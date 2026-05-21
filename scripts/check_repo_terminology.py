@@ -57,10 +57,24 @@ TEXT_SUFFIXES = {
 
 AUDIT_TOOL_FILES = {
     ROOT / "scripts" / "check_maintained_doc_terms.py",
+    ROOT / "src" / "tests" / "test_docs_audit.py",
 }
 
 PATTERNS: list[tuple[re.Pattern[str], str]] = [
     (re.compile(r"zero-mock", re.IGNORECASE), "test-double wording"),
+    (re.compile(r"\bPyMDPConverter\b"), "stale PyMDP converter name"),
+    (re.compile(r"\bmock_services\b"), "test-double service wording"),
+    (re.compile(r"\bmock_data\b"), "test-double data wording"),
+    (re.compile(r"\bmock_llm\b"), "test-double LLM wording"),
+    (re.compile(r"\bdummy_input\b"), "test-double input wording"),
+    (re.compile(r"\bdummy_observations\b"), "test-double observation wording"),
+    (re.compile(r"\bRoot shims\b"), "compatibility-layer wording"),
+    (re.compile(r"\btest shims\b"), "test shim wording"),
+    (re.compile(r"\btool shims\b"), "MCP shim wording"),
+    (
+        re.compile(r"\bfallback shims removed\b", re.IGNORECASE),
+        "stale fallback shim wording",
+    ),
     (re.compile(r"no mocks", re.IGNORECASE), "test-double wording"),
     (re.compile(r"unittest\.mock", re.IGNORECASE), "test-double import/reference"),
     (re.compile(r"\bmock(s)?\b", re.IGNORECASE), "test-double wording"),

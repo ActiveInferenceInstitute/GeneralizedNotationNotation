@@ -14,8 +14,8 @@ How to run:
   # Skip post-install JAX/Optax/Flax/pymdp functional self-test (core deps still installed)
   python src/1_setup.py --setup-core-only --target-dir input/gnn_files --output-dir output --verbose
 
-  # Optional groups (LLM client libraries are core deps since 1.3.x)
-  python src/1_setup.py --install-optional --optional-groups=llm --verbose
+  # Optional groups beyond the core dependency set
+  python src/1_setup.py --install-optional --optional-groups=gui,audio --verbose
 
   # Install all optional dependencies
   python src/1_setup.py --install-optional --verbose
@@ -27,9 +27,9 @@ How to run:
   python src/1_setup.py --install-all-extras --verbose
 
   # Alternative: Use uv directly for specific extras
-  uv sync                          # Core includes openai, ollama, python-dotenv, aiohttp
-  uv sync --extra openai           # Optional OpenAI-backed LLM stack
-  uv sync --extra visualization    # Install visualization packages
+  uv sync                          # Core includes Step 12, LLM, visualization, and bnlearn backends
+  uv sync --extra gui              # Install GUI packages
+  uv sync --extra audio            # Install audio packages
   uv sync --extra all              # Install all optional packages
 
 Expected outputs:
@@ -70,12 +70,18 @@ def setup_orchestrator(
     output_path = Path(output_dir)
     verbose = kwargs.get("verbose", False)
     recreate = kwargs.get("recreate_venv", False)
-    install_optional = kwargs.get("install_optional", False)
+    install_optional_raw = kwargs.get("install_optional", False)
     optional_groups_str = kwargs.get("optional_groups", None)
     setup_core_only = bool(kwargs.get("setup_core_only", False))
 
     # Parse optional groups if provided
     optional_groups = None
+    if isinstance(install_optional_raw, str) and install_optional_raw.strip():
+        optional_groups_str = optional_groups_str or install_optional_raw
+        install_optional = True
+    else:
+        install_optional = bool(install_optional_raw)
+
     if optional_groups_str:
         optional_groups = [g.strip() for g in optional_groups_str.split(",")]
 
@@ -114,20 +120,27 @@ run_script = create_standardized_pipeline_script(
     setup_orchestrator,
     "Project setup and environment validation with UV",
     additional_arguments={
-        "recreate_venv": {"type": bool, "help": "Recreate virtual environment"},
+        "recreate_venv": {
+            "flag": "--recreate-uv-env",
+            "action": "store_true",
+            "help": "Recreate virtual environment",
+        },
         "dev": {
-            "type": bool,
+            "action": "store_true",
             "help": "Install development dependencies (uv sync --extra dev)",
         },
         "install_all_extras": {
-            "type": bool,
+            "action": "store_true",
             "help": "Install all optional groups (uv sync --all-extras)",
         },
         "setup_core_only": {
-            "type": bool,
+            "action": "store_true",
             "help": "Skip post-install JAX/Optax/Flax/pymdp functional self-test (deps still installed)",
         },
-        "install_optional": {"type": bool, "help": "Install optional dependencies"},
+        "install_optional": {
+            "action": "store_true",
+            "help": "Install optional dependencies",
+        },
         "optional_groups": {
             "type": str,
             "help": "Comma-separated list of optional groups (jax,pymdp,visualization,audio,llm,ml)",

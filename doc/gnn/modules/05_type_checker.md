@@ -138,7 +138,7 @@ sample corpus rather than MagicMock fixtures.
 | Symptom | Likely Cause | Remediation |
 |---------|-------------|-------------|
 | Step 5 reports "no GNN files found" with exit code 2 | `--target-dir` points at an empty or non-existent dir | Verify path; Step 3 (GNN parse) should have populated it. |
-| Trading card images missing but summary present | matplotlib unavailable in venv | `uv sync --extra visualization` |
+| Trading card images missing but summary present | matplotlib unavailable in venv | `uv sync` |
 | Resource estimates show `complexity_class: extreme` for small models | ModelParameters missing `num_hidden_states` so estimator fell back on StateSpaceBlock parsing | Add canonical keys to ModelParameters section; see GNN-W004. |
 
 ## Source References

@@ -270,7 +270,7 @@ class ProtobufGNNParser(BaseGNNParser):
 
             if source_match and target_match:
                 # This indicates the structure exists
-                pass
+                logger.debug("Detected protobuf connection field structure")
 
         # Parse from embedded model data
         model_content = self._extract_embedded_model_data(content)

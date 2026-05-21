@@ -27,8 +27,15 @@ MATPLOTLIB_AVAILABLE = True
 logger = logging.getLogger(__name__)
 
 
-def _pymdp_v1_visualization_data(data: Dict[str, Any]) -> Dict[str, Any]:
-    if data.get("schema_version") != "pymdp_simulation_v1":
+CURRENT_VISUALIZATION_SCHEMAS = {
+    "pymdp_simulation_v1",
+    "rxinfer_simulation_v1",
+    "activeinference_jl_simulation_v1",
+}
+
+
+def _current_schema_visualization_data(data: Dict[str, Any]) -> Dict[str, Any]:
+    if data.get("schema_version") not in CURRENT_VISUALIZATION_SCHEMAS:
         return {}
     return {
         "beliefs": (data.get("beliefs_by_factor", {}) or {}).get("joint_state", []),
@@ -42,6 +49,7 @@ def _pymdp_v1_visualization_data(data: Dict[str, Any]) -> Dict[str, Any]:
         "variational_free_energy": data.get("variational_free_energy", []),
         "metrics": data.get("metrics", {}),
         "model_parameters": data.get("model_parameters", {}),
+        "schema_version": data.get("schema_version"),
     }
 
 
@@ -205,8 +213,9 @@ def visualize_all_framework_outputs(
             raw_framework = data.get("framework", "unknown")
             framework = _normalize_framework_name(raw_framework)
             if (
-                framework == "pymdp"
-                and data.get("schema_version") != "pymdp_simulation_v1"
+                framework in {"pymdp", "rxinfer", "activeinference_jl"}
+                and data.get("schema_version")
+                and data.get("schema_version") not in CURRENT_VISUALIZATION_SCHEMAS
             ):
                 continue
             model_name = data.get("model_name", result_file.parent.name)
@@ -258,8 +267,9 @@ def visualize_all_framework_outputs(
             # Normalize framework name to canonical form
             framework = _normalize_framework_name(framework)
             if (
-                framework == "pymdp"
-                and data.get("schema_version") != "pymdp_simulation_v1"
+                framework in {"pymdp", "rxinfer", "activeinference_jl"}
+                and data.get("schema_version")
+                and data.get("schema_version") not in CURRENT_VISUALIZATION_SCHEMAS
             ):
                 continue
             if allowed_frameworks and framework not in allowed_frameworks:
@@ -322,8 +332,8 @@ def visualize_all_framework_outputs(
             if not sim_data and data.get("results"):
                 # Try to extract from first result
                 result = data["results"][0]
-                if framework == "pymdp":
-                    sim_data = _pymdp_v1_visualization_data(result)
+                if framework in {"pymdp", "rxinfer", "activeinference_jl"}:
+                    sim_data = _current_schema_visualization_data(result)
                 else:
                     sim_data = result.get("simulation_data", {})
 
@@ -338,16 +348,26 @@ def visualize_all_framework_outputs(
                                 with open(json_file, "r") as f:
                                     file_data = json.load(f)
                                 if isinstance(file_data, dict):
-                                    if framework == "pymdp":
+                                    if framework in {
+                                        "pymdp",
+                                        "rxinfer",
+                                        "activeinference_jl",
+                                    }:
                                         sim_data.update(
-                                            _pymdp_v1_visualization_data(file_data)
+                                            _current_schema_visualization_data(
+                                                file_data
+                                            )
                                         )
                                     else:
                                         sim_data.update(file_data)
-                            except (json.JSONDecodeError, OSError):
-                                pass
-            elif framework == "pymdp":
-                sim_data = _pymdp_v1_visualization_data(sim_data)
+                            except (json.JSONDecodeError, OSError) as e:
+                                logger.debug(
+                                    "Skipping unreadable simulation data file %s: %s",
+                                    json_file,
+                                    e,
+                                )
+            elif framework in {"pymdp", "rxinfer", "activeinference_jl"}:
+                sim_data = _current_schema_visualization_data(sim_data)
 
                 # For ActiveInference.jl: read CSV simulation data directly
                 if framework == "activeinference_jl" and not sim_data.get("beliefs"):

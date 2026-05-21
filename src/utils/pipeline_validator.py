@@ -15,6 +15,8 @@ import logging
 from pathlib import Path
 from typing import Any, Dict, List
 
+from utils.pipeline_step_dependencies import dependency_scripts_for_script
+
 logger = logging.getLogger(__name__)
 
 
@@ -55,39 +57,7 @@ def validate_step_prerequisites(
     # Import get_output_dir_for_script to use consistent output directory mapping
     from pipeline.config import get_output_dir_for_script
 
-    # Define step dependencies (step name -> [required prerequisite steps])
-    step_dependencies: dict[str, Any] = {
-        "11_render.py": ["3_gnn.py"],  # Render needs parsed GNN files
-        "12_execute.py": [
-            "3_gnn.py",
-            "11_render.py",
-        ],  # Execute needs parsed models and rendered code
-        "8_visualization.py": ["3_gnn.py"],  # Visualization needs parsed files
-        "9_advanced_viz.py": [
-            "3_gnn.py",
-            "8_visualization.py",
-        ],  # Advanced viz builds on parsed data and base viz
-        "13_llm.py": ["3_gnn.py"],  # LLM analysis needs parsed files
-        "23_report.py": [
-            "8_visualization.py",
-            "13_llm.py",
-        ],  # Report needs viz and analysis
-        "20_website.py": ["8_visualization.py"],  # Website needs visualizations
-        "5_type_checker.py": ["3_gnn.py"],  # Type checking needs parsed files
-        "6_validation.py": [
-            "3_gnn.py",
-            "5_type_checker.py",
-        ],  # Validation needs parsed files and type checks
-        "7_export.py": ["3_gnn.py"],  # Export needs parsed files
-        "10_ontology.py": ["3_gnn.py"],  # Ontology processing needs parsed files
-        "15_audio.py": ["3_gnn.py"],  # Audio generation needs parsed files
-        "16_analysis.py": [
-            "3_gnn.py",
-            "7_export.py",
-        ],  # Analysis needs parsed inputs and exports
-    }
-
-    required_steps = step_dependencies.get(script_name, [])
+    required_steps = dependency_scripts_for_script(script_name)
     # Filter out intentionally skipped prerequisites
     required_steps = [s for s in required_steps if not _is_skipped(s)]
 

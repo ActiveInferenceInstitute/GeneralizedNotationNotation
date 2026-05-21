@@ -84,6 +84,21 @@ def _parse_step_args(
     try:
         from utils import ArgumentParser
 
+        unsupported_extra_args = [
+            name
+            for name in (additional_arguments or {})
+            if name not in ArgumentParser.ARGUMENT_DEFINITIONS
+        ]
+        if unsupported_extra_args:
+            logging.warning(
+                "Step %s has unregistered extra CLI args %s; using recovery parser",
+                step_name,
+                unsupported_extra_args,
+            )
+            return _create_fallback_parser(
+                fallback_parser_description, additional_arguments or {}
+            ).parse_args()
+
         return ArgumentParser.parse_step_arguments(step_name)
     except Exception as e:
         logging.warning(f"Enhanced parser failed for {step_name}, using recovery: {e}")
@@ -194,7 +209,7 @@ CommonModuleParams: dict[str, Any] = {
     "recreate_venv": bool,  # For setup
     "dev": bool,  # For setup
     "install_all_extras": bool,  # For setup: uv sync --all-extras
-    "setup_core_only": bool,  # For setup: skip execution-frameworks
+    "setup_core_only": bool,  # For setup: skip post-sync JAX/PyMDP self-test
 }
 
 # Standardized naming conventions for module functions

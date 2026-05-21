@@ -54,12 +54,15 @@ def function_name_mcp(mcp_instance_ref=None, **kwargs) -> Dict[str, Any]:
         logger.error(f"MCP tool error: {e}")
         return {"success": False, "error": str(e), "error_type": "execution_error"}
 
-# Registry with full metadata
-MCP_TOOLS: Dict[str, Dict[str, Any]] = {
-    "tool_name": {
-        "function": function_name_mcp,
-        "description": "Human-readable description of what this tool does",
-        "parameters": {
+def register_tools(mcp=None) -> None:
+    """Register all MCP tools with the central server."""
+    if mcp is None:
+        from mcp.mcp import mcp_instance as mcp
+
+    mcp.register_tool(
+        "tool_name",
+        function_name_mcp,
+        {
             "type": "object",
             "properties": {
                 "param1": {"type": "string", "description": "Description"},
@@ -67,12 +70,11 @@ MCP_TOOLS: Dict[str, Dict[str, Any]] = {
             },
             "required": ["param1"],
         },
-    }
-}
-
-def register_tools(mcp=None) -> None:
-    """Register all MCP tools with the central server."""
-    logger.info(f"module_name: {len(MCP_TOOLS)} MCP tools registered.")
+        "Human-readable description of what this tool does",
+        module=__package__,
+        category="module_name",
+    )
+    logger.info("module_name: MCP tools registered.")
 ```
 
 ---

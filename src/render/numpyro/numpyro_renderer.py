@@ -202,14 +202,14 @@ try:
     import jax.numpy as jnp
     import jax.random as jrandom
 except ImportError:
-    print("ERROR: JAX not installed. Install with: uv sync --extra probabilistic-programming")
+    print("ERROR: JAX not installed. Install with: uv sync")
     sys.exit(1)
 
 try:
     import numpyro
     import numpyro.distributions as dist
 except ImportError:
-    print("ERROR: NumPyro not installed. Install with: uv sync --extra probabilistic-programming")
+    print("ERROR: NumPyro not installed. Install with: uv sync")
     sys.exit(1)
 
 import numpy as np

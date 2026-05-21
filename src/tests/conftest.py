@@ -285,10 +285,37 @@ def sample_gnn_file() -> Generator[Path, None, None]:
 def sample_gnn_spec() -> Dict[str, Any]:
     """In-memory GNN spec dict used by render tests."""
     return {
+        "model_name": "actinf_pomdp_agent",
         "name": "actinf_pomdp_agent",
-        "states": ["s"],
-        "observations": ["o"],
-        "parameters": {"A": [[0.5, 0.5]]},
+        "states": ["s0", "s1"],
+        "observations": ["o0", "o1"],
+        "actions": ["stay"],
+        "num_states": 2,
+        "num_observations": 2,
+        "num_actions": 1,
+        "time_horizon": 4,
+        "seed": 42,
+        "b_tensor_order": "next_state_previous_state_action",
+        "initialparameterization": {
+            "A": [[0.9, 0.1], [0.1, 0.9]],
+            "B": [[0.9, 0.2], [0.1, 0.8]],
+            "C": [0.0, 1.0],
+            "D": [1.0, 0.0],
+            "E": [1.0],
+        },
+        "model_parameters": {
+            "num_hidden_states": 2,
+            "num_obs": 2,
+            "num_actions": 1,
+            "b_tensor_order": "next_state_previous_state_action",
+        },
+        "parameters": {
+            "A": [[0.9, 0.1], [0.1, 0.9]],
+            "B": [[0.9, 0.2], [0.1, 0.8]],
+            "C": [0.0, 1.0],
+            "D": [1.0, 0.0],
+            "E": [1.0],
+        },
     }
 
 

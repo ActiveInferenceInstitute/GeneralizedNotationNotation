@@ -15,6 +15,49 @@ logger = logging.getLogger(__name__)
 from ..viz_base import MATPLOTLIB_AVAILABLE, np, plt
 
 
+def _current_rxinfer_models(execution_dir: Path) -> set[str] | None:
+    """Return model names for RxInfer entries in the current Step 12 summary."""
+    summary_file = execution_dir / "summaries" / "execution_summary.json"
+    if not summary_file.exists():
+        summary_file = execution_dir / "execution_summary.json"
+    if not summary_file.exists():
+        return None
+    try:
+        data = json.loads(summary_file.read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, OSError):
+        return None
+    details = data.get("execution_details")
+    if not isinstance(details, list):
+        details = data.get("execution_results", [])
+    if not isinstance(details, list):
+        return None
+    models = {
+        str(detail.get("model_name"))
+        for detail in details
+        if isinstance(detail, dict)
+        and str(detail.get("framework", "")).lower() == "rxinfer"
+        and detail.get("model_name")
+    }
+    return models or None
+
+
+def _latest_current_results_file(sim_data_dir: Path) -> Path | None:
+    """Select one current RxInfer result file from a simulation_data directory."""
+    candidates = sorted(
+        sim_data_dir.glob("*simulation_results.json"),
+        key=lambda path: path.stat().st_mtime,
+        reverse=True,
+    )
+    for candidate in candidates:
+        try:
+            data = json.loads(candidate.read_text(encoding="utf-8"))
+        except (json.JSONDecodeError, OSError):
+            continue
+        if data.get("schema_version") == "rxinfer_simulation_v1":
+            return candidate
+    return candidates[0] if candidates else None
+
+
 def generate_analysis_from_logs(
     execution_dir: Path, output_dir: Path, verbose: bool = False
 ) -> List[str]:
@@ -33,19 +76,22 @@ def generate_analysis_from_logs(
 
     try:
         # Find RxInfer execution results
+        current_models = _current_rxinfer_models(execution_dir)
         rxinfer_dirs = list(execution_dir.glob("*/rxinfer"))
 
         for rxinfer_dir in rxinfer_dirs:
+            model_name = rxinfer_dir.parent.name
+            if current_models and model_name not in current_models:
+                continue
             sim_data_dir = rxinfer_dir / "simulation_data"
             if sim_data_dir.exists():
                 # Load simulation results
-                results_files = list(sim_data_dir.glob("*simulation_results.json"))
-                for results_file in results_files:
+                results_file = _latest_current_results_file(sim_data_dir)
+                if results_file is not None:
                     try:
                         with open(results_file, "r") as f:
                             data = json.load(f)
 
-                        model_name = rxinfer_dir.parent.name
                         viz_files = create_rxinfer_visualizations(
                             data, output_dir, model_name, verbose
                         )

@@ -383,8 +383,12 @@ class _DirectMarkdownParser:
                     else:
                         try:
                             dimensions.append(int(part))
-                        except ValueError:
-                            pass
+                        except ValueError as e:
+                            logger.debug(
+                                "Ignoring non-dimension token %r: %s",
+                                part,
+                                e,
+                            )
                 var_type = "hidden_state"
                 if name in ["A", "B", "C", "D"]:
                     var_type = (

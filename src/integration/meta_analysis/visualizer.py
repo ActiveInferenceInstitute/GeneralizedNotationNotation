@@ -44,8 +44,10 @@ try:
     from mpl_toolkits.mplot3d import Axes3D  # noqa: F401
 
     _MPL_AVAILABLE = True
-except ImportError:
-    pass
+except ImportError as exc:
+    logging.getLogger(__name__).debug(
+        "Matplotlib unavailable for meta-analysis visualizations: %s", exc
+    )
 
 
 # Style Constants — Curated for ultra-bold high-contrast scientific reports

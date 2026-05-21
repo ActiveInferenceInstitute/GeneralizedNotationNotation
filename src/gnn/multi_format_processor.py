@@ -14,6 +14,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Sequence, Tuple, cast
 
+from gnn.discovery import is_model_source_path
 from utils import log_step_error, log_step_start, log_step_success
 
 
@@ -125,6 +126,7 @@ def process_gnn_multi_format(
         else:
             for ext in extensions:
                 gnn_files.extend(target_path.glob(f"*{ext}"))
+        gnn_files = [path for path in gnn_files if is_model_source_path(path)]
 
         logger.info(f"Found {len(gnn_files)} potential GNN files")
 

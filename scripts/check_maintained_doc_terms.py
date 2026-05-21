@@ -47,6 +47,19 @@ class Finding:
 
 PATTERNS: list[tuple[re.Pattern[str], str]] = [
     (re.compile(r"\bFallbackAgent\b"), "stale PyMDP execution agent name"),
+    (re.compile(r"\bPyMDPConverter\b"), "stale PyMDP converter name"),
+    (re.compile(r"\bmock_services\b"), "test-double service wording"),
+    (re.compile(r"\bmock_data\b"), "test-double data wording"),
+    (re.compile(r"\bmock_llm\b"), "test-double LLM wording"),
+    (re.compile(r"\bdummy_input\b"), "test-double input wording"),
+    (re.compile(r"\bdummy_observations\b"), "test-double observation wording"),
+    (re.compile(r"\bRoot shims\b"), "compatibility-layer wording"),
+    (re.compile(r"\btest shims\b"), "test shim wording"),
+    (re.compile(r"\btool shims\b"), "MCP shim wording"),
+    (
+        re.compile(r"\bfallback shims removed\b", re.IGNORECASE),
+        "stale fallback shim wording",
+    ),
     (
         re.compile(r"Fallback Circuit Breakers", re.IGNORECASE),
         "unsupported feature claim",

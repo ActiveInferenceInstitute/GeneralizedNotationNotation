@@ -141,23 +141,26 @@ def module_action_mcp(mcp_instance_ref=None, **kwargs) -> Dict[str, Any]:
         logger.error(f"MCP tool error: {e}")
         return {"success": False, "error": str(e), "error_type": "execution_error"}
 
-MCP_TOOLS: Dict[str, Dict[str, Any]] = {
-    "module_action": {
-        "function": module_action_mcp,
-        "description": "Perform module action",
-        "parameters": {
+def register_tools(mcp=None) -> None:
+    """Register MCP tools with server."""
+    if mcp is None:
+        from mcp.mcp import mcp_instance as mcp
+
+    mcp.register_tool(
+        "module_action",
+        module_action_mcp,
+        {
             "type": "object",
             "properties": {
                 "input_path": {"type": "string", "description": "Path to input file"},
-                "verbose": {"type": "boolean", "default": False}
+                "verbose": {"type": "boolean", "default": False},
             },
-            "required": ["input_path"]
-        }
-    }
-}
-
-def register_tools(mcp=None) -> None:
-    """Register MCP tools with server."""
+            "required": ["input_path"],
+        },
+        "Perform module action",
+        module=__package__,
+        category="module_name",
+    )
     logger.info("module_name MCP tools registered.")
 ```
 

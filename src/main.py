@@ -96,6 +96,7 @@ from utils.logging.logging_utils import (
     setup_step_logging,
 )
 from utils.pipeline_config_merge import apply_input_config_defaults
+from utils.pipeline_step_dependencies import resolve_step_dependencies
 from utils.pipeline_validator import (
     validate_pipeline_step_sequence,
     validate_step_prerequisites,
@@ -280,44 +281,17 @@ def main(
     if only_steps_val:
         requested_step_numbers = parse_step_list(only_steps_val)
 
-        # Automatic dependency resolution
-        step_dependencies: dict[Any, Any] = {
-            11: [3],  # 11_render.py needs 3_gnn.py
-            12: [3, 11],  # 12_execute.py needs 3_gnn.py and 11_render.py
-            8: [3],  # 8_visualization.py needs 3_gnn.py
-            9: [3, 8],  # 9_advanced_viz.py needs 3_gnn.py and 8_visualization.py
-            13: [3],  # 13_llm.py needs 3_gnn.py
-            23: [8, 13],  # 23_report.py needs 8_visualization.py and 13_llm.py
-            20: [8],  # 20_website.py needs 8_visualization.py
-            5: [3],  # 5_type_checker.py needs 3_gnn.py
-            6: [3, 5],  # 6_validation.py needs 3_gnn.py and 5_type_checker.py
-            7: [3],  # 7_export.py needs 3_gnn.py
-            10: [3],  # 10_ontology.py needs 3_gnn.py
-            15: [3],  # 15_audio.py needs 3_gnn.py
-            16: [3, 7],  # 16_analysis.py needs 3_gnn.py and 7_export.py
-            24: [
-                23
-            ],  # 24_intelligent_analysis.py needs 23_report.py (and implicitly the summary it generates/pipeline completion)
-        }
-
-        # Include dependencies automatically
-        resolved_step_numbers = set(requested_step_numbers)
-        added_dependencies: list[Any] = []
-        for step_num in requested_step_numbers:
-            if step_num in step_dependencies:
-                for dep in step_dependencies[step_num]:
-                    if dep not in resolved_step_numbers:
-                        resolved_step_numbers.add(dep)
-                        added_dependencies.append(dep)
+        resolved_step_numbers = resolve_step_dependencies(requested_step_numbers)
+        added_dependencies = sorted(
+            set(resolved_step_numbers) - set(requested_step_numbers)
+        )
 
         if added_dependencies:
-            logger.info(
-                f"Auto-including dependency steps: {sorted(added_dependencies)}"
-            )
+            logger.info(f"Auto-including dependency steps: {added_dependencies}")
 
         steps_to_execute = [
             pipeline_steps[i]
-            for i in sorted(resolved_step_numbers)
+            for i in resolved_step_numbers
             if 0 <= i < len(pipeline_steps)
         ]
         logger.info(f"Executing steps: {[step[0] for step in steps_to_execute]}")

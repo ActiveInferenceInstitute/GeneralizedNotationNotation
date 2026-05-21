@@ -256,7 +256,11 @@ class PipelineErrorHandler:
                 raise e
             # For warnings/errors that should be handled by caller
             elif exit_code == 2:
-                pass  # Allow caller to decide how to proceed
+                self.logger.debug(
+                    "[%s] Non-critical error in %s left for caller handling",
+                    self.correlation_id,
+                    step_name,
+                )
 
     def retry_operation(
         self, operation: Callable[[], T], error: PipelineError

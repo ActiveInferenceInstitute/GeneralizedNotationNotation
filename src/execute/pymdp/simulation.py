@@ -76,7 +76,12 @@ def _canonicalise_A(A_data: Any, fallback_shape: Tuple[int, int]) -> np.ndarray:
     return _normalise_columns(mat)
 
 
-def _canonicalise_B(B_data: Any, num_states: int, num_actions: int) -> np.ndarray:
+def _canonicalise_B(
+    B_data: Any,
+    num_states: int,
+    num_actions: int,
+    b_tensor_order: str = "",
+) -> np.ndarray:
     """
     Return a B tensor with PyMDP shape ``(next_state, prev_state, action)``.
 
@@ -90,12 +95,19 @@ def _canonicalise_B(B_data: Any, num_states: int, num_actions: int) -> np.ndarra
         raise ValueError("B matrix is required for PyMDP execution")
 
     raw = np.asarray(B_data, dtype=np.float64)
+    declared_order = b_tensor_order.lower().replace("-", "_").replace(" ", "_")
 
     if raw.ndim == 2:
         tensor = raw[:, :, np.newaxis]
     elif raw.ndim == 3:
         # If leading dim matches num_actions, assume GNN (action, prev, next)
-        if raw.shape[0] == num_actions and raw.shape[1] == raw.shape[2]:
+        if declared_order in {
+            "next_state_previous_state_action",
+            "next_previous_action",
+            "next_prev_action",
+        }:
+            tensor = raw
+        elif raw.shape[0] == num_actions and raw.shape[1] == raw.shape[2]:
             tensor = raw.transpose(2, 1, 0)
         elif raw.shape[-1] == num_actions and raw.shape[0] == raw.shape[1]:
             tensor = raw
@@ -355,7 +367,12 @@ def run_pymdp_simulation(
 
     num_actions = max(1, int(model_params.get("num_actions", num_actions_guess)))
 
-    B_np = _canonicalise_B(b_raw, num_states, num_actions)
+    B_np = _canonicalise_B(
+        b_raw,
+        num_states,
+        num_actions,
+        str(model_params.get("b_tensor_order", "")),
+    )
     # Ensure num_actions reflects the canonicalised tensor.
     num_actions = int(B_np.shape[2])
     C_np = _canonicalise_C(init_params.get("C"), num_obs)
@@ -530,6 +547,12 @@ def run_pymdp_simulation(
             "pymdp_version_ge_1_0_0": _is_version_ge(pymdp_version, (1, 0, 0)),
         },
     }
+    results["validation"]["all_valid"] = (
+        results["validation"]["all_beliefs_valid"]
+        and results["validation"]["beliefs_sum_to_one"]
+        and results["validation"]["actions_in_range"]
+        and results["validation"]["pymdp_version_ge_1_0_0"]
+    )
 
     output_dir.mkdir(parents=True, exist_ok=True)
     results_file = output_dir / "simulation_results.json"

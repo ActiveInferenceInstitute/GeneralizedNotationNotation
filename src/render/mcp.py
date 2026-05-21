@@ -12,6 +12,7 @@ from typing import Any, Dict
 logger = logging.getLogger(__name__)
 
 from . import process_render
+from .framework_registry import get_available_renderers, get_supported_frameworks
 
 
 def process_render_mcp(
@@ -61,14 +62,7 @@ def process_render_mcp(
 # Canonical framework descriptions used by both branches of
 # ``list_render_frameworks_mcp`` so success/fallback share one shape.
 _FRAMEWORK_DESCRIPTIONS: Dict[str, str] = {
-    "pymdp": "PyMDP Active Inference simulation (Python)",
-    "rxinfer": "RxInfer.jl probabilistic programming (Julia)",
-    "activeinference_jl": "ActiveInference.jl simulation (Julia)",
-    "jax": "JAX/XLA accelerated computation (Python)",
-    "discopy": "DisCoPy string diagrams (Python)",
-    "pytorch": "PyTorch neural integration (Python)",
-    "numpyro": "NumPyro probabilistic programming (Python)",
-    "stan": "Stan probabilistic programming (Stan)",
+    name: spec["description"] for name, spec in get_available_renderers().items()
 }
 
 
@@ -87,8 +81,6 @@ def list_render_frameworks_mcp() -> Dict[str, Any]:
         for name, desc in _FRAMEWORK_DESCRIPTIONS.items()
     }
     try:
-        from . import get_supported_frameworks
-
         for name in get_supported_frameworks():
             entry = frameworks.setdefault(
                 name, {"available": False, "description": name}
@@ -169,9 +161,9 @@ def get_render_module_info_mcp() -> Dict[str, Any]:
     try:
         from . import get_supported_frameworks
 
-        frameworks = get_supported_frameworks()
+        frameworks: list[str] = get_supported_frameworks()
     except Exception:
-        frameworks = {}
+        frameworks = []
     return {
         "success": True,
         "module": __package__,
@@ -240,16 +232,7 @@ def register_tools(mcp_instance: Any) -> None:
                 "framework": {
                     "type": "string",
                     "description": "Target framework",
-                    "enum": [
-                        "pymdp",
-                        "rxinfer",
-                        "activeinference_jl",
-                        "jax",
-                        "discopy",
-                        "pytorch",
-                        "numpyro",
-                        "stan",
-                    ],
+                    "enum": get_supported_frameworks(),
                     "default": "pymdp",
                 },
                 "verbose": {

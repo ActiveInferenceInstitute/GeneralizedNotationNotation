@@ -12,6 +12,8 @@ import logging
 from dataclasses import dataclass
 from typing import Any, Dict, Optional
 
+from .framework_registry import get_supported_frameworks
+
 logger = logging.getLogger(__name__)
 
 
@@ -35,16 +37,13 @@ class RendererStatus:
         }
 
 
-# Known renderer targets and their import paths
+# Renderer import paths derived from the canonical framework inventory.
+_RENDERER_MODULE_OVERRIDES: dict[str, str] = {
+    "bnlearn": "render.generators",
+}
 _RENDERERS: dict[str, Any] = {
-    "pymdp": "render.pymdp",
-    "rxinfer": "render.rxinfer",
-    "jax": "render.jax",
-    "numpyro": "render.numpyro",
-    "stan": "render.stan",
-    "pytorch": "render.pytorch",
-    "activeinference_jl": "render.activeinference_jl",
-    "discopy": "render.discopy",
+    name: _RENDERER_MODULE_OVERRIDES.get(name, f"render.{name}")
+    for name in get_supported_frameworks()
 }
 
 

@@ -10,7 +10,7 @@ import json
 import logging
 import re
 from pathlib import Path
-from shutil import copy2
+from shutil import copy2, rmtree
 from typing import TYPE_CHECKING, Any, Dict, List
 
 _module_logger = logging.getLogger(__name__)
@@ -84,6 +84,24 @@ def normalize_and_deduplicate_paths(
     return deduplicated
 
 
+def _clear_collected_output_dirs(output_dir: Path, logger: logging.Logger) -> None:
+    """Clear per-run collected data directories before copying current outputs."""
+    for child_name in ("simulation_data", "traces", "other"):
+        child_dir = output_dir / child_name
+        if not child_dir.exists():
+            continue
+        for child in child_dir.iterdir():
+            try:
+                if child.is_dir():
+                    rmtree(child)
+                else:
+                    child.unlink()
+            except OSError as exc:
+                logger.debug(
+                    "Could not remove previous collected output %s: %s", child, exc
+                )
+
+
 def collect_execution_outputs(
     script_path: Path,
     output_dir: Path,
@@ -128,8 +146,10 @@ def collect_execution_outputs(
                 found_files.extend(discopy_dir.rglob("*.svg"))
                 found_files.extend(discopy_dir.rglob("*.json"))
         elif framework == "activeinference_jl":
+            found_files.extend(script_dir.glob("simulation_results.json"))
             for out_dir in script_dir.glob("activeinference_outputs_*"):
                 if out_dir.is_dir():
+                    found_files.extend(out_dir.glob("simulation_results.json"))
                     viz_dir = out_dir / "visualizations"
                     if viz_dir.exists() and viz_dir.is_dir():
                         found_files.extend(viz_dir.glob("*.png"))
@@ -143,6 +163,7 @@ def collect_execution_outputs(
                         found_files.extend(traces_dir.glob("*.json"))
                         found_files.extend(traces_dir.glob("*.csv"))
         elif framework == "rxinfer":
+            found_files.extend(script_dir.glob("simulation_results.json"))
             rxinfer_dir = script_dir / "rxinfer_outputs"
             if rxinfer_dir.exists():
                 found_files.extend(rxinfer_dir.rglob("*.png"))
@@ -186,6 +207,7 @@ def collect_execution_outputs(
             )
             return collected
 
+        _clear_collected_output_dirs(output_dir, logger)
         logger.info(f"Found {len(found_files)} output files to collect for {framework}")
 
         for source_file in found_files:
@@ -409,6 +431,31 @@ def extract_rxinfer_data_from_files(
     data: dict[Any, Any] = {}
 
     try:
+        sim_data_dir = output_dir / "simulation_data"
+        if sim_data_dir.exists():
+            results_files = list(sim_data_dir.glob("*simulation_results.json"))
+            if results_files:
+                results_file = results_files[0]
+                with open(results_file, "r", encoding="utf-8") as f:
+                    results = json.load(f)
+                for key in (
+                    "schema_version",
+                    "beliefs",
+                    "true_states",
+                    "observations",
+                    "actions",
+                    "expected_free_energy",
+                    "policy_posterior",
+                    "validation",
+                    "model_parameters",
+                ):
+                    if key in results:
+                        data[key] = results[key]
+                if "expected_free_energy" in results:
+                    data["free_energy"] = results["expected_free_energy"]
+                logger.info(f"Extracted RxInfer data from {results_file.name}")
+                return data
+
         # Look for inference data JSON files
         data_dir = output_dir / "inference_data"
         if data_dir.exists():
@@ -519,11 +566,31 @@ def extract_activeinference_jl_data_from_files(
         # Also check the shared simulation_data location.
         data_dir = output_dir / "simulation_data"
         if data_dir.exists():
-            json_files = list(data_dir.glob("*.json"))
+            json_files = list(data_dir.glob("*simulation_results.json")) + list(
+                data_dir.glob("*.json")
+            )
             for json_file in json_files:
                 try:
                     with open(json_file, "r") as f:
                         sim_data = json.load(f)
+                        for key in (
+                            "schema_version",
+                            "beliefs",
+                            "true_states",
+                            "observations",
+                            "actions",
+                            "expected_free_energy",
+                            "policy_posterior",
+                            "validation",
+                            "model_parameters",
+                        ):
+                            if key in sim_data and key not in data:
+                                data[key] = sim_data[key]
+                        if (
+                            "expected_free_energy" in sim_data
+                            and "free_energy" not in data
+                        ):
+                            data["free_energy"] = sim_data["expected_free_energy"]
                         if "free_energy" in sim_data and "free_energy" not in data:
                             data["free_energy"] = sim_data["free_energy"]
                         if "beliefs" in sim_data and "beliefs" not in data:

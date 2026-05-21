@@ -49,6 +49,7 @@ def pomdp_gnn_spec() -> Any:
             "B_right": [[0.1, 0.0, 0.9], [0.1, 0.8, 0.1], [0.8, 0.2, 0.0]],
             "C": [1.0, 0.0, -1.0],
             "D": [1.0, 0.0, 0.0],
+            "E": [0.5, 0.5],
         },
         "initialparameterization": {
             "A": [[0.8, 0.1, 0.1], [0.1, 0.8, 0.1], [0.1, 0.1, 0.8]],
@@ -58,6 +59,7 @@ def pomdp_gnn_spec() -> Any:
             ],
             "C": [1.0, 0.0, -1.0],
             "D": [1.0, 0.0, 0.0],
+            "E": [0.5, 0.5],
         },
         "model_parameters": {"num_hidden_states": 3, "num_obs": 3, "num_actions": 2},
         "num_states": 3,

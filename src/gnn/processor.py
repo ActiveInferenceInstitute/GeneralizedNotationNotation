@@ -8,9 +8,10 @@ import logging
 import re
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime
-from fnmatch import fnmatch
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
+
+from gnn.discovery import is_model_source_path
 
 
 def _process_single_gnn_file(file_path: Path) -> Dict[str, Any]:
@@ -205,20 +206,7 @@ def discover_gnn_files(
         else:
             gnn_files.extend(directory.glob(pattern))
 
-    # Filter out common non-GNN files
-    excluded_patterns: list[Any] = [
-        "README.md",
-        "CHANGELOG.md",
-        "LICENSE.md",
-        "*.template.md",
-        "*.example.md",
-    ]
-
-    return [
-        f
-        for f in gnn_files
-        if not any(fnmatch(f.name, pat) for pat in excluded_patterns)
-    ]
+    return [path for path in gnn_files if is_model_source_path(path)]
 
 
 def parse_gnn_file(

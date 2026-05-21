@@ -15,7 +15,7 @@ Multi-framework rendering and code generation from GNN models.
 - `generators.py` - Code generator utilities (1365 lines)
 
 ## Supported Frameworks
-- `pymdp`, `rxinfer`, `activeinference_jl`, `jax`, `discopy`, plus optional backends when available: `pytorch`, `numpyro`, `stan`.
+- `pymdp`, `rxinfer`, `activeinference_jl`, `jax`, `discopy`, `pytorch`, `numpyro`, `stan`, and `bnlearn`.
 
 ## Key Exports
 ```python

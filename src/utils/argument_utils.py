@@ -30,6 +30,7 @@ class ArgumentDefinition:
     help_text: str = ""
     choices: Optional[List[str]] = None
     action: str | type[argparse.Action] | None = None
+    nargs: str | int | None = None
     # When True with store_true/store_false, default is SUPPRESS so YAML/config can supply values
     use_suppress: bool = False
 
@@ -62,6 +63,9 @@ class ArgumentDefinition:
 
         if self.choices:
             kwargs["choices"] = self.choices
+
+        if self.nargs is not None:
+            kwargs["nargs"] = self.nargs
 
         parser.add_argument(self.flag, **kwargs)
 
@@ -107,10 +111,11 @@ class PipelineArguments:
     # Setup options
     recreate_venv: bool = False  # Virtual environment recreation flag
     dev: bool = False
-    # Step 1: skip execution-frameworks (JAX / NumPyro / torch / discopy); core-only uv sync
+    # Step 1: skip post-sync JAX/PyMDP self-test; core deps still sync normally
     setup_core_only: bool = False
-    # Optional setup groups to install (comma-separated), used by step 1
-    install_optional: Optional[str] = None
+    # Optional setup groups to install, used by step 1
+    install_optional: bool = False
+    optional_groups: Optional[str] = None
 
     # Execution options
     frameworks: str = "all"
@@ -126,6 +131,8 @@ class PipelineArguments:
     # Audio generation options
     duration: float = 30.0
     audio_backend: str = "auto"
+    sonification: bool = True
+    full_analysis: bool = False
 
     # Test options (fast pipeline suite is default for step 2 subprocess)
     fast_only: bool = True
@@ -134,6 +141,20 @@ class PipelineArguments:
 
     # Skip LLM-powered processing where supported.
     skip_llm: bool = False
+
+    # Advanced visualization options
+    viz_type: str = "all"
+    interactive: bool = False
+    export_formats: Optional[List[str]] = None
+
+    # GUI options
+    headless: bool = False
+    gui_types: str = "gui_1,gui_2"
+    open_browser: bool = False
+
+    # Intelligent analysis options
+    analysis_model: Optional[str] = None
+    bottleneck_threshold: float = 60.0
 
     # Step 1: uv sync --all-extras (optional heavy install)
     install_all_extras: bool = False
@@ -369,7 +390,10 @@ class ArgumentParser:
                 flag="--frameworks",
                 arg_type=str,
                 default="all",
-                help_text="Frameworks to execute (all, lite, or comma-separated list: pymdp,jax,discopy,rxinfer,activeinference_jl)",
+                help_text=(
+                    "Frameworks to execute/render (all, lite, or comma-separated list: "
+                    "pymdp,rxinfer,activeinference_jl,jax,discopy,pytorch,numpyro,stan,bnlearn)"
+                ),
             ),
             "strict_framework_success": ArgumentDefinition(
                 flag="--strict-framework-success",
@@ -441,7 +465,7 @@ class ArgumentParser:
                 flag="--setup-core-only",
                 action="store_true",
                 help_text=(
-                    "Step 1: install only core dependencies (no execution-frameworks / JAX stack for step 12)"
+                    "Step 1: skip the post-sync JAX/PyMDP self-test after installing core dependencies"
                 ),
             ),
             "duration": ArgumentDefinition(
@@ -455,6 +479,18 @@ class ArgumentParser:
                 arg_type=str,
                 default="auto",
                 help_text="Audio backend to use (auto, sapf, pedalboard, default: auto)",
+            ),
+            "sonification": ArgumentDefinition(
+                flag="--sonification",
+                action=argparse.BooleanOptionalAction,
+                default=True,
+                help_text="Generate model sonification",
+            ),
+            "full_analysis": ArgumentDefinition(
+                flag="--full-analysis",
+                action="store_true",
+                default=False,
+                help_text="Run full audio analysis",
             ),
             "fast_only": ArgumentDefinition(
                 flag="--fast-only",
@@ -475,7 +511,74 @@ class ArgumentParser:
             ),
             "install_optional": ArgumentDefinition(
                 flag="--install-optional",
-                help_text="Install optional package groups (comma-separated): ml_ai,llm,visualization,audio,graphs,research,active_inference",
+                action="store_true",
+                help_text="Install optional dependency groups",
+            ),
+            "optional_groups": ArgumentDefinition(
+                flag="--optional-groups",
+                default=None,
+                help_text="Comma-separated optional dependency groups to install, e.g. gui,audio",
+            ),
+            "viz_type": ArgumentDefinition(
+                flag="--viz-type",
+                arg_type=str,
+                default="all",
+                choices=[
+                    "all",
+                    "3d",
+                    "interactive",
+                    "dashboard",
+                    "d2",
+                    "diagrams",
+                    "pipeline",
+                    "statistical",
+                    "pomdp",
+                    "network",
+                ],
+                help_text="Step 9: type of advanced visualization to generate",
+            ),
+            "interactive": ArgumentDefinition(
+                flag="--interactive",
+                action=argparse.BooleanOptionalAction,
+                default=False,
+                help_text="Enable interactive mode where supported",
+            ),
+            "export_formats": ArgumentDefinition(
+                flag="--export-formats",
+                arg_type=str,
+                default=["html", "json"],
+                nargs="+",
+                help_text="Step 9: visualization export formats",
+            ),
+            "headless": ArgumentDefinition(
+                flag="--headless",
+                action="store_true",
+                default=False,
+                help_text="Step 22: run GUI processors in headless artifact mode",
+            ),
+            "gui_types": ArgumentDefinition(
+                flag="--gui-types",
+                arg_type=str,
+                default="gui_1,gui_2",
+                help_text="Step 22: comma-separated GUI processors to run",
+            ),
+            "open_browser": ArgumentDefinition(
+                flag="--open-browser",
+                action="store_true",
+                default=False,
+                help_text="Step 22: open browser for interactive GUIs",
+            ),
+            "analysis_model": ArgumentDefinition(
+                flag="--analysis-model",
+                arg_type=str,
+                default=None,
+                help_text="Step 24: LLM model tag for intelligent analysis",
+            ),
+            "bottleneck_threshold": ArgumentDefinition(
+                flag="--bottleneck-threshold",
+                arg_type=float,
+                default=60.0,
+                help_text="Step 24: duration threshold in seconds for bottleneck detection",
             ),
             "timesteps": ArgumentDefinition(
                 flag="--timesteps",
@@ -517,6 +620,7 @@ class ArgumentParser:
                 "install_all_extras",
                 "setup_core_only",
                 "install_optional",
+                "optional_groups",
             ],
             "2_tests.py": [
                 "target_dir",
@@ -547,7 +651,15 @@ class ArgumentParser:
             "6_validation.py": ["target_dir", "output_dir", "recursive", "verbose"],
             "7_export.py": ["target_dir", "output_dir", "recursive", "verbose"],
             "8_visualization.py": ["target_dir", "output_dir", "recursive", "verbose"],
-            "9_advanced_viz.py": ["target_dir", "output_dir", "recursive", "verbose"],
+            "9_advanced_viz.py": [
+                "target_dir",
+                "output_dir",
+                "recursive",
+                "verbose",
+                "viz_type",
+                "interactive",
+                "export_formats",
+            ],
             "10_ontology.py": [
                 "target_dir",
                 "output_dir",
@@ -600,6 +712,8 @@ class ArgumentParser:
                 "verbose",
                 "duration",
                 "audio_backend",
+                "sonification",
+                "full_analysis",
             ],
             "16_analysis.py": [
                 "target_dir",
@@ -630,13 +744,24 @@ class ArgumentParser:
                 "mcp_overall_timeout",
                 "mcp_modules_allowlist",
             ],
-            "22_gui.py": ["target_dir", "output_dir", "recursive", "verbose"],
+            "22_gui.py": [
+                "target_dir",
+                "output_dir",
+                "recursive",
+                "verbose",
+                "headless",
+                "interactive",
+                "gui_types",
+                "open_browser",
+            ],
             "23_report.py": ["target_dir", "output_dir", "recursive", "verbose"],
             "24_intelligent_analysis.py": [
                 "target_dir",
                 "output_dir",
                 "verbose",
+                "analysis_model",
                 "skip_llm",
+                "bottleneck_threshold",
             ],
             "main.py": list(ARGUMENT_DEFINITIONS.keys()),
         }
@@ -671,9 +796,32 @@ class ArgumentParser:
 
         # Add arguments supported by this step
         supported_args = cls.STEP_ARGUMENTS.get(step_name, [])
+        config_key = (
+            step_name.replace(".py", "") if step_name.endswith(".py") else step_name
+        )
+        try:
+            step_defaults = StepConfiguration.get_step_config(config_key).get(
+                "defaults", {}
+            )
+        except NameError:
+            step_defaults = {}
+
         for arg_name in supported_args:
             if arg_name in cls.ARGUMENT_DEFINITIONS:
-                cls.ARGUMENT_DEFINITIONS[arg_name].add_to_parser(parser)
+                arg_def = cls.ARGUMENT_DEFINITIONS[arg_name]
+                if arg_name in step_defaults:
+                    arg_def = ArgumentDefinition(
+                        flag=arg_def.flag,
+                        arg_type=arg_def.arg_type,
+                        default=step_defaults[arg_name],
+                        required=arg_def.required,
+                        help_text=arg_def.help_text,
+                        choices=arg_def.choices,
+                        action=arg_def.action,
+                        nargs=arg_def.nargs,
+                        use_suppress=arg_def.use_suppress,
+                    )
+                arg_def.add_to_parser(parser)
             else:
                 logger.warning(f"Unknown argument '{arg_name}' for step {step_name}")
 
@@ -748,8 +896,26 @@ class ArgumentParser:
                         "dev",
                         "setup_core_only",
                         "install_all_extras",
+                        "install_optional",
+                        "headless",
+                        "open_browser",
+                        "skip_llm",
                     ]:
                         setattr(parsed_args, arg_name, False)
+                    elif arg_name == "optional_groups":
+                        setattr(parsed_args, arg_name, None)
+                    elif arg_name == "viz_type":
+                        setattr(parsed_args, arg_name, "all")
+                    elif arg_name == "interactive":
+                        setattr(parsed_args, arg_name, False)
+                    elif arg_name == "export_formats":
+                        setattr(parsed_args, arg_name, ["html", "json"])
+                    elif arg_name == "gui_types":
+                        setattr(parsed_args, arg_name, "gui_1,gui_2")
+                    elif arg_name == "analysis_model":
+                        setattr(parsed_args, arg_name, None)
+                    elif arg_name == "bottleneck_threshold":
+                        setattr(parsed_args, arg_name, 60.0)
                     elif arg_name == "fast_only":
                         setattr(parsed_args, arg_name, True)
                     elif arg_name == "comprehensive":
@@ -782,64 +948,83 @@ class ArgumentParser:
             code = e.code
             if code == 0 or code is None:
                 raise
-            # Handle argument parsing errors gracefully (e.g. invalid flags)
             logger.error(f"Argument parsing failed for step {step_name}: {e}")
-            # Return a namespace with all required attributes set to defaults
-            fallback_args = argparse.Namespace()
-            step_supported_args = cls.STEP_ARGUMENTS.get(step_name, [])
+            raise
+        except Exception:
+            raise
 
-            for arg_name in step_supported_args:
-                if arg_name == "recursive":
-                    setattr(fallback_args, arg_name, True)
-                elif arg_name == "verbose":
-                    setattr(fallback_args, arg_name, False)
-                elif arg_name == "strict":
-                    setattr(fallback_args, arg_name, False)
-                elif arg_name == "estimate_resources":
-                    setattr(fallback_args, arg_name, True)
-                elif arg_name.endswith("_dir"):
-                    setattr(
-                        fallback_args,
-                        arg_name,
-                        Path("output")
-                        if "output" in arg_name
-                        else Path("input/gnn_files"),
-                    )
-                elif arg_name == "llm_timeout":
-                    setattr(fallback_args, arg_name, 360)
-                elif arg_name == "llm_tasks":
-                    setattr(fallback_args, arg_name, "all")
-                elif arg_name == "execution_workers":
-                    setattr(fallback_args, arg_name, 1)
-                elif arg_name == "website_html_filename":
-                    setattr(
-                        fallback_args, arg_name, "gnn_pipeline_summary_website.html"
-                    )
-                elif arg_name in [
-                    "recreate_venv",
-                    "dev",
-                    "setup_core_only",
-                    "install_all_extras",
-                ]:
-                    setattr(fallback_args, arg_name, False)
-                elif arg_name == "fast_only":
-                    setattr(fallback_args, arg_name, True)
-                elif arg_name == "comprehensive":
-                    setattr(fallback_args, arg_name, False)
-                elif arg_name == "duration":
-                    setattr(fallback_args, arg_name, 30.0)
-                elif arg_name == "timeout":
-                    setattr(fallback_args, arg_name, 300)
-                elif arg_name == "serialize_preset":
-                    setattr(fallback_args, arg_name, "full")
-                elif arg_name == "execution_benchmark_repeats":
-                    setattr(fallback_args, arg_name, 1)
-                elif arg_name == "execution_summary_detail":
-                    setattr(fallback_args, arg_name, False)
-                else:
-                    setattr(fallback_args, arg_name, None)
+    @classmethod
+    def create_default_namespace(cls, step_name: str) -> argparse.Namespace:
+        """Create a namespace populated with registered defaults for recovery callers."""
+        fallback_args = argparse.Namespace()
+        step_supported_args = cls.STEP_ARGUMENTS.get(step_name, [])
 
-            return fallback_args
+        for arg_name in step_supported_args:
+            if arg_name == "recursive":
+                setattr(fallback_args, arg_name, True)
+            elif arg_name == "verbose":
+                setattr(fallback_args, arg_name, False)
+            elif arg_name == "strict":
+                setattr(fallback_args, arg_name, False)
+            elif arg_name == "estimate_resources":
+                setattr(fallback_args, arg_name, True)
+            elif arg_name.endswith("_dir"):
+                setattr(
+                    fallback_args,
+                    arg_name,
+                    Path("output") if "output" in arg_name else Path("input/gnn_files"),
+                )
+            elif arg_name == "llm_timeout":
+                setattr(fallback_args, arg_name, 360)
+            elif arg_name == "llm_tasks":
+                setattr(fallback_args, arg_name, "all")
+            elif arg_name == "execution_workers":
+                setattr(fallback_args, arg_name, 1)
+            elif arg_name == "website_html_filename":
+                setattr(fallback_args, arg_name, "gnn_pipeline_summary_website.html")
+            elif arg_name in [
+                "recreate_venv",
+                "dev",
+                "setup_core_only",
+                "install_all_extras",
+                "install_optional",
+                "headless",
+                "open_browser",
+                "skip_llm",
+            ]:
+                setattr(fallback_args, arg_name, False)
+            elif arg_name == "optional_groups":
+                setattr(fallback_args, arg_name, None)
+            elif arg_name == "viz_type":
+                setattr(fallback_args, arg_name, "all")
+            elif arg_name == "interactive":
+                setattr(fallback_args, arg_name, False)
+            elif arg_name == "export_formats":
+                setattr(fallback_args, arg_name, ["html", "json"])
+            elif arg_name == "gui_types":
+                setattr(fallback_args, arg_name, "gui_1,gui_2")
+            elif arg_name == "analysis_model":
+                setattr(fallback_args, arg_name, None)
+            elif arg_name == "bottleneck_threshold":
+                setattr(fallback_args, arg_name, 60.0)
+            elif arg_name == "fast_only":
+                setattr(fallback_args, arg_name, True)
+            elif arg_name == "comprehensive":
+                setattr(fallback_args, arg_name, False)
+            elif arg_name == "duration":
+                setattr(fallback_args, arg_name, 30.0)
+            elif arg_name == "timeout":
+                setattr(fallback_args, arg_name, 300)
+            elif arg_name == "serialize_preset":
+                setattr(fallback_args, arg_name, "full")
+            elif arg_name == "execution_benchmark_repeats":
+                setattr(fallback_args, arg_name, 1)
+            elif arg_name == "execution_summary_detail":
+                setattr(fallback_args, arg_name, False)
+            else:
+                setattr(fallback_args, arg_name, None)
+
+        return fallback_args
 
 
 # Add enhanced validation and step configuration
@@ -865,6 +1050,7 @@ class StepConfiguration:
                     "install_all_extras",
                     "setup_core_only",
                     "install_optional",
+                    "optional_groups",
                 ],
                 "defaults": {
                     "verbose": False,
@@ -872,6 +1058,8 @@ class StepConfiguration:
                     "dev": False,
                     "install_all_extras": False,
                     "setup_core_only": False,
+                    "install_optional": False,
+                    "optional_groups": None,
                 },
                 "description": "Project Setup & Environment Configuration",
             },
@@ -953,8 +1141,20 @@ class StepConfiguration:
             },
             "9_advanced_viz": {
                 "required_args": ["target_dir", "output_dir"],
-                "optional_args": ["recursive", "verbose"],
-                "defaults": {"recursive": True, "verbose": False},
+                "optional_args": [
+                    "recursive",
+                    "verbose",
+                    "viz_type",
+                    "interactive",
+                    "export_formats",
+                ],
+                "defaults": {
+                    "recursive": True,
+                    "verbose": False,
+                    "viz_type": "all",
+                    "interactive": True,
+                    "export_formats": ["html", "json"],
+                },
                 "description": "Advanced Visualization & Exploration",
             },
             "10_ontology": {
@@ -1017,12 +1217,21 @@ class StepConfiguration:
             },
             "15_audio": {
                 "required_args": ["target_dir", "output_dir"],
-                "optional_args": ["recursive", "verbose", "duration", "audio_backend"],
+                "optional_args": [
+                    "recursive",
+                    "verbose",
+                    "duration",
+                    "audio_backend",
+                    "sonification",
+                    "full_analysis",
+                ],
                 "defaults": {
                     "recursive": True,
                     "verbose": False,
                     "duration": 30.0,
                     "audio_backend": "auto",
+                    "sonification": True,
+                    "full_analysis": False,
                 },
                 "description": "Audio Generation & Processing",
             },
@@ -1085,8 +1294,22 @@ class StepConfiguration:
             },
             "22_gui": {
                 "required_args": ["target_dir", "output_dir"],
-                "optional_args": ["recursive", "verbose"],
-                "defaults": {"recursive": True, "verbose": False},
+                "optional_args": [
+                    "recursive",
+                    "verbose",
+                    "headless",
+                    "interactive",
+                    "gui_types",
+                    "open_browser",
+                ],
+                "defaults": {
+                    "recursive": True,
+                    "verbose": False,
+                    "headless": False,
+                    "interactive": False,
+                    "gui_types": "gui_1,gui_2",
+                    "open_browser": False,
+                },
                 "description": "Interactive GUI for Constructing/Editing GNN Models",
             },
             "23_report": {
@@ -1097,8 +1320,18 @@ class StepConfiguration:
             },
             "24_intelligent_analysis": {
                 "required_args": ["target_dir", "output_dir"],
-                "optional_args": ["verbose", "skip_llm"],
-                "defaults": {"verbose": False},
+                "optional_args": [
+                    "verbose",
+                    "analysis_model",
+                    "skip_llm",
+                    "bottleneck_threshold",
+                ],
+                "defaults": {
+                    "verbose": False,
+                    "analysis_model": None,
+                    "skip_llm": False,
+                    "bottleneck_threshold": 60.0,
+                },
                 "description": "AI-powered Pipeline Analysis and Optimization Recommendations",
             },
         }
@@ -1232,6 +1465,8 @@ Examples:
                         help_text=arg_def.help_text,
                         choices=arg_def.choices,
                         action=arg_def.action,
+                        nargs=arg_def.nargs,
+                        use_suppress=arg_def.use_suppress,
                     )
                     modified_arg_def.add_to_parser(parser)
                 else:
@@ -1385,6 +1620,9 @@ def build_step_command_args(
                     # This ensures compatibility with steps that may not support --no-flag
                     if arg_value is True:
                         cmd.append(flag)
+                elif isinstance(arg_value, list):
+                    cmd.append(flag)
+                    cmd.extend(str(item) for item in arg_value)
                 else:
                     # Regular arguments with values
                     cmd.extend([flag, str(arg_value)])
@@ -1426,10 +1664,6 @@ def validate_arguments(args: argparse.Namespace) -> List[str]:
     if hasattr(args, "target_dir") and args.target_dir:
         if not Path(args.target_dir).exists():
             errors.append(f"Target directory does not exist: {args.target_dir}")
-
-    if hasattr(args, "output_dir") and args.output_dir:
-        # Output directory can be created if it doesn't exist
-        pass
 
     return errors
 

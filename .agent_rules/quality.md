@@ -120,7 +120,7 @@ Before submitting a new module, verify:
 
 - [ ] `__init__.py` with `__version__`, `FEATURES`, `get_module_info()`
 - [ ] `processor.py` with standard function signature
-- [ ] `mcp.py` with `MCP_TOOLS` dict and `register_tools()`
+- [ ] `mcp.py` with `register_tools(mcp_instance)` and explicit `register_tool(...)` schemas
 - [ ] `AGENTS.md` documenting capabilities
 - [ ] `README.md` with usage examples
 - [ ] Tests in `src/tests/MODULENAME/test_MODULENAME_overall.py`

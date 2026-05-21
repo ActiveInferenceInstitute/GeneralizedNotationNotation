@@ -18,6 +18,7 @@ import re
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
 
+from gnn.discovery import is_model_source_path
 from pipeline.config import get_output_dir_for_script
 from utils import performance_tracker
 
@@ -992,6 +993,7 @@ def generate_visualizations(
                 gnn_files = list(target_dir.rglob("*.md"))
             else:
                 gnn_files = list(target_dir.glob("*.md"))
+            gnn_files = [path for path in gnn_files if is_model_source_path(path)]
 
             log_step_success(logger, f"Found {len(gnn_files)} GNN files to visualize")
 

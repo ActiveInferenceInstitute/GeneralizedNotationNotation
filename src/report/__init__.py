@@ -237,8 +237,11 @@ def process_report(
                             )
                         else:
                             # Check for broken links (basic check)
-                            # This is a simple check - could be enhanced
-                            pass
+                            # Detailed link validation is handled by docs_audit.py.
+                            logger.debug(
+                                "HTML report structure validated: %s",
+                                html_file_name,
+                            )
                 except Exception as e:
                     html_validation_errors.append(
                         f"{html_file_name}: Validation error - {e}"

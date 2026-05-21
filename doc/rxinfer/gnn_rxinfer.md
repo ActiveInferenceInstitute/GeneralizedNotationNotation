@@ -205,9 +205,9 @@ end
 # Example usage (matrices would need to be defined)
 # transition_matrix_val = [[0.7, 0.3], [0.4, 0.6]]
 # emission_matrix_val = [[0.5, 0.3, 0.2], [0.1, 0.2, 0.7]]
-# dummy_observations = [1, 2, 1] # Assuming mapped to integers
+# sample_observations = [1, 2, 1] # Assuming mapped to integers
 # result = infer(model = SimpleHMM(transition_matrix = transition_matrix_val, emission_matrix = emission_matrix_val), 
-#                data = (observations = dummy_observations, T = 3))
+#                data = (observations = sample_observations, T = 3))
 ```
 *(Note: This example simplifies how states (e.g., `s_t_minus_1`) and indexing would be robustly handled in a real transpiler. State mappings (e.g., `[1,2]` to actual indices) would also be needed.)*
 

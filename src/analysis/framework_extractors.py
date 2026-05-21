@@ -10,9 +10,71 @@ Extracted from post_simulation.py for maintainability.
 import json
 import logging
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any, Dict, cast
 
 logger = logging.getLogger(__name__)
+
+CURRENT_SIMULATION_SCHEMAS = {
+    "pymdp": "pymdp_simulation_v1",
+    "rxinfer": "rxinfer_simulation_v1",
+    "activeinference_jl": "activeinference_jl_simulation_v1",
+}
+
+
+def _normalise_current_simulation_payload(payload: Dict[str, Any]) -> Dict[str, Any]:
+    """Map current framework simulation schemas into analysis fields."""
+    beliefs_by_factor = payload.get("beliefs_by_factor", {}) or {}
+    observations_by_modality = payload.get("observations_by_modality", {}) or {}
+    actions_by_control_factor = payload.get("actions_by_control_factor", {}) or {}
+    hidden_states_by_factor = payload.get("hidden_states_by_factor", {}) or {}
+    metrics = payload.get("metrics", {}) or {}
+    return {
+        "traces": payload.get("simulation_trace", {}),
+        "free_energy": payload.get("expected_free_energy", []),
+        "states": hidden_states_by_factor.get(
+            "joint_state", payload.get("true_states", [])
+        ),
+        "observations": observations_by_modality.get(
+            "joint_observation", payload.get("observations", [])
+        ),
+        "actions": actions_by_control_factor.get(
+            "joint_action", payload.get("actions", [])
+        ),
+        "policy": payload.get("policy_posterior", []),
+        "beliefs": beliefs_by_factor.get("joint_state", payload.get("beliefs", [])),
+        "belief_confidence": metrics.get("belief_confidence", []),
+        "action_probabilities": payload.get(
+            "policy_posterior", payload.get("action_probabilities", [])
+        ),
+        "validation": payload.get("validation", {}),
+        "model_parameters": payload.get("model_parameters", {}),
+        "schema_version": payload.get("schema_version"),
+    }
+
+
+def _load_current_schema_from_impl_dir(
+    implementation_dir: Any, expected_schema: str
+) -> Dict[str, Any] | None:
+    if not implementation_dir:
+        return None
+    impl_path = Path(str(implementation_dir))
+    candidate_paths: list[Path] = []
+    sim_data_dir = impl_path / "simulation_data"
+    if sim_data_dir.exists():
+        candidate_paths.extend(sorted(sim_data_dir.glob("*simulation_results.json")))
+    candidate_paths.append(impl_path / "simulation_results.json")
+    candidate_paths.extend(sorted(impl_path.rglob("simulation_results.json")))
+    for path in candidate_paths:
+        if not path.exists() or not path.is_file():
+            continue
+        try:
+            payload = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            continue
+        if payload.get("schema_version") == expected_schema:
+            logger.info("Reading current simulation data from %s", path.name)
+            return cast(Dict[str, Any], payload)
+    return None
 
 
 def extract_pymdp_data(execution_result: Dict[str, Any]) -> Dict[str, Any]:
@@ -115,6 +177,25 @@ def extract_rxinfer_data(execution_result: Dict[str, Any]) -> Dict[str, Any]:
     efe_history, true_states, action_probabilities, validation.
     """
     simulation_data = execution_result.get("simulation_data", {})
+    payload = (
+        execution_result
+        if execution_result.get("schema_version")
+        == CURRENT_SIMULATION_SCHEMAS["rxinfer"]
+        else None
+    )
+    if payload is None and isinstance(simulation_data, dict):
+        if (
+            simulation_data.get("schema_version")
+            == CURRENT_SIMULATION_SCHEMAS["rxinfer"]
+        ):
+            payload = simulation_data
+    if payload is None:
+        payload = _load_current_schema_from_impl_dir(
+            execution_result.get("implementation_directory"),
+            CURRENT_SIMULATION_SCHEMAS["rxinfer"],
+        )
+    if payload is not None:
+        return _normalise_current_simulation_payload(payload)
 
     # Try to read from collected files if available
     implementation_dir = execution_result.get("implementation_directory")
@@ -186,6 +267,26 @@ def extract_activeinference_jl_data(execution_result: Dict[str, Any]) -> Dict[st
         Extracted simulation data with full Active Inference fields
     """
     simulation_data = execution_result.get("simulation_data", {})
+    payload = (
+        execution_result
+        if execution_result.get("schema_version")
+        == CURRENT_SIMULATION_SCHEMAS["activeinference_jl"]
+        else None
+    )
+    if payload is None and isinstance(simulation_data, dict):
+        if (
+            simulation_data.get("schema_version")
+            == CURRENT_SIMULATION_SCHEMAS["activeinference_jl"]
+        ):
+            payload = simulation_data
+    if payload is None:
+        payload = _load_current_schema_from_impl_dir(
+            execution_result.get("implementation_directory"),
+            CURRENT_SIMULATION_SCHEMAS["activeinference_jl"],
+        )
+    if payload is not None:
+        return _normalise_current_simulation_payload(payload)
+
     model_parameters = simulation_data.get("model_parameters", {})
 
     # Try to read from collected files if available

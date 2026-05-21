@@ -131,8 +131,8 @@ Server introspection and diagnostic tools:
 - Enhancement suggestions
 - Natural language explanations
 
-### Site (`src/site/mcp.py`)
-- HTML site generation
+### Website (`src/website/mcp.py`)
+- HTML website generation
 - Report aggregation
 - Interactive elements
 

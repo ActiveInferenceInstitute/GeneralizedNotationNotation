@@ -15,6 +15,9 @@ from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union, cast
 
 import numpy as np
 
+from .framework_registry import get_pomdp_framework_configs
+from .pomdp_contract import build_canonical_pomdp_spec
+
 if TYPE_CHECKING:
     from gnn.pomdp_extractor import POMDPStateSpace
 
@@ -109,73 +112,7 @@ class POMDPRenderProcessor:
         self.base_output_dir = Path(base_output_dir)
         self.logger = logging.getLogger(__name__)
 
-        # Framework-specific configurations
-        self.framework_configs = {
-            "pymdp": {
-                "output_subdir": "pymdp",
-                "file_extension": ".py",
-                "requires_matrices": ["A", "B", "C", "D"],
-                "optional_matrices": ["E"],
-                "supports_multi_modality": True,
-                "supports_multi_factor": True,
-            },
-            "rxinfer": {
-                "output_subdir": "rxinfer",
-                "file_extension": ".jl",
-                "requires_matrices": ["A", "B", "C", "D"],
-                "optional_matrices": ["E"],
-                "supports_multi_modality": False,
-                "supports_multi_factor": False,
-            },
-            "activeinference_jl": {
-                "output_subdir": "activeinference_jl",
-                "file_extension": ".jl",
-                "requires_matrices": ["A", "B", "C", "D"],
-                "optional_matrices": ["E"],
-                "supports_multi_modality": True,
-                "supports_multi_factor": True,
-            },
-            "jax": {
-                "output_subdir": "jax",
-                "file_extension": ".py",
-                "requires_matrices": ["A", "B", "C", "D"],
-                "optional_matrices": ["E"],
-                "supports_multi_modality": True,
-                "supports_multi_factor": True,
-            },
-            "discopy": {
-                "output_subdir": "discopy",
-                "file_extension": ".py",
-                "requires_matrices": [],
-                "optional_matrices": ["A", "B", "C", "D", "E"],
-                "supports_multi_modality": True,
-                "supports_multi_factor": True,
-            },
-            "pytorch": {
-                "output_subdir": "pytorch",
-                "file_extension": ".py",
-                "requires_matrices": ["A", "B", "C", "D"],
-                "optional_matrices": ["E"],
-                "supports_multi_modality": True,
-                "supports_multi_factor": True,
-            },
-            "numpyro": {
-                "output_subdir": "numpyro",
-                "file_extension": ".py",
-                "requires_matrices": ["A", "B", "C", "D"],
-                "optional_matrices": ["E"],
-                "supports_multi_modality": True,
-                "supports_multi_factor": True,
-            },
-            "bnlearn": {
-                "output_subdir": "bnlearn",
-                "file_extension": ".py",
-                "requires_matrices": [],
-                "optional_matrices": ["A", "B", "C", "D", "E"],
-                "supports_multi_modality": True,
-                "supports_multi_factor": True,
-            },
-        }
+        self.framework_configs = get_pomdp_framework_configs()
 
     def process_pomdp_for_all_frameworks(
         self,
@@ -403,7 +340,7 @@ class POMDPRenderProcessor:
 
         if framework == "pymdp":
             try:
-                self._build_pymdp_initialparameterization(pomdp_space)
+                self._build_canonical_initialparameterization(pomdp_space)
             except ValueError as exc:
                 return {"compatible": False, "reason": str(exc), "warnings": warnings}
 
@@ -444,11 +381,11 @@ class POMDPRenderProcessor:
             return time_keys[0]
         return None
 
-    def _build_pymdp_initialparameterization(
+    def _build_canonical_initialparameterization(
         self,
         pomdp_space: "POMDPStateSpace",
     ) -> tuple[Dict[str, Any], Dict[str, Dict[str, Any]]]:
-        """Build the strict canonical A/B/C/D/E contract used by PyMDP execution."""
+        """Build the strict canonical A/B/C/D/E contract used by renderers."""
         matrices = getattr(pomdp_space, "matrices", None) or {}
         provenance = dict(getattr(pomdp_space, "matrix_provenance", None) or {})
         has_canonical = all(key in matrices for key in ("A", "B", "C", "D"))
@@ -457,7 +394,20 @@ class POMDPRenderProcessor:
             initial = {key: matrices[key] for key in ("A", "B", "C", "D")}
             if "E" in matrices:
                 initial["E"] = matrices["E"]
-            return initial, provenance
+            gnn_spec = {
+                "initialparameterization": initial,
+                "model_parameters": getattr(pomdp_space, "model_parameters", None)
+                or {},
+                "num_states": pomdp_space.num_states,
+                "num_observations": pomdp_space.num_observations,
+                "num_actions": pomdp_space.num_actions,
+                "matrix_provenance": provenance,
+            }
+            canonical = build_canonical_pomdp_spec(gnn_spec)
+            return (
+                canonical["initialparameterization"],
+                canonical["matrix_provenance"],
+            )
 
         time_indexed_b = self._time_indexed_transition_key(matrices)
         if time_indexed_b and all(key in matrices for key in ("A", "C", "D")):
@@ -480,7 +430,20 @@ class POMDPRenderProcessor:
                 "derived": True,
                 "reason": "PyMDP static transition contract uses the declared B_t tensor for execution",
             }
-            return initial, provenance
+            gnn_spec = {
+                "initialparameterization": initial,
+                "model_parameters": getattr(pomdp_space, "model_parameters", None)
+                or {},
+                "num_states": pomdp_space.num_states,
+                "num_observations": pomdp_space.num_observations,
+                "num_actions": pomdp_space.num_actions,
+                "matrix_provenance": provenance,
+            }
+            canonical = build_canonical_pomdp_spec(gnn_spec)
+            return (
+                canonical["initialparameterization"],
+                canonical["matrix_provenance"],
+            )
 
         joint, joint_provenance = self._compose_factored_pomdp(pomdp_space)
         initial = {
@@ -492,7 +455,19 @@ class POMDPRenderProcessor:
         if "E" in matrices:
             initial["E"] = matrices["E"]
         provenance.update(joint_provenance)
-        return initial, provenance
+        gnn_spec = {
+            "initialparameterization": initial,
+            "model_parameters": getattr(pomdp_space, "model_parameters", None) or {},
+            "num_states": len(initial["D"]),
+            "num_observations": len(initial["A"]),
+            "num_actions": pomdp_space.num_actions,
+            "matrix_provenance": provenance,
+        }
+        canonical = build_canonical_pomdp_spec(gnn_spec)
+        return (
+            canonical["initialparameterization"],
+            canonical["matrix_provenance"],
+        )
 
     def _compose_factored_pomdp(
         self, pomdp_space: "POMDPStateSpace"
@@ -775,7 +750,7 @@ class POMDPRenderProcessor:
             parsed_sim_params = {}
 
         initial_parameterization, matrix_provenance = (
-            self._build_pymdp_initialparameterization(pomdp_space)
+            self._build_canonical_initialparameterization(pomdp_space)
         )
         raw_model_parameters = getattr(pomdp_space, "model_parameters", None) or {}
         state_factors = getattr(pomdp_space, "state_factors", None) or []
@@ -814,6 +789,7 @@ class POMDPRenderProcessor:
                 "adapter_notes": getattr(pomdp_space, "adapter_notes", None) or [],
             },
             "matrix_provenance": matrix_provenance,
+            "canonical_pomdp_schema": "canonical_pomdp_v1",
             "variables": [],
             "connections": [],
         }
@@ -870,6 +846,8 @@ class POMDPRenderProcessor:
             return self._call_pytorch_renderer(gnn_spec, output_dir, **kwargs)
         elif framework == "numpyro":
             return self._call_numpyro_renderer(gnn_spec, output_dir, **kwargs)
+        elif framework == "stan":
+            return self._call_stan_renderer(gnn_spec, output_dir, **kwargs)
         elif framework == "bnlearn":
             return self._call_bnlearn_renderer(gnn_spec, output_dir, **kwargs)
         else:
@@ -1198,6 +1176,34 @@ class POMDPRenderProcessor:
             return {
                 "success": False,
                 "message": "NumPyro renderer not available",
+                "artifacts": [],
+            }
+
+    def _call_stan_renderer(
+        self, gnn_spec: Dict[str, Any], output_dir: Path, **kwargs: Any
+    ) -> Dict[str, Any]:
+        """Call Stan renderer."""
+        try:
+            from .stan import render_stan
+
+            model_name = gnn_spec.get("name", "pomdp_model")
+            output_file = output_dir / f"{model_name}_stan.stan"
+            code = render_stan(
+                list(gnn_spec.get("variables", [])),
+                list(gnn_spec.get("connections", [])),
+                model_name=model_name,
+            )
+            output_file.write_text(code, encoding="utf-8")
+            return {
+                "success": True,
+                "message": "Stan model generated",
+                "artifacts": [str(output_file)],
+                "warnings": [],
+            }
+        except ImportError:
+            return {
+                "success": False,
+                "message": "Stan renderer not available",
                 "artifacts": [],
             }
 

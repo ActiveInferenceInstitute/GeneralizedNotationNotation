@@ -47,7 +47,7 @@ CI uses a narrower marker (`-m "not pipeline and not mcp"`); see [.github/workfl
 │   └── invalid_models/     # Models with known errors
 ├── utils/                   # Testing utilities
 │   ├── test_helpers.py
-│   └── mock_services.py
+│   └── controlled_services.py
 └── conftest.py             # Pytest configuration
 ```
 
@@ -453,9 +453,9 @@ def sample_gnn_model():
     """
 
 @pytest.fixture
-def mock_llm_service():
+def controlled_llm_service():
     """Deterministic LLM service for testing"""
-    class MockLLMService:
+    class ControlledLLMService:
         def analyze_model(self, model):
             return {"analysis": "test analysis"}
         
@@ -651,7 +651,7 @@ src/tests/fixtures/
 │   ├── json_exports/
 │   ├── visualizations/
 │   └── rendered_code/
-└── mock_data/
+└── controlled_data/
     ├── simulation_results.pkl
     └── llm_responses.json
 ```

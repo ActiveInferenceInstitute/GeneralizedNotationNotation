@@ -346,8 +346,8 @@ def process_gnn_directory_lightweight(
                     f,
                     indent=2,
                 )
-        except OSError:
-            pass
+        except OSError as e:
+            logger.debug("Could not write lightweight processing summary: %s", e)
     return result
 
 

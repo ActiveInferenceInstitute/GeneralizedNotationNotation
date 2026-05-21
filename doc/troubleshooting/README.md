@@ -82,7 +82,7 @@ python src/main.py --output-dir /tmp/gnn_output
 uv pip install inferactively-pymdp
 
 # Or install via optional group
-uv sync --extra active-inference
+uv sync
 ```
 
 #### RxInfer.jl Setup Issues
@@ -100,7 +100,7 @@ julia -e 'using Pkg; Pkg.add("RxInfer")'
 #### JAX Compilation Errors
 **Error**: `XLA compilation failed`
 **Solutions**:
-- Update JAX: `uv pip install --upgrade jax jaxlib` (or `uv sync --extra active-inference`)
+- Update JAX: `uv pip install --upgrade jax jaxlib` (or refresh the core environment with `uv sync`)
 - Use CPU-only mode: `export JAX_PLATFORM_NAME=cpu`
 - Simplify model complexity
 
@@ -283,4 +283,4 @@ rm -rf output/ src/.venv/ __pycache__/
 python src/1_setup.py --clean-install
 ```
 
-This troubleshooting guide covers the most common issues. For persistent problems, please file a GitHub issue with debug information. 
+This troubleshooting guide covers the most common issues. For persistent problems, please file a GitHub issue with debug information.

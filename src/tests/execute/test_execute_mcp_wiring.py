@@ -3,7 +3,7 @@ MCP wiring tests for ``src/execute/mcp.py``.
 
 These tests invoke each registered tool through the module-level MCP
 registration path to guard against future signature drift between the MCP
-tool shims and the underlying domain functions. They do not require a full
+tool adapters and the underlying domain functions. They do not require a full
 simulation to succeed: dependency-driven failures are allowed, but the tools
 must always return a dictionary with a ``success`` key and must never raise
 ``TypeError`` due to bad argument wiring.

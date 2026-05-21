@@ -356,8 +356,12 @@ def rotate_logs(log_dir: Path, max_files: int = 5, compress: bool = True) -> Any
             for i in range(to_delete_count):
                 try:
                     log_files[i].unlink()
-                except OSError:
-                    pass  # intentional: best-effort cleanup of old log files during rotation
+                except OSError as e:
+                    logging.getLogger(__name__).debug(
+                        "Could not remove old rotated log %s: %s",
+                        log_files[i],
+                        e,
+                    )
 
     except Exception as e:
         # Don't fail pipeline on log rotation issues
@@ -956,7 +960,11 @@ def log_step_success(
         step_status = _global_progress_tracker.step_status.get(step_number)
         if step_status != "RUNNING" and step_status is not None:
             # Step already completed, just log the message without completion summary
-            pass
+            logger.debug(
+                "Step %s already completed with status %s",
+                step_number,
+                step_status,
+            )
         else:
             # Step not yet completed, complete it and add summary
             completion_summary = _global_progress_tracker.complete_step(

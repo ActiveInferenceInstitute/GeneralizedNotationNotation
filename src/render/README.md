@@ -1,11 +1,12 @@
 # POMDP-Aware Render Module
 
-This module provides **POMDP-aware code generation** for GNN models. It translates parsed GNN/POMDP specifications into executable simulation code for multiple frameworks including PyMDP, RxInfer.jl, ActiveInference.jl, JAX, DisCoPy, and (when available) PyTorch, NumPyro, and Stan.
+This module provides **POMDP-aware code generation** for GNN models. It translates parsed GNN/POMDP specifications into executable simulation code for multiple frameworks including PyMDP, RxInfer.jl, ActiveInference.jl, JAX, DisCoPy, PyTorch, NumPyro, Stan, and bnlearn.
 
 ## Key Features
 
 - **POMDP state space extraction**: extracts Active Inference matrices (A, B, C, D, E) and dimensions from GNN specs.
-- **Modular injection**: injects extracted state spaces into framework-specific renderers with compatibility checks.
+- **Canonical POMDP contract**: normalizes `A/B/C/D/E`, provenance, labels, and B tensor order before framework rendering.
+- **Modular injection**: injects extracted state spaces into framework-specific renderers with validation checks.
 - **Implementation-specific outputs**: organizes code under per-model/per-framework subfolders.
 - **Structured summaries**: writes `render_processing_summary.json` and overview README content under the output directory.
 
@@ -17,7 +18,7 @@ graph TD
     Extract --> Check{Framework<br/>Compatible?}
     
     Check -->|Yes| Inject[Modular Injection]
-    Check -->|No| Error[Compatibility Error]
+    Check -->|No| Error[Validation Error]
     
     Inject --> PyMDP[PyMDP Renderer]
     Inject --> RxInfer[RxInfer.jl Renderer]
@@ -98,6 +99,7 @@ flowchart LR
     subgraph "Render Module"
         Processor[processor.py]
         POMDPProc[pomdp_processor.py]
+        Contract[pomdp_contract.py]
         Generators[generators.py]
     end
     
@@ -115,6 +117,7 @@ flowchart LR
     
     Step11 --> Processor
     Processor --> POMDPProc
+    POMDPProc --> Contract
     Processor --> Generators
     
     POMDPProc --> PyMDP
@@ -140,6 +143,7 @@ src/render/
 ├── render.py                      # Core rendering functionality
 ├── processor.py                   # Main render processor (Step 11 entry)
 ├── generators.py                  # Code generation utilities
+├── pomdp_contract.py              # Canonical POMDP matrix contract
 ├── pomdp_processor.py             # POMDP state space injection into renderers
 ├── pymdp_template.py              # PyMDP template definitions
 ├── visualization_suite.py         # Render visualization suite
@@ -178,6 +182,8 @@ The pipeline calls:
 
 - `render.process_render(target_dir, output_dir, verbose=False, frameworks=None, strict_validation=True, strict_framework_success=False, **kwargs) -> bool | int`
 
+For POMDP targets, `render_gnn_spec(..., "pymdp" | "rxinfer" | "activeinference_jl", ...)` uses the same canonical renderers as Step 11. The shared contract is `canonical_pomdp_v1`, with B stored as `(next_state, previous_state, action)`.
+
 In POMDP-aware mode, `process_render` delegates per-model/per-framework rendering to `POMDPRenderProcessor` in `pomdp_processor.py`.
 Explicit framework selections such as `"pymdp"` or `"pymdp,jax"` require every requested renderer to succeed for every input file. Use `strict_framework_success=True` to apply that same policy to `"all"` or `"lite"` runs.
 
@@ -190,9 +196,9 @@ Backend-specific renderers live under:
 - `src/render/activeinference_jl/`
 - `src/render/jax/`
 - `src/render/discopy/`
-- optional: `src/render/pytorch/`, `src/render/numpyro/`, `src/render/stan/`
+- additional maintained backends: `src/render/pytorch/`, `src/render/numpyro/`, `src/render/stan/`, and generator-backed `bnlearn`
 
-The supported framework inventory for the module is reflected by `src/render/health.py` and the export surface in `src/render/__init__.py`.
+The supported framework inventory is defined in `src/render/framework_registry.py` and consumed by `health.py`, `__init__.py`, `processor.py`, `pomdp_processor.py`, and `mcp.py`.
 
 ## Usage Examples
 

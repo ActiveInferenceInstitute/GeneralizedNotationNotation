@@ -10,7 +10,22 @@ from render.generators import (
     generate_bnlearn_code,
     generate_discopy_code,
     generate_pymdp_code,
+    generate_rxinfer_code,
 )
+
+
+def _explicit_pomdp_spec() -> dict[str, Any]:
+    return {
+        "model_name": "TestModel",
+        "initialparameterization": {
+            "A": [[0.9, 0.1], [0.1, 0.9]],
+            "B": [[[0.8, 0.2], [0.2, 0.8]]],
+            "C": [0.0, 1.0],
+            "D": [0.5, 0.5],
+            "E": [1.0],
+        },
+        "model_parameters": {"num_hidden_states": 2, "num_obs": 2, "num_actions": 1},
+    }
 
 
 def test_bnlearn_generator() -> Any:
@@ -26,7 +41,13 @@ def test_pymdp_generator() -> Any:
 
 
 def test_activeinference_jl_generator() -> Any:
-    res = generate_activeinference_jl_code({"model_name": "TestModel"})
+    res = generate_activeinference_jl_code(_explicit_pomdp_spec())
+    assert isinstance(res, str)
+    assert "TestModel" in res
+
+
+def test_rxinfer_generator() -> Any:
+    res = generate_rxinfer_code(_explicit_pomdp_spec())
     assert isinstance(res, str)
     assert "TestModel" in res
 

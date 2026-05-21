@@ -1010,7 +1010,10 @@ def process_intelligent_analysis(
     logger.info(f"Step analysis: {red_count} red flags, {yellow_count} yellow flags")
 
     # 4. Identify Bottlenecks
-    bottlenecks = identify_bottlenecks(summary_data)
+    bottlenecks = identify_bottlenecks(
+        summary_data,
+        threshold_seconds=float(kwargs.get("bottleneck_threshold", 60.0)),
+    )
     if bottlenecks:
         logger.info(f"Identified {len(bottlenecks)} performance bottlenecks")
 

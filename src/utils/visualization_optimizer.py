@@ -349,12 +349,10 @@ class VisualizationOptimizer:
         # Parse and optimize data
         optimized_content = content
         if self.enable_sampling:
-            try:
-                # This would need to be adapted based on the actual data format
-                # For now, we'll pass the content through
-                pass
-            except Exception as e:
-                self.logger.warning(f"Data sampling failed for {model_name}: {e}")
+            self.logger.debug(
+                "Sampling requested for %s; content sampling is not needed for text input.",
+                model_name,
+            )
 
         # Process visualization
         try:

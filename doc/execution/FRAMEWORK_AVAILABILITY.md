@@ -23,13 +23,13 @@ for fw, info in status.items():
 - **Python module**: `pymdp`
 - **Status file**: `output/12_execute_output/framework_status.json`
 - **Check command**: `python -c "import pymdp; print(pymdp.__version__)"`
-- **Install**: `uv sync --extra active-inference` (or `uv pip install inferactively-pymdp`)
+- **Install**: `uv sync` (or `uv pip install inferactively-pymdp`)
 
 ### JAX + Flax
 
 - **Python modules**: `jax`, `flax`
 - **Check command**: `python -c "import jax; import flax; print(f'JAX: {jax.__version__}, Flax: {flax.__version__}')"`
-- **Install**: `uv sync --extra active-inference` (or `uv pip install jax flax`)
+- **Install**: `uv sync` (or `uv pip install jax flax`)
 
 ### RxInfer.jl
 
@@ -59,8 +59,8 @@ The execute module automatically detects available frameworks and logs them:
 2025-11-19 11:07:11 [execute] INFO - Checking framework availability...
 2025-11-19 11:07:11 [execute] INFO - ✅ DisCoPy available
 2025-11-19 11:07:11 [execute] INFO - ✅ ActiveInference.jl available
-2025-11-19 11:07:11 [execute] INFO - ❌ PyMDP not available (optional - install with: uv sync --extra active-inference)
-2025-11-19 11:07:11 [execute] INFO - ❌ Flax not available (JAX requires Flax - install with: uv sync --extra active-inference)
+2025-11-19 11:07:11 [execute] INFO - ❌ PyMDP not available (install with: uv sync)
+2025-11-19 11:07:11 [execute] INFO - ❌ Flax not available (JAX requires Flax - install with: uv sync)
 2025-11-19 11:07:11 [execute] INFO - ❌ RxInfer not available (optional - install Julia first, then: julia -e 'import Pkg; Pkg.add("RxInfer")')
 ```
 
@@ -78,7 +78,7 @@ For each framework:
 
 ```
 2025-11-19 11:07:13 [execute] WARNING - ❌ model_name_pymdp.py failed
-2025-11-19 11:07:13 [execute] WARNING - Error: PyMDP not available - install with: uv sync --extra active-inference
+2025-11-19 11:07:13 [execute] WARNING - Error: PyMDP not available - install with: uv sync
 ```
 
 ### After Execution
@@ -164,7 +164,7 @@ uv pip install inferactively-pymdp flax
 ### For Complete Coverage
 
 ```bash
-uv sync --extra active-inference --extra visualization
+uv sync
 julia -e 'import Pkg; Pkg.add(["RxInfer", "ActiveInference"])'
 # Result: All 7 frameworks work
 ```

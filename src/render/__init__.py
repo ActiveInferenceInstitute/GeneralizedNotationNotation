@@ -12,6 +12,7 @@ from typing import Any, Dict, List, Optional, Tuple
 
 from .activeinference_jl import render_gnn_to_activeinference_jl
 from .discopy import render_gnn_to_discopy
+from .framework_registry import get_supported_frameworks
 from .generators import (
     generate_activeinference_jl_code,
     generate_discopy_code,
@@ -30,6 +31,7 @@ from .pymdp import render_gnn_to_pymdp
 from .pymdp.pymdp_renderer import PyMDPRenderer
 from .pytorch import render_gnn_to_pytorch
 from .rxinfer import render_gnn_to_rxinfer, render_gnn_to_rxinfer_toml
+from .stan import render_stan
 
 
 class JAXRenderer:
@@ -46,23 +48,6 @@ class JAXRenderer:
         from .jax.jax_renderer import render_gnn_to_jax
 
         return render_gnn_to_jax(spec, output_path, options)
-
-
-def get_supported_frameworks() -> Any:
-    """Return list of supported rendering frameworks.
-
-    Returns:
-        List of framework names that can be used for rendering.
-    """
-    return [
-        "pymdp",
-        "rxinfer",
-        "activeinference_jl",
-        "jax",
-        "discopy",
-        "pytorch",
-        "numpyro",
-    ]
 
 
 def validate_render(result: Any, framework: Any = None) -> Any:
@@ -104,6 +89,7 @@ __all__: list[Any] = [
     "render_gnn_to_activeinference_jl",
     "render_gnn_to_pytorch",
     "render_gnn_to_numpyro",
+    "render_stan",
     # Renderer classes
     "PyMDPRenderer",
     "JAXRenderer",
@@ -125,6 +111,7 @@ FEATURES: dict[str, Any] = {
     "jax_rendering": True,
     "pytorch_rendering": True,
     "numpyro_rendering": True,
+    "stan_rendering": True,
     "mcp_integration": True,
     "pomdp_processing": True,
     "state_space_extraction": True,

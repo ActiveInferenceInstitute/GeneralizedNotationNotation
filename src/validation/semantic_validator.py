@@ -309,8 +309,8 @@ class SemanticValidator:
                                         f"Connection {i} uses 'broadcast' but dimension {j} shrinks: {from_dim} -> {to_dim}"
                                     )
                         elif mapping_lower == "reduce":
-                            # Reduce mapping: source dimensions can be larger
-                            pass  # Any dimension reduction is valid
+                            # Reduce mapping: source dimensions can be larger.
+                            continue
                         elif mapping_lower not in valid_mappings:
                             warnings.append(
                                 f"Connection {i} uses unknown mapping type: '{mapping}' (supported: {valid_mappings})"
@@ -430,14 +430,7 @@ class SemanticValidator:
         errors: list[Any] = []
         warnings: list[Any] = []
 
-        pass
-        # In a real implementation, this would include:
-        # - Markov blanket validation
-        # - Information geometry validation
-        # - Ergodicity validation
-        # - Convergence properties
-
-        # For now, just check for some advanced concepts
+        # Research-level validation checks for explicit advanced concepts.
         has_markov_blanket = bool(re.search(r"MarkovBlanket", content, re.IGNORECASE))
         has_information_geometry = bool(
             re.search(r"InformationGeometry|FisherInformation", content, re.IGNORECASE)

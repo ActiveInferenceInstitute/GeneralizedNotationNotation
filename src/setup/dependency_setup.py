@@ -202,10 +202,20 @@ def install_optional_package_group(group_name: str, verbose: bool = False) -> bo
 
     group_aliases: dict[str, Any] = {
         "ml": "ml-ai",
-        "jax": "active-inference",
-        "pymdp": "active-inference",
+        "jax": "",
+        "pymdp": "",
+        "numpyro": "",
+        "plotly": "",
+        "llm": "",
     }
     normalized_name = group_aliases.get(group_name.lower(), group_name.lower())
+
+    if normalized_name == "":
+        logger.info(
+            "ℹ️ '%s' is installed by the core dependency set; run `uv sync`.",
+            group_name,
+        )
+        return True
 
     if normalized_name not in OPTIONAL_GROUPS:
         logger.error(f"❌ Unknown package group: {group_name}")

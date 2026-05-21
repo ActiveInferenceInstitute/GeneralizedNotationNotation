@@ -290,12 +290,10 @@ def validate_test_environment() -> Tuple[bool, List[str]]:
 
 def setup_test_environment() -> None:
     """Setup test environment."""
-    pass
 
 
 def cleanup_test_environment() -> None:
     """Cleanup test environment."""
-    pass
 
 
 def get_test_coverage(output_dir: Path) -> float:
@@ -984,7 +982,6 @@ def register_tools(mcp_instance: Any) -> None:
     """Register test-related tools with MCP instance."""
     # This would register test tools with the MCP instance
     # Implementation depends on the specific MCP framework being used
-    pass
 
 
 def generate_html_report_file(data: Dict[str, Any], output_path: Path) -> bool:

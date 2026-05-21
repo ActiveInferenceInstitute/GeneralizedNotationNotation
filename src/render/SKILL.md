@@ -1,6 +1,6 @@
 ---
 name: gnn-code-generation
-description: GNN code generation for simulation frameworks. Use when generating PyMDP, RxInfer.jl, ActiveInference.jl, JAX, or DisCoPy simulation code from GNN model specifications.
+description: GNN code generation for simulation frameworks. Use when generating PyMDP, RxInfer.jl, ActiveInference.jl, JAX, DisCoPy, PyTorch, NumPyro, Stan, or bnlearn code from GNN model specifications.
 ---
 
 # GNN Code Generation / Render (Step 11)
@@ -28,14 +28,16 @@ python src/main.py --only-steps 11 --verbose
 | **ActiveInference.jl** | Julia | `render/activeinference_jl/` | `.jl` scripts |
 | **JAX** | Python | `render/jax/` | `.py` scripts |
 | **DisCoPy** | Python | `render/discopy/` | `.py` scripts |
+| **PyTorch** | Python | `render/pytorch/` | `.py` scripts |
+| **NumPyro** | Python | `render/numpyro/` | `.py` scripts |
+| **Stan** | Stan | `render/stan/` | `.stan` models |
+| **bnlearn** | Python | generator-backed | `.py` scripts |
 
 ## API
 
 ```python
 from render import (
     process_render, render_gnn_spec, get_supported_frameworks,
-    generate_pymdp_code, generate_rxinfer_code,
-    generate_activeinference_jl_code, generate_discopy_code,
     validate_render, PyMDPRenderer, JAXRenderer
 )
 
@@ -45,12 +47,11 @@ process_render(target_dir, output_dir, verbose=True)
 # Render a single GNN spec
 result = render_gnn_spec(parsed_spec, framework="pymdp")
 
-# Framework-specific code generation
-pymdp_code = generate_pymdp_code(parsed_model)
-rxinfer_code = generate_rxinfer_code(parsed_model)
+# Canonical POMDP rendering
+success, message, files = render_gnn_spec(parsed_model, "rxinfer", "output/11_render_output")
 
 # Query supported frameworks
-frameworks = get_supported_frameworks()  # ['pymdp', 'rxinfer', 'activeinference_jl', 'jax', 'discopy']
+frameworks = get_supported_frameworks()  # ['pymdp', 'rxinfer', ..., 'stan', 'bnlearn']
 
 # Validate render output
 validate_render(result, framework="pymdp")
@@ -59,7 +60,6 @@ validate_render(result, framework="pymdp")
 ## Key Exports
 
 - `process_render` / `render_gnn_spec` — core rendering functions
-- `generate_pymdp_code`, `generate_rxinfer_code`, `generate_discopy_code`, `generate_activeinference_jl_code`
 - `PyMDPRenderer` / `JAXRenderer` — renderer classes
 - `get_supported_frameworks` / `validate_render` — utilities
 
@@ -80,8 +80,8 @@ The render processor follows a structured pipeline for each GNN file:
 uv sync
 
 # For Julia frameworks (RxInfer.jl, ActiveInference.jl)
-# Requires Julia installed and Julia packages: RxInfer, ActiveInference
-julia -e 'using Pkg; Pkg.add(["RxInfer", "ActiveInference"])'
+# Requires Julia installed and packages available in the active Julia environment
+julia --startup-file=no -e 'using RxInfer, ActiveInference, JSON, Distributions, StatsBase'
 
 # For DisCoPy
 uv sync --extra graphs
@@ -90,7 +90,7 @@ uv sync --extra graphs
 ## Output
 
 - Generated scripts in `output/11_render_output/`
-- Per-framework subdirectories: `pymdp/`, `rxinfer/`, `jax/`, `discopy/`, `activeinference_jl/`
+- Per-framework subdirectories: `pymdp/`, `rxinfer/`, `activeinference_jl/`, `jax/`, `discopy/`, `pytorch/`, `numpyro/`, `stan/`, `bnlearn/`
 - One script per model per framework
 - Render overview documentation
 

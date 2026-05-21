@@ -173,10 +173,9 @@ def attempt_pymdp_auto_install(use_uv: bool = True) -> Tuple[bool, str]:
     try:
         logger.info(f"Attempting to install {package_name} using UV sync...")
 
-        # Preferred method: use uv sync with the pymdp extra
-        # This ensures proper lockfile integration
+        # Preferred method: use uv sync; PyMDP is part of the core dependency set.
         result = subprocess.run(  # nosec B607 B603
-            ["uv", "sync", "--extra", "active-inference"],
+            ["uv", "sync"],
             capture_output=True,
             text=True,
             timeout=120,

@@ -14,7 +14,7 @@ This module is responsible for running GNN models that have been rendered into f
 | **PyTorch** | Python | `pytorch/` | `*_pytorch.py` | ✅ Full support |
 | **NumPyro** | Python | `numpyro/` | `*_numpyro.py` | ✅ Full support |
 
-JAX, NumPyro, PyTorch, and DisCoPy are **core** dependencies (`uv sync`). If the environment is incomplete, their scripts are **skipped** (not failed). Julia frameworks require Julia installed.
+JAX, NumPyro, PyTorch, and DisCoPy are **core** dependencies (`uv sync`). If the environment is incomplete, their scripts report an explicit skipped status. Requested Julia frameworks require Julia plus their package set; in strict requested-framework runs, missing packages make Step 12 fail.
 
 ## Module Structure
 
@@ -24,7 +24,6 @@ src/execute/
 ├── executor.py              # GNNExecutor class (framework dispatch)
 ├── processor.py             # Main processor (Step 12 entry point)
 ├── validator.py             # Output validation
-├── recovery.py              # Recovery execution strategies
 ├── data_extractors.py       # Result data extraction
 ├── julia_setup.py           # Julia environment setup
 ├── pymdp/                   # PyMDP execution
@@ -94,27 +93,23 @@ PyMDP simulation runner with:
 - Column normalization for stochastic matrices
 - Strict `pymdp_simulation_v1` `simulation_results.json` output
 
+### Julia framework scripts
+
+RxInfer.jl and ActiveInference.jl generated scripts write current JSON schemas:
+
+- `rxinfer_simulation_v1`
+- `activeinference_jl_simulation_v1`
+
+Both schemas include observations by modality, hidden states by factor, actions by control factor, beliefs by factor, expected free energy, policy posterior, validation, matrix provenance, and runtime metadata.
+
 ### `julia_setup.py`
 
-Julia environment management for RxInfer.jl and ActiveInference.jl:
+Julia environment management helpers for RxInfer.jl and ActiveInference.jl.
 
-- Package installation and version management
-- Environment activation
-- Runtime error handling
+## Current Cross-Framework Gate
 
-## Current Performance (8 Discrete Models × 5 Frameworks)
-
-```
-Total: 40 | Success: 40 | Failed: 0
-
-  actinf_pomdp_agent     (5/5): ✅PyMDP ✅JAX ✅DisCoPy ✅RxInfer ✅ActInf.jl
-  deep_planning_horizon  (5/5): ✅PyMDP ✅JAX ✅DisCoPy ✅RxInfer ✅ActInf.jl
-  hmm_baseline           (5/5): ✅PyMDP ✅JAX ✅DisCoPy ✅RxInfer ✅ActInf.jl
-  markov_chain           (5/5): ✅PyMDP ✅JAX ✅DisCoPy ✅RxInfer ✅ActInf.jl
-  multi_armed_bandit     (5/5): ✅PyMDP ✅JAX ✅DisCoPy ✅RxInfer ✅ActInf.jl
-  simple_mdp             (5/5): ✅PyMDP ✅JAX ✅DisCoPy ✅RxInfer ✅ActInf.jl
-  tmaze_epistemic        (5/5): ✅PyMDP ✅JAX ✅DisCoPy ✅RxInfer ✅ActInf.jl
-  two_state_bistable     (5/5): ✅PyMDP ✅JAX ✅DisCoPy ✅RxInfer ✅ActInf.jl
+```bash
+uv run pytest src/tests/pipeline/test_pomdp_gridworld_cross_framework.py -q --tb=short
 ```
 
 ## Usage

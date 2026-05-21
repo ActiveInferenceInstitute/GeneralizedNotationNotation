@@ -20,8 +20,8 @@ try:
     import numpy as np
 
     MATPLOTLIB_AVAILABLE = True
-except ImportError:
-    pass
+except ImportError as exc:
+    logger.debug("Matplotlib unavailable for type-checker visualizations: %s", exc)
 
 
 def attach_metadata_footer(fig: Any, framework: str = "gnn_type_checker") -> None:

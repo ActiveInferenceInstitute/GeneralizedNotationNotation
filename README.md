@@ -617,9 +617,9 @@ The GNN framework is built around a modular architecture, where each pipeline st
 | `validation` | 6 | Validates GNN models against predefined rules and constraints. | Constraint Solver, Logic Validator |
 | `export` | 7 | Exports GNN models to various formats (JSON, XML, GraphML). | JSON/XML/GraphML Serializers |
 | `visualization` | 8 | Generates graphical representations of GNN models. | `matplotlib`, `plotly`, `graphviz` |
-| `advanced_visualization` | 9 | Provides advanced, interactive 3D and dynamic visualizations. | `vedo`, `pyvista`, `dash` |
+| `advanced_visualization` | 9 | Provides advanced, interactive and dashboard visualizations. | `plotly`, D3/HTML output, `matplotlib`, `networkx` |
 | `ontology` | 10 | Maps GNN concepts to Active Inference ontology terms. | Ontology Mapper, Knowledge Graph |
-| `render` | 11 | Renders GNN models into executable code for various backends. | Code Generators (PyMDP, RxInfer, JAX, ActInf.jl, PyTorch, NumPyro, DisCoPy) |
+| `render` | 11 | Renders GNN models into executable code for various backends. | Code Generators (PyMDP, RxInfer, JAX, ActInf.jl, PyTorch, NumPyro, Stan, DisCoPy, bnlearn) |
 | `execute` | 12 | Executes the rendered code using the specified backend. | PyMDP, RxInfer.jl, JAX, ActiveInference.jl, PyTorch, NumPyro |
 | `llm` | 13 | Integrates Large Language Models for analysis, generation, and insights. | OpenAI GPT, Anthropic Claude, Local LLMs |
 | `ml_integration` | 14 | Integrates with machine learning frameworks for advanced analysis. | `scikit-learn`, `tensorflow`, `pytorch` |
@@ -729,7 +729,7 @@ python src/main.py --help
 - `--llm-tasks LIST`: Comma-separated LLM tasks
 - `--llm-timeout`: LLM processing timeout
 - `--pipeline-summary-file FILE`: Pipeline summary report path
-- `--site-html-filename NAME`: Generated HTML site filename
+- `--website-html-filename NAME`: Generated HTML website filename
 - `--duration`: Audio duration for audio generation (default: 30.0)
 - `--audio-backend`: Audio backend to use (auto, sapf, pedalboard, default: auto)
 - `--recreate-uv-env`: Recreate UV environment
@@ -741,7 +741,7 @@ python src/main.py --help
 
 ## 🛠️ Tools and Utilities
 
-The GNN ecosystem includes several sophisticated tools to aid in model development, validation, and understanding. These tools are primarily invoked through the `src/main.py` pipeline script. The project also provides a **CLI** (`gnn` command), **LSP** (Language Server Protocol) for editor support, and a **REST API** (FastAPI Pipeline-as-a-Service); **131 MCP tools** are registered for model context integration. See [AGENTS.md](./AGENTS.md) and [doc/gnn/](doc/gnn/) for details.
+The GNN ecosystem includes several sophisticated tools to aid in model development, validation, and understanding. These tools are primarily invoked through the `src/main.py` pipeline script. The project also provides a **CLI** (`gnn` command), **LSP** (Language Server Protocol) for editor support, and a **REST API** (FastAPI Pipeline-as-a-Service); **133 MCP tools** are registered for model context integration. See [AGENTS.md](./AGENTS.md) and [doc/gnn/](doc/gnn/) for details.
 
 ### ✅ Type Checker and Resource Estimator
 
@@ -987,7 +987,7 @@ python --version
 
 ```bash
 # Force reinstall dependencies
-uv run python src/main.py --only-steps 2 --recreate-uv-env --dev
+uv run python src/main.py --only-steps 1 --recreate-uv-env --dev
 ```
 
 **🔧 Pipeline Failures**

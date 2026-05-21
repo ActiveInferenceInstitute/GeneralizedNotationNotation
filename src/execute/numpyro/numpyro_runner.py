@@ -80,7 +80,7 @@ def execute_numpyro_script(
             logger.debug(f"✅ Dependency available: {dep}")
         except ImportError:
             logger.error(f"❌ Missing required dependency: {dep}")
-            logger.error("Install with: uv sync --extra probabilistic-programming")
+            logger.error("Install with: uv sync")
             return False
 
     # Syntax validation

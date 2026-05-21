@@ -15,10 +15,13 @@ Author: GNN RxInfer Integration
 Date: 2024
 """
 
+import json
 import logging
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
+
+from render.pomdp_contract import build_canonical_pomdp_spec
 
 
 class RxInferRenderer:
@@ -48,15 +51,16 @@ class RxInferRenderer:
             Tuple of (success, message)
         """
         try:
-            # Read GNN file
-            with open(gnn_file_path, "r", encoding="utf-8") as f:
-                content = f.read()
+            from gnn.pomdp_extractor import extract_pomdp_from_file
+            from render.pomdp_processor import POMDPRenderProcessor
 
-            # Parse GNN content (simplified for now)
-            gnn_spec = self._parse_gnn_content(content, gnn_file_path.stem)
-
-            # Generate RxInfer.jl simulation code
-            rxinfer_code = self._generate_rxinfer_simulation_code_simple(
+            pomdp_space = extract_pomdp_from_file(gnn_file_path, strict_validation=True)
+            if pomdp_space is None:
+                raise ValueError(f"No valid POMDP matrices found in {gnn_file_path}")
+            gnn_spec = POMDPRenderProcessor(output_path.parent)._pomdp_to_gnn_spec(
+                pomdp_space
+            )
+            rxinfer_code = self._generate_rxinfer_simulation_code(
                 gnn_spec, gnn_file_path.stem
             )
 
@@ -107,74 +111,10 @@ class RxInferRenderer:
     def _generate_rxinfer_simulation_code_simple(
         self, gnn_spec: Dict[str, Any], model_name: str
     ) -> str:
-        """Generate simplified RxInfer code that actually works with modern API."""
-        from datetime import datetime
-
-        try:
-            # Get model parameters with defaults
-            model_display_name = gnn_spec.get("model_name", model_name)
-            model_params = gnn_spec.get("model_parameters", {})
-            num_states = model_params.get("num_hidden_states", 3)
-            num_observations = model_params.get("num_obs", 3)
-
-            # Extract num_actions from multiple possible sources
-            initial_params = gnn_spec.get(
-                "initial_parameterization", {}
-            ) or gnn_spec.get("initialparameterization", {})
-            B_data = initial_params.get("B", [])
-
-            # Infer from B matrix dimensions if available
-            inferred_actions = (
-                len(B_data) if B_data and isinstance(B_data, list) else None
-            )
-
-            num_actions = (
-                model_params.get("num_actions")
-                or model_params.get("num_controls")
-                or model_params.get("n_actions")
-                or inferred_actions
-                or 3  # Default to 3 for proper POMDP
-            )
-
-            # Extract num_timesteps from model parameters.
-            num_timesteps = model_params.get(
-                "num_timesteps",
-                gnn_spec.get("initialparameterization", {}).get("num_timesteps", 20),
-            )
-
-            # Validate parameters
-            if not isinstance(num_states, int) or num_states < 1:
-                num_states = 3
-            if not isinstance(num_observations, int) or num_observations < 1:
-                num_observations = 3
-            if not isinstance(num_actions, int) or num_actions < 1:
-                num_actions = 3
-            if not isinstance(num_timesteps, int) or num_timesteps < 1:
-                num_timesteps = 20
-
-            # Read the minimal working template with current APIs.
-            template_path = Path(__file__).parent / "minimal_template.jl"
-            if not template_path.exists():
-                raise FileNotFoundError(f"Template file not found: {template_path}")
-
-            with open(template_path, "r", encoding="utf-8") as f:
-                template = f.read()
-
-            # Fill in the template carefully to avoid Julia syntax conflicts.
-            # Replace template markers one at a time to avoid issues with curly braces.
-            code = template
-            code = code.replace("{model_name}", model_display_name)
-            code = code.replace(
-                "{timestamp}", datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            )
-            code = code.replace("{num_states}", str(num_states))
-            code = code.replace("{num_observations}", str(num_observations))
-            code = code.replace("{num_actions}", str(num_actions))
-            code = code.replace("{num_timesteps}", str(num_timesteps))
-
-            return code
-        except Exception as e:
-            raise RuntimeError(f"Failed to generate RxInfer code template: {e}") from e
+        """Require the canonical renderer for file-based RxInfer rendering."""
+        raise ValueError(
+            f"RxInfer rendering for {model_name} requires explicit POMDP matrices"
+        )
 
     def _generate_rxinfer_simulation_code(
         self, gnn_spec: Dict[str, Any], model_name: str
@@ -189,6 +129,294 @@ class RxInferRenderer:
         Returns:
             Generated Julia code string
         """
+        canonical_spec = build_canonical_pomdp_spec(gnn_spec)
+        return self._generate_canonical_rxinfer_code(canonical_spec, model_name)
+
+    def _generate_canonical_rxinfer_code(
+        self, gnn_spec: Dict[str, Any], model_name: str
+    ) -> str:
+        """Generate a strict RxInfer.jl script from canonical POMDP matrices."""
+        model_display_name = (
+            gnn_spec.get("model_name") or gnn_spec.get("name") or model_name
+        )
+        model_params = gnn_spec.get("model_parameters", {})
+        initial_params = gnn_spec["initialparameterization"]
+        num_states = int(model_params["num_hidden_states"])
+        num_observations = int(model_params["num_obs"])
+        num_actions = int(model_params["num_actions"])
+        num_timesteps = int(model_params.get("num_timesteps", 20))
+        seed = int(model_params.get("random_seed", model_params.get("seed", 42)))
+        action_precision = float(
+            model_params.get("action_precision", model_params.get("gamma", 4.0))
+        )
+        spec_json = json.dumps(gnn_spec, sort_keys=True)
+
+        code = f'''#!/usr/bin/env julia
+# RxInfer.jl discrete POMDP simulation
+# Generated from GNN Model: {model_display_name}
+# Generated: {self._get_timestamp()}
+
+using Pkg
+using RxInfer
+using Distributions
+using LinearAlgebra
+using Random
+using StatsBase
+using JSON
+using Dates
+
+const SCHEMA_VERSION = "rxinfer_simulation_v1"
+const MODEL_NAME = "{model_display_name}"
+const NUM_STATES = {num_states}
+const NUM_OBSERVATIONS = {num_observations}
+const NUM_ACTIONS = {num_actions}
+const TIME_STEPS = {num_timesteps}
+const RANDOM_SEED = {seed}
+const ACTION_PRECISION = {action_precision}
+const GNN_SPEC = JSON.parse(raw"""{spec_json}""")
+
+function package_version(name::String)
+    for (_, dep) in Pkg.dependencies()
+        if dep.name == name
+            return string(dep.version)
+        end
+    end
+    return "unknown"
+end
+
+function to_float_matrix(raw)
+    rows = collect(raw)
+    matrix = zeros(Float64, length(rows), length(collect(rows[1])))
+    for row in eachindex(rows)
+        values = collect(rows[row])
+        for column in eachindex(values)
+            matrix[row, column] = Float64(values[column])
+        end
+    end
+    return matrix
+end
+
+function to_float_tensor(raw)
+    blocks = collect(raw)
+    rows = length(blocks)
+    columns = length(collect(blocks[1]))
+    actions = length(collect(collect(blocks[1])[1]))
+    tensor = zeros(Float64, rows, columns, actions)
+    for next_state in 1:rows
+        block = collect(blocks[next_state])
+        for previous_state in 1:columns
+            values = collect(block[previous_state])
+            for action in 1:actions
+                tensor[next_state, previous_state, action] = Float64(values[action])
+            end
+        end
+    end
+    return tensor
+end
+
+function normalize_vector(values)
+    vector = Float64.(collect(values))
+    total = sum(vector)
+    if !isfinite(total) || total <= 0
+        error("probability vector has invalid mass")
+    end
+    return vector ./ total
+end
+
+function normalize_columns!(matrix)
+    for column in 1:size(matrix, 2)
+        total = sum(matrix[:, column])
+        if !isfinite(total) || total <= 0
+            error("matrix column has invalid probability mass")
+        end
+        matrix[:, column] ./= total
+    end
+    return matrix
+end
+
+function normalize_tensor!(tensor)
+    for action in 1:size(tensor, 3)
+        for previous_state in 1:size(tensor, 2)
+            total = sum(tensor[:, previous_state, action])
+            if !isfinite(total) || total <= 0
+                error("transition column has invalid probability mass")
+            end
+            tensor[:, previous_state, action] ./= total
+        end
+    end
+    return tensor
+end
+
+function softmax(values)
+    shifted = values .- maximum(values)
+    weights = exp.(shifted)
+    return weights ./ sum(weights)
+end
+
+function categorical_index(probabilities)
+    safe_probs = max.(probabilities, 1e-16)
+    safe_probs ./= sum(safe_probs)
+    return rand(Categorical(safe_probs))
+end
+
+function compute_efe(belief, action, A, B, C_pref)
+    predicted_state = B[:, :, action] * belief
+    predicted_state = max.(predicted_state, 1e-16)
+    predicted_state ./= sum(predicted_state)
+    predicted_obs = A * predicted_state
+    predicted_obs = max.(predicted_obs, 1e-16)
+    predicted_obs ./= sum(predicted_obs)
+
+    ambiguity = 0.0
+    for state in eachindex(predicted_state)
+        likelihood = max.(A[:, state], 1e-16)
+        ambiguity -= predicted_state[state] * sum(likelihood .* log.(likelihood))
+    end
+
+    preferred = max.(C_pref, 1e-16)
+    risk = sum(predicted_obs .* (log.(predicted_obs) .- log.(preferred)))
+    return ambiguity + risk
+end
+
+function select_action(belief, A, B, C_pref)
+    efe_values = [compute_efe(belief, action, A, B, C_pref) for action in 1:size(B, 3)]
+    policy = softmax(-ACTION_PRECISION .* efe_values)
+    action = categorical_index(policy)
+    return action, efe_values, policy
+end
+
+function validate_dimensions(A, B, C, D)
+    if size(A) != (NUM_OBSERVATIONS, NUM_STATES)
+        error("A shape $(size(A)) does not match expected ($NUM_OBSERVATIONS, $NUM_STATES)")
+    end
+    if size(B) != (NUM_STATES, NUM_STATES, NUM_ACTIONS)
+        error("B shape $(size(B)) does not match expected ($NUM_STATES, $NUM_STATES, $NUM_ACTIONS)")
+    end
+    if length(C) != NUM_OBSERVATIONS
+        error("C length $(length(C)) does not match expected $NUM_OBSERVATIONS")
+    end
+    if length(D) != NUM_STATES
+        error("D length $(length(D)) does not match expected $NUM_STATES")
+    end
+end
+
+function run_simulation()
+    Random.seed!(RANDOM_SEED)
+    initial = GNN_SPEC["initialparameterization"]
+    A = normalize_columns!(to_float_matrix(initial["A"]))
+    B = normalize_tensor!(to_float_tensor(initial["B"]))
+    C = Float64.(collect(initial["C"]))
+    D = normalize_vector(initial["D"])
+    E = haskey(initial, "E") ? normalize_vector(initial["E"]) : fill(1.0 / NUM_ACTIONS, NUM_ACTIONS)
+    validate_dimensions(A, B, C, D)
+
+    C_pref = softmax(C)
+    current_state = categorical_index(D)
+    current_belief = copy(D)
+
+    observations = Int[]
+    true_states = Int[]
+    actions = Int[]
+    beliefs = Vector{{Vector{{Float64}}}}()
+    efe_per_action = Vector{{Vector{{Float64}}}}()
+    selected_efe = Float64[]
+    policy_posterior = Vector{{Vector{{Float64}}}}()
+
+    for step in 1:TIME_STEPS
+        observation = categorical_index(A[:, current_state])
+        likelihood = A[observation, :]
+        updated = current_belief .* likelihood
+        if sum(updated) <= 0
+            error("belief update produced zero mass at step $step")
+        end
+        current_belief = updated ./ sum(updated)
+
+        action, efe_values, policy = select_action(current_belief, A, B, C_pref)
+        next_probs = B[:, current_state, action]
+        current_state = categorical_index(next_probs)
+        predicted = B[:, :, action] * current_belief
+        current_belief = predicted ./ sum(predicted)
+
+        push!(observations, observation - 1)
+        push!(true_states, current_state - 1)
+        push!(actions, action - 1)
+        push!(beliefs, copy(current_belief))
+        push!(efe_per_action, copy(efe_values))
+        push!(selected_efe, efe_values[action])
+        push!(policy_posterior, copy(policy))
+    end
+
+    validation = Dict(
+        "all_beliefs_valid" => all(b -> all(v -> 0.0 <= v <= 1.0, b), beliefs),
+        "beliefs_sum_to_one" => all(b -> isapprox(sum(b), 1.0; atol=1e-6), beliefs),
+        "actions_in_range" => all(a -> 0 <= a < NUM_ACTIONS, actions),
+        "all_valid" => true
+    )
+    validation["all_valid"] = validation["all_beliefs_valid"] &&
+        validation["beliefs_sum_to_one"] &&
+        validation["actions_in_range"]
+
+    return Dict(
+        "schema_version" => SCHEMA_VERSION,
+        "success" => true,
+        "framework" => "RxInfer.jl",
+        "model_name" => MODEL_NAME,
+        "num_timesteps" => TIME_STEPS,
+        "observations_by_modality" => Dict("joint_observation" => observations),
+        "hidden_states_by_factor" => Dict("joint_state" => true_states),
+        "actions_by_control_factor" => Dict("joint_action" => actions),
+        "beliefs_by_factor" => Dict("joint_state" => beliefs),
+        "expected_free_energy" => selected_efe,
+        "efe_per_action" => efe_per_action,
+        "variational_free_energy" => Float64[],
+        "policy_posterior" => policy_posterior,
+        "observations" => observations,
+        "true_states" => true_states,
+        "actions" => actions,
+        "beliefs" => beliefs,
+        "model_parameters" => Dict(
+            "A_shape" => collect(size(A)),
+            "B_shape" => collect(size(B)),
+            "C_shape" => [length(C)],
+            "D_shape" => [length(D)],
+            "E_shape" => [length(E)],
+            "num_states" => NUM_STATES,
+            "num_observations" => NUM_OBSERVATIONS,
+            "num_actions" => NUM_ACTIONS
+        ),
+        "matrix_provenance" => get(GNN_SPEC, "matrix_provenance", Dict()),
+        "runtime_metadata" => Dict(
+            "random_seed" => RANDOM_SEED,
+            "schema_version" => SCHEMA_VERSION,
+            "generated_at" => string(now()),
+            "rxinfer_version" => package_version("RxInfer"),
+            "julia_version" => string(VERSION)
+        ),
+        "metrics" => Dict(
+            "expected_free_energy" => selected_efe,
+            "policy_posterior" => policy_posterior,
+            "belief_confidence" => [maximum(b) for b in beliefs]
+        ),
+        "validation" => validation
+    )
+end
+
+function main()
+    results = run_simulation()
+    open("simulation_results.json", "w") do file
+        JSON.print(file, results, 2)
+    end
+    println("RxInfer.jl simulation wrote simulation_results.json")
+    return results["validation"]["all_valid"] ? 0 : 1
+end
+
+if abspath(PROGRAM_FILE) == @__FILE__
+    exit(main())
+end
+'''
+        return code
+
+        # Extract key information from GNN spec
         # Extract key information from GNN spec
         model_display_name = gnn_spec.get("model_name", model_name)
 

@@ -28,7 +28,9 @@ logger = logging.getLogger(__name__)
 
 
 def check_julia_dependencies(
-    verbose: bool, log: Optional[logging.Logger] = None
+    verbose: bool,
+    log: Optional[logging.Logger] = None,
+    frameworks: Optional[List[str]] = None,
 ) -> bool:
     """Check if required Julia packages are available.
 
@@ -47,10 +49,14 @@ def check_julia_dependencies(
             ["julia", "--version"], capture_output=True, check=True, timeout=10
         )  # nosec B607 B603
 
-        # Check for key packages
-        check_script = (
-            'using Pkg; Pkg.status(["RxInfer", "ActiveInference", "GraphPPL"])'
-        )
+        requested = set(frameworks or ["rxinfer", "activeinference_jl"])
+        packages = ["JSON", "Distributions", "StatsBase"]
+        if "rxinfer" in requested:
+            packages.append("RxInfer")
+        if "activeinference_jl" in requested:
+            packages.append("ActiveInference")
+        using_clause = ", ".join(packages)
+        check_script = f"using {using_clause}"
         result = subprocess.run(  # nosec B607 B603
             ["julia", "-e", check_script], capture_output=True, text=True, timeout=30
         )
@@ -610,7 +616,7 @@ def process_execute(
                     )
                 filtered_count = before_filter - len(executable_scripts)
                 if filtered_count:
-                    logger.warning(
+                    logger.info(
                         "Ignoring %d rendered scripts not present in the latest render summary",
                         filtered_count,
                     )
@@ -1042,11 +1048,14 @@ def execute_single_script(
 
             # For Julia scripts, check availability and dependencies
             elif executor == "julia":
-                if not check_julia_dependencies(verbose, logger):
-                    logger.warning(
-                        "Julia dependencies (RxInfer/ActiveInference) may be missing"
+                if not check_julia_dependencies(verbose, logger, [framework]):
+                    skipped = _make_skipped_result(
+                        script_info, framework, model_name, executor, logger
                     )
-                    # Don't fail here, let the script try to run, but log warning
+                    skipped["error"] = (
+                        f"Julia packages required for {framework} are not available"
+                    )
+                    return skipped
 
                 subprocess.run(
                     [executor, "--version"],  # nosec B603
@@ -1486,7 +1495,7 @@ def generate_execution_report(
                 f.write("4. Verify script syntax and functionality\n\n")
             elif skipped:
                 f.write(
-                    "Skipped scripts are due to missing optional dependencies. To run all frameworks: `uv sync --extra execution-frameworks` (or install active-inference, probabilistic-programming, ml-ai, graphs).\n\n"
+                    "Skipped scripts are due to missing optional dependencies or unavailable system runtimes. Run `uv sync` for core Python backends; add `uv sync --extra ml-ai --extra graphs` for optional Python extension groups, and install Julia/D2 system tools as needed.\n\n"
                 )
             else:
                 f.write(

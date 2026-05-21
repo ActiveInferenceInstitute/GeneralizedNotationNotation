@@ -451,7 +451,7 @@ def _path_cwd_note(out_dir: Path) -> str | None:
             f"`{pr / 'input' / 'gnn_files' / 'pymdp_scaling_study'}`."
         )
     except ValueError:
-        pass
+        return None
     if pr not in (out_r, *out_r.parents):
         return (
             f"Output resolves to {out_r}, outside the repository root {pr}. "

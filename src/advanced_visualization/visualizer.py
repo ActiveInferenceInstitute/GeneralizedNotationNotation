@@ -14,13 +14,12 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-# Use non-interactive backend for server/CI environments
-try:
-    import matplotlib
+logger = logging.getLogger(__name__)
 
-    matplotlib.use("Agg")
-except ImportError:
-    pass
+# Use non-interactive backend for server/CI environments
+import matplotlib
+
+matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -30,6 +29,9 @@ try:
 
     VIS_PROCESSOR_AVAILABLE = True
 except ImportError:
+    logger.debug(
+        "VisualizationDataExtractor unavailable; using reduced visualization path."
+    )
     VIS_PROCESSOR_AVAILABLE = False  # graceful degradation without data extractor
 
 

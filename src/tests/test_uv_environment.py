@@ -429,7 +429,17 @@ class TestOptionalGroups:
     @pytest.mark.skipif(not SETUP_AVAILABLE, reason="Setup module not available")
     def test_expected_optional_groups_exist(self) -> Any:
         """Test that expected optional groups are defined."""
-        expected_groups: list[Any] = ["dev", "llm", "visualization", "audio", "all"]
+        expected_groups: list[Any] = [
+            "dev",
+            "api",
+            "ml-ai",
+            "audio",
+            "gui",
+            "graphs",
+            "research",
+            "scaling",
+            "all",
+        ]
         for group in expected_groups:
             assert group in OPTIONAL_GROUPS, (
                 f"Expected optional group '{group}' not found"

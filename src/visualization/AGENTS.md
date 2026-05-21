@@ -312,7 +312,7 @@ uv sync
 
 **Alternative**: Install visualization optional group:
 ```bash
-uv sync --extra visualization
+uv sync
 ```
 
 #### 3. Large Model Visualization Failures

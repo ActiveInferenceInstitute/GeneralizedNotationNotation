@@ -30,18 +30,14 @@ These groups match `[project.optional-dependencies]` in `pyproject.toml`:
 
 | Group | Key Packages | Purpose |
 | ----- | ------------ | ------- |
-| `active-inference` | jax, jaxlib, flax, optax | JAX stack (pymdp is a core dep) |
-| `execution-frameworks` | jax, numpyro, torch, discopy | Same pins as core Step 12 stack (explicit `uv sync --extra`) |
-| `visualization` | plotly, altair, seaborn, bokeh, holoviews | Visualization |
-| `llm` | openai, anthropic, cohere, ollama | LLM integration |
+| Core `uv sync` | pymdp, jax, numpyro, torch, discopy, LLM clients, visualization, bnlearn | Standard pipeline runtime |
 | `audio` | librosa, soundfile, pedalboard, pydub | Audio generation |
 | `gui` | gradio, streamlit | GUI interface |
-| `ml-ai` | torch, transformers, datasets | Machine learning |
-| `graphs` | igraph, graphviz, discopy | Graph libraries |
+| `ml-ai` | transformers, scipy, scikit-learn | Machine learning extensions |
+| `graphs` | graphviz | Graphviz bindings |
 | `dev` | pytest-*, mypy, ruff | Development tools |
-| `database` | sqlalchemy, alembic | Database integration |
 | `research` | jupyterlab, sympy, numba, cython | Research tools |
-| `scaling` | dask, distributed, joblib | Parallel processing |
+| `scaling` | dask, distributed, ray | Parallel processing |
 | `all` | Everything above | Full installation |
 
 ## Environment Requirements
@@ -55,9 +51,9 @@ These groups match `[project.optional-dependencies]` in `pyproject.toml`:
 | Issue | Solution |
 | ----- | ------- |
 | `uv: command not found` | `curl -LsSf https://astral.sh/uv/install.sh \| sh` |
-| PyMDP import fails | `uv sync --extra active-inference` |
-| matplotlib missing | `uv sync --extra visualization` |
-| CUDA not detected | Check `torch.cuda.is_available()` after `uv sync --extra ml-ai` |
+| PyMDP import fails | `uv sync` |
+| matplotlib missing | `uv sync` |
+| CUDA not detected | Check `torch.cuda.is_available()` after `uv sync` |
 
 
 ## MCP Tools

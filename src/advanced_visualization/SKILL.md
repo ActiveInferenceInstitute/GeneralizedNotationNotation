@@ -62,7 +62,7 @@ if D2_AVAILABLE:
 
 ```bash
 # Core interactive visualization
-uv sync --extra visualization
+uv sync
 
 # For D2 diagrams (requires d2 CLI)
 # Install d2: https://d2lang.com/tour/install

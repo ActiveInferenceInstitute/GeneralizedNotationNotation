@@ -60,9 +60,9 @@ optional groups are requested). `**kwargs` accepts:
 Default path: `uv sync` for core deps. Step 12 backends (JAX, NumPyro, PyTorch,
 DisCoPy), interactive visualization (pandas, plotly, seaborn, h5py), and the bnlearn
 backend are in `[project.dependencies]` and therefore installed without any `--extra`.
-`SETUP_DEFAULT_PIPELINE_EXTRAS` is empty by default; the `execution-frameworks` /
-`visualization` / `inference` extras duplicate those pins for explicit sync. Step 22
-(GUI) additionally needs `uv sync --extra gui` to pull Gradio.
+`SETUP_DEFAULT_PIPELINE_EXTRAS` is empty by default because core dependencies already
+cover Step 12 backends, LLM clients, interactive visualization packages, and bnlearn.
+Step 22 (GUI) additionally needs `uv sync --extra gui` to pull Gradio.
 
 ### Module-level Public Functions
 

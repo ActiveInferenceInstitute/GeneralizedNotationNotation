@@ -214,16 +214,9 @@ class PerformanceProfiler:
             "distributed_amenable": False,
         }
 
-        # Count blocks that can be processed in parallel
-        # For simplicity, assume blocks without circular dependencies can be parallelized
-        block_names = list(block_dims.keys())
-        {name: [] for name in block_names}
-
-        # Build dependency graph
-        for _ in connection_types:
-            # In a real implementation, we would parse the connections to build the graph
-            # For now, just assume some sequential dependencies based on connection count
-            pass
+        # Dependency graph parsing is intentionally coarse here; connection count feeds the
+        # sequential-dependency heuristic below.
+        sequential_connection_count = len(connection_types)
 
         # Estimate parallel efficiency
         total_blocks = len(block_dims)
@@ -231,8 +224,13 @@ class PerformanceProfiler:
             # Simple heuristic: assume 70% of blocks can be parallelized
             parallelizable_blocks = int(total_blocks * 0.7)
             parallelization["parallelizable_blocks"] = parallelizable_blocks
-            parallelization["sequential_dependencies"] = (
-                total_blocks - parallelizable_blocks
+            sequential_dependencies = (
+                total_blocks
+                - parallelizable_blocks
+                + int(sequential_connection_count > 0)
+            )
+            parallelization["sequential_dependencies"] = min(
+                total_blocks, sequential_dependencies
             )
             parallelization["parallel_efficiency"] = (
                 parallelizable_blocks / total_blocks

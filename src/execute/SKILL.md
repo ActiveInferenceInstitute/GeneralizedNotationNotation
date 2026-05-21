@@ -79,7 +79,7 @@ The execute processor follows this pipeline:
 
 ```bash
 # Core execution (PyMDP)
-uv sync --extra active-inference
+uv sync
 
 # For Julia frameworks
 # Requires Julia installed + packages

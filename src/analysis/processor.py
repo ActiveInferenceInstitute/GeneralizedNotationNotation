@@ -12,6 +12,7 @@ from typing import Any, Dict, List, Optional, Union, cast
 
 import numpy as np
 
+from gnn.discovery import is_model_source_path
 from utils.logging.logging_utils import log_step_error, log_step_start, log_step_success
 
 # Phase 6: analyzer submodule is in-tree with core-only dependencies.
@@ -247,7 +248,9 @@ def process_analysis(
             execution_dir = output_dir.parent / "12_execute_output"
 
         # Find GNN files
-        gnn_files = list(target_dir.rglob("*.md"))
+        gnn_files = [
+            path for path in target_dir.rglob("*.md") if is_model_source_path(path)
+        ]
         if not gnn_files:
             logger.warning("No GNN files found for analysis")
             # Exit-code 2: no input is a warning, not an error. Per CLAUDE.md
@@ -515,7 +518,7 @@ def process_analysis(
                     generate_unified_framework_dashboard,
                     visualize_all_framework_outputs,
                 )
-                from .visualizations import _pymdp_v1_visualization_data
+                from .visualizations import _current_schema_visualization_data
 
                 # Use cross_framework folder for cross-implementation analysis
                 viz_output_dir = results_dir / "cross_framework"
@@ -577,13 +580,20 @@ def process_analysis(
                                         and model_from_path not in allowed_model_names
                                     ):
                                         continue
-                                if framework == "pymdp":
-                                    if (
-                                        sim_data.get("schema_version")
-                                        != "pymdp_simulation_v1"
-                                    ):
+                                if framework in {
+                                    "pymdp",
+                                    "rxinfer",
+                                    "activeinference_jl",
+                                }:
+                                    if sim_data.get("schema_version") not in {
+                                        "pymdp_simulation_v1",
+                                        "rxinfer_simulation_v1",
+                                        "activeinference_jl_simulation_v1",
+                                    }:
                                         continue
-                                    sim_data = _pymdp_v1_visualization_data(sim_data)
+                                    sim_data = _current_schema_visualization_data(
+                                        sim_data
+                                    )
                                 key = framework
                                 if key not in framework_data_for_dashboard:
                                     framework_data_for_dashboard[key] = {

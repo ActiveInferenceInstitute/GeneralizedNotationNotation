@@ -62,6 +62,18 @@ logger = logging.getLogger(__name__)
 
 from .processor import render_gnn_spec
 
+RENDER_CLI_TARGETS = [
+    "pymdp",
+    "rxinfer",
+    "rxinfer_toml",
+    "activeinference_jl",
+    "discopy",
+    "discopy_combined",
+    "bnlearn",
+    "jax",
+    "jax_pomdp",
+]
+
 
 def main(cli_args: Any = None) -> Any:
     """Command-line entry point for the renderer."""
@@ -72,18 +84,7 @@ def main(cli_args: Any = None) -> Any:
     parser.add_argument("output_dir", help="Output directory for rendered files")
     parser.add_argument(
         "target",
-        # Only targets that ``render_gnn_spec`` actually dispatches.
-        choices=[
-            "pymdp",
-            "rxinfer",
-            "rxinfer_toml",
-            "activeinference_jl",
-            "discopy",
-            "discopy_combined",
-            "bnlearn",
-            "jax",
-            "jax_pomdp",
-        ],
+        choices=RENDER_CLI_TARGETS,
         default="pymdp",
         help="Target platform",
     )

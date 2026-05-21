@@ -296,12 +296,24 @@ def generate_pymdp_code(
 def generate_activeinference_jl_code(
     model_data: Dict, output_path: Optional[Union[str, Path]] = None
 ) -> str:
-    """Generate ActiveInference.jl simulation code with enhanced features."""
+    """Generate ActiveInference.jl code from explicit POMDP matrices."""
     if (
         _validate_or_return_empty(model_data, "generate_activeinference_jl_code")
         is None
     ):
         return ""
+    if not model_data.get("initialparameterization"):
+        return ""
+    from .activeinference_jl.activeinference_renderer import (
+        extract_model_info,
+        generate_activeinference_script,
+    )
+
+    code = generate_activeinference_script(extract_model_info(model_data))
+    if output_path:
+        with open(output_path, "w") as f:
+            f.write(code)
+    return code
     try:
         model_name = model_data.get("model_name", "GNN Model")
         model_pascal = _to_pascal_case(model_name)
@@ -1111,9 +1123,19 @@ if __name__ == "__main__":
 def generate_rxinfer_code(
     model_data: Dict, output_path: Optional[Union[str, Path]] = None
 ) -> str:
-    """Generate RxInfer.jl Bayesian inference code with enhanced features."""
+    """Generate RxInfer.jl code from explicit POMDP matrices."""
     if _validate_or_return_empty(model_data, "generate_rxinfer_code") is None:
         return ""
+    if not model_data.get("initialparameterization"):
+        return ""
+    model_name = model_data.get("model_name") or model_data.get("name", "GNN Model")
+    from .rxinfer.rxinfer_renderer import RxInferRenderer
+
+    code = RxInferRenderer()._generate_rxinfer_simulation_code(model_data, model_name)
+    if output_path:
+        with open(output_path, "w") as f:
+            f.write(code)
+    return code
     try:
         model_name = model_data.get("model_name", "GNN Model")
         model_snake = _sanitize_identifier(model_name, lowercase=True)

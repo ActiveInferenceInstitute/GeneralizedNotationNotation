@@ -105,7 +105,6 @@ class AudioGenerator:
                             duration = frames / float(sample_rate)
                     except (wave.Error, OSError, ValueError) as e:
                         logger.debug(f"Could not read wav metadata from {path}: {e}")
-                        pass
                 elif suffix in [".mp3", ".ogg", ".flac"]:
                     # Estimate based on file size if mutagen/ffmpeg not available
                     # Approx 128kbps for MP3

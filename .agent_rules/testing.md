@@ -66,8 +66,8 @@ class TestModuleMCP:
     @pytest.mark.safe_to_fail
     def test_mcp_tools_registered(self):
         try:
-            from module_name.mcp import MCP_TOOLS
-            assert len(MCP_TOOLS) > 0
+            from module_name.mcp import register_tools
+            assert callable(register_tools)
         except ImportError:
             pytest.skip("MCP not available")
 ```

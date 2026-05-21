@@ -16,7 +16,7 @@ from typing import cast
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent))
 
-from advanced_visualization.processor import process_advanced_viz
+from advanced_visualization import process_advanced_viz
 from utils.pipeline_template import create_standardized_pipeline_script
 
 run_script = create_standardized_pipeline_script(

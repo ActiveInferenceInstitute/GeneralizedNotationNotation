@@ -111,7 +111,7 @@ def start_lsp() -> Any:
             if method == "initialize":
                 write_message(handle_initialize(msg_id))
             elif method == "initialized":
-                pass
+                logger.debug("Client initialized notification received")
             elif method == "textDocument/hover":
                 write_message(handle_hover(msg_id, msg.get("params")))
             elif method == "textDocument/didOpen":

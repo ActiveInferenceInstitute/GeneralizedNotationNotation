@@ -78,11 +78,10 @@ def _parse_matrix_string(matrix_str: str) -> Any:
         inner_content = processed_str[1:-1].strip()
         # If it looks like a dict (contains a colon not inside a tuple/list), leave it.
         # This is a simple check; complex dicts with nested structures might not be covered.
-        if ":" in inner_content and not (
+        looks_like_dict = ":" in inner_content and not (
             inner_content.startswith("(") and inner_content.endswith(")")
-        ):
-            pass  # Likely a dictionary, ast.literal_eval handles dicts with {}
-        else:
+        )
+        if not looks_like_dict:
             # Otherwise, assume GNN's { } means a list-like structure (set or list of items/tuples)
             # Convert to [ ] for ast.literal_eval to parse as a list.
             processed_str = "[" + inner_content + "]"

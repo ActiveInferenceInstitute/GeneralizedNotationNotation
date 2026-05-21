@@ -48,8 +48,6 @@ JAX_AVAILABLE = False  # Overall flag for JAX-backed DisCoPy readiness
 class DisCoPySetupError(Exception):
     """Raised when DisCoPy or JAX components are not available."""
 
-    pass
-
 
 def generate_setup_report() -> str:
     """Generate comprehensive setup instructions for DisCoPy and JAX."""
@@ -266,7 +264,7 @@ def check_discopy_availability() -> Dict[str, bool]:
 
             # Test backend context
             with backend_actual("jax"):
-                pass
+                logger.debug("DisCoPy matrix backend accepted the JAX backend context")
 
             availability["discopy_matrix"] = True
             logger.debug("DisCoPy matrix backend available and functional")

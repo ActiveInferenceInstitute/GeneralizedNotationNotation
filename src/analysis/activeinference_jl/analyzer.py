@@ -22,8 +22,7 @@ def generate_analysis_from_logs(
     """
     Generate analysis and visualizations for ActiveInference.jl results.
 
-    The ActiveInference.jl execution creates visualizations during its run (in timestamped folders).
-    This analyzer collects those existing visualizations and copies them to the analysis output.
+    The analyzer reads current Step 12 outputs and creates plots under Step 16.
 
     Args:
         execution_results_dir: Directory containing execution results (12_execute_output)
@@ -36,18 +35,25 @@ def generate_analysis_from_logs(
     generated_files: list[Any] = []
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    # Search locations for ActiveInference.jl outputs:
-    # 1. The execution_results_dir (12_execute_output)
-    # 2. The sibling render output (11_render_output) - where Julia actually writes visualizations
-
     search_dirs: list[Any] = [execution_results_dir]
 
-    # Add sibling render output directory
-    render_output = execution_results_dir.parent / "11_render_output"
-    if render_output.exists():
-        search_dirs.append(render_output)
-        if verbose:
-            logger.info(f"Also searching render output: {render_output}")
+    current_json_files = sorted(
+        execution_results_dir.glob(
+            "**/activeinference_jl/simulation_data/*simulation_results.json"
+        ),
+        key=lambda p: p.stat().st_mtime,
+        reverse=True,
+    )
+    if current_json_files:
+        generated_files.extend(
+            create_current_schema_visualizations(current_json_files[0], output_dir)
+        )
+        if generated_files:
+            logger.info(
+                "Generated %d ActiveInference.jl visualizations from current schema",
+                len(generated_files),
+            )
+            return generated_files
 
     target_dirs: list[Any] = []
 
@@ -143,6 +149,99 @@ def generate_analysis_from_logs(
             break  # Use most recent data
 
     return generated_files
+
+
+def create_current_schema_visualizations(
+    json_path: Path, output_dir: Path
+) -> List[str]:
+    """Create ActiveInference.jl plots from ``activeinference_jl_simulation_v1``."""
+    try:
+        from ..viz_base import MATPLOTLIB_AVAILABLE, np, plt
+    except ImportError:
+        return []
+
+    if not MATPLOTLIB_AVAILABLE or plt is None or np is None:
+        return []
+
+    try:
+        payload = json.loads(json_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        logger.warning("Failed to read ActiveInference.jl JSON results: %s", exc)
+        return []
+
+    if payload.get("schema_version") != "activeinference_jl_simulation_v1":
+        return []
+
+    beliefs = payload.get("beliefs_by_factor", {}).get(
+        "joint_state", payload.get("beliefs", [])
+    )
+    observations = payload.get("observations_by_modality", {}).get(
+        "joint_observation", payload.get("observations", [])
+    )
+    actions = payload.get("actions_by_control_factor", {}).get(
+        "joint_action", payload.get("actions", [])
+    )
+    free_energy = payload.get("expected_free_energy", [])
+
+    output_dir.mkdir(parents=True, exist_ok=True)
+    generated: List[str] = []
+
+    if beliefs:
+        belief_array = np.asarray(beliefs, dtype=float)
+        belief_file = output_dir / "activeinference_jl_belief_heatmap.png"
+        plt.figure(figsize=(10, 5))
+        plt.imshow(belief_array.T, aspect="auto", origin="lower", cmap="viridis")
+        plt.colorbar(label="Probability")
+        plt.xlabel("Time Step")
+        plt.ylabel("State")
+        plt.title("ActiveInference.jl Beliefs")
+        plt.tight_layout()
+        plt.savefig(belief_file, dpi=300, bbox_inches="tight")
+        plt.close()
+        generated.append(str(belief_file))
+
+    if actions:
+        action_file = output_dir / "activeinference_jl_actions.png"
+        plt.figure(figsize=(10, 4))
+        plt.step(range(len(actions)), actions, where="mid")
+        plt.scatter(range(len(actions)), actions, s=20)
+        plt.xlabel("Time Step")
+        plt.ylabel("Action")
+        plt.title("ActiveInference.jl Actions")
+        plt.grid(True, alpha=0.3)
+        plt.tight_layout()
+        plt.savefig(action_file, dpi=300, bbox_inches="tight")
+        plt.close()
+        generated.append(str(action_file))
+
+    if observations:
+        obs_file = output_dir / "activeinference_jl_observations.png"
+        plt.figure(figsize=(10, 4))
+        plt.step(range(len(observations)), observations, where="mid", color="#2E86AB")
+        plt.scatter(range(len(observations)), observations, s=20, color="#2E86AB")
+        plt.xlabel("Time Step")
+        plt.ylabel("Observation")
+        plt.title("ActiveInference.jl Observations")
+        plt.grid(True, alpha=0.3)
+        plt.tight_layout()
+        plt.savefig(obs_file, dpi=300, bbox_inches="tight")
+        plt.close()
+        generated.append(str(obs_file))
+
+    if free_energy:
+        fe_file = output_dir / "activeinference_jl_expected_free_energy.png"
+        plt.figure(figsize=(10, 4))
+        plt.plot(range(len(free_energy)), free_energy, marker="o")
+        plt.xlabel("Time Step")
+        plt.ylabel("Expected Free Energy")
+        plt.title("ActiveInference.jl Expected Free Energy")
+        plt.grid(True, alpha=0.3)
+        plt.tight_layout()
+        plt.savefig(fe_file, dpi=300, bbox_inches="tight")
+        plt.close()
+        generated.append(str(fe_file))
+
+    return generated
 
 
 def create_trace_reconstruction(csv_path: Path, output_dir: Path) -> List[str]:

@@ -84,13 +84,11 @@ install_jax_and_test(verbose: bool = False) -> bool
 ```
 
 Valid group names are defined in `OPTIONAL_GROUPS` (`constants.py`):
-`dev`, `active-inference`, `ml-ai`, `llm`, `visualization`, `inference`, `audio`, `gui`,
-`graphs`, `research`, `scaling`, `database`, `probabilistic-programming`,
-`execution-frameworks`, `all`.
+`dev`, `api`, `ml-ai`, `audio`, `gui`, `graphs`, `research`, `scaling`, `all`.
 
-Step 12 backends (JAX, NumPyro, PyTorch, DisCoPy) are already in `[project.dependencies]`,
-so `uv sync` installs them without any extra. The `execution-frameworks` group simply
-duplicates those pins so a user can request them explicitly.
+Step 12 backends (JAX, NumPyro, PyTorch, DisCoPy), LLM clients, interactive
+visualization packages, and bnlearn are already in `[project.dependencies]`, so
+`uv sync` installs them without any extra.
 
 ### Validators (`validator`)
 
@@ -125,7 +123,7 @@ logger, **kwargs)` which wraps `perform_full_setup` / `setup_complete_environmen
 - `__version__` — currently `"1.6.0"`
 - `FEATURES` — dict of capability flags (see `__init__.py`)
 - `OPTIONAL_GROUPS` — name → description map used by Step 1 CLI help
-- `EnvironmentManager`, `VirtualEnvironment` — thin classes kept for test shims
+- `EnvironmentManager`, `VirtualEnvironment` — thin classes kept for setup tests
 - `validate_environment()`, `check_python_version()` — small helpers used by tests
 
 ## Usage
@@ -145,8 +143,8 @@ python src/1_setup.py --dev --verbose
 # Every optional group
 python src/1_setup.py --install-all-extras --verbose
 
-# Specific groups
-python src/1_setup.py --install-optional --optional-groups "llm,visualization" --verbose
+# Specific groups beyond the core dependency set
+python src/1_setup.py --install-optional --optional-groups "gui,audio" --verbose
 ```
 
 ### Programmatic
@@ -155,7 +153,7 @@ python src/1_setup.py --install-optional --optional-groups "llm,visualization" -
 from setup import setup_uv_environment, install_optional_package_group
 
 setup_uv_environment(verbose=True, dev=True)
-install_optional_package_group("visualization", verbose=True)
+install_optional_package_group("gui", verbose=True)
 ```
 
 ### `uv` directly
@@ -163,7 +161,7 @@ install_optional_package_group("visualization", verbose=True)
 ```bash
 uv sync                     # Core (JAX, NumPyro, PyTorch, DisCoPy, pymdp, …)
 uv sync --extra dev         # Add dev tools
-uv sync --extra visualization
+uv sync --extra gui
 uv sync --all-extras        # Everything
 ```
 

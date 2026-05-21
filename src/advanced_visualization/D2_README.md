@@ -72,7 +72,7 @@ All Python dependencies are included in the main GNN pipeline. Install using UV:
 uv sync
 
 # Or install with visualization extras
-uv sync --extra visualization
+uv sync
 ```
 
 ## Usage

@@ -73,7 +73,7 @@ success = process_mcp(
 )
 ```
 
-#### `register_module_tools(module_name: Optional[str] = None) -> bool`
+#### `register_module_tools(module_name: Optional[str] = None) -> bool | List[Dict[str, Any]]`
 **Description**: Discover one (or all) pipeline modules and call their
 `register_tools(mcp_instance)` function against the global singleton. Each
 target module owns its tool definitions via `src/<module>/mcp.py`.
@@ -82,7 +82,8 @@ target module owns its tool definitions via `src/<module>/mcp.py`.
 - `module_name` (Optional[str]): Single module to register (e.g. `"gnn"`).
   `None` triggers full discovery via `MCP.discover_modules()`.
 
-**Returns**: `bool` — True when registration succeeds.
+**Returns**: `bool` when `module_name` is provided; a list of registered tool
+dictionaries when discovering all modules.
 
 #### `register_tools(mcp: Optional[MCP] = None) -> bool`
 **Description**: Module-level helper equivalent to
@@ -218,16 +219,8 @@ success = process_mcp(
 ```python
 from mcp import register_module_tools
 
-tools = [
-    {
-        'name': 'gnn_parse',
-        'description': 'Parse GNN model files',
-        'handler': parse_gnn_file,
-        'input_schema': {...}
-    }
-]
-
-success = register_module_tools('gnn', tools)
+success = register_module_tools("gnn")
+all_tools = register_module_tools()
 ```
 
 ### Tool Discovery

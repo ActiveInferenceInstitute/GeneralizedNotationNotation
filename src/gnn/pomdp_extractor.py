@@ -372,7 +372,7 @@ class POMDPExtractor:
                         for prefix in ("A", "B", "C", "D", "E", "F", "G")
                     ):
                         # These are matrix/vector parameters, not state space variables
-                        pass
+                        continue
                     else:
                         variables["state_variables"].append(var_info)
 
@@ -495,13 +495,13 @@ class POMDPExtractor:
             try:
                 params[key] = int(clean_value)
                 continue
-            except ValueError:
-                pass
+            except ValueError as e:
+                self.logger.debug("Model parameter %s is not an int: %s", key, e)
             try:
                 params[key] = float(clean_value)
                 continue
-            except ValueError:
-                pass
+            except ValueError as e:
+                self.logger.debug("Model parameter %s is not a float: %s", key, e)
             if clean_value.lower() in {"true", "false"}:
                 params[key] = clean_value.lower() == "true"
             else:

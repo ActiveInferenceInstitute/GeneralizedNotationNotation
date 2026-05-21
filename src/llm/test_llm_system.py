@@ -24,8 +24,8 @@ try:
     load_dotenv = getattr(dotenv, "load_dotenv", None)
     if callable(load_dotenv):
         load_dotenv(Path(__file__).parent / ".env")
-except ModuleNotFoundError:
-    pass
+except ModuleNotFoundError as exc:
+    logging.getLogger(__name__).debug("python-dotenv unavailable: %s", exc)
 except Exception as exc:
     logger = logging.getLogger(__name__)
     logger.debug("dotenv loading skipped: %s", exc)

@@ -71,8 +71,6 @@ try:
     # - Render steps: from render.{framework} import {Framework}Renderer
     # - Execute steps: from execute.{framework} import {Framework}Runner
     # - Analysis steps: from analysis import run_analysis
-    pass
-
     DEPENDENCIES_AVAILABLE = True
     logger.debug("Successfully imported step-specific dependencies")
 

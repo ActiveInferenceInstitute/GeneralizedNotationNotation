@@ -65,7 +65,6 @@ def safe_savefig(
             plt.close()
         except (OSError, ValueError) as e:
             logger.debug(f"plt.close() failed (non-fatal): {e}")
-            pass
         return None
 
 

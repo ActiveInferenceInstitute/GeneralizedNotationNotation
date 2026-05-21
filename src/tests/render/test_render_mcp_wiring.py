@@ -1,7 +1,7 @@
 """
 MCP wiring tests for ``src/render/mcp.py``.
 
-Guards against signature / return-shape drift between the MCP tool shims and
+Guards against signature / return-shape drift between the MCP tool adapters and
 the underlying render module API. Every registered tool must return a dict
 with ``success`` and must not raise ``TypeError``.
 """
@@ -16,6 +16,7 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
+from render import get_supported_frameworks, render_gnn_spec
 from render import mcp as render_mcp
 
 
@@ -39,6 +40,13 @@ def registered_tools() -> Dict[str, Any]:
     mcp = _CapturingMCP()
     render_mcp.register_tools(mcp)
     return {name: func for name, func, _schema, _desc in mcp.tools}
+
+
+@pytest.fixture(scope="module")
+def registered_tool_schemas() -> Dict[str, Dict[str, Any]]:
+    mcp = _CapturingMCP()
+    render_mcp.register_tools(mcp)
+    return {name: schema for name, _func, schema, _desc in mcp.tools}
 
 
 SAMPLE_GNN = (
@@ -77,6 +85,35 @@ def test_list_render_frameworks_shape(registered_tools: Dict[str, Any]) -> None:
         )
         assert isinstance(entry["available"], bool)
         assert isinstance(entry["description"], str)
+
+
+def test_render_framework_inventory_is_canonical(
+    registered_tool_schemas: Dict[str, Dict[str, Any]],
+) -> None:
+    expected = get_supported_frameworks()
+    result = render_mcp.list_render_frameworks_mcp()
+    assert list(result["frameworks"]) == expected
+    assert {"stan", "bnlearn"}.issubset(expected)
+
+    schema_enum = registered_tool_schemas["render_gnn_to_format"]["properties"][
+        "framework"
+    ]["enum"]
+    assert schema_enum == expected
+
+
+def test_stan_render_target_writes_model(tmp_path: Path) -> None:
+    success, message, files = render_gnn_spec(
+        {
+            "model_name": "minimal_stan",
+            "variables": [{"name": "x", "dimensions": [2], "dtype": "real"}],
+            "connections": [],
+        },
+        "stan",
+        tmp_path,
+    )
+    assert success, message
+    assert files == [str(tmp_path / "minimal_stan_stan.stan")]
+    assert Path(files[0]).exists()
 
 
 def test_get_render_module_info_shape(registered_tools: Dict[str, Any]) -> None:

@@ -303,7 +303,10 @@ def main() -> None:
             except ValueError:
                 # 'server' command not found, maybe it's a direct script call.
                 # For simplicity, we assume the main CLI is used.
-                pass  # Don't add verbose if we can't find where to put it.
+                print(
+                    "Inspector: --verbose not injected because the server subcommand was not found.",
+                    file=sys.stderr,
+                )
         print(
             f"Inspector: Augmented server command for verbose: {' '.join(server_cmd_list)}",
             file=sys.stderr,

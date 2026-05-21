@@ -75,19 +75,13 @@ class ParseError(Exception):
 class ValidationError(Exception):
     """Exception for validation errors."""
 
-    pass
-
 
 class ValidationWarning(Warning):
     """Warning for validation issues."""
 
-    pass
-
 
 class ConversionError(Exception):
     """Exception for format conversion errors."""
-
-    pass
 
 
 # ================================
@@ -462,7 +456,6 @@ class ASTVisitor(ABC):
     @abstractmethod
     def visit(self, node: ASTNode) -> Any:
         """Visit an AST node."""
-        pass
 
     def visit_children(self, node: ASTNode) -> List[Any]:
         """Visit all children of a node."""
@@ -580,17 +573,14 @@ class BaseGNNParser(ABC):
     @abstractmethod
     def parse_file(self, file_path: str) -> ParseResult:
         """Parse a GNN file."""
-        pass
 
     @abstractmethod
     def parse_string(self, content: str) -> ParseResult:
         """Parse GNN content from string."""
-        pass
 
     @abstractmethod
     def get_supported_extensions(self) -> List[str]:
         """Get supported file extensions."""
-        pass
 
     def create_parse_error(
         self, message: str, line: Optional[int] = None, column: Optional[int] = None

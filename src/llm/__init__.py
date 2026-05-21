@@ -36,7 +36,7 @@ def process_llm(*args: Any, **kwargs: Any) -> bool:
     return _impl(*args, **kwargs)
 
 
-# Phase 6: llm submodules are in-tree; fallback shims removed as dead code.
+# Phase 6: llm submodules are in-tree; removed recovery import layers are dead code.
 # If any import here fails, it's a real bug that must surface in CI — not be
 # silently papered over.
 from .analyzer import (

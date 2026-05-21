@@ -16,7 +16,7 @@ from typing import cast
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent))
 
-from intelligent_analysis.processor import process_intelligent_analysis
+from intelligent_analysis import process_intelligent_analysis
 from utils.pipeline_template import create_standardized_pipeline_script
 
 # Create the runnable script using the standardized template

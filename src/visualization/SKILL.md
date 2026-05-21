@@ -66,7 +66,7 @@ Visualization uses a four-tier recovery system:
 uv sync
 
 # For additional viz backends
-uv sync --extra visualization
+uv sync
 ```
 
 ## Output

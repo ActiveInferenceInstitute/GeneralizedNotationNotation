@@ -13,8 +13,6 @@ logger = logging.getLogger(__name__)
 class ConversionError(Exception):
     """Raised when format conversion fails."""
 
-    pass
-
 
 class FormatConverter:
     """

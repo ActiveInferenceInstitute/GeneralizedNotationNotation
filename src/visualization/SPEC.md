@@ -21,7 +21,7 @@ Step-8 visualization: graphs, matrices, combined analysis. Prefers step-3 `{mode
 | `analysis/combined_analysis.py` | Combined and cross-file plots |
 | `ontology/visualizer.py` | Ontology table / annotations |
 | `compat/viz_compat.py` | Shared `plt` / `np` / `sns` for step 8 and analysis |
-| Root shims | `processor.py`, `matrix_visualizer.py`, `parser.py`, `network_visualizations.py`, `combined_analysis.py`, `ontology_visualizer.py`, `_viz_compat.py` |
+| Root entry points | `processor.py`, `matrix_visualizer.py`, `parser.py`, `network_visualizations.py`, `combined_analysis.py`, `ontology_visualizer.py`, `_viz_compat.py` |
 
 ## Visualization types
 

@@ -30,10 +30,10 @@ __all__: list[Any] = [
 # Canonical mapping: framework-name → (importable-module, install-hint).
 # Keep in sync with src/execute/executor.py framework runners.
 FRAMEWORK_IMPORT_CHECK: Dict[str, Tuple[str, str]] = {
-    "jax": ("jax", "uv sync --extra active-inference"),
-    "numpyro": ("numpyro", "uv sync --extra probabilistic-programming"),
-    "pytorch": ("torch", "uv sync --extra ml-ai"),
-    "discopy": ("discopy", "uv sync --extra graphs"),
+    "jax": ("jax", "uv sync"),
+    "numpyro": ("numpyro", "uv sync"),
+    "pytorch": ("torch", "uv sync"),
+    "discopy": ("discopy", "uv sync"),
     "bnlearn": ("bnlearn", "uv sync"),
     "pymdp": ("pymdp", "uv sync"),
 }

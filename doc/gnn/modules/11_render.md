@@ -153,16 +153,15 @@ success = process_render(
 
 **Location**: `src/render/processor.py`
 
-### Generator helpers (`generators.py`)
+### Canonical POMDP renderers
 
-`src/render/generators.py` also exports convenience generators used by parts of the module:
+For POMDP targets, Step 11 and `render_gnn_spec(...)` route to the same validated renderers:
 
-- `generate_pymdp_code(model_data: Dict, output_path: Optional[Union[str, Path]] = None) -> str`
-- `generate_rxinfer_code(model_data: Dict, output_path: Optional[Union[str, Path]] = None) -> str`
-- `generate_activeinference_jl_code(model_data: Dict, output_path: Optional[Union[str, Path]] = None) -> str`
-- `generate_discopy_code(model_data: Dict, output_path: Optional[Union[str, Path]] = None) -> str`
+- `render_gnn_to_pymdp(...)`
+- `render_gnn_to_rxinfer(...)`
+- `render_gnn_to_activeinference_jl(...)`
 
-These functions take a loosely-structured `model_data` dictionary and return code as a string (and optionally write it to `output_path`). The authoritative, pipeline-facing interface remains `process_render(...)`.
+The shared contract is `canonical_pomdp_v1`, with B stored as `(next_state, previous_state, action)`.
 
 #### `get_module_info() -> Dict[str, Any]`
 **Description**: Get information about the render module capabilities.
@@ -285,11 +284,11 @@ success, message, files = render_gnn_spec(
 
 ### Multi-Framework Rendering
 ```python
-from render.renderer import generate_pymdp_code, generate_rxinfer_code
+from render.renderer import render_gnn_spec
 
-# Generate code for multiple frameworks
-pymdp_code = generate_pymdp_code(model_data)
-rxinfer_code = generate_rxinfer_code(model_data)
+for framework in ["pymdp", "rxinfer", "activeinference_jl"]:
+    success, message, files = render_gnn_spec(model_data, framework, "output/11_render_output")
+    assert success, message
 ```
 
 ### Custom Framework Options

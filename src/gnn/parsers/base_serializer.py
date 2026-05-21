@@ -14,7 +14,6 @@ class BaseGNNSerializer(ABC):
     @abstractmethod
     def serialize(self, model: GNNInternalRepresentation) -> str:
         """Serialize the GNN model to string format."""
-        pass
 
     def serialize_to_file(
         self, model: GNNInternalRepresentation, file_path: str

@@ -76,7 +76,7 @@ providers = get_available_providers()  # e.g., ['ollama', 'openai']
 # LLM PyPI packages are core dependencies (uv sync)
 uv sync
 
-# Optional: uv sync --extra llm  (compatibility; same pins)
+# LLM client packages are core dependencies; use uv sync.
 # Install Ollama CLI separately for local inference: https://ollama.com
 ```
 

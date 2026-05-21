@@ -87,19 +87,16 @@ class BaseLLMProvider(ABC):
     @abstractmethod
     def provider_type(self) -> ProviderType:
         """Return the provider type enum."""
-        pass
 
     @property
     @abstractmethod
     def default_model(self) -> str:
         """Return the default model for this provider."""
-        pass
 
     @property
     @abstractmethod
     def available_models(self) -> List[str]:
         """Return list of available models for this provider."""
-        pass
 
     @abstractmethod
     def initialize(self) -> bool:
@@ -109,7 +106,6 @@ class BaseLLMProvider(ABC):
         Returns:
             True if initialization successful, False otherwise
         """
-        pass
 
     @abstractmethod
     def validate_config(self, config: LLMConfig) -> bool:
@@ -122,7 +118,6 @@ class BaseLLMProvider(ABC):
         Returns:
             True if configuration is valid, False otherwise
         """
-        pass
 
     @abstractmethod
     async def generate_response(
@@ -138,7 +133,6 @@ class BaseLLMProvider(ABC):
         Returns:
             Standardized LLM response
         """
-        pass
 
     @abstractmethod
     async def generate_stream(

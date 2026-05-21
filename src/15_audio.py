@@ -29,6 +29,7 @@ If you encounter errors:
   - Verify audio configuration and requirements
 """
 
+import argparse
 import sys
 from pathlib import Path
 from typing import cast
@@ -53,15 +54,16 @@ run_script = create_standardized_pipeline_script(
             "type": str,
             "default": "auto",
             "help": "Audio backend to use (auto, sapf, pedalboard)",
+            "flag": "--audio-backend",
         },
         "sonification": {
-            "type": bool,
+            "action": argparse.BooleanOptionalAction,
             "default": True,
             "help": "Generate sonification",
             "flag": "--sonification",
         },
         "full_analysis": {
-            "type": bool,
+            "action": "store_true",
             "default": False,
             "help": "Run full audio analysis",
             "flag": "--full-analysis",

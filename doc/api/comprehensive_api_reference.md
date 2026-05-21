@@ -281,56 +281,17 @@ render_result = renderer.execute(model, template_dir="./templates/")
 ### **🐍 PyMDP Integration**
 
 ```python
-from gnn.frameworks.pymdp import PyMDPConverter, PyMDPAgent
+from render.pymdp import render_gnn_to_pymdp
 
-class PyMDPConverter:
-    """Convert GNN models to PyMDP agents."""
-    
-    def __init__(self, optimization_level: str = 'standard'):
-        """
-        Initialize PyMDP converter.
-        
-        Args:
-            optimization_level: 'minimal', 'standard', 'aggressive'
-        """
-    
-    def convert_model(self, model: GNNModel) -> PyMDPAgent:
-        """
-        Convert GNN model to PyMDP agent.
-        
-        Args:
-            model: GNN model to convert
-            
-        Returns:
-            PyMDPAgent: Configured PyMDP agent
-        """
-    
-    def generate_code(self, model: GNNModel, 
-                     output_file: str = None) -> str:
-        """
-        Generate PyMDP Python code.
-        
-        Args:
-            model: GNN model to convert
-            output_file: Optional file to write code
-            
-        Returns:
-            str: Generated Python code
-        """
+# Generate executable PyMDP code from a validated structured POMDP spec.
+output_path = render_gnn_to_pymdp(
+    gnn_spec=model,
+    output_dir="./output/pymdp",
+    model_name=model.name,
+)
 
-# Usage example:
-converter = PyMDPConverter(optimization_level='aggressive')
-agent = converter.convert_model(model)
-
-# Generate executable code
-code = converter.generate_code(model, "generated_agent.py")
-
-# Run simulation
-observations = [0, 1, 0, 1, 1]
-for obs in observations:
-    beliefs = agent.infer_states([obs])
-    action = agent.sample_action()
-    print(f"Obs: {obs}, Belief: {beliefs[0]}, Action: {action[0]}")
+# Execute generated scripts through Step 12 / execute.process_execute.
+print(f"Generated PyMDP script: {output_path}")
 ```
 
 ### **🔢 RxInfer.jl Integration**
@@ -674,7 +635,7 @@ class ActiveInferenceWorkflow:
         self.pipeline = Pipeline()
         self.visualizer = Visualizer()
         self.llm_analyzer = LLMAnalyzer()
-        self.pymdp_converter = PyMDPConverter()
+        self.pymdp_renderer = render_gnn_to_pymdp
         self.monitor = PerformanceMonitor()
     
     def process_research_model(self, model_file: str) -> ResearchReport:
@@ -691,7 +652,7 @@ class ActiveInferenceWorkflow:
         )
         
         # 3. Generate PyMDP implementation
-        pymdp_agent = self.pymdp_converter.convert_model(model)
+        pymdp_script = self.pymdp_renderer(model, output_dir=f"./output/{model.name}/pymdp")
         
         # 4. Create visualizations
         network_fig = self.visualizer.create_network_diagram(model)

@@ -125,7 +125,7 @@ MyVariable[2,1,type=float]
 **Cause**: `graphviz` or `networkx` issues, or disconnected graph structure.
 **Solution**:
 
-- Ensure dependencies are installed: `uv pip install graphviz networkx` or `uv sync --extra visualization`.
+- Ensure dependencies are installed: `uv sync`; install system Graphviz separately when graph layout tools require it.
 - Verify `Connections` section in GNN file is not empty.
 
 ---

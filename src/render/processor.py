@@ -16,6 +16,13 @@ from datetime import datetime
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple, Union, cast
 
+from .framework_registry import (
+    get_available_renderers as _registry_get_available_renderers,
+)
+from .framework_registry import (
+    get_supported_frameworks as _registry_get_supported_frameworks,
+)
+
 if TYPE_CHECKING:
     from gnn.types import GNNInternalRepresentation
 
@@ -251,9 +258,12 @@ def process_render(
             pomdp_available = False
 
         # Find GNN files
+        from gnn.discovery import is_model_source_path
+
         gnn_files: list[Any] = []
         for pattern in ["*.md", "*.json", "*.yaml", "*.yml"]:
             gnn_files.extend(target_dir.glob(pattern))
+        gnn_files = [path for path in gnn_files if is_model_source_path(path)]
 
         if not gnn_files:
             logger.warning(f"No GNN files found in {target_dir}")
@@ -491,11 +501,9 @@ def _process_single_gnn_file_basic(
     try:
         # Import basic generators
         from .generators import (
-            generate_activeinference_jl_code,
             generate_bnlearn_code,
             generate_discopy_code,
             generate_pymdp_code,
-            generate_rxinfer_code,
         )
 
         # Create basic model data from filename
@@ -514,8 +522,6 @@ def _process_single_gnn_file_basic(
         # Generate code for each framework
         frameworks: dict[str, Any] = {
             "pymdp": (generate_pymdp_code, ".py"),
-            "rxinfer": (generate_rxinfer_code, ".jl"),
-            "activeinference_jl": (generate_activeinference_jl_code, ".jl"),
             "discopy": (generate_discopy_code, ".py"),
             "bnlearn": (generate_bnlearn_code, ".py"),
         }
@@ -624,7 +630,11 @@ The rendered files are organized in implementation-specific subfolders:
 │   ├── rxinfer/            # RxInfer.jl Julia simulations
 │   ├── activeinference_jl/ # ActiveInference.jl Julia simulations
 │   ├── jax/                # JAX Python simulations
-│   └── discopy/            # DisCoPy categorical diagrams
+│   ├── discopy/            # DisCoPy categorical diagrams
+│   ├── pytorch/            # PyTorch simulations
+│   ├── numpyro/            # NumPyro simulations
+│   ├── stan/               # Stan models
+│   └── bnlearn/            # Bayesian network scripts
 └── render_processing_summary.json  # Detailed results
 ```
 
@@ -680,12 +690,6 @@ def render_gnn_spec(
 
         # Generator-based renderers: target → (generator_name, file_suffix)
         _GENERATOR_TARGETS: dict[str, Any] = {
-            "pymdp": ("generate_pymdp_code", "_pymdp.py"),
-            "rxinfer": ("generate_rxinfer_code", "_rxinfer.jl"),
-            "activeinference_jl": (
-                "generate_activeinference_jl_code",
-                "_activeinference.jl",
-            ),
             "discopy": ("generate_discopy_code", "_discopy.py"),
             "bnlearn": ("generate_bnlearn_code", "_bnlearn.py"),
         }
@@ -704,6 +708,61 @@ def render_gnn_spec(
             }
         files: list[Any] = []
 
+        if target_lower in {
+            "pymdp",
+            "rxinfer",
+            "activeinference_jl",
+            "pytorch",
+            "numpyro",
+        }:
+            from .pomdp_contract import build_canonical_pomdp_spec
+
+            canonical_spec = build_canonical_pomdp_spec(gnn_spec_mapping)
+            if target_lower == "pymdp":
+                from .pymdp.pymdp_renderer import render_gnn_to_pymdp
+
+                output_file = output_dir / f"{model_name}_pymdp.py"
+                success, msg, _warnings = render_gnn_to_pymdp(
+                    canonical_spec, output_file, options
+                )
+                return (True, msg, [str(output_file)]) if success else (False, msg, [])
+            if target_lower == "rxinfer":
+                from .rxinfer.rxinfer_renderer import render_gnn_to_rxinfer
+
+                output_file = output_dir / f"{model_name}_rxinfer.jl"
+                success, msg, _warnings = render_gnn_to_rxinfer(
+                    canonical_spec, output_file, options
+                )
+                return (True, msg, [str(output_file)]) if success else (False, msg, [])
+
+            if target_lower == "activeinference_jl":
+                from .activeinference_jl.activeinference_renderer import (
+                    render_gnn_to_activeinference_jl,
+                )
+
+                output_file = output_dir / f"{model_name}_activeinference.jl"
+                success, msg, artifacts = render_gnn_to_activeinference_jl(
+                    canonical_spec, output_file, options
+                )
+                return (True, msg, artifacts) if success else (False, msg, [])
+
+            if target_lower == "pytorch":
+                from .pytorch.pytorch_renderer import render_gnn_to_pytorch
+
+                output_file = output_dir / f"{model_name}_pytorch.py"
+                success, msg, artifacts = render_gnn_to_pytorch(
+                    canonical_spec, output_file, options
+                )
+                return (True, msg, artifacts) if success else (False, msg, [])
+
+            from .numpyro.numpyro_renderer import render_gnn_to_numpyro
+
+            output_file = output_dir / f"{model_name}_numpyro.py"
+            success, msg, artifacts = render_gnn_to_numpyro(
+                canonical_spec, output_file, options
+            )
+            return (True, msg, artifacts) if success else (False, msg, [])
+
         if target_lower in _GENERATOR_TARGETS:
             gen_name, suffix = _GENERATOR_TARGETS[target_lower]
             from . import generators
@@ -714,6 +773,18 @@ def render_gnn_spec(
             if code:
                 output_file.write_text(code)
                 files.append(str(output_file))
+
+        elif target_lower == "stan":
+            from .stan import render_stan
+
+            code = render_stan(
+                list(gnn_spec_mapping.get("variables", [])),
+                list(gnn_spec_mapping.get("connections", [])),
+                model_name=model_name,
+            )
+            output_file = output_dir / f"{model_name}_stan.stan"
+            output_file.write_text(code)
+            files.append(str(output_file))
 
         elif target_lower == "rxinfer_toml":
             try:
@@ -774,21 +845,8 @@ def get_module_info() -> Dict[str, Any]:
         "name": "Render Module",
         "version": _version,
         "description": "POMDP-aware code generation for GNN specifications",
-        "supported_targets": [
-            "pymdp",
-            "rxinfer",
-            "activeinference_jl",
-            "jax",
-            "discopy",
-            "bnlearn",
-        ],
-        "available_targets": [
-            "pymdp",
-            "rxinfer",
-            "activeinference_jl",
-            "discopy",
-            "bnlearn",
-        ],
+        "supported_targets": _registry_get_supported_frameworks(),
+        "available_targets": _registry_get_supported_frameworks(),
         "features": [
             "POMDP state space extraction",
             "Modular framework injection",
@@ -798,98 +856,18 @@ def get_module_info() -> Dict[str, Any]:
             "ActiveInference.jl code generation",
             "JAX code generation",
             "DisCoPy categorical diagram generation",
+            "PyTorch code generation",
+            "NumPyro code generation",
+            "Stan model generation",
             "bnlearn bayesian network generation",
             "Structured documentation generation",
         ],
-        "supported_formats": ["python", "julia", "python_script"],
+        "supported_formats": ["python", "julia", "stan", "python_script"],
         "processing_modes": ["basic", "pomdp_aware"],
     }
 
 
-AVAILABLE_RENDERERS: Dict[str, Dict[str, Any]] = {
-    "pymdp": {
-        "name": "PyMDP",
-        "description": "Python Markov Decision Process library for Active Inference",
-        "language": "Python",
-        "file_extension": ".py",
-        "supported_features": [
-            "POMDP",
-            "MDP",
-            "Belief State Updates",
-            "Active Inference",
-        ],
-        "function": "render_gnn_to_pymdp",
-        "output_format": "python",
-        "pomdp_compatible": True,
-    },
-    "rxinfer": {
-        "name": "RxInfer.jl",
-        "description": "Julia reactive message passing inference engine",
-        "language": "Julia",
-        "file_extension": ".jl",
-        "supported_features": [
-            "Message Passing",
-            "Probabilistic Programming",
-            "Bayesian Inference",
-        ],
-        "function": "render_gnn_to_rxinfer",
-        "output_format": "julia",
-        "pomdp_compatible": True,
-    },
-    "activeinference_jl": {
-        "name": "ActiveInference.jl",
-        "description": "Julia Active Inference library",
-        "language": "Julia",
-        "file_extension": ".jl",
-        "supported_features": ["Free Energy Minimization", "Active Inference", "POMDP"],
-        "function": "render_gnn_to_activeinference_jl",
-        "output_format": "julia",
-        "pomdp_compatible": True,
-    },
-    "jax": {
-        "name": "JAX",
-        "description": "High-performance numerical computing with automatic differentiation",
-        "language": "Python",
-        "file_extension": ".py",
-        "supported_features": [
-            "GPU Acceleration",
-            "Automatic Differentiation",
-            "JIT Compilation",
-        ],
-        "function": "render_gnn_to_jax",
-        "output_format": "python",
-        "pomdp_compatible": True,
-    },
-    "discopy": {
-        "name": "DisCoPy",
-        "description": "Python library for computing with string diagrams",
-        "language": "Python",
-        "file_extension": ".py",
-        "supported_features": [
-            "Categorical Diagrams",
-            "String Diagrams",
-            "Compositional Models",
-        ],
-        "function": "render_gnn_to_discopy",
-        "output_format": "python",
-        "pomdp_compatible": True,
-    },
-    "bnlearn": {
-        "name": "bnlearn",
-        "description": "Python package for learning the graphical structure of Bayesian networks",
-        "language": "Python",
-        "file_extension": ".py",
-        "supported_features": [
-            "Structure Learning",
-            "Parameter Learning",
-            "Exact Inference",
-            "Causal Discovery",
-        ],
-        "function": "render_gnn_to_bnlearn",
-        "output_format": "python",
-        "pomdp_compatible": True,
-    },
-}
+AVAILABLE_RENDERERS: Dict[str, Dict[str, Any]] = _registry_get_available_renderers()
 
 
 def get_available_renderers() -> Dict[str, Dict[str, Any]]:

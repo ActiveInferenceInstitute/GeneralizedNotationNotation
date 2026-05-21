@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Set, cast
 
 from advanced_visualization._shared import normalize_connection_format
+from gnn.discovery import is_model_source_path
 from utils.logging.logging_utils import (
     log_step_error,
     log_step_start,
@@ -61,7 +62,9 @@ def process_visualization(
         results_dir = output_dir
         results_dir.mkdir(parents=True, exist_ok=True)
 
-        gnn_files = list(target_dir.glob("*.md"))
+        gnn_files = [
+            path for path in target_dir.glob("*.md") if is_model_source_path(path)
+        ]
         if not gnn_files:
             gnn_files = list(target_dir.glob("*.gnn"))
         if not gnn_files:

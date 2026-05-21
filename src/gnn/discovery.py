@@ -14,6 +14,26 @@ from typing import Any, Dict, List, Optional
 
 logger = logging.getLogger(__name__)
 
+NON_MODEL_MARKDOWN_FILENAMES = {
+    "agents.md",
+    "changelog.md",
+    "contributing.md",
+    "license.md",
+    "readme.md",
+}
+NON_MODEL_MARKDOWN_SUFFIXES = (
+    ".example.md",
+    ".template.md",
+)
+
+
+def is_model_source_path(file_path: Path) -> bool:
+    """Return True when a path is a maintained GNN model source."""
+    name = file_path.name.lower()
+    if name in NON_MODEL_MARKDOWN_FILENAMES:
+        return False
+    return not any(name.endswith(suffix) for suffix in NON_MODEL_MARKDOWN_SUFFIXES)
+
 
 @dataclass
 class DiscoveryResult:
@@ -79,7 +99,9 @@ class FileDiscoveryStrategy:
 
         # Content analysis for GNN indicators
         for file_path in all_files:
-            if self._analyze_file_content(file_path):
+            if is_model_source_path(file_path) and self._analyze_file_content(
+                file_path
+            ):
                 potential_gnn_files.append(file_path)
 
         discovery_time = time.time() - start_time

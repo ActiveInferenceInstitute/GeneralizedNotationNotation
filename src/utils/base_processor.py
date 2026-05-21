@@ -102,7 +102,6 @@ class BaseProcessor(ABC):
         Returns:
             True if processing succeeded, False otherwise
         """
-        pass
 
     def find_files(
         self,

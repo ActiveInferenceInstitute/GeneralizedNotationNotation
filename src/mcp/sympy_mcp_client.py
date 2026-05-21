@@ -26,13 +26,9 @@ logger = logging.getLogger(__name__)
 class SymPyMCPError(Exception):
     """Base exception for SymPy MCP operations"""
 
-    pass
-
 
 class SymPyMCPConnectionError(SymPyMCPError):
     """Exception raised when connection to SymPy MCP server fails"""
-
-    pass
 
 
 class SymPyMCPClient:
@@ -465,8 +461,6 @@ class GNNSymPyIntegration:
                     float(x) if isinstance(x, (int, float)) else 0 for x in row
                 )
                 stochasticity_details["row_sums"].append(row_sum)
-                if abs(row_sum - 1.0) > 0.01:  # Allow small numerical tolerance
-                    pass
 
             # Also check column sums for column-stochastic matrices
             if matrix_data and matrix_data[0]:
