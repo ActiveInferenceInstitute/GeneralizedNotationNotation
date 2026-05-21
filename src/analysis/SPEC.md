@@ -15,6 +15,8 @@ Post-simulation analysis and metrics for GNN model execution.
 - Action analysis
 - Free energy plots
 - Observation analysis
+- GridWorld GIF animation and manifest generation for current PyMDP,
+  RxInfer.jl, and ActiveInference.jl schemas
 
 ## Key Exports
 ```python

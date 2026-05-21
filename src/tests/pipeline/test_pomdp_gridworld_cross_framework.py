@@ -210,7 +210,38 @@ def test_gridworld_render_execute_analyze_visualize_strict(tmp_path: Path) -> No
         analysis_out / "cross_framework" / "cross_framework_comparison.png"
     )
     assert cross_framework.exists()
+    gifs = list(analysis_out.rglob("*.gif"))
+    assert gifs, "Step 16 should create GridWorld GIF animations"
+    cross_framework_gif = (
+        analysis_out
+        / "cross_framework"
+        / "gridworld_animations"
+        / "gridworld_cross_framework_trajectory.gif"
+    )
+    assert cross_framework_gif.exists()
+    assert cross_framework_gif.stat().st_size > 0
     for framework in FRAMEWORKS:
         assert list((analysis_out / framework).glob("*.png")), (
             f"Step 16 should create {framework} visualizations"
         )
+        framework_gifs = list(
+            (analysis_out / "cross_framework" / "gridworld_animations").glob(
+                f"*_{framework}_*.gif"
+            )
+        )
+        assert len(framework_gifs) >= 2, (
+            f"Step 16 should create belief and trajectory GIFs for {framework}"
+        )
+        assert all(path.stat().st_size > 0 for path in framework_gifs)
+
+    manifest_path = (
+        analysis_out / "cross_framework" / "gridworld_analysis_manifest.json"
+    )
+    assert manifest_path.exists()
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    assert manifest["schema_version"] == "gridworld_analysis_manifest_v1"
+    assert sorted(manifest["frameworks"]) == sorted(FRAMEWORKS)
+    assert manifest["matrix_provenance_equal"] is True
+    assert len(manifest["outputs"]["gif"]) >= 7
+    assert manifest["outputs"]["png"]
+    assert manifest["outputs"]["statistics"]

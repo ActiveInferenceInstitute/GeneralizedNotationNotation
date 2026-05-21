@@ -603,6 +603,12 @@ class ArgumentParser:
                 action="store_true",
                 help_text="Include advanced statistical analysis",
             ),
+            "generate_animations": ArgumentDefinition(
+                flag="--no-animations",
+                action="store_false",
+                default=True,
+                help_text="Disable Step 16 animation artifacts",
+            ),
         }
     )
 
@@ -721,6 +727,7 @@ class ArgumentParser:
                 "recursive",
                 "verbose",
                 "advanced_stats",
+                "generate_animations",
             ],
             "17_integration.py": ["target_dir", "output_dir", "recursive", "verbose"],
             "18_security.py": ["target_dir", "output_dir", "recursive", "verbose"],

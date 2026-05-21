@@ -33,6 +33,17 @@ CURRENT_VISUALIZATION_SCHEMAS = {
     "activeinference_jl_simulation_v1",
 }
 
+VISUALIZATION_FRAMEWORK_DIRS = {
+    "pymdp",
+    "rxinfer",
+    "activeinference_jl",
+    "jax",
+    "discopy",
+    "pytorch",
+    "numpyro",
+    "bnlearn",
+}
+
 
 def _current_schema_visualization_data(data: Dict[str, Any]) -> Dict[str, Any]:
     if data.get("schema_version") not in CURRENT_VISUALIZATION_SCHEMAS:
@@ -129,6 +140,190 @@ def animate_belief_evolution(
     return str(output_path)
 
 
+def _state_count_from_payload(payload: Dict[str, Any]) -> int:
+    model_parameters = payload.get("model_parameters", {})
+    if isinstance(model_parameters, dict):
+        for key in ("num_states", "num_hidden_states"):
+            value = model_parameters.get(key)
+            if isinstance(value, int) and value > 0:
+                return value
+
+        shape = model_parameters.get("B_shape") or model_parameters.get("A_shape")
+        if isinstance(shape, list) and shape:
+            first = shape[0]
+            if isinstance(first, int) and first > 0:
+                return first
+
+    beliefs = payload.get("beliefs") or payload.get("beliefs_by_factor", {}).get(
+        "joint_state", []
+    )
+    if isinstance(beliefs, list) and beliefs and isinstance(beliefs[0], list):
+        return len(beliefs[0])
+    return 0
+
+
+def _is_gridworld_payload(payload: Dict[str, Any]) -> bool:
+    if payload.get("schema_version") not in CURRENT_VISUALIZATION_SCHEMAS:
+        return False
+
+    model_parameters = payload.get("model_parameters", {})
+    b_shape = (
+        model_parameters.get("B_shape") if isinstance(model_parameters, dict) else None
+    )
+    if b_shape == [9, 9, 5]:
+        return True
+
+    state_count = _state_count_from_payload(payload)
+    actions = payload.get("actions") or payload.get(
+        "actions_by_control_factor", {}
+    ).get("joint_action", [])
+    return state_count == 9 and isinstance(actions, list) and len(set(actions)) <= 5
+
+
+def _series_from_payload(
+    payload: Dict[str, Any],
+    current_data: Dict[str, Any],
+    plain_key: str,
+    grouped_key: str,
+    grouped_name: str,
+) -> list[Any]:
+    value = payload.get(plain_key)
+    if isinstance(value, list) and value:
+        return value
+    grouped = payload.get(grouped_key, {})
+    if isinstance(grouped, dict):
+        grouped_value = grouped.get(grouped_name)
+        if isinstance(grouped_value, list) and grouped_value:
+            return grouped_value
+    current_value = current_data.get(plain_key)
+    if isinstance(current_value, list):
+        return current_value
+    return []
+
+
+def _belief_map_states(beliefs: list[Any]) -> list[int]:
+    states: list[int] = []
+    for belief in beliefs:
+        if not isinstance(belief, list) or not belief:
+            continue
+        try:
+            states.append(int(np.argmax(np.asarray(belief, dtype=float))))
+        except (TypeError, ValueError):
+            continue
+    return states
+
+
+def _gridworld_state_sequence(
+    payload: Dict[str, Any], current_data: Dict[str, Any]
+) -> list[int]:
+    hidden_states = _series_from_payload(
+        payload,
+        current_data,
+        "hidden_states",
+        "hidden_states_by_factor",
+        "joint_state",
+    )
+    states: list[int] = []
+    for state in hidden_states:
+        if isinstance(state, list) and state:
+            state = state[0]
+        try:
+            states.append(int(state))
+        except (TypeError, ValueError):
+            continue
+
+    beliefs = _series_from_payload(
+        payload, current_data, "beliefs", "beliefs_by_factor", "joint_state"
+    )
+    if not states:
+        states = _belief_map_states(beliefs)
+
+    step_counts = [
+        len(series)
+        for series in [
+            beliefs,
+            _series_from_payload(
+                payload,
+                current_data,
+                "actions",
+                "actions_by_control_factor",
+                "joint_action",
+            ),
+            _series_from_payload(
+                payload,
+                current_data,
+                "observations",
+                "observations_by_modality",
+                "joint_observation",
+            ),
+        ]
+        if series
+    ]
+    max_steps = max(step_counts) if step_counts else len(states)
+    return states[:max_steps]
+
+
+def _grid_side_for_states(state_count: int) -> int:
+    side = int(np.sqrt(state_count))
+    if side * side != state_count:
+        raise ValueError(
+            f"GridWorld animation requires square state count: {state_count}"
+        )
+    return side
+
+
+def animate_gridworld_trajectory(
+    states: list[int],
+    output_path: Path,
+    title: str,
+    state_count: int = 9,
+    fps: int = 4,
+) -> str:
+    """Create a GIF showing a single GridWorld state trajectory."""
+    if not states:
+        raise ValueError("No states provided for GridWorld animation")
+
+    side = _grid_side_for_states(state_count)
+    fig, ax = plt.subplots(figsize=(4.5, 4.5))
+    grid = np.zeros((side, side), dtype=float)
+    image = ax.imshow(grid, cmap="Blues", vmin=0.0, vmax=1.0)
+    (path_line,) = ax.plot([], [], color="#F39C12", linewidth=2, alpha=0.8)
+    (marker,) = ax.plot([], [], "o", color="#E74C3C", markersize=12)
+    ax.plot([side - 1], [side - 1], "*", color="#27AE60", markersize=16)
+
+    ax.set_xticks(range(side))
+    ax.set_yticks(range(side))
+    ax.set_xticks(np.arange(-0.5, side, 1), minor=True)
+    ax.set_yticks(np.arange(-0.5, side, 1), minor=True)
+    ax.grid(which="minor", color="black", linewidth=1)
+    ax.tick_params(which="minor", bottom=False, left=False)
+    ax.set_xlim(-0.5, side - 0.5)
+    ax.set_ylim(side - 0.5, -0.5)
+
+    def _coords(sequence: list[int]) -> tuple[list[int], list[int]]:
+        cols = [int(state) % side for state in sequence]
+        rows = [int(state) // side for state in sequence]
+        return cols, rows
+
+    def update(frame: int) -> list[Any]:
+        current_states = states[: frame + 1]
+        current_state = max(0, min(state_count - 1, current_states[-1]))
+        grid.fill(0.0)
+        grid[current_state // side, current_state % side] = 1.0
+        image.set_data(grid)
+        cols, rows = _coords(current_states)
+        path_line.set_data(cols, rows)
+        marker.set_data([cols[-1]], [rows[-1]])
+        ax.set_title(f"{title}\nStep {frame + 1}: state {current_state}")
+        return [image, path_line, marker]
+
+    animation = FuncAnimation(fig, update, frames=len(states), blit=False)
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    animation.save(output_path, writer=PillowWriter(fps=fps))
+    plt.close(fig)
+    return str(output_path)
+
+
 def _normalize_framework_name(framework: str) -> str:
     """
     Normalize framework names to canonical form.
@@ -155,12 +350,319 @@ def _normalize_framework_name(framework: str) -> str:
     return fw_lower
 
 
+def _model_name_from_path(path: Path) -> str:
+    for ancestor in path.parents:
+        candidate = ancestor.name
+        if (
+            candidate
+            and candidate not in VISUALIZATION_FRAMEWORK_DIRS
+            and candidate
+            not in {
+                "simulation_data",
+                "execution_logs",
+                "individual_outputs",
+                "12_execute_output",
+                "output",
+            }
+        ):
+            return candidate
+    return "unknown"
+
+
+def _framework_from_path_or_payload(path: Path, payload: Dict[str, Any]) -> str:
+    for part in path.parts:
+        if part in VISUALIZATION_FRAMEWORK_DIRS:
+            return _normalize_framework_name(part)
+    return _normalize_framework_name(str(payload.get("framework", "unknown")))
+
+
+def _gridworld_animation_items(
+    framework_data: Dict[str, Dict[str, Any]],
+) -> list[Dict[str, Any]]:
+    items: list[Dict[str, Any]] = []
+    for data in framework_data.values():
+        payload = data.get("raw_simulation_data") or data.get("simulation_data", {})
+        if not isinstance(payload, dict) or not _is_gridworld_payload(payload):
+            continue
+
+        current_data = data.get("simulation_data", {})
+        if not isinstance(current_data, dict):
+            current_data = _current_schema_visualization_data(payload)
+        state_count = _state_count_from_payload(payload)
+        states = _gridworld_state_sequence(payload, current_data)
+        beliefs = _series_from_payload(
+            payload, current_data, "beliefs", "beliefs_by_factor", "joint_state"
+        )
+        framework = str(data.get("framework", "unknown"))
+        model_name = str(data.get("model_name", "unknown"))
+        items.append(
+            {
+                "framework": framework,
+                "model_name": model_name,
+                "schema_version": payload.get("schema_version"),
+                "state_count": state_count,
+                "states": states,
+                "beliefs": beliefs,
+                "source_file": data.get("source_file"),
+                "matrix_provenance": payload.get("matrix_provenance", {}),
+            }
+        )
+
+    framework_order = {"pymdp": 0, "rxinfer": 1, "activeinference_jl": 2}
+    return sorted(
+        items,
+        key=lambda item: (
+            framework_order.get(str(item.get("framework")), 99),
+            str(item.get("model_name")),
+        ),
+    )
+
+
+def animate_cross_framework_gridworld_trajectories(
+    items: list[Dict[str, Any]],
+    output_path: Path,
+    title: str = "GridWorld Cross-Framework Trajectories",
+    fps: int = 4,
+) -> str:
+    """Create one GIF comparing GridWorld trajectories across frameworks."""
+    usable_items = [item for item in items if item.get("states")]
+    if len(usable_items) < 2:
+        raise ValueError("Need at least two framework trajectories")
+
+    state_count = int(usable_items[0].get("state_count") or 9)
+    side = _grid_side_for_states(state_count)
+    frame_count = max(len(item["states"]) for item in usable_items)
+
+    fig, axes = plt.subplots(
+        1,
+        len(usable_items),
+        figsize=(4.2 * len(usable_items), 4.8),
+        squeeze=False,
+    )
+    flat_axes = list(axes[0])
+    artists: list[dict[str, Any]] = []
+    for ax, item in zip(flat_axes, usable_items):
+        grid = np.zeros((side, side), dtype=float)
+        image = ax.imshow(grid, cmap="Blues", vmin=0.0, vmax=1.0)
+        (path_line,) = ax.plot([], [], color="#F39C12", linewidth=2, alpha=0.8)
+        (marker,) = ax.plot([], [], "o", color="#E74C3C", markersize=12)
+        ax.plot([side - 1], [side - 1], "*", color="#27AE60", markersize=16)
+        ax.set_title(str(item.get("framework", "unknown")))
+        ax.set_xticks(range(side))
+        ax.set_yticks(range(side))
+        ax.set_xticks(np.arange(-0.5, side, 1), minor=True)
+        ax.set_yticks(np.arange(-0.5, side, 1), minor=True)
+        ax.grid(which="minor", color="black", linewidth=1)
+        ax.tick_params(which="minor", bottom=False, left=False)
+        ax.set_xlim(-0.5, side - 0.5)
+        ax.set_ylim(side - 0.5, -0.5)
+        artists.append(
+            {
+                "item": item,
+                "grid": grid,
+                "image": image,
+                "path": path_line,
+                "marker": marker,
+            }
+        )
+
+    fig.suptitle(title)
+
+    def _coords(sequence: list[int]) -> tuple[list[int], list[int]]:
+        cols = [int(state) % side for state in sequence]
+        rows = [int(state) // side for state in sequence]
+        return cols, rows
+
+    def update(frame: int) -> list[Any]:
+        changed: list[Any] = []
+        for entry in artists:
+            states = entry["item"]["states"]
+            frame_index = min(frame, len(states) - 1)
+            current_states = states[: frame_index + 1]
+            current_state = max(0, min(state_count - 1, int(current_states[-1])))
+            entry["grid"].fill(0.0)
+            entry["grid"][current_state // side, current_state % side] = 1.0
+            entry["image"].set_data(entry["grid"])
+            cols, rows = _coords(current_states)
+            entry["path"].set_data(cols, rows)
+            entry["marker"].set_data([cols[-1]], [rows[-1]])
+            changed.extend([entry["image"], entry["path"], entry["marker"]])
+        fig.suptitle(f"{title} - Step {frame + 1}")
+        return changed
+
+    animation = FuncAnimation(fig, update, frames=frame_count, blit=False)
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    animation.save(output_path, writer=PillowWriter(fps=fps))
+    plt.close(fig)
+    return str(output_path)
+
+
+def generate_gridworld_animation_suite(
+    framework_data: Dict[str, Dict[str, Any]],
+    output_dir: Path,
+    logger_instance: Optional[logging.Logger] = None,
+) -> List[str]:
+    """Generate per-framework and cross-framework GridWorld GIFs."""
+    log = logger_instance or logger
+    generated_files: List[str] = []
+    items = _gridworld_animation_items(framework_data)
+    if not items:
+        log.debug("No current GridWorld schemas found for animation")
+        return generated_files
+
+    animation_dir = output_dir / "gridworld_animations"
+    animation_dir.mkdir(parents=True, exist_ok=True)
+    for item in items:
+        framework = str(item["framework"])
+        model_name = str(item["model_name"])
+        state_count = int(item["state_count"] or 9)
+        beliefs = item.get("beliefs", [])
+        states = item.get("states", [])
+
+        if beliefs:
+            belief_file = (
+                animation_dir / f"{model_name}_{framework}_belief_evolution.gif"
+            )
+            try:
+                generated_files.append(
+                    animate_belief_evolution(
+                        beliefs,
+                        belief_file,
+                        title=f"Belief Evolution - {model_name} ({framework})",
+                    )
+                )
+                log.info(f"Generated GridWorld belief GIF: {belief_file.name}")
+            except Exception as e:
+                log.warning(f"Failed to generate belief GIF for {framework}: {e}")
+
+        if states:
+            trajectory_file = (
+                animation_dir / f"{model_name}_{framework}_state_trajectory.gif"
+            )
+            try:
+                generated_files.append(
+                    animate_gridworld_trajectory(
+                        states,
+                        trajectory_file,
+                        title=f"State Trajectory - {model_name} ({framework})",
+                        state_count=state_count,
+                    )
+                )
+                log.info(f"Generated GridWorld trajectory GIF: {trajectory_file.name}")
+            except Exception as e:
+                log.warning(f"Failed to generate trajectory GIF for {framework}: {e}")
+
+    try:
+        cross_file = animation_dir / "gridworld_cross_framework_trajectory.gif"
+        generated_files.append(
+            animate_cross_framework_gridworld_trajectories(items, cross_file)
+        )
+        log.info(f"Generated GridWorld cross-framework GIF: {cross_file.name}")
+    except Exception as e:
+        log.warning(f"Failed to generate cross-framework GridWorld GIF: {e}")
+
+    return generated_files
+
+
+def _relative_or_absolute(path: Path, base: Path) -> str:
+    try:
+        return str(path.relative_to(base))
+    except ValueError:
+        return str(path)
+
+
+def write_gridworld_analysis_manifest(
+    execution_dir: Path,
+    analysis_dir: Path,
+    allowed_frameworks: Optional[set[str]] = None,
+    allowed_model_names: Optional[set[str]] = None,
+    logger_instance: Optional[logging.Logger] = None,
+) -> Optional[str]:
+    """Write a manifest for current GridWorld logs, statistics, PNGs, and GIFs."""
+    log = logger_instance or logger
+    source_results: list[dict[str, Any]] = []
+    provenances: list[Dict[str, Any]] = []
+
+    for sim_file in sorted(execution_dir.rglob("*simulation_results.json")):
+        try:
+            payload = json.loads(sim_file.read_text(encoding="utf-8"))
+        except (json.JSONDecodeError, OSError) as e:
+            log.debug(f"Skipping unreadable simulation result {sim_file}: {e}")
+            continue
+        if not isinstance(payload, dict) or not _is_gridworld_payload(payload):
+            continue
+
+        framework = _framework_from_path_or_payload(sim_file, payload)
+        model_name = _model_name_from_path(sim_file)
+        if allowed_frameworks and framework not in allowed_frameworks:
+            continue
+        if allowed_model_names and model_name not in allowed_model_names:
+            continue
+
+        matrix_provenance = payload.get("matrix_provenance", {})
+        if isinstance(matrix_provenance, dict):
+            provenances.append(matrix_provenance)
+        source_results.append(
+            {
+                "framework": framework,
+                "model_name": model_name,
+                "schema_version": payload.get("schema_version"),
+                "source_path": str(sim_file),
+                "num_timesteps": payload.get("num_timesteps"),
+                "validation": payload.get("validation", {}),
+            }
+        )
+
+    if not source_results:
+        return None
+
+    manifest_path = (
+        analysis_dir / "cross_framework" / "gridworld_analysis_manifest.json"
+    )
+    png_outputs = sorted(
+        _relative_or_absolute(path, analysis_dir)
+        for path in analysis_dir.rglob("*.png")
+    )
+    gif_outputs = sorted(
+        _relative_or_absolute(path, analysis_dir)
+        for path in analysis_dir.rglob("*.gif")
+    )
+    statistics_outputs = sorted(
+        _relative_or_absolute(path, analysis_dir)
+        for path in analysis_dir.rglob("*")
+        if path.is_file() and path.suffix in {".json", ".md"} and path != manifest_path
+    )
+
+    first_provenance = provenances[0] if provenances else {}
+    matrix_provenance_equal = all(
+        provenance == first_provenance for provenance in provenances
+    )
+    manifest = {
+        "schema_version": "gridworld_analysis_manifest_v1",
+        "model_names": sorted({entry["model_name"] for entry in source_results}),
+        "frameworks": sorted({entry["framework"] for entry in source_results}),
+        "source_results": source_results,
+        "matrix_provenance_equal": matrix_provenance_equal,
+        "outputs": {
+            "statistics": statistics_outputs,
+            "png": png_outputs,
+            "gif": gif_outputs,
+        },
+    }
+
+    manifest_path.parent.mkdir(parents=True, exist_ok=True)
+    manifest_path.write_text(json.dumps(manifest, indent=2), encoding="utf-8")
+    log.info(f"Generated GridWorld analysis manifest: {manifest_path}")
+    return str(manifest_path)
+
+
 def visualize_all_framework_outputs(
     execution_dir: Path,
     output_dir: Path,
     logger_instance: Optional[logging.Logger] = None,
     allowed_frameworks: Optional[set[str]] = None,
     allowed_model_names: Optional[set[str]] = None,
+    generate_animations: bool = True,
 ) -> List[str]:
     """
     Generate comprehensive visualizations for all raw execution outputs.
@@ -305,10 +807,14 @@ def visualize_all_framework_outputs(
                     "framework": framework,
                     "model_name": model_name,
                     "simulation_data": data,
+                    "raw_simulation_data": data,
+                    "source_file": str(sim_file),
                 }
             else:
                 # Merge simulation data into existing entry
                 framework_data[key]["simulation_data"] = data
+                framework_data[key]["raw_simulation_data"] = data
+                framework_data[key]["source_file"] = str(sim_file)
 
         except Exception as e:
             log.warning(f"Failed to load simulation file {sim_file}: {e}")
@@ -556,6 +1062,15 @@ def visualize_all_framework_outputs(
                     generated_files.extend(files)
         except Exception as e:
             log.warning(f"Failed to generate framework radar: {e}")
+
+        if generate_animations:
+            try:
+                animation_files = generate_gridworld_animation_suite(
+                    framework_data, cross_fw_dir, log
+                )
+                generated_files.extend(animation_files)
+            except Exception as e:
+                log.warning(f"Failed to generate GridWorld animations: {e}")
 
     log.info(f"Generated {len(generated_files)} visualization files")
     return generated_files

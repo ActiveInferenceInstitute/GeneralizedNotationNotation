@@ -48,7 +48,13 @@ run_script = create_standardized_pipeline_script(
             "flag": "--advanced-stats",
             "action": "store_true",
             "help": "Enable advanced statistical distributions and extended visualizations",
-        }
+        },
+        "generate_animations": {
+            "flag": "--no-animations",
+            "action": "store_false",
+            "default": True,
+            "help": "Disable Step 16 GIF animation artifacts",
+        },
     },
 )
 

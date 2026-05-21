@@ -236,6 +236,12 @@ def process_analysis(
             "model_comparisons": [],
             "visualization_files": [],
         }
+        generate_animations_arg = kwargs.get("generate_animations")
+        generate_animations = (
+            bool(kwargs.get("no_animations", True))
+            if generate_animations_arg is None
+            else bool(generate_animations_arg)
+        )
 
         # Resolve execution results directory once at the top so all branches can reference it
         try:
@@ -528,6 +534,7 @@ def process_analysis(
                     logger,
                     allowed_frameworks=allowed_frameworks,
                     allowed_model_names=allowed_model_names,
+                    generate_animations=generate_animations,
                 )
                 results["comprehensive_visualizations"] = comprehensive_viz
                 results["visualization_files"].extend(comprehensive_viz)
@@ -653,6 +660,27 @@ def process_analysis(
                 import traceback
 
                 logger.debug(traceback.format_exc())
+
+            if generate_animations:
+                try:
+                    from .visualizations import write_gridworld_analysis_manifest
+
+                    manifest_file = write_gridworld_analysis_manifest(
+                        execution_dir,
+                        results_dir,
+                        allowed_frameworks=allowed_frameworks,
+                        allowed_model_names=allowed_model_names,
+                        logger_instance=logger,
+                    )
+                    if manifest_file:
+                        results["gridworld_analysis_manifest"] = manifest_file
+                except Exception as e:
+                    logger.warning(
+                        f"GridWorld analysis manifest generation failed: {e}"
+                    )
+                    import traceback
+
+                    logger.debug(traceback.format_exc())
 
         # Save detailed results
         results_file = results_dir / "analysis_results.json"

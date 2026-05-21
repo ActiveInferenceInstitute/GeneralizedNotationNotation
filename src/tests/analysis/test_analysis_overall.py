@@ -1,10 +1,98 @@
 import json
 import logging
+from pathlib import Path
 from typing import Any
 
 import pytest
 
 from analysis.processor import process_analysis
+
+
+def _gridworld_payload(schema_version: str, framework: str) -> dict[str, Any]:
+    states = [0, 1, 2, 5, 8]
+    beliefs = [
+        [1.0 if index == state else 0.0 for index in range(9)] for state in states
+    ]
+    return {
+        "schema_version": schema_version,
+        "success": True,
+        "framework": framework,
+        "num_timesteps": len(states),
+        "observations": states,
+        "observations_by_modality": {"joint_observation": states},
+        "hidden_states_by_factor": {"joint_state": states},
+        "actions": [3, 3, 1, 1, 4],
+        "actions_by_control_factor": {"joint_action": [3, 3, 1, 1, 4]},
+        "beliefs": beliefs,
+        "beliefs_by_factor": {"joint_state": beliefs},
+        "expected_free_energy": [1.0, 0.8, 0.6, 0.4, 0.2],
+        "variational_free_energy": [0.5, 0.4, 0.3, 0.2, 0.1],
+        "validation": {"all_valid": True},
+        "model_parameters": {
+            "num_states": 9,
+            "num_observations": 9,
+            "num_actions": 5,
+            "B_shape": [9, 9, 5],
+        },
+        "matrix_provenance": {
+            "B": {"canonical_order": "next_state_previous_state_action"}
+        },
+    }
+
+
+def test_gridworld_animation_suite_and_manifest(tmp_path: Any) -> None:
+    """Current GridWorld schemas produce GIFs and a unified manifest."""
+    from analysis.visualizations import (
+        _current_schema_visualization_data,
+        generate_gridworld_animation_suite,
+        write_gridworld_analysis_manifest,
+    )
+
+    execution_dir = tmp_path / "12_execute_output"
+    analysis_dir = tmp_path / "16_analysis_output"
+    cross_dir = analysis_dir / "cross_framework"
+    cross_dir.mkdir(parents=True)
+    (analysis_dir / "analysis_results.json").write_text("{}", encoding="utf-8")
+    (cross_dir / "cross_framework_comparison.png").write_bytes(b"png")
+
+    schemas = {
+        "pymdp": "pymdp_simulation_v1",
+        "rxinfer": "rxinfer_simulation_v1",
+        "activeinference_jl": "activeinference_jl_simulation_v1",
+    }
+    framework_data: dict[str, dict[str, Any]] = {}
+    for framework, schema_version in schemas.items():
+        payload = _gridworld_payload(schema_version, framework)
+        sim_dir = execution_dir / "pomdp_gridworld_3x3" / framework / "simulation_data"
+        sim_dir.mkdir(parents=True)
+        sim_file = sim_dir / "simulation_results.json"
+        sim_file.write_text(json.dumps(payload), encoding="utf-8")
+        framework_data[f"{framework}_pomdp_gridworld_3x3"] = {
+            "framework": framework,
+            "model_name": "pomdp_gridworld_3x3",
+            "simulation_data": _current_schema_visualization_data(payload),
+            "raw_simulation_data": payload,
+            "source_file": str(sim_file),
+        }
+
+    gifs = generate_gridworld_animation_suite(framework_data, cross_dir)
+    assert len(gifs) == 7
+    assert all(Path(path).exists() and Path(path).stat().st_size > 0 for path in gifs)
+
+    manifest_path = write_gridworld_analysis_manifest(
+        execution_dir,
+        analysis_dir,
+        allowed_frameworks=set(schemas),
+        allowed_model_names={"pomdp_gridworld_3x3"},
+    )
+    assert manifest_path is not None
+    manifest = json.loads(Path(manifest_path).read_text(encoding="utf-8"))
+    assert manifest["schema_version"] == "gridworld_analysis_manifest_v1"
+    assert manifest["frameworks"] == sorted(schemas)
+    assert manifest["matrix_provenance_equal"] is True
+    assert len(manifest["outputs"]["gif"]) == 7
+    assert manifest["outputs"]["png"]
+    assert manifest["outputs"]["statistics"]
 
 
 class TestAnalysisOverall:

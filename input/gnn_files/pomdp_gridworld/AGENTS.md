@@ -15,6 +15,9 @@ This directory contains the maintained GridWorld POMDP fixture used to verify th
 - `pomdp_gridworld_3x3.md` is the canonical cross-framework fixture.
 - The transition tensor `B` is stored as `(next_state, previous_state, action)`.
 - Runtime metadata uses `num_timesteps: 15`, `random_seed: 42`, and five actions.
+- Step 16 emits per-framework PNG plots, belief GIFs, 3x3 trajectory GIFs, a
+  cross-framework trajectory GIF, and `gridworld_analysis_manifest.json` from the
+  current execution outputs.
 
 ## Verification
 
