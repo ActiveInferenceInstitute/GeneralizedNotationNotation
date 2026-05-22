@@ -21,10 +21,12 @@ This tree is part of the GNN documentation system; implementation lives in `src/
 | File | Role |
 |------|------|
 | [README.md](README.md) | Human entrypoint: `uv`, frameworks, links to `STEP_INDEX` / `main.py` |
+| [pipeline_stage_hardening_review.md](pipeline_stage_hardening_review.md) | Maintained stage-by-stage review goal and GridWorld proof contract |
 
 ## Quick navigation
 
 - **Step index**: [src/STEP_INDEX.md](../../src/STEP_INDEX.md)
+- **Stage hardening review**: [pipeline_stage_hardening_review.md](pipeline_stage_hardening_review.md)
 - **Orchestrator**: [src/main.py](../../src/main.py)
 - **Script catalog**: [PIPELINE_SCRIPTS.md](../PIPELINE_SCRIPTS.md)
 - **Pipeline module**: [src/pipeline/AGENTS.md](../../src/pipeline/AGENTS.md)

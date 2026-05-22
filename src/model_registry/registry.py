@@ -433,7 +433,12 @@ def process_model_registry(
     Returns:
         Dictionary with processing results
     """
-    registry_path = output_dir / "model_registry.json"
+    registry_path_arg = kwargs.get("registry_path")
+    registry_path = (
+        Path(registry_path_arg)
+        if registry_path_arg is not None
+        else output_dir / "model_registry.json"
+    )
     registry = ModelRegistry(registry_path)
 
     processed_files = 0

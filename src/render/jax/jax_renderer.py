@@ -20,6 +20,8 @@ from typing import Any, Callable, Dict, List, Optional, Tuple, cast
 
 import numpy as np
 
+from render.pomdp_contract import build_canonical_pomdp_spec
+
 logger = logging.getLogger(__name__)
 
 
@@ -203,6 +205,18 @@ def _extract_gnn_matrices(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
     # --- Primary: Handle POMDP processor format ---
     if "model_parameters" in gnn_spec:
         logger.info("Extracting matrices from POMDP processor format")
+        init_candidate = gnn_spec.get("initialparameterization", {})
+        if isinstance(init_candidate, dict) and all(
+            key in init_candidate for key in ("A", "B", "C", "D")
+        ):
+            try:
+                gnn_spec = build_canonical_pomdp_spec(gnn_spec)
+                logger.info("Canonicalized POMDP matrices for JAX renderer")
+            except Exception as exc:
+                logger.warning(
+                    "Could not canonicalize POMDP matrices for JAX renderer: %s",
+                    exc,
+                )
 
         model_params = gnn_spec["model_parameters"]
         n_states = model_params.get("num_hidden_states", 3)
@@ -236,30 +250,10 @@ def _extract_gnn_matrices(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
         if "B" in init_params:
             B_matrix = init_params["B"]
             if isinstance(B_matrix, (list, np.ndarray)) and len(B_matrix) > 0:
-                # B matrix shape should be (n_states, n_states, n_actions) or similar
-                if isinstance(B_matrix, list):
-                    if (
-                        len(B_matrix) > 0
-                        and isinstance(B_matrix[0], list)
-                        and len(B_matrix[0]) > 0
-                        and isinstance(B_matrix[0][0], list)
-                    ):
-                        # B is (actions, states, observations) or similar nested structure
-                        n_actions_from_b = len(B_matrix)
-                    else:
-                        n_actions_from_b = 1  # Default recovery
-                else:
-                    # B is numpy array
-                    if len(B_matrix.shape) >= 3:
-                        n_actions_from_b = B_matrix.shape[
-                            2
-                        ]  # Last dimension is actions
-                    else:
-                        n_actions_from_b = 1  # Default recovery
-
-                if n_actions_from_b > 1:  # Only override if we got a meaningful value
-                    n_actions = n_actions_from_b
-                    logger.info(f"Corrected n_actions from B matrix: {n_actions}")
+                B_array = np.asarray(B_matrix, dtype=float)
+                n_actions_from_b = B_array.shape[2] if B_array.ndim >= 3 else 1
+                n_actions = n_actions_from_b
+                logger.info(f"Corrected n_actions from B matrix: {n_actions}")
 
             # Also check for explicit dimensions in model_params that might override
             if "B" in gnn_spec.get("model_params", {}):
@@ -305,15 +299,20 @@ def _extract_gnn_matrices(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
                     # Handle both list and tuple (POMDP extractor returns tuples)
                     if isinstance(B_data, (list, tuple)):
                         B_matrix = np.array(B_data)
-                        if B_matrix.ndim == 3:
-                            # POMDP extractor returns B as (actions, rows, cols)
-                            # JAX renderer expects B as (rows, cols, actions)
-                            # Transpose from (actions, rows, cols) to (rows, cols, actions)
-                            B_matrix = np.transpose(B_matrix, (1, 2, 0))
-                            matrices["B"] = B_matrix
-                            logger.info(
-                                f"Successfully extracted B matrix: shape {B_matrix.shape} (transposed)"
-                            )
+                    elif isinstance(B_data, np.ndarray):
+                        B_matrix = B_data
+                    else:
+                        B_matrix = np.array([])
+                    if B_matrix.ndim == 2:
+                        matrices["B"] = B_matrix[:, :, np.newaxis]
+                        logger.info(
+                            f"Successfully extracted passive B matrix: shape {matrices['B'].shape}"
+                        )
+                    elif B_matrix.ndim == 3:
+                        matrices["B"] = B_matrix
+                        logger.info(
+                            f"Successfully extracted B matrix: shape {B_matrix.shape}"
+                        )
                 except Exception as e:
                     logger.warning(f"Failed to extract B matrix: {e}")
 

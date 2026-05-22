@@ -384,7 +384,7 @@ class POMDPRenderProcessor:
     def _build_canonical_initialparameterization(
         self,
         pomdp_space: "POMDPStateSpace",
-    ) -> tuple[Dict[str, Any], Dict[str, Dict[str, Any]]]:
+    ) -> tuple[Dict[str, Any], Dict[str, Dict[str, Any]], Dict[str, Any]]:
         """Build the strict canonical A/B/C/D/E contract used by renderers."""
         matrices = getattr(pomdp_space, "matrices", None) or {}
         provenance = dict(getattr(pomdp_space, "matrix_provenance", None) or {})
@@ -407,6 +407,7 @@ class POMDPRenderProcessor:
             return (
                 canonical["initialparameterization"],
                 canonical["matrix_provenance"],
+                canonical["model_parameters"],
             )
 
         time_indexed_b = self._time_indexed_transition_key(matrices)
@@ -443,6 +444,7 @@ class POMDPRenderProcessor:
             return (
                 canonical["initialparameterization"],
                 canonical["matrix_provenance"],
+                canonical["model_parameters"],
             )
 
         joint, joint_provenance = self._compose_factored_pomdp(pomdp_space)
@@ -455,9 +457,15 @@ class POMDPRenderProcessor:
         if "E" in matrices:
             initial["E"] = matrices["E"]
         provenance.update(joint_provenance)
+        canonical_model_parameters = {
+            **(getattr(pomdp_space, "model_parameters", None) or {}),
+            "num_hidden_states": len(initial["D"]),
+            "num_obs": len(initial["A"]),
+            "num_actions": pomdp_space.num_actions,
+        }
         gnn_spec = {
             "initialparameterization": initial,
-            "model_parameters": getattr(pomdp_space, "model_parameters", None) or {},
+            "model_parameters": canonical_model_parameters,
             "num_states": len(initial["D"]),
             "num_observations": len(initial["A"]),
             "num_actions": pomdp_space.num_actions,
@@ -467,6 +475,7 @@ class POMDPRenderProcessor:
         return (
             canonical["initialparameterization"],
             canonical["matrix_provenance"],
+            canonical["model_parameters"],
         )
 
     def _compose_factored_pomdp(
@@ -749,7 +758,7 @@ class POMDPRenderProcessor:
             )
             parsed_sim_params = {}
 
-        initial_parameterization, matrix_provenance = (
+        initial_parameterization, matrix_provenance, canonical_model_parameters = (
             self._build_canonical_initialparameterization(pomdp_space)
         )
         raw_model_parameters = getattr(pomdp_space, "model_parameters", None) or {}
@@ -764,19 +773,19 @@ class POMDPRenderProcessor:
             "model_name": pomdp_space.model_name or "POMDP_Model",
             "description": pomdp_space.model_annotation or "Extracted POMDP model",
             "model_parameters": {
-                "num_hidden_states": pomdp_space.num_states,
-                "num_obs": pomdp_space.num_observations,
-                "num_actions": pomdp_space.num_actions,
+                **raw_model_parameters,
+                **canonical_model_parameters,
                 "num_state_factors": len(state_factors)
+                or canonical_model_parameters.get("num_state_factors")
                 or raw_model_parameters.get("num_state_factors"),
                 "num_modalities": len(observation_modalities)
+                or canonical_model_parameters.get("num_modalities")
                 or raw_model_parameters.get("num_modalities"),
                 "state_factors": state_factors,
                 "observation_modalities": observation_modalities,
                 "control_factors": control_factors,
                 "passive_model": getattr(pomdp_space, "passive_model", False),
                 "simulation_params": parsed_sim_params,
-                **raw_model_parameters,
                 **({"num_timesteps": timesteps} if timesteps else {}),
             },
             "initialparameterization": initial_parameterization,

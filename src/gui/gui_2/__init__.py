@@ -44,7 +44,9 @@ def gui_2(
 
         logger.info("🎯 Starting GUI 2: Visual Matrix Editor")
 
-        success = run_gui(
+        from . import processor as _processor
+
+        success = _processor.run_gui(
             target_dir=target_dir,
             output_dir=output_dir,
             logger=logger,
@@ -59,7 +61,12 @@ def gui_2(
             "description": "Visual Matrix Editor for GNN Models",
             "success": success,
             "output_file": str(output_dir / export_filename) if success else None,
-            "backend": "gradio+plotly" if not headless else "headless",
+            "backend": "gradio+plotly"
+            if not headless and _processor._GUI_BACKEND is not None
+            else "headless"
+            if headless
+            else "none",
+            "backend_reason": _processor._GUI_BACKEND_REASON,
             "features": [
                 "Visual matrix representation and editing",
                 "Drag-and-drop state space modification",

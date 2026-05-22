@@ -12,12 +12,16 @@ Step 12 (Execute) runs rendered scripts for PyMDP, RxInfer.jl, ActiveInference.j
 - **Documentation versioning** (language vs doc bundle vs package): [`../SPEC.md`](../SPEC.md)
 - **Source specification**: `../../src/SPEC.md`
 - **Step index (0–24)**: `../../src/STEP_INDEX.md`
+- **Stage hardening review**: [`pipeline_stage_hardening_review.md`](pipeline_stage_hardening_review.md)
 - **Orchestrator implementation**: `../../src/main.py`
 
 ## Notes
 
 - The pipeline consists of **25 steps (0–24)** implemented as thin orchestrators in `src/`.
 - Per-folder routing is controlled by `input/config.yaml` (`testing_matrix`).
+- The maintained GridWorld proof path confirms configurable parse, type-check,
+  visualization, render, execute, logging, analysis, PNG/GIF generation,
+  dashboards, and manifests across PyMDP, RxInfer.jl, and ActiveInference.jl.
 
 ## Documentation coverage exclusions
 
@@ -27,5 +31,4 @@ When auditing “every folder under `src/` has `AGENTS.md`/`README.md`/`SPEC.md`
 - `src/output/` (optional fixture subtree; not step code)
 - `src/tests/output/` (generated test artifacts; ignored by git — see `.gitignore`)
 
-Repository-root `output/` is **tracked** (with selective ignores for temp/audio/cache/logs). Do not require full module scaffolding inside `output/` or `src/output/`.
-
+Repository-root `output/` is ignored except for `output/.gitkeep`. Do not require full module scaffolding inside `output/` or `src/output/`.

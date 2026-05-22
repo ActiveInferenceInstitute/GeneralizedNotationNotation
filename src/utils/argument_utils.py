@@ -96,6 +96,9 @@ class PipelineArguments:
     # Type checking options
     strict: bool = False
     estimate_resources: bool = False
+    profile: bool = False
+    simulate_error: bool = False
+    registry_path: Any = None
 
     # File references
     ontology_terms_file: Any = None
@@ -200,6 +203,8 @@ class PipelineArguments:
             self.render_output_dir, str
         ):
             self.render_output_dir = Path(self.render_output_dir)
+        if self.registry_path is not None and isinstance(self.registry_path, str):
+            self.registry_path = Path(self.registry_path)
 
     def validate(self) -> List[str]:
         """Validate argument values and return list of errors."""
@@ -325,6 +330,23 @@ class ArgumentParser:
             ),
             "strict": ArgumentDefinition(
                 flag="--strict", action="store_true", help_text="Enable strict mode"
+            ),
+            "profile": ArgumentDefinition(
+                flag="--profile",
+                action="store_true",
+                help_text="Enable performance profiling",
+            ),
+            "simulate_error": ArgumentDefinition(
+                flag="--simulate-error",
+                action="store_true",
+                use_suppress=True,
+                help_text="Simulate an error for testing",
+            ),
+            "registry_path": ArgumentDefinition(
+                flag="--registry-path",
+                arg_type=Path,
+                default=None,
+                help_text="Path to model registry file",
             ),
             "estimate_resources": ArgumentDefinition(
                 flag="--estimate-resources",
@@ -615,7 +637,13 @@ class ArgumentParser:
     # Define which arguments each step supports
     STEP_ARGUMENTS = MappingProxyType(
         {
-            "0_template.py": ["target_dir", "output_dir", "recursive", "verbose"],
+            "0_template.py": [
+                "target_dir",
+                "output_dir",
+                "recursive",
+                "verbose",
+                "simulate_error",
+            ],
             "1_setup.py": [
                 "target_dir",
                 "output_dir",
@@ -645,7 +673,13 @@ class ArgumentParser:
                 "enable_cross_format",
                 "serialize_preset",
             ],
-            "4_model_registry.py": ["target_dir", "output_dir", "recursive", "verbose"],
+            "4_model_registry.py": [
+                "target_dir",
+                "output_dir",
+                "recursive",
+                "verbose",
+                "registry_path",
+            ],
             "5_type_checker.py": [
                 "target_dir",
                 "output_dir",
@@ -654,7 +688,14 @@ class ArgumentParser:
                 "strict",
                 "estimate_resources",
             ],
-            "6_validation.py": ["target_dir", "output_dir", "recursive", "verbose"],
+            "6_validation.py": [
+                "target_dir",
+                "output_dir",
+                "recursive",
+                "verbose",
+                "strict",
+                "profile",
+            ],
             "7_export.py": ["target_dir", "output_dir", "recursive", "verbose"],
             "8_visualization.py": ["target_dir", "output_dir", "recursive", "verbose"],
             "9_advanced_viz.py": [
@@ -907,6 +948,8 @@ class ArgumentParser:
                         "headless",
                         "open_browser",
                         "skip_llm",
+                        "simulate_error",
+                        "profile",
                     ]:
                         setattr(parsed_args, arg_name, False)
                     elif arg_name == "optional_groups":
@@ -998,6 +1041,8 @@ class ArgumentParser:
                 "headless",
                 "open_browser",
                 "skip_llm",
+                "simulate_error",
+                "profile",
             ]:
                 setattr(fallback_args, arg_name, False)
             elif arg_name == "optional_groups":
@@ -1043,8 +1088,12 @@ class StepConfiguration:
         {
             "0_template": {
                 "required_args": ["target_dir", "output_dir"],
-                "optional_args": ["recursive", "verbose"],
-                "defaults": {"recursive": True, "verbose": False},
+                "optional_args": ["recursive", "verbose", "simulate_error"],
+                "defaults": {
+                    "recursive": True,
+                    "verbose": False,
+                    "simulate_error": False,
+                },
                 "description": "Standardized pipeline step template",
             },
             "1_setup": {
@@ -1108,8 +1157,12 @@ class StepConfiguration:
             },
             "4_model_registry": {
                 "required_args": ["target_dir", "output_dir"],
-                "optional_args": ["recursive", "verbose"],
-                "defaults": {"recursive": True, "verbose": False},
+                "optional_args": ["recursive", "verbose", "registry_path"],
+                "defaults": {
+                    "recursive": True,
+                    "verbose": False,
+                    "registry_path": None,
+                },
                 "description": "Model Registry & Versioning",
             },
             "5_type_checker": {
@@ -1130,8 +1183,13 @@ class StepConfiguration:
             },
             "6_validation": {
                 "required_args": ["target_dir", "output_dir"],
-                "optional_args": ["recursive", "verbose"],
-                "defaults": {"recursive": True, "verbose": False},
+                "optional_args": ["recursive", "verbose", "strict", "profile"],
+                "defaults": {
+                    "recursive": True,
+                    "verbose": False,
+                    "strict": False,
+                    "profile": False,
+                },
                 "description": "Validation & Quality Assurance",
             },
             "7_export": {

@@ -17,6 +17,7 @@ from render.generators import (
 def _explicit_pomdp_spec() -> dict[str, Any]:
     return {
         "model_name": "TestModel",
+        "description": 'A model with quoted labels like "left" and "reward context".',
         "initialparameterization": {
             "A": [[0.9, 0.1], [0.1, 0.9]],
             "B": [[[0.8, 0.2], [0.2, 0.8]]],
@@ -44,12 +45,18 @@ def test_activeinference_jl_generator() -> Any:
     res = generate_activeinference_jl_code(_explicit_pomdp_spec())
     assert isinstance(res, str)
     assert "TestModel" in res
+    assert "using Base64" in res
+    assert "base64decode" in res
+    assert "JSON.parse(raw" not in res
 
 
 def test_rxinfer_generator() -> Any:
     res = generate_rxinfer_code(_explicit_pomdp_spec())
     assert isinstance(res, str)
     assert "TestModel" in res
+    assert "using Base64" in res
+    assert "base64decode" in res
+    assert "JSON.parse(raw" not in res
 
 
 def test_discopy_generator() -> Any:

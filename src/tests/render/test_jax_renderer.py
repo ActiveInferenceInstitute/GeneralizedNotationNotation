@@ -93,6 +93,52 @@ class TestExtractGnnMatrices:
         result = mod._extract_gnn_matrices(spec)
         assert isinstance(result, dict)
 
+    def test_passive_pomdp_b_stays_canonical_single_action(self, mod: Any) -> Any:
+        spec: dict[str, Any] = {
+            "model_name": "passive_chain",
+            "model_parameters": {
+                "num_hidden_states": 3,
+                "num_obs": 3,
+                "num_actions": 1,
+            },
+            "initialparameterization": {
+                "A": np.eye(3).tolist(),
+                "B": np.eye(3).tolist(),
+                "C": [0.0, 0.0, 0.0],
+                "D": [1.0 / 3.0, 1.0 / 3.0, 1.0 / 3.0],
+            },
+        }
+
+        result = mod._extract_gnn_matrices(spec)
+
+        assert result["B"].shape == (3, 3, 1)
+        np.testing.assert_allclose(result["B"][:, :, 0], np.eye(3))
+
+    def test_controlled_canonical_b_is_not_transposed(self, mod: Any) -> Any:
+        b_matrix = np.zeros((3, 3, 3))
+        for action in range(3):
+            b_matrix[:, :, action] = np.roll(np.eye(3), action, axis=0)
+        spec: dict[str, Any] = {
+            "model_name": "controlled_chain",
+            "model_parameters": {
+                "num_hidden_states": 3,
+                "num_obs": 3,
+                "num_actions": 3,
+                "b_tensor_order": "next_state_previous_state_action",
+            },
+            "initialparameterization": {
+                "A": np.eye(3).tolist(),
+                "B": b_matrix.tolist(),
+                "C": [0.0, 0.0, 0.0],
+                "D": [1.0 / 3.0, 1.0 / 3.0, 1.0 / 3.0],
+            },
+        }
+
+        result = mod._extract_gnn_matrices(spec)
+
+        assert result["B"].shape == (3, 3, 3)
+        np.testing.assert_allclose(result["B"], b_matrix)
+
 
 class TestGenerateJaxModelCode:
     """Tests for _generate_jax_model_code code generation."""
@@ -120,6 +166,26 @@ class TestGenerateJaxModelCode:
         """Empty spec produces valid string output without raising."""
         result = mod._generate_jax_model_code({}, None)
         assert isinstance(result, str)
+
+    def test_passive_pomdp_generates_one_action(self, mod: Any) -> Any:
+        spec: dict[str, Any] = {
+            "model_name": "passive_chain",
+            "model_parameters": {
+                "num_hidden_states": 3,
+                "num_obs": 3,
+                "num_actions": 1,
+            },
+            "initialparameterization": {
+                "A": np.eye(3).tolist(),
+                "B": np.eye(3).tolist(),
+                "C": [0.0, 0.0, 0.0],
+                "D": [1.0 / 3.0, 1.0 / 3.0, 1.0 / 3.0],
+            },
+        }
+
+        result = mod._generate_jax_model_code(spec, None)
+
+        assert "NUM_ACTIONS = 1" in result
 
 
 class TestGenerateJaxPomdpCode:

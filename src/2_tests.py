@@ -74,7 +74,7 @@ def _test_runner_wrapper(
 
 
 additional_args: dict[str, Any] = {
-    "fast-only": {
+    "fast_only": {
         "action": "store_true",
         "default": True,
         "help": "Run only fast tests (default)",

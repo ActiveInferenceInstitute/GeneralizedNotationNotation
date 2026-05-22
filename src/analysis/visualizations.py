@@ -616,21 +616,93 @@ def write_gridworld_analysis_manifest(
     if not source_results:
         return None
 
+    current_frameworks = allowed_frameworks or {
+        entry["framework"] for entry in source_results
+    }
+    current_models = allowed_model_names or {
+        entry["model_name"] for entry in source_results
+    }
+
     manifest_path = (
         analysis_dir / "cross_framework" / "gridworld_analysis_manifest.json"
     )
+
+    current_cross_framework_files = {
+        "confidence_comparison.png",
+        "cross_framework_comparison.png",
+        "efe_convergence_comparison.png",
+        "framework_comparison_data.json",
+        "framework_comparison_report.md",
+        "framework_performance_comparison.png",
+        "framework_radar.png",
+        "framework_success_rates.png",
+    }
+    current_root_files = {
+        "analysis_results.json",
+        "analysis_summary.md",
+        "cross_model_comparison_report.md",
+    }
+
+    def is_current_artifact(path: Path) -> bool:
+        if path == manifest_path or not path.is_file():
+            return False
+
+        try:
+            rel = path.relative_to(analysis_dir)
+        except ValueError:
+            return False
+
+        parts = rel.parts
+        if not parts:
+            return False
+
+        name = path.name
+        first = parts[0]
+        if first in current_frameworks:
+            return any(model_name in name for model_name in current_models)
+
+        if first == "cross_framework":
+            if "gridworld_animations" in parts:
+                return name.startswith("gridworld_cross_framework_") or any(
+                    model_name in name for model_name in current_models
+                )
+            if "unified_dashboard" in parts:
+                return path.suffix == ".png"
+            if name in current_cross_framework_files:
+                return True
+            if name.endswith("_post_simulation_analysis.json"):
+                return any(
+                    name == f"{model_name}_post_simulation_analysis.json"
+                    for model_name in current_models
+                )
+            return False
+
+        if len(parts) == 1:
+            return name in current_root_files
+
+        return False
+
     png_outputs = sorted(
         _relative_or_absolute(path, analysis_dir)
         for path in analysis_dir.rglob("*.png")
+        if is_current_artifact(path)
     )
     gif_outputs = sorted(
         _relative_or_absolute(path, analysis_dir)
         for path in analysis_dir.rglob("*.gif")
+        if is_current_artifact(path)
+    )
+    dashboard_outputs = sorted(
+        _relative_or_absolute(path, analysis_dir)
+        for path in (analysis_dir / "cross_framework" / "unified_dashboard").glob(
+            "*.png"
+        )
+        if is_current_artifact(path)
     )
     statistics_outputs = sorted(
         _relative_or_absolute(path, analysis_dir)
         for path in analysis_dir.rglob("*")
-        if path.is_file() and path.suffix in {".json", ".md"} and path != manifest_path
+        if path.suffix in {".json", ".md"} and is_current_artifact(path)
     )
 
     first_provenance = provenances[0] if provenances else {}
@@ -647,6 +719,7 @@ def write_gridworld_analysis_manifest(
             "statistics": statistics_outputs,
             "png": png_outputs,
             "gif": gif_outputs,
+            "dashboard": dashboard_outputs,
         },
     }
 

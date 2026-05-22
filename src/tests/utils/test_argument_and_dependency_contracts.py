@@ -1,14 +1,34 @@
 """Interface guardrails for step arguments and dependency closure."""
 
+import logging
+import sys
 from pathlib import Path
 
 import pytest
 
 from utils.argument_utils import ArgumentParser
+from utils.pipeline_template import _parse_step_args
 from utils.pipeline_step_dependencies import resolve_step_dependencies
 
 
 def test_step_specific_arguments_are_exposed() -> None:
+    step0 = ArgumentParser.parse_step_arguments("0_template.py", ["--simulate-error"])
+    assert step0.simulate_error is True
+
+    step2 = ArgumentParser.parse_step_arguments("2_tests.py", ["--fast-only"])
+    assert step2.fast_only is True
+
+    step4 = ArgumentParser.parse_step_arguments(
+        "4_model_registry.py", ["--registry-path", "custom_registry.json"]
+    )
+    assert step4.registry_path == Path("custom_registry.json")
+
+    step6 = ArgumentParser.parse_step_arguments(
+        "6_validation.py", ["--profile", "--strict"]
+    )
+    assert step6.profile is True
+    assert step6.strict is True
+
     step9 = ArgumentParser.parse_step_arguments(
         "9_advanced_viz.py",
         [
@@ -62,6 +82,58 @@ def test_step_specific_defaults_are_preserved() -> None:
     step22 = ArgumentParser.parse_step_arguments("22_gui.py", [])
     assert step9.interactive is True
     assert step22.interactive is False
+
+
+def test_script_additional_args_do_not_trigger_recovery_parser(
+    monkeypatch: pytest.MonkeyPatch, caplog: pytest.LogCaptureFixture
+) -> None:
+    cases = [
+        (
+            "0_template.py",
+            ["--simulate-error"],
+            {"simulate_error": {"type": bool, "help": "Simulate an error"}},
+            "simulate_error",
+            True,
+        ),
+        (
+            "2_tests.py",
+            ["--fast-only"],
+            {
+                "fast_only": {
+                    "action": "store_true",
+                    "default": True,
+                    "flag": "--fast-only",
+                }
+            },
+            "fast_only",
+            True,
+        ),
+        (
+            "4_model_registry.py",
+            ["--registry-path", "registry.json"],
+            {"registry_path": {"type": str, "help": "Registry path"}},
+            "registry_path",
+            Path("registry.json"),
+        ),
+        (
+            "6_validation.py",
+            ["--profile", "--strict"],
+            {
+                "profile": {"type": bool, "help": "Profile"},
+                "strict": {"type": bool, "help": "Strict"},
+            },
+            "profile",
+            True,
+        ),
+    ]
+
+    caplog.set_level(logging.WARNING)
+    for step_name, argv, additional, attr_name, expected in cases:
+        caplog.clear()
+        monkeypatch.setattr(sys, "argv", [step_name, *argv])
+        parsed = _parse_step_args(step_name, "test parser", additional)
+        assert getattr(parsed, attr_name) == expected
+        assert not any("using recovery parser" in r.message for r in caplog.records)
 
 
 def test_invalid_step_argument_fails_instead_of_silent_defaults() -> None:

@@ -6,6 +6,7 @@ This module provides streamlined rendering capabilities for GNN specifications t
 ActiveInference.jl code, focusing on core functionality and scientific validity.
 """
 
+import base64
 import json
 import logging
 from pathlib import Path
@@ -332,6 +333,9 @@ def _generate_canonical_activeinference_script(model_info: Dict[str, Any]) -> st
     random_seed = int(model_info["random_seed"])
     action_precision = float(model_info["action_precision"])
     spec_json = str(model_info["spec_json"])
+    spec_json_b64 = base64.b64encode(spec_json.encode("utf-8")).decode("ascii")
+    model_name_literal = json.dumps(model_name)
+    b_tensor_order_literal = json.dumps("next_state_previous_state_action")
 
     return f'''#!/usr/bin/env julia
 # ActiveInference.jl discrete POMDP simulation
@@ -344,17 +348,20 @@ using LinearAlgebra
 using Random
 using StatsBase
 using JSON
+using Base64
 using Dates
 
 const SCHEMA_VERSION = "activeinference_jl_simulation_v1"
-const MODEL_NAME = "{model_name}"
+const MODEL_NAME = {model_name_literal}
 const NUM_STATES = {n_states}
 const NUM_OBSERVATIONS = {n_observations}
 const NUM_ACTIONS = {n_actions}
 const TIME_STEPS = {n_timesteps}
 const RANDOM_SEED = {random_seed}
 const ACTION_PRECISION = {action_precision}
-const GNN_SPEC = JSON.parse(raw"""{spec_json}""")
+const B_TENSOR_ORDER = {b_tensor_order_literal}
+const GNN_SPEC_JSON_B64 = "{spec_json_b64}"
+const GNN_SPEC = JSON.parse(String(base64decode(GNN_SPEC_JSON_B64)))
 
 function package_version(name::String)
     for (_, dep) in Pkg.dependencies()

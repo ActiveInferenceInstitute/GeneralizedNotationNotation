@@ -9,11 +9,14 @@ from typing import Any, Optional, cast
 
 try:
     import gradio as gr  # Lightweight, widely available
-
+    if not hasattr(gr, "Blocks"):
+        raise AttributeError("gradio import does not expose Blocks")
     _GUI_BACKEND = "gradio"
-except Exception:
+    _GUI_BACKEND_REASON = cast(Any, None)
+except Exception as exc:
     gr = cast(Any, None)
     _GUI_BACKEND = cast(Any, None)
+    _GUI_BACKEND_REASON = str(exc)
 
 from utils.pipeline_template import (
     log_step_error,
@@ -78,6 +81,8 @@ def run_gui(
                     logger.warning(
                         "Gradio not available - generating recovery artifacts only"
                     )
+                if _GUI_BACKEND_REASON:
+                    logger.info(f"GUI backend unavailable: {_GUI_BACKEND_REASON}")
                 logger.info("Install GUI support with: uv sync --extra gui")
             else:
                 logger.info(
@@ -98,6 +103,7 @@ def run_gui(
                 "reason": "gradio_not_available"
                 if _GUI_BACKEND is None
                 else "headless_requested",
+                "backend_reason": _GUI_BACKEND_REASON,
                 "recommendations": [
                     "Install with: uv sync --extra gui",
                     "Run with --interactive for full GUI experience",

@@ -15,6 +15,7 @@ Author: GNN RxInfer Integration
 Date: 2024
 """
 
+import base64
 import json
 import logging
 from datetime import datetime
@@ -150,6 +151,11 @@ class RxInferRenderer:
             model_params.get("action_precision", model_params.get("gamma", 4.0))
         )
         spec_json = json.dumps(gnn_spec, sort_keys=True)
+        spec_json_b64 = base64.b64encode(spec_json.encode("utf-8")).decode("ascii")
+        model_name_literal = json.dumps(str(model_display_name))
+        b_tensor_order_literal = json.dumps(
+            str(model_params.get("b_tensor_order", "next_state_previous_state_action"))
+        )
 
         code = f'''#!/usr/bin/env julia
 # RxInfer.jl discrete POMDP simulation
@@ -163,17 +169,20 @@ using LinearAlgebra
 using Random
 using StatsBase
 using JSON
+using Base64
 using Dates
 
 const SCHEMA_VERSION = "rxinfer_simulation_v1"
-const MODEL_NAME = "{model_display_name}"
+const MODEL_NAME = {model_name_literal}
 const NUM_STATES = {num_states}
 const NUM_OBSERVATIONS = {num_observations}
 const NUM_ACTIONS = {num_actions}
 const TIME_STEPS = {num_timesteps}
 const RANDOM_SEED = {seed}
 const ACTION_PRECISION = {action_precision}
-const GNN_SPEC = JSON.parse(raw"""{spec_json}""")
+const B_TENSOR_ORDER = {b_tensor_order_literal}
+const GNN_SPEC_JSON_B64 = "{spec_json_b64}"
+const GNN_SPEC = JSON.parse(String(base64decode(GNN_SPEC_JSON_B64)))
 
 function package_version(name::String)
     for (_, dep) in Pkg.dependencies()

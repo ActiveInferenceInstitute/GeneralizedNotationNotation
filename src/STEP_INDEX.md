@@ -1,6 +1,6 @@
 # GNN Pipeline Step Index
 
-**Version**: 1.6.0 · **Last Updated**: 2026-05-12 · **Total Steps**: 25 (0–24)
+**Version**: 1.6.0 · **Last Updated**: 2026-05-22 · **Total Steps**: 25 (0–24)
 
 ---
 
@@ -12,6 +12,9 @@ Steps are controlled via [`input/config.yaml`](../input/config.yaml) using the *
 - **Processing steps** (3–24): Routed per-folder via `testing_matrix.folders`
 
 > See [`SPEC.md`](SPEC.md) for full matrix configuration documentation.
+> For the maintained hardening goal, stage-by-stage operating contract, and
+> GridWorld end-to-end proof path, see
+> [`doc/pipeline/pipeline_stage_hardening_review.md`](../doc/pipeline/pipeline_stage_hardening_review.md).
 
 ---
 

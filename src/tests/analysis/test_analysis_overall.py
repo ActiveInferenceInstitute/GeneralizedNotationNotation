@@ -53,7 +53,22 @@ def test_gridworld_animation_suite_and_manifest(tmp_path: Any) -> None:
     cross_dir = analysis_dir / "cross_framework"
     cross_dir.mkdir(parents=True)
     (analysis_dir / "analysis_results.json").write_text("{}", encoding="utf-8")
+    (analysis_dir / "cross_model_comparison_report.md").write_text(
+        "current report", encoding="utf-8"
+    )
     (cross_dir / "cross_framework_comparison.png").write_bytes(b"png")
+    (cross_dir / "pomdp_gridworld_3x3_post_simulation_analysis.json").write_text(
+        "{}", encoding="utf-8"
+    )
+    (cross_dir / "old_model_post_simulation_analysis.json").write_text(
+        "{}", encoding="utf-8"
+    )
+    dashboard_dir = cross_dir / "unified_dashboard"
+    dashboard_dir.mkdir()
+    (dashboard_dir / "unified_belief_comparison.png").write_bytes(b"png")
+    stale_framework_dir = analysis_dir / "jax"
+    stale_framework_dir.mkdir()
+    (stale_framework_dir / "old_model_jax_dashboard.png").write_bytes(b"png")
 
     schemas = {
         "pymdp": "pymdp_simulation_v1",
@@ -91,8 +106,16 @@ def test_gridworld_animation_suite_and_manifest(tmp_path: Any) -> None:
     assert manifest["frameworks"] == sorted(schemas)
     assert manifest["matrix_provenance_equal"] is True
     assert len(manifest["outputs"]["gif"]) == 7
+    assert manifest["outputs"]["dashboard"] == [
+        "cross_framework/unified_dashboard/unified_belief_comparison.png"
+    ]
     assert manifest["outputs"]["png"]
     assert manifest["outputs"]["statistics"]
+    manifest_outputs = "\n".join(
+        output for outputs in manifest["outputs"].values() for output in outputs
+    )
+    assert "old_model" not in manifest_outputs
+    assert "jax_dashboard" not in manifest_outputs
 
 
 class TestAnalysisOverall:

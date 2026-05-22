@@ -48,7 +48,9 @@ def gui_1(
 
         logger.info("🎮 Starting GUI 1: Form-based Interactive GNN Constructor")
 
-        success = run_gui(
+        from . import processor as _processor
+
+        success = _processor.run_gui(
             target_dir=target_dir,
             output_dir=output_dir,
             logger=logger,
@@ -63,7 +65,12 @@ def gui_1(
             "description": "Form-based Interactive GNN Constructor",
             "success": success,
             "output_file": str(output_dir / export_filename) if success else None,
-            "backend": "gradio" if not headless else "headless",
+            "backend": _processor._GUI_BACKEND
+            if not headless and _processor._GUI_BACKEND is not None
+            else "headless"
+            if headless
+            else "none",
+            "backend_reason": _processor._GUI_BACKEND_REASON,
             "features": [
                 "Component management via forms",
                 "State space editing",

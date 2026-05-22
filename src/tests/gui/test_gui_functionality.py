@@ -11,8 +11,11 @@ Tests the GUI module's process_gui function and related functionality:
 """
 
 import io
+import importlib
 import json
 import logging
+import sys
+import types
 from typing import Any, cast
 
 import pytest
@@ -196,6 +199,56 @@ class TestGUIConfiguration:
             for r in caplog.records
             if r.levelno >= logging.WARNING
         )
+
+    @pytest.mark.unit
+    @pytest.mark.fast
+    def test_placeholder_gradio_falls_back_without_failing(
+        self, isolated_temp_dir: Any, monkeypatch: pytest.MonkeyPatch
+    ) -> Any:
+        """Importable Gradio without Blocks should use recovery artifacts."""
+        gui1_processor = importlib.import_module("gui.gui_1.processor")
+        gui2_processor = importlib.import_module("gui.gui_2.processor")
+
+        original_gradio = sys.modules.get("gradio")
+        dummy_gradio = types.ModuleType("gradio")
+        monkeypatch.setitem(sys.modules, "gradio", dummy_gradio)
+        importlib.reload(gui1_processor)
+        importlib.reload(gui2_processor)
+
+        try:
+            assert gui1_processor._GUI_BACKEND is None
+            assert gui2_processor._GUI_BACKEND is None
+
+            target = isolated_temp_dir / "input"
+            output = isolated_temp_dir / "output"
+            target.mkdir(parents=True, exist_ok=True)
+            (target / "model.md").write_text("# Test Model\n")
+
+            logger = get_real_logger()
+            result = process_gui(
+                target_dir=target,
+                output_dir=output,
+                logger=logger,
+                interactive=True,
+                gui_types="gui_1,gui_2",
+            )
+
+            assert result is True
+            summary = json.loads(
+                (output / "gui_processing_summary.json").read_text()
+            )
+            assert summary["overall_success"] is True
+            assert summary["results"]["gui_1"]["success"] is True
+            assert summary["results"]["gui_2"]["success"] is True
+            assert summary["results"]["gui_1"]["backend"] == "none"
+            assert summary["results"]["gui_2"]["backend"] == "none"
+        finally:
+            if original_gradio is None:
+                sys.modules.pop("gradio", None)
+            else:
+                sys.modules["gradio"] = original_gradio
+            importlib.reload(gui1_processor)
+            importlib.reload(gui2_processor)
 
 
 class TestGUIHTMLNavigation:
