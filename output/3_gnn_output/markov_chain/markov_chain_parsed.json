@@ -1,0 +1,506 @@
+{
+  "model_name": "Simple Markov Chain",
+  "version": "1.0",
+  "annotation": "This model describes a minimal discrete-time Markov Chain:\n\n- 3 states representing weather (sunny, cloudy, rainy).\n- No actions \u2014 the system evolves passively.\n- Observations = states directly (identity mapping for monitoring).\n- Stationary transition matrix with realistic weather dynamics.\n- Tests the simplest model structure: passive state evolution with no control.",
+  "variables": [
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "5dca62f4-d2be-41ad-8fa3-9008644eb887",
+      "name": "A",
+      "var_type": "likelihood_matrix",
+      "dimensions": [
+        3,
+        3
+      ],
+      "data_type": "float",
+      "description": "Observation model (identity for direct monitoring)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "77ec09ca-022c-479c-8a63-8146486eaa32",
+      "name": "B",
+      "var_type": "transition_matrix",
+      "dimensions": [
+        3,
+        3
+      ],
+      "data_type": "float",
+      "description": "Markov transition matrix",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "4408326d-a24d-4f7d-a150-e86a0a74b9a6",
+      "name": "D",
+      "var_type": "prior_vector",
+      "dimensions": [
+        3
+      ],
+      "data_type": "float",
+      "description": "Prior over initial states",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "e99fa893-f87d-4b98-88fd-85a977cc689d",
+      "name": "s",
+      "var_type": "hidden_state",
+      "dimensions": [
+        3,
+        1
+      ],
+      "data_type": "float",
+      "description": "Current state distribution",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "b78d184c-9b84-4033-aa51-47d32162d5a5",
+      "name": "s_prime",
+      "var_type": "hidden_state",
+      "dimensions": [
+        3,
+        1
+      ],
+      "data_type": "float",
+      "description": "Next state distribution",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "a0821dd4-f705-4c03-b553-8a8c445007eb",
+      "name": "o",
+      "var_type": "observation",
+      "dimensions": [
+        3,
+        1
+      ],
+      "data_type": "integer",
+      "description": "Current observation",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "b47718f2-7121-4547-b415-6830591a2b9f",
+      "name": "t",
+      "var_type": "hidden_state",
+      "dimensions": [
+        1
+      ],
+      "data_type": "integer",
+      "description": "Discrete time step",
+      "constraints": {}
+    }
+  ],
+  "connections": [
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "e32b92db-acae-496b-8e1a-4b7ffbd46f94",
+      "source_variables": [
+        "D"
+      ],
+      "target_variables": [
+        "s"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "bf854240-2e2b-45c9-a840-451913d066ec",
+      "source_variables": [
+        "s"
+      ],
+      "target_variables": [
+        "A"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "9d411ca3-2fd3-444f-b77a-7d37078338e4",
+      "source_variables": [
+        "A"
+      ],
+      "target_variables": [
+        "o"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "c594f8c6-9b5c-45ff-88f2-d2ba66f770b3",
+      "source_variables": [
+        "s"
+      ],
+      "target_variables": [
+        "s_prime"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "5ae49020-3873-4132-b4d8-365c8cc332b8",
+      "source_variables": [
+        "B"
+      ],
+      "target_variables": [
+        "s_prime"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "3b967fa7-4a2b-4a46-8e07-eaf3dda1a653",
+      "source_variables": [
+        "s"
+      ],
+      "target_variables": [
+        "B"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    }
+  ],
+  "parameters": [
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "4543e7d2-0cf2-4e9b-b99f-a0e0fc322936",
+      "name": "A",
+      "value": [
+        [
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "c1f38b65-2878-4783-9fff-f0c4a821d567",
+      "name": "B",
+      "value": [
+        [
+          0.7,
+          0.3,
+          0.1
+        ],
+        [
+          0.2,
+          0.4,
+          0.3
+        ],
+        [
+          0.1,
+          0.3,
+          0.6
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "d75549eb-aaab-4bee-b600-6990ae2f4814",
+      "name": "D",
+      "value": [
+        [
+          0.5,
+          0.3,
+          0.2
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "0084f33e-94b8-4d40-bae8-cc8a86dc7691",
+      "name": "num_hidden_states",
+      "value": 3,
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "987acb4a-f09b-4ff6-8e5b-62771d7f6bbb",
+      "name": "num_obs",
+      "value": 3,
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "a96d2738-e556-4d6d-ac8b-8c3b127ed508",
+      "name": "num_actions",
+      "value": 1,
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "905a4a7a-b224-48f8-836e-3d1e259ebb3c",
+      "name": "num_timesteps",
+      "value": 40,
+      "type_hint": null,
+      "description": null
+    }
+  ],
+  "equations": [],
+  "time_specification": {
+    "node_type": "TimeSpecification",
+    "source_location": null,
+    "metadata": {},
+    "id": "dce26c0f-ad86-428a-bd6e-57da564d0a95",
+    "time_type": "Dynamic",
+    "discretization": null,
+    "horizon": "Unbounded",
+    "step_size": null
+  },
+  "ontology_mappings": [
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "98477caf-b2e6-42e4-9854-cbb5abf1a974",
+      "variable_name": "A",
+      "ontology_term": "EmissionMatrix",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "0e3e008b-06ac-41e8-b747-4d3e170125ee",
+      "variable_name": "B",
+      "ontology_term": "TransitionMatrix",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "b04c0ec9-1f9f-44fd-ba35-16ffcd2e8397",
+      "variable_name": "D",
+      "ontology_term": "InitialStateDistribution",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "ca9abfae-eafa-4e1e-8240-6fa435df8af7",
+      "variable_name": "s",
+      "ontology_term": "HiddenState",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "7e2e1395-0627-45e3-a894-baf9b4792cfb",
+      "variable_name": "s_prime",
+      "ontology_term": "NextHiddenState",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "7bac8e3d-ffff-4a18-9957-0bee30e1d1c9",
+      "variable_name": "o",
+      "ontology_term": "Observation",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "2aa550e6-5706-4713-972c-05642810e8d8",
+      "variable_name": "t",
+      "ontology_term": "Time",
+      "description": null
+    }
+  ],
+  "source_format": null,
+  "created_at": "2026-05-22T06:17:18.844470",
+  "modified_at": "2026-05-22T06:17:18.844470",
+  "checksum": null,
+  "extensions": {
+    "gnn_section": "HiddenMarkovModel",
+    "footer": "Simple Markov Chain v1 - GNN Representation.\nPassive dynamics, no actions. Tests minimal Markov model structure.",
+    "signature": "Cryptographic signature goes here"
+  },
+  "raw_sections": {
+    "GNNSection": "HiddenMarkovModel",
+    "GNNVersionAndFlags": "GNN v1",
+    "ModelName": "Simple Markov Chain",
+    "ModelAnnotation": "This model describes a minimal discrete-time Markov Chain:\n\n- 3 states representing weather (sunny, cloudy, rainy).\n- No actions \u2014 the system evolves passively.\n- Observations = states directly (identity mapping for monitoring).\n- Stationary transition matrix with realistic weather dynamics.\n- Tests the simplest model structure: passive state evolution with no control.",
+    "StateSpaceBlock": "# Emission/Observation matrix: A[observations, states]\n\nA[3,3,type=float]    # Observation model (identity for direct monitoring)\n\n# Transition matrix: B[states_next, states_previous] (no action dimension)\n\nB[3,3,type=float]    # Markov transition matrix\n\n# Prior vector: D[states]\n\nD[3,type=float]      # Prior over initial states\n\n# Hidden State\n\ns[3,1,type=float]    # Current state distribution\ns_prime[3,1,type=float] # Next state distribution\n\n# Observation\n\no[3,1,type=int]      # Current observation\n\n# Time\n\nt[1,type=int]        # Discrete time step",
+    "Connections": "D>s\ns-A\nA-o\ns>s_prime\nB>s_prime\ns-B",
+    "InitialParameterization": "# A: 3x3 Identity \u2014 states are directly observed\n\nA={\n  (1.0, 0.0, 0.0),\n  (0.0, 1.0, 0.0),\n  (0.0, 0.0, 1.0)\n}\n\n# B: 3x3 weather transition matrix (no action dimension)\n\n# Sunny tends to stay sunny. Cloudy can go anywhere. Rainy tends to stay rainy\n\nB={\n  (0.7, 0.3, 0.1),\n  (0.2, 0.4, 0.3),\n  (0.1, 0.3, 0.6)\n}\n\n# D: Start slightly favoring sunny\n\nD={(0.5, 0.3, 0.2)}",
+    "Equations": "# Markov Chain evolution: s(t+1) ~ Categorical(B @ s(t))\n\n# Observation: o(t) = s(t) (identity)\n\n# No inference or action selection needed \u2014 passive system",
+    "Time": "Time=t\nDynamic\nDiscrete\nModelTimeHorizon=Unbounded",
+    "ActInfOntologyAnnotation": "A=EmissionMatrix\nB=TransitionMatrix\nD=InitialStateDistribution\ns=HiddenState\ns_prime=NextHiddenState\no=Observation\nt=Time",
+    "ModelParameters": "num_hidden_states: 3\nnum_obs: 3\nnum_actions: 1\nnum_timesteps: 40",
+    "Footer": "Simple Markov Chain v1 - GNN Representation.\nPassive dynamics, no actions. Tests minimal Markov model structure.",
+    "Signature": "Cryptographic signature goes here"
+  },
+  "initialparameterization": {
+    "A": [
+      [
+        1.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        1.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "B": [
+      [
+        0.7,
+        0.3,
+        0.1
+      ],
+      [
+        0.2,
+        0.4,
+        0.3
+      ],
+      [
+        0.1,
+        0.3,
+        0.6
+      ]
+    ],
+    "D": [
+      [
+        0.5,
+        0.3,
+        0.2
+      ]
+    ],
+    "num_hidden_states": 3,
+    "num_obs": 3,
+    "num_actions": 1,
+    "num_timesteps": 40
+  },
+  "model_parameters": {
+    "A": [
+      [
+        1.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        1.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "B": [
+      [
+        0.7,
+        0.3,
+        0.1
+      ],
+      [
+        0.2,
+        0.4,
+        0.3
+      ],
+      [
+        0.1,
+        0.3,
+        0.6
+      ]
+    ],
+    "D": [
+      [
+        0.5,
+        0.3,
+        0.2
+      ]
+    ],
+    "num_hidden_states": 3,
+    "num_obs": 3,
+    "num_actions": 1,
+    "num_timesteps": 40
+  }
+}

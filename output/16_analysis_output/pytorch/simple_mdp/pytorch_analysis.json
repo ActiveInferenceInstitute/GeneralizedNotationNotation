@@ -1,0 +1,26 @@
+{
+  "framework": "pytorch",
+  "model_name": "simple_mdp",
+  "num_timesteps": 25,
+  "num_states": 4,
+  "validation": {
+    "beliefs_in_range": true,
+    "beliefs_sum_to_one": false,
+    "actions_in_range": true,
+    "all_valid": false
+  },
+  "metrics": {
+    "mean_belief_entropy": 1.3322676295501875e-17,
+    "final_belief_entropy": -0.0,
+    "mean_confidence": 0.03999999999999998,
+    "final_confidence": 0.0,
+    "action_distribution": {
+      "0": 5,
+      "1": 8,
+      "2": 8,
+      "3": 4
+    },
+    "mean_efe": 0.08256493363312022
+  },
+  "plots_generated": true
+}

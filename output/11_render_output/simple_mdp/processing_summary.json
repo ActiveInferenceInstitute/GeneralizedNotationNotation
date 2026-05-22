@@ -1,0 +1,33 @@
+{
+  "timestamp": "2026-05-22T06:18:15.465306",
+  "source_file": "input/gnn_files/discrete/simple_mdp.md",
+  "model_name": "Simple MDP Agent",
+  "pomdp_dimensions": {
+    "num_states": 4,
+    "num_observations": 4,
+    "num_actions": 4
+  },
+  "frameworks_requested": [
+    "pymdp",
+    "rxinfer",
+    "activeinference_jl",
+    "jax",
+    "discopy",
+    "pytorch",
+    "numpyro",
+    "stan",
+    "bnlearn"
+  ],
+  "frameworks_processed": [
+    "pymdp",
+    "rxinfer",
+    "activeinference_jl",
+    "jax",
+    "discopy",
+    "pytorch",
+    "numpyro",
+    "stan",
+    "bnlearn"
+  ],
+  "frameworks_failed": []
+}

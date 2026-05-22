@@ -1,0 +1,23 @@
+{
+  "framework": "pytorch",
+  "model_name": "hmm_baseline",
+  "num_timesteps": 50,
+  "num_states": 4,
+  "validation": {
+    "beliefs_in_range": true,
+    "beliefs_sum_to_one": true,
+    "actions_in_range": true,
+    "all_valid": true
+  },
+  "metrics": {
+    "mean_belief_entropy": 0.7518567692083649,
+    "final_belief_entropy": 0.5060233135048309,
+    "mean_confidence": 0.6783860531321411,
+    "final_confidence": 0.8479597897079761,
+    "action_distribution": {
+      "0": 50
+    },
+    "mean_efe": 1.4861834203673303
+  },
+  "plots_generated": true
+}

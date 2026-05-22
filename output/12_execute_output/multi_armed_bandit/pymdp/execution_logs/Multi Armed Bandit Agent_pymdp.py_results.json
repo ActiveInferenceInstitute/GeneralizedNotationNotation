@@ -1,0 +1,255 @@
+{
+  "framework": "pymdp",
+  "model_name": "multi_armed_bandit",
+  "script_name": "Multi Armed Bandit Agent_pymdp.py",
+  "script_path": "output/11_render_output/multi_armed_bandit/pymdp/Multi Armed Bandit Agent_pymdp.py",
+  "success": true,
+  "return_code": 0,
+  "execution_time": 2.994269,
+  "timestamp": "2026-05-22T06:19:06.914577",
+  "simulation_data": {
+    "traces": [],
+    "free_energy": [],
+    "states": [],
+    "observations": [
+      0,
+      0,
+      2,
+      2,
+      2,
+      0,
+      0,
+      1,
+      2,
+      2,
+      1,
+      2,
+      1,
+      2,
+      1,
+      0,
+      1,
+      0,
+      2,
+      0,
+      0,
+      0,
+      2,
+      1,
+      1,
+      0,
+      0,
+      0,
+      1,
+      0
+    ],
+    "actions": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "policy": [],
+    "raw_output": "PyMDP 1.0.0+ detected (JAX-first Agent).\n",
+    "raw_error": "2026-05-22 06:19:07,444 - INFO - Running pymdp 1.0.0 rollout for Multi Armed Bandit Agent\n2026-05-22 06:19:07,444 - INFO - Output directory: output/pymdp_simulations/Multi Armed Bandit Agent\n2026-05-22 06:19:07,444 - INFO - Executing PyMDP simulation (correlation_id: render_generated_script)\n2026-05-22 06:19:07,444 - INFO - Starting pymdp 1.0.0 rollout (JAX backend)\n2026-05-22 06:19:07,445 - INFO - Dimensions: No=3, Ns=3, Nu=3 | T=30, batch=1, policy_len=1\n2026-05-22 06:19:07,450 - INFO - Unable to initialize backend 'tpu': INTERNAL: Failed to open libtpu.so: dlopen(libtpu.so, 0x0001): tried: 'libtpu.so' (no such file), '/System/Volumes/Preboot/Cryptexes/OSlibtpu.so' (no such file), '/usr/lib/libtpu.so' (no such file, not in dyld cache), 'libtpu.so' (no such file)\n2026-05-22 06:19:07,608 - INFO - pymdp 1.0.0 Agent built (batch_size=1)\n2026-05-22 06:19:08,222 - INFO - t=00 obs=0 belief=[0.091, 0.455, 0.455] action=0 next_state=0\n2026-05-22 06:19:08,267 - INFO - t=01 obs=0 belief=[0.028, 0.486, 0.486] action=0 next_state=0\n2026-05-22 06:19:08,310 - INFO - t=02 obs=2 belief=[0.242, 0.253, 0.505] action=0 next_state=0\n2026-05-22 06:19:08,351 - INFO - t=03 obs=2 belief=[0.557, 0.096, 0.347] action=0 next_state=0\n2026-05-22 06:19:08,394 - INFO - t=04 obs=2 belief=[0.793, 0.033, 0.174] action=0 next_state=0\n2026-05-22 06:19:08,435 - INFO - t=05 obs=0 belief=[0.344, 0.186, 0.471] action=0 next_state=0\n2026-05-22 06:19:08,479 - INFO - t=06 obs=0 belief=[0.094, 0.286, 0.62] action=0 next_state=0\n2026-05-22 06:19:08,520 - INFO - t=07 obs=1 belief=[0.118, 0.356, 0.525] action=0 next_state=0\n2026-05-22 06:19:08,562 - INFO - t=08 obs=2 belief=[0.402, 0.157, 0.441] action=0 next_state=0\n2026-05-22 06:19:08,621 - INFO - t=09 obs=2 belief=[0.695, 0.054, 0.251] action=0 next_state=0\n2026-05-22 06:19:08,694 - INFO - t=10 obs=1 belief=[0.62, 0.124, 0.255] action=0 next_state=0\n2026-05-22 06:19:08,765 - INFO - t=11 obs=2 belief=[0.834, 0.037, 0.129] action=0 next_state=0\n2026-05-22 06:19:08,841 - INFO - t=12 obs=1 belief=[0.739, 0.106, 0.155] action=0 next_state=2\n2026-05-22 06:19:08,897 - INFO - t=13 obs=2 belief=[0.89, 0.031, 0.08] action=0 next_state=2\n2026-05-22 06:19:08,949 - INFO - t=14 obs=1 belief=[0.786, 0.099, 0.115] action=0 next_state=2\n2026-05-22 06:19:09,000 - INFO - t=15 obs=0 belief=[0.338, 0.315, 0.347] action=0 next_state=2\n2026-05-22 06:19:09,045 - INFO - t=16 obs=1 belief=[0.305, 0.383, 0.312] action=0 next_state=2\n2026-05-22 06:19:09,091 - INFO - t=17 obs=0 belief=[0.082, 0.499, 0.418] action=0 next_state=2\n2026-05-22 06:19:09,140 - INFO - t=18 obs=2 belief=[0.359, 0.237, 0.405] action=0 next_state=2\n2026-05-22 06:19:09,188 - INFO - t=19 obs=0 belief=[0.099, 0.351, 0.55] action=0 next_state=2\n2026-05-22 06:19:09,238 - INFO - t=20 obs=0 belief=[0.03, 0.39, 0.58] action=0 next_state=2\n2026-05-22 06:19:09,291 - INFO - t=21 obs=0 belief=[0.016, 0.406, 0.578] action=0 next_state=2\n2026-05-22 06:19:09,340 - INFO - t=22 obs=2 belief=[0.205, 0.212, 0.582] action=0 next_state=2\n2026-05-22 06:19:09,386 - INFO - t=23 obs=1 belief=[0.209, 0.286, 0.506] action=0 next_state=1\n2026-05-22 06:19:09,434 - INFO - t=24 obs=1 belief=[0.207, 0.356, 0.437] action=0 next_state=1\n2026-05-22 06:19:09,479 - INFO - t=25 obs=0 belief=[0.055, 0.43, 0.515] action=0 next_state=1\n2026-05-22 06:19:09,533 - INFO - t=26 obs=0 belief=[0.021, 0.45, 0.529] action=0 next_state=1\n2026-05-22 06:19:09,583 - INFO - t=27 obs=0 belief=[0.014, 0.458, 0.528] action=0 next_state=1\n2026-05-22 06:19:09,636 - INFO - t=28 obs=1 belief=[0.054, 0.511, 0.435] action=0 next_state=1\n2026-05-22 06:19:09,686 - INFO - t=29 obs=0 belief=[0.021, 0.524, 0.455] action=0 next_state=1\n2026-05-22 06:19:09,687 - INFO - Saved simulation results to output/pymdp_simulations/Multi Armed Bandit Agent/simulation_results.json\n2026-05-22 06:19:09,687 - INFO - PyMDP simulation completed successfully\n2026-05-22 06:19:09,687 - INFO - Simulation completed successfully\n2026-05-22 06:19:09,687 - INFO -   framework:    PyMDP\n2026-05-22 06:19:09,687 - INFO -   pymdp ver:    1.0.0\n2026-05-22 06:19:09,687 - INFO -   backend:      jax\n2026-05-22 06:19:09,687 - INFO -   num_timesteps:30\n",
+    "beliefs": [
+      [
+        0.09090908616781235,
+        0.45454543828964233,
+        0.45454543828964233
+      ],
+      [
+        0.028340088203549385,
+        0.4858299493789673,
+        0.4858299493789673
+      ],
+      [
+        0.24246437847614288,
+        0.2525118589401245,
+        0.505023717880249
+      ],
+      [
+        0.5567793250083923,
+        0.09589117765426636,
+        0.3473294675350189
+      ],
+      [
+        0.7925131916999817,
+        0.033196039497852325,
+        0.174290731549263
+      ],
+      [
+        0.34369590878486633,
+        0.18574757874011993,
+        0.4705565571784973
+      ],
+      [
+        0.09421664476394653,
+        0.28623050451278687,
+        0.6195528507232666
+      ],
+      [
+        0.1184990406036377,
+        0.3562338948249817,
+        0.5252670645713806
+      ],
+      [
+        0.40191370248794556,
+        0.15679267048835754,
+        0.4412936866283417
+      ],
+      [
+        0.6945309042930603,
+        0.05417118966579437,
+        0.25129783153533936
+      ],
+      [
+        0.620486319065094,
+        0.12408798933029175,
+        0.25542566180229187
+      ],
+      [
+        0.8339747786521912,
+        0.03742610663175583,
+        0.12859907746315002
+      ],
+      [
+        0.7387328147888184,
+        0.1061871275305748,
+        0.15508006513118744
+      ],
+      [
+        0.8897730708122253,
+        0.030681634321808815,
+        0.07954532653093338
+      ],
+      [
+        0.7863650321960449,
+        0.09893033653497696,
+        0.11470463871955872
+      ],
+      [
+        0.3378593623638153,
+        0.3153060972690582,
+        0.34683457016944885
+      ],
+      [
+        0.304863840341568,
+        0.38337457180023193,
+        0.3117615580558777
+      ],
+      [
+        0.08214089274406433,
+        0.49936506152153015,
+        0.41849395632743835
+      ],
+      [
+        0.3585953116416931,
+        0.23666000366210938,
+        0.4047447144985199
+      ],
+      [
+        0.09908634424209595,
+        0.350707471370697,
+        0.550206184387207
+      ],
+      [
+        0.03007398173213005,
+        0.38997653126716614,
+        0.5799494385719299
+      ],
+      [
+        0.01608491875231266,
+        0.40602436661720276,
+        0.5778906941413879
+      ],
+      [
+        0.20544184744358063,
+        0.212479829788208,
+        0.5820782780647278
+      ],
+      [
+        0.2085912972688675,
+        0.2855287790298462,
+        0.5058799386024475
+      ],
+      [
+        0.2070969045162201,
+        0.3555738925933838,
+        0.4373292326927185
+      ],
+      [
+        0.05518541857600212,
+        0.42999139428138733,
+        0.5148231983184814
+      ],
+      [
+        0.021010374650359154,
+        0.450411319732666,
+        0.5285782814025879
+      ],
+      [
+        0.014350823126733303,
+        0.4576966166496277,
+        0.5279525518417358
+      ],
+      [
+        0.054257720708847046,
+        0.5106562972068787,
+        0.4350859522819519
+      ],
+      [
+        0.02082517370581627,
+        0.5243802070617676,
+        0.45479464530944824
+      ]
+    ],
+    "num_timesteps": 30
+  },
+  "execution_benchmark_repeats": 1,
+  "execution_metadata": {
+    "executor": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python",
+    "stdout_length": 41,
+    "stderr_length": 4177,
+    "output_directory": "output/12_execute_output/multi_armed_bandit/pymdp"
+  },
+  "execution_time_mean": 2.994269,
+  "execution_time_std": 0.0,
+  "execution_time_samples": [
+    2.994269
+  ],
+  "collected_outputs": {
+    "visualizations": [],
+    "simulation_data": [
+      "output/12_execute_output/multi_armed_bandit/pymdp/simulation_data/simulation_results.json"
+    ],
+    "traces": [],
+    "other": []
+  }
+}

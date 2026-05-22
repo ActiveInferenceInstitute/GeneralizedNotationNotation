@@ -1,0 +1,482 @@
+{
+  "timestamp": "2026-05-22T06:17:19.355828",
+  "source_directory": "input/gnn_files/continuous",
+  "output_directory": "output/3_gnn_output",
+  "processing_config": {
+    "recursive": true,
+    "verbose": false,
+    "serialize_preset": "full",
+    "supported_formats": [
+      "markdown",
+      "scala",
+      "lean",
+      "coq",
+      "python",
+      "bnf",
+      "ebnf",
+      "isabelle",
+      "maxima",
+      "xml",
+      "json",
+      "protobuf",
+      "yaml",
+      "xsd",
+      "asn1",
+      "pkl",
+      "alloy",
+      "z_notation",
+      "tla_plus",
+      "agda",
+      "haskell",
+      "pickle"
+    ],
+    "serialized_formats": [
+      "markdown",
+      "scala",
+      "lean",
+      "coq",
+      "python",
+      "bnf",
+      "ebnf",
+      "isabelle",
+      "maxima",
+      "xml",
+      "json",
+      "protobuf",
+      "yaml",
+      "xsd",
+      "asn1",
+      "pkl",
+      "alloy",
+      "z_notation",
+      "tla_plus",
+      "agda",
+      "haskell",
+      "pickle"
+    ],
+    "available_serializers": {
+      "markdown": "MarkdownSerializer",
+      "json": "JSONSerializer",
+      "xml": "XMLSerializer",
+      "yaml": "YAMLSerializer",
+      "scala": "ScalaSerializer",
+      "protobuf": "ProtobufSerializer",
+      "pkl": "PKLSerializer",
+      "xsd": "XSDSerializer",
+      "asn1": "ASN1Serializer",
+      "lean": "LeanSerializer",
+      "coq": "CoqSerializer",
+      "python": "PythonSerializer",
+      "bnf": "GrammarSerializer",
+      "ebnf": "GrammarSerializer",
+      "isabelle": "IsabelleSerializer",
+      "maxima": "MaximaSerializer",
+      "alloy": "AlloySerializer",
+      "z_notation": "ZNotationSerializer",
+      "tla_plus": "TLASerializer",
+      "agda": "AgdaSerializer",
+      "haskell": "FunctionalSerializer",
+      "pickle": "BinarySerializer"
+    }
+  },
+  "processed_files": [
+    {
+      "file_name": "predictive_coding_agent.md",
+      "file_path": "input/gnn_files/continuous/predictive_coding_agent.md",
+      "parse_success": true,
+      "parsed_model_file": "output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_parsed.json",
+      "source_format": null,
+      "model_info": {
+        "name": "Predictive Coding Active Inference Agent",
+        "version": "1.0",
+        "variables_count": 16,
+        "connections_count": 18,
+        "parameters_count": 13,
+        "equations_count": 0
+      },
+      "generated_formats": {
+        "markdown": {
+          "output_file": "output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_markdown.md",
+          "file_size": 2186,
+          "success": true
+        },
+        "scala": {
+          "output_file": "output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_scala.scala",
+          "file_size": 7149,
+          "success": true
+        },
+        "lean": {
+          "output_file": "output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_lean.lean",
+          "file_size": 7480,
+          "success": true
+        },
+        "coq": {
+          "output_file": "output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_coq.v",
+          "file_size": 7156,
+          "success": true
+        },
+        "python": {
+          "output_file": "output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_python.py",
+          "file_size": 12024,
+          "success": true
+        },
+        "bnf": {
+          "output_file": "output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_bnf.bnf",
+          "file_size": 7455,
+          "success": true
+        },
+        "ebnf": {
+          "output_file": "output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_ebnf.ebnf",
+          "file_size": 7455,
+          "success": true
+        },
+        "isabelle": {
+          "output_file": "output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_isabelle.thy",
+          "file_size": 7205,
+          "success": true
+        },
+        "maxima": {
+          "output_file": "output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_maxima.max",
+          "file_size": 7932,
+          "success": true
+        },
+        "xml": {
+          "output_file": "output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_xml.xml",
+          "file_size": 13008,
+          "success": true
+        },
+        "json": {
+          "output_file": "output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_json.json",
+          "file_size": 12803,
+          "success": true
+        },
+        "protobuf": {
+          "output_file": "output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_protobuf.proto",
+          "file_size": 9645,
+          "success": true
+        },
+        "yaml": {
+          "output_file": "output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_yaml.yaml",
+          "file_size": 7822,
+          "success": true
+        },
+        "xsd": {
+          "output_file": "output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_xsd.xsd",
+          "file_size": 8242,
+          "success": true
+        },
+        "asn1": {
+          "output_file": "output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_asn1.asn1",
+          "file_size": 10686,
+          "success": true
+        },
+        "pkl": {
+          "output_file": "output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_pkl.pkl",
+          "file_size": 16936,
+          "success": true
+        },
+        "alloy": {
+          "output_file": "output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_alloy.als",
+          "file_size": 11491,
+          "success": true
+        },
+        "z_notation": {
+          "output_file": "output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_z_notation.z",
+          "file_size": 7874,
+          "success": true
+        },
+        "tla_plus": {
+          "output_file": "output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_tla_plus.tla",
+          "file_size": 6468,
+          "success": true
+        },
+        "agda": {
+          "output_file": "output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_agda.agda",
+          "file_size": 6432,
+          "success": true
+        },
+        "haskell": {
+          "output_file": "output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_haskell.hs",
+          "file_size": 7378,
+          "success": true
+        },
+        "pickle": {
+          "output_file": "output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_pickle.pkl",
+          "file_size": 4920,
+          "success": true
+        }
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "file_name": "stochastic_dynamics.md",
+      "file_path": "input/gnn_files/continuous/stochastic_dynamics.md",
+      "parse_success": true,
+      "parsed_model_file": "output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_parsed.json",
+      "source_format": null,
+      "model_info": {
+        "name": "Stochastic Continuous Dynamics Agent",
+        "version": "1.0",
+        "variables_count": 10,
+        "connections_count": 6,
+        "parameters_count": 11,
+        "equations_count": 0
+      },
+      "generated_formats": {
+        "markdown": {
+          "output_file": "output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_markdown.md",
+          "file_size": 2007,
+          "success": true
+        },
+        "scala": {
+          "output_file": "output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_scala.scala",
+          "file_size": 4844,
+          "success": true
+        },
+        "lean": {
+          "output_file": "output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_lean.lean",
+          "file_size": 5567,
+          "success": true
+        },
+        "coq": {
+          "output_file": "output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_coq.v",
+          "file_size": 5322,
+          "success": true
+        },
+        "python": {
+          "output_file": "output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_python.py",
+          "file_size": 8894,
+          "success": true
+        },
+        "bnf": {
+          "output_file": "output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_bnf.bnf",
+          "file_size": 5663,
+          "success": true
+        },
+        "ebnf": {
+          "output_file": "output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_ebnf.ebnf",
+          "file_size": 5663,
+          "success": true
+        },
+        "isabelle": {
+          "output_file": "output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_isabelle.thy",
+          "file_size": 5332,
+          "success": true
+        },
+        "maxima": {
+          "output_file": "output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_maxima.max",
+          "file_size": 5813,
+          "success": true
+        },
+        "xml": {
+          "output_file": "output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_xml.xml",
+          "file_size": 8630,
+          "success": true
+        },
+        "json": {
+          "output_file": "output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_json.json",
+          "file_size": 8025,
+          "success": true
+        },
+        "protobuf": {
+          "output_file": "output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_protobuf.proto",
+          "file_size": 7182,
+          "success": true
+        },
+        "yaml": {
+          "output_file": "output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_yaml.yaml",
+          "file_size": 5035,
+          "success": true
+        },
+        "xsd": {
+          "output_file": "output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_xsd.xsd",
+          "file_size": 6188,
+          "success": true
+        },
+        "asn1": {
+          "output_file": "output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_asn1.asn1",
+          "file_size": 8267,
+          "success": true
+        },
+        "pkl": {
+          "output_file": "output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_pkl.pkl",
+          "file_size": 11702,
+          "success": true
+        },
+        "alloy": {
+          "output_file": "output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_alloy.als",
+          "file_size": 7926,
+          "success": true
+        },
+        "z_notation": {
+          "output_file": "output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_z_notation.z",
+          "file_size": 5912,
+          "success": true
+        },
+        "tla_plus": {
+          "output_file": "output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_tla_plus.tla",
+          "file_size": 4457,
+          "success": true
+        },
+        "agda": {
+          "output_file": "output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_agda.agda",
+          "file_size": 4431,
+          "success": true
+        },
+        "haskell": {
+          "output_file": "output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_haskell.hs",
+          "file_size": 4989,
+          "success": true
+        },
+        "pickle": {
+          "output_file": "output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_pickle.pkl",
+          "file_size": 3988,
+          "success": true
+        }
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "file_name": "continuous_navigation.md",
+      "file_path": "input/gnn_files/continuous/continuous_navigation.md",
+      "parse_success": true,
+      "parsed_model_file": "output/3_gnn_output/continuous_navigation/continuous_navigation_parsed.json",
+      "source_format": null,
+      "model_info": {
+        "name": "Continuous State Navigation Agent",
+        "version": "1.0",
+        "variables_count": 20,
+        "connections_count": 18,
+        "parameters_count": 17,
+        "equations_count": 0
+      },
+      "generated_formats": {
+        "markdown": {
+          "output_file": "output/3_gnn_output/continuous_navigation/continuous_navigation_markdown.md",
+          "file_size": 1894,
+          "success": true
+        },
+        "scala": {
+          "output_file": "output/3_gnn_output/continuous_navigation/continuous_navigation_scala.scala",
+          "file_size": 7569,
+          "success": true
+        },
+        "lean": {
+          "output_file": "output/3_gnn_output/continuous_navigation/continuous_navigation_lean.lean",
+          "file_size": 7673,
+          "success": true
+        },
+        "coq": {
+          "output_file": "output/3_gnn_output/continuous_navigation/continuous_navigation_coq.v",
+          "file_size": 7303,
+          "success": true
+        },
+        "python": {
+          "output_file": "output/3_gnn_output/continuous_navigation/continuous_navigation_python.py",
+          "file_size": 12522,
+          "success": true
+        },
+        "bnf": {
+          "output_file": "output/3_gnn_output/continuous_navigation/continuous_navigation_bnf.bnf",
+          "file_size": 7568,
+          "success": true
+        },
+        "ebnf": {
+          "output_file": "output/3_gnn_output/continuous_navigation/continuous_navigation_ebnf.ebnf",
+          "file_size": 7568,
+          "success": true
+        },
+        "isabelle": {
+          "output_file": "output/3_gnn_output/continuous_navigation/continuous_navigation_isabelle.thy",
+          "file_size": 7386,
+          "success": true
+        },
+        "maxima": {
+          "output_file": "output/3_gnn_output/continuous_navigation/continuous_navigation_maxima.max",
+          "file_size": 8042,
+          "success": true
+        },
+        "xml": {
+          "output_file": "output/3_gnn_output/continuous_navigation/continuous_navigation_xml.xml",
+          "file_size": 13567,
+          "success": true
+        },
+        "json": {
+          "output_file": "output/3_gnn_output/continuous_navigation/continuous_navigation_json.json",
+          "file_size": 13463,
+          "success": true
+        },
+        "protobuf": {
+          "output_file": "output/3_gnn_output/continuous_navigation/continuous_navigation_protobuf.proto",
+          "file_size": 9855,
+          "success": true
+        },
+        "yaml": {
+          "output_file": "output/3_gnn_output/continuous_navigation/continuous_navigation_yaml.yaml",
+          "file_size": 8023,
+          "success": true
+        },
+        "xsd": {
+          "output_file": "output/3_gnn_output/continuous_navigation/continuous_navigation_xsd.xsd",
+          "file_size": 8542,
+          "success": true
+        },
+        "asn1": {
+          "output_file": "output/3_gnn_output/continuous_navigation/continuous_navigation_asn1.asn1",
+          "file_size": 10518,
+          "success": true
+        },
+        "pkl": {
+          "output_file": "output/3_gnn_output/continuous_navigation/continuous_navigation_pkl.pkl",
+          "file_size": 17710,
+          "success": true
+        },
+        "alloy": {
+          "output_file": "output/3_gnn_output/continuous_navigation/continuous_navigation_alloy.als",
+          "file_size": 11900,
+          "success": true
+        },
+        "z_notation": {
+          "output_file": "output/3_gnn_output/continuous_navigation/continuous_navigation_z_notation.z",
+          "file_size": 8093,
+          "success": true
+        },
+        "tla_plus": {
+          "output_file": "output/3_gnn_output/continuous_navigation/continuous_navigation_tla_plus.tla",
+          "file_size": 6944,
+          "success": true
+        },
+        "agda": {
+          "output_file": "output/3_gnn_output/continuous_navigation/continuous_navigation_agda.agda",
+          "file_size": 6900,
+          "success": true
+        },
+        "haskell": {
+          "output_file": "output/3_gnn_output/continuous_navigation/continuous_navigation_haskell.hs",
+          "file_size": 7796,
+          "success": true
+        },
+        "pickle": {
+          "output_file": "output/3_gnn_output/continuous_navigation/continuous_navigation_pickle.pkl",
+          "file_size": 4664,
+          "success": true
+        }
+      },
+      "errors": [],
+      "warnings": []
+    }
+  ],
+  "summary": {
+    "total_files": 3,
+    "successful_parses": 3,
+    "failed_parses": 0,
+    "total_formats_generated": 66,
+    "formats_per_file": {
+      "predictive_coding_agent.md": 22,
+      "stochastic_dynamics.md": 22,
+      "continuous_navigation.md": 22
+    }
+  }
+}

@@ -1,0 +1,225 @@
+annotation: 'A POMDP agent operating in a non-stationary environment. The key feature
+
+  is that the transition matrix `B` is indexed by time (`B_t`), capturing
+
+  dynamics that evolve across the planning horizon — e.g., shifting wind
+
+  patterns for a sailing agent, or changing opponent strategy in a
+
+  sequential game.
+
+
+  - 3 hidden states, 3 observations, 2 actions
+
+  - B_t: 3D transition tensor per timestep (shape: next_state × current_state × action)
+
+  - Agent must adapt belief updates each step to the current B_t
+
+  - Exercises time-varying matrix handling in renderers
+
+
+  This sample pushes the language extensions around time-indexed tensors
+
+  and tests downstream code generation when matrix literals are
+
+  timestep-dependent.'
+connections:
+- connection_type: undirected
+  description: null
+  source_variables:
+  - A
+  target_variables:
+  - o_t
+  weight: null
+- connection_type: directed
+  description: null
+  source_variables:
+  - B_t
+  target_variables:
+  - s_t+1
+  weight: null
+- connection_type: undirected
+  description: null
+  source_variables:
+  - C
+  target_variables:
+  - o_t
+  weight: null
+- connection_type: directed
+  description: null
+  source_variables:
+  - D
+  target_variables:
+  - s_t
+  weight: null
+- connection_type: undirected
+  description: null
+  source_variables:
+  - s_t
+  target_variables:
+  - A
+  weight: null
+- connection_type: directed
+  description: null
+  source_variables:
+  - s_t
+  - u_t
+  target_variables:
+  - B_t
+  weight: null
+created_at: '2026-05-22T06:17:18.833980'
+equations: []
+model_name: Time-Varying Transition Dynamics Agent
+modified_at: '2026-05-22T06:17:18.833981'
+ontology_mappings:
+- description: null
+  ontology_term: LikelihoodMatrix
+  variable_name: A
+- description: null
+  ontology_term: TimeVaryingTransitionMatrix
+  variable_name: B_t
+- description: null
+  ontology_term: PreferenceVector
+  variable_name: C
+- description: null
+  ontology_term: Prior
+  variable_name: D
+- description: null
+  ontology_term: Observation
+  variable_name: o_t
+- description: null
+  ontology_term: HiddenState
+  variable_name: s_t
+- description: null
+  ontology_term: Action
+  variable_name: u_t
+parameters:
+- description: null
+  name: A
+  type_hint: null
+  value:
+  - - 0.85
+    - 0.1
+    - 0.05
+  - - 0.1
+    - 0.8
+    - 0.1
+  - - 0.05
+    - 0.1
+    - 0.85
+- description: null
+  name: B_t
+  type_hint: null
+  value:
+  - - - 0.6
+      - 0.1
+    - - 0.3
+      - 0.1
+    - - 0.1
+      - 0.8
+  - - - 0.3
+      - 0.1
+    - - 0.6
+      - 0.6
+    - - 0.1
+      - 0.3
+  - - - 0.1
+      - 0.8
+    - - 0.1
+      - 0.3
+    - - 0.8
+      - 0.1
+- description: null
+  name: C
+  type_hint: null
+  value:
+  - - 0.0
+    - 0.0
+    - 1.0
+- description: null
+  name: D
+  type_hint: null
+  value:
+  - - 0.33
+    - 0.33
+    - 0.34
+- description: null
+  name: num_actions
+  type_hint: null
+  value: 2
+- description: null
+  name: num_hidden_states
+  type_hint: null
+  value: 3
+- description: null
+  name: num_obs
+  type_hint: null
+  value: 3
+- description: null
+  name: num_timesteps
+  type_hint: null
+  value: 10
+time_specification:
+  discretization: DiscreteTime
+  horizon: 10
+  step_size: null
+  time_type: Dynamic
+variables:
+- data_type: float
+  description: Observation model (time-invariant)
+  dimensions:
+  - 3
+  - 3
+  name: A
+  type: likelihood_matrix
+- data_type: float
+  description: Transition model, indexed by time t
+  dimensions:
+  - 3
+  - 3
+  - 2
+  name: B_t
+  type: hidden_state
+- data_type: float
+  description: Preference vector
+  dimensions:
+  - 3
+  - 1
+  name: C
+  type: preference_vector
+- data_type: float
+  description: Initial state prior
+  dimensions:
+  - 3
+  - 1
+  name: D
+  type: prior_vector
+- data_type: integer
+  description: Observation at time t
+  dimensions:
+  - 3
+  - 1
+  name: o_t
+  type: observation
+- data_type: float
+  description: Hidden state at time t
+  dimensions:
+  - 3
+  - 1
+  name: s_t
+  type: hidden_state
+- data_type: float
+  description: Hidden state at time t+1
+  dimensions:
+  - 3
+  - 1
+  name: s_t+1
+  type: hidden_state
+- data_type: integer
+  description: Action at time t
+  dimensions:
+  - 2
+  - 1
+  name: u_t
+  type: action
+version: '1.0'

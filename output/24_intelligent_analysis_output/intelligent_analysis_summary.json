@@ -1,0 +1,14 @@
+{
+  "timestamp": "2026-05-22T06:35:10.995632",
+  "overall_status": "SUCCESS",
+  "health_score": 85.0,
+  "failure_count": 0,
+  "red_flag_count": 0,
+  "yellow_flag_count": 7,
+  "bottleneck_count": 5,
+  "recommendation_count": 6,
+  "recovery_plan_length": 0,
+  "recovery_plan": [],
+  "report_file": "output/24_intelligent_analysis_output/intelligent_analysis_report.md",
+  "data_file": "output/24_intelligent_analysis_output/analysis_data.json"
+}

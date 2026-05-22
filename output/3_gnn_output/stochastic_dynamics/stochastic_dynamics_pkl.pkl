@@ -1,0 +1,262 @@
+///
+/// GNN Model: Stochastic Continuous Dynamics Agent
+/// Annotation: A continuous-state Active Inference agent whose dynamics include
+explicit process and observation noise. This sample exercises the
+continuous-time path of the language: Time=Continuous, state as a
+multi-dimensional vector, and Equations containing noise terms ε_state
+and ε_obs that downstream renderers must handle.
+
+- 4-dimensional continuous hidden state (e.g., position + velocity in 2D)
+- 2-dimensional continuous observation (noisy position readout)
+- Linear Gaussian dynamics: ẋ = Fx + Gu + ε_state
+- Linear Gaussian observation: o = Hx + ε_obs
+- Precision parameters γ_state (process) and γ_obs (observation)
+
+Used to validate that downstream backends either generate SDE solvers
+(Stan via latent-variable sampling, NumPyro) or raise a clean
+"unsupported feature" warning (PyMDP, which is discrete-only).
+/// Generated: 2026-05-22T06:17:19.374321
+/// Enhanced by GNN PKL Serializer
+///
+
+@ModuleInfo { minPklVersion = "0.25.0" }
+
+class GNNModel {{
+  name: String = "Stochastic Continuous Dynamics Agent"
+  annotation: String = "A continuous-state Active Inference agent whose dynamics include
+explicit process and observation noise. This sample exercises the
+continuous-time path of the language: Time=Continuous, state as a
+multi-dimensional vector, and Equations containing noise terms ε_state
+and ε_obs that downstream renderers must handle.
+
+- 4-dimensional continuous hidden state (e.g., position + velocity in 2D)
+- 2-dimensional continuous observation (noisy position readout)
+- Linear Gaussian dynamics: ẋ = Fx + Gu + ε_state
+- Linear Gaussian observation: o = Hx + ε_obs
+- Precision parameters γ_state (process) and γ_obs (observation)
+
+Used to validate that downstream backends either generate SDE solvers
+(Stan via latent-variable sampling, NumPyro) or raise a clean
+"unsupported feature" warning (PyMDP, which is discrete-only)."
+
+  variables: Mapping<String, Variable> = new Mapping {{
+    ["F"] = new Variable {
+      name = "F"
+      varType = "hidden_state"
+      dataType = "float"
+      dimensions = List(4, 4)
+    }}
+    ["G"] = new Variable {
+      name = "G"
+      varType = "policy"
+      dataType = "float"
+      dimensions = List(4, 2)
+    }}
+    ["H"] = new Variable {
+      name = "H"
+      varType = "hidden_state"
+      dataType = "float"
+      dimensions = List(2, 4)
+    }}
+    ["epsilon_obs"] = new Variable {
+      name = "epsilon_obs"
+      varType = "observation"
+      dataType = "float"
+      dimensions = List(2, 1)
+    }}
+    ["epsilon_state"] = new Variable {
+      name = "epsilon_state"
+      varType = "hidden_state"
+      dataType = "float"
+      dimensions = List(4, 1)
+    }}
+    ["gamma_obs"] = new Variable {
+      name = "gamma_obs"
+      varType = "observation"
+      dataType = "float"
+      dimensions = List(1)
+    }}
+    ["gamma_state"] = new Variable {
+      name = "gamma_state"
+      varType = "hidden_state"
+      dataType = "float"
+      dimensions = List(1)
+    }}
+    ["o"] = new Variable {
+      name = "o"
+      varType = "observation"
+      dataType = "float"
+      dimensions = List(2, 1)
+    }}
+    ["u"] = new Variable {
+      name = "u"
+      varType = "action"
+      dataType = "float"
+      dimensions = List(2, 1)
+    }}
+    ["x"] = new Variable {
+      name = "x"
+      varType = "hidden_state"
+      dataType = "float"
+      dimensions = List(4, 1)
+    }}
+  }}
+
+  connections: Mapping<String, Connection> = new Mapping {{
+    ["connection_0"] = new Connection {
+      sourceVariables = List("x", "u", "epsilon_state")
+      targetVariables = List("F")
+      connectionType = "directed"
+    }}
+    ["connection_1"] = new Connection {
+      sourceVariables = List("F")
+      targetVariables = List("x")
+      connectionType = "directed"
+    }}
+    ["connection_2"] = new Connection {
+      sourceVariables = List("x", "epsilon_obs")
+      targetVariables = List("H")
+      connectionType = "directed"
+    }}
+    ["connection_3"] = new Connection {
+      sourceVariables = List("H")
+      targetVariables = List("o")
+      connectionType = "directed"
+    }}
+    ["connection_4"] = new Connection {
+      sourceVariables = List("gamma_state")
+      targetVariables = List("epsilon_state")
+      connectionType = "undirected"
+    }}
+    ["connection_5"] = new Connection {
+      sourceVariables = List("gamma_obs")
+      targetVariables = List("epsilon_obs")
+      connectionType = "undirected"
+    }}
+  }}
+
+  parameters: Mapping<String, Parameter> = new Mapping {{
+    ["F"] = new Parameter {
+      name = "F"
+      value = List([1.0, 0.0, 0.1, 0.0], [0.0, 1.0, 0.0, 0.1], [0.0, 0.0, 0.95, 0.0], [0.0, 0.0, 0.0, 0.95])
+      paramType = "constant"
+    }}
+    ["G"] = new Parameter {
+      name = "G"
+      value = List([0.0, 0.0], [0.0, 0.0], [1.0, 0.0], [0.0, 1.0])
+      paramType = "constant"
+    }}
+    ["H"] = new Parameter {
+      name = "H"
+      value = List([1.0, 0.0, 0.0, 0.0], [0.0, 1.0, 0.0, 0.0])
+      paramType = "constant"
+    }}
+    ["control_dim"] = new Parameter {
+      name = "control_dim"
+      value = 2
+      paramType = "constant"
+    }}
+    ["gamma_obs"] = new Parameter {
+      name = "gamma_obs"
+      value = List([5.0])
+      paramType = "constant"
+    }}
+    ["gamma_state"] = new Parameter {
+      name = "gamma_state"
+      value = List([10.0])
+      paramType = "constant"
+    }}
+    ["integration_step"] = new Parameter {
+      name = "integration_step"
+      value = 0.1
+      paramType = "constant"
+    }}
+    ["num_timesteps"] = new Parameter {
+      name = "num_timesteps"
+      value = 50
+      paramType = "constant"
+    }}
+    ["obs_dim"] = new Parameter {
+      name = "obs_dim"
+      value = 2
+      paramType = "constant"
+    }}
+    ["state_dim"] = new Parameter {
+      name = "state_dim"
+      value = 4
+      paramType = "constant"
+    }}
+    ["time_horizon"] = new Parameter {
+      name = "time_horizon"
+      value = 5.0
+      paramType = "constant"
+    }}
+  }}
+
+  ontologyMappings: List<OntologyMapping> = new List {{
+  }}
+
+}}
+
+class Variable {{
+  name: String
+  varType: String
+  dataType: String
+  dimensions: List<Int>
+}}
+
+class Connection {{
+  sourceVariables: List<String>
+  targetVariables: List<String>
+  connectionType: String
+}}
+
+class Parameter {{
+  name: String
+  value: Any
+  paramType: String
+}}
+
+class TimeSpec {{
+  timeType: String
+  steps: Int
+  description: String?
+}}
+
+class OntologyMapping {{
+  variableName: String
+  ontologyTerm: String
+}}
+
+/* MODEL_DATA: {"model_name":"Stochastic Continuous Dynamics Agent","annotation":"A continuous-state Active Inference agent whose dynamics include\nexplicit process and observation noise. This sample exercises the\ncontinuous-time path of the language: Time=Continuous, state as a\nmulti-dimensional vector, and Equations containing noise terms \u03b5_state\nand \u03b5_obs that downstream renderers must handle.\n\n- 4-dimensional continuous hidden state (e.g., position + velocity in 2D)\n- 2-dimensional continuous observation (noisy position readout)\n- Linear Gaussian dynamics: \u1e8b = Fx + Gu + \u03b5_state\n- Linear Gaussian observation: o = Hx + \u03b5_obs\n- Precision parameters \u03b3_state (process) and \u03b3_obs (observation)\n\nUsed to validate that downstream backends either generate SDE solvers\n(Stan via latent-variable sampling, NumPyro) or raise a clean\n\"unsupported feature\" warning (PyMDP, which is discrete-only).","variables":[{"name":"x","var_type":"hidden_state","data_type":"float","dimensions":[4,1]},{"name":"o","var_type":"observation","data_type":"float","dimensions":[2,1]},{"name":"u","var_type":"action","data_type":"float","dimensions":[2,1]},{"name":"F","var_type":"hidden_state","data_type":"float","dimensions":[4,4]},{"name":"G","var_type":"policy","data_type":"float","dimensions":[4,2]},{"name":"H","var_type":"hidden_state","data_type":"float","dimensions":[2,4]},{"name":"gamma_state","var_type":"hidden_state","data_type":"float","dimensions":[1]},{"name":"gamma_obs","var_type":"observation","data_type":"float","dimensions":[1]},{"name":"epsilon_state","var_type":"hidden_state","data_type":"float","dimensions":[4,1]},{"name":"epsilon_obs","var_type":"observation","data_type":"float","dimensions":[2,1]}],"connections":[{"source_variables":["x","u","epsilon_state"],"target_variables":["F"],"connection_type":"directed"},{"source_variables":["F"],"target_variables":["x"],"connection_type":"directed"},{"source_variables":["x","epsilon_obs"],"target_variables":["H"],"connection_type":"directed"},{"source_variables":["H"],"target_variables":["o"],"connection_type":"directed"},{"source_variables":["gamma_state"],"target_variables":["epsilon_state"],"connection_type":"undirected"},{"source_variables":["gamma_obs"],"target_variables":["epsilon_obs"],"connection_type":"undirected"}],"parameters":[{"name":"F","value":[[1.0,0.0,0.1,0.0],[0.0,1.0,0.0,0.1],[0.0,0.0,0.95,0.0],[0.0,0.0,0.0,0.95]],"param_type":"constant"},{"name":"G","value":[[0.0,0.0],[0.0,0.0],[1.0,0.0],[0.0,1.0]],"param_type":"constant"},{"name":"H","value":[[1.0,0.0,0.0,0.0],[0.0,1.0,0.0,0.0]],"param_type":"constant"},{"name":"gamma_state","value":[[10.0]],"param_type":"constant"},{"name":"gamma_obs","value":[[5.0]],"param_type":"constant"},{"name":"state_dim","value":4,"param_type":"constant"},{"name":"obs_dim","value":2,"param_type":"constant"},{"name":"control_dim","value":2,"param_type":"constant"},{"name":"num_timesteps","value":50,"param_type":"constant"},{"name":"time_horizon","value":5.0,"param_type":"constant"},{"name":"integration_step","value":0.1,"param_type":"constant"}],"equations":[],"time_specification":{"time_type":"Static","discretization":"ContinuousTime","horizon":"5.0","step_size":null},"ontology_mappings":[{"variable_name":"x","ontology_term":"ContinuousHiddenState","description":null},{"variable_name":"o","ontology_term":"ContinuousObservation","description":null},{"variable_name":"u","ontology_term":"ContinuousAction","description":null},{"variable_name":"F","ontology_term":"DriftMatrix","description":null},{"variable_name":"G","ontology_term":"ControlMatrix","description":null},{"variable_name":"H","ontology_term":"ObservationMatrix","description":null},{"variable_name":"gamma_state","ontology_term":"ProcessNoisePrecision","description":null},{"variable_name":"gamma_obs","ontology_term":"ObservationNoisePrecision","description":null},{"variable_name":"epsilon_state","ontology_term":"ProcessNoise","description":null},{"variable_name":"epsilon_obs","ontology_term":"ObservationNoise","description":null}]} */
+
+// Variables:
+// Variable: x (hidden_state)
+// Variable: o (observation)
+// Variable: u (action)
+// Variable: F (hidden_state)
+// Variable: G (policy)
+// Variable: H (hidden_state)
+// Variable: gamma_state (hidden_state)
+// Variable: gamma_obs (observation)
+// Variable: epsilon_state (hidden_state)
+// Variable: epsilon_obs (observation)
+// Connections:
+// Connection: x,u,epsilon_state --directed--> F
+// Connection: F --directed--> x
+// Connection: x,epsilon_obs --directed--> H
+// Connection: H --directed--> o
+// Connection: gamma_state --undirected--> epsilon_state
+// Connection: gamma_obs --undirected--> epsilon_obs
+// Parameters:
+// Parameter: F = [[1.0, 0.0, 0.1, 0.0], [0.0, 1.0, 0.0, 0.1], [0.0, 0.0, 0.95, 0.0], [0.0, 0.0, 0.0, 0.95]]
+// Parameter: G = [[0.0, 0.0], [0.0, 0.0], [1.0, 0.0], [0.0, 1.0]]
+// Parameter: H = [[1.0, 0.0, 0.0, 0.0], [0.0, 1.0, 0.0, 0.0]]
+// Parameter: gamma_state = [[10.0]]
+// Parameter: gamma_obs = [[5.0]]
+// Parameter: state_dim = 4
+// Parameter: obs_dim = 2
+// Parameter: control_dim = 2
+// Parameter: num_timesteps = 50
+// Parameter: time_horizon = 5.0
+// Parameter: integration_step = 0.1

@@ -1,0 +1,33 @@
+{
+  "timestamp": "2026-05-22T06:18:15.515719",
+  "source_file": "input/gnn_files/discrete/tmaze_epistemic.md",
+  "model_name": "T-Maze Epistemic Foraging Agent",
+  "pomdp_dimensions": {
+    "num_states": 4,
+    "num_observations": 4,
+    "num_actions": 4
+  },
+  "frameworks_requested": [
+    "pymdp",
+    "rxinfer",
+    "activeinference_jl",
+    "jax",
+    "discopy",
+    "pytorch",
+    "numpyro",
+    "stan",
+    "bnlearn"
+  ],
+  "frameworks_processed": [
+    "pymdp",
+    "rxinfer",
+    "activeinference_jl",
+    "jax",
+    "discopy",
+    "pytorch",
+    "numpyro",
+    "stan",
+    "bnlearn"
+  ],
+  "frameworks_failed": []
+}

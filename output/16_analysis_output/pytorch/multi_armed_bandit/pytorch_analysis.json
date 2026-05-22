@@ -1,0 +1,25 @@
+{
+  "framework": "pytorch",
+  "model_name": "multi_armed_bandit",
+  "num_timesteps": 30,
+  "num_states": 3,
+  "validation": {
+    "beliefs_in_range": true,
+    "beliefs_sum_to_one": true,
+    "actions_in_range": true,
+    "all_valid": true
+  },
+  "metrics": {
+    "mean_belief_entropy": 0.5881964009000256,
+    "final_belief_entropy": 0.3886764850847702,
+    "mean_confidence": 0.7382745276290381,
+    "final_confidence": 0.8711896147915382,
+    "action_distribution": {
+      "0": 9,
+      "1": 9,
+      "2": 12
+    },
+    "mean_efe": 2.0504600881912194
+  },
+  "plots_generated": true
+}

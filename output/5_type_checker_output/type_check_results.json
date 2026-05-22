@@ -1,0 +1,1375 @@
+{
+  "timestamp": "2026-05-22T06:17:41.374834",
+  "processed_files": 3,
+  "success": true,
+  "errors": [],
+  "validation_results": [
+    {
+      "file_path": "input/gnn_files/continuous/predictive_coding_agent.md",
+      "file_name": "predictive_coding_agent.md",
+      "valid": false,
+      "errors": [
+        "Duplicate variable names: parameters, level, error, precision, belief"
+      ],
+      "warnings": [
+        "Type issue: Unknown type 'Predictive' for variable 'Example'",
+        "Type issue: Unknown type '1' for variable 'Version'",
+        "Type issue: Unknown type 'sensory' for variable 'hierarchy'",
+        "Type issue: Unknown type 'predicts' for variable 'level'",
+        "Type issue: Unknown type 'predicts' for variable 'level'",
+        "Type issue: Unknown type 'mean' for variable 'belief'",
+        "Type issue: Unknown type 'o' for variable 'error'",
+        "Type issue: Unknown type 'mu_dot' for variable 'error'",
+        "Type issue: Unknown type 'o' for variable 'parameters'",
+        "Type issue: Unknown type 'mu_dot' for variable 'parameters'",
+        "Type issue: Unknown type 'confidence' for variable 'precision'",
+        "Type issue: Unknown type 'confidence' for variable 'precision'",
+        "Type issue: Unknown type 'centered' for variable 'belief'",
+        "Type issue: Unknown type 'moderate' for variable 'covariance'",
+        "Type issue: Unknown type 'high' for variable 'precision'",
+        "Type issue: Unknown type 'moderate' for variable 'precision'",
+        "Type issue: Unknown type 'attractor' for variable 'state'",
+        "Type issue: Unknown type 'e_s' for variable 'error'",
+        "Type issue: Unknown type 'e_d' for variable 'error'",
+        "Type issue: Unknown type '3' for variable 'state_dim'",
+        "Type issue: Unknown type '4' for variable 'obs_dim'",
+        "Type issue: Unknown type '2' for variable 'action_dim'",
+        "Type issue: Unknown type '0' for variable 'dt'",
+        "Type issue: Unknown type '5' for variable 'simulation_time'",
+        "Type issue: Unknown type '1' for variable 'learning_rate_belief'",
+        "Type issue: Unknown type '0' for variable 'learning_rate_action'",
+        "Type issue: Unknown type 'perception' for variable 'architecture'"
+      ],
+      "type_issues": [
+        {
+          "valid": false,
+          "message": "Unknown type 'Predictive' for variable 'Example'",
+          "variable": "Example",
+          "type": "Predictive"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '1' for variable 'Version'",
+          "variable": "Version",
+          "type": "1"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type 'sensory' for variable 'hierarchy'",
+          "variable": "hierarchy",
+          "type": "sensory"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type 'predicts' for variable 'level'",
+          "variable": "level",
+          "type": "predicts"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type 'predicts' for variable 'level'",
+          "variable": "level",
+          "type": "predicts"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type 'mean' for variable 'belief'",
+          "variable": "belief",
+          "type": "mean"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type 'o' for variable 'error'",
+          "variable": "error",
+          "type": "o"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type 'mu_dot' for variable 'error'",
+          "variable": "error",
+          "type": "mu_dot"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type 'o' for variable 'parameters'",
+          "variable": "parameters",
+          "type": "o"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type 'mu_dot' for variable 'parameters'",
+          "variable": "parameters",
+          "type": "mu_dot"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type 'confidence' for variable 'precision'",
+          "variable": "precision",
+          "type": "confidence"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type 'confidence' for variable 'precision'",
+          "variable": "precision",
+          "type": "confidence"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type 'centered' for variable 'belief'",
+          "variable": "belief",
+          "type": "centered"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type 'moderate' for variable 'covariance'",
+          "variable": "covariance",
+          "type": "moderate"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type 'high' for variable 'precision'",
+          "variable": "precision",
+          "type": "high"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type 'moderate' for variable 'precision'",
+          "variable": "precision",
+          "type": "moderate"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type 'attractor' for variable 'state'",
+          "variable": "state",
+          "type": "attractor"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type 'e_s' for variable 'error'",
+          "variable": "error",
+          "type": "e_s"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type 'e_d' for variable 'error'",
+          "variable": "error",
+          "type": "e_d"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '3' for variable 'state_dim'",
+          "variable": "state_dim",
+          "type": "3"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '4' for variable 'obs_dim'",
+          "variable": "obs_dim",
+          "type": "4"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '2' for variable 'action_dim'",
+          "variable": "action_dim",
+          "type": "2"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '0' for variable 'dt'",
+          "variable": "dt",
+          "type": "0"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '5' for variable 'simulation_time'",
+          "variable": "simulation_time",
+          "type": "5"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '1' for variable 'learning_rate_belief'",
+          "variable": "learning_rate_belief",
+          "type": "1"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '0' for variable 'learning_rate_action'",
+          "variable": "learning_rate_action",
+          "type": "0"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type 'perception' for variable 'architecture'",
+          "variable": "architecture",
+          "type": "perception"
+        }
+      ],
+      "validation_timestamp": "2026-05-22T06:17:41.374978",
+      "dimension_compatibility": {
+        "compatible": true,
+        "issues": [],
+        "warnings": [],
+        "variables_checked": [
+          "mu",
+          "mu_dot",
+          "Sigma",
+          "e_s",
+          "e_d",
+          "g_params",
+          "f_params",
+          "Pi_s",
+          "Pi_d",
+          "o",
+          "u",
+          "F",
+          "F_s",
+          "F_d",
+          "mu_star",
+          "t"
+        ],
+        "dimension_map": {
+          "mu": [
+            3,
+            1
+          ],
+          "mu_dot": [
+            3,
+            1
+          ],
+          "Sigma": [
+            3,
+            3
+          ],
+          "e_s": [
+            4,
+            1
+          ],
+          "e_d": [
+            3,
+            1
+          ],
+          "g_params": [
+            12
+          ],
+          "f_params": [
+            9
+          ],
+          "Pi_s": [
+            4,
+            4
+          ],
+          "Pi_d": [
+            3,
+            3
+          ],
+          "o": [
+            4,
+            1
+          ],
+          "u": [
+            2,
+            1
+          ],
+          "F": [
+            1
+          ],
+          "F_s": [
+            1
+          ],
+          "F_d": [
+            1
+          ],
+          "mu_star": [
+            3,
+            1
+          ],
+          "t": [
+            1
+          ]
+        }
+      },
+      "resource_estimation": {
+        "complexity_tier": "small",
+        "estimated_memory_bytes": 324,
+        "total_parameters": 81,
+        "variables": 16,
+        "connections": 34,
+        "flops_estimate": 2334.5290906369414,
+        "complexity_score": 4.669058181273883
+      }
+    },
+    {
+      "file_path": "input/gnn_files/continuous/stochastic_dynamics.md",
+      "file_name": "stochastic_dynamics.md",
+      "valid": false,
+      "errors": [
+        "Duplicate variable names: F, H, G"
+      ],
+      "warnings": [
+        "Type issue: Unknown type 'Stochastic' for variable 'Example'",
+        "Type issue: Unknown type '1' for variable 'Version'",
+        "Type issue: Unknown type 'Time' for variable 'language'",
+        "Type issue: Unknown type 'o' for variable 'observation'",
+        "Type issue: Unknown type 'next' for variable 'Dynamics'",
+        "Type issue: Unknown type 'current' for variable 'Observation'",
+        "Type issue: Unknown type 'near' for variable 'F'",
+        "Type issue: Unknown type 'control' for variable 'G'",
+        "Type issue: Unknown type 'observe' for variable 'H'",
+        "Type issue: Unknown type '4' for variable 'state_dim'",
+        "Type issue: Unknown type '2' for variable 'obs_dim'",
+        "Type issue: Unknown type '2' for variable 'control_dim'",
+        "Type issue: Unknown type '50' for variable 'num_timesteps'",
+        "Type issue: Unknown type '5' for variable 'time_horizon'",
+        "Type issue: Unknown type '0' for variable 'integration_step'"
+      ],
+      "type_issues": [
+        {
+          "valid": false,
+          "message": "Unknown type 'Stochastic' for variable 'Example'",
+          "variable": "Example",
+          "type": "Stochastic"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '1' for variable 'Version'",
+          "variable": "Version",
+          "type": "1"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type 'Time' for variable 'language'",
+          "variable": "language",
+          "type": "Time"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type 'o' for variable 'observation'",
+          "variable": "observation",
+          "type": "o"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type 'next' for variable 'Dynamics'",
+          "variable": "Dynamics",
+          "type": "next"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type 'current' for variable 'Observation'",
+          "variable": "Observation",
+          "type": "current"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type 'near' for variable 'F'",
+          "variable": "F",
+          "type": "near"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type 'control' for variable 'G'",
+          "variable": "G",
+          "type": "control"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type 'observe' for variable 'H'",
+          "variable": "H",
+          "type": "observe"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '4' for variable 'state_dim'",
+          "variable": "state_dim",
+          "type": "4"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '2' for variable 'obs_dim'",
+          "variable": "obs_dim",
+          "type": "2"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '2' for variable 'control_dim'",
+          "variable": "control_dim",
+          "type": "2"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '50' for variable 'num_timesteps'",
+          "variable": "num_timesteps",
+          "type": "50"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '5' for variable 'time_horizon'",
+          "variable": "time_horizon",
+          "type": "5"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '0' for variable 'integration_step'",
+          "variable": "integration_step",
+          "type": "0"
+        }
+      ],
+      "validation_timestamp": "2026-05-22T06:17:41.376941",
+      "dimension_compatibility": {
+        "compatible": true,
+        "issues": [],
+        "warnings": [],
+        "variables_checked": [
+          "x",
+          "o",
+          "u",
+          "F",
+          "G",
+          "H",
+          "gamma_state",
+          "gamma_obs",
+          "epsilon_state",
+          "epsilon_obs"
+        ],
+        "dimension_map": {
+          "x": [
+            4,
+            1
+          ],
+          "o": [
+            2,
+            1
+          ],
+          "u": [
+            2,
+            1
+          ],
+          "F": [
+            4,
+            4
+          ],
+          "G": [
+            4,
+            2
+          ],
+          "H": [
+            2,
+            4
+          ],
+          "gamma_state": [
+            1
+          ],
+          "gamma_obs": [
+            1
+          ],
+          "epsilon_state": [
+            4,
+            1
+          ],
+          "epsilon_obs": [
+            2,
+            1
+          ]
+        }
+      },
+      "resource_estimation": {
+        "complexity_tier": "small",
+        "estimated_memory_bytes": 192,
+        "total_parameters": 48,
+        "variables": 10,
+        "connections": 22,
+        "flops_estimate": 2215.307603281782,
+        "complexity_score": 4.430615206563564
+      }
+    },
+    {
+      "file_path": "input/gnn_files/continuous/continuous_navigation.md",
+      "file_name": "continuous_navigation.md",
+      "valid": true,
+      "errors": [],
+      "warnings": [
+        "Type issue: Unknown type '1' for variable 'Version'",
+        "Type issue: Unknown type '2D' for variable 'states'",
+        "Type issue: Unknown type 'noisy' for variable 'Observations'",
+        "Type issue: Unknown type '2D' for variable 'Actions'",
+        "Type issue: Unknown type 'position' for variable 'identity'",
+        "Type issue: Unknown type 'goal' for variable 'Target'",
+        "Type issue: Unknown type 'starting' for variable 'belief'",
+        "Type issue: Unknown type 'F' for variable 'Energy'",
+        "Type issue: Unknown type 'd' for variable 'update'",
+        "Type issue: Unknown type 'u' for variable 'Action'",
+        "Type issue: Unknown type '2' for variable 'state_dim'",
+        "Type issue: Unknown type '2' for variable 'obs_dim'",
+        "Type issue: Unknown type '2' for variable 'action_dim'",
+        "Type issue: Unknown type '0' for variable 'dt'",
+        "Type issue: Unknown type '10' for variable 'simulation_time'",
+        "Type issue: Unknown type '1' for variable 'goal_x'",
+        "Type issue: Unknown type '1' for variable 'goal_y'",
+        "Type issue: Invalid variable name '\u03bc'",
+        "Type issue: Invalid variable name '\u03a3'",
+        "Type issue: Invalid variable name '\u03bc_prime'",
+        "Type issue: Invalid variable name '\u03bc_dot'",
+        "Type issue: Invalid variable name '\u03bc_ddot'",
+        "Type issue: Invalid variable name 'A_\u03bc'",
+        "Type issue: Invalid variable name 'A_\u03a3'",
+        "Type issue: Invalid variable name 'C_\u03bc'",
+        "Type issue: Invalid variable name 'C_\u03a3'",
+        "Type issue: Invalid variable name '\u03b5_o'",
+        "Type issue: Invalid variable name '\u03b5_x'",
+        "Type issue: Invalid variable name '\u03a0_o'",
+        "Type issue: Invalid variable name '\u03a0_x'"
+      ],
+      "type_issues": [
+        {
+          "valid": false,
+          "message": "Unknown type '1' for variable 'Version'",
+          "variable": "Version",
+          "type": "1"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '2D' for variable 'states'",
+          "variable": "states",
+          "type": "2D"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type 'noisy' for variable 'Observations'",
+          "variable": "Observations",
+          "type": "noisy"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '2D' for variable 'Actions'",
+          "variable": "Actions",
+          "type": "2D"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type 'position' for variable 'identity'",
+          "variable": "identity",
+          "type": "position"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type 'goal' for variable 'Target'",
+          "variable": "Target",
+          "type": "goal"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type 'starting' for variable 'belief'",
+          "variable": "belief",
+          "type": "starting"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type 'F' for variable 'Energy'",
+          "variable": "Energy",
+          "type": "F"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type 'd' for variable 'update'",
+          "variable": "update",
+          "type": "d"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type 'u' for variable 'Action'",
+          "variable": "Action",
+          "type": "u"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '2' for variable 'state_dim'",
+          "variable": "state_dim",
+          "type": "2"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '2' for variable 'obs_dim'",
+          "variable": "obs_dim",
+          "type": "2"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '2' for variable 'action_dim'",
+          "variable": "action_dim",
+          "type": "2"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '0' for variable 'dt'",
+          "variable": "dt",
+          "type": "0"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '10' for variable 'simulation_time'",
+          "variable": "simulation_time",
+          "type": "10"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '1' for variable 'goal_x'",
+          "variable": "goal_x",
+          "type": "1"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '1' for variable 'goal_y'",
+          "variable": "goal_y",
+          "type": "1"
+        },
+        {
+          "valid": false,
+          "message": "Invalid variable name '\u03bc'",
+          "variable": "\u03bc",
+          "type": "float"
+        },
+        {
+          "valid": false,
+          "message": "Invalid variable name '\u03a3'",
+          "variable": "\u03a3",
+          "type": "float"
+        },
+        {
+          "valid": false,
+          "message": "Invalid variable name '\u03bc_prime'",
+          "variable": "\u03bc_prime",
+          "type": "float"
+        },
+        {
+          "valid": false,
+          "message": "Invalid variable name '\u03bc_dot'",
+          "variable": "\u03bc_dot",
+          "type": "float"
+        },
+        {
+          "valid": false,
+          "message": "Invalid variable name '\u03bc_ddot'",
+          "variable": "\u03bc_ddot",
+          "type": "float"
+        },
+        {
+          "valid": false,
+          "message": "Invalid variable name 'A_\u03bc'",
+          "variable": "A_\u03bc",
+          "type": "float"
+        },
+        {
+          "valid": false,
+          "message": "Invalid variable name 'A_\u03a3'",
+          "variable": "A_\u03a3",
+          "type": "float"
+        },
+        {
+          "valid": false,
+          "message": "Invalid variable name 'C_\u03bc'",
+          "variable": "C_\u03bc",
+          "type": "float"
+        },
+        {
+          "valid": false,
+          "message": "Invalid variable name 'C_\u03a3'",
+          "variable": "C_\u03a3",
+          "type": "float"
+        },
+        {
+          "valid": false,
+          "message": "Invalid variable name '\u03b5_o'",
+          "variable": "\u03b5_o",
+          "type": "float"
+        },
+        {
+          "valid": false,
+          "message": "Invalid variable name '\u03b5_x'",
+          "variable": "\u03b5_x",
+          "type": "float"
+        },
+        {
+          "valid": false,
+          "message": "Invalid variable name '\u03a0_o'",
+          "variable": "\u03a0_o",
+          "type": "float"
+        },
+        {
+          "valid": false,
+          "message": "Invalid variable name '\u03a0_x'",
+          "variable": "\u03a0_x",
+          "type": "float"
+        }
+      ],
+      "validation_timestamp": "2026-05-22T06:17:41.378776",
+      "dimension_compatibility": {
+        "compatible": true,
+        "issues": [],
+        "warnings": [],
+        "variables_checked": [
+          "o",
+          "B_f",
+          "B_u",
+          "u",
+          "F",
+          "G",
+          "t"
+        ],
+        "dimension_map": {
+          "o": [
+            2,
+            1
+          ],
+          "B_f": [
+            2,
+            2
+          ],
+          "B_u": [
+            2,
+            2
+          ],
+          "u": [
+            2,
+            1
+          ],
+          "F": [
+            1
+          ],
+          "G": [
+            1
+          ],
+          "t": [
+            1
+          ]
+        }
+      },
+      "resource_estimation": {
+        "complexity_tier": "small",
+        "estimated_memory_bytes": 60,
+        "total_parameters": 15,
+        "variables": 7,
+        "connections": 24,
+        "flops_estimate": 2013.5802469135804,
+        "complexity_score": 4.027160493827161
+      }
+    }
+  ],
+  "type_analysis": [
+    {
+      "file_path": "input/gnn_files/continuous/predictive_coding_agent.md",
+      "file_name": "predictive_coding_agent.md",
+      "types_found": [
+        {
+          "name": "Example",
+          "type": "Predictive",
+          "line": 1
+        },
+        {
+          "name": "Version",
+          "type": "1",
+          "line": 3
+        },
+        {
+          "name": "hierarchy",
+          "type": "sensory",
+          "line": 23
+        },
+        {
+          "name": "level",
+          "type": "predicts",
+          "line": 26
+        },
+        {
+          "name": "level",
+          "type": "predicts",
+          "line": 27
+        },
+        {
+          "name": "belief",
+          "type": "mean",
+          "line": 36
+        },
+        {
+          "name": "error",
+          "type": "o",
+          "line": 42
+        },
+        {
+          "name": "error",
+          "type": "mu_dot",
+          "line": 43
+        },
+        {
+          "name": "parameters",
+          "type": "o",
+          "line": 47
+        },
+        {
+          "name": "parameters",
+          "type": "mu_dot",
+          "line": 48
+        },
+        {
+          "name": "precision",
+          "type": "confidence",
+          "line": 52
+        },
+        {
+          "name": "precision",
+          "type": "confidence",
+          "line": 53
+        },
+        {
+          "name": "belief",
+          "type": "centered",
+          "line": 100
+        },
+        {
+          "name": "covariance",
+          "type": "moderate",
+          "line": 105
+        },
+        {
+          "name": "precision",
+          "type": "high",
+          "line": 113
+        },
+        {
+          "name": "precision",
+          "type": "moderate",
+          "line": 122
+        },
+        {
+          "name": "state",
+          "type": "attractor",
+          "line": 130
+        },
+        {
+          "name": "error",
+          "type": "e_s",
+          "line": 136
+        },
+        {
+          "name": "error",
+          "type": "e_d",
+          "line": 138
+        },
+        {
+          "name": "inference",
+          "type": "action",
+          "line": 152
+        },
+        {
+          "name": "state_dim",
+          "type": "3",
+          "line": 181
+        },
+        {
+          "name": "obs_dim",
+          "type": "4",
+          "line": 182
+        },
+        {
+          "name": "action_dim",
+          "type": "2",
+          "line": 183
+        },
+        {
+          "name": "dt",
+          "type": "0",
+          "line": 184
+        },
+        {
+          "name": "simulation_time",
+          "type": "5",
+          "line": 185
+        },
+        {
+          "name": "learning_rate_belief",
+          "type": "1",
+          "line": 186
+        },
+        {
+          "name": "learning_rate_action",
+          "type": "0",
+          "line": 187
+        },
+        {
+          "name": "architecture",
+          "type": "perception",
+          "line": 193
+        },
+        {
+          "name": "mu",
+          "type": "float",
+          "line": 36
+        },
+        {
+          "name": "mu_dot",
+          "type": "float",
+          "line": 37
+        },
+        {
+          "name": "Sigma",
+          "type": "float",
+          "line": 38
+        },
+        {
+          "name": "e_s",
+          "type": "float",
+          "line": 42
+        },
+        {
+          "name": "e_d",
+          "type": "float",
+          "line": 43
+        },
+        {
+          "name": "g_params",
+          "type": "float",
+          "line": 47
+        },
+        {
+          "name": "f_params",
+          "type": "float",
+          "line": 48
+        },
+        {
+          "name": "Pi_s",
+          "type": "float",
+          "line": 52
+        },
+        {
+          "name": "Pi_d",
+          "type": "float",
+          "line": 53
+        },
+        {
+          "name": "o",
+          "type": "float",
+          "line": 57
+        },
+        {
+          "name": "u",
+          "type": "float",
+          "line": 61
+        },
+        {
+          "name": "F",
+          "type": "float",
+          "line": 65
+        },
+        {
+          "name": "F_s",
+          "type": "float",
+          "line": 66
+        },
+        {
+          "name": "F_d",
+          "type": "float",
+          "line": 67
+        },
+        {
+          "name": "mu_star",
+          "type": "float",
+          "line": 71
+        },
+        {
+          "name": "t",
+          "type": "float",
+          "line": 75
+        }
+      ],
+      "type_distribution": {
+        "Predictive": 1,
+        "1": 2,
+        "sensory": 1,
+        "predicts": 2,
+        "mean": 1,
+        "o": 2,
+        "mu_dot": 2,
+        "confidence": 2,
+        "centered": 1,
+        "moderate": 2,
+        "high": 1,
+        "attractor": 1,
+        "e_s": 1,
+        "e_d": 1,
+        "action": 1,
+        "3": 1,
+        "4": 1,
+        "2": 1,
+        "0": 2,
+        "5": 1,
+        "perception": 1,
+        "float": 16
+      },
+      "total_variables": 44,
+      "analysis_timestamp": "2026-05-22T06:17:41.376910"
+    },
+    {
+      "file_path": "input/gnn_files/continuous/stochastic_dynamics.md",
+      "file_name": "stochastic_dynamics.md",
+      "types_found": [
+        {
+          "name": "Example",
+          "type": "Stochastic",
+          "line": 1
+        },
+        {
+          "name": "Version",
+          "type": "1",
+          "line": 3
+        },
+        {
+          "name": "language",
+          "type": "Time",
+          "line": 24
+        },
+        {
+          "name": "observation",
+          "type": "o",
+          "line": 31
+        },
+        {
+          "name": "Dynamics",
+          "type": "next",
+          "line": 64
+        },
+        {
+          "name": "Observation",
+          "type": "current",
+          "line": 68
+        },
+        {
+          "name": "F",
+          "type": "near",
+          "line": 78
+        },
+        {
+          "name": "G",
+          "type": "control",
+          "line": 88
+        },
+        {
+          "name": "H",
+          "type": "observe",
+          "line": 97
+        },
+        {
+          "name": "state_dim",
+          "type": "4",
+          "line": 147
+        },
+        {
+          "name": "obs_dim",
+          "type": "2",
+          "line": 148
+        },
+        {
+          "name": "control_dim",
+          "type": "2",
+          "line": 149
+        },
+        {
+          "name": "num_timesteps",
+          "type": "50",
+          "line": 150
+        },
+        {
+          "name": "time_horizon",
+          "type": "5",
+          "line": 151
+        },
+        {
+          "name": "integration_step",
+          "type": "0",
+          "line": 152
+        },
+        {
+          "name": "x",
+          "type": "float",
+          "line": 42
+        },
+        {
+          "name": "o",
+          "type": "float",
+          "line": 43
+        },
+        {
+          "name": "u",
+          "type": "float",
+          "line": 44
+        },
+        {
+          "name": "F",
+          "type": "float",
+          "line": 48
+        },
+        {
+          "name": "G",
+          "type": "float",
+          "line": 49
+        },
+        {
+          "name": "H",
+          "type": "float",
+          "line": 50
+        },
+        {
+          "name": "gamma_state",
+          "type": "float",
+          "line": 54
+        },
+        {
+          "name": "gamma_obs",
+          "type": "float",
+          "line": 55
+        },
+        {
+          "name": "epsilon_state",
+          "type": "float",
+          "line": 59
+        },
+        {
+          "name": "epsilon_obs",
+          "type": "float",
+          "line": 60
+        }
+      ],
+      "type_distribution": {
+        "Stochastic": 1,
+        "1": 1,
+        "Time": 1,
+        "o": 1,
+        "next": 1,
+        "current": 1,
+        "near": 1,
+        "control": 1,
+        "observe": 1,
+        "4": 1,
+        "2": 2,
+        "50": 1,
+        "5": 1,
+        "0": 1,
+        "float": 10
+      },
+      "total_variables": 25,
+      "analysis_timestamp": "2026-05-22T06:17:41.378748"
+    },
+    {
+      "file_path": "input/gnn_files/continuous/continuous_navigation.md",
+      "file_name": "continuous_navigation.md",
+      "types_found": [
+        {
+          "name": "Example",
+          "type": "Continuous",
+          "line": 1
+        },
+        {
+          "name": "Version",
+          "type": "1",
+          "line": 2
+        },
+        {
+          "name": "states",
+          "type": "2D",
+          "line": 16
+        },
+        {
+          "name": "Observations",
+          "type": "noisy",
+          "line": 17
+        },
+        {
+          "name": "Actions",
+          "type": "2D",
+          "line": 18
+        },
+        {
+          "name": "identity",
+          "type": "position",
+          "line": 88
+        },
+        {
+          "name": "Target",
+          "type": "goal",
+          "line": 92
+        },
+        {
+          "name": "belief",
+          "type": "starting",
+          "line": 96
+        },
+        {
+          "name": "Energy",
+          "type": "F",
+          "line": 107
+        },
+        {
+          "name": "update",
+          "type": "d",
+          "line": 108
+        },
+        {
+          "name": "Action",
+          "type": "u",
+          "line": 109
+        },
+        {
+          "name": "state_dim",
+          "type": "2",
+          "line": 136
+        },
+        {
+          "name": "obs_dim",
+          "type": "2",
+          "line": 137
+        },
+        {
+          "name": "action_dim",
+          "type": "2",
+          "line": 138
+        },
+        {
+          "name": "dt",
+          "type": "0",
+          "line": 139
+        },
+        {
+          "name": "simulation_time",
+          "type": "10",
+          "line": 140
+        },
+        {
+          "name": "goal_x",
+          "type": "1",
+          "line": 141
+        },
+        {
+          "name": "goal_y",
+          "type": "1",
+          "line": 142
+        },
+        {
+          "name": "\u03bc",
+          "type": "float",
+          "line": 24
+        },
+        {
+          "name": "\u03a3",
+          "type": "float",
+          "line": 25
+        },
+        {
+          "name": "\u03bc_prime",
+          "type": "float",
+          "line": 26
+        },
+        {
+          "name": "\u03bc_dot",
+          "type": "float",
+          "line": 29
+        },
+        {
+          "name": "\u03bc_ddot",
+          "type": "float",
+          "line": 30
+        },
+        {
+          "name": "A_\u03bc",
+          "type": "float",
+          "line": 33
+        },
+        {
+          "name": "A_\u03a3",
+          "type": "float",
+          "line": 34
+        },
+        {
+          "name": "o",
+          "type": "float",
+          "line": 35
+        },
+        {
+          "name": "B_f",
+          "type": "float",
+          "line": 38
+        },
+        {
+          "name": "B_u",
+          "type": "float",
+          "line": 39
+        },
+        {
+          "name": "C_\u03bc",
+          "type": "float",
+          "line": 42
+        },
+        {
+          "name": "C_\u03a3",
+          "type": "float",
+          "line": 43
+        },
+        {
+          "name": "u",
+          "type": "float",
+          "line": 46
+        },
+        {
+          "name": "F",
+          "type": "float",
+          "line": 49
+        },
+        {
+          "name": "G",
+          "type": "float",
+          "line": 50
+        },
+        {
+          "name": "\u03b5_o",
+          "type": "float",
+          "line": 51
+        },
+        {
+          "name": "\u03b5_x",
+          "type": "float",
+          "line": 52
+        },
+        {
+          "name": "\u03a0_o",
+          "type": "float",
+          "line": 55
+        },
+        {
+          "name": "\u03a0_x",
+          "type": "float",
+          "line": 56
+        },
+        {
+          "name": "t",
+          "type": "float",
+          "line": 59
+        }
+      ],
+      "type_distribution": {
+        "Continuous": 1,
+        "1": 3,
+        "2D": 2,
+        "noisy": 1,
+        "position": 1,
+        "goal": 1,
+        "starting": 1,
+        "F": 1,
+        "d": 1,
+        "u": 1,
+        "2": 3,
+        "0": 1,
+        "10": 1,
+        "float": 20
+      },
+      "total_variables": 38,
+      "analysis_timestamp": "2026-05-22T06:17:41.380590"
+    }
+  ]
+}

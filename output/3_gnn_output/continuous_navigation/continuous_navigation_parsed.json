@@ -1,0 +1,1234 @@
+{
+  "model_name": "Continuous State Navigation Agent",
+  "version": "1.0",
+  "annotation": "A continuous-state Active Inference agent navigating a 2D environment:\n- Hidden states: 2D position (x, y) as Gaussian belief\n- Observations: noisy position measurements with Gaussian noise\n- Actions: 2D velocity commands (dx, dy)\n- Uses Laplace approximation for Gaussian belief updating\n- Generalized coordinates of motion for smooth trajectories",
+  "variables": [
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "47f7321d-1a93-44ea-9992-f8901f5d78b9",
+      "name": "\u03bc",
+      "var_type": "hidden_state",
+      "dimensions": [
+        2,
+        1
+      ],
+      "data_type": "float",
+      "description": "Mean of position belief (x, y)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "f1ed32d4-36f2-4e04-a6b0-f5c1b7eb1ef6",
+      "name": "\u03a3",
+      "var_type": "hidden_state",
+      "dimensions": [
+        2,
+        2
+      ],
+      "data_type": "float",
+      "description": "Covariance of position belief",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "1e2c585d-c086-4298-99d6-244d6c555886",
+      "name": "\u03bc_prime",
+      "var_type": "hidden_state",
+      "dimensions": [
+        2,
+        1
+      ],
+      "data_type": "float",
+      "description": "Next position mean (predicted)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "89ae68c3-d7bc-48c3-abaf-8f5a2e0eaff6",
+      "name": "\u03bc_dot",
+      "var_type": "hidden_state",
+      "dimensions": [
+        2,
+        1
+      ],
+      "data_type": "float",
+      "description": "Velocity (first motion derivative)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "74074153-216b-45ca-acf0-62f67da63e70",
+      "name": "\u03bc_ddot",
+      "var_type": "hidden_state",
+      "dimensions": [
+        2,
+        1
+      ],
+      "data_type": "float",
+      "description": "Acceleration (second motion derivative)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "6b961f97-7287-45a6-b2fd-a45104eb65cc",
+      "name": "A_\u03bc",
+      "var_type": "action",
+      "dimensions": [
+        2,
+        2
+      ],
+      "data_type": "float",
+      "description": "Observation mean mapping (identity + noise)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "10b21f7f-8b56-47ad-978e-c2394f398f36",
+      "name": "A_\u03a3",
+      "var_type": "action",
+      "dimensions": [
+        2,
+        2
+      ],
+      "data_type": "float",
+      "description": "Observation noise covariance",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "141d8903-22f5-4f47-b995-600c8e4695d4",
+      "name": "o",
+      "var_type": "observation",
+      "dimensions": [
+        2,
+        1
+      ],
+      "data_type": "float",
+      "description": "Observation (noisy position measurement)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "bd98aae2-2910-44e2-aad1-08258b6df6e8",
+      "name": "B_f",
+      "var_type": "hidden_state",
+      "dimensions": [
+        2,
+        2
+      ],
+      "data_type": "float",
+      "description": "State transition matrix (flow)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "8257c9e5-7eee-4c88-83d3-7aa71527aa11",
+      "name": "B_u",
+      "var_type": "hidden_state",
+      "dimensions": [
+        2,
+        2
+      ],
+      "data_type": "float",
+      "description": "Action effect matrix",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "e2e34a8a-9cef-4bd1-ad37-e222f859cead",
+      "name": "C_\u03bc",
+      "var_type": "hidden_state",
+      "dimensions": [
+        2,
+        1
+      ],
+      "data_type": "float",
+      "description": "Target position (preference mean)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "79d53c4e-2a9f-4fcf-b767-d88f65fd5407",
+      "name": "C_\u03a3",
+      "var_type": "hidden_state",
+      "dimensions": [
+        2,
+        2
+      ],
+      "data_type": "float",
+      "description": "Preference uncertainty",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "f041b4c4-b858-4b34-a77d-66d1e1204b89",
+      "name": "u",
+      "var_type": "action",
+      "dimensions": [
+        2,
+        1
+      ],
+      "data_type": "float",
+      "description": "Continuous velocity command",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "9680e4de-e737-4816-8156-6c340b83756b",
+      "name": "F",
+      "var_type": "hidden_state",
+      "dimensions": [
+        1
+      ],
+      "data_type": "float",
+      "description": "Variational Free Energy (scalar)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "f4b268da-1ee6-4d74-ac23-2d95589f705b",
+      "name": "G",
+      "var_type": "policy",
+      "dimensions": [
+        1
+      ],
+      "data_type": "float",
+      "description": "Expected Free Energy (scalar)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "15a02df6-6bc5-4ec3-8229-ee63e02d0280",
+      "name": "\u03b5_o",
+      "var_type": "hidden_state",
+      "dimensions": [
+        2,
+        1
+      ],
+      "data_type": "float",
+      "description": "Sensory prediction error",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "e0e69188-2b80-4992-b2c8-271660095283",
+      "name": "\u03b5_x",
+      "var_type": "hidden_state",
+      "dimensions": [
+        2,
+        1
+      ],
+      "data_type": "float",
+      "description": "Dynamic prediction error",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "7b75a89f-3996-4447-b4e2-4fb6e90423b9",
+      "name": "\u03a0_o",
+      "var_type": "hidden_state",
+      "dimensions": [
+        2,
+        2
+      ],
+      "data_type": "float",
+      "description": "Sensory precision matrix (inverse noise cov)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "78d00787-b12e-42bb-9d76-2bbc12e0799f",
+      "name": "\u03a0_x",
+      "var_type": "hidden_state",
+      "dimensions": [
+        2,
+        2
+      ],
+      "data_type": "float",
+      "description": "Dynamic precision matrix",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "6999e581-fbe5-480a-8a8a-205605a8b8b3",
+      "name": "t",
+      "var_type": "hidden_state",
+      "dimensions": [
+        1
+      ],
+      "data_type": "float",
+      "description": "Continuous time",
+      "constraints": {}
+    }
+  ],
+  "connections": [
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "5fc8a9ec-849d-4f9c-b644-de400a153bf8",
+      "source_variables": [
+        "\u03bc"
+      ],
+      "target_variables": [
+        "A_\u03bc"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "b664148e-af0f-4487-adaa-f03cfbc0f2f3",
+      "source_variables": [
+        "A_\u03bc"
+      ],
+      "target_variables": [
+        "o"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "a06dab8f-901e-4dec-89d5-70e8eb49aadd",
+      "source_variables": [
+        "A_\u03a3"
+      ],
+      "target_variables": [
+        "\u03b5_o"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "5063072f-2a0f-4dd9-a01c-14577696b0c5",
+      "source_variables": [
+        "o"
+      ],
+      "target_variables": [
+        "\u03b5_o"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "9ed8ae4d-f611-4f52-9e42-f228492011db",
+      "source_variables": [
+        "\u03b5_o"
+      ],
+      "target_variables": [
+        "F"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "22c3de83-0a39-4d95-9b94-1b0ea0e90478",
+      "source_variables": [
+        "\u03a0_o"
+      ],
+      "target_variables": [
+        "F"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "96924290-633d-4e2b-bd3c-19d56badc41c",
+      "source_variables": [
+        "\u03bc"
+      ],
+      "target_variables": [
+        "B_f"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "a796d743-6a2b-4571-b118-aa52b15381bf",
+      "source_variables": [
+        "B_f"
+      ],
+      "target_variables": [
+        "\u03bc_prime"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "5b6c73c1-4df5-442d-9db3-3b3ff32fcf9d",
+      "source_variables": [
+        "B_u"
+      ],
+      "target_variables": [
+        "\u03bc_prime"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "81a1e8e6-11fe-42b1-8de1-1b9dcd9680dc",
+      "source_variables": [
+        "u"
+      ],
+      "target_variables": [
+        "B_u"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "a22d23cc-20f9-4e16-bffc-c51b17800f09",
+      "source_variables": [
+        "\u03b5_x"
+      ],
+      "target_variables": [
+        "F"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "39fe9ae7-7240-4a8f-a388-1d3701774e51",
+      "source_variables": [
+        "\u03a0_x"
+      ],
+      "target_variables": [
+        "F"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "354d3aaf-76b0-461a-aed7-e9884742d314",
+      "source_variables": [
+        "C_\u03bc"
+      ],
+      "target_variables": [
+        "G"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "64ed5b83-0e9c-4af8-ac15-be304cbbcc86",
+      "source_variables": [
+        "C_\u03a3"
+      ],
+      "target_variables": [
+        "G"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "ca32051a-56f7-496a-b7f7-9ffe711e5f52",
+      "source_variables": [
+        "\u03bc_prime"
+      ],
+      "target_variables": [
+        "G"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "3fc2071a-3ed0-499f-a0c7-36daa8402755",
+      "source_variables": [
+        "G"
+      ],
+      "target_variables": [
+        "u"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "ef1f33bf-1819-4d8f-9a73-9d0fc77d5109",
+      "source_variables": [
+        "\u03bc"
+      ],
+      "target_variables": [
+        "\u03a3"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "59ec65b9-8c91-429f-a6c0-f3a194ee6f84",
+      "source_variables": [
+        "\u03a3"
+      ],
+      "target_variables": [
+        "\u03a0_o"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    }
+  ],
+  "parameters": [
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "8238aa83-de1a-47ea-b507-9c23d36021dc",
+      "name": "A_\u03bc",
+      "value": [
+        [
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "dfe41cf5-d6c0-424d-9459-6299fea903c8",
+      "name": "A_\u03a3",
+      "value": [
+        [
+          0.1,
+          0.0
+        ],
+        [
+          0.0,
+          0.1
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "ea02ffee-ac54-49f4-bc7f-50ca8c931034",
+      "name": "B_f",
+      "value": [
+        [
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "1111e467-d012-487f-b6d1-7ac9b2e0bcb2",
+      "name": "B_u",
+      "value": [
+        [
+          0.1,
+          0.0
+        ],
+        [
+          0.0,
+          0.1
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "6569a933-d3c1-463d-bf07-be2bd1c4b95e",
+      "name": "C_\u03bc",
+      "value": [
+        [
+          1.0
+        ],
+        [
+          1.0
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "45835444-0581-4eff-89db-1d07253b6e90",
+      "name": "C_\u03a3",
+      "value": [
+        [
+          0.05,
+          0.0
+        ],
+        [
+          0.0,
+          0.05
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "2e59940b-85e9-4afe-995d-70f5305aaded",
+      "name": "\u03bc",
+      "value": [
+        [
+          0.0
+        ],
+        [
+          0.0
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "42fe2876-aaac-44b3-b865-58c6b31fd8e4",
+      "name": "\u03a3",
+      "value": [
+        [
+          0.5,
+          0.0
+        ],
+        [
+          0.0,
+          0.5
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "4e01ff61-511e-47ce-98a6-b5f62ea61a0e",
+      "name": "\u03a0_o",
+      "value": [
+        [
+          10.0,
+          0.0
+        ],
+        [
+          0.0,
+          10.0
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "77a06b9d-a977-4d8a-b966-8280a0f70daa",
+      "name": "\u03a0_x",
+      "value": [
+        [
+          20.0,
+          0.0
+        ],
+        [
+          0.0,
+          20.0
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "e1b3c6a3-60d5-4cde-a8f6-cb4603ea7af5",
+      "name": "state_dim",
+      "value": 2,
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "0a82d353-9c2c-44f0-aee7-b7187bff4e50",
+      "name": "obs_dim",
+      "value": 2,
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "8a6625f7-91ad-4ccf-8a39-6275ac522c18",
+      "name": "action_dim",
+      "value": 2,
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "2a605517-7329-4045-bfad-f42d0c73bb96",
+      "name": "dt",
+      "value": 0.01,
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "083b5924-62a3-449e-bd8e-1b29fe2aa942",
+      "name": "simulation_time",
+      "value": 10.0,
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "ee28c1b2-19b1-41ed-b37d-f8d309cb22d9",
+      "name": "goal_x",
+      "value": 1.0,
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "488aa3cf-c4a0-4c1a-b83e-4403b528e8bd",
+      "name": "goal_y",
+      "value": 1.0,
+      "type_hint": null,
+      "description": null
+    }
+  ],
+  "equations": [],
+  "time_specification": {
+    "node_type": "TimeSpecification",
+    "source_location": null,
+    "metadata": {},
+    "id": "ab691e8d-a592-40cc-9e93-57a158d169bf",
+    "time_type": "Dynamic",
+    "discretization": null,
+    "horizon": "10.0",
+    "step_size": null
+  },
+  "ontology_mappings": [
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "8a486594-1eff-4103-b53e-63dab214648f",
+      "variable_name": "\u03bc",
+      "ontology_term": "BeliefMean",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "04aef828-db45-4756-83fa-46ac4dd9846f",
+      "variable_name": "\u03a3",
+      "ontology_term": "BeliefCovariance",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "daa751e2-c80f-4948-b24a-d4a9c37ec2e5",
+      "variable_name": "A_\u03bc",
+      "ontology_term": "ObservationMeanMapping",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "3e2b6dd4-991d-4905-a77c-b52faadada73",
+      "variable_name": "A_\u03a3",
+      "ontology_term": "ObservationNoise",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "1c52973c-8580-4cfc-b5fc-32337e18ea80",
+      "variable_name": "o",
+      "ontology_term": "Observation",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "5eee1b19-90f9-4c70-8fa3-842e66a34243",
+      "variable_name": "B_f",
+      "ontology_term": "DynamicsMatrix",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "5bec62d9-3574-430d-a676-5aa658182da3",
+      "variable_name": "B_u",
+      "ontology_term": "ActionEffectMatrix",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "7c5080ce-0b2b-43d2-be60-a4dd49949d49",
+      "variable_name": "C_\u03bc",
+      "ontology_term": "PreferenceMean",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "415bddde-9063-4437-b7ef-d0e6390751e4",
+      "variable_name": "C_\u03a3",
+      "ontology_term": "PreferenceCovariance",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "2857c692-a904-44a4-9ea0-972e996bd0d3",
+      "variable_name": "u",
+      "ontology_term": "ContinuousAction",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "b4352bac-d31c-4b62-b81d-5d135d533bf6",
+      "variable_name": "F",
+      "ontology_term": "VariationalFreeEnergy",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "6b42b38d-88ce-4710-9676-eed2ca6fd623",
+      "variable_name": "G",
+      "ontology_term": "ExpectedFreeEnergy",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "1f1c3522-6be3-44a2-97b0-dd61ba5dfec4",
+      "variable_name": "\u03b5_o",
+      "ontology_term": "SensoryPredictionError",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "9fdb1d31-1e82-4eb4-9201-28523cf76a01",
+      "variable_name": "\u03b5_x",
+      "ontology_term": "DynamicPredictionError",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "1ce47f49-dae0-4719-8989-4f278987fe4b",
+      "variable_name": "\u03a0_o",
+      "ontology_term": "SensoryPrecision",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "b2e31901-848f-4d93-844c-779257a87ec7",
+      "variable_name": "\u03a0_x",
+      "ontology_term": "DynamicPrecision",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "d4dbe5f9-482e-482f-80f4-233af5b96e27",
+      "variable_name": "t",
+      "ontology_term": "ContinuousTime",
+      "description": null
+    }
+  ],
+  "source_format": null,
+  "created_at": "2026-05-22T06:17:19.375141",
+  "modified_at": "2026-05-22T06:17:19.375141",
+  "checksum": null,
+  "extensions": {
+    "gnn_section": "ActInfContinuous",
+    "footer": "Continuous State Navigation Agent v1 - GNN Representation.\nUses Laplace approximation for Gaussian belief updating.\nGeneralized coordinates enable smooth predictive control.",
+    "signature": "Cryptographic signature goes here"
+  },
+  "raw_sections": {
+    "GNNSection": "ActInfContinuous",
+    "GNNVersionAndFlags": "GNN v1",
+    "ModelName": "Continuous State Navigation Agent",
+    "ModelAnnotation": "A continuous-state Active Inference agent navigating a 2D environment:\n- Hidden states: 2D position (x, y) as Gaussian belief\n- Observations: noisy position measurements with Gaussian noise\n- Actions: 2D velocity commands (dx, dy)\n- Uses Laplace approximation for Gaussian belief updating\n- Generalized coordinates of motion for smooth trajectories",
+    "StateSpaceBlock": "# Continuous state (2D position belief as Gaussian)\n\u03bc[2,1,type=float]      # Mean of position belief (x, y)\n\u03a3[2,2,type=float]      # Covariance of position belief\n\u03bc_prime[2,1,type=float] # Next position mean (predicted)\n\n# Generalized coordinates\n\u03bc_dot[2,1,type=float]  # Velocity (first motion derivative)\n\u03bc_ddot[2,1,type=float] # Acceleration (second motion derivative)\n\n# Observation model (Gaussian)\nA_\u03bc[2,2,type=float]    # Observation mean mapping (identity + noise)\nA_\u03a3[2,2,type=float]    # Observation noise covariance\no[2,1,type=float]      # Observation (noisy position measurement)\n\n# Dynamics model (linear Gaussian)\nB_f[2,2,type=float]    # State transition matrix (flow)\nB_u[2,2,type=float]    # Action effect matrix\n\n# Preferences (target position as Gaussian)\nC_\u03bc[2,1,type=float]    # Target position (preference mean)\nC_\u03a3[2,2,type=float]    # Preference uncertainty\n\n# Action\nu[2,1,type=float]      # Continuous velocity command\n\n# Free Energy quantities\nF[1,type=float]        # Variational Free Energy (scalar)\nG[1,type=float]        # Expected Free Energy (scalar)\n\u03b5_o[2,1,type=float]    # Sensory prediction error\n\u03b5_x[2,1,type=float]    # Dynamic prediction error\n\n# Precision\n\u03a0_o[2,2,type=float]    # Sensory precision matrix (inverse noise cov)\n\u03a0_x[2,2,type=float]    # Dynamic precision matrix\n\n# Time\nt[1,type=float]        # Continuous time",
+    "Connections": "\u03bc-A_\u03bc\nA_\u03bc-o\nA_\u03a3-\u03b5_o\no-\u03b5_o\n\u03b5_o-F\n\u03a0_o-F\n\u03bc-B_f\nB_f-\u03bc_prime\nB_u-\u03bc_prime\nu-B_u\n\u03b5_x-F\n\u03a0_x-F\nC_\u03bc-G\nC_\u03a3-G\n\u03bc_prime-G\nG>u\n\u03bc-\u03a3\n\u03a3-\u03a0_o",
+    "InitialParameterization": "# Identity observation mapping\nA_\u03bc={(1.0, 0.0), (0.0, 1.0)}\n\n# Observation noise (moderate uncertainty)\nA_\u03a3={(0.1, 0.0), (0.0, 0.1)}\n\n# State transition (identity: position persists without action)\nB_f={(1.0, 0.0), (0.0, 1.0)}\nB_u={(0.1, 0.0), (0.0, 0.1)}\n\n# Target: goal position at (1.0, 1.0)\nC_\u03bc={(1.0), (1.0)}\nC_\u03a3={(0.05, 0.0), (0.0, 0.05)}\n\n# Initial belief: starting at origin with moderate uncertainty\n\u03bc={(0.0), (0.0)}\n\u03a3={(0.5, 0.0), (0.0, 0.5)}\n\n# Precision matrices (inverse of covariance)\n\u03a0_o={(10.0, 0.0), (0.0, 10.0)}\n\u03a0_x={(20.0, 0.0), (0.0, 20.0)}",
+    "Equations": "# Sensory prediction error: \u03b5_o = o - A_\u03bc * \u03bc\n# Dynamic prediction error: \u03b5_x = \u03bc_dot - (B_f * \u03bc + B_u * u)\n# Free Energy: F = 0.5 * (\u03b5_o^T \u03a0_o \u03b5_o + \u03b5_x^T \u03a0_x \u03b5_x)\n# Belief update: d\u03bc/dt = -\u2202F/\u2202\u03bc (gradient descent on VFE)\n# Action: u = -\u2202G/\u2202u (minimize Expected Free Energy w.r.t. action)",
+    "Time": "Time=t\nDynamic\nContinuous\nModelTimeHorizon=10.0",
+    "ActInfOntologyAnnotation": "\u03bc=BeliefMean\n\u03a3=BeliefCovariance\nA_\u03bc=ObservationMeanMapping\nA_\u03a3=ObservationNoise\no=Observation\nB_f=DynamicsMatrix\nB_u=ActionEffectMatrix\nC_\u03bc=PreferenceMean\nC_\u03a3=PreferenceCovariance\nu=ContinuousAction\nF=VariationalFreeEnergy\nG=ExpectedFreeEnergy\n\u03b5_o=SensoryPredictionError\n\u03b5_x=DynamicPredictionError\n\u03a0_o=SensoryPrecision\n\u03a0_x=DynamicPrecision\nt=ContinuousTime",
+    "ModelParameters": "state_dim: 2\nobs_dim: 2\naction_dim: 2\ndt: 0.01\nsimulation_time: 10.0\ngoal_x: 1.0\ngoal_y: 1.0",
+    "Footer": "Continuous State Navigation Agent v1 - GNN Representation.\nUses Laplace approximation for Gaussian belief updating.\nGeneralized coordinates enable smooth predictive control.",
+    "Signature": "Cryptographic signature goes here"
+  },
+  "initialparameterization": {
+    "A_\u03bc": [
+      [
+        1.0,
+        0.0
+      ],
+      [
+        0.0,
+        1.0
+      ]
+    ],
+    "A_\u03a3": [
+      [
+        0.1,
+        0.0
+      ],
+      [
+        0.0,
+        0.1
+      ]
+    ],
+    "B_f": [
+      [
+        1.0,
+        0.0
+      ],
+      [
+        0.0,
+        1.0
+      ]
+    ],
+    "B_u": [
+      [
+        0.1,
+        0.0
+      ],
+      [
+        0.0,
+        0.1
+      ]
+    ],
+    "C_\u03bc": [
+      [
+        1.0
+      ],
+      [
+        1.0
+      ]
+    ],
+    "C_\u03a3": [
+      [
+        0.05,
+        0.0
+      ],
+      [
+        0.0,
+        0.05
+      ]
+    ],
+    "\u03bc": [
+      [
+        0.0
+      ],
+      [
+        0.0
+      ]
+    ],
+    "\u03a3": [
+      [
+        0.5,
+        0.0
+      ],
+      [
+        0.0,
+        0.5
+      ]
+    ],
+    "\u03a0_o": [
+      [
+        10.0,
+        0.0
+      ],
+      [
+        0.0,
+        10.0
+      ]
+    ],
+    "\u03a0_x": [
+      [
+        20.0,
+        0.0
+      ],
+      [
+        0.0,
+        20.0
+      ]
+    ],
+    "state_dim": 2,
+    "obs_dim": 2,
+    "action_dim": 2,
+    "dt": 0.01,
+    "simulation_time": 10.0,
+    "goal_x": 1.0,
+    "goal_y": 1.0
+  },
+  "model_parameters": {
+    "A_\u03bc": [
+      [
+        1.0,
+        0.0
+      ],
+      [
+        0.0,
+        1.0
+      ]
+    ],
+    "A_\u03a3": [
+      [
+        0.1,
+        0.0
+      ],
+      [
+        0.0,
+        0.1
+      ]
+    ],
+    "B_f": [
+      [
+        1.0,
+        0.0
+      ],
+      [
+        0.0,
+        1.0
+      ]
+    ],
+    "B_u": [
+      [
+        0.1,
+        0.0
+      ],
+      [
+        0.0,
+        0.1
+      ]
+    ],
+    "C_\u03bc": [
+      [
+        1.0
+      ],
+      [
+        1.0
+      ]
+    ],
+    "C_\u03a3": [
+      [
+        0.05,
+        0.0
+      ],
+      [
+        0.0,
+        0.05
+      ]
+    ],
+    "\u03bc": [
+      [
+        0.0
+      ],
+      [
+        0.0
+      ]
+    ],
+    "\u03a3": [
+      [
+        0.5,
+        0.0
+      ],
+      [
+        0.0,
+        0.5
+      ]
+    ],
+    "\u03a0_o": [
+      [
+        10.0,
+        0.0
+      ],
+      [
+        0.0,
+        10.0
+      ]
+    ],
+    "\u03a0_x": [
+      [
+        20.0,
+        0.0
+      ],
+      [
+        0.0,
+        20.0
+      ]
+    ],
+    "state_dim": 2,
+    "obs_dim": 2,
+    "action_dim": 2,
+    "dt": 0.01,
+    "simulation_time": 10.0,
+    "goal_x": 1.0,
+    "goal_y": 1.0
+  }
+}

@@ -1,0 +1,947 @@
+{
+  "model_name": "Factorized Posterior Agent",
+  "version": "1.0",
+  "annotation": "A mean-field factorized POMDP agent. The joint posterior over two\nindependent state factors `s_1` (location) and `s_2` (goal identity) is\napproximated as the product of marginals Q(s_1, s_2) = Q(s_1) * Q(s_2).\nThis is the canonical simplification used in variational inference when\nexact joint posteriors are computationally intractable.\n\n- Two state factors: location (4 states), goal (2 states)\n- Two observation modalities: visual (3 obs), proprioceptive (2 obs)\n- Separate transition matrices B_1 (location \u00d7 action) and B_2 (goal is static)\n- Explicit factorization declared in ## Equations\n- Tests multi-factor / multi-modality handling in the parser",
+  "variables": [
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "1732cecc-535a-4426-88b4-82e0fcbb368a",
+      "name": "s_f0",
+      "var_type": "hidden_state",
+      "dimensions": [
+        4,
+        1
+      ],
+      "data_type": "float",
+      "description": "Factor 0: agent location (4 possible positions)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "88e00dd3-a82e-479f-83a8-72c49b634da2",
+      "name": "s_f1",
+      "var_type": "hidden_state",
+      "dimensions": [
+        2,
+        1
+      ],
+      "data_type": "float",
+      "description": "Factor 1: goal identity (2 possible goals)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "e4baf0ea-b2d3-47e2-9b3a-681becbac06d",
+      "name": "o_m0",
+      "var_type": "observation",
+      "dimensions": [
+        3,
+        1
+      ],
+      "data_type": "integer",
+      "description": "Modality 0: visual observation (3 visual cues)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "a90870ce-4be9-4274-b493-fe91c23b7514",
+      "name": "o_m1",
+      "var_type": "observation",
+      "dimensions": [
+        2,
+        1
+      ],
+      "data_type": "integer",
+      "description": "Modality 1: proprioceptive observation (2 body states)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "40c6752f-3e08-4a67-bf50-db58f46c3523",
+      "name": "u",
+      "var_type": "action",
+      "dimensions": [
+        3,
+        1
+      ],
+      "data_type": "integer",
+      "description": "3 possible actions: stay, forward, backward",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "1147494f-8e3f-44be-8cc8-58a2c10ecf01",
+      "name": "A_m0",
+      "var_type": "action",
+      "dimensions": [
+        3,
+        4,
+        2
+      ],
+      "data_type": "float",
+      "description": "Visual likelihood: depends on both factors",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "e85f8dd4-f574-458b-a582-b63c1d33ee04",
+      "name": "A_m1",
+      "var_type": "action",
+      "dimensions": [
+        2,
+        4
+      ],
+      "data_type": "float",
+      "description": "Proprioceptive likelihood: depends only on location",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "f78488db-403f-413f-97d2-34344b3ae7cb",
+      "name": "B_f0",
+      "var_type": "hidden_state",
+      "dimensions": [
+        4,
+        4,
+        3
+      ],
+      "data_type": "float",
+      "description": "Location transitions (depends on action)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "1329a53a-152a-4956-99aa-cfcaebb4c0f8",
+      "name": "B_f1",
+      "var_type": "hidden_state",
+      "dimensions": [
+        2,
+        2
+      ],
+      "data_type": "float",
+      "description": "Goal transitions (typically identity \u2014 goal is static)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "f33da55b-73d4-406f-a858-2cc4739d7435",
+      "name": "D_f0",
+      "var_type": "hidden_state",
+      "dimensions": [
+        4,
+        1
+      ],
+      "data_type": "float",
+      "description": "Prior over locations (uniform)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "14148ccf-204e-4fc7-a5a5-42d27aff0849",
+      "name": "D_f1",
+      "var_type": "hidden_state",
+      "dimensions": [
+        2,
+        1
+      ],
+      "data_type": "float",
+      "description": "Prior over goals",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "6f140bca-66a1-436b-ad0f-130d6b36e8cf",
+      "name": "C_m0",
+      "var_type": "hidden_state",
+      "dimensions": [
+        3,
+        1
+      ],
+      "data_type": "float",
+      "description": "Visual preferences",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "fe075a29-13a6-4cd6-a2b3-948ef261a85d",
+      "name": "C_m1",
+      "var_type": "hidden_state",
+      "dimensions": [
+        2,
+        1
+      ],
+      "data_type": "float",
+      "description": "Proprioceptive preferences",
+      "constraints": {}
+    }
+  ],
+  "connections": [
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "4024d0d4-5518-4e89-bac1-05a544ca05cf",
+      "source_variables": [
+        "D_f0"
+      ],
+      "target_variables": [
+        "s_f0"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "9ca219e5-1429-4f91-ba98-d1f268c4a5cf",
+      "source_variables": [
+        "D_f1"
+      ],
+      "target_variables": [
+        "s_f1"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "06f5f216-c16c-4c6f-8450-c4272dba5e26",
+      "source_variables": [
+        "s_f0",
+        "u"
+      ],
+      "target_variables": [
+        "B_f0"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "0fc95543-f302-40f1-84d0-2bd5408d83d2",
+      "source_variables": [
+        "B_f0"
+      ],
+      "target_variables": [
+        "s_f0"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "69335260-9d3b-4918-abf1-8ba575f58807",
+      "source_variables": [
+        "s_f1"
+      ],
+      "target_variables": [
+        "B_f1"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "32782143-8b91-4613-8ec8-e2e673bfb42f",
+      "source_variables": [
+        "B_f1"
+      ],
+      "target_variables": [
+        "s_f1"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "29c685c7-2922-4d3a-8b85-1e68541e2411",
+      "source_variables": [
+        "s_f0",
+        "s_f1"
+      ],
+      "target_variables": [
+        "A_m0"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "308caed0-26c8-4298-8754-38c16355491c",
+      "source_variables": [
+        "A_m0"
+      ],
+      "target_variables": [
+        "o_m0"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "e8b7edef-a995-47fb-a723-8d35ee5f823e",
+      "source_variables": [
+        "s_f0"
+      ],
+      "target_variables": [
+        "A_m1"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "207f4398-cf86-4134-97fc-64e751b77167",
+      "source_variables": [
+        "A_m1"
+      ],
+      "target_variables": [
+        "o_m1"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "166ea3b2-f0d4-451a-bf35-4b5daea6c9be",
+      "source_variables": [
+        "C_m0"
+      ],
+      "target_variables": [
+        "o_m0"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "7b2e24ca-33c0-49a3-a34c-0e33f038041a",
+      "source_variables": [
+        "C_m1"
+      ],
+      "target_variables": [
+        "o_m1"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    }
+  ],
+  "parameters": [
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "1242521e-9615-4efa-b537-a2de2d146bbc",
+      "name": "A_m0",
+      "value": [
+        [
+          [
+            0.7,
+            0.1,
+            0.1,
+            0.1
+          ],
+          [
+            0.1,
+            0.7,
+            0.1,
+            0.1
+          ],
+          [
+            0.2,
+            0.2,
+            0.8,
+            0.8
+          ]
+        ],
+        [
+          [
+            0.1,
+            0.7,
+            0.1,
+            0.1
+          ],
+          [
+            0.7,
+            0.1,
+            0.1,
+            0.1
+          ],
+          [
+            0.2,
+            0.2,
+            0.8,
+            0.8
+          ]
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "7a2730d2-b472-4a3a-a65e-adefecf61015",
+      "name": "A_m1",
+      "value": [
+        [
+          0.9,
+          0.1,
+          0.1,
+          0.1
+        ],
+        [
+          0.1,
+          0.9,
+          0.9,
+          0.9
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "f026db95-0381-4441-abec-e4c4212f7ead",
+      "name": "D_f0",
+      "value": [
+        [
+          0.25,
+          0.25,
+          0.25,
+          0.25
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "cfe4c017-57cb-40c6-b0f1-5d55434b0ded",
+      "name": "D_f1",
+      "value": [
+        [
+          0.6,
+          0.4
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "dbf9afc7-ac7b-4365-b1b2-2a88ebc028be",
+      "name": "C_m0",
+      "value": [
+        [
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "6061ea30-39d7-40ad-8bcc-11b09cf0c6f3",
+      "name": "C_m1",
+      "value": [
+        [
+          0.5,
+          0.5
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "53bffa7a-6fc0-4375-8667-f61ead2ca2a2",
+      "name": "num_hidden_states_factor0",
+      "value": 4,
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "19b2a8d4-a875-45a3-a643-c00b60ab0b7d",
+      "name": "num_hidden_states_factor1",
+      "value": 2,
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "50929a76-3175-4074-9c21-1411ec0857fb",
+      "name": "num_obs_modality0",
+      "value": 3,
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "b2380a0e-79d3-4540-bdc5-004c980f6950",
+      "name": "num_obs_modality1",
+      "value": 2,
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "c4e7229a-2f59-4134-8099-d079ffb7e21c",
+      "name": "num_actions",
+      "value": 3,
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "77e9004e-f8ae-4b95-be0e-b90a743b3a46",
+      "name": "num_factors",
+      "value": 2,
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "4f9b74b1-031e-4a7e-a218-73ad58c021fb",
+      "name": "num_modalities",
+      "value": 2,
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "25afd2ac-36ed-42ba-b365-09d0f5ea95c6",
+      "name": "num_timesteps",
+      "value": 15,
+      "type_hint": null,
+      "description": null
+    }
+  ],
+  "equations": [],
+  "time_specification": {
+    "node_type": "TimeSpecification",
+    "source_location": null,
+    "metadata": {},
+    "id": "b9bf899f-932b-4836-8535-84073d5337c6",
+    "time_type": "Dynamic",
+    "discretization": "DiscreteTime",
+    "horizon": 15,
+    "step_size": null
+  },
+  "ontology_mappings": [
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "512ccc8e-1cc1-4d4b-b79f-fd91b0badcdc",
+      "variable_name": "s_f0",
+      "ontology_term": "HiddenStateFactor0",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "e2d9d315-b89a-4c1b-8c30-f3af68a622b6",
+      "variable_name": "s_f1",
+      "ontology_term": "HiddenStateFactor1",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "81203a8e-82b9-4973-93e5-52ce3ddb19b6",
+      "variable_name": "o_m0",
+      "ontology_term": "ObservationModality0",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "8e81191f-617e-4f42-8448-33504fbfd9b6",
+      "variable_name": "o_m1",
+      "ontology_term": "ObservationModality1",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "754e52e2-7ba2-473c-9937-8d55080a3cbe",
+      "variable_name": "u",
+      "ontology_term": "Action",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "70b2f690-a344-4359-9e66-ade8c850b5e1",
+      "variable_name": "A_m0",
+      "ontology_term": "LikelihoodMatrixModality0",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "4dd09932-33a8-461b-b83c-ff8eef6e89c0",
+      "variable_name": "A_m1",
+      "ontology_term": "LikelihoodMatrixModality1",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "c43eaa9b-e129-4cd0-a21f-7c75419b71d1",
+      "variable_name": "B_f0",
+      "ontology_term": "TransitionMatrixFactor0",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "d869bca8-18c7-4da3-95eb-4becc803e9f9",
+      "variable_name": "B_f1",
+      "ontology_term": "TransitionMatrixFactor1",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "b6dcf0b1-ce69-4a87-9b40-568cd2450d67",
+      "variable_name": "D_f0",
+      "ontology_term": "PriorFactor0",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "fff65cb0-7c5a-48d6-8525-8529ef7b493b",
+      "variable_name": "D_f1",
+      "ontology_term": "PriorFactor1",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "7aa8958f-5564-47a4-b3d5-e6cf0c5e02a5",
+      "variable_name": "C_m0",
+      "ontology_term": "PreferenceModality0",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "4d66bda1-94b4-4701-af2a-5e110c8afdff",
+      "variable_name": "C_m1",
+      "ontology_term": "PreferenceModality1",
+      "description": null
+    }
+  ],
+  "source_format": null,
+  "created_at": "2026-05-22T06:17:18.962144",
+  "modified_at": "2026-05-22T06:17:18.962145",
+  "checksum": null,
+  "extensions": {
+    "gnn_section": "ActInfFactorized",
+    "footer": "Factorized Posterior Agent v1.0 \u2014 explicit mean-field Q(s) = Q(s_0) Q(s_1)\nfactorization. Two state factors \u00d7 two observation modalities.",
+    "signature": "Cryptographic signature goes here"
+  },
+  "raw_sections": {
+    "GNNSection": "ActInfFactorized",
+    "GNNVersionAndFlags": "GNN v1",
+    "ModelName": "Factorized Posterior Agent",
+    "ModelAnnotation": "A mean-field factorized POMDP agent. The joint posterior over two\nindependent state factors `s_1` (location) and `s_2` (goal identity) is\napproximated as the product of marginals Q(s_1, s_2) = Q(s_1) * Q(s_2).\nThis is the canonical simplification used in variational inference when\nexact joint posteriors are computationally intractable.\n\n- Two state factors: location (4 states), goal (2 states)\n- Two observation modalities: visual (3 obs), proprioceptive (2 obs)\n- Separate transition matrices B_1 (location \u00d7 action) and B_2 (goal is static)\n- Explicit factorization declared in ## Equations\n- Tests multi-factor / multi-modality handling in the parser",
+    "StateSpaceBlock": "# Two factorized state dimensions\n\ns_f0[4,1,type=float]      # Factor 0: agent location (4 possible positions)\ns_f1[2,1,type=float]      # Factor 1: goal identity (2 possible goals)\n\n# Two observation modalities\n\no_m0[3,1,type=int]        # Modality 0: visual observation (3 visual cues)\no_m1[2,1,type=int]        # Modality 1: proprioceptive observation (2 body states)\n\n# Actions\n\nu[3,1,type=int]           # 3 possible actions: stay, forward, backward\n\n# Likelihood matrices (one per modality)\n\nA_m0[3,4,2,type=float]    # Visual likelihood: depends on both factors\nA_m1[2,4,type=float]      # Proprioceptive likelihood: depends only on location\n\n# Transition matrices (one per factor)\n\nB_f0[4,4,3,type=float]    # Location transitions (depends on action)\nB_f1[2,2,type=float]      # Goal transitions (typically identity \u2014 goal is static)\n\n# Priors and preferences\n\nD_f0[4,1,type=float]      # Prior over locations (uniform)\nD_f1[2,1,type=float]      # Prior over goals\nC_m0[3,1,type=float]      # Visual preferences\nC_m1[2,1,type=float]      # Proprioceptive preferences",
+    "Connections": "# Factor-wise priors\nD_f0>s_f0\nD_f1>s_f1\n\n# Transitions per factor\n(s_f0, u)>B_f0\nB_f0>s_f0\ns_f1>B_f1\nB_f1>s_f1\n\n# Observations couple modalities to state factors\n(s_f0, s_f1)>A_m0\nA_m0>o_m0\ns_f0>A_m1\nA_m1>o_m1\n\n# Preferences\nC_m0-o_m0\nC_m1-o_m1",
+    "InitialParameterization": "# A_m0: visual observation depends on (location, goal) jointly\n# Simplified uniform mapping for each goal\n\nA_m0={\n  (\n    (0.7, 0.1, 0.1, 0.1),\n    (0.1, 0.7, 0.1, 0.1),\n    (0.2, 0.2, 0.8, 0.8)\n  ),\n  (\n    (0.1, 0.7, 0.1, 0.1),\n    (0.7, 0.1, 0.1, 0.1),\n    (0.2, 0.2, 0.8, 0.8)\n  )\n}\n\n# A_m1: proprioceptive depends only on location\n\nA_m1={\n  (0.9, 0.1, 0.1, 0.1),\n  (0.1, 0.9, 0.9, 0.9)\n}\n\n# D_f0: uniform over 4 locations\n\nD_f0={(0.25, 0.25, 0.25, 0.25)}\n\n# D_f1: slight bias toward goal 0\n\nD_f1={(0.6, 0.4)}\n\n# C_m0: prefer the third visual observation\n\nC_m0={(0.0, 0.0, 1.0)}\n\n# C_m1: neutral\n\nC_m1={(0.5, 0.5)}",
+    "Equations": "# Mean-field factorization assumption:\n# Q(s_f0, s_f1) = Q(s_f0) * Q(s_f1)\n#\n# Per-factor updates (coordinate ascent VI):\n# Q(s_f0) = softmax(ln(D_f0) + \u03a3_m ln(\u03a3_{s_f1} A_m[s_f0, s_f1] * Q(s_f1)^T * o_m))\n# Q(s_f1) = softmax(ln(D_f1) + \u03a3_m ln(\u03a3_{s_f0} A_m[s_f0, s_f1] * Q(s_f0)^T * o_m))\n#\n# Factorized policy posterior:\n# Q(\u03c0) = softmax(-G(\u03c0))\n# G(\u03c0) = \u03a3_m [E_Q[ln Q(o_m|\u03c0) - ln C_m] - H[Q(s_f0|\u03c0)] - H[Q(s_f1|\u03c0)]]",
+    "Time": "Dynamic\nDiscreteTime=t\nModelTimeHorizon=15",
+    "ActInfOntologyAnnotation": "s_f0=HiddenStateFactor0\ns_f1=HiddenStateFactor1\no_m0=ObservationModality0\no_m1=ObservationModality1\nu=Action\nA_m0=LikelihoodMatrixModality0\nA_m1=LikelihoodMatrixModality1\nB_f0=TransitionMatrixFactor0\nB_f1=TransitionMatrixFactor1\nD_f0=PriorFactor0\nD_f1=PriorFactor1\nC_m0=PreferenceModality0\nC_m1=PreferenceModality1",
+    "ModelParameters": "num_hidden_states_factor0: 4\nnum_hidden_states_factor1: 2\nnum_obs_modality0: 3\nnum_obs_modality1: 2\nnum_actions: 3\nnum_factors: 2\nnum_modalities: 2\nnum_timesteps: 15",
+    "Footer": "Factorized Posterior Agent v1.0 \u2014 explicit mean-field Q(s) = Q(s_0) Q(s_1)\nfactorization. Two state factors \u00d7 two observation modalities.",
+    "Signature": "Cryptographic signature goes here"
+  },
+  "initialparameterization": {
+    "A_m0": [
+      [
+        [
+          0.7,
+          0.1,
+          0.1,
+          0.1
+        ],
+        [
+          0.1,
+          0.7,
+          0.1,
+          0.1
+        ],
+        [
+          0.2,
+          0.2,
+          0.8,
+          0.8
+        ]
+      ],
+      [
+        [
+          0.1,
+          0.7,
+          0.1,
+          0.1
+        ],
+        [
+          0.7,
+          0.1,
+          0.1,
+          0.1
+        ],
+        [
+          0.2,
+          0.2,
+          0.8,
+          0.8
+        ]
+      ]
+    ],
+    "A_m1": [
+      [
+        0.9,
+        0.1,
+        0.1,
+        0.1
+      ],
+      [
+        0.1,
+        0.9,
+        0.9,
+        0.9
+      ]
+    ],
+    "D_f0": [
+      [
+        0.25,
+        0.25,
+        0.25,
+        0.25
+      ]
+    ],
+    "D_f1": [
+      [
+        0.6,
+        0.4
+      ]
+    ],
+    "C_m0": [
+      [
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "C_m1": [
+      [
+        0.5,
+        0.5
+      ]
+    ],
+    "num_hidden_states_factor0": 4,
+    "num_hidden_states_factor1": 2,
+    "num_obs_modality0": 3,
+    "num_obs_modality1": 2,
+    "num_actions": 3,
+    "num_factors": 2,
+    "num_modalities": 2,
+    "num_timesteps": 15
+  },
+  "model_parameters": {
+    "A_m0": [
+      [
+        [
+          0.7,
+          0.1,
+          0.1,
+          0.1
+        ],
+        [
+          0.1,
+          0.7,
+          0.1,
+          0.1
+        ],
+        [
+          0.2,
+          0.2,
+          0.8,
+          0.8
+        ]
+      ],
+      [
+        [
+          0.1,
+          0.7,
+          0.1,
+          0.1
+        ],
+        [
+          0.7,
+          0.1,
+          0.1,
+          0.1
+        ],
+        [
+          0.2,
+          0.2,
+          0.8,
+          0.8
+        ]
+      ]
+    ],
+    "A_m1": [
+      [
+        0.9,
+        0.1,
+        0.1,
+        0.1
+      ],
+      [
+        0.1,
+        0.9,
+        0.9,
+        0.9
+      ]
+    ],
+    "D_f0": [
+      [
+        0.25,
+        0.25,
+        0.25,
+        0.25
+      ]
+    ],
+    "D_f1": [
+      [
+        0.6,
+        0.4
+      ]
+    ],
+    "C_m0": [
+      [
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "C_m1": [
+      [
+        0.5,
+        0.5
+      ]
+    ],
+    "num_hidden_states_factor0": 4,
+    "num_hidden_states_factor1": 2,
+    "num_obs_modality0": 3,
+    "num_obs_modality1": 2,
+    "num_actions": 3,
+    "num_factors": 2,
+    "num_modalities": 2,
+    "num_timesteps": 15
+  }
+}

@@ -1,0 +1,84 @@
+{
+  "framework": "jax",
+  "model_name": "tmaze_epistemic",
+  "script_name": "T-Maze Epistemic Foraging Agent_jax.py",
+  "script_path": "output/11_render_output/tmaze_epistemic/jax/T-Maze Epistemic Foraging Agent_jax.py",
+  "success": true,
+  "return_code": 0,
+  "execution_time": 1.004013,
+  "timestamp": "2026-05-22T06:19:20.301017",
+  "simulation_data": {
+    "traces": [],
+    "free_energy": [
+      1.0,
+      2.4791
+    ],
+    "states": [],
+    "observations": [
+      0,
+      0,
+      0
+    ],
+    "actions": [
+      3,
+      3,
+      3
+    ],
+    "policy": [],
+    "raw_output": "============================================================\nJAX Active Inference Model: GNNModel\n============================================================\n\n\u2705 Model parameters created\n   A matrix shape: (12, 8)\n   B matrix shape: (8, 8, 4)\n   C vector shape: (12,)\n   D vector shape: (8,)\n\nGNNModel Model Summary (Pure JAX Implementation):\n- Number of states: 8\n- Number of observations: 12\n- Number of actions: 4\n- Parameters: A matrix, B matrix, C vector, D vector\n\nKey Functions:\n- create_params(): Create model parameters\n- belief_update(): Bayesian belief update\n- compute_expected_free_energy(): Compute EFE for action\n- choose_action(): Choose action with minimum EFE\n- simulate_step(): One step of Active Inference\n- run_simulation(): Full simulation over observations\n\n\n\ud83e\uddea Running test simulation...\n\n\ud83d\udcca Simulation Results:\n   Initial belief: [0.5 0.5 0.  0.  0.  0.  0.  0. ]\n   Updated belief: [0.5 0.5 0.  0.  0.  0.  0.  0. ]\n   Selected action: 3\n   Expected free energy: 1.0000\n   EFE for all actions: [2.97209 2.97209 2.97209 1.     ]\n\n\ud83d\udd04 Running 3-step simulation...\n   Actions taken: [3 3 3]\n   Final belief: [0.5 0.5 0.  0.  0.  0.  0.  0. ]\n   Average EFE: 2.4791\n\n\ud83d\udcbe Saved simulation results to: output/12_execute_output/tmaze_epistemic/jax/simulation_data/simulation_results.json\n\n\u2705 JAX Active Inference model test successful!\n",
+    "raw_error": "",
+    "beliefs": [
+      [
+        0.5,
+        0.5,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.5,
+        0.5,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.5,
+        0.5,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    ],
+    "num_timesteps": 3
+  },
+  "execution_benchmark_repeats": 1,
+  "execution_metadata": {
+    "executor": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python",
+    "stdout_length": 1348,
+    "stderr_length": 0,
+    "output_directory": "output/12_execute_output/tmaze_epistemic/jax"
+  },
+  "execution_time_mean": 1.004013,
+  "execution_time_std": 0.0,
+  "execution_time_samples": [
+    1.004013
+  ],
+  "collected_outputs": {
+    "visualizations": [],
+    "simulation_data": [
+      "output/12_execute_output/tmaze_epistemic/jax/simulation_data/simulation_results.json"
+    ],
+    "traces": [],
+    "other": []
+  }
+}

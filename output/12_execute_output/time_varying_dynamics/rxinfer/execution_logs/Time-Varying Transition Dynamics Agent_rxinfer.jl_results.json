@@ -1,0 +1,221 @@
+{
+  "framework": "rxinfer",
+  "model_name": "time_varying_dynamics",
+  "script_name": "Time-Varying Transition Dynamics Agent_rxinfer.jl",
+  "script_path": "output/11_render_output/time_varying_dynamics/rxinfer/Time-Varying Transition Dynamics Agent_rxinfer.jl",
+  "success": true,
+  "return_code": 0,
+  "execution_time": 5.418053,
+  "timestamp": "2026-05-22T06:21:24.850046",
+  "simulation_data": {
+    "traces": [],
+    "free_energy": [
+      0.7468932840812468,
+      0.5449112966570797,
+      0.5539426530898751,
+      0.5567752723924159,
+      0.5570940116956872,
+      0.7189491246517096,
+      0.938277501842466,
+      0.5547022307710037,
+      0.5564577934410695,
+      0.5570517867530144
+    ],
+    "states": [],
+    "observations": [
+      1,
+      2,
+      2,
+      2,
+      2,
+      0,
+      0,
+      0,
+      2,
+      2
+    ],
+    "actions": [
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0
+    ],
+    "policy": [],
+    "raw_output": "RxInfer.jl simulation wrote simulation_results.json\n",
+    "raw_error": "",
+    "schema_version": "rxinfer_simulation_v1",
+    "beliefs": [
+      [
+        0.1582074521651561,
+        0.5141993957703928,
+        0.3275931520644512
+      ],
+      [
+        0.14215461212807823,
+        0.18079720946872577,
+        0.6770481784031961
+      ],
+      [
+        0.11193618657575917,
+        0.11741598589037944,
+        0.7706478275338614
+      ],
+      [
+        0.10765438446021931,
+        0.11039600666099046,
+        0.7819496088787903
+      ],
+      [
+        0.10719340375844909,
+        0.10968513117680816,
+        0.7831214650647428
+      ],
+      [
+        0.4380858412298193,
+        0.26785122117627425,
+        0.29406293759390645
+      ],
+      [
+        0.5628206055328452,
+        0.3123106656054282,
+        0.12486872886172662
+      ],
+      [
+        0.10685818807051767,
+        0.13208557196089274,
+        0.7610562399685896
+      ],
+      [
+        0.10798432934851133,
+        0.11153034621578876,
+        0.7804853244357
+      ],
+      [
+        0.10725069198554732,
+        0.10978927266647434,
+        0.7829600353479783
+      ]
+    ],
+    "true_states": [
+      2,
+      2,
+      2,
+      2,
+      0,
+      0,
+      0,
+      2,
+      2,
+      2
+    ],
+    "expected_free_energy": [
+      0.7468932840812468,
+      0.5449112966570797,
+      0.5539426530898751,
+      0.5567752723924159,
+      0.5570940116956872,
+      0.7189491246517096,
+      0.938277501842466,
+      0.5547022307710037,
+      0.5564577934410695,
+      0.5570517867530144
+    ],
+    "policy_posterior": [
+      [
+        0.38155189705222325,
+        0.6184481029477766
+      ],
+      [
+        0.8226422174071639,
+        0.17735778259283602
+      ],
+      [
+        0.8603910537456968,
+        0.13960894625430312
+      ],
+      [
+        0.864828237550031,
+        0.13517176244996898
+      ],
+      [
+        0.8652955765988156,
+        0.1347044234011845
+      ],
+      [
+        0.33774917921757486,
+        0.6622508207824253
+      ],
+      [
+        0.1741309828753053,
+        0.8258690171246947
+      ],
+      [
+        0.16184992885520372,
+        0.8381500711447962
+      ],
+      [
+        0.8644827706063867,
+        0.13551722939361333
+      ],
+      [
+        0.8652373733807727,
+        0.13476262661922742
+      ]
+    ],
+    "validation": {
+      "all_beliefs_valid": true,
+      "actions_in_range": true,
+      "all_valid": true,
+      "beliefs_sum_to_one": true
+    },
+    "model_parameters": {
+      "num_observations": 3,
+      "E_shape": [
+        2
+      ],
+      "A_shape": [
+        3,
+        3
+      ],
+      "D_shape": [
+        3
+      ],
+      "B_shape": [
+        3,
+        3,
+        2
+      ],
+      "num_actions": 2,
+      "C_shape": [
+        3
+      ],
+      "num_states": 3
+    }
+  },
+  "execution_benchmark_repeats": 1,
+  "execution_metadata": {
+    "executor": "julia",
+    "stdout_length": 52,
+    "stderr_length": 0,
+    "output_directory": "output/12_execute_output/time_varying_dynamics/rxinfer"
+  },
+  "execution_time_mean": 5.418053,
+  "execution_time_std": 0.0,
+  "execution_time_samples": [
+    5.418053
+  ],
+  "collected_outputs": {
+    "visualizations": [],
+    "simulation_data": [
+      "output/12_execute_output/time_varying_dynamics/rxinfer/simulation_data/simulation_results.json"
+    ],
+    "traces": [],
+    "other": []
+  }
+}
