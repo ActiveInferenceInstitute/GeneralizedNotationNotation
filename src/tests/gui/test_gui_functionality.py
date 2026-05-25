@@ -10,8 +10,8 @@ Tests the GUI module's process_gui function and related functionality:
 - Error handling
 """
 
-import io
 import importlib
+import io
 import json
 import logging
 import sys
@@ -202,7 +202,7 @@ class TestGUIConfiguration:
 
     @pytest.mark.unit
     @pytest.mark.fast
-    def test_placeholder_gradio_falls_back_without_failing(
+    def test_importable_gradio_without_blocks_falls_back_without_failing(
         self, isolated_temp_dir: Any, monkeypatch: pytest.MonkeyPatch
     ) -> Any:
         """Importable Gradio without Blocks should use recovery artifacts."""
@@ -234,9 +234,7 @@ class TestGUIConfiguration:
             )
 
             assert result is True
-            summary = json.loads(
-                (output / "gui_processing_summary.json").read_text()
-            )
+            summary = json.loads((output / "gui_processing_summary.json").read_text())
             assert summary["overall_success"] is True
             assert summary["results"]["gui_1"]["success"] is True
             assert summary["results"]["gui_2"]["success"] is True

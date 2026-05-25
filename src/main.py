@@ -727,6 +727,22 @@ def main(
                 logger.warning(f"Could not render performance dashboard: {e}")
             # --- END DASHBOARD INJECTION ---
 
+            try:
+                from report.pipeline_report import generate_pipeline_report
+
+                report_path = args.output_dir / "PIPELINE_REPORT.md"
+                report_path.write_text(
+                    generate_pipeline_report(
+                        args.output_dir,
+                        summary_path=summary_path,
+                        mode="final",
+                    ),
+                    encoding="utf-8",
+                )
+                logger.info(f"📄 Final pipeline report written to: {report_path}")
+            except Exception as e:
+                logger.warning(f"Could not render final pipeline report: {e}")
+
             # Log summary statistics
             steps = pipeline_summary["steps"]
             successful = sum(

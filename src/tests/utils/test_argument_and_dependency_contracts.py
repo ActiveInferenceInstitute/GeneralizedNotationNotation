@@ -7,8 +7,8 @@ from pathlib import Path
 import pytest
 
 from utils.argument_utils import ArgumentParser
-from utils.pipeline_template import _parse_step_args
 from utils.pipeline_step_dependencies import resolve_step_dependencies
+from utils.pipeline_template import _parse_step_args
 
 
 def test_step_specific_arguments_are_exposed() -> None:

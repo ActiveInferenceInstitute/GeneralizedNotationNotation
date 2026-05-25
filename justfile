@@ -154,5 +154,5 @@ setup-clean:
 
 # Validate the JAX + PyMDP stack
 validate-stack:
-    uv run python -c "from utils.jax_stack_validation import verify_jax_pymdp_stack; \
+    PYTHONPATH=src uv run python -c "from utils.jax_stack_validation import verify_jax_pymdp_stack; \
         verify_jax_pymdp_stack(); print('✅ JAX + PyMDP stack OK')"

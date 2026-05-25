@@ -1,6 +1,6 @@
 # GNN Pipeline Test Suite - Comprehensive Summary
 
-**Last Updated**: 2026-05-20
+**Last Updated**: 2026-05-25
 **Status**: ✅ Production Ready  
 **Test Infrastructure Version**: 2.0.1
 
@@ -12,12 +12,12 @@ The GNN Processing Pipeline test suite provides comprehensive coverage across al
 
 ### Key Metrics
 
-- **Total Test Files**: 166 `test_*.py` files
+- **Total Test Files**: 170 `test_*.py` files
 - **Directory Layout**: 34 first-level directories under `src/tests/`; 31 contain direct test files
 - **Root-Level Tests**: 28 `test_*.py` files at `src/tests/`
-- **Subdirectory Tests**: 138 `test_*.py` files under module/helper directories
-- **Collected Tests**: 2,258 with `uv run pytest --collect-only src/tests/ -q --tb=no --ignore=src/tests/llm/test_llm_ollama.py --ignore=src/tests/llm/test_llm_ollama_integration.py` (2026-05-20)
-- **Latest Full Run**: `uv run pytest src/tests/ -q --tb=no --ignore=src/tests/llm/test_llm_ollama.py --ignore=src/tests/llm/test_llm_ollama_integration.py` passed on 2026-05-20: 2,250 passed, 7 skipped, 1 xpassed in 722.10s.
+- **Subdirectory Tests**: 142 `test_*.py` files under module/helper directories
+- **Collected Tests**: 2,284 with `uv run pytest --collect-only src/tests/ -q --tb=no --ignore=src/tests/llm/test_llm_ollama.py --ignore=src/tests/llm/test_llm_ollama_integration.py` (2026-05-25)
+- **Latest Full Run**: `uv run pytest src/tests/ -q --tb=no --ignore=src/tests/llm/test_llm_ollama.py --ignore=src/tests/llm/test_llm_ollama_integration.py` passed on 2026-05-25: 2,276 passed, 7 skipped, 1 xpassed in 813.52s.
 
 ---
 
@@ -283,9 +283,9 @@ output/2_tests_output/
 
 The GNN Processing Pipeline test suite provides comprehensive, production-ready testing infrastructure with:
 
-- 166 test files across root and module-specific directories
-- 2,258 collected tests in the current command-of-record collect pass with Ollama integration tests ignored
-- Latest full command-of-record run passed on 2026-05-20: 2,250 passed, 7 skipped, 1 xpassed in 722.10s
+- 170 test files across root and module-specific directories
+- 2,284 collected tests in the current command-of-record collect pass with Ollama integration tests ignored
+- Latest full command-of-record run passed on 2026-05-25: 2,276 passed, 7 skipped, 1 xpassed in 813.52s
 - Real data and real implementations throughout core paths
 - Comprehensive error handling and recovery testing
 - Module coverage for all 25 pipeline steps

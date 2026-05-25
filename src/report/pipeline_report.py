@@ -8,16 +8,31 @@ Markdown report covering: overview, step status, timing, artifacts, and errors.
 
 import json
 import logging
+from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional, cast
+from typing import Any, Dict, List, Literal, Optional, cast
 
 logger = logging.getLogger(__name__)
+
+
+@dataclass(frozen=True)
+class PipelineReportContext:
+    """Resolved inputs used by each report section."""
+
+    output_dir: Path
+    summary_path: Path
+    summary: Dict[str, Any]
+    step_dirs: List[Path]
+    step_stats: Dict[str, Dict[str, Any]]
+    mode: Literal["final", "preliminary"]
 
 
 def generate_pipeline_report(
     output_dir: Path,
     summary_path: Optional[Path] = None,
+    *,
+    mode: Literal["final", "preliminary"] = "final",
 ) -> str:
     """
     Generate a comprehensive Markdown report from pipeline results.
@@ -26,36 +41,56 @@ def generate_pipeline_report(
         output_dir: Root output directory containing per-step subdirectories.
         summary_path: Path to pipeline_execution_summary.json.
                       Defaults to output_dir/pipeline_execution_summary.json.
+        mode: Use "preliminary" while step 23 is running, or "final" after the
+              completed pipeline summary has been written.
 
     Returns:
         Markdown string for PIPELINE_REPORT.md.
     """
-    output_dir = Path(output_dir)
-    summary_path = (
-        summary_path
-        or output_dir / "00_pipeline_summary" / "pipeline_execution_summary.json"
-    )
-
-    # Load summary if available
-    summary = _load_summary(summary_path)
-
-    # Collect per-step results
-    step_dirs = _discover_step_dirs(output_dir)
-    step_stats = _collect_step_stats(step_dirs)
+    context = _build_report_context(output_dir, summary_path, mode)
 
     # Build report sections
     sections: list[Any] = [
-        _section_header(summary),
-        _section_step_status(summary, step_stats),
-        _section_timing(summary),
-        _section_artifacts(step_dirs),
-        _section_statistics(output_dir),
-        _section_errors(summary, step_stats),
+        _section_header(context.summary),
+        _section_step_status(
+            context.summary,
+            context.step_stats,
+            mode=context.mode,
+        ),
+        _section_timing(context.summary),
+        _section_artifacts(context.step_dirs),
+        _section_statistics(context.output_dir),
+        _section_errors(context.summary, context.step_stats),
     ]
 
     report = "\n\n---\n\n".join(s for s in sections if s)
     logger.info(f"📄 Pipeline report generated ({len(report)} chars)")
     return report
+
+
+def _build_report_context(
+    output_dir: Path,
+    summary_path: Optional[Path],
+    mode: Literal["final", "preliminary"],
+) -> PipelineReportContext:
+    """Resolve report inputs once so section renderers stay side-effect free."""
+    resolved_output_dir = Path(output_dir)
+    resolved_summary_path = (
+        summary_path
+        or resolved_output_dir
+        / "00_pipeline_summary"
+        / "pipeline_execution_summary.json"
+    )
+    summary = _load_summary(resolved_summary_path)
+    step_dirs = _discover_step_dirs(resolved_output_dir)
+    return PipelineReportContext(
+        output_dir=resolved_output_dir,
+        summary_path=resolved_summary_path,
+        summary=summary,
+        step_dirs=step_dirs,
+        step_stats=_collect_step_stats(step_dirs),
+        mode=mode,
+    )
 
 
 def _load_summary(path: Path) -> Dict[str, Any]:
@@ -125,21 +160,28 @@ def _section_header(summary: Dict[str, Any]) -> str:
     if isinstance(total_duration, (int, float)):
         total_duration = f"{total_duration:.1f}"
 
-    # Support both boolean 'success' and string 'overall_status' keys
+    # Support both boolean 'success' and string 'overall_status' keys.
     overall_status = summary.get("overall_status", None)
     success = summary.get("success", None)
     if overall_status:
-        is_success = overall_status.upper() == "SUCCESS"
-        is_failed = overall_status.upper() in ("FAILED", "FAILURE")
+        status_text = str(overall_status).upper()
+        is_success = status_text == "SUCCESS"
+        is_warning = "WARN" in status_text or status_text == "PARTIAL_SUCCESS"
+        is_failed = status_text in ("FAILED", "FAILURE")
     elif success is not None:
         is_success = success is True
+        is_warning = False
         is_failed = success is False
+        status_text = "SUCCESS" if is_success else "FAILED"
     else:
         is_success = False
+        is_warning = False
         is_failed = False
+        status_text = "UNKNOWN"
 
-    status_emoji = "🟢" if is_success else "🔴" if is_failed else "⚪"
-    status_text = "SUCCESS" if is_success else "FAILED" if is_failed else "UNKNOWN"
+    status_emoji = (
+        "🟢" if is_success else "🟡" if is_warning else "🔴" if is_failed else "⚪"
+    )
 
     return f"""# Pipeline Execution Report
 
@@ -152,6 +194,8 @@ def _section_header(summary: Dict[str, Any]) -> str:
 def _section_step_status(
     summary: Dict[str, Any],
     step_stats: Dict[str, Dict[str, Any]],
+    *,
+    mode: Literal["final", "preliminary"] = "final",
 ) -> str:
     """Generate step status table."""
     lines: list[Any] = ["## Step Status"]
@@ -188,30 +232,27 @@ def _section_step_status(
                 f"| {step_num} | {name} | {emoji} {status} | {duration} | {files} | {size} |"
             )
 
-        # Self-referencing rows: the report step itself (step 23_report.py)
-        # and intelligent analysis (24_intelligent_analysis.py) are generated
-        # after the report step runs. If the summary is preliminary (written
-        # before these steps finish), append them so all 25 steps appear.
-        recorded_scripts = {s.get("script_name", "") for s in steps}
-        self_referencing_steps: list[Any] = [
-            ("23_report.py", "Comprehensive analysis report generation"),
-            (
-                "24_intelligent_analysis.py",
-                "AI-powered pipeline analysis and executive reports",
-            ),
-        ]
-        for script_name, desc in self_referencing_steps:
-            if script_name not in recorded_scripts:
-                output_dir_name = script_name.replace(".py", "_output")
-                st = step_stats.get(output_dir_name, {})
-                files = st.get("file_count", "—")
-                size = st.get("total_size_kb", "—")
-                # These steps are in-flight when the report is written
-                step_num = int(script_name.split("_")[0]) + 1
-                emoji = "🔄"
-                lines.append(
-                    f"| {step_num} | {desc} | {emoji} IN PROGRESS | — | {files} | {size} |"
-                )
+        if mode == "preliminary":
+            # Step 23 can only see a partial summary while it is running. Add
+            # explicit in-flight rows there, but never in the final report.
+            recorded_scripts = {s.get("script_name", "") for s in steps}
+            self_referencing_steps: list[Any] = [
+                ("23_report.py", "Comprehensive analysis report generation"),
+                (
+                    "24_intelligent_analysis.py",
+                    "AI-powered pipeline analysis and executive reports",
+                ),
+            ]
+            for script_name, desc in self_referencing_steps:
+                if script_name not in recorded_scripts:
+                    output_dir_name = script_name.replace(".py", "_output")
+                    st = step_stats.get(output_dir_name, {})
+                    files = st.get("file_count", "—")
+                    size = st.get("total_size_kb", "—")
+                    step_num = int(script_name.split("_")[0]) + 1
+                    lines.append(
+                        f"| {step_num} | {desc} | 🔄 IN PROGRESS | — | {files} | {size} |"
+                    )
 
     elif step_stats:
         lines.append("")

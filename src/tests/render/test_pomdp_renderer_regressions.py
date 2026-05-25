@@ -36,8 +36,7 @@ def test_discrete_pomdp_models_render_to_julia_frameworks(
     assert spec["model_parameters"]["num_hidden_states"] == expected_shape[0]
     assert spec["model_parameters"]["num_actions"] == expected_shape[2]
     assert (
-        spec["model_parameters"]["b_tensor_order"]
-        == "next_state_previous_state_action"
+        spec["model_parameters"]["b_tensor_order"] == "next_state_previous_state_action"
     )
 
     ok, message, artifacts = render_gnn_spec(spec, framework, tmp_path / framework)

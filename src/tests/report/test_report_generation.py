@@ -5,6 +5,7 @@ Test Report Generation - Tests for report generation functionality.
 Tests the ReportGenerator class and report generation pipeline.
 """
 
+import json
 import sys
 from pathlib import Path
 from typing import Any
@@ -94,6 +95,49 @@ class TestReportGeneration:
         output_file.write_text(content)
 
         assert content is not None
+
+    @pytest.mark.fast
+    def test_pipeline_report_modes_handle_in_progress_rows(self, tmp_path: Any) -> None:
+        """Final reports should not carry preliminary self-referencing rows."""
+        from report.pipeline_report import generate_pipeline_report
+
+        summary_dir = tmp_path / "00_pipeline_summary"
+        summary_dir.mkdir(parents=True)
+        summary_path = summary_dir / "pipeline_execution_summary.json"
+        summary_path.write_text(
+            json.dumps(
+                {
+                    "start_time": "2026-05-25T07:00:00",
+                    "overall_status": "SUCCESS_WITH_WARNINGS",
+                    "total_duration_seconds": 12.5,
+                    "steps": [
+                        {
+                            "step_number": 23,
+                            "script_name": "22_gui.py",
+                            "description": "GUI",
+                            "status": "SUCCESS",
+                            "duration_seconds": 1.0,
+                        }
+                    ],
+                }
+            ),
+            encoding="utf-8",
+        )
+
+        preliminary = generate_pipeline_report(
+            tmp_path,
+            summary_path=summary_path,
+            mode="preliminary",
+        )
+        final = generate_pipeline_report(
+            tmp_path,
+            summary_path=summary_path,
+            mode="final",
+        )
+
+        assert "🟡 **Status**: SUCCESS_WITH_WARNINGS" in final
+        assert "IN PROGRESS" in preliminary
+        assert "IN PROGRESS" not in final
 
     @pytest.mark.integration
     def test_generate_comprehensive_report(self, tmp_path: Any) -> Any:

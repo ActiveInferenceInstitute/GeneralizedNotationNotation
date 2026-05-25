@@ -117,7 +117,7 @@ src/
 ├── utils/                   # Shared utilities
 │   ├── argument_utils.py    # CLI/pipeline argument model
 │   └── pipeline_template.py # Thin orchestrator wrapper
-└── tests/                   # 166 pytest files, mirrored by module
+└── tests/                   # 170 pytest files, mirrored by module
 ```
 
 ### Design Patterns

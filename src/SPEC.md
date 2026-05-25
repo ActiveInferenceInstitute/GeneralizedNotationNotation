@@ -129,7 +129,7 @@ Accepted alternatives for core processing file organization:
 | `tests/` | Test suite |
 | `sapf/` | SAPF public entry point (`audio/sapf/`) |
 
-Pipeline artifacts are written to the repository-level `output/` directory by default (`io.output_dir` in `input/config.yaml`). That tree is **tracked in git** (with selective ignores for volatile paths under `.gitignore`). The `src/output/` directory is not a Python package; see [`output/README.md`](output/README.md) for fixture copies vs root `output/`.
+Pipeline artifacts are written to the repository-level `output/` directory by default (`io.output_dir` in `input/config.yaml`). That tree is ignored except for its marker file, so generated artifacts should be regenerated rather than hand-edited. The `src/output/` directory is not a Python package; see [`doc/pipeline/README.md`](../doc/pipeline/README.md) for generated-output coverage exclusions.
 
 ---
 

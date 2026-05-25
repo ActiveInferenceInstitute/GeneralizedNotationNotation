@@ -11,28 +11,23 @@ import logging
 import os
 import tempfile
 from pathlib import Path
-from typing import Any, Optional, cast
-
-try:
-    import gradio as gr
-    if not hasattr(gr, "Blocks"):
-        raise AttributeError("gradio import does not expose Blocks")
-    _GUI_BACKEND = "gradio"
-    _GUI_BACKEND_REASON = cast(Any, None)
-except Exception as exc:
-    gr = cast(Any, None)
-    _GUI_BACKEND = cast(Any, None)
-    _GUI_BACKEND_REASON = str(exc)
+from typing import Any, Optional
 
 from utils.pipeline_template import (
     log_step_error,
     log_step_success,
 )
 
+from ..backend import detect_gradio_backend, write_json_atomically
 from .matrix_editor import (
     create_matrix_from_gnn,
     get_pomdp_template,
 )
+
+_GUI_STATUS = detect_gradio_backend()
+gr = _GUI_STATUS.module
+_GUI_BACKEND = _GUI_STATUS.name
+_GUI_BACKEND_REASON = _GUI_STATUS.reason
 
 
 def run_gui(
@@ -106,50 +101,37 @@ def run_gui(
 
             # Save visual data as JSON for potential future loading
             vis_matrices_path = gui_output_dir / "visual_matrices.json"
-            with tempfile.NamedTemporaryFile(
-                mode="w", encoding="utf-8", dir=vis_matrices_path.parent, delete=False
-            ) as tmp_f:
-                tmp_f.write(json.dumps(visual_data, indent=2))
-            os.replace(tmp_f.name, str(vis_matrices_path))
+            write_json_atomically(vis_matrices_path, visual_data)
 
             # Generate status artifact
-            gui_status_path = gui_output_dir / "gui_status.json"
-            with tempfile.NamedTemporaryFile(
-                mode="w", encoding="utf-8", dir=gui_status_path.parent, delete=False
-            ) as tmp_f:
-                tmp_f.write(
-                    json.dumps(
-                        {
-                            "backend": _GUI_BACKEND or "none",
-                            "launched": False,
-                            "export_file": str(starter_path),
-                            "gui_type": "visual_matrix_editor",
-                            "status": "fallback_mode"
-                            if _GUI_BACKEND is None
-                            else "headless_mode",
-                            "backend_reason": _GUI_BACKEND_REASON,
-                            "visual_data_file": str(
-                                gui_output_dir / "visual_matrices.json"
-                            ),
-                            "features": [
-                                "Visual matrix editing",
-                                "Drag-and-drop interface",
-                                "Real-time GNN generation",
-                                "POMDP template-based",
-                            ],
-                            "recommendations": [
-                                "Run with --interactive to launch GUI server on port 7861"
-                            ]
-                            if _GUI_BACKEND
-                            else [
-                                "Install with: uv sync --extra gui",
-                                "Run with --interactive for full GUI experience",
-                            ],
-                        },
-                        indent=2,
-                    )
-                )
-            os.replace(tmp_f.name, str(gui_status_path))
+            write_json_atomically(
+                gui_output_dir / "gui_status.json",
+                {
+                    "backend": _GUI_BACKEND or "none",
+                    "launched": False,
+                    "export_file": str(starter_path),
+                    "gui_type": "visual_matrix_editor",
+                    "status": "fallback_mode"
+                    if _GUI_BACKEND is None
+                    else "headless_mode",
+                    "backend_reason": _GUI_BACKEND_REASON,
+                    "visual_data_file": str(gui_output_dir / "visual_matrices.json"),
+                    "features": [
+                        "Visual matrix editing",
+                        "Drag-and-drop interface",
+                        "Real-time GNN generation",
+                        "POMDP template-based",
+                    ],
+                    "recommendations": [
+                        "Run with --interactive to launch GUI server on port 7861"
+                    ]
+                    if _GUI_BACKEND
+                    else [
+                        "Install with: uv sync --extra gui",
+                        "Run with --interactive for full GUI experience",
+                    ],
+                },
+            )
 
             log_step_success(
                 logger,
@@ -198,30 +180,23 @@ def run_gui(
         # Record launch status
         gui_output_dir = output_root
         gui_output_dir.mkdir(parents=True, exist_ok=True)
-        gui_status_path2 = gui_output_dir / "gui_status.json"
-        with tempfile.NamedTemporaryFile(
-            mode="w", encoding="utf-8", dir=gui_status_path2.parent, delete=False
-        ) as tmp_f:
-            tmp_f.write(
-                json.dumps(
-                    {
-                        "backend": _GUI_BACKEND,
-                        "launched": True,
-                        "export_file": str(starter_path),
-                        "gui_type": "visual_matrix_editor",
-                        "port": 7861,
-                        "url": "http://localhost:7861",
-                        "features": [
-                            "Visual matrix editing",
-                            "Drag-and-drop interface",
-                            "Real-time GNN generation",
-                            "POMDP template-based",
-                        ],
-                    },
-                    indent=2,
-                )
-            )
-        os.replace(tmp_f.name, str(gui_status_path2))
+        write_json_atomically(
+            gui_output_dir / "gui_status.json",
+            {
+                "backend": _GUI_BACKEND,
+                "launched": True,
+                "export_file": str(starter_path),
+                "gui_type": "visual_matrix_editor",
+                "port": 7861,
+                "url": "http://localhost:7861",
+                "features": [
+                    "Visual matrix editing",
+                    "Drag-and-drop interface",
+                    "Real-time GNN generation",
+                    "POMDP template-based",
+                ],
+            },
+        )
 
         log_step_success(logger, "GUI 2 (Visual Matrix Editor) launched successfully")
         return True

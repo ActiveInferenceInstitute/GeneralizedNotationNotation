@@ -258,7 +258,10 @@ def process_report(
         try:
             from .pipeline_report import generate_pipeline_report
 
-            pipeline_report_md = generate_pipeline_report(pipeline_output_dir)
+            pipeline_report_md = generate_pipeline_report(
+                pipeline_output_dir,
+                mode="preliminary",
+            )
             report_path = pipeline_output_dir / "PIPELINE_REPORT.md"
             with open(report_path, "w") as f:
                 f.write(pipeline_report_md)

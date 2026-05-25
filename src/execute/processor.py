@@ -12,9 +12,10 @@ import os
 import subprocess  # nosec B404
 import sys
 from concurrent.futures import ProcessPoolExecutor
+from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple, Union, cast
+from typing import Any, Dict, List, Literal, Optional, Tuple, Union, cast
 
 from utils.logging.logging_utils import (
     PipelineLogger,
@@ -25,6 +26,27 @@ from utils.logging.logging_utils import (
 )
 
 logger = logging.getLogger(__name__)
+
+ExecutionFrameworkName = Literal[
+    "pymdp",
+    "rxinfer",
+    "jax",
+    "discopy",
+    "activeinference_jl",
+    "pytorch",
+    "numpyro",
+]
+
+
+@dataclass(frozen=True)
+class ScriptExecutionContext:
+    """Normalized execution metadata for one rendered script."""
+
+    script_path: Path
+    script_name: str
+    framework: str
+    model_name: str
+    executor: str
 
 
 def check_julia_dependencies(
@@ -951,6 +973,83 @@ def _aggregate_benchmark_samples(samples: List[float]) -> Dict[str, Any]:
     }
 
 
+def _build_script_execution_context(
+    script_info: Dict[str, Any],
+) -> ScriptExecutionContext:
+    """Normalize model/framework metadata from a rendered script path."""
+    script_path = script_info["path"]
+    path_parts = script_path.parts
+    if len(path_parts) >= 3:
+        model_name = path_parts[-3]
+        framework = path_parts[-2]
+    else:
+        model_name = "unknown_model"
+        framework = script_info["framework"]
+
+    return ScriptExecutionContext(
+        script_path=script_path,
+        script_name=script_info["name"],
+        framework=framework,
+        model_name=model_name,
+        executor=script_info["executor"],
+    )
+
+
+def _new_execution_result(context: ScriptExecutionContext) -> Dict[str, Any]:
+    """Create the standard execution result envelope."""
+    return {
+        "script_path": str(context.script_path),
+        "script_name": context.script_name,
+        "framework": context.framework,
+        "model_name": context.model_name,
+        "executor": context.executor,
+        "success": False,
+        "return_code": None,
+        "stdout": "",
+        "stderr": "",
+        "execution_time": 0,
+        "timestamp": datetime.now().isoformat(),
+    }
+
+
+def _build_execution_environment(
+    context: ScriptExecutionContext,
+    results_dir: Path,
+) -> Dict[str, str]:
+    """Build environment variables for a rendered-script subprocess."""
+    env = os.environ.copy()
+    if context.framework == "pymdp":
+        env["PYTHONPATH"] = (
+            str(context.script_path.parent) + os.pathsep + env.get("PYTHONPATH", "")
+        )
+        proc_path = Path(__file__).resolve()
+        repo_root = proc_path.parent.parent.parent
+        env["GNN_PROJECT_ROOT"] = str(repo_root)
+        env.setdefault("TF_CPP_MIN_LOG_LEVEL", "3")
+        jax_platform = os.environ.get("GNN_JAX_PLATFORM")
+        if jax_platform and str(jax_platform).strip():
+            env["JAX_PLATFORM_NAME"] = str(jax_platform).strip()
+
+    simulation_data_dir = (
+        results_dir / context.model_name / context.framework / "simulation_data"
+    )
+    output_env_vars = {
+        "jax": "GNN_OUTPUT_DIR",
+        "numpyro": "NUMPYRO_OUTPUT_DIR",
+        "pytorch": "PYTORCH_OUTPUT_DIR",
+    }
+    if context.framework in output_env_vars:
+        simulation_data_dir.mkdir(parents=True, exist_ok=True)
+        env[output_env_vars[context.framework]] = str(simulation_data_dir)
+
+    return env
+
+
+def _framework_for_data_helpers(framework: str) -> ExecutionFrameworkName:
+    """Narrow framework names for typed data-collection helper calls."""
+    return cast(ExecutionFrameworkName, framework)
+
+
 def execute_single_script(
     script_info: Dict[str, Any],
     results_dir: Path,
@@ -972,18 +1071,11 @@ def execute_single_script(
     Returns:
         Dictionary with execution results
     """
-    script_path = script_info["path"]
-    executor = script_info["executor"]
-
-    # Extract model name and framework from script path for organization
-    # Expected path: .../11_render_output/model_name/framework/script.ext
-    path_parts = script_path.parts
-    if len(path_parts) >= 3:
-        model_name = path_parts[-3]  # e.g., 'actinf_pomdp_agent'
-        framework = path_parts[-2]  # e.g., 'pymdp'
-    else:
-        model_name = "unknown_model"
-        framework = script_info["framework"]
+    context = _build_script_execution_context(script_info)
+    script_path = context.script_path
+    executor = context.executor
+    model_name = context.model_name
+    framework = context.framework
 
     # Pre-flight skip: do not run Python frameworks when optional dependency is missing
     if executor == sys.executable and not _is_python_framework_dependency_available(
@@ -994,19 +1086,7 @@ def execute_single_script(
         )
 
     # Prepare execution result
-    exec_result: dict[str, Any] = {
-        "script_path": str(script_path),
-        "script_name": script_info["name"],
-        "framework": framework,
-        "model_name": model_name,
-        "executor": executor,
-        "success": False,
-        "return_code": None,
-        "stdout": "",
-        "stderr": "",
-        "execution_time": 0,
-        "timestamp": datetime.now().isoformat(),
-    }
+    exec_result = _new_execution_result(context)
 
     try:
         if verbose:
@@ -1103,32 +1183,7 @@ def execute_single_script(
         broke_early = False
 
         try:
-            env = os.environ.copy()
-            if framework == "pymdp":
-                env["PYTHONPATH"] = (
-                    str(script_path.parent) + os.pathsep + env.get("PYTHONPATH", "")
-                )
-                _proc = Path(__file__).resolve()
-                _repo_root = (
-                    _proc.parent.parent.parent
-                )  # src/execute/processor.py -> repo root
-                env["GNN_PROJECT_ROOT"] = str(_repo_root)
-                env.setdefault("TF_CPP_MIN_LOG_LEVEL", "3")
-                jax_plat = os.environ.get("GNN_JAX_PLATFORM")
-                if jax_plat and str(jax_plat).strip():
-                    env["JAX_PLATFORM_NAME"] = str(jax_plat).strip()
-
-            impl_output_dir = results_dir / model_name / framework
-            sim_data_dir = impl_output_dir / "simulation_data"
-            if framework == "jax":
-                sim_data_dir.mkdir(parents=True, exist_ok=True)
-                env["GNN_OUTPUT_DIR"] = str(sim_data_dir)
-            elif framework == "numpyro":
-                sim_data_dir.mkdir(parents=True, exist_ok=True)
-                env["NUMPYRO_OUTPUT_DIR"] = str(sim_data_dir)
-            elif framework == "pytorch":
-                sim_data_dir.mkdir(parents=True, exist_ok=True)
-                env["PYTORCH_OUTPUT_DIR"] = str(sim_data_dir)
+            env = _build_execution_environment(context, results_dir)
 
             for rep in range(K):
                 rep_start = datetime.now()
@@ -1238,8 +1293,9 @@ def execute_single_script(
         # is copied to them, avoiding empty folder creation.
 
         # Extract simulation data from stdout/stderr
+        data_framework = _framework_for_data_helpers(framework)
         simulation_data = _extract_simulation_data(
-            result.stdout, result.stderr, framework, logger
+            result.stdout, result.stderr, data_framework, logger
         )
         exec_result["simulation_data"] = simulation_data
 
@@ -1318,7 +1374,7 @@ def execute_single_script(
                     f"Collecting execution outputs for {framework} script {script_info['name']}"
                 )
                 collected_outputs = collect_execution_outputs(
-                    script_path, impl_specific_dir.parent, framework, logger
+                    script_path, impl_specific_dir.parent, data_framework, logger
                 )
                 exec_result["collected_outputs"] = collected_outputs
 
@@ -1336,7 +1392,7 @@ def execute_single_script(
                         f"Extracting simulation data from collected files for {framework}"
                     )
                     enhanced_data = _extract_simulation_data_from_files(
-                        impl_specific_dir.parent, framework, logger
+                        impl_specific_dir.parent, data_framework, logger
                     )
                     if enhanced_data:
                         logger.info(

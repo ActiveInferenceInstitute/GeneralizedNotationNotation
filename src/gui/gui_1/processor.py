@@ -5,25 +5,20 @@ import logging
 import os
 import tempfile
 from pathlib import Path
-from typing import Any, Optional, cast
-
-try:
-    import gradio as gr  # Lightweight, widely available
-    if not hasattr(gr, "Blocks"):
-        raise AttributeError("gradio import does not expose Blocks")
-    _GUI_BACKEND = "gradio"
-    _GUI_BACKEND_REASON = cast(Any, None)
-except Exception as exc:
-    gr = cast(Any, None)
-    _GUI_BACKEND = cast(Any, None)
-    _GUI_BACKEND_REASON = str(exc)
+from typing import Any, Optional
 
 from utils.pipeline_template import (
     log_step_error,
     log_step_success,
 )
 
+from ..backend import detect_gradio_backend, write_json_atomically
 from .markdown import parse_state_space_from_markdown  # noqa: F401
+
+_GUI_STATUS = detect_gradio_backend()
+gr = _GUI_STATUS.module
+_GUI_BACKEND = _GUI_STATUS.name
+_GUI_BACKEND_REASON = _GUI_STATUS.reason
 
 
 def run_gui(
@@ -116,12 +111,7 @@ def run_gui(
                 ],
             }
 
-            gui_status_path = gui_output_dir / "gui_status.json"
-            with tempfile.NamedTemporaryFile(
-                mode="w", encoding="utf-8", dir=gui_status_path.parent, delete=False
-            ) as tmp_f:
-                tmp_f.write(json.dumps(fallback_status, indent=2))
-            os.replace(tmp_f.name, str(gui_status_path))
+            write_json_atomically(gui_output_dir / "gui_status.json", fallback_status)
 
             log_step_success(
                 logger,
@@ -171,24 +161,17 @@ def run_gui(
         # Record availability artifact
         gui_output_dir = output_root
         gui_output_dir.mkdir(parents=True, exist_ok=True)
-        gui_status_path = gui_output_dir / "gui_status.json"
-        with tempfile.NamedTemporaryFile(
-            mode="w", encoding="utf-8", dir=gui_status_path.parent, delete=False
-        ) as tmp_f:
-            tmp_f.write(
-                json.dumps(
-                    {
-                        "backend": _GUI_BACKEND,
-                        "launched": True,
-                        "export_file": str(starter_path),
-                        "gui_type": "form_based_constructor",
-                        "port": 7860,
-                        "url": "http://localhost:7860",
-                    },
-                    indent=2,
-                )
-            )
-        os.replace(tmp_f.name, str(gui_status_path))
+        write_json_atomically(
+            gui_output_dir / "gui_status.json",
+            {
+                "backend": _GUI_BACKEND,
+                "launched": True,
+                "export_file": str(starter_path),
+                "gui_type": "form_based_constructor",
+                "port": 7860,
+                "url": "http://localhost:7860",
+            },
+        )
 
         log_step_success(logger, "GUI 1 launched successfully")
         return True

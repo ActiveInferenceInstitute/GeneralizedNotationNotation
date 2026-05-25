@@ -1,6 +1,6 @@
 # GeneralizedNotationNotation (GNN)
 
-**Last Updated**: 2026-05-20
+**Last Updated**: 2026-05-25
 
 <div align="center">
 
@@ -48,10 +48,10 @@
 ### 📚 Initial Publication
 
 **Smékal, J., & Friedman, D. A. (2023)**. *Generalized Notation Notation for Active Inference Models*. Active Inference Journal.  
-**Last Updated**: 2026-05-20
+**Last Updated**: 2026-05-25
 **Version**: 1.6.0  
 **Status**: ✅ Production Ready (Active Inference Institute)  
-**Test Suite Inventory (measured 2026-05-20)**: 166 `test_*.py` files under `src/tests/`; `uv run pytest --collect-only src/tests/ -q --tb=no --ignore=src/tests/llm/test_llm_ollama.py --ignore=src/tests/llm/test_llm_ollama_integration.py` collected 2,258 tests. Fresh full suite with the same Ollama integration excludes passed on 2026-05-20: 2,250 passed, 7 skipped, 1 xpassed in 722.10s.
+**Test Suite Inventory (measured 2026-05-25)**: 170 `test_*.py` files under `src/tests/`; `uv run pytest --collect-only src/tests/ -q --tb=no --ignore=src/tests/llm/test_llm_ollama.py --ignore=src/tests/llm/test_llm_ollama_integration.py` collected 2,284 tests. Fresh full suite with the same Ollama integration excludes passed on 2026-05-25: 2,276 passed, 7 skipped, 1 xpassed in 813.52s.
 **Features (v1.6.0)**: Neurosymbolic LLM Context Injection, D3 Execution Dashboards, NumPyro/Stan Renderers, structured PyMDP 1.0 POMDP execution, PyMDP Scaling Study, MCP Full Module Exposure.
 📖 **DOI:** [10.5281/zenodo.7803328](https://doi.org/10.5281/zenodo.7803328)  
 📁 **Archive:** [zenodo.org/records/7803328](https://zenodo.org/records/7803328)
