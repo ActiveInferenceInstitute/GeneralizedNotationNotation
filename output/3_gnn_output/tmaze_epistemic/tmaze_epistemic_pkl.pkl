@@ -9,7 +9,7 @@
 - Agent must decide: go directly to an arm (exploit) or visit cue location first (explore)
 - Demonstrates epistemic foraging: Active Inference naturally balances exploration vs exploitation
 - The Expected Free Energy decomposes into epistemic (information gain) + instrumental (reward) value
-/// Generated: 2026-05-22T06:17:18.857032
+/// Generated: 2026-05-25T09:51:15.217407
 /// Enhanced by GNN PKL Serializer
 ///
 

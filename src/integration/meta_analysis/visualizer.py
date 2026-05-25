@@ -151,7 +151,9 @@ class SweepVisualizer:
         ]
 
         if not sweep_records:
-            self.logger.warning("No sweep-parameterized records found")
+            self.logger.info(
+                "No sweep-parameterized records found; skipping sweep visualizations"
+            )
             return generated
 
         # Global N and T values across ALL frameworks

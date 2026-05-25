@@ -115,7 +115,7 @@ if not result["success"]:
 ```
 
 #### `execute_rendered_simulators(target_dir: Path, output_dir: Path, logger: logging.Logger, recursive: bool = False, verbose: bool = False, **kwargs) -> bool`
-**Description**: Iterate over every supported framework runner (PyMDP, RxInfer.jl, DisCoPy, ActiveInference.jl, JAX, NumPyro, PyTorch) and write a summary JSON + markdown report under ``output_dir / "12_execute_output" / "summaries" /``. Missing optional dependencies are recorded as ``"SKIPPED"`` instead of failures.
+**Description**: Iterate over the `ExecutorFrameworkSpec` registry for every supported framework runner (PyMDP, RxInfer.jl, DisCoPy, ActiveInference.jl, JAX, NumPyro, PyTorch) and write a summary JSON + markdown report under ``output_dir / "12_execute_output" / "summaries" /``. Missing optional dependencies are recorded as ``"SKIPPED"`` instead of failures.
 
 #### Framework Health Checking
 

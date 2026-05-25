@@ -1,6 +1,6 @@
 {
-  "timestamp": "2026-05-22T06:17:19.355828",
-  "source_directory": "input/gnn_files/continuous",
+  "timestamp": "2026-05-25T09:59:34.944213",
+  "source_directory": "input/gnn_files/multiagent",
   "output_directory": "output/3_gnn_output",
   "processing_config": {
     "recursive": true,
@@ -81,386 +81,257 @@
   },
   "processed_files": [
     {
-      "file_name": "predictive_coding_agent.md",
-      "file_path": "input/gnn_files/continuous/predictive_coding_agent.md",
+      "file_name": "stigmergic_swarm.md",
+      "file_path": "input/gnn_files/multiagent/stigmergic_swarm.md",
       "parse_success": true,
-      "parsed_model_file": "output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_parsed.json",
+      "parsed_model_file": "output/3_gnn_output/stigmergic_swarm/stigmergic_swarm_parsed.json",
       "source_format": null,
       "model_info": {
-        "name": "Predictive Coding Active Inference Agent",
+        "name": "Stigmergic Swarm Active Inference",
         "version": "1.0",
-        "variables_count": 16,
-        "connections_count": 18,
+        "variables_count": 30,
+        "connections_count": 28,
+        "parameters_count": 18,
+        "equations_count": 0
+      },
+      "generated_formats": {
+        "markdown": {
+          "output_file": "output/3_gnn_output/stigmergic_swarm/stigmergic_swarm_markdown.md",
+          "file_size": 3496,
+          "success": true
+        },
+        "scala": {
+          "output_file": "output/3_gnn_output/stigmergic_swarm/stigmergic_swarm_scala.scala",
+          "file_size": 11548,
+          "success": true
+        },
+        "lean": {
+          "output_file": "output/3_gnn_output/stigmergic_swarm/stigmergic_swarm_lean.lean",
+          "file_size": 11712,
+          "success": true
+        },
+        "coq": {
+          "output_file": "output/3_gnn_output/stigmergic_swarm/stigmergic_swarm_coq.v",
+          "file_size": 11220,
+          "success": true
+        },
+        "python": {
+          "output_file": "output/3_gnn_output/stigmergic_swarm/stigmergic_swarm_python.py",
+          "file_size": 19218,
+          "success": true
+        },
+        "bnf": {
+          "output_file": "output/3_gnn_output/stigmergic_swarm/stigmergic_swarm_bnf.bnf",
+          "file_size": 11417,
+          "success": true
+        },
+        "ebnf": {
+          "output_file": "output/3_gnn_output/stigmergic_swarm/stigmergic_swarm_ebnf.ebnf",
+          "file_size": 11417,
+          "success": true
+        },
+        "isabelle": {
+          "output_file": "output/3_gnn_output/stigmergic_swarm/stigmergic_swarm_isabelle.thy",
+          "file_size": 11366,
+          "success": true
+        },
+        "maxima": {
+          "output_file": "output/3_gnn_output/stigmergic_swarm/stigmergic_swarm_maxima.max",
+          "file_size": 12881,
+          "success": true
+        },
+        "xml": {
+          "output_file": "output/3_gnn_output/stigmergic_swarm/stigmergic_swarm_xml.xml",
+          "file_size": 20912,
+          "success": true
+        },
+        "json": {
+          "output_file": "output/3_gnn_output/stigmergic_swarm/stigmergic_swarm_json.json",
+          "file_size": 21079,
+          "success": true
+        },
+        "protobuf": {
+          "output_file": "output/3_gnn_output/stigmergic_swarm/stigmergic_swarm_protobuf.proto",
+          "file_size": 14942,
+          "success": true
+        },
+        "yaml": {
+          "output_file": "output/3_gnn_output/stigmergic_swarm/stigmergic_swarm_yaml.yaml",
+          "file_size": 12897,
+          "success": true
+        },
+        "xsd": {
+          "output_file": "output/3_gnn_output/stigmergic_swarm/stigmergic_swarm_xsd.xsd",
+          "file_size": 12808,
+          "success": true
+        },
+        "asn1": {
+          "output_file": "output/3_gnn_output/stigmergic_swarm/stigmergic_swarm_asn1.asn1",
+          "file_size": 15229,
+          "success": true
+        },
+        "pkl": {
+          "output_file": "output/3_gnn_output/stigmergic_swarm/stigmergic_swarm_pkl.pkl",
+          "file_size": 26813,
+          "success": true
+        },
+        "alloy": {
+          "output_file": "output/3_gnn_output/stigmergic_swarm/stigmergic_swarm_alloy.als",
+          "file_size": 18231,
+          "success": true
+        },
+        "z_notation": {
+          "output_file": "output/3_gnn_output/stigmergic_swarm/stigmergic_swarm_z_notation.z",
+          "file_size": 12204,
+          "success": true
+        },
+        "tla_plus": {
+          "output_file": "output/3_gnn_output/stigmergic_swarm/stigmergic_swarm_tla_plus.tla",
+          "file_size": 10542,
+          "success": true
+        },
+        "agda": {
+          "output_file": "output/3_gnn_output/stigmergic_swarm/stigmergic_swarm_agda.agda",
+          "file_size": 10493,
+          "success": true
+        },
+        "haskell": {
+          "output_file": "output/3_gnn_output/stigmergic_swarm/stigmergic_swarm_haskell.hs",
+          "file_size": 11884,
+          "success": true
+        },
+        "pickle": {
+          "output_file": "output/3_gnn_output/stigmergic_swarm/stigmergic_swarm_pickle.pkl",
+          "file_size": 8668,
+          "success": true
+        }
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "file_name": "multi_agent_coordination.md",
+      "file_path": "input/gnn_files/multiagent/multi_agent_coordination.md",
+      "parse_success": true,
+      "parsed_model_file": "output/3_gnn_output/multi_agent_coordination/multi_agent_coordination_parsed.json",
+      "source_format": null,
+      "model_info": {
+        "name": "Multi-Agent Cooperative Active Inference",
+        "version": "1.0",
+        "variables_count": 23,
+        "connections_count": 21,
         "parameters_count": 13,
         "equations_count": 0
       },
       "generated_formats": {
         "markdown": {
-          "output_file": "output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_markdown.md",
-          "file_size": 2186,
+          "output_file": "output/3_gnn_output/multi_agent_coordination/multi_agent_coordination_markdown.md",
+          "file_size": 2783,
           "success": true
         },
         "scala": {
-          "output_file": "output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_scala.scala",
-          "file_size": 7149,
+          "output_file": "output/3_gnn_output/multi_agent_coordination/multi_agent_coordination_scala.scala",
+          "file_size": 8920,
           "success": true
         },
         "lean": {
-          "output_file": "output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_lean.lean",
-          "file_size": 7480,
+          "output_file": "output/3_gnn_output/multi_agent_coordination/multi_agent_coordination_lean.lean",
+          "file_size": 9009,
           "success": true
         },
         "coq": {
-          "output_file": "output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_coq.v",
-          "file_size": 7156,
+          "output_file": "output/3_gnn_output/multi_agent_coordination/multi_agent_coordination_coq.v",
+          "file_size": 8599,
           "success": true
         },
         "python": {
-          "output_file": "output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_python.py",
-          "file_size": 12024,
+          "output_file": "output/3_gnn_output/multi_agent_coordination/multi_agent_coordination_python.py",
+          "file_size": 14788,
           "success": true
         },
         "bnf": {
-          "output_file": "output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_bnf.bnf",
-          "file_size": 7455,
+          "output_file": "output/3_gnn_output/multi_agent_coordination/multi_agent_coordination_bnf.bnf",
+          "file_size": 8814,
           "success": true
         },
         "ebnf": {
-          "output_file": "output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_ebnf.ebnf",
-          "file_size": 7455,
+          "output_file": "output/3_gnn_output/multi_agent_coordination/multi_agent_coordination_ebnf.ebnf",
+          "file_size": 8814,
           "success": true
         },
         "isabelle": {
-          "output_file": "output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_isabelle.thy",
-          "file_size": 7205,
+          "output_file": "output/3_gnn_output/multi_agent_coordination/multi_agent_coordination_isabelle.thy",
+          "file_size": 8691,
           "success": true
         },
         "maxima": {
-          "output_file": "output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_maxima.max",
-          "file_size": 7932,
+          "output_file": "output/3_gnn_output/multi_agent_coordination/multi_agent_coordination_maxima.max",
+          "file_size": 10005,
           "success": true
         },
         "xml": {
-          "output_file": "output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_xml.xml",
-          "file_size": 13008,
+          "output_file": "output/3_gnn_output/multi_agent_coordination/multi_agent_coordination_xml.xml",
+          "file_size": 16093,
           "success": true
         },
         "json": {
-          "output_file": "output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_json.json",
-          "file_size": 12803,
+          "output_file": "output/3_gnn_output/multi_agent_coordination/multi_agent_coordination_json.json",
+          "file_size": 17145,
           "success": true
         },
         "protobuf": {
-          "output_file": "output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_protobuf.proto",
-          "file_size": 9645,
+          "output_file": "output/3_gnn_output/multi_agent_coordination/multi_agent_coordination_protobuf.proto",
+          "file_size": 11836,
           "success": true
         },
         "yaml": {
-          "output_file": "output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_yaml.yaml",
-          "file_size": 7822,
+          "output_file": "output/3_gnn_output/multi_agent_coordination/multi_agent_coordination_yaml.yaml",
+          "file_size": 10122,
           "success": true
         },
         "xsd": {
-          "output_file": "output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_xsd.xsd",
-          "file_size": 8242,
+          "output_file": "output/3_gnn_output/multi_agent_coordination/multi_agent_coordination_xsd.xsd",
+          "file_size": 9926,
           "success": true
         },
         "asn1": {
-          "output_file": "output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_asn1.asn1",
-          "file_size": 10686,
+          "output_file": "output/3_gnn_output/multi_agent_coordination/multi_agent_coordination_asn1.asn1",
+          "file_size": 11813,
           "success": true
         },
         "pkl": {
-          "output_file": "output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_pkl.pkl",
-          "file_size": 16936,
+          "output_file": "output/3_gnn_output/multi_agent_coordination/multi_agent_coordination_pkl.pkl",
+          "file_size": 20850,
           "success": true
         },
         "alloy": {
-          "output_file": "output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_alloy.als",
-          "file_size": 11491,
+          "output_file": "output/3_gnn_output/multi_agent_coordination/multi_agent_coordination_alloy.als",
+          "file_size": 14066,
           "success": true
         },
         "z_notation": {
-          "output_file": "output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_z_notation.z",
-          "file_size": 7874,
+          "output_file": "output/3_gnn_output/multi_agent_coordination/multi_agent_coordination_z_notation.z",
+          "file_size": 9454,
           "success": true
         },
         "tla_plus": {
-          "output_file": "output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_tla_plus.tla",
-          "file_size": 6468,
+          "output_file": "output/3_gnn_output/multi_agent_coordination/multi_agent_coordination_tla_plus.tla",
+          "file_size": 8173,
           "success": true
         },
         "agda": {
-          "output_file": "output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_agda.agda",
-          "file_size": 6432,
+          "output_file": "output/3_gnn_output/multi_agent_coordination/multi_agent_coordination_agda.agda",
+          "file_size": 8134,
           "success": true
         },
         "haskell": {
-          "output_file": "output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_haskell.hs",
-          "file_size": 7378,
+          "output_file": "output/3_gnn_output/multi_agent_coordination/multi_agent_coordination_haskell.hs",
+          "file_size": 9166,
           "success": true
         },
         "pickle": {
-          "output_file": "output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_pickle.pkl",
-          "file_size": 4920,
-          "success": true
-        }
-      },
-      "errors": [],
-      "warnings": []
-    },
-    {
-      "file_name": "stochastic_dynamics.md",
-      "file_path": "input/gnn_files/continuous/stochastic_dynamics.md",
-      "parse_success": true,
-      "parsed_model_file": "output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_parsed.json",
-      "source_format": null,
-      "model_info": {
-        "name": "Stochastic Continuous Dynamics Agent",
-        "version": "1.0",
-        "variables_count": 10,
-        "connections_count": 6,
-        "parameters_count": 11,
-        "equations_count": 0
-      },
-      "generated_formats": {
-        "markdown": {
-          "output_file": "output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_markdown.md",
-          "file_size": 2007,
-          "success": true
-        },
-        "scala": {
-          "output_file": "output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_scala.scala",
-          "file_size": 4844,
-          "success": true
-        },
-        "lean": {
-          "output_file": "output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_lean.lean",
-          "file_size": 5567,
-          "success": true
-        },
-        "coq": {
-          "output_file": "output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_coq.v",
-          "file_size": 5322,
-          "success": true
-        },
-        "python": {
-          "output_file": "output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_python.py",
-          "file_size": 8894,
-          "success": true
-        },
-        "bnf": {
-          "output_file": "output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_bnf.bnf",
-          "file_size": 5663,
-          "success": true
-        },
-        "ebnf": {
-          "output_file": "output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_ebnf.ebnf",
-          "file_size": 5663,
-          "success": true
-        },
-        "isabelle": {
-          "output_file": "output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_isabelle.thy",
-          "file_size": 5332,
-          "success": true
-        },
-        "maxima": {
-          "output_file": "output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_maxima.max",
-          "file_size": 5813,
-          "success": true
-        },
-        "xml": {
-          "output_file": "output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_xml.xml",
-          "file_size": 8630,
-          "success": true
-        },
-        "json": {
-          "output_file": "output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_json.json",
-          "file_size": 8025,
-          "success": true
-        },
-        "protobuf": {
-          "output_file": "output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_protobuf.proto",
-          "file_size": 7182,
-          "success": true
-        },
-        "yaml": {
-          "output_file": "output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_yaml.yaml",
-          "file_size": 5035,
-          "success": true
-        },
-        "xsd": {
-          "output_file": "output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_xsd.xsd",
-          "file_size": 6188,
-          "success": true
-        },
-        "asn1": {
-          "output_file": "output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_asn1.asn1",
-          "file_size": 8267,
-          "success": true
-        },
-        "pkl": {
-          "output_file": "output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_pkl.pkl",
-          "file_size": 11702,
-          "success": true
-        },
-        "alloy": {
-          "output_file": "output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_alloy.als",
-          "file_size": 7926,
-          "success": true
-        },
-        "z_notation": {
-          "output_file": "output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_z_notation.z",
-          "file_size": 5912,
-          "success": true
-        },
-        "tla_plus": {
-          "output_file": "output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_tla_plus.tla",
-          "file_size": 4457,
-          "success": true
-        },
-        "agda": {
-          "output_file": "output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_agda.agda",
-          "file_size": 4431,
-          "success": true
-        },
-        "haskell": {
-          "output_file": "output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_haskell.hs",
-          "file_size": 4989,
-          "success": true
-        },
-        "pickle": {
-          "output_file": "output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_pickle.pkl",
-          "file_size": 3988,
-          "success": true
-        }
-      },
-      "errors": [],
-      "warnings": []
-    },
-    {
-      "file_name": "continuous_navigation.md",
-      "file_path": "input/gnn_files/continuous/continuous_navigation.md",
-      "parse_success": true,
-      "parsed_model_file": "output/3_gnn_output/continuous_navigation/continuous_navigation_parsed.json",
-      "source_format": null,
-      "model_info": {
-        "name": "Continuous State Navigation Agent",
-        "version": "1.0",
-        "variables_count": 20,
-        "connections_count": 18,
-        "parameters_count": 17,
-        "equations_count": 0
-      },
-      "generated_formats": {
-        "markdown": {
-          "output_file": "output/3_gnn_output/continuous_navigation/continuous_navigation_markdown.md",
-          "file_size": 1894,
-          "success": true
-        },
-        "scala": {
-          "output_file": "output/3_gnn_output/continuous_navigation/continuous_navigation_scala.scala",
-          "file_size": 7569,
-          "success": true
-        },
-        "lean": {
-          "output_file": "output/3_gnn_output/continuous_navigation/continuous_navigation_lean.lean",
-          "file_size": 7673,
-          "success": true
-        },
-        "coq": {
-          "output_file": "output/3_gnn_output/continuous_navigation/continuous_navigation_coq.v",
-          "file_size": 7303,
-          "success": true
-        },
-        "python": {
-          "output_file": "output/3_gnn_output/continuous_navigation/continuous_navigation_python.py",
-          "file_size": 12522,
-          "success": true
-        },
-        "bnf": {
-          "output_file": "output/3_gnn_output/continuous_navigation/continuous_navigation_bnf.bnf",
-          "file_size": 7568,
-          "success": true
-        },
-        "ebnf": {
-          "output_file": "output/3_gnn_output/continuous_navigation/continuous_navigation_ebnf.ebnf",
-          "file_size": 7568,
-          "success": true
-        },
-        "isabelle": {
-          "output_file": "output/3_gnn_output/continuous_navigation/continuous_navigation_isabelle.thy",
-          "file_size": 7386,
-          "success": true
-        },
-        "maxima": {
-          "output_file": "output/3_gnn_output/continuous_navigation/continuous_navigation_maxima.max",
-          "file_size": 8042,
-          "success": true
-        },
-        "xml": {
-          "output_file": "output/3_gnn_output/continuous_navigation/continuous_navigation_xml.xml",
-          "file_size": 13567,
-          "success": true
-        },
-        "json": {
-          "output_file": "output/3_gnn_output/continuous_navigation/continuous_navigation_json.json",
-          "file_size": 13463,
-          "success": true
-        },
-        "protobuf": {
-          "output_file": "output/3_gnn_output/continuous_navigation/continuous_navigation_protobuf.proto",
-          "file_size": 9855,
-          "success": true
-        },
-        "yaml": {
-          "output_file": "output/3_gnn_output/continuous_navigation/continuous_navigation_yaml.yaml",
-          "file_size": 8023,
-          "success": true
-        },
-        "xsd": {
-          "output_file": "output/3_gnn_output/continuous_navigation/continuous_navigation_xsd.xsd",
-          "file_size": 8542,
-          "success": true
-        },
-        "asn1": {
-          "output_file": "output/3_gnn_output/continuous_navigation/continuous_navigation_asn1.asn1",
-          "file_size": 10518,
-          "success": true
-        },
-        "pkl": {
-          "output_file": "output/3_gnn_output/continuous_navigation/continuous_navigation_pkl.pkl",
-          "file_size": 17710,
-          "success": true
-        },
-        "alloy": {
-          "output_file": "output/3_gnn_output/continuous_navigation/continuous_navigation_alloy.als",
-          "file_size": 11900,
-          "success": true
-        },
-        "z_notation": {
-          "output_file": "output/3_gnn_output/continuous_navigation/continuous_navigation_z_notation.z",
-          "file_size": 8093,
-          "success": true
-        },
-        "tla_plus": {
-          "output_file": "output/3_gnn_output/continuous_navigation/continuous_navigation_tla_plus.tla",
-          "file_size": 6944,
-          "success": true
-        },
-        "agda": {
-          "output_file": "output/3_gnn_output/continuous_navigation/continuous_navigation_agda.agda",
-          "file_size": 6900,
-          "success": true
-        },
-        "haskell": {
-          "output_file": "output/3_gnn_output/continuous_navigation/continuous_navigation_haskell.hs",
-          "file_size": 7796,
-          "success": true
-        },
-        "pickle": {
-          "output_file": "output/3_gnn_output/continuous_navigation/continuous_navigation_pickle.pkl",
-          "file_size": 4664,
+          "output_file": "output/3_gnn_output/multi_agent_coordination/multi_agent_coordination_pickle.pkl",
+          "file_size": 6860,
           "success": true
         }
       },
@@ -469,14 +340,13 @@
     }
   ],
   "summary": {
-    "total_files": 3,
-    "successful_parses": 3,
+    "total_files": 2,
+    "successful_parses": 2,
     "failed_parses": 0,
-    "total_formats_generated": 66,
+    "total_formats_generated": 44,
     "formats_per_file": {
-      "predictive_coding_agent.md": 22,
-      "stochastic_dynamics.md": 22,
-      "continuous_navigation.md": 22
+      "stigmergic_swarm.md": 22,
+      "multi_agent_coordination.md": 22
     }
   }
 }

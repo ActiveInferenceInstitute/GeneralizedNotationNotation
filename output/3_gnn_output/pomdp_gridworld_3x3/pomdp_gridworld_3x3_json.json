@@ -124,16 +124,16 @@
       "weight": null
     }
   ],
-  "created_at": "2026-05-22T06:17:19.109962",
+  "created_at": "2026-05-25T09:51:15.487285",
   "equations": [
-    "Equation(node_type='Equation', source_location=None, metadata={}, id='2b0cae24-4711-4ca2-a451-62c79935c538', label=None, content='State inference uses the observation likelihood and previous predictive belief. Action selection minimizes expected free energy under the shared transition tensor.', format='latex', description=None)"
+    "Equation(node_type='Equation', source_location=None, metadata={}, id='a58bc8dc-d990-4f45-b59d-1f05cce84a57', label=None, content='State inference uses the observation likelihood and previous predictive belief. Action selection minimizes expected free energy under the shared transition tensor.', format='latex', description=None)"
   ],
   "extensions": {
     "footer": "POMDP GridWorld 3x3 v1 - canonical cross-framework GNN fixture.",
     "gnn_section": "ActInfPOMDP"
   },
   "model_name": "POMDP GridWorld 3x3",
-  "modified_at": "2026-05-22T06:17:19.109965",
+  "modified_at": "2026-05-25T09:51:15.487287",
   "ontology_mappings": [
     {
       "description": null,

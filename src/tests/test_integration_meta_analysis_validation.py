@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import logging
 from pathlib import Path
 from typing import Any
 
@@ -12,6 +13,7 @@ from integration.meta_analysis import run_meta_analysis
 from integration.meta_analysis.collector import SweepDataCollector, SweepRecord
 from integration.meta_analysis.statistics import compute_meta_statistics
 from integration.meta_analysis.validator import validate_sweep_records
+from integration.meta_analysis.visualizer import SweepVisualizer
 
 
 def test_validate_empty_records() -> None:
@@ -277,6 +279,28 @@ def test_run_meta_analysis_returns_none_without_records(tmp_path: Path) -> None:
     )
     out_dir = tmp_path / "meta_empty"
     assert run_meta_analysis(execute_output_dir=exec_root, output_dir=out_dir) is None
+
+
+def test_visualizer_treats_non_sweep_records_as_info(
+    tmp_path: Path, caplog: pytest.LogCaptureFixture, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    import integration.meta_analysis.visualizer as visualizer
+
+    monkeypatch.setattr(visualizer, "_MPL_AVAILABLE", True)
+    caplog.set_level(logging.WARNING)
+    records = [
+        SweepRecord("simple_mdp", "pymdp", success=True, execution_time=0.2),
+        SweepRecord("categorical_agent", "pymdp", success=True, execution_time=0.4),
+    ]
+
+    plots = SweepVisualizer(records, tmp_path / "visualizations").generate_all()
+
+    assert plots == []
+    assert not any(
+        "No sweep-parameterized records found" in record.message
+        and record.levelno >= logging.WARNING
+        for record in caplog.records
+    )
 
 
 def test_collect_slim_execution_summary_preserves_timing_for_collector(

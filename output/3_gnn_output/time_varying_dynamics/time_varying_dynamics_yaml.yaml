@@ -67,10 +67,10 @@ connections:
   target_variables:
   - B_t
   weight: null
-created_at: '2026-05-22T06:17:18.833980'
+created_at: '2026-05-25T09:51:15.187676'
 equations: []
 model_name: Time-Varying Transition Dynamics Agent
-modified_at: '2026-05-22T06:17:18.833981'
+modified_at: '2026-05-25T09:51:15.187676'
 ontology_mappings:
 - description: null
   ontology_term: LikelihoodMatrix

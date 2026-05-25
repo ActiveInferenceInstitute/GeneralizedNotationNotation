@@ -1,7 +1,7 @@
 {
   "generated_at": "2026-02-24T06:51:00",
-  "modules_total": 33,
-  "modules_loaded": 33,
+  "modules_total": 32,
+  "modules_loaded": 32,
   "modules_errored": 0,
   "modules_loaded_names": [
     "advanced_visualization",
@@ -22,7 +22,6 @@
     "ml_integration",
     "model_registry",
     "ontology",
-    "output",
     "pipeline",
     "render",
     "report",
@@ -39,9 +38,9 @@
     "website"
   ],
   "modules_errored_names": [],
-  "tools_total": 133,
-  "tools_real": 133,
-  "tools_documented": 133,
+  "tools_total": 132,
+  "tools_real": 132,
+  "tools_documented": 132,
   "tools": [
     {
       "name": "analyze_audio_characteristics",
@@ -771,15 +770,6 @@
       "is_real": true,
       "documented": true,
       "description": "Search models in the registry by name, description, or tags"
-    },
-    {
-      "name": "output.describe_fixtures",
-      "module": "",
-      "category": "",
-      "fn": "describe_output_fixtures",
-      "is_real": true,
-      "documented": true,
-      "description": "Describe the source-controlled output fixture directory."
     },
     {
       "name": "parse_gnn_content",

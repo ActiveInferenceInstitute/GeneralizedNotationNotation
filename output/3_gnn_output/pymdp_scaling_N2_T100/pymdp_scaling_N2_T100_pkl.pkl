@@ -1,7 +1,7 @@
 ///
 /// GNN Model: PyMDP Scaling N2 T100
 /// Annotation: PyMDP runtime scaling sweep with noisy observation and stochastic transitions.
-/// Generated: 2026-05-22T06:16:27.326817
+/// Generated: 2026-05-25T10:00:03.224400
 /// Enhanced by GNN PKL Serializer
 ///
 

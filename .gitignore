@@ -77,6 +77,11 @@ wheels/
 # Historical or redirected pipeline output under src/ may be generated as well, but should be ignored.
 /src/output/*
 
+# Large generated PyMDP scaling parse artifacts.
+/output/3_gnn_output/pymdp_scaling_N128_T10/pymdp_scaling_N128_T10_parsed.json
+/output/3_gnn_output/pymdp_scaling_N128_T50/pymdp_scaling_N128_T50_parsed.json
+/output/3_gnn_output/pymdp_scaling_N128_T100/pymdp_scaling_N128_T100_parsed.json
+
 # Timestamped or run-specific documentation execution outputs are regenerated
 # from examples; curated docs and source examples remain tracked outside these
 # generated directories.

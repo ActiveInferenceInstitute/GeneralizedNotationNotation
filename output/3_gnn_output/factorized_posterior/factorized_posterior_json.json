@@ -137,7 +137,7 @@
       "weight": null
     }
   ],
-  "created_at": "2026-05-22T06:17:18.962144",
+  "created_at": "2026-05-25T09:51:15.341783",
   "equations": [],
   "extensions": {
     "footer": "Factorized Posterior Agent v1.0 — explicit mean-field Q(s) = Q(s_0) Q(s_1)\nfactorization. Two state factors × two observation modalities.",
@@ -145,7 +145,7 @@
     "signature": "Cryptographic signature goes here"
   },
   "model_name": "Factorized Posterior Agent",
-  "modified_at": "2026-05-22T06:17:18.962145",
+  "modified_at": "2026-05-25T09:51:15.341784",
   "ontology_mappings": [
     {
       "description": null,

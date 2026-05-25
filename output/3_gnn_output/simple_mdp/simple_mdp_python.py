@@ -7,7 +7,7 @@ This model describes a fully observable Markov Decision Process (MDP):
 - 4 actions: stay, move-north, move-south, move-east.
 - Preferences strongly favor state/observation 3 (goal location).
 - Tests the degenerate POMDP case where partial observability is absent.
-Generated: 2026-05-22T06:17:18.796510
+Generated: 2026-05-25T09:51:15.120095
 """
 
 import numpy as np

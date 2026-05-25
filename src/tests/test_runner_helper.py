@@ -14,6 +14,7 @@ Usage:
 """
 
 import argparse
+import os
 import subprocess  # nosec B404
 import sys
 import time
@@ -24,13 +25,19 @@ from typing import Any, Optional
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 
+def _default_output_dir() -> str:
+    """Return the helper output root, overridable by pipeline test runners."""
+    return os.getenv("GNN_PIPELINE_TEST_OUTPUT_DIR", "output")
+
+
 def run_test_configuration(
     config_name: str,
     target_dir: str = "input/gnn_files",
-    output_dir: str = "output",
+    output_dir: Optional[str] = None,
     verbose: bool = False,
 ) -> bool:
     """Run a predefined test configuration."""
+    output_dir = output_dir or _default_output_dir()
 
     # Define test configurations
     configurations: dict[str, Any] = {
@@ -213,7 +220,7 @@ Examples:
     )
     parser.add_argument(
         "--output-dir",
-        default="output",
+        default=_default_output_dir(),
         help="Output directory for test results (default: output)",
     )
     parser.add_argument(

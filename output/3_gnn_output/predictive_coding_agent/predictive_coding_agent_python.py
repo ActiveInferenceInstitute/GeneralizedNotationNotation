@@ -10,7 +10,7 @@ A continuous-state Active Inference agent implementing predictive coding:
 - Action minimizes expected free energy by changing sensory input
 - Uses generalized coordinates of motion (position, velocity, acceleration)
 - Demonstrates the core predictive processing framework underlying Active Inference
-Generated: 2026-05-22T06:17:19.358187
+Generated: 2026-05-25T09:51:15.773300
 """
 
 import numpy as np

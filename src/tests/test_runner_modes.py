@@ -86,6 +86,7 @@ def run_fast_pipeline_tests(
     cmd.append("src/tests/")
 
     output_dir.mkdir(parents=True, exist_ok=True)
+    isolated_output_root = output_dir / "isolated_pipeline_outputs"
 
     project_root = Path(__file__).parent.parent.parent
 
@@ -93,6 +94,8 @@ def run_fast_pipeline_tests(
 
     try:
         overall_timeout = int(os.getenv("FAST_TESTS_TIMEOUT", "600")) + 30
+        env = os.environ.copy()
+        env.setdefault("GNN_PIPELINE_TEST_OUTPUT_DIR", str(isolated_output_root))
 
         result = subprocess.run(  # nosec B603
             cmd,
@@ -100,6 +103,7 @@ def run_fast_pipeline_tests(
             capture_output=True,
             text=True,
             timeout=overall_timeout,
+            env=env,
         )
 
         output_file = output_dir / "pytest_reliable_output.txt"

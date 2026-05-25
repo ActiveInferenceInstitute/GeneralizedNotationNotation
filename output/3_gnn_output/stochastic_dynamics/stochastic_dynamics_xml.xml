@@ -14,8 +14,8 @@ and ε_obs that downstream renderers must handle.
 Used to validate that downstream backends either generate SDE solvers
 (Stan via latent-variable sampling, NumPyro) or raise a clean
 "unsupported feature" warning (PyMDP, which is discrete-only).</annotation>
-    <created_at>2026-05-22T06:17:19.369054</created_at>
-    <modified_at>2026-05-22T06:17:19.369055</modified_at>
+    <created_at>2026-05-25T09:51:15.782229</created_at>
+    <modified_at>2026-05-25T09:51:15.782230</modified_at>
   </metadata>
   <variables>
     <variable data_type="float" dimensions="4,4" name="F" type="hidden_state" description="State transition matrix (drift)"/>

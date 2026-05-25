@@ -1,7 +1,7 @@
 """
 Comprehensive Pipeline Script Tests
 
-This module provides thorough testing for all 14 numbered pipeline step scripts
+This module provides thorough testing for all 25 numbered pipeline step scripts
 to ensure 100% functionality and coverage. Each test validates:
 
 1. Script existence and basic structure
@@ -30,12 +30,35 @@ import pytest
 pytestmark: list[Any] = [pytest.mark.pipeline]
 PROJECT_ROOT = Path(__file__).parent.parent.parent.parent
 SRC_DIR = PROJECT_ROOT / "src"
+MAX_NUMBERED_SCRIPT_LINES = 150
 # Single small POMDP for subprocess smoke tests (avoids entire input/gnn_files, e.g. large scaling study dir).
 SMOKE_GNN = PROJECT_ROOT / "input" / "gnn_files" / "discrete" / "simple_mdp.md"
 
 
 class TestPipelineScriptDiscovery:
     """Test discovery and basic structure of all pipeline scripts."""
+
+    @pytest.mark.unit
+    def test_numbered_scripts_stay_thin(self) -> None:
+        """Numbered scripts should remain thin orchestrators."""
+        script_paths = sorted(
+            SRC_DIR.glob("[0-9]*_*.py"),
+            key=lambda path: int(path.name.split("_", maxsplit=1)[0]),
+        )
+        script_sizes = [
+            (path.name, len(path.read_text().splitlines())) for path in script_paths
+        ]
+        over_limit = [
+            (name, line_count)
+            for name, line_count in script_sizes
+            if line_count > MAX_NUMBERED_SCRIPT_LINES
+        ]
+
+        assert not over_limit, (
+            "Numbered pipeline scripts should stay at or below "
+            f"{MAX_NUMBERED_SCRIPT_LINES} lines; move logic/docs into module files: "
+            f"{over_limit}"
+        )
 
     @pytest.mark.unit
     def test_all_pipeline_scripts_exist(self) -> None:

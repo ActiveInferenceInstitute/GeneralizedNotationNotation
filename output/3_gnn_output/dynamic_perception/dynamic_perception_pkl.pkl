@@ -8,7 +8,7 @@
 - No action selection — the agent passively observes a changing world
 - Demonstrates belief updating (state inference) across time steps
 - Suitable for tracking hidden sources from noisy observations
-/// Generated: 2026-05-22T06:16:00.684650
+/// Generated: 2026-05-25T09:59:34.676502
 /// Enhanced by GNN PKL Serializer
 ///
 

@@ -15,7 +15,7 @@ and ε_obs that downstream renderers must handle.
 Used to validate that downstream backends either generate SDE solvers
 (Stan via latent-variable sampling, NumPyro) or raise a clean
 "unsupported feature" warning (PyMDP, which is discrete-only).
-/// Generated: 2026-05-22T06:17:19.374321
+/// Generated: 2026-05-25T09:51:15.788891
 /// Enhanced by GNN PKL Serializer
 ///
 

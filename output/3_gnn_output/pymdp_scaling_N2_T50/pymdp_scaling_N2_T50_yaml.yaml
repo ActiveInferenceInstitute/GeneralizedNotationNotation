@@ -70,10 +70,10 @@ connections:
   target_variables:
   - u
   weight: null
-created_at: '2026-05-22T06:16:27.707228'
+created_at: '2026-05-25T10:00:03.633772'
 equations: []
 model_name: PyMDP Scaling N2 T50
-modified_at: '2026-05-22T06:16:27.707229'
+modified_at: '2026-05-25T10:00:03.633774'
 ontology_mappings:
 - description: null
   ontology_term: LikelihoodMatrix

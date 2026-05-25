@@ -2,8 +2,8 @@
 <gnn_model name="PyMDP Scaling N2 T50" version="1.0">
   <metadata>
     <annotation>PyMDP runtime scaling sweep with noisy observation and stochastic transitions.</annotation>
-    <created_at>2026-05-22T06:16:27.707228</created_at>
-    <modified_at>2026-05-22T06:16:27.707229</modified_at>
+    <created_at>2026-05-25T10:00:03.633772</created_at>
+    <modified_at>2026-05-25T10:00:03.633774</modified_at>
   </metadata>
   <variables>
     <variable data_type="float" dimensions="2,2" name="A" type="likelihood_matrix"/>

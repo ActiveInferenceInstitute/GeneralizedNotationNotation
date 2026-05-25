@@ -17,6 +17,7 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
+from execute import executor as executor_module  # noqa: E402
 from execute.executor import execute_rendered_simulators  # noqa: E402
 
 EXPECTED_FRAMEWORK_KEYS: set[Any] = {
@@ -28,6 +29,16 @@ EXPECTED_FRAMEWORK_KEYS: set[Any] = {
     "numpyro_executions",
     "pytorch_executions",
 }
+
+
+def test_framework_spec_registry_matches_summary_contract() -> None:
+    specs = executor_module._framework_specs()
+
+    assert [spec.framework_dir_key for spec in specs] == list(
+        executor_module.FRAMEWORK_DIR_NAMES
+    )
+    assert {spec.result_key for spec in specs} == EXPECTED_FRAMEWORK_KEYS
+    assert all(spec.runner is not None or not spec.available for spec in specs)
 
 
 def test_executor_covers_all_frameworks(tmp_path: Path) -> None:
@@ -68,3 +79,62 @@ def test_executor_covers_all_frameworks(tmp_path: Path) -> None:
     assert {"numpyro", "pytorch"}.issubset(framework_dirs.keys()), (
         "numpyro/pytorch output directories not declared in framework_execution_dirs"
     )
+
+
+def test_failed_framework_runner_logs_warning_not_success(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    import logging
+
+    log_events: list[tuple[str, str]] = []
+
+    def fake_runner(**kwargs: Any) -> bool:
+        return False
+
+    def fake_log_step_success(logger: logging.Logger, message: str) -> None:
+        log_events.append(("success", message))
+
+    def fake_log_step_warning(logger: logging.Logger, message: str) -> None:
+        log_events.append(("warning", message))
+
+    monkeypatch.setattr(executor_module, "log_step_success", fake_log_step_success)
+    monkeypatch.setattr(executor_module, "log_step_warning", fake_log_step_warning)
+
+    spec = executor_module.ExecutorFrameworkSpec(
+        framework_dir_key="fake",
+        result_key="fake_executions",
+        available=True,
+        runner=fake_runner,
+        operation_name="fake_operation",
+        start_message="Running fake framework",
+        success_message="Fake framework succeeded",
+        failure_message="Fake framework failed",
+        unavailable_log="Fake framework unavailable",
+        unavailable_message="Fake framework unavailable",
+        success_log="Fake framework completed",
+        warning_log_prefix="Fake framework warning",
+    )
+    framework_dirs = {"fake": tmp_path / "fake"}
+    framework_dirs["fake"].mkdir()
+    execution_results: dict[str, Any] = {
+        "total_successes": 0,
+        "total_failures": 0,
+        "fake_executions": [],
+    }
+
+    executor_module._execute_framework_spec(
+        spec=spec,
+        target_dir=tmp_path,
+        framework_dirs=framework_dirs,
+        execution_results=execution_results,
+        logger=logging.getLogger("test_failed_framework_runner_logs_warning"),
+        recursive=False,
+        verbose=False,
+    )
+
+    assert execution_results["total_successes"] == 0
+    assert execution_results["total_failures"] == 1
+    assert execution_results["fake_executions"][0]["status"] == "FAILED"
+    assert ("warning", "Fake framework failed") in log_events
+    assert all(event_type != "success" for event_type, _ in log_events)

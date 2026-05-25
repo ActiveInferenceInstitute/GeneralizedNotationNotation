@@ -212,22 +212,15 @@ if not check_system_requirements(verbose=True):
 ## Output Specification
 
 ### Output Products
-- `setup_summary.json` - Setup completion summary
-- `environment_info.json` - Environment information
-- `dependency_status.json` - Dependency installation status
-- `setup_log.txt` - Detailed setup log
+- `environment_setup_summary.json` - Setup completion summary, timings, and probe results
+- `installed_packages.json` - Installed package inventory
 - `uv.lock` - Dependency lock file (updated)
 
 ### Output Directory Structure
 ```
 output/1_setup_output/
-├── setup_summary.json
-├── environment_info.json
-├── dependency_status.json
-├── setup_log.txt
-└── environment_details/
-    ├── python_version.txt
-    └── package_list.txt
+├── environment_setup_summary.json
+└── installed_packages.json
 ```
 
 ---

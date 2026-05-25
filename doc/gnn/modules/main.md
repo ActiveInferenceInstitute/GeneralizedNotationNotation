@@ -8,13 +8,13 @@ The main pipeline orchestrator executes all 25 steps (0–24) in sequence with c
 
 ```bash
 # Full pipeline
-python src/main.py --target-dir input/gnn_files --verbose
+uv run python src/main.py --target-dir input/gnn_files --verbose
 
 # Specific steps only (auto-resolves dependencies)
-python src/main.py --only-steps "0,1,2,3" --verbose
+uv run python src/main.py --only-steps "0,1,2,3" --verbose
 
 # Skip certain steps
-python src/main.py --skip-steps "15,16" --verbose
+uv run python src/main.py --skip-steps "15,16" --verbose
 ```
 
 ## Features
@@ -58,5 +58,5 @@ Saved to `output/00_pipeline_summary/pipeline_execution_summary.json` with:
 ## Source
 
 - **Script**: [src/main.py](../../../src/main.py)
-- **Lines**: 1136
-- **Key functions**: `main()`, `execute_pipeline_step()`, `parse_step_list()`, `get_environment_info()`
+- **Shape**: `main()` is a compact coordinator; argument/config preparation, step execution recording, final summary writing, and failure handling live in named helpers.
+- **Key functions**: `main()`, `execute_pipeline_step()`, `parse_step_list()`, `get_environment_info()`, `validate_pipeline_summary()`

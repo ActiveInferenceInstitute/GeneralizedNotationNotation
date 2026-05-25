@@ -319,6 +319,44 @@ from .prompts import PromptType, get_prompt
 from .providers.base_provider import LLMConfig, LLMMessage
 
 
+def _optional_positive_int(value: Any) -> int | None:
+    """Normalize optional positive integer config values."""
+    if value in (None, "", False):
+        return None
+    try:
+        normalized = int(value)
+    except (TypeError, ValueError):
+        return None
+    return normalized if normalized > 0 else None
+
+
+def _resolve_llm_budget_seconds(
+    kwargs: dict[str, Any], llm_config: dict[str, Any]
+) -> int:
+    """Resolve the total LLM budget from CLI kwargs, then config, then default."""
+    for key in ("total_budget", "llm_timeout"):
+        budget = _optional_positive_int(kwargs.get(key))
+        if budget is not None:
+            return budget
+    return _optional_positive_int(llm_config.get("timeout_seconds")) or 600
+
+
+def _resolve_llm_max_files(
+    kwargs: dict[str, Any], llm_config: dict[str, Any]
+) -> int | None:
+    """Resolve the optional file cap for bounded pipeline LLM runs."""
+    for key in ("max_files", "llm_max_files"):
+        max_files = _optional_positive_int(kwargs.get(key))
+        if max_files is not None:
+            return max_files
+    return _optional_positive_int(llm_config.get("max_files"))
+
+
+def _llm_file_sort_key(path: Path) -> tuple[int, str]:
+    """Sort deterministically and keep the large scaling corpus behind examples."""
+    return (1 if "pymdp_scaling_study" in path.parts else 0, str(path))
+
+
 def process_llm(
     target_dir: Path, output_dir: Path, verbose: bool = False, **kwargs: Any
 ) -> bool:
@@ -361,17 +399,13 @@ async def _process_llm_async(
     # Initialize LLM response cache
     cache = LLMCache(cache_dir=output_dir / ".cache")
 
-    # Total budget: read from config, recovery to kwargs, recovery to 600s
+    # Total budget: CLI overrides config so long pipeline runs can scale the LLM step.
     llm_config = _get_llm_config()
-    TOTAL_BUDGET_SECONDS = kwargs.get(
-        "total_budget", llm_config.get("timeout_seconds", 600)
-    )
+    TOTAL_BUDGET_SECONDS = _resolve_llm_budget_seconds(kwargs, llm_config)
     budget_start = _time.monotonic()
 
     def _budget_remaining() -> float:
-        return cast(
-            "float", max(0.0, TOTAL_BUDGET_SECONDS - (_time.monotonic() - budget_start))
-        )
+        return max(0.0, TOTAL_BUDGET_SECONDS - (_time.monotonic() - budget_start))
 
     try:
         log_step_start(logger, "Processing LLM with enhanced Ollama integration")
@@ -431,14 +465,34 @@ async def _process_llm_async(
         failed_auth_providers: set[Any] = set()
 
         # Find GNN files (recursive to handle subdirectory structure)
-        gnn_files = list(target_dir.rglob("*.md"))
+        discovered_gnn_files = sorted(target_dir.rglob("*.md"), key=_llm_file_sort_key)
+        max_files = _resolve_llm_max_files(kwargs, llm_config)
+        gnn_files = (
+            discovered_gnn_files[:max_files]
+            if max_files is not None
+            else discovered_gnn_files
+        )
+        if max_files is not None and len(discovered_gnn_files) > len(gnn_files):
+            logger.info(
+                "LLM file selection limited to %s/%s files by config",
+                len(gnn_files),
+                len(discovered_gnn_files),
+            )
+
+        results["total_files_discovered"] = len(discovered_gnn_files)
+        results["selected_files"] = len(gnn_files)
+        results["skipped_files"] = max(0, len(discovered_gnn_files) - len(gnn_files))
+        results["file_selection"] = {
+            "max_files": max_files,
+            "policy": "sorted, non-scaling fixtures first",
+            "selected_paths": [str(path) for path in gnn_files],
+        }
+
         if not gnn_files:
             logger.warning("No GNN files found for LLM processing")
             results["success"] = False
             results["errors"].append("No GNN files found")
         else:
-            results["processed_files"] = len(gnn_files)
-
             # Initialize LLM processor (prioritize Ollama)
             processor_initialized = False
             try:
@@ -850,6 +904,8 @@ async def _process_llm_async(
                     }
                     results["errors"].append(error_info)
                     logger.error(f"Error processing {gnn_file}: {e}")
+                finally:
+                    results["processed_files"] += 1
 
         # Save detailed results (include cache stats)
         results["cache_stats"] = cache.summary()

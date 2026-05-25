@@ -171,10 +171,8 @@ Step 1 writes artifacts under `output/1_setup_output/`:
 
 ```
 output/1_setup_output/
-├── setup_summary.json        # High-level result and timings
-├── environment_info.json     # Python + uv + platform info
-├── dependency_status.json    # Installed packages and versions
-└── setup_log.txt             # Emitted logger output
+├── environment_setup_summary.json  # High-level setup result, timings, and probes
+└── installed_packages.json         # Installed packages and versions
 ```
 
 The root `uv.lock` file is updated by `uv` itself when any sync operation runs.

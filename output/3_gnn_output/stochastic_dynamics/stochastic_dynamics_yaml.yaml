@@ -71,10 +71,10 @@ connections:
   target_variables:
   - epsilon_state
   weight: null
-created_at: '2026-05-22T06:17:19.369054'
+created_at: '2026-05-25T09:51:15.782229'
 equations: []
 model_name: Stochastic Continuous Dynamics Agent
-modified_at: '2026-05-22T06:17:19.369055'
+modified_at: '2026-05-25T09:51:15.782230'
 ontology_mappings:
 - description: null
   ontology_term: DriftMatrix

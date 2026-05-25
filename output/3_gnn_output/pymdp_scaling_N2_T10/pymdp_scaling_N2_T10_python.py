@@ -1,7 +1,7 @@
 """
 GNN Model: PyMDP Scaling N2 T10
 PyMDP runtime scaling sweep with noisy observation and stochastic transitions.
-Generated: 2026-05-22T06:16:27.328751
+Generated: 2026-05-25T10:00:03.226795
 """
 
 import numpy as np

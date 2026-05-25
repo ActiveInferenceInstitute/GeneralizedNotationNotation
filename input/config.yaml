@@ -131,7 +131,7 @@ testing_matrix:
         10,
         11,
         12,
-        # 13,  # LLM — disabled (slow Ollama calls); re-enable when needed
+        # 13, # LLM folder routing omitted here; use pipeline.skip_steps or --skip-llm to disable globally
         14,
         15,
         16,
@@ -170,6 +170,9 @@ llm:
 
   # Total budget for LLM processing in seconds (pipeline kills at 900s)
   timeout_seconds: 600
+
+  # Bound full-pipeline LLM work to the documented 8-file prompt sample
+  max_files: 8
 
   # Per-prompt timeout in seconds
   prompt_timeout: 45

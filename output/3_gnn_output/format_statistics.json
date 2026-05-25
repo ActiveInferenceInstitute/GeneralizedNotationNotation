@@ -1,112 +1,112 @@
 {
   "markdown": {
-    "successful": 3,
+    "successful": 2,
     "failed": 0,
-    "total_size": 6087
+    "total_size": 6279
   },
   "scala": {
-    "successful": 3,
+    "successful": 2,
     "failed": 0,
-    "total_size": 19562
+    "total_size": 20468
   },
   "lean": {
-    "successful": 3,
+    "successful": 2,
     "failed": 0,
-    "total_size": 20720
+    "total_size": 20721
   },
   "coq": {
-    "successful": 3,
+    "successful": 2,
     "failed": 0,
-    "total_size": 19781
+    "total_size": 19819
   },
   "python": {
-    "successful": 3,
+    "successful": 2,
     "failed": 0,
-    "total_size": 33440
+    "total_size": 34006
   },
   "bnf": {
-    "successful": 3,
+    "successful": 2,
     "failed": 0,
-    "total_size": 20686
+    "total_size": 20231
   },
   "ebnf": {
-    "successful": 3,
+    "successful": 2,
     "failed": 0,
-    "total_size": 20686
+    "total_size": 20231
   },
   "isabelle": {
-    "successful": 3,
+    "successful": 2,
     "failed": 0,
-    "total_size": 19923
+    "total_size": 20057
   },
   "maxima": {
-    "successful": 3,
+    "successful": 2,
     "failed": 0,
-    "total_size": 21787
+    "total_size": 22886
   },
   "xml": {
-    "successful": 3,
+    "successful": 2,
     "failed": 0,
-    "total_size": 35205
+    "total_size": 37005
   },
   "json": {
-    "successful": 3,
+    "successful": 2,
     "failed": 0,
-    "total_size": 34291
+    "total_size": 38224
   },
   "protobuf": {
-    "successful": 3,
+    "successful": 2,
     "failed": 0,
-    "total_size": 26682
+    "total_size": 26778
   },
   "yaml": {
-    "successful": 3,
+    "successful": 2,
     "failed": 0,
-    "total_size": 20880
+    "total_size": 23019
   },
   "xsd": {
-    "successful": 3,
+    "successful": 2,
     "failed": 0,
-    "total_size": 22972
+    "total_size": 22734
   },
   "asn1": {
-    "successful": 3,
+    "successful": 2,
     "failed": 0,
-    "total_size": 29471
+    "total_size": 27042
   },
   "pkl": {
-    "successful": 3,
+    "successful": 2,
     "failed": 0,
-    "total_size": 46348
+    "total_size": 47663
   },
   "alloy": {
-    "successful": 3,
+    "successful": 2,
     "failed": 0,
-    "total_size": 31317
+    "total_size": 32297
   },
   "z_notation": {
-    "successful": 3,
+    "successful": 2,
     "failed": 0,
-    "total_size": 21879
+    "total_size": 21658
   },
   "tla_plus": {
-    "successful": 3,
+    "successful": 2,
     "failed": 0,
-    "total_size": 17869
+    "total_size": 18715
   },
   "agda": {
-    "successful": 3,
+    "successful": 2,
     "failed": 0,
-    "total_size": 17763
+    "total_size": 18627
   },
   "haskell": {
-    "successful": 3,
+    "successful": 2,
     "failed": 0,
-    "total_size": 20163
+    "total_size": 21050
   },
   "pickle": {
-    "successful": 3,
+    "successful": 2,
     "failed": 0,
-    "total_size": 13572
+    "total_size": 15528
   }
 }

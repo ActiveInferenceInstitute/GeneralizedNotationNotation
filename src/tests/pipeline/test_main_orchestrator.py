@@ -197,11 +197,12 @@ class TestStepExecution:
             pytest.skip("3_gnn.py missing")
         with tempfile.TemporaryDirectory() as td:
             outdir = Path(td) / "output"
+            target_dir = PROJECT_ROOT / "input" / "gnn_files" / "discrete"
             cmd: list[Any] = [
                 sys.executable,
                 str(script),
                 "--target-dir",
-                str(PROJECT_ROOT / "input" / "gnn_files"),
+                str(target_dir),
                 "--output-dir",
                 str(outdir),
             ]
@@ -328,24 +329,92 @@ class TestEndToEndIntegration:
 
     def test_enhanced_warning_detection(self) -> None:
         """Test improved warning detection logic."""
-        # Test the warning detection logic from main.py
-        combined_output = "INFO: Processing completed\nWARNING: Optional feature not available\n⚠️ Warning symbol detected"
-        import re
+        from main import _step_has_actionable_warning
 
-        warning_pattern = re.compile(r"(WARNING|⚠️|warn)", re.IGNORECASE)
-        has_warning = bool(warning_pattern.search(combined_output))
+        safe_warning = {
+            "stdout": "INFO: Processing completed\nWARNING: optional dependency not available",
+            "stderr": "",
+        }
+        mixed_warning = {
+            "stdout": (
+                "INFO: Processing completed\n"
+                "WARNING: optional dependency not available\n"
+                "WARNING: Budget exhausted"
+            ),
+            "stderr": "",
+        }
+        no_warning = {
+            "stdout": "INFO: Processing completed\nDEBUG: File processed successfully",
+            "stderr": "",
+        }
 
-        # Should detect warnings
-        assert has_warning
+        assert not _step_has_actionable_warning(safe_warning)
+        assert _step_has_actionable_warning(mixed_warning)
+        assert not _step_has_actionable_warning(no_warning)
 
-        # Test without warnings
-        combined_output_no_warning = (
-            "INFO: Processing completed\nDEBUG: File processed successfully"
+    def test_warning_status_updates_performance_summary(self) -> None:
+        """Warning step statuses should affect aggregate warning counts."""
+        from main import _update_performance_summary
+
+        summary: dict[str, Any] = {
+            "performance_summary": {
+                "peak_memory_mb": 0.0,
+                "total_steps": 0,
+                "failed_steps": 0,
+                "critical_failures": 0,
+                "successful_steps": 0,
+                "warnings": 0,
+            }
+        }
+        step_result: dict[str, Any] = {
+            "status": "SUCCESS_WITH_WARNINGS",
+            "memory_usage_mb": 0.0,
+            "peak_memory_mb": 0.0,
+        }
+
+        _update_performance_summary(
+            summary,
+            step_result,
+            "13_llm.py",
+            has_warning=False,
+            total_steps=1,
         )
-        has_warning = bool(warning_pattern.search(combined_output_no_warning))
 
-        # Should not detect warnings
-        assert not has_warning
+        assert summary["performance_summary"]["successful_steps"] == 1
+        assert summary["performance_summary"]["warnings"] == 1
+        assert summary["performance_summary"]["total_steps"] == 1
+
+    def test_finalize_pipeline_summary_preserves_warning_status(self) -> None:
+        """Warning-only pipelines should finish SUCCESS_WITH_WARNINGS."""
+        from datetime import datetime
+
+        from main import _finalize_pipeline_summary
+
+        summary: dict[str, Any] = {
+            "start_time": datetime.now().isoformat(),
+            "steps": [{"status": "SUCCESS_WITH_WARNINGS"}],
+            "performance_summary": {
+                "peak_memory_mb": 0.0,
+                "total_steps": 1,
+                "failed_steps": 0,
+                "critical_failures": 0,
+                "successful_steps": 1,
+                "warnings": 0,
+            },
+        }
+
+        _finalize_pipeline_summary(summary)
+
+        assert summary["overall_status"] == "SUCCESS_WITH_WARNINGS"
+
+    def test_pipeline_exit_code_maps_warning_status(self) -> None:
+        """Warning-only pipeline status should use the warning exit code."""
+        from main import _pipeline_exit_code
+
+        assert _pipeline_exit_code("SUCCESS") == 0
+        assert _pipeline_exit_code("SUCCESS_WITH_WARNINGS") == 2
+        assert _pipeline_exit_code("PARTIAL_SUCCESS") == 2
+        assert _pipeline_exit_code("FAILED") == 1
 
     def test_pipeline_summary_step_numbering(self) -> None:
         """Test that pipeline summary uses correct step numbering."""

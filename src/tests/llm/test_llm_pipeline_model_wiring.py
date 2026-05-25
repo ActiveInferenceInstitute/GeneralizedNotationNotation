@@ -173,3 +173,79 @@ def test_structured_prompt_get_response_passes_model_name(
         process_llm(target, out, verbose=False)
 
     assert captured.get("model_name") == "smollm2:135m-instruct-q4_K_S"
+
+
+@pytest.mark.unit
+def test_process_llm_limits_files_from_config(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Full-pipeline LLM runs should use a deterministic bounded sample."""
+    target = tmp_path / "gnn_in"
+    scaling = target / "pymdp_scaling_study"
+    scaling.mkdir(parents=True)
+    out = tmp_path / "llm_out"
+    out.mkdir()
+    for name in ["b_model.md", "a_model.md"]:
+        (target / name).write_text("## GNNSection\nX\n## ModelName\nM\n")
+    for name in ["pymdp_scaling_N64_T10.md", "pymdp_scaling_N128_T10.md"]:
+        (scaling / name).write_text("## GNNSection\nX\n## ModelName\nS\n")
+
+    analyzed: list[str] = []
+
+    async def controlled_analyze(
+        path: Path, *args: Any, **kwargs: Any
+    ) -> dict[str, Any]:
+        analyzed.append(path.name)
+        return {"file": path.name}
+
+    class UnavailableProcessor:
+        async def initialize(self) -> bool:
+            return False
+
+        async def close(self) -> None:
+            return None
+
+    with monkeypatch.context() as m:
+        m.setattr(
+            "llm.processor._get_llm_config",
+            lambda: {"timeout_seconds": 600, "max_files": 2},
+        )
+        m.setattr(
+            "llm.processor._start_ollama_if_needed",
+            lambda *args, **kwargs: (False, []),
+        )
+        m.setattr(
+            "llm.processor.LLMProcessor",
+            lambda *args, **kwargs: UnavailableProcessor(),
+        )
+        m.setattr("llm.processor.analyze_gnn_file_with_llm", controlled_analyze)
+        m.setattr("llm.processor.generate_model_insights", lambda *args, **kwargs: {})
+        m.setattr("llm.processor.generate_code_suggestions", lambda *args, **kwargs: {})
+        m.setattr("llm.processor.generate_documentation", lambda *args, **kwargs: {})
+        m.setattr(
+            "llm.processor.generate_llm_summary", lambda *args, **kwargs: "# summary\n"
+        )
+
+        from llm.processor import process_llm
+
+        assert process_llm(target, out, verbose=False)
+
+    assert analyzed == ["a_model.md", "b_model.md"]
+
+    import json
+
+    results = json.loads((out / "llm_results.json").read_text())
+    assert results["processed_files"] == 2
+    assert results["total_files_discovered"] == 4
+    assert results["selected_files"] == 2
+    assert results["skipped_files"] == 2
+
+
+@pytest.mark.unit
+def test_llm_budget_prefers_cli_timeout() -> None:
+    from llm.processor import _resolve_llm_budget_seconds
+
+    assert (
+        _resolve_llm_budget_seconds({"llm_timeout": 1200}, {"timeout_seconds": 600})
+        == 1200
+    )

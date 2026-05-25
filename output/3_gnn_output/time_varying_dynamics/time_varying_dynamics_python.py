@@ -14,7 +14,7 @@ sequential game.
 This sample pushes the language extensions around time-indexed tensors
 and tests downstream code generation when matrix literals are
 timestep-dependent.
-Generated: 2026-05-22T06:17:18.834850
+Generated: 2026-05-25T09:51:15.189101
 """
 
 import numpy as np

@@ -25,6 +25,11 @@ from typing import Any, Dict, List
 from .categories import MODULAR_TEST_CATEGORIES
 
 
+def _isolated_pipeline_output_dir(base_output_dir: Any) -> str:
+    """Return the output root inherited by subprocess-driven tests."""
+    return str(Path(base_output_dir) / "isolated_pipeline_outputs")
+
+
 class ModularTestRunner:
     """Test runner with comprehensive error handling and reporting."""
 
@@ -387,6 +392,10 @@ class ModularTestRunner:
                 env.setdefault("COLUMNS", "120")
                 env.setdefault("LINES", "40")
                 env.setdefault("OLLAMA_DISABLED", "1")
+                env.setdefault(
+                    "GNN_PIPELINE_TEST_OUTPUT_DIR",
+                    _isolated_pipeline_output_dir(self.args.output_dir),
+                )
 
                 self.logger.info(
                     f"Starting test execution at {time.strftime('%H:%M:%S')}"

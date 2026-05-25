@@ -5,7 +5,7 @@ A Bayesian Network model mapping Active Inference structure:
 - A: Action
 - S_prev: Previous State
 - O: Observation
-Generated: 2026-05-22T06:17:18.830806
+Generated: 2026-05-25T09:51:15.183066
 """
 
 import numpy as np

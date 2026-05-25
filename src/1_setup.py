@@ -2,48 +2,9 @@
 """
 Step 1: Project Setup and Environment Validation with UV (Thin Orchestrator)
 
-This step handles project initialization, UV environment setup,
-
-dependency installation, and environment validation using
-Python packaging standards.
-
-How to run:
-  # Default: ``uv sync`` core dependencies (includes JAX, NumPyro, PyTorch, DisCoPy for step 12)
-  python src/1_setup.py --target-dir input/gnn_files --output-dir output --verbose
-
-  # Skip post-install JAX/Optax/Flax/pymdp functional self-test (core deps still installed)
-  python src/1_setup.py --setup-core-only --target-dir input/gnn_files --output-dir output --verbose
-
-  # Optional groups beyond the core dependency set
-  python src/1_setup.py --install-optional --optional-groups=gui,audio --verbose
-
-  # Install all optional dependencies
-  python src/1_setup.py --install-optional --verbose
-
-  # Dev test tooling only (pytest-cov, xdist, …)
-  python src/1_setup.py --dev --verbose
-
-  # Every optional extra in pyproject (heavy)
-  python src/1_setup.py --install-all-extras --verbose
-
-  # Alternative: Use uv directly for specific extras
-  uv sync                          # Core includes Step 12, LLM, visualization, and bnlearn backends
-  uv sync --extra gui              # Install GUI packages
-  uv sync --extra audio            # Install audio packages
-  uv sync --extra all              # Install all optional packages
-
-Expected outputs:
-  - Environment setup results in the specified output directory
-  - UV environment creation and validation
-  - Dependency installation and verification
-  - Actionable error messages if dependencies or paths are missing
-  - Clear logging of all resolved arguments and paths
-
-If you encounter errors:
-  - Check that UV is installed and available
-  - Check that src/setup/ contains setup modules
-  - Check that the output directory is writable
-  - Verify system requirements and permissions
+Handles argument wiring and delegates UV setup, dependency installation, and
+environment validation to `src/setup/`. Keep usage examples and operational
+details in `src/setup/README.md` so this numbered step stays orchestration-only.
 """
 
 import logging
@@ -55,7 +16,6 @@ from typing import Any, cast
 sys.path.insert(0, str(Path(__file__).parent))
 
 from setup import (
-    install_optional_package_group,
     setup_complete_environment,
     setup_uv_environment,
 )
