@@ -20,6 +20,7 @@ class GUIBackendStatus:
 
     @property
     def available(self) -> bool:
+        """Provide available behavior."""
         return self.name is not None
 
 

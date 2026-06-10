@@ -9,4 +9,4 @@ This directory owns pytest coverage for `src/execute/`.
 - Do not place production implementation logic here.
 
 ## Verification
-Run `uv run pytest src/tests/execute/ -q`.
+Run `uv run --extra dev python -m pytest src/tests/execute/ -q`.

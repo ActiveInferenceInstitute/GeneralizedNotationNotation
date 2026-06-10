@@ -113,6 +113,7 @@ class ExecutorFrameworkSpec:
 
 # Provide a simple hardware detection function used in tests for patching
 def get_available_hardware() -> list[str]:
+    """Return available hardware."""
     try:
         import jax  # noqa: F401
 

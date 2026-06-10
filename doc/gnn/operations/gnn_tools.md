@@ -488,7 +488,7 @@ uv run python src/mcp/validate_tools.py
 # → generates src/tests/mcp_audit_report.json
 
 # Or via pytest (full suite totals: repository README.md)
-uv run pytest src/tests/mcp/test_mcp_audit.py -v
+uv run --extra dev python -m pytest src/tests/mcp/test_mcp_audit.py -v
 ```
 
 Key tool groups:

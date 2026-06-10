@@ -45,6 +45,7 @@ class JAXRenderer:
         output_path: Path,
         options: Optional[Dict[str, Any]] = None,
     ) -> Tuple[bool, str, List[str]]:
+        """Render operation."""
         from .jax.jax_renderer import render_gnn_to_jax
 
         return render_gnn_to_jax(spec, output_path, options)

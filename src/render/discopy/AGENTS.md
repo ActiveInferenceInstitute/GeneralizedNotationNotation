@@ -141,8 +141,8 @@ GNN spec → render_gnn_to_discopy → <output>.py → execute.discopy runs scri
 
 ## Testing
 
-- `pytest src/tests/test_render_discopy*.py -v`
-- `pytest src/tests/render/test_render_cli_targets.py -v` — verifies the `discopy` target dispatches correctly.
+- `uv run --extra dev python -m pytest src/tests/test_render_discopy*.py -v`
+- `uv run --extra dev python -m pytest src/tests/render/test_render_cli_targets.py -v` — verifies the `discopy` target dispatches correctly.
 
 ---
 

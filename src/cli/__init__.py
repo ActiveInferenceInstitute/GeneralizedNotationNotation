@@ -411,6 +411,7 @@ def _find_render_artifact(render_dir: Path, framework: str) -> Path | None:
     }.get(framework, set())
 
     def is_candidate(path: Path) -> bool:
+        """Return whether candidate."""
         return (
             path.is_file()
             and (not suffixes or path.suffix in suffixes)

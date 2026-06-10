@@ -25,6 +25,7 @@ class ValidationStrategy:
     """
 
     def __init__(self) -> None:
+        """Initialize the instance."""
         self.validation_level = "standard"
         self.enable_strict_checking = False
         self.validators: dict[str, Any] = {}

@@ -20,24 +20,28 @@ from .base_provider import (
 
 # Lazy accessors to avoid importing heavy/optional dependencies at module import time
 def get_openai_provider_class() -> Type[Any]:
+    """Return openai provider class."""
     from .openai_provider import OpenAIProvider
 
     return OpenAIProvider
 
 
 def get_openrouter_provider_class() -> Type[Any]:
+    """Return openrouter provider class."""
     from .openrouter_provider import OpenRouterProvider
 
     return OpenRouterProvider
 
 
 def get_perplexity_provider_class() -> Type[Any]:
+    """Return perplexity provider class."""
     from .perplexity_provider import PerplexityProvider
 
     return PerplexityProvider
 
 
 def get_ollama_provider_class() -> Type[Any]:
+    """Return ollama provider class."""
     from .ollama_provider import OllamaProvider
 
     return OllamaProvider

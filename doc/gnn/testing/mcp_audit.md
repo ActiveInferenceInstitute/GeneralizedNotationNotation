@@ -81,12 +81,12 @@ DOMAIN_TOOLS = [
 
 ```bash
 # Full audit (all three classes)
-PYTHONPATH=src python -m pytest src/tests/mcp/test_mcp_audit.py -v
+uv run --extra dev python -m pytest src/tests/mcp/test_mcp_audit.py -v
 
 # Single class
-PYTHONPATH=src python -m pytest src/tests/mcp/test_mcp_audit.py::TestMCPModuleDiscovery -v
-PYTHONPATH=src python -m pytest src/tests/mcp/test_mcp_audit.py::TestMCPToolRealness -v
-PYTHONPATH=src python -m pytest src/tests/mcp/test_mcp_audit.py::TestMCPDomainTools -v
+uv run --extra dev python -m pytest src/tests/mcp/test_mcp_audit.py::TestMCPModuleDiscovery -v
+uv run --extra dev python -m pytest src/tests/mcp/test_mcp_audit.py::TestMCPToolRealness -v
+uv run --extra dev python -m pytest src/tests/mcp/test_mcp_audit.py::TestMCPDomainTools -v
 
 # JSON report only
 PYTHONPATH=src python src/mcp/validate_tools.py

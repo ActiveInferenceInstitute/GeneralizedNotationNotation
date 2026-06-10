@@ -14,7 +14,7 @@ from __future__ import annotations
 import os
 import subprocess  # nosec B404
 from pathlib import Path
-from typing import Any, Optional, Tuple
+from typing import Any, Optional, Tuple, cast
 
 _stack_ok_cache: Optional[bool] = None
 
@@ -38,6 +38,7 @@ def verify_jax_pymdp_stack() -> None:
 
 
 def _verify_jax_pymdp_stack_impl() -> None:
+    """Handle verify jax pymdp stack impl for internal callers."""
     import flax.linen as nn
     import jax
     import jax.numpy as jnp
@@ -56,6 +57,7 @@ def _verify_jax_pymdp_stack_impl() -> None:
 
     @jax.jit
     def _jit_sum_sin(z: jnp.ndarray) -> jnp.ndarray:
+        """Handle jit sum sin for internal callers."""
         return jnp.sum(jnp.sin(z))
 
     r = _jit_sum_sin(x)
@@ -63,6 +65,7 @@ def _verify_jax_pymdp_stack_impl() -> None:
         raise RuntimeError("JAX JIT path failed")
 
     def _sin_row(v: jnp.ndarray) -> jnp.ndarray:
+        """Handle sin row for internal callers."""
         return jnp.sin(v)
 
     vm = jax.vmap(_sin_row)
@@ -70,6 +73,7 @@ def _verify_jax_pymdp_stack_impl() -> None:
 
     @jax.jit
     def _scale(z: jnp.ndarray) -> jnp.ndarray:
+        """Handle scale for internal callers."""
         return z * 2.0
 
     xla_res = _scale(jnp.ones(10, dtype=jnp.float32)).block_until_ready()
@@ -81,9 +85,12 @@ def _verify_jax_pymdp_stack_impl() -> None:
     opt.init(params)
 
     class _Tiny(nn.Module):
+        """Provide a minimal Flax module for stack validation."""
+
         @nn.compact
         def __call__(self, z: jnp.ndarray) -> jnp.ndarray:
-            return nn.Dense(1)(z)
+            """Invoke the callable instance."""
+            return cast(jnp.ndarray, nn.Dense(1)(z))
 
     model = _Tiny()
     key = jax.random.PRNGKey(0)

@@ -559,6 +559,7 @@ def build_visual_gui(
             try:
                 # Convert Gradio DataFrames to Python lists
                 def convert_df_to_list(data: Any) -> Any:
+                    """Convert df to list."""
                     if hasattr(data, "values"):
                         return data.values.tolist()
                     elif isinstance(data, list):
@@ -655,6 +656,7 @@ def build_visual_gui(
 
                 # Convert DataFrames to lists
                 def convert_df_to_list(data: Any) -> Any:
+                    """Convert df to list."""
                     if hasattr(data, "values"):
                         return data.values.tolist()
                     elif isinstance(data, list):

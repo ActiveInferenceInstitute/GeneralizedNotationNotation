@@ -90,6 +90,7 @@ class StructuredLogger:
     """Enhanced logger with structured logging and performance tracking."""
 
     def __init__(self, name: str, correlation_id: Optional[str] = None) -> None:
+        """Initialize the instance."""
         self.name = name
         self.correlation_id = correlation_id or self._generate_correlation_id()
         self.base_logger = logging.getLogger(name)
@@ -309,11 +310,13 @@ class StructuredFormatter(logging.Formatter):
     """Custom formatter for structured logging output."""
 
     def __init__(self, correlation_id: str) -> None:
+        """Initialize the instance."""
         super().__init__()
         self.correlation_id = correlation_id
 
     def format(self, record: Any) -> Any:
         # Add correlation ID to all log records
+        """Provide format behavior."""
         if not hasattr(record, "correlation_id"):
             record.correlation_id = self.correlation_id
 
@@ -339,6 +342,7 @@ class LogAggregator:
     """Aggregate logs from multiple sources for analysis."""
 
     def __init__(self) -> None:
+        """Initialize the instance."""
         self.logs: List[Dict[str, Any]] = []
         self.metrics: Dict[str, Any] = {}
 

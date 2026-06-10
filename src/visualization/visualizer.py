@@ -303,6 +303,7 @@ class GNNVisualizer:
     def generate_graph_visualization(
         self, graph_data: Dict[str, Any] | None = None
     ) -> Dict[str, Any]:
+        """Generate graph visualization."""
         output_dir = self.output_dir / "graph"
         output_dir.mkdir(parents=True, exist_ok=True)
         if MATPLOTLIB_AVAILABLE:
@@ -354,6 +355,7 @@ class GNNVisualizer:
     def create_network_diagram(
         self, graph_data: Dict[str, Any] | None = None
     ) -> Dict[str, Any]:
+        """Create network diagram."""
         return self.generate_graph_visualization(graph_data)
 
     def _create_basic_text_visualization(
@@ -967,6 +969,7 @@ def generate_visualizations(
 
     @contextmanager
     def _noop_context() -> Any:
+        """Handle noop context for internal callers."""
         yield
 
     log_step_start(logger, f"Generating visualizations for GNN files in: {target_dir}")

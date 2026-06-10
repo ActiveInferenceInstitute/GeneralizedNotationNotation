@@ -39,5 +39,5 @@ output/12_execute_output/<model>/rxinfer/simulation_data/simulation_results.json
 
 ```bash
 julia --startup-file=no -e 'using RxInfer, JSON, Distributions, StatsBase'
-uv run pytest src/tests/pipeline/test_pomdp_gridworld_cross_framework.py -q --tb=short
+uv run --extra dev python -m pytest src/tests/pipeline/test_pomdp_gridworld_cross_framework.py -q --tb=short
 ```

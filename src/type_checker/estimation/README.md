@@ -7,5 +7,5 @@ This folder contains estimator strategies and report helpers used by the type-ch
 Run:
 
 ```bash
-uv run pytest src/tests/type_checker/ -q
+uv run --extra dev python -m pytest src/tests/type_checker/ -q
 ```

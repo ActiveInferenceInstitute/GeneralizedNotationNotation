@@ -18,6 +18,7 @@ class _GNNParseAccumulator:
     """
 
     def __init__(self, file_path: Union[str, Path]) -> None:
+        """Initialize the instance."""
         self.file_path = Path(file_path)
         self.file_name = self.file_path.name
         self.content = ""
@@ -195,6 +196,7 @@ class GNNFormalParser:
     """Section-oriented formal parser backed by the built-in GNN parser."""
 
     def __init__(self) -> None:
+        """Initialize the instance."""
         self._system = GNNParsingSystem()
 
     def parse_file(self, file_path: Union[str, Path]) -> Optional[_GNNParseAccumulator]:
@@ -250,6 +252,7 @@ class ParsedGNNFormal(_GNNParseAccumulator):
     """Formal parse result using the same accumulator shape as file parsing."""
 
     def __init__(self, file_path: Union[str, Path] = "<string>") -> None:
+        """Initialize the instance."""
         super().__init__(file_path)
 
 

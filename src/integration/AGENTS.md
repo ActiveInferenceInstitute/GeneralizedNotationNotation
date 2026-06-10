@@ -207,7 +207,7 @@ Pipeline Steps → Integration Coordination → System State → Cross-Module Co
 Measure on demand:
 
 ```bash
-uv run pytest src/tests/test_integration*.py \
+uv run --extra dev python -m pytest src/tests/test_integration*.py \
     --cov=src/integration --cov-report=term-missing
 ```
 ### Key Test Scenarios

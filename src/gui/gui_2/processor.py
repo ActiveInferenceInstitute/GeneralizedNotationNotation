@@ -155,6 +155,7 @@ def run_gui(
         import time
 
         def launch_gui() -> Any:
+            """Provide launch gui behavior."""
             logger.info("🎯 Visual Matrix Editor starting...")
             demo.launch(
                 share=False,

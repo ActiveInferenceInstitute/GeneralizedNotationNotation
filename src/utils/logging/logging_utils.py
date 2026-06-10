@@ -35,6 +35,7 @@ class CorrelationFormatter(logging.Formatter):
 
     def format(self, record: Any) -> Any:
         # Add correlation ID to log record
+        """Provide format behavior."""
         correlation_id = getattr(_correlation_context, "correlation_id", "MAIN")
         step_name = getattr(_correlation_context, "step_name", "pipeline")
 
@@ -254,6 +255,7 @@ class StructuredFormatter(CorrelationFormatter):
 
     def format(self, record: Any) -> Any:
         # Extract structured data if present
+        """Provide format behavior."""
         if hasattr(record, "structured_data"):
             structured_data = record.structured_data
 
@@ -744,6 +746,7 @@ class PipelineProgressTracker:
     """Track pipeline progress across steps with visual indicators."""
 
     def __init__(self, total_steps: int) -> None:
+        """Initialize the instance."""
         self.total_steps = total_steps
         self.current_step = 0
         self.step_status: Dict[int, str] = {}
@@ -835,12 +838,14 @@ class VisualFormatter(StructuredFormatter):
         include_performance: Any = True,
         use_colors: Any = True,
     ) -> None:
+        """Initialize the instance."""
         super().__init__(format_string)
         self.include_performance = include_performance
         self.use_colors = use_colors and VisualLoggingEnhancer.supports_color()
 
     def format(self, record: Any) -> Any:
         # Get base formatted message
+        """Provide format behavior."""
         formatted = super().format(record)
 
         # Add color coding for log levels and emojis

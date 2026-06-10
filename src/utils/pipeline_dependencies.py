@@ -42,6 +42,7 @@ class PipelineDependencyManager:
     """
 
     def __init__(self) -> None:
+        """Initialize the instance."""
         self.logger = logging.getLogger(__name__)
         self.dependency_cache: Dict[str, DependencyResult] = {}
         self.step_configs = self._initialize_step_configs()

@@ -35,6 +35,7 @@ logger = logging.getLogger(__name__)
 def _filter_connections(
     connections: List[Dict[str, Any]], var_names: Set[str]
 ) -> List[Dict[str, Any]]:
+    """Handle filter connections for internal callers."""
     out: List[Dict[str, Any]] = []
     for conn in connections:
         if not isinstance(conn, dict):
@@ -55,6 +56,7 @@ def process_visualization(
     verbose: bool = False,
     **kwargs: Any,
 ) -> bool:
+    """Process visualization."""
     logger_v = logging.getLogger("visualization")
     try:
         log_step_start(logger_v, "Processing visualizations")
@@ -116,6 +118,7 @@ def process_visualization(
 def process_single_gnn_file(
     gnn_file: Path, results_dir: Path, verbose: bool = False
 ) -> List[str]:
+    """Process single gnn file."""
     from ..matrix.visualizer import MatrixVisualizer
 
     with open(gnn_file, encoding="utf-8") as f:

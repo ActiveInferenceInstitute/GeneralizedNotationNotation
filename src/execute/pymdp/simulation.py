@@ -125,6 +125,7 @@ def _canonicalise_B(
 
 
 def _canonicalise_C(C_data: Any, num_obs: int) -> np.ndarray:
+    """Canonicalize C."""
     if C_data is None:
         raise ValueError("C vector is required for PyMDP execution")
     vec = np.asarray(C_data, dtype=np.float64).flatten()
@@ -137,12 +138,14 @@ def _canonicalise_C(C_data: Any, num_obs: int) -> np.ndarray:
 
 
 def _canonicalise_D(D_data: Any, num_states: int) -> np.ndarray:
+    """Canonicalize D."""
     if D_data is None:
         raise ValueError("D vector is required for PyMDP execution")
     return _normalise_probability_vector_safe(D_data, num_states)
 
 
 def _normalise_probability_vector_safe(v: Any, expected_len: int) -> np.ndarray:
+    """Normalize probability vector safe."""
     vec = np.asarray(v, dtype=np.float64).flatten()
     if vec.shape[0] != expected_len:
         padded = np.ones(expected_len, dtype=np.float64) / max(expected_len, 1)
@@ -155,6 +158,7 @@ def _normalise_probability_vector_safe(v: Any, expected_len: int) -> np.ndarray:
 def _canonicalise_E(
     E_data: Any, expected_policies: Optional[int]
 ) -> Optional[np.ndarray]:
+    """Canonicalize E."""
     if E_data is None:
         return None
     vec = np.asarray(E_data, dtype=np.float64).flatten()
@@ -564,6 +568,7 @@ def run_pymdp_simulation(
 
 
 def _is_version_ge(ver: str, target: Sequence[int]) -> bool:
+    """Return whether version ge."""
     try:
         parts = tuple(int(p) for p in ver.split(".")[: len(target)] if p.isdigit())
     except Exception:  # noqa: BLE001

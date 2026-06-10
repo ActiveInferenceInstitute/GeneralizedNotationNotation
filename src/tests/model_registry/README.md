@@ -7,5 +7,5 @@ This folder contains module-focused tests for registry processing and model meta
 Run:
 
 ```bash
-uv run pytest src/tests/model_registry/ -q
+uv run --extra dev python -m pytest src/tests/model_registry/ -q
 ```

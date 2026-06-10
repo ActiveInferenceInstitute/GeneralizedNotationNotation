@@ -7,5 +7,5 @@ This folder contains module-focused tests for report generation, formats, and in
 Run:
 
 ```bash
-uv run pytest src/tests/report/ -q
+uv run --extra dev python -m pytest src/tests/report/ -q
 ```

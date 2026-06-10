@@ -49,6 +49,7 @@ class PerformanceTracker:
     """Track performance metrics for pipeline operations."""
 
     def __init__(self) -> None:
+        """Initialize the instance."""
         self.metrics: Dict[str, List[float]] = {}
         self.active_operations: Dict[str, float] = {}
 
@@ -337,7 +338,10 @@ def with_diagnostic_logging(step_name: str, output_dir: Optional[Path] = None) -
     """
 
     def decorator(func: Callable) -> Any:
+        """Provide decorator behavior."""
+
         def wrapper(*args: Any, **kwargs: Any) -> Any:
+            """Provide wrapper behavior."""
             diagnostic_logger = create_diagnostic_logger(step_name, output_dir)
 
             try:

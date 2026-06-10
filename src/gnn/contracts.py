@@ -26,6 +26,7 @@ class ContractViolation:
     line: Optional[int] = None
 
     def __str__(self) -> str:
+        """Return the string representation."""
         loc = f" [{self.file_path}:{self.line}]" if self.file_path else ""
         return f"[{self.framework}] {self.field}: expected {self.expected}, got {self.actual}{loc}"
 

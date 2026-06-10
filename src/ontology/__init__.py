@@ -60,9 +60,11 @@ class OntologyProcessor:
     """Ontology processor with methods expected by tests."""
 
     def __init__(self) -> None:
+        """Initialize the instance."""
         self.logger = logging.getLogger(__name__)
 
     def run(self, *args: Any, **kwargs: Any) -> bool:
+        """Run operation."""
         return True
 
     def process_ontology(self, data: Union[Dict[str, Any], str]) -> Dict[str, Any]:
@@ -82,6 +84,7 @@ class OntologyProcessor:
 
     # Additional methods expected by some tests
     def validate_terms(self, terms: Optional[List[str]] = None) -> bool:
+        """Validate terms."""
         terms = terms or []
         defined = load_defined_ontology_terms()
         return all(t in defined for t in terms)
@@ -91,9 +94,11 @@ class OntologyValidator:
     """Ontology validator exposing validate_ontology as required by tests."""
 
     def __init__(self) -> None:
+        """Initialize the instance."""
         self.logger = logging.getLogger(__name__)
 
     def validate(self, annotations: Optional[List[str]] = None) -> Dict[str, Any]:
+        """Validate operation."""
         annotations = annotations or []
         terms = load_defined_ontology_terms()
         res = validate_annotations(annotations, terms)
@@ -105,6 +110,7 @@ class OntologyValidator:
         }
 
     def validate_ontology(self, content: str) -> Union[bool, Dict[str, Any]]:
+        """Validate ontology."""
         parsed = parse_gnn_ontology_section(content)
         result = self.validate(parsed.get("annotations", []))
         # Some tests expect a boolean True/False
@@ -112,6 +118,7 @@ class OntologyValidator:
 
     # Additional method expected by tests
     def check_consistency(self, annotations: Optional[List[str]] = None) -> bool:
+        """Check consistency."""
         return cast("bool", self.validate(annotations).get("valid", False))
 
 

@@ -7,5 +7,5 @@ This folder contains module-focused tests for the SAPF public entry point and pr
 Run:
 
 ```bash
-uv run pytest src/tests/sapf/ -q
+uv run --extra dev python -m pytest src/tests/sapf/ -q
 ```

@@ -159,13 +159,16 @@ export GNN_CACHE_DIR="/path/to/cache"
 
 ### Optional Dependencies
 
-The following dependencies are included in `requirements-dev.txt`:
+Optional dependency groups are declared in `pyproject.toml` and resolved through
+`uv sync --extra <group>` or `uv sync --all-extras`:
 
-- **Testing**: pytest-cov and repository pytest helpers
-- **Code Quality**: flake8, mypy, black, isort
-- **Documentation**: sphinx, sphinx-rtd-theme
-- **Debugging**: ipython, ipdb
-- **Performance Profiling**: py-spy
+- **Development** (`dev`): pytest, pytest-cov, repository pytest helpers,
+  ruff, mypy, black, isort, flake8, pylint, sphinx, ipython, ipdb, and profiling
+  tools such as py-spy
+- **Interfaces and backends**: `api`, `audio`, `gui`, `graphs`, `ml-ai`,
+  `research`, and `scaling` install the corresponding optional pipeline support
+- **All extras** (`all`): installs the optional runtime groups intended for
+  broad local experimentation
 
 ## Framework Dependencies
 

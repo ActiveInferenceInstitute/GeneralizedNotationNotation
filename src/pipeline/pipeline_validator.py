@@ -33,6 +33,7 @@ class PipelineValidator:
     """Comprehensive pipeline validator and improvement tester."""
 
     def __init__(self, verbose: bool = True) -> None:
+        """Initialize the instance."""
         self.verbose = verbose
         self.logger = self._setup_logging()
         self.dependency_manager = get_pipeline_dependency_manager()

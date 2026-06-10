@@ -45,6 +45,7 @@ class ValidationIssue:
     details: Dict[str, Any] = field(default_factory=dict)
 
     def __str__(self) -> str:
+        """Return the string representation."""
         return f"{self.severity.value.upper()}: {self.component_type} '{self.component}': {self.message}"
 
 
@@ -536,6 +537,7 @@ class GNNValidator:
         components: list[Any] = []
 
         def dfs(node: Any, component: Any) -> Any:
+            """Provide dfs behavior."""
             if node in visited:
                 return
             visited.add(node)

@@ -9,4 +9,4 @@ This directory owns resource-estimation logic for `src/type_checker/`.
 - Keep tests in `src/tests/type_checker/` focused on real estimation behavior.
 
 ## Verification
-Run `uv run pytest src/tests/type_checker/ -q`.
+Run `uv run --extra dev python -m pytest src/tests/type_checker/ -q`.

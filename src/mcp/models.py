@@ -270,6 +270,7 @@ class MCPSDKStatus:
     """Enhanced MCP SDK status tracking."""
 
     def __init__(self) -> None:
+        """Initialize the instance."""
         self._sdk_found = False
         self._sdk_version: str | None = None
         self._sdk_path: Path | None = None

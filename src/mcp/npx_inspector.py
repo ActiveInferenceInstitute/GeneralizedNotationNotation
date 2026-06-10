@@ -54,6 +54,7 @@ class StdioMCPClient:
     """A simple client to interact with an MCP server over stdio."""
 
     def __init__(self, process: Any) -> None:
+        """Initialize the instance."""
         self.process = process
         self.request_id_counter = 1
         self.response_timeout = 10  # seconds
@@ -74,6 +75,7 @@ class StdioMCPClient:
     def _send_request(
         self, method: str, params: Optional[Dict[str, Any]] = None
     ) -> Dict[str, Any]:
+        """Handle send request for internal callers."""
         if not self.process.stdin:
             raise IOError("Server stdin is not available.")
 
@@ -145,10 +147,12 @@ class StdioMCPClient:
     def get_capabilities(self) -> dict:
         # MCP standard often uses "mcp/discover" or similar,
         # but GNN server's meta_mcp.py registers "get_mcp_server_capabilities"
+        """Return capabilities."""
         return self._send_request(method="get_mcp_server_capabilities")
 
     def execute_tool(self, tool_name: str, tool_params: dict) -> dict:
         # GNN MCP server expects tool name as method and params as params object
+        """Execute tool."""
         return self._send_request(method=tool_name, params=tool_params)
 
     def get_resource(self, uri: str) -> dict:
@@ -159,6 +163,7 @@ class StdioMCPClient:
         # Based on GNN MCP spec, there isn't a generic "get resource" tool.
         # Resources are typically outputs of other tools. This function might be less useful directly.
         # For now, let's make it try to call the URI as if it were a tool (unlikely to work).
+        """Return resource."""
         print(
             "INSPECTOR (warning): Direct resource GET not well-defined in GNN MCP. Trying URI as method.",
             file=sys.stderr,
@@ -217,6 +222,7 @@ def handle_get_resource(client: StdioMCPClient, args: Any) -> Any:
 # --- Main ---
 def main() -> None:
     # This is the primary parser for the inspector tool itself.
+    """Provide main behavior."""
     parser = argparse.ArgumentParser(
         description="GNN MCP Inspector. Launches and interacts with a GNN MCP server.",
         epilog=f'Example: python {sys.argv[0]} --server-cmd "python src/mcp/cli.py server --transport stdio" list-capabilities',

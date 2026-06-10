@@ -7,5 +7,5 @@ This folder contains module-focused tests for MCP registry discovery, tool behav
 Run:
 
 ```bash
-uv run pytest src/tests/mcp/ -q
+uv run --extra dev python -m pytest src/tests/mcp/ -q
 ```

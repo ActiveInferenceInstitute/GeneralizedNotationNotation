@@ -9,4 +9,4 @@ This directory owns pytest coverage for `src/mcp/`.
 - Do not place production implementation logic here.
 
 ## Verification
-Run `uv run pytest src/tests/mcp/ -q`.
+Run `uv run --extra dev python -m pytest src/tests/mcp/ -q`.

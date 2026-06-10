@@ -44,6 +44,7 @@ class _LazyMatrixVisualizer:
     """Defer MatrixVisualizer import until advanced visualization actually needs it."""
 
     def __call__(self) -> Any:
+        """Invoke the callable instance."""
         from visualization.matrix_visualizer import MatrixVisualizer
 
         return MatrixVisualizer()

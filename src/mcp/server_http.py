@@ -172,6 +172,7 @@ class MCPHTTPServer:
     """
 
     def __init__(self, host: str = "127.0.0.1", port: int = 8080) -> None:
+        """Initialize the instance."""
         self.host = host
         self.port = port
         self.server: Optional[HTTPServer] = None

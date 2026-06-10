@@ -1,6 +1,6 @@
 # GeneralizedNotationNotation (GNN)
 
-**Last Updated**: 2026-05-25
+**Last Updated**: 2026-06-09
 
 <div align="center">
 
@@ -48,10 +48,10 @@
 ### 📚 Initial Publication
 
 **Smékal, J., & Friedman, D. A. (2023)**. *Generalized Notation Notation for Active Inference Models*. Active Inference Journal.  
-**Last Updated**: 2026-05-25
+**Last Updated**: 2026-06-09
 **Version**: 1.6.0  
 **Status**: ✅ Production Ready (Active Inference Institute)  
-**Test Suite Inventory (measured 2026-05-25)**: 170 `test_*.py` files under `src/tests/`; `uv run pytest --collect-only src/tests/ -q --tb=no --ignore=src/tests/llm/test_llm_ollama.py --ignore=src/tests/llm/test_llm_ollama_integration.py` collected 2,284 tests. Fresh full suite with the same Ollama integration excludes passed on 2026-05-25: 2,276 passed, 7 skipped, 1 xpassed in 813.52s.
+**Test Suite Inventory (measured 2026-06-09)**: 171 `test_*.py` files under `src/tests/`; `uv run --extra dev python -m pytest --collect-only src/tests/ -q --tb=no --ignore=src/tests/llm/test_llm_ollama.py --ignore=src/tests/llm/test_llm_ollama_integration.py` collected 2,296 tests. Latest recorded full suite with the same Ollama integration excludes passed on 2026-06-09: 2,281 passed, 14 skipped, 1 xfailed in 744.50s.
 **Features (v1.6.0)**: Neurosymbolic LLM Context Injection, D3 Execution Dashboards, NumPyro/Stan Renderers, structured PyMDP 1.0 POMDP execution, PyMDP Scaling Study, MCP Full Module Exposure.
 📖 **DOI:** [10.5281/zenodo.7803328](https://doi.org/10.5281/zenodo.7803328)  
 📁 **Archive:** [zenodo.org/records/7803328](https://zenodo.org/records/7803328)
@@ -99,7 +99,7 @@ GeneralizedNotationNotation/
 │   ├── 0_template.py → 24_intelligent_analysis.py  # Numbered pipeline scripts
 │   ├── gnn/, render/, execute/, llm/, ...  # Agent modules
 │   └── tests/                # Comprehensive test suite
-├── 📁 doc/                    # 612 Markdown files under doc/ (plus assets; see doc/README.md)
+├── 📁 doc/                    # 605 Markdown files under doc/ (plus assets; see doc/README.md)
 │   ├── gnn/                  # GNN language specification
 │   ├── pymdp/, rxinfer/      # Framework integration guides
 │   └── cognitive_phenomena/  # Example cognitive models
@@ -955,8 +955,7 @@ uv run python src/main.py -- --target-dir input/gnn_files --verbose
 You can also run individual commands under `uv` (recommended):
 
 ```bash
-uv run pytest          # run tests inside uv-managed venv
-uv run python -m pytest
+uv run --extra dev python -m pytest          # run tests inside uv-managed venv
 ```
 
 **6️⃣ Explore Results**
@@ -1186,7 +1185,7 @@ python src/2_tests.py
 pytest --cov=src --cov-report=term-missing
 
 # Run specific module tests
-pytest src/tests/test_[module]*.py -v
+uv run --extra dev python -m pytest src/tests/test_[module]*.py -v
 ```
 
 **Test Configuration:** See [pytest.ini](./pytest.ini) for complete test settings.

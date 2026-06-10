@@ -45,6 +45,7 @@ class DependencyManager:
     """Comprehensive dependency management for the GNN pipeline."""
 
     def __init__(self) -> None:
+        """Initialize the instance."""
         self.logger = logging.getLogger(__name__)
         self.dependency_groups: Dict[str, DependencyGroup] = {}
         self._setup_dependency_groups()

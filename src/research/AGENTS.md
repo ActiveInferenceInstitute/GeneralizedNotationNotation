@@ -239,7 +239,7 @@ Research Data → Analysis → Visualization → Report Generation → Publicati
 Measure on demand:
 
 ```bash
-uv run pytest src/tests/test_research*.py \
+uv run --extra dev python -m pytest src/tests/test_research*.py \
     --cov=src/research --cov-report=term-missing
 ```
 ### Key Test Scenarios

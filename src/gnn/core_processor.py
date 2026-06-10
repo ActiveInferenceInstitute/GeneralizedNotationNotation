@@ -84,6 +84,7 @@ class GNNProcessor:
     """
 
     def __init__(self, logger: Optional[logging.Logger] = None) -> None:
+        """Initialize the instance."""
         self.logger = logger or logging.getLogger("gnn.core_processor")
 
         # Initialize processing strategies

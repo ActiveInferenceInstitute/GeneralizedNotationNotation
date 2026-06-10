@@ -77,7 +77,7 @@ def test_with_real_data():
 - Minimum 90% code coverage per module
 - Tests must validate real pipeline outputs against known-good baselines
 - Integration tests run the full pipeline with sample GNN files from `input/gnn_files/`
-- Tests are run via: `uv run pytest src/tests/ -v` (from repository root)
+- Tests are run via: `uv run --extra dev python -m pytest src/tests/ -v` (from repository root)
 
 ---
 

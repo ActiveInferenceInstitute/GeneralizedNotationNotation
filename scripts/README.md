@@ -13,8 +13,8 @@ Tools are designed to be executed via `uv run`:
 
 ```bash
 # Run documentation validation
-uv run python scripts/check_gnn_doc_patterns.py --strict
-uv run python scripts/check_maintained_doc_terms.py --strict
+uv run --extra dev python scripts/check_gnn_doc_patterns.py --strict
+uv run --extra dev python scripts/check_maintained_doc_terms.py --strict
 
 # Execute a PyMDP scaling sweep using current config
 uv run python scripts/run_pymdp_gnn_scaling_analysis.py

@@ -31,6 +31,7 @@ class GNNParseError:
     severity: str = "error"  # "error" or "warning"
 
     def __str__(self) -> str:
+        """Return the string representation."""
         loc = f":{self.line}" if self.line else ""
         src = f" [{self.file}{loc}]" if self.file else ""
         return f"[{self.code}] {self.message}{src}"

@@ -25,6 +25,7 @@ class PipelineMigrationHelper:
     """Helper class for migrating pipeline modules to new patterns."""
 
     def __init__(self, src_dir: Path) -> None:
+        """Initialize the instance."""
         self.src_dir = src_dir
         self.changes_made: List[str] = []
 
@@ -195,6 +196,7 @@ class PipelineMigrationHelper:
         pattern1 = r"try:\s+(from utils import[^}]+})\s+except ImportError as e:.*?(?=\n\w|\n#|\nif|\ndef|\nclass|\Z)"
 
         def replace_fallback(match: Any) -> Any:
+            """Provide replace fallback behavior."""
             utils_import = match.group(1)
             changes.append(
                 "Removed redundant import recovery - utils provides graceful fallbacks"
@@ -239,6 +241,7 @@ class PipelineMigrationHelper:
 
 
 def main() -> Any:
+    """Provide main behavior."""
     parser = argparse.ArgumentParser(description="Pipeline Migration Helper")
     parser.add_argument(
         "--analyze",

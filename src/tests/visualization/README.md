@@ -7,5 +7,5 @@ This folder contains module-focused tests for graph, matrix, Mermaid, D2, and ar
 Run:
 
 ```bash
-uv run pytest src/tests/visualization/ -q
+uv run --extra dev python -m pytest src/tests/visualization/ -q
 ```

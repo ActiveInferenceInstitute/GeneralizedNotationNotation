@@ -389,11 +389,13 @@ class PerplexityProvider(BaseLLMProvider):
         prompt = f"Analyze this GNN model for {task}: {content}"
 
         async def _run() -> LLMResponse:
+            """Run operation."""
             return await self.generate_response(
                 [LLMMessage(role="user", content=prompt)]
             )
 
         def _extract(result: Any) -> str:
+            """Extract operation."""
             return result.content if hasattr(result, "content") else str(result)
 
         try:
@@ -402,6 +404,7 @@ class PerplexityProvider(BaseLLMProvider):
         except RuntimeError:
             # Already inside a running event loop – delegate to a worker thread
             def _thread_run() -> LLMResponse:
+                """Handle thread run for internal callers."""
                 return asyncio.run(_run())
 
             with concurrent.futures.ThreadPoolExecutor(max_workers=1) as pool:

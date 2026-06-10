@@ -7,5 +7,5 @@ This folder contains module-focused tests for ML integration processing and cove
 Run:
 
 ```bash
-uv run pytest src/tests/ml_integration/ -q
+uv run --extra dev python -m pytest src/tests/ml_integration/ -q
 ```

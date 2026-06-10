@@ -96,6 +96,7 @@ def build_simple_visual_gui(
         try:
             # Convert gradio dataframes to lists safely
             def safe_convert(data: Any) -> Any:
+                """Provide safe convert behavior."""
                 if hasattr(data, "values"):
                     return data.values.tolist()
                 elif isinstance(data, list):
@@ -197,6 +198,7 @@ def build_simple_visual_gui(
             def update_stats_only(
                 matrix_a: Any, matrix_b: Any, vector_c: Any, vector_d: Any
             ) -> Any:
+                """Update stats only."""
                 return update_visualizations(matrix_a, matrix_b, vector_c, vector_d)[-1]
 
             update_btn.click(

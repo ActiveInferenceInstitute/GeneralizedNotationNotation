@@ -9,6 +9,8 @@ from typing import Any, Dict, List, Optional, Tuple, Union
 
 
 class ValidationLevel(Enum):
+    """Provide ValidationLevel behavior."""
+
     BASIC = "basic"
     STANDARD = "standard"
     STRICT = "strict"
@@ -17,6 +19,8 @@ class ValidationLevel(Enum):
 
 
 class GNNSyntaxError(Exception):
+    """Provide GNNSyntaxError behavior."""
+
     def __init__(
         self,
         message: str,
@@ -24,12 +28,14 @@ class GNNSyntaxError(Exception):
         column: Optional[int] = None,
         format_context: Optional[str] = None,
     ) -> None:
+        """Initialize the instance."""
         super().__init__(message)
         self.line = line
         self.column = column
         self.format_context = format_context
 
     def format_message(self) -> str:
+        """Provide format message behavior."""
         msg = str(self)
         if self.line is not None:
             msg += f" (line {self.line}"
@@ -43,6 +49,8 @@ class GNNSyntaxError(Exception):
 
 @dataclass
 class ValidationResult:
+    """Provide ValidationResult behavior."""
+
     is_valid: bool
     errors: List[str] = field(default_factory=list)
     warnings: List[str] = field(default_factory=list)
@@ -56,12 +64,14 @@ class ValidationResult:
     performance_metrics: Dict[str, float] = field(default_factory=dict)
 
     def add_round_trip_result(self, result: "RoundTripResult") -> None:
+        """Provide add round trip result behavior."""
         self.round_trip_results.append(result)
         if not result.success:
             self.errors.extend(result.errors)
             self.warnings.extend(result.warnings)
 
     def get_round_trip_success_rate(self) -> float:
+        """Return round trip success rate."""
         if not self.round_trip_results:
             return 0.0
         successful = sum(1 for r in self.round_trip_results if r.success)
@@ -70,6 +80,8 @@ class ValidationResult:
 
 @dataclass
 class GNNVariable:
+    """Provide GNNVariable behavior."""
+
     name: str
     dimensions: List[Union[int, str]]
     data_type: str
@@ -82,6 +94,8 @@ class GNNVariable:
 
 @dataclass
 class GNNConnection:
+    """Provide GNNConnection behavior."""
+
     source: Union[str, List[str]]
     target: Union[str, List[str]]
     connection_type: str
@@ -94,6 +108,8 @@ class GNNConnection:
 
 @dataclass
 class ParsedGNN:
+    """Provide ParsedGNN behavior."""
+
     gnn_section: str
     version: str
     model_name: str
@@ -122,6 +138,8 @@ from .parsers.common import (  # re-export for types module consumers  # noqa: E
 
 @dataclass
 class ParseResult:
+    """Provide ParseResult behavior."""
+
     model: Optional[GNNInternalRepresentation] = None
     success: bool = False
     errors: List[str] = field(default_factory=list)
@@ -129,15 +147,19 @@ class ParseResult:
     metadata: Dict[str, Any] = field(default_factory=dict)
 
     def add_error(self, error: str) -> Any:
+        """Provide add error behavior."""
         self.errors.append(error)
         self.success = False
 
     def add_warning(self, warning: str) -> Any:
+        """Provide add warning behavior."""
         self.warnings.append(warning)
 
 
 @dataclass
 class RoundTripResult:
+    """Provide RoundTripResult behavior."""
+
     source_format: GNNFormat
     target_format: GNNFormat
     success: bool
@@ -152,13 +174,16 @@ class RoundTripResult:
     checksum_converted: Optional[str] = None
 
     def add_difference(self, diff: str) -> None:
+        """Provide add difference behavior."""
         self.differences.append(diff)
         self.success = False
 
     def add_warning(self, warning: str) -> Any:
+        """Provide add warning behavior."""
         self.warnings.append(warning)
 
     def add_error(self, error: str) -> Any:
+        """Provide add error behavior."""
         self.errors.append(error)
         self.success = False
 
@@ -178,6 +203,7 @@ class ComprehensiveTestReport:
     critical_errors: List[str] = field(default_factory=list)
 
     def add_result(self, result: RoundTripResult) -> None:
+        """Provide add result behavior."""
         self.round_trip_results.append(result)
         self.total_tests += 1
         if result.success:
@@ -191,6 +217,7 @@ class ComprehensiveTestReport:
         )
 
     def get_success_rate(self) -> float:
+        """Return success rate."""
         return (
             (self.successful_tests / self.total_tests) * 100
             if self.total_tests > 0
@@ -198,6 +225,7 @@ class ComprehensiveTestReport:
         )
 
     def get_format_summary(self) -> Dict[GNNFormat, Dict[str, int]]:
+        """Return format summary."""
         format_summary: dict[Any, Any] = {}
         for result in self.round_trip_results:
             fmt = result.target_format

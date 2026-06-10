@@ -78,13 +78,13 @@ gnn:
 setup:
   # Virtual environment
   create_venv: true
-  venv_dir: "src/.venv"
-  python_version: "3.8+"
+  venv_dir: ".venv"
+  python_version: ">=3.11,<3.14"
   
   # Dependencies
   install_deps: true
   upgrade_deps: false
-  requirements_file: "requirements.txt"
+  dependency_source: "pyproject.toml"
   extra_packages: []
   
   # External tools

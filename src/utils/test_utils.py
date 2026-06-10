@@ -104,6 +104,7 @@ class TestRunner:
     """Basic test runner for compatibility."""
 
     def __init__(self, config: Any = None) -> None:
+        """Store runner configuration and initialize a compatibility logger."""
         self.config = config or {}
         self.logger = logging.getLogger("test_runner")
 
@@ -140,6 +141,7 @@ class TestResult:
         execution_time: Any = 0.0,
         error_message: Any = None,
     ) -> None:
+        """Store summary counters and optional failure context."""
         self.success = success
         self.tests_run = tests_run
         self.tests_passed = tests_passed
@@ -166,13 +168,16 @@ class TestCategory:
     """Basic test category for compatibility."""
 
     def __init__(self, name: Any = "", description: Any = "") -> None:
+        """Store the category name and description."""
         self.name = name
         self.description = description
 
     def __str__(self) -> Any:
+        """Return the compact category display name."""
         return f"TestCategory({self.name})"
 
     def __repr__(self) -> Any:
+        """Return the developer-facing category representation."""
         return self.__str__()
 
 
@@ -188,6 +193,7 @@ class TestStage:
         parallel: Any = True,
         coverage: Any = False,
     ) -> None:
+        """Store stage execution limits and coverage settings."""
         self.name = name
         self.timeout = timeout
         self.max_failures = max_failures
@@ -195,9 +201,11 @@ class TestStage:
         self.coverage = coverage
 
     def __str__(self) -> Any:
+        """Return the compact stage display name."""
         return f"TestStage({self.name})"
 
     def __repr__(self) -> Any:
+        """Return the developer-facing stage representation."""
         return self.__str__()
 
 
@@ -206,13 +214,16 @@ class CoverageTarget:
     """Basic coverage target for compatibility."""
 
     def __init__(self, name: Any = "", target_percentage: Any = 0.0) -> None:
+        """Store the coverage target name and threshold."""
         self.name = name
         self.target_percentage = target_percentage
 
     def __str__(self) -> Any:
+        """Return the compact coverage target display name."""
         return f"CoverageTarget({self.name}: {self.target_percentage}%)"
 
     def __repr__(self) -> Any:
+        """Return the developer-facing coverage target representation."""
         return self.__str__()
 
 
@@ -1142,6 +1153,7 @@ class _PerformanceTracker:
     """Holds timing and memory metrics for a performance_tracker context."""
 
     def __init__(self, start_time: float, start_memory: float) -> None:
+        """Store starting metrics and initialize derived metric fields."""
         self.start_time = start_time
         self.start_memory = start_memory
         self.end_time: float | None = None
@@ -1150,6 +1162,7 @@ class _PerformanceTracker:
         self.memory_delta: float | None = None
 
     def finalize(self) -> None:
+        """Capture end metrics and compute duration and memory deltas."""
         end_time = time.time()
         end_memory = get_memory_usage()
         self.end_time = end_time
@@ -1189,6 +1202,7 @@ def track_peak_memory(func: Any) -> Any:
     """Decorator to track peak memory usage of a function."""
 
     def wrapper(*args: Any, **kwargs: Any) -> Any:
+        """Run the wrapped function while sampling process memory."""
         try:
             import psutil
 

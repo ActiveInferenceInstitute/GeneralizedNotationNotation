@@ -28,7 +28,7 @@
 ## Verification
 
 ```bash
-uv run pytest \
+uv run --extra dev python -m pytest \
     src/tests/analysis/test_analysis_post_simulation.py \
     src/tests/analysis/test_analysis_overall.py \
     -q --tb=short

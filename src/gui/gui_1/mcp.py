@@ -10,6 +10,7 @@ from mcp import register_module_tools
 
 
 def register_gui_tools() -> Dict[str, Any]:
+    """Register gui tools."""
     try:
         registered = bool(register_module_tools("gui"))
         return {

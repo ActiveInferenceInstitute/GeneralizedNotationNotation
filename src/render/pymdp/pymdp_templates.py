@@ -393,6 +393,7 @@ if __name__ == "__main__":
 
 
 def _flag(label: str, value: Any) -> str:
+    """Handle flag for internal callers."""
     return "Present" if value is not None and value != "None" else "Missing"
 
 
@@ -429,6 +430,7 @@ def generate_file_header(model_name: str) -> str:
 
 
 def generate_conversion_summary(log_entries: List[str]) -> str:
+    """Generate conversion summary."""
     lines = "\n".join(f"# {entry}" for entry in log_entries)
     return f"\n# --- GNN to pymdp 1.0.0 conversion summary ---\n{lines}\n# --- end summary ---\n"
 

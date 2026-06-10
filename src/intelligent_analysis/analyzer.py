@@ -28,6 +28,7 @@ class AnalysisContext:
     performance_summary: Dict[str, Any] = field(init=False)
 
     def __post_init__(self) -> None:
+        """Normalize fields after dataclass initialization."""
         self.overall_status = self.summary_data.get("overall_status", "UNKNOWN")
         self.total_duration = self.summary_data.get("total_duration_seconds", 0.0)
         self.steps = self.summary_data.get("steps", [])

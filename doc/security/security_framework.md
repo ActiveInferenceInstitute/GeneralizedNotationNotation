@@ -586,8 +586,8 @@ RUN apt-get update && apt-get upgrade -y && \
 
 # Set up application directory
 WORKDIR /app
-COPY requirements.txt .
-RUN uv pip install --no-cache-dir -r requirements.txt
+COPY pyproject.toml uv.lock ./
+RUN uv sync --frozen
 
 # Copy application code
 COPY --chown=gnn:gnn . .

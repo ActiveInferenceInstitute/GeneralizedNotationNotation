@@ -287,7 +287,6 @@ See [Performance Guide](performance.md) for optimization strategies.
 1. **Activate virtual environment**: Ensure you're in the correct Python environment
 
    ```bash
-   cd src
    source .venv/bin/activate  # Linux/Mac
    # or
    .venv\Scripts\activate  # Windows
@@ -296,11 +295,10 @@ See [Performance Guide](performance.md) for optimization strategies.
 2. **Install missing dependencies**:
 
    ```bash
-   uv sync  # Recommended - installs all dependencies
-   # Or: uv pip install -r requirements.txt
+   uv sync  # Install runtime dependencies from pyproject.toml / uv.lock
    ```
 
-3. **Python version compatibility**: GNN requires Python 3.8+
+3. **Python version compatibility**: GNN requires Python 3.11 through 3.13
 
    ```bash
    python --version  # Check your version
@@ -322,7 +320,7 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 uv sync --extra dev
 
 # Run tests to verify setup
-uv run pytest tests/
+uv run --extra dev python -m pytest src/tests/
 ```
 
 ### Can I use GNN with Docker?
@@ -336,8 +334,8 @@ FROM python:3.11-slim
 WORKDIR /app
 COPY . /app
 
-RUN cd src && uv pip install -r requirements.txt
-CMD ["python", "src/main.py", "--help"]
+RUN uv sync --frozen
+CMD ["uv", "run", "python", "src/main.py", "--help"]
 ```
 
 **Docker Compose for development:**
@@ -582,12 +580,11 @@ jobs:
     
     - name: Install dependencies
       run: |
-        cd src
-        uv pip install -r requirements.txt
+        uv sync --frozen
     
     - name: Validate GNN models
       run: |
-        python src/5_type_checker.py --target-dir models/
+        uv run python src/5_type_checker.py --target-dir models/
     
     - name: Generate documentation
       run: |

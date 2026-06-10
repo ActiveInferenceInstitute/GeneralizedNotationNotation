@@ -279,7 +279,7 @@ Template Input → Processing → Pattern Demonstration → Validation → Docum
 Measure on demand:
 
 ```bash
-uv run pytest src/tests/test_template*.py \
+uv run --extra dev python -m pytest src/tests/test_template*.py \
     --cov=src/template --cov-report=term-missing
 ```
 ### Key Test Scenarios

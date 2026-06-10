@@ -717,6 +717,7 @@ def visualize_simulation_results(
                 def apply_chart_metadata(
                     framework: str = framework, data: dict = data
                 ) -> None:
+                    """Apply chart metadata."""
                     try:
                         meta_parts: list[Any] = [
                             f"Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}",
@@ -1102,6 +1103,7 @@ def _extract_simulation_metrics(
         candidate_files: List[Path] = []
 
         def _add_unique(paths: List[Path], p: Path) -> None:
+            """Handle add unique for internal callers."""
             if p not in paths:
                 paths.append(p)
 

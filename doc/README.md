@@ -2,7 +2,7 @@
 
 > **Role**: Primary human onboarding hub for `doc/`. **Flat index**: [INDEX.md](INDEX.md). **Guided tour**: [START_HERE.md](START_HERE.md). **Learning paths**: [learning_paths.md](learning_paths.md). **Cross-topic links**: [CROSS_REFERENCE_INDEX.md](CROSS_REFERENCE_INDEX.md). **Doc tree index for agents**: [AGENTS.md](AGENTS.md).
 >
-> **Setup**: [SETUP.md](SETUP.md) | **Contributing**: [../CONTRIBUTING.md](../CONTRIBUTING.md) | **Versioning**: [SPEC.md](SPEC.md) | **Doc audit**: [development/docs_audit.py](development/docs_audit.py) (`uv run python doc/development/docs_audit.py --strict`)
+> **Setup**: [SETUP.md](SETUP.md) | **Contributing**: [../CONTRIBUTING.md](../CONTRIBUTING.md) | **Versioning**: [SPEC.md](SPEC.md) | **Doc audit**: [development/docs_audit.py](development/docs_audit.py) (`uv run --extra dev python doc/development/docs_audit.py --strict`)
 
 Welcome to the documentation for Generalized Notation Notation (GNN), a standardized text-based language for expressing Active Inference generative models.
 

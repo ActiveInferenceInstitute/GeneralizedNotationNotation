@@ -16,21 +16,21 @@ Executes the comprehensive test suite across all GNN pipeline modules. Manages t
 python src/2_tests.py --comprehensive
 
 # Run tests directly with pytest
-pytest src/tests/ -v
+uv run --extra dev python -m pytest src/tests/ -v
 
 # Module-specific tests
-pytest src/tests/test_gnn_*.py -v
-pytest src/tests/test_render_*.py -v
-pytest src/tests/test_export_*.py -v
+uv run --extra dev python -m pytest src/tests/test_gnn_*.py -v
+uv run --extra dev python -m pytest src/tests/test_render_*.py -v
+uv run --extra dev python -m pytest src/tests/test_export_*.py -v
 
 # Check coverage
 pytest --cov=src --cov-report=term-missing
 
 # Run with specific markers
-pytest src/tests/ -v -m "not slow"
+uv run --extra dev python -m pytest src/tests/ -v -m "not slow"
 
 # Quick smoke test
-pytest src/tests/ -x -q --tb=short
+uv run --extra dev python -m pytest src/tests/ -x -q --tb=short
 ```
 
 ## Test Organization

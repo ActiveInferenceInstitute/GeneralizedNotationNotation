@@ -7,5 +7,5 @@ This folder contains the rule and dimension-checking implementation used by `src
 Run:
 
 ```bash
-uv run pytest src/tests/type_checker/ -q
+uv run --extra dev python -m pytest src/tests/type_checker/ -q
 ```

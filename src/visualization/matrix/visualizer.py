@@ -146,6 +146,7 @@ class MatrixVisualizer:
         return extract_matrices_from_parameter_list(parameters)
 
     def _convert_to_matrix(self, value: Any, name: str = "") -> Optional[np.ndarray]:
+        """Convert to matrix."""
         return convert_to_matrix(value, name)
 
     def extract_from_parsed_gnn(
@@ -281,6 +282,7 @@ class MatrixVisualizer:
             return False
 
     def create_heatmap(self, matrix: List[List[float]] | np.ndarray) -> bool:
+        """Create heatmap."""
         try:
             arr = np.array(matrix, dtype=float)
             # Save to project output/test_artifacts to avoid polluting repo root
@@ -689,11 +691,12 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
                 top=0.92, bottom=0.08, left=0.08, right=0.95, hspace=0.4, wspace=0.3
             )
 
-            for size, kwargs in [
+            save_attempts: list[tuple[tuple[int, int] | None, dict[str, Any]]] = [
                 (None, {"dpi": 96, "bbox_inches": "tight"}),
                 ((8, 6), {"dpi": 72}),
                 ((6, 4), {}),
-            ]:
+            ]
+            for size, kwargs in save_attempts:
                 try:
                     if size:
                         fig.set_size_inches(*size)

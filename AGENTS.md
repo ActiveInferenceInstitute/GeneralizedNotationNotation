@@ -220,11 +220,11 @@ graph TD
 - **Screen Reader Support**: Accessible output with emoji-free alternatives for assistive technologies
 - **Performance Monitoring**: Built-in timing and resource consumption tracking with visual displays
 
-### Current Validation (May 2026)
+### Current Validation (June 2026)
 
-- **Docs audit**: `uv run python doc/development/docs_audit.py --strict --check-anchors --no-write` reports no broken links, anchor gaps, or AGENTS/README coverage gaps.
-- **GNN doc patterns**: `uv run python scripts/check_gnn_doc_patterns.py --strict` reports no banned GNN documentation patterns.
-- **Tests**: command of record is `uv run pytest src/tests/ -q --tb=no --ignore=src/tests/llm/test_llm_ollama.py --ignore=src/tests/llm/test_llm_ollama_integration.py`; current collect-only inventory (2026-05-25) is 170 test files and 2,284 collected tests with the same Ollama ignores. Fresh full suite with the same excludes passed on 2026-05-25: 2,276 passed, 7 skipped, 1 xpassed in 813.52s. Re-enable `src/tests/llm/test_llm_ollama*.py` when `ollama` is available.
+- **Docs audit**: `uv run --extra dev python doc/development/docs_audit.py --strict --check-anchors --no-write` reports no broken links, anchor gaps, or AGENTS/README coverage gaps.
+- **GNN doc patterns**: `uv run --extra dev python scripts/check_gnn_doc_patterns.py --strict` reports no banned GNN documentation patterns.
+- **Tests**: command of record is `uv run --extra dev python -m pytest src/tests/ -q --tb=no --ignore=src/tests/llm/test_llm_ollama.py --ignore=src/tests/llm/test_llm_ollama_integration.py`; current collect-only inventory (2026-06-09) is 171 test files and 2,296 collected tests with the same Ollama ignores. Latest recorded full suite with the same excludes passed on 2026-06-09: 2,281 passed, 14 skipped, 1 xfailed in 744.50s. Re-enable `src/tests/llm/test_llm_ollama*.py` when `ollama` is available.
 - **LLM Default Model**: `smollm2:135m-instruct-q4_K_S` via Ollama (`llm.defaults.DEFAULT_OLLAMA_MODEL`; override with `OLLAMA_MODEL` / `input/config.yaml`).
 - **Renderer inventory**: PyMDP, RxInfer, JAX, NumPyro, Stan, PyTorch, ActiveInference.jl, and DisCoPy have maintained render paths; run focused backend tests before publishing operational pass counts.
 - **Visual Accessibility**: All pipeline steps now include enhanced visual indicators and progress tracking.
@@ -306,7 +306,7 @@ python src/2_tests.py --comprehensive
 ### Run Module-Specific Tests
 
 ```bash
-pytest src/tests/test_[module]*.py -v
+uv run --extra dev python -m pytest src/tests/test_[module]*.py -v
 ```
 
 ### Check Coverage
@@ -514,7 +514,7 @@ Each module provides specialized agent capabilities for different aspects of Act
 
 ---
 
-**Last Updated**: 2026-05-25
+**Last Updated**: 2026-06-09
 **Pipeline Version**: 1.6.0
 **Total Steps**: 25 (0-24)
 **Status**: Maintained

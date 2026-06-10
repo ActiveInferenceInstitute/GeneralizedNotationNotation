@@ -32,6 +32,7 @@ class GNNWatcher:
         debounce_ms: int = 250,
         extensions: tuple = (".md",),
     ) -> None:
+        """Initialize the instance."""
         self.watch_dir = Path(watch_dir)
         self.on_change = on_change or self._default_callback
         self.debounce_ms = debounce_ms
@@ -58,11 +59,15 @@ class GNNWatcher:
         from watchdog.observers import Observer
 
         class _GNNChangeHandler(FileSystemEventHandler):
+            """Provide GNNChangeHandler behavior."""
+
             def __init__(self, gnn_watcher: Any) -> None:
+                """Initialize the instance."""
                 super().__init__()
                 self._watcher = gnn_watcher
 
             def on_modified(self, event: Any) -> Any:
+                """Provide on modified behavior."""
                 if isinstance(event, FileModifiedEvent):
                     src_path = (
                         event.src_path.decode()

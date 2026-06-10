@@ -9,4 +9,4 @@ This directory owns pytest coverage for `src/type_checker/`.
 - Do not place production implementation logic here.
 
 ## Verification
-Run `uv run pytest src/tests/type_checker/ -q`.
+Run `uv run --extra dev python -m pytest src/tests/type_checker/ -q`.

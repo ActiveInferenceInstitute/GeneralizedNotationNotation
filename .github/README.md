@@ -313,28 +313,28 @@ From the repository root:
 actionlint .github/workflows/*.yml
 
 uv sync --frozen --extra dev
-uv run ruff format --check src scripts
-uv run ruff check src scripts
-uv run python scripts/check_repo_terminology.py --strict
-uv run python scripts/check_maintained_doc_terms.py --strict
-uv run python doc/development/docs_audit.py --strict --check-anchors --no-write
-uv run python scripts/check_gnn_doc_patterns.py --strict
-uv run mypy src --show-error-codes
-uv run bandit -r src -c pyproject.toml -q
-uv run pytest --collect-only src/tests/ -q --tb=no \
+uv run --extra dev ruff format --check src scripts
+uv run --extra dev ruff check src scripts
+uv run --extra dev python scripts/check_repo_terminology.py --strict
+uv run --extra dev python scripts/check_maintained_doc_terms.py --strict
+uv run --extra dev python doc/development/docs_audit.py --strict --check-anchors --no-write
+uv run --extra dev python scripts/check_gnn_doc_patterns.py --strict
+uv run --extra dev mypy src --show-error-codes
+uv run --extra dev bandit -r src -c pyproject.toml -q
+uv run --extra dev python -m pytest --collect-only src/tests/ -q --tb=no \
   --ignore=src/tests/llm/test_llm_ollama.py \
   --ignore=src/tests/llm/test_llm_ollama_integration.py
-uv run pytest \
+uv run --extra dev python -m pytest \
   src/tests/execute/test_pymdp_contracts.py \
   src/tests/execute/test_discrete_models_pymdp.py \
   src/tests/visualization/test_visualization_matrices.py \
   -q --tb=short
-uv run pytest -m "not pipeline and not mcp" --tb=short -q
+uv run --extra dev python -m pytest -m "not pipeline and not mcp" --tb=short -q
 # Same output as CI security job (SARIF for artifacts / code scanning):
-# uv run bandit -r src -c pyproject.toml --severity-level medium --confidence-level medium -f sarif -o bandit-results.sarif
+# uv run --extra dev bandit -r src -c pyproject.toml --severity-level medium --confidence-level medium -f sarif -o bandit-results.sarif
 ```
 
-Full local suite (broader than default CI marker filter): `uv run pytest src/tests/ -q --tb=no --ignore=src/tests/llm/test_llm_ollama.py --ignore=src/tests/llm/test_llm_ollama_integration.py`. Ollama integration tests may need a local daemon; see [README.md](../README.md) and [pytest.ini](../pytest.ini).
+Full local suite (broader than default CI marker filter): `uv run --extra dev python -m pytest src/tests/ -q --tb=no --ignore=src/tests/llm/test_llm_ollama.py --ignore=src/tests/llm/test_llm_ollama_integration.py`. Ollama integration tests may need a local daemon; see [README.md](../README.md) and [pytest.ini](../pytest.ini).
 
 ---
 

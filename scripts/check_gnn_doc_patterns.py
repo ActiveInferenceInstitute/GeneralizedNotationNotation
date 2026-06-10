@@ -5,8 +5,8 @@ Spot-check markdown under doc/ and src/gnn/ for known-stale GNN documentation pa
 Does not fail the build by default; run in CI with --strict to exit non-zero on hits.
 
 Usage:
-  uv run python scripts/check_gnn_doc_patterns.py
-  uv run python scripts/check_gnn_doc_patterns.py --strict
+  uv run --extra dev python scripts/check_gnn_doc_patterns.py
+  uv run --extra dev python scripts/check_gnn_doc_patterns.py --strict
 """
 
 from __future__ import annotations

@@ -24,6 +24,7 @@ from .markdown import (
 
 
 def _dimension_count(item: dict[str, object]) -> int:
+    """Handle dimension count for internal callers."""
     dims = item.get("dims", [])
     return len(dims) if isinstance(dims, list) else 0
 
@@ -31,6 +32,7 @@ def _dimension_count(item: dict[str, object]) -> int:
 def build_gui(
     markdown_text: str, export_path: Path, logger: Optional[logging.Logger] = None
 ) -> "gr.Blocks":
+    """Build gui."""
     if gr is None:
         raise RuntimeError("Gradio not available")
 
@@ -40,6 +42,7 @@ def build_gui(
     initial_selected = initial_names[0] if initial_names else ""
 
     def _vals_for(name: str) -> Any:
+        """Handle vals for for internal callers."""
         for e in initial_items:
             if str(e.get("name")) == name:
                 dims_value = e.get("dims", [])
@@ -149,25 +152,31 @@ def build_gui(
                 )
 
         def _split_states(s: str) -> list[str]:
+            """Handle split states for internal callers."""
             return [x.strip() for x in s.split(",") if x.strip()]
 
         def add_component(md: str, name: str, ctype: str, states_csv: str) -> str:
+            """Provide add component behavior."""
             return add_component_to_markdown(md, name, ctype, _split_states(states_csv))
 
         def replace_states(md: str, name: str, states_csv: str) -> str:
+            """Provide replace states behavior."""
             return update_component_states(
                 md, name, _split_states(states_csv), mode="replace"
             )
 
         def append_states(md: str, name: str, states_csv: str) -> str:
+            """Provide append states behavior."""
             return update_component_states(
                 md, name, _split_states(states_csv), mode="append"
             )
 
         def remove_component(md: str, name: str) -> str:
+            """Provide remove component behavior."""
             return remove_component_from_markdown(md, name)
 
         def save_md(md: str) -> Any:
+            """Save md."""
             with tempfile.NamedTemporaryFile(
                 mode="w", encoding="utf-8", dir=export_path.parent, delete=False
             ) as tmp_f:
@@ -246,19 +255,23 @@ def build_gui(
 
         # State Space actions
         def _compute_state_choices(md: str) -> list[str]:
+            """Compute state choices."""
             items = parse_state_space_from_markdown(md)
             return [str(i.get("name", "")) for i in items if i.get("name")]
 
         def refresh_states(md: str) -> Any:
+            """Provide refresh states behavior."""
             return gr.update(choices=_compute_state_choices(md))
 
         def add_state(md: str, name: str, dims_csv: str, typ: str, comment: str) -> Any:
+            """Provide add state behavior."""
             dims = [int(x.strip()) for x in dims_csv.split(",") if x.strip().isdigit()]
             return add_state_space_entry(md, name, dims, typ or None, comment or None)
 
         def update_state(
             md: str, selected: str, name: str, dims_csv: str, typ: str, comment: str
         ) -> Any:
+            """Update state."""
             dims = [int(x.strip()) for x in dims_csv.split(",") if x.strip().isdigit()]
             return update_state_space_entry(
                 md,
@@ -270,6 +283,7 @@ def build_gui(
             )
 
         def remove_state(md: str, selected: str) -> Any:
+            """Provide remove state behavior."""
             if not selected:
                 return md
             return remove_state_space_entry(md, selected)
@@ -304,6 +318,7 @@ def build_gui(
         )
 
         def populate_fields(md: str, selected: str) -> Any:
+            """Provide populate fields behavior."""
             entries = parse_state_space_from_markdown(md)
             for e in entries:
                 if str(e.get("name")) == selected:
@@ -325,6 +340,7 @@ def build_gui(
         def update_state_live(
             md: str, selected: str, name: str, dims_csv: str, typ: str, comment: str
         ) -> Any:
+            """Update state live."""
             dims = [int(x.strip()) for x in dims_csv.split(",") if x.strip().isdigit()]
             new_md = update_state_space_entry(
                 md,

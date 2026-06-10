@@ -62,6 +62,7 @@ class DependencyAuditor:
     def __init__(
         self, project_root: Path, logger: Optional[logging.Logger] = None
     ) -> None:
+        """Initialize the instance."""
         self.project_root = project_root
         self.logger = logger or logging.getLogger(__name__)
         self.dependencies: Dict[str, DependencyInfo] = {}
@@ -514,6 +515,7 @@ class DependencyOptimizer:
     def __init__(
         self, project_root: Path, logger: Optional[logging.Logger] = None
     ) -> None:
+        """Initialize the instance."""
         self.project_root = project_root
         self.logger = logger or logging.getLogger(__name__)
 

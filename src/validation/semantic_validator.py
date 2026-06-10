@@ -396,6 +396,7 @@ class SemanticValidator:
         path: set[Any] = set()
 
         def has_cycle(node: Any) -> Any:
+            """Return whether cycle."""
             if node in path:
                 return True
             if node in visited:

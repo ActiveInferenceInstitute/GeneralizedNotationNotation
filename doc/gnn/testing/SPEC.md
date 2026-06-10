@@ -24,7 +24,7 @@ Complements `src/tests/` which holds the actual test suite.
 ## Running
 ```bash
 uv sync --extra dev
-uv run pytest src/tests/ -q --tb=no \
+uv run --extra dev python -m pytest src/tests/ -q --tb=no \
   --ignore=src/tests/llm/test_llm_ollama.py \
   --ignore=src/tests/llm/test_llm_ollama_integration.py
 ```

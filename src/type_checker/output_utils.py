@@ -15,12 +15,14 @@ from typing import Any, Dict, List, Optional
 
 
 def write_markdown(path: Path, content: str) -> Any:
+    """Write markdown."""
     path.parent.mkdir(parents=True, exist_ok=True)
     with open(path, "w") as f:
         f.write(content)
 
 
 def write_json(path: Path, data: Any) -> Any:
+    """Write json."""
     path.parent.mkdir(parents=True, exist_ok=True)
     with open(path, "w") as f:
         json.dump(data, f, indent=2)
@@ -29,6 +31,7 @@ def write_json(path: Path, data: Any) -> Any:
 def write_csv(
     path: Path, rows: List[List[Any]], header: Optional[List[str]] = None
 ) -> Any:
+    """Write csv."""
     path.parent.mkdir(parents=True, exist_ok=True)
     with open(path, "w", newline="") as f:
         writer = csv.writer(f)

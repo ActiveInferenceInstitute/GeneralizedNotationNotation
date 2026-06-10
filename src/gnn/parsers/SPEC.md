@@ -28,4 +28,4 @@
 
 ## Testing
 
-Primary coverage lives under `src/tests/test_gnn*.py` and `src/gnn/testing/`. Run e.g. `uv run pytest src/tests/gnn/test_gnn_parsing.py -q`.
+Primary coverage lives under `src/tests/test_gnn*.py` and `src/gnn/testing/`. Run e.g. `uv run --extra dev python -m pytest src/tests/gnn/test_gnn_parsing.py -q`.

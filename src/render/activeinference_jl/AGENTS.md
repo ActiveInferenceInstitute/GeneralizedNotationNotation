@@ -26,5 +26,5 @@ Render validated GNN POMDP specs to executable ActiveInference.jl scripts.
 
 ```bash
 julia --startup-file=no -e 'using ActiveInference, JSON, Distributions, StatsBase'
-uv run pytest src/tests/pipeline/test_pomdp_gridworld_cross_framework.py -q --tb=short
+uv run --extra dev python -m pytest src/tests/pipeline/test_pomdp_gridworld_cross_framework.py -q --tb=short
 ```

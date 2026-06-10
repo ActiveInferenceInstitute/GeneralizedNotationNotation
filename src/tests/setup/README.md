@@ -7,5 +7,5 @@ This folder contains module-focused tests for setup validation and environment c
 Run:
 
 ```bash
-uv run pytest src/tests/setup/ -q
+uv run --extra dev python -m pytest src/tests/setup/ -q
 ```

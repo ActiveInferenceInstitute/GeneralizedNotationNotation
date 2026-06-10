@@ -279,7 +279,7 @@ output/4_model_registry_output/
 Measure on demand:
 
 ```bash
-uv run pytest src/tests/test_model_registry*.py \
+uv run --extra dev python -m pytest src/tests/test_model_registry*.py \
     --cov=src/model_registry --cov-report=term-missing
 ```
 ---

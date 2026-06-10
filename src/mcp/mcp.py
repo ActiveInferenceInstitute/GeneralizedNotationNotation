@@ -1557,15 +1557,18 @@ class _LazyMCP:
     _PROXY_ONLY: Any = frozenset()  # reserved for internal proxy state
 
     def _target(self) -> "MCP":
+        """Handle target for internal callers."""
         global _mcp_instance
         if _mcp_instance is None:
             _mcp_instance = MCP()
         return _mcp_instance
 
     def __getattr__(self, name: str) -> Any:
+        """Handle getattr for internal callers."""
         return getattr(self._target(), name)
 
     def __setattr__(self, name: str, value: Any) -> None:
+        """Handle setattr for internal callers."""
         if name in self._PROXY_ONLY:
             object.__setattr__(self, name, value)
             return
@@ -1707,9 +1710,11 @@ def register_tools(server: Any) -> Any:
     """Register core MCP introspection tools."""
 
     def list_core_tools() -> List[Dict[str, Any]]:
+        """Provide list core tools behavior."""
         return list_available_tools()
 
     def list_core_resources() -> List[Dict[str, Any]]:
+        """Provide list core resources behavior."""
         return list_available_resources()
 
     server.register_tool(

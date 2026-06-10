@@ -81,6 +81,7 @@ class LLMProcessor:
     """Minimal processor facade exposing methods expected by tests."""
 
     def analyze(self, content: str) -> Dict[str, Any]:
+        """Analyze operation."""
         return {
             "variables": extract_variables(content),
             "connections": extract_connections(content),
@@ -89,6 +90,7 @@ class LLMProcessor:
 
     # Methods expected by tests
     def analyze_model(self, model_data: Union[str, Dict[str, Any]]) -> Dict[str, Any]:
+        """Analyze model."""
         text = ""
         if isinstance(model_data, dict):
             text = model_data.get("content", "")
@@ -97,6 +99,7 @@ class LLMProcessor:
         return self.analyze(text)
 
     def generate_description(self, content: str) -> str:
+        """Generate description."""
         variables = [v.get("name", "var") for v in extract_variables(content)]
         return f"Model with {len(variables)} variables and {len(extract_connections(content))} connections"
 
@@ -105,6 +108,7 @@ class LLMAnalyzer:
     """Simple analyzer class exposing analysis helpers expected by tests."""
 
     def analyze_content(self, content: str) -> Dict[str, Any]:
+        """Analyze content."""
         return {
             "variables": extract_variables(content),
             "connections": extract_connections(content),
@@ -115,6 +119,7 @@ class LLMAnalyzer:
         }
 
     def extract_insights(self, content: str) -> Dict[str, Any]:
+        """Extract insights."""
         return perform_semantic_analysis(
             content, extract_variables(content), extract_connections(content)
         )

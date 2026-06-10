@@ -7,5 +7,5 @@ This folder contains module-focused tests for sonification, SAPF paths, and audi
 Run:
 
 ```bash
-uv run pytest src/tests/audio/ -q
+uv run --extra dev python -m pytest src/tests/audio/ -q
 ```

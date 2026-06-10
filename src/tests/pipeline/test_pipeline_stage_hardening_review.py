@@ -51,13 +51,17 @@ def test_pipeline_stage_hardening_review_lists_required_gates() -> None:
     text = REVIEW_PATH.read_text(encoding="utf-8")
 
     required_commands = (
-        "uv run ruff format --check src scripts",
-        "uv run ruff check src scripts",
-        "uv run mypy src --show-error-codes",
-        "uv run bandit -r src -c pyproject.toml -q",
-        "uv run python doc/development/docs_audit.py --strict --check-anchors --no-write",
-        "uv run pytest src/tests/pipeline/test_pomdp_gridworld_cross_framework.py -q --tb=short",
-        "uv run pytest src/tests/ -q --tb=no",
+        "uv run --extra dev ruff format --check src scripts",
+        "uv run --extra dev ruff check src scripts",
+        "uv run --extra dev mypy src --show-error-codes",
+        "uv run --extra dev bandit -r src -c pyproject.toml -q",
+        "uv run --extra dev python scripts/check_repo_terminology.py --strict",
+        "uv run --extra dev python scripts/check_maintained_doc_terms.py --strict",
+        "uv run --extra dev python doc/development/docs_audit.py --strict --check-anchors --no-write",
+        "uv run --extra dev python scripts/check_gnn_doc_patterns.py --strict",
+        "uv run --extra dev python -m pytest src/tests/pipeline/test_pomdp_gridworld_cross_framework.py -q --tb=short",
+        "uv run --extra dev python -m pytest --collect-only src/tests/ -q --tb=no",
+        "uv run --extra dev python -m pytest src/tests/ -q --tb=no",
     )
     for command in required_commands:
         assert command in text

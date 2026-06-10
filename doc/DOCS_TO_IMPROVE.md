@@ -6,7 +6,7 @@ This file explains how to find **maintained** documentation that still needs sub
 
 1. Run from the repository root:
 
-   `uv run python doc/development/docs_audit.py --strict`
+   `uv run --extra dev python doc/development/docs_audit.py --strict`
 
 2. Read the generated report:
 
@@ -18,7 +18,7 @@ That report lists broken relative links, AGENTS↔README pairing gaps, `doc/**/A
 
 Heading fragments in Markdown links are not validated in the default audit (only target **files** are). To approximate GitHub-style heading IDs:
 
-`uv run python doc/development/docs_audit.py --check-anchors`
+`uv run --extra dev python doc/development/docs_audit.py --check-anchors`
 
 Use `--strict --check-anchors` only when you intend to fix or tolerate anchor mismatches; many older links use short `#fragments` that do not match computed heading slugs.
 

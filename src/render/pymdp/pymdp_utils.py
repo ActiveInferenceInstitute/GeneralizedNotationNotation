@@ -23,6 +23,7 @@ def _numpy_array_to_string(arr: np.ndarray, indent: Any = 0) -> str:
 
     # Ensure floats are like "1.0", "2.5"
     def float_format_func(x: Any) -> Any:
+        """Provide float format func behavior."""
         if isinstance(x, float):
             return f"{x:.1f}" if x.is_integer() else str(x)
         return str(x)

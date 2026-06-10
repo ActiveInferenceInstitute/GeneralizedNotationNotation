@@ -371,6 +371,7 @@ def _resolve_render_output_dir(
     """
 
     def _if_nonempty(p: Path) -> Optional[Path]:
+        """Handle if nonempty for internal callers."""
         if p.exists() and any(p.rglob("*")):
             return p
         return None
@@ -1167,7 +1168,10 @@ def execute_single_script(
             return exec_result
 
         class ErrorResult:
+            """Provide ErrorResult behavior."""
+
             def __init__(self, returncode: int, stdout: str, stderr: str) -> None:
+                """Initialize the instance."""
                 self.returncode = returncode
                 self.stdout = stdout
                 self.stderr = stderr

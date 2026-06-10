@@ -292,7 +292,7 @@ System Check → UV Environment Creation → UV Sync (pyproject.toml → uv.lock
 Measure on demand — this file does not pin a number:
 
 ```bash
-uv run pytest src/tests/test_setup*.py --cov=src/setup --cov-report=term-missing
+uv run --extra dev python -m pytest src/tests/test_setup*.py --cov=src/setup --cov-report=term-missing
 ```
 
 ### Key Test Scenarios

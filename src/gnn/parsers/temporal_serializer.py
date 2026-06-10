@@ -249,6 +249,7 @@ class TLASerializer(TemporalSerializer):
     """Specific serializer for TLA+ format."""
 
     def __init__(self) -> None:
+        """Initialize the instance."""
         super().__init__(target_format="tla")
 
 
@@ -256,4 +257,5 @@ class AgdaSerializer(TemporalSerializer):
     """Specific serializer for Agda format."""
 
     def __init__(self) -> None:
+        """Initialize the instance."""
         super().__init__(target_format="agda")

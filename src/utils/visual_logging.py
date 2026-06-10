@@ -93,6 +93,7 @@ class VisualLogger:
     """Enhanced visual logger with accessibility features."""
 
     def __init__(self, name: str, config: Optional[VisualConfig] = None) -> None:
+        """Initialize the instance."""
         self.name = name
         self.config = config or VisualConfig()
         self.console = Console() if RICH_AVAILABLE else None

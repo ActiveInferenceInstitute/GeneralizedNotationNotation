@@ -30,5 +30,5 @@ Generated plots include belief evolution, belief heatmaps, observation/state tra
 ## Verification
 
 ```bash
-uv run pytest src/tests/pipeline/test_pomdp_gridworld_cross_framework.py -q --tb=short
+uv run --extra dev python -m pytest src/tests/pipeline/test_pomdp_gridworld_cross_framework.py -q --tb=short
 ```

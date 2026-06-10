@@ -271,7 +271,7 @@ GNN Files → Analysis → Statistical Reports → Model Comparisons → Optimiz
 Measure on demand:
 
 ```bash
-uv run pytest src/tests/test_analysis*.py \
+uv run --extra dev python -m pytest src/tests/test_analysis*.py \
     --cov=src/analysis --cov-report=term-missing
 ```
 ### Key Test Scenarios

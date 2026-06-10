@@ -201,15 +201,19 @@ def register_tools(mcp_instance: Any) -> None:
 
     # Named wrappers keep MCP audit checks happy (no functools.partial names).
     def get_pipeline_steps_tool() -> Any:
+        """Return pipeline steps tool."""
         return get_pipeline_steps(mcp_instance)
 
     def get_pipeline_status_tool() -> Any:
+        """Return pipeline status tool."""
         return get_pipeline_status(mcp_instance)
 
     def validate_pipeline_dependencies_tool() -> Any:
+        """Validate pipeline dependencies tool."""
         return validate_pipeline_dependencies(mcp_instance)
 
     def get_pipeline_config_info_tool() -> Any:
+        """Return pipeline config info tool."""
         return get_pipeline_config_info(mcp_instance)
 
     # Register tools

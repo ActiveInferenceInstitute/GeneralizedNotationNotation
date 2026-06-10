@@ -57,9 +57,9 @@ def test_audio_backend_missing():
 
 ```bash
 # Selective execution by marker
-PYTHONPATH=src python -m pytest src/tests/ -m fast -q
-PYTHONPATH=src python -m pytest src/tests/ -m "not slow" -q
-PYTHONPATH=src python -m pytest src/tests/ -m "integration and not slow" -q
+uv run --extra dev python -m pytest src/tests/ -m fast -q
+uv run --extra dev python -m pytest src/tests/ -m "not slow" -q
+uv run --extra dev python -m pytest src/tests/ -m "integration and not slow" -q
 ```
 
 ## Fixture Convention (conftest.py)
@@ -148,7 +148,7 @@ omit = ["src/tests/*", "src/**/__pycache__/*"]
 Generate HTML report:
 
 ```bash
-PYTHONPATH=src python -m pytest src/tests/ \
+uv run --extra dev python -m pytest src/tests/ \
   --cov=src --cov-report=html --cov-report=term-missing -q
 # → htmlcov/index.html
 ```

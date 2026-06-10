@@ -13,17 +13,17 @@ From the repository root:
 
 ```bash
 # Scan maintained Markdown for broken relative links (generated output/ is skipped)
-uv run python doc/development/docs_audit.py
+uv run --extra dev python doc/development/docs_audit.py
 # Fail the shell if any issues (for CI / pre-commit)
-uv run python doc/development/docs_audit.py --strict
+uv run --extra dev python doc/development/docs_audit.py --strict
 # With --strict and failures, full per-issue lines go to stderr by default (fix loop). Use -q for summary only.
-uv run python doc/development/docs_audit.py --strict -q
+uv run --extra dev python doc/development/docs_audit.py --strict -q
 # Optional: validate #fragments against heading slugs (heuristic; can be noisy)
-uv run python doc/development/docs_audit.py --check-anchors
+uv run --extra dev python doc/development/docs_audit.py --check-anchors
 # Optional: log markdown file count and other diagnostics to stderr
-uv run python doc/development/docs_audit.py --verbose
+uv run --extra dev python doc/development/docs_audit.py --verbose
 # Check maintained docs for stale PyMDP and policy terminology
-uv run python scripts/check_maintained_doc_terms.py --strict
+uv run --extra dev python scripts/check_maintained_doc_terms.py --strict
 ```
 
 Writes [docs_audit_report.md](docs_audit_report.md): broken relative links, `AGENTS.md`→`SPEC.md` consistency, `src/` dirs with `.py` but no `AGENTS.md`, maintained `doc/` dirs missing `AGENTS.md` or `README.md`, `AGENTS.md`/`README.md` pairing under `src/`, `doc/`, `.github/`, and the repo root, and **`doc/**/AGENTS.md` orientation** (`## Overview`, `## Purpose`, or `## Directory Identity`; substantive `## Purpose` when present). Generated snapshots under `doc/` are excluded from pairing where noted. After moving files under `doc/gnn/`, run the rewriter (idempotent on already-fixed links):
@@ -117,7 +117,7 @@ src/
 ├── utils/                   # Shared utilities
 │   ├── argument_utils.py    # CLI/pipeline argument model
 │   └── pipeline_template.py # Thin orchestrator wrapper
-└── tests/                   # 170 pytest files, mirrored by module
+└── tests/                   # 171 pytest files, mirrored by module
 ```
 
 ### Design Patterns
@@ -349,14 +349,14 @@ class TestGNNParser:
 python src/main.py --only-steps 3
 
 # Run specific test categories
-pytest src/tests/unit/ -v
-pytest src/tests/integration/ -v
+uv run --extra dev python -m pytest src/tests/unit/ -v
+uv run --extra dev python -m pytest src/tests/integration/ -v
 
 # Run with coverage
 pytest --cov=src --cov-report=html:output/coverage
 
 # Run performance tests
-pytest src/tests/performance/ --benchmark-only
+uv run --extra dev python -m pytest src/tests/performance/ --benchmark-only
 ```
 
 ### Adding New Features
@@ -411,10 +411,10 @@ pytest src/tests/performance/ --benchmark-only
 - Maintain CHANGELOG.md with clear categories
 
 ### Quality Gates
-1. Formatting and lint pass (`uv run ruff format --check src scripts`; `uv run ruff check src scripts`)
+1. Formatting and lint pass (`uv run --extra dev ruff format --check src scripts`; `uv run --extra dev ruff check src scripts`)
 2. Terminology and documentation audits pass (`scripts/check_repo_terminology.py`, `scripts/check_maintained_doc_terms.py`, `doc/development/docs_audit.py`, `scripts/check_gnn_doc_patterns.py`)
-3. Type checking passes (`uv run mypy src --show-error-codes`)
-4. Security scan passes (`uv run bandit -r src -c pyproject.toml -q`)
+3. Type checking passes (`uv run --extra dev mypy src --show-error-codes`)
+4. Security scan passes (`uv run --extra dev bandit -r src -c pyproject.toml -q`)
 5. Focused PyMDP/POMDP tests, collect-only, and the full suite command of record pass
 
 ### Release Checklist
@@ -461,7 +461,7 @@ python src/mcp/cli.py --debug list-tools
 pytest -vvv --pdb src/tests/unit/test_specific.py
 
 # Type checking
-uv run mypy src --show-error-codes
+uv run --extra dev mypy src --show-error-codes
 ```
 
 ## Contributing Guidelines

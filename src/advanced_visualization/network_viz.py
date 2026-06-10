@@ -48,7 +48,7 @@ def _generate_3d_visualization(
     try:
         if MATPLOTLIB_AVAILABLE and plt and np:
             fig = plt.figure(figsize=(10, 8))
-            ax = fig.add_subplot(111, projection="3d")
+            ax = cast(Any, fig.add_subplot(111, projection="3d"))
 
             variables = model_data.get("variables", [])
             connections = model_data.get("connections", [])

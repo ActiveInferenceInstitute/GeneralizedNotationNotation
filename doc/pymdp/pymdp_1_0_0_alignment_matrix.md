@@ -53,7 +53,7 @@ integration points in this repository.
 Run:
 
 ```bash
-uv run pytest \
+uv run --extra dev python -m pytest \
     src/tests/execute/test_pymdp_1_0_0_upstream_api.py \
     src/tests/execute/test_pymdp_contracts.py \
     src/tests/execute/test_execute_pymdp_integration.py \

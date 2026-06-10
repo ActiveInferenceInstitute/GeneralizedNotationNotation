@@ -105,6 +105,7 @@ class PyMDPVisualizer:
         title: str = "Discrete State Sequence",
         save_path: Optional[Union[Path, str]] = None,
     ) -> Any:
+        """Plot discrete states."""
         fig = self.visualize_discrete_states(state_sequence, num_states, title)
         if fig and save_path:
             Path(save_path).parent.mkdir(parents=True, exist_ok=True)
@@ -118,6 +119,7 @@ class PyMDPVisualizer:
         title: str = "Belief Evolution",
         save_path: Optional[Union[Path, str]] = None,
     ) -> Any:
+        """Plot belief evolution."""
         fig = self.visualize_belief_evolution(belief_traces, title)
         if fig and save_path:
             Path(save_path).parent.mkdir(parents=True, exist_ok=True)
@@ -131,6 +133,7 @@ class PyMDPVisualizer:
         title: str = "Performance Metrics",
         save_path: Optional[Union[Path, str]] = None,
     ) -> Any:
+        """Plot performance metrics."""
         fig = self.visualize_performance_metrics(metrics, title)
         if fig and save_path:
             Path(save_path).parent.mkdir(parents=True, exist_ok=True)
@@ -146,6 +149,7 @@ class PyMDPVisualizer:
         save_path: Optional[Union[Path, str]] = None,
     ) -> Any:
         # Infer number of actions if not provided
+        """Plot action sequence."""
         if num_actions is None:
             try:
                 num_actions = (
@@ -163,6 +167,7 @@ class PyMDPVisualizer:
         title: str = "Observation Sequence",
         save_path: Optional[Union[Path, str]] = None,
     ) -> Any:
+        """Plot observation sequence."""
         return self.plot_discrete_states(
             observation_sequence, num_observations, title, save_path
         )
@@ -174,6 +179,7 @@ class PyMDPVisualizer:
         save_path: Optional[Union[Path, str]] = None,
     ) -> Any:
         # Create a combined visualization: states + belief + performance
+        """Plot episode summary."""
         metrics: dict[str, Any] = {
             "actions": episode_trace.get("actions", []),
             "belief_confidence": [

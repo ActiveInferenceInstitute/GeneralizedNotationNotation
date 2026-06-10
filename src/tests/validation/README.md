@@ -7,5 +7,5 @@ This folder contains module-focused tests for semantic validation and consistenc
 Run:
 
 ```bash
-uv run pytest src/tests/validation/ -q
+uv run --extra dev python -m pytest src/tests/validation/ -q
 ```

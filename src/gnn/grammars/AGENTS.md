@@ -24,5 +24,5 @@ See **[README.md](README.md)** for Unicode, comment, and Active Inference variab
 Grammar-related behavior is covered indirectly via parser tests, e.g.:
 
 ```bash
-uv run pytest src/tests/gnn/test_gnn_parsing.py src/tests/gnn/test_gnn_parsers_common.py -q
+uv run --extra dev python -m pytest src/tests/gnn/test_gnn_parsing.py src/tests/gnn/test_gnn_parsers_common.py -q
 ```

@@ -165,6 +165,7 @@ def create_standardized_pipeline_script(
     """
 
     def run_standardized_script() -> Any:
+        """Run standardized script."""
         try:
             _preload_step_imports(step_specific_imports)
             parsed_args = _parse_step_args(

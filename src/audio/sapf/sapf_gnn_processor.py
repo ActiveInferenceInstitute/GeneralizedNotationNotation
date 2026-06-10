@@ -19,6 +19,7 @@ class SAPFGNNProcessor:
     """
 
     def __init__(self) -> None:
+        """Initialize the instance."""
         self.base_frequency = 261.63  # C4
         self.sample_rate = 44100
         self.default_duration = 10.0

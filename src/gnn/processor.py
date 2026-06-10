@@ -15,6 +15,7 @@ from gnn.discovery import is_model_source_path
 
 
 def _process_single_gnn_file(file_path: Path) -> Dict[str, Any]:
+    """Process single gnn file."""
     try:
         content = file_path.read_text(encoding="utf-8")
         return {
@@ -68,6 +69,7 @@ def process_gnn_directory_lightweight(
         }
 
         def record_file_result(file_result: Dict[str, Any]) -> None:
+            """Provide record file result behavior."""
             error_info = file_result.get("error")
             if error_info:
                 results["errors"].append(error_info)

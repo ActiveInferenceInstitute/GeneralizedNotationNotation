@@ -55,6 +55,7 @@ def _normalise_current_simulation_payload(payload: Dict[str, Any]) -> Dict[str, 
 def _load_current_schema_from_impl_dir(
     implementation_dir: Any, expected_schema: str
 ) -> Dict[str, Any] | None:
+    """Load current schema from impl dir."""
     if not implementation_dir:
         return None
     impl_path = Path(str(implementation_dir))

@@ -469,7 +469,7 @@ JAX Code Generation → Device Selection → Hardware Validation → JIT Compila
 Measure on demand:
 
 ```bash
-uv run pytest src/tests/test_jax*.py \
+uv run --extra dev python -m pytest src/tests/test_jax*.py \
     --cov=src/execute/jax --cov-report=term-missing
 ```
 ### Key Test Scenarios
@@ -482,10 +482,10 @@ uv run pytest src/tests/test_jax*.py \
 ### Test Commands
 ```bash
 # Run JAX execution tests
-pytest src/tests/test_execute_jax*.py -v
+uv run --extra dev python -m pytest src/tests/test_execute_jax*.py -v
 
 # Run with coverage
-pytest src/tests/test_execute_jax*.py --cov=src/execute/jax --cov-report=term-missing
+uv run --extra dev python -m pytest src/tests/test_execute_jax*.py --cov=src/execute/jax --cov-report=term-missing
 ```
 
 ---

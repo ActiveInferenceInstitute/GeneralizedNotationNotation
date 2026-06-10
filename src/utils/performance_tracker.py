@@ -28,6 +28,7 @@ class PerformanceTracker:
     """Track performance metrics across pipeline steps."""
 
     def __init__(self) -> None:
+        """Initialize the instance."""
         self._metrics: Dict[str, List[Dict[str, Any]]] = {}
         self._lock = threading.Lock()
         self._memory_usage: List[float] = []
@@ -124,6 +125,7 @@ class _LazyPerformanceTracker:
     """Proxy that defers PerformanceTracker construction to first attribute access."""
 
     def __getattr__(self, name: str) -> Any:
+        """Handle getattr for internal callers."""
         return getattr(get_performance_tracker(), name)
 
 

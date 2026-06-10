@@ -42,6 +42,7 @@ class ScalaGNNParser(BaseGNNParser):
     """
 
     def __init__(self) -> None:
+        """Initialize the instance."""
         super().__init__()
         self.variable_patterns = {
             "case_class": re.compile(r"case class\s+(\w+)\s*\([^)]*\)"),

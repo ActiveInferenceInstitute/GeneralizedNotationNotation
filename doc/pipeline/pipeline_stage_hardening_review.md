@@ -59,21 +59,21 @@ Generated outputs remain under ignored output trees and are regenerated as evide
 Before publishing a hardening result, run:
 
 ```bash
-uv run ruff format --check src scripts
-uv run ruff check src scripts
-uv run mypy src --show-error-codes
-uv run bandit -r src -c pyproject.toml -q
-uv run python scripts/check_repo_terminology.py --strict
-uv run python scripts/check_maintained_doc_terms.py --strict
-uv run python doc/development/docs_audit.py --strict --check-anchors --no-write
-uv run python scripts/check_gnn_doc_patterns.py --strict
+uv run --extra dev ruff format --check src scripts
+uv run --extra dev ruff check src scripts
+uv run --extra dev mypy src --show-error-codes
+uv run --extra dev bandit -r src -c pyproject.toml -q
+uv run --extra dev python scripts/check_repo_terminology.py --strict
+uv run --extra dev python scripts/check_maintained_doc_terms.py --strict
+uv run --extra dev python doc/development/docs_audit.py --strict --check-anchors --no-write
+uv run --extra dev python scripts/check_gnn_doc_patterns.py --strict
 uv lock --check
 julia --startup-file=no -e 'using RxInfer, ActiveInference, JSON, Distributions, StatsBase'
-uv run pytest src/tests/pipeline/test_pomdp_gridworld_cross_framework.py -q --tb=short
-uv run pytest src/tests/analysis/test_analysis_post_simulation.py src/tests/analysis/test_analysis_overall.py -q --tb=short
-uv run pytest src/tests/execute/test_pymdp_contracts.py src/tests/execute/test_discrete_models_pymdp.py src/tests/visualization/test_visualization_matrices.py -q --tb=short
-uv run pytest --collect-only src/tests/ -q --tb=no --ignore=src/tests/llm/test_llm_ollama.py --ignore=src/tests/llm/test_llm_ollama_integration.py
-uv run pytest src/tests/ -q --tb=no --ignore=src/tests/llm/test_llm_ollama.py --ignore=src/tests/llm/test_llm_ollama_integration.py
+uv run --extra dev python -m pytest src/tests/pipeline/test_pomdp_gridworld_cross_framework.py -q --tb=short
+uv run --extra dev python -m pytest src/tests/analysis/test_analysis_post_simulation.py src/tests/analysis/test_analysis_overall.py -q --tb=short
+uv run --extra dev python -m pytest src/tests/execute/test_pymdp_contracts.py src/tests/execute/test_discrete_models_pymdp.py src/tests/visualization/test_visualization_matrices.py -q --tb=short
+uv run --extra dev python -m pytest --collect-only src/tests/ -q --tb=no --ignore=src/tests/llm/test_llm_ollama.py --ignore=src/tests/llm/test_llm_ollama_integration.py
+uv run --extra dev python -m pytest src/tests/ -q --tb=no --ignore=src/tests/llm/test_llm_ollama.py --ignore=src/tests/llm/test_llm_ollama_integration.py
 ```
 
 Ollama integration tests are run separately when a local daemon and model are available.

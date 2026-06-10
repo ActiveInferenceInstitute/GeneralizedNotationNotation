@@ -7,5 +7,5 @@ This folder contains module-focused and cross-step tests for orchestration, numb
 Run:
 
 ```bash
-uv run pytest src/tests/pipeline/ -q
+uv run --extra dev python -m pytest src/tests/pipeline/ -q
 ```

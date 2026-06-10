@@ -54,6 +54,7 @@ class ParseError(Exception):
         column: Optional[int] = None,
         source: Optional[str] = None,
     ) -> None:
+        """Initialize the instance."""
         self.message = message
         self.line = line
         self.column = column
@@ -165,6 +166,7 @@ class ASTNode:
     id: str = field(default_factory=lambda: str(uuid.uuid4()))
 
     def __post_init__(self) -> Any:
+        """Normalize fields after dataclass initialization."""
         if not self.node_type:
             self.node_type = self.__class__.__name__
 
@@ -195,6 +197,7 @@ class Variable(ASTNode):
     constraints: Dict[str, Any] = field(default_factory=dict)
 
     def __post_init__(self) -> Any:
+        """Normalize fields after dataclass initialization."""
         super().__post_init__()
         self.node_type = "Variable"
 
@@ -210,6 +213,7 @@ class Connection(ASTNode):
     description: Optional[str] = None
 
     def __post_init__(self) -> Any:
+        """Normalize fields after dataclass initialization."""
         super().__post_init__()
         self.node_type = "Connection"
 
@@ -224,6 +228,7 @@ class Parameter(ASTNode):
     description: Optional[str] = None
 
     def __post_init__(self) -> Any:
+        """Normalize fields after dataclass initialization."""
         super().__post_init__()
         self.node_type = "Parameter"
 
@@ -238,6 +243,7 @@ class Equation(ASTNode):
     description: Optional[str] = None
 
     def __post_init__(self) -> Any:
+        """Normalize fields after dataclass initialization."""
         super().__post_init__()
         self.node_type = "Equation"
 
@@ -252,6 +258,7 @@ class TimeSpecification(ASTNode):
     step_size: Optional[float] = None
 
     def __post_init__(self) -> Any:
+        """Normalize fields after dataclass initialization."""
         super().__post_init__()
         self.node_type = "TimeSpecification"
 
@@ -265,6 +272,7 @@ class OntologyMapping(ASTNode):
     description: Optional[str] = None
 
     def __post_init__(self) -> Any:
+        """Normalize fields after dataclass initialization."""
         super().__post_init__()
         self.node_type = "OntologyMapping"
 
@@ -278,6 +286,7 @@ class Section(ASTNode):
     raw_content: Optional[str] = None
 
     def __post_init__(self) -> Any:
+        """Normalize fields after dataclass initialization."""
         super().__post_init__()
         self.node_type = "Section"
 
@@ -466,6 +475,7 @@ class PrintVisitor(ASTVisitor):
     """Visitor that prints the AST structure."""
 
     def __init__(self, indent: int = 0) -> None:
+        """Initialize the instance."""
         self.indent = indent
 
     def visit(self, node: ASTNode) -> str:
@@ -566,6 +576,7 @@ class BaseGNNParser(ABC):
     """Abstract base class for GNN parsers."""
 
     def __init__(self) -> None:
+        """Initialize the instance."""
         self.current_file: Optional[str] = None
         self.current_line: int = 0
         self.current_column: int = 0

@@ -372,7 +372,7 @@ GNN Model → Spectral Mapping → FFT Analysis → Effects Processing → IFFT 
 Measure on demand:
 
 ```bash
-uv run pytest src/tests/test_sapf*.py \
+uv run --extra dev python -m pytest src/tests/test_sapf*.py \
     --cov=src/audio/sapf --cov-report=term-missing
 ```
 ### Key Test Scenarios
@@ -385,10 +385,10 @@ uv run pytest src/tests/test_sapf*.py \
 ### Test Commands
 ```bash
 # Run SAPF-specific tests
-pytest src/tests/test_audio_sapf*.py -v
+uv run --extra dev python -m pytest src/tests/test_audio_sapf*.py -v
 
 # Run with coverage
-pytest src/tests/test_audio_sapf*.py --cov=src/audio/sapf --cov-report=term-missing
+uv run --extra dev python -m pytest src/tests/test_audio_sapf*.py --cov=src/audio/sapf --cov-report=term-missing
 ```
 
 ---

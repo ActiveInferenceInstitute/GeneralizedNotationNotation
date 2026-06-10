@@ -755,6 +755,7 @@ def gnn_connections_to_discopy_diagram(
     assignment_pattern = re.compile(assignment_pattern_str)
 
     def parse_vars_from_group(group_str: str | None) -> list[str]:
+        """Parse vars from group."""
         if not group_str:
             return []
         # Handles cases where the string might already be clean or needs splitting.
@@ -991,6 +992,7 @@ def gnn_connections_to_discopy_matrix_diagram(
     assignment_pattern = re.compile(assignment_pattern_str)
 
     def parse_vars_from_group(group_str: str | None) -> list[str]:
+        """Parse vars from group."""
         if not group_str:
             return []
         return [v.strip() for v in group_str.split(",") if v.strip()]
@@ -1552,6 +1554,7 @@ def gnn_file_to_discopy_matrix_diagram(
                     def _key_provider_impl(
                         name_suffix: str, _jrm: Any = jax_random_module_local
                     ) -> Any:
+                        """Handle key provider impl for internal callers."""
                         hashed_suffix = hash(name_suffix) & ((1 << 32) - 1)
                         return _jrm.fold_in(
                             base_key, hashed_suffix

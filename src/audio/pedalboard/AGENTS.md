@@ -437,7 +437,7 @@ GNN Model → Effects Mapping → Chain Creation → Audio Processing → Output
 Measure on demand:
 
 ```bash
-uv run pytest src/tests/test_pedalboard*.py \
+uv run --extra dev python -m pytest src/tests/test_pedalboard*.py \
     --cov=src/audio/pedalboard --cov-report=term-missing
 ```
 ### Key Test Scenarios
@@ -450,10 +450,10 @@ uv run pytest src/tests/test_pedalboard*.py \
 ### Test Commands
 ```bash
 # Run Pedalboard-specific tests
-pytest src/tests/test_audio_pedalboard*.py -v
+uv run --extra dev python -m pytest src/tests/test_audio_pedalboard*.py -v
 
 # Run with coverage
-pytest src/tests/test_audio_pedalboard*.py --cov=src/audio/pedalboard --cov-report=term-missing
+uv run --extra dev python -m pytest src/tests/test_audio_pedalboard*.py --cov=src/audio/pedalboard --cov-report=term-missing
 ```
 
 ---

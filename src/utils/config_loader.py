@@ -82,6 +82,7 @@ class OntologyConfig:
     )
 
     def __post_init__(self) -> Any:
+        """Normalize fields after dataclass initialization."""
         if isinstance(self.terms_file, str):
             self.terms_file = Path(self.terms_file)
 

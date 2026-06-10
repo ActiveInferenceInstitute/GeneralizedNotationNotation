@@ -80,6 +80,7 @@ _FRAMEWORK_COLORS: dict[str, Any] = {
 
 
 def _get_color(framework: str) -> str:
+    """Return color."""
     return cast("str", _FRAMEWORK_COLORS.get(framework, "#AAAAAA"))
 
 
@@ -129,6 +130,7 @@ class SweepVisualizer:
         logger: Optional[logging.Logger] = None,
         gnn_format_statistics: Optional[Dict[str, Any]] = None,
     ) -> None:
+        """Initialize the instance."""
         self.records = records
         self.output_dir = Path(output_dir)
         self.output_dir.mkdir(parents=True, exist_ok=True)
@@ -1591,7 +1593,7 @@ class SweepVisualizer:
 
         fig = plt.figure(figsize=(12, 10))
         fig.patch.set_facecolor(_STYLE["bg_color"])
-        ax = fig.add_subplot(111, projection="3d")
+        ax = cast(Any, fig.add_subplot(111, projection="3d"))
         ax.set_facecolor(_STYLE["bg_color"])
 
         # Mask NaN for surface plot

@@ -8,6 +8,7 @@ class ASN1Serializer(BaseGNNSerializer):
     """Serializer for ASN.1 format."""
 
     def __init__(self) -> None:
+        """Initialize the instance."""
         super().__init__()
         self.format_name = "asn1"
 

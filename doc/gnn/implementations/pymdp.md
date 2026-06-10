@@ -79,7 +79,7 @@ diagnostics instead of trying to recover flat traces.
 ## Verification
 
 ```bash
-uv run pytest \
+uv run --extra dev python -m pytest \
     src/tests/execute/test_pymdp_contracts.py \
     src/tests/execute/test_discrete_models_pymdp.py \
     src/tests/analysis/test_analysis_post_simulation.py \

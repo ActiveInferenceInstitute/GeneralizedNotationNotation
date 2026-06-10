@@ -115,6 +115,7 @@ class Dispatcher:
             # Context switch to a remote function with robust retries
             @ray.remote(max_retries=self.max_retries, retry_exceptions=True)
             def _remote_execute(script_info: Any, kwargs_dict: Any) -> Any:
+                """Handle remote execute for internal callers."""
                 return execute_fn(script_info, **kwargs_dict)
 
             futures = [_remote_execute.remote(info, kwargs) for info in script_infos]
@@ -148,6 +149,7 @@ class Dispatcher:
 
             @ray.remote(max_retries=self.max_retries, retry_exceptions=True)
             def _remote_eval(params: Any) -> Any:
+                """Handle remote eval for internal callers."""
                 return model_fn(**params)
 
             futures = [_remote_eval.remote(p) for p in param_grid]

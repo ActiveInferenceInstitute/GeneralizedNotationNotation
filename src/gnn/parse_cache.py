@@ -24,6 +24,7 @@ class ParseCache:
     """
 
     def __init__(self, cache_dir: Optional[Path] = None) -> None:
+        """Initialize the instance."""
         self.cache_dir = cache_dir or Path(".parse_cache")
         self.cache_dir.mkdir(parents=True, exist_ok=True)
         self._stats = {"hits": 0, "misses": 0}

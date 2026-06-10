@@ -546,6 +546,7 @@ class WebsiteGenerator:
     """Generates a premium multi-page static HTML website from pipeline artifacts."""
 
     def __init__(self) -> None:
+        """Initialize the instance."""
         self.template_dir = Path(__file__).parent / "templates"
         self.static_dir = Path(__file__).parent / "static"
 
@@ -626,6 +627,7 @@ class WebsiteGenerator:
         assets_dir: Path,
         user_data: dict,
     ) -> dict:
+        """Collect all data."""
         data: dict = {
             "p_root": p_root,
             "output_dir": output_dir,
@@ -781,6 +783,7 @@ class WebsiteGenerator:
     # ── Page generators ─────────────────────────────────────────────────────
 
     def _page_index(self, data: dict) -> str:
+        """Handle page index for internal callers."""
         n_ok = sum(1 for s in data["step_statuses"].values() if s == "ok")
         n_steps = len(_PIPELINE_STEPS)
         n_files = data["processed_files"]
@@ -845,6 +848,7 @@ class WebsiteGenerator:
         return _page("Dashboard", "index", body)
 
     def _page_pipeline(self, data: dict) -> str:
+        """Handle page pipeline for internal callers."""
         rows = ""
         for step_num, step_name, step_desc in _PIPELINE_STEPS:
             status = data["step_statuses"].get(step_num, "pending")
@@ -878,6 +882,7 @@ class WebsiteGenerator:
         return _page("Pipeline", "pipeline", body)
 
     def _page_gnn_files(self, data: dict) -> str:
+        """Handle page gnn files for internal callers."""
         if not data["gnn_files"]:
             content = '<div class="card"><p>No GNN source files found.</p></div>'
         else:
@@ -906,6 +911,7 @@ class WebsiteGenerator:
         return _page("GNN Files", "gnn_files", body)
 
     def _page_analysis(self, data: dict) -> str:
+        """Handle page analysis for internal callers."""
         if not data["analysis"]:
             inner = '<div class="card"><p>No analysis results found. Run step 16 (Analysis) to generate results.</p></div>'
         else:
@@ -933,6 +939,7 @@ class WebsiteGenerator:
         return _page("Analysis", "analysis", body)
 
     def _page_visualization(self, data: dict) -> str:
+        """Handle page visualization for internal callers."""
         if not data["visualizations"]:
             inner = '<div class="card"><p>No visualizations found. Run steps 8–9 to generate visualizations.</p></div>'
         else:
@@ -968,6 +975,7 @@ class WebsiteGenerator:
         return _page("Visualizations", "visualization", body)
 
     def _page_reports(self, data: dict) -> str:
+        """Handle page reports for internal callers."""
         if not data["reports"]:
             inner = '<div class="card"><p>No report artifacts found in pipeline output directories.</p></div>'
         else:
@@ -997,6 +1005,7 @@ class WebsiteGenerator:
         return _page("Reports", "reports", body)
 
     def _page_mcp(self, data: dict) -> str:
+        """Handle page mcp for internal callers."""
         tools = data["mcp_tools"]
         if not tools:
             by_mod_html = '<div class="card"><p>No MCP tools registered. Run step 21 (MCP Processing) to register tools.</p></div>'

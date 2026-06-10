@@ -84,6 +84,7 @@ def execute_command_streaming(
 
         # Reader threads
         def read_stream(stream: Any, is_stderr: Any) -> Any:
+            """Read stream."""
             try:
                 for line in iter(stream.readline, ""):
                     if not line:

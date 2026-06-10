@@ -380,7 +380,7 @@ Pipeline Results → Report Aggregation → Data Analysis → Format Generation 
 Measure on demand:
 
 ```bash
-uv run pytest src/tests/test_report*.py \
+uv run --extra dev python -m pytest src/tests/test_report*.py \
     --cov=src/report --cov-report=term-missing
 ```
 ### Key Test Scenarios

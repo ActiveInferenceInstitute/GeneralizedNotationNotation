@@ -185,14 +185,14 @@ graph TD
   `input/config.yaml`).
 - **MCP registration**: `discover_modules` walks `src/*/mcp.py` on startup; see
   `src/mcp/processor.py` for the worker pool configuration.
-- **Tests command of record**: `uv sync --extra dev && uv run pytest src/tests/ -q
+- **Tests command of record**: `uv run --extra dev python -m pytest src/tests/ -q
   --tb=no --ignore=src/tests/llm/test_llm_ollama.py
   --ignore=src/tests/llm/test_llm_ollama_integration.py`. Re-include the two Ollama files
   when `ollama` is installed and reachable.
-- **Current test inventory (2026-05-25)**: 170 `test_*.py` files under `src/tests/`;
-  the command-of-record collect pass with Ollama integration tests ignored collected 2,284 tests.
-  Fresh full suite with the same Ollama integration excludes passed on 2026-05-25:
-  2,276 passed, 7 skipped, 1 xpassed in 813.52s.
+- **Current test inventory (2026-06-09)**: 171 `test_*.py` files under `src/tests/`;
+  the command-of-record collect pass with Ollama integration tests ignored collected 2,296 tests.
+  Latest recorded full suite with the same Ollama integration excludes passed on 2026-06-09:
+  2,281 passed, 14 skipped, 1 xfailed in 744.50s.
 - All 25 orchestrator scripts comply with the <150 line thin orchestrator pattern.
 - Maintained source/test documentation coverage is enforced by `doc/development/docs_audit.py --strict`.
 
@@ -323,7 +323,7 @@ python src/2_tests.py --comprehensive
 ### Run Module-Specific Tests
 
 ```bash
-pytest src/tests/test_[module]*.py -v
+uv run --extra dev python -m pytest src/tests/test_[module]*.py -v
 ```
 
 ### Check Coverage
@@ -341,7 +341,7 @@ pytest --cov=src --cov-report=term-missing
 
 ---
 
-**Last Updated**: 2026-05-25
+**Last Updated**: 2026-06-09
 **Pipeline Version**: 1.6.0
 **Total Steps**: 25 (0-24)
 **Status**: Maintained

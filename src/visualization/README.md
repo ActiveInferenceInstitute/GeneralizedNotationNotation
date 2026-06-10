@@ -200,7 +200,7 @@ Failures in network, matrix, or combined branches are isolated per subsection. `
 
 ## Tests
 
-`uv run pytest src/tests/test_visualization_*.py -v` — full suite `uv run pytest src/tests/ -v`.
+`uv run --extra dev python -m pytest src/tests/test_visualization_*.py -v` — full suite `uv run --extra dev python -m pytest src/tests/ -v`.
 
 ## Dependencies
 

@@ -29,6 +29,7 @@ class VisualizationCache:
     max_cache_size_mb: int = 500
 
     def __post_init__(self) -> Any:
+        """Normalize fields after dataclass initialization."""
         self.cache_dir.mkdir(parents=True, exist_ok=True)
         self.metadata_file = self.cache_dir / "cache_metadata.json"
         self._load_metadata()
@@ -208,6 +209,7 @@ class ParallelVisualizationProcessor:
     """Parallel processing for visualization tasks."""
 
     def __init__(self, max_workers: Optional[int] = None) -> None:
+        """Initialize the instance."""
         self.max_workers = max_workers or min(4, multiprocessing.cpu_count())
         self.logger = logging.getLogger(__name__)
 
@@ -312,6 +314,7 @@ class VisualizationOptimizer:
         enable_sampling: bool = True,
         enable_caching: bool = True,
     ) -> None:
+        """Initialize the instance."""
         self.enable_caching = enable_caching
         self.enable_sampling = enable_sampling
         self.logger = logging.getLogger(__name__)
@@ -442,6 +445,7 @@ def monitor_visualization_performance(func: Callable) -> Callable:
     """Decorator to monitor visualization performance."""
 
     def wrapper(*args: Any, **kwargs: Any) -> Any:
+        """Provide wrapper behavior."""
         start_time = time.time()
         start_memory = get_memory_usage()
 

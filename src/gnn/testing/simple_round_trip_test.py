@@ -33,10 +33,12 @@ class SimpleTestResult:
     test_time: float = 0.0
 
     def add_error(self, error: str) -> Any:
+        """Provide add error behavior."""
         self.errors.append(error)
         self.success = False
 
     def add_warning(self, warning: str) -> Any:
+        """Provide add warning behavior."""
         self.warnings.append(warning)
 
 

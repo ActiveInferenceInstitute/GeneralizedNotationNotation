@@ -7,5 +7,5 @@ This folder contains module-focused tests for GUI processing and Oxdraw integrat
 Run:
 
 ```bash
-uv run pytest src/tests/gui/ -q
+uv run --extra dev python -m pytest src/tests/gui/ -q
 ```

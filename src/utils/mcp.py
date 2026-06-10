@@ -290,18 +290,23 @@ def register_tools(mcp_instance: Any) -> Any:
 
     # Named wrappers keep MCP audit checks happy (no functools.partial names).
     def get_system_info_tool() -> Any:
+        """Return system info tool."""
         return get_system_info(mcp_instance)
 
     def get_environment_info_tool() -> Any:
+        """Return environment info tool."""
         return get_environment_info(mcp_instance)
 
     def get_file_info_tool(file_path: str) -> Any:
+        """Return file info tool."""
         return get_file_info(mcp_instance, file_path)
 
     def get_logging_info_tool() -> Any:
+        """Return logging info tool."""
         return get_logging_info(mcp_instance)
 
     def validate_dependencies_tool() -> Any:
+        """Validate dependencies tool."""
         return validate_dependencies(mcp_instance)
 
     # Register tools

@@ -37,6 +37,7 @@ class SweepReporter:
         statistics_json_name: str = "meta_statistics.json",
         gnn_format_statistics: Optional[Dict[str, Any]] = None,
     ) -> None:
+        """Initialize the instance."""
         self.records = records
         self.plot_paths = plot_paths
         self.output_dir = Path(output_dir)
@@ -197,6 +198,7 @@ class SweepReporter:
             avg_ps = f"{sum(per_step) / len(per_step):.2f}" if per_step else "—"
 
             def _fmt(v: Any) -> Any:
+                """Handle fmt for internal callers."""
                 return f"{v:.1f}s" if v < 60 else f"{v / 60:.1f}m"
 
             lines.append(

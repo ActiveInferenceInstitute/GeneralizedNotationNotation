@@ -7,5 +7,5 @@ This folder contains module-focused tests for analysis processing, empty-input h
 Run:
 
 ```bash
-uv run pytest src/tests/analysis/ -q
+uv run --extra dev python -m pytest src/tests/analysis/ -q
 ```

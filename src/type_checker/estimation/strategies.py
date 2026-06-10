@@ -231,9 +231,9 @@ def estimate_matrix_operation_costs(
 
     matrices: Dict[str, List[int]] = {}
     for var_name, var_info in variables.items():
-        dims = var_info.get("dimensions", [1])
-        if len(dims) >= 2:
-            int_dims = [_safe_dim_int(d) for d in dims]
+        raw_dims: Sequence[int | str] = var_info.get("dimensions", [1])
+        if len(raw_dims) >= 2:
+            int_dims = [_safe_dim_int(d) for d in raw_dims]
             matrices[var_name] = int_dims
 
     for edge in edges:
@@ -261,11 +261,14 @@ def estimate_matrix_operation_costs(
 
     for line in equations.split("\n"):
         if "^T" in line or "transpose" in line:
-            for matrix_name, dims in matrices.items():
+            for matrix_name, matrix_dims in matrices.items():
                 if matrix_name in line and (
                     f"{matrix_name}^T" in line or f"transpose({matrix_name})" in line
                 ):
-                    m, n = dims[0], dims[1] if len(dims) > 1 else 1
+                    m, n = (
+                        matrix_dims[0],
+                        matrix_dims[1] if len(matrix_dims) > 1 else 1,
+                    )
                     flops = m * n
                     costs["matrix_transpose"].append(
                         {
@@ -277,11 +280,11 @@ def estimate_matrix_operation_costs(
                     costs["total_matrix_flops"] += flops
 
         if "^-1" in line or "inv(" in line:
-            for matrix_name, dims in matrices.items():
+            for matrix_name, matrix_dims in matrices.items():
                 if matrix_name in line and (
                     f"{matrix_name}^-1" in line or f"inv({matrix_name})" in line
                 ):
-                    n = dims[0]
+                    n = matrix_dims[0]
                     flops = n**3
                     costs["matrix_inversion"].append(
                         {

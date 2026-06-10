@@ -7,5 +7,5 @@ This folder contains module-focused tests for integration processing and cross-m
 Run:
 
 ```bash
-uv run pytest src/tests/integration/ -q
+uv run --extra dev python -m pytest src/tests/integration/ -q
 ```

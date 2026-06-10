@@ -13,5 +13,5 @@ Meta-analysis helpers for Step 17 integration reporting.
 Run:
 
 ```bash
-uv run pytest src/tests/integration/ -q
+uv run --extra dev python -m pytest src/tests/integration/ -q
 ```

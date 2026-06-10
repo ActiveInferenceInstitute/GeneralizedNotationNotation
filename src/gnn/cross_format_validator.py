@@ -70,6 +70,7 @@ class CrossFormatValidator:
         gnn_module_path: Optional[Path] = None,
         enable_round_trip_testing: bool = False,
     ) -> None:
+        """Initialize the instance."""
         if gnn_module_path is None:
             gnn_module_path = Path(__file__).parent
 

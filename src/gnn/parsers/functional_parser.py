@@ -31,6 +31,7 @@ class HaskellGNNParser(BaseGNNParser):
     """Parser for Haskell functional specifications."""
 
     def __init__(self) -> None:
+        """Initialize the instance."""
         super().__init__()
         self.module_pattern = re.compile(
             r"module\s+([\w.]+)\s*(?:\([^)]*\))?\s*where", re.IGNORECASE
@@ -46,9 +47,11 @@ class HaskellGNNParser(BaseGNNParser):
         )
 
     def get_supported_extensions(self) -> List[str]:
+        """Return supported extensions."""
         return [".hs", ".lhs"]
 
     def parse_file(self, file_path: str) -> ParseResult:
+        """Parse file."""
         try:
             with open(file_path, "r", encoding="utf-8") as f:
                 content = f.read()
@@ -60,6 +63,7 @@ class HaskellGNNParser(BaseGNNParser):
 
     def parse_string(self, content: str) -> ParseResult:
         # First try to extract embedded JSON model data
+        """Parse string."""
         embedded_data = self._extract_embedded_json_data(content)
         if embedded_data:
             result = ParseResult(model=self.create_empty_model())

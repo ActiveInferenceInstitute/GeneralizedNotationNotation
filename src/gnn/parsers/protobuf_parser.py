@@ -36,10 +36,12 @@ class ProtobufGNNParser(BaseGNNParser):
     """Enhanced parser for Protocol Buffer (.proto) files containing GNN models."""
 
     def __init__(self) -> None:
+        """Initialize the instance."""
         super().__init__()
         self.model_cache: dict[str, GNNInternalRepresentation] = {}
 
     def get_supported_extensions(self) -> List[str]:
+        """Return supported extensions."""
         return [".proto"]
 
     def parse_file(self, file_path: str) -> ParseResult:

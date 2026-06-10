@@ -63,6 +63,7 @@ class TimeoutManager:
     """Comprehensive timeout management for various operation types."""
 
     def __init__(self) -> None:
+        """Initialize the instance."""
         self.logger = logging.getLogger(__name__)
         self._active_operations: Dict[str, float] = {}  # Track active operations
 
@@ -335,6 +336,7 @@ class TimeoutManager:
         """Execute operation with signal-based timeout (Unix only)."""
 
         def timeout_handler(signum: Any, frame: Any) -> Any:
+            """Provide timeout handler behavior."""
             raise TimeoutError(f"Operation timed out after {timeout} seconds")
 
         # Set up signal handler
@@ -379,6 +381,7 @@ class LLMTimeoutManager(TimeoutManager):
     """Specialized timeout manager for LLM operations."""
 
     def __init__(self) -> None:
+        """Initialize the instance."""
         super().__init__()
         self.default_config = TimeoutConfig(
             base_timeout=60.0,
@@ -401,6 +404,7 @@ class LLMTimeoutManager(TimeoutManager):
 
         # Add graceful recovery for LLM calls
         def llm_fallback(*args: Any, **kwargs: Any) -> Any:
+            """Provide llm fallback behavior."""
             return f"LLM request timed out. Model: {model}, Prompt length: {len(prompt)} chars"
 
         config.graceful_fallback = llm_fallback
@@ -416,6 +420,7 @@ class ProcessTimeoutManager(TimeoutManager):
     """Specialized timeout manager for subprocess operations."""
 
     def __init__(self) -> None:
+        """Initialize the instance."""
         super().__init__()
         self.default_config = TimeoutConfig(
             base_timeout=120.0,
@@ -435,6 +440,7 @@ class ProcessTimeoutManager(TimeoutManager):
         config = config or self.default_config
 
         def subprocess_operation(*args: Any, **kwargs: Any) -> Any:
+            """Provide subprocess operation behavior."""
             return subprocess.run(  # nosec B603
                 command, timeout=config.base_timeout, check=False, **subprocess_kwargs
             )
@@ -469,8 +475,11 @@ def with_timeout(config: TimeoutConfig) -> Any:
     """Decorator for adding timeout handling to functions."""
 
     def decorator(func: Any) -> Any:
+        """Wrap a synchronous function with timeout handling."""
+
         @functools.wraps(func)
         def wrapper(*args: Any, **kwargs: Any) -> Any:
+            """Provide wrapper behavior."""
             manager = get_timeout_manager()
             with manager.sync_timeout(
                 func.__name__, config, func, *args, **kwargs
@@ -489,8 +498,11 @@ def with_async_timeout(config: TimeoutConfig) -> Any:
     """Decorator for adding timeout handling to async functions."""
 
     def decorator(func: Any) -> Any:
+        """Wrap an async function with timeout handling."""
+
         @functools.wraps(func)
         async def wrapper(*args: Any, **kwargs: Any) -> Any:
+            """Provide wrapper behavior."""
             manager = get_timeout_manager()
             async with manager.async_timeout(
                 func.__name__, config, func, *args, **kwargs
@@ -514,6 +526,7 @@ if __name__ == "__main__":
         manager = get_llm_timeout_manager()
 
         async def slow_operation(delay: float) -> Any:
+            """Provide slow operation behavior."""
             await asyncio.sleep(delay)
             return f"Completed after {delay}s"
 

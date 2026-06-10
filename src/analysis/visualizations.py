@@ -46,6 +46,7 @@ VISUALIZATION_FRAMEWORK_DIRS = {
 
 
 def _current_schema_visualization_data(data: Dict[str, Any]) -> Dict[str, Any]:
+    """Handle current schema visualization data for internal callers."""
     if data.get("schema_version") not in CURRENT_VISUALIZATION_SCHEMAS:
         return {}
     return {
@@ -122,11 +123,13 @@ def animate_belief_evolution(
     ax.grid(True, alpha=0.3)
 
     def init() -> Any:
+        """Provide init behavior."""
         for line in lines:
             line.set_data([], [])
         return lines
 
     def update(frame: int) -> Any:
+        """Update operation."""
         for i in range(n_states):
             lines[i].set_data(range(frame + 1), belief_array[: frame + 1, i])
         return lines
@@ -141,6 +144,7 @@ def animate_belief_evolution(
 
 
 def _state_count_from_payload(payload: Dict[str, Any]) -> int:
+    """Handle state count from payload for internal callers."""
     model_parameters = payload.get("model_parameters", {})
     if isinstance(model_parameters, dict):
         for key in ("num_states", "num_hidden_states"):
@@ -163,6 +167,7 @@ def _state_count_from_payload(payload: Dict[str, Any]) -> int:
 
 
 def _is_gridworld_payload(payload: Dict[str, Any]) -> bool:
+    """Return whether gridworld payload."""
     if payload.get("schema_version") not in CURRENT_VISUALIZATION_SCHEMAS:
         return False
 
@@ -187,6 +192,7 @@ def _series_from_payload(
     grouped_key: str,
     grouped_name: str,
 ) -> list[Any]:
+    """Handle series from payload for internal callers."""
     value = payload.get(plain_key)
     if isinstance(value, list) and value:
         return value
@@ -202,6 +208,7 @@ def _series_from_payload(
 
 
 def _belief_map_states(beliefs: list[Any]) -> list[int]:
+    """Handle belief map states for internal callers."""
     states: list[int] = []
     for belief in beliefs:
         if not isinstance(belief, list) or not belief:
@@ -216,6 +223,7 @@ def _belief_map_states(beliefs: list[Any]) -> list[int]:
 def _gridworld_state_sequence(
     payload: Dict[str, Any], current_data: Dict[str, Any]
 ) -> list[int]:
+    """Handle gridworld state sequence for internal callers."""
     hidden_states = _series_from_payload(
         payload,
         current_data,
@@ -264,6 +272,7 @@ def _gridworld_state_sequence(
 
 
 def _grid_side_for_states(state_count: int) -> int:
+    """Handle grid side for states for internal callers."""
     side = int(np.sqrt(state_count))
     if side * side != state_count:
         raise ValueError(
@@ -301,11 +310,13 @@ def animate_gridworld_trajectory(
     ax.set_ylim(side - 0.5, -0.5)
 
     def _coords(sequence: list[int]) -> tuple[list[int], list[int]]:
+        """Handle coords for internal callers."""
         cols = [int(state) % side for state in sequence]
         rows = [int(state) // side for state in sequence]
         return cols, rows
 
     def update(frame: int) -> list[Any]:
+        """Update operation."""
         current_states = states[: frame + 1]
         current_state = max(0, min(state_count - 1, current_states[-1]))
         grid.fill(0.0)
@@ -351,6 +362,7 @@ def _normalize_framework_name(framework: str) -> str:
 
 
 def _model_name_from_path(path: Path) -> str:
+    """Handle model name from path for internal callers."""
     for ancestor in path.parents:
         candidate = ancestor.name
         if (
@@ -370,6 +382,7 @@ def _model_name_from_path(path: Path) -> str:
 
 
 def _framework_from_path_or_payload(path: Path, payload: Dict[str, Any]) -> str:
+    """Handle framework from path or payload for internal callers."""
     for part in path.parts:
         if part in VISUALIZATION_FRAMEWORK_DIRS:
             return _normalize_framework_name(part)
@@ -379,6 +392,7 @@ def _framework_from_path_or_payload(path: Path, payload: Dict[str, Any]) -> str:
 def _gridworld_animation_items(
     framework_data: Dict[str, Dict[str, Any]],
 ) -> list[Dict[str, Any]]:
+    """Handle gridworld animation items for internal callers."""
     items: list[Dict[str, Any]] = []
     for data in framework_data.values():
         payload = data.get("raw_simulation_data") or data.get("simulation_data", {})
@@ -469,11 +483,13 @@ def animate_cross_framework_gridworld_trajectories(
     fig.suptitle(title)
 
     def _coords(sequence: list[int]) -> tuple[list[int], list[int]]:
+        """Handle coords for internal callers."""
         cols = [int(state) % side for state in sequence]
         rows = [int(state) // side for state in sequence]
         return cols, rows
 
     def update(frame: int) -> list[Any]:
+        """Update operation."""
         changed: list[Any] = []
         for entry in artists:
             states = entry["item"]["states"]
@@ -565,6 +581,7 @@ def generate_gridworld_animation_suite(
 
 
 def _relative_or_absolute(path: Path, base: Path) -> str:
+    """Handle relative or absolute for internal callers."""
     try:
         return str(path.relative_to(base))
     except ValueError:
@@ -644,6 +661,7 @@ def write_gridworld_analysis_manifest(
     }
 
     def is_current_artifact(path: Path) -> bool:
+        """Return whether current artifact."""
         if path == manifest_path or not path.is_file():
             return False
 

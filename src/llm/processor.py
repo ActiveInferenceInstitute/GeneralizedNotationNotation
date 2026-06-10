@@ -405,6 +405,7 @@ async def _process_llm_async(
     budget_start = _time.monotonic()
 
     def _budget_remaining() -> float:
+        """Handle budget remaining for internal callers."""
         return max(0.0, TOTAL_BUDGET_SECONDS - (_time.monotonic() - budget_start))
 
     try:

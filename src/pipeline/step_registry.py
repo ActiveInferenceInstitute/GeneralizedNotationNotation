@@ -41,6 +41,7 @@ class StepInfo:
     module_path: str = ""
 
     def __post_init__(self) -> None:
+        """Normalize fields after dataclass initialization."""
         if self.depends_on is None:
             self.depends_on = []
 
@@ -68,6 +69,7 @@ def pipeline_step(
     depends_on = depends_on or []
 
     def decorator(func: Callable) -> Callable:
+        """Provide decorator behavior."""
         info = StepInfo(
             name=name,
             step_num=step_num,

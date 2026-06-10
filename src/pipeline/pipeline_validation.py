@@ -502,6 +502,7 @@ def validate_dependency_cycles() -> Dict[str, List[str]]:
         def find_cycles(
             node: str, path: List[str], visited: set, rec_stack: set
         ) -> Optional[List[str]]:
+            """Provide find cycles behavior."""
             visited.add(node)
             rec_stack.add(node)
 
@@ -819,6 +820,7 @@ def print_validation_report(report: Dict) -> None:
 
 
 def main() -> int:
+    """Provide main behavior."""
     parser = argparse.ArgumentParser(description="Validate GNN pipeline consistency")
     parser.add_argument(
         "--src-dir",

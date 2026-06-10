@@ -141,6 +141,7 @@ async def get_job_status(job_id: str) -> JobStatusResponse:
         raise HTTPException(status_code=404, detail=f"Job not found: {job_id}")
 
     def _dt(s: Any) -> Any:
+        """Handle dt for internal callers."""
         return datetime.fromisoformat(s) if s else None
 
     return JobStatusResponse(

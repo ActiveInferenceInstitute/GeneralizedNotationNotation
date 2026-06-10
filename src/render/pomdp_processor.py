@@ -25,6 +25,7 @@ logger = logging.getLogger(__name__)
 
 
 def _normalise_prob_vector(values: np.ndarray) -> np.ndarray:
+    """Normalize prob vector."""
     vector = np.asarray(values, dtype=np.float64).flatten()
     total = float(vector.sum())
     if not np.isfinite(total) or total <= 0:
@@ -35,6 +36,7 @@ def _normalise_prob_vector(values: np.ndarray) -> np.ndarray:
 
 
 def _normalise_columns(matrix: np.ndarray) -> np.ndarray:
+    """Normalize columns."""
     out = np.asarray(matrix, dtype=np.float64).copy()
     if out.ndim != 2:
         raise ValueError(f"expected 2D matrix, got shape {out.shape}")
@@ -363,6 +365,7 @@ class POMDPRenderProcessor:
     def _has_matrix_or_factored_matrix(
         self, pomdp_space: "POMDPStateSpace", matrix_name: str
     ) -> bool:
+        """Return whether matrix or factored matrix."""
         matrices = getattr(pomdp_space, "matrices", None) or {}
         if matrix_name in matrices:
             return True
@@ -644,6 +647,7 @@ class POMDPRenderProcessor:
     def _canonicalise_factored_B(
         self, value: Any, factor_size: int, num_actions: int
     ) -> np.ndarray:
+        """Canonicalize factored B."""
         raw = np.asarray(value, dtype=np.float64)
         if raw.ndim == 2:
             tensor = raw[:, :, np.newaxis]
@@ -672,6 +676,7 @@ class POMDPRenderProcessor:
         descriptors: List[Dict[str, Any]],
         required_size: Optional[int] = None,
     ) -> int:
+        """Handle match descriptor index for internal callers."""
         suffix = (
             matrix_key.split("_", 1)[1].lower()
             if "_" in matrix_key
@@ -706,6 +711,7 @@ class POMDPRenderProcessor:
         state_factors: List[Dict[str, Any]],
         matrix_state_shape: tuple[int, ...],
     ) -> List[int]:
+        """Handle match state indices for matrix for internal callers."""
         if len(matrix_state_shape) == 1:
             return [
                 self._match_descriptor_index(
@@ -1316,6 +1322,7 @@ class POMDPRenderProcessor:
             model_annotation = getattr(pomdp_space, "model_annotation", None) or "N/A"
 
             def _shape_text(value: Any) -> str | None:
+                """Handle shape text for internal callers."""
                 if value is None:
                     return None
                 try:
@@ -1336,6 +1343,7 @@ class POMDPRenderProcessor:
                     return None
 
             def _vector_length(value: Any) -> int | None:
+                """Handle vector length for internal callers."""
                 if value is None:
                     return None
                 array = np.asarray(value)

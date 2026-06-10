@@ -205,6 +205,7 @@ class PyMDPRenderer:
     """
 
     def __init__(self, options: Optional[Dict[str, Any]] = None) -> None:
+        """Initialize the instance."""
         self.options = options or {}
         self.mode = str(self.options.get("mode", "pipeline")).lower()
         if self.mode not in {"pipeline", "standalone"}:
@@ -215,6 +216,7 @@ class PyMDPRenderer:
     # Entry points
     # ------------------------------------------------------------------
     def render_file(self, gnn_file_path: Path, output_path: Path) -> Tuple[bool, str]:
+        """Render file."""
         try:
             with open(gnn_file_path, "r", encoding="utf-8") as f:
                 content = f.read()
@@ -236,6 +238,7 @@ class PyMDPRenderer:
     def render_spec(
         self, gnn_spec: Dict[str, Any], output_path: Path
     ) -> Tuple[bool, str, List[str]]:
+        """Render spec."""
         try:
             model_name = gnn_spec.get("model_name", "GNN_Model")
             code = self._generate_code(gnn_spec, model_name)
@@ -254,6 +257,7 @@ class PyMDPRenderer:
     def render_directory(
         self, output_dir: Path, input_dir: Optional[Path] = None
     ) -> Dict[str, Any]:
+        """Render directory."""
         results: Dict[str, Any] = {
             "rendered_files": [],
             "failed_files": [],
@@ -288,6 +292,7 @@ class PyMDPRenderer:
     # Code generation
     # ------------------------------------------------------------------
     def _generate_code(self, gnn_spec: Dict[str, Any], model_name: str) -> str:
+        """Generate code."""
         model_display_name = gnn_spec.get("model_name", model_name)
         model_annotation = gnn_spec.get("annotation", "")
         init_params = gnn_spec.get("initialparameterization") or gnn_spec.get(

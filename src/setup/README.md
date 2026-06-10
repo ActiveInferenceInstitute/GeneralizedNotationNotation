@@ -190,9 +190,9 @@ The root `uv.lock` file is updated by `uv` itself when any sync operation runs.
 ## Testing
 
 ```bash
-uv run pytest src/tests/setup/test_setup_overall.py -v
-uv run pytest src/tests/test_uv_environment.py -v
-uv run pytest src/tests/test_environment_overall.py -v
+uv run --extra dev python -m pytest src/tests/setup/test_setup_overall.py -v
+uv run --extra dev python -m pytest src/tests/test_uv_environment.py -v
+uv run --extra dev python -m pytest src/tests/test_environment_overall.py -v
 ```
 
 The tests cover: environment creation, `uv sync` invocation, optional-group installation,

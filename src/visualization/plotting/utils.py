@@ -28,6 +28,7 @@ def save_plot_safely(plot_path: Path, dpi: int = 300, **savefig_kwargs: Any) -> 
         return False
 
     def _safe_dpi_value(dpi_input: Any) -> int:
+        """Handle safe dpi value for internal callers."""
         try:
             dpi_val = int(dpi_input) if isinstance(dpi_input, (int, float)) else 150
             return max(50, min(dpi_val, 600))

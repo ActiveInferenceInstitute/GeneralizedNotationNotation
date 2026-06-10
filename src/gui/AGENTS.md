@@ -400,7 +400,7 @@ GNN Files → GUI Construction → Visual Editing → Model Validation → GNN E
 Measure on demand:
 
 ```bash
-uv run pytest src/tests/test_gui*.py \
+uv run --extra dev python -m pytest src/tests/test_gui*.py \
     --cov=src/gui --cov-report=term-missing
 ```
 ### Key Test Scenarios

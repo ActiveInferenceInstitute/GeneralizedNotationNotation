@@ -40,6 +40,7 @@ class StepRecord:
     errors: List[str] = field(default_factory=list)
 
     def to_dict(self) -> Dict[str, Any]:
+        """Provide to dict behavior."""
         return {
             "name": self.name,
             "step_num": self.step_num,
@@ -64,6 +65,7 @@ class PipelineContext:
         output_dir: Optional[Path] = None,
         target_dir: Optional[Path] = None,
     ) -> None:
+        """Initialize the instance."""
         self.output_dir = Path(output_dir) if output_dir else Path("output")
         self.target_dir = Path(target_dir) if target_dir else Path("input/gnn_files")
         self.start_time = datetime.now()
@@ -105,6 +107,7 @@ class PipelineContext:
 
     @models.setter
     def models(self, value: List["GNNInternalRepresentation"]) -> None:
+        """Provide models behavior."""
         self._models = value
         logger.debug(f"Context: stored {len(value)} models")
 
@@ -219,6 +222,7 @@ class PipelineContext:
         return path
 
     def __repr__(self) -> str:
+        """Return the developer-facing representation."""
         return (
             f"PipelineContext(steps={len(self._steps)}, "
             f"models={len(self._models)}, "

@@ -74,6 +74,7 @@ def _var_type(var_info: Dict[str, Any]) -> str:
 
 
 def _connection_is_undirected(conn_info: Dict[str, Any]) -> bool:
+    """Handle connection is undirected for internal callers."""
     ct = str(conn_info.get("connection_type", "directed")).lower().strip()
     return ct == "undirected"
 
@@ -81,6 +82,7 @@ def _connection_is_undirected(conn_info: Dict[str, Any]) -> bool:
 def generate_network_visualizations(
     parsed_data: Dict[str, Any], output_dir: Path, model_name: str
 ) -> List[str]:
+    """Generate network visualizations."""
     visualizations: List[str] = []
 
     if not NETWORKX_AVAILABLE or not MATPLOTLIB_AVAILABLE or plt is None or nx is None:
@@ -320,6 +322,7 @@ def _determine_connection_type(
     source_type: Optional[str] = None,
     target_type: Optional[str] = None,
 ) -> str:
+    """Handle determine connection type for internal callers."""
     if source_type and target_type:
         if source_type == _HID and target_type == _HID:
             return "state_transition"
@@ -353,6 +356,7 @@ def _determine_connection_type(
 
 
 def _get_edge_style(connection_type: str) -> Dict[str, Any]:
+    """Return edge style."""
     style_map: dict[str, Any] = {
         "state_transition": {
             "color": "#3B5998",
@@ -427,6 +431,7 @@ def _get_edge_style(connection_type: str) -> Dict[str, Any]:
 
 
 def _generate_network_statistics(variables: list, connections: list) -> Dict[str, Any]:
+    """Generate network statistics."""
     stats: Dict[str, Any] = {
         "total_variables": len(variables),
         "total_connections": len(connections),
@@ -497,6 +502,7 @@ def _generate_network_statistics(variables: list, connections: list) -> Dict[str
 
 
 def _generate_interactive_network(G: Any, output_path: Path) -> bool:
+    """Generate interactive network."""
     if not PLOTLY_AVAILABLE or not go or nx is None:
         return False
 

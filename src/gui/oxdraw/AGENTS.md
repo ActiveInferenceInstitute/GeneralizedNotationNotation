@@ -403,7 +403,7 @@ GNN Files → parse_gnn_file() → gnn_to_mermaid() → Mermaid Files
 Measure on demand:
 
 ```bash
-uv run pytest src/tests/gui/test_oxdraw_integration.py \
+uv run --extra dev python -m pytest src/tests/gui/test_oxdraw_integration.py \
     src/tests/visualization/test_mermaid_converter.py \
     src/tests/visualization/test_mermaid_parser.py \
     --cov=src/gui/oxdraw --cov-report=term-missing

@@ -37,6 +37,7 @@ def _viz_var_type(var_info: Dict[str, Any]) -> str:
 def generate_combined_analysis(
     parsed_data: Dict[str, Any], output_dir: Path, model_name: str
 ) -> List[str]:
+    """Generate combined analysis."""
     visualizations: List[str] = []
 
     if not MATPLOTLIB_AVAILABLE:
@@ -127,6 +128,7 @@ def generate_combined_analysis(
                         except Exception:
 
                             def count_elements(obj: Any) -> int:
+                                """Provide count elements behavior."""
                                 if isinstance(obj, (int, float)):
                                     return 1
                                 if isinstance(obj, (list, tuple)):
@@ -212,6 +214,7 @@ def generate_combined_analysis(
 def _generate_standalone_panels(
     parsed_data: Dict[str, Any], output_dir: Path, model_name: str
 ) -> List[str]:
+    """Generate standalone panels."""
     visualizations: List[str] = []
 
     if not MATPLOTLIB_AVAILABLE:
@@ -343,6 +346,7 @@ def _generate_standalone_panels(
 def _generate_generative_model_diagram(
     parsed_data: Dict[str, Any], output_dir: Path, model_name: str
 ) -> List[str]:
+    """Generate generative model diagram."""
     visualizations: List[str] = []
 
     if not MATPLOTLIB_AVAILABLE:
@@ -475,6 +479,7 @@ def _generate_generative_model_diagram(
 def generate_combined_visualizations(
     gnn_files: List[Path], results_dir: Path, verbose: bool = False
 ) -> List[str]:
+    """Generate combined visualizations."""
     visualizations: List[str] = []
 
     if not MATPLOTLIB_AVAILABLE:

@@ -35,6 +35,7 @@ class TLAParser(BaseGNNParser):
     """Parser for TLA+ (Temporal Logic of Actions) specifications."""
 
     def __init__(self) -> None:
+        """Initialize the instance."""
         super().__init__()
         self.module_pattern = re.compile(r"MODULE\s+(\w+)", re.IGNORECASE)
         self.variable_pattern = re.compile(r"VARIABLES?\s+([\w\s,]+)", re.IGNORECASE)
@@ -47,9 +48,11 @@ class TLAParser(BaseGNNParser):
         )
 
     def get_supported_extensions(self) -> List[str]:
+        """Return supported extensions."""
         return [".tla"]
 
     def parse_file(self, file_path: str) -> ParseResult:
+        """Parse file."""
         try:
             with open(file_path, "r", encoding="utf-8") as f:
                 content = f.read()
@@ -61,6 +64,7 @@ class TLAParser(BaseGNNParser):
 
     def parse_string(self, content: str) -> ParseResult:
         # First try to extract embedded JSON model data
+        """Parse string."""
         embedded_data = self._extract_embedded_json_data(content)
         if embedded_data:
             result = ParseResult(model=self.create_empty_model())
@@ -296,6 +300,7 @@ class AgdaParser(BaseGNNParser):
     """Parser for Agda dependently typed functional programming language."""
 
     def __init__(self) -> None:
+        """Initialize the instance."""
         super().__init__()
         self.module_pattern = re.compile(r"module\s+([\w.]+)\s+where", re.IGNORECASE)
         self.data_pattern = re.compile(
@@ -308,9 +313,11 @@ class AgdaParser(BaseGNNParser):
         self.import_pattern = re.compile(r"import\s+([\w.]+)", re.IGNORECASE)
 
     def get_supported_extensions(self) -> List[str]:
+        """Return supported extensions."""
         return [".agda"]
 
     def parse_file(self, file_path: str) -> ParseResult:
+        """Parse file."""
         try:
             with open(file_path, "r", encoding="utf-8") as f:
                 content = f.read()
@@ -322,6 +329,7 @@ class AgdaParser(BaseGNNParser):
 
     def parse_string(self, content: str) -> ParseResult:
         # First try to extract embedded JSON model data
+        """Parse string."""
         embedded_data = self._extract_embedded_json_data(content)
         if embedded_data:
             result = ParseResult(model=self.create_empty_model())

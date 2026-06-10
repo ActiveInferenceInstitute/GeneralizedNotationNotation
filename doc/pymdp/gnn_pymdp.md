@@ -128,7 +128,7 @@ Step 12 sets `GNN_PROJECT_ROOT` so the generated pipeline runner can
 **Tests:**
 
 ```bash
-uv run pytest \
+uv run --extra dev python -m pytest \
     src/tests/execute/test_pymdp_1_0_0_upstream_api.py \
     src/tests/execute/test_pymdp_contracts.py \
     src/tests/execute/test_execute_pymdp_integration.py \

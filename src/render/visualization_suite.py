@@ -51,6 +51,7 @@ class ComprehensiveDataExporter:
     """Exports simulation data in multiple formats for reproducibility"""
 
     def __init__(self, output_dir: Path, simulation_name: str) -> None:
+        """Initialize the instance."""
         self.output_dir = Path(output_dir)
         self.simulation_name = simulation_name
         self.data_dir = self.output_dir / "data_exports"
@@ -173,6 +174,7 @@ class VisualizationSuite:
     """Comprehensive visualization suite with multiple chart types"""
 
     def __init__(self, output_dir: Path, simulation_name: str) -> None:
+        """Initialize the instance."""
         self.output_dir = Path(output_dir)
         self.simulation_name = simulation_name
         self.viz_dir = self.output_dir / "visualizations"

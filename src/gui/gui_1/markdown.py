@@ -227,6 +227,7 @@ def parse_state_space_from_markdown(md_text: str) -> list[dict[str, object]]:
 
 
 def _ensure_state_space_section(md_text: str) -> tuple[str, int]:
+    """Handle ensure state space section for internal callers."""
     lines = md_text.splitlines()
     for i, line in enumerate(lines):
         if (
@@ -254,6 +255,7 @@ def add_state_space_entry(
     typ: str | None = None,
     comment: str | None = None,
 ) -> str:
+    """Provide add state space entry behavior."""
     md_text, _ = _ensure_state_space_section(md_text)
     suffix = f"  # {comment}" if comment else ""
     line = (
@@ -271,6 +273,7 @@ def update_state_space_entry(
     typ: str | None = None,
     comment: str | None = None,
 ) -> str:
+    """Update state space entry."""
     lines = md_text.splitlines()
     out: list[str] = []
     replaced = False
@@ -298,6 +301,7 @@ def update_state_space_entry(
 
 
 def remove_state_space_entry(md_text: str, name: str) -> str:
+    """Provide remove state space entry behavior."""
     lines = md_text.splitlines()
     out: list[str] = []
     for line in lines:

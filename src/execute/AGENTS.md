@@ -321,7 +321,7 @@ Use the current `output/*/00_pipeline_summary/pipeline_execution_summary.json` a
 Measure on demand:
 
 ```bash
-uv run pytest src/tests/test_execute*.py \
+uv run --extra dev python -m pytest src/tests/test_execute*.py \
     --cov=src/execute --cov-report=term-missing
 ```
 ### Key Test Scenarios

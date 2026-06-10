@@ -17,9 +17,9 @@ python src/2_tests.py --comprehensive --verbose   # full suite
 ### Run tests for a single module
 
 ```bash
-PYTHONPATH=src pytest src/tests/gnn/ -v
-PYTHONPATH=src pytest src/tests/render/ -v
-PYTHONPATH=src pytest src/tests/execute/ -v
+uv run --extra dev python -m pytest src/tests/gnn/ -v
+uv run --extra dev python -m pytest src/tests/render/ -v
+uv run --extra dev python -m pytest src/tests/execute/ -v
 ```
 
 ### Run by marker
@@ -33,15 +33,15 @@ pytest -m slow          # slow/performance tests only
 
 ## Test Statistics
 
-- **Total test files**: 170 (142 in subdirectories + 28 at root)
-- **Test collection baseline**: 2,284 collected with the command-of-record
+- **Total test files**: 171 (142 in subdirectories + 29 at root)
+- **Test collection baseline**: 2,296 collected with the command-of-record
   collect pass and the two local Ollama integration files ignored
-- **Pass/skip baseline**: the latest command-of-record full run with the
-  two local Ollama integration files ignored passed on 2026-05-25:
-  2,276 passed, 7 skipped, 1 xpassed in 813.52s
+- **Pass/skip baseline**: the latest recorded command-of-record full run with the
+  two local Ollama integration files ignored passed on 2026-06-09:
+  2,281 passed, 14 skipped, 1 xfailed in 744.50s
 - **Fast-test duration**: 1-3 minutes
 - **Full-suite duration**: varies by optional backend availability; latest
-  command-of-record run completed in 13:33
+  command-of-record run completed in 12:24
 
 ## Directory Layout (Phase 7)
 
@@ -587,7 +587,7 @@ def test_new_module_integration():
 **Symptoms**: `ERROR collecting` messages, import errors
 **Solutions**:
 
-- Check for missing dependencies: `uv sync` (or `uv sync --extra dev` for dev tools)
+- Check for missing dependencies: `uv sync` for runtime dependencies or `uv sync --extra dev` for pytest and developer tools
 - Verify Python path includes `src/` directory
 - Check for syntax errors in test files
 - Review error messages for specific import failures
@@ -600,7 +600,7 @@ def test_new_module_integration():
 - Verify test files follow naming convention: `test_*.py`
 - Check that test functions are named with `test_` prefix
 - Ensure test files are in `src/tests/` directory
-- Check pytest is installed: `uv pip install pytest` (included in `uv sync`)
+- Check pytest through the dev extra: `uv run --extra dev python -m pytest --version`
 
 #### Issue: Memory Errors
 
@@ -646,9 +646,9 @@ If issues persist:
 
 ### Test Coverage
 
-- **170 test files** across root and module-specific directories
-- **2,284 collected tests** in the current command-of-record collect pass with Ollama integration tests ignored
-- **Latest full suite** passed on 2026-05-25 with the same Ollama integration excludes: 2,276 passed, 7 skipped, 1 xpassed in 813.52s
+- **171 test files** across root and module-specific directories
+- **2,296 collected tests** in the current command-of-record collect pass with Ollama integration tests ignored
+- **Latest recorded full suite** passed on 2026-06-09 with the same Ollama integration excludes: 2,281 passed, 14 skipped, 1 xfailed in 744.50s
 - **Comprehensive module coverage** for all major modules
 - **Specialized test areas** for specific functionality
 - **Integration tests** for cross-module functionality
@@ -679,14 +679,14 @@ If issues persist:
 
 ### Module Coverage
 
-Module coverage mirrors the maintained source tree. Use `rg --files src/tests -g 'test_*.py'` for the current file inventory and `uv run pytest src/tests/ --collect-only -q` for the current collected-test count.
+Module coverage mirrors the maintained source tree. Use `rg --files src/tests -g 'test_*.py'` for the current file inventory and `uv run --extra dev python -m pytest src/tests/ --collect-only -q` for the current collected-test count.
 
 ## Test Execution Results
 
-Latest measured collect-only inventory (2026-05-25): 170 `test_*.py` files and 2,284 collected tests with the Ollama integration files excluded. Latest full command-of-record run with the same excludes passed on 2026-05-25: 2,276 passed, 7 skipped, 1 xpassed in 813.52s.
+Latest measured collect-only inventory (2026-06-09): 171 `test_*.py` files and 2,296 collected tests with the Ollama integration files excluded. Latest recorded full command-of-record run with the same excludes passed on 2026-06-09: 2,281 passed, 14 skipped, 1 xfailed in 744.50s.
 
 ```bash
-uv run pytest src/tests/ -q --tb=no \
+uv run --extra dev python -m pytest src/tests/ -q --tb=no \
   --ignore=src/tests/llm/test_llm_ollama.py \
   --ignore=src/tests/llm/test_llm_ollama_integration.py
 ```

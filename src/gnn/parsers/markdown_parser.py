@@ -48,6 +48,7 @@ class MarkdownGNNParser(ParameterParsingMixin, BaseGNNParser):
     """
 
     def __init__(self) -> None:
+        """Initialize the instance."""
         super().__init__()
         self.section_parsers = {
             "GNNSection": self._parse_gnn_section,

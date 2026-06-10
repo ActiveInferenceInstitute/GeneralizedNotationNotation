@@ -155,7 +155,10 @@ def test_basic_analysis() -> None:
     try:
         # Construct a local response object without contacting external providers.
         class _Resp:
+            """Minimal local response shape used by the analysis smoke test."""
+
             def __init__(self) -> None:
+                """Populate response attributes expected by the assertions."""
                 self.content = "summary"
                 self.model_used = "local-response"
                 self.provider = "local"

@@ -111,6 +111,7 @@ class PipelineErrorHandler:
     """Centralized error handling and recovery system."""
 
     def __init__(self, logger: logging.Logger, correlation_id: str) -> None:
+        """Initialize the instance."""
         self.logger = logger
         self.correlation_id = correlation_id
         self.errors: List[PipelineError] = []

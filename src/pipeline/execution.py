@@ -32,12 +32,14 @@ _STEP_NUM_BY_ALIAS["advanced_visualization"] = 9
 
 
 def _ensure_src_on_path() -> None:
+    """Handle ensure src on path for internal callers."""
     src_dir = Path(__file__).resolve().parents[1]
     if str(src_dir) not in sys.path:
         sys.path.insert(0, str(src_dir))
 
 
 def _main_module() -> Any:
+    """Handle main module for internal callers."""
     _ensure_src_on_path()
     import main
 
@@ -69,6 +71,7 @@ def _coerce_steps(steps: Any, pipeline_data: dict | None = None) -> list[int]:
 
 
 def _script_for_step(step_name: str) -> str | None:
+    """Handle script for step for internal callers."""
     steps = _coerce_steps([step_name])
     if not steps:
         return None
@@ -82,6 +85,7 @@ def _path_from_sources(
     step_config: dict | None = None,
     fallback: str,
 ) -> Path:
+    """Handle path from sources for internal callers."""
     for source in (step_config or {}, pipeline_data or {}):
         value = source.get(key)
         if value is not None:
@@ -106,6 +110,7 @@ class StepExecutionResult:
     warnings: Optional[List[str]] = None
 
     def __post_init__(self) -> Any:
+        """Normalize fields after dataclass initialization."""
         if self.warnings is None:
             self.warnings = []
 

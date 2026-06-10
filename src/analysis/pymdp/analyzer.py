@@ -19,10 +19,12 @@ logger = logging.getLogger("analysis.pymdp")
 
 
 def _slug(name: str) -> str:
+    """Handle slug for internal callers."""
     return name.replace(" ", "_").replace("/", "_")
 
 
 def _first_sequence(mapping: Dict[str, Any], preferred_key: str) -> List[Any]:
+    """Handle first sequence for internal callers."""
     preferred = mapping.get(preferred_key)
     if isinstance(preferred, list):
         return preferred
@@ -33,6 +35,7 @@ def _first_sequence(mapping: Dict[str, Any], preferred_key: str) -> List[Any]:
 
 
 def _load_json(path: Path) -> Dict[str, Any] | None:
+    """Load json."""
     try:
         with open(path, "r", encoding="utf-8") as handle:
             data = json.load(handle)
@@ -47,11 +50,13 @@ def _load_json(path: Path) -> Dict[str, Any] | None:
 
 
 def _iter_execution_summary_paths(execution_results_dir: Path) -> Iterable[Path]:
+    """Handle iter execution summary paths for internal callers."""
     yield execution_results_dir / "summaries" / "execution_summary.json"
     yield execution_results_dir / "execution_summary.json"
 
 
 def _result_paths_from_execution_summary(execution_results_dir: Path) -> List[Path]:
+    """Handle result paths from execution summary for internal callers."""
     for summary_path in _iter_execution_summary_paths(execution_results_dir):
         if not summary_path.exists():
             continue
@@ -103,6 +108,7 @@ def _result_paths_from_execution_summary(execution_results_dir: Path) -> List[Pa
 
 
 def _unique_existing_paths(paths: Iterable[Path]) -> List[Path]:
+    """Handle unique existing paths for internal callers."""
     unique: List[Path] = []
     seen: set[Path] = set()
     for path in paths:
@@ -115,6 +121,7 @@ def _unique_existing_paths(paths: Iterable[Path]) -> List[Path]:
 
 
 def _discover_pymdp_result_files(execution_results_dir: Path) -> List[Path]:
+    """Discover pymdp result files."""
     summary_paths = _result_paths_from_execution_summary(execution_results_dir)
     if summary_paths:
         return summary_paths
@@ -263,6 +270,7 @@ def _plot_cumulative_preference(
     model_name: str,
     model_viz_dir: Path,
 ) -> Path | None:
+    """Plot cumulative preference."""
     try:
         from ..viz_base import MATPLOTLIB_AVAILABLE, np, plt
 

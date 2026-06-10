@@ -16,11 +16,13 @@ class _CallTracker:
     """Wraps a callable to count invocations."""
 
     def __init__(self, target_func: Callable) -> None:
+        """Initialize the instance."""
         self.func = target_func
         self.call_count = 0
         self.called = False
 
     def __call__(self, *a: Any, **kw: Any) -> Any:
+        """Invoke the callable instance."""
         self.called = True
         self.call_count += 1
         return self.func(*a, **kw)
@@ -62,8 +64,11 @@ class SimulationMonitor:
         """
 
         def decorator(func: Callable) -> Any:
+            """Wrap a simulation function with monitoring hooks."""
+
             @functools.wraps(func)
             def wrapper(*args: Any, **kwargs: Any) -> Any:
+                """Provide wrapper behavior."""
                 self.execution_data["total_attempted"] += 1
 
                 tracked_func = _CallTracker(func)

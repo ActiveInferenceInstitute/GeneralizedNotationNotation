@@ -38,6 +38,7 @@ class ResourceTracker:
     """Tracks resource usage during operations."""
 
     def __init__(self) -> None:
+        """Initialize the instance."""
         self.start_time = time.time()
         self.end_time: Optional[float] = None
         self.start_memory = psutil.Process().memory_info().rss / 1024 / 1024  # MB
@@ -95,6 +96,7 @@ def track_peak_memory(func: Callable[..., T]) -> Callable[..., Tuple[T, float]]:
 
     @functools.wraps(func)
     def wrapper(*args: Any, **kwargs: Any) -> Tuple[T, float]:
+        """Provide wrapper behavior."""
         tracker = ResourceTracker()
         try:
             result = func(*args, **kwargs)

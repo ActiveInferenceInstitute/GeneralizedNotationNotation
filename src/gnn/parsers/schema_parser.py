@@ -58,6 +58,7 @@ class XSDParser(BaseGNNParser):
     """Parser for XML Schema Definition (XSD) files."""
 
     def __init__(self) -> None:
+        """Initialize the instance."""
         super().__init__()
 
     def _extract_embedded_json_data(self, content: str) -> Optional[Dict[str, Any]]:
@@ -172,9 +173,11 @@ class XSDParser(BaseGNNParser):
             return list(enum_class)[0]
 
     def get_supported_extensions(self) -> List[str]:
+        """Return supported extensions."""
         return [".xsd"]
 
     def parse_file(self, file_path: str) -> ParseResult:
+        """Parse file."""
         try:
             # Read the file content first to check for embedded data
             with open(file_path, "r", encoding="utf-8") as f:
@@ -187,6 +190,7 @@ class XSDParser(BaseGNNParser):
 
     def parse_string(self, content: str) -> ParseResult:
         # First try to extract embedded JSON model data from original content
+        """Parse string."""
         embedded_data = self._extract_embedded_json_data(content)
         if embedded_data:
             result = ParseResult(model=self.create_empty_model())
@@ -201,6 +205,7 @@ class XSDParser(BaseGNNParser):
             return result
 
     def parse_xml_element(self, root: Any) -> ParseResult:
+        """Parse xml element."""
         result = ParseResult(model=self.create_empty_model())
 
         # Convert XML element back to string to look for embedded data
@@ -232,6 +237,7 @@ class XSDParser(BaseGNNParser):
         return result
 
     def _map_xsd_type(self, xsd_type: str) -> DataType:
+        """Handle map xsd type for internal callers."""
         type_mapping: dict[str, Any] = {
             "string": DataType.CATEGORICAL,
             "int": DataType.INTEGER,
@@ -246,6 +252,7 @@ class XSDParser(BaseGNNParser):
         )
 
     def _infer_variable_type(self, name: str) -> VariableType:
+        """Handle infer variable type for internal callers."""
         name_lower = name.lower()
         if "state" in name_lower:
             return VariableType.HIDDEN_STATE
@@ -259,6 +266,7 @@ class ASN1Parser(BaseGNNParser):
     """Parser for ASN.1 schema definition files."""
 
     def __init__(self) -> None:
+        """Initialize the instance."""
         super().__init__()
         self.module_pattern = re.compile(
             r"(\w+)\s+DEFINITIONS.*::=\s*BEGIN", re.IGNORECASE
@@ -383,9 +391,11 @@ class ASN1Parser(BaseGNNParser):
             return list(enum_class)[0]
 
     def get_supported_extensions(self) -> List[str]:
+        """Return supported extensions."""
         return [".asn1", ".asn"]
 
     def parse_file(self, file_path: str) -> ParseResult:
+        """Parse file."""
         try:
             with open(file_path, "r", encoding="utf-8") as f:
                 content = f.read()
@@ -396,6 +406,7 @@ class ASN1Parser(BaseGNNParser):
             return result
 
     def parse_string(self, content: str) -> ParseResult:
+        """Parse string."""
         result = ParseResult(model=self.create_empty_model())
 
         try:
@@ -438,6 +449,7 @@ class ASN1Parser(BaseGNNParser):
         return result
 
     def _parse_asn1_dimensions(self, type_def: str) -> List[int]:
+        """Parse asn1 dimensions."""
         if "SEQUENCE OF" in type_def.upper():
             return [1]  # Array/list type
         elif "CHOICE" in type_def.upper():
@@ -445,6 +457,7 @@ class ASN1Parser(BaseGNNParser):
         return []
 
     def _map_asn1_type(self, type_def: str) -> DataType:
+        """Handle map asn1 type for internal callers."""
         type_upper = type_def.upper()
         if "INTEGER" in type_upper:
             return DataType.INTEGER
@@ -459,6 +472,7 @@ class ASN1Parser(BaseGNNParser):
         return DataType.CATEGORICAL
 
     def _infer_variable_type(self, name: str) -> VariableType:
+        """Handle infer variable type for internal callers."""
         name_lower = name.lower()
         if "state" in name_lower or "hidden" in name_lower:
             return VariableType.HIDDEN_STATE
@@ -474,6 +488,7 @@ class PKLParser(BaseGNNParser):
     """Parser for Apple PKL configuration files."""
 
     def __init__(self) -> None:
+        """Initialize the instance."""
         super().__init__()
         self.class_pattern = re.compile(r"class\s+(\w+)\s*\{([^}]+)\}", re.DOTALL)
         self.property_pattern = re.compile(
@@ -599,9 +614,11 @@ class PKLParser(BaseGNNParser):
             return list(enum_class)[0]
 
     def get_supported_extensions(self) -> List[str]:
+        """Return supported extensions."""
         return [".pkl"]
 
     def parse_file(self, file_path: str) -> ParseResult:
+        """Parse file."""
         try:
             with open(file_path, "r", encoding="utf-8") as f:
                 content = f.read()
@@ -612,6 +629,7 @@ class PKLParser(BaseGNNParser):
             return result
 
     def parse_string(self, content: str) -> ParseResult:
+        """Parse string."""
         result = ParseResult(model=self.create_empty_model())
 
         try:
@@ -1149,6 +1167,7 @@ class AlloyParser(BaseGNNParser):
     """Parser for Alloy model specification files with embedded data support."""
 
     def __init__(self) -> None:
+        """Initialize the instance."""
         super().__init__()
         self.sig_pattern = re.compile(
             r"sig\s+(\w+)\s*\{([^}]*)\}", re.IGNORECASE | re.DOTALL
@@ -1156,6 +1175,7 @@ class AlloyParser(BaseGNNParser):
         self.field_pattern = re.compile(r"(\w+)\s*:\s*([^\n,]+)", re.IGNORECASE)
 
     def get_supported_extensions(self) -> List[str]:
+        """Return supported extensions."""
         return [".als"]
 
     def _extract_embedded_json_data(self, content: str) -> Optional[Dict[str, Any]]:
@@ -1240,6 +1260,7 @@ class AlloyParser(BaseGNNParser):
             return result
 
     def parse_file(self, file_path: str) -> ParseResult:
+        """Parse file."""
         try:
             with open(file_path, "r", encoding="utf-8") as f:
                 content = f.read()
@@ -1250,6 +1271,7 @@ class AlloyParser(BaseGNNParser):
             return result
 
     def parse_string(self, content: str) -> ParseResult:
+        """Parse string."""
         result = ParseResult(model=self.create_empty_model())
 
         # First, try to extract embedded JSON data for perfect round-trip
@@ -1288,6 +1310,7 @@ class AlloyParser(BaseGNNParser):
         return result
 
     def _infer_variable_type(self, name: str) -> VariableType:
+        """Handle infer variable type for internal callers."""
         name_lower = name.lower()
         if "state" in name_lower:
             return VariableType.HIDDEN_STATE
@@ -1301,11 +1324,13 @@ class ZNotationParser(BaseGNNParser):
     """Parser for Z notation formal specification files with embedded data support."""
 
     def __init__(self) -> None:
+        """Initialize the instance."""
         super().__init__()
         self.schema_pattern = re.compile(r"┌─\s*(\w+)\s*─+┐\s*([^└]+)└─+┘", re.DOTALL)
         self.declaration_pattern = re.compile(r"(\w+)\s*:\s*([^\n]+)", re.MULTILINE)
 
     def get_supported_extensions(self) -> List[str]:
+        """Return supported extensions."""
         return [".zed", ".z"]
 
     def _extract_embedded_json_data(self, content: str) -> Optional[Dict[str, Any]]:
@@ -1397,6 +1422,7 @@ class ZNotationParser(BaseGNNParser):
             return result
 
     def parse_file(self, file_path: str) -> ParseResult:
+        """Parse file."""
         try:
             with open(file_path, "r", encoding="utf-8") as f:
                 content = f.read()
@@ -1407,6 +1433,7 @@ class ZNotationParser(BaseGNNParser):
             return result
 
     def parse_string(self, content: str) -> ParseResult:
+        """Parse string."""
         result = ParseResult(model=self.create_empty_model())
 
         # First, try to extract embedded JSON data for perfect round-trip
@@ -1445,6 +1472,7 @@ class ZNotationParser(BaseGNNParser):
         return result
 
     def _map_z_type(self, z_type: str) -> DataType:
+        """Handle map z type for internal callers."""
         if "ℕ" in z_type or "NAT" in z_type:
             return DataType.INTEGER
         elif "ℝ" in z_type or "REAL" in z_type:
@@ -1455,6 +1483,7 @@ class ZNotationParser(BaseGNNParser):
             return DataType.CATEGORICAL
 
     def _infer_variable_type(self, name: str) -> VariableType:
+        """Handle infer variable type for internal callers."""
         name_lower = name.lower()
         if "state" in name_lower:
             return VariableType.HIDDEN_STATE

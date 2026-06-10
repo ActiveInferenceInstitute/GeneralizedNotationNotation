@@ -449,7 +449,7 @@ RxInfer.jl Code Generation → Julia Environment Setup → Model Compilation →
 Measure on demand:
 
 ```bash
-uv run pytest src/tests/test_rxinfer*.py \
+uv run --extra dev python -m pytest src/tests/test_rxinfer*.py \
     --cov=src/execute/rxinfer --cov-report=term-missing
 ```
 ### Key Test Scenarios
@@ -462,10 +462,10 @@ uv run pytest src/tests/test_rxinfer*.py \
 ### Test Commands
 ```bash
 # Run RxInfer.jl execution tests
-pytest src/tests/test_execute_rxinfer*.py -v
+uv run --extra dev python -m pytest src/tests/test_execute_rxinfer*.py -v
 
 # Run with coverage
-pytest src/tests/test_execute_rxinfer*.py --cov=src/execute/rxinfer --cov-report=term-missing
+uv run --extra dev python -m pytest src/tests/test_execute_rxinfer*.py --cov=src/execute/rxinfer --cov-report=term-missing
 ```
 
 ---

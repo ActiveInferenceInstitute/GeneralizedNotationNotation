@@ -79,6 +79,7 @@ class GNNParser:
     )
 
     def __init__(self, enhanced_validation: bool = True) -> None:
+        """Initialize the instance."""
         self.enhanced_validation = enhanced_validation
         self.parsing_system: Optional[GNNParsingSystem]
         if enhanced_validation and ROUND_TRIP_AVAILABLE:
@@ -820,6 +821,7 @@ class GNNValidator:
         validation_level: ValidationLevel = ValidationLevel.STANDARD,
         enable_cross_validation: bool = True,
     ) -> None:
+        """Initialize the instance."""
         if schema_path is None:
             schema_path = Path(__file__).parent / "schemas/json.json"
 

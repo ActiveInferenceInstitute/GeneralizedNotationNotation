@@ -11,4 +11,4 @@ Historical summary of the first full repo-wide audit (links, pairing, canonical 
 
 ## Canonical test line
 
-When counts change, update together: `README.md`, `CLAUDE.md`, root `AGENTS.md`, `src/AGENTS.md` (same `uv run pytest ...` ignores and passed/skipped/date).
+When counts change, update together: `README.md`, `CLAUDE.md`, root `AGENTS.md`, `src/AGENTS.md` (same `uv run --extra dev python -m pytest ...` ignores and passed/skipped/date).

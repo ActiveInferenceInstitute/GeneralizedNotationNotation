@@ -7,5 +7,5 @@ This folder contains module-focused tests for shared helpers, pipeline templates
 Run:
 
 ```bash
-uv run pytest src/tests/utils/ -q
+uv run --extra dev python -m pytest src/tests/utils/ -q
 ```

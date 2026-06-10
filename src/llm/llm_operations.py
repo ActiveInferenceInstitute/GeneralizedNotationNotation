@@ -401,6 +401,7 @@ _llm_ops: Optional["LLMOperations"] = None
 
 
 def _get_llm_ops() -> "LLMOperations":
+    """Return llm ops."""
     global _llm_ops
     if _llm_ops is None:
         _llm_ops = LLMOperations()

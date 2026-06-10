@@ -7,5 +7,5 @@ This folder contains module-focused tests for language-server behavior and GNN e
 Run:
 
 ```bash
-uv run pytest src/tests/lsp/ -q
+uv run --extra dev python -m pytest src/tests/lsp/ -q
 ```

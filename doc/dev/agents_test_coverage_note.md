@@ -7,7 +7,7 @@ Many module `AGENTS.md` files include a **Current** coverage percentage. Those v
 **Other modules:** treat inline percentages as point-in-time snapshots until you re-run coverage, for example:
 
 ```bash
-uv run pytest src/tests/test_<module>_*.py --cov=src.<module> --cov-report=term-missing
+uv run --extra dev python -m pytest src/tests/test_<module>_*.py --cov=src.<module> --cov-report=term-missing
 ```
 
 When updating a module’s AGENTS file, either refresh the number from the command output or replace it with the same “measure with pytest” pattern used in visualization.

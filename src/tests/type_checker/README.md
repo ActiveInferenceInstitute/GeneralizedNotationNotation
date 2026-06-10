@@ -7,5 +7,5 @@ This folder contains module-focused tests for type checking, dimensions, resourc
 Run:
 
 ```bash
-uv run pytest src/tests/type_checker/ -q
+uv run --extra dev python -m pytest src/tests/type_checker/ -q
 ```

@@ -9,4 +9,4 @@ This directory owns pytest coverage for `src/research/`.
 - Do not place production implementation logic here.
 
 ## Verification
-Run `uv run pytest src/tests/research/ -q`.
+Run `uv run --extra dev python -m pytest src/tests/research/ -q`.

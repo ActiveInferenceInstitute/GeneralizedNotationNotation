@@ -275,12 +275,14 @@ class _FunctionProcessor(BaseProcessor):
         logger: Optional[logging.Logger],
         verbose: bool,
     ) -> None:
+        """Initialize the instance."""
         super().__init__(step_name, logger, verbose)
         self._process_func = process_func
 
     def process_single_file(
         self, file_path: Path, output_dir: Path, **kwargs: Any
     ) -> bool:
+        """Process single file."""
         return self._process_func(file_path, output_dir)
 
 

@@ -7,5 +7,5 @@ This folder contains module-focused tests for render processors, framework gener
 Run:
 
 ```bash
-uv run pytest src/tests/render/ -q
+uv run --extra dev python -m pytest src/tests/render/ -q
 ```

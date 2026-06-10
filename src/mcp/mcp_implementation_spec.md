@@ -65,6 +65,6 @@ structured JSON-RPC responses.
 Focused checks:
 
 ```bash
-uv run pytest src/tests/mcp/test_mcp_configurability.py src/tests/mcp/test_mcp_audit.py -q
+uv run --extra dev python -m pytest src/tests/mcp/test_mcp_configurability.py src/tests/mcp/test_mcp_audit.py -q
 uv run python src/21_mcp.py --target-dir input/gnn_files --output-dir output --verbose
 ```

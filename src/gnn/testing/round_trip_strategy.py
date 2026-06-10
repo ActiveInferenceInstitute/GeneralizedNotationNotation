@@ -36,6 +36,7 @@ class RoundTripTestStrategy:
     """
 
     def __init__(self) -> None:
+        """Initialize the instance."""
         self.test_subset: Optional[List[str]] = None
         self.reference_file: Optional[str] = None
         self.output_dir: Optional[Path] = None

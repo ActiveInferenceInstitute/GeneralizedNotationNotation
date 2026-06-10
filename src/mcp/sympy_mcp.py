@@ -386,6 +386,7 @@ def validate_equation_tool_sync(
 
     # Store reference to async function to avoid recursion
     async def _async_wrapper() -> Any:
+        """Handle async wrapper for internal callers."""
         return await validate_equation_tool_async(equation, context)
 
     return asyncio.run(_async_wrapper())
@@ -397,6 +398,7 @@ def validate_matrix_tool_sync(
     """Synchronous wrapper for matrix validation"""
 
     async def _async_wrapper() -> Any:
+        """Handle async wrapper for internal callers."""
         return await validate_matrix_tool_async(matrix_data, matrix_type)
 
     return asyncio.run(_async_wrapper())
@@ -408,6 +410,7 @@ def analyze_stability_tool_sync(
     """Synchronous wrapper for stability analysis"""
 
     async def _async_wrapper() -> Any:
+        """Handle async wrapper for internal callers."""
         return await analyze_stability_tool_async(transition_matrices)
 
     return asyncio.run(_async_wrapper())
@@ -417,6 +420,7 @@ def simplify_expression_tool_sync(expression: str) -> Dict[str, Any]:
     """Synchronous wrapper for expression simplification"""
 
     async def _async_wrapper() -> Any:
+        """Handle async wrapper for internal callers."""
         return await simplify_expression_tool_async(expression)
 
     return asyncio.run(_async_wrapper())
@@ -428,6 +432,7 @@ def solve_equation_tool_sync(
     """Synchronous wrapper for equation solving"""
 
     async def _async_wrapper() -> Any:
+        """Handle async wrapper for internal callers."""
         return await solve_equation_tool_async(equation, variable, domain)
 
     return asyncio.run(_async_wrapper())
@@ -437,6 +442,7 @@ def get_latex_tool_sync(expression: str) -> Dict[str, Any]:
     """Synchronous wrapper for LaTeX conversion"""
 
     async def _async_wrapper() -> Any:
+        """Handle async wrapper for internal callers."""
         return await get_latex_tool_async(expression)
 
     return asyncio.run(_async_wrapper())
@@ -448,6 +454,7 @@ def initialize_sympy_tool_sync(
     """Synchronous wrapper for SymPy initialization"""
 
     async def _async_wrapper() -> Any:
+        """Handle async wrapper for internal callers."""
         return await initialize_sympy_tool_async(server_executable)
 
     return asyncio.run(_async_wrapper())
@@ -457,6 +464,7 @@ def cleanup_sympy_tool_sync() -> Dict[str, Any]:
     """Synchronous wrapper for SymPy cleanup"""
 
     async def _async_wrapper() -> Any:
+        """Handle async wrapper for internal callers."""
         return await cleanup_sympy_tool_async()
 
     return asyncio.run(_async_wrapper())

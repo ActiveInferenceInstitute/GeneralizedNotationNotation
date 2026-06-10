@@ -101,6 +101,7 @@ def render_dashboard(
 
 
 def _load_json(path: Path) -> dict:
+    """Load json."""
     if path.exists():
         try:
             with open(path) as f:
@@ -111,6 +112,7 @@ def _load_json(path: Path) -> dict:
 
 
 def _render_mermaid_graph(summary: dict) -> str:
+    """Render mermaid graph."""
     target_dir = summary.get("target_dir")
     if not target_dir:
         return ""
@@ -134,6 +136,7 @@ def _render_mermaid_graph(summary: dict) -> str:
 
 
 def _discover_step_dirs(results_dir: Path) -> List[Path]:
+    """Discover step dirs."""
     return sorted(
         d
         for d in results_dir.iterdir()
@@ -142,6 +145,7 @@ def _discover_step_dirs(results_dir: Path) -> List[Path]:
 
 
 def _status_color(status: str) -> str:
+    """Handle status color for internal callers."""
     s = str(status).lower()
     if s in ("success", "passed"):
         return "#22c55e"
@@ -153,6 +157,7 @@ def _status_color(status: str) -> str:
 
 
 def _render_sidebar(steps: List[dict], step_dirs: List[Path]) -> str:
+    """Render sidebar."""
     items: list[Any] = []
     if steps:
         for s in steps:
@@ -177,6 +182,7 @@ def _render_sidebar(steps: List[dict], step_dirs: List[Path]) -> str:
 
 
 def _render_timeline_svg(steps: List[dict]) -> str:
+    """Render timeline svg."""
     if not steps:
         return '<p class="muted">No timing data available.</p>'
 
@@ -209,6 +215,7 @@ def _render_timeline_svg(steps: List[dict]) -> str:
 
 
 def _render_step_details(steps: List[dict], step_dirs: List[Path]) -> str:
+    """Render step details."""
     sections: list[Any] = []
     dir_map = {d.name: d for d in step_dirs}
 
@@ -245,6 +252,7 @@ def _render_step_details(steps: List[dict], step_dirs: List[Path]) -> str:
 
 
 def _render_stats(summary: dict, step_dirs: List[Path]) -> str:
+    """Render stats."""
     total_files = sum(sum(1 for f in d.rglob("*") if f.is_file()) for d in step_dirs)
     total_size = sum(
         sum(f.stat().st_size for f in d.rglob("*") if f.is_file()) for d in step_dirs

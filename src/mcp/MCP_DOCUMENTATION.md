@@ -196,8 +196,8 @@ current counts:
 ## Installation and Setup
 
 ### Prerequisites
-- Python 3.8 or higher
-- Required dependencies (see requirements.txt)
+- Python 3.11 through 3.13, matching `pyproject.toml`
+- Required dependencies resolved from `pyproject.toml` / `uv.lock` with `uv sync`
 
 ### Installation
 ```bash
@@ -704,14 +704,14 @@ module_info = mcp_instance.get_module_info("my_module")
 
 ```bash
 # All MCP tests
-pytest src/tests/mcp/test_mcp_overall.py src/tests/mcp/test_mcp_functional.py \
+uv run --extra dev python -m pytest src/tests/mcp/test_mcp_overall.py src/tests/mcp/test_mcp_functional.py \
        src/tests/mcp/test_mcp_tools.py src/tests/mcp/test_mcp_performance.py \
        src/tests/mcp/test_mcp_audit.py -v
 
 # Narrower slices
-pytest src/tests/mcp/test_mcp_tools.py -v          # registration + dispatch
-pytest src/tests/mcp/test_mcp_performance.py -v    # load / latency
-pytest src/tests/mcp/test_mcp_audit.py -v          # spec / schema audit
+uv run --extra dev python -m pytest src/tests/mcp/test_mcp_tools.py -v          # registration + dispatch
+uv run --extra dev python -m pytest src/tests/mcp/test_mcp_performance.py -v    # load / latency
+uv run --extra dev python -m pytest src/tests/mcp/test_mcp_audit.py -v          # spec / schema audit
 ```
 
 ### Test Categories

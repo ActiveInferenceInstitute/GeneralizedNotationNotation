@@ -7,5 +7,5 @@ This folder contains module-focused tests for research processing and functional
 Run:
 
 ```bash
-uv run pytest src/tests/research/ -q
+uv run --extra dev python -m pytest src/tests/research/ -q
 ```

@@ -13,7 +13,7 @@ Pass/skip totals are **not** fixed in this file. Run and read the terminal outpu
 
 ```bash
 uv sync --extra dev
-uv run pytest src/tests/ -q --tb=no --ignore=src/tests/llm/test_llm_ollama.py --ignore=src/tests/llm/test_llm_ollama_integration.py
+uv run --extra dev python -m pytest src/tests/ -q --tb=no --ignore=src/tests/llm/test_llm_ollama.py --ignore=src/tests/llm/test_llm_ollama_integration.py
 ```
 
 CI uses a narrower marker (`-m "not pipeline and not mcp"`); see [.github/workflows/ci.yml](../../.github/workflows/ci.yml) and [CLAUDE.md](../../CLAUDE.md) for parity notes. Enable `test_llm_ollama*.py` when local Ollama is available.
@@ -509,18 +509,18 @@ filterwarnings =
 python -m pytest
 
 # Run specific test categories
-python -m pytest src/tests/unit/          # Unit tests only
-python -m pytest src/tests/integration/   # Integration tests only
+uv run --extra dev python -m pytest src/tests/unit/          # Unit tests only
+uv run --extra dev python -m pytest src/tests/integration/   # Integration tests only
 python -m pytest -m "not slow"            # Skip slow tests
 
 # Run with coverage
 python -m pytest --cov=src --cov-report=html:output/coverage
 
 # Run specific test file
-python -m pytest src/tests/unit/test_gnn_parser.py
+uv run --extra dev python -m pytest src/tests/unit/test_gnn_parser.py
 
 # Run specific test function
-python -m pytest src/tests/unit/test_gnn_parser.py::TestGNNParser::test_parse_valid_model
+uv run --extra dev python -m pytest src/tests/unit/test_gnn_parser.py::TestGNNParser::test_parse_valid_model
 ```
 
 ### Advanced Test Commands
@@ -623,7 +623,7 @@ repos:
     hooks:
     -   id: pytest-check
         name: pytest-check
-        entry: python -m pytest src/tests/unit/ -x
+        entry: uv run --extra dev python -m pytest src/tests/unit/ -x
         language: system
         pass_filenames: false
         always_run: true

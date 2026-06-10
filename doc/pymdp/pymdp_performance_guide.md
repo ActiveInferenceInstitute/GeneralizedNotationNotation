@@ -158,7 +158,7 @@ The meta-analysis module (v1.7.0) generates **scientific-grade visualizations** 
 The repository ships a runnable smoke benchmark that you can adapt:
 
 ```bash
-uv run pytest src/tests/execute/test_pymdp_contracts.py::test_pymdp_seeded_reproducibility_contract \
+uv run --extra dev python -m pytest src/tests/execute/test_pymdp_contracts.py::test_pymdp_seeded_reproducibility_contract \
     --durations=5 -v
 ```
 
@@ -168,7 +168,7 @@ and prints per-test wall times in the slowest-durations report.
 For a larger workload, use the ActInf POMDP end-to-end test:
 
 ```bash
-uv run pytest src/tests/execute/test_pymdp_contracts.py::test_actinf_pomdp_render_execute_analyze_e2e \
+uv run --extra dev python -m pytest src/tests/execute/test_pymdp_contracts.py::test_actinf_pomdp_render_execute_analyze_e2e \
     --durations=5 -v -m "integration and slow"
 ```
 

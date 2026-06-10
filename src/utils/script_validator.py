@@ -47,6 +47,7 @@ class PipelineScriptValidator:
     """Validator for pipeline scripts."""
 
     def __init__(self, src_dir: Optional[Path] = None) -> None:
+        """Initialize the instance."""
         self.src_dir = src_dir or Path(__file__).parent.parent
         self.logger = logging.getLogger(__name__)
 

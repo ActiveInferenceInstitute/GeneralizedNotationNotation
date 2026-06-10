@@ -394,7 +394,7 @@ GNN Parsing → Model Validation → Framework Selection → Code Generation →
 Measure on demand:
 
 ```bash
-uv run pytest src/tests/test_render*.py \
+uv run --extra dev python -m pytest src/tests/test_render*.py \
     --cov=src/render --cov-report=term-missing
 ```
 ### Key Test Scenarios

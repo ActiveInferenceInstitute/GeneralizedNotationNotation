@@ -104,10 +104,10 @@ def register_tools(server: Any) -> None:
 
 ```bash
 # Full MCP audit (part of src/tests/; suite counts in repository README.md)
-uv run pytest src/tests/mcp/test_mcp_audit.py -v
+uv run --extra dev python -m pytest src/tests/mcp/test_mcp_audit.py -v
 
 # Focus on your new module
-uv run pytest src/tests/mcp/test_mcp_audit.py -v -k "<module>"
+uv run --extra dev python -m pytest src/tests/mcp/test_mcp_audit.py -v -k "<module>"
 
 # Generate the tool inventory JSON
 uv run python src/mcp/validate_tools.py

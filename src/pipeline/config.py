@@ -92,6 +92,7 @@ class StepConfig:
     """Configuration for a pipeline step."""
 
     def __init__(self, step_name: str, **kwargs: Any) -> None:
+        """Initialize the instance."""
         self.step_name = step_name
         self.enabled = kwargs.get("enabled", True)
         self.timeout = kwargs.get("timeout", 3600)
@@ -109,6 +110,7 @@ class PipelineConfig:
     """Pipeline configuration manager."""
 
     def __init__(self, config_path: Optional[Path] = None) -> None:
+        """Initialize the instance."""
         self.config_path = config_path or Path("pipeline_config.yaml")
         self.config = self._load_settings_from_path()
 

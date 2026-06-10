@@ -7,5 +7,5 @@ This folder contains module-focused tests for CLI help, routing, and subcommand 
 Run:
 
 ```bash
-uv run pytest src/tests/cli/ -q
+uv run --extra dev python -m pytest src/tests/cli/ -q
 ```

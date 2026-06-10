@@ -102,6 +102,7 @@ class Exporter:
             return out
 
     def validate_format(self, format_name: str) -> bool:
+        """Validate format."""
         return validate_export_format(format_name)
 
 
@@ -109,6 +110,7 @@ class MultiFormatExporter:
     """Exporter that produces multiple formats in one call (test helper)."""
 
     def export_to_multiple_formats(self, gnn_content: str, formats: list[str]) -> dict:
+        """Export to multiple formats."""
         import tempfile
         from pathlib import Path
 
@@ -120,6 +122,7 @@ class MultiFormatExporter:
             return out
 
     def get_supported_formats(self) -> list[str]:
+        """Return supported formats."""
         return get_supported_formats()
 
 

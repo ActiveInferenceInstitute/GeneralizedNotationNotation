@@ -7,5 +7,5 @@ This folder contains module-focused tests for security processing, functional ch
 Run:
 
 ```bash
-uv run pytest src/tests/security/ -q
+uv run --extra dev python -m pytest src/tests/security/ -q
 ```

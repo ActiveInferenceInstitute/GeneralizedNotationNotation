@@ -54,6 +54,7 @@ class _DefaultStepArgs:
     """Default pipeline step arguments returned by RecoveryArgumentParser."""
 
     def __init__(self, step_name: str) -> None:
+        """Initialize the instance."""
         self.verbose = False
         self.output_dir = Path("output")
         self.step_name = step_name

@@ -24,6 +24,7 @@ class ReportGenerator:
     """
 
     def __init__(self) -> None:
+        """Initialize the instance."""
         self.report_formats = ["json", "markdown", "html"]
 
     def generate_processing_report(

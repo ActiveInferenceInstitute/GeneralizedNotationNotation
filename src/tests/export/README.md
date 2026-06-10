@@ -7,5 +7,5 @@ This folder contains module-focused tests for export processing and serializatio
 Run:
 
 ```bash
-uv run pytest src/tests/export/ -q
+uv run --extra dev python -m pytest src/tests/export/ -q
 ```

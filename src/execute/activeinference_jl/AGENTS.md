@@ -431,7 +431,7 @@ ActiveInference.jl Code Generation → Julia Environment Setup → Model Compila
 Measure on demand:
 
 ```bash
-uv run pytest src/tests/test_activeinference_jl*.py \
+uv run --extra dev python -m pytest src/tests/test_activeinference_jl*.py \
     --cov=src/execute/activeinference_jl --cov-report=term-missing
 ```
 ### Key Test Scenarios
@@ -444,10 +444,10 @@ uv run pytest src/tests/test_activeinference_jl*.py \
 ### Test Commands
 ```bash
 # Run ActiveInference.jl execution tests
-pytest src/tests/test_execute_activeinference*.py -v
+uv run --extra dev python -m pytest src/tests/test_execute_activeinference*.py -v
 
 # Run with coverage
-pytest src/tests/test_execute_activeinference*.py --cov=src/execute/activeinference_jl --cov-report=term-missing
+uv run --extra dev python -m pytest src/tests/test_execute_activeinference*.py --cov=src/execute/activeinference_jl --cov-report=term-missing
 ```
 
 ---

@@ -50,7 +50,7 @@ This document tracks notable changes, additions, and improvements to the GNN doc
 Counts drift as the tree grows. For **mechanical** link and pairing checks, run from the repository root:
 
 ```bash
-uv run python doc/development/docs_audit.py --strict
+uv run --extra dev python doc/development/docs_audit.py --strict
 ```
 
 Approximate scale (order of magnitude): hundreds of Markdown files under `doc/`, many AGENTS/README pairs, cross-links maintained via audits rather than fixed integers here.

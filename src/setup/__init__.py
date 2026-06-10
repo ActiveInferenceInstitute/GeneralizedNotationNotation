@@ -119,7 +119,10 @@ __all__: list[Any] = [
 
 # Minimal classes/APIs expected by tests
 class EnvironmentManager:
+    """Provide EnvironmentManager behavior."""
+
     def setup_environment(self, *args: Any, **kwargs: Any) -> bool:
+        """Set up environment."""
         return True
 
     def validate_environment(self, *args: Any, **kwargs: Any) -> Dict[str, Any]:
@@ -138,17 +141,23 @@ class EnvironmentManager:
 
 
 class VirtualEnvironment:
+    """Provide VirtualEnvironment behavior."""
+
     def __init__(self, name: str) -> None:
+        """Initialize the instance."""
         self.name = name
 
     def create(self) -> bool:
+        """Create operation."""
         return True
 
     def activate(self) -> bool:
+        """Provide activate behavior."""
         return True
 
 
 def validate_environment() -> dict:
+    """Validate environment."""
     try:
         from .uv_management import validate_uv_setup
 

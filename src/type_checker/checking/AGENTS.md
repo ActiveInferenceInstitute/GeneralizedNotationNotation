@@ -9,4 +9,4 @@ This directory owns the core structural type-checking rules for `src/type_checke
 - Keep tests in `src/tests/type_checker/` focused on real checker behavior.
 
 ## Verification
-Run `uv run pytest src/tests/type_checker/ -q`.
+Run `uv run --extra dev python -m pytest src/tests/type_checker/ -q`.

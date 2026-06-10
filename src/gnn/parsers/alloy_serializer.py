@@ -8,6 +8,7 @@ class AlloySerializer(BaseGNNSerializer):
     """Serializer for Alloy model checking language."""
 
     def __init__(self) -> None:
+        """Initialize the instance."""
         super().__init__()
         self.format_name = "alloy"
 

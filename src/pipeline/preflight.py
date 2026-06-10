@@ -37,15 +37,18 @@ class PreflightReport:
 
     @property
     def is_ok(self) -> bool:
+        """Return whether ok."""
         return self.checks_failed == 0
 
     def add_pass(self, msg: str) -> None:
+        """Provide add pass behavior."""
         self.checks_passed += 1
         logger.debug(f"✅ {msg}")
 
     def add_issue(
         self, category: str, severity: str, msg: str, fix: Optional[str] = None
     ) -> Any:
+        """Provide add issue behavior."""
         self.issues.append(
             PreflightIssue(category=category, severity=severity, message=msg, fix=fix)
         )
@@ -54,6 +57,7 @@ class PreflightReport:
         logger.warning(f"⚠️ [{category}] {msg}")
 
     def to_markdown(self) -> str:
+        """Provide to markdown behavior."""
         lines: list[Any] = ["# Preflight Check Report", ""]
         emoji = "🟢" if self.is_ok else "🔴"
         lines.append(

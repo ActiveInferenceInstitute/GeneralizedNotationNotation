@@ -22,6 +22,7 @@ class SimpleValidator:
     """
 
     def __init__(self) -> None:
+        """Initialize the instance."""
         self.valid_extensions = [".md", ".json", ".xml", ".yaml", ".pkl"]
 
     def validate_file(self, file_path: Path) -> Dict[str, Any]:

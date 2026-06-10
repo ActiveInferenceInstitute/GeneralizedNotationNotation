@@ -34,6 +34,7 @@ class IsabelleParser(BaseGNNParser):
     """Parser for Isabelle/HOL theorem proving specifications."""
 
     def __init__(self) -> None:
+        """Initialize the instance."""
         super().__init__()
         self.theory_pattern = re.compile(
             r"theory\s+(\w+)\s+imports\s+([\w\s]+)\s+begin", re.IGNORECASE

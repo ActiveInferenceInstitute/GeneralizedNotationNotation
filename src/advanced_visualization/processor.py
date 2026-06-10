@@ -52,15 +52,18 @@ class SafeAdvancedVisualizationManager:
     """Context manager for safe advanced visualization with automatic cleanup"""
 
     def __init__(self, logger: logging.Logger) -> None:
+        """Initialize the instance."""
         self.logger = logger
         self.tracker = PerformanceTracker()
         self.start_time: float | None = None
 
     def __enter__(self) -> Any:
+        """Enter the context manager."""
         self.start_time = time.time()
         return self
 
     def __exit__(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> Any:
+        """Exit the context manager and release resources."""
         if exc_type is not None:
             self.logger.warning(f"Advanced visualization encountered error: {exc_val}")
         return False  # Don't suppress exceptions
@@ -391,6 +394,7 @@ def process_advanced_viz(
 
                 # Helper to track attempt results
                 def _track(attempt: Any) -> Any:
+                    """Handle track for internal callers."""
                     results.attempts.append(attempt)
                     results.total_attempts += 1
                     if attempt.status == "success":

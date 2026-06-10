@@ -31,12 +31,15 @@ class PickleGNNParser(BaseGNNParser):
     """Parser for Python pickle binary format with enhanced round-trip support."""
 
     def __init__(self) -> None:
+        """Initialize the instance."""
         super().__init__()
 
     def get_supported_extensions(self) -> List[str]:
+        """Return supported extensions."""
         return [".pkl", ".pickle"]
 
     def parse_file(self, file_path: str) -> ParseResult:
+        """Parse file."""
         try:
             # Try binary read first
             with open(file_path, "rb") as f:

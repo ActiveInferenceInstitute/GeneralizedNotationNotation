@@ -24,6 +24,7 @@ class PipelineDiagnosticEnhancer:
     """
 
     def __init__(self) -> None:
+        """Initialize the instance."""
         self.known_issues = {
             "gradio.*has no attribute.*Blocks": {
                 "category": "dependency_version",

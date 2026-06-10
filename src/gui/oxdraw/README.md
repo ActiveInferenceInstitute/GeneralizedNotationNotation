@@ -224,7 +224,7 @@ Launch interactive oxdraw editor.
 # Run parser tests
 
 # Run all oxdraw tests
-pytest src/tests/test_*oxdraw*.py src/tests/test_mermaid*.py -v
+uv run --extra dev python -m pytest src/tests/test_*oxdraw*.py src/tests/test_mermaid*.py -v
 ```
 
 ### Test Coverage

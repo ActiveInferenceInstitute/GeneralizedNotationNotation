@@ -42,7 +42,7 @@ from export import get_supported_formats, get_module_info
 ## Testing
 
 ```bash
-uv run python -m pytest src/tests/export/test_export_overall.py src/tests/export/test_export_roundtrip.py -v
+uv run uv run --extra dev python -m pytest src/tests/export/test_export_overall.py src/tests/export/test_export_roundtrip.py -v
 ```
 
 

@@ -383,7 +383,7 @@ Configuration → Step Discovery → Dependency Validation → Execution Plannin
 Measure on demand — no static number is kept in this file:
 
 ```bash
-uv run pytest src/tests/test_pipeline_*.py --cov=src/pipeline --cov-report=term-missing
+uv run --extra dev python -m pytest src/tests/test_pipeline_*.py --cov=src/pipeline --cov-report=term-missing
 ```
 
 ### Key Test Scenarios

@@ -22,6 +22,7 @@ class MCPError(Exception):
         tool_name: Optional[str] = None,
         module_name: Optional[str] = None,
     ) -> None:
+        """Initialize the instance."""
         super().__init__(message)
         self.code = code
         self.data = data or {}
@@ -42,6 +43,7 @@ class MCPToolNotFoundError(MCPError):
     def __init__(
         self, tool_name: str, available_tools: Optional[List[str]] = None
     ) -> None:
+        """Initialize the instance."""
         super().__init__(
             f"Tool '{tool_name}' not found",
             code=-32601,
@@ -56,6 +58,7 @@ class MCPResourceNotFoundError(MCPError):
     def __init__(
         self, uri: str, available_resources: Optional[List[str]] = None
     ) -> None:
+        """Initialize the instance."""
         super().__init__(
             f"Resource '{uri}' not found",
             code=-32601,
@@ -74,6 +77,7 @@ class MCPInvalidParamsError(MCPError):
         tool_name: Optional[str] = None,
         schema: Optional[Dict[str, Any]] = None,
     ) -> None:
+        """Initialize the instance."""
         super().__init__(
             message,
             code=-32602,
@@ -91,6 +95,7 @@ class MCPToolExecutionError(MCPError):
         original_exception: Exception,
         execution_time: Optional[float] = None,
     ) -> None:
+        """Initialize the instance."""
         super().__init__(
             f"Tool '{tool_name}' execution failed: {str(original_exception)}",
             code=-32603,
@@ -111,6 +116,7 @@ class MCPSDKNotFoundError(MCPError):
         message: str = "MCP SDK not found or failed to initialize.",
         sdk_paths: Optional[List[str]] = None,
     ) -> None:
+        """Initialize the instance."""
         super().__init__(message, code=-32001, data={"sdk_paths": sdk_paths or []})
 
 
@@ -124,6 +130,7 @@ class MCPValidationError(MCPError):
         tool_name: Optional[str] = None,
         value: Optional[Any] = None,
     ) -> None:
+        """Initialize the instance."""
         super().__init__(
             message,
             code=-32602,
@@ -136,6 +143,7 @@ class MCPModuleLoadError(MCPError):
     """Raised when a module fails to load."""
 
     def __init__(self, module_name: str, original_exception: Exception) -> None:
+        """Initialize the instance."""
         super().__init__(
             f"Module '{module_name}' failed to load: {str(original_exception)}",
             code=-32003,
@@ -151,6 +159,7 @@ class MCPPerformanceError(MCPError):
     """Raised when performance thresholds are exceeded."""
 
     def __init__(self, operation: str, execution_time: float, threshold: float) -> None:
+        """Initialize the instance."""
         super().__init__(
             f"Performance threshold exceeded for '{operation}': {execution_time:.3f}s > {threshold:.3f}s",
             code=-32004,
@@ -166,6 +175,7 @@ class MCPRateLimitError(MCPError):
     """Raised when rate limit is exceeded for a tool."""
 
     def __init__(self, tool_name: str, rate_limit: float, current_rate: float) -> None:
+        """Initialize the instance."""
         super().__init__(
             f"Rate limit exceeded for tool '{tool_name}': {current_rate:.2f} req/s > {rate_limit:.2f} req/s",
             code=-32005,
@@ -184,6 +194,7 @@ class MCPCacheError(MCPError):
     def __init__(
         self, operation: str, cache_key: str, original_error: Exception
     ) -> None:
+        """Initialize the instance."""
         super().__init__(
             f"Cache operation '{operation}' failed for key '{cache_key}': {str(original_error)}",
             code=-32006,
@@ -201,6 +212,7 @@ class MCPModuleDiscoveryError(MCPError):
     def __init__(
         self, module_name: str, discovery_path: str, original_error: Exception
     ) -> None:
+        """Initialize the instance."""
         super().__init__(
             f"Module discovery failed for '{module_name}' in '{discovery_path}': {str(original_error)}",
             code=-32007,

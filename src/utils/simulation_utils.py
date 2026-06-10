@@ -18,6 +18,7 @@ class SimulationTracker:
     """Generic tracker for simulation data across different frameworks."""
 
     def __init__(self, model_name: str, framework: str, output_dir: Path) -> None:
+        """Initialize the instance."""
         self.model_name = model_name
         self.framework = framework
         self.output_dir = Path(output_dir)
@@ -267,6 +268,7 @@ class DiagramAnalyzer:
     """Generic analyzer for categorical diagrams and mathematical structures."""
 
     def __init__(self, model_name: str, output_dir: Path) -> None:
+        """Initialize the instance."""
         self.model_name = model_name
         self.output_dir = Path(output_dir)
 

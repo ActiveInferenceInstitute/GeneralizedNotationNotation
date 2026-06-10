@@ -308,7 +308,7 @@ File Input → Security Validation → Threat Detection → Access Control → S
 Measure on demand:
 
 ```bash
-uv run pytest src/tests/test_security*.py \
+uv run --extra dev python -m pytest src/tests/test_security*.py \
     --cov=src/security --cov-report=term-missing
 ```
 ### Key Test Scenarios

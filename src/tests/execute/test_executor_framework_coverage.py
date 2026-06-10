@@ -89,38 +89,38 @@ def test_failed_framework_runner_logs_warning_not_success(
 
     log_events: list[tuple[str, str]] = []
 
-    def fake_runner(**kwargs: Any) -> bool:
+    def sample_runner(**kwargs: Any) -> bool:
         return False
 
-    def fake_log_step_success(logger: logging.Logger, message: str) -> None:
+    def sample_log_step_success(logger: logging.Logger, message: str) -> None:
         log_events.append(("success", message))
 
-    def fake_log_step_warning(logger: logging.Logger, message: str) -> None:
+    def sample_log_step_warning(logger: logging.Logger, message: str) -> None:
         log_events.append(("warning", message))
 
-    monkeypatch.setattr(executor_module, "log_step_success", fake_log_step_success)
-    monkeypatch.setattr(executor_module, "log_step_warning", fake_log_step_warning)
+    monkeypatch.setattr(executor_module, "log_step_success", sample_log_step_success)
+    monkeypatch.setattr(executor_module, "log_step_warning", sample_log_step_warning)
 
     spec = executor_module.ExecutorFrameworkSpec(
-        framework_dir_key="fake",
-        result_key="fake_executions",
+        framework_dir_key="sample",
+        result_key="sample_executions",
         available=True,
-        runner=fake_runner,
-        operation_name="fake_operation",
-        start_message="Running fake framework",
-        success_message="Fake framework succeeded",
-        failure_message="Fake framework failed",
-        unavailable_log="Fake framework unavailable",
-        unavailable_message="Fake framework unavailable",
-        success_log="Fake framework completed",
-        warning_log_prefix="Fake framework warning",
+        runner=sample_runner,
+        operation_name="sample_operation",
+        start_message="Running sample framework",
+        success_message="Sample framework succeeded",
+        failure_message="Sample framework failed",
+        unavailable_log="Sample framework unavailable",
+        unavailable_message="Sample framework unavailable",
+        success_log="Sample framework completed",
+        warning_log_prefix="Sample framework warning",
     )
-    framework_dirs = {"fake": tmp_path / "fake"}
-    framework_dirs["fake"].mkdir()
+    framework_dirs = {"sample": tmp_path / "sample"}
+    framework_dirs["sample"].mkdir()
     execution_results: dict[str, Any] = {
         "total_successes": 0,
         "total_failures": 0,
-        "fake_executions": [],
+        "sample_executions": [],
     }
 
     executor_module._execute_framework_spec(
@@ -135,6 +135,6 @@ def test_failed_framework_runner_logs_warning_not_success(
 
     assert execution_results["total_successes"] == 0
     assert execution_results["total_failures"] == 1
-    assert execution_results["fake_executions"][0]["status"] == "FAILED"
-    assert ("warning", "Fake framework failed") in log_events
+    assert execution_results["sample_executions"][0]["status"] == "FAILED"
+    assert ("warning", "Sample framework failed") in log_events
     assert all(event_type != "success" for event_type, _ in log_events)

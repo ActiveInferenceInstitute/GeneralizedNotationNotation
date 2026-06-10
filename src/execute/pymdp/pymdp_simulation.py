@@ -133,9 +133,11 @@ class PyMDPSimulation:
     # Parameter extraction
     # ------------------------------------------------------------------
     def _initialize_parameters(self) -> None:
+        """Handle initialize parameters for internal callers."""
         cfg = self.gnn_config
 
         def _resolve(name: str, default_prefix: str, default_count: int) -> List[str]:
+            """Handle resolve for internal callers."""
             raw = cfg.get(name, [])
             if isinstance(raw, int):
                 return [f"{default_prefix}_{i}" for i in range(raw)]
@@ -240,6 +242,7 @@ class PyMDPSimulation:
         return _canonicalise_B(B, Ns, Na)
 
     def _demo_preference_model(self) -> np.ndarray:
+        """Handle demo preference model for internal callers."""
         params = self.gnn_config.get("parameters", {}) or {}
         prefs = params.get("preferences")
         if isinstance(prefs, (list, tuple, np.ndarray)):
@@ -254,6 +257,7 @@ class PyMDPSimulation:
         return C
 
     def _demo_prior_beliefs(self) -> np.ndarray:
+        """Handle demo prior beliefs for internal callers."""
         params = self.gnn_config.get("parameters", {}) or {}
         prior = params.get("prior_beliefs")
         if isinstance(prior, (list, tuple, np.ndarray)):
@@ -266,6 +270,7 @@ class PyMDPSimulation:
         return D
 
     def _build_model_from_demo_spec(self) -> None:
+        """Build model from demo spec."""
         A_np = self._demo_observation_model()
         B_np = self._demo_transition_model()
         C_np = self._demo_preference_model()
@@ -278,6 +283,7 @@ class PyMDPSimulation:
     def _build_model_from_initial_parameterization(
         self, init_params: Dict[str, Any]
     ) -> None:
+        """Build model from initial parameterization."""
         fallback_shape = (self.num_observations, self.num_states)
         A_np = _canonicalise_A(init_params.get("A"), fallback_shape)
 
@@ -312,6 +318,7 @@ class PyMDPSimulation:
         D_np: np.ndarray,
         E_np: Optional[np.ndarray],
     ) -> None:
+        """Handle install matrices for internal callers."""
         self.A_np = A_np
         self.B_np = B_np
         self.C_np = C_np
@@ -330,6 +337,7 @@ class PyMDPSimulation:
         }
 
     def _instantiate_agent(self) -> None:
+        """Handle instantiate agent for internal callers."""
         self.agent = _build_pymdp_agent(
             A_np=self.A_np,
             B_np=self.B_np,
@@ -398,6 +406,7 @@ class PyMDPSimulation:
     def _sample_observation(
         self, current_state: int, np_rng: np.random.Generator
     ) -> int:
+        """Handle sample observation for internal callers."""
         probs = _normalise_prob_vector(self.A_np[:, current_state])
         return int(np_rng.choice(self.num_observations, p=probs))
 
@@ -409,6 +418,7 @@ class PyMDPSimulation:
         np_rng: np.random.Generator,
         jax_key: Any,
     ) -> Tuple[int, Any, Any, Dict[str, Any]]:
+        """Run simulation step."""
         import jax.numpy as jnp
         import jax.random as jr
 
@@ -457,6 +467,7 @@ class PyMDPSimulation:
         num_timesteps: Optional[int] = None,
         **_: Any,
     ) -> Dict[str, Any]:
+        """Run simulation."""
         if num_timesteps is not None:
             try:
                 self.num_timesteps = int(num_timesteps)
@@ -594,6 +605,7 @@ class PyMDPSimulation:
         return results_out
 
     def _analyze_results(self, duration: float) -> Dict[str, Any]:
+        """Analyze results."""
         if not self.simulation_trace:
             return {}
 
@@ -637,6 +649,7 @@ class PyMDPSimulation:
         }
 
     def _save_results(self, output_dir: Path) -> None:
+        """Save results."""
         try:
             output_dir.mkdir(parents=True, exist_ok=True)
             results_file = output_dir / f"pymdp_results_{self.model_name}.json"
@@ -658,6 +671,7 @@ class PyMDPSimulation:
             self.logger.error("Error saving results: %s", e)
 
     def get_summary(self) -> Dict[str, Any]:
+        """Return summary."""
         if not self.results:
             return {"status": "no_results"}
         perf = self.results.get("performance", {})

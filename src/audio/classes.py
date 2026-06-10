@@ -126,6 +126,7 @@ class AudioGenerator:
     def process_gnn_to_audio(
         self, gnn_content: str, output_dir: Optional[Path] = None
     ) -> Dict[str, Any]:
+        """Process gnn to audio."""
         from .analyzer import process_gnn_to_audio
 
         return process_gnn_to_audio(
@@ -139,6 +140,7 @@ class SAPFGNNProcessor:
     """SAPF (Sonification and Audio Processing Framework) GNN Processor."""
 
     def __init__(self) -> None:
+        """Initialize the instance."""
         self.supported_formats = ["wav", "mp3", "flac", "ogg"]
         self.audio_engines = ["basic", "sapf", "pedalboard"]
 
@@ -209,6 +211,7 @@ class SAPFGNNProcessor:
 
     # Methods expected by tests on processor instances
     def convert_gnn_to_sapf(self, gnn_content: str, output_dir: Path) -> Dict[str, Any]:
+        """Convert gnn to sapf."""
         from .analyzer import convert_gnn_to_sapf
 
         return convert_gnn_to_sapf(gnn_content, output_dir)
@@ -216,6 +219,7 @@ class SAPFGNNProcessor:
     def process_audio(
         self, target_dir: Path, output_dir: Path, verbose: bool = False
     ) -> bool:
+        """Process audio."""
         from .processor import process_audio as _process_audio
 
         return _process_audio(target_dir, output_dir, verbose)
@@ -224,4 +228,5 @@ class SAPFGNNProcessor:
         self, audio_data: Any, effects: Optional[List[str]] = None
     ) -> Any:
         # Minimal no-op implementation for test expectations
+        """Apply effects."""
         return audio_data

@@ -26,6 +26,7 @@ class DependencyInstaller:
     """Comprehensive dependency installer for the GNN pipeline."""
 
     def __init__(self, use_uv: bool = True, verbose: bool = True) -> None:
+        """Initialize the instance."""
         self.use_uv = use_uv
         self.verbose = verbose
         self.logger = self._setup_logging()

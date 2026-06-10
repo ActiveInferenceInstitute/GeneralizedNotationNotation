@@ -223,7 +223,7 @@ class TestRenderIntegration:
 
 ```bash
 # Enforce the numbered-script line budget and basic script structure
-uv run pytest src/tests/pipeline/test_pipeline_scripts.py::TestPipelineScriptDiscovery -q
+uv run --extra dev python -m pytest src/tests/pipeline/test_pipeline_scripts.py::TestPipelineScriptDiscovery -q
 
 # Inspect current numbered-script sizes
 rg --files src -g '[0-9]*_*.py' | sort -V | xargs wc -l

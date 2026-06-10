@@ -51,6 +51,7 @@ def normalise_matrix_columns(value: Any, *, name: str) -> List[List[float]]:
 
 
 def _declared_b_order(model_parameters: Dict[str, Any]) -> str:
+    """Handle declared b order for internal callers."""
     order = str(
         model_parameters.get("b_tensor_order")
         or model_parameters.get("B_tensor_order")
@@ -151,6 +152,7 @@ def canonicalise_b_matrix(
 
 
 def _first_int(*values: Any, required: bool = True) -> int:
+    """Handle first int for internal callers."""
     for value in values:
         if value is None:
             continue
@@ -180,6 +182,7 @@ def _infer_num_actions_from_b(value: Any, *, num_states: int) -> int:
 
 
 def _require_keys(mapping: Dict[str, Any], keys: Iterable[str]) -> None:
+    """Handle require keys for internal callers."""
     missing = [key for key in keys if key not in mapping]
     if missing:
         raise ValueError(f"Missing required initialparameterization keys: {missing}")

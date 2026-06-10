@@ -7,5 +7,5 @@ This folder contains module-focused tests for advanced visualization behavior an
 Run:
 
 ```bash
-uv run pytest src/tests/advanced_visualization/ -q
+uv run --extra dev python -m pytest src/tests/advanced_visualization/ -q
 ```

@@ -48,6 +48,7 @@ class OllamaProvider(BaseLLMProvider):
     DEFAULT_MODEL = DEFAULT_OLLAMA_MODEL
 
     def __init__(self, **kwargs: Any) -> None:
+        """Initialize the instance."""
         super().__init__(api_key=None, **kwargs)
         self.base_url = kwargs.get("base_url")  # optional custom host
         self.default_model_override = kwargs.get("default_model")
@@ -61,18 +62,22 @@ class OllamaProvider(BaseLLMProvider):
 
     @property
     def provider_type(self) -> ProviderType:
+        """Provide provider type behavior."""
         return ProviderType.OLLAMA
 
     @property
     def default_model(self) -> str:
+        """Provide default model behavior."""
         return self.default_model_override or self.DEFAULT_MODEL
 
     @property
     def available_models(self) -> List[str]:
+        """Provide available models behavior."""
         return list(self.AVAILABLE_MODELS)
 
     def initialize(self) -> bool:
         # Prefer Python client
+        """Provide initialize behavior."""
         try:
             import ollama
 
@@ -112,6 +117,7 @@ class OllamaProvider(BaseLLMProvider):
 
     def validate_config(self, config: LLMConfig) -> bool:
         # Ollama accepts many models; don't strictly enforce model list
+        """Validate config."""
         if config.max_tokens is not None and config.max_tokens <= 0:
             logger.error("max_tokens must be positive")
             return False
@@ -125,6 +131,7 @@ class OllamaProvider(BaseLLMProvider):
         messages: List[LLMMessage],
         config: Optional[LLMConfig] = None,
     ) -> LLMResponse:
+        """Generate response."""
         if not self.is_initialized:
             raise RuntimeError("Ollama provider not initialized")
 
@@ -148,6 +155,7 @@ class OllamaProvider(BaseLLMProvider):
                 model = config.model or self.default_model
 
                 def _call_cli() -> Dict[str, Any]:
+                    """Handle call cli for internal callers."""
                     import time as _t
 
                     # Prefer JSON mode via `ollama chat` if available; recovery to `ollama run`
@@ -217,6 +225,7 @@ class OllamaProvider(BaseLLMProvider):
             else:
                 # Python client - returns ChatResponse object
                 def _call_py() -> Any:
+                    """Handle call py for internal callers."""
                     return self._ollama.chat(
                         model=config.model or self.default_model,
                         messages=ollama_messages,
@@ -271,6 +280,7 @@ class OllamaProvider(BaseLLMProvider):
         messages: List[LLMMessage],
         config: Optional[LLMConfig] = None,
     ) -> AsyncGenerator[str, None]:
+        """Generate stream."""
         if not self.is_initialized:
             raise RuntimeError("Ollama provider not initialized")
 
@@ -289,6 +299,7 @@ class OllamaProvider(BaseLLMProvider):
             if self._use_cli:
                 # CLI streaming not standardized; emit single chunk
                 def _call_cli_once() -> str:
+                    """Handle call cli once for internal callers."""
                     import time as _t
 
                     prompt = "\n\n".join(m.content for m in messages)
@@ -315,6 +326,7 @@ class OllamaProvider(BaseLLMProvider):
             else:
 
                 def _iter() -> Any:
+                    """Handle iter for internal callers."""
                     return self._ollama.generate(
                         model=config.model or self.default_model,
                         prompt="\n\n".join(
@@ -349,11 +361,13 @@ class OllamaProvider(BaseLLMProvider):
         prompt = f"Analyze this GNN model for {task}: {content}"
 
         async def _run() -> LLMResponse:
+            """Run operation."""
             return await self.generate_response(
                 [LLMMessage(role="user", content=prompt)]
             )
 
         def _extract(result: Any) -> str:
+            """Extract operation."""
             return result.content if hasattr(result, "content") else str(result)
 
         try:
@@ -362,6 +376,7 @@ class OllamaProvider(BaseLLMProvider):
         except RuntimeError:
 
             def _thread_run() -> LLMResponse:
+                """Handle thread run for internal callers."""
                 return asyncio.run(_run())
 
             with concurrent.futures.ThreadPoolExecutor(max_workers=1) as pool:
@@ -373,5 +388,6 @@ class OllamaProvider(BaseLLMProvider):
 
     async def close(self) -> None:
         # No persistent connection to close for Ollama
+        """Close operation."""
         self._is_initialized = False
         logger.info("Ollama provider closed")

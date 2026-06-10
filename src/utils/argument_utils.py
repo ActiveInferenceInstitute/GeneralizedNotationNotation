@@ -2001,6 +2001,7 @@ def parse_arguments() -> PipelineArguments:
 
 
 def validate_and_convert_paths(args: PipelineArguments, logger: logging.Logger) -> Any:
+    """Validate and convert paths."""
     path_args_to_check: list[Any] = [
         "output_dir",
         "target_dir",

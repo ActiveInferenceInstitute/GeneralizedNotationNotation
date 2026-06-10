@@ -8,6 +8,7 @@ logger = logging.getLogger(__name__)
 
 
 def get_pipeline_scripts(current_dir: Path) -> list[dict[str, int | str | Path]]:
+    """Return pipeline scripts."""
     potential_scripts_pattern = current_dir / "*_*.py"
     logger.debug(
         f"ℹ️ Discovering potential pipeline scripts using pattern: {potential_scripts_pattern}"

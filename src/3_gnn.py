@@ -24,6 +24,7 @@ run_script = create_standardized_pipeline_script(
 
 
 def main() -> int:
+    """Provide main behavior."""
     return cast("int", run_script())
 
 

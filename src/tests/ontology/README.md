@@ -7,5 +7,5 @@ This folder contains module-focused tests for ontology processing and annotation
 Run:
 
 ```bash
-uv run pytest src/tests/ontology/ -q
+uv run --extra dev python -m pytest src/tests/ontology/ -q
 ```

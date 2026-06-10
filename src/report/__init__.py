@@ -70,13 +70,16 @@ class ReportGenerator:
     def generate_processing_report(
         self, context: "Any | None" = None, output_dir: Path | None = None
     ) -> dict:
+        """Generate processing report."""
         return {"status": "SUCCESS", "reports": []}
 
     # Methods expected by tests
     def generate_report(self, data: Dict[str, Any] | None = None) -> Dict[str, Any]:
+        """Generate report."""
         return {"status": "SUCCESS", "data": data or {}}
 
     def format_report(self, content: Any, fmt: str = "markdown") -> str:
+        """Provide format report behavior."""
         if fmt == "html":
             return f"<html><body><pre>{content}</pre></body></html>"
         return f"# Report\n\n{content}"
@@ -86,12 +89,15 @@ class ReportFormatter:
     """Minimal ReportFormatter API expected by tests."""
 
     def format(self, data: dict, kind: str = "markdown") -> str:
+        """Provide format behavior."""
         return "# Report\n"
 
     def format_markdown(self, content: Any) -> str:
+        """Provide format markdown behavior."""
         return f"# Report\n\n{content}"
 
     def format_html(self, content: Any) -> str:
+        """Provide format html behavior."""
         return f"<html><body><pre>{content}</pre></body></html>"
 
 

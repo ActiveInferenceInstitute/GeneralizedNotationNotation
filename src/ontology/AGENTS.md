@@ -279,7 +279,7 @@ output/10_ontology_output/
 Measure on demand:
 
 ```bash
-uv run pytest src/tests/test_ontology*.py \
+uv run --extra dev python -m pytest src/tests/test_ontology*.py \
     --cov=src/ontology --cov-report=term-missing
 ```
 ### Key Test Scenarios

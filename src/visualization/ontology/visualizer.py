@@ -250,9 +250,11 @@ class OntologyVisualizer:
     def extract_ontology_mappings(
         self, ontology_content: "str | dict"
     ) -> List[Tuple[str, str]]:
+        """Extract ontology mappings."""
         return self._extract_ontology_mappings(str(ontology_content))
 
     def create_ontology_table(
         self, mappings: List[Tuple[str, str]], output_dir: Path
     ) -> Optional[str]:
+        """Create ontology table."""
         return self._create_ontology_table(mappings, output_dir)

@@ -18,7 +18,7 @@ Leaf `SPEC.md` files under experimental or research subtrees may omit bundle ver
 
 - **`doc/`** is the static documentation tree; it does not execute pipeline steps. Runtime behavior lives under `src/`.
 - **Top-level folder list**: [expected_dirs.txt](expected_dirs.txt) is the canonical list of `doc/<name>/` directories for tooling; update it when adding or renaming a top-level doc subtree.
-- **Mechanical completeness** is enforced by [development/docs_audit.py](development/docs_audit.py) (`uv run python doc/development/docs_audit.py --strict` from repo root). With `--strict` and failures, the tool prints every issue to stderr by default; use `-q` for summary only. Optional: `--check-anchors` validates `#fragments` against heading slugs (heuristic).
+- **Mechanical completeness** is enforced by [development/docs_audit.py](development/docs_audit.py) (`uv run --extra dev python doc/development/docs_audit.py --strict` from repo root). With `--strict` and failures, the tool prints every issue to stderr by default; use `-q` for summary only. Optional: `--check-anchors` validates `#fragments` against heading slugs (heuristic).
 - **GNN authority** for syntax and pipeline narrative: [doc/gnn/README.md](gnn/README.md), [doc/gnn/SPEC.md](gnn/SPEC.md), [CLAUDE.md](../CLAUDE.md), [src/AGENTS.md](../src/AGENTS.md).
 
 ## Components
@@ -29,4 +29,4 @@ Leaf `SPEC.md` files under experimental or research subtrees may omit bundle ver
 ## Interfaces
 
 - Cross-links use repo-relative Markdown paths from the linking file.
-- For current test commands and pass counts, use [CLAUDE.md](../CLAUDE.md) (measured in CI / local `uv run pytest`); do not treat stale inline numbers as ground truth.
+- For current test commands and pass counts, use [CLAUDE.md](../CLAUDE.md) (measured in CI / local `uv run --extra dev python -m pytest`); do not treat stale inline numbers as ground truth.

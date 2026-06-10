@@ -9,6 +9,7 @@ class BaseGNNSerializer(ABC):
     """Base class for all GNN serializers with common utility methods."""
 
     def __init__(self) -> None:
+        """Initialize the instance."""
         self.format_name = self.__class__.__name__.replace("Serializer", "").lower()
 
     @abstractmethod

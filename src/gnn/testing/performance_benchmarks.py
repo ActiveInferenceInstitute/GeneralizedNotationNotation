@@ -34,6 +34,7 @@ class GNNPerformanceBenchmark:
     """Performance benchmarking for GNN operations."""
 
     def __init__(self, test_iterations: int = 100) -> None:
+        """Initialize the instance."""
         self.test_iterations = test_iterations
         self.results: List[PerformanceMetrics] = []
 

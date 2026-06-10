@@ -426,7 +426,7 @@ output/9_advanced_viz_output/
 Measure on demand:
 
 ```bash
-uv run pytest src/tests/test_advanced_visualization*.py \
+uv run --extra dev python -m pytest src/tests/test_advanced_visualization*.py \
     --cov=src/advanced_visualization --cov-report=term-missing
 ```
 

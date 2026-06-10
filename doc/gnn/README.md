@@ -254,4 +254,4 @@ All GNN documentation follows these principles:
 **Total Pipeline Steps**: 25 (0–24)
 **Last Updated**: 2026-05-08
 
-**Status**: Maintained (re-run `uv run python doc/development/docs_audit.py` after link or tree changes)
+**Status**: Maintained (re-run `uv run --extra dev python doc/development/docs_audit.py` after link or tree changes)

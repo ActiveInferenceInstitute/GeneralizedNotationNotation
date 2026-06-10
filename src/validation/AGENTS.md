@@ -238,7 +238,7 @@ Model Content → Structure Validation → Semantic Validation → Performance P
 Measure on demand:
 
 ```bash
-uv run pytest src/tests/test_validation*.py \
+uv run --extra dev python -m pytest src/tests/test_validation*.py \
     --cov=src/validation --cov-report=term-missing
 ```
 ### Key Test Scenarios

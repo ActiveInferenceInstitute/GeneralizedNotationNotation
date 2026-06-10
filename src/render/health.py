@@ -28,6 +28,7 @@ class RendererStatus:
     error: Optional[str] = None
 
     def to_dict(self) -> dict:
+        """Provide to dict behavior."""
         return {
             "name": self.name,
             "available": self.available,

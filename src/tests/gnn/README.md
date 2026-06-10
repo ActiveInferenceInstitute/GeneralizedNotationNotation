@@ -7,5 +7,5 @@ This folder contains module-focused tests for parsers, processors, schemas, vali
 Run:
 
 ```bash
-uv run pytest src/tests/gnn/ -q
+uv run --extra dev python -m pytest src/tests/gnn/ -q
 ```

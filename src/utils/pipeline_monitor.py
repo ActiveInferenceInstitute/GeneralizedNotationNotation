@@ -117,6 +117,7 @@ class PipelineMonitor:
     """Comprehensive pipeline monitoring system."""
 
     def __init__(self, alert_callbacks: Optional[List[Callable]] = None) -> None:
+        """Initialize the instance."""
         self.logger = logging.getLogger(__name__)
         self.step_metrics: Dict[str, StepMetrics] = {}
         self.alerts: deque = deque(maxlen=100)  # Keep last 100 alerts

@@ -52,6 +52,7 @@ class PipelineOrchestrator:
         steps: list[str] | str | None = "all",
         verbose: bool = False,
     ) -> None:
+        """Initialize the instance."""
         self.target_dir = target_dir
         self.output_dir = output_dir
         self.steps = steps
@@ -68,6 +69,7 @@ class PipelineOrchestrator:
         return bool(result.get("success"))
 
     def get_pipeline_steps(self) -> list[str]:
+        """Return pipeline steps."""
         cfg = get_pipeline_config()
         steps = cfg.get("steps") if isinstance(cfg, dict) else None
         if steps is None:
@@ -75,6 +77,7 @@ class PipelineOrchestrator:
         return list(steps)
 
     def execute_pipeline(self, pipeline_data: dict | None = None) -> dict:
+        """Execute pipeline."""
         data = pipeline_data or {}
         result = run_pipeline(
             pipeline_data=data,
@@ -101,6 +104,7 @@ class PipelineStep:
         output_dir: str = "output",
         verbose: bool = False,
     ) -> None:
+        """Initialize the instance."""
         self.name = name
         self.target_dir = target_dir
         self.output_dir = output_dir

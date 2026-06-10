@@ -235,7 +235,7 @@ GNN Content → SAPF Conversion → Audio Generation → Audio Analysis → Outp
 Measure on demand:
 
 ```bash
-uv run pytest src/tests/test_sapf*.py \
+uv run --extra dev python -m pytest src/tests/test_sapf*.py \
     --cov=src/sapf --cov-report=term-missing
 ```
 ### Key Test Scenarios

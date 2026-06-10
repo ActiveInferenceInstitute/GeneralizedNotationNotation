@@ -12,6 +12,7 @@ logger = logging.getLogger(__name__)
 
 
 def _is_complete_parameter(value_str: str) -> bool:
+    """Return whether complete parameter."""
     open_braces = value_str.count("{")
     close_braces = value_str.count("}")
     open_parens = value_str.count("(")
@@ -24,6 +25,7 @@ def _is_complete_parameter(value_str: str) -> bool:
 
 
 def _parse_parameter_value(value_str: str) -> Any:
+    """Parse parameter value."""
     try:
         cleaned = value_str.strip()
         cleaned = cleaned.replace("{", "[").replace("}", "]")
@@ -36,6 +38,7 @@ def _parse_parameter_value(value_str: str) -> Any:
 def _save_parameter(
     parsed: Dict[str, Any], param_name: str, param_lines: List[str]
 ) -> None:
+    """Save parameter."""
     try:
         full_value = " ".join(param_lines)
         parsed_value = _parse_parameter_value(full_value)

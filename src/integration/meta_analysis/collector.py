@@ -91,6 +91,7 @@ class SweepDataCollector:
         render_output_dir: Optional[Path] = None,
         logger: Optional[logging.Logger] = None,
     ) -> None:
+        """Initialize the instance."""
         self.execute_output_dir = Path(execute_output_dir)
         self.render_output_dir = Path(render_output_dir) if render_output_dir else None
         self.logger = logger or logging.getLogger(__name__)

@@ -55,6 +55,7 @@ class FileDiscoveryStrategy:
     """
 
     def __init__(self) -> None:
+        """Initialize the instance."""
         self.target_extensions = [".md", ".json", ".xml", ".yaml", ".pkl"]
         self.gnn_indicators = [
             "## ModelName",

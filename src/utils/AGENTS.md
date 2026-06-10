@@ -448,7 +448,7 @@ Configuration → Logging Setup → Resource Monitoring → Error Handling → P
 Measure on demand:
 
 ```bash
-uv run pytest src/tests/test_utils*.py \
+uv run --extra dev python -m pytest src/tests/test_utils*.py \
     --cov=src/utils --cov-report=term-missing
 ```
 ### Key Test Scenarios

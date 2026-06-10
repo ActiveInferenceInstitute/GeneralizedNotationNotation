@@ -27,6 +27,7 @@ class JSONFormatter(logging.Formatter):
     """
 
     def format(self, record: logging.LogRecord) -> str:
+        """Provide format behavior."""
         entry: dict[str, Any] = {
             "timestamp": datetime.fromtimestamp(record.created).isoformat(),
             "level": record.levelname,
@@ -65,6 +66,7 @@ class HumanFormatter(logging.Formatter):
     RESET = "\033[0m"
 
     def format(self, record: logging.LogRecord) -> str:
+        """Provide format behavior."""
         color = self.COLORS.get(record.levelname, "")
         prefix = f"{color}{record.levelname:7s}{self.RESET}"
 

@@ -1230,7 +1230,7 @@ uv run python src/3_gnn.py --test-mode
 
 # Run specific test module
 
-pytest src/tests/validation/test_validation_overall.py -v
+uv run --extra dev python -m pytest src/tests/validation/test_validation_overall.py -v
 
 ```
 

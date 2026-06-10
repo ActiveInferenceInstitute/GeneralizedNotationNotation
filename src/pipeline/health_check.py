@@ -53,6 +53,7 @@ class EnhancedHealthChecker:
     """
 
     def __init__(self, verbose: bool = False) -> None:
+        """Initialize the instance."""
         self.verbose = verbose
         self.logger = setup_step_logging("enhanced_health_check", verbose)
         self.results: Dict[str, Any] = {}

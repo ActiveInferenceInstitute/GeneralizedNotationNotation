@@ -269,7 +269,7 @@ output/7_export_output/
 Measure on demand:
 
 ```bash
-uv run pytest src/tests/test_export*.py \
+uv run --extra dev python -m pytest src/tests/test_export*.py \
     --cov=src/export --cov-report=term-missing
 ```
 ### Key Test Scenarios

@@ -26,6 +26,7 @@ class SyntheticAudioGenerator:
     """
 
     def __init__(self, sample_rate: int = 44100) -> None:
+        """Initialize the instance."""
         self.sample_rate = sample_rate
         self.base_frequency = 261.63  # C4
 

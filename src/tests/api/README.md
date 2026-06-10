@@ -7,5 +7,5 @@ This folder contains module-focused tests for API startup, endpoints, and servic
 Run:
 
 ```bash
-uv run pytest src/tests/api/ -q
+uv run --extra dev python -m pytest src/tests/api/ -q
 ```

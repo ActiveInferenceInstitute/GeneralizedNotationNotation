@@ -88,6 +88,7 @@ def _extract_matrices(
         params = gnn_spec.get("parameters", {})
 
     def _parse_matrix(raw: Any, default: Any) -> Any:
+        """Parse matrix."""
         if raw is None:
             return default
         if isinstance(raw, (list, np.ndarray)):

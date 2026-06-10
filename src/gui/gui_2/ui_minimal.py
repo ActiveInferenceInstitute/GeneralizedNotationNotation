@@ -35,6 +35,7 @@ def build_debug_visual_gui(
         test_button = gr.Button("Test Button")
 
         def simple_test(input_text: Any) -> Any:
+            """Provide simple test behavior."""
             return f"Processed: {input_text}"
 
         test_button.click(simple_test, inputs=[text_input], outputs=[text_output])

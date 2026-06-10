@@ -9,4 +9,4 @@ This directory owns pytest coverage for `src/analysis/`.
 - Do not place production implementation logic here.
 
 ## Verification
-Run `uv run pytest src/tests/analysis/ -q`.
+Run `uv run --extra dev python -m pytest src/tests/analysis/ -q`.

@@ -136,6 +136,7 @@ def run_gui(
         import time
 
         def launch_gui() -> Any:
+            """Provide launch gui behavior."""
             logger.info("🎮 Form-based Constructor starting...")
             demo.launch(
                 share=False,
@@ -181,6 +182,7 @@ def run_gui(
 
 
 def _load_first_markdown(target_dir: Path) -> Optional[str]:
+    """Load first markdown."""
     try:
         for p in sorted(target_dir.glob("*.md")):
             return p.read_text()

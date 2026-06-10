@@ -7,5 +7,5 @@ This folder contains module-focused tests for static website generation and arti
 Run:
 
 ```bash
-uv run pytest src/tests/website/ -q
+uv run --extra dev python -m pytest src/tests/website/ -q
 ```

@@ -195,6 +195,7 @@ if FASTAPI_AVAILABLE:
             entry = _find_run(run_hash)
 
             async def event_generator() -> Any:
+                """Provide event generator behavior."""
                 last_index = 0
                 while True:
                     for event in entry.get("events", [])[last_index:]:
@@ -230,10 +231,12 @@ if FASTAPI_AVAILABLE:
         """Owns all state mutations and event appends for a single pipeline run."""
 
         def __init__(self, entry: Dict[str, Any], run_hash: str) -> None:
+            """Initialize the instance."""
             self._entry = entry
             self._run_hash = run_hash
 
         def emit_pipeline_start(self) -> None:
+            """Emit pipeline start."""
             self._entry["events"].append(
                 {
                     "type": "pipeline_start",
@@ -243,6 +246,7 @@ if FASTAPI_AVAILABLE:
             )
 
         def on_step_start(self, name: str, step_num: int) -> None:
+            """Provide on step start behavior."""
             self._entry["current_step"] = name
             self._entry["events"].append(
                 {
@@ -256,6 +260,7 @@ if FASTAPI_AVAILABLE:
         def on_step_complete(
             self, name: str, step_num: int, status: str, duration: float
         ) -> None:
+            """Provide on step complete behavior."""
             self._entry["steps_completed"] = self._entry.get("steps_completed", 0) + 1
             self._entry["events"].append(
                 {
@@ -269,6 +274,7 @@ if FASTAPI_AVAILABLE:
             )
 
         def on_error(self, name: str, error_msg: str) -> None:
+            """Provide on error behavior."""
             self._entry["events"].append(
                 {
                     "type": "error",
@@ -279,11 +285,13 @@ if FASTAPI_AVAILABLE:
             )
 
         def mark_completed(self, start: float) -> None:
+            """Mark completed."""
             self._entry["status"] = "completed"
             self._entry["completed_at"] = datetime.now().isoformat()
             self._entry["duration_seconds"] = round(time.time() - start, 2)
 
         def mark_failed(self, error: Exception, start: float) -> None:
+            """Mark failed."""
             self._entry["status"] = "failed"
             self._entry["errors"].append(str(error))
             self._entry["completed_at"] = datetime.now().isoformat()

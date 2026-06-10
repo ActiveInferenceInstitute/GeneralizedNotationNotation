@@ -110,7 +110,7 @@ Julia environment management helpers for RxInfer.jl and ActiveInference.jl.
 ## Current Cross-Framework Gate
 
 ```bash
-uv run pytest src/tests/pipeline/test_pomdp_gridworld_cross_framework.py -q --tb=short
+uv run --extra dev python -m pytest src/tests/pipeline/test_pomdp_gridworld_cross_framework.py -q --tb=short
 ```
 
 ## Usage

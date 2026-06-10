@@ -7,5 +7,5 @@ This folder contains module-focused tests for template processing and scaffold c
 Run:
 
 ```bash
-uv run pytest src/tests/template/ -q
+uv run --extra dev python -m pytest src/tests/template/ -q
 ```

@@ -135,7 +135,7 @@ async with stdio_client(server_params) as (read, write):
 **Tools not appearing**: Run the audit to confirm tools register cleanly:
 
 ```bash
-PYTHONPATH=src python -m pytest src/tests/mcp/test_mcp_audit.py -v --tb=short
+uv run --extra dev python -m pytest src/tests/mcp/test_mcp_audit.py -v --tb=short
 ```
 
 **Timeout on heavy steps**: Steps 12 (execute) and 13 (LLM) can take minutes. Set client timeout to ≥300s.

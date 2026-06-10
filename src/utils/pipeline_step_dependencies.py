@@ -110,6 +110,7 @@ def resolve_step_dependencies(requested_steps: Iterable[int]) -> list[int]:
     visiting: set[int] = set()
 
     def visit(step_number: int) -> None:
+        """Provide visit behavior."""
         if step_number in resolved:
             return
         if step_number in visiting:

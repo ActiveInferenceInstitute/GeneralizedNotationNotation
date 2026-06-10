@@ -272,7 +272,7 @@ GNN Models → ML Framework Selection → Dataset Preparation → Model Training
 Measure on demand:
 
 ```bash
-uv run pytest src/tests/test_ml_integration*.py \
+uv run --extra dev python -m pytest src/tests/test_ml_integration*.py \
     --cov=src/ml_integration --cov-report=term-missing
 ```
 ### Key Test Scenarios

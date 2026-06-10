@@ -46,10 +46,12 @@ logger = logging.getLogger(__name__)
 
 
 def _ensure_path(path_str: str) -> Path:
+    """Handle ensure path for internal callers."""
     return Path(path_str)
 
 
 def _strip_comments_from_multiline_str(m_str: str) -> str:
+    """Handle strip comments from multiline str for internal callers."""
     lines = [line.split("#", 1)[0].rstrip() for line in m_str.splitlines()]
     return "\n".join(lines).strip()
 
@@ -90,6 +92,7 @@ def _parse_matrix_string(matrix_str: str) -> Any:
         parsed_value = ast.literal_eval(processed_str)
 
         def convert_structure(item: Any) -> Any:
+            """Convert structure."""
             if isinstance(item, set):
                 try:
                     return sorted(item)
@@ -130,10 +133,12 @@ def _parse_matrix_string(matrix_str: str) -> Any:
 
 
 def _parse_free_text_section(section_content: str) -> str:
+    """Parse free text section."""
     return section_content.strip()
 
 
 def _parse_state_line(line: str) -> Optional[Dict[str, Any]]:
+    """Parse state line."""
     match = re.match(
         r"^\s*([a-zA-Z0-9_']+)\s*(?:\[(.*?)\])?\s*(.*)$", line.split("#")[0].strip()
     )
@@ -151,6 +156,7 @@ def _parse_state_line(line: str) -> Optional[Dict[str, Any]]:
 
 
 def _parse_transition_line(line: str) -> Optional[Dict[str, Any]]:
+    """Parse transition line."""
     pattern = r"^\s*(.*?)\s*([-><]+|-)\s*(.*?)\s*(?::\s*(.*))?$"
     match = re.match(pattern, line.split("#")[0].strip())
     if not match:
@@ -158,6 +164,7 @@ def _parse_transition_line(line: str) -> Optional[Dict[str, Any]]:
     source_str, operator, target_str, attrs_str = match.groups()
 
     def clean_variable_list_str(s: str) -> List[str]:
+        """Provide clean variable list str behavior."""
         s = s.strip()
         if s.startswith("(") and s.endswith(")"):
             s = s[1:-1]
@@ -185,6 +192,7 @@ def _parse_transition_line(line: str) -> Optional[Dict[str, Any]]:
 
 
 def _parse_list_items_section(content: str, parser: Callable) -> List[Any]:
+    """Parse list items section."""
     items: list[Any] = []
     for line in content.strip().split("\n"):
         if not line or line.startswith("#"):
@@ -196,6 +204,7 @@ def _parse_list_items_section(content: str, parser: Callable) -> List[Any]:
 
 
 def _parse_initial_parameterization_section(section_content: str) -> Dict[str, Any]:
+    """Parse initial parameterization section."""
     data: dict[Any, Any] = {}
     current_key: Optional[str] = None
     current_value_lines: List[str] = []
@@ -222,6 +231,7 @@ SECTION_PARSERS: dict[str, Any] = {
 
 
 def _gnn_model_to_dict(gnn_file_path_str: str) -> Dict[str, Any]:
+    """Handle gnn model to dict for internal callers."""
     gnn_file_path = Path(gnn_file_path_str)
     if not gnn_file_path.is_file():
         raise FileNotFoundError(f"GNN file not found: {gnn_file_path_str}")
@@ -247,11 +257,13 @@ def _gnn_model_to_dict(gnn_file_path_str: str) -> Dict[str, Any]:
 
 # --- XML Helpers ---
 def _pretty_print_xml(element: ET.Element) -> str:
+    """Handle pretty print xml for internal callers."""
     ET.indent(element, space="  ")
     return ET.tostring(element, encoding="unicode")
 
 
 def _dict_to_xml(tag: str, d: Union[Dict, List, Any]) -> ET.Element:
+    """Handle dict to xml for internal callers."""
     elem = ET.Element(tag)
     if isinstance(d, dict):
         for key, val in d.items():
@@ -326,6 +338,7 @@ def export_to_python_pickle(
 
 
 def _build_networkx_graph(gnn_model: Dict[str, Any]) -> "Optional[nx.DiGraph]":
+    """Build networkx graph."""
     if not HAS_NETWORKX:
         return None
     _configure_networkx()

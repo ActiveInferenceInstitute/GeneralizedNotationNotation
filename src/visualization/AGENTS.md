@@ -252,7 +252,7 @@ GNN Files → Graph Extraction → Layout Calculation → Visualization Generati
 - `src/tests/visualization/test_visualization_artifacts.py` - Artifact / manifest tests
 
 ### Test Coverage
-- **Measurement**: `uv run pytest src/tests/test_visualization_*.py --cov=src.visualization --cov-report=term-missing` (do not treat a fixed percentage in this file as canonical).
+- **Measurement**: `uv run --extra dev python -m pytest src/tests/test_visualization_*.py --cov=src.visualization --cov-report=term-missing` (do not treat a fixed percentage in this file as canonical).
 
 ### Key Test Scenarios
 1. Graph visualization with various layouts

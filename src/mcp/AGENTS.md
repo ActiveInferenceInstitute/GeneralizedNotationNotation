@@ -315,7 +315,7 @@ Module Tools → MCP Registration → Tool Discovery → Execution Requests → 
 Measure on demand:
 
 ```bash
-uv run pytest src/tests/test_mcp*.py \
+uv run --extra dev python -m pytest src/tests/test_mcp*.py \
     --cov=src/mcp --cov-report=term-missing
 ```
 ### Key Test Scenarios

@@ -260,7 +260,7 @@ Pipeline Artifacts → Content Extraction → Template Processing → Asset Embe
 Measure on demand:
 
 ```bash
-uv run pytest src/tests/test_website*.py \
+uv run --extra dev python -m pytest src/tests/test_website*.py \
     --cov=src/website --cov-report=term-missing
 ```
 ### Key Test Scenarios

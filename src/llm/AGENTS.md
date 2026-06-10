@@ -293,7 +293,7 @@ if result.returncode == 0:
 Measure on demand:
 
 ```bash
-uv run pytest src/tests/test_llm*.py \
+uv run --extra dev python -m pytest src/tests/test_llm*.py \
     --cov=src/llm --cov-report=term-missing
 ```
 ### Key Test Scenarios

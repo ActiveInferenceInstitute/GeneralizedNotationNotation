@@ -391,6 +391,7 @@ class LLMProcessor:
             raise RuntimeError("No providers available")
 
         def _is_healthy(ptype: ProviderType) -> bool:
+            """Return whether healthy."""
             return self._circuit_breakers.get(ptype, 0) < self.MAX_FAILURES
 
         if (
@@ -1013,6 +1014,7 @@ def enhance_model(gnn_content: str) -> Dict[str, Any]:
         processor = GNNLLMProcessor()
 
         async def _run() -> Dict[str, Any]:
+            """Run operation."""
             await processor.initialize()
             result = await processor.suggest_enhancements(gnn_content)
             await processor.close()

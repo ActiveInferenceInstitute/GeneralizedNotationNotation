@@ -236,6 +236,7 @@ class SyntheticAudioGenerator:
     """Synthetic Audio Generator for creating artificial sounds."""
 
     def __init__(self) -> None:
+        """Initialize the instance."""
         self.supported_formats = ["wav", "mp3", "flac", "ogg"]
         self.oscillator_types = ["sine", "square", "sawtooth", "triangle", "noise"]
         self.envelope_types = ["ADSR", "AR", "ASR", "AD", "custom"]

@@ -7,5 +7,5 @@ This folder contains module-focused tests for execution processors, framework ru
 Run:
 
 ```bash
-uv run pytest src/tests/execute/ -q
+uv run --extra dev python -m pytest src/tests/execute/ -q
 ```

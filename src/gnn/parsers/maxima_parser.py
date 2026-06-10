@@ -29,6 +29,7 @@ class MaximaParser(BaseGNNParser):
     """Parser for Maxima symbolic computation specifications with embedded data support."""
 
     def __init__(self) -> None:
+        """Initialize the instance."""
         super().__init__()
         self.assignment_pattern = re.compile(r"(\w+)\s*:\s*(.+?);", re.MULTILINE)
         self.function_pattern = re.compile(

@@ -234,7 +234,7 @@ output/15_audio_output/
 Measure on demand:
 
 ```bash
-uv run pytest src/tests/test_audio*.py \
+uv run --extra dev python -m pytest src/tests/test_audio*.py \
     --cov=src/audio --cov-report=term-missing
 ```
 ### Key Test Scenarios

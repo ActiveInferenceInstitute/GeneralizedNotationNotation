@@ -391,7 +391,7 @@ Run tests using `pytest`:
 ```bash
 pytest
 # For coverage report:
-uv run pytest --cov=src --cov=examples --cov-report=html
+uv run --extra dev python -m pytest --cov=src --cov=examples --cov-report=html
 ```
 
 All Pull Requests must introduce or update tests as appropriate and pass the full suite.
