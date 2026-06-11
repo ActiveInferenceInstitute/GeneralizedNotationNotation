@@ -14,8 +14,9 @@ logger = logging.getLogger(__name__)
 from . import get_supported_formats, process_export, validate_export_format
 
 
-def process_export_mcp(target_directory: str, output_directory: str,
-                       verbose: bool = False) -> Dict[str, Any]:
+def process_export_mcp(
+    target_directory: str, output_directory: str, verbose: bool = False
+) -> Dict[str, Any]:
     """
     Export GNN models in a directory to all supported formats.
 
@@ -85,8 +86,9 @@ def validate_export_format_mcp(format_name: str) -> Dict[str, Any]:
         return {"success": False, "error": str(e)}
 
 
-def export_single_file_mcp(gnn_file_path: str, output_directory: str,
-                           formats: Optional[List[str]] = None) -> Dict[str, Any]:
+def export_single_file_mcp(
+    gnn_file_path: str, output_directory: str, formats: Optional[List[str]] = None
+) -> Dict[str, Any]:
     """
     Export a single GNN file to one or more target formats.
 
@@ -101,8 +103,9 @@ def export_single_file_mcp(gnn_file_path: str, output_directory: str,
     try:
         import shutil
         import tempfile
+
         gnn_path = Path(gnn_file_path)
-        out_dir  = Path(output_directory)
+        out_dir = Path(output_directory)
 
         if not gnn_path.exists():
             return {"success": False, "error": f"GNN file not found: {gnn_file_path}"}
@@ -111,7 +114,9 @@ def export_single_file_mcp(gnn_file_path: str, output_directory: str,
             tmp_in = Path(tmp) / "input"
             tmp_in.mkdir()
             shutil.copy2(gnn_path, tmp_in / gnn_path.name)
-            success = process_export(target_dir=tmp_in, output_dir=out_dir, verbose=False)
+            success = process_export(
+                target_dir=tmp_in, output_dir=out_dir, verbose=False
+            )
 
         output_files = [str(f) for f in out_dir.rglob(f"*{gnn_path.stem}*")]
         return {
@@ -128,48 +133,85 @@ def export_single_file_mcp(gnn_file_path: str, output_directory: str,
 
 # ── MCP Registration ────────────────────────────────────────────────────────
 
-def register_tools(mcp_instance) -> None:
+
+def register_tools(mcp_instance: Any) -> None:
     """Register export tools with the MCP server."""
 
     mcp_instance.register_tool(
         "process_export",
         process_export_mcp,
-        {"type": "object", "properties": {
-            "target_directory": {"type": "string", "description": "Directory with GNN files to export"},
-            "output_directory": {"type": "string", "description": "Directory for exported files"},
-            "verbose":          {"type": "boolean", "default": False},
-        }, "required": ["target_directory", "output_directory"]},
+        {
+            "type": "object",
+            "properties": {
+                "target_directory": {
+                    "type": "string",
+                    "description": "Directory with GNN files to export",
+                },
+                "output_directory": {
+                    "type": "string",
+                    "description": "Directory for exported files",
+                },
+                "verbose": {"type": "boolean", "default": False},
+            },
+            "required": ["target_directory", "output_directory"],
+        },
         "Export GNN models to all supported output formats (JSON, YAML, Python, Julia, etc.).",
-        module=__package__, category="export",
+        module=__package__,
+        category="export",
     )
 
     mcp_instance.register_tool(
         "list_export_formats",
-        list_export_formats_mcp, {},
+        list_export_formats_mcp,
+        {},
         "List all supported GNN export formats and their descriptions.",
-        module=__package__, category="export",
+        module=__package__,
+        category="export",
     )
 
     mcp_instance.register_tool(
         "validate_export_format",
         validate_export_format_mcp,
-        {"type": "object", "properties": {
-            "format_name": {"type": "string", "description": "Export format name to validate"},
-        }, "required": ["format_name"]},
+        {
+            "type": "object",
+            "properties": {
+                "format_name": {
+                    "type": "string",
+                    "description": "Export format name to validate",
+                },
+            },
+            "required": ["format_name"],
+        },
         "Check whether a given export format is supported.",
-        module=__package__, category="export",
+        module=__package__,
+        category="export",
     )
 
     mcp_instance.register_tool(
         "export_single_gnn_file",
         export_single_file_mcp,
-        {"type": "object", "properties": {
-            "gnn_file_path":    {"type": "string", "description": "Path to the GNN source file"},
-            "output_directory": {"type": "string", "description": "Output directory"},
-            "formats":          {"type": "array",  "items": {"type": "string"}, "description": "Target formats"},
-        }, "required": ["gnn_file_path", "output_directory"]},
+        {
+            "type": "object",
+            "properties": {
+                "gnn_file_path": {
+                    "type": "string",
+                    "description": "Path to the GNN source file",
+                },
+                "output_directory": {
+                    "type": "string",
+                    "description": "Output directory",
+                },
+                "formats": {
+                    "type": "array",
+                    "items": {"type": "string"},
+                    "description": "Target formats",
+                },
+            },
+            "required": ["gnn_file_path", "output_directory"],
+        },
         "Export a single GNN file to one or more target formats.",
-        module=__package__, category="export",
+        module=__package__,
+        category="export",
     )
 
     logger.info("export module MCP tools registered (5 domain tools).")

@@ -2,8 +2,8 @@
 
 This guide details the architecture of the Generalized Notation Notation (GNN) system. It complements `DOCS.md` and `doc/pipeline/README.md` with an implementation-oriented perspective for developers.
 
-**Last Updated**: 2026-03-23
-**Version**: 1.3.0
+**Last Updated**: 2026-05-08
+**Version**: 1.6.0
 **Status**: Maintained
 **Pipeline Steps**: 25 (0-24)
 
@@ -19,9 +19,9 @@ This guide details the architecture of the Generalized Notation Notation (GNN) s
 
 ### Quality Assurance Principles
 
-- **No Mock Testing**: All tests use real code paths and actual data dependencies
+- **Real Implementation Testing**: All tests use real code paths and actual data dependencies
 - **Comprehensive Coverage**: >95% test coverage with performance and integration validation
-- **Real Data Processing**: No synthetic or placeholder data in tests or examples
+- **Real Data Processing**: Tests and examples use explicit, runnable data
 - **Performance Standards**: Sub-30-minute execution time, <2GB memory usage for standard workloads
 - **Error Rate Targets**: <1% critical failure rate, >99% step completion success rate
 
@@ -237,7 +237,7 @@ Adding new pipeline steps and modules follows a well-established pattern that en
 
 ### 4. **Add Comprehensive Testing**
 
-- Create integration tests in `src/tests/test_newstep_integration.py`
+- Create integration tests in `src/tests/newstep/test_newstep_integration.py`
 - Implement unit tests for all public functions
 - Add performance tests with timing and memory validation
 - Include error scenario testing with real failure modes
@@ -323,8 +323,8 @@ Each agent implements comprehensive performance monitoring:
 
 ---
 
-**Architecture Version**: 1.3.0
-**Last Updated**: 2026-03-23
+**Architecture Version**: 1.6.0
+**Last Updated**: 2026-05-08
 **Status**: ✅ Production Ready
 **Compliance**: Thin orchestrator pattern
 **Latest Validation**: See current test and pipeline runs

@@ -143,10 +143,10 @@ connections:
   target_variables:
   - e_s
   weight: null
-created_at: '2026-04-10T10:24:34.032608'
+created_at: '2026-05-25T09:51:15.769853'
 equations: []
 model_name: Predictive Coding Active Inference Agent
-modified_at: '2026-04-10T10:24:34.032609'
+modified_at: '2026-05-25T09:51:15.769853'
 ontology_mappings:
 - description: null
   ontology_term: VariationalFreeEnergy
@@ -244,6 +244,22 @@ parameters:
     - 0.0
     - 1.0
 - description: null
+  name: action_dim
+  type_hint: null
+  value: 2
+- description: null
+  name: dt
+  type_hint: null
+  value: 0.01
+- description: null
+  name: learning_rate_action
+  type_hint: null
+  value: 0.1
+- description: null
+  name: learning_rate_belief
+  type_hint: null
+  value: 1.0
+- description: null
   name: mu
   type_hint: null
   value:
@@ -264,6 +280,18 @@ parameters:
   - - 1.0
   - - 1.0
   - - 0.5
+- description: null
+  name: obs_dim
+  type_hint: null
+  value: 4
+- description: null
+  name: simulation_time
+  type_hint: null
+  value: 5.0
+- description: null
+  name: state_dim
+  type_hint: null
+  value: 3
 time_specification:
   discretization: null
   horizon: '5.0'

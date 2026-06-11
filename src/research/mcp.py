@@ -16,8 +16,9 @@ logger = logging.getLogger(__name__)
 from . import process_research
 
 
-def process_research_mcp(target_directory: str, output_directory: str,
-                         verbose: bool = False) -> Dict[str, Any]:
+def process_research_mcp(
+    target_directory: str, output_directory: str, verbose: bool = False
+) -> Dict[str, Any]:
     """
     Run GNN research processing on a directory of GNN files.
 
@@ -56,21 +57,22 @@ def list_research_topics_mcp() -> Dict[str, Any]:
     Returns:
         Dictionary with topic names, descriptions, and related GNN constructs.
     """
-    topics = {
-        "active_inference":  "Free Energy Principle / Active Inference agents",
-        "pomdp":             "Partially Observable Markov Decision Processes",
-        "bayesian_mechanics":"Bayesian mechanics and path integral formulation",
+    topics: dict[str, Any] = {
+        "active_inference": "Free Energy Principle / Active Inference agents",
+        "pomdp": "Partially Observable Markov Decision Processes",
+        "bayesian_mechanics": "Bayesian mechanics and path integral formulation",
         "predictive_coding": "Predictive coding and hierarchical generative models",
-        "markov_blankets":   "Markov blankets and statistical self-organisation",
+        "markov_blankets": "Markov blankets and statistical self-organisation",
         "variational_bayes": "Variational Bayes and message passing algorithms",
-        "epistemic_value":   "Epistemic value, information gain and exploration",
-        "policy_selection":  "Policy selection via Expected Free Energy",
+        "epistemic_value": "Epistemic value, information gain and exploration",
+        "policy_selection": "Policy selection via Expected Free Energy",
     }
     return {"success": True, "topics": topics, "count": len(topics)}
 
 
-def read_research_results_mcp(output_directory: str,
-                               file_pattern: str = "*.json") -> Dict[str, Any]:
+def read_research_results_mcp(
+    output_directory: str, file_pattern: str = "*.json"
+) -> Dict[str, Any]:
     """
     Read and return research results from a previous research processing run.
 
@@ -84,7 +86,10 @@ def read_research_results_mcp(output_directory: str,
     try:
         out_dir = Path(output_directory)
         if not out_dir.exists():
-            return {"success": False, "error": f"Directory not found: {output_directory}"}
+            return {
+                "success": False,
+                "error": f"Directory not found: {output_directory}",
+            }
 
         results: List[Dict[str, Any]] = []
         for f in sorted(out_dir.rglob(file_pattern))[:20]:
@@ -115,26 +120,42 @@ def get_research_module_info_mcp() -> Dict[str, Any]:
     return {
         "success": True,
         "module": __package__,
-        "capabilities": ["experiment_metadata", "cross_reference", "literature_mapping"],
+        "capabilities": [
+            "experiment_metadata",
+            "cross_reference",
+            "literature_mapping",
+        ],
         "supported_output_formats": ["json", "markdown"],
     }
 
 
 # ── MCP Registration ────────────────────────────────────────────────────────
 
-def register_tools(mcp_instance) -> None:
+
+def register_tools(mcp_instance: Any) -> None:
     """Register research tools with the MCP server."""
 
     mcp_instance.register_tool(
         "process_research",
         process_research_mcp,
-        {"type": "object", "properties": {
-            "target_directory": {"type": "string", "description": "Directory with GNN files"},
-            "output_directory": {"type": "string", "description": "Research output directory"},
-            "verbose":          {"type": "boolean", "default": False},
-        }, "required": ["target_directory", "output_directory"]},
+        {
+            "type": "object",
+            "properties": {
+                "target_directory": {
+                    "type": "string",
+                    "description": "Directory with GNN files",
+                },
+                "output_directory": {
+                    "type": "string",
+                    "description": "Research output directory",
+                },
+                "verbose": {"type": "boolean", "default": False},
+            },
+            "required": ["target_directory", "output_directory"],
+        },
         "Run GNN research processing: generate experiment metadata and cross-references.",
-        module=__package__, category="research",
+        module=__package__,
+        category="research",
     )
 
     mcp_instance.register_tool(
@@ -142,19 +163,31 @@ def register_tools(mcp_instance) -> None:
         list_research_topics_mcp,
         {},
         "Return Active Inference and GNN research topic taxonomy.",
-        module=__package__, category="research",
+        module=__package__,
+        category="research",
     )
 
     mcp_instance.register_tool(
         "read_research_results",
         read_research_results_mcp,
-        {"type": "object", "properties": {
-            "output_directory": {"type": "string", "description": "Directory with research outputs"},
-            "file_pattern":     {"type": "string", "default": "*.json",
-                                 "description": "Glob pattern for output files"},
-        }, "required": ["output_directory"]},
+        {
+            "type": "object",
+            "properties": {
+                "output_directory": {
+                    "type": "string",
+                    "description": "Directory with research outputs",
+                },
+                "file_pattern": {
+                    "type": "string",
+                    "default": "*.json",
+                    "description": "Glob pattern for output files",
+                },
+            },
+            "required": ["output_directory"],
+        },
         "Read and return research output files from a previous research processing run.",
-        module=__package__, category="research",
+        module=__package__,
+        category="research",
     )
 
     mcp_instance.register_tool(
@@ -162,7 +195,8 @@ def register_tools(mcp_instance) -> None:
         get_research_module_info_mcp,
         {},
         "Return metadata about the research module capabilities.",
-        module=__package__, category="research",
+        module=__package__,
+        category="research",
     )
 
     logger.info("research module MCP tools registered (4 tools).")

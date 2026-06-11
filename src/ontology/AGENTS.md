@@ -10,9 +10,9 @@
 
 **Status**: ✅ Production Ready
 
-**Version**: 1.0.0
+**Version**: 1.6.0
 
-**Last Updated**: 2026-01-21
+**Last Updated**: 2026-04-16
 
 ---
 
@@ -273,12 +273,15 @@ output/10_ontology_output/
 ## Testing
 
 ### Test Files
-- `src/tests/test_ontology_overall.py`
+- `src/tests/ontology/test_ontology_overall.py`
 
 ### Test Coverage
-- **Current**: 78%
-- **Target**: 85%+
+Measure on demand:
 
+```bash
+uv run --extra dev python -m pytest src/tests/test_ontology*.py \
+    --cov=src/ontology --cov-report=term-missing
+```
 ### Key Test Scenarios
 1. Ontology term extraction
 2. Ontology compliance validation
@@ -342,7 +345,7 @@ def extract_ontology_terms_tool(gnn_content: str) -> List[str]:
 
 ## Version History
 
-### Current Version: 1.0.0
+### Current Version: 1.6.0
 
 **Features**:
 - Ontology term extraction
@@ -374,10 +377,10 @@ def extract_ontology_terms_tool(gnn_content: str) -> List[str]:
 
 ---
 
-**Last Updated**: 2026-01-21
+**Last Updated**: 2026-04-16
 **Maintainer**: GNN Pipeline Team
 **Status**: ✅ Production Ready
-**Version**: 1.0.0
+**Version**: 1.6.0
 **Architecture Compliance**: ✅ 100% Thin Orchestrator Pattern
 
 

@@ -37,6 +37,7 @@ def split_models(content: str) -> List[str]:
     stripped = content
     try:
         from .frontmatter import has_frontmatter, parse_frontmatter
+
         if has_frontmatter(content):
             _, stripped = parse_frontmatter(content)
     except ImportError as e:
@@ -77,7 +78,7 @@ def parse_multimodel(
     from .schema import parse_connections, parse_state_space
 
     model_blocks = split_models(content)
-    results = []
+    results: list[Any] = []
 
     for i, block in enumerate(model_blocks):
         model_file = f"{file_path}#model{i}" if file_path else f"model{i}"
@@ -88,22 +89,32 @@ def parse_multimodel(
             block, known_variables=var_names, file_path=model_file
         )
 
-        results.append({
-            "model_index": i,
-            "variables": [
-                {"name": v.name, "dimensions": v.dimensions, "dtype": v.dtype, "default": v.default}
-                for v in variables
-            ],
-            "connections": [
-                {
-                    "source": c.source, "target": c.target,
-                    "directed": c.directed, "label": c.label, "line": c.line,
-                }
-                for c in connections
-            ],
-            "errors": [str(e) for e in var_errors + conn_errors],
-            "variable_count": len(variables),
-            "connection_count": len(connections),
-        })
+        results.append(
+            {
+                "model_index": i,
+                "variables": [
+                    {
+                        "name": v.name,
+                        "dimensions": v.dimensions,
+                        "dtype": v.dtype,
+                        "default": v.default,
+                    }
+                    for v in variables
+                ],
+                "connections": [
+                    {
+                        "source": c.source,
+                        "target": c.target,
+                        "directed": c.directed,
+                        "label": c.label,
+                        "line": c.line,
+                    }
+                    for c in connections
+                ],
+                "errors": [str(e) for e in var_errors + conn_errors],
+                "variable_count": len(variables),
+                "connection_count": len(connections),
+            }
+        )
 
     return results

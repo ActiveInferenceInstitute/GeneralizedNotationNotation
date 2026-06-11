@@ -12,8 +12,9 @@
 3. [Memory Footprint of List-of-Array Models](#memory-footprint-of-list-of-array-models)
 4. [Avoiding Python-Loop Overhead](#avoiding-python-loop-overhead)
 5. [Dtype Choice (float32 vs float64)](#dtype-choice-float32-vs-float64)
-6. [Benchmarking the Pipeline](#benchmarking-the-pipeline)
-7. [Known Pitfalls](#known-pitfalls)
+6. [Systematic Scaling Studies](#systematic-scaling-studies)
+7. [Benchmarking the Pipeline](#benchmarking-the-pipeline)
+8. [Known Pitfalls](#known-pitfalls)
 
 ---
 
@@ -50,7 +51,8 @@ Rule of thumb:
 - `batch_size = 16`: ~6–10× throughput vs running 16 separate agents serially
 - `batch_size = 128`: saturates on a typical laptop CPU
 
-The pipeline's `run_simple_pymdp_simulation` defaults to `batch_size=1`
+The pipeline's `run_pymdp_simulation` uses `batch_size=1` unless the GNN spec
+sets another value
 because most GNN POMDPs are single-agent. Override via the GNN spec:
 
 ```json
@@ -116,12 +118,47 @@ matrices with `jnp.asarray(..., dtype=jnp.float32)`. `float64` is possible
 (set `JAX_ENABLE_X64=1`) but memory doubles and CPU throughput drops roughly
 2× with no accuracy gain for typical discrete POMDPs.
 
+## Systematic Scaling Studies
+
+For production-grade performance analysis, the repository provides an automated scaling orchestrator: `scripts/run_pymdp_gnn_scaling_analysis.py`.
+
+### The Scaling Orchestrator
+This tool automates the generation, execution, and analysis of model grids (e.g., N=2 to 128 states, T=10 to 1000 steps).
+
+**Usage:**
+```bash
+uv run python scripts/run_pymdp_gnn_scaling_analysis.py
+```
+
+### O(n³) Complexity Warning
+Dense B tensors in PyMDP models grow as **O(n³)** in both memory and disk space. For example:
+- **N=128**: ~50 MiB specification file.
+- **N=256**: ~500 MiB specification file.
+- **N=512**: ~4 GiB specification file.
+
+The orchestrator enforces strict **Resource Gates** to prevent disk exhaustion. Configuration is managed via `scripts/pymdp_scaling_config.yaml`.
+
+### Safety Guardrails
+- `max_n`: Skips state counts that would exceed reasonable storage limits.
+- `max_file_size_mb`: Caps individual specification size.
+- `min_free_disk_mb`: Policy-based headroom check before generation.
+
+### Results and Manifests
+Each run generates a `pymdp_scaling_run_manifest.json` in the output directory, capturing all planned, skipped, and successful execution phases. Meta-analysis reports are automatically generated in Step 17 under the `integration_results/meta_analysis/` directory.
+
+### Publication-Grade Analysis
+The meta-analysis module (v1.7.0) generates **scientific-grade visualizations** and reports:
+- **Scaling Exponents**: Automated O(N^α) and O(T^β) law derivation with $R^2$ goodness-of-fit.
+- **Correlation Stats**: Pearson $r$ correlation between belief entropy (certainty) and observation accuracy.
+- **Scientific Theme**: High-contrast white background plots optimized for research publications and presentations.
+
+
 ## Benchmarking the Pipeline
 
 The repository ships a runnable smoke benchmark that you can adapt:
 
 ```bash
-uv run pytest src/tests/test_pymdp_contracts.py::test_pymdp_seeded_reproducibility_contract \
+uv run --extra dev python -m pytest src/tests/execute/test_pymdp_contracts.py::test_pymdp_seeded_reproducibility_contract \
     --durations=5 -v
 ```
 
@@ -131,7 +168,7 @@ and prints per-test wall times in the slowest-durations report.
 For a larger workload, use the ActInf POMDP end-to-end test:
 
 ```bash
-uv run pytest src/tests/test_pymdp_contracts.py::test_actinf_pomdp_render_execute_analyze_e2e \
+uv run --extra dev python -m pytest src/tests/execute/test_pymdp_contracts.py::test_actinf_pomdp_render_execute_analyze_e2e \
     --durations=5 -v -m "integration and slow"
 ```
 

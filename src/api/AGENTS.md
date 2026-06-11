@@ -6,8 +6,8 @@
 **Pipeline Step**: Infrastructure module (not a numbered step)
 **Category**: Infrastructure / API
 **Status**: ✅ Production Ready
-**Version**: 1.0.0
-**Last Updated**: 2026-03-24
+**Version**: 1.6.0
+**Last Updated**: 2026-04-16
 
 The `api` module provides a FastAPI-based REST interface for the GNN processing pipeline.
 It enables programmatic pipeline invocation, job management, and tool discovery without
@@ -70,7 +70,7 @@ from api.processor import create_job, execute_job_async
 
 When working with this module:
 1. The `processor.py` contains job lifecycle logic -- extend it for persistence needs
-2. The `models.py` is the API contract -- change carefully to preserve backwards compatibility
+2. The `models.py` is the API contract -- update schemas and tests together
 3. Add new endpoints in `server.py` following the existing pattern
 4. MCP tools in `mcp.py` should mirror significant REST endpoints
 

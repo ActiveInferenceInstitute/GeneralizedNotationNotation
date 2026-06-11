@@ -9,7 +9,7 @@ Provides:
 
 import logging
 from collections import defaultdict
-from typing import Dict, List, Set
+from typing import Any, Dict, List, Set
 
 logger = logging.getLogger(__name__)
 
@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 def resolve_execution_order(
     step_dependencies: Dict[int, List[int]],
     total_steps: int = 25,
-    skip_steps: Set[int] = None,
+    skip_steps: (Set[int]) | None = None,
 ) -> List[List[int]]:
     """
     Topologically sort pipeline steps into parallel execution tiers.
@@ -56,7 +56,7 @@ def resolve_execution_order(
 
     while ready:
         tiers.append(ready)
-        next_ready = []
+        next_ready: list[Any] = []
         for step in ready:
             for dep_step in dependents[step]:
                 in_degree[dep_step] -= 1
@@ -67,7 +67,9 @@ def resolve_execution_order(
     resolved = {s for tier in tiers for s in tier}
     unresolved = all_steps - resolved
     if unresolved:
-        logger.warning(f"⚠️ Circular dependencies detected for steps: {sorted(unresolved)}")
+        logger.warning(
+            f"⚠️ Circular dependencies detected for steps: {sorted(unresolved)}"
+        )
         tiers.append(sorted(unresolved))
 
     return tiers
@@ -75,7 +77,7 @@ def resolve_execution_order(
 
 def visualize_dag(
     tiers: List[List[int]],
-    step_names: Dict[int, str] = None,
+    step_names: (Dict[int, str]) | None = None,
 ) -> str:
     """
     Render DAG tiers as a human-readable string for logging.
@@ -88,7 +90,7 @@ def visualize_dag(
         Multi-line string showing execution plan.
     """
     step_names = step_names or {}
-    lines = ["📊 Execution Plan:"]
+    lines: list[Any] = ["📊 Execution Plan:"]
     for i, tier in enumerate(tiers):
         names = [step_names.get(s, f"step_{s}") for s in tier]
         parallel = " | ".join(names)

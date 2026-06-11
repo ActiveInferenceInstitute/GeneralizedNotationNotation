@@ -1,26 +1,24 @@
-# PyTorch Analysis Backend Specification
+# PyTorch Analysis — Technical Specification
 
-## Overview
+**Version**: 1.6.0
 
-Consumes PyTorch execution outputs and produces analysis artifacts used by Step 16 and downstream reporting.
+## Input Format
 
-## Public API
+- `simulation_results.json` from PyTorch execution step
+- Fields: `belief_history`, `action_history`, `efe_values`, `metadata`
 
-- `generate_analysis_from_logs(results_dir: Path, output_dir: Optional[Path] = None, verbose: bool = False) -> List[str]`
+## Output Format
 
-## Discovery contract
+- PNG plots: `belief_trajectory.png`, `action_distribution.png`, `efe_analysis.png`
+- JSON summary: `analysis_summary.json`
 
-The analyzer searches under `results_dir` for:
+## Processing Requirements
 
-- `**/pytorch/**/simulation_results.json`
-- `**/pytorch_simulation_results.json`
-- `simulation_results.json` at the root as a recovery path
+- Handles variable-length simulation runs
+- Graceful degradation when matplotlib unavailable
+- Numerical stability for near-zero probability values
 
-## Outputs
+## Error Handling
 
-For each discovered results file, writes:
-
-- `output_dir/<model_name>/pytorch_analysis.json`
-
-and optionally plot PNGs when `matplotlib` is available.
-
+- Missing results file → returns empty analysis with warning
+- Malformed JSON → logs parse error, continues with available data

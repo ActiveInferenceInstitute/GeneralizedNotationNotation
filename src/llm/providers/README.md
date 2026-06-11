@@ -1,11 +1,32 @@
-# Providers
+# LLM Providers
 
-## Overview
-This module handles `Providers` components.
+Provider abstraction layer implementing multiple LLM backends with a unified interface.
 
-## Available Members
-- **Classes**: BaseLLMProvider, LLMConfig, LLMMessage, LLMResponse, OllamaProvider, OpenAIProvider, OpenRouterProvider, PerplexityProvider, ProviderType
-- **Functions**: analyze, available_models, construct_search_prompt, construct_system_prompt, default_model, format_gnn_analysis_prompt, get_ollama_provider_class, get_openai_provider_class, get_openrouter_provider_class, get_perplexity_provider_class, get_provider_info, initialize, is_initialized, is_online_model, provider_type, validate_config
+## Available Providers
+
+| Provider | File | Backend |
+|----------|------|---------|
+| Ollama | `ollama_provider.py` | Local Ollama server |
+| OpenAI | `openai_provider.py` | OpenAI API |
+| OpenRouter | `openrouter_provider.py` | Multi-model gateway |
+| Perplexity | `perplexity_provider.py` | Perplexity AI |
 
 ## Usage
-Import necessary members directly to orchestrate tasks related to Providers.
+
+```python
+from llm.providers import get_provider
+
+provider = get_provider("ollama")  # or "openai", "openrouter", "perplexity"
+response = provider.generate("Explain this GNN model...")
+```
+
+## Adding a New Provider
+
+1. Create `new_provider.py` inheriting from `BaseLLMProvider`
+2. Implement `generate()`, `generate_stream()`, `get_available_models()`, `health_check()`
+3. Register in `__init__.py` provider factory
+
+## See Also
+
+- [Parent: llm/README.md](../README.md)
+- [AGENTS.md](AGENTS.md) — Architecture documentation

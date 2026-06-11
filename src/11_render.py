@@ -31,6 +31,7 @@ If you encounter errors:
 
 import sys
 from pathlib import Path
+from typing import cast
 
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent))
@@ -46,23 +47,36 @@ run_script = create_standardized_pipeline_script(
         "timesteps": {
             "flag": "--timesteps",
             "type": int,
-            "default": 15,
-            "help": "Number of timesteps for generated Active Inference simulations"
+            "default": None,
+            "help": "Number of timesteps for generated Active Inference simulations",
         },
         "simulation_params": {
             "flag": "--simulation-params",
             "type": str,
             "default": "{}",
-            "help": "JSON string containing additional simulation parameters"
-        }
+            "help": "JSON string containing additional simulation parameters",
+        },
+        "frameworks": {
+            "flag": "--frameworks",
+            "type": str,
+            "default": "all",
+            "help": "Frameworks to render (all, lite, or comma-separated list)",
+        },
+        "strict_framework_success": {
+            "flag": "--strict-framework-success",
+            "action": "store_true",
+            "help": "Fail the render step when any requested framework render fails",
+        },
     },
     default_target_dir="input/gnn_files",
     default_recursive=True,
 )
 
+
 def main() -> int:
     """Main entry point for the render step."""
-    return run_script()
+    return cast("int", run_script())
+
 
 if __name__ == "__main__":
     raise SystemExit(main())

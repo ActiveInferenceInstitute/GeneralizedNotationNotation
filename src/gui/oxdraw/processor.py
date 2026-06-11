@@ -11,7 +11,7 @@ Handles:
 import json
 import logging
 import shutil
-import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
+import subprocess  # nosec B404
 from pathlib import Path
 from typing import Any, Dict, Optional
 
@@ -31,11 +31,11 @@ def process_oxdraw(
     launch_editor: bool = False,
     port: int = 5151,
     host: str = "127.0.0.1",
-    **kwargs
+    **kwargs: Any,
 ) -> bool:
     """
     Process GNN files through oxdraw visual interface.
-    
+
     Args:
         target_dir: Directory containing GNN files
         output_dir: Output directory for oxdraw results
@@ -47,7 +47,7 @@ def process_oxdraw(
         port: Port for oxdraw server
         host: Host for oxdraw server
         **kwargs: Additional processing options
-        
+
     Returns:
         True if processing succeeded
     """
@@ -61,7 +61,9 @@ def process_oxdraw(
     # Check oxdraw availability for interactive mode
     if mode == "interactive" and launch_editor:
         if not check_oxdraw_installed():
-            logger.warning("⚠️  oxdraw CLI not found. Install with: cargo install oxdraw")
+            logger.warning(
+                "⚠️  oxdraw CLI not found. Install with: cargo install oxdraw"
+            )
             logger.info("Falling back to headless conversion mode...")
             mode = "headless"
 
@@ -73,13 +75,13 @@ def process_oxdraw(
         logger.warning("No GNN files found to process")
         return False
 
-    results = {
+    results: dict[str, Any] = {
         "mode": mode,
         "timestamp": _get_timestamp(),
         "files_processed": [],
         "gnn_to_mermaid_conversions": [],
         "mermaid_to_gnn_conversions": [],
-        "errors": []
+        "errors": [],
     }
 
     # Phase 1: Convert GNN files to Mermaid
@@ -93,36 +95,37 @@ def process_oxdraw(
                 mermaid_file = output_dir / f"{gnn_file.stem}.mmd"
                 mermaid_content = convert_gnn_file_to_mermaid(gnn_file, mermaid_file)
 
-                results["gnn_to_mermaid_conversions"].append({
-                    "gnn_file": str(gnn_file),
-                    "mermaid_file": str(mermaid_file),
-                    "success": True,
-                    "lines": len(mermaid_content.split('\n'))
-                })
+                results["gnn_to_mermaid_conversions"].append(
+                    {
+                        "gnn_file": str(gnn_file),
+                        "mermaid_file": str(mermaid_file),
+                        "success": True,
+                        "lines": len(mermaid_content.split("\n")),
+                    }
+                )
 
                 logger.info(f"  ✅ Converted: {gnn_file.name} → {mermaid_file.name}")
 
             except Exception as e:
                 logger.error(f"  ❌ Conversion failed for {gnn_file.name}: {e}")
-                results["errors"].append({
-                    "file": str(gnn_file),
-                    "phase": "gnn_to_mermaid",
-                    "error": str(e)
-                })
-                results["gnn_to_mermaid_conversions"].append({
-                    "gnn_file": str(gnn_file),
-                    "success": False,
-                    "error": str(e)
-                })
+                results["errors"].append(
+                    {"file": str(gnn_file), "phase": "gnn_to_mermaid", "error": str(e)}
+                )
+                results["gnn_to_mermaid_conversions"].append(
+                    {"gnn_file": str(gnn_file), "success": False, "error": str(e)}
+                )
 
     # Phase 2: Launch interactive editor or process in headless mode
-    if mode == "interactive" and launch_editor and results["gnn_to_mermaid_conversions"]:
+    if (
+        mode == "interactive"
+        and launch_editor
+        and results["gnn_to_mermaid_conversions"]
+    ):
         logger.info("🚀 Phase 2: Launching oxdraw interactive editor...")
 
         # Launch editor for first successfully converted file
         first_success = next(
-            (c for c in results["gnn_to_mermaid_conversions"] if c["success"]),
-            None
+            (c for c in results["gnn_to_mermaid_conversions"] if c["success"]), None
         )
 
         if first_success:
@@ -130,15 +133,14 @@ def process_oxdraw(
 
             try:
                 success = launch_oxdraw_editor(
-                    mermaid_file=first_mermaid,
-                    port=port,
-                    host=host,
-                    logger=logger
+                    mermaid_file=first_mermaid, port=port, host=host, logger=logger
                 )
 
                 if success:
                     logger.info(f"✅ oxdraw editor launched at http://{host}:{port}")
-                    logger.info("Edit your model visually, then save and close the editor")
+                    logger.info(
+                        "Edit your model visually, then save and close the editor"
+                    )
 
                     results["editor_launched"] = True
                     results["editor_url"] = f"http://{host}:{port}"
@@ -148,10 +150,7 @@ def process_oxdraw(
 
             except Exception as e:
                 logger.error(f"❌ Editor launch error: {e}")
-                results["errors"].append({
-                    "phase": "editor_launch",
-                    "error": str(e)
-                })
+                results["errors"].append({"phase": "editor_launch", "error": str(e)})
                 results["editor_launched"] = False
 
     # Phase 3: Convert Mermaid files back to GNN (if any .mmd files exist)
@@ -166,49 +165,60 @@ def process_oxdraw(
             try:
                 output_gnn_file = output_dir / f"{mermaid_file.stem}_from_mermaid.md"
                 parsed_model = convert_mermaid_file_to_gnn(
-                    mermaid_file,
-                    output_gnn_file
+                    mermaid_file, output_gnn_file
                 )
 
-                results["mermaid_to_gnn_conversions"].append({
-                    "mermaid_file": str(mermaid_file),
-                    "gnn_file": str(output_gnn_file),
-                    "success": True,
-                    "variables": len(parsed_model.get('variables', {})),
-                    "connections": len(parsed_model.get('connections', []))
-                })
+                results["mermaid_to_gnn_conversions"].append(
+                    {
+                        "mermaid_file": str(mermaid_file),
+                        "gnn_file": str(output_gnn_file),
+                        "success": True,
+                        "variables": len(parsed_model.get("variables", {})),
+                        "connections": len(parsed_model.get("connections", [])),
+                    }
+                )
 
-                logger.info(f"  ✅ Converted: {mermaid_file.name} → {output_gnn_file.name}")
+                logger.info(
+                    f"  ✅ Converted: {mermaid_file.name} → {output_gnn_file.name}"
+                )
 
             except Exception as e:
                 logger.error(f"  ❌ Conversion failed for {mermaid_file.name}: {e}")
-                results["errors"].append({
-                    "file": str(mermaid_file),
-                    "phase": "mermaid_to_gnn",
-                    "error": str(e)
-                })
-                results["mermaid_to_gnn_conversions"].append({
-                    "mermaid_file": str(mermaid_file),
-                    "success": False,
-                    "error": str(e)
-                })
+                results["errors"].append(
+                    {
+                        "file": str(mermaid_file),
+                        "phase": "mermaid_to_gnn",
+                        "error": str(e),
+                    }
+                )
+                results["mermaid_to_gnn_conversions"].append(
+                    {
+                        "mermaid_file": str(mermaid_file),
+                        "success": False,
+                        "error": str(e),
+                    }
+                )
 
     # Save processing results
     results_file = output_dir / "oxdraw_processing_results.json"
-    with open(results_file, 'w') as f:
+    with open(results_file, "w") as f:
         json.dump(results, f, indent=2)
 
     logger.info(f"📊 Processing results saved to: {results_file}")
 
     # Summary
-    success_count = sum(1 for c in results["gnn_to_mermaid_conversions"] if c["success"])
+    success_count = sum(
+        1 for c in results["gnn_to_mermaid_conversions"] if c["success"]
+    )
     total_count = len(results["gnn_to_mermaid_conversions"])
 
     logger.info("✨ Summary:")
     logger.info(f"   GNN → Mermaid: {success_count}/{total_count} successful")
 
     if results["mermaid_to_gnn_conversions"]:
-        back_success = sum(1 for c in results["mermaid_to_gnn_conversions"] if c["success"])
+        back_success = sum(
+            1 for c in results["mermaid_to_gnn_conversions"] if c["success"]
+        )
         back_total = len(results["mermaid_to_gnn_conversions"])
         logger.info(f"   Mermaid → GNN: {back_success}/{back_total} successful")
 
@@ -221,7 +231,7 @@ def process_oxdraw(
 def check_oxdraw_installed() -> bool:
     """
     Check if oxdraw CLI is installed and available.
-    
+
     Returns:
         True if oxdraw is available, False otherwise
     """
@@ -233,18 +243,18 @@ def launch_oxdraw_editor(
     port: int = 5151,
     host: str = "127.0.0.1",
     logger: Optional[logging.Logger] = None,
-    background: bool = False
+    background: bool = False,
 ) -> bool:
     """
     Launch oxdraw interactive editor for a Mermaid file.
-    
+
     Args:
         mermaid_file: Path to Mermaid file to edit
         port: Port for oxdraw server
         host: Host address for oxdraw server
         logger: Optional logger instance
         background: Run in background (non-blocking)
-        
+
     Returns:
         True if launch succeeded, False otherwise
     """
@@ -259,12 +269,15 @@ def launch_oxdraw_editor(
         return False
 
     try:
-        cmd = [
+        cmd: list[Any] = [
             "oxdraw",
-            "--input", str(mermaid_file),
+            "--input",
+            str(mermaid_file),
             "--edit",
-            "--serve-host", host,
-            "--serve-port", str(port)
+            "--serve-host",
+            host,
+            "--serve-port",
+            str(port),
         ]
 
         if logger:
@@ -272,14 +285,12 @@ def launch_oxdraw_editor(
 
         if background:
             # Non-blocking launch
-            subprocess.Popen(  # nosec B603 -- subprocess calls with controlled/trusted input
-                cmd,
-                stdout=subprocess.DEVNULL,
-                stderr=subprocess.DEVNULL
+            subprocess.Popen(  # nosec B603
+                cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
             )
         else:
             # Blocking launch
-            subprocess.run(cmd, check=True, timeout=300)  # nosec B603 -- subprocess calls with controlled/trusted input
+            subprocess.run(cmd, check=True, timeout=300)  # nosec B603
 
         return True
 
@@ -296,7 +307,7 @@ def launch_oxdraw_editor(
 def get_module_info() -> Dict[str, Any]:
     """
     Get module information and capabilities.
-    
+
     Returns:
         Dictionary with module metadata
     """
@@ -310,16 +321,16 @@ def get_module_info() -> Dict[str, Any]:
             "Interactive visual editing",
             "Headless batch conversion",
             "Ontology preservation",
-            "Connection validation"
+            "Connection validation",
         ],
         "modes": ["interactive", "headless"],
         "supported_formats": ["mermaid", "gnn_markdown"],
-        "oxdraw_cli_available": check_oxdraw_installed()
+        "oxdraw_cli_available": check_oxdraw_installed(),
     }
 
 
 def _get_timestamp() -> str:
     """Get ISO 8601 timestamp."""
     from datetime import datetime
-    return datetime.now().isoformat()
 
+    return datetime.now().isoformat()

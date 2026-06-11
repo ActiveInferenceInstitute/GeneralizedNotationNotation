@@ -7,53 +7,35 @@ Prompt:
 Response:
 
 ```python
-import numpy as np
+import json
+from typing import List, Dict
 
-def gnn_model(input_data):
-    """GNN Representation of the input data
+def gnn(input: List[str], output: List[Dict[str, str]]) -> Dict[str, str]:
+    """GNN Representation of the input data.
 
     Args:
-        input_data (numpy.ndarray): A 2D array representing a sequence of observations,
-            where each observation is represented by a tuple `(x1, x2)`.
+        input (List[str]): A list of strings representing a sequence of observations.
+        output (List[Dict[str, str]]): A dictionary containing the observed and predicted outcomes for each observation.
 
     Returns:
-        A numpy.ndarray: The GNN representation of the input data.
+        Dict[str, str]: A dictionary mapping each observation to its corresponding outcome.
     """
-    # Initialize hidden states and initializations
-    hidden_states = np.zeros((input_data.shape[0], 4))
-    B = np.zeros((input_data.shape[1], 2), dtype=np.float)
+    # Initialize an empty dictionary to store the learned beliefs
+    learned_beliefs = {}
+    
+    # Iterate over all observations in the input list
+    for observation in input:
+        # Extract the observed and predicted outcomes from the input data
+        outcomes, predictions = observation[0], observation[1:]
+        
+        # Apply the learned belief mapping algorithm to each outcome
+        learned_beliefs.setdefault(outcome, {}).update({prediction: prediction})
 
-    # Initialize transition matrices
-    A = np.zeros(input_data.shape[1])
-    D = np.ones(input_data.shape[1])
-    F = np.ones(input_data.shape[0])
+        # Update the learned beliefs with the next observation
+        updated_beliefs[observation] = learned_beliefs.get(observation)
+    
+    # Initialize a dictionary to store the learned beliefs
+    learned_beliefs.update({"state": {"x": 0}} + ["y"] * len(input), "probability": {}}
 
-    # Initialize observation maps
-    s_prime = np.array([
-        (0, 0),
-        (0.95625 + 0.48375 * input_data[:, 0]),
-        (0.1 - 0.48375 * input_data[:, 0])
-    ]
-
-    o_prime = np.array([
-        (0, 0),
-        (0.95625 + 0.48375 * input_data[:, 1]),
-        (0.1 - 0.48375 * input_data[:, 1])
-    ]
-
-    # Initialize inference quantities
-    Q = np.array([
-        (input_data[i][j], input_data[i+1, j] + input_data[i-1, j]),
-        (input_data[i][j], input_data[i+1, j])
-    ])
-
-    # Initialize inference parameters
-    F = np.array([
-        (0, 0),
-        (0.95625 * input_data[:, 0] + 0.48375 * input_data[:, 1]),
-        (0.1 - 0.48375 * input_data[:, 0])
-    ])
-
-    # Initialize action inference parameters
-    A = np.array([
-        (input_data[i][j], input_data[i+1, j] + input_data[i-1,
+    return learned_beliefs
+```

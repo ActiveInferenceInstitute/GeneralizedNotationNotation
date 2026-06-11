@@ -1,6 +1,6 @@
 # Optional Dependencies
 
-> Core functionality works without optional packages. Always implement graceful fallback.
+> Core functionality works without optional packages. Report unavailable optional features as explicit skipped, failed, or degraded statuses with actionable reasons.
 
 ## Dependency Categories
 
@@ -64,7 +64,7 @@ def check_command(cmd: str) -> tuple[bool, str]:
 
 ---
 
-## Graceful Fallback — Required Pattern
+## Optional Dependency Status Pattern
 
 ```python
 # Pattern 1: Module-level flag
@@ -75,19 +75,10 @@ except ImportError:
     PYMDP_AVAILABLE = False
     logger.info(
         "PyMDP not available — normal if not installed. "
-        "To enable: uv pip install inferactively-pymdp. "
-        "Continuing with fallback mode."
+        "To enable: uv pip install inferactively-pymdp."
     )
 
-# Pattern 2: Fallback class
-try:
-    from pymdp import Agent as PyMDPAgent
-except ImportError:
-    class PyMDPAgent:
-        def __init__(self, *args, **kwargs):
-            raise ImportError("Install PyMDP: uv pip install inferactively-pymdp")
-
-# Pattern 3: Feature flags in __init__.py
+# Pattern 2: Feature flags in __init__.py
 FEATURES = {
     "pymdp_simulation": _check_pymdp_available(),
     "jax_rendering": _check_jax_available(),
@@ -153,4 +144,4 @@ JAX_PLATFORM_NAME=cpu   # or gpu, tpu
 
 ---
 
-**Last Updated**: March 2026 | **Status**: Production Standard
+**Last Updated**: 2026-05-20 | **Status**: Maintained Standard

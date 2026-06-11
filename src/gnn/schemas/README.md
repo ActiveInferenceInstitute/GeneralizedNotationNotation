@@ -1,24 +1,23 @@
-# GNN Schemas
+# GNN Schema Definitions
 
-This directory contains schema definitions for GNN models in various formats:
+Schema files defining the structural contracts for valid GNN models across multiple serialization formats.
 
-- `json.json` - JSON Schema definition with Unicode character support
-- `yaml.yaml` - YAML Schema definition with single hashtag comments
-- `proto.proto` - Protocol Buffers schema
-- `xsd.xsd` - XML Schema definition
-- `pkl.pkl` - Apple Pkl schema
-- `asn1.asn1` - ASN.1 schema definition
+## Included Schemas
 
-These schemas provide validation and structure for GNN model specifications.
+| File | Format | Purpose |
+|------|--------|---------|
+| `json.json` | JSON Schema | Primary validation schema |
+| `yaml.yaml` | YAML | YAML format validation |
+| `xsd.xsd` | XML Schema | XML format validation |
+| `proto.proto` | Protocol Buffers | Binary format definition |
+| `asn1.asn1` | ASN.1 | Formal notation schema |
+| `pkl.pkl` | Pickle | Serialization reference |
 
-## Unicode Character Support
+## Usage
 
-All schemas have been updated to handle Unicode characters, especially the Greek letter π (pi) used in Active Inference policy variables. This ensures proper support for the reference actinf_pomdp_agent.md model.
+Schemas are loaded by `gnn/schema_validator.py` during Steps 5–6 (type checking and validation).
 
-## Comment Handling
+## See Also
 
-Single hashtag comments (e.g., `# comment`) are properly supported in all schemas, matching the format used in the reference model.
-
-## Active Inference Support
-
-Special handling for Active Inference specific variables (A, B, C, D, E, G, π) has been added to all schemas to ensure compatibility with standard Active Inference POMDP models.
+- [Parent: gnn/README.md](../README.md)
+- [AGENTS.md](AGENTS.md) — Architecture documentation

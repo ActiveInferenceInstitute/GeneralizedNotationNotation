@@ -6,7 +6,7 @@
 
 ✅ **Achieved**: Move PyMDP simulation from reference implementation to full pipeline integration
 ✅ **Achieved**: GNN-driven POMDP parameter configuration
-✅ **Achieved**: Real PyMDP methods integration (no mock implementations)
+✅ **Achieved**: Real PyMDP methods integration
 ✅ **Achieved**: Pipeline-compatible execution through steps 11 & 12
 
 ## 📁 **File Migration & Structure**
@@ -88,7 +88,7 @@ B[0] = np.zeros((num_states, num_states, num_actions))
 
 ### ✅ **Verified Real PyMDP Usage**
 ```python
-# Real PyMDP imports (not mock)
+# Real PyMDP imports
 from pymdp import utils
 from pymdp.agent import Agent
 
@@ -207,7 +207,7 @@ batch_results = batch_execute_pymdp(
 ## 📈 **Benefits Achieved**
 
 1. **🎯 GNN-Driven Configuration**: POMDP state spaces automatically extracted from GNN specs
-2. **🔬 Scientific Authenticity**: Real PyMDP Agent class, no mock implementations  
+2. **🔬 Scientific Authenticity**: Real PyMDP Agent class  
 3. **🔧 Pipeline Compatibility**: Seamless integration with GNN parsing and validation
 4. **📊 Comprehensive Output**: JSON traces, performance metrics, visualizations
 5. **🧩 Modular Design**: Can be used standalone or as part of full 25-step pipeline

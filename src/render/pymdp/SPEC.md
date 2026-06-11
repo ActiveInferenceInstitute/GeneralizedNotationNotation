@@ -1,8 +1,34 @@
-# Specification: Pymdp
+# PyMDP Renderer — Technical Specification
 
-## Design Requirements
-This module (`pymdp`) maps structural logic to the overall execution graph.
-It ensures that `Pymdp` tasks resolve without runtime dependency loops.
+**Version**: 1.6.0
 
-## Components
-Expected available types: GnnToPyMdpConverter, MarkdownGNNParser, NumpySafeOperations, ParseResult, PyMDPRenderer
+## Purpose
+
+Generates Python code for PyMDP POMDP simulation.
+
+## Code Generation
+
+- Maps GNN model structure to PyMDP agent constructor
+- Generates transition matrices (A, B), preference vectors (C), prior (D)
+- Produces standalone simulation scripts
+
+## Output
+
+- Python scripts using `pymdp` API
+- JSON parameter files
+
+## Architecture
+
+```
+pymdp/
+├── __init__.py             # Package exports
+├── pymdp_renderer.py       # Canonical renderer
+├── pymdp_templates.py      # Pipeline and standalone runner templates
+└── ...
+```
+
+## Runtime Contract
+
+- Generated scripts target `inferactively-pymdp>=1.0.0`.
+- Required matrices are `A`, `B`, `C`, and `D`; factored POMDP specs are
+  composed by `render/pomdp_processor.py` before this renderer is called.

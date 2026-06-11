@@ -4,15 +4,22 @@ Markdown documentation audit: relative links, AGENTS→SPEC footers, src/doc cov
 AGENTS↔README pairing.
 
 Run from repository root:
-  uv run python doc/development/docs_audit.py
-  uv run python doc/development/docs_audit.py --strict   # exit 1 if any issue
+  uv run --extra dev python doc/development/docs_audit.py
+  uv run --extra dev python doc/development/docs_audit.py --strict   # exit 1 if any issue
+  uv run --extra dev python doc/development/docs_audit.py --check-anchors  # verify #fragments in .md links (optional)
+  uv run --extra dev python doc/development/docs_audit.py --strict --check-anchors --no-write
 
-Writes: doc/development/docs_audit_report.md
+With ``--strict`` and any findings, a **full per-issue listing** is written to stderr by default
+(terminal-friendly fix loop). Use ``--quiet`` to print only counts and the one-line summary.
+
+Writes ``doc/development/docs_audit_report.md`` unless ``--no-write`` is passed or a
+custom ``--report-path`` is provided.
 """
 
 from __future__ import annotations
 
 import argparse
+import logging
 import re
 import sys
 from pathlib import Path
@@ -30,6 +37,10 @@ SKIP_PARTS = frozenset(
         "dist",
         "build",
         ".eggs",
+        # Pipeline-generated artifacts — not maintained documentation.
+        # LLM output, render output, execute output, etc. may contain code-like
+        # fragments that the link regex would otherwise mis-parse.
+        "output",
     }
 )
 
@@ -67,7 +78,21 @@ def should_skip(path: Path) -> bool:
         rel = path.relative_to(REPO_ROOT)
     except ValueError:
         return True
-    return any(p in SKIP_PARTS for p in rel.parts)
+    return any(p in SKIP_PARTS for p in rel.parts) or _path_is_generated_output(rel)
+
+
+def _path_is_generated_output(rel: Path) -> bool:
+    """Run outputs that are intentionally excluded from maintained-doc audits."""
+    parts = rel.parts
+    if not parts:
+        return False
+    if parts[0] == "output":
+        return True
+    if any(part.startswith("activeinference_outputs_") for part in parts):
+        return True
+    if any(part.endswith("_outputs") or "_outputs_" in part for part in parts):
+        return True
+    return "pomdp_gridworld_outputs" in parts
 
 
 def iter_markdown_files() -> list[Path]:
@@ -86,9 +111,103 @@ def iter_markdown_files() -> list[Path]:
 # [text](url) — capture path before # or )
 LINK_RE = re.compile(r"\[[^\]]*\]\(([^)#\s]+)(?:#[^)]*)?\)")
 
+# [text](url) — full href including fragment (for anchor checks)
+FULL_LINK_RE = re.compile(r"\[[^\]]*\]\(([^)]+)\)")
+
+# Fenced code blocks (``` … ``` or ~~~ … ~~~), non-greedy, DOTALL so fences can span lines.
+FENCED_CODE_RE = re.compile(r"(?ms)^([ \t]*)(```|~~~)[^\n]*\n.*?^\1\2[ \t]*$")
+
+# Inline code spans: `…` or ``…`` (shortest match wins within a line).
+INLINE_CODE_RE = re.compile(r"(`+)(?:(?!\1).)+\1")
+
+
+def _strip_code(md: str) -> str:
+    """Remove fenced code blocks and inline code spans so link regexes don't match
+    Python / shell snippets that happen to contain ``[ident](expr)``."""
+    no_blocks = FENCED_CODE_RE.sub(
+        lambda m: "\n".join("" for _ in m.group(0).splitlines()), md
+    )
+    return INLINE_CODE_RE.sub(
+        lambda m: " " * len(m.group(0)), no_blocks
+    )
+
 
 def extract_links(md: str) -> list[str]:
-    return [m.group(1).strip() for m in LINK_RE.finditer(md)]
+    return [m.group(1).strip() for m in LINK_RE.finditer(_strip_code(md))]
+
+
+def _gfm_heading_slug(heading_line: str) -> str:
+    """Approximate GitHub-style slug from a markdown heading line (with # marks)."""
+    m = re.match(r"^#{1,6}\s+(.+)$", heading_line.strip())
+    text = m.group(1) if m else heading_line
+    text = re.sub(r"`+", "", text.strip()).lower()
+    # Keep word chars (Unicode) and spaces; drop punctuation like (), /, emoji
+    text = re.sub(r"[^\w\s-]", "", text, flags=re.UNICODE)
+    text = re.sub(r"[-\s]+", "-", text.strip())
+    return re.sub(r"-+", "-", text).strip("-")
+
+
+def _heading_slugs_in_markdown(md: str) -> set[str]:
+    slugs: set[str] = set()
+    for line in md.splitlines():
+        if not line.strip().startswith("#"):
+            continue
+        slugs.add(_gfm_heading_slug(line))
+    return slugs
+
+
+def audit_bad_markdown_anchors(files: list[Path]) -> list[tuple[Path, int, str, str]]:
+    """Flag relative links to *.md where #fragment does not match any heading slug."""
+    issues: list[tuple[Path, int, str, str]] = []
+    slug_cache: dict[Path, set[str]] = {}
+    for src in files:
+        try:
+            rel_src = src.relative_to(REPO_ROOT)
+        except ValueError:
+            continue
+        raw = src.read_text(encoding="utf-8", errors="replace")
+        lines = _strip_code(raw).splitlines()
+        for i, line in enumerate(lines, start=1):
+            for m in FULL_LINK_RE.finditer(line):
+                href = m.group(1).strip()
+                if href.startswith("`"):
+                    continue
+                href = href.strip("<>")
+                if "#" not in href:
+                    continue
+                path_part, frag = href.split("#", 1)
+                if not path_part:
+                    continue
+                frag = frag.split("?")[0].strip()
+                if not frag:
+                    continue
+                if path_part.startswith(("http://", "https://", "mailto:", "//")):
+                    continue
+                resolved = resolve_link(src, path_part)
+                if resolved is None or not resolved.is_file():
+                    continue
+                if resolved.suffix.lower() != ".md":
+                    continue
+                if resolved not in slug_cache:
+                    slug_cache[resolved] = _heading_slugs_in_markdown(
+                        resolved.read_text(encoding="utf-8", errors="replace")
+                    )
+                slugs = slug_cache[resolved]
+                frag_l = frag.lower()
+                if frag_l not in slugs:
+                    try:
+                        rt = resolved.relative_to(REPO_ROOT)
+                    except ValueError:
+                        rt = resolved
+                    issues.append(
+                        (
+                            rel_src,
+                            i,
+                            href,
+                            f"anchor #{frag} not found (headings in `{rt}`)",
+                        )
+                    )
+    return issues
 
 
 def resolve_link(source_file: Path, href: str) -> Path | None:
@@ -112,7 +231,7 @@ def audit_broken_links(files: list[Path]) -> list[tuple[Path, int, str, str]]:
     issues: list[tuple[Path, int, str, str]] = []
     for path in files:
         text = path.read_text(encoding="utf-8", errors="replace")
-        lines = text.splitlines()
+        lines = _strip_code(text).splitlines()
         for i, line in enumerate(lines, start=1):
             for href in extract_links(line):
                 if href.startswith("`"):
@@ -344,6 +463,82 @@ def audit_doc_agents_structure() -> list[tuple[Path, str]]:
     return issues
 
 
+def format_strict_issue_detail(
+    *,
+    link_issues: list[tuple[Path, int, str, str]],
+    anchor_issues: list[tuple[Path, int, str, str]],
+    anchor_checked: bool,
+    spec_issues: list[tuple[Path, str]],
+    coverage: list[Path],
+    doc_missing_agents: list[Path],
+    doc_missing_readme: list[Path],
+    agents_no_readme: list[Path],
+    readme_no_agents: list[Path],
+    doc_agents_structure: list[tuple[Path, str]],
+) -> str:
+    """Human-readable listing for terminal fix loops (stderr)."""
+    chunks: list[str] = []
+    chunks.append("Strict mode: full issue list (fix in source order)\n")
+
+    if link_issues:
+        chunks.append(f"## Broken relative links ({len(link_issues)})\n")
+        for rel, lineno, href, reason in sorted(link_issues, key=lambda x: (str(x[0]), x[1])):
+            chunks.append(f"  {rel}:{lineno}  `{href}`  → {reason}\n")
+
+    if anchor_checked and anchor_issues:
+        chunks.append(f"## Bad markdown anchors ({len(anchor_issues)})\n")
+        for rel, lineno, href, reason in sorted(anchor_issues, key=lambda x: (str(x[0]), x[1])):
+            chunks.append(f"  {rel}:{lineno}  `{href}`  → {reason}\n")
+
+    if spec_issues:
+        chunks.append(f"## AGENTS.md → missing SPEC.md ({len(spec_issues)})\n")
+        for rel, msg in sorted(spec_issues, key=lambda x: str(x[0])):
+            chunks.append(f"  `{rel}`  → {msg}\n")
+
+    if coverage:
+        chunks.append(f"## src/ dirs with .py but no AGENTS.md ({len(coverage)})\n")
+        for rel in sorted(coverage, key=str):
+            chunks.append(f"  `{rel}`\n")
+
+    if doc_missing_agents:
+        chunks.append(
+            f"## doc/ maintained folders missing AGENTS.md ({len(doc_missing_agents)})\n"
+        )
+        for rel in sorted(doc_missing_agents, key=str):
+            chunks.append(f"  `{rel}`\n")
+
+    if doc_missing_readme:
+        chunks.append(
+            f"## doc/ maintained folders missing README.md ({len(doc_missing_readme)})\n"
+        )
+        for rel in sorted(doc_missing_readme, key=str):
+            chunks.append(f"  `{rel}`\n")
+
+    if agents_no_readme:
+        chunks.append(
+            f"## Directories with AGENTS.md but no README.md ({len(agents_no_readme)})\n"
+        )
+        for rel in sorted(agents_no_readme, key=str):
+            chunks.append(f"  `{rel}`\n")
+
+    if readme_no_agents:
+        chunks.append(
+            f"## Directories with README.md but no AGENTS.md ({len(readme_no_agents)})\n"
+        )
+        for rel in sorted(readme_no_agents, key=str):
+            chunks.append(f"  `{rel}`\n")
+
+    if doc_agents_structure:
+        chunks.append(f"## doc/**/AGENTS.md structure ({len(doc_agents_structure)})\n")
+        for rel, msg in sorted(doc_agents_structure, key=lambda x: str(x[0])):
+            chunks.append(f"  `{rel}`  → {msg}\n")
+
+    chunks.append(
+        "\nTip: full tables also in doc/development/docs_audit_report.md\n"
+    )
+    return "".join(chunks)
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Markdown documentation audit for this repository.")
     parser.add_argument(
@@ -351,14 +546,53 @@ def main() -> int:
         action="store_true",
         help="Exit with code 1 if any broken links, SPEC gaps, coverage gaps, AGENTS/README pairing, or doc AGENTS structure issues are found.",
     )
+    parser.add_argument(
+        "--check-anchors",
+        action="store_true",
+        help="Also verify that #fragments in relative .md links match a heading slug in the target file.",
+    )
+    parser.add_argument(
+        "--quiet",
+        "-q",
+        action="store_true",
+        help="With --strict: suppress per-issue detail on stderr (summary counts only).",
+    )
+    parser.add_argument(
+        "--verbose",
+        "-v",
+        action="store_true",
+        help="Log extra diagnostics to stderr (e.g. markdown file count).",
+    )
+    parser.add_argument(
+        "--no-write",
+        action="store_true",
+        help="Run checks without writing docs_audit_report.md.",
+    )
+    parser.add_argument(
+        "--report-path",
+        type=Path,
+        default=REPO_ROOT / "doc" / "development" / "docs_audit_report.md",
+        help="Optional report output path. Ignored when --no-write is set.",
+    )
     args = parser.parse_args()
+
+    if not logging.root.handlers:
+        logging.basicConfig(
+            level=logging.INFO if args.verbose else logging.WARNING,
+            format="%(message)s",
+            stream=sys.stderr,
+            force=True,
+        )
 
     if not REPO_ROOT.joinpath("pyproject.toml").exists():
         print("Run from repo root (pyproject.toml not found).", file=sys.stderr)
         return 1
 
     md_files = iter_markdown_files()
+    if args.verbose:
+        logging.info("Markdown files scanned: %d", len(md_files))
     link_issues = audit_broken_links(md_files)
+    anchor_issues = audit_bad_markdown_anchors(md_files) if args.check_anchors else []
     spec_issues = audit_agents_spec()
     coverage = audit_src_agents_coverage()
     doc_missing_agents = audit_doc_maintained_missing_agents()
@@ -367,11 +601,13 @@ def main() -> int:
     readme_no_agents = audit_readme_without_agents()
     doc_agents_structure = audit_doc_agents_structure()
 
-    report_path = REPO_ROOT / "doc" / "development" / "docs_audit_report.md"
+    report_path = args.report_path
+    if not report_path.is_absolute():
+        report_path = REPO_ROOT / report_path
     lines = [
         "# Documentation audit report",
         "",
-        "Generated by `uv run python doc/development/docs_audit.py`. Re-run after doc changes.",
+        "Generated by `uv run --extra dev python doc/development/docs_audit.py`. Re-run after doc changes.",
         "",
         "## Broken relative Markdown links",
         "",
@@ -382,6 +618,22 @@ def main() -> int:
         lines.append("| Source | Line | Href | Issue |")
         lines.append("|--------|------|------|-------|")
         for rel, lineno, href, reason in sorted(link_issues, key=lambda x: (str(x[0]), x[1])):
+            lines.append(f"| `{rel}` | {lineno} | `{href}` | {reason} |")
+    lines.extend(
+        [
+            "",
+            "## Suspicious markdown anchors (optional --check-anchors)",
+            "",
+        ]
+    )
+    if not args.check_anchors:
+        lines.append("Not run (pass `--check-anchors` to validate `#fragments` against heading slugs).")
+    elif not anchor_issues:
+        lines.append("None found.")
+    else:
+        lines.append("| Source | Line | Href | Issue |")
+        lines.append("|--------|------|------|-------|")
+        for rel, lineno, href, reason in sorted(anchor_issues, key=lambda x: (str(x[0]), x[1])):
             lines.append(f"| `{rel}` | {lineno} | `{href}` | {reason} |")
     lines.extend(
         [
@@ -468,9 +720,18 @@ def main() -> int:
         for rel, msg in doc_agents_structure:
             lines.append(f"- `{rel}`: {msg}")
 
-    report_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
-    print(f"Wrote {report_path.relative_to(REPO_ROOT)}")
+    if args.no_write:
+        print("Report not written (--no-write).")
+    else:
+        report_path.parent.mkdir(parents=True, exist_ok=True)
+        report_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+        try:
+            display_path = report_path.relative_to(REPO_ROOT)
+        except ValueError:
+            display_path = report_path
+        print(f"Wrote {display_path}")
     print(f"Broken links: {len(link_issues)}")
+    print(f"Bad markdown anchors: {len(anchor_issues)}")
     print(f"AGENTS/SPEC gaps: {len(spec_issues)}")
     print(f"src dirs missing AGENTS.md: {len(coverage)}")
     print(f"doc maintained missing AGENTS.md: {len(doc_missing_agents)}")
@@ -487,8 +748,27 @@ def main() -> int:
         + len(agents_no_readme)
         + len(readme_no_agents)
         + len(doc_agents_structure)
+        + (len(anchor_issues) if args.check_anchors else 0)
     )
     if args.strict and total_issues > 0:
+        sys.stdout.flush()
+        if not args.quiet:
+            print(
+                format_strict_issue_detail(
+                    link_issues=link_issues,
+                    anchor_issues=anchor_issues,
+                    anchor_checked=args.check_anchors,
+                    spec_issues=spec_issues,
+                    coverage=coverage,
+                    doc_missing_agents=doc_missing_agents,
+                    doc_missing_readme=doc_missing_readme,
+                    agents_no_readme=agents_no_readme,
+                    readme_no_agents=readme_no_agents,
+                    doc_agents_structure=doc_agents_structure,
+                ),
+                file=sys.stderr,
+                end="",
+            )
         print(f"Strict mode: {total_issues} issue(s); exiting 1.", file=sys.stderr)
         return 1
     return 0

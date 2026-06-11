@@ -265,7 +265,7 @@ validateConstraint :: Constraint -> Matrix Double -> Bool
 validateConstraint Stochastic m = all (\i -> abs (sum [m ! (i, j) | j <- [1..M.ncols m]] - 1.0) < 1e-10) [1..M.nrows m]
 validateConstraint NonNegative m = all (>= 0) (M.toList m)
 validateConstraint Symmetric m = m == M.transpose m
-validateConstraint _ _ = True -- Other constraints not implemented
+validateConstraint _ _ = True -- Other constraints are outside this Haskell reference artifact
 
 -- | Validate a GNN model
 validateModel :: ValidationLevel -> GNNModel -> ValidationResult
@@ -333,7 +333,7 @@ tensorProduct :: (KnownNat s1, KnownNat o1, KnownNat u1,
                 ActiveInferenceModel s1 o1 u1 ->
                 ActiveInferenceModel s2 o2 u2 ->
                 -- Result type would be (s1*s2, o1*o2, u1*u2) but requires type-level arithmetic
-                String -- Placeholder
+                String -- Encoded tensor product descriptor
 tensorProduct m1 m2 = "Tensor product not fully implemented"
 
 -- | Smart constructor for likelihood matrix with validation

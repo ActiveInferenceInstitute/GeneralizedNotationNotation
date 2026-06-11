@@ -11,19 +11,19 @@ Generated from GNN POMDP Model: **Hidden Markov Model Baseline**
 - Fixed transition and emission matrices
 - No action selection (passive inference only)
 - Suitable for sequence modeling and state estimation tasks
-- **Generation Date**: 2026-04-10 10:25:04
+- **Generation Date**: 2026-05-22 06:18:15
 
 ## POMDP Dimensions
 
 - **Number of States**: 4
 - **Number of Observations**: 6
-- **Number of Actions**: 4
+- **Number of Actions**: 1
 
 ## Active Inference Matrices
 
 ### Available Matrices/Vectors:
 - **A Matrix (Likelihood)**: 6×4 - Maps hidden states to observations
-- **B Matrix (Transition)**: Present - State transitions given actions
+- **B Matrix (Transition)**: 4×4 - State transitions given actions
 - **C Vector (Preferences)**: Length 6 - Preferences over observations
 - **D Vector (Prior)**: Length 4 - Prior beliefs over states
 

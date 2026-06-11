@@ -8,9 +8,9 @@
 
 **Category**: Governance / Policy
 
-**Status**: ✅ Production Ready
+**Status**: Maintained
 
-**Version**: 1.1.0
+**Version**: 1.6.0
 
 ---
 
@@ -18,7 +18,7 @@
 
 ### Primary Responsibilities
 
-1. **Policy Enforcement**: Defines non-negotiable architectural mandates (e.g., the Zero-Mock policy, Thin Orchestrator Pattern, and God-Class Decomposition routines).
+1. **Policy Enforcement**: Defines non-negotiable architectural mandates (e.g., real-implementation testing, Thin Orchestrator Pattern, and God-Class Decomposition routines).
 2. **Behavioral Framing**: Governs how agents interact with the file system, manage technical debt, and format outputs.
 3. **Quality Assurance**: Outlines testing thresholds, linting guidelines, and error-handling paradigms directly accessible via the MCP framework.
 

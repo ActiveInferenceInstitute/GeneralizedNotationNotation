@@ -1,14 +1,34 @@
-# Schemas — agent notes
+# GNN Schema Definitions
+
+## Overview
+
+Contains schema definitions for GNN model validation in multiple serialization formats. These schemas define the structural contracts that valid GNN files must conform to.
+
+## Architecture
+
+```
+schemas/
+├── __init__.py     # Package marker
+├── json.json       # JSON Schema for GNN model validation
+├── yaml.yaml       # YAML schema definition
+├── xsd.xsd         # XML Schema Definition for GNN XML format
+├── proto.proto      # Protocol Buffers schema
+├── asn1.asn1        # ASN.1 schema definition
+└── pkl.pkl          # Pickle schema reference
+```
 
 ## Purpose
 
-Provide **schema definitions** consumed by the GNN stack (see **`src/gnn/parsers/schema_parser.py`**, **`schema_serializer.py`**, and serializers for JSON, XML, YAML, etc.).
+- **Validation anchors** — Used by `gnn/schema_validator.py` to validate parsed models.
+- **Format contracts** — Define the expected structure for each serialization format.
+- **Cross-format consistency** — Ensure semantic equivalence across JSON, YAML, XML, and binary representations.
 
-## Files
+## Usage
 
-Listed in **[README.md](README.md)** and **[SPEC.md](SPEC.md)** (`json.json`, `yaml.yaml`, `proto.proto`, `xsd.xsd`, `asn1.asn1`, `pkl.pkl`).
+Schemas are loaded by the validation pipeline (Steps 5–6) and referenced during export (Step 7) to ensure output conformity.
 
-## Related
+## Parent Module
 
-- **[../SPEC.md](../SPEC.md)** — canonical format counts
-- **`src/gnn/parsers/`** — parsers that embed or validate against these shapes
+See [gnn/AGENTS.md](../AGENTS.md) for the overall GNN processing architecture.
+
+**Version**: 1.6.0

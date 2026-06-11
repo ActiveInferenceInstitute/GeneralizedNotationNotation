@@ -69,7 +69,7 @@ See **[doc/gnn/AGENTS.md](../doc/gnn/AGENTS.md)** for the registry of all 25 doc
 - **[api/](api/AGENTS.md)** - REST API server (FastAPI)
 - **[cli/](cli/AGENTS.md)** - CLI entry point
 - **[lsp/](lsp/AGENTS.md)** - Language Server Protocol support
-- **[sapf/](sapf/AGENTS.md)** - SAPF compatibility shim (re-exports from `audio/sapf/`)
+- **[sapf/](sapf/AGENTS.md)** - SAPF public entry point (re-exports from `audio/sapf/`)
 - **[doc/](doc/AGENTS.md)** - In-repo technical documentation subtree (`src/doc/`)
 
 ---
@@ -89,7 +89,7 @@ See **[doc/gnn/AGENTS.md](../doc/gnn/AGENTS.md)** for the registry of all 25 doc
 
 - Contains all domain logic
 - Provides public API for orchestrators
-- Implements error handling and fallbacks
+- Implements explicit error handling, skip statuses, and dependency diagnostics
 - Exports functions via `__init__.py`
 
 ### Example Structure
@@ -178,16 +178,27 @@ graph TD
 - MCP integration and documentation coverage are tracked by repository audits.
 - Use step outputs and tests as the ground-truth status indicators.
 
-### Recent Validation (March 2026)
+### Defaults worth knowing
 
-- **MCP Deadlock Resolved**: Fixed a multithreading deadlock in `discover_modules` that caused silent timeouts, restoring full pipeline summaries with 131 tools registered perfectly within 5 seconds.
-- **LLM Glob Fixed**: Resolved recursive path issues during LLM processing logic.
-- **ML Class Warning Fixed**: Updated cross-validation fold logic `min(5, len(X), min_class_count)` to dynamically avoid target class sparsity warnings.
-- **Confirmed**: Full pipeline execution with 100% success rate and enhanced visual logging.
-- **Performance**: All 25 steps complete rapidly with comprehensive progress tracking.
-- **Tests (local `uv run pytest src/tests/ -q --tb=no --ignore=src/tests/test_llm_ollama.py --ignore=src/tests/test_llm_ollama_integration.py`)**: 1,906 passed, 30 skipped (2026-03-24). Re-include those modules when `ollama` is installed and responsive.
-- **LLM Default Model**: `smollm2:135m-instruct-q4_K_S` via Ollama (`llm.defaults.DEFAULT_OLLAMA_MODEL`; configurable).
-- **Visual Accessibility**: All pipeline steps now include enhanced visual indicators and progress tracking.
+- **LLM default model**: `smollm2:135m-instruct-q4_K_S` via Ollama
+  (`llm.defaults.DEFAULT_OLLAMA_MODEL`; override with the `OLLAMA_MODEL` env var or
+  `input/config.yaml`).
+- **MCP registration**: `discover_modules` walks `src/*/mcp.py` on startup; see
+  `src/mcp/processor.py` for the worker pool configuration.
+- **Tests command of record**: `uv run --extra dev python -m pytest src/tests/ -q
+  --tb=no --ignore=src/tests/llm/test_llm_ollama.py
+  --ignore=src/tests/llm/test_llm_ollama_integration.py`. Re-include the two Ollama files
+  when `ollama` is installed and reachable.
+- **Current test inventory (2026-06-09)**: 171 `test_*.py` files under `src/tests/`;
+  the command-of-record collect pass with Ollama integration tests ignored collected 2,296 tests.
+  Latest recorded full suite with the same Ollama integration excludes passed on 2026-06-09:
+  2,281 passed, 14 skipped, 1 xfailed in 744.50s.
+- All 25 orchestrator scripts comply with the <150 line thin orchestrator pattern.
+- Maintained source/test documentation coverage is enforced by `doc/development/docs_audit.py --strict`.
+
+Per-step timings and tool counts are generated under `output/`; current test inventory
+lives in `src/tests/TEST_SUITE_SUMMARY.md`. Regenerate pipeline artifacts locally when
+you need fresh run evidence rather than committing them as maintained documentation.
 
 ---
 
@@ -297,7 +308,7 @@ python src/1_setup.py --install_optional --optional_groups "viz,pymdp"
 - Use type hints for all public functions
 - Document all classes and methods
 - Maintain >80% test coverage
-- Include error handling and fallbacks
+- Include explicit error handling, status reporting, and dependency diagnostics
 
 ---
 
@@ -312,7 +323,7 @@ python src/2_tests.py --comprehensive
 ### Run Module-Specific Tests
 
 ```bash
-pytest src/tests/test_[module]*.py -v
+uv run --extra dev python -m pytest src/tests/test_[module]*.py -v
 ```
 
 ### Check Coverage
@@ -330,7 +341,7 @@ pytest --cov=src --cov-report=term-missing
 
 ---
 
-**Last Updated**: 2026-04-09
-**Pipeline Version**: 1.3.0
+**Last Updated**: 2026-06-09
+**Pipeline Version**: 1.6.0
 **Total Steps**: 25 (0-24)
 **Status**: Maintained

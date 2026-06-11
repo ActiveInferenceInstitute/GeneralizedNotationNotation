@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
+from typing import Any, cast
+
 """
 GUI 3: State Space Design Studio Processor
 Low-dependency visual design interface for Active Inference models
@@ -15,10 +17,12 @@ from typing import Any, Dict
 
 try:
     import gradio as gr
+
     _GUI_BACKEND = "gradio"
 except ImportError:
-    gr = None  # type: ignore
-    _GUI_BACKEND = None
+    gr = cast(Any, None)
+    _GUI_BACKEND = cast(Any, None)
+
 
 def run_gui(
     target_dir: Path,
@@ -46,7 +50,9 @@ def run_gui(
     """
 
     try:
-        output_root = output_dir.parent if output_dir.name.endswith('_output') else output_dir
+        output_root = (
+            output_dir.parent if output_dir.name.endswith("_output") else output_dir
+        )
         output_root.mkdir(parents=True, exist_ok=True)
 
         starter_path = output_root / export_filename
@@ -68,32 +74,47 @@ def run_gui(
                     )
                 logger.info("Install GUI support with: uv sync --extra gui")
             else:
-                logger.info("📦 Running GUI 3 in HEADLESS mode - generating artifacts only")
+                logger.info(
+                    "📦 Running GUI 3 in HEADLESS mode - generating artifacts only"
+                )
 
             design_analysis = _analyze_gnn_design(starter_md)
 
             # Write starter model to file
-            with tempfile.NamedTemporaryFile(mode='w', encoding='utf-8', dir=starter_path.parent, delete=False) as tmp_f:
+            with tempfile.NamedTemporaryFile(
+                mode="w", encoding="utf-8", dir=starter_path.parent, delete=False
+            ) as tmp_f:
                 tmp_f.write(starter_md)
             os.replace(tmp_f.name, str(starter_path))
 
             # Save design analysis
             analysis_file = output_root / "design_analysis.json"
-            with tempfile.NamedTemporaryFile(mode='w', encoding='utf-8', dir=analysis_file.parent, delete=False) as tmp_f:
-                tmp_f.write(json.dumps({
-                "gui_type": "design_studio",
-                "backend": _GUI_BACKEND or "none",
-                "status": "headless_mode" if _GUI_BACKEND else "fallback_mode",
-                "analysis": design_analysis,
-                "export_path": str(starter_path),
-                "headless_mode": True,
-                "recommendations": [
-                    "Run with --interactive to launch GUI server on port 7862"
-                ] if _GUI_BACKEND else [
-                    "Install with: uv sync --extra gui",
-                    "Run with --interactive for full GUI experience"
-                ]
-            }, indent=2))
+            with tempfile.NamedTemporaryFile(
+                mode="w", encoding="utf-8", dir=analysis_file.parent, delete=False
+            ) as tmp_f:
+                tmp_f.write(
+                    json.dumps(
+                        {
+                            "gui_type": "design_studio",
+                            "backend": _GUI_BACKEND or "none",
+                            "status": "headless_mode"
+                            if _GUI_BACKEND
+                            else "fallback_mode",
+                            "analysis": design_analysis,
+                            "export_path": str(starter_path),
+                            "headless_mode": True,
+                            "recommendations": [
+                                "Run with --interactive to launch GUI server on port 7862"
+                            ]
+                            if _GUI_BACKEND
+                            else [
+                                "Install with: uv sync --extra gui",
+                                "Run with --interactive for full GUI experience",
+                            ],
+                        },
+                        indent=2,
+                    )
+                )
             os.replace(tmp_f.name, str(analysis_file))
 
             logger.info(f"🎨 Design analysis saved to: {analysis_file}")
@@ -102,25 +123,27 @@ def run_gui(
         # Interactive mode - build the Design Studio GUI
         logger.info("🔧 Building State Space Design Studio...")
         from .ui_designer import build_design_studio
+
         demo = build_design_studio(
-            markdown_text=starter_md,
-            export_path=starter_path,
-            logger=logger
+            markdown_text=starter_md, export_path=starter_path, logger=logger
         )
         logger.info("✅ State Space Design Studio UI built successfully")
 
         # Launch GUI
-        logger.info(f"🌐 Launching GUI 3 on http://localhost:7862 (open_browser={open_browser})")
+        logger.info(
+            f"🌐 Launching GUI 3 on http://localhost:7862 (open_browser={open_browser})"
+        )
 
         import threading
         import time
 
-        def launch_gui():
+        def launch_gui() -> Any:
+            """Provide launch gui behavior."""
             logger.info("🎨 Design Studio starting...")
             demo.launch(
                 share=False,
                 prevent_thread_lock=False,  # Let the thread properly block on the server
-                server_name="0.0.0.0",  # nosec B104 -- binding to all interfaces is intentional for local dev server
+                server_name="0.0.0.0",  # nosec B104
                 server_port=7862,
                 inbrowser=open_browser,
                 show_error=True,
@@ -131,25 +154,34 @@ def run_gui(
         gui_thread.start()
         time.sleep(3)
         logger.info("🎨 Design Studio is running on http://localhost:7862")
-        logger.info("🔍 Features: Visual state space design, ontology editing, connection graphs, low-dependency approach")
+        logger.info(
+            "🔍 Features: Visual state space design, ontology editing, connection graphs, low-dependency approach"
+        )
 
         # Save launch status
         status_file = output_root / "design_studio_status.json"
-        with tempfile.NamedTemporaryFile(mode='w', encoding='utf-8', dir=status_file.parent, delete=False) as tmp_f:
-            tmp_f.write(json.dumps({
-                "gui_type": "design_studio",
-                "backend": "gradio",
-                "launched": True,
-                "export_file": str(starter_path),
-                "port": 7862,
-                "url": "http://localhost:7862",
-                "features": [
-                    "State space visual designer",
-                    "Ontology term editor",
-                    "Connection graph interface",
-                    "Parameter tuning controls"
-                ]
-            }, indent=2))
+        with tempfile.NamedTemporaryFile(
+            mode="w", encoding="utf-8", dir=status_file.parent, delete=False
+        ) as tmp_f:
+            tmp_f.write(
+                json.dumps(
+                    {
+                        "gui_type": "design_studio",
+                        "backend": "gradio",
+                        "launched": True,
+                        "export_file": str(starter_path),
+                        "port": 7862,
+                        "url": "http://localhost:7862",
+                        "features": [
+                            "State space visual designer",
+                            "Ontology term editor",
+                            "Connection graph interface",
+                            "Parameter tuning controls",
+                        ],
+                    },
+                    indent=2,
+                )
+            )
         os.replace(tmp_f.name, str(status_file))
 
         return True
@@ -181,7 +213,7 @@ def _load_starter_content(target_dir: Path, logger: logging.Logger) -> str:
 
 def _get_default_pomdp_template() -> str:
     """Get default POMDP template for design studio"""
-    return '''# GNN Example: Active Inference POMDP Agent (Design Studio)
+    return """# GNN Example: Active Inference POMDP Agent (Design Studio)
 # GNN Version: 1.0
 
 ## ModelName
@@ -210,51 +242,50 @@ D=PriorOverHiddenStates
 num_hidden_states: 3
 num_obs: 3
 num_actions: 3
-'''
+"""
 
 
 def _analyze_gnn_design(gnn_content: str) -> Dict[str, Any]:
     """Analyze GNN content for design studio insights"""
 
-    analysis = {
+    analysis: dict[str, Any] = {
         "state_spaces": [],
         "ontology_terms": {},
         "connections": [],
-        "parameters": {}
+        "parameters": {},
     }
 
-    lines = gnn_content.split('\n')
+    lines = gnn_content.split("\n")
     current_section = None
 
     for line in lines:
         line = line.strip()
 
-        if line.startswith('## '):
+        if line.startswith("## "):
             current_section = line[3:]
             continue
 
         if current_section == "StateSpaceBlock":
-            if '[' in line and ']' in line:
+            if "[" in line and "]" in line:
                 # Extract state space definitions
-                var_name = line.split('[')[0]
-                dimensions = line.split('[')[1].split(']')[0]
-                analysis["state_spaces"].append({
-                    "variable": var_name,
-                    "dimensions": dimensions
-                })
+                var_name = line.split("[")[0]
+                dimensions = line.split("[")[1].split("]")[0]
+                analysis["state_spaces"].append(
+                    {"variable": var_name, "dimensions": dimensions}
+                )
 
         elif current_section == "ActInfOntologyAnnotation":
-            if '=' in line:
-                var, concept = line.split('=', 1)
+            if "=" in line:
+                var, concept = line.split("=", 1)
                 analysis["ontology_terms"][var.strip()] = concept.strip()
 
         elif current_section == "Connections":
-            if line and not line.startswith('#'):
+            if line and not line.startswith("#"):
                 analysis["connections"].append(line)
 
         elif current_section == "ModelParameters":
-            if ':' in line:
-                param, value = line.split(':', 1)
+            if ":" in line:
+                param, value = line.split(":", 1)
                 analysis["parameters"][param.strip()] = value.strip()
 
     return analysis

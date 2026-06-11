@@ -24,15 +24,13 @@ If a function is not exported there, it should not be documented as public API.
     - `_generate_code(...)` — dispatches to pipeline or standalone template
   - Constructor takes `options={"mode": "pipeline" | "standalone"}`:
     * **pipeline** (default) emits a thin runner that delegates to
-      `src.execute.pymdp.run_simple_pymdp_simulation`.
+      `src.execute.pymdp.run_pymdp_simulation`.
     * **standalone** emits a fully self-contained pymdp 1.0.0 script.
 - `pymdp_templates.py`
   - `generate_pipeline_runner_script(ctx)` — pipeline runner
   - `generate_standalone_runner_script(ctx)` — standalone runner
-  - Legacy helpers (`generate_file_header`, `generate_example_usage_template`,
-    `generate_placeholder_matrices`) now emit pymdp 1.0.0 JAX-first code.
-- `pymdp_converter.py` — long-form GNN→pymdp converter retained for tests;
-  not on the primary `render_gnn_to_pymdp` code path.
+  - Helper functions (`generate_file_header`, `generate_example_usage_template`)
+    emit pymdp 1.0.0 JAX-first code.
 
 ## Data Flow
 
@@ -60,11 +58,11 @@ If a function is not exported there, it should not be documented as public API.
     from pymdp.agent import Agent
     ```
 - All generated scripts embed a runtime check for
-  `Agent.update_empirical_prior` and exit fast on legacy (<1.0.0) wheels.
+  `Agent.update_empirical_prior` and exit fast on unsupported (<1.0.0) wheels.
 
 ## Tests
 
 Primary validation is in `src/tests/` integration coverage for render and
 render→execute handoff. The generated script calls `execute_pymdp_simulation` /
-`run_simple_pymdp_simulation`, whose upstream `Agent` API is locked by
-`src/tests/test_pymdp_1_0_0_upstream_api.py`.
+`run_pymdp_simulation`, whose upstream `Agent` API is locked by
+`src/tests/execute/test_pymdp_1_0_0_upstream_api.py`.

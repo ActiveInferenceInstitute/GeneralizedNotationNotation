@@ -25,7 +25,7 @@ This directory contains comprehensive documentation for audio processing, sonifi
 - **[Audio Module](../../src/audio/README.md)**: Audio generation and sonification implementation
 - **[SAPF Integration](../sapf/sapf_gnn.md)**: Sound As Pure Form framework
 - **[Pedalboard Integration](../pedalboard/pedalboard_gnn.md)**: Audio processing library
-- **[Sonification](../CROSS_REFERENCE_INDEX.md#audio--sonification)**: Audio sonification tools
+- **[Sonification](../CROSS_REFERENCE_INDEX.md#audio-and-sonification)**: Audio sonification tools
 
 ### Pipeline Integration
 - **[Pipeline Documentation](../gnn/operations/gnn_tools.md)**: Complete pipeline guide
@@ -95,7 +95,7 @@ See [src/AGENTS.md](../../src/AGENTS.md) for complete pipeline documentation.
 ### Audio Resources
 - **[SAPF Integration](../sapf/sapf_gnn.md)**: Sound As Pure Form framework
 - **[Pedalboard Integration](../pedalboard/pedalboard_gnn.md)**: Audio processing library
-- **[Sonification](../CROSS_REFERENCE_INDEX.md#audio--sonification)**: Audio sonification overview
+- **[Sonification](../CROSS_REFERENCE_INDEX.md#audio-and-sonification)**: Audio sonification overview
 
 ### Pipeline Architecture
 - **[Pipeline Documentation](../gnn/operations/gnn_tools.md)**: Complete pipeline guide
@@ -113,7 +113,7 @@ All documentation in this module adheres to professional standards:
 
 ## See Also
 
-- **[Audio Cross-Reference](../CROSS_REFERENCE_INDEX.md#audio--sonification)**: Cross-reference index entry
+- **[Audio Cross-Reference](../CROSS_REFERENCE_INDEX.md#audio-and-sonification)**: Cross-reference index entry
 - **[SAPF Integration](../sapf/sapf_gnn.md)**: Sound As Pure Form framework
 - **[Pedalboard Integration](../pedalboard/pedalboard_gnn.md)**: Audio processing library
 - **[Main Index](../README.md)**: Return to main documentation

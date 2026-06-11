@@ -1,30 +1,31 @@
-# PyTorch Analysis Backend - Agent Scaffolding
+# PyTorch Analysis Sub-module
 
-## Module Overview
+## Overview
 
-**Purpose**: Analyze PyTorch execution outputs (Step 12) and generate summary metrics and plots.
+Framework-specific analysis module for PyTorch simulation outputs. Reads `simulation_results.json` produced by the PyTorch runner and generates belief trajectory, action distribution, and EFE analysis plots.
 
-**Parent**: `src/analysis/` (Step 16: Analysis)
+## Architecture
 
----
+```
+pytorch/
+├── __init__.py      # Package exports
+└── analyzer.py      # PyTorch result analysis and visualization (186 lines)
+```
 
-## Public API
+## Key Functions
 
-From `src/analysis/pytorch/__init__.py`:
+- **`analyze_pytorch_results(results_dir, output_dir)`** — Main entry point; reads PyTorch JSON results and produces matplotlib visualizations.
+- **Belief trajectory plotting** — Tracks posterior belief evolution over simulation timesteps.
+- **Action distribution analysis** — Visualizes policy distributions across actions.
+- **EFE decomposition** — Breaks down Expected Free Energy into epistemic and instrumental components.
 
-- `generate_analysis_from_logs(results_dir: Path, output_dir: Optional[Path] = None, verbose: bool = False) -> List[str]`
+## Dependencies
 
----
+- `numpy`, `matplotlib` (required)
+- `torch` (runtime, for result interpretation)
 
-## Inputs and outputs
+## Parent Module
 
-**Inputs**:
-- searches recursively for `simulation_results.json` under `results_dir` (notably under `**/pytorch/**/simulation_results.json`)
+See [analysis/AGENTS.md](../AGENTS.md) for the overall analysis architecture.
 
-**Outputs**:
-- writes `pytorch_analysis.json` under `output_dir/<model_name>/`
-- optionally writes plots under `output_dir/<model_name>/` when `matplotlib` is available:
-  - `belief_trajectory.png`
-  - `action_distribution.png`
-  - `efe_history.png`
-
+**Version**: 1.6.0

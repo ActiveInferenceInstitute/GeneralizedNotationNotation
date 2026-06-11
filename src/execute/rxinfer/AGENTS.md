@@ -443,12 +443,15 @@ RxInfer.jl Code Generation → Julia Environment Setup → Model Compilation →
 ## Testing
 
 ### Test Files
-- `src/tests/test_execute_overall.py` - Execute module tests (includes framework selection)
+- `src/tests/execute/test_execute_overall.py` - Execute module tests (includes framework selection)
 
 ### Test Coverage
-- **Current**: 75%
-- **Target**: 85%+
+Measure on demand:
 
+```bash
+uv run --extra dev python -m pytest src/tests/test_rxinfer*.py \
+    --cov=src/execute/rxinfer --cov-report=term-missing
+```
 ### Key Test Scenarios
 1. Julia environment validation and setup
 2. RxInfer.jl model compilation and execution
@@ -459,10 +462,10 @@ RxInfer.jl Code Generation → Julia Environment Setup → Model Compilation →
 ### Test Commands
 ```bash
 # Run RxInfer.jl execution tests
-pytest src/tests/test_execute_rxinfer*.py -v
+uv run --extra dev python -m pytest src/tests/test_execute_rxinfer*.py -v
 
 # Run with coverage
-pytest src/tests/test_execute_rxinfer*.py --cov=src/execute/rxinfer --cov-report=term-missing
+uv run --extra dev python -m pytest src/tests/test_execute_rxinfer*.py --cov=src/execute/rxinfer --cov-report=term-missing
 ```
 
 ---
@@ -552,7 +555,7 @@ results = execute_rxinfer_simulation(script_path, config, debug=True, verbose=Tr
 
 ## Version History
 
-### Current Version: 1.0.0
+### Current Version: 1.6.0
 
 **Features**:
 - Complete RxInfer.jl simulation execution pipeline
@@ -589,7 +592,7 @@ results = execute_rxinfer_simulation(script_path, config, debug=True, verbose=Tr
 
 ---
 
-**Last Updated**: 2026-01-21
+**Last Updated**: 2026-04-16
 **Maintainer**: Execute Module Team
 **Status**: ✅ Production Ready
 

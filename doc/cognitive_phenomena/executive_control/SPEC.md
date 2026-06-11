@@ -6,3 +6,7 @@ It ensures that `Executive Control` tasks resolve without runtime dependency loo
 
 ## Components
 Expected available types: No specific classes exported.
+
+## Parent specification
+
+- Canonical policy: [Cognitive phenomena](../SPEC.md)

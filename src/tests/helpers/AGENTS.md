@@ -1,25 +1,31 @@
-# Helpers - Agent Scaffolding
+# Test Helpers Sub-module
 
-## Module Overview
+## Overview
 
-**Purpose**: Responsible for `Helpers` operations within the GNN pipeline architecture.
-**Category**: Generated Pipeline Component
-**Status**: Development
+Shared test utilities and recovery helpers used across the GNN test suite. Provides common fixtures, assertion helpers, and render recovery logic for test stability.
 
----
+## Architecture
 
-## Core Functionality
+```
+helpers/
+├── __init__.py            # Helper exports and shared test fixtures (60 lines)
+└── render_recovery.py     # Render step recovery helpers for test isolation (57 lines)
+```
 
-### Primary Responsibilities
-Test Helpers Module
+## Key Exports
 
-Provides reusable helper functions and utilities for test execution. Render recovery helper for testing pipeline resilience.
+- **Test fixtures** — Common `pytest` fixtures for temporary directories, sample GNN files, and pipeline context.
+- **`render_recovery`** — Utilities to safely recover from render step failures during integration testing, preventing cascading test failures.
 
-### Extracted Code Entities
+## Usage
 
-- **Classes**: No specific classes exported.
-- **Functions**: get_sample_gnn_model, get_test_data_dir, load_sample_gnn_spec, render_gnn_files
+```python
+from tests.helpers import create_temp_gnn_file, get_test_output_dir
+from tests.helpers.render_recovery import safe_render_cleanup
+```
 
-## Implementation Details
+## Parent Module
 
-This module follows the Thin Orchestrator Pattern. It is governed by the Zero-Mock testing policy.
+See [tests/AGENTS.md](../AGENTS.md) for the overall test architecture.
+
+**Version**: 1.6.0

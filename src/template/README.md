@@ -57,7 +57,7 @@ flowchart TD
 
 ```
 src/
-├── main.py                           # Main pipeline orchestrator
+├── ../main.py (pipeline driver)                           # Main pipeline orchestrator
 ├── 0_template.py                     # Thin orchestrator for template step
 └── template/                         # Modular template implementation
     ├── __init__.py                   # Module exports and initialization

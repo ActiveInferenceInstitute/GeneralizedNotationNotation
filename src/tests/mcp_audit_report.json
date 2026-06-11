@@ -1,7 +1,7 @@
 {
   "generated_at": "2026-02-24T06:51:00",
-  "modules_total": 31,
-  "modules_loaded": 31,
+  "modules_total": 32,
+  "modules_loaded": 32,
   "modules_errored": 0,
   "modules_loaded_names": [
     "advanced_visualization",
@@ -9,6 +9,7 @@
     "api",
     "audio",
     "cli",
+    "doc",
     "execute",
     "export",
     "gnn",
@@ -16,6 +17,7 @@
     "integration",
     "intelligent_analysis",
     "llm",
+    "lsp",
     "mcp",
     "ml_integration",
     "model_registry",
@@ -29,7 +31,6 @@
     "setup",
     "sympy_mcp",
     "template",
-    "tests",
     "type_checker",
     "utils",
     "validation",
@@ -37,9 +38,9 @@
     "website"
   ],
   "modules_errored_names": [],
-  "tools_total": 133,
-  "tools_real": 133,
-  "tools_documented": 133,
+  "tools_total": 132,
+  "tools_real": 132,
+  "tools_documented": 132,
   "tools": [
     {
       "name": "analyze_audio_characteristics",
@@ -174,7 +175,7 @@
       "fn": "execute_gnn_model_mcp",
       "is_real": true,
       "documented": true,
-      "description": "Execute a single GNN model file: parse, construct POMDP, run N inference steps."
+      "description": "Execute a single GNN model file via GNNExecutor (PyMDP default); timesteps come from the model's Time section."
     },
     {
       "name": "execute_pymdp_simulation",
@@ -183,7 +184,7 @@
       "fn": "execute_pymdp_simulation_mcp",
       "is_real": true,
       "documented": true,
-      "description": "Run a PyMDP Active Inference simulation from a GNN model (A/B/C/D matrices \u2192 Agent \u2192 perception-action loop)."
+      "description": "Run a PyMDP Active Inference simulation from a GNN model (A/B/C/D matrices -> Agent -> perception-action loop)."
     },
     {
       "name": "export_single_gnn_file",
@@ -717,6 +718,24 @@
       "description": "List all visualization artifacts (PNG, SVG, HTML, PDF) in an output directory."
     },
     {
+      "name": "mcp.list_available_resources",
+      "module": "",
+      "category": "",
+      "fn": "list_core_resources",
+      "is_real": true,
+      "documented": true,
+      "description": "List all resources currently registered with the MCP registry."
+    },
+    {
+      "name": "mcp.list_available_tools",
+      "module": "",
+      "category": "",
+      "fn": "list_core_tools",
+      "is_real": true,
+      "documented": true,
+      "description": "List all tools currently registered with the MCP registry."
+    },
+    {
       "name": "model_registry.get_model",
       "module": "",
       "category": "",
@@ -969,24 +988,6 @@
       "description": "Render a single GNN file (runs Step 11 render; does not currently filter to one framework)."
     },
     {
-      "name": "run_all_tests",
-      "module": "",
-      "category": "",
-      "fn": "run_all_tests_mcp",
-      "is_real": true,
-      "documented": true,
-      "description": "Run comprehensive test suite for the GNN pipeline."
-    },
-    {
-      "name": "run_integration_tests",
-      "module": "",
-      "category": "",
-      "fn": "run_integration_tests_mcp",
-      "is_real": true,
-      "documented": true,
-      "description": "Run integration test suite for the GNN pipeline."
-    },
-    {
       "name": "run_round_trip_tests",
       "module": "",
       "category": "",
@@ -994,15 +995,6 @@
       "is_real": true,
       "documented": true,
       "description": "Run comprehensive round-trip tests on GNN files across all supported formats."
-    },
-    {
-      "name": "run_unit_tests",
-      "module": "",
-      "category": "",
-      "fn": "run_unit_tests_mcp",
-      "is_real": true,
-      "documented": true,
-      "description": "Run unit test suite for the GNN pipeline."
     },
     {
       "name": "scan_gnn_file",

@@ -1,14 +1,19 @@
-# src/doc
+# GNN In-Repo Documentation
 
-Internal source-adjacent documentation and notes used by the `src/` implementation.
+Technical documentation subtree for the GNN pipeline.
 
-## Scope
+## Contents
 
-- Holds hand-maintained markdown content that supports development and maintenance.
-- Does not define runtime pipeline behavior.
-- Complements top-level `doc/` content when material is implementation-near.
+- **[cognitive_phenomena/](cognitive_phenomena/)** — Cognitive phenomena relevant to Active Inference modeling
+  - `effort/` — Cognitive effort models
+  - `memory/` — Temporal memory dynamics
 
-## Coverage Policy Note
+## Purpose
 
-Folder-level documentation coverage applies to maintained source/documentation folders.
-Generated outputs, caches, and transient artifacts are excluded from coverage expectations.
+Provides theoretical background, design rationale, and reference material for GNN model designers and pipeline contributors.
+
+## See Also
+
+- [src/AGENTS.md](../AGENTS.md) — Pipeline module registry
+- [src/SPEC.md](../SPEC.md) — Pipeline specification
+- [doc/gnn/](../../doc/gnn/) — External GNN documentation hub

@@ -7,7 +7,7 @@
       "node_type": "Variable",
       "source_location": null,
       "metadata": {},
-      "id": "25c9c45e-375d-4efa-b871-01accaac62c8",
+      "id": "1c8d3d5c-2ac0-464a-8f03-2f00095e6843",
       "name": "A",
       "var_type": "likelihood_matrix",
       "dimensions": [
@@ -22,7 +22,7 @@
       "node_type": "Variable",
       "source_location": null,
       "metadata": {},
-      "id": "db0eeb1d-d819-4c9d-bff6-8b98236cc5cb",
+      "id": "4a7f535f-60aa-481e-b977-2cc72bfec5ce",
       "name": "D",
       "var_type": "prior_vector",
       "dimensions": [
@@ -37,7 +37,7 @@
       "node_type": "Variable",
       "source_location": null,
       "metadata": {},
-      "id": "5f47d204-cc41-4778-8894-f58c8e755746",
+      "id": "f84f62b1-7cb9-40ce-8c57-1f3628cc2ec5",
       "name": "s",
       "var_type": "hidden_state",
       "dimensions": [
@@ -52,7 +52,7 @@
       "node_type": "Variable",
       "source_location": null,
       "metadata": {},
-      "id": "64aa3fc4-1cf6-4b3a-aa86-3eef50e9a5bd",
+      "id": "9a7c0d36-178b-4bbc-a475-e6efccd84c23",
       "name": "o",
       "var_type": "observation",
       "dimensions": [
@@ -69,7 +69,7 @@
       "node_type": "Connection",
       "source_location": null,
       "metadata": {},
-      "id": "0d862591-4db7-4409-aef5-767c309ffcd9",
+      "id": "e4e2c171-ae4e-4f9a-82e9-a70b7de179da",
       "source_variables": [
         "D"
       ],
@@ -84,7 +84,7 @@
       "node_type": "Connection",
       "source_location": null,
       "metadata": {},
-      "id": "f36a86d9-0925-4e06-9454-248bcebb59a7",
+      "id": "7b0e38dc-c7a6-4a18-a0c9-f26442a656c8",
       "source_variables": [
         "s"
       ],
@@ -99,7 +99,7 @@
       "node_type": "Connection",
       "source_location": null,
       "metadata": {},
-      "id": "7cb5e540-8a02-4b11-ba62-f9413491ffb1",
+      "id": "2da5c047-c5a2-4802-a526-ab044c155e49",
       "source_variables": [
         "A"
       ],
@@ -116,7 +116,7 @@
       "node_type": "Parameter",
       "source_location": null,
       "metadata": {},
-      "id": "9b9a4f20-fa48-41ee-a3a2-1552a740427a",
+      "id": "80508120-fd0a-451d-bef0-5d16ebbcede7",
       "name": "A",
       "value": [
         [
@@ -135,7 +135,7 @@
       "node_type": "Parameter",
       "source_location": null,
       "metadata": {},
-      "id": "82b0a6d3-70b0-4fa4-9336-24bf334d2229",
+      "id": "44077e06-ca43-4f22-b29e-cd1139915a2d",
       "name": "D",
       "value": [
         [
@@ -145,6 +145,26 @@
       ],
       "type_hint": null,
       "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "ca14c0a7-5bfe-4f97-9e71-49dcb622da86",
+      "name": "num_hidden_states",
+      "value": 2,
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "afc71bbb-910b-426e-a17a-d11e9fb2e272",
+      "name": "num_obs",
+      "value": 2,
+      "type_hint": null,
+      "description": null
     }
   ],
   "equations": [],
@@ -152,7 +172,7 @@
     "node_type": "TimeSpecification",
     "source_location": null,
     "metadata": {},
-    "id": "43cfa788-8a23-4a16-8c8f-2c1c8f516d65",
+    "id": "0ad30825-9034-4828-96f5-52c37d3c69ee",
     "time_type": "Static",
     "discretization": null,
     "horizon": null,
@@ -163,7 +183,7 @@
       "node_type": "OntologyMapping",
       "source_location": null,
       "metadata": {},
-      "id": "693f4b17-128f-4068-8275-ea8990d6e51c",
+      "id": "c45335db-b779-4ad9-8844-d0ca0eafeda8",
       "variable_name": "A",
       "ontology_term": "RecognitionMatrix",
       "description": null
@@ -172,7 +192,7 @@
       "node_type": "OntologyMapping",
       "source_location": null,
       "metadata": {},
-      "id": "123ae3a5-dd44-4f37-811c-ae06dd435147",
+      "id": "a96b08eb-dbf9-487c-a0d0-64f0b189833c",
       "variable_name": "D",
       "ontology_term": "Prior",
       "description": null
@@ -181,7 +201,7 @@
       "node_type": "OntologyMapping",
       "source_location": null,
       "metadata": {},
-      "id": "9c6db027-4a8a-4f65-a319-ca66d83a7ba1",
+      "id": "aff0b84a-0c5e-4f01-99bc-f5099a9f6dbb",
       "variable_name": "s",
       "ontology_term": "HiddenState",
       "description": null
@@ -190,15 +210,15 @@
       "node_type": "OntologyMapping",
       "source_location": null,
       "metadata": {},
-      "id": "e10c3bdc-9738-4958-8eb2-e2a97f96edf6",
+      "id": "24f188df-9304-4ddf-847d-04b246976adb",
       "variable_name": "o",
       "ontology_term": "Observation",
       "description": null
     }
   ],
   "source_format": null,
-  "created_at": "2026-04-10T10:24:31.833690",
-  "modified_at": "2026-04-10T10:24:31.833691",
+  "created_at": "2026-05-25T09:59:34.667022",
+  "modified_at": "2026-05-25T09:59:34.667023",
   "checksum": null,
   "extensions": {
     "gnn_section": "ActiveInferencePerception",
@@ -219,5 +239,45 @@
     "ModelParameters": "num_hidden_states: 2\nnum_obs: 2",
     "Footer": "Static Perception Model v1 - GNN Representation.\nSimplest possible Active Inference model.\nNo temporal dynamics, no action \u2014 perception only.",
     "Signature": "Cryptographic signature goes here"
+  },
+  "initialparameterization": {
+    "A": [
+      [
+        0.9,
+        0.1
+      ],
+      [
+        0.2,
+        0.8
+      ]
+    ],
+    "D": [
+      [
+        0.5,
+        0.5
+      ]
+    ],
+    "num_hidden_states": 2,
+    "num_obs": 2
+  },
+  "model_parameters": {
+    "A": [
+      [
+        0.9,
+        0.1
+      ],
+      [
+        0.2,
+        0.8
+      ]
+    ],
+    "D": [
+      [
+        0.5,
+        0.5
+      ]
+    ],
+    "num_hidden_states": 2,
+    "num_obs": 2
   }
 }

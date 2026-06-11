@@ -365,13 +365,16 @@ GNN Model → Spectral Mapping → FFT Analysis → Effects Processing → IFFT 
 ## Testing
 
 ### Test Files
-- `src/tests/test_audio_sapf.py` - SAPF backend tests
-- `src/tests/test_audio_integration.py` - Pipeline integration tests for audio outputs
+- `src/tests/audio/test_audio_sapf.py` - SAPF backend tests
+- `src/tests/audio/test_audio_integration.py` - Pipeline integration tests for audio outputs
 
 ### Test Coverage
-- **Current**: 75%
-- **Target**: 85%+
+Measure on demand:
 
+```bash
+uv run --extra dev python -m pytest src/tests/test_sapf*.py \
+    --cov=src/audio/sapf --cov-report=term-missing
+```
 ### Key Test Scenarios
 1. Spectral analysis accuracy validation
 2. Round-trip synthesis quality testing
@@ -382,10 +385,10 @@ GNN Model → Spectral Mapping → FFT Analysis → Effects Processing → IFFT 
 ### Test Commands
 ```bash
 # Run SAPF-specific tests
-pytest src/tests/test_audio_sapf*.py -v
+uv run --extra dev python -m pytest src/tests/test_audio_sapf*.py -v
 
 # Run with coverage
-pytest src/tests/test_audio_sapf*.py --cov=src/audio/sapf --cov-report=term-missing
+uv run --extra dev python -m pytest src/tests/test_audio_sapf*.py --cov=src/audio/sapf --cov-report=term-missing
 ```
 
 ---
@@ -479,7 +482,7 @@ result = process_sapf_audio(audio_data, spectral_config, debug=True, verbose=Tru
 
 ## Version History
 
-### Current Version: 1.0.0
+### Current Version: 1.6.0
 
 **Features**:
 - Complete spectral analysis and synthesis pipeline
@@ -514,7 +517,7 @@ result = process_sapf_audio(audio_data, spectral_config, debug=True, verbose=Tru
 
 ---
 
-**Last Updated**: 2026-01-21
+**Last Updated**: 2026-04-16
 **Maintainer**: Audio Processing Team
 **Status**: ✅ Production Ready
 

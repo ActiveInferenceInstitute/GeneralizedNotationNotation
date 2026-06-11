@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GNN Pipeline Performance Dashboard</title>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+:root {
+  --bg: #0f172a; --surface: #1e293b; --border: #334155;
+  --text: #e2e8f0; --muted: #94a3b8; --accent: #3b82f6;
+  --success: #22c55e; --warning: #f59e0b; --danger: #ef4444;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--text); padding: 32px; }
+.header { margin-bottom: 32px; border-bottom: 1px solid var(--border); padding-bottom: 16px; }
+.header h1 { font-size: 28px; font-weight: 700; color: #fff; }
+.header p { color: var(--muted); margin-top: 8px; }
+
+.metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 24px; margin-bottom: 40px; }
+.metric-card { background: var(--surface); padding: 24px; border-radius: 12px; border: 1px solid var(--border); text-align: center; }
+.metric-value { font-size: 32px; font-weight: 700; margin-bottom: 8px; }
+.metric-label { font-size: 13px; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); }
+
+.charts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin-bottom: 40px; }
+.chart-container { background: var(--surface); padding: 24px; border-radius: 12px; border: 1px solid var(--border); }
+.chart-container h2 { font-size: 18px; margin-bottom: 16px; color: #fff; }
+
+.gantt-container { background: var(--surface); padding: 24px; border-radius: 12px; border: 1px solid var(--border); overflow-x: auto; margin-bottom: 40px; }
+.gantt-container h2 { font-size: 18px; margin-bottom: 16px; color: #fff; }
+#gantt-chart { min-width: 800px; height: 400px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>GNN Pipeline Performance</h1>
+  <p id="dashboard-meta">Loading execution metrics...</p>
+</div>
+
+<div class="metrics-grid">
+  <div class="metric-card">
+    <div class="metric-value" id="val-health" style="color: var(--success)">--</div>
+    <div class="metric-label">Overall Health Score</div>
+  </div>
+  <div class="metric-card">
+    <div class="metric-value" id="val-duration" style="color: var(--accent)">--</div>
+    <div class="metric-label">Total Duration (s)</div>
+  </div>
+  <div class="metric-card">
+    <div class="metric-value" id="val-memory" style="color: var(--warning)">--</div>
+    <div class="metric-label">Peak Memory (MB)</div>
+  </div>
+  <div class="metric-card">
+    <div class="metric-value" id="val-errors" style="color: var(--danger)">--</div>
+    <div class="metric-label">Total Errors</div>
+  </div>
+</div>
+
+<div class="charts-grid">
+  <div class="chart-container">
+    <h2>Step Duration Distribution</h2>
+    <canvas id="durationChart"></canvas>
+  </div>
+  <div class="chart-container">
+    <h2>Memory Usage Profile</h2>
+    <canvas id="memoryChart"></canvas>
+  </div>
+</div>
+
+<div class="gantt-container">
+  <h2>Execution Gantt Chart (D3.js)</h2>
+  <div id="gantt-chart"></div>
+</div>
+
+<script>
+// SUMMARY_JSON is injected by the dashboard renderer.
+const rawData = {"run_hash": "a2b2179cb869", "file_hashes": {"basics/dynamic_perception.md": "b0abd0b673915c98093150d78c1b4b1442287c7bc094f1fe42b07a1730f2258c", "basics/static_perception.md": "5bdf61e8d8c20a935957c41900b40d9edb19e8eac8b237b85e604b158c0c8d70", "continuous/continuous_navigation.md": "bb6eaaf3114149fd8d77ccf5ca79f165aadf094be77ad6a66d76d7613551fea0", "continuous/predictive_coding_agent.md": "447738f0a679abdeab23770fb3307128e32c4d688cdcb98123f748d2740025b7", "continuous/stochastic_dynamics.md": "32f1012362a1d599b876d75cf19c0fb5a29acbcb16b549997b6c9b489de32731", "discrete/actinf_pomdp_agent.md": "76291fde1990d152b0b21fff1733fc7cca5eb61eb16972fb0b4e606cf41df804", "discrete/bnlearn_causal_model.md": "d108293a713435c668aec0bea48bb880f760ed5bd803e61347911e02fc36d067", "discrete/deep_planning_horizon.md": "e8b373d391621f25c2f26f9a15e0d8d470f01b028ce83d129e1a08bdf8ad3e3b", "discrete/hmm_baseline.md": "a13b695360a4d62cf4104d1404a74aa1ceb8514682469ab3296d166f7fff8265", "discrete/markov_chain.md": "0614662a15ff5ceb77b0d3002a10099b6b96e86b22757ea91c07edfb964ebcfb", "discrete/multi_armed_bandit.md": "14590a5fb0c59081ee201da2fd8dc0951f6f146b736836633e1ba25deb5b8c1a", "discrete/simple_mdp.md": "36ae32ba9404ca2f0ae5fc575cecb7d645c95088f04399d53fc2f947b6b0cb3c", "discrete/time_varying_dynamics.md": "8be45efe9dd1fa0081340b48802fe221995a3fba93bab4e39c368193e4dac806", "discrete/tmaze_epistemic.md": "05534dc53e8c87f2757a642a5837b279028858be0ff857217d452c280301e34f", "discrete/two_state_bistable.md": "9d99b874a8f3a4b57098ee79c0b63613ab3f70f395a8b9320ce9f3d799c95361", "hierarchical/hierarchical_pomdp.md": "45e10342bbc6390f46958e811b7896e847e8d660bfb44364ddc9a41e5026462f", "hierarchical/temporal_hierarchy.md": "c46ae80b2cdee48d2328c15522dc9a2bcb7431deac480b1de9de19be959ac409", "multiagent/multi_agent_coordination.md": "3dc6e754c4e197a3ef18b7c8cde936041205ecb64f72ba67bc4fe07b030d6346", "multiagent/stigmergic_swarm.md": "9c2183b152808b39bdb9b5cffa35f61ee1bf1e745354678af01fe95d7798a0fe", "pomdp_gridworld/AGENTS.md": "ec618ca9f601e94c9b932df686ab9dd00efcc590dcecfc40bbcdcafb84bcdc35", "pomdp_gridworld/README.md": "cf3f312140c0b02dd04dd308eb341c7905484f0d3a681a4483628dcb92e0fb30", "pomdp_gridworld/pomdp_gridworld_3x3.md": "a87cdc89163bcd1b612f902d21ad16f95e3d25c7ff59e3718fa0179b1bc4d302", "precision/curiosity_driven_agent.md": "4cdd9b02df57267f1ee00f8eb4534653a8dc5bdc4a3d509c21ba5623013c4ddb", "precision/precision_weighted.md": "627ff9009025a028020d26a8c2293f7c0997d1343278be4f0809376719451009", "pymdp_scaling_study/pymdp_scaling_N128_T10.md": "511b86f52e28a2ea58c9bd3daf357e6f84c344d5ccdb619f5443e03d4a9c2c1b", "pymdp_scaling_study/pymdp_scaling_N128_T100.md": "64e0f6fe463c5803461e2e6ff16f5ae0175bae66e12f02cf90b65092c9210edc", "pymdp_scaling_study/pymdp_scaling_N128_T50.md": "14f13108e5283a414402e96f5fb722e877a497f7460985aec6aebb99a3826a67", "pymdp_scaling_study/pymdp_scaling_N16_T10.md": "53782ae01259c5f2892b04b9a2bd917bd03ae0c187996e3d9f7e1adb7763c8db", "pymdp_scaling_study/pymdp_scaling_N16_T100.md": "f3b11cf873105c9374728bc59c3f48d786844fac64d812dc8f65854f7b5dae0a", "pymdp_scaling_study/pymdp_scaling_N16_T50.md": "339c99d479508f2ff703ff65849792cd1e15c0a7db375af6f06896b3213be182", "pymdp_scaling_study/pymdp_scaling_N2_T10.md": "0724e85dc708ca735c9f133f66289990f8a5664a7198f6cb59e1b9578b72db2a", "pymdp_scaling_study/pymdp_scaling_N2_T100.md": "e55db1feff61132b58d035c74ac4b33d701dc43b1aa72cad0673f9f071789c00", "pymdp_scaling_study/pymdp_scaling_N2_T50.md": "e005a69e9304acc016fded788fae889d021f7d9adc6953cdc01a78998c025581", "pymdp_scaling_study/pymdp_scaling_N32_T10.md": "9cc1acc504686f5d27921de49b8d1f90b6d308ab1776e61c9e293e5645d13f12", "pymdp_scaling_study/pymdp_scaling_N32_T100.md": "1a7d49404bd8823cfa236d130bf94e118d08492b50d7c3bda87c7ff63307e76c", "pymdp_scaling_study/pymdp_scaling_N32_T50.md": "5022ac2f65ad6f9a14817b9b182bfdd58b6d18f5fcf23a0920ec485b10b7d602", "pymdp_scaling_study/pymdp_scaling_N4_T10.md": "76d6e17bcc7537f42594fef21cfd770bfb24a150daa5a38413b4a1505c4f5d2e", "pymdp_scaling_study/pymdp_scaling_N4_T100.md": "c69d3a17b52841440c6a8f294cb93d041b98327e3633b03a6a6a08354157c8e0", "pymdp_scaling_study/pymdp_scaling_N4_T50.md": "2d8ffb4ee2dda2774dc14b33e4dd696979565ffaf940001d81e1e83f59ce7c19", "pymdp_scaling_study/pymdp_scaling_N64_T10.md": "9f2c13b127db27c519b81a715874a72bcd9ff2a7364d3b051be5f452a3995d18", "pymdp_scaling_study/pymdp_scaling_N64_T100.md": "6503beefdf1c3a3fc7973d1c50296c5d5a7846c7a19b54097d8deb76be0e91c9", "pymdp_scaling_study/pymdp_scaling_N64_T50.md": "233356b31458a888ab505ab386f32961ccb84887bad5a27d9bcf2aaa7d8e0793", "pymdp_scaling_study/pymdp_scaling_N8_T10.md": "ccd055232958fd46c255d03866caf2ba4967d008632addd07b8f12dcd5dee626", "pymdp_scaling_study/pymdp_scaling_N8_T100.md": "e91d4365da8267a0c36c03644d175d2bbd24203c9ce970fb949ae3c7ef9bf792", "pymdp_scaling_study/pymdp_scaling_N8_T50.md": "53769aa826b88d975b029e6544644c588f0fad514a1dd3a14251095c7a2eb3f4", "structured/factor_graph_model.md": "1974e5a788885652b33ace27726231ff18189ea944a7e02d641944fd679fbdf0", "structured/factorized_posterior.md": "64bcaf81216fc8a2db301ed54079a5fbc519e768d0da650d803a0a70d2445813"}, "start_time": "2026-05-25T09:49:50.073735", "arguments": {"target_dir": "input/gnn_files", "output_dir": "output", "recursive": true, "verbose": false, "log_format": "human", "enable_round_trip": true, "enable_cross_format": true, "skip_steps": null, "only_steps": "3", "strict": false, "estimate_resources": false, "profile": false, "simulate_error": false, "registry_path": null, "ontology_terms_file": "src/ontology/act_inf_ontology_terms.json", "pipeline_summary_file": "output/00_pipeline_summary/pipeline_execution_summary.json", "llm_tasks": "all", "llm_timeout": 360, "website_html_filename": "gnn_pipeline_summary_website.html", "recreate_venv": false, "dev": false, "setup_core_only": false, "install_optional": false, "optional_groups": null, "frameworks": "all", "strict_framework_success": false, "render_output_dir": null, "distributed": false, "execution_workers": 1, "backend": "ray", "serialize_preset": "full", "execution_benchmark_repeats": 1, "execution_summary_detail": false, "duration": 30.0, "audio_backend": "auto", "sonification": true, "full_analysis": false, "fast_only": true, "include_performance": false, "comprehensive": false, "skip_llm": false, "viz_type": "all", "interactive": false, "export_formats": null, "headless": false, "gui_types": "gui_1,gui_2", "open_browser": false, "analysis_model": null, "bottleneck_threshold": 60.0, "install_all_extras": false, "performance_mode": "low", "mcp_strict_validation": null, "mcp_cache_ttl": null, "mcp_per_module_timeout": null, "mcp_overall_timeout": null, "mcp_modules_allowlist": null, "timesteps": null, "simulation_params": "{}", "timeout": 300, "advanced_stats": false}, "steps": [{"status": "SUCCESS", "stdout": "\n--- Output for basics ---\n2026-05-25 09:49:50,165 [80b2f8fd:3_gnn] 3_gnn.py - INFO - \ud83d\ude80 Starting step: Processing GNN files with full multi-format generation\n2026-05-25 09:49:50,167 [80b2f8fd:3_gnn] 3_gnn.py - INFO - Initialized GNN parsing system with 22 supported formats (full preset emits 22 serializers)\n2026-05-25 09:49:50,167 [80b2f8fd:3_gnn] 3_gnn.py - INFO - Available serializers: [<GNNFormat.MARKDOWN: 'markdown'>, <GNNFormat.JSON: 'json'>, <GNNFormat.XML: 'xml'>, <GNNFormat.YAML: 'yaml'>, <GNNFormat.SCALA: 'scala'>, <GNNFormat.PROTOBUF: 'protobuf'>, <GNNFormat.PKL: 'pkl'>, <GNNFormat.XSD: 'xsd'>, <GNNFormat.ASN1: 'asn1'>, <GNNFormat.LEAN: 'lean'>, <GNNFormat.COQ: 'coq'>, <GNNFormat.PYTHON: 'python'>, <GNNFormat.BNF: 'bnf'>, <GNNFormat.EBNF: 'ebnf'>, <GNNFormat.ISABELLE: 'isabelle'>, <GNNFormat.MAXIMA: 'maxima'>, <GNNFormat.ALLOY: 'alloy'>, <GNNFormat.Z_NOTATION: 'z_notation'>, <GNNFormat.TLA_PLUS: 'tla_plus'>, <GNNFormat.AGDA: 'agda'>, <GNNFormat.HASKELL: 'haskell'>, <GNNFormat.PICKLE: 'pickle'>]\n2026-05-25 09:49:50,168 [80b2f8fd:3_gnn] 3_gnn.py - INFO - Found 2 potential GNN files\n2026-05-25 09:49:50,168 [80b2f8fd:3_gnn] 3_gnn.py - INFO - Processing: input/gnn_files/basics/static_perception.md\n2026-05-25 09:49:50,176 [80b2f8fd:3_gnn] 3_gnn.py - INFO - Generated 22 formats for static_perception.md\n2026-05-25 09:49:50,176 [80b2f8fd:3_gnn] 3_gnn.py - INFO - Processing: input/gnn_files/basics/dynamic_perception.md\n2026-05-25 09:49:50,181 [80b2f8fd:3_gnn] 3_gnn.py - INFO - Generated 22 formats for dynamic_perception.md\n2026-05-25 09:49:50,182 [80b2f8fd:3_gnn] 3_gnn.py - INFO - \u2705 Processed 2 files, generated 44 format instances across 22 formats (preset=full)\n\n\n--- Output for hierarchical ---\n2026-05-25 09:49:50,296 [f0eb6f7f:3_gnn] 3_gnn.py - INFO - \ud83d\ude80 Starting step: Processing GNN files with full multi-format generation\n2026-05-25 09:49:50,298 [f0eb6f7f:3_gnn] 3_gnn.py - INFO - Initialized GNN parsing system with 22 supported formats (full preset emits 22 serializers)\n2026-05-25 09:49:50,298 [f0eb6f7f:3_gnn] 3_gnn.py - INFO - Available serializers: [<GNNFormat.MARKDOWN: 'markdown'>, <GNNFormat.JSON: 'json'>, <GNNFormat.XML: 'xml'>, <GNNFormat.YAML: 'yaml'>, <GNNFormat.SCALA: 'scala'>, <GNNFormat.PROTOBUF: 'protobuf'>, <GNNFormat.PKL: 'pkl'>, <GNNFormat.XSD: 'xsd'>, <GNNFormat.ASN1: 'asn1'>, <GNNFormat.LEAN: 'lean'>, <GNNFormat.COQ: 'coq'>, <GNNFormat.PYTHON: 'python'>, <GNNFormat.BNF: 'bnf'>, <GNNFormat.EBNF: 'ebnf'>, <GNNFormat.ISABELLE: 'isabelle'>, <GNNFormat.MAXIMA: 'maxima'>, <GNNFormat.ALLOY: 'alloy'>, <GNNFormat.Z_NOTATION: 'z_notation'>, <GNNFormat.TLA_PLUS: 'tla_plus'>, <GNNFormat.AGDA: 'agda'>, <GNNFormat.HASKELL: 'haskell'>, <GNNFormat.PICKLE: 'pickle'>]\n2026-05-25 09:49:50,299 [f0eb6f7f:3_gnn] 3_gnn.py - INFO - Found 2 potential GNN files\n2026-05-25 09:49:50,299 [f0eb6f7f:3_gnn] 3_gnn.py - INFO - Processing: input/gnn_files/hierarchical/temporal_hierarchy.md\n2026-05-25 09:49:50,315 [f0eb6f7f:3_gnn] 3_gnn.py - INFO - Generated 22 formats for temporal_hierarchy.md\n2026-05-25 09:49:50,315 [f0eb6f7f:3_gnn] 3_gnn.py - INFO - Processing: input/gnn_files/hierarchical/hierarchical_pomdp.md\n2026-05-25 09:49:50,325 [f0eb6f7f:3_gnn] 3_gnn.py - INFO - Generated 22 formats for hierarchical_pomdp.md\n2026-05-25 09:49:50,325 [f0eb6f7f:3_gnn] 3_gnn.py - INFO - \u2705 Processed 2 files, generated 44 format instances across 22 formats (preset=full)\n\n\n--- Output for multiagent ---\n2026-05-25 09:49:50,433 [1dd68a81:3_gnn] 3_gnn.py - INFO - \ud83d\ude80 Starting step: Processing GNN files with full multi-format generation\n2026-05-25 09:49:50,435 [1dd68a81:3_gnn] 3_gnn.py - INFO - Initialized GNN parsing system with 22 supported formats (full preset emits 22 serializers)\n2026-05-25 09:49:50,435 [1dd68a81:3_gnn] 3_gnn.py - INFO - Available serializers: [<GNNFormat.MARKDOWN: 'markdown'>, <GNNFormat.JSON: 'json'>, <GNNFormat.XML: 'xml'>, <GNNFormat.YAML: 'yaml'>, <GNNFormat.SCALA: 'scala'>, <GNNFormat.PROTOBUF: 'protobuf'>, <GNNFormat.PKL: 'pkl'>, <GNNFormat.XSD: 'xsd'>, <GNNFormat.ASN1: 'asn1'>, <GNNFormat.LEAN: 'lean'>, <GNNFormat.COQ: 'coq'>, <GNNFormat.PYTHON: 'python'>, <GNNFormat.BNF: 'bnf'>, <GNNFormat.EBNF: 'ebnf'>, <GNNFormat.ISABELLE: 'isabelle'>, <GNNFormat.MAXIMA: 'maxima'>, <GNNFormat.ALLOY: 'alloy'>, <GNNFormat.Z_NOTATION: 'z_notation'>, <GNNFormat.TLA_PLUS: 'tla_plus'>, <GNNFormat.AGDA: 'agda'>, <GNNFormat.HASKELL: 'haskell'>, <GNNFormat.PICKLE: 'pickle'>]\n2026-05-25 09:49:50,437 [1dd68a81:3_gnn] 3_gnn.py - INFO - Found 2 potential GNN files\n2026-05-25 09:49:50,437 [1dd68a81:3_gnn] 3_gnn.py - INFO - Processing: input/gnn_files/multiagent/stigmergic_swarm.md\n2026-05-25 09:49:50,453 [1dd68a81:3_gnn] 3_gnn.py - INFO - Generated 22 formats for stigmergic_swarm.md\n2026-05-25 09:49:50,453 [1dd68a81:3_gnn] 3_gnn.py - INFO - Processing: input/gnn_files/multiagent/multi_agent_coordination.md\n2026-05-25 09:49:50,465 [1dd68a81:3_gnn] 3_gnn.py - INFO - Generated 22 formats for multi_agent_coordination.md\n2026-05-25 09:49:50,465 [1dd68a81:3_gnn] 3_gnn.py - INFO - \u2705 Processed 2 files, generated 44 format instances across 22 formats (preset=full)\n\n\n--- Output for pymdp_scaling_study ---\n2026-05-25 09:49:50,572 [6ac9aa8e:3_gnn] 3_gnn.py - INFO - \ud83d\ude80 Starting step: Processing GNN files with full multi-format generation\n2026-05-25 09:49:50,574 [6ac9aa8e:3_gnn] 3_gnn.py - INFO - Initialized GNN parsing system with 22 supported formats (full preset emits 22 serializers)\n2026-05-25 09:49:50,574 [6ac9aa8e:3_gnn] 3_gnn.py - INFO - Available serializers: [<GNNFormat.MARKDOWN: 'markdown'>, <GNNFormat.JSON: 'json'>, <GNNFormat.XML: 'xml'>, <GNNFormat.YAML: 'yaml'>, <GNNFormat.SCALA: 'scala'>, <GNNFormat.PROTOBUF: 'protobuf'>, <GNNFormat.PKL: 'pkl'>, <GNNFormat.XSD: 'xsd'>, <GNNFormat.ASN1: 'asn1'>, <GNNFormat.LEAN: 'lean'>, <GNNFormat.COQ: 'coq'>, <GNNFormat.PYTHON: 'python'>, <GNNFormat.BNF: 'bnf'>, <GNNFormat.EBNF: 'ebnf'>, <GNNFormat.ISABELLE: 'isabelle'>, <GNNFormat.MAXIMA: 'maxima'>, <GNNFormat.ALLOY: 'alloy'>, <GNNFormat.Z_NOTATION: 'z_notation'>, <GNNFormat.TLA_PLUS: 'tla_plus'>, <GNNFormat.AGDA: 'agda'>, <GNNFormat.HASKELL: 'haskell'>, <GNNFormat.PICKLE: 'pickle'>]\n2026-05-25 09:49:50,576 [6ac9aa8e:3_gnn] 3_gnn.py - INFO - Found 21 potential GNN files\n2026-05-25 09:49:50,576 [6ac9aa8e:3_gnn] 3_gnn.py - INFO - Processing: input/gnn_files/pymdp_scaling_study/pymdp_scaling_N32_T50.md\n2026-05-25 09:49:50,942 [6ac9aa8e:3_gnn] 3_gnn.py - INFO - Generated 22 formats for pymdp_scaling_N32_T50.md\n2026-05-25 09:49:50,942 [6ac9aa8e:3_gnn] 3_gnn.py - INFO - Processing: input/gnn_files/pymdp_scaling_study/pymdp_scaling_N16_T50.md\n2026-05-25 09:49:50,996 [6ac9aa8e:3_gnn] 3_gnn.py - INFO - Generated 22 formats for pymdp_scaling_N16_T50.md\n2026-05-25 09:49:50,996 [6ac9aa8e:3_gnn] 3_gnn.py - INFO - Processing: input/gnn_files/pymdp_scaling_study/pymdp_scaling_N8_T10.md\n2026-05-25 09:49:51,009 [6ac9aa8e:3_gnn] 3_gnn.py - INFO - Generated 22 formats for pymdp_scaling_N8_T10.md\n2026-05-25 09:49:51,009 [6ac9aa8e:3_gnn] 3_gnn.py - INFO - Processing: input/gnn_files/pymdp_scaling_study/pymdp_scaling_N8_T100.md\n2026-05-25 09:49:51,022 [6ac9aa8e:3_gnn] 3_gnn.py - INFO - Generated 22 formats for pymdp_scaling_N8_T100.md\n2026-05-25 09:49:51,022 [6ac9aa8e:3_gnn] 3_gnn.py - INFO - Processing: input/gnn_files/pymdp_scaling_study/pymdp_scaling_N4_T10.md\n2026-05-25 09:49:51,029 [6ac9aa8e:3_gnn] 3_gnn.py - INFO - Generated 22 formats for pymdp_scaling_N4_T10.md\n2026-05-25 09:49:51,029 [6ac9aa8e:3_gnn] 3_gnn.py - INFO - Processing: input/gnn_files/pymdp_scaling_study/pymdp_scaling_N16_T100.md\n2026-05-25 09:49:51,084 [6ac9aa8e:3_gnn] 3_gnn.py - INFO - Generated 22 formats for pymdp_scaling_N16_T100.md\n2026-05-25 09:49:51,084 [6ac9aa8e:3_gnn] 3_gnn.py - INFO - Processing: input/gnn_files/pymdp_scaling_study/pymdp_scaling_N64_T100.md\n2026-05-25 09:49:54,037 [6ac9aa8e:3_gnn] 3_gnn.py - INFO - Generated 22 formats for pymdp_scaling_N64_T100.md\n2026-05-25 09:49:54,037 [6ac9aa8e:3_gnn] 3_gnn.py - INFO - Processing: input/gnn_files/pymdp_scaling_study/pymdp_scaling_N128_T100.md\n2026-05-25 09:50:18,652 [6ac9aa8e:3_gnn] 3_gnn.py - INFO - Generated 22 formats for pymdp_scaling_N128_T100.md\n2026-05-25 09:50:18,652 [6ac9aa8e:3_gnn] 3_gnn.py - INFO - Processing: input/gnn_files/pymdp_scaling_study/pymdp_scaling_N4_T50.md\n2026-05-25 09:50:18,671 [6ac9aa8e:3_gnn] 3_gnn.py - INFO - Generated 22 formats for pymdp_scaling_N4_T50.md\n2026-05-25 09:50:18,672 [6ac9aa8e:3_gnn] 3_gnn.py - INFO - Processing: input/gnn_files/pymdp_scaling_study/pymdp_scaling_N8_T50.md\n2026-05-25 09:50:18,685 [6ac9aa8e:3_gnn] 3_gnn.py - INFO - Generated 22 formats for pymdp_scaling_N8_T50.md\n2026-05-25 09:50:18,685 [6ac9aa8e:3_gnn] 3_gnn.py - INFO - Processing: input/gnn_files/pymdp_scaling_study/pymdp_scaling_N16_T10.md\n2026-05-25 09:50:18,738 [6ac9aa8e:3_gnn] 3_gnn.py - INFO - Generated 22 formats for pymdp_scaling_N16_T10.md\n2026-05-25 09:50:18,738 [6ac9aa8e:3_gnn] 3_gnn.py - INFO - Processing: input/gnn_files/pymdp_scaling_study/pymdp_scaling_N32_T10.md\n2026-05-25 09:50:19,105 [6ac9aa8e:3_gnn] 3_gnn.py - INFO - Generated 22 formats for pymdp_scaling_N32_T10.md\n2026-05-25 09:50:19,106 [6ac9aa8e:3_gnn] 3_gnn.py - INFO - Processing: input/gnn_files/pymdp_scaling_study/pymdp_scaling_N2_T100.md\n2026-05-25 09:50:19,113 [6ac9aa8e:3_gnn] 3_gnn.py - INFO - Generated 22 formats for pymdp_scaling_N2_T100.md\n2026-05-25 09:50:19,113 [6ac9aa8e:3_gnn] 3_gnn.py - INFO - Processing: input/gnn_files/pymdp_scaling_study/pymdp_scaling_N2_T10.md\n2026-05-25 09:50:19,119 [6ac9aa8e:3_gnn] 3_gnn.py - INFO - Generated 22 formats for pymdp_scaling_N2_T10.md\n2026-05-25 09:50:19,119 [6ac9aa8e:3_gnn] 3_gnn.py - INFO - Processing: input/gnn_files/pymdp_scaling_study/pymdp_scaling_N32_T100.md\n2026-05-25 09:50:19,498 [6ac9aa8e:3_gnn] 3_gnn.py - INFO - Generated 22 formats for pymdp_scaling_N32_T100.md\n2026-05-25 09:50:19,498 [6ac9aa8e:3_gnn] 3_gnn.py - INFO - Processing: input/gnn_files/pymdp_scaling_study/pymdp_scaling_N2_T50.md\n2026-05-25 09:50:19,504 [6ac9aa8e:3_gnn] 3_gnn.py - INFO - Generated 22 formats for pymdp_scaling_N2_T50.md\n2026-05-25 09:50:19,504 [6ac9aa8e:3_gnn] 3_gnn.py - INFO - Processing: input/gnn_files/pymdp_scaling_study/pymdp_scaling_N64_T10.md\n2026-05-25 09:50:22,469 [6ac9aa8e:3_gnn] 3_gnn.py - INFO - Generated 22 formats for pymdp_scaling_N64_T10.md\n2026-05-25 09:50:22,469 [6ac9aa8e:3_gnn] 3_gnn.py - INFO - Processing: input/gnn_files/pymdp_scaling_study/pymdp_scaling_N64_T50.md\n2026-05-25 09:50:25,461 [6ac9aa8e:3_gnn] 3_gnn.py - INFO - Generated 22 formats for pymdp_scaling_N64_T50.md\n2026-05-25 09:50:25,461 [6ac9aa8e:3_gnn] 3_gnn.py - INFO - Processing: input/gnn_files/pymdp_scaling_study/pymdp_scaling_N128_T10.md\n2026-05-25 09:50:50,323 [6ac9aa8e:3_gnn] 3_gnn.py - INFO - Generated 22 formats for pymdp_scaling_N128_T10.md\n2026-05-25 09:50:50,323 [6ac9aa8e:3_gnn] 3_gnn.py - INFO - Processing: input/gnn_files/pymdp_scaling_study/pymdp_scaling_N4_T100.md\n2026-05-25 09:50:50,393 [6ac9aa8e:3_gnn] 3_gnn.py - INFO - Generated 22 formats for pymdp_scaling_N4_T100.md\n2026-05-25 09:50:50,393 [6ac9aa8e:3_gnn] 3_gnn.py - INFO - Processing: input/gnn_files/pymdp_scaling_study/pymdp_scaling_N128_T50.md\n2026-05-25 09:51:14,953 [6ac9aa8e:3_gnn] 3_gnn.py - INFO - Generated 22 formats for pymdp_scaling_N128_T50.md\n2026-05-25 09:51:14,957 [6ac9aa8e:3_gnn] 3_gnn.py - INFO - \u2705 Processed 21 files, generated 462 format instances across 22 formats (preset=full)\n\n\n--- Output for discrete ---\n2026-05-25 09:51:15,113 [64ae580c:3_gnn] 3_gnn.py - INFO - \ud83d\ude80 Starting step: Processing GNN files with full multi-format generation\n2026-05-25 09:51:15,115 [64ae580c:3_gnn] 3_gnn.py - INFO - Initialized GNN parsing system with 22 supported formats (full preset emits 22 serializers)\n2026-05-25 09:51:15,115 [64ae580c:3_gnn] 3_gnn.py - INFO - Available serializers: [<GNNFormat.MARKDOWN: 'markdown'>, <GNNFormat.JSON: 'json'>, <GNNFormat.XML: 'xml'>, <GNNFormat.YAML: 'yaml'>, <GNNFormat.SCALA: 'scala'>, <GNNFormat.PROTOBUF: 'protobuf'>, <GNNFormat.PKL: 'pkl'>, <GNNFormat.XSD: 'xsd'>, <GNNFormat.ASN1: 'asn1'>, <GNNFormat.LEAN: 'lean'>, <GNNFormat.COQ: 'coq'>, <GNNFormat.PYTHON: 'python'>, <GNNFormat.BNF: 'bnf'>, <GNNFormat.EBNF: 'ebnf'>, <GNNFormat.ISABELLE: 'isabelle'>, <GNNFormat.MAXIMA: 'maxima'>, <GNNFormat.ALLOY: 'alloy'>, <GNNFormat.Z_NOTATION: 'z_notation'>, <GNNFormat.TLA_PLUS: 'tla_plus'>, <GNNFormat.AGDA: 'agda'>, <GNNFormat.HASKELL: 'haskell'>, <GNNFormat.PICKLE: 'pickle'>]\n2026-05-25 09:51:15,116 [64ae580c:3_gnn] 3_gnn.py - INFO - Found 10 potential GNN files\n2026-05-25 09:51:15,116 [64ae580c:3_gnn] 3_gnn.py - INFO - Processing: input/gnn_files/discrete/simple_mdp.md\n2026-05-25 09:51:15,126 [64ae580c:3_gnn] 3_gnn.py - INFO - Generated 22 formats for simple_mdp.md\n2026-05-25 09:51:15,126 [64ae580c:3_gnn] 3_gnn.py - INFO - Processing: input/gnn_files/discrete/multi_armed_bandit.md\n2026-05-25 09:51:15,134 [64ae580c:3_gnn] 3_gnn.py - INFO - Generated 22 formats for multi_armed_bandit.md\n2026-05-25 09:51:15,134 [64ae580c:3_gnn] 3_gnn.py - INFO - Processing: input/gnn_files/discrete/deep_planning_horizon.md\n2026-05-25 09:51:15,160 [64ae580c:3_gnn] 3_gnn.py - INFO - Generated 22 formats for deep_planning_horizon.md\n2026-05-25 09:51:15,160 [64ae580c:3_gnn] 3_gnn.py - INFO - Processing: input/gnn_files/discrete/actinf_pomdp_agent.md\n2026-05-25 09:51:15,174 [64ae580c:3_gnn] 3_gnn.py - INFO - Generated 22 formats for actinf_pomdp_agent.md\n2026-05-25 09:51:15,174 [64ae580c:3_gnn] 3_gnn.py - INFO - Processing: input/gnn_files/discrete/hmm_baseline.md\n2026-05-25 09:51:15,181 [64ae580c:3_gnn] 3_gnn.py - INFO - Generated 22 formats for hmm_baseline.md\n2026-05-25 09:51:15,181 [64ae580c:3_gnn] 3_gnn.py - INFO - Processing: input/gnn_files/discrete/bnlearn_causal_model.md\n2026-05-25 09:51:15,187 [64ae580c:3_gnn] 3_gnn.py - INFO - Generated 22 formats for bnlearn_causal_model.md\n2026-05-25 09:51:15,187 [64ae580c:3_gnn] 3_gnn.py - INFO - Processing: input/gnn_files/discrete/time_varying_dynamics.md\n2026-05-25 09:51:15,193 [64ae580c:3_gnn] 3_gnn.py - INFO - Generated 22 formats for time_varying_dynamics.md\n2026-05-25 09:51:15,193 [64ae580c:3_gnn] 3_gnn.py - INFO - Processing: input/gnn_files/discrete/two_state_bistable.md\n2026-05-25 09:51:15,201 [64ae580c:3_gnn] 3_gnn.py - INFO - Generated 22 formats for two_state_bistable.md\n2026-05-25 09:51:15,201 [64ae580c:3_gnn] 3_gnn.py - INFO - Processing: input/gnn_files/discrete/markov_chain.md\n2026-05-25 09:51:15,207 [64ae580c:3_gnn] 3_gnn.py - INFO - Generated 22 formats for markov_chain.md\n2026-05-25 09:51:15,207 [64ae580c:3_gnn] 3_gnn.py - INFO - Processing: input/gnn_files/discrete/tmaze_epistemic.md\n2026-05-25 09:51:15,218 [64ae580c:3_gnn] 3_gnn.py - INFO - Generated 22 formats for tmaze_epistemic.md\n2026-05-25 09:51:15,219 [64ae580c:3_gnn] 3_gnn.py - INFO - \u2705 Processed 10 files, generated 220 format instances across 22 formats (preset=full)\n\n\n--- Output for structured ---\n2026-05-25 09:51:15,338 [79c54a65:3_gnn] 3_gnn.py - INFO - \ud83d\ude80 Starting step: Processing GNN files with full multi-format generation\n2026-05-25 09:51:15,340 [79c54a65:3_gnn] 3_gnn.py - INFO - Initialized GNN parsing system with 22 supported formats (full preset emits 22 serializers)\n2026-05-25 09:51:15,340 [79c54a65:3_gnn] 3_gnn.py - INFO - Available serializers: [<GNNFormat.MARKDOWN: 'markdown'>, <GNNFormat.JSON: 'json'>, <GNNFormat.XML: 'xml'>, <GNNFormat.YAML: 'yaml'>, <GNNFormat.SCALA: 'scala'>, <GNNFormat.PROTOBUF: 'protobuf'>, <GNNFormat.PKL: 'pkl'>, <GNNFormat.XSD: 'xsd'>, <GNNFormat.ASN1: 'asn1'>, <GNNFormat.LEAN: 'lean'>, <GNNFormat.COQ: 'coq'>, <GNNFormat.PYTHON: 'python'>, <GNNFormat.BNF: 'bnf'>, <GNNFormat.EBNF: 'ebnf'>, <GNNFormat.ISABELLE: 'isabelle'>, <GNNFormat.MAXIMA: 'maxima'>, <GNNFormat.ALLOY: 'alloy'>, <GNNFormat.Z_NOTATION: 'z_notation'>, <GNNFormat.TLA_PLUS: 'tla_plus'>, <GNNFormat.AGDA: 'agda'>, <GNNFormat.HASKELL: 'haskell'>, <GNNFormat.PICKLE: 'pickle'>]\n2026-05-25 09:51:15,341 [79c54a65:3_gnn] 3_gnn.py - INFO - Found 2 potential GNN files\n2026-05-25 09:51:15,341 [79c54a65:3_gnn] 3_gnn.py - INFO - Processing: input/gnn_files/structured/factorized_posterior.md\n2026-05-25 09:51:15,351 [79c54a65:3_gnn] 3_gnn.py - INFO - Generated 22 formats for factorized_posterior.md\n2026-05-25 09:51:15,351 [79c54a65:3_gnn] 3_gnn.py - INFO - Processing: input/gnn_files/structured/factor_graph_model.md\n2026-05-25 09:51:15,364 [79c54a65:3_gnn] 3_gnn.py - INFO - Generated 22 formats for factor_graph_model.md\n2026-05-25 09:51:15,365 [79c54a65:3_gnn] 3_gnn.py - INFO - \u2705 Processed 2 files, generated 44 format instances across 22 formats (preset=full)\n\n\n--- Output for pomdp_gridworld ---\n2026-05-25 09:51:15,483 [7f5a833c:3_gnn] 3_gnn.py - INFO - \ud83d\ude80 Starting step: Processing GNN files with full multi-format generation\n2026-05-25 09:51:15,485 [7f5a833c:3_gnn] 3_gnn.py - INFO - Initialized GNN parsing system with 22 supported formats (full preset emits 22 serializers)\n2026-05-25 09:51:15,485 [7f5a833c:3_gnn] 3_gnn.py - INFO - Available serializers: [<GNNFormat.MARKDOWN: 'markdown'>, <GNNFormat.JSON: 'json'>, <GNNFormat.XML: 'xml'>, <GNNFormat.YAML: 'yaml'>, <GNNFormat.SCALA: 'scala'>, <GNNFormat.PROTOBUF: 'protobuf'>, <GNNFormat.PKL: 'pkl'>, <GNNFormat.XSD: 'xsd'>, <GNNFormat.ASN1: 'asn1'>, <GNNFormat.LEAN: 'lean'>, <GNNFormat.COQ: 'coq'>, <GNNFormat.PYTHON: 'python'>, <GNNFormat.BNF: 'bnf'>, <GNNFormat.EBNF: 'ebnf'>, <GNNFormat.ISABELLE: 'isabelle'>, <GNNFormat.MAXIMA: 'maxima'>, <GNNFormat.ALLOY: 'alloy'>, <GNNFormat.Z_NOTATION: 'z_notation'>, <GNNFormat.TLA_PLUS: 'tla_plus'>, <GNNFormat.AGDA: 'agda'>, <GNNFormat.HASKELL: 'haskell'>, <GNNFormat.PICKLE: 'pickle'>]\n2026-05-25 09:51:15,486 [7f5a833c:3_gnn] 3_gnn.py - INFO - Found 1 potential GNN files\n2026-05-25 09:51:15,486 [7f5a833c:3_gnn] 3_gnn.py - INFO - Processing: input/gnn_files/pomdp_gridworld/pomdp_gridworld_3x3.md\n2026-05-25 09:51:15,501 [7f5a833c:3_gnn] 3_gnn.py - INFO - Generated 22 formats for pomdp_gridworld_3x3.md\n2026-05-25 09:51:15,501 [7f5a833c:3_gnn] 3_gnn.py - INFO - \u2705 Processed 1 files, generated 22 format instances across 22 formats (preset=full)\n\n\n--- Output for precision ---\n2026-05-25 09:51:15,618 [a232e633:3_gnn] 3_gnn.py - INFO - \ud83d\ude80 Starting step: Processing GNN files with full multi-format generation\n2026-05-25 09:51:15,620 [a232e633:3_gnn] 3_gnn.py - INFO - Initialized GNN parsing system with 22 supported formats (full preset emits 22 serializers)\n2026-05-25 09:51:15,620 [a232e633:3_gnn] 3_gnn.py - INFO - Available serializers: [<GNNFormat.MARKDOWN: 'markdown'>, <GNNFormat.JSON: 'json'>, <GNNFormat.XML: 'xml'>, <GNNFormat.YAML: 'yaml'>, <GNNFormat.SCALA: 'scala'>, <GNNFormat.PROTOBUF: 'protobuf'>, <GNNFormat.PKL: 'pkl'>, <GNNFormat.XSD: 'xsd'>, <GNNFormat.ASN1: 'asn1'>, <GNNFormat.LEAN: 'lean'>, <GNNFormat.COQ: 'coq'>, <GNNFormat.PYTHON: 'python'>, <GNNFormat.BNF: 'bnf'>, <GNNFormat.EBNF: 'ebnf'>, <GNNFormat.ISABELLE: 'isabelle'>, <GNNFormat.MAXIMA: 'maxima'>, <GNNFormat.ALLOY: 'alloy'>, <GNNFormat.Z_NOTATION: 'z_notation'>, <GNNFormat.TLA_PLUS: 'tla_plus'>, <GNNFormat.AGDA: 'agda'>, <GNNFormat.HASKELL: 'haskell'>, <GNNFormat.PICKLE: 'pickle'>]\n2026-05-25 09:51:15,622 [a232e633:3_gnn] 3_gnn.py - INFO - Found 2 potential GNN files\n2026-05-25 09:51:15,622 [a232e633:3_gnn] 3_gnn.py - INFO - Processing: input/gnn_files/precision/precision_weighted.md\n2026-05-25 09:51:15,633 [a232e633:3_gnn] 3_gnn.py - INFO - Generated 22 formats for precision_weighted.md\n2026-05-25 09:51:15,633 [a232e633:3_gnn] 3_gnn.py - INFO - Processing: input/gnn_files/precision/curiosity_driven_agent.md\n2026-05-25 09:51:15,645 [a232e633:3_gnn] 3_gnn.py - INFO - Generated 22 formats for curiosity_driven_agent.md\n2026-05-25 09:51:15,646 [a232e633:3_gnn] 3_gnn.py - INFO - \u2705 Processed 2 files, generated 44 format instances across 22 formats (preset=full)\n\n\n--- Output for continuous ---\n2026-05-25 09:51:15,765 [b1a598a4:3_gnn] 3_gnn.py - INFO - \ud83d\ude80 Starting step: Processing GNN files with full multi-format generation\n2026-05-25 09:51:15,768 [b1a598a4:3_gnn] 3_gnn.py - INFO - Initialized GNN parsing system with 22 supported formats (full preset emits 22 serializers)\n2026-05-25 09:51:15,768 [b1a598a4:3_gnn] 3_gnn.py - INFO - Available serializers: [<GNNFormat.MARKDOWN: 'markdown'>, <GNNFormat.JSON: 'json'>, <GNNFormat.XML: 'xml'>, <GNNFormat.YAML: 'yaml'>, <GNNFormat.SCALA: 'scala'>, <GNNFormat.PROTOBUF: 'protobuf'>, <GNNFormat.PKL: 'pkl'>, <GNNFormat.XSD: 'xsd'>, <GNNFormat.ASN1: 'asn1'>, <GNNFormat.LEAN: 'lean'>, <GNNFormat.COQ: 'coq'>, <GNNFormat.PYTHON: 'python'>, <GNNFormat.BNF: 'bnf'>, <GNNFormat.EBNF: 'ebnf'>, <GNNFormat.ISABELLE: 'isabelle'>, <GNNFormat.MAXIMA: 'maxima'>, <GNNFormat.ALLOY: 'alloy'>, <GNNFormat.Z_NOTATION: 'z_notation'>, <GNNFormat.TLA_PLUS: 'tla_plus'>, <GNNFormat.AGDA: 'agda'>, <GNNFormat.HASKELL: 'haskell'>, <GNNFormat.PICKLE: 'pickle'>]\n2026-05-25 09:51:15,769 [b1a598a4:3_gnn] 3_gnn.py - INFO - Found 3 potential GNN files\n2026-05-25 09:51:15,769 [b1a598a4:3_gnn] 3_gnn.py - INFO - Processing: input/gnn_files/continuous/predictive_coding_agent.md\n2026-05-25 09:51:15,781 [b1a598a4:3_gnn] 3_gnn.py - INFO - Generated 22 formats for predictive_coding_agent.md\n2026-05-25 09:51:15,782 [b1a598a4:3_gnn] 3_gnn.py - INFO - Processing: input/gnn_files/continuous/stochastic_dynamics.md\n2026-05-25 09:51:15,789 [b1a598a4:3_gnn] 3_gnn.py - INFO - Generated 22 formats for stochastic_dynamics.md\n2026-05-25 09:51:15,789 [b1a598a4:3_gnn] 3_gnn.py - INFO - Processing: input/gnn_files/continuous/continuous_navigation.md\n2026-05-25 09:51:15,802 [b1a598a4:3_gnn] 3_gnn.py - INFO - Generated 22 formats for continuous_navigation.md\n2026-05-25 09:51:15,802 [b1a598a4:3_gnn] 3_gnn.py - INFO - \u2705 Processed 3 files, generated 66 format instances across 22 formats (preset=full)\n\n", "stderr": "", "memory_usage_mb": 183.703125, "peak_memory_mb": 341.9375, "memory_delta_mb": -158.234375, "exit_code": 0, "retry_count": 0, "prerequisite_check": true, "dependency_warnings": [], "recoverable": false, "step_number": 1, "script_name": "3_gnn.py", "description": "GNN file processing", "start_time": "2026-05-25T09:49:50.075166", "end_time": "2026-05-25T09:51:15.821912", "duration_seconds": 85.74673700332642}], "end_time": "2026-05-25T09:51:15.825301", "overall_status": "SUCCESS", "total_duration_seconds": 85.751566, "environment_info": {"python_version": "3.13.11 (main, Dec  5 2025, 21:16:49) [Clang 21.1.4 ]", "platform": "darwin", "cpu_count": 10, "working_directory": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation", "user": "mini", "memory_total_gb": "16.0", "disk_free_gb": "15.4"}, "performance_summary": {"peak_memory_mb": 341.9375, "total_steps": 1, "failed_steps": 0, "critical_failures": 0, "successful_steps": 1, "warnings": 0}};
+
+document.addEventListener("DOMContentLoaded", () => {
+    try {
+        if (!rawData || !rawData.steps) {
+            document.getElementById('dashboard-meta').innerText = 'No valid execution data found.';
+            return;
+        }
+
+        // 1. Populate Header & Metrics
+        document.getElementById('dashboard-meta').innerText = `Execution ID: ${rawData.process_id || 'Unknown'} | Timestamp: ${rawData.timestamp || ''}`;
+        
+        // Derive a health score when Step 24 has not produced one yet.
+        const health = rawData.health_score || (100 - (rawData.failures ? rawData.failures.length : 0) * 10);
+        document.getElementById('val-health').innerText = `${health}/100`;
+        // Color code health
+        document.getElementById('val-health').style.color = health > 80 ? 'var(--success)' : health > 50 ? 'var(--warning)' : 'var(--danger)';
+
+        document.getElementById('val-duration').innerText = (rawData.total_duration_seconds || rawData.total_duration || 0).toFixed(2);
+        
+        // Find Peak Memory
+        const maxMem = Math.max(...rawData.steps.map(s => s.memory_mb || 0).filter(v => v));
+        document.getElementById('val-memory').innerText = maxMem > 0 ? maxMem.toFixed(1) : 'N/A';
+        
+        const errs = rawData.failures ? rawData.failures.length : 0;
+        document.getElementById('val-errors').innerText = errs;
+
+
+        // 2. Prepare Chart Data
+        const labels = rawData.steps.map(s => s.name);
+        const durations = rawData.steps.map(s => Math.max(0, s.duration_seconds || 0));
+        const memories = rawData.steps.map(s => Math.max(0, s.memory_mb || 0));
+
+        // 3. Duration Chart (Chart.js)
+        new Chart(document.getElementById('durationChart'), {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Duration (seconds)',
+                    data: durations,
+                    backgroundColor: 'rgba(59, 130, 246, 0.8)',
+                    borderRadius: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: { legend: { display: false } },
+                scales: { 
+                    y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.1)' } },
+                    x: { ticks: { maxRotation: 45, minRotation: 45 }, grid: { display: false } }
+                }
+            }
+        });
+
+        // 4. Memory Chart (Chart.js)
+        new Chart(document.getElementById('memoryChart'), {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Memory (MB)',
+                    data: memories,
+                    borderColor: 'rgba(245, 158, 11, 0.8)',
+                    backgroundColor: 'rgba(245, 158, 11, 0.1)',
+                    fill: true,
+                    tension: 0.3
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: { legend: { display: false } },
+                scales: { 
+                    y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.1)' } },
+                    x: { ticks: { maxRotation: 45, minRotation: 45 }, grid: { display: false } }
+                }
+            }
+        });
+
+        // 5. Build D3 Gantt Chart
+        const ganttDiv = d3.select("#gantt-chart");
+        const width = 800;
+        const height = rawData.steps.length * 30 + 50;
+
+        const svg = ganttDiv.append("svg")
+            .attr("width", "100%")
+            .attr("height", height)
+            .style("background", "var(--surface)");
+
+        // We build cumulative start times
+        let currentStart = 0;
+        const ganttData = rawData.steps.map(s => {
+            const dur = Math.max(0.1, s.duration_seconds || 0); // min 0.1s for visibility
+            const item = {
+                name: s.name,
+                status: s.status,
+                start: currentStart,
+                duration: dur,
+                end: currentStart + dur
+            };
+            currentStart += dur;
+            return item;
+        });
+
+        const xScale = d3.scaleLinear()
+            .domain([0, currentStart])
+            .range([200, width - 40]);
+
+        const yScale = d3.scaleBand()
+            .domain(ganttData.map(d => d.name))
+            .range([0, height - 30])
+            .padding(0.2);
+
+        // Name Labels
+        svg.selectAll(".gantt-label")
+            .data(ganttData)
+            .enter().append("text")
+            .attr("x", 190)
+            .attr("y", d => yScale(d.name) + yScale.bandwidth() / 2 + 4)
+            .attr("text-anchor", "end")
+            .attr("fill", "#94a3b8")
+            .attr("font-size", "12px")
+            .text(d => d.name.length > 25 ? d.name.substring(0,25)+'...' : d.name);
+
+        // Bars
+        svg.selectAll(".gantt-bar")
+            .data(ganttData)
+            .enter().append("rect")
+            .attr("x", d => xScale(d.start))
+            .attr("y", d => yScale(d.name))
+            .attr("width", d => Math.max(2, xScale(d.end) - xScale(d.start))) // Min 2px width
+            .attr("height", yScale.bandwidth())
+            .attr("rx", 4)
+            .attr("fill", d => {
+                const s = String(d.status).toLowerCase();
+                if (s.includes("success") || s.includes("passed")) return "#22c55e";
+                if (s.includes("warn")) return "#f59e0b";
+                if (s.includes("fail") || s.includes("error")) return "#ef4444";
+                return "#3b82f6";
+            })
+            .style("opacity", 0.9);
+
+        // Duration overlay inside/next to bar
+        svg.selectAll(".gantt-dur")
+            .data(ganttData)
+            .enter().append("text")
+            .attr("x", d => xScale(d.end) + 5)
+            .attr("y", d => yScale(d.name) + yScale.bandwidth() / 2 + 4)
+            .attr("fill", "#64748b")
+            .attr("font-size", "10px")
+            .text(d => d.duration.toFixed(2) + "s");
+
+    } catch (err) {
+        console.error(err);
+        document.getElementById('dashboard-meta').innerText = 'Error initializing dashboard visuals.';
+    }
+});
+</script>
+</body>
+</html>

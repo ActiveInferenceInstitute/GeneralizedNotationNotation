@@ -7,21 +7,40 @@ Prompt:
 Response:
 
 ```python
-import numpy as np
-from scipy import stats
-from scipy import stats, math
+import json
+from collections import Counter
 
-# Define the environment parameters
-env_signal = np.array([
-    (0.75, 0.75, 0.75, 0.75),
-    (-0.25, -0.25, -0.25, -0.25)
-])
+def gnn(input_data):
+    """GNN implementation for the Stigmergic Swarm Active Inference (SSAI) protocol."""
 
-# Define the initial environment parameters
-num_agents = 3
-grid_size = 9
-num_actions = 4
-signal_decay = 1e-6
-signal_deposit_rate = 0.3
-num_timesteps = 30
-```
+    # Input data
+    input_data = {
+        "agent1": {"id": 0, "position": [4.5386279e-05, -0.1], "observation": [0.0]},
+        "agent2": {"id": 0, "position": [4.5386279e-05, -0.1]}
+    }
+
+    # Input data with no signals
+    input_data = {
+        "agent1": {"id": 0, "position": [4.5386279e-05, -0.1], "observation": [0.0]},
+        "agent2": {"id": 0, "position": [4.5386279e-05, -0.1]}
+    }
+
+    # Input data with signals
+    input_data = {
+        "agent1": {"id": 0, "position": [4.5386279e-05, -0.1], "observation": [0.0]},
+        "agent2": {"id": 0, "position": [4.5386279e-05, -0.1]}
+    }
+
+    # Input data with no signals
+    input_data = {
+        "agent1": {"id": 0, "position": [4.5386279e-05, -0.1], "observation": [0.0]},
+        "agent2": {"id": 0, "position": [4.5386279e-05, -0.1]}
+    }
+
+    # Input data with no signals and a signal decay rate of 10%
+    input_data = {
+        "agent1": {"id": 0, "position": [4.5386279e-05, -0.1], "observation": [0.0]},
+        "agent2": {"id": 0, "position": [4.5386279e-05, -0.1]}
+    }
+
+    #

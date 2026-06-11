@@ -1,20 +1,46 @@
-# Logging Utilities Specification
+# GNN Pipeline Logging Specification (SPEC.md)
 
 ## Overview
+The GNN Pipeline uses a centralized, structured logging system designed for high observability, correlation-based tracing across 25 processing steps, and rich visual feedback in the terminal.
 
-`utils.logging` provides shared logging configuration utilities used throughout the pipeline.
+## Architecture
 
-## Scope
+### 1. Thin Orchestrator Pattern
+Logging is initialized in the numbered step scripts (e.g., `3_gnn.py`) via `setup_step_logging()`. This ensures that logs from the step orchestrator and the underlying module implementations are unified.
 
-- standardized logger setup for step scripts and modules
-- consistent formatting and handler configuration (console + file)
+### 2. Correlation IDs
+Every log record carries a `correlation_id` and a `step_name`.
+- **Format**: `[ID:STEP]` (e.g., `[04ae8b91:3_gnn]`)
+- **Persistence**: Correlation IDs are stored in thread-local storage (`threading.local()`) and automatically injected into log records by the `CorrelationFormatter`.
+- **Tracing**: This allows tracing a single execution context through multiple modules and layers.
 
-## Public API
+## Log Formats
 
-The public API is defined by `src/utils/logging/__init__.py` and `logging_utils.py`.
+### 1. Visual Text (Human-Readable)
+- **Destination**: `stdout`
+- **Format**: `%(asctime)s [%(correlation_id)s:%(step_name)s] %(name)s - %(levelname)s - %(message)s`
+- **Features**: Color coding, emojis (🚀, ✅, ⚠️, ❌), and performance metrics in square brackets (e.g., `[⏱️ 1.2s | 🧠 150MB]`).
 
-## Non-goals
+### 2. Structured JSON (Machine-Readable)
+- **Destination**: `output/00_pipeline_logs/pipeline.jsonl`
+- **Format**: JSON Lines (one JSON object per line).
+- **Fields**: `timestamp`, `level`, `logger`, `message`, `correlation_id`, `step_name`, `data` (structured metadata), `performance`.
 
-- implementing a custom logging framework
-- embedding runtime metrics that are not directly observed by the pipeline
+## Log Levels
+- **DEBUG**: Verbose information for troubleshooting.
+- **INFO**: Standard operational messages.
+- **STEP (25)**: Custom level for marking major pipeline milestones.
+- **WARNING**: Recoverable issues or potential problems.
+- **ERROR**: Serious issues that might affect step output.
+- **CRITICAL**: System-wide failures.
 
+## Performance Tracking
+Integrated with `utils.performance_tracker`.
+- Automatically logs memory usage (RSS) and duration for tracked operations.
+- Appends `[⏱️ duration | 🧠 memory]` to visual logs when available.
+
+## Handler Management
+To prevent duplication:
+- `PipelineLogger.initialize()` clears existing handlers on the root logger.
+- Only one `StreamHandler` and one `FileHandler` are permitted on the root logger.
+- Propagation is used for child loggers instead of attaching per-logger handlers.

@@ -6,19 +6,19 @@ This document provides a comprehensive guide to optional dependencies in the GNN
 
 | Framework | Status | Purpose | Install Command | Pipeline Step |
 |-----------|--------|---------|-----------------|---|
-| PyMDP | Optional | POMDP agent simulation | `uv sync --extra active-inference` | 12 (Execute) |
-| Flax | Optional | JAX neural networks | `uv sync --extra active-inference` | 12 (Execute) |
+| PyMDP | Core | POMDP agent simulation | `uv sync` | 12 (Execute) |
+| Flax | Core | JAX neural networks | `uv sync` | 12 (Execute) |
 | RxInfer.jl | Optional | Julia probabilistic inference | `julia -e 'import Pkg; Pkg.add("RxInfer")'` | 12 (Execute) |
-| Plotly | Optional | Interactive visualizations | `uv sync --extra visualization` | 8-9 (Visualization) |
+| Plotly | Core | Interactive visualizations | `uv sync` | 8-9 (Visualization) |
 | GraphViz | Optional | Advanced graph layouts | `apt-get install graphviz` (system) | 8-9 (Visualization) |
 
 ---
 
 ## Detailed Framework Information
 
-### PyMDP - Optional Simulation Framework
+### PyMDP - Core Simulation Framework
 
-**Status**: ❌ Not installed by default (OPTIONAL)
+**Status**: Installed by the core `uv sync` environment.
 
 **What it does**: Enables execution of rendered Python code for POMDP simulations using the PyMDP library
 
@@ -27,8 +27,8 @@ This document provides a comprehensive guide to optional dependencies in the GNN
 **Installation**:
 
 ```bash
-# Via UV optional group (recommended)
-uv sync --extra active-inference
+# Via UV core dependency sync
+uv sync
 
 # Or individual package
 uv pip install inferactively-pymdp
@@ -59,9 +59,9 @@ ERROR:src.execute.pymdp.executor:PyMDP import failed: No module named 'pymdp.age
 - You only need Python-based simulations (JAX, DisCoPy)
 - You want a minimal installation
 
-### Flax - Optional JAX Dependency
+### Flax - Core JAX Dependency
 
-**Status**: ❌ Not installed by default (OPTIONAL)
+**Status**: Installed by the core `uv sync` environment.
 
 **What it does**: Enables execution of JAX-based neural network code for Active Inference models
 
@@ -70,8 +70,8 @@ ERROR:src.execute.pymdp.executor:PyMDP import failed: No module named 'pymdp.age
 **Installation**:
 
 ```bash
-# Via UV optional group (recommended)
-uv sync --extra active-inference
+# Via UV core dependency sync
+uv sync
 
 # Or individual package
 uv pip install flax
@@ -148,9 +148,9 @@ Run `import Pkg; Pkg.add("RxInfer")` to install the RxInfer package.
 
 ## Visualization Dependencies
 
-### Plotly - Optional Interactive Visualizations
+### Plotly - Core Interactive Visualization Dependency
 
-**Status**: ❌ Not installed by default (OPTIONAL)
+**Status**: Installed by the core `uv sync` environment.
 
 **What it does**: Enables interactive 3D visualizations and web-based charts
 
@@ -159,8 +159,8 @@ Run `import Pkg; Pkg.add("RxInfer")` to install the RxInfer package.
 **Installation**:
 
 ```bash
-# Via UV optional group (recommended)
-uv sync --extra visualization
+# Via UV core dependency sync
+uv sync
 
 # Or individual package
 uv pip install plotly
@@ -260,8 +260,8 @@ uv pip install inferactively-pymdp flax  # Optional frameworks
 **Best for**: Comprehensive testing, research, all frameworks
 
 ```bash
-# Install everything using UV optional groups
-uv sync --extra active-inference --extra visualization
+# Install core Python runtime dependencies
+uv sync
 
 # Then separately install Julia packages
 julia -e 'import Pkg; Pkg.add(["RxInfer"])'
@@ -338,7 +338,7 @@ grep -i "successfully loaded" output/21_mcp_output/*.log
 
 **Solutions**:
 
-1. Install PyMDP: `uv pip install inferactively-pymdp` or `uv sync --extra active-inference`
+1. Install PyMDP through the core environment: `uv sync`
 2. Or use other frameworks: Execution continues with available frameworks
 3. Check installation: `python -c "import pymdp; print(pymdp.__version__)"`
 
@@ -348,7 +348,7 @@ grep -i "successfully loaded" output/21_mcp_output/*.log
 
 **Solutions**:
 
-1. Install Flax: `uv pip install flax` or `uv sync --extra active-inference`
+1. Install Flax through the core environment: `uv sync`
 2. Or skip JAX simulations in Step 12 settings
 3. Check installation: `python -c "import flax; print(flax.__version__)"`
 
@@ -369,7 +369,7 @@ grep -i "successfully loaded" output/21_mcp_output/*.log
 **Solutions**:
 
 1. Install GraphViz (system): See installation steps above
-2. Install Plotly: `uv pip install plotly` or `uv sync --extra visualization`
+2. Install Plotly through the core environment: `uv sync`
 3. Run Step 9 with verbose: `python src/9_advanced_viz.py --verbose`
 
 ---
@@ -380,7 +380,7 @@ grep -i "successfully loaded" output/21_mcp_output/*.log
 
 ```bash
 # Install everything for maximum features
-uv sync --extra active-inference --extra visualization
+uv sync
 # Plus Julia packages
 julia -e 'import Pkg; Pkg.add(["RxInfer"])'
 # Plus system dependencies
@@ -391,7 +391,7 @@ brew install graphviz  # or apt-get on Linux
 
 ```bash
 # Install core + testing frameworks
-uv sync --extra active-inference
+uv sync
 ```
 
 ### For Quick Prototyping
@@ -414,7 +414,7 @@ uv sync
 
 ```bash
 # Install known-working set
-uv sync --extra active-inference
+uv sync
 # Skip rarely-used optional deps
 ```
 

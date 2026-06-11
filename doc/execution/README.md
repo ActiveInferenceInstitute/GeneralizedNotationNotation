@@ -2,6 +2,8 @@
 
 Framework execution and simulation backend management
 
+**Signposts:** [doc/SPEC.md](../SPEC.md) (documentation versioning) · [src/AGENTS.md](../../src/AGENTS.md) (pipeline steps; Step 12 Execute) · [doc/gnn/operations/gnn_tools.md](../gnn/operations/gnn_tools.md)
+
 ## Overview
 
 This directory contains documentation and resources for the execution subsystem.

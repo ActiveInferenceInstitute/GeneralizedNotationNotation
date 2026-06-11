@@ -425,12 +425,15 @@ ActiveInference.jl Code Generation → Julia Environment Setup → Model Compila
 ## Testing
 
 ### Test Files
-- `src/tests/test_execute_overall.py` - Execute module tests (includes framework selection)
+- `src/tests/execute/test_execute_overall.py` - Execute module tests (includes framework selection)
 
 ### Test Coverage
-- **Current**: 78%
-- **Target**: 85%+
+Measure on demand:
 
+```bash
+uv run --extra dev python -m pytest src/tests/test_activeinference_jl*.py \
+    --cov=src/execute/activeinference_jl --cov-report=term-missing
+```
 ### Key Test Scenarios
 1. Julia environment validation and setup
 2. ActiveInference.jl model loading and execution
@@ -441,10 +444,10 @@ ActiveInference.jl Code Generation → Julia Environment Setup → Model Compila
 ### Test Commands
 ```bash
 # Run ActiveInference.jl execution tests
-pytest src/tests/test_execute_activeinference*.py -v
+uv run --extra dev python -m pytest src/tests/test_execute_activeinference*.py -v
 
 # Run with coverage
-pytest src/tests/test_execute_activeinference*.py --cov=src/execute/activeinference_jl --cov-report=term-missing
+uv run --extra dev python -m pytest src/tests/test_execute_activeinference*.py --cov=src/execute/activeinference_jl --cov-report=term-missing
 ```
 
 ---
@@ -541,7 +544,7 @@ results = run_activeinference_analysis(
 
 ## Version History
 
-### Current Version: 1.0.0
+### Current Version: 1.6.0
 
 **Features**:
 - Complete ActiveInference.jl execution and analysis pipeline
@@ -578,7 +581,7 @@ results = run_activeinference_analysis(
 
 ---
 
-**Last Updated**: 2026-01-21
+**Last Updated**: 2026-04-16
 **Maintainer**: Execute Module Team
 **Status**: ✅ Production Ready
 

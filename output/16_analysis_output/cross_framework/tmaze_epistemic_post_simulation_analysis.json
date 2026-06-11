@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-04-10T10:35:03.803337",
+  "timestamp": "2026-05-22T06:34:18.930911",
   "execution_results_dir": "output/12_execute_output/tmaze_epistemic",
   "framework_results": {
     "bnlearn": {
@@ -15,23 +15,7 @@
     "jax": {
       "framework": "jax",
       "result_count": 1,
-      "analyses": [
-        {
-          "framework": "jax",
-          "model_name": "tmaze_epistemic",
-          "free_energy_count": 2,
-          "free_energy_values": [
-            0.0,
-            1.3816
-          ],
-          "mean_free_energy": 0.6908,
-          "std_free_energy": 0.6908,
-          "min_free_energy": 0.0,
-          "max_free_energy": 1.3816,
-          "free_energy_trend": 1.3815999999999995,
-          "free_energy_decreasing": "False"
-        }
-      ]
+      "analyses": []
     },
     "pytorch": {
       "framework": "pytorch",
@@ -46,17 +30,76 @@
     "activeinference_jl": {
       "framework": "activeinference_jl",
       "result_count": 1,
-      "analyses": []
-    },
-    "numpyro": {
-      "framework": "numpyro",
-      "result_count": 1,
-      "analyses": []
+      "analyses": [
+        {
+          "framework": "activeinference_jl",
+          "model_name": "tmaze_epistemic",
+          "free_energy_count": 3,
+          "free_energy_values": [
+            2.4210235183374924,
+            1.452178264877319,
+            1.452178264877319
+          ],
+          "mean_free_energy": 1.7751266826973768,
+          "std_free_energy": 0.45671803242805875,
+          "min_free_energy": 1.452178264877319,
+          "max_free_energy": 2.4210235183374924,
+          "free_energy_trend": -0.4844226267300868,
+          "free_energy_decreasing": "True"
+        },
+        {
+          "framework": "activeinference_jl",
+          "model_name": "tmaze_epistemic",
+          "policy_count": 3,
+          "policy_entropy": [
+            1.098636018914809,
+            0.05643238703988466,
+            0.05643238703988466
+          ],
+          "policy_stability": {
+            "entropy_mean": 0.40383359766485943,
+            "entropy_std": 0.4912995036506715,
+            "stable": false
+          }
+        }
+      ]
     },
     "rxinfer": {
       "framework": "rxinfer",
       "result_count": 1,
-      "analyses": []
+      "analyses": [
+        {
+          "framework": "rxinfer",
+          "model_name": "tmaze_epistemic",
+          "free_energy_count": 3,
+          "free_energy_values": [
+            2.4210235183374924,
+            1.452178264877319,
+            1.452178264877319
+          ],
+          "mean_free_energy": 1.7751266826973768,
+          "std_free_energy": 0.45671803242805875,
+          "min_free_energy": 1.452178264877319,
+          "max_free_energy": 2.4210235183374924,
+          "free_energy_trend": -0.4844226267300868,
+          "free_energy_decreasing": "True"
+        },
+        {
+          "framework": "rxinfer",
+          "model_name": "tmaze_epistemic",
+          "policy_count": 3,
+          "policy_entropy": [
+            1.098636018914809,
+            0.05643238703988466,
+            0.05643238703988466
+          ],
+          "policy_stability": {
+            "entropy_mean": 0.40383359766485943,
+            "entropy_std": 0.4912995036506715,
+            "stable": false
+          }
+        }
+      ]
     }
   },
   "cross_framework_comparison": {
@@ -68,35 +111,43 @@
       "pytorch",
       "pymdp",
       "activeinference_jl",
-      "numpyro",
       "rxinfer"
     ],
-    "framework_count": 8,
+    "framework_count": 7,
     "comparisons": {
       "free_energy": {
         "jax": {
-          "mean": 0.6908,
-          "min": 0.0,
-          "max": 1.3816
+          "mean": 1.73955,
+          "min": 1.0,
+          "max": 2.4791
+        },
+        "activeinference_jl": {
+          "mean": 1.7751266826973768,
+          "min": 1.452178264877319,
+          "max": 2.4210235183374924
+        },
+        "rxinfer": {
+          "mean": 1.7751266826973768,
+          "min": 1.452178264877319,
+          "max": 2.4210235183374924
         }
       },
       "best_free_energy": {
         "framework": "jax",
-        "mean_fe": 0.6908
+        "mean_fe": 1.73955
       },
       "execution_time": {
-        "bnlearn": 1.856554,
-        "discopy": 0.235463,
-        "jax": 0.693688,
-        "pytorch": 0.45662,
-        "pymdp": 2.719854,
-        "activeinference_jl": 10.364203,
-        "numpyro": 0.718057,
-        "rxinfer": 13.650717
+        "bnlearn": 2.198489,
+        "discopy": 0.244564,
+        "jax": 1.004013,
+        "pytorch": 0.475742,
+        "pymdp": 1.704344,
+        "activeinference_jl": 7.830748,
+        "rxinfer": 5.434579
       },
       "fastest_execution": {
         "framework": "discopy",
-        "time": 0.235463
+        "time": 0.244564
       },
       "success_rates": {
         "bnlearn": true,
@@ -105,7 +156,6 @@
         "pytorch": true,
         "pymdp": true,
         "activeinference_jl": true,
-        "numpyro": true,
         "rxinfer": true
       }
     }

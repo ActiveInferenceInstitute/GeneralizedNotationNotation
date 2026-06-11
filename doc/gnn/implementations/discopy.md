@@ -7,7 +7,7 @@
 
 ## Overview
 
-The Generalized Notation Notation (GNN) pipeline translates theoretical model specifications into executable Python code utilizing the `discopy` framework for categorical diagram generation. Unlike the other four implementations (PyMDP, JAX, RxInfer, ActiveInference.jl), DisCoPy does **not** run a numerical simulation of the Active Inference perception-action loop. Instead, it constructs a **compositional representation** of the model architecture as string diagrams in a monoidal category, providing structural analysis and formal verification of the model's type-theoretic properties.
+The Generalized Notation Notation (GNN) pipeline translates theoretical model specifications into executable Python code utilizing the `discopy` framework for categorical diagram generation. Unlike the other numerical backends (PyMDP, JAX, RxInfer, ActiveInference.jl, PyTorch, NumPyro), DisCoPy does **not** run a numerical simulation of the Active Inference perception-action loop. Instead, it constructs a **compositional representation** of the model architecture as string diagrams in a monoidal category, providing structural analysis and formal verification of the model's type-theoretic properties.
 
 Within the GNN cross-framework comparison, DisCoPy serves as the categorical semantics reference — validating that the model's compositional structure (morphisms, types, and their compositions) is well-formed.
 

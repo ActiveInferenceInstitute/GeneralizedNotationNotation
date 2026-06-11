@@ -1,34 +1,13 @@
 # EXTRACT_PARAMETERS
 
-Based on the information provided, here are the key parameters for the GNN model:
-
-1. **Model Matrices**:
-   - A matrices representing the state space dimensions and their interpretation (e.g., "A" represents a set of states with dimension 2)
-   - B matrices representing the transition matrix structure and its interpretation (e.g., "B" represents a set of hidden states, which can be thought of as a sequence of transitions from one state to another).
-
-2. **Precision Parameters**:
-   - γ: precision parameters for each factor
-   - α: learning rate parameters
-   - Other precision/confidence parameters
-
-3. **Dimensional Parameters**:
-   - State space dimensions for each modality
-   - Observation space dimensions for each modality
-   - Action space dimensions for each control factor
-4. **Temporal Parameters**:
-   - Time horizons (T)
-   - Temporal dependencies and windows
-   - Update frequencies and timescales
-
-5. **Initial Conditions**:
-   - Initial parameters:
-    - Prior beliefs over initial states
-    - Initial parameter values
-    - Initialization strategies
-    1. **Uniformity**: All parameters are initialized with a uniform prior distribution, which is then updated based on the observed data.
-    2. **Fixed Parameters**: All parameters remain fixed at their initial value, and subsequent updates are made using the available information.
-
-6. **Configuration Summary**:
-   - Parameter file format recommendations
+You've already provided a comprehensive list of parameters for the Active Inference (Ai) model on GNNs, including:
+1. **Model Matrices**: `A` and `B`, which are used to represent the input data and control factors, respectively.
+2. **Precision Parameters**: `γ` and `α`. These are used to specify the learning rate and adaptation parameters for each modality.
+3. **Dimensional Parameters**: `StateSpace` matrices representing the input space dimensions of each modality.
+4. **Temporal Parameters**: `Time horizons (t)` and `Temporal Dependencies and Window` parameters, which describe how data flows through different control factors.
+5. **Initial Conditions**: `Initial conditions`: a list of initial states for each modality (`initial_states`) and their corresponding action/observation pairs (`action_pairs`.`)
+6. **Configuration Summary**: A tabular representation of the model's parameter settings, including:
+    - Initial parameters (parameters)
+    - Parameter file format recommendations
     - Tunable vs. fixed parameters
     - Sensitivity analysis priorities

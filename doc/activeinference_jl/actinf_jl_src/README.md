@@ -49,7 +49,7 @@ The single `activeinference_runner.jl` script provides the complete ActiveInfere
 - Uses working ActiveInference.jl API calls validated by testing
 
 ### ✅ **Fully Functional Implementation**
-- No mock, stub, or placeholder code - all examples work
+- All examples are runnable and use explicit data
 - Based on successful `demo_success.jl` API usage
 - Real Active Inference computations and data generation
 
@@ -156,7 +156,7 @@ activeinference_outputs_[timestamp]/
 
 ## Scientific Reproducibility and Traceability
 
-- **No mock, fallback, or blank data is ever used.**
+- **Examples use explicit data and report unavailable inputs clearly.**
 - **All data for analysis and visualization is real, saved, and checked for completeness.**
 - **If any required data is missing or empty, the pipeline halts with a clear error.**
 - **File locations and sizes are logged for every data file used.**

@@ -1,26 +1,41 @@
-# Parse - Agent Scaffolding
+# Visualization Parse Sub-module
 
-## Module Overview
+## Overview
 
-**Purpose**: Responsible for `Parse` operations within the GNN pipeline architecture.
-**Category**: Generated Pipeline Component
-**Status**: Development
+GNN file parsing utilities specific to the visualization pipeline. Provides markdown GNN format parsing to extract model structure for visualization when pre-parsed JSON from Step 3 is unavailable.
 
----
+## Architecture
 
-## Core Functionality
+```
+parse/
+├── __init__.py            # Package exports
+├── gnn_file_parser.py     # GNN file structure extraction
+└── markdown.py            # Markdown GNN format parsing
+```
 
-### Primary Responsibilities
-GNN Parser Module
+## Key Functions
 
-This module provides functionality to parse GNN files and convert them into a structured format
-for visualization and analysis. Markdown GNN parsing fallback when step-3 parsed JSON is unavailable.
+### markdown.py
 
-### Extracted Code Entities
+- **`parse_gnn_content(content: str) -> Dict[str, Any]`** — Parse raw GNN markdown content into structured dict with `variables`, `connections`, `parameters`, `raw_sections`, and `ActInfOntologyAnnotation`.
 
-- **Classes**: GNNParser
-- **Functions**: extract_sections, parse_file, parse_gnn_content
+### Internal Helpers
 
-## Implementation Details
+- `_is_complete_parameter(value_str)` — Detect multi-line parameter value completeness.
+- `_parse_parameter_value(value_str)` — Safely parse parameter value strings (JSON, lists, scalars).
+- `_save_parameter(parsed, param_name, param_lines)` — Accumulate multi-line parameter definitions.
 
-This module follows the Thin Orchestrator Pattern. It is governed by the Zero-Mock testing policy.
+## Raw Markdown Parser Role
+
+This module provides the explicit raw-Markdown parser for the visualization
+pipeline. The preferred path loads structured JSON from Step 3 via
+`core/parsed_model.py`. When Step 3 output is unavailable,
+`parse_gnn_content` provides reduced but functional model data for
+visualization.
+
+## Parent Module
+
+See [visualization/AGENTS.md](../AGENTS.md) for the overall visualization architecture.
+
+**Version**: 1.6.0
+**Last Updated**: 2026-05-12

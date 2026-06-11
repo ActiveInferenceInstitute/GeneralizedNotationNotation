@@ -8,11 +8,11 @@
 
 **Category**: Audio Generation / Sonification
 
-**Status**: 🔄 In Development
+**Status**: ✅ Production Ready
 
-**Version**: 1.0.0
+**Version**: 1.6.0
 
-**Last Updated**: 2026-01-21
+**Last Updated**: 2026-04-16
 
 ---
 
@@ -227,13 +227,16 @@ output/15_audio_output/
 ## Testing
 
 ### Test Files
-- `src/tests/test_audio_integration.py`
-- `src/tests/test_audio_sapf.py`
+- `src/tests/audio/test_audio_integration.py`
+- `src/tests/audio/test_audio_sapf.py`
 
 ### Test Coverage
-- **Current**: 74%
-- **Target**: 80%+
+Measure on demand:
 
+```bash
+uv run --extra dev python -m pytest src/tests/test_audio*.py \
+    --cov=src/audio --cov-report=term-missing
+```
 ### Key Test Scenarios
 1. Audio generation from GNN models
 2. SAPF code generation
@@ -294,7 +297,7 @@ def generate_audio_tool(gnn_content: str, duration: float = 30.0) -> Dict[str, A
 
 ## Version History
 
-### Current Version: 1.0.0
+### Current Version: 1.6.0
 
 **Features**:
 - SAPF code generation
@@ -326,10 +329,10 @@ def generate_audio_tool(gnn_content: str, duration: float = 30.0) -> Dict[str, A
 
 ---
 
-**Last Updated**: 2026-01-21
+**Last Updated**: 2026-04-16
 **Maintainer**: GNN Pipeline Team
-**Status**: 🔄 In Development
-**Version**: 1.0.0
+**Status**: ✅ Production Ready
+**Version**: 1.6.0
 **Architecture Compliance**: ✅ 100% Thin Orchestrator Pattern
 
 

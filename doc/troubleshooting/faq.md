@@ -287,7 +287,6 @@ See [Performance Guide](performance.md) for optimization strategies.
 1. **Activate virtual environment**: Ensure you're in the correct Python environment
 
    ```bash
-   cd src
    source .venv/bin/activate  # Linux/Mac
    # or
    .venv\Scripts\activate  # Windows
@@ -296,11 +295,10 @@ See [Performance Guide](performance.md) for optimization strategies.
 2. **Install missing dependencies**:
 
    ```bash
-   uv sync  # Recommended - installs all dependencies
-   # Or: uv pip install -r requirements.txt
+   uv sync  # Install runtime dependencies from pyproject.toml / uv.lock
    ```
 
-3. **Python version compatibility**: GNN requires Python 3.8+
+3. **Python version compatibility**: GNN requires Python 3.11 through 3.13
 
    ```bash
    python --version  # Check your version
@@ -322,7 +320,7 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 uv sync --extra dev
 
 # Run tests to verify setup
-uv run pytest tests/
+uv run --extra dev python -m pytest src/tests/
 ```
 
 ### Can I use GNN with Docker?
@@ -336,8 +334,8 @@ FROM python:3.11-slim
 WORKDIR /app
 COPY . /app
 
-RUN cd src && uv pip install -r requirements.txt
-CMD ["python", "src/main.py", "--help"]
+RUN uv sync --frozen
+CMD ["uv", "run", "python", "src/main.py", "--help"]
 ```
 
 **Docker Compose for development:**
@@ -558,7 +556,7 @@ git commit -m "Experiment: Add hierarchical planning layers"
 
 1. **Semantic versioning**: Use version numbers in model names
 2. **Change logs**: Document model modifications
-3. **Backward compatibility**: Maintain compatibility with older versions
+3. **Migration behavior**: Document changes for older versions
 4. **Branching strategy**: Separate branches for different model variants
 
 ### How do I automate GNN workflows?
@@ -582,12 +580,11 @@ jobs:
     
     - name: Install dependencies
       run: |
-        cd src
-        uv pip install -r requirements.txt
+        uv sync --frozen
     
     - name: Validate GNN models
       run: |
-        python src/5_type_checker.py --target-dir models/
+        uv run python src/5_type_checker.py --target-dir models/
     
     - name: Generate documentation
       run: |
@@ -717,13 +714,13 @@ s_f0_y[10,1,type=int]  # Y coordinate
 
 **Version compatibility:**
 
-- **GNN v1.0 → v1.1**: Fully backward compatible
+- **GNN v1.0 → v1.1**: Migration preserved the documented public syntax used by maintained examples
 - **Pre-v1.0 → v1.x**: May require syntax updates
 - **Framework versions**: PyMDP/RxInfer updates may affect rendering
 
 **Migration checklist:**
 
-1. **Syntax updates**: Check for deprecated section names
+1. **Syntax updates**: Check for retired section names
 2. **Variable naming**: Ensure compliance with current naming conventions
 3. **Matrix specifications**: Verify dimension specifications
 4. **Validation**: Run updated type checker on old models
@@ -821,7 +818,7 @@ Actual: Validation fails with error X
 - [ ] **Tests added**: Unit tests for new functionality
 - [ ] **Documentation updated**: User guides and API docs
 - [ ] **Examples provided**: Working examples demonstrating feature
-- [ ] **Backward compatibility**: Doesn't break existing models
+- [ ] **Migration behavior**: Documents model updates required by the change
 - [ ] **Performance tested**: No significant performance regression
 
 ### How do I request new functionality?

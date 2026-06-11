@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-04-10T10:24:38.135706",
+  "timestamp": "2026-05-22T06:17:42.791513",
   "source_directory": "input/gnn_files/discrete",
   "output_directory": "output/7_export_output",
   "files_exported": [
@@ -10,7 +10,7 @@
         "json": {
           "success": true,
           "export_file": "output/7_export_output/predictive_coding_agent/predictive_coding_agent_json.json",
-          "file_size": 24936
+          "file_size": 29062
         },
         "xml": {
           "success": true,
@@ -30,7 +30,39 @@
         "pickle": {
           "success": true,
           "export_file": "output/7_export_output/predictive_coding_agent/predictive_coding_agent_pickle.pkl",
-          "file_size": 13371
+          "file_size": 15399
+        }
+      },
+      "success": true
+    },
+    {
+      "file_name": "stochastic_dynamics.md",
+      "file_path": "input/gnn_files/continuous/stochastic_dynamics.md",
+      "exports": {
+        "json": {
+          "success": true,
+          "export_file": "output/7_export_output/stochastic_dynamics/stochastic_dynamics_json.json",
+          "file_size": 19248
+        },
+        "xml": {
+          "success": true,
+          "export_file": "output/7_export_output/stochastic_dynamics/stochastic_dynamics_xml.xml",
+          "file_size": 722
+        },
+        "graphml": {
+          "success": true,
+          "export_file": "output/7_export_output/stochastic_dynamics/stochastic_dynamics_graphml.graphml",
+          "file_size": 1162
+        },
+        "gexf": {
+          "success": true,
+          "export_file": "output/7_export_output/stochastic_dynamics/stochastic_dynamics_gexf.gexf",
+          "file_size": 946
+        },
+        "pickle": {
+          "success": true,
+          "export_file": "output/7_export_output/stochastic_dynamics/stochastic_dynamics_pickle.pkl",
+          "file_size": 11115
         }
       },
       "success": true
@@ -42,7 +74,7 @@
         "json": {
           "success": true,
           "export_file": "output/7_export_output/continuous_navigation/continuous_navigation_json.json",
-          "file_size": 26335
+          "file_size": 30382
         },
         "xml": {
           "success": true,
@@ -62,22 +94,22 @@
         "pickle": {
           "success": true,
           "export_file": "output/7_export_output/continuous_navigation/continuous_navigation_pickle.pkl",
-          "file_size": 13175
+          "file_size": 15109
         }
       },
       "success": true
     }
   ],
   "summary": {
-    "total_files": 2,
-    "successful_exports": 2,
+    "total_files": 3,
+    "successful_exports": 3,
     "failed_exports": 0,
     "formats_generated": {
-      "json": 2,
-      "xml": 2,
-      "graphml": 2,
-      "gexf": 2,
-      "pickle": 2
+      "json": 3,
+      "xml": 3,
+      "graphml": 3,
+      "gexf": 3,
+      "pickle": 3
     }
   }
 }

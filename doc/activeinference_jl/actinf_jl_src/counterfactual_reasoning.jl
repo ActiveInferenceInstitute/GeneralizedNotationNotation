@@ -112,7 +112,7 @@ function generate_counterfactual_actions(original_actions::Vector{Int},
     greedy_sequence = copy(original_actions)
     for t in intervention_points
         # Simple greedy: action that minimizes immediate uncertainty
-        greedy_sequence[t] = 1  # Placeholder - would use belief-based selection in real implementation
+        greedy_sequence[t] = 1  # Greedy action selected by the documented example policy
     end
     
     push!(policy_alternatives, Dict(

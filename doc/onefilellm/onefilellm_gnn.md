@@ -136,7 +136,7 @@ onefilellm --alias-add gnnsec "https://raw.githubusercontent.com/ActiveInference
 onefilellm gnnsec State_Space gnnsec Likelihood_Matrix gnnsec Policy_Prior
 ```
 
-Reduces CLI length by **67%**, supports placeholder arg substitution[1][5].
+Reduces CLI length by **67%**, supports argument substitution[1][5].
 
 ### Round-Trip Execution
 

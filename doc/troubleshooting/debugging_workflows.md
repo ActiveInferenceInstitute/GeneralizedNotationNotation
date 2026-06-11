@@ -242,8 +242,9 @@ python -c "import sys; print(sys.path)"
 
 # Check virtual environment
 echo $VIRTUAL_ENV
-pip list --format=freeze > current_packages.txt
-diff current_packages.txt requirements.txt
+uv pip list --format=freeze > current_packages.txt
+uv lock --check
+uv sync --frozen
 ```
 
 ### **Step 2: Dependency Validation**
@@ -653,4 +654,4 @@ python -c "from src.gnn import GNNModel; import pdb; pdb.set_trace(); model = GN
 
 **Debugging Workflows Version**: 1.0  
 **Coverage**: 5 major workflow categories  
-**Status**: Production-Ready 
+**Status**: Production-Ready

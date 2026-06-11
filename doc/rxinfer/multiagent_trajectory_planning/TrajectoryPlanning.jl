@@ -482,7 +482,7 @@ function path_planning(; environment, agents, nr_iterations = 350, nr_steps = 40
         log_message("Convergence plot saved successfully to $output_path", logger)
     else
         # Generate a flat line with "Data Not Found" message instead of sample data
-        log_message("No convergence metrics available. Generating placeholder convergence plot...", logger)
+        log_message("No convergence metrics available. Generating data-not-found convergence plot...", logger)
         flat_data = zeros(100)  # Flat line at zero
         p = plot(flat_data, linewidth=2, xlabel="Iteration", ylabel="ELBO",
                 title="Convergence of Inference", legend=false, size=(800, 400),
@@ -490,7 +490,7 @@ function path_planning(; environment, agents, nr_iterations = 350, nr_steps = 40
         annotate!(p, 50, 0.5, text("Data Not Found", :red, :center, 12))
         output_path = joinpath(output_dir, "convergence.png")
         savefig(p, output_path)
-        log_message("Placeholder convergence plot saved to $output_path", logger)
+        log_message("Data-not-found convergence plot saved to $output_path", logger)
     end
     
     # Save intermediate results if available
@@ -893,7 +893,7 @@ function create_readme(output_dir, logger)
         println(f, "- `obstacle_distance.png` - Heatmap of distances to obstacles")
         println(f, "- `path_uncertainty.png` - Visualization of path uncertainties")
         println(f, "- `path_visualization.png` - Static visualization of agent paths")
-        println(f, "- `convergence.png` - Convergence plot of the inference (may show placeholder if ELBO tracking unavailable)")
+        println(f, "- `convergence.png` - Convergence plot of the inference (reports missing ELBO tracking when unavailable)")
         println(f, "")
         println(f, "### Environment Heatmaps")
         println(f, "- `door_environment_heatmap.png` - Distance field visualization for door environment")

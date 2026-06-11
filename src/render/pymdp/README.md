@@ -22,6 +22,10 @@ No additional public function is exported by this package.
 ## Contract
 
 - Input is a parsed GNN dictionary expected by the render pipeline.
+- Required execution matrices are explicit: `A`, `B`, `C`, and `D`.
+  Factored models are composed into a joint PyMDP contract with matrix
+  provenance, and a declared `B_t` tensor is projected to canonical
+  `(next_state, previous_state, action)` `B` with provenance.
 - Output is a Python script file at the target `output_path`.
 - Return tuple structure is:
   - `success: bool`
@@ -42,7 +46,7 @@ No additional public function is exported by this package.
 | 12 Execute | `output/12_execute_output/<gnn_stem>/pymdp/simulation_data/simulation_results.json` (after collection from `.../pymdp/output/pymdp_simulations/...`) |
 | 16 Analysis | `output/16_analysis_output/pymdp/<model_slug>/` (plots from `generate_analysis_from_logs`) |
 
-Generated scripts resolve the repo root via `GNN_PROJECT_ROOT` (set by Step 12 when running subprocesses) or by walking upward to a directory containing `pyproject.toml` and `src/`.
+Generated scripts resolve the repo root via `GNN_PROJECT_ROOT` (set by Step 12 when running subprocesses) or by walking upward to a directory containing `pyproject.toml` and `src/`, then add `src/` to `sys.path` before importing the canonical executor.
 
 ## Dependency Notes
 
@@ -59,14 +63,14 @@ Generated scripts resolve the repo root via `GNN_PROJECT_ROOT` (set by Step 12 w
   from pymdp import utils as pymdp_utils
   ```
 - Each generated script sanity-checks for ``Agent.update_empirical_prior`` at
-  runtime and exits fast with a clear message if a legacy wheel is present.
+  runtime and exits fast with a clear message if an unsupported wheel is present.
 
 ## Render Modes
 
 `PyMDPRenderer` accepts `options={"mode": ...}`:
 
 - `"pipeline"` (default) — thin runner that delegates to
-  `src.execute.pymdp.run_simple_pymdp_simulation` (the canonical JAX rollout).
+  `src.execute.pymdp.run_pymdp_simulation` (the canonical JAX rollout).
 - `"standalone"` — fully self-contained pymdp 1.0.0 script with an inline
   rollout loop. Useful for sharing a runnable example that does not require
   this repository on `PYTHONPATH`.
@@ -76,4 +80,4 @@ Generated scripts resolve the repo root via `GNN_PROJECT_ROOT` (set by Step 12 w
 Relevant tests live in `src/tests/`, including render+execute integration and
 PyMDP simulation pathway tests. Upstream ``Agent`` / ``utils`` methods used by
 generated runners are also asserted in
-`src/tests/test_pymdp_1_0_0_upstream_api.py`.
+`src/tests/execute/test_pymdp_1_0_0_upstream_api.py`.

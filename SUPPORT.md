@@ -2,7 +2,7 @@
 
 > **📋 Document Metadata**  
 > **Type**: Support Guide | **Audience**: All Users | **Complexity**: Beginner-Friendly  
-> **Last Updated**: March 2026 | **Status**: Production-Ready  
+> **Last Updated**: May 2026 | **Status**: Production-Ready  
 > **Cross-References**: [README](README.md) | [Troubleshooting](doc/troubleshooting/README.md) | [Contributing](CONTRIBUTING.md)
 
 If you need help with GeneralizedNotationNotation (GNN), have questions, or want to discuss the project, here are several ways to get support:
@@ -132,7 +132,7 @@ Currently, there is no official commercial support offered for GeneralizedNotati
 
 ### 🔧 Pipeline and Tools
 
-- [Pipeline Architecture](#placeholder) - 25-step pipeline overview
+- [Pipeline Architecture](./ARCHITECTURE.md) - 25-step pipeline overview
 - [API Reference](./doc/api/README.md) - Complete API documentation
 - [Testing Guide](./doc/testing/README.md) - Testing strategies
 

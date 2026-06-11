@@ -376,7 +376,7 @@ Create a visualization of convergence metrics and save it to a file.
 """
 function create_convergence_visualization(metrics, output_file)
     if isempty(metrics)
-        # Create a placeholder plot if no metrics are available
+        # Create an explicit "data not found" plot if no metrics are available
         p = plot(
             [0, 100], [0, 0], 
             linewidth=0, 

@@ -3,14 +3,14 @@
 pymdp 1.0.0 runner for Simple Markov Chain
 
 This file was generated from a GNN specification by
-``src/render/pymdp/pymdp_renderer.py``. It delegates the actual rollout
+``render/pymdp/pymdp_renderer.py``. It delegates the actual rollout
 to the GNN pipeline's tested execution module
-(``src.execute.pymdp.run_simple_pymdp_simulation``), which in turn calls
+(``execute.pymdp.run_pymdp_simulation``), which in turn calls
 real pymdp 1.0.0 (JAX-first) under the hood.
 
 Model:        Simple Markov Chain
 Description:  
-Generated:    2026-04-10 10:25:04
+Generated:    2026-05-22 06:18:15
 
 State Space:
   - Hidden States: 3
@@ -44,7 +44,7 @@ if sys.path and sys.path[0] and sys.path[0].endswith("pymdp"):
 _gnn_root = os.environ.get("GNN_PROJECT_ROOT")
 if _gnn_root:
     _repo = Path(_gnn_root).resolve()
-    sys.path.insert(0, str(_repo))
+    sys.path.insert(0, str(_repo / "src"))
 else:
     _cur = Path(__file__).resolve().parent
     _found = None
@@ -62,7 +62,7 @@ else:
             file=sys.stderr,
         )
         sys.exit(1)
-    sys.path.insert(0, str(_found))
+    sys.path.insert(0, str(_found / "src"))
 
 # ---------------------------------------------------------------------------
 # pymdp 1.0.0 presence check (hard requirement)
@@ -71,7 +71,7 @@ try:
     import pymdp  # noqa: F401
     from pymdp.agent import Agent  # noqa: F401
     if not hasattr(Agent, "update_empirical_prior"):
-        raise ImportError("legacy pymdp (<1.0.0) detected")
+        raise ImportError("unsupported pymdp (<1.0.0) detected")
     print("PyMDP 1.0.0+ detected (JAX-first Agent).")
 except ImportError as e:
     print(
@@ -82,7 +82,7 @@ except ImportError as e:
     )
     sys.exit(1)
 
-from src.execute.pymdp import execute_pymdp_simulation
+from execute.pymdp import execute_pymdp_simulation
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
@@ -92,7 +92,7 @@ def main() -> int:
     """Run a pymdp 1.0.0 simulation for the GNN model embedded in this file."""
     # Matrices embedded verbatim from the GNN spec.
     A_data = [[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]]
-    B_data = [[0.7, 0.3, 0.1], [0.2, 0.4, 0.3], [0.1, 0.3, 0.6]]
+    B_data = [[[0.7000000000000001], [0.3], [0.1]], [[0.20000000000000004], [0.4], [0.3]], [[0.10000000000000002], [0.3], [0.6]]]
     C_data = [0.0, 0.0, 0.0]
     D_data = [0.5, 0.3, 0.2]
     E_data = None
@@ -106,8 +106,50 @@ def main() -> int:
         "num_hidden_states": 3,
         "num_obs": 3,
         "num_actions": 1,
-        "simulation_params": {},
-        "num_timesteps": 15
+        "num_timesteps": 40,
+        "b_tensor_order": "next_state_previous_state_action",
+        "num_state_factors": 2,
+        "num_modalities": 1,
+        "state_factors": [
+            {
+                "name": "s",
+                "size": 3,
+                "dimensions": [
+                    3,
+                    1
+                ],
+                "type": "float",
+                "comment": "Current state distribution",
+                "index": 1
+            },
+            {
+                "name": "s_prime",
+                "size": 3,
+                "dimensions": [
+                    3,
+                    1
+                ],
+                "type": "float",
+                "comment": "Next state distribution",
+                "index": 2
+            }
+        ],
+        "observation_modalities": [
+            {
+                "name": "o",
+                "size": 3,
+                "dimensions": [
+                    3,
+                    1
+                ],
+                "type": "float",
+                "comment": "Current observation",
+                "index": 1
+            }
+        ],
+        "control_factors": [],
+        "passive_model": True,
+        "simulation_params": {}
     },
     "initialparameterization": {
         "A": [
@@ -129,19 +171,37 @@ def main() -> int:
         ],
         "B": [
             [
-                0.7,
-                0.3,
-                0.1
+                [
+                    0.7000000000000001
+                ],
+                [
+                    0.3
+                ],
+                [
+                    0.1
+                ]
             ],
             [
-                0.2,
-                0.4,
-                0.3
+                [
+                    0.20000000000000004
+                ],
+                [
+                    0.4
+                ],
+                [
+                    0.3
+                ]
             ],
             [
-                0.1,
-                0.3,
-                0.6
+                [
+                    0.10000000000000002
+                ],
+                [
+                    0.3
+                ],
+                [
+                    0.6
+                ]
             ]
         ],
         "C": [
@@ -155,6 +215,168 @@ def main() -> int:
             0.2
         ]
     },
+    "structured_pomdp": {
+        "matrices": {
+            "A": [
+                [
+                    1.0,
+                    0.0,
+                    0.0
+                ],
+                [
+                    0.0,
+                    1.0,
+                    0.0
+                ],
+                [
+                    0.0,
+                    0.0,
+                    1.0
+                ]
+            ],
+            "B": [
+                [
+                    0.7,
+                    0.3,
+                    0.1
+                ],
+                [
+                    0.2,
+                    0.4,
+                    0.3
+                ],
+                [
+                    0.1,
+                    0.3,
+                    0.6
+                ]
+            ],
+            "D": [
+                0.5,
+                0.3,
+                0.2
+            ],
+            "C": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        "matrix_provenance": {
+            "A": {
+                "source": "InitialParameterization",
+                "shape": [
+                    3,
+                    3
+                ],
+                "derived": False
+            },
+            "B": {
+                "source": "InitialParameterization",
+                "shape": [
+                    3,
+                    3,
+                    1
+                ],
+                "derived": False,
+                "source_order": "next_state_previous_state",
+                "canonical_order": "next_state_previous_state_action"
+            },
+            "D": {
+                "source": "InitialParameterization",
+                "shape": [
+                    3
+                ],
+                "derived": False
+            },
+            "C": {
+                "source": "passive_model_adapter",
+                "shape": [
+                    3
+                ],
+                "derived": True,
+                "reason": "zero preferences for passive HMM/Markov model"
+            }
+        },
+        "state_factors": [
+            {
+                "name": "s",
+                "size": 3,
+                "dimensions": [
+                    3,
+                    1
+                ],
+                "type": "float",
+                "comment": "Current state distribution",
+                "index": 1
+            },
+            {
+                "name": "s_prime",
+                "size": 3,
+                "dimensions": [
+                    3,
+                    1
+                ],
+                "type": "float",
+                "comment": "Next state distribution",
+                "index": 2
+            }
+        ],
+        "observation_modalities": [
+            {
+                "name": "o",
+                "size": 3,
+                "dimensions": [
+                    3,
+                    1
+                ],
+                "type": "float",
+                "comment": "Current observation",
+                "index": 1
+            }
+        ],
+        "control_factors": [],
+        "adapter_notes": [
+            "passive_model_zero_preferences"
+        ]
+    },
+    "matrix_provenance": {
+        "A": {
+            "source": "InitialParameterization",
+            "shape": [
+                3,
+                3
+            ],
+            "derived": False
+        },
+        "B": {
+            "source": "InitialParameterization",
+            "shape": [
+                3,
+                3,
+                1
+            ],
+            "derived": False,
+            "source_order": "next_state_previous_state",
+            "canonical_order": "next_state_previous_state_action"
+        },
+        "D": {
+            "source": "InitialParameterization",
+            "shape": [
+                3
+            ],
+            "derived": False
+        },
+        "C": {
+            "source": "passive_model_adapter",
+            "shape": [
+                3
+            ],
+            "derived": True,
+            "reason": "zero preferences for passive HMM/Markov model"
+        }
+    },
+    "canonical_pomdp_schema": "canonical_pomdp_v1",
     "variables": [
         {
             "name": "D",
@@ -258,7 +480,7 @@ def main() -> int:
     if D_data is not None: gnn_spec["initialparameterization"]["D"] = D_data
     if E_data is not None: gnn_spec["initialparameterization"]["E"] = E_data
     gnn_spec.setdefault("model_parameters", {})
-    gnn_spec["model_parameters"].setdefault("num_timesteps", 15)
+    gnn_spec["model_parameters"].setdefault("num_timesteps", 40)
 
     output_dir = Path(os.environ.get("PYMDP_OUTPUT_DIR", "output/pymdp_simulations/Simple Markov Chain"))
     output_dir.mkdir(parents=True, exist_ok=True)

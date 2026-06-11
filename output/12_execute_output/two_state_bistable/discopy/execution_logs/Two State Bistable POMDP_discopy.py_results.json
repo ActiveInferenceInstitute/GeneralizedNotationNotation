@@ -5,8 +5,8 @@
   "script_path": "output/11_render_output/two_state_bistable/discopy/Two State Bistable POMDP_discopy.py",
   "success": true,
   "return_code": 0,
-  "execution_time": 0.237351,
-  "timestamp": "2026-04-10T10:26:13.545941",
+  "execution_time": 0.245023,
+  "timestamp": "2026-05-22T06:19:40.718165",
   "simulation_data": {
     "traces": [],
     "free_energy": [],
@@ -48,12 +48,18 @@
       "num_actions": 2
     }
   },
+  "execution_benchmark_repeats": 1,
   "execution_metadata": {
     "executor": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python",
     "stdout_length": 1566,
     "stderr_length": 0,
     "output_directory": "output/12_execute_output/two_state_bistable/discopy"
   },
+  "execution_time_mean": 0.245023,
+  "execution_time_std": 0.0,
+  "execution_time_samples": [
+    0.245023
+  ],
   "collected_outputs": {
     "visualizations": [],
     "simulation_data": [

@@ -94,9 +94,11 @@ with performance_tracker.track("operation_name"):
 
 This module registers tools with the GNN MCP server (see `mcp.py`):
 
-- `get_utility_info`
+- `get_environment_info`
+- `get_file_info`
+- `get_logging_info`
+- `get_system_info`
 - `validate_dependencies`
-- `get_pipeline_template_info`
 
 ## References
 

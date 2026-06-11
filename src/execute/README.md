@@ -14,7 +14,7 @@ This module is responsible for running GNN models that have been rendered into f
 | **PyTorch** | Python | `pytorch/` | `*_pytorch.py` | ✅ Full support |
 | **NumPyro** | Python | `numpyro/` | `*_numpyro.py` | ✅ Full support |
 
-JAX, NumPyro, PyTorch, and DisCoPy are **core** dependencies (`uv sync`). If the environment is incomplete, their scripts are **skipped** (not failed). Julia frameworks require Julia installed.
+JAX, NumPyro, PyTorch, and DisCoPy are **core** dependencies (`uv sync`). If the environment is incomplete, their scripts report an explicit skipped status. Requested Julia frameworks require Julia plus their package set; in strict requested-framework runs, missing packages make Step 12 fail.
 
 ## Module Structure
 
@@ -24,13 +24,10 @@ src/execute/
 ├── executor.py              # GNNExecutor class (framework dispatch)
 ├── processor.py             # Main processor (Step 12 entry point)
 ├── validator.py             # Output validation
-├── recovery.py              # Recovery execution strategies
 ├── data_extractors.py       # Result data extraction
 ├── julia_setup.py           # Julia environment setup
-├── install_dependencies.py  # Dependency management
-├── test_execution.py        # Execution tests
 ├── pymdp/                   # PyMDP execution
-│   └── simple_simulation.py # PyMDP simulation runner
+│   └── simulation.py        # PyMDP simulation runner
 ├── rxinfer/                 # RxInfer.jl execution
 ├── activeinference_jl/      # ActiveInference.jl execution
 ├── jax/                     # JAX execution
@@ -47,8 +44,11 @@ graph TD
     Step12 --> Discovery[Discover Rendered Scripts]
     Discovery --> List[Script List]
     
-    List --> Loop{For Each Script}
-    Loop --> Detect[Detect Framework]
+    List --> Dispatch{Execution Mode}
+    Dispatch --> Local[Local Process Workers]
+    Dispatch --> Distributed[Ray or Dask Dispatcher]
+    Local --> Detect[Detect Framework]
+    Distributed --> Detect
     Detect --> Setup[Environment Setup]
     Setup --> Run[Subprocess Execution]
     Run --> Capture[Capture Output]
@@ -65,14 +65,15 @@ graph TD
 
 ## Core Components
 
-### `executor.py` — `GNNExecutor`
+### `executor.py` — `GNNExecutor` and framework dispatch
 
-Main executor class providing framework dispatch:
+Main executor class plus a small `ExecutorFrameworkSpec` registry for framework-wide dispatch:
 
 - `execute_gnn_model(model_path, execution_type, options)` — Execute a rendered script
 - `run_simulation(simulation_config)` — Run a simulation from config
 - `generate_execution_report(output_file)` — Generate execution summary
 - `_execute_pymdp_script()`, `_execute_rxinfer_config()`, `_execute_discopy_diagram()`, `_execute_jax_script()` — Framework-specific execution methods
+- `execute_rendered_simulators(...)` — Iterates the registry, writes `summaries/execution_summary.json`, and renders the markdown execution report
 
 ### `processor.py` — Step 12 Entry Point
 
@@ -80,38 +81,36 @@ Orchestrates multi-framework execution:
 
 1. Discovers all rendered scripts in `output/11_render_output/`
 2. Detects framework by file extension and naming pattern
-3. Executes each script in appropriate runtime environment
+3. Executes each script in the appropriate runtime environment, serially by default or with bounded script-level workers
 4. Aggregates results into `output/12_execute_output/summaries/`
 
-### `pymdp/simple_simulation.py`
+`--execution-workers N` parallelizes across rendered scripts, for example separate scaling-study `(N,T)` runs. It does not split the timesteps inside one rendered PyMDP/JAX script. `--distributed --backend ray|dask` uses the distributed dispatcher; otherwise worker counts above `1` use local processes.
 
-PyMDP simulation runner with support for:
+### `pymdp/simulation.py`
+
+PyMDP simulation runner with:
 
 - 2D and 3D B matrices (passive models and action-conditioned)
 - Column normalization for stochastic matrices
-- Standardized `simulation_results.json` output
+- Strict `pymdp_simulation_v1` `simulation_results.json` output
+
+### Julia framework scripts
+
+RxInfer.jl and ActiveInference.jl generated scripts write current JSON schemas:
+
+- `rxinfer_simulation_v1`
+- `activeinference_jl_simulation_v1`
+
+Both schemas include observations by modality, hidden states by factor, actions by control factor, beliefs by factor, expected free energy, policy posterior, validation, matrix provenance, and runtime metadata.
 
 ### `julia_setup.py`
 
-Julia environment management for RxInfer.jl and ActiveInference.jl:
+Julia environment management helpers for RxInfer.jl and ActiveInference.jl.
 
-- Package installation and version management
-- Environment activation
-- Runtime error handling
+## Current Cross-Framework Gate
 
-## Current Performance (8 Discrete Models × 5 Frameworks)
-
-```
-Total: 40 | Success: 40 | Failed: 0
-
-  actinf_pomdp_agent     (5/5): ✅PyMDP ✅JAX ✅DisCoPy ✅RxInfer ✅ActInf.jl
-  deep_planning_horizon  (5/5): ✅PyMDP ✅JAX ✅DisCoPy ✅RxInfer ✅ActInf.jl
-  hmm_baseline           (5/5): ✅PyMDP ✅JAX ✅DisCoPy ✅RxInfer ✅ActInf.jl
-  markov_chain           (5/5): ✅PyMDP ✅JAX ✅DisCoPy ✅RxInfer ✅ActInf.jl
-  multi_armed_bandit     (5/5): ✅PyMDP ✅JAX ✅DisCoPy ✅RxInfer ✅ActInf.jl
-  simple_mdp             (5/5): ✅PyMDP ✅JAX ✅DisCoPy ✅RxInfer ✅ActInf.jl
-  tmaze_epistemic        (5/5): ✅PyMDP ✅JAX ✅DisCoPy ✅RxInfer ✅ActInf.jl
-  two_state_bistable     (5/5): ✅PyMDP ✅JAX ✅DisCoPy ✅RxInfer ✅ActInf.jl
+```bash
+uv run --extra dev python -m pytest src/tests/pipeline/test_pomdp_gridworld_cross_framework.py -q --tb=short
 ```
 
 ## Usage
@@ -124,6 +123,9 @@ python src/main.py
 
 # Run only render + execute steps  
 python src/main.py --only-steps "11,12"
+
+# Execute rendered scripts with two local workers
+python src/main.py --only-steps "11,12" --execution-workers 2
 ```
 
 ### Standalone

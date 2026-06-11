@@ -3,7 +3,7 @@
 Test Unit Overall Tests
 
 Real unit tests for core GNN utilities and helper functions.
-No mocks - tests real implementations.
+Tests real implementations.
 """
 
 import sys
@@ -11,7 +11,6 @@ from pathlib import Path
 
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
-
 
 
 class TestPathUtilities:
@@ -52,23 +51,29 @@ class TestModuleStructure:
         """Test that gnn module exports expected functions."""
         import gnn
 
-        assert hasattr(gnn, 'parse_gnn_file'), "gnn should export parse_gnn_file"
-        assert hasattr(gnn, 'validate_gnn_structure'), "gnn should export validate_gnn_structure"
-        assert hasattr(gnn, '__version__'), "gnn should have __version__"
+        assert hasattr(gnn, "parse_gnn_file"), "gnn should export parse_gnn_file"
+        assert hasattr(gnn, "validate_gnn_structure"), (
+            "gnn should export validate_gnn_structure"
+        )
+        assert hasattr(gnn, "__version__"), "gnn should have __version__"
 
     def test_export_module_exports(self) -> None:
         """Test that export module exports expected functions."""
         import export
 
-        assert hasattr(export, 'get_supported_formats'), "export should export get_supported_formats"
-        assert hasattr(export, '__version__'), "export should have __version__"
+        assert hasattr(export, "get_supported_formats"), (
+            "export should export get_supported_formats"
+        )
+        assert hasattr(export, "__version__"), "export should have __version__"
 
     def test_render_module_exports(self) -> None:
         """Test that render module exports expected functions."""
         import render
 
-        assert hasattr(render, 'process_render'), "render should export process_render"
-        assert hasattr(render, 'get_available_renderers'), "render should export get_available_renderers"
+        assert hasattr(render, "process_render"), "render should export process_render"
+        assert hasattr(render, "get_available_renderers"), (
+            "render should export get_available_renderers"
+        )
 
 
 class TestFeatureFlags:
@@ -78,7 +83,7 @@ class TestFeatureFlags:
         """Test GNN module has FEATURES dict."""
         import gnn
 
-        assert hasattr(gnn, 'FEATURES'), "gnn should have FEATURES"
+        assert hasattr(gnn, "FEATURES"), "gnn should have FEATURES"
         assert isinstance(gnn.FEATURES, dict), "FEATURES should be a dict"
         assert len(gnn.FEATURES) > 0, "FEATURES should not be empty"
 
@@ -86,16 +91,17 @@ class TestFeatureFlags:
         """Test render module has FEATURES dict."""
         import render
 
-        assert hasattr(render, 'FEATURES'), "render should have FEATURES"
+        assert hasattr(render, "FEATURES"), "render should have FEATURES"
         assert isinstance(render.FEATURES, dict), "FEATURES should be a dict"
 
     def test_src_package_version(self) -> None:
-        """Test src package version matches expected format."""
-        import src
+        """Test installed package version matches expected format."""
+        from importlib.metadata import version
 
-        assert hasattr(src, '__version__'), "src should have __version__"
-        version = src.__version__
+        package_version = version("generalized-notation-notation")
 
         # Version should be in semver-like format
-        parts = version.split('.')
-        assert len(parts) >= 2, f"Version '{version}' should have at least major.minor"
+        parts = package_version.split(".")
+        assert len(parts) >= 2, (
+            f"Version '{package_version}' should have at least major.minor"
+        )

@@ -1,12 +1,13 @@
 # IDENTIFY_COMPONENTS
 
-You've already covered the key concepts:
+Based on the provided documentation, here's a systematic breakdown of the key concepts:
 
 1. **State Variables (Hidden States)**:
    - Variable names and dimensions
    - What each state represents conceptually
    - State space structure (discrete/continuous, finite/infinite)
-
+   - What each state represents in terms of observation modalities or measurement interpretations
+   - Noise models or uncertainty characterization
 2. **Observation Variables**:
    - Observation modalities and their meanings
    - Sensor/measurement interpretations
@@ -27,7 +28,6 @@ You've already covered the key concepts:
    - Precision parameters (γ, α, etc.)
    - Learning rates and adaptation parameters
    - Fixed vs. learnable parameters
-
 6. **Temporal Structure**:
    - Time horizons and temporal dependencies
    - Dynamic vs. static components

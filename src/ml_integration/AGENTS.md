@@ -10,9 +10,9 @@
 
 **Status**: ✅ Production Ready
 
-**Version**: 1.0.0
+**Version**: 1.6.0
 
-**Last Updated**: 2026-01-21
+**Last Updated**: 2026-04-16
 
 ---
 
@@ -266,12 +266,15 @@ GNN Models → ML Framework Selection → Dataset Preparation → Model Training
 ## Testing
 
 ### Test Files
-- `src/tests/test_ml_integration_overall.py` - Module-level tests
+- `src/tests/ml_integration/test_ml_integration_overall.py` - Module-level tests
 
 ### Test Coverage
-- **Current**: 72%
-- **Target**: 85%+
+Measure on demand:
 
+```bash
+uv run --extra dev python -m pytest src/tests/test_ml_integration*.py \
+    --cov=src/ml_integration --cov-report=term-missing
+```
 ### Key Test Scenarios
 1. Framework detection and selection
 2. Model generation and training across frameworks

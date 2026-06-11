@@ -207,7 +207,7 @@ response = refiner(question="Explain photosynthesis")
 **Key Features**:
 - Multiple attempts with different temperatures
 - Reward-based selection
-- Replaces legacy `dspy.Assert` for some use cases
+- Supersedes older `dspy.Assert` patterns for some use cases
 - Configurable number of attempts
 
 ---

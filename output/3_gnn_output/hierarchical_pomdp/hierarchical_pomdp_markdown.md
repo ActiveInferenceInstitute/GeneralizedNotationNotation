@@ -59,6 +59,12 @@ A2 = [[0.9, 0.1, 0.0, 0.0], [0.1, 0.9, 0.0, 0.0], [0.0, 0.0, 0.9, 0.1], [0.0, 0.
 B2 = [[[0.9, 0.1], [0.1, 0.9]]]
 C2 = [[0.1, 1.0]]
 D2 = [[0.5, 0.5]]
+num_hidden_states_l1 = 4
+num_obs_l1 = 4
+num_actions_l1 = 3
+num_context_states_l2 = 2
+num_timesteps = 20
+timescale_ratio = 5
 
 ## Time
 Dynamic
@@ -81,6 +87,6 @@ o2 = HigherLevelObservation
 G2 = HigherLevelExpectedFreeEnergy
 
 ## Footer
-Generated: 2026-04-10T10:24:32.090891
+Generated: 2026-05-25T09:59:34.818775
 
 ## Signature

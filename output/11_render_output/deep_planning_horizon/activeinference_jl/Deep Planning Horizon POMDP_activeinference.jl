@@ -1,392 +1,264 @@
 #!/usr/bin/env julia
+# ActiveInference.jl discrete POMDP simulation
+# Generated from GNN Model: Deep Planning Horizon POMDP
 
-"""
-ActiveInference.jl Script for GNN Model: Deep Planning Horizon POMDP
-
-Generated from GNN specification.
-An Active Inference POMDP with deep (T=5) planning horizon:
-- Evaluates policies over 5 future timesteps before acting
-- Uses rollout Expected Free Energy accumulation
-- 4 hidden states, 4 observations, 4 actions
-- Each action policy is a sequence of T actions: π = [a_1, a_2, ..., a_T]
-- Enables sophisticated multi-step reasoning and delayed reward attribution
-
-Model Dimensions:
-- States: 4
-- Observations: 4  
-- Actions: 4
-"""
-
-# Ensure required packages are installed
 using Pkg
-
-# Install missing packages if needed
-println("📦 Ensuring required packages are installed...")
-try
-    # Try to precompile key packages - will add if missing
-    Pkg.add(["JSON", "ActiveInference", "Distributions"])
-    println("✅ Package installation complete")
-catch e
-    println("⚠️  Some packages may need manual installation: $e")
-end
-
-# Import packages
-using Dates
-using Logging
-using DelimitedFiles
-using Random
-using Statistics
-using LinearAlgebra
 using ActiveInference
 using Distributions
-using JSON
+using LinearAlgebra
+using Random
 using StatsBase
+using JSON
+using Base64
+using Dates
 
-# Global configuration
-const SCRIPT_VERSION = "1.0.0"
+const SCHEMA_VERSION = "activeinference_jl_simulation_v1"
 const MODEL_NAME = "Deep Planning Horizon POMDP"
-const N_STATES = 4
-const N_OBSERVATIONS = 4
-const N_CONTROLS = 4
-# POLICY_LEN is defined below after E-vector setup
+const NUM_STATES = 4
+const NUM_OBSERVATIONS = 4
+const NUM_ACTIONS = 4
+const TIME_STEPS = 30
+const RANDOM_SEED = 42
+const ACTION_PRECISION = 4.0
+const B_TENSOR_ORDER = "next_state_previous_state_action"
+const GNN_SPEC_JSON_B64 = "eyJjYW5vbmljYWxfcG9tZHBfc2NoZW1hIjogImNhbm9uaWNhbF9wb21kcF92MSIsICJjb25uZWN0aW9ucyI6IFt7InJlbGF0aW9uIjogIj4iLCAic291cmNlIjogIkQiLCAidGFyZ2V0IjogInMifSwgeyJyZWxhdGlvbiI6ICItIiwgInNvdXJjZSI6ICJzIiwgInRhcmdldCI6ICJBIn0sIHsicmVsYXRpb24iOiAiLSIsICJzb3VyY2UiOiAiQSIsICJ0YXJnZXQiOiAibyJ9LCB7InJlbGF0aW9uIjogIi0iLCAic291cmNlIjogInMiLCAidGFyZ2V0IjogIkYifSwgeyJyZWxhdGlvbiI6ICItIiwgInNvdXJjZSI6ICJvIiwgInRhcmdldCI6ICJGIn0sIHsicmVsYXRpb24iOiAiPiIsICJzb3VyY2UiOiAiRSIsICJ0YXJnZXQiOiAiXHUwM2MwIn0sIHsicmVsYXRpb24iOiAiPiIsICJzb3VyY2UiOiAiRyIsICJ0YXJnZXQiOiAiXHUwM2MwIn0sIHsicmVsYXRpb24iOiAiPiIsICJzb3VyY2UiOiAicyIsICJ0YXJnZXQiOiAic190YXUxIn0sIHsicmVsYXRpb24iOiAiPiIsICJzb3VyY2UiOiAiQiIsICJ0YXJnZXQiOiAic190YXUxIn0sIHsicmVsYXRpb24iOiAiPiIsICJzb3VyY2UiOiAic190YXUxIiwgInRhcmdldCI6ICJzX3RhdTIifSwgeyJyZWxhdGlvbiI6ICI+IiwgInNvdXJjZSI6ICJCIiwgInRhcmdldCI6ICJzX3RhdTIifSwgeyJyZWxhdGlvbiI6ICI+IiwgInNvdXJjZSI6ICJzX3RhdTIiLCAidGFyZ2V0IjogInNfdGF1MyJ9LCB7InJlbGF0aW9uIjogIj4iLCAic291cmNlIjogIkIiLCAidGFyZ2V0IjogInNfdGF1MyJ9LCB7InJlbGF0aW9uIjogIj4iLCAic291cmNlIjogInNfdGF1MyIsICJ0YXJnZXQiOiAic190YXU0In0sIHsicmVsYXRpb24iOiAiPiIsICJzb3VyY2UiOiAiQiIsICJ0YXJnZXQiOiAic190YXU0In0sIHsicmVsYXRpb24iOiAiPiIsICJzb3VyY2UiOiAic190YXU0IiwgInRhcmdldCI6ICJzX3RhdTUifSwgeyJyZWxhdGlvbiI6ICItIiwgInNvdXJjZSI6ICJBIiwgInRhcmdldCI6ICJzX3RhdTEifSwgeyJyZWxhdGlvbiI6ICItIiwgInNvdXJjZSI6ICJBIiwgInRhcmdldCI6ICJzX3RhdTIifSwgeyJyZWxhdGlvbiI6ICItIiwgInNvdXJjZSI6ICJBIiwgInRhcmdldCI6ICJzX3RhdTMifSwgeyJyZWxhdGlvbiI6ICItIiwgInNvdXJjZSI6ICJBIiwgInRhcmdldCI6ICJzX3RhdTQifSwgeyJyZWxhdGlvbiI6ICItIiwgInNvdXJjZSI6ICJBIiwgInRhcmdldCI6ICJzX3RhdTUifSwgeyJyZWxhdGlvbiI6ICI+IiwgInNvdXJjZSI6ICJDIiwgInRhcmdldCI6ICJHX3RhdTEifSwgeyJyZWxhdGlvbiI6ICI+IiwgInNvdXJjZSI6ICJDIiwgInRhcmdldCI6ICJHX3RhdTIifSwgeyJyZWxhdGlvbiI6ICI+IiwgInNvdXJjZSI6ICJDIiwgInRhcmdldCI6ICJHX3RhdTMifSwgeyJyZWxhdGlvbiI6ICI+IiwgInNvdXJjZSI6ICJDIiwgInRhcmdldCI6ICJHX3RhdTQifSwgeyJyZWxhdGlvbiI6ICI+IiwgInNvdXJjZSI6ICJDIiwgInRhcmdldCI6ICJHX3RhdTUifSwgeyJyZWxhdGlvbiI6ICI+IiwgInNvdXJjZSI6ICJHX3RhdTEiLCAidGFyZ2V0IjogIkcifSwgeyJyZWxhdGlvbiI6ICI+IiwgInNvdXJjZSI6ICJHX3RhdTIiLCAidGFyZ2V0IjogIkcifSwgeyJyZWxhdGlvbiI6ICI+IiwgInNvdXJjZSI6ICJHX3RhdTMiLCAidGFyZ2V0IjogIkcifSwgeyJyZWxhdGlvbiI6ICI+IiwgInNvdXJjZSI6ICJHX3RhdTQiLCAidGFyZ2V0IjogIkcifSwgeyJyZWxhdGlvbiI6ICI+IiwgInNvdXJjZSI6ICJHX3RhdTUiLCAidGFyZ2V0IjogIkcifSwgeyJyZWxhdGlvbiI6ICI+IiwgInNvdXJjZSI6ICJHIiwgInRhcmdldCI6ICJcdTAzYzAifSwgeyJyZWxhdGlvbiI6ICI+IiwgInNvdXJjZSI6ICJcdTAzYzAiLCAidGFyZ2V0IjogInUifV0sICJkZXNjcmlwdGlvbiI6ICJBbiBBY3RpdmUgSW5mZXJlbmNlIFBPTURQIHdpdGggZGVlcCAoVD01KSBwbGFubmluZyBob3Jpem9uOlxuLSBFdmFsdWF0ZXMgcG9saWNpZXMgb3ZlciA1IGZ1dHVyZSB0aW1lc3RlcHMgYmVmb3JlIGFjdGluZ1xuLSBVc2VzIHJvbGxvdXQgRXhwZWN0ZWQgRnJlZSBFbmVyZ3kgYWNjdW11bGF0aW9uXG4tIDQgaGlkZGVuIHN0YXRlcywgNCBvYnNlcnZhdGlvbnMsIDQgYWN0aW9uc1xuLSBFYWNoIGFjdGlvbiBwb2xpY3kgaXMgYSBzZXF1ZW5jZSBvZiBUIGFjdGlvbnM6IFx1MDNjMCA9IFthXzEsIGFfMiwgLi4uLCBhX1RdXG4tIEVuYWJsZXMgc29waGlzdGljYXRlZCBtdWx0aS1zdGVwIHJlYXNvbmluZyBhbmQgZGVsYXllZCByZXdhcmQgYXR0cmlidXRpb24iLCAiaW5pdGlhbF9wYXJhbWV0ZXJpemF0aW9uIjogeyJBIjogW1swLjksIDAuMDUsIDAuMDI1LCAwLjAyNV0sIFswLjA1LCAwLjksIDAuMDI1LCAwLjAyNV0sIFswLjAyNSwgMC4wMjUsIDAuOSwgMC4wNV0sIFswLjAyNSwgMC4wMjUsIDAuMDUsIDAuOV1dLCAiQiI6IFtbWzAuOSwgMC45LCAwLjgsIDAuNzAwMDAwMDAwMDAwMDAwMV0sIFswLjAsIDAuMSwgMC4wLCAwLjEwMDAwMDAwMDAwMDAwMDAyXSwgWzAuMCwgMC4wLCAwLjEsIDAuMDk5OTk5OTk5OTk5OTk5OTldLCBbMC4xLCAwLjAsIDAuMSwgMC4xXV0sIFtbMC4xLCAwLjAsIDAuMSwgMC4xMDAwMDAwMDAwMDAwMDAwMl0sIFswLjksIDAuOSwgMC44LCAwLjcwMDAwMDAwMDAwMDAwMDFdLCBbMC4wLCAwLjEsIDAuMCwgMC4wOTk5OTk5OTk5OTk5OTk5OV0sIFswLjAsIDAuMCwgMC4xLCAwLjFdXSwgW1swLjAsIDAuMCwgMC4xLCAwLjEwMDAwMDAwMDAwMDAwMDAyXSwgWzAuMSwgMC4wLCAwLjEsIDAuMTAwMDAwMDAwMDAwMDAwMDJdLCBbMC45LCAwLjksIDAuOCwgMC43XSwgWzAuMCwgMC4xLCAwLjAsIDAuMV1dLCBbWzAuMCwgMC4xLCAwLjAsIDAuMTAwMDAwMDAwMDAwMDAwMDJdLCBbMC4wLCAwLjAsIDAuMSwgMC4xMDAwMDAwMDAwMDAwMDAwMl0sIFswLjEsIDAuMCwgMC4xLCAwLjA5OTk5OTk5OTk5OTk5OTk5XSwgWzAuOSwgMC45LCAwLjgsIDAuN11dXSwgIkMiOiBbLTEuMCwgLTAuNSwgLTAuNSwgMi4wXSwgIkQiOiBbMC4yNSwgMC4yNSwgMC4yNSwgMC4yNV19LCAiaW5pdGlhbHBhcmFtZXRlcml6YXRpb24iOiB7IkEiOiBbWzAuOSwgMC4wNSwgMC4wMjUsIDAuMDI1XSwgWzAuMDUsIDAuOSwgMC4wMjUsIDAuMDI1XSwgWzAuMDI1LCAwLjAyNSwgMC45LCAwLjA1XSwgWzAuMDI1LCAwLjAyNSwgMC4wNSwgMC45XV0sICJCIjogW1tbMC45LCAwLjksIDAuOCwgMC43MDAwMDAwMDAwMDAwMDAxXSwgWzAuMCwgMC4xLCAwLjAsIDAuMTAwMDAwMDAwMDAwMDAwMDJdLCBbMC4wLCAwLjAsIDAuMSwgMC4wOTk5OTk5OTk5OTk5OTk5OV0sIFswLjEsIDAuMCwgMC4xLCAwLjFdXSwgW1swLjEsIDAuMCwgMC4xLCAwLjEwMDAwMDAwMDAwMDAwMDAyXSwgWzAuOSwgMC45LCAwLjgsIDAuNzAwMDAwMDAwMDAwMDAwMV0sIFswLjAsIDAuMSwgMC4wLCAwLjA5OTk5OTk5OTk5OTk5OTk5XSwgWzAuMCwgMC4wLCAwLjEsIDAuMV1dLCBbWzAuMCwgMC4wLCAwLjEsIDAuMTAwMDAwMDAwMDAwMDAwMDJdLCBbMC4xLCAwLjAsIDAuMSwgMC4xMDAwMDAwMDAwMDAwMDAwMl0sIFswLjksIDAuOSwgMC44LCAwLjddLCBbMC4wLCAwLjEsIDAuMCwgMC4xXV0sIFtbMC4wLCAwLjEsIDAuMCwgMC4xMDAwMDAwMDAwMDAwMDAwMl0sIFswLjAsIDAuMCwgMC4xLCAwLjEwMDAwMDAwMDAwMDAwMDAyXSwgWzAuMSwgMC4wLCAwLjEsIDAuMDk5OTk5OTk5OTk5OTk5OTldLCBbMC45LCAwLjksIDAuOCwgMC43XV1dLCAiQyI6IFstMS4wLCAtMC41LCAtMC41LCAyLjBdLCAiRCI6IFswLjI1LCAwLjI1LCAwLjI1LCAwLjI1XX0sICJtYXRyaXhfcHJvdmVuYW5jZSI6IHsiQSI6IHsiZGVyaXZlZCI6IGZhbHNlLCAic2hhcGUiOiBbNCwgNF0sICJzb3VyY2UiOiAiSW5pdGlhbFBhcmFtZXRlcml6YXRpb24ifSwgIkIiOiB7ImNhbm9uaWNhbF9vcmRlciI6ICJuZXh0X3N0YXRlX3ByZXZpb3VzX3N0YXRlX2FjdGlvbiIsICJkZXJpdmVkIjogZmFsc2UsICJzaGFwZSI6IFs0LCA0LCA0XSwgInNvdXJjZSI6ICJJbml0aWFsUGFyYW1ldGVyaXphdGlvbiIsICJzb3VyY2Vfb3JkZXIiOiAibmV4dF9zdGF0ZV9wcmV2aW91c19zdGF0ZV9hY3Rpb24ifSwgIkMiOiB7ImRlcml2ZWQiOiBmYWxzZSwgInNoYXBlIjogWzRdLCAic291cmNlIjogIkluaXRpYWxQYXJhbWV0ZXJpemF0aW9uIn0sICJEIjogeyJkZXJpdmVkIjogZmFsc2UsICJzaGFwZSI6IFs0XSwgInNvdXJjZSI6ICJJbml0aWFsUGFyYW1ldGVyaXphdGlvbiJ9fSwgIm1vZGVsX25hbWUiOiAiRGVlcCBQbGFubmluZyBIb3Jpem9uIFBPTURQIiwgIm1vZGVsX3BhcmFtZXRlcnMiOiB7ImJfdGVuc29yX29yZGVyIjogIm5leHRfc3RhdGVfcHJldmlvdXNfc3RhdGVfYWN0aW9uIiwgImNvbnRyb2xfZmFjdG9ycyI6IFt7ImNvbW1lbnQiOiAiUG9saWN5IGRpc3RyaWJ1dGlvbiAob3ZlciBULXN0ZXAgYWN0aW9uIHNlcXVlbmNlcykiLCAiZGltZW5zaW9ucyI6IFs2NF0sICJpbmRleCI6IDEsICJuYW1lIjogIlx1MDNjMCIsICJzaXplIjogNjQsICJ0eXBlIjogImZsb2F0In0sIHsiY29tbWVudCI6ICJTZWxlY3RlZCBmaXJzdCBhY3Rpb24gZnJvbSBiZXN0IHBvbGljeSIsICJkaW1lbnNpb25zIjogWzFdLCAiaW5kZXgiOiAyLCAibmFtZSI6ICJ1IiwgInNpemUiOiAxLCAidHlwZSI6ICJmbG9hdCJ9XSwgIm51bV9hY3Rpb25zIjogNCwgIm51bV9oaWRkZW5fc3RhdGVzIjogNCwgIm51bV9tb2RhbGl0aWVzIjogMSwgIm51bV9vYnMiOiA0LCAibnVtX3BvbGljaWVzIjogNjQsICJudW1fc3RhdGVfZmFjdG9ycyI6IDYsICJudW1fdGltZXN0ZXBzIjogMzAsICJvYnNlcnZhdGlvbl9tb2RhbGl0aWVzIjogW3siY29tbWVudCI6ICJDdXJyZW50IG9ic2VydmF0aW9uIiwgImRpbWVuc2lvbnMiOiBbNCwgMV0sICJpbmRleCI6IDEsICJuYW1lIjogIm8iLCAic2l6ZSI6IDQsICJ0eXBlIjogImZsb2F0In1dLCAicGFzc2l2ZV9tb2RlbCI6IGZhbHNlLCAicGxhbm5pbmdfaG9yaXpvbiI6IDUsICJzaW11bGF0aW9uX3BhcmFtcyI6IHt9LCAic3RhdGVfZmFjdG9ycyI6IFt7ImNvbW1lbnQiOiAiQ3VycmVudCBoaWRkZW4gc3RhdGUgYmVsaWVmIiwgImRpbWVuc2lvbnMiOiBbNCwgMV0sICJpbmRleCI6IDEsICJuYW1lIjogInMiLCAic2l6ZSI6IDQsICJ0eXBlIjogImZsb2F0In0sIHsiY29tbWVudCI6ICJQcmVkaWN0ZWQgc3RhdGUgYXQgdGF1PTEiLCAiZGltZW5zaW9ucyI6IFs0LCAxXSwgImluZGV4IjogMiwgIm5hbWUiOiAic190YXUxIiwgInNpemUiOiA0LCAidHlwZSI6ICJmbG9hdCJ9LCB7ImNvbW1lbnQiOiAiUHJlZGljdGVkIHN0YXRlIGF0IHRhdT0yIiwgImRpbWVuc2lvbnMiOiBbNCwgMV0sICJpbmRleCI6IDMsICJuYW1lIjogInNfdGF1MiIsICJzaXplIjogNCwgInR5cGUiOiAiZmxvYXQifSwgeyJjb21tZW50IjogIlByZWRpY3RlZCBzdGF0ZSBhdCB0YXU9MyIsICJkaW1lbnNpb25zIjogWzQsIDFdLCAiaW5kZXgiOiA0LCAibmFtZSI6ICJzX3RhdTMiLCAic2l6ZSI6IDQsICJ0eXBlIjogImZsb2F0In0sIHsiY29tbWVudCI6ICJQcmVkaWN0ZWQgc3RhdGUgYXQgdGF1PTQiLCAiZGltZW5zaW9ucyI6IFs0LCAxXSwgImluZGV4IjogNSwgIm5hbWUiOiAic190YXU0IiwgInNpemUiOiA0LCAidHlwZSI6ICJmbG9hdCJ9LCB7ImNvbW1lbnQiOiAiUHJlZGljdGVkIHN0YXRlIGF0IHRhdT01IiwgImRpbWVuc2lvbnMiOiBbNCwgMV0sICJpbmRleCI6IDYsICJuYW1lIjogInNfdGF1NSIsICJzaXplIjogNCwgInR5cGUiOiAiZmxvYXQifV19LCAibmFtZSI6ICJEZWVwIFBsYW5uaW5nIEhvcml6b24gUE9NRFAiLCAib250b2xvZ3lfbWFwcGluZyI6IHsiQSI6ICJMaWtlbGlob29kTWF0cml4IiwgIkIiOiAiVHJhbnNpdGlvbk1hdHJpeCIsICJDIjogIkxvZ1ByZWZlcmVuY2VWZWN0b3IiLCAiRCI6ICJQcmlvck92ZXJIaWRkZW5TdGF0ZXMiLCAiRSI6ICJQb2xpY3lQcmlvciIsICJGIjogIlZhcmlhdGlvbmFsRnJlZUVuZXJneSIsICJHIjogIkN1bXVsYXRpdmVFeHBlY3RlZEZyZWVFbmVyZ3kiLCAibyI6ICJPYnNlcnZhdGlvbiIsICJzIjogIkhpZGRlblN0YXRlIiwgInQiOiAiVGltZSIsICJ1IjogIkFjdGlvbiIsICJcdTAzYzAiOiAiUG9saWN5U2VxdWVuY2VEaXN0cmlidXRpb24ifSwgInN0cnVjdHVyZWRfcG9tZHAiOiB7ImFkYXB0ZXJfbm90ZXMiOiBbXSwgImNhbm9uaWNhbF9iX29yZGVyIjogIm5leHRfc3RhdGVfcHJldmlvdXNfc3RhdGVfYWN0aW9uIiwgImNvbnRyb2xfZmFjdG9ycyI6IFt7ImNvbW1lbnQiOiAiUG9saWN5IGRpc3RyaWJ1dGlvbiAob3ZlciBULXN0ZXAgYWN0aW9uIHNlcXVlbmNlcykiLCAiZGltZW5zaW9ucyI6IFs2NF0sICJpbmRleCI6IDEsICJuYW1lIjogIlx1MDNjMCIsICJzaXplIjogNjQsICJ0eXBlIjogImZsb2F0In0sIHsiY29tbWVudCI6ICJTZWxlY3RlZCBmaXJzdCBhY3Rpb24gZnJvbSBiZXN0IHBvbGljeSIsICJkaW1lbnNpb25zIjogWzFdLCAiaW5kZXgiOiAyLCAibmFtZSI6ICJ1IiwgInNpemUiOiAxLCAidHlwZSI6ICJmbG9hdCJ9XSwgIm1hdHJpY2VzIjogeyJBIjogW1swLjksIDAuMDUsIDAuMDI1LCAwLjAyNV0sIFswLjA1LCAwLjksIDAuMDI1LCAwLjAyNV0sIFswLjAyNSwgMC4wMjUsIDAuOSwgMC4wNV0sIFswLjAyNSwgMC4wMjUsIDAuMDUsIDAuOV1dLCAiQiI6IFtbWzAuOSwgMC4xLCAwLjAsIDAuMF0sIFswLjAsIDAuOSwgMC4xLCAwLjBdLCBbMC4wLCAwLjAsIDAuOSwgMC4xXSwgWzAuMSwgMC4wLCAwLjAsIDAuOV1dLCBbWzAuOSwgMC4wLCAwLjAsIDAuMV0sIFswLjEsIDAuOSwgMC4wLCAwLjBdLCBbMC4wLCAwLjEsIDAuOSwgMC4wXSwgWzAuMCwgMC4wLCAwLjEsIDAuOV1dLCBbWzAuOCwgMC4xLCAwLjEsIDAuMF0sIFswLjAsIDAuOCwgMC4xLCAwLjFdLCBbMC4xLCAwLjAsIDAuOCwgMC4xXSwgWzAuMSwgMC4xLCAwLjAsIDAuOF1dLCBbWzAuNywgMC4xLCAwLjEsIDAuMV0sIFswLjEsIDAuNywgMC4xLCAwLjFdLCBbMC4xLCAwLjEsIDAuNywgMC4xXSwgWzAuMSwgMC4xLCAwLjEsIDAuN11dXSwgIkMiOiBbLTEuMCwgLTAuNSwgLTAuNSwgMi4wXSwgIkQiOiBbMC4yNSwgMC4yNSwgMC4yNSwgMC4yNV19LCAibWF0cml4X3Byb3ZlbmFuY2UiOiB7IkEiOiB7ImRlcml2ZWQiOiBmYWxzZSwgInNoYXBlIjogWzQsIDRdLCAic291cmNlIjogIkluaXRpYWxQYXJhbWV0ZXJpemF0aW9uIn0sICJCIjogeyJjYW5vbmljYWxfb3JkZXIiOiAibmV4dF9zdGF0ZV9wcmV2aW91c19zdGF0ZV9hY3Rpb24iLCAiZGVyaXZlZCI6IGZhbHNlLCAic2hhcGUiOiBbNCwgNCwgNF0sICJzb3VyY2UiOiAiSW5pdGlhbFBhcmFtZXRlcml6YXRpb24iLCAic291cmNlX29yZGVyIjogIm5leHRfc3RhdGVfcHJldmlvdXNfc3RhdGVfYWN0aW9uIn0sICJDIjogeyJkZXJpdmVkIjogZmFsc2UsICJzaGFwZSI6IFs0XSwgInNvdXJjZSI6ICJJbml0aWFsUGFyYW1ldGVyaXphdGlvbiJ9LCAiRCI6IHsiZGVyaXZlZCI6IGZhbHNlLCAic2hhcGUiOiBbNF0sICJzb3VyY2UiOiAiSW5pdGlhbFBhcmFtZXRlcml6YXRpb24ifX0sICJvYnNlcnZhdGlvbl9tb2RhbGl0aWVzIjogW3siY29tbWVudCI6ICJDdXJyZW50IG9ic2VydmF0aW9uIiwgImRpbWVuc2lvbnMiOiBbNCwgMV0sICJpbmRleCI6IDEsICJuYW1lIjogIm8iLCAic2l6ZSI6IDQsICJ0eXBlIjogImZsb2F0In1dLCAic3RhdGVfZmFjdG9ycyI6IFt7ImNvbW1lbnQiOiAiQ3VycmVudCBoaWRkZW4gc3RhdGUgYmVsaWVmIiwgImRpbWVuc2lvbnMiOiBbNCwgMV0sICJpbmRleCI6IDEsICJuYW1lIjogInMiLCAic2l6ZSI6IDQsICJ0eXBlIjogImZsb2F0In0sIHsiY29tbWVudCI6ICJQcmVkaWN0ZWQgc3RhdGUgYXQgdGF1PTEiLCAiZGltZW5zaW9ucyI6IFs0LCAxXSwgImluZGV4IjogMiwgIm5hbWUiOiAic190YXUxIiwgInNpemUiOiA0LCAidHlwZSI6ICJmbG9hdCJ9LCB7ImNvbW1lbnQiOiAiUHJlZGljdGVkIHN0YXRlIGF0IHRhdT0yIiwgImRpbWVuc2lvbnMiOiBbNCwgMV0sICJpbmRleCI6IDMsICJuYW1lIjogInNfdGF1MiIsICJzaXplIjogNCwgInR5cGUiOiAiZmxvYXQifSwgeyJjb21tZW50IjogIlByZWRpY3RlZCBzdGF0ZSBhdCB0YXU9MyIsICJkaW1lbnNpb25zIjogWzQsIDFdLCAiaW5kZXgiOiA0LCAibmFtZSI6ICJzX3RhdTMiLCAic2l6ZSI6IDQsICJ0eXBlIjogImZsb2F0In0sIHsiY29tbWVudCI6ICJQcmVkaWN0ZWQgc3RhdGUgYXQgdGF1PTQiLCAiZGltZW5zaW9ucyI6IFs0LCAxXSwgImluZGV4IjogNSwgIm5hbWUiOiAic190YXU0IiwgInNpemUiOiA0LCAidHlwZSI6ICJmbG9hdCJ9LCB7ImNvbW1lbnQiOiAiUHJlZGljdGVkIHN0YXRlIGF0IHRhdT01IiwgImRpbWVuc2lvbnMiOiBbNCwgMV0sICJpbmRleCI6IDYsICJuYW1lIjogInNfdGF1NSIsICJzaXplIjogNCwgInR5cGUiOiAiZmxvYXQifV19LCAidmFyaWFibGVzIjogW3siY29tbWVudCI6ICJQcmlvciBvdmVyIGluaXRpYWwgc3RhdGVzIiwgImRpbWVuc2lvbnMiOiBbNF0sICJuYW1lIjogIkQiLCAidHlwZSI6ICJmbG9hdCJ9LCB7ImNvbW1lbnQiOiAiQ3VycmVudCBoaWRkZW4gc3RhdGUgYmVsaWVmIiwgImRpbWVuc2lvbnMiOiBbNCwgMV0sICJuYW1lIjogInMiLCAidHlwZSI6ICJmbG9hdCJ9LCB7ImNvbW1lbnQiOiAiUHJlZGljdGVkIHN0YXRlIGF0IHRhdT0xIiwgImRpbWVuc2lvbnMiOiBbNCwgMV0sICJuYW1lIjogInNfdGF1MSIsICJ0eXBlIjogImZsb2F0In0sIHsiY29tbWVudCI6ICJQcmVkaWN0ZWQgc3RhdGUgYXQgdGF1PTIiLCAiZGltZW5zaW9ucyI6IFs0LCAxXSwgIm5hbWUiOiAic190YXUyIiwgInR5cGUiOiAiZmxvYXQifSwgeyJjb21tZW50IjogIlByZWRpY3RlZCBzdGF0ZSBhdCB0YXU9MyIsICJkaW1lbnNpb25zIjogWzQsIDFdLCAibmFtZSI6ICJzX3RhdTMiLCAidHlwZSI6ICJmbG9hdCJ9LCB7ImNvbW1lbnQiOiAiUHJlZGljdGVkIHN0YXRlIGF0IHRhdT00IiwgImRpbWVuc2lvbnMiOiBbNCwgMV0sICJuYW1lIjogInNfdGF1NCIsICJ0eXBlIjogImZsb2F0In0sIHsiY29tbWVudCI6ICJQcmVkaWN0ZWQgc3RhdGUgYXQgdGF1PTUiLCAiZGltZW5zaW9ucyI6IFs0LCAxXSwgIm5hbWUiOiAic190YXU1IiwgInR5cGUiOiAiZmxvYXQifSwgeyJjb21tZW50IjogIlZhcmlhdGlvbmFsIEZyZWUgRW5lcmd5IGZvciBjdXJyZW50IHN0YXRlIiwgImRpbWVuc2lvbnMiOiBbIlx1MDNjMCJdLCAibmFtZSI6ICJGIiwgInR5cGUiOiAiZmxvYXQifSwgeyJjb21tZW50IjogIlByZWZlcmVuY2VzIChwZXIgb2JzZXJ2YXRpb24pIiwgImRpbWVuc2lvbnMiOiBbNF0sICJuYW1lIjogIkMiLCAidHlwZSI6ICJmbG9hdCJ9LCB7ImNvbW1lbnQiOiAiQ3VycmVudCBvYnNlcnZhdGlvbiIsICJkaW1lbnNpb25zIjogWzQsIDFdLCAibmFtZSI6ICJvIiwgInR5cGUiOiAiZmxvYXQifSwgeyJjb21tZW50IjogIlRyYW5zaXRpb24gbWF0cml4ICg0IGFjdGlvbnMpIiwgImRpbWVuc2lvbnMiOiBbNCwgNCwgNF0sICJuYW1lIjogIkIiLCAidHlwZSI6ICJmbG9hdCJ9LCB7ImNvbW1lbnQiOiAiUG9saWN5IGRpc3RyaWJ1dGlvbiAob3ZlciBULXN0ZXAgYWN0aW9uIHNlcXVlbmNlcykiLCAiZGltZW5zaW9ucyI6IFs2NF0sICJuYW1lIjogIlx1MDNjMCIsICJ0eXBlIjogImZsb2F0In0sIHsiY29tbWVudCI6ICJTZWxlY3RlZCBmaXJzdCBhY3Rpb24gZnJvbSBiZXN0IHBvbGljeSIsICJkaW1lbnNpb25zIjogWzFdLCAibmFtZSI6ICJ1IiwgInR5cGUiOiAiZmxvYXQifSwgeyJjb21tZW50IjogIkRpc2NyZXRlIHRpbWUgc3RlcCAoYWN0aW9uIHRpbWVzdGVwKSIsICJkaW1lbnNpb25zIjogWzFdLCAibmFtZSI6ICJ0IiwgInR5cGUiOiAiZmxvYXQifV19"
+const GNN_SPEC = JSON.parse(String(base64decode(GNN_SPEC_JSON_B64)))
 
-println("="^70)
-println("ActiveInference.jl Script for GNN Model: $MODEL_NAME")
-println("="^70)
-println("Julia version: $(VERSION)")
-println("Date: $(now())")
-println("Model dimensions: States=$N_STATES, Observations=$N_OBSERVATIONS, Actions=$N_CONTROLS")
-println()
-
-# Setup output directory
-timestamp = Dates.format(now(), "yyyy-mm-dd_HH-MM-SS")
-output_dir = "activeinference_outputs_$timestamp"
-mkpath(output_dir)
-println("📁 Output directory: $output_dir")
-
-# Create model matrices from GNN specification
-println("🔧 Creating model matrices from GNN specification...")
-
-# A matrix (observation model)
-A_matrix = [0.9 0.05 0.025 0.025; 0.05 0.9 0.025 0.025; 0.025 0.025 0.9 0.05; 0.025 0.025 0.05 0.9]
-println("✅ A matrix created: $(size(A_matrix))")
-
-# B matrix (transition model) 
-B_matrix = cat([0.9 0.1 0.0 0.0; 0.0 0.9 0.1 0.0; 0.0 0.0 0.9 0.1; 0.1 0.0 0.0 0.9], [0.9 0.0 0.0 0.1; 0.1 0.9 0.0 0.0; 0.0 0.1 0.9 0.0; 0.0 0.0 0.1 0.9], [0.8 0.1 0.1 0.0; 0.0 0.8 0.1 0.1; 0.1 0.0 0.8 0.1; 0.1 0.1 0.0 0.8], [0.7 0.1 0.1 0.1; 0.1 0.7 0.1 0.1; 0.1 0.1 0.7 0.1; 0.1 0.1 0.1 0.7]; dims=3)
-println("✅ B matrix created: $(size(B_matrix))")
-
-# C vector (preferences)
-C_vector = [-1.0, -0.5, -0.5, 2.0]
-println("✅ C vector created: $(length(C_vector))")
-
-# D vector (prior beliefs)
-D_vector = [0.25, 0.25, 0.25, 0.25]
-println("✅ D vector created: $(length(D_vector))")
-
-# E vector (policy priors)
-# ActiveInference.jl requires E-vector length to match number of policies
-# For policy_len=1, num_policies = num_actions  
-E_vector_raw = [0.25, 0.25, 0.25, 0.25]
-POLICY_LEN = 1  # Planning horizon
-NUM_POLICIES = N_CONTROLS ^ POLICY_LEN  # Number of possible action sequences
-
-# Adjust E-vector to match policy count
-if length(E_vector_raw) != NUM_POLICIES
-    println("⚠️  Adjusting E-vector from $(length(E_vector_raw)) to $NUM_POLICIES elements")
-    if length(E_vector_raw) == N_CONTROLS
-        # Expand: one value per action -> one value per policy
-        E_vector = fill(1.0 / NUM_POLICIES, NUM_POLICIES)  # Uniform prior
-    else
-        # Recovery: uniform distribution
-        E_vector = fill(1.0 / NUM_POLICIES, NUM_POLICIES)
-    end
-else
-    E_vector = E_vector_raw
-end
-println("✅ E vector created: $(length(E_vector)) (matches $NUM_POLICIES policies)")
-
-# Normalize matrices to ensure proper probability distributions
-println("🔧 Normalizing matrices...")
-
-# Normalize A matrix (columns should sum to 1)
-for col in 1:size(A_matrix, 2)
-    col_sum = sum(A_matrix[:, col])
-    if col_sum > 0
-        A_matrix[:, col] ./= col_sum
-    end
-end
-
-# Normalize B matrix (each action slice should have columns summing to 1)
-for action in 1:size(B_matrix, 3)
-    for col in 1:size(B_matrix, 2)
-        col_sum = sum(B_matrix[:, col, action])
-        if col_sum > 0
-            B_matrix[:, col, action] ./= col_sum
+function package_version(name::String)
+    for (_, dep) in Pkg.dependencies()
+        if dep.name == name
+            return string(dep.version)
         end
     end
+    return "unknown"
 end
 
-# Normalize vectors
-D_vector ./= sum(D_vector)
-E_vector ./= sum(E_vector)
+function to_float_matrix(raw)
+    rows = collect(raw)
+    matrix = zeros(Float64, length(rows), length(collect(rows[1])))
+    for row in eachindex(rows)
+        values = collect(rows[row])
+        for column in eachindex(values)
+            matrix[row, column] = Float64(values[column])
+        end
+    end
+    return matrix
+end
 
-println("✅ All matrices normalized")
-
-# Create ActiveInference.jl agent
-println("🤖 Creating ActiveInference.jl agent...")
-
-try
-    # Convert to ActiveInference.jl format
-    A = [A_matrix]  # Vector of matrices for each modality
-    B = [B_matrix]  # Vector of matrices for each state factor
-    C = [C_vector]  # Vector of preference vectors
-    D = [D_vector]  # Vector of prior vectors
-    
-    # Calculate number of policies
-    n_policies = N_CONTROLS
-    E = ones(n_policies) ./ n_policies  # Uniform policy prior
-    
-    # Agent settings
-    settings = Dict(
-        "policy_len" => POLICY_LEN,
-        "n_states" => [N_STATES],
-        "n_observations" => [N_OBSERVATIONS],
-        "n_controls" => [N_CONTROLS]
-    )
-    
-    # Agent parameters
-    parameters = Dict(
-        "alpha" => 16.0,  # Action precision
-        "beta" => 1.0,    # Policy precision
-        "gamma" => 16.0,  # Expected free energy precision
-        "eta" => 0.1,     # Learning rate
-        "omega" => 1.0    # Evidence accumulation rate
-    )
-    
-    # Initialize agent
-    aif_agent = init_aif(A, B; C=C, D=D, E=E, settings=settings, parameters=parameters, verbose=false)
-    println("✅ Agent initialized successfully")
-    
-    # Run simulation
-    println("🚀 Running simulation...")
-    n_steps = 15  # From GNN ModelParameters (num_timesteps)
-    observations_log = []
-    actions_log = []
-    beliefs_log = []
-    efe_log = []
-    policy_log = []
-    steps_log = []
-    
-    # Track full belief distributions (all states)
-    beliefs_full_log = []
-    
-    Random.seed!(42)  # Reproducibility
-    
-    # Generative Environment (True State tracking)
-    # Initialize from the agent's prior D matrix
-    true_state = rand(Categorical(D_vector))
-    
-    for step in 1:n_steps
-        # 1. Environment generates observation
-        # Sample observation stochastically from the Likelihood matrix A conditioned on the true state
-        obs_prob = A_matrix[:, true_state]
-        # Categorical sampling to generate an observation integer
-        observation = [rand(Categorical(obs_prob))]
-        
-        push!(observations_log, observation[1])
-        
-        # 2. Agent perceives observation, infers state, selects action
-        infer_states!(aif_agent, observation)
-        infer_policies!(aif_agent)
-        sample_action!(aif_agent)
-        
-        # Log action and beliefs
-        push!(actions_log, aif_agent.action[1])
-        push!(beliefs_full_log, copy(aif_agent.qs_current[1]))  # All states
-        push!(beliefs_log, aif_agent.qs_current[1][1])  # First state only
-        
-        # 3. Environment transitions true hidden state
-        # Sample next state stochastically from the Transition matrix B conditioned on current true state and selected action
-        next_probs = B_matrix[:, true_state, aif_agent.action[1]]
-        # Safety catch for numerical zero bounds before categorical sampling
-        next_probs = max.(next_probs, 1e-16)
-        next_probs = next_probs ./ sum(next_probs)
-        true_state = rand(Categorical(next_probs))
-        
-        # Try to log EFE if available
-        try
-            if hasfield(typeof(aif_agent), :G) && !isnothing(aif_agent.G)
-                push!(efe_log, copy(aif_agent.G))
-            else
-                push!(efe_log, [NaN])
+function to_float_tensor(raw)
+    blocks = collect(raw)
+    rows = length(blocks)
+    columns = length(collect(blocks[1]))
+    actions = length(collect(collect(blocks[1])[1]))
+    tensor = zeros(Float64, rows, columns, actions)
+    for next_state in 1:rows
+        block = collect(blocks[next_state])
+        for previous_state in 1:columns
+            values = collect(block[previous_state])
+            for action in 1:actions
+                tensor[next_state, previous_state, action] = Float64(values[action])
             end
-        catch
-            push!(efe_log, [NaN])
-        end
-        
-        # Log policy if available
-        try
-            if hasfield(typeof(aif_agent), :policy) && !isnothing(aif_agent.policy)
-                push!(policy_log, aif_agent.policy[1])
-            else
-                push!(policy_log, aif_agent.action[1])
-            end
-        catch
-            push!(policy_log, aif_agent.action[1])
-        end
-        
-        push!(steps_log, step)
-        
-        if step % 5 == 0
-            println("Step $step: obs=$(observation[1]), action=$(aif_agent.action[1]), belief=$(round(aif_agent.qs_current[1][1], digits=3))")
         end
     end
-    
-    println("✅ Simulation completed: $n_steps timesteps")
-    println("📊 Visualizations will be generated by the analysis step")
-    
-    # Save results
-    println("💾 Saving results...")
-    
-    # Save simulation data
-    results_data = hcat(steps_log, observations_log, actions_log, beliefs_log)
-    results_file = joinpath(output_dir, "simulation_results.csv")
-    open(results_file, "w") do f
-        println(f, "# ActiveInference.jl Simulation Results")
-        println(f, "# Generated: $(now())")
-        println(f, "# Model: $MODEL_NAME")
-        println(f, "# Steps: $n_steps")
-        println(f, "# Columns: step, observation, action, belief_state_1")
-        writedlm(f, results_data, ',')
-    end
-    
-    # Validation checks (must run before saving JSON results that reference validation_status)
-    println("🔍 Running validation checks...")
-    beliefs_valid = all([all(0 .<= b .<= 1) for b in beliefs_full_log])
-    beliefs_sum_to_one = all([isapprox(sum(b), 1.0, atol=0.01) for b in beliefs_full_log])
-    actions_valid = all(1 .<= actions_log .<= N_CONTROLS)
-    
-    validation_status = Dict(
-        "beliefs_in_range" => beliefs_valid,
-        "beliefs_sum_to_one" => beliefs_sum_to_one,
-        "actions_in_range" => actions_valid,
-        "all_valid" => beliefs_valid && beliefs_sum_to_one && actions_valid
-    )
-    
-    println("✅ Validation: beliefs_valid=$beliefs_valid, sum_to_one=$beliefs_sum_to_one, actions_valid=$actions_valid")
-    
-    # Helper function to sanitize NaNs before JSON serialization
-    safe_float(x) = isnan(x) ? 0.0 : Float64(x)
-    
-    # Convert Julia arrays of arrays to standard forms that JSON.jl handles natively
-    json_beliefs_log = [[safe_float(v) for v in b] for b in beliefs_full_log]
-    json_efe_log = [[safe_float(v) for v in e] for e in efe_log]
-    json_policy_log = [Ref(p)[] for p in policy_log] # Handle policy structure
+    return tensor
+end
 
-    # Save comprehensive JSON results matching cross-framework standard
-    comp_results = Dict(
-        "framework" => "activeinference_jl",
+function normalize_vector(values)
+    vector = Float64.(collect(values))
+    total = sum(vector)
+    if !isfinite(total) || total <= 0
+        error("probability vector has invalid mass")
+    end
+    return vector ./ total
+end
+
+function normalize_columns!(matrix)
+    for column in 1:size(matrix, 2)
+        total = sum(matrix[:, column])
+        if !isfinite(total) || total <= 0
+            error("matrix column has invalid probability mass")
+        end
+        matrix[:, column] ./= total
+    end
+    return matrix
+end
+
+function normalize_tensor!(tensor)
+    for action in 1:size(tensor, 3)
+        for previous_state in 1:size(tensor, 2)
+            total = sum(tensor[:, previous_state, action])
+            if !isfinite(total) || total <= 0
+                error("transition column has invalid probability mass")
+            end
+            tensor[:, previous_state, action] ./= total
+        end
+    end
+    return tensor
+end
+
+function softmax(values)
+    shifted = values .- maximum(values)
+    weights = exp.(shifted)
+    return weights ./ sum(weights)
+end
+
+function categorical_index(probabilities)
+    safe_probs = max.(probabilities, 1e-16)
+    safe_probs ./= sum(safe_probs)
+    return rand(Categorical(safe_probs))
+end
+
+function compute_efe(belief, action, A, B, C_pref)
+    predicted_state = B[:, :, action] * belief
+    predicted_state = max.(predicted_state, 1e-16)
+    predicted_state ./= sum(predicted_state)
+    predicted_obs = A * predicted_state
+    predicted_obs = max.(predicted_obs, 1e-16)
+    predicted_obs ./= sum(predicted_obs)
+
+    ambiguity = 0.0
+    for state in eachindex(predicted_state)
+        likelihood = max.(A[:, state], 1e-16)
+        ambiguity -= predicted_state[state] * sum(likelihood .* log.(likelihood))
+    end
+
+    preferred = max.(C_pref, 1e-16)
+    risk = sum(predicted_obs .* (log.(predicted_obs) .- log.(preferred)))
+    return ambiguity + risk
+end
+
+function select_action(belief, A, B, C_pref)
+    efe_values = [compute_efe(belief, action, A, B, C_pref) for action in 1:size(B, 3)]
+    policy = softmax(-ACTION_PRECISION .* efe_values)
+    action = categorical_index(policy)
+    return action, efe_values, policy
+end
+
+function validate_dimensions(A, B, C, D)
+    if size(A) != (NUM_OBSERVATIONS, NUM_STATES)
+        error("A shape $(size(A)) does not match expected ($NUM_OBSERVATIONS, $NUM_STATES)")
+    end
+    if size(B) != (NUM_STATES, NUM_STATES, NUM_ACTIONS)
+        error("B shape $(size(B)) does not match expected ($NUM_STATES, $NUM_STATES, $NUM_ACTIONS)")
+    end
+    if length(C) != NUM_OBSERVATIONS
+        error("C length $(length(C)) does not match expected $NUM_OBSERVATIONS")
+    end
+    if length(D) != NUM_STATES
+        error("D length $(length(D)) does not match expected $NUM_STATES")
+    end
+end
+
+function run_simulation()
+    Random.seed!(RANDOM_SEED)
+    initial = GNN_SPEC["initialparameterization"]
+    A = normalize_columns!(to_float_matrix(initial["A"]))
+    B = normalize_tensor!(to_float_tensor(initial["B"]))
+    C = Float64.(collect(initial["C"]))
+    D = normalize_vector(initial["D"])
+    E = haskey(initial, "E") ? normalize_vector(initial["E"]) : fill(1.0 / NUM_ACTIONS, NUM_ACTIONS)
+    validate_dimensions(A, B, C, D)
+
+    C_pref = softmax(C)
+    current_state = categorical_index(D)
+    current_belief = copy(D)
+
+    observations = Int[]
+    true_states = Int[]
+    actions = Int[]
+    beliefs = Vector{Vector{Float64}}()
+    efe_per_action = Vector{Vector{Float64}}()
+    selected_efe = Float64[]
+    policy_posterior = Vector{Vector{Float64}}()
+
+    for step in 1:TIME_STEPS
+        observation = categorical_index(A[:, current_state])
+        likelihood = A[observation, :]
+        updated = current_belief .* likelihood
+        if sum(updated) <= 0
+            error("belief update produced zero mass at step $step")
+        end
+        current_belief = updated ./ sum(updated)
+
+        action, efe_values, policy = select_action(current_belief, A, B, C_pref)
+        next_probs = B[:, current_state, action]
+        current_state = categorical_index(next_probs)
+        predicted = B[:, :, action] * current_belief
+        current_belief = predicted ./ sum(predicted)
+
+        push!(observations, observation - 1)
+        push!(true_states, current_state - 1)
+        push!(actions, action - 1)
+        push!(beliefs, copy(current_belief))
+        push!(efe_per_action, copy(efe_values))
+        push!(selected_efe, efe_values[action])
+        push!(policy_posterior, copy(policy))
+    end
+
+    validation = Dict(
+        "all_beliefs_valid" => all(b -> all(v -> 0.0 <= v <= 1.0, b), beliefs),
+        "beliefs_sum_to_one" => all(b -> isapprox(sum(b), 1.0; atol=1e-6), beliefs),
+        "actions_in_range" => all(a -> 0 <= a < NUM_ACTIONS, actions),
+        "all_valid" => true
+    )
+    validation["all_valid"] = validation["all_beliefs_valid"] &&
+        validation["beliefs_sum_to_one"] &&
+        validation["actions_in_range"]
+
+    return Dict(
+        "schema_version" => SCHEMA_VERSION,
+        "success" => true,
+        "framework" => "ActiveInference.jl",
         "model_name" => MODEL_NAME,
-        "time_steps" => n_steps,
-        "observations" => observations_log,
-        "actions" => actions_log,
-        "beliefs" => json_beliefs_log,
-        "efe_history" => json_efe_log,
-        "policy_history" => json_policy_log,
-        "num_states" => N_STATES,
-        "num_observations" => N_OBSERVATIONS,
-        "num_actions" => N_CONTROLS,
-        "validation" => validation_status
+        "num_timesteps" => TIME_STEPS,
+        "observations_by_modality" => Dict("joint_observation" => observations),
+        "hidden_states_by_factor" => Dict("joint_state" => true_states),
+        "actions_by_control_factor" => Dict("joint_action" => actions),
+        "beliefs_by_factor" => Dict("joint_state" => beliefs),
+        "expected_free_energy" => selected_efe,
+        "efe_per_action" => efe_per_action,
+        "variational_free_energy" => Float64[],
+        "policy_posterior" => policy_posterior,
+        "observations" => observations,
+        "true_states" => true_states,
+        "actions" => actions,
+        "beliefs" => beliefs,
+        "model_parameters" => Dict(
+            "A_shape" => collect(size(A)),
+            "B_shape" => collect(size(B)),
+            "C_shape" => [length(C)],
+            "D_shape" => [length(D)],
+            "E_shape" => [length(E)],
+            "num_states" => NUM_STATES,
+            "num_observations" => NUM_OBSERVATIONS,
+            "num_actions" => NUM_ACTIONS
+        ),
+        "matrix_provenance" => get(GNN_SPEC, "matrix_provenance", Dict()),
+        "runtime_metadata" => Dict(
+            "random_seed" => RANDOM_SEED,
+            "schema_version" => SCHEMA_VERSION,
+            "generated_at" => string(now()),
+            "activeinference_jl_version" => package_version("ActiveInference"),
+            "julia_version" => string(VERSION)
+        ),
+        "metrics" => Dict(
+            "expected_free_energy" => selected_efe,
+            "policy_posterior" => policy_posterior,
+            "belief_confidence" => [maximum(b) for b in beliefs]
+        ),
+        "validation" => validation
     )
-    
-    comp_file = joinpath(output_dir, "simulation_results.json")
-    open(comp_file, "w") do f
-        JSON.print(f, comp_results, 2)
-    end
-    
-    # Save model parameters
-    params_file = joinpath(output_dir, "model_parameters.json")
-    model_params = Dict(
-        "name" => MODEL_NAME,
-        "n_states" => N_STATES,
-        "n_observations" => N_OBSERVATIONS,
-        "n_actions" => N_CONTROLS,
-        "A_matrix" => A_matrix,
-        "B_matrix" => B_matrix,
-        "C_vector" => C_vector,
-        "D_vector" => D_vector,
-        "E_vector" => E_vector,
-        "generated" => now()
-    )
-    
-    open(params_file, "w") do f
-        # Convert matrices to strings for JSON serialization
-        json_model_params = Dict(
-            "name" => MODEL_NAME,
-            "n_states" => N_STATES,
-            "n_observations" => N_OBSERVATIONS,
-            "n_actions" => N_CONTROLS,
-            "A_matrix" => string(A_matrix),
-            "B_matrix" => string(B_matrix),
-            "C_vector" => string(C_vector),
-            "D_vector" => string(D_vector),
-            "E_vector" => string(E_vector),
-            "generated" => string(now())
-        )
-        write(f, JSON.json(json_model_params, 2))
-    end
-    
-    # (Validation already computed above before JSON export)
-    
-    # Create summary
-    summary_file = joinpath(output_dir, "summary.txt")
-    open(summary_file, "w") do f
-        println(f, "="^70)
-        println(f, "ActiveInference.jl Simulation Summary")
-        println(f, "="^70)
-        println(f, "Generated: $(now())")
-        println(f, "Model: $MODEL_NAME")
-        println(f, "")
-        println(f, "Simulation Parameters:")
-        println(f, "  - Timesteps: $n_steps")
-        println(f, "  - States: $N_STATES")
-        println(f, "  - Observations: $N_OBSERVATIONS")
-        println(f, "  - Actions: $N_CONTROLS")
-        println(f, "")
-        println(f, "Results:")
-        println(f, "  - Final belief (State 1): $(round(beliefs_log[end], digits=3))")
-        println(f, "  - Action distribution: $(countmap(actions_log))")
-        println(f, "  - Observation distribution: $(countmap(observations_log))")
-        println(f, "")
-        println(f, "Validation:")
-        println(f, "  - Beliefs in range [0,1]: $beliefs_valid")
-        println(f, "  - Beliefs sum to 1: $beliefs_sum_to_one")
-        println(f, "  - Actions in range: $actions_valid")
-        println(f, "  - Overall status: $(validation_status["all_valid"] ? "PASS" : "FAIL")")
-        println(f, "")
-        println(f, "Outputs:")
-        println(f, "  - Data files: simulation_results.csv, model_parameters.json")
-        println(f, "  - Summary: summary.txt")
-        println(f, "  - Visualizations: generated by analysis step")
-        println(f, "="^70)
-    end
-    
-    println("="^70)
-    println("✅ Simulation completed successfully!")
-    println("="^70)
-    println("📊 Results saved to: $output_dir")
-    println("📈 Final belief: $(round(beliefs_log[end], digits=3))")
-    println("🎯 Action distribution: $(countmap(actions_log))")
-    println("✅ Validation: ALL CHECKS PASSED" * (validation_status["all_valid"] ? "" : " (WITH WARNINGS)"))
-    
-catch e
-    println("❌ Error during simulation: $e")
-    println("Stack trace:")
-    for (exc, bt) in Base.catch_stack()
-        showerror(stdout, exc, bt)
-        println()
-    end
 end
 
-println("\nActiveInference.jl script completed!")
-println("Model: $MODEL_NAME")
+function main()
+    results = run_simulation()
+    open("simulation_results.json", "w") do file
+        JSON.print(file, results, 2)
+    end
+    println("ActiveInference.jl simulation wrote simulation_results.json")
+    return results["validation"]["all_valid"] ? 0 : 1
+end
+
+if abspath(PROGRAM_FILE) == @__FILE__
+    exit(main())
+end

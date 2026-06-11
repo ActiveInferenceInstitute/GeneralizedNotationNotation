@@ -411,8 +411,8 @@ if __name__ == "__main__":
     print(f"   EFE for all actions: {result['all_efe_values']}")
 
     # Run multi-step simulation
-    print("\n🔄 Running 15-step simulation...")
-    trajectory = run_simulation(params, num_steps=15)
+    print("\n🔄 Running 25-step simulation...")
+    trajectory = run_simulation(params, num_steps=25)
 
     print(f"   Actions taken: {trajectory['actions']}")
     print(f"   Final belief: {trajectory['final_belief']}")

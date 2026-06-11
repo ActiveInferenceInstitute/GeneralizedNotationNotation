@@ -7,24 +7,26 @@ batch operations, and network timing measurements.
 
 import logging
 import time
+from typing import Any
 
 try:
     import httpx
 except ImportError:
-    httpx = None  # type: ignore[assignment]
-from typing import Any, Dict, List
+    httpx = cast(Any, None)
+from typing import Any, Dict, List, cast
 
 logger = logging.getLogger(__name__)
 
-def timed_request(url: str, method: str = "GET", **kwargs) -> Dict[str, Any]:
+
+def timed_request(url: str, method: str = "GET", **kwargs: Any) -> Dict[str, Any]:
     """
     Make a timed HTTP request and return timing information.
-    
+
     Args:
         url: The URL to request
         method: HTTP method (GET, POST, etc.)
         **kwargs: Additional arguments for requests
-        
+
     Returns:
         Dictionary with response data and timing information
     """
@@ -43,7 +45,7 @@ def timed_request(url: str, method: str = "GET", **kwargs) -> Dict[str, Any]:
             "url": url,
             "method": method,
             "content_length": len(response.content) if response.content else 0,
-            "headers": dict(response.headers)
+            "headers": dict(response.headers),
         }
     except Exception as e:
         end_time = time.time()
@@ -52,22 +54,25 @@ def timed_request(url: str, method: str = "GET", **kwargs) -> Dict[str, Any]:
             "error": str(e),
             "response_time": end_time - start_time,
             "url": url,
-            "method": method
+            "method": method,
         }
 
-def batch_request(urls: List[str], method: str = "GET", **kwargs) -> List[Dict[str, Any]]:
+
+def batch_request(
+    urls: List[str], method: str = "GET", **kwargs: Any
+) -> List[Dict[str, Any]]:
     """
     Make batch HTTP requests and return results.
-    
+
     Args:
         urls: List of URLs to request
         method: HTTP method (GET, POST, etc.)
         **kwargs: Additional arguments for requests
-        
+
     Returns:
         List of response dictionaries
     """
-    results = []
+    results: list[Any] = []
 
     for url in urls:
         result = timed_request(url, method, **kwargs)
@@ -75,36 +80,38 @@ def batch_request(urls: List[str], method: str = "GET", **kwargs) -> List[Dict[s
 
     return results
 
+
 def validate_api_endpoint(url: str, expected_status: int = 200) -> Dict[str, Any]:
     """
     Validate an API endpoint by making a test request.
-    
+
     Args:
         url: The URL to validate
         expected_status: Expected HTTP status code
-        
+
     Returns:
         Dictionary with validation results
     """
     result = timed_request(url)
 
-    validation_result = {
+    validation_result: dict[str, Any] = {
         "url": url,
         "accessible": result["success"],
         "status_code": result.get("status_code"),
         "response_time": result.get("response_time", 0),
-        "valid": result["success"] and result.get("status_code") == expected_status
+        "valid": result["success"] and result.get("status_code") == expected_status,
     }
 
     return validation_result
 
+
 def get_network_performance_metrics(urls: List[str]) -> Dict[str, Any]:
     """
     Get network performance metrics for a list of URLs.
-    
+
     Args:
         urls: List of URLs to test
-        
+
     Returns:
         Dictionary with performance metrics
     """
@@ -115,15 +122,17 @@ def get_network_performance_metrics(urls: List[str]) -> Dict[str, Any]:
 
     response_times = [r["response_time"] for r in successful_requests]
 
-    metrics = {
+    metrics: dict[str, Any] = {
         "total_requests": len(results),
         "successful_requests": len(successful_requests),
         "failed_requests": len(failed_requests),
         "success_rate": len(successful_requests) / len(results) if results else 0,
-        "average_response_time": sum(response_times) / len(response_times) if response_times else 0,
+        "average_response_time": sum(response_times) / len(response_times)
+        if response_times
+        else 0,
         "min_response_time": min(response_times) if response_times else 0,
         "max_response_time": max(response_times) if response_times else 0,
-        "total_response_time": sum(response_times)
+        "total_response_time": sum(response_times),
     }
 
     return metrics

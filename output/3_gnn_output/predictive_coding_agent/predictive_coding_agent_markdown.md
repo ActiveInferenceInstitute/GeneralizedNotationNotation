@@ -61,6 +61,13 @@ Sigma = [[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]]
 Pi_s = [[8.0, 0.0, 0.0, 0.0], [0.0, 8.0, 0.0, 0.0], [0.0, 0.0, 8.0, 0.0], [0.0, 0.0, 0.0, 8.0]]
 Pi_d = [[4.0, 0.0, 0.0], [0.0, 4.0, 0.0], [0.0, 0.0, 4.0]]
 mu_star = [[1.0], [1.0], [0.5]]
+state_dim = 3
+obs_dim = 4
+action_dim = 2
+dt = 0.01
+simulation_time = 5.0
+learning_rate_belief = 1.0
+learning_rate_action = 0.1
 
 ## Time
 Dynamic
@@ -85,6 +92,6 @@ mu_star = PriorExpectation
 t = ContinuousTime
 
 ## Footer
-Generated: 2026-04-10T10:24:34.033600
+Generated: 2026-05-25T09:51:15.772367
 
 ## Signature

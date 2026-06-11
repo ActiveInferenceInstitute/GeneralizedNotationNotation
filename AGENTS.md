@@ -49,7 +49,7 @@ The GNN (Generalized Notation Notation) Pipeline is a comprehensive 25-step syst
 - **[api/](src/api/AGENTS.md)** - REST API (FastAPI)
 - **[cli/](src/cli/AGENTS.md)** - `gnn` CLI entry point
 - **[lsp/](src/lsp/AGENTS.md)** - Language Server Protocol support
-- **[sapf/](src/sapf/AGENTS.md)** - SAPF compatibility shim (implementation in `src/audio/sapf/`)
+- **[sapf/](src/sapf/AGENTS.md)** - SAPF public entry point (implementation in `src/audio/sapf/`)
 - **[doc/](src/doc/AGENTS.md)** - In-repo technical documentation subtree
 
 ### Documentation Agents
@@ -98,7 +98,7 @@ graph TB
 
 - Contains all domain logic in `processor.py` and subdirectories
 - Provides public API via `__init__.py` exports
-- Implements error handling and fallbacks
+- Implements explicit error handling, skip statuses, and dependency diagnostics
 - Registers MCP tools in `mcp.py`
 
 ### Example Structure
@@ -220,15 +220,13 @@ graph TD
 - **Screen Reader Support**: Accessible output with emoji-free alternatives for assistive technologies
 - **Performance Monitoring**: Built-in timing and resource consumption tracking with visual displays
 
-### Recent Validation (March 2026)
+### Current Validation (June 2026)
 
-- **MCP Deadlock Resolved**: Fixed a multithreading deadlock in `discover_modules` that caused silent timeouts, restoring full pipeline summaries with 131 tools registered perfectly within 5 seconds.
-- **LLM Glob Fixed**: Resolved recursive path issues during LLM processing logic.
-- **ML Class Warning Fixed**: Updated cross-validation fold logic `min(5, len(X), min_class_count)` to dynamically avoid target class sparsity warnings.
-- **Confirmed**: Full pipeline execution with 100% success rate and enhanced visual logging.
-- **Performance**: All 25 steps complete rapidly with comprehensive progress tracking.
-- **Tests**: `uv run pytest src/tests/ -q --tb=no --ignore=src/tests/test_llm_ollama.py --ignore=src/tests/test_llm_ollama_integration.py` — 1,906 passed, 30 skipped (2026-03-24); re-enable `test_llm_ollama*.py` when `ollama` is available.
+- **Docs audit**: `uv run --extra dev python doc/development/docs_audit.py --strict --check-anchors --no-write` reports no broken links, anchor gaps, or AGENTS/README coverage gaps.
+- **GNN doc patterns**: `uv run --extra dev python scripts/check_gnn_doc_patterns.py --strict` reports no banned GNN documentation patterns.
+- **Tests**: command of record is `uv run --extra dev python -m pytest src/tests/ -q --tb=no --ignore=src/tests/llm/test_llm_ollama.py --ignore=src/tests/llm/test_llm_ollama_integration.py`; current collect-only inventory (2026-06-09) is 171 test files and 2,296 collected tests with the same Ollama ignores. Latest recorded full suite with the same excludes passed on 2026-06-09: 2,281 passed, 14 skipped, 1 xfailed in 744.50s. Re-enable `src/tests/llm/test_llm_ollama*.py` when `ollama` is available.
 - **LLM Default Model**: `smollm2:135m-instruct-q4_K_S` via Ollama (`llm.defaults.DEFAULT_OLLAMA_MODEL`; override with `OLLAMA_MODEL` / `input/config.yaml`).
+- **Renderer inventory**: PyMDP, RxInfer, JAX, NumPyro, Stan, PyTorch, ActiveInference.jl, and DisCoPy have maintained render paths; run focused backend tests before publishing operational pass counts.
 - **Visual Accessibility**: All pipeline steps now include enhanced visual indicators and progress tracking.
 
 ---
@@ -241,19 +239,34 @@ Module-level status is maintained in each module's own `AGENTS.md` and test file
 
 ## Quick Start
 
-### Run Full Pipeline
+### Using `just` (Recommended)
+
+```bash
+brew install just              # macOS — or: cargo install just
+just                           # See available recipes
+just test                      # Fast test suite
+just lint                      # Ruff lint check
+just pipeline                  # Full 25-step pipeline
+just pipeline-steps "3,5,11,12"  # Specific steps
+just render-health             # Check renderer availability
+just test-mod render           # Test a specific module
+```
+
+### Direct Commands
+
+#### Run Full Pipeline
 
 ```bash
 python src/main.py --target-dir input/gnn_files --verbose
 ```
 
-### Run Specific Steps
+#### Run Specific Steps
 
 ```bash
 python src/main.py --only-steps "3,5,7,8,11,12" --verbose
 ```
 
-### Run Individual Step
+#### Run Individual Step
 
 ```bash
 python src/3_gnn.py --target-dir input/gnn_files --output-dir output --verbose
@@ -278,7 +291,7 @@ python src/3_gnn.py --target-dir input/gnn_files --output-dir output --verbose
 - Use type hints for all public functions
 - Document all classes and methods
 - Maintain >80% test coverage
-- Include error handling and fallbacks
+- Include explicit error handling, status reporting, and dependency diagnostics
 
 ---
 
@@ -293,7 +306,7 @@ python src/2_tests.py --comprehensive
 ### Run Module-Specific Tests
 
 ```bash
-pytest src/tests/test_[module]*.py -v
+uv run --extra dev python -m pytest src/tests/test_[module]*.py -v
 ```
 
 ### Check Coverage
@@ -395,10 +408,9 @@ Each module provides specialized agent capabilities for different aspects of Act
 ### 🚀 **Execute Agent** - Simulation Runner
 
 - **ActiveInferenceAgent**: Primary full-fidelity execution engine
-- **FallbackAgent**: Robust recovery mechanism (non-mock safe degradation)
 - Multi-environment execution (PyMDP, RxInfer, JAX, PyTorch, NumPyro)
 - Resource monitoring and optimization
-- Error recovery and retry logic
+- Explicit failure, skip, and retry reporting
 - Cross-platform compatibility
 
 ### 🤖 **LLM Agent** - AI Enhancement
@@ -480,6 +492,20 @@ Each module provides specialized agent capabilities for different aspects of Act
 
 ---
 
+## Learned User Preferences
+
+- When implementing an attached plan, do not edit the plan file itself; use the existing to-do items and complete them without recreating them.
+- Documentation fixes should verify file paths, commands, and signposts against the current repository rather than preserving stale examples.
+- Prefer measured verification outputs over estimates when reporting test, pipeline, or scaling behavior.
+
+## Learned Workspace Facts
+
+- Pipeline `--target-dir` arguments must point to directories; single `.md` file paths are not discovered by the current `Path.rglob`-based flow.
+- The PyMDP scaling study expands dense `B` tensors as O(n^3) text, so large `N` values require explicit file-size and disk-space guardrails.
+- Step 12 execution runs rendered `.py` and `.jl` scripts via the execute processor; auxiliary per-framework helper scripts are not the primary pipeline path.
+
+---
+
 ## References
 
 - **Main Documentation**: [README.md](README.md)
@@ -488,7 +514,7 @@ Each module provides specialized agent capabilities for different aspects of Act
 
 ---
 
-**Last Updated**: 2026-03-24
-**Pipeline Version**: 1.3.0
+**Last Updated**: 2026-06-09
+**Pipeline Version**: 1.6.0
 **Total Steps**: 25 (0-24)
 **Status**: Maintained

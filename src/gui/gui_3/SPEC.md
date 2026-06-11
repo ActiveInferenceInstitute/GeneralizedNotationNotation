@@ -1,8 +1,19 @@
-# Specification: Gui 3
+# GUI 3 — Technical Specification
 
-## Design Requirements
-This module (`gui_3`) maps structural logic to the overall execution graph.
-It ensures that `Gui 3` tasks resolve without runtime dependency loops.
+**Version**: 1.6.0
 
-## Components
-Expected available types: No specific classes exported.
+## Purpose
+
+Third-generation web-based GNN constructor interface.
+
+## Features
+
+- Browser-based UI
+- Interactive graph editing
+- Collaborative editing support
+- Export to multiple GNN formats
+
+## Technology
+
+- HTML5 + JavaScript frontend
+- Python backend server

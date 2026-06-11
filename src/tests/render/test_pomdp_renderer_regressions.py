@@ -1,0 +1,51 @@
+"""Regression tests for canonical POMDP rendering edge cases."""
+
+from __future__ import annotations
+
+from pathlib import Path
+
+import numpy as np
+import pytest
+
+from gnn.pomdp_extractor import extract_pomdp_from_file
+from render.pomdp_processor import POMDPRenderProcessor
+from render.processor import render_gnn_spec
+
+REPO_ROOT = Path(__file__).resolve().parents[3]
+DISCRETE_DIR = REPO_ROOT / "input" / "gnn_files" / "discrete"
+
+
+@pytest.mark.integration
+@pytest.mark.parametrize(
+    ("filename", "expected_shape"),
+    [
+        ("actinf_pomdp_agent.md", (3, 3, 3)),
+        ("tmaze_epistemic.md", (8, 8, 4)),
+    ],
+)
+@pytest.mark.parametrize("framework", ["rxinfer", "activeinference_jl"])
+def test_discrete_pomdp_models_render_to_julia_frameworks(
+    filename: str, expected_shape: tuple[int, int, int], framework: str, tmp_path: Path
+) -> None:
+    pomdp = extract_pomdp_from_file(DISCRETE_DIR / filename, strict_validation=True)
+    assert pomdp is not None
+    spec = POMDPRenderProcessor(tmp_path)._pomdp_to_gnn_spec(pomdp)
+
+    b_matrix = np.asarray(spec["initialparameterization"]["B"], dtype=float)
+    assert b_matrix.shape == expected_shape
+    assert spec["model_parameters"]["num_hidden_states"] == expected_shape[0]
+    assert spec["model_parameters"]["num_actions"] == expected_shape[2]
+    assert (
+        spec["model_parameters"]["b_tensor_order"] == "next_state_previous_state_action"
+    )
+
+    ok, message, artifacts = render_gnn_spec(spec, framework, tmp_path / framework)
+
+    assert ok, message
+    assert artifacts
+    rendered = Path(artifacts[0])
+    assert rendered.exists()
+    text = rendered.read_text(encoding="utf-8")
+    assert "using Base64" in text
+    assert "base64decode" in text
+    assert "JSON.parse(raw" not in text

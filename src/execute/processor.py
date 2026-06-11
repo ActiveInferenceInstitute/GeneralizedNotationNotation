@@ -5,32 +5,55 @@ Execute Processor module for GNN Processing Pipeline.
 This module provides execute processing capabilities for rendered implementations.
 """
 
+import copy
 import json
 import logging
 import os
-import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
+import subprocess  # nosec B404
 import sys
+from concurrent.futures import ProcessPoolExecutor
+from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Literal, Optional, Tuple, Union, cast
 
 from utils.logging.logging_utils import (
+    PipelineLogger,
     log_step_error,
     log_step_start,
     log_step_success,
     log_step_warning,
 )
 
-try:
-    from utils.logging.logging_utils import PipelineLogger
-except ImportError:
-    PipelineLogger = None
-
 logger = logging.getLogger(__name__)
 
+ExecutionFrameworkName = Literal[
+    "pymdp",
+    "rxinfer",
+    "jax",
+    "discopy",
+    "activeinference_jl",
+    "pytorch",
+    "numpyro",
+]
 
 
-def check_julia_dependencies(verbose: bool, log: Optional[logging.Logger] = None) -> bool:
+@dataclass(frozen=True)
+class ScriptExecutionContext:
+    """Normalized execution metadata for one rendered script."""
+
+    script_path: Path
+    script_name: str
+    framework: str
+    model_name: str
+    executor: str
+
+
+def check_julia_dependencies(
+    verbose: bool,
+    log: Optional[logging.Logger] = None,
+    frameworks: Optional[List[str]] = None,
+) -> bool:
     """Check if required Julia packages are available.
 
     Args:
@@ -44,15 +67,20 @@ def check_julia_dependencies(verbose: bool, log: Optional[logging.Logger] = None
         log = logger
     try:
         # check basic julia availability
-        subprocess.run(['julia', '--version'], capture_output=True, check=True, timeout=10)  # nosec B607 B603 -- subprocess calls with controlled/trusted input
+        subprocess.run(
+            ["julia", "--version"], capture_output=True, check=True, timeout=10
+        )  # nosec B607 B603
 
-        # Check for key packages
-        check_script = 'using Pkg; Pkg.status(["RxInfer", "ActiveInference", "GraphPPL"])'
-        result = subprocess.run(  # nosec B607 B603 -- subprocess calls with controlled/trusted input
-            ['julia', '-e', check_script],
-            capture_output=True,
-            text=True,
-            timeout=30
+        requested = set(frameworks or ["rxinfer", "activeinference_jl"])
+        packages = ["JSON", "Distributions", "StatsBase"]
+        if "rxinfer" in requested:
+            packages.append("RxInfer")
+        if "activeinference_jl" in requested:
+            packages.append("ActiveInference")
+        using_clause = ", ".join(packages)
+        check_script = f"using {using_clause}"
+        result = subprocess.run(  # nosec B607 B603
+            ["julia", "-e", check_script], capture_output=True, text=True, timeout=30
         )
 
         if result.returncode != 0:
@@ -65,7 +93,9 @@ def check_julia_dependencies(verbose: bool, log: Optional[logging.Logger] = None
         return False
 
 
-def determine_script_framework(script_path: Path, render_output_dir: Path, framework_dirs: Dict[str, str]) -> str:
+def determine_script_framework(
+    script_path: Path, render_output_dir: Path, framework_dirs: Dict[str, str]
+) -> str:
     """
     Determine the framework for a script based on its directory path.
 
@@ -81,58 +111,72 @@ def determine_script_framework(script_path: Path, render_output_dir: Path, frame
         # Get relative path from render output directory
         relative_path = script_path.relative_to(render_output_dir)
 
-        # Check each part of the path for framework indicators
-        for part in relative_path.parts:
-            # Check if this part matches a known framework directory
+        # Render outputs use model/framework/script.ext. Match framework
+        # directories exactly so model names like "bnlearn_causal_model" do
+        # not override the actual framework directory.
+        for part in relative_path.parts[:-1]:
             if part.lower() in framework_dirs:
                 return framework_dirs[part.lower()]
 
-            # Check for framework names in the directory name
-            for framework_name in framework_dirs.values():
-                if framework_name.lower() in part.lower():
-                    return framework_name
+        script_name = relative_path.name.lower()
+        for framework_name in framework_dirs.values():
+            if script_name.endswith(f"_{framework_name}.py") or script_name.endswith(
+                f"_{framework_name}.jl"
+            ):
+                return framework_name
 
         # Default recovery
         return "unknown"
 
     except Exception as e:
-        logging.getLogger(__name__).debug(f"Error determining framework for script: {e}")
+        logging.getLogger(__name__).debug(
+            f"Error determining framework for script: {e}"
+        )
         return "unknown"
 
 
-# Optional Python modules required per framework (for pre-flight skip when missing)
-_FRAMEWORK_IMPORT_CHECK = {
-    "jax": ("jax", "uv sync --extra active-inference"),
-    "numpyro": ("numpyro", "uv sync --extra probabilistic-programming"),
-    "pytorch": ("torch", "uv sync --extra ml-ai"),
-    "discopy": ("discopy", "uv sync --extra graphs"),
-    "bnlearn": ("bnlearn", "uv sync"),
-}
+# Phase 2.3: framework-availability helpers moved to utils.framework_availability
+# so execute and render stay in sync. The import-check dict and predicate are
+# re-exported here via thin aliases to preserve any external callers that
+# previously imported them from execute.processor.
+from utils.framework_availability import (  # noqa: E402
+    FRAMEWORK_IMPORT_CHECK as _FRAMEWORK_IMPORT_CHECK,
+)
+from utils.framework_availability import (
+    is_framework_available as _is_framework_available_by_name,
+)
 
 
-def _is_python_framework_dependency_available(framework: str, executor: str, logger) -> bool:
-    """Return True if the framework's required Python module is importable (skip run if False)."""
-    if framework not in _FRAMEWORK_IMPORT_CHECK:
-        return True
-    module_name, _ = _FRAMEWORK_IMPORT_CHECK[framework]
-    try:
-        r = subprocess.run(
-            [executor, "-c", f"import {module_name}"],
-            capture_output=True,
-            text=True,
-            timeout=10,
-        )
-        return r.returncode == 0
-    except (subprocess.TimeoutExpired, FileNotFoundError):
-        return False
+def _is_python_framework_dependency_available(
+    framework: str, executor: str, logger: Any
+) -> bool:
+    """Return True if the framework's required Python module is importable.
+
+    Delegates to ``utils.framework_availability.is_framework_available``, passing
+    ``executor`` so the check targets the subprocess-invoked interpreter rather
+    than the caller's. Preserves the pre-Phase-2.3 call-site signature.
+    """
+    return _is_framework_available_by_name(framework, executor=executor, logger=logger)
 
 
-def _make_skipped_result(script_info: Dict[str, Any], framework: str, model_name: str, executor: str, logger) -> Dict[str, Any]:
+def _make_skipped_result(
+    script_info: Dict[str, Any],
+    framework: str,
+    model_name: str,
+    executor: str,
+    logger: Any,
+) -> Dict[str, Any]:
     """Build an execution result dict for a script skipped due to missing dependency."""
     module_name, install_hint = _FRAMEWORK_IMPORT_CHECK.get(framework, ("", ""))
-    reason = f"Dependency not installed: {module_name}" if module_name else "Dependency not installed"
+    reason = (
+        f"Dependency not installed: {module_name}"
+        if module_name
+        else "Dependency not installed"
+    )
     if install_hint and not logger.isEnabledFor(logging.DEBUG):
-        logger.info(f"Skipping {script_info['name']} ({framework}): {module_name} not installed. Install with: {install_hint}")
+        logger.info(
+            f"Skipping {script_info['name']} ({framework}): {module_name} not installed. Install with: {install_hint}"
+        )
     return {
         "script_path": str(script_info["path"]),
         "script_name": script_info["name"],
@@ -151,7 +195,114 @@ def _make_skipped_result(script_info: Dict[str, Any], framework: str, model_name
     }
 
 
-def parse_frameworks_parameter(frameworks: str, logger) -> List[str]:
+def _coerce_execution_workers(value: Any) -> int:
+    """Normalize the configured local/distributed worker count."""
+    try:
+        workers = int(value)
+    except (TypeError, ValueError):
+        workers = 1
+    return max(1, workers)
+
+
+def _execute_script_worker(
+    bundle: Tuple[Dict[str, Any], Path, bool, int, int],
+) -> Dict[str, Any]:
+    """Process-pool entry point for a single rendered script."""
+    script_info, results_dir, verbose, timeout, repeats = bundle
+    worker_logger = logging.getLogger("execute.worker")
+    worker_logger.setLevel(logging.INFO)
+    result = execute_single_script(
+        script_info,
+        results_dir,
+        verbose,
+        worker_logger,
+        timeout,
+        execution_benchmark_repeats=repeats,
+    )
+    result.setdefault("skipped", False)
+    return result
+
+
+def _make_local_worker_pool_failure_result(
+    script_info: Dict[str, Any],
+    exc: BaseException,
+) -> Dict[str, Any]:
+    """Return a per-script failure envelope when local process dispatch fails."""
+    script_path = Path(script_info["path"])
+    path_parts = script_path.parts
+    model_name = path_parts[-3] if len(path_parts) >= 3 else "unknown_model"
+    framework = path_parts[-2] if len(path_parts) >= 3 else script_info["framework"]
+    error = f"Local worker pool failed before script completion: {exc}"
+    return {
+        "script_path": str(script_path),
+        "script_name": script_info["name"],
+        "framework": framework,
+        "model_name": model_name,
+        "executor": script_info["executor"],
+        "success": False,
+        "skipped": False,
+        "return_code": None,
+        "stdout": "",
+        "stderr": "",
+        "execution_time": 0,
+        "timestamp": datetime.now().isoformat(),
+        "error": error,
+        "error_type": "LocalWorkerPoolError",
+        "worker_pool_error_type": type(exc).__name__,
+    }
+
+
+def _run_scripts_with_local_workers(
+    executable_scripts: List[Dict[str, Any]],
+    results_dir: Path,
+    verbose: bool,
+    logger: logging.Logger,
+    timeout: int,
+    execution_workers: int,
+    execution_benchmark_repeats: int,
+) -> List[Dict[str, Any]]:
+    """Execute rendered scripts locally, using multiple processes when requested."""
+    repeats = max(1, int(execution_benchmark_repeats))
+    if execution_workers <= 1 or len(executable_scripts) <= 1:
+        details: list[Any] = []
+        for script_info in executable_scripts:
+            exec_result = execute_single_script(
+                script_info,
+                results_dir,
+                verbose,
+                logger,
+                timeout,
+                execution_benchmark_repeats=repeats,
+            )
+            exec_result.setdefault("skipped", False)
+            details.append(exec_result)
+        return details
+
+    bounded_workers = min(execution_workers, len(executable_scripts))
+    logger.info(
+        "Dispatching %s executable scripts with %s local workers",
+        len(executable_scripts),
+        bounded_workers,
+    )
+    bundles = [
+        (info, results_dir, verbose, timeout, repeats) for info in executable_scripts
+    ]
+    try:
+        with ProcessPoolExecutor(max_workers=bounded_workers) as pool:
+            return list(pool.map(_execute_script_worker, bundles))
+    except Exception as exc:  # noqa: BLE001
+        logger.error(
+            "Local worker pool failed while executing %d scripts: %s",
+            len(executable_scripts),
+            exc,
+        )
+        return [
+            _make_local_worker_pool_failure_result(script_info, exc)
+            for script_info in executable_scripts
+        ]
+
+
+def parse_frameworks_parameter(frameworks: str, logger: Any) -> List[str]:
     """
     Parse the frameworks parameter into a list of framework names.
 
@@ -163,44 +314,89 @@ def parse_frameworks_parameter(frameworks: str, logger) -> List[str]:
         List of framework names to include
     """
     if not frameworks or frameworks.lower() == "all":
-        return ["pymdp", "jax", "discopy", "rxinfer", "activeinference_jl", "pytorch", "numpyro", "bnlearn"]
+        return [
+            "pymdp",
+            "jax",
+            "discopy",
+            "rxinfer",
+            "activeinference_jl",
+            "pytorch",
+            "numpyro",
+            "bnlearn",
+        ]
 
     if frameworks.lower() == "lite":
         return ["pymdp", "jax", "discopy", "bnlearn"]
 
     # Parse comma-separated list
     framework_list = [f.strip() for f in frameworks.split(",")]
-    valid_frameworks = ["pymdp", "jax", "discopy", "rxinfer", "activeinference_jl", "pytorch", "numpyro", "bnlearn"]
+    valid_frameworks: list[Any] = [
+        "pymdp",
+        "jax",
+        "discopy",
+        "rxinfer",
+        "activeinference_jl",
+        "pytorch",
+        "numpyro",
+        "bnlearn",
+    ]
 
     # Filter out invalid frameworks
     valid_list = [f for f in framework_list if f in valid_frameworks]
 
     if len(valid_list) != len(framework_list):
         invalid = [f for f in framework_list if f not in valid_frameworks]
-        logger.warning(f"Invalid frameworks specified: {invalid}. Valid options: {valid_frameworks}")
+        logger.warning(
+            f"Invalid frameworks specified: {invalid}. Valid options: {valid_frameworks}"
+        )
 
     return valid_list if valid_list else ["pymdp"]  # Default to pymdp if nothing valid
 
 
-def _resolve_render_output_dir(target_dir: Path, kwargs: dict) -> Optional[Path]:
+def _resolve_render_output_dir(
+    target_dir: Path,
+    kwargs: dict,
+    output_dir: Optional[Path] = None,
+) -> Optional[Path]:
     """Resolve the render output directory from kwargs and filesystem heuristics.
 
     Resolution priority:
     1. Explicit ``--render-output-dir`` kwarg.
-    2. target_dir itself if it looks like a render output directory.
-    3. Common pipeline and test output locations (searched in order).
+    2. Sibling of the current step's output dir: when ``output_dir`` is
+       ``<base>/12_execute_output``, use ``<base>/11_render_output`` (and nested layout).
+    3. target_dir itself if it looks like a render output directory.
+    4. Common pipeline and test output locations (searched in order).
 
     Returns the first existing, non-empty directory found, or None.
     """
+
+    def _if_nonempty(p: Path) -> Optional[Path]:
+        """Handle if nonempty for internal callers."""
+        if p.exists() and any(p.rglob("*")):
+            return p
+        return None
+
     # Priority 1: explicit kwarg
-    if kwargs.get('render_output_dir'):
-        return Path(kwargs['render_output_dir'])
+    if kwargs.get("render_output_dir"):
+        p = Path(kwargs["render_output_dir"])
+        return _if_nonempty(p) or p
 
-    # Priority 2: target_dir is already the render output
+    # Priority 2: same pipeline base as step 12 (target often remains GNN input dir)
+    if output_dir is not None:
+        base = output_dir.parent
+        for rel in (
+            "11_render_output/11_render_output",
+            "11_render_output",
+        ):
+            found = _if_nonempty(base / rel)
+            if found is not None:
+                return found
+
+    # Priority 3: target_dir is already the render output
     if "11_render_output" in str(target_dir) or target_dir.name == "11_render_output":
-        return target_dir
+        return _if_nonempty(target_dir) or target_dir
 
-    # Priority 3: search common locations
+    # Priority 4: search common cwd-relative locations.
     candidates: List[Path] = [
         target_dir.parent / "output" / "11_render_output",
         target_dir / "11_render_output",
@@ -210,9 +406,116 @@ def _resolve_render_output_dir(target_dir: Path, kwargs: dict) -> Optional[Path]
         *list(Path("output").glob("**/11_render_output")),
     ]
     for candidate in candidates:
-        if candidate.exists() and any(candidate.rglob("*")):
-            return candidate
+        found = _if_nonempty(candidate)
+        if found is not None:
+            return found
     return None
+
+
+def _load_render_summary_contract(
+    render_output_dir: Path,
+    requested_frameworks: List[str],
+    logger: logging.Logger,
+) -> Tuple[Optional[set[Path]], List[Dict[str, str]]]:
+    """Load the latest Step 11 render contract for script filtering and failures."""
+    summary_file = render_output_dir / "render_processing_summary.json"
+    if not summary_file.exists():
+        return None, []
+
+    try:
+        summary = json.loads(summary_file.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        logger.warning("Could not read render summary %s: %s", summary_file, exc)
+        return None, []
+
+    requested = set(requested_frameworks)
+    allowed_scripts: set[Path] = set()
+    render_failures: List[Dict[str, str]] = []
+    file_results = summary.get("file_results")
+    if not isinstance(file_results, dict):
+        return None, []
+
+    for source_file, file_result in file_results.items():
+        framework_results = (
+            file_result.get("framework_results", {})
+            if isinstance(file_result, dict)
+            else {}
+        )
+        if not isinstance(framework_results, dict):
+            continue
+        for framework, framework_result in framework_results.items():
+            if framework not in requested or not isinstance(framework_result, dict):
+                continue
+            if framework_result.get("success"):
+                for output_file in framework_result.get("output_files") or []:
+                    allowed_scripts.add(Path(output_file).resolve())
+            else:
+                render_failures.append(
+                    {
+                        "file": Path(str(source_file)).name,
+                        "framework": str(framework),
+                        "message": str(framework_result.get("message", "")),
+                    }
+                )
+
+    return allowed_scripts, render_failures
+
+
+def _summarize_collected_outputs(coll: Any) -> Any:
+    """Replace bulky collected_outputs with counts safe for aggregate JSON."""
+    if coll is None:
+        return None
+    if isinstance(coll, dict):
+        out: Dict[str, Any] = {}
+        for k, v in coll.items():
+            if isinstance(v, list):
+                out[str(k)] = {"count": len(v)}
+            elif isinstance(v, dict):
+                out[str(k)] = {"n_keys": len(v)}
+            else:
+                out[str(k)] = v
+        return out
+    if isinstance(coll, list):
+        return {"count": len(coll)}
+    return coll
+
+
+def _slim_execution_detail(detail: Dict[str, Any]) -> Dict[str, Any]:
+    """Strip heavy fields from a per-script execution result for aggregate summaries."""
+    keys_keep = (
+        "script_path",
+        "script_name",
+        "framework",
+        "model_name",
+        "executor",
+        "success",
+        "skipped",
+        "return_code",
+        "error",
+        "error_type",
+        "execution_time",
+        "timestamp",
+        "execution_benchmark_repeats",
+        "execution_time_mean",
+        "execution_time_std",
+        "execution_time_samples",
+        "structured_result_file",
+        "output_file",
+        "implementation_directory",
+    )
+    slim: Dict[str, Any] = {}
+    for k in keys_keep:
+        if k in detail:
+            slim[k] = detail[k]
+    if isinstance(detail.get("stdout"), str):
+        slim["stdout_length"] = len(detail["stdout"])
+    if isinstance(detail.get("stderr"), str):
+        slim["stderr_length"] = len(detail["stderr"])
+    if "collected_outputs" in detail:
+        slim["collected_outputs_summary"] = _summarize_collected_outputs(
+            detail["collected_outputs"]
+        )
+    return slim
 
 
 def process_execute(
@@ -220,37 +523,55 @@ def process_execute(
     output_dir: Path,
     verbose: bool = False,
     frameworks: str = "all",
-    **kwargs
-) -> bool:
+    **kwargs: Any,
+) -> Union[bool, int]:
     """
     Execute rendered implementations from 11_render_output directory.
-    
+
     This function searches for executable scripts generated by 11_render.py
     and executes them using subprocess, capturing their outputs and results.
-    
+
     Args:
         target_dir: Directory containing rendered executable scripts (typically 11_render_output)
         output_dir: Directory to save execution results
         verbose: Enable verbose output
         **kwargs: Additional arguments
-        
+
     Returns:
         True if processing successful, False otherwise
     """
     logger = logging.getLogger("execute")
 
     try:
-        log_step_start(logger, "Processing execute - searching for rendered implementations")
+        log_step_start(
+            logger, "Processing execute - searching for rendered implementations"
+        )
+
+        # Phase 1.3: validate frameworks arg before parsing. Rejects non-string
+        # input and fully-unknown framework lists early with a clear error.
+        try:
+            from utils.validation_schemas import validate_frameworks_arg
+
+            frameworks = validate_frameworks_arg(frameworks, context="process_execute")
+        except ValueError as _verr:
+            log_step_error(logger, f"Invalid frameworks argument: {_verr}")
+            return False
 
         # Parse frameworks parameter
         requested_frameworks = parse_frameworks_parameter(frameworks, logger)
+        strict_requested_frameworks = str(frameworks).lower() not in {"all", "lite"}
         logger.info(f"Requested frameworks: {requested_frameworks}")
 
         results_dir = output_dir
         results_dir.mkdir(parents=True, exist_ok=True)
 
+        execution_benchmark_repeats = max(
+            1, int(kwargs.get("execution_benchmark_repeats", 1))
+        )
+        execution_summary_detail = bool(kwargs.get("execution_summary_detail", False))
+
         # Initialize execution results
-        execution_results = {
+        execution_results: dict[str, Any] = {
             "timestamp": datetime.now().isoformat(),
             "target_directory": str(target_dir),
             "output_directory": str(output_dir),
@@ -260,11 +581,18 @@ def process_execute(
             "skipped_executions": 0,
             "execution_details": [],
             "framework_status": {},
-            "success": True
+            "execution_mode": "local",
+            "execution_workers": 1,
+            "backend": None,
+            "execution_benchmark_repeats": execution_benchmark_repeats,
+            "execution_summary_detail": execution_summary_detail,
+            "success": True,
         }
 
         # Look for rendered implementations from render output
-        render_output_dir = _resolve_render_output_dir(target_dir, kwargs)
+        render_output_dir = _resolve_render_output_dir(
+            target_dir, kwargs, output_dir=results_dir
+        )
         if render_output_dir is not None and render_output_dir != target_dir:
             logger.info(f"Found render output directory: {render_output_dir}")
 
@@ -272,12 +600,49 @@ def process_execute(
             logger.info(f"Searching for executable scripts in: {render_output_dir}")
 
         if not render_output_dir or not render_output_dir.exists():
-            log_step_warning(logger, f"Render output directory not found: {render_output_dir}")
-            execution_results["success"] = True  # Not an error, just no files to execute
+            log_step_warning(
+                logger, f"Render output directory not found: {render_output_dir}"
+            )
+            execution_results["success"] = True  # Not a hard error
+            execution_results["skipped_reason"] = "no_render_output"
             execution_results["message"] = "No rendered implementations found"
         else:
+            allowed_render_scripts, render_failures = _load_render_summary_contract(
+                render_output_dir,
+                requested_frameworks,
+                logger,
+            )
+            execution_results["render_failures"] = render_failures
+
             # Find executable scripts, filtered by requested frameworks
-            executable_scripts = find_executable_scripts(render_output_dir, verbose, logger, requested_frameworks)
+            executable_scripts = find_executable_scripts(
+                render_output_dir, verbose, logger, requested_frameworks
+            )
+            if allowed_render_scripts is not None:
+                before_filter = len(executable_scripts)
+                executable_scripts = [
+                    script
+                    for script in executable_scripts
+                    if script["path"].resolve() in allowed_render_scripts
+                ]
+                found_allowed_scripts = {
+                    script["path"].resolve() for script in executable_scripts
+                }
+                missing_render_scripts = sorted(
+                    str(path) for path in allowed_render_scripts - found_allowed_scripts
+                )
+                execution_results["missing_render_scripts"] = missing_render_scripts
+                if missing_render_scripts:
+                    logger.error(
+                        "Latest render summary references %d requested scripts not discoverable for execution",
+                        len(missing_render_scripts),
+                    )
+                filtered_count = before_filter - len(executable_scripts)
+                if filtered_count:
+                    logger.info(
+                        "Ignoring %d rendered scripts not present in the latest render summary",
+                        filtered_count,
+                    )
             execution_results["total_scripts_found"] = len(executable_scripts)
             execution_results["requested_frameworks"] = requested_frameworks
 
@@ -285,39 +650,68 @@ def process_execute(
                 log_step_warning(logger, "No executable scripts found in render output")
                 execution_results["message"] = "No executable scripts found"
                 execution_results["success"] = True
+                execution_results["skipped_reason"] = "no_executable_scripts"
             else:
-                logger.info(f"Found {len(executable_scripts)} executable scripts to run")
+                logger.info(
+                    f"Found {len(executable_scripts)} executable scripts to run"
+                )
 
                 # Extract args
-                timeout = kwargs.get('timeout', 300)
-                is_distributed = kwargs.get('distributed', False)
-                details = []
+                timeout = kwargs.get("timeout", 3600)
+                is_distributed = kwargs.get("distributed", False)
+                execution_workers = _coerce_execution_workers(
+                    kwargs.get("execution_workers", 1)
+                )
+                execution_results["execution_mode"] = (
+                    "distributed" if is_distributed else "local"
+                )
+                execution_results["execution_workers"] = execution_workers
+                execution_results["backend"] = (
+                    kwargs.get("backend", "ray") if is_distributed else None
+                )
+                details: list[Any] = []
 
                 if is_distributed:
                     from .distributed import Dispatcher
-                    backend = kwargs.get('backend', 'ray')
-                    dispatcher = Dispatcher(backend=backend)
-                    
-                    def ray_script_runner(info, **kws):
-                        # Re-instantiate logger to avoid pickle issues
+
+                    backend = kwargs.get("backend", "ray")
+                    dispatcher = Dispatcher(backend=backend, num_cpus=execution_workers)
+
+                    def ray_script_runner(info: Any, **kws: Any) -> Any:
+                        """Execute a rendered simulation script using Ray for distributed processing."""
                         import logging
+
                         local_logger = logging.getLogger("execute.worker")
                         local_logger.setLevel(logging.INFO)
-                        return execute_single_script(info, kws["results_dir"], kws["verbose"], local_logger, kws["timeout"])
-                        
+                        return execute_single_script(
+                            info,
+                            kws["results_dir"],
+                            kws["verbose"],
+                            local_logger,
+                            kws["timeout"],
+                            execution_benchmark_repeats=kws.get(
+                                "execution_benchmark_repeats", 1
+                            ),
+                        )
+
                     details = dispatcher.run_scripts_parallel(
-                        executable_scripts, 
-                        ray_script_runner, 
-                        results_dir=results_dir, 
-                        verbose=verbose, 
-                        timeout=timeout
+                        executable_scripts,
+                        ray_script_runner,
+                        results_dir=results_dir,
+                        verbose=verbose,
+                        timeout=timeout,
+                        execution_benchmark_repeats=execution_benchmark_repeats,
                     )
                 else:
-                    # Execute each script sequentially (execute_single_script skips when optional dep missing)
-                    for script_info in executable_scripts:
-                        exec_result = execute_single_script(script_info, results_dir, verbose, logger, timeout)
-                        exec_result.setdefault("skipped", False)
-                        details.append(exec_result)
+                    details = _run_scripts_with_local_workers(
+                        executable_scripts,
+                        results_dir,
+                        verbose,
+                        logger,
+                        timeout,
+                        execution_workers,
+                        execution_benchmark_repeats,
+                    )
 
                 # Update aggregated results
                 for exec_result in details:
@@ -326,62 +720,148 @@ def process_execute(
                     # Update framework status
                     framework = exec_result.get("framework", "unknown")
                     if framework not in execution_results["framework_status"]:
-                        execution_results["framework_status"][framework] = {"status": "unknown", "executions": 0}
+                        execution_results["framework_status"][framework] = {
+                            "status": "unknown",
+                            "executions": 0,
+                        }
 
                     execution_results["framework_status"][framework]["executions"] += 1
 
                     if exec_result.get("skipped"):
-                        execution_results["skipped_executions"] = execution_results.get("skipped_executions", 0) + 1
-                        execution_results["framework_status"][framework]["status"] = "skipped"
+                        execution_results["skipped_executions"] = (
+                            execution_results.get("skipped_executions", 0) + 1
+                        )
+                        execution_results["framework_status"][framework]["status"] = (
+                            "skipped"
+                        )
                         if "error" in exec_result:
-                            execution_results["framework_status"][framework]["error"] = exec_result["error"]
+                            execution_results["framework_status"][framework][
+                                "error"
+                            ] = exec_result["error"]
                     elif exec_result["success"]:
                         execution_results["successful_executions"] += 1
-                        execution_results["framework_status"][framework]["status"] = "success"
+                        execution_results["framework_status"][framework]["status"] = (
+                            "success"
+                        )
                     else:
                         execution_results["failed_executions"] += 1
-                        execution_results["framework_status"][framework]["status"] = "failed"
+                        execution_results["framework_status"][framework]["status"] = (
+                            "failed"
+                        )
                         if "error" in exec_result:
-                            execution_results["framework_status"][framework]["error"] = exec_result["error"]
+                            execution_results["framework_status"][framework][
+                                "error"
+                            ] = exec_result["error"]
 
-        # Save detailed results to summaries subfolder
+        # Populate summary counters before saving.
+        total_found = execution_results["total_scripts_found"]
+        successful = execution_results["successful_executions"]
+        skipped = execution_results.get("skipped_executions", 0)
+        attempted = total_found - skipped
+        execution_results["total_scripts"] = total_found
+        execution_results["success_rate"] = (
+            round(successful / attempted * 100, 2) if attempted > 0 else 100.0
+        )
+
+        # Save detailed results to summaries subfolder (slim aggregate + optional full detail file)
         summaries_dir = results_dir / "summaries"
         summaries_dir.mkdir(parents=True, exist_ok=True)
         results_file = summaries_dir / "execution_summary.json"
-        with open(results_file, 'w') as f:
+
+        full_details_snapshot = copy.deepcopy(execution_results["execution_details"])
+        execution_results["execution_details"] = [
+            _slim_execution_detail(d) for d in full_details_snapshot
+        ]
+        execution_results["execution_summary_format"] = "slim_v1"
+
+        with open(results_file, "w") as f:
             json.dump(execution_results, f, indent=2, default=str)
 
-        # Generate execution report
+        if execution_summary_detail:
+            detail_path = summaries_dir / "execution_summary_detail.json"
+            detail_payload = dict(execution_results)
+            detail_payload["execution_details"] = full_details_snapshot
+            detail_payload["execution_summary_format"] = "detail_v1"
+            with open(detail_path, "w") as f:
+                json.dump(detail_payload, f, indent=2, default=str)
+
+        # Generate execution report (uses slim execution_details)
         generate_execution_report(execution_results, results_dir, logger)
+
+        # Restore full details in-memory for any downstream callers of this function
+        execution_results["execution_details"] = full_details_snapshot
 
         # Determine overall success: only count real failures (not skipped) toward critical threshold
         total_scripts = execution_results["total_scripts_found"]
         failed_scripts = execution_results["failed_executions"]
         skipped_scripts = execution_results.get("skipped_executions", 0)
         attempted_scripts = total_scripts - skipped_scripts
+        render_failures = execution_results.get("render_failures", [])
+        missing_render_scripts = execution_results.get("missing_render_scripts", [])
 
+        if strict_requested_frameworks and render_failures:
+            failure_preview = "; ".join(
+                f"{item['file']}:{item['framework']}" for item in render_failures[:5]
+            )
+            log_step_error(
+                logger,
+                f"Execute blocked by requested-framework render failures: {failure_preview}",
+            )
+            return False
+        if strict_requested_frameworks and missing_render_scripts:
+            log_step_error(
+                logger,
+                "Execute blocked because requested rendered scripts were not discoverable",
+            )
+            return False
         if total_scripts == 0:
             log_step_warning(logger, "No executable scripts found to run")
-            return True
+            if strict_requested_frameworks:
+                return False
+            # Exit-code 2: step completed without doing work. Distinguishes
+            # "nothing to do" from "did work successfully".
+            return 2
+        elif strict_requested_frameworks and (
+            failed_scripts > 0 or skipped_scripts > 0
+        ):
+            log_step_error(
+                logger,
+                f"Execute failed for requested frameworks: {successful} succeeded, "
+                f"{failed_scripts} failed, {skipped_scripts} skipped",
+            )
+            return False
         elif failed_scripts == 0:
             if skipped_scripts:
-                log_step_success(logger, f"Execute completed: {execution_results['successful_executions']} succeeded, {skipped_scripts} skipped (dependency not installed)")
+                log_step_success(
+                    logger,
+                    f"Execute completed: {execution_results['successful_executions']} succeeded, {skipped_scripts} skipped (dependency not installed)",
+                )
             else:
                 log_step_success(logger, "Execute processing completed successfully")
         elif attempted_scripts > 0 and failed_scripts < attempted_scripts * 0.5:
-            log_step_warning(logger, f"Execute completed with {failed_scripts}/{attempted_scripts} failures (partial success)" + (f", {skipped_scripts} skipped" if skipped_scripts else ""))
+            log_step_warning(
+                logger,
+                f"Execute completed with {failed_scripts}/{attempted_scripts} failures (partial success)"
+                + (f", {skipped_scripts} skipped" if skipped_scripts else ""),
+            )
         elif attempted_scripts > 0:
-            log_step_error(logger, f"Execute completed with {failed_scripts}/{attempted_scripts} failures (critical)" + (f", {skipped_scripts} skipped" if skipped_scripts else ""))
+            log_step_error(
+                logger,
+                f"Execute completed with {failed_scripts}/{attempted_scripts} failures (critical)"
+                + (f", {skipped_scripts} skipped" if skipped_scripts else ""),
+            )
+            return False
 
-        # Return True if we found and attempted to run scripts (even if some failed)
-        # Return False only if there was a critical error preventing execution
-        return True
+        return cast("bool | int", failed_scripts == 0)
 
     except Exception as e:
         log_step_error(logger, f"Execute processing failed: {e}")
         return False
 
-def find_executable_scripts(render_output_dir: Path, verbose: bool, logger, requested_frameworks: List[str]) -> List[Dict[str, Any]]:
+
+def find_executable_scripts(
+    render_output_dir: Path, verbose: bool, logger: Any, requested_frameworks: List[str]
+) -> List[Dict[str, Any]]:
     """
     Find executable scripts in the render output directory.
 
@@ -407,251 +887,399 @@ def find_executable_scripts(render_output_dir: Path, verbose: bool, logger, requ
             - relative_path: Path relative to render_output_dir
             - size_bytes: File size in bytes
     """
-    executable_scripts = []
+    executable_scripts: list[Any] = []
 
     # Define supported script types and their executors
-    script_types = {
-        '*.py': {'executor': sys.executable, 'framework': 'python'},
-        '*.jl': {'executor': 'julia', 'framework': 'julia'},
+    script_types: dict[str, Any] = {
+        "*.py": {"executor": sys.executable, "framework": "python"},
+        "*.jl": {"executor": "julia", "framework": "julia"},
     }
 
     # Map framework directories to framework names
-    framework_dirs = {
-        'pymdp': 'pymdp',
-        'jax': 'jax',
-        'discopy': 'discopy',
-        'rxinfer': 'rxinfer',
-        'activeinference_jl': 'activeinference_jl',
-        'activeinference.jl': 'activeinference_jl',
-        'pytorch': 'pytorch',
-        'numpyro': 'numpyro',
-        'bnlearn': 'bnlearn',
+    framework_dirs: dict[str, Any] = {
+        "pymdp": "pymdp",
+        "jax": "jax",
+        "discopy": "discopy",
+        "rxinfer": "rxinfer",
+        "activeinference_jl": "activeinference_jl",
+        "activeinference.jl": "activeinference_jl",
+        "pytorch": "pytorch",
+        "numpyro": "numpyro",
+        "bnlearn": "bnlearn",
     }
 
     for pattern, config in script_types.items():
         scripts = list(render_output_dir.rglob(pattern))
 
         for script_path in scripts:
-            # Skip test files and other non-executable scripts
-            if any(skip in script_path.name.lower() for skip in ['test_', '__', 'readme']):
+            # Skip support modules in test folders without excluding rendered
+            # model scripts whose model name naturally starts with "test_".
+            script_name = script_path.name.lower()
+            path_parts = {part.lower() for part in script_path.parts}
+            if (
+                script_name == "__init__.py"
+                or script_name.startswith("__")
+                or script_path.stem.lower().endswith("_test")
+                or "tests" in path_parts
+            ):
                 continue
 
             # Determine framework from directory path
-            framework = determine_script_framework(script_path, render_output_dir, framework_dirs)
+            framework = determine_script_framework(
+                script_path, render_output_dir, framework_dirs
+            )
 
             # Filter by requested frameworks
             if framework not in requested_frameworks:
                 if verbose:
-                    logger.debug(f"Skipping {framework} script: {script_path.name} (not in requested frameworks)")
+                    logger.debug(
+                        f"Skipping {framework} script: {script_path.name} (not in requested frameworks)"
+                    )
                 continue
 
             # Check if script is executable or can be made executable
-            script_info = {
-                'path': script_path,
-                'name': script_path.name,
-                'framework': framework,
-                'executor': config['executor'],
-                'relative_path': script_path.relative_to(render_output_dir),
-                'size_bytes': script_path.stat().st_size if script_path.exists() else 0
+            script_info: dict[str, Any] = {
+                "path": script_path,
+                "name": script_path.name,
+                "framework": framework,
+                "executor": config["executor"],
+                "relative_path": script_path.relative_to(render_output_dir),
+                "size_bytes": script_path.stat().st_size if script_path.exists() else 0,
             }
 
             executable_scripts.append(script_info)
 
             if verbose:
-                logger.info(f"Found {config['framework']} script: {script_info['relative_path']}")
+                logger.info(
+                    f"Found {config['framework']} script: {script_info['relative_path']}"
+                )
 
     return executable_scripts
 
 
-def execute_single_script(script_info: Dict[str, Any], results_dir: Path, verbose: bool, logger, timeout: int = 300) -> Dict[str, Any]:
+def _aggregate_benchmark_samples(samples: List[float]) -> Dict[str, Any]:
+    """Aggregate repeated execution durations (median + population std)."""
+    import statistics
+
+    if not samples:
+        return {}
+    med = float(statistics.median(samples))
+    mean = float(statistics.mean(samples))
+    std = float(statistics.pstdev(samples)) if len(samples) > 1 else 0.0
+    return {
+        "execution_time": med,
+        "execution_time_mean": mean,
+        "execution_time_std": std,
+        "execution_time_samples": list(samples),
+    }
+
+
+def _build_script_execution_context(
+    script_info: Dict[str, Any],
+) -> ScriptExecutionContext:
+    """Normalize model/framework metadata from a rendered script path."""
+    script_path = script_info["path"]
+    path_parts = script_path.parts
+    if len(path_parts) >= 3:
+        model_name = path_parts[-3]
+        framework = path_parts[-2]
+    else:
+        model_name = "unknown_model"
+        framework = script_info["framework"]
+
+    return ScriptExecutionContext(
+        script_path=script_path,
+        script_name=script_info["name"],
+        framework=framework,
+        model_name=model_name,
+        executor=script_info["executor"],
+    )
+
+
+def _new_execution_result(context: ScriptExecutionContext) -> Dict[str, Any]:
+    """Create the standard execution result envelope."""
+    return {
+        "script_path": str(context.script_path),
+        "script_name": context.script_name,
+        "framework": context.framework,
+        "model_name": context.model_name,
+        "executor": context.executor,
+        "success": False,
+        "return_code": None,
+        "stdout": "",
+        "stderr": "",
+        "execution_time": 0,
+        "timestamp": datetime.now().isoformat(),
+    }
+
+
+def _build_execution_environment(
+    context: ScriptExecutionContext,
+    results_dir: Path,
+) -> Dict[str, str]:
+    """Build environment variables for a rendered-script subprocess."""
+    env = os.environ.copy()
+    if context.framework == "pymdp":
+        env["PYTHONPATH"] = (
+            str(context.script_path.parent) + os.pathsep + env.get("PYTHONPATH", "")
+        )
+        proc_path = Path(__file__).resolve()
+        repo_root = proc_path.parent.parent.parent
+        env["GNN_PROJECT_ROOT"] = str(repo_root)
+        env.setdefault("TF_CPP_MIN_LOG_LEVEL", "3")
+        jax_platform = os.environ.get("GNN_JAX_PLATFORM")
+        if jax_platform and str(jax_platform).strip():
+            env["JAX_PLATFORM_NAME"] = str(jax_platform).strip()
+
+    simulation_data_dir = (
+        results_dir / context.model_name / context.framework / "simulation_data"
+    )
+    output_env_vars = {
+        "jax": "GNN_OUTPUT_DIR",
+        "numpyro": "NUMPYRO_OUTPUT_DIR",
+        "pytorch": "PYTORCH_OUTPUT_DIR",
+    }
+    if context.framework in output_env_vars:
+        simulation_data_dir.mkdir(parents=True, exist_ok=True)
+        env[output_env_vars[context.framework]] = str(simulation_data_dir)
+
+    return env
+
+
+def _framework_for_data_helpers(framework: str) -> ExecutionFrameworkName:
+    """Narrow framework names for typed data-collection helper calls."""
+    return cast(ExecutionFrameworkName, framework)
+
+
+def execute_single_script(
+    script_info: Dict[str, Any],
+    results_dir: Path,
+    verbose: bool,
+    logger: Any,
+    timeout: int = 3600,
+    *,
+    execution_benchmark_repeats: int = 1,
+) -> Dict[str, Any]:
     """
     Execute a single script using subprocess.
-    
+
     Args:
         script_info: Dictionary containing script information
         results_dir: Directory to save execution results (will create implementation-specific subfolders)
         verbose: Enable verbose logging
         logger: Logger instance
-        
+
     Returns:
         Dictionary with execution results
     """
-    script_path = script_info['path']
-    executor = script_info['executor']
-
-    # Extract model name and framework from script path for organization
-    # Expected path: .../11_render_output/model_name/framework/script.ext
-    path_parts = script_path.parts
-    if len(path_parts) >= 3:
-        model_name = path_parts[-3]  # e.g., 'actinf_pomdp_agent'
-        framework = path_parts[-2]   # e.g., 'pymdp'
-    else:
-        model_name = 'unknown_model'
-        framework = script_info['framework']
+    context = _build_script_execution_context(script_info)
+    script_path = context.script_path
+    executor = context.executor
+    model_name = context.model_name
+    framework = context.framework
 
     # Pre-flight skip: do not run Python frameworks when optional dependency is missing
-    if executor == sys.executable and not _is_python_framework_dependency_available(framework, executor, logger):
-        return _make_skipped_result(script_info, framework, model_name, executor, logger)
+    if executor == sys.executable and not _is_python_framework_dependency_available(
+        framework, executor, logger
+    ):
+        return _make_skipped_result(
+            script_info, framework, model_name, executor, logger
+        )
 
     # Prepare execution result
-    exec_result = {
-        'script_path': str(script_path),
-        'script_name': script_info['name'],
-        'framework': framework,
-        'model_name': model_name,
-        'executor': executor,
-        'success': False,
-        'return_code': None,
-        'stdout': '',
-        'stderr': '',
-        'execution_time': 0,
-        'timestamp': datetime.now().isoformat()
-    }
+    exec_result = _new_execution_result(context)
 
     try:
-
         if verbose:
-            logger.info(f"Executing {script_info['framework']} script: {script_info['name']}")
-
-        start_time = datetime.now()
+            logger.info(
+                f"Executing {script_info['framework']} script: {script_info['name']}"
+            )
 
         # Check if the executor is available
         try:
             # For Python scripts, check if Python is available (most are Python scripts)
-            if executor in ['python', 'python3']:
-                subprocess.run([executor, '--version'],  # nosec B603 -- subprocess calls with controlled/trusted input
-                             capture_output=True,
-                             text=True,
-                             timeout=5,
-                             check=True)
+            if executor in ["python", "python3"]:
+                subprocess.run(
+                    [executor, "--version"],  # nosec B603
+                    capture_output=True,
+                    text=True,
+                    timeout=5,
+                    check=True,
+                )
 
                 # For PyMDP, specifically check if it's importable
                 if framework == "pymdp":
                     try:
-                        import_check = subprocess.run(  # nosec B603 -- subprocess calls with controlled/trusted input
-                            [executor, '-c', 'import pymdp; print("ok")'],
+                        import_check = subprocess.run(  # nosec B603
+                            [executor, "-c", 'import pymdp; print("ok")'],
                             capture_output=True,
                             text=True,
-                            timeout=5
+                            timeout=5,
                         )
                         if import_check.returncode != 0:
-                            logger.warning(f"PyMDP package appears missing or broken: {import_check.stderr}")
-                            exec_result['error'] = f"PyMDP dependency missing: {import_check.stderr}"
+                            logger.warning(
+                                f"PyMDP package appears missing or broken: {import_check.stderr}"
+                            )
+                            exec_result["error"] = (
+                                f"PyMDP dependency missing: {import_check.stderr}"
+                            )
                             # Continue anyway as it might be a local import, but log warning
                     except Exception as e:
                         logger.debug(f"Error checking PyMDP importability: {e}")
 
             # For Julia scripts, check availability and dependencies
-            elif executor == 'julia':
-                if not check_julia_dependencies(verbose, logger):
-                    logger.warning("Julia dependencies (RxInfer/ActiveInference) may be missing")
-                    # Don't fail here, let the script try to run, but log warning
+            elif executor == "julia":
+                if not check_julia_dependencies(verbose, logger, [framework]):
+                    skipped = _make_skipped_result(
+                        script_info, framework, model_name, executor, logger
+                    )
+                    skipped["error"] = (
+                        f"Julia packages required for {framework} are not available"
+                    )
+                    return skipped
 
-                subprocess.run([executor, '--version'],  # nosec B603 -- subprocess calls with controlled/trusted input
-                             capture_output=True,
-                             text=True,
-                             timeout=5,
-                             check=True)
+                subprocess.run(
+                    [executor, "--version"],  # nosec B603
+                    capture_output=True,
+                    text=True,
+                    timeout=5,
+                    check=True,
+                )
             # For other executors, try a basic check
             else:
-                subprocess.run([executor, '--version'],  # nosec B603 -- subprocess calls with controlled/trusted input
-                             capture_output=True,
-                             text=True,
-                             timeout=5,
-                             check=True)
-        except (subprocess.CalledProcessError, FileNotFoundError, subprocess.TimeoutExpired) as e:
-            exec_result['error'] = f"Executor '{executor}' is not available or not working: {e}"
-            logger.warning(f"Executor '{executor}' is not available - skipping {script_info['name']}")
+                subprocess.run(
+                    [executor, "--version"],  # nosec B603
+                    capture_output=True,
+                    text=True,
+                    timeout=5,
+                    check=True,
+                )
+        except (
+            subprocess.CalledProcessError,
+            FileNotFoundError,
+            subprocess.TimeoutExpired,
+        ) as e:
+            exec_result["error"] = (
+                f"Executor '{executor}' is not available or not working: {e}"
+            )
+            logger.warning(
+                f"Executor '{executor}' is not available - skipping {script_info['name']}"
+            )
             return exec_result
 
-        # Execute the script with improved error handling
-        script_name = script_path.name
-        result = None
-
-        # Error result class for consistent interface when subprocess fails
         class ErrorResult:
-            def __init__(self, returncode: int, stdout: str, stderr: str):
+            """Provide ErrorResult behavior."""
+
+            def __init__(self, returncode: int, stdout: str, stderr: str) -> None:
+                """Initialize the instance."""
                 self.returncode = returncode
                 self.stdout = stdout
                 self.stderr = stderr
 
+        # Execute the script with improved error handling
+        script_name = script_path.name
+        result: subprocess.CompletedProcess[str] | ErrorResult | None = None
+
+        K = max(1, int(execution_benchmark_repeats))
+        exec_result["execution_benchmark_repeats"] = K
+
+        durations_success: List[float] = []
+        broke_early = False
+
         try:
-            # Set environment variables if needed
-            env = os.environ.copy()
-            if framework == "pymdp":
-                env["PYTHONPATH"] = str(script_path.parent) + os.pathsep + env.get("PYTHONPATH", "")
-                # Generated PyMDP scripts import src.execute.pymdp; subprocess cwd is often under output/
-                _proc = Path(__file__).resolve()
-                _repo_root = _proc.parent.parent.parent  # src/execute/processor.py -> src -> repo root
-                env["GNN_PROJECT_ROOT"] = str(_repo_root)
+            env = _build_execution_environment(context, results_dir)
 
-            # Direct JAX/NumPyro/PyTorch output into execute output dir for collection/analysis
-            impl_output_dir = results_dir / model_name / framework
-            sim_data_dir = impl_output_dir / "simulation_data"
-            if framework == "jax":
-                sim_data_dir.mkdir(parents=True, exist_ok=True)
-                env["GNN_OUTPUT_DIR"] = str(sim_data_dir)
-            elif framework == "numpyro":
-                sim_data_dir.mkdir(parents=True, exist_ok=True)
-                env["NUMPYRO_OUTPUT_DIR"] = str(sim_data_dir)
-            elif framework == "pytorch":
-                sim_data_dir.mkdir(parents=True, exist_ok=True)
-                env["PYTORCH_OUTPUT_DIR"] = str(sim_data_dir)
+            for rep in range(K):
+                rep_start = datetime.now()
+                try:
+                    run_result = subprocess.run(  # nosec B603
+                        [executor, script_name],
+                        capture_output=True,
+                        text=True,
+                        timeout=timeout,
+                        cwd=script_path.parent,
+                        env=env,
+                    )
+                except subprocess.TimeoutExpired:
+                    exec_result["execution_time"] = (
+                        datetime.now() - rep_start
+                    ).total_seconds()
+                    exec_result["error"] = (
+                        f"Script execution timed out after {timeout} seconds"
+                    )
+                    exec_result["return_code"] = -1
+                    exec_result["stdout"] = ""
+                    exec_result["stderr"] = "Timeout"
+                    logger.warning(
+                        f"⏰ Script {script_info['name']} timed out after {timeout} seconds "
+                        f"(rep {rep + 1}/{K})"
+                    )
+                    result = ErrorResult(-1, "", "Timeout")
+                    broke_early = True
+                    break
 
-            result = subprocess.run(  # nosec B603 -- subprocess calls with controlled/trusted input
-                [executor, script_name],
-                capture_output=True,
-                text=True,
-                timeout=timeout,
-                cwd=script_path.parent,  # Run in the script's directory
-                env=env
-            )
+                elapsed_rep = (datetime.now() - rep_start).total_seconds()
 
-            end_time = datetime.now()
-            exec_result['execution_time'] = (end_time - start_time).total_seconds()
-            exec_result['return_code'] = result.returncode
-            exec_result['stdout'] = result.stdout
-            exec_result['stderr'] = result.stderr
+                if run_result.returncode != 0:
+                    exec_result["execution_time"] = elapsed_rep
+                    exec_result["return_code"] = run_result.returncode
+                    exec_result["stdout"] = run_result.stdout
+                    exec_result["stderr"] = run_result.stderr
+                    exec_result["error"] = (
+                        f"Script failed with return code {run_result.returncode}"
+                    )
 
-            if result.returncode == 0:
-                exec_result['success'] = True
-                logger.info(f"✅ Successfully executed {script_info['name']}")
-                if verbose and result.stdout:
-                    logger.info(f"Script output: {result.stdout[:200]}...")  # Show first 200 chars
-            else:
-                exec_result['error'] = f"Script failed with return code {result.returncode}"
+                    if "ModuleNotFoundError" in run_result.stderr:
+                        exec_result["error_type"] = "DependencyError"
+                        logger.error(
+                            f"Missing dependency in {script_info['name']}: "
+                            f"{run_result.stderr.splitlines()[-1]}"
+                        )
+                    elif "SyntaxError" in run_result.stderr:
+                        exec_result["error_type"] = "SyntaxError"
+                        logger.error(f"Syntax error in {script_info['name']}")
+                    else:
+                        exec_result["error_type"] = "RuntimeError"
 
-                # Analyze stderr for common errors
-                if "ModuleNotFoundError" in result.stderr:
-                    exec_result['error_type'] = "DependencyError"
-                    logger.error(f"Missing dependency in {script_info['name']}: {result.stderr.splitlines()[-1]}")
-                elif "SyntaxError" in result.stderr:
-                    exec_result['error_type'] = "SyntaxError"
-                    logger.error(f"Syntax error in {script_info['name']}")
+                    logger.warning(
+                        f"⚠️ Script {script_info['name']} failed with return code "
+                        f"{run_result.returncode} (rep {rep + 1}/{K})"
+                    )
+                    if run_result.stderr:
+                        logger.warning(f"Error output: {run_result.stderr[:500]}...")
+                    result = run_result
+                    broke_early = True
+                    break
+
+                durations_success.append(elapsed_rep)
+                result = run_result
+                if verbose and K > 1:
+                    logger.info(
+                        f"Benchmark rep {rep + 1}/{K} for {script_info['name']}: {elapsed_rep:.3f}s"
+                    )
+
+            if not broke_early and result is not None and len(durations_success) == K:
+                agg = _aggregate_benchmark_samples(durations_success)
+                exec_result.update(agg)
+                exec_result["success"] = True
+                exec_result["return_code"] = result.returncode
+                exec_result["stdout"] = result.stdout
+                exec_result["stderr"] = result.stderr
+                if K == 1:
+                    logger.info(f"✅ Successfully executed {script_info['name']}")
                 else:
-                    exec_result['error_type'] = "RuntimeError"
-
-                logger.warning(f"⚠️ Script {script_info['name']} failed with return code {result.returncode}")
-                if result.stderr:
-                    logger.warning(f"Error output: {result.stderr[:500]}...")  # Show first 500 chars
-
-        except subprocess.TimeoutExpired:
-            end_time = datetime.now()
-            exec_result['execution_time'] = (end_time - start_time).total_seconds()
-            exec_result['error'] = f"Script execution timed out after {timeout} seconds"
-            exec_result['return_code'] = -1
-            exec_result['stdout'] = ""
-            exec_result['stderr'] = "Timeout"
-            logger.warning(f"⏰ Script {script_info['name']} timed out after {timeout} seconds")
-            result = ErrorResult(-1, "", "Timeout")
-
+                    logger.info(
+                        f"✅ Successfully executed {script_info['name']} "
+                        f"({K} reps, median {exec_result['execution_time']:.3f}s)"
+                    )
+                if verbose and result.stdout:
+                    logger.info(f"Script output: {result.stdout[:200]}...")
         except Exception as e:
-            end_time = datetime.now()
-            exec_result['execution_time'] = (end_time - start_time).total_seconds()
-            exec_result['error'] = f"Script execution failed: {e}"
-            exec_result['return_code'] = -2
-            exec_result['stdout'] = ""
-            exec_result['stderr'] = str(e)
+            exec_result["execution_time"] = exec_result.get("execution_time", 0)
+            exec_result["error"] = f"Script execution failed: {e}"
+            exec_result["return_code"] = -2
+            exec_result["stdout"] = ""
+            exec_result["stderr"] = str(e)
             logger.warning(f"❌ Script {script_info['name']} execution failed: {e}")
             result = ErrorResult(-2, "", str(e))
 
@@ -668,44 +1296,70 @@ def execute_single_script(script_info: Dict[str, Any], results_dir: Path, verbos
         # are created on-demand by collect_execution_outputs() only when actual content
         # is copied to them, avoiding empty folder creation.
 
-
         # Extract simulation data from stdout/stderr
-        simulation_data = _extract_simulation_data(result.stdout, result.stderr, framework, logger)
-        exec_result['simulation_data'] = simulation_data
+        data_framework = _framework_for_data_helpers(framework)
+        simulation_data = _extract_simulation_data(
+            result.stdout, result.stderr, data_framework, logger
+        )
+        exec_result["simulation_data"] = simulation_data
 
         # Save structured execution results in JSON format
-        structured_result = {
+        structured_result: dict[str, Any] = {
             "framework": framework,
             "model_name": model_name,
-            "script_name": script_info['name'],
+            "script_name": script_info["name"],
             "script_path": str(script_path),
-            "success": exec_result['success'],
-            "return_code": exec_result.get('return_code'),
-            "execution_time": exec_result.get('execution_time', 0),
-            "timestamp": exec_result['timestamp'],
+            "success": exec_result["success"],
+            "return_code": exec_result.get("return_code"),
+            "execution_time": exec_result.get("execution_time", 0),
+            "timestamp": exec_result["timestamp"],
             "simulation_data": simulation_data,
+            "execution_benchmark_repeats": exec_result.get(
+                "execution_benchmark_repeats", 1
+            ),
             "execution_metadata": {
                 "executor": executor,
                 "stdout_length": len(result.stdout),
                 "stderr_length": len(result.stderr),
-                "output_directory": str(impl_specific_dir.parent)
-            }
+                "output_directory": str(impl_specific_dir.parent),
+            },
         }
+        for bench_key in (
+            "execution_time_mean",
+            "execution_time_std",
+            "execution_time_samples",
+        ):
+            if bench_key in exec_result:
+                structured_result[bench_key] = exec_result[bench_key]
 
         # Save structured JSON result
         json_output_file = impl_specific_dir / f"{script_info['name']}_results.json"
-        with open(json_output_file, 'w') as f:
+        with open(json_output_file, "w") as f:
             json.dump(structured_result, f, indent=2, default=str)
 
-        exec_result['structured_result_file'] = str(json_output_file)
+        exec_result["structured_result_file"] = str(json_output_file)
 
         # Also save human-readable log
         output_file = impl_specific_dir / f"{script_info['name']}_execution.log"
-        with open(output_file, 'w') as f:
+        with open(output_file, "w") as f:
             f.write(f"Execution Results for {script_info['name']}\n")
             f.write(f"Timestamp: {exec_result['timestamp']}\n")
             f.write(f"Return Code: {result.returncode}\n")
-            f.write(f"Execution Time: {exec_result['execution_time']:.2f} seconds\n")
+            f.write(
+                f"Benchmark repeats: {exec_result.get('execution_benchmark_repeats', 1)}\n"
+            )
+            f.write(
+                f"Execution Time (median wall-clock): {exec_result['execution_time']:.2f} seconds\n"
+            )
+            if exec_result.get("execution_time_samples"):
+                f.write(
+                    f"Sample durations (s): {exec_result['execution_time_samples']}\n"
+                )
+            if exec_result.get("execution_time_std") is not None:
+                f.write(
+                    f"Duration mean/std (s): {exec_result.get('execution_time_mean', 0):.4f} / "
+                    f"{exec_result.get('execution_time_std', 0):.4f}\n"
+                )
             f.write(f"Model: {model_name}\n")
             f.write(f"Framework: {framework}\n")
             f.write(f"Output Directory: {impl_specific_dir.parent}\n\n")
@@ -714,54 +1368,62 @@ def execute_single_script(script_info: Dict[str, Any], results_dir: Path, verbos
             f.write("\n\nSTDERR:\n")
             f.write(result.stderr)
 
-        exec_result['output_file'] = str(output_file)
-        exec_result['implementation_directory'] = str(impl_specific_dir.parent)
+        exec_result["output_file"] = str(output_file)
+        exec_result["implementation_directory"] = str(impl_specific_dir.parent)
 
         # Collect execution outputs (visualizations, simulation data, traces)
-        if exec_result['success']:
+        if exec_result["success"]:
             try:
-                logger.info(f"Collecting execution outputs for {framework} script {script_info['name']}")
-                collected_outputs = collect_execution_outputs(
-                    script_path,
-                    impl_specific_dir.parent,
-                    framework,
-                    logger
+                logger.info(
+                    f"Collecting execution outputs for {framework} script {script_info['name']}"
                 )
-                exec_result['collected_outputs'] = collected_outputs
+                collected_outputs = collect_execution_outputs(
+                    script_path, impl_specific_dir.parent, data_framework, logger
+                )
+                exec_result["collected_outputs"] = collected_outputs
 
                 # Update structured result with collected file paths
-                structured_result['collected_outputs'] = collected_outputs
+                structured_result["collected_outputs"] = collected_outputs
 
                 # Re-save structured result with collected outputs
-                with open(json_output_file, 'w') as f:
+                with open(json_output_file, "w") as f:
                     json.dump(structured_result, f, indent=2, default=str)
                 logger.debug("Updated results JSON with collected outputs")
 
                 # Enhance simulation data extraction from collected files
                 if collected_outputs:
-                    logger.info(f"Extracting simulation data from collected files for {framework}")
+                    logger.info(
+                        f"Extracting simulation data from collected files for {framework}"
+                    )
                     enhanced_data = _extract_simulation_data_from_files(
-                        impl_specific_dir.parent,
-                        framework,
-                        logger
+                        impl_specific_dir.parent, data_framework, logger
                     )
                     if enhanced_data:
-                        logger.info(f"Extracted {len(enhanced_data)} data fields from files")
+                        logger.info(
+                            f"Extracted {len(enhanced_data)} data fields from files"
+                        )
                         simulation_data.update(enhanced_data)
-                        exec_result['simulation_data'] = simulation_data
-                        structured_result['simulation_data'] = simulation_data
+                        exec_result["simulation_data"] = simulation_data
+                        structured_result["simulation_data"] = simulation_data
 
                         # Re-save again with enhanced data
-                        with open(json_output_file, 'w') as f:
+                        with open(json_output_file, "w") as f:
                             json.dump(structured_result, f, indent=2, default=str)
-                        logger.debug("Updated results JSON with enhanced simulation data")
+                        logger.debug(
+                            "Updated results JSON with enhanced simulation data"
+                        )
                     else:
-                        logger.debug(f"No additional data extracted from files for {framework}")
+                        logger.debug(
+                            f"No additional data extracted from files for {framework}"
+                        )
 
                 if framework == "pymdp":
                     sim_dir = impl_specific_dir.parent / "simulation_data"
                     sr_candidates = list(sim_dir.glob("*simulation_results.json"))
-                    if not sr_candidates and (sim_dir / "simulation_results.json").exists():
+                    if (
+                        not sr_candidates
+                        and (sim_dir / "simulation_results.json").exists()
+                    ):
                         sr_candidates = [sim_dir / "simulation_results.json"]
                     if sr_candidates:
                         try:
@@ -783,21 +1445,22 @@ def execute_single_script(script_info: Dict[str, Any], results_dir: Path, verbos
             except Exception as e:
                 logger.warning(f"Failed to collect execution outputs: {e}")
                 import traceback
+
                 logger.debug(traceback.format_exc())
 
     except subprocess.TimeoutExpired:
-        exec_result['error'] = f'Script execution timed out ({timeout} seconds)'
+        exec_result["error"] = f"Script execution timed out ({timeout} seconds)"
         logger.error(f"Script {script_info['name']} timed out")
 
     except Exception as e:
-        exec_result['error'] = str(e)
-        exec_result['error_type'] = type(e).__name__
+        exec_result["error"] = str(e)
+        exec_result["error_type"] = type(e).__name__
         logger.error(f"Error executing {script_info['name']}: {e}")
 
     return exec_result
 
 
-# --- Re-export everything from sub-modules for backward compatibility ---
+# --- Public exports from sub-modules ---
 from .data_extractors import (
     collect_execution_outputs,
 )
@@ -809,10 +1472,12 @@ from .data_extractors import (
 )
 
 
-def generate_execution_report(execution_results: Dict[str, Any], results_dir: Path, logger: logging.Logger) -> None:
+def generate_execution_report(
+    execution_results: Dict[str, Any], results_dir: Path, logger: logging.Logger
+) -> None:
     """
     Generate a comprehensive execution report.
-    
+
     Args:
         execution_results: Dictionary with execution results
         results_dir: Directory to save the report
@@ -823,28 +1488,36 @@ def generate_execution_report(execution_results: Dict[str, Any], results_dir: Pa
     report_file = summaries_dir / "execution_report.md"
 
     try:
-        with open(report_file, 'w') as f:
+        with open(report_file, "w") as f:
             f.write("# GNN Script Execution Report\n\n")
             f.write(f"**Generated:** {execution_results['timestamp']}\n")
             f.write(f"**Target Directory:** {execution_results['target_directory']}\n")
-            f.write(f"**Output Directory:** {execution_results['output_directory']}\n\n")
+            f.write(
+                f"**Output Directory:** {execution_results['output_directory']}\n\n"
+            )
 
             f.write("## Summary\n\n")
-            f.write(f"- **Total Scripts Found:** {execution_results['total_scripts_found']}\n")
-            f.write(f"- **Successful Executions:** {execution_results['successful_executions']}\n")
-            f.write(f"- **Failed Executions:** {execution_results['failed_executions']}\n")
-            skipped = execution_results.get('skipped_executions', 0)
+            f.write(
+                f"- **Total Scripts Found:** {execution_results['total_scripts_found']}\n"
+            )
+            f.write(
+                f"- **Successful Executions:** {execution_results['successful_executions']}\n"
+            )
+            f.write(
+                f"- **Failed Executions:** {execution_results['failed_executions']}\n"
+            )
+            skipped = execution_results.get("skipped_executions", 0)
             if skipped:
                 f.write(f"- **Skipped (dependency not installed):** {skipped}\n")
             f.write("\n")
 
-            if execution_results['execution_details']:
+            if execution_results["execution_details"]:
                 f.write("## Execution Details\n\n")
 
-                for detail in execution_results['execution_details']:
-                    if detail.get('skipped'):
+                for detail in execution_results["execution_details"]:
+                    if detail.get("skipped"):
                         status = "⏭️ SKIPPED"
-                    elif detail['success']:
+                    elif detail["success"]:
                         status = "✅ SUCCESS"
                     else:
                         status = "❌ FAILED"
@@ -852,30 +1525,42 @@ def generate_execution_report(execution_results: Dict[str, Any], results_dir: Pa
                     f.write(f"- **Framework:** {detail['framework']}\n")
                     f.write(f"- **Executor:** {detail['executor']}\n")
                     f.write(f"- **Path:** `{detail['script_path']}`\n")
-                    if detail.get('skipped'):
-                        f.write(f"- **Reason:** {detail.get('error', 'Dependency not installed')}\n")
+                    if detail.get("skipped"):
+                        f.write(
+                            f"- **Reason:** {detail.get('error', 'Dependency not installed')}\n"
+                        )
                     else:
-                        f.write(f"- **Return Code:** {detail.get('return_code', 'N/A')}\n")
-                        f.write(f"- **Execution Time:** {detail.get('execution_time', 0):.2f} seconds\n")
+                        f.write(
+                            f"- **Return Code:** {detail.get('return_code', 'N/A')}\n"
+                        )
+                        f.write(
+                            f"- **Execution Time:** {detail.get('execution_time', 0):.2f} seconds\n"
+                        )
 
-                        if not detail['success'] and 'error' in detail:
+                        if not detail["success"] and "error" in detail:
                             f.write(f"- **Error:** {detail['error']}\n")
 
-                        if 'output_file' in detail:
+                        if "output_file" in detail:
                             f.write(f"- **Detailed Output:** {detail['output_file']}\n")
 
                     f.write("\n")
 
             f.write("## Next Steps\n\n")
-            if execution_results['failed_executions'] > 0:
+            if execution_results["failed_executions"] > 0:
                 f.write("1. Review failed executions above\n")
-                f.write("2. Check individual output files for detailed error information\n")
+                f.write(
+                    "2. Check individual output files for detailed error information\n"
+                )
                 f.write("3. Ensure required dependencies are installed\n")
                 f.write("4. Verify script syntax and functionality\n\n")
             elif skipped:
-                f.write("Skipped scripts are due to missing optional dependencies. To run all frameworks: `uv sync --extra execution-frameworks` (or install active-inference, probabilistic-programming, ml-ai, graphs).\n\n")
+                f.write(
+                    "Skipped scripts are due to missing optional dependencies or unavailable system runtimes. Run `uv sync` for core Python backends; add `uv sync --extra ml-ai --extra graphs` for optional Python extension groups, and install Julia/D2 system tools as needed.\n\n"
+                )
             else:
-                f.write("All scripts executed successfully! Check individual output files for results.\n\n")
+                f.write(
+                    "All scripts executed successfully! Check individual output files for results.\n\n"
+                )
 
         logger.info(f"Generated execution report: {report_file}")
 
@@ -886,11 +1571,11 @@ def generate_execution_report(execution_results: Dict[str, Any], results_dir: Pa
 def execute_simulation_from_gnn(gnn_file: Path, output_dir: Path) -> Dict[str, Any]:
     """
     Execute simulation from GNN file.
-    
+
     Args:
         gnn_file: Path to GNN file
         output_dir: Output directory
-        
+
     Returns:
         Dictionary with execution results
     """
@@ -908,7 +1593,4 @@ def execute_simulation_from_gnn(gnn_file: Path, output_dir: Path) -> Dict[str, A
 
     except Exception as e:
         logger.error(f"Failed to execute simulation for {gnn_file}: {e}")
-        return {
-            "success": False,
-            "error": str(e)
-        }
+        return {"success": False, "error": str(e)}

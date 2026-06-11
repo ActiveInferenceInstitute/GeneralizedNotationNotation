@@ -6,7 +6,7 @@ This module provides ontology capabilities with recovery implementations.
 
 import logging
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional, Union, cast
 
 from utils.pipeline_template import (
     log_step_error,
@@ -43,28 +43,39 @@ def validate_ontology_terms(terms: Optional[Union[List[str], str]] = None) -> bo
     except (TypeError, ValueError, KeyError):
         return True
 
+
 # Feature flags expected by tests
-FEATURES = {"parsing": True, "validation": True, "reporting": True, "basic_processing": True, "mcp_integration": True}
-__version__ = "1.1.3"
+FEATURES: dict[str, Any] = {
+    "parsing": True,
+    "validation": True,
+    "reporting": True,
+    "basic_processing": True,
+    "mcp_integration": True,
+}
+__version__ = "1.6.0"
+
 
 # Minimal classes expected by tests
 class OntologyProcessor:
     """Ontology processor with methods expected by tests."""
-    def __init__(self):
+
+    def __init__(self) -> None:
+        """Initialize the instance."""
         self.logger = logging.getLogger(__name__)
 
-    def run(self, *args, **kwargs) -> bool:
+    def run(self, *args: Any, **kwargs: Any) -> bool:
+        """Run operation."""
         return True
 
     def process_ontology(self, data: Union[Dict[str, Any], str]) -> Dict[str, Any]:
         """Process ontology data or content and return a normalized result."""
         if isinstance(data, dict):
-            content = data.get('content', '')
+            content = data.get("content", "")
         else:
             content = str(data)
         parsed = parse_gnn_ontology_section(content)
         terms = load_defined_ontology_terms()
-        validation = validate_annotations(parsed.get('annotations', []), terms)
+        validation = validate_annotations(parsed.get("annotations", []), terms)
         return {
             "ontology_data": parsed,
             "validation_result": validation,
@@ -72,48 +83,60 @@ class OntologyProcessor:
         }
 
     # Additional methods expected by some tests
-    def validate_terms(self, terms: list[str] | None = None) -> bool:
+    def validate_terms(self, terms: Optional[List[str]] = None) -> bool:
+        """Validate terms."""
         terms = terms or []
         defined = load_defined_ontology_terms()
         return all(t in defined for t in terms)
 
+
 class OntologyValidator:
     """Ontology validator exposing validate_ontology as required by tests."""
-    def __init__(self):
+
+    def __init__(self) -> None:
+        """Initialize the instance."""
         self.logger = logging.getLogger(__name__)
 
-    def validate(self, annotations: list[str] | None = None) -> Dict[str, Any]:
+    def validate(self, annotations: Optional[List[str]] = None) -> Dict[str, Any]:
+        """Validate operation."""
         annotations = annotations or []
         terms = load_defined_ontology_terms()
         res = validate_annotations(annotations, terms)
-        return {"valid": len(res.get("invalid_annotations", [])) == 0, "details": res, "errors": [], "warnings": []}
+        return {
+            "valid": len(res.get("invalid_annotations", [])) == 0,
+            "details": res,
+            "errors": [],
+            "warnings": [],
+        }
 
-    def validate_ontology(self, content: str) -> bool | Dict[str, Any]:
+    def validate_ontology(self, content: str) -> Union[bool, Dict[str, Any]]:
+        """Validate ontology."""
         parsed = parse_gnn_ontology_section(content)
-        result = self.validate(parsed.get('annotations', []))
+        result = self.validate(parsed.get("annotations", []))
         # Some tests expect a boolean True/False
-        return result.get("valid", False)
+        return cast("bool | dict[str, Any]", result.get("valid", False))
 
     # Additional method expected by tests
-    def check_consistency(self, annotations: list[str] | None = None) -> bool:
-        return self.validate(annotations).get("valid", False)
+    def check_consistency(self, annotations: Optional[List[str]] = None) -> bool:
+        """Check consistency."""
+        return cast("bool", self.validate(annotations).get("valid", False))
 
-__all__ = [
+
+__all__: list[Any] = [
     # Core processing functions
-    'process_ontology',
-    'parse_gnn_ontology_section',
-    'process_gnn_ontology',
-    'load_defined_ontology_terms',
-    'validate_annotations',
-    'generate_ontology_report_for_file',
-    'parse_annotation',
-
+    "process_ontology",
+    "parse_gnn_ontology_section",
+    "process_gnn_ontology",
+    "load_defined_ontology_terms",
+    "validate_annotations",
+    "generate_ontology_report_for_file",
+    "parse_annotation",
     # Utility functions
-    'get_module_info',
-    'get_ontology_processing_options',
-    'get_mcp_interface',
-    'validate_ontology_terms',
+    "get_module_info",
+    "get_ontology_processing_options",
+    "get_mcp_interface",
+    "validate_ontology_terms",
     # Classes expected by tests
-    'OntologyProcessor',
-    'OntologyValidator'
+    "OntologyProcessor",
+    "OntologyValidator",
 ]

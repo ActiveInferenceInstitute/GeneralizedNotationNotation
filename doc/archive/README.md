@@ -13,6 +13,10 @@ This directory contains archived documentation, historical materials, and exampl
 
 > **⚠️ Note**: Archive materials are preserved for historical reference. For current documentation and examples, see the main [doc/](../) directory and [GNN Examples](../gnn/tutorials/gnn_examples_doc.md).
 
+### Audit / maintenance
+
+This subtree is **archival**. [`doc/development/docs_audit.py`](../development/docs_audit.py) excludes `doc/archive/` from maintained-folder checks (`AGENTS.md` / `README.md` pairing for “maintained” trees). Do not expect the same scaffolding or link hygiene as active hubs; for current docs start at [doc/README.md](../README.md).
+
 ## Quick Navigation
 
 ### This Directory
@@ -50,9 +54,9 @@ Historical GNN example models demonstrating various Active Inference application
 
 #### Historical Documentation
 - Previous documentation versions
-- Deprecated implementation guides
+- Retired implementation guides
 - Superseded examples and tutorials
-- Legacy framework integrations
+- Older framework integration notes
 - Previous architecture designs
 
 ## Archive Materials
@@ -93,7 +97,7 @@ Historical GNN example models demonstrating various Active Inference application
 Archive materials represent historical versions of the 25-step GNN processing pipeline:
 
 1. **Historical Processing**: Previous pipeline implementations
-2. **Legacy Formats**: Older GNN syntax and structure
+2. **Older formats**: prior GNN syntax and structure
 3. **Deprecated Features**: Features no longer supported
 4. **Research Lineage**: Evolution of GNN modeling approaches
 

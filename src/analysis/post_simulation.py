@@ -11,23 +11,40 @@ Implementation is split across sub-modules for maintainability:
 - math_utils: Active Inference statistical functions (entropy, KL, VFE, EFE)
 - visualizations: All plotting, animation, and dashboard generation
 
-This file re-exports all public names for backward compatibility.
+This file is the public facade for the analysis sub-modules listed above.
 """
 
-__all__ = [
+from typing import Any
+
+__all__: list[Any] = [
     # trace_analysis
-    "analyze_simulation_traces", "analyze_free_energy", "analyze_policy_convergence",
-    "analyze_state_distributions", "compare_framework_results",
+    "analyze_simulation_traces",
+    "analyze_free_energy",
+    "analyze_policy_convergence",
+    "analyze_state_distributions",
+    "compare_framework_results",
     # framework_extractors
-    "extract_pymdp_data", "extract_rxinfer_data", "extract_activeinference_jl_data",
-    "extract_jax_data", "extract_discopy_data",
+    "extract_pymdp_data",
+    "extract_rxinfer_data",
+    "extract_activeinference_jl_data",
+    "extract_jax_data",
+    "extract_discopy_data",
     # math_utils
-    "compute_shannon_entropy", "compute_kl_divergence", "compute_variational_free_energy",
-    "compute_expected_free_energy", "compute_information_gain", "analyze_active_inference_metrics",
+    "compute_shannon_entropy",
+    "compute_kl_divergence",
+    "compute_variational_free_energy",
+    "compute_expected_free_energy",
+    "compute_information_gain",
+    "analyze_active_inference_metrics",
     # visualizations
-    "plot_belief_evolution", "animate_belief_evolution", "visualize_all_framework_outputs",
-    "generate_belief_heatmaps", "generate_action_analysis", "generate_free_energy_plots",
-    "generate_observation_analysis", "generate_cross_framework_comparison",
+    "plot_belief_evolution",
+    "animate_belief_evolution",
+    "visualize_all_framework_outputs",
+    "generate_belief_heatmaps",
+    "generate_action_analysis",
+    "generate_free_energy_plots",
+    "generate_observation_analysis",
+    "generate_cross_framework_comparison",
     "generate_unified_framework_dashboard",
     # local
     "analyze_execution_results",
@@ -86,52 +103,60 @@ from .visualizations import (
 
 def analyze_execution_results(
     execution_results_dir: Path,
-    model_name: Optional[str] = None
+    model_name: Optional[str] = None,
+    allowed_frameworks: Optional[set[str]] = None,
 ) -> Dict[str, Any]:
     """
-    Analyze execution results from all frameworks.
+    Analyze execution results from the current execution scope.
 
     Args:
         execution_results_dir: Directory containing execution results
         model_name: Optional model name filter
+        allowed_frameworks: Optional normalized framework names to include
 
     Returns:
         Dictionary with comprehensive analysis results
     """
     try:
-        analysis_results = {
+        analysis_results: dict[str, Any] = {
             "timestamp": datetime.now().isoformat(),
             "execution_results_dir": str(execution_results_dir),
             "framework_results": {},
-            "cross_framework_comparison": {}
+            "cross_framework_comparison": {},
         }
 
         # Find all result JSON files
         result_files = list(execution_results_dir.rglob("*_results.json"))
 
         if not result_files:
-            logger.warning(f"No execution result files found in {execution_results_dir}")
+            logger.warning(
+                f"No execution result files found in {execution_results_dir}"
+            )
             return analysis_results
 
         # Group by framework
-        framework_data = {}
+        framework_data: dict[Any, Any] = {}
 
         for result_file in result_files:
             try:
-                with open(result_file, 'r') as f:
+                with open(result_file, "r") as f:
                     result_data = json.load(f)
 
                 framework = result_data.get("framework", "unknown")
                 # Normalize framework name to lowercase for consistent grouping
                 # Simulation JSONs may use "PyMDP"/"JAX" while execution logs use "pymdp"/"jax"
                 framework = framework.lower().replace(".", "_").replace(" ", "_")
+                if allowed_frameworks and framework not in allowed_frameworks:
+                    continue
                 file_model_name = result_data.get("model_name", "unknown")
 
                 # Filter by model name if specified — use normalized comparison
                 # because GNN file stems (e.g. "simple_mdp") differ from
                 # display names in JSONs (e.g. "Simple MDP Agent", "GNNModel")
                 if model_name and file_model_name != model_name:
-                    file_slug = file_model_name.lower().replace(" ", "_").replace("-", "_")
+                    file_slug = (
+                        file_model_name.lower().replace(" ", "_").replace("-", "_")
+                    )
                     param_slug = model_name.lower().replace(" ", "_").replace("-", "_")
                     if param_slug not in file_slug and file_slug not in param_slug:
                         continue
@@ -147,10 +172,10 @@ def analyze_execution_results(
         # Analyze each framework's results
         for framework, results in framework_data.items():
             try:
-                framework_analysis = {
+                framework_analysis: dict[str, Any] = {
                     "framework": framework,
                     "result_count": len(results),
-                    "analyses": []
+                    "analyses": [],
                 }
 
                 for result in results:
@@ -169,66 +194,109 @@ def analyze_execution_results(
                         else:
                             extracted = result.get("simulation_data", {}) or {}
 
-                        # Also try to read from collected files if extraction didn't find data
-                        if isinstance(extracted, dict) and not extracted.get("beliefs") and not extracted.get("observations"):
+                        # Non-PyMDP frameworks still have heterogeneous outputs.
+                        # PyMDP is strict and handled by extract_pymdp_data().
+                        if (
+                            framework != "pymdp"
+                            and isinstance(extracted, dict)
+                            and not extracted.get("beliefs")
+                            and not extracted.get("observations")
+                        ):
                             implementation_dir = result.get("implementation_directory")
                             if implementation_dir:
                                 try:
                                     impl_path = Path(implementation_dir)
                                     sim_data_dir = impl_path / "simulation_data"
                                     if sim_data_dir.exists():
-                                        results_files = list(sim_data_dir.glob("*.json"))
+                                        results_files = list(
+                                            sim_data_dir.glob("*.json")
+                                        )
                                         for results_file in results_files:
                                             try:
-                                                with open(results_file, 'r') as f:
+                                                with open(results_file, "r") as f:
                                                     file_data = json.load(f)
                                                     if isinstance(file_data, dict):
-                                                        if "beliefs" in file_data and not extracted.get("beliefs"):
-                                                            extracted["beliefs"] = file_data["beliefs"]
-                                                        if "actions" in file_data and not extracted.get("actions"):
-                                                            extracted["actions"] = file_data["actions"]
-                                                        if "observations" in file_data and not extracted.get("observations"):
-                                                            extracted["observations"] = file_data["observations"]
+                                                        if (
+                                                            "beliefs" in file_data
+                                                            and not extracted.get(
+                                                                "beliefs"
+                                                            )
+                                                        ):
+                                                            extracted["beliefs"] = (
+                                                                file_data["beliefs"]
+                                                            )
+                                                        if (
+                                                            "actions" in file_data
+                                                            and not extracted.get(
+                                                                "actions"
+                                                            )
+                                                        ):
+                                                            extracted["actions"] = (
+                                                                file_data["actions"]
+                                                            )
+                                                        if (
+                                                            "observations" in file_data
+                                                            and not extracted.get(
+                                                                "observations"
+                                                            )
+                                                        ):
+                                                            extracted[
+                                                                "observations"
+                                                            ] = file_data[
+                                                                "observations"
+                                                            ]
                                             except Exception as e:
-                                                logger.debug(f"Failed to parse JSON file: {e}")
+                                                logger.debug(
+                                                    f"Failed to parse JSON file: {e}"
+                                                )
                                 except Exception as e:
-                                    logger.debug(f"Error reading files for {framework}: {e}")
+                                    logger.debug(
+                                        f"Error reading files for {framework}: {e}"
+                                    )
 
                         # Run generic analyses
                         model_name_for_analysis = result.get("model_name", "unknown")
 
                         if isinstance(extracted, dict):
-                            # Recovery: if extractors didn't find free_energy, try
-                            # pulling it directly from the loaded JSON result data.
-                            # The simulation_results.json files store EFE as:
-                            #   - efe_history (rxinfer, activeinference_jl)
-                            #   - metrics.expected_free_energy (pymdp, jax)
-                            #   - simulation_trace.efe_history (pymdp, jax)
-                            if not extracted.get("free_energy"):
+                            if framework != "pymdp" and not extracted.get(
+                                "free_energy"
+                            ):
                                 efe = None
                                 if result.get("efe_history"):
                                     efe = result["efe_history"]
-                                elif isinstance(result.get("metrics"), dict) and result["metrics"].get("expected_free_energy"):
+                                elif isinstance(result.get("metrics"), dict) and result[
+                                    "metrics"
+                                ].get("expected_free_energy"):
                                     efe = result["metrics"]["expected_free_energy"]
-                                elif isinstance(result.get("simulation_trace"), dict) and result["simulation_trace"].get("efe_history"):
+                                elif isinstance(
+                                    result.get("simulation_trace"), dict
+                                ) and result["simulation_trace"].get("efe_history"):
                                     efe = result["simulation_trace"]["efe_history"]
                                 if efe:
                                     extracted["free_energy"] = efe
-                                    logger.debug(f"Recovery: extracted EFE for {framework} from result data ({len(efe)} entries)")
+                                    logger.debug(
+                                        f"Recovery: extracted EFE for {framework} from result data ({len(efe)} entries)"
+                                    )
 
-                            # Also pull beliefs if missing
-                            if not extracted.get("beliefs"):
-                                beliefs = result.get("beliefs") or result.get("simulation_trace", {}).get("beliefs")
+                            if framework != "pymdp" and not extracted.get("beliefs"):
+                                beliefs = result.get("beliefs") or result.get(
+                                    "simulation_trace", {}
+                                ).get("beliefs")
                                 if beliefs:
                                     extracted["beliefs"] = beliefs
 
-                            # Also pull actions/observations if missing
-                            if not extracted.get("actions"):
-                                actions = result.get("actions") or result.get("simulation_trace", {}).get("actions")
+                            if framework != "pymdp" and not extracted.get("actions"):
+                                actions = result.get("actions") or result.get(
+                                    "simulation_trace", {}
+                                ).get("actions")
                                 if actions:
                                     extracted["actions"] = actions
-                            if not extracted.get("observations"):
-                                obs = result.get("observations") or result.get("simulation_trace", {}).get("observations")
+                            if framework != "pymdp" and not extracted.get(
+                                "observations"
+                            ):
+                                obs = result.get("observations") or result.get(
+                                    "simulation_trace", {}
+                                ).get("observations")
                                 if obs:
                                     extracted["observations"] = obs
 
@@ -236,7 +304,7 @@ def analyze_execution_results(
                                 fe_analysis = analyze_free_energy(
                                     extracted["free_energy"],
                                     framework,
-                                    model_name_for_analysis
+                                    model_name_for_analysis,
                                 )
                                 framework_analysis["analyses"].append(fe_analysis)
 
@@ -244,7 +312,7 @@ def analyze_execution_results(
                                 trace_analysis = analyze_simulation_traces(
                                     extracted["traces"],
                                     framework,
-                                    model_name_for_analysis
+                                    model_name_for_analysis,
                                 )
                                 framework_analysis["analyses"].append(trace_analysis)
 
@@ -252,7 +320,7 @@ def analyze_execution_results(
                                 policy_analysis = analyze_policy_convergence(
                                     extracted["policy"],
                                     framework,
-                                    model_name_for_analysis
+                                    model_name_for_analysis,
                                 )
                                 framework_analysis["analyses"].append(policy_analysis)
                     except Exception as e:
@@ -261,6 +329,7 @@ def analyze_execution_results(
 
                 # Validate serializability
                 def safe_json_default(obj: Any) -> Any:
+                    """Provide safe json default behavior."""
                     if isinstance(obj, Path):
                         return str(obj)
                     if isinstance(obj, (np.integer, int)):
@@ -271,18 +340,22 @@ def analyze_execution_results(
                         return obj.tolist()
                     if isinstance(obj, (set, frozenset)):
                         return list(obj)
-                    if hasattr(obj, '__dict__'):
+                    if hasattr(obj, "__dict__"):
                         return str(obj)
                     return str(obj)
 
                 try:
                     json.dumps(framework_analysis, default=safe_json_default)
-                    analysis_results["framework_results"][framework] = framework_analysis
+                    analysis_results["framework_results"][framework] = (
+                        framework_analysis
+                    )
                 except Exception as e:
-                    logger.error(f"Circular reference or serialization error in {framework} analysis: {e}")
+                    logger.error(
+                        f"Circular reference or serialization error in {framework} analysis: {e}"
+                    )
                     analysis_results["framework_results"][framework] = {
                         "framework": framework,
-                        "error": f"Serialization failed: {e}"
+                        "error": f"Serialization failed: {e}",
                     }
 
             except Exception as e:
@@ -291,12 +364,14 @@ def analyze_execution_results(
 
         # Cross-framework comparison
         if len(framework_data) > 1:
-            comparison_input = {}
+            comparison_input: dict[Any, Any] = {}
             for framework, results in framework_data.items():
                 if results:
                     comparison_input[framework] = results[0]
 
-            comparison = compare_framework_results(comparison_input, model_name or "unknown")
+            comparison = compare_framework_results(
+                comparison_input, model_name or "unknown"
+            )
             analysis_results["cross_framework_comparison"] = comparison
 
         # Trigger visualizations and animations for the model results
@@ -306,15 +381,33 @@ def analyze_execution_results(
 
             for framework, data in analysis_results["framework_results"].items():
                 for _, analysis in enumerate(data.get("analyses", [])):
-                    if "beliefs" in analysis or (isinstance(analysis, dict) and "simulation_data" in analysis and "beliefs" in analysis["simulation_data"]):
-                        beliefs = analysis.get("beliefs") or analysis["simulation_data"].get("beliefs")
+                    if "beliefs" in analysis or (
+                        isinstance(analysis, dict)
+                        and "simulation_data" in analysis
+                        and "beliefs" in analysis["simulation_data"]
+                    ):
+                        beliefs = analysis.get("beliefs") or analysis[
+                            "simulation_data"
+                        ].get("beliefs")
                         if beliefs:
-                            plot_file = results_dir / f"{model_name}_{framework}_beliefs.png"
-                            plot_belief_evolution(beliefs, plot_file, title=f"Beliefs - {model_name} ({framework})")
+                            plot_file = (
+                                results_dir / f"{model_name}_{framework}_beliefs.png"
+                            )
+                            plot_belief_evolution(
+                                beliefs,
+                                plot_file,
+                                title=f"Beliefs - {model_name} ({framework})",
+                            )
 
-                            anim_file = results_dir / f"{model_name}_{framework}_beliefs.gif"
+                            anim_file = (
+                                results_dir / f"{model_name}_{framework}_beliefs.gif"
+                            )
                             try:
-                                animate_belief_evolution(beliefs, anim_file, title=f"Evolution - {model_name} ({framework})")
+                                animate_belief_evolution(
+                                    beliefs,
+                                    anim_file,
+                                    title=f"Evolution - {model_name} ({framework})",
+                                )
                             except Exception as e:
                                 logger.warning(f"Animation failed for {framework}: {e}")
 
@@ -326,8 +419,6 @@ def analyze_execution_results(
     except Exception as e:
         logger.error(f"Error analyzing execution results: {e}")
         import traceback
+
         logger.debug(traceback.format_exc())
-        return {
-            "timestamp": datetime.now().isoformat(),
-            "error": str(e)
-        }
+        return {"timestamp": datetime.now().isoformat(), "error": str(e)}

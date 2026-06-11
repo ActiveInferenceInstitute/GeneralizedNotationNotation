@@ -10,9 +10,9 @@
 
 **Status**: ✅ Production Ready
 
-**Version**: 1.0.0
+**Version**: 1.6.0
 
-**Last Updated**: 2026-03-24
+**Last Updated**: 2026-04-16
 
 
 ## Core Functionality
@@ -228,13 +228,16 @@ GNN Content → SAPF Conversion → Audio Generation → Audio Analysis → Outp
 ## Testing
 
 ### Test Files
-- `src/tests/test_sapf_processor.py` - SAPF processor tests
-- `src/tests/test_audio_sapf.py` - SAPF audio backend tests
+- `src/tests/sapf/test_sapf_processor.py` - SAPF processor tests
+- `src/tests/audio/test_audio_sapf.py` - SAPF audio backend tests
 
 ### Test Coverage
-- **Current**: 75%
-- **Target**: 85%+
+Measure on demand:
 
+```bash
+uv run --extra dev python -m pytest src/tests/test_sapf*.py \
+    --cov=src/sapf --cov-report=term-missing
+```
 ### Key Test Scenarios
 1. Audio generation with various GNN models
 2. SAPF conversion and validation
@@ -261,7 +264,7 @@ def convert_gnn_to_sapf_tool(gnn_content, output_dir):
 
 ---
 
-**Last Updated**: 2026-01-21
+**Last Updated**: 2026-04-16
 **Status**: ✅ Production Ready
 
 ---

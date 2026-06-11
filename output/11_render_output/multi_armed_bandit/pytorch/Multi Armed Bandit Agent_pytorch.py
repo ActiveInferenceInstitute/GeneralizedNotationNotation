@@ -27,22 +27,34 @@ def run_simulation():
     # --- Model Parameters ---
     num_states = 3
     num_obs = 3
-    num_actions = 2
-    T = 15
+    num_actions = 3
+    T = 30
 
     A = torch.tensor([
-        [1.000000, 0.000000, 0.000000],
-        [0.000000, 1.000000, 0.000000],
-        [0.000000, 0.000000, 1.000000]
+        [0.100000, 0.500000, 0.500000],
+        [0.300000, 0.400000, 0.300000],
+        [0.600000, 0.100000, 0.200000]
     ], dtype=torch.float64)
     C = torch.tensor([0.000000, 1.000000, 3.000000], dtype=torch.float64)
     D = torch.tensor([0.333333, 0.333333, 0.333333], dtype=torch.float64)
     
-    B = torch.tensor([
-        [1.000000, 0.000000, 0.000000],
-        [0.000000, 1.000000, 0.000000],
-        [0.000000, 0.000000, 1.000000]
-    ], dtype=torch.float64).unsqueeze(2).expand(-1, -1, 2).clone()
+    B_slices = []
+    B_slices.append(torch.tensor([
+        [0.900000, 0.050000, 0.050000],
+        [0.050000, 0.900000, 0.050000],
+        [0.050000, 0.050000, 0.900000]
+    ], dtype=torch.float64))
+    B_slices.append(torch.tensor([
+        [0.900000, 0.050000, 0.050000],
+        [0.050000, 0.900000, 0.050000],
+        [0.050000, 0.050000, 0.900000]
+    ], dtype=torch.float64))
+    B_slices.append(torch.tensor([
+        [0.900000, 0.050000, 0.050000],
+        [0.050000, 0.900000, 0.050000],
+        [0.050000, 0.050000, 0.900000]
+    ], dtype=torch.float64))
+    B = torch.stack(B_slices, dim=2)
 
     # --- Simulation State ---
     beliefs_history = []

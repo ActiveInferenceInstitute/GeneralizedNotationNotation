@@ -79,7 +79,7 @@ The execute processor follows this pipeline:
 
 ```bash
 # Core execution (PyMDP)
-uv sync --extra active-inference
+uv sync
 
 # For Julia frameworks
 # Requires Julia installed + packages
@@ -101,9 +101,11 @@ uv sync --extra graphs
 
 This module registers tools with the GNN MCP server (see `mcp.py`):
 
-- `process_execute`
+- `check_execute_dependencies`
 - `execute_gnn_model`
 - `execute_pymdp_simulation`
+- `get_execute_module_info`
+- `process_execute`
 
 ## References
 

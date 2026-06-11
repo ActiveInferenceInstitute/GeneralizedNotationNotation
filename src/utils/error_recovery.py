@@ -20,6 +20,7 @@ logger = logging.getLogger(__name__)
 
 class ErrorRecord(TypedDict):
     """Typed structure for error records stored by ErrorReporter."""
+
     type: str
     message: str
     details: Dict[str, Any]
@@ -29,15 +30,17 @@ class ErrorRecord(TypedDict):
 
 class ErrorSeverity(Enum):
     """Error severity levels."""
-    INFO = "info"         # Informational message
-    WARNING = "warning"   # Warning, operation can continue
-    ERROR = "error"       # Error, operation failed
-    CRITICAL = "critical" # Critical error, pipeline halt recommended
+
+    INFO = "info"  # Informational message
+    WARNING = "warning"  # Warning, operation can continue
+    ERROR = "error"  # Error, operation failed
+    CRITICAL = "critical"  # Critical error, pipeline halt recommended
 
 
 @dataclass
 class ErrorContext:
     """Structured error context for detailed reporting."""
+
     operation: str
     severity: ErrorSeverity
     message: str
@@ -49,59 +52,79 @@ class ErrorContext:
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary for logging/serialization."""
         return {
-            'operation': self.operation,
-            'severity': self.severity.value,
-            'message': self.message,
-            'error_code': self.error_code,
-            'details': self.details or {},
-            'recovery_suggestions': self.recovery_suggestions or [],
+            "operation": self.operation,
+            "severity": self.severity.value,
+            "message": self.message,
+            "error_code": self.error_code,
+            "details": self.details or {},
+            "recovery_suggestions": self.recovery_suggestions or [],
         }
 
 
 class ErrorRecoveryManager:
     """Manages error handling and recovery strategies."""
 
-    def __init__(self, logger: Optional[logging.Logger] = None):
+    def __init__(self, logger: Optional[logging.Logger] = None) -> None:
         """Initialize error recovery manager."""
         self.logger = logger or logging.getLogger(__name__)
         self.error_handlers: Dict[str, Callable] = {}
         self.recovery_strategies: Dict[str, List[str]] = {}
         self._setup_default_handlers()
 
-    def _setup_default_handlers(self):
+    def _setup_default_handlers(self) -> Any:
         """Setup default error handlers and recovery strategies."""
 
-        handler_config = {
-            'import': ("Module Import", ErrorSeverity.WARNING, [
-                'Install missing package: uv pip install <package>',
-                'Check Python version compatibility',
-                'Verify package is in pyproject.toml',
-                'Try running with --verbose for more details',
-            ]),
-            'file': ("File Operation", ErrorSeverity.ERROR, [
-                'Verify file path exists and is accessible',
-                'Check file permissions (read/write access)',
-                'Ensure sufficient disk space is available',
-                'Try with a different file path',
-            ]),
-            'resource': ("Resource Management", ErrorSeverity.ERROR, [
-                'Check system memory and disk space',
-                'Reduce model size or complexity',
-                'Close other applications to free resources',
-                'Try with --lightweight-mode for reduced memory usage',
-            ]),
-            'validation': ("Validation", ErrorSeverity.ERROR, [
-                'Review error details for specific field',
-                'Check type annotation requirements',
-                'Validate input data format',
-                'Refer to GNN schema documentation',
-            ]),
-            'execution': ("Execution", ErrorSeverity.ERROR, [
-                'Check simulation parameters',
-                'Verify model structure is valid',
-                'Review execution log for details',
-                'Try with smaller time horizon or state space',
-            ]),
+        handler_config: dict[str, Any] = {
+            "import": (
+                "Module Import",
+                ErrorSeverity.WARNING,
+                [
+                    "Install missing package: uv pip install <package>",
+                    "Check Python version compatibility",
+                    "Verify package is in pyproject.toml",
+                    "Try running with --verbose for more details",
+                ],
+            ),
+            "file": (
+                "File Operation",
+                ErrorSeverity.ERROR,
+                [
+                    "Verify file path exists and is accessible",
+                    "Check file permissions (read/write access)",
+                    "Ensure sufficient disk space is available",
+                    "Try with a different file path",
+                ],
+            ),
+            "resource": (
+                "Resource Management",
+                ErrorSeverity.ERROR,
+                [
+                    "Check system memory and disk space",
+                    "Reduce model size or complexity",
+                    "Close other applications to free resources",
+                    "Try with --lightweight-mode for reduced memory usage",
+                ],
+            ),
+            "validation": (
+                "Validation",
+                ErrorSeverity.ERROR,
+                [
+                    "Review error details for specific field",
+                    "Check type annotation requirements",
+                    "Validate input data format",
+                    "Refer to GNN schema documentation",
+                ],
+            ),
+            "execution": (
+                "Execution",
+                ErrorSeverity.ERROR,
+                [
+                    "Check simulation parameters",
+                    "Verify model structure is valid",
+                    "Review execution log for details",
+                    "Try with smaller time horizon or state space",
+                ],
+            ),
         }
         for error_type, (operation, severity, suggestions) in handler_config.items():
             self.recovery_strategies[error_type] = suggestions
@@ -132,15 +155,21 @@ class ErrorRecoveryManager:
 
         return context.severity != ErrorSeverity.CRITICAL
 
-    def _make_error_context(self, operation: str, severity: ErrorSeverity,
-                            error_type: str, error_code: str, message: str) -> ErrorContext:
+    def _make_error_context(
+        self,
+        operation: str,
+        severity: ErrorSeverity,
+        error_type: str,
+        error_code: str,
+        message: str,
+    ) -> ErrorContext:
         """Create an ErrorContext for the given operation type."""
         return ErrorContext(
             operation=operation,
             severity=severity,
             message=message,
             error_code=error_code,
-            recovery_suggestions=self.recovery_strategies.get(error_type, [])
+            recovery_suggestions=self.recovery_strategies.get(error_type, []),
         )
 
 
@@ -180,7 +209,7 @@ class ErrorCodeRegistry:
         return {
             attr: getattr(cls, attr)
             for attr in dir(cls)
-            if attr.isupper() and not attr.startswith('_')
+            if attr.isupper() and not attr.startswith("_")
         }
 
 
@@ -189,11 +218,11 @@ def format_error_message(
     operation: str,
     message: str,
     details: Optional[Dict[str, Any]] = None,
-    suggestions: Optional[List[str]] = None
+    suggestions: Optional[List[str]] = None,
 ) -> str:
     """Format error message with all relevant information."""
 
-    lines = [
+    lines: list[Any] = [
         f"[{error_code}] {operation} Error",
         f"Message: {message}",
     ]
@@ -227,7 +256,7 @@ def format_and_log_error(
     severity: ErrorSeverity = ErrorSeverity.ERROR,
     details: Optional[Dict[str, Any]] = None,
     suggestions: Optional[List[str]] = None,
-    exception: Optional[Exception] = None
+    exception: Optional[Exception] = None,
 ) -> ErrorContext:
     """Format, log, and return error context."""
 
@@ -238,7 +267,7 @@ def format_and_log_error(
         error_code=error_code,
         details=details,
         recovery_suggestions=suggestions,
-        original_exception=exception
+        original_exception=exception,
     )
 
     _recovery_manager.handle_error(context)
@@ -248,27 +277,33 @@ def format_and_log_error(
 class ErrorReporter:
     """Collects and reports errors during pipeline execution."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize error reporter."""
         self.errors: List[ErrorRecord] = []
         self.logger = logging.getLogger(__name__)
 
-    def collect_error(self, error_type: str, message: str, details: Optional[Dict[str, Any]] = None, severity: ErrorSeverity = ErrorSeverity.ERROR):
+    def collect_error(
+        self,
+        error_type: str,
+        message: str,
+        details: Optional[Dict[str, Any]] = None,
+        severity: ErrorSeverity = ErrorSeverity.ERROR,
+    ) -> Any:
         """
         Collect an error for reporting.
-        
+
         Args:
             error_type: Type/category of the error
             message: Error message
             details: Additional error details
             severity: Error severity level
         """
-        error_record = {
+        error_record: ErrorRecord = {
             "type": error_type,
             "message": message,
             "details": details or {},
             "severity": severity,
-            "timestamp": str(time.time())
+            "timestamp": str(time.time()),
         }
         self.errors.append(error_record)
         self.logger.debug(f"Error collected: {error_type} - {message}")
@@ -281,14 +316,14 @@ class ErrorReporter:
         """Check if any errors have been collected."""
         return bool(self.errors)
 
-    def clear_errors(self):
+    def clear_errors(self) -> Any:
         """Clear all collected errors."""
         self.errors.clear()
 
     def get_summary(self) -> Dict[str, Any]:
         """Get summary of collected errors."""
-        severity_counts = {}
-        error_type_counts = {}
+        severity_counts: dict[Any, Any] = {}
+        error_type_counts: dict[Any, Any] = {}
 
         for error in self.errors:
             severity = error.get("severity", "unknown")
@@ -300,5 +335,5 @@ class ErrorReporter:
         return {
             "total_errors": len(self.errors),
             "by_severity": severity_counts,
-            "by_type": error_type_counts
+            "by_type": error_type_counts,
         }

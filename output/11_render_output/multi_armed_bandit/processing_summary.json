@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-04-10T10:25:04.507638",
+  "timestamp": "2026-05-22T06:18:15.472255",
   "source_file": "input/gnn_files/discrete/multi_armed_bandit.md",
   "model_name": "Multi Armed Bandit Agent",
   "pomdp_dimensions": {
@@ -15,6 +15,7 @@
     "discopy",
     "pytorch",
     "numpyro",
+    "stan",
     "bnlearn"
   ],
   "frameworks_processed": [
@@ -25,6 +26,7 @@
     "discopy",
     "pytorch",
     "numpyro",
+    "stan",
     "bnlearn"
   ],
   "frameworks_failed": []

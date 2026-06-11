@@ -45,10 +45,10 @@ python src/2_tests.py --fast-only --verbose
 python src/2_tests.py --comprehensive --verbose
 
 # Specific category
-pytest src/tests/test_gnn*.py -v
+uv run --extra dev python -m pytest src/tests/test_gnn*.py -v
 
 # All tests
-python -m pytest src/tests/ -v
+uv run --extra dev python -m pytest src/tests/ -v
 ```
 
 ## Key Exports

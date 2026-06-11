@@ -1,17 +1,29 @@
 # PRACTICAL_APPLICATIONS
 
-You've covered the key points about the application of GNN, including its practical applications, use cases, and potential benefits and advantages. 
+You've covered the key points about the application of GNN on active inference models, including:
+1. **Application overview**
+    - Application overview with specific domains (e.g., "real-world applications")
+    - Specific use cases and scenarios
+    - Industry or research applications
 
-To summarize:
+2. **Implementation considerations**:
+   - Computational requirements and scalability
+   - Data requirements and collection strategies
+   - Integration with existing systems
+3. **Performance expectations**
+    - What kinds of performance can be expected?
+    - Metrics for evaluation and validation
+    - Limitations and failure modes
+4. **Deployment scenarios**
+    - Online vs. offline processing
+    - Real-time constraints and requirements
+    - Hardware and software dependencies
 
-1. **Real-World Applications**: The model can be applied to various domains where coordination is required between agents or systems. It has real-world applications in fields like healthcare, finance, transportation, and more.
-
-2. **Implementation Considerations**: The model's performance requirements are well-defined, including computational resources, data availability, and integration with existing systems.
-
-3. **Performance Expectations**: The model can be applied to specific use cases or scenarios where coordination is required between agents or systems. It has practical applications in various domains like healthcare, finance, transportation, and more.
-
-4. **Deployment Scenarios**: The model's performance expectations are well-defined, including the ability to handle real-time constraints and requirements. 
-
-5. **Benefits and Advantages**: This model can solve problems that require coordination between agents or systems efficiently and effectively. It has potential benefits in various domains like healthcare, finance, transportation, and more.
-
-6. **Challenges and Considerations**: There are several challenges and considerations involved in implementing GNNs, including the need for computational resources, data availability, tuning performance expectations, maintenance requirements, and monitoring needs.
+5. **Benefits and advantages**:
+   - Unique capabilities or features
+   - Comparison to alternative approaches (e.g., "generalized notations" approach)
+   - Potential for improved performance
+6. **Challenges and considerations**
+    - Potential difficulties in implementation
+    - Tuning and optimization requirements
+    - Maintenance and monitoring needs

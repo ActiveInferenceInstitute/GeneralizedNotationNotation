@@ -37,6 +37,9 @@ o_t-F
 A = [[0.9, 0.1], [0.2, 0.8]]
 B = [[0.7, 0.3], [0.3, 0.7]]
 D = [[0.5, 0.5]]
+num_hidden_states = 2
+num_obs = 2
+num_timesteps = 10
 
 ## Time
 Dynamic
@@ -53,6 +56,6 @@ F = VariationalFreeEnergy
 t = Time
 
 ## Footer
-Generated: 2026-04-10T10:24:31.839307
+Generated: 2026-05-25T09:59:34.672859
 
 ## Signature

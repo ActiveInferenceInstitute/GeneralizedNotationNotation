@@ -1,7 +1,7 @@
 # GNN Visualization Guide
 
-**Version**: v2.0.0  
-**Last Updated**: 2026-03-24  
+**Version**: v1.6.0 Engine (Bundle v2.0.0)  
+**Last Updated**: 2026-04-15  
 **Status**: ✅ Production Ready  
 **Modules**: 38+ · **Pipeline steps**: 25 · **Renderers**: 9 backends (see [../implementations/README.md](../implementations/README.md)) · **Tests**: see [../../../README.md](../../../README.md)  
 
@@ -206,7 +206,7 @@ success = process_advanced_visualization(
 
 ## Analysis Visualization (Step 16)
 
-Post-simulation analysis (Step 16) provides a suite of visualization functions in the `src/analysis/` module (primarily `visualizations.py`, re-exported from `post_simulation.py` for backward compatibility) that generate framework-specific and cross-framework visualizations from execution results.
+Post-simulation analysis (Step 16) provides a suite of visualization functions in the `src/analysis/` module (primarily `visualizations.py`, re-exported from `post_simulation.py`) that generate framework-specific and cross-framework visualizations from execution results.
 
 ### Per-Framework Visualization Functions
 
@@ -314,5 +314,5 @@ Visualization results are integrated throughout the pipeline:
 ---
 
 **Status**: ✅ Production Ready  
-**Last Updated**: 2026-03-24  
-**Version**: v2.0.0
+**Last Updated**: 2026-04-15  
+**Version**: v1.6.0 Engine (Bundle v2.0.0)

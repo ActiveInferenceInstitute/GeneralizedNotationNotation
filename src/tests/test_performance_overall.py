@@ -17,7 +17,6 @@ import pytest
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 
-
 class TestPerformanceBasics:
     """Basic performance characteristic tests."""
 
@@ -36,10 +35,11 @@ class TestPerformanceBasics:
         """Test that memory tracking utilities are functional."""
         try:
             import psutil
+
             process = psutil.Process()
             mem_info = process.memory_info()
 
-            assert hasattr(mem_info, 'rss'), "Memory info should have RSS"
+            assert hasattr(mem_info, "rss"), "Memory info should have RSS"
             assert mem_info.rss > 0, "RSS should be positive"
         except ImportError:
             pytest.skip("psutil not available for memory tracking")
@@ -91,6 +91,7 @@ class TestResourceMonitoring:
     def test_cpu_count_detection(self) -> None:
         """Test CPU count detection works."""
         import os
+
         cpu_count = os.cpu_count()
 
         assert cpu_count is not None

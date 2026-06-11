@@ -26,7 +26,13 @@ s>o
 
 ## InitialParameterization
 A = [[0.9, 0.1], [0.1, 0.9]]
+B = [[[0.7, 0.3], [0.3, 0.7]], [[0.3, 0.7], [0.7, 0.3]]]
+C = [[0.0, 1.0]]
 D = [[0.5, 0.5]]
+num_timesteps = 30
+num_hidden_states = 2
+num_obs = 2
+num_actions = 2
 
 ## Time
 Dynamic
@@ -40,6 +46,6 @@ o = Observation
 a = Action
 
 ## Footer
-Generated: 2026-04-10T10:24:32.871425
+Generated: 2026-05-25T09:51:15.182751
 
 ## Signature

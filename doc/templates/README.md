@@ -233,7 +233,7 @@ Templates should pass basic syntax validation and resource estimation.
 4. **Technical review** for GNN compliance
 5. **Integration** into template system
 
-**Cross-References**: [Contributing Process](../../CONTRIBUTING.md#submitting-changes) | [Quality Assurance](../style_guide.md)
+**Cross-References**: [Contributing Process](../../CONTRIBUTING.md#submitting-code-changes) | [Quality Assurance](../style_guide.md)
 
 ## Template Metadata
 

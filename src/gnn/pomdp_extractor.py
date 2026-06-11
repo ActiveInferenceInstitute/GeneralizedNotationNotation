@@ -2,7 +2,7 @@
 """
 POMDP State Space Extractor for GNN Active Inference Models
 
-This module provides specialized parsing and extraction capabilities for POMDP 
+This module provides specialized parsing and extraction capabilities for POMDP
 (Partially Observable Markov Decision Process) state spaces from GNN specifications,
 with focus on Active Inference model structures.
 """
@@ -11,9 +11,10 @@ import logging
 import re
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Dict, List, Optional, Tuple, Union, cast
 
 logger = logging.getLogger(__name__)
+
 
 @dataclass
 class POMDPStateSpace:
@@ -35,42 +36,60 @@ class POMDPStateSpace:
     state_variables: Optional[List[Dict[str, Any]]] = None
     observation_variables: Optional[List[Dict[str, Any]]] = None
     action_variables: Optional[List[Dict[str, Any]]] = None
+    state_factors: Optional[List[Dict[str, Any]]] = None
+    observation_modalities: Optional[List[Dict[str, Any]]] = None
+    control_factors: Optional[List[Dict[str, Any]]] = None
 
     # Connections/relationships
-    connections: Optional[List[Tuple[str, str, str]]] = None  # (source, relation, target)
+    connections: Optional[List[Tuple[str, str, str]]] = (
+        None  # (source, relation, target)
+    )
 
     # Metadata
     model_name: Optional[str] = None
     model_annotation: Optional[str] = None
     ontology_mapping: Optional[Dict[str, str]] = None
     num_timesteps: Optional[int] = None  # Simulation timesteps (from ModelParameters)
+    model_parameters: Optional[Dict[str, Any]] = None
+    matrices: Optional[Dict[str, Any]] = None
+    matrix_provenance: Optional[Dict[str, Dict[str, Any]]] = None
+    passive_model: bool = False
+    adapter_notes: Optional[List[str]] = None
 
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary representation."""
         return {
-            'num_states': self.num_states,
-            'num_observations': self.num_observations,
-            'num_actions': self.num_actions,
-            'A_matrix': self.A_matrix,
-            'B_matrix': self.B_matrix,
-            'C_vector': self.C_vector,
-            'D_vector': self.D_vector,
-            'E_vector': self.E_vector,
-            'state_variables': self.state_variables,
-            'observation_variables': self.observation_variables,
-            'action_variables': self.action_variables,
-            'connections': self.connections,
-            'model_name': self.model_name,
-            'model_annotation': self.model_annotation,
-            'ontology_mapping': self.ontology_mapping,
-            'num_timesteps': self.num_timesteps
+            "num_states": self.num_states,
+            "num_observations": self.num_observations,
+            "num_actions": self.num_actions,
+            "A_matrix": self.A_matrix,
+            "B_matrix": self.B_matrix,
+            "C_vector": self.C_vector,
+            "D_vector": self.D_vector,
+            "E_vector": self.E_vector,
+            "state_variables": self.state_variables,
+            "observation_variables": self.observation_variables,
+            "action_variables": self.action_variables,
+            "state_factors": self.state_factors,
+            "observation_modalities": self.observation_modalities,
+            "control_factors": self.control_factors,
+            "connections": self.connections,
+            "model_name": self.model_name,
+            "model_annotation": self.model_annotation,
+            "ontology_mapping": self.ontology_mapping,
+            "num_timesteps": self.num_timesteps,
+            "model_parameters": self.model_parameters,
+            "matrices": self.matrices,
+            "matrix_provenance": self.matrix_provenance,
+            "passive_model": self.passive_model,
+            "adapter_notes": self.adapter_notes,
         }
 
 
 class POMDPExtractor:
     """
     Specialized extractor for POMDP state spaces from GNN specifications.
-    
+
     Features:
     - Parses Active Inference matrix structures (A, B, C, D, E)
     - Extracts state space dimensions and variable definitions
@@ -79,10 +98,10 @@ class POMDPExtractor:
     - Validates POMDP structural consistency
     """
 
-    def __init__(self, strict_validation: bool = True):
+    def __init__(self, strict_validation: bool = True) -> None:
         """
         Initialize POMDP extractor.
-        
+
         Args:
             strict_validation: Enable strict validation of POMDP structure
         """
@@ -90,18 +109,24 @@ class POMDPExtractor:
         self.logger = logging.getLogger(__name__)
 
         # Patterns for parsing GNN content
-        self.SECTION_PATTERN = re.compile(r'^##\s+(.+)$', re.MULTILINE)
-        self.VARIABLE_PATTERN = re.compile(r'^([A-Za-z_π][A-Za-z0-9_π]*)\[([^\]]+)\](?:,type=([a-zA-Z]+))?(?:\s*#\s*(.*))?$')
-        self.CONNECTION_PATTERN = re.compile(r'^(.+?)\s*(>|->|-|\|)\s*(.+?)(?:\s*#\s*(.*))?$')
-        self.PARAMETER_PATTERN = re.compile(r'^([A-Za-z_π][A-Za-z0-9_π]*)\s*=\s*\{(.+)\}', re.MULTILINE | re.DOTALL)
+        self.SECTION_PATTERN = re.compile(r"^##\s+(.+)$", re.MULTILINE)
+        self.VARIABLE_PATTERN = re.compile(
+            r"^([A-Za-z_π][A-Za-z0-9_π]*)\[([^\]]+)\](?:,type=([a-zA-Z]+))?(?:\s*#\s*(.*))?$"
+        )
+        self.CONNECTION_PATTERN = re.compile(
+            r"^(.+?)\s*(>|->|-|\|)\s*(.+?)(?:\s*#\s*(.*))?$"
+        )
+        self.PARAMETER_PATTERN = re.compile(
+            r"^([A-Za-z_π][A-Za-z0-9_π]*)\s*=\s*\{(.+)\}", re.MULTILINE | re.DOTALL
+        )
 
     def extract_from_gnn_content(self, content: str) -> Optional[POMDPStateSpace]:
         """
         Extract POMDP state space from GNN content.
-        
+
         Args:
             content: Raw GNN file content
-            
+
         Returns:
             POMDPStateSpace object or None if extraction fails
         """
@@ -113,59 +138,68 @@ class POMDPExtractor:
             model_annotation = self._extract_model_annotation(sections)
 
             # Parse state space block
-            state_space_info = self._parse_state_space_block(sections.get('StateSpaceBlock', ''))
+            state_space_info = self._parse_state_space_block(
+                sections.get("StateSpaceBlock", "")
+            )
 
             # Parse initial parameterization FIRST (needed for dimension inference)
-            initial_params = self._parse_initial_parameterization(sections.get('InitialParameterization', ''))
+            initial_params = self._parse_initial_parameterization(
+                sections.get("InitialParameterization", "")
+            )
+            model_parameters = self._parse_model_parameters(
+                sections.get("ModelParameters", "")
+            )
 
             # Extract dimensions (now with access to sections and initial_params for better inference)
-            num_states, num_observations, num_actions, num_timesteps = self._extract_dimensions(
-                state_space_info, sections=sections, initial_params=initial_params
+            num_states, num_observations, num_actions, num_timesteps = (
+                self._extract_dimensions(
+                    state_space_info, sections=sections, initial_params=initial_params
+                )
             )
 
             # Parse connections
-            connections = self._parse_connections(sections.get('Connections', ''))
+            connections = self._parse_connections(sections.get("Connections", ""))
 
             # Parse ontology mapping
-            ontology_mapping = self._parse_ontology_annotations(sections.get('ActInfOntologyAnnotation', ''))
+            ontology_mapping = self._parse_ontology_annotations(
+                sections.get("ActInfOntologyAnnotation", "")
+            )
 
-            # Resolve multi-factor matrix names to standard A/B/C/D/E
-            # Supports models like T-maze which use A_loc, A_rew, B_loc, B_ctx, etc.
-            def _resolve_param(base_name, params):
-                """Look up a parameter by base name, falling back to factored variants."""
-                if params.get(base_name) is not None:
-                    return params[base_name]
-                # Look for factored variants (e.g., A_loc, A_rew for base A)
-                factored = {k: v for k, v in params.items()
-                           if k.startswith(base_name + '_') and v is not None}
-                if factored:
-                    # Take the first factor that has the right structure
-                    # Prefer non-context factors (A_loc over A_ctx, B_loc over B_ctx)
-                    for suffix in ['_loc', '_rew', '']:
-                        key = base_name + suffix
-                        if key in factored:
-                            self.logger.info(f"Using factored param '{key}' as primary '{base_name}' matrix")
-                            return factored[key]
-                    # Fall back to first available factor
-                    first_key = next(iter(factored))
-                    self.logger.info(f"Using factored param '{first_key}' as primary '{base_name}' matrix")
-                    return factored[first_key]
-                return None
+            matrices = self._collect_matrix_parameters(initial_params)
+            matrix_provenance = self._build_matrix_provenance(matrices)
+            state_factors = self._describe_variables(
+                state_space_info.get("state_variables"), "state_factor"
+            )
+            observation_modalities = self._describe_variables(
+                state_space_info.get("observation_variables"), "observation_modality"
+            )
+            control_factors = self._describe_variables(
+                state_space_info.get("action_variables"), "control_factor"
+            )
+            passive_model = self._is_passive_model(
+                model_parameters=model_parameters,
+                initial_params=initial_params,
+                num_actions=num_actions,
+                connections=connections,
+            )
 
-            A_matrix = _resolve_param('A', initial_params)
-            B_matrix = _resolve_param('B', initial_params)
-            C_vector = _resolve_param('C', initial_params)
-            D_vector = _resolve_param('D', initial_params)
-            E_vector = _resolve_param('E', initial_params)
+            A_matrix = initial_params.get("A")
+            B_matrix = initial_params.get("B")
+            C_vector = initial_params.get("C")
+            D_vector = initial_params.get("D")
+            E_vector = initial_params.get("E")
+            adapter_notes: list[Any] = []
 
-            # For HMM / passive models without preferences (C) or policy prior (E),
-            # generate uniform fallbacks so renderers can still produce scripts
-            if C_vector is None and num_observations > 0:
-                self.logger.info(f"No C vector found — generating uniform preferences ({num_observations} observations)")
+            if C_vector is None and passive_model and num_observations > 0:
                 C_vector = [0.0] * num_observations
-            if D_vector is None and num_states > 0:
-                self.logger.info(f"No D vector found — generating uniform prior ({num_states} states)")
-                D_vector = [1.0 / num_states] * num_states
+                matrices["C"] = C_vector
+                matrix_provenance["C"] = {
+                    "source": "passive_model_adapter",
+                    "shape": [num_observations],
+                    "derived": True,
+                    "reason": "zero preferences for passive HMM/Markov model",
+                }
+                adapter_notes.append("passive_model_zero_preferences")
 
             # Create POMDP state space
             pomdp_space = POMDPStateSpace(
@@ -177,21 +211,31 @@ class POMDPExtractor:
                 C_vector=C_vector,
                 D_vector=D_vector,
                 E_vector=E_vector,
-                state_variables=state_space_info.get('state_variables'),
-                observation_variables=state_space_info.get('observation_variables'),
-                action_variables=state_space_info.get('action_variables'),
+                state_variables=state_space_info.get("state_variables"),
+                observation_variables=state_space_info.get("observation_variables"),
+                action_variables=state_space_info.get("action_variables"),
+                state_factors=state_factors,
+                observation_modalities=observation_modalities,
+                control_factors=control_factors,
                 connections=connections,
                 model_name=model_name,
                 model_annotation=model_annotation,
                 ontology_mapping=ontology_mapping,
-                num_timesteps=num_timesteps
+                num_timesteps=num_timesteps,
+                model_parameters=model_parameters,
+                matrices=matrices,
+                matrix_provenance=matrix_provenance,
+                passive_model=passive_model,
+                adapter_notes=adapter_notes,
             )
 
             # Validate if strict validation enabled
             if self.strict_validation:
                 validation_result = self._validate_pomdp_structure(pomdp_space)
-                if not validation_result['valid']:
-                    self.logger.warning(f"POMDP validation warnings: {validation_result['warnings']}")
+                if not validation_result["valid"]:
+                    self.logger.warning(
+                        f"POMDP validation warnings: {validation_result['warnings']}"
+                    )
 
             return pomdp_space
 
@@ -199,13 +243,15 @@ class POMDPExtractor:
             self.logger.error(f"Failed to extract POMDP state space: {e}")
             return None
 
-    def extract_from_file(self, file_path: Union[str, Path]) -> Optional[POMDPStateSpace]:
+    def extract_from_file(
+        self, file_path: Union[str, Path]
+    ) -> Optional[POMDPStateSpace]:
         """
         Extract POMDP state space from GNN file.
-        
+
         Args:
             file_path: Path to GNN file
-            
+
         Returns:
             POMDPStateSpace object or None if extraction fails
         """
@@ -215,7 +261,7 @@ class POMDPExtractor:
                 self.logger.error(f"File not found: {file_path}")
                 return None
 
-            with open(file_path, 'r', encoding='utf-8') as f:
+            with open(file_path, "r", encoding="utf-8") as f:
                 content = f.read()
 
             return self.extract_from_gnn_content(content)
@@ -226,11 +272,11 @@ class POMDPExtractor:
 
     def _parse_sections(self, content: str) -> Dict[str, str]:
         """Parse GNN content into sections."""
-        sections = {}
+        sections: dict[Any, Any] = {}
         current_section = None
-        current_content = []
+        current_content: list[Any] = []
 
-        for line in content.split('\n'):
+        for line in content.split("\n"):
             line = line.strip()
 
             # Check for section header
@@ -238,7 +284,7 @@ class POMDPExtractor:
             if section_match:
                 # Save previous section
                 if current_section:
-                    sections[current_section] = '\n'.join(current_content)
+                    sections[current_section] = "\n".join(current_content)
 
                 # Start new section
                 current_section = section_match.group(1).strip()
@@ -250,83 +296,99 @@ class POMDPExtractor:
 
         # Save final section
         if current_section:
-            sections[current_section] = '\n'.join(current_content)
+            sections[current_section] = "\n".join(current_content)
 
         return sections
 
     def _extract_model_name(self, sections: Dict[str, str]) -> Optional[str]:
         """Extract model name from sections."""
-        return sections.get('ModelName', '').strip() or None
+        return sections.get("ModelName", "").strip() or None
 
     def _extract_model_annotation(self, sections: Dict[str, str]) -> Optional[str]:
         """Extract model annotation from sections."""
-        return sections.get('ModelAnnotation', '').strip() or None
+        return sections.get("ModelAnnotation", "").strip() or None
 
     def _parse_state_space_block(self, content: str) -> Dict[str, Any]:
         """Parse StateSpaceBlock section."""
-        variables = {
-            'state_variables': [],
-            'observation_variables': [],
-            'action_variables': []
+        variables: dict[str, Any] = {
+            "state_variables": [],
+            "observation_variables": [],
+            "action_variables": [],
         }
 
-        for line in content.split('\n'):
+        for line in content.split("\n"):
             line = line.strip()
-            if not line or line.startswith('#'):
+            if not line or line.startswith("#"):
                 continue
 
             match = self.VARIABLE_PATTERN.match(line)
             if match:
                 var_name = match.group(1)
                 dimensions_str = match.group(2)
-                var_type = match.group(3) or 'float'
+                var_type = match.group(3) or "float"
                 comment = match.group(4)
 
                 # Parse dimensions
-                dimensions = []
-                for dim in dimensions_str.split(','):
+                dimensions: list[Any] = []
+                for dim in dimensions_str.split(","):
                     dim = dim.strip()
-                    if '=' not in dim:  # Skip type specifications
+                    if "=" not in dim:  # Skip type specifications
                         try:
-                            if dim == 'π':  # Special handling for π
-                                dimensions.append('π')
+                            if dim == "π":  # Special handling for π
+                                dimensions.append("π")
                             else:
                                 dimensions.append(int(dim))
                         except ValueError:
                             dimensions.append(dim)  # Keep as string if not integer
 
-                var_info = {
-                    'name': var_name,
-                    'dimensions': dimensions,
-                    'type': var_type,
-                    'comment': comment
+                var_info: dict[str, Any] = {
+                    "name": var_name,
+                    "dimensions": dimensions,
+                    "type": var_type,
+                    "comment": comment,
                 }
 
                 # Categorize variables
-                if var_name.lower() in ['s', 's_prime'] or 'state' in (comment or '').lower():
-                    variables['state_variables'].append(var_info)
-                elif var_name.lower() in ['o'] or 'observation' in (comment or '').lower():
-                    variables['observation_variables'].append(var_info)
-                elif var_name.lower() in ['u', 'π'] or 'action' in (comment or '').lower() or 'policy' in (comment or '').lower():
-                    variables['action_variables'].append(var_info)
+                if (
+                    var_name.lower() in ["s", "s_prime"]
+                    or "state" in (comment or "").lower()
+                ):
+                    variables["state_variables"].append(var_info)
+                elif (
+                    var_name.lower() in ["o"]
+                    or "observation" in (comment or "").lower()
+                ):
+                    variables["observation_variables"].append(var_info)
+                elif (
+                    var_name.lower() in ["u", "π"]
+                    or "action" in (comment or "").lower()
+                    or "policy" in (comment or "").lower()
+                ):
+                    variables["action_variables"].append(var_info)
                 else:
                     # Default categorization based on typical Active Inference naming
-                    if var_name in ['A', 'B', 'C', 'D', 'E', 'F', 'G']:
+                    if var_name in ["A", "B", "C", "D", "E", "F", "G"] or any(
+                        var_name.startswith(f"{prefix}_")
+                        for prefix in ("A", "B", "C", "D", "E", "F", "G")
+                    ):
                         # These are matrix/vector parameters, not state space variables
-                        pass
+                        continue
                     else:
-                        variables['state_variables'].append(var_info)
+                        variables["state_variables"].append(var_info)
 
         return variables
 
-    def _extract_dimensions(self, state_space_info: Dict[str, Any],
-                            sections: Optional[Dict[str, str]] = None,
-                            initial_params: Optional[Dict[str, Any]] = None) -> Tuple[int, int, int]:
+    def _extract_dimensions(
+        self,
+        state_space_info: Dict[str, Any],
+        sections: Optional[Dict[str, str]] = None,
+        initial_params: Optional[Dict[str, Any]] = None,
+    ) -> Tuple[int, int, int, Optional[int]]:
         """
         Extract core dimensions from state space information.
-        
+
         Priority for num_actions:
-        1. ModelParameters section (num_actions, num_controls)  
+        1. ModelParameters section (num_actions, num_controls)
         2. B matrix dimensions (inferred from shape)
         3. Action variables (u, π)
         4. Default (3)
@@ -338,54 +400,77 @@ class POMDPExtractor:
 
         # Priority 1: Check ModelParameters section
         if sections:
-            model_params_content = sections.get('ModelParameters', '')
-            for line in model_params_content.split('\n'):
-                line = line.strip()
-                if ':' in line:
-                    key, value = line.split(':', 1)
-                    key = key.strip().lower()
-                    try:
-                        value = int(value.strip().split('#')[0].strip())  # Remove comments
-                        if key in ['num_actions', 'num_controls', 'n_actions']:
-                            num_actions = value
-                        elif key in ['num_hidden_states', 'num_states', 'n_states', 'num_locations']:
-                            num_states = value
-                        elif key in ['num_obs', 'num_observations', 'n_obs', 'num_location_obs']:
-                            num_observations = value
-                        elif key in ['num_timesteps', 'n_timesteps', 'timesteps']:
-                            num_timesteps = value
-                    except (ValueError, IndexError):
-                        self.logger.debug("Could not parse POMDP parameter '%s' from metadata", key)
+            for key, value in self._parse_model_parameters(
+                sections.get("ModelParameters", "")
+            ).items():
+                try:
+                    int_value = int(value)
+                except (ValueError, TypeError):
+                    continue
+                key_lower = key.lower()
+                if key_lower in ["num_actions", "num_controls", "n_actions"]:
+                    num_actions = int_value
+                elif key_lower in [
+                    "num_hidden_states",
+                    "num_states",
+                    "n_states",
+                    "num_locations",
+                ]:
+                    num_states = int_value
+                elif key_lower in [
+                    "num_obs",
+                    "num_observations",
+                    "n_obs",
+                    "num_location_obs",
+                ]:
+                    num_observations = int_value
+                elif key_lower in ["num_timesteps", "n_timesteps", "timesteps"]:
+                    num_timesteps = int_value
 
         # Priority 2: Infer from B matrix dimensions if still None
         if num_actions is None and initial_params:
-            B_matrix = initial_params.get('B')
-            if B_matrix and isinstance(B_matrix, (list, tuple)) and len(B_matrix) > 0:
-                # B is typically [action][next_state][prev_state] or [action][row][col]
-                num_actions = len(B_matrix)
-                self.logger.info(f"Inferred num_actions={num_actions} from B matrix dimensions")
+            action_candidates: list[Any] = []
+            for key, matrix in initial_params.items():
+                if key == "B" or key.startswith("B_"):
+                    shape = self._nested_shape(matrix)
+                    if len(shape) == 2:
+                        action_candidates.append(1)
+                    elif len(shape) == 3:
+                        if shape[0] == shape[1]:
+                            action_candidates.append(shape[2])
+                        elif shape[1] == shape[2]:
+                            action_candidates.append(shape[0])
+                        else:
+                            action_candidates.append(shape[-1])
+            if action_candidates:
+                num_actions = max(action_candidates)
+                self.logger.info(
+                    "Inferred num_actions=%d from B matrix dimensions", num_actions
+                )
 
         # Priority 3: Try to extract from state variables
-        for var in state_space_info.get('state_variables', []):
-            if var['name'].lower() == 's':
-                if len(var['dimensions']) > 0 and isinstance(var['dimensions'][0], int):
+        for var in state_space_info.get("state_variables", []):
+            if var["name"].lower() == "s":
+                if len(var["dimensions"]) > 0 and isinstance(var["dimensions"][0], int):
                     if num_states == 3:  # Only override default
-                        num_states = var['dimensions'][0]
+                        num_states = var["dimensions"][0]
 
         # Try to extract from observation variables
-        for var in state_space_info.get('observation_variables', []):
-            if var['name'].lower() == 'o':
-                if len(var['dimensions']) > 0 and isinstance(var['dimensions'][0], int):
+        for var in state_space_info.get("observation_variables", []):
+            if var["name"].lower() == "o":
+                if len(var["dimensions"]) > 0 and isinstance(var["dimensions"][0], int):
                     if num_observations == 3:  # Only override default
-                        num_observations = var['dimensions'][0]
+                        num_observations = var["dimensions"][0]
 
         # Priority 4: Try to extract from action variables (if still None)
         if num_actions is None:
-            for var in state_space_info.get('action_variables', []):
-                if var['name'].lower() in ['u', 'π']:
-                    if len(var['dimensions']) > 0 and isinstance(var['dimensions'][0], int):
+            for var in state_space_info.get("action_variables", []):
+                if var["name"].lower() in ["u", "π"]:
+                    if len(var["dimensions"]) > 0 and isinstance(
+                        var["dimensions"][0], int
+                    ):
                         # Only use if > 1 (u[1] means single action, not 1 possible action)
-                        dim = var['dimensions'][0]
+                        dim = var["dimensions"][0]
                         if dim > 1:
                             num_actions = dim
 
@@ -395,12 +480,129 @@ class POMDPExtractor:
 
         return num_states, num_observations, num_actions, num_timesteps
 
+    def _parse_model_parameters(self, content: str) -> Dict[str, Any]:
+        """Parse the ModelParameters section into typed scalar values."""
+        params: Dict[str, Any] = {}
+        for line in content.split("\n"):
+            line = line.strip()
+            if not line or line.startswith("#") or ":" not in line:
+                continue
+            key, value = line.split(":", 1)
+            clean_value = value.split("#", 1)[0].strip()
+            key = key.strip()
+            if not clean_value:
+                continue
+            try:
+                params[key] = int(clean_value)
+                continue
+            except ValueError as e:
+                self.logger.debug("Model parameter %s is not an int: %s", key, e)
+            try:
+                params[key] = float(clean_value)
+                continue
+            except ValueError as e:
+                self.logger.debug("Model parameter %s is not a float: %s", key, e)
+            if clean_value.lower() in {"true", "false"}:
+                params[key] = clean_value.lower() == "true"
+            else:
+                params[key] = clean_value
+        return params
+
+    def _collect_matrix_parameters(self, params: Dict[str, Any]) -> Dict[str, Any]:
+        """Return all Active Inference matrices/vectors without collapsing factors."""
+        matrices: Dict[str, Any] = {}
+        for key, value in params.items():
+            if key in {"A", "B", "C", "D", "E"} or any(
+                key.startswith(f"{prefix}_") for prefix in ("A", "B", "C", "D", "E")
+            ):
+                matrices[key] = value
+        return matrices
+
+    def _build_matrix_provenance(
+        self, matrices: Dict[str, Any]
+    ) -> Dict[str, Dict[str, Any]]:
+        """Describe where each extracted matrix came from and what shape it has."""
+        return {
+            key: {
+                "source": "InitialParameterization",
+                "shape": self._nested_shape(value),
+                "derived": False,
+            }
+            for key, value in matrices.items()
+        }
+
+    def _nested_shape(self, value: Any) -> List[int]:
+        """Return a best-effort shape for nested Python matrix data."""
+        shape: list[Any] = []
+        current = value
+        while isinstance(current, (list, tuple)):
+            shape.append(len(current))
+            if not current:
+                break
+            current = current[0]
+        return shape
+
+    def _describe_variables(
+        self,
+        variables: Optional[List[Dict[str, Any]]],
+        fallback_prefix: str,
+    ) -> List[Dict[str, Any]]:
+        """Create factor/modality/control descriptors from parsed variables."""
+        descriptors: list[Any] = []
+        for index, variable in enumerate(variables or []):
+            name = variable.get("name") or f"{fallback_prefix}_{index}"
+            name_lower = str(name).lower()
+            if fallback_prefix == "state_factor" and not name_lower.startswith("s"):
+                continue
+            if fallback_prefix == "observation_modality" and not name_lower.startswith(
+                "o"
+            ):
+                continue
+            if (
+                fallback_prefix == "control_factor"
+                and name_lower not in {"u", "π", "pi"}
+                and not name_lower.startswith("pi")
+            ):
+                continue
+            dimensions = variable.get("dimensions") or []
+            size = next((dim for dim in dimensions if isinstance(dim, int)), None)
+            descriptors.append(
+                {
+                    "name": name,
+                    "size": size,
+                    "dimensions": dimensions,
+                    "type": variable.get("type"),
+                    "comment": variable.get("comment"),
+                    "index": index,
+                }
+            )
+        return descriptors
+
+    def _is_passive_model(
+        self,
+        *,
+        model_parameters: Dict[str, Any],
+        initial_params: Dict[str, Any],
+        num_actions: int,
+        connections: List[Tuple[str, str, str]],
+    ) -> bool:
+        """Detect passive HMM/Markov models that have no control-dependent choices."""
+        model_type = str(model_parameters.get("model_type", "")).lower()
+        if any(term in model_type for term in ("hmm", "markov", "passive")):
+            return True
+        if int(num_actions) == 1:
+            return True
+        b_matrix = initial_params.get("B")
+        if b_matrix is not None and len(self._nested_shape(b_matrix)) == 2:
+            return True
+        return False
+
     def _parse_initial_parameterization(self, content: str) -> Dict[str, Any]:
         """Parse InitialParameterization section."""
-        params = {}
+        params: dict[Any, Any] = {}
 
         # Split content into lines and process each parameter block
-        lines = content.split('\n')
+        lines = content.split("\n")
         current_param = None
         current_value = ""
         in_param_block = False
@@ -409,25 +611,27 @@ class POMDPExtractor:
             line = line.strip()
 
             # Skip comments
-            if line.startswith('#') or not line:
+            if line.startswith("#") or not line:
                 continue
 
             # Check if this line starts a parameter definition
-            if '={' in line and not in_param_block:
+            if "={" in line and not in_param_block:
                 # Start of parameter block
-                param_name = line.split('={')[0].strip()
+                param_name = line.split("={")[0].strip()
                 current_param = param_name
-                current_value = line.split('={')[1]
+                current_value = line.split("={")[1]
 
                 # Check if parameter ends on the same line
-                if '}' in current_value:
+                if "}" in current_value:
                     # Single-line parameter
-                    current_value = current_value.split('}')[0]
+                    current_value = current_value.split("}")[0]
                     try:
                         parsed_value = self._parse_parameter_value(current_value)
                         params[current_param] = parsed_value
                     except Exception as e:
-                        self.logger.warning(f"Failed to parse parameter {current_param}: {e}")
+                        self.logger.warning(
+                            f"Failed to parse parameter {current_param}: {e}"
+                        )
                     current_param = None
                     current_value = ""
                 else:
@@ -436,14 +640,16 @@ class POMDPExtractor:
 
             elif in_param_block and current_param:
                 # Continue collecting parameter value
-                if '}' in line:
+                if "}" in line:
                     # End of parameter block
-                    current_value += " " + line.split('}')[0]
+                    current_value += " " + line.split("}")[0]
                     try:
                         parsed_value = self._parse_parameter_value(current_value)
                         params[current_param] = parsed_value
                     except Exception as e:
-                        self.logger.warning(f"Failed to parse parameter {current_param}: {e}")
+                        self.logger.warning(
+                            f"Failed to parse parameter {current_param}: {e}"
+                        )
                     in_param_block = False
                     current_param = None
                     current_value = ""
@@ -456,38 +662,45 @@ class POMDPExtractor:
     def _parse_parameter_value(self, value_str: str) -> Union[List, float, int]:
         """Parse parameter value string into appropriate data structure."""
         import ast
+
         value_str = value_str.strip()
 
         # Handle simple numeric values
         try:
-            if re.match(r'^[-+]?\d*\.\d+$', value_str):
+            if re.match(r"^[-+]?\d*\.\d+$", value_str):
                 return float(value_str)
-            if re.match(r'^[-+]?\d+$', value_str):
+            if re.match(r"^[-+]?\d+$", value_str):
                 return int(value_str)
         except ValueError:
-            self.logger.debug("Value '%s' is not a simple numeric, trying structured formats", value_str[:40])
+            self.logger.debug(
+                "Value '%s' is not a simple numeric, trying structured formats",
+                value_str[:40],
+            )
 
         # Handle structured data (tuples/nested lists)
-        if '(' in value_str or '[' in value_str:
+        if "(" in value_str or "[" in value_str:
             try:
                 # Convert ( ) to [ ] for literal_eval if needed, or just let it handle tuples
                 # Better to convert to a standard format
-                clean_str = value_str.replace('(', '[').replace(')', ']')
+                clean_str = value_str.replace("(", "[").replace(")", "]")
                 # Handle cases like ( (1,2), (3,4) ) -> [ [1,2], [3,4] ]
                 # Remove extra commas if any (e.g., from trailing commas in GNN)
-                clean_str = re.sub(r',\s*\]', ']', clean_str)
-                return ast.literal_eval(clean_str)
+                clean_str = re.sub(r",\s*\]", "]", clean_str)
+                return cast("list[Any] | float | int", ast.literal_eval(clean_str))
             except (ValueError, SyntaxError) as e:
-                self.logger.warning(f"ast.literal_eval failed for {value_str}: {e}. Falling back to manual parsing.")
+                self.logger.warning(
+                    f"ast.literal_eval failed for {value_str}: {e}. Falling back to manual parsing."
+                )
                 return self._parse_nested_structure_safe(value_str)
 
         # Recovery for simple comma-separated values without brackets
-        values = []
-        for item in value_str.split(','):
+        values: list[Any] = []
+        for item in value_str.split(","):
             item = item.strip()
-            if not item: continue
+            if not item:
+                continue
             try:
-                if '.' in item:
+                if "." in item:
                     values.append(float(item))
                 else:
                     values.append(int(item))
@@ -505,14 +718,14 @@ class POMDPExtractor:
         if not value_str:
             return []
 
-        result = []
+        result: list[Any] = []
         current = ""
         depth = 0
 
         # Normalize delimiters
-        value_str = value_str.replace('(', '[').replace(')', ']')
+        value_str = value_str.replace("(", "[").replace(")", "]")
 
-        if value_str.startswith('[') and value_str.endswith(']'):
+        if value_str.startswith("[") and value_str.endswith("]"):
             content = value_str[1:-1].strip()
         else:
             content = value_str
@@ -520,22 +733,24 @@ class POMDPExtractor:
         i = 0
         while i < len(content):
             char = content[i]
-            if char == '[':
+            if char == "[":
                 if depth == 0:
                     start_idx = i
                 depth += 1
-            elif char == ']':
+            elif char == "]":
                 depth -= 1
                 if depth == 0:
                     # Found a complete nested group
-                    group = content[start_idx:i+1]
+                    group = content[start_idx : i + 1]
                     result.append(self._parse_nested_structure_safe(group))
-            elif char == ',' and depth == 0:
+            elif char == "," and depth == 0:
                 if current.strip():
                     try:
                         val = current.strip()
-                        if '.' in val: result.append(float(val))
-                        else: result.append(int(val))
+                        if "." in val:
+                            result.append(float(val))
+                        else:
+                            result.append(int(val))
                     except ValueError:
                         result.append(current.strip())
                     current = ""
@@ -546,8 +761,10 @@ class POMDPExtractor:
         if current.strip():
             try:
                 val = current.strip()
-                if '.' in val: result.append(float(val))
-                else: result.append(int(val))
+                if "." in val:
+                    result.append(float(val))
+                else:
+                    result.append(int(val))
             except ValueError:
                 result.append(current.strip())
 
@@ -555,11 +772,11 @@ class POMDPExtractor:
 
     def _parse_connections(self, content: str) -> List[Tuple[str, str, str]]:
         """Parse Connections section."""
-        connections = []
+        connections: list[Any] = []
 
-        for line in content.split('\n'):
+        for line in content.split("\n"):
             line = line.strip()
-            if not line or line.startswith('#'):
+            if not line or line.startswith("#"):
                 continue
 
             match = self.CONNECTION_PATTERN.match(line)
@@ -573,15 +790,15 @@ class POMDPExtractor:
 
     def _parse_ontology_annotations(self, content: str) -> Dict[str, str]:
         """Parse ActInfOntologyAnnotation section."""
-        mapping = {}
+        mapping: dict[Any, Any] = {}
 
-        for line in content.split('\n'):
+        for line in content.split("\n"):
             line = line.strip()
-            if not line or line.startswith('#'):
+            if not line or line.startswith("#"):
                 continue
 
-            if '=' in line:
-                parts = line.split('=', 1)
+            if "=" in line:
+                parts = line.split("=", 1)
                 if len(parts) == 2:
                     key = parts[0].strip()
                     value = parts[1].strip()
@@ -591,65 +808,85 @@ class POMDPExtractor:
 
     def _validate_pomdp_structure(self, pomdp_space: POMDPStateSpace) -> Dict[str, Any]:
         """Validate POMDP structure for consistency."""
-        warnings = []
+        warnings: list[Any] = []
 
         # Check dimension consistency
         try:
             if pomdp_space.A_matrix and isinstance(pomdp_space.A_matrix, list):
-                if len(pomdp_space.A_matrix) > 0 and isinstance(pomdp_space.A_matrix[0], list):
-                    expected_a_dims = (pomdp_space.num_observations, pomdp_space.num_states)
-                    actual_a_dims = (len(pomdp_space.A_matrix), len(pomdp_space.A_matrix[0]))
+                if len(pomdp_space.A_matrix) > 0 and isinstance(
+                    pomdp_space.A_matrix[0], list
+                ):
+                    expected_a_dims = (
+                        pomdp_space.num_observations,
+                        pomdp_space.num_states,
+                    )
+                    actual_a_dims = (
+                        len(pomdp_space.A_matrix),
+                        len(pomdp_space.A_matrix[0]),
+                    )
                     if expected_a_dims != actual_a_dims:
-                        warnings.append(f"A matrix dimensions {actual_a_dims} don't match expected {expected_a_dims}")
+                        warnings.append(
+                            f"A matrix dimensions {actual_a_dims} don't match expected {expected_a_dims}"
+                        )
         except (TypeError, IndexError) as e:
             warnings.append(f"A matrix has invalid structure: {e}")
 
         try:
             if pomdp_space.B_matrix and isinstance(pomdp_space.B_matrix, list):
-                if (len(pomdp_space.B_matrix) > 0 and
-                    isinstance(pomdp_space.B_matrix[0], list) and
-                    len(pomdp_space.B_matrix[0]) > 0 and
-                    isinstance(pomdp_space.B_matrix[0][0], list)):
-                    expected_b_dims = (pomdp_space.num_states, pomdp_space.num_states, pomdp_space.num_actions)
+                if (
+                    len(pomdp_space.B_matrix) > 0
+                    and isinstance(pomdp_space.B_matrix[0], list)
+                    and len(pomdp_space.B_matrix[0]) > 0
+                    and isinstance(pomdp_space.B_matrix[0][0], list)
+                ):
+                    expected_b_dims = (
+                        pomdp_space.num_states,
+                        pomdp_space.num_states,
+                        pomdp_space.num_actions,
+                    )
                     actual_b_dims = (
                         len(pomdp_space.B_matrix[0]),
                         len(pomdp_space.B_matrix[0][0]),
-                        len(pomdp_space.B_matrix)
+                        len(pomdp_space.B_matrix),
                     )
                     if expected_b_dims != actual_b_dims:
-                        warnings.append(f"B matrix dimensions {actual_b_dims} don't match expected {expected_b_dims}")
+                        warnings.append(
+                            f"B matrix dimensions {actual_b_dims} don't match expected {expected_b_dims}"
+                        )
         except (TypeError, IndexError) as e:
             warnings.append(f"B matrix has invalid structure: {e}")
 
         try:
             if pomdp_space.C_vector and isinstance(pomdp_space.C_vector, list):
                 if len(pomdp_space.C_vector) != pomdp_space.num_observations:
-                    warnings.append(f"C vector length {len(pomdp_space.C_vector)} doesn't match num_observations {pomdp_space.num_observations}")
-        except (TypeError) as e:
+                    warnings.append(
+                        f"C vector length {len(pomdp_space.C_vector)} doesn't match num_observations {pomdp_space.num_observations}"
+                    )
+        except TypeError as e:
             warnings.append(f"C vector has invalid structure: {e}")
 
         try:
             if pomdp_space.D_vector and isinstance(pomdp_space.D_vector, list):
                 if len(pomdp_space.D_vector) != pomdp_space.num_states:
-                    warnings.append(f"D vector length {len(pomdp_space.D_vector)} doesn't match num_states {pomdp_space.num_states}")
-        except (TypeError) as e:
+                    warnings.append(
+                        f"D vector length {len(pomdp_space.D_vector)} doesn't match num_states {pomdp_space.num_states}"
+                    )
+        except TypeError as e:
             warnings.append(f"D vector has invalid structure: {e}")
 
-        return {
-            'valid': len(warnings) == 0,
-            'warnings': warnings
-        }
+        return {"valid": len(warnings) == 0, "warnings": warnings}
 
 
-def extract_pomdp_from_file(file_path: Union[str, Path],
-                           strict_validation: bool = True) -> Optional[POMDPStateSpace]:
+def extract_pomdp_from_file(
+    file_path: Union[str, Path], strict_validation: bool = True
+) -> Optional[POMDPStateSpace]:
     """
     Convenience function to extract POMDP state space from a GNN file.
-    
+
     Args:
         file_path: Path to GNN file
         strict_validation: Enable strict validation
-        
+
     Returns:
         POMDPStateSpace object or None if extraction fails
     """
@@ -657,15 +894,16 @@ def extract_pomdp_from_file(file_path: Union[str, Path],
     return extractor.extract_from_file(file_path)
 
 
-def extract_pomdp_from_content(content: str,
-                              strict_validation: bool = True) -> Optional[POMDPStateSpace]:
+def extract_pomdp_from_content(
+    content: str, strict_validation: bool = True
+) -> Optional[POMDPStateSpace]:
     """
     Convenience function to extract POMDP state space from GNN content.
-    
+
     Args:
         content: GNN file content
         strict_validation: Enable strict validation
-        
+
     Returns:
         POMDPStateSpace object or None if extraction fails
     """

@@ -5,7 +5,6 @@ Pipeline Verification Script
 This script verifies that the complete GNN Processing Pipeline is working correctly.
 """
 
-
 from pathlib import Path
 from typing import Any, Dict
 
@@ -14,10 +13,17 @@ def verify_pipeline_discovery() -> Dict[str, Any]:
     """Verify pipeline step discovery."""
     try:
         from pipeline.discovery import get_pipeline_scripts
+
         scripts = get_pipeline_scripts(Path(__file__).parent)
 
         expected_steps = list(range(25))  # 0-24
-        found_steps = [s['num'] for s in scripts]
+        found_steps: list[int] = []
+        for script in scripts:
+            step_number = script.get("num")
+            if isinstance(step_number, int):
+                found_steps.append(step_number)
+            elif isinstance(step_number, str) and step_number.isdigit():
+                found_steps.append(int(step_number))
 
         return {
             "success": found_steps == expected_steps,
@@ -25,17 +31,15 @@ def verify_pipeline_discovery() -> Dict[str, Any]:
             "found_count": len(found_steps),
             "missing_steps": set(expected_steps) - set(found_steps),
             "extra_steps": set(found_steps) - set(expected_steps),
-            "scripts": [s['basename'] for s in sorted(scripts, key=lambda x: x['num'])]
+            "scripts": [s["basename"] for s in sorted(scripts, key=lambda x: x["num"])],
         }
     except Exception as e:
-        return {
-            "success": False,
-            "error": str(e)
-        }
+        return {"success": False, "error": str(e)}
+
 
 def verify_module_imports() -> Dict[str, Any]:
     """Verify that all modules can be imported."""
-    modules_to_test = [
+    modules_to_test: list[Any] = [
         "utils",
         "pipeline",
         "type_checker",
@@ -61,11 +65,11 @@ def verify_module_imports() -> Dict[str, Any]:
         "mcp",
         "gui",
         "report",
-        "intelligent_analysis"
+        "intelligent_analysis",
     ]
 
-    results = {}
-    failed_imports = []
+    results: dict[Any, Any] = {}
+    failed_imports: list[Any] = []
 
     for module_name in modules_to_test:
         try:
@@ -81,14 +85,16 @@ def verify_module_imports() -> Dict[str, Any]:
         "successful_imports": sum(results.values()),
         "failed_imports": len(failed_imports),
         "failed_modules": failed_imports,
-        "results": results
+        "results": results,
     }
+
 
 def verify_pipeline_config() -> Dict[str, Any]:
     """Verify pipeline configuration."""
     try:
-        from pipeline import get_pipeline_config
-        config = get_pipeline_config()
+        from pipeline.config import PipelineConfig
+
+        config = PipelineConfig()
 
         return {
             "success": True,
@@ -96,46 +102,49 @@ def verify_pipeline_config() -> Dict[str, Any]:
             "has_template": "0_template.py" in config.steps,
             "has_setup": "1_setup.py" in config.steps,
             "has_tests": "2_tests.py" in config.steps,
-            "has_main": "main.py" in config.steps
+            "has_main": "main.py" in config.steps,
         }
     except Exception as e:
-        return {
-            "success": False,
-            "error": str(e)
-        }
+        return {"success": False, "error": str(e)}
+
 
 def verify_step_files() -> Dict[str, Any]:
     """Verify that all step files exist."""
-    expected_files = [f"{i}_" + name for i, name in enumerate([
-        "template.py",
-        "setup.py",
-        "tests.py",
-        "gnn.py",
-        "model_registry.py",
-        "type_checker.py",
-        "validation.py",
-        "export.py",
-        "visualization.py",
-        "advanced_viz.py",
-        "ontology.py",
-        "render.py",
-        "execute.py",
-        "llm.py",
-        "ml_integration.py",
-        "audio.py",
-        "analysis.py",
-        "integration.py",
-        "security.py",
-        "research.py",
-        "website.py",
-        "mcp.py",
-        "gui.py",
-        "report.py",
-        "intelligent_analysis.py"
-    ])]
+    expected_files = [
+        f"{i}_" + name
+        for i, name in enumerate(
+            [
+                "template.py",
+                "setup.py",
+                "tests.py",
+                "gnn.py",
+                "model_registry.py",
+                "type_checker.py",
+                "validation.py",
+                "export.py",
+                "visualization.py",
+                "advanced_viz.py",
+                "ontology.py",
+                "render.py",
+                "execute.py",
+                "llm.py",
+                "ml_integration.py",
+                "audio.py",
+                "analysis.py",
+                "integration.py",
+                "security.py",
+                "research.py",
+                "website.py",
+                "mcp.py",
+                "gui.py",
+                "report.py",
+                "intelligent_analysis.py",
+            ]
+        )
+    ]
 
-    existing_files = []
-    missing_files = []
+    existing_files: list[Any] = []
+    missing_files: list[Any] = []
 
     for filename in expected_files:
         file_path = Path(__file__).parent / filename
@@ -150,20 +159,16 @@ def verify_step_files() -> Dict[str, Any]:
         "existing_count": len(existing_files),
         "missing_count": len(missing_files),
         "missing_files": missing_files,
-        "existing_files": existing_files
+        "existing_files": existing_files,
     }
+
 
 def verify_mcp_integration() -> Dict[str, Any]:
     """Verify MCP integration files."""
-    modules_with_mcp = [
-        "tests",
-        "type_checker",
-        "export",
-        "setup"
-    ]
+    modules_with_mcp: list[Any] = ["tests", "type_checker", "export", "setup"]
 
-    results = {}
-    missing_mcp = []
+    results: dict[Any, Any] = {}
+    missing_mcp: list[Any] = []
 
     for module_name in modules_with_mcp:
         mcp_file = Path(__file__).parent / module_name / "mcp.py"
@@ -179,23 +184,24 @@ def verify_mcp_integration() -> Dict[str, Any]:
         "with_mcp": len([r for r in results.values() if r]),
         "missing_mcp": len(missing_mcp),
         "missing_modules": missing_mcp,
-        "results": results
+        "results": results,
     }
+
 
 def verify_test_modules() -> Dict[str, Any]:
     """Verify test modules."""
-    expected_test_files = [
+    expected_test_files: list[Any] = [
         "__init__.py",
         "unit_tests.py",
         "integration_tests.py",
         "performance_tests.py",
         "coverage_tests.py",
-        "mcp.py"
+        "mcp.py",
     ]
 
     test_dir = Path(__file__).parent / "tests"
-    existing_files = []
-    missing_files = []
+    existing_files: list[Any] = []
+    missing_files: list[Any] = []
 
     for filename in expected_test_files:
         file_path = test_dir / filename
@@ -210,15 +216,16 @@ def verify_test_modules() -> Dict[str, Any]:
         "existing_count": len(existing_files),
         "missing_count": len(missing_files),
         "missing_files": missing_files,
-        "existing_files": existing_files
+        "existing_files": existing_files,
     }
+
 
 def main() -> int:
     """Main verification function."""
     print("🔍 GNN Processing Pipeline Verification")
     print("=" * 50)
 
-    verification_results = {}
+    verification_results: dict[Any, Any] = {}
 
     # Run all verifications
     print("\n1. Verifying pipeline discovery...")
@@ -267,6 +274,7 @@ def main() -> int:
         print("❌ SOME VERIFICATIONS FAILED!")
         print("⚠️  Please check the issues above before using the pipeline.")
         return 1
+
 
 if __name__ == "__main__":
     raise SystemExit(main())

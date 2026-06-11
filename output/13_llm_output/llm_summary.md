@@ -1,10 +1,10 @@
 
 # LLM Processing Summary
 
-**Generated**: 2026-04-10 10:34:56
+**Generated**: 2026-05-22 06:33:08
 
 ## Processing Results
-- **Files Processed**: 20
+- **Files Processed**: 47
 - **Success**: True
 - **Errors**: 0
 
@@ -18,7 +18,7 @@
 - No errors encountered
 
 ## Recommendations
-- Total variables across all models: 1528
-- Total connections across all models: 310
+- Total variables across all models: 1158
+- Total connections across all models: 241
 - Consider modularizing large models
 - Consider simplifying complex graph structures

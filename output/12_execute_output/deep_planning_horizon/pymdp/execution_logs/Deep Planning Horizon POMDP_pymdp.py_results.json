@@ -5,8 +5,8 @@
   "script_path": "output/11_render_output/deep_planning_horizon/pymdp/Deep Planning Horizon POMDP_pymdp.py",
   "success": true,
   "return_code": 0,
-  "execution_time": 2.647969,
-  "timestamp": "2026-04-10T10:25:16.488606",
+  "execution_time": 2.654145,
+  "timestamp": "2026-05-22T06:18:27.416370",
   "simulation_data": {
     "traces": [],
     "free_energy": [],
@@ -26,7 +26,22 @@
       0,
       0,
       3,
-      3
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2
     ],
     "actions": [
       3,
@@ -43,11 +58,26 @@
       3,
       3,
       1,
-      1
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3
     ],
     "policy": [],
     "raw_output": "PyMDP 1.0.0+ detected (JAX-first Agent).\n",
-    "raw_error": "2026-04-10 10:25:17,512 - __main__ - INFO - Running pymdp 1.0.0 rollout for Deep Planning Horizon POMDP\n2026-04-10 10:25:17,512 - __main__ - INFO - Output directory: output/pymdp_simulations/Deep Planning Horizon POMDP\n2026-04-10 10:25:17,512 - src.execute.pymdp.executor - INFO - Executing PyMDP simulation (correlation_id: render_generated_script)\n2026-04-10 10:25:17,513 - src.execute.pymdp.simple_simulation - INFO - Starting pymdp 1.0.0 rollout (JAX backend)\n2026-04-10 10:25:17,513 - src.execute.pymdp.simple_simulation - INFO - Dimensions: No=4, Ns=4, Nu=4 | T=15, batch=1, policy_len=1\nINFO:2026-04-10 10:25:17,518:jax._src.xla_bridge:834: Unable to initialize backend 'tpu': INTERNAL: Failed to open libtpu.so: dlopen(libtpu.so, 0x0001): tried: 'libtpu.so' (no such file), '/System/Volumes/Preboot/Cryptexes/OSlibtpu.so' (no such file), '/usr/lib/libtpu.so' (no such file, not in dyld cache), 'libtpu.so' (no such file)\n2026-04-10 10:25:17,518 - jax._src.xla_bridge - INFO - Unable to initialize backend 'tpu': INTERNAL: Failed to open libtpu.so: dlopen(libtpu.so, 0x0001): tried: 'libtpu.so' (no such file), '/System/Volumes/Preboot/Cryptexes/OSlibtpu.so' (no such file), '/usr/lib/libtpu.so' (no such file, not in dyld cache), 'libtpu.so' (no such file)\n2026-04-10 10:25:17,670 - src.execute.pymdp.simple_simulation - INFO - pymdp 1.0.0 Agent built (batch_size=1)\n2026-04-10 10:25:18,264 - src.execute.pymdp.simple_simulation - INFO - t=00 obs=2 belief=[0.025, 0.025, 0.9, 0.05] action=3 next_state=0\n2026-04-10 10:25:18,311 - src.execute.pymdp.simple_simulation - INFO - t=01 obs=0 belief=[0.805, 0.045, 0.125, 0.025] action=3 next_state=2\n2026-04-10 10:25:18,358 - src.execute.pymdp.simple_simulation - INFO - t=02 obs=2 belief=[0.081, 0.018, 0.87, 0.032] action=3 next_state=2\n2026-04-10 10:25:18,405 - src.execute.pymdp.simple_simulation - INFO - t=03 obs=2 belief=[0.006, 0.005, 0.978, 0.01] action=3 next_state=2\n2026-04-10 10:25:18,452 - src.execute.pymdp.simple_simulation - INFO - t=04 obs=2 belief=[0.004, 0.004, 0.983, 0.008] action=3 next_state=2\n2026-04-10 10:25:18,499 - src.execute.pymdp.simple_simulation - INFO - t=05 obs=0 belief=[0.787, 0.044, 0.147, 0.022] action=3 next_state=2\n2026-04-10 10:25:18,546 - src.execute.pymdp.simple_simulation - INFO - t=06 obs=1 belief=[0.191, 0.759, 0.031, 0.019] action=3 next_state=2\n2026-04-10 10:25:18,592 - src.execute.pymdp.simple_simulation - INFO - t=07 obs=2 belief=[0.041, 0.105, 0.812, 0.042] action=3 next_state=2\n2026-04-10 10:25:18,641 - src.execute.pymdp.simple_simulation - INFO - t=08 obs=2 belief=[0.006, 0.008, 0.975, 0.012] action=3 next_state=2\n2026-04-10 10:25:18,688 - src.execute.pymdp.simple_simulation - INFO - t=09 obs=2 belief=[0.004, 0.004, 0.983, 0.009] action=3 next_state=0\n2026-04-10 10:25:18,735 - src.execute.pymdp.simple_simulation - INFO - t=10 obs=0 belief=[0.787, 0.044, 0.147, 0.022] action=3 next_state=0\n2026-04-10 10:25:18,782 - src.execute.pymdp.simple_simulation - INFO - t=11 obs=0 belief=[0.974, 0.012, 0.009, 0.005] action=3 next_state=0\n2026-04-10 10:25:18,830 - src.execute.pymdp.simple_simulation - INFO - t=12 obs=0 belief=[0.983, 0.009, 0.004, 0.004] action=3 next_state=3\n2026-04-10 10:25:18,876 - src.execute.pymdp.simple_simulation - INFO - t=13 obs=3 belief=[0.147, 0.022, 0.044, 0.787] action=1 next_state=3\n2026-04-10 10:25:18,923 - src.execute.pymdp.simple_simulation - INFO - t=14 obs=3 belief=[0.005, 0.001, 0.009, 0.985] action=1 next_state=3\n2026-04-10 10:25:18,925 - src.execute.pymdp.simple_simulation - INFO - Saved simulation results to output/pymdp_simulations/Deep Planning Horizon POMDP/simulation_results.json\n2026-04-10 10:25:18,925 - src.execute.pymdp.executor - INFO - PyMDP simulation completed successfully\n2026-04-10 10:25:18,925 - __main__ - INFO - Simulation completed successfully\n2026-04-10 10:25:18,925 - __main__ - INFO -   framework:    PyMDP\n2026-04-10 10:25:18,925 - __main__ - INFO -   pymdp ver:    1.0.0\n2026-04-10 10:25:18,925 - __main__ - INFO -   backend:      jax\n2026-04-10 10:25:18,925 - __main__ - INFO -   num_timesteps:15\n",
+    "raw_error": "2026-05-22 06:18:27,927 - INFO - Running pymdp 1.0.0 rollout for Deep Planning Horizon POMDP\n2026-05-22 06:18:27,927 - INFO - Output directory: output/pymdp_simulations/Deep Planning Horizon POMDP\n2026-05-22 06:18:27,927 - INFO - Executing PyMDP simulation (correlation_id: render_generated_script)\n2026-05-22 06:18:27,928 - INFO - Starting pymdp 1.0.0 rollout (JAX backend)\n2026-05-22 06:18:27,928 - INFO - Dimensions: No=4, Ns=4, Nu=4 | T=30, batch=1, policy_len=1\n2026-05-22 06:18:27,933 - INFO - Unable to initialize backend 'tpu': INTERNAL: Failed to open libtpu.so: dlopen(libtpu.so, 0x0001): tried: 'libtpu.so' (no such file), '/System/Volumes/Preboot/Cryptexes/OSlibtpu.so' (no such file), '/usr/lib/libtpu.so' (no such file, not in dyld cache), 'libtpu.so' (no such file)\n2026-05-22 06:18:28,091 - INFO - pymdp 1.0.0 Agent built (batch_size=1)\n2026-05-22 06:18:28,683 - INFO - t=00 obs=2 belief=[0.025, 0.025, 0.9, 0.05] action=3 next_state=0\n2026-05-22 06:18:28,726 - INFO - t=01 obs=0 belief=[0.805, 0.045, 0.125, 0.025] action=3 next_state=2\n2026-05-22 06:18:28,768 - INFO - t=02 obs=2 belief=[0.081, 0.018, 0.87, 0.032] action=3 next_state=2\n2026-05-22 06:18:28,810 - INFO - t=03 obs=2 belief=[0.006, 0.005, 0.978, 0.01] action=3 next_state=2\n2026-05-22 06:18:28,852 - INFO - t=04 obs=2 belief=[0.004, 0.004, 0.983, 0.008] action=3 next_state=2\n2026-05-22 06:18:28,894 - INFO - t=05 obs=0 belief=[0.787, 0.044, 0.147, 0.022] action=3 next_state=2\n2026-05-22 06:18:28,936 - INFO - t=06 obs=1 belief=[0.191, 0.759, 0.031, 0.019] action=3 next_state=2\n2026-05-22 06:18:28,979 - INFO - t=07 obs=2 belief=[0.041, 0.105, 0.812, 0.042] action=3 next_state=2\n2026-05-22 06:18:29,023 - INFO - t=08 obs=2 belief=[0.006, 0.008, 0.975, 0.012] action=3 next_state=2\n2026-05-22 06:18:29,066 - INFO - t=09 obs=2 belief=[0.004, 0.004, 0.983, 0.009] action=3 next_state=0\n2026-05-22 06:18:29,109 - INFO - t=10 obs=0 belief=[0.787, 0.044, 0.147, 0.022] action=3 next_state=0\n2026-05-22 06:18:29,151 - INFO - t=11 obs=0 belief=[0.974, 0.012, 0.009, 0.005] action=3 next_state=0\n2026-05-22 06:18:29,194 - INFO - t=12 obs=0 belief=[0.983, 0.009, 0.004, 0.004] action=3 next_state=3\n2026-05-22 06:18:29,237 - INFO - t=13 obs=3 belief=[0.147, 0.022, 0.044, 0.787] action=1 next_state=3\n2026-05-22 06:18:29,278 - INFO - t=14 obs=3 belief=[0.005, 0.001, 0.009, 0.985] action=1 next_state=3\n2026-05-22 06:18:29,320 - INFO - t=15 obs=3 belief=[0.0, 0.0, 0.007, 0.993] action=1 next_state=3\n2026-05-22 06:18:29,363 - INFO - t=16 obs=3 belief=[0.0, 0.0, 0.007, 0.993] action=1 next_state=3\n2026-05-22 06:18:29,405 - INFO - t=17 obs=3 belief=[0.0, 0.0, 0.006, 0.993] action=1 next_state=3\n2026-05-22 06:18:29,449 - INFO - t=18 obs=3 belief=[0.0, 0.0, 0.006, 0.993] action=1 next_state=3\n2026-05-22 06:18:29,491 - INFO - t=19 obs=3 belief=[0.0, 0.0, 0.006, 0.993] action=1 next_state=3\n2026-05-22 06:18:29,533 - INFO - t=20 obs=3 belief=[0.0, 0.0, 0.006, 0.993] action=1 next_state=3\n2026-05-22 06:18:29,575 - INFO - t=21 obs=3 belief=[0.0, 0.0, 0.006, 0.993] action=1 next_state=3\n2026-05-22 06:18:29,617 - INFO - t=22 obs=3 belief=[0.0, 0.0, 0.006, 0.993] action=1 next_state=3\n2026-05-22 06:18:29,659 - INFO - t=23 obs=3 belief=[0.0, 0.0, 0.006, 0.993] action=1 next_state=2\n2026-05-22 06:18:29,703 - INFO - t=24 obs=2 belief=[0.0, 0.0, 0.679, 0.321] action=3 next_state=2\n2026-05-22 06:18:29,745 - INFO - t=25 obs=2 belief=[0.005, 0.005, 0.959, 0.031] action=3 next_state=2\n2026-05-22 06:18:29,786 - INFO - t=26 obs=2 belief=[0.004, 0.004, 0.982, 0.01] action=3 next_state=2\n2026-05-22 06:18:29,828 - INFO - t=27 obs=2 belief=[0.004, 0.004, 0.983, 0.008] action=3 next_state=2\n2026-05-22 06:18:29,870 - INFO - t=28 obs=2 belief=[0.004, 0.004, 0.984, 0.008] action=3 next_state=2\n2026-05-22 06:18:29,912 - INFO - t=29 obs=2 belief=[0.004, 0.004, 0.984, 0.008] action=3 next_state=2\n2026-05-22 06:18:29,913 - INFO - Saved simulation results to output/pymdp_simulations/Deep Planning Horizon POMDP/simulation_results.json\n2026-05-22 06:18:29,913 - INFO - PyMDP simulation completed successfully\n2026-05-22 06:18:29,913 - INFO - Simulation completed successfully\n2026-05-22 06:18:29,913 - INFO -   framework:    PyMDP\n2026-05-22 06:18:29,913 - INFO -   pymdp ver:    1.0.0\n2026-05-22 06:18:29,913 - INFO -   backend:      jax\n2026-05-22 06:18:29,913 - INFO -   num_timesteps:30\n",
     "beliefs": [
       [
         0.02499999664723873,
@@ -138,16 +168,112 @@
         0.0009294650517404079,
         0.00893652904778719,
         0.9850363731384277
+      ],
+      [
+        0.00014558088150806725,
+        5.381050505093299e-05,
+        0.006627462338656187,
+        0.9931731820106506
+      ],
+      [
+        4.211199211567873e-06,
+        2.195614251832012e-05,
+        0.006500748451799154,
+        0.9934731125831604
+      ],
+      [
+        1.847459287773745e-07,
+        2.0674173356383108e-05,
+        0.006493780296295881,
+        0.9934853911399841
+      ],
+      [
+        6.894106263644062e-08,
+        2.0616829715436324e-05,
+        0.006493397057056427,
+        0.9934859871864319
+      ],
+      [
+        6.554717657536457e-08,
+        2.0614039385691285e-05,
+        0.0064933751709759235,
+        0.9934859871864319
+      ],
+      [
+        6.544436104150009e-08,
+        2.0613901142496616e-05,
+        0.0064933751709759235,
+        0.9934859871864319
+      ],
+      [
+        6.544112096662502e-08,
+        2.0613881133613177e-05,
+        0.0064933751709759235,
+        0.9934859871864319
+      ],
+      [
+        6.544086517124015e-08,
+        2.0613881133613177e-05,
+        0.0064933751709759235,
+        0.9934859871864319
+      ],
+      [
+        6.544086517124015e-08,
+        2.0613881133613177e-05,
+        0.0064933751709759235,
+        0.9934859871864319
+      ],
+      [
+        3.8026004745006503e-07,
+        0.0001197819656226784,
+        0.6791636943817139,
+        0.32071617245674133
+      ],
+      [
+        0.005248015280812979,
+        0.005251775961369276,
+        0.9588067531585693,
+        0.030693447217345238
+      ],
+      [
+        0.004167063161730766,
+        0.004167154897004366,
+        0.9820980429649353,
+        0.009567679837346077
+      ],
+      [
+        0.00406266562640667,
+        0.004062667489051819,
+        0.9834924936294556,
+        0.008382202126085758
+      ],
+      [
+        0.004055590368807316,
+        0.004055592231452465,
+        0.9835724234580994,
+        0.008316397666931152
+      ],
+      [
+        0.004055158235132694,
+        0.004055158235132694,
+        0.9835769534111023,
+        0.008312729187309742
       ]
     ],
-    "num_timesteps": 15
+    "num_timesteps": 30
   },
+  "execution_benchmark_repeats": 1,
   "execution_metadata": {
     "executor": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python",
     "stdout_length": 41,
-    "stderr_length": 4085,
+    "stderr_length": 4360,
     "output_directory": "output/12_execute_output/deep_planning_horizon/pymdp"
   },
+  "execution_time_mean": 2.654145,
+  "execution_time_std": 0.0,
+  "execution_time_samples": [
+    2.654145
+  ],
   "collected_outputs": {
     "visualizations": [],
     "simulation_data": [

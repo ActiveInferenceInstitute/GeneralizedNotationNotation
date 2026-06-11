@@ -1,6 +1,6 @@
 # Actinf Jl Src - Agent Scaffolding
 
-## Module Overview
+## Overview
 
 **Purpose**: Responsible for `Actinf Jl Src` operations within the GNN pipeline architecture.
 **Category**: Generated Pipeline Component
@@ -20,4 +20,4 @@ Handles internal processing and logical orchestration for this namespace.
 
 ## Implementation Details
 
-This module follows the Thin Orchestrator Pattern. It is governed by the Zero-Mock testing policy.
+This module follows the Thin Orchestrator Pattern. It is governed by the real-implementation testing policy.

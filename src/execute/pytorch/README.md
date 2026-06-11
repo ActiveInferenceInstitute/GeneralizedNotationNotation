@@ -1,18 +1,26 @@
-# PyTorch Executor
+# PyTorch Runner
 
-`src/execute/pytorch/` discovers and executes PyTorch scripts produced by Step 11 render output.
+Discovers and executes PyTorch-generated POMDP scripts via subprocess.
 
-## Key functions
+## Usage
 
-- `run_pytorch_scripts(rendered_simulators_dir, execution_output_dir=None, recursive_search=True, verbose=False, device=None) -> bool`
+```python
+from execute.pytorch import run_pytorch_scripts
 
-## Output
+results = run_pytorch_scripts(
+    render_dir="output/11_render_output",
+    output_dir="output/12_execute_output"
+)
+```
 
-For each executed script (when `execution_output_dir` is provided), the runner writes:
+## Features
 
-- `stdout.txt`
-- `stderr.txt`
-- `execution_log.json`
+- Dependency validation (checks `torch` availability)
+- Syntax pre-validation before execution
+- Log persistence (stdout/stderr capture)
+- Wall-clock execution timing
 
-and the executed script writes `simulation_results.json` under `PYTORCH_OUTPUT_DIR`.
+## See Also
 
+- [Parent: execute/README.md](../README.md)
+- [AGENTS.md](AGENTS.md) — Architecture documentation

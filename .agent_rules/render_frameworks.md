@@ -13,7 +13,7 @@
 | **ActiveInference.jl** | Julia | Julia + ActiveInference | Optional |
 | **DisCoPy** | Python | `discopy` | Optional |
 
-**Execution fallback order** (Step 12): JAX → PyMDP → ActiveInference.jl → RxInfer.jl → DisCoPy
+**Execution selection** (Step 12): run the requested frameworks and report explicit skipped or failed statuses when a requested backend is unavailable or fails.
 
 ---
 
@@ -136,4 +136,4 @@ output/11_render_output/
 
 ---
 
-**Last Updated**: March 2026 | **Status**: Production Standard
+**Last Updated**: 2026-05-20 | **Status**: Maintained Standard

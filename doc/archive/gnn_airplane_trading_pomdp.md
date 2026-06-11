@@ -156,7 +156,7 @@ B_f0={ # P(s_f0' | s_f0, s_f1, u_c0)
   )
   # Note: Probabilities for B_f0 need to sum to 1 over s_f0' for each (s_f0, s_f1, u_c0) combination.
   # The above is illustrative and would need careful normalization. For a real model, these would be precise.
-  # Placeholder: For robust parsing, ensure this complex structure is handled or simplified if needed by the target execution engine.
+  # For robust parsing, ensure this complex structure is handled or simplified if needed by the target execution engine.
   # For visualizer, it will become many rows.
 }
 

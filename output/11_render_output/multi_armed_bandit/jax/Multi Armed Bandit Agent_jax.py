@@ -30,7 +30,7 @@ def create_params() -> Dict[str, jnp.ndarray]:
         'A_matrix': jnp.array([[0.1, 0.5, 0.5], [0.3, 0.4, 0.3], [0.6, 0.1, 0.2]]),  # Observation model P(o|s)
         'B_matrix': jnp.array([[[0.9, 0.9, 0.9], [0.05, 0.05, 0.05], [0.05, 0.05, 0.05]], [[0.05, 0.05, 0.05], [0.9, 0.9, 0.9], [0.05, 0.05, 0.05]], [[0.05, 0.05, 0.05], [0.05, 0.05, 0.05], [0.9, 0.9, 0.9]]]),  # Transition model P(s'|s,a)
         'C_vector': jnp.array([0.0, 1.0, 3.0]),  # Preferences over observations
-        'D_vector': jnp.array([0.33333, 0.33333, 0.33333]),  # Prior over initial states
+        'D_vector': jnp.array([0.3333333333333333, 0.3333333333333333, 0.3333333333333333]),  # Prior over initial states
     }
 
 
@@ -411,8 +411,8 @@ if __name__ == "__main__":
     print(f"   EFE for all actions: {result['all_efe_values']}")
 
     # Run multi-step simulation
-    print("\n🔄 Running 15-step simulation...")
-    trajectory = run_simulation(params, num_steps=15)
+    print("\n🔄 Running 30-step simulation...")
+    trajectory = run_simulation(params, num_steps=30)
 
     print(f"   Actions taken: {trajectory['actions']}")
     print(f"   Final belief: {trajectory['final_belief']}")

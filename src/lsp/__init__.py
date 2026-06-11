@@ -9,6 +9,18 @@ Provides:
 Requires `pygls` package. Falls back gracefully when not installed.
 """
 
+from typing import Any, cast
+
+__version__ = "1.6.0"
+
+FEATURES: dict[str, Any] = {
+    "diagnostics": True,
+    "hover_info": True,
+    "completion": True,
+    "gnn_language_support": True,
+}
+
+
 import logging
 import re
 from pathlib import Path
@@ -34,10 +46,13 @@ try:
         Range,
     )
     from pygls.server import LanguageServer
+
     PYGLS_AVAILABLE = True
 except ImportError:
     PYGLS_AVAILABLE = False
-    logger.debug("pygls not installed — LSP server unavailable. Install with: pip install pygls")
+    logger.debug(
+        "pygls not installed — LSP server unavailable. Install with: pip install pygls"
+    )
 
 
 def create_server() -> Any:
@@ -54,18 +69,20 @@ def create_server() -> Any:
     server = LanguageServer("gnn-lsp", "0.1.0")
 
     @server.feature(TEXT_DOCUMENT_DID_OPEN)
-    def did_open(params: DidOpenTextDocumentParams):
+    def did_open(params: DidOpenTextDocumentParams) -> Any:
         """Publish diagnostics when a GNN file is opened."""
-        _publish_diagnostics(server, params.text_document.uri, params.text_document.text)
+        _publish_diagnostics(
+            server, params.text_document.uri, params.text_document.text
+        )
 
     @server.feature(TEXT_DOCUMENT_DID_SAVE)
-    def did_save(params: DidSaveTextDocumentParams):
+    def did_save(params: DidSaveTextDocumentParams) -> Any:
         """Re-publish diagnostics on save."""
         doc = server.workspace.get_text_document(params.text_document.uri)
         _publish_diagnostics(server, params.text_document.uri, doc.source)
 
     @server.feature(TEXT_DOCUMENT_HOVER)
-    def hover(params: HoverParams):
+    def hover(params: HoverParams) -> Any:
         """Show variable info on hover."""
         doc = server.workspace.get_text_document(params.text_document.uri)
         return _get_hover(doc.source, params.position)
@@ -76,6 +93,7 @@ def create_server() -> Any:
 def _publish_diagnostics(server: Any, uri: str, content: str) -> None:
     """Run GNN validation and publish diagnostics."""
     import sys
+
     src_dir = str(Path(__file__).parent.parent)
     if src_dir not in sys.path:
         sys.path.insert(0, src_dir)
@@ -95,54 +113,64 @@ def _publish_diagnostics(server: Any, uri: str, content: str) -> None:
         section_errors = validate_required_sections(content, file_path=file_path)
         for err in section_errors:
             line = _extract_line(err)
-            diagnostics.append(Diagnostic(
-                range=Range(
-                    start=Position(line=max(0, line - 1), character=0),
-                    end=Position(line=max(0, line - 1), character=100),
-                ),
-                message=str(err),
-                severity=DiagnosticSeverity.Error,
-                source="gnn-lsp",
-            ))
+            diagnostics.append(
+                Diagnostic(
+                    range=Range(
+                        start=Position(line=max(0, line - 1), character=0),
+                        end=Position(line=max(0, line - 1), character=100),
+                    ),
+                    message=str(err),
+                    severity=DiagnosticSeverity.Error,
+                    source="gnn-lsp",
+                )
+            )
 
         # Parse errors
         variables, var_errors = parse_state_space(content, file_path=file_path)
         for err in var_errors:
             line = _extract_line(err)
-            diagnostics.append(Diagnostic(
-                range=Range(
-                    start=Position(line=max(0, line - 1), character=0),
-                    end=Position(line=max(0, line - 1), character=100),
-                ),
-                message=str(err),
-                severity=DiagnosticSeverity.Warning,
-                source="gnn-lsp",
-            ))
+            diagnostics.append(
+                Diagnostic(
+                    range=Range(
+                        start=Position(line=max(0, line - 1), character=0),
+                        end=Position(line=max(0, line - 1), character=100),
+                    ),
+                    message=str(err),
+                    severity=DiagnosticSeverity.Warning,
+                    source="gnn-lsp",
+                )
+            )
 
         var_names = {v.name for v in variables}
-        _, conn_errors = parse_connections(content, known_variables=var_names, file_path=file_path)
+        _, conn_errors = parse_connections(
+            content, known_variables=var_names, file_path=file_path
+        )
         for err in conn_errors:
             line = _extract_line(err)
-            diagnostics.append(Diagnostic(
-                range=Range(
-                    start=Position(line=max(0, line - 1), character=0),
-                    end=Position(line=max(0, line - 1), character=100),
-                ),
-                message=str(err),
-                severity=DiagnosticSeverity.Warning,
-                source="gnn-lsp",
-            ))
+            diagnostics.append(
+                Diagnostic(
+                    range=Range(
+                        start=Position(line=max(0, line - 1), character=0),
+                        end=Position(line=max(0, line - 1), character=100),
+                    ),
+                    message=str(err),
+                    severity=DiagnosticSeverity.Warning,
+                    source="gnn-lsp",
+                )
+            )
 
     except Exception as e:
-        diagnostics.append(Diagnostic(
-            range=Range(
-                start=Position(line=0, character=0),
-                end=Position(line=0, character=100),
-            ),
-            message=f"LSP analysis error: {e}",
-            severity=DiagnosticSeverity.Information,
-            source="gnn-lsp",
-        ))
+        diagnostics.append(
+            Diagnostic(
+                range=Range(
+                    start=Position(line=0, character=0),
+                    end=Position(line=0, character=100),
+                ),
+                message=f"LSP analysis error: {e}",
+                severity=DiagnosticSeverity.Information,
+                source="gnn-lsp",
+            )
+        )
 
     server.publish_diagnostics(uri, diagnostics)
     logger.debug(f"Published {len(diagnostics)} diagnostics for {uri}")
@@ -154,6 +182,7 @@ def _get_hover(content: str, position: Any) -> Optional[Any]:
         return None
 
     import sys
+
     src_dir = str(Path(__file__).parent.parent)
     if src_dir not in sys.path:
         sys.path.insert(0, src_dir)
@@ -206,16 +235,16 @@ def _word_at_position(line: str, char: int) -> Optional[str]:
     return word if word else None
 
 
-def _extract_line(error) -> int:
+def _extract_line(error: Any) -> int:
     """Extract line number from a GNNParseError or string."""
     if hasattr(error, "line") and error.line:
-        return error.line
+        return cast("int", error.line)
     # Try to extract from string representation
     m = re.search(r":(\d+)", str(error))
     return int(m.group(1)) if m else 1
 
 
-def start_server():
+def start_server() -> Any:
     """Start the LSP server on stdio."""
     server = create_server()
     if server:
@@ -223,3 +252,13 @@ def start_server():
         server.start_io()
     else:
         logger.error("LSP server could not be created (missing pygls)")
+
+
+def get_module_info() -> dict:
+    """Return module metadata for composability and MCP discovery."""
+    return {
+        "name": "lsp",
+        "version": __version__,
+        "description": "Language Server Protocol support for GNN files",
+        "features": FEATURES,
+    }

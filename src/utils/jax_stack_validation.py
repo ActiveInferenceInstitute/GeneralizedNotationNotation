@@ -12,9 +12,9 @@ Requires core dependencies: ``jax``, ``jaxlib``, ``optax``, ``flax``, ``inferact
 from __future__ import annotations
 
 import os
-import subprocess  # nosec B404 -- controlled invocation of venv Python
+import subprocess  # nosec B404
 from pathlib import Path
-from typing import Optional, Tuple
+from typing import Any, Optional, Tuple, cast
 
 _stack_ok_cache: Optional[bool] = None
 
@@ -38,6 +38,7 @@ def verify_jax_pymdp_stack() -> None:
 
 
 def _verify_jax_pymdp_stack_impl() -> None:
+    """Handle verify jax pymdp stack impl for internal callers."""
     import flax.linen as nn
     import jax
     import jax.numpy as jnp
@@ -45,7 +46,9 @@ def _verify_jax_pymdp_stack_impl() -> None:
 
     devices = jax.devices()
     if not devices:
-        raise RuntimeError("JAX reported no devices — check jax/jaxlib install and platform support")
+        raise RuntimeError(
+            "JAX reported no devices — check jax/jaxlib install and platform support"
+        )
 
     x = jnp.array([1.0, 2.0, 3.0], dtype=jnp.float32)
     y = jnp.sum(jnp.sin(x))
@@ -54,6 +57,7 @@ def _verify_jax_pymdp_stack_impl() -> None:
 
     @jax.jit
     def _jit_sum_sin(z: jnp.ndarray) -> jnp.ndarray:
+        """Handle jit sum sin for internal callers."""
         return jnp.sum(jnp.sin(z))
 
     r = _jit_sum_sin(x)
@@ -61,6 +65,7 @@ def _verify_jax_pymdp_stack_impl() -> None:
         raise RuntimeError("JAX JIT path failed")
 
     def _sin_row(v: jnp.ndarray) -> jnp.ndarray:
+        """Handle sin row for internal callers."""
         return jnp.sin(v)
 
     vm = jax.vmap(_sin_row)
@@ -68,6 +73,7 @@ def _verify_jax_pymdp_stack_impl() -> None:
 
     @jax.jit
     def _scale(z: jnp.ndarray) -> jnp.ndarray:
+        """Handle scale for internal callers."""
         return z * 2.0
 
     xla_res = _scale(jnp.ones(10, dtype=jnp.float32)).block_until_ready()
@@ -75,18 +81,23 @@ def _verify_jax_pymdp_stack_impl() -> None:
         raise RuntimeError("XLA compile/run or block_until_ready failed")
 
     opt = optax.adam(0.01)
-    params = {"w": jnp.ones((2, 2), dtype=jnp.float32)}
+    params: dict[str, Any] = {"w": jnp.ones((2, 2), dtype=jnp.float32)}
     opt.init(params)
 
     class _Tiny(nn.Module):
+        """Provide a minimal Flax module for stack validation."""
+
         @nn.compact
         def __call__(self, z: jnp.ndarray) -> jnp.ndarray:
-            return nn.Dense(1)(z)
+            """Invoke the callable instance."""
+            return cast(jnp.ndarray, nn.Dense(1)(z))
 
     model = _Tiny()
     key = jax.random.PRNGKey(0)
     variables = model.init(key, jnp.ones((1, 2), dtype=jnp.float32))
     out = model.apply(variables, jnp.ones((1, 2), dtype=jnp.float32))
+    if isinstance(out, tuple):
+        out = out[0]
     if out.shape != (1, 1) or not jnp.isfinite(out).all():
         raise RuntimeError("Flax module forward pass failed")
 
@@ -115,14 +126,16 @@ def jax_pymdp_stack_ok(*, use_cache: bool = True) -> bool:
         return False
 
 
-def run_jax_stack_probe_subprocess(venv_python: Path, project_root: Path) -> Tuple[bool, str]:
+def run_jax_stack_probe_subprocess(
+    venv_python: Path, project_root: Path
+) -> Tuple[bool, str]:
     """
     Run :func:`verify_jax_pymdp_stack` inside ``venv_python`` with ``PYTHONPATH=<project>/src``.
 
     Used by setup and validation so the probe always uses the same interpreter as the lockfile.
     """
-    env = {**os.environ, "PYTHONPATH": str(project_root / "src")}
-    proc = subprocess.run(  # nosec B603 -- controlled/trusted paths
+    env: dict[Any, Any] = {**os.environ, "PYTHONPATH": str(project_root / "src")}
+    proc = subprocess.run(  # nosec B603
         [
             str(venv_python),
             "-c",

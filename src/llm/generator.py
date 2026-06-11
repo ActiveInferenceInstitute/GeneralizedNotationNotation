@@ -9,12 +9,12 @@ from typing import Any, Dict
 
 def generate_model_insights(file_analysis: Dict[str, Any]) -> Dict[str, Any]:
     """Generate insights about the GNN model."""
-    insights = {
+    insights: dict[str, Any] = {
         "model_complexity": "medium",
         "recommendations": [],
         "strengths": [],
         "weaknesses": [],
-        "generation_timestamp": datetime.now().isoformat()
+        "generation_timestamp": datetime.now().isoformat(),
     }
 
     # Analyze complexity
@@ -27,17 +27,23 @@ def generate_model_insights(file_analysis: Dict[str, Any]) -> Dict[str, Any]:
     elif total_elements > 50:
         insights["model_complexity"] = "high"
         insights["weaknesses"].append("Complex model may be difficult to understand")
-        insights["recommendations"].append("Consider breaking down into smaller modules")
+        insights["recommendations"].append(
+            "Consider breaking down into smaller modules"
+        )
 
     # Analyze variables
     variables = file_analysis.get("variables", [])
     if len(variables) > 20:
-        insights["recommendations"].append("High variable count - consider grouping related variables")
+        insights["recommendations"].append(
+            "High variable count - consider grouping related variables"
+        )
 
     # Analyze connections
     connections = file_analysis.get("connections", [])
     if len(connections) > len(variables) * 3:
-        insights["recommendations"].append("High connectivity - consider simplifying the graph structure")
+        insights["recommendations"].append(
+            "High connectivity - consider simplifying the graph structure"
+        )
 
     # Check for patterns
     patterns = file_analysis.get("patterns", {})
@@ -49,13 +55,14 @@ def generate_model_insights(file_analysis: Dict[str, Any]) -> Dict[str, Any]:
 
     return insights
 
+
 def generate_code_suggestions(file_analysis: Dict[str, Any]) -> Dict[str, Any]:
     """Generate code suggestions for the GNN model."""
-    suggestions = {
+    suggestions: dict[str, Any] = {
         "optimizations": [],
         "improvements": [],
         "best_practices": [],
-        "generation_timestamp": datetime.now().isoformat()
+        "generation_timestamp": datetime.now().isoformat(),
     }
 
     # Analyze for optimization opportunities
@@ -63,19 +70,27 @@ def generate_code_suggestions(file_analysis: Dict[str, Any]) -> Dict[str, Any]:
     density = complexity_metrics.get("density", 0)
 
     if density > 2.0:
-        suggestions["optimizations"].append("High graph density - consider sparse representations")
+        suggestions["optimizations"].append(
+            "High graph density - consider sparse representations"
+        )
 
     # Check variable patterns
     variables = file_analysis.get("variables", [])
     connections = file_analysis.get("connections", [])
-    var_types = {}
+    var_types: dict[Any, Any] = {}
     for var in variables:
-        var_type = var.get("definition", "").split(":")[-1].strip() if ":" in var.get("definition", "") else "unknown"
+        var_type = (
+            var.get("definition", "").split(":")[-1].strip()
+            if ":" in var.get("definition", "")
+            else "unknown"
+        )
         var_types[var_type] = var_types.get(var_type, 0) + 1
 
     # Suggest type improvements
     if "unknown" in var_types and var_types["unknown"] > len(variables) * 0.5:
-        suggestions["improvements"].append("Many variables lack type annotations - consider adding explicit types")
+        suggestions["improvements"].append(
+            "Many variables lack type annotations - consider adding explicit types"
+        )
 
     # Suggest best practices
     if len(variables) > 0:
@@ -84,19 +99,24 @@ def generate_code_suggestions(file_analysis: Dict[str, Any]) -> Dict[str, Any]:
 
     if len(connections) > 0:
         suggestions["best_practices"].append("Document connection semantics")
-        suggestions["best_practices"].append("Consider connection weights or probabilities")
+        suggestions["best_practices"].append(
+            "Consider connection weights or probabilities"
+        )
 
     return suggestions
 
+
 def generate_documentation(file_analysis: Dict[str, Any]) -> Dict[str, Any]:
     """Generate documentation for the GNN model."""
-    documentation = {
-        "file_path": file_analysis.get("file_path", file_analysis.get("file_name", "Unknown")),
+    documentation: dict[str, Any] = {
+        "file_path": file_analysis.get(
+            "file_path", file_analysis.get("file_name", "Unknown")
+        ),
         "model_overview": "",
         "variable_documentation": [],
         "connection_documentation": [],
         "usage_examples": [],
-        "generation_timestamp": datetime.now().isoformat()
+        "generation_timestamp": datetime.now().isoformat(),
     }
 
     # Generate model overview
@@ -112,18 +132,18 @@ This GNN model contains {len(variables)} variables and {len(connections)} connec
 ## Model Structure
 - **Variables**: {len(variables)} defined
 - **Connections**: {len(connections)} defined
-- **Complexity**: {file_analysis.get('complexity_metrics', {}).get('total_elements', 0)} total elements
+- **Complexity**: {file_analysis.get("complexity_metrics", {}).get("total_elements", 0)} total elements
 
 ## Key Components
 """
 
     # Document variables
     for var in variables:
-        doc = {
+        doc: dict[str, Any] = {
             "name": var.get("name", "Unknown"),
             "definition": var.get("definition", ""),
             "line": var.get("line", 0),
-            "description": f"Variable defined at line {var.get('line', 0)}"
+            "description": f"Variable defined at line {var.get('line', 0)}",
         }
         documentation["variable_documentation"].append(doc)
 
@@ -134,55 +154,62 @@ This GNN model contains {len(variables)} variables and {len(connections)} connec
             "target": conn.get("target", "Unknown"),
             "connection": conn.get("connection", ""),
             "line": conn.get("line", 0),
-            "description": f"Connection from {conn.get('source', 'Unknown')} to {conn.get('target', 'Unknown')}"
+            "description": f"Connection from {conn.get('source', 'Unknown')} to {conn.get('target', 'Unknown')}",
         }
         documentation["connection_documentation"].append(doc)
 
     # Generate usage examples
     if variables:
         example_vars = [var.get("name", "var") for var in variables[:3]]
-        documentation["usage_examples"].append({
-            "title": "Variable Usage",
-            "description": f"Example variables: {', '.join(example_vars)}",
-            "code": f"# Example variable usage\n{chr(10).join([f'{var} = ...' for var in example_vars])}"
-        })
+        documentation["usage_examples"].append(
+            {
+                "title": "Variable Usage",
+                "description": f"Example variables: {', '.join(example_vars)}",
+                "code": f"# Example variable usage\n{chr(10).join([f'{var} = ...' for var in example_vars])}",
+            }
+        )
 
     if connections:
         example_conns = connections[:2]
-        conn_examples = []
+        conn_examples: list[Any] = []
         for conn in example_conns:
-            conn_examples.append(f"{conn.get('source', 'source')} -> {conn.get('target', 'target')}")
+            conn_examples.append(
+                f"{conn.get('source', 'source')} -> {conn.get('target', 'target')}"
+            )
 
-        documentation["usage_examples"].append({
-            "title": "Connection Usage",
-            "description": f"Example connections: {', '.join(conn_examples)}",
-            "code": f"# Example connections\n{chr(10).join(conn_examples)}"
-        })
+        documentation["usage_examples"].append(
+            {
+                "title": "Connection Usage",
+                "description": f"Example connections: {', '.join(conn_examples)}",
+                "code": f"# Example connections\n{chr(10).join(conn_examples)}",
+            }
+        )
 
     return documentation
+
 
 def generate_llm_summary(results: Dict[str, Any]) -> str:
     """Generate a summary report of LLM processing results."""
     summary = f"""
 # LLM Processing Summary
 
-**Generated**: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
+**Generated**: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
 
 ## Processing Results
-- **Files Processed**: {results.get('processed_files', 0)}
-- **Success**: {results.get('success', False)}
-- **Errors**: {len(results.get('errors', []))}
+- **Files Processed**: {results.get("processed_files", 0)}
+- **Success**: {results.get("success", False)}
+- **Errors**: {len(results.get("errors", []))}
 
 ## Analysis Results
-- **Files Analyzed**: {len(results.get('analysis_results', []))}
-- **Insights Generated**: {len(results.get('model_insights', []))}
-- **Suggestions Generated**: {len(results.get('code_suggestions', []))}
-- **Documentation Generated**: {len(results.get('documentation_generated', []))}
+- **Files Analyzed**: {len(results.get("analysis_results", []))}
+- **Insights Generated**: {len(results.get("model_insights", []))}
+- **Suggestions Generated**: {len(results.get("code_suggestions", []))}
+- **Documentation Generated**: {len(results.get("documentation_generated", []))}
 
 ## Error Summary
 """
 
-    errors = results.get('errors', [])
+    errors = results.get("errors", [])
     if errors:
         for error in errors:
             if isinstance(error, dict):
@@ -195,10 +222,14 @@ def generate_llm_summary(results: Dict[str, Any]) -> str:
     summary += "\n## Recommendations\n"
 
     # Add recommendations based on analysis
-    analysis_results = results.get('analysis_results', [])
+    analysis_results = results.get("analysis_results", [])
     if analysis_results:
-        total_variables = sum(len(analysis.get('variables', [])) for analysis in analysis_results)
-        total_connections = sum(len(analysis.get('connections', [])) for analysis in analysis_results)
+        total_variables = sum(
+            len(analysis.get("variables", [])) for analysis in analysis_results
+        )
+        total_connections = sum(
+            len(analysis.get("connections", [])) for analysis in analysis_results
+        )
 
         summary += f"- Total variables across all models: {total_variables}\n"
         summary += f"- Total connections across all models: {total_connections}\n"

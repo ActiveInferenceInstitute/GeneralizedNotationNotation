@@ -10,13 +10,6 @@ src/pipeline/
 ├── README.md                      # This documentation
 ├── AGENTS.md                      # Agent scaffolding documentation
 ├── config.py                      # Pipeline configuration management
-├── audit_filepaths.py            # Filepath and reference audit script
-├── fix_filepath_references.py    # Fix outdated script references
-├── fix_path_issues.py            # Fix documentation path issues
-├── audit_docs.py                 # Documentation audit script
-├── generate_viz_inventory.py     # Visualization inventory generator
-├── install_optional_packages.py  # Optional package installer
-├── validate_documentation.py     # Documentation validation
 ├── pipeline_validation.py        # Pipeline validation utilities
 ├── pipeline_validator.py         # Pipeline validator
 ├── pipeline_step_template.py    # Pipeline step template
@@ -25,9 +18,7 @@ src/pipeline/
 ├── execution.py                   # Pipeline execution
 ├── discovery.py                  # Pipeline discovery
 ├── mcp.py                        # MCP integration
-├── update_version.py             # Version update utility
 ├── verify_pipeline.py            # Pipeline verification
-└── generate_api_index.py         # API index generator
 ```
 
 ### Pipeline Flow
@@ -360,7 +351,7 @@ The pipeline consists of exactly 25 steps (steps 0-24), executed in order:
 9. **8_visualization.py** → `src/visualization/` - Graph and matrix visualization generation
 10. **9_advanced_viz.py** → `src/advanced_visualization/` - Advanced visualization and interactive plots
 11. **10_ontology.py** → `src/ontology/` - Active Inference Ontology processing and validation
-12. **11_render.py** → `src/render/` - Code generation for PyMDP, RxInfer, ActiveInference.jl simulation environments
+12. **11_render.py** → `src/render/` - Code generation for PyMDP, RxInfer, ActiveInference.jl, JAX, PyTorch, NumPyro, DisCoPy, bnlearn, and Stan-supported render paths
 13. **12_execute.py** → `src/execute/` - Execute rendered simulation scripts with result capture
 14. **13_llm.py** → `src/llm/` - LLM-enhanced analysis, model interpretation, and AI assistance
 15. **14_ml_integration.py** → `src/ml_integration/` - Machine learning integration and model training

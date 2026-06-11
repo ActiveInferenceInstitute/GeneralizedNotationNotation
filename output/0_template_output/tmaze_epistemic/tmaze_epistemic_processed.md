@@ -1,7 +1,7 @@
 
 # Processed by GNN Pipeline Template
 # Original file: input/gnn_files/discrete/tmaze_epistemic.md
-# Processed on: 2026-04-10T10:23:34.161570
+# Processed on: 2026-05-22T06:10:26.461287
 # Options: {'verbose': False, 'recursive': True, 'example_param': 'default_value'}
 
 # GNN Example: T-Maze Epistemic Foraging Agent
@@ -134,6 +134,12 @@ A_loc={
 # Slice for context=reward_right
 
 # center: (1.0, 0.0, 0.0), left: (1.0, 0.0, 0.0), right: (0.0, 1.0, 0.0), cue: (1.0, 0.0, 0.0)
+
+A_rew={
+  ( (1.0, 1.0), (0.0, 1.0), (1.0, 0.0), (0.0, 1.0) ),
+  ( (0.0, 0.0), (1.0, 0.0), (0.0, 1.0), (0.0, 0.0) ),
+  ( (0.0, 0.0), (0.0, 0.0), (0.0, 0.0), (1.0, 0.0) )
+}
 
 # Transition: deterministic moves
 

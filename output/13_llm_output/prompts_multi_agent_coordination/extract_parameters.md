@@ -1,34 +1,51 @@
 # EXTRACT_PARAMETERS
 
-Based on the document, here are the key parameters for the GNN implementation:
+Here is the structured specification of GNN:
+```python
+# GNNVersionAndFlags
+GNN v1
 
-1. **Model Matrices**:
-   - A matrices representing the model structure and its dependencies (e.g., state space dimensions)
-   - B matrices representing the action-belief relationships between agents (state space dimensionality)
-   - C matrices representing the policy-action relationships between agents (observation space dimensionality)
-   - D matrices representing the action-policy relationships between agents (observation space dimensionality)
+## ModelName
+Multi-Agent Cooperative Active Inference
 
-2. **Precision Parameters**:
-   - γ: precision parameters and their roles
-   - α: learning rates and adaptation parameters
-   - Other precision/confidence parameters
+## ModelAnnotation
 
-3. **Dimensional Parameters**:
-   - State space dimensions for each modality
-   - Observation space dimensions for each modality
-   - Action space dimensions for each control factor
+A1={
+  (0.85, 0.05, 0.05, 0.05),
+  (0.05, 0.85, 0.05, 0.05),
+  (0.05, 0.05, 0.85, 0.05)
+}
+A2={
+  (0.85, 0.05, 0.05, 0.05),
+  (0.05, 0.85, 0.05, 0.05),
+  (0.05, 0.05, 0.85, 0.05)
+}
+B1={
+  (-1.0, -1.0, -1.0, 2.0)}
+B2={
+  ((-1.0, -1.0, -1.0, 2.0), ((-1.0, -1.0, -1.0, 2.0)), (-1.0, -1.0, -1.0, 2.0))
+}
+C1={
+  (0.95, 0.85, 0.05, 0.05),
+  (0.05, 0.95, 0.05, 0.05)
+}
+D1={(0.25, 0.25, 0.25, 0.25)}
+D2={
+  (()=()){} {} 
 
-4. **Temporal Parameters**:
-   - Time horizons (T)
-   - Temporal dependencies and windows
-   - Update frequencies and timescales
+B2={
+  (()=()){} {} 
 
-5. **Initial Conditions**:
-   - Prior beliefs over initial states
-   - Initial parameter values
-   - Initialization strategies
+A3={
+  (()=()){} {} 
 
-6. **Configuration Summary**:
-   - Parameter file format recommendations
-   - Tunable vs. fixed parameters
-   - Sensitivity analysis priorities
+C4={
+  (()=()){} {} 
+
+G1={
+  (()=()){} {} 
+
+# Shared environment state: agent 1's last action and agent 2's next actions
+
+s_joint = [[0.95, 0.85], [0.05]]
+o_joint = [[0.95, 0.85], [0.05]]

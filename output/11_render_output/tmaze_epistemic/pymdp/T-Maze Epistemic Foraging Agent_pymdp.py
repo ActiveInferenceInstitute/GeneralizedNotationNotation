@@ -3,18 +3,18 @@
 pymdp 1.0.0 runner for T-Maze Epistemic Foraging Agent
 
 This file was generated from a GNN specification by
-``src/render/pymdp/pymdp_renderer.py``. It delegates the actual rollout
+``render/pymdp/pymdp_renderer.py``. It delegates the actual rollout
 to the GNN pipeline's tested execution module
-(``src.execute.pymdp.run_simple_pymdp_simulation``), which in turn calls
+(``execute.pymdp.run_pymdp_simulation``), which in turn calls
 real pymdp 1.0.0 (JAX-first) under the hood.
 
 Model:        T-Maze Epistemic Foraging Agent
 Description:  
-Generated:    2026-04-10 10:25:04
+Generated:    2026-05-22 06:18:15
 
 State Space:
-  - Hidden States: 4
-  - Observations:  4
+  - Hidden States: 8
+  - Observations:  12
   - Actions:       4
 
 Initial matrices present in GNN spec:
@@ -44,7 +44,7 @@ if sys.path and sys.path[0] and sys.path[0].endswith("pymdp"):
 _gnn_root = os.environ.get("GNN_PROJECT_ROOT")
 if _gnn_root:
     _repo = Path(_gnn_root).resolve()
-    sys.path.insert(0, str(_repo))
+    sys.path.insert(0, str(_repo / "src"))
 else:
     _cur = Path(__file__).resolve().parent
     _found = None
@@ -62,7 +62,7 @@ else:
             file=sys.stderr,
         )
         sys.exit(1)
-    sys.path.insert(0, str(_found))
+    sys.path.insert(0, str(_found / "src"))
 
 # ---------------------------------------------------------------------------
 # pymdp 1.0.0 presence check (hard requirement)
@@ -71,7 +71,7 @@ try:
     import pymdp  # noqa: F401
     from pymdp.agent import Agent  # noqa: F401
     if not hasattr(Agent, "update_empirical_prior"):
-        raise ImportError("legacy pymdp (<1.0.0) detected")
+        raise ImportError("unsupported pymdp (<1.0.0) detected")
     print("PyMDP 1.0.0+ detected (JAX-first Agent).")
 except ImportError as e:
     print(
@@ -82,7 +82,7 @@ except ImportError as e:
     )
     sys.exit(1)
 
-from src.execute.pymdp import execute_pymdp_simulation
+from execute.pymdp import execute_pymdp_simulation
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
@@ -91,10 +91,10 @@ logger = logging.getLogger(__name__)
 def main() -> int:
     """Run a pymdp 1.0.0 simulation for the GNN model embedded in this file."""
     # Matrices embedded verbatim from the GNN spec.
-    A_data = [[1.0, 0.0, 0.0, 0.0], [0.0, 1.0, 0.0, 0.0], [0.0, 0.0, 1.0, 0.0], [0.0, 0.0, 0.0, 1.0]]
-    B_data = [[[0.0, 0.0, 0.0, 0.0], [1.0, 1.0, 0.0, 0.0], [0.0, 0.0, 1.0, 0.0], [0.0, 0.0, 0.0, 1.0]], [[0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0], [1.0, 0.0, 1.0, 0.0], [0.0, 0.0, 0.0, 1.0]], [[0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0], [1.0, 0.0, 0.0, 1.0]], [[1.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0], [0.0, 1.0, 1.0, 0.0]]]
-    C_data = [0.0, 0.0, 0.0, 0.0]
-    D_data = [1.0, 0.0, 0.0, 0.0]
+    A_data = [[1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0], [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0]]
+    B_data = [[[0.25, 0.25, 0.25, 1.0], [0.0, 0.0, 0.0, 0.0], [0.5, 0.25, 0.25, 0.25], [0.0, 0.0, 0.0, 0.0], [0.0, 0.5, 0.25, 0.25], [0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.5, 0.0], [0.0, 0.0, 0.0, 0.0]], [[0.0, 0.0, 0.0, 0.0], [0.25, 0.25, 0.25, 1.0], [0.0, 0.0, 0.0, 0.0], [0.5, 0.25, 0.25, 0.25], [0.0, 0.0, 0.0, 0.0], [0.0, 0.5, 0.25, 0.25], [0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.5, 0.0]], [[0.25, 0.25, 0.25, 0.0], [0.0, 0.0, 0.0, 0.0], [0.5, 0.25, 0.25, 0.25], [0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.25, 0.25], [0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.5], [0.0, 0.0, 0.0, 0.0]], [[0.0, 0.0, 0.0, 0.0], [0.25, 0.25, 0.25, 0.0], [0.0, 0.0, 0.0, 0.0], [0.5, 0.25, 0.25, 0.25], [0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.25, 0.25], [0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.5]], [[0.25, 0.25, 0.25, 0.0], [0.0, 0.0, 0.0, 0.0], [0.0, 0.25, 0.25, 0.25], [0.0, 0.0, 0.0, 0.0], [1.0, 0.5, 0.25, 0.25], [0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.5], [0.0, 0.0, 0.0, 0.0]], [[0.0, 0.0, 0.0, 0.0], [0.25, 0.25, 0.25, 0.0], [0.0, 0.0, 0.0, 0.0], [0.0, 0.25, 0.25, 0.25], [0.0, 0.0, 0.0, 0.0], [1.0, 0.5, 0.25, 0.25], [0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.5]], [[0.25, 0.25, 0.25, 0.0], [0.0, 0.0, 0.0, 0.0], [0.0, 0.25, 0.25, 0.25], [0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.25, 0.25], [0.0, 0.0, 0.0, 0.0], [1.0, 1.0, 0.5, 0.0], [0.0, 0.0, 0.0, 0.0]], [[0.0, 0.0, 0.0, 0.0], [0.25, 0.25, 0.25, 0.0], [0.0, 0.0, 0.0, 0.0], [0.0, 0.25, 0.25, 0.25], [0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.25, 0.25], [0.0, 0.0, 0.0, 0.0], [1.0, 1.0, 0.5, 0.0]]]
+    C_data = [-1.0, 3.0, 0.0, -1.0, 3.0, 0.0, -1.0, 3.0, 0.0, -1.0, 3.0, 0.0]
+    D_data = [0.5, 0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
     E_data = None
 
     # Full parsed spec, with matrices merged into initialparameterization.
@@ -103,21 +103,167 @@ def main() -> int:
     "model_name": "T-Maze Epistemic Foraging Agent",
     "description": "The classic T-maze task from Active Inference literature (Friston et al.):\n- Agent navigates a T-shaped maze with 4 locations: center, left arm, right arm, cue location\n- Two observation modalities: location (where am I?) and reward/cue (what do I see?)\n- Reward is hidden behind one of the two arms (left or right), determined by context\n- Cue location provides partial information about which arm holds the reward\n- Agent must decide: go directly to an arm (exploit) or visit cue location first (explore)\n- Demonstrates epistemic foraging: Active Inference naturally balances exploration vs exploitation\n- The Expected Free Energy decomposes into epistemic (information gain) + instrumental (reward) value",
     "model_parameters": {
-        "num_hidden_states": 4,
-        "num_obs": 4,
+        "num_locations": 4,
+        "num_contexts": 2,
+        "num_location_obs": 4,
+        "num_reward_obs": 3,
         "num_actions": 4,
-        "simulation_params": {},
-        "num_timesteps": 15
+        "num_timesteps": 3,
+        "num_modalities": 2,
+        "num_state_factors": 2,
+        "num_hidden_states": 8,
+        "num_obs": 12,
+        "b_tensor_order": "next_state_previous_state_action",
+        "state_factors": [
+            {
+                "name": "s_loc",
+                "size": 4,
+                "dimensions": [
+                    4,
+                    1
+                ],
+                "type": "float",
+                "comment": "Location state: (0:center, 1:left_arm, 2:right_arm, 3:cue_location)",
+                "index": 0
+            },
+            {
+                "name": "s_ctx",
+                "size": 2,
+                "dimensions": [
+                    2,
+                    1
+                ],
+                "type": "float",
+                "comment": "Context state: (0:reward_left, 1:reward_right)",
+                "index": 1
+            }
+        ],
+        "observation_modalities": [
+            {
+                "name": "o_loc",
+                "size": 4,
+                "dimensions": [
+                    4,
+                    1
+                ],
+                "type": "float",
+                "comment": "Location observation: (0:center, 1:left, 2:right, 3:cue)",
+                "index": 0
+            },
+            {
+                "name": "o_rew",
+                "size": 3,
+                "dimensions": [
+                    3,
+                    1
+                ],
+                "type": "float",
+                "comment": "Reward/cue observation: (0:no_reward, 1:reward, 2:cue_left)",
+                "index": 1
+            }
+        ],
+        "control_factors": [
+            {
+                "name": "pi",
+                "size": 4,
+                "dimensions": [
+                    4
+                ],
+                "type": "float",
+                "comment": "Policy over 4 actions: (go_left, go_right, go_cue, stay)",
+                "index": 1
+            },
+            {
+                "name": "u",
+                "size": 1,
+                "dimensions": [
+                    1
+                ],
+                "type": "float",
+                "comment": "Selected action",
+                "index": 2
+            }
+        ],
+        "passive_model": False,
+        "simulation_params": {}
     },
     "initialparameterization": {
         "A": [
             [
                 1.0,
+                1.0,
+                0.0,
+                0.0,
+                0.0,
                 0.0,
                 0.0,
                 0.0
             ],
             [
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+            ],
+            [
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+            ],
+            [
+                0.0,
+                0.0,
+                0.0,
+                1.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+            ],
+            [
+                0.0,
+                0.0,
+                1.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+            ],
+            [
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+            ],
+            [
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1.0,
+                0.0,
+                0.0,
+                0.0
+            ],
+            [
+                0.0,
+                0.0,
+                0.0,
+                0.0,
                 0.0,
                 1.0,
                 0.0,
@@ -126,41 +272,93 @@ def main() -> int:
             [
                 0.0,
                 0.0,
-                1.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
                 0.0
             ],
             [
+                0.0,
+                0.0,
+                0.0,
+                0.0,
                 0.0,
                 0.0,
                 0.0,
                 1.0
+            ],
+            [
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+            ],
+            [
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1.0,
+                0.0
             ]
         ],
         "B": [
             [
                 [
-                    0.0,
-                    0.0,
-                    0.0,
-                    0.0
-                ],
-                [
-                    1.0,
-                    1.0,
-                    0.0,
-                    0.0
-                ],
-                [
-                    0.0,
-                    0.0,
-                    1.0,
-                    0.0
-                ],
-                [
-                    0.0,
-                    0.0,
-                    0.0,
+                    0.25,
+                    0.25,
+                    0.25,
                     1.0
+                ],
+                [
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                [
+                    0.5,
+                    0.25,
+                    0.25,
+                    0.25
+                ],
+                [
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                [
+                    0.0,
+                    0.5,
+                    0.25,
+                    0.25
+                ],
+                [
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                [
+                    0.0,
+                    0.0,
+                    0.5,
+                    0.0
+                ],
+                [
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0
                 ]
             ],
             [
@@ -171,22 +369,96 @@ def main() -> int:
                     0.0
                 ],
                 [
-                    0.0,
-                    0.0,
-                    0.0,
-                    0.0
-                ],
-                [
-                    1.0,
-                    0.0,
-                    1.0,
-                    0.0
-                ],
-                [
-                    0.0,
-                    0.0,
-                    0.0,
+                    0.25,
+                    0.25,
+                    0.25,
                     1.0
+                ],
+                [
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                [
+                    0.5,
+                    0.25,
+                    0.25,
+                    0.25
+                ],
+                [
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                [
+                    0.0,
+                    0.5,
+                    0.25,
+                    0.25
+                ],
+                [
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                [
+                    0.0,
+                    0.0,
+                    0.5,
+                    0.0
+                ]
+            ],
+            [
+                [
+                    0.25,
+                    0.25,
+                    0.25,
+                    0.0
+                ],
+                [
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                [
+                    0.5,
+                    0.25,
+                    0.25,
+                    0.25
+                ],
+                [
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                [
+                    0.0,
+                    0.0,
+                    0.25,
+                    0.25
+                ],
+                [
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                [
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.5
+                ],
+                [
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0
                 ]
             ],
             [
@@ -197,9 +469,9 @@ def main() -> int:
                     0.0
                 ],
                 [
-                    0.0,
-                    0.0,
-                    0.0,
+                    0.25,
+                    0.25,
+                    0.25,
                     0.0
                 ],
                 [
@@ -209,18 +481,66 @@ def main() -> int:
                     0.0
                 ],
                 [
-                    1.0,
+                    0.5,
+                    0.25,
+                    0.25,
+                    0.25
+                ],
+                [
                     0.0,
                     0.0,
-                    1.0
+                    0.0,
+                    0.0
+                ],
+                [
+                    0.0,
+                    0.0,
+                    0.25,
+                    0.25
+                ],
+                [
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                [
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.5
                 ]
             ],
             [
                 [
-                    1.0,
+                    0.25,
+                    0.25,
+                    0.25,
+                    0.0
+                ],
+                [
+                    0.0,
                     0.0,
                     0.0,
                     0.0
+                ],
+                [
+                    0.0,
+                    0.25,
+                    0.25,
+                    0.25
+                ],
+                [
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                [
+                    1.0,
+                    0.5,
+                    0.25,
+                    0.25
                 ],
                 [
                     0.0,
@@ -232,29 +552,712 @@ def main() -> int:
                     0.0,
                     0.0,
                     0.0,
+                    0.5
+                ],
+                [
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0
+                ]
+            ],
+            [
+                [
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                [
+                    0.25,
+                    0.25,
+                    0.25,
                     0.0
                 ],
                 [
                     0.0,
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                [
+                    0.0,
+                    0.25,
+                    0.25,
+                    0.25
+                ],
+                [
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                [
+                    1.0,
+                    0.5,
+                    0.25,
+                    0.25
+                ],
+                [
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                [
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.5
+                ]
+            ],
+            [
+                [
+                    0.25,
+                    0.25,
+                    0.25,
+                    0.0
+                ],
+                [
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                [
+                    0.0,
+                    0.25,
+                    0.25,
+                    0.25
+                ],
+                [
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                [
+                    0.0,
+                    0.0,
+                    0.25,
+                    0.25
+                ],
+                [
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                [
                     1.0,
                     1.0,
+                    0.5,
+                    0.0
+                ],
+                [
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0
+                ]
+            ],
+            [
+                [
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                [
+                    0.25,
+                    0.25,
+                    0.25,
+                    0.0
+                ],
+                [
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                [
+                    0.0,
+                    0.25,
+                    0.25,
+                    0.25
+                ],
+                [
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                [
+                    0.0,
+                    0.0,
+                    0.25,
+                    0.25
+                ],
+                [
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                [
+                    1.0,
+                    1.0,
+                    0.5,
                     0.0
                 ]
             ]
         ],
         "C": [
+            -1.0,
+            3.0,
             0.0,
+            -1.0,
+            3.0,
             0.0,
+            -1.0,
+            3.0,
             0.0,
+            -1.0,
+            3.0,
             0.0
         ],
         "D": [
-            1.0,
+            0.5,
+            0.5,
+            0.0,
+            0.0,
+            0.0,
             0.0,
             0.0,
             0.0
         ]
     },
+    "structured_pomdp": {
+        "matrices": {
+            "A_loc": [
+                [
+                    1.0,
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                [
+                    0.0,
+                    1.0,
+                    0.0,
+                    0.0
+                ],
+                [
+                    0.0,
+                    0.0,
+                    1.0,
+                    0.0
+                ],
+                [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ]
+            ],
+            "A_rew": [
+                [
+                    [
+                        1.0,
+                        1.0
+                    ],
+                    [
+                        0.0,
+                        1.0
+                    ],
+                    [
+                        1.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        1.0
+                    ]
+                ],
+                [
+                    [
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        1.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        1.0
+                    ],
+                    [
+                        0.0,
+                        0.0
+                    ]
+                ],
+                [
+                    [
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        1.0,
+                        0.0
+                    ]
+                ]
+            ],
+            "B_loc": [
+                [
+                    [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        1.0,
+                        1.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        1.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        0.0,
+                        1.0
+                    ]
+                ],
+                [
+                    [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        1.0,
+                        0.0,
+                        1.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        0.0,
+                        1.0
+                    ]
+                ],
+                [
+                    [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        1.0,
+                        0.0,
+                        0.0,
+                        1.0
+                    ]
+                ],
+                [
+                    [
+                        1.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        1.0,
+                        1.0,
+                        0.0
+                    ]
+                ]
+            ],
+            "B_ctx": [
+                [
+                    1.0,
+                    0.0
+                ],
+                [
+                    0.0,
+                    1.0
+                ]
+            ],
+            "C_loc": [
+                0.0,
+                0.0,
+                0.0,
+                0.0
+            ],
+            "C_rew": [
+                -1.0,
+                3.0,
+                0.0
+            ],
+            "D_loc": [
+                1.0,
+                0.0,
+                0.0,
+                0.0
+            ],
+            "D_ctx": [
+                0.5,
+                0.5
+            ]
+        },
+        "matrix_provenance": {
+            "A_loc": {
+                "source": "InitialParameterization",
+                "shape": [
+                    4,
+                    4
+                ],
+                "derived": False
+            },
+            "A_rew": {
+                "source": "InitialParameterization",
+                "shape": [
+                    3,
+                    4,
+                    2
+                ],
+                "derived": False
+            },
+            "B_loc": {
+                "source": "InitialParameterization",
+                "shape": [
+                    4,
+                    4,
+                    4
+                ],
+                "derived": False
+            },
+            "B_ctx": {
+                "source": "InitialParameterization",
+                "shape": [
+                    2,
+                    2
+                ],
+                "derived": False
+            },
+            "C_loc": {
+                "source": "InitialParameterization",
+                "shape": [
+                    4
+                ],
+                "derived": False
+            },
+            "C_rew": {
+                "source": "InitialParameterization",
+                "shape": [
+                    3
+                ],
+                "derived": False
+            },
+            "D_loc": {
+                "source": "InitialParameterization",
+                "shape": [
+                    4
+                ],
+                "derived": False
+            },
+            "D_ctx": {
+                "source": "InitialParameterization",
+                "shape": [
+                    2
+                ],
+                "derived": False
+            },
+            "A": {
+                "source": "factored_joint_composition",
+                "source_keys": [
+                    "A_loc",
+                    "A_rew"
+                ],
+                "shape": [
+                    12,
+                    8
+                ],
+                "derived": True
+            },
+            "B": {
+                "source": "factored_joint_composition",
+                "source_keys": [
+                    "B_ctx",
+                    "B_loc"
+                ],
+                "shape": [
+                    8,
+                    8,
+                    4
+                ],
+                "derived": True,
+                "source_order": "next_state_previous_state_action",
+                "canonical_order": "next_state_previous_state_action"
+            },
+            "C": {
+                "source": "factored_joint_composition",
+                "source_keys": [
+                    "C_loc",
+                    "C_rew"
+                ],
+                "shape": [
+                    12
+                ],
+                "derived": True
+            },
+            "D": {
+                "source": "factored_joint_composition",
+                "source_keys": [
+                    "D_ctx",
+                    "D_loc"
+                ],
+                "shape": [
+                    8
+                ],
+                "derived": True
+            }
+        },
+        "state_factors": [
+            {
+                "name": "s_loc",
+                "size": 4,
+                "dimensions": [
+                    4,
+                    1
+                ],
+                "type": "float",
+                "comment": "Location state: (0:center, 1:left_arm, 2:right_arm, 3:cue_location)",
+                "index": 0
+            },
+            {
+                "name": "s_ctx",
+                "size": 2,
+                "dimensions": [
+                    2,
+                    1
+                ],
+                "type": "float",
+                "comment": "Context state: (0:reward_left, 1:reward_right)",
+                "index": 1
+            }
+        ],
+        "observation_modalities": [
+            {
+                "name": "o_loc",
+                "size": 4,
+                "dimensions": [
+                    4,
+                    1
+                ],
+                "type": "float",
+                "comment": "Location observation: (0:center, 1:left, 2:right, 3:cue)",
+                "index": 0
+            },
+            {
+                "name": "o_rew",
+                "size": 3,
+                "dimensions": [
+                    3,
+                    1
+                ],
+                "type": "float",
+                "comment": "Reward/cue observation: (0:no_reward, 1:reward, 2:cue_left)",
+                "index": 1
+            }
+        ],
+        "control_factors": [
+            {
+                "name": "pi",
+                "size": 4,
+                "dimensions": [
+                    4
+                ],
+                "type": "float",
+                "comment": "Policy over 4 actions: (go_left, go_right, go_cue, stay)",
+                "index": 1
+            },
+            {
+                "name": "u",
+                "size": 1,
+                "dimensions": [
+                    1
+                ],
+                "type": "float",
+                "comment": "Selected action",
+                "index": 2
+            }
+        ],
+        "adapter_notes": []
+    },
+    "matrix_provenance": {
+        "A_loc": {
+            "source": "InitialParameterization",
+            "shape": [
+                4,
+                4
+            ],
+            "derived": False
+        },
+        "A_rew": {
+            "source": "InitialParameterization",
+            "shape": [
+                3,
+                4,
+                2
+            ],
+            "derived": False
+        },
+        "B_loc": {
+            "source": "InitialParameterization",
+            "shape": [
+                4,
+                4,
+                4
+            ],
+            "derived": False
+        },
+        "B_ctx": {
+            "source": "InitialParameterization",
+            "shape": [
+                2,
+                2
+            ],
+            "derived": False
+        },
+        "C_loc": {
+            "source": "InitialParameterization",
+            "shape": [
+                4
+            ],
+            "derived": False
+        },
+        "C_rew": {
+            "source": "InitialParameterization",
+            "shape": [
+                3
+            ],
+            "derived": False
+        },
+        "D_loc": {
+            "source": "InitialParameterization",
+            "shape": [
+                4
+            ],
+            "derived": False
+        },
+        "D_ctx": {
+            "source": "InitialParameterization",
+            "shape": [
+                2
+            ],
+            "derived": False
+        },
+        "A": {
+            "source": "factored_joint_composition",
+            "source_keys": [
+                "A_loc",
+                "A_rew"
+            ],
+            "shape": [
+                12,
+                8
+            ],
+            "derived": True
+        },
+        "B": {
+            "source": "factored_joint_composition",
+            "source_keys": [
+                "B_ctx",
+                "B_loc"
+            ],
+            "shape": [
+                8,
+                8,
+                4
+            ],
+            "derived": True,
+            "source_order": "next_state_previous_state_action",
+            "canonical_order": "next_state_previous_state_action"
+        },
+        "C": {
+            "source": "factored_joint_composition",
+            "source_keys": [
+                "C_loc",
+                "C_rew"
+            ],
+            "shape": [
+                12
+            ],
+            "derived": True
+        },
+        "D": {
+            "source": "factored_joint_composition",
+            "source_keys": [
+                "D_ctx",
+                "D_loc"
+            ],
+            "shape": [
+                8
+            ],
+            "derived": True
+        }
+    },
+    "canonical_pomdp_schema": "canonical_pomdp_v1",
     "variables": [
         {
             "name": "s_loc",
@@ -273,75 +1276,6 @@ def main() -> int:
             ],
             "type": "float",
             "comment": "Context state: (0:reward_left, 1:reward_right)"
-        },
-        {
-            "name": "A_loc",
-            "dimensions": [
-                4,
-                4
-            ],
-            "type": "float",
-            "comment": "Location likelihood: P(o_loc | s_loc) \u2014 identity"
-        },
-        {
-            "name": "A_rew",
-            "dimensions": [
-                3,
-                4,
-                2
-            ],
-            "type": "float",
-            "comment": "Reward likelihood: P(o_rew | s_loc, s_ctx) \u2014 context-dependent"
-        },
-        {
-            "name": "B_ctx",
-            "dimensions": [
-                2,
-                2,
-                1
-            ],
-            "type": "float",
-            "comment": "Context transitions: identity (context doesn't change)"
-        },
-        {
-            "name": "C_loc",
-            "dimensions": [
-                4
-            ],
-            "type": "float",
-            "comment": "No location preference (agent doesn't prefer a location per se)"
-        },
-        {
-            "name": "D_loc",
-            "dimensions": [
-                4
-            ],
-            "type": "float",
-            "comment": "Prior: agent starts at center"
-        },
-        {
-            "name": "D_ctx",
-            "dimensions": [
-                2
-            ],
-            "type": "float",
-            "comment": "Prior: uncertain about which arm has reward"
-        },
-        {
-            "name": "G_epi",
-            "dimensions": [
-                "pi"
-            ],
-            "type": "float",
-            "comment": "Epistemic value (information gain about context)"
-        },
-        {
-            "name": "G_ins",
-            "dimensions": [
-                "pi"
-            ],
-            "type": "float",
-            "comment": "Instrumental value (expected reward)"
         },
         {
             "name": "t",
@@ -538,7 +1472,7 @@ def main() -> int:
     if D_data is not None: gnn_spec["initialparameterization"]["D"] = D_data
     if E_data is not None: gnn_spec["initialparameterization"]["E"] = E_data
     gnn_spec.setdefault("model_parameters", {})
-    gnn_spec["model_parameters"].setdefault("num_timesteps", 15)
+    gnn_spec["model_parameters"].setdefault("num_timesteps", 3)
 
     output_dir = Path(os.environ.get("PYMDP_OUTPUT_DIR", "output/pymdp_simulations/T-Maze Epistemic Foraging Agent"))
     output_dir.mkdir(parents=True, exist_ok=True)

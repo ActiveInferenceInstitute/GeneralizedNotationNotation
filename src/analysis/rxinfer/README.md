@@ -1,81 +1,34 @@
-# RxInfer Analysis Module
+# RxInfer.jl Analysis Module
 
-Framework-specific analysis for RxInfer.jl simulation results.
+Framework-specific analysis for RxInfer.jl execution results.
 
-## Overview
+## Public Surface
 
-This submodule provides analysis capabilities for RxInfer.jl (Julia) message-passing simulations. RxInfer implements reactive message passing for Bayesian inference.
+- `generate_analysis_from_logs(execution_results_dir, output_dir, verbose=False)`
+- Step 16 calls this analyzer for current `rxinfer` Step 12 outputs.
 
-## Module Structure
+## Input Contract
 
-```
-analysis/rxinfer/
-├── __init__.py    # Module exports
-├── analyzer.py    # RxInferAnalyzer class
-├── README.md      # This file
-└── AGENTS.md      # Agent scaffolding
-```
+The primary input is:
 
-## Key Components
-
-### RxInferAnalyzer (`analyzer.py`)
-
-Analyzes RxInfer simulation outputs:
-
-```python
-from analysis.rxinfer.analyzer import generate_analysis_from_logs
-
-results = generate_analysis_from_logs(
-    execution_dir=Path("output/12_execute_output"),
-    output_dir=Path("output/16_analysis_output/rxinfer"),
-    verbose=True
-)
+```text
+output/12_execute_output/<model>/rxinfer/simulation_data/simulation_results.json
 ```
 
-**Capabilities:**
-- Parse message-passing outputs
-- Analyze belief propagation
-- Track message convergence
-- Extract factor graph metrics
-- Generate inference reports
+The JSON schema is `rxinfer_simulation_v1` and includes observations by modality, hidden states by factor, actions by control factor, beliefs by factor, expected free energy, policy posterior, validation, matrix provenance, and runtime metadata.
 
-## Analysis Features
+## Outputs
 
-- **Message Analysis**: Track message flow and convergence
-- **Belief Propagation**: Monitor belief updates
-- **Factor Graph Metrics**: Node/edge statistics
-- **Convergence Analysis**: Iteration counts, residuals
-- **Performance Profiling**: Message scheduling efficiency
+The analyzer writes plots under:
 
-## Data Flow
-
-```
-RxInfer Execution (Step 12)
-    ↓
-RxInferAnalyzer.analyze()
-    ↓
-├── Parse outputs
-├── Extract messages
-├── Analyze convergence
-└── Generate metrics
-    ↓
-Analysis Output (Step 16)
+```text
+output/16_analysis_output/rxinfer/
 ```
 
-## Input/Output
+Generated plots include belief evolution, belief heatmaps, observation/state traces, entropy, and inference accuracy.
 
-**Input:** `output/12_execute_output/*/rxinfer/`
-- `simulation_results.json`
-- Message logs
-- Execution outputs
+## Verification
 
-**Output:** `output/16_analysis_output/rxinfer/`
-- `analysis_summary.json`
-- Convergence plots
-- Message flow reports
-
----
-
-**Framework:** RxInfer.jl (Julia)
-**Version:** 1.1.3
-**Status:** Production Ready
+```bash
+uv run --extra dev python -m pytest src/tests/pipeline/test_pomdp_gridworld_cross_framework.py -q --tb=short
+```

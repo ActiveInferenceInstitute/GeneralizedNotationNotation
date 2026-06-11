@@ -8,10 +8,10 @@
       "framework": "sklearn",
       "task": "family_classification",
       "train_accuracy": 1.0,
-      "cv_mean_accuracy": 0.6666666666666666,
-      "cv_std": 0.2721655269759087,
+      "cv_mean_accuracy": 0.5833333333333333,
+      "cv_std": 0.1800205749557739,
       "n_folds": 3,
-      "n_samples": 9,
+      "n_samples": 10,
       "n_features": 14,
       "feature_names": [
         "num_states",
@@ -38,8 +38,8 @@
         "connectivity_ratio": 0.0,
         "max_dimension": 0.0,
         "total_parameters": 0.0,
-        "planning_horizon": 0.0,
-        "directed_connections": 1.0,
+        "planning_horizon": 0.3571428571428571,
+        "directed_connections": 0.6428571428571428,
         "undirected_connections": 0.0,
         "has_precision": 0.0,
         "has_learning": 0.0,
@@ -49,7 +49,11 @@
       "top_features": [
         [
           "directed_connections",
-          1.0
+          0.6429
+        ],
+        [
+          "planning_horizon",
+          0.3571
         ],
         [
           "num_states",
@@ -62,10 +66,6 @@
         [
           "num_actions",
           0.0
-        ],
-        [
-          "num_variables",
-          0.0
         ]
       ]
     },
@@ -74,10 +74,10 @@
       "framework": "sklearn",
       "task": "family_classification",
       "train_accuracy": 1.0,
-      "cv_mean_accuracy": 0.7777777777777778,
-      "cv_std": 0.31426968052735443,
+      "cv_mean_accuracy": 0.5833333333333333,
+      "cv_std": 0.1800205749557739,
       "n_folds": 3,
-      "n_samples": 9,
+      "n_samples": 10,
       "n_features": 14,
       "feature_names": [
         "num_states",
@@ -97,16 +97,16 @@
       ],
       "artifact_path": "output/14_ml_integration_output/gnn_random_forest.pkl",
       "feature_importance": {
-        "num_states": 0.0,
-        "num_observations": 0.115625,
-        "num_actions": 0.084375,
-        "num_variables": 0.13,
-        "connectivity_ratio": 0.1,
-        "max_dimension": 0.064,
-        "total_parameters": 0.05714285714285714,
-        "planning_horizon": 0.0,
-        "directed_connections": 0.4428571428571429,
-        "undirected_connections": 0.005999999999999994,
+        "num_states": 0.005555555555555551,
+        "num_observations": 0.22132936507936501,
+        "num_actions": 0.018750000000000006,
+        "num_variables": 0.0865079365079365,
+        "connectivity_ratio": 0.06666666666666667,
+        "max_dimension": 0.04047619047619048,
+        "total_parameters": 0.06428571428571428,
+        "planning_horizon": 0.16626984126984126,
+        "directed_connections": 0.30873015873015874,
+        "undirected_connections": 0.02142857142857143,
         "has_precision": 0.0,
         "has_learning": 0.0,
         "has_ontology": 0.0,
@@ -115,38 +115,38 @@
       "top_features": [
         [
           "directed_connections",
-          0.4429
-        ],
-        [
-          "num_variables",
-          0.13
+          0.3087
         ],
         [
           "num_observations",
-          0.1156
+          0.2213
+        ],
+        [
+          "planning_horizon",
+          0.1663
+        ],
+        [
+          "num_variables",
+          0.0865
         ],
         [
           "connectivity_ratio",
-          0.1
-        ],
-        [
-          "num_actions",
-          0.0844
+          0.0667
         ]
       ]
     }
   ],
   "feature_importance": {
     "num_states": 0.0,
-    "num_observations": 0.115625,
-    "num_actions": 0.084375,
-    "num_variables": 0.13,
-    "connectivity_ratio": 0.1,
-    "max_dimension": 0.064,
-    "total_parameters": 0.05714285714285714,
-    "planning_horizon": 0.0,
-    "directed_connections": 0.4428571428571429,
-    "undirected_connections": 0.005999999999999994,
+    "num_observations": 0.0,
+    "num_actions": 0.0,
+    "num_variables": 0.0,
+    "connectivity_ratio": 0.0,
+    "max_dimension": 0.0,
+    "total_parameters": 0.0,
+    "planning_horizon": 0.3571428571428571,
+    "directed_connections": 0.6428571428571428,
+    "undirected_connections": 0.0,
     "has_precision": 0.0,
     "has_learning": 0.0,
     "has_ontology": 0.0,
@@ -269,6 +269,25 @@
       "has_ontology": true,
       "has_parameterization": true,
       "planning_horizon": 1,
+      "time_type": "unknown"
+    },
+    {
+      "file_name": "time_varying_dynamics.md",
+      "model_family": "pomdp",
+      "num_variables": 7,
+      "num_states": 3,
+      "num_observations": 3,
+      "num_actions": 0,
+      "max_dimension": 3,
+      "total_parameters": 41,
+      "connectivity_ratio": 0.14285714285714285,
+      "directed_connections": 3,
+      "undirected_connections": 3,
+      "has_precision": false,
+      "has_learning": false,
+      "has_ontology": true,
+      "has_parameterization": true,
+      "planning_horizon": 10,
       "time_type": "unknown"
     },
     {

@@ -16,4 +16,4 @@ print(repo.get_file_tree())
 print(repo.extract_symbols('src/main.py'))
 # Output: [{"name": "main", "type": "function", "file": "src/main.py", ...}, ...]
 
-repo.write_index("repo_index.json")
+repo.write_index("repo_index.local.json")
