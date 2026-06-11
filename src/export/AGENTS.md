@@ -10,9 +10,9 @@
 
 **Status**: ✅ Production Ready
 
-**Version**: 1.1.3
+**Version**: 1.6.0
 
-**Last Updated**: 2026-01-21
+**Last Updated**: 2026-04-16
 
 ---
 
@@ -262,13 +262,16 @@ output/7_export_output/
 
 ### Test Files
 
-- `src/tests/test_export_overall.py`
+- `src/tests/export/test_export_overall.py`
 
 ### Test Coverage
 
-- **Current**: 86%
-- **Target**: 90%+
+Measure on demand:
 
+```bash
+uv run --extra dev python -m pytest src/tests/test_export*.py \
+    --cov=src/export --cov-report=term-missing
+```
 ### Key Test Scenarios
 
 1. Multi-format export generation
@@ -349,7 +352,7 @@ python src/7_export.py --target-dir input/ --verbose
 
 ## Version History
 
-### Current Version: 1.1.3
+### Current Version: 1.6.0
 
 **Features**:
 
@@ -385,10 +388,10 @@ python src/7_export.py --target-dir input/ --verbose
 
 ---
 
-**Last Updated**: 2026-01-21
+**Last Updated**: 2026-04-16
 **Maintainer**: GNN Pipeline Team
 **Status**: ✅ Production Ready
-**Version**: 1.1.3
+**Version**: 1.6.0
 **Architecture Compliance**: ✅ 100% Thin Orchestrator Pattern
 
 

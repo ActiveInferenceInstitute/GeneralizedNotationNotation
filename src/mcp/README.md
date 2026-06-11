@@ -14,8 +14,6 @@ The GNN MCP implementation provides:
 
 ## Architecture
 
-## Architecture
-
 ```mermaid
 graph TD
     Client[MCP Client] --> Transport{Transport Layer}
@@ -133,8 +131,8 @@ Server introspection and diagnostic tools:
 - Enhancement suggestions
 - Natural language explanations
 
-### Site (`src/site/mcp.py`)
-- HTML site generation
+### Website (`src/website/mcp.py`)
+- HTML website generation
 - Report aggregation
 - Interactive elements
 
@@ -393,6 +391,7 @@ When contributing to the MCP implementation:
 
 - [Model Context Protocol Specification](https://modelcontextprotocol.io/)
 - [JSON-RPC 2.0 Specification](https://www.jsonrpc.org/specification)
+- **[Comprehensive MCP Documentation](MCP_DOCUMENTATION.md)** — Full implementation guide with 133+ tools registered
 - [GNN Project Documentation](../../doc/)
 - [MCP Integration Guide](../../doc/mcp/gnn_mcp_model_context_protocol.md)
 - Project overview: ../../README.md

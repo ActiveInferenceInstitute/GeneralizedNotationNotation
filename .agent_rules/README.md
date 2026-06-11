@@ -1,6 +1,6 @@
 # .agent_rules — GNN Pipeline Development Guidelines
 
-**Version**: 3.0.0 | **Status**: ✅ Production Ready | **Updated**: March 2026
+**Version**: 3.0.0 | **Status**: Maintained | **Updated**: 2026-05-20
 
 > **Quick Start**: Run `uv run python src/main.py --verbose` from the project root. All tooling uses `uv`.
 
@@ -32,15 +32,15 @@ Numbered scripts (`N_module.py`) are **thin orchestrators only**:
 - Scripts only: argument parsing, logging setup, output directory, exit codes
 - See: [architecture.md](architecture.md)
 
-### 2. No Mocks Policy ⚠️
-All tests use **real implementations** — no `unittest.mock` or monkeypatching.
+### 2. Real Implementation Testing ⚠️
+All tests use **real implementations** and real artifacts.
 - Skip gracefully when optional deps unavailable: `pytest.skip(...)`
 - See: [testing.md](testing.md)
 
 ### 3. Safe-to-Fail Steps ⚠️
 Steps 8, 9, 12 (Visualization/Execute) **never stop the pipeline**:
 - Always return exit code `0`
-- Multiple fallback levels with HTML reports on failure
+- Emit explicit success, skipped, failed, or degraded status artifacts with reasons
 - See: [error_handling.md](error_handling.md)
 
 ### 4. Exit Codes
@@ -84,10 +84,10 @@ uv pip install -e .                   # Install deps
 | `error_handling.md` | Exit codes, safe-to-fail, graceful degradation, recovery |
 | `performance.md` | Benchmarks, memory optimization, caching, profiling |
 | `mcp.md` | MCP tool registration, tool structure, error handling |
-| `dependencies.md` | Core vs optional deps, detection patterns, fallbacks |
+| `dependencies.md` | Core vs optional deps, detection patterns, explicit availability statuses |
 | `render_frameworks.md` | PyMDP, JAX (no Flax), RxInfer.jl, DisCoPy patterns |
 | `troubleshooting.md` | Common issues, diagnostics, recovery procedures |
 
 ---
 
-**Pipeline Version**: 1.3.0 | **Steps**: 25 | **Tests**: 1,522+ passing | **MCP Tools**: 131
+**Pipeline Version**: 1.6.0 | **Steps**: 25 | **Tests**: 2,250 passed, 7 skipped, 1 xpassed with Ollama integration excludes on 2026-05-20 | **MCP Tools**: 133

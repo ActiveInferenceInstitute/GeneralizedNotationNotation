@@ -1,74 +1,27 @@
-"""
-Top-level sapf package shim that re-exports real SAPF functionality from
-`audio.sapf`. This keeps tests and external callers working with
-`import sapf` without duplicating code.
-"""
-import logging
+"""Top-level SAPF package surface backed by ``audio.sapf``."""
 
-_logger = logging.getLogger(__name__)
-try:
-    # Prefer explicit absolute import of the package to support both `import sapf`
-    # and `import src.sapf` invocation contexts during tests.
-    from audio.sapf import (
-        convert_gnn_to_sapf,
-        create_sapf_visualization,
-        generate_audio_from_sapf,
-        generate_sapf_audio,
-        generate_sapf_report,
-        process_gnn_to_audio,
-        validate_sapf_code,
-    )
-except Exception:
-    # Fall back to relative import if running as package under `src.` namespace
-    # We need to go up one level to 'src', then down to 'audio.sapf'
-    from ..audio.sapf import (
-        convert_gnn_to_sapf,
-        create_sapf_visualization,
-        generate_audio_from_sapf,
-        generate_sapf_audio,
-        generate_sapf_report,
-        process_gnn_to_audio,
-        validate_sapf_code,
-    )
+from typing import Any
 
+from audio import sapf as _audio_sapf
 
-# --- Module metadata and compatibility shims ---
-try:
-    # Attempt to reference the underlying implementation for richer metadata
-    from ..audio import sapf as _audio_sapf
-except Exception:
-    _audio_sapf = None
+convert_gnn_to_sapf = _audio_sapf.convert_gnn_to_sapf
+create_sapf_visualization = _audio_sapf.create_sapf_visualization
+generate_audio_from_sapf = _audio_sapf.generate_audio_from_sapf
+generate_sapf_audio = _audio_sapf.generate_sapf_audio
+generate_sapf_report = _audio_sapf.generate_sapf_report
+process_gnn_to_audio = _audio_sapf.process_gnn_to_audio
+validate_sapf_code = _audio_sapf.validate_sapf_code
 
-__version__ = getattr(_audio_sapf, '__version__', '1.1.1')
-FEATURES = getattr(_audio_sapf, 'FEATURES', {
-    'convert_gnn_to_sapf': True,
-    'generate_audio_from_sapf': True,
-    'validate_sapf_code': True,
-    'process_gnn_to_audio': True,
-    'mcp_integration': True,
-})
+__version__ = "1.6.0"
+FEATURES = _audio_sapf.FEATURES
 
 
 def get_module_info() -> dict:
-    """Return module metadata in the shape tests expect.
+    """Delegate to the underlying audio.sapf module metadata."""
+    return _audio_sapf.get_module_info()
 
-    Prefer delegating to the underlying `audio.sapf.get_module_info()` when
-    available, otherwise return a minimal dictionary.
-    """
-    if _audio_sapf and hasattr(_audio_sapf, 'get_module_info'):
-        try:
-            return _audio_sapf.get_module_info()
-        except Exception as e:
-            _logger.debug(f"get_module_info delegation failed, using recovery: {e}")
 
-    return {
-        'version': __version__,
-        'description': 'SAPF audio bridge for GNN pipeline',
-        'features': FEATURES,
-        'supported_formats': ['sapf', 'wav']
-    }
-
-__all__ = [
+__all__: list[Any] = [
     "convert_gnn_to_sapf",
     "generate_sapf_audio",
     "generate_audio_from_sapf",
@@ -76,6 +29,6 @@ __all__ = [
     "process_gnn_to_audio",
     "create_sapf_visualization",
     "generate_sapf_report",
+    "FEATURES",
+    "get_module_info",
 ]
-
-

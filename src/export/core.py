@@ -1,5 +1,6 @@
 import logging
 from pathlib import Path
+from typing import Any
 
 from pipeline import get_output_dir_for_script
 from utils import log_step_error, log_step_start, log_step_success, log_step_warning
@@ -18,10 +19,12 @@ try:
         export_to_python_pickle,
         export_to_xml_gnn,
     )
+
     FORMAT_EXPORTERS_LOADED = True
 except ImportError:
     FORMAT_EXPORTERS_LOADED = False
     HAS_NETWORKX = False
+
 
 def export_gnn_files(
     target_dir: Path,
@@ -29,11 +32,11 @@ def export_gnn_files(
     logger: logging.Logger,
     recursive: bool = False,
     verbose: bool = False,
-    **kwargs
+    **kwargs: Any,
 ) -> bool:
     """
     Export GNN files to multiple formats.
-    
+
     Args:
         target_dir: Directory containing GNN files to export
         output_dir: Output directory for results
@@ -41,7 +44,7 @@ def export_gnn_files(
         recursive: Whether to process files recursively
         verbose: Whether to enable verbose logging
         **kwargs: Additional export options
-        
+
     Returns:
         True if export succeeded, False otherwise
     """
@@ -73,7 +76,7 @@ def export_gnn_files(
             logger.debug(f"Processing file: {gnn_file}")
 
             # Parse GNN file to dictionary
-            gnn_dict = _gnn_model_to_dict(gnn_file)
+            gnn_dict = _gnn_model_to_dict(str(gnn_file))
 
             # Create file-specific output directory
             file_output_dir = export_output_dir / gnn_file.stem
@@ -81,7 +84,7 @@ def export_gnn_files(
 
             # Export to various formats (functions raise exceptions on failure)
             export_success = True
-            export_errors = []
+            export_errors: list[Any] = []
 
             # JSON export
             try:
@@ -99,13 +102,17 @@ def export_gnn_files(
 
             # Plaintext exports
             try:
-                export_to_plaintext_summary(gnn_dict, file_output_dir / f"{gnn_file.stem}_summary.txt")
+                export_to_plaintext_summary(
+                    gnn_dict, str(file_output_dir / f"{gnn_file.stem}_summary.txt")
+                )
             except Exception as e:
                 export_success = False
                 export_errors.append(f"Summary: {e}")
 
             try:
-                export_to_plaintext_dsl(gnn_dict, file_output_dir / f"{gnn_file.stem}_dsl.txt")
+                export_to_plaintext_dsl(
+                    gnn_dict, str(file_output_dir / f"{gnn_file.stem}_dsl.txt")
+                )
             except Exception as e:
                 export_success = False
                 export_errors.append(f"DSL: {e}")
@@ -113,26 +120,35 @@ def export_gnn_files(
             # Graph exports (if NetworkX available)
             if HAS_NETWORKX:
                 try:
-                    export_to_gexf(gnn_dict, file_output_dir / f"{gnn_file.stem}.gexf")
+                    export_to_gexf(
+                        gnn_dict, str(file_output_dir / f"{gnn_file.stem}.gexf")
+                    )
                 except Exception as e:
                     export_success = False
                     export_errors.append(f"GEXF: {e}")
 
                 try:
-                    export_to_graphml(gnn_dict, file_output_dir / f"{gnn_file.stem}.graphml")
+                    export_to_graphml(
+                        gnn_dict, str(file_output_dir / f"{gnn_file.stem}.graphml")
+                    )
                 except Exception as e:
                     export_success = False
                     export_errors.append(f"GraphML: {e}")
 
                 try:
-                    export_to_json_adjacency_list(gnn_dict, file_output_dir / f"{gnn_file.stem}_adjacency.json")
+                    export_to_json_adjacency_list(
+                        gnn_dict,
+                        str(file_output_dir / f"{gnn_file.stem}_adjacency.json"),
+                    )
                 except Exception as e:
                     export_success = False
                     export_errors.append(f"Adjacency: {e}")
 
             # Pickle export
             try:
-                export_to_python_pickle(gnn_dict, file_output_dir / f"{gnn_file.stem}.pkl")
+                export_to_python_pickle(
+                    gnn_dict, file_output_dir / f"{gnn_file.stem}.pkl"
+                )
             except Exception as e:
                 export_success = False
                 export_errors.append(f"Pickle: {e}")
@@ -141,19 +157,26 @@ def export_gnn_files(
                 success_count += 1
                 logger.debug(f"Successfully exported {gnn_file.name}")
             else:
-                log_step_warning(logger, f"Some exports failed for {gnn_file.name}: {'; '.join(export_errors)}")
+                log_step_warning(
+                    logger,
+                    f"Some exports failed for {gnn_file.name}: {'; '.join(export_errors)}",
+                )
 
         except Exception as e:
             log_step_error(logger, f"Failed to export {gnn_file}: {e}")
 
     # Log summary
-    logger.info(f"Export completed: {success_count}/{total_files} files exported successfully")
+    logger.info(
+        f"Export completed: {success_count}/{total_files} files exported successfully"
+    )
 
     if success_count == total_files:
         log_step_success(logger, "All GNN files exported successfully")
         return True
     elif success_count > 0:
-        log_step_warning(logger, f"Partial success: {success_count}/{total_files} files exported")
+        log_step_warning(
+            logger, f"Partial success: {success_count}/{total_files} files exported"
+        )
         return False
     else:
         log_step_error(logger, "No files were exported successfully")

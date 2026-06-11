@@ -1,11 +1,11 @@
 # GNN Documentation Index
 
-**Version**: v2.0.0
-**Last Updated**: 2026-03-24
+**Version**: v1.6.0 Engine (Bundle v2.0.0)
+**Last Updated**: 2026-05-08
 **Status**: Maintained
 **Pipeline Steps**: 25
 
-Complete navigation guide for all GNN (Generalized Notation Notation) documentation. For the machine-oriented tree manifest (directory counts and new-module index), see **[AGENTS.md](AGENTS.md)**. Parent doc hub: [doc/README.md](../README.md), [doc/INDEX.md](../INDEX.md).
+Complete navigation guide for all GNN (Generalized Notation Notation) documentation. For the machine-oriented tree manifest (directory counts and new-module index), see **[AGENTS.md](AGENTS.md)**. Parent doc hub: [doc/README.md](../README.md), [doc/INDEX.md](../INDEX.md). **Versioning policy** (GNN language vs doc bundle vs Python package): [doc/SPEC.md](../SPEC.md).
 
 ## 🚀 Quick Start
 
@@ -71,7 +71,7 @@ uv run python src/main.py --only-steps "3,5,8,11,12" --verbose
 
 **Framework Integration:**
 
-- **[MCP Hub](mcp/README.md)** — 131 tools, client setup, tool development guide
+- **[MCP Hub](mcp/README.md)** — tool inventory for the **whole pipeline** MCP surface (order-of-magnitude 130+ tools; not Step 3 only), client setup, tool development guide
 - [Framework Integration Guide](integration/framework_integration_guide.md) - PyMDP, RxInfer, ActiveInference.jl, DisCoPy, JAX, PyTorch, NumPyro, Stan
 - [GNN Implementation Guide](integration/gnn_implementation.md) - Implementation workflows and patterns
 - **[Framework Implementations](implementations/README.md)** — Framework documentation for PyMDP, JAX, RxInfer, ActiveInference.jl, DisCoPy, PyTorch, NumPyro, Stan, and CatColab
@@ -118,7 +118,7 @@ uv run python src/main.py --only-steps "3,5,8,11,12" --verbose
 | 10 | `10_ontology.py` | [ontology/](../../src/ontology/AGENTS.md) | Ontology processing |
 | 11 | `11_render.py` | [render/](../../src/render/AGENTS.md) | Code generation |
 | 12 | `12_execute.py` | [execute/](../../src/execute/AGENTS.md) | Simulation execution |
-| 13 | `13_llm.py` | [llm/](../../src/llm/AGENTS.md) | LLM analysis |
+| 13 | `13_llm.py` | [llm/](../../src/llm/AGENTS.md) | Neurosymbolic LLM Analysis |
 | 14 | `14_ml_integration.py` | [ml_integration/](../../src/ml_integration/AGENTS.md) | ML integration |
 | 15 | `15_audio.py` | [audio/](../../src/audio/AGENTS.md) | Audio generation |
 | 16 | `16_analysis.py` | [analysis/](../../src/analysis/AGENTS.md) | Statistical analysis |
@@ -134,7 +134,7 @@ uv run python src/main.py --only-steps "3,5,8,11,12" --verbose
 | 21 | `21_mcp.py` | [mcp/](../../src/mcp/AGENTS.md) | MCP processing |
 | 22 | `22_gui.py` | [gui/](../../src/gui/AGENTS.md) | GUI interface |
 | 23 | `23_report.py` | [report/](../../src/report/AGENTS.md) | Report generation |
-| 24 | `24_intelligent_analysis.py` | [intelligent_analysis/](../../src/intelligent_analysis/AGENTS.md) | Intelligent analysis |
+| 24 | `24_intelligent_analysis.py` | [intelligent_analysis/](../../src/intelligent_analysis/AGENTS.md) | Intelligent Heuristic Recovery |
 
 ## 🔍 Find What You Need
 
@@ -248,9 +248,10 @@ All GNN documentation follows these principles:
 
 ---
 
-**GNN Version**: v2.0.0
-**Pipeline Version**: 2.0.0
+**GNN documentation bundle**: v1.6.0 Engine (Bundle v2.0.0) (this tree and front matter on major pages)
+**GNN syntax standard**: v1.1 (see [gnn_syntax.md](gnn_syntax.md))
+**Python package** (`generalized-notation-notation`): **1.6.0** ([pyproject.toml](../../pyproject.toml))
 **Total Pipeline Steps**: 25 (0–24)
-**Last Updated**: 2026-03-24
+**Last Updated**: 2026-05-08
 
-**Status**: Maintained (re-run `uv run python doc/development/docs_audit.py` after link or tree changes)
+**Status**: Maintained (re-run `uv run --extra dev python doc/development/docs_audit.py` after link or tree changes)

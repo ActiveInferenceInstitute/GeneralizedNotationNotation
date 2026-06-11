@@ -10,9 +10,9 @@
 
 **Status**: ✅ Production Ready
 
-**Version**: 1.0.0
+**Version**: 1.6.0
 
-**Last Updated**: 2026-04-10
+**Last Updated**: 2026-04-16
 
 ---
 
@@ -284,15 +284,18 @@ if result.returncode == 0:
 ## Testing
 
 ### Test Files
-- `src/tests/test_llm_overall.py` - Module-level tests
-- `src/tests/test_llm_functional.py` - Functional tests
-- `src/tests/test_llm_ollama.py` - Ollama-specific tests
-- `src/tests/test_llm_ollama_integration.py` - Ollama integration tests
+- `src/tests/llm/test_llm_overall.py` - Module-level tests
+- `src/tests/llm/test_llm_functional.py` - Functional tests
+- `src/tests/llm/test_llm_ollama.py` - Ollama-specific tests
+- `src/tests/llm/test_llm_ollama_integration.py` - Ollama integration tests
 
 ### Test Coverage
-- **Current**: 76%
-- **Target**: 85%+
+Measure on demand:
 
+```bash
+uv run --extra dev python -m pytest src/tests/test_llm*.py \
+    --cov=src/llm --cov-report=term-missing
+```
 ### Key Test Scenarios
 1. Ollama detection and availability check
 2. Model selection and prioritization
@@ -633,7 +636,7 @@ configs['ollama']['default_max_tokens'] = 1024
 
 ## Version History
 
-### Current Version: 1.0.0
+### Current Version: 1.6.0
 
 **Features**:
 - Multi-provider LLM support (OpenAI, Anthropic, Ollama)
@@ -666,10 +669,10 @@ configs['ollama']['default_max_tokens'] = 1024
 
 ---
 
-**Last Updated**: 2026-04-10
+**Last Updated**: 2026-04-16
 **Maintainer**: GNN Pipeline Team
 **Status**: ✅ Production Ready
-**Version**: 1.0.0
+**Version**: 1.6.0
 **Architecture Compliance**: ✅ 100% Thin Orchestrator Pattern
 
 

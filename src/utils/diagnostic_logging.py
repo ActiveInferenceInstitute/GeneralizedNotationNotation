@@ -13,7 +13,7 @@ import uuid
 from contextlib import contextmanager
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, Callable, Dict, List, Optional, cast
 
 import psutil
 
@@ -28,12 +28,12 @@ class CorrelationContext:
     @classmethod
     def get_correlation_id(cls) -> str:
         """Get current correlation ID or create a new one."""
-        if not hasattr(cls._local, 'correlation_id'):
+        if not hasattr(cls._local, "correlation_id"):
             cls._local.correlation_id = str(uuid.uuid4())[:8]
-        return cls._local.correlation_id
+        return cast("str", cls._local.correlation_id)
 
     @classmethod
-    def set_correlation_id(cls, correlation_id: str):
+    def set_correlation_id(cls, correlation_id: str) -> Any:
         """Set correlation ID for current thread."""
         cls._local.correlation_id = correlation_id
 
@@ -48,7 +48,8 @@ class CorrelationContext:
 class PerformanceTracker:
     """Track performance metrics for pipeline operations."""
 
-    def __init__(self):
+    def __init__(self) -> None:
+        """Initialize the instance."""
         self.metrics: Dict[str, List[float]] = {}
         self.active_operations: Dict[str, float] = {}
 
@@ -66,7 +67,7 @@ class PerformanceTracker:
             del self.active_operations[operation_key]
 
             # Extract operation name
-            operation_name = operation_key.split('#')[0]
+            operation_name = operation_key.split("#")[0]
             if operation_name not in self.metrics:
                 self.metrics[operation_name] = []
             self.metrics[operation_name].append(duration)
@@ -76,7 +77,7 @@ class PerformanceTracker:
 
     def get_metrics_summary(self) -> Dict[str, Any]:
         """Get summary of all tracked metrics."""
-        summary = {}
+        summary: dict[Any, Any] = {}
         for operation, durations in self.metrics.items():
             if durations:
                 summary[operation] = {
@@ -84,7 +85,7 @@ class PerformanceTracker:
                     "total_time": sum(durations),
                     "average_time": sum(durations) / len(durations),
                     "min_time": min(durations),
-                    "max_time": max(durations)
+                    "max_time": max(durations),
                 }
         return summary
 
@@ -92,10 +93,10 @@ class PerformanceTracker:
 class DiagnosticLogger:
     """Enhanced logger with diagnostic capabilities and correlation tracking."""
 
-    def __init__(self, step_name: str, output_dir: Optional[Path] = None):
+    def __init__(self, step_name: str, output_dir: Optional[Path] = None) -> None:
         """
         Initialize diagnostic logger.
-        
+
         Args:
             step_name: Name of the pipeline step
             output_dir: Optional directory for detailed logs
@@ -117,7 +118,7 @@ class DiagnosticLogger:
         """Get current system diagnostic information."""
         try:
             memory = psutil.virtual_memory()
-            disk = psutil.disk_usage('/')
+            disk = psutil.disk_usage("/")
 
             return {
                 "timestamp": datetime.now().isoformat(),
@@ -130,21 +131,21 @@ class DiagnosticLogger:
                 "cpu_percent": psutil.cpu_percent(interval=0.1),
                 "disk_total_gb": round(disk.total / (1024**3), 1),
                 "disk_free_gb": round(disk.free / (1024**3), 1),
-                "disk_percent": round((disk.used / disk.total) * 100, 1)
+                "disk_percent": round((disk.used / disk.total) * 100, 1),
             }
         except Exception as e:
             return {
                 "timestamp": datetime.now().isoformat(),
                 "correlation_id": self.correlation_id,
-                "error": f"Could not get system info: {e}"
+                "error": f"Could not get system info: {e}",
             }
 
-    def log_step_start(self, description: str, **context):
+    def log_step_start(self, description: str, **context: Any) -> Any:
         """Log step start with enhanced diagnostics."""
         self.diagnostics["step_start"] = {
             "description": description,
             "system_info": self.system_info,
-            "context": context
+            "context": context,
         }
 
         message = f"[{self.correlation_id}] 🚀 Starting {self.step_name}: {description}"
@@ -161,7 +162,7 @@ class DiagnosticLogger:
             f"Disk {self.system_info.get('disk_percent', 'unknown')}%"
         )
 
-    def log_step_success(self, message: str, **context):
+    def log_step_success(self, message: str, **context: Any) -> Any:
         """Log step success with performance metrics."""
         duration = time.time() - self.start_time
 
@@ -169,7 +170,7 @@ class DiagnosticLogger:
             "message": message,
             "duration_seconds": duration,
             "performance_metrics": self.performance_tracker.get_metrics_summary(),
-            "context": context
+            "context": context,
         }
 
         log_message = f"[{self.correlation_id}] ✅ {self.step_name} completed: {message} ({duration:.2f}s)"
@@ -178,13 +179,15 @@ class DiagnosticLogger:
 
         self.logger.info(log_message)
 
-    def log_step_warning(self, message: str, **context):
+    def log_step_warning(self, message: str, **context: Any) -> Any:
         """Log step warning with context."""
-        self.diagnostics.setdefault("warnings", []).append({
-            "message": message,
-            "context": context,
-            "timestamp": datetime.now().isoformat()
-        })
+        self.diagnostics.setdefault("warnings", []).append(
+            {
+                "message": message,
+                "context": context,
+                "timestamp": datetime.now().isoformat(),
+            }
+        )
 
         log_message = f"[{self.correlation_id}] ⚠️  {message}"
         if context:
@@ -192,20 +195,24 @@ class DiagnosticLogger:
 
         self.logger.warning(log_message)
 
-    def log_step_error(self, message: str, error: Optional[Exception] = None, **context):
+    def log_step_error(
+        self, message: str, error: Optional[Exception] = None, **context: Any
+    ) -> Any:
         """Log step error with full diagnostic information."""
-        error_info = {
+        error_info: dict[str, Any] = {
             "message": message,
             "context": context,
-            "timestamp": datetime.now().isoformat()
+            "timestamp": datetime.now().isoformat(),
         }
 
         if error:
-            error_info.update({
-                "exception_type": type(error).__name__,
-                "exception_message": str(error),
-                "exception_module": getattr(error, '__module__', 'unknown')
-            })
+            error_info.update(
+                {
+                    "exception_type": type(error).__name__,
+                    "exception_message": str(error),
+                    "exception_module": getattr(error, "__module__", "unknown"),
+                }
+            )
 
         self.diagnostics.setdefault("errors", []).append(error_info)
 
@@ -218,10 +225,12 @@ class DiagnosticLogger:
         self.logger.error(log_message)
 
     @contextmanager
-    def performance_context(self, operation_name: str):
+    def performance_context(self, operation_name: str) -> Any:
         """Context manager for performance tracking."""
         operation_key = self.performance_tracker.start_operation(operation_name)
-        self.logger.debug(f"[{self.correlation_id}] Starting operation: {operation_name}")
+        self.logger.debug(
+            f"[{self.correlation_id}] Starting operation: {operation_name}"
+        )
 
         try:
             yield
@@ -231,7 +240,7 @@ class DiagnosticLogger:
                 f"[{self.correlation_id}] Completed operation: {operation_name} ({duration:.3f}s)"
             )
 
-    def log_dependency_status(self, dependencies: Dict[str, bool]):
+    def log_dependency_status(self, dependencies: Dict[str, bool]) -> Any:
         """Log dependency availability status."""
         available = [name for name, status in dependencies.items() if status]
         unavailable = [name for name, status in dependencies.items() if not status]
@@ -239,7 +248,7 @@ class DiagnosticLogger:
         self.diagnostics["dependencies"] = {
             "available": available,
             "unavailable": unavailable,
-            "total_dependencies": len(dependencies)
+            "total_dependencies": len(dependencies),
         }
 
         self.logger.info(
@@ -251,16 +260,16 @@ class DiagnosticLogger:
                 f"[{self.correlation_id}] Unavailable dependencies: {', '.join(unavailable)}"
             )
 
-    def log_file_operations(self, operations: List[Dict[str, Any]]):
+    def log_file_operations(self, operations: List[Dict[str, Any]]) -> Any:
         """Log file operation results."""
-        successful = [op for op in operations if op.get('success', False)]
-        failed = [op for op in operations if not op.get('success', False)]
+        successful = [op for op in operations if op.get("success", False)]
+        failed = [op for op in operations if not op.get("success", False)]
 
         self.diagnostics["file_operations"] = {
             "successful": len(successful),
             "failed": len(failed),
             "total": len(operations),
-            "details": operations
+            "details": operations,
         }
 
         self.logger.info(
@@ -274,7 +283,7 @@ class DiagnosticLogger:
                     f"on {op.get('file_path', 'unknown')} - {op.get('error', 'unknown error')}"
                 )
 
-    def save_diagnostic_report(self, output_path: Optional[Path] = None):
+    def save_diagnostic_report(self, output_path: Optional[Path] = None) -> Any:
         """Save comprehensive diagnostic report."""
         if output_path is None and self.output_dir:
             output_path = self.output_dir / f"{self.step_name}_diagnostic_report.json"
@@ -287,42 +296,52 @@ class DiagnosticLogger:
 
         try:
             output_path.parent.mkdir(parents=True, exist_ok=True)
-            with open(output_path, 'w') as f:
+            with open(output_path, "w") as f:
                 json.dump(self.diagnostics, f, indent=2, default=str)
 
-            self.logger.info(f"[{self.correlation_id}] Diagnostic report saved to {output_path}")
+            self.logger.info(
+                f"[{self.correlation_id}] Diagnostic report saved to {output_path}"
+            )
         except Exception as e:
-            self.logger.error(f"[{self.correlation_id}] Failed to save diagnostic report: {e}")
+            self.logger.error(
+                f"[{self.correlation_id}] Failed to save diagnostic report: {e}"
+            )
 
     def get_correlation_id(self) -> str:
         """Get current correlation ID."""
         return self.correlation_id
 
 
-def create_diagnostic_logger(step_name: str, output_dir: Optional[Path] = None) -> DiagnosticLogger:
+def create_diagnostic_logger(
+    step_name: str, output_dir: Optional[Path] = None
+) -> DiagnosticLogger:
     """
     Create a diagnostic logger for a pipeline step.
-    
+
     Args:
         step_name: Name of the pipeline step
         output_dir: Optional directory for diagnostic outputs
-        
+
     Returns:
         DiagnosticLogger instance
     """
     return DiagnosticLogger(step_name, output_dir)
 
 
-def with_diagnostic_logging(step_name: str, output_dir: Optional[Path] = None):
+def with_diagnostic_logging(step_name: str, output_dir: Optional[Path] = None) -> Any:
     """
     Decorator to add diagnostic logging to functions.
-    
+
     Args:
         step_name: Name of the pipeline step
         output_dir: Optional directory for diagnostic outputs
     """
-    def decorator(func: Callable):
-        def wrapper(*args, **kwargs):
+
+    def decorator(func: Callable) -> Any:
+        """Provide decorator behavior."""
+
+        def wrapper(*args: Any, **kwargs: Any) -> Any:
+            """Provide wrapper behavior."""
             diagnostic_logger = create_diagnostic_logger(step_name, output_dir)
 
             try:
@@ -331,7 +350,9 @@ def with_diagnostic_logging(step_name: str, output_dir: Optional[Path] = None):
                 with diagnostic_logger.performance_context(func.__name__):
                     result = func(*args, **kwargs)
 
-                diagnostic_logger.log_step_success(f"{func.__name__} completed successfully")
+                diagnostic_logger.log_step_success(
+                    f"{func.__name__} completed successfully"
+                )
                 return result
 
             except Exception as e:
@@ -341,5 +362,5 @@ def with_diagnostic_logging(step_name: str, output_dir: Optional[Path] = None):
                 diagnostic_logger.save_diagnostic_report()
 
         return wrapper
-    return decorator
 
+    return decorator

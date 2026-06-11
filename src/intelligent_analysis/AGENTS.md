@@ -10,9 +10,9 @@
 
 **Status**: Production Ready
 
-**Version**: 2.0.0
+**Version**: 1.6.0
 
-**Last Updated**: 2026-03-03
+**Last Updated**: 2026-04-16
 
 ---
 
@@ -524,7 +524,7 @@ The module implements a layered recovery approach:
 
 ### Test Files
 
-- `src/tests/test_intelligent_analysis_overall.py` - Module-level tests
+- `src/tests/intelligent_analysis/test_intelligent_analysis_overall.py` - Module-level tests
 - Test via full pipeline: `python src/main.py --only-steps 24 --verbose`
 
 ### Required Test Fixtures
@@ -676,17 +676,11 @@ def test_detect_cascading_failure_pattern():
     assert any(p["type"] == "cascading_failure" for p in patterns)
 ```
 
-### Mocking LLM Calls
+### LLM Unavailable Handling
 
 ```python
-from unittest.simulated import patch, AsyncMock
-
-@patch("intelligent_analysis.processor._run_llm_analysis")
-def test_process_with_llm_failure(mock_llm, sample_summary_data, tmp_path):
-    """Test that LLM failure falls back to rule-based analysis."""
-    mock_llm.side_effect = Exception("LLM unavailable")
-
-    # The processor should still succeed with rule-based recovery
+def test_process_without_provider_config(sample_summary_data, tmp_path):
+    """Test that provider unavailability still yields rule-based analysis."""
     import logging
     logger = logging.getLogger("test")
 
@@ -891,7 +885,7 @@ The `_run_llm_analysis()` function is async because it uses the shared `llm.llm_
 
 ## Version History
 
-### Current Version: 2.0.0
+### Current Version: 1.6.0
 
 **Features**:
 
@@ -927,10 +921,10 @@ The `_run_llm_analysis()` function is async because it uses the shared `llm.llm_
 
 ---
 
-**Last Updated**: 2026-03-03
+**Last Updated**: 2026-04-16
 **Maintainer**: GNN Pipeline Team
 **Status**: Production Ready
-**Version**: 2.0.0
+**Version**: 1.6.0
 **Architecture Compliance**: 100% Thin Orchestrator Pattern
 
 ---

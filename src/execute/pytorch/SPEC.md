@@ -1,31 +1,23 @@
-# PyTorch Execute Backend Specification
+# PyTorch Execution — Technical Specification
 
-## Overview
+**Version**: 1.6.0
 
-The PyTorch execute backend runs PyTorch-generated Python scripts and persists execution logs and outputs.
+## Execution Model
 
-## Public API
+- Subprocess execution via `python -c` or script file
+- Pre-flight: syntax check + dependency validation
+- Timeout: inherits from Step 12 timeout (default 1800s)
 
-The module must export:
+## Input
 
-- `is_pytorch_available() -> bool`
-- `find_pytorch_scripts(base_dir: Union[str, Path], recursive: bool = True) -> List[Path]`
-- `execute_pytorch_script(script_path: Path, verbose: bool = False, device: Optional[str] = None, output_dir: Optional[Path] = None, timeout: int = 300) -> bool`
-- `run_pytorch_scripts(rendered_simulators_dir: Union[str, Path], execution_output_dir: Optional[Union[str, Path]] = None, recursive_search: bool = True, verbose: bool = False, device: Optional[str] = None) -> bool`
+- PyTorch scripts from `output/11_render_output/pytorch/`
 
-## Script discovery
+## Output
 
-`run_pytorch_scripts` searches under:
+- `simulation_results.json` — Simulation trajectories and results
+- Execution logs (stdout/stderr)
+- Timing data
 
-- `<rendered_simulators_dir>/pytorch/`
+## Dependencies
 
-and matches either folder name `pytorch` or file name containing `pytorch`.
-
-## Environment contract
-
-When `output_dir` is provided, the runner sets:
-
-- `PYTORCH_OUTPUT_DIR=<output_dir>`
-
-so that generated scripts write `simulation_results.json` into the execution tree.
-
+- `torch >= 2.0.0`

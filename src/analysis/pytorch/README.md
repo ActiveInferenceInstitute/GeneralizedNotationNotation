@@ -1,11 +1,29 @@
-# Pytorch
+# PyTorch Analysis
 
-## Overview
-This module handles `Pytorch` components.
-
-## Available Members
-- **Classes**: No specific classes exported.
-- **Functions**: generate_analysis_from_logs
+Framework-specific analysis module for PyTorch simulation outputs.
 
 ## Usage
-Import necessary members directly to orchestrate tasks related to Pytorch.
+
+```python
+from analysis.pytorch.analyzer import analyze_pytorch_results
+
+analyze_pytorch_results(results_dir="output/12_execute_output", output_dir="output/16_analysis_output")
+```
+
+## Outputs
+
+- Belief trajectory plots (PNG)
+- Action distribution histograms (PNG)
+- EFE component analysis (PNG)
+- Summary statistics (JSON)
+
+## Dependencies
+
+- `numpy`, `matplotlib` (required)
+- `torch` (optional, for advanced result interpretation)
+
+## See Also
+
+- [Parent: analysis/README.md](../README.md)
+- [AGENTS.md](AGENTS.md) — Architecture documentation
+- [SPEC.md](SPEC.md) — Technical specification

@@ -1,11 +1,61 @@
-# Logging
+# GNN Pipeline Logging
 
-## Overview
-This module handles `Logging` components.
+Modular, structured logging system for Active Inference model processing.
 
-## Available Members
-- **Classes**: BasicPipelineLogger, CorrelationFormatter, JSONFormatter, PerformanceTracker, PipelineLogger, PipelineProgressTracker, StructuredFormatter, VisualFormatter, VisualLoggingEnhancer
-- **Functions**: clear_correlation_context, colorize, complete_step, enable_json_logging, format, format_duration, format_memory_usage, format_step_header, get_logger, get_overall_progress, get_performance_summary, get_progress_summary, get_summary, initialize, log_pipeline_summary, log_section_header, log_step_error, log_step_start, log_step_success, log_step_warning, log_structured, reset_progress_tracker, rotate_logs, set_correlation_context, set_global_progress_tracker, set_verbose_mode, set_verbosity, setup_correlation_context, setup_main_logging, setup_standalone_logging, setup_step_logging, silence_noisy_modules_in_console, start_step, step, supports_color, timed_operation, track_operation
+## Quick Start
 
-## Usage
-Import necessary members directly to orchestrate tasks related to Logging.
+### For Pipeline Modules
+Initialize logging at the start of your module:
+
+```python
+from utils.logging.logging_utils import setup_step_logging
+
+logger = setup_step_logging("my_step_name", verbose=True)
+logger.info("Starting processing")
+```
+
+### Logging with Structured Data
+Attach metadata to your logs for better analysis:
+
+```python
+from utils.logging.logging_utils import PipelineLogger
+
+PipelineLogger.log_structured(
+    logger, 
+    logging.INFO, 
+    "Processed file",
+    file_name="model.md",
+    size_bytes=1024
+)
+```
+
+### Timing Operations
+Use the context manager to automatically log duration and memory usage:
+
+```python
+from utils.logging.logging_utils import PipelineLogger
+
+with PipelineLogger.timed_operation("Parsing GNN", logger):
+    # Perform expensive work
+    parse_gnn()
+```
+
+## Features
+- **Correlation-Aware**: Every log line is tagged with a correlation ID for easy tracing.
+- **Visual Feedback**: Real-time progress bars and color-coded status in the terminal.
+- **Structured Output**: Concurrent JSON-L logging for automated analysis.
+- **Performance Monitoring**: Automatic memory and duration tracking for all major operations.
+
+## Output Locations
+- **Terminal**: Real-time human-readable logs.
+- **`output/00_pipeline_logs/pipeline.log`**: Full text logs.
+- **`output/00_pipeline_logs/pipeline.jsonl`**: Machine-readable structured logs.
+
+## Best Practices
+1. **Use Emojis**: Use standard pipeline emojis for consistency:
+   - 🚀 `log_step_start`
+   - ✅ `log_step_success`
+   - ⚠️ `log_step_warning`
+   - ❌ `log_step_error`
+2. **Avoid Print**: Never use `print()`. Always use the `logger`.
+3. **Propagate**: Do not add handlers to your local loggers. Rely on the root handlers provided by the pipeline.

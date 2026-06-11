@@ -1,11 +1,17 @@
-# Sdk
+# MCP SDK Facade
 
-## Overview
-This module handles `Sdk` components.
+Thin delegation layer forwarding to the parent `mcp` module. Exists for `MCPSDKStatus` health check compliance.
 
-## Available Members
-- **Classes**: No specific classes exported.
-- **Functions**: No specific public functions exported.
+## Files
 
-## Usage
-Import necessary members directly to orchestrate tasks related to Sdk.
+- `client.py` — Client-side facade (re-exports)
+- `mcp.py` — Core API re-exports from `mcp.mcp`
+- `server.py` — Server-side facade (re-exports)
+
+## Note
+
+This is a **pure delegation layer** — no independent logic. All real implementation lives in `src/mcp/mcp.py`.
+
+## See Also
+
+- [Parent: mcp/README.md](../README.md)

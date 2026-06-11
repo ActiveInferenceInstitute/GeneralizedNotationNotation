@@ -17,6 +17,8 @@ GNN model execution across multiple frameworks.
 - Single model execution
 - Batch execution
 - Framework-specific execution
+- Local script-level worker execution via `execution_workers`
+- Optional Ray/Dask dispatch via `distributed` and `backend`
 
 ## Key Exports
 ```python

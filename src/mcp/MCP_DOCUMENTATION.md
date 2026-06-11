@@ -39,7 +39,6 @@ src/mcp/
 ├── sympy_mcp_client.py   # SymPy MCP client
 ├── npx_inspector.py      # NPX inspector utilities
 ├── README.md             # Basic documentation
-├── COMPREHENSIVE_DOCUMENTATION.md  # This comprehensive documentation
 └── *.md                  # Additional documentation files
 ```
 
@@ -60,7 +59,6 @@ class MCPTool:
     version: str = "1.0.0"      # Tool version
     tags: List[str] = field(default_factory=list)  # Tags for categorization
     examples: List[Dict[str, Any]] = field(default_factory=list)  # Usage examples
-    deprecated: bool = False    # Deprecation flag
     experimental: bool = False  # Experimental flag
     timeout: Optional[float] = None  # Execution timeout
     max_concurrent: int = 1     # Max concurrent executions
@@ -94,9 +92,11 @@ class MCPResource:
     encryption: bool = False    # Encryption flag
 ```
 
-### Enhanced Error Classes
+### Error Classes
 
-The implementation provides comprehensive error handling with detailed context:
+Errors carry both the wire-level JSON-RPC code and local context (tool name,
+module name, optional payload) so server logs can be correlated with client
+stack traces:
 
 ```python
 class MCPError(Exception):
@@ -135,11 +135,69 @@ class MCPPerformanceError(MCPError):
     """Raised when performance thresholds are exceeded."""
 ```
 
+## Configuration
+
+All runtime knobs live on the singleton :class:`mcp.MCP` instance and are
+settable through ``initialize(...)`` or the pipeline step ``process_mcp(**kwargs)``.
+The table below is the authoritative list — any additional configuration must
+be added to :func:`mcp.mcp.initialize`.
+
+| Knob | Type | Default | Effect |
+|------|------|---------|--------|
+| `performance_mode` | `"low"` \| `"medium"` \| `"high"` | `"low"` | Bulk toggle — sets the four booleans below to sensible preset values |
+| `enable_caching` | `bool` | mode-derived | Toggle result-cache for tool invocations |
+| `enable_rate_limiting` | `bool` | mode-derived | Enforce per-tool RPS limits |
+| `strict_validation` | `bool` | mode-derived | Validate every call against its JSON schema |
+| `cache_ttl` | `float` (s) | `300.0` | Result-cache TTL |
+| `modules_allowlist` | `list[str]` \| `None` | `None` | Restrict discovery to the named modules under `src/` |
+| `per_module_timeout` | `float` (s) | `30.0` | Max wall-clock per module during discovery |
+| `overall_timeout` | `float` (s) | `120.0` | Max wall-clock for parallel discovery |
+| `force_refresh` | `bool` | `False` | Re-run discovery even if modules are already loaded |
+
+### CLI flags (pipeline step 21)
+
+```bash
+python src/21_mcp.py \
+    --performance-mode high \
+    --mcp-strict-validation \
+    --mcp-cache-ttl 120 \
+    --mcp-modules-allowlist gnn,execute,render \
+    --mcp-per-module-timeout 15 \
+    --mcp-overall-timeout 60
+```
+
+### Registered tool inventory (snapshot)
+
+The MCP auto-discovers every module under `src/` that exposes `mcp.py`. A live
+run currently registers **133 tools** and **1 resource** across **33 modules**.
+Use the audit script for an up-to-date, ground-truth list:
+
+```bash
+PYTHONPATH=src uv run python src/mcp/validate_tools.py
+```
+
+Per-module tool counts below are a snapshot; use the audit command above for
+current counts:
+
+| Module | Tools | Module | Tools |
+|--------|-------|--------|-------|
+| advanced_visualization | 4 | api | 5 |
+| analysis | 4 | audio | 5 |
+| execute | 5 | export | 4 |
+| gnn (+ sympy + meta) | 47 | gui | 3 |
+| integration | 4 | intelligent_analysis | 3 |
+| llm | 5 | ml_integration | 4 |
+| ontology | 4 | render | 4 |
+| report | 5 | research | 4 |
+| sapf | 4 | security | 4 |
+| validation | 4 | visualization | 4 |
+| website | 5 | cli | 2 |
+
 ## Installation and Setup
 
 ### Prerequisites
-- Python 3.8 or higher
-- Required dependencies (see requirements.txt)
+- Python 3.11 through 3.13, matching `pyproject.toml`
+- Required dependencies resolved from `pyproject.toml` / `uv.lock` with `uv sync`
 
 ### Installation
 ```bash
@@ -290,9 +348,10 @@ capabilities = mcp_instance.get_capabilities()
 cache_stats = mcp_instance.clear_cache()
 ```
 
-### Enhanced Parameter Validation
+### Parameter Validation
 
-The implementation provides comprehensive parameter validation:
+Tool schemas support JSON-Schema-style type / range / format constraints and
+object composition. Validation runs before the tool handler is invoked:
 
 ```python
 # Complex schema with validation
@@ -520,7 +579,8 @@ Tools can also be invoked directly:
 
 ### Performance Metrics
 
-The implementation tracks comprehensive performance metrics:
+Each tool dispatch records latency, cache hit/miss, error counts, and concurrency
+snapshot. `get_enhanced_server_status()` returns the aggregated view:
 
 ```python
 # Get performance metrics
@@ -643,12 +703,15 @@ module_info = mcp_instance.get_module_info("my_module")
 ### Running Tests
 
 ```bash
-# Run all MCP tests
-pytest src/tests/test_mcp_comprehensive.py -v
+# All MCP tests
+uv run --extra dev python -m pytest src/tests/mcp/test_mcp_overall.py src/tests/mcp/test_mcp_functional.py \
+       src/tests/mcp/test_mcp_tools.py src/tests/mcp/test_mcp_performance.py \
+       src/tests/mcp/test_mcp_audit.py -v
 
-# Run specific test categories
-pytest src/tests/test_mcp_comprehensive.py::TestMCPCoreComprehensive -v
-pytest src/tests/test_mcp_comprehensive.py::TestMCPTransportLayers -v
+# Narrower slices
+uv run --extra dev python -m pytest src/tests/mcp/test_mcp_tools.py -v          # registration + dispatch
+uv run --extra dev python -m pytest src/tests/mcp/test_mcp_performance.py -v    # load / latency
+uv run --extra dev python -m pytest src/tests/mcp/test_mcp_audit.py -v          # spec / schema audit
 ```
 
 ### Test Categories
@@ -810,7 +873,7 @@ mcp_instance.register_tool(
 1. **Structure**: Follow the standard module structure
 2. **Metadata**: Provide complete module metadata
 3. **Error Handling**: Handle errors gracefully
-4. **Testing**: Include comprehensive tests
+4. **Testing**: Cover happy path, error path, and schema rejection
 5. **Documentation**: Document all tools and resources
 
 ## Contributing
@@ -826,7 +889,7 @@ mcp_instance.register_tool(
 ### Code Style
 - Follow PEP 8 style guidelines
 - Use type hints throughout
-- Include comprehensive docstrings
+- Include docstrings with parameters, returns, and at least one example
 - Write clear, readable code
 
 ### Testing
@@ -835,8 +898,12 @@ mcp_instance.register_tool(
 - Test error scenarios and edge cases
 - Maintain good test coverage
 
-## Conclusion
+## Summary
 
-The Enhanced MCP implementation provides a comprehensive, production-ready solution for exposing GNN capabilities through the Model Context Protocol. With advanced features like caching, rate limiting, performance monitoring, and enhanced error handling, it offers a robust foundation for building AI-powered applications that can interact with GNN models and tools.
+The MCP subsystem exposes every pipeline module as JSON-RPC tools discovered from
+`src/*/mcp.py`. Wrappers around dispatch add per-tool caching, concurrency caps,
+rate limiting, and metrics. `get_enhanced_server_status()` is the canonical
+snapshot for debugging live servers.
 
-For more information, see the individual module documentation and the main project documentation. 
+For per-module tool inventories, see the `mcp.py` files in each module and the
+main documentation in `doc/mcp/`.

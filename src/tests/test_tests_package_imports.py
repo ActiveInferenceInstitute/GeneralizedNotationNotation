@@ -1,8 +1,8 @@
 """Regression: runner and factory must resolve to real implementations.
 
-Note: ``conftest.py`` registers a minimal ``sys.modules['tests']`` placeholder for
+Note: ``conftest.py`` registers a minimal ``sys.modules['tests']`` package for
 collection; ``import tests`` may not expose ``run_tests``. Pipeline code uses
-``from tests import run_tests`` with ``src`` on ``sys.path`` before that stub is
+``from tests import run_tests`` with ``src`` on ``sys.path`` before that package is
 installed. Submodules ``tests.runner`` and ``tests.test_runner_modular`` are always
 the canonical sources.
 """

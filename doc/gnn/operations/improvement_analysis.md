@@ -1,7 +1,7 @@
 # GNN Pipeline Improvement Analysis
 
-**Version**: v2.0.0  
-**Last Updated**: 2026-03-24  
+**Version**: v1.6.0 Engine (Bundle v2.0.0)  
+**Last Updated**: 2026-04-15  
 **Status**: ✅ Production Ready  
 **Modules**: 38+ · **Pipeline steps**: 25 · **Renderers**: 9 backends (see [../implementations/README.md](../implementations/README.md)) · **Tests**: see [../../../README.md](../../../README.md)  
 
@@ -200,7 +200,7 @@ except (ImportError, RecursionError, AttributeError, ValueError) as e:
 
 - Some modules provide no-op functions
 - Others return None or False
-- Some raise NotImplementedError
+- Others raise explicit runtime errors
 - Different error messages and logging approaches
 
 ### Improvement Required
@@ -262,7 +262,7 @@ def process_gnn_content(content: str) -> dict:
 
 **Issues:**
 
-- Pipeline step template contains TODOs and placeholder comments (`src/pipeline_step_template.py:47-51`)
+- Pipeline step template contains TODOs and example comments (`src/pipeline_step_template.py:47-51`)
 - Mixed step counting (template says 13 steps, actual pipeline has 24)
 - Inconsistent validation patterns
 

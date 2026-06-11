@@ -11,14 +11,20 @@ GNN (Generalized Notation Notation) is a text-based specification language for A
 
 - Parsing or authoring `.md` GNN model files
 - Running the full pipeline or individual steps
-- Generating simulation code (PyMDP, RxInfer.jl, JAX, DisCoPy, ActiveInference.jl, PyTorch, NumPyro)
+- Generating simulation code (PyMDP, RxInfer.jl, JAX, DisCoPy, ActiveInference.jl, PyTorch, NumPyro, Stan)
 - Creating visualizations, exports, or reports from GNN models
 - Working with Active Inference ontology annotations
 
 ## Quick Start
 
 ```bash
-# Run full pipeline
+# Using just (recommended task runner)
+just                     # List all 21 recipes
+just test                # Fast test suite
+just pipeline            # Full 25-step pipeline
+just render-health       # Check all 8 renderer backends
+
+# Run full pipeline directly
 python src/main.py --target-dir input/gnn_files --verbose
 
 # Run specific steps only
@@ -106,11 +112,11 @@ Each `src/module/` directory contains its own `SKILL.md` with module-specific in
 ## Testing
 
 ```bash
-# Full test suite (1,522+ tests)
+# Full test suite (2,256 collected tests with standard Ollama integration ignores on 2026-05-14)
 pytest src/tests/ -v
 
 # Test a specific module
-pytest src/tests/test_gnn.py -v
+pytest src/tests/gnn/test_gnn_overall.py -v
 
 # With coverage
 pytest src/tests/ --cov=src -v

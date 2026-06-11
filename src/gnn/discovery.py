@@ -14,10 +14,31 @@ from typing import Any, Dict, List, Optional
 
 logger = logging.getLogger(__name__)
 
+NON_MODEL_MARKDOWN_FILENAMES = {
+    "agents.md",
+    "changelog.md",
+    "contributing.md",
+    "license.md",
+    "readme.md",
+}
+NON_MODEL_MARKDOWN_SUFFIXES = (
+    ".example.md",
+    ".template.md",
+)
+
+
+def is_model_source_path(file_path: Path) -> bool:
+    """Return True when a path is a maintained GNN model source."""
+    name = file_path.name.lower()
+    if name in NON_MODEL_MARKDOWN_FILENAMES:
+        return False
+    return not any(name.endswith(suffix) for suffix in NON_MODEL_MARKDOWN_SUFFIXES)
+
 
 @dataclass
 class DiscoveryResult:
     """Result of file discovery operation."""
+
     files_found: List[Path]
     analysis_time: float
     file_types: Dict[str, int]
@@ -28,24 +49,27 @@ class DiscoveryResult:
 class FileDiscoveryStrategy:
     """
     Intelligent file discovery strategy for GNN models.
-    
+
     Performs content-aware discovery and basic analysis
     to identify potential GNN files.
     """
 
-    def __init__(self):
-        self.target_extensions = ['.md', '.json', '.xml', '.yaml', '.pkl']
+    def __init__(self) -> None:
+        """Initialize the instance."""
+        self.target_extensions = [".md", ".json", ".xml", ".yaml", ".pkl"]
         self.gnn_indicators = [
-            '## ModelName',
-            '## StateSpaceBlock',
-            '## Connections',
-            'GNN',
-            'model_name',
-            'variables',
-            'connections'
+            "## ModelName",
+            "## StateSpaceBlock",
+            "## Connections",
+            "GNN",
+            "model_name",
+            "variables",
+            "connections",
         ]
 
-    def configure(self, target_extensions: Optional[List[str]] = None, **kwargs):
+    def configure(
+        self, target_extensions: Optional[List[str]] = None, **kwargs: Any
+    ) -> Any:
         """Configure discovery parameters."""
         if target_extensions:
             self.target_extensions = target_extensions
@@ -53,10 +77,10 @@ class FileDiscoveryStrategy:
     def discover(self, target_dir: Path) -> List[Path]:
         """
         Discover GNN files in target directory.
-        
+
         Args:
             target_dir: Directory to search
-            
+
         Returns:
             List of discovered file paths
         """
@@ -64,8 +88,8 @@ class FileDiscoveryStrategy:
         start_time = time.time()
 
         # Basic file discovery
-        all_files = []
-        potential_gnn_files = []
+        all_files: list[Any] = []
+        potential_gnn_files: list[Any] = []
 
         # Recursive search for target extensions
         for ext in self.target_extensions:
@@ -76,27 +100,31 @@ class FileDiscoveryStrategy:
 
         # Content analysis for GNN indicators
         for file_path in all_files:
-            if self._analyze_file_content(file_path):
+            if is_model_source_path(file_path) and self._analyze_file_content(
+                file_path
+            ):
                 potential_gnn_files.append(file_path)
 
         discovery_time = time.time() - start_time
-        logger.info(f"Discovery completed: {len(potential_gnn_files)}/{len(all_files)} potential GNN files in {discovery_time:.3f}s")
+        logger.info(
+            f"Discovery completed: {len(potential_gnn_files)}/{len(all_files)} potential GNN files in {discovery_time:.3f}s"
+        )
 
         return potential_gnn_files
 
     def _analyze_file_content(self, file_path: Path) -> bool:
         """
         Analyze file content for GNN indicators.
-        
+
         Args:
             file_path: Path to analyze
-            
+
         Returns:
             bool: Whether file appears to be a GNN file
         """
         try:
             # Read file content
-            content = file_path.read_text(encoding='utf-8', errors='ignore')
+            content = file_path.read_text(encoding="utf-8", errors="ignore")
 
             # Check for GNN indicators
             indicators_found = 0

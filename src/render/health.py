@@ -10,7 +10,9 @@ Provides:
 import importlib
 import logging
 from dataclasses import dataclass
-from typing import Dict, Optional
+from typing import Any, Dict, Optional
+
+from .framework_registry import get_supported_frameworks
 
 logger = logging.getLogger(__name__)
 
@@ -18,6 +20,7 @@ logger = logging.getLogger(__name__)
 @dataclass
 class RendererStatus:
     """Status of a single renderer."""
+
     name: str
     available: bool
     version: Optional[str] = None
@@ -25,6 +28,7 @@ class RendererStatus:
     error: Optional[str] = None
 
     def to_dict(self) -> dict:
+        """Provide to dict behavior."""
         return {
             "name": self.name,
             "available": self.available,
@@ -34,16 +38,13 @@ class RendererStatus:
         }
 
 
-# Known renderer targets and their import paths
-_RENDERERS = {
-    "pymdp": "render.pymdp",
-    "rxinfer": "render.rxinfer",
-    "jax": "render.jax",
-    "numpyro": "render.numpyro",
-    "stan": "render.stan",
-    "pytorch": "render.pytorch",
-    "activeinference_jl": "render.activeinference_jl",
-    "discopy": "render.discopy",
+# Renderer import paths derived from the canonical framework inventory.
+_RENDERER_MODULE_OVERRIDES: dict[str, str] = {
+    "bnlearn": "render.generators",
+}
+_RENDERERS: dict[str, Any] = {
+    name: _RENDERER_MODULE_OVERRIDES.get(name, f"render.{name}")
+    for name in get_supported_frameworks()
 }
 
 
@@ -54,7 +55,7 @@ def check_renderers() -> Dict[str, RendererStatus]:
     Returns:
         Dict mapping renderer name → RendererStatus.
     """
-    results = {}
+    results: dict[Any, Any] = {}
 
     for name, module_path in _RENDERERS.items():
         try:

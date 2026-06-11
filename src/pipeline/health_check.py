@@ -18,58 +18,33 @@ import importlib
 import json
 import logging
 import platform
-import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
+import subprocess  # nosec B404
 import sys
 import time
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any, Dict, List, cast
+
+from utils.logging.logging_utils import setup_step_logging
+from utils.structured_logging import (
+    log_step_error,
+    log_step_success,
+    log_step_warning,
+)
+
+from .config import get_pipeline_config
+from .diagnostic_enhancer import PipelineDiagnosticEnhancer
+from .pipeline_validator import PipelineValidator
 
 # Optional psutil import with recovery
 try:
     import psutil
+
     PSUTIL_AVAILABLE = True
 except ImportError:
-    psutil = None  # type: ignore
+    psutil = cast(Any, None)
     PSUTIL_AVAILABLE = False
 
-# Enhanced imports with fallbacks
-try:
-    import sys
-    from pathlib import Path as _P
-
-    from .config import get_pipeline_config
-    from .diagnostic_enhancer import PipelineDiagnosticEnhancer
-    from .pipeline_validator import PipelineValidator
-    if str(_P(__file__).parent.parent) not in sys.path:
-        sys.path.insert(0, str(_P(__file__).parent.parent))
-    from utils.structured_logging import (
-        log_step_error,
-        log_step_success,
-        log_step_warning,
-        setup_step_logging,
-    )
-    PIPELINE_INTEGRATION = True
-except ImportError:
-    # Attempting silent recovery since the user reported print spam
-    # print(f"Warning: Limited pipeline integration in health_check")
-    PIPELINE_INTEGRATION = False
-    # Recovery logging — only configure if no handlers are set up yet
-    if not logging.root.handlers:
-        logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-    logger = logging.getLogger(__name__)
-
-    try:
-        from utils.logging.logging_utils import (
-            log_step_error,
-            log_step_success,
-            log_step_warning,
-            setup_step_logging,
-        )
-    except ImportError:
-        def setup_step_logging(name: str, verbose: bool = False) -> logging.Logger: return logging.getLogger(name)
-        def log_step_success(logger: logging.Logger, msg: str) -> None: logger.info(msg)
-        def log_step_warning(logger: logging.Logger, msg: str) -> None: logger.warning(msg)
-        def log_step_error(logger: logging.Logger, msg: str) -> None: logger.error(msg)
+PIPELINE_INTEGRATION = True
 
 
 class EnhancedHealthChecker:
@@ -78,6 +53,7 @@ class EnhancedHealthChecker:
     """
 
     def __init__(self, verbose: bool = False) -> None:
+        """Initialize the instance."""
         self.verbose = verbose
         self.logger = setup_step_logging("enhanced_health_check", verbose)
         self.results: Dict[str, Any] = {}
@@ -95,58 +71,65 @@ class EnhancedHealthChecker:
             "pathlib": ">=1.0.0",  # Standard library but check availability
         }
 
-        self.optional_feature_groups = {
+        self.optional_feature_groups: Dict[str, Dict[str, Any]] = {
             "gui": {
                 "dependencies": ["gradio"],
                 "description": "Interactive GUI for GNN model construction",
-                "critical": False
+                "critical": False,
             },
             "audio": {
                 "dependencies": ["librosa", "soundfile", "pedalboard"],
                 "description": "Audio generation and sonification",
-                "critical": False
+                "critical": False,
             },
             "ml-ai": {
                 "dependencies": ["torch", "transformers"],
                 "description": "Machine learning and AI integration",
-                "critical": False
+                "critical": False,
             },
             "llm": {
                 "dependencies": ["openai", "anthropic"],
                 "description": "Large language model integration",
-                "critical": False
+                "critical": False,
             },
             "simulation": {
                 "dependencies": ["pymdp"],
                 "description": "Active inference simulation frameworks",
-                "critical": True  # Critical for core functionality
+                "critical": True,  # Critical for core functionality
             },
             "visualization": {
                 "dependencies": ["plotly", "seaborn", "bokeh"],
                 "description": "Advanced visualization capabilities",
-                "critical": False
+                "critical": False,
             },
             "julia": {
                 "dependencies": [],  # Special case - check Julia installation
                 "description": "Julia runtime for RxInfer.jl support",
-                "critical": False
-            }
+                "critical": False,
+            },
         }
 
     def check_system_resources(self) -> Dict[str, Any]:
         """Check system resource availability."""
         self.logger.info("📊 Checking system resources...")
 
-        _platform = {
+        _platform: dict[str, Any] = {
             "system": platform.system(),
             "release": platform.release(),
             "python_version": sys.version,
         }
-        _empty_resources = {"cpu": {}, "memory": {}, "disk": {}, "network": {}}
+        _empty_resources: dict[str, Any] = {
+            "cpu": {},
+            "memory": {},
+            "disk": {},
+            "network": {},
+        }
 
         # Check if psutil is available
         if not PSUTIL_AVAILABLE:
-            self.logger.warning("⚠️ psutil not available - limited system resource checks")
+            self.logger.warning(
+                "⚠️ psutil not available - limited system resource checks"
+            )
             return {
                 "status": "limited",
                 "error": "psutil not installed - install with: uv pip install psutil",
@@ -164,15 +147,18 @@ class EnhancedHealthChecker:
             memory_gb = memory.total / (1024**3)
 
             # Disk information
-            disk = psutil.disk_usage('/')
+            disk = psutil.disk_usage("/")
             disk_gb = disk.total / (1024**3)
 
             # Network check (basic connectivity)
             network_available = True
             try:
                 # Simple connectivity test
-                subprocess.run(['ping', '-c', '1', '8.8.8.8'],  # nosec B607 B603 -- subprocess calls with controlled/trusted input
-                            capture_output=True, timeout=5)
+                subprocess.run(
+                    ["ping", "-c", "1", "8.8.8.8"],  # nosec B607 B603
+                    capture_output=True,
+                    timeout=5,
+                )
             except (subprocess.TimeoutExpired, FileNotFoundError):
                 network_available = False
 
@@ -181,23 +167,23 @@ class EnhancedHealthChecker:
                 "cpu": {
                     "cores": cpu_count,
                     "usage_percent": cpu_percent,
-                    "status": "good" if cpu_percent < 80 else "high"
+                    "status": "good" if cpu_percent < 80 else "high",
                 },
                 "memory": {
                     "total_gb": round(memory_gb, 2),
                     "available_gb": round(memory.available / (1024**3), 2),
                     "usage_percent": memory.percent,
-                    "status": "good" if memory.percent < 80 else "high"
+                    "status": "good" if memory.percent < 80 else "high",
                 },
                 "disk": {
                     "total_gb": round(disk_gb, 2),
                     "free_gb": round(disk.free / (1024**3), 2),
                     "usage_percent": disk.percent,
-                    "status": "good" if disk.percent < 85 else "high"
+                    "status": "good" if disk.percent < 85 else "high",
                 },
                 "network": {
                     "available": network_available,
-                    "status": "connected" if network_available else "offline"
+                    "status": "connected" if network_available else "offline",
                 },
                 "platform": _platform,
             }
@@ -215,12 +201,12 @@ class EnhancedHealthChecker:
         """Enhanced core dependency checking with version validation."""
         self.logger.info("📦 Checking core dependencies...")
 
-        results = {
+        results: dict[str, Any] = {
             "available": [],
             "missing": [],
             "version_issues": [],
             "status": "healthy",
-            "total_checked": len(self.core_dependencies)
+            "total_checked": len(self.core_dependencies),
         }
 
         for dep, version_req in self.core_dependencies.items():
@@ -230,7 +216,9 @@ class EnhancedHealthChecker:
 
                 # Basic version checking (could be enhanced)
                 if version_req != ">=1.0.0" and version == "unknown":
-                    results["version_issues"].append(f"{dep}: version unknown (required: {version_req})")
+                    results["version_issues"].append(
+                        f"{dep}: version unknown (required: {version_req})"
+                    )
                 else:
                     results["available"].append(f"{dep} {version}")
 
@@ -244,15 +232,15 @@ class EnhancedHealthChecker:
         """Enhanced optional dependency checking."""
         self.logger.info("🔧 Checking optional dependencies...")
 
-        results = {}
+        results: dict[Any, Any] = {}
 
         for group_name, group_info in self.optional_feature_groups.items():
-            group_result = {
+            group_result: dict[str, Any] = {
                 "available": [],
                 "missing": [],
                 "status": "available",
                 "description": group_info["description"],
-                "critical": group_info["critical"]
+                "critical": group_info["critical"],
             }
 
             for dep in group_info["dependencies"]:
@@ -267,10 +255,16 @@ class EnhancedHealthChecker:
             if group_name == "julia":
                 try:
                     # Check if Julia is installed
-                    result = subprocess.run(['julia', '--version'],  # nosec B607 B603 -- subprocess calls with controlled/trusted input
-                                          capture_output=True, text=True, timeout=10)
+                    result = subprocess.run(
+                        ["julia", "--version"],  # nosec B607 B603
+                        capture_output=True,
+                        text=True,
+                        timeout=10,
+                    )
                     if result.returncode == 0:
-                        group_result["available"].append(f"julia {result.stdout.strip()}")
+                        group_result["available"].append(
+                            f"julia {result.stdout.strip()}"
+                        )
                     else:
                         group_result["missing"].append("julia")
                 except (FileNotFoundError, subprocess.TimeoutExpired):
@@ -279,7 +273,9 @@ class EnhancedHealthChecker:
             # Determine group status
             if group_result["missing"]:
                 deps = group_info["dependencies"]
-                all_missing = len(group_result["missing"]) == len(deps) if deps else True
+                all_missing = (
+                    len(group_result["missing"]) == len(deps) if deps else True
+                )
                 if all_missing:
                     group_result["status"] = "unavailable"
                 else:
@@ -296,16 +292,16 @@ class EnhancedHealthChecker:
         self.logger.info("🏗️ Checking pipeline structure...")
 
         src_dir = Path(__file__).parent.parent  # src/
-        results = {
+        results: dict[str, Any] = {
             "available_scripts": [],
             "missing_scripts": [],
             "available_modules": [],
             "missing_modules": [],
-            "status": "complete"
+            "status": "complete",
         }
 
         # Check for all numbered pipeline scripts (0-24)
-        _expected_scripts = []
+        _expected_scripts: list[Any] = []
         for step_num in range(25):  # 0-24
             # Check for both .py files and module directories
             script_path = src_dir / f"{step_num}_*.py"
@@ -331,7 +327,7 @@ class EnhancedHealthChecker:
                 results["status"] = "incomplete"
 
         # Check main pipeline files
-        main_files = ["main.py", "__init__.py"]
+        main_files: list[Any] = ["main.py", "__init__.py"]
         for main_file in main_files:
             main_path = src_dir / main_file
             if main_path.exists():
@@ -346,11 +342,11 @@ class EnhancedHealthChecker:
         """Check integration with pipeline module utilities."""
         self.logger.info("🔗 Checking pipeline integration...")
 
-        results = {
+        results: dict[str, Any] = {
             "config_available": False,
             "validator_available": False,
             "diagnostic_available": False,
-            "integration_status": "unknown"
+            "integration_status": "unknown",
         }
 
         if not PIPELINE_INTEGRATION:
@@ -400,12 +396,12 @@ class EnhancedHealthChecker:
 
     def _calculate_overall_health(self) -> Dict[str, Any]:
         """Calculate overall system health score."""
-        score_components = {
+        score_components: dict[str, Any] = {
             "system_resources": 20,
             "core_dependencies": 30,
             "pipeline_structure": 25,
             "pipeline_integration": 15,
-            "optional_features": 10
+            "optional_features": 10,
         }
 
         total_score = 0
@@ -441,9 +437,12 @@ class EnhancedHealthChecker:
 
         # Optional features (10 points) - bonus for having nice-to-have features
         optional_deps = self.results.get("optional_dependencies", {})
-        available_features = sum(1 for group in optional_deps.values()
-                               if group.get("status") == "available")
-        total_score += min(available_features * 2, score_components["optional_features"])
+        available_features = sum(
+            1 for group in optional_deps.values() if group.get("status") == "available"
+        )
+        total_score += min(
+            available_features * 2, score_components["optional_features"]
+        )
 
         # Calculate percentage
         health_percentage = (total_score / total_possible) * 100
@@ -463,102 +462,123 @@ class EnhancedHealthChecker:
             "rating": rating,
             "raw_score": total_score,
             "max_score": total_possible,
-            "components": score_components
+            "components": score_components,
         }
 
     def _generate_recommendations(self) -> List[Dict[str, Any]]:
         """Generate actionable recommendations."""
-        recommendations = []
+        recommendations: list[Any] = []
 
         # Core dependency recommendations
         core_deps = self.results.get("core_dependencies", {})
         if core_deps.get("missing"):
-            recommendations.append({
-                "priority": "high",
-                "category": "dependencies",
-                "title": "Install Missing Core Dependencies",
-                "description": f"Missing: {', '.join(core_deps['missing'])}",
-                "action": "Run: uv pip install -e ."
-            })
+            recommendations.append(
+                {
+                    "priority": "high",
+                    "category": "dependencies",
+                    "title": "Install Missing Core Dependencies",
+                    "description": f"Missing: {', '.join(core_deps['missing'])}",
+                    "action": "Run: uv pip install -e .",
+                }
+            )
 
         # Optional feature recommendations
         optional_deps = self.results.get("optional_dependencies", {})
         for group_name, group_info in optional_deps.items():
             if group_info.get("status") == "unavailable" and group_info.get("critical"):
-                recommendations.append({
-                    "priority": "medium",
-                    "category": "features",
-                    "title": f"Install {group_name.title()} Support",
-                    "description": group_info["description"],
-                    "action": f"Install required packages for {group_name} functionality"
-                })
+                recommendations.append(
+                    {
+                        "priority": "medium",
+                        "category": "features",
+                        "title": f"Install {group_name.title()} Support",
+                        "description": group_info["description"],
+                        "action": f"Install required packages for {group_name} functionality",
+                    }
+                )
 
         # Pipeline structure recommendations
         pipeline_struct = self.results.get("pipeline_structure", {})
         if pipeline_struct.get("missing_scripts"):
-            recommendations.append({
-                "priority": "high",
-                "category": "pipeline",
-                "title": "Complete Pipeline Structure",
-                "description": f"Missing scripts: {', '.join(pipeline_struct['missing_scripts'])}",
-                "action": "Ensure all numbered pipeline scripts (0-24) exist"
-            })
+            recommendations.append(
+                {
+                    "priority": "high",
+                    "category": "pipeline",
+                    "title": "Complete Pipeline Structure",
+                    "description": f"Missing scripts: {', '.join(pipeline_struct['missing_scripts'])}",
+                    "action": "Ensure all numbered pipeline scripts (0-24) exist",
+                }
+            )
 
         # System resource recommendations
         sys_resources = self.results.get("system_resources", {})
         if sys_resources.get("memory", {}).get("status") == "high":
-            recommendations.append({
-                "priority": "low",
-                "category": "performance",
-                "title": "Monitor Memory Usage",
-                "description": "High memory usage detected",
-                "action": "Monitor system resources during pipeline execution"
-            })
+            recommendations.append(
+                {
+                    "priority": "low",
+                    "category": "performance",
+                    "title": "Monitor Memory Usage",
+                    "description": "High memory usage detected",
+                    "action": "Monitor system resources during pipeline execution",
+                }
+            )
 
         # Performance recommendations
         if self.results["execution_time"] > 5.0:
-            recommendations.append({
-                "priority": "low",
-                "category": "performance",
-                "title": "Optimize Health Check Performance",
-                "description": f"Health check took {self.results['execution_time']:.2f}s",
-                "action": "Consider caching results or reducing check frequency"
-            })
+            recommendations.append(
+                {
+                    "priority": "low",
+                    "category": "performance",
+                    "title": "Optimize Health Check Performance",
+                    "description": f"Health check took {self.results['execution_time']:.2f}s",
+                    "action": "Consider caching results or reducing check frequency",
+                }
+            )
 
         return recommendations
 
     def print_enhanced_report(self) -> None:
         """Print comprehensive health report."""
-        print("\n" + "="*80)
+        print("\n" + "=" * 80)
         print("🚀 GNN PIPELINE ENHANCED HEALTH CHECK")
-        print("="*80)
+        print("=" * 80)
 
         health_score = self.results.get("health_score", {})
-        score_icon = {
-            "excellent": "🌟",
-            "good": "✅",
-            "fair": "⚠️",
-            "poor": "❌"
-        }.get(health_score.get("rating", "unknown"), "❓")
+        score_icon = {"excellent": "🌟", "good": "✅", "fair": "⚠️", "poor": "❌"}.get(
+            health_score.get("rating", "unknown"), "❓"
+        )
 
-        print(f"\n{score_icon} Overall Health: {health_score.get('rating', 'unknown').upper()} ({health_score.get('score', 0)}/100)")
+        print(
+            f"\n{score_icon} Overall Health: {health_score.get('rating', 'unknown').upper()} ({health_score.get('score', 0)}/100)"
+        )
 
         # System resources
         sys_resources = self.results.get("system_resources", {})
         if sys_resources.get("status") == "healthy":
             print("\n💻 System Resources:")
             memory = sys_resources.get("memory", {})
-            print(f"   CPU: {sys_resources.get('cpu', {}).get('cores', '?')} cores ({sys_resources.get('cpu', {}).get('usage_percent', '?')}% usage)")
-            print(f"   Memory: {memory.get('total_gb', '?')}GB total ({memory.get('usage_percent', '?')}% usage)")
-            print(f"   Disk: {sys_resources.get('disk', {}).get('free_gb', '?')}GB free")
-            print(f"   Network: {sys_resources.get('network', {}).get('status', 'unknown')}")
+            print(
+                f"   CPU: {sys_resources.get('cpu', {}).get('cores', '?')} cores ({sys_resources.get('cpu', {}).get('usage_percent', '?')}% usage)"
+            )
+            print(
+                f"   Memory: {memory.get('total_gb', '?')}GB total ({memory.get('usage_percent', '?')}% usage)"
+            )
+            print(
+                f"   Disk: {sys_resources.get('disk', {}).get('free_gb', '?')}GB free"
+            )
+            print(
+                f"   Network: {sys_resources.get('network', {}).get('status', 'unknown')}"
+            )
 
         # Core dependencies
         core_deps = self.results.get("core_dependencies", {})
         dep_icon = "✅" if core_deps.get("status") == "healthy" else "❌"
-        print(f"\n{dep_icon} Core Dependencies: {core_deps.get('status', 'unknown').upper()}")
+        print(
+            f"\n{dep_icon} Core Dependencies: {core_deps.get('status', 'unknown').upper()}"
+        )
         if core_deps.get("available"):
-            print(f"   Available ({len(core_deps['available'])}/{core_deps['total_checked']}):")
+            print(
+                f"   Available ({len(core_deps['available'])}/{core_deps['total_checked']}):"
+            )
             for dep in core_deps["available"][:5]:  # Show first 5
                 print(f"     ✅ {dep}")
             if len(core_deps["available"]) > 5:
@@ -573,37 +593,51 @@ class EnhancedHealthChecker:
         print("\n🔧 Optional Features:")
         optional_deps = self.results.get("optional_dependencies", {})
         for group_name, group_info in optional_deps.items():
-            status_icon = {
-                "available": "✅",
-                "partial": "⚠️",
-                "unavailable": "❌"
-            }.get(group_info.get("status"), "❓")
-            print(f"   {status_icon} {group_name}: {group_info.get('status', 'unknown')}")
+            status_icon = {"available": "✅", "partial": "⚠️", "unavailable": "❌"}.get(
+                group_info.get("status"), "❓"
+            )
+            print(
+                f"   {status_icon} {group_name}: {group_info.get('status', 'unknown')}"
+            )
 
         # Pipeline structure
         pipeline_struct = self.results.get("pipeline_structure", {})
         struct_icon = "✅" if pipeline_struct.get("status") == "complete" else "❌"
-        print(f"\n{struct_icon} Pipeline Structure: {pipeline_struct.get('status', 'unknown').upper()}")
-        print(f"   Scripts: {len(pipeline_struct.get('available_scripts', []))}/24 available")
-        print(f"   Modules: {len(pipeline_struct.get('available_modules', []))}/24 available")
+        print(
+            f"\n{struct_icon} Pipeline Structure: {pipeline_struct.get('status', 'unknown').upper()}"
+        )
+        print(
+            f"   Scripts: {len(pipeline_struct.get('available_scripts', []))}/24 available"
+        )
+        print(
+            f"   Modules: {len(pipeline_struct.get('available_modules', []))}/24 available"
+        )
 
         # Pipeline integration
         integration = self.results.get("pipeline_integration", {})
-        int_icon = {"full": "✅", "partial": "⚠️", "limited": "❌"}.get(integration.get("integration_status"), "❓")
-        print(f"\n{int_icon} Pipeline Integration: {integration.get('integration_status', 'unknown').upper()}")
+        int_icon = {"full": "✅", "partial": "⚠️", "limited": "❌"}.get(
+            integration.get("integration_status"), "❓"
+        )
+        print(
+            f"\n{int_icon} Pipeline Integration: {integration.get('integration_status', 'unknown').upper()}"
+        )
 
         # Recommendations
         recommendations = self.results.get("recommendations", [])
         if recommendations:
             print("\n🎯 RECOMMENDATIONS:")
             for i, rec in enumerate(recommendations, 1):
-                priority_icon = {"high": "🔴", "medium": "🟡", "low": "🔵"}.get(rec.get("priority"), "⚪")
-                print(f"   {i}. {priority_icon} [{rec['category'].upper()}] {rec['title']}")
+                priority_icon = {"high": "🔴", "medium": "🟡", "low": "🔵"}.get(
+                    rec.get("priority"), "⚪"
+                )
+                print(
+                    f"   {i}. {priority_icon} [{rec['category'].upper()}] {rec['title']}"
+                )
                 print(f"      {rec['description']}")
                 print(f"      💡 {rec['action']}")
 
         print(f"\n⏱️ Health check completed in {self.results['execution_time']:.2f}s")
-        print("="*80)
+        print("=" * 80)
 
 
 def run_enhanced_health_check(verbose: bool = False) -> Dict[str, Any]:
@@ -622,12 +656,13 @@ def main() -> int:
     import argparse
 
     parser = argparse.ArgumentParser(description="Enhanced GNN Pipeline Health Check")
-    parser.add_argument("--verbose", "-v", action="store_true",
-                       help="Enable verbose output")
-    parser.add_argument("--json", action="store_true",
-                       help="Output results as JSON only")
-    parser.add_argument("--output-file", type=Path,
-                       help="Save results to JSON file")
+    parser.add_argument(
+        "--verbose", "-v", action="store_true", help="Enable verbose output"
+    )
+    parser.add_argument(
+        "--json", action="store_true", help="Output results as JSON only"
+    )
+    parser.add_argument("--output-file", type=Path, help="Save results to JSON file")
 
     args = parser.parse_args()
 
@@ -640,17 +675,23 @@ def main() -> int:
     elif not args.verbose:
         # Brief summary for non-verbose mode
         health_score = results.get("health_score", {})
-        print(f"Health Score: {health_score.get('score', 0)}/100 ({health_score.get('rating', 'unknown')})")
+        print(
+            f"Health Score: {health_score.get('score', 0)}/100 ({health_score.get('rating', 'unknown')})"
+        )
 
         core_deps = results.get("core_dependencies", {})
-        print(f"Core Dependencies: {len(core_deps.get('available', []))}/{len(core_deps.get('missing', [])) + len(core_deps.get('available', []))} available")
+        print(
+            f"Core Dependencies: {len(core_deps.get('available', []))}/{len(core_deps.get('missing', [])) + len(core_deps.get('available', []))} available"
+        )
 
         pipeline_struct = results.get("pipeline_structure", {})
-        print(f"Pipeline Scripts: {len(pipeline_struct.get('available_scripts', []))}/24 available")
+        print(
+            f"Pipeline Scripts: {len(pipeline_struct.get('available_scripts', []))}/24 available"
+        )
 
     # Save to file if requested
     if args.output_file:
-        with open(args.output_file, 'w') as f:
+        with open(args.output_file, "w") as f:
             json.dump(results, f, indent=2, default=str)
         print(f"\n📄 Results saved to: {args.output_file}")
 

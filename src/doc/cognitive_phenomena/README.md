@@ -1,11 +1,13 @@
-# Cognitive Phenomena
+# Cognitive Phenomena Models
 
-## Overview
-This module handles `Cognitive Phenomena` components.
+Theoretical Active Inference models for cognitive phenomena, expressed in GNN notation.
 
-## Available Members
-- **Classes**: No specific classes exported.
-- **Functions**: No specific public functions exported.
+## Sub-directories
 
-## Usage
-Import necessary members directly to orchestrate tasks related to Cognitive Phenomena.
+- **effort/** — Computational effort and resource allocation models
+- **memory/** — Working memory and episodic recall models
+
+## Purpose
+
+Documents how Active Inference formalisms map to standard cognitive science constructs,
+providing reference GNN specifications that can be parsed, typed, and simulated by the pipeline.

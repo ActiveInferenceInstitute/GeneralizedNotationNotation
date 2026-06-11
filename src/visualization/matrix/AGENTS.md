@@ -1,11 +1,47 @@
-# visualization.matrix
+# Visualization Matrix Sub-module
 
-| Symbol | Location |
-|--------|----------|
-| `MatrixVisualizer`, `generate_matrix_visualizations`, `process_matrix_visualization` | `visualizer.py` |
-| `convert_to_matrix`, `extract_matrix_data_from_parameters` | `extract.py` |
-| `parse_matrix_data`, `generate_matrix_visualizations` | `compat.py` — string parse + batch matrix plots |
+## Overview
 
-Root `matrix_compat.py` re-exports `compat`. Shared plotting imports: `visualization.compat.viz_compat`. Tight layout: `visualization.plotting.utils.safe_tight_layout`.
+Matrix visualization module for GNN model parameters. Generates heatmaps,
+statistics, correlation plots, and POMDP tensor analysis from the
+`MatrixVisualizer` class.
 
-Root `matrix_visualizer.py` re-exports the public class and module functions.
+## Architecture
+
+```
+matrix/
+├── __init__.py       # Package exports
+├── visualizer.py     # MatrixVisualizer class (1339 lines)
+├── extract.py        # Matrix extraction from parsed models
+└── compat.py         # Shared helper exports
+```
+
+## Key Class: `MatrixVisualizer`
+
+### Core Methods
+
+- **`generate_matrix_heatmap(matrix_name, matrix, output_path, **kwargs) -> bool`** — Annotated heatmap with auto-suppressed annotations beyond `_ANNOTATION_CELL_LIMIT` (25 cells).
+- **`generate_3d_tensor_visualization(tensor_name, tensor, output_path, **kwargs) -> bool`** — Per-action-slice POMDP transition tensor visualization. For `B`, shape is `(next_state, previous_state, action)`.
+- **`generate_pomdp_transition_analysis(tensor, output_path) -> bool`** — Comprehensive POMDP B-matrix analysis with entropy, stochasticity checks over next-state columns, and state dominance.
+- **`generate_matrix_analysis(parameters, output_path) -> bool`** — Multi-panel matrix analysis from raw parameter lists.
+- **`generate_matrix_statistics(parameters, output_path) -> bool`** — Statistical summary panels (distributions, ranges, sparsity).
+- **`generate_combined_matrix_overview(matrices, output_path) -> bool`** — Side-by-side comparison of all matrices in a model.
+
+### Extraction Methods
+
+- **`extract_matrix_data_from_parameters(parameters) -> Dict[str, ndarray]`** — Extracts named matrices (A, B, C, D, E) from parameter lists.
+- **`extract_from_parsed_gnn(parsed_data) -> Dict[str, ndarray]`** — Extracts matrices from parsed GNN model dict.
+
+### Safety Features
+
+- `_ANNOTATION_CELL_LIMIT = 25` — Skip per-cell text annotation on large matrices.
+- `_MAX_FIGURE_DIMENSION = 200` — Prevent matplotlib RendererAgg pixel overflow.
+- `_safe_figsize(requested)` — Clamp figure dimensions to prevent rendering crashes.
+- CSV export alongside every heatmap and every 3-D tensor action slice for downstream accessibility.
+
+## Parent Module
+
+See [visualization/AGENTS.md](../AGENTS.md) for the overall visualization architecture.
+
+**Version**: 1.6.0
+**Last Updated**: 2026-05-12

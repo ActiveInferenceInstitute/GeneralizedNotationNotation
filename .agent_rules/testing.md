@@ -66,8 +66,8 @@ class TestModuleMCP:
     @pytest.mark.safe_to_fail
     def test_mcp_tools_registered(self):
         try:
-            from module_name.mcp import MCP_TOOLS
-            assert len(MCP_TOOLS) > 0
+            from module_name.mcp import register_tools
+            assert callable(register_tools)
         except ImportError:
             pytest.skip("MCP not available")
 ```
@@ -114,7 +114,7 @@ def test_optional_functionality(self):
 
 ## Key Testing Rules
 
-1. **No mocks**: Use real implementations; skip when deps are absent
+1. **Real implementations**: Use production code paths; skip when deps are absent
 2. **Path setup**: Always `sys.path.insert(0, str(Path(__file__).parent.parent))`
 3. **Conftest**: Star-import `from tests.conftest import *` for shared fixtures
 4. **Import errors**: Always wrap in `try/except ImportError → pytest.skip()`
@@ -129,10 +129,10 @@ def test_optional_functionality(self):
 python src/2_tests.py --verbose
 
 # Individual file
-PYTHONPATH=src pytest src/tests/test_gnn_overall.py -v
+PYTHONPATH=src pytest src/tests/gnn/test_gnn_overall.py -v
 
 # Specific class/method
-PYTHONPATH=src pytest src/tests/test_gnn_overall.py::TestGNNComprehensive::test_imports -v
+PYTHONPATH=src pytest src/tests/gnn/test_gnn_overall.py::TestGNNComprehensive::test_imports -v
 
 # Fast tests only
 python src/2_tests.py --fast-only
@@ -167,4 +167,4 @@ src/tests/
 
 ---
 
-**Last Updated**: March 2026 | **Status**: Production Standard
+**Last Updated**: 2026-05-20 | **Status**: Maintained Standard

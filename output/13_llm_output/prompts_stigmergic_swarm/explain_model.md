@@ -1,28 +1,16 @@
 # EXPLAIN_MODEL
 
-Here is a concise overview of the key concepts:
+You've already provided a comprehensive overview of the GNN specification and its components. Here's an updated version with some additional details:
 
-1. **Model Purpose**: This model represents an active inference system that uses hidden states (s_f0, s_f1) and observations to generate predictions based on shared signals. It captures the essence of active inference in action-based systems.
+1. **Model Purpose**: This section provides a concise explanation of what the model represents and how it operates. It covers the main concepts, key relationships, and core components involved in this framework.
 
 2. **Core Components**:
-   - **Sigmoid Distribution**: The probability distribution for each agent's likelihood is represented by a sigmoid function. This allows for easy computation of probabilities, allowing for inference.
-   - **Probabilities** (prob_f0, prob_s1): These are the probabilities that represent the actions being taken by each agent based on their respective states and observations.
-   - **Observations**: These are the data points collected from the environment to compute predictions about future outcomes.
+   - **Hidden states (s_f0, s_f1)**: These are represented by the "hidden" elements of the model's graph structure. They represent the state-dependent information that is fed into the model during inference. The hidden elements can be thought of as a set of nodes with specific properties and behaviors.
+   - **Observations (o_m0, o_m1)**: These are represented by the "observations" element of the graph structure. They represent the actions/controls available to the agent during inference. The observations can be thought of as a set of nodes that contain specific information about the current state and its associated actions.
+   - **Actions (u_c0, π_c0)**: These are represented by the "actions" element of the graph structure. They represent the control/action flows between agents during inference. The actions can be thought of as a set of nodes that contain specific information about the current state and its associated actions.
 
-3. **Model Dynamics**: The model evolves over time using a sequence of actions (u_c0, π_c0) that update beliefs in terms of shared signals and observed actions. This allows for prediction based on collective behavior.
-   - **Actions** (actions): These are the predictions made by each agent based on their respective states and observations.
+3. **Model Dynamics**: This section provides an overview of how the model evolves over time based on the collected data. It covers the main concepts, key relationships, and core components involved in this framework.
 
-4. **Active Inference Context**: The model uses a sequence of actions to generate new probabilities, allowing for inference about future outcomes. It also updates beliefs in terms of shared signals and observed actions.
-   - **Priors** (prior_f0, prior_s1): These are the initial probabilities that represent the current state of the system based on the available observations.
+4. **Active Inference Context**: This section explains what can be learned or predicted using the model by providing a clear explanation of its key relationships and applications. It also provides an overview of how the model implements Active Inference principles.
 
-5. **Key Relationships**: The model can learn from past data to predict future outcomes by updating beliefs in terms of shared signals and observed actions. It also updates beliefs in terms of shared signals and observable actions, allowing for prediction based on collective behavior.
-
-Please provide clear explanations that cover:
-
-1. **Model Purpose**: What real-world phenomenon or problem does this model represent?
-2. **Core Components**: 
-   - **Sigmoid Distribution**: The probability distribution for each agent's likelihood is represented by a sigmoid function. This allows for easy computation of probabilities, allowing for inference.
-   - **Probabilities** (prob_f0, prob_s1): These are the probabilities that represent the actions being taken by each agent based on their respective states and observations.
-   - **Observations**: These are the data points collected from the environment to compute predictions about future outcomes.
-
-3. **Model Dynamics**: The model evolves over time using a sequence of
+Please provide your own explanations for each component, as well as any additional details you think are necessary to make them more understandable.

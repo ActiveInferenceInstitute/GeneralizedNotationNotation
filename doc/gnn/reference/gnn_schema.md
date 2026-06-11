@@ -1,7 +1,7 @@
 # GNN Schema Specification
 
-**Version**: v2.0.0  
-**Last Updated**: 2026-03-24  
+**Version**: v1.6.0 Engine (Bundle v2.0.0)  
+**Last Updated**: 2026-04-15  
 **Status**: ✅ Production Ready  
 **Modules**: 38+ · **Pipeline steps**: 25 · **Renderers**: 9 backends (see [../implementations/README.md](../implementations/README.md)) · **Tests**: see [../../../README.md](../../../README.md)  
 
@@ -206,7 +206,6 @@ src/5_type_checker.py (thin orchestrator)
     │   ├── analyze_variable_types() (line 13)
     │   ├── analyze_connections() 
     │   └── estimate_computational_complexity()
-    ├── checker.py 
     │   └── GNNTypeChecker (line 174-268)
     │       ├── check_file() (line 232)
     │       ├── _check_required_sections()

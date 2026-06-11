@@ -7,10 +7,11 @@ It's designed to complete in under 30 seconds and provide basic confidence
 that the system is working correctly.
 """
 
-import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
+import subprocess  # nosec B404
 import sys
 import time
 from pathlib import Path
+from typing import Any
 
 
 def run_fast_tests() -> bool:
@@ -19,15 +20,18 @@ def run_fast_tests() -> bool:
     start_time = time.time()
 
     # Prepare pytest command for fast tests only
-    pytest_cmd = [
-        sys.executable, "-m", "pytest",
+    pytest_cmd: list[Any] = [
+        sys.executable,
+        "-m",
+        "pytest",
         "--quiet",
         "--tb=short",
         "--maxfail=5",
         "--durations=5",
         "--disable-warnings",
-        "-m", "fast",
-        "src/tests/test_fast_suite.py"
+        "-m",
+        "fast",
+        "src/tests/test_fast_suite.py",
     ]
 
     # Add timeout plugin if available
@@ -36,12 +40,12 @@ def run_fast_tests() -> bool:
 
     try:
         # Run pytest with 60 second timeout
-        result = subprocess.run(  # nosec B603 -- subprocess calls with controlled/trusted input
+        result = subprocess.run(  # nosec B603
             pytest_cmd,
             capture_output=True,
             text=True,
             cwd=Path(__file__).parent.parent.parent,  # Project root
-            timeout=60
+            timeout=60,
         )
 
         elapsed_time = time.time() - start_time
@@ -65,6 +69,7 @@ def run_fast_tests() -> bool:
     except Exception as e:
         print(f"Error running fast tests: {e}")
         return False
+
 
 if __name__ == "__main__":
     success = run_fast_tests()

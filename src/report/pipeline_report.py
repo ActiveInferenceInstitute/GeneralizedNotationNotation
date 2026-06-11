@@ -8,16 +8,31 @@ Markdown report covering: overview, step status, timing, artifacts, and errors.
 
 import json
 import logging
+from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Literal, Optional, cast
 
 logger = logging.getLogger(__name__)
+
+
+@dataclass(frozen=True)
+class PipelineReportContext:
+    """Resolved inputs used by each report section."""
+
+    output_dir: Path
+    summary_path: Path
+    summary: Dict[str, Any]
+    step_dirs: List[Path]
+    step_stats: Dict[str, Dict[str, Any]]
+    mode: Literal["final", "preliminary"]
 
 
 def generate_pipeline_report(
     output_dir: Path,
     summary_path: Optional[Path] = None,
+    *,
+    mode: Literal["final", "preliminary"] = "final",
 ) -> str:
     """
     Generate a comprehensive Markdown report from pipeline results.
@@ -26,28 +41,26 @@ def generate_pipeline_report(
         output_dir: Root output directory containing per-step subdirectories.
         summary_path: Path to pipeline_execution_summary.json.
                       Defaults to output_dir/pipeline_execution_summary.json.
+        mode: Use "preliminary" while step 23 is running, or "final" after the
+              completed pipeline summary has been written.
 
     Returns:
         Markdown string for PIPELINE_REPORT.md.
     """
-    output_dir = Path(output_dir)
-    summary_path = summary_path or output_dir / "pipeline_execution_summary.json"
-
-    # Load summary if available
-    summary = _load_summary(summary_path)
-
-    # Collect per-step results
-    step_dirs = _discover_step_dirs(output_dir)
-    step_stats = _collect_step_stats(step_dirs)
+    context = _build_report_context(output_dir, summary_path, mode)
 
     # Build report sections
-    sections = [
-        _section_header(summary),
-        _section_step_status(summary, step_stats),
-        _section_timing(summary),
-        _section_artifacts(step_dirs),
-        _section_statistics(output_dir),
-        _section_errors(summary, step_stats),
+    sections: list[Any] = [
+        _section_header(context.summary),
+        _section_step_status(
+            context.summary,
+            context.step_stats,
+            mode=context.mode,
+        ),
+        _section_timing(context.summary),
+        _section_artifacts(context.step_dirs),
+        _section_statistics(context.output_dir),
+        _section_errors(context.summary, context.step_stats),
     ]
 
     report = "\n\n---\n\n".join(s for s in sections if s)
@@ -55,10 +68,35 @@ def generate_pipeline_report(
     return report
 
 
+def _build_report_context(
+    output_dir: Path,
+    summary_path: Optional[Path],
+    mode: Literal["final", "preliminary"],
+) -> PipelineReportContext:
+    """Resolve report inputs once so section renderers stay side-effect free."""
+    resolved_output_dir = Path(output_dir)
+    resolved_summary_path = (
+        summary_path
+        or resolved_output_dir
+        / "00_pipeline_summary"
+        / "pipeline_execution_summary.json"
+    )
+    summary = _load_summary(resolved_summary_path)
+    step_dirs = _discover_step_dirs(resolved_output_dir)
+    return PipelineReportContext(
+        output_dir=resolved_output_dir,
+        summary_path=resolved_summary_path,
+        summary=summary,
+        step_dirs=step_dirs,
+        step_stats=_collect_step_stats(step_dirs),
+        mode=mode,
+    )
+
+
 def _load_summary(path: Path) -> Dict[str, Any]:
     """Load pipeline_execution_summary.json, returning empty dict on failure."""
     # Check the provided path first, then fall back to 00_pipeline_summary subdir
-    candidates = [path]
+    candidates: list[Any] = [path]
     if path.parent.name != "00_pipeline_summary":
         candidates.append(path.parent / "00_pipeline_summary" / path.name)
 
@@ -66,7 +104,7 @@ def _load_summary(path: Path) -> Dict[str, Any]:
         if candidate.exists():
             try:
                 with open(candidate) as f:
-                    return json.load(f)
+                    return cast("dict[str, Any]", json.load(f))
             except (json.JSONDecodeError, OSError) as e:
                 logger.warning(f"Could not load summary from {candidate}: {e}")
     return {}
@@ -75,7 +113,8 @@ def _load_summary(path: Path) -> Dict[str, Any]:
 def _discover_step_dirs(output_dir: Path) -> List[Path]:
     """Find all step output directories (e.g. 3_gnn_output, 7_export_output)."""
     dirs = sorted(
-        d for d in output_dir.iterdir()
+        d
+        for d in output_dir.iterdir()
         if d.is_dir() and d.name[0].isdigit() and "_output" in d.name
     )
     return dirs
@@ -83,13 +122,16 @@ def _discover_step_dirs(output_dir: Path) -> List[Path]:
 
 def _collect_step_stats(step_dirs: List[Path]) -> Dict[str, Dict[str, Any]]:
     """Collect basic stats from each step output directory."""
-    stats = {}
+    stats: dict[Any, Any] = {}
     for d in step_dirs:
         file_count = sum(1 for f in d.rglob("*") if f.is_file())
         total_size = sum(f.stat().st_size for f in d.rglob("*") if f.is_file())
         # Look for a results JSON
         results_json = None
-        for candidate in [d / "results.json", d / f"{d.name.replace('_output', '')}_results.json"]:
+        for candidate in [
+            d / "results.json",
+            d / f"{d.name.replace('_output', '')}_results.json",
+        ]:
             if candidate.exists():
                 results_json = candidate
                 break
@@ -109,26 +151,37 @@ def _collect_step_stats(step_dirs: List[Path]) -> Dict[str, Dict[str, Any]]:
 
 def _section_header(summary: Dict[str, Any]) -> str:
     """Generate the report header section."""
-    timestamp = summary.get("start_time", summary.get("timestamp", datetime.now().isoformat()))
-    total_duration = summary.get("total_duration_seconds", summary.get("total_duration", "N/A"))
+    timestamp = summary.get(
+        "start_time", summary.get("timestamp", datetime.now().isoformat())
+    )
+    total_duration = summary.get(
+        "total_duration_seconds", summary.get("total_duration", "N/A")
+    )
     if isinstance(total_duration, (int, float)):
         total_duration = f"{total_duration:.1f}"
 
-    # Support both boolean 'success' and string 'overall_status' keys
+    # Support both boolean 'success' and string 'overall_status' keys.
     overall_status = summary.get("overall_status", None)
     success = summary.get("success", None)
     if overall_status:
-        is_success = overall_status.upper() == "SUCCESS"
-        is_failed = overall_status.upper() in ("FAILED", "FAILURE")
+        status_text = str(overall_status).upper()
+        is_success = status_text == "SUCCESS"
+        is_warning = "WARN" in status_text or status_text == "PARTIAL_SUCCESS"
+        is_failed = status_text in ("FAILED", "FAILURE")
     elif success is not None:
         is_success = success is True
+        is_warning = False
         is_failed = success is False
+        status_text = "SUCCESS" if is_success else "FAILED"
     else:
         is_success = False
+        is_warning = False
         is_failed = False
+        status_text = "UNKNOWN"
 
-    status_emoji = "🟢" if is_success else "🔴" if is_failed else "⚪"
-    status_text = "SUCCESS" if is_success else "FAILED" if is_failed else "UNKNOWN"
+    status_emoji = (
+        "🟢" if is_success else "🟡" if is_warning else "🔴" if is_failed else "⚪"
+    )
 
     return f"""# Pipeline Execution Report
 
@@ -141,9 +194,11 @@ def _section_header(summary: Dict[str, Any]) -> str:
 def _section_step_status(
     summary: Dict[str, Any],
     step_stats: Dict[str, Dict[str, Any]],
+    *,
+    mode: Literal["final", "preliminary"] = "final",
 ) -> str:
     """Generate step status table."""
-    lines = ["## Step Status"]
+    lines: list[Any] = ["## Step Status"]
 
     steps = summary.get("steps", [])
     if steps:
@@ -166,14 +221,47 @@ def _section_step_status(
             files = st.get("file_count", "—")
             size = st.get("total_size_kb", "—")
             step_num = step.get("step_number", step.get("step_num", "?"))
-            emoji = "✅" if status in ("SUCCESS", "success") else "⚠️" if "warn" in str(status).lower() else "❌"
-            lines.append(f"| {step_num} | {name} | {emoji} {status} | {duration} | {files} | {size} |")
+            emoji = (
+                "✅"
+                if status in ("SUCCESS", "success")
+                else "⚠️"
+                if "warn" in str(status).lower()
+                else "❌"
+            )
+            lines.append(
+                f"| {step_num} | {name} | {emoji} {status} | {duration} | {files} | {size} |"
+            )
+
+        if mode == "preliminary":
+            # Step 23 can only see a partial summary while it is running. Add
+            # explicit in-flight rows there, but never in the final report.
+            recorded_scripts = {s.get("script_name", "") for s in steps}
+            self_referencing_steps: list[Any] = [
+                ("23_report.py", "Comprehensive analysis report generation"),
+                (
+                    "24_intelligent_analysis.py",
+                    "AI-powered pipeline analysis and executive reports",
+                ),
+            ]
+            for script_name, desc in self_referencing_steps:
+                if script_name not in recorded_scripts:
+                    output_dir_name = script_name.replace(".py", "_output")
+                    st = step_stats.get(output_dir_name, {})
+                    files = st.get("file_count", "—")
+                    size = st.get("total_size_kb", "—")
+                    step_num = int(script_name.split("_")[0]) + 1
+                    lines.append(
+                        f"| {step_num} | {desc} | 🔄 IN PROGRESS | — | {files} | {size} |"
+                    )
+
     elif step_stats:
         lines.append("")
         lines.append("| Step Output | Files | Size (KB) |")
         lines.append("|-------------|-------|-----------|")
         for dir_name, st in sorted(step_stats.items()):
-            lines.append(f"| `{dir_name}` | {st['file_count']} | {st['total_size_kb']} |")
+            lines.append(
+                f"| `{dir_name}` | {st['file_count']} | {st['total_size_kb']} |"
+            )
     else:
         lines.append("\n*No step results available.*")
 
@@ -187,10 +275,12 @@ def _section_timing(summary: Dict[str, Any]) -> str:
         return ""
 
     total = summary.get("total_duration_seconds", summary.get("total_duration", 0))
-    lines = ["## Timing Breakdown"]
+    lines: list[Any] = ["## Timing Breakdown"]
 
     # Sort by duration descending
-    sorted_steps = sorted(steps, key=lambda s: s.get("duration_seconds", 0), reverse=True)
+    sorted_steps = sorted(
+        steps, key=lambda s: s.get("duration_seconds", 0), reverse=True
+    )
 
     lines.append("")
     lines.append("| Step | Duration (s) | % of Total |")
@@ -207,7 +297,7 @@ def _section_timing(summary: Dict[str, Any]) -> str:
 
 def _section_artifacts(step_dirs: List[Path]) -> str:
     """Generate artifact inventory section."""
-    lines = ["## Artifact Inventory"]
+    lines: list[Any] = ["## Artifact Inventory"]
     lines.append("")
 
     if not step_dirs:
@@ -225,18 +315,22 @@ def _section_artifacts(step_dirs: List[Path]) -> str:
         total_size += size
 
         # Show notable files (JSON results, reports)
-        notable = [f.name for f in file_items if f.suffix in (".json", ".md", ".html", ".svg")][:5]
+        notable = [
+            f.name for f in file_items if f.suffix in (".json", ".md", ".html", ".svg")
+        ][:5]
         notable_str = ", ".join(f"`{n}`" for n in notable) if notable else "—"
-        lines.append(f"- **`{d.name}`**: {count} files ({size/1024:.1f} KB) — {notable_str}")
+        lines.append(
+            f"- **`{d.name}`**: {count} files ({size / 1024:.1f} KB) — {notable_str}"
+        )
 
-    lines.append(f"\n**Total**: {total_files} files ({total_size/1024:.1f} KB)")
+    lines.append(f"\n**Total**: {total_files} files ({total_size / 1024:.1f} KB)")
     return "\n".join(lines)
 
 
 def _section_statistics(output_dir: Path) -> str:
     """Pull model/parse statistics from GNN step outputs."""
-    lines = ["## Pipeline Statistics"]
-    stats = {}
+    lines: list[Any] = ["## Pipeline Statistics"]
+    stats: dict[Any, Any] = {}
 
     # GNN parse results
     gnn_results = output_dir / "3_gnn_output" / "gnn_results.json"
@@ -245,7 +339,9 @@ def _section_statistics(output_dir: Path) -> str:
             with open(gnn_results) as f:
                 data = json.load(f)
             stats["Files parsed"] = data.get("total_files", "?")
-            stats["Models discovered"] = data.get("total_models", data.get("files_parsed", "?"))
+            stats["Models discovered"] = data.get(
+                "total_models", data.get("files_parsed", "?")
+            )
             stats["Sections extracted"] = sum(
                 len(fi.get("sections", []))
                 for fi in data.get("file_results", data.get("results", []))
@@ -286,17 +382,21 @@ def _section_errors(
     if not errors and not auth_errors:
         return "## Errors\n\n✅ No errors recorded."
 
-    lines = ["## Errors"]
+    lines: list[Any] = ["## Errors"]
     lines.append("")
 
     for err in errors:
         if isinstance(err, dict):
-            lines.append(f"- ❌ **{err.get('step', '?')}**: {err.get('error', str(err))}")
+            lines.append(
+                f"- ❌ **{err.get('step', '?')}**: {err.get('error', str(err))}"
+            )
         else:
             lines.append(f"- ❌ {err}")
 
     for ae in auth_errors:
         if isinstance(ae, dict):
-            lines.append(f"- 🔑 Auth failure: **{ae.get('provider', '?')}** — {ae.get('error', '')[:100]}")
+            lines.append(
+                f"- 🔑 Auth failure: **{ae.get('provider', '?')}** — {ae.get('error', '')[:100]}"
+            )
 
     return "\n".join(lines)

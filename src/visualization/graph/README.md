@@ -1,11 +1,13 @@
-# Graph
+# Visualization Graph
 
-## Overview
-This module handles `Graph` components.
+Network topology and bipartite graph generation for GNN models.
 
-## Available Members
-- **Classes**: No specific classes exported.
-- **Functions**: generate_network_visualizations, generate_variable_parameter_bipartite
+## Exports
 
-## Usage
-Import necessary members directly to orchestrate tasks related to Graph.
+- `generate_network_visualizations()` — Create directed graph layouts from model connections
+- `generate_variable_parameter_bipartite()` — Bipartite plots showing variable-parameter relationships
+
+## Dependencies
+
+- `matplotlib` for plot rendering
+- `networkx` (optional, for graph layout algorithms)

@@ -18,42 +18,33 @@ import uuid
 from contextlib import contextmanager
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, cast
 
 # Thread-local storage for correlation context
 _correlation_context = threading.local()
 
-# Import performance tracking from dedicated module
+# Import performance tracking from dedicated module.
 try:
-    from utils.performance_tracker import PerformanceTracker, performance_tracker
+    from utils.performance_tracker import performance_tracker
 except ImportError:
-    try:
-        from ..performance_tracker import PerformanceTracker, performance_tracker
-    except ImportError:
-        # Recovery: define minimal stubs for graceful degradation
-        class PerformanceTracker:
-            """Recovery performance tracker when module unavailable."""
-            def __init__(self): pass
-            @contextmanager
-            def track_operation(self, name: str, metadata: dict = None):
-                yield
-            def get_summary(self) -> dict:
-                return {"status": "recovery", "operations": []}
-        performance_tracker = PerformanceTracker()
+    from ..performance_tracker import performance_tracker
+
 
 class CorrelationFormatter(logging.Formatter):
     """Formatter that includes correlation IDs for tracing across pipeline steps."""
 
-    def format(self, record):
+    def format(self, record: Any) -> Any:
         # Add correlation ID to log record
-        correlation_id = getattr(_correlation_context, 'correlation_id', 'MAIN')
-        step_name = getattr(_correlation_context, 'step_name', 'pipeline')
+        """Provide format behavior."""
+        correlation_id = getattr(_correlation_context, "correlation_id", "MAIN")
+        step_name = getattr(_correlation_context, "step_name", "pipeline")
 
         # Create enhanced record with correlation info
         record.correlation_id = correlation_id
         record.step_name = step_name
 
         return super().format(record)
+
 
 class BasicPipelineLogger:
     """Basic centralized logger for the GNN pipeline with correlation support."""
@@ -63,8 +54,12 @@ class BasicPipelineLogger:
     _log_file_handler: Optional[logging.FileHandler] = None
 
     @classmethod
-    def initialize(cls, log_dir: Optional[Path] = None, console_level: int = logging.INFO,
-                  file_level: int = logging.DEBUG) -> None:
+    def initialize(
+        cls,
+        log_dir: Optional[Path] = None,
+        console_level: int = logging.INFO,
+        file_level: int = logging.DEBUG,
+    ) -> None:
         """Initialize the centralized logging system."""
         if cls._initialized:
             return
@@ -78,10 +73,10 @@ class BasicPipelineLogger:
 
         # Create correlation-aware formatter
         console_formatter = CorrelationFormatter(
-            '%(asctime)s [%(correlation_id)s:%(step_name)s] %(name)s - %(levelname)s - %(message)s'
+            "%(asctime)s [%(correlation_id)s:%(step_name)s] %(name)s - %(levelname)s - %(message)s"
         )
         file_formatter = CorrelationFormatter(
-            '%(asctime)s [%(correlation_id)s:%(step_name)s] %(name)s - %(levelname)s - %(funcName)s:%(lineno)d - %(message)s'
+            "%(asctime)s [%(correlation_id)s:%(step_name)s] %(name)s - %(levelname)s - %(funcName)s:%(lineno)d - %(message)s"
         )
 
         # Console handler
@@ -95,18 +90,25 @@ class BasicPipelineLogger:
             try:
                 log_dir.mkdir(parents=True, exist_ok=True)
                 log_file = log_dir / "pipeline.log"
-                cls._log_file_handler = logging.FileHandler(log_file, mode='w')
+                cls._log_file_handler = logging.FileHandler(log_file, mode="w")
                 cls._log_file_handler.setLevel(file_level)
                 cls._log_file_handler.setFormatter(file_formatter)
                 root_logger.addHandler(cls._log_file_handler)
             except Exception as e:
-                console_handler.emit(logging.LogRecord(
-                    name="PipelineLogger", level=logging.ERROR, pathname="", lineno=0,
-                    msg=f"Failed to setup file logging: {e}", args=(), exc_info=None
-                ))
+                console_handler.emit(
+                    logging.LogRecord(
+                        name="PipelineLogger",
+                        level=logging.ERROR,
+                        pathname="",
+                        lineno=0,
+                        msg=f"Failed to setup file logging: {e}",
+                        args=(),
+                        exc_info=None,
+                    )
+                )
 
         # Silence noisy third-party libraries
-        for noisy_lib in ['PIL', 'matplotlib', 'urllib3', 'requests']:
+        for noisy_lib in ["PIL", "matplotlib", "urllib3", "requests"]:
             logging.getLogger(noisy_lib).setLevel(logging.WARNING)
 
         cls._initialized = True
@@ -126,10 +128,15 @@ class BasicPipelineLogger:
         return cls._loggers[name]
 
     @classmethod
-    def set_correlation_context(cls, step_name: str, correlation_id: Optional[str] = None) -> str:
+    def set_correlation_context(
+        cls, step_name: str, correlation_id: Optional[str] = None
+    ) -> str:
         """Set correlation context for current thread."""
         if correlation_id is None:
-            correlation_id = str(uuid.uuid4())[:8]
+            # Try to inherit from existing context if available
+            correlation_id = getattr(
+                _correlation_context, "correlation_id", str(uuid.uuid4())[:8]
+            )
 
         _correlation_context.correlation_id = correlation_id
         _correlation_context.step_name = step_name
@@ -139,10 +146,10 @@ class BasicPipelineLogger:
     @classmethod
     def clear_correlation_context(cls) -> None:
         """Clear correlation context for current thread."""
-        if hasattr(_correlation_context, 'correlation_id'):
-            delattr(_correlation_context, 'correlation_id')
-        if hasattr(_correlation_context, 'step_name'):
-            delattr(_correlation_context, 'step_name')
+        if hasattr(_correlation_context, "correlation_id"):
+            delattr(_correlation_context, "correlation_id")
+        if hasattr(_correlation_context, "step_name"):
+            delattr(_correlation_context, "step_name")
 
     @classmethod
     def set_verbosity(cls, verbose: bool) -> None:
@@ -150,19 +157,25 @@ class BasicPipelineLogger:
         level = logging.DEBUG if verbose else logging.INFO
         root_logger = logging.getLogger()
         for handler in root_logger.handlers:
-            if isinstance(handler, logging.StreamHandler) and handler.stream == sys.stdout:
+            if (
+                isinstance(handler, logging.StreamHandler)
+                and handler.stream == sys.stdout
+            ):
                 handler.setLevel(level)
                 break
 
-def setup_main_logging(log_dir: Optional[Path] = None, verbose: bool = False, log_format: str = "human") -> logging.Logger:
+
+def setup_main_logging(
+    log_dir: Optional[Path] = None, verbose: bool = False, log_format: str = "human"
+) -> logging.Logger:
     """
     Setup logging for the main pipeline orchestrator.
-    
+
     Args:
         log_dir: Directory for log files
         verbose: Whether to enable verbose logging
         log_format: format for console output ('human' or 'json')
-        
+
     Returns:
         Configured main logger
     """
@@ -176,6 +189,7 @@ def setup_main_logging(log_dir: Optional[Path] = None, verbose: bool = False, lo
 
     return logger
 
+
 # Standalone logging setup for scripts not part of the main pipeline
 def setup_standalone_logging(
     level: int = logging.INFO,
@@ -183,23 +197,30 @@ def setup_standalone_logging(
     output_dir: Optional[Path] = None,
     log_filename: str = "pipeline.log",
     console_level: int = logging.INFO,
-    file_level: int = logging.DEBUG
+    file_level: int = logging.DEBUG,
 ) -> logging.Logger:
     """Setup standalone logging with file and console handlers."""
     log_dir = output_dir / "logs" if output_dir else None
-    PipelineLogger.initialize(log_dir=log_dir, console_level=console_level, file_level=file_level)
+    PipelineLogger.initialize(
+        log_dir=log_dir, console_level=console_level, file_level=file_level
+    )
     return PipelineLogger.get_logger(logger_name)
 
-def silence_noisy_modules_in_console():
+
+def silence_noisy_modules_in_console() -> Any:
     """Reduce console output from verbose third-party modules."""
-    for module in ['PIL', 'matplotlib', 'urllib3', 'requests']:
+    for module in ["PIL", "matplotlib", "urllib3", "requests"]:
         logging.getLogger(module).setLevel(logging.WARNING)
 
-def set_verbose_mode(verbose: bool):
+
+def set_verbose_mode(verbose: bool) -> Any:
     """Set verbose mode for console output."""
     PipelineLogger.set_verbosity(verbose)
 
-def log_section_header(logger: logging.Logger, title: str, char: str = '=', length: int = 80):
+
+def log_section_header(
+    logger: logging.Logger, title: str, char: str = "=", length: int = 80
+) -> Any:
     """Log a formatted section header."""
     border = char * length
     padded_title = f" {title} ".center(length, char)
@@ -210,28 +231,43 @@ def log_section_header(logger: logging.Logger, title: str, char: str = '=', leng
     logger.info(border)
     logger.info("")
 
+
 # Enhanced logging functionality
-logging.STEP = 25  # Custom log level between INFO and WARNING
-logging.addLevelName(logging.STEP, "STEP")
+_logging_any = cast(Any, logging)
+_logging_any.TRACE = 5  # Finer than DEBUG for high-volume parse/trace lines
+logging.addLevelName(_logging_any.TRACE, "TRACE")
 
-def step(self, message: str, *args: Any, **kwargs: Any) -> None:
+_logging_any.STEP = 25  # Custom log level between INFO and WARNING
+logging.addLevelName(_logging_any.STEP, "STEP")
+
+
+def step(self: logging.Logger, message: str, *args: Any, **kwargs: Any) -> None:
     """Log a step-level message."""
-    if self.isEnabledFor(logging.STEP):
-        self._log(logging.STEP, message, args, **kwargs)
+    if self.isEnabledFor(_logging_any.STEP):
+        self._log(_logging_any.STEP, message, args, **kwargs)
 
-logging.Logger.step = step
+
+cast(Any, logging.Logger).step = step
+
 
 class StructuredFormatter(CorrelationFormatter):
     """Formatter that handles structured logging data."""
 
-    def format(self, record):
+    def format(self, record: Any) -> Any:
         # Extract structured data if present
-        if hasattr(record, 'structured_data'):
+        """Provide format behavior."""
+        if hasattr(record, "structured_data"):
             structured_data = record.structured_data
 
             # Add structured data to the log message
             if isinstance(structured_data, dict) and structured_data:
-                structured_str = " | ".join([f"{k}={v}" for k, v in structured_data.items() if k != 'event_type'])
+                structured_str = " | ".join(
+                    [
+                        f"{k}={v}"
+                        for k, v in structured_data.items()
+                        if k != "event_type"
+                    ]
+                )
                 if structured_str:
                     record.msg = f"{record.msg} [{structured_str}]"
 
@@ -239,31 +275,40 @@ class StructuredFormatter(CorrelationFormatter):
         # Continue with correlation formatting
         return super().format(record)
 
+
 class JSONFormatter(logging.Formatter):
     """Formatter that outputs JSON lines for structured logging."""
 
-    def format(self, record):
+    def format(self, record: Any) -> Any:
         """Format the log record as a valid JSON object."""
-        log_entry = {
+        log_entry: dict[str, Any] = {
             "timestamp": datetime.fromtimestamp(record.created).isoformat(),
             "level": record.levelname,
             "logger": record.name,
             "message": record.getMessage(),
-            "correlation_id": getattr(record, 'correlation_id', getattr(_correlation_context, 'correlation_id', 'MAIN')),
-            "step_name": getattr(record, 'step_name', getattr(_correlation_context, 'step_name', 'pipeline')),
+            "correlation_id": getattr(
+                record,
+                "correlation_id",
+                getattr(_correlation_context, "correlation_id", "MAIN"),
+            ),
+            "step_name": getattr(
+                record,
+                "step_name",
+                getattr(_correlation_context, "step_name", "pipeline"),
+            ),
             "module": record.module,
             "function": record.funcName,
             "line": record.lineno,
             "process": record.process,
-            "thread": record.threadName
+            "thread": record.threadName,
         }
 
         # Add structured data if present
-        if hasattr(record, 'structured_data'):
+        if hasattr(record, "structured_data"):
             log_entry["data"] = record.structured_data
 
         # Add performance context if present
-        if hasattr(record, 'performance_context'):
+        if hasattr(record, "performance_context"):
             log_entry["performance"] = record.performance_context
 
         # Add exception info if present
@@ -273,10 +318,10 @@ class JSONFormatter(logging.Formatter):
         return json.dumps(log_entry)
 
 
-def rotate_logs(log_dir: Path, max_files: int = 5, compress: bool = True):
+def rotate_logs(log_dir: Path, max_files: int = 5, compress: bool = True) -> Any:
     """
     Rotate log files in the specified directory.
-    
+
     Args:
         log_dir: Directory containing log files
         max_files: Maximum number of rotated files to keep (including current)
@@ -297,11 +342,11 @@ def rotate_logs(log_dir: Path, max_files: int = 5, compress: bool = True):
 
         # Compress if requested
         if compress:
-            with open(rotated_path, 'rb') as f_in:
-                compressed_path = rotated_path.with_suffix('.log.gz')
-                with gzip.open(compressed_path, 'wb') as f_out:
+            with open(rotated_path, "rb") as f_in:
+                compressed_path = rotated_path.with_suffix(".log.gz")
+                with gzip.open(compressed_path, "wb") as f_out:
                     shutil.copyfileobj(f_in, f_out)
-            rotated_path.unlink() # Remove uncompressed file
+            rotated_path.unlink()  # Remove uncompressed file
 
         # Cleanup old logs
         pattern = "pipeline_*.log.gz" if compress else "pipeline_*.log"
@@ -313,92 +358,143 @@ def rotate_logs(log_dir: Path, max_files: int = 5, compress: bool = True):
             for i in range(to_delete_count):
                 try:
                     log_files[i].unlink()
-                except OSError:
-                    pass  # intentional: best-effort cleanup of old log files during rotation
+                except OSError as e:
+                    logging.getLogger(__name__).debug(
+                        "Could not remove old rotated log %s: %s",
+                        log_files[i],
+                        e,
+                    )
 
     except Exception as e:
         # Don't fail pipeline on log rotation issues
         print(f"Warning: Log rotation failed: {e}")
 
 
-
 class PipelineLogger(BasicPipelineLogger):
     """Pipeline logger with structured logging support."""
 
     @classmethod
-    def initialize(cls, log_dir: Optional[Path] = None, console_level: int = logging.INFO,
-                  file_level: int = logging.DEBUG, enable_structured: bool = True, log_format: str = "human") -> None:
+    def initialize(
+        cls,
+        log_dir: Optional[Path] = None,
+        console_level: int = logging.INFO,
+        file_level: int = logging.DEBUG,
+        enable_structured: bool = True,
+        log_format: str = "human",
+        force: bool = False,
+    ) -> None:
         """Initialize logging with structured data support."""
-        if cls._initialized:
+        if cls._initialized and not force:
             return
 
         # Setup root logger
         root_logger = logging.getLogger()
         root_logger.setLevel(logging.DEBUG)
-        root_logger.handlers.clear()
+
+        # Clear existing handlers to avoid duplicates, but only if we're initializing
+        # the root logger for the first time or forcing a reset.
+        if not cls._initialized or force:
+            root_logger.handlers.clear()
 
         # Choose formatter based on structured logging preference
+        console_formatter: logging.Formatter
+        file_formatter: logging.Formatter
         if enable_structured:
             if log_format == "json":
                 console_formatter = JSONFormatter()
             else:
                 console_formatter = VisualFormatter(
-                    '%(asctime)s [%(correlation_id)s:%(step_name)s] %(name)s - %(levelname)s - %(message)s',
-                    include_performance=True
+                    "%(asctime)s [%(correlation_id)s:%(step_name)s] %(name)s - %(levelname)s - %(message)s",
+                    include_performance=True,
                 )
             file_formatter = StructuredFormatter(
-                '%(asctime)s [%(correlation_id)s:%(step_name)s] %(name)s - %(levelname)s - %(funcName)s:%(lineno)d - %(message)s'
+                "%(asctime)s [%(correlation_id)s:%(step_name)s] %(name)s - %(levelname)s - %(funcName)s:%(lineno)d - %(message)s"
             )
         else:
             if log_format == "json":
                 console_formatter = JSONFormatter()
             else:
                 console_formatter = CorrelationFormatter(
-                    '%(asctime)s [%(correlation_id)s:%(step_name)s] %(name)s - %(levelname)s - %(message)s'
+                    "%(asctime)s [%(correlation_id)s:%(step_name)s] %(name)s - %(levelname)s - %(message)s"
                 )
             file_formatter = CorrelationFormatter(
-                '%(asctime)s [%(correlation_id)s:%(step_name)s] %(name)s - %(levelname)s - %(funcName)s:%(lineno)d - %(message)s'
+                "%(asctime)s [%(correlation_id)s:%(step_name)s] %(name)s - %(levelname)s - %(funcName)s:%(lineno)d - %(message)s"
             )
 
-        # Console handler
-        console_handler = logging.StreamHandler(sys.stdout)
-        console_handler.setLevel(console_level)
-        console_handler.setFormatter(console_formatter)
-        root_logger.addHandler(console_handler)
+        # Add console handler if not already present
+        has_console = any(
+            isinstance(h, logging.StreamHandler) and h.stream == sys.stdout
+            for h in root_logger.handlers
+        )
+        if not has_console:
+            console_handler = logging.StreamHandler(sys.stdout)
+            console_handler.setLevel(console_level)
+            console_handler.setFormatter(console_formatter)
+            root_logger.addHandler(console_handler)
 
         # File handler
         if log_dir:
             try:
                 log_dir.mkdir(parents=True, exist_ok=True)
                 log_file = log_dir / "pipeline.log"
-                cls._log_file_handler = logging.FileHandler(log_file, mode='w')
-                cls._log_file_handler.setLevel(file_level)
-                cls._log_file_handler.setFormatter(file_formatter)
-                root_logger.addHandler(cls._log_file_handler)
+
+                # Check for existing file handler to same path
+                has_file = any(
+                    isinstance(h, logging.FileHandler)
+                    and h.baseFilename == str(log_file.absolute())
+                    for h in root_logger.handlers
+                )
+
+                if not has_file:
+                    cls._log_file_handler = logging.FileHandler(log_file, mode="w")
+                    cls._log_file_handler.setLevel(file_level)
+                    cls._log_file_handler.setFormatter(file_formatter)
+                    root_logger.addHandler(cls._log_file_handler)
             except Exception as e:
-                console_handler.emit(logging.LogRecord(
-                    name="PipelineLogger", level=logging.ERROR, pathname="", lineno=0,
-                    msg=f"Failed to setup file logging: {e}", args=(), exc_info=None
-                ))
+                # If console handler exists, emit error
+                record = logging.LogRecord(
+                    name="PipelineLogger",
+                    level=logging.ERROR,
+                    pathname="",
+                    lineno=0,
+                    msg=f"Failed to setup file logging: {e}",
+                    args=(),
+                    exc_info=None,
+                )
+                root_logger.handle(record)
 
         # Silence noisy libraries
-        for noisy_lib in ['PIL', 'matplotlib', 'urllib3', 'requests', 'werkzeug']:
+        for noisy_lib in [
+            "PIL",
+            "matplotlib",
+            "urllib3",
+            "requests",
+            "werkzeug",
+            "ray",
+        ]:
             logging.getLogger(noisy_lib).setLevel(logging.WARNING)
 
         cls._initialized = True
 
     @classmethod
-    def log_structured(cls, logger: logging.Logger, level: int, message: str, **structured_data):
+    def log_structured(
+        cls, logger: logging.Logger, level: int, message: str, **structured_data: Any
+    ) -> Any:
         """Log a message with structured data."""
         record = logging.LogRecord(
-            name=logger.name, level=level, pathname="", lineno=0,
-            msg=message, args=(), exc_info=None
+            name=logger.name,
+            level=level,
+            pathname="",
+            lineno=0,
+            msg=message,
+            args=(),
+            exc_info=None,
         )
         record.structured_data = structured_data
         logger.handle(record)
 
     @classmethod
-    def enable_json_logging(cls, log_dir: Path, level: int = logging.DEBUG):
+    def enable_json_logging(cls, log_dir: Path, level: int = logging.DEBUG) -> Any:
         """Enable dedicated JSON-formatted log file."""
         if not cls._initialized:
             # Recovery to initialize first if not ready
@@ -410,7 +506,7 @@ class PipelineLogger(BasicPipelineLogger):
             json_log_file = log_dir / "pipeline.jsonl"
 
             # Create handler
-            json_handler = logging.FileHandler(json_log_file, mode='a')
+            json_handler = logging.FileHandler(json_log_file, mode="a")
             json_handler.setLevel(level)
             json_handler.setFormatter(JSONFormatter())
 
@@ -419,21 +515,25 @@ class PipelineLogger(BasicPipelineLogger):
             print(f"Failed to enable JSON logging: {e}")
 
     @classmethod
-
     @contextmanager
-    def timed_operation(cls, operation_name: str, logger: Optional[logging.Logger] = None,
-                       metadata: Optional[Dict[str, Any]] = None):
+    def timed_operation(
+        cls,
+        operation_name: str,
+        logger: Optional[logging.Logger] = None,
+        metadata: Optional[Dict[str, Any]] = None,
+    ) -> Any:
         """Context manager for timing operations with structured logging."""
         if logger is None:
             logger = cls.get_logger("performance")
 
         start_time = time.time()
         cls.log_structured(
-            logger, logging.INFO,
+            logger,
+            logging.INFO,
             f"🚀 Starting {operation_name}",
             event_type="operation_start",
             operation=operation_name,
-            **(metadata or {})
+            **(metadata or {}),
         )
 
         try:
@@ -442,29 +542,36 @@ class PipelineLogger(BasicPipelineLogger):
 
             duration = time.time() - start_time
             cls.log_structured(
-                logger, logging.INFO,
+                logger,
+                logging.INFO,
                 f"✅ Completed {operation_name}",
                 event_type="operation_complete",
                 operation=operation_name,
                 duration_seconds=round(duration, 3),
-                **(metadata or {})
+                **(metadata or {}),
             )
 
         except Exception as e:
             duration = time.time() - start_time
             cls.log_structured(
-                logger, logging.ERROR,
+                logger,
+                logging.ERROR,
                 f"❌ Failed {operation_name}: {e}",
                 event_type="operation_error",
                 operation=operation_name,
                 duration_seconds=round(duration, 3),
                 error=str(e),
-                **(metadata or {})
+                **(metadata or {}),
             )
             raise
 
-def setup_step_logging(step_name: str, verbose: bool = False,
-                               enable_structured: bool = True, log_format: str = "human") -> logging.Logger:
+
+def setup_step_logging(
+    step_name: str,
+    verbose: bool = False,
+    enable_structured: bool = True,
+    log_format: str = "human",
+) -> logging.Logger:
     """
     Setup logging for a pipeline step with structured data support.
 
@@ -473,15 +580,19 @@ def setup_step_logging(step_name: str, verbose: bool = False,
         verbose: Whether to enable verbose logging
         enable_structured: Whether to enable structured logging
         log_format: 'human' or 'json' Output format
-        
+
     Returns:
         Configured logger for the step
     """
     # Initialize enhanced pipeline logger
-    PipelineLogger.initialize(enable_structured=enable_structured, log_format=log_format)
+    PipelineLogger.initialize(
+        enable_structured=enable_structured, log_format=log_format
+    )
 
     # Set correlation context
-    correlation_id = PipelineLogger.set_correlation_context(step_name.replace('.py', ''))
+    correlation_id = PipelineLogger.set_correlation_context(
+        step_name.replace(".py", "")
+    )
 
     # Configure verbosity
     PipelineLogger.set_verbosity(verbose)
@@ -490,33 +601,35 @@ def setup_step_logging(step_name: str, verbose: bool = False,
     logger = PipelineLogger.get_logger(step_name)
 
     # Add step-specific attributes
-    logger.step_name = step_name
-    logger.correlation_id = correlation_id
+    logger_any = cast(Any, logger)
+    logger_any.step_name = step_name
+    logger_any.correlation_id = correlation_id
 
     return logger
+
 
 class VisualLoggingEnhancer:
     """Enhanced visual formatting for pipeline logging with progress tracking."""
 
     # Color codes for terminal output
-    COLORS = {
-        'RESET': '\033[0m',
-        'BOLD': '\033[1m',
-        'DIM': '\033[2m',
-        'GREEN': '\033[92m',
-        'YELLOW': '\033[93m',
-        'RED': '\033[91m',
-        'BLUE': '\033[94m',
-        'MAGENTA': '\033[95m',
-        'CYAN': '\033[96m',
-        'WHITE': '\033[97m',
-        'BG_GREEN': '\033[102m',
-        'BG_YELLOW': '\033[103m',
-        'BG_RED': '\033[101m'
+    COLORS: dict[str, Any] = {
+        "RESET": "\033[0m",
+        "BOLD": "\033[1m",
+        "DIM": "\033[2m",
+        "GREEN": "\033[92m",
+        "YELLOW": "\033[93m",
+        "RED": "\033[91m",
+        "BLUE": "\033[94m",
+        "MAGENTA": "\033[95m",
+        "CYAN": "\033[96m",
+        "WHITE": "\033[97m",
+        "BG_GREEN": "\033[102m",
+        "BG_YELLOW": "\033[103m",
+        "BG_RED": "\033[101m",
     }
 
     # Progress indicators
-    PROGRESS_CHARS = ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏']
+    PROGRESS_CHARS: list[Any] = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"]
 
     @classmethod
     def supports_color(cls) -> bool:
@@ -525,18 +638,18 @@ class VisualLoggingEnhancer:
             return False
 
         # Check environment variables
-        if os.getenv('NO_COLOR'):
+        if os.getenv("NO_COLOR"):
             return False
-        if os.getenv('FORCE_COLOR'):
+        if os.getenv("FORCE_COLOR"):
             return True
 
         # Check terminal type
-        term = os.getenv('TERM', '').lower()
-        if 'color' in term or term in ['xterm', 'xterm-256color', 'screen', 'tmux']:
+        term = os.getenv("TERM", "").lower()
+        if "color" in term or term in ["xterm", "xterm-256color", "screen", "tmux"]:
             return True
 
         # Check if we have a known terminal with color support
-        return shutil.which('tput') is not None
+        return shutil.which("tput") is not None
 
     @classmethod
     def colorize(cls, text: str, color: str, bold: bool = False) -> str:
@@ -544,22 +657,23 @@ class VisualLoggingEnhancer:
         if not cls.supports_color():
             return text
 
-        color_code = cls.COLORS.get(color.upper(), '')
-        bold_code = cls.COLORS['BOLD'] if bold else ''
-        reset_code = cls.COLORS['RESET']
+        color_code = cls.COLORS.get(color.upper(), "")
+        bold_code = cls.COLORS["BOLD"] if bold else ""
+        reset_code = cls.COLORS["RESET"]
 
         return f"{color_code}{bold_code}{text}{reset_code}"
 
     @classmethod
-    def format_step_header(cls, step_num: int, total_steps: int, step_name: str,
-                          status: str = "RUNNING") -> str:
+    def format_step_header(
+        cls, step_num: int, total_steps: int, step_name: str, status: str = "RUNNING"
+    ) -> str:
         """Create a formatted step header with progress bar."""
         progress = step_num / total_steps
         bar_length = 30
         filled_length = int(bar_length * progress)
 
         # Create progress bar
-        bar = '█' * filled_length + '▒' * (bar_length - filled_length)
+        bar = "█" * filled_length + "▒" * (bar_length - filled_length)
         percentage = int(progress * 100)
 
         # Color code based on status
@@ -586,7 +700,7 @@ class VisualLoggingEnhancer:
     def format_duration(cls, duration_seconds: float) -> str:
         """Format duration with appropriate units and color coding."""
         if duration_seconds < 1:
-            duration_str = f"{duration_seconds*1000:.0f}ms"
+            duration_str = f"{duration_seconds * 1000:.0f}ms"
             color = "GREEN"
         elif duration_seconds < 10:
             duration_str = f"{duration_seconds:.2f}s"
@@ -627,10 +741,12 @@ class VisualLoggingEnhancer:
 
         return cls.colorize(memory_str, color)
 
+
 class PipelineProgressTracker:
     """Track pipeline progress across steps with visual indicators."""
 
-    def __init__(self, total_steps: int):
+    def __init__(self, total_steps: int) -> None:
+        """Initialize the instance."""
         self.total_steps = total_steps
         self.current_step = 0
         self.step_status: Dict[int, str] = {}
@@ -646,7 +762,9 @@ class PipelineProgressTracker:
             step_num, self.total_steps, step_name, "RUNNING"
         )
 
-    def complete_step(self, step_num: int, status: str, duration: Optional[float] = None) -> str:
+    def complete_step(
+        self, step_num: int, status: str, duration: Optional[float] = None
+    ) -> str:
         """Mark step as completed and return summary."""
         self.step_status[step_num] = status
         if duration:
@@ -656,7 +774,9 @@ class PipelineProgressTracker:
         completed = len([s for s in self.step_status.values() if s != "RUNNING"])
         success_count = len([s for s in self.step_status.values() if "SUCCESS" in s])
 
-        duration_str = f" in {VisualLoggingEnhancer.format_duration(duration)}" if duration else ""
+        duration_str = (
+            f" in {VisualLoggingEnhancer.format_duration(duration)}" if duration else ""
+        )
 
         if status == "SUCCESS":
             icon = "✅"
@@ -669,13 +789,12 @@ class PipelineProgressTracker:
             color = "RED"
 
         completion_text = VisualLoggingEnhancer.colorize(
-            f"{icon} Step {step_num} completed with {status}{duration_str}",
-            color, True
+            f"{icon} Step {step_num} completed with {status}{duration_str}", color, True
         )
 
         progress_text = VisualLoggingEnhancer.colorize(
             f"Progress: {completed}/{self.total_steps} steps ({success_count} successful)",
-            "CYAN"
+            "CYAN",
         )
 
         return f"{completion_text}\n{progress_text}"
@@ -685,58 +804,84 @@ class PipelineProgressTracker:
         completed = len([s for s in self.step_status.values() if s != "RUNNING"])
         success_count = len([s for s in self.step_status.values() if "SUCCESS" in s])
         warning_count = len([s for s in self.step_status.values() if "WARNING" in s])
-        failed_count = len([s for s in self.step_status.values() if "FAILED" in s or "ERROR" in s])
+        failed_count = len(
+            [s for s in self.step_status.values() if "FAILED" in s or "ERROR" in s]
+        )
 
         elapsed = time.time() - self.start_time
 
         progress_bar = VisualLoggingEnhancer.format_step_header(
-            completed, self.total_steps, "Overall Progress",
-            "SUCCESS" if completed == self.total_steps and failed_count == 0 else "RUNNING"
+            completed,
+            self.total_steps,
+            "Overall Progress",
+            "SUCCESS"
+            if completed == self.total_steps and failed_count == 0
+            else "RUNNING",
         )
 
-        stats = [
+        stats: list[Any] = [
             f"✅ Success: {success_count}",
             f"⚠️ Warnings: {warning_count}",
             f"❌ Failed: {failed_count}",
-            f"⏱️ Elapsed: {VisualLoggingEnhancer.format_duration(elapsed)}"
+            f"⏱️ Elapsed: {VisualLoggingEnhancer.format_duration(elapsed)}",
         ]
 
         return f"{progress_bar}\nStats: {' | '.join(stats)}"
 
+
 class VisualFormatter(StructuredFormatter):
     """Formatter with visual improvements and performance context."""
 
-    def __init__(self, format_string, include_performance=True, use_colors=True):
+    def __init__(
+        self,
+        format_string: Any,
+        include_performance: Any = True,
+        use_colors: Any = True,
+    ) -> None:
+        """Initialize the instance."""
         super().__init__(format_string)
         self.include_performance = include_performance
         self.use_colors = use_colors and VisualLoggingEnhancer.supports_color()
 
-    def format(self, record):
+    def format(self, record: Any) -> Any:
         # Get base formatted message
+        """Provide format behavior."""
         formatted = super().format(record)
 
         # Add color coding for log levels and emojis
         if self.use_colors:
             if "🚀" in formatted:
-                formatted = formatted.replace("🚀", VisualLoggingEnhancer.colorize("🚀", "BLUE", True))
+                formatted = formatted.replace(
+                    "🚀", VisualLoggingEnhancer.colorize("🚀", "BLUE", True)
+                )
             elif "✅" in formatted:
-                formatted = formatted.replace("✅", VisualLoggingEnhancer.colorize("✅", "GREEN", True))
+                formatted = formatted.replace(
+                    "✅", VisualLoggingEnhancer.colorize("✅", "GREEN", True)
+                )
             elif "⚠️" in formatted:
-                formatted = formatted.replace("⚠️", VisualLoggingEnhancer.colorize("⚠️", "YELLOW", True))
+                formatted = formatted.replace(
+                    "⚠️", VisualLoggingEnhancer.colorize("⚠️", "YELLOW", True)
+                )
             elif "❌" in formatted:
-                formatted = formatted.replace("❌", VisualLoggingEnhancer.colorize("❌", "RED", True))
+                formatted = formatted.replace(
+                    "❌", VisualLoggingEnhancer.colorize("❌", "RED", True)
+                )
 
         # Add performance context if available
-        if self.include_performance and hasattr(record, 'performance_context'):
+        if self.include_performance and hasattr(record, "performance_context"):
             perf_data = record.performance_context
-            perf_parts = []
+            perf_parts: list[Any] = []
 
-            if 'duration' in perf_data:
-                duration_str = VisualLoggingEnhancer.format_duration(perf_data['duration'])
+            if "duration" in perf_data:
+                duration_str = VisualLoggingEnhancer.format_duration(
+                    perf_data["duration"]
+                )
                 perf_parts.append(f"⏱️ {duration_str}")
 
-            if 'memory_mb' in perf_data:
-                memory_str = VisualLoggingEnhancer.format_memory_usage(perf_data['memory_mb'])
+            if "memory_mb" in perf_data:
+                memory_str = VisualLoggingEnhancer.format_memory_usage(
+                    perf_data["memory_mb"]
+                )
                 perf_parts.append(f"🧠 {memory_str}")
 
             if perf_parts:
@@ -744,18 +889,25 @@ class VisualFormatter(StructuredFormatter):
 
         return formatted
 
+
 # Global progress tracker
 _global_progress_tracker = None
 
 
-def set_global_progress_tracker(tracker) -> None:
+def set_global_progress_tracker(tracker: Any) -> None:
     """Set the global progress tracker used by log_step_* functions."""
     global _global_progress_tracker
     _global_progress_tracker = tracker
 
+
 # Enhanced logging functions with visual improvements
-def log_step_start(logger_or_step_name, message: Optional[str] = None, step_number: Optional[int] = None,
-                  total_steps: Optional[int] = None, **metadata):
+def log_step_start(
+    logger_or_step_name: Any,
+    message: Optional[str] = None,
+    step_number: Optional[int] = None,
+    total_steps: Optional[int] = None,
+    **metadata: Any,
+) -> Any:
     """Enhanced step start logging with visual progress indicators."""
     if isinstance(logger_or_step_name, str):
         step_name = logger_or_step_name
@@ -771,20 +923,32 @@ def log_step_start(logger_or_step_name, message: Optional[str] = None, step_numb
         if not _global_progress_tracker:
             _global_progress_tracker = PipelineProgressTracker(total_steps)
 
-        progress_header = _global_progress_tracker.start_step(step_number, step_name if isinstance(logger_or_step_name, str) else f"Step {step_number}")
+        progress_header = _global_progress_tracker.start_step(
+            step_number,
+            step_name
+            if isinstance(logger_or_step_name, str)
+            else f"Step {step_number}",
+        )
         message = f"{progress_header}\n    {message}"
 
     PipelineLogger.log_structured(
-        logger, logging.INFO,
+        logger,
+        logging.INFO,
         message,
         event_type="step_start",
         step_number=step_number,
         total_steps=total_steps,
-        **metadata
+        **metadata,
     )
 
-def log_step_success(logger_or_step_name, message: Optional[str] = None, step_number: Optional[int] = None,
-                    duration: Optional[float] = None, **metadata):
+
+def log_step_success(
+    logger_or_step_name: Any,
+    message: Optional[str] = None,
+    step_number: Optional[int] = None,
+    duration: Optional[float] = None,
+    **metadata: Any,
+) -> Any:
     """Enhanced step success logging with visual indicators."""
     if isinstance(logger_or_step_name, str):
         step_name = logger_or_step_name
@@ -801,28 +965,49 @@ def log_step_success(logger_or_step_name, message: Optional[str] = None, step_nu
         step_status = _global_progress_tracker.step_status.get(step_number)
         if step_status != "RUNNING" and step_status is not None:
             # Step already completed, just log the message without completion summary
-            pass
+            logger.debug(
+                "Step %s already completed with status %s",
+                step_number,
+                step_status,
+            )
         else:
             # Step not yet completed, complete it and add summary
-            completion_summary = _global_progress_tracker.complete_step(step_number, "SUCCESS", duration)
+            completion_summary = _global_progress_tracker.complete_step(
+                step_number, "SUCCESS", duration
+            )
             message = f"{completion_summary}\n    {message}"
 
     # Add performance context to log record
-    performance_context = {}
+    performance_context: dict[Any, Any] = {}
     if duration:
-        performance_context['duration'] = duration
-    if 'memory_mb' in metadata:
-        performance_context['memory_mb'] = metadata['memory_mb']
+        performance_context["duration"] = duration
+    if "memory_mb" in metadata:
+        performance_context["memory_mb"] = metadata["memory_mb"]
 
     record = logging.LogRecord(
-        name=logger.name, level=logging.INFO, pathname="", lineno=0,
-        msg=f"✅ {message}", args=(), exc_info=None
+        name=logger.name,
+        level=logging.INFO,
+        pathname="",
+        lineno=0,
+        msg=f"✅ {message}",
+        args=(),
+        exc_info=None,
     )
-    record.structured_data = {**metadata, "event_type": "step_success", "step_number": step_number}
+    record.structured_data = {
+        **metadata,
+        "event_type": "step_success",
+        "step_number": step_number,
+    }
     record.performance_context = performance_context
     logger.handle(record)
 
-def log_step_warning(logger_or_step_name, message: Optional[str] = None, step_number: Optional[int] = None, **metadata):
+
+def log_step_warning(
+    logger_or_step_name: Any,
+    message: Optional[str] = None,
+    step_number: Optional[int] = None,
+    **metadata: Any,
+) -> Any:
     """Enhanced step warning logging with visual indicators."""
     if isinstance(logger_or_step_name, str):
         step_name = logger_or_step_name
@@ -835,18 +1020,27 @@ def log_step_warning(logger_or_step_name, message: Optional[str] = None, step_nu
     # Add completion tracking for warnings
     global _global_progress_tracker
     if step_number and _global_progress_tracker:
-        completion_summary = _global_progress_tracker.complete_step(step_number, "SUCCESS_WITH_WARNINGS")
+        completion_summary = _global_progress_tracker.complete_step(
+            step_number, "SUCCESS_WITH_WARNINGS"
+        )
         message = f"{completion_summary}\n    {message}"
 
     PipelineLogger.log_structured(
-        logger, logging.WARNING,
+        logger,
+        logging.WARNING,
         f"⚠️ {message}",
         event_type="step_warning",
         step_number=step_number,
-        **metadata
+        **metadata,
     )
 
-def log_step_error(logger_or_step_name, message: Optional[str] = None, step_number: Optional[int] = None, **metadata):
+
+def log_step_error(
+    logger_or_step_name: Any,
+    message: Optional[str] = None,
+    step_number: Optional[int] = None,
+    **metadata: Any,
+) -> Any:
     """Enhanced step error logging with visual indicators."""
     if isinstance(logger_or_step_name, str):
         step_name = logger_or_step_name
@@ -859,51 +1053,65 @@ def log_step_error(logger_or_step_name, message: Optional[str] = None, step_numb
     # Add completion tracking for errors
     global _global_progress_tracker
     if step_number and _global_progress_tracker:
-        completion_summary = _global_progress_tracker.complete_step(step_number, "FAILED")
+        completion_summary = _global_progress_tracker.complete_step(
+            step_number, "FAILED"
+        )
         message = f"{completion_summary}\n    {message}"
 
     # Extract event_type if provided, otherwise use default
     event_type = metadata.pop("event_type", "step_error") if metadata else "step_error"
 
     PipelineLogger.log_structured(
-        logger, logging.ERROR,
+        logger,
+        logging.ERROR,
         f"❌ {message}",
         event_type=event_type,
         step_number=step_number,
-        **metadata
+        **metadata,
     )
     # Return a small dict to satisfy tests expecting non-None
     return {"status": "ERROR", "message": message}
 
-def log_pipeline_summary(logger: logging.Logger, summary_data: Dict[str, Any]):
+
+def log_pipeline_summary(logger: logging.Logger, summary_data: Dict[str, Any]) -> Any:
     """Enhanced pipeline summary logging with sophisticated visual formatting."""
 
     # Extract summary statistics - use performance_summary for accurate counts
-    steps = summary_data.get('steps', [])
-    perf_summary = summary_data.get('performance_summary', {})
+    steps = summary_data.get("steps", [])
+    perf_summary = summary_data.get("performance_summary", {})
 
     # Use performance_summary counts which are correctly calculated in main.py
-    total_steps = perf_summary.get('total_steps', len(steps))
-    successful_steps = perf_summary.get('successful_steps', 0)
-    warning_count = perf_summary.get('warnings', 0)
-    failed_steps = perf_summary.get('failed_steps', 0)
+    total_steps = perf_summary.get("total_steps", len(steps))
+    successful_steps = perf_summary.get("successful_steps", 0)
+    warning_count = perf_summary.get("warnings", 0)
+    failed_steps = perf_summary.get("failed_steps", 0)
 
     # Calculate pure successes vs successes with warnings from step statuses
-    pure_successes = len([s for s in steps if s.get('status') == 'SUCCESS'])
-    successes_with_warnings = len([s for s in steps if s.get('status') == 'SUCCESS_WITH_WARNINGS'])
-    _failures = len([s for s in steps if 'FAILED' in s.get('status', '') or 'ERROR' in s.get('status', '')])  # noqa: F841 - computed for summary diagnostics
+    pure_successes = len([s for s in steps if s.get("status") == "SUCCESS"])
+    successes_with_warnings = len(
+        [s for s in steps if s.get("status") == "SUCCESS_WITH_WARNINGS"]
+    )
+    _failures = len(
+        [
+            s
+            for s in steps
+            if "FAILED" in s.get("status", "") or "ERROR" in s.get("status", "")
+        ]
+    )  # noqa: F841 - computed for summary diagnostics
 
     # Use total_duration from summary if available, otherwise calculate
-    total_duration = summary_data.get('total_duration_seconds', 0)
+    total_duration = summary_data.get("total_duration_seconds", 0)
     if not total_duration:
-        total_duration = sum(s.get('duration_seconds', 0) for s in steps if s.get('duration_seconds'))
+        total_duration = sum(
+            s.get("duration_seconds", 0) for s in steps if s.get("duration_seconds")
+        )
 
     # Determine overall status from summary_data
-    overall_status = summary_data.get('overall_status', 'UNKNOWN')
-    if overall_status == 'FAILED':
+    overall_status = summary_data.get("overall_status", "UNKNOWN")
+    if overall_status == "FAILED":
         status_color = "RED"
         status_icon = "❌"
-    elif overall_status in ('SUCCESS_WITH_WARNINGS', 'PARTIAL_SUCCESS'):
+    elif overall_status in ("SUCCESS_WITH_WARNINGS", "PARTIAL_SUCCESS"):
         status_color = "YELLOW"
         status_icon = "⚠️"
     else:
@@ -924,7 +1132,7 @@ def log_pipeline_summary(logger: logging.Logger, summary_data: Dict[str, Any]):
     title_line = f"║{' ' * title_padding}{VisualLoggingEnhancer.colorize(title, status_color, True)}{' ' * (box_width - 2 - title_padding - len(title))}║"
 
     # Create content lines with enhanced formatting
-    content_lines = []
+    content_lines: list[Any] = []
 
     # Basic statistics
     stats_line = f"║ Total Steps: {VisualLoggingEnhancer.colorize(str(total_steps), 'WHITE', True)}"
@@ -933,32 +1141,57 @@ def log_pipeline_summary(logger: logging.Logger, summary_data: Dict[str, Any]):
     # Success statistics with colors - show breakdown of pure successes and successes with warnings
     success_text = f"✅ Successful: {VisualLoggingEnhancer.colorize(str(successful_steps), 'GREEN', True)}"
     if successes_with_warnings > 0:
-        success_breakdown = f" ({pure_successes} pure, {successes_with_warnings} with warnings)"
+        success_breakdown = (
+            f" ({pure_successes} pure, {successes_with_warnings} with warnings)"
+        )
         success_text += success_breakdown
     warning_text = f"⚠️ Warnings: {VisualLoggingEnhancer.colorize(str(warning_count), 'YELLOW', True)}"
-    failure_text = f"❌ Failed: {VisualLoggingEnhancer.colorize(str(failed_steps), 'RED', True)}"
+    failure_text = (
+        f"❌ Failed: {VisualLoggingEnhancer.colorize(str(failed_steps), 'RED', True)}"
+    )
 
     # Calculate line lengths accounting for ANSI color codes
     success_display_len = len(f"✅ Successful: {successful_steps}")
     if successes_with_warnings > 0:
-        success_display_len += len(f" ({pure_successes} pure, {successes_with_warnings} with warnings)")
+        success_display_len += len(
+            f" ({pure_successes} pure, {successes_with_warnings} with warnings)"
+        )
     warning_display_len = len(f"⚠️ Warnings: {warning_count}")
     failure_display_len = len(f"❌ Failed: {failed_steps}")
 
     success_line = f"║ {success_text}"
-    content_lines.append(success_line.ljust(box_width - 1 + (len(success_text) - success_display_len)) + "║")
+    content_lines.append(
+        success_line.ljust(box_width - 1 + (len(success_text) - success_display_len))
+        + "║"
+    )
 
     warning_line = f"║ {warning_text}"
-    content_lines.append(warning_line.ljust(box_width - 1 + (len(warning_text) - warning_display_len)) + "║")
+    content_lines.append(
+        warning_line.ljust(box_width - 1 + (len(warning_text) - warning_display_len))
+        + "║"
+    )
 
     failure_line = f"║ {failure_text}"
-    content_lines.append(failure_line.ljust(box_width - 1 + (len(failure_text) - failure_display_len)) + "║")
+    content_lines.append(
+        failure_line.ljust(box_width - 1 + (len(failure_text) - failure_display_len))
+        + "║"
+    )
 
     # Duration with enhanced formatting
-    duration_text = f"⏱️ Total Time: {VisualLoggingEnhancer.format_duration(total_duration)}"
-    duration_display_len = len("⏱️ Total Time: ") + len(VisualLoggingEnhancer.format_duration(total_duration).replace('\033[', '').split('m')[-1].replace('\033[0m', ''))
+    duration_text = (
+        f"⏱️ Total Time: {VisualLoggingEnhancer.format_duration(total_duration)}"
+    )
+    duration_display_len = len("⏱️ Total Time: ") + len(
+        VisualLoggingEnhancer.format_duration(total_duration)
+        .replace("\033[", "")
+        .split("m")[-1]
+        .replace("\033[0m", "")
+    )
     duration_line = f"║ {duration_text}"
-    content_lines.append(duration_line.ljust(box_width - 1 + (len(duration_text) - duration_display_len)) + "║")
+    content_lines.append(
+        duration_line.ljust(box_width - 1 + (len(duration_text) - duration_display_len))
+        + "║"
+    )
 
     # Add performance insights if available
     if total_duration > 0:
@@ -968,11 +1201,15 @@ def log_pipeline_summary(logger: logging.Logger, summary_data: Dict[str, Any]):
 
     # Success rate calculation - use successful_steps which includes both pure successes and successes with warnings
     success_rate = (successful_steps / total_steps * 100) if total_steps > 0 else 0
-    success_rate_color = "GREEN" if success_rate >= 90 else "YELLOW" if success_rate >= 70 else "RED"
+    success_rate_color = (
+        "GREEN" if success_rate >= 90 else "YELLOW" if success_rate >= 70 else "RED"
+    )
     rate_text = f"📊 Success Rate: {VisualLoggingEnhancer.colorize(f'{success_rate:.1f}%', success_rate_color, True)}"
     rate_display_len = len(f"📊 Success Rate: {success_rate:.1f}%")
     rate_line = f"║ {rate_text}"
-    content_lines.append(rate_line.ljust(box_width - 1 + (len(rate_text) - rate_display_len)) + "║")
+    content_lines.append(
+        rate_line.ljust(box_width - 1 + (len(rate_text) - rate_display_len)) + "║"
+    )
 
     # Log the sophisticated formatted summary
     logger.info("")
@@ -986,17 +1223,24 @@ def log_pipeline_summary(logger: logging.Logger, summary_data: Dict[str, Any]):
 
     # Add step-by-step breakdown for failures/warnings with detailed warning messages
     if failed_steps > 0 or successes_with_warnings > 0:
-        logger.info("🔍 " + VisualLoggingEnhancer.colorize("DETAILED STEP ANALYSIS:", "CYAN", True))
+        logger.info(
+            "🔍 "
+            + VisualLoggingEnhancer.colorize("DETAILED STEP ANALYSIS:", "CYAN", True)
+        )
         for step in steps:
-            status = step.get('status', 'UNKNOWN')
-            step_name = step.get('script_name', 'Unknown')
-            _step_description = step.get('description', step_name)  # noqa: F841 - available for enhanced logging
+            status = step.get("status", "UNKNOWN")
+            step_name = step.get("script_name", "Unknown")
+            _step_description = step.get("description", step_name)  # noqa: F841 - available for enhanced logging
 
-            if 'FAILED' in status or 'ERROR' in status or 'WARNING' in status:
-                duration = step.get('duration_seconds', 0)
-                duration_str = f" ({VisualLoggingEnhancer.format_duration(duration)})" if duration else ""
+            if "FAILED" in status or "ERROR" in status or "WARNING" in status:
+                duration = step.get("duration_seconds", 0)
+                duration_str = (
+                    f" ({VisualLoggingEnhancer.format_duration(duration)})"
+                    if duration
+                    else ""
+                )
 
-                if 'FAILED' in status or 'ERROR' in status:
+                if "FAILED" in status or "ERROR" in status:
                     icon = "❌"
                     color = "RED"
                 else:
@@ -1004,67 +1248,87 @@ def log_pipeline_summary(logger: logging.Logger, summary_data: Dict[str, Any]):
                     color = "YELLOW"
 
                 # Extract warning/error messages from step output
-                warning_messages = []
-                stdout = step.get('stdout', '')
-                stderr = step.get('stderr', '')
+                warning_messages: list[Any] = []
+                stdout = step.get("stdout", "")
+                stderr = step.get("stderr", "")
                 combined_output = f"{stdout}\n{stderr}"
 
                 # Look for warning patterns in output
                 import re
-                warning_patterns = [
-                    r'WARNING[:\s]+([^\n]+)',
-                    r'⚠️[:\s]+([^\n]+)',
+
+                warning_patterns: list[Any] = [
+                    r"WARNING[:\s]+([^\n]+)",
+                    r"⚠️[:\s]+([^\n]+)",
                 ]
 
                 for pattern in warning_patterns:
                     matches = re.findall(pattern, combined_output, re.IGNORECASE)
-                    warning_messages.extend(matches[:3])  # Limit to first 3 warnings per step
+                    warning_messages.extend(
+                        matches[:3]
+                    )  # Limit to first 3 warnings per step
 
                 # Same log line must not appear twice (e.g. overlapping patterns)
-                warning_messages = list(dict.fromkeys(m.strip() for m in warning_messages if m.strip()))
+                warning_messages = list(
+                    dict.fromkeys(m.strip() for m in warning_messages if m.strip())
+                )
 
                 # Also check dependency_warnings
-                dep_warnings = step.get('dependency_warnings', [])
+                dep_warnings = step.get("dependency_warnings", [])
                 if dep_warnings:
-                    warning_messages.extend(dep_warnings[:2])  # Limit to first 2 dependency warnings
+                    warning_messages.extend(
+                        dep_warnings[:2]
+                    )  # Limit to first 2 dependency warnings
 
                 # Display step with warnings
-                logger.info(f"  {icon} {VisualLoggingEnhancer.colorize(step_name, color)}: {status}{duration_str}")
+                logger.info(
+                    f"  {icon} {VisualLoggingEnhancer.colorize(step_name, color)}: {status}{duration_str}"
+                )
                 if warning_messages:
                     for msg in warning_messages[:3]:  # Show max 3 warning messages
                         clean_msg = msg.strip()[:100]  # Limit message length
-                        logger.info(f"    └─ {VisualLoggingEnhancer.colorize(clean_msg, 'YELLOW')}")
+                        logger.info(
+                            f"    └─ {VisualLoggingEnhancer.colorize(clean_msg, 'YELLOW')}"
+                        )
         logger.info("")
+
 
 def get_performance_summary() -> Dict[str, Any]:
     """Get performance summary for the current pipeline run."""
-    return performance_tracker.get_summary()
+    return cast("dict[str, Any]", performance_tracker.get_summary())
 
-def reset_progress_tracker():
+
+def reset_progress_tracker() -> Any:
     """Reset the global progress tracker for a new pipeline run."""
     global _global_progress_tracker
     _global_progress_tracker = None
+
 
 def get_progress_summary() -> str:
     """Get a summary of current progress."""
     return "Progress tracking not available in this context"
 
-def setup_correlation_context(step_name: str, correlation_id: Optional[str] = None) -> str:
+
+def setup_correlation_context(
+    step_name: str, correlation_id: Optional[str] = None
+) -> str:
     """
     Setup correlation context for a pipeline step.
-    
+
     Args:
         step_name: Name of the pipeline step
         correlation_id: Optional correlation ID (generated if not provided)
-        
+
     Returns:
         The correlation ID that was set
     """
     return PipelineLogger.set_correlation_context(step_name, correlation_id)
 
+
 # Module-level function for setting correlation context
 # Some modules import set_correlation_context directly from this module.
 # This is a thin wrapper that delegates to PipelineLogger.set_correlation_context.
-def set_correlation_context(step_name: str, correlation_id: Optional[str] = None) -> str:
+def set_correlation_context(
+    step_name: str, correlation_id: Optional[str] = None
+) -> str:
     """Set correlation context for logging. Delegates to PipelineLogger.set_correlation_context."""
     return PipelineLogger.set_correlation_context(step_name, correlation_id)

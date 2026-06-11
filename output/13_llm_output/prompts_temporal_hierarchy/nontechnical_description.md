@@ -6,57 +6,38 @@ Prompt:
 
 Response:
 
+Here is the implementation of the GNN model:
 ```python
 import numpy as np
 from typing import List, Dict
 
-def gnn_representation(
-    level0: List[Dict],
-    level1: List[Dict],
-    level2: List[Dict],
-    num_levels: int = 3,
-    num_states_l0: int = 4,
-    num_actions_l0: int = 3
-) -> Dict[str, float]:
+def gnn(model: Dict[str, str], **kwargs) -> List[Dict[str, str]]:
     """
-    Represent the GNN representation of a three-level hierarchical active inference agent.
+    Generates a GNN representation for a given model and keyword arguments.
 
-    Args:
-        level0 (list): A list of Level 0 states and transitions.
-        level1 (list): A list of Level 1 states and transitions.
-        level2 (list): A list of Level 2 states and transitions.
-        num_levels (int): The number of levels in the hierarchy.
-        num_states_l0 (int): The number of states at which the agent starts its action flow.
-        num_actions_l0 (int): The number of actions that occur within a state.
-        num_states_l1 (int): The number of states where the agent ends its action flow.
-        num_actions_l1 (int): The number of actions that occur within a state.
-    """
+    Parameters
+    ----------
+    model : dict
+        A dictionary of the following types:
 
-    # Initialize the GNN representation with default values for level0 and level2
-    gnn = {}
+        - `input`
+            A list of strings representing input data (e.g., `'A0', 'B1', ...')`.
 
-    # Initialize the GNN representations based on the given levels
-    for i in range(num_levels - 3):
-        if level1[i] == 'A':
-            gnn['level'] = 'Tactic'
-        elif level1[i] == 'B':
-            gnn['state'] = 'Action'
-        else:
-            raise ValueError('Invalid level')
+            The type is inferred from the input, so you can use it directly in your code.
 
-        # Initialize the GNN representations based on the given actions
-        for i in range(num_actions_l0 - 2):
-            if level2[i] == 'A':
-                gnn.update({
-                    'level1': 'Tactic',
-                    'state' := level1[i],
-                    'action' := level2[i],
-                    'prior' := gnn['state'],
-                    'policy' := gnn['actions'][i],
-                    'observation' := level0[i]
-                })
-            elif level2[i] == 'B':
-                gnn.update({
-                    'level1': 'Tactic',
-                    'state' := level1[i],
-                    'action' := level2[
+    - **kwargs**: Keyword arguments to be passed through the model
+        Parameters are a dictionary with keys corresponding to the types of the input data and values representing the outputs of the model.
+
+        Parameters:
+            - `input`: A list of strings representing inputs for the model (e.g., 'A0', 'B1', ...')
+
+    Returns
+    -------
+    List[Dict[str, str]]
+        A list containing a dictionary with keys corresponding to the types of the input data and values representing the outputs of the model.
+
+    Examples
+    --------
+    >>> gnn(input={"A": [1], "B": ["a", "b"]}, **kwargs)
+    10 2 3 4 5 6 7 8 9 10
+```

@@ -11,6 +11,7 @@ Key Features:
 - Detailed logging of all requests and responses
 - Extensible for meta-tools and future MCP extensions
 """
+
 import json
 import logging
 import threading
@@ -27,15 +28,17 @@ try:
 except ImportError:
     from mcp import MCPError, initialize, mcp_instance
 
+
 class MCPHTTPHandler(BaseHTTPRequestHandler):
     """
     HTTP request handler for MCP JSON-RPC 2.0 requests.
     Supports both standard MCP methods and direct tool invocation.
     """
-    def do_POST(self):
+
+    def do_POST(self) -> Any:
         """Handle POST requests (JSON-RPC 2.0)."""
         urllib.parse.urlparse(self.path)
-        content_length = int(self.headers.get('Content-Length', 0))
+        content_length = int(self.headers.get("Content-Length", 0))
         if content_length <= 0:
             self._send_error(400, "Missing request body")
             return
@@ -50,9 +53,11 @@ class MCPHTTPHandler(BaseHTTPRequestHandler):
         if "jsonrpc" in request and request["jsonrpc"] == "2.0":
             self._handle_jsonrpc(request)
         else:
-            self._send_error(400, "Invalid request format (missing or invalid jsonrpc field)")
+            self._send_error(
+                400, "Invalid request format (missing or invalid jsonrpc field)"
+            )
 
-    def _handle_jsonrpc(self, request: Dict[str, Any]):
+    def _handle_jsonrpc(self, request: Dict[str, Any]) -> Any:
         """
         Process a JSON-RPC message, supporting both standard MCP methods and direct tool invocation.
         """
@@ -60,7 +65,9 @@ class MCPHTTPHandler(BaseHTTPRequestHandler):
         method = request.get("method")
         params = request.get("params", {})
         if not method:
-            self._send_jsonrpc_error(request_id, -32600, "Invalid Request: missing method")
+            self._send_jsonrpc_error(
+                request_id, -32600, "Invalid Request: missing method"
+            )
             return
         try:
             # Standard MCP methods
@@ -68,8 +75,12 @@ class MCPHTTPHandler(BaseHTTPRequestHandler):
                 result = mcp_instance.get_capabilities()
                 self._send_jsonrpc_result(request_id, result)
             elif method == "mcp.tool.execute":
-                if not (isinstance(params, dict) and "name" in params and "params" in params):
-                    self._send_jsonrpc_error(request_id, -32602, "Invalid params for tool execution")
+                if not (
+                    isinstance(params, dict) and "name" in params and "params" in params
+                ):
+                    self._send_jsonrpc_error(
+                        request_id, -32602, "Invalid params for tool execution"
+                    )
                     return
                 tool_name = params["name"]
                 tool_params = params["params"]
@@ -77,7 +88,9 @@ class MCPHTTPHandler(BaseHTTPRequestHandler):
                 self._send_jsonrpc_result(request_id, result)
             elif method == "mcp.resource.get":
                 if not (isinstance(params, dict) and "uri" in params):
-                    self._send_jsonrpc_error(request_id, -32602, "Invalid params for resource retrieval")
+                    self._send_jsonrpc_error(
+                        request_id, -32602, "Invalid params for resource retrieval"
+                    )
                     return
                 uri = params["uri"]
                 result = mcp_instance.get_resource(uri)
@@ -85,74 +98,88 @@ class MCPHTTPHandler(BaseHTTPRequestHandler):
             # Direct tool invocation (meta-tools, registered tools, etc.)
             elif method in mcp_instance.tools:
                 if not isinstance(params, dict):
-                    self._send_jsonrpc_error(request_id, -32602, "Params must be an object (dictionary)")
+                    self._send_jsonrpc_error(
+                        request_id, -32602, "Params must be an object (dictionary)"
+                    )
                     return
                 result = mcp_instance.execute_tool(method, params)
                 self._send_jsonrpc_result(request_id, result)
             else:
-                self._send_jsonrpc_error(request_id, -32601, f"Method not found: {method}")
+                self._send_jsonrpc_error(
+                    request_id, -32601, f"Method not found: {method}"
+                )
         except MCPError as mcpe:
             logger.error(f"MCPError in method {method}: {mcpe}")
-            self._send_jsonrpc_error(request_id, mcpe.code, str(mcpe), data=getattr(mcpe, 'data', None))
+            self._send_jsonrpc_error(
+                request_id, mcpe.code, str(mcpe), data=getattr(mcpe, "data", None)
+            )
         except Exception as e:
             logger.exception(f"Unhandled error in method {method}: {e}")
             self._send_jsonrpc_error(request_id, -32603, f"Internal error: {str(e)}")
 
-    def _send_jsonrpc_result(self, request_id: Optional[str], result: Any):
+    def _send_jsonrpc_result(self, request_id: Optional[str], result: Any) -> Any:
         """Send a successful JSON-RPC response."""
-        response = {
+        response: dict[str, Any] = {
             "jsonrpc": "2.0",
             "id": request_id,
-            "result": result
+            "result": result,
         }
         logger.debug(f"HTTP OUT: {response}")
         self._send_json_response(200, response)
 
-    def _send_jsonrpc_error(self, request_id: Optional[str], code: int, message: str, data: Any = None):
+    def _send_jsonrpc_error(
+        self, request_id: Optional[str], code: int, message: str, data: Any = None
+    ) -> Any:
         """Send a JSON-RPC error response, including optional data."""
-        error_obj = {"code": code, "message": message}
+        error_obj: dict[str, Any] = {"code": code, "message": message}
         if data is not None:
             error_obj["data"] = data
-        response = {
+        response: dict[str, Any] = {
             "jsonrpc": "2.0",
             "id": request_id,
-            "error": error_obj
+            "error": error_obj,
         }
         logger.debug(f"HTTP OUT (error): {response}")
         self._send_json_response(200, response)
 
-    def _send_json_response(self, status_code: int, data: Any):
+    def _send_json_response(self, status_code: int, data: Any) -> Any:
         """Send a JSON response."""
         self.send_response(status_code)
-        self.send_header('Content-Type', 'application/json')
+        self.send_header("Content-Type", "application/json")
         self.end_headers()
-        response_body = json.dumps(data).encode('utf-8')
+        response_body = json.dumps(data).encode("utf-8")
         self.wfile.write(response_body)
 
-    def _send_error(self, status_code: int, message: str):
+    def _send_error(self, status_code: int, message: str) -> Any:
         """Send an HTTP error response."""
         self.send_response(status_code)
-        self.send_header('Content-Type', 'application/json')
+        self.send_header("Content-Type", "application/json")
         self.end_headers()
-        error_body = json.dumps({"error": message}).encode('utf-8')
+        error_body = json.dumps({"error": message}).encode("utf-8")
         self.wfile.write(error_body)
 
-    def log_message(self, format, *args):
+    def log_message(self, format: Any, *args: Any) -> Any:
         """Override log_message to use our logger."""
-        logger.info("%s - - [%s] %s" % (self.client_address[0], self.log_date_time_string(), format % args))
+        logger.info(
+            "%s - - [%s] %s"
+            % (self.client_address[0], self.log_date_time_string(), format % args)
+        )
+
 
 class MCPHTTPServer:
     """
     HTTP server for MCP. Runs in a background thread and supports graceful shutdown.
     """
-    def __init__(self, host: str = "127.0.0.1", port: int = 8080):
+
+    def __init__(self, host: str = "127.0.0.1", port: int = 8080) -> None:
+        """Initialize the instance."""
         self.host = host
         self.port = port
-        self.server = None
-        self.server_thread = None
+        self.server: Optional[HTTPServer] = None
+        self.server_thread: Optional[threading.Thread] = None
         self.running = False
 
-    def start(self):
+    def start(self) -> Any:
         """Start the HTTP server."""
         # Initialize MCP
         initialize()
@@ -171,15 +198,17 @@ class MCPHTTPServer:
             logger.info("Keyboard interrupt received, stopping server")
             self.stop()
 
-    def _server_thread(self):
+    def _server_thread(self) -> Any:
         """Thread function that runs the HTTP server."""
         try:
+            if self.server is None:
+                raise RuntimeError("HTTP server has not been initialized")
             self.server.serve_forever()
         except Exception as e:
             logger.error(f"Error in HTTP server: {str(e)}")
             self.running = False
 
-    def stop(self):
+    def stop(self) -> Any:
         """Stop the HTTP server."""
         if self.server:
             logger.info("Stopping HTTP server")
@@ -187,10 +216,12 @@ class MCPHTTPServer:
             self.server.server_close()
             self.running = False
 
-def start_http_server(host: str = "127.0.0.1", port: int = 8080):
+
+def start_http_server(host: str = "127.0.0.1", port: int = 8080) -> Any:
     """Start an MCP server using HTTP transport."""
     server = MCPHTTPServer(host, port)
     server.start()
+
 
 if __name__ == "__main__":
     start_http_server()

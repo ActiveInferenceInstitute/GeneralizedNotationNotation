@@ -14,6 +14,11 @@ Usage:
     python src/main.py --only-steps 21  # MCP step also registers API tools
 """
 
+from typing import Any
+
+__version__ = "1.6.0"
+
+
 from pathlib import Path
 
 MODULE_NAME = "api"
@@ -23,15 +28,26 @@ MODULE_DESCRIPTION = "FastAPI-based REST interface for the GNN processing pipeli
 # API is optional — check for fastapi at import time
 try:
     import fastapi  # noqa: F401
+
     FASTAPI_AVAILABLE = True
 except ImportError:
     FASTAPI_AVAILABLE = False
 
-FEATURES = {
+FEATURES: dict[str, Any] = {
     "rest_api": FASTAPI_AVAILABLE,
     "job_management": FASTAPI_AVAILABLE,
     "async_execution": FASTAPI_AVAILABLE,
     "mcp_tool_registration": True,
 }
 
-__all__ = ["MODULE_NAME", "MODULE_VERSION", "FASTAPI_AVAILABLE", "FEATURES"]
+__all__: list[Any] = ["MODULE_NAME", "MODULE_VERSION", "FASTAPI_AVAILABLE", "FEATURES"]
+
+
+def get_module_info() -> dict:
+    """Return module metadata for composability and MCP discovery."""
+    return {
+        "name": "api",
+        "version": __version__,
+        "description": "REST API (FastAPI) for pipeline-as-a-service",
+        "features": FEATURES,
+    }

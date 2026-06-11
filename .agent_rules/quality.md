@@ -1,6 +1,6 @@
 # Code Quality Standards
 
-> **Principle**: Real implementations only. No mocks, no placeholders, no stubs.
+> **Principle**: Real implementations only. Avoid simulated replacements and incomplete surfaces.
 
 ## Type Safety
 
@@ -78,11 +78,11 @@ uv run mypy src/ --strict
 
 ## Implementation Quality Rules
 
-### No Mocks ⚠️
+### Real Implementations ⚠️
 ```python
 # ❌ WRONG
-from unittest.mock import MagicMock, patch
-mock_logger = MagicMock()
+class TestLogger:
+    def info(self, message): ...
 
 # ✅ CORRECT
 import logging
@@ -91,8 +91,8 @@ logger = logging.getLogger("test")
 
 ### Real Data Testing
 ```python
-# ❌ WRONG — hard-coded fake data
-model = {"name": "fake", "states": 2}
+# ❌ WRONG — hard-coded substitute data
+model = {"name": "example", "states": 2}
 
 # ✅ CORRECT — use actual GNN fixture files
 from tests.conftest import sample_gnn_files
@@ -120,10 +120,10 @@ Before submitting a new module, verify:
 
 - [ ] `__init__.py` with `__version__`, `FEATURES`, `get_module_info()`
 - [ ] `processor.py` with standard function signature
-- [ ] `mcp.py` with `MCP_TOOLS` dict and `register_tools()`
+- [ ] `mcp.py` with `register_tools(mcp_instance)` and explicit `register_tool(...)` schemas
 - [ ] `AGENTS.md` documenting capabilities
 - [ ] `README.md` with usage examples
-- [ ] Tests in `src/tests/test_MODULENAME_overall.py`
+- [ ] Tests in `src/tests/MODULENAME/test_MODULENAME_overall.py`
 - [ ] All public functions have complete type hints
 - [ ] All public functions have docstrings with examples
 - [ ] No unused imports
@@ -141,7 +141,7 @@ logger = logging.getLogger(__name__)
 # Levels:
 logger.debug("Detailed trace info for troubleshooting")
 logger.info("Normal operation milestones: files found, steps completed")
-logger.warning("Recoverable issue: optional dep missing, fallback used")
+logger.warning("Recoverable issue: optional dependency missing; emitted skipped status")
 logger.error("Non-fatal failure: file failed to process, step degraded")
 logger.critical("Fatal error: pipeline cannot continue")
 
@@ -167,4 +167,4 @@ logger.error(f"Failed to parse {file_path}: {e} — check file format")
 
 ---
 
-**Last Updated**: March 2026 | **Status**: Production Standard
+**Last Updated**: 2026-05-20 | **Status**: Maintained Standard

@@ -6,3 +6,7 @@ It ensures that `Meta-Aware-2` tasks resolve without runtime dependency loops.
 
 ## Components
 Expected available types: PaperVerification, TestCompleteImplementation
+
+## Parent specification
+
+- Canonical policy: [Cognitive phenomena](../SPEC.md)

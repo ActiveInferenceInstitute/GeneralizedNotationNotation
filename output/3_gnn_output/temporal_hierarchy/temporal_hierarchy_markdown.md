@@ -90,6 +90,19 @@ D2 = [[0.5, 0.5]]
 tau0 = [[0.1]]
 tau1 = [[1.0]]
 tau2 = [[10.0]]
+num_levels = 3
+num_states_l0 = 4
+num_obs_l0 = 3
+num_actions_l0 = 3
+num_states_l1 = 3
+num_obs_l1 = 4
+num_actions_l1 = 3
+num_states_l2 = 2
+num_obs_l2 = 3
+num_actions_l2 = 2
+timescale_ratio_1_0 = 10
+timescale_ratio_2_1 = 10
+num_timesteps = 100
 
 ## Time
 Dynamic
@@ -129,6 +142,6 @@ tau2 = StrategicTimeConstant
 t = Time
 
 ## Footer
-Generated: 2026-04-10T10:24:32.075442
+Generated: 2026-05-25T09:59:34.803304
 
 ## Signature

@@ -1,24 +1,24 @@
 # Performance Optimization
 
-> Full pipeline target: <3 minutes | Peak memory: <500MB
+> Treat performance numbers as run evidence, not permanent documentation. Measure locally before publishing timing or memory claims.
 
-## Step Benchmarks (Actual — March 2026)
+## Step Targets And Measurement
 
-| Step | Description | Target | Actual |
-|------|-------------|--------|--------|
-| 0 | Template | <1s | 0.13s |
-| 1 | Setup | <5s | 2.46s |
-| 2 | Tests | <120s | 93.5s |
-| 3 | GNN Processing | <1s | 0.09s |
-| 4–7 | Registry/Type/Val/Export | <1s each | ~0.06s |
-| 8 | Visualization | <5s | 0.32s |
-| 9 | Advanced Viz | <15s | 8.25s |
-| 12 | Execute | <60s | 29.8s |
-| 13 | LLM | <60s | 0.41s |
-| 14 | ML Integration | <5s | 1.74s |
-| 21 | MCP | <15s | 10.5s |
-| 22 | GUI | <2s | 1.19s |
-| **Total** | **Full pipeline** | **<3 min** | **~2m53s** |
+| Step | Description | Target |
+|------|-------------|--------|
+| 0 | Template | <1s |
+| 1 | Setup | <5s |
+| 2 | Tests | <20min for command-of-record full suite |
+| 3 | GNN Processing | <1s for sample models |
+| 4–7 | Registry/Type/Val/Export | <30s each |
+| 8 | Visualization | <60s |
+| 9 | Advanced Viz | <180s |
+| 12 | Execute | <300s |
+| 13 | LLM | <600s |
+| 14 | ML Integration | <300s |
+| 21 | MCP | <60s |
+| 22 | GUI | <60s |
+| Full pipeline | Local complete run | Record exact command, model set, environment, duration, and skips |
 
 ---
 
@@ -164,4 +164,4 @@ uv pip install snakeviz && snakeviz profile.prof
 
 ---
 
-**Last Updated**: March 2026 | **Status**: Production Standard
+**Last Updated**: 2026-05-20 | **Status**: Maintained Standard

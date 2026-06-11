@@ -1,7 +1,7 @@
 {
   "framework": "pytorch",
   "model_name": "actinf_pomdp_agent",
-  "num_timesteps": 15,
+  "num_timesteps": 30,
   "num_states": 3,
   "validation": {
     "beliefs_in_range": true,
@@ -10,15 +10,16 @@
     "all_valid": true
   },
   "metrics": {
-    "mean_belief_entropy": 1.4802973661668754e-17,
-    "final_belief_entropy": -0.0,
-    "mean_confidence": 0.9999999999999999,
-    "final_confidence": 0.9999999999999999,
+    "mean_belief_entropy": 0.19788435321519196,
+    "final_belief_entropy": 0.2061997214224159,
+    "mean_confidence": 0.9085110959511123,
+    "final_confidence": 0.9473679460729121,
     "action_distribution": {
-      "0": 7,
-      "1": 8
+      "0": 9,
+      "1": 10,
+      "2": 11
     },
-    "mean_efe": 0.5950597735424263
+    "mean_efe": 1.1134185576271227
   },
   "plots_generated": true
 }

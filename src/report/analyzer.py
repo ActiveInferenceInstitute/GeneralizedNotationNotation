@@ -13,18 +13,20 @@ from pathlib import Path
 from typing import Any, Dict, List
 
 
-def collect_pipeline_data(pipeline_output_dir: Path, logger: logging.Logger) -> Dict[str, Any]:
+def collect_pipeline_data(
+    pipeline_output_dir: Path, logger: logging.Logger
+) -> Dict[str, Any]:
     """
     Collect data from all pipeline outputs for analysis.
-    
+
     Args:
         pipeline_output_dir: Directory containing pipeline outputs
         logger: Logger for this operation
-        
+
     Returns:
         Dictionary containing collected pipeline data
     """
-    pipeline_data = {
+    pipeline_data: dict[str, Any] = {
         "report_generation_time": datetime.datetime.now().isoformat(),
         "pipeline_output_directory": str(pipeline_output_dir),
         "steps": {},
@@ -34,19 +36,27 @@ def collect_pipeline_data(pipeline_output_dir: Path, logger: logging.Logger) -> 
             "total_warnings": 0,
             "processing_time": 0.0,
             "total_size_mb": 0.0,
-            "success_rate": 0.0
+            "success_rate": 0.0,
         },
         "performance_metrics": {},
         "error_analysis": {},
         "file_type_analysis": {},
-        "step_dependencies": {}
+        "step_dependencies": {},
     }
 
-    # Check for pipeline execution summary
-    pipeline_summary_file = pipeline_output_dir / "pipeline_execution_summary.json"
-    if pipeline_summary_file.exists():
+    # Check for pipeline execution summary (main.py writes to 00_pipeline_summary/ subdir)
+    pipeline_summary_candidates: list[Any] = [
+        pipeline_output_dir / "00_pipeline_summary" / "pipeline_execution_summary.json",
+        pipeline_output_dir / "pipeline_execution_summary.json",
+    ]
+    pipeline_summary_file = None
+    for candidate in pipeline_summary_candidates:
+        if candidate.exists():
+            pipeline_summary_file = candidate
+            break
+    if pipeline_summary_file is not None:
         try:
-            with open(pipeline_summary_file, 'r', encoding='utf-8') as f:
+            with open(pipeline_summary_file, "r", encoding="utf-8") as f:
                 pipeline_data["pipeline_summary"] = json.load(f)
 
             # Extract performance metrics from summary
@@ -56,13 +66,15 @@ def collect_pipeline_data(pipeline_output_dir: Path, logger: logging.Logger) -> 
 
             # Extract error analysis from summary
             if "errors" in summary:
-                pipeline_data["error_analysis"] = analyze_errors(summary["errors"], logger)
+                pipeline_data["error_analysis"] = analyze_errors(
+                    summary["errors"], logger
+                )
 
         except Exception as e:
             logger.warning(f"Failed to read pipeline summary: {e}")
 
     # Collect data from each step directory
-    step_directories = [
+    step_directories: list[Any] = [
         "0_template_output",
         "1_setup_output",
         "2_tests_output",
@@ -86,7 +98,7 @@ def collect_pipeline_data(pipeline_output_dir: Path, logger: logging.Logger) -> 
         "20_website_output",
         "21_mcp_output",
         "22_gui_output",
-        "23_report_output"
+        "23_report_output",
     ]
 
     for step_dir in step_directories:
@@ -96,8 +108,12 @@ def collect_pipeline_data(pipeline_output_dir: Path, logger: logging.Logger) -> 
             pipeline_data["steps"][step_dir] = step_data
 
             # Update summary statistics
-            pipeline_data["summary"]["total_files_processed"] += step_data.get("file_count", 0)
-            pipeline_data["summary"]["total_size_mb"] += step_data.get("total_size_mb", 0)
+            pipeline_data["summary"]["total_files_processed"] += step_data.get(
+                "file_count", 0
+            )
+            pipeline_data["summary"]["total_size_mb"] += step_data.get(
+                "total_size_mb", 0
+            )
         else:
             pipeline_data["steps"][step_dir] = {
                 "directory": str(step_path),
@@ -106,48 +122,67 @@ def collect_pipeline_data(pipeline_output_dir: Path, logger: logging.Logger) -> 
                 "total_size_mb": 0.0,
                 "file_types": {},
                 "last_modified": None,
-                "status": "missing"
+                "status": "missing",
             }
 
     # Fix self-referencing: step 23 (report) scans its own output directory
     # before files are written, resulting in 0 files. Annotate accordingly.
     report_step = pipeline_data["steps"].get("23_report_output")
-    if report_step and report_step.get("exists") and report_step.get("file_count", 0) == 0:
+    if (
+        report_step
+        and report_step.get("exists")
+        and report_step.get("file_count", 0) == 0
+    ):
         # The report step will generate report files (html, md, json + summaries)
-        report_step["note"] = "Report step output (self-referencing — files generated during this step)"
+        report_step["note"] = (
+            "Report step output (self-referencing — files generated during this step)"
+        )
         report_step["estimated_file_count"] = 6  # html + md + json + summaries
         report_step["status"] = "generating"
         logger.debug("Annotated 23_report_output as self-referencing step")
 
     # Calculate success rate
     total_steps = len(step_directories)
-    successful_steps = len([step for step in pipeline_data["steps"].values() if step.get("exists", False)])
-    pipeline_data["summary"]["success_rate"] = (successful_steps / total_steps) * 100 if total_steps > 0 else 0
+    successful_steps = len(
+        [step for step in pipeline_data["steps"].values() if step.get("exists", False)]
+    )
+    pipeline_data["summary"]["success_rate"] = (
+        (successful_steps / total_steps) * 100 if total_steps > 0 else 0
+    )
 
     # Analyze file types across all steps
-    pipeline_data["file_type_analysis"] = analyze_file_types_across_steps(pipeline_data["steps"], logger)
+    pipeline_data["file_type_analysis"] = analyze_file_types_across_steps(
+        pipeline_data["steps"], logger
+    )
 
     # Analyze step dependencies
-    pipeline_data["step_dependencies"] = analyze_step_dependencies(pipeline_data["steps"], logger)
+    pipeline_data["step_dependencies"] = analyze_step_dependencies(
+        pipeline_data["steps"], logger
+    )
 
     # Collect visualizations from all pipeline outputs
-    pipeline_data["visualizations"] = collect_visualizations(pipeline_output_dir, logger)
+    pipeline_data["visualizations"] = collect_visualizations(
+        pipeline_output_dir, logger
+    )
 
     return pipeline_data
 
-def analyze_step_directory(step_path: Path, step_name: str, logger: logging.Logger) -> Dict[str, Any]:
+
+def analyze_step_directory(
+    step_path: Path, step_name: str, logger: logging.Logger
+) -> Dict[str, Any]:
     """
     Analyze a specific step directory and extract relevant data.
-    
+
     Args:
         step_path: Path to the step directory
         step_name: Name of the step
         logger: Logger for this operation
-        
+
     Returns:
         Dictionary containing step analysis data
     """
-    step_data = {
+    step_data: dict[str, Any] = {
         "directory": str(step_path),
         "exists": True,
         "file_count": 0,
@@ -157,7 +192,7 @@ def analyze_step_directory(step_path: Path, step_name: str, logger: logging.Logg
         "status": "success",
         "performance_metrics": {},
         "error_logs": [],
-        "key_files": []
+        "key_files": [],
     }
 
     try:
@@ -171,22 +206,30 @@ def analyze_step_directory(step_path: Path, step_name: str, logger: logging.Logg
                 # Track file types
                 file_ext = file_path.suffix.lower()
                 if file_ext not in step_data["file_types"]:
-                    step_data["file_types"][file_ext] = {"count": 0, "total_size_mb": 0.0}
+                    step_data["file_types"][file_ext] = {
+                        "count": 0,
+                        "total_size_mb": 0.0,
+                    }
                 step_data["file_types"][file_ext]["count"] += 1
                 step_data["file_types"][file_ext]["total_size_mb"] += file_size_mb
 
                 # Track last modification
                 mtime = file_path.stat().st_mtime
-                if step_data["last_modified"] is None or mtime > step_data["last_modified"]:
+                if (
+                    step_data["last_modified"] is None
+                    or mtime > step_data["last_modified"]
+                ):
                     step_data["last_modified"] = mtime
 
                 # Identify key files
                 if is_key_file(file_path, step_name):
-                    step_data["key_files"].append({
-                        "name": file_path.name,
-                        "size_mb": round(file_size_mb, 2),
-                        "type": file_ext
-                    })
+                    step_data["key_files"].append(
+                        {
+                            "name": file_path.name,
+                            "size_mb": round(file_size_mb, 2),
+                            "type": file_ext,
+                        }
+                    )
 
         # Convert timestamp to ISO format
         if step_data["last_modified"]:
@@ -207,26 +250,31 @@ def analyze_step_directory(step_path: Path, step_name: str, logger: logging.Logg
 
     return step_data
 
-def analyze_step_specific_data(step_path: Path, step_name: str, logger: logging.Logger) -> Dict[str, Any]:
+
+def analyze_step_specific_data(
+    step_path: Path, step_name: str, logger: logging.Logger
+) -> Dict[str, Any]:
     """
     Analyze step-specific data like performance metrics and error logs.
-    
+
     Args:
         step_path: Path to the step directory
         step_name: Name of the step
         logger: Logger for this operation
-        
+
     Returns:
         Dictionary with step-specific analysis data
     """
-    step_data = {}
+    step_data: dict[Any, Any] = {}
 
     try:
         # Look for performance metrics files
-        perf_files = list(step_path.glob("*performance*.json")) + list(step_path.glob("*metrics*.json"))
+        perf_files = list(step_path.glob("*performance*.json")) + list(
+            step_path.glob("*metrics*.json")
+        )
         for perf_file in perf_files:
             try:
-                with open(perf_file, 'r', encoding='utf-8') as f:
+                with open(perf_file, "r", encoding="utf-8") as f:
                     step_data["performance_metrics"] = json.load(f)
                 break
             except Exception as e:
@@ -234,16 +282,20 @@ def analyze_step_specific_data(step_path: Path, step_name: str, logger: logging.
 
         # Look for error logs
         log_files = list(step_path.glob("*.log")) + list(step_path.glob("*error*.json"))
-        error_logs = []
+        error_logs: list[Any] = []
         for log_file in log_files:
             try:
-                with open(log_file, 'r', encoding='utf-8') as f:
+                with open(log_file, "r", encoding="utf-8") as f:
                     content = f.read()
                     if "error" in content.lower() or "warning" in content.lower():
-                        error_logs.append({
-                            "file": log_file.name,
-                            "size_mb": round(log_file.stat().st_size / (1024 * 1024), 2)
-                        })
+                        error_logs.append(
+                            {
+                                "file": log_file.name,
+                                "size_mb": round(
+                                    log_file.stat().st_size / (1024 * 1024), 2
+                                ),
+                            }
+                        )
             except Exception as e:
                 logger.debug(f"Failed to read log file {log_file}: {e}")
 
@@ -255,21 +307,24 @@ def analyze_step_specific_data(step_path: Path, step_name: str, logger: logging.
 
     return step_data
 
-def analyze_file_types_across_steps(steps: Dict[str, Any], logger: logging.Logger) -> Dict[str, Any]:
+
+def analyze_file_types_across_steps(
+    steps: Dict[str, Any], logger: logging.Logger
+) -> Dict[str, Any]:
     """
     Analyze file types across all pipeline steps.
-    
+
     Args:
         steps: Dictionary of step data
         logger: Logger for this operation
-        
+
     Returns:
         Dictionary with file type analysis
     """
-    file_type_analysis = {
+    file_type_analysis: dict[str, Any] = {
         "total_by_type": {},
         "largest_files_by_type": {},
-        "step_distribution": {}
+        "step_distribution": {},
     }
 
     try:
@@ -282,11 +337,15 @@ def analyze_file_types_across_steps(steps: Dict[str, Any], logger: logging.Logge
                 if file_ext not in file_type_analysis["total_by_type"]:
                     file_type_analysis["total_by_type"][file_ext] = {
                         "count": 0,
-                        "total_size_mb": 0.0
+                        "total_size_mb": 0.0,
                     }
 
-                file_type_analysis["total_by_type"][file_ext]["count"] += file_info["count"]
-                file_type_analysis["total_by_type"][file_ext]["total_size_mb"] += file_info["total_size_mb"]
+                file_type_analysis["total_by_type"][file_ext]["count"] += file_info[
+                    "count"
+                ]
+                file_type_analysis["total_by_type"][file_ext]["total_size_mb"] += (
+                    file_info["total_size_mb"]
+                )
 
                 # Track step distribution
                 if file_ext not in file_type_analysis["step_distribution"]:
@@ -294,7 +353,7 @@ def analyze_file_types_across_steps(steps: Dict[str, Any], logger: logging.Logge
 
                 file_type_analysis["step_distribution"][file_ext][step_name] = {
                     "count": file_info["count"],
-                    "size_mb": file_info["total_size_mb"]
+                    "size_mb": file_info["total_size_mb"],
                 }
 
         # Round sizes
@@ -308,18 +367,21 @@ def analyze_file_types_across_steps(steps: Dict[str, Any], logger: logging.Logge
 
     return file_type_analysis
 
-def analyze_step_dependencies(steps: Dict[str, Any], logger: logging.Logger) -> Dict[str, Any]:
+
+def analyze_step_dependencies(
+    steps: Dict[str, Any], logger: logging.Logger
+) -> Dict[str, Any]:
     """
     Analyze dependencies between pipeline steps.
-    
+
     Args:
         steps: Dictionary of step data
         logger: Logger for this operation
-        
+
     Returns:
         Dictionary with dependency analysis
     """
-    dependencies = {
+    dependencies: dict[str, Any] = {
         "step_order": [
             "0_template_output",
             "1_setup_output",
@@ -344,15 +406,15 @@ def analyze_step_dependencies(steps: Dict[str, Any], logger: logging.Logger) -> 
             "20_website_output",
             "21_mcp_output",
             "22_gui_output",
-            "23_report_output"
+            "23_report_output",
         ],
         "dependency_chain": {},
-        "missing_prerequisites": []
+        "missing_prerequisites": [],
     }
 
     try:
         # Define step dependencies
-        step_deps = {
+        step_deps: dict[str, Any] = {
             "1_setup_output": ["0_template_output"],
             "2_tests_output": ["1_setup_output"],
             "3_gnn_output": ["1_setup_output"],
@@ -375,27 +437,30 @@ def analyze_step_dependencies(steps: Dict[str, Any], logger: logging.Logger) -> 
             "20_website_output": ["8_visualization_output", "10_ontology_output"],
             "21_mcp_output": ["3_gnn_output"],
             "22_gui_output": ["3_gnn_output"],
-            "23_report_output": ["8_visualization_output", "10_ontology_output", "15_audio_output"]
+            "23_report_output": [
+                "8_visualization_output",
+                "10_ontology_output",
+                "15_audio_output",
+            ],
         }
 
         # Check for missing prerequisites
         for step_name, prereqs in step_deps.items():
             if step_name in steps and steps[step_name].get("exists", False):
-                missing = []
+                missing: list[Any] = []
                 for prereq in prereqs:
                     if prereq not in steps or not steps[prereq].get("exists", False):
                         missing.append(prereq)
 
                 if missing:
-                    dependencies["missing_prerequisites"].append({
-                        "step": step_name,
-                        "missing": missing
-                    })
+                    dependencies["missing_prerequisites"].append(
+                        {"step": step_name, "missing": missing}
+                    )
 
                 dependencies["dependency_chain"][step_name] = {
                     "prerequisites": prereqs,
                     "missing_prerequisites": missing,
-                    "status": "complete" if not missing else "incomplete"
+                    "status": "complete" if not missing else "incomplete",
                 }
 
     except Exception as e:
@@ -403,23 +468,26 @@ def analyze_step_dependencies(steps: Dict[str, Any], logger: logging.Logger) -> 
 
     return dependencies
 
-def analyze_errors(errors: List[Dict[str, Any]], logger: logging.Logger) -> Dict[str, Any]:
+
+def analyze_errors(
+    errors: List[Dict[str, Any]], logger: logging.Logger
+) -> Dict[str, Any]:
     """
     Analyze error patterns from pipeline execution.
-    
+
     Args:
         errors: List of error dictionaries
         logger: Logger for this operation
-        
+
     Returns:
         Dictionary with error analysis
     """
-    error_analysis = {
+    error_analysis: dict[str, Any] = {
         "total_errors": len(errors),
         "error_types": {},
         "step_error_distribution": {},
         "critical_errors": [],
-        "warnings": []
+        "warnings": [],
     }
 
     try:
@@ -448,18 +516,19 @@ def analyze_errors(errors: List[Dict[str, Any]], logger: logging.Logger) -> Dict
 
     return error_analysis
 
+
 def is_key_file(file_path: Path, step_name: str) -> bool:
     """
     Determine if a file is a key file for a specific step.
-    
+
     Args:
         file_path: Path to the file
         step_name: Name of the step
-        
+
     Returns:
         True if the file is a key file for the step
     """
-    key_patterns = {
+    key_patterns: dict[str, Any] = {
         "0_template_output": ["template_processing_summary.json"],
         "1_setup_output": ["setup_success.json", "directory_structure.json"],
         "2_tests_output": ["pytest_report.xml", "test_summary.json", "*.txt"],
@@ -469,10 +538,19 @@ def is_key_file(file_path: Path, step_name: str) -> bool:
         "6_validation_output": ["validation_results.json"],
         "7_export_output": ["*.json", "*.xml", "*.graphml", "*.gexf"],
         "8_visualization_output": ["*.png", "*.svg", "*.html"],
-        "9_advanced_viz_output": ["*.png", "*.svg", "*.html", "advanced_viz_summary.json"],
+        "9_advanced_viz_output": [
+            "*.png",
+            "*.svg",
+            "*.html",
+            "advanced_viz_summary.json",
+        ],
         "10_ontology_output": ["ontology_analysis.json", "ontology_summary.md"],
         "11_render_output": ["*.py", "*.jl", "render_processing_summary.json"],
-        "12_execute_output": ["summaries/execution_summary.json", "summaries/execution_report.md", "*.png"],
+        "12_execute_output": [
+            "summaries/execution_summary.json",
+            "summaries/execution_report.md",
+            "*.png",
+        ],
         "13_llm_output": ["llm_analysis.json", "*.md"],
         "14_ml_integration_output": ["ml_integration_summary.json"],
         "15_audio_output": ["*.wav", "*.mp3", "audio_processing_summary.json"],
@@ -483,7 +561,10 @@ def is_key_file(file_path: Path, step_name: str) -> bool:
         "20_website_output": ["*.html", "*.css", "*.js"],
         "21_mcp_output": ["mcp_processing_summary.json", "registered_tools.json"],
         "22_gui_output": ["gui_processing_summary.json", "navigation.html"],
-        "23_report_output": ["comprehensive_analysis_report.html", "report_summary.json"]
+        "23_report_output": [
+            "comprehensive_analysis_report.html",
+            "report_summary.json",
+        ],
     }
 
     if step_name not in key_patterns:
@@ -499,26 +580,29 @@ def is_key_file(file_path: Path, step_name: str) -> bool:
 
     return False
 
-def collect_visualizations(pipeline_output_dir: Path, logger: logging.Logger) -> Dict[str, Any]:
+
+def collect_visualizations(
+    pipeline_output_dir: Path, logger: logging.Logger
+) -> Dict[str, Any]:
     """
     Collect all visualizations from pipeline output directories.
-    
+
     Args:
         pipeline_output_dir: Directory containing pipeline outputs
         logger: Logger for this operation
-        
+
     Returns:
         Dictionary with visualization catalog organized by step and type
     """
-    visualizations = {
+    visualizations: dict[str, Any] = {
         "total_count": 0,
         "by_step": {},
         "by_type": {},
-        "all_visualizations": []
+        "all_visualizations": [],
     }
 
     # Visualization output directories to scan
-    viz_directories = [
+    viz_directories: list[Any] = [
         ("8_visualization_output", ["*.png", "*.svg", "*.jpg", "*.jpeg", "*.html"]),
         ("9_advanced_viz_output", ["*.png", "*.svg", "*.jpg", "*.jpeg", "*.html"]),
         ("11_render_output", ["*.png", "*.svg", "*.jpg", "*.jpeg", "*.html"]),
@@ -532,11 +616,7 @@ def collect_visualizations(pipeline_output_dir: Path, logger: logging.Logger) ->
             if not step_path.exists():
                 continue
 
-            step_viz = {
-                "step": step_dir,
-                "count": 0,
-                "files": []
-            }
+            step_viz: dict[str, Any] = {"step": step_dir, "count": 0, "files": []}
 
             # Scan for visualization files
             for pattern in patterns:
@@ -548,12 +628,16 @@ def collect_visualizations(pipeline_output_dir: Path, logger: logging.Logger) ->
 
                             # Determine file type
                             file_ext = viz_file.suffix.lower()
-                            file_type = "image" if file_ext in [".png", ".svg", ".jpg", ".jpeg", ".gif"] else "html"
+                            file_type = (
+                                "image"
+                                if file_ext in [".png", ".svg", ".jpg", ".jpeg", ".gif"]
+                                else "html"
+                            )
 
                             # Get relative path from pipeline output directory
                             rel_path = str(viz_file.relative_to(pipeline_output_dir))
 
-                            viz_info = {
+                            viz_info: dict[str, Any] = {
                                 "name": viz_file.name,
                                 "path": str(viz_file),
                                 "relative_path": rel_path,
@@ -561,7 +645,7 @@ def collect_visualizations(pipeline_output_dir: Path, logger: logging.Logger) ->
                                 "extension": file_ext,
                                 "size_bytes": file_size,
                                 "size_mb": round(file_size_mb, 2),
-                                "step": step_dir
+                                "step": step_dir,
                             }
 
                             step_viz["files"].append(viz_info)
@@ -577,7 +661,9 @@ def collect_visualizations(pipeline_output_dir: Path, logger: logging.Logger) ->
                             visualizations["all_visualizations"].append(viz_info)
 
                         except Exception as e:
-                            logger.debug(f"Error processing visualization file {viz_file}: {e}")
+                            logger.debug(
+                                f"Error processing visualization file {viz_file}: {e}"
+                            )
 
             if step_viz["count"] > 0:
                 visualizations["by_step"][step_dir] = step_viz
@@ -590,13 +676,14 @@ def collect_visualizations(pipeline_output_dir: Path, logger: logging.Logger) ->
 
     return visualizations
 
+
 def get_pipeline_health_score(pipeline_data: Dict[str, Any]) -> float:
     """
     Calculate a health score for the pipeline based on various metrics.
-    
+
     Args:
         pipeline_data: Pipeline analysis data
-        
+
     Returns:
         Health score between 0 and 100
     """
@@ -606,9 +693,13 @@ def get_pipeline_health_score(pipeline_data: Dict[str, Any]) -> float:
 
         # Step completion rate (40% weight)
         steps = pipeline_data.get("steps", {})
-        successful_steps = len([step for step in steps.values() if step.get("exists", False)])
+        successful_steps = len(
+            [step for step in steps.values() if step.get("exists", False)]
+        )
         total_steps = len(steps)
-        step_completion_rate = (successful_steps / total_steps) * 100 if total_steps > 0 else 0
+        step_completion_rate = (
+            (successful_steps / total_steps) * 100 if total_steps > 0 else 0
+        )
         score += step_completion_rate * 0.4
         total_weight += 0.4
 

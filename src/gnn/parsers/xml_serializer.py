@@ -1,7 +1,8 @@
 import json
-import xml.etree.ElementTree as ET  # nosec B405 - GNN files are researcher-generated, not untrusted input
+import xml.etree.ElementTree as ET  # nosec B405
+from typing import Any
 from xml.dom import (
-    minidom,  # nosec B408 - GNN files are researcher-generated, not untrusted input
+    minidom,  # nosec B408
 )
 
 from .base_serializer import BaseGNNSerializer
@@ -43,10 +44,13 @@ class XMLSerializer(BaseGNNSerializer):
         # Connections - sorted by source then target for consistency
         if model.connections:
             connections = ET.SubElement(root, "connections")
-            sorted_conns = sorted(model.connections, key=lambda c: (
-                ",".join(sorted(c.source_variables)),
-                ",".join(sorted(c.target_variables))
-            ))
+            sorted_conns = sorted(
+                model.connections,
+                key=lambda c: (
+                    ",".join(sorted(c.source_variables)),
+                    ",".join(sorted(c.target_variables)),
+                ),
+            )
             for conn in sorted_conns:
                 conn_elem = ET.SubElement(connections, "connection")
                 conn_elem.set("type", conn.connection_type.value)
@@ -105,7 +109,9 @@ class XMLSerializer(BaseGNNSerializer):
         # Ontology Mappings - sorted by variable name
         if model.ontology_mappings:
             ontology = ET.SubElement(root, "ontology_mappings")
-            sorted_mappings = sorted(model.ontology_mappings, key=lambda m: m.variable_name)
+            sorted_mappings = sorted(
+                model.ontology_mappings, key=lambda m: m.variable_name
+            )
             for mapping in sorted_mappings:
                 mapping_elem = ET.SubElement(ontology, "mapping")
                 mapping_elem.set("term", mapping.ontology_term)
@@ -114,75 +120,101 @@ class XMLSerializer(BaseGNNSerializer):
                     mapping_elem.set("description", mapping.description)
 
         # Add embedded complete model data as XML comment for perfect round-trip
-        model_data = {
-            'model_name': model.model_name,
-            'annotation': model.annotation,
-            'variables': [
+        model_data: dict[str, Any] = {
+            "model_name": model.model_name,
+            "annotation": model.annotation,
+            "variables": [
                 {
-                    'name': var.name,
-                    'var_type': var.var_type.value if hasattr(var, 'var_type') else 'hidden_state',
-                    'data_type': var.data_type.value if hasattr(var, 'data_type') else 'categorical',
-                    'dimensions': var.dimensions if hasattr(var, 'dimensions') else []
+                    "name": var.name,
+                    "var_type": var.var_type.value
+                    if hasattr(var, "var_type")
+                    else "hidden_state",
+                    "data_type": var.data_type.value
+                    if hasattr(var, "data_type")
+                    else "categorical",
+                    "dimensions": var.dimensions if hasattr(var, "dimensions") else [],
                 }
                 for var in model.variables
             ],
-            'connections': [
+            "connections": [
                 {
-                    'source_variables': conn.source_variables if hasattr(conn, 'source_variables') else [],
-                    'target_variables': conn.target_variables if hasattr(conn, 'target_variables') else [],
-                    'connection_type': conn.connection_type.value if hasattr(conn, 'connection_type') else 'directed'
+                    "source_variables": conn.source_variables
+                    if hasattr(conn, "source_variables")
+                    else [],
+                    "target_variables": conn.target_variables
+                    if hasattr(conn, "target_variables")
+                    else [],
+                    "connection_type": conn.connection_type.value
+                    if hasattr(conn, "connection_type")
+                    else "directed",
                 }
                 for conn in model.connections
             ],
-            'parameters': [
+            "parameters": [
                 {
-                    'name': param.name,
-                    'value': param.value,
-                    'param_type': getattr(param, 'param_type', 'constant')
+                    "name": param.name,
+                    "value": param.value,
+                    "param_type": getattr(param, "param_type", "constant"),
                 }
                 for param in model.parameters
             ],
-            'equations': [str(eq) for eq in (model.equations if hasattr(model, 'equations') else [])],
-            'time_specification': self._serialize_time_spec(model.time_specification) if hasattr(model, 'time_specification') and model.time_specification else None,
-            'ontology_mappings': self._serialize_ontology_mappings(model.ontology_mappings) if hasattr(model, 'ontology_mappings') else []
+            "equations": [
+                str(eq)
+                for eq in (model.equations if hasattr(model, "equations") else [])
+            ],
+            "time_specification": self._serialize_time_spec(model.time_specification)
+            if hasattr(model, "time_specification") and model.time_specification
+            else None,
+            "ontology_mappings": self._serialize_ontology_mappings(
+                model.ontology_mappings
+            )
+            if hasattr(model, "ontology_mappings")
+            else [],
         }
 
         # Convert to string with consistent formatting
-        rough_string = ET.tostring(root, encoding='unicode')
-        reparsed = minidom.parseString(rough_string)  # nosec B318 - GNN files are researcher-generated, not untrusted input
+        rough_string = ET.tostring(root, encoding="unicode")
+        reparsed = minidom.parseString(rough_string)  # nosec B318
 
         # Get pretty XML and normalize whitespace
         pretty_xml = reparsed.toprettyxml(indent="  ")
 
         # Remove empty lines and normalize
-        lines = [line for line in pretty_xml.split('\n') if line.strip()]
+        lines = [line for line in pretty_xml.split("\n") if line.strip()]
 
         # Add embedded data as XML comment before the closing tag
-        if lines and lines[-1].strip() == '</gnn_model>':
-            lines.insert(-1, f"<!-- MODEL_DATA: {json.dumps(model_data, separators=(',', ':'))} -->")
+        if lines and lines[-1].strip() == "</gnn_model>":
+            lines.insert(
+                -1,
+                f"<!-- MODEL_DATA: {json.dumps(model_data, separators=(',', ':'))} -->",
+            )
 
-        return '\n'.join(lines)
+        return "\n".join(lines)
 
-    def _serialize_time_spec(self, time_spec):
+    def _serialize_time_spec(self, time_spec: Any) -> Any:
         """Serialize time specification object."""
         if not time_spec:
             return None
         return {
-            'time_type': getattr(time_spec, 'time_type', 'dynamic'),
-            'discretization': getattr(time_spec, 'discretization', None),
-            'horizon': getattr(time_spec, 'horizon', None),
-            'step_size': getattr(time_spec, 'step_size', None)
+            "time_type": getattr(time_spec, "time_type", "dynamic"),
+            "discretization": getattr(time_spec, "discretization", None),
+            "horizon": getattr(time_spec, "horizon", None),
+            "step_size": getattr(time_spec, "step_size", None),
         }
 
-    def _serialize_ontology_mappings(self, mappings):
+    def _serialize_ontology_mappings(self, mappings: Any) -> Any:
         """Serialize ontology mappings."""
         if not mappings:
             return []
         return [
             {
-                'variable_name': mapping.variable_name if hasattr(mapping, 'variable_name') else str(mapping),
-                'ontology_term': mapping.ontology_term if hasattr(mapping, 'ontology_term') else '',
-                'description': getattr(mapping, 'description', None)
+                "variable_name": mapping.variable_name
+                if hasattr(mapping, "variable_name")
+                else str(mapping),
+                "ontology_term": mapping.ontology_term
+                if hasattr(mapping, "ontology_term")
+                else "",
+                "description": getattr(mapping, "description", None),
             }
             for mapping in mappings
         ]

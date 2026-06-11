@@ -52,7 +52,7 @@ This directory contains documentation for release management, version control, a
 The GNN project follows semantic versioning:
 
 - **Major Versions** (X.0.0): Breaking changes, major feature additions
-- **Minor Versions** (0.X.0): New features, backward-compatible
+- **Minor Versions** (0.X.0): New features and documented migrations
 - **Patch Versions** (0.0.X): Bug fixes, minor improvements
 
 ### Release Cycles
@@ -132,4 +132,3 @@ All documentation in this module adheres to professional standards:
 **Status**: ✅ Production Ready  
 **Compliance**: Professional documentation standards  
 **Maintenance**: Regular updates with new release processes and version management strategies
-

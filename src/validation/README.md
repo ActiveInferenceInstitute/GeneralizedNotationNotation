@@ -10,7 +10,6 @@ src/validation/
 ├── README.md                      # This documentation
 ├── AGENTS.md                      # Agent scaffolding documentation
 ├── SPEC.md                        # Module specification
-├── PAI.md                         # Pipeline integration documentation
 ├── consistency_checker.py         # Consistency checking (naming, style, structure, references)
 ├── semantic_validator.py          # Semantic validation (structure, state space, connections, math)
 ├── performance_profiler.py        # Performance profiling (complexity, memory, parallelization)
@@ -372,7 +371,7 @@ The `process_validation()` orchestrator catches all exceptions per-file, logs er
 
 ## Testing
 
-Validation module tests are located in `src/tests/test_comprehensive_api.py` and cover:
+Validation module tests are located in `src/tests/api/test_comprehensive_api.py` and cover:
 
 - `process_semantic_validation()` with file path and dict inputs
 - `profile_performance()` with file path and dict inputs

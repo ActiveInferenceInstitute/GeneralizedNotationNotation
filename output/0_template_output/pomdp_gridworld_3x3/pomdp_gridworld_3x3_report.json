@@ -1,0 +1,12 @@
+{
+  "input_file": "input/gnn_files/pomdp_gridworld/pomdp_gridworld_3x3.md",
+  "output_file": "output/0_template_output/pomdp_gridworld_3x3/pomdp_gridworld_3x3_processed.md",
+  "timestamp": "2026-05-22T06:10:26.462088",
+  "file_size_bytes": 5485,
+  "file_size_lines": 201,
+  "processing_options": {
+    "verbose": false,
+    "recursive": true,
+    "example_param": "default_value"
+  }
+}

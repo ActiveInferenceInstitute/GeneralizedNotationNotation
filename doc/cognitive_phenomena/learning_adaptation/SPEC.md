@@ -6,3 +6,7 @@ It ensures that `Learning Adaptation` tasks resolve without runtime dependency l
 
 ## Components
 Expected available types: No specific classes exported.
+
+## Parent specification
+
+- Canonical policy: [Cognitive phenomena](../SPEC.md)

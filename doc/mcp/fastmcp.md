@@ -67,7 +67,7 @@ def add(a: int, b: int) -> int:
 async def calculate_entropy(data: list[float]) -> float:
     """Computes Shannon entropy of numerical data."""
     # ... implementation ...
-    return sum(data) # Placeholder
+    return sum(data) # Minimal runnable example
 ```
 
 ### 2. Resources
@@ -78,7 +78,7 @@ Resources are data endpoints that an LLM can query to retrieve information.
 
 ```python
 from fastmcp import FastMCP # Assuming mcp is an instance of FastMCP
-# from db_setup import db, User # Placeholder for database setup
+# from db_setup import db, User # Project-specific database setup
 
 mcp = FastMCP("Resource Demo Server")
 
@@ -86,7 +86,7 @@ mcp = FastMCP("Resource Demo Server")
 def get_user_profile(id: str) -> dict:
     """Retrieves a user's profile by their ID."""
     # return db.query(User).filter(User.id == id).first().__dict__ # Example
-    return {"id": id, "name": "Jane Doe", "email": "jane@example.com"} # Placeholder
+    return {"id": id, "name": "Jane Doe", "email": "jane@example.com"} # Example response
 ```
 
 ### 3. Prompts
@@ -133,7 +133,7 @@ async def process_data_with_context(uri: str, ctx: Context):
     # data_resource = await ctx.read_resource(uri)
     # content_to_summarize = data_resource.content[:500] # Assuming text content
 
-    # For demonstration, using a placeholder string
+    # For demonstration, using a static resource string
     content_to_summarize = "This is some sample data that needs to be summarized by the LLM."
     
     await ctx.info(f"Content to summarize: {content_to_summarize}")
@@ -391,7 +391,7 @@ Run tests using `pytest`:
 ```bash
 pytest
 # For coverage report:
-uv run pytest --cov=src --cov=examples --cov-report=html
+uv run --extra dev python -m pytest --cov=src --cov=examples --cov-report=html
 ```
 
 All Pull Requests must introduce or update tests as appropriate and pass the full suite.

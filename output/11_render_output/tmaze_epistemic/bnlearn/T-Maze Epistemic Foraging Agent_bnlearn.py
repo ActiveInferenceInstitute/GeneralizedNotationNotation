@@ -32,7 +32,7 @@ class EnhancedTMazeEpistemicForagingAgentBnlearnAnalyzer:
         
         # Generate synthetic trace data based on the structure layout to fit CPDs
         np.random.seed(42)
-        n_samples = max(1000, 15 * 20)
+        n_samples = max(1000, 3 * 20)
         
         # Simulate tabular data for the edges
         print(f"📊 Simulating {n_samples} traces for structure parameter learning...")

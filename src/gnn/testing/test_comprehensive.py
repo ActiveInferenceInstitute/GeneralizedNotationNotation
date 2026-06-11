@@ -3,7 +3,7 @@ Comprehensive Test Suite for GNN (Generalized Notation Notation) Module
 
 This test suite provides complete coverage of the GNN module including:
 - Schema validation testing
-- Parser functionality testing  
+- Parser functionality testing
 - Example file validation
 - Performance benchmarking
 - Error handling and edge cases
@@ -18,6 +18,7 @@ import tempfile
 import time
 import unittest
 from pathlib import Path
+from typing import Any, cast
 
 import psutil
 
@@ -32,6 +33,7 @@ try:
         ParsedGNN,
         ValidationResult,
     )
+
     GNN_AVAILABLE = True
 except ImportError:
     GNN_AVAILABLE = False
@@ -43,7 +45,7 @@ LARK_AVAILABLE = False
 class TestGNNSchemaValidation(unittest.TestCase):
     """Test schema validation functionality."""
 
-    def setUp(self):
+    def setUp(self) -> Any:
         """Set up test environment."""
         if not GNN_AVAILABLE:
             self.skipTest("GNN module not available")
@@ -139,28 +141,35 @@ InvalidTimeType             # Invalid time specification
 # Missing footer content
 """
 
-    def test_schema_loading(self):
+    def test_schema_loading(self) -> Any:
         """Test JSON schema loading."""
         self.assertIsNotNone(self.validator.schema)
         self.assertIsInstance(self.validator.schema, dict)
 
-    def test_valid_gnn_validation(self):
+    def test_valid_gnn_validation(self) -> Any:
         """Test validation of valid GNN content."""
-        result = self.validator.validate_file(self._create_temp_file(self.valid_gnn_content))
+        result = self.validator.validate_file(
+            self._create_temp_file(self.valid_gnn_content)
+        )
 
         self.assertIsInstance(result, ValidationResult)
-        self.assertTrue(result.is_valid, f"Valid GNN should pass validation. Errors: {result.errors}")
+        self.assertTrue(
+            result.is_valid,
+            f"Valid GNN should pass validation. Errors: {result.errors}",
+        )
         self.assertEqual(len(result.errors), 0)
 
-    def test_invalid_gnn_validation(self):
+    def test_invalid_gnn_validation(self) -> Any:
         """Test validation of invalid GNN content."""
-        result = self.validator.validate_file(self._create_temp_file(self.invalid_gnn_content))
+        result = self.validator.validate_file(
+            self._create_temp_file(self.invalid_gnn_content)
+        )
 
         self.assertIsInstance(result, ValidationResult)
         self.assertFalse(result.is_valid)
         self.assertGreater(len(result.errors), 0)
 
-    def test_missing_required_sections(self):
+    def test_missing_required_sections(self) -> Any:
         """Test validation when required sections are missing."""
         incomplete_content = """## GNNSection
 TestModel
@@ -169,22 +178,28 @@ TestModel
 Incomplete Model
 """
 
-        result = self.validator.validate_file(self._create_temp_file(incomplete_content))
+        result = self.validator.validate_file(
+            self._create_temp_file(incomplete_content)
+        )
 
         self.assertFalse(result.is_valid)
-        self.assertTrue(any("Required section missing" in error for error in result.errors))
+        self.assertTrue(
+            any("Required section missing" in error for error in result.errors)
+        )
 
-    def test_schema_validator_error_reporting(self):
+    def test_schema_validator_error_reporting(self) -> Any:
         """Test detailed error reporting from schema validator."""
-        result = self.validator.validate_file(self._create_temp_file(self.invalid_gnn_content))
+        result = self.validator.validate_file(
+            self._create_temp_file(self.invalid_gnn_content)
+        )
 
         # Check for specific error types
-        error_messages = ' '.join(result.errors)
+        error_messages = " ".join(result.errors)
         self.assertIn("Required section missing", error_messages)
 
     def _create_temp_file(self, content: str) -> str:
         """Create temporary file with content."""
-        with tempfile.NamedTemporaryFile(mode='w', suffix='.md', delete=False) as f:
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".md", delete=False) as f:
             f.write(content)
             return f.name
 
@@ -192,7 +207,7 @@ Incomplete Model
 class TestGNNParser(unittest.TestCase):
     """Test GNN parser functionality."""
 
-    def setUp(self):
+    def setUp(self) -> Any:
         """Set up test environment."""
         if not GNN_AVAILABLE:
             self.skipTest("GNN module not available")
@@ -313,7 +328,7 @@ Status: Testing
 Compliance: GNN v1
 """
 
-    def test_parse_content_basic(self):
+    def test_parse_content_basic(self) -> Any:
         """Test basic content parsing."""
         parsed = self.parser.parse_content(self.parser_test_content)
 
@@ -322,7 +337,7 @@ Compliance: GNN v1
         self.assertEqual(parsed.model_name, "Parser Test Model")
         self.assertIn("Comprehensive model", parsed.model_annotation)
 
-    def test_parse_variables(self):
+    def test_parse_variables(self) -> Any:
         """Test variable parsing from StateSpaceBlock."""
         parsed = self.parser.parse_content(self.parser_test_content)
 
@@ -339,7 +354,7 @@ Compliance: GNN v1
         self.assertEqual(s_f0.data_type, "float")
         self.assertEqual(len(s_f0.dimensions), 2)
 
-    def test_parse_connections(self):
+    def test_parse_connections(self) -> Any:
         """Test connection parsing."""
         parsed = self.parser.parse_content(self.parser_test_content)
 
@@ -354,9 +369,11 @@ Compliance: GNN v1
         first_conn = parsed.connections[0]
         self.assertIsNotNone(first_conn.source)
         self.assertIsNotNone(first_conn.target)
-        self.assertIn(first_conn.connection_type, ['directed', 'undirected', 'conditional'])
+        self.assertIn(
+            first_conn.connection_type, ["directed", "undirected", "conditional"]
+        )
 
-    def test_parse_parameters(self):
+    def test_parse_parameters(self) -> Any:
         """Test parameter parsing."""
         parsed = self.parser.parse_content(self.parser_test_content)
 
@@ -367,7 +384,7 @@ Compliance: GNN v1
         self.assertIn("A_m0", parsed.parameters)
         self.assertIn("D_f0", parsed.parameters)
 
-    def test_parse_equations(self):
+    def test_parse_equations(self) -> Any:
         """Test equation parsing."""
         parsed = self.parser.parse_content(self.parser_test_content)
 
@@ -379,7 +396,7 @@ Compliance: GNN v1
         self.assertIn("latex", first_eq)
         self.assertIsInstance(first_eq["latex"], str)
 
-    def test_parse_time_config(self):
+    def test_parse_time_config(self) -> Any:
         """Test time configuration parsing."""
         parsed = self.parser.parse_content(self.parser_test_content)
 
@@ -387,7 +404,7 @@ Compliance: GNN v1
         self.assertIsInstance(parsed.time_config, dict)
         self.assertIn("type", parsed.time_config)
 
-    def test_parse_ontology_mappings(self):
+    def test_parse_ontology_mappings(self) -> Any:
         """Test ontology mapping parsing."""
         parsed = self.parser.parse_content(self.parser_test_content)
 
@@ -396,7 +413,7 @@ Compliance: GNN v1
         self.assertIn("A_m0", parsed.ontology_mappings)
         self.assertEqual(parsed.ontology_mappings["A_m0"], "LikelihoodMatrixModality0")
 
-    def test_parse_model_parameters(self):
+    def test_parse_model_parameters(self) -> Any:
         """Test model parameter parsing."""
         parsed = self.parser.parse_content(self.parser_test_content)
 
@@ -404,20 +421,22 @@ Compliance: GNN v1
         self.assertGreater(len(parsed.model_parameters), 0)
         self.assertIn("backend", parsed.model_parameters)
 
-    def test_parse_signature(self):
+    def test_parse_signature(self) -> Any:
         """Test signature parsing."""
         parsed = self.parser.parse_content(self.parser_test_content)
 
         # Check signature
-        self.assertIsNotNone(parsed.signature)
-        self.assertIn("Creator", parsed.signature)
+        signature = parsed.signature
+        self.assertIsNotNone(signature)
+        assert signature is not None
+        self.assertIn("Creator", signature)
 
-    def test_parse_file_not_found(self):
+    def test_parse_file_not_found(self) -> Any:
         """Test parsing non-existent file."""
         with self.assertRaises(FileNotFoundError):
             self.parser.parse_file("nonexistent_file.md")
 
-    def test_parse_empty_content(self):
+    def test_parse_empty_content(self) -> Any:
         """Test parsing empty content."""
         parsed = self.parser.parse_content("")
 
@@ -429,7 +448,7 @@ Compliance: GNN v1
 class TestGNNExampleValidation(unittest.TestCase):
     """Test validation of all GNN example files."""
 
-    def setUp(self):
+    def setUp(self) -> Any:
         """Set up test environment."""
         if not GNN_AVAILABLE:
             self.skipTest("GNN module not available")
@@ -438,7 +457,7 @@ class TestGNNExampleValidation(unittest.TestCase):
         self.parser = GNNParser()
         self.examples_dir = Path(__file__).parent / "examples"
 
-    def test_example_files_exist(self):
+    def test_example_files_exist(self) -> Any:
         """Test that example files exist."""
         if not self.examples_dir.exists():
             self.skipTest("Examples directory not found")
@@ -446,13 +465,13 @@ class TestGNNExampleValidation(unittest.TestCase):
         example_files = list(self.examples_dir.glob("*.md"))
         self.assertGreater(len(example_files), 0, "No example files found")
 
-    def test_validate_all_examples(self):
+    def test_validate_all_examples(self) -> Any:
         """Test validation of all example files."""
         if not self.examples_dir.exists():
             self.skipTest("Examples directory not found")
 
         example_files = list(self.examples_dir.glob("*.md"))
-        validation_results = {}
+        validation_results: dict[Any, Any] = {}
 
         for example_file in example_files:
             result = self.validator.validate_file(example_file)
@@ -461,20 +480,22 @@ class TestGNNExampleValidation(unittest.TestCase):
             # Each example should be valid
             self.assertTrue(
                 result.is_valid,
-                f"Example {example_file.name} failed validation: {result.errors}"
+                f"Example {example_file.name} failed validation: {result.errors}",
             )
 
         # All examples should pass
-        valid_count = sum(1 for result in validation_results.values() if result.is_valid)
+        valid_count = sum(
+            1 for result in validation_results.values() if result.is_valid
+        )
         self.assertEqual(valid_count, len(example_files))
 
-    def test_parse_all_examples(self):
+    def test_parse_all_examples(self) -> Any:
         """Test parsing of all example files."""
         if not self.examples_dir.exists():
             self.skipTest("Examples directory not found")
 
         example_files = list(self.examples_dir.glob("*.md"))
-        parse_results = {}
+        parse_results: dict[Any, Any] = {}
 
         for example_file in example_files:
             try:
@@ -494,7 +515,7 @@ class TestGNNExampleValidation(unittest.TestCase):
         # All examples should parse successfully
         self.assertEqual(len(parse_results), len(example_files))
 
-    def test_example_consistency(self):
+    def test_example_consistency(self) -> Any:
         """Test consistency across example files."""
         if not self.examples_dir.exists():
             self.skipTest("Examples directory not found")
@@ -507,8 +528,9 @@ class TestGNNExampleValidation(unittest.TestCase):
             # Check that ontology mappings are consistent with variables
             for var_name, _ontology_term in parsed.ontology_mappings.items():
                 self.assertIn(
-                    var_name, parsed.variables,
-                    f"Ontology mapping references undefined variable: {var_name}"
+                    var_name,
+                    parsed.variables,
+                    f"Ontology mapping references undefined variable: {var_name}",
                 )
 
             # Check that connections reference defined variables
@@ -516,20 +538,24 @@ class TestGNNExampleValidation(unittest.TestCase):
                 # This is a simplified check - full validation would need
                 # to parse variable groups properly
                 if isinstance(connection.source, str):
-                    _source_vars = [connection.source]  # noqa: F841
+                    _source_vars: list[Any] = [connection.source]  # noqa: F841
                 else:
-                    _source_vars = connection.source if isinstance(connection.source, list) else []  # noqa: F841
+                    _source_vars = (
+                        connection.source if isinstance(connection.source, list) else []
+                    )  # noqa: F841
 
                 if isinstance(connection.target, str):
-                    _target_vars = [connection.target]  # noqa: F841
+                    _target_vars: list[Any] = [connection.target]  # noqa: F841
                 else:
-                    _target_vars = connection.target if isinstance(connection.target, list) else []  # noqa: F841
+                    _target_vars = (
+                        connection.target if isinstance(connection.target, list) else []
+                    )  # noqa: F841
 
 
 class TestGNNPerformance(unittest.TestCase):
     """Test GNN module performance and memory usage."""
 
-    def setUp(self):
+    def setUp(self) -> Any:
         """Set up performance testing."""
         if not GNN_AVAILABLE:
             self.skipTest("GNN module not available")
@@ -560,19 +586,21 @@ It contains many variables and connections to test parser and validator performa
 
         # Generate many variables
         for i in range(num_variables):
-            content += f"var_{i}[{i+1},{i+2},type=float]    # Variable {i}\n"
+            content += f"var_{i}[{i + 1},{i + 2},type=float]    # Variable {i}\n"
 
         content += "\n## Connections\n"
 
         # Generate many connections
         for i in range(num_variables - 1):
-            content += f"var_{i}>var_{i+1}\n"
+            content += f"var_{i}>var_{i + 1}\n"
 
         content += "\n## InitialParameterization\n"
 
         # Generate many parameters
-        for i in range(min(20, num_variables)):  # Limit parameters to avoid memory issues
-            content += f"var_{i}={{({i*0.1},{i*0.2})}}\n"
+        for i in range(
+            min(20, num_variables)
+        ):  # Limit parameters to avoid memory issues
+            content += f"var_{i}={{({i * 0.1},{i * 0.2})}}\n"
 
         content += """
 ## Time
@@ -585,7 +613,7 @@ Large Performance Test Model - End
 
         return content
 
-    def test_parsing_performance(self):
+    def test_parsing_performance(self) -> Any:
         """Test parsing performance with large content."""
         start_time = time.time()
         start_memory = psutil.Process().memory_info().rss
@@ -600,15 +628,19 @@ Large Performance Test Model - End
 
         # Performance assertions (adjust thresholds as needed)
         self.assertLess(parse_time, 5.0, f"Parsing took too long: {parse_time:.2f}s")
-        self.assertLess(memory_used, 100 * 1024 * 1024, f"Too much memory used: {memory_used / 1024 / 1024:.2f}MB")
+        self.assertLess(
+            memory_used,
+            100 * 1024 * 1024,
+            f"Too much memory used: {memory_used / 1024 / 1024:.2f}MB",
+        )
 
         # Verify parsing was successful
         self.assertIsInstance(parsed, ParsedGNN)
         self.assertGreater(len(parsed.variables), 50)
 
-    def test_validation_performance(self):
+    def test_validation_performance(self) -> Any:
         """Test validation performance."""
-        temp_file = tempfile.NamedTemporaryFile(mode='w', suffix='.md', delete=False)
+        temp_file = tempfile.NamedTemporaryFile(mode="w", suffix=".md", delete=False)
         temp_file.write(self.large_gnn_content)
         temp_file.close()
 
@@ -621,7 +653,11 @@ Large Performance Test Model - End
             validation_time = end_time - start_time
 
             # Performance assertion
-            self.assertLess(validation_time, 10.0, f"Validation took too long: {validation_time:.2f}s")
+            self.assertLess(
+                validation_time,
+                10.0,
+                f"Validation took too long: {validation_time:.2f}s",
+            )
 
             # Verify validation completed
             self.assertIsInstance(result, ValidationResult)
@@ -629,7 +665,7 @@ Large Performance Test Model - End
         finally:
             os.unlink(temp_file.name)
 
-    def test_memory_usage_large_files(self):
+    def test_memory_usage_large_files(self) -> Any:
         """Test memory usage with very large files."""
         # Generate even larger content
         very_large_content = self._generate_large_gnn_content(num_variables=500)
@@ -643,7 +679,11 @@ Large Performance Test Model - End
             memory_used = peak_memory - initial_memory
 
             # Memory usage should be reasonable
-            self.assertLess(memory_used, 200 * 1024 * 1024, f"Excessive memory usage: {memory_used / 1024 / 1024:.2f}MB")
+            self.assertLess(
+                memory_used,
+                200 * 1024 * 1024,
+                f"Excessive memory usage: {memory_used / 1024 / 1024:.2f}MB",
+            )
 
             # Verify parsing was successful
             self.assertIsInstance(parsed, ParsedGNN)
@@ -655,7 +695,7 @@ Large Performance Test Model - End
 class TestGNNErrorHandling(unittest.TestCase):
     """Test error handling and edge cases."""
 
-    def setUp(self):
+    def setUp(self) -> Any:
         """Set up error handling tests."""
         if not GNN_AVAILABLE:
             self.skipTest("GNN module not available")
@@ -663,7 +703,7 @@ class TestGNNErrorHandling(unittest.TestCase):
         self.parser = GNNParser()
         self.validator = GNNValidator()
 
-    def test_unicode_content(self):
+    def test_unicode_content(self) -> Any:
         """Test handling of Unicode content."""
         unicode_content = """## GNNSection
 UnicodeTestModel
@@ -704,7 +744,7 @@ End of Unicode test - 测试结束
         self.assertIn("Unicode Test Model", parsed.model_name)
         self.assertIn("α_factor", parsed.variables)
 
-    def test_malformed_sections(self):
+    def test_malformed_sections(self) -> Any:
         """Test handling of malformed sections."""
         malformed_content = """## GNNSection
 MalformedTest
@@ -738,7 +778,7 @@ End
         self.assertIsInstance(parsed, ParsedGNN)
 
         # Validation should catch errors
-        temp_file = tempfile.NamedTemporaryFile(mode='w', suffix='.md', delete=False)
+        temp_file = tempfile.NamedTemporaryFile(mode="w", suffix=".md", delete=False)
         temp_file.write(malformed_content)
         temp_file.close()
 
@@ -749,7 +789,7 @@ End
         finally:
             os.unlink(temp_file.name)
 
-    def test_extremely_long_lines(self):
+    def test_extremely_long_lines(self) -> Any:
         """Test handling of extremely long lines."""
         long_line = "x" * 10000  # 10KB line
 
@@ -783,7 +823,7 @@ End
         parsed = self.parser.parse_content(long_line_content)
         self.assertIsInstance(parsed, ParsedGNN)
 
-    def test_empty_sections(self):
+    def test_empty_sections(self) -> Any:
         """Test handling of empty sections."""
         empty_sections_content = """## GNNSection
 EmptyTest
@@ -819,9 +859,9 @@ End
         self.assertEqual(len(parsed.connections), 0)
         self.assertEqual(len(parsed.parameters), 0)
 
-    def test_parser_robustness(self):
+    def test_parser_robustness(self) -> Any:
         """Test parser robustness with various edge cases."""
-        edge_cases = [
+        edge_cases: list[Any] = [
             "",  # Empty file
             "## GNNSection\n",  # Only one section
             "Not a valid GNN file at all",  # No GNN structure
@@ -842,14 +882,20 @@ End
 class TestGNNMCPIntegration(unittest.TestCase):
     """Test MCP (Model Context Protocol) integration."""
 
-    def setUp(self):
+    def setUp(self) -> Any:
         """Set up MCP integration tests."""
         if not GNN_AVAILABLE:
             self.skipTest("GNN module not available")
 
-    def test_get_gnn_documentation(self):
+    def test_get_gnn_documentation(self) -> Any:
         """Test MCP documentation retrieval."""
-        doc_types = ["file_structure", "punctuation", "schema_json", "schema_yaml", "grammar"]
+        doc_types: list[Any] = [
+            "file_structure",
+            "punctuation",
+            "schema_json",
+            "schema_yaml",
+            "grammar",
+        ]
 
         for doc_type in doc_types:
             with self.subTest(doc_type=doc_type):
@@ -863,7 +909,7 @@ class TestGNNMCPIntegration(unittest.TestCase):
                     self.assertIsInstance(result["content"], str)
                     self.assertGreater(len(result["content"]), 0)
 
-    def test_validate_gnn_content_mcp(self):
+    def test_validate_gnn_content_mcp(self) -> Any:
         """Test MCP validation functionality."""
         valid_content = """## GNNSection
 MCPTest
@@ -903,23 +949,23 @@ End
             self.assertIn("errors", result)
             self.assertIn("warnings", result)
 
-    def test_mcp_error_handling(self):
+    def test_mcp_error_handling(self) -> Any:
         """Test MCP error handling."""
         # Test invalid document type
-        result = get_gnn_documentation("invalid_type")
+        result = get_gnn_documentation(cast(Any, "invalid_type"))
 
         self.assertIsInstance(result, dict)
         self.assertFalse(result["success"])
         self.assertIn("error", result)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     # Configure test discovery and execution
     loader = unittest.TestLoader()
     suite = unittest.TestSuite()
 
     # Add all test classes
-    test_classes = [
+    test_classes: list[Any] = [
         TestGNNSchemaValidation,
         TestGNNParser,
         TestGNNExampleValidation,
@@ -937,9 +983,9 @@ if __name__ == '__main__':
     result = runner.run(suite)
 
     # Print summary
-    print(f"\n{'='*60}")
+    print(f"\n{'=' * 60}")
     print("TEST SUMMARY")
-    print(f"{'='*60}")
+    print(f"{'=' * 60}")
     print(f"Tests run: {result.testsRun}")
     print(f"Failures: {len(result.failures)}")
     print(f"Errors: {len(result.errors)}")

@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Any
 
 from .base_serializer import BaseGNNSerializer
 from .common import GNNInternalRepresentation
@@ -9,7 +10,7 @@ class MarkdownSerializer(BaseGNNSerializer):
 
     def serialize(self, model: GNNInternalRepresentation) -> str:
         """Convert GNN model back to Markdown format."""
-        sections = []
+        sections: list[Any] = []
 
         # GNNVersionAndFlags
         sections.append("## GNNVersionAndFlags")
@@ -31,7 +32,9 @@ class MarkdownSerializer(BaseGNNSerializer):
         if model.variables:
             sections.append("## StateSpaceBlock")
             for var in model.variables:
-                dims_str = f"[{','.join(map(str, var.dimensions))}]" if var.dimensions else ""
+                dims_str = (
+                    f"[{','.join(map(str, var.dimensions))}]" if var.dimensions else ""
+                )
                 sections.append(f"{var.name}{dims_str},{var.data_type.value}")
             sections.append("")
 
@@ -74,7 +77,9 @@ class MarkdownSerializer(BaseGNNSerializer):
             if model.time_specification.discretization:
                 sections.append(model.time_specification.discretization)
             if model.time_specification.horizon:
-                sections.append(f"ModelTimeHorizon = {model.time_specification.horizon}")
+                sections.append(
+                    f"ModelTimeHorizon = {model.time_specification.horizon}"
+                )
             sections.append("")
 
         # ActInfOntologyAnnotation
@@ -95,4 +100,4 @@ class MarkdownSerializer(BaseGNNSerializer):
             sections.append(f"Checksum: {model.checksum}")
         sections.append("")
 
-        return '\n'.join(sections)
+        return "\n".join(sections)

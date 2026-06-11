@@ -128,7 +128,7 @@ function run_simulation(config)
         nr_agents = length(config["agents"])
         println("Using $(nr_agents) agents from configuration")
         
-        # Placeholder for agent simulation code
+        # Report configured agent trajectories.
         println("Agent initial positions:")
         for agent in config["agents"]
             println("Agent $(agent["id"]): $(agent["initial_position"]) -> $(agent["target_position"])")

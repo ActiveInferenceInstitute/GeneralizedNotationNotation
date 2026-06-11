@@ -23,4 +23,4 @@ Examples are used as input fixtures by:
 
 - `gnn/testing/test_round_trip.py` — round-trip for configured formats (see **[../SPEC.md](../SPEC.md)**)
 - `gnn/testing/test_comprehensive.py` — comprehensive parsing validation
-- `src/tests/test_gnn_parsing.py` — unit-level parsing tests
+- `src/tests/gnn/test_gnn_parsing.py` — unit-level parsing tests

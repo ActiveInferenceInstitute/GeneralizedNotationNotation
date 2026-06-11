@@ -1,26 +1,39 @@
-# Compat - Agent Scaffolding
+# Visualization Compatibility Sub-module
 
-## Module Overview
+## Overview
 
-**Purpose**: Responsible for `Compat` operations within the GNN pipeline architecture.
-**Category**: Generated Pipeline Component
-**Status**: Development
+Compatibility layer that handles optional dependency availability for matplotlib, seaborn, and numpy. Provides safe fallback imports and shared helpers used by all visualization sub-modules.
 
----
+## Architecture
 
-## Core Functionality
+```
+compat/
+├── __init__.py        # Package exports
+└── viz_compat.py      # Optional dependency detection, fallbacks, and shared helpers
+```
 
-### Primary Responsibilities
-Shared matplotlib/numpy/seaborn imports for visualization and analysis.
+## Key Exports
 
-Both visualization (step 8) and analysis (step 16) import from the package-root
-`visualization._viz_compat` shim, which re-exports this module.
+- **`MATPLOTLIB_AVAILABLE`** — Boolean flag indicating matplotlib availability.
+- **`plt`** — `matplotlib.pyplot` or `None` if unavailable.
+- **`sns`** — `seaborn` or `None` if unavailable.
+- **`np`** — `numpy` (always available as a core dependency).
+- **`viz_var_type(var_info: dict) -> str`** — Extract variable type from a parsed variable dict. Checks `var_type`, `type`, and `node_type` keys in order, returning `"unknown"` when none are present. Canonical source — imported by `analysis/combined_analysis.py` and `graph/network_visualizations.py`.
 
-### Extracted Code Entities
+## Usage
 
-- **Classes**: No specific classes exported.
-- **Functions**: No specific public functions exported.
+```python
+from visualization.compat.viz_compat import MATPLOTLIB_AVAILABLE, plt, np, viz_var_type
 
-## Implementation Details
+if MATPLOTLIB_AVAILABLE:
+    fig, ax = plt.subplots()
 
-This module follows the Thin Orchestrator Pattern. It is governed by the Zero-Mock testing policy.
+var_type = viz_var_type({"var_type": "hidden_state"})  # -> "hidden_state"
+```
+
+## Parent Module
+
+See [visualization/AGENTS.md](../AGENTS.md) for the overall visualization architecture.
+
+**Version**: 1.6.0
+**Last Updated**: 2026-05-12

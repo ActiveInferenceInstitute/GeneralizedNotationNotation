@@ -10,9 +10,9 @@
 
 **Status**: ✅ Production Ready
 
-**Version**: 1.0.0
+**Version**: 1.6.0
 
-**Last Updated**: 2026-01-21
+**Last Updated**: 2026-04-16
 
 ---
 
@@ -371,15 +371,18 @@ Pipeline Results → Report Aggregation → Data Analysis → Format Generation 
 
 ### Test Files
 
-- `src/tests/test_report_integration.py` - Integration tests
-- `src/tests/test_report_generation.py` - Generation tests
-- `src/tests/test_report_formats.py` - Format tests
+- `src/tests/report/test_report_integration.py` - Integration tests
+- `src/tests/report/test_report_generation.py` - Generation tests
+- `src/tests/report/test_report_formats.py` - Format tests
 
 ### Test Coverage
 
-- **Current**: 81%
-- **Target**: 90%+
+Measure on demand:
 
+```bash
+uv run --extra dev python -m pytest src/tests/test_report*.py \
+    --cov=src/report --cov-report=term-missing
+```
 ### Key Test Scenarios
 
 1. Report generation across all supported formats
@@ -443,7 +446,7 @@ def generate_report(pipeline_data, format="html", template="default"):
 
 ## Version History
 
-### Current Version: 1.0.0
+### Current Version: 1.6.0
 
 **Features**:
 
@@ -477,10 +480,10 @@ def generate_report(pipeline_data, format="html", template="default"):
 
 ---
 
-**Last Updated**: 2026-01-21
+**Last Updated**: 2026-04-16
 **Maintainer**: GNN Pipeline Team
 **Status**: ✅ Production Ready
-**Version**: 1.0.0
+**Version**: 1.6.0
 **Architecture Compliance**: ✅ 100% Thin Orchestrator Pattern
 
 

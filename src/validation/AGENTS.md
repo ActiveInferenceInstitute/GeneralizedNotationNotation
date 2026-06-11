@@ -10,9 +10,9 @@
 
 **Status**: ✅ Production Ready
 
-**Version**: 1.0.0
+**Version**: 1.6.0
 
-**Last Updated**: 2026-01-21
+**Last Updated**: 2026-04-16
 
 ---
 
@@ -231,13 +231,16 @@ Model Content → Structure Validation → Semantic Validation → Performance P
 ## Testing
 
 ### Test Files
-- `src/tests/test_validation_overall.py` - Module-level validation tests
-- `src/tests/test_gnn_validation.py` - GNN validation-focused tests (shared)
+- `src/tests/validation/test_validation_overall.py` - Module-level validation tests
+- `src/tests/gnn/test_gnn_validation.py` - GNN validation-focused tests (shared)
 
 ### Test Coverage
-- **Current**: 82%
-- **Target**: 85%+
+Measure on demand:
 
+```bash
+uv run --extra dev python -m pytest src/tests/test_validation*.py \
+    --cov=src/validation --cov-report=term-missing
+```
 ### Key Test Scenarios
 1. Model structure validation
 2. Semantic consistency checking

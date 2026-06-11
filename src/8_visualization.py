@@ -33,6 +33,7 @@ If you encounter errors:
 
 import sys
 from pathlib import Path
+from typing import cast
 
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent))
@@ -44,12 +45,14 @@ from visualization import process_visualization
 run_script = create_standardized_pipeline_script(
     "8_visualization.py",
     process_visualization,
-    "Matrix and network visualization processing"
+    "Matrix and network visualization processing",
 )
+
 
 def main() -> int:
     """Main entry point for the visualization step."""
-    return run_script()
+    return cast("int", run_script())
+
 
 if __name__ == "__main__":
     raise SystemExit(main())

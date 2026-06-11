@@ -23,11 +23,11 @@ def generate_comprehensive_report(
     report_formats: Optional[List[str]] = None,
     include_performance: bool = True,
     include_errors: bool = True,
-    include_dependencies: bool = True
+    include_dependencies: bool = True,
 ) -> bool:
     """
     Generate a comprehensive analysis report from all pipeline outputs.
-    
+
     Args:
         pipeline_output_dir: Directory containing all pipeline outputs
         report_output_dir: Directory to save the generated report
@@ -36,7 +36,7 @@ def generate_comprehensive_report(
         include_performance: Whether to include performance metrics
         include_errors: Whether to include error analysis
         include_dependencies: Whether to include dependency analysis
-        
+
     Returns:
         True if report generation succeeded, False otherwise
     """
@@ -45,7 +45,9 @@ def generate_comprehensive_report(
 
         # Validate input directories
         if not pipeline_output_dir.exists():
-            logger.error(f"Pipeline output directory does not exist: {pipeline_output_dir}")
+            logger.error(
+                f"Pipeline output directory does not exist: {pipeline_output_dir}"
+            )
             return False
 
         # Create report output directory
@@ -70,27 +72,33 @@ def generate_comprehensive_report(
             "options": {
                 "include_performance": include_performance,
                 "include_errors": include_errors,
-                "include_dependencies": include_dependencies
-            }
+                "include_dependencies": include_dependencies,
+            },
         }
 
         # Generate reports in requested formats
-        generated_files = []
+        generated_files: list[Any] = []
 
         for format_type in report_formats:
             try:
                 if format_type == "html":
-                    success = generate_html_report_file(pipeline_data, report_output_dir, logger)
+                    success = generate_html_report_file(
+                        pipeline_data, report_output_dir, logger
+                    )
                     if success:
                         generated_files.append("comprehensive_analysis_report.html")
 
                 elif format_type == "markdown":
-                    success = generate_markdown_report_file(pipeline_data, report_output_dir, logger)
+                    success = generate_markdown_report_file(
+                        pipeline_data, report_output_dir, logger
+                    )
                     if success:
                         generated_files.append("comprehensive_analysis_report.md")
 
                 elif format_type == "json":
-                    success = generate_json_report_file(pipeline_data, report_output_dir, logger)
+                    success = generate_json_report_file(
+                        pipeline_data, report_output_dir, logger
+                    )
                     if success:
                         generated_files.append("report_summary.json")
 
@@ -101,7 +109,9 @@ def generate_comprehensive_report(
                 logger.error(f"Failed to generate {format_type} report: {e}")
 
         # Generate summary report
-        generate_summary_report(pipeline_data, report_output_dir, logger, generated_files)
+        generate_summary_report(
+            pipeline_data, report_output_dir, logger, generated_files
+        )
 
         # Log success
         logger.info(f"Generated comprehensive report with {len(generated_files)} files")
@@ -114,19 +124,18 @@ def generate_comprehensive_report(
         logger.error(f"Failed to generate comprehensive report: {e}")
         return False
 
+
 def generate_html_report_file(
-    pipeline_data: Dict[str, Any],
-    report_output_dir: Path,
-    logger: logging.Logger
+    pipeline_data: Dict[str, Any], report_output_dir: Path, logger: logging.Logger
 ) -> bool:
     """
     Generate HTML report file.
-    
+
     Args:
         pipeline_data: Pipeline analysis data
         report_output_dir: Output directory
         logger: Logger for this operation
-        
+
     Returns:
         True if successful, False otherwise
     """
@@ -138,7 +147,7 @@ def generate_html_report_file(
 
         # Write HTML report
         report_file = report_output_dir / "comprehensive_analysis_report.html"
-        with open(report_file, 'w', encoding='utf-8') as f:
+        with open(report_file, "w", encoding="utf-8") as f:
             f.write(html_content)
 
         file_size_mb = report_file.stat().st_size / (1024 * 1024)
@@ -150,19 +159,18 @@ def generate_html_report_file(
         logger.error(f"Failed to generate HTML report: {e}")
         return False
 
+
 def generate_markdown_report_file(
-    pipeline_data: Dict[str, Any],
-    report_output_dir: Path,
-    logger: logging.Logger
+    pipeline_data: Dict[str, Any], report_output_dir: Path, logger: logging.Logger
 ) -> bool:
     """
     Generate Markdown report file.
-    
+
     Args:
         pipeline_data: Pipeline analysis data
         report_output_dir: Output directory
         logger: Logger for this operation
-        
+
     Returns:
         True if successful, False otherwise
     """
@@ -174,7 +182,7 @@ def generate_markdown_report_file(
 
         # Write Markdown report
         report_file = report_output_dir / "comprehensive_analysis_report.md"
-        with open(report_file, 'w', encoding='utf-8') as f:
+        with open(report_file, "w", encoding="utf-8") as f:
             f.write(markdown_content)
 
         file_size_mb = report_file.stat().st_size / (1024 * 1024)
@@ -186,19 +194,18 @@ def generate_markdown_report_file(
         logger.error(f"Failed to generate Markdown report: {e}")
         return False
 
+
 def generate_json_report_file(
-    pipeline_data: Dict[str, Any],
-    report_output_dir: Path,
-    logger: logging.Logger
+    pipeline_data: Dict[str, Any], report_output_dir: Path, logger: logging.Logger
 ) -> bool:
     """
     Generate JSON report file.
-    
+
     Args:
         pipeline_data: Pipeline analysis data
         report_output_dir: Output directory
         logger: Logger for this operation
-        
+
     Returns:
         True if successful, False otherwise
     """
@@ -207,7 +214,7 @@ def generate_json_report_file(
 
         # Write JSON report
         report_file = report_output_dir / "report_summary.json"
-        with open(report_file, 'w', encoding='utf-8') as f:
+        with open(report_file, "w", encoding="utf-8") as f:
             json.dump(pipeline_data, f, indent=2, default=str)
 
         file_size_mb = report_file.stat().st_size / (1024 * 1024)
@@ -219,15 +226,16 @@ def generate_json_report_file(
         logger.error(f"Failed to generate JSON report: {e}")
         return False
 
+
 def generate_summary_report(
     pipeline_data: Dict[str, Any],
     report_output_dir: Path,
     logger: logging.Logger,
-    generated_files: List[str]
+    generated_files: List[str],
 ) -> None:
     """
     Generate a summary report of the report generation process.
-    
+
     Args:
         pipeline_data: Pipeline analysis data
         report_output_dir: Output directory
@@ -235,25 +243,39 @@ def generate_summary_report(
         generated_files: List of generated report files
     """
     try:
-        summary = {
+        summary: dict[str, Any] = {
             "report_generation_summary": {
                 "generation_time": datetime.now().isoformat(),
-                "pipeline_directory": str(pipeline_data.get("pipeline_output_directory", "")),
+                "pipeline_directory": str(
+                    pipeline_data.get("pipeline_output_directory", "")
+                ),
                 "report_directory": str(report_output_dir),
                 "health_score": pipeline_data.get("health_score", 0),
                 "generated_files": generated_files,
                 "pipeline_summary": {
                     "total_steps": len(pipeline_data.get("steps", {})),
-                    "successful_steps": len([s for s in pipeline_data.get("steps", {}).values() if s.get("exists", False)]),
-                    "total_files": pipeline_data.get("summary", {}).get("total_files_processed", 0),
-                    "total_size_mb": pipeline_data.get("summary", {}).get("total_size_mb", 0),
-                    "success_rate": pipeline_data.get("summary", {}).get("success_rate", 0)
-                }
+                    "successful_steps": len(
+                        [
+                            s
+                            for s in pipeline_data.get("steps", {}).values()
+                            if s.get("exists", False)
+                        ]
+                    ),
+                    "total_files": pipeline_data.get("summary", {}).get(
+                        "total_files_processed", 0
+                    ),
+                    "total_size_mb": pipeline_data.get("summary", {}).get(
+                        "total_size_mb", 0
+                    ),
+                    "success_rate": pipeline_data.get("summary", {}).get(
+                        "success_rate", 0
+                    ),
+                },
             }
         }
 
         summary_file = report_output_dir / "report_generation_summary.json"
-        with open(summary_file, 'w', encoding='utf-8') as f:
+        with open(summary_file, "w", encoding="utf-8") as f:
             json.dump(summary, f, indent=2, default=str)
 
         logger.info(f"Report generation summary created: {summary_file}")
@@ -261,17 +283,18 @@ def generate_summary_report(
     except Exception as e:
         logger.error(f"Failed to generate summary report: {e}")
 
+
 def generate_custom_report(
     pipeline_output_dir: Path,
     report_output_dir: Path,
     logger: logging.Logger,
     step_filter: Optional[List[str]] = None,
     exclude_steps: Optional[List[str]] = None,
-    format_type: str = "html"
+    format_type: str = "html",
 ) -> bool:
     """
     Generate a custom report with specific step filtering.
-    
+
     Args:
         pipeline_output_dir: Directory containing pipeline outputs
         report_output_dir: Directory to save generated reports
@@ -279,7 +302,7 @@ def generate_custom_report(
         step_filter: List of steps to include (optional)
         exclude_steps: List of steps to exclude (optional)
         format_type: Report format (html, markdown, json)
-        
+
     Returns:
         True if successful, False otherwise
     """
@@ -291,7 +314,7 @@ def generate_custom_report(
 
         # Filter steps if specified
         if step_filter or exclude_steps:
-            filtered_steps = {}
+            filtered_steps: dict[Any, Any] = {}
             for step_name, step_data in pipeline_data.get("steps", {}).items():
                 if step_filter and step_name not in step_filter:
                     continue
@@ -302,7 +325,7 @@ def generate_custom_report(
             pipeline_data["steps"] = filtered_steps
             pipeline_data["filtering_applied"] = {
                 "included_steps": step_filter,
-                "excluded_steps": exclude_steps
+                "excluded_steps": exclude_steps,
             }
 
         # Create output directory
@@ -312,7 +335,9 @@ def generate_custom_report(
         if format_type == "html":
             return generate_html_report_file(pipeline_data, report_output_dir, logger)
         elif format_type == "markdown":
-            return generate_markdown_report_file(pipeline_data, report_output_dir, logger)
+            return generate_markdown_report_file(
+                pipeline_data, report_output_dir, logger
+            )
         elif format_type == "json":
             return generate_json_report_file(pipeline_data, report_output_dir, logger)
         else:
@@ -323,25 +348,22 @@ def generate_custom_report(
         logger.error(f"Failed to generate custom report: {e}")
         return False
 
+
 def validate_report_data(pipeline_data: Dict[str, Any]) -> Dict[str, Any]:
     """
     Validate pipeline data and return validation results.
-    
+
     Args:
         pipeline_data: Pipeline analysis data
-        
+
     Returns:
         Dictionary with validation results
     """
-    validation_results = {
-        "valid": True,
-        "warnings": [],
-        "errors": []
-    }
+    validation_results: dict[str, Any] = {"valid": True, "warnings": [], "errors": []}
 
     try:
         # Check required fields
-        required_fields = ["steps", "summary", "report_generation_time"]
+        required_fields: list[Any] = ["steps", "summary", "report_generation_time"]
         for field in required_fields:
             if field not in pipeline_data:
                 validation_results["errors"].append(f"Missing required field: {field}")
@@ -351,25 +373,35 @@ def validate_report_data(pipeline_data: Dict[str, Any]) -> Dict[str, Any]:
         steps = pipeline_data.get("steps", {})
         for step_name, step_data in steps.items():
             if not isinstance(step_data, dict):
-                validation_results["errors"].append(f"Invalid step data for {step_name}")
+                validation_results["errors"].append(
+                    f"Invalid step data for {step_name}"
+                )
                 validation_results["valid"] = False
                 continue
 
             # Check step data structure
             if "exists" not in step_data:
-                validation_results["warnings"].append(f"Missing 'exists' field for step {step_name}")
+                validation_results["warnings"].append(
+                    f"Missing 'exists' field for step {step_name}"
+                )
 
             if step_data.get("exists", False):
                 if "file_count" not in step_data:
-                    validation_results["warnings"].append(f"Missing 'file_count' for step {step_name}")
+                    validation_results["warnings"].append(
+                        f"Missing 'file_count' for step {step_name}"
+                    )
 
                 if "total_size_mb" not in step_data:
-                    validation_results["warnings"].append(f"Missing 'total_size_mb' for step {step_name}")
+                    validation_results["warnings"].append(
+                        f"Missing 'total_size_mb' for step {step_name}"
+                    )
 
         # Check summary data
         summary = pipeline_data.get("summary", {})
         if "total_files_processed" not in summary:
-            validation_results["warnings"].append("Missing 'total_files_processed' in summary")
+            validation_results["warnings"].append(
+                "Missing 'total_files_processed' in summary"
+            )
 
         if "success_rate" not in summary:
             validation_results["warnings"].append("Missing 'success_rate' in summary")

@@ -34,6 +34,10 @@ s-B
 A = [[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]]
 B = [[0.7, 0.3, 0.1], [0.2, 0.4, 0.3], [0.1, 0.3, 0.6]]
 D = [[0.5, 0.3, 0.2]]
+num_hidden_states = 3
+num_obs = 3
+num_actions = 1
+num_timesteps = 40
 
 ## Time
 Dynamic
@@ -49,6 +53,6 @@ o = Observation
 t = Time
 
 ## Footer
-Generated: 2026-04-10T10:24:32.892217
+Generated: 2026-05-25T09:51:15.202847
 
 ## Signature

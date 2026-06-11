@@ -205,9 +205,9 @@ end
 # Example usage (matrices would need to be defined)
 # transition_matrix_val = [[0.7, 0.3], [0.4, 0.6]]
 # emission_matrix_val = [[0.5, 0.3, 0.2], [0.1, 0.2, 0.7]]
-# dummy_observations = [1, 2, 1] # Assuming mapped to integers
+# sample_observations = [1, 2, 1] # Assuming mapped to integers
 # result = infer(model = SimpleHMM(transition_matrix = transition_matrix_val, emission_matrix = emission_matrix_val), 
-#                data = (observations = dummy_observations, T = 3))
+#                data = (observations = sample_observations, T = 3))
 ```
 *(Note: This example simplifies how states (e.g., `s_t_minus_1`) and indexing would be robustly handled in a real transpiler. State mappings (e.g., `[1,2]` to actual indices) would also be needed.)*
 
@@ -289,6 +289,22 @@ This synergy would streamline the workflow from theoretical model design to prac
 ## Overview
 
 RxInfer.jl is a powerful Julia package for Bayesian inference on factor graphs using reactive message passing. This guide explains how GNN models are translated to RxInfer.jl code and how to work with the generated implementations for Active Inference applications.
+
+## Getting started
+
+Start from [Overview](#overview), then read [Conceptual Mapping](#conceptual-mapping) and the program-synthesis sections earlier in this file ([GNN for Program Synthesis](#gnn-for-program-synthesis-and-implementation-of-generative-models-in-rxinferjl)).
+
+## Multi-agent examples
+
+See [GNN multi-agent](../gnn/advanced/gnn_multiagent.md) and the [multiagent trajectory planning](multiagent_trajectory_planning/) materials.
+
+## POMDP models
+
+Partially observed settings map through GNN’s POMDP extraction to RxInfer factor graphs; see [GNN for Active Inference Models in RxInfer](#4-gnn-for-active-inference-models-in-rxinfer).
+
+## Security considerations
+
+Run generated Julia with the same care as any simulation code: trust only vetted GNN inputs and review `output/` before publishing.
 
 ## GNN to RxInfer Translation
 
@@ -864,7 +880,7 @@ end
         # Likelihood of current observation
         obs ~ Categorical(params[:A][new_belief, :])
         
-        # Placeholder node for initialization
+        # Initialization node
         current_belief = new_belief
     end
     

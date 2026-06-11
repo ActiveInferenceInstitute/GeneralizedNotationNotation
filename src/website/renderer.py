@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
+from typing import Any, cast
+
 """
 Website renderer module for GNN pipeline.
 """
@@ -11,10 +13,11 @@ from typing import Any, Dict, List
 
 logger = logging.getLogger(__name__)
 
+
 class WebsiteRenderer:
     """Renders HTML content and manages website assets."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize the website renderer."""
         self.css_styles = self._get_default_styles()
 
@@ -54,7 +57,7 @@ class WebsiteRenderer:
                 "font-family": "Arial, sans-serif",
                 "margin": "0",
                 "padding": "20px",
-                "background-color": "#f5f5f5"
+                "background-color": "#f5f5f5",
             },
             ".container": {
                 "max-width": "1200px",
@@ -62,65 +65,50 @@ class WebsiteRenderer:
                 "background-color": "white",
                 "padding": "20px",
                 "border-radius": "5px",
-                "box-shadow": "0 2px 4px rgba(0,0,0,0.1)"
+                "box-shadow": "0 2px 4px rgba(0,0,0,0.1)",
             },
             ".header": {
                 "background-color": "#f0f0f0",
                 "padding": "20px",
                 "border-radius": "5px",
-                "margin-bottom": "20px"
+                "margin-bottom": "20px",
             },
             ".section": {
                 "margin": "20px 0",
                 "padding": "15px",
-                "border-left": "4px solid #0066cc"
+                "border-left": "4px solid #0066cc",
             },
             ".result": {
                 "background-color": "#f9f9f9",
                 "padding": "15px",
                 "margin": "10px 0",
                 "border-radius": "3px",
-                "border": "1px solid #ddd"
+                "border": "1px solid #ddd",
             },
-            ".link": {
-                "color": "#0066cc",
-                "text-decoration": "none"
-            },
-            ".link:hover": {
-                "text-decoration": "underline"
-            },
-            "h1": {
-                "color": "#333",
-                "margin-bottom": "10px"
-            },
-            "h2": {
-                "color": "#555",
-                "margin-top": "30px",
-                "margin-bottom": "15px"
-            },
-            "h3": {
-                "color": "#666",
-                "margin-top": "20px",
-                "margin-bottom": "10px"
-            }
+            ".link": {"color": "#0066cc", "text-decoration": "none"},
+            ".link:hover": {"text-decoration": "underline"},
+            "h1": {"color": "#333", "margin-bottom": "10px"},
+            "h2": {"color": "#555", "margin-top": "30px", "margin-bottom": "15px"},
+            "h3": {"color": "#666", "margin-top": "20px", "margin-bottom": "10px"},
         }
+
 
 def process_website(
     target_dir: Path,
     output_dir: Path,
     verbose: bool = False,
     pipeline_output_root: Path | None = None,
-    **kwargs
+    **kwargs: Any,
 ) -> bool:
     """
     Process website generation from pipeline artifacts.
-    
+
     Args:
         target_dir: Directory containing pipeline artifacts
         output_dir: Directory to save website
         verbose: Enable verbose output
         **kwargs: Additional arguments
-        
+
     Returns:
         True if processing successful, False otherwise
     """
@@ -133,33 +121,44 @@ def process_website(
 
         # Generate website; if target_dir missing, return failure
         from .generator import generate_website
+
         if not Path(target_dir).exists():
-            return {"success": False, "errors": [f"Target directory not found: {target_dir}"], "warnings": [], "pages_created": 0}
-        result = generate_website(logger, target_dir, website_dir, pipeline_output_root=pipeline_output_root)
+            logger.error("Target directory not found: %s", target_dir)
+            return False
+        result = generate_website(
+            logger, target_dir, website_dir, pipeline_output_root=pipeline_output_root
+        )
         # Persist a minimal results file for tests
         try:
             results_file = website_dir / "website_results.json"
-            with open(results_file, 'w') as f:
+            with open(results_file, "w") as f:
                 import json as _json
-                _json.dump({
-                    "success": bool(result.get("success", False)),
-                    "pages_created": int(result.get("pages_created", 0))
-                }, f)
+
+                _json.dump(
+                    {
+                        "success": bool(result.get("success", False)),
+                        "pages_created": int(result.get("pages_created", 0)),
+                    },
+                    f,
+                )
         except Exception as e:
             logger.debug(f"Could not write results file (optional): {e}")
 
         if result["success"]:
-            logger.info(f"Website generated successfully with {result['pages_created']} pages")
+            logger.info(
+                f"Website generated successfully with {result['pages_created']} pages"
+            )
         else:
             logger.error("Website generation failed")
             for error in result["errors"]:
                 logger.error(f"Error: {error}")
 
-        return result["success"]
+        return cast("bool", result["success"])
 
     except Exception as e:
         logger.error(f"Website processing failed: {e}")
         return False
+
 
 def generate_html_report(content: str, output_file: Path) -> bool:
     """Generate an HTML report from content."""
@@ -168,7 +167,7 @@ def generate_html_report(content: str, output_file: Path) -> bool:
         html_content = renderer.render_html(content)
 
         output_file.parent.mkdir(parents=True, exist_ok=True)
-        with open(output_file, 'w') as f:
+        with open(output_file, "w") as f:
             f.write(html_content)
 
         return True
@@ -176,6 +175,7 @@ def generate_html_report(content: str, output_file: Path) -> bool:
     except Exception as e:
         logger.debug(f"Operation failed: {e}")
         return False
+
 
 def embed_image(image_path: Path, output_file: Path) -> bool:
     """Embed an image into an HTML file."""
@@ -201,7 +201,7 @@ def embed_image(image_path: Path, output_file: Path) -> bool:
 </body>
 </html>"""
 
-        with open(output_file, 'w') as f:
+        with open(output_file, "w") as f:
             f.write(html_content)
 
         return True
@@ -210,6 +210,7 @@ def embed_image(image_path: Path, output_file: Path) -> bool:
         logger.debug(f"Operation failed: {e}")
         return False
 
+
 def embed_markdown_file(md_path: Path, output_file: Path) -> bool:
     """Embed a markdown file into an HTML file."""
     try:
@@ -217,7 +218,7 @@ def embed_markdown_file(md_path: Path, output_file: Path) -> bool:
             return False
 
         # Read markdown content
-        with open(md_path, 'r') as f:
+        with open(md_path, "r") as f:
             md_content = f.read()
 
         # Convert markdown to HTML (simplified)
@@ -242,7 +243,7 @@ def embed_markdown_file(md_path: Path, output_file: Path) -> bool:
 </body>
 </html>"""
 
-        with open(output_file, 'w') as f:
+        with open(output_file, "w") as f:
             f.write(html_content)
 
         return True
@@ -251,6 +252,7 @@ def embed_markdown_file(md_path: Path, output_file: Path) -> bool:
         logger.debug(f"Operation failed: {e}")
         return False
 
+
 def embed_text_file(text_path: Path, output_file: Path) -> bool:
     """Embed a text file into an HTML file."""
     try:
@@ -258,7 +260,7 @@ def embed_text_file(text_path: Path, output_file: Path) -> bool:
             return False
 
         # Read text content
-        with open(text_path, 'r') as f:
+        with open(text_path, "r") as f:
             text_content = f.read()
 
         # Convert text to HTML
@@ -279,7 +281,7 @@ def embed_text_file(text_path: Path, output_file: Path) -> bool:
 </body>
 </html>"""
 
-        with open(output_file, 'w') as f:
+        with open(output_file, "w") as f:
             f.write(html_content)
 
         return True
@@ -288,6 +290,7 @@ def embed_text_file(text_path: Path, output_file: Path) -> bool:
         logger.debug(f"Operation failed: {e}")
         return False
 
+
 def embed_json_file(json_path: Path, output_file: Path) -> bool:
     """Embed a JSON file into an HTML file."""
     try:
@@ -295,7 +298,7 @@ def embed_json_file(json_path: Path, output_file: Path) -> bool:
             return False
 
         # Read JSON content
-        with open(json_path, 'r') as f:
+        with open(json_path, "r") as f:
             json_content = f.read()
 
         # Convert JSON to HTML
@@ -319,7 +322,7 @@ def embed_json_file(json_path: Path, output_file: Path) -> bool:
 </body>
 </html>"""
 
-        with open(output_file, 'w') as f:
+        with open(output_file, "w") as f:
             f.write(html_content)
 
         return True
@@ -328,6 +331,7 @@ def embed_json_file(json_path: Path, output_file: Path) -> bool:
         logger.debug(f"Operation failed: {e}")
         return False
 
+
 def embed_html_file(html_path: Path, output_file: Path) -> bool:
     """Embed an HTML file into another HTML file."""
     try:
@@ -335,7 +339,7 @@ def embed_html_file(html_path: Path, output_file: Path) -> bool:
             return False
 
         # Read HTML content
-        with open(html_path, 'r') as f:
+        with open(html_path, "r") as f:
             html_content = f.read()
 
         # Create wrapper HTML
@@ -358,7 +362,7 @@ def embed_html_file(html_path: Path, output_file: Path) -> bool:
 </body>
 </html>"""
 
-        with open(output_file, 'w') as f:
+        with open(output_file, "w") as f:
             f.write(wrapper_html)
 
         return True
@@ -366,6 +370,7 @@ def embed_html_file(html_path: Path, output_file: Path) -> bool:
     except Exception as e:
         logger.debug(f"Operation failed: {e}")
         return False
+
 
 def get_module_info() -> Dict[str, Any]:
     """Get information about the website module."""
@@ -379,15 +384,33 @@ def get_module_info() -> Dict[str, Any]:
             "Markdown embedding",
             "Text file embedding",
             "JSON file embedding",
-            "HTML file embedding"
+            "HTML file embedding",
         ],
         "supported_formats": ["HTML", "CSS", "Markdown", "Text", "JSON", "Images"],
         "supported_file_types": [
-            ".html", ".htm", ".md", ".txt", ".json", ".yaml", ".yml", ".csv",
-            ".png", ".jpg", ".jpeg", ".gif", ".svg"
+            ".html",
+            ".htm",
+            ".md",
+            ".txt",
+            ".json",
+            ".yaml",
+            ".yml",
+            ".csv",
+            ".png",
+            ".jpg",
+            ".jpeg",
+            ".gif",
+            ".svg",
         ],
-        "embedding_capabilities": {"images": True, "markdown": True, "json": True, "html": True, "text": True}
+        "embedding_capabilities": {
+            "images": True,
+            "markdown": True,
+            "json": True,
+            "html": True,
+            "text": True,
+        },
     }
+
 
 def get_supported_file_types() -> List[str]:
     """Return a flat list of supported file types/extensions.
@@ -397,14 +420,28 @@ def get_supported_file_types() -> List[str]:
     """
     return [
         # Text/Markdown
-        "txt", "md", "markdown", "rst",
+        "txt",
+        "md",
+        "markdown",
+        "rst",
         # Data formats
-        "json", "yaml", "yml", "csv",
+        "json",
+        "yaml",
+        "yml",
+        "csv",
         # Images
-        "png", "jpg", "jpeg", "gif", "svg",
+        "png",
+        "jpg",
+        "jpeg",
+        "gif",
+        "svg",
         # Web assets
-        "html", "htm", "css", "js",
+        "html",
+        "htm",
+        "css",
+        "js",
     ]
+
 
 def validate_website_config(config: Dict[str, Any] | str) -> bool | Dict[str, Any]:
     """Validate website configuration. Accepts dict or simple string for tests.
@@ -414,14 +451,10 @@ def validate_website_config(config: Dict[str, Any] | str) -> bool | Dict[str, An
     """
     if isinstance(config, str):
         return True
-    validation_result = {
-        "valid": True,
-        "errors": [],
-        "warnings": []
-    }
+    validation_result: dict[str, Any] = {"valid": True, "errors": [], "warnings": []}
 
     # Check required fields
-    required_fields = ["output_dir"]  # input_dir optional per tests
+    required_fields: list[Any] = ["output_dir"]  # input_dir optional per tests
     for field in required_fields:
         if field not in config:
             validation_result["valid"] = False
@@ -432,7 +465,9 @@ def validate_website_config(config: Dict[str, Any] | str) -> bool | Dict[str, An
         output_dir = Path(config["output_dir"])
         if output_dir.exists() and not output_dir.is_dir():
             validation_result["valid"] = False
-            validation_result["errors"].append("Output directory path exists but is not a directory")
+            validation_result["errors"].append(
+                "Output directory path exists but is not a directory"
+            )
         if not output_dir.exists():
             # If nonexistent, consider invalid for this test
             validation_result["valid"] = False

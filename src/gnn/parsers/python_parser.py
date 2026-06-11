@@ -12,7 +12,7 @@ License: MIT
 import ast
 import logging
 import re
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, cast
 
 from .common import (
     BaseGNNParser,
@@ -25,20 +25,21 @@ from .common import (
 
 logger = logging.getLogger(__name__)
 
+
 class PythonGNNParser(BaseGNNParser):
     """Parser for Python geometric/neural implementations."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize the Python parser."""
         super().__init__()
-        self.class_pattern = re.compile(r'class\s+(\w+).*:')
-        self.function_pattern = re.compile(r'def\s+(\w+)\s*\([^)]*\):')
-        self.import_pattern = re.compile(r'(?:from\s+([^\s]+)\s+)?import\s+([^\n]+)')
+        self.class_pattern = re.compile(r"class\s+(\w+).*:")
+        self.function_pattern = re.compile(r"def\s+(\w+)\s*\([^)]*\):")
+        self.import_pattern = re.compile(r"(?:from\s+([^\s]+)\s+)?import\s+([^\n]+)")
 
     def parse_file(self, file_path: str) -> ParseResult:
         """Parse a Python file containing GNN implementations."""
         try:
-            with open(file_path, 'r', encoding='utf-8') as f:
+            with open(file_path, "r", encoding="utf-8") as f:
                 content = f.read()
 
             return self.parse_string(content)
@@ -46,8 +47,7 @@ class PythonGNNParser(BaseGNNParser):
         except Exception as e:
             logger.error(f"Error parsing Python file {file_path}: {e}")
             result = ParseResult(
-                model=self.create_empty_model("Failed Python Parse"),
-                success=False
+                model=self.create_empty_model("Failed Python Parse"), success=False
             )
             result.add_error(f"Failed to parse Python file: {e}")
             return result
@@ -67,8 +67,7 @@ class PythonGNNParser(BaseGNNParser):
         except Exception as e:
             logger.error(f"Error parsing Python content: {e}")
             result = ParseResult(
-                model=self.create_empty_model("Failed Python Parse"),
-                success=False
+                model=self.create_empty_model("Failed Python Parse"), success=False
             )
             result.add_error(f"Failed to parse Python content: {e}")
             return result
@@ -88,8 +87,7 @@ class PythonGNNParser(BaseGNNParser):
         model_name = self._extract_model_name_ast(tree) or "PythonGNNModel"
 
         model = GNNInternalRepresentation(
-            model_name=model_name,
-            annotation="Parsed from Python implementation"
+            model_name=model_name, annotation="Parsed from Python implementation"
         )
 
         # Parse imports
@@ -104,9 +102,10 @@ class PythonGNNParser(BaseGNNParser):
     def _extract_embedded_json_data(self, content: str) -> Optional[Dict[str, Any]]:
         """Extract embedded JSON model data from Python comments."""
         import json
+
         # Look for JSON data in Python comments
-        patterns = [
-            r'#\s*MODEL_DATA:\s*(\{.+\})',  # # MODEL_DATA: {...}
+        patterns: list[Any] = [
+            r"#\s*MODEL_DATA:\s*(\{.+\})",  # # MODEL_DATA: {...}
             r'"""\s*MODEL_DATA:\s*(\{.+?\})\s*"""',  # """ MODEL_DATA: {...} """
             r"'''\s*MODEL_DATA:\s*(\{.+?\})\s*'''",  # ''' MODEL_DATA: {...} '''
         ]
@@ -115,13 +114,17 @@ class PythonGNNParser(BaseGNNParser):
             match = re.search(pattern, content, re.DOTALL | re.MULTILINE)
             if match:
                 try:
-                    return json.loads(match.group(1))
+                    return cast("dict[str, Any] | None", json.loads(match.group(1)))
                 except json.JSONDecodeError as e:
-                    logger.debug("Malformed JSON in embedded data, trying next pattern: %s", e)
+                    logger.debug(
+                        "Malformed JSON in embedded data, trying next pattern: %s", e
+                    )
                     continue
         return None
 
-    def _parse_from_embedded_data(self, embedded_data: Dict[str, Any], result: ParseResult) -> ParseResult:
+    def _parse_from_embedded_data(
+        self, embedded_data: Dict[str, Any], result: ParseResult
+    ) -> ParseResult:
         """Parse model from embedded JSON data."""
         try:
             from .common import (
@@ -135,57 +138,59 @@ class PythonGNNParser(BaseGNNParser):
 
             # Create model from embedded data
             model = GNNInternalRepresentation(
-                model_name=embedded_data.get('model_name', 'Unknown Model'),
-                annotation=embedded_data.get('annotation', ''),
+                model_name=embedded_data.get("model_name", "Unknown Model"),
+                annotation=embedded_data.get("annotation", ""),
             )
 
             # Parse variables
-            for var_data in embedded_data.get('variables', []):
+            for var_data in embedded_data.get("variables", []):
                 var = Variable(
-                    name=var_data['name'],
-                    var_type=VariableType(var_data['var_type']),
-                    data_type=DataType(var_data['data_type']),
-                    dimensions=var_data.get('dimensions', [])
+                    name=var_data["name"],
+                    var_type=VariableType(var_data["var_type"]),
+                    data_type=DataType(var_data["data_type"]),
+                    dimensions=var_data.get("dimensions", []),
                 )
                 model.variables.append(var)
 
             # Parse connections
-            for conn_data in embedded_data.get('connections', []):
+            for conn_data in embedded_data.get("connections", []):
                 conn = Connection(
-                    source_variables=conn_data['source_variables'],
-                    target_variables=conn_data['target_variables'],
-                    connection_type=ConnectionType(conn_data['connection_type'])
+                    source_variables=conn_data["source_variables"],
+                    target_variables=conn_data["target_variables"],
+                    connection_type=ConnectionType(conn_data["connection_type"]),
                 )
                 model.connections.append(conn)
 
             # Parse parameters
-            for param_data in embedded_data.get('parameters', []):
+            for param_data in embedded_data.get("parameters", []):
                 param = Parameter(
-                    name=param_data['name'],
-                    value=param_data['value'],
-                    type_hint=param_data.get('param_type', 'constant')
+                    name=param_data["name"],
+                    value=param_data["value"],
+                    type_hint=param_data.get("param_type", "constant"),
                 )
                 model.parameters.append(param)
 
             # Set time specification if present
-            if embedded_data.get('time_specification'):
-                time_data = embedded_data['time_specification']
+            if embedded_data.get("time_specification"):
+                time_data = embedded_data["time_specification"]
                 from .common import TimeSpecification
+
                 model.time_specification = TimeSpecification(
-                    time_type=time_data.get('time_type', 'dynamic'),
-                    discretization=time_data.get('discretization'),
-                    horizon=time_data.get('horizon'),
-                    step_size=time_data.get('step_size')
+                    time_type=time_data.get("time_type", "dynamic"),
+                    discretization=time_data.get("discretization"),
+                    horizon=time_data.get("horizon"),
+                    step_size=time_data.get("step_size"),
                 )
 
             # Set ontology mappings if present
-            if embedded_data.get('ontology_mappings'):
+            if embedded_data.get("ontology_mappings"):
                 from .common import OntologyMapping
-                for mapping_data in embedded_data['ontology_mappings']:
+
+                for mapping_data in embedded_data["ontology_mappings"]:
                     mapping = OntologyMapping(
-                        variable_name=mapping_data['variable_name'],
-                        ontology_term=mapping_data['ontology_term'],
-                        description=mapping_data.get('description')
+                        variable_name=mapping_data["variable_name"],
+                        ontology_term=mapping_data["ontology_term"],
+                        description=mapping_data.get("description"),
                     )
                     model.ontology_mappings.append(mapping)
 
@@ -203,7 +208,7 @@ class PythonGNNParser(BaseGNNParser):
 
         model = GNNInternalRepresentation(
             model_name=model_name,
-            annotation="Parsed from Python implementation (regex recovery)"
+            annotation="Parsed from Python implementation (regex recovery)",
         )
 
         # Parse imports
@@ -218,8 +223,10 @@ class PythonGNNParser(BaseGNNParser):
         """Extract model name from AST."""
         for node in ast.walk(tree):
             if isinstance(node, ast.ClassDef):
-                if any(keyword in node.name.lower()
-                       for keyword in ['model', 'gnn', 'active', 'inference']):
+                if any(
+                    keyword in node.name.lower()
+                    for keyword in ["model", "gnn", "active", "inference"]
+                ):
                     return node.name
 
         # Try module docstring
@@ -227,15 +234,15 @@ class PythonGNNParser(BaseGNNParser):
             first = tree.body[0]
             if isinstance(first, ast.Expr) and isinstance(first.value, ast.Constant):
                 docstring = first.value.value
-                if isinstance(docstring, str) and 'model' in docstring.lower():
+                if isinstance(docstring, str) and "model" in docstring.lower():
                     # Extract potential model name from docstring
-                    lines = docstring.split('\n')
+                    lines = docstring.split("\n")
                     for line in lines:
-                        if 'model' in line.lower():
+                        if "model" in line.lower():
                             words = line.split()
                             for word in words:
-                                if 'model' in word.lower():
-                                    return word.replace(':', '')
+                                if "model" in word.lower():
+                                    return word.replace(":", "")
 
         return None
 
@@ -244,18 +251,22 @@ class PythonGNNParser(BaseGNNParser):
         class_matches = self.class_pattern.findall(content)
 
         for class_name in class_matches:
-            if any(keyword in class_name.lower()
-                   for keyword in ['model', 'gnn', 'active', 'inference']):
-                return class_name
+            if any(
+                keyword in class_name.lower()
+                for keyword in ["model", "gnn", "active", "inference"]
+            ):
+                return cast("str", class_name)
 
         if class_matches:
-            return class_matches[0]
+            return cast("str", class_matches[0])
 
         return "PythonGNNModel"
 
-    def _parse_imports_ast(self, tree: ast.AST, model: GNNInternalRepresentation):
+    def _parse_imports_ast(
+        self, tree: ast.AST, model: GNNInternalRepresentation
+    ) -> Any:
         """Parse imports from AST."""
-        imports = []
+        imports: list[Any] = []
 
         for node in ast.walk(tree):
             if isinstance(node, ast.Import):
@@ -266,40 +277,46 @@ class PythonGNNParser(BaseGNNParser):
                 for alias in node.names:
                     imports.append(f"{module}.{alias.name}")
 
-        model.extensions['python_imports'] = imports
+        model.extensions["python_imports"] = imports
 
         # Check for relevant libraries
-        ml_libraries = ['torch', 'jax', 'tensorflow', 'numpy', 'scipy']
-        ai_libraries = ['pymdp', 'active_inference']
+        ml_libraries: list[Any] = ["torch", "jax", "tensorflow", "numpy", "scipy"]
+        ai_libraries: list[Any] = ["pymdp", "active_inference"]
 
-        model.extensions['uses_ml_libraries'] = any(
+        model.extensions["uses_ml_libraries"] = any(
             any(lib in imp for lib in ml_libraries) for imp in imports
         )
-        model.extensions['uses_ai_libraries'] = any(
+        model.extensions["uses_ai_libraries"] = any(
             any(lib in imp for lib in ai_libraries) for imp in imports
         )
 
-    def _parse_imports_regex(self, content: str, model: GNNInternalRepresentation):
+    def _parse_imports_regex(
+        self, content: str, model: GNNInternalRepresentation
+    ) -> Any:
         """Parse imports using regex."""
         import_matches = self.import_pattern.findall(content)
-        imports = []
+        imports: list[Any] = []
 
         for from_module, import_items in import_matches:
             if from_module:
-                for item in import_items.split(','):
+                for item in import_items.split(","):
                     imports.append(f"{from_module}.{item.strip()}")
             else:
-                imports.extend([item.strip() for item in import_items.split(',')])
+                imports.extend([item.strip() for item in import_items.split(",")])
 
-        model.extensions['python_imports'] = imports
+        model.extensions["python_imports"] = imports
 
-    def _parse_classes_ast(self, tree: ast.AST, model: GNNInternalRepresentation):
+    def _parse_classes_ast(
+        self, tree: ast.AST, model: GNNInternalRepresentation
+    ) -> Any:
         """Parse class definitions from AST."""
         for node in ast.walk(tree):
             if isinstance(node, ast.ClassDef):
                 self._parse_class_ast(node, model)
 
-    def _parse_class_ast(self, class_node: ast.ClassDef, model: GNNInternalRepresentation):
+    def _parse_class_ast(
+        self, class_node: ast.ClassDef, model: GNNInternalRepresentation
+    ) -> Any:
         """Parse a single class definition."""
         class_name = class_node.name
 
@@ -310,8 +327,12 @@ class PythonGNNParser(BaseGNNParser):
             elif isinstance(node, ast.Assign):
                 self._parse_class_assignment_ast(node, model, class_name)
 
-    def _parse_method_ast(self, method_node: ast.FunctionDef,
-                         model: GNNInternalRepresentation, class_name: str):
+    def _parse_method_ast(
+        self,
+        method_node: ast.FunctionDef,
+        model: GNNInternalRepresentation,
+        class_name: str,
+    ) -> Any:
         """Parse method to extract variables and connections."""
         method_name = method_node.name
 
@@ -320,8 +341,9 @@ class PythonGNNParser(BaseGNNParser):
             if isinstance(node, ast.Assign):
                 self._parse_assignment_ast(node, model, f"{class_name}.{method_name}")
 
-    def _parse_assignment_ast(self, assign_node: ast.Assign,
-                             model: GNNInternalRepresentation, context: str):
+    def _parse_assignment_ast(
+        self, assign_node: ast.Assign, model: GNNInternalRepresentation, context: str
+    ) -> Any:
         """Parse assignment to extract variables."""
         for target in assign_node.targets:
             if isinstance(target, ast.Name):
@@ -340,24 +362,31 @@ class PythonGNNParser(BaseGNNParser):
                     var_type=var_type,
                     dimensions=self._infer_dimensions_from_assignment(assign_node),
                     data_type=data_type,
-                    description=f"Variable from {context}"
+                    description=f"Variable from {context}",
                 )
 
                 model.variables.append(variable)
 
-    def _parse_class_assignment_ast(self, assign_node: ast.Assign,
-                                   model: GNNInternalRepresentation, class_name: str):
+    def _parse_class_assignment_ast(
+        self, assign_node: ast.Assign, model: GNNInternalRepresentation, class_name: str
+    ) -> Any:
         """Parse class-level assignments."""
         self._parse_assignment_ast(assign_node, model, f"class {class_name}")
 
-    def _parse_functions_ast(self, tree: ast.AST, model: GNNInternalRepresentation):
+    def _parse_functions_ast(
+        self, tree: ast.AST, model: GNNInternalRepresentation
+    ) -> Any:
         """Parse standalone function definitions."""
         for node in ast.walk(tree):
-            if isinstance(node, ast.FunctionDef) and self._is_top_level_function(node, tree):
+            if isinstance(node, ast.FunctionDef) and self._is_top_level_function(
+                node, tree
+            ):
                 # Parse function body for variables
                 for sub_node in ast.walk(node):
                     if isinstance(sub_node, ast.Assign):
-                        self._parse_assignment_ast(sub_node, model, f"function {node.name}")
+                        self._parse_assignment_ast(
+                            sub_node, model, f"function {node.name}"
+                        )
 
     def _is_top_level_function(self, func_node: ast.FunctionDef, tree: ast.AST) -> bool:
         """Check if function is at module level (not in a class)."""
@@ -367,37 +396,44 @@ class PythonGNNParser(BaseGNNParser):
                     return False
         return True
 
-    def _parse_classes_regex(self, content: str, model: GNNInternalRepresentation):
+    def _parse_classes_regex(
+        self, content: str, model: GNNInternalRepresentation
+    ) -> Any:
         """Parse classes using regex."""
         class_matches = self.class_pattern.findall(content)
 
         for class_name in class_matches:
             # Extract class body (simplified)
-            class_pattern = rf'class\s+{re.escape(class_name)}.*?(?=\nclass|\n\w+\s*=|\Z)'
+            class_pattern = (
+                rf"class\s+{re.escape(class_name)}.*?(?=\nclass|\n\w+\s*=|\Z)"
+            )
             class_match = re.search(class_pattern, content, re.DOTALL)
 
             if class_match:
                 class_body = class_match.group(0)
-                self._extract_variables_from_text(class_body, model, f"class {class_name}")
+                self._extract_variables_from_text(
+                    class_body, model, f"class {class_name}"
+                )
 
-    def _extract_variables_from_text(self, text: str,
-                                    model: GNNInternalRepresentation, context: str):
+    def _extract_variables_from_text(
+        self, text: str, model: GNNInternalRepresentation, context: str
+    ) -> Any:
         """Extract variables from text using heuristics."""
         # Look for common variable patterns
-        patterns = [
-            r'self\.(\w+)\s*=',  # Instance variables
-            r'(\w+)\s*=\s*(?:torch|jax|np)\.',  # ML library assignments
-            r'(\w+)\s*=\s*.*(?:state|action|observation|policy)',  # AI variables
+        patterns: list[Any] = [
+            r"self\.(\w+)\s*=",  # Instance variables
+            r"(\w+)\s*=\s*(?:torch|jax|np)\.",  # ML library assignments
+            r"(\w+)\s*=\s*.*(?:state|action|observation|policy)",  # AI variables
         ]
 
-        found_vars = set()
+        found_vars: set[Any] = set()
 
         for pattern in patterns:
             matches = re.findall(pattern, text, re.IGNORECASE)
             for match in matches:
                 var_name = match if isinstance(match, str) else match[0]
 
-                if var_name not in found_vars and not var_name.startswith('_'):
+                if var_name not in found_vars and not var_name.startswith("_"):
                     found_vars.add(var_name)
 
                     var_type = self._infer_variable_type_from_name(var_name)
@@ -408,7 +444,7 @@ class PythonGNNParser(BaseGNNParser):
                         var_type=var_type,
                         dimensions=[],
                         data_type=data_type,
-                        description=f"Variable from {context}"
+                        description=f"Variable from {context}",
                     )
 
                     model.variables.append(variable)
@@ -417,21 +453,21 @@ class PythonGNNParser(BaseGNNParser):
         """Infer variable type from name."""
         name_lower = name.lower()
 
-        if any(keyword in name_lower for keyword in ['state', 'hidden', 's_']):
+        if any(keyword in name_lower for keyword in ["state", "hidden", "s_"]):
             return VariableType.HIDDEN_STATE
-        elif any(keyword in name_lower for keyword in ['obs', 'observation', 'o_']):
+        elif any(keyword in name_lower for keyword in ["obs", "observation", "o_"]):
             return VariableType.OBSERVATION
-        elif any(keyword in name_lower for keyword in ['action', 'control', 'u_']):
+        elif any(keyword in name_lower for keyword in ["action", "control", "u_"]):
             return VariableType.ACTION
-        elif any(keyword in name_lower for keyword in ['policy', 'pi_']):
+        elif any(keyword in name_lower for keyword in ["policy", "pi_"]):
             return VariableType.POLICY
-        elif name_lower in ['a', 'a_matrix', 'likelihood']:
+        elif name_lower in ["a", "a_matrix", "likelihood"]:
             return VariableType.LIKELIHOOD_MATRIX
-        elif name_lower in ['b', 'b_matrix', 'transition']:
+        elif name_lower in ["b", "b_matrix", "transition"]:
             return VariableType.TRANSITION_MATRIX
-        elif name_lower in ['c', 'c_vector', 'preference']:
+        elif name_lower in ["c", "c_vector", "preference"]:
             return VariableType.PREFERENCE_VECTOR
-        elif name_lower in ['d', 'd_vector', 'prior']:
+        elif name_lower in ["d", "d_vector", "prior"]:
             return VariableType.PRIOR_VECTOR
 
         return VariableType.HIDDEN_STATE
@@ -451,9 +487,9 @@ class PythonGNNParser(BaseGNNParser):
         if isinstance(assign_node.value, ast.Call):
             if isinstance(assign_node.value.func, ast.Attribute):
                 func_name = assign_node.value.func.attr
-                if func_name in ['zeros', 'ones', 'randn', 'random']:
+                if func_name in ["zeros", "ones", "randn", "random"]:
                     return DataType.CONTINUOUS
-                elif func_name in ['randint', 'arange']:
+                elif func_name in ["randint", "arange"]:
                     return DataType.INTEGER
 
         return DataType.CONTINUOUS
@@ -466,17 +502,21 @@ class PythonGNNParser(BaseGNNParser):
                 for arg in assign_node.value.args:
                     if isinstance(arg, (ast.Tuple, ast.List)):
                         try:
-                            dims = []
+                            dims: list[Any] = []
                             for elt in arg.elts:
-                                if isinstance(elt, ast.Constant) and isinstance(elt.value, int):
+                                if isinstance(elt, ast.Constant) and isinstance(
+                                    elt.value, int
+                                ):
                                     dims.append(elt.value)
                             if dims:
                                 return dims
                         except (ValueError, TypeError, AttributeError) as e:
-                            logger.debug("AST dimension extraction failed (best-effort): %s", e)
+                            logger.debug(
+                                "AST dimension extraction failed (best-effort): %s", e
+                            )
 
         return []
 
     def get_supported_extensions(self) -> List[str]:
         """Get supported file extensions."""
-        return ['.py']
+        return [".py"]

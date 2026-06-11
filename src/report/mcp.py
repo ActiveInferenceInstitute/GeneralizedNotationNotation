@@ -5,6 +5,7 @@ Exposes GNN report generation tools: comprehensive report creation,
 format listing, validation, and report inspection through MCP.
 """
 
+import json
 import logging
 from pathlib import Path
 from typing import Any, Dict
@@ -16,8 +17,9 @@ from . import get_supported_formats, process_report
 from .generator import generate_comprehensive_report
 
 
-def generate_report_mcp(target_directory: str, output_directory: str,
-                        verbose: bool = False) -> Dict[str, Any]:
+def generate_report_mcp(
+    target_directory: str, output_directory: str, verbose: bool = False
+) -> Dict[str, Any]:
     """
     Generate a comprehensive pipeline execution report.
 
@@ -34,10 +36,13 @@ def generate_report_mcp(target_directory: str, output_directory: str,
     """
     try:
         import logging as _log
+
         _logger = _log.getLogger("report.mcp")
         if verbose:
             _logger.setLevel(_log.DEBUG)
-        success = generate_comprehensive_report(Path(target_directory), Path(output_directory), _logger)
+        success = generate_comprehensive_report(
+            Path(target_directory), Path(output_directory), _logger
+        )
         return {
             "success": success,
             "target_directory": target_directory,
@@ -49,8 +54,9 @@ def generate_report_mcp(target_directory: str, output_directory: str,
         return {"success": False, "error": str(e)}
 
 
-def process_report_mcp(target_directory: str, output_directory: str,
-                       verbose: bool = False) -> Dict[str, Any]:
+def process_report_mcp(
+    target_directory: str, output_directory: str, verbose: bool = False
+) -> Dict[str, Any]:
     """
     Run the full report processing pipeline step.
 
@@ -110,9 +116,13 @@ def read_report_mcp(report_file_path: str) -> Dict[str, Any]:
     """
     try:
         import json as _json
+
         rpath = Path(report_file_path)
         if not rpath.exists():
-            return {"success": False, "error": f"Report file not found: {report_file_path}"}
+            return {
+                "success": False,
+                "error": f"Report file not found: {report_file_path}",
+            }
 
         content = rpath.read_text(encoding="utf-8", errors="replace")
         parsed = None
@@ -120,15 +130,17 @@ def read_report_mcp(report_file_path: str) -> Dict[str, Any]:
             try:
                 parsed = _json.loads(content)
             except (json.JSONDecodeError, ValueError):
-                logger.debug("Report file %s is not valid JSON, returning as text", rpath.name)
+                logger.debug(
+                    "Report file %s is not valid JSON, returning as text", rpath.name
+                )
 
         return {
-            "success":   True,
-            "file":      str(rpath),
-            "format":    rpath.suffix.lstrip("."),
+            "success": True,
+            "file": str(rpath),
+            "format": rpath.suffix.lstrip("."),
             "size_bytes": rpath.stat().st_size,
-            "content":   content[:5000],
-            "data":      parsed,
+            "content": content[:5000],
+            "data": parsed,
         }
     except Exception as e:
         logger.error(f"read_report_mcp error: {e}", exc_info=True)
@@ -147,55 +159,84 @@ def get_report_module_info_mcp() -> Dict[str, Any]:
 
 # ── MCP Registration ────────────────────────────────────────────────────────
 
-def register_tools(mcp_instance) -> None:
+
+def register_tools(mcp_instance: Any) -> None:
     """Register report tools with the MCP server."""
 
     mcp_instance.register_tool(
         "generate_report",
         generate_report_mcp,
-        {"type": "object", "properties": {
-            "target_directory": {"type": "string", "description": "Pipeline input directory"},
-            "output_directory": {"type": "string", "description": "Report output directory"},
-            "verbose":          {"type": "boolean", "default": False},
-        }, "required": ["target_directory", "output_directory"]},
+        {
+            "type": "object",
+            "properties": {
+                "target_directory": {
+                    "type": "string",
+                    "description": "Pipeline input directory",
+                },
+                "output_directory": {
+                    "type": "string",
+                    "description": "Report output directory",
+                },
+                "verbose": {"type": "boolean", "default": False},
+            },
+            "required": ["target_directory", "output_directory"],
+        },
         "Generate a comprehensive pipeline execution report with statistics and summaries.",
-        module=__package__, category="report",
+        module=__package__,
+        category="report",
     )
 
     mcp_instance.register_tool(
         "process_report",
         process_report_mcp,
-        {"type": "object", "properties": {
-            "target_directory": {"type": "string"},
-            "output_directory": {"type": "string"},
-            "verbose": {"type": "boolean", "default": False},
-        }, "required": ["target_directory", "output_directory"]},
+        {
+            "type": "object",
+            "properties": {
+                "target_directory": {"type": "string"},
+                "output_directory": {"type": "string"},
+                "verbose": {"type": "boolean", "default": False},
+            },
+            "required": ["target_directory", "output_directory"],
+        },
         "Run the full report pipeline step.",
-        module=__package__, category="report",
+        module=__package__,
+        category="report",
     )
 
     mcp_instance.register_tool(
         "list_report_formats",
-        list_report_formats_mcp, {},
+        list_report_formats_mcp,
+        {},
         "Return all supported report output formats (JSON, HTML, Markdown, etc.).",
-        module=__package__, category="report",
+        module=__package__,
+        category="report",
     )
 
     mcp_instance.register_tool(
         "read_report",
         read_report_mcp,
-        {"type": "object", "properties": {
-            "report_file_path": {"type": "string", "description": "Path to the report file"},
-        }, "required": ["report_file_path"]},
+        {
+            "type": "object",
+            "properties": {
+                "report_file_path": {
+                    "type": "string",
+                    "description": "Path to the report file",
+                },
+            },
+            "required": ["report_file_path"],
+        },
         "Read and return the contents of a generated pipeline report file.",
-        module=__package__, category="report",
+        module=__package__,
+        category="report",
     )
 
     mcp_instance.register_tool(
         "get_report_module_info",
-        get_report_module_info_mcp, {},
+        get_report_module_info_mcp,
+        {},
         "Return metadata about the report module (version, supported formats).",
-        module=__package__, category="report",
+        module=__package__,
+        category="report",
     )
 
     logger.info("report module MCP tools registered (5 domain tools).")

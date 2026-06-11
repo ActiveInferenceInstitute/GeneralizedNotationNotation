@@ -1,5 +1,7 @@
-"""Shim: network plots live in visualization.graph."""
+"""Facade: network plots live in visualization.graph."""
 
-from visualization.graph import generate_network_visualizations
+from typing import Any
 
-__all__ = ["generate_network_visualizations"]
+from .graph import generate_network_visualizations
+
+__all__: list[Any] = ["generate_network_visualizations"]

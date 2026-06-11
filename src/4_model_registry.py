@@ -33,20 +33,13 @@ If you encounter errors:
 
 import sys
 from pathlib import Path
+from typing import cast
 
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent))
 
+from model_registry import process_model_registry
 from utils.pipeline_template import create_standardized_pipeline_script
-
-# Import module function
-try:
-    from model_registry import process_model_registry
-except ImportError:
-    def process_model_registry(target_dir, output_dir, logger, **kwargs) -> bool:
-        """Recovery model registry when module unavailable."""
-        logger.warning("Model registry module not available - using recovery")
-        return True
 
 run_script = create_standardized_pipeline_script(
     "4_model_registry.py",
@@ -54,12 +47,14 @@ run_script = create_standardized_pipeline_script(
     "Model registry processing for GNN models",
     additional_arguments={
         "registry_path": {"type": str, "help": "Path to model registry file"}
-    }
+    },
 )
+
 
 def main() -> int:
     """Main entry point for the model registry step."""
-    return run_script()
+    return cast("int", run_script())
+
 
 if __name__ == "__main__":
     raise SystemExit(main())

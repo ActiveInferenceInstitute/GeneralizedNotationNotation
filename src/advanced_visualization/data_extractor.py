@@ -21,10 +21,10 @@ class VisualizationDataExtractor:
     Extracts visualization data from GNN files using the comprehensive parsing system.
     """
 
-    def __init__(self, strict_validation: bool = True):
+    def __init__(self, strict_validation: bool = True) -> None:
         """
         Initialize the data extractor with the GNN parsing system.
-        
+
         Args:
             strict_validation: Whether to use strict validation during parsing
         """
@@ -33,10 +33,10 @@ class VisualizationDataExtractor:
     def extract_from_file(self, file_path: Path) -> Dict[str, Any]:
         """
         Extract visualization data from a GNN file.
-        
+
         Args:
             file_path: Path to the GNN file
-            
+
         Returns:
             Dictionary containing extracted visualization data
         """
@@ -45,7 +45,9 @@ class VisualizationDataExtractor:
             parse_result = self.parsing_system.parse_file(file_path)
 
             if not parse_result.success:
-                return self._empty_result(errors=parse_result.errors, warnings=parse_result.warnings)
+                return self._empty_result(
+                    errors=parse_result.errors, warnings=parse_result.warnings
+                )
 
             # Extract data from the parsed model
             model = parse_result.model
@@ -54,14 +56,16 @@ class VisualizationDataExtractor:
         except Exception as e:
             return self._empty_result(errors=[str(e)])
 
-    def extract_from_content(self, content: str, format_hint: Optional[GNNFormat] = None) -> Dict[str, Any]:
+    def extract_from_content(
+        self, content: str, format_hint: Optional[GNNFormat] = None
+    ) -> Dict[str, Any]:
         """
         Extract visualization data from GNN content string.
-        
+
         Args:
             content: GNN file content as string
             format_hint: Optional format hint for parsing
-            
+
         Returns:
             Dictionary containing extracted visualization data
         """
@@ -71,11 +75,17 @@ class VisualizationDataExtractor:
                 parse_result = self.parsing_system.parse_string(content, format_hint)
             else:
                 # Try to detect format from content
-                detected_format = self.parsing_system._detect_format_from_content(content)
-                parse_result = self.parsing_system.parse_string(content, detected_format)
+                detected_format = self.parsing_system._detect_format_from_content(
+                    content
+                )
+                parse_result = self.parsing_system.parse_string(
+                    content, detected_format
+                )
 
             if not parse_result.success:
-                return self._empty_result(errors=parse_result.errors, warnings=parse_result.warnings)
+                return self._empty_result(
+                    errors=parse_result.errors, warnings=parse_result.warnings
+                )
 
             # Extract data from the parsed model
             model = parse_result.model
@@ -84,7 +94,9 @@ class VisualizationDataExtractor:
         except Exception as e:
             return self._empty_result(errors=[str(e)])
 
-    def _empty_result(self, errors: list = None, warnings: list = None) -> Dict[str, Any]:
+    def _empty_result(
+        self, errors: (list) | None = None, warnings: (list) | None = None
+    ) -> Dict[str, Any]:
         """Return a failure result with the same key shape as a success result."""
         return {
             "success": False,
@@ -104,60 +116,66 @@ class VisualizationDataExtractor:
             "extraction_timestamp": datetime.now().isoformat(),
         }
 
-    def _extract_from_model(self, model) -> Dict[str, Any]:
+    def _extract_from_model(self, model: Any) -> Dict[str, Any]:
         """
         Extract visualization data from a parsed GNN model.
-        
+
         Args:
             model: Parsed GNN model (GNNInternalRepresentation)
-            
+
         Returns:
             Dictionary containing extracted visualization data
         """
         # Extract variable blocks
-        blocks = []
+        blocks: list[Any] = []
         for var in model.variables:
-            block_data = {
+            block_data: dict[str, Any] = {
                 "name": var.name,
-                "type": var.var_type.value if hasattr(var.var_type, 'value') else str(var.var_type),
-                "data_type": var.data_type.value if hasattr(var.data_type, 'value') else str(var.data_type),
+                "type": var.var_type.value
+                if hasattr(var.var_type, "value")
+                else str(var.var_type),
+                "data_type": var.data_type.value
+                if hasattr(var.data_type, "value")
+                else str(var.data_type),
                 "dimensions": var.dimensions,
                 "description": var.description or "",
-                "constraints": var.constraints
+                "constraints": var.constraints,
             }
             blocks.append(block_data)
 
         # Extract connections
-        connections = []
+        connections: list[Any] = []
         for conn in model.connections:
-            conn_data = {
+            conn_data: dict[str, Any] = {
                 "source_variables": conn.source_variables,
                 "target_variables": conn.target_variables,
-                "type": conn.connection_type.value if hasattr(conn.connection_type, 'value') else str(conn.connection_type),
+                "type": conn.connection_type.value
+                if hasattr(conn.connection_type, "value")
+                else str(conn.connection_type),
                 "weight": conn.weight,
-                "description": conn.description or ""
+                "description": conn.description or "",
             }
             connections.append(conn_data)
 
         # Extract parameters
-        parameters = []
+        parameters: list[Any] = []
         for param in model.parameters:
-            param_data = {
+            param_data: dict[str, Any] = {
                 "name": param.name,
                 "value": param.value,
                 "type_hint": param.type_hint,
-                "description": param.description or ""
+                "description": param.description or "",
             }
             parameters.append(param_data)
 
         # Extract equations
-        equations = []
+        equations: list[Any] = []
         for eq in model.equations:
-            eq_data = {
+            eq_data: dict[str, Any] = {
                 "label": eq.label,
                 "content": eq.content,
                 "format": eq.format,
-                "description": eq.description or ""
+                "description": eq.description or "",
             }
             equations.append(eq_data)
 
@@ -168,16 +186,16 @@ class VisualizationDataExtractor:
                 "time_type": model.time_specification.time_type,
                 "discretization": model.time_specification.discretization,
                 "horizon": model.time_specification.horizon,
-                "step_size": model.time_specification.step_size
+                "step_size": model.time_specification.step_size,
             }
 
         # Extract ontology mappings
-        ontology_mappings = []
+        ontology_mappings: list[Any] = []
         for mapping in model.ontology_mappings:
-            mapping_data = {
+            mapping_data: dict[str, Any] = {
                 "variable_name": mapping.variable_name,
                 "ontology_term": mapping.ontology_term,
-                "description": mapping.description or ""
+                "description": mapping.description or "",
             }
             ontology_mappings.append(mapping_data)
 
@@ -187,9 +205,15 @@ class VisualizationDataExtractor:
                 "name": model.model_name,
                 "version": model.version,
                 "annotation": model.annotation,
-                "source_format": model.source_format.value if model.source_format else None,
-                "created_at": model.created_at.isoformat() if model.created_at else None,
-                "modified_at": model.modified_at.isoformat() if model.modified_at else None
+                "source_format": model.source_format.value
+                if model.source_format
+                else None,
+                "created_at": model.created_at.isoformat()
+                if model.created_at
+                else None,
+                "modified_at": model.modified_at.isoformat()
+                if model.modified_at
+                else None,
             },
             "blocks": blocks,
             "connections": connections,
@@ -201,16 +225,16 @@ class VisualizationDataExtractor:
             "total_connections": len(connections),
             "total_parameters": len(parameters),
             "total_equations": len(equations),
-            "extraction_timestamp": datetime.now().isoformat()
+            "extraction_timestamp": datetime.now().isoformat(),
         }
 
     def get_model_statistics(self, extracted_data: Dict[str, Any]) -> Dict[str, Any]:
         """
         Generate statistics from extracted visualization data.
-        
+
         Args:
             extracted_data: Data extracted by extract_from_file or extract_from_content
-            
+
         Returns:
             Dictionary containing model statistics
         """
@@ -221,25 +245,27 @@ class VisualizationDataExtractor:
         connections = extracted_data.get("connections", [])
 
         # Variable type statistics
-        type_counts = {}
+        type_counts: dict[Any, Any] = {}
         for block in blocks:
             var_type = block.get("type", "unknown")
             type_counts[var_type] = type_counts.get(var_type, 0) + 1
 
         # Data type statistics
-        data_type_counts = {}
+        data_type_counts: dict[Any, Any] = {}
         for block in blocks:
             data_type = block.get("data_type", "unknown")
             data_type_counts[data_type] = data_type_counts.get(data_type, 0) + 1
 
         # Connection type statistics
-        connection_type_counts = {}
+        connection_type_counts: dict[Any, Any] = {}
         for conn in connections:
             conn_type = conn.get("type", "unknown")
-            connection_type_counts[conn_type] = connection_type_counts.get(conn_type, 0) + 1
+            connection_type_counts[conn_type] = (
+                connection_type_counts.get(conn_type, 0) + 1
+            )
 
         # Dimension statistics
-        dimension_counts = {}
+        dimension_counts: dict[Any, Any] = {}
         for block in blocks:
             dimensions = block.get("dimensions", [])
             dim_key = f"{len(dimensions)}D"
@@ -253,19 +279,21 @@ class VisualizationDataExtractor:
             "total_variables": len(blocks),
             "total_connections": len(connections),
             "total_parameters": extracted_data.get("total_parameters", 0),
-            "total_equations": extracted_data.get("total_equations", 0)
+            "total_equations": extracted_data.get("total_equations", 0),
         }
 
 
-def extract_visualization_data(target_dir: "Path | str", output_dir: "Path | str", **kwargs: Any) -> Dict[str, Any]:
+def extract_visualization_data(
+    target_dir: "Path | str", output_dir: "Path | str", **kwargs: Any
+) -> Dict[str, Any]:
     """
     Extract visualization data from GNN files in the target directory.
-    
+
     Args:
         target_dir: Directory containing GNN files
         output_dir: Directory to save extracted data
         **kwargs: Additional arguments
-        
+
     Returns:
         Dictionary with extraction results
     """
@@ -277,18 +305,18 @@ def extract_visualization_data(target_dir: "Path | str", output_dir: "Path | str
 
     extractor = VisualizationDataExtractor(strict_validation=False)
 
-    results = {
+    results: dict[str, Any] = {
         "processed_files": 0,
         "successful_extractions": 0,
         "failed_extractions": 0,
         "extracted_data": {},
         "statistics": {},
-        "errors": []
+        "errors": [],
     }
 
     # Find all GNN files
-    gnn_extensions = ['.md', '.gnn', '.json', '.yaml', '.yml']
-    gnn_files = []
+    gnn_extensions: list[Any] = [".md", ".gnn", ".json", ".yaml", ".yml"]
+    gnn_files: list[Any] = []
 
     for ext in gnn_extensions:
         gnn_files.extend(target_dir.glob(f"**/*{ext}"))
@@ -304,20 +332,24 @@ def extract_visualization_data(target_dir: "Path | str", output_dir: "Path | str
 
                 model_name = gnn_file.stem
                 results["extracted_data"][model_name] = extracted_data
-                results["statistics"][model_name] = extractor.get_model_statistics(extracted_data)
+                results["statistics"][model_name] = extractor.get_model_statistics(
+                    extracted_data
+                )
 
                 # Save individual file data
                 model_output_dir = output_dir / model_name
                 model_output_dir.mkdir(parents=True, exist_ok=True)
 
-                with open(model_output_dir / "extracted_data.json", 'w') as f:
+                with open(model_output_dir / "extracted_data.json", "w") as f:
                     json.dump(extracted_data, f, indent=2)
 
-                with open(model_output_dir / "statistics.json", 'w') as f:
+                with open(model_output_dir / "statistics.json", "w") as f:
                     json.dump(results["statistics"][model_name], f, indent=2)
             else:
                 results["failed_extractions"] += 1
-                results["errors"].append(f"Failed to extract from {gnn_file}: {extracted_data.get('errors', [])}")
+                results["errors"].append(
+                    f"Failed to extract from {gnn_file}: {extracted_data.get('errors', [])}"
+                )
 
         except Exception as e:
             results["processed_files"] += 1
@@ -327,7 +359,7 @@ def extract_visualization_data(target_dir: "Path | str", output_dir: "Path | str
     # Save overall summary
     output_dir.mkdir(parents=True, exist_ok=True)
     summary_file = output_dir / "extraction_summary.json"
-    with open(summary_file, 'w') as f:
+    with open(summary_file, "w") as f:
         json.dump(results, f, indent=2)
 
     return results

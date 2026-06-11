@@ -6,21 +6,84 @@ Prompt:
 
 Response:
 
-You've already done a good job of summarizing the GNN model and its components, so I'll just add a few more details to provide context for your analysis.
+```python
+import json
+from typing import List
 
-The GNN representation is composed of three main layers:
+def gnn(input: List[str], output: List[List[str]]) -> List[Dict[str, str]]:
+    """GNN implementation of the GNN algorithm.
 
-1) **Fast** layer with 3 states (fast), which represents the agent's actions in terms of sensorimotor preferences and strategic decisions. This layer has 4 states, each representing one level of the hierarchy. The state transitions are represented by a single state transition matrix.
-2) **Medium** layer with 6 states (medium), which represents the agent's beliefs about their own behavior based on their actions in terms of sensorimotor preferences and strategic decisions. This layer has 4 states, each representing one level of the hierarchy. The belief vectors are represented by a single vector.
-3) **Slow** layer with 2 states (slowly), which represents the agent's beliefs about their own behavior based on their actions in terms of sensorimotor preferences and strategic decisions. This layer has 4 states, each representing one level of the hierarchy. The belief vectors are represented by a single vector.
+    Args:
+        input (list): A list of strings representing actions and states.
+        output (list): A list of dictionaries containing the action-state transitions for each level.
 
-The GNN model is composed of three layers:
+        Returns:
+            list(dicts) - A list of dictionaries containing the action-state transitions for each level.
+    """
+    # TODO: Implement the GNN implementation
 
-1) **Fast** layer with 3 states (fast), which represents the agent's actions in terms of sensorimotor preferences and strategic decisions. This layer has 4 states, each representing one level of the hierarchy. The state transitions are represented by a single state transition matrix.
-2) **Medium** layer with 6 states (medium), which represents the agent's beliefs about their own behavior based on their actions in terms of sensorimotor preferences and strategic decisions. This layer has 4 states, each representing one level of the hierarchy. The belief vectors are represented by a single vector.
-3) **Slow** layer with 2 states (slowly), which represents the agent's beliefs about their own behavior based on their actions in terms of sensorimotor preferences and strategic decisions. This layer has 4 states, each representing one level of the hierarchy. The belief vectors are represented by a single vector.
+    def gnn_func(*args, **kwargs):
+        """GNN implementation of the GNN algorithm."""
+        return {
+            "input": input,
+            "output": output,
+            "outputs": [
+                {"action": action},
+                {"state": state} for action in input[1:]
+            ],
+            "errors": []
+        }
 
-The GNN model is composed of three layers:
+    def gnn_func(level: List[str], actions: List[List[str]]) -> Dict[str, str]:
+        """GNN implementation of the GNN algorithm."""
 
-1) **Fast** layer with 3 states (fast), which represents the agent's actions in terms of sensorimotor preferences and strategic decisions. This layer has 4 states, each representing one level of the hierarchy. The state transitions are represented by a single state transition matrix.
-2) **Medium** layer
+        # TODO: Implement the GNN implementation
+
+        return {
+            "input": input,
+            "output": output,
+            "outputs": [
+                {"action": action},
+                {"state": state} for action in actions
+            ],
+            "errors": []
+        }
+
+    def gnn_func(level: List[str], states: List[List[str]]) -> Dict[str, str]:
+
+        # TODO: Implement the GNN implementation
+
+        return {
+            "input": input,
+            "output": output,
+            "outputs": [
+                {"action": action},
+                {"state": state} for action in actions
+            ],
+            "errors": []
+        }
+
+    def gnn_func(level: List[str], states: List[List[str]]) -> Dict[str, str]:
+
+        # TODO: Implement the GNN implementation
+
+        return {
+            "input": input,
+            "output": output,
+            "outputs": [
+                {"action": action},
+                {"state": state} for action in actions
+            ],
+            "errors": []
+        }
+
+    def gnn_func(level: List[str], states: List[List[str]]) -> Dict[str, str]:
+
+        # TODO: Implement the GNN implementation
+
+        return {
+            "input": input,
+            "output": output,
+            "outputs": [
+                {"action": action},
+               

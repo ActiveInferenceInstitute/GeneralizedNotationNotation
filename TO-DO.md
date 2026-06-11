@@ -1,106 +1,78 @@
 # TO-DO — GNN Pipeline Roadmap
 
-**Last Updated**: 2026-03-15
-**Current Version**: 1.3.0
-**Next Target**: v1.4.0
+**Last Updated**: 2026-05-08
+**Current Version**: 1.6.0
+**Next Target**: v1.7.0
 
 ---
 
-## v1.4.0 — Test Coverage Milestone
+## ✅ v1.6.0 — Real-Implementation Stabilization & Core Infrastructure (Released)
 
-> **Scope**: Achieve ≥ 85% line coverage across all 31 modules. This is a minor release milestone.
+> **Released**: 2026-04-15 (tag: `v1.6.0`)
+> **Scope**: Production hardening, MCP integration, renderer expansion, documentation integrity.
 
-- [x] **Coverage baseline** — Run `uv run pytest --cov=src --cov-report=term-missing` and record per-module coverage
-- [x] **Identify gaps** — List all modules below 80% coverage with specific uncovered functions
-- [ ] **Core modules** — Ensure `gnn/`, `render/`, `execute/`, `validation/`, `type_checker/` each exceed 85%
-- [ ] **Infrastructure modules** — Ensure `pipeline/`, `utils/`, `cli/`, `api/`, `lsp/` each exceed 80%
-- [ ] **CI enforcement** — Add `--cov-fail-under=80` to CI workflow (`ci.yml`)
-
-### v1.4.0 Acceptance
-
-- [ ] `uv run pytest --cov=src --cov-fail-under=80` passes
-- [ ] CI pipeline enforces coverage floor
+- [x] **NumPyro/Stan Renderer Integration** — Complete end-to-end render pathway for NumPyro and Stan alongside existing PyMDP, RxInfer, JAX, DisCoPy, PyTorch, ActiveInference.jl backends. Use current backend tests before publishing operational pass counts.
+- [x] **MCP Full Module Exposure** — All 25 pipeline modules + infrastructure modules expose tools via MCP files. Current audit coverage is tracked by `src/tests/mcp/test_mcp_audit.py`; the 2026-05-14 focused audit registered 133 tools and 1 resource.
+- [x] **PyMDP Scaling Study** — Automated scaling analysis pipeline (`scripts/run_pymdp_gnn_scaling_analysis.py`) with configurable N=[2,256] grids, exponential state-space sweeps, and 19-artifact visualization suite.
+- [x] **Test Suite Hardening** — Real-implementation coverage across all modules. Current collect-only inventory is tracked in `src/tests/TEST_SUITE_SUMMARY.md`; Hypothesis tests were refactored to deterministic parametric matrices.
+- [x] **Documentation Integrity** — 105 `doc/gnn/` files, 34 `AGENTS.md` across `src/`, all version strings synchronized to `1.6.0`. Zero phantom file references.
+- [x] **Enhanced Visual Logging** — Progress bars, color-coded output, structured summaries, correlation ID tracking, screen reader support across all 25 pipeline steps.
+- [x] **LLM & ML Fixes** — LLM recursive glob fix, ML cross-validation fold logic hardened (`min(5, len(X), min_class_count)`).
 
 ---
 
-## v1.5.0 — Pipeline Observability & Structured Logging
+## 🎯 v1.7.0 — Multi-Agent Topologies & Interactive Frontends
 
-> **Scope**: Replace raw `print()` calls with structured logging and add pipeline metrics dashboard.
+> **Scope**: Push the pipeline from single-agent generation to interactive, multi-agent architectures with real-time editing and streaming capabilities.
 
-- [ ] **Structured logging** — Audit and replace raw `print()` calls in non-test production code with `logger.info()` / `logger.debug()`
-- [ ] **JSON log format** — Ensure `--log-format json` produces valid JSON-lines output from all 25 steps
-- [ ] **Performance dashboard** — Generate `output/00_pipeline_summary/performance_dashboard.html` with step timing, memory, and throughput charts
-- [ ] **Memory profiling** — Add optional `--profile-memory` flag that records peak RSS per step
-- [ ] **Step dependency graph** — Generate live Mermaid diagram of step DAG execution in pipeline summary
+- [ ] **Multi-Agent Message Passing (RxInfer)** — Expand the `execute/` layer to handle clustered topologies (100+ agents) passing states asynchronously utilizing graph factorization in Julia via RxInfer.jl.
+- [ ] **Categorical Symmetries (DisCoPy)** — Sync matrix permutations natively to string diagrams, allowing visual topology validation before simulation generation.
+- [ ] **Reactive WebSocket GUI** — Overhaul the GUI stack (Step 22) into a WebSocket-powered frontend allowing users to adjust agent matrices on the fly without pipeline re-execution. Build on the oxdraw WebSocket architecture.
+- [ ] **Audio Parameter Streaming** — Bridge Step 15 (Audio/Pedalboard/SAPF) to accept dynamic telemetry updates from long-running PyMDP agent simulations in real time. Extend the existing `process_realtime_chunk` pattern.
+- [ ] **3D Matrix Visualization** — Upgrade the Matrix Visualization module into interactive Three.js canvas structures for explorable generative model inspection.
 
-### v1.5.0 Acceptance
-
-- [ ] Zero raw `print()` calls in non-test `src/` files (all use `logging`)
-- [ ] `gnn run --log-format json` produces valid JSONL
-- [ ] Pipeline summary includes HTML performance dashboard
-
----
-
-## v1.6.0 — Renderer Parity & Execution Coverage
-
-> **Scope**: Ensure all 8 renderers produce runnable code and execute module has matching runners.
-
-- [ ] **Stan renderer** — Verify `render/stan/` produces valid `.stan` files; add smoke test
-- [ ] **DisCoPy renderer** — Verify `render/discopy/` produces valid DisCoPy circuits; add smoke test
-- [ ] **Execute parity** — Create `execute/stan/` runner (or document as render-only with rationale)
-- [ ] **Execute parity** — Create `execute/discopy/` runner (or document as render-only with rationale)
-- [ ] **Cross-framework test** — Add integration test that renders + executes the same GNN model across PyMDP, JAX, and PyTorch
-- [ ] **Renderer benchmarks** — Generate timing comparison table across all 8 renderers for `actinf_pomdp_agent.md`
-
-### v1.6.0 Acceptance
-
-- [ ] All 8 renderers pass smoke tests
-- [ ] `execute/` has runners for ≥ 6 of 8 frameworks (remaining 2 documented as render-only)
-- [ ] Cross-framework integration test passes
+### Acceptance
+```bash
+uv run python src/main.py --only-steps "11,12" --frameworks "rxinfer,discopy" --target-dir input/multi_agent_models --verbose
+uv run pytest src/tests/test_audio*.py src/tests/test_gui*.py
+```
 
 ---
 
-## v1.7.0 — Documentation Quality & Discoverability
+## 🌐 v1.8.0 — Developer Kit & Template Ecosystem
 
-> **Scope**: Raise all module documentation to comprehensive quality and improve cross-linking.
+> **Scope**: Standardizing GNN as the definitive orchestration language with developer-grade tooling and reusable template packages.
 
-- [ ] **Docstring coverage** — Increase from current level to ≥ 80% of all public functions having docstrings
-- [ ] **`doc/` index** — Create `doc/INDEX.md` that lists all 580+ documentation files with one-line descriptions
-- [ ] **Module READMEs** — Ensure all 31 module README.md files have ≥ 50 lines with usage examples
-- [ ] **API reference** — Auto-generate API docs from docstrings using `pdoc` or `sphinx-autodoc` for top 10 modules
-- [ ] **Search index** — Add `doc/search_index.json` for documentation search tooling
-- [ ] **Broken link audit** — Run link checker across all `doc/` files and fix any broken references
+- [ ] **GNN Template Library Engine** — Enable package-manager style downloads for specialized active-inference setups directly using `gnn pull [template_name]` via CLI (Step `src/cli/`).
+- [x] **Pre-commit Ecosystem** — Ship `.pre-commit-config.yaml`, `justfile` (21 recipes), `.devcontainer/` (Dockerfile + devcontainer.json), Ruff lint/format hooks, and secret detection to make repository contributions frictionless.
+- [ ] **MCP Remote Orchestration** — Extend MCP server from local tool discovery to remote CI/CD agent manipulation with authenticated HTTP transport and rate limiting.
 
-### v1.7.0 Acceptance
-
-- [ ] Docstring coverage ≥ 80%
-- [ ] `doc/INDEX.md` exists with ≥ 500 entries
-- [ ] Zero broken internal links in `doc/`
+### Acceptance
+```bash
+gnn pull actinf-pomdp-2state     # Template library works
+just lint                         # Developer tooling works
+mcp-test-client ping gnn-server   # Remote MCP endpoint responds
+```
 
 ---
 
-## v1.8.0 — Developer Experience & Tooling
+## 🚀 v2.0.0 — Multimodal Autonomy & Self-Modifying Workflows
 
-> **Scope**: Improve the development workflow with pre-commit hooks, linting, and automation.
+> **Scope**: Evolving the pipeline from a linear generator into a continuously-running autonomous ecology. Agents define, write, evaluate, and rewrite their own generative models.
 
-- [ ] **Pre-commit hooks** — Add `.pre-commit-config.yaml` with ruff, black, mypy, and markdownlint
-- [ ] **Ruff configuration** — Add `[tool.ruff]` section to `pyproject.toml` with project-specific rules
-- [ ] **Mypy configuration** — Add `[tool.mypy]` section to `pyproject.toml` with gradual typing config
-- [ ] **Makefile / justfile** — Create `justfile` with common developer commands (`just test`, `just lint`, `just run`, `just docs`)
-- [ ] **VS Code settings** — Add `.vscode/settings.json` + `.vscode/extensions.json` for recommended dev environment
-- [ ] **Dev containers** — Add `.devcontainer/devcontainer.json` for GitHub Codespaces / VS Code remote containers
+- [ ] **Self-Modifying Active Inference** — Implement the capacity for the pipeline to self-recompile agent matrices based on failed execution evaluations, entering a recursive design loop.
+- [ ] **Multimodal Agent Interfaces** — Integrate real-time vision processing into the `execute/` modules, allowing simulated agents to optimize policies based on dynamic streams natively defined in their notation.
+- [ ] **Distributed Ecology Scaling** — Implement container orchestration allowing massive-scale distributed agent computing clusters triggered by GNN architecture definitions.
 
-### v1.8.0 Acceptance
-
-- [ ] `pre-commit run --all-files` passes
-- [ ] `just test` runs test suite
-- [ ] `.devcontainer/` works in GitHub Codespaces
+### Acceptance
+```bash
+uv run python src/main.py --autonomous --target-dir input/recursive_models/
+```
 
 ---
 
 ## Conventions
 
 - Versions follow [SemVer](https://semver.org/) — `MAJOR.MINOR.PATCH`
-- Patch releases (1.3.x) target a single file or narrow focus area, completable in 1 session
-- Minor releases (1.x.0) are milestone releases requiring multiple sessions
-- Each release has concrete acceptance criteria with verifiable commands
+- All releases require 100% pipeline stability, real-implementation test coverage, documentation integrity, and verifiable console acceptance metrics.
+- Items marked `[x]` are verified complete against the codebase, not estimated.

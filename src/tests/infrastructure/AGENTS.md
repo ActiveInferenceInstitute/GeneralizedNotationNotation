@@ -1,45 +1,30 @@
-# Tests Infrastructure - Agent Scaffolding
+# Test Infrastructure Sub-module
 
-## Module Overview
+## Overview
 
-**Purpose**: Provide reusable infrastructure for running pytest suites with resource monitoring and structured reporting.
+Core test infrastructure providing the test runner, configuration, resource monitoring, report generation, and shared utilities for the GNN test suite.
 
-**Parent**: `src/tests/`
+## Architecture
 
-This folder is not a pipeline step; it is a support library used by the test runner and test tooling.
+```
+infrastructure/
+├── __init__.py             # Infrastructure exports (62 lines)
+├── test_runner.py          # Custom test runner with progress tracking (296 lines)
+├── test_config.py          # Test configuration and environment detection (41 lines)
+├── report_generator.py     # Test report generation (HTML, JSON) (130 lines)
+├── resource_monitor.py     # Memory and CPU monitoring during tests (99 lines)
+└── utils.py                # Shared infrastructure utilities (365 lines)
+```
 
----
+## Key Components
 
-## Public API
+- **`TestRunner`** — Custom pytest runner with progress bars, resource tracking, and structured output.
+- **`TestConfig`** — Detects environment capabilities (GPU, Ollama, network) and configures test markers.
+- **`ReportGenerator`** — Produces HTML and JSON test reports with timing and coverage data.
+- **`ResourceMonitor`** — Tracks memory and CPU usage during test execution for performance regression detection.
 
-`src/tests/infrastructure/__init__.py` re-exports the public surface:
+## Parent Module
 
-- **Configuration**: `TestExecutionConfig`, `TestExecutionResult`
-- **Monitoring**: `ResourceMonitor`, `PSUTIL_AVAILABLE`
-- **Runner**: `TestRunner`
-- **Reports**: `generate_markdown_report`, `generate_fallback_report`, `generate_timeout_report`, `generate_error_report`, `flatten_pipeline_test_summary` (maps `execution_summary` JSON to markdown keys)
-- **Utilities**: `check_test_dependencies`, `build_pytest_command`, `extract_collection_errors`, `parse_test_statistics`, `parse_coverage_statistics`
+See [tests/AGENTS.md](../AGENTS.md) for the overall test architecture.
 
-`parse_test_statistics(stdout)` returns `total`, `passed`, `failed`, `skipped`, `errors`, plus `tests_run` / `tests_*` aliases for callers. `parse_coverage_statistics` accepts a `Path` to `coverage.json`, or `None`; long/multiline strings are treated as non-path (fast pipeline does not embed coverage in stdout).
-
----
-
-## Key files
-
-- `test_config.py`: dataclasses defining test configuration and result shape
-- `resource_monitor.py`: CPU/memory monitoring (optional `psutil`)
-- `test_runner.py`: `TestRunner` implementation
-- `report_generator.py`: markdown / fallback / timeout / error reports; `flatten_pipeline_test_summary`
-- `utils.py`: pytest command building and output parsing helpers
-
----
-
-## Testing guidance
-
-This module should be validated by:
-
-- [`../test_infrastructure_utils_statistics.py`](../test_infrastructure_utils_statistics.py): `parse_test_statistics`, `parse_coverage_statistics` edge cases, `flatten_pipeline_test_summary`
-- smoke tests for `TestRunner` command construction (without requiring long-running executions)
-
-**Last Updated**: 2026-03-24
-
+**Version**: 1.6.0

@@ -6,6 +6,7 @@ Test to isolate the XML parser duplication issue.
 import json
 import sys
 from pathlib import Path
+from typing import Any
 
 # Add src directory to path
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
@@ -13,28 +14,42 @@ sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 from gnn.parsers.xml_parser import XMLGNNParser
 
 
-def test_xml_parser_only():
+def test_xml_parser_only() -> Any:
     """Test XML parser with minimal embedded data."""
     print("🔍 Testing XML parser with minimal embedded data...")
 
     # Create minimal embedded data
-    minimal_data = {
-        'model_name': 'Test Model',
-        'annotation': 'Test annotation',
-        'variables': [
-            {'name': 'A', 'var_type': 'likelihood_matrix', 'data_type': 'float', 'dimensions': [3, 3]},
-            {'name': 'B', 'var_type': 'transition_matrix', 'data_type': 'float', 'dimensions': [3, 3]},
+    minimal_data: dict[str, Any] = {
+        "model_name": "Test Model",
+        "annotation": "Test annotation",
+        "variables": [
+            {
+                "name": "A",
+                "var_type": "likelihood_matrix",
+                "data_type": "float",
+                "dimensions": [3, 3],
+            },
+            {
+                "name": "B",
+                "var_type": "transition_matrix",
+                "data_type": "float",
+                "dimensions": [3, 3],
+            },
         ],
-        'connections': [
-            {'source_variables': ['A'], 'target_variables': ['B'], 'connection_type': 'directed'},
+        "connections": [
+            {
+                "source_variables": ["A"],
+                "target_variables": ["B"],
+                "connection_type": "directed",
+            },
         ],
-        'parameters': [
-            {'name': 'param1', 'value': 'value1'},
-            {'name': 'param2', 'value': 'value2'},
+        "parameters": [
+            {"name": "param1", "value": "value1"},
+            {"name": "param2", "value": "value2"},
         ],
-        'equations': [],
-        'time_specification': None,
-        'ontology_mappings': []
+        "equations": [],
+        "time_specification": None,
+        "ontology_mappings": [],
     }
 
     print("📊 Input data:")
@@ -62,7 +77,7 @@ def test_xml_parser_only():
     <parameter name="param1">value1</parameter>
     <parameter name="param2">value2</parameter>
   </parameters>
-  <!-- MODEL_DATA: {json.dumps(minimal_data, separators=(',', ':'))} -->
+  <!-- MODEL_DATA: {json.dumps(minimal_data, separators=(",", ":"))} -->
 </gnn_model>"""
 
     print(f"\n📄 Created XML content ({len(xml_content)} characters)")
@@ -84,12 +99,12 @@ def test_xml_parser_only():
     # Show variable names
     print("\n📊 Variable names:")
     for i, var in enumerate(model.variables):
-        print(f"   {i+1:2d}. {var.name}")
+        print(f"   {i + 1:2d}. {var.name}")
 
     # Show parameter names
     print("\n📊 Parameter names:")
     for i, param in enumerate(model.parameters):
-        print(f"   {i+1:2d}. {param.name}")
+        print(f"   {i + 1:2d}. {param.name}")
 
     # Check for duplicates
     var_names = [var.name for var in model.variables]
@@ -102,6 +117,7 @@ def test_xml_parser_only():
     if len(var_names) != len(set(var_names)):
         print("   ❌ DUPLICATE VARIABLES!")
         from collections import Counter
+
         var_counts = Counter(var_names)
         for name, count in var_counts.items():
             if count > 1:
@@ -110,10 +126,12 @@ def test_xml_parser_only():
     if len(param_names) != len(set(param_names)):
         print("   ❌ DUPLICATE PARAMETERS!")
         from collections import Counter
+
         param_counts = Counter(param_names)
         for name, count in param_counts.items():
             if count > 1:
                 print(f"      '{name}' appears {count} times")
+
 
 if __name__ == "__main__":
     test_xml_parser_only()

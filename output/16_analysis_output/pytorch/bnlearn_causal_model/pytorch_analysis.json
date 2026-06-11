@@ -1,0 +1,24 @@
+{
+  "framework": "pytorch",
+  "model_name": "bnlearn_causal_model",
+  "num_timesteps": 30,
+  "num_states": 2,
+  "validation": {
+    "beliefs_in_range": true,
+    "beliefs_sum_to_one": true,
+    "actions_in_range": true,
+    "all_valid": true
+  },
+  "metrics": {
+    "mean_belief_entropy": 0.01643088420414373,
+    "final_belief_entropy": 6.58837569612818e-09,
+    "mean_confidence": 0.9957002168707251,
+    "final_confidence": 0.9999999997132026,
+    "action_distribution": {
+      "0": 17,
+      "1": 13
+    },
+    "mean_efe": 0.49647381599006424
+  },
+  "plots_generated": true
+}

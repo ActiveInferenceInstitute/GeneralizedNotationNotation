@@ -1,11 +1,21 @@
-# Ontology
+# Visualization Ontology
 
-## Overview
-This module handles `Ontology` components.
+Ontology-aware visualization rendering. Maps Active Inference terms to visual elements.
 
-## Available Members
-- **Classes**: OntologyVisualizer
-- **Functions**: create_ontology_table, extract_ontology_mappings, visualize_directory, visualize_ontology
+## Exports
+
+- `OntologyVisualizer` — Class that renders ontology term graphs, annotation overlays,
+  and semantic relationship diagrams between Active Inference constructs
+
+## Dependencies
+
+- `matplotlib` for rendering
+- `ontology` module for term definitions and validation
 
 ## Usage
-Import necessary members directly to orchestrate tasks related to Ontology.
+
+```python
+from visualization.ontology import OntologyVisualizer
+viz = OntologyVisualizer()
+viz.render(parsed_model, output_dir)
+```

@@ -1,11 +1,13 @@
-# Examples
+# Type System Examples
 
-## Overview
-This module handles `Examples` components.
+Reference examples demonstrating GNN type system features.
 
-## Available Members
-- **Classes**: No specific classes exported.
-- **Functions**: No specific public functions exported.
+## Contents
 
-## Usage
-Import necessary members directly to orchestrate tasks related to Examples.
+- `pomdp_example.scala` — Scala POMDP type definition showing state-space dimension typing,
+  transition matrix shape constraints, and observation model compatibility checks
+
+## Purpose
+
+Provides concrete, executable examples for the type checker module's dimension compatibility
+and resource estimation algorithms.

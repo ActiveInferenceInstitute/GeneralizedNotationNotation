@@ -2,7 +2,7 @@
 Template Step Module - Architectural Pattern Reference
 
 This module serves as the reference implementation for the GNN pipeline's architectural pattern.
-It demonstrates the complete flow from main.py through numbered scripts as thin orchestrators 
+It demonstrates the complete flow from main.py through numbered scripts as thin orchestrators
 to modular scripts in dedicated folders.
 
 Architectural Pattern:
@@ -17,16 +17,18 @@ For complete documentation of this architectural pattern, see:
 - src/main.py: Main pipeline orchestrator
 """
 
-__version__ = "1.1.3"
+from typing import Any
+
+__version__ = "1.6.0"
 __author__ = "GNN Pipeline Team"
 __description__ = "Standardized template for GNN pipeline steps"
 
-FEATURES = {
+FEATURES: dict[str, Any] = {
     "standardized_processing": True,
     "correlation_id_generation": True,
     "safe_execution": True,
     "pipeline_initialization": True,
-    "mcp_integration": True
+    "mcp_integration": True,
 }
 
 # Export main functionality
@@ -43,20 +45,30 @@ from .processor import (
 from .utils import get_version_info
 
 # Version information
-VERSION_INFO = {
+VERSION_INFO: dict[str, Any] = {
     "version": __version__,
     "name": "Template Step",
     "description": __description__,
-    "author": __author__
+    "author": __author__,
 }
 
-__all__ = [
-    'process_template_standardized',
-    'process_single_file',
-    'validate_file',
-    'generate_correlation_id',
-    'safe_template_execution',
-    'demonstrate_utility_patterns',
-    'get_version_info',
-    'VERSION_INFO'
+__all__: list[Any] = [
+    "process_template_standardized",
+    "process_single_file",
+    "validate_file",
+    "generate_correlation_id",
+    "safe_template_execution",
+    "demonstrate_utility_patterns",
+    "get_version_info",
+    "VERSION_INFO",
 ]
+
+
+def get_module_info() -> dict:
+    """Return module metadata for composability and MCP discovery."""
+    return {
+        "name": "template",
+        "version": __version__,
+        "description": "Pipeline template initialization and configuration",
+        "features": FEATURES,
+    }

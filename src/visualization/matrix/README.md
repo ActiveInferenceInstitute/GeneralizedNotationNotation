@@ -1,11 +1,23 @@
-# Matrix
+# Matrix Visualization
 
-## Overview
-This module handles `Matrix` components.
+Heatmap and statistical visualization for model likelihood, transition,
+preference, prior, and PyMDP/POMDP tensor matrices.
 
-## Available Members
-- **Classes**: MatrixVisualizer
-- **Functions**: convert_to_matrix, create_heatmap, export_matrix_to_csv, extract_from_parsed_gnn, extract_matrix_data_from_parameters, generate_3d_tensor_visualization, generate_combined_matrix_overview, generate_matrix_analysis, generate_matrix_composed_view, generate_matrix_correlation_plot, generate_matrix_heatmap, generate_matrix_histogram, generate_matrix_statistics, generate_matrix_visualizations, generate_pomdp_transition_analysis, generate_single_matrix_heatmap, parse_matrix_data, process_matrix_visualization, visualize_directory
+## Files
 
-## Usage
-Import necessary members directly to orchestrate tasks related to Matrix.
+- `visualizer.py` — Matrix heatmap engine with 3-D tensor support. POMDP `B`
+  tensors use `(next_state, previous_state, action)` and validate stochasticity
+  by summing over the next-state axis for each previous-state/action column.
+- `extract.py` (60 lines) — Matrix extraction from parsed models
+- `compat.py` (40 lines) — Shared helper exports
+
+## Outputs
+
+- PNG/SVG visualizations for matrices and per-action tensor slices.
+- CSV exports for 2-D matrices and every 3-D tensor slice.
+- POMDP transition analysis panels for entropy, stochasticity, and dominant
+  next-state structure.
+
+## See Also
+
+- [Parent: visualization/README.md](../README.md)

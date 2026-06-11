@@ -53,4 +53,13 @@ jobs:
         run: uv sync --frozen --extra dev
 
       - name: Documentation audit (strict)
-        run: uv run python doc/development/docs_audit.py --strict
+        run: uv run --extra dev python doc/development/docs_audit.py --strict --check-anchors --no-write
+
+      - name: Repository terminology audit
+        run: uv run --extra dev python scripts/check_repo_terminology.py --strict
+
+      - name: Maintained documentation terminology audit
+        run: uv run --extra dev python scripts/check_maintained_doc_terms.py --strict
+
+      - name: GNN documentation pattern audit
+        run: uv run --extra dev python scripts/check_gnn_doc_patterns.py --strict

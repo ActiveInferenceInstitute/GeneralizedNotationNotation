@@ -16,7 +16,7 @@ Features:
 import json
 import logging
 import os
-import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
+import subprocess  # nosec B404
 import sys
 import time
 from pathlib import Path
@@ -27,20 +27,25 @@ logger = logging.getLogger(__name__)
 try:
     from execute.julia_setup import is_julia_available
 except ImportError:
-    def is_julia_available() -> bool:  # type: ignore[misc]
+
+    def is_julia_available(min_version: tuple[Any, ...] = (1, 9, 0)) -> bool:
         """Recovery when julia_setup is unavailable: check PATH directly."""
         import shutil
+
         return shutil.which("julia") is not None
 
-def setup_julia_environment(project_dir: Path, force_setup: bool = False, verbose: bool = False) -> bool:
+
+def setup_julia_environment(
+    project_dir: Path, force_setup: bool = False, verbose: bool = False
+) -> bool:
     """
     Setup Julia environment using the comprehensive setup script.
-    
+
     Args:
         project_dir: Path to the ActiveInference.jl project directory
         force_setup: Whether to force reinstall all packages
         verbose: Whether to enable verbose setup output
-        
+
     Returns:
         bool: True if setup was successful, False otherwise
     """
@@ -59,7 +64,7 @@ def setup_julia_environment(project_dir: Path, force_setup: bool = False, verbos
         return _fallback_environment_setup(project_dir)
 
     # Prepare setup command
-    setup_args = []
+    setup_args: list[Any] = []
     if verbose:
         setup_args.append("--verbose")
     if force_setup:
@@ -72,13 +77,13 @@ def setup_julia_environment(project_dir: Path, force_setup: bool = False, verbos
 
     try:
         # Run setup with extended timeout
-        result = subprocess.run(  # nosec B603 -- subprocess calls with controlled/trusted input
+        result = subprocess.run(  # nosec B603
             cmd,
             capture_output=True,
             text=True,
             check=False,
             cwd=project_dir,
-            timeout=1800  # 30 minutes for comprehensive setup
+            timeout=1800,  # 30 minutes for comprehensive setup
         )
 
         if result.returncode == 0:
@@ -87,7 +92,9 @@ def setup_julia_environment(project_dir: Path, force_setup: bool = False, verbos
                 logger.debug(f"Setup output:\n{result.stdout}")
             return True
         else:
-            logger.error(f"❌ Environment setup failed with return code {result.returncode}")
+            logger.error(
+                f"❌ Environment setup failed with return code {result.returncode}"
+            )
             if result.stderr.strip():
                 logger.error(f"Setup errors:\n{result.stderr}")
             if result.stdout.strip():
@@ -107,13 +114,14 @@ def setup_julia_environment(project_dir: Path, force_setup: bool = False, verbos
         logger.info("Attempting recovery environment setup...")
         return _fallback_environment_setup(project_dir)
 
+
 def _fallback_environment_setup(project_dir: Path) -> bool:
     """
     Recovery environment setup using basic Pkg.instantiate().
-    
+
     Args:
         project_dir: Path to the ActiveInference.jl project directory
-        
+
     Returns:
         bool: True if recovery setup was successful, False otherwise
     """
@@ -121,23 +129,32 @@ def _fallback_environment_setup(project_dir: Path) -> bool:
 
     try:
         # Basic package instantiation
-        instantiate_cmd = ["julia", f"--project={project_dir}", "-e", "using Pkg; Pkg.instantiate()"]
+        instantiate_cmd: list[Any] = [
+            "julia",
+            f"--project={project_dir}",
+            "-e",
+            "using Pkg; Pkg.instantiate()",
+        ]
         logger.debug(f"Running: {' '.join(instantiate_cmd)}")
 
-        result = subprocess.run(  # nosec B603 -- subprocess calls with controlled/trusted input
+        result = subprocess.run(  # nosec B603
             instantiate_cmd,
             capture_output=True,
             text=True,
             check=False,
             cwd=project_dir,
-            timeout=600  # 10 minutes for basic setup
+            timeout=600,  # 10 minutes for basic setup
         )
 
         if result.returncode == 0:
             logger.info("✅ Recovery environment setup completed")
 
             # Try to validate core packages
-            core_packages = ["ActiveInference", "Distributions", "LinearAlgebra"]
+            core_packages: list[Any] = [
+                "ActiveInference",
+                "Distributions",
+                "LinearAlgebra",
+            ]
             validation_success = True
 
             for package in core_packages:
@@ -162,55 +179,70 @@ def _fallback_environment_setup(project_dir: Path) -> bool:
         logger.error(f"❌ Error in recovery setup: {e}")
         return False
 
+
 def _validate_package(project_dir: Path, package_name: str) -> bool:
     """
     Validate that a package can be loaded.
-    
+
     Args:
         project_dir: Path to the Julia project directory
         package_name: Name of the package to validate
-        
+
     Returns:
         bool: True if package loads successfully, False otherwise
     """
     try:
-        cmd = ["julia", f"--project={project_dir}", "-e", f"using {package_name}; println(\"✅ {package_name} loaded\")"]
-        result = subprocess.run(  # nosec B603 -- subprocess calls with controlled/trusted input
+        cmd: list[Any] = [
+            "julia",
+            f"--project={project_dir}",
+            "-e",
+            f'using {package_name}; println("✅ {package_name} loaded")',
+        ]
+        result = subprocess.run(  # nosec B603
             cmd,
             capture_output=True,
             text=True,
             check=False,
             cwd=project_dir,
-            timeout=30
+            timeout=30,
         )
         return result.returncode == 0
     except Exception:
         return False
 
+
 def get_environment_status(project_dir: Path) -> Dict[str, Any]:
     """
     Get detailed status of the Julia environment.
-    
+
     Args:
         project_dir: Path to the Julia project directory
-        
+
     Returns:
         Dict containing environment status information
     """
-    status = {
+    status: dict[str, Any] = {
         "julia_available": is_julia_available(),
         "project_toml_exists": (project_dir / "Project.toml").exists(),
         "manifest_toml_exists": (project_dir / "Manifest.toml").exists(),
         "setup_script_exists": (project_dir / "setup_environment.jl").exists(),
         "environment_report_exists": (project_dir / "environment_report.json").exists(),
         "core_packages_status": {},
-        "setup_recommendation": "unknown"
+        "setup_recommendation": "unknown",
     }
 
     # Check core packages
-    core_packages = ["ActiveInference", "Distributions", "LinearAlgebra", "Random", "Statistics"]
+    core_packages: list[Any] = [
+        "ActiveInference",
+        "Distributions",
+        "LinearAlgebra",
+        "Random",
+        "Statistics",
+    ]
     for package in core_packages:
-        status["core_packages_status"][package] = _validate_package(project_dir, package)
+        status["core_packages_status"][package] = _validate_package(
+            project_dir, package
+        )
 
     # Determine setup recommendation
     core_packages_working = all(status["core_packages_status"].values())
@@ -226,21 +258,22 @@ def get_environment_status(project_dir: Path) -> Dict[str, Any]:
 
     return status
 
+
 def execute_activeinference_script(
     script_path: Path,
     verbose: bool = False,
     output_dir: Optional[Path] = None,
-    setup_environment: bool = True
+    setup_environment: bool = True,
 ) -> bool:
     """
     Execute a single ActiveInference.jl script with enhanced environmental setup.
-    
+
     Args:
         script_path: Path to the ActiveInference.jl script
         verbose: Whether to enable verbose output
         output_dir: Optional output directory for results
         setup_environment: Whether to setup/validate environment before execution
-        
+
     Returns:
         bool: True if execution was successful, False otherwise
     """
@@ -252,7 +285,9 @@ def execute_activeinference_script(
 
     # Determine the project directory
     project_dir = script_path.parent
-    while project_dir.name != "activeinference_jl" and project_dir.parent != project_dir:
+    while (
+        project_dir.name != "activeinference_jl" and project_dir.parent != project_dir
+    ):
         project_dir = project_dir.parent
 
     if project_dir.name != "activeinference_jl":
@@ -281,7 +316,7 @@ def execute_activeinference_script(
         abs_script_path = script_path.resolve()
 
         # Prepare Julia command
-        cmd = ["julia", f"--project={project_dir}", str(abs_script_path)]
+        cmd: list[Any] = ["julia", f"--project={project_dir}", str(abs_script_path)]
 
         # Add output directory argument if provided
         if output_dir:
@@ -295,14 +330,14 @@ def execute_activeinference_script(
         env["JULIA_PROJECT"] = str(project_dir)
 
         # Execute the script
-        result = subprocess.run(  # nosec B603 -- subprocess calls with controlled/trusted input
+        result = subprocess.run(  # nosec B603
             cmd,
             capture_output=True,
             text=True,
             check=False,
             env=env,
             cwd=project_dir,
-            timeout=600  # 10 minute timeout for script execution
+            timeout=600,  # 10 minute timeout for script execution
         )
 
         # Process the execution result
@@ -312,7 +347,9 @@ def execute_activeinference_script(
                 logger.debug(f"Output from {script_path.name}:\n{result.stdout}")
             return True
         else:
-            logger.error(f"❌ Script execution failed with return code {result.returncode}: {script_path.name}")
+            logger.error(
+                f"❌ Script execution failed with return code {result.returncode}: {script_path.name}"
+            )
             if result.stderr.strip():
                 logger.error(f"Error output:\n{result.stderr}")
             if result.stdout.strip():
@@ -320,12 +357,20 @@ def execute_activeinference_script(
 
             # Provide helpful error analysis
             stderr_lower = result.stderr.lower()
-            if "package" in stderr_lower and ("not found" in stderr_lower or "not in registry" in stderr_lower):
+            if "package" in stderr_lower and (
+                "not found" in stderr_lower or "not in registry" in stderr_lower
+            ):
                 logger.error("💡 This appears to be a missing Julia package issue.")
-                logger.error("💡 Try running the environment setup with --force-reinstall")
+                logger.error(
+                    "💡 Try running the environment setup with --force-reinstall"
+                )
             elif "method error" in stderr_lower or "undefvarerror" in stderr_lower:
-                logger.error("💡 This appears to be a package version compatibility issue.")
-                logger.error("💡 The script may need updates for the current ActiveInference.jl version")
+                logger.error(
+                    "💡 This appears to be a package version compatibility issue."
+                )
+                logger.error(
+                    "💡 The script may need updates for the current ActiveInference.jl version"
+                )
 
             return False
 
@@ -336,19 +381,20 @@ def execute_activeinference_script(
         logger.error(f"❌ Error executing script {script_path.name}: {e}")
         return False
 
+
 def find_activeinference_scripts(
     search_dir: Union[str, Path],
     recursive: bool = True,
-    include_patterns: List[str] = None
+    include_patterns: (List[str]) | None = None,
 ) -> List[Path]:
     """
     Find ActiveInference.jl scripts in a directory.
-    
+
     Args:
         search_dir: Directory to search for scripts
         recursive: Whether to search recursively
         include_patterns: Patterns to match (default: ["*.jl"])
-        
+
     Returns:
         List of script paths found
     """
@@ -356,7 +402,7 @@ def find_activeinference_scripts(
         include_patterns = ["*.jl"]
 
     # Accept either str or Path and normalize
-    script_files = []
+    script_files: list[Any] = []
     search_dir = Path(search_dir) if not isinstance(search_dir, Path) else search_dir
 
     if not search_dir.exists():
@@ -372,26 +418,29 @@ def find_activeinference_scripts(
                 script_files.extend(search_dir.glob(pattern))
 
         # Filter out setup and utility scripts
-        filtered_scripts = []
+        filtered_scripts: list[Any] = []
         for script in script_files:
             if script.name.startswith("setup_") or script.name.startswith("_"):
                 logger.debug(f"Skipping utility script: {script.name}")
                 continue
             filtered_scripts.append(script)
 
-        logger.info(f"Found {len(filtered_scripts)} ActiveInference.jl scripts in {search_dir}")
+        logger.info(
+            f"Found {len(filtered_scripts)} ActiveInference.jl scripts in {search_dir}"
+        )
         return filtered_scripts
 
     except Exception as e:
         logger.error(f"Error finding scripts in {search_dir}: {e}")
         return []
 
+
 def run_activeinference_analysis(
     rendered_simulators_dir: Union[str, Path],
     execution_output_dir: Optional[Union[str, Path]] = None,
     recursive_search: bool = True,
     verbose: bool = False,
-    force_setup: bool = False
+    force_setup: bool = False,
 ) -> bool:
     """
     Find and run ActiveInference.jl analysis scripts on rendered models with robust environment setup.
@@ -406,21 +455,29 @@ def run_activeinference_analysis(
     Returns:
         bool: True if analysis completed successfully, False if any failed
     """
-    logger.info("Starting ActiveInference.jl analysis with comprehensive environment setup...")
+    logger.info(
+        "Starting ActiveInference.jl analysis with comprehensive environment setup..."
+    )
 
     # Check if Julia is available
     if not is_julia_available():
-        logger.error("Julia is not available, cannot execute ActiveInference.jl scripts")
+        logger.error(
+            "Julia is not available, cannot execute ActiveInference.jl scripts"
+        )
         return False
 
     # Set up execution output directory
     if execution_output_dir:
         exec_output_dir = Path(execution_output_dir)
     else:
-        exec_output_dir = Path(rendered_simulators_dir) / "execution_results" / "activeinference_jl"
+        exec_output_dir = (
+            Path(rendered_simulators_dir) / "execution_results" / "activeinference_jl"
+        )
 
     exec_output_dir.mkdir(parents=True, exist_ok=True)
-    logger.info(f"ActiveInference.jl execution outputs will be saved to: {exec_output_dir}")
+    logger.info(
+        f"ActiveInference.jl execution outputs will be saved to: {exec_output_dir}"
+    )
 
     # Find ActiveInference.jl rendered scripts
     activeinference_dir = Path(rendered_simulators_dir) / "activeinference_jl"
@@ -433,8 +490,12 @@ def run_activeinference_analysis(
 
     # Setup environment first
     logger.info("Setting up Julia environment before script execution...")
-    if not setup_julia_environment(activeinference_dir, force_setup=force_setup, verbose=verbose):
-        logger.warning("Environment setup had issues, but continuing with script execution...")
+    if not setup_julia_environment(
+        activeinference_dir, force_setup=force_setup, verbose=verbose
+    ):
+        logger.warning(
+            "Environment setup had issues, but continuing with script execution..."
+        )
 
     # Find scripts
     script_files = find_activeinference_scripts(activeinference_dir, recursive_search)
@@ -444,8 +505,8 @@ def run_activeinference_analysis(
         return True  # Not necessarily an error
 
     # Execute scripts
-    successful_scripts = []
-    failed_scripts = []
+    successful_scripts: list[Any] = []
+    failed_scripts: list[Any] = []
 
     logger.info(f"Executing {len(script_files)} ActiveInference.jl scripts...")
 
@@ -460,7 +521,7 @@ def run_activeinference_analysis(
             script_path,
             verbose=verbose,
             output_dir=script_output_dir,
-            setup_environment=False  # Already done above
+            setup_environment=False,  # Already done above
         ):
             successful_scripts.append(script_path)
         else:
@@ -480,26 +541,26 @@ def run_activeinference_analysis(
             logger.warning(f"  - {script.name}")
 
     # Save execution report
-    execution_report = {
+    execution_report: dict[str, Any] = {
         "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
         "environment_setup": {
             "force_setup": force_setup,
-            "setup_successful": True  # We got this far
+            "setup_successful": True,  # We got this far
         },
         "execution_summary": {
             "total_scripts": len(script_files),
             "successful_scripts": len(successful_scripts),
             "failed_scripts": len(failed_scripts),
-            "success_rate": success_rate
+            "success_rate": success_rate,
         },
         "successful_scripts": [str(p) for p in successful_scripts],
         "failed_scripts": [str(p) for p in failed_scripts],
-        "output_directory": str(exec_output_dir)
+        "output_directory": str(exec_output_dir),
     }
 
     report_file = exec_output_dir / "activeinference_execution_report.json"
     try:
-        with open(report_file, 'w') as f:
+        with open(report_file, "w") as f:
             json.dump(execution_report, f, indent=2)
         logger.info(f"Execution report saved to: {report_file}")
     except Exception as e:
@@ -507,29 +568,45 @@ def run_activeinference_analysis(
 
     return len(failed_scripts) == 0
 
-# Aliases for backward compatibility and naming convention consistency
-run_activeinference_scripts = run_activeinference_analysis
-run_analysis_suite = run_activeinference_analysis
 
 if __name__ == "__main__":
     # Setup logging for standalone execution
     logging.basicConfig(
         level=logging.INFO,
-        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-        stream=sys.stdout
+        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+        stream=sys.stdout,
     )
 
     # Parse command-line arguments for standalone execution
     import argparse
-    parser = argparse.ArgumentParser(description="Execute ActiveInference.jl scripts generated by the GNN rendering step")
-    parser.add_argument("--output-dir", type=Path, default="../output",
-                       help="Main pipeline output directory")
-    parser.add_argument("--recursive", action=argparse.BooleanOptionalAction, default=True,
-                       help="Recursively search for scripts in the output directory")
-    parser.add_argument("--verbose", action=argparse.BooleanOptionalAction, default=False,
-                       help="Enable verbose output")
-    parser.add_argument("--force-setup", action=argparse.BooleanOptionalAction, default=False,
-                       help="Force environment reinstallation before execution")
+
+    parser = argparse.ArgumentParser(
+        description="Execute ActiveInference.jl scripts generated by the GNN rendering step"
+    )
+    parser.add_argument(
+        "--output-dir",
+        type=Path,
+        default="../output",
+        help="Main pipeline output directory",
+    )
+    parser.add_argument(
+        "--recursive",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+        help="Recursively search for scripts in the output directory",
+    )
+    parser.add_argument(
+        "--verbose",
+        action=argparse.BooleanOptionalAction,
+        default=False,
+        help="Enable verbose output",
+    )
+    parser.add_argument(
+        "--force-setup",
+        action=argparse.BooleanOptionalAction,
+        default=False,
+        help="Force environment reinstallation before execution",
+    )
 
     args = parser.parse_args()
 
@@ -542,7 +619,7 @@ if __name__ == "__main__":
         rendered_simulators_dir=args.output_dir,
         recursive_search=args.recursive,
         verbose=args.verbose,
-        force_setup=args.force_setup
+        force_setup=args.force_setup,
     )
 
     # Exit with appropriate status code

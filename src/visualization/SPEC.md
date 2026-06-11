@@ -10,7 +10,7 @@ Step-8 visualization: graphs, matrices, combined analysis. Prefers step-3 `{mode
 |----------------|----------------|
 | `core/process.py` | Orchestration, per-file pipeline, sampling |
 | `core/parsed_model.py` | `load_visualization_model`, step-3 path resolution |
-| `parse/markdown.py` | `parse_gnn_content` fallback |
+| `parse/markdown.py` | `parse_gnn_content` explicit raw-Markdown parser |
 | `parse/gnn_file_parser.py` | `GNNParser` (file / CSV-oriented API) |
 | `plotting/utils.py` | Matplotlib Agg, save/tight_layout helpers |
 | `graph/network_visualizations.py` | Directed vs undirected edges, ontology labels |
@@ -21,7 +21,7 @@ Step-8 visualization: graphs, matrices, combined analysis. Prefers step-3 `{mode
 | `analysis/combined_analysis.py` | Combined and cross-file plots |
 | `ontology/visualizer.py` | Ontology table / annotations |
 | `compat/viz_compat.py` | Shared `plt` / `np` / `sns` for step 8 and analysis |
-| Root shims | `processor.py`, `matrix_visualizer.py`, `parser.py`, `network_visualizations.py`, `combined_analysis.py`, `ontology_visualizer.py`, `_viz_compat.py` |
+| Root entry points | `processor.py`, `matrix_visualizer.py`, `parser.py`, `network_visualizations.py`, `combined_analysis.py`, `ontology_visualizer.py`, `_viz_compat.py` |
 
 ## Visualization types
 
@@ -34,7 +34,7 @@ Step-8 visualization: graphs, matrices, combined analysis. Prefers step-3 `{mode
 
 ```python
 from visualization import process_visualization, MatrixVisualizer
-from visualization.processor import parse_gnn_content, _save_plot_safely
+from visualization.processor import parse_gnn_content, save_plot_safely
 from visualization.parse import GNNParser, parse_gnn_content
 ```
 

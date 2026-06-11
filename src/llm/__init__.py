@@ -6,18 +6,20 @@ It avoids importing heavy optional dependencies at import time; functions
 are provided as thin wrappers that import implementations on first use.
 """
 
-__version__ = "1.1.3"
+from typing import Any
+
+__version__ = "1.6.0"
 
 from .defaults import DEFAULT_OLLAMA_MODEL
 
-FEATURES = {
+FEATURES: dict[str, Any] = {
     "openai_integration": True,
     "anthropic_integration": True,
     "ollama_integration": True,
     "multi_provider_support": True,
     "model_analysis": True,
     "structured_prompting": True,
-    "mcp_integration": True
+    "mcp_integration": True,
 }
 
 import logging
@@ -26,122 +28,60 @@ from typing import Any, Dict, List, Optional, Tuple, Union
 
 logger = logging.getLogger(__name__)
 
-def process_llm(*args: Any, **kwargs: Any) -> Any:
+
+def process_llm(*args: Any, **kwargs: Any) -> bool:
+    """Delegate to processor.process_llm — returns True on success."""
     from .processor import process_llm as _impl
+
     return _impl(*args, **kwargs)
 
-try:
-    from .llm_processor import (
-        AnalysisType,
-        create_processor_from_env,
-        get_default_provider_configs,
-        get_preferred_providers_from_env,
-        initialize_global_processor,
-        load_api_keys_from_env,
-    )
-    from .llm_processor import (
-        LLMProcessor as UnifiedLLMProcessor,
-    )
-    from .llm_processor import (
-        get_processor as get_global_processor,
-    )
-except (ImportError, AttributeError):
-    # Provide minimal shims during test collection if heavy deps are missing
-    class AnalysisType:  # type: ignore[no-redef]  # fallback shim when llm_processor unavailable
-        SUMMARY = type("E", (), {"value": "summary"})()
-    class UnifiedLLMProcessor:  # type: ignore[no-redef]  # fallback shim when llm_processor unavailable
-        pass
-    def load_api_keys_from_env() -> Dict[str, str]: return {}
-    async def initialize_global_processor(*_: Any, **__: Any) -> None: return None
-    def get_global_processor() -> Optional[UnifiedLLMProcessor]: return None
-    async def create_processor_from_env() -> Optional[UnifiedLLMProcessor]: return None
-    def get_default_provider_configs() -> Dict[str, Any]: return {}
-    def get_preferred_providers_from_env() -> List[str]: return []
 
-try:
-    from .providers import (
-        BaseLLMProvider,
-        LLMConfig,
-        LLMMessage,
-        LLMResponse,
-        ProviderType,
-    )
-except (ImportError, AttributeError):
-    class ProviderType:  # type: ignore[no-redef]  # fallback shim when providers unavailable
-        OPENAI = type("E", (), {"value": "openai"})()
-    class LLMConfig: pass  # type: ignore[no-redef]  # fallback shim
-    class LLMMessage: pass  # type: ignore[no-redef]  # fallback shim
-    class LLMResponse: pass  # type: ignore[no-redef]  # fallback shim
-    class BaseLLMProvider: pass  # type: ignore[no-redef]  # fallback shim
-
-try:
-    from .analyzer import (
-        analyze_gnn_file_with_llm,
-        calculate_complexity_metrics,
-        extract_connections,
-        extract_sections,
-        extract_variables,
-        identify_patterns,
-        perform_semantic_analysis,
-    )
-except (ImportError, AttributeError):
-    # Provide real, direct implementations where possible instead of empty shims.
-    # These implementations are lightweight and synchronous where tests expect sync behavior.
-    async def analyze_gnn_file_with_llm(content: str, **kwargs: Any) -> Dict[str, Any]:
-        # Basic analysis pipeline using available extractors
-        vars_ = extract_variables(content) if 'extract_variables' in globals() else []
-        conns = extract_connections(content) if 'extract_connections' in globals() else []
-        sections = extract_sections(content) if 'extract_sections' in globals() else []
-        return {
-            "success": True,
-            "variables": vars_,
-            "connections": conns,
-            "sections": sections
-        }
-
-    def extract_variables(content: str) -> List[Dict[str, Any]]:
-        # Very small heuristic: look for lines with ':' or '[' indicating variables
-        out = []
-        for i, line in enumerate(str(content).splitlines()):
-            if '[' in line or ':' in line:
-                out.append({'name': f'var_{i}', 'line': line.strip()})
-        return out
-
-    def extract_connections(content: str) -> List[Dict[str, Any]]:
-        out = []
-        for i, line in enumerate(str(content).splitlines()):
-            if '>' in line or '-' in line:
-                out.append({'source': f'src_{i}', 'target': f'tgt_{i}'})
-        return out
-
-    def extract_sections(content: str) -> List[str]:
-        # Sections identified by '##' headings
-        return [ln.strip().lstrip('#').strip() for ln in str(content).splitlines() if ln.strip().startswith('##')]
-
-    def perform_semantic_analysis(content: str, vars_: Any, conns: Any) -> Dict[str, Any]:
-        return {"variables_count": len(vars_), "connections_count": len(conns)}
-
-    def calculate_complexity_metrics(*_: Any, **__: Any) -> Dict[str, Any]: return {}
-    def identify_patterns(*_: Any, **__: Any) -> List[Any]: return []
-
-try:
-    from .generator import (
-        generate_code_suggestions,
-        generate_documentation,
-        generate_llm_summary,
-        generate_model_insights,
-    )
-except (ImportError, AttributeError):
-    def generate_model_insights(*_: Any, **__: Any) -> Dict[str, Any]: return {}
-    def generate_code_suggestions(*_: Any, **__: Any) -> Dict[str, Any]: return {}
-    def generate_documentation(*_: Any, **__: Any) -> str: return ""
-    def generate_llm_summary(*_: Any, **__: Any) -> str: return ""
+# Phase 6: llm submodules are in-tree; removed recovery import layers are dead code.
+# If any import here fails, it's a real bug that must surface in CI — not be
+# silently papered over.
+from .analyzer import (
+    analyze_gnn_file_with_llm,
+    calculate_complexity_metrics,
+    extract_connections,
+    extract_sections,
+    extract_variables,
+    identify_patterns,
+    perform_semantic_analysis,
+)
+from .generator import (
+    generate_code_suggestions,
+    generate_documentation,
+    generate_llm_summary,
+    generate_model_insights,
+)
+from .llm_processor import (
+    AnalysisType,
+    create_processor_from_env,
+    get_default_provider_configs,
+    get_preferred_providers_from_env,
+    initialize_global_processor,
+    load_api_keys_from_env,
+)
+from .llm_processor import (
+    LLMProcessor as UnifiedLLMProcessor,
+)
+from .llm_processor import (
+    get_processor as get_global_processor,
+)
+from .providers import (
+    BaseLLMProvider,
+    LLMConfig,
+    LLMMessage,
+    LLMResponse,
+    ProviderType,
+)
 
 
 class LLMProcessor:
     """Minimal processor facade exposing methods expected by tests."""
 
     def analyze(self, content: str) -> Dict[str, Any]:
+        """Analyze operation."""
         return {
             "variables": extract_variables(content),
             "connections": extract_connections(content),
@@ -150,6 +90,7 @@ class LLMProcessor:
 
     # Methods expected by tests
     def analyze_model(self, model_data: Union[str, Dict[str, Any]]) -> Dict[str, Any]:
+        """Analyze model."""
         text = ""
         if isinstance(model_data, dict):
             text = model_data.get("content", "")
@@ -158,6 +99,7 @@ class LLMProcessor:
         return self.analyze(text)
 
     def generate_description(self, content: str) -> str:
+        """Generate description."""
         variables = [v.get("name", "var") for v in extract_variables(content)]
         return f"Model with {len(variables)} variables and {len(extract_connections(content))} connections"
 
@@ -166,15 +108,21 @@ class LLMAnalyzer:
     """Simple analyzer class exposing analysis helpers expected by tests."""
 
     def analyze_content(self, content: str) -> Dict[str, Any]:
+        """Analyze content."""
         return {
             "variables": extract_variables(content),
             "connections": extract_connections(content),
             "sections": extract_sections(content),
-            "patterns": identify_patterns(content, extract_variables(content), extract_connections(content)),
+            "patterns": identify_patterns(
+                content, extract_variables(content), extract_connections(content)
+            ),
         }
 
     def extract_insights(self, content: str) -> Dict[str, Any]:
-        return perform_semantic_analysis(content, extract_variables(content), extract_connections(content))
+        """Extract insights."""
+        return perform_semantic_analysis(
+            content, extract_variables(content), extract_connections(content)
+        )
 
 
 def get_module_info() -> Dict[str, Any]:
@@ -182,6 +130,7 @@ def get_module_info() -> Dict[str, Any]:
     return {
         "version": __version__,
         "description": "LLM-enhanced analysis utilities for GNN",
+        "features": FEATURES,
         "providers": get_available_providers(),
     }
 
@@ -191,63 +140,78 @@ def analyze_gnn_model(model_content: Union[str, Dict[str, Any]]) -> Dict[str, An
     # Prefer analyzer class if available
     try:
         analyzer = LLMAnalyzer()
-        return analyzer.analyze_content(model_content if isinstance(model_content, str) else model_content.get('content',''))
+        return analyzer.analyze_content(
+            model_content
+            if isinstance(model_content, str)
+            else model_content.get("content", "")
+        )
     except Exception:
+        content = (
+            model_content
+            if isinstance(model_content, str)
+            else model_content.get("content", "")
+        )
         return {
-            'variables': extract_variables(model_content),
-            'connections': extract_connections(model_content)
+            "variables": extract_variables(content),
+            "connections": extract_connections(content),
         }
 
 
 def generate_model_description(content: str) -> str:
+    """Generate a natural language description of a GNN model from its content."""
     proc = LLMProcessor()
     return proc.generate_description(content)
 
 
 def get_available_providers() -> list:
     """Return a list of available provider identifiers (best-effort)."""
-    providers = ["ollama"]
+    providers: list[Any] = ["ollama"]
     try:
         # Importing lazily to avoid heavy deps
         from .providers import openai_provider as _openai  # noqa: F401
+
         providers.append("openai")
     except ImportError:
         logger.debug("openai provider not installed, skipping")
     try:
         from .providers import openrouter_provider as _openrouter  # noqa: F401
+
         providers.append("openrouter")
     except ImportError:
         logger.debug("openrouter provider not installed, skipping")
     return providers
 
 
-__all__ = [
-    'process_llm',
-    'analyze_gnn_file_with_llm',
-    'extract_variables',
-    'extract_connections',
-    'extract_sections',
-    'perform_semantic_analysis',
-    'calculate_complexity_metrics',
-    'identify_patterns',
-    'generate_model_insights',
-    'generate_code_suggestions',
-    'generate_documentation',
-    'generate_llm_summary',
-    'LLMProcessor',
-    'LLMAnalyzer',
-    'get_module_info',
-    'get_available_providers',
-    'AnalysisType',
-    'UnifiedLLMProcessor',
-    'load_api_keys_from_env',
-    'ProviderType',
-    'initialize_global_processor',
-    'get_global_processor',
-    'create_processor_from_env',
-    'get_default_provider_configs',
-    'get_preferred_providers_from_env',
-    'LLMConfig', 'LLMMessage', 'LLMResponse', 'BaseLLMProvider',
-    'DEFAULT_OLLAMA_MODEL',
-    '__version__'
+__all__: list[Any] = [
+    "process_llm",
+    "analyze_gnn_file_with_llm",
+    "extract_variables",
+    "extract_connections",
+    "extract_sections",
+    "perform_semantic_analysis",
+    "calculate_complexity_metrics",
+    "identify_patterns",
+    "generate_model_insights",
+    "generate_code_suggestions",
+    "generate_documentation",
+    "generate_llm_summary",
+    "LLMProcessor",
+    "LLMAnalyzer",
+    "get_module_info",
+    "get_available_providers",
+    "AnalysisType",
+    "UnifiedLLMProcessor",
+    "load_api_keys_from_env",
+    "ProviderType",
+    "initialize_global_processor",
+    "get_global_processor",
+    "create_processor_from_env",
+    "get_default_provider_configs",
+    "get_preferred_providers_from_env",
+    "LLMConfig",
+    "LLMMessage",
+    "LLMResponse",
+    "BaseLLMProvider",
+    "DEFAULT_OLLAMA_MODEL",
+    "__version__",
 ]

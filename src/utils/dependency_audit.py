@@ -9,25 +9,19 @@ and optimization capabilities for the GNN processing pipeline.
 import json
 import logging
 import re
-import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
+import subprocess  # nosec B404
 import sys
+import tomllib
 from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
-try:
-    import tomllib
-except ImportError:
-    try:
-        import tomli as tomllib  # type: ignore[no-redef]
-    except ImportError:
-        tomllib = None  # type: ignore[assignment]
-
 
 @dataclass
 class DependencyInfo:
     """Information about a single dependency."""
+
     name: str
     version: str
     specifier: str = ""
@@ -48,6 +42,7 @@ class DependencyInfo:
 @dataclass
 class AuditResult:
     """Results of a dependency audit."""
+
     timestamp: datetime
     total_dependencies: int
     outdated_dependencies: int
@@ -64,7 +59,10 @@ class AuditResult:
 class DependencyAuditor:
     """Comprehensive dependency auditor for Python projects."""
 
-    def __init__(self, project_root: Path, logger: Optional[logging.Logger] = None):
+    def __init__(
+        self, project_root: Path, logger: Optional[logging.Logger] = None
+    ) -> None:
+        """Initialize the instance."""
         self.project_root = project_root
         self.logger = logger or logging.getLogger(__name__)
         self.dependencies: Dict[str, DependencyInfo] = {}
@@ -101,20 +99,26 @@ class DependencyAuditor:
         self.audit_result = AuditResult(
             timestamp=datetime.now(),
             total_dependencies=len(self.dependencies),
-            outdated_dependencies=sum(1 for dep in self.dependencies.values() if dep.is_outdated),
-            vulnerable_dependencies=sum(1 for dep in self.dependencies.values() if dep.security_vulnerabilities),
+            outdated_dependencies=sum(
+                1 for dep in self.dependencies.values() if dep.is_outdated
+            ),
+            vulnerable_dependencies=sum(
+                1 for dep in self.dependencies.values() if dep.security_vulnerabilities
+            ),
             missing_dependencies=0,  # Would need additional analysis
             unused_dependencies=0,  # Would need additional analysis
             recommendations=recommendations,
             security_score=security_score,
             performance_score=performance_score,
-            maintainability_score=maintainability_score
+            maintainability_score=maintainability_score,
         )
 
-        self.logger.info(f"Dependency audit completed. Found {len(recommendations)} recommendations")
+        self.logger.info(
+            f"Dependency audit completed. Found {len(recommendations)} recommendations"
+        )
         return self.audit_result
 
-    def _load_project_dependencies(self):
+    def _load_project_dependencies(self) -> Any:
         """Load dependencies from project files."""
         # Load from pyproject.toml (primary source with UV)
         pyproject_path = self.project_root / "pyproject.toml"
@@ -129,62 +133,49 @@ class DependencyAuditor:
         # Load installed packages
         self._load_installed_packages()
 
-    def _load_from_pyproject_toml(self, pyproject_path: Path):
+    def _load_from_pyproject_toml(self, pyproject_path: Path) -> Any:
         """Load dependencies from pyproject.toml."""
-        if tomllib is None:
-            self.logger.warning("tomllib/tomli not available, skipping pyproject.toml parsing")
-            return
-
         try:
-            with open(pyproject_path, 'rb') as f:
+            with open(pyproject_path, "rb") as f:
                 data = tomllib.load(f)
 
             # Load main dependencies
-            dependencies = data.get('project', {}).get('dependencies', [])
+            dependencies = data.get("project", {}).get("dependencies", [])
             for dep_spec in dependencies:
                 name, version = self._parse_dependency_spec(dep_spec)
                 if name:
                     self.dependencies[name] = DependencyInfo(
-                        name=name,
-                        version=version,
-                        specifier=dep_spec
+                        name=name, version=version, specifier=dep_spec
                     )
 
             # Load optional dependencies
-            optional_deps = data.get('project', {}).get('optional-dependencies', {})
+            optional_deps = data.get("project", {}).get("optional-dependencies", {})
             for _, deps in optional_deps.items():
                 for dep_spec in deps:
                     name, version = self._parse_dependency_spec(dep_spec)
                     if name and name not in self.dependencies:
                         self.dependencies[name] = DependencyInfo(
-                            name=name,
-                            version=version,
-                            specifier=dep_spec
+                            name=name, version=version, specifier=dep_spec
                         )
 
         except Exception as e:
             self.logger.error(f"Error parsing pyproject.toml: {e}")
 
-    def _load_from_uv_lock(self, uv_lock_path: Path):
+    def _load_from_uv_lock(self, uv_lock_path: Path) -> Any:
         """Load dependencies from uv.lock file."""
-        if tomllib is None:
-            self.logger.warning("tomllib/tomli not available, skipping uv.lock parsing")
-            return
         try:
-            with open(uv_lock_path, 'rb') as f:
+            with open(uv_lock_path, "rb") as f:
                 lock_data = tomllib.load(f)
 
             # UV lock format has a 'package' array with package information
-            packages = lock_data.get('package', [])
+            packages = lock_data.get("package", [])
             for pkg in packages:
-                name = pkg.get('name', '')
-                version = pkg.get('version', '')
+                name = pkg.get("name", "")
+                version = pkg.get("version", "")
                 if name:
                     if name not in self.dependencies:
                         self.dependencies[name] = DependencyInfo(
-                            name=name,
-                            version=version,
-                            specifier=f"{name}=={version}"
+                            name=name, version=version, specifier=f"{name}=={version}"
                         )
                     else:
                         # Update version from lock file
@@ -193,18 +184,26 @@ class DependencyAuditor:
         except Exception as e:
             self.logger.error(f"Error parsing uv.lock: {e}")
 
-    def _load_installed_packages(self):
+    def _load_installed_packages(self) -> Any:
         """Load information about installed packages."""
         try:
-            result = subprocess.run([  # nosec B607 B603 -- subprocess calls with controlled/trusted input
-                'uv', 'pip', 'list', '--format=json'
-            ], capture_output=True, text=True, timeout=30)
+            result = subprocess.run(
+                [  # nosec B607 B603
+                    "uv",
+                    "pip",
+                    "list",
+                    "--format=json",
+                ],
+                capture_output=True,
+                text=True,
+                timeout=30,
+            )
 
             if result.returncode == 0:
                 installed_packages = json.loads(result.stdout)
                 for package in installed_packages:
-                    name = package['name']
-                    version = package['version']
+                    name = package["name"]
+                    version = package["version"]
 
                     if name in self.dependencies:
                         self.dependencies[name].installed_version = version
@@ -214,7 +213,7 @@ class DependencyAuditor:
                             name=name,
                             version=version,
                             installed_version=version,
-                            specifier=""  # Not in requirements
+                            specifier="",  # Not in requirements
                         )
 
         except Exception as e:
@@ -223,42 +222,60 @@ class DependencyAuditor:
     def _parse_dependency_spec(self, spec: str) -> Tuple[str, str]:
         """Parse dependency specification into name and version."""
         # Handle common patterns like "package>=1.0.0", "package==1.0.0", etc.
-        match = re.match(r'^([a-zA-Z0-9_-]+)([><=~!,\s\d.]+)?', spec)
+        match = re.match(r"^([a-zA-Z0-9_-]+)([><=~!,\s\d.]+)?", spec)
         if match:
             name = match.group(1).lower()
             version = match.group(2) or ""
             return name, version.strip()
         return "", ""
 
-    def _check_outdated_packages(self):
+    def _check_outdated_packages(self) -> Any:
         """Check for outdated packages."""
         try:
-            result = subprocess.run([  # nosec B607 B603 -- subprocess calls with controlled/trusted input
-                'uv', 'pip', 'list', '--outdated', '--format=json'
-            ], capture_output=True, text=True, timeout=60)
+            result = subprocess.run(
+                [  # nosec B607 B603
+                    "uv",
+                    "pip",
+                    "list",
+                    "--outdated",
+                    "--format=json",
+                ],
+                capture_output=True,
+                text=True,
+                timeout=60,
+            )
 
             if result.returncode == 0:
                 outdated_packages = json.loads(result.stdout)
                 for package in outdated_packages:
-                    name = package['name']
-                    latest_version = package['latest_version']
-                    installed_version = package['version']
+                    name = package["name"]
+                    latest_version = package["latest_version"]
+                    installed_version = package["version"]
 
                     if name in self.dependencies:
                         self.dependencies[name].latest_version = latest_version
                         self.dependencies[name].is_outdated = True
-                        self.logger.warning(f"Package {name} is outdated: {installed_version} -> {latest_version}")
+                        self.logger.warning(
+                            f"Package {name} is outdated: {installed_version} -> {latest_version}"
+                        )
 
         except Exception as e:
             self.logger.error(f"Error checking outdated packages: {e}")
 
-    def _scan_security_vulnerabilities(self):
+    def _scan_security_vulnerabilities(self) -> Any:
         """Scan for security vulnerabilities."""
         try:
             # Use pip-audit if available
-            result = subprocess.run([  # nosec B603 -- subprocess calls with controlled/trusted input
-                sys.executable, '-m', 'pip_audit'
-            ], capture_output=True, text=True, timeout=120)
+            result = subprocess.run(
+                [  # nosec B603
+                    sys.executable,
+                    "-m",
+                    "pip_audit",
+                ],
+                capture_output=True,
+                text=True,
+                timeout=120,
+            )
 
             if result.returncode == 0:
                 # Parse pip-audit output (would need to implement proper parsing)
@@ -267,16 +284,26 @@ class DependencyAuditor:
                 self.logger.warning("Security scan encountered issues")
 
         except FileNotFoundError:
-            self.logger.warning("pip-audit not available, install with: uv pip install pip-audit")
+            self.logger.warning(
+                "pip-audit not available, install with: uv pip install pip-audit"
+            )
         except Exception as e:
             self.logger.error(f"Error during security scan: {e}")
 
-    def _analyze_dependency_graph(self):
+    def _analyze_dependency_graph(self) -> Any:
         """Analyze dependency relationships."""
         try:
-            result = subprocess.run([  # nosec B607 B603 -- subprocess calls with controlled/trusted input
-                'uv', 'pip', 'show', *list(self.dependencies.keys())
-            ], capture_output=True, text=True, timeout=60)
+            result = subprocess.run(
+                [  # nosec B607 B603
+                    "uv",
+                    "pip",
+                    "show",
+                    *list(self.dependencies.keys()),
+                ],
+                capture_output=True,
+                text=True,
+                timeout=60,
+            )
 
             if result.returncode == 0:
                 # Parse pip show output to extract dependency information
@@ -285,68 +312,92 @@ class DependencyAuditor:
         except Exception as e:
             self.logger.error(f"Error analyzing dependency graph: {e}")
 
-    def _parse_pip_show_output(self, output: str):
+    def _parse_pip_show_output(self, output: str) -> Any:
         """Parse output from pip show command."""
-        sections = output.split('---')
+        sections = output.split("---")
         for section in sections:
             if not section.strip():
                 continue
 
-            lines = section.strip().split('\n')
+            lines = section.strip().split("\n")
             if not lines:
                 continue
 
-            package_info = {}
+            package_info: dict[Any, Any] = {}
             for line in lines:
-                if ':' in line:
-                    key, value = line.split(':', 1)
+                if ":" in line:
+                    key, value = line.split(":", 1)
                     package_info[key.strip().lower()] = value.strip()
 
-            name = package_info.get('name', '').lower()
+            name = package_info.get("name", "").lower()
             if name in self.dependencies:
                 dep = self.dependencies[name]
-                dep.homepage = package_info.get('homepage', '')
-                dep.summary = package_info.get('summary', '')
-                dep.author = package_info.get('author', '')
+                dep.homepage = package_info.get("homepage", "")
+                dep.summary = package_info.get("summary", "")
+                dep.author = package_info.get("author", "")
                 dep.license_info = {
-                    'license': package_info.get('license', ''),
-                    'classifier': package_info.get('license-expression', '')
+                    "license": package_info.get("license", ""),
+                    "classifier": package_info.get("license-expression", ""),
                 }
 
                 # Parse dependencies
-                requires = package_info.get('requires', '')
+                requires = package_info.get("requires", "")
                 if requires:
-                    dep.dependencies = [d.strip() for d in requires.split(',') if d.strip()]
+                    dep.dependencies = [
+                        d.strip() for d in requires.split(",") if d.strip()
+                    ]
 
-    def _find_unused_dependencies(self):
+    def _find_unused_dependencies(self) -> Any:
         """Find potentially unused dependencies."""
         # This would require static analysis of the codebase
         # For now, we'll use a simple heuristic
-        self.logger.info("Analyzing potentially unused dependencies would require static code analysis")
+        self.logger.info(
+            "Analyzing potentially unused dependencies would require static code analysis"
+        )
 
     def _generate_recommendations(self) -> List[str]:
         """Generate improvement recommendations."""
-        recommendations = []
+        recommendations: list[Any] = []
 
         # Outdated package recommendations
         outdated = [name for name, dep in self.dependencies.items() if dep.is_outdated]
         if outdated:
-            recommendations.append(f"Update {len(outdated)} outdated packages: {', '.join(outdated[:5])}")
+            recommendations.append(
+                f"Update {len(outdated)} outdated packages: {', '.join(outdated[:5])}"
+            )
 
         # Security recommendations
-        vulnerable = [name for name, dep in self.dependencies.items() if dep.security_vulnerabilities]
+        vulnerable = [
+            name
+            for name, dep in self.dependencies.items()
+            if dep.security_vulnerabilities
+        ]
         if vulnerable:
-            recommendations.append(f"Address security vulnerabilities in {len(vulnerable)} packages")
+            recommendations.append(
+                f"Address security vulnerabilities in {len(vulnerable)} packages"
+            )
 
         # Large packages
-        large_packages = [(name, dep.size_mb) for name, dep in self.dependencies.items() if dep.size_mb > 50]
+        large_packages = [
+            (name, dep.size_mb)
+            for name, dep in self.dependencies.items()
+            if dep.size_mb > 50
+        ]
         if large_packages:
-            recommendations.append(f"Consider lighter alternatives for large packages: {', '.join([name for name, _ in large_packages])}")
+            recommendations.append(
+                f"Consider lighter alternatives for large packages: {', '.join([name for name, _ in large_packages])}"
+            )
 
         # Missing dependencies in requirements
-        missing_in_reqs = [name for name, dep in self.dependencies.items() if not dep.specifier and dep.installed_version]
+        missing_in_reqs = [
+            name
+            for name, dep in self.dependencies.items()
+            if not dep.specifier and dep.installed_version
+        ]
         if missing_in_reqs:
-            recommendations.append(f"Add {len(missing_in_reqs)} packages to requirements files")
+            recommendations.append(
+                f"Add {len(missing_in_reqs)} packages to requirements files"
+            )
 
         return recommendations
 
@@ -355,7 +406,9 @@ class DependencyAuditor:
         if not self.dependencies:
             return 100.0
 
-        vulnerable_count = sum(1 for dep in self.dependencies.values() if dep.security_vulnerabilities)
+        vulnerable_count = sum(
+            1 for dep in self.dependencies.values() if dep.security_vulnerabilities
+        )
         score = 100.0 * (1 - vulnerable_count / len(self.dependencies))
         return max(0.0, min(100.0, score))
 
@@ -378,7 +431,9 @@ class DependencyAuditor:
             return 100.0
 
         # Score based on outdated packages and license issues
-        outdated_penalty = sum(1 for dep in self.dependencies.values() if dep.is_outdated)
+        outdated_penalty = sum(
+            1 for dep in self.dependencies.values() if dep.is_outdated
+        )
         score = 100.0 - (outdated_penalty * 5)
         return max(0.0, min(100.0, score))
 
@@ -387,7 +442,7 @@ class DependencyAuditor:
         if not self.audit_result:
             raise ValueError("Run audit_dependencies() first")
 
-        report_data = {
+        report_data: dict[str, Any] = {
             "audit_timestamp": self.audit_result.timestamp.isoformat(),
             "summary": {
                 "total_dependencies": self.audit_result.total_dependencies,
@@ -397,7 +452,7 @@ class DependencyAuditor:
                 "unused_dependencies": self.audit_result.unused_dependencies,
                 "security_score": self.audit_result.security_score,
                 "performance_score": self.audit_result.performance_score,
-                "maintainability_score": self.audit_result.maintainability_score
+                "maintainability_score": self.audit_result.maintainability_score,
             },
             "recommendations": self.audit_result.recommendations,
             "dependencies": {
@@ -409,13 +464,13 @@ class DependencyAuditor:
                     "security_vulnerabilities": len(dep.security_vulnerabilities),
                     "dependencies": dep.dependencies,
                     "homepage": dep.homepage,
-                    "summary": dep.summary
+                    "summary": dep.summary,
                 }
                 for name, dep in self.dependencies.items()
-            }
+            },
         }
 
-        with open(output_path, 'w') as f:
+        with open(output_path, "w") as f:
             json.dump(report_data, f, indent=2, default=str)
 
         self.logger.info(f"Audit report exported to {output_path}")
@@ -423,29 +478,33 @@ class DependencyAuditor:
 
     def optimize_dependencies(self) -> Dict[str, Any]:
         """Suggest dependency optimizations."""
-        optimizations = {
+        optimizations: dict[str, Any] = {
             "updates_available": [],
             "security_fixes": [],
             "consolidation_opportunities": [],
-            "removal_candidates": []
+            "removal_candidates": [],
         }
 
         # Find update opportunities
         for name, dep in self.dependencies.items():
             if dep.is_outdated:
-                optimizations["updates_available"].append({
-                    "package": name,
-                    "current": dep.installed_version,
-                    "latest": dep.latest_version
-                })
+                optimizations["updates_available"].append(
+                    {
+                        "package": name,
+                        "current": dep.installed_version,
+                        "latest": dep.latest_version,
+                    }
+                )
 
         # Find security issues
         for name, dep in self.dependencies.items():
             if dep.security_vulnerabilities:
-                optimizations["security_fixes"].append({
-                    "package": name,
-                    "vulnerabilities": len(dep.security_vulnerabilities)
-                })
+                optimizations["security_fixes"].append(
+                    {
+                        "package": name,
+                        "vulnerabilities": len(dep.security_vulnerabilities),
+                    }
+                )
 
         return optimizations
 
@@ -453,7 +512,10 @@ class DependencyAuditor:
 class DependencyOptimizer:
     """Tools for optimizing dependency management."""
 
-    def __init__(self, project_root: Path, logger: Optional[logging.Logger] = None):
+    def __init__(
+        self, project_root: Path, logger: Optional[logging.Logger] = None
+    ) -> None:
+        """Initialize the instance."""
         self.project_root = project_root
         self.logger = logger or logging.getLogger(__name__)
 
@@ -464,16 +526,17 @@ class DependencyOptimizer:
 
     def update_dependencies(self, dry_run: bool = True) -> Dict[str, Any]:
         """Update outdated dependencies."""
-        result = {"updated": [], "failed": [], "skipped": []}
+        result: dict[str, Any] = {"updated": [], "failed": [], "skipped": []}
 
         try:
-            cmd = ['uv', 'pip', 'install', '--upgrade']
+            cmd: list[Any] = ["uv", "pip", "install", "--upgrade"]
             if dry_run:
-                cmd.append('--dry-run')
+                cmd.append("--dry-run")
 
-            # Would need to identify which packages to update
-            # For now, return placeholder
-            result["message"] = "Dependency update simulation completed"
+            result["success"] = False
+            result["message"] = (
+                "Automatic dependency updates require an explicit package selection"
+            )
 
         except Exception as e:
             result["error"] = str(e)
@@ -483,7 +546,10 @@ class DependencyOptimizer:
     def clean_unused_dependencies(self) -> Dict[str, Any]:
         """Remove unused dependencies."""
         # This would require static analysis
-        return {"removed": [], "message": "Unused dependency analysis requires static code analysis"}
+        return {
+            "removed": [],
+            "message": "Unused dependency analysis requires static code analysis",
+        }
 
 
 def audit_project_dependencies(project_root: Path) -> AuditResult:

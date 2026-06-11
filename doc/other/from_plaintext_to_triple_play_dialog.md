@@ -51,7 +51,7 @@
     *   `s` would be your variable, maybe "state," see?
     *   `[2,1]` – those square fellas, they tell you the **dimensions**. This "s" is like a list with 2 rows and 1 column. A vector, as the highbrows say.
     *   `type=float` – that just means it's a number that can have a decimal point, a "floating-point" number. Not just whole beans like an "int" for integer.
-    We got a whole guide to this, `doc/gnn/gnn_syntax.md` and its partner `src/gnn/documentation/punctuation.md`. They're the rulebooks for how to write these things just so.
+    We got a whole guide to this, `doc/gnn/reference/gnn_syntax.md` and its partner `src/gnn/documentation/punctuation.md`. They're the rulebooks for how to write these things just so.
 
 **Pip:** So the StateSpaceBlock is like a list of all the players and their positions? And the syntax tells you how to write down their stats?
 

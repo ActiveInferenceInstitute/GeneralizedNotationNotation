@@ -127,7 +127,7 @@ expected_free_energy(beliefs, A_matrix, B_matrices, C_vector, action_idx) :=
       s, 1, length(beliefs)
     ),
     /* Simplified KL divergence term (would need full implementation) */
-    kl_divergence: 0, /* Placeholder */
+    kl_divergence: 0, /* Default until KL term inputs are supplied */
     /* Total expected free energy (negative because we minimize) */
     total_efe: -expected_reward + kl_divergence,
     total_efe

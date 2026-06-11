@@ -31,25 +31,13 @@ If you encounter errors:
 
 import sys
 from pathlib import Path
+from typing import cast
 
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent))
 
+from integration import process_integration
 from utils.pipeline_template import create_standardized_pipeline_script
-
-# Import module function
-try:
-    from integration import process_integration
-except ImportError:
-    import logging
-    from typing import Any, Optional
-
-    def process_integration(target_dir: Path, output_dir: Path, logger: Optional[logging.Logger] = None, **kwargs: Any) -> bool:
-        """Recovery integration processing when module unavailable."""
-        if logger is None:
-            logger = logging.getLogger(__name__)
-        logger.warning("Integration module not available - using recovery")
-        return True
 
 run_script = create_standardized_pipeline_script(
     "17_integration.py",
@@ -57,9 +45,11 @@ run_script = create_standardized_pipeline_script(
     "Integration processing for GNN models",
 )
 
+
 def main() -> int:
     """Main entry point for the integration step."""
-    return run_script()
+    return cast("int", run_script())
+
 
 if __name__ == "__main__":
     raise SystemExit(main())

@@ -263,12 +263,12 @@ Qed.
 
 (* Transform GNN model to different representation *)
 Definition transform_gnn_model (model : GNNModel) (target_format : string) : option GNNModel :=
-  (* Placeholder for model transformation logic *)
+  (* Identity transform until a concrete target representation is supplied. *)
   Some model.
 
 (* Compose two GNN models *)
 Definition compose_gnn_models (model1 model2 : GNNModel) : option GNNModel :=
-  (* Placeholder for model composition logic *)
+  (* Composition is undefined until an explicit merge rule is supplied. *)
   None.
 
 (* Extract Active Inference model from GNN *)
@@ -310,7 +310,7 @@ Theorem gnn_preserves_ai_semantics :
          (obs : Vector.t R (obs_joint_dim (ai_observation_space (gnn_ai_model model)))),
   let (new_beliefs, policy) := ai_step (gnn_ai_model model) beliefs obs in
   (* The result satisfies Active Inference principles *)
-  True. (* Placeholder for actual semantic preservation property *)
+  True. (* Semantic preservation property scaffold. *)
 Proof.
   intros model H_valid beliefs obs.
   destruct (ai_step (gnn_ai_model model) beliefs obs) as [new_beliefs policy].

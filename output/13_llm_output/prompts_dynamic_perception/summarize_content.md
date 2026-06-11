@@ -1,20 +1,9 @@
 # SUMMARIZE_CONTENT
 
-Here's a concise summary:
+This is a GNN implementation of a passive observer model that can learn from noisy observations. It provides an example of how to use it in a simulation context. The key variables are:
 
-**Model Overview:**
-This GNN represents a dynamic perception model that can learn from noisy observations and adaptively infer hidden sources based on their behavior. The model consists of two main components:
-
-1. **GNN Representation**: A neural network with 2 hidden states, 2 observation maps, and an action-based inference mechanism. It learns to predict the next state based on a sequence of observed states and actions.
-**Key Variables:**
-   - Hidden states (represented by lists): [list with brief descriptions]
-   - Observations: [list with brief descriptions]  
-   - Actions/Controls (represented by lists): [list with brief descriptions]
-
- **Critical Parameters:**
-   - Most important matrices (A, B, C, D) and their roles:
-   - Key hyperparameters and settings:
-   - Unique aspects of this model design:
-**Notable Features:**
-   - Special properties or constraints
-   - Unique aspects of this model design:
+1. **Model Overview**: A description of the model, including its structure and purpose.
+2. **Key Variables**: List with brief descriptions describing each variable's role.
+3. **Critical Parameters**: List with brief descriptions explaining what is important for the model to work correctly.
+4. **Notable Features**: List with brief descriptions highlighting key features or constraints of the model, such as special properties or unique aspects that are relevant in certain scenarios.
+5. **Use Cases**: A list of scenarios where this model can be applied and how it works well under specific conditions.

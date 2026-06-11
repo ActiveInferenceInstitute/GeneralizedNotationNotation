@@ -10,9 +10,9 @@
 
 **Status**: ✅ Production Ready
 
-**Version**: 1.1.3
+**Version**: 1.6.0
 
-**Last Updated**: 2026-04-09
+**Last Updated**: 2026-04-16
 
 ---
 
@@ -83,7 +83,7 @@ success = process_gnn_multi_format(
 - `directory` (Union[str, Path]): Directory to process
 - `output_dir` (Union[str, Path, None]): Optional output directory for results (default: None)
 - `recursive` (bool): Whether to process subdirectories (default: True)
-- `parallel` (bool): Whether to use parallel processing (not implemented, default: False)
+- `parallel` (bool): Whether to process discovered files concurrently (default: False)
 
 **Returns**: `Dict[str, Any]` - Dictionary with processing results containing:
 
@@ -118,16 +118,18 @@ success = process_gnn_multi_format(
 
 #### `discover_gnn_files(directory: Union[str, Path], recursive: bool = True) -> List[Path]`
 
-**Description**: Discovers all GNN specification files in target directory with support for multiple formats.
+**Description**: Discovers candidate files for **lightweight** processing (`process_gnn_directory`, reports, etc.). This is **not** the same discovery policy as pipeline Step 3.
 
 **Parameters**:
 
 - `directory` (Union[str, Path]): Directory to search
 - `recursive` (bool): Whether to search subdirectories (default: True)
 
-**Returns**: `List[Path]` - List of Path objects for discovered GNN files
+**Returns**: `List[Path]` - List of Path objects for discovered files
 
-**Supported Extensions**: `.md`, `.markdown`, `.json`, `.xml`, `.yaml`, `.yml`, `.py`, `.jl`, `.hs`, `.lean`, `.v`, `.thy`, `.max`, `.proto`, `.xsd`, `.asn1`, `.pkl`, `.als`, `.z`, `.tla`, `.agda`, `.bnf`, `.ebnf`
+**Glob patterns**: `*.md`, `*.gnn`, `*.txt` only. Excludes `README.md`, `CHANGELOG.md`, `LICENSE.md`, and names matching `*.template.md` / `*.example.md`.
+
+**Pipeline Step 3 (`process_gnn_multi_format`)** uses a **broader** extension list in `multi_format_processor.py` (e.g. `.json`, `.yaml`, `.lean`, …) so interchange artifacts on disk are found and re-processed. See [SPEC.md](SPEC.md) § File discovery.
 
 **Location**: `src/gnn/processor.py`
 
@@ -203,7 +205,7 @@ success = process_gnn_multi_format(
 
 #### `process_gnn(*args, **kwargs) -> Dict[str, Any]`
 
-**Description**: Alias for `process_gnn_directory`. Provides backward compatibility.
+**Description**: Public alias for `process_gnn_directory`.
 
 **Parameters**: Same as `process_gnn_directory`
 
@@ -460,7 +462,7 @@ output/3_gnn_output/
 ### Data Flow
 
 ```
-input/gnn_files/*.md → GNN Parser → Multi-Format Serializer → output/3_gnn_output/
+input/gnn_files/ (mixed extensions per multi_format_processor) → GNNParsingSystem → Serializers → output/3_gnn_output/
                             ↓
                     Parsed Model JSON
                             ↓
@@ -473,21 +475,21 @@ input/gnn_files/*.md → GNN Parser → Multi-Format Serializer → output/3_gnn
 
 ### Test Files
 
-- `src/tests/test_gnn_overall.py` - Module-level coverage and smoke tests
-- `src/tests/test_gnn_parsing.py` - Parsing-focused tests
-- `src/tests/test_gnn_parsing_system.py` - `GNNParsingSystem` / registry tests
-- `src/tests/test_gnn_processing.py` - Directory processing tests
-- `src/tests/test_gnn_parsers_common.py` - Parser utilities tests
-- `src/tests/test_gnn_parsers_json.py` - JSON parser tests
-- `src/tests/test_gnn_parsers_base_serializer.py` - Serializer base tests
-- `src/tests/test_gnn_xml_parser.py` - XML parser tests
-- `src/tests/test_gnn_schema.py` - Schema validator tests
-- `src/tests/test_gnn_cross_format_validator.py` - Cross-format validation tests
-- `src/tests/test_gnn_validation.py` - Validation tests
+- `src/tests/gnn/test_gnn_overall.py` - Module-level coverage and smoke tests
+- `src/tests/gnn/test_gnn_parsing.py` - Parsing-focused tests
+- `src/tests/gnn/test_gnn_parsing_system.py` - `GNNParsingSystem` / registry tests
+- `src/tests/gnn/test_gnn_processing.py` - Directory processing tests
+- `src/tests/gnn/test_gnn_parsers_common.py` - Parser utilities tests
+- `src/tests/gnn/test_gnn_parsers_json.py` - JSON parser tests
+- `src/tests/gnn/test_gnn_parsers_base_serializer.py` - Serializer base tests
+- `src/tests/gnn/test_gnn_xml_parser.py` - XML parser tests
+- `src/tests/gnn/test_gnn_schema.py` - Schema validator tests
+- `src/tests/gnn/test_gnn_cross_format_validator.py` - Cross-format validation tests
+- `src/tests/gnn/test_gnn_validation.py` - Validation tests
 
 ### Test Coverage
 
-Measure locally: `uv run pytest src/tests/test_gnn*.py --cov=src/gnn --cov-report=term-missing`. Targets are project-defined (see CI / maintainer notes); do not treat fixed percentages in docs as measured unless cited from a report.
+Measure locally: `uv run --extra dev python -m pytest src/tests/test_gnn*.py --cov=src/gnn --cov-report=term-missing`. Targets are project-defined (see CI / maintainer notes); do not treat fixed percentages in docs as measured unless cited from a report.
 
 ### Key Test Scenarios
 
@@ -501,13 +503,13 @@ Measure locally: `uv run pytest src/tests/test_gnn*.py --cov=src/gnn --cov-repor
 
 ```bash
 # Run GNN-specific tests
-pytest src/tests/test_gnn*.py -v
+uv run --extra dev python -m pytest src/tests/test_gnn*.py -v
 
 # Run with coverage
-pytest src/tests/test_gnn*.py --cov=src/gnn --cov-report=term-missing
+uv run --extra dev python -m pytest src/tests/test_gnn*.py --cov=src/gnn --cov-report=term-missing
 
 # Run only parser tests
-pytest src/tests/test_gnn_parsing.py -v
+uv run --extra dev python -m pytest src/tests/gnn/test_gnn_parsing.py -v
 ```
 
 ---
@@ -547,7 +549,7 @@ See **`mcp.py`** `register_tools` for the authoritative list. Examples include:
 ### Scalability
 
 - **Input Size Limits**: 10MB per file (configurable)
-- **Parallelization**: Not currently parallelized (could process multiple files in parallel)
+- **Parallelization**: Lightweight directory processing can process discovered files concurrently.
 
 ---
 
@@ -613,7 +615,7 @@ cat output/3_gnn_output/gnn_processing_summary.json | python -m json.tool
 
 ## Version History
 
-### Current Version: 1.1.3
+### Current Version: 1.6.0
 
 **Features**:
 

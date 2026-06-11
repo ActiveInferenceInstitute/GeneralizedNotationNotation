@@ -15,39 +15,83 @@ logger = logging.getLogger(__name__)
 from ..viz_base import MATPLOTLIB_AVAILABLE, np, plt
 
 
+def _current_rxinfer_models(execution_dir: Path) -> set[str] | None:
+    """Return model names for RxInfer entries in the current Step 12 summary."""
+    summary_file = execution_dir / "summaries" / "execution_summary.json"
+    if not summary_file.exists():
+        summary_file = execution_dir / "execution_summary.json"
+    if not summary_file.exists():
+        return None
+    try:
+        data = json.loads(summary_file.read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, OSError):
+        return None
+    details = data.get("execution_details")
+    if not isinstance(details, list):
+        details = data.get("execution_results", [])
+    if not isinstance(details, list):
+        return None
+    models = {
+        str(detail.get("model_name"))
+        for detail in details
+        if isinstance(detail, dict)
+        and str(detail.get("framework", "")).lower() == "rxinfer"
+        and detail.get("model_name")
+    }
+    return models or None
+
+
+def _latest_current_results_file(sim_data_dir: Path) -> Path | None:
+    """Select one current RxInfer result file from a simulation_data directory."""
+    candidates = sorted(
+        sim_data_dir.glob("*simulation_results.json"),
+        key=lambda path: path.stat().st_mtime,
+        reverse=True,
+    )
+    for candidate in candidates:
+        try:
+            data = json.loads(candidate.read_text(encoding="utf-8"))
+        except (json.JSONDecodeError, OSError):
+            continue
+        if data.get("schema_version") == "rxinfer_simulation_v1":
+            return candidate
+    return candidates[0] if candidates else None
+
+
 def generate_analysis_from_logs(
-    execution_dir: Path,
-    output_dir: Path,
-    verbose: bool = False
+    execution_dir: Path, output_dir: Path, verbose: bool = False
 ) -> List[str]:
     """
     Generate analysis and visualizations from RxInfer execution logs.
-    
+
     Args:
         execution_dir: Directory containing execution results
         output_dir: Directory to save visualizations
         verbose: Enable verbose logging
-        
+
     Returns:
         List of generated visualization file paths
     """
-    visualizations = []
+    visualizations: list[Any] = []
 
     try:
         # Find RxInfer execution results
+        current_models = _current_rxinfer_models(execution_dir)
         rxinfer_dirs = list(execution_dir.glob("*/rxinfer"))
 
         for rxinfer_dir in rxinfer_dirs:
+            model_name = rxinfer_dir.parent.name
+            if current_models and model_name not in current_models:
+                continue
             sim_data_dir = rxinfer_dir / "simulation_data"
             if sim_data_dir.exists():
                 # Load simulation results
-                results_files = list(sim_data_dir.glob("*simulation_results.json"))
-                for results_file in results_files:
+                results_file = _latest_current_results_file(sim_data_dir)
+                if results_file is not None:
                     try:
-                        with open(results_file, 'r') as f:
+                        with open(results_file, "r") as f:
                             data = json.load(f)
 
-                        model_name = rxinfer_dir.parent.name
                         viz_files = create_rxinfer_visualizations(
                             data, output_dir, model_name, verbose
                         )
@@ -63,24 +107,21 @@ def generate_analysis_from_logs(
 
 
 def create_rxinfer_visualizations(
-    data: Dict[str, Any],
-    output_dir: Path,
-    model_name: str,
-    verbose: bool = False
+    data: Dict[str, Any], output_dir: Path, model_name: str, verbose: bool = False
 ) -> List[str]:
     """
     Create visualizations from RxInfer simulation data.
-    
+
     Args:
         data: Simulation results dictionary
         output_dir: Output directory
         model_name: Name of the model
         verbose: Enable verbose logging
-        
+
     Returns:
         List of generated file paths
     """
-    visualizations = []
+    visualizations: list[Any] = []
 
     if not MATPLOTLIB_AVAILABLE:
         logger.warning("Matplotlib not available, skipping RxInfer visualizations")
@@ -103,18 +144,18 @@ def create_rxinfer_visualizations(
 
             if beliefs_arr.ndim == 2:
                 for i in range(beliefs_arr.shape[1]):
-                    ax.plot(beliefs_arr[:, i], label=f"State {i+1}", linewidth=2)
+                    ax.plot(beliefs_arr[:, i], label=f"State {i + 1}", linewidth=2)
             else:
                 ax.plot(beliefs_arr, label="Belief", linewidth=2)
 
-            ax.set_xlabel("Time Step", fontweight='bold')
-            ax.set_ylabel("Belief Probability", fontweight='bold')
-            ax.set_title(f"RxInfer Belief Evolution - {model_name}", fontweight='bold')
+            ax.set_xlabel("Time Step", fontweight="bold")
+            ax.set_ylabel("Belief Probability", fontweight="bold")
+            ax.set_title(f"RxInfer Belief Evolution - {model_name}", fontweight="bold")
             ax.legend()
             ax.grid(True, alpha=0.3)
 
             viz_file = output_dir / f"{model_name}_rxinfer_belief_evolution.png"
-            plt.savefig(viz_file, dpi=300, bbox_inches='tight')
+            plt.savefig(viz_file, dpi=300, bbox_inches="tight")
             plt.close()
             visualizations.append(str(viz_file))
             logger.info(f"Generated belief evolution: {viz_file.name}")
@@ -127,15 +168,17 @@ def create_rxinfer_visualizations(
             fig, ax = plt.subplots(figsize=(12, 4))
             x = range(len(observations))
             ax.scatter(x, observations, label="Observations", alpha=0.7, s=50)
-            ax.scatter(x, true_states, label="True States", alpha=0.7, s=50, marker='x')
-            ax.set_xlabel("Time Step", fontweight='bold')
-            ax.set_ylabel("State/Observation", fontweight='bold')
-            ax.set_title(f"RxInfer Observations vs True States - {model_name}", fontweight='bold')
+            ax.scatter(x, true_states, label="True States", alpha=0.7, s=50, marker="x")
+            ax.set_xlabel("Time Step", fontweight="bold")
+            ax.set_ylabel("State/Observation", fontweight="bold")
+            ax.set_title(
+                f"RxInfer Observations vs True States - {model_name}", fontweight="bold"
+            )
             ax.legend()
             ax.grid(True, alpha=0.3)
 
             viz_file = output_dir / f"{model_name}_rxinfer_obs_vs_true.png"
-            plt.savefig(viz_file, dpi=300, bbox_inches='tight')
+            plt.savefig(viz_file, dpi=300, bbox_inches="tight")
             plt.close()
             visualizations.append(str(viz_file))
             logger.info(f"Generated obs vs true: {viz_file.name}")
@@ -148,19 +191,28 @@ def create_rxinfer_visualizations(
             beliefs_arr = np.array(beliefs)
             if beliefs_arr.ndim == 2 and beliefs_arr.shape[0] > 1:
                 fig, ax = plt.subplots(figsize=(14, 5))
-                im = ax.imshow(beliefs_arr.T, aspect='auto', cmap='viridis',
-                              origin='lower', interpolation='nearest')
-                ax.set_xlabel("Time Step", fontweight='bold')
-                ax.set_ylabel("State", fontweight='bold')
-                ax.set_title(f"RxInfer Belief Heatmap - {model_name}", fontweight='bold')
+                im = ax.imshow(
+                    beliefs_arr.T,
+                    aspect="auto",
+                    cmap="viridis",
+                    origin="lower",
+                    interpolation="nearest",
+                )
+                ax.set_xlabel("Time Step", fontweight="bold")
+                ax.set_ylabel("State", fontweight="bold")
+                ax.set_title(
+                    f"RxInfer Belief Heatmap - {model_name}", fontweight="bold"
+                )
                 ax.set_yticks(range(beliefs_arr.shape[1]))
-                ax.set_yticklabels([f"State {i+1}" for i in range(beliefs_arr.shape[1])])
+                ax.set_yticklabels(
+                    [f"State {i + 1}" for i in range(beliefs_arr.shape[1])]
+                )
 
                 cbar = plt.colorbar(im, ax=ax)
-                cbar.set_label("Belief Probability", fontweight='bold')
+                cbar.set_label("Belief Probability", fontweight="bold")
 
                 viz_file = output_dir / f"{model_name}_rxinfer_belief_heatmap.png"
-                plt.savefig(viz_file, dpi=300, bbox_inches='tight')
+                plt.savefig(viz_file, dpi=300, bbox_inches="tight")
                 plt.close()
                 visualizations.append(str(viz_file))
                 logger.info(f"Generated belief heatmap: {viz_file.name}")
@@ -179,21 +231,28 @@ def create_rxinfer_visualizations(
                 entropy = -np.sum(beliefs_clipped * np.log2(beliefs_clipped), axis=1)
 
                 fig, ax = plt.subplots(figsize=(12, 4))
-                ax.plot(entropy, 'purple', linewidth=2, marker='o', markersize=3)
-                ax.fill_between(range(len(entropy)), entropy, alpha=0.3, color='purple')
-                ax.set_xlabel("Time Step", fontweight='bold')
-                ax.set_ylabel("Belief Entropy (bits)", fontweight='bold')
-                ax.set_title(f"RxInfer Belief Uncertainty - {model_name}", fontweight='bold')
+                ax.plot(entropy, "purple", linewidth=2, marker="o", markersize=3)
+                ax.fill_between(range(len(entropy)), entropy, alpha=0.3, color="purple")
+                ax.set_xlabel("Time Step", fontweight="bold")
+                ax.set_ylabel("Belief Entropy (bits)", fontweight="bold")
+                ax.set_title(
+                    f"RxInfer Belief Uncertainty - {model_name}", fontweight="bold"
+                )
                 ax.grid(True, alpha=0.3)
 
                 # Add max entropy line for reference
                 max_entropy = np.log2(beliefs_arr.shape[1])
-                ax.axhline(y=max_entropy, color='red', linestyle='--', alpha=0.5,
-                          label=f'Max Entropy ({max_entropy:.2f})')
+                ax.axhline(
+                    y=max_entropy,
+                    color="red",
+                    linestyle="--",
+                    alpha=0.5,
+                    label=f"Max Entropy ({max_entropy:.2f})",
+                )
                 ax.legend()
 
                 viz_file = output_dir / f"{model_name}_rxinfer_belief_entropy.png"
-                plt.savefig(viz_file, dpi=300, bbox_inches='tight')
+                plt.savefig(viz_file, dpi=300, bbox_inches="tight")
                 plt.close()
                 visualizations.append(str(viz_file))
                 logger.info(f"Generated belief entropy: {viz_file.name}")
@@ -206,31 +265,46 @@ def create_rxinfer_visualizations(
             beliefs_arr = np.array(beliefs)
             if beliefs_arr.ndim == 2:
                 # Get most likely state from beliefs (argmax)
-                inferred_states = np.argmax(beliefs_arr, axis=1) + 1  # 1-indexed like true_states
-                true_arr = np.array(true_states[:len(inferred_states)])
+                inferred_states = (
+                    np.argmax(beliefs_arr, axis=1) + 1
+                )  # 1-indexed like true_states
+                true_arr = np.array(true_states[: len(inferred_states)])
 
                 # Calculate accuracy
                 matches = (inferred_states == true_arr).astype(int)
                 cumulative_accuracy = np.cumsum(matches) / (np.arange(len(matches)) + 1)
 
                 fig, ax = plt.subplots(figsize=(12, 4))
-                ax.plot(cumulative_accuracy * 100, 'green', linewidth=2)
-                ax.fill_between(range(len(cumulative_accuracy)), cumulative_accuracy * 100,
-                               alpha=0.3, color='green')
-                ax.set_xlabel("Time Step", fontweight='bold')
-                ax.set_ylabel("Cumulative Accuracy (%)", fontweight='bold')
-                ax.set_title(f"RxInfer Inference Accuracy - {model_name}", fontweight='bold')
+                ax.plot(cumulative_accuracy * 100, "green", linewidth=2)
+                ax.fill_between(
+                    range(len(cumulative_accuracy)),
+                    cumulative_accuracy * 100,
+                    alpha=0.3,
+                    color="green",
+                )
+                ax.set_xlabel("Time Step", fontweight="bold")
+                ax.set_ylabel("Cumulative Accuracy (%)", fontweight="bold")
+                ax.set_title(
+                    f"RxInfer Inference Accuracy - {model_name}", fontweight="bold"
+                )
                 ax.set_ylim(0, 105)
                 ax.grid(True, alpha=0.3)
 
                 # Add final accuracy annotation
-                final_acc = cumulative_accuracy[-1] * 100 if len(cumulative_accuracy) > 0 else 0
-                ax.axhline(y=final_acc, color='navy', linestyle='--', alpha=0.5)
-                ax.text(len(cumulative_accuracy) - 1, final_acc + 3,
-                       f'Final: {final_acc:.1f}%', ha='right', fontweight='bold')
+                final_acc = (
+                    cumulative_accuracy[-1] * 100 if len(cumulative_accuracy) > 0 else 0
+                )
+                ax.axhline(y=final_acc, color="navy", linestyle="--", alpha=0.5)
+                ax.text(
+                    len(cumulative_accuracy) - 1,
+                    final_acc + 3,
+                    f"Final: {final_acc:.1f}%",
+                    ha="right",
+                    fontweight="bold",
+                )
 
                 viz_file = output_dir / f"{model_name}_rxinfer_accuracy.png"
-                plt.savefig(viz_file, dpi=300, bbox_inches='tight')
+                plt.savefig(viz_file, dpi=300, bbox_inches="tight")
                 plt.close()
                 visualizations.append(str(viz_file))
                 logger.info(f"Generated inference accuracy: {viz_file.name}")
@@ -240,29 +314,29 @@ def create_rxinfer_visualizations(
     return visualizations
 
 
-
-
-def extract_simulation_data(execution_dir: Path, logger: Optional[logging.Logger] = None) -> Dict[str, Any]:
+def extract_simulation_data(
+    execution_dir: Path, logger: Optional[logging.Logger] = None
+) -> Dict[str, Any]:
     """
     Extract RxInfer simulation data from execution outputs.
-    
+
     Args:
         execution_dir: Directory containing execution results
         logger: Logger instance
-        
+
     Returns:
         Dictionary with extracted simulation data
     """
     if logger is None:
         logger = logging.getLogger(__name__)
 
-    data = {
+    data: dict[str, Any] = {
         "beliefs": [],
         "observations": [],
         "true_states": [],
         "time_steps": 0,
         "model_name": "",
-        "framework": "rxinfer"
+        "framework": "rxinfer",
     }
 
     try:
@@ -270,7 +344,7 @@ def extract_simulation_data(execution_dir: Path, logger: Optional[logging.Logger
         if sim_data_dir.exists():
             results_files = list(sim_data_dir.glob("*simulation_results.json"))
             if results_files:
-                with open(results_files[0], 'r') as f:
+                with open(results_files[0], "r") as f:
                     results = json.load(f)
                 data.update(results)
 
@@ -280,7 +354,7 @@ def extract_simulation_data(execution_dir: Path, logger: Optional[logging.Logger
     return data
 
 
-__all__ = [
+__all__: list[Any] = [
     "generate_analysis_from_logs",
     "create_rxinfer_visualizations",
     "extract_simulation_data",

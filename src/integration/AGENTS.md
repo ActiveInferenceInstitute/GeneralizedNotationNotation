@@ -10,9 +10,9 @@
 
 **Status**: ✅ Production Ready
 
-**Version**: 1.0.0
+**Version**: 1.6.0
 
-**Last Updated**: 2026-01-21
+**Last Updated**: 2026-04-16
 
 ---
 
@@ -70,14 +70,12 @@ success = process_integration(
 )
 ```
 
-#### `coordinate_pipeline_modules() -> Dict[str, Any]`
-**Description**: Coordinates all pipeline modules for integrated operation using dependency graph analysis.
+#### Module Coordination (via `process_integration`)
 
-**Returns**: `Dict[str, Any]` - Coordination results with:
-- `modules` (List[str]): List of coordinated modules
+Module coordination (dependency graph construction, cycle detection, cross-reference validation) is performed internally by `process_integration()`. The integration report JSON includes:
+- `modules` (List[str]): List of discovered modules
 - `dependency_graph` (Dict): Module dependency graph
-- `cycles_detected` (List[List[str]]): Detected circular dependencies
-- `status` (str): Coordination status ("success", "partial", "failed")
+- `cycles_detected` (List[List[str]]): Circular dependency cycles
 - `statistics` (Dict[str, Any]): Graph statistics (nodes, edges, density)
 
 ---
@@ -189,7 +187,7 @@ output/17_integration_output/
 - `pipeline.config` - Configuration management
 
 ### Imported By
-- `src/tests/test_integration_overall.py` - Module-level integration tests
+- `src/tests/integration/test_integration_overall.py` - Module-level integration tests
 - `main.py` - Pipeline orchestration
 
 ### Data Flow
@@ -202,13 +200,16 @@ Pipeline Steps → Integration Coordination → System State → Cross-Module Co
 ## Testing
 
 ### Test Files
-- `src/tests/test_integration_functional.py` - Functional integration tests
-- `src/tests/test_integration_processor.py` - Processor-level integration tests
+- `src/tests/integration/test_integration_functional.py` - Functional integration tests
+- `src/tests/integration/test_integration_processor.py` - Processor-level integration tests
 
 ### Test Coverage
-- **Current**: 83%
-- **Target**: 90%+
+Measure on demand:
 
+```bash
+uv run --extra dev python -m pytest src/tests/test_integration*.py \
+    --cov=src/integration --cov-report=term-missing
+```
 ### Key Test Scenarios
 1. Cross-module coordination with various step combinations
 2. Recovery mode operation when dependencies unavailable
@@ -262,7 +263,7 @@ def get_integration_status():
 
 ## Version History
 
-### Current Version: 1.0.0
+### Current Version: 1.6.0
 
 **Features**:
 - Cross-module coordination
@@ -292,10 +293,10 @@ def get_integration_status():
 
 ---
 
-**Last Updated**: 2026-01-21
+**Last Updated**: 2026-04-16
 **Maintainer**: GNN Pipeline Team
 **Status**: ✅ Production Ready
-**Version**: 1.0.0
+**Version**: 1.6.0
 **Architecture Compliance**: ✅ 100% Thin Orchestrator Pattern
 
 

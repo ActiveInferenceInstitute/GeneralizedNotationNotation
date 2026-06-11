@@ -22,13 +22,13 @@ Pipeline Flow:
 How to run:
   # Headless mode (pipeline default - generates artifacts only)
   python src/22_gui.py --target-dir input/gnn_files --output-dir output --headless
-  
+
   # Interactive mode (launch GUI servers)
   python src/22_gui.py --target-dir input/gnn_files --output-dir output --interactive
-  
+
   # Specific GUI types
   python src/22_gui.py --gui-types "gui_1,oxdraw" --interactive
-  
+
   # As part of pipeline (automatically runs in headless mode)
   python src/main.py  # runs all steps including GUI in headless mode
 
@@ -48,27 +48,15 @@ If you encounter errors:
   - For oxdraw: Install with `cargo install oxdraw` (optional for headless mode)
 """
 
-import logging
 import sys
 from pathlib import Path
-from typing import Any, Optional
+from typing import cast
 
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent))
 
+from gui import process_gui
 from utils.pipeline_template import create_standardized_pipeline_script
-
-# Import module function
-try:
-    from gui import process_gui
-except ImportError:
-    def process_gui(target_dir: Path, output_dir: Path, logger: Optional[logging.Logger] = None, **kwargs: Any) -> bool:
-        """Recovery GUI processing when module unavailable."""
-        if logger is None:
-            logger = logging.getLogger(__name__)
-        logger.warning("GUI module not available - using recovery")
-        logger.info("Install GUI support with: uv pip install -e .[gui]")
-        return True
 
 run_script = create_standardized_pipeline_script(
     "22_gui.py",
@@ -78,29 +66,31 @@ run_script = create_standardized_pipeline_script(
         "headless": {
             "action": "store_true",
             "default": False,  # Will be set to True in process_gui if not --interactive
-            "help": "Run in headless mode (artifacts only, no GUI servers)"
+            "help": "Run in headless mode (artifacts only, no GUI servers)",
         },
         "interactive": {
             "action": "store_true",
             "default": False,
-            "help": "Launch interactive GUI servers (overrides headless)"
+            "help": "Launch interactive GUI servers (overrides headless)",
         },
         "gui_types": {
             "type": str,
             "default": "gui_1,gui_2",
-            "help": "Comma-separated list of GUI types to run (gui_1, gui_2, gui_3, oxdraw)"
+            "help": "Comma-separated list of GUI types to run (gui_1, gui_2, gui_3, oxdraw)",
         },
         "open_browser": {
             "action": "store_true",
             "default": False,
-            "help": "Automatically open browser for interactive GUIs"
+            "help": "Automatically open browser for interactive GUIs",
         },
     },
 )
 
+
 def main() -> int:
     """Main entry point for the GUI step."""
-    return run_script()
+    return cast("int", run_script())
+
 
 if __name__ == "__main__":
     raise SystemExit(main())

@@ -1,7 +1,7 @@
 # GNN Examples and Model Progression
 
-**Version**: v2.0.0  
-**Last Updated**: 2026-03-24  
+**Version**: v1.6.0 Engine (Bundle v2.0.0)  
+**Last Updated**: 2026-04-15  
 **Status**: ✅ Production Ready  
 **Modules**: 38+ · **Pipeline steps**: 25 · **Renderers**: 9 backends (see [../implementations/README.md](../implementations/README.md)) · **Tests**: see [../../../README.md](../../../README.md)  
 
@@ -13,10 +13,10 @@ All examples can be processed through the GNN pipeline for parsing, validation, 
 
 ```bash
 # Process all examples
-python src/main.py --target-dir doc/gnn/examples/ --verbose
+python src/main.py --target-dir input/gnn_files --verbose
 
 # Run specific processing steps
-python src/main.py --only-steps "3,5,8,11,12" --target-dir doc/gnn/examples/
+python src/main.py --only-steps "3,5,8,11,12" --target-dir input/gnn_files
 ```
 
 For module-specific documentation:
@@ -488,6 +488,10 @@ pie
     "With Policy" : 7
     "Flexible Policy" : 10
 ```
+
+## Hierarchical examples
+
+For layered slow–fast models, pair this progression with the [hierarchical template](../../templates/hierarchical_template.md) and [temporal hierarchy patterns](../advanced/advanced_modeling_patterns.md#temporal-hierarchy).
 
 ## Implementation Tips
 
