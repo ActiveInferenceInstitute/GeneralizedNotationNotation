@@ -16,8 +16,10 @@ Date: 2024
 """
 
 import base64
+import hashlib
 import json
 import logging
+import re
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
@@ -69,6 +71,7 @@ class RxInferRenderer:
             output_path.parent.mkdir(parents=True, exist_ok=True)
             with open(output_path, "w", encoding="utf-8") as f:
                 f.write(rxinfer_code)
+            _write_rxinfer_execution_metadata(output_path, gnn_spec)
 
             self.logger.info(f"Generated RxInfer.jl simulation: {output_path}")
             return True, "Successfully generated RxInfer.jl simulation code"
@@ -858,9 +861,12 @@ def render_gnn_to_rxinfer(
 
         # Write output file
         try:
+            metadata = build_rxinfer_execution_metadata(gnn_spec)
             output_path.parent.mkdir(parents=True, exist_ok=True)
             with open(output_path, "w", encoding="utf-8") as f:
                 f.write(rxinfer_code)
+            if metadata:
+                _write_rxinfer_execution_metadata(output_path, gnn_spec, metadata)
         except Exception as write_error:
             logger.error(f"Failed to write output file: {write_error}")
             return False, f"Error writing RxInfer.jl script: {write_error}", []
@@ -869,7 +875,10 @@ def render_gnn_to_rxinfer(
         warnings: list[Any] = []
 
         # Check for potential issues
-        if not gnn_spec.get("initial_parameterization"):
+        if not (
+            gnn_spec.get("initial_parameterization")
+            or gnn_spec.get("initialparameterization")
+        ):
             warnings.append("No initial parameterization found - using defaults")
 
         if not gnn_spec.get("model_parameters"):
@@ -881,3 +890,107 @@ def render_gnn_to_rxinfer(
     except Exception as e:
         logger.error(f"Unexpected error in render_gnn_to_rxinfer: {e}", exc_info=True)
         return False, f"Error generating RxInfer.jl script: {e}", []
+
+
+def build_rxinfer_execution_metadata(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
+    """Build Step 12 execution metadata for declared RxInfer agent populations."""
+    initial = gnn_spec.get("initialparameterization") or gnn_spec.get(
+        "initial_parameterization"
+    )
+    if not isinstance(initial, dict):
+        return {}
+
+    agents = _extract_declared_rxinfer_agents(initial)
+    if not agents:
+        return {}
+
+    from .toml_generator import _extract_agent_topology
+
+    topology = _extract_agent_topology(initial, agents)
+    return {
+        "schema": "gnn_rxinfer_execution_metadata_v1",
+        "agent_count": len(agents),
+        "agents": agents,
+        "topology": topology,
+    }
+
+
+def _extract_declared_rxinfer_agents(params: Dict[str, Any]) -> List[Dict[str, Any]]:
+    """Extract explicitly declared agents without inventing default agents."""
+    from .toml_generator import (
+        _coerce_positive_int,
+        _extract_compact_agents,
+        _extract_indexed_agents,
+    )
+
+    nr_agents = _coerce_positive_int(params.get("nr_agents"))
+    if nr_agents > 0:
+        compact_agents = _extract_compact_agents(params, nr_agents)
+        if compact_agents is not None:
+            return compact_agents
+
+        indexed_agents = _extract_indexed_agents(params, nr_agents)
+        if len(indexed_agents) == nr_agents:
+            return indexed_agents
+
+        raise ValueError(
+            "nr_agents was provided but agent configuration is incomplete. "
+            "Provide compact agent_ids/agent_initial_positions/agent_target_positions "
+            "or complete agent{i}_id/agent{i}_initial_position/agent{i}_target_position keys."
+        )
+
+    indexed_count = _infer_indexed_agent_count(params)
+    if indexed_count <= 0:
+        return []
+    indexed_agents = _extract_indexed_agents(params, indexed_count)
+    if len(indexed_agents) != indexed_count:
+        raise ValueError(
+            "Indexed agent configuration is incomplete. Provide complete "
+            "agent{i}_id/agent{i}_initial_position/agent{i}_target_position keys."
+        )
+    return indexed_agents
+
+
+def _infer_indexed_agent_count(params: Dict[str, Any]) -> int:
+    """Infer agent count from agent{i}_... keys when nr_agents is omitted."""
+    agent_indices: set[int] = set()
+    for key in params:
+        match = re.match(r"agent(\d+)_", str(key))
+        if match:
+            agent_indices.add(int(match.group(1)))
+    return max(agent_indices) if agent_indices else 0
+
+
+def _write_rxinfer_execution_metadata(
+    output_path: Path,
+    gnn_spec: Dict[str, Any],
+    metadata: Optional[Dict[str, Any]] = None,
+) -> Optional[Path]:
+    """Write a sibling execution metadata JSON artifact when metadata exists."""
+    metadata = (
+        metadata if metadata is not None else build_rxinfer_execution_metadata(gnn_spec)
+    )
+    if not metadata:
+        return None
+    metadata_path = output_path.with_suffix(".metadata.json")
+    metadata = dict(metadata)
+    metadata["script_path"] = str(output_path)
+    metadata["script_sha256"] = _sha256_file(output_path)
+    metadata["metadata_provenance"] = "rendered_rxinfer_sidecar"
+    topology = dict(metadata.get("topology") or {})
+    topology.setdefault("source", str(metadata_path))
+    metadata["topology"] = topology
+    metadata_path.write_text(
+        json.dumps(metadata, indent=2, sort_keys=True),
+        encoding="utf-8",
+    )
+    return metadata_path
+
+
+def _sha256_file(path: Path) -> str:
+    """Return the SHA256 digest for a rendered script."""
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()

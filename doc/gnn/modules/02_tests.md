@@ -494,7 +494,7 @@ def test_new_module_complex():
 
 ### Test Files
 - **120+** `test_*.py` modules under `src/tests/` (exact count drifts; use `find src/tests -maxdepth 1 -name 'test_*.py' | wc -l`)
-- **2,296** collected tests with standard Ollama integration ignores as measured by collect-only on 2026-06-09
+- **2,397** collected tests with standard Ollama integration ignores as measured by collect-only on 2026-06-12
 - **20+ test categories** for organized execution
 - **25+ test markers** for selective execution
 

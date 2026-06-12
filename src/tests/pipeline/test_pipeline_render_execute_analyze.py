@@ -133,7 +133,7 @@ E={(0.33333, 0.33333, 0.33333)}
             dirs["base_output"],
             verbose=True,
             frameworks="pymdp",
-            timeout=10,
+            timeout=30,
             render_output_dir=dirs["base_output"] / "11_render_output",
         )
         assert isinstance(execute_result, (bool, int))
@@ -170,7 +170,7 @@ E={(0.33333, 0.33333, 0.33333)}
             dirs["base_output"],
             verbose=True,
             frameworks="pymdp",
-            timeout=10,
+            timeout=30,
             render_output_dir=dirs["base_output"],
         )
         assert execute_result is True

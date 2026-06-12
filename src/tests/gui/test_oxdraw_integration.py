@@ -390,6 +390,18 @@ class TestProcessOxdraw:
         assert "gnn_to_mermaid_conversions" in results
         assert len(results["gnn_to_mermaid_conversions"]) > 0
 
+        assert results["websocket_bridge"]["message_contract_available"] is True
+        assert results["websocket_bridge"]["server_running"] is False
+        assert results["websocket_bridge"]["status"] == "message_contract_only"
+        messages = results["websocket_bridge"]["messages"]
+        assert len(messages) == 1
+        load_message = messages[0]
+        assert load_message["type"] == "model.load"
+        assert load_message["payload"]["model_id"] == "test_model"
+        assert load_message["payload"]["format"] == "mermaid"
+        assert load_message["payload"]["mermaid_file"].endswith("test_model.mmd")
+        assert "flowchart TD" in load_message["payload"]["mermaid"]
+
     def test_process_oxdraw_no_files(self, temp_dir: Any, capsys: Any) -> Any:
         """Test processing with no GNN files."""
         import logging

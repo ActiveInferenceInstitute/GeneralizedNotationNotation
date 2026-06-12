@@ -189,10 +189,10 @@ graph TD
   --tb=no --ignore=src/tests/llm/test_llm_ollama.py
   --ignore=src/tests/llm/test_llm_ollama_integration.py`. Re-include the two Ollama files
   when `ollama` is installed and reachable.
-- **Current test inventory (2026-06-09)**: 171 `test_*.py` files under `src/tests/`;
-  the command-of-record collect pass with Ollama integration tests ignored collected 2,296 tests.
-  Latest recorded full suite with the same Ollama integration excludes passed on 2026-06-09:
-  2,281 passed, 14 skipped, 1 xfailed in 744.50s.
+- **Current test inventory (2026-06-12)**: 184 `test_*.py` files under `src/tests/`;
+  the command-of-record collect pass with Ollama integration tests ignored collected 2,397 tests.
+  Latest recorded full suite evidence with the same Ollama integration excludes is
+  2,379 passed, 17 skipped, 1 xfailed.
 - All 25 orchestrator scripts comply with the <150 line thin orchestrator pattern.
 - Maintained source/test documentation coverage is enforced by `doc/development/docs_audit.py --strict`.
 
@@ -341,7 +341,7 @@ pytest --cov=src --cov-report=term-missing
 
 ---
 
-**Last Updated**: 2026-06-09
-**Pipeline Version**: 1.6.0
+**Last Updated**: 2026-06-11
+**Pipeline Version**: 1.8.0
 **Total Steps**: 25 (0-24)
 **Status**: Maintained

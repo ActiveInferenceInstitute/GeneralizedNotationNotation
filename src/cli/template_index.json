@@ -1,0 +1,20 @@
+[
+  {
+    "name": "actinf-pomdp-2state",
+    "description": "Two-state Active Inference POMDP starter model.",
+    "source": "template_assets/actinf_pomdp_2state.md",
+    "filename": "actinf_pomdp_2state.md"
+  },
+  {
+    "name": "multi-agent-coordination",
+    "description": "Compact multi-agent coordination model for RxInfer experiments.",
+    "source": "template_assets/multi_agent_coordination.md",
+    "filename": "multi_agent_coordination.md"
+  },
+  {
+    "name": "pomdp-gridworld-3x3",
+    "description": "3x3 gridworld POMDP fixture for cross-framework acceptance checks.",
+    "source": "template_assets/pomdp_gridworld_3x3.md",
+    "filename": "pomdp_gridworld_3x3.md"
+  }
+]

@@ -767,6 +767,19 @@ class POMDPRenderProcessor:
         initial_parameterization, matrix_provenance, canonical_model_parameters = (
             self._build_canonical_initialparameterization(pomdp_space)
         )
+        raw_initial_parameterization = (
+            getattr(pomdp_space, "initial_parameterization", None) or {}
+        )
+        matrix_keys = set(getattr(pomdp_space, "matrices", None) or {})
+        preserved_initial_metadata = {
+            key: value
+            for key, value in raw_initial_parameterization.items()
+            if key not in matrix_keys
+        }
+        initial_parameterization = {
+            **initial_parameterization,
+            **preserved_initial_metadata,
+        }
         raw_model_parameters = getattr(pomdp_space, "model_parameters", None) or {}
         state_factors = getattr(pomdp_space, "state_factors", None) or []
         observation_modalities = (
@@ -906,10 +919,15 @@ class POMDPRenderProcessor:
                 if not post_validation["valid"]:
                     warnings.extend(post_validation.get("warnings", []))
 
+            artifacts = [str(output_file)] if success else []
+            metadata_file = output_file.with_suffix(".metadata.json")
+            if success and metadata_file.exists():
+                artifacts.append(str(metadata_file))
+
             return {
                 "success": success,
                 "message": message,
-                "artifacts": [str(output_file)] if success else [],
+                "artifacts": artifacts,
                 "warnings": warnings,
             }
 

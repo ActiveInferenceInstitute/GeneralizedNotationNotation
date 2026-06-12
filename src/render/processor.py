@@ -733,7 +733,11 @@ def render_gnn_spec(
                 success, msg, _warnings = render_gnn_to_rxinfer(
                     canonical_spec, output_file, options
                 )
-                return (True, msg, [str(output_file)]) if success else (False, msg, [])
+                artifacts = [str(output_file)]
+                metadata_file = output_file.with_suffix(".metadata.json")
+                if metadata_file.exists():
+                    artifacts.append(str(metadata_file))
+                return (True, msg, artifacts) if success else (False, msg, [])
 
             if target_lower == "activeinference_jl":
                 from .activeinference_jl.activeinference_renderer import (

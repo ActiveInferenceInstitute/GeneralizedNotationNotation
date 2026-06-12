@@ -181,4 +181,4 @@ Signature:
   Author: "AXIOM Research Team - rMM Module"
   Institution: "VERSES AI / Active Inference Institute"
   ContactEmail: "axiom-rmm@verses.ai"
-  DOI: "TBD - Not yet published" 
+  DOI: "Not assigned; draft specification"

@@ -188,6 +188,13 @@ def _require_keys(mapping: Dict[str, Any], keys: Iterable[str]) -> None:
         raise ValueError(f"Missing required initialparameterization keys: {missing}")
 
 
+def _is_active_inference_matrix_key(key: str) -> bool:
+    """Return whether an InitialParameterization key names a matrix/vector contract."""
+    return key in {"A", "B", "C", "D", "E"} or any(
+        key.startswith(f"{prefix}_") for prefix in ("A", "B", "C", "D", "E")
+    )
+
+
 def build_canonical_pomdp_spec(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
     """Return a copied GNN spec with canonical POMDP matrices and provenance."""
     spec = deepcopy(gnn_spec)
@@ -238,6 +245,9 @@ def build_canonical_pomdp_spec(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
     }
     if "E" in initial:
         canonical_initial["E"] = normalise_vector(initial["E"], name="E")
+    for key, value in initial.items():
+        if key not in canonical_initial and not _is_active_inference_matrix_key(key):
+            canonical_initial[key] = deepcopy(value)
 
     model_parameters.update(
         {
