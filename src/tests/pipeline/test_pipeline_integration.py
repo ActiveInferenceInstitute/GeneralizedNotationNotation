@@ -16,6 +16,7 @@ from typing import Any
 
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
+PROJECT_ROOT = Path(__file__).parent.parent.parent.parent
 
 
 class TestPipelineStepIntegration:
@@ -265,7 +266,11 @@ class TestPipelineErrorIntegration:
 
         logging.getLogger("test_pipeline")
 
-        orchestrator = PipelineOrchestrator(steps=["3"])
+        orchestrator = PipelineOrchestrator(
+            target_dir=str(PROJECT_ROOT / "input" / "gnn_files" / "discrete"),
+            output_dir=str(tmp_path / "output"),
+            steps=["3"],
+        )
 
         # Should be able to instantiate and run
         assert orchestrator is not None

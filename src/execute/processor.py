@@ -6,11 +6,13 @@ This module provides execute processing capabilities for rendered implementation
 """
 
 import copy
+import hashlib
 import json
 import logging
 import os
 import subprocess  # nosec B404
 import sys
+import tomllib
 from concurrent.futures import ProcessPoolExecutor
 from dataclasses import dataclass
 from datetime import datetime
@@ -147,6 +149,103 @@ from utils.framework_availability import (
 )
 
 
+def _load_rxinfer_execution_metadata_sidecar(script_path: Path) -> Dict[str, Any]:
+    """Load declared RxInfer execution metadata from JSON sidecar artifacts."""
+    candidates = [
+        script_path.with_suffix(".metadata.json"),
+        script_path.with_name(f"{script_path.stem}_metadata.json"),
+    ]
+    seen: set[Path] = set()
+    for metadata_path in candidates:
+        if metadata_path in seen or not metadata_path.exists():
+            continue
+        seen.add(metadata_path)
+        try:
+            data = json.loads(metadata_path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            continue
+        if not isinstance(data, dict):
+            continue
+        if data.get("schema") != "gnn_rxinfer_execution_metadata_v1":
+            continue
+        if data.get("script_sha256") != _sha256_file(script_path):
+            continue
+        if "agent_count" not in data and "topology" not in data:
+            continue
+        topology = data.get("topology")
+        if not isinstance(topology, dict):
+            topology = {}
+        topology.setdefault("source", str(metadata_path))
+        data["topology"] = topology
+        data["agent_count"] = int(data.get("agent_count") or 0)
+        data["metadata_provenance"] = data.get(
+            "metadata_provenance", "rendered_rxinfer_sidecar"
+        )
+        data["metadata_verification"] = "script_sha256_match"
+        return data
+    return {}
+
+
+def _load_rxinfer_execution_metadata_from_script(script_path: Path) -> Dict[str, Any]:
+    """Load agent population metadata from rendered RxInfer metadata artifacts."""
+    if not script_path.exists():
+        return {}
+    sidecar_metadata = _load_rxinfer_execution_metadata_sidecar(script_path)
+    if sidecar_metadata:
+        return sidecar_metadata
+    toml_candidates = [script_path.with_suffix(".toml")]
+    seen_toml: set[Path] = set()
+    for toml_path in toml_candidates:
+        if toml_path in seen_toml or not toml_path.exists():
+            continue
+        seen_toml.add(toml_path)
+        try:
+            data = tomllib.loads(toml_path.read_text(encoding="utf-8"))
+        except (OSError, tomllib.TOMLDecodeError):
+            continue
+        agents = data.get("agents", [])
+        model = data.get("model", {})
+        agent_count = (
+            len(agents) if isinstance(agents, list) else model.get("nr_agents")
+        )
+        agent_ids = [
+            agent.get("id")
+            for agent in agents
+            if isinstance(agent, dict) and "id" in agent
+        ]
+        topology_data = data.get("topology", {})
+        topology: Dict[str, Any] = {
+            "type": "agent_population",
+            "agent_ids": agent_ids,
+            "source": str(toml_path),
+        }
+        if isinstance(topology_data, dict):
+            topology["type"] = str(topology_data.get("type") or topology["type"])
+            topology["agent_ids"] = topology_data.get("agent_ids") or agent_ids
+            if "edges" in topology_data:
+                topology["edges"] = topology_data["edges"]
+            if "clusters" in topology_data:
+                topology["clusters"] = topology_data["clusters"]
+            if "message_passing" in topology_data:
+                topology["message_passing"] = topology_data["message_passing"]
+        return {
+            "agent_count": int(agent_count or 0),
+            "topology": topology,
+            "metadata_provenance": "rxinfer_toml_sidecar",
+            "metadata_verification": "exact_stem_toml",
+        }
+    return {}
+
+
+def _sha256_file(path: Path) -> str:
+    """Return the SHA256 digest for an executable script."""
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
 def _is_python_framework_dependency_available(
     framework: str, executor: str, logger: Any
 ) -> bool:
@@ -192,6 +291,11 @@ def _make_skipped_result(
         "timestamp": datetime.now().isoformat(),
         "error": reason,
         "error_type": "DependencyNotInstalled",
+        "execution_metadata": _load_rxinfer_execution_metadata_from_script(
+            Path(script_info["path"])
+        )
+        if framework == "rxinfer"
+        else {},
     }
 
 
@@ -502,6 +606,7 @@ def _slim_execution_detail(detail: Dict[str, Any]) -> Dict[str, Any]:
         "structured_result_file",
         "output_file",
         "implementation_directory",
+        "execution_metadata",
     )
     slim: Dict[str, Any] = {}
     for k in keys_keep:
@@ -1088,6 +1193,10 @@ def execute_single_script(
 
     # Prepare execution result
     exec_result = _new_execution_result(context)
+    if framework == "rxinfer":
+        exec_result["execution_metadata"] = (
+            _load_rxinfer_execution_metadata_from_script(script_path)
+        )
 
     try:
         if verbose:
@@ -1322,6 +1431,7 @@ def execute_single_script(
                 "stdout_length": len(result.stdout),
                 "stderr_length": len(result.stderr),
                 "output_directory": str(impl_specific_dir.parent),
+                **exec_result.get("execution_metadata", {}),
             },
         }
         for bench_key in (

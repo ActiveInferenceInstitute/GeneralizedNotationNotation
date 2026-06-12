@@ -144,4 +144,4 @@ Signature:
   Author: "AXIOM Research Team"
   Institution: "VERSES AI / Active Inference Institute"
   ContactEmail: "axiom-gnn@verses.ai"
-  DOI: "TBD - Not yet published" 
+  DOI: "Not assigned; draft specification"

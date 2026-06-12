@@ -8,21 +8,27 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
 
 ## [Unreleased]
 
+No unreleased changes yet.
+
+---
+
+## [1.8.0] — 2026-06-12
+
 ### Added
-- **Developer tooling**: `justfile` (21 recipes), `.pre-commit-config.yaml` (Ruff, file hygiene hooks), `.devcontainer/` (Python 3.11 + uv + just for GitHub Codespaces)
-- **NumPyro/Stan E2E tests**: 15-test suite (`test_render_numpyro_stan.py`) validating render success, Python compilation, AST parsing, import correctness, type mapping, and empty-input handling
-- **Renderer health verification**: All 8/8 backends confirmed operational (PyMDP, RxInfer, JAX, NumPyro, Stan, PyTorch, ActiveInference.jl, DisCoPy)
+- **Template developer kit**: packaged template index, package-data template assets, `gnn templates list`, `gnn templates show NAME`, and `gnn pull NAME --output-dir ... --dry-run --overwrite`.
+- **Template safety contracts**: checksum verification, collision handling, symlink/path traversal rejection, unknown-template failures, and installed-wheel smoke coverage outside the repo checkout.
+- **MCP local HTTP orchestration**: bearer-token auth through `GNN_MCP_TOKEN`, localhost default binding, explicit insecure local opt-in with `GNN_MCP_ALLOW_INSECURE_LOCAL=1`, safe-tool filtering, optional rate limiting, and default-denied resource reads unless explicitly allowlisted.
+- **Capability-contract verifier**: release-facing checks for template package data, MCP auth/resource safety, acceptance-command isolation, roadmap ordering, count drift, and autonomy non-mutation claims.
+- **Roadmap foundations**: contract fixtures for v1.7 multi-agent/rendering/UI/audio/Three.js surfaces and v1.9 model-family acceptance/interpretability ledgers without marking those future release items complete.
 
 ### Changed
-- Test suite expanded to 2,200 passed, 70 skipped (from 1,906/30)
-- Documentation version synchronized to 1.6.0 across 35 files (resolved v1.3.0/v1.5.0 drift)
-- TO-DO.md rewritten with verified completed items and restructured roadmap
-- Pre-commit detect-secrets hook removed (not in project deps; CI uses GitGuardian)
+- Current test evidence updated to 2,397 collected tests and latest full local suite evidence of 2,379 passed, 17 skipped, 1 xfailed with the documented Ollama integration excludes.
+- `TO-DO.md` now treats v1.8.0 as the developer-kit release and v1.9.0 as the next model-family reliability target.
+- Developer documentation now advertises verified template and MCP commands only, with `/tmp` output directories in acceptance smokes to avoid tracked `output/` churn.
+- Pre-commit/dev tooling remains scoped to Ruff, file hygiene, and `just`/devcontainer ergonomics; dedicated secret scanning is not claimed.
 
 ### Fixed
-- 4 broken Mermaid diagram blocks in `doc/gnn/modules/` (00_template, 01_setup, 11_render, 21_mcp)
-- Stale line-count claims for orchestrator scripts (11_render.py, 12_execute.py, main.py)
-- Root `AGENTS.md` version (1.5.0 → 1.6.0) and `README.md` feature attribution (v1.5.0 → v1.6.0)
+- Removed release-facing false-certification paths around optional framework fallback, stale counts, MCP unauthenticated HTTP, unsafe MCP resource exposure, and template assets that only work from a source checkout.
 
 ---
 
@@ -123,7 +129,8 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
 - pytest test suite with comprehensive coverage
 - MCP tool registration framework
 
-[Unreleased]: https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/compare/v1.6.0...HEAD
+[Unreleased]: https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/compare/v1.8.0...HEAD
+[1.8.0]: https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/compare/v1.6.0...v1.8.0
 [1.6.0]: https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/compare/v1.3.0...v1.6.0
 [1.3.0]: https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/compare/v1.2.0...v1.3.0
 [1.2.0]: https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/compare/v1.1.0...v1.2.0

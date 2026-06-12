@@ -13,6 +13,7 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
+PROJECT_ROOT = Path(__file__).parent.parent.parent.parent
 pipeline = pytest.importorskip("pipeline")
 
 
@@ -81,8 +82,11 @@ class TestPipelineFunctionality:
         from pipeline import PipelineOrchestrator
 
         orchestrator = PipelineOrchestrator()
-        pipeline_data = comprehensive_test_data.get("pipeline_data", {})
-        pipeline_data["steps"] = [3]
+        pipeline_data = {
+            "target_dir": str(PROJECT_ROOT / "input" / "gnn_files" / "discrete"),
+            "output_dir": str(comprehensive_test_data["output_dir"]),
+            "steps": [3],
+        }
         result = orchestrator.execute_pipeline(pipeline_data)
         assert result is not None
 

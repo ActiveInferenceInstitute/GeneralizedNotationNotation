@@ -225,6 +225,9 @@ def process_single_gnn_file(
                         m_name, m_data, m_path, tensor_type="transition"
                     ):
                         visualizations.append(str(m_path))
+                    html_path = model_dir / f"{model_name}_{m_name}_threejs.html"
+                    if mv.generate_threejs_tensor_explorer(m_name, m_data, html_path):
+                        visualizations.append(str(html_path))
                     analysis_path = model_dir / f"{model_name}_{m_name}_analysis.png"
                     mv.generate_pomdp_transition_analysis(m_data, analysis_path)
                     visualizations.append(str(analysis_path))

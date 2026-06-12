@@ -22,6 +22,10 @@ def cli_health_check(params: (Dict[str, Any]) | None = None) -> Dict[str, Any]:
         "preflight",
         "health",
         "serve",
+        "templates",
+        "pull",
+        "watch",
+        "graph",
         "lsp",
     ]
     return {

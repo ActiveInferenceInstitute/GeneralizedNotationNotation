@@ -90,4 +90,4 @@ uv pip install -e .                   # Install deps
 
 ---
 
-**Pipeline Version**: 1.6.0 | **Steps**: 25 | **Tests**: 2,250 passed, 7 skipped, 1 xpassed with Ollama integration excludes on 2026-05-20 | **MCP Tools**: 133
+**Pipeline Version**: 1.8.0 | **Steps**: 25 | **Tests**: latest recorded full suite with Ollama integration excludes: 2,379 passed, 17 skipped, 1 xfailed; collect-only inventory is 2,397 tests | **MCP Tools**: verify with `src/tests/mcp/test_mcp_audit.py`

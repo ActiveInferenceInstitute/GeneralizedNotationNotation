@@ -16,6 +16,7 @@ from pathlib import Path
 from typing import Any, Dict, Optional
 
 from gnn.processor import discover_gnn_files
+from gui.websocket_bridge import build_initial_messages
 
 from .mermaid_converter import convert_gnn_file_to_mermaid
 from .mermaid_parser import convert_mermaid_file_to_gnn
@@ -81,6 +82,15 @@ def process_oxdraw(
         "files_processed": [],
         "gnn_to_mermaid_conversions": [],
         "mermaid_to_gnn_conversions": [],
+        "websocket_bridge": {
+            "enabled": False,
+            "message_contract_available": True,
+            "server_running": False,
+            "host": host,
+            "port": port,
+            "messages": [],
+            "status": "message_contract_only",
+        },
         "errors": [],
     }
 
@@ -198,6 +208,27 @@ def process_oxdraw(
                         "error": str(e),
                     }
                 )
+
+    successful_payloads = []
+    for conversion in results["gnn_to_mermaid_conversions"]:
+        if not conversion.get("success") or not conversion.get("mermaid_file"):
+            continue
+        mermaid_file = Path(conversion["mermaid_file"])
+        payload = {
+            "model_id": mermaid_file.stem,
+            "format": "mermaid",
+            "gnn_file": conversion["gnn_file"],
+            "mermaid_file": str(mermaid_file),
+        }
+        try:
+            payload["mermaid"] = mermaid_file.read_text(encoding="utf-8")
+        except OSError as exc:
+            payload["load_warning"] = f"Unable to read Mermaid artifact: {exc}"
+        successful_payloads.append(payload)
+    results["websocket_bridge"]["messages"] = [
+        json.loads(message.to_json())
+        for message in build_initial_messages(successful_payloads)
+    ]
 
     # Save processing results
     results_file = output_dir / "oxdraw_processing_results.json"

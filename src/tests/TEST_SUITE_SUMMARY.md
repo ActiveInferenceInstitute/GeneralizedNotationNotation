@@ -1,6 +1,6 @@
 # GNN Pipeline Test Suite - Comprehensive Summary
 
-**Last Updated**: 2026-06-09
+**Last Updated**: 2026-06-11
 **Status**: ✅ Production Ready  
 **Test Infrastructure Version**: 2.0.1
 
@@ -12,12 +12,12 @@ The GNN Processing Pipeline test suite provides comprehensive coverage across al
 
 ### Key Metrics
 
-- **Total Test Files**: 171 `test_*.py` files
-- **Directory Layout**: 34 first-level directories under `src/tests/`; 31 contain direct test files
+- **Total Test Files**: 184 `test_*.py` files
+- **Directory Layout**: 34 maintained first-level directories under `src/tests/`; 32 contain direct test files
 - **Root-Level Tests**: 29 `test_*.py` files at `src/tests/`
-- **Subdirectory Tests**: 142 `test_*.py` files under module/helper directories
-- **Collected Tests**: 2,296 with `uv run --extra dev python -m pytest --collect-only src/tests/ -q --tb=no --ignore=src/tests/llm/test_llm_ollama.py --ignore=src/tests/llm/test_llm_ollama_integration.py` (2026-06-09)
-- **Latest Full Run**: `uv run --extra dev python -m pytest src/tests/ -q --tb=no --ignore=src/tests/llm/test_llm_ollama.py --ignore=src/tests/llm/test_llm_ollama_integration.py` passed on 2026-06-09: 2,281 passed, 14 skipped, 1 xfailed in 744.50s.
+- **Subdirectory Tests**: 155 `test_*.py` files under module/helper directories
+- **Collected Tests**: 2,397 with `uv run --extra dev python -m pytest --collect-only src/tests/ -q --tb=no --ignore=src/tests/llm/test_llm_ollama.py --ignore=src/tests/llm/test_llm_ollama_integration.py` (2026-06-12)
+- **Latest Full Run Evidence**: `uv run --extra dev python -m pytest src/tests/ -q --tb=no --ignore=src/tests/llm/test_llm_ollama.py --ignore=src/tests/llm/test_llm_ollama_integration.py`: 2,379 passed, 17 skipped, 1 xfailed.
 
 ---
 
@@ -33,8 +33,8 @@ src/tests/
 ├── __init__.py             # Module exports and utilities
 ├── README.md               # Comprehensive documentation
 ├── AGENTS.md               # Technical API documentation
-├── <module>/test_*.py      # 138 module/helper test files
-└── test_*.py               # 28 cross-cutting root test files
+├── <module>/test_*.py      # 155 module/helper test files
+└── test_*.py               # 29 cross-cutting root test files
 ```
 
 ### Execution Modes
@@ -283,9 +283,9 @@ output/2_tests_output/
 
 The GNN Processing Pipeline test suite provides comprehensive, production-ready testing infrastructure with:
 
-- 171 test files across root and module-specific directories
-- 2,296 collected tests in the current command-of-record collect pass with Ollama integration tests ignored
-- Latest recorded full command-of-record run passed on 2026-06-09: 2,281 passed, 14 skipped, 1 xfailed in 744.50s
+- 184 test files across root and module-specific directories
+- 2,397 collected tests in the current command-of-record collect pass with Ollama integration tests ignored
+- Latest recorded full command-of-record evidence: 2,379 passed, 17 skipped, 1 xfailed
 - Real data and real implementations throughout core paths
 - Comprehensive error handling and recovery testing
 - Module coverage for all 25 pipeline steps

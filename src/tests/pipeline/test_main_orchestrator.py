@@ -22,6 +22,7 @@ All tests execute real methods and subprocesses.
 """
 
 import logging
+import shutil
 import subprocess  # nosec B404
 import sys
 import tempfile
@@ -219,19 +220,30 @@ class TestPipelineCoordination:
         main_py = SRC_DIR / "main.py"
         with tempfile.TemporaryDirectory() as td:
             outdir = Path(td) / "output"
+            target_dir = PROJECT_ROOT / "input" / "gnn_files" / "discrete"
             cmd: list[Any] = [
                 sys.executable,
                 str(main_py),
                 "--only-steps",
                 "3,5,7",
                 "--target-dir",
-                str(PROJECT_ROOT / "input" / "gnn_files"),
+                str(target_dir),
                 "--output-dir",
                 str(outdir),
             ]
-            result = subprocess.run(
-                cmd, capture_output=True, text=True, cwd=str(PROJECT_ROOT)
-            )  # nosec B603
+            try:
+                result = subprocess.run(
+                    cmd,
+                    capture_output=True,
+                    text=True,
+                    cwd=str(PROJECT_ROOT),
+                    timeout=240,
+                )  # nosec B603
+            except subprocess.TimeoutExpired as exc:
+                pytest.fail(
+                    f"Minimal pipeline timed out for {target_dir}: "
+                    f"stdout={exc.stdout!r}, stderr={exc.stderr!r}"
+                )
 
             # Check for summary in the correct location (00_pipeline_summary subdirectory)
             summary = outdir / "00_pipeline_summary" / "pipeline_execution_summary.json"
@@ -265,6 +277,12 @@ class TestEndToEndIntegration:
     def test_run_pipeline_subset(self) -> None:
         main_py = SRC_DIR / "main.py"
         with tempfile.TemporaryDirectory() as td:
+            target_dir = Path(td) / "input"
+            target_dir.mkdir()
+            shutil.copy2(
+                PROJECT_ROOT / "input" / "gnn_files" / "discrete" / "simple_mdp.md",
+                target_dir / "simple_mdp.md",
+            )
             outdir = Path(td) / "output"
             cmd: list[Any] = [
                 sys.executable,
@@ -272,7 +290,7 @@ class TestEndToEndIntegration:
                 "--only-steps",
                 "3,5,7,8",
                 "--target-dir",
-                str(PROJECT_ROOT / "input" / "gnn_files"),
+                str(target_dir),
                 "--output-dir",
                 str(outdir),
             ]

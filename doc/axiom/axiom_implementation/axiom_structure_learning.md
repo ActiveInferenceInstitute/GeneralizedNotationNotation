@@ -266,4 +266,4 @@ Signature:
   Author: "AXIOM Research Team - Structure Learning Module"
   Institution: "VERSES AI / Active Inference Institute"
   ContactEmail: "axiom-structure@verses.ai"
-  DOI: "TBD - Not yet published" 
+  DOI: "Not assigned; draft specification"

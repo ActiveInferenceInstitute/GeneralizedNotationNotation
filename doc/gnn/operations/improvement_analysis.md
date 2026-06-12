@@ -1,11 +1,11 @@
 # GNN Pipeline Improvement Analysis
 
 **Version**: v1.6.0 Engine (Bundle v2.0.0)  
-**Last Updated**: 2026-04-15  
-**Status**: ✅ Production Ready  
+**Last Reviewed**: 2026-06-12
+**Status**: Historical analysis; use `TO-DO.md` and current verifier output for live release status
 **Modules**: 38+ · **Pipeline steps**: 25 · **Renderers**: 9 backends (see [../implementations/README.md](../implementations/README.md)) · **Tests**: see [../../../README.md](../../../README.md)  
 
-Comprehensive analysis of identified areas for improvement, streamlining, and ensuring robust functionality within and across modules.
+Historical analysis of identified areas for improvement, streamlining, and ensuring robust functionality within and across modules. This page is not a current pass-rate, runtime, or release-readiness certificate.
 
 ## Pipeline Architecture References
 
@@ -16,10 +16,9 @@ For current pipeline implementation and standards:
 - **[src/main.py](../../../src/main.py)**: Pipeline orchestrator implementation
 - **[architecture_reference.md](../reference/architecture_reference.md)**: Implementation patterns and cross-module data flow
 
-- 25 steps (0-24): All operational with 100% success rate
-- Execution time: ~2 minutes for full pipeline
-- Memory usage: < 25MB peak (excellent efficiency)
-- All modules use thin orchestrator pattern
+- 25 steps (0-24) are maintained through the thin-orchestrator architecture.
+- Current pass counts, runtime, optional-backend availability, and release evidence must be taken from live command output and `TO-DO.md`.
+- Optional frameworks must be reported as passed, skipped, or failed explicitly; fallback behavior is not release evidence.
 
 ---
 
@@ -262,7 +261,8 @@ def process_gnn_content(content: str) -> dict:
 
 **Issues:**
 
-- Pipeline step template contains TODOs and example comments (`src/pipeline_step_template.py:47-51`)
+- Pipeline step template has been replaced by maintained thin-orchestrator
+  examples; audit current numbered scripts before filing new template issues.
 - Mixed step counting (template says 13 steps, actual pipeline has 24)
 - Inconsistent validation patterns
 
@@ -292,9 +292,12 @@ def process_gnn_content(content: str) -> dict:
 
 ### Priority 1: High (Immediate Attention)
 
-## Implementation Plan
+## Historical Remediation Outline
 
-### Phase 1: Critical Infrastructure (Weeks 1-2)
+The outline below records improvement themes from the earlier analysis. Treat it
+as background context, not as an active dated schedule.
+
+### Phase 1: Critical Infrastructure
 
 1. **Standardize Dependency Management**
    - Expand `DependencyManager` to handle all modules
@@ -306,7 +309,7 @@ def process_gnn_content(content: str) -> dict:
    - Standardize correlation ID system across modules
    - Implement consistent recovery strategies
 
-### Phase 2: Cross-Module Standards (Weeks 3-4)  
+### Phase 2: Cross-Module Standards
 
 1. **Data Exchange Standards**
    - Create `src/data_contracts.py` with schemas
@@ -318,7 +321,7 @@ def process_gnn_content(content: str) -> dict:
    - Handle Python 3.13 compatibility centrally
    - Standardize alternative function patterns
 
-### Phase 3: MCP Completion (Weeks 5-6)
+### Phase 3: MCP Completion
 
 1. **Complete MCP Integration**
    - Fix render and execute module import issues
@@ -328,7 +331,7 @@ def process_gnn_content(content: str) -> dict:
 
 ## Success Metrics
 
-### Quantitative Targets
+### Historical Quantitative Targets
 
 - **Dependency Success Rate**: 95%+ modules load without errors
 - **Cross-Module Communication**: 100% standardized data formats

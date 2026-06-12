@@ -620,7 +620,7 @@ class TestPipelineScriptIntegration:
         scripts: list[Any] = ["3_gnn.py", "5_type_checker.py", "7_export.py"]
         with tempfile.TemporaryDirectory() as td:
             tmp = Path(td)
-            input_dir = PROJECT_ROOT / "input" / "gnn_files"
+            input_dir = PROJECT_ROOT / "input" / "gnn_files" / "discrete"
             output_dir = tmp / "output"
             for script_name in scripts:
                 script_path = SRC_DIR / script_name
@@ -634,9 +634,19 @@ class TestPipelineScriptIntegration:
                     "--output-dir",
                     str(output_dir),
                 ]
-                result = subprocess.run(
-                    cmd, capture_output=True, text=True, cwd=str(PROJECT_ROOT)
-                )
+                try:
+                    result = subprocess.run(
+                        cmd,
+                        capture_output=True,
+                        text=True,
+                        cwd=str(PROJECT_ROOT),
+                        timeout=180,
+                    )
+                except subprocess.TimeoutExpired as exc:
+                    pytest.fail(
+                        f"{script_name} timed out for {input_dir}: "
+                        f"stdout={exc.stdout!r}, stderr={exc.stderr!r}"
+                    )
                 assert result.returncode in [0, 1]
 
     @pytest.mark.integration
