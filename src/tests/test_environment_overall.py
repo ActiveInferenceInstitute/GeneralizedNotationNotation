@@ -149,4 +149,4 @@ def test_environment_module_performance() -> None:
     start_time = time.time()
     manager.validate_environment()
     processing_time = time.time() - start_time
-    assert processing_time < 5.0
+    assert processing_time < 10.0

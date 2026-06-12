@@ -980,6 +980,17 @@ def main(
         logger,
     ) = _prepare_pipeline_context(override_args, override_config)
 
+    if getattr(args, "autonomous", False):
+        from pipeline.autonomous import run_autonomous_proposal_loop
+
+        report = run_autonomous_proposal_loop(args.target_dir, args.output_dir)
+        logger.info(
+            "Autonomous proposal loop wrote %d candidate(s) under %s/autonomous",
+            report.get("candidate_count", 0),
+            args.output_dir,
+        )
+        return 0
+
     progress_tracker: Optional[PipelineProgressTracker] = None
     try:
         progress_tracker = _start_pipeline_run(

@@ -92,6 +92,7 @@ class PipelineArguments:
     # Step control
     skip_steps: Optional[str] = None
     only_steps: Optional[str] = None
+    autonomous: bool = False
 
     # Type checking options
     strict: bool = False
@@ -322,6 +323,15 @@ class ArgumentParser:
                 flag="--only-steps",
                 default=None,
                 help_text="Comma-separated list of steps to run exclusively",
+            ),
+            "autonomous": ArgumentDefinition(
+                flag="--autonomous",
+                action="store_true",
+                default=False,
+                help_text=(
+                    "Write bounded autonomous proposal artifacts under output/ "
+                    "without editing source files"
+                ),
             ),
             "skip_llm": ArgumentDefinition(
                 flag="--skip-llm",

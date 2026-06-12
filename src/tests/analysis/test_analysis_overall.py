@@ -652,6 +652,38 @@ class TestAnalyzerSimulationMetrics:
         assert isinstance(result, dict)
         assert result["execution_times"] == [1.0]
 
+    def test_extract_simulation_metrics_rejects_stale_checkout_output(
+        self, tmp_path: Any, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """Skipped details must not scan repo-root output from an isolated run."""
+        import json
+
+        from analysis.analyzer import _extract_simulation_metrics
+
+        checkout = tmp_path / "checkout"
+        stale_dir = checkout / "output" / "11_render_output" / "simple_mdp" / "rxinfer"
+        stale_dir.mkdir(parents=True)
+        (stale_dir / "simulation_results.json").write_text(
+            json.dumps({"beliefs": [[1.0]], "free_energy": [0.0]}),
+            encoding="utf-8",
+        )
+        execution_dir = tmp_path / "run" / "12_execute_output"
+        execution_dir.mkdir(parents=True)
+        monkeypatch.chdir(checkout)
+
+        detail: dict[str, Any] = {
+            "framework": "numpyro",
+            "success": False,
+            "skipped": True,
+            "error": "Dependency not installed: numpyro",
+        }
+        result = _extract_simulation_metrics(
+            "numpyro", [detail], execution_dir, self._make_logger()
+        )
+        assert result["beliefs"] == []
+        assert result["free_energy"] == []
+        assert result["data_source"] is None
+
     def test_extract_simulation_metrics_bnlearn_execution_logs(
         self, tmp_path: Any
     ) -> Any:

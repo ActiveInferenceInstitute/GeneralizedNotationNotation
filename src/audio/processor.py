@@ -41,6 +41,11 @@ from .generator import (
     generate_sonification_audio,
     generate_tonal_representation,
 )
+from .streaming import (
+    chunks_from_frames,
+    frames_from_execution_trace,
+    write_stream_summary,
+)
 
 
 def process_audio(
@@ -74,6 +79,7 @@ def process_audio(
             "audio_files_generated": [],
             "sonification_results": [],
             "audio_analysis": [],
+            "audio_streaming": {},
         }
 
         # Find GNN files
@@ -111,6 +117,10 @@ def process_audio(
                     results["errors"].append(error_info)
                     logger.error(f"Error processing {gnn_file}: {e}")
 
+        stream_summary = _process_audio_streaming(kwargs, results_dir, logger)
+        if stream_summary:
+            results["audio_streaming"] = stream_summary
+
         # Save detailed results
         results_file = results_dir / "audio_results.json"
         with open(results_file, "w") as f:
@@ -132,6 +142,164 @@ def process_audio(
     except Exception as e:
         log_step_error(logger, "Audio processing failed", context={"error": str(e)})
         return False
+
+
+def _process_audio_streaming(
+    kwargs: Dict[str, Any], output_dir: Path, logger: logging.Logger
+) -> Dict[str, Any]:
+    """Generate streaming-safe audio chunk metadata from optional telemetry."""
+    telemetries: List[tuple[str, Dict[str, Any]]] = []
+    telemetry = kwargs.get("telemetry")
+    telemetry_file = kwargs.get("telemetry_file")
+    if isinstance(telemetry, dict):
+        telemetries.append(("inline", telemetry))
+    telemetry_files = list(kwargs.get("telemetry_files") or [])
+    if telemetry_file:
+        telemetry_files.append(telemetry_file)
+    for path_value in telemetry_files:
+        telemetry_path = Path(path_value)
+        loaded = _load_telemetry_json(telemetry_path, logger)
+        if loaded:
+            telemetries.append((str(telemetry_path), loaded))
+    execution_output_dir = kwargs.get("execution_output_dir") or kwargs.get(
+        "execution_results_dir"
+    )
+    if not execution_output_dir:
+        sibling_execution_dir = output_dir.parent / "12_execute_output"
+        if sibling_execution_dir.exists():
+            execution_output_dir = sibling_execution_dir
+    if execution_output_dir:
+        telemetries.extend(
+            _load_execution_telemetry_dir(Path(execution_output_dir), logger)
+        )
+    if not telemetries:
+        return {}
+    frames = []
+    provenance = []
+    for source, item in telemetries:
+        provenance.append(source)
+        frames.extend(frames_from_execution_trace(item))
+    if not frames:
+        summary = write_stream_summary([], output_dir / "audio_stream_chunks.json")
+        summary["telemetry_source_count"] = len(telemetries)
+        summary["telemetry_provenance"] = provenance
+        (output_dir / "audio_stream_chunks.json").write_text(
+            json.dumps(summary, indent=2), encoding="utf-8"
+        )
+        return summary
+    chunks = chunks_from_frames(
+        frames, chunk_size=int(kwargs.get("audio_chunk_size", 32))
+    )
+    summary = write_stream_summary(chunks, output_dir / "audio_stream_chunks.json")
+    summary["telemetry_source_count"] = len(telemetries)
+    summary["telemetry_provenance"] = provenance
+    (output_dir / "audio_stream_chunks.json").write_text(
+        json.dumps(summary, indent=2), encoding="utf-8"
+    )
+    return summary
+
+
+def _load_telemetry_json(path: Path, logger: logging.Logger) -> Dict[str, Any]:
+    """Load one telemetry JSON file if it contains an object."""
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        logger.warning("Could not read audio telemetry file %s: %s", path, exc)
+        return {}
+    return payload if isinstance(payload, dict) else {}
+
+
+def _load_execution_telemetry_dir(
+    execution_output_dir: Path, logger: logging.Logger
+) -> List[tuple[str, Dict[str, Any]]]:
+    """Load Step 12 result JSON files that contain telemetry-like payloads."""
+    if not execution_output_dir.exists():
+        logger.warning("Execution output directory not found: %s", execution_output_dir)
+        return []
+    telemetries: List[tuple[str, Dict[str, Any]]] = []
+    for path in sorted(execution_output_dir.rglob("*.json")):
+        payload = _load_telemetry_json(path, logger)
+        if not payload:
+            continue
+        if path.name == "execution_summary.json":
+            telemetries.extend(
+                _load_execution_summary_telemetries(
+                    payload, path.parent, execution_output_dir, logger
+                )
+            )
+        if any(
+            key in payload
+            for key in (
+                "simulation_data",
+                "telemetry",
+                "free_energy",
+                "expected_free_energy",
+                "beliefs",
+                "actions",
+            )
+        ):
+            telemetries.append((str(path), payload))
+    return _dedupe_telemetries(telemetries)
+
+
+def _load_execution_summary_telemetries(
+    summary: Dict[str, Any],
+    summary_dir: Path,
+    execution_output_dir: Path,
+    logger: logging.Logger,
+) -> List[tuple[str, Dict[str, Any]]]:
+    """Follow Step 12 slim-summary pointers to structured result JSON payloads."""
+    telemetries: List[tuple[str, Dict[str, Any]]] = []
+    details = summary.get("execution_details")
+    if not isinstance(details, list):
+        return telemetries
+    for detail in details:
+        if not isinstance(detail, dict):
+            continue
+        simulation_data = detail.get("simulation_data")
+        if isinstance(simulation_data, dict):
+            telemetries.append(
+                ("execution_summary.inline", {"simulation_data": simulation_data})
+            )
+            continue
+        structured_result_file = detail.get("structured_result_file")
+        if not isinstance(structured_result_file, str) or not structured_result_file:
+            continue
+        structured_path = Path(structured_result_file)
+        if not structured_path.is_absolute():
+            structured_path = (summary_dir / structured_path).resolve()
+        else:
+            structured_path = structured_path.resolve()
+        try:
+            structured_path.relative_to(execution_output_dir.resolve())
+        except ValueError:
+            logger.warning(
+                "Ignoring Step 12 telemetry outside execution output: %s",
+                structured_path,
+            )
+            continue
+        payload = _load_telemetry_json(structured_path, logger)
+        simulation_data = payload.get("simulation_data") if payload else None
+        if isinstance(simulation_data, dict):
+            telemetries.append(
+                (str(structured_path), {"simulation_data": simulation_data})
+            )
+    return telemetries
+
+
+def _dedupe_telemetries(
+    telemetries: List[tuple[str, Dict[str, Any]]],
+) -> List[tuple[str, Dict[str, Any]]]:
+    """Remove duplicate telemetry payloads found through summary and file scans."""
+    unique: List[tuple[str, Dict[str, Any]]] = []
+    seen: set[str] = set()
+    for source, telemetry in telemetries:
+        key = json.dumps(telemetry, sort_keys=True, default=str)
+        if key in seen:
+            continue
+        seen.add(key)
+        unique.append((source, telemetry))
+    return unique
 
 
 def generate_audio_from_gnn(

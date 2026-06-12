@@ -1080,6 +1080,32 @@ def _extract_simulation_metrics(
         "model_parameters": {},
         "data_source": None,
     }
+    execution_root = execution_output_dir.resolve()
+
+    def _resolve_current_output_path(path_value: Any) -> Path | None:
+        """Resolve an execution artifact path, rejecting paths outside this run."""
+        if not path_value:
+            return None
+        raw_path = Path(str(path_value))
+        candidates = [raw_path]
+        if not raw_path.is_absolute():
+            candidates = [
+                execution_output_dir / raw_path,
+                execution_output_dir.parent / raw_path,
+            ]
+        for candidate in candidates:
+            try:
+                resolved = candidate.resolve()
+                resolved.relative_to(execution_root)
+            except (OSError, ValueError):
+                continue
+            return resolved
+        logger.debug(
+            "  [%s] Ignoring artifact outside current output tree: %s",
+            framework,
+            path_value,
+        )
+        return None
 
     for detail in details:
         framework_key = framework.lower().replace(".", "_").replace(" ", "_")
@@ -1087,16 +1113,17 @@ def _extract_simulation_metrics(
         exec_time = detail.get("execution_time", 0)
         if exec_time:
             metrics["execution_times"].append(exec_time)
+        if detail.get("success") is False or detail.get("skipped") is True:
+            logger.debug("  [%s] Skipping non-successful execution detail", framework)
+            continue
 
-        impl_dir = Path(detail.get("implementation_directory", ""))
-        if not impl_dir.exists():
-            # Try resolving relative to execution_output_dir parent
-            impl_dir = execution_output_dir.parent.parent / detail.get(
-                "implementation_directory", ""
+        impl_dir = _resolve_current_output_path(detail.get("implementation_directory"))
+        if not impl_dir or not impl_dir.exists():
+            logger.debug(
+                "  [%s] implementation directory missing or outside current output tree",
+                framework,
             )
-            if not impl_dir.exists():
-                logger.debug(f"  [{framework}] impl_dir not found: {impl_dir}")
-                continue
+            continue
 
         # Search for simulation data files. PyMDP is schema-locked to
         # pymdp_simulation_v1; other frameworks still have heterogeneous outputs.
@@ -1110,26 +1137,16 @@ def _extract_simulation_metrics(
         if framework_key == "pymdp":
             sr = detail.get("structured_result_file")
             if sr:
-                sp = Path(sr)
-                if not sp.is_file():
-                    alt = execution_output_dir.parent.parent / sr
-                    if alt.is_file():
-                        sp = alt
-                if sp.is_file():
+                sp = _resolve_current_output_path(sr)
+                if sp and sp.is_file():
                     try:
                         with open(sp, "r", encoding="utf-8") as handle:
                             structured = json.load(handle)
                         for collected_path in structured.get(
                             "collected_outputs", {}
                         ).get("simulation_data", []):
-                            cp = Path(collected_path)
-                            if not cp.is_file():
-                                alt = (
-                                    execution_output_dir.parent.parent / collected_path
-                                )
-                                if alt.is_file():
-                                    cp = alt
-                            if cp.is_file():
+                            cp = _resolve_current_output_path(collected_path)
+                            if cp and cp.is_file():
                                 _add_unique(candidate_files, cp)
                     except (json.JSONDecodeError, OSError) as exc:
                         logger.debug(
@@ -1170,12 +1187,8 @@ def _extract_simulation_metrics(
 
             sr = detail.get("structured_result_file")
             if sr:
-                sp = Path(sr)
-                if not sp.is_file():
-                    alt = execution_output_dir.parent.parent / sr
-                    if alt.is_file():
-                        sp = alt
-                if sp.is_file():
+                sp = _resolve_current_output_path(sr)
+                if sp and sp.is_file():
                     _add_unique(candidate_files, sp)
             exec_logs = impl_dir / "execution_logs"
             if exec_logs.is_dir():

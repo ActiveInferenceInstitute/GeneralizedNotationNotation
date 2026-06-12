@@ -36,18 +36,36 @@ def _gridworld_spec() -> dict[str, Any]:
 
 
 def _assert_julia_packages() -> None:
-    result = subprocess.run(  # nosec B603 B607
-        [
-            "julia",
-            "--startup-file=no",
-            "-e",
-            "using RxInfer, ActiveInference, JSON, Distributions, StatsBase",
-        ],
-        cwd=REPO_ROOT,
-        capture_output=True,
-        text=True,
-        timeout=120,
-    )
+    cmd = [
+        "julia",
+        "--startup-file=no",
+        "-e",
+        "using RxInfer, ActiveInference, JSON, Distributions, StatsBase",
+    ]
+    try:
+        result = subprocess.run(  # nosec B603 B607
+            cmd,
+            cwd=REPO_ROOT,
+            capture_output=True,
+            text=True,
+            timeout=120,
+        )
+    except FileNotFoundError as exc:
+        pytest.skip(f"Julia executable not available for strict backend gate: {exc}")
+    except subprocess.TimeoutExpired as exc:
+        pytest.skip(
+            "Julia package gate timed out before backend execution; "
+            f"command={cmd!r} timeout={exc.timeout}s"
+        )
+    if (
+        result.returncode != 0
+        and "Package " in result.stderr
+        and " not found" in result.stderr
+    ):
+        pytest.skip(
+            "Optional Julia backend packages are not installed for strict "
+            f"cross-framework execution: {result.stderr.strip()}"
+        )
     assert result.returncode == 0, (
         "Strict Julia package gate failed:\n"
         f"STDOUT:\n{result.stdout}\nSTDERR:\n{result.stderr}"
@@ -70,6 +88,26 @@ def _assert_julia_parse(script: Path) -> None:
     assert result.returncode == 0, (
         f"Julia parse failed for {script}:\nSTDOUT:\n{result.stdout}\nSTDERR:\n{result.stderr}"
     )
+
+
+def test_julia_package_gate_skips_missing_optional_backend_packages(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    def fake_run(*_args: object, **_kwargs: object) -> subprocess.CompletedProcess[str]:
+        return subprocess.CompletedProcess(
+            args=["julia"],
+            returncode=1,
+            stdout="",
+            stderr=(
+                "ERROR: ArgumentError: Package RxInfer not found in current path.\n"
+                '- Run `import Pkg; Pkg.add("RxInfer")` to install the RxInfer package.'
+            ),
+        )
+
+    monkeypatch.setattr(subprocess, "run", fake_run)
+
+    with pytest.raises(pytest.skip.Exception, match="Optional Julia backend packages"):
+        _assert_julia_packages()
 
 
 def _payload_for(exec_out: Path, framework: str) -> dict[str, Any]:

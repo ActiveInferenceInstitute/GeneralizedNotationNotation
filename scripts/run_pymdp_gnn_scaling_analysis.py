@@ -39,7 +39,10 @@ import yaml
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 sys.path.append(str(PROJECT_ROOT))
 
-from pymdp_spec_generator import estimate_gnn_file_bytes, generate_gnn_file
+from pymdp_spec_generator import (  # type: ignore[import-not-found]
+    estimate_gnn_file_bytes,
+    generate_gnn_file,
+)
 
 from utils.visual_logging import VisualConfig, create_visual_logger
 
@@ -420,7 +423,7 @@ def _write_run_manifest(pipeline_output_dir: Path, manifest: dict[str, object]) 
     return path
 
 
-def _usage_snapshot(path: Path) -> dict[str, int | float]:
+def _usage_snapshot(path: Path) -> dict[str, Any]:
     u = shutil.disk_usage(path)
     total = u.total
     used = u.total - u.free
@@ -646,7 +649,7 @@ def _load_and_validate_config() -> dict:
     try:
         with open(CONFIG_FILE, "r") as f:
             config = yaml.safe_load(f)
-            if config is None:
+            if not isinstance(config, dict):
                 config = {}
             return config
     except yaml.YAMLError as e:

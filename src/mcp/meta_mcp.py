@@ -142,18 +142,20 @@ def get_mcp_auth_status(mcp_instance_ref: Any) -> Dict[str, Any]:
     """
     return {
         "success": True,
-        "authentication_type": "none_implemented",
-        "access_level": "unrestricted_local_access",
+        "authentication_type": "bearer_token_for_http",
+        "access_level": "safe_http_tool_and_resource_allowlists",
         "transport_security": {
             "stdio": "local_process_only",
-            "http": "local_network_only",
+            "http": "bearer_token_required_by_default",
             "https": "not_configured",
         },
-        "description": "Server does not implement explicit authentication. Relies on transport security.",
+        "description": "HTTP transport requires Authorization: Bearer <GNN_MCP_TOKEN> by default. Unauthenticated development mode is restricted to explicit loopback opt-in. Tool execution and resource reads are separately allowlisted for HTTP.",
         "recommendations": [
             "Use stdio transport for local-only access",
-            "Configure HTTPS for HTTP transport if needed",
-            "Implement authentication if exposing to untrusted networks",
+            "Keep HTTP bound to 127.0.0.1 unless a trusted reverse proxy handles TLS and access control",
+            "Set GNN_MCP_TOKEN for every HTTP run",
+            "Expose HTTP resources only through GNN_MCP_SAFE_RESOURCES",
+            "Use GNN_MCP_ALLOW_INSECURE_LOCAL=1 only for loopback development",
         ],
     }
 

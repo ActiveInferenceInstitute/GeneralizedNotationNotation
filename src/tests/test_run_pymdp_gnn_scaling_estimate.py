@@ -207,3 +207,24 @@ def test_resource_gate_write_returns_none_when_volume_full(
     monkeypatch.setattr(scaling_mod.Path, "write_text", fail_with_enospc)
 
     assert scaling_mod._write_resource_gate_file({"kind": "test"}) is None
+
+
+def test_non_mapping_yaml_config_recovers_to_empty_dict(
+    scaling_mod: Any, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    config_path = tmp_path / "pymdp_scaling_config.yaml"
+    config_path.write_text("- not\n- a\n- mapping\n", encoding="utf-8")
+    monkeypatch.setattr(scaling_mod, "CONFIG_FILE", config_path)
+
+    assert scaling_mod._load_and_validate_config() == {}
+
+
+def test_usage_snapshot_returns_stable_disk_fields(
+    scaling_mod: Any, tmp_path: Path
+) -> None:
+    snapshot = scaling_mod._usage_snapshot(tmp_path)
+
+    assert snapshot["path"] == str(tmp_path.resolve())
+    assert snapshot["total_bytes"] >= snapshot["free_bytes"]
+    assert snapshot["used_bytes"] >= 0
+    assert 0.0 <= snapshot["used_percent"] <= 100.0

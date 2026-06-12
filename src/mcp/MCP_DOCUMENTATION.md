@@ -224,10 +224,15 @@ python -m src.mcp.cli --help
 python -m src.mcp.cli server --transport stdio
 ```
 
-**HTTP Transport (For network access):**
+**HTTP Transport (Authenticated local orchestration):**
 ```bash
-python -m src.mcp.cli server --transport http --host 0.0.0.0 --port 8080
+GNN_MCP_TOKEN=local-dev-token python -m src.mcp.cli server --transport http --host 127.0.0.1 --port 8080
 ```
+
+HTTP exposes only safe tools by default. Resource reads are denied unless an
+exact URI is listed in `GNN_MCP_SAFE_RESOURCES`; keep stdio transport for broad
+local resource access.
+The HTTP capability response is filtered to this exposed safe surface.
 
 #### Using the CLI
 
@@ -467,7 +472,13 @@ python -m src.mcp.cli server --transport stdio
 
 ### HTTP Server
 
-The HTTP server provides network-based access:
+The HTTP server provides authenticated JSON-RPC access. Keep it bound to
+`127.0.0.1` unless a trusted reverse proxy provides TLS and access control.
+Tool execution and resource reads are guarded by separate allowlists:
+`GNN_MCP_SAFE_RESOURCES` must contain each URI that `mcp.resource.get` may
+return over HTTP.
+Rate limiting is checked before bearer authentication, so repeated missing or
+invalid tokens are throttled by `GNN_MCP_RATE_LIMIT_PER_MINUTE`.
 
 ```python
 from mcp.server_http import MCPHTTPHandler
@@ -480,7 +491,7 @@ server.serve_forever()
 
 **Usage:**
 ```bash
-python -m src.mcp.cli server --transport http --host 0.0.0.0 --port 8080
+GNN_MCP_TOKEN=local-dev-token python -m src.mcp.cli server --transport http --host 127.0.0.1 --port 8080
 ```
 
 ## JSON-RPC API
@@ -514,6 +525,9 @@ python -m src.mcp.cli server --transport http --host 0.0.0.0 --port 8080
 ```
 
 #### Get Resource
+HTTP transport rejects resource reads unless the URI is explicitly allowlisted
+through `GNN_MCP_SAFE_RESOURCES`; stdio/direct process use is unaffected.
+
 ```json
 {
   "jsonrpc": "2.0",
