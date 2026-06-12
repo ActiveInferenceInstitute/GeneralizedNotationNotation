@@ -10,9 +10,9 @@
 
 **Status**: ✅ Production Ready
 
-**Version**: 1.0.0
+**Version**: 1.6.0
 
-**Last Updated**: 2026-01-21
+**Last Updated**: 2026-04-16
 
 ---
 
@@ -74,39 +74,33 @@ success = process_security(
 )
 ```
 
-#### `validate_model_security(file_path: Path, security_level: str = "standard") -> Dict[str, Any]`
-**Description**: Validate security aspects of a GNN model file.
+#### `perform_security_check(file_path: Path, verbose: bool = False) -> Dict[str, Any]`
+**Description**: Perform comprehensive security check on a file (AST analysis for Python, pattern scanning for all files).
 
 **Parameters**:
-- `file_path` (Path): Path to GNN file to validate
-- `security_level` (str): Security validation level ("basic", "standard", "strict")
+- `file_path` (Path): Path to file to check
+- `verbose` (bool): Enable verbose logging
 
-**Returns**: `Dict[str, Any]` - Security validation results with:
-- `passed` (bool): Whether validation passed
-- `vulnerabilities` (List[Dict]): List of detected vulnerabilities
-- `security_score` (float): Security score (0.0-1.0)
-- `recommendations` (List[str]): Security improvement recommendations
+**Returns**: `Dict[str, Any]` - Security check results with:
+- `file` (str): File path checked
+- `vulnerabilities` (List[Dict]): Detected vulnerabilities
+- `security_score` (float): Security score (0.0–1.0)
+- `recommendations` (List[Dict]): Security improvement recommendations
 
-#### `check_access_permissions(file_path: Path, operation: str) -> bool`
-**Description**: Check access permissions for file operations.
-
-**Parameters**:
-- `file_path` (Path): File path to check
-- `operation` (str): Operation to check ("read", "write", "execute")
-
-**Returns**: `bool` - True if operation is permitted, False otherwise
-- `operation`: Operation to validate
-
-**Returns**: `True` if access is permitted
-
-#### `detect_threats(content, threat_types=None) -> List[Dict[str, Any]]`
-**Description**: Detect potential security threats in content
+#### `check_vulnerabilities(file_path: Path, verbose: bool = False) -> List[Dict[str, Any]]`
+**Description**: Scan a file for security vulnerabilities using pattern matching and Python AST analysis.
 
 **Parameters**:
-- `content`: Content to analyze
-- `threat_types`: Types of threats to detect
+- `file_path` (Path): Path to file to scan
+- `verbose` (bool): Enable verbose logging
 
-**Returns**: List of detected threat indicators
+**Returns**: `List[Dict[str, Any]]` - List of detected vulnerability dicts
+
+#### `generate_security_recommendations(file_path: Path, verbose: bool = False) -> List[Dict[str, Any]]`
+**Description**: Generate security improvement recommendations for a file.
+
+#### `calculate_security_score(vulnerabilities: List[Dict]) -> float`
+**Description**: Calculate overall security score (0.0–1.0) based on vulnerability severity weights.
 
 ---
 
@@ -181,33 +175,30 @@ success = process_security(
 )
 ```
 
-### Model Security Check
+### File Security Check
 ```python
-from security.processor import validate_model_security
+from security.processor import perform_security_check
 
-security_result = validate_model_security(
-    file_path="models/sensitive_model.md",
-    security_level="strict"
+security_result = perform_security_check(
+    file_path=Path("models/sensitive_model.md"),
+    verbose=True
 )
 
-if security_result["passed"]:
-    print("Model security validation passed")
+if security_result["security_score"] > 0.8:
+    print("Security check passed")
 else:
     print("Security issues found:")
-    for issue in security_result["issues"]:
-        print(f"  - {issue}")
+    for vuln in security_result["vulnerabilities"]:
+        print(f"  - {vuln['description']}")
 ```
 
-### Access Control Check
+### Vulnerability Scanning
 ```python
-from security.processor import check_access_permissions
+from security.processor import check_vulnerabilities
 
-if check_access_permissions("models/confidential.md", "read"):
-    print("Access granted")
-    # Proceed with model processing
-else:
-    print("Access denied")
-    # Handle unauthorized access
+vulns = check_vulnerabilities(Path("output/11_render_output/model_pymdp.py"))
+for vuln in vulns:
+    print(f"  [{vuln['severity']}] {vuln['description']}")
 ```
 
 ---
@@ -310,13 +301,16 @@ File Input → Security Validation → Threat Detection → Access Control → S
 ## Testing
 
 ### Test Files
-- `src/tests/test_security_overall.py` - Module-level tests
-- `src/tests/test_security_functional.py` - Functional tests
+- `src/tests/security/test_security_overall.py` - Module-level tests
+- `src/tests/security/test_security_functional.py` - Functional tests
 
 ### Test Coverage
-- **Current**: 87%
-- **Target**: 90%+
+Measure on demand:
 
+```bash
+uv run --extra dev python -m pytest src/tests/test_security*.py \
+    --cov=src/security --cov-report=term-missing
+```
 ### Key Test Scenarios
 1. Security validation with various threat types
 2. Access control enforcement
@@ -329,11 +323,10 @@ File Input → Security Validation → Threat Detection → Access Control → S
 ## MCP Integration
 
 ### Tools Registered
-- `security.validate_model` - Validate model security
-- `security.check_access` - Check access permissions
-- `security.detect_threats` - Detect security threats
-- `security.audit_access` - Audit access control
-- `security.encrypt_data` - Encrypt sensitive data
+- `security.validate_model` - Perform security check on a model file
+- `security.scan_file` - Scan file for vulnerabilities
+- `security.get_report` - Get security report
+- `security.list_checks` - List available security checks
 
 ### Tool Endpoints
 ```python
@@ -374,7 +367,7 @@ def validate_model_security_tool(file_path, security_level="standard"):
 
 ## Version History
 
-### Current Version: 1.0.0
+### Current Version: 1.6.0
 
 **Features**:
 - Security validation
@@ -405,10 +398,10 @@ def validate_model_security_tool(file_path, security_level="standard"):
 
 ---
 
-**Last Updated**: 2026-01-21
+**Last Updated**: 2026-04-16
 **Maintainer**: GNN Pipeline Team
 **Status**: ✅ Production Ready
-**Version**: 1.0.0
+**Version**: 1.6.0
 **Architecture Compliance**: ✅ 100% Thin Orchestrator Pattern
 
 ---

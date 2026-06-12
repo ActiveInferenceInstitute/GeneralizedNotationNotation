@@ -1,8 +1,17 @@
-# Specification: Analysis
+# Visualization Analysis — Technical Specification
 
-## Design Requirements
-This module (`analysis`) maps structural logic to the overall execution graph.
-It ensures that `Analysis` tasks resolve without runtime dependency loops.
+**Version**: 1.6.0
 
-## Components
-Expected available types: No specific classes exported.
+## Input Sources
+
+- Step 7 exports, Step 8 visualizations, Step 12 execution results, Step 16 analysis
+
+## Output
+
+- Combined HTML dashboard
+- Cross-step correlation plots (PNG)
+
+## Aggregation Strategy
+
+- Merges data by model name across steps
+- Missing steps produce partial dashboards with warnings

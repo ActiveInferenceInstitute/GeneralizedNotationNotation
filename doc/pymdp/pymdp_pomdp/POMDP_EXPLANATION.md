@@ -2,7 +2,7 @@
 
 ## Confirmed Real PyMDP Implementation
 
-This simulation uses **authentic PyMDP methods** from the official [PyMDP library v0.0.7+](https://github.com/infer-actively/pymdp), not mock or simplified implementations.
+This simulation uses **authentic PyMDP methods** from the official [PyMDP library v0.0.7+](https://github.com/infer-actively/pymdp).
 
 **Verification Links:**
 - [PyMDP Documentation](https://pymdp-rtd.readthedocs.io/)
@@ -15,7 +15,7 @@ This simulation uses **authentic PyMDP methods** from the official [PyMDP librar
 from pymdp import utils
 from pymdp.agent import Agent
 
-# Real PyMDP object arrays (not mock implementations)
+# Real PyMDP object arrays
 A = utils.obj_array(1)  
 B = utils.obj_array(1)
 C = utils.obj_array(1)

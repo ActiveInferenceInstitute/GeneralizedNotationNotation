@@ -7,36 +7,46 @@ Prompt:
 Response:
 
 ```python
-import numpy as np
-from scipy import stats
+import json
+from collections import Counter
+from typing import List, Dict, Tuple
 
-# Define the GNN model annotations
-model_annotations = {
-    'GNNVersion': 1,
-    'Flags': ['v', 'a'],
-    'ModelAnnotationType': ['LikelihoodMatrix', 'TransitionVector'],
-    'StateSpaceBlock': [
-        {'type': np.ndarray(shape=[4]),
-            'state': np.array([
-                (0.7, 0.7, 0.7, 0.7),
-                (0.15, 0.15, 0.15, 0.15)
-            ]
-        ),
-    ],
-}
+def gnn(
+    agent1: Dict[str, str],
+    agent2: Dict[str, str],
+    agent3: Dict[str, str],
+    action_dict: Dict[str, str] = {},
+    reward_map: Dict[str, float] = {}
+) -> List[Tuple[str, int]]:
+    """GNN implementation of the Stigmergic Swarm Active Inference algorithm.
 
+    This implementation uses a GNN model to compute the probability distribution over all
+    agents based on their actions and rewards. It is designed to handle different types
+    of agent interactions (e.g., stigmergy, distributed robotics) with different
+    probabilities for each action. The model outputs a list of tuples containing the
+    agent's likelihood score, the reward received by that agent, and the probability
+    distribution over all agents based on their actions and rewards.
 
-def gnn_model(state):
+    This implementation is designed to handle different types of agent interactions (e.g.,
+    stigmergy) with different probabilities for each action. The model outputs a list
+    of tuples containing the agent's likelihood score, the reward received by that agent,
+    and the probability distribution over all agents based on their actions and rewards.
 
-    # Define the GNN model annotations
-    model_annotations = {
-        'GNNVersion': 1,
-        'Flags': ['v', 'a'],
-        'ModelAnnotationType': ['LikelihoodMatrix', 'TransitionVector']
-    }
+    This implementation is designed to handle different types of agent interactions (e.g.,
+    distributed robotics) with different probabilities for each action. The model outputs a list
+    of tuples containing the agent's likelihood score, the reward received by that agent,
+    and the probability distribution over all agents based on their actions and rewards.
 
-    return np.array([
-        (0.7, 0.7, 0.7, 0.7),
-        (0.15, 0.15, 0.15, 0.15)
-    ]
-```
+    This implementation is designed to handle different types of agent interactions (e.g.,
+    distributed robotics) with different probabilities for each action. The model outputs a list
+    of tuples containing the agent's likelihood score, the reward received by that agent,
+    and the probability distribution over all agents based on their actions and rewards.
+
+    This implementation is designed to handle different types of agent interactions (e.g.,
+    distributed robotics) with different probabilities for each action. The model outputs a list
+    of tuples containing the agent's likelihood score, the reward received by that agent,
+    and the probability distribution over all agents based on their actions and rewards.
+
+    This implementation is designed to handle different types of agent interactions (e.g.,
+    distributed robotics) with different probabilities for each action. The model outputs a list
+    of tuples containing the agent's likelihood score, the reward received

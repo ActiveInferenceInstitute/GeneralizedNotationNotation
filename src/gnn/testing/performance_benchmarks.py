@@ -19,6 +19,7 @@ logger = logging.getLogger(__name__)
 @dataclass
 class PerformanceMetrics:
     """Performance metrics for GNN operations."""
+
     operation_name: str
     execution_time: float
     memory_usage_mb: float
@@ -32,7 +33,8 @@ class PerformanceMetrics:
 class GNNPerformanceBenchmark:
     """Performance benchmarking for GNN operations."""
 
-    def __init__(self, test_iterations: int = 100):
+    def __init__(self, test_iterations: int = 100) -> None:
+        """Initialize the instance."""
         self.test_iterations = test_iterations
         self.results: List[PerformanceMetrics] = []
 
@@ -42,7 +44,7 @@ class GNNPerformanceBenchmark:
 
         parser = GNNParser()
 
-        with open(file_path, 'r') as f:
+        with open(file_path, "r") as f:
             content = f.read()
 
         # Measure performance
@@ -71,7 +73,7 @@ class GNNPerformanceBenchmark:
             throughput_ops_per_sec=throughput,
             complexity_score=len(content) * 0.001,  # Simple complexity estimate
             accuracy_score=1.0 - (errors / self.test_iterations),
-            error_count=errors
+            error_count=errors,
         )
 
         self.results.append(metrics)
@@ -111,7 +113,7 @@ class GNNPerformanceBenchmark:
             throughput_ops_per_sec=throughput,
             complexity_score=file_path.stat().st_size * 0.0001,
             accuracy_score=1.0 - (errors / (self.test_iterations * 10)),  # Normalized
-            error_count=errors
+            error_count=errors,
         )
 
         self.results.append(metrics)
@@ -124,7 +126,9 @@ class GNNPerformanceBenchmark:
 
         total_time = sum(m.execution_time for m in self.results)
         avg_memory = sum(m.memory_usage_mb for m in self.results) / len(self.results)
-        avg_throughput = sum(m.throughput_ops_per_sec for m in self.results) / len(self.results)
+        avg_throughput = sum(m.throughput_ops_per_sec for m in self.results) / len(
+            self.results
+        )
         total_errors = sum(m.error_count for m in self.results)
 
         return {
@@ -133,7 +137,7 @@ class GNNPerformanceBenchmark:
                 "total_execution_time": total_time,
                 "average_memory_usage_mb": avg_memory,
                 "average_throughput": avg_throughput,
-                "total_errors": total_errors
+                "total_errors": total_errors,
             },
             "operations": [
                 {
@@ -142,10 +146,10 @@ class GNNPerformanceBenchmark:
                     "memory_mb": m.memory_usage_mb,
                     "throughput": m.throughput_ops_per_sec,
                     "accuracy": m.accuracy_score,
-                    "errors": m.error_count
+                    "errors": m.error_count,
                 }
                 for m in self.results
-            ]
+            ],
         }
 
 

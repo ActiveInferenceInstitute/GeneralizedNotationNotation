@@ -1,7 +1,7 @@
 # GNN Source Specification
 
-**Version**: 2.0.0 (Specification) — Pipeline Package Version: `src/__init__.py::__version__ == "1.3.0"`  
-**Last Updated**: 2026-04-09  
+**Version**: 1.6.0 (Specification) — Pipeline Package Version: `src/__init__.py::__version__ == "1.6.0"`  
+**Last Updated**: 2026-05-12  
 **Status**: Maintained
 
 ---
@@ -60,7 +60,7 @@ Accepted alternatives for core processing file organization:
 
 - `setup/`, `tests/`, `validation/`: processing logic in `__init__.py`
 - `model_registry/`: processing logic in `registry.py`
-- `website/`: processing logic split across `renderer.py` and `generator.py` (`processor.py` remains a thin shim)
+- `website/`: processing logic split across `renderer.py` and `generator.py` (`processor.py` remains a thin facade)
 
 ### Exit Code Standards
 
@@ -127,9 +127,9 @@ Accepted alternatives for core processing file organization:
 | `lsp/` | Language Server Protocol support |
 | `doc/` | In-repo technical documentation subtree |
 | `tests/` | Test suite |
-| `sapf/` | SAPF compatibility shim (`audio/sapf/`) |
+| `sapf/` | SAPF public entry point (`audio/sapf/`) |
 
-Pipeline artifacts are written to the repository-level `output/` directory by default (`io.output_dir` in `input/config.yaml`). That tree is **tracked in git** (with selective ignores for volatile paths under `.gitignore`). The `src/output/` directory is not a Python package; see [`output/README.md`](output/README.md) for fixture copies vs root `output/`.
+Pipeline artifacts are written to the repository-level `output/` directory by default (`io.output_dir` in `input/config.yaml`). That tree is ignored except for its marker file, so generated artifacts should be regenerated rather than hand-edited. The `src/output/` directory is not a Python package; see [`doc/pipeline/README.md`](../doc/pipeline/README.md) for generated-output coverage exclusions.
 
 ---
 
@@ -260,6 +260,16 @@ def module_operation(input: str, output_path: str) -> dict:
 ## Performance Targets
 
 Performance and reliability targets should be validated by current benchmark/test runs in CI or local execution, rather than fixed values in static docs.
+
+---
+
+## Versioning
+
+> **Dual Versioning Policy**: This repository uses two version numbers:
+> - **Pipeline version** (src/): Corresponds to `src/__init__.py::__version__` (currently v1.6.0)
+> - **MCP version** (mcp/): Independent MCP subsystem versioning (currently v1.7.0)
+>
+> MCP (Model Context Protocol) has its own version because it represents an extended protocol implementation that evolved beyond the main pipeline versioning.
 
 ---
 

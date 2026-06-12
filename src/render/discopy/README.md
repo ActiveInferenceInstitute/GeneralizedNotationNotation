@@ -15,7 +15,7 @@ src/render/discopy/
 ├── AGENTS.md                   # Detailed agent scaffolding
 ├── discopy_renderer.py         # Main DisCoPy renderer
 ├── translator.py               # GNN to DisCoPy translator
-└── visualize_jax_output.py     # Visualization utilities
+└── # visualize_jax_output.py is in execute/discopy_translator_module/     # Visualization utilities
 ```
 
 ## Core Components

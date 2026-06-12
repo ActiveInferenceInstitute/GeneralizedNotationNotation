@@ -54,6 +54,12 @@ C = [[-2.0, -2.0, -2.0, -2.0, 2.0]]
 D = [[0.2, 0.2, 0.2, 0.2, 0.2]]
 E = [[0.25, 0.25, 0.25, 0.25]]
 γ = [[1.0]]
+num_hidden_states = 5
+num_obs = 5
+num_actions = 4
+num_timesteps = 30
+epistemic_weight = 1.0
+instrumental_weight = 1.0
 
 ## Time
 Dynamic
@@ -78,6 +84,6 @@ F = VariationalFreeEnergy
 t = Time
 
 ## Footer
-Generated: 2026-04-10T10:24:33.665693
+Generated: 2026-05-25T09:51:15.635014
 
 ## Signature

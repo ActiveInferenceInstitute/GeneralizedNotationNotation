@@ -6,8 +6,8 @@
 **Pipeline Step**: Infrastructure module (not a numbered step)
 **Category**: Infrastructure / Development Tools
 **Status**: ✅ Production Ready
-**Version**: 1.0.0
-**Last Updated**: 2026-03-24
+**Version**: 1.6.0
+**Last Updated**: 2026-04-16
 
 The LSP module implements a GNN Language Server using the Language Server Protocol. It provides real-time diagnostics and hover information for GNN model files in any LSP-compatible editor.
 
@@ -47,3 +47,10 @@ lsp/
 
 - [README.md](README.md) — Usage guide
 - [SPEC.md](SPEC.md) — Specification
+
+---
+## Documentation
+- **[README](README.md)**: Module Overview
+- **[AGENTS](AGENTS.md)**: Agentic Workflows
+- **[SPEC](SPEC.md)**: Architectural Specification
+- **[SKILL](SKILL.md)**: Capability API

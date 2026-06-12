@@ -1,9 +1,9 @@
 # GNN MCP Audit Framework
 
-How `src/tests/test_mcp_audit.py` (462 lines) validates the MCP tool registry.
+How `src/tests/mcp/test_mcp_audit.py` validates the MCP tool registry.
 
-**Last Updated**: 2026-03-24  
-**Source**: [`src/tests/test_mcp_audit.py`](../../../src/tests/test_mcp_audit.py)
+**Last Updated**: 2026-04-15  
+**Source**: [`src/tests/mcp/test_mcp_audit.py`](../../../src/tests/mcp/test_mcp_audit.py)
 
 ## Fixture Design
 
@@ -29,7 +29,9 @@ def mcp_initialized():
 
 Two derived fixtures: `all_tools` (dict snapshot) and `all_modules` (module info dict).
 
-## Three Test Classes
+## Test Classes
+
+The audit file contains six test classes (`TestMCPModuleDiscovery`, `TestMCPToolRealness`, `TestMCPDomainTools`, `TestMCPToolExecution`, `TestMCPLoggingCoverage`, `TestMCPAuditReport`). The three primary classes are documented below.
 
 ### `TestMCPModuleDiscovery`
 
@@ -79,12 +81,12 @@ DOMAIN_TOOLS = [
 
 ```bash
 # Full audit (all three classes)
-PYTHONPATH=src python -m pytest src/tests/test_mcp_audit.py -v
+uv run --extra dev python -m pytest src/tests/mcp/test_mcp_audit.py -v
 
 # Single class
-PYTHONPATH=src python -m pytest src/tests/test_mcp_audit.py::TestMCPModuleDiscovery -v
-PYTHONPATH=src python -m pytest src/tests/test_mcp_audit.py::TestMCPToolRealness -v
-PYTHONPATH=src python -m pytest src/tests/test_mcp_audit.py::TestMCPDomainTools -v
+uv run --extra dev python -m pytest src/tests/mcp/test_mcp_audit.py::TestMCPModuleDiscovery -v
+uv run --extra dev python -m pytest src/tests/mcp/test_mcp_audit.py::TestMCPToolRealness -v
+uv run --extra dev python -m pytest src/tests/mcp/test_mcp_audit.py::TestMCPDomainTools -v
 
 # JSON report only
 PYTHONPATH=src python src/mcp/validate_tools.py
@@ -102,6 +104,6 @@ The MCP server registers modules synchronously but reverts to background threads
 
 ## See Also
 
-- [mcp/tool_development_guide.md](../mcp/tool_development_guide.md) — No-placeholder policy, canonical mcp.py pattern
+- [mcp/tool_development_guide.md](../mcp/tool_development_guide.md) — Real-tool policy, canonical mcp.py pattern
 - [mcp/tool_reference.md](../mcp/tool_reference.md) — full DOMAIN_TOOLS list in table form
 - [testing/test_patterns.md](test_patterns.md) — general test patterns and fixtures

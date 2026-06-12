@@ -7,17 +7,36 @@ Prompt:
 Response:
 
 ```python
-import numpy as np
-from scipy import stats
-from scipy import stats
+import json
+from collections import Counter
 
-# Define the GNN model parameters and initializations
-GNN_model = MultiAgentCooperativeActiveInference(
-    num_agents=2,
-    num_hidden_states_per_agent=4,
-    num_actions_per_agent=3,
-    num_timesteps=20,
-    alpha=1.0  # Alpha is the initial probability of cooperation
-)
-GNN_model = MultiAgentCooperativeActiveInference(num_agents=2, num_hidden_states_per_agent=4, num_actions_per_agent=3, num_timesteps=20)
-```
+def multiagent(state):
+    """Multi-Agent Cooperative Active Inference (MCAF) implementation."""
+
+    # Initialize state and agent matrices
+    A1 = [[0.85, 0.05, 0.05], [0.05, 0.85, 0.05]]
+    B1 = [[(0.9, 0.1), (0.0, 0.1)], [(0.9, 0.0), (0.0, 0.1)]]
+
+    # Initialize action matrices
+    A2 = [[(-1.0, -1.0), (-1.0, -1.0)]]
+    B2 = [[(0.25, 0.25), (0.25, 0.25))]
+
+    # Initialize transition matrix
+    D1 = [[((0.9, 0.1), (0.85, 0.1)), (0.0, 0.1)], [(0.9, 0.1), (0.0, 0.1)]]
+    D2 = [[()], []]
+
+    # Initialize action matrices
+    A3 = [[(0.9, 0.1), (0.85, 0.1), (0.0, 0.1)], [(0.9, 0.1), (0.0, 0.1)]]
+    B4 = [[()], []]
+
+    # Initialize action matrices
+    A6 = [[(0.25, 0.25), (0.85, 0.1), (0.0, 0.1)], [(0.9, 0.1), (0.0, 0.1)]]
+    B7 = [[()], []]
+
+    # Initialize action matrices
+    A8 = [[(0.25, 0.25), (0.36, 0.46)], [()]]
+    B9 = [[()], []]
+
+    # Initialize action matrices
+    A10 = [[(-1.0, -1.0), (-1.0, -1.0)]]
+    B10 = [[(0.85, 0.1), (0.05, 0.1)], [(0.9

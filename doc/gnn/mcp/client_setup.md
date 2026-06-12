@@ -1,8 +1,8 @@
 # GNN MCP Client Setup Guide
 
-Connect any MCP-compatible client to the GNN pipeline and access all 131 tools interactively.
+Connect any MCP-compatible client to the GNN pipeline and access the registered GNN tools interactively.
 
-**Last Updated**: 2026-03-24
+**Last Updated**: 2026-04-15
 
 ## Prerequisites
 
@@ -38,7 +38,7 @@ Restart Claude Desktop. You will see **GNN** in the tools palette (🔧 icon). Y
 
 > *"Parse the file at input/gnn_files/actinf_pomdp_agent.md using parse_gnn_content"*
 > *"Run process_validation on my GNN directory"*
-> *"List all 131 GNN tools"*
+> *"List all registered GNN tools"*
 
 ## VS Code (via MCP extension)
 
@@ -112,7 +112,7 @@ async with stdio_client(server_params) as (read, write):
         await session.initialize()
         tools = await session.list_tools()
         print(f"Connected: {len(tools.tools)} tools available")
-        # → Connected: 131 tools available
+        # → Connected: registered tools available
 ```
 
 ## Available Tools by Use Case
@@ -132,17 +132,17 @@ async with stdio_client(server_params) as (read, write):
 
 **Server won't start**: Ensure `PYTHONPATH=src` includes the `src/` directory where all modules live.
 
-**Tools not appearing**: Run the audit to confirm all 131 tools register cleanly:
+**Tools not appearing**: Run the audit to confirm tools register cleanly:
 
 ```bash
-PYTHONPATH=src python -m pytest src/tests/test_mcp_audit.py -v --tb=short
+uv run --extra dev python -m pytest src/tests/mcp/test_mcp_audit.py -v --tb=short
 ```
 
 **Timeout on heavy steps**: Steps 12 (execute) and 13 (LLM) can take minutes. Set client timeout to ≥300s.
 
 ## See Also
 
-- [Tool Reference](tool_reference.md) — all 131 tools in a flat table
+- [Tool Reference](tool_reference.md) — registered tools in a flat table
 - [Tool Development Guide](tool_development_guide.md) — add your own tools
 - [modules/21_mcp.md](../modules/21_mcp.md) — pipeline step documentation
 - [doc/mcp/fastmcp.md](../../../doc/mcp/fastmcp.md) — FastMCP library guide

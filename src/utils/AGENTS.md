@@ -10,9 +10,9 @@
 
 **Status**: ✅ Production Ready
 
-**Version**: 2.0.0
+**Version**: 1.6.0
 
-**Last Updated**: 2026-01-21
+**Last Updated**: 2026-04-16
 
 ---
 
@@ -441,13 +441,16 @@ Configuration → Logging Setup → Resource Monitoring → Error Handling → P
 ## Testing
 
 ### Test Files
-- `src/tests/test_utils_core.py` - Core utils tests
-- `src/tests/test_new_utils.py` - Additional utils tests
+- `src/tests/utils/test_utils_core.py` - Core utils tests
+- `src/tests/utils/test_new_utils.py` - Additional utils tests
 
 ### Test Coverage
-- **Current**: 93%
-- **Target**: 95%+
+Measure on demand:
 
+```bash
+uv run --extra dev python -m pytest src/tests/test_utils*.py \
+    --cov=src/utils --cov-report=term-missing
+```
 ### Key Test Scenarios
 1. Logging and diagnostic utilities
 2. Configuration and argument parsing
@@ -501,7 +504,7 @@ def get_system_info_tool():
 
 ## Version History
 
-### Current Version: 2.0.0
+### Current Version: 1.6.0
 
 **Features**:
 - Centralized logging system
@@ -531,10 +534,10 @@ def get_system_info_tool():
 
 ---
 
-**Last Updated**: 2026-01-21
+**Last Updated**: 2026-04-16
 **Maintainer**: GNN Pipeline Team
 **Status**: ✅ Production Ready
-**Version**: 2.0.0
+**Version**: 1.6.0
 **Architecture Compliance**: ✅ 100% Thin Orchestrator Pattern
 
 ---

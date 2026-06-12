@@ -1,8 +1,17 @@
-# Specification: Memory
+# Memory Model — Specification
 
-## Design Requirements
-This module (`memory`) maps structural logic to the overall execution graph.
-It ensures that `Memory` tasks resolve without runtime dependency loops.
+## Model Structure
 
-## Components
-Expected available types: No specific classes exported.
+The memory model implements working memory maintenance and retrieval as Active Inference.
+
+## State Space
+
+- **Memory slots**: Discrete item representations
+- **Attention states**: Allocation of processing resources
+- **Retrieval cues**: External prompts triggering recall
+
+## Matrices
+
+- `A` (observation model): Maps internal memory states to observable recall accuracy
+- `B` (transition model): Memory decay, rehearsal, and interference dynamics
+- `C` (preference): Accuracy-maximizing preferences

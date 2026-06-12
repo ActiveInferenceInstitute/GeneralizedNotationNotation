@@ -71,8 +71,10 @@ formats = get_supported_formats()
 This module registers tools with the GNN MCP server (see `mcp.py`):
 
 - `generate_report`
-- `process_report`
+- `get_report_module_info`
 - `list_report_formats`
+- `process_report`
+- `read_report`
 
 ## References
 

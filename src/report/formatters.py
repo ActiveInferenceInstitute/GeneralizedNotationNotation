@@ -15,11 +15,11 @@ from .analyzer import get_pipeline_health_score
 def generate_html_report(pipeline_data: Dict[str, Any], logger: logging.Logger) -> str:
     """
     Generate an HTML report from pipeline data.
-    
+
     Args:
         pipeline_data: Collected pipeline data
         logger: Logger for this operation
-        
+
     Returns:
         HTML content as string
     """
@@ -272,25 +272,25 @@ def generate_html_report(pipeline_data: Dict[str, Any], logger: logging.Logger) 
         <div class="header">
             <h1>🎯 GNN Pipeline Comprehensive Analysis Report</h1>
             <div class="health-score">Health Score: {health_score}/100</div>
-            <p class="timestamp">Generated: {pipeline_data.get('report_generation_time', 'Unknown')}</p>
+            <p class="timestamp">Generated: {pipeline_data.get("report_generation_time", "Unknown")}</p>
         </div>
         
         <div class="summary-grid">
             <div class="summary-card">
                 <h3>Pipeline Output Directory</h3>
-                <div class="value">{pipeline_data.get('pipeline_output_directory', 'Unknown')}</div>
+                <div class="value">{pipeline_data.get("pipeline_output_directory", "Unknown")}</div>
             </div>
             <div class="summary-card">
                 <h3>Total Steps Analyzed</h3>
-                <div class="value">{len(pipeline_data.get('steps', {}))}</div>
+                <div class="value">{len(pipeline_data.get("steps", {}))}</div>
             </div>
             <div class="summary-card">
                 <h3>Total Files Processed</h3>
-                <div class="value">{pipeline_data.get('summary', {}).get('total_files_processed', 0)}</div>
+                <div class="value">{pipeline_data.get("summary", {}).get("total_files_processed", 0)}</div>
             </div>
             <div class="summary-card">
                 <h3>Total Size</h3>
-                <div class="value">{pipeline_data.get('summary', {}).get('total_size_mb', 0)} MB</div>
+                <div class="value">{pipeline_data.get("summary", {}).get("total_size_mb", 0)} MB</div>
             </div>
         </div>
         
@@ -298,144 +298,26 @@ def generate_html_report(pipeline_data: Dict[str, Any], logger: logging.Logger) 
         <div class="performance-section">
             <h3>Success Rate</h3>
             <div class="progress-bar">
-                <div class="progress-fill" style="width: {pipeline_data.get('summary', {}).get('success_rate', 0)}%"></div>
+                <div class="progress-fill" style="width: {pipeline_data.get("summary", {}).get("success_rate", 0)}%"></div>
             </div>
-            <p><strong>{pipeline_data.get('summary', {}).get('success_rate', 0):.1f}%</strong> of pipeline steps completed successfully</p>
+            <p><strong>{pipeline_data.get("summary", {}).get("success_rate", 0):.1f}%</strong> of pipeline steps completed successfully</p>
         </div>
 """
 
-    # Add performance metrics if available
-    performance_metrics = pipeline_data.get('performance_metrics', {})
-    if performance_metrics:
-        html_content += """
-        <h2>⚡ Performance Metrics</h2>
-        <div class="performance-section">
-            <table>
-                <tr><th>Metric</th><th>Value</th></tr>
-"""
-        for metric, value in performance_metrics.items():
-            html_content += f"<tr><td>{metric.replace('_', ' ').title()}</td><td>{value}</td></tr>"
-        html_content += """
-            </table>
-        </div>
-"""
-
-    # Add error analysis if available
-    error_analysis = pipeline_data.get('error_analysis', {})
-    if error_analysis and error_analysis.get('total_errors', 0) > 0:
-        html_content += f"""
-        <h2>⚠️ Error Analysis</h2>
-        <div class="error-section">
-            <h3>Total Errors: {error_analysis.get('total_errors', 0)}</h3>
-            <h4>Error Types:</h4>
-            <ul>
-"""
-        for error_type, count in error_analysis.get('error_types', {}).items():
-            html_content += f"<li><strong>{error_type}:</strong> {count}</li>"
-        html_content += """
-            </ul>
-        </div>
-"""
-
-    # Add step-by-step analysis
-    html_content += """
-        <h2>🔍 Step-by-Step Analysis</h2>
-        <div class="step-grid">
-"""
-
-    for step_name, step_data in pipeline_data.get('steps', {}).items():
-        status_class = "success" if step_data.get('exists', False) else "missing"
-        if step_data.get('status') == "error":
-            status_class = "error"
-
-        html_content += f"""
-        <div class="step-card {status_class}">
-            <div class="step-title">📁 {step_name.replace('_', ' ').title()}</div>
-            <div class="step-details">
-"""
-
-        if step_data.get('exists', False):
-            html_content += f"""
-                <p><strong>Files:</strong> {step_data.get('file_count', 0)}</p>
-                <p><strong>Size:</strong> {step_data.get('total_size_mb', 0)} MB</p>
-                <p><strong>Last Modified:</strong> {step_data.get('last_modified', 'Unknown')}</p>
-                <p><strong>Status:</strong> {step_data.get('status', 'success')}</p>
-"""
-
-            # Add file types
-            file_types = step_data.get('file_types', {})
-            if file_types:
-                html_content += '<div class="file-types">'
-                for ext, info in file_types.items():
-                    count = info.get('count', 0) if isinstance(info, dict) else info
-                    html_content += f'<span class="file-type-tag">{ext}: {count}</span>'
-                html_content += '</div>'
-
-            # Add key files
-            key_files = step_data.get('key_files', [])
-            if key_files:
-                html_content += '<div class="key-files"><strong>Key Files:</strong>'
-                for key_file in key_files[:3]:  # Show first 3 key files
-                    html_content += f'<div class="key-file">{key_file["name"]} ({key_file["size_mb"]} MB)</div>'
-                html_content += '</div>'
-
-            # Add dependency information
-            dependencies = pipeline_data.get('step_dependencies', {}).get('dependency_chain', {}).get(step_name, {})
-            if dependencies:
-                missing = dependencies.get('missing_prerequisites', [])
-                if missing:
-                    html_content += f'<div class="dependency-chain"><strong>Missing Dependencies:</strong> <span class="missing-deps">{", ".join(missing)}</span></div>'
-                else:
-                    html_content += '<div class="dependency-chain"><strong>Dependencies:</strong> <span class="complete-deps">Complete</span></div>'
-        else:
-            html_content += '<p><em>Step directory not found or empty</em></p>'
-
-        html_content += """
-            </div>
-        </div>
-"""
-
-    html_content += """
-        </div>
-"""
-
-    # Add file type analysis
-    file_type_analysis = pipeline_data.get('file_type_analysis', {})
-    if file_type_analysis.get('total_by_type'):
-        html_content += """
-        <h2>📁 File Type Analysis</h2>
-        <table>
-            <tr><th>File Type</th><th>Count</th><th>Total Size (MB)</th></tr>
-"""
-        for file_ext, info in file_type_analysis['total_by_type'].items():
-            html_content += f"<tr><td>{file_ext}</td><td>{info['count']}</td><td>{info['total_size_mb']}</td></tr>"
-        html_content += """
-        </table>
-"""
-
-    # Add visualizations section if available
-    visualizations = pipeline_data.get('visualizations', {})
-    if visualizations and visualizations.get('total_count', 0) > 0:
-        html_content += f"""
-        <h2>🎨 Visualizations</h2>
-        <div class="performance-section">
-            <p><strong>Total Visualizations:</strong> {visualizations.get('total_count', 0)}</p>
-            {_format_visualization_gallery(visualizations)}
-        </div>
-"""
-
-    # Add pipeline summary if available
-    if 'pipeline_summary' in pipeline_data:
-        summary = pipeline_data['pipeline_summary']
-        html_content += f"""
-        <h2>📈 Pipeline Execution Summary</h2>
-        <div class="performance-section">
-            <p><strong>Start Time:</strong> {summary.get('start_time', 'Unknown')}</p>
-            <p><strong>End Time:</strong> {summary.get('end_time', 'Unknown')}</p>
-            <p><strong>Overall Status:</strong> {summary.get('overall_status', 'Unknown')}</p>
-            <p><strong>Total Steps:</strong> {len(summary.get('steps', []))}</p>
-        </div>
-"""
+    html_content += _format_performance_metrics(
+        pipeline_data.get("performance_metrics", {})
+    )
+    html_content += _format_error_analysis(pipeline_data.get("error_analysis", {}))
+    html_content += _format_step_analysis(pipeline_data)
+    html_content += _format_file_type_analysis(
+        pipeline_data.get("file_type_analysis", {})
+    )
+    html_content += _format_visualizations_section(
+        pipeline_data.get("visualizations", {})
+    )
+    html_content += _format_pipeline_summary_section(
+        pipeline_data.get("pipeline_summary")
+    )
 
     html_content += """
     </div>
@@ -445,42 +327,219 @@ def generate_html_report(pipeline_data: Dict[str, Any], logger: logging.Logger) 
 
     return html_content
 
+
+def _format_performance_metrics(performance_metrics: Dict[str, Any]) -> str:
+    """Format optional performance metrics as an HTML table."""
+    if not performance_metrics:
+        return ""
+
+    rows = "".join(
+        f"<tr><td>{metric.replace('_', ' ').title()}</td><td>{value}</td></tr>"
+        for metric, value in performance_metrics.items()
+    )
+    return f"""
+        <h2>⚡ Performance Metrics</h2>
+        <div class="performance-section">
+            <table>
+                <tr><th>Metric</th><th>Value</th></tr>
+                {rows}
+            </table>
+        </div>
+"""
+
+
+def _format_error_analysis(error_analysis: Dict[str, Any]) -> str:
+    """Format optional error analysis details."""
+    if not error_analysis or error_analysis.get("total_errors", 0) <= 0:
+        return ""
+
+    error_rows = "".join(
+        f"<li><strong>{error_type}:</strong> {count}</li>"
+        for error_type, count in error_analysis.get("error_types", {}).items()
+    )
+    return f"""
+        <h2>⚠️ Error Analysis</h2>
+        <div class="error-section">
+            <h3>Total Errors: {error_analysis.get("total_errors", 0)}</h3>
+            <h4>Error Types:</h4>
+            <ul>
+                {error_rows}
+            </ul>
+        </div>
+"""
+
+
+def _format_step_analysis(pipeline_data: Dict[str, Any]) -> str:
+    """Format the step-by-step analysis grid."""
+    html = """
+        <h2>🔍 Step-by-Step Analysis</h2>
+        <div class="step-grid">
+"""
+
+    for step_name, step_data in pipeline_data.get("steps", {}).items():
+        status_class = "success" if step_data.get("exists", False) else "missing"
+        if step_data.get("status") == "error":
+            status_class = "error"
+
+        html += f"""
+        <div class="step-card {status_class}">
+            <div class="step-title">📁 {step_name.replace("_", " ").title()}</div>
+            <div class="step-details">
+"""
+        if step_data.get("exists", False):
+            html += _format_step_details(step_name, step_data, pipeline_data)
+        else:
+            html += "<p><em>Step directory not found or empty</em></p>"
+
+        html += """
+            </div>
+        </div>
+"""
+
+    html += """
+        </div>
+"""
+    return html
+
+
+def _format_step_details(
+    step_name: str,
+    step_data: Dict[str, Any],
+    pipeline_data: Dict[str, Any],
+) -> str:
+    """Format one existing step card's details."""
+    html = f"""
+                <p><strong>Files:</strong> {step_data.get("file_count", 0)}</p>
+                <p><strong>Size:</strong> {step_data.get("total_size_mb", 0)} MB</p>
+                <p><strong>Last Modified:</strong> {step_data.get("last_modified", "Unknown")}</p>
+                <p><strong>Status:</strong> {step_data.get("status", "success")}</p>
+"""
+
+    file_types = step_data.get("file_types", {})
+    if file_types:
+        html += '<div class="file-types">'
+        for ext, info in file_types.items():
+            count = info.get("count", 0) if isinstance(info, dict) else info
+            html += f'<span class="file-type-tag">{ext}: {count}</span>'
+        html += "</div>"
+
+    key_files = step_data.get("key_files", [])
+    if key_files:
+        html += '<div class="key-files"><strong>Key Files:</strong>'
+        for key_file in key_files[:3]:
+            html += (
+                f'<div class="key-file">{key_file["name"]} '
+                f"({key_file['size_mb']} MB)</div>"
+            )
+        html += "</div>"
+
+    dependencies = (
+        pipeline_data.get("step_dependencies", {})
+        .get("dependency_chain", {})
+        .get(step_name, {})
+    )
+    if dependencies:
+        missing = dependencies.get("missing_prerequisites", [])
+        if missing:
+            html += (
+                '<div class="dependency-chain"><strong>Missing Dependencies:</strong> '
+                f'<span class="missing-deps">{", ".join(missing)}</span></div>'
+            )
+        else:
+            html += (
+                '<div class="dependency-chain"><strong>Dependencies:</strong> '
+                '<span class="complete-deps">Complete</span></div>'
+            )
+
+    return html
+
+
+def _format_file_type_analysis(file_type_analysis: Dict[str, Any]) -> str:
+    """Format aggregate file type statistics."""
+    if not file_type_analysis.get("total_by_type"):
+        return ""
+
+    rows = "".join(
+        f"<tr><td>{file_ext}</td><td>{info['count']}</td><td>{info['total_size_mb']}</td></tr>"
+        for file_ext, info in file_type_analysis["total_by_type"].items()
+    )
+    return f"""
+        <h2>📁 File Type Analysis</h2>
+        <table>
+            <tr><th>File Type</th><th>Count</th><th>Total Size (MB)</th></tr>
+            {rows}
+        </table>
+"""
+
+
+def _format_visualizations_section(visualizations: Dict[str, Any]) -> str:
+    """Format the optional visualization gallery section."""
+    if not visualizations or visualizations.get("total_count", 0) <= 0:
+        return ""
+
+    return f"""
+        <h2>🎨 Visualizations</h2>
+        <div class="performance-section">
+            <p><strong>Total Visualizations:</strong> {visualizations.get("total_count", 0)}</p>
+            {_format_visualization_gallery(visualizations)}
+        </div>
+"""
+
+
+def _format_pipeline_summary_section(summary: Any) -> str:
+    """Format the optional final pipeline summary section."""
+    if not isinstance(summary, dict):
+        return ""
+
+    return f"""
+        <h2>📈 Pipeline Execution Summary</h2>
+        <div class="performance-section">
+            <p><strong>Start Time:</strong> {summary.get("start_time", "Unknown")}</p>
+            <p><strong>End Time:</strong> {summary.get("end_time", "Unknown")}</p>
+            <p><strong>Overall Status:</strong> {summary.get("overall_status", "Unknown")}</p>
+            <p><strong>Total Steps:</strong> {len(summary.get("steps", []))}</p>
+        </div>
+"""
+
+
 def _format_visualization_gallery(visualizations: Dict[str, Any]) -> str:
     """
     Format visualization gallery HTML.
-    
+
     Args:
         visualizations: Visualization data dictionary
-        
+
     Returns:
         HTML string for visualization gallery
     """
-    if not visualizations or visualizations.get('total_count', 0) == 0:
+    if not visualizations or visualizations.get("total_count", 0) == 0:
         return "<p>No visualizations found.</p>"
 
     html = ""
 
     # Group by step
-    by_step = visualizations.get('by_step', {})
+    by_step = visualizations.get("by_step", {})
     if by_step:
         html += '<div class="step-grid">'
         for step_name, step_data in by_step.items():
-            step_display = step_name.replace('_', ' ').replace('output', '').strip().title()
+            step_display = (
+                step_name.replace("_", " ").replace("output", "").strip().title()
+            )
             html += f"""
             <div class="step-card success">
                 <div class="step-title">📁 {step_display}</div>
                 <div class="step-details">
-                    <p><strong>Visualizations:</strong> {step_data.get('count', 0)}</p>
+                    <p><strong>Visualizations:</strong> {step_data.get("count", 0)}</p>
                     <div class="key-files">
 """
             # Show first 5 visualizations per step
-            for viz in step_data.get('files', [])[:5]:
-                viz_name = viz.get('name', 'Unknown')
-                rel_path = viz.get('relative_path', '')
-                file_type = viz.get('type', 'image')
-                size_mb = viz.get('size_mb', 0)
+            for viz in step_data.get("files", [])[:5]:
+                viz_name = viz.get("name", "Unknown")
+                rel_path = viz.get("relative_path", "")
+                file_type = viz.get("type", "image")
+                size_mb = viz.get("size_mb", 0)
 
-                if file_type == 'image':
+                if file_type == "image":
                     html += f"""
                         <div class="key-file">
                             <a href="../{rel_path}" target="_blank" class="link">{viz_name}</a>
@@ -493,7 +552,7 @@ def _format_visualization_gallery(visualizations: Dict[str, Any]) -> str:
                             <span style="color: #6c757d; font-size: 11px;"> (HTML)</span>
                         </div>"""
 
-            if step_data.get('count', 0) > 5:
+            if step_data.get("count", 0) > 5:
                 html += f'<div class="key-file" style="color: #6c757d; font-style: italic;">... and {step_data.get("count", 0) - 5} more</div>'
 
             html += """
@@ -501,26 +560,31 @@ def _format_visualization_gallery(visualizations: Dict[str, Any]) -> str:
                 </div>
             </div>
 """
-        html += '</div>'
+        html += "</div>"
 
     # Add summary by type
-    by_type = visualizations.get('by_type', {})
+    by_type = visualizations.get("by_type", {})
     if by_type:
-        html += '<h3>Visualizations by Type</h3><table><tr><th>Type</th><th>Count</th></tr>'
+        html += (
+            "<h3>Visualizations by Type</h3><table><tr><th>Type</th><th>Count</th></tr>"
+        )
         for viz_type, viz_list in by_type.items():
-            html += f'<tr><td>{viz_type.title()}</td><td>{len(viz_list)}</td></tr>'
-        html += '</table>'
+            html += f"<tr><td>{viz_type.title()}</td><td>{len(viz_list)}</td></tr>"
+        html += "</table>"
 
     return html
 
-def generate_markdown_report(pipeline_data: Dict[str, Any], logger: logging.Logger) -> str:
+
+def generate_markdown_report(
+    pipeline_data: Dict[str, Any], logger: logging.Logger
+) -> str:
     """
     Generate a markdown report from pipeline data.
-    
+
     Args:
         pipeline_data: Collected pipeline data
         logger: Logger for this operation
-        
+
     Returns:
         Markdown content as string
     """
@@ -529,23 +593,23 @@ def generate_markdown_report(pipeline_data: Dict[str, Any], logger: logging.Logg
 
     markdown_content = f"""# 🎯 GNN Pipeline Comprehensive Analysis Report
 
-**Generated:** {pipeline_data.get('report_generation_time', 'Unknown')}  
-**Pipeline Output Directory:** {pipeline_data.get('pipeline_output_directory', 'Unknown')}  
+**Generated:** {pipeline_data.get("report_generation_time", "Unknown")}  
+**Pipeline Output Directory:** {pipeline_data.get("pipeline_output_directory", "Unknown")}  
 **Health Score:** {health_score}/100
 
 ## 📊 Pipeline Overview
 
-- **Total Steps Analyzed:** {len(pipeline_data.get('steps', {}))}
-- **Total Files Processed:** {pipeline_data.get('summary', {}).get('total_files_processed', 0)}
-- **Total Size:** {pipeline_data.get('summary', {}).get('total_size_mb', 0)} MB
-- **Success Rate:** {pipeline_data.get('summary', {}).get('success_rate', 0):.1f}%
+- **Total Steps Analyzed:** {len(pipeline_data.get("steps", {}))}
+- **Total Files Processed:** {pipeline_data.get("summary", {}).get("total_files_processed", 0)}
+- **Total Size:** {pipeline_data.get("summary", {}).get("total_size_mb", 0)} MB
+- **Success Rate:** {pipeline_data.get("summary", {}).get("success_rate", 0):.1f}%
 
 ## ⚡ Performance Metrics
 
 """
 
     # Add performance metrics if available
-    performance_metrics = pipeline_data.get('performance_metrics', {})
+    performance_metrics = pipeline_data.get("performance_metrics", {})
     if performance_metrics:
         for metric, value in performance_metrics.items():
             markdown_content += f"- **{metric.replace('_', ' ').title()}:** {value}\n"
@@ -553,22 +617,24 @@ def generate_markdown_report(pipeline_data: Dict[str, Any], logger: logging.Logg
         markdown_content += "*No performance metrics available*\n"
 
     # Add error analysis if available
-    error_analysis = pipeline_data.get('error_analysis', {})
-    if error_analysis and error_analysis.get('total_errors', 0) > 0:
+    error_analysis = pipeline_data.get("error_analysis", {})
+    if error_analysis and error_analysis.get("total_errors", 0) > 0:
         markdown_content += f"""
 ## ⚠️ Error Analysis
 
-**Total Errors:** {error_analysis.get('total_errors', 0)}
+**Total Errors:** {error_analysis.get("total_errors", 0)}
 
 ### Error Types:
 """
-        for error_type, count in error_analysis.get('error_types', {}).items():
+        for error_type, count in error_analysis.get("error_types", {}).items():
             markdown_content += f"- **{error_type}:** {count}\n"
 
-        if error_analysis.get('critical_errors'):
-            markdown_content += f"\n**Critical Errors:** {len(error_analysis['critical_errors'])}\n"
+        if error_analysis.get("critical_errors"):
+            markdown_content += (
+                f"\n**Critical Errors:** {len(error_analysis['critical_errors'])}\n"
+            )
 
-        if error_analysis.get('warnings'):
+        if error_analysis.get("warnings"):
             markdown_content += f"\n**Warnings:** {len(error_analysis['warnings'])}\n"
 
     # Add step-by-step analysis
@@ -577,120 +643,143 @@ def generate_markdown_report(pipeline_data: Dict[str, Any], logger: logging.Logg
 
 """
 
-    for step_name, step_data in pipeline_data.get('steps', {}).items():
-        if step_data.get('exists', False):
-            status_icon = "✅" if step_data.get('status') == "success" else "⚠️" if step_data.get('status') == "error" else "❌"
-            markdown_content += f"""### {status_icon} {step_name.replace('_', ' ').title()}
+    for step_name, step_data in pipeline_data.get("steps", {}).items():
+        if step_data.get("exists", False):
+            status_icon = (
+                "✅"
+                if step_data.get("status") == "success"
+                else "⚠️"
+                if step_data.get("status") == "error"
+                else "❌"
+            )
+            markdown_content += f"""### {status_icon} {step_name.replace("_", " ").title()}
 
-- **Files:** {step_data.get('file_count', 0)}
-- **Size:** {step_data.get('total_size_mb', 0)} MB
-- **Last Modified:** {step_data.get('last_modified', 'Unknown')}
-- **Status:** {step_data.get('status', 'success')}
+- **Files:** {step_data.get("file_count", 0)}
+- **Size:** {step_data.get("total_size_mb", 0)} MB
+- **Last Modified:** {step_data.get("last_modified", "Unknown")}
+- **Status:** {step_data.get("status", "success")}
 
 """
 
             # Add file types
-            file_types = step_data.get('file_types', {})
+            file_types = step_data.get("file_types", {})
             if file_types:
-                file_type_list = []
+                file_type_list: list[Any] = []
                 for ext, info in file_types.items():
-                    count = info.get('count', 0) if isinstance(info, dict) else info
+                    count = info.get("count", 0) if isinstance(info, dict) else info
                     file_type_list.append(f"{ext}: {count}")
                 markdown_content += f"- **File Types:** {', '.join(file_type_list)}\n"
 
             # Add key files
-            key_files = step_data.get('key_files', [])
+            key_files = step_data.get("key_files", [])
             if key_files:
                 markdown_content += "- **Key Files:**\n"
                 for key_file in key_files[:3]:  # Show first 3 key files
-                    markdown_content += f"  - {key_file['name']} ({key_file['size_mb']} MB)\n"
+                    markdown_content += (
+                        f"  - {key_file['name']} ({key_file['size_mb']} MB)\n"
+                    )
 
             # Add dependency information
-            dependencies = pipeline_data.get('step_dependencies', {}).get('dependency_chain', {}).get(step_name, {})
+            dependencies = (
+                pipeline_data.get("step_dependencies", {})
+                .get("dependency_chain", {})
+                .get(step_name, {})
+            )
             if dependencies:
-                missing = dependencies.get('missing_prerequisites', [])
+                missing = dependencies.get("missing_prerequisites", [])
                 if missing:
-                    markdown_content += f"- **Missing Dependencies:** {', '.join(missing)}\n"
+                    markdown_content += (
+                        f"- **Missing Dependencies:** {', '.join(missing)}\n"
+                    )
                 else:
                     markdown_content += "- **Dependencies:** Complete\n"
 
             markdown_content += "\n"
         else:
-            markdown_content += f"""### ❌ {step_name.replace('_', ' ').title()}
+            markdown_content += f"""### ❌ {step_name.replace("_", " ").title()}
 
 *Step directory not found or empty*
 
 """
 
     # Add file type analysis
-    file_type_analysis = pipeline_data.get('file_type_analysis', {})
-    if file_type_analysis.get('total_by_type'):
+    file_type_analysis = pipeline_data.get("file_type_analysis", {})
+    if file_type_analysis.get("total_by_type"):
         markdown_content += """
 ## 📁 File Type Analysis
 
 | File Type | Count | Total Size (MB) |
 |-----------|-------|-----------------|
 """
-        for file_ext, info in file_type_analysis['total_by_type'].items():
-            markdown_content += f"| {file_ext} | {info['count']} | {info['total_size_mb']} |\n"
+        for file_ext, info in file_type_analysis["total_by_type"].items():
+            markdown_content += (
+                f"| {file_ext} | {info['count']} | {info['total_size_mb']} |\n"
+            )
 
     # Add visualizations section if available
-    visualizations = pipeline_data.get('visualizations', {})
-    if visualizations and visualizations.get('total_count', 0) > 0:
+    visualizations = pipeline_data.get("visualizations", {})
+    if visualizations and visualizations.get("total_count", 0) > 0:
         markdown_content += f"""
 ## 🎨 Visualizations
 
-**Total Visualizations:** {visualizations.get('total_count', 0)}
+**Total Visualizations:** {visualizations.get("total_count", 0)}
 
 """
         # Group by step
-        by_step = visualizations.get('by_step', {})
+        by_step = visualizations.get("by_step", {})
         for step_name, step_data in by_step.items():
-            step_display = step_name.replace('_', ' ').replace('output', '').strip().title()
+            step_display = (
+                step_name.replace("_", " ").replace("output", "").strip().title()
+            )
             markdown_content += f"### {step_display}\n\n"
             markdown_content += f"**Count:** {step_data.get('count', 0)}\n\n"
             markdown_content += "**Files:**\n"
-            for viz in step_data.get('files', [])[:10]:  # Show first 10
-                rel_path = viz.get('relative_path', '')
-                size_mb = viz.get('size_mb', 0)
-                markdown_content += f"- [{viz.get('name', 'Unknown')}](../{rel_path}) ({size_mb} MB)\n"
-            if step_data.get('count', 0) > 10:
+            for viz in step_data.get("files", [])[:10]:  # Show first 10
+                rel_path = viz.get("relative_path", "")
+                size_mb = viz.get("size_mb", 0)
+                markdown_content += (
+                    f"- [{viz.get('name', 'Unknown')}](../{rel_path}) ({size_mb} MB)\n"
+                )
+            if step_data.get("count", 0) > 10:
                 markdown_content += f"- ... and {step_data.get('count', 0) - 10} more\n"
             markdown_content += "\n"
 
     # Add dependency analysis
-    dependencies = pipeline_data.get('step_dependencies', {})
-    if dependencies.get('missing_prerequisites'):
+    dependencies = pipeline_data.get("step_dependencies", {})
+    if dependencies.get("missing_prerequisites"):
         markdown_content += """
 ## 🔗 Dependency Analysis
 
 ### Missing Prerequisites:
 """
-        for missing in dependencies['missing_prerequisites']:
-            markdown_content += f"- **{missing['step']}** missing: {', '.join(missing['missing'])}\n"
+        for missing in dependencies["missing_prerequisites"]:
+            markdown_content += (
+                f"- **{missing['step']}** missing: {', '.join(missing['missing'])}\n"
+            )
 
     # Add pipeline summary if available
-    if 'pipeline_summary' in pipeline_data:
-        summary = pipeline_data['pipeline_summary']
+    if "pipeline_summary" in pipeline_data:
+        summary = pipeline_data["pipeline_summary"]
         markdown_content += f"""
 ## 📈 Pipeline Execution Summary
 
-- **Start Time:** {summary.get('start_time', 'Unknown')}
-- **End Time:** {summary.get('end_time', 'Unknown')}
-- **Overall Status:** {summary.get('overall_status', 'Unknown')}
-- **Total Steps:** {len(summary.get('steps', []))}
+- **Start Time:** {summary.get("start_time", "Unknown")}
+- **End Time:** {summary.get("end_time", "Unknown")}
+- **Overall Status:** {summary.get("overall_status", "Unknown")}
+- **Total Steps:** {len(summary.get("steps", []))}
 
 """
 
     return markdown_content
 
+
 def get_health_color(health_score: float) -> str:
     """
     Get color for health score display.
-    
+
     Args:
         health_score: Health score between 0 and 100
-        
+
     Returns:
         CSS color string
     """

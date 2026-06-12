@@ -14,8 +14,8 @@
 ## Running
 
 ```bash
-uv run pytest src/gnn/testing/ -q
-uv run pytest src/tests/test_gnn*.py -q
+uv run --extra dev python -m pytest src/gnn/testing/ -q
+uv run --extra dev python -m pytest src/tests/test_gnn*.py -q
 ```
 
 See **[README.md](README.md)** and **[README_round_trip.md](README_round_trip.md)**.

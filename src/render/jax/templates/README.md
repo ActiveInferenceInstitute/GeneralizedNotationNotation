@@ -34,7 +34,7 @@ code = GENERAL_TEMPLATE.format(
 )
 ```
 
-## Placeholder keys (contract)
+## Template Keys
 
 All templates require:
 
@@ -46,7 +46,7 @@ All templates require:
 - `n_observations`
 - `n_actions`
 
-Additional placeholders:
+Additional keys:
 
 - `discount` (POMDP + combined templates)
 - `use_pomdp`, `use_neural` (combined template)

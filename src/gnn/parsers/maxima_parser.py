@@ -9,7 +9,7 @@ Date: 2025-01-11
 """
 
 import re
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, cast
 
 from .common import (
     BaseGNNParser,
@@ -28,20 +28,32 @@ from .common import (
 class MaximaParser(BaseGNNParser):
     """Parser for Maxima symbolic computation specifications with embedded data support."""
 
-    def __init__(self):
+    def __init__(self) -> None:
+        """Initialize the instance."""
         super().__init__()
-        self.assignment_pattern = re.compile(r'(\w+)\s*:\s*(.+?);', re.MULTILINE)
-        self.function_pattern = re.compile(r'(\w+)\s*\(\s*([^)]*)\s*\)\s*:=\s*(.+?);', re.MULTILINE)
-        self.matrix_pattern = re.compile(r'matrix\s*\(\s*(.+?)\s*\)', re.IGNORECASE | re.DOTALL)
-        self.solve_pattern = re.compile(r'solve\s*\(\s*(.+?)\s*,\s*(.+?)\s*\)', re.IGNORECASE)
+        self.assignment_pattern = re.compile(r"(\w+)\s*:\s*(.+?);", re.MULTILINE)
+        self.function_pattern = re.compile(
+            r"(\w+)\s*\(\s*([^)]*)\s*\)\s*:=\s*(.+?);", re.MULTILINE
+        )
+        self.matrix_pattern = re.compile(
+            r"matrix\s*\(\s*(.+?)\s*\)", re.IGNORECASE | re.DOTALL
+        )
+        self.solve_pattern = re.compile(
+            r"solve\s*\(\s*(.+?)\s*,\s*(.+?)\s*\)", re.IGNORECASE
+        )
 
     def _extract_embedded_json_data(self, content: str) -> Optional[Dict[str, Any]]:
         """Extract embedded JSON model data from Maxima comments."""
-        return extract_embedded_json_data(content, [
-            r'/\*\s*MODEL_DATA:\s*(\{.+?\})\s*\*/',  # /* MODEL_DATA: {...} */
-        ])
+        return extract_embedded_json_data(
+            content,
+            [
+                r"/\*\s*MODEL_DATA:\s*(\{.+?\})\s*\*/",  # /* MODEL_DATA: {...} */
+            ],
+        )
 
-    def _parse_from_embedded_data(self, embedded_data: Dict[str, Any], result: ParseResult) -> ParseResult:
+    def _parse_from_embedded_data(
+        self, embedded_data: Dict[str, Any], result: ParseResult
+    ) -> ParseResult:
         """Parse model from embedded JSON data for perfect round-trip fidelity."""
         from .common import (
             Connection,
@@ -53,54 +65,55 @@ class MaximaParser(BaseGNNParser):
         )
 
         try:
-            result.model.model_name = embedded_data.get('model_name', 'MaximaGNNModel')
-            result.model.annotation = embedded_data.get('annotation', '')
+            result.model.model_name = embedded_data.get("model_name", "MaximaGNNModel")
+            result.model.annotation = embedded_data.get("annotation", "")
 
             # Restore variables
-            for var_data in embedded_data.get('variables', []):
+            for var_data in embedded_data.get("variables", []):
                 var = Variable(
-                    name=var_data['name'],
-                    var_type=VariableType(var_data.get('var_type', 'hidden_state')),
-                    data_type=DataType(var_data.get('data_type', 'categorical')),
-                    dimensions=var_data.get('dimensions', [])
+                    name=var_data["name"],
+                    var_type=VariableType(var_data.get("var_type", "hidden_state")),
+                    data_type=DataType(var_data.get("data_type", "categorical")),
+                    dimensions=var_data.get("dimensions", []),
                 )
                 result.model.variables.append(var)
 
             # Restore connections
-            for conn_data in embedded_data.get('connections', []):
+            for conn_data in embedded_data.get("connections", []):
                 conn = Connection(
-                    source_variables=conn_data.get('source_variables', []),
-                    target_variables=conn_data.get('target_variables', []),
-                    connection_type=ConnectionType(conn_data.get('connection_type', 'directed'))
+                    source_variables=conn_data.get("source_variables", []),
+                    target_variables=conn_data.get("target_variables", []),
+                    connection_type=ConnectionType(
+                        conn_data.get("connection_type", "directed")
+                    ),
                 )
                 result.model.connections.append(conn)
 
             # Restore parameters
-            for param_data in embedded_data.get('parameters', []):
-                param = Parameter(
-                    name=param_data['name'],
-                    value=param_data['value']
-                )
+            for param_data in embedded_data.get("parameters", []):
+                param = Parameter(name=param_data["name"], value=param_data["value"])
                 result.model.parameters.append(param)
 
             # Restore time specification
-            if embedded_data.get('time_specification'):
+            if embedded_data.get("time_specification"):
                 from .common import TimeSpecification
-                time_data = embedded_data['time_specification']
+
+                time_data = embedded_data["time_specification"]
                 result.model.time_specification = TimeSpecification(
-                    time_type=time_data.get('time_type', 'dynamic'),
-                    discretization=time_data.get('discretization'),
-                    horizon=time_data.get('horizon'),
-                    step_size=time_data.get('step_size')
+                    time_type=time_data.get("time_type", "dynamic"),
+                    discretization=time_data.get("discretization"),
+                    horizon=time_data.get("horizon"),
+                    step_size=time_data.get("step_size"),
                 )
 
             # Restore ontology mappings
-            for mapping_data in embedded_data.get('ontology_mappings', []):
+            for mapping_data in embedded_data.get("ontology_mappings", []):
                 from .common import OntologyMapping
+
                 mapping = OntologyMapping(
-                    variable_name=mapping_data.get('variable_name', ''),
-                    ontology_term=mapping_data.get('ontology_term', ''),
-                    description=mapping_data.get('description')
+                    variable_name=mapping_data.get("variable_name", ""),
+                    ontology_term=mapping_data.get("ontology_term", ""),
+                    description=mapping_data.get("description"),
                 )
                 result.model.ontology_mappings.append(mapping)
 
@@ -112,12 +125,12 @@ class MaximaParser(BaseGNNParser):
 
     def get_supported_extensions(self) -> List[str]:
         """Get file extensions supported by this parser."""
-        return ['.mac', '.max', '.wxm']
+        return [".mac", ".max", ".wxm"]
 
     def parse_file(self, file_path: str) -> ParseResult:
         """Parse a Maxima file."""
         try:
-            with open(file_path, 'r', encoding='utf-8') as f:
+            with open(file_path, "r", encoding="utf-8") as f:
                 content = f.read()
             return self.parse_string(content)
         except Exception as e:
@@ -152,7 +165,7 @@ class MaximaParser(BaseGNNParser):
                         var_type=self._infer_variable_type(var_name),
                         dimensions=dims,
                         data_type=DataType.FLOAT,
-                        description=f"Maxima matrix assignment: {var_value[:50]}..."
+                        description=f"Maxima matrix assignment: {var_value[:50]}...",
                     )
                     result.model.variables.append(variable)
                 else:
@@ -160,7 +173,7 @@ class MaximaParser(BaseGNNParser):
                     parameter = Parameter(
                         name=var_name,
                         value=self._parse_maxima_value(var_value),
-                        description=f"Maxima assignment: {var_value}"
+                        description=f"Maxima assignment: {var_value}",
                     )
                     result.model.parameters.append(parameter)
 
@@ -174,12 +187,14 @@ class MaximaParser(BaseGNNParser):
                     label=func_name,
                     content=f"{func_name}({func_args}) := {func_body}",
                     format="maxima",
-                    description=f"Maxima function with args: {func_args}"
+                    description=f"Maxima function with args: {func_args}",
                 )
                 result.model.equations.append(equation)
 
                 # Extract connections from function dependencies
-                connections = self._extract_function_connections(func_name, func_args, func_body)
+                connections = self._extract_function_connections(
+                    func_name, func_args, func_body
+                )
                 result.model.connections.extend(connections)
 
             # Parse solve statements as equations
@@ -191,7 +206,7 @@ class MaximaParser(BaseGNNParser):
                     label=f"solve_{len(result.model.equations)}",
                     content=f"solve({equation_expr}, {variables})",
                     format="maxima",
-                    description="Maxima solve statement"
+                    description="Maxima solve statement",
                 )
                 result.model.equations.append(equation)
 
@@ -204,36 +219,39 @@ class MaximaParser(BaseGNNParser):
 
     def _extract_model_name(self, content: str) -> str:
         """Extract model name from comments."""
-        comment_patterns = [
-            re.compile(r'/\*\s*Model:\s*(\w+)', re.IGNORECASE),
-            re.compile(r'/\*\s*(\w+)\s*Model', re.IGNORECASE),
-            re.compile(r'/\*.*?(\w+).*?\*/', re.IGNORECASE | re.DOTALL)
+        comment_patterns: list[Any] = [
+            re.compile(r"/\*\s*Model:\s*(\w+)", re.IGNORECASE),
+            re.compile(r"/\*\s*(\w+)\s*Model", re.IGNORECASE),
+            re.compile(r"/\*.*?(\w+).*?\*/", re.IGNORECASE | re.DOTALL),
         ]
 
         for pattern in comment_patterns:
             match = pattern.search(content)
             if match:
-                return match.group(1)
+                return cast("str", match.group(1))
 
         return "MaximaModel"
 
     def _is_matrix_definition(self, value: str) -> bool:
         """Check if value is a matrix definition."""
-        return ('matrix(' in value.lower() or
-                '[' in value and ']' in value or
-                'transpose(' in value.lower())
+        return (
+            "matrix(" in value.lower()
+            or "[" in value
+            and "]" in value
+            or "transpose(" in value.lower()
+        )
 
     def _parse_matrix_dimensions(self, matrix_def: str) -> List[int]:
         """Parse matrix dimensions from definition."""
         # Simple heuristic for common matrix patterns
-        if 'matrix(' in matrix_def.lower():
+        if "matrix(" in matrix_def.lower():
             # Count comma-separated rows
             matrix_match = self.matrix_pattern.search(matrix_def)
             if matrix_match:
                 content = matrix_match.group(1)
-                rows = content.split('],[')
+                rows = content.split("],[")
                 if len(rows) > 1:
-                    cols = len(rows[0].split(','))
+                    cols = len(rows[0].split(","))
                     return [len(rows), cols]
 
         # Default assumption
@@ -245,11 +263,11 @@ class MaximaParser(BaseGNNParser):
 
         # Try to evaluate simple numeric expressions
         try:
-            if value_clean.replace('.', '').replace('-', '').isdigit():
-                return float(value_clean) if '.' in value_clean else int(value_clean)
-            elif '%pi' in value_clean:
+            if value_clean.replace(".", "").replace("-", "").isdigit():
+                return float(value_clean) if "." in value_clean else int(value_clean)
+            elif "%pi" in value_clean:
                 return f"π-expression: {value_clean}"
-            elif '%e' in value_clean:
+            elif "%e" in value_clean:
                 return f"e-expression: {value_clean}"
             else:
                 return value_clean
@@ -259,32 +277,34 @@ class MaximaParser(BaseGNNParser):
     def _infer_variable_type(self, name: str) -> VariableType:
         """Infer variable type from name."""
         name_lower = name.lower()
-        if any(prefix in name_lower for prefix in ['a_', 'likelihood']):
+        if any(prefix in name_lower for prefix in ["a_", "likelihood"]):
             return VariableType.LIKELIHOOD_MATRIX
-        elif any(prefix in name_lower for prefix in ['b_', 'transition']):
+        elif any(prefix in name_lower for prefix in ["b_", "transition"]):
             return VariableType.TRANSITION_MATRIX
-        elif any(prefix in name_lower for prefix in ['c_', 'preference']):
+        elif any(prefix in name_lower for prefix in ["c_", "preference"]):
             return VariableType.PREFERENCE_VECTOR
-        elif any(prefix in name_lower for prefix in ['d_', 'prior']):
+        elif any(prefix in name_lower for prefix in ["d_", "prior"]):
             return VariableType.PRIOR_VECTOR
-        elif 's_' in name_lower or 'state' in name_lower:
+        elif "s_" in name_lower or "state" in name_lower:
             return VariableType.HIDDEN_STATE
-        elif 'o_' in name_lower or 'obs' in name_lower:
+        elif "o_" in name_lower or "obs" in name_lower:
             return VariableType.OBSERVATION
-        elif 'u_' in name_lower or 'action' in name_lower:
+        elif "u_" in name_lower or "action" in name_lower:
             return VariableType.ACTION
         else:
             return VariableType.HIDDEN_STATE
 
-    def _extract_function_connections(self, func_name: str, args: str, body: str) -> List[Connection]:
+    def _extract_function_connections(
+        self, func_name: str, args: str, body: str
+    ) -> List[Connection]:
         """Extract connections from function dependencies."""
-        connections = []
+        connections: list[Any] = []
 
         # Parse function arguments as source variables
-        arg_vars = [arg.strip() for arg in args.split(',') if arg.strip()]
+        arg_vars = [arg.strip() for arg in args.split(",") if arg.strip()]
 
         # Look for variable references in function body
-        var_pattern = re.compile(r'\b([a-zA-Z_]\w*)\b')
+        var_pattern = re.compile(r"\b([a-zA-Z_]\w*)\b")
         var_pattern.findall(body)
 
         # Create connections from arguments to function
@@ -294,10 +314,8 @@ class MaximaParser(BaseGNNParser):
                     source_variables=[arg_var],
                     target_variables=[func_name],
                     connection_type=ConnectionType.DIRECTED,
-                    description=f"Maxima function dependency: {arg_var} -> {func_name}"
+                    description=f"Maxima function dependency: {arg_var} -> {func_name}",
                 )
                 connections.append(connection)
 
         return connections
-
-

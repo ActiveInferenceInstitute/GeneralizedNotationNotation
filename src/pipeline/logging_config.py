@@ -15,7 +15,7 @@ import sys
 from datetime import datetime
 from pathlib import Path
 from types import MappingProxyType
-from typing import Optional
+from typing import Any, Optional
 
 
 class JSONFormatter(logging.Formatter):
@@ -27,7 +27,8 @@ class JSONFormatter(logging.Formatter):
     """
 
     def format(self, record: logging.LogRecord) -> str:
-        entry = {
+        """Provide format behavior."""
+        entry: dict[str, Any] = {
             "timestamp": datetime.fromtimestamp(record.created).isoformat(),
             "level": record.levelname,
             "logger": record.name,
@@ -53,16 +54,19 @@ class HumanFormatter(logging.Formatter):
     Human-readable colored formatter for terminal output.
     """
 
-    COLORS = MappingProxyType({
-        "DEBUG": "\033[36m",     # Cyan
-        "INFO": "\033[32m",      # Green
-        "WARNING": "\033[33m",   # Yellow
-        "ERROR": "\033[31m",     # Red
-        "CRITICAL": "\033[35m",  # Magenta
-    })
+    COLORS = MappingProxyType(
+        {
+            "DEBUG": "\033[36m",  # Cyan
+            "INFO": "\033[32m",  # Green
+            "WARNING": "\033[33m",  # Yellow
+            "ERROR": "\033[31m",  # Red
+            "CRITICAL": "\033[35m",  # Magenta
+        }
+    )
     RESET = "\033[0m"
 
     def format(self, record: logging.LogRecord) -> str:
+        """Provide format behavior."""
         color = self.COLORS.get(record.levelname, "")
         prefix = f"{color}{record.levelname:7s}{self.RESET}"
 
@@ -97,6 +101,7 @@ def configure_logging(
     root.handlers.clear()
 
     # Choose formatter
+    formatter: logging.Formatter
     if log_format == "json":
         formatter = JSONFormatter()
     else:

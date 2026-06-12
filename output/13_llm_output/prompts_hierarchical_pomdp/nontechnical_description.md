@@ -6,48 +6,76 @@ Prompt:
 
 Response:
 
-You can create a GNN model using the following code:
 ```python
-import numpy as np
-from scipy import stats
+import json
+from typing import List, Dict
 
-def gnn(x):
-    """GNN implementation of the standard Bayesian inference algorithm."""
+class GNNModel:
+    def __init__(self):
+        self.model = None
 
-    # Initialize state space and parameters
-    x_state = np.array([
-        (1, 0.85, 0.05, 0.05),
-        (0.05, 0.85, 0.05, 0.05)
-    ])
+    def load(self) -> None:
+        """Loads the GNN model from a JSON file."""
 
-    # Initialize the state space and parameters
-    x_state = np.array([x])
+        with open("GNN_model.json", "r") as f:
+            self.model = json.load(f)
+        
+        if not isinstance(self.model, dict):
+            raise ValueError("Model is not a dictionary.")
+            
+        for key in self.model["outputs"]:
+            try:
+                self.model[key] = eval(eval_json(self.model[key]))
+            
+            except Exception as e:
+                print(f"Error loading model from JSON file: {e}")
+        
+        if isinstance(self.model, dict):
+            for key, value in self.model["outputs"].items():
+                try:
+                    self._load_action(value)
+                    
+        else:
+            raise ValueError("Model is not a dictionary.")
 
-    # Initialize the initial parameterization
-    A1=np.array([[(1/2**i for i in range(num_hidden_states)]),
-                  (1/(2*num_actions))])
-    B1=np.array([[0, 0], [0]])
-    C1=np.array([((1+x)**(-1)for x in np.random.rand())]
+        return
 
-    # Initialize the initial parameterization
-    A2=np.array([[(1/2**i for i in range(num_hidden_states)]),
-                  (1/(2*num_actions))])
-    B2=np.array([((0+x)**(-1)for x in np.random.rand())]
+    def _load_action(self, action):
+        """Loads the actions from the model."""
+        
+        if isinstance(self.model[action], dict):
+            for key in self.model["outputs"]:
+                try:
+                    self._load_action(eval(json.loads(str(self.model[key]))))
+                    
+                except Exception as e:
+                    print(f"Error loading action from model: {e}")
+                
+        else:
+            raise ValueError("Model is not a dictionary.")
 
-    # Initialize the initial parameterization
-    A3=np.array([[(1/2**i for i in range(num_hidden_states)]),
-                  (1/(2*num_actions))])
-    B3=np.array([((0+x)**(-1)for x in np.random.rand())]
-
-    # Initialize the initial parameterization
-    A4=np.array([[(1/2**i for i in range(num_hidden_states)]),
-                  (1/(2*num_actions))])
-    B4=np.array([((0+x)**(-1)for x in np.random.rand())]
-
-    # Initialize the initial parameterization
-    A5=np.array([[(1/2**i for i in range(num_hidden_states)]),
-                  (1/(2*num_actions))])
-    B5=np.array([((0+x)**(-1)for x in np.random.rand())]
-
-    # Initialize the initial parameterization
-    A6=np.array([[(1
+    def _load_ontology(self, path):
+        """Loads the ontology file."""
+        
+        with open(path + "/node.json", "r") as f:
+            self._load_action(eval(json.loads(str(f))))
+            
+    def _load_ontology(self, path):
+        """Loads the ontology file."""
+        
+        if isinstance(self.model[path], dict):
+            for key in self.model["outputs"]:
+                try:
+                    self._load_node(eval(json.loads(str(self.model[key]))))
+                    
+                
+    def _load_action(self, action):
+        """Loads the actions from the model."""
+        
+        if isinstance(self.model[action], dict):
+            for key in self.model["outputs"]:
+                try:
+                    self._load_node(eval(json.loads(str(self.model[key]))))
+                    
+                
+    def _load_node(self

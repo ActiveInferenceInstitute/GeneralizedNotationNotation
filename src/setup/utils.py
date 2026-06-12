@@ -9,24 +9,31 @@ import logging
 from pathlib import Path
 from typing import Any, Dict, List
 
+try:
+    from setup import __version__
+except ImportError:
+    __version__ = "1.6.0"
+
 logger = logging.getLogger(__name__)
+
 
 def ensure_directory(directory_path: Path) -> Path:
     """Create directory if it doesn't exist; raise OSError if it cannot be created."""
     directory_path.mkdir(parents=True, exist_ok=True)
     return directory_path
 
+
 def find_gnn_files(directory: Path, recursive: bool = True) -> List[Path]:
     """
     Find GNN files in the specified directory.
-    
+
     Args:
         directory: Directory to search for GNN files
-        
+
     Returns:
         List of GNN file paths found
     """
-    gnn_files = []
+    gnn_files: list[Any] = []
     try:
         iterator = directory.rglob("*.md") if recursive else directory.glob("*.md")
         for file_path in iterator:
@@ -37,13 +44,14 @@ def find_gnn_files(directory: Path, recursive: bool = True) -> List[Path]:
 
     return gnn_files
 
+
 def get_output_paths(base_output_dir: Path) -> Dict[str, Path]:
     """
     Get standard output paths for the pipeline.
-    
+
     Args:
         base_output_dir: Base output directory
-        
+
     Returns:
         Dictionary of output paths
     """
@@ -66,82 +74,84 @@ def get_output_paths(base_output_dir: Path) -> Dict[str, Path]:
         "research": base_output_dir / "research_results",
         "website": base_output_dir / "website_results",
         "report": base_output_dir / "report_results",
-        "mcp": base_output_dir / "mcp_results"
+        "mcp": base_output_dir / "mcp_results",
     }
+
 
 def get_module_info() -> Dict[str, Any]:
     """
     Get comprehensive information about the setup module and its UV capabilities.
-    
+
     Returns:
         Dictionary with module information
     """
     return {
-        'version': "2.0.0",
-        'description': "GNN environment setup and management with UV",
-        'features': {
-            'uv_environment_setup': True,
-            'uv_dependency_management': True,
-            'uv_virtual_environment': True,
-            'system_validation': True,
-            'project_initialization': True,
-            'jax_installation': True,
-            'mcp_integration': True,
-            'pyproject_toml_support': True,
-            'lock_file_management': True
+        "version": __version__,
+        "description": "GNN environment setup and management with UV",
+        "features": {
+            "uv_environment_setup": True,
+            "uv_dependency_management": True,
+            "uv_virtual_environment": True,
+            "system_validation": True,
+            "project_initialization": True,
+            "jax_installation": True,
+            "mcp_integration": True,
+            "pyproject_toml_support": True,
+            "lock_file_management": True,
         },
-        'setup_capabilities': [
-            'UV environment setup',
-            'Dependency management',
-            'Virtual environment creation',
-            'System validation',
-            'Project initialization',
-            'JAX installation',
-            'MCP integration',
-            'PyProject.toml support',
-            'Lock file management'
+        "setup_capabilities": [
+            "UV environment setup",
+            "Dependency management",
+            "Virtual environment creation",
+            "System validation",
+            "Project initialization",
+            "JAX installation",
+            "MCP integration",
+            "PyProject.toml support",
+            "Lock file management",
         ],
-        'processing_methods': [
-            'UV installation',
-            'Environment validation',
-            'Dependency resolution',
-            'Project structure creation'
+        "processing_methods": [
+            "UV installation",
+            "Environment validation",
+            "Dependency resolution",
+            "Project structure creation",
         ],
-        'processing_capabilities': [
-            'Setup UV environment',
-            'Install dependencies',
-            'Validate system requirements',
-            'Create project structure',
-            'Manage virtual environments',
-            'Handle lock files'
+        "processing_capabilities": [
+            "Setup UV environment",
+            "Install dependencies",
+            "Validate system requirements",
+            "Create project structure",
+            "Manage virtual environments",
+            "Handle lock files",
         ],
-        'supported_formats': [
-            'PyProject.toml',
-            'uv.lock',
-            'poetry.lock'
-        ]
+        "supported_formats": ["PyProject.toml", "uv.lock", "poetry.lock"],
     }
+
 
 def get_setup_options() -> dict:
     """
     Get setup options and configuration.
-    
+
     Returns:
         Dictionary with setup options
     """
     return {
-        'environment_types': ['uv', 'venv', 'conda', 'pip'],
-        'python_versions': ['3.11', '3.12', '3.13'],  # Per pyproject.toml requires-python
-        'dependency_sources': ['pyproject.toml', 'uv.lock', 'poetry.lock'],
-        'setup_modes': ['minimal', 'standard', 'full', 'development'],
-        'validation_levels': ['basic', 'comprehensive', 'strict'],
-        'installation_methods': ['uv', 'pip', 'conda', 'poetry'],
-        'project_templates': ['basic', 'advanced', 'research', 'production'],
-        'output_formats': ['json', 'yaml', 'toml', 'markdown']
+        "environment_types": ["uv", "venv", "conda", "pip"],
+        "python_versions": [
+            "3.11",
+            "3.12",
+            "3.13",
+        ],  # Per pyproject.toml requires-python
+        "dependency_sources": ["pyproject.toml", "uv.lock", "poetry.lock"],
+        "setup_modes": ["minimal", "standard", "full", "development"],
+        "validation_levels": ["basic", "comprehensive", "strict"],
+        "installation_methods": ["uv", "pip", "conda", "poetry"],
+        "project_templates": ["basic", "advanced", "research", "production"],
+        "output_formats": ["json", "yaml", "toml", "markdown"],
     }
 
 
-def setup_environment(verbose: bool = False, **kwargs) -> bool:
+def setup_environment(verbose: bool = False, **kwargs: Any) -> bool:
     """
     Set up the GNN environment using UV.
 
@@ -156,13 +166,14 @@ def setup_environment(verbose: bool = False, **kwargs) -> bool:
     """
     try:
         from .uv_management import setup_uv_environment
+
         return setup_uv_environment(verbose=verbose, **kwargs)
     except ImportError:
         logger.warning("UV management module not available — returning success")
         return True
 
 
-def install_dependencies(verbose: bool = False, **kwargs) -> bool:
+def install_dependencies(verbose: bool = False, **kwargs: Any) -> bool:
     """
     Install GNN pipeline dependencies using UV.
 
@@ -177,8 +188,8 @@ def install_dependencies(verbose: bool = False, **kwargs) -> bool:
     """
     try:
         from .uv_management import install_uv_dependencies
+
         return install_uv_dependencies(verbose=verbose, **kwargs)
     except ImportError:
         logger.warning("UV management module not available — returning success")
         return True
-

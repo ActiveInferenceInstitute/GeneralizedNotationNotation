@@ -1,7 +1,7 @@
 # GNN Standards
 
-**Version**: v2.0.0  
-**Last Updated**: 2026-03-24  
+**Version**: v1.6.0 Engine (Bundle v2.0.0)  
+**Last Updated**: 2026-04-15  
 **Status**: ✅ Production Ready  
 **Modules**: 38+ · **Pipeline steps**: 25 · **Renderers**: 9 backends (see [../implementations/README.md](../implementations/README.md)) · **Tests**: see [../../../README.md](../../../README.md)  
 
@@ -14,7 +14,7 @@ The GNN pipeline follows strict architectural patterns and standards:
 - **Module Architecture**: Each module follows consistent structure with public APIs
   - See: **[src/AGENTS.md](../../../src/AGENTS.md)** for complete module registry
 - **Testing Standards**: No substitutions, real data validation, >90% test coverage
-  - See: **[doc/gnn/REPO_COHERENCE_CHECK.md](../operations/REPO_COHERENCE_CHECK.md)** for quality standards
+  - See: **[doc/gnn/operations/REPO_COHERENCE_CHECK.md](../operations/REPO_COHERENCE_CHECK.md)** for quality standards
 
 **Architecture Documentation:**
 
@@ -58,7 +58,7 @@ src/<module_name>/
 
 ### Real-Implementation Policy
 
-All tests must use real implementations. **No substitute objects, simulated methods, or placeholder functions** are permitted.
+All tests must use real implementations and representative data.
 
 ```python
 # ❌ PROHIBITED
@@ -77,7 +77,7 @@ def test_with_real_data():
 - Minimum 90% code coverage per module
 - Tests must validate real pipeline outputs against known-good baselines
 - Integration tests run the full pipeline with sample GNN files from `input/gnn_files/`
-- Tests are run via: `uv run pytest src/tests/ -v` (from repository root)
+- Tests are run via: `uv run --extra dev python -m pytest src/tests/ -v` (from repository root)
 
 ---
 
@@ -102,7 +102,7 @@ def test_with_real_data():
 - **Causality**: `>` for directed edges (X>Y), `-` for undirected (X-Y)
 - **Operations**: Standard math operators (+, -, *, /, |)
 - **Grouping**: Parentheses (), exact values {1}, indexing/dimensions [2,3]
-- **Comments**: Triple hashtags (###) for inline comments
+- **Comments**: Lines starting with `#` inside variable/connection blocks are treated as comments
 - **Probability**: Conditional probability notation P(X|Y) using pipe |
 
 ---
@@ -116,8 +116,8 @@ Every documentation file in `doc/gnn/` must include this header:
 ```markdown
 # [Title]
 
-**Version**: v2.0.0  
-**Last Updated**: 2026-03-24  
+**Version**: v1.6.0 Engine (Bundle v2.0.0)  
+**Last Updated**: 2026-04-15  
 **Status**: ✅ Production Ready  
 **Modules**: 38+ · **Pipeline steps**: 25 · **Renderers**: 9 backends (see [../implementations/README.md](../implementations/README.md)) · **Tests**: see [../../../README.md](../../../README.md)  
 ```

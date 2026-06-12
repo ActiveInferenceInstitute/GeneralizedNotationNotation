@@ -1,18 +1,29 @@
-# Type systems — agent notes
+# GNN Type System Definitions
+
+## Overview
+
+Contains type system implementations and mappings for GNN models. Defines categorical, functional, and algebraic type annotations used during type checking (Step 5).
+
+## Architecture
+
+```
+type_systems/
+├── __init__.py           # Package marker
+├── categorical.scala     # Categorical type system (Scala DSL)
+├── haskell.hs            # Haskell algebraic type definitions
+├── scala.scala           # Scala type annotations
+├── mapping.md            # Type mapping documentation (cross-system)
+└── examples/             # Example type annotations
+```
 
 ## Purpose
 
-Static **Scala** and **Haskell** (and related) reference material for GNN-aligned typing and categorical structure. See **[README.md](README.md)** and **[mapping.md](mapping.md)**.
+- **Type annotations** — Define the type algebra used by `type_checker/processor.py`.
+- **Cross-language mapping** — `mapping.md` documents how types translate across Haskell, Scala, and Python representations.
+- **Categorical semantics** — `categorical.scala` defines functorial and natural transformation types for DisCoPy integration.
 
-## Relationship to Python
+## Parent Module
 
-Runtime GNN types live in **`src/gnn/types.py`** and parsers in **`src/gnn/parsers/`**. This folder is **not** imported by the default pipeline as core logic.
+See [gnn/AGENTS.md](../AGENTS.md) for the overall GNN processing architecture.
 
-## Layout
-
-- Root: `scala.scala`, `haskell.hs`, `categorical.scala`, `mapping.md`
-- **`examples/`** — smaller samples; see **`examples/README.md`**
-
-## Related
-
-- **[../SPEC.md](../SPEC.md)** — GNN module architecture
+**Version**: 1.6.0

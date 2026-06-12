@@ -109,14 +109,12 @@ print(f"Connections: {len(gnn_model['connections'])}")
 
 ```bash
 # Headless mode (no GUI, fast)
-python3 src/24_oxdraw.py \
     --target-dir input/gnn_files \
     --output-dir output \
     --mode headless \
     --verbose
 
 # Interactive mode (launches editor)
-python3 src/24_oxdraw.py \
     --target-dir input/gnn_files \
     --output-dir output \
     --mode interactive \
@@ -220,16 +218,13 @@ Launch interactive oxdraw editor.
 
 ```bash
 # Run oxdraw integration tests
-pytest src/tests/test_oxdraw_integration.py -v
 
 # Run converter tests
-pytest src/tests/test_mermaid_converter.py -v
 
 # Run parser tests
-pytest src/tests/test_mermaid_parser.py -v
 
 # Run all oxdraw tests
-pytest src/tests/test_*oxdraw*.py src/tests/test_mermaid*.py -v
+uv run --extra dev python -m pytest src/tests/test_*oxdraw*.py src/tests/test_mermaid*.py -v
 ```
 
 ### Test Coverage
@@ -253,7 +248,6 @@ The module follows the GNN pipeline's **thin orchestrator pattern**:
 
 ```
 src/
-├── 24_oxdraw.py                 # Thin orchestrator
 ├── oxdraw/                      # Module implementation
 │   ├── __init__.py             # Public API
 │   ├── processor.py            # Main processing logic
@@ -263,9 +257,6 @@ src/
 │   ├── mcp.py                  # MCP tool registration
 │   └── AGENTS.md               # Comprehensive documentation
 └── tests/
-    ├── test_oxdraw_integration.py
-    ├── test_mermaid_converter.py
-    └── test_mermaid_parser.py
 ```
 
 ## Performance
@@ -323,7 +314,7 @@ MIT License - See main repository LICENSE file
 
 ---
 
-**Version**: 1.0.0  
+**Version**: 1.6.0  
 **Last Updated**: October 28, 2025  
 **Status**: ✅ Ready for Testing
 

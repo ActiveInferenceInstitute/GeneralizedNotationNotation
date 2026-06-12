@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import logging
 import re
-from typing import Optional
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -11,12 +11,15 @@ logger = logging.getLogger(__name__)
 # Component helpers (public API)
 # ------------------------------
 
-def add_component_to_markdown(md_text: str, name: str, comp_type: str, states: Optional[list[str]] = None) -> str:
+
+def add_component_to_markdown(
+    md_text: str, name: str, comp_type: str, states: Optional[list[str]] = None
+) -> str:
     """
     Append a new component block to the markdown. Creates components section if missing.
     """
     states_list = states or []
-    block = [
+    block: list[Any] = [
         "components:",
         f"  - name: {name}",
         f"    type: {comp_type}",
@@ -24,7 +27,7 @@ def add_component_to_markdown(md_text: str, name: str, comp_type: str, states: O
     ]
     prefix = "\n" if (md_text and not md_text.endswith("\n")) else ""
     if "\ncomponents:\n" in f"\n{md_text}\n":
-        item = [
+        item: list[Any] = [
             f"  - name: {name}",
             f"    type: {comp_type}",
             f"    states: [{', '.join(states_list)}]",
@@ -33,7 +36,9 @@ def add_component_to_markdown(md_text: str, name: str, comp_type: str, states: O
     return f"{md_text}{prefix}" + "\n".join(block) + "\n"
 
 
-def update_component_states(md_text: str, name: str, states: list[str], mode: str = "append") -> str:
+def update_component_states(
+    md_text: str, name: str, states: list[str], mode: str = "append"
+) -> str:
     """
     Update the states for a component by name.
     mode = 'append' to add a comment line, or 'replace' to replace a matching 'states' line.
@@ -52,7 +57,9 @@ def update_component_states(md_text: str, name: str, states: list[str], mode: st
             else:
                 j = i + 1
                 replaced = False
-                while j < len(lines) and (lines[j].startswith(" ") or not lines[j].strip()):
+                while j < len(lines) and (
+                    lines[j].startswith(" ") or not lines[j].strip()
+                ):
                     if lines[j].strip().startswith("states:"):
                         out.pop()
                         out.append(lines[i])
@@ -147,7 +154,13 @@ def parse_state_space_from_markdown(md_text: str) -> list[dict[str, object]]:
         if norm.startswith("## "):
             # Detect known headers for state-space listings
             tag = norm[3:].replace(" ", "")
-            if tag in {"statespace", "statespaceblock", "statespaces", "state_space", "state_space_block"}:
+            if tag in {
+                "statespace",
+                "statespaceblock",
+                "statespaces",
+                "state_space",
+                "state_space_block",
+            }:
                 in_section = True
                 found_section = True
                 continue
@@ -174,7 +187,11 @@ def parse_state_space_from_markdown(md_text: str) -> list[dict[str, object]]:
                             dims.append(int(p))
                         except ValueError:
                             logger.debug("Skipping non-integer dimension token: %s", p)
-                entry: dict[str, object] = {"name": name, "dims": dims, "type": typ or ""}
+                entry: dict[str, object] = {
+                    "name": name,
+                    "dims": dims,
+                    "type": typ or "",
+                }
                 if comment:
                     entry["comment"] = comment
                 result.append(entry)
@@ -188,7 +205,7 @@ def parse_state_space_from_markdown(md_text: str) -> list[dict[str, object]]:
                 inside = m.group(2)
                 comment = (m.group(4) or "").strip()
                 parts = [p.strip() for p in inside.split(",") if p.strip()]
-                dims: list[int] = []
+                dims = []
                 typ = None
                 for p in parts:
                     if p.startswith("type="):
@@ -198,7 +215,11 @@ def parse_state_space_from_markdown(md_text: str) -> list[dict[str, object]]:
                             dims.append(int(p))
                         except ValueError:
                             logger.debug("Skipping non-integer dimension token: %s", p)
-                entry: dict[str, object] = {"name": name, "dims": dims, "type": typ or ""}
+                entry = {
+                    "name": name,
+                    "dims": dims,
+                    "type": typ or "",
+                }
                 if comment:
                     entry["comment"] = comment
                 result.append(entry)
@@ -206,44 +227,81 @@ def parse_state_space_from_markdown(md_text: str) -> list[dict[str, object]]:
 
 
 def _ensure_state_space_section(md_text: str) -> tuple[str, int]:
+    """Handle ensure state space section for internal callers."""
     lines = md_text.splitlines()
     for i, line in enumerate(lines):
-        if line.strip().lower().startswith("## state space") or line.strip().lower() == "state space":
+        if (
+            line.strip().lower().startswith("## state space")
+            or line.strip().lower() == "state space"
+        ):
             return md_text, i + 1
-    to_add = []
+    to_add: list[Any] = []
     if lines and lines[-1].strip() != "":
         to_add.append("")
     to_add.append("## State Space")
-    new_text = md_text + ("\n" if not md_text.endswith("\n") else "") + "\n".join(to_add) + "\n"
+    new_text = (
+        md_text
+        + ("\n" if not md_text.endswith("\n") else "")
+        + "\n".join(to_add)
+        + "\n"
+    )
     return new_text, len(new_text.splitlines())
 
 
-def add_state_space_entry(md_text: str, name: str, dims: list[int], typ: str | None = None, comment: str | None = None) -> str:
+def add_state_space_entry(
+    md_text: str,
+    name: str,
+    dims: list[int],
+    typ: str | None = None,
+    comment: str | None = None,
+) -> str:
+    """Provide add state space entry behavior."""
     md_text, _ = _ensure_state_space_section(md_text)
     suffix = f"  # {comment}" if comment else ""
-    line = f"{name}[{', '.join(str(d) for d in dims)}{', type=' + typ if typ else ''}]" + suffix
+    line = (
+        f"{name}[{', '.join(str(d) for d in dims)}{', type=' + typ if typ else ''}]"
+        + suffix
+    )
     return md_text + ("\n" if not md_text.endswith("\n") else "") + line + "\n"
 
 
-def update_state_space_entry(md_text: str, orig_name: str, new_name: str, dims: list[int], typ: str | None = None, comment: str | None = None) -> str:
+def update_state_space_entry(
+    md_text: str,
+    orig_name: str,
+    new_name: str,
+    dims: list[int],
+    typ: str | None = None,
+    comment: str | None = None,
+) -> str:
+    """Update state space entry."""
     lines = md_text.splitlines()
     out: list[str] = []
     replaced = False
     for line in lines:
         m = _STATE_LINE_RE.match(line)
         if m and m.group(1) == orig_name:
-            suffix = f"  # {comment}" if comment else (f"  # {m.group(4).strip()}" if m.group(4) else "")
-            new_line = f"{new_name}[{', '.join(str(d) for d in dims)}{', type=' + typ if typ else ''}]" + suffix
+            suffix = (
+                f"  # {comment}"
+                if comment
+                else (f"  # {m.group(4).strip()}" if m.group(4) else "")
+            )
+            new_line = (
+                f"{new_name}[{', '.join(str(d) for d in dims)}{', type=' + typ if typ else ''}]"
+                + suffix
+            )
             out.append(new_line)
             replaced = True
         else:
             out.append(line)
     if not replaced:
-        return add_state_space_entry("\n".join(out) + "\n", new_name, dims, typ, comment)
+        return add_state_space_entry(
+            "\n".join(out) + "\n", new_name, dims, typ, comment
+        )
     return "\n".join(out) + ("\n" if not out or out[-1] != "" else "")
 
 
 def remove_state_space_entry(md_text: str, name: str) -> str:
+    """Provide remove state space entry behavior."""
     lines = md_text.splitlines()
     out: list[str] = []
     for line in lines:
@@ -252,5 +310,3 @@ def remove_state_space_entry(md_text: str, name: str) -> str:
             continue
         out.append(line)
     return "\n".join(out) + ("\n" if not out or out[-1] != "" else "")
-
-

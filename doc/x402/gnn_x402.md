@@ -42,7 +42,7 @@ Together with these partners, and by leveraging powerful agent definition framew
 ### Why x402 Matters (with GNN)
 Traditional payment methods aren't just outdated—they actively hinder the internet economy, especially for the autonomous agents and systems described by frameworks like Generalized Notation Notation (GNN).
 
-Legacy payment systems like credit cards and bank transfers weren't built for today's fast, global, and automated internet. They're slow, expensive, and riddled with geographical and authentication barriers. Even crypto solutions often require complex wallets or blockchain-specific tools, adding friction instead of removing it – a significant barrier for GNN-defined agents designed for autonomous operation.
+Conventional payment systems like credit cards and bank transfers weren't built for today's fast, global, and automated internet. They're slow, expensive, and riddled with geographical and authentication barriers. Even crypto solutions often require complex wallets or blockchain-specific tools, adding friction instead of removing it – a significant barrier for GNN-defined agents designed for autonomous operation.
 
 x402 solves this by resurrecting the HTTP 402 "Payment Required" status code, a dormant feature of the web designed for seamless payment requests within standard HTTP interactions. Now, clients—whether humans, scripts, or GNN-specified AI agents—can respond to payment prompts instantly using widely-used stablecoins (like USDC), making transactions as effortless as loading a webpage.
 

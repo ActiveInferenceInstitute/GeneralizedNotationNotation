@@ -257,7 +257,7 @@ def calculate_episode_statistics(trace: Dict[str, Any]) -> Dict[str, Any]:
     if 'positions' in trace and trace['positions']:
         stats['final_position'] = trace['positions'][-1]
     
-    # Check success (placeholder - depends on environment specifics)
+    # Check success using reward semantics supplied by the environment trace.
     if 'rewards' in trace and trace['rewards']:
         # Assume success if final reward is positive and large
         final_reward = trace['rewards'][-1] if trace['rewards'] else 0

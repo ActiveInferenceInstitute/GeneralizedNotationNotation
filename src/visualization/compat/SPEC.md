@@ -1,8 +1,20 @@
-# Specification: Compat
+# Visualization Compatibility — Technical Specification
 
-## Design Requirements
-This module (`compat`) maps structural logic to the overall execution graph.
-It ensures that `Compat` tasks resolve without runtime dependency loops.
+**Version**: 1.6.0
 
-## Components
-Expected available types: No specific classes exported.
+## Import Strategy
+
+```python
+try:
+    import matplotlib.pyplot as plt
+    MATPLOTLIB_AVAILABLE = True
+except ImportError:
+    plt = None
+    MATPLOTLIB_AVAILABLE = False
+```
+
+## Contract
+
+- `MATPLOTLIB_AVAILABLE` is always a `bool`
+- `plt` is either `matplotlib.pyplot` or `None`
+- `np` is always `numpy` (core dependency)

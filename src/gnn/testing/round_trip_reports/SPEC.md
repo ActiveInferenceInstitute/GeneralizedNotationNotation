@@ -1,8 +1,13 @@
-# Specification: Round Trip Reports
+# Round-Trip Reports — Specification
 
-## Design Requirements
-This module (`round_trip_reports`) maps structural logic to the overall execution graph.
-It ensures that `Round Trip Reports` tasks resolve without runtime dependency loops.
+## Report Format
 
-## Components
-Expected available types: No specific classes exported.
+Each report contains:
+- **Timestamp**: ISO 8601 execution time
+- **Formats tested**: List of parser/serializer pairs exercised
+- **Field comparison**: Per-field match/mismatch counts
+- **Pass/fail summary**: Overall fidelity verdict
+
+## JSON Schema
+
+Results files use `{format, passed, total, mismatches: [{field, expected, actual}]}` structure.

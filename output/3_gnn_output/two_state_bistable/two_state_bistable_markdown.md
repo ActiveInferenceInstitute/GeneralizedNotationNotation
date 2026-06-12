@@ -46,6 +46,10 @@ B = [[[0.8, 0.3], [0.2, 0.7]], [[0.3, 0.8], [0.7, 0.2]]]
 C = [[0.0, 2.0]]
 D = [[0.5, 0.5]]
 E = [[0.5, 0.5]]
+num_hidden_states = 2
+num_obs = 2
+num_actions = 2
+num_timesteps = 20
 
 ## Time
 Dynamic
@@ -66,6 +70,6 @@ u = Action
 t = Time
 
 ## Footer
-Generated: 2026-04-10T10:24:32.880586
+Generated: 2026-05-25T09:51:15.194793
 
 ## Signature

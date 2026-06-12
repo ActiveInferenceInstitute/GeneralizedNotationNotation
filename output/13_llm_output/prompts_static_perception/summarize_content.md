@@ -1,13 +1,24 @@
 # SUMMARIZE_CONTENT
 
-Here is a concise summary of the GNN specification:
+Here's a concise summary of the GNN implementation:
 
 **Model Overview:**
-This is a simple active inference model that models perception without temporal dynamics or action components. It consists of two hidden states (A and B) and two observations, which are combined into one observation to represent the input data. The model performs binary classification on the input data based on its corresponding belief over the hidden state. The model's key variables include:
-- **hidden_states**: A list containing 2 values representing the presence or absence of a hidden state (1 for "yes" and 0 for "no")
-- **observations** - A list containing 3 values representing each observation, which are combined into one observation. Each observation is represented as a binary vector with two elements: `(x_i, y_i)` where x_i represents the input data and y_i represents the corresponding belief of the hidden state.
-- **actions** - A list containing 2 values representing each action (1 for "yes" or "no") that is applied to each observation during inference. Each action can be represented as a binary vector with two elements: `(x, y)` where x and y are the corresponding input data and actions represent whether the input was attended or not attended.
-- **belief** - A list containing 2 values representing the belief of the hidden state (1 for "yes" or "no") at each observation during inference. Each observation is represented as a binary vector with two elements: `(x_i, y_i)` where x_i and y_i are the corresponding input data and action respectively.
-- **action_probabilities** - A list containing 2 values representing the probability of observing an action at each observation during inference (1 for "yes" or "no") based on its belief over the hidden state. Each observation is represented as a binary vector with two elements: `(x, y)` where x and y are the corresponding input data and actions respectively.
-- **belief_update** - A list containing 2 values representing the updated belief of the hidden state at each observation during inference (1 for "yes" or "no") based on its belief over the hidden state. Each observation is represented as a binary vector with two elements: `(x, y)` where x and y are the corresponding input data and actions respectively.
-- **belief_update** - A list containing 2 values representing the updated belief of the
+This is an active inference model that can learn from data based on its ability to recognize patterns in perception-based data. It consists of two main components:
+
+1. **GNN Representation**: A neural network architecture consisting of two hidden states, one for each observation and the other for the action component. The input data is represented as a set of 2x3 matrices representing observed observations (A) and predicted actions (B). These matrices are initialized with random values to represent the initial state-action relationships.
+
+2. **GNN Representation**: A neural network architecture consisting of two hidden states, one for each observation and the other for action components. The input data is represented as a set of 2x3 matrices representing observed observations (A) and predicted actions (B). These matrices are initialized with random values to represent the initial state-action relationships.
+
+**Key Variables:**
+
+1. **hidden states**: A neural network architecture consisting of two hidden states, one for each observation. The input data is represented as a set of 2x3 matrices representing observed observations (A) and predicted actions (B). These matrices are initialized with random values to represent the initial state-action relationships.
+2. **actions/control**: A neural network architecture consisting of two hidden states, one for each action component. The input data is represented as a set of 2x3 matrices representing observed observations (A) and predicted actions (B). These matrices are initialized with random values to represent the initial state-action relationships.
+
+**Critical Parameters:**
+
+1. **hidden_states**: A neural network architecture consisting of two hidden states, one for each observation. The input data is represented as a set of 2x3 matrices representing observed observations (A) and predicted actions (B). These matrices are initialized with random values to represent the initial state-action relationships.
+2. **actions/control**: A neural network architecture consisting of two hidden states, one for each action component. The input data is represented as a set of 2x3 matrices representing observed observations (A) and predicted actions (B). These matrices are initialized with random values to represent the initial state-action relationships.
+
+**Notable Features:**
+
+1. **Random initialization**: Randomly initialize the hidden states, action components, and input data using a random number generator. This ensures that the model is trained without any biases or limitations in its

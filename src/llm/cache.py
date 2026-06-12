@@ -14,7 +14,7 @@ import json
 import logging
 from datetime import datetime
 from pathlib import Path
-from typing import Optional
+from typing import Any, Optional, cast
 
 logger = logging.getLogger(__name__)
 
@@ -22,15 +22,37 @@ logger = logging.getLogger(__name__)
 class LLMCache:
     """Content-addressed cache for LLM prompt responses."""
 
-    def __init__(self, cache_dir: Optional[Path] = None):
+    def __init__(
+        self, cache_dir: Optional[Path] = None, base_output_dir: Optional[Path] = None
+    ) -> None:
         """
         Initialize cache.
-        
+
         Args:
-            cache_dir: Directory to store cached responses.
-                       Defaults to output/13_llm_output/.cache/
+            cache_dir: Explicit directory to store cached responses. Takes
+                precedence over ``base_output_dir``.
+            base_output_dir: If provided (and ``cache_dir`` is None), the
+                cache root is resolved via
+                ``pipeline.config.get_output_dir_for_script("13_llm.py",
+                base_output_dir) / ".cache"``. This allows multi-workspace /
+                multi-pipeline runs to avoid sharing one on-disk cache.
+                When both are None, uses ``output/13_llm_output/.cache``
+                relative to CWD.
         """
-        self.cache_dir = cache_dir or Path("output/13_llm_output/.cache")
+        if cache_dir is not None:
+            self.cache_dir = Path(cache_dir)
+        elif base_output_dir is not None:
+            try:
+                from pipeline.config import get_output_dir_for_script
+
+                self.cache_dir = (
+                    get_output_dir_for_script("13_llm.py", Path(base_output_dir))
+                    / ".cache"
+                )
+            except ImportError:
+                self.cache_dir = Path(base_output_dir) / "13_llm_output" / ".cache"
+        else:
+            self.cache_dir = Path("output/13_llm_output/.cache")
         self.cache_dir.mkdir(parents=True, exist_ok=True)
         self.hits = 0
         self.misses = 0
@@ -69,7 +91,7 @@ class LLMCache:
                     entry = json.load(f)
                 self.hits += 1
                 logger.debug(f"Cache HIT: {key[:12]}…")
-                return entry.get("response")
+                return cast("str | None", entry.get("response"))
             except (json.JSONDecodeError, KeyError) as exc:
                 logger.warning(f"Corrupt cache entry {key[:12]}…: {exc}")
                 path.unlink(missing_ok=True)
@@ -97,7 +119,7 @@ class LLMCache:
         key = self._make_key(file_content, model_name, prompt_template)
         path = self._cache_path(key)
 
-        entry = {
+        entry: dict[str, Any] = {
             "key": key,
             "model": model_name,
             "timestamp": datetime.now().isoformat(),

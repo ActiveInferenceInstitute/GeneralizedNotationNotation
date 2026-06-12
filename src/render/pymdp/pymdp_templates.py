@@ -13,7 +13,7 @@ new API exclusively:
 There are two generators:
 
 * ``generate_pipeline_runner_script`` — emits a thin runner that delegates to
-  ``src.execute.pymdp.run_simple_pymdp_simulation`` so the generated script
+  ``execute.pymdp.run_pymdp_simulation`` so the generated script
   shares the pipeline's tested rollout code.
 * ``generate_standalone_runner_script`` — emits a fully self-contained
   pymdp 1.0.0 script usable outside the GNN pipeline.
@@ -28,9 +28,9 @@ _PIPELINE_RUNNER_TEMPLATE = '''#!/usr/bin/env python3
 pymdp 1.0.0 runner for {model_display_name}
 
 This file was generated from a GNN specification by
-``src/render/pymdp/pymdp_renderer.py``. It delegates the actual rollout
+``render/pymdp/pymdp_renderer.py``. It delegates the actual rollout
 to the GNN pipeline's tested execution module
-(``src.execute.pymdp.run_simple_pymdp_simulation``), which in turn calls
+(``execute.pymdp.run_pymdp_simulation``), which in turn calls
 real pymdp 1.0.0 (JAX-first) under the hood.
 
 Model:        {model_display_name}
@@ -69,7 +69,7 @@ if sys.path and sys.path[0] and sys.path[0].endswith("pymdp"):
 _gnn_root = os.environ.get("GNN_PROJECT_ROOT")
 if _gnn_root:
     _repo = Path(_gnn_root).resolve()
-    sys.path.insert(0, str(_repo))
+    sys.path.insert(0, str(_repo / "src"))
 else:
     _cur = Path(__file__).resolve().parent
     _found = None
@@ -87,7 +87,7 @@ else:
             file=sys.stderr,
         )
         sys.exit(1)
-    sys.path.insert(0, str(_found))
+    sys.path.insert(0, str(_found / "src"))
 
 # ---------------------------------------------------------------------------
 # pymdp 1.0.0 presence check (hard requirement)
@@ -96,7 +96,7 @@ try:
     import pymdp  # noqa: F401
     from pymdp.agent import Agent  # noqa: F401
     if not hasattr(Agent, "update_empirical_prior"):
-        raise ImportError("legacy pymdp (<1.0.0) detected")
+        raise ImportError("unsupported pymdp (<1.0.0) detected")
     print("PyMDP 1.0.0+ detected (JAX-first Agent).")
 except ImportError as e:
     print(
@@ -107,7 +107,7 @@ except ImportError as e:
     )
     sys.exit(1)
 
-from src.execute.pymdp import execute_pymdp_simulation
+from execute.pymdp import execute_pymdp_simulation
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
@@ -195,7 +195,7 @@ try:
     import jax.random as jr
     from pymdp.agent import Agent
     if not hasattr(Agent, "update_empirical_prior"):
-        raise ImportError("legacy pymdp (<1.0.0) detected")
+        raise ImportError("unsupported pymdp (<1.0.0) detected")
 except ImportError as e:
     print(
         "ERROR: pymdp 1.0.0 required. Install with: "
@@ -267,41 +267,35 @@ def main() -> int:
     D_data = {D_literal}
     E_data = {E_literal}
 
-    num_obs_default = {num_obs}
-    num_states_default = {num_states}
     num_actions_default = {num_actions}
     num_timesteps = {num_timesteps}
 
     # Build canonical numpy matrices
     if A_data is None:
-        A_np = np.eye(num_obs_default, num_states_default) * 0.9 + 0.1 / max(num_obs_default, 1)
-    else:
-        A_np = np.asarray(A_data, dtype=np.float64)
+        raise ValueError("A matrix is required for pymdp execution")
+    A_np = np.asarray(A_data, dtype=np.float64)
     A_np = _norm_cols(A_np)
     num_obs, num_states = A_np.shape
 
     if B_data is None:
-        B_np = np.stack([np.eye(num_states) for _ in range(num_actions_default)], axis=-1)
-    else:
-        B_np = _canonical_B(np.asarray(B_data, dtype=np.float64), num_states, num_actions_default)
+        raise ValueError("B matrix is required for pymdp execution")
+    B_np = _canonical_B(np.asarray(B_data, dtype=np.float64), num_states, num_actions_default)
     num_actions = B_np.shape[2]
 
     if C_data is None:
-        C_np = np.zeros(num_obs, dtype=np.float64)
-    else:
-        c = np.asarray(C_data, dtype=np.float64).flatten()
-        C_np = np.zeros(num_obs, dtype=np.float64)
-        C_np[: min(num_obs, len(c))] = c[: min(num_obs, len(c))]
+        raise ValueError("C vector is required for pymdp execution")
+    c = np.asarray(C_data, dtype=np.float64).flatten()
+    C_np = np.zeros(num_obs, dtype=np.float64)
+    C_np[: min(num_obs, len(c))] = c[: min(num_obs, len(c))]
 
     if D_data is None:
-        D_np = np.ones(num_states, dtype=np.float64) / num_states
-    else:
-        D_np = _norm_vec(np.asarray(D_data, dtype=np.float64))
-        if D_np.shape[0] != num_states:
-            padded = np.ones(num_states, dtype=np.float64) / num_states
-            k = min(num_states, D_np.shape[0])
-            padded[:k] = D_np[:k]
-            D_np = _norm_vec(padded)
+        raise ValueError("D vector is required for pymdp execution")
+    D_np = _norm_vec(np.asarray(D_data, dtype=np.float64))
+    if D_np.shape[0] != num_states:
+        padded = np.ones(num_states, dtype=np.float64) / num_states
+        k = min(num_states, D_np.shape[0])
+        padded[:k] = D_np[:k]
+        D_np = _norm_vec(padded)
 
     E_np: Optional[np.ndarray] = None
     if E_data is not None:
@@ -322,10 +316,11 @@ def main() -> int:
         C=C_list,
         D=D_list,
         num_controls=[num_actions],
-        control_fac_idx=[0],
         policy_len=1,
         batch_size=1,
     )
+    if num_actions > 1:
+        kwargs["control_fac_idx"] = [0]
     if E_np is not None:
         kwargs["E"] = _to_batched_jax(E_np)
     agent = Agent(**kwargs)
@@ -366,6 +361,7 @@ def main() -> int:
         logger.info("t=%02d obs=%d action=%d belief=%s", t, obs_idx, a_idx, np.round(belief_vec, 3).tolist())
 
     results = {{
+        "schema_version": "pymdp_simulation_v1",
         "framework": "PyMDP",
         "pymdp_version": "1.0.0+",
         "backend": "jax",
@@ -397,6 +393,7 @@ if __name__ == "__main__":
 
 
 def _flag(label: str, value: Any) -> str:
+    """Handle flag for internal callers."""
     return "Present" if value is not None and value != "None" else "Missing"
 
 
@@ -418,23 +415,22 @@ def generate_standalone_runner_script(ctx: Dict[str, Any]) -> str:
 
 
 # ---------------------------------------------------------------------------
-# Legacy helper retained for backwards compatibility with test fixtures that
-# import symbols from this module directly. These helpers build string
-# fragments for the pymdp 1.0.0 JAX API (no more ``utils.obj_array``).
+# Helpers that build string fragments for the pymdp 1.0.0 JAX API.
 # ---------------------------------------------------------------------------
 def generate_file_header(model_name: str) -> str:
     """Return a short module docstring header for a generated script."""
     return (
-        '#!/usr/bin/env python3\n'
+        "#!/usr/bin/env python3\n"
         f'"""pymdp 1.0.0 agent script — {model_name} (generated by GNN renderer)."""\n'
-        'from __future__ import annotations\n'
-        'import jax.numpy as jnp\n'
-        'import jax.random as jr\n'
-        'from pymdp.agent import Agent\n'
+        "from __future__ import annotations\n"
+        "import jax.numpy as jnp\n"
+        "import jax.random as jr\n"
+        "from pymdp.agent import Agent\n"
     )
 
 
 def generate_conversion_summary(log_entries: List[str]) -> str:
+    """Generate conversion summary."""
     lines = "\n".join(f"# {entry}" for entry in log_entries)
     return f"\n# --- GNN to pymdp 1.0.0 conversion summary ---\n{lines}\n# --- end summary ---\n"
 
@@ -450,10 +446,8 @@ def generate_example_usage_template(
     """
     Produce a minimal pymdp 1.0.0 rollout snippet as a list of code lines.
 
-    The legacy (pre-1.0.0) version of this helper generated code that called
-    ``agent.infer_states(o_current)`` / ``agent.sample_action()`` without
-    rng_key / empirical_prior arguments — that API is gone in 1.0.0. The new
-    lines below use the canonical JAX-first pattern.
+    The lines below use the canonical JAX-first pattern with rng_key and
+    empirical_prior arguments.
     """
     lines: List[str] = [
         "",
@@ -473,7 +467,7 @@ def generate_example_usage_template(
         "    empirical_prior = agent.D",
         "",
         "    for t in range(T):",
-        "        # Single-modality observation placeholder (replace with real env)",
+        "        # Single-modality observation sample for generated examples",
         "        obs = [jnp.array([0], dtype=jnp.int32) for _ in range(num_modalities)]",
         "        qs, info = agent.infer_states(obs, empirical_prior=empirical_prior, return_info=True)",
         "        q_pi, neg_efe = agent.infer_policies(qs)",
@@ -486,41 +480,3 @@ def generate_example_usage_template(
         f"    print('Rollout finished: {model_name}')",
     ]
     return lines
-
-
-def generate_placeholder_matrices(
-    num_modalities: int, num_states: List[int]
-) -> Dict[str, List[str]]:
-    """
-    Return placeholder matrix-construction code lines in pymdp 1.0.0 form.
-
-    Unlike the legacy helper, this no longer emits ``utils.obj_array`` (gone
-    in 1.0.0). Instead it creates plain numpy arrays suitable for handing to
-    ``_to_batched_jax`` in the generated runner.
-    """
-    matrix_defs: Dict[str, List[str]] = {"A": [], "B": [], "C": [], "D": []}
-
-    Ns = num_states[0] if num_states else 2
-    Nm = max(num_modalities, 1)
-
-    matrix_defs["A"] = [
-        "# A: likelihood P(o|s) — column-normalised",
-        f"A_np = np.eye({Nm}, {Ns}) * 0.9 + 0.1 / max({Nm}, 1)",
-        "A_np = A_np / A_np.sum(axis=0, keepdims=True)",
-    ]
-    matrix_defs["B"] = [
-        "# B: transitions in (next_state, prev_state, action) shape",
-        f"B_np = np.stack([np.eye({Ns}), np.roll(np.eye({Ns}), 1, axis=1)], axis=-1)",
-        "for a in range(B_np.shape[2]):",
-        "    col_sums = B_np[:, :, a].sum(axis=0, keepdims=True)",
-        "    B_np[:, :, a] /= np.where(col_sums == 0, 1.0, col_sums)",
-    ]
-    matrix_defs["C"] = [
-        "# C: observation preferences",
-        f"C_np = np.zeros({Nm}, dtype=np.float64)",
-    ]
-    matrix_defs["D"] = [
-        "# D: uniform prior over hidden states",
-        f"D_np = np.ones({Ns}, dtype=np.float64) / {Ns}",
-    ]
-    return matrix_defs

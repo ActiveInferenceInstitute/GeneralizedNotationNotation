@@ -1,6 +1,8 @@
 # LLM Module
 
-This module provides comprehensive LLM (Large Language Model) integration capabilities for GNN models, including model analysis, interpretation, AI assistance, and enhanced understanding through multiple LLM providers.
+Multi-provider Large-Language-Model integration for GNN models: parse, interpret,
+summarise, and annotate Active Inference specifications through Ollama (local) and,
+when API keys are present, OpenAI / OpenRouter / Perplexity / Anthropic.
 
 ## Module Structure
 
@@ -9,7 +11,6 @@ src/llm/
 ├── __init__.py                    # Module initialization and exports
 ├── README.md                      # This documentation
 ├── analyzer.py                    # LLM analysis system
-├── demo_enhanced_llm.py          # Enhanced LLM demonstration
 ├── llm_operations.py             # Core LLM operations
 ├── llm_processor.py              # LLM processing system
 ├── mcp.py                        # Model Context Protocol integration
@@ -697,7 +698,10 @@ Common Ollama tags: `smollm2:135m-instruct-q4_K_S`, `gemma3:4b`, `tinyllama`, an
 
 ## Summary
 
-The LLM module provides comprehensive LLM integration capabilities for GNN models, including model analysis, interpretation, AI assistance, and enhanced understanding through multiple LLM providers. The module supports various analysis types, optimization suggestions, and documentation generation to enhance Active Inference research and development.
+The module analyses GNN models with an LLM of the caller's choosing, prefers local
+Ollama when no cloud keys are set, and writes per-model summary / explanation /
+optimisation artifacts into `output/13_llm_output/` for downstream consumption by
+steps 16, 20, and 23.
 
 ## License and Citation
 

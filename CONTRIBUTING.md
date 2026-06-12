@@ -18,7 +18,10 @@ git clone https://github.com/<your-username>/GeneralizedNotationNotation.git
 cd GeneralizedNotationNotation
 
 # Install dependencies
-uv sync
+uv sync --extra dev
+
+# Install pre-commit hooks
+uv run pre-commit install
 
 # Run the test suite to verify your setup
 uv run pytest src/tests/ -v
@@ -79,7 +82,7 @@ All pipeline modules follow the **thin orchestrator pattern**:
 
 - **Type hints** for all public functions
 - **Exit codes**: 0 = success, 1 = error, 2 = warnings
-- **No mocks** in tests — all tests must exercise real code paths
+- Tests exercise real code paths and real data dependencies
 - Follow existing patterns — read neighboring modules before writing new ones
 
 ### Module Structure
@@ -114,6 +117,12 @@ Pull requests against `main` run the workflows described in [.github/README.md](
 Before opening a PR, align locally where possible:
 
 ```bash
+# Using just (recommended)
+just lint                  # Ruff lint check
+just test                  # Fast test suite
+just test-mod MODULE       # Test specific module
+
+# Or manually
 uv sync --frozen --extra dev
 uv run pytest -m "not pipeline and not mcp" --tb=short -q
 uv run ruff check src/
@@ -138,6 +147,8 @@ Follow the project [Style Guide](doc/style_guide.md) for formatting and naming c
 - Commit messages should be imperative ("Add feature" not "Added feature")
 
 ## Security
+
+### Security considerations
 
 If you discover a security vulnerability, please follow the reporting process in [SECURITY.md](SECURITY.md). Do **not** open a public issue for security vulnerabilities.
 

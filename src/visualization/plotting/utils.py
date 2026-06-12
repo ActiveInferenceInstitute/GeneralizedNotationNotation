@@ -5,7 +5,7 @@ from __future__ import annotations
 import logging
 import warnings
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
 import matplotlib
 
@@ -13,9 +13,10 @@ matplotlib.use("Agg")
 
 try:
     import matplotlib.pyplot as plt
+
     MATPLOTLIB_AVAILABLE = True
 except (ImportError, RecursionError):
-    plt = None
+    plt = cast(Any, None)
     MATPLOTLIB_AVAILABLE = False
 
 logger = logging.getLogger(__name__)
@@ -27,6 +28,7 @@ def save_plot_safely(plot_path: Path, dpi: int = 300, **savefig_kwargs: Any) -> 
         return False
 
     def _safe_dpi_value(dpi_input: Any) -> int:
+        """Handle safe dpi value for internal callers."""
         try:
             dpi_val = int(dpi_input) if isinstance(dpi_input, (int, float)) else 150
             return max(50, min(dpi_val, 600))
@@ -66,8 +68,3 @@ def safe_tight_layout() -> None:
             plt.tight_layout()
     except (ValueError, RuntimeError):
         logger.debug("tight_layout skipped (non-critical)")
-
-
-# Backward-compatible names for tests / processor shims
-_save_plot_safely = save_plot_safely
-_safe_tight_layout = safe_tight_layout

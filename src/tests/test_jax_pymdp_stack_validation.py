@@ -2,7 +2,7 @@
 Package integrity: JAX + Optax + Flax + pymdp 1.x must work in the project ``.venv``.
 
 Uses the same subprocess probe as Step 1 and ``validate_uv_setup``, so the test passes
-even when ``pytest`` is launched from a different interpreter (``uv run pytest`` still
+even when ``pytest`` is launched from a different interpreter (``uv run --extra dev python -m pytest`` still
 validates the lockfile environment).
 """
 

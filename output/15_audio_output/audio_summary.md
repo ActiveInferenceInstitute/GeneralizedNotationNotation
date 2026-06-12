@@ -1,9 +1,9 @@
 # Audio Processing Summary
 
-Generated on: 2026-04-10T10:34:58.334121
+Generated on: 2026-05-22T06:33:09.905516
 
 ## Overview
-- **Files Processed**: 9
+- **Files Processed**: 10
 - **Success**: True
 - **Errors**: 0
 
@@ -50,12 +50,20 @@ Generated on: 2026-04-10T10:34:58.334121
   - ambient: hmm_baseline_ambient.wav
 
 ### bnlearn_causal_model.md
-- **Variables**: 31
+- **Variables**: 37
 - **Connections**: 0
 - **Audio Files**: 3
   - tonal: bnlearn_causal_model_tonal.wav
   - rhythmic: bnlearn_causal_model_rhythmic.wav
   - ambient: bnlearn_causal_model_ambient.wav
+
+### time_varying_dynamics.md
+- **Variables**: 42
+- **Connections**: 0
+- **Audio Files**: 3
+  - tonal: time_varying_dynamics_tonal.wav
+  - rhythmic: time_varying_dynamics_rhythmic.wav
+  - ambient: time_varying_dynamics_ambient.wav
 
 ### two_state_bistable.md
 - **Variables**: 69
@@ -74,7 +82,7 @@ Generated on: 2026-04-10T10:34:58.334121
   - ambient: markov_chain_ambient.wav
 
 ### tmaze_epistemic.md
-- **Variables**: 115
+- **Variables**: 116
 - **Connections**: 0
 - **Audio Files**: 3
   - tonal: tmaze_epistemic_tonal.wav

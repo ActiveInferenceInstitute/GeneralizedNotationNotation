@@ -17,7 +17,7 @@ from typing import Any, Dict, List, Optional
 import matplotlib
 import numpy as np
 
-matplotlib.use('Agg')
+matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation, PillowWriter
 
@@ -27,11 +27,49 @@ MATPLOTLIB_AVAILABLE = True
 logger = logging.getLogger(__name__)
 
 
+CURRENT_VISUALIZATION_SCHEMAS = {
+    "pymdp_simulation_v1",
+    "rxinfer_simulation_v1",
+    "activeinference_jl_simulation_v1",
+}
+
+VISUALIZATION_FRAMEWORK_DIRS = {
+    "pymdp",
+    "rxinfer",
+    "activeinference_jl",
+    "jax",
+    "discopy",
+    "pytorch",
+    "numpyro",
+    "bnlearn",
+}
+
+
+def _current_schema_visualization_data(data: Dict[str, Any]) -> Dict[str, Any]:
+    """Handle current schema visualization data for internal callers."""
+    if data.get("schema_version") not in CURRENT_VISUALIZATION_SCHEMAS:
+        return {}
+    return {
+        "beliefs": (data.get("beliefs_by_factor", {}) or {}).get("joint_state", []),
+        "actions": (data.get("actions_by_control_factor", {}) or {}).get(
+            "joint_action", []
+        ),
+        "observations": (data.get("observations_by_modality", {}) or {}).get(
+            "joint_observation", []
+        ),
+        "expected_free_energy": data.get("expected_free_energy", []),
+        "variational_free_energy": data.get("variational_free_energy", []),
+        "metrics": data.get("metrics", {}),
+        "model_parameters": data.get("model_parameters", {}),
+        "schema_version": data.get("schema_version"),
+    }
+
+
 def plot_belief_evolution(
     beliefs: List[List[float]],
     output_path: Path,
     title: str = "Belief Evolution",
-    true_states: Optional[List[int]] = None
+    true_states: Optional[List[int]] = None,
 ) -> str:
     """
     Plot belief evolution over time.
@@ -41,14 +79,14 @@ def plot_belief_evolution(
     time_steps = range(len(beliefs))
 
     for i in range(belief_array.shape[1]):
-        plt.plot(time_steps, belief_array[:, i], label=f"State {i+1}")
+        plt.plot(time_steps, belief_array[:, i], label=f"State {i + 1}")
 
     if true_states:
         # Normalize true states if they are 1-indexed
         _min_state = min(true_states)
         for t, s in enumerate(true_states):
-            plt.scatter(t, 1.05, marker='*', color='black', alpha=0.5 if t > 0 else 0)
-            plt.text(t, 1.1, f"S{s}", ha='center', fontsize=8)
+            plt.scatter(t, 1.05, marker="*", color="black", alpha=0.5 if t > 0 else 0)
+            plt.text(t, 1.1, f"S{s}", ha="center", fontsize=8)
 
     plt.title(title)
     plt.xlabel("Time Step")
@@ -57,14 +95,15 @@ def plot_belief_evolution(
     plt.legend()
     plt.grid(True, alpha=0.3)
 
-    plt.savefig(output_path, bbox_inches='tight', dpi=300)
+    plt.savefig(output_path, bbox_inches="tight", dpi=300)
     plt.close()
     return str(output_path)
+
 
 def animate_belief_evolution(
     beliefs: List[List[float]],
     output_path: Path,
-    title: str = "Belief Evolution Animation"
+    title: str = "Belief Evolution Animation",
 ) -> str:
     """
     Create a GIF animation of belief evolution.
@@ -73,7 +112,7 @@ def animate_belief_evolution(
     n_steps, n_states = belief_array.shape
 
     fig, ax = plt.subplots(figsize=(10, 6))
-    lines = [ax.plot([], [], label=f"State {i+1}")[0] for i in range(n_states)]
+    lines = [ax.plot([], [], label=f"State {i + 1}")[0] for i in range(n_states)]
 
     ax.set_xlim(0, n_steps - 1)
     ax.set_ylim(0, 1.1)
@@ -84,13 +123,15 @@ def animate_belief_evolution(
     ax.grid(True, alpha=0.3)
 
     def init() -> Any:
+        """Provide init behavior."""
         for line in lines:
             line.set_data([], [])
         return lines
 
     def update(frame: int) -> Any:
+        """Update operation."""
         for i in range(n_states):
-            lines[i].set_data(range(frame + 1), belief_array[:frame+1, i])
+            lines[i].set_data(range(frame + 1), belief_array[: frame + 1, i])
         return lines
 
     ani = FuncAnimation(fig, update, frames=n_steps, init_func=init, blit=True)
@@ -99,6 +140,198 @@ def animate_belief_evolution(
     writer = PillowWriter(fps=5)
     ani.save(output_path, writer=writer)
     plt.close()
+    return str(output_path)
+
+
+def _state_count_from_payload(payload: Dict[str, Any]) -> int:
+    """Handle state count from payload for internal callers."""
+    model_parameters = payload.get("model_parameters", {})
+    if isinstance(model_parameters, dict):
+        for key in ("num_states", "num_hidden_states"):
+            value = model_parameters.get(key)
+            if isinstance(value, int) and value > 0:
+                return value
+
+        shape = model_parameters.get("B_shape") or model_parameters.get("A_shape")
+        if isinstance(shape, list) and shape:
+            first = shape[0]
+            if isinstance(first, int) and first > 0:
+                return first
+
+    beliefs = payload.get("beliefs") or payload.get("beliefs_by_factor", {}).get(
+        "joint_state", []
+    )
+    if isinstance(beliefs, list) and beliefs and isinstance(beliefs[0], list):
+        return len(beliefs[0])
+    return 0
+
+
+def _is_gridworld_payload(payload: Dict[str, Any]) -> bool:
+    """Return whether gridworld payload."""
+    if payload.get("schema_version") not in CURRENT_VISUALIZATION_SCHEMAS:
+        return False
+
+    model_parameters = payload.get("model_parameters", {})
+    b_shape = (
+        model_parameters.get("B_shape") if isinstance(model_parameters, dict) else None
+    )
+    if b_shape == [9, 9, 5]:
+        return True
+
+    state_count = _state_count_from_payload(payload)
+    actions = payload.get("actions") or payload.get(
+        "actions_by_control_factor", {}
+    ).get("joint_action", [])
+    return state_count == 9 and isinstance(actions, list) and len(set(actions)) <= 5
+
+
+def _series_from_payload(
+    payload: Dict[str, Any],
+    current_data: Dict[str, Any],
+    plain_key: str,
+    grouped_key: str,
+    grouped_name: str,
+) -> list[Any]:
+    """Handle series from payload for internal callers."""
+    value = payload.get(plain_key)
+    if isinstance(value, list) and value:
+        return value
+    grouped = payload.get(grouped_key, {})
+    if isinstance(grouped, dict):
+        grouped_value = grouped.get(grouped_name)
+        if isinstance(grouped_value, list) and grouped_value:
+            return grouped_value
+    current_value = current_data.get(plain_key)
+    if isinstance(current_value, list):
+        return current_value
+    return []
+
+
+def _belief_map_states(beliefs: list[Any]) -> list[int]:
+    """Handle belief map states for internal callers."""
+    states: list[int] = []
+    for belief in beliefs:
+        if not isinstance(belief, list) or not belief:
+            continue
+        try:
+            states.append(int(np.argmax(np.asarray(belief, dtype=float))))
+        except (TypeError, ValueError):
+            continue
+    return states
+
+
+def _gridworld_state_sequence(
+    payload: Dict[str, Any], current_data: Dict[str, Any]
+) -> list[int]:
+    """Handle gridworld state sequence for internal callers."""
+    hidden_states = _series_from_payload(
+        payload,
+        current_data,
+        "hidden_states",
+        "hidden_states_by_factor",
+        "joint_state",
+    )
+    states: list[int] = []
+    for state in hidden_states:
+        if isinstance(state, list) and state:
+            state = state[0]
+        try:
+            states.append(int(state))
+        except (TypeError, ValueError):
+            continue
+
+    beliefs = _series_from_payload(
+        payload, current_data, "beliefs", "beliefs_by_factor", "joint_state"
+    )
+    if not states:
+        states = _belief_map_states(beliefs)
+
+    step_counts = [
+        len(series)
+        for series in [
+            beliefs,
+            _series_from_payload(
+                payload,
+                current_data,
+                "actions",
+                "actions_by_control_factor",
+                "joint_action",
+            ),
+            _series_from_payload(
+                payload,
+                current_data,
+                "observations",
+                "observations_by_modality",
+                "joint_observation",
+            ),
+        ]
+        if series
+    ]
+    max_steps = max(step_counts) if step_counts else len(states)
+    return states[:max_steps]
+
+
+def _grid_side_for_states(state_count: int) -> int:
+    """Handle grid side for states for internal callers."""
+    side = int(np.sqrt(state_count))
+    if side * side != state_count:
+        raise ValueError(
+            f"GridWorld animation requires square state count: {state_count}"
+        )
+    return side
+
+
+def animate_gridworld_trajectory(
+    states: list[int],
+    output_path: Path,
+    title: str,
+    state_count: int = 9,
+    fps: int = 4,
+) -> str:
+    """Create a GIF showing a single GridWorld state trajectory."""
+    if not states:
+        raise ValueError("No states provided for GridWorld animation")
+
+    side = _grid_side_for_states(state_count)
+    fig, ax = plt.subplots(figsize=(4.5, 4.5))
+    grid = np.zeros((side, side), dtype=float)
+    image = ax.imshow(grid, cmap="Blues", vmin=0.0, vmax=1.0)
+    (path_line,) = ax.plot([], [], color="#F39C12", linewidth=2, alpha=0.8)
+    (marker,) = ax.plot([], [], "o", color="#E74C3C", markersize=12)
+    ax.plot([side - 1], [side - 1], "*", color="#27AE60", markersize=16)
+
+    ax.set_xticks(range(side))
+    ax.set_yticks(range(side))
+    ax.set_xticks(np.arange(-0.5, side, 1), minor=True)
+    ax.set_yticks(np.arange(-0.5, side, 1), minor=True)
+    ax.grid(which="minor", color="black", linewidth=1)
+    ax.tick_params(which="minor", bottom=False, left=False)
+    ax.set_xlim(-0.5, side - 0.5)
+    ax.set_ylim(side - 0.5, -0.5)
+
+    def _coords(sequence: list[int]) -> tuple[list[int], list[int]]:
+        """Handle coords for internal callers."""
+        cols = [int(state) % side for state in sequence]
+        rows = [int(state) // side for state in sequence]
+        return cols, rows
+
+    def update(frame: int) -> list[Any]:
+        """Update operation."""
+        current_states = states[: frame + 1]
+        current_state = max(0, min(state_count - 1, current_states[-1]))
+        grid.fill(0.0)
+        grid[current_state // side, current_state % side] = 1.0
+        image.set_data(grid)
+        cols, rows = _coords(current_states)
+        path_line.set_data(cols, rows)
+        marker.set_data([cols[-1]], [rows[-1]])
+        ax.set_title(f"{title}\nStep {frame + 1}: state {current_state}")
+        return [image, path_line, marker]
+
+    animation = FuncAnimation(fig, update, frames=len(states), blit=False)
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    animation.save(output_path, writer=PillowWriter(fps=fps))
+    plt.close(fig)
     return str(output_path)
 
 
@@ -128,10 +361,399 @@ def _normalize_framework_name(framework: str) -> str:
     return fw_lower
 
 
+def _model_name_from_path(path: Path) -> str:
+    """Handle model name from path for internal callers."""
+    for ancestor in path.parents:
+        candidate = ancestor.name
+        if (
+            candidate
+            and candidate not in VISUALIZATION_FRAMEWORK_DIRS
+            and candidate
+            not in {
+                "simulation_data",
+                "execution_logs",
+                "individual_outputs",
+                "12_execute_output",
+                "output",
+            }
+        ):
+            return candidate
+    return "unknown"
+
+
+def _framework_from_path_or_payload(path: Path, payload: Dict[str, Any]) -> str:
+    """Handle framework from path or payload for internal callers."""
+    for part in path.parts:
+        if part in VISUALIZATION_FRAMEWORK_DIRS:
+            return _normalize_framework_name(part)
+    return _normalize_framework_name(str(payload.get("framework", "unknown")))
+
+
+def _gridworld_animation_items(
+    framework_data: Dict[str, Dict[str, Any]],
+) -> list[Dict[str, Any]]:
+    """Handle gridworld animation items for internal callers."""
+    items: list[Dict[str, Any]] = []
+    for data in framework_data.values():
+        payload = data.get("raw_simulation_data") or data.get("simulation_data", {})
+        if not isinstance(payload, dict) or not _is_gridworld_payload(payload):
+            continue
+
+        current_data = data.get("simulation_data", {})
+        if not isinstance(current_data, dict):
+            current_data = _current_schema_visualization_data(payload)
+        state_count = _state_count_from_payload(payload)
+        states = _gridworld_state_sequence(payload, current_data)
+        beliefs = _series_from_payload(
+            payload, current_data, "beliefs", "beliefs_by_factor", "joint_state"
+        )
+        framework = str(data.get("framework", "unknown"))
+        model_name = str(data.get("model_name", "unknown"))
+        items.append(
+            {
+                "framework": framework,
+                "model_name": model_name,
+                "schema_version": payload.get("schema_version"),
+                "state_count": state_count,
+                "states": states,
+                "beliefs": beliefs,
+                "source_file": data.get("source_file"),
+                "matrix_provenance": payload.get("matrix_provenance", {}),
+            }
+        )
+
+    framework_order = {"pymdp": 0, "rxinfer": 1, "activeinference_jl": 2}
+    return sorted(
+        items,
+        key=lambda item: (
+            framework_order.get(str(item.get("framework")), 99),
+            str(item.get("model_name")),
+        ),
+    )
+
+
+def animate_cross_framework_gridworld_trajectories(
+    items: list[Dict[str, Any]],
+    output_path: Path,
+    title: str = "GridWorld Cross-Framework Trajectories",
+    fps: int = 4,
+) -> str:
+    """Create one GIF comparing GridWorld trajectories across frameworks."""
+    usable_items = [item for item in items if item.get("states")]
+    if len(usable_items) < 2:
+        raise ValueError("Need at least two framework trajectories")
+
+    state_count = int(usable_items[0].get("state_count") or 9)
+    side = _grid_side_for_states(state_count)
+    frame_count = max(len(item["states"]) for item in usable_items)
+
+    fig, axes = plt.subplots(
+        1,
+        len(usable_items),
+        figsize=(4.2 * len(usable_items), 4.8),
+        squeeze=False,
+    )
+    flat_axes = list(axes[0])
+    artists: list[dict[str, Any]] = []
+    for ax, item in zip(flat_axes, usable_items):
+        grid = np.zeros((side, side), dtype=float)
+        image = ax.imshow(grid, cmap="Blues", vmin=0.0, vmax=1.0)
+        (path_line,) = ax.plot([], [], color="#F39C12", linewidth=2, alpha=0.8)
+        (marker,) = ax.plot([], [], "o", color="#E74C3C", markersize=12)
+        ax.plot([side - 1], [side - 1], "*", color="#27AE60", markersize=16)
+        ax.set_title(str(item.get("framework", "unknown")))
+        ax.set_xticks(range(side))
+        ax.set_yticks(range(side))
+        ax.set_xticks(np.arange(-0.5, side, 1), minor=True)
+        ax.set_yticks(np.arange(-0.5, side, 1), minor=True)
+        ax.grid(which="minor", color="black", linewidth=1)
+        ax.tick_params(which="minor", bottom=False, left=False)
+        ax.set_xlim(-0.5, side - 0.5)
+        ax.set_ylim(side - 0.5, -0.5)
+        artists.append(
+            {
+                "item": item,
+                "grid": grid,
+                "image": image,
+                "path": path_line,
+                "marker": marker,
+            }
+        )
+
+    fig.suptitle(title)
+
+    def _coords(sequence: list[int]) -> tuple[list[int], list[int]]:
+        """Handle coords for internal callers."""
+        cols = [int(state) % side for state in sequence]
+        rows = [int(state) // side for state in sequence]
+        return cols, rows
+
+    def update(frame: int) -> list[Any]:
+        """Update operation."""
+        changed: list[Any] = []
+        for entry in artists:
+            states = entry["item"]["states"]
+            frame_index = min(frame, len(states) - 1)
+            current_states = states[: frame_index + 1]
+            current_state = max(0, min(state_count - 1, int(current_states[-1])))
+            entry["grid"].fill(0.0)
+            entry["grid"][current_state // side, current_state % side] = 1.0
+            entry["image"].set_data(entry["grid"])
+            cols, rows = _coords(current_states)
+            entry["path"].set_data(cols, rows)
+            entry["marker"].set_data([cols[-1]], [rows[-1]])
+            changed.extend([entry["image"], entry["path"], entry["marker"]])
+        fig.suptitle(f"{title} - Step {frame + 1}")
+        return changed
+
+    animation = FuncAnimation(fig, update, frames=frame_count, blit=False)
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    animation.save(output_path, writer=PillowWriter(fps=fps))
+    plt.close(fig)
+    return str(output_path)
+
+
+def generate_gridworld_animation_suite(
+    framework_data: Dict[str, Dict[str, Any]],
+    output_dir: Path,
+    logger_instance: Optional[logging.Logger] = None,
+) -> List[str]:
+    """Generate per-framework and cross-framework GridWorld GIFs."""
+    log = logger_instance or logger
+    generated_files: List[str] = []
+    items = _gridworld_animation_items(framework_data)
+    if not items:
+        log.debug("No current GridWorld schemas found for animation")
+        return generated_files
+
+    animation_dir = output_dir / "gridworld_animations"
+    animation_dir.mkdir(parents=True, exist_ok=True)
+    for item in items:
+        framework = str(item["framework"])
+        model_name = str(item["model_name"])
+        state_count = int(item["state_count"] or 9)
+        beliefs = item.get("beliefs", [])
+        states = item.get("states", [])
+
+        if beliefs:
+            belief_file = (
+                animation_dir / f"{model_name}_{framework}_belief_evolution.gif"
+            )
+            try:
+                generated_files.append(
+                    animate_belief_evolution(
+                        beliefs,
+                        belief_file,
+                        title=f"Belief Evolution - {model_name} ({framework})",
+                    )
+                )
+                log.info(f"Generated GridWorld belief GIF: {belief_file.name}")
+            except Exception as e:
+                log.warning(f"Failed to generate belief GIF for {framework}: {e}")
+
+        if states:
+            trajectory_file = (
+                animation_dir / f"{model_name}_{framework}_state_trajectory.gif"
+            )
+            try:
+                generated_files.append(
+                    animate_gridworld_trajectory(
+                        states,
+                        trajectory_file,
+                        title=f"State Trajectory - {model_name} ({framework})",
+                        state_count=state_count,
+                    )
+                )
+                log.info(f"Generated GridWorld trajectory GIF: {trajectory_file.name}")
+            except Exception as e:
+                log.warning(f"Failed to generate trajectory GIF for {framework}: {e}")
+
+    try:
+        cross_file = animation_dir / "gridworld_cross_framework_trajectory.gif"
+        generated_files.append(
+            animate_cross_framework_gridworld_trajectories(items, cross_file)
+        )
+        log.info(f"Generated GridWorld cross-framework GIF: {cross_file.name}")
+    except Exception as e:
+        log.warning(f"Failed to generate cross-framework GridWorld GIF: {e}")
+
+    return generated_files
+
+
+def _relative_or_absolute(path: Path, base: Path) -> str:
+    """Handle relative or absolute for internal callers."""
+    try:
+        return str(path.relative_to(base))
+    except ValueError:
+        return str(path)
+
+
+def write_gridworld_analysis_manifest(
+    execution_dir: Path,
+    analysis_dir: Path,
+    allowed_frameworks: Optional[set[str]] = None,
+    allowed_model_names: Optional[set[str]] = None,
+    logger_instance: Optional[logging.Logger] = None,
+) -> Optional[str]:
+    """Write a manifest for current GridWorld logs, statistics, PNGs, and GIFs."""
+    log = logger_instance or logger
+    source_results: list[dict[str, Any]] = []
+    provenances: list[Dict[str, Any]] = []
+
+    for sim_file in sorted(execution_dir.rglob("*simulation_results.json")):
+        try:
+            payload = json.loads(sim_file.read_text(encoding="utf-8"))
+        except (json.JSONDecodeError, OSError) as e:
+            log.debug(f"Skipping unreadable simulation result {sim_file}: {e}")
+            continue
+        if not isinstance(payload, dict) or not _is_gridworld_payload(payload):
+            continue
+
+        framework = _framework_from_path_or_payload(sim_file, payload)
+        model_name = _model_name_from_path(sim_file)
+        if allowed_frameworks and framework not in allowed_frameworks:
+            continue
+        if allowed_model_names and model_name not in allowed_model_names:
+            continue
+
+        matrix_provenance = payload.get("matrix_provenance", {})
+        if isinstance(matrix_provenance, dict):
+            provenances.append(matrix_provenance)
+        source_results.append(
+            {
+                "framework": framework,
+                "model_name": model_name,
+                "schema_version": payload.get("schema_version"),
+                "source_path": str(sim_file),
+                "num_timesteps": payload.get("num_timesteps"),
+                "validation": payload.get("validation", {}),
+            }
+        )
+
+    if not source_results:
+        return None
+
+    current_frameworks = allowed_frameworks or {
+        entry["framework"] for entry in source_results
+    }
+    current_models = allowed_model_names or {
+        entry["model_name"] for entry in source_results
+    }
+
+    manifest_path = (
+        analysis_dir / "cross_framework" / "gridworld_analysis_manifest.json"
+    )
+
+    current_cross_framework_files = {
+        "confidence_comparison.png",
+        "cross_framework_comparison.png",
+        "efe_convergence_comparison.png",
+        "framework_comparison_data.json",
+        "framework_comparison_report.md",
+        "framework_performance_comparison.png",
+        "framework_radar.png",
+        "framework_success_rates.png",
+    }
+    current_root_files = {
+        "analysis_results.json",
+        "analysis_summary.md",
+        "cross_model_comparison_report.md",
+    }
+
+    def is_current_artifact(path: Path) -> bool:
+        """Return whether current artifact."""
+        if path == manifest_path or not path.is_file():
+            return False
+
+        try:
+            rel = path.relative_to(analysis_dir)
+        except ValueError:
+            return False
+
+        parts = rel.parts
+        if not parts:
+            return False
+
+        name = path.name
+        first = parts[0]
+        if first in current_frameworks:
+            return any(model_name in name for model_name in current_models)
+
+        if first == "cross_framework":
+            if "gridworld_animations" in parts:
+                return name.startswith("gridworld_cross_framework_") or any(
+                    model_name in name for model_name in current_models
+                )
+            if "unified_dashboard" in parts:
+                return path.suffix == ".png"
+            if name in current_cross_framework_files:
+                return True
+            if name.endswith("_post_simulation_analysis.json"):
+                return any(
+                    name == f"{model_name}_post_simulation_analysis.json"
+                    for model_name in current_models
+                )
+            return False
+
+        if len(parts) == 1:
+            return name in current_root_files
+
+        return False
+
+    png_outputs = sorted(
+        _relative_or_absolute(path, analysis_dir)
+        for path in analysis_dir.rglob("*.png")
+        if is_current_artifact(path)
+    )
+    gif_outputs = sorted(
+        _relative_or_absolute(path, analysis_dir)
+        for path in analysis_dir.rglob("*.gif")
+        if is_current_artifact(path)
+    )
+    dashboard_outputs = sorted(
+        _relative_or_absolute(path, analysis_dir)
+        for path in (analysis_dir / "cross_framework" / "unified_dashboard").glob(
+            "*.png"
+        )
+        if is_current_artifact(path)
+    )
+    statistics_outputs = sorted(
+        _relative_or_absolute(path, analysis_dir)
+        for path in analysis_dir.rglob("*")
+        if path.suffix in {".json", ".md"} and is_current_artifact(path)
+    )
+
+    first_provenance = provenances[0] if provenances else {}
+    matrix_provenance_equal = all(
+        provenance == first_provenance for provenance in provenances
+    )
+    manifest = {
+        "schema_version": "gridworld_analysis_manifest_v1",
+        "model_names": sorted({entry["model_name"] for entry in source_results}),
+        "frameworks": sorted({entry["framework"] for entry in source_results}),
+        "source_results": source_results,
+        "matrix_provenance_equal": matrix_provenance_equal,
+        "outputs": {
+            "statistics": statistics_outputs,
+            "png": png_outputs,
+            "gif": gif_outputs,
+            "dashboard": dashboard_outputs,
+        },
+    }
+
+    manifest_path.parent.mkdir(parents=True, exist_ok=True)
+    manifest_path.write_text(json.dumps(manifest, indent=2), encoding="utf-8")
+    log.info(f"Generated GridWorld analysis manifest: {manifest_path}")
+    return str(manifest_path)
+
+
 def visualize_all_framework_outputs(
     execution_dir: Path,
     output_dir: Path,
-    logger_instance: Optional[logging.Logger] = None
+    logger_instance: Optional[logging.Logger] = None,
+    allowed_frameworks: Optional[set[str]] = None,
+    allowed_model_names: Optional[set[str]] = None,
+    generate_animations: bool = True,
 ) -> List[str]:
     """
     Generate comprehensive visualizations for all raw execution outputs.
@@ -147,6 +769,8 @@ def visualize_all_framework_outputs(
         execution_dir: Directory containing execution results (e.g., output/12_execute_output)
         output_dir: Directory to save visualizations
         logger_instance: Optional logger instance
+        allowed_frameworks: Optional normalized framework names from the current run
+        allowed_model_names: Optional model directory names from the current run
 
     Returns:
         List of generated visualization file paths
@@ -159,23 +783,56 @@ def visualize_all_framework_outputs(
     # Collect all execution data
     framework_data: Dict[str, Dict[str, Any]] = {}
 
+    # Known framework directory names for path-based detection
+    _FRAMEWORK_DIRS: set[Any] = {
+        "pymdp",
+        "rxinfer",
+        "activeinference_jl",
+        "jax",
+        "discopy",
+        "pytorch",
+        "numpyro",
+    }
+
     # Search for execution result files
     for result_file in execution_dir.rglob("*_results.json"):
+        if "simulation_data" in result_file.parts:
+            continue
         try:
-            with open(result_file, 'r') as f:
+            with open(result_file, "r") as f:
                 data = json.load(f)
 
             # Normalize framework name to canonical form
             raw_framework = data.get("framework", "unknown")
             framework = _normalize_framework_name(raw_framework)
+            if (
+                framework in {"pymdp", "rxinfer", "activeinference_jl"}
+                and data.get("schema_version")
+                and data.get("schema_version") not in CURRENT_VISUALIZATION_SCHEMAS
+            ):
+                continue
             model_name = data.get("model_name", result_file.parent.name)
+            if allowed_frameworks and framework not in allowed_frameworks:
+                continue
+            if allowed_model_names and model_name not in allowed_model_names:
+                model_slug = str(model_name).lower().replace(" ", "_").replace("-", "_")
+                path_model = None
+                for index, part in enumerate(result_file.parts):
+                    if part in _FRAMEWORK_DIRS and index >= 1:
+                        path_model = result_file.parts[index - 1]
+                        break
+                if (
+                    model_slug not in allowed_model_names
+                    and path_model not in allowed_model_names
+                ):
+                    continue
 
             key = f"{framework}_{model_name}"
             if key not in framework_data:
                 framework_data[key] = {
                     "framework": framework,
                     "model_name": model_name,
-                    "results": []
+                    "results": [],
                 }
             framework_data[key]["results"].append(data)
 
@@ -183,12 +840,9 @@ def visualize_all_framework_outputs(
             log.warning(f"Failed to load {result_file}: {e}")
 
     # Also search for simulation_results.json files - MERGE into existing keys
-    # Known framework directory names for path-based detection
-    _FRAMEWORK_DIRS = {"pymdp", "rxinfer", "activeinference_jl", "jax", "discopy", "pytorch", "numpyro"}
-
     for sim_file in execution_dir.rglob("*simulation_results.json"):
         try:
-            with open(sim_file, 'r') as f:
+            with open(sim_file, "r") as f:
                 data = json.load(f)
 
             # Determine framework from path or file content
@@ -205,6 +859,14 @@ def visualize_all_framework_outputs(
 
             # Normalize framework name to canonical form
             framework = _normalize_framework_name(framework)
+            if (
+                framework in {"pymdp", "rxinfer", "activeinference_jl"}
+                and data.get("schema_version")
+                and data.get("schema_version") not in CURRENT_VISUALIZATION_SCHEMAS
+            ):
+                continue
+            if allowed_frameworks and framework not in allowed_frameworks:
+                continue
 
             # Derive model_name: walk up directory tree to find the first
             # ancestor that isn't a framework directory or a subdirectory like
@@ -212,12 +874,22 @@ def visualize_all_framework_outputs(
             model_name = "unknown"
             for ancestor in sim_file.parents:
                 candidate = ancestor.name
-                if candidate and candidate not in _FRAMEWORK_DIRS and candidate not in {
-                    "simulation_data", "execution_logs", "individual_outputs",
-                    "12_execute_output", "output"
-                }:
+                if (
+                    candidate
+                    and candidate not in _FRAMEWORK_DIRS
+                    and candidate
+                    not in {
+                        "simulation_data",
+                        "execution_logs",
+                        "individual_outputs",
+                        "12_execute_output",
+                        "output",
+                    }
+                ):
                     model_name = candidate
                     break
+            if allowed_model_names and model_name not in allowed_model_names:
+                continue
 
             # Use the same key format as results (no _sim suffix) to merge data
             key = f"{framework}_{model_name}"
@@ -225,11 +897,15 @@ def visualize_all_framework_outputs(
                 framework_data[key] = {
                     "framework": framework,
                     "model_name": model_name,
-                    "simulation_data": data
+                    "simulation_data": data,
+                    "raw_simulation_data": data,
+                    "source_file": str(sim_file),
                 }
             else:
                 # Merge simulation data into existing entry
                 framework_data[key]["simulation_data"] = data
+                framework_data[key]["raw_simulation_data"] = data
+                framework_data[key]["source_file"] = str(sim_file)
 
         except Exception as e:
             log.warning(f"Failed to load simulation file {sim_file}: {e}")
@@ -238,7 +914,9 @@ def visualize_all_framework_outputs(
         log.warning("No execution data found for visualization")
         return generated_files
 
-    log.info(f"Found {len(framework_data)} framework/model combinations for visualization")
+    log.info(
+        f"Found {len(framework_data)} framework/model combinations for visualization"
+    )
 
     # Generate visualizations for each framework/model
     for _key, data in framework_data.items():
@@ -251,7 +929,10 @@ def visualize_all_framework_outputs(
             if not sim_data and data.get("results"):
                 # Try to extract from first result
                 result = data["results"][0]
-                sim_data = result.get("simulation_data", {})
+                if framework in {"pymdp", "rxinfer", "activeinference_jl"}:
+                    sim_data = _current_schema_visualization_data(result)
+                else:
+                    sim_data = result.get("simulation_data", {})
 
                 # Also check implementation directory for files
                 impl_dir = result.get("implementation_directory")
@@ -261,42 +942,75 @@ def visualize_all_framework_outputs(
                     if sim_data_dir.exists():
                         for json_file in sim_data_dir.glob("*.json"):
                             try:
-                                with open(json_file, 'r') as f:
+                                with open(json_file, "r") as f:
                                     file_data = json.load(f)
                                 if isinstance(file_data, dict):
-                                    sim_data.update(file_data)
-                            except (json.JSONDecodeError, OSError):
-                                pass  # nosec B110 -- intentional: skip malformed simulation data files
+                                    if framework in {
+                                        "pymdp",
+                                        "rxinfer",
+                                        "activeinference_jl",
+                                    }:
+                                        sim_data.update(
+                                            _current_schema_visualization_data(
+                                                file_data
+                                            )
+                                        )
+                                    else:
+                                        sim_data.update(file_data)
+                            except (json.JSONDecodeError, OSError) as e:
+                                logger.debug(
+                                    "Skipping unreadable simulation data file %s: %s",
+                                    json_file,
+                                    e,
+                                )
+            elif framework in {"pymdp", "rxinfer", "activeinference_jl"}:
+                sim_data = _current_schema_visualization_data(sim_data)
 
                 # For ActiveInference.jl: read CSV simulation data directly
                 if framework == "activeinference_jl" and not sim_data.get("beliefs"):
                     if impl_dir:
                         import csv as csv_module
+
                         sim_data_path = Path(impl_dir) / "simulation_data"
-                        csv_candidates = []
+                        csv_candidates: list[Any] = []
                         if sim_data_path.exists():
-                            csv_candidates.append(sim_data_path / "simulation_results.csv")
-                            csv_candidates.extend(sorted(sim_data_path.glob("*_simulation_results.csv")))
+                            csv_candidates.append(
+                                sim_data_path / "simulation_results.csv"
+                            )
+                            csv_candidates.extend(
+                                sorted(sim_data_path.glob("*_simulation_results.csv"))
+                            )
 
                         for csv_file in csv_candidates:
                             if csv_file.exists():
                                 try:
-                                    beliefs = []
-                                    actions = []
-                                    observations = []
-                                    with open(csv_file, 'r') as f:
-                                        lines = [line for line in f if not line.startswith('#')]
+                                    beliefs: list[Any] = []
+                                    actions: list[Any] = []
+                                    observations: list[Any] = []
+                                    with open(csv_file, "r") as f:
+                                        lines = [
+                                            line
+                                            for line in f
+                                            if not line.startswith("#")
+                                        ]
                                     if lines:
                                         reader = csv_module.reader(lines)
                                         for row in reader:
                                             if len(row) >= 3:
                                                 try:
-                                                    observations.append(int(float(row[1])))
+                                                    observations.append(
+                                                        int(float(row[1]))
+                                                    )
                                                     actions.append(int(float(row[2])))
                                                     if len(row) > 3:
-                                                        beliefs.append([float(x) for x in row[3:]])
+                                                        beliefs.append(
+                                                            [float(x) for x in row[3:]]
+                                                        )
                                                 except ValueError as e:
-                                                    log.debug("Skipping non-numeric CSV row: %s", e)
+                                                    log.debug(
+                                                        "Skipping non-numeric CSV row: %s",
+                                                        e,
+                                                    )
                                                     continue
                                     if beliefs:
                                         sim_data["beliefs"] = beliefs
@@ -305,10 +1019,14 @@ def visualize_all_framework_outputs(
                                     if observations:
                                         sim_data["observations"] = observations
                                     if beliefs or actions:
-                                        log.info(f"Extracted {len(beliefs)} steps from ActiveInference.jl CSV")
+                                        log.info(
+                                            f"Extracted {len(beliefs)} steps from ActiveInference.jl CSV"
+                                        )
                                         break
                                 except Exception as e:
-                                    log.debug(f"Error reading ActiveInference.jl CSV: {e}")
+                                    log.debug(
+                                        f"Error reading ActiveInference.jl CSV: {e}"
+                                    )
 
             # Route framework-specific visualizations to correct directories
             framework_viz_dir = output_dir.parent / framework
@@ -320,26 +1038,66 @@ def visualize_all_framework_outputs(
             # of these plots. Generating them here would create duplicates.
 
             # Generate free energy plot (not produced by per-framework analyzers)
-            free_energy = sim_data.get("free_energy", [])
+            free_energy = (
+                sim_data.get("free_energy", [])
+                or sim_data.get("efe_history", [])
+                or sim_data.get("expected_free_energy", [])
+            )
+            vfe_energy = sim_data.get("variational_free_energy", []) or sim_data.get(
+                "vfe_history", []
+            )
+
             if free_energy:
-                fe_file = framework_viz_dir / f"{model_name}_{framework}_free_energy.png"
+                fe_file = (
+                    framework_viz_dir / f"{model_name}_{framework}_free_energy.png"
+                )
                 try:
-                    generate_free_energy_plots(free_energy, fe_file, f"Free Energy - {model_name} ({framework})")
+                    generate_free_energy_plots(
+                        free_energy,
+                        fe_file,
+                        f"Free Energy - {model_name} ({framework})",
+                    )
                     generated_files.append(str(fe_file))
                     log.info(f"Generated free energy plot: {fe_file.name}")
                 except Exception as e:
                     log.warning(f"Failed to generate free energy plot for {key}: {e}")
 
+            if free_energy and vfe_energy:
+                fe_dual_file = (
+                    framework_viz_dir / f"{model_name}_{framework}_vfe_vs_efe.png"
+                )
+                try:
+                    generate_vfe_vs_efe_plot(
+                        vfe_energy,
+                        free_energy,
+                        fe_dual_file,
+                        f"Active Inference Energy Dynamics - {model_name} ({framework})",
+                    )
+                    generated_files.append(str(fe_dual_file))
+                    log.info(f"Generated dual free energy plot: {fe_dual_file.name}")
+                except Exception as e:
+                    log.warning(
+                        f"Failed to generate dual free energy plot for {key}: {e}"
+                    )
+
             # Generate observation analysis (not produced by all per-framework analyzers)
             observations = sim_data.get("observations", [])
             if observations:
-                obs_file = framework_viz_dir / f"{model_name}_{framework}_observations.png"
+                obs_file = (
+                    framework_viz_dir / f"{model_name}_{framework}_observations.png"
+                )
                 try:
-                    generate_observation_analysis(observations, obs_file, f"Observations - {model_name} ({framework})")
+                    generate_observation_analysis(
+                        observations,
+                        obs_file,
+                        f"Observations - {model_name} ({framework})",
+                    )
                     generated_files.append(str(obs_file))
                     log.info(f"Generated observation analysis: {obs_file.name}")
                 except Exception as e:
-                    log.warning(f"Failed to generate observation analysis for {key}: {e}")
+                    log.warning(
+                        f"Failed to generate observation analysis for {key}: {e}"
+                    )
 
             # Update framework_data with enriched sim_data for comparison chart
             data["simulation_data"] = sim_data
@@ -388,11 +1146,22 @@ def visualize_all_framework_outputs(
                 exec_summary_path = execution_dir / "execution_summary.json"
             if exec_summary_path.exists():
                 radar_file = cross_fw_dir / "framework_radar.png"
-                files = generate_framework_radar(exec_summary_path, framework_data, radar_file)
+                files = generate_framework_radar(
+                    exec_summary_path, framework_data, radar_file
+                )
                 if files:
                     generated_files.extend(files)
         except Exception as e:
             log.warning(f"Failed to generate framework radar: {e}")
+
+        if generate_animations:
+            try:
+                animation_files = generate_gridworld_animation_suite(
+                    framework_data, cross_fw_dir, log
+                )
+                generated_files.extend(animation_files)
+            except Exception as e:
+                log.warning(f"Failed to generate GridWorld animations: {e}")
 
     log.info(f"Generated {len(generated_files)} visualization files")
     return generated_files
@@ -401,7 +1170,7 @@ def visualize_all_framework_outputs(
 def generate_belief_heatmaps(
     beliefs: List[List[float]],
     output_path: Path,
-    title: str = "Belief State Evolution Heatmap"
+    title: str = "Belief State Evolution Heatmap",
 ) -> str:
     """
     Generate a heatmap visualization of belief state evolution over time.
@@ -424,38 +1193,41 @@ def generate_belief_heatmaps(
 
     # Heatmap
     ax1 = axes[0]
-    im = ax1.imshow(belief_array.T, aspect='auto', cmap='viridis', origin='lower')
+    im = ax1.imshow(belief_array.T, aspect="auto", cmap="viridis", origin="lower")
     ax1.set_xlabel("Time Step")
     ax1.set_ylabel("State")
     ax1.set_title(f"{title}\n(Heatmap)")
     ax1.set_yticks(range(n_states))
-    ax1.set_yticklabels([f"S{i+1}" for i in range(n_states)])
+    ax1.set_yticklabels([f"S{i + 1}" for i in range(n_states)])
     plt.colorbar(im, ax=ax1, label="Probability")
 
     # Line plot
     ax2 = axes[1]
-    colors = plt.cm.tab10(np.linspace(0, 1, n_states))
+    colors = plt.get_cmap("tab10")(np.linspace(0, 1, n_states))
     for i in range(n_states):
-        ax2.plot(range(n_steps), belief_array[:, i], label=f"State {i+1}",
-                 color=colors[i], linewidth=2)
+        ax2.plot(
+            range(n_steps),
+            belief_array[:, i],
+            label=f"State {i + 1}",
+            color=colors[i],
+            linewidth=2,
+        )
     ax2.set_xlabel("Time Step")
     ax2.set_ylabel("Probability")
     ax2.set_title(f"{title}\n(Trajectories)")
-    ax2.legend(loc='best')
+    ax2.legend(loc="best")
     ax2.grid(True, alpha=0.3)
     ax2.set_ylim(0, 1.05)
 
     plt.tight_layout()
-    plt.savefig(output_path, dpi=300, bbox_inches='tight')
+    plt.savefig(output_path, dpi=300, bbox_inches="tight")
     plt.close()
 
     return str(output_path)
 
 
 def generate_action_analysis(
-    actions: List[int],
-    output_path: Path,
-    title: str = "Action Selection Analysis"
+    actions: List[int], output_path: Path, title: str = "Action Selection Analysis"
 ) -> str:
     """
     Generate visualization of action selection patterns.
@@ -480,7 +1252,7 @@ def generate_action_analysis(
     # Action histogram
     ax1 = axes[0]
     action_counts = [np.sum(actions_array == a) for a in unique_actions]
-    colors = plt.cm.Set2(np.linspace(0, 1, n_actions))
+    colors = plt.get_cmap("Set2")(np.linspace(0, 1, n_actions))
     bars = ax1.bar(unique_actions, action_counts, color=colors)
     ax1.set_xlabel("Action")
     ax1.set_ylabel("Count")
@@ -490,12 +1262,18 @@ def generate_action_analysis(
 
     # Add count labels on bars
     for bar, count in zip(bars, action_counts):
-        ax1.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 0.5,
-                 str(count), ha='center', va='bottom', fontsize=10)
+        ax1.text(
+            bar.get_x() + bar.get_width() / 2,
+            bar.get_height() + 0.5,
+            str(count),
+            ha="center",
+            va="bottom",
+            fontsize=10,
+        )
 
     # Action sequence plot
     ax2 = axes[1]
-    ax2.plot(range(len(actions)), actions, 'o-', markersize=4, linewidth=1, alpha=0.7)
+    ax2.plot(range(len(actions)), actions, "o-", markersize=4, linewidth=1, alpha=0.7)
     ax2.set_xlabel("Time Step")
     ax2.set_ylabel("Action")
     ax2.set_title("Action Sequence Over Time")
@@ -515,11 +1293,14 @@ def generate_action_analysis(
 
         # Normalize rows
         row_sums = transition_matrix.sum(axis=1, keepdims=True)
-        transition_matrix = np.divide(transition_matrix, row_sums,
-                                       where=row_sums != 0,
-                                       out=np.zeros_like(transition_matrix))
+        transition_matrix = np.divide(
+            transition_matrix,
+            row_sums,
+            where=row_sums != 0,
+            out=np.zeros_like(transition_matrix),
+        )
 
-        im = ax3.imshow(transition_matrix, cmap='Blues', vmin=0, vmax=1)
+        im = ax3.imshow(transition_matrix, cmap="Blues", vmin=0, vmax=1)
         ax3.set_xlabel("Next Action")
         ax3.set_ylabel("Current Action")
         ax3.set_title("Action Transition Probabilities")
@@ -531,27 +1312,37 @@ def generate_action_analysis(
         # Add text annotations
         for i in range(n_actions):
             for j in range(n_actions):
-                _text = ax3.text(j, i, f"{transition_matrix[i, j]:.2f}",
-                                ha="center", va="center", color="black" if transition_matrix[i, j] < 0.5 else "white")
+                _text = ax3.text(
+                    j,
+                    i,
+                    f"{transition_matrix[i, j]:.2f}",
+                    ha="center",
+                    va="center",
+                    color="black" if transition_matrix[i, j] < 0.5 else "white",
+                )
 
         plt.colorbar(im, ax=ax3, label="Probability")
     else:
-        ax3.text(0.5, 0.5, "Need > 1 action\nfor transitions",
-                 ha='center', va='center', transform=ax3.transAxes)
+        ax3.text(
+            0.5,
+            0.5,
+            "Need > 1 action\nfor transitions",
+            ha="center",
+            va="center",
+            transform=ax3.transAxes,
+        )
         ax3.set_title("Action Transition Probabilities")
 
-    plt.suptitle(title, fontsize=14, fontweight='bold')
+    plt.suptitle(title, fontsize=14, fontweight="bold")
     plt.tight_layout()
-    plt.savefig(output_path, dpi=300, bbox_inches='tight')
+    plt.savefig(output_path, dpi=300, bbox_inches="tight")
     plt.close()
 
     return str(output_path)
 
 
 def generate_free_energy_plots(
-    free_energy: List[float],
-    output_path: Path,
-    title: str = "Free Energy Dynamics"
+    free_energy: List[float], output_path: Path, title: str = "Free Energy Dynamics"
 ) -> str:
     """
     Generate visualization of free energy evolution.
@@ -591,24 +1382,39 @@ def generate_free_energy_plots(
         if n_policies <= 10:
             for p in range(n_policies):
                 # Only label first few to avoid legend clutter
-                lbl = f'Policy {p+1}' if p < 5 else None
-                ax1.plot(range(n_steps), fe_array[:, p], linewidth=1.0, alpha=0.6, label=lbl)
+                lbl = f"Policy {p + 1}" if p < 5 else None
+                ax1.plot(
+                    range(n_steps), fe_array[:, p], linewidth=1.0, alpha=0.6, label=lbl
+                )
         else:
             # Add a heatmap background if there are many policies
-            _im = ax1.imshow(fe_array.T, aspect='auto', cmap='viridis', interpolation='none', alpha=0.3)
+            _im = ax1.imshow(
+                fe_array.T,
+                aspect="auto",
+                cmap="viridis",
+                interpolation="none",
+                alpha=0.3,
+            )
             ax1.set_ylabel("Policy Index / EFE")
 
         # Bold line for the selected/minimum EFE
-        ax1.plot(range(n_steps), fe_summary, 'k-', linewidth=2, label='Min EFE (Selected)')
+        ax1.plot(
+            range(n_steps), fe_summary, "k-", linewidth=2, label="Min EFE (Selected)"
+        )
     else:
-        ax1.plot(range(n_steps), fe_array, 'b-', linewidth=1.5, label='Free Energy')
+        ax1.plot(range(n_steps), fe_array, "b-", linewidth=1.5, label="Free Energy")
 
     # Add moving average if enough points (using summary EFE)
     if n_steps > 5:
         window = min(5, n_steps // 3)
-        moving_avg = np.convolve(fe_summary, np.ones(window)/window, mode='valid')
-        ax1.plot(range(window-1, n_steps), moving_avg, 'r--', linewidth=2,
-                 label=f'{window}-step Moving Average')
+        moving_avg = np.convolve(fe_summary, np.ones(window) / window, mode="valid")
+        ax1.plot(
+            range(window - 1, n_steps),
+            moving_avg,
+            "r--",
+            linewidth=2,
+            label=f"{window}-step Moving Average",
+        )
 
     ax1.set_xlabel("Time Step")
     ax1.set_ylabel("Free Energy")
@@ -618,9 +1424,32 @@ def generate_free_energy_plots(
 
     # Distribution of free energy values (using summary EFE)
     ax2 = axes[0, 1]
-    ax2.hist(fe_summary, bins=min(20, n_steps), color='steelblue', edgecolor='white', alpha=0.7)
-    ax2.axvline(np.mean(fe_summary), color='red', linestyle='--', linewidth=2, label=f'Mean: {np.mean(fe_summary):.3f}')
-    ax2.axvline(np.median(fe_summary), color='green', linestyle='--', linewidth=2, label=f'Median: {np.median(fe_summary):.3f}')
+
+    # Check if data is constant to prevent "Too many bins for data range" errors
+    fe_min = np.min(fe_summary)
+    fe_max = np.max(fe_summary)
+
+    if np.isclose(fe_min, fe_max) or fe_max - fe_min < 1e-10:
+        # For constant or near-constant data, use a single explicit bin range centered around the value
+        bins: int | list[Any] = [fe_min - 0.5, fe_min + 0.5]
+    else:
+        bins = min(20, max(1, n_steps))
+
+    ax2.hist(fe_summary, bins=bins, color="steelblue", edgecolor="white", alpha=0.7)
+    ax2.axvline(
+        np.mean(fe_summary),
+        color="red",
+        linestyle="--",
+        linewidth=2,
+        label=f"Mean: {np.mean(fe_summary):.3f}",
+    )
+    ax2.axvline(
+        np.median(fe_summary),
+        color="green",
+        linestyle="--",
+        linewidth=2,
+        label=f"Median: {np.median(fe_summary):.3f}",
+    )
     ax2.set_xlabel("Free Energy (Selected)")
     ax2.set_ylabel("Frequency")
     ax2.set_title("Selected Free Energy Distribution")
@@ -630,8 +1459,13 @@ def generate_free_energy_plots(
     ax3 = axes[1, 0]
     if n_steps > 1:
         fe_diff = np.diff(fe_summary)
-        ax3.bar(range(len(fe_diff)), fe_diff, color=['green' if d < 0 else 'red' for d in fe_diff], alpha=0.7)
-        ax3.axhline(0, color='black', linestyle='-', linewidth=0.5)
+        ax3.bar(
+            range(len(fe_diff)),
+            fe_diff,
+            color=["green" if d < 0 else "red" for d in fe_diff],
+            alpha=0.7,
+        )
+        ax3.axhline(0, color="black", linestyle="-", linewidth=0.5)
         ax3.set_xlabel("Time Step")
         ax3.set_ylabel("\u0394FE")
         ax3.set_title("Free Energy Change per Step")
@@ -639,17 +1473,25 @@ def generate_free_energy_plots(
         # Add summary statistics
         positive_changes = np.sum(fe_diff > 0)
         negative_changes = np.sum(fe_diff < 0)
-        ax3.text(0.02, 0.98, f"\u2191 Increases: {positive_changes}\n\u2193 Decreases: {negative_changes}",
-                 transform=ax3.transAxes, verticalalignment='top', fontsize=10,
-                 bbox={'boxstyle': 'round', 'facecolor': 'wheat', 'alpha': 0.5})
+        ax3.text(
+            0.02,
+            0.98,
+            f"\u2191 Increases: {positive_changes}\n\u2193 Decreases: {negative_changes}",
+            transform=ax3.transAxes,
+            verticalalignment="top",
+            fontsize=10,
+            bbox={"boxstyle": "round", "facecolor": "wheat", "alpha": 0.5},
+        )
 
     # Convergence analysis
     ax4 = axes[1, 1]
     if n_steps > 10:
         # Calculate rolling variance
         window = max(3, n_steps // 10)
-        rolling_var = [np.var(fe_summary[max(0, i-window):i]) for i in range(1, n_steps+1)]
-        ax4.plot(range(1, n_steps+1), rolling_var, 'purple', linewidth=2)
+        rolling_var = [
+            np.var(fe_summary[max(0, i - window) : i]) for i in range(1, n_steps + 1)
+        ]
+        ax4.plot(range(1, n_steps + 1), rolling_var, "purple", linewidth=2)
         ax4.set_xlabel("Time Step")
         ax4.set_ylabel("Rolling Variance")
         ax4.set_title(f"Convergence Analysis ({window}-step variance)")
@@ -660,27 +1502,108 @@ def generate_free_energy_plots(
             final_var = rolling_var[-1]
             converged = final_var < 0.1
             status = "\u2713 Converged" if converged else "\u26a0 Not Converged"
-            ax4.text(0.98, 0.98, f"{status}\nFinal Variance: {final_var:.4f}",
-                     transform=ax4.transAxes, verticalalignment='top', horizontalalignment='right',
-                     fontsize=10, bbox={'boxstyle': 'round',
-                                            'facecolor': 'lightgreen' if converged else 'lightyellow', 'alpha': 0.7})
+            ax4.text(
+                0.98,
+                0.98,
+                f"{status}\nFinal Variance: {final_var:.4f}",
+                transform=ax4.transAxes,
+                verticalalignment="top",
+                horizontalalignment="right",
+                fontsize=10,
+                bbox={
+                    "boxstyle": "round",
+                    "facecolor": "lightgreen" if converged else "lightyellow",
+                    "alpha": 0.7,
+                },
+            )
     else:
-        ax4.text(0.5, 0.5, "Need > 10 steps\nfor convergence analysis",
-                 ha='center', va='center', transform=ax4.transAxes)
+        ax4.text(
+            0.5,
+            0.5,
+            "Need > 10 steps\nfor convergence analysis",
+            ha="center",
+            va="center",
+            transform=ax4.transAxes,
+        )
         ax4.set_title("Convergence Analysis")
 
-    plt.suptitle(title, fontsize=14, fontweight='bold')
+    plt.suptitle(title, fontsize=14, fontweight="bold")
     plt.tight_layout()
-    plt.savefig(output_path, dpi=300, bbox_inches='tight')
+    plt.savefig(output_path, dpi=300, bbox_inches="tight")
+    plt.close()
+
+    return str(output_path)
+
+
+def generate_vfe_vs_efe_plot(
+    vfe: List[float],
+    efe: List[Any],
+    output_path: Path,
+    title: str = "Variational vs Expected Free Energy",
+) -> str:
+    """
+    Generate visualization comparing VFE and EFE over time.
+
+    Args:
+        vfe: List of variational free energy values (scalars)
+        efe: List of expected free energy values (lists of scalars, one per policy)
+        output_path: Path to save the visualization
+        title: Title for the plot
+
+    Returns:
+        Path to the generated file
+    """
+    if not vfe or not efe:
+        raise ValueError("Need both VFE and EFE data to generate plot")
+
+    # Process EFE (take min across policies if it's a list)
+    efe_summary: list[Any] = []
+    for efe_t in efe:
+        if hasattr(efe_t, "__iter__") and not isinstance(efe_t, str):
+            efe_summary.append(min(efe_t) if len(efe_t) > 0 else 0)
+        else:
+            efe_summary.append(efe_t)
+
+    fig, ax1 = plt.subplots(figsize=(10, 6))
+
+    color1 = "tab:blue"
+    ax1.set_xlabel("Time Step")
+    ax1.set_ylabel("Variational Free Energy (VFE)", color=color1)
+    ax1.plot(vfe, "o-", color=color1, linewidth=2, label="VFE (Belief Update Cost)")
+    ax1.tick_params(axis="y", labelcolor=color1)
+    ax1.grid(True, alpha=0.3)
+
+    ax2 = ax1.twinx()
+    color2 = "tab:orange"
+    ax2.set_ylabel("Expected Free Energy (EFE)", color=color2)
+    ax2.plot(
+        efe_summary, "s--", color=color2, linewidth=2, label="Min EFE (Policy Cost)"
+    )
+    ax2.tick_params(axis="y", labelcolor=color2)
+
+    fig.suptitle(title, fontsize=14, fontweight="bold")
+    fig.tight_layout()
+
+    # Combine legends from both axes
+    lines_1, labels_1 = ax1.get_legend_handles_labels()
+    lines_2, labels_2 = ax2.get_legend_handles_labels()
+    ax1.legend(
+        lines_1 + lines_2,
+        labels_1 + labels_2,
+        loc="upper center",
+        bbox_to_anchor=(0.5, -0.15),
+        ncol=2,
+    )
+    plt.subplots_adjust(bottom=0.2)
+
+    plt.savefig(output_path, dpi=300, bbox_inches="tight")
     plt.close()
 
     return str(output_path)
 
 
 def generate_observation_analysis(
-    observations: List[int],
-    output_path: Path,
-    title: str = "Observation Analysis"
+    observations: List[int], output_path: Path, title: str = "Observation Analysis"
 ) -> str:
     """
     Generate visualization of observation patterns.
@@ -705,8 +1628,8 @@ def generate_observation_analysis(
     # Observation frequency
     ax1 = axes[0]
     obs_counts = [np.sum(obs_array == o) for o in unique_obs]
-    colors = plt.cm.Pastel1(np.linspace(0, 1, n_obs))
-    ax1.bar(unique_obs, obs_counts, color=colors, edgecolor='black')
+    colors = plt.get_cmap("Pastel1")(np.linspace(0, 1, n_obs))
+    ax1.bar(unique_obs, obs_counts, color=colors, edgecolor="black")
     ax1.set_xlabel("Observation")
     ax1.set_ylabel("Count")
     ax1.set_title("Observation Frequency")
@@ -715,8 +1638,15 @@ def generate_observation_analysis(
 
     # Observation sequence
     ax2 = axes[1]
-    ax2.scatter(range(len(observations)), observations, c=observations, cmap='tab10', s=30, alpha=0.7)
-    ax2.plot(range(len(observations)), observations, 'gray', alpha=0.3, linewidth=0.5)
+    ax2.scatter(
+        range(len(observations)),
+        observations,
+        c=observations,
+        cmap="tab10",
+        s=30,
+        alpha=0.7,
+    )
+    ax2.plot(range(len(observations)), observations, "gray", alpha=0.3, linewidth=0.5)
     ax2.set_xlabel("Time Step")
     ax2.set_ylabel("Observation")
     ax2.set_title("Observation Sequence")
@@ -724,9 +1654,9 @@ def generate_observation_analysis(
     ax2.set_yticklabels([f"O{o}" for o in unique_obs])
     ax2.grid(True, alpha=0.3)
 
-    plt.suptitle(title, fontsize=14, fontweight='bold')
+    plt.suptitle(title, fontsize=14, fontweight="bold")
     plt.tight_layout()
-    plt.savefig(output_path, dpi=300, bbox_inches='tight')
+    plt.savefig(output_path, dpi=300, bbox_inches="tight")
     plt.close()
 
     return str(output_path)
@@ -735,7 +1665,7 @@ def generate_observation_analysis(
 def generate_unified_framework_dashboard(
     framework_data: Dict[str, Dict[str, Any]],
     output_dir: Path,
-    model_name: str = "Active Inference Model"
+    model_name: str = "Active Inference Model",
 ) -> List[str]:
     """
     Generate comprehensive unified dashboard comparing all frameworks.
@@ -754,14 +1684,15 @@ def generate_unified_framework_dashboard(
     Returns:
         List of generated file paths
     """
-    generated_files = []
+    generated_files: list[Any] = []
     output_dir.mkdir(parents=True, exist_ok=True)
 
     # Extract data per framework
-    framework_beliefs = {}
-    framework_actions = {}
-    framework_efe = {}
-    framework_metrics = {}
+    framework_beliefs: dict[Any, Any] = {}
+    framework_actions: dict[Any, Any] = {}
+    framework_efe: dict[Any, Any] = {}
+    framework_vfe: dict[Any, Any] = {}
+    framework_metrics: dict[Any, Any] = {}
 
     for _key, data in framework_data.items():
         framework = data.get("framework", "unknown")
@@ -778,18 +1709,34 @@ def generate_unified_framework_dashboard(
             if sim_data.get("actions"):
                 framework_actions[framework] = sim_data["actions"]
             if sim_data.get("efe_history") or sim_data.get("expected_free_energy"):
-                efe_data = sim_data.get("efe_history") or sim_data.get("expected_free_energy") or []
+                efe_data = (
+                    sim_data.get("efe_history")
+                    or sim_data.get("expected_free_energy")
+                    or []
+                )
                 if efe_data:
                     efe_arr = np.array(efe_data)
                     if efe_arr.ndim == 2:
                         efe_data = np.mean(efe_arr, axis=1).tolist()
                     framework_efe[framework] = efe_data
 
+            if sim_data.get("vfe_history") or sim_data.get("variational_free_energy"):
+                vfe_data = (
+                    sim_data.get("vfe_history")
+                    or sim_data.get("variational_free_energy")
+                    or []
+                )
+                if vfe_data:
+                    framework_vfe[framework] = vfe_data
+
             # Collect metrics
             framework_metrics[framework] = {
-                "num_timesteps": len(sim_data.get("beliefs", [])) or len(sim_data.get("actions", [])),
-                "num_states": len(sim_data["beliefs"][0]) if sim_data.get("beliefs") else 0,
-                "unique_actions": len(set(sim_data.get("actions", [])))
+                "num_timesteps": len(sim_data.get("beliefs", []))
+                or len(sim_data.get("actions", [])),
+                "num_states": len(sim_data["beliefs"][0])
+                if sim_data.get("beliefs")
+                else 0,
+                "unique_actions": len(set(sim_data.get("actions", []))),
             }
 
     # === Dashboard 1: Belief Evolution Comparison ===
@@ -797,7 +1744,7 @@ def generate_unified_framework_dashboard(
         fig, axes = plt.subplots(2, 3, figsize=(18, 12))
         axes = axes.flatten()
 
-        colors = plt.cm.tab10(np.linspace(0, 1, 10))
+        colors = plt.get_cmap("tab10")(np.linspace(0, 1, 10))
         _frameworks = list(framework_beliefs.keys())
 
         # Individual framework belief plots
@@ -809,16 +1756,20 @@ def generate_unified_framework_dashboard(
 
             for state_idx in range(min(n_states, 5)):
                 if beliefs.ndim > 1:
-                    ax.plot(beliefs[:, state_idx], label=f"State {state_idx+1}",
-                           color=colors[state_idx], linewidth=1.5)
+                    ax.plot(
+                        beliefs[:, state_idx],
+                        label=f"State {state_idx + 1}",
+                        color=colors[state_idx],
+                        linewidth=1.5,
+                    )
                 else:
                     ax.plot(beliefs, label="Belief", linewidth=1.5)
 
-            ax.set_title(f"{fw.upper()}", fontsize=12, fontweight='bold')
+            ax.set_title(f"{fw.upper()}", fontsize=12, fontweight="bold")
             ax.set_xlabel("Time Step")
             ax.set_ylabel("Probability")
             ax.set_ylim(0, 1.05)
-            ax.legend(loc='upper right', fontsize=8)
+            ax.legend(loc="upper right", fontsize=8)
             ax.grid(True, alpha=0.3)
 
         # Combined comparison in last panel
@@ -826,20 +1777,36 @@ def generate_unified_framework_dashboard(
         for fw_idx, (fw, beliefs) in enumerate(framework_beliefs.items()):
             if beliefs.ndim > 1:
                 dominant_belief = np.max(beliefs, axis=1)
-                ax_combined.plot(dominant_belief, label=f"{fw}",
-                                linewidth=2, linestyle=['solid', 'dashed', 'dotted', 'dashdot', (0, (3, 5, 1, 5))][fw_idx % 5])
+                ax_combined.plot(
+                    dominant_belief,
+                    label=f"{fw}",
+                    linewidth=2,
+                    linestyle=[
+                        "solid",
+                        "dashed",
+                        "dotted",
+                        "dashdot",
+                        (0, (3, 5, 1, 5)),
+                    ][fw_idx % 5],
+                )
 
-        ax_combined.set_title("Dominant Belief Confidence", fontsize=12, fontweight='bold')
+        ax_combined.set_title(
+            "Dominant Belief Confidence", fontsize=12, fontweight="bold"
+        )
         ax_combined.set_xlabel("Time Step")
         ax_combined.set_ylabel("Max Probability")
-        ax_combined.legend(loc='best')
+        ax_combined.legend(loc="best")
         ax_combined.grid(True, alpha=0.3)
 
-        plt.suptitle(f"Belief Evolution Comparison - {model_name}", fontsize=14, fontweight='bold')
+        plt.suptitle(
+            f"Belief Evolution Comparison - {model_name}",
+            fontsize=14,
+            fontweight="bold",
+        )
         plt.tight_layout()
 
         belief_file = output_dir / "unified_belief_comparison.png"
-        plt.savefig(belief_file, dpi=300, bbox_inches='tight')
+        plt.savefig(belief_file, dpi=300, bbox_inches="tight")
         plt.close()
         generated_files.append(str(belief_file))
 
@@ -850,10 +1817,10 @@ def generate_unified_framework_dashboard(
 
         # Action distribution comparison
         if framework_actions:
-            all_actions = set()
+            all_action_set: set[Any] = set()
             for actions in framework_actions.values():
-                all_actions.update(actions)
-            all_actions = sorted(all_actions)
+                all_action_set.update(actions)
+            all_actions = sorted(all_action_set)
 
             ax_action = axes[0, 0] if axes.ndim > 1 else axes[0]
             bar_width = 0.8 / len(framework_actions)
@@ -861,15 +1828,20 @@ def generate_unified_framework_dashboard(
             for fw_idx, (fw, actions) in enumerate(framework_actions.items()):
                 action_counts = [actions.count(a) for a in all_actions]
                 x_positions = np.arange(len(all_actions)) + fw_idx * bar_width
-                ax_action.bar(x_positions, action_counts, bar_width, label=fw, alpha=0.8)
+                ax_action.bar(
+                    x_positions, action_counts, bar_width, label=fw, alpha=0.8
+                )
 
             ax_action.set_xlabel("Action")
             ax_action.set_ylabel("Count")
             ax_action.set_title("Action Distribution by Framework")
-            ax_action.set_xticks(np.arange(len(all_actions)) + bar_width * (len(framework_actions) - 1) / 2)
+            ax_action.set_xticks(
+                np.arange(len(all_actions))
+                + bar_width * (len(framework_actions) - 1) / 2
+            )
             ax_action.set_xticklabels([f"A{a}" for a in all_actions])
             ax_action.legend()
-            ax_action.grid(True, alpha=0.3, axis='y')
+            ax_action.grid(True, alpha=0.3, axis="y")
 
         # EFE evolution comparison
         if framework_efe:
@@ -886,42 +1858,45 @@ def generate_unified_framework_dashboard(
 
         # Metrics summary table
         ax_table = axes[1, 0] if axes.ndim > 1 else axes[2]
-        ax_table.axis('off')
+        ax_table.axis("off")
 
         if framework_metrics:
-            table_data = []
-            headers = ["Framework", "Timesteps", "States", "Actions Used"]
+            table_data: list[Any] = []
+            headers: list[Any] = ["Framework", "Timesteps", "States", "Actions Used"]
 
             for fw, metrics in framework_metrics.items():
-                table_data.append([
-                    fw.upper(),
-                    str(metrics.get("num_timesteps", "N/A")),
-                    str(metrics.get("num_states", "N/A")),
-                    str(metrics.get("unique_actions", "N/A"))
-                ])
+                table_data.append(
+                    [
+                        fw.upper(),
+                        str(metrics.get("num_timesteps", "N/A")),
+                        str(metrics.get("num_states", "N/A")),
+                        str(metrics.get("unique_actions", "N/A")),
+                    ]
+                )
 
             table = ax_table.table(
-                cellText=table_data,
-                colLabels=headers,
-                loc='center',
-                cellLoc='center'
+                cellText=table_data, colLabels=headers, loc="center", cellLoc="center"
             )
             table.auto_set_font_size(False)
             table.set_fontsize(10)
             table.scale(1.2, 1.5)
-            ax_table.set_title("Framework Metrics Summary", fontsize=12, fontweight='bold', pad=20)
+            ax_table.set_title(
+                "Framework Metrics Summary", fontsize=12, fontweight="bold", pad=20
+            )
 
         # Hide unused axes
         for idx in range(2, axes.shape[1] if axes.ndim > 1 else 1):
             for row in range(2):
                 if axes.ndim > 1:
-                    axes[row, idx].axis('off')
+                    axes[row, idx].axis("off")
 
-        plt.suptitle(f"Action & EFE Comparison - {model_name}", fontsize=14, fontweight='bold')
+        plt.suptitle(
+            f"Action & EFE Comparison - {model_name}", fontsize=14, fontweight="bold"
+        )
         plt.tight_layout()
 
         action_efe_file = output_dir / "unified_action_efe_comparison.png"
-        plt.savefig(action_efe_file, dpi=300, bbox_inches='tight')
+        plt.savefig(action_efe_file, dpi=300, bbox_inches="tight")
         plt.close()
         generated_files.append(str(action_efe_file))
 
@@ -930,10 +1905,10 @@ def generate_unified_framework_dashboard(
         fig, axes = plt.subplots(1, 2, figsize=(14, 5))
 
         # Calculate entropy for each framework
-        framework_entropy = {}
+        framework_entropy: dict[Any, Any] = {}
         for fw, beliefs in framework_beliefs.items():
             if beliefs.ndim > 1:
-                entropy = []
+                entropy: list[Any] = []
                 for t in range(len(beliefs)):
                     p = np.clip(beliefs[t], 1e-10, 1.0)
                     p = p / np.sum(p)
@@ -957,20 +1932,22 @@ def generate_unified_framework_dashboard(
         labels = list(framework_entropy.keys())
 
         bp = ax2.boxplot(entropy_data, labels=labels, patch_artist=True)
-        colors = plt.cm.Set2(np.linspace(0, 1, len(labels)))
-        for patch, color in zip(bp['boxes'], colors):
+        colors = plt.get_cmap("Set2")(np.linspace(0, 1, len(labels)))
+        for patch, color in zip(bp["boxes"], colors):
             patch.set_facecolor(color)
 
         ax2.set_xlabel("Framework")
         ax2.set_ylabel("Entropy Distribution")
         ax2.set_title("Entropy Statistics by Framework")
-        ax2.grid(True, alpha=0.3, axis='y')
+        ax2.grid(True, alpha=0.3, axis="y")
 
-        plt.suptitle(f"Belief Entropy Analysis - {model_name}", fontsize=14, fontweight='bold')
+        plt.suptitle(
+            f"Belief Entropy Analysis - {model_name}", fontsize=14, fontweight="bold"
+        )
         plt.tight_layout()
 
         entropy_file = output_dir / "unified_entropy_comparison.png"
-        plt.savefig(entropy_file, dpi=300, bbox_inches='tight')
+        plt.savefig(entropy_file, dpi=300, bbox_inches="tight")
         plt.close()
         generated_files.append(str(entropy_file))
 
@@ -978,8 +1955,7 @@ def generate_unified_framework_dashboard(
 
 
 def generate_cross_framework_comparison(
-    framework_data: Dict[str, Dict[str, Any]],
-    output_path: Path
+    framework_data: Dict[str, Dict[str, Any]], output_path: Path
 ) -> str:
     """
     Generate cross-framework comparison visualization.
@@ -1002,7 +1978,7 @@ def generate_cross_framework_comparison(
                 "execution_times": [],
                 "steps_completed": [],
                 "success_count": 0,
-                "total_count": 0
+                "total_count": 0,
             }
 
         agg = aggregated[framework]
@@ -1038,12 +2014,18 @@ def generate_cross_framework_comparison(
 
     # Build final metrics lists
     frameworks = sorted(aggregated.keys())
-    metrics = {"execution_time": [], "steps_completed": [], "success_rate": []}
+    metrics: dict[str, Any] = {
+        "execution_time": [],
+        "steps_completed": [],
+        "success_rate": [],
+    }
 
     for fw in frameworks:
         agg = aggregated[fw]
         if agg["execution_times"]:
-            metrics["execution_time"].append(sum(agg["execution_times"]) / len(agg["execution_times"]))
+            metrics["execution_time"].append(
+                sum(agg["execution_times"]) / len(agg["execution_times"])
+            )
         else:
             metrics["execution_time"].append(0)
 
@@ -1059,7 +2041,7 @@ def generate_cross_framework_comparison(
 
     fig, axes = plt.subplots(1, 3, figsize=(15, 5))
 
-    colors = plt.cm.Set3(np.linspace(0, 1, len(frameworks)))
+    colors = plt.get_cmap("Set3")(np.linspace(0, 1, len(frameworks)))
 
     # Execution time comparison
     ax1 = axes[0]
@@ -1068,7 +2050,7 @@ def generate_cross_framework_comparison(
     ax1.set_ylabel("Execution Time (s)")
     ax1.set_title("Execution Time Comparison")
     ax1.set_xticks(range(len(frameworks)))
-    ax1.set_xticklabels(frameworks, rotation=45, ha='right')
+    ax1.set_xticklabels(frameworks, rotation=45, ha="right")
 
     # Steps completed comparison
     ax2 = axes[1]
@@ -1077,30 +2059,34 @@ def generate_cross_framework_comparison(
     ax2.set_ylabel("Steps Completed")
     ax2.set_title("Simulation Steps Comparison")
     ax2.set_xticks(range(len(frameworks)))
-    ax2.set_xticklabels(frameworks, rotation=45, ha='right')
+    ax2.set_xticklabels(frameworks, rotation=45, ha="right")
 
     # Success rate comparison
     ax3 = axes[2]
-    success_colors = ['green' if s >= 1.0 else ('orange' if s > 0 else 'red') for s in metrics["success_rate"]]
-    ax3.bar(range(len(frameworks)), metrics["success_rate"], color=success_colors, alpha=0.7)
+    success_colors = [
+        "green" if s >= 1.0 else ("orange" if s > 0 else "red")
+        for s in metrics["success_rate"]
+    ]
+    ax3.bar(
+        range(len(frameworks)), metrics["success_rate"], color=success_colors, alpha=0.7
+    )
     ax3.set_xlabel("Framework")
     ax3.set_ylabel("Success Rate")
     ax3.set_title("Execution Success Comparison")
     ax3.set_xticks(range(len(frameworks)))
-    ax3.set_xticklabels(frameworks, rotation=45, ha='right')
+    ax3.set_xticklabels(frameworks, rotation=45, ha="right")
     ax3.set_ylim(-0.1, 1.1)
 
-    plt.suptitle("Cross-Framework Comparison", fontsize=14, fontweight='bold')
+    plt.suptitle("Cross-Framework Comparison", fontsize=14, fontweight="bold")
     plt.tight_layout()
-    plt.savefig(output_path, dpi=300, bbox_inches='tight')
+    plt.savefig(output_path, dpi=300, bbox_inches="tight")
     plt.close()
 
     return str(output_path)
 
 
 def generate_efe_convergence_comparison(
-    framework_data: Dict[str, Dict[str, Any]],
-    output_path: Path
+    framework_data: Dict[str, Dict[str, Any]], output_path: Path
 ) -> List[str]:
     """
     Generate an overlay plot comparing Expected Free Energy convergence across frameworks.
@@ -1118,9 +2104,14 @@ def generate_efe_convergence_comparison(
         return []
 
     # Collect EFE data per framework
-    efe_series = {}
-    colors = {'jax': '#E74C3C', 'pymdp': '#3498DB', 'rxinfer': '#2ECC71',
-              'activeinference_jl': '#9B59B6', 'discopy': '#F39C12'}
+    efe_series: dict[Any, Any] = {}
+    colors: dict[str, Any] = {
+        "jax": "#E74C3C",
+        "pymdp": "#3498DB",
+        "rxinfer": "#2ECC71",
+        "activeinference_jl": "#9B59B6",
+        "discopy": "#F39C12",
+    }
 
     for _key, data in framework_data.items():
         framework = data.get("framework", "unknown")
@@ -1128,9 +2119,9 @@ def generate_efe_convergence_comparison(
 
         # Check simulation_trace and metrics for EFE
         efe = (
-            sim_data.get("simulation_trace", {}).get("efe_history") or
-            sim_data.get("metrics", {}).get("expected_free_energy") or
-            sim_data.get("efe_history", [])
+            sim_data.get("simulation_trace", {}).get("efe_history")
+            or sim_data.get("metrics", {}).get("expected_free_energy")
+            or sim_data.get("efe_history", [])
         )
 
         if efe and len(efe) > 1:
@@ -1153,39 +2144,50 @@ def generate_efe_convergence_comparison(
 
     # Left: Raw EFE trajectories
     for fw, efe in efe_series.items():
-        color = colors.get(fw, '#7F8C8D')
-        ax1.plot(efe, 'o-', label=fw.upper(), color=color, linewidth=2, markersize=5, alpha=0.8)
+        color = colors.get(fw, "#7F8C8D")
+        ax1.plot(
+            efe,
+            "o-",
+            label=fw.upper(),
+            color=color,
+            linewidth=2,
+            markersize=5,
+            alpha=0.8,
+        )
 
-    ax1.set_xlabel("Time Step", fontweight='bold')
-    ax1.set_ylabel("Expected Free Energy", fontweight='bold')
-    ax1.set_title("EFE Convergence Comparison", fontweight='bold', fontsize=13)
+    ax1.set_xlabel("Time Step", fontweight="bold")
+    ax1.set_ylabel("Expected Free Energy", fontweight="bold")
+    ax1.set_title("EFE Convergence Comparison", fontweight="bold", fontsize=13)
     ax1.legend(fontsize=10)
     ax1.grid(True, alpha=0.3)
 
     # Right: Cumulative/running mean EFE
     for fw, efe in efe_series.items():
-        color = colors.get(fw, '#7F8C8D')
+        color = colors.get(fw, "#7F8C8D")
         running_mean = np.cumsum(efe) / (np.arange(len(efe)) + 1)
-        ax2.plot(running_mean, '-', label=f"{fw.upper()} (mean)", color=color, linewidth=2.5)
-        ax2.fill_between(range(len(running_mean)), running_mean, alpha=0.15, color=color)
+        ax2.plot(
+            running_mean, "-", label=f"{fw.upper()} (mean)", color=color, linewidth=2.5
+        )
+        ax2.fill_between(
+            range(len(running_mean)), running_mean, alpha=0.15, color=color
+        )
 
-    ax2.set_xlabel("Time Step", fontweight='bold')
-    ax2.set_ylabel("Running Mean EFE", fontweight='bold')
-    ax2.set_title("EFE Running Mean", fontweight='bold', fontsize=13)
+    ax2.set_xlabel("Time Step", fontweight="bold")
+    ax2.set_ylabel("Running Mean EFE", fontweight="bold")
+    ax2.set_title("EFE Running Mean", fontweight="bold", fontsize=13)
     ax2.legend(fontsize=10)
     ax2.grid(True, alpha=0.3)
 
-    plt.suptitle("Cross-Framework EFE Analysis", fontsize=15, fontweight='bold', y=1.02)
+    plt.suptitle("Cross-Framework EFE Analysis", fontsize=15, fontweight="bold", y=1.02)
     plt.tight_layout()
-    plt.savefig(str(output_path), dpi=300, bbox_inches='tight')
+    plt.savefig(str(output_path), dpi=300, bbox_inches="tight")
     plt.close()
     logger.info(f"Generated EFE convergence comparison: {output_path.name}")
     return [str(output_path)]
 
 
 def generate_confidence_comparison(
-    framework_data: Dict[str, Dict[str, Any]],
-    output_path: Path
+    framework_data: Dict[str, Dict[str, Any]], output_path: Path
 ) -> List[str]:
     """
     Generate a comparison of belief confidence convergence across frameworks.
@@ -1203,9 +2205,14 @@ def generate_confidence_comparison(
     if not MATPLOTLIB_AVAILABLE:
         return []
 
-    confidence_series = {}
-    colors = {'jax': '#E74C3C', 'pymdp': '#3498DB', 'rxinfer': '#2ECC71',
-              'activeinference_jl': '#9B59B6', 'discopy': '#F39C12'}
+    confidence_series: dict[Any, Any] = {}
+    colors: dict[str, Any] = {
+        "jax": "#E74C3C",
+        "pymdp": "#3498DB",
+        "rxinfer": "#2ECC71",
+        "activeinference_jl": "#9B59B6",
+        "discopy": "#F39C12",
+    }
 
     for _key, data in framework_data.items():
         framework = data.get("framework", "unknown")
@@ -1213,9 +2220,9 @@ def generate_confidence_comparison(
 
         # Direct confidence data
         confidence = (
-            sim_data.get("simulation_trace", {}).get("belief_confidence") or
-            sim_data.get("metrics", {}).get("belief_confidence") or
-            sim_data.get("belief_confidence", [])
+            sim_data.get("simulation_trace", {}).get("belief_confidence")
+            or sim_data.get("metrics", {}).get("belief_confidence")
+            or sim_data.get("belief_confidence", [])
         )
 
         # Derive from beliefs if not available directly
@@ -1235,34 +2242,36 @@ def generate_confidence_comparison(
 
     # Left: Confidence over time
     for fw, conf in confidence_series.items():
-        color = colors.get(fw, '#7F8C8D')
-        ax1.plot(conf, 'o-', label=fw.upper(), color=color, linewidth=2, markersize=5)
+        color = colors.get(fw, "#7F8C8D")
+        ax1.plot(conf, "o-", label=fw.upper(), color=color, linewidth=2, markersize=5)
 
-    ax1.set_xlabel("Time Step", fontweight='bold')
-    ax1.set_ylabel("Max Belief Probability", fontweight='bold')
-    ax1.set_title("Belief Confidence Over Time", fontweight='bold', fontsize=13)
+    ax1.set_xlabel("Time Step", fontweight="bold")
+    ax1.set_ylabel("Max Belief Probability", fontweight="bold")
+    ax1.set_title("Belief Confidence Over Time", fontweight="bold", fontsize=13)
     ax1.set_ylim(0, 1.05)
     ax1.legend(fontsize=10)
     ax1.grid(True, alpha=0.3)
-    ax1.axhline(y=1/3, color='gray', linestyle=':', alpha=0.5, label='Chance level')
+    ax1.axhline(y=1 / 3, color="gray", linestyle=":", alpha=0.5, label="Chance level")
 
     # Right: Entropy over time (inverse of confidence)
     for fw, conf in confidence_series.items():
-        color = colors.get(fw, '#7F8C8D')
+        color = colors.get(fw, "#7F8C8D")
         # Reconstruct entropy from max confidence (approximation)
         entropy = [-np.log2(c + 1e-10) for c in conf]
-        ax2.plot(entropy, '-', label=fw.upper(), color=color, linewidth=2)
+        ax2.plot(entropy, "-", label=fw.upper(), color=color, linewidth=2)
         ax2.fill_between(range(len(entropy)), entropy, alpha=0.1, color=color)
 
-    ax2.set_xlabel("Time Step", fontweight='bold')
-    ax2.set_ylabel("Belief Uncertainty (-log₂ confidence)", fontweight='bold')
-    ax2.set_title("Uncertainty Reduction Over Time", fontweight='bold', fontsize=13)
+    ax2.set_xlabel("Time Step", fontweight="bold")
+    ax2.set_ylabel("Belief Uncertainty (-log₂ confidence)", fontweight="bold")
+    ax2.set_title("Uncertainty Reduction Over Time", fontweight="bold", fontsize=13)
     ax2.legend(fontsize=10)
     ax2.grid(True, alpha=0.3)
 
-    plt.suptitle("Cross-Framework Confidence Analysis", fontsize=15, fontweight='bold', y=1.02)
+    plt.suptitle(
+        "Cross-Framework Confidence Analysis", fontsize=15, fontweight="bold", y=1.02
+    )
     plt.tight_layout()
-    plt.savefig(str(output_path), dpi=300, bbox_inches='tight')
+    plt.savefig(str(output_path), dpi=300, bbox_inches="tight")
     plt.close()
     logger.info(f"Generated confidence comparison: {output_path.name}")
     return [str(output_path)]
@@ -1271,7 +2280,7 @@ def generate_confidence_comparison(
 def generate_framework_radar(
     exec_summary_path: Path,
     framework_data: Dict[str, Dict[str, Any]],
-    output_path: Path
+    output_path: Path,
 ) -> List[str]:
     """
     Generate a radar/spider chart comparing frameworks across multiple dimensions.
@@ -1290,14 +2299,14 @@ def generate_framework_radar(
         return []
 
     try:
-        with open(exec_summary_path, 'r') as f:
+        with open(exec_summary_path, "r") as f:
             exec_summary = json.load(f)
     except Exception as e:
         logger.warning(f"Failed to load execution summary: {e}")
         return []
 
     # Collect per-framework metrics
-    fw_metrics = {}
+    fw_metrics: dict[Any, Any] = {}
     exec_details = exec_summary.get("execution_details", [])
 
     for detail in exec_details:
@@ -1308,24 +2317,34 @@ def generate_framework_radar(
 
         # Count data fields from framework_data
         data_richness = 0
-        belief_quality = 0
+        belief_quality = 0.0
         timesteps = 0
         for _key, data in framework_data.items():
             if data.get("framework") == fw_norm:
                 sim = data.get("simulation_data", {})
                 # Count non-empty data fields
-                for field in ['beliefs', 'actions', 'observations', 'true_states',
-                              'free_energy', 'efe_history']:
+                for field in [
+                    "beliefs",
+                    "actions",
+                    "observations",
+                    "true_states",
+                    "free_energy",
+                    "efe_history",
+                ]:
                     if sim.get(field):
                         data_richness += 1
                 # Check simulation_trace too
                 trace = sim.get("simulation_trace", {})
-                for field in ['beliefs', 'actions', 'efe_history', 'belief_confidence']:
+                for field in ["beliefs", "actions", "efe_history", "belief_confidence"]:
                     if trace.get(field):
                         data_richness += 1
                 # Metrics fields
                 metrics = sim.get("metrics", {})
-                for field in ['expected_free_energy', 'belief_confidence', 'cumulative_preference']:
+                for field in [
+                    "expected_free_energy",
+                    "belief_confidence",
+                    "cumulative_preference",
+                ]:
                     if metrics.get(field):
                         data_richness += 1
                 # Belief quality: does beliefs sum to ~1?
@@ -1341,45 +2360,69 @@ def generate_framework_radar(
                 break
 
         fw_metrics[fw_norm] = {
-            'speed': max(0, 1 - exec_time / 25),  # Normalized: 25s = 0, 0s = 1
-            'data_richness': min(data_richness / 10, 1.0),  # Normalize to [0, 1]
-            'belief_quality': belief_quality,
-            'timesteps': min(timesteps / 20, 1.0),  # Normalize: 20 steps = 1.0
-            'validation': success,
+            "speed": max(0, 1 - exec_time / 25),  # Normalized: 25s = 0, 0s = 1
+            "data_richness": min(data_richness / 10, 1.0),  # Normalize to [0, 1]
+            "belief_quality": belief_quality,
+            "timesteps": min(timesteps / 20, 1.0),  # Normalize: 20 steps = 1.0
+            "validation": success,
         }
 
     if len(fw_metrics) < 2:
         return []
 
     # Build radar chart
-    categories = ['Speed', 'Data Richness', 'Belief Quality', 'Timesteps', 'Validation']
+    categories: list[Any] = [
+        "Speed",
+        "Data Richness",
+        "Belief Quality",
+        "Timesteps",
+        "Validation",
+    ]
     N = len(categories)
     angles = np.linspace(0, 2 * np.pi, N, endpoint=False).tolist()
     angles += angles[:1]  # Close the polygon
 
-    fig, ax = plt.subplots(figsize=(10, 10), subplot_kw={'polar': True})
-    colors = {'jax': '#E74C3C', 'pymdp': '#3498DB', 'rxinfer': '#2ECC71',
-              'activeinference_jl': '#9B59B6', 'discopy': '#F39C12'}
+    fig, ax = plt.subplots(figsize=(10, 10), subplot_kw={"polar": True})
+    colors: dict[str, Any] = {
+        "jax": "#E74C3C",
+        "pymdp": "#3498DB",
+        "rxinfer": "#2ECC71",
+        "activeinference_jl": "#9B59B6",
+        "discopy": "#F39C12",
+    }
 
     for fw, metrics in fw_metrics.items():
-        values = [metrics['speed'], metrics['data_richness'], metrics['belief_quality'],
-                  metrics['timesteps'], metrics['validation']]
+        values: list[Any] = [
+            metrics["speed"],
+            metrics["data_richness"],
+            metrics["belief_quality"],
+            metrics["timesteps"],
+            metrics["validation"],
+        ]
         values += values[:1]  # Close the polygon
-        color = colors.get(fw, '#7F8C8D')
-        ax.plot(angles, values, 'o-', linewidth=2.5, label=fw.upper(), color=color, markersize=7)
+        color = colors.get(fw, "#7F8C8D")
+        ax.plot(
+            angles,
+            values,
+            "o-",
+            linewidth=2.5,
+            label=fw.upper(),
+            color=color,
+            markersize=7,
+        )
         ax.fill(angles, values, alpha=0.15, color=color)
 
     ax.set_xticks(angles[:-1])
-    ax.set_xticklabels(categories, fontsize=11, fontweight='bold')
+    ax.set_xticklabels(categories, fontsize=11, fontweight="bold")
     ax.set_ylim(0, 1.1)
     ax.set_yticks([0.25, 0.5, 0.75, 1.0])
-    ax.set_yticklabels(['25%', '50%', '75%', '100%'], fontsize=8, alpha=0.7)
-    ax.set_title("Framework Capability Radar", fontsize=15, fontweight='bold', pad=20)
-    ax.legend(loc='upper right', bbox_to_anchor=(1.25, 1.1), fontsize=10)
+    ax.set_yticklabels(["25%", "50%", "75%", "100%"], fontsize=8, alpha=0.7)
+    ax.set_title("Framework Capability Radar", fontsize=15, fontweight="bold", pad=20)
+    ax.legend(loc="upper right", bbox_to_anchor=(1.25, 1.1), fontsize=10)
     ax.grid(True, alpha=0.3)
 
     plt.tight_layout()
-    plt.savefig(str(output_path), dpi=300, bbox_inches='tight')
+    plt.savefig(str(output_path), dpi=300, bbox_inches="tight")
     plt.close()
     logger.info(f"Generated framework radar: {output_path.name}")
     return [str(output_path)]

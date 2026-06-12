@@ -1,0 +1,26 @@
+{
+  "file_path": "input/gnn_files/pomdp_gridworld/AGENTS.md",
+  "file_name": "AGENTS.md",
+  "ontology_data": {
+    "concepts": [],
+    "relations": [],
+    "properties": [],
+    "annotations": []
+  },
+  "validation_result": {
+    "valid_annotations": [],
+    "invalid_annotations": [],
+    "matched_terms": {},
+    "suggestions": [],
+    "coverage_score": 0.0
+  },
+  "summary": {
+    "total_concepts": 0,
+    "total_relations": 0,
+    "total_properties": 0,
+    "total_annotations": 0,
+    "valid_annotations": 0,
+    "invalid_annotations": 0,
+    "coverage_score": 0.0
+  }
+}

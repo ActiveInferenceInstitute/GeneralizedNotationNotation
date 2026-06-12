@@ -5,10 +5,13 @@ Template Utils module for GNN Processing Pipeline.
 This module provides template utility functions.
 """
 
-def get_version_info():
+from typing import Any
+
+
+def get_version_info() -> Any:
     """
     Get version information for the template step.
-    
+
     Returns:
         Dictionary with version information
     """
@@ -16,5 +19,5 @@ def get_version_info():
         "version": "1.0.0",
         "name": "Template Step",
         "description": "Standardized template for GNN pipeline steps",
-        "author": "GNN Pipeline Team"
+        "author": "GNN Pipeline Team",
     }

@@ -171,7 +171,7 @@ G > (pi_c0, pi_c1, pi_c2)
 (pi_c2) -> u_c2
 
 ## InitialParameterization
-# Due to the vastness, parameterizations are conceptual placeholders.
+# Due to the vastness, parameterizations are conceptual examples.
 # Real values would require extensive research or learning.
 # All B matrices need to be column-stochastic (sum to 1 over next_states for each prev_state/action combo).
 # All A matrices need to be column-stochastic (sum to 1 over outcomes for each state combo).

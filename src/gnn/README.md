@@ -1,6 +1,7 @@
 # GNN (Generalized Notation Notation) Core Module
 
-This module provides enhanced infrastructure for GNN (Generalized Notation Notation) - a standardized language for specifying Active Inference generative models with comprehensive format support.
+Core infrastructure for GNN: file discovery, multi-format parsing, serialization,
+round-trip validation, and schema / cross-format consistency checks.
 
 ## Format Interoperability Status
 

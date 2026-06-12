@@ -9,11 +9,11 @@ import json
 import logging
 import platform
 import shutil
-import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
+import subprocess  # nosec B404
 import sys
 import time
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, cast
 
 from .constants import (
     LOCK_PATH,
@@ -30,12 +30,17 @@ try:
     from utils.jax_stack_validation import run_jax_stack_probe_subprocess
 except ImportError:
     try:
-        from src.utils.jax_stack_validation import run_jax_stack_probe_subprocess
+        from utils.jax_stack_validation import run_jax_stack_probe_subprocess
     except ImportError:
-        run_jax_stack_probe_subprocess = None  # type: ignore[misc,assignment]
+        run_jax_stack_probe_subprocess = cast(Any, None)
 
 
-def run_command(command: list[str], cwd: Path = PROJECT_ROOT, check: bool = True, verbose: bool = False) -> subprocess.CompletedProcess:
+def run_command(
+    command: list[str],
+    cwd: Path = PROJECT_ROOT,
+    check: bool = True,
+    verbose: bool = False,
+) -> subprocess.CompletedProcess:
     """
     Runs a shell command and logs its output based on verbosity.
 
@@ -49,13 +54,28 @@ def run_command(command: list[str], cwd: Path = PROJECT_ROOT, check: bool = True
         The completed process object with stdout and stderr attributes.
     """
     command_str_list = [str(c) for c in command]
+
+    # Robustly resolve the uv binary to handle missing PATH in test/CI environments
+    if command_str_list and command_str_list[0] == "uv":
+        command_str_list[0] = shutil.which("uv") or str(
+            Path.home() / ".local" / "bin" / "uv"
+        )
+
     if verbose:
         logger.debug(f"Running command: '{' '.join(command_str_list)}' in {cwd}")
     else:
         logger.debug(f"Running command: '{command_str_list[0]} ...' in {cwd}")
 
     try:
-        process = subprocess.run(command_str_list, cwd=cwd, check=check, capture_output=True, text=True, errors='replace', timeout=300)  # nosec B603 -- subprocess calls with controlled/trusted input
+        process = subprocess.run(
+            command_str_list,
+            cwd=cwd,
+            check=check,
+            capture_output=True,
+            text=True,
+            errors="replace",
+            timeout=300,
+        )  # nosec B603
         if verbose:
             if process.stdout:
                 logger.debug(f"Stdout:\n{process.stdout.strip()}")
@@ -75,11 +95,11 @@ def run_command(command: list[str], cwd: Path = PROJECT_ROOT, check: bool = True
             logger.error(f"Stdout:\n{e.stdout.strip()}")
         if e.stderr:
             logger.error(f"Stderr:\n{e.stderr.strip()}")
-        if check:
-            raise
-        return e
+        raise
     except FileNotFoundError as e:
-        logger.error(f"Error: Command not found - {command_str_list[0]}. Ensure it is installed and in PATH.")
+        logger.error(
+            f"Error: Command not found - {command_str_list[0]}. Ensure it is installed and in PATH."
+        )
         logger.error(f"Details: {e}")
         if check:
             raise
@@ -101,10 +121,14 @@ def check_system_requirements(verbose: bool = False) -> bool:
 
     python_version = sys.version_info
     if python_version < MIN_PYTHON_VERSION:
-        logger.error(f"Python version {python_version.major}.{python_version.minor}.{python_version.micro} is below the minimum required version {MIN_PYTHON_VERSION[0]}.{MIN_PYTHON_VERSION[1]}")
+        logger.error(
+            f"Python version {python_version.major}.{python_version.minor}.{python_version.micro} is below the minimum required version {MIN_PYTHON_VERSION[0]}.{MIN_PYTHON_VERSION[1]}"
+        )
         return False
     else:
-        logger.info(f"✅ Python version check passed: {python_version.major}.{python_version.minor}.{python_version.micro}")
+        logger.info(
+            f"✅ Python version check passed: {python_version.major}.{python_version.minor}.{python_version.micro}"
+        )
         sys.stdout.flush()
 
     try:
@@ -116,14 +140,18 @@ def check_system_requirements(verbose: bool = False) -> bool:
         logger.error(f"❌ Error checking UV: {e}")
         logger.error("Please install UV first:")
         logger.error("  curl -LsSf https://astral.sh/uv/install.sh | sh")
-        logger.error("  or visit: https://docs.astral.sh/uv/getting-started/installation/")
+        logger.error(
+            "  or visit: https://docs.astral.sh/uv/getting-started/installation/"
+        )
         return False
 
     try:
         disk_usage = shutil.disk_usage(PROJECT_ROOT)
         free_space_gb = disk_usage.free / (1024 * 1024 * 1024)
         if free_space_gb < 1:
-            logger.warning(f"⚠️ Low disk space: {free_space_gb:.2f}GB free. At least 1GB recommended for dependency installation.")
+            logger.warning(
+                f"⚠️ Low disk space: {free_space_gb:.2f}GB free. At least 1GB recommended for dependency installation."
+            )
         else:
             logger.info(f"✅ Disk space check passed: {free_space_gb:.2f}GB free")
         sys.stdout.flush()
@@ -185,44 +213,71 @@ def create_uv_environment(verbose: bool = False, recreate: bool = False) -> bool
             run_command(["uv", "venv", str(VENV_PATH)], verbose=verbose)
 
             duration = time.time() - start_time
-            logger.info(f"✅ UV environment created successfully at {VENV_PATH} (took {duration:.1f}s)")
+            logger.info(
+                f"✅ UV environment created successfully at {VENV_PATH} (took {duration:.1f}s)"
+            )
             sys.stdout.flush()
             return True
         except Exception as e:
             logger.error(f"❌ Failed to create UV environment: {e}")
             if verbose:
                 import traceback
+
                 logger.error(traceback.format_exc())
             return False
     else:
         logger.info(f"✓ Using existing UV environment at {VENV_PATH}")
         try:
             if VENV_PYTHON.exists():
-                test_result = subprocess.run([str(VENV_PYTHON), "--version"],  # nosec B603 -- subprocess calls with controlled/trusted input
-                                           capture_output=True, text=True, timeout=10)
+                # Command is the repository-managed virtualenv Python.
+                test_result = subprocess.run(  # nosec B603
+                    [str(VENV_PYTHON), "--version"],
+                    capture_output=True,
+                    text=True,
+                    timeout=10,
+                )
                 if test_result.returncode == 0:
-                    logger.info(f"✅ Existing environment is working: {test_result.stdout.strip()}")
+                    logger.info(
+                        f"✅ Existing environment is working: {test_result.stdout.strip()}"
+                    )
 
                     try:
-                        test_imports = subprocess.run([str(VENV_PYTHON), "-c",  # nosec B603 -- subprocess calls with controlled/trusted input
-                                                    "import sys; import pathlib; print('Core imports work')"],
-                                                   capture_output=True, text=True, timeout=10)
+                        test_imports = subprocess.run(
+                            [
+                                str(VENV_PYTHON),
+                                "-c",  # nosec B603
+                                "import sys; import pathlib; print('Core imports work')",
+                            ],
+                            capture_output=True,
+                            text=True,
+                            timeout=10,
+                        )
                         if test_imports.returncode == 0:
-                            logger.info("✅ Core packages are available in existing environment")
+                            logger.info(
+                                "✅ Core packages are available in existing environment"
+                            )
                             sys.stdout.flush()
                             return True
                         else:
                             logger.warning("⚠️ Core packages missing, will reinstall...")
                     except Exception:
-                        logger.warning("⚠️ Could not test core packages, will reinstall...")
+                        logger.warning(
+                            "⚠️ Could not test core packages, will reinstall..."
+                        )
                 else:
-                    logger.warning("⚠️ Existing environment may be corrupted, will recreate...")
+                    logger.warning(
+                        "⚠️ Existing environment may be corrupted, will recreate..."
+                    )
                     return create_uv_environment(verbose=verbose, recreate=True)
             else:
-                logger.warning("⚠️ Virtual environment Python not found, will recreate...")
+                logger.warning(
+                    "⚠️ Virtual environment Python not found, will recreate..."
+                )
                 return create_uv_environment(verbose=verbose, recreate=True)
         except Exception as e:
-            logger.warning(f"⚠️ Error checking existing environment: {e}, will recreate...")
+            logger.warning(
+                f"⚠️ Error checking existing environment: {e}, will recreate..."
+            )
             return create_uv_environment(verbose=verbose, recreate=True)
 
     return True
@@ -258,13 +313,16 @@ def install_uv_dependencies(
     try:
         start_time = time.time()
 
-        sync_cmd = ["uv", "sync"]
+        uv_bin = shutil.which("uv") or str(Path.home() / ".local" / "bin" / "uv")
+        sync_cmd: list[Any] = [uv_bin, "sync"]
 
         if verbose:
             sync_cmd.append("--verbose")
 
         if install_all_extras:
-            logger.info("📦 Installing all optional dependency groups (--all-extras)...")
+            logger.info(
+                "📦 Installing all optional dependency groups (--all-extras)..."
+            )
             sync_cmd.append("--all-extras")
         elif dev:
             logger.info("📦 Installing development dependencies (--extra dev)...")
@@ -280,7 +338,7 @@ def install_uv_dependencies(
         if verbose:
             logger.debug(f"Running: {' '.join(sync_cmd)}")
 
-        result = subprocess.run(  # nosec B603 -- subprocess calls with controlled/trusted input
+        result = subprocess.run(  # nosec B603
             sync_cmd,
             cwd=PROJECT_ROOT,
             capture_output=True,
@@ -296,17 +354,25 @@ def install_uv_dependencies(
                 logger.error(result.stdout)
                 logger.error("STDERR:")
                 logger.error(result.stderr)
-            logger.warning("⚠️ Some packages failed to install, attempting to continue...")
+            logger.warning(
+                "⚠️ Some packages failed to install, attempting to continue..."
+            )
         else:
             duration = time.time() - start_time
-            logger.info(f"✅ Dependencies synchronized using UV sync in {duration:.1f}s")
+            logger.info(
+                f"✅ Dependencies synchronized using UV sync in {duration:.1f}s"
+            )
 
         if verbose:
             logger.debug("Verifying environment Python executable")
-        verify = subprocess.run([str(VENV_PYTHON), "--version"], capture_output=True, text=True, timeout=30)  # nosec B603 -- subprocess calls with controlled/trusted input
+        verify = subprocess.run(
+            [str(VENV_PYTHON), "--version"], capture_output=True, text=True, timeout=30
+        )  # nosec B603
         if verify.returncode == 0:
             if verbose:
-                logger.debug(f"Python in venv: {verify.stdout.strip() or verify.stderr.strip()}")
+                logger.debug(
+                    f"Python in venv: {verify.stdout.strip() or verify.stderr.strip()}"
+                )
 
         get_installed_package_versions(verbose)
         return True
@@ -315,70 +381,94 @@ def install_uv_dependencies(
         logger.error(f"❌ Error during UV sync dependency installation: {e}")
         if verbose:
             import traceback
+
             logger.error(traceback.format_exc())
         return False
 
 
 def get_installed_package_versions(verbose: bool = False) -> dict:
     """
-    Get a list of all installed packages and their versions using UV.
+    Get installed package versions by inspecting the venv's site-packages directly.
+
+    Uses ``importlib.metadata`` rather than shelling out to ``uv pip list``.
+    This is faster, facade-independent, and works against any Python
+    distribution installed in ``VENV_PATH``.
 
     Args:
         verbose: If True, logs the full package list.
 
     Returns:
-        A dictionary of package names and their versions.
+        A dictionary mapping package names to version strings.
     """
-    logger.info("📋 Getting list of installed packages using UV...")
+    logger.info("📋 Getting list of installed packages from venv site-packages...")
     sys.stdout.flush()
 
     try:
-        list_cmd = ["uv", "pip", "list", "--python", str(VENV_PYTHON), "--format=json"]
-        result = subprocess.run(  # nosec B603 -- subprocess calls with controlled/trusted input
-            list_cmd,
+        # Query the venv's interpreter directly via importlib.metadata so we
+        # see the packages installed in THAT environment, not the one running
+        # this function.
+        probe = (
+            "import json, sys\n"
+            "try:\n"
+            "    from importlib.metadata import distributions\n"
+            "except ImportError:\n"
+            "    from importlib_metadata import distributions\n"
+            "out = {}\n"
+            "for d in distributions():\n"
+            "    name = d.metadata['Name']\n"
+            "    if name:\n"
+            "        out[name] = d.version\n"
+            "json.dump(out, sys.stdout)\n"
+        )
+        result = subprocess.run(  # nosec B603
+            [str(VENV_PYTHON), "-c", probe],
             cwd=PROJECT_ROOT,
             capture_output=True,
             text=True,
             check=False,
             timeout=60,
         )
-
         if result.returncode != 0:
-            logger.warning(f"⚠️ Failed to get package list (exit code: {result.returncode})")
+            logger.warning(
+                f"⚠️ Failed to enumerate packages (exit code: {result.returncode})"
+            )
             if verbose:
-                logger.warning(f"Error: {result.stderr.strip()}")
+                logger.warning(f"stderr: {result.stderr.strip()}")
             return {}
 
         try:
-            packages = json.loads(result.stdout)
-            package_dict = {pkg["name"]: pkg["version"] for pkg in packages}
-
-            package_count = len(package_dict)
-            logger.info(f"📦 Found {package_count} installed packages using UV")
-
-            if verbose:
-                logger.info("📋 Installed packages:")
-                for name, version in sorted(package_dict.items()):
-                    logger.info(f"  - {name}: {version}")
-            else:
-                key_packages = ["pip", "pytest", "numpy", "matplotlib", "scipy", "psutil"]
-                logger.info("📋 Key installed packages:")
-                for pkg in key_packages:
-                    if pkg in package_dict:
-                        logger.info(f"  - {pkg}: {package_dict[pkg]}")
-
-            package_list_file = VENV_PATH / "installed_packages_uv.json"
-            with open(package_list_file, 'w') as f:
-                json.dump(package_dict, f, indent=2, sort_keys=True)
-            logger.info(f"📄 Full package list saved to: {package_list_file}")
-
-            return package_dict
-
+            package_dict: Dict[str, str] = json.loads(result.stdout)
         except json.JSONDecodeError:
-            logger.warning("⚠️ Failed to parse package list JSON")
+            logger.warning("⚠️ Failed to parse package inventory JSON")
             if verbose:
-                logger.warning(f"Output: {result.stdout}")
+                logger.warning(f"stdout: {result.stdout[:500]}")
             return {}
+
+        logger.info(f"📦 Found {len(package_dict)} installed packages")
+
+        if verbose:
+            logger.info("📋 Installed packages:")
+            for name, version in sorted(package_dict.items()):
+                logger.info(f"  - {name}: {version}")
+        else:
+            key_packages: list[Any] = [
+                "pip",
+                "pytest",
+                "numpy",
+                "matplotlib",
+                "scipy",
+                "psutil",
+            ]
+            logger.info("📋 Key installed packages:")
+            for pkg in key_packages:
+                if pkg in package_dict:
+                    logger.info(f"  - {pkg}: {package_dict[pkg]}")
+
+        package_list_file = VENV_PATH / "installed_packages_uv.json"
+        with open(package_list_file, "w") as f:
+            json.dump(package_dict, f, indent=2, sort_keys=True)
+        logger.info(f"📄 Full package list saved to: {package_list_file}")
+        return package_dict
 
     except Exception as e:
         logger.error(f"❌ Error while getting package versions: {e}")
@@ -433,7 +523,9 @@ def setup_uv_environment(
                 extras=extras,
                 install_all_extras=install_all_extras,
             ):
-                logger.warning("⚠️ Core dependency installation had issues, but continuing...")
+                logger.warning(
+                    "⚠️ Core dependency installation had issues, but continuing..."
+                )
 
             if not skip_jax_test:
                 logger.info("🧠 Installing JAX and testing...")
@@ -456,7 +548,9 @@ def setup_uv_environment(
                 logger.info("✅ GNN environment setup completed successfully using UV")
                 return True
             else:
-                logger.warning("⚠️ Environment validation had issues, but setup may still be functional")
+                logger.warning(
+                    "⚠️ Environment validation had issues, but setup may still be functional"
+                )
                 return True
         else:
             logger.error("❌ Virtual environment Python not found after creation")
@@ -467,7 +561,9 @@ def setup_uv_environment(
         return False
 
 
-def validate_uv_setup(project_root: Optional[Path] = None, logger: Optional[logging.Logger] = None) -> Dict[str, Any]:
+def validate_uv_setup(
+    project_root: Optional[Path] = None, logger: Optional[logging.Logger] = None
+) -> Dict[str, Any]:
     """
     Validate the current UV setup and return status information.
 
@@ -481,14 +577,14 @@ def validate_uv_setup(project_root: Optional[Path] = None, logger: Optional[logg
     # project_root is accepted for API compatibility; internal helpers use the module-level
     # PROJECT_ROOT constant which is set once at import time from constants.py.
     _ = project_root  # noqa: F841
-    validation_results = {
+    validation_results: dict[str, Any] = {
         "system_requirements": False,
         "uv_environment": False,
         "dependencies": False,
         "jax_installation": False,
         "jax_stack_functional": False,
         "overall_status": False,
-        "python_version": f"{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}"
+        "python_version": f"{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}",
     }
 
     try:
@@ -507,12 +603,16 @@ def validate_uv_setup(project_root: Optional[Path] = None, logger: Optional[logg
 
         try:
             if VENV_PYTHON.exists() and run_jax_stack_probe_subprocess is not None:
-                ok_jax, jax_out = run_jax_stack_probe_subprocess(VENV_PYTHON, PROJECT_ROOT)
+                ok_jax, jax_out = run_jax_stack_probe_subprocess(
+                    VENV_PYTHON, PROJECT_ROOT
+                )
                 if ok_jax:
                     validation_results["jax_installation"] = True
                     validation_results["jax_stack_functional"] = True
                     if logger:
-                        logger.info("✅ JAX stack (JAX/Optax/Flax/pymdp) functional in venv")
+                        logger.info(
+                            "✅ JAX stack (JAX/Optax/Flax/pymdp) functional in venv"
+                        )
                 else:
                     if logger:
                         logger.warning(
@@ -520,7 +620,7 @@ def validate_uv_setup(project_root: Optional[Path] = None, logger: Optional[logg
                             (jax_out[:500] + "…") if len(jax_out) > 500 else jax_out,
                         )
             elif VENV_PYTHON.exists():
-                result = subprocess.run(  # nosec B603 -- subprocess calls with controlled/trusted input
+                result = subprocess.run(  # nosec B603
                     [str(VENV_PYTHON), "-c", "import jax; print(jax.__version__)"],
                     capture_output=True,
                     text=True,
@@ -529,8 +629,15 @@ def validate_uv_setup(project_root: Optional[Path] = None, logger: Optional[logg
                 if result.returncode == 0:
                     validation_results["jax_installation"] = True
                     if logger:
-                        logger.info(f"✅ JAX import OK (full stack probe unavailable): {result.stdout.strip()}")
-        except (ImportError, subprocess.TimeoutExpired, FileNotFoundError, OSError) as e:
+                        logger.info(
+                            f"✅ JAX import OK (full stack probe unavailable): {result.stdout.strip()}"
+                        )
+        except (
+            ImportError,
+            subprocess.TimeoutExpired,
+            FileNotFoundError,
+            OSError,
+        ) as e:
             if logger:
                 logger.debug("JAX stack check skipped or failed: %s", e)
 
@@ -557,12 +664,12 @@ def get_uv_setup_info() -> Dict[str, Any]:
     Returns:
         Dictionary with UV setup information
     """
-    info = {
+    info: dict[str, Any] = {
         "project_root": str(PROJECT_ROOT),
         "uv_environment_path": str(VENV_PATH),
         "python_version": f"{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}",
         "platform": platform.platform(),
-        "uv_setup_status": validate_uv_setup()
+        "uv_setup_status": validate_uv_setup(),
     }
 
     try:
@@ -583,138 +690,155 @@ def check_environment_health(verbose: bool = False) -> Dict[str, Any]:
     Returns:
         Dictionary with health check results
     """
-    health = {
-        'overall_healthy': False,
-        'uv_available': False,
-        'uv_version': None,
-        'venv_exists': False,
-        'venv_python_works': False,
-        'lock_file_exists': False,
-        'pyproject_exists': False,
-        'core_packages': {},
-        'optional_packages': {},
-        'issues': [],
-        'suggestions': []
+    health: dict[str, Any] = {
+        "overall_healthy": False,
+        "uv_available": False,
+        "uv_version": None,
+        "venv_exists": False,
+        "venv_python_works": False,
+        "lock_file_exists": False,
+        "pyproject_exists": False,
+        "core_packages": {},
+        "optional_packages": {},
+        "issues": [],
+        "suggestions": [],
     }
 
     logger.info("🏥 Running GNN environment health check...")
 
     try:
-        uv_result = subprocess.run(  # nosec B607 B603 -- subprocess calls with controlled/trusted input
-            ["uv", "--version"],
-            capture_output=True,
-            text=True,
-            timeout=5
+        uv_bin = shutil.which("uv") or str(Path.home() / ".local" / "bin" / "uv")
+        uv_result = subprocess.run(  # nosec B603
+            [uv_bin, "--version"], capture_output=True, text=True, timeout=5
         )
         if uv_result.returncode == 0:
-            health['uv_available'] = True
-            health['uv_version'] = uv_result.stdout.strip()
+            health["uv_available"] = True
+            health["uv_version"] = uv_result.stdout.strip()
             if verbose:
                 logger.info(f"✅ UV: {health['uv_version']}")
         else:
-            health['issues'].append("UV CLI not responding correctly")
-            health['suggestions'].append("Reinstall UV: curl -LsSf https://astral.sh/uv/install.sh | sh")
+            health["issues"].append("UV CLI not responding correctly")
+            health["suggestions"].append(
+                "Reinstall UV: curl -LsSf https://astral.sh/uv/install.sh | sh"
+            )
     except FileNotFoundError:
-        health['issues'].append("UV not found in PATH")
-        health['suggestions'].append("Install UV: curl -LsSf https://astral.sh/uv/install.sh | sh")
+        health["issues"].append("UV not found in PATH")
+        health["suggestions"].append(
+            "Install UV: curl -LsSf https://astral.sh/uv/install.sh | sh"
+        )
     except Exception as e:
-        health['issues'].append(f"UV check failed: {e}")
+        health["issues"].append(f"UV check failed: {e}")
 
-    health['pyproject_exists'] = PYPROJECT_PATH.exists()
-    if not health['pyproject_exists']:
-        health['issues'].append("pyproject.toml not found")
-        health['suggestions'].append("Run 'uv init' to create project configuration")
+    health["pyproject_exists"] = PYPROJECT_PATH.exists()
+    if not health["pyproject_exists"]:
+        health["issues"].append("pyproject.toml not found")
+        health["suggestions"].append("Run 'uv init' to create project configuration")
     elif verbose:
         logger.info("✅ pyproject.toml exists")
 
-    health['lock_file_exists'] = LOCK_PATH.exists()
-    if not health['lock_file_exists']:
-        health['issues'].append("uv.lock not found")
-        health['suggestions'].append("Run 'uv lock' to generate lock file")
+    health["lock_file_exists"] = LOCK_PATH.exists()
+    if not health["lock_file_exists"]:
+        health["issues"].append("uv.lock not found")
+        health["suggestions"].append("Run 'uv lock' to generate lock file")
     elif verbose:
         logger.info("✅ uv.lock exists")
 
-    health['venv_exists'] = VENV_PATH.exists()
-    if not health['venv_exists']:
-        health['issues'].append("Virtual environment not found")
-        health['suggestions'].append("Run 'uv sync' to create environment and install dependencies")
+    health["venv_exists"] = VENV_PATH.exists()
+    if not health["venv_exists"]:
+        health["issues"].append("Virtual environment not found")
+        health["suggestions"].append(
+            "Run 'uv sync' to create environment and install dependencies"
+        )
     elif verbose:
         logger.info(f"✅ Virtual environment exists at {VENV_PATH}")
 
-    if health['venv_exists'] and VENV_PYTHON.exists():
+    if health["venv_exists"] and VENV_PYTHON.exists():
         try:
-            py_result = subprocess.run(  # nosec B603 -- subprocess calls with controlled/trusted input
+            py_result = subprocess.run(  # nosec B603
                 [str(VENV_PYTHON), "--version"],
                 capture_output=True,
                 text=True,
-                timeout=5
+                timeout=5,
             )
             if py_result.returncode == 0:
-                health['venv_python_works'] = True
+                health["venv_python_works"] = True
                 if verbose:
                     logger.info(f"✅ Venv Python: {py_result.stdout.strip()}")
             else:
-                health['issues'].append("Venv Python not responding")
-                health['suggestions'].append("Recreate environment: uv sync --reinstall")
+                health["issues"].append("Venv Python not responding")
+                health["suggestions"].append(
+                    "Recreate environment: uv sync --reinstall"
+                )
         except Exception as e:
-            health['issues'].append(f"Venv Python check failed: {e}")
+            health["issues"].append(f"Venv Python check failed: {e}")
 
-    core_packages = ['numpy', 'matplotlib', 'networkx', 'pandas', 'scipy', 'pytest']
+    core_packages: list[Any] = [
+        "numpy",
+        "matplotlib",
+        "networkx",
+        "pandas",
+        "scipy",
+        "pytest",
+    ]
     for pkg in core_packages:
         try:
-            result = subprocess.run(  # nosec B603 -- subprocess calls with controlled/trusted input
+            result = subprocess.run(  # nosec B603
                 [
                     str(VENV_PYTHON),
                     "-c",
-                    "import importlib.metadata as m; print(m.version(" + repr(pkg) + "))",
+                    "import importlib.metadata as m; print(m.version("
+                    + repr(pkg)
+                    + "))",
                 ],
                 capture_output=True,
                 text=True,
-                timeout=5
+                timeout=5,
             )
             if result.returncode == 0:
-                health['core_packages'][pkg] = result.stdout.strip()
+                health["core_packages"][pkg] = result.stdout.strip()
             else:
-                health['core_packages'][pkg] = None
-                health['issues'].append(f"Core package '{pkg}' not available")
+                health["core_packages"][pkg] = None
+                health["issues"].append(f"Core package '{pkg}' not available")
         except Exception:
-            health['core_packages'][pkg] = None
+            health["core_packages"][pkg] = None
 
-    optional_checks = {
-        'llm': {'packages': ['openai'], 'extra': 'llm'},
-        'visualization': {'packages': ['plotly'], 'extra': 'visualization'},
-        'ml': {'packages': ['torch'], 'extra': 'ml-ai'},
-        'audio': {'packages': ['librosa'], 'extra': 'audio'},
+    optional_checks: dict[str, Any] = {
+        "llm": {"packages": ["openai"], "extra": "llm"},
+        "visualization": {"packages": ["plotly"], "extra": "visualization"},
+        "ml": {"packages": ["torch"], "extra": "ml-ai"},
+        "audio": {"packages": ["librosa"], "extra": "audio"},
     }
 
     for group, config in optional_checks.items():
         try:
-            pkg = config['packages'][0]
-            result = subprocess.run(  # nosec B603 -- subprocess calls with controlled/trusted input
+            pkg = config["packages"][0]
+            result = subprocess.run(  # nosec B603
                 [str(VENV_PYTHON), "-c", f"import {pkg}"],
                 capture_output=True,
                 text=True,
-                timeout=5
+                timeout=5,
             )
-            health['optional_packages'][group] = (result.returncode == 0)
+            health["optional_packages"][group] = result.returncode == 0
             if result.returncode == 0 and verbose:
                 logger.info(f"✅ Optional group '{group}' is available")
         except Exception:
-            health['optional_packages'][group] = False
+            health["optional_packages"][group] = False
 
-    critical_checks = [
-        health['uv_available'],
-        health['pyproject_exists'],
-        health['venv_exists'],
-        health['venv_python_works']
+    critical_checks: list[Any] = [
+        health["uv_available"],
+        health["pyproject_exists"],
+        health["venv_exists"],
+        health["venv_python_works"],
     ]
-    health['overall_healthy'] = all(critical_checks)
+    health["overall_healthy"] = all(critical_checks)
 
-    if health['overall_healthy']:
+    if health["overall_healthy"]:
         logger.info("✅ Environment health check PASSED")
     else:
-        logger.warning(f"⚠️ Environment health check found {len(health['issues'])} issue(s)")
-        for issue in health['issues']:
+        logger.warning(
+            f"⚠️ Environment health check found {len(health['issues'])} issue(s)"
+        )
+        for issue in health["issues"]:
             logger.warning(f"  - {issue}")
 
     return health
@@ -763,7 +887,7 @@ def save_setup_results(
     try:
         output_dir.mkdir(parents=True, exist_ok=True)
 
-        setup_results = {
+        setup_results: dict[str, Any] = {
             "timestamp": datetime.now().isoformat(),
             "validation": validation_results,
             "configuration": {
@@ -778,16 +902,16 @@ def save_setup_results(
                 "platform": platform.system(),
                 "platform_release": platform.release(),
                 "python_executable": sys.executable,
-            }
+            },
         }
 
         summary_file = output_dir / "environment_setup_summary.json"
-        with open(summary_file, 'w') as f:
+        with open(summary_file, "w") as f:
             json.dump(setup_results, f, indent=2, default=str)
         logger.info(f"💾 Setup results saved to: {summary_file}")
 
         packages_file = output_dir / "installed_packages.json"
-        with open(packages_file, 'w') as f:
+        with open(packages_file, "w") as f:
             json.dump(get_installed_package_versions(), f, indent=2)
         logger.info(f"📦 Package list saved to: {packages_file}")
 
@@ -800,14 +924,14 @@ def log_system_info(logger: logging.Logger) -> Dict[str, Any]:
     try:
         logger.info("Logging system information")
 
-        system_info = {
+        system_info: dict[str, Any] = {
             "platform": platform.platform(),
             "python_version": sys.version,
             "python_executable": sys.executable,
             "architecture": platform.architecture(),
             "processor": platform.processor(),
             "machine": platform.machine(),
-            "node": platform.node()
+            "node": platform.node(),
         }
 
         logger.info(f"System Platform: {system_info['platform']}")

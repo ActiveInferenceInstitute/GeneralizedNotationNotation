@@ -6,3 +6,8 @@ It ensures that `Simulation Logging` tasks resolve without runtime dependency lo
 
 ## Components
 Expected available types: SimulationLogger, SimulationMetrics
+
+## Parent specification
+
+- Canonical policy: [Cognitive phenomena](../../SPEC.md)
+- Immediate parent: [meta-aware-2](../SPEC.md)

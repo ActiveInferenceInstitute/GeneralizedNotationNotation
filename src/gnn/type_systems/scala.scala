@@ -545,7 +545,7 @@ implicit object JsonGNNSerializer extends GNNSerializer[Either[String, *]] {
   
   def deserialize[S, O, U](content: String): Either[String, GNNModel[S, O, U]] = {
     // Simplified JSON deserialization
-    Left("Deserialization not implemented")
+    Left("Deserialization is outside this Scala reference artifact")
   }
 }
 

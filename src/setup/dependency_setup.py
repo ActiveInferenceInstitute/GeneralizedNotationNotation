@@ -7,9 +7,9 @@ optional package group installation, and project structure creation.
 
 import logging
 import shutil
-import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
+import subprocess  # nosec B404
 from pathlib import Path
-from typing import List
+from typing import Any, List, cast
 
 from .constants import (
     OPTIONAL_GROUPS,
@@ -32,9 +32,9 @@ try:
     from utils.jax_stack_validation import run_jax_stack_probe_subprocess
 except ImportError:
     try:
-        from src.utils.jax_stack_validation import run_jax_stack_probe_subprocess
+        from utils.jax_stack_validation import run_jax_stack_probe_subprocess
     except ImportError:
-        run_jax_stack_probe_subprocess = None  # type: ignore[misc,assignment]
+        run_jax_stack_probe_subprocess = cast(Any, None)
 
 
 def install_jax_and_test(verbose: bool = False) -> bool:
@@ -61,18 +61,20 @@ def install_jax_and_test(verbose: bool = False) -> bool:
                 logger.info("   %s", line)
         return True
 
-    logger.warning("JAX stack validation failed: %s", out[:2000] if out else "(no output)")
+    logger.warning(
+        "JAX stack validation failed: %s", out[:2000] if out else "(no output)"
+    )
 
     try:
         logger.info("Attempting repair: uv sync (project extras)...")
-        install_cmd = ["uv", "sync", "--verbose"]
+        install_cmd: list[Any] = ["uv", "sync", "--verbose"]
         for extra in SETUP_DEFAULT_PIPELINE_EXTRAS:
             install_cmd.extend(["--extra", extra])
 
         if verbose:
             logger.info("Running: %s", " ".join(install_cmd))
 
-        result = subprocess.run(  # nosec B603 -- subprocess calls with controlled/trusted input
+        result = subprocess.run(  # nosec B603
             install_cmd,
             cwd=PROJECT_ROOT,
             capture_output=True,
@@ -81,14 +83,18 @@ def install_jax_and_test(verbose: bool = False) -> bool:
         )
 
         if result.returncode != 0:
-            logger.error("uv sync failed: %s", result.stderr[:2000] if result.stderr else "")
+            logger.error(
+                "uv sync failed: %s", result.stderr[:2000] if result.stderr else ""
+            )
             return False
 
         ok2, out2 = run_jax_stack_probe_subprocess(VENV_PYTHON, PROJECT_ROOT)
         if ok2:
             logger.info("✅ JAX stack validated after uv sync")
             return True
-        logger.warning("JAX stack still failing after sync: %s", out2[:2000] if out2 else "")
+        logger.warning(
+            "JAX stack still failing after sync: %s", out2[:2000] if out2 else ""
+        )
         return False
     except Exception as e:
         logger.error("JAX stack repair failed: %s", e)
@@ -112,55 +118,64 @@ def setup_julia_environment(verbose: bool = False) -> bool:
         if not julia_path:
             logger.error("❌ Julia not found in PATH")
             logger.info("💡 Install Julia from: https://julialang.org/downloads/")
-            return False  # nosec B603 -- subprocess calls with controlled/trusted input
+            return False  # nosec B603
 
-        version_result = subprocess.run(  # nosec B603 -- subprocess calls with controlled/trusted input
-            [julia_path, "--version"],
-            capture_output=True,
-            text=True,
-            timeout=10
+        version_result = subprocess.run(  # nosec B603
+            [julia_path, "--version"], capture_output=True, text=True, timeout=10
         )
 
         if version_result.returncode == 0:
-            version_line = version_result.stdout.strip().split('\n')[0]
+            version_line = version_result.stdout.strip().split("\n")[0]
             logger.info(f"✅ Julia found: {version_line}")
         else:
-            logger.warning(f"⚠️ Could not determine Julia version: {version_result.stderr}")
+            logger.warning(
+                f"⚠️ Could not determine Julia version: {version_result.stderr}"
+            )
             logger.info("✅ Julia is available, proceeding with setup")
 
-        setup_scripts = [
+        setup_scripts: list[Any] = [
             PROJECT_ROOT / "src" / "execute" / "rxinfer" / "setup_environment.jl",
-            PROJECT_ROOT / "src" / "execute" / "activeinference_jl" / "setup_environment.jl"
+            PROJECT_ROOT
+            / "src"
+            / "execute"
+            / "activeinference_jl"
+            / "setup_environment.jl",
         ]
 
         success_count = 0
 
         for script_path in setup_scripts:
             if script_path.exists():
-                logger.info(f"Running Julia setup script: {script_path}")  # nosec B603 -- subprocess calls with controlled/trusted input
+                logger.info(f"Running Julia setup script: {script_path}")
                 try:
-                    result = subprocess.run(  # nosec B603 -- subprocess calls with controlled/trusted input
+                    result = subprocess.run(  # nosec B603
                         [julia_path, str(script_path)],
                         cwd=script_path.parent,
                         capture_output=True,
                         text=True,
-                        timeout=300
+                        timeout=300,
                     )
 
                     if result.returncode == 0:
                         logger.info(f"✅ Julia setup completed for {script_path.name}")
                         success_count += 1
                     else:
-                        logger.error(f"❌ Julia setup failed for {script_path.name}: {result.stderr}")
+                        logger.error(
+                            f"❌ Julia setup failed for {script_path.name}: {result.stderr}"
+                        )
                 except subprocess.TimeoutExpired:
                     logger.error(f"⏰ Julia setup timed out for {script_path.name}")
                 except Exception as e:
-                    logger.error(f"❌ Error running Julia setup for {script_path.name}: {e}")
+                    logger.error(
+                        f"❌ Error running Julia setup for {script_path.name}: {e}"
+                    )
             else:
                 logger.warning(f"⚠️ Julia setup script not found: {script_path}")
 
         if success_count > 0:
-            logger.info(f"✅ Julia environment setup completed ({success_count} frameworks configured)")
+            logger.info(
+                f"✅ Julia environment setup completed ({success_count} frameworks configured)"
+            )
             return True
         else:
             logger.warning("⚠️ No Julia frameworks were successfully configured")
@@ -182,15 +197,25 @@ def install_optional_package_group(group_name: str, verbose: bool = False) -> bo
     Returns:
         True if installation succeeded, False otherwise
     """
-    if group_name.lower() == 'julia':
+    if group_name.lower() == "julia":
         return setup_julia_environment(verbose=verbose)
 
-    group_aliases = {
-        'ml': 'ml-ai',
-        'jax': 'active-inference',
-        'pymdp': 'active-inference',
+    group_aliases: dict[str, Any] = {
+        "ml": "ml-ai",
+        "jax": "",
+        "pymdp": "",
+        "numpyro": "",
+        "plotly": "",
+        "llm": "",
     }
     normalized_name = group_aliases.get(group_name.lower(), group_name.lower())
+
+    if normalized_name == "":
+        logger.info(
+            "ℹ️ '%s' is installed by the core dependency set; run `uv sync`.",
+            group_name,
+        )
+        return True
 
     if normalized_name not in OPTIONAL_GROUPS:
         logger.error(f"❌ Unknown package group: {group_name}")
@@ -201,25 +226,25 @@ def install_optional_package_group(group_name: str, verbose: bool = False) -> bo
     logger.info(f"📦 Installing '{normalized_name}' package group: {group_description}")
 
     try:
-        sync_cmd = ["uv", "sync", "--extra", normalized_name]
+        sync_cmd: list[Any] = ["uv", "sync", "--extra", normalized_name]
 
         if verbose:
             sync_cmd.append("--verbose")
-            logger.debug(f"Running: {' '.join(sync_cmd)}")  # nosec B603 -- subprocess calls with controlled/trusted input
+            logger.debug(f"Running: {' '.join(sync_cmd)}")
 
-        result = subprocess.run(  # nosec B603 -- subprocess calls with controlled/trusted input
+        result = subprocess.run(  # nosec B603
             sync_cmd,
             cwd=PROJECT_ROOT,
             capture_output=True,
             text=True,
             check=False,
-            timeout=600
+            timeout=600,
         )
 
         if result.returncode == 0:
             logger.info(f"✅ Successfully installed '{normalized_name}' package group")
             if verbose and result.stdout:
-                for line in result.stdout.strip().split('\n'):
+                for line in result.stdout.strip().split("\n"):
                     if line.strip():
                         logger.debug(f"  {line}")
             return True
@@ -248,28 +273,30 @@ def install_all_optional_packages(verbose: bool = False) -> dict:
     Returns:
         Dictionary with installation status
     """
-    logger.info("🚀 Installing ALL optional package groups via 'uv sync --extra all'...")
+    logger.info(
+        "🚀 Installing ALL optional package groups via 'uv sync --extra all'..."
+    )
 
     try:
-        sync_cmd = ["uv", "sync", "--extra", "all"]
+        sync_cmd: list[Any] = ["uv", "sync", "--extra", "all"]
 
         if verbose:
             sync_cmd.append("--verbose")
-            logger.debug(f"Running: {' '.join(sync_cmd)}")  # nosec B603 -- subprocess calls with controlled/trusted input
+            logger.debug(f"Running: {' '.join(sync_cmd)}")
 
-        result = subprocess.run(  # nosec B603 -- subprocess calls with controlled/trusted input
+        result = subprocess.run(  # nosec B603
             sync_cmd,
             cwd=PROJECT_ROOT,
             capture_output=True,
             text=True,
             check=False,
-            timeout=1800
+            timeout=1800,
         )
 
         if result.returncode == 0:
             logger.info("✅ All optional packages installed successfully")
             if verbose and result.stdout:
-                for line in result.stdout.strip().split('\n'):
+                for line in result.stdout.strip().split("\n"):
                     if line.strip():
                         logger.debug(f"  {line}")
             return {"all": True, "success": True}
@@ -286,8 +313,11 @@ def install_all_optional_packages(verbose: bool = False) -> dict:
         return {"all": False, "success": False, "error": str(e)}
 
 
-def install_optional_dependencies(project_root: Path, logger: logging.Logger,
-                                package_groups: List[str] = None) -> bool:
+def install_optional_dependencies(
+    project_root: Path,
+    logger: logging.Logger,
+    package_groups: (List[str]) | None = None,
+) -> bool:
     """Install optional dependencies for the project using UV sync with extras."""
     try:
         logger.info("Installing optional dependencies using UV sync")
@@ -298,12 +328,18 @@ def install_optional_dependencies(project_root: Path, logger: logging.Logger,
         for group in package_groups:
             try:
                 logger.info(f"Installing {group} dependencies via UV sync")
-                result = run_command(["uv", "sync", "--extra", group],
-                                    cwd=project_root, check=False, verbose=True)
+                result = run_command(
+                    ["uv", "sync", "--extra", group],
+                    cwd=project_root,
+                    check=False,
+                    verbose=True,
+                )
                 if result.returncode == 0:
                     logger.info(f"✅ {group} dependencies installed successfully")
                 else:
-                    logger.warning(f"⚠️ {group} dependencies installation failed (exit {result.returncode})")
+                    logger.warning(
+                        f"⚠️ {group} dependencies installation failed (exit {result.returncode})"
+                    )
             except Exception as e:
                 logger.warning(f"⚠️ Failed to install {group} dependencies: {e}")
 
@@ -319,13 +355,13 @@ def create_project_structure(output_dir: Path, logger: logging.Logger) -> bool:
     try:
         logger.info("Creating project structure")
 
-        directories = [
+        directories: list[Any] = [
             "input/gnn_files",
             "output",
             "output/logs",
             "output/temp",
             "doc",
-            "tests"
+            "tests",
         ]
 
         for directory in directories:
@@ -333,16 +369,16 @@ def create_project_structure(output_dir: Path, logger: logging.Logger) -> bool:
             dir_path.mkdir(parents=True, exist_ok=True)
             logger.debug(f"Created directory: {dir_path}")
 
-        config_files = {
+        config_files: dict[str, Any] = {
             "input/config.yaml": "# GNN Pipeline Configuration\n",
             "output/.gitkeep": "",
-            "tests/__init__.py": "# Tests package\n"
+            "tests/__init__.py": "# Tests package\n",
         }
 
         for file_path, content in config_files.items():
             full_path = output_dir / file_path
             full_path.parent.mkdir(parents=True, exist_ok=True)
-            with open(full_path, 'w') as f:
+            with open(full_path, "w") as f:
                 f.write(content)
             logger.debug(f"Created file: {full_path}")
 
@@ -366,16 +402,16 @@ def setup_gnn_project(project_path: str, verbose: bool = False) -> bool:
         True if setup successful, False otherwise
     """
     try:
-        project_path = Path(project_path)
-        project_path.mkdir(parents=True, exist_ok=True)
+        project_dir = Path(project_path)
+        project_dir.mkdir(parents=True, exist_ok=True)
 
-        (project_path / "input" / "gnn_files").mkdir(parents=True, exist_ok=True)
-        (project_path / "output").mkdir(parents=True, exist_ok=True)
-        (project_path / "src").mkdir(parents=True, exist_ok=True)
-  # nosec B607 B603 -- subprocess calls with controlled/trusted input
+        (project_dir / "input" / "gnn_files").mkdir(parents=True, exist_ok=True)
+        (project_dir / "output").mkdir(parents=True, exist_ok=True)
+        (project_dir / "src").mkdir(parents=True, exist_ok=True)
+        # nosec B607 B603
         try:
-            subprocess.run(["uv", "init"], cwd=project_path, check=True, timeout=30)  # nosec B607 B603 -- subprocess calls with controlled/trusted input
-            logger.info(f"UV project initialized at {project_path}")
+            subprocess.run(["uv", "init"], cwd=project_dir, check=True, timeout=30)  # nosec B607 B603
+            logger.info(f"UV project initialized at {project_dir}")
         except Exception as e:
             logger.warning(f"Could not initialize UV project: {e}")
 
@@ -391,8 +427,8 @@ def setup_complete_environment(
     verbose: bool = False,
     recreate: bool = False,
     install_optional: bool = False,
-    optional_groups: list = None,
-    output_dir: Path = None
+    optional_groups: (list) | None = None,
+    output_dir: (Path) | None = None,
 ) -> bool:
     """
     Complete environment setup with optional dependencies.
@@ -420,7 +456,9 @@ def setup_complete_environment(
 
         logger.info("📦 Installing core dependencies...")
         if not install_uv_dependencies(verbose=verbose):
-            logger.warning("⚠️ Core dependency installation had issues, but continuing...")
+            logger.warning(
+                "⚠️ Core dependency installation had issues, but continuing..."
+            )
 
         if install_optional:
             logger.info("\n🎁 Installing optional dependency groups...")
@@ -435,7 +473,9 @@ def setup_complete_environment(
         validation_results = validate_uv_setup(PROJECT_ROOT, logger)
 
         if output_dir:
-            save_setup_results(output_dir, validation_results, optional_groups or [], True)
+            save_setup_results(
+                output_dir, validation_results, optional_groups or [], True
+            )
 
         logger.info("\n🎉 COMPLETE environment setup finished!")
         return True
@@ -444,5 +484,6 @@ def setup_complete_environment(
         logger.error(f"❌ Complete environment setup failed: {e}")
         if verbose:
             import traceback
+
             logger.error(traceback.format_exc())
         return False

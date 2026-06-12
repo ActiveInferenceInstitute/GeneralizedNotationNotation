@@ -14,10 +14,7 @@ from typing import Any, Dict, List
 
 
 def process_gui(
-    target_dir: Path,
-    output_dir: Path,
-    verbose: bool = False,
-    **kwargs
+    target_dir: Path, output_dir: Path, verbose: bool = False, **kwargs: Any
 ) -> bool:
     """
     Main processing function for GUI module.
@@ -48,25 +45,30 @@ def process_gui(
         logger.setLevel(logging.DEBUG)
 
     # Handle interactive vs headless mode
-    interactive = kwargs.get('interactive', False)
+    interactive = kwargs.get("interactive", False)
     if interactive:
-        kwargs['headless'] = False
+        kwargs["headless"] = False
         logger.info("🎮 Running in INTERACTIVE mode - will launch GUI servers")
     else:
-        kwargs['headless'] = kwargs.get('headless', True)
-        if kwargs['headless']:
-            logger.info("📦 Running in HEADLESS mode - generating artifacts only (fast)")
+        kwargs["headless"] = kwargs.get("headless", True)
+        if kwargs["headless"]:
+            logger.info(
+                "📦 Running in HEADLESS mode - generating artifacts only (fast)"
+            )
 
     # Determine which GUIs to run
-    gui_types = kwargs.get('gui_types', 'gui_1,gui_2')
+    gui_types = kwargs.get("gui_types", "gui_1,gui_2")
     if isinstance(gui_types, str):
-        gui_types = [g.strip() for g in gui_types.split(',')]
+        gui_types = [g.strip() for g in gui_types.split(",")]
 
     # Prepare kwargs for GUI functions
-    gui_kwargs = {k: v for k, v in kwargs.items()
-                  if k not in ['logger', 'target_dir', 'output_dir', 'verbose']}
+    gui_kwargs = {
+        k: v
+        for k, v in kwargs.items()
+        if k not in ["logger", "target_dir", "output_dir", "verbose"]
+    }
 
-    results = {}
+    results: dict[Any, Any] = {}
     overall_success = True
 
     try:
@@ -75,47 +77,65 @@ def process_gui(
         logger.info(f"Mode: {'INTERACTIVE' if not kwargs['headless'] else 'HEADLESS'}")
 
         # Map GUI types to functions
-        gui_functions = {
-            'gui_1': gui_1,
-            'gui_2': gui_2,
-            'gui_3': gui_3,
-            'oxdraw': oxdraw_gui,
+        gui_functions: dict[str, Any] = {
+            "gui_1": gui_1,
+            "gui_2": gui_2,
+            "gui_3": gui_3,
+            "oxdraw": oxdraw_gui,
         }
 
         # Run each requested GUI
-        for gui_type in gui_types:
+        for index, gui_type in enumerate(gui_types, 1):
             try:
+                logger.debug(
+                    f"[{index}/{len(gui_types)}] Initializing pipeline for GUI component: {gui_type}..."
+                )
                 if gui_type in gui_functions:
+                    logger.info(f"🎨 Generating visual assets via {gui_type} engine...")
                     result = gui_functions[gui_type](
                         target_dir=Path(target_dir),
                         output_dir=Path(output_dir),
                         logger=logger,
                         verbose=verbose,
-                        **gui_kwargs
+                        **gui_kwargs,
                     )
+                    if result.get("success", False):
+                        logger.info(
+                            f"✅ Successfully compiled {gui_type} visual DOM artifacts."
+                        )
+                    else:
+                        logger.warning(
+                            f"⚠️ Warning: {gui_type} returned non-success parsing state."
+                        )
                 else:
-                    logger.warning(f"Unknown GUI type: {gui_type}")
+                    logger.warning(
+                        f"Unknown GUI type configuration: '{gui_type}'. Skipping."
+                    )
                     result = {
                         "gui_type": gui_type,
                         "success": False,
-                        "error": f"Unknown GUI type: {gui_type}"
+                        "error": f"Unknown GUI type: {gui_type}",
                     }
 
                 results[gui_type] = result
-                if not result.get('success', False):
+                if not result.get("success", False):
                     overall_success = False
 
             except Exception as e:
-                logger.error(f"GUI {gui_type} failed: {e}")
+                logger.error(
+                    f"🚨 GUI render exception in {gui_type}: {e}", exc_info=verbose
+                )
                 results[gui_type] = {
                     "gui_type": gui_type,
                     "success": False,
-                    "error": str(e)
+                    "error": str(e),
                 }
                 overall_success = False
 
         # Save processing summary
-        _save_processing_summary(output_dir, kwargs, gui_types, results, overall_success, logger)
+        _save_processing_summary(
+            output_dir, kwargs, gui_types, results, overall_success, logger
+        )
 
         # Generate HTML navigation page for all outputs
         _generate_navigation_page(output_dir, logger)
@@ -133,19 +153,28 @@ def _save_processing_summary(
     gui_types: List[str],
     results: Dict[str, Any],
     overall_success: bool,
-    logger: logging.Logger
+    logger: logging.Logger,
 ) -> None:
     """Save GUI processing summary to JSON file."""
     try:
         output_path = Path(output_dir)
         summary_file = output_path / "gui_processing_summary.json"
-        with tempfile.NamedTemporaryFile(mode='w', encoding='utf-8', dir=output_path, delete=False) as tmp_f:
-            tmp_f.write(json.dumps({
-                "mode": "interactive" if not kwargs.get('headless', True) else "headless",
-                "gui_types": gui_types,
-                "results": results,
-                "overall_success": overall_success
-            }, indent=2))
+        with tempfile.NamedTemporaryFile(
+            mode="w", encoding="utf-8", dir=output_path, delete=False
+        ) as tmp_f:
+            tmp_f.write(
+                json.dumps(
+                    {
+                        "mode": "interactive"
+                        if not kwargs.get("headless", True)
+                        else "headless",
+                        "gui_types": gui_types,
+                        "results": results,
+                        "overall_success": overall_success,
+                    },
+                    indent=2,
+                )
+            )
         os.replace(tmp_f.name, str(summary_file))
         logger.info(f"📊 GUI processing summary saved to: {summary_file}")
     except Exception as e:
@@ -164,9 +193,7 @@ def _generate_navigation_page(output_dir: Path, logger: logging.Logger) -> None:
 
 
 def generate_html_navigation(
-    pipeline_output_dir: Path,
-    output_dir: Path,
-    logger: logging.Logger
+    pipeline_output_dir: Path, output_dir: Path, logger: logging.Logger
 ) -> bool:
     """
     Generate HTML navigation page that links to all pipeline output types.
@@ -186,7 +213,7 @@ def generate_html_navigation(
         output_dir.mkdir(parents=True, exist_ok=True)
 
         # Define pipeline steps and their output directories
-        pipeline_steps = [
+        pipeline_steps: list[Any] = [
             ("Template", "0_template_output", ["*.json", "*.md"]),
             ("Setup", "1_setup_output", ["*.json"]),
             ("Tests", "2_tests_output", ["*.txt", "*.json"]),
@@ -195,7 +222,11 @@ def generate_html_navigation(
             ("Type Checker", "5_type_checker_output", ["*.json", "*.md"]),
             ("Validation", "6_validation_output", ["*.json"]),
             ("Export", "7_export_output", ["*.json", "*.xml", "*.pkl"]),
-            ("Visualization", "8_visualization_output", ["*.png", "*.svg", "*.csv", "*.json"]),
+            (
+                "Visualization",
+                "8_visualization_output",
+                ["*.png", "*.svg", "*.csv", "*.json"],
+            ),
             ("Advanced Visualization", "9_advanced_viz_output", ["*.png", "*.json"]),
             ("Ontology", "10_ontology_output", ["*.json"]),
             ("Render", "11_render_output", ["*.py", "*.jl", "*.md", "*.json", "*.png"]),
@@ -211,11 +242,15 @@ def generate_html_navigation(
             ("MCP", "21_mcp_output", ["*.json"]),
             ("GUI", "22_gui_output", ["*.md", "*.json"]),
             ("Report", "23_report_output", ["*.html", "*.md", "*.json"]),
-            ("Intelligent Analysis", "24_intelligent_analysis_output", ["*.json", "*.md", "*.html"]),
+            (
+                "Intelligent Analysis",
+                "24_intelligent_analysis_output",
+                ["*.json", "*.md", "*.html"],
+            ),
         ]
 
         # Collect output information
-        output_sections = []
+        output_sections: list[Any] = []
         total_files = 0
 
         for step_name, step_dir, patterns in pipeline_steps:
@@ -223,7 +258,7 @@ def generate_html_navigation(
             if not step_path.exists():
                 continue
 
-            step_files = []
+            step_files: list[Any] = []
             for pattern in patterns:
                 for file_path in step_path.rglob(pattern):
                     if file_path.is_file():
@@ -232,31 +267,39 @@ def generate_html_navigation(
                             file_size = file_path.stat().st_size
                             file_size_mb = file_size / (1024 * 1024)
 
-                            step_files.append({
-                                "name": file_path.name,
-                                "path": rel_path,
-                                "size_mb": round(file_size_mb, 3),
-                                "type": file_path.suffix.lower()
-                            })
+                            step_files.append(
+                                {
+                                    "name": file_path.name,
+                                    "path": rel_path,
+                                    "size_mb": round(file_size_mb, 3),
+                                    "type": file_path.suffix.lower(),
+                                }
+                            )
                             total_files += 1
                         except OSError as e:
                             logger.debug(f"Could not read file {file_path}: {e}")
 
             if step_files:
                 step_files.sort(key=lambda x: (x["type"], x["name"]))
-                output_sections.append({
-                    "step_name": step_name,
-                    "step_dir": step_dir,
-                    "file_count": len(step_files),
-                    "files": step_files[:20]
-                })
+                output_sections.append(
+                    {
+                        "step_name": step_name,
+                        "step_dir": step_dir,
+                        "file_count": len(step_files),
+                        "files": step_files[:20],
+                    }
+                )
 
         # Generate HTML content
-        html_content = _build_navigation_html(output_sections, total_files, pipeline_output_dir)
+        html_content = _build_navigation_html(
+            output_sections, total_files, pipeline_output_dir
+        )
 
         # Write HTML file
         nav_file = output_dir / "navigation.html"
-        with tempfile.NamedTemporaryFile(mode='w', encoding='utf-8', dir=nav_file.parent, delete=False) as tmp_f:
+        with tempfile.NamedTemporaryFile(
+            mode="w", encoding="utf-8", dir=nav_file.parent, delete=False
+        ) as tmp_f:
             tmp_f.write(html_content)
         os.replace(tmp_f.name, str(nav_file))
 
@@ -266,14 +309,13 @@ def generate_html_navigation(
     except Exception as e:
         logger.error(f"Failed to generate HTML navigation: {e}")
         import traceback
+
         logger.debug(traceback.format_exc())
         return False
 
 
 def _build_navigation_html(
-    output_sections: List[Dict[str, Any]],
-    total_files: int,
-    pipeline_output_dir: Path
+    output_sections: List[Dict[str, Any]], total_files: int, pipeline_output_dir: Path
 ) -> str:
     """Build the HTML content for the navigation page."""
     html_content = f"""<!DOCTYPE html>
@@ -284,46 +326,72 @@ def _build_navigation_html(
     <title>GNN Pipeline Output Navigation</title>
     <style>
         body {{
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             margin: 0;
             padding: 20px;
-            background-color: #f8f9fa;
-            color: #333;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            color: #2c3e50;
         }}
         .container {{
             max-width: 1400px;
             margin: 0 auto;
-            background-color: white;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
         }}
         .header {{
             text-align: center;
             margin-bottom: 40px;
             padding-bottom: 20px;
-            border-bottom: 3px solid #007bff;
+            border-bottom: 2px solid rgba(0, 123, 255, 0.2);
         }}
-        h1 {{ color: #2c3e50; margin: 0; font-size: 2.5em; font-weight: 300; }}
-        h2 {{ color: #34495e; margin-top: 40px; margin-bottom: 20px; font-size: 1.8em; border-left: 4px solid #007bff; padding-left: 15px; }}
+        h1 {{ color: #1a202c; margin: 0; font-size: 2.8em; font-weight: 800; letter-spacing: -1px; }}
+        h2 {{ color: #2d3748; margin-top: 40px; margin-bottom: 20px; font-size: 1.8em; font-weight: 600; border-left: 5px solid #4299e1; padding-left: 15px; }}
         .summary {{
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white; padding: 25px; border-radius: 10px;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.8) 0%, rgba(118, 75, 162, 0.8) 100%);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.4);
+            color: white; padding: 30px; border-radius: 16px;
             text-align: center; margin: 30px 0;
+            box-shadow: 0 8px 20px rgba(118, 75, 162, 0.2);
         }}
-        .summary-grid {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin: 30px 0; }}
-        .summary-card {{ background-color: #f8f9fa; border: 1px solid #dee2e6; border-radius: 10px; padding: 20px; text-align: center; }}
-        .summary-card .value {{ font-size: 2em; font-weight: bold; color: #007bff; margin: 10px 0; }}
-        .step-section {{ background-color: #f8f9fa; border: 1px solid #dee2e6; border-radius: 10px; padding: 20px; margin: 20px 0; }}
-        .step-header {{ font-weight: bold; color: #495057; margin-bottom: 15px; font-size: 1.2em; }}
-        .file-list {{ display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 10px; margin-top: 15px; }}
-        .file-item {{ background-color: white; border: 1px solid #dee2e6; border-radius: 6px; padding: 10px; transition: transform 0.2s, box-shadow 0.2s; }}
-        .file-item:hover {{ transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.1); }}
-        .file-item a {{ color: #007bff; text-decoration: none; font-weight: 500; }}
-        .file-item a:hover {{ text-decoration: underline; }}
-        .file-meta {{ color: #6c757d; font-size: 12px; margin-top: 5px; }}
-        .link {{ color: #007bff; text-decoration: none; }}
-        .link:hover {{ text-decoration: underline; }}
+        .summary-grid {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-top: 20px; }}
+        .summary-card {{ 
+            background: rgba(255, 255, 255, 0.15); 
+            border: 1px solid rgba(255,255,255,0.2); 
+            border-radius: 12px; padding: 20px; text-align: center; 
+            transition: transform 0.3s ease;
+        }}
+        .summary-card:hover {{ transform: translateY(-5px); background: rgba(255, 255, 255, 0.25); }}
+        .summary-card .value {{ font-size: 2.2em; font-weight: 800; color: #fff; margin: 10px 0; text-shadow: 0 2px 4px rgba(0,0,0,0.1); }}
+        .step-section {{ 
+            background: rgba(255, 255, 255, 0.6); 
+            border: 1px solid rgba(255, 255, 255, 0.5); 
+            border-radius: 16px; padding: 25px; margin: 25px 0; 
+            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+            transition: all 0.3s ease;
+        }}
+        .step-section:hover {{ background: rgba(255, 255, 255, 0.8); box-shadow: 0 8px 15px rgba(0,0,0,0.05); }}
+        .step-header {{ font-weight: 700; color: #2d3748; margin-bottom: 15px; font-size: 1.3em; }}
+        .file-list {{ display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px; margin-top: 20px; }}
+        .file-item {{ 
+            background: rgba(255, 255, 255, 0.9); 
+            border: 1px solid rgba(226, 232, 240, 0.8); 
+            border-radius: 10px; padding: 15px; 
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); 
+        }}
+        .file-item:hover {{ transform: translateY(-3px); box-shadow: 0 6px 12px rgba(0,0,0,0.08); border-color: #cbd5e0; }}
+        .file-item a {{ color: #3182ce; text-decoration: none; font-weight: 600; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }}
+        .file-item a:hover {{ color: #2b6cb0; text-decoration: underline; }}
+        .file-meta {{ color: #718096; font-size: 12px; margin-top: 8px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; }}
+        .link {{ color: #3182ce; text-decoration: none; font-weight: 600; transition: color 0.2s; }}
+        .link:hover {{ color: #2b6cb0; text-decoration: underline; }}
     </style>
 </head>
 <body>
@@ -358,21 +426,21 @@ def _build_navigation_html(
     for section in output_sections:
         html_content += f"""
         <div class="step-section">
-            <div class="step-header">📂 {section['step_name']} ({section['step_dir']})</div>
-            <p><strong>Files:</strong> {section['file_count']}</p>
+            <div class="step-header">📂 {section["step_name"]} ({section["step_dir"]})</div>
+            <p><strong>Files:</strong> {section["file_count"]}</p>
             <div class="file-list">
 """
-        for file_info in section['files']:
+        for file_info in section["files"]:
             html_content += f"""
                 <div class="file-item">
-                    <a href="../{file_info['path']}" target="_blank">{file_info['name']}</a>
-                    <div class="file-meta">{file_info['type']} • {file_info['size_mb']} MB</div>
+                    <a href="../{file_info["path"]}" target="_blank">{file_info["name"]}</a>
+                    <div class="file-meta">{file_info["type"]} • {file_info["size_mb"]} MB</div>
                 </div>
 """
-        if section['file_count'] > len(section['files']):
+        if section["file_count"] > len(section["files"]):
             html_content += f"""
                 <div class="file-item" style="opacity: 0.7; font-style: italic;">
-                    ... and {section['file_count'] - len(section['files'])} more files
+                    ... and {section["file_count"] - len(section["files"])} more files
                 </div>
 """
         html_content += """

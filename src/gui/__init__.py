@@ -16,13 +16,15 @@ Public API:
 - get_available_guis: list all available GUI implementations
 """
 
-__version__ = "1.1.3"
-FEATURES = {
+from typing import Any
+
+__version__ = "1.6.0"
+FEATURES: dict[str, Any] = {
     "form_based_constructor": True,
     "visual_matrix_editor": True,
     "state_space_studio": True,
     "diagram_as_code": True,
-    "mcp_integration": True
+    "mcp_integration": True,
 }
 
 # Import GUI runners
@@ -50,7 +52,7 @@ from .processor import (
 )
 
 
-def get_available_guis():
+def get_available_guis() -> Any:
     """Get list of available GUI implementations with their info"""
     return {
         "gui_1": get_gui_1_info(),
@@ -60,7 +62,7 @@ def get_available_guis():
     }
 
 
-__all__ = [
+__all__: list[Any] = [
     "process_gui",
     "gui_1",
     "gui_2",
@@ -82,3 +84,13 @@ __all__ = [
     "update_state_space_entry",
     "remove_state_space_entry",
 ]
+
+
+def get_module_info() -> dict:
+    """Return module metadata for composability and MCP discovery."""
+    return {
+        "name": "gui",
+        "version": __version__,
+        "description": "Interactive GUI for GNN model construction",
+        "features": FEATURES,
+    }

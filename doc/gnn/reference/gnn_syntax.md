@@ -1,7 +1,7 @@
 # GNN Syntax Reference
 
-**Version**: v2.0.0  
-**Last Updated**: 2026-03-24  
+**Version**: v1.6.0 Engine (Bundle v2.0.0)  
+**Last Updated**: 2026-04-10  
 **Status**: Maintained  
 
 Quick reference for GNN syntax with working examples.
@@ -22,6 +22,133 @@ uv run python src/5_type_checker.py --target-dir input/gnn_files --strict --verb
 ```
 
 For complete pipeline documentation, see **[src/AGENTS.md](../../../src/AGENTS.md)**.
+
+---
+
+## Canonical Section Inventory
+
+A valid GNN file uses the following sections in the order below. All sections
+marked **Required** are validated by `src/gnn/parsers/markdown_parser.py` and
+must appear; sections marked **Optional** may be omitted and pipeline steps
+that consume them will skip gracefully.
+
+| # | Section | Requirement | Parser hook |
+|---|---------|-------------|-------------|
+| 1 | `## GNNSection` | **Required** | `_parse_gnn_section` |
+| 2 | `## GNNVersionAndFlags` | **Required** | `_parse_version_flags` |
+| 3 | `## ModelName` | **Required** | `_parse_model_name` |
+| 4 | `## ModelAnnotation` | Optional | `_parse_annotation` |
+| 5 | `## StateSpaceBlock` | **Required** | `_parse_state_space` |
+| 6 | `## Connections` | **Required** | `_parse_connections` |
+| 7 | `## InitialParameterization` | **Required** | `_parse_initial_parameters` |
+| 8 | `## Equations` | **Required** | `_parse_equations` |
+| 9 | `## Time` | **Required** | `_parse_time` |
+| 10 | `## ActInfOntologyAnnotation` | **Required** | `_parse_ontology` |
+| 11 | `## ModelParameters` | **Required** | `_parse_model_parameters` |
+| 12 | `## Footer` | **Required** | `_parse_footer` |
+| 13 | `## Signature` | **Required** | `_parse_signature` |
+
+The last five sections (Equations, Time, ActInfOntologyAnnotation,
+ModelParameters, Footer, Signature) were promoted from "v1.5 extension" to
+**Required** in v1.6.0 to reflect that every sample in `input/gnn_files/`
+uses them and every renderer / analyzer depends on them downstream. Parsers
+from before v1.6.0 may tolerate their absence; v1.6.0+ type-checker emits
+`GNN-E001` (unknown section) or `GNN-W002` (missing expected section) as
+appropriate.
+
+### `## Equations`
+
+Free-form block documenting the generative equations of the model. Lines
+starting with `#` are treated as commentary; lines containing `=` are
+extracted as equation literals. Consumed by Step 13 (LLM analysis) for
+prompt context and by Step 24 (intelligent analysis) for traceability. Not
+dimensionally validated — the type checker skips this section.
+
+```gnn
+## Equations
+# Generative Model
+Q(s) = softmax(ln(D) + ln(A^T * o))
+# Policy Posterior
+Q(π) = softmax(-G(π))
+```
+
+### `## Time`
+
+Temporal regime. Exactly one of the three values below, followed by optional
+modifiers on subsequent non-comment lines.
+
+| Value | Meaning |
+|-------|---------|
+| `Static` | Perception-only / single-step inference, no dynamics. |
+| `Dynamic` | Time-indexed variables; B matrix required. |
+| `Continuous` | Continuous-time dynamics (SDE/ODE-based backends). |
+
+Optional modifiers (Dynamic only):
+- `DiscreteTime=t` — declare the time index variable
+- `ContinuousTime=τ`
+- `ModelTimeHorizon=<int|Unbounded>`
+
+```gnn
+## Time
+Dynamic
+DiscreteTime=t
+ModelTimeHorizon=20
+```
+
+### `## ModelParameters`
+
+Key-value scalar parameters consumed by renderers (`render/pymdp`,
+`render/rxinfer`, `render/jax`) to size the code they emit. Syntax:
+`key: value` one per line. Scalar values only (int / float / string).
+Dimensions declared here may be referenced by name in `StateSpaceBlock`
+(e.g., `A[num_obs, num_hidden_states]`).
+
+Canonical keys expected by renderers (not all are required for every model):
+
+| Key | Type | Used by |
+|-----|------|---------|
+| `num_hidden_states` | int | all renderers |
+| `num_obs` | int | all renderers |
+| `num_actions` / `num_controls` / `n_actions` | int | all renderers |
+| `num_timesteps` | int | all renderers |
+| `num_modalities` | int | PyMDP, JAX |
+| `num_factors` | int | PyMDP, RxInfer |
+| `learning_rate` | float | JAX, PyTorch |
+
+Omitting canonical keys triggers `GNN-W004`; renderers then fall back on
+dimensions parsed from StateSpaceBlock.
+
+```gnn
+## ModelParameters
+num_hidden_states: 4
+num_obs: 3
+num_actions: 2
+num_timesteps: 20
+learning_rate: 0.01
+```
+
+### `## Footer`
+
+Human-readable closing block. Free-form Markdown, typically model name +
+version + one-line disposition. Not dimensionally validated; consumed by
+Step 23 (report) for audit trails.
+
+```gnn
+## Footer
+Simple POMDP Agent v1.0 — deterministic transition, partial observability.
+```
+
+### `## Signature`
+
+Provenance / cryptographic digest. Free-form single line — current
+convention is a literal `pending` string or a hex digest. Reserved for
+future provenance tooling (Step 18 security). Presence is required but the
+value may be marked as `pending`.
+
+```gnn
+## Signature
+Cryptographic signature goes here
+```
 
 ---
 
@@ -141,3 +268,19 @@ A=RecognitionMatrix
 ```
 
 This syntax produces models that parse cleanly and execute correctly in the GNN pipeline.
+
+## Variable naming conventions
+
+Use factor/modality indices consistently (`s_f0`, `o_m0`, `u_c0`) as in the [StateSpaceBlock](#statespaceblock) examples above.
+
+## Connection notation
+
+Directed edges use `>`; undirected compatibility uses `-` (see [Connections](#connections)).
+
+## Mathematical expressions
+
+Matrix literals and tuples belong in `InitialParameterization` and equation blocks; keep shapes aligned with the [type checker](../../../src/type_checker/AGENTS.md).
+
+## Multi-agent extensions
+
+Model multiple agents by declaring additional state factors and control indices; see [GNN Multi-Agent](../advanced/gnn_multiagent.md).

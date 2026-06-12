@@ -5,8 +5,8 @@
   "script_path": "output/11_render_output/bnlearn_causal_model/discopy/Bnlearn Causal Model_discopy.py",
   "success": true,
   "return_code": 0,
-  "execution_time": 0.242819,
-  "timestamp": "2026-04-10T10:26:04.154320",
+  "execution_time": 0.24219,
+  "timestamp": "2026-05-22T06:19:31.551032",
   "simulation_data": {
     "traces": [],
     "free_energy": [],
@@ -48,12 +48,18 @@
       "num_actions": 2
     }
   },
+  "execution_benchmark_repeats": 1,
   "execution_metadata": {
     "executor": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python",
     "stdout_length": 1562,
     "stderr_length": 0,
     "output_directory": "output/12_execute_output/bnlearn_causal_model/discopy"
   },
+  "execution_time_mean": 0.24219,
+  "execution_time_std": 0.0,
+  "execution_time_samples": [
+    0.24219
+  ],
   "collected_outputs": {
     "visualizations": [],
     "simulation_data": [

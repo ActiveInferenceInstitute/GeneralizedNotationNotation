@@ -10,9 +10,9 @@
 
 **Status**: ✅ Production Ready
 
-**Version**: 1.0.0
+**Version**: 1.6.0
 
-**Last Updated**: 2026-01-21
+**Last Updated**: 2026-04-16
 
 ---
 
@@ -254,12 +254,15 @@ Pipeline Artifacts → Content Extraction → Template Processing → Asset Embe
 ## Testing
 
 ### Test Files
-- `src/tests/test_website_overall.py` - Module-level tests
+- `src/tests/website/test_website_overall.py` - Module-level tests
 
 ### Test Coverage
-- **Current**: 79%
-- **Target**: 85%+
+Measure on demand:
 
+```bash
+uv run --extra dev python -m pytest src/tests/test_website*.py \
+    --cov=src/website --cov-report=term-missing
+```
 ### Key Test Scenarios
 1. Website generation from pipeline artifacts
 2. HTML report creation and formatting
@@ -315,7 +318,7 @@ def generate_website_tool(artifacts_dir, output_dir):
 
 ## Version History
 
-### Current Version: 1.0.0
+### Current Version: 1.6.0
 
 **Features**:
 - Static HTML website generation
@@ -344,10 +347,10 @@ def generate_website_tool(artifacts_dir, output_dir):
 
 ---
 
-**Last Updated**: 2026-01-21
+**Last Updated**: 2026-04-16
 **Maintainer**: GNN Pipeline Team
 **Status**: ✅ Production Ready
-**Version**: 1.0.0
+**Version**: 1.6.0
 **Architecture Compliance**: ✅ 100% Thin Orchestrator Pattern
 
 ---

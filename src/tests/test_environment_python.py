@@ -7,6 +7,7 @@ Tests Python version, path configuration, and interpreter settings.
 
 import sys
 from pathlib import Path
+from typing import Any
 
 import pytest
 
@@ -18,14 +19,13 @@ class TestPythonVersion:
     """Tests for Python version requirements."""
 
     @pytest.mark.fast
-    def test_python_version_minimum(self):
+    def test_python_version_minimum(self) -> Any:
         """Test Python version meets minimum requirements."""
         # GNN requires Python 3.9+
-        assert sys.version_info >= (3, 9), \
-            f"Python 3.9+ required, got {sys.version}"
+        assert sys.version_info >= (3, 9), f"Python 3.9+ required, got {sys.version}"
 
     @pytest.mark.fast
-    def test_python_version_compatible(self):
+    def test_python_version_compatible(self) -> Any:
         """Test Python version is in compatible range."""
         # Should work with Python 3.9 - 3.13
         major, minor = sys.version_info[:2]
@@ -34,20 +34,20 @@ class TestPythonVersion:
         assert 9 <= minor <= 13
 
     @pytest.mark.fast
-    def test_python_implementation(self):
+    def test_python_implementation(self) -> Any:
         """Test Python implementation is CPython."""
         import platform
 
         impl = platform.python_implementation()
         # CPython is the expected implementation
-        assert impl in ('CPython', 'PyPy')
+        assert impl in ("CPython", "PyPy")
 
 
 class TestPythonPath:
     """Tests for Python path configuration."""
 
     @pytest.mark.fast
-    def test_src_in_path(self):
+    def test_src_in_path(self) -> Any:
         """Test src directory is in Python path."""
         src_dir = Path(__file__).parent.parent
 
@@ -57,17 +57,19 @@ class TestPythonPath:
         )
 
     @pytest.mark.fast
-    def test_project_root_accessible(self):
+    def test_project_root_accessible(self) -> Any:
         """Test project root is accessible."""
         project_root = Path(__file__).parent.parent.parent
 
         assert project_root.exists()
-        assert (project_root / "pyproject.toml").exists() or \
-               (project_root / "setup.py").exists() or \
-               (project_root / "src").exists()
+        assert (
+            (project_root / "pyproject.toml").exists()
+            or (project_root / "setup.py").exists()
+            or (project_root / "src").exists()
+        )
 
     @pytest.mark.fast
-    def test_modules_importable(self):
+    def test_modules_importable(self) -> Any:
         """Test core modules are importable."""
         # These should all import successfully
         import gnn
@@ -83,12 +85,12 @@ class TestPythonInterpreter:
     """Tests for Python interpreter settings."""
 
     @pytest.mark.fast
-    def test_encoding_utf8(self):
+    def test_encoding_utf8(self) -> Any:
         """Test default encoding is UTF-8."""
-        assert sys.getdefaultencoding() == 'utf-8'
+        assert sys.getdefaultencoding() == "utf-8"
 
     @pytest.mark.fast
-    def test_recursion_limit_adequate(self):
+    def test_recursion_limit_adequate(self) -> Any:
         """Test recursion limit is adequate."""
         limit = sys.getrecursionlimit()
 
@@ -96,31 +98,33 @@ class TestPythonInterpreter:
         assert limit >= 1000
 
     @pytest.mark.fast
-    def test_platform_supported(self):
+    def test_platform_supported(self) -> Any:
         """Test platform is supported."""
         import platform
 
         system = platform.system()
 
         # Should be one of the supported platforms
-        assert system in ('Darwin', 'Linux', 'Windows')
+        assert system in ("Darwin", "Linux", "Windows")
 
 
 class TestPythonFeatures:
     """Tests for Python language features."""
 
     @pytest.mark.fast
-    def test_async_await_available(self):
+    def test_async_await_available(self) -> Any:
         """Test async/await is available."""
-        async def async_func():
+
+        async def async_func() -> Any:
             return 42
 
         import asyncio
+
         result = asyncio.run(async_func())
         assert result == 42
 
     @pytest.mark.fast
-    def test_type_hints_work(self):
+    def test_type_hints_work(self) -> Any:
         """Test type hints work correctly."""
         from typing import Dict, List
 
@@ -131,7 +135,7 @@ class TestPythonFeatures:
         assert result == {"a": 1, "bb": 2, "ccc": 3}
 
     @pytest.mark.fast
-    def test_dataclasses_available(self):
+    def test_dataclasses_available(self) -> Any:
         """Test dataclasses are available."""
         from dataclasses import dataclass
 
@@ -145,7 +149,7 @@ class TestPythonFeatures:
         assert data.value == 42
 
     @pytest.mark.fast
-    def test_pathlib_fully_functional(self):
+    def test_pathlib_fully_functional(self) -> Any:
         """Test pathlib is fully functional."""
         from pathlib import Path
 
@@ -159,18 +163,18 @@ class TestPythonModules:
     """Tests for Python standard library modules."""
 
     @pytest.mark.fast
-    def test_json_module(self):
+    def test_json_module(self) -> Any:
         """Test json module works."""
         import json
 
-        data = {"key": "value", "number": 42}
+        data: dict[str, Any] = {"key": "value", "number": 42}
         encoded = json.dumps(data)
         decoded = json.loads(encoded)
 
         assert decoded == data
 
     @pytest.mark.fast
-    def test_logging_module(self):
+    def test_logging_module(self) -> Any:
         """Test logging module works."""
         import logging
 
@@ -181,27 +185,25 @@ class TestPythonModules:
         logger.debug("test")
 
     @pytest.mark.fast
-    def test_subprocess_module(self):
+    def test_subprocess_module(self) -> Any:
         """Test subprocess module works."""
-        import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
+        import subprocess  # nosec B404
 
-        result = subprocess.run(  # nosec B603 -- subprocess calls with controlled/trusted input
-            [sys.executable, "--version"],
-            capture_output=True,
-            text=True
+        result = subprocess.run(  # nosec B603
+            [sys.executable, "--version"], capture_output=True, text=True
         )
 
         assert result.returncode == 0
         assert "Python" in result.stdout or "python" in result.stdout.lower()
 
     @pytest.mark.fast
-    def test_threading_module(self):
+    def test_threading_module(self) -> Any:
         """Test threading module works."""
         import threading
 
-        results = []
+        results: list[Any] = []
 
-        def worker():
+        def worker() -> Any:
             results.append(42)
 
         thread = threading.Thread(target=worker)
@@ -215,16 +217,16 @@ class TestPythonEnvironment:
     """Tests for Python environment variables."""
 
     @pytest.mark.fast
-    def test_environment_variables_accessible(self):
+    def test_environment_variables_accessible(self) -> Any:
         """Test environment variables are accessible."""
         import os
 
         # Should be able to access environment
         env = os.environ
-        assert isinstance(env, dict) or hasattr(env, '__getitem__')
+        assert isinstance(env, dict) or hasattr(env, "__getitem__")
 
     @pytest.mark.fast
-    def test_cwd_accessible(self):
+    def test_cwd_accessible(self) -> Any:
         """Test current working directory is accessible."""
         import os
 

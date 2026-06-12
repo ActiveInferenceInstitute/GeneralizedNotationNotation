@@ -50,7 +50,7 @@ If extraction fails or is partial, the implementation applies defaults and recov
 Each API call writes a single Python script to `output_path`:
 
 - **General model**: pure JAX + NumPy
-- **POMDP solver**: JAX; optional Optax import with fallback behavior in generated code
+- **POMDP solver**: JAX; optional Optax import with explicit "continue without Optax" behavior in generated code
 - **Combined model**: JAX + Flax + Optax
 
 Step 11 may place these scripts under:
@@ -68,7 +68,7 @@ Step 11 may place these scripts under:
 
 - `jax`, `jaxlib` (required)
 - `numpy`
-- `optax` (required for combined model; optional-with-fallback for POMDP solver)
+- `optax` (required for combined model; optional for the POMDP solver, which records when Optax helpers are unavailable)
 - `flax` (required for combined model)
 
 ## Non-goals

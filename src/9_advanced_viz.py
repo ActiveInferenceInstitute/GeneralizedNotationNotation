@@ -11,11 +11,12 @@ How to run:
 
 import sys
 from pathlib import Path
+from typing import cast
 
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent))
 
-from advanced_visualization.processor import process_advanced_viz
+from advanced_visualization import process_advanced_viz
 from utils.pipeline_template import create_standardized_pipeline_script
 
 run_script = create_standardized_pipeline_script(
@@ -25,7 +26,18 @@ run_script = create_standardized_pipeline_script(
     additional_arguments={
         "viz_type": {
             "type": str,
-            "choices": ["all", "3d", "interactive", "dashboard", "d2", "diagrams", "pipeline", "statistical", "pomdp", "network"],
+            "choices": [
+                "all",
+                "3d",
+                "interactive",
+                "dashboard",
+                "d2",
+                "diagrams",
+                "pipeline",
+                "statistical",
+                "pomdp",
+                "network",
+            ],
             "default": "all",
             "help": "Type of visualization to generate: all, 3d, interactive, dashboard, d2/diagrams (D2 diagrams), pipeline (pipeline D2 diagrams), statistical (statistical plots and correlations), pomdp (POMDP-specific visualizations), network (network analysis)",
         },
@@ -46,7 +58,7 @@ run_script = create_standardized_pipeline_script(
 
 def main() -> int:
     """Main entry point for advanced visualization step."""
-    return run_script()
+    return cast("int", run_script())
 
 
 if __name__ == "__main__":

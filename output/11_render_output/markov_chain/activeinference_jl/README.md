@@ -11,7 +11,7 @@ Generated from GNN POMDP Model: **Simple Markov Chain**
 - Observations = states directly (identity mapping for monitoring).
 - Stationary transition matrix with realistic weather dynamics.
 - Tests the simplest model structure: passive state evolution with no control.
-- **Generation Date**: 2026-04-10 10:25:04
+- **Generation Date**: 2026-05-22 06:18:15
 
 ## POMDP Dimensions
 
@@ -23,7 +23,7 @@ Generated from GNN POMDP Model: **Simple Markov Chain**
 
 ### Available Matrices/Vectors:
 - **A Matrix (Likelihood)**: 3×3 - Maps hidden states to observations
-- **B Matrix (Transition)**: Present - State transitions given actions
+- **B Matrix (Transition)**: 3×3 - State transitions given actions
 - **C Vector (Preferences)**: Length 3 - Preferences over observations
 - **D Vector (Prior)**: Length 3 - Prior beliefs over states
 

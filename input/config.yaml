@@ -38,7 +38,7 @@ setup:
   recreate_venv: false
   # install_all_extras: false   # if true: uv sync --all-extras (every optional group; heavy)
 
-# Legacy / documentation only: main.py does not read uv.sync.* (use ``setup:`` above).
+# Documentation only: main.py does not read uv.sync.* (use ``setup:`` above).
 # For manual installs: uv sync --extra dev | uv sync --all-extras
 uv:
   recreate_uv_env: false
@@ -131,7 +131,7 @@ testing_matrix:
         10,
         11,
         12,
-        # 13,  # LLM — disabled (slow Ollama calls); re-enable when needed
+        # 13, # LLM folder routing omitted here; use pipeline.skip_steps or --skip-llm to disable globally
         14,
         15,
         16,
@@ -170,6 +170,9 @@ llm:
 
   # Total budget for LLM processing in seconds (pipeline kills at 900s)
   timeout_seconds: 600
+
+  # Bound full-pipeline LLM work to the documented 8-file prompt sample
+  max_files: 8
 
   # Per-prompt timeout in seconds
   prompt_timeout: 45

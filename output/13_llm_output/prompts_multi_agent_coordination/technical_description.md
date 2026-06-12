@@ -7,72 +7,52 @@ Prompt:
 Response:
 
 ```python
-import numpy as np
-from typing import List, Tuple
+import json
+from typing import List, Dict
 
-def multiagent_cooperative(
-    agent1: List[Tuple[float, float]],
-    agent2: List[Tuple[float, float]] = [],
-    num_agents=3,
-    num_hidden_states_per_agent=4,
-    num_actions_per_agent=3,
-    num_timesteps=20
-) -> List[List[Tuple[float, float]], List[Tuple[float, float]]]:
-    """
-    Multi-Agent Cooperative Active Inference.
+class GNNModel:
+    def __init__(self):
+        self._model = None
 
-    Args:
-        agent1 (list): A list of tuples representing the actions of agent 1 and
-            agent 2. Each tuple represents a single action in the joint state space.
-        num_agents (int): Number of agents to cooperate with.
-        num_hidden_states_per_agent (int): Number of hidden states per agent.
-        num_actions_per_agent (int): Number of actions per agent.
-        num_timesteps (int): Number of timesteps for each action in the joint state space.
+    @staticmethod
+    def generate_instance(state1=None, state2=[]):
+        """Generate instance for the given state.
 
-    Returns:
-        List[Tuple[float, float]]: A list containing a single action and its corresponding
-            probability distribution over the joint states.
-    """
-    # Initialize probabilities to 0
-    prob = np.zeros((num_agents + num_hidden_states_per_agent * num_actions_per_agent))
+        Args:
+            state1 (List[Dict[str, float]]): List of 4x4 lists representing actions and their corresponding probabilities.
+                Each list represents a single action in the state.
+                For example, `[[0.85, 0.05, 0.05], [0.05, 0.85, 0.05]]` is an instance of `GNNModel`.
+            state2 (List[Dict[str, float]]): List of 4x4 lists representing actions and their corresponding probabilities.
+                Each list represents a single action in the state.
+                For example, `[[0.85, 0.05], [0.05, 0.85], [0.1, 0.9]]` is an instance of `GNNModel`.
+        """
 
-    for i in range(num_agents):
-        for j in range(num_actions_per_agent):
-            if (i == agent1[j][0] and
-                (
-                    (
-                        (
-                            (
-                                (
-                                    (
-                                        (
-                                        (
-                                            (
-                                                (
-                                                    (
-                                                        (
-                                                                (
-                                                                    (
-                                                                                      (
-                                                                     ) = np.random.randint(min(num_hidden_states_per_agent, 2), max(num_hidden_states_per_agent, 3)) + 1)
+        self._model = GNN()
 
-                                                                   ) == 0 :
-                                                                       (
-                                                                        (
-                                                                                                                                                    (
-                                                                                      (
-                                                        (
-                                                    (
-                                                (
-                                                    (
-                                                        ((((((
-                                                                                                                                            (
-                                                                                                                                                             (
-                                                                                                                                                              (
-                                                                                                                                                                (
-                                                                                                                                                               (
-                                                                                                                                                                  (
-                                                                                                                                                                   (
-                                                                                                                                                   (
-                                                                                                                                                  (
-                                                                     ) = np.random.randint(min(num_hidden_states_per_agent
+    def generate_instance(self):
+        """Generate instance for the given state and actions."""
+        if not isinstance(state1, list) or not isinstance(state2, list):
+            raise ValueError("State 1 must be a list of lists representing actions and their corresponding probabilities.")
+
+        self._model.generate_instance([state1])
+
+    def generate_actions(self):
+        """Generate actions for the given state."""
+        if not isinstance(state1, list) or not isinstance(state2, list):
+            raise ValueError("State 1 must be a list of lists representing actions and their corresponding probabilities.")
+
+        self._model.generate_action([state1])
+
+    def generate_observation(self):
+        """Generate observation for the given state."""
+        if not isinstance(state1, list) or not isinstance(state2, list):
+            raise ValueError("State 1 must be a list of lists representing actions and their corresponding probabilities.")
+
+        self._model.generate_observation([state1])
+
+    def generate_policy(self):
+        """Generate action for the given state."""
+        if not isinstance(state1, list) or not isinstance(state2, list):
+            raise ValueError("State 1 must be a list of lists representing actions and their corresponding probabilities.")
+
+        self

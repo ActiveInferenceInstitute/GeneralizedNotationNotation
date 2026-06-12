@@ -40,7 +40,7 @@ SPM is implemented as a suite of MATLAB functions and subroutines with some exte
 
 - **MATLAB R2007a (7.4) to R2023b (9.15)** - no special toolboxes required[5][9]
 - **MEX files** - pre-compiled binaries provided for Windows (32/64-bit), Linux (64-bit), and macOS (64-bit)[5]
-- **NIFTI-1 file format** for image data (also reads legacy Analyze format)[5]
+- **NIFTI-1 file format** for image data (also reads older Analyze format)[5]
 
 A **standalone version** is also available using the MATLAB Compiler, eliminating the need for a MATLAB license.[7][5]
 

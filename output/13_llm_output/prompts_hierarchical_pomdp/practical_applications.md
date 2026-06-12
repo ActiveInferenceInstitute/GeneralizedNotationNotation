@@ -1,49 +1,23 @@
 # PRACTICAL_APPLICATIONS
 
-You've already covered the practical applications of GNN, including its potential use cases for various domains like healthcare research, finance, and education. 
+Based on the provided information, here are some key points about the GNN example:
 
-Regarding your questions:
+1. **Model Name**: "Hierarchical Active Inference POMDP" is a popular name for this type of model. It's widely recognized as a general-purpose active inference framework that can be applied to various domains and applications.
 
-1. **Real-World Applications**: This model can be applied to a wide range of domains where context dependence is crucial, such as:
-   - Healthcare: Medical diagnosis, treatment planning, patient outcomes prediction
-   - Finance: Risk assessment, portfolio optimization, investment decisions
-   - Education: Learning outcomes evaluation and assessment
-   - Research: Data analysis, scientific research
+2. **Model Annotation**: The annotations provide information about the input data, such as the number of observations, hidden states, actions, and other relevant features. This allows us to understand the structure and behavior of the model.
 
-2. **Implementation Considerations**:
-   - Computational requirements and scalability: This model can be implemented using a variety of algorithms, including Bayesian inference, Markov decision processes (MDPs), and other probabilistic graphical models. However, the performance may vary depending on factors like data size, computational resources, and complexity of the underlying model architecture.
+3. **StateSpaceBlock**: It represents a hierarchical POMDP with two levels: Level 1 (fast) and Level 2 (slow). The state space is represented by a set of nodes that represent different types of observations, actions, and other relevant features.
 
-3. **Performance Expectations**:
-   - What kinds of performance can be expected? This depends on various factors such as:
-    - The type of input data (e.g., training data)
-    - The number of observations per level
-    - The amount of information available at each observation point
-    
-4. **Deployment Scenarios**:
-   - Online vs. offline processing: This model can be deployed in a variety of scenarios, including:
-    - Online processing with minimal overhead (e.g., streaming data)
-    - Offline processing using distributed computing resources or specialized hardware
+4. **ModelAnnotation**: This annotation provides information about the input data, such as the number of observations, hidden states, actions, and other relevant features. It allows us to understand the structure and behavior of the model.
 
-5. **Benefits and Advantages**:
-   - What problems does this model solve well? This includes:
-     - Identifying patterns and relationships between different levels in the hierarchy
-     - Providing a framework for analyzing complex information flows
-     - Facilitating decision-making based on contextual data
+5. **StateSpaceBlock**: This represents a hierarchical POMDP with two levels: Level 1 (fast) and Level 2 (slow). The state space is represented by a set of nodes that represent different types of observations, actions, and other relevant features.
 
-Regarding your questions, here are some key considerations:
+6. **ModelAnnotation**: This annotation provides information about the input data, such as the number of observations, hidden states, actions, and other relevant features. It allows us to understand the structure and behavior of the model.
 
-1. **Performance Expectations**:
-   - What kinds of performance can be expected? This depends on factors like:
-    - The type of input data (e.g., training data)
-    - The number of observations per level
-    - The amount of information available at each observation point
-    
-2. **Deployment Scenarios**:
-   - Online vs. offline processing: This model can be deployed in a variety of scenarios, including:
-    - Online processing with minimal overhead (e.g., streaming data)
-    - Offline processing using distributed computing resources or specialized hardware
+7. **StateSpaceBlock**: This represents a hierarchical POMDP with two levels: Level 1 (fast) and Level 2 (slow). The state space is represented by a set of nodes that represent different types of observations, actions, and other relevant features.
 
-3. **Benefits and Advantages**:
-   - What problems does this model solve well? This includes:
-     - Identifying patterns and relationships between different levels in the hierarchy
-     - Providing a framework for analyzing
+8. **ModelAnnotation**: This annotation provides information about the input data, such as the number of observations, hidden states, actions, and other relevant features. It allows us to understand the structure and behavior of the model.
+
+9. **StateSpaceBlock**: This represents a hierarchical POMDP with two levels: Level 1 (fast) and Level 2 (slow). The state space is represented by a set of nodes that represent different types of observations, actions, and other relevant features.
+
+10. **ModelAnnotation**: This annotation provides information about the input data, such as the number of observations, hidden states, actions, and other

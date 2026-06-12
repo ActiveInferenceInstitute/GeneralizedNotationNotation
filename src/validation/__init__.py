@@ -5,13 +5,15 @@ This module provides comprehensive validation capabilities for GNN models,
 including semantic validation, performance profiling, and consistency checking.
 """
 
-__version__ = "1.1.3"
-FEATURES = {
+from typing import Any, cast
+
+__version__ = "1.6.0"
+FEATURES: dict[str, Any] = {
     "semantic_validation": True,
     "performance_profiling": True,
     "consistency_checking": True,
     "multi_model_validation": True,
-    "mcp_integration": True
+    "mcp_integration": True,
 }
 
 from pathlib import Path
@@ -24,7 +26,9 @@ from .performance_profiler import PerformanceProfiler, profile_performance
 from .semantic_validator import SemanticValidator, process_semantic_validation
 
 
-def process_validation(target_dir: Path, output_dir: Path, verbose: bool = False, **kwargs) -> bool:
+def process_validation(
+    target_dir: Path, output_dir: Path, verbose: bool = False, **kwargs: Any
+) -> bool:
     """
     Main validation processing function for GNN models.
 
@@ -58,13 +62,22 @@ def process_validation(target_dir: Path, output_dir: Path, verbose: bool = False
     try:
         # Load parsed GNN data from previous step (step 3)
         from pipeline.config import get_output_dir_for_script
+
         # Look in the base output directory, not the step-specific directory
-        base_output_dir = Path(output_dir).parent if Path(output_dir).name.startswith(('6_validation', '7_export', '8_visualization')) else output_dir
+        base_output_dir = (
+            Path(output_dir).parent
+            if Path(output_dir).name.startswith(
+                ("6_validation", "7_export", "8_visualization")
+            )
+            else output_dir
+        )
         gnn_output_dir = get_output_dir_for_script("3_gnn.py", base_output_dir)
         gnn_results_file = gnn_output_dir / "gnn_processing_results.json"
 
         if not gnn_results_file.exists():
-            logger.error(f"GNN processing results not found at {gnn_results_file}. Run step 3 first.")
+            logger.error(
+                f"GNN processing results not found at {gnn_results_file}. Run step 3 first."
+            )
             logger.error(f"Expected file location: {gnn_results_file}")
             logger.error(f"GNN output directory: {gnn_output_dir}")
             logger.error(f"GNN output directory exists: {gnn_output_dir.exists()}")
@@ -72,28 +85,66 @@ def process_validation(target_dir: Path, output_dir: Path, verbose: bool = False
                 logger.error(f"Contents: {list(gnn_output_dir.iterdir())}")
             return False
 
-        with open(gnn_results_file, 'r') as f:
+        with open(gnn_results_file, "r") as f:
             gnn_results = json.load(f)
 
         logger.info(f"Loaded {len(gnn_results['processed_files'])} parsed GNN files")
 
-        # Validation results
-        validation_results = {
-            "timestamp": datetime.datetime.now().isoformat(),
-            "source_directory": str(target_dir),
-            "output_directory": str(output_dir),
-            "files_validated": [],
-            "summary": {
-                "total_files": 0,
-                "successful_validations": 0,
-                "failed_validations": 0,
-                "validation_scores": {
-                    "semantic": [],
-                    "performance": [],
-                    "consistency": []
-                }
+        # Load existing validation results if present (accumulate across subdirectory passes)
+        validation_results_file = output_dir / "validation_results.json"
+        if validation_results_file.exists():
+            try:
+                with open(validation_results_file, "r") as f:
+                    validation_results = json.load(f)
+                # Ensure all expected keys exist for safe accumulation
+                validation_results.setdefault("files_validated", [])
+                validation_results.setdefault("summary", {})
+                validation_results["summary"].setdefault("total_files", 0)
+                validation_results["summary"].setdefault("successful_validations", 0)
+                validation_results["summary"].setdefault("failed_validations", 0)
+                validation_results["summary"].setdefault("validation_scores", {})
+                for k in ("semantic", "performance", "consistency"):
+                    validation_results["summary"]["validation_scores"].setdefault(k, [])
+                # Update source directory to show accumulated sources
+                prev_sources = validation_results.get("source_directories", [])
+                if not prev_sources:
+                    prev_src = validation_results.get("source_directory", "")
+                    prev_sources = [prev_src] if prev_src else []
+                if str(target_dir) not in prev_sources:
+                    prev_sources.append(str(target_dir))
+                validation_results["source_directories"] = prev_sources
+                validation_results["source_directory"] = str(target_dir)
+                validation_results["timestamp"] = datetime.datetime.now().isoformat()
+                logger.info(
+                    f"Accumulating validation results from {len(validation_results['files_validated'])} previously validated files"
+                )
+            except (json.JSONDecodeError, OSError) as e:
+                logger.warning(
+                    f"Could not load existing validation results, starting fresh: {e}"
+                )
+                validation_results = cast(Any, None)
+
+        if not validation_results_file.exists():
+            validation_results = None
+
+        if validation_results is None:
+            validation_results = {
+                "timestamp": datetime.datetime.now().isoformat(),
+                "source_directory": str(target_dir),
+                "source_directories": [str(target_dir)],
+                "output_directory": str(output_dir),
+                "files_validated": [],
+                "summary": {
+                    "total_files": 0,
+                    "successful_validations": 0,
+                    "failed_validations": 0,
+                    "validation_scores": {
+                        "semantic": [],
+                        "performance": [],
+                        "consistency": [],
+                    },
+                },
             }
-        }
 
         # Process each file
         for file_result in gnn_results["processed_files"]:
@@ -107,22 +158,28 @@ def process_validation(target_dir: Path, output_dir: Path, verbose: bool = False
             parsed_model_file = file_result.get("parsed_model_file")
             if parsed_model_file and Path(parsed_model_file).exists():
                 try:
-                    with open(parsed_model_file, 'r') as f:
+                    with open(parsed_model_file, "r") as f:
                         actual_gnn_spec = json.load(f)
-                    logger.info(f"Loaded parsed GNN specification from {parsed_model_file}")
+                    logger.info(
+                        f"Loaded parsed GNN specification from {parsed_model_file}"
+                    )
                     model_data = actual_gnn_spec
                 except Exception as e:
-                    logger.error(f"Failed to load parsed GNN spec from {parsed_model_file}: {e}")
+                    logger.error(
+                        f"Failed to load parsed GNN spec from {parsed_model_file}: {e}"
+                    )
                     model_data = file_result
             else:
-                logger.warning(f"Parsed model file not found for {file_name}, using summary data")
+                logger.warning(
+                    f"Parsed model file not found for {file_name}, using summary data"
+                )
                 model_data = file_result
 
-            file_validation_result = {
+            file_validation_result: dict[str, Any] = {
                 "file_name": file_name,
                 "file_path": file_result["file_path"],
                 "validations": {},
-                "success": True
+                "success": True,
             }
 
             # Perform semantic validation
@@ -140,10 +197,12 @@ def process_validation(target_dir: Path, output_dir: Path, verbose: bool = False
             # Perform performance profiling
             try:
                 performance_result = profile_performance(model_data)
-                file_validation_result["validations"]["performance"] = performance_result
-                validation_results["summary"]["validation_scores"]["performance"].append(
-                    performance_result.get("performance_score", 0.0)
+                file_validation_result["validations"]["performance"] = (
+                    performance_result
                 )
+                validation_results["summary"]["validation_scores"][
+                    "performance"
+                ].append(performance_result.get("performance_score", 0.0))
                 logger.info(f"Performance profiling completed for {file_name}")
             except Exception as e:
                 logger.error(f"Performance profiling failed for {file_name}: {e}")
@@ -152,10 +211,12 @@ def process_validation(target_dir: Path, output_dir: Path, verbose: bool = False
             # Perform consistency checking
             try:
                 consistency_result = check_consistency(model_data)
-                file_validation_result["validations"]["consistency"] = consistency_result
-                validation_results["summary"]["validation_scores"]["consistency"].append(
-                    consistency_result.get("consistency_score", 0.0)
+                file_validation_result["validations"]["consistency"] = (
+                    consistency_result
                 )
+                validation_results["summary"]["validation_scores"][
+                    "consistency"
+                ].append(consistency_result.get("consistency_score", 0.0))
                 logger.info(f"Consistency checking completed for {file_name}")
             except Exception as e:
                 logger.error(f"Consistency checking failed for {file_name}: {e}")
@@ -174,37 +235,49 @@ def process_validation(target_dir: Path, output_dir: Path, verbose: bool = False
             scores = validation_results["summary"]["validation_scores"][score_type]
             if scores:
                 avg_score = sum(scores) / len(scores)
-                validation_results["summary"]["validation_scores"][f"avg_{score_type}_score"] = avg_score
+                validation_results["summary"]["validation_scores"][
+                    f"avg_{score_type}_score"
+                ] = avg_score
 
         # Save validation results
         validation_results_file = output_dir / "validation_results.json"
-        with open(validation_results_file, 'w') as f:
+        with open(validation_results_file, "w") as f:
             json.dump(validation_results, f, indent=2)
 
         # Save validation summary
         validation_summary_file = output_dir / "validation_summary.json"
-        with open(validation_summary_file, 'w') as f:
+        with open(validation_summary_file, "w") as f:
             json.dump(validation_results["summary"], f, indent=2)
 
         logger.info("Validation processing completed:")
         logger.info(f"  Total files: {validation_results['summary']['total_files']}")
-        logger.info(f"  Successful validations: {validation_results['summary']['successful_validations']}")
-        logger.info(f"  Failed validations: {validation_results['summary']['failed_validations']}")
+        logger.info(
+            f"  Successful validations: {validation_results['summary']['successful_validations']}"
+        )
+        logger.info(
+            f"  Failed validations: {validation_results['summary']['failed_validations']}"
+        )
 
         if validation_results["summary"]["validation_scores"]["semantic"]:
-            avg_semantic = validation_results["summary"]["validation_scores"]["avg_semantic_score"]
+            avg_semantic = validation_results["summary"]["validation_scores"][
+                "avg_semantic_score"
+            ]
             logger.info(f"  Average semantic score: {avg_semantic:.2f}")
 
         if validation_results["summary"]["validation_scores"]["performance"]:
-            avg_performance = validation_results["summary"]["validation_scores"]["avg_performance_score"]
+            avg_performance = validation_results["summary"]["validation_scores"][
+                "avg_performance_score"
+            ]
             logger.info(f"  Average performance score: {avg_performance:.2f}")
 
         if validation_results["summary"]["validation_scores"]["consistency"]:
-            avg_consistency = validation_results["summary"]["validation_scores"]["avg_consistency_score"]
+            avg_consistency = validation_results["summary"]["validation_scores"][
+                "avg_consistency_score"
+            ]
             logger.info(f"  Average consistency score: {avg_consistency:.2f}")
 
         success = validation_results["summary"]["successful_validations"] > 0
-        return success
+        return cast("bool", success)
 
     except Exception as e:
         logger.error(f"Validation processing failed: {e}")
@@ -212,14 +285,24 @@ def process_validation(target_dir: Path, output_dir: Path, verbose: bool = False
 
 
 # Re-export main classes and functions
-__all__ = [
-    '__version__',
-    'FEATURES',
-    'SemanticValidator',
-    'PerformanceProfiler',
-    'ConsistencyChecker',
-    'process_semantic_validation',
-    'profile_performance',
-    'check_consistency',
-    'process_validation'
+__all__: list[Any] = [
+    "__version__",
+    "FEATURES",
+    "SemanticValidator",
+    "PerformanceProfiler",
+    "ConsistencyChecker",
+    "process_semantic_validation",
+    "profile_performance",
+    "check_consistency",
+    "process_validation",
 ]
+
+
+def get_module_info() -> dict:
+    """Return module metadata for composability and MCP discovery."""
+    return {
+        "name": "validation",
+        "version": __version__,
+        "description": "Advanced validation and consistency checking",
+        "features": FEATURES,
+    }

@@ -32,6 +32,7 @@ def clear_registry() -> None:
 @dataclass
 class StepInfo:
     """Metadata for a registered pipeline step."""
+
     name: str
     step_num: int
     func: Optional[Callable] = None
@@ -40,6 +41,7 @@ class StepInfo:
     module_path: str = ""
 
     def __post_init__(self) -> None:
+        """Normalize fields after dataclass initialization."""
         if self.depends_on is None:
             self.depends_on = []
 
@@ -47,7 +49,7 @@ class StepInfo:
 def pipeline_step(
     name: str,
     step_num: int,
-    depends_on: List[int] = None,
+    depends_on: (List[int]) | None = None,
     phase: str = "core",
 ) -> Callable:
     """
@@ -67,6 +69,7 @@ def pipeline_step(
     depends_on = depends_on or []
 
     def decorator(func: Callable) -> Callable:
+        """Provide decorator behavior."""
         info = StepInfo(
             name=name,
             step_num=step_num,
@@ -119,7 +122,11 @@ def discover_steps(src_dir: Optional[Path] = None) -> Dict[int, StepInfo]:
             name=step_name,
             step_num=step_num,
             module_path=str(py_file),
-            phase="core" if step_num < 10 else "analysis" if step_num < 20 else "output",
+            phase="core"
+            if step_num < 10
+            else "analysis"
+            if step_num < 20
+            else "output",
         )
 
     logger.info(f"📦 Discovered {len(discovered)} pipeline steps")
@@ -128,8 +135,4 @@ def discover_steps(src_dir: Optional[Path] = None) -> Dict[int, StepInfo]:
 
 def get_step_dependencies(steps: Dict[int, StepInfo]) -> Dict[int, List[int]]:
     """Extract dependency dict from discovered steps."""
-    return {
-        num: info.depends_on
-        for num, info in steps.items()
-        if info.depends_on
-    }
+    return {num: info.depends_on for num, info in steps.items() if info.depends_on}

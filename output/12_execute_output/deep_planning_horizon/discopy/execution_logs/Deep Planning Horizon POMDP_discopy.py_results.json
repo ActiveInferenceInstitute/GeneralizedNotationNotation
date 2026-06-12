@@ -5,8 +5,8 @@
   "script_path": "output/11_render_output/deep_planning_horizon/discopy/Deep Planning Horizon POMDP_discopy.py",
   "success": true,
   "return_code": 0,
-  "execution_time": 0.269416,
-  "timestamp": "2026-04-10T10:25:21.197032",
+  "execution_time": 0.233388,
+  "timestamp": "2026-05-22T06:18:32.411110",
   "simulation_data": {
     "traces": [],
     "free_energy": [],
@@ -48,12 +48,18 @@
       "num_actions": 4
     }
   },
+  "execution_benchmark_repeats": 1,
   "execution_metadata": {
     "executor": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python",
     "stdout_length": 1569,
     "stderr_length": 0,
     "output_directory": "output/12_execute_output/deep_planning_horizon/discopy"
   },
+  "execution_time_mean": 0.233388,
+  "execution_time_std": 0.0,
+  "execution_time_samples": [
+    0.233388
+  ],
   "collected_outputs": {
     "visualizations": [],
     "simulation_data": [

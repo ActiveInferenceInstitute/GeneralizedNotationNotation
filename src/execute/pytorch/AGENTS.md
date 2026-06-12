@@ -1,27 +1,31 @@
-# PyTorch Execute Backend - Agent Scaffolding
+# PyTorch Execution Sub-module
 
-## Module Overview
+## Overview
 
-**Purpose**: Discover and execute PyTorch-rendered simulation scripts produced by Step 11.
+Discovers and runs PyTorch-generated POMDP scripts via subprocess. Includes syntax validation, dependency checking, log persistence, and execution timing.
 
-**Parent**: `src/execute/` (Step 12: Execute)
+## Architecture
 
----
+```
+pytorch/
+├── __init__.py            # Package exports
+└── pytorch_runner.py      # PyTorch script discovery and execution (239 lines)
+```
 
-## Public API
+## Key Functions
 
-From `src/execute/pytorch/__init__.py`:
+- **`run_pytorch_scripts(render_dir, output_dir)`** — Discovers and executes all PyTorch scripts in the render output directory.
+- **Dependency validation** — Checks for `torch` availability before execution.
+- **Syntax checking** — Pre-validates Python syntax before subprocess execution.
+- **Log persistence** — Captures stdout/stderr to log files alongside results.
+- **Timing** — Records wall-clock execution time for each script.
 
-- `is_pytorch_available() -> bool`
-- `find_pytorch_scripts(base_dir: Union[str, Path], recursive: bool = True) -> List[Path]`
-- `execute_pytorch_script(script_path: Path, verbose: bool = False, device: Optional[str] = None, output_dir: Optional[Path] = None, timeout: int = 300) -> bool`
-- `run_pytorch_scripts(rendered_simulators_dir: Union[str, Path], execution_output_dir: Optional[Union[str, Path]] = None, recursive_search: bool = True, verbose: bool = False, device: Optional[str] = None) -> bool`
+## Dependencies
 
----
+- `torch` (runtime, checked before execution)
 
-## Conventions
+## Parent Module
 
-- Looks for scripts under `<rendered_simulators_dir>/pytorch/` and for filenames containing `pytorch`.
-- Persists `stdout.txt`, `stderr.txt`, and `execution_log.json` under `output_dir` when provided.
-- Uses `PYTORCH_OUTPUT_DIR` env var to tell generated scripts where to write `simulation_results.json`.
+See [execute/AGENTS.md](../AGENTS.md) for the overall execution architecture.
 
+**Version**: 1.6.0

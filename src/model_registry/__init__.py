@@ -5,12 +5,14 @@ This module provides model versioning, registry management, and metadata handlin
 for GNN model specifications.
 """
 
-__version__ = "1.1.3"
-FEATURES = {
+from typing import Any
+
+__version__ = "1.6.0"
+FEATURES: dict[str, Any] = {
     "model_versioning": True,
     "registry_management": True,
     "metadata_handling": True,
-    "mcp_integration": True
+    "mcp_integration": True,
 }
 
 from pathlib import Path
@@ -20,9 +22,19 @@ from typing import Any, Dict, List, Optional
 from .registry import ModelRegistry, process_model_registry
 
 # Re-export main classes and functions
-__all__ = [
-    '__version__',
-    'FEATURES',
-    'ModelRegistry',
-    'process_model_registry'
+__all__: list[Any] = [
+    "__version__",
+    "FEATURES",
+    "ModelRegistry",
+    "process_model_registry",
 ]
+
+
+def get_module_info() -> dict:
+    """Return module metadata for composability and MCP discovery."""
+    return {
+        "name": "model_registry",
+        "version": __version__,
+        "description": "Model versioning, metadata management, and lifecycle tracking",
+        "features": FEATURES,
+    }

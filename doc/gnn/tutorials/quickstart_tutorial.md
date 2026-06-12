@@ -1,7 +1,7 @@
 # GNN Quick Start Tutorial
 
-**Version**: v2.0.0  
-**Last Updated**: 2026-03-24  
+**Version**: v1.6.0 Engine (Bundle v2.0.0)  
+**Last Updated**: 2026-04-15  
 **Status**: Maintained  
 
 **Goal**: Create and run your first GNN model in 15 minutes, no prior Active Inference knowledge required.
@@ -18,7 +18,7 @@ A simple navigation agent that learns to find a goal location in a 2x2 grid worl
 ## ⚡ Prerequisites
 
 - Basic programming knowledge (any language)
-- Python 3.8+ installed
+- Python 3.11+ installed
 - 15 minutes of focused time
 
 > 💡 **No Active Inference background needed!** This tutorial explains concepts as we go.

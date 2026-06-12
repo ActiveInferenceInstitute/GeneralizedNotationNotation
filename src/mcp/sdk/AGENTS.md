@@ -1,25 +1,26 @@
-# Sdk - Agent Scaffolding
+# MCP SDK Facade
 
-## Module Overview
+## Overview
 
-**Purpose**: Responsible for `Sdk` operations within the GNN pipeline architecture.
-**Category**: Generated Pipeline Component
-**Status**: Development
+Provides a thin SDK facade that delegates to the parent `mcp` module implementation. Present so that `MCPSDKStatus` health checks find a complete SDK surface under `src/mcp/sdk/`.
 
----
+## Architecture
 
-## Core Functionality
+```
+sdk/
+├── client.py     # Client-side MCP SDK facade (16 lines)
+├── mcp.py        # Core SDK re-exports from parent mcp module (39 lines)
+└── server.py     # Server-side MCP SDK facade (16 lines)
+```
 
-### Primary Responsibilities
-MCP SDK server shim: delegates to the parent mcp.server implementation.
-Present so MCPSDKStatus health check finds a complete SDK under src/mcp/sdk/. MCP SDK client shim: minimal client interface delegating to the parent mcp module.
-Present so MCPSDKStatus health check finds a complete SDK under src
+## Purpose
 
-### Extracted Code Entities
+- **Health check compliance** — `MCPSDKStatus` validates SDK presence by checking this directory.
+- **API surface delegation** — All exports delegate to `mcp.mcp.MCP` and related classes.
+- **No independent logic** — This is a pure re-export layer, not an independent implementation.
 
-- **Classes**: No specific classes exported.
-- **Functions**: No specific public functions exported.
+## Parent Module
 
-## Implementation Details
+See [mcp/AGENTS.md](../AGENTS.md) for the full MCP architecture.
 
-This module follows the Thin Orchestrator Pattern. It is governed by the Zero-Mock testing policy.
+**Version**: 1.6.0

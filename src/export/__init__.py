@@ -4,6 +4,8 @@ Export module for GNN Processing Pipeline.
 This module provides multi-format export capabilities for GNN files.
 """
 
+from typing import Any
+
 from .formatters import (
     export_to_gexf,
     export_to_graphml,
@@ -28,11 +30,19 @@ from .processor import (
 from .utils import get_module_info
 from .utils import get_supported_formats as _get_supported_formats_dict
 
-__version__ = "1.1.3"
-FEATURES = {"json_export": True, "xml_export": True, "graphml_export": True, "gexf_export": True, "pickle_export": True, "mcp_integration": True}
+__version__ = "1.6.0"
+FEATURES: dict[str, Any] = {
+    "json_export": True,
+    "xml_export": True,
+    "graphml_export": True,
+    "gexf_export": True,
+    "pickle_export": True,
+    "mcp_integration": True,
+}
 HAS_NETWORKX = True
 
 # --- Public API expected by tests ---
+
 
 def get_supported_formats() -> list:
     """Return a flat list of supported format names.
@@ -41,11 +51,11 @@ def get_supported_formats() -> list:
     'pickle' over the abbreviated 'pkl' spelling.
     """
     info = _get_supported_formats_dict()
-    all_formats = set()
+    all_formats: set[Any] = set()
     for key in ("data_formats", "graph_formats", "text_formats", "all_formats"):
         for fmt in info.get(key, []):
             all_formats.add("pickle" if fmt in {"pkl", "pickle"} else fmt)
-    ordered = ["json", "xml", "graphml", "gexf", "pickle", "txt", "dsl"]
+    ordered: list[Any] = ["json", "xml", "graphml", "gexf", "pickle", "txt", "dsl"]
     extras = sorted(f for f in all_formats if f not in ordered)
     return [f for f in ordered if f in all_formats] + extras
 
@@ -85,12 +95,14 @@ class Exporter:
         from pathlib import Path
 
         from .processor import _gnn_model_to_dict
+
         model_data = _gnn_model_to_dict(gnn_content)
         with tempfile.TemporaryDirectory() as tmp:
             out = export_model(model_data, Path(tmp), formats=[format_name])
             return out
 
     def validate_format(self, format_name: str) -> bool:
+        """Validate format."""
         return validate_export_format(format_name)
 
 
@@ -98,43 +110,47 @@ class MultiFormatExporter:
     """Exporter that produces multiple formats in one call (test helper)."""
 
     def export_to_multiple_formats(self, gnn_content: str, formats: list[str]) -> dict:
+        """Export to multiple formats."""
         import tempfile
         from pathlib import Path
 
         from .processor import _gnn_model_to_dict
+
         model_data = _gnn_model_to_dict(gnn_content)
         with tempfile.TemporaryDirectory() as tmp:
             out = export_model(model_data, Path(tmp), formats=formats)
             return out
 
     def get_supported_formats(self) -> list[str]:
+        """Return supported formats."""
         return get_supported_formats()
 
-__all__ = [
-    'generate_exports',
-    'export_single_gnn_file',
-    'parse_gnn_content',
-    'export_model',
-    'export_gnn_model',
-    '_gnn_model_to_dict',
-    'Exporter',
-    'MultiFormatExporter',
-    'validate_export_format',
-    'export_to_json',
-    'export_to_xml',
-    'export_to_graphml',
-    'export_to_gexf',
-    'export_to_pickle',
-    'export_to_json_gnn',
-    'export_to_xml_gnn',
-    'export_to_python_pickle',
-    'export_to_plaintext_summary',
-    'export_to_plaintext_dsl',
-    'get_module_info',
-    'get_supported_formats',
-    'get_supported_formats_dict',
-    '__version__',
-    'FEATURES',
-    'HAS_NETWORKX',
-    'process_export'
+
+__all__: list[Any] = [
+    "generate_exports",
+    "export_single_gnn_file",
+    "parse_gnn_content",
+    "export_model",
+    "export_gnn_model",
+    "_gnn_model_to_dict",
+    "Exporter",
+    "MultiFormatExporter",
+    "validate_export_format",
+    "export_to_json",
+    "export_to_xml",
+    "export_to_graphml",
+    "export_to_gexf",
+    "export_to_pickle",
+    "export_to_json_gnn",
+    "export_to_xml_gnn",
+    "export_to_python_pickle",
+    "export_to_plaintext_summary",
+    "export_to_plaintext_dsl",
+    "get_module_info",
+    "get_supported_formats",
+    "get_supported_formats_dict",
+    "__version__",
+    "FEATURES",
+    "HAS_NETWORKX",
+    "process_export",
 ]

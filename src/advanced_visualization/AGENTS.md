@@ -10,9 +10,9 @@
 
 **Status**: ✅ Production Ready
 
-**Version**: 1.0.0
+**Version**: 1.6.0
 
-**Last Updated**: 2026-01-21
+**Last Updated**: 2026-04-16
 
 ---
 
@@ -42,9 +42,9 @@
 
 ### Public Functions
 
-#### `process_advanced_viz_standardized_impl(target_dir, output_dir, logger, **kwargs) -> bool`
+#### `process_advanced_viz(target_dir, output_dir, logger, **kwargs) -> bool`
 
-**Description**: Main advanced visualization processing function called by orchestrator (9_advanced_viz.py)
+**Description**: Main advanced visualization processing function called by orchestrator ([9_advanced_viz.py](../9_advanced_viz.py)). Implementation: [processor.py](processor.py).
 
 **Parameters**:
 
@@ -61,9 +61,9 @@
 **Example**:
 
 ```python
-from advanced_visualization.processor import process_advanced_viz_standardized_impl
+from advanced_visualization.processor import process_advanced_viz
 
-success = process_advanced_viz_standardized_impl(
+success = process_advanced_viz(
     target_dir=Path("input/gnn_files"),
     output_dir=Path("output/9_advanced_viz_output"),
     logger=logger,
@@ -202,9 +202,9 @@ See [D2_README.md](D2_README.md) for comprehensive D2 integration documentation.
 ### Basic Usage
 
 ```python
-from advanced_visualization.processor import process_advanced_viz_standardized_impl
+from advanced_visualization.processor import process_advanced_viz
 
-success = process_advanced_viz_standardized_impl(
+success = process_advanced_viz(
     target_dir=Path("input/gnn_files"),
     output_dir=Path("output/9_advanced_viz_output"),
     logger=logger,
@@ -215,7 +215,7 @@ success = process_advanced_viz_standardized_impl(
 ### Interactive Dashboard
 
 ```python
-success = process_advanced_viz_standardized_impl(
+success = process_advanced_viz(
     target_dir=Path("input/gnn_files"),
     output_dir=Path("output/9_advanced_viz_output"),
     logger=logger,
@@ -229,7 +229,7 @@ success = process_advanced_viz_standardized_impl(
 
 ```python
 # Generate only D2 diagrams
-success = process_advanced_viz_standardized_impl(
+success = process_advanced_viz(
     target_dir=Path("input/gnn_files"),
     output_dir=Path("output/9_advanced_viz_output"),
     logger=logger,
@@ -351,7 +351,7 @@ output/9_advanced_viz_output/
 **Major Fixes Applied**:
 
 1. **Data Loading**: Fixed GNN model discovery and loading from processing results
-2. **Visualization Implementation**: Replaced stubs with real matplotlib-based visualizations
+2. **Visualization Implementation**: Uses real matplotlib-based visualizations
 3. **Import Structure**: Corrected module imports and dependencies
 4. **Error Handling**: Added comprehensive error handling and recovery mechanisms
 5. **Test Coverage**: Created 17 comprehensive tests covering all functionality
@@ -418,26 +418,24 @@ output/9_advanced_viz_output/
 
 ### Test Files
 
-- `src/tests/test_advanced_visualization_overall.py` ✅
-- `src/tests/test_comprehensive_api.py` (integration tests)
+- `src/tests/advanced_visualization/test_advanced_visualization_overall.py` ✅
+- `src/tests/advanced_visualization/test_advanced_visualization_shared.py` ✅
 
 ### Test Coverage
 
-- **Current**: 95%+ ✅
-- **Test Categories**:
-  - ✅ Unit Tests: Module imports, instantiation, basic functionality
-  - ✅ Integration Tests: Data extraction, visualization generation
-  - ✅ Error Handling: Invalid content, missing dependencies
-  - ✅ Performance Tests: Execution time and resource usage
-  - ✅ Pipeline Integration: End-to-end workflow testing
+Measure on demand:
 
-### Test Results (Latest Run)
+```bash
+uv run --extra dev python -m pytest src/tests/test_advanced_visualization*.py \
+    --cov=src/advanced_visualization --cov-report=term-missing
+```
 
-- **Total Tests**: 17
-- **Passed**: 16 ✅
-- **Skipped**: 1 (MCP integration - optional)
-- **Failed**: 0 ✅
-- **Coverage**: All major functionality tested and verified
+### Test Categories
+
+- Unit: module imports, instantiation, basic API surface
+- Integration: data extraction, end-to-end visualization generation
+- Error handling: missing dependencies, malformed content, degraded paths
+- Performance: execution time / resource usage smoke tests
 
 ---
 
@@ -522,7 +520,7 @@ python src/9_advanced_viz.py --target-dir input/ --verbose
 
 ## Version History
 
-### Current Version: 1.0.0
+### Current Version: 1.6.0
 
 **Features**:
 
@@ -561,10 +559,10 @@ python src/9_advanced_viz.py --target-dir input/ --verbose
 
 ---
 
-**Last Updated**: 2026-01-21
+**Last Updated**: 2026-05-12
 **Maintainer**: GNN Pipeline Team
 **Status**: ✅ Production Ready
-**Version**: 1.0.0
+**Version**: 1.6.0
 **Architecture Compliance**: ✅ 100% Thin Orchestrator Pattern
 
 

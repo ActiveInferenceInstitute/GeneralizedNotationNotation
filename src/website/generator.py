@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
+from typing import Any
+
 """
 Website generator module for GNN pipeline.
 
@@ -29,45 +31,50 @@ logger = logging.getLogger(__name__)
 # ─────────────────────────────────────────────────────────────────────────────
 
 _CSS = """
-/* ── GNN Pipeline Design System ── */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+/* ── GNN Pipeline Premium Design System ── */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
 
 :root {
-  --bg-base:    #0d1117;
-  --bg-surface: #161b22;
-  --bg-card:    #1c2230;
-  --bg-hover:   #21273a;
-  --border:     #30363d;
-  --accent:     #7c5cbf;
-  --accent-2:   #2ea8c4;
-  --success:    #3fb950;
-  --warning:    #d29922;
-  --error:      #f85149;
-  --text-1:     #e6edf3;
-  --text-2:     #8b949e;
-  --text-3:     #484f58;
-  --radius:     8px;
-  --radius-lg:  14px;
-  --shadow:     0 4px 24px rgba(0,0,0,0.45);
-  --glow:       0 0 20px rgba(124,92,191,0.25);
+  --bg-gradient: radial-gradient(circle at top right, #1b1e32, #07090f 80%);
+  --bg-surface:  rgba(22, 27, 34, 0.45);
+  --bg-card:     rgba(28, 34, 48, 0.6);
+  --bg-hover:    rgba(33, 39, 58, 0.85);
+  --border:      rgba(255, 255, 255, 0.08);
+  --accent:      #a881fb;
+  --accent-2:    #00f0ff;
+  --success:     #3fb950;
+  --warning:     #e3b341;
+  --error:       #fc6c65;
+  --text-1:      #ffffff;
+  --text-2:      #aeb6c2;
+  --text-3:      #606a78;
+  --radius:      12px;
+  --radius-lg:   16px;
+  --shadow:      0 8px 32px rgba(0, 0, 0, 0.5);
+  --glow:        0 0 24px rgba(168, 129, 251, 0.4);
 }
+
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
 html { scroll-behavior: smooth; }
 
 body {
-  font-family: 'Inter', sans-serif;
-  background: var(--bg-base);
+  font-family: 'Outfit', 'Inter', sans-serif;
+  background: #07090f;
+  background-image: var(--bg-gradient);
+  background-attachment: fixed;
   color: var(--text-1);
   min-height: 100vh;
   display: flex;
 }
 
-/* ── Sidebar ── */
+/* ── Sidebar (Glass) ── */
 .sidebar {
-  width: 240px;
+  width: 260px;
   flex-shrink: 0;
   background: var(--bg-surface);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   border-right: 1px solid var(--border);
   display: flex;
   flex-direction: column;
@@ -76,287 +83,377 @@ body {
   top: 0;
   height: 100vh;
   overflow-y: auto;
+  box-shadow: 4px 0 24px rgba(0,0,0,0.2);
 }
 .sidebar-logo {
-  padding: 20px 16px 16px;
+  padding: 24px 20px 20px;
   border-bottom: 1px solid var(--border);
 }
 .sidebar-logo h2 {
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 700;
   background: linear-gradient(135deg, var(--accent), var(--accent-2));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  letter-spacing: -0.02em;
 }
-.sidebar-logo p { color: var(--text-2); font-size: 11px; margin-top: 2px; }
-.sidebar-nav { padding: 12px 8px; flex: 1; }
-.nav-section { margin-bottom: 8px; }
+.sidebar-logo p { color: var(--text-2); font-size: 12px; margin-top: 4px; font-weight: 300; }
+.sidebar-nav { padding: 16px 12px; flex: 1; }
+.nav-section { margin-bottom: 12px; }
 .nav-label {
   font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.08em;
+  font-weight: 700;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--text-3);
-  padding: 4px 8px;
-  margin-bottom: 2px;
+  padding: 4px 12px;
+  margin-bottom: 4px;
 }
 .nav-link {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 7px 10px;
+  gap: 12px;
+  padding: 10px 12px;
   border-radius: var(--radius);
   color: var(--text-2);
   text-decoration: none;
-  font-size: 13px;
-  transition: all 0.15s;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .nav-link:hover, .nav-link.active {
-  background: var(--bg-card);
+  background: rgba(255,255,255,0.05);
+  color: var(--text-1);
+  transform: translateX(4px);
+}
+.nav-link.active {
+  background: linear-gradient(90deg, rgba(168,129,251,0.15), transparent);
+  border-left: 3px solid var(--accent);
   color: var(--text-1);
 }
-.nav-link.active { color: var(--accent-2); }
-.nav-link .icon { font-size: 14px; width: 18px; text-align: center; }
+.nav-link .icon { font-size: 16px; width: 22px; text-align: center; }
 
 /* ── Main content ── */
 .main {
   flex: 1;
   min-width: 0;
-  padding: 32px;
-  overflow-x: hidden;
+  padding: 40px 48px;
+  overflow-x: auto;
+  animation: fadeIn 0.6s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 /* ── Page header ── */
 .page-header {
-  margin-bottom: 28px;
-  padding-bottom: 20px;
+  margin-bottom: 36px;
+  padding-bottom: 24px;
   border-bottom: 1px solid var(--border);
 }
 .page-header h1 {
-  font-size: 26px;
+  font-size: 32px;
   font-weight: 700;
   color: var(--text-1);
+  letter-spacing: -0.02em;
 }
 .page-header .subtitle {
   color: var(--text-2);
-  font-size: 14px;
-  margin-top: 6px;
+  font-size: 15px;
+  margin-top: 8px;
+  font-weight: 300;
 }
 
-/* ── Stat cards ── */
+/* ── Stat cards (Glass) ── */
 .stats-row {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-  gap: 14px;
-  margin-bottom: 28px;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 16px;
+  margin-bottom: 36px;
 }
 .stat-card {
   background: var(--bg-card);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
-  padding: 18px 20px;
-  transition: box-shadow 0.2s;
+  padding: 24px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: var(--shadow);
+  position: relative;
+  overflow: hidden;
 }
-.stat-card:hover { box-shadow: var(--glow); }
-.stat-card .label { font-size: 11px; color: var(--text-2); text-transform: uppercase; letter-spacing: 0.06em; }
-.stat-card .value { font-size: 28px; font-weight: 700; margin-top: 4px; }
-.stat-card .sub   { font-size: 11px; color: var(--text-2); margin-top: 2px; }
-.stat-card.success .value { color: var(--success); }
-.stat-card.accent  .value { color: var(--accent); }
-.stat-card.accent2 .value { color: var(--accent-2); }
-.stat-card.warning .value { color: var(--warning); }
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: transparent;
+  transition: background 0.3s ease;
+}
+.stat-card:hover { 
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: var(--glow); 
+  border-color: rgba(255,255,255,0.15);
+}
+.stat-card.success:hover::before { background: var(--success); }
+.stat-card.accent:hover::before { background: var(--accent); }
+.stat-card.accent2:hover::before { background: var(--accent-2); }
+
+.stat-card .label { font-size: 11px; color: var(--text-2); text-transform: uppercase; letter-spacing: 0.1em; font-weight: 600; }
+.stat-card .value { font-size: 36px; font-weight: 700; margin-top: 8px; letter-spacing: -0.03em; }
+.stat-card .sub   { font-size: 12px; color: var(--text-2); margin-top: 4px; font-weight: 300; }
+
+.stat-card.success .value { color: var(--success); text-shadow: 0 0 16px rgba(63,185,80,0.4); }
+.stat-card.accent  .value { color: var(--accent); text-shadow: 0 0 16px rgba(168,129,251,0.4); }
+.stat-card.accent2 .value { color: var(--accent-2); text-shadow: 0 0 16px rgba(0,240,255,0.4); }
 
 /* ── Step grid ── */
 .step-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: 12px;
-  margin-bottom: 32px;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 40px;
 }
 .step-card {
   background: var(--bg-card);
+  backdrop-filter: blur(12px);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
-  padding: 16px;
-  transition: all 0.15s;
+  padding: 20px;
+  transition: all 0.3s ease;
   cursor: default;
+  display: flex;
+  flex-direction: column;
 }
 .step-card:hover {
-  border-color: var(--accent);
-  box-shadow: var(--glow);
-  transform: translateY(-1px);
+  border-color: rgba(255,255,255,0.2);
+  box-shadow: 0 12px 32px rgba(0,0,0,0.6), var(--glow);
+  transform: translateY(-4px);
+  background: var(--bg-hover);
 }
 .step-card .step-num {
   font-size: 10px;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--text-3);
-  letter-spacing: 0.1em;
+  letter-spacing: 0.15em;
 }
 .step-card .step-name {
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 600;
-  margin: 4px 0 8px;
+  margin: 6px 0 10px;
   color: var(--text-1);
 }
 .step-card .step-desc {
-  font-size: 11px;
+  font-size: 12px;
   color: var(--text-2);
-  line-height: 1.5;
+  line-height: 1.6;
+  font-weight: 300;
+  flex-grow: 1;
 }
 .step-card .step-badge {
-  display: inline-block;
-  margin-top: 10px;
+  display: inline-flex;
+  align-items: center;
+  margin-top: 16px;
   font-size: 10px;
-  font-weight: 600;
-  padding: 2px 8px;
+  font-weight: 700;
+  padding: 4px 10px;
   border-radius: 20px;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  align-self: flex-start;
 }
-.badge-ok      { background: rgba(63,185,80,0.15);    color: var(--success); }
-.badge-skip    { background: rgba(210,153,34,0.15);   color: var(--warning); }
-.badge-error   { background: rgba(248,81,73,0.15);    color: var(--error); }
-.badge-pending { background: rgba(139,148,158,0.15);  color: var(--text-2); }
 
-/* ── Table ── */
-.table-wrap { overflow-x: auto; border-radius: var(--radius-lg); border: 1px solid var(--border); }
-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+/* Animations for badges */
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.5; }
+  100% { opacity: 1; }
+}
+.badge-ok      { background: rgba(63,185,80,0.15);    color: var(--success); border: 1px solid rgba(63,185,80,0.3); }
+.badge-skip    { background: rgba(227,179,65,0.15);   color: var(--warning); border: 1px solid rgba(227,179,65,0.3); }
+.badge-error   { background: rgba(252,108,101,0.15);  color: var(--error); border: 1px solid rgba(252,108,101,0.3); }
+.badge-pending { 
+  background: rgba(255,255,255,0.05); color: var(--text-2); border: 1px solid var(--border);
+  animation: pulse 2s infinite ease-in-out; 
+}
+
+/* ── Table (Glass) ── */
+.table-wrap { 
+  overflow-x: auto; 
+  border-radius: var(--radius-lg); 
+  border: 1px solid var(--border); 
+  background: var(--bg-card);
+  backdrop-filter: blur(12px);
+}
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
 th {
-  background: var(--bg-surface);
+  background: rgba(0,0,0,0.2);
   color: var(--text-2);
   font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.06em;
+  font-weight: 700;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  padding: 10px 14px;
+  padding: 14px 18px;
   text-align: left;
   border-bottom: 1px solid var(--border);
 }
 td {
-  padding: 10px 14px;
+  padding: 14px 18px;
   border-bottom: 1px solid var(--border);
   color: var(--text-1);
   vertical-align: top;
+  font-weight: 300;
 }
 tr:last-child td { border-bottom: none; }
-tr:hover td { background: var(--bg-hover); }
+tr:hover td { background: rgba(255,255,255,0.03); }
 
 /* ── Code ── */
 pre, code {
   font-family: 'JetBrains Mono', monospace;
-  font-size: 12px;
+  font-size: 13px;
 }
 pre {
-  background: var(--bg-surface);
+  background: rgba(0,0,0,0.4);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 16px;
+  padding: 20px;
   overflow-x: auto;
   line-height: 1.6;
   color: var(--text-2);
+  box-shadow: inset 0 2px 10px rgba(0,0,0,0.2);
 }
 code { color: var(--accent-2); }
 
 /* ── Section ── */
-.section      { margin-bottom: 32px; }
+.section      { margin-bottom: 40px; }
 .section-title {
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 600;
-  margin-bottom: 14px;
+  margin-bottom: 20px;
   color: var(--text-1);
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 12px;
 }
 .section-title::after {
   content: '';
   flex: 1;
   height: 1px;
-  background: var(--border);
+  background: linear-gradient(90deg, var(--border), transparent);
 }
 
 /* ── Cards ── */
 .card {
   background: var(--bg-card);
+  backdrop-filter: blur(12px);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
-  padding: 20px;
-  margin-bottom: 12px;
+  padding: 24px;
+  margin-bottom: 16px;
+  transition: transform 0.2s, box-shadow 0.2s;
 }
-.card h3 { font-size: 14px; font-weight: 600; margin-bottom: 8px; }
-.card p  { font-size: 13px; color: var(--text-2); line-height: 1.6; }
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow);
+  border-color: rgba(255,255,255,0.15);
+}
+.card h3 { font-size: 16px; font-weight: 600; margin-bottom: 10px; }
+.card p  { font-size: 14px; color: var(--text-2); line-height: 1.6; font-weight: 300; }
 
 /* ── Visualization gallery ── */
 .viz-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 24px;
 }
 .viz-card {
   background: var(--bg-card);
+  backdrop-filter: blur(12px);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   overflow: hidden;
-  transition: box-shadow 0.2s;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
 }
-.viz-card:hover { box-shadow: var(--glow); }
+.viz-card:hover { 
+  box-shadow: 0 16px 40px rgba(0,0,0,0.6), var(--glow); 
+  transform: translateY(-6px);
+  border-color: rgba(255,255,255,0.2);
+}
 .viz-card img  { width: 100%; display: block; border-bottom: 1px solid var(--border); }
-.viz-card .viz-info { padding: 12px 14px; }
-.viz-card .viz-title { font-size: 12px; font-weight: 600; }
-.viz-card .viz-desc  { font-size: 11px; color: var(--text-2); margin-top: 2px; }
+.viz-card .viz-info { padding: 16px 20px; background: rgba(0,0,0,0.2); flex-grow: 1; }
+.viz-card .viz-title { font-size: 14px; font-weight: 600; }
+.viz-card .viz-desc  { font-size: 12px; color: var(--text-2); margin-top: 4px; font-weight: 300; }
 
 /* ── MCP tool card ── */
 .tool-card {
-  background: var(--bg-card);
+  background: rgba(0,0,0,0.2);
   border: 1px solid var(--border);
+  border-left: 3px solid var(--accent-2);
   border-radius: var(--radius);
-  padding: 14px 16px;
-  margin-bottom: 8px;
+  padding: 16px 20px;
+  margin-bottom: 12px;
+  transition: background 0.2s;
 }
-.tool-card .tool-name { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--accent-2); }
-.tool-card .tool-mod  { font-size: 11px; color: var(--text-3); margin-top: 2px; }
-.tool-card .tool-desc { font-size: 12px; color: var(--text-2); margin-top: 6px; line-height: 1.5; }
+.tool-card:hover { background: rgba(255,255,255,0.05); }
+.tool-card .tool-name { font-family: 'JetBrains Mono', monospace; font-size: 14px; color: var(--accent-2); font-weight: 600; }
+.tool-card .tool-mod  { font-size: 11px; color: var(--text-3); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.1em; }
+.tool-card .tool-desc { font-size: 13px; color: var(--text-2); margin-top: 8px; line-height: 1.6; font-weight: 300; }
 
 /* ── Pill badge ── */
 .pill {
   display: inline-block;
   font-size: 10px;
-  font-weight: 600;
-  padding: 1px 7px;
+  font-weight: 700;
+  padding: 3px 10px;
   border-radius: 12px;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
-/* ── Collapsible ── */
-details { margin-bottom: 8px; }
+/* ── Collapsible (Glass) ── */
+details { margin-bottom: 12px; }
 summary {
   cursor: pointer;
   background: var(--bg-card);
+  backdrop-filter: blur(12px);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 10px 14px;
-  font-size: 13px;
-  font-weight: 500;
+  padding: 14px 18px;
+  font-size: 14px;
+  font-weight: 600;
   list-style: none;
   display: flex;
   justify-content: space-between;
+  align-items: center;
+  transition: background 0.2s, border-color 0.2s;
 }
+summary:hover { background: var(--bg-hover); border-color: rgba(255,255,255,0.15); }
 summary::-webkit-details-marker { display: none; }
-summary::after { content: '▸'; color: var(--text-3); }
-details[open] summary::after { content: '▾'; }
-details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
+summary::after { content: '▸'; color: var(--text-3); font-size: 16px; transition: transform 0.2s; }
+details[open] summary::after { transform: rotate(90deg); }
+details[open] summary { border-radius: var(--radius) var(--radius) 0 0; background: rgba(0,0,0,0.3); border-bottom: none; }
 .details-body {
   border: 1px solid var(--border);
   border-top: none;
   border-radius: 0 0 var(--radius) var(--radius);
-  padding: 12px 14px;
-  background: var(--bg-surface);
+  padding: 16px 18px;
+  background: rgba(0,0,0,0.2);
+  backdrop-filter: blur(12px);
 }
 
 /* ── Responsive ── */
 @media (max-width: 768px) {
-  .sidebar { display: none; }
-  .main { padding: 16px; }
+  .sidebar { position: fixed; transform: translateX(-100%); z-index: 100; transition: transform 0.3s; }
+  .sidebar.open { transform: translateX(0); }
+  .main { padding: 20px; }
+  .page-header h1 { font-size: 26px; }
+  .stat-card .value { font-size: 28px; }
 }
 """
 
@@ -364,14 +461,14 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
 def _page(title: str, active: str, body: str, *, nav_extra: str = "") -> str:
     """Wrap body in the shared page shell with sidebar and nav."""
     ts = datetime.now().strftime("%Y-%m-%d %H:%M")
-    nav_items = [
-        ("🏠", "Dashboard",      "index.html",          "index"),
-        ("⚡", "Pipeline",       "pipeline.html",        "pipeline"),
-        ("📂", "GNN Files",      "gnn_files.html",       "gnn_files"),
-        ("📊", "Analysis",       "analysis.html",        "analysis"),
-        ("🖼️", "Visualizations", "visualization.html",   "visualization"),
-        ("📋", "Reports",        "reports.html",         "reports"),
-        ("🔧", "MCP Tools",      "mcp.html",             "mcp"),
+    nav_items: list[Any] = [
+        ("🏠", "Dashboard", "index.html", "index"),
+        ("⚡", "Pipeline", "pipeline.html", "pipeline"),
+        ("📂", "GNN Files", "gnn_files.html", "gnn_files"),
+        ("📊", "Analysis", "analysis.html", "analysis"),
+        ("🖼️", "Visualizations", "visualization.html", "visualization"),
+        ("📋", "Reports", "reports.html", "reports"),
+        ("🔧", "MCP Tools", "mcp.html", "mcp"),
     ]
     nav_html = ""
     for icon, label, href, key in nav_items:
@@ -412,75 +509,92 @@ def _page(title: str, active: str, body: str, *, nav_extra: str = "") -> str:
 #  Pipeline step catalogue
 # ─────────────────────────────────────────────────────────────────────────────
 
-_PIPELINE_STEPS = [
-    (0,  "Setup",                "Environment setup, dependency checking"),
-    (1,  "GNN File Discovery",   "Discover and index all GNN source files"),
-    (2,  "File Listing",         "List and catalog GNN files for processing"),
-    (3,  "GNN Parsing",          "Parse GNN files into structured models"),
-    (4,  "MCP Parsing",          "Parse MCP-format specifications"),
-    (5,  "Type Checking",        "Validate types and dimensions in GNN models"),
-    (6,  "Validation",           "Schema and semantic validation of GNN content"),
-    (7,  "Export",               "Export GNN to Julia, Python, and other formats"),
-    (8,  "Visualization",        "Generate static visualizations and plots"),
-    (9,  "Advanced Visualization","Interactive HTML plots and dashboards"),
-    (10, "Ontology Processing",  "Map variables to Active Inference ontology"),
-    (11, "Rendering",            "Render GNN models to target code"),
-    (12, "Execution",            "Execute rendered GNN simulations"),
-    (13, "LLM Integration",      "LLM-assisted annotation and analysis"),
-    (14, "ML Integration",       "Machine learning model integration"),
-    (15, "Audio Generation",     "SAPF audio synthesis from GNN models"),
-    (16, "Analysis",             "Statistical and complexity analysis"),
-    (17, "Integration",          "Third-party system integration"),
-    (18, "Security",             "Security scanning and compliance checks"),
-    (19, "Research",             "Research query and literature processing"),
-    (20, "Website Generation",   "Static website from pipeline artifacts"),
-    (21, "MCP Processing",       "Model Context Protocol server setup"),
-    (22, "GUI",                  "Interactive GUI interfaces"),
-    (23, "Report Generation",    "Comprehensive PDF/HTML report creation"),
-    (24, "Intelligent Analysis", "LLM-powered pipeline executive summary"),
+_PIPELINE_STEPS: list[Any] = [
+    (0, "Template", "Pipeline template and initialization"),
+    (1, "Setup", "Environment setup and dependency install"),
+    (2, "Tests", "Test suite execution (pytest)"),
+    (
+        3,
+        "GNN Processing",
+        "GNN file discovery, parsing, and multi-format serialization",
+    ),
+    (4, "Model Registry", "Model versioning and registry management"),
+    (5, "Type Checking", "GNN type validation and resource estimation"),
+    (6, "Validation", "Consistency and semantic quality checking"),
+    (7, "Export", "Multi-format export (JSON, XML, GraphML, GEXF, Pickle)"),
+    (8, "Visualization", "Graph and matrix visualization generation"),
+    (9, "Advanced Viz", "Interactive and advanced visualization (Plotly, D3)"),
+    (10, "Ontology", "Active Inference ontology processing and validation"),
+    (11, "Rendering", "Code generation for simulation frameworks"),
+    (12, "Execution", "Execute rendered simulation scripts"),
+    (13, "LLM", "LLM-enhanced analysis and model interpretation"),
+    (14, "ML Integration", "Machine learning integration and model training"),
+    (15, "Audio", "Audio sonification generation (SAPF)"),
+    (16, "Analysis", "Statistical analysis and cross-simulation aggregation"),
+    (17, "Integration", "System integration and cross-module coordination"),
+    (18, "Security", "Security validation and generated code scanning"),
+    (19, "Research", "Research tools and literature references"),
+    (20, "Website", "Static HTML website generation from pipeline artifacts"),
+    (21, "MCP Processing", "Model Context Protocol processing and tool registration"),
+    (22, "GUI", "Interactive GNN constructor GUI"),
+    (23, "Report", "Comprehensive analysis report generation"),
+    (24, "Intelligent Analysis", "AI-powered pipeline analysis and executive reports"),
 ]
 
 
 class WebsiteGenerator:
     """Generates a premium multi-page static HTML website from pipeline artifacts."""
 
-    def __init__(self):
+    def __init__(self) -> None:
+        """Initialize the instance."""
         self.template_dir = Path(__file__).parent / "templates"
-        self.static_dir   = Path(__file__).parent / "static"
+        self.static_dir = Path(__file__).parent / "static"
 
     # ── Public API ──────────────────────────────────────────────────────────
 
     def generate_website(self, website_data: dict) -> dict:
         """Generate the complete static website."""
-        result = {"success": True, "pages_created": 0, "errors": [], "warnings": []}
+        result: dict[str, Any] = {
+            "success": True,
+            "pages_created": 0,
+            "errors": [],
+            "warnings": [],
+        }
         try:
-            output_dir = Path(website_data.get("output_dir", "output/20_website_output"))
-            input_dir  = Path(website_data.get("input_dir", "output"))
-            p_root     = Path(website_data.get("pipeline_output_root", str(input_dir)))
+            output_dir = Path(
+                website_data.get("output_dir", "output/20_website_output")
+            )
+            input_dir = Path(website_data.get("input_dir", "output"))
+            p_root = Path(website_data.get("pipeline_output_root", str(input_dir)))
 
             output_dir.mkdir(parents=True, exist_ok=True)
             assets_dir = output_dir / "assets"
             assets_dir.mkdir(exist_ok=True)
 
             # Aggregate data from pipeline outputs
-            data = self._collect_all_data(p_root, input_dir, output_dir, assets_dir, website_data)
+            data = self._collect_all_data(
+                p_root, input_dir, output_dir, assets_dir, website_data
+            )
 
-            pages = {
-                "index.html":         self._page_index(data),
-                "pipeline.html":      self._page_pipeline(data),
-                "gnn_files.html":     self._page_gnn_files(data),
-                "analysis.html":      self._page_analysis(data),
+            pages: dict[str, Any] = {
+                "index.html": self._page_index(data),
+                "pipeline.html": self._page_pipeline(data),
+                "gnn_files.html": self._page_gnn_files(data),
+                "analysis.html": self._page_analysis(data),
                 "visualization.html": self._page_visualization(data),
-                "reports.html":       self._page_reports(data),
-                "mcp.html":           self._page_mcp(data),
+                "reports.html": self._page_reports(data),
+                "mcp.html": self._page_mcp(data),
             }
 
             for filename, html in pages.items():
                 try:
                     import os as _os
                     import tempfile as _tempfile
+
                     _dest = output_dir / filename
-                    with _tempfile.NamedTemporaryFile(mode='w', encoding='utf-8', dir=output_dir, delete=False) as _tmp:
+                    with _tempfile.NamedTemporaryFile(
+                        mode="w", encoding="utf-8", dir=output_dir, delete=False
+                    ) as _tmp:
                         _tmp.write(html)
                     _os.replace(_tmp.name, str(_dest))
                     result["pages_created"] += 1
@@ -489,7 +603,9 @@ class WebsiteGenerator:
 
             # Copy static assets if available
             if self.static_dir.exists():
-                shutil.copytree(self.static_dir, output_dir / "static", dirs_exist_ok=True)
+                shutil.copytree(
+                    self.static_dir, output_dir / "static", dirs_exist_ok=True
+                )
 
         except Exception as e:
             result["success"] = False
@@ -503,26 +619,37 @@ class WebsiteGenerator:
 
     # ── Data collection ─────────────────────────────────────────────────────
 
-    def _collect_all_data(self, p_root: Path, input_dir: Path,
-                          output_dir: Path, assets_dir: Path,
-                          user_data: dict) -> dict:
+    def _collect_all_data(
+        self,
+        p_root: Path,
+        input_dir: Path,
+        output_dir: Path,
+        assets_dir: Path,
+        user_data: dict,
+    ) -> dict:
+        """Collect all data."""
         data: dict = {
-            "p_root":        p_root,
-            "output_dir":    output_dir,
-            "gnn_files":     [],
-            "analysis":      [],
-            "complexity":    [],
-            "visualizations":[],
-            "reports":       [],
-            "mcp_tools":     [],
+            "p_root": p_root,
+            "output_dir": output_dir,
+            "gnn_files": [],
+            "analysis": [],
+            "complexity": [],
+            "visualizations": [],
+            "reports": [],
+            "mcp_tools": [],
             "step_statuses": {},
-            "exec_summary":  {},
+            "exec_summary": {},
             "processed_files": 0,
         }
 
         # Merge any caller-supplied data
-        data.update({k: v for k, v in user_data.items()
-                     if k not in ("output_dir", "input_dir", "pipeline_output_root")})
+        data.update(
+            {
+                k: v
+                for k, v in user_data.items()
+                if k not in ("output_dir", "input_dir", "pipeline_output_root")
+            }
+        )
 
         # GNN source files
         for search_dir in [p_root.parent / "input" / "gnn_files", input_dir]:
@@ -536,7 +663,7 @@ class WebsiteGenerator:
         self._collect_step_statuses(p_root, data)
 
         # Analysis JSON files
-        seen = set()
+        seen: set[Any] = set()
         for candidate in [
             p_root / "16_analysis_output" / "analysis_results",
             p_root / "16_analysis_output",
@@ -549,7 +676,9 @@ class WebsiteGenerator:
                             d = json.loads(jf.read_text())
                             data["analysis"].append(d)
                         except Exception as e:
-                            logger.debug(f"Skipped malformed analysis file {jf.name}: {e}")
+                            logger.debug(
+                                f"Skipped malformed analysis file {jf.name}: {e}"
+                            )
 
         # Execution summary
         for ec in [
@@ -564,9 +693,9 @@ class WebsiteGenerator:
                 break
 
         # Visualizations — copy assets
-        viz_dirs = [
+        viz_dirs: list[Any] = [
             p_root / "08_visualization_output" / "visualization_results",
-            p_root / "8_visualization_output"  / "visualization_results",
+            p_root / "8_visualization_output" / "visualization_results",
             p_root / "09_advanced_viz_output",
             p_root / "9_advanced_viz_output",
         ]
@@ -579,16 +708,23 @@ class WebsiteGenerator:
                     shutil.copy2(img, dest)
                 except Exception:
                     dest = img
-                data["visualizations"].append({"title": img.stem, "path": dest.name,
-                                               "type": "image", "abs": dest})
+                data["visualizations"].append(
+                    {"title": img.stem, "path": dest.name, "type": "image", "abs": dest}
+                )
             for html_f in vd.rglob("*.html"):
                 dest = assets_dir / html_f.name
                 try:
                     shutil.copy2(html_f, dest)
                 except Exception:
                     dest = html_f
-                data["visualizations"].append({"title": html_f.stem, "path": dest.name,
-                                               "type": "html", "abs": dest})
+                data["visualizations"].append(
+                    {
+                        "title": html_f.stem,
+                        "path": dest.name,
+                        "type": "html",
+                        "abs": dest,
+                    }
+                )
 
         # Reports — collect all JSON/txt artifacts from numbered output dirs
         for d in sorted(p_root.iterdir()) if p_root.exists() else []:
@@ -597,28 +733,34 @@ class WebsiteGenerator:
             for jf in list(d.rglob("*.json"))[:5]:  # cap per dir
                 try:
                     content = jf.read_text(encoding="utf-8", errors="replace")
-                    data["reports"].append({
-                        "name":    jf.name,
-                        "dir":     d.name,
-                        "content": content[:2000],
-                        "size":    jf.stat().st_size,
-                    })
+                    data["reports"].append(
+                        {
+                            "name": jf.name,
+                            "dir": d.name,
+                            "content": content[:2000],
+                            "size": jf.stat().st_size,
+                        }
+                    )
                 except Exception as e:
                     logger.debug(f"Skipped unreadable report file {jf.name}: {e}")
 
         # MCP tools — try to load live
         try:
             import sys
+
             sys.path.insert(0, str(Path(__file__).parent.parent))
             from mcp.mcp import mcp_instance
+
             if mcp_instance.tools:
                 for name, tool in mcp_instance.tools.items():
-                    data["mcp_tools"].append({
-                        "name":     name,
-                        "module":   getattr(tool, "module", ""),
-                        "category": getattr(tool, "category", ""),
-                        "desc":     getattr(tool, "description", ""),
-                    })
+                    data["mcp_tools"].append(
+                        {
+                            "name": name,
+                            "module": getattr(tool, "module", ""),
+                            "category": getattr(tool, "category", ""),
+                            "desc": getattr(tool, "description", ""),
+                        }
+                    )
         except Exception as e:
             logger.debug(f"MCP tools not loaded for website (optional): {e}")
 
@@ -641,10 +783,11 @@ class WebsiteGenerator:
     # ── Page generators ─────────────────────────────────────────────────────
 
     def _page_index(self, data: dict) -> str:
-        n_ok      = sum(1 for s in data["step_statuses"].values() if s == "ok")
-        n_steps   = len(_PIPELINE_STEPS)
-        n_files   = data["processed_files"]
-        n_tools   = len(data["mcp_tools"])
+        """Handle page index for internal callers."""
+        n_ok = sum(1 for s in data["step_statuses"].values() if s == "ok")
+        n_steps = len(_PIPELINE_STEPS)
+        n_files = data["processed_files"]
+        n_tools = len(data["mcp_tools"])
 
         stats = f"""
 <div class="stats-row">
@@ -674,10 +817,16 @@ class WebsiteGenerator:
         cards = ""
         for step_num, step_name, step_desc in _PIPELINE_STEPS:
             status = data["step_statuses"].get(step_num, "pending")
-            badge_cls = {"ok": "badge-ok", "error": "badge-error",
-                         "skip": "badge-skip"}.get(status, "badge-pending")
-            badge_label = {"ok": "✓ Complete", "error": "✗ Error",
-                           "skip": "⊘ Skipped"}.get(status, "○ Pending")
+            badge_cls = {
+                "ok": "badge-ok",
+                "error": "badge-error",
+                "skip": "badge-skip",
+            }.get(status, "badge-pending")
+            badge_label = {
+                "ok": "✓ Complete",
+                "error": "✗ Error",
+                "skip": "⊘ Skipped",
+            }.get(status, "○ Pending")
             cards += f"""
 <div class="step-card">
   <div class="step-num">STEP {step_num:02d}</div>
@@ -689,7 +838,7 @@ class WebsiteGenerator:
         body = f"""
 <div class="page-header">
   <h1>GNN Pipeline Dashboard</h1>
-  <p class="subtitle">Results overview — generated {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}</p>
+  <p class="subtitle">Results overview — generated {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}</p>
 </div>
 {stats}
 <div class="section">
@@ -699,20 +848,25 @@ class WebsiteGenerator:
         return _page("Dashboard", "index", body)
 
     def _page_pipeline(self, data: dict) -> str:
+        """Handle page pipeline for internal callers."""
         rows = ""
         for step_num, step_name, step_desc in _PIPELINE_STEPS:
-            status   = data["step_statuses"].get(step_num, "pending")
-            badge_cls = {"ok": "badge-ok", "error": "badge-error",
-                          "skip": "badge-skip"}.get(status, "badge-pending")
-            badge_label = {"ok": "Complete", "error": "Error",
-                           "skip": "Skipped"}.get(status, "Pending")
+            status = data["step_statuses"].get(step_num, "pending")
+            badge_cls = {
+                "ok": "badge-ok",
+                "error": "badge-error",
+                "skip": "badge-skip",
+            }.get(status, "badge-pending")
+            badge_label = {"ok": "Complete", "error": "Error", "skip": "Skipped"}.get(
+                status, "Pending"
+            )
             f"{step_num}_{step_name.lower().replace(' ', '_')}.py"
             rows += f"""<tr>
   <td><code>{step_num:02d}</code></td>
   <td>{step_name}</td>
   <td>{step_desc}</td>
   <td><span class="step-badge {badge_cls}">{badge_label}</span></td>
-  <td><code style="font-size:11px;color:var(--text-3)">{step_num}_{step_name.lower().replace(' ','_')}.py</code></td>
+  <td><code style="font-size:11px;color:var(--text-3)">{step_num}_{step_name.lower().replace(" ", "_")}.py</code></td>
 </tr>"""
         body = f"""
 <div class="page-header">
@@ -728,6 +882,7 @@ class WebsiteGenerator:
         return _page("Pipeline", "pipeline", body)
 
     def _page_gnn_files(self, data: dict) -> str:
+        """Handle page gnn files for internal callers."""
         if not data["gnn_files"]:
             content = '<div class="card"><p>No GNN source files found.</p></div>'
         else:
@@ -735,7 +890,11 @@ class WebsiteGenerator:
             for gf in data["gnn_files"]:
                 try:
                     src = gf.read_text(encoding="utf-8", errors="replace")[:3000]
-                    escaped = src.replace("&","&amp;").replace("<","&lt;").replace(">","&gt;")
+                    escaped = (
+                        src.replace("&", "&amp;")
+                        .replace("<", "&lt;")
+                        .replace(">", "&gt;")
+                    )
                 except Exception:
                     escaped = "(could not read)"
                 content += f"""
@@ -752,6 +911,7 @@ class WebsiteGenerator:
         return _page("GNN Files", "gnn_files", body)
 
     def _page_analysis(self, data: dict) -> str:
+        """Handle page analysis for internal callers."""
         if not data["analysis"]:
             inner = '<div class="card"><p>No analysis results found. Run step 16 (Analysis) to generate results.</p></div>'
         else:
@@ -779,6 +939,7 @@ class WebsiteGenerator:
         return _page("Analysis", "analysis", body)
 
     def _page_visualization(self, data: dict) -> str:
+        """Handle page visualization for internal callers."""
         if not data["visualizations"]:
             inner = '<div class="card"><p>No visualizations found. Run steps 8–9 to generate visualizations.</p></div>'
         else:
@@ -787,20 +948,20 @@ class WebsiteGenerator:
                 if v["type"] == "image":
                     cards += f"""
 <div class="viz-card">
-  <img src="assets/{v['path']}" alt="{v['title']}" loading="lazy">
+  <img src="assets/{v["path"]}" alt="{v["title"]}" loading="lazy">
   <div class="viz-info">
-    <div class="viz-title">{v['title']}</div>
-    <div class="viz-desc">{v.get('type','image').title()} artifact</div>
+    <div class="viz-title">{v["title"]}</div>
+    <div class="viz-desc">{v.get("type", "image").title()} artifact</div>
   </div>
 </div>"""
                 else:
                     cards += f"""
 <div class="viz-card">
   <div style="padding:16px;background:var(--bg-surface);text-align:center">
-    <a href="assets/{v['path']}" target="_blank" style="color:var(--accent-2);font-size:13px">🔗 Open interactive: {v['title']}</a>
+    <a href="assets/{v["path"]}" target="_blank" style="color:var(--accent-2);font-size:13px">🔗 Open interactive: {v["title"]}</a>
   </div>
   <div class="viz-info">
-    <div class="viz-title">{v['title']}</div>
+    <div class="viz-title">{v["title"]}</div>
     <div class="viz-desc">Interactive HTML visualization</div>
   </div>
 </div>"""
@@ -814,6 +975,7 @@ class WebsiteGenerator:
         return _page("Visualizations", "visualization", body)
 
     def _page_reports(self, data: dict) -> str:
+        """Handle page reports for internal callers."""
         if not data["reports"]:
             inner = '<div class="card"><p>No report artifacts found in pipeline output directories.</p></div>'
         else:
@@ -824,10 +986,14 @@ class WebsiteGenerator:
                     pretty = json.dumps(parsed, indent=2)[:1500]
                 except Exception:
                     pretty = rep["content"][:1500]
-                escaped = pretty.replace("&","&amp;").replace("<","&lt;").replace(">","&gt;")
+                escaped = (
+                    pretty.replace("&", "&amp;")
+                    .replace("<", "&lt;")
+                    .replace(">", "&gt;")
+                )
                 inner += f"""
 <details>
-  <summary>{rep['name']} <span style="color:var(--text-3);font-size:11px;margin-left:8px">{rep['dir']} · {rep['size']} bytes</span></summary>
+  <summary>{rep["name"]} <span style="color:var(--text-3);font-size:11px;margin-left:8px">{rep["dir"]} · {rep["size"]} bytes</span></summary>
   <div class="details-body"><pre>{escaped}</pre></div>
 </details>"""
         body = f"""
@@ -839,13 +1005,14 @@ class WebsiteGenerator:
         return _page("Reports", "reports", body)
 
     def _page_mcp(self, data: dict) -> str:
+        """Handle page mcp for internal callers."""
         tools = data["mcp_tools"]
         if not tools:
             by_mod_html = '<div class="card"><p>No MCP tools registered. Run step 21 (MCP Processing) to register tools.</p></div>'
         else:
             # Group by module
             by_mod: Dict[str, List[dict]] = {}
-            for t in sorted(tools, key=lambda x: (x.get("module",""), x["name"])):
+            for t in sorted(tools, key=lambda x: (x.get("module", ""), x["name"])):
                 mod = t.get("module") or "core"
                 by_mod.setdefault(mod, []).append(t)
 
@@ -854,10 +1021,10 @@ class WebsiteGenerator:
                 cards_html = ""
                 for t in mod_tools:
                     desc = t.get("desc") or ""
-                    cat  = t.get("category") or ""
+                    cat = t.get("category") or ""
                     cards_html += f"""
 <div class="tool-card">
-  <div class="tool-name">{t['name']}</div>
+  <div class="tool-name">{t["name"]}</div>
   <div class="tool-mod">{mod}{f" · {cat}" if cat else ""}</div>
   {f'<div class="tool-desc">{desc}</div>' if desc else ""}
 </div>"""
@@ -880,27 +1047,44 @@ class WebsiteGenerator:
 #  Module-level convenience function
 # ─────────────────────────────────────────────────────────────────────────────
 
-def generate_website(logger: logging.Logger, input_dir: Path, output_dir: Path, *,
-                     pipeline_output_root: Optional[Path] = None) -> Dict[str, Any]:
+
+def generate_website(
+    logger: logging.Logger,
+    input_dir: Path,
+    output_dir: Path,
+    *,
+    pipeline_output_root: Optional[Path] = None,
+) -> Dict[str, Any]:
     """Generate a premium website from GNN pipeline artifacts."""
     try:
         generator = WebsiteGenerator()
         p_root = pipeline_output_root if pipeline_output_root else output_dir.parent
-        website_data = {
-            "input_dir":            str(input_dir),
-            "output_dir":           str(output_dir),
+        website_data: dict[str, Any] = {
+            "input_dir": str(input_dir),
+            "output_dir": str(output_dir),
             "pipeline_output_root": str(p_root),
         }
         if not input_dir.exists():
-            return {"success": False, "pages_created": 0,
-                    "errors": [f"Input directory not found: {input_dir}"], "warnings": []}
+            return {
+                "success": False,
+                "pages_created": 0,
+                "errors": [f"Input directory not found: {input_dir}"],
+                "warnings": [],
+            }
         result = generator.generate_website(website_data)
         if result["success"]:
-            logger.info(f"Website generated: {result['pages_created']} pages → {output_dir}")
+            logger.info(
+                f"Website generated: {result['pages_created']} pages → {output_dir}"
+            )
         else:
             for e in result["errors"]:
                 logger.error(f"Website error: {e}")
         return result
     except Exception as e:
         logger.error(f"Website generation failed: {e}")
-        return {"success": False, "pages_created": 0, "errors": [str(e)], "warnings": []}
+        return {
+            "success": False,
+            "pages_created": 0,
+            "errors": [str(e)],
+            "warnings": [],
+        }

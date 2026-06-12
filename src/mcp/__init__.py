@@ -4,6 +4,8 @@ See ``src/mcp/AGENTS.md`` for the public API, step-21 wiring, and tool registrat
 """
 
 # Import exception classes from exceptions module
+from typing import Any
+
 from .exceptions import (
     MCPError,
     MCPInvalidParamsError,
@@ -44,80 +46,91 @@ from .processor import (
     process_mcp,
     register_module_tools,
 )
-from .server import MCPServer
-from .server_core import create_mcp_server, start_mcp_server
+from .server import MCPServer as _JSONRPCServer
+from .server_core import create_mcp_server, register_tools, start_mcp_server
 
-# Backward-compatible alias expected by legacy tests/import sites.
-MCPServer = MCP
+MCPRegistry = MCP
+MCPServer = _JSONRPCServer
+JSONRPCServer = _JSONRPCServer
 
 # Module metadata
-__version__ = "1.1.3"
+__version__ = "1.6.0"
 __author__ = "Active Inference Institute"
 __description__ = "Enhanced Model Context Protocol implementation for GNN"
 
 # Feature availability flags
-FEATURES = {
-    'tool_registration': True,
-    'resource_access': True,
-    'module_discovery': True,
-    'json_rpc': True,
-    'server_implementation': True,
-    'error_handling': True,
-    'mcp_integration': True,
-    'enhanced_features': True,
-    'caching': True,
-    'rate_limiting': True,
-    'concurrent_control': True,
-    'performance_monitoring': True,
-    'thread_safety': True,
-    'enhanced_validation': True,
-    'health_monitoring': True
+FEATURES: dict[str, Any] = {
+    "tool_registration": True,
+    "resource_access": True,
+    "module_discovery": True,
+    "json_rpc": True,
+    "server_implementation": True,
+    "error_handling": True,
+    "mcp_integration": True,
+    "enhanced_features": True,
+    "caching": True,
+    "rate_limiting": True,
+    "concurrent_control": True,
+    "performance_monitoring": True,
+    "thread_safety": True,
+    "enhanced_validation": True,
+    "health_monitoring": True,
 }
 
 # Main API functions
 # Note: process_mcp is imported from processor.py above, not redefined here
 
 
-__all__ = [
+__all__: list[Any] = [
     # Core MCP classes and functions
-    'mcp_instance',
-    'initialize',
-    'MCP',
-    'MCPServer',
-    'MCPTool',
-    'MCPResource',
-    'MCPError',
-    'get_mcp_instance',
-
+    "mcp_instance",
+    "initialize",
+    "MCP",
+    "MCPRegistry",
+    "MCPServer",
+    "JSONRPCServer",
+    "MCPTool",
+    "MCPResource",
+    "MCPError",
+    "get_mcp_instance",
+    "create_mcp_server",
+    "start_mcp_server",
+    "register_tools",
     # Processor functions
-    'register_module_tools',
-    'handle_mcp_request',
-    'generate_mcp_report',
-    'process_mcp',
-    'get_available_tools',
-
+    "register_module_tools",
+    "handle_mcp_request",
+    "generate_mcp_report",
+    "process_mcp",
+    "get_available_tools",
     # Enhanced error classes
-    'MCPToolNotFoundError',
-    'MCPResourceNotFoundError',
-    'MCPInvalidParamsError',
-    'MCPToolExecutionError',
-    'MCPSDKNotFoundError',
-    'MCPValidationError',
-    'MCPModuleLoadError',
-    'MCPPerformanceError',
-
+    "MCPToolNotFoundError",
+    "MCPResourceNotFoundError",
+    "MCPInvalidParamsError",
+    "MCPToolExecutionError",
+    "MCPSDKNotFoundError",
+    "MCPValidationError",
+    "MCPModuleLoadError",
+    "MCPPerformanceError",
     # Enhanced data structures
-    'MCPModuleInfo',
-    'MCPPerformanceMetrics',
-    'MCPSDKStatus',
-
+    "MCPModuleInfo",
+    "MCPPerformanceMetrics",
+    "MCPSDKStatus",
     # Enhanced utility functions
-    'list_available_tools',
-    'list_available_resources',
-    'get_tool_info',
-    'get_resource_info',
-
+    "list_available_tools",
+    "list_available_resources",
+    "get_tool_info",
+    "get_resource_info",
     # Metadata
-    'FEATURES',
-    '__version__'
+    "FEATURES",
+    "__version__",
 ]
+
+
+def get_module_info() -> dict:
+    """Return module metadata for composability and MCP discovery."""
+    return {
+        "name": "mcp",
+        "version": __version__,
+        "description": "Model Context Protocol tool registration and discovery",
+        "features": FEATURES,
+    }

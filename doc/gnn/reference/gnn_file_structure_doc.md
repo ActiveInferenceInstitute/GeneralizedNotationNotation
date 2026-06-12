@@ -1,7 +1,7 @@
 # GNN File Structure
 
-**Version**: v2.0.0  
-**Last Updated**: 2026-03-24  
+**Version**: v1.6.0 Engine (Bundle v2.0.0)  
+**Last Updated**: 2026-04-15  
 **Status**: ✅ Production Ready  
 **Modules**: 38+ · **Pipeline steps**: 25 · **Renderers**: 9 backends (see [../implementations/README.md](../implementations/README.md)) · **Tests**: see [../../../README.md](../../../README.md)  
 
@@ -29,6 +29,10 @@ python src/main.py --only-steps "3,5,6" --target-dir input/gnn_files --verbose
 For complete pipeline documentation, see **[src/AGENTS.md](../../../src/AGENTS.md)**.
 
 ---
+
+## Time section
+
+The **`Time`** block and temporal indexing are documented under [### 8. Time](#8-time) and the [Time](#time) examples in this guide.
 
 ## Overview
 

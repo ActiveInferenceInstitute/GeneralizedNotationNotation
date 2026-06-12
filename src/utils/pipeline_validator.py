@@ -15,9 +15,14 @@ import logging
 from pathlib import Path
 from typing import Any, Dict, List
 
+from utils.pipeline_step_dependencies import dependency_scripts_for_script
+
 logger = logging.getLogger(__name__)
 
-def validate_step_prerequisites(script_name: str, args, logger, skip_steps: list = None) -> Dict[str, Any]:
+
+def validate_step_prerequisites(
+    script_name: str, args: Any, logger: Any, skip_steps: (list) | None = None
+) -> Dict[str, Any]:
     """Validate prerequisites for a pipeline step before execution.
 
     Args:
@@ -28,15 +33,11 @@ def validate_step_prerequisites(script_name: str, args, logger, skip_steps: list
                     are intentionally skipped.  Prerequisites fulfilled by
                     skipped steps are silently ignored rather than warned about.
     """
-    result = {
-        "passed": True,
-        "warnings": [],
-        "errors": []
-    }
+    result: dict[str, Any] = {"passed": True, "warnings": [], "errors": []}
 
     # Normalise skip_steps to a set of script names (e.g. {"13_llm.py"})
     _skipped: set = set()
-    for s in (skip_steps or []):
+    for s in skip_steps or []:
         if isinstance(s, int):
             # Map step number -> script name pattern used in step_dependencies
             _skipped.add(f"{s}_")  # prefix match
@@ -47,29 +48,16 @@ def validate_step_prerequisites(script_name: str, args, logger, skip_steps: list
         """Return True if *step_script* was intentionally skipped."""
         if step_script in _skipped:
             return True
-        return any(step_script.startswith(prefix) for prefix in _skipped if prefix.endswith("_"))
+        return any(
+            step_script.startswith(prefix)
+            for prefix in _skipped
+            if prefix.endswith("_")
+        )
 
     # Import get_output_dir_for_script to use consistent output directory mapping
     from pipeline.config import get_output_dir_for_script
 
-    # Define step dependencies (step name -> [required prerequisite steps])
-    step_dependencies = {
-        "11_render.py": ["3_gnn.py"],  # Render needs parsed GNN files
-        "12_execute.py": ["3_gnn.py", "11_render.py"],  # Execute needs parsed models and rendered code
-        "8_visualization.py": ["3_gnn.py"],  # Visualization needs parsed files
-        "9_advanced_viz.py": ["3_gnn.py", "8_visualization.py"],  # Advanced viz builds on parsed data and base viz
-        "13_llm.py": ["3_gnn.py"],  # LLM analysis needs parsed files
-        "23_report.py": ["8_visualization.py", "13_llm.py"],  # Report needs viz and analysis
-        "20_website.py": ["8_visualization.py"],  # Website needs visualizations
-        "5_type_checker.py": ["3_gnn.py"],  # Type checking needs parsed files
-        "6_validation.py": ["3_gnn.py", "5_type_checker.py"],  # Validation needs parsed files and type checks
-        "7_export.py": ["3_gnn.py"],  # Export needs parsed files
-        "10_ontology.py": ["3_gnn.py"],  # Ontology processing needs parsed files
-        "15_audio.py": ["3_gnn.py"],  # Audio generation needs parsed files
-        "16_analysis.py": ["3_gnn.py", "7_export.py"],  # Analysis needs parsed inputs and exports
-    }
-
-    required_steps = step_dependencies.get(script_name, [])
+    required_steps = dependency_scripts_for_script(script_name)
     # Filter out intentionally skipped prerequisites
     required_steps = [s for s in required_steps if not _is_skipped(s)]
 
@@ -107,7 +95,9 @@ def validate_step_prerequisites(script_name: str, args, logger, skip_steps: list
                     # Look for parsed files at any depth
                     parsed_files = list(gnn_output_dir.rglob("*_parsed.json"))
                     if not parsed_files:
-                        result["warnings"].append("No parsed GNN files found in 3_gnn_output")
+                        result["warnings"].append(
+                            "No parsed GNN files found in 3_gnn_output"
+                        )
                     # Note: Parsed files in model-specific subdirectories (e.g., 3_gnn_output/model_name/model_name_parsed.json)
                     # is the correct and intended structure - no warning needed
 
@@ -115,31 +105,38 @@ def validate_step_prerequisites(script_name: str, args, logger, skip_steps: list
                 # Check for rendered simulation code
                 render_output_dir = args.output_dir / "11_render_output"
                 if render_output_dir.exists():
-                    rendered_files = list(render_output_dir.rglob("*.py")) + list(render_output_dir.rglob("*.jl"))
+                    rendered_files = list(render_output_dir.rglob("*.py")) + list(
+                        render_output_dir.rglob("*.jl")
+                    )
                     if not rendered_files:
-                        result["warnings"].append("No rendered simulation files found in 11_render_output")
+                        result["warnings"].append(
+                            "No rendered simulation files found in 11_render_output"
+                        )
 
     return result
 
-def validate_pipeline_step_sequence(steps_to_execute: List[tuple], logger) -> Dict[str, Any]:
+
+def validate_pipeline_step_sequence(
+    steps_to_execute: List[tuple], logger: Any
+) -> Dict[str, Any]:
     """Validate the sequence of pipeline steps for dependency issues."""
-    validation_result = {
+    validation_result: dict[str, Any] = {
         "valid": True,
         "warnings": [],
-        "recommendations": []
+        "recommendations": [],
     }
 
     # Extract script names from steps_to_execute
     script_names = [step[0] for step in steps_to_execute]
 
     # Define critical dependency chains
-    dependency_chains = [
+    dependency_chains: list[Any] = [
         ["3_gnn.py", "5_type_checker.py", "6_validation.py"],
         ["3_gnn.py", "7_export.py"],
         ["3_gnn.py", "8_visualization.py", "9_advanced_viz.py"],
         ["3_gnn.py", "11_render.py", "12_execute.py"],
         ["8_visualization.py", "20_website.py"],
-        ["8_visualization.py", "23_report.py"]
+        ["8_visualization.py", "23_report.py"],
     ]
 
     for chain in dependency_chains:
@@ -148,11 +145,15 @@ def validate_pipeline_step_sequence(steps_to_execute: List[tuple], logger) -> Di
 
         if len(chain_steps_in_execution) > 1:
             # Verify order is correct
-            chain_indices = [script_names.index(step) for step in chain_steps_in_execution]
+            chain_indices = [
+                script_names.index(step) for step in chain_steps_in_execution
+            ]
             expected_indices = [chain.index(step) for step in chain_steps_in_execution]
 
             # Sort both to compare order
-            if chain_indices != sorted(chain_indices, key=lambda x: expected_indices[chain_indices.index(x)]):
+            if chain_indices != sorted(
+                chain_indices, key=lambda x: expected_indices[chain_indices.index(x)]
+            ):
                 validation_result["warnings"].append(
                     f"Dependency chain order issue detected: {' → '.join(chain_steps_in_execution)}"
                 )
@@ -161,14 +162,19 @@ def validate_pipeline_step_sequence(steps_to_execute: List[tuple], logger) -> Di
                 )
 
     # Check for missing critical dependencies
-    critical_steps = ["3_gnn.py"]  # Core parsing step
+    critical_steps: list[Any] = ["3_gnn.py"]  # Core parsing step
     script_names = [step[0] for step in steps_to_execute]
 
     for critical_step in critical_steps:
         if critical_step not in script_names:
-            dependent_steps = []
+            dependent_steps: list[Any] = []
             for step in script_names:
-                if step in ["5_type_checker.py", "8_visualization.py", "11_render.py", "12_execute.py"]:
+                if step in [
+                    "5_type_checker.py",
+                    "8_visualization.py",
+                    "11_render.py",
+                    "12_execute.py",
+                ]:
                     dependent_steps.append(step)
 
             if dependent_steps:
@@ -181,30 +187,33 @@ def validate_pipeline_step_sequence(steps_to_execute: List[tuple], logger) -> Di
 
     return validation_result
 
+
 def validate_step_outputs(script_name: str, output_dir: Path) -> Dict[str, Any]:
     """Validate that a step produced expected outputs."""
-    validation = {
+    validation: dict[str, Any] = {
         "step_name": script_name,
         "outputs_created": [],
         "missing_outputs": [],
-        "validation_passed": True
+        "validation_passed": True,
     }
 
     # Define expected outputs for each step
-    expected_outputs = {
+    expected_outputs: dict[str, Any] = {
         "3_gnn.py": ["*_parsed.json", "*.gnn"],
         "8_visualization.py": ["*.png", "*_analysis.json"],
         "11_render.py": ["*.py", "*.jl"],
         "12_execute.py": ["*_results.json", "*_report.md"],
-        "7_export.py": ["*.json", "*.xml", "*.graphml"]
+        "7_export.py": ["*.json", "*.xml", "*.graphml"],
     }
 
-    step_number = script_name.split('_')[0]
-    step_name = script_name.split('_')[1].replace('.py', '')
+    step_number = script_name.split("_")[0]
+    step_name = script_name.split("_")[1].replace(".py", "")
     step_output_dir = output_dir / f"{step_number}_{step_name}_output"
 
     if not step_output_dir.exists():
-        validation["missing_outputs"].append(f"Output directory {step_output_dir} not found")
+        validation["missing_outputs"].append(
+            f"Output directory {step_output_dir} not found"
+        )
         validation["validation_passed"] = False
         return validation
 
@@ -212,7 +221,9 @@ def validate_step_outputs(script_name: str, output_dir: Path) -> Dict[str, Any]:
     for pattern in patterns:
         files = list(step_output_dir.rglob(pattern))
         if files:
-            validation["outputs_created"].extend([str(f.relative_to(output_dir)) for f in files])
+            validation["outputs_created"].extend(
+                [str(f.relative_to(output_dir)) for f in files]
+            )
         else:
             validation["missing_outputs"].append(f"No files matching pattern {pattern}")
 
@@ -221,28 +232,42 @@ def validate_step_outputs(script_name: str, output_dir: Path) -> Dict[str, Any]:
 
     return validation
 
-def check_pipeline_readiness(steps_to_execute: List[tuple], args) -> Dict[str, Any]:
+
+def check_pipeline_readiness(
+    steps_to_execute: List[tuple], args: Any
+) -> Dict[str, Any]:
     """Comprehensive pipeline readiness check before execution."""
-    readiness_check = {
+    readiness_check: dict[str, Any] = {
         "ready": True,
         "blocking_issues": [],
         "warnings": [],
-        "recommendations": []
+        "recommendations": [],
     }
 
     # Check basic requirements
     if not args.target_dir.exists():
-        readiness_check["blocking_issues"].append(f"Target directory {args.target_dir} does not exist")
+        readiness_check["blocking_issues"].append(
+            f"Target directory {args.target_dir} does not exist"
+        )
         readiness_check["ready"] = False
 
     # Check for GNN files if GNN-dependent steps are included
-    gnn_dependent_steps = ["5_type_checker.py", "8_visualization.py", "11_render.py", "13_llm.py"]
+    gnn_dependent_steps: list[Any] = [
+        "5_type_checker.py",
+        "8_visualization.py",
+        "11_render.py",
+        "13_llm.py",
+    ]
     script_names = [step[0] for step in steps_to_execute]
 
     if any(step in script_names for step in gnn_dependent_steps):
-        gnn_files = list(args.target_dir.rglob("*.md")) + list(args.target_dir.rglob("*.gnn"))
+        gnn_files = list(args.target_dir.rglob("*.md")) + list(
+            args.target_dir.rglob("*.gnn")
+        )
         if not gnn_files:
-            readiness_check["blocking_issues"].append(f"No GNN files found in {args.target_dir}")
+            readiness_check["blocking_issues"].append(
+                f"No GNN files found in {args.target_dir}"
+            )
             readiness_check["ready"] = False
 
     # Check output directory is writable
@@ -251,12 +276,17 @@ def check_pipeline_readiness(steps_to_execute: List[tuple], args) -> Dict[str, A
         test_file = args.output_dir / ".pipeline_test"
         import os as _os
         import tempfile as _tempfile
-        with _tempfile.NamedTemporaryFile(mode='w', dir=args.output_dir, delete=False) as _tmp:
+
+        with _tempfile.NamedTemporaryFile(
+            mode="w", dir=args.output_dir, delete=False
+        ) as _tmp:
             _tmp.write("test")
         _os.replace(_tmp.name, str(test_file))
         test_file.unlink()
     except Exception as e:
-        readiness_check["blocking_issues"].append(f"Output directory {args.output_dir} is not writable: {e}")
+        readiness_check["blocking_issues"].append(
+            f"Output directory {args.output_dir} is not writable: {e}"
+        )
         readiness_check["ready"] = False
 
     return readiness_check

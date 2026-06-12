@@ -53,7 +53,7 @@
 ```bash
 uv pip install inferactively-pymdp
 # Or use UV optional group:
-uv sync --extra active-inference
+uv sync
 ```
 
 ### Basic Usage

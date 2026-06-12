@@ -3,7 +3,7 @@
 > **Scope:** This document contains *illustrative* patterns for building
 > advanced active-inference agents on top of pymdp 1.0.0 (JAX-first). These
 > examples are not pipeline contracts — the canonical pipeline entry points
-> live in `src/execute/pymdp/simple_simulation.py` and
+> live in `src/execute/pymdp/simulation.py` and
 > `src/execute/pymdp/pymdp_simulation.py`.
 >
 > All examples use the real 1.0.0 API (batched `list[jax.Array]` models,
@@ -106,7 +106,7 @@ action = agent.sample_action(q_pi=..., rng_key=jr.split(key, batch + 1)[1:])
 # action.shape == (batch, num_factors)
 ```
 
-The pipeline's `run_simple_pymdp_simulation` pins `batch_size=1` by default
+The pipeline's `run_pymdp_simulation` uses `batch_size=1` unless configured
 but the underlying `_build_pymdp_agent` accepts any batch size you pass via
 `model_parameters.batch_size` in the GNN spec.
 
@@ -136,7 +136,7 @@ for t in range(T):
     action = agent.sample_action(q_pi, rng_key=action_keys[1:])
 ```
 
-The pipeline additionally seeds the numpy generator used for fake-environment
+The pipeline additionally seeds the numpy generator used for simulated-environment
 transitions from `gnn_spec["model_parameters"]["random_seed"]`, so a single
 seed reproduces both the agent's samples and the environment transitions
 (see `test_pymdp_seeded_reproducibility_contract`).
@@ -150,5 +150,5 @@ Features available upstream that this repository does **not** wrap:
 - `pymdp.control.generate_I_matrix` — inductive-inference pruning
 - `pymdp.envs.*` — built-in JAX environments for agent training
 
-See the upstream documentation and `src/tests/test_pymdp_1_0_0_upstream_api.py`
+See the upstream documentation and `src/tests/execute/test_pymdp_1_0_0_upstream_api.py`
 for the exact surface currently asserted by this repository.

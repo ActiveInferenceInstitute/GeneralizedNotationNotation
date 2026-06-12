@@ -26,7 +26,7 @@ from typing import Any, Dict, List
 
 # ── Path setup ───────────────────────────────────────────────────────────────
 REPO_ROOT = Path(__file__).parent.parent.parent
-SRC_ROOT  = REPO_ROOT / "src"
+SRC_ROOT = REPO_ROOT / "src"
 sys.path.insert(0, str(SRC_ROOT))
 
 logger = logging.getLogger("mcp_audit")
@@ -44,6 +44,7 @@ def main() -> int:
     print("\n[1] Initializing MCP and discovering modules...")
     try:
         from mcp import initialize, mcp_instance
+
         initialize(halt_on_missing_sdk=False, force_proceed_flag=True)
         m = mcp_instance
     except Exception as e:
@@ -52,7 +53,7 @@ def main() -> int:
 
     # ── 2. Module summary ────────────────────────────────────────────────────
     print(f"\n[2] Modules discovered: {len(m.modules)}")
-    loaded  = [name for name, info in m.modules.items() if info.status == "loaded"]
+    loaded = [name for name, info in m.modules.items() if info.status == "loaded"]
     errored = [name for name, info in m.modules.items() if info.status == "error"]
 
     for mod, info in sorted(m.modules.items()):
@@ -70,37 +71,52 @@ def main() -> int:
     for name, tool in sorted(m.tools.items()):
         func = getattr(tool, "func", None) or getattr(tool, "function", None)
         desc = (getattr(tool, "description", "") or "").strip()
-        fn   = getattr(func, "__name__", "NONE") if func else "NONE"
-        mod  = getattr(tool, "module", "") or ""
+        fn = getattr(func, "__name__", "NONE") if func else "NONE"
+        mod = getattr(tool, "module", "") or ""
 
-        is_callable  = callable(func)
-        is_lambda    = (fn == "<lambda>")
-        is_real      = is_callable and not is_lambda
+        is_callable = callable(func)
+        is_lambda = fn == "<lambda>"
+        is_real = is_callable and not is_lambda
 
         is_documented = bool(desc)
 
         status = "OK"
         if not is_real:
             status = "NOT_CALLABLE"
-            issues.append({"tool": name, "issue": "not a real callable", "fn": fn, "mod": mod})
+            issues.append(
+                {"tool": name, "issue": "not a real callable", "fn": fn, "mod": mod}
+            )
         elif not is_documented:
             status = "UNDOCUMENTED"
-            issues.append({"tool": name, "issue": "missing description", "fn": fn, "mod": mod})
+            issues.append(
+                {"tool": name, "issue": "missing description", "fn": fn, "mod": mod}
+            )
 
         flag = "✓" if status == "OK" else "✗"
-        print(f"  {flag} [{status:14s}]  {name:55s}  fn={fn:35s}  doc={is_documented}  mod={mod}")
+        print(
+            f"  {flag} [{status:14s}]  {name:55s}  fn={fn:35s}  doc={is_documented}  mod={mod}"
+        )
 
     # ── 4. Light callability verification ────────────────────────────────────
     print("\n[4] Callability spot-checks (no-arg tools)...")
-    no_arg_tools = ["list_analysis_tools", "list_render_frameworks", "list_export_formats",
-                    "list_standard_ontology_terms", "list_supported_integrations",
-                    "list_research_topics", "list_security_checks",
-                    "get_website_module_info", "get_render_module_info",
-                    "get_visualization_options", "get_report_module_info",
-                    "check_audio_backends", "get_sapf_module_info",
-                    "check_integration_dependencies"]
+    no_arg_tools: list[Any] = [
+        "list_analysis_tools",
+        "list_render_frameworks",
+        "list_export_formats",
+        "list_standard_ontology_terms",
+        "list_supported_integrations",
+        "list_research_topics",
+        "list_security_checks",
+        "get_website_module_info",
+        "get_render_module_info",
+        "get_visualization_options",
+        "get_report_module_info",
+        "check_audio_backends",
+        "get_sapf_module_info",
+        "check_integration_dependencies",
+    ]
 
-    call_ok  = 0
+    call_ok = 0
     call_err = 0
     for tname in no_arg_tools:
         if tname not in m.tools:
@@ -115,7 +131,13 @@ def main() -> int:
                 call_ok += 1
             else:
                 call_err += 1
-                issues.append({"tool": tname, "issue": "execute returned success=False", "result": str(result)[:80]})
+                issues.append(
+                    {
+                        "tool": tname,
+                        "issue": "execute returned success=False",
+                        "result": str(result)[:80],
+                    }
+                )
         except Exception as e:
             print(f"  ✗  {tname:55s}  → EXCEPTION: {e}")
             call_err += 1
@@ -123,11 +145,16 @@ def main() -> int:
 
     # ── 5. Logging coverage check ─────────────────────────────────────────────
     print("\n[5] Logging coverage check (register_tools uses logger.info?)...")
-    submodule_dirs = [d for d in SRC_ROOT.iterdir()
-                      if d.is_dir() and (d / "mcp.py").exists()
-                      and not d.name.startswith("_") and d.name != "mcp"]
+    submodule_dirs = [
+        d
+        for d in SRC_ROOT.iterdir()
+        if d.is_dir()
+        and (d / "mcp.py").exists()
+        and not d.name.startswith("_")
+        and d.name != "mcp"
+    ]
 
-    log_ok  = 0
+    log_ok = 0
     log_miss = 0
     for d in sorted(submodule_dirs):
         mcp_src = (d / "mcp.py").read_text(encoding="utf-8", errors="replace")
@@ -144,7 +171,12 @@ def main() -> int:
             log_ok += 1
         else:
             log_miss += 1
-            issues.append({"tool": d.name + "/mcp.py", "issue": "register_tools() has no logger.info"})
+            issues.append(
+                {
+                    "tool": d.name + "/mcp.py",
+                    "issue": "register_tools() has no logger.info",
+                }
+            )
         print(f"  {icon}  {d.name}/mcp.py  logged={has_log_info}")
 
     # ── 6. Summary ───────────────────────────────────────────────────────────
@@ -169,30 +201,36 @@ def main() -> int:
     print("=" * 72)
 
     # ── 7. Save report ───────────────────────────────────────────────────────
-    report = {
-        "modules_total":    len(m.modules),
-        "modules_loaded":   len(loaded),
-        "modules_errored":  len(errored),
-        "tools_total":      len(m.tools),
-        "tools_list":       [
+    report: dict[str, Any] = {
+        "modules_total": len(m.modules),
+        "modules_loaded": len(loaded),
+        "modules_errored": len(errored),
+        "tools_total": len(m.tools),
+        "tools_list": [
             {
-                "name":     name,
-                "module":   getattr(tool, "module", ""),
+                "name": name,
+                "module": getattr(tool, "module", ""),
                 "category": getattr(tool, "category", ""),
-                "fn":       getattr(getattr(tool, "func", None) or getattr(tool, "function", None), "__name__", "?"),
+                "fn": getattr(
+                    getattr(tool, "func", None) or getattr(tool, "function", None),
+                    "__name__",
+                    "?",
+                ),
                 "documented": bool((getattr(tool, "description", "") or "").strip()),
                 "description": (getattr(tool, "description", "") or "").strip()[:120],
             }
             for name, tool in sorted(m.tools.items())
         ],
-        "spot_checks_ok":   call_ok,
-        "spot_checks_err":  call_err,
-        "logging_ok":       log_ok,
-        "logging_miss":     log_miss,
-        "issues":           issues,
+        "spot_checks_ok": call_ok,
+        "spot_checks_err": call_err,
+        "logging_ok": log_ok,
+        "logging_miss": log_miss,
+        "issues": issues,
     }
     out_path = SRC_ROOT / "mcp" / "audit_report.json"
-    with tempfile.NamedTemporaryFile(mode='w', encoding='utf-8', dir=out_path.parent, delete=False) as tmp_f:
+    with tempfile.NamedTemporaryFile(
+        mode="w", encoding="utf-8", dir=out_path.parent, delete=False
+    ) as tmp_f:
         tmp_f.write(json.dumps(report, indent=2))
     os.replace(tmp_f.name, str(out_path))
     print(f"\n  Full report saved → {out_path}")
@@ -201,5 +239,7 @@ def main() -> int:
 
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.WARNING, format="%(levelname)s %(name)s: %(message)s")
+    logging.basicConfig(
+        level=logging.WARNING, format="%(levelname)s %(name)s: %(message)s"
+    )
     sys.exit(main())

@@ -19,8 +19,16 @@ import numpy as np
 
 logger = logging.getLogger(__name__)
 
-FRAMEWORK_ORDER = ["pymdp", "jax", "rxinfer", "activeinference_jl", "discopy", "pytorch", "numpyro"]
-FRAMEWORK_LABELS = {
+FRAMEWORK_ORDER: list[Any] = [
+    "pymdp",
+    "jax",
+    "rxinfer",
+    "activeinference_jl",
+    "discopy",
+    "pytorch",
+    "numpyro",
+]
+FRAMEWORK_LABELS: dict[str, Any] = {
     "pymdp": "PyMDP",
     "jax": "JAX",
     "rxinfer": "RxInfer",
@@ -35,7 +43,12 @@ FRAMEWORK_LABELS = {
 # Data collection helpers
 # ---------------------------------------------------------------------------
 
-def _collect_simulation_data(execution_dir: Path) -> Dict[str, Dict[str, Any]]:
+
+def _collect_simulation_data(
+    execution_dir: Path,
+    allowed_frameworks: Optional[set[str]] = None,
+    allowed_model_names: Optional[set[str]] = None,
+) -> Dict[str, Dict[str, Any]]:
     """Collect simulation results keyed by (model_name, framework)."""
     data: Dict[str, Dict[str, Any]] = {}  # model -> framework -> result
 
@@ -51,6 +64,8 @@ def _collect_simulation_data(execution_dir: Path) -> Dict[str, Dict[str, Any]]:
                 if part in FRAMEWORK_ORDER:
                     framework = part
                     break
+            if allowed_frameworks and framework not in allowed_frameworks:
+                continue
 
             # Determine model name from path (parent directories above framework)
             model_name = None
@@ -62,6 +77,8 @@ def _collect_simulation_data(execution_dir: Path) -> Dict[str, Dict[str, Any]]:
                     break
             if not model_name:
                 model_name = result.get("model_name", sim_file.parent.parent.name)
+            if allowed_model_names and model_name not in allowed_model_names:
+                continue
 
             if model_name not in data:
                 data[model_name] = {}
@@ -74,7 +91,11 @@ def _collect_simulation_data(execution_dir: Path) -> Dict[str, Dict[str, Any]]:
     return data
 
 
-def _collect_execution_times(execution_dir: Path) -> Dict[str, Dict[str, float]]:
+def _collect_execution_times(
+    execution_dir: Path,
+    allowed_frameworks: Optional[set[str]] = None,
+    allowed_model_names: Optional[set[str]] = None,
+) -> Dict[str, Dict[str, float]]:
     """Collect execution times from execution_summary.json."""
     times: Dict[str, Dict[str, float]] = {}
     summary_file = execution_dir / "summaries" / "execution_summary.json"
@@ -99,6 +120,8 @@ def _collect_execution_times(execution_dir: Path) -> Dict[str, Dict[str, float]]
                     break
 
             if framework:
+                if allowed_frameworks and framework not in allowed_frameworks:
+                    continue
                 # model is the directory before the framework dir
                 parts = Path(script).parts
                 for i, part in enumerate(parts):
@@ -107,6 +130,8 @@ def _collect_execution_times(execution_dir: Path) -> Dict[str, Dict[str, float]]
                         break
 
             if model_name and framework:
+                if allowed_model_names and model_name not in allowed_model_names:
+                    continue
                 if model_name not in times:
                     times[model_name] = {}
                 times[model_name][framework] = entry.get("execution_time", 0.0)
@@ -121,12 +146,10 @@ def _collect_execution_times(execution_dir: Path) -> Dict[str, Dict[str, float]]
 # Metric extractors
 # ---------------------------------------------------------------------------
 
+
 def _mean_belief_confidence(result: Dict[str, Any]) -> Optional[float]:
     """Compute mean of max-belief across timesteps."""
-    beliefs = (
-        result.get("beliefs")
-        or result.get("simulation_trace", {}).get("beliefs")
-    )
+    beliefs = result.get("beliefs") or result.get("simulation_trace", {}).get("beliefs")
     if not beliefs:
         return None
     try:
@@ -140,9 +163,8 @@ def _mean_belief_confidence(result: Dict[str, Any]) -> Optional[float]:
 
 def _mean_efe(result: Dict[str, Any]) -> Optional[float]:
     """Compute mean EFE (selected action's EFE) across timesteps."""
-    efe = (
-        result.get("efe_history")
-        or result.get("simulation_trace", {}).get("efe_history")
+    efe = result.get("efe_history") or result.get("simulation_trace", {}).get(
+        "efe_history"
     )
     metrics = result.get("metrics", {})
     if not efe and isinstance(metrics, dict):
@@ -150,10 +172,7 @@ def _mean_efe(result: Dict[str, Any]) -> Optional[float]:
     if not efe:
         return None
 
-    actions = (
-        result.get("actions")
-        or result.get("simulation_trace", {}).get("actions")
-    )
+    actions = result.get("actions") or result.get("simulation_trace", {}).get("actions")
 
     try:
         efe_arr = np.array(efe, dtype=float)
@@ -161,7 +180,7 @@ def _mean_efe(result: Dict[str, Any]) -> Optional[float]:
             return float(np.mean(efe_arr))
         elif efe_arr.ndim == 2 and actions:
             # Per-action EFE matrix: extract chosen action's EFE per step
-            selected = []
+            selected: list[Any] = []
             for t, a in enumerate(actions):
                 if t < len(efe_arr):
                     a_idx = int(a) if int(a) < efe_arr.shape[1] else 0
@@ -174,10 +193,7 @@ def _mean_efe(result: Dict[str, Any]) -> Optional[float]:
 
 def _mean_belief_entropy(result: Dict[str, Any]) -> Optional[float]:
     """Compute mean Shannon entropy of beliefs across timesteps."""
-    beliefs = (
-        result.get("beliefs")
-        or result.get("simulation_trace", {}).get("beliefs")
-    )
+    beliefs = result.get("beliefs") or result.get("simulation_trace", {}).get("beliefs")
     if not beliefs:
         return None
     try:
@@ -196,10 +212,7 @@ def _mean_belief_entropy(result: Dict[str, Any]) -> Optional[float]:
 
 def _action_diversity(result: Dict[str, Any]) -> Optional[float]:
     """Fraction of unique actions used."""
-    actions = (
-        result.get("actions")
-        or result.get("simulation_trace", {}).get("actions")
-    )
+    actions = result.get("actions") or result.get("simulation_trace", {}).get("actions")
     if not actions:
         return None
     try:
@@ -233,10 +246,13 @@ def _validation_status(result: Dict[str, Any]) -> str:
 # Report generation
 # ---------------------------------------------------------------------------
 
+
 def generate_cross_model_report(
     execution_dir: Path,
     analysis_dir: Path,
     output_path: Path,
+    allowed_frameworks: Optional[set[str]] = None,
+    allowed_model_names: Optional[set[str]] = None,
 ) -> str:
     """
     Generate a unified cross-model comparison markdown report.
@@ -245,20 +261,34 @@ def generate_cross_model_report(
         execution_dir: Path to output/12_execute_output
         analysis_dir: Path to output/16_analysis_output
         output_path: Path to write the markdown report
+        allowed_frameworks: Optional normalized framework names from the current run
+        allowed_model_names: Optional model directory names from the current run
 
     Returns:
         Path to the generated report file (as string)
     """
     logger.info("Generating cross-model comparison report...")
-    sim_data = _collect_simulation_data(execution_dir)
-    exec_times = _collect_execution_times(execution_dir)
+    sim_data = _collect_simulation_data(
+        execution_dir,
+        allowed_frameworks=allowed_frameworks,
+        allowed_model_names=allowed_model_names,
+    )
+    exec_times = _collect_execution_times(
+        execution_dir,
+        allowed_frameworks=allowed_frameworks,
+        allowed_model_names=allowed_model_names,
+    )
 
     if not sim_data:
         logger.warning("No simulation data found — skipping cross-model report")
         return ""
 
     models = sorted(sim_data.keys())
-    frameworks = FRAMEWORK_ORDER
+    frameworks = [
+        fw
+        for fw in FRAMEWORK_ORDER
+        if not allowed_frameworks or fw in allowed_frameworks
+    ]
 
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
@@ -269,7 +299,11 @@ def generate_cross_model_report(
 
     # ---- Summary table ----
     lines.append("## Summary Matrix\n")
-    header = "| Model |" + "|".join(f" {FRAMEWORK_LABELS.get(fw, fw)} " for fw in frameworks) + "|"
+    header = (
+        "| Model |"
+        + "|".join(f" {FRAMEWORK_LABELS.get(fw, fw)} " for fw in frameworks)
+        + "|"
+    )
     sep = "|" + "|".join("---" for _ in range(len(frameworks) + 1)) + "|"
     lines.append(header)
     lines.append(sep)
@@ -288,11 +322,17 @@ def generate_cross_model_report(
         lines.append(row)
 
     lines.append("")
-    lines.append("> Values show validation status and mean belief confidence (max belief per timestep).\n")
+    lines.append(
+        "> Values show validation status and mean belief confidence (max belief per timestep).\n"
+    )
 
     # ---- EFE Comparison ----
     lines.append("## Expected Free Energy Comparison\n")
-    header = "| Model |" + "|".join(f" {FRAMEWORK_LABELS.get(fw, fw)} " for fw in frameworks) + "|"
+    header = (
+        "| Model |"
+        + "|".join(f" {FRAMEWORK_LABELS.get(fw, fw)} " for fw in frameworks)
+        + "|"
+    )
     lines.append(header)
     lines.append(sep)
 
@@ -312,7 +352,11 @@ def generate_cross_model_report(
     # ---- Belief Entropy Comparison ----
     lines.append("## Belief Entropy Comparison\n")
     lines.append("Mean Shannon entropy of posterior beliefs (lower = more certain).\n")
-    header = "| Model |" + "|".join(f" {FRAMEWORK_LABELS.get(fw, fw)} " for fw in frameworks) + "|"
+    header = (
+        "| Model |"
+        + "|".join(f" {FRAMEWORK_LABELS.get(fw, fw)} " for fw in frameworks)
+        + "|"
+    )
     lines.append(header)
     lines.append(sep)
 
@@ -331,7 +375,11 @@ def generate_cross_model_report(
 
     # ---- Performance Comparison ----
     lines.append("## Execution Time (seconds)\n")
-    header = "| Model |" + "|".join(f" {FRAMEWORK_LABELS.get(fw, fw)} " for fw in frameworks) + "|"
+    header = (
+        "| Model |"
+        + "|".join(f" {FRAMEWORK_LABELS.get(fw, fw)} " for fw in frameworks)
+        + "|"
+    )
     lines.append(header)
     lines.append(sep)
 
@@ -356,13 +404,19 @@ def generate_cross_model_report(
         model_data = sim_data.get(model, {})
 
         # Quick stats table
-        lines.append("| Framework | Steps | Confidence | EFE (mean) | Entropy | Action Diversity | Validation |")
-        lines.append("|-----------|-------|------------|------------|---------|------------------|------------|")
+        lines.append(
+            "| Framework | Steps | Confidence | EFE (mean) | Entropy | Action Diversity | Validation |"
+        )
+        lines.append(
+            "|-----------|-------|------------|------------|---------|------------------|------------|"
+        )
 
         for fw in frameworks:
             result = model_data.get(fw)
             if not result:
-                lines.append(f"| {FRAMEWORK_LABELS.get(fw, fw)} | — | — | — | — | — | — |")
+                lines.append(
+                    f"| {FRAMEWORK_LABELS.get(fw, fw)} | — | — | — | — | — | — |"
+                )
                 continue
 
             steps = _timestep_count(result)
@@ -372,7 +426,7 @@ def generate_cross_model_report(
             div = _action_diversity(result)
             val = _validation_status(result)
 
-            parts_line = [f"| {FRAMEWORK_LABELS.get(fw, fw)}"]
+            parts_line: list[Any] = [f"| {FRAMEWORK_LABELS.get(fw, fw)}"]
             parts_line.append(f" {steps or '—'}")
             parts_line.append(f" {conf:.4f}" if conf is not None else " —")
             parts_line.append(f" {efe:.4f}" if efe is not None else " —")
@@ -389,8 +443,8 @@ def generate_cross_model_report(
             confs = {fw: _mean_belief_confidence(model_data[fw]) for fw in fw_with_data}
             confs_valid = {fw: c for fw, c in confs.items() if c is not None}
             if confs_valid:
-                best_fw = max(confs_valid, key=confs_valid.get)
-                worst_fw = min(confs_valid, key=confs_valid.get)
+                best_fw = max(confs_valid, key=lambda fw: confs_valid[fw])
+                worst_fw = min(confs_valid, key=lambda fw: confs_valid[fw])
                 lines.append(
                     f"**Highest confidence:** {FRAMEWORK_LABELS.get(best_fw, best_fw)} ({confs_valid[best_fw]:.4f}) | "
                     f"**Lowest:** {FRAMEWORK_LABELS.get(worst_fw, worst_fw)} ({confs_valid[worst_fw]:.4f})\n"
@@ -400,9 +454,9 @@ def generate_cross_model_report(
     lines.append("## Cross-Model Observations\n")
 
     # Find model with fastest convergence (highest confidence)
-    model_confs = {}
+    model_confs: dict[Any, Any] = {}
     for model in models:
-        all_confs = []
+        all_confs: list[Any] = []
         for fw in frameworks:
             result = sim_data.get(model, {}).get(fw)
             if result:
@@ -413,10 +467,14 @@ def generate_cross_model_report(
             model_confs[model] = np.mean(all_confs)
 
     if model_confs:
-        best_model = max(model_confs, key=model_confs.get)
-        worst_model = min(model_confs, key=model_confs.get)
-        lines.append(f"- **Highest avg. confidence:** {best_model} ({model_confs[best_model]:.4f})")
-        lines.append(f"- **Lowest avg. confidence:** {worst_model} ({model_confs[worst_model]:.4f})")
+        best_model = max(model_confs, key=lambda model: model_confs[model])
+        worst_model = min(model_confs, key=lambda model: model_confs[model])
+        lines.append(
+            f"- **Highest avg. confidence:** {best_model} ({model_confs[best_model]:.4f})"
+        )
+        lines.append(
+            f"- **Lowest avg. confidence:** {worst_model} ({model_confs[worst_model]:.4f})"
+        )
 
     # Framework speed comparison
     fw_speeds: Dict[str, List[float]] = {}

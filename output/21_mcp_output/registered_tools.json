@@ -99,14 +99,14 @@
   },
   {
     "name": "execute_gnn_model",
-    "description": "Execute a single GNN model file: parse, construct POMDP, run N inference steps.",
+    "description": "Execute a single GNN model file via GNNExecutor (PyMDP default); timesteps come from the model's Time section.",
     "module": "src.execute",
     "category": "execute",
     "version": "1.0.0"
   },
   {
     "name": "execute_pymdp_simulation",
-    "description": "Run a PyMDP Active Inference simulation from a GNN model (A/B/C/D matrices \u2192 Agent \u2192 perception-action loop).",
+    "description": "Run a PyMDP Active Inference simulation from a GNN model (A/B/C/D matrices -> Agent -> perception-action loop).",
     "module": "src.execute",
     "category": "execute",
     "version": "1.0.0"
@@ -525,6 +525,20 @@
     "version": "1.0.0"
   },
   {
+    "name": "mcp.list_available_resources",
+    "description": "List all resources currently registered with the MCP registry.",
+    "module": "",
+    "category": "",
+    "version": "1.0.0"
+  },
+  {
+    "name": "mcp.list_available_tools",
+    "description": "List all tools currently registered with the MCP registry.",
+    "module": "",
+    "category": "",
+    "version": "1.0.0"
+  },
+  {
     "name": "model_registry.get_model",
     "description": "Get a model from the registry by ID",
     "module": "",
@@ -721,29 +735,8 @@
     "version": "1.0.0"
   },
   {
-    "name": "run_all_tests",
-    "description": "Run comprehensive test suite for the GNN pipeline.",
-    "module": "",
-    "category": "",
-    "version": "1.0.0"
-  },
-  {
-    "name": "run_integration_tests",
-    "description": "Run integration test suite for the GNN pipeline.",
-    "module": "",
-    "category": "",
-    "version": "1.0.0"
-  },
-  {
     "name": "run_round_trip_tests",
     "description": "Run comprehensive round-trip tests on GNN files across all supported formats.",
-    "module": "",
-    "category": "",
-    "version": "1.0.0"
-  },
-  {
-    "name": "run_unit_tests",
-    "description": "Run unit test suite for the GNN pipeline.",
     "module": "",
     "category": "",
     "version": "1.0.0"

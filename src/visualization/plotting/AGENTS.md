@@ -1,23 +1,34 @@
-# Plotting - Agent Scaffolding
+# Visualization Plotting Sub-module
 
-## Module Overview
+## Overview
 
-**Purpose**: Responsible for `Plotting` operations within the GNN pipeline architecture.
-**Category**: Generated Pipeline Component
-**Status**: Development
+Shared plotting utilities used across all visualization sub-modules. Provides safe matplotlib save routines with DPI fallbacks and warning-suppressed tight layout.
 
----
+## Architecture
 
-## Core Functionality
+```
+plotting/
+├── __init__.py     # Package exports and configuration
+└── utils.py        # Shared plotting utilities
+```
 
-### Primary Responsibilities
-Matplotlib helpers shared across visualization subpackages. Shared matplotlib save helpers for visualization (no imports from core.process).
+## Key Functions
 
-### Extracted Code Entities
+- **`save_plot_safely(plot_path, dpi=300, **savefig_kwargs) -> bool`** — Save current figure with automatic DPI fallback chain (user → rcParams → no-DPI). Returns `True` on success.
+- **`safe_tight_layout() -> None`** — Apply `plt.tight_layout()` with `UserWarning` suppression. Silently skips on `ValueError` / `RuntimeError`.
 
-- **Classes**: No specific classes exported.
-- **Functions**: safe_tight_layout, save_plot_safely
+## Usage
 
-## Implementation Details
+```python
+from visualization.plotting.utils import save_plot_safely, safe_tight_layout
 
-This module follows the Thin Orchestrator Pattern. It is governed by the Zero-Mock testing policy.
+safe_tight_layout()
+save_plot_safely(output_path, dpi=300, bbox_inches="tight")
+```
+
+## Parent Module
+
+See [visualization/AGENTS.md](../AGENTS.md) for the overall visualization architecture.
+
+**Version**: 1.6.0
+**Last Updated**: 2026-05-12

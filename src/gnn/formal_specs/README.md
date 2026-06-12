@@ -27,7 +27,7 @@ The formal specifications serve three roles:
 
 ## Relationship to Codebase
 
-The Python dataclasses in `types.py` (`ParsedGNN`, `GNNVariable`, `GNNConnection`, `GNNFormat`) are the runtime counterparts of the structures formalized here. The `pomdp_extractor.py` module implements the POMDP extraction logic whose correctness properties are stated as theorems in the Isabelle, Lean, and Coq specifications.
+The Python dataclasses in `types.py` (`ParsedGNN`, `GNNVariable`, `GNNConnection`, etc.) are the runtime counterparts of the structures formalized here. **`GNNFormat`** is the interchange enum **defined in `parsers/common.py`** and re-exported from `types.py`. The `pomdp_extractor.py` module implements the POMDP extraction logic whose correctness properties are stated as theorems in the Isabelle, Lean, and Coq specifications.
 
 ## Usage
 

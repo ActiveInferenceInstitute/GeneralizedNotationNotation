@@ -7,6 +7,10 @@
 ## Overview
 This guide covers various deployment scenarios for GeneralizedNotationNotation (GNN), from local development to production environments.
 
+## Security
+
+Harden hosts that run the pipeline: least-privilege service accounts, secret management for API keys, network segmentation for MCP/HTTP services, and regular dependency updates. See [security/README.md](../security/README.md).
+
 ## Deployment Architectures
 
 ### 1. Local Development Setup
@@ -17,10 +21,11 @@ This guide covers various deployment scenarios for GeneralizedNotationNotation (
 # Clone and setup
 git clone https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation.git
 cd GeneralizedNotationNotation
-python src/main.py --only-steps 2  # Setup environment
+uv sync
+uv run python src/main.py --only-steps 1 --dev   # environment (Step 1); use --only-steps 2 to run tests
 
 # Run pipeline
-python src/main.py --target-dir input/gnn_files/
+uv run python src/main.py --target-dir input/gnn_files/ --verbose
 ```
 
 #### Development Configuration

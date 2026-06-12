@@ -1,11 +1,17 @@
-# Compat
+# Visualization Compatibility
 
-## Overview
-This module handles `Compat` components.
+Safe dependency detection for optional visualization libraries (matplotlib, seaborn).
 
-## Available Members
-- **Classes**: No specific classes exported.
-- **Functions**: No specific public functions exported.
+## Files
+
+- `viz_compat.py` (40 lines) — Exports `MATPLOTLIB_AVAILABLE`, `plt`, `sns`, `np`
 
 ## Usage
-Import necessary members directly to orchestrate tasks related to Compat.
+
+```python
+from visualization.compat.viz_compat import MATPLOTLIB_AVAILABLE, plt
+```
+
+## See Also
+
+- [Parent: visualization/README.md](../README.md)

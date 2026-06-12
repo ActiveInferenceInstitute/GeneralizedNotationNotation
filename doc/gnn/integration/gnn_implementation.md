@@ -1,7 +1,7 @@
 # GNN Implementation Guide
 
-**Version**: v2.0.0  
-**Last Updated**: 2026-03-24  
+**Version**: v1.6.0 Engine (Bundle v2.0.0)  
+**Last Updated**: 2026-04-14  
 **Status**: ✅ Production Ready  
 **Modules**: 38+ · **Pipeline steps**: 25 · **Renderers**: 9 backends (see [../implementations/README.md](../implementations/README.md)) · **Tests**: see [../../../README.md](../../../README.md)  
 
@@ -38,16 +38,16 @@ For complete pipeline documentation, see **[src/AGENTS.md](../../../src/AGENTS.m
 
 ## Step 11 — Render Module Deep Dive
 
-The render module (`src/render/`) transforms GNN specifications into executable code for five Active Inference frameworks. It follows a POMDP-aware processing pipeline.
+The render module (`src/render/`) transforms GNN specifications into executable code for maintained simulation frameworks. It follows a POMDP-aware processing pipeline.
 
 ### Processing Pipeline
 
 ```mermaid
 flowchart TD
     GNN[GNN Files<br>*.md, *.json, *.yaml] --> EXTRACT[POMDP Extraction<br>extract_pomdp_from_file]
-    EXTRACT -->|Success| VALIDATE[validate_pomdp_for_rendering<br>states, observations, actions]
-    EXTRACT -->|Failure| BASIC[_process_single_gnn_file_basic<br>basic code generation]
-    VALIDATE --> NORMALIZE[normalize_matrices<br>A matrix, B matrix]
+    EXTRACT -->|POMDP spec| VALIDATE[validate_pomdp_for_rendering<br>factors, modalities, controls]
+    EXTRACT -->|Non-POMDP spec| BASIC[_process_single_gnn_file_basic<br>generic render path]
+    VALIDATE --> NORMALIZE[normalize_matrices<br>A/B/C/D provenance]
     NORMALIZE --> RENDER[POMDPRenderProcessor<br>process_pomdp_for_all_frameworks]
     RENDER --> PYMDP[PyMDP .py]
     RENDER --> RXINFER[RxInfer .jl]
@@ -64,8 +64,8 @@ flowchart TD
 
 The core function `process_render()` in `src/render/processor.py` implements:
 
-1. **POMDP Extraction** — Extracts state space dimensions (`num_states`, `num_observations`, `num_actions`) and matrices (A, B, C, D) from GNN files via `gnn.pomdp_extractor.extract_pomdp_from_file()`
-2. **Validation** — `validate_pomdp_for_rendering()` checks that all required dimensions are positive and present
+1. **POMDP Extraction** — Extracts state factors, observation modalities, control factors, matrices (A, B, C, D/E), and matrix provenance from GNN files via `gnn.pomdp_extractor.extract_pomdp_from_file()`
+2. **Validation** — `validate_pomdp_for_rendering()` checks that required dimensions and matrices are present for the requested framework
 3. **Matrix Normalization** — `normalize_matrices()` ensures:
    - **A matrix** (observation model): columns sum to 1 over the observation dimension
    - **B matrix** (transition model): columns sum to 1 over the next-state dimension, per action
@@ -246,7 +246,7 @@ These are assembled by `analyze_active_inference_metrics()` which takes complete
 
 ### Framework-Specific Data Extraction
 
-Each framework has a dedicated extraction function in `analysis/framework_extractors.py` (re-exported from `post_simulation.py` for backward compatibility):
+Each framework has a dedicated extraction function in `analysis/framework_extractors.py` (re-exported from `post_simulation.py`):
 
 - `extract_pymdp_data()` — beliefs, actions, free energy, observations from PyMDP output
 - `extract_rxinfer_data()` — posterior distributions from RxInfer JSON/CSV output  
@@ -267,7 +267,7 @@ output/16_analysis_output/
 ├── jax/                                # JAX visualizations
 ├── rxinfer/                            # RxInfer visualizations
 └── cross_framework/                    # Cross-framework comparisons
-    └── unified_dashboard/              # Multi-panel comparison dashboard
+    └── unified_dashboard/              # Step 23 interactive D3.js dashboard targets
 ```
 
 ---
@@ -409,7 +409,7 @@ def initialize_variables(state_space_text):
                 elif 'type=' in dim:  # Type specification, ignore for now
                     continue
                 else:  # Symbolic dimension (e.g., len(π))
-                    # For now, we'll use a placeholder value
+                    # Use an explicit default value when the data source is absent
                     dims.append(2)  # Default to 2 for symbolic dimensions
             
             # Create the variable with zeros
@@ -895,6 +895,22 @@ graph LR
     class GNN gnn;
     class PYMDP,PYAI,FEP,INFER,CUSTOM framework;
 ```
+
+## Variable design
+
+Name and shape state/observation variables consistently with [GNN Syntax](../reference/gnn_syntax.md#variable-naming-conventions) before wiring renderers.
+
+## Parameter specification
+
+Encode priors and constraints in `InitialParameterization` and matrix blocks as described in [Step 3: Setting Up Model Structure](#step-3-setting-up-model-structure).
+
+## Optimization
+
+Performance tuning spans pipeline configuration (Steps 11–12) and downstream numerics in each framework; see [Performance](../../performance/README.md).
+
+## Multi-agent coordination
+
+Compose multiple agents or factors in GNN structure and validate before render; see [GNN Multi-Agent](../advanced/gnn_multiagent.md).
 
 ## References
 

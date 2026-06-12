@@ -565,7 +565,7 @@ class ErrorRecoveryManager:
         
         if error.error_code in self.recovery_strategies:
             try:
-                return self.recovery_strategies[error.error_code](#placeholder)
+                return self.recovery_strategies[error.error_code](#)
             except Exception as recovery_error:
                 print(f"Recovery failed: {recovery_error}")
                 return False
@@ -577,8 +577,8 @@ class ErrorRecoveryManager:
         
         section_templates = {
             'ModelName': '## ModelName\nGenerated_Model',
-            'StateSpaceBlock': '## StateSpaceBlock\n# Auto-generated placeholder',
-            'Connections': '## Connections\n# Auto-generated placeholder'
+            'StateSpaceBlock': '## StateSpaceBlock\n# Auto-generated section',
+            'Connections': '## Connections\n# Auto-generated section'
         }
         
         missing_section = error.context.get('missing_section')

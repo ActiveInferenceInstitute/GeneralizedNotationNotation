@@ -10,9 +10,9 @@
 
 **Status**: ✅ Production Ready
 
-**Version**: 1.0.0
+**Version**: 1.6.0
 
-**Last Updated**: 2026-01-21
+**Last Updated**: 2026-04-16
 
 ---
 
@@ -272,13 +272,16 @@ Template Input → Processing → Pattern Demonstration → Validation → Docum
 ## Testing
 
 ### Test Files
-- `src/tests/test_template_overall.py` - Module-level tests (imports, outputs, and core behaviors)
-- `src/tests/test_pipeline_scripts.py` - Orchestrator-level checks that include `0_template.py`
+- `src/tests/template/test_template_overall.py` - Module-level tests (imports, outputs, and core behaviors)
+- `src/tests/pipeline/test_pipeline_scripts.py` - Orchestrator-level checks that include `0_template.py`
 
 ### Test Coverage
-- **Current**: 85%
-- **Target**: 90%+
+Measure on demand:
 
+```bash
+uv run --extra dev python -m pytest src/tests/test_template*.py \
+    --cov=src/template --cov-report=term-missing
+```
 ### Key Test Scenarios
 1. Template processing and generation
 2. Pattern demonstration and validation

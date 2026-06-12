@@ -19,16 +19,19 @@ logger = logging.getLogger(__name__)
 
 # ─── GNN Error Types ────────────────────────────────────────────────────────────
 
+
 @dataclass
 class GNNParseError:
     """Structured parse error with code, line number, and human-readable message."""
-    code: str          # e.g. GNN-E001
+
+    code: str  # e.g. GNN-E001
     message: str
     line: Optional[int] = None
     file: Optional[str] = None
-    severity: str = "error"   # "error" or "warning"
+    severity: str = "error"  # "error" or "warning"
 
     def __str__(self) -> str:
+        """Return the string representation."""
         loc = f":{self.line}" if self.line else ""
         src = f" [{self.file}{loc}]" if self.file else ""
         return f"[{self.code}] {self.message}{src}"
@@ -48,9 +51,10 @@ _CONNECTION_RE = re.compile(
 @dataclass
 class GNNConnectionEdge:
     """A parsed connection/edge between two state-space variables."""
+
     source: str
     target: str
-    directed: bool       # True for '>', False for '-'
+    directed: bool  # True for '>', False for '-'
     label: Optional[str] = None
     line: Optional[int] = None
 
@@ -83,7 +87,7 @@ def parse_connections(
         # Detect section boundaries
         if line.startswith("## "):
             section_name = line[3:].strip()
-            in_connections = (section_name == "Connections")
+            in_connections = section_name == "Connections"
             continue
 
         if not in_connections:
@@ -105,23 +109,34 @@ def parse_connections(
             # Cross-validate against declared variables
             if known_variables is not None:
                 if conn.source not in known_variables:
-                    errors.append(GNNParseError(
-                        code="GNN-W002",
-                        message=f"Connection references undeclared variable '{conn.source}'",
-                        line=line_no, file=file_path, severity="warning",
-                    ))
+                    errors.append(
+                        GNNParseError(
+                            code="GNN-W002",
+                            message=f"Connection references undeclared variable '{conn.source}'",
+                            line=line_no,
+                            file=file_path,
+                            severity="warning",
+                        )
+                    )
                 if conn.target not in known_variables:
-                    errors.append(GNNParseError(
-                        code="GNN-W002",
-                        message=f"Connection references undeclared variable '{conn.target}'",
-                        line=line_no, file=file_path, severity="warning",
-                    ))
+                    errors.append(
+                        GNNParseError(
+                            code="GNN-W002",
+                            message=f"Connection references undeclared variable '{conn.target}'",
+                            line=line_no,
+                            file=file_path,
+                            severity="warning",
+                        )
+                    )
         else:
-            errors.append(GNNParseError(
-                code="GNN-E005",
-                message=f"Unparseable connection: '{line}'",
-                line=line_no, file=file_path,
-            ))
+            errors.append(
+                GNNParseError(
+                    code="GNN-E005",
+                    message=f"Unparseable connection: '{line}'",
+                    line=line_no,
+                    file=file_path,
+                )
+            )
 
     return connections, errors
 
@@ -137,8 +152,9 @@ _VAR_RE = re.compile(
 @dataclass
 class GNNVariable:
     """A parsed state-space variable declaration."""
+
     name: str
-    dimensions: List[str]   # can be ints or symbolic names
+    dimensions: List[str]  # can be ints or symbolic names
     dtype: str = "float"
     default: Optional[str] = None
     line: Optional[int] = None
@@ -165,7 +181,7 @@ def parse_state_space(
 
         if line.startswith("## "):
             section_name = line[3:].strip()
-            in_ssb = (section_name == "StateSpaceBlock")
+            in_ssb = section_name == "StateSpaceBlock"
             continue
 
         if not in_ssb:
@@ -175,7 +191,7 @@ def parse_state_space(
 
         # Strip inline comment
         if "#" in line:
-            line = line[:line.index("#")].strip()
+            line = line[: line.index("#")].strip()
 
         m = _VAR_RE.match(line)
         if not m:
@@ -186,7 +202,7 @@ def parse_state_space(
 
         # Parse comma-separated dimension entries
         parts = [p.strip() for p in raw_dims.split(",")]
-        dims = []
+        dims: list[Any] = []
         dtype = "float"
         default = None
         for part in parts:
@@ -201,22 +217,31 @@ def parse_state_space(
                 dims.append(part)
 
         if name in seen_names:
-            errors.append(GNNParseError(
-                code="GNN-E004",
-                message=f"Duplicate variable declaration: '{name}'",
-                line=line_no, file=file_path,
-            ))
+            errors.append(
+                GNNParseError(
+                    code="GNN-E004",
+                    message=f"Duplicate variable declaration: '{name}'",
+                    line=line_no,
+                    file=file_path,
+                )
+            )
         seen_names.add(name)
 
-        variables.append(GNNVariable(
-            name=name, dimensions=dims, dtype=dtype,
-            default=default, line=line_no,
-        ))
+        variables.append(
+            GNNVariable(
+                name=name,
+                dimensions=dims,
+                dtype=dtype,
+                default=default,
+                line=line_no,
+            )
+        )
 
     return variables, errors
 
 
 # ─── Matrix Dimension Validation ─────────────────────────────────────────────────
+
 
 def validate_matrix_dimensions(
     content: str,
@@ -244,7 +269,7 @@ def validate_matrix_dimensions(
 
         if line.startswith("## "):
             section_name = line[3:].strip()
-            in_param = (section_name == "InitialParameterization")
+            in_param = section_name == "InitialParameterization"
             continue
 
         if not in_param:
@@ -271,22 +296,31 @@ def validate_matrix_dimensions(
                     try:
                         expected_rows = int(decl.dimensions[0])
                         if rows_counted != expected_rows:
-                            errors.append(GNNParseError(
-                                code="GNN-E002",
-                                message=(
-                                    f"Matrix '{current_var}': declared {expected_rows} rows "
-                                    f"but parameterization has {rows_counted} rows"
-                                ),
-                                line=line_no, file=file_path,
-                            ))
+                            errors.append(
+                                GNNParseError(
+                                    code="GNN-E002",
+                                    message=(
+                                        f"Matrix '{current_var}': declared {expected_rows} rows "
+                                        f"but parameterization has {rows_counted} rows"
+                                    ),
+                                    line=line_no,
+                                    file=file_path,
+                                )
+                            )
                     except (ValueError, IndexError) as e:
-                        logger.debug(f"Symbolic dimensions for '{current_var}', skipping numeric check: {e}")
+                        logger.debug(
+                            f"Symbolic dimensions for '{current_var}', skipping numeric check: {e}"
+                        )
                 else:
-                    errors.append(GNNParseError(
-                        code="GNN-W003",
-                        message=f"Parameterization for undeclared variable '{current_var}'",
-                        line=line_no, file=file_path, severity="warning",
-                    ))
+                    errors.append(
+                        GNNParseError(
+                            code="GNN-W003",
+                            message=f"Parameterization for undeclared variable '{current_var}'",
+                            line=line_no,
+                            file=file_path,
+                            severity="warning",
+                        )
+                    )
                 current_var = None
                 rows_counted = 0
 
@@ -301,7 +335,13 @@ GNN_MODEL_SCHEMA: Dict[str, Any] = {
     "title": "GNN Model",
     "description": "Schema for a parsed GNN (Generalized Notation Notation) model object.",
     "type": "object",
-    "required": ["gnn_section", "gnn_version", "model_name", "state_space", "connections"],
+    "required": [
+        "gnn_section",
+        "gnn_version",
+        "model_name",
+        "state_space",
+        "connections",
+    ],
     "properties": {
         "gnn_section": {
             "type": "string",
@@ -373,6 +413,7 @@ def validate_gnn_object(obj: Dict[str, Any]) -> List[str]:
     """
     try:
         import jsonschema
+
         validator = jsonschema.Draft202012Validator(GNN_MODEL_SCHEMA)
         return [e.message for e in sorted(validator.iter_errors(obj), key=str)]
     except ImportError:
@@ -383,7 +424,13 @@ def validate_gnn_object(obj: Dict[str, Any]) -> List[str]:
 
 # ─── Required Sections Validation ────────────────────────────────────────────────
 
-REQUIRED_SECTIONS = {"GNNSection", "GNNVersionAndFlags", "ModelName", "StateSpaceBlock", "Connections"}
+REQUIRED_SECTIONS: set[Any] = {
+    "GNNSection",
+    "GNNVersionAndFlags",
+    "ModelName",
+    "StateSpaceBlock",
+    "Connections",
+}
 
 
 def validate_required_sections(
@@ -392,17 +439,19 @@ def validate_required_sections(
     file_path: Optional[str] = None,
 ) -> List[GNNParseError]:
     """Check that all required sections are present."""
-    found = set()
+    found: set[Any] = set()
     for line in content.splitlines():
         if line.strip().startswith("## "):
             found.add(line.strip()[3:].strip())
 
-    errors = []
+    errors: list[Any] = []
     for section in REQUIRED_SECTIONS:
         if section not in found:
-            errors.append(GNNParseError(
-                code="GNN-E001",
-                message=f"Missing required section: '## {section}'",
-                file=file_path,
-            ))
+            errors.append(
+                GNNParseError(
+                    code="GNN-E001",
+                    message=f"Missing required section: '## {section}'",
+                    file=file_path,
+                )
+            )
     return errors

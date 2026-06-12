@@ -39,10 +39,10 @@ def get_oxdraw_info() -> Dict[str, Any]:
             "Interactive visual model editing",
             "Real-time diagram-as-code synchronization",
             "Ontology term preservation",
-            "Headless batch conversion support"
+            "Headless batch conversion support",
         ],
         "dependencies": ["oxdraw CLI (optional for interactive mode)"],
-        "modes": ["interactive", "headless"]
+        "modes": ["interactive", "headless"],
     }
 
 
@@ -51,14 +51,14 @@ def oxdraw_gui(
     output_dir: Path,
     logger: logging.Logger,
     verbose: bool = False,
-    **kwargs
+    **kwargs: Any,
 ) -> Dict[str, Any]:
     """
     oxdraw GUI processing function (GUI module interface).
-    
+
     This is the main entry point when oxdraw is selected as a GUI type
     in the GUI module (step 22).
-    
+
     Args:
         target_dir: Directory containing GNN files
         output_dir: Output directory for oxdraw results
@@ -72,7 +72,7 @@ def oxdraw_gui(
             - host (str): oxdraw server host (default: 127.0.0.1)
             - auto_convert (bool): Auto-convert GNN files to Mermaid
             - validate_on_save (bool): Validate conversions
-    
+
     Returns:
         Dictionary with processing results:
         {
@@ -85,14 +85,15 @@ def oxdraw_gui(
         }
     """
     import time
+
     start_time = time.time()
 
     # Determine mode - headless by default for pipeline integration
-    headless = kwargs.get('headless', True)
-    mode = kwargs.get('mode', 'headless' if headless else 'interactive')
+    headless = kwargs.get("headless", True)
+    mode = kwargs.get("mode", "headless" if headless else "interactive")
 
     # Override headless if explicitly set to interactive
-    if mode == 'interactive':
+    if mode == "interactive":
         headless = False
 
     logger.info(f"🎨 oxdraw GUI - Mode: {mode.upper()}")
@@ -108,25 +109,25 @@ def oxdraw_gui(
             output_dir=oxdraw_output,
             logger=logger,
             mode=mode,
-            **kwargs
+            **kwargs,
         )
 
         # Collect outputs
-        outputs = []
+        outputs: list[Any] = []
         if oxdraw_output.exists():
             outputs = [str(f) for f in oxdraw_output.glob("*.mmd")]
             outputs.extend([str(f) for f in oxdraw_output.glob("*.json")])
 
         duration = time.time() - start_time
 
-        result = {
+        result: dict[str, Any] = {
             "gui_type": "oxdraw",
             "success": success,
             "mode": mode,
             "files_processed": len(list(Path(target_dir).glob("*.md"))),
             "outputs": outputs,
             "duration": duration,
-            "output_dir": str(oxdraw_output)
+            "output_dir": str(oxdraw_output),
         }
 
         if success:
@@ -145,11 +146,11 @@ def oxdraw_gui(
             "mode": mode,
             "error": str(e),
             "duration": duration,
-            "output_dir": str(oxdraw_output)
+            "output_dir": str(oxdraw_output),
         }
 
 
-__all__ = [
+__all__: list[Any] = [
     "oxdraw_gui",
     "get_oxdraw_info",
     "process_oxdraw",

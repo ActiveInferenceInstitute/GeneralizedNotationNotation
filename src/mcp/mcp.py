@@ -16,7 +16,7 @@ from collections import defaultdict
 from concurrent.futures import ThreadPoolExecutor
 from contextlib import contextmanager
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional, Tuple, Union
+from typing import Any, Callable, Dict, List, Optional, Tuple, Union, cast
 
 # Configure logging
 logger = logging.getLogger("mcp")
@@ -43,11 +43,12 @@ from .models import (
 # Global SDK status instance
 _MCP_SDK_STATUS = MCPSDKStatus()
 
+
 # --- Enhanced Main MCP Class ---
 class MCP:
     """
     Enhanced Model Context Protocol implementation.
-    
+
     This class provides the core functionality for:
     - Discovering and loading MCP modules with caching
     - Registering tools and resources with enhanced metadata
@@ -58,8 +59,13 @@ class MCP:
     - Enhanced error handling and validation
     """
 
-    def __init__(self, enable_caching: bool = True, enable_rate_limiting: bool = True,
-                 strict_validation: bool = False, max_workers: int = 4):
+    def __init__(
+        self,
+        enable_caching: bool = True,
+        enable_rate_limiting: bool = True,
+        strict_validation: bool = False,
+        max_workers: int = 4,
+    ) -> None:
         """Initialize the enhanced MCP server with configurable features."""
         self.tools: Dict[str, MCPTool] = {}
         self.resources: Dict[str, MCPResource] = {}
@@ -69,6 +75,7 @@ class MCP:
         self._request_count = 0
         self._error_count = 0
         self._lock = threading.RLock()
+        self._module_import_lock = threading.RLock()
 
         self._performance_metrics = MCPPerformanceMetrics()
         self._tool_execution_times: Dict[str, List[float]] = defaultdict(list)
@@ -88,8 +95,11 @@ class MCP:
         self._result_cache: Dict[str, Tuple[Any, float]] = {}
         self._result_cache_lock = threading.Lock()
 
+        self._executor: Optional[ThreadPoolExecutor]
         try:
-            self._executor = ThreadPoolExecutor(max_workers=max_workers, thread_name_prefix="MCP")
+            self._executor = ThreadPoolExecutor(
+                max_workers=max_workers, thread_name_prefix="MCP"
+            )
         except Exception as e:
             logger.warning(f"Failed to create thread pool executor: {e}")
             self._executor = None
@@ -98,8 +108,10 @@ class MCP:
         self._enable_rate_limiting = enable_rate_limiting
         self._strict_validation = strict_validation
 
-        logger.info(f"Enhanced MCP server initialized (caching={enable_caching}, "
-                   f"rate_limiting={enable_rate_limiting}, strict_validation={strict_validation})")
+        logger.info(
+            f"Enhanced MCP server initialized (caching={enable_caching}, "
+            f"rate_limiting={enable_rate_limiting}, strict_validation={strict_validation})"
+        )
 
     @property
     def uptime(self) -> float:
@@ -130,11 +142,13 @@ class MCP:
             "strict_validation": self._strict_validation,
             "cache_ttl": self._cache_ttl,
             "max_workers": self._executor._max_workers if self._executor else 0,
-            "modules_discovered": self._modules_discovered
+            "modules_discovered": self._modules_discovered,
         }
 
     # --- Compatibility: simple listings used by reporting and diagnostics ---
-    def list_available_tools(self, include_metadata: bool = True) -> Union[List[Dict[str, Any]], List[str]]:
+    def list_available_tools(
+        self, include_metadata: bool = True
+    ) -> Union[List[Dict[str, Any]], List[str]]:
         """
         Return a list of registered tools. If include_metadata is True, returns a list of
         dictionaries with metadata; otherwise returns tool names.
@@ -143,18 +157,22 @@ class MCP:
             if include_metadata:
                 result: List[Dict[str, Any]] = []
                 for name, tool in self.tools.items():
-                    result.append({
-                        "name": name,
-                        "description": getattr(tool, "description", ""),
-                        "module": getattr(tool, "module", ""),
-                        "category": getattr(tool, "category", ""),
-                        "version": getattr(tool, "version", "1.0.0")
-                    })
+                    result.append(
+                        {
+                            "name": name,
+                            "description": getattr(tool, "description", ""),
+                            "module": getattr(tool, "module", ""),
+                            "category": getattr(tool, "category", ""),
+                            "version": getattr(tool, "version", "1.0.0"),
+                        }
+                    )
                 return sorted(result, key=lambda t: t["name"])
             else:
                 return sorted(self.tools.keys())
 
-    def list_available_resources(self, include_metadata: bool = True) -> Union[List[Dict[str, Any]], List[str]]:
+    def list_available_resources(
+        self, include_metadata: bool = True
+    ) -> Union[List[Dict[str, Any]], List[str]]:
         """
         Return a list of registered resources. If include_metadata is True, returns a list of
         dictionaries with metadata; otherwise returns resource URIs.
@@ -163,19 +181,26 @@ class MCP:
             if include_metadata:
                 result: List[Dict[str, Any]] = []
                 for uri, res in self.resources.items():
-                    result.append({
-                        "uri": uri,
-                        "description": getattr(res, "description", ""),
-                        "module": getattr(res, "module", ""),
-                        "category": getattr(res, "category", ""),
-                        "version": getattr(res, "version", "1.0.0")
-                    })
+                    result.append(
+                        {
+                            "uri": uri,
+                            "description": getattr(res, "description", ""),
+                            "module": getattr(res, "module", ""),
+                            "category": getattr(res, "category", ""),
+                            "version": getattr(res, "version", "1.0.0"),
+                        }
+                    )
                 return sorted(result, key=lambda r: r["uri"])
             else:
                 return sorted(self.resources.keys())
 
-    def discover_modules(self, force_refresh: bool = False, modules_allowlist: Optional[List[str]] = None,
-                         per_module_timeout: float = 30.0, overall_timeout: float = 120.0) -> bool:
+    def discover_modules(
+        self,
+        force_refresh: bool = False,
+        modules_allowlist: Optional[List[str]] = None,
+        per_module_timeout: float = 30.0,
+        overall_timeout: float = 120.0,
+    ) -> bool:
         """
         Enhanced module discovery with caching, thread safety, and comprehensive error handling.
 
@@ -194,13 +219,16 @@ class MCP:
         """
         with self._discovery_cache_lock:
             if self._modules_discovered and not force_refresh:
-                logger.debug("MCP modules already discovered. Skipping redundant discovery.")
+                logger.debug(
+                    "MCP modules already discovered. Skipping redundant discovery."
+                )
                 return True
 
             # Prevent concurrent discoveries
             self._modules_discovered = True
 
         root_dir = Path(__file__).parent.parent
+        self._configure_local_imports(root_dir)
         logger.info(f"Discovering MCP modules in {root_dir}")
         all_modules_loaded_successfully = True
 
@@ -216,15 +244,21 @@ class MCP:
                 self._discovery_cache.clear()
 
         # Get list of directories to scan
-        directories = [d for d in root_dir.iterdir()
-                      if d.is_dir() and not d.name.startswith('_')]
+        discovery_excluded_dirs: set[Any] = {"tests"}
+        directories = [
+            d
+            for d in root_dir.iterdir()
+            if d.is_dir()
+            and not d.name.startswith("_")
+            and d.name not in discovery_excluded_dirs
+        ]
         if modules_allowlist:
             allow = set(modules_allowlist)
-            directories = [d for d in directories if d.name in allow or d.name == 'mcp']
+            directories = [d for d in directories if d.name in allow or d.name == "mcp"]
 
         # Use thread pool if available, otherwise load sequentially
         if self._executor is not None:
-            module_load_futures = {}
+            module_load_futures: dict[Any, Any] = {}
             for directory in directories:
                 mcp_file = directory / "mcp.py"
                 if not mcp_file.exists():
@@ -239,12 +273,18 @@ class MCP:
             for module_name, future in list(module_load_futures.items()):
                 remaining = max(0.0, overall_timeout - (time.time() - start_wait))
                 try:
-                    success = future.result(timeout=min(per_module_timeout, remaining) if remaining > 0 else 0.001)
+                    success = future.result(
+                        timeout=min(per_module_timeout, remaining)
+                        if remaining > 0
+                        else 0.001
+                    )
                     if not success:
                         all_modules_loaded_successfully = False
                 except FuturesTimeoutError:
                     # Timeout is a transient issue - module may load later via recovery
-                    logger.warning(f"Module {module_name} loading timed out (>{per_module_timeout:.0f}s) — skipped")
+                    logger.warning(
+                        f"Module {module_name} loading timed out (>{per_module_timeout:.0f}s) — skipped"
+                    )
                     all_modules_loaded_successfully = False
                 except Exception as e:
                     error_msg = str(e) if str(e) else type(e).__name__
@@ -255,7 +295,7 @@ class MCP:
                         path=Path(__file__).parent.parent / module_name / "mcp.py",
                         status="error",
                         error_message=error_msg,
-                        last_updated=time.time()
+                        last_updated=time.time(),
                     )
         else:
             # Recovery sequential loading
@@ -281,7 +321,9 @@ class MCP:
                 sympy_module = importlib.import_module("src.mcp.sympy_mcp")
                 import_time = time.time() - import_start
 
-                if hasattr(sympy_module, "register_tools") and callable(sympy_module.register_tools):
+                if hasattr(sympy_module, "register_tools") and callable(
+                    sympy_module.register_tools
+                ):
                     tools_before = len(self.tools)
                     sympy_module.register_tools(self)
                     tools_added = len(self.tools) - tools_before
@@ -292,13 +334,17 @@ class MCP:
                         tools_count=tools_added,
                         status="loaded",
                         load_time=import_time,
-                        last_updated=time.time()
+                        last_updated=time.time(),
                     )
-                    logger.debug(f"Loaded sympy_mcp: {tools_added} tools in {import_time:.3f}s")
+                    logger.debug(
+                        f"Loaded sympy_mcp: {tools_added} tools in {import_time:.3f}s"
+                    )
                 else:
                     logger.warning("sympy_mcp module has no register_tools function")
             except Exception as e:
-                logger.error(f"Failed to load core MCP module src.mcp.sympy_mcp: {str(e)}")
+                logger.error(
+                    f"Failed to load core MCP module src.mcp.sympy_mcp: {str(e)}"
+                )
                 all_modules_loaded_successfully = False
 
                 self.modules["sympy_mcp"] = MCPModuleInfo(
@@ -306,27 +352,31 @@ class MCP:
                     path=sympy_mcp_file,
                     status="error",
                     error_message=str(e),
-                    last_updated=time.time()
+                    last_updated=time.time(),
                 )
 
         discovery_time = time.time() - discovery_start
-        logger.info(f"Enhanced module discovery completed in {discovery_time:.2f}s: "
-                   f"{len(self.modules)} modules, {len(self.tools)} tools, {len(self.resources)} resources")
+        logger.info(
+            f"Enhanced module discovery completed in {discovery_time:.2f}s: "
+            f"{len(self.modules)} modules, {len(self.tools)} tools, {len(self.resources)} resources"
+        )
 
         self._modules_discovered = True
         self._cache_timestamp = time.time()
 
         return all_modules_loaded_successfully
 
-    def _load_module(self, directory: Path, mcp_file: Path, module_name: Optional[str] = None) -> bool:
+    def _load_module(
+        self, directory: Path, mcp_file: Path, module_name: Optional[str] = None
+    ) -> bool:
         """
         Load a single MCP module with enhanced error handling and performance tracking.
-        
+
         Args:
             directory: Directory containing the module
             mcp_file: Path to the mcp.py file
             module_name: Optional custom module name
-            
+
         Returns:
             bool: True if module loaded successfully
         """
@@ -334,27 +384,40 @@ class MCP:
             module_name = directory.name
 
         module_start = time.time()
+        full_module_name = f"src.{module_name}.mcp"
 
         try:
-            # Add parent directory to path if needed
-            root_dir = Path(__file__).parent.parent
-            if str(root_dir.parent) not in sys.path:
-                sys.path.append(str(root_dir.parent))
+            with self._module_import_lock:
+                # Add parent directory to path if needed
+                root_dir = Path(__file__).parent.parent
+                if str(root_dir.parent) not in sys.path:
+                    sys.path.insert(0, str(root_dir.parent))
+                if str(root_dir) not in sys.path:
+                    sys.path.insert(0, str(root_dir))
 
-            # Import the module
-            full_module_name = f"src.{module_name}.mcp"
-            module = importlib.import_module(full_module_name)
+                # Import the module. Imports are serialized because several
+                # modules expose both `src.<module>` and top-level package
+                # paths, and Python's import cache is process-global.
+                module = importlib.import_module(full_module_name)
             import_time = time.time() - module_start
 
-            logger.debug(f"Loaded MCP module: {full_module_name} (import: {import_time:.3f}s)")
+            logger.debug(
+                f"Loaded MCP module: {full_module_name} (import: {import_time:.3f}s)"
+            )
 
             # Special handling for llm module initialization
             if full_module_name == "src.llm.mcp":
-                if hasattr(module, "initialize_llm_module") and callable(module.initialize_llm_module):
-                    logger.debug(f"Calling initialize_llm_module for {full_module_name}")
+                if hasattr(module, "initialize_llm_module") and callable(
+                    module.initialize_llm_module
+                ):
+                    logger.debug(
+                        f"Calling initialize_llm_module for {full_module_name}"
+                    )
                     module.initialize_llm_module(self)
                 else:
-                    logger.warning(f"Module {full_module_name} does not have a callable initialize_llm_module function.")
+                    logger.warning(
+                        f"Module {full_module_name} does not have a callable initialize_llm_module function."
+                    )
 
             # Register tools and resources from the module
             register_start = time.time()
@@ -383,24 +446,30 @@ class MCP:
                     version=getattr(module, "__version__", "1.0.0"),
                     description=getattr(module, "__description__", ""),
                     dependencies=getattr(module, "__dependencies__", []),
-                    last_updated=time.time()
+                    last_updated=time.time(),
                 )
 
                 # Update performance metrics
-                self._performance_metrics.module_load_times[module_name] = module_load_time
+                self._performance_metrics.module_load_times[module_name] = (
+                    module_load_time
+                )
 
-                logger.info(f"Successfully loaded module {module_name}: "
-                           f"{tools_added} tools, {resources_added} resources "
-                           f"(load: {module_load_time:.3f}s, import: {import_time:.3f}s, register: {register_time:.3f}s)")
+                logger.info(
+                    f"Successfully loaded module {module_name}: "
+                    f"{tools_added} tools, {resources_added} resources "
+                    f"(load: {module_load_time:.3f}s, import: {import_time:.3f}s, register: {register_time:.3f}s)"
+                )
                 return True
             else:
-                logger.warning(f"Module {full_module_name} found but has no register_tools function.")
+                logger.warning(
+                    f"Module {full_module_name} found but has no register_tools function."
+                )
                 self.modules[module_name] = MCPModuleInfo(
                     name=full_module_name,
                     path=mcp_file,
                     status="no_register_function",
                     import_time=import_time,
-                    last_updated=time.time()
+                    last_updated=time.time(),
                 )
                 return False
 
@@ -414,21 +483,78 @@ class MCP:
                 status="error",
                 error_message=str(e),
                 load_time=module_load_time,
-                last_updated=time.time()
+                last_updated=time.time(),
             )
             return False
 
-    def register_tool(self, name: str, func: Optional[Callable] = None, schema: Optional[Dict[str, Any]] = None, description: str = "",
-                     module: str = "", category: str = "", version: str = "1.0.0",
-                     tags: Optional[List[str]] = None, examples: Optional[List[Dict[str, Any]]] = None,
-                     deprecated: bool = False, experimental: bool = False,
-                     timeout: Optional[float] = None, max_concurrent: int = 1, requires_auth: bool = False,
-                      rate_limit: Optional[float] = None, cache_ttl: Optional[float] = None,
-                      input_validation: bool = True, output_validation: bool = True,
-                      # Compatibility keywords accepted by some module mcp files
-                      function: Optional[Callable] = None,
-                      parameters: Optional[List[Dict[str, Any]]] = None,
-                      returns: Optional[Dict[str, Any]] = None) -> None:
+    @staticmethod
+    def _configure_local_imports(root_dir: Path) -> None:
+        """Keep local source packages ahead of same-named installed packages."""
+        if str(root_dir.parent) not in sys.path:
+            sys.path.insert(0, str(root_dir.parent))
+        if str(root_dir) not in sys.path:
+            sys.path.insert(0, str(root_dir))
+
+        local_names = {
+            name
+            for name in (
+                "advanced_visualization",
+                "analysis",
+                "gnn",
+                "gui",
+                "intelligent_analysis",
+                "llm",
+                "pipeline",
+                "type_checker",
+                "visualization",
+            )
+            if (root_dir / name).is_dir()
+        }
+        if not local_names:
+            return
+
+        root_resolved = root_dir.resolve()
+        for loaded_name in list(sys.modules):
+            top_level_name = loaded_name.split(".", 1)[0]
+            if top_level_name not in local_names:
+                continue
+
+            module = sys.modules.get(loaded_name)
+            module_file = getattr(module, "__file__", None)
+            if not module_file:
+                sys.modules.pop(loaded_name, None)
+                continue
+
+            try:
+                module_path = Path(module_file).resolve()
+                module_path.relative_to(root_resolved / top_level_name)
+            except (OSError, ValueError):
+                sys.modules.pop(loaded_name, None)
+
+    def register_tool(
+        self,
+        name: str,
+        func: Optional[Callable] = None,
+        schema: Optional[Dict[str, Any]] = None,
+        description: str = "",
+        module: str = "",
+        category: str = "",
+        version: str = "1.0.0",
+        tags: Optional[List[str]] = None,
+        examples: Optional[List[Dict[str, Any]]] = None,
+        experimental: bool = False,
+        timeout: Optional[float] = None,
+        max_concurrent: int = 1,
+        requires_auth: bool = False,
+        rate_limit: Optional[float] = None,
+        cache_ttl: Optional[float] = None,
+        input_validation: bool = True,
+        output_validation: bool = True,
+        # Alternate metadata keywords accepted by module mcp files.
+        function: Optional[Callable] = None,
+        parameters: Optional[List[Dict[str, Any]]] = None,
+        returns: Optional[Dict[str, Any]] = None,
+    ) -> None:
         """
         Register a new tool with the MCP server.
 
@@ -442,7 +568,6 @@ class MCP:
             version: Tool version
             tags: List of tags for categorization
             examples: List of example parameter sets
-            deprecated: Whether the tool is deprecated
             experimental: Whether the tool is experimental
             timeout: Optional timeout for the tool in seconds
             max_concurrent: Maximum number of concurrent executions
@@ -478,36 +603,38 @@ class MCP:
                 # If it's from the same module/registration context, skip it silently
                 # If it's from a different source, log a warning but allow overwriting
                 # This reduces noise from multiple registration attempts
-                logger.debug(f"Tool '{name}' already registered, updating with new version")
+                logger.debug(
+                    f"Tool '{name}' already registered, updating with new version"
+                )
 
             # Convert older "parameters" list format into JSON schema if provided
             if parameters and not schema:
                 props: Dict[str, Any] = {}
                 required_fields: List[str] = []
-                type_map = {
-                    'string': 'string',
-                    'boolean': 'boolean',
-                    'integer': 'integer',
-                    'number': 'number',
-                    'array': 'array',
-                    'object': 'object'
+                type_map: dict[str, Any] = {
+                    "string": "string",
+                    "boolean": "boolean",
+                    "integer": "integer",
+                    "number": "number",
+                    "array": "array",
+                    "object": "object",
                 }
                 for p in parameters:
-                    pname = p.get('name') or p.get('param')
-                    ptype = type_map.get(p.get('type', 'string'), 'string')
-                    prop: Dict[str, Any] = {'type': ptype}
-                    if 'description' in p:
-                        prop['description'] = p['description']
-                    if 'enum' in p:
-                        prop['enum'] = p['enum']
-                    if 'default' in p:
-                        prop['default'] = p['default']
+                    pname = str(p.get("name") or p.get("param"))
+                    ptype = type_map.get(p.get("type", "string"), "string")
+                    prop: Dict[str, Any] = {"type": ptype}
+                    if "description" in p:
+                        prop["description"] = p["description"]
+                    if "enum" in p:
+                        prop["enum"] = p["enum"]
+                    if "default" in p:
+                        prop["default"] = p["default"]
                     props[pname] = prop
-                    if p.get('required', False):
+                    if p.get("required", False):
                         required_fields.append(pname)
-                schema = {'type': 'object', 'properties': props}
+                schema = {"type": "object", "properties": props}
                 if required_fields:
-                    schema['required'] = required_fields
+                    schema["required"] = required_fields
 
             tool = MCPTool(
                 name=name,
@@ -519,7 +646,6 @@ class MCP:
                 version=version,
                 tags=tags or [],
                 examples=examples or [],
-                deprecated=deprecated,
                 experimental=experimental,
                 timeout=timeout,
                 max_concurrent=max_concurrent,
@@ -527,22 +653,33 @@ class MCP:
                 rate_limit=rate_limit,
                 cache_ttl=cache_ttl,
                 input_validation=input_validation,
-                output_validation=output_validation
+                output_validation=output_validation,
             )
 
             self.tools[name] = tool
             logger.debug(f"Registered tool: {name}")
 
-    def register_resource(self, uri_template: str, retriever: Callable, description: str,
-                         module: str = "", category: str = "", version: str = "1.0.0",
-                         mime_type: str = "application/json", cacheable: bool = True,
-                         tags: Optional[List[str]] = None,
-                         timeout: Optional[float] = None, requires_auth: bool = False,
-                         rate_limit: Optional[float] = None, cache_ttl: Optional[float] = None,
-                         compression: bool = False, encryption: bool = False):
+    def register_resource(
+        self,
+        uri_template: str,
+        retriever: Callable,
+        description: str,
+        module: str = "",
+        category: str = "",
+        version: str = "1.0.0",
+        mime_type: str = "application/json",
+        cacheable: bool = True,
+        tags: Optional[List[str]] = None,
+        timeout: Optional[float] = None,
+        requires_auth: bool = False,
+        rate_limit: Optional[float] = None,
+        cache_ttl: Optional[float] = None,
+        compression: bool = False,
+        encryption: bool = False,
+    ) -> Any:
         """
         Register a new resource with the MCP server.
-        
+
         Args:
             uri_template: URI template for the resource
             retriever: Function to retrieve resource content
@@ -562,7 +699,9 @@ class MCP:
         """
         with self._lock:
             if uri_template in self.resources:
-                logger.warning(f"Resource '{uri_template}' already registered, overwriting")
+                logger.warning(
+                    f"Resource '{uri_template}' already registered, overwriting"
+                )
 
             resource = MCPResource(
                 uri_template=uri_template,
@@ -579,7 +718,7 @@ class MCP:
                 rate_limit=rate_limit,
                 cache_ttl=cache_ttl,
                 compression=compression,
-                encryption=encryption
+                encryption=encryption,
             )
 
             self.resources[uri_template] = resource
@@ -588,14 +727,14 @@ class MCP:
     def execute_tool(self, tool_name: str, params: Dict[str, Any]) -> Dict[str, Any]:
         """
         Enhanced tool execution with rate limiting, caching, and performance tracking.
-        
+
         Args:
             tool_name: Name of the tool to execute
             params: Parameters for the tool
-            
+
         Returns:
             Dict containing the tool execution result
-            
+
         Raises:
             MCPToolNotFoundError: If tool is not found
             MCPInvalidParamsError: If parameters are invalid
@@ -617,16 +756,17 @@ class MCP:
             # in this local-only server (no auth mechanism is configured).
             if tool.requires_auth:
                 raise MCPToolNotFoundError(
-                    tool_name,
-                    [t for t, v in self.tools.items() if not v.requires_auth]
+                    tool_name, [t for t, v in self.tools.items() if not v.requires_auth]
                 )
 
             # Simplified validation
             if tool.input_validation:
-                if 'required' in tool.schema:
-                    for req in tool.schema['required']:
+                if "required" in tool.schema:
+                    for req in tool.schema["required"]:
                         if req not in params:
-                            raise MCPInvalidParamsError(f"Missing required param: {req}")
+                            raise MCPInvalidParamsError(
+                                f"Missing required param: {req}"
+                            )
 
             # Synchronous execution
             start_time = time.time()
@@ -636,15 +776,18 @@ class MCP:
                 if tool.output_validation:
                     self._validate_output(result)
                 logger.debug(f"Tool {tool_name} executed successfully")
-                return result
+                return cast("dict[str, Any]", result)
             except Exception as e:
                 execution_time = time.time() - start_time
                 self._performance_metrics.failed_requests += 1
-                self._performance_metrics.error_counts[tool_name] = \
+                self._performance_metrics.error_counts[tool_name] = (
                     self._performance_metrics.error_counts.get(tool_name, 0) + 1
+                )
 
                 # Log detailed error information
-                logger.error(f"Tool {tool_name} execution failed after {execution_time:.3f}s: {e}")
+                logger.error(
+                    f"Tool {tool_name} execution failed after {execution_time:.3f}s: {e}"
+                )
                 logger.debug(f"Tool {tool_name} parameters: {params}")
 
                 raise MCPToolExecutionError(tool_name, e, execution_time) from e
@@ -652,19 +795,23 @@ class MCP:
             finally:
                 # Clean up execution tracking
                 with self._execution_lock:
-                    self._active_executions[tool_name] = max(0, self._active_executions[tool_name] - 1)
-                    self._performance_metrics.concurrent_requests = max(0, self._performance_metrics.concurrent_requests - 1)
+                    self._active_executions[tool_name] = max(
+                        0, self._active_executions[tool_name] - 1
+                    )
+                    self._performance_metrics.concurrent_requests = max(
+                        0, self._performance_metrics.concurrent_requests - 1
+                    )
 
     def get_resource(self, uri: str) -> Dict[str, Any]:
         """
         Retrieve a resource by URI.
-        
+
         Args:
             uri: URI of the resource to retrieve
-            
+
         Returns:
             Resource content
-            
+
         Raises:
             MCPResourceNotFoundError: If resource is not found
         """
@@ -691,12 +838,12 @@ class MCP:
                 content = matching_resource.retriever(uri)
 
                 # Add metadata
-                result = {
+                result: dict[str, Any] = {
                     "content": content,
                     "uri": uri,
                     "mime_type": matching_resource.mime_type,
                     "cacheable": matching_resource.cacheable,
-                    "retrieved_at": time.time()
+                    "retrieved_at": time.time(),
                 }
 
                 logger.debug(f"Resource '{uri}' retrieved successfully")
@@ -709,46 +856,49 @@ class MCP:
     def get_capabilities(self) -> Dict[str, Any]:
         """Get server capabilities including all available tools and resources."""
         with self._lock:
-            tools_list = []
+            tools_list: list[Any] = []
             for tool in self.tools.values():
-                tools_list.append({
-                    "name": tool.name,
-                    "description": tool.description,
-                    "schema": tool.schema,
-                    "module": tool.module,
-                    "category": tool.category,
-                    "version": tool.version,
-                    "tags": tool.tags,
-                    "examples": tool.examples,
-                    "deprecated": tool.deprecated,
-                    "experimental": tool.experimental,
-                    "timeout": tool.timeout,
-                    "max_concurrent": tool.max_concurrent,
-                    "requires_auth": tool.requires_auth,
-                    "rate_limit": tool.rate_limit,
-                    "cache_ttl": tool.cache_ttl,
-                    "input_validation": tool.input_validation,
-                    "output_validation": tool.output_validation
-                })
+                tools_list.append(
+                    {
+                        "name": tool.name,
+                        "description": tool.description,
+                        "schema": tool.schema,
+                        "module": tool.module,
+                        "category": tool.category,
+                        "version": tool.version,
+                        "tags": tool.tags,
+                        "examples": tool.examples,
+                        "experimental": tool.experimental,
+                        "timeout": tool.timeout,
+                        "max_concurrent": tool.max_concurrent,
+                        "requires_auth": tool.requires_auth,
+                        "rate_limit": tool.rate_limit,
+                        "cache_ttl": tool.cache_ttl,
+                        "input_validation": tool.input_validation,
+                        "output_validation": tool.output_validation,
+                    }
+                )
 
-            resources_list = []
+            resources_list: list[Any] = []
             for resource in self.resources.values():
-                resources_list.append({
-                    "uri_template": resource.uri_template,
-                    "description": resource.description,
-                    "module": resource.module,
-                    "category": resource.category,
-                    "version": resource.version,
-                    "mime_type": resource.mime_type,
-                    "cacheable": resource.cacheable,
-                    "tags": resource.tags,
-                    "timeout": resource.timeout,
-                    "requires_auth": resource.requires_auth,
-                    "rate_limit": resource.rate_limit,
-                    "cache_ttl": resource.cache_ttl,
-                    "compression": resource.compression,
-                    "encryption": resource.encryption
-                })
+                resources_list.append(
+                    {
+                        "uri_template": resource.uri_template,
+                        "description": resource.description,
+                        "module": resource.module,
+                        "category": resource.category,
+                        "version": resource.version,
+                        "mime_type": resource.mime_type,
+                        "cacheable": resource.cacheable,
+                        "tags": resource.tags,
+                        "timeout": resource.timeout,
+                        "requires_auth": resource.requires_auth,
+                        "rate_limit": resource.rate_limit,
+                        "cache_ttl": resource.cache_ttl,
+                        "compression": resource.compression,
+                        "encryption": resource.encryption,
+                    }
+                )
 
             return {
                 "tools": tools_list,
@@ -759,9 +909,9 @@ class MCP:
                     "description": "Model Context Protocol server for GeneralizedNotationNotation",
                     "capabilities": {
                         "tools": {"listChanged": True},
-                        "resources": {"listChanged": True}
-                    }
-                }
+                        "resources": {"listChanged": True},
+                    },
+                },
             }
 
     def get_server_status(self) -> Dict[str, Any]:
@@ -771,12 +921,12 @@ class MCP:
             uptime_str = time.strftime("%H:%M:%S", time.gmtime(uptime_seconds))
 
             # Calculate tool categories
-            categories = defaultdict(int)
+            categories: Any = defaultdict(int)
             for tool in self.tools.values():
                 categories[tool.category or "uncategorized"] += 1
 
             # Calculate resource categories
-            resource_categories = defaultdict(int)
+            resource_categories: Any = defaultdict(int)
             for resource in self.resources.values():
                 resource_categories[resource.category or "uncategorized"] += 1
 
@@ -797,8 +947,10 @@ class MCP:
                     "failed_requests": self._performance_metrics.failed_requests,
                     "average_execution_time": self._performance_metrics.average_execution_time,
                     "max_execution_time": self._performance_metrics.max_execution_time,
-                    "min_execution_time": self._performance_metrics.min_execution_time if self._performance_metrics.min_execution_time != float('inf') else 0.0
-                }
+                    "min_execution_time": self._performance_metrics.min_execution_time
+                    if self._performance_metrics.min_execution_time != float("inf")
+                    else 0.0,
+                },
             }
 
     def get_module_info(self, module_name: str) -> Optional[Dict[str, Any]]:
@@ -811,13 +963,13 @@ class MCP:
 
             # Get tools for this module
             module_tools = [
-                tool.name for tool in self.tools.values()
-                if tool.module == module_name
+                tool.name for tool in self.tools.values() if tool.module == module_name
             ]
 
             # Get resources for this module
             module_resources = [
-                resource.uri_template for resource in self.resources.values()
+                resource.uri_template
+                for resource in self.resources.values()
                 if resource.module == module_name
             ]
 
@@ -834,7 +986,7 @@ class MCP:
                 "last_updated": module_info.last_updated,
                 "error_message": module_info.error_message,
                 "tools": module_tools,
-                "resources": module_resources
+                "resources": module_resources,
             }
 
     def get_tool_info(self, tool_name: str) -> Optional[Dict[str, Any]]:
@@ -847,7 +999,9 @@ class MCP:
 
             # Get execution statistics
             execution_times = self._tool_execution_times.get(tool_name, [])
-            avg_execution_time = sum(execution_times) / len(execution_times) if execution_times else 0.0
+            avg_execution_time = (
+                sum(execution_times) / len(execution_times) if execution_times else 0.0
+            )
 
             return {
                 "name": tool.name,
@@ -858,9 +1012,10 @@ class MCP:
                 "version": tool.version,
                 "tags": tool.tags,
                 "examples": tool.examples,
-                "deprecated": tool.deprecated,
                 "experimental": tool.experimental,
-                "usage_count": self._performance_metrics.tool_usage_stats.get(tool_name, 0),
+                "usage_count": self._performance_metrics.tool_usage_stats.get(
+                    tool_name, 0
+                ),
                 "average_execution_time": avg_execution_time,
                 "execution_count": len(execution_times),
                 "timeout": tool.timeout,
@@ -869,17 +1024,17 @@ class MCP:
                 "rate_limit": tool.rate_limit,
                 "cache_ttl": tool.cache_ttl,
                 "input_validation": tool.input_validation,
-                "output_validation": tool.output_validation
+                "output_validation": tool.output_validation,
             }
 
     def _validate_params(self, schema: Dict[str, Any], params: Dict[str, Any]) -> None:
         """
         Enhanced parameter validation against schema with detailed error reporting.
-        
+
         Args:
             schema: JSON schema for validation
             params: Parameters to validate
-            
+
         Raises:
             MCPValidationError: If validation fails
         """
@@ -888,7 +1043,9 @@ class MCP:
             if "required" in schema:
                 for required in schema["required"]:
                     if required not in params:
-                        raise MCPValidationError(f"Missing required parameter: {required}")
+                        raise MCPValidationError(
+                            f"Missing required parameter: {required}"
+                        )
             return
 
         if not isinstance(params, dict):
@@ -900,7 +1057,7 @@ class MCP:
                 if required_field not in params:
                     raise MCPValidationError(
                         f"Required parameter '{required_field}' is missing",
-                        field=required_field
+                        field=required_field,
                     )
 
         # Validate properties
@@ -921,15 +1078,17 @@ class MCP:
                 f"Too many properties: {len(params)} > {schema['maxProperties']}"
             )
 
-    def _validate_field(self, field_name: str, field_value: Any, field_schema: Dict[str, Any]) -> None:
+    def _validate_field(
+        self, field_name: str, field_value: Any, field_schema: Dict[str, Any]
+    ) -> None:
         """
         Validate a single field against its schema.
-        
+
         Args:
             field_name: Name of the field
             field_value: Value to validate
             field_schema: Schema for the field
-            
+
         Raises:
             MCPValidationError: If validation fails
         """
@@ -941,38 +1100,45 @@ class MCP:
                 raise MCPValidationError(
                     f"Parameter '{field_name}' must be a string",
                     field=field_name,
-                    value=field_value
+                    value=field_value,
                 )
 
             # String-specific validations
-            if "minLength" in field_schema and len(field_value) < field_schema["minLength"]:
+            if (
+                "minLength" in field_schema
+                and len(field_value) < field_schema["minLength"]
+            ):
                 raise MCPValidationError(
                     f"Parameter '{field_name}' too short: {len(field_value)} < {field_schema['minLength']}",
                     field=field_name,
-                    value=field_value
+                    value=field_value,
                 )
 
-            if "maxLength" in field_schema and len(field_value) > field_schema["maxLength"]:
+            if (
+                "maxLength" in field_schema
+                and len(field_value) > field_schema["maxLength"]
+            ):
                 raise MCPValidationError(
                     f"Parameter '{field_name}' too long: {len(field_value)} > {field_schema['maxLength']}",
                     field=field_name,
-                    value=field_value
+                    value=field_value,
                 )
 
             if "pattern" in field_schema:
                 import re
+
                 if not re.match(field_schema["pattern"], field_value):
                     raise MCPValidationError(
                         f"Parameter '{field_name}' does not match pattern: {field_schema['pattern']}",
                         field=field_name,
-                        value=field_value
+                        value=field_value,
                     )
 
             if "enum" in field_schema and field_value not in field_schema["enum"]:
                 raise MCPValidationError(
                     f"Parameter '{field_name}' must be one of: {field_schema['enum']}",
                     field=field_name,
-                    value=field_value
+                    value=field_value,
                 )
 
         elif field_type == "integer":
@@ -980,7 +1146,7 @@ class MCP:
                 raise MCPValidationError(
                     f"Parameter '{field_name}' must be an integer",
                     field=field_name,
-                    value=field_value
+                    value=field_value,
                 )
 
             # Integer-specific validations
@@ -988,14 +1154,14 @@ class MCP:
                 raise MCPValidationError(
                     f"Parameter '{field_name}' too small: {field_value} < {field_schema['minimum']}",
                     field=field_name,
-                    value=field_value
+                    value=field_value,
                 )
 
             if "maximum" in field_schema and field_value > field_schema["maximum"]:
                 raise MCPValidationError(
                     f"Parameter '{field_name}' too large: {field_value} > {field_schema['maximum']}",
                     field=field_name,
-                    value=field_value
+                    value=field_value,
                 )
 
         elif field_type == "number":
@@ -1003,7 +1169,7 @@ class MCP:
                 raise MCPValidationError(
                     f"Parameter '{field_name}' must be a number",
                     field=field_name,
-                    value=field_value
+                    value=field_value,
                 )
 
             # Number-specific validations
@@ -1011,14 +1177,14 @@ class MCP:
                 raise MCPValidationError(
                     f"Parameter '{field_name}' too small: {field_value} < {field_schema['minimum']}",
                     field=field_name,
-                    value=field_value
+                    value=field_value,
                 )
 
             if "maximum" in field_schema and field_value > field_schema["maximum"]:
                 raise MCPValidationError(
                     f"Parameter '{field_name}' too large: {field_value} > {field_schema['maximum']}",
                     field=field_name,
-                    value=field_value
+                    value=field_value,
                 )
 
         elif field_type == "boolean":
@@ -1026,7 +1192,7 @@ class MCP:
                 raise MCPValidationError(
                     f"Parameter '{field_name}' must be a boolean",
                     field=field_name,
-                    value=field_value
+                    value=field_value,
                 )
 
         elif field_type == "array":
@@ -1034,34 +1200,42 @@ class MCP:
                 raise MCPValidationError(
                     f"Parameter '{field_name}' must be an array",
                     field=field_name,
-                    value=field_value
+                    value=field_value,
                 )
 
             # Array-specific validations
-            if "minItems" in field_schema and len(field_value) < field_schema["minItems"]:
+            if (
+                "minItems" in field_schema
+                and len(field_value) < field_schema["minItems"]
+            ):
                 raise MCPValidationError(
                     f"Parameter '{field_name}' too few items: {len(field_value)} < {field_schema['minItems']}",
                     field=field_name,
-                    value=field_value
+                    value=field_value,
                 )
 
-            if "maxItems" in field_schema and len(field_value) > field_schema["maxItems"]:
+            if (
+                "maxItems" in field_schema
+                and len(field_value) > field_schema["maxItems"]
+            ):
                 raise MCPValidationError(
                     f"Parameter '{field_name}' too many items: {len(field_value)} > {field_schema['maxItems']}",
                     field=field_name,
-                    value=field_value
+                    value=field_value,
                 )
 
             # Validate array items if schema provided
             if "items" in field_schema:
                 for i, item in enumerate(field_value):
                     try:
-                        self._validate_field(f"{field_name}[{i}]", item, field_schema["items"])
+                        self._validate_field(
+                            f"{field_name}[{i}]", item, field_schema["items"]
+                        )
                     except MCPValidationError as e:
                         raise MCPValidationError(
                             f"Array item validation failed: {e}",
                             field=field_name,
-                            value=field_value
+                            value=field_value,
                         ) from e
 
         elif field_type == "object":
@@ -1069,7 +1243,7 @@ class MCP:
                 raise MCPValidationError(
                     f"Parameter '{field_name}' must be an object",
                     field=field_name,
-                    value=field_value
+                    value=field_value,
                 )
 
             # Object-specific validations
@@ -1077,16 +1251,23 @@ class MCP:
                 for prop_name, prop_value in field_value.items():
                     if prop_name in field_schema["properties"]:
                         try:
-                            self._validate_field(f"{field_name}.{prop_name}", prop_value, field_schema["properties"][prop_name])
+                            self._validate_field(
+                                f"{field_name}.{prop_name}",
+                                prop_value,
+                                field_schema["properties"][prop_name],
+                            )
                         except MCPValidationError as e:
                             raise MCPValidationError(
                                 f"Object property validation failed: {e}",
                                 field=field_name,
-                                value=field_value
+                                value=field_value,
                             ) from e
 
             # Check for additional properties
-            if "additionalProperties" in field_schema and field_schema["additionalProperties"] is False:
+            if (
+                "additionalProperties" in field_schema
+                and field_schema["additionalProperties"] is False
+            ):
                 allowed_props = set(field_schema.get("properties", {}).keys())
                 actual_props = set(field_value.keys())
                 extra_props = actual_props - allowed_props
@@ -1094,7 +1275,7 @@ class MCP:
                     raise MCPValidationError(
                         f"Parameter '{field_name}' has additional properties not allowed: {extra_props}",
                         field=field_name,
-                        value=field_value
+                        value=field_value,
                     )
 
     def _match_uri_template(self, template: str, uri: str) -> bool:
@@ -1115,7 +1296,7 @@ class MCP:
 
             for template_part, uri_part in zip(template_parts, uri_parts):
                 if template_part.startswith("{") and template_part.endswith("}"):
-                    continue  # Parameter placeholder
+                    continue
                 if template_part != uri_part:
                     return False
 
@@ -1124,7 +1305,7 @@ class MCP:
         return False
 
     @contextmanager
-    def _track_performance(self, operation: str):
+    def _track_performance(self, operation: str) -> Any:
         """Context manager for tracking operation performance."""
         start_time = time.time()
         try:
@@ -1133,7 +1314,7 @@ class MCP:
             execution_time = time.time() - start_time
             logger.debug(f"Operation '{operation}' completed in {execution_time:.4f}s")
 
-    def _validate_output(self, result: Any):
+    def _validate_output(self, result: Any) -> Any:
         """Validate tool output (basic validation)."""
         if result is None:
             raise MCPValidationError("Tool output cannot be None")
@@ -1145,7 +1326,7 @@ class MCP:
     def get_enhanced_server_status(self) -> Dict[str, Any]:
         """
         Get enhanced server status with detailed metrics and health information.
-        
+
         Returns:
             Dict containing comprehensive server status
         """
@@ -1154,6 +1335,7 @@ class MCP:
             memory_usage = None
             try:
                 import psutil
+
                 process = psutil.Process()
                 memory_usage = process.memory_info().rss
             except ImportError:
@@ -1167,14 +1349,16 @@ class MCP:
             active_executions = dict(self._active_executions)
 
             # Get rate limit status
-            rate_limit_status = {}
+            rate_limit_status: dict[Any, Any] = {}
             with self._rate_limit_lock:
                 for tool_name, timestamps in self._rate_limit_timestamps.items():
                     current_time = time.time()
-                    recent_requests = len([ts for ts in timestamps if current_time - ts < 1.0])
+                    recent_requests = len(
+                        [ts for ts in timestamps if current_time - ts < 1.0]
+                    )
                     rate_limit_status[tool_name] = {
                         "recent_requests": recent_requests,
-                        "total_requests": len(timestamps)
+                        "total_requests": len(timestamps),
                     }
 
             return {
@@ -1183,23 +1367,26 @@ class MCP:
                     "version": "2.0.0",
                     "uptime": self.uptime,
                     "start_time": self._start_time,
-                    "last_activity": self._last_activity
+                    "last_activity": self._last_activity,
                 },
                 "performance": {
                     "total_requests": self._performance_metrics.total_requests,
                     "successful_requests": self._performance_metrics.successful_requests,
                     "failed_requests": self._performance_metrics.failed_requests,
                     "success_rate": (
-                        self._performance_metrics.successful_requests / max(1, self._performance_metrics.total_requests)
+                        self._performance_metrics.successful_requests
+                        / max(1, self._performance_metrics.total_requests)
                     ),
                     "average_execution_time": self._performance_metrics.average_execution_time,
                     "max_execution_time": self._performance_metrics.max_execution_time,
-                    "min_execution_time": self._performance_metrics.min_execution_time if self._performance_metrics.min_execution_time != float('inf') else 0.0,
+                    "min_execution_time": self._performance_metrics.min_execution_time
+                    if self._performance_metrics.min_execution_time != float("inf")
+                    else 0.0,
                     "cache_hit_ratio": self._performance_metrics.cache_hit_ratio,
                     "cache_hits": self._performance_metrics.cache_hits,
                     "cache_misses": self._performance_metrics.cache_misses,
                     "concurrent_requests": self._performance_metrics.concurrent_requests,
-                    "max_concurrent_requests": self._performance_metrics.max_concurrent_requests
+                    "max_concurrent_requests": self._performance_metrics.max_concurrent_requests,
                 },
                 "resources": {
                     "tools_count": len(self.tools),
@@ -1207,7 +1394,7 @@ class MCP:
                     "modules_count": len(self.modules),
                     "memory_usage_bytes": memory_usage,
                     "cache_size": cache_size,
-                    "cache_memory_estimate_bytes": cache_memory_estimate
+                    "cache_memory_estimate_bytes": cache_memory_estimate,
                 },
                 "modules": {
                     module_name: {
@@ -1216,7 +1403,7 @@ class MCP:
                         "resources_count": info.resources_count,
                         "load_time": info.load_time,
                         "last_updated": info.last_updated,
-                        "error_message": info.error_message
+                        "error_message": info.error_message,
                     }
                     for module_name, info in self.modules.items()
                 },
@@ -1224,17 +1411,23 @@ class MCP:
                 "rate_limit_status": rate_limit_status,
                 "sdk_status": _MCP_SDK_STATUS.to_dict(),
                 "health": {
-                    "status": "healthy" if self._performance_metrics.failed_requests / max(1, self._performance_metrics.total_requests) < 0.1 else "degraded",
-                    "error_rate": self._performance_metrics.failed_requests / max(1, self._performance_metrics.total_requests),
+                    "status": "healthy"
+                    if self._performance_metrics.failed_requests
+                    / max(1, self._performance_metrics.total_requests)
+                    < 0.1
+                    else "degraded",
+                    "error_rate": self._performance_metrics.failed_requests
+                    / max(1, self._performance_metrics.total_requests),
                     "cache_efficiency": self._performance_metrics.cache_hit_ratio,
-                    "concurrent_load": self._performance_metrics.concurrent_requests / 10.0  # Normalized to max workers
-                }
+                    "concurrent_load": self._performance_metrics.concurrent_requests
+                    / 10.0,  # Normalized to max workers
+                },
             }
 
     def clear_cache(self) -> Dict[str, Any]:
         """
         Clear all caches and return statistics.
-        
+
         Returns:
             Dict containing cache clearing statistics
         """
@@ -1249,16 +1442,16 @@ class MCP:
             return {
                 "result_cache_cleared": cache_size_before,
                 "discovery_cache_cleared": discovery_cache_size,
-                "timestamp": time.time()
+                "timestamp": time.time(),
             }
 
     def get_tool_performance_stats(self, tool_name: str) -> Optional[Dict[str, Any]]:
         """
         Get detailed performance statistics for a specific tool.
-        
+
         Args:
             tool_name: Name of the tool
-            
+
         Returns:
             Dict containing tool performance statistics or None if tool not found
         """
@@ -1275,7 +1468,7 @@ class MCP:
                 "max_execution_time": 0.0,
                 "total_execution_time": 0.0,
                 "error_count": self._performance_metrics.error_counts.get(tool_name, 0),
-                "success_rate": 1.0
+                "success_rate": 1.0,
             }
 
         total_executions = len(execution_times)
@@ -1298,38 +1491,44 @@ class MCP:
             "error_count": error_count,
             "success_count": success_count,
             "success_rate": success_rate,
-            "recent_executions": execution_times[-10:] if len(execution_times) > 10 else execution_times
+            "recent_executions": execution_times[-10:]
+            if len(execution_times) > 10
+            else execution_times,
         }
 
     def shutdown(self) -> Dict[str, Any]:
         """
         Gracefully shutdown the MCP server.
-        
+
         Returns:
             Dict containing shutdown statistics
         """
         logger.info("Shutting down MCP server...")
 
-        # Shutdown thread pool
-        self._executor.shutdown(wait=True)
+        # Shutdown thread pool (may be None if construction failed at init time)
+        if self._executor is not None:
+            try:
+                self._executor.shutdown(wait=True)
+            except Exception as e:
+                logger.warning(f"Thread pool shutdown failed: {e}")
 
         # Clear caches
         cache_stats = self.clear_cache()
 
         # Get final statistics
-        final_stats = {
+        final_stats: dict[str, Any] = {
             "uptime": self.uptime,
             "total_requests": self._performance_metrics.total_requests,
             "successful_requests": self._performance_metrics.successful_requests,
             "failed_requests": self._performance_metrics.failed_requests,
             "cache_stats": cache_stats,
-            "shutdown_time": time.time()
+            "shutdown_time": time.time(),
         }
 
         logger.info(f"MCP server shutdown complete: {final_stats}")
         return final_stats
 
-    def set_performance_mode(self, mode: str = "low"):
+    def set_performance_mode(self, mode: str = "low") -> Any:
         """Set performance mode to optimize resource usage."""
         if mode == "low":
             self._enable_caching = False
@@ -1340,6 +1539,7 @@ class MCP:
             self._enable_rate_limiting = True
             self._strict_validation = True
 
+
 # --- Global MCP Instance (lazy) ---
 # Deferred to first access so importing this module does not allocate a
 # ThreadPoolExecutor or other resources before the caller is ready.
@@ -1347,32 +1547,71 @@ _mcp_instance: Optional["MCP"] = None
 
 
 class _LazyMCP:
-    """Proxy that creates the real MCP singleton on first attribute access."""
-    def __getattr__(self, name: str):
+    """Proxy that creates the real MCP singleton on first attribute access.
+
+    Forwards both reads and writes to the underlying :class:`MCP` instance so
+    call sites can safely do e.g. ``mcp_instance._enable_caching = False``
+    without silently shadowing the attribute on the proxy itself.
+    """
+
+    _PROXY_ONLY: Any = frozenset()  # reserved for internal proxy state
+
+    def _target(self) -> "MCP":
+        """Handle target for internal callers."""
         global _mcp_instance
         if _mcp_instance is None:
             _mcp_instance = MCP()
-        return getattr(_mcp_instance, name)
+        return _mcp_instance
+
+    def __getattr__(self, name: str) -> Any:
+        """Handle getattr for internal callers."""
+        return getattr(self._target(), name)
+
+    def __setattr__(self, name: str, value: Any) -> None:
+        """Handle setattr for internal callers."""
+        if name in self._PROXY_ONLY:
+            object.__setattr__(self, name, value)
+            return
+        setattr(self._target(), name, value)
 
 
-mcp_instance: "MCP" = _LazyMCP()  # type: ignore[assignment]  # _LazyMCP proxies all MCP attributes via __getattr__
+mcp_instance: Any = _LazyMCP()
+
 
 # --- Initialization Function ---
-def initialize(halt_on_missing_sdk: bool = True, force_proceed_flag: bool = False,
-               performance_mode: str = "low",
-               modules_allowlist: Optional[List[str]] = None,
-               per_module_timeout: float = 30.0,
-               overall_timeout: float = 120.0) -> Tuple[MCP, bool, bool]:
+def initialize(
+    halt_on_missing_sdk: bool = True,
+    force_proceed_flag: bool = False,
+    performance_mode: str = "low",
+    modules_allowlist: Optional[List[str]] = None,
+    per_module_timeout: float = 30.0,
+    overall_timeout: float = 120.0,
+    enable_caching: Optional[bool] = None,
+    enable_rate_limiting: Optional[bool] = None,
+    strict_validation: Optional[bool] = None,
+    cache_ttl: Optional[float] = None,
+    force_refresh: bool = False,
+) -> Tuple[MCP, bool, bool]:
     """
     Initialize the MCP by discovering modules and checking SDK status.
 
     Args:
-        halt_on_missing_sdk: If True, raises MCPSDKNotFoundError if SDK is missing
-        force_proceed_flag: If True, proceeds even if SDK is missing
-        performance_mode: Passed to set_performance_mode ("low" or "high")
-        modules_allowlist: If set, only load these package names under src/
-        per_module_timeout: Max seconds to wait per module during parallel discovery
-        overall_timeout: Wall-clock budget for the parallel wait loop (see discover_modules)
+        halt_on_missing_sdk: If True, raises MCPSDKNotFoundError if SDK is missing.
+        force_proceed_flag: If True, proceeds even if SDK is missing.
+        performance_mode: ``"low"``, ``"medium"`` (unused; treated as low), or
+            ``"high"``. Applied via :meth:`MCP.set_performance_mode` before any
+            fine-grained overrides below.
+        modules_allowlist: If set, only load these package names under ``src/``.
+        per_module_timeout: Max seconds to wait per module during parallel
+            discovery (see :meth:`MCP.discover_modules`).
+        overall_timeout: Wall-clock budget for the parallel wait loop.
+        enable_caching: Optional override for result-cache enablement. When
+            None the value chosen by ``performance_mode`` is preserved.
+        enable_rate_limiting: Optional override for rate-limiting enablement.
+        strict_validation: Optional override for strict schema validation.
+        cache_ttl: Optional override for result-cache TTL (seconds).
+        force_refresh: If True, force re-discovery even if the singleton has
+            already loaded modules in this process.
 
     Returns:
         Tuple of (mcp_instance, sdk_found, all_modules_loaded)
@@ -1401,11 +1640,22 @@ def initialize(halt_on_missing_sdk: bool = True, force_proceed_flag: bool = Fals
     except (AttributeError, TypeError):
         logger.debug("Performance mode setting not supported on this MCP instance")
 
+    # Fine-grained overrides applied after performance_mode so callers can
+    # opt into, e.g., high performance with strict_validation disabled.
+    if enable_caching is not None:
+        mcp_instance._enable_caching = bool(enable_caching)
+    if enable_rate_limiting is not None:
+        mcp_instance._enable_rate_limiting = bool(enable_rate_limiting)
+    if strict_validation is not None:
+        mcp_instance._strict_validation = bool(strict_validation)
+    if cache_ttl is not None:
+        mcp_instance._cache_ttl = float(cache_ttl)
+
     all_modules_loaded = mcp_instance.discover_modules(
-        force_refresh=False,
+        force_refresh=force_refresh,
         modules_allowlist=modules_allowlist,
         per_module_timeout=per_module_timeout,
-        overall_timeout=overall_timeout
+        overall_timeout=overall_timeout,
     )
 
     if all_modules_loaded:
@@ -1415,6 +1665,7 @@ def initialize(halt_on_missing_sdk: bool = True, force_proceed_flag: bool = Fals
 
     return mcp_instance, sdk_found, all_modules_loaded
 
+
 def get_mcp_instance() -> MCP:
     """Get the global MCP instance, creating it on first call."""
     global _mcp_instance
@@ -1422,17 +1673,21 @@ def get_mcp_instance() -> MCP:
         _mcp_instance = MCP()
     return _mcp_instance
 
+
 def list_available_tools() -> List[Dict[str, Any]]:
     """List all available tools with metadata."""
-    return mcp_instance.list_available_tools()
+    return cast(List[Dict[str, Any]], mcp_instance.list_available_tools())
+
 
 def list_available_resources() -> List[Dict[str, Any]]:
     """List all available resources with metadata."""
-    return mcp_instance.list_available_resources()
+    return cast(List[Dict[str, Any]], mcp_instance.list_available_resources())
+
 
 def get_tool_info(tool_name: str) -> Optional[Dict[str, Any]]:
     """Get information about a specific tool."""
-    return mcp_instance.get_tool_info(tool_name)
+    return cast(Optional[Dict[str, Any]], mcp_instance.get_tool_info(tool_name))
+
 
 def get_resource_info(uri_template: str) -> Optional[Dict[str, Any]]:
     """Get information about a specific resource."""
@@ -1446,18 +1701,31 @@ def get_resource_info(uri_template: str) -> Optional[Dict[str, Any]]:
             "version": resource.version,
             "mime_type": resource.mime_type,
             "cacheable": resource.cacheable,
-            "tags": resource.tags
+            "tags": resource.tags,
         }
     return None
 
-# Re-export server components from server_core sub-module for backward compatibility
 
+def register_tools(server: Any) -> Any:
+    """Register core MCP introspection tools."""
 
-def register_tools(server):
-    """No-op: this module IS the MCP server, not a plugin.
+    def list_core_tools() -> List[Dict[str, Any]]:
+        """Provide list core tools behavior."""
+        return list_available_tools()
 
-    The auto-discovery loop imports ``src.mcp.mcp`` and looks for
-    ``register_tools``.  Providing this placeholder avoids the warning
-    "Module src.mcp.mcp found but has no register_tools function."
-    """
-    pass
+    def list_core_resources() -> List[Dict[str, Any]]:
+        """Provide list core resources behavior."""
+        return list_available_resources()
+
+    server.register_tool(
+        name="mcp.list_available_tools",
+        func=list_core_tools,
+        schema={},
+        description="List all tools currently registered with the MCP registry.",
+    )
+    server.register_tool(
+        name="mcp.list_available_resources",
+        func=list_core_resources,
+        schema={},
+        description="List all resources currently registered with the MCP registry.",
+    )

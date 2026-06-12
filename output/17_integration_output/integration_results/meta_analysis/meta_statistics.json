@@ -1,0 +1,87 @@
+{
+  "schema_version": "1.0",
+  "per_framework": {
+    "activeinference_jl": {
+      "records_total": 10,
+      "successful_runs": 10,
+      "success_rate": 1.0,
+      "runtime_median_s": 7.8398685,
+      "runtime_mean_s": 7.8458742,
+      "runtime_min_s": 7.81918,
+      "runtime_max_s": 7.87912,
+      "sum_median_proxy_s": 78.458742
+    },
+    "bnlearn": {
+      "records_total": 10,
+      "successful_runs": 10,
+      "success_rate": 1.0,
+      "runtime_median_s": 2.049705,
+      "runtime_mean_s": 2.0648845,
+      "runtime_min_s": 2.029279,
+      "runtime_max_s": 2.198489,
+      "sum_median_proxy_s": 20.648845
+    },
+    "discopy": {
+      "records_total": 10,
+      "successful_runs": 10,
+      "success_rate": 1.0,
+      "runtime_median_s": 0.242281,
+      "runtime_mean_s": 0.24190940000000002,
+      "runtime_min_s": 0.233388,
+      "runtime_max_s": 0.248717,
+      "sum_median_proxy_s": 2.419094
+    },
+    "jax": {
+      "records_total": 10,
+      "successful_runs": 10,
+      "success_rate": 1.0,
+      "runtime_median_s": 0.8340205,
+      "runtime_mean_s": 0.8607922,
+      "runtime_min_s": 0.785111,
+      "runtime_max_s": 1.004013,
+      "sum_median_proxy_s": 8.607922
+    },
+    "numpyro": {
+      "records_total": 10,
+      "successful_runs": 0,
+      "success_rate": 0.0,
+      "runtime_median_s": null,
+      "runtime_mean_s": null,
+      "runtime_min_s": null,
+      "runtime_max_s": null,
+      "sum_median_proxy_s": 0.0
+    },
+    "pymdp": {
+      "records_total": 10,
+      "successful_runs": 10,
+      "success_rate": 1.0,
+      "runtime_median_s": 2.6429835,
+      "runtime_mean_s": 2.7103533000000004,
+      "runtime_min_s": 1.704344,
+      "runtime_max_s": 4.336232,
+      "sum_median_proxy_s": 27.103533
+    },
+    "pytorch": {
+      "records_total": 10,
+      "successful_runs": 10,
+      "success_rate": 1.0,
+      "runtime_median_s": 0.502394,
+      "runtime_mean_s": 0.5124695,
+      "runtime_min_s": 0.475742,
+      "runtime_max_s": 0.597878,
+      "sum_median_proxy_s": 5.124695
+    },
+    "rxinfer": {
+      "records_total": 10,
+      "successful_runs": 10,
+      "success_rate": 1.0,
+      "runtime_median_s": 5.4309965,
+      "runtime_mean_s": 5.44199,
+      "runtime_min_s": 5.417373,
+      "runtime_max_s": 5.53966,
+      "sum_median_proxy_s": 54.4199
+    }
+  },
+  "per_cell_best_framework": [],
+  "loglog_runtime_vs_n_by_T": {}
+}
