@@ -170,19 +170,25 @@ def _normalize_acceptance_profile(
     profile = dict(DEFAULT_ACCEPTANCE_PROFILE)
     profile.update(defaults)
     profile.update(override)
+    unsupported_step_reasons_raw = profile.get("unsupported_step_reasons", {})
+    if unsupported_step_reasons_raw is None:
+        unsupported_step_reasons_raw = {}
+    if not isinstance(unsupported_step_reasons_raw, dict):
+        raise ValueError(
+            "Acceptance profile unsupported_step_reasons must be an object"
+        )
+    unsupported_step_reasons: Dict[str, str] = {}
+    for step_raw, reason_raw in unsupported_step_reasons_raw.items():
+        reason = str(reason_raw).strip()
+        if reason:
+            unsupported_step_reasons[str(step_raw)] = reason
     return {
         "required_steps": _coerce_step_list(profile.get("required_steps")),
         "evidence_steps": _coerce_step_list(profile.get("evidence_steps")),
         "allow_unsupported_steps": _coerce_step_list(
             profile.get("allow_unsupported_steps")
         ),
-        "unsupported_step_reasons": {
-            str(step): str(reason)
-            for step, reason in dict(
-                profile.get("unsupported_step_reasons", {})
-            ).items()
-            if str(reason).strip()
-        },
+        "unsupported_step_reasons": unsupported_step_reasons,
     }
 
 
