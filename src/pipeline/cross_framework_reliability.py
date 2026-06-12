@@ -6,7 +6,7 @@ import json
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Callable, Iterable, Sequence
+from typing import Any, Callable, Iterable, Sequence, cast
 
 from pipeline.model_family_acceptance import (
     ModelFamily,
@@ -376,7 +376,7 @@ def _pipeline_output_from_family_result(family_result: dict[str, Any]) -> Path |
 def _first_family_result(ledger: dict[str, Any], family_name: str) -> dict[str, Any]:
     for family in ledger.get("families", []):
         if family.get("name") == family_name:
-            return family
+            return cast("dict[str, Any]", family)
     raise ValueError(f"Acceptance ledger did not include {family_name}")
 
 

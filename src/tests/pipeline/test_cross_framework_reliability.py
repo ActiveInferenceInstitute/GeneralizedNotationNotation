@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+from typing import Any
 
 import pytest
 
@@ -14,7 +15,7 @@ from pipeline.cross_framework_reliability import (
 def test_cross_framework_gate_profiles_all_maintained_backends(
     tmp_path: Path,
 ) -> None:
-    def acceptance_runner(_family: object, output_dir: Path) -> dict[str, object]:
+    def acceptance_runner(_family: object, output_dir: Path) -> dict[str, Any]:
         pipeline_output = output_dir / "basics" / "pipeline_output"
         _write_simulation_payload(pipeline_output, "pymdp")
         _write_execution_summary(pipeline_output, "pymdp")
@@ -40,7 +41,7 @@ def test_cross_framework_gate_profiles_all_maintained_backends(
 def test_cross_framework_gate_fails_missing_step_12_evidence(
     tmp_path: Path,
 ) -> None:
-    def acceptance_runner(_family: object, output_dir: Path) -> dict[str, object]:
+    def acceptance_runner(_family: object, output_dir: Path) -> dict[str, Any]:
         pipeline_output = output_dir / "basics" / "pipeline_output"
         _write_simulation_payload(pipeline_output, "pymdp")
         _write_execution_summary(pipeline_output, "pymdp")
@@ -115,7 +116,7 @@ def test_compare_framework_metrics_fails_missing_seed() -> None:
     assert any(issue.field == "random_seed" for issue in issues)
 
 
-def _acceptance_ledger(name: str, pipeline_output: Path) -> dict[str, object]:
+def _acceptance_ledger(name: str, pipeline_output: Path) -> dict[str, Any]:
     return {
         "schema": "gnn_model_family_acceptance_ledger_v1",
         "status": "passed",
