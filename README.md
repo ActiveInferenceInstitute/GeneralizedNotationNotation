@@ -49,11 +49,11 @@
 
 **Smékal, J., & Friedman, D. A. (2023)**. *Generalized Notation Notation for Active Inference Models*. Active Inference Journal.  
 **Last Updated**: 2026-06-12
-**Version**: 1.8.0
+**Version**: 1.9.0
 **Status**: ✅ Production Ready (Active Inference Institute)  
-**Test Suite Inventory (measured 2026-06-12)**: 184 `test_*.py` files under `src/tests/`; `uv run --extra dev python -m pytest --collect-only src/tests/ -q --tb=no --ignore=src/tests/llm/test_llm_ollama.py --ignore=src/tests/llm/test_llm_ollama_integration.py` collected 2,397 tests. Latest recorded full suite evidence with the same Ollama integration excludes is 2,379 passed, 17 skipped, 1 xfailed.
-**Features (v1.8.0)**: maintained template CLI (`gnn templates list`, `gnn templates show`, `gnn pull`), packaged template assets with checksum/collision handling, authenticated local MCP HTTP orchestration, pre-commit/devcontainer tooling, structured PyMDP 1.0 POMDP execution, PyMDP Scaling Study, and MCP Full Module Exposure.
-**Roadmap foundations (unreleased)**: model-family acceptance/interpretability ledgers for v1.9.0 reliability work.
+**Test Suite Inventory (measured 2026-06-12)**: 184 `test_*.py` files under `src/tests/`; `uv run --extra dev python -m pytest --collect-only src/tests/ -q --tb=no --ignore=src/tests/llm/test_llm_ollama.py --ignore=src/tests/llm/test_llm_ollama_integration.py` collected 2,399 tests. Latest recorded full suite evidence with the same Ollama integration excludes is 2,381 passed, 17 skipped, 1 xfailed.
+**Features (v1.9.0)**: model-family acceptance and interpretability ledgers for basics, discrete, continuous, hierarchical, multi-agent, precision, structured, gridworld, and scaling-study fixtures; explicit profiled unsupported Step 11/12 skips for continuous/hierarchical families; maintained template CLI (`gnn templates list`, `gnn templates show`, `gnn pull`); packaged template assets with checksum/collision handling; authenticated local MCP HTTP orchestration; pre-commit/devcontainer tooling; structured PyMDP 1.0 POMDP execution; PyMDP Scaling Study; and MCP Full Module Exposure.
+**Next Target**: v2.0.0 semantic fidelity and cross-framework reliability hardening.
 📖 **DOI:** [10.5281/zenodo.7803328](https://doi.org/10.5281/zenodo.7803328)  
 📁 **Archive:** [zenodo.org/records/7803328](https://zenodo.org/records/7803328)
 

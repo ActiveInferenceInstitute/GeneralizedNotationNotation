@@ -16,7 +16,7 @@ def render_model_family_acceptance_markdown(ledger: Dict[str, Any]) -> str:
         f"- Only steps: {ledger['only_steps'] or 'full pipeline'}",
         f"- Frameworks: {ledger.get('frameworks') or 'pipeline default'}",
         "",
-        "| Family | Status | Models | Passed Steps | Failed Steps | Skipped Steps | Raw Failed Steps | Allowed Unsupported |",
+        "| Family | Status | Models | Passed Steps | Failed Steps | Skipped Steps | Raw Failed Steps | Profiled Unsupported Skips |",
         "| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |",
     ]
     for family in ledger["families"]:
@@ -24,14 +24,14 @@ def render_model_family_acceptance_markdown(ledger: Dict[str, Any]) -> str:
         raw_failed = sum(
             1 for status in family.get("raw_steps", {}).values() if status == "failed"
         )
-        allowed_unsupported = sum(
+        profiled_unsupported = sum(
             1
             for evidence in family.get("step_evidence", {}).values()
             if isinstance(evidence, dict)
-            and evidence.get("acceptance") == "allowed_unsupported"
+            and evidence.get("acceptance") == "profiled_unsupported_skip"
         )
         lines.append(
-            "| {name} | {status} | {models} | {passed} | {failed} | {skipped} | {raw_failed} | {allowed} |".format(
+            "| {name} | {status} | {models} | {passed} | {failed} | {skipped} | {raw_failed} | {profiled} |".format(
                 name=family["name"],
                 status=family["status"],
                 models=family["interpretability_summary"]["model_count"],
@@ -39,7 +39,7 @@ def render_model_family_acceptance_markdown(ledger: Dict[str, Any]) -> str:
                 failed=counts.get("failed", 0),
                 skipped=counts.get("skipped", 0),
                 raw_failed=raw_failed,
-                allowed=allowed_unsupported,
+                profiled=profiled_unsupported,
             )
         )
     return "\n".join(lines) + "\n"

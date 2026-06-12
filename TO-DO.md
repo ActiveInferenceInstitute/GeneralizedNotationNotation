@@ -1,14 +1,17 @@
 # TO-DO — GNN Pipeline Roadmap
 
 **Last Updated**: 2026-06-12
-**Current Version**: 1.8.0
-**Next Target**: v1.9.0 (model-family reliability and interpretability)
+**Current Version**: 1.9.0
+**Next Target**: v2.0.0 (semantic fidelity and cross-framework reliability)
 
-**Current Evidence (2026-06-12)**: Maintained verifier gates pass on the
-roadmap-hardening branch. Current inventory is `2397` collected tests with the
-documented Ollama ignores. Latest full local suite evidence with the same
-Ollama ignores is `2379 passed, 17 skipped, 1 xfailed`. v1.8.0 focused release
-smokes passed for `gnn templates list`, `gnn templates show
+**Current Evidence (2026-06-12)**: v1.9.0 focused family/report suite
+`17 passed`; command-of-record collect-only inventory is `2399` collected tests
+across 184 `test_*.py` files with the documented Ollama integration ignores.
+Latest full local suite evidence with the same Ollama ignores is
+`2381 passed, 17 skipped, 1 xfailed`. The all-family strict acceptance passed
+for 9 families; continuous/hierarchical Step 11/12 recorded as profiled
+unsupported skips with `0` raw failed Step 11/12 counts. v1.8.0 focused
+release smokes passed for `gnn templates list`, `gnn templates show
 pomdp-gridworld-3x3`, dry-run `gnn pull` to `/tmp/gnn-pull`, and authenticated
 MCP HTTP tests (`12 passed`; combined CLI/MCP/capability suite `32 passed`);
 `just lint` passes.
@@ -30,10 +33,10 @@ MCP HTTP tests (`12 passed`; combined CLI/MCP/capability suite `32 passed`);
 
 ---
 
-## 🎯 v1.7.0 — Multi-Agent Topologies & Interactive Frontends
+## 🧱 v1.7.0 — Foundation Track (Retired as Release Target)
 
 > **Scope**: Push the pipeline from single-agent generation to interactive, multi-agent architectures with real-time editing and streaming capabilities.
-> **RC status**: Foundation contracts are implemented, but this release remains deferred until runtime-depth evidence catches up to the public claims.
+> **Status**: Retired as a standalone release target. Foundation contracts landed in later release branches; runtime-depth ambitions moved to v2+ reliability/orchestration milestones.
 
 - [ ] **Multi-Agent Message Passing (RxInfer)** — Expand the `execute/` layer to handle clustered topologies (100+ agents) passing states asynchronously utilizing graph factorization in Julia via RxInfer.jl.
 - [ ] **Categorical Symmetries (DisCoPy)** — Sync matrix permutations natively to string diagrams, allowing visual topology validation before simulation generation.
@@ -80,22 +83,23 @@ just lint
 
 ---
 
-## 🧭 v1.9.0 — Model-Family Reliability & Interpretability
+## ✅ v1.9.0 — Model-Family Reliability & Interpretability (Released)
 
 > **Scope**: Make broader families of generative models reliably traverse the maintained pipeline with validation, execution-status, telemetry, interpretability, and report evidence.
+> **Released**: 2026-06-12 (tag: `v1.9.0`)
 
-- [ ] **Model-Family Acceptance Harness** — Maintain `input/model_family_manifest.json` and run representative basics, discrete, continuous, hierarchical, multi-agent, precision, structured, gridworld, and scaling-study fixtures through pipeline evidence steps with explicit passed/skipped/failed statuses.
-- [ ] **Cross-Step Evidence Ledger** — Link Step 3/5/6/11/12/15/16/23 evidence for each accepted family: parsed model identity, matrix dimensions, renderer status, execution status, telemetry, analysis, visualization, and report artifacts.
-- [ ] **Interpretability Summaries** — Emit per-family variable/edge inventories, matrix-shape tables, optional observation/action/free-energy trace previews, renderer/execution status, and artifact links.
+- [x] **Model-Family Acceptance Harness** — Maintain `input/model_family_manifest.json` and run representative basics, discrete, continuous, hierarchical, multi-agent, precision, structured, gridworld, and scaling-study fixtures through pipeline evidence steps with explicit passed/skipped/failed statuses. v1.9.0 focused family/report suite `17 passed`; all-family strict acceptance passed for 9 families.
+- [x] **Cross-Step Evidence Ledger** — Link Step 3/5/6/11/12/15/16/23 evidence for each accepted family: parsed model identity, matrix dimensions, renderer status, execution status, telemetry, analysis, visualization, report artifacts, and artifact links. Continuous/hierarchical Step 11/12 recorded as profiled unsupported skips with `0` raw failed Step 11/12 counts.
+- [x] **Interpretability Summaries** — Emit per-family variable/edge inventories, matrix-shape tables, telemetry presence, optional observation/action/free-energy trace previews, renderer/execution status, and artifact links.
+- [x] **Release Readiness Ledger** — release gates passed for focused family/report tests, all-family strict acceptance, collect-only inventory, full suite evidence, maintained docs/verifier gates, and tracked `output/` cleanliness.
 
-Current RC foundation: the all-family strict harness parses real pipeline
-summaries, fails closed when summaries or required per-step records are missing,
-rejects incomplete `--only-steps` acceptance profiles, clears stale per-family
-outputs before each run, and requires concrete artifacts for selected evidence
-steps. `continuous` and `hierarchical` still expose raw failed Step 11/12
-outcomes; the ledger may record them as explicitly allowed unsupported
-renderer/executor skips with incompatibility and `no_executable_scripts`
-reasons. This is honest traversal evidence, not full backend reliability.
+Release evidence: the all-family strict harness parses real pipeline summaries,
+fails closed when summaries or required per-step records are missing, rejects
+incomplete `--only-steps` acceptance profiles, clears stale per-family outputs
+before each run, and requires concrete artifacts for selected evidence steps.
+`continuous` and `hierarchical` profile Step 11/12 as unsupported and skip those
+steps before execution; failed Step 11/12 summaries are rejected by strict
+negative controls instead of converted to success.
 
 ### Acceptance
 ```bash
@@ -113,7 +117,6 @@ uv run --extra dev python src/main.py --target-dir input/gnn_files/discrete --ou
 
 - [ ] **Semantic Round-Trip Gates** — Require representative model families to preserve variables, edges, dimensions, and key matrix contracts across maintained formats.
 - [ ] **Cross-Framework Result Comparisons** — Compare compatible PyMDP, RxInfer, JAX, NumPyro, PyTorch, ActiveInference.jl, and DisCoPy outputs with explicit skipped/failed states for unavailable frameworks.
-- [ ] **Release Readiness Ledger** — Produce one release ledger tying docs, verifier gates, collect-only inventory, focused tests, and acceptance smokes to checked roadmap items.
 
 ---
 

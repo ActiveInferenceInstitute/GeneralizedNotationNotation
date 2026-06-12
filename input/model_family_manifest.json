@@ -3,8 +3,7 @@
   "acceptance_profile_defaults": {
     "required_steps": [3, 5, 6, 15, 16, 23],
     "evidence_steps": [11, 12],
-    "allow_unsupported_steps": [],
-    "allow_unsupported_reason_patterns": []
+    "allow_unsupported_steps": []
   },
   "families": [
     {
@@ -30,12 +29,10 @@
       "acceptance_profile": {
         "evidence_steps": [],
         "allow_unsupported_steps": [11, 12],
-        "allow_unsupported_reason_patterns": [
-          "POMDP not compatible",
-          "Missing required matrices",
-          "no_executable_scripts",
-          "No executable scripts found"
-        ]
+        "unsupported_step_reasons": {
+          "11": "Continuous fixtures use non-POMDP matrices that current code renderers intentionally skip for v1.9.",
+          "12": "No executable script is expected when Step 11 is profiled as unsupported for continuous fixtures."
+        }
       }
     },
     {
@@ -47,12 +44,10 @@
       "acceptance_profile": {
         "evidence_steps": [],
         "allow_unsupported_steps": [11, 12],
-        "allow_unsupported_reason_patterns": [
-          "POMDP not compatible",
-          "Missing required matrices",
-          "no_executable_scripts",
-          "No executable scripts found"
-        ]
+        "unsupported_step_reasons": {
+          "11": "Hierarchical fixtures require cross-level matrix semantics that current POMDP renderers intentionally skip for v1.9.",
+          "12": "No executable script is expected when Step 11 is profiled as unsupported for hierarchical fixtures."
+        }
       }
     },
     {

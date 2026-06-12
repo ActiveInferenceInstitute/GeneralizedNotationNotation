@@ -224,7 +224,7 @@ graph TD
 
 - **Docs audit**: `uv run --extra dev python doc/development/docs_audit.py --strict --check-anchors --no-write` reports no broken links, anchor gaps, or AGENTS/README coverage gaps.
 - **GNN doc patterns**: `uv run --extra dev python scripts/check_gnn_doc_patterns.py --strict` reports no banned GNN documentation patterns.
-- **Tests**: command of record is `uv run --extra dev python -m pytest src/tests/ -q --tb=no --ignore=src/tests/llm/test_llm_ollama.py --ignore=src/tests/llm/test_llm_ollama_integration.py`; current collect-only inventory (2026-06-12) is 184 test files and 2,397 collected tests with the same Ollama ignores. Latest recorded full suite evidence with the same excludes is 2,379 passed, 17 skipped, 1 xfailed. Re-enable `src/tests/llm/test_llm_ollama*.py` when `ollama` is available.
+- **Tests**: command of record is `uv run --extra dev python -m pytest src/tests/ -q --tb=no --ignore=src/tests/llm/test_llm_ollama.py --ignore=src/tests/llm/test_llm_ollama_integration.py`; current collect-only inventory (2026-06-12) is 184 test files and 2,399 collected tests with the same Ollama ignores. Latest recorded full suite evidence with the same excludes is 2,381 passed, 17 skipped, 1 xfailed. Re-enable `src/tests/llm/test_llm_ollama*.py` when `ollama` is available.
 - **LLM Default Model**: `smollm2:135m-instruct-q4_K_S` via Ollama (`llm.defaults.DEFAULT_OLLAMA_MODEL`; override with `OLLAMA_MODEL` / `input/config.yaml`).
 - **Renderer inventory**: PyMDP, RxInfer, JAX, NumPyro, Stan, PyTorch, ActiveInference.jl, and DisCoPy have maintained render paths; run focused backend tests before publishing operational pass counts.
 - **Visual Accessibility**: All pipeline steps now include enhanced visual indicators and progress tracking.
@@ -515,6 +515,6 @@ Each module provides specialized agent capabilities for different aspects of Act
 ---
 
 **Last Updated**: 2026-06-12
-**Pipeline Version**: 1.8.0
+**Pipeline Version**: 1.9.0
 **Total Steps**: 25 (0-24)
 **Status**: Maintained

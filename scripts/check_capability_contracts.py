@@ -109,6 +109,11 @@ def run_audit() -> List[str]:
         failures.append(
             "TO-DO.md: v1.8.0 is next while v1.7.0 remains unchecked without an explicit deferred/foundation-only status"
         )
+    if (
+        "**Current Version**: 1.9.0" in todo_text
+        and "**Next Target**: v2.0.0" not in todo_text
+    ):
+        failures.append("TO-DO.md: v1.9.0 release must set v2.0.0 as next target")
 
     readme_tests = _read("src/tests/README.md")
     maintained_dirs, direct_test_dirs = _maintained_test_directory_counts()
@@ -163,6 +168,27 @@ def run_audit() -> List[str]:
             "authenticated\nMCP HTTP tests (`12 passed`",
             "combined CLI/MCP/capability suite `32 passed`",
             "`just lint` passes",
+        ),
+        "Model-Family Acceptance Harness": (
+            "v1.9.0 focused family/report suite",
+            "all-family strict acceptance passed for 9 families",
+            "profiled unsupported skips",
+            "`0` raw failed Step 11/12 counts",
+        ),
+        "Cross-Step Evidence Ledger": (
+            "Step 3/5/6/11/12/15/16/23",
+            "artifact links",
+            "all-family strict acceptance passed for 9 families",
+        ),
+        "Interpretability Summaries": (
+            "variable/edge inventories",
+            "matrix-shape tables",
+            "telemetry presence",
+        ),
+        "Release Readiness Ledger": (
+            "release gates passed",
+            "collect-only inventory",
+            "full suite evidence",
         ),
     }
     for item in guarded_pending_items:
@@ -307,6 +333,18 @@ def run_audit() -> List[str]:
     if "pipeline_passed = False" not in acceptance_text:
         failures.append(
             "src/pipeline/model_family_acceptance.py: missing pipeline-summary fail-closed path"
+        )
+    if "allow_unsupported_reason_patterns" in acceptance_text:
+        failures.append(
+            "src/pipeline/model_family_acceptance.py: reason-pattern fallback must not certify unsupported steps"
+        )
+    if "allow_unsupported_reason_patterns" in _read("input/model_family_manifest.json"):
+        failures.append(
+            "input/model_family_manifest.json: unsupported steps must use explicit profiled skip reasons, not reason patterns"
+        )
+    if "profiled_unsupported_skip" not in acceptance_text:
+        failures.append(
+            "src/pipeline/model_family_acceptance.py: missing explicit profiled unsupported skip evidence"
         )
     if (
         "return_code in {0, 2}" in acceptance_text

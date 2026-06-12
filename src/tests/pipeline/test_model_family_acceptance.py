@@ -336,17 +336,19 @@ def test_model_family_acceptance_fails_code_two_when_selected_step_failed(
         raise AssertionError("strict acceptance should fail when Step 12 failed")
 
 
-def test_model_family_acceptance_allows_profiled_unsupported_steps(
+def test_model_family_acceptance_profiles_unsupported_steps_as_explicit_skips(
     tmp_path: Path,
 ) -> None:
+    seen_commands: list[list[str]] = []
+
     def runner(command: Sequence[str]) -> subprocess.CompletedProcess[str]:
+        seen_commands.append(list(command))
         output_dir = Path(command[command.index("--output-dir") + 1])
-        _write_pipeline_summary(output_dir, failed_steps={11, 12})
-        _write_unsupported_render_execute_summaries(output_dir)
+        _write_pipeline_summary(output_dir, skipped_steps={11, 12})
         return subprocess.CompletedProcess(
             args=list(command),
-            returncode=1,
-            stdout="pipeline failed because selected renderer is unsupported",
+            returncode=0,
+            stdout="unsupported renderer and executor steps were explicitly skipped",
             stderr="",
         )
 
@@ -360,14 +362,53 @@ def test_model_family_acceptance_allows_profiled_unsupported_steps(
 
     family = ledger["families"][0]
     assert ledger["status"] == "passed"
-    assert family["raw_steps"]["11"] == "failed"
-    assert family["raw_steps"]["12"] == "failed"
+    assert seen_commands and "--skip-steps" in seen_commands[0]
+    assert seen_commands[0][seen_commands[0].index("--skip-steps") + 1] == "11,12"
+    assert family["raw_steps"]["11"] == "skipped"
+    assert family["raw_steps"]["12"] == "skipped"
     assert family["steps"]["11"] == "skipped"
     assert family["steps"]["12"] == "skipped"
-    assert family["step_evidence"]["11"]["acceptance"] == "allowed_unsupported"
-    assert family["step_evidence"]["12"]["acceptance"] == "allowed_unsupported"
-    assert "POMDP not compatible" in family["step_evidence"]["11"]["reason"]
-    assert "no_executable_scripts" in family["step_evidence"]["12"]["reason"]
+    assert family["step_evidence"]["11"]["acceptance"] == "profiled_unsupported_skip"
+    assert family["step_evidence"]["12"]["acceptance"] == "profiled_unsupported_skip"
+    assert (
+        "Continuous fixtures use non-POMDP" in family["step_evidence"]["11"]["reason"]
+    )
+    assert "No executable script is expected" in family["step_evidence"]["12"]["reason"]
+
+
+def test_model_family_acceptance_rejects_failed_profiled_unsupported_steps(
+    tmp_path: Path,
+) -> None:
+    def runner(command: Sequence[str]) -> subprocess.CompletedProcess[str]:
+        output_dir = Path(command[command.index("--output-dir") + 1])
+        _write_pipeline_summary(output_dir, failed_steps={11, 12})
+        _write_unsupported_render_execute_summaries(output_dir)
+        return subprocess.CompletedProcess(
+            args=list(command),
+            returncode=1,
+            stdout="profiled unsupported steps still failed",
+            stderr="",
+        )
+
+    try:
+        run_model_family_acceptance(
+            Path("input/model_family_manifest.json"),
+            tmp_path,
+            family_names=["continuous"],
+            runner=runner,
+            strict=True,
+        )
+    except RuntimeError as exc:
+        assert "continuous" in str(exc)
+    else:
+        raise AssertionError("profiled unsupported steps must not hide raw failures")
+
+    ledger = json.loads(
+        (tmp_path / "model_family_acceptance_ledger.json").read_text(encoding="utf-8")
+    )
+    family = ledger["families"][0]
+    assert family["raw_steps"]["11"] == "failed"
+    assert family["step_evidence"]["11"]["acceptance"] == "required"
 
 
 def test_model_family_acceptance_rejects_partial_render_as_unsupported_skip(
@@ -404,11 +445,13 @@ def test_model_family_acceptance_rejects_partial_render_as_unsupported_skip(
 def _write_pipeline_summary(
     output_dir: Path,
     failed_steps: set[int] | None = None,
+    skipped_steps: set[int] | None = None,
     present_steps: set[int] | None = None,
     overall_status: str | None = None,
     include_artifacts: bool = True,
 ) -> None:
     failed_steps = failed_steps or set()
+    skipped_steps = skipped_steps or set()
     present_steps = present_steps or {3, 5, 6, 11, 12, 15, 16, 23}
     if include_artifacts:
         _write_step_artifacts(output_dir, present_steps)
@@ -416,10 +459,15 @@ def _write_pipeline_summary(
     summary_dir.mkdir(parents=True, exist_ok=True)
     steps = []
     for step in sorted(present_steps):
+        status = "SUCCESS"
+        if step in failed_steps:
+            status = "FAILED"
+        elif step in skipped_steps:
+            status = "SKIPPED"
         steps.append(
             {
                 "script_name": f"{step}_step.py",
-                "status": "FAILED" if step in failed_steps else "SUCCESS",
+                "status": status,
             }
         )
     (summary_dir / "pipeline_execution_summary.json").write_text(
@@ -430,7 +478,10 @@ def _write_pipeline_summary(
                 "steps": steps,
                 "performance_summary": {
                     "failed_steps": len(failed_steps),
-                    "successful_steps": len(steps) - len(failed_steps),
+                    "successful_steps": len(steps)
+                    - len(failed_steps)
+                    - len(skipped_steps),
+                    "skipped_steps": len(skipped_steps),
                 },
             }
         ),
