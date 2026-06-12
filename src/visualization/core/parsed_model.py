@@ -7,7 +7,7 @@ import logging
 from pathlib import Path
 from typing import Any, Dict
 
-from visualization.parse.markdown import parse_gnn_content
+from ..parse.markdown import parse_gnn_content
 
 logger = logging.getLogger(__name__)
 
@@ -21,6 +21,7 @@ def resolve_gnn_step3_output_dir(results_dir: Path) -> Path:
 
 
 def _ontology_list_to_dict(mappings: Any) -> Dict[str, str]:
+    """Handle ontology list to dict for internal callers."""
     out: Dict[str, str] = {}
     if isinstance(mappings, list):
         for m in mappings:
@@ -35,13 +36,19 @@ def _ontology_list_to_dict(mappings: Any) -> Dict[str, str]:
     return out
 
 
-def _dict_from_parsed_json(data: Dict[str, Any], json_path: Path, stale: bool) -> Dict[str, Any]:
+def _dict_from_parsed_json(
+    data: Dict[str, Any], json_path: Path, stale: bool
+) -> Dict[str, Any]:
+    """Handle dict from parsed json for internal callers."""
     raw_sections = data.get("raw_sections") or {}
     if not isinstance(raw_sections, dict):
         raw_sections = {}
 
     return {
-        "sections": {k: [line for line in str(v).splitlines() if line.strip()] for k, v in raw_sections.items()},
+        "sections": {
+            k: [line for line in str(v).splitlines() if line.strip()]
+            for k, v in raw_sections.items()
+        },
         "raw_sections": raw_sections,
         "variables": list(data.get("variables") or []),
         "connections": list(data.get("connections") or []),
@@ -98,7 +105,9 @@ def load_visualization_model(
                     logger.info("Visualization data loaded from %s", parsed_json)
                 return result
         except Exception as e:
-            logger.warning("Failed to load %s: %s; falling back to markdown", parsed_json, e)
+            logger.warning(
+                "Failed to load %s: %s; falling back to markdown", parsed_json, e
+            )
 
     if verbose:
         logger.info("Visualization data from markdown parse (%s)", gnn_file.name)
@@ -109,6 +118,7 @@ def load_visualization_model(
 
 
 def stale_json_note_text(gnn_file: Path, parsed_json: Path) -> str:
+    """Provide stale json note text behavior."""
     return (
         f"Step-3 parsed JSON is older than the source GNN file.\n"
         f"Source: {gnn_file}\n"
@@ -120,6 +130,7 @@ def stale_json_note_text(gnn_file: Path, parsed_json: Path) -> str:
 def write_stale_json_note_if_needed(
     parsed_data: Dict[str, Any], model_dir: Path, model_name: str, gnn_file: Path
 ) -> None:
+    """Write stale json note if needed."""
     meta = parsed_data.get("_viz_meta") or {}
     if not meta.get("json_stale"):
         return
@@ -128,6 +139,8 @@ def write_stale_json_note_if_needed(
         return
     note = model_dir / f"{model_name}_viz_source_note.txt"
     try:
-        note.write_text(stale_json_note_text(gnn_file, Path(path_str)), encoding="utf-8")
+        note.write_text(
+            stale_json_note_text(gnn_file, Path(path_str)), encoding="utf-8"
+        )
     except OSError as e:
         logger.debug("Could not write stale JSON note: %s", e)

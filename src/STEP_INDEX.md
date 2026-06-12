@@ -1,6 +1,6 @@
 # GNN Pipeline Step Index
 
-**Version**: 2.0.0 · **Last Updated**: 2026-04-09 · **Total Steps**: 25 (0–24)
+**Version**: 1.6.0 · **Last Updated**: 2026-05-22 · **Total Steps**: 25 (0–24)
 
 ---
 
@@ -12,6 +12,9 @@ Steps are controlled via [`input/config.yaml`](../input/config.yaml) using the *
 - **Processing steps** (3–24): Routed per-folder via `testing_matrix.folders`
 
 > See [`SPEC.md`](SPEC.md) for full matrix configuration documentation.
+> For the maintained hardening goal, stage-by-stage operating contract, and
+> GridWorld end-to-end proof path, see
+> [`doc/pipeline/pipeline_stage_hardening_review.md`](../doc/pipeline/pipeline_stage_hardening_review.md).
 
 ---
 
@@ -40,7 +43,7 @@ Steps are controlled via [`input/config.yaml`](../input/config.yaml) using the *
 | 18 | [`18_security.py`](18_security.py) | [`security/`](security/) | Output | Security validation & generated code scanning | Generated scripts | `18_security_output/` | ✅ | [✅](security/AGENTS.md) | [✅](security/README.md) | [✅](security/SPEC.md) | — | 0, 1, 2 | 300 | Step 11 | Reports findings, continues | Security report | Per-folder | High | Quality |
 | 19 | [`19_research.py`](19_research.py) | [`research/`](research/) | Output | Research tools & literature references | Parsed GNN | `19_research_output/` | ✅ | [✅](research/AGENTS.md) | [✅](research/README.md) | [✅](research/SPEC.md) | — | 0, 1, 2 | 300 | Step 3 | Generates with available data | Research notes | Per-folder | Low | Research |
 | 20 | [`20_website.py`](20_website.py) | [`website/`](website/) | Output | Static HTML website generation | Pipeline artifacts | `20_website_output/` | ✅ | [✅](website/AGENTS.md) | [✅](website/README.md) | [✅](website/SPEC.md) | jinja2 | 0, 1, 2 | 300 | Step 8 | Minimal HTML if deps missing | Website files | Per-folder | Low | Publishing |
-| 21 | [`21_mcp.py`](21_mcp.py) | [`mcp/`](mcp/) | Output | Model Context Protocol processing & tool registration | Module MCPs | `21_mcp_output/` | ✅ | [✅](mcp/AGENTS.md) | [✅](mcp/README.md) | [✅](mcp/SPEC.md) | — | 0, 1, 2 | 300 | All modules | Registers available tools | MCP tool manifest | Per-folder | Medium | Integration |
+| 21 | [`21_mcp.py`](21_mcp.py) | [`mcp/`](mcp/) | Output | Model Context Protocol processing & tool registration | Module MCPs | `21_mcp_output/` | ✅ | [✅](mcp/AGENTS.md) | [✅](mcp/README.md) | [✅](mcp/SPEC.md) | — | 0, 1, 2 | 300 | Source modules; no prior step output | Registers available tools | MCP tool manifest | Per-folder | Medium | Integration |
 | 22 | [`22_gui.py`](22_gui.py) | [`gui/`](gui/) | Output | Interactive GNN constructor GUI | Parsed GNN | `22_gui_output/` | ✅ | [✅](gui/AGENTS.md) | [✅](gui/README.md) | [✅](gui/SPEC.md) | tkinter, customtkinter | 0, 1, 2 | 300 | Step 3 | Logs if GUI deps missing | GUI screenshots | Per-folder | Low | Creative |
 | 23 | [`23_report.py`](23_report.py) | [`report/`](report/) | Output | Comprehensive analysis report generation | Analysis results | `23_report_output/` | ✅ | [✅](report/AGENTS.md) | [✅](report/README.md) | [✅](report/SPEC.md) | — | 0, 1, 2 | 600 | Steps 8, 13 | Generates partial report | Markdown + PDF reports | Per-folder | Medium | Publishing |
 | 24 | [`24_intelligent_analysis.py`](24_intelligent_analysis.py) | [`intelligent_analysis/`](intelligent_analysis/) | Output | AI-powered pipeline analysis & executive reports | Pipeline summary | `24_intelligent_analysis_output/` | ✅ | [✅](intelligent_analysis/AGENTS.md) | [✅](intelligent_analysis/README.md) | [✅](intelligent_analysis/SPEC.md) | LLM providers | 0, 1, 2 | 600 | All steps | Generates without LLM if unavailable | Executive summary | Per-folder | Low | AI |

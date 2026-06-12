@@ -76,9 +76,10 @@ is_valid = validator.validate_ontology(content)
 
 This module registers tools with the GNN MCP server (see `mcp.py`):
 
+- `extract_ontology_annotations`
+- `list_standard_ontology_terms`
 - `process_ontology`
 - `validate_ontology_terms`
-- `extract_ontology_annotations`
 
 ## References
 

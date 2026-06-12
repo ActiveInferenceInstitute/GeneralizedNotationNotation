@@ -1,8 +1,24 @@
-# Specification: Activeinference Jl
+# ActiveInference.jl Analysis — Technical Specification
 
-## Design Requirements
-This module (`activeinference_jl`) maps structural logic to the overall execution graph.
-It ensures that `Activeinference Jl` tasks resolve without runtime dependency loops.
+**Version**: 1.6.0
 
-## Components
-Expected available types: No specific classes exported.
+## Input
+
+- `simulation_results.json` from ActiveInference.jl execution step
+
+## Output
+
+- Belief trajectory plots (PNG)
+- Action distribution analysis (PNG)
+- EFE decomposition plots (PNG)
+- `analysis_summary.json`
+
+## Framework
+
+- Julia-based Active Inference results parsed from JSON
+- Matplotlib visualization with numpy processing
+
+## Error Handling
+
+- Missing Julia results → warning + empty analysis
+- Graceful degradation when matplotlib unavailable

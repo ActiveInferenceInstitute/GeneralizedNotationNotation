@@ -6,25 +6,72 @@ Prompt:
 
 Response:
 
-You can use the following code to generate a GNN representation of your model:
 ```python
-import numpy as np
-from scipy import stats
+import json
+from typing import List, Dict
 
-# Define the parameters for your GNN model
-num_hidden_states = 2
-num_obs = 2
-num_timesteps = 10
+def generate_gnn(input_data: List[Dict[str, str]]) -> Dict[str, str]:
+    """Generate a GNN representation of the input data.
 
-# Generate the GNN representation
-GnnModel=np.random.rand(num_hidden_states, num_obs) * np.ones((num_hidden_states, num_obs)) + stats.normalvariate(
-    (0.95*D[2:4]),
-    (1/2)*ln(B^T*(o_t-F)),
-    (1/(2*np.sqrt(A)))
-) * np.ones((num_hidden_states, num_obs)) + stats.normalvariate(-0.95*D[2:4])**2 / 2 **2 # Softmax over states
-```
-This code generates a GNN representation of your model with the specified parameters and initializes it with random values for each hidden state. It then generates predictions using the transition matrix B, which is initialized to zero at time t=0 (no actions). The softmax function calculates the probability that the observed observation belongs to a particular hidden state based on the previous states.
-The `stats` module provides a way to calculate the distribution of values for each parameter in your model. For example, if you want to compute the distribution of values for the transition matrix B at time t=0 (no actions), you can use the following code:
-```python
-B = np.random.rand(num_hidden_states) * np.ones((num_hidden_states)) + stats.normalvariate(-1*D[2:4])**2 / 2 **2 # Softmax over states
-```
+    Args:
+        input_data (List[Dict[str, str]]): A list of dictionaries representing the input data.
+
+    Returns:
+        Dict[str, str]: A dictionary containing the GNN representations for each input node and its corresponding actions.
+    """
+    # Generate a dictionary to store the GNN representation of the input data
+    gnn_representation = {}
+    
+    # Initialize the GNN model with the given parameters
+    for node in input_data:
+        gnn_representation[node["name"]] = []
+        
+        # Generate transitions based on the input nodes
+        for action, state in node.items():
+            if isinstance(state, str):
+                transition = {
+                    "type": "transition",
+                    "value": action + "\n" + str(action) + "\n" 
+                }
+            
+            # Generate a new observation based on the current state and previous states
+            next_node = input_data[node["name"]]
+
+            if isinstance(next_node, str):
+                next_state = input_data[input_data.index(next_node)]
+
+                # Generate a prediction for the next node
+                prediction = {
+                    "type": "prediction",
+                    "value": action + "\n" + str(action) + "\n" 
+                }
+                
+                # Generate an observation based on the current state and previous states
+                observation = input_data[input_data.index(next_node)]
+
+                if isinstance(observation, str):
+                    observation = input_data[input_data.index(observation)]
+
+                    # Generate a prediction for the next node
+                    prediction = {
+                        "type": "prediction",
+                        "value": action + "\n" + str(action) + "\n" 
+                    }
+                
+                else:
+                    prediction = {}
+                    
+                # Generate an observation based on the current state and previous states
+                observation_next = input_data[input_data.index(observation)]
+
+                if isinstance(observation, str):
+                    observation = input_data[input_data.index(observation)]
+
+                    # Generate a prediction for the next node
+                    prediction = {
+                        "type": "prediction",
+                        "value": action + "\n" + str(action) + "\n" 
+                    }
+                
+                else:
+                    prediction =

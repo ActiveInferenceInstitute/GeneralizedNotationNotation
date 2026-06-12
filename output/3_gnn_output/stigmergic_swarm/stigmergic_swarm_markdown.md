@@ -90,6 +90,13 @@ D2 = [[0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]]
 D3 = [[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0]]
 env_signal = [[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]]
 signal_decay = [[0.9]]
+num_agents = 3
+grid_size = 9
+num_obs = 4
+num_actions = 4
+signal_decay_rate = 0.9
+signal_deposit_rate = 0.3
+num_timesteps = 30
 
 ## Time
 Dynamic
@@ -128,6 +135,6 @@ signal_decay = SignalDecayRate
 t = Time
 
 ## Footer
-Generated: 2026-04-10T10:24:32.375841
+Generated: 2026-05-25T09:59:34.946145
 
 ## Signature

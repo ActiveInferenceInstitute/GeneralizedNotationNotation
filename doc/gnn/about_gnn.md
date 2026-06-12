@@ -1,7 +1,7 @@
 # About GNN
 
-**Version**: v2.0.0
-**Last Updated**: 2026-03-24
+**Version**: v1.6.0 Engine (Bundle v2.0.0)
+**Last Updated**: 2026-04-14
 **Status**: Maintained
 **Pipeline Steps**: 25
 
@@ -49,7 +49,7 @@ The syntax is designed to be both human-readable and machine-parsable, making it
 | () | Grouping | (X+Y) | Parenthesized expression |
 | {} | Exact value specification | X{1} | X equals 1 |
 | [] | Dimensionality or indexing | X[2,3] | X is a 2×3 matrix |
-| # / ## / ### | Markdown headings and comments | ## Title | Section header in GNN source file |
+| # / ## | Markdown headings; `#` also acts as inline comment in variable/connection blocks | ## Title | Section header in GNN source file |
 | + | Addition | X+Y | Sum of X and Y |
 | * | Multiplication | X*Y | Product of X and Y |
 | / | Division | X/Y | X divided by Y |
@@ -103,9 +103,7 @@ The GNN file structure is designed to be machine-readable, with each section cle
 - Automatic conversion to computational implementations
 - Visualization of model structure
 
-### Cross-model comparison and analysis
-
-### Punctuation and Representation
+For punctuation tables and symbol semantics, see `src/gnn/documentation/punctuation.md`. For cross-model comparison via shared ontology annotations, see **[Ontology System](advanced/ontology_system.md)** and Step 10 in **[src/AGENTS.md](../../src/AGENTS.md)**.
 
 ### GNN Processing Pipeline
 
@@ -122,11 +120,12 @@ GNN files are processed through a comprehensive 25-step pipeline orchestrated by
 - `11_render.py`: Code generation for PyMDP, RxInfer, ActiveInference.jl, DisCoPy, JAX, Stan, PyTorch, NumPyro
 - `12_execute.py`: Execution of rendered simulation scripts
 
-### Analysis and Reporting (Steps 13, 16, 23)
+### Analysis and Reporting (Steps 13, 16, 23, 24)
 
-- `13_llm.py`: LLM-enhanced analysis and model interpretation
+- `13_llm.py`: Neurosymbolic LLM Analysis and runtime execution heuristics
 - `16_analysis.py`: Advanced statistical analysis
-- `23_report.py`: Comprehensive report generation
+- `23_report.py`: Comprehensive report generation with D3 Dashboard telemetry
+- `24_intelligent_analysis.py`: Autonomous heuristic fallback and execution recovery plans
 
 For complete pipeline documentation, see:
 
@@ -157,8 +156,8 @@ uv run python src/main.py --only-steps "3" --target-dir input/gnn_files --verbos
 ```
 
 ```bash
-# CLI equivalent for parsing
-uv run gnn parse --target-dir input/gnn_files --output-dir output
+# CLI: parse one GNN file to JSON (path required)
+uv run gnn parse input/gnn_files/discrete/simple_mdp.md
 ```
 
 ## Progressive Model Development with GNN
@@ -217,6 +216,8 @@ B=ObservationLikelihoodMatrix
 
 ## The Triple Play: Modalities
 
+### The triple play modalities of GNN
+
 GNN expressions support three complementary modalities for model representation, which can be used together for comprehensive model documentation:
 
 1. **Text-Based Models**: Plain-text GNN files render directly into formulas, pseudocode, or prose using tools like regex or LLMs. This modality provides a human-readable specification that can be shared in papers, documentation, and educational materials.
@@ -270,6 +271,7 @@ To work with GNN, several tools and approaches can be used:
 - **Visualization**: Graph visualization libraries can render GNN connections
 - **Simulation**: The model structure can be translated to executable code
 - **Verification**: GNN files can be validated against the specification
+- **Performance Benchmarking**: Automate model scaling studies using the [PyMDP Scaling Orchestrator](../../scripts/run_pymdp_gnn_scaling_analysis.py)
 - **GNN Repository**: Access examples and tools at the [GNN GitHub repository](https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation)
 - **Active Inference Ontology**: Map variables to standardized terms using the [Active Inference Ontology](https://doi.org/10.5281/zenodo.7430333)
 

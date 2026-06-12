@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
+from typing import Any, cast
+
 """
 OpenRouter LLM Provider
 
@@ -17,6 +19,7 @@ from typing import Any, AsyncGenerator, Dict, List, Optional
 
 try:
     import aiohttp
+
     AIOHTTP_AVAILABLE = True
 except ImportError as e:
     AIOHTTP_AVAILABLE = False
@@ -33,6 +36,7 @@ from .base_provider import (
 
 logger = logging.getLogger(__name__)
 
+
 class OpenRouterProvider(BaseLLMProvider):
     """OpenRouter implementation of the LLM provider interface."""
 
@@ -43,24 +47,19 @@ class OpenRouterProvider(BaseLLMProvider):
         "openai/gpt-4o-mini",
         "openai/gpt-4-turbo",
         "openai/gpt-3.5-turbo",
-
         # Anthropic models
         "anthropic/claude-3.5-sonnet",
         "anthropic/claude-3-haiku",
         "anthropic/claude-3-opus",
-
         # Google models
         "google/gemini-pro",
         "google/gemini-pro-vision",
-
         # Meta models
         "meta-llama/llama-3.1-405b-instruct",
         "meta-llama/llama-3.1-70b-instruct",
         "meta-llama/llama-3.1-8b-instruct",
-
         # Moonshot AI models
         "moonshotai/kimi-k2:free",
-
         # Other providers
         "mistralai/mistral-7b-instruct",
         "cohere/command-r-plus",
@@ -70,21 +69,25 @@ class OpenRouterProvider(BaseLLMProvider):
     DEFAULT_MODEL = "openai/gpt-4o-mini"
     BASE_URL = "https://openrouter.ai/api/v1"
 
-    def __init__(self, api_key: Optional[str] = None, **kwargs):
+    def __init__(self, api_key: Optional[str] = None, **kwargs: Any) -> None:
         """
         Initialize OpenRouter provider.
-        
+
         Args:
             api_key: OpenRouter API key (if None, will try environment variables)
             **kwargs: Additional OpenRouter-specific configuration
         """
         super().__init__(api_key, **kwargs)
-        self.api_key = api_key or os.getenv('OPENROUTER_API_KEY')
-        self.site_url = kwargs.get('site_url') or os.getenv('OPENROUTER_SITE_URL', 'http://localhost')
-        self.site_name = kwargs.get('site_name') or os.getenv('OPENROUTER_SITE_NAME', 'GNN Pipeline')
+        self.api_key = api_key or os.getenv("OPENROUTER_API_KEY")
+        self.site_url = kwargs.get("site_url") or os.getenv(
+            "OPENROUTER_SITE_URL", "http://localhost"
+        )
+        self.site_name = kwargs.get("site_name") or os.getenv(
+            "OPENROUTER_SITE_NAME", "GNN Pipeline"
+        )
         # Use environment variable for model selection if available
-        self.preferred_model = os.getenv('OPENROUTER_MODEL', self.DEFAULT_MODEL)
-        self.session = None
+        self.preferred_model = os.getenv("OPENROUTER_MODEL", self.DEFAULT_MODEL)
+        self.session: Any = None
 
     @property
     def provider_type(self) -> ProviderType:
@@ -104,38 +107,42 @@ class OpenRouterProvider(BaseLLMProvider):
     def initialize(self) -> bool:
         """
         Initialize the OpenRouter client.
-        
+
         Returns:
             True if initialization successful, False otherwise
         """
         if not AIOHTTP_AVAILABLE:
-            logger.error(f"Cannot initialize OpenRouter provider: aiohttp is not available ({AIOHTTP_IMPORT_ERROR})")
+            logger.error(
+                f"Cannot initialize OpenRouter provider: aiohttp is not available ({AIOHTTP_IMPORT_ERROR})"
+            )
             logger.error("Install aiohttp with: uv pip install aiohttp>=3.9.0")
             return False
 
         if not self.api_key:
-            logger.debug("OpenRouter API key not provided - OpenRouter provider will not be available")
+            logger.debug(
+                "OpenRouter API key not provided - OpenRouter provider will not be available"
+            )
             return False
 
         try:
             # Initialize aiohttp session with proper headers
-            headers = {
+            headers: dict[str, Any] = {
                 "Authorization": f"Bearer {self.api_key}",
                 "Content-Type": "application/json",
                 "HTTP-Referer": self.site_url,
-                "X-Title": self.site_name
+                "X-Title": self.site_name,
             }
 
             if not AIOHTTP_AVAILABLE:
-                raise ImportError(f"aiohttp is required but not available: {AIOHTTP_IMPORT_ERROR}")
+                raise ImportError(
+                    f"aiohttp is required but not available: {AIOHTTP_IMPORT_ERROR}"
+                )
 
             connector = aiohttp.TCPConnector(limit=100, limit_per_host=30)
             timeout = aiohttp.ClientTimeout(total=300)  # 5 minute timeout
 
             self.session = aiohttp.ClientSession(
-                headers=headers,
-                connector=connector,
-                timeout=timeout
+                headers=headers, connector=connector, timeout=timeout
             )
 
             self._is_initialized = True
@@ -143,16 +150,18 @@ class OpenRouterProvider(BaseLLMProvider):
             return True
 
         except Exception as e:
-            logger.debug(f"OpenRouter provider initialization issue (will use other providers if available): {e}")
+            logger.debug(
+                f"OpenRouter provider initialization issue (will use other providers if available): {e}"
+            )
             return False
 
     def validate_config(self, config: LLMConfig) -> bool:
         """
         Validate OpenRouter-specific configuration.
-        
+
         Args:
             config: LLM configuration to validate
-            
+
         Returns:
             True if configuration is valid, False otherwise
         """
@@ -175,17 +184,15 @@ class OpenRouterProvider(BaseLLMProvider):
         return True
 
     async def generate_response(
-        self,
-        messages: List[LLMMessage],
-        config: Optional[LLMConfig] = None
+        self, messages: List[LLMMessage], config: Optional[LLMConfig] = None
     ) -> LLMResponse:
         """
         Generate a response using OpenRouter API.
-        
+
         Args:
             messages: List of messages for the conversation
             config: Optional configuration parameters
-            
+
         Returns:
             Standardized LLM response
         """
@@ -204,16 +211,16 @@ class OpenRouterProvider(BaseLLMProvider):
             {
                 "role": msg.role,
                 "content": msg.content,
-                **({"name": msg.name} if msg.name else {})
+                **({"name": msg.name} if msg.name else {}),
             }
             for msg in messages
         ]
 
         # Prepare request payload
-        payload = {
+        payload: dict[str, Any] = {
             "model": config.model or self.default_model,
             "messages": openrouter_messages,
-            "stream": False
+            "stream": False,
         }
 
         # Add optional parameters
@@ -230,8 +237,7 @@ class OpenRouterProvider(BaseLLMProvider):
 
         try:
             async with self.session.post(
-                f"{self.BASE_URL}/chat/completions",
-                json=payload
+                f"{self.BASE_URL}/chat/completions", json=payload
             ) as response:
                 response.raise_for_status()
                 data = await response.json()
@@ -243,7 +249,7 @@ class OpenRouterProvider(BaseLLMProvider):
                     usage_dict = {
                         "prompt_tokens": data["usage"].get("prompt_tokens", 0),
                         "completion_tokens": data["usage"].get("completion_tokens", 0),
-                        "total_tokens": data["usage"].get("total_tokens", 0)
+                        "total_tokens": data["usage"].get("total_tokens", 0),
                     }
 
                 return LLMResponse(
@@ -256,30 +262,32 @@ class OpenRouterProvider(BaseLLMProvider):
                         "response_id": data.get("id"),
                         "created": data.get("created"),
                         "provider_info": data.get("provider", {}),
-                        "native_finish_reason": choice.get("native_finish_reason")
-                    }
+                        "native_finish_reason": choice.get("native_finish_reason"),
+                    },
                 )
 
         except Exception as e:
             # Handle both aiohttp.ClientError and other exceptions
-            if AIOHTTP_AVAILABLE and hasattr(e, '__module__') and 'aiohttp' in e.__module__:
+            if (
+                AIOHTTP_AVAILABLE
+                and hasattr(e, "__module__")
+                and "aiohttp" in e.__module__
+            ):
                 logger.error(f"OpenRouter API call failed: {e}")
             else:
                 logger.error(f"OpenRouter API call failed: {e}")
             raise
 
     async def generate_stream(
-        self,
-        messages: List[LLMMessage],
-        config: Optional[LLMConfig] = None
+        self, messages: List[LLMMessage], config: Optional[LLMConfig] = None
     ) -> AsyncGenerator[str, None]:
         """
         Generate a streaming response using OpenRouter API.
-        
+
         Args:
             messages: List of messages for the conversation
             config: Optional configuration parameters
-            
+
         Yields:
             Chunks of the response content
         """
@@ -300,16 +308,16 @@ class OpenRouterProvider(BaseLLMProvider):
             {
                 "role": msg.role,
                 "content": msg.content,
-                **({"name": msg.name} if msg.name else {})
+                **({"name": msg.name} if msg.name else {}),
             }
             for msg in messages
         ]
 
         # Prepare request payload
-        payload = {
+        payload: dict[str, Any] = {
             "model": config.model or self.default_model,
             "messages": openrouter_messages,
-            "stream": True
+            "stream": True,
         }
 
         # Add optional parameters
@@ -326,28 +334,31 @@ class OpenRouterProvider(BaseLLMProvider):
 
         try:
             async with self.session.post(
-                f"{self.BASE_URL}/chat/completions",
-                json=payload
+                f"{self.BASE_URL}/chat/completions", json=payload
             ) as response:
                 response.raise_for_status()
 
                 async for line in response.content:
-                    line_text = line.decode('utf-8').strip()
+                    line_text = line.decode("utf-8").strip()
 
-                    if line_text.startswith('data: '):
+                    if line_text.startswith("data: "):
                         data_str = line_text[6:]  # Remove 'data: ' prefix
 
-                        if data_str == '[DONE]':
+                        if data_str == "[DONE]":
                             break
 
                         try:
                             chunk_data = json.loads(data_str)
-                            if (chunk_data.get("choices") and
-                                chunk_data["choices"][0].get("delta") and
-                                chunk_data["choices"][0]["delta"].get("content")):
+                            if (
+                                chunk_data.get("choices")
+                                and chunk_data["choices"][0].get("delta")
+                                and chunk_data["choices"][0]["delta"].get("content")
+                            ):
                                 yield chunk_data["choices"][0]["delta"]["content"]
                         except json.JSONDecodeError:
-                            logger.debug("Skipping malformed streaming chunk: %s", data_str[:100])
+                            logger.debug(
+                                "Skipping malformed streaming chunk: %s", data_str[:100]
+                            )
                             continue
 
         except Exception as e:
@@ -357,7 +368,7 @@ class OpenRouterProvider(BaseLLMProvider):
     async def get_available_models(self) -> List[Dict[str, Any]]:
         """
         Fetch the list of available models from OpenRouter.
-        
+
         Returns:
             List of model information dictionaries
         """
@@ -368,7 +379,7 @@ class OpenRouterProvider(BaseLLMProvider):
             async with self.session.get(f"{self.BASE_URL}/models") as response:
                 response.raise_for_status()
                 data = await response.json()
-                return data.get("data", [])
+                return cast("list[dict[str, Any]]", data.get("data", []))
 
         except Exception as e:
             logger.error(f"Failed to fetch OpenRouter models: {e}")
@@ -377,10 +388,10 @@ class OpenRouterProvider(BaseLLMProvider):
     async def get_generation_info(self, generation_id: str) -> Dict[str, Any]:
         """
         Get detailed information about a specific generation.
-        
+
         Args:
             generation_id: The ID of the generation to query
-            
+
         Returns:
             Generation information including usage and cost
         """
@@ -392,7 +403,7 @@ class OpenRouterProvider(BaseLLMProvider):
                 f"{self.BASE_URL}/generation?id={generation_id}"
             ) as response:
                 response.raise_for_status()
-                return await response.json()
+                return cast("dict[str, Any]", await response.json())
 
         except Exception as e:
             logger.error(f"Failed to fetch generation info: {e}")
@@ -413,12 +424,14 @@ class OpenRouterProvider(BaseLLMProvider):
         prompt = f"Analyze this GNN model for {task}: {content}"
 
         async def _run() -> LLMResponse:
+            """Run operation."""
             return await self.generate_response(
-                [{"role": "user", "content": prompt}]
+                [LLMMessage(role="user", content=prompt)]
             )
 
         def _extract(result: Any) -> str:
-            return result.content if hasattr(result, 'content') else str(result)
+            """Extract operation."""
+            return result.content if hasattr(result, "content") else str(result)
 
         try:
             result = asyncio.run(_run())
@@ -426,6 +439,7 @@ class OpenRouterProvider(BaseLLMProvider):
         except RuntimeError:
             # Already inside a running event loop – delegate to a worker thread
             def _thread_run() -> LLMResponse:
+                """Handle thread run for internal callers."""
                 return asyncio.run(_run())
 
             with concurrent.futures.ThreadPoolExecutor(max_workers=1) as pool:

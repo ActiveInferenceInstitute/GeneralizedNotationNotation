@@ -2,7 +2,7 @@
 
 > **📋 Document Metadata**  
 > **Type**: Framework Integration Guide | **Audience**: Researchers, Developers | **Complexity**: Intermediate-Advanced  
-> **Cross-References**: [AGENTS.md](AGENTS.md) | [GNN RxInfer Guide](gnn_rxinfer.md) | [Framework Integration](../gnn/integration/framework_integration_guide.md) | [Main Documentation](../README.md)
+> **Cross-References**: [AGENTS.md](AGENTS.md) | [GNN RxInfer Guide](gnn_rxinfer.md) | [Framework Integration](../gnn/integration/framework_integration_guide.md) | [Main Documentation](../README.md) | [doc/SPEC.md](../SPEC.md) (versioning)
 
 ## Overview
 

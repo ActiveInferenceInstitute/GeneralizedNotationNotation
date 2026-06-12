@@ -23,6 +23,7 @@ logger = logging.getLogger("mcp")
 @dataclass
 class MCPTool:
     """Enhanced MCP tool representation with better validation and utilities."""
+
     name: str
     func: Callable
     schema: Dict[str, Any]
@@ -32,7 +33,6 @@ class MCPTool:
     version: str = "1.0.0"
     tags: List[str] = field(default_factory=list)
     examples: List[Dict[str, Any]] = field(default_factory=list)
-    deprecated: bool = False
     experimental: bool = False
     timeout: Optional[float] = None
     max_concurrent: int = 1
@@ -45,7 +45,7 @@ class MCPTool:
     last_used: Optional[float] = None
     use_count: int = 0
 
-    def __post_init__(self):
+    def __post_init__(self) -> Any:
         """Validate tool configuration after initialization."""
         if not self.name:
             raise ValueError("Tool name cannot be empty")
@@ -82,9 +82,9 @@ class MCPTool:
 
         current_time = time.time()
         if self.last_used is not None:
-             elapsed = current_time - self.last_used
-             if elapsed < (1.0 / self.rate_limit):
-                 return True
+            elapsed = current_time - self.last_used
+            if elapsed < (1.0 / self.rate_limit):
+                return True
         return False
 
     def get_usage_summary(self) -> Dict[str, Any]:
@@ -94,13 +94,16 @@ class MCPTool:
             "use_count": self.use_count,
             "created_at": self.created_at,
             "last_used": self.last_used,
-            "avg_usage_interval": None if self.use_count < 2 else
-                (self.last_used - self.created_at) / (self.use_count - 1) if self.last_used else None
+            "avg_usage_interval": None
+            if self.use_count < 2
+            else (self.last_used - self.created_at) / (self.use_count - 1)
+            if self.last_used
+            else None,
         }
 
     def validate_schema(self) -> List[str]:
         """Validate the tool schema and return any issues."""
-        issues = []
+        issues: list[Any] = []
 
         if not isinstance(self.schema, dict):
             issues.append("Schema must be a dictionary")
@@ -124,6 +127,7 @@ class MCPTool:
 @dataclass
 class MCPResource:
     """Enhanced MCP resource representation with better validation and utilities."""
+
     uri_template: str
     retriever: Callable
     description: str
@@ -143,7 +147,7 @@ class MCPResource:
     last_accessed: Optional[float] = None
     access_count: int = 0
 
-    def __post_init__(self):
+    def __post_init__(self) -> Any:
         """Validate resource configuration after initialization."""
         if not self.uri_template:
             raise ValueError("Resource URI template cannot be empty")
@@ -170,18 +174,26 @@ class MCPResource:
             "access_count": self.access_count,
             "created_at": self.created_at,
             "last_accessed": self.last_accessed,
-            "avg_access_interval": None if self.access_count < 2 else
-                (self.last_accessed - self.created_at) / (self.access_count - 1) if self.last_accessed else None
+            "avg_access_interval": None
+            if self.access_count < 2
+            else (self.last_accessed - self.created_at) / (self.access_count - 1)
+            if self.last_accessed
+            else None,
         }
 
     def validate_uri_template(self, uri: str) -> bool:
         """Validate if a URI matches this resource template."""
-        return uri.startswith(self.uri_template.split('{')[0]) if '{' in self.uri_template else uri == self.uri_template
+        return (
+            uri.startswith(self.uri_template.split("{")[0])
+            if "{" in self.uri_template
+            else uri == self.uri_template
+        )
 
 
 @dataclass
 class MCPModuleInfo:
     """Information about a discovered MCP module."""
+
     name: str
     path: Path
     tools_count: int = 0
@@ -199,12 +211,14 @@ class MCPModuleInfo:
     register_time: float = 0.0
     memory_usage: Optional[int] = None
 
-    def __post_init__(self):
+    def __post_init__(self) -> Any:
         """Calculate file size and hash if path exists."""
         if self.path.exists():
             try:
                 self.file_size = self.path.stat().st_size
-                self.file_hash = hashlib.md5(self.path.read_bytes(), usedforsecurity=False).hexdigest()
+                self.file_hash = hashlib.md5(
+                    self.path.read_bytes(), usedforsecurity=False
+                ).hexdigest()
             except Exception as e:
                 logger.warning(f"Could not calculate file info for {self.path}: {e}")
 
@@ -212,13 +226,14 @@ class MCPModuleInfo:
 @dataclass
 class MCPPerformanceMetrics:
     """Enhanced performance metrics for MCP operations."""
+
     total_requests: int = 0
     successful_requests: int = 0
     failed_requests: int = 0
     total_execution_time: float = 0.0
     average_execution_time: float = 0.0
     max_execution_time: float = 0.0
-    min_execution_time: float = float('inf')
+    min_execution_time: float = float("inf")
     request_history: deque = field(default_factory=lambda: deque(maxlen=1000))
     tool_usage_stats: Dict[str, int] = field(default_factory=dict)
     error_counts: Dict[str, int] = field(default_factory=dict)
@@ -232,14 +247,14 @@ class MCPPerformanceMetrics:
     request_queue_size: int = 0
     max_request_queue_size: int = 0
 
-    def update_execution_time(self, execution_time: float):
+    def update_execution_time(self, execution_time: float) -> Any:
         """Update execution time statistics."""
         self.total_execution_time += execution_time
         self.max_execution_time = max(self.max_execution_time, execution_time)
         self.min_execution_time = min(self.min_execution_time, execution_time)
         self.average_execution_time = self.total_execution_time / self.total_requests
 
-    def update_cache_stats(self, hit: bool):
+    def update_cache_stats(self, hit: bool) -> Any:
         """Update cache statistics."""
         if hit:
             self.cache_hits += 1
@@ -254,10 +269,11 @@ class MCPPerformanceMetrics:
 class MCPSDKStatus:
     """Enhanced MCP SDK status tracking."""
 
-    def __init__(self):
+    def __init__(self) -> None:
+        """Initialize the instance."""
         self._sdk_found = False
-        self._sdk_version = None
-        self._sdk_path = None
+        self._sdk_version: str | None = None
+        self._sdk_path: Path | None = None
         self._last_check = 0.0
         self._check_interval = 300.0  # 5 minutes
         self._sdk_capabilities: Dict[str, Any] = {}
@@ -274,12 +290,12 @@ class MCPSDKStatus:
         self._last_check = current_time
 
         try:
-            sdk_paths = [
+            sdk_paths: list[Any] = [
                 Path.home() / ".mcp" / "sdk",
                 Path("/usr/local/mcp/sdk"),
                 Path("/opt/mcp/sdk"),
                 Path.cwd() / "mcp_sdk",
-                Path(__file__).parent / "sdk"
+                Path(__file__).parent / "sdk",
             ]
 
             for sdk_path in sdk_paths:
@@ -293,7 +309,9 @@ class MCPSDKStatus:
 
                     self._check_sdk_health(sdk_path)
 
-                    logger.info(f"MCP SDK found at {sdk_path} (version: {self._sdk_version})")
+                    logger.info(
+                        f"MCP SDK found at {sdk_path} (version: {self._sdk_version})"
+                    )
                     return True
 
             if os.environ.get("MCP_SDK_PATH"):
@@ -317,10 +335,10 @@ class MCPSDKStatus:
             self._sdk_health = "error"
             return False
 
-    def _check_sdk_health(self, sdk_path: Path):
+    def _check_sdk_health(self, sdk_path: Path) -> Any:
         """Check the health of the SDK installation."""
         try:
-            essential_files = ["mcp.py", "server.py", "client.py"]
+            essential_files: list[Any] = ["mcp.py", "server.py", "client.py"]
             missing_files = [f for f in essential_files if not (sdk_path / f).exists()]
 
             if missing_files:
@@ -348,5 +366,5 @@ class MCPSDKStatus:
             "sdk_path": str(self._sdk_path) if self._sdk_path else None,
             "sdk_health": self._sdk_health,
             "sdk_capabilities": self._sdk_capabilities,
-            "last_check": self._last_check
+            "last_check": self._last_check,
         }

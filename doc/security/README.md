@@ -2,7 +2,7 @@
 
 > **📋 Document Metadata**  
 > **Type**: Security Reference | **Audience**: Developers, DevOps, Security Teams | **Complexity**: Intermediate  
-> **Cross-References**: [Deployment Guide](../deployment/README.md) | [MCP Security](../mcp/README.md#security) | [API Security](../api/README.md#security)
+> **Cross-References**: [Deployment Guide](../deployment/README.md) | [MCP Security](../mcp/README.md#security) | [API Security](../api/README.md#security) | [doc/SPEC.md](../SPEC.md) (versioning policy)
 
 ## Overview
 
@@ -171,9 +171,9 @@ RUN apt-get update && \
 COPY --chown=gnn:gnn . /app
 WORKDIR /app
 
-# Install dependencies with security scanning
-RUN uv pip install --no-cache-dir -r requirements.txt
-RUN pip audit  # Security vulnerability scanning
+# Install locked project dependencies with security scanning
+RUN uv sync --frozen
+RUN uv tool run pip-audit  # Security vulnerability scanning
 
 # Security configurations
 USER gnn

@@ -1,0 +1,72 @@
+{
+  "processedAtMs": 1777060312680,
+  "transcriptDirectory": "/Users/mini/.cursor/projects/Users-mini-Documents-GitHub-GeneralizedNotationNotation/agent-transcripts",
+  "transcripts": {
+    "1d1dfd92-ef35-45e6-88db-f58f7a96fb2f/1d1dfd92-ef35-45e6-88db-f58f7a96fb2f.jsonl": {
+      "mtimeMs": 1776196589505,
+      "sizeBytes": 61698
+    },
+    "1d1dfd92-ef35-45e6-88db-f58f7a96fb2f/subagents/2b3948f4-e521-41cd-9132-8c835aab0bf1.jsonl": {
+      "mtimeMs": 1776196153404,
+      "sizeBytes": 30340
+    },
+    "1d1dfd92-ef35-45e6-88db-f58f7a96fb2f/subagents/c0557df4-6a4a-4543-910b-2506c7f101cf.jsonl": {
+      "mtimeMs": 1776196125951,
+      "sizeBytes": 19246
+    },
+    "1d1dfd92-ef35-45e6-88db-f58f7a96fb2f/subagents/d06e3921-02c8-4f2f-9634-8445960c4bda.jsonl": {
+      "mtimeMs": 1776196134668,
+      "sizeBytes": 26768
+    },
+    "1d1dfd92-ef35-45e6-88db-f58f7a96fb2f/subagents/dc440c53-8eb8-44c9-b1fb-f87d123b6813.jsonl": {
+      "mtimeMs": 1776196120836,
+      "sizeBytes": 11864
+    },
+    "3d6f94d4-1ee7-4c9a-8482-fef956fdb728/3d6f94d4-1ee7-4c9a-8482-fef956fdb728.jsonl": {
+      "mtimeMs": 1776044863417,
+      "sizeBytes": 194208
+    },
+    "643c7e1a-9d97-4c5d-b5f4-2bd93e14a068/643c7e1a-9d97-4c5d-b5f4-2bd93e14a068.jsonl": {
+      "mtimeMs": 1775832395589,
+      "sizeBytes": 90373
+    },
+    "72f3fd8b-2a72-4b83-8b93-d5629e307104/72f3fd8b-2a72-4b83-8b93-d5629e307104.jsonl": {
+      "mtimeMs": 1776043860533,
+      "sizeBytes": 116293
+    },
+    "cb810e59-3c3a-4836-bf00-a21c1bd19508/cb810e59-3c3a-4836-bf00-a21c1bd19508.jsonl": {
+      "mtimeMs": 1777060247571,
+      "sizeBytes": 304752
+    },
+    "cb810e59-3c3a-4836-bf00-a21c1bd19508/subagents/05986e65-7746-4922-b987-3d01178b47f0.jsonl": {
+      "mtimeMs": 1777060261378,
+      "sizeBytes": 3066
+    },
+    "e06cc1ff-8fc2-40c0-9467-8654a75f1452/e06cc1ff-8fc2-40c0-9467-8654a75f1452.jsonl": {
+      "mtimeMs": 1775829706105,
+      "sizeBytes": 176303
+    },
+    "e3c0e0b3-293d-432f-9b92-678f8413347d/e3c0e0b3-293d-432f-9b92-678f8413347d.jsonl": {
+      "mtimeMs": 1776362869874,
+      "sizeBytes": 156228
+    },
+    "e3c0e0b3-293d-432f-9b92-678f8413347d/subagents/0aff269f-b74c-4fc1-884d-f9382a4e4ec9.jsonl": {
+      "mtimeMs": 1776360101434,
+      "sizeBytes": 40005
+    },
+    "e3c0e0b3-293d-432f-9b92-678f8413347d/subagents/fa7f1324-cbc5-40ea-97ff-96e1341da81a.jsonl": {
+      "mtimeMs": 1776360107621,
+      "sizeBytes": 35135
+    },
+    "e3c0e0b3-293d-432f-9b92-678f8413347d/subagents/fab33d1b-f1ac-4a1b-a0d5-b7cb9330fc4c.jsonl": {
+      "mtimeMs": 1776360060021,
+      "sizeBytes": 27396
+    },
+    "fab33554-6d56-4edd-8430-9f50a7bbb8bd/fab33554-6d56-4edd-8430-9f50a7bbb8bd.jsonl": {
+      "mtimeMs": 1776030283906,
+      "sizeBytes": 397202
+    }
+  },
+  "version": 1,
+  "workspace": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation"
+}

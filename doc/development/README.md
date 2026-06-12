@@ -2,7 +2,7 @@
 
 > **📋 Document Metadata**  
 > **Type**: Development Guide | **Audience**: Developers & Contributors | **Complexity**: Intermediate-Advanced  
-> **Cross-References**: [Testing Guide](../testing/README.md) | [API Documentation](../api/README.md) | [AGENTS.md](AGENTS.md) | [doc/INDEX.md](../INDEX.md)
+> **Cross-References**: [Testing Guide](../testing/README.md) | [API Documentation](../api/README.md) | [AGENTS.md](AGENTS.md) | [doc/INDEX.md](../INDEX.md) | [doc/SPEC.md](../SPEC.md) (versioning policy)
 
 ## Overview
 This guide provides information for developers contributing to the GNN project, including code organization, development workflows, and architecture patterns.
@@ -12,10 +12,18 @@ This guide provides information for developers contributing to the GNN project, 
 From the repository root:
 
 ```bash
-# Scan Markdown for broken relative links (includes tracked output/ when present)
-uv run python doc/development/docs_audit.py
+# Scan maintained Markdown for broken relative links (generated output/ is skipped)
+uv run --extra dev python doc/development/docs_audit.py
 # Fail the shell if any issues (for CI / pre-commit)
-uv run python doc/development/docs_audit.py --strict
+uv run --extra dev python doc/development/docs_audit.py --strict
+# With --strict and failures, full per-issue lines go to stderr by default (fix loop). Use -q for summary only.
+uv run --extra dev python doc/development/docs_audit.py --strict -q
+# Optional: validate #fragments against heading slugs (heuristic; can be noisy)
+uv run --extra dev python doc/development/docs_audit.py --check-anchors
+# Optional: log markdown file count and other diagnostics to stderr
+uv run --extra dev python doc/development/docs_audit.py --verbose
+# Check maintained docs for stale PyMDP and policy terminology
+uv run --extra dev python scripts/check_maintained_doc_terms.py --strict
 ```
 
 Writes [docs_audit_report.md](docs_audit_report.md): broken relative links, `AGENTS.md`→`SPEC.md` consistency, `src/` dirs with `.py` but no `AGENTS.md`, maintained `doc/` dirs missing `AGENTS.md` or `README.md`, `AGENTS.md`/`README.md` pairing under `src/`, `doc/`, `.github/`, and the repo root, and **`doc/**/AGENTS.md` orientation** (`## Overview`, `## Purpose`, or `## Directory Identity`; substantive `## Purpose` when present). Generated snapshots under `doc/` are excluded from pairing where noted. After moving files under `doc/gnn/`, run the rewriter (idempotent on already-fixed links):
@@ -24,7 +32,7 @@ Writes [docs_audit_report.md](docs_audit_report.md): broken relative links, `AGE
 uv run python doc/development/rewrite_gnn_doc_links.py
 ```
 
-Source: [docs_audit.py](docs_audit.py), [rewrite_gnn_doc_links.py](rewrite_gnn_doc_links.py).
+Source: [docs_audit.py](docs_audit.py), [rewrite_gnn_doc_links.py](rewrite_gnn_doc_links.py), [../../scripts/check_maintained_doc_terms.py](../../scripts/check_maintained_doc_terms.py). Documentation improvement tracker: [../DOCS_TO_IMPROVE.md](../DOCS_TO_IMPROVE.md).
 
 ## Quick Start for Developers
 
@@ -56,7 +64,8 @@ git checkout -b feature/my-new-feature
 # ...
 
 # Run quality checks
-python src/main.py --only-steps 3,4 --strict
+just quality
+just test-pymdp-focused
 
 # Commit and push
 git add .
@@ -70,55 +79,45 @@ git push origin feature/my-new-feature
 ```
 src/
 ├── main.py                    # Pipeline orchestrator
-├── pipeline/                  # Pipeline configuration
-│   ├── config.py             # Step configuration, timeouts
-│   └── dependency_validator.py # Dependency checking
+├── pipeline/                  # Pipeline configuration, execution adapters, DAG/context helpers
+│   ├── config.py             # Step metadata and output directory mapping
+│   ├── execution.py          # Programmatic API delegating to main.py/numbered steps
+│   └── step_timeouts.py      # Per-step timeout policy
 ├── gnn/                      # Core GNN processing
-│   ├── parser.py             # GNN file parsing
-│   ├── validator.py          # Syntax validation  
-│   └── examples/             # Example GNN files
+│   ├── processor.py          # Directory processing helpers
+│   ├── schema.py             # Core schema parsing/validation
+│   └── parsers/              # Format-specific parsers
 ├── export/                   # Multi-format export
-│   ├── format_exporters.py  # Export implementations
-│   └── mcp.py               # Export MCP tools
+│   ├── processor.py          # Export orchestration
+│   └── format_exporters.py   # Export implementations
 ├── visualization/            # Model visualization
-│   ├── visualize_gnn.py     # Main visualization logic
-│   ├── diagram_generators.py # Specific diagram types
-│   └── mcp.py               # Visualization MCP tools
+│   ├── core/                 # Core visualization processing
+│   ├── graph/                # Graph visualizers
+│   └── matrix/               # Matrix visualizers
 ├── render/                   # Code generation
-│   ├── pymdp/               # PyMDP code generation
-│   ├── rxinfer/             # RxInfer.jl generation
-│   └── render.py            # Main rendering interface
+│   ├── processor.py          # Main rendering processor
+│   ├── pymdp/                # PyMDP code generation
+│   ├── rxinfer/              # RxInfer.jl generation
+│   └── stan/                 # Stan rendering support
 ├── execute/                  # Simulator execution
-│   ├── pymdp_runner.py      # PyMDP execution
-│   └── rxinfer_runner.py    # RxInfer.jl execution
+│   ├── processor.py          # Execute orchestration
+│   ├── pymdp/                # PyMDP execution
+│   └── rxinfer/              # RxInfer.jl execution
 ├── llm/                     # LLM integration
 │   ├── providers/           # LLM provider implementations
-│   ├── tasks/               # Specific LLM tasks
-│   └── mcp.py              # LLM MCP tools
+│   ├── processor.py         # Step 13 processing
+│   └── mcp.py               # LLM MCP tools
 ├── mcp/                     # Model Context Protocol
-│   ├── mcp.py              # Core MCP instance
-│   ├── server_http.py      # HTTP server
-│   ├── server_stdio.py     # STDIO server
-│   └── cli.py              # Command-line interface
+│   ├── mcp.py               # Core MCP instance
+│   ├── server_stdio.py      # STDIO server
+│   └── processor.py         # Step 21 processing
 ├── ontology/                # Ontology processing
-│   ├── ontology_processor.py # Core processing
-│   ├── act_inf_ontology_terms.json # Ontology data
-│   └── mcp.py              # Ontology MCP tools
-├── discopy_translator_module/ # Category theory
-│   ├── translator.py       # GNN to DisCoPy translation
-│   └── visualize_jax_output.py # JAX visualization
+│   ├── processor.py         # Core processing
+│   └── act_inf_ontology_terms.json # Ontology data
 ├── utils/                   # Shared utilities
-│   ├── logging_utils.py    # Logging configuration
-│   └── file_utils.py       # File operations
-├── setup/                   # Environment setup
-│   ├── setup.py           # Main setup logic
-│   └── utils.py           # Setup utilities
-├── tests/                   # Test suite
-│   ├── unit/              # Unit tests
-│   ├── integration/       # Integration tests
-│   └── fixtures/          # Test data
-└── site/                   # Site generation
-    └── site_generator.py  # HTML generation
+│   ├── argument_utils.py    # CLI/pipeline argument model
+│   └── pipeline_template.py # Thin orchestrator wrapper
+└── tests/                   # 171 pytest files, mirrored by module
 ```
 
 ### Design Patterns
@@ -350,14 +349,14 @@ class TestGNNParser:
 python src/main.py --only-steps 3
 
 # Run specific test categories
-pytest src/tests/unit/ -v
-pytest src/tests/integration/ -v
+uv run --extra dev python -m pytest src/tests/unit/ -v
+uv run --extra dev python -m pytest src/tests/integration/ -v
 
 # Run with coverage
 pytest --cov=src --cov-report=html:output/coverage
 
 # Run performance tests
-pytest src/tests/performance/ --benchmark-only
+uv run --extra dev python -m pytest src/tests/performance/ --benchmark-only
 ```
 
 ### Adding New Features
@@ -412,11 +411,11 @@ pytest src/tests/performance/ --benchmark-only
 - Maintain CHANGELOG.md with clear categories
 
 ### Quality Gates
-1. All tests pass (`python src/main.py --only-steps 3`)
-2. Type checking passes (`mypy src/`)
-3. Code formatting (`black src/`, `isort src/`)
-4. Documentation builds successfully
-5. Example models validate correctly
+1. Formatting and lint pass (`uv run --extra dev ruff format --check src scripts`; `uv run --extra dev ruff check src scripts`)
+2. Terminology and documentation audits pass (`scripts/check_repo_terminology.py`, `scripts/check_maintained_doc_terms.py`, `doc/development/docs_audit.py`, `scripts/check_gnn_doc_patterns.py`)
+3. Type checking passes (`uv run --extra dev mypy src --show-error-codes`)
+4. Security scan passes (`uv run --extra dev bandit -r src -c pyproject.toml -q`)
+5. Focused PyMDP/POMDP tests, collect-only, and the full suite command of record pass
 
 ### Release Checklist
 - [ ] Update version numbers
@@ -462,7 +461,7 @@ python src/mcp/cli.py --debug list-tools
 pytest -vvv --pdb src/tests/unit/test_specific.py
 
 # Type checking
-mypy src/ --show-error-codes
+uv run --extra dev mypy src --show-error-codes
 ```
 
 ## Contributing Guidelines

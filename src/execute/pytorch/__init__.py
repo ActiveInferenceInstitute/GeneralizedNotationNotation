@@ -1,4 +1,7 @@
 """PyTorch executor package for GNN pipeline."""
+
+from typing import Any
+
 from .pytorch_runner import (
     execute_pytorch_script,
     find_pytorch_scripts,
@@ -6,9 +9,9 @@ from .pytorch_runner import (
     run_pytorch_scripts,
 )
 
-__all__ = [
-    'is_pytorch_available',
-    'find_pytorch_scripts',
-    'execute_pytorch_script',
-    'run_pytorch_scripts',
+__all__: list[Any] = [
+    "is_pytorch_available",
+    "find_pytorch_scripts",
+    "execute_pytorch_script",
+    "run_pytorch_scripts",
 ]

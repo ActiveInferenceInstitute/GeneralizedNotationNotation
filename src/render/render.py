@@ -9,74 +9,91 @@ import argparse
 import logging
 import sys
 from pathlib import Path
+from typing import Any, cast
 
 # Import renderers with proper error handling
 try:
     from .pymdp import render_gnn_to_pymdp
+
     PYMDP_AVAILABLE = True
 except ImportError as e:
     logging.warning(f"PyMDP renderer not available: {e}")
-    render_gnn_to_pymdp = None
+    render_gnn_to_pymdp = cast(Any, None)
     PYMDP_AVAILABLE = False
 
 try:
     from .rxinfer import render_gnn_to_rxinfer_toml
+
     RXINFER_AVAILABLE = True
 except ImportError as e:
     logging.warning(f"RxInfer renderer not available: {e}")
-    render_gnn_to_rxinfer_toml = None
+    render_gnn_to_rxinfer_toml = cast(Any, None)
     RXINFER_AVAILABLE = False
 
 try:
-    from .discopy import render_gnn_to_discopy, render_gnn_to_discopy_jax
+    from .discopy import render_gnn_to_discopy
+
     DISCOPY_AVAILABLE = True
 except ImportError as e:
     logging.warning(f"DisCoPy renderer not available: {e}")
-    render_gnn_to_discopy = None
-    render_gnn_to_discopy_jax = None
+    render_gnn_to_discopy = cast(Any, None)
     DISCOPY_AVAILABLE = False
 
 try:
-    from .activeinference_jl import (
-        render_gnn_to_activeinference_combined,
-        render_gnn_to_activeinference_jl,
-    )
+    from .activeinference_jl import render_gnn_to_activeinference_jl
+
     ACTIVEINFERENCE_JL_AVAILABLE = True
 except ImportError as e:
     logging.warning(f"ActiveInference.jl renderer not available: {e}")
-    render_gnn_to_activeinference_jl = None
-    render_gnn_to_activeinference_combined = None
+    render_gnn_to_activeinference_jl = cast(Any, None)
     ACTIVEINFERENCE_JL_AVAILABLE = False
 
 try:
-    from .jax import (
-        render_gnn_to_jax,
-        render_gnn_to_jax_combined,
-        render_gnn_to_jax_pomdp,
-    )
+    from .jax import render_gnn_to_jax, render_gnn_to_jax_pomdp
+
     JAX_AVAILABLE = True
 except ImportError as e:
     logging.warning(f"JAX renderer not available: {e}")
-    render_gnn_to_jax = None
-    render_gnn_to_jax_pomdp = None
-    render_gnn_to_jax_combined = None
+    render_gnn_to_jax = cast(Any, None)
+    render_gnn_to_jax_pomdp = cast(Any, None)
     JAX_AVAILABLE = False
 
 logger = logging.getLogger(__name__)
 
 from .processor import render_gnn_spec
 
+RENDER_CLI_TARGETS = [
+    "pymdp",
+    "rxinfer",
+    "rxinfer_toml",
+    "activeinference_jl",
+    "discopy",
+    "discopy_combined",
+    "bnlearn",
+    "jax",
+    "jax_pomdp",
+]
 
-def main(cli_args=None):
+
+def main(cli_args: Any = None) -> Any:
     """Command-line entry point for the renderer."""
-    parser = argparse.ArgumentParser(description="Render GNN specifications to various target platforms")
+    parser = argparse.ArgumentParser(
+        description="Render GNN specifications to various target platforms"
+    )
     parser.add_argument("gnn_file", help="Path to the GNN specification file")
     parser.add_argument("output_dir", help="Output directory for rendered files")
-    parser.add_argument("target", choices=["pymdp", "rxinfer_toml", "discopy", "discopy_jax", "discopy_combined", "activeinference_jl", "activeinference_combined", "jax", "jax_pomdp"],
-                       default="pymdp", help="Target platform")
-    parser.add_argument("--output_filename", help="Base filename for the output (without extension)")
-    parser.add_argument("--debug", "--verbose", action="store_true", help="Enable debug logging")
-    parser.add_argument("--jax-seed", type=int, default=0, help="Seed for JAX PRNG (for discopy_jax targets)")
+    parser.add_argument(
+        "target",
+        choices=RENDER_CLI_TARGETS,
+        default="pymdp",
+        help="Target platform",
+    )
+    parser.add_argument(
+        "--output_filename", help="Base filename for the output (without extension)"
+    )
+    parser.add_argument(
+        "--debug", "--verbose", action="store_true", help="Enable debug logging"
+    )
 
     args = parser.parse_args(cli_args)
 
@@ -89,11 +106,14 @@ def main(cli_args=None):
         return 1
 
     try:
-        from gnn.parser import parse_gnn_file
+        from gnn import parse_gnn_file
+
         gnn_spec = parse_gnn_file(gnn_file_path)
         logger.info(f"Successfully parsed GNN file using parser: {gnn_file_path}")
     except (ImportError, ModuleNotFoundError) as e:
-        logger.error(f"GNN parser unavailable — cannot render without canonical parser: {e}")
+        logger.error(
+            f"GNN parser unavailable — cannot render without canonical parser: {e}"
+        )
         return 1
 
     output_dir = Path(args.output_dir)
@@ -105,10 +125,7 @@ def main(cli_args=None):
         base_filename = gnn_spec.get("name", gnn_file_path.stem)
 
     success, message, artifacts = render_gnn_spec(
-        gnn_spec,
-        args.target,
-        output_dir,
-        {"output_filename": base_filename}
+        gnn_spec, args.target, output_dir, {"output_filename": base_filename}
     )
 
     if success:
@@ -118,6 +135,7 @@ def main(cli_args=None):
     else:
         print(f"Error rendering to {args.target}: {message}")
         return 1
+
 
 if __name__ == "__main__":
     sys.exit(main())

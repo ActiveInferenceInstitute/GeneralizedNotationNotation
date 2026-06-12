@@ -7,15 +7,16 @@ checking, syntax validation, log persistence, and execution timing.
 
 @Web: https://num.pyro.ai/
 """
+
 import json as json_mod
 import logging
 import os
-import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
+import subprocess  # nosec B404
 import sys
 import tempfile
 import time as time_mod
 from pathlib import Path
-from typing import List, Optional, Union
+from typing import Any, List, Optional, Union
 
 logger = logging.getLogger(__name__)
 
@@ -25,6 +26,7 @@ def is_numpyro_available() -> bool:
     try:
         import jax
         import numpyro
+
         logger.info(f"NumPyro version: {numpyro.__version__} (JAX {jax.__version__})")
         return True
     except ImportError as e:
@@ -35,7 +37,9 @@ def is_numpyro_available() -> bool:
         return False
 
 
-def find_numpyro_scripts(base_dir: Union[str, Path], recursive: bool = True) -> List[Path]:
+def find_numpyro_scripts(
+    base_dir: Union[str, Path], recursive: bool = True
+) -> List[Path]:
     """Find NumPyro scripts in the specified directory."""
     base_path = Path(base_dir)
     if not base_path.exists():
@@ -43,7 +47,8 @@ def find_numpyro_scripts(base_dir: Union[str, Path], recursive: bool = True) -> 
         return []
     pattern = "**/*.py" if recursive else "*.py"
     return [
-        f for f in base_path.glob(pattern)
+        f
+        for f in base_path.glob(pattern)
         if "numpyro" in f.name.lower() or f.parent.name == "numpyro"
     ]
 
@@ -75,7 +80,7 @@ def execute_numpyro_script(
             logger.debug(f"✅ Dependency available: {dep}")
         except ImportError:
             logger.error(f"❌ Missing required dependency: {dep}")
-            logger.error("Install with: uv sync --extra probabilistic-programming")
+            logger.error("Install with: uv sync")
             return False
 
     # Syntax validation
@@ -96,7 +101,7 @@ def execute_numpyro_script(
 
     try:
         abs_path = script_path.resolve()
-        result = subprocess.run(  # nosec B603 -- subprocess calls with controlled/trusted input
+        result = subprocess.run(  # nosec B603
             [sys.executable, str(abs_path)],
             capture_output=True,
             text=True,
@@ -123,14 +128,18 @@ def execute_numpyro_script(
         try:
             log_dir.mkdir(parents=True, exist_ok=True)
             stdout_path = log_dir / "stdout.txt"
-            with tempfile.NamedTemporaryFile(mode='w', encoding='utf-8', dir=stdout_path.parent, delete=False) as tmp_f:
+            with tempfile.NamedTemporaryFile(
+                mode="w", encoding="utf-8", dir=stdout_path.parent, delete=False
+            ) as tmp_f:
                 tmp_f.write(result.stdout or "")
             os.replace(tmp_f.name, str(stdout_path))
             stderr_path = log_dir / "stderr.txt"
-            with tempfile.NamedTemporaryFile(mode='w', encoding='utf-8', dir=stderr_path.parent, delete=False) as tmp_f:
+            with tempfile.NamedTemporaryFile(
+                mode="w", encoding="utf-8", dir=stderr_path.parent, delete=False
+            ) as tmp_f:
                 tmp_f.write(result.stderr or "")
             os.replace(tmp_f.name, str(stderr_path))
-            execution_log = {
+            execution_log: dict[str, Any] = {
                 "script": str(abs_path),
                 "return_code": result.returncode,
                 "success": success,
@@ -139,7 +148,9 @@ def execute_numpyro_script(
                 "timestamp": time_mod.strftime("%Y-%m-%d %H:%M:%S"),
             }
             exec_log_path = log_dir / "execution_log.json"
-            with tempfile.NamedTemporaryFile(mode='w', encoding='utf-8', dir=exec_log_path.parent, delete=False) as tmp_f:
+            with tempfile.NamedTemporaryFile(
+                mode="w", encoding="utf-8", dir=exec_log_path.parent, delete=False
+            ) as tmp_f:
                 tmp_f.write(json_mod.dumps(execution_log, indent=2))
             os.replace(tmp_f.name, str(exec_log_path))
             logger.debug(f"Execution logs saved to: {log_dir}")

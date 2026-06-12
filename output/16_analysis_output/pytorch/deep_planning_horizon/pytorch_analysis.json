@@ -1,7 +1,7 @@
 {
   "framework": "pytorch",
   "model_name": "deep_planning_horizon",
-  "num_timesteps": 15,
+  "num_timesteps": 30,
   "num_states": 4,
   "validation": {
     "beliefs_in_range": true,
@@ -10,15 +10,17 @@
     "all_valid": true
   },
   "metrics": {
-    "mean_belief_entropy": 2.2204460492503123e-17,
-    "final_belief_entropy": -0.0,
-    "mean_confidence": 0.9999999999999999,
-    "final_confidence": 0.9999999999999999,
+    "mean_belief_entropy": 0.015491724300700215,
+    "final_belief_entropy": 3.070789916056443e-10,
+    "mean_confidence": 0.9965055368386003,
+    "final_confidence": 0.9999999999885751,
     "action_distribution": {
       "0": 6,
-      "1": 9
+      "1": 9,
+      "2": 7,
+      "3": 8
     },
-    "mean_efe": 3.1938853259622086
+    "mean_efe": 0.49988545525912786
   },
   "plots_generated": true
 }

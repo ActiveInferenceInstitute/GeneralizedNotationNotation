@@ -7,19 +7,19 @@ These models define the API contract — request shapes and response schemas.
 
 from datetime import datetime
 from enum import Enum
-from typing import Any, Dict, List, Optional
+from typing import Any, ClassVar, Dict, List, Optional
 
 try:
-    from pydantic import BaseModel, Field
+    from pydantic import BaseModel, ConfigDict, Field
 except ImportError as e:
     raise ImportError(
-        "pydantic is required for the GNN API module. "
-        "Install with: uv sync --extra api"
+        "pydantic is required for the GNN API module. Install with: uv sync --extra api"
     ) from e
 
 
 class JobStatus(str, Enum):
     """Pipeline job execution status."""
+
     PENDING = "pending"
     RUNNING = "running"
     COMPLETED = "completed"
@@ -32,45 +32,38 @@ class ProcessRequest(BaseModel):
 
     target_dir: str = Field(
         default="input/gnn_files",
-        description="Directory containing GNN files to process"
+        description="Directory containing GNN files to process",
     )
     steps: Optional[List[int]] = Field(
         default=None,
-        description="Specific pipeline steps to run (e.g., [3,5,8]). None = all steps."
+        description="Specific pipeline steps to run (e.g., [3,5,8]). None = all steps.",
     )
     skip_steps: Optional[List[int]] = Field(
-        default=None,
-        description="Pipeline steps to skip"
+        default=None, description="Pipeline steps to skip"
     )
-    verbose: bool = Field(
-        default=False,
-        description="Enable verbose logging output"
-    )
-    strict: bool = Field(
-        default=False,
-        description="Treat warnings as errors"
-    )
+    verbose: bool = Field(default=False, description="Enable verbose logging output")
+    strict: bool = Field(default=False, description="Treat warnings as errors")
 
-    model_config = {"json_schema_extra": {
-        "example": {
-            "target_dir": "input/gnn_files",
-            "steps": [3, 5, 6, 8],
-            "verbose": True
+    model_config: ClassVar[ConfigDict] = ConfigDict(
+        json_schema_extra={
+            "example": {
+                "target_dir": "input/gnn_files",
+                "steps": [3, 5, 6, 8],
+                "verbose": True,
+            }
         }
-    }}
+    )
 
 
 class ToolRequest(BaseModel):
     """Request to invoke a single pipeline step/tool."""
 
     target_dir: str = Field(
-        default="input/gnn_files",
-        description="Directory containing GNN files"
+        default="input/gnn_files", description="Directory containing GNN files"
     )
     verbose: bool = Field(default=False)
     kwargs: Dict[str, Any] = Field(
-        default_factory=dict,
-        description="Step-specific parameters"
+        default_factory=dict, description="Step-specific parameters"
     )
 
 
@@ -93,8 +86,7 @@ class JobStatusResponse(BaseModel):
     started_at: Optional[datetime] = None
     completed_at: Optional[datetime] = None
     progress_step: Optional[int] = Field(
-        default=None,
-        description="Currently executing step number"
+        default=None, description="Currently executing step number"
     )
     steps_completed: List[int] = Field(default_factory=list)
     steps_failed: List[int] = Field(default_factory=list)

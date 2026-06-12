@@ -8,6 +8,7 @@ using torch.tensor operations.
 
 @Web: https://pytorch.org/docs/stable/
 """
+
 import logging
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
@@ -20,7 +21,7 @@ logger = logging.getLogger(__name__)
 def render_gnn_to_pytorch(
     gnn_spec: Dict[str, Any],
     output_path: Path,
-    options: Optional[Dict[str, Any]] = None
+    options: Optional[Dict[str, Any]] = None,
 ) -> Tuple[bool, str, List[str]]:
     """Render a GNN specification to a PyTorch POMDP simulation script.
 
@@ -41,19 +42,30 @@ def render_gnn_to_pytorch(
 
         # Validate shapes
         from render.matrix_utils import validate_abcd_shapes
+
         valid, msg = validate_abcd_shapes(A, B, C, D)
         if not valid:
             logger.warning(f"Shape validation warning: {msg}")
 
         # Generate code
-        code = _generate_pytorch_code(model_name, A, B, C, D, options)
+        code = _generate_pytorch_code(
+            model_name,
+            A,
+            B,
+            C,
+            D,
+            _extract_num_timesteps(gnn_spec, options),
+        )
 
         # Write output
         output_path = Path(output_path)
         output_path.parent.mkdir(parents=True, exist_ok=True)
         import os as _os
         import tempfile as _tempfile
-        with _tempfile.NamedTemporaryFile(mode='w', encoding='utf-8', dir=output_path.parent, delete=False) as _tmp:
+
+        with _tempfile.NamedTemporaryFile(
+            mode="w", encoding="utf-8", dir=output_path.parent, delete=False
+        ) as _tmp:
             _tmp.write(code)
         _os.replace(_tmp.name, str(output_path))
 
@@ -65,7 +77,9 @@ def render_gnn_to_pytorch(
         return False, f"PyTorch rendering failed: {e}", []
 
 
-def _extract_matrices(gnn_spec: Dict[str, Any]) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+def _extract_matrices(
+    gnn_spec: Dict[str, Any],
+) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     """Extract A, B, C, D matrices from GNN spec."""
     params = gnn_spec.get("stateSpace", {}).get("parameters", {})
     if not params:
@@ -73,7 +87,8 @@ def _extract_matrices(gnn_spec: Dict[str, Any]) -> Tuple[np.ndarray, np.ndarray,
     if not params:
         params = gnn_spec.get("parameters", {})
 
-    def _parse_matrix(raw, default):
+    def _parse_matrix(raw: Any, default: Any) -> Any:
+        """Parse matrix."""
         if raw is None:
             return default
         if isinstance(raw, (list, np.ndarray)):
@@ -81,6 +96,7 @@ def _extract_matrices(gnn_spec: Dict[str, Any]) -> Tuple[np.ndarray, np.ndarray,
         if isinstance(raw, str):
             try:
                 import ast
+
                 parsed = ast.literal_eval(raw)
                 return np.array(parsed, dtype=float)
             except Exception:
@@ -107,6 +123,7 @@ def _extract_matrices(gnn_spec: Dict[str, Any]) -> Tuple[np.ndarray, np.ndarray,
 
     # Normalize
     from render.matrix_utils import normalize_columns
+
     A = normalize_columns(A)
     if B.ndim == 2:
         B = normalize_columns(B)
@@ -116,6 +133,21 @@ def _extract_matrices(gnn_spec: Dict[str, Any]) -> Tuple[np.ndarray, np.ndarray,
     return A, B, C, D
 
 
+def _extract_num_timesteps(
+    gnn_spec: Dict[str, Any], options: Optional[Dict[str, Any]] = None
+) -> int:
+    """Extract simulation horizon from render options or parsed GNN metadata."""
+    options = options or {}
+    model_params = gnn_spec.get("model_parameters", {})
+    init_params = gnn_spec.get("initialparameterization", {})
+    return int(
+        options.get(
+            "num_timesteps",
+            model_params.get("num_timesteps", init_params.get("num_timesteps", 10)),
+        )
+    )
+
+
 def _format_tensor(arr: np.ndarray, indent: int = 4) -> str:
     """Format a numpy array as a torch.tensor() literal."""
     prefix = " " * indent
@@ -123,7 +155,7 @@ def _format_tensor(arr: np.ndarray, indent: int = 4) -> str:
         vals = ", ".join(f"{v:.6f}" for v in arr)
         return f"torch.tensor([{vals}], dtype=torch.float64)"
     elif arr.ndim == 2:
-        rows = []
+        rows: list[Any] = []
         for row in arr:
             vals = ", ".join(f"{v:.6f}" for v in row)
             rows.append(f"{prefix}    [{vals}]")
@@ -139,10 +171,9 @@ def _generate_pytorch_code(
     B: np.ndarray,
     C: np.ndarray,
     D: np.ndarray,
-    options: Optional[Dict[str, Any]] = None
+    num_timesteps: int = 10,
 ) -> str:
     """Generate standalone PyTorch POMDP simulation script."""
-    num_timesteps = (options or {}).get("num_timesteps", 10)
     num_states = A.shape[1] if A.ndim == 2 else 2
     num_obs = A.shape[0] if A.ndim == 2 else num_states
     num_actions = B.shape[2] if B.ndim == 3 else 2
@@ -154,12 +185,20 @@ def _generate_pytorch_code(
 
     B_full_init = ""
     if B.ndim == 3:
-        slices = []
+        slices: list[Any] = []
         for a in range(B.shape[2]):
-            slices.append(f"    B_slices.append({_format_tensor(B[:, :, a], indent=4)})")
-        B_full_init = "\n    B_slices = []\n" + "\n".join(slices) + "\n    B = torch.stack(B_slices, dim=2)"
+            slices.append(
+                f"    B_slices.append({_format_tensor(B[:, :, a], indent=4)})"
+            )
+        B_full_init = (
+            "\n    B_slices = []\n"
+            + "\n".join(slices)
+            + "\n    B = torch.stack(B_slices, dim=2)"
+        )
     else:
-        B_full_init = f"\n    B = {B_str}.unsqueeze(2).expand(-1, -1, {num_actions}).clone()"
+        B_full_init = (
+            f"\n    B = {B_str}.unsqueeze(2).expand(-1, -1, {num_actions}).clone()"
+        )
 
     code = f'''\
 #!/usr/bin/env python3

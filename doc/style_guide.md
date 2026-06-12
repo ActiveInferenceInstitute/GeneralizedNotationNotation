@@ -10,6 +10,10 @@ This style guide ensures consistency, quality, and accessibility across all GNN 
 
 **Documentation Philosophy**: Clear, actionable, and scientifically rigorous documentation that serves both beginners and experts.
 
+### Commands in examples
+
+Use **`uv run python`** from the **repository root** for `src/main.py` and `src/N_*.py` invocations (see [CLAUDE.md](../CLAUDE.md)). Avoid bare `python src/...` in new doc unless illustrating a non-uv environment.
+
 ## 📝 **Writing Standards**
 
 ### **Voice and Tone**
@@ -72,7 +76,7 @@ Implementation specifics
 - Include "Last Updated" dates on all documents
 - Review and update dependencies regularly
 - Maintain version compatibility matrices
-- Flag deprecated features clearly
+- Flag retired features clearly
 
 ## 🎨 **Formatting Conventions**
 
@@ -83,7 +87,7 @@ Implementation specifics
 ```markdown
 > **📋 Document Metadata**  
 > **Type**: [Guide|Reference|Tutorial|API|Examples] | **Audience**: [Beginners|Practitioners|Developers|Researchers] | **Complexity**: [Beginner|Intermediate|Advanced]  
-> **Cross-References**: [Link 1](#placeholder) | [Link 2](#placeholder) | [Link 3](#placeholder)
+> **Cross-References**: [Overview](../README.md) | [Testing](../testing/README.md) | [API](../api/README.md)
 ```
 
 ### **Headings and Structure**
@@ -157,9 +161,9 @@ python main.py --only-steps 1_gnn
 
 **Internal Links**:
 ```markdown
-[Document Title](#placeholder)
-[Specific Section](#placeholder)
-[Cross-Reference](#placeholder)
+[Document Title](../README.md)
+[Specific Section](../README.md)
+[Cross-Reference](../testing/README.md)
 ```
 
 **External Links**:
@@ -187,9 +191,9 @@ See [FR23] for foundational theory and [SM24] for implementation details.
 ```markdown
 | Component | Purpose | Status | Documentation |
 |-----------|---------|--------|---------------|
-| Type Checker | Validation | ✅ Complete | [Link](#placeholder) |
-| Visualizer | Diagrams | 🔄 In Progress | [Link](#placeholder) |
-| Renderer | Code Gen | ✅ Complete | [Link](#placeholder) |
+| Type Checker | Validation | ✅ Complete | [Link](../gnn/modules/05_type_checker.md) |
+| Visualizer | Diagrams | 🔄 In Progress | [Link](../gnn/modules/08_visualization.md) |
+| Renderer | Code Gen | ✅ Complete | [Link](../gnn/modules/11_render.md) |
 ```
 
 **Callout Boxes**:
@@ -210,7 +214,7 @@ See [FR23] for foundational theory and [SM24] for implementation details.
 
 - ✅ Complete/Working
 - 🔄 In Progress
-- ❌ Not Working/Deprecated
+- ❌ Not Working/Retired
 - 🚧 Under Construction
 - 📋 Documentation
 
@@ -318,9 +322,9 @@ git push origin docs/update-integration-guide
 
 **Deprecation Protocol**:
 
-1. **Warning Phase** (2 releases): Mark as deprecated with replacement guidance
+1. **Warning Phase** (2 releases): Mark as retired with replacement guidance
 2. **Migration Phase** (2 releases): Provide migration tools and updated examples
-3. **Removal Phase** (1 release): Remove deprecated content, keep redirects
+3. **Removal Phase** (1 release): Remove retired content, keep redirects
 
 ### **Performance Standards**
 
@@ -357,7 +361,7 @@ print(f"Model has {len(model.state_space)} state variables")
 ```
 
 Try it yourself:
-[🚀 Run in Colab](#placeholder) | [📝 Edit on GitHub](#placeholder)
+[Run in Colab](https://colab.research.google.com/) | [Edit on GitHub](https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation)
 
 ```
 
@@ -397,9 +401,9 @@ graph TD
     B --> C[Result]
 ```
 
-**🎥 Video Tutorial**: [Watch explanation](#placeholder)  
-**🎮 Interactive Demo**: [Try it yourself](#placeholder)  
-**📊 Infographic**: [Visual summary](#placeholder)
+**Video Tutorial**: [Watch explanation](../README.md)  
+**Interactive Demo**: [Try it yourself](quickstart.md)  
+**Infographic**: [Visual summary](../README.md)
 
 ```
 
@@ -422,7 +426,7 @@ graph TD
 
 > **📋 Document Metadata**  
 > **Type**: Guide | **Audience**: Developers | **Complexity**: Intermediate  
-> **Cross-References**: [Link 1](#placeholder) | [Link 2](#placeholder)
+> **Cross-References**: [Link 1](#) | [Link 2](#)
 
 ## Overview
 
@@ -726,8 +730,8 @@ write-good doc/**/*.md
 **Change Management**:
 
 - Update documentation with every code release
-- Maintain backward compatibility information
-- Archive deprecated content appropriately
+- Document migration requirements and removed interfaces
+- Archive retired content appropriately
 - Version control all documentation changes
 
 ## 📚 **Resources and Tools**
@@ -760,7 +764,7 @@ write-good doc/**/*.md
 
 - [Active Inference Ontology](https://github.com/ActiveInferenceInstitute/ActiveInferenceOntology)
 - [GNN Syntax Specification](gnn/reference/gnn_syntax.md)
-- [Framework Documentation](../README.md#framework-integrations)
+- [Framework Documentation](README.md#framework-integrations)
 
 ### **Quality Assurance Tools**
 

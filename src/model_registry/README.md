@@ -9,7 +9,6 @@ src/model_registry/
 ├── __init__.py                    # Module initialization and exports
 ├── README.md                      # This documentation
 ├── AGENTS.md                      # Agent scaffolding documentation
-├── PAI.md                         # PAI context documentation
 ├── SPEC.md                        # Module specification
 ├── mcp.py                         # Model Context Protocol integration
 └── registry.py                    # Core registry functionality
@@ -331,7 +330,7 @@ output/4_model_registry_output/
 
 ### Lifecycle Management
 
-- **Model States**: Active, deprecated, archived, deleted
+- **Model States**: Active, retired, archived, deleted
 - **State Transitions**: Controlled state transitions
 - **Audit Trail**: Complete audit trail for all changes
 - **Cleanup Procedures**: Automated cleanup procedures

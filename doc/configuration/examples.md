@@ -390,7 +390,7 @@ targets:
     template_dir: "./src/render/pymdp/templates"
     output_subdir: "pymdp"
     matrix_validation: true
-    placeholder_matrices: false
+    default_matrices: false
     
   rxinfer:
     enable: true

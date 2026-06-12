@@ -6,24 +6,16 @@ from __future__ import annotations
 
 from typing import Any, Dict
 
-try:
-    from mcp import register_module_tools
-except Exception:  # MCP optional
-    def register_module_tools(*args, **kwargs):
-        return {"status": "noop"}
+from mcp import register_module_tools
 
 
 def register_gui_tools() -> Dict[str, Any]:
+    """Register gui tools."""
     try:
-        tools = [
-            {
-                "name": "gui_status",
-                "description": "Query GUI availability and export path",
-                "params_schema": {"type": "object", "properties": {}}
-            }
-        ]
-        return register_module_tools("gui", tools)
+        registered = bool(register_module_tools("gui"))
+        return {
+            "status": "SUCCESS" if registered else "FAILED",
+            "registered": registered,
+        }
     except Exception as e:
         return {"status": "FAILED", "error": str(e)}
-
-

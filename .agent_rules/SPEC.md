@@ -5,7 +5,7 @@ The `.agent_rules` module operates outside the standard 25-step execution pipeli
 
 ## Components
 While it exports no executable classes, it provides static guarantees:
-1. All AI actions must check the Zero-Mock policy defined in `testing.md`.
+1. All AI actions must check the real-implementation testing policy defined in `testing.md`.
 2. Pipeline architectural changes must conform to the Thin Orchestrator pattern outlined in `architecture.md`.
 3. Error handling must strictly follow the Safe-to-Fail principles in `error_handling.md`.
 

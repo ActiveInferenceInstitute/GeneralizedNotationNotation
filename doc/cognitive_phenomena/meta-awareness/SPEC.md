@@ -6,3 +6,7 @@ It ensures that `Meta-Awareness` tasks resolve without runtime dependency loops.
 
 ## Components
 Expected available types: SandvedSmithModel
+
+## Parent specification
+
+- Canonical policy: [Cognitive phenomena](../SPEC.md)

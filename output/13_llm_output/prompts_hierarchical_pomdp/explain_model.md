@@ -1,32 +1,14 @@
 # EXPLAIN_MODEL
 
-Here's a concise overview of the key components and core concepts:
+Here's a concise overview of the key components:
 
-**Model Purpose:** This is an active inference POMDP that represents a hierarchical neural network with two-level hierarchies (Level 1 and Level 2) and slower dynamics in the lower levels (Contextual HIDDEN states). The model aims to learn patterns, make predictions based on observed data, and update beliefs.
+1. **Model Purpose**: This document provides an explanation of what the model represents and how it works. It covers the main concepts, core components, and key relationships involved.
 
-**Core Components:**
+2. **Core Components**:
+   - **Hidden states (s_f0, s_f1, etc.)**: These are used to represent the state space for the model's actions/controls. They capture the current state of the system.
+   - **Observations (o_m0, o_m1, etc.)**: These represent the data that is fed into the model and can be thought of as a set of "what-if scenarios" or "what if situations". They are used to update the model's beliefs based on new information.
+   - **Actions/Controls (u_c0, π_c0, etc.)**: These represent the actions that the model performs in response to specific input data. They capture the current state of the system and can be thought of as a set of "what if situations" or "what-if scenarios".
 
-1. **Hierarchical Neural Network**: A hierarchical neural network with two-level hierarchies (Level 1 and Level 2) that process observations in a sequential manner. Each layer has its own hidden state distribution, which is updated using the action/observation transition matrix. The model learns patterns based on observed data and updates beliefs accordingly.
+3. **Model Dynamics**: This document provides an explanation on how the model evolves over time based on its interactions with the observed data. It also discusses key relationships between hidden states, observations, actions/controls, and predictions.
 
-2. **Contextual HIDDEN States**: A set of hidden states (s_f0, s_f1) that represent actions or decisions made by the network at each level. These hidden states are updated using the action/observation transition matrix to reflect changes in the network's behavior.
-
-3. **Higher-Level Neural Network**: A hierarchical neural network with higher levels of nested networks (Contextual HIDDEN states). Each layer has its own hidden state distribution, which is updated using the action/observation transition matrix to reflect changes in the network's behavior at each level. The model learns patterns based on observed data and updates beliefs accordingly.
-
-**Model Dynamics:**
-
-1. **Action Transitions**: Actions are propagated through the network by updating their probabilities based on the actions learned from previous layers. These transitions are updated using the action/observation transition matrix to reflect changes in the network's behavior at each level.
-
-2. **Contextual HIDDEN States**: Contextual hidden states represent the observed data and can be used for prediction or inference purposes. They are updated by updating their probabilities based on the actions learned from previous layers.
-
-**Practical Implications:**
-
-1. **Learning Patterns**: The model learns patterns in the network's behavior, enabling it to make predictions about future outcomes based on past observations.
-
-2. **Action Recognition**: The model can recognize patterns and make predictions based on observed data by updating its beliefs accordingly.
-
-3. **Decision-Making**: The model can inform decisions using a combination of action recognition and prediction capabilities.
-
-**Key Relationships:**
-
-1. **Contextual HIDDEN States**: These hidden states represent the observed data, allowing the network to learn patterns based on it.
-
+Please provide clear and concise explanations in a narrative format while maintaining scientific accuracy.

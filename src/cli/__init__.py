@@ -12,13 +12,30 @@ Provides:
   gnn preflight  — Run environment & config checks
   gnn health     — Show renderer & dependency status
   gnn serve      — Start Pipeline-as-a-Service API
+  gnn templates  — Inspect maintained GNN templates
+  gnn pull       — Copy a maintained template into an input directory
   gnn lsp        — Launch Language Server
 """
+
+from typing import Any, cast
+
+__version__ = "1.6.0"
+
+FEATURES: dict[str, Any] = {
+    "subcommands": True,
+    "pipeline_execution": True,
+    "file_validation": True,
+    "file_parsing": True,
+    "render_dispatch": True,
+    "lsp_launch": True,
+}
+
 
 import argparse
 import json
 import logging
 import os
+import shutil
 import sys
 import tempfile
 from pathlib import Path
@@ -33,17 +50,32 @@ def main(argv: Optional[List[str]] = None) -> int:
         prog="gnn",
         description="GNN Processing Pipeline — Command-line interface",
     )
-    parser.add_argument("--verbose", "-v", action="store_true", help="Enable verbose output")
+    parser.add_argument(
+        "--verbose", "-v", action="store_true", help="Enable verbose output"
+    )
     subparsers = parser.add_subparsers(dest="command", help="Available commands")
 
     # ── gnn run ──────────────────────────────────────────────────────────────
     run_p = subparsers.add_parser("run", help="Execute the full pipeline")
-    run_p.add_argument("--target-dir", "-t", default="input/gnn_files", help="Input directory")
+    run_p.add_argument(
+        "--target-dir", "-t", default="input/gnn_files", help="Input directory"
+    )
     run_p.add_argument("--output-dir", "-o", default="output", help="Output directory")
     run_p.add_argument("--skip-steps", nargs="*", type=int, help="Step numbers to skip")
-    run_p.add_argument("--skip-llm", action="store_true", help="Skip LLM step (alias for --skip-steps 13)")
-    run_p.add_argument("--linear", action="store_true", help="Force linear execution (no DAG)")
-    run_p.add_argument("--log-format", choices=["human", "json"], default="human", help="Output format for pipeline logs")
+    run_p.add_argument(
+        "--skip-llm",
+        action="store_true",
+        help="Skip LLM step (alias for --skip-steps 13)",
+    )
+    run_p.add_argument(
+        "--linear", action="store_true", help="Force linear execution (no DAG)"
+    )
+    run_p.add_argument(
+        "--log-format",
+        choices=["human", "json"],
+        default="human",
+        help="Output format for pipeline logs",
+    )
 
     # ── gnn validate ─────────────────────────────────────────────────────────
     validate_p = subparsers.add_parser("validate", help="Validate a GNN file")
@@ -53,29 +85,59 @@ def main(argv: Optional[List[str]] = None) -> int:
     # ── gnn parse ────────────────────────────────────────────────────────────
     parse_p = subparsers.add_parser("parse", help="Parse a GNN file and output JSON")
     parse_p.add_argument("file", type=Path, help="GNN file to parse")
-    parse_p.add_argument("--format", choices=["json", "yaml", "summary"], default="json")
+    parse_p.add_argument(
+        "--format", choices=["json", "yaml", "summary"], default="json"
+    )
 
     # ── gnn render ───────────────────────────────────────────────────────────
-    render_p = subparsers.add_parser("render", help="Render a GNN file to framework code")
+    render_p = subparsers.add_parser(
+        "render", help="Render a GNN file to framework code"
+    )
     render_p.add_argument("file", type=Path, help="GNN file to render")
-    render_p.add_argument("--framework", "-f", default="pymdp",
-                          choices=["pymdp", "rxinfer", "jax", "numpyro", "stan", "pytorch"],
-                          help="Target framework")
+    render_p.add_argument(
+        "--framework",
+        "-f",
+        default="pymdp",
+        choices=[
+            "pymdp",
+            "rxinfer",
+            "activeinference_jl",
+            "jax",
+            "numpyro",
+            "stan",
+            "pytorch",
+            "discopy",
+            "bnlearn",
+        ],
+        help="Target framework",
+    )
     render_p.add_argument("--output", "-o", type=Path, help="Output file path")
 
     # ── gnn report ───────────────────────────────────────────────────────────
     report_p = subparsers.add_parser("report", help="Generate pipeline report")
-    report_p.add_argument("--output-dir", "-o", default="output", help="Pipeline output directory")
+    report_p.add_argument(
+        "--output-dir", "-o", default="output", help="Pipeline output directory"
+    )
 
     # ── gnn reproduce ────────────────────────────────────────────────────────
-    reproduce_p = subparsers.add_parser("reproduce", help="Re-run from a previous run hash")
+    reproduce_p = subparsers.add_parser(
+        "reproduce", help="Re-run from a previous run hash"
+    )
     reproduce_p.add_argument("run_hash", help="Run hash (12-char hex prefix)")
-    reproduce_p.add_argument("--history-dir", type=Path, default=Path("output/00_pipeline_summary/.history"), 
-                             help="Directory containing index.json")
+    reproduce_p.add_argument(
+        "--history-dir",
+        type=Path,
+        default=Path("output/00_pipeline_summary/.history"),
+        help="Directory containing index.json",
+    )
 
     # ── gnn preflight ────────────────────────────────────────────────────────
-    preflight_p = subparsers.add_parser("preflight", help="Run environment & config checks")
-    preflight_p.add_argument("--config", type=Path, default=None, help="Config file path")
+    preflight_p = subparsers.add_parser(
+        "preflight", help="Run environment & config checks"
+    )
+    preflight_p.add_argument(
+        "--config", type=Path, default=None, help="Config file path"
+    )
 
     # ── gnn health ───────────────────────────────────────────────────────────
     subparsers.add_parser("health", help="Show renderer & dependency status")
@@ -85,14 +147,48 @@ def main(argv: Optional[List[str]] = None) -> int:
     serve_p.add_argument("--host", default="127.0.0.1", help="Bind host")
     serve_p.add_argument("--port", type=int, default=8000, help="Bind port")
 
+    # ── gnn templates ───────────────────────────────────────────────────────
+    templates_p = subparsers.add_parser("templates", help="Inspect template library")
+    templates_sub = templates_p.add_subparsers(
+        dest="templates_command", help="Template commands"
+    )
+    templates_sub.add_parser("list", help="List available templates")
+    templates_show_p = templates_sub.add_parser("show", help="Show one template")
+    templates_show_p.add_argument("name", help="Template name")
+
+    # ── gnn pull ────────────────────────────────────────────────────────────
+    pull_p = subparsers.add_parser("pull", help="Copy a maintained GNN template")
+    pull_p.add_argument("name", help="Template name")
+    pull_p.add_argument(
+        "--output-dir",
+        "-o",
+        type=Path,
+        default=Path("input/gnn_files"),
+        help="Directory to receive the template",
+    )
+    pull_p.add_argument("--dry-run", action="store_true", help="Report without copying")
+    pull_p.add_argument(
+        "--overwrite",
+        action="store_true",
+        help="Replace destination on checksum mismatch",
+    )
+
     # ── gnn watch ────────────────────────────────────────────────────────────
-    watch_p = subparsers.add_parser("watch", help="Monitor directory and live-reparse on change")
-    watch_p.add_argument("dir", type=Path, help="Directory to monitor (e.g. input/gnn_files/)")
+    watch_p = subparsers.add_parser(
+        "watch", help="Monitor directory and live-reparse on change"
+    )
+    watch_p.add_argument(
+        "dir", type=Path, help="Directory to monitor (e.g. input/gnn_files/)"
+    )
 
     # ── gnn graph ────────────────────────────────────────────────────────────
-    graph_p = subparsers.add_parser("graph", help="Generate dependency graph from multi-model files")
+    graph_p = subparsers.add_parser(
+        "graph", help="Generate dependency graph from multi-model files"
+    )
     graph_p.add_argument("file", type=Path, help="GNN file to render")
-    graph_p.add_argument("--format", choices=["mermaid", "text"], default="mermaid", help="Output format")
+    graph_p.add_argument(
+        "--format", choices=["mermaid", "text"], default="mermaid", help="Output format"
+    )
 
     # ── gnn lsp ──────────────────────────────────────────────────────────────
     subparsers.add_parser("lsp", help="Launch GNN Language Server")
@@ -113,7 +209,7 @@ def main(argv: Optional[List[str]] = None) -> int:
         return 0
 
     # Dispatch
-    handlers = {
+    handlers: dict[str, Any] = {
         "run": _cmd_run,
         "validate": _cmd_validate,
         "parse": _cmd_parse,
@@ -123,13 +219,15 @@ def main(argv: Optional[List[str]] = None) -> int:
         "preflight": _cmd_preflight,
         "health": _cmd_health,
         "serve": _cmd_serve,
+        "templates": _cmd_templates,
+        "pull": _cmd_pull,
         "lsp": _cmd_lsp,
         "watch": _cmd_watch,
         "graph": _cmd_graph,
     }
     handler = handlers.get(args.command)
     if handler:
-        return handler(args)
+        return cast("int", handler(args))
     else:
         parser.print_help()
         return 1
@@ -137,12 +235,19 @@ def main(argv: Optional[List[str]] = None) -> int:
 
 # ─── Command Handlers ────────────────────────────────────────────────────────────
 
-def _cmd_run(args):
+
+def _cmd_run(args: Any) -> Any:
     """Execute full pipeline."""
     try:
         from main import main as pipeline_main
+
         sys.argv = ["gnn"]
-        extra_args = ["--target-dir", str(args.target_dir), "--output-dir", str(args.output_dir)]
+        extra_args: list[Any] = [
+            "--target-dir",
+            str(args.target_dir),
+            "--output-dir",
+            str(args.output_dir),
+        ]
         if args.verbose:
             extra_args.append("--verbose")
         if args.log_format == "json":
@@ -158,7 +263,7 @@ def _cmd_run(args):
         return 1
 
 
-def _cmd_validate(args):
+def _cmd_validate(args: Any) -> Any:
     """Validate a GNN file."""
     if not args.file.exists():
         logger.error(f"File not found: {args.file}")
@@ -174,7 +279,7 @@ def _cmd_validate(args):
         validate_required_sections,
     )
 
-    errors = []
+    errors: list[Any] = []
 
     # Section validation
     section_errors = validate_required_sections(content, file_path=file_name)
@@ -186,7 +291,9 @@ def _cmd_validate(args):
 
     # Connection parsing
     var_names = {v.name for v in variables}
-    connections, conn_errors = parse_connections(content, known_variables=var_names, file_path=file_name)
+    connections, conn_errors = parse_connections(
+        content, known_variables=var_names, file_path=file_name
+    )
     errors.extend(conn_errors)
 
     # Matrix validation
@@ -203,11 +310,13 @@ def _cmd_validate(args):
         print(f"\n⚠️ {len(errors)} warning(s) — pass --strict to fail")
         return 0
     else:
-        print(f"✅ {file_name}: valid ({len(variables)} variables, {len(connections)} connections)")
+        print(
+            f"✅ {file_name}: valid ({len(variables)} variables, {len(connections)} connections)"
+        )
         return 0
 
 
-def _cmd_parse(args):
+def _cmd_parse(args: Any) -> Any:
     """Parse a GNN file and output JSON."""
     if not args.file.exists():
         logger.error(f"File not found: {args.file}")
@@ -219,27 +328,38 @@ def _cmd_parse(args):
 
     variables, _ = parse_state_space(content, file_path=str(args.file))
     var_names = {v.name for v in variables}
-    connections, _ = parse_connections(content, known_variables=var_names, file_path=str(args.file))
+    connections, _ = parse_connections(
+        content, known_variables=var_names, file_path=str(args.file)
+    )
 
     # Try frontmatter
-    metadata = {}
+    metadata: dict[Any, Any] = {}
     try:
         from gnn.frontmatter import parse_frontmatter
+
         metadata, _ = parse_frontmatter(content)
     except ImportError as e:
         logger.debug("Frontmatter parsing not available: %s", e)
 
-    result = {
+    result: dict[str, Any] = {
         "file": str(args.file),
         "metadata": metadata,
         "variables": [
-            {"name": v.name, "dimensions": v.dimensions, "dtype": v.dtype, "default": v.default}
+            {
+                "name": v.name,
+                "dimensions": v.dimensions,
+                "dtype": v.dtype,
+                "default": v.default,
+            }
             for v in variables
         ],
         "connections": [
             {
-                "source": c.source, "target": c.target,
-                "directed": c.directed, "label": c.label, "line": c.line,
+                "source": c.source,
+                "target": c.target,
+                "directed": c.directed,
+                "label": c.label,
+                "line": c.line,
             }
             for c in connections
         ],
@@ -256,15 +376,114 @@ def _cmd_parse(args):
     return 0
 
 
-def _cmd_render(args):
+def _cmd_render(args: Any) -> Any:
     """Render a GNN file to framework code."""
-    print(f"Rendering {args.file} → {args.framework}")
-    print("(Render via CLI delegates to src/render/processor.py)")
-    # Placeholder — full implementation would import render.processor
-    return 0
+    if not args.file.exists():
+        logger.error(f"File not found: {args.file}")
+        return 1
+
+    from render import process_render
+
+    framework = str(args.framework)
+    with tempfile.TemporaryDirectory(prefix="gnn-render-") as td:
+        tmp_root = Path(td)
+        input_dir = tmp_root / "input"
+        input_dir.mkdir()
+        shutil.copy2(args.file, input_dir / args.file.name)
+
+        render_dir = (
+            tmp_root / "render_output"
+            if args.output
+            else Path("output") / "11_render_output" / args.file.stem
+        )
+        ok = process_render(
+            target_dir=input_dir,
+            output_dir=render_dir,
+            verbose=getattr(args, "verbose", False),
+            frameworks=[framework],
+            strict_validation=False,
+            strict_framework_success=True,
+        )
+
+        if ok not in (True, 0):
+            logger.error(f"Render failed for {args.file} using framework {framework}")
+            return 1
+
+        if not args.output:
+            print(f"Rendered {args.file} → {framework}: {render_dir}")
+            return 0
+
+        artifact = _find_render_artifact(render_dir, framework)
+        if artifact is None:
+            logger.error(
+                f"Render completed but no {framework} artifact was found in {render_dir}"
+            )
+            return 1
+
+        args.output.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(artifact, args.output)
+        print(f"Rendered {args.file} → {framework}: {args.output}")
+        return 0
 
 
-def _cmd_report(args):
+def _find_render_artifact(render_dir: Path, framework: str) -> Path | None:
+    """Find the primary artifact for a single-framework render invocation."""
+    suffixes = {
+        "pymdp": {".py"},
+        "jax": {".py"},
+        "numpyro": {".py"},
+        "pytorch": {".py"},
+        "discopy": {".py"},
+        "bnlearn": {".py"},
+        "rxinfer": {".jl", ".toml"},
+        "activeinference_jl": {".jl"},
+        "stan": {".stan"},
+    }.get(framework, set())
+
+    def is_candidate(path: Path) -> bool:
+        """Return whether candidate."""
+        return (
+            path.is_file()
+            and (not suffixes or path.suffix in suffixes)
+            and path.name
+            not in {
+                "README.md",
+                "processing_summary.json",
+                "render_processing_summary.json",
+            }
+        )
+
+    summary_path = render_dir / "render_processing_summary.json"
+    if summary_path.exists():
+        try:
+            summary = json.loads(summary_path.read_text(encoding="utf-8"))
+            for result in summary.get("file_results", {}).values():
+                framework_result = result.get("framework_results", {}).get(framework)
+                if framework_result:
+                    for item in framework_result.get("output_files", []):
+                        candidate = Path(item)
+                        if candidate.exists() and is_candidate(candidate):
+                            return candidate
+                for item in result.get("generated_files", []):
+                    candidate = Path(item)
+                    if (
+                        candidate.exists()
+                        and framework in str(candidate)
+                        and is_candidate(candidate)
+                    ):
+                        return candidate
+        except (json.JSONDecodeError, OSError, TypeError):
+            logger.debug("Could not parse render summary at %s", summary_path)
+
+    candidates = sorted(
+        p
+        for p in render_dir.rglob("*")
+        if framework in str(p.parent) and is_candidate(p)
+    )
+    return candidates[0] if candidates else None
+
+
+def _cmd_report(args: Any) -> Any:
     """Generate pipeline report from existing outputs."""
     output_dir = Path(args.output_dir)
     if not output_dir.exists():
@@ -272,54 +491,61 @@ def _cmd_report(args):
         return 1
 
     from report.pipeline_report import generate_pipeline_report
+
     report = generate_pipeline_report(output_dir)
     report_path = output_dir / "PIPELINE_REPORT.md"
-    with tempfile.NamedTemporaryFile(mode='w', encoding='utf-8', dir=report_path.parent, delete=False) as tmp_f:
+    with tempfile.NamedTemporaryFile(
+        mode="w", encoding="utf-8", dir=report_path.parent, delete=False
+    ) as tmp_f:
         tmp_f.write(report)
     os.replace(tmp_f.name, str(report_path))
     print(f"📄 Report written to: {report_path}")
     return 0
 
 
-def _cmd_reproduce(args):
+def _cmd_reproduce(args: Any) -> Any:
     """Re-run from a previous run hash."""
     import logging
+
     logger = logging.getLogger(__name__)
-    
+
     from pipeline.hasher import lookup_run
+
     history_dir = args.history_dir
-    
+
     run_entry = lookup_run(args.run_hash, history_dir)
     if not run_entry:
         print(f"❌ Run hash not found: {args.run_hash}")
         return 1
-        
+
     print(f"🔄 Reproducing run: {args.run_hash}")
     config = run_entry.get("config", {})
     run_args_dict = config.get("args", {})
     pipeline_settings = config.get("pipeline", {})
-    
+
     try:
         from main import main as pipeline_main
         from utils.argument_utils import PipelineArguments
-        
+
         # Reconstruct PipelineArguments
         # Some paths might need to be converted back to Path objects
         if "target_dir" in run_args_dict:
             run_args_dict["target_dir"] = Path(run_args_dict["target_dir"])
         if "output_dir" in run_args_dict:
             run_args_dict["output_dir"] = Path(run_args_dict["output_dir"])
-            
+
         reproduced_args = PipelineArguments(**run_args_dict)
-        
+
         # Trigger execution bypassing normal CLI arg parsing
         print("🚀 Bypassing CLI parser, running with reconstructed config")
-        
+
         # Pass the full config structure that main() expects back in override_config
-        full_config_override = {"pipeline": pipeline_settings}
-        
-        return pipeline_main(override_args=reproduced_args, override_config=full_config_override)
-        
+        full_config_override: dict[str, Any] = {"pipeline": pipeline_settings}
+
+        return pipeline_main(
+            override_args=reproduced_args, override_config=full_config_override
+        )
+
     except ImportError as e:
         logger.error(f"Could not import pipeline for reproduction: {e}")
         return 1
@@ -328,15 +554,16 @@ def _cmd_reproduce(args):
         return 1
 
 
-def _cmd_preflight(args):
+def _cmd_preflight(args: Any) -> Any:
     """Run environment & config checks."""
     from pipeline.preflight import run_preflight
+
     report = run_preflight(config_path=args.config)
     print(report.to_markdown())
     return 0 if report.is_ok else 1
 
 
-def _cmd_health(args):
+def _cmd_health(args: Any) -> Any:
     """Show renderer & dependency status."""
     from pipeline.preflight import check_environment
     from render.health import check_renderers
@@ -359,10 +586,11 @@ def _cmd_health(args):
     return 0
 
 
-def _cmd_serve(args):
+def _cmd_serve(args: Any) -> Any:
     """Start Pipeline-as-a-Service API."""
     try:
         from api.app import start_server
+
         start_server(host=args.host, port=args.port)
     except ImportError:
         print("❌ FastAPI not installed. Run: pip install fastapi uvicorn")
@@ -370,10 +598,46 @@ def _cmd_serve(args):
     return 0
 
 
-def _cmd_lsp(args):
+def _cmd_templates(args: Any) -> Any:
+    """Inspect the maintained template library."""
+    from .templates import list_templates, show_template
+
+    if getattr(args, "templates_command", None) in {None, "list"}:
+        print(json.dumps({"templates": list_templates()}, indent=2))
+        return 0
+    if args.templates_command == "show":
+        try:
+            print(json.dumps({"template": show_template(args.name)}, indent=2))
+        except KeyError as exc:
+            logger.error(str(exc))
+            return 1
+        return 0
+    return 1
+
+
+def _cmd_pull(args: Any) -> Any:
+    """Copy a maintained template into an input directory."""
+    from .templates import pull_template
+
+    try:
+        result = pull_template(
+            args.name,
+            Path(args.output_dir),
+            dry_run=bool(args.dry_run),
+            overwrite=bool(args.overwrite),
+        )
+    except (KeyError, FileExistsError, FileNotFoundError, OSError) as exc:
+        logger.error(str(exc))
+        return 1
+    print(json.dumps(result, indent=2))
+    return 0
+
+
+def _cmd_lsp(args: Any) -> Any:
     """Launch GNN Language Server."""
     try:
         from cli.lsp import start_lsp
+
         start_lsp()
     except ImportError as e:
         print(f"❌ Could not start LSP server: {e}")
@@ -381,10 +645,11 @@ def _cmd_lsp(args):
     return 0
 
 
-def _cmd_watch(args):
+def _cmd_watch(args: Any) -> Any:
     """Monitor directory and live-reparse on change."""
     try:
         from gnn.watcher import GNNWatcher
+
         watcher = GNNWatcher(watch_dir=args.dir)
         watcher.start()
     except ImportError as e:
@@ -393,7 +658,7 @@ def _cmd_watch(args):
     return 0
 
 
-def _cmd_graph(args):
+def _cmd_graph(args: Any) -> Any:
     """Generate dependency graph from multi-model files."""
     if not args.file.exists():
         logger.error(f"File not found: {args.file}")
@@ -401,6 +666,7 @@ def _cmd_graph(args):
 
     try:
         from gnn.dep_graph import render_graph_from_file
+
         output = render_graph_from_file(str(args.file), output_format=args.format)
         print(output)
     except ImportError as e:
@@ -411,3 +677,13 @@ def _cmd_graph(args):
 
 if __name__ == "__main__":
     sys.exit(main())
+
+
+def get_module_info() -> dict:
+    """Return module metadata for composability and MCP discovery."""
+    return {
+        "name": "cli",
+        "version": __version__,
+        "description": "Unified command-line interface with subcommands",
+        "features": FEATURES,
+    }

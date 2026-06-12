@@ -1,11 +1,21 @@
-# Parse
+# Visualization Parse
 
-## Overview
-This module handles `Parse` components.
+GNN file parsing utilities tailored for the visualization pipeline.
 
-## Available Members
-- **Classes**: GNNParser
-- **Functions**: extract_sections, parse_file, parse_gnn_content
+## Exports
+
+- `GNNParser` — Configurable parser for extracting visualization-ready data from GNN files,
+  including state spaces, connection graphs, and matrix specifications
+- `parse_gnn_content()` — Parse raw GNN markdown content into structured sections
+
+## Dependencies
+
+- Standard library only (no external dependencies)
 
 ## Usage
-Import necessary members directly to orchestrate tasks related to Parse.
+
+```python
+from visualization.parse import GNNParser, parse_gnn_content
+parser = GNNParser()
+model = parser.parse(gnn_file_path)
+```

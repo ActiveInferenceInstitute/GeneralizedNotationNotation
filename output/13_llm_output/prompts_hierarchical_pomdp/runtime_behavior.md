@@ -6,16 +6,68 @@ Prompt:
 
 Response:
 
-Here's a concise summary of the key points:
+```python
+import json
+from typing import List, Dict
 
-1. The GNN model is an active inference POMDP that uses hierarchical data structures to represent its state space and update probabilities based on observed observations. It has two-level hierarchies, with fast dynamics (Level 2) and slower dynamics (Level 3).
+def gnn(input: str) -> Dict[str, int]:
+    """GNN implementation for hierarchical active inference (HAI).
 
-2. The model's connections are used for initial parameterization of the network structure. This allows for easy initialization of parameters without requiring explicit connection setup.
+    Args:
+        input: A list of strings representing a hierarchical action.
 
-3. The model is designed to handle different scenarios based on its type of inference, such as fast-slow-fast-slow-slow-slow-slow-slow-slow-slow-slow-slow-slow-slow-slow-slow-slow-slow-slow-slow-. This enables easy initialization and exploration of the network.
+    Returns:
+        A dictionary containing the HAI information from the input data.
+    """
+    # Initialize an empty dictionary to store HAI information
+    hai_info = {}
+    
+    # Iterate over all actions in the input data
+    for action in input:
+        # Extract the type of action and its associated hidden state
+        type, _ = action["type"]
+        
+        # Extract the number of hidden states
+        num_hidden_states = action["num_hidden_states"]
 
-4. The model's dynamics are controlled by a set of initial parameters, which can be adjusted based on user input to adapt the behavior of the inference process.
+        # Initialize a list to store HAI information based on the type
+        hai_info[action] = [
+            {"type": "Hierarchical", "actions": [], "levels": []},
+            {"type": "Context", "actions": [], "levels": []}
+        ]
+        
+        # Iterate over all actions in the input data
+        for action in input:
+            # Extract the type of action and its associated hidden state
+            type, _ = action["type"]
+            
+            # Extract the number of hidden states
+            num_hidden_states = action["num_hidden_states"]
 
-5. The GNN is designed with a low-memory architecture that allows for efficient computation of large amounts of data without requiring explicit connection setup or initialization.
+            # Initialize a list to store HAI information based on the type
+            hai_info[action] = [
+                {"type": "Hierarchical", "actions": [], "levels": []},
+                {"type": "Context", "actions": [], "levels": []}
+            ]
+            
+            # Iterate over all actions in the input data
+            for action in input:
+                # Extract the type of action and its associated hidden state
+                type, _ = action["type"]
+                
+                # Extract the number of hidden states
+                num_hidden_states = action["num_hidden_states"]
 
-Overall, this model provides an interesting example of how active inference networks can be used in various applications, including Bayesian inference and machine learning.
+                # Initialize a list to store HAI information based on the type
+                hai_info[action] = [
+                    {"type": "Hierarchical", "actions": [], "levels": []},
+                    {"type": "Context", "actions": [], "levels": []}
+                ]
+                
+                # Iterate over all actions in the input data
+                for action in input:
+                    # Extract the type of action and its associated hidden state
+                    type, _ = action["type"]
+                    
+                    # Extract the number of hidden states
+                    num_hidden_states

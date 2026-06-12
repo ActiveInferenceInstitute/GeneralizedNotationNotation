@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Any, Dict, List, Optional, Union
 
-from visualization.compat.viz_compat import np
+from ..compat.viz_compat import np
 
 NUMPY_AVAILABLE = np is not None
 

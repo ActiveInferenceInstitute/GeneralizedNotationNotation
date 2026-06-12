@@ -1,11 +1,13 @@
-# Analysis
+# Visualization Analysis
 
-## Overview
-This module handles `Analysis` components.
+Combined analysis and visualization generation for GNN pipeline outputs.
 
-## Available Members
-- **Classes**: No specific classes exported.
-- **Functions**: count_elements, generate_combined_analysis, generate_combined_visualizations
+## Exports
 
-## Usage
-Import necessary members directly to orchestrate tasks related to Analysis.
+- `generate_combined_analysis()` — Aggregate results from multiple pipeline steps into unified analysis
+- `generate_combined_visualizations()` — Produce comparative visualization across model families
+
+## Dependencies
+
+- `matplotlib` (optional, for plot generation)
+- `visualization.core` for model loading

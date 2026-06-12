@@ -1,7 +1,7 @@
 # GNN Overview
 
-**Version**: v2.0.0
-**Last Updated**: 2026-03-24
+**Version**: v1.6.0 Engine (Bundle v2.0.0)
+**Last Updated**: 2026-04-14
 **Status**: Maintained
 **Pipeline Steps**: 25
 
@@ -94,6 +94,7 @@ GNN aims to:
 4. **Ensure reproducibility** of computational cognitive models
 5. **Standardize documentation** for model implementations
 6. **Facilitate knowledge transfer** between researchers at different expertise levels
+7. **Enable systematic performance benchmarking** through automated parametric scaling studies
 
 ## The Triple Play Approach
 
@@ -187,7 +188,7 @@ The pipeline consists of the following steps (0-24):
 - **Step 10**: Active Inference ontology processing
 - **Step 11**: Code rendering for PyMDP, RxInfer, ActiveInference.jl, DisCoPy, JAX, Stan, PyTorch, NumPyro
 - **Step 12**: Execution of rendered simulation scripts
-- **Step 13**: LLM-enhanced analysis and interpretation
+- **Step 13**: Neurosymbolic LLM Context Analysis and LLM execution guidance
 - **Step 14**: Machine learning integration
 - **Step 15**: Audio generation and sonification
 - **Step 16**: Advanced statistical analysis
@@ -201,7 +202,7 @@ The pipeline consists of the following steps (0-24):
 - **Step 21**: Model Context Protocol processing
 - **Step 22**: Interactive GUI for model construction
 - **Step 23**: Comprehensive report generation
-- **Step 24**: Intelligent Analysis
+- **Step 24**: Intelligent Analysis with Autonomous Heuristic Execution Recovery
 
 ### Pipeline Documentation
 

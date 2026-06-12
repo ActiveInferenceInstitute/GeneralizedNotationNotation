@@ -6,8 +6,10 @@ including failure analysis, performance bottleneck identification, per-step anal
 with yellow/red flag detection, and executive report generation using LLM infrastructure.
 """
 
-__version__ = "2.0.0"
-FEATURES = {
+from typing import Any
+
+__version__ = "1.6.0"
+FEATURES: dict[str, Any] = {
     "pipeline_analysis": True,
     "failure_root_cause": True,
     "performance_optimization": True,
@@ -16,7 +18,7 @@ FEATURES = {
     "mcp_integration": True,
     "per_step_analysis": True,
     "yellow_red_flags": True,
-    "rule_based_fallback": True
+    "rule_based_fallback": True,
 }
 
 import logging
@@ -60,7 +62,7 @@ def get_module_info() -> Dict[str, Any]:
         "description": "Intelligent AI-powered pipeline analysis",
         "features": list(FEATURES.keys()),
         "report_formats": ["markdown", "json", "html"],
-        "llm_backends": ["openai", "anthropic", "local"]
+        "llm_backends": ["openai", "anthropic", "local"],
     }
 
 
@@ -72,88 +74,81 @@ def get_supported_analysis_types() -> List[str]:
         "optimization_recommendations",
         "executive_summary",
         "trend_analysis",
-        "comparative_analysis"
+        "comparative_analysis",
     ]
 
 
 def validate_pipeline_summary(summary: Dict[str, Any]) -> bool:
     """Validate that a pipeline summary has the required structure."""
-    required_fields = [
-        "start_time",
-        "steps",
-        "overall_status"
-    ]
+    required_fields: list[Any] = ["start_time", "steps", "overall_status"]
     return all(field in summary for field in required_fields)
 
 
 def check_intelligent_analysis_tools() -> Dict[str, Dict[str, Any]]:
     """Check availability of analysis tools and LLM backends."""
-    tools = {}
+    tools: dict[Any, Any] = {}
 
     # Check LLM processor
     try:
         from llm.llm_processor import get_processor
-        tools['llm_processor'] = {
-            'available': True,
-            'description': 'LLM processor for AI-powered analysis'
+
+        tools["llm_processor"] = {
+            "available": True,
+            "description": "LLM processor for AI-powered analysis",
         }
     except ImportError:
-        tools['llm_processor'] = {
-            'available': False,
-            'description': 'LLM processor not available'
+        tools["llm_processor"] = {
+            "available": False,
+            "description": "LLM processor not available",
         }
 
     # Check numpy for statistics
     try:
         import numpy
-        tools['numpy'] = {
-            'available': True,
-            'version': numpy.__version__
-        }
+
+        tools["numpy"] = {"available": True, "version": numpy.__version__}
     except ImportError:
-        tools['numpy'] = {'available': False, 'version': None}
+        tools["numpy"] = {"available": False, "version": None}
 
     # Check pandas for data analysis
     try:
         import pandas
-        tools['pandas'] = {
-            'available': True,
-            'version': pandas.__version__
-        }
+
+        tools["pandas"] = {"available": True, "version": pandas.__version__}
     except ImportError:
-        tools['pandas'] = {'available': False, 'version': None}
+        tools["pandas"] = {"available": False, "version": None}
 
     return tools
 
 
 def check_analysis_tools() -> Dict[str, Dict[str, Any]]:
-    """Backward-compatible alias used by MCP integration."""
+    """Return intelligent-analysis tool availability for MCP integration."""
     return check_intelligent_analysis_tools()
 
 
-__all__ = [
+__all__: list[Any] = [
     # Module info
-    '__version__',
-    'FEATURES',
-    'get_module_info',
-    'get_supported_analysis_types',
-    'validate_pipeline_summary',
-    'check_intelligent_analysis_tools',
-    'check_analysis_tools',
+    "__version__",
+    "FEATURES",
+    "get_module_info",
+    "get_supported_analysis_types",
+    "validate_pipeline_summary",
+    "check_intelligent_analysis_tools",
+    "check_analysis_tools",
     # Processor functions and classes
-    'process_intelligent_analysis',
-    'analyze_pipeline_summary',
-    'analyze_individual_steps',
-    'generate_executive_report',
-    'identify_bottlenecks',
-    'extract_failure_context',
-    'generate_recommendations',
-    'StepAnalysis',
+    "process_intelligent_analysis",
+    "analyze_pipeline_summary",
+    "analyze_individual_steps",
+    "generate_executive_report",
+    "identify_bottlenecks",
+    "extract_failure_context",
+    "generate_recommendations",
+    "StepAnalysis",
     # Analyzer classes and functions
-    'IntelligentAnalyzer',
-    'AnalysisContext',
-    'calculate_pipeline_health_score',
-    'classify_failure_severity',
-    'detect_performance_patterns',
-    'generate_optimization_suggestions'
+    "IntelligentAnalyzer",
+    "AnalysisContext",
+    "calculate_pipeline_health_score",
+    "classify_failure_severity",
+    "detect_performance_patterns",
+    "generate_optimization_suggestions",
 ]

@@ -1,11 +1,13 @@
-# Effort
+# Cognitive Effort Documentation
 
-## Overview
-This module handles `Effort` components.
+Theoretical documentation on cognitive effort allocation in Active Inference models.
 
-## Available Members
-- **Classes**: No specific classes exported.
-- **Functions**: No specific public functions exported.
+## Topics
 
-## Usage
-Import necessary members directly to orchestrate tasks related to Effort.
+- Expected Free Energy as effort proxy
+- Resource-rational models of cognitive allocation
+- Precision-weighted attention mechanisms
+
+## See Also
+
+- [Parent: cognitive_phenomena/README.md](../README.md)

@@ -5,16 +5,44 @@ Fixed Render generators module for GNN code generation with enhanced visualizati
 
 import re
 from pathlib import Path
-from typing import Dict, Optional, Union
+from typing import Any, Dict, Optional, Union, cast
 
 
-def generate_bnlearn_code(model_data: Dict, output_path: Optional[Union[str, Path]] = None) -> str:
-    """Generate bnlearn python script for Bayesian Network causal discovery and Inference."""
+def _validate_or_return_empty(
+    model_data: Any, context: str
+) -> Optional[Dict[str, Any]]:
+    """Phase 1.3 shared guard for every generate_* entry point.
+
+    Returns the validated dict, or None if validation failed (caller returns "").
+    Rejects None and non-dict input only. Per-key requirements are intentionally
+    NOT enforced here: every generator falls back on sensible defaults via
+    ``.get('model_name', 'GNN Model')`` etc., so requiring specific keys would
+    break callers that supply GNN-spec-shaped dicts using the ``ModelName`` key
+    variant (capitalized) instead of ``model_name``.
+    """
     try:
-        model_name = model_data.get('model_name', 'GNN Model')
-        gnn_file = model_data.get('source_file', 'unknown.md')
-        model_params = model_data.get('model_parameters', {})
-        num_timesteps = model_params.get('num_timesteps', 15)
+        from utils.validation_schemas import validate_model_data
+
+        # Pass required_keys=() to defer to the generator's own .get() defaults.
+        return validate_model_data(model_data, required_keys=(), context=context)
+    except ValueError:
+        return None
+
+
+def generate_bnlearn_code(
+    model_data: Dict[str, Any], output_path: Optional[Union[str, Path]] = None
+) -> str:
+    """Generate bnlearn python script for Bayesian Network causal discovery and Inference."""
+    if _validate_or_return_empty(model_data, "generate_bnlearn_code") is None:
+        return ""
+    try:
+        model_name = model_data.get("model_name", "GNN Model")
+        gnn_file = model_data.get("source_file", "unknown.md")
+        model_params = model_data.get("model_parameters", {})
+        init_params = model_data.get("initialparameterization", {})
+        num_timesteps = model_params.get(
+            "num_timesteps", init_params.get("num_timesteps", 15)
+        )
 
         code = f'''#!/usr/bin/env python3
 """
@@ -112,7 +140,7 @@ if __name__ == "__main__":
 '''
 
         if output_path:
-            with open(output_path, 'w') as f:
+            with open(output_path, "w") as f:
                 f.write(code)
         return code
     except Exception as e:
@@ -120,7 +148,9 @@ if __name__ == "__main__":
         return ""
 
 
-def _sanitize_identifier(base: str, *, lowercase: bool = True, allow_empty_fallback: str = "model") -> str:
+def _sanitize_identifier(
+    base: str, *, lowercase: bool = True, allow_empty_fallback: str = "model"
+) -> str:
     """Sanitize an arbitrary string into a safe Python/Julia identifier (snake_case)."""
     s = base.lower() if lowercase else base
     s = re.sub(r"\W+", "_", s)
@@ -130,6 +160,7 @@ def _sanitize_identifier(base: str, *, lowercase: bool = True, allow_empty_fallb
     if s[0].isdigit():
         s = f"{allow_empty_fallback}_{s}"
     return s
+
 
 def _to_pascal_case(base: str, *, allow_empty_fallback: str = "Model") -> str:
     """Convert arbitrary string to PascalCase for Julia struct/type names."""
@@ -143,29 +174,30 @@ def _to_pascal_case(base: str, *, allow_empty_fallback: str = "Model") -> str:
     return name
 
 
-def _matrix_to_julia(matrix_data) -> str:
+def _matrix_to_julia(matrix_data: Any) -> str:
     """Convert Python matrix (list of lists/tuples) to Julia matrix syntax.
-    
+
     2D matrices use semicolon row separators: [0.9 0.05; 0.05 0.9]
     3D matrices use cat(...; dims=3) syntax
     1D vectors use comma separators: [0.1, 0.2, 0.3]
     """
     if isinstance(matrix_data, str):
         matrix_data = matrix_data.strip()
-        if matrix_data.startswith('[') or matrix_data.startswith('('):
+        if matrix_data.startswith("[") or matrix_data.startswith("("):
             try:
                 import ast
+
                 matrix_data = ast.literal_eval(matrix_data)
             except (ValueError, SyntaxError):
-                return matrix_data
+                return cast("str", matrix_data)
 
     if isinstance(matrix_data, (list, tuple)):
         if len(matrix_data) > 0 and isinstance(matrix_data[0], (list, tuple)):
             if len(matrix_data[0]) > 0 and isinstance(matrix_data[0][0], (list, tuple)):
                 # 3D matrix (B matrix) - use cat(...; dims=3)
-                slices = []
+                slices: list[Any] = []
                 for slice_data in matrix_data:
-                    rows = []
+                    rows: list[Any] = []
                     for row in slice_data:
                         if isinstance(row, (tuple, list)):
                             row_values = " ".join(str(x) for x in row)
@@ -189,29 +221,53 @@ def _matrix_to_julia(matrix_data) -> str:
         return "[" + ", ".join(str(x) for x in matrix_data) + "]"
     return str(matrix_data)
 
-def generate_pymdp_code(model_data: Dict, output_path: Optional[Union[str, Path]] = None) -> str:
+
+def generate_pymdp_code(
+    model_data: Dict, output_path: Optional[Union[str, Path]] = None
+) -> str:
     """Generate Enhanced PyMDP simulation code with comprehensive visualizations."""
+    if _validate_or_return_empty(model_data, "generate_pymdp_code") is None:
+        return ""
     try:
         # Import the template
         from .pymdp_template import PYMDP_TEMPLATE
 
         # Get model name and sanitize identifiers
-        model_name = model_data.get('model_name', 'GNN Model')
-        model_snake = _sanitize_identifier(model_name, lowercase=True, allow_empty_fallback="model")
-        gnn_file = model_data.get('source_file', 'unknown.md')
+        model_name = model_data.get("model_name", "GNN Model")
+        model_snake = _sanitize_identifier(
+            model_name, lowercase=True, allow_empty_fallback="model"
+        )
+        gnn_file = model_data.get("source_file", "unknown.md")
 
         # Extract POMDP matrices with proper formatting
-        state_space = model_data.get('state_space', {})
+        state_space = model_data.get("state_space", {})
 
         # Extract config parameters
-        model_params = model_data.get('model_parameters', {})
-        num_timesteps = model_params.get('num_timesteps', 15)
+        model_params = model_data.get("model_parameters", {})
+        init_params = model_data.get("initialparameterization", {})
+        num_timesteps = model_params.get(
+            "num_timesteps", init_params.get("num_timesteps", 15)
+        )
 
         # Format matrices for template (with fallbacks)
-        a_matrix = state_space.get('A', [[0.9, 0.05, 0.05], [0.05, 0.9, 0.05], [0.05, 0.05, 0.9], [0.33, 0.33, 0.33]])
-        b_matrix = state_space.get('B', [[[0.8, 0.1, 0.1], [0.1, 0.8, 0.1], [0.1, 0.1, 0.8]], [[0.2, 0.3, 0.5], [0.2, 0.3, 0.5], [0.1, 0.1, 0.8]]])
-        c_vector = state_space.get('C', [0.1, 0.1, 1.0, 0.0])
-        d_vector = state_space.get('D', [0.333, 0.333, 0.333])
+        a_matrix = state_space.get(
+            "A",
+            [
+                [0.9, 0.05, 0.05],
+                [0.05, 0.9, 0.05],
+                [0.05, 0.05, 0.9],
+                [0.33, 0.33, 0.33],
+            ],
+        )
+        b_matrix = state_space.get(
+            "B",
+            [
+                [[0.8, 0.1, 0.1], [0.1, 0.8, 0.1], [0.1, 0.1, 0.8]],
+                [[0.2, 0.3, 0.5], [0.2, 0.3, 0.5], [0.1, 0.1, 0.8]],
+            ],
+        )
+        c_vector = state_space.get("C", [0.1, 0.1, 1.0, 0.0])
+        d_vector = state_space.get("D", [0.333, 0.333, 0.333])
 
         # Generate PyMDP code using template
         code = PYMDP_TEMPLATE.format(
@@ -222,12 +278,12 @@ def generate_pymdp_code(model_data: Dict, output_path: Optional[Union[str, Path]
             b_matrix=b_matrix,
             c_vector=c_vector,
             d_vector=d_vector,
-            num_timesteps=num_timesteps
+            num_timesteps=num_timesteps,
         )
 
         # Save to file if output_path specified
         if output_path:
-            with open(output_path, 'w') as f:
+            with open(output_path, "w") as f:
                 f.write(code)
 
         return code
@@ -236,22 +292,59 @@ def generate_pymdp_code(model_data: Dict, output_path: Optional[Union[str, Path]
         print(f"Error generating PyMDP code: {e}")
         return ""
 
-def generate_activeinference_jl_code(model_data: Dict, output_path: Optional[Union[str, Path]] = None) -> str:
-    """Generate ActiveInference.jl simulation code with enhanced features."""
+
+def generate_activeinference_jl_code(
+    model_data: Dict, output_path: Optional[Union[str, Path]] = None
+) -> str:
+    """Generate ActiveInference.jl code from explicit POMDP matrices."""
+    if (
+        _validate_or_return_empty(model_data, "generate_activeinference_jl_code")
+        is None
+    ):
+        return ""
+    if not model_data.get("initialparameterization"):
+        return ""
+    from .activeinference_jl.activeinference_renderer import (
+        extract_model_info,
+        generate_activeinference_script,
+    )
+
+    code = generate_activeinference_script(extract_model_info(model_data))
+    if output_path:
+        with open(output_path, "w") as f:
+            f.write(code)
+    return code
     try:
-        model_name = model_data.get('model_name', 'GNN Model')
+        model_name = model_data.get("model_name", "GNN Model")
         model_pascal = _to_pascal_case(model_name)
-        gnn_file = model_data.get('source_file', 'unknown.md')
+        gnn_file = model_data.get("source_file", "unknown.md")
 
         # Extract parameters and state space information
-        model_params = model_data.get('model_parameters', {})
-        num_timesteps = model_params.get('num_timesteps', 15)
+        model_params = model_data.get("model_parameters", {})
+        init_params = model_data.get("initialparameterization", {})
+        num_timesteps = model_params.get(
+            "num_timesteps", init_params.get("num_timesteps", 15)
+        )
 
-        state_space = model_data.get('state_space', {})
-        a_matrix = state_space.get('A', [[0.9, 0.05, 0.05], [0.05, 0.9, 0.05], [0.05, 0.05, 0.9], [0.33, 0.33, 0.33]])
-        b_matrix = state_space.get('B', [[[0.8, 0.1, 0.1], [0.1, 0.8, 0.1], [0.1, 0.1, 0.8]], [[0.2, 0.3, 0.5], [0.2, 0.3, 0.5], [0.1, 0.1, 0.8]]])
-        c_vector = state_space.get('C', [0.1, 0.1, 1.0, 0.0])
-        d_vector = state_space.get('D', [0.333, 0.333, 0.333])
+        state_space = model_data.get("state_space", {})
+        a_matrix = state_space.get(
+            "A",
+            [
+                [0.9, 0.05, 0.05],
+                [0.05, 0.9, 0.05],
+                [0.05, 0.05, 0.9],
+                [0.33, 0.33, 0.33],
+            ],
+        )
+        b_matrix = state_space.get(
+            "B",
+            [
+                [[0.8, 0.1, 0.1], [0.1, 0.8, 0.1], [0.1, 0.1, 0.8]],
+                [[0.2, 0.3, 0.5], [0.2, 0.3, 0.5], [0.1, 0.1, 0.8]],
+            ],
+        )
+        c_vector = state_space.get("C", [0.1, 0.1, 1.0, 0.0])
+        d_vector = state_space.get("D", [0.333, 0.333, 0.333])
 
         code = f'''#!/usr/bin/env julia
 """
@@ -638,7 +731,7 @@ end
 '''
 
         if output_path:
-            with open(output_path, 'w') as f:
+            with open(output_path, "w") as f:
                 f.write(code)
 
         return code
@@ -647,11 +740,16 @@ end
         print(f"Error generating ActiveInference.jl code: {e}")
         return ""
 
-def generate_discopy_code(model_data: Dict, output_path: Optional[Union[str, Path]] = None) -> str:
+
+def generate_discopy_code(
+    model_data: Dict, output_path: Optional[Union[str, Path]] = None
+) -> str:
     """Generate DisCoPy categorical analysis code with enhanced features."""
+    if _validate_or_return_empty(model_data, "generate_discopy_code") is None:
+        return ""
     try:
-        model_name = model_data.get('model_name', 'GNN Model')
-        gnn_file = model_data.get('source_file', 'unknown.md')
+        model_name = model_data.get("model_name", "GNN Model")
+        gnn_file = model_data.get("source_file", "unknown.md")
 
         code = f'''#!/usr/bin/env python3
 """
@@ -1012,7 +1110,7 @@ if __name__ == "__main__":
 '''
 
         if output_path:
-            with open(output_path, 'w') as f:
+            with open(output_path, "w") as f:
                 f.write(code)
 
         return code
@@ -1021,12 +1119,27 @@ if __name__ == "__main__":
         print(f"Error generating DisCoPy code: {e}")
         return ""
 
-def generate_rxinfer_code(model_data: Dict, output_path: Optional[Union[str, Path]] = None) -> str:
-    """Generate RxInfer.jl Bayesian inference code with enhanced features."""
+
+def generate_rxinfer_code(
+    model_data: Dict, output_path: Optional[Union[str, Path]] = None
+) -> str:
+    """Generate RxInfer.jl code from explicit POMDP matrices."""
+    if _validate_or_return_empty(model_data, "generate_rxinfer_code") is None:
+        return ""
+    if not model_data.get("initialparameterization"):
+        return ""
+    model_name = model_data.get("model_name") or model_data.get("name", "GNN Model")
+    from .rxinfer.rxinfer_renderer import RxInferRenderer
+
+    code = RxInferRenderer()._generate_rxinfer_simulation_code(model_data, model_name)
+    if output_path:
+        with open(output_path, "w") as f:
+            f.write(code)
+    return code
     try:
-        model_name = model_data.get('model_name', 'GNN Model')
+        model_name = model_data.get("model_name", "GNN Model")
         model_snake = _sanitize_identifier(model_name, lowercase=True)
-        gnn_file = model_data.get('source_file', 'unknown.md')
+        gnn_file = model_data.get("source_file", "unknown.md")
 
         code = f'''#!/usr/bin/env julia
 """
@@ -1441,7 +1554,7 @@ end
 '''
 
         if output_path:
-            with open(output_path, 'w') as f:
+            with open(output_path, "w") as f:
                 f.write(code)
 
         return code
@@ -1450,22 +1563,9 @@ end
         print(f"Error generating RxInfer code: {e}")
         return ""
 
-def create_active_inference_diagram(model_data: Dict) -> str:
-    """Create Active Inference diagram for visualization."""
-    model_name = model_data.get('model_name', 'GNN Model')
-    return f"""
-# Active Inference Diagram for {model_name}
-# This represents the categorical structure of the POMDP model
-# Generated from GNN specification
 
-State Space: S = {{S1, S2, S3}}
-Observation Space: O = {{O1, O2, O3, O4}}  
-Action Space: A = {{A1, A2}}
-
-Morphisms:
-- T: S ⊗ A → S  (Transition dynamics)
-- H: S → O      (Observation model)
-- Policy: S → A  (Action selection)
-
-Full POMDP: (S ⊗ A) → S → O
-"""
+# NOTE: ``create_active_inference_diagram`` was removed in 2026-04 because the
+# output contained hard-coded "S1, S2, S3" / "O1..O4" / "A1, A2" instead of
+# reflecting the parsed GNN spec. Use
+# ``render.discopy.render_gnn_to_discopy`` (Step 11) for a real categorical
+# diagram derived from the model.

@@ -1,34 +1,49 @@
-# Type Checker Module Specification
+# Type Checker — Technical Specification
 
-## Overview
-GNN model type checking and resource estimation.
+**Version**: 1.6.0
 
-## Components
+## Purpose
 
-### Core
-- `checker.py` - Type checker (1344 lines)
-- `resource_estimator.py` - Resource estimation (1742 lines)
+Step 5 — Static type analysis and resource estimation for parsed GNN models.
 
-### Utilities
-- `analysis_utils.py` - Analysis utilities
-- `output_utils.py` - Output formatting
-- `cli.py` - Command-line interface
+## Architecture
 
-## Features
-- Variable type validation
-- Dimension checking
-- Memory/FLOPS estimation
-- Inference time prediction
-
-## Key Exports
-```python
-from type_checker import GNNTypeChecker, GNNResourceEstimator
+```
+type_checker/
+├── __init__.py              # Package exports
+├── checking/                # Core validation subpackage
+│   ├── core.py              # Orchestrator
+│   ├── dimensions.py        # Shape analysis
+│   └── rules.py             # Type rule engine
+├── estimation/              # Resource estimation subpackage
+│   ├── estimator.py         # Hardware projections
+│   ├── strategies.py        # Math utilities
+│   ├── report_html.py       # HTML reporting
+│   └── report_markdown.py   # Text reporting
+├── processor.py             # Public checking facade
+├── resource_estimator.py    # Resource estimator CLI facade
+├── estimation_strategies.py # Public strategy exports
+└── mcp.py                   # MCP tool registration
 ```
 
+## Type Checking Rules
 
----
-## Documentation
-- **[README](README.md)**: Module Overview
-- **[AGENTS](AGENTS.md)**: Agentic Workflows
-- **[SPEC](SPEC.md)**: Architectural Specification
-- **[SKILL](SKILL.md)**: Capability API
+1. **Variable type consistency** — All variables must have declared types matching usage
+2. **Matrix dimension agreement** — Transition/observation matrix dimensions must match state/observation counts
+3. **Probability normalization** — Stochastic matrices must have rows summing to 1.0 (within tolerance)
+4. **Prior compatibility** — Prior distributions must match model structure
+
+## Resource Estimation
+
+- Memory requirements per model (estimated from matrix dimensions)
+- Computational complexity classification (O(n²), O(n³))
+- Recommended framework based on model scale
+
+## Input
+
+- Parsed GNN models from Step 3
+
+## Output
+
+- `type_check_results.json` — Type errors, warnings, and resource estimates
+- Exit code: 0 (clean), 1 (errors), 2 (warnings only)

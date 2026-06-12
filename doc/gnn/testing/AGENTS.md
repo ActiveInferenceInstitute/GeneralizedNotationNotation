@@ -1,6 +1,6 @@
 # Testing - Agent Scaffolding
 
-## Module Overview
+## Overview
 
 **Purpose**: This directory serves as a categorized documentation index for the `Testing` layer of the GNN Framework.
 

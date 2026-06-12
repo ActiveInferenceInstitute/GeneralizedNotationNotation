@@ -1,6 +1,6 @@
 # GeneralizedNotationNotation (GNN)
 
-**Last Updated**: 2026-03-24
+**Last Updated**: 2026-06-12
 
 <div align="center">
 
@@ -48,10 +48,12 @@
 ### 📚 Initial Publication
 
 **Smékal, J., & Friedman, D. A. (2023)**. *Generalized Notation Notation for Active Inference Models*. Active Inference Journal.  
-**Last Updated**: 2026-03-24  
-**Version**: 1.3.0  
+**Last Updated**: 2026-06-12
+**Version**: 1.9.0
 **Status**: ✅ Production Ready (Active Inference Institute)  
-**Test Suite (latest local `uv run pytest src/tests/ -q --tb=no --ignore=src/tests/test_llm_ollama.py --ignore=src/tests/test_llm_ollama_integration.py`)**: 1,906 passed, 30 skipped (2026-03-24). Including `test_llm_ollama*.py` adds integration cases that call the local `ollama` CLI (default tag overridable via `OLLAMA_MODEL`); without a responsive daemon they may time out or fail.  
+**Test Suite Inventory (measured 2026-06-12)**: 184 `test_*.py` files under `src/tests/`; `uv run --extra dev python -m pytest --collect-only src/tests/ -q --tb=no --ignore=src/tests/llm/test_llm_ollama.py --ignore=src/tests/llm/test_llm_ollama_integration.py` collected 2,399 tests. Latest recorded full suite evidence with the same Ollama integration excludes is 2,381 passed, 17 skipped, 1 xfailed.
+**Features (v1.9.0)**: model-family acceptance and interpretability ledgers for basics, discrete, continuous, hierarchical, multi-agent, precision, structured, gridworld, and scaling-study fixtures; explicit profiled unsupported Step 11/12 skips for continuous/hierarchical families; maintained template CLI (`gnn templates list`, `gnn templates show`, `gnn pull`); packaged template assets with checksum/collision handling; authenticated local MCP HTTP orchestration; pre-commit/devcontainer tooling; structured PyMDP 1.0 POMDP execution; PyMDP Scaling Study; and MCP Full Module Exposure.
+**Next Target**: v2.0.0 semantic fidelity and cross-framework reliability hardening.
 📖 **DOI:** [10.5281/zenodo.7803328](https://doi.org/10.5281/zenodo.7803328)  
 📁 **Archive:** [zenodo.org/records/7803328](https://zenodo.org/records/7803328)
 
@@ -93,20 +95,24 @@ GNN addresses the challenge of communicating Active Inference models, which are 
 ```text
 GeneralizedNotationNotation/
 ├── 📄 README.md, AGENTS.md, DOCS.md, ARCHITECTURE.md  # Core documentation
-├── 📁 src/                    # 25-step pipeline + 31 modules
+├── 📁 src/                    # 25-step pipeline + 33 top-level source/doc dirs
 │   ├── main.py               # 🎯 Main orchestrator - run this!
 │   ├── 0_template.py → 24_intelligent_analysis.py  # Numbered pipeline scripts
 │   ├── gnn/, render/, execute/, llm/, ...  # Agent modules
 │   └── tests/                # Comprehensive test suite
-├── 📁 doc/                    # ~450 Markdown files under doc/ (plus assets; see doc/README.md)
+├── 📁 doc/                    # 605 Markdown files under doc/ (plus assets; see doc/README.md)
 │   ├── gnn/                  # GNN language specification
 │   ├── pymdp/, rxinfer/      # Framework integration guides
 │   └── cognitive_phenomena/  # Example cognitive models
 ├── 📁 input/                  # Input GNN files and configuration
 │   └── gnn_files/            # Sample GNN model files
-├── 📁 output/                 # Pipeline outputs (tracked; see .gitignore for temp/audio/cache)
+├── 📁 output/                 # Local generated pipeline outputs (ignored except .gitkeep)
 └── 📄 pyproject.toml, pytest.ini  # Configuration files
 ```
+
+Generated run artifacts belong under `output/` or a step-specific output directory.
+Those files are intentionally not maintained source; regenerate them with `src/main.py`
+or the individual numbered step commands when you need fresh evidence.
 
 ---
 
@@ -612,9 +618,9 @@ The GNN framework is built around a modular architecture, where each pipeline st
 | `validation` | 6 | Validates GNN models against predefined rules and constraints. | Constraint Solver, Logic Validator |
 | `export` | 7 | Exports GNN models to various formats (JSON, XML, GraphML). | JSON/XML/GraphML Serializers |
 | `visualization` | 8 | Generates graphical representations of GNN models. | `matplotlib`, `plotly`, `graphviz` |
-| `advanced_visualization` | 9 | Provides advanced, interactive 3D and dynamic visualizations. | `vedo`, `pyvista`, `dash` |
+| `advanced_visualization` | 9 | Provides advanced, interactive and dashboard visualizations. | `plotly`, D3/HTML output, `matplotlib`, `networkx` |
 | `ontology` | 10 | Maps GNN concepts to Active Inference ontology terms. | Ontology Mapper, Knowledge Graph |
-| `render` | 11 | Renders GNN models into executable code for various backends. | Code Generators (PyMDP, RxInfer, JAX, ActInf.jl, PyTorch, NumPyro, DisCoPy) |
+| `render` | 11 | Renders GNN models into executable code for various backends. | Code Generators (PyMDP, RxInfer, JAX, ActInf.jl, PyTorch, NumPyro, Stan, DisCoPy, bnlearn) |
 | `execute` | 12 | Executes the rendered code using the specified backend. | PyMDP, RxInfer.jl, JAX, ActiveInference.jl, PyTorch, NumPyro |
 | `llm` | 13 | Integrates Large Language Models for analysis, generation, and insights. | OpenAI GPT, Anthropic Claude, Local LLMs |
 | `ml_integration` | 14 | Integrates with machine learning frameworks for advanced analysis. | `scikit-learn`, `tensorflow`, `pytorch` |
@@ -724,7 +730,7 @@ python src/main.py --help
 - `--llm-tasks LIST`: Comma-separated LLM tasks
 - `--llm-timeout`: LLM processing timeout
 - `--pipeline-summary-file FILE`: Pipeline summary report path
-- `--site-html-filename NAME`: Generated HTML site filename
+- `--website-html-filename NAME`: Generated HTML website filename
 - `--duration`: Audio duration for audio generation (default: 30.0)
 - `--audio-backend`: Audio backend to use (auto, sapf, pedalboard, default: auto)
 - `--recreate-uv-env`: Recreate UV environment
@@ -736,7 +742,7 @@ python src/main.py --help
 
 ## 🛠️ Tools and Utilities
 
-The GNN ecosystem includes several sophisticated tools to aid in model development, validation, and understanding. These tools are primarily invoked through the `src/main.py` pipeline script. The project also provides a **CLI** (`gnn` command), **LSP** (Language Server Protocol) for editor support, and a **REST API** (FastAPI Pipeline-as-a-Service); **131 MCP tools** are registered for model context integration. See [AGENTS.md](./AGENTS.md) and [doc/gnn/](doc/gnn/) for details.
+The GNN ecosystem includes several sophisticated tools to aid in model development, validation, and understanding. These tools are primarily invoked through the `src/main.py` pipeline script. The project also provides a **CLI** (`gnn` command), **LSP** (Language Server Protocol) for editor support, and a **REST API** (FastAPI Pipeline-as-a-Service); **133 MCP tools** are registered for model context integration. See [AGENTS.md](./AGENTS.md) and [doc/gnn/](doc/gnn/) for details.
 
 ### ✅ Type Checker and Resource Estimator
 
@@ -769,9 +775,14 @@ When executed, the type checker writes to `output/5_type_checker_output/`:
 
 ```text
 output/5_type_checker_output/
-├── type_check_results.json
-├── type_check_summary.json
-└── global_type_analysis.json
+├── type_check_results.json       # Per-model validation + resource estimates
+├── type_check_summary.md         # Markdown dashboard with embedded visuals
+└── visualizations/
+    ├── type_validity_mosaic.png   # Pass/fail heatmap grid
+    ├── type_issue_distribution.png
+    ├── dimension_compatibility_abstract.png
+    ├── type_category_distribution.png
+    └── cards/                    # Per-model "baseball card" PNGs
 ```
 
 ### 🎨 Visualization
@@ -945,8 +956,7 @@ uv run python src/main.py -- --target-dir input/gnn_files --verbose
 You can also run individual commands under `uv` (recommended):
 
 ```bash
-uv run pytest          # run tests inside uv-managed venv
-uv run python -m pytest
+uv run --extra dev python -m pytest          # run tests inside uv-managed venv
 ```
 
 **6️⃣ Explore Results**
@@ -977,7 +987,7 @@ python --version
 
 ```bash
 # Force reinstall dependencies
-uv run python src/main.py --only-steps 2 --recreate-uv-env --dev
+uv run python src/main.py --only-steps 1 --recreate-uv-env --dev
 ```
 
 **🔧 Pipeline Failures**
@@ -1176,7 +1186,7 @@ python src/2_tests.py
 pytest --cov=src --cov-report=term-missing
 
 # Run specific module tests
-pytest src/tests/test_[module]*.py -v
+uv run --extra dev python -m pytest src/tests/test_[module]*.py -v
 ```
 
 **Test Configuration:** See [pytest.ini](./pytest.ini) for complete test settings.

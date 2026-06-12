@@ -1,8 +1,17 @@
-# Specification: Effort
+# Effort Model — Specification
 
-## Design Requirements
-This module (`effort`) maps structural logic to the overall execution graph.
-It ensures that `Effort` tasks resolve without runtime dependency loops.
+## Model Structure
 
-## Components
-Expected available types: No specific classes exported.
+The effort model implements expected free energy minimization for resource allocation decisions.
+
+## State Space
+
+- **Effort levels**: Discrete set of metabolic expenditure states
+- **Task demands**: Observable task difficulty signals
+- **Reward signals**: Outcome-contingent feedback
+
+## Matrices
+
+- `A` (observation model): Maps effort→performance observations
+- `B` (transition model): Effort dynamics with fatigue and recovery
+- `C` (preference): Reward-maximizing preferences over outcomes

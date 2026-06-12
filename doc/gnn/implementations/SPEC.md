@@ -1,7 +1,35 @@
-# Specification: Implementations Docs
+# Specification: Framework Implementation Docs
 
-## Design Requirements
-This module (`implementations`) organizes GNN related markdown records. It adheres strictly to the repository-wide style and Markdownlint guarantees.
+## Scope
+Documentation for every supported rendering / execution backend. Each
+document in this subtree describes how a GNN specification is translated
+into framework-native code (PyMDP, RxInfer.jl, JAX, etc.) and what the
+backend can / cannot express.
 
-## Components
-Expected available types: Static Markdown Indices and Manuals.
+## Contents
+| File | Backend | AI semantics |
+|------|---------|--------------|
+| `pymdp.md` | PyMDP (Python) | Full Active Inference |
+| `rxinfer.md` | RxInfer.jl (Julia) | Full Active Inference |
+| `activeinference_jl.md` | ActiveInference.jl (Julia) | Full Active Inference |
+| `jax.md` | JAX (Python) | Full Active Inference |
+| `numpyro.md` | NumPyro (Python) | Full probabilistic |
+| `pytorch.md` | PyTorch (Python) | ML integration |
+| `discopy.md` | DisCoPy (Python) | Categorical diagrams |
+| `stan.md` | Stan | Structural only (no AI loop) |
+| `catcolab.md` | CatColab | Categorical tooling |
+
+## Versioning
+Each backend doc carries a frontmatter version matching the render module
+version. Backends may lag the language version when experimental features
+aren't yet implemented in that backend.
+
+## Document Structure
+Every backend doc should follow the structure in
+[`rxinfer.md`](rxinfer.md) (the canonical template): Overview,
+Architecture, GNN Parameter Ingestion, Generated Code Example, Limitations,
+Usage, Source References, Navigation.
+
+## Status
+Maintained. `stan.md` marked structural-only (no Active Inference loop);
+all others support the full pipeline.

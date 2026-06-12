@@ -52,7 +52,9 @@ def process_llm_mcp(
             "success": success,
             "target_directory": target_directory,
             "output_directory": output_directory,
-            "message": "LLM processing completed" if success else "LLM processing failed",
+            "message": "LLM processing completed"
+            if success
+            else "LLM processing failed",
         }
     except Exception as e:
         logger.error(f"process_llm_mcp error: {e}", exc_info=True)
@@ -110,12 +112,64 @@ def generate_llm_documentation_mcp(
         Dictionary with success flag and generated documentation string.
     """
     try:
-        result = generate_documentation(
-            gnn_file=Path(gnn_file_path),
-            output_path=Path(output_path) if output_path else None,
-            format=format,
+        # Read the GNN file and build a lightweight analysis dict
+        # that matches the signature of generate_documentation(file_analysis).
+        gnn_path = Path(gnn_file_path)
+        content = (
+            gnn_path.read_text(encoding="utf-8", errors="replace")
+            if gnn_path.exists()
+            else ""
         )
+
+        # Build a minimal file_analysis structure expected by generate_documentation
+        file_analysis: Dict[str, Any] = {
+            "file_path": str(gnn_path),
+            "file_name": gnn_path.name,
+            "variables": [],
+            "connections": [],
+            "complexity_metrics": {},
+            "patterns": {},
+        }
+
+        # If the analyzer module is available, extract richer data
+        try:
+            from .analyzer import (
+                calculate_complexity_metrics,
+                extract_connections,
+                extract_variables,
+                identify_patterns,
+            )
+
+            file_analysis["variables"] = extract_variables(content)
+            file_analysis["connections"] = extract_connections(content)
+            file_analysis["patterns"] = identify_patterns(
+                content, file_analysis["variables"], file_analysis["connections"]
+            )
+            file_analysis["complexity_metrics"] = calculate_complexity_metrics(
+                file_analysis["variables"], file_analysis["connections"]
+            )
+        except Exception:
+            logger.debug(
+                "LLM analyzer not available for documentation generation; using lightweight analysis"
+            )
+
+        result = generate_documentation(file_analysis)
+
         if isinstance(result, dict):
+            # Optionally write to disk if output_path was provided
+            if output_path:
+                out = Path(output_path)
+                out.parent.mkdir(parents=True, exist_ok=True)
+                if format == "text":
+                    out.write_text(
+                        result.get("model_overview", str(result)), encoding="utf-8"
+                    )
+                else:
+                    import json as _json
+
+                    out.write_text(
+                        _json.dumps(result, indent=2, default=str), encoding="utf-8"
+                    )
             return {"success": True, **result}
         return {"success": True, "documentation": str(result)}
     except Exception as e:
@@ -136,6 +190,7 @@ def get_llm_providers_mcp() -> Dict[str, Any]:
     try:
         import importlib.util
         import os
+
         providers: Dict[str, Dict[str, Any]] = {}
 
         # OpenAI
@@ -162,10 +217,10 @@ def get_llm_providers_mcp() -> Dict[str, Any]:
 
         configured = [p for p, info in providers.items() if info["configured"]]
         return {
-            "success":    True,
-            "providers":  providers,
+            "success": True,
+            "providers": providers,
             "configured": configured,
-            "count":      len(providers),
+            "count": len(providers),
         }
     except Exception as e:
         logger.error(f"get_llm_providers_mcp error: {e}", exc_info=True)
@@ -184,11 +239,12 @@ def get_llm_module_info_mcp() -> Dict[str, Any]:
     """
     try:
         import importlib
+
         mod = importlib.import_module(__package__)
         version = getattr(mod, "__version__", "unknown")
         return {
             "success": True,
-            "module":  __package__,
+            "module": __package__,
             "version": version,
             "analysis_types": ["comprehensive", "summary", "complexity", "connections"],
             "output_formats": ["markdown", "text"],
@@ -208,7 +264,7 @@ def get_llm_module_info_mcp() -> Dict[str, Any]:
 # ── MCP Registration ──────────────────────────────────────────────────────────
 
 
-def initialize_llm_module(mcp_instance) -> None:
+def initialize_llm_module(mcp_instance: Any) -> None:
     """
     Initialize the LLM module prior to tool registration.
     Loads API keys and configures the default LLM processor.
@@ -216,10 +272,12 @@ def initialize_llm_module(mcp_instance) -> None:
     try:
         import asyncio
 
-        from src.llm import create_processor_from_env
+        from llm import create_processor_from_env
+
         logger.info("Initializing LLM module prior to MCP registration...")
 
         # create_processor_from_env is a coroutine; must be awaited
+        processor: Any
         try:
             loop = asyncio.get_running_loop()
             # If there's an active loop, wrap in a task
@@ -235,7 +293,7 @@ def initialize_llm_module(mcp_instance) -> None:
         logger.error(f"Failed to initialize LLM module: {e}")
 
 
-def register_tools(mcp_instance) -> None:
+def register_tools(mcp_instance: Any) -> None:
     """Register LLM domain tools with the MCP server."""
 
     mcp_instance.register_tool(
@@ -244,14 +302,21 @@ def register_tools(mcp_instance) -> None:
         {
             "type": "object",
             "properties": {
-                "target_directory": {"type": "string", "description": "Directory with GNN files"},
-                "output_directory": {"type": "string", "description": "LLM output directory"},
-                "verbose":          {"type": "boolean", "default": False},
+                "target_directory": {
+                    "type": "string",
+                    "description": "Directory with GNN files",
+                },
+                "output_directory": {
+                    "type": "string",
+                    "description": "LLM output directory",
+                },
+                "verbose": {"type": "boolean", "default": False},
             },
             "required": ["target_directory", "output_directory"],
         },
         "Run LLM analysis pipeline for all GNN files in a directory.",
-        module=__package__, category="llm",
+        module=__package__,
+        category="llm",
     )
 
     mcp_instance.register_tool(
@@ -261,7 +326,8 @@ def register_tools(mcp_instance) -> None:
             "type": "object",
             "properties": {
                 "gnn_file_path": {
-                    "type": "string", "description": "Path to the GNN model file",
+                    "type": "string",
+                    "description": "Path to the GNN model file",
                 },
                 "analysis_type": {
                     "type": "string",
@@ -277,7 +343,8 @@ def register_tools(mcp_instance) -> None:
             "required": ["gnn_file_path"],
         },
         "Run LLM-based analysis on a single GNN model file: summary, complexity, connections.",
-        module=__package__, category="llm",
+        module=__package__,
+        category="llm",
     )
 
     mcp_instance.register_tool(
@@ -286,14 +353,26 @@ def register_tools(mcp_instance) -> None:
         {
             "type": "object",
             "properties": {
-                "gnn_file_path": {"type": "string", "description": "Path to the GNN model file"},
-                "output_path":   {"type": "string", "description": "Optional path to write documentation", "nullable": True},
-                "format":        {"type": "string", "enum": ["markdown", "text"], "default": "markdown"},
+                "gnn_file_path": {
+                    "type": "string",
+                    "description": "Path to the GNN model file",
+                },
+                "output_path": {
+                    "type": "string",
+                    "description": "Optional path to write documentation",
+                    "nullable": True,
+                },
+                "format": {
+                    "type": "string",
+                    "enum": ["markdown", "text"],
+                    "default": "markdown",
+                },
             },
             "required": ["gnn_file_path"],
         },
         "Generate human-readable Markdown documentation for a GNN model using an LLM.",
-        module=__package__, category="llm",
+        module=__package__,
+        category="llm",
     )
 
     mcp_instance.register_tool(
@@ -301,7 +380,8 @@ def register_tools(mcp_instance) -> None:
         get_llm_providers_mcp,
         {},
         "Return available LLM providers and their API key / configuration status.",
-        module=__package__, category="llm",
+        module=__package__,
+        category="llm",
     )
 
     mcp_instance.register_tool(
@@ -309,7 +389,8 @@ def register_tools(mcp_instance) -> None:
         get_llm_module_info_mcp,
         {},
         "Return version, analysis types, output formats, and tool list of the GNN LLM module.",
-        module=__package__, category="llm",
+        module=__package__,
+        category="llm",
     )
 
     logger.info("llm module MCP tools registered (5 real domain tools).")

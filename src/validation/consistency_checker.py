@@ -16,10 +16,10 @@ class ConsistencyChecker:
     def check(self, content: str) -> Dict[str, Any]:
         """
         Check the consistency of a GNN model.
-        
+
         Args:
             content: GNN model content
-            
+
         Returns:
             Consistency check result with warnings
         """
@@ -30,7 +30,7 @@ class ConsistencyChecker:
         reference_result = self._check_reference_consistency(content)
 
         # Combine warnings
-        warnings = []
+        warnings: list[Any] = []
         warnings.extend(naming_result.get("warnings", []))
         warnings.extend(style_result.get("warnings", []))
         warnings.extend(structure_result.get("warnings", []))
@@ -38,10 +38,10 @@ class ConsistencyChecker:
 
         # Determine overall consistency
         is_consistent = (
-            naming_result.get("is_consistent", True) and
-            style_result.get("is_consistent", True) and
-            structure_result.get("is_consistent", True) and
-            reference_result.get("is_consistent", True)
+            naming_result.get("is_consistent", True)
+            and style_result.get("is_consistent", True)
+            and structure_result.get("is_consistent", True)
+            and reference_result.get("is_consistent", True)
         )
 
         return {
@@ -51,46 +51,64 @@ class ConsistencyChecker:
                 "naming_conventions": naming_result,
                 "style_consistency": style_result,
                 "structural_integrity": structure_result,
-                "reference_consistency": reference_result
-            }
+                "reference_consistency": reference_result,
+            },
         }
 
     def _check_naming_conventions(self, content: str) -> Dict[str, Any]:
         """Check naming conventions."""
-        warnings = []
+        warnings: list[Any] = []
 
         # Extract named elements
-        state_blocks = re.findall(r'StateSpaceBlock\s*\{([^}]*)\}', content)
-        block_names = []
+        state_blocks = re.findall(r"StateSpaceBlock\s*\{([^}]*)\}", content)
+        block_names: list[Any] = []
 
         for block in state_blocks:
-            name_match = re.search(r'Name:\s*([^\n]+)', block)
+            name_match = re.search(r"Name:\s*([^\n]+)", block)
             if name_match:
                 block_names.append(name_match.group(1).strip())
 
         # Check for naming consistency
-        camel_case = sum(1 for name in block_names if name and name[0].isupper() and '_' not in name)
-        snake_case = sum(1 for name in block_names if '_' in name)
-        pascal_case = sum(1 for name in block_names if name and name[0].isupper() and not any(c.islower() for c in name))
+        camel_case = sum(
+            1 for name in block_names if name and name[0].isupper() and "_" not in name
+        )
+        snake_case = sum(1 for name in block_names if "_" in name)
+        pascal_case = sum(
+            1
+            for name in block_names
+            if name and name[0].isupper() and not any(c.islower() for c in name)
+        )
 
         # Determine dominant naming convention
-        naming_styles = {"camelCase": camel_case, "snake_case": snake_case, "PascalCase": pascal_case}
-        dominant_style = max(naming_styles.items(), key=lambda x: x[1])[0] if naming_styles else None
+        naming_styles: dict[str, Any] = {
+            "camelCase": camel_case,
+            "snake_case": snake_case,
+            "PascalCase": pascal_case,
+        }
+        dominant_style = (
+            max(naming_styles.items(), key=lambda x: x[1])[0] if naming_styles else None
+        )
 
         # Check for consistency
         mixed_styles = sum(count > 0 for count in naming_styles.values()) > 1
         if mixed_styles:
-            warnings.append(f"Inconsistent naming conventions: mix of {', '.join(style for style, count in naming_styles.items() if count > 0)}")
+            warnings.append(
+                f"Inconsistent naming conventions: mix of {', '.join(style for style, count in naming_styles.items() if count > 0)}"
+            )
 
         # Check for duplicate names
         duplicate_names = {name for name in block_names if block_names.count(name) > 1}
         if duplicate_names:
-            warnings.append(f"Duplicate block names found: {', '.join(duplicate_names)}")
+            warnings.append(
+                f"Duplicate block names found: {', '.join(duplicate_names)}"
+            )
 
         # Check for descriptive names
         non_descriptive_names = [name for name in block_names if len(name) < 3]
         if non_descriptive_names:
-            warnings.append(f"Non-descriptive block names found: {', '.join(non_descriptive_names)}")
+            warnings.append(
+                f"Non-descriptive block names found: {', '.join(non_descriptive_names)}"
+            )
 
         return {
             "is_consistent": len(warnings) == 0,
@@ -98,46 +116,54 @@ class ConsistencyChecker:
             "dominant_style": dominant_style,
             "mixed_styles": mixed_styles,
             "duplicate_names": list(duplicate_names),
-            "non_descriptive_names": non_descriptive_names
+            "non_descriptive_names": non_descriptive_names,
         }
 
     def _check_style_consistency(self, content: str) -> Dict[str, Any]:
         """Check style consistency."""
-        warnings = []
+        warnings: list[Any] = []
 
         # Check for consistent indentation
-        lines = content.split('\n')
-        indentation_patterns = {}
+        lines = content.split("\n")
+        indentation_patterns: dict[Any, Any] = {}
 
         for line in lines:
-            if line.strip() and line.startswith(' '):
-                indent = len(line) - len(line.lstrip(' '))
+            if line.strip() and line.startswith(" "):
+                indent = len(line) - len(line.lstrip(" "))
                 if indent not in indentation_patterns:
                     indentation_patterns[indent] = 0
                 indentation_patterns[indent] += 1
 
         # Determine if there are inconsistent indentation patterns
         if len(indentation_patterns) > 2:
-            warnings.append(f"Inconsistent indentation patterns: {len(indentation_patterns)} different patterns detected")
+            warnings.append(
+                f"Inconsistent indentation patterns: {len(indentation_patterns)} different patterns detected"
+            )
 
         # Check for consistent block formatting
-        state_block_formats = set()
-        state_blocks = re.findall(r'StateSpaceBlock\s*\{([^}]*)\}', content)
+        state_block_formats: set[Any] = set()
+        state_blocks = re.findall(r"StateSpaceBlock\s*\{([^}]*)\}", content)
 
         for block in state_blocks:
             # Check if fields are consistently formatted
-            fields = re.findall(r'([A-Za-z]+):\s*([^\n]+)', block)
+            fields = re.findall(r"([A-Za-z]+):\s*([^\n]+)", block)
             if fields:
-                format_style = "inline" if len(fields) == 1 and len(block.strip().split('\n')) == 1 else "multiline"
+                format_style = (
+                    "inline"
+                    if len(fields) == 1 and len(block.strip().split("\n")) == 1
+                    else "multiline"
+                )
                 state_block_formats.add(format_style)
 
         if len(state_block_formats) > 1:
-            warnings.append("Inconsistent block formatting: mix of inline and multiline formats")
+            warnings.append(
+                "Inconsistent block formatting: mix of inline and multiline formats"
+            )
 
         # Check for consistent field ordering
-        field_orders = []
+        field_orders: list[Any] = []
         for block in state_blocks:
-            fields = re.findall(r'([A-Za-z]+):', block)
+            fields = re.findall(r"([A-Za-z]+):", block)
             if fields:
                 field_orders.append(tuple(fields))
 
@@ -150,22 +176,24 @@ class ConsistencyChecker:
             "warnings": warnings,
             "indentation_patterns": len(indentation_patterns),
             "block_format_styles": list(state_block_formats),
-            "field_order_consistency": len(unique_orders) == 1
+            "field_order_consistency": len(unique_orders) == 1,
         }
 
     def _check_structural_integrity(self, content: str) -> Dict[str, Any]:
         """Check structural integrity."""
-        warnings = []
+        warnings: list[Any] = []
 
         # Check for balanced braces
-        open_braces = content.count('{')
-        close_braces = content.count('}')
+        open_braces = content.count("{")
+        close_braces = content.count("}")
         if open_braces != close_braces:
-            warnings.append(f"Unbalanced braces: {open_braces} opening vs {close_braces} closing")
+            warnings.append(
+                f"Unbalanced braces: {open_braces} opening vs {close_braces} closing"
+            )
 
         # Check for proper block structure
-        state_blocks = re.findall(r'StateSpaceBlock\s*\{([^}]*)\}', content)
-        connections = re.findall(r'Connection\s*\{([^}]*)\}', content)
+        state_blocks = re.findall(r"StateSpaceBlock\s*\{([^}]*)\}", content)
+        connections = re.findall(r"Connection\s*\{([^}]*)\}", content)
 
         # Check for empty blocks
         empty_blocks = sum(1 for block in state_blocks if not block.strip())
@@ -177,28 +205,37 @@ class ConsistencyChecker:
             warnings.append(f"Empty Connection definitions found: {empty_connections}")
 
         # Check for consistent field presence
-        required_state_fields = ["Name", "Dimensions"]
-        required_connection_fields = ["From", "To"]
+        required_state_fields: list[Any] = ["Name", "Dimensions"]
+        required_connection_fields: list[Any] = ["From", "To"]
 
-        missing_state_fields = []
+        missing_state_fields: list[Any] = []
         for i, block in enumerate(state_blocks):
             for field in required_state_fields:
-                if not re.search(f'{field}:', block):
+                if not re.search(f"{field}:", block):
                     missing_state_fields.append((i, field))
 
         if missing_state_fields:
-            field_warnings = [f"Block {i} missing {field}" for i, field in missing_state_fields]
-            warnings.append(f"Missing required fields in StateSpaceBlocks: {', '.join(field_warnings)}")
+            field_warnings = [
+                f"Block {i} missing {field}" for i, field in missing_state_fields
+            ]
+            warnings.append(
+                f"Missing required fields in StateSpaceBlocks: {', '.join(field_warnings)}"
+            )
 
-        missing_connection_fields = []
+        missing_connection_fields: list[Any] = []
         for i, conn in enumerate(connections):
             for field in required_connection_fields:
-                if not re.search(f'{field}:', conn):
+                if not re.search(f"{field}:", conn):
                     missing_connection_fields.append((i, field))
 
         if missing_connection_fields:
-            field_warnings = [f"Connection {i} missing {field}" for i, field in missing_connection_fields]
-            warnings.append(f"Missing required fields in Connections: {', '.join(field_warnings)}")
+            field_warnings = [
+                f"Connection {i} missing {field}"
+                for i, field in missing_connection_fields
+            ]
+            warnings.append(
+                f"Missing required fields in Connections: {', '.join(field_warnings)}"
+            )
 
         return {
             "is_consistent": len(warnings) == 0,
@@ -207,29 +244,29 @@ class ConsistencyChecker:
             "empty_blocks": empty_blocks,
             "empty_connections": empty_connections,
             "missing_state_fields": missing_state_fields,
-            "missing_connection_fields": missing_connection_fields
+            "missing_connection_fields": missing_connection_fields,
         }
 
     def _check_reference_consistency(self, content: str) -> Dict[str, Any]:
         """Check reference consistency."""
-        warnings = []
+        warnings: list[Any] = []
 
         # Extract state blocks and connections
-        state_blocks = re.findall(r'StateSpaceBlock\s*\{([^}]*)\}', content)
-        connections = re.findall(r'Connection\s*\{([^}]*)\}', content)
+        state_blocks = re.findall(r"StateSpaceBlock\s*\{([^}]*)\}", content)
+        connections = re.findall(r"Connection\s*\{([^}]*)\}", content)
 
         # Extract block names
-        block_names = []
+        block_names: list[Any] = []
         for block in state_blocks:
-            name_match = re.search(r'Name:\s*([^\n]+)', block)
+            name_match = re.search(r"Name:\s*([^\n]+)", block)
             if name_match:
                 block_names.append(name_match.group(1).strip())
 
         # Check for references to non-existent blocks
-        invalid_references = []
+        invalid_references: list[Any] = []
         for i, conn in enumerate(connections):
-            from_match = re.search(r'From:\s*([^\n]+)', conn)
-            to_match = re.search(r'To:\s*([^\n]+)', conn)
+            from_match = re.search(r"From:\s*([^\n]+)", conn)
+            to_match = re.search(r"To:\s*([^\n]+)", conn)
 
             if from_match and from_match.group(1).strip() not in block_names:
                 invalid_references.append((i, "From", from_match.group(1).strip()))
@@ -238,15 +275,17 @@ class ConsistencyChecker:
                 invalid_references.append((i, "To", to_match.group(1).strip()))
 
         if invalid_references:
-            ref_warnings = [f"Connection {i} references non-existent {field} block: '{ref}'"
-                           for i, field, ref in invalid_references]
+            ref_warnings = [
+                f"Connection {i} references non-existent {field} block: '{ref}'"
+                for i, field, ref in invalid_references
+            ]
             warnings.append(f"Invalid block references: {', '.join(ref_warnings)}")
 
         # Check for isolated blocks (no incoming or outgoing connections)
-        connected_blocks = set()
+        connected_blocks: set[Any] = set()
         for conn in connections:
-            from_match = re.search(r'From:\s*([^\n]+)', conn)
-            to_match = re.search(r'To:\s*([^\n]+)', conn)
+            from_match = re.search(r"From:\s*([^\n]+)", conn)
+            to_match = re.search(r"To:\s*([^\n]+)", conn)
 
             if from_match:
                 connected_blocks.add(from_match.group(1).strip())
@@ -255,13 +294,15 @@ class ConsistencyChecker:
 
         isolated_blocks = [name for name in block_names if name not in connected_blocks]
         if isolated_blocks:
-            warnings.append(f"Isolated blocks with no connections: {', '.join(isolated_blocks)}")
+            warnings.append(
+                f"Isolated blocks with no connections: {', '.join(isolated_blocks)}"
+            )
 
         # Check for circular references
-        graph = {}
+        graph: dict[Any, Any] = {}
         for conn in connections:
-            from_match = re.search(r'From:\s*([^\n]+)', conn)
-            to_match = re.search(r'To:\s*([^\n]+)', conn)
+            from_match = re.search(r"From:\s*([^\n]+)", conn)
+            to_match = re.search(r"To:\s*([^\n]+)", conn)
 
             if from_match and to_match:
                 from_block = from_match.group(1).strip()
@@ -272,10 +313,11 @@ class ConsistencyChecker:
                 graph[from_block].append(to_block)
 
         # Check for cycles
-        visited = set()
-        path = set()
+        visited: set[Any] = set()
+        path: set[Any] = set()
 
-        def has_cycle(node):
+        def has_cycle(node: Any) -> Any:
+            """Return whether cycle."""
             if node in path:
                 return True
             if node in visited:
@@ -291,29 +333,32 @@ class ConsistencyChecker:
             path.remove(node)
             return False
 
-        cycles = []
+        cycles: list[Any] = []
         for node in graph:
             if has_cycle(node):
                 cycles.append(node)
 
         if cycles:
-            warnings.append(f"Circular dependencies detected in blocks: {', '.join(cycles)}")
+            warnings.append(
+                f"Circular dependencies detected in blocks: {', '.join(cycles)}"
+            )
 
         return {
             "is_consistent": len(warnings) == 0,
             "warnings": warnings,
             "invalid_references": invalid_references,
             "isolated_blocks": isolated_blocks,
-            "circular_references": cycles
+            "circular_references": cycles,
         }
+
 
 def check_consistency(model_data: Union[str, Path, Dict[str, Any]]) -> Dict[str, Any]:
     """
     Check consistency for a GNN model.
-    
+
     Args:
         model_data: Path to GNN file, Path object, or model data dictionary
-        
+
     Returns:
         Dictionary with consistency check results
     """
@@ -330,7 +375,7 @@ def check_consistency(model_data: Union[str, Path, Dict[str, Any]]) -> Dict[str,
             file_path = str(model_data)
 
             # Read model content
-            with open(model_data, 'r', encoding='utf-8') as f:
+            with open(model_data, "r", encoding="utf-8") as f:
                 content = f.read()
 
         # Perform consistency checking
@@ -346,19 +391,22 @@ def check_consistency(model_data: Union[str, Path, Dict[str, Any]]) -> Dict[str,
             "consistent": consistency_result["is_consistent"],
             "warnings": consistency_result["warnings"],
             "consistency_score": consistency_score,
-            "recovery": False
+            "recovery": False,
         }
 
     except Exception as e:
         return {
             "status": "error",
-            "file_path": str(model_data) if not isinstance(model_data, dict) else "unknown",
+            "file_path": str(model_data)
+            if not isinstance(model_data, dict)
+            else "unknown",
             "error": str(e),
             "consistent": False,
             "warnings": [str(e)],
             "consistency_score": 0.0,
-            "recovery": True
+            "recovery": True,
         }
+
 
 def _extract_content_from_dict(model_data: Dict[str, Any]) -> str:
     """Extract content from model data dictionary."""
@@ -366,7 +414,7 @@ def _extract_content_from_dict(model_data: Dict[str, Any]) -> str:
     raw_sections = model_data.get("raw_sections", {})
     if raw_sections:
         # Reconstruct the original content from raw sections
-        content_parts = []
+        content_parts: list[Any] = []
 
         # Add model name
         if "ModelName" in raw_sections:
@@ -378,7 +426,9 @@ def _extract_content_from_dict(model_data: Dict[str, Any]) -> str:
 
         # Add initial parameterization
         if "InitialParameterization" in raw_sections:
-            content_parts.append(f"InitialParameterization: {raw_sections['InitialParameterization']}")
+            content_parts.append(
+                f"InitialParameterization: {raw_sections['InitialParameterization']}"
+            )
 
         # Add connections
         if "Connections" in raw_sections:
@@ -395,21 +445,31 @@ def _extract_content_from_dict(model_data: Dict[str, Any]) -> str:
 
         # Add variables
         if variables:
-            var_lines = []
+            var_lines: list[Any] = []
             for var in variables:
                 name = var.get("name", "Unknown")
                 var_type = var.get("var_type", "unknown")
                 dimensions = var.get("dimensions", [])
-                dim_str = "[" + ", ".join(map(str, dimensions)) + "]" if dimensions else ""
+                dim_str = (
+                    "[" + ", ".join(map(str, dimensions)) + "]" if dimensions else ""
+                )
                 var_lines.append(f"{name}{dim_str} # {var_type}")
             content_parts.append("StateSpaceBlock:\n" + "\n".join(var_lines))
 
         # Add connections
         if connections:
-            conn_lines = []
+            conn_lines: list[Any] = []
             for conn in connections:
-                source = conn.get("source_variables", ["?"])[0] if conn.get("source_variables") else "?"
-                target = conn.get("target_variables", ["?"])[0] if conn.get("target_variables") else "?"
+                source = (
+                    conn.get("source_variables", ["?"])[0]
+                    if conn.get("source_variables")
+                    else "?"
+                )
+                target = (
+                    conn.get("target_variables", ["?"])[0]
+                    if conn.get("target_variables")
+                    else "?"
+                )
                 conn_lines.append(f"{source} > {target}")
             content_parts.append("Connections:\n" + "\n".join(conn_lines))
 
@@ -417,6 +477,7 @@ def _extract_content_from_dict(model_data: Dict[str, Any]) -> str:
 
     # Final recovery: return empty string
     return ""
+
 
 def _calculate_consistency_score(consistency_result: Dict[str, Any]) -> float:
     """Calculate a consistency score from consistency results."""

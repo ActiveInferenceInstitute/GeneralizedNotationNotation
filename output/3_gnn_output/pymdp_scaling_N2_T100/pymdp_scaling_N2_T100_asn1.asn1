@@ -1,0 +1,69 @@
+PyMDPScalingN2T100-Schema DEFINITIONS AUTOMATIC TAGS ::= BEGIN
+
+-- GNN Model Schema Definition
+-- Model: PyMDP Scaling N2 T100
+-- PyMDP runtime scaling sweep with noisy observation and stochastic transitions.
+
+GNNModel ::= SEQUENCE {
+    modelName       UTF8String,
+    version         UTF8String,
+    annotation      UTF8String OPTIONAL,
+    variables       SEQUENCE OF Variable OPTIONAL,
+    connections     SEQUENCE OF Connection OPTIONAL,
+    parameters      SEQUENCE OF Parameter OPTIONAL
+}
+
+Variable ::= SEQUENCE {
+    name            UTF8String,
+    varType         UTF8String,
+    dataType        UTF8String,
+    dimensions      SEQUENCE OF INTEGER OPTIONAL,
+    description     UTF8String OPTIONAL
+}
+
+Connection ::= SEQUENCE {
+    sourceVariables SEQUENCE OF UTF8String,
+    targetVariables SEQUENCE OF UTF8String,
+    connectionType  UTF8String,
+    weight          REAL OPTIONAL,
+    description     UTF8String OPTIONAL
+}
+
+Parameter ::= SEQUENCE {
+    name            UTF8String,
+    value           UTF8String,
+    typeHint        UTF8String OPTIONAL,
+    description     UTF8String OPTIONAL
+}
+
+-- Example Values
+exampleModel GNNModel ::= {
+    modelName "PyMDP Scaling N2 T100",
+    version "1.0",
+    annotation "PyMDP runtime scaling sweep with noisy observation and stochastic transitions.",
+    variables {
+        {
+            name "s",
+            varType "hidden_state",
+            dataType "float"
+            dimensions { 2, 1 }
+        },
+        {
+            name "o",
+            varType "observation",
+            dataType "integer"
+            dimensions { 2, 1 }
+        },
+        {
+            name "A",
+            varType "likelihood_matrix",
+            dataType "float"
+            dimensions { 2, 2 }
+        }
+    }
+}
+
+END -- PyMDPScalingN2T100-Schema
+
+
+-- MODEL_DATA: {"model_name":"PyMDP Scaling N2 T100","version":"1.0","annotation":"PyMDP runtime scaling sweep with noisy observation and stochastic transitions.","variables":[{"name":"s","var_type":"hidden_state","data_type":"float","dimensions":[2,1],"description":null},{"name":"o","var_type":"observation","data_type":"integer","dimensions":[2,1],"description":null},{"name":"A","var_type":"likelihood_matrix","data_type":"float","dimensions":[2,2],"description":null},{"name":"B","var_type":"transition_matrix","data_type":"float","dimensions":[2,2,2],"description":null},{"name":"C","var_type":"preference_vector","data_type":"float","dimensions":[2],"description":null},{"name":"D","var_type":"prior_vector","data_type":"float","dimensions":[2],"description":null},{"name":"\u03c0","var_type":"policy","data_type":"float","dimensions":[2],"description":null},{"name":"u","var_type":"action","data_type":"integer","dimensions":[1],"description":null},{"name":"G","var_type":"policy","data_type":"float","dimensions":[1],"description":null},{"name":"F","var_type":"hidden_state","data_type":"float","dimensions":[1],"description":null},{"name":"t","var_type":"hidden_state","data_type":"integer","dimensions":[1],"description":null}],"connections":[{"source_variables":["D"],"target_variables":["s"],"connection_type":"directed","weight":null,"description":null},{"source_variables":["s"],"target_variables":["A"],"connection_type":"undirected","weight":null,"description":null},{"source_variables":["A"],"target_variables":["o"],"connection_type":"undirected","weight":null,"description":null},{"source_variables":["s"],"target_variables":["B"],"connection_type":"undirected","weight":null,"description":null},{"source_variables":["C"],"target_variables":["G"],"connection_type":"directed","weight":null,"description":null},{"source_variables":["G"],"target_variables":["\u03c0"],"connection_type":"directed","weight":null,"description":null},{"source_variables":["\u03c0"],"target_variables":["u"],"connection_type":"directed","weight":null,"description":null},{"source_variables":["B"],"target_variables":["u"],"connection_type":"directed","weight":null,"description":null},{"source_variables":["s"],"target_variables":["F"],"connection_type":"undirected","weight":null,"description":null},{"source_variables":["o"],"target_variables":["F"],"connection_type":"undirected","weight":null,"description":null}],"parameters":[{"name":"A","value":[[0.95,0.05],[0.05,0.95]],"type_hint":null,"description":null},{"name":"B","value":[[[0.9,0.1],[0.9,0.1]],[[0.1,0.9],[0.1,0.9]]],"type_hint":null,"description":null},{"name":"C","value":[[0.0,3.0]],"type_hint":null,"description":null},{"name":"D","value":[[0.5,0.5]],"type_hint":null,"description":null},{"name":"num_hidden_states","value":2,"type_hint":null,"description":null},{"name":"num_obs","value":2,"type_hint":null,"description":null},{"name":"num_actions","value":2,"type_hint":null,"description":null},{"name":"num_timesteps","value":100,"type_hint":null,"description":null}],"equations":[],"time_specification":{"time_type":"Dynamic","discretization":null,"horizon":100,"step_size":null},"ontology_mappings":[{"variable_name":"A","ontology_term":"LikelihoodMatrix","description":null},{"variable_name":"B","ontology_term":"TransitionMatrix","description":null},{"variable_name":"C","ontology_term":"LogPreferenceVector","description":null},{"variable_name":"D","ontology_term":"PriorOverHiddenStates","description":null},{"variable_name":"G","ontology_term":"ExpectedFreeEnergy","description":null},{"variable_name":"F","ontology_term":"VariationalFreeEnergy","description":null},{"variable_name":"s","ontology_term":"HiddenState","description":null},{"variable_name":"o","ontology_term":"Observation","description":null},{"variable_name":"\u03c0","ontology_term":"PolicyVector","description":null},{"variable_name":"u","ontology_term":"Action","description":null},{"variable_name":"t","ontology_term":"Time","description":null}]}

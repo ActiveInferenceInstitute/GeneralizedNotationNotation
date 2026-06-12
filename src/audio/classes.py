@@ -11,22 +11,19 @@ from typing import Any, Dict, List, Optional
 
 logger = logging.getLogger(__name__)
 
+
 class AudioGenerator:
     """Generates audio from GNN models."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize the audio generator."""
-        self.supported_formats = ['wav', 'mp3', 'flac', 'ogg']
-        self.generation_types = ['tonal', 'rhythmic', 'ambient', 'sonification']
+        self.supported_formats = ["wav", "mp3", "flac", "ogg"]
+        self.generation_types = ["tonal", "rhythmic", "ambient", "sonification"]
 
     def generate_audio(self, model_data: Dict[str, Any]) -> Dict[str, Any]:
         """Generate audio from model data."""
         try:
-            results = {
-                "success": True,
-                "audio_files": [],
-                "errors": []
-            }
+            results: dict[str, Any] = {"success": True, "audio_files": [], "errors": []}
 
             # Extract variables and connections
             variables = model_data.get("variables", [])
@@ -39,21 +36,27 @@ class AudioGenerator:
 
                 # Generate tonal audio
                 from .generator import generate_tonal_representation
+
                 tonal_audio = generate_tonal_representation(variables, connections)
                 tonal_path = output_dir / "tonal.wav"
                 from .processor import save_audio_file
+
                 save_audio_file(tonal_audio, tonal_path)
                 results["audio_files"].append(str(tonal_path))
 
                 # Generate rhythmic audio
                 from .generator import generate_rhythmic_representation
-                rhythmic_audio = generate_rhythmic_representation(variables, connections)
+
+                rhythmic_audio = generate_rhythmic_representation(
+                    variables, connections
+                )
                 rhythmic_path = output_dir / "rhythmic.wav"
                 save_audio_file(rhythmic_audio, rhythmic_path)
                 results["audio_files"].append(str(rhythmic_path))
 
                 # Generate ambient audio
                 from .generator import generate_ambient_representation
+
                 ambient_audio = generate_ambient_representation(variables, connections)
                 ambient_path = output_dir / "ambient.wav"
                 save_audio_file(ambient_audio, ambient_path)
@@ -61,7 +64,10 @@ class AudioGenerator:
 
                 # Generate sonification
                 from .generator import generate_sonification_audio
-                sonification_audio = generate_sonification_audio([])  # Empty dynamics for now
+
+                sonification_audio = generate_sonification_audio(
+                    []
+                )  # Empty dynamics for now
                 sonification_path = output_dir / "sonification.wav"
                 save_audio_file(sonification_audio, sonification_path)
                 results["audio_files"].append(str(sonification_path))
@@ -73,7 +79,7 @@ class AudioGenerator:
                 "success": False,
                 "error": str(e),
                 "audio_files": [],
-                "errors": [str(e)]
+                "errors": [str(e)],
             }
 
     def analyze_audio(self, audio_file: str) -> Dict[str, Any]:
@@ -87,19 +93,19 @@ class AudioGenerator:
 
             if path.exists():
                 suffix = path.suffix.lower()
-                if suffix == '.wav':
+                if suffix == ".wav":
                     import contextlib
                     import wave
+
                     try:
-                        with contextlib.closing(wave.open(str(path), 'r')) as f:
+                        with contextlib.closing(wave.open(str(path), "r")) as f:
                             frames = f.getnframes()
                             sample_rate = f.getframerate()
                             channels = f.getnchannels()
                             duration = frames / float(sample_rate)
                     except (wave.Error, OSError, ValueError) as e:
                         logger.debug(f"Could not read wav metadata from {path}: {e}")
-                        pass  # nosec B110 -- intentional: recovery if wave module fails to read audio metadata
-                elif suffix in ['.mp3', '.ogg', '.flac']:
+                elif suffix in [".mp3", ".ogg", ".flac"]:
                     # Estimate based on file size if mutagen/ffmpeg not available
                     # Approx 128kbps for MP3
                     size_bytes = path.stat().st_size
@@ -111,25 +117,32 @@ class AudioGenerator:
                 "file_path": audio_file,
                 "duration": duration,
                 "sample_rate": sample_rate,
-                "channels": channels
+                "channels": channels,
             }
         except Exception as e:
-            return {
-                "success": False,
-                "error": str(e)
-            }
+            return {"success": False, "error": str(e)}
 
     # Convenience API expected by tests
-    def process_gnn_to_audio(self, gnn_content: str, output_dir: Optional[Path] = None) -> Dict[str, Any]:
+    def process_gnn_to_audio(
+        self, gnn_content: str, output_dir: Optional[Path] = None
+    ) -> Dict[str, Any]:
+        """Process gnn to audio."""
         from .analyzer import process_gnn_to_audio
-        return process_gnn_to_audio(gnn_content, model_name="gnn_model", output_dir=str(output_dir) if output_dir else None)
+
+        return process_gnn_to_audio(
+            gnn_content,
+            model_name="gnn_model",
+            output_dir=str(output_dir) if output_dir else None,
+        )
+
 
 class SAPFGNNProcessor:
     """SAPF (Sonification and Audio Processing Framework) GNN Processor."""
 
-    def __init__(self):
-        self.supported_formats = ['wav', 'mp3', 'flac', 'ogg']
-        self.audio_engines = ['basic', 'sapf', 'pedalboard']
+    def __init__(self) -> None:
+        """Initialize the instance."""
+        self.supported_formats = ["wav", "mp3", "flac", "ogg"]
+        self.audio_engines = ["basic", "sapf", "pedalboard"]
 
     def process_gnn_content(self, gnn_content: str) -> Dict[str, Any]:
         """Process GNN content for audio generation."""
@@ -139,6 +152,7 @@ class SAPFGNNProcessor:
                 extract_connections_for_audio,
                 extract_variables_for_audio,
             )
+
             variables = extract_variables_for_audio(gnn_content)
             connections = extract_connections_for_audio(gnn_content)
 
@@ -146,15 +160,14 @@ class SAPFGNNProcessor:
                 "success": True,
                 "variables": variables,
                 "connections": connections,
-                "audio_ready": True
+                "audio_ready": True,
             }
         except Exception as e:
-            return {
-                "success": False,
-                "error": str(e)
-            }
+            return {"success": False, "error": str(e)}
 
-    def generate_audio(self, model_data: Dict[str, Any], output_dir: Path) -> Dict[str, Any]:
+    def generate_audio(
+        self, model_data: Dict[str, Any], output_dir: Path
+    ) -> Dict[str, Any]:
         """Generate audio from model data."""
         try:
             # Generate different audio representations
@@ -165,24 +178,22 @@ class SAPFGNNProcessor:
             )
 
             tonal_audio = generate_tonal_representation(
-                model_data.get("variables", []),
-                model_data.get("connections", [])
+                model_data.get("variables", []), model_data.get("connections", [])
             )
 
             rhythmic_audio = generate_rhythmic_representation(
-                model_data.get("variables", []),
-                model_data.get("connections", [])
+                model_data.get("variables", []), model_data.get("connections", [])
             )
 
             ambient_audio = generate_ambient_representation(
-                model_data.get("variables", []),
-                model_data.get("connections", [])
+                model_data.get("variables", []), model_data.get("connections", [])
             )
 
             # Save audio files
             output_dir.mkdir(parents=True, exist_ok=True)
 
             from .processor import save_audio_file
+
             save_audio_file(tonal_audio, output_dir / "tonal.wav")
             save_audio_file(rhythmic_audio, output_dir / "rhythmic.wav")
             save_audio_file(ambient_audio, output_dir / "ambient.wav")
@@ -192,24 +203,30 @@ class SAPFGNNProcessor:
                 "audio_files": {
                     "tonal": str(output_dir / "tonal.wav"),
                     "rhythmic": str(output_dir / "rhythmic.wav"),
-                    "ambient": str(output_dir / "ambient.wav")
-                }
+                    "ambient": str(output_dir / "ambient.wav"),
+                },
             }
         except Exception as e:
-            return {
-                "success": False,
-                "error": str(e)
-            }
+            return {"success": False, "error": str(e)}
 
     # Methods expected by tests on processor instances
     def convert_gnn_to_sapf(self, gnn_content: str, output_dir: Path) -> Dict[str, Any]:
+        """Convert gnn to sapf."""
         from .analyzer import convert_gnn_to_sapf
+
         return convert_gnn_to_sapf(gnn_content, output_dir)
 
-    def process_audio(self, target_dir: Path, output_dir: Path, verbose: bool = False) -> bool:
+    def process_audio(
+        self, target_dir: Path, output_dir: Path, verbose: bool = False
+    ) -> bool:
+        """Process audio."""
         from .processor import process_audio as _process_audio
+
         return _process_audio(target_dir, output_dir, verbose)
 
-    def apply_effects(self, audio_data: Any, effects: Optional[List[str]] = None) -> Any:
+    def apply_effects(
+        self, audio_data: Any, effects: Optional[List[str]] = None
+    ) -> Any:
         # Minimal no-op implementation for test expectations
+        """Apply effects."""
         return audio_data

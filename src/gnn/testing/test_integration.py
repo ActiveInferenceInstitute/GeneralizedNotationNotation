@@ -17,27 +17,38 @@ import logging
 import os
 import sys
 from pathlib import Path
+from typing import Any
 
 # Add the src directory to the Python path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
 
-def setup_logging(verbose: bool = False):
+
+def setup_logging(verbose: bool = False) -> Any:
     """Set up logging configuration."""
     level = logging.DEBUG if verbose else logging.INFO
-    format_str = '%(asctime)s - %(name)s - %(levelname)s - %(message)s' if verbose else '%(levelname)s: %(message)s'
-
-    logging.basicConfig(
-        level=level,
-        format=format_str,
-        handlers=[logging.StreamHandler(sys.stdout)]
+    format_str = (
+        "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+        if verbose
+        else "%(levelname)s: %(message)s"
     )
 
-def main():
+    logging.basicConfig(
+        level=level, format=format_str, handlers=[logging.StreamHandler(sys.stdout)]
+    )
+
+
+def main() -> Any:
     """Main integration test function."""
     parser = argparse.ArgumentParser(description="GNN Round-Trip Integration Test")
-    parser.add_argument("--verbose", "-v", action="store_true", help="Enable verbose logging")
-    parser.add_argument("--output-dir", "-o", type=str, help="Output directory for test results")
-    parser.add_argument("--quick", "-q", action="store_true", help="Run quick tests only")
+    parser.add_argument(
+        "--verbose", "-v", action="store_true", help="Enable verbose logging"
+    )
+    parser.add_argument(
+        "--output-dir", "-o", type=str, help="Output directory for test results"
+    )
+    parser.add_argument(
+        "--quick", "-q", action="store_true", help="Run quick tests only"
+    )
 
     args = parser.parse_args()
 
@@ -61,9 +72,9 @@ def main():
 
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    logger.info("="*60)
+    logger.info("=" * 60)
     logger.info("GNN ROUND-TRIP INTEGRATION TEST")
-    logger.info("="*60)
+    logger.info("=" * 60)
     logger.info(f"Reference file: {reference_file}")
     logger.info(f"Output directory: {output_dir}")
     logger.info(f"Quick mode: {args.quick}")
@@ -72,7 +83,9 @@ def main():
     # Check if reference file exists
     if not reference_file.exists():
         logger.error(f"Reference file not found: {reference_file}")
-        logger.error("Please ensure the actinf_pomdp_agent.md file exists in src/gnn/gnn_examples/")
+        logger.error(
+            "Please ensure the actinf_pomdp_agent.md file exists in src/gnn/gnn_examples/"
+        )
         return 1
 
     try:
@@ -120,7 +133,9 @@ def main():
                 # GNNFormat.XML  # Temporarily disabled until serializer is fixed
             ]
 
-        logger.info(f"Running round-trip tests for {len(tester.supported_formats)} formats...")
+        logger.info(
+            f"Running round-trip tests for {len(tester.supported_formats)} formats..."
+        )
         report = tester.run_comprehensive_tests()
 
         # Save quick report
@@ -128,12 +143,16 @@ def main():
         tester.generate_report(report, quick_report_file)
 
         success_rate = report.get_success_rate()
-        logger.info(f"Round-trip test results: {report.successful_tests}/{report.total_tests} passed ({success_rate:.1f}%)")
+        logger.info(
+            f"Round-trip test results: {report.successful_tests}/{report.total_tests} passed ({success_rate:.1f}%)"
+        )
 
         if success_rate >= 50:  # Allow partial success for integration test
             logger.info("✅ Quick round-trip test passed")
         else:
-            logger.warning(f"⚠️ Quick round-trip test had low success rate: {success_rate:.1f}%")
+            logger.warning(
+                f"⚠️ Quick round-trip test had low success rate: {success_rate:.1f}%"
+            )
 
     except Exception as e:
         logger.error(f"❌ Quick round-trip test failed: {e}")
@@ -144,10 +163,10 @@ def main():
     if not args.quick:
         logger.info("Test 3: Comprehensive testing...")
         try:
-            # Use GNNRoundTripTester for comprehensive testing
-            tester = GNNRoundTripTester(gnn_dir, output_dir)
-            test_result = tester.run_tests()
-            success = getattr(test_result, 'success', bool(test_result))
+            tester = GNNRoundTripTester(output_dir / "temp_comprehensive")
+            tester.reference_file = reference_file
+            test_result = tester.run_comprehensive_tests()
+            success = test_result.get_success_rate() >= 50
 
             if success:
                 logger.info("✅ Comprehensive testing passed")
@@ -161,9 +180,9 @@ def main():
 
     # Summary
     logger.info("")
-    logger.info("="*60)
+    logger.info("=" * 60)
     logger.info("INTEGRATION TEST SUMMARY")
-    logger.info("="*60)
+    logger.info("=" * 60)
     logger.info("✅ All integration tests completed successfully!")
     logger.info(f"📁 Test outputs saved to: {output_dir}")
     logger.info("")
@@ -172,6 +191,7 @@ def main():
     logger.info("")
 
     return 0
+
 
 if __name__ == "__main__":
     sys.exit(main())

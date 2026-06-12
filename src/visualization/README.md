@@ -7,7 +7,7 @@ This module provides comprehensive visualization capabilities for GNN models, in
 ```
 src/visualization/
 ├── __init__.py                 # Public exports (MatrixVisualizer, process_visualization, …)
-├── processor.py                # Shim: core + parse + plotting re-exports
+├── processor.py                # Facade: core + parse + plotting re-exports
 ├── core/                       # process.py, parsed_model.py (JSON-first loader); [README](core/README.md)
 ├── parse/                      # markdown.py, gnn_file_parser.py (GNNParser); [README](parse/README.md)
 ├── plotting/                   # utils.py (Agg, save_plot_safely); [README](plotting/README.md)
@@ -17,10 +17,10 @@ src/visualization/
 ├── ontology/                   # visualizer.py; [README](ontology/README.md)
 ├── compat/                     # viz_compat.py (plt/np/sns); [README](compat/README.md)
 ├── visualizer.py               # GNNVisualizer (optional CLI)
-├── matrix_visualizer.py        # Shim → matrix/
-├── parser.py                   # Shim → parse/
-├── network_visualizations.py   # Shim → graph/
-├── combined_analysis.py        # Shim → analysis/
+├── matrix_visualizer.py        # Facade → matrix/
+├── parser.py                   # Facade → parse/
+├── network_visualizations.py   # Facade → graph/
+├── combined_analysis.py        # Facade → analysis/
 ├── mcp.py                      # MCP tools
 └── cli.py                      # Module CLI
 ```
@@ -112,7 +112,7 @@ flowchart LR
 |--------|------|
 | `process_visualization` | Step-8 batch: all `*.md` / `*.gnn` in `target_dir` → per-model folder under `output_dir` |
 | `load_visualization_model` | [`core/parsed_model.py`](core/parsed_model.py): JSON-first from step 3, else markdown |
-| `parse_gnn_content` | [`parse/markdown.py`](parse/markdown.py): markdown fallback |
+| `parse_gnn_content` | [`parse/markdown.py`](parse/markdown.py): explicit raw-Markdown parser |
 | `GNNParser` | [`parse/gnn_file_parser.py`](parse/gnn_file_parser.py): file-oriented parse (e.g. multi-file combined chart) |
 | `MatrixVisualizer` | [`matrix/visualizer.py`](matrix/visualizer.py): heatmaps, 3D tensors, POMDP panels |
 | `generate_network_visualizations` | [`graph/network_visualizations.py`](graph/network_visualizations.py): graph PNG, stats JSON, optional Plotly HTML, ontology legend |
@@ -200,7 +200,7 @@ Failures in network, matrix, or combined branches are isolated per subsection. `
 
 ## Tests
 
-`uv run pytest src/tests/test_visualization_*.py -v` — full suite `uv run pytest src/tests/ -v`.
+`uv run --extra dev python -m pytest src/tests/test_visualization_*.py -v` — full suite `uv run --extra dev python -m pytest src/tests/ -v`.
 
 ## Dependencies
 

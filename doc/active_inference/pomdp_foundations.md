@@ -260,7 +260,7 @@ Even with full observability, Active Inference maintains:
 
 | Component | Path |
 |-----------|------|
-| Examples | [`examples/`](#placeholder) |
+| Examples | [`examples/`](#) |
 | Parser | [`src/gnn/`](../../src/gnn/) |
 
 ---

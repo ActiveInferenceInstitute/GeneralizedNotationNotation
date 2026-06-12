@@ -6,7 +6,7 @@ Generates executable Python scripts that run real pymdp 1.0.0 simulations
 from GNN specifications. Two shapes of output are emitted (see
 ``pymdp_templates.py``):
 
-1. **Pipeline runner** — delegates to ``src.execute.pymdp.run_simple_pymdp_simulation``
+1. **Pipeline runner** — delegates to ``src.execute.pymdp.run_pymdp_simulation``
    so the script is a thin wrapper around the pipeline's tested rollout.
 2. **Standalone runner** — builds a pymdp 1.0.0 ``Agent`` directly and
    performs a rollout inline. Useful for sharing a self-contained script
@@ -26,36 +26,16 @@ from typing import Any, Dict, List, Optional, Tuple
 
 import numpy as np
 
+from gnn.parsers.common import (  # noqa: F401
+    GNNInternalRepresentation,
+    ParseResult,
+)
+from gnn.parsers.markdown_parser import MarkdownGNNParser
+
 from .pymdp_templates import (
     generate_pipeline_runner_script,
     generate_standalone_runner_script,
 )
-
-try:
-    from ...gnn.parsers.common import (  # noqa: F401
-        GNNInternalRepresentation,
-        ParseResult,
-    )
-    from ...gnn.parsers.markdown_parser import MarkdownGNNParser
-except ImportError:  # pragma: no cover - fallback when used standalone
-    try:
-        from gnn.parsers.common import (  # noqa: F401
-            GNNInternalRepresentation,
-            ParseResult,
-        )
-        from gnn.parsers.markdown_parser import MarkdownGNNParser
-    except ImportError:
-        logging.warning("GNN parsers not available, using simplified parsing stubs")
-
-        class ParseResult:  # type: ignore[no-redef]
-            def __init__(self, success: bool, data: Any) -> None:
-                self.success = success
-                self.data = data
-
-        class MarkdownGNNParser:  # type: ignore[no-redef]
-            def parse_string(self, content: str) -> ParseResult:
-                return ParseResult(True, {"model_name": "RecoveryModel"})
-
 
 logger = logging.getLogger(__name__)
 
@@ -100,7 +80,9 @@ def parse_gnn_markdown(content: str, file_path: Path) -> Optional[Dict[str, Any]
             gnn_spec = result.model.to_dict()
             _ensure_initialparameterization_from_parameters(gnn_spec)
             return gnn_spec
-        logger.error("Failed to parse GNN file %s: %s", file_path, getattr(result, "errors", ""))
+        logger.error(
+            "Failed to parse GNN file %s: %s", file_path, getattr(result, "errors", "")
+        )
         return None
     except Exception as e:  # noqa: BLE001
         logger.exception("Exception parsing GNN file %s: %s", file_path, e)
@@ -132,6 +114,23 @@ def _gnn_spec_for_json_embedding(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
     return raw if isinstance(raw, dict) else dict(gnn_spec)
 
 
+def _json_to_python_literal(json_str: str) -> str:
+    """Convert a JSON string into a valid Python dict literal.
+
+    Replaces JSON keywords (``null``, ``true``, ``false``) with their Python
+    equivalents (``None``, ``True``, ``False``) so the resulting string can
+    be embedded directly into generated Python source code.
+    """
+    import re
+
+    # Only replace bare JSON keywords that appear as values (after : or in arrays)
+    # Use word-boundary matching to avoid replacing substrings in keys
+    s = re.sub(r"\bnull\b", "None", json_str)
+    s = re.sub(r"\btrue\b", "True", s)
+    s = re.sub(r"\bfalse\b", "False", s)
+    return s
+
+
 def _extract_dimensions(
     gnn_spec: Dict[str, Any], init_params: Dict[str, Any]
 ) -> Tuple[int, int, int]:
@@ -159,9 +158,17 @@ def _extract_dimensions(
             num_actions = int(dims[2])
 
     model_params = gnn_spec.get("model_parameters") or {}
-    num_states = int(model_params.get("num_hidden_states", num_states))
-    num_obs = int(model_params.get("num_obs", num_obs))
-    num_actions = int(model_params.get("num_actions", num_actions))
+
+    # Fallback to initial_params where ModelParameters are merged by MarkdownGNNParser
+    num_states = int(
+        model_params.get(
+            "num_hidden_states", init_params.get("num_hidden_states", num_states)
+        )
+    )
+    num_obs = int(model_params.get("num_obs", init_params.get("num_obs", num_obs)))
+    num_actions = int(
+        model_params.get("num_actions", init_params.get("num_actions", num_actions))
+    )
 
     A_raw = init_params.get("A")
     if A_raw is not None:
@@ -178,6 +185,8 @@ def _extract_dimensions(
                 num_actions = int(arr.shape[2])
             else:
                 num_actions = int(arr.shape[0])
+        elif arr.ndim == 2:
+            num_actions = 1
 
     return int(num_obs), int(num_states), int(max(num_actions, 1))
 
@@ -191,11 +200,12 @@ class PyMDPRenderer:
     options
         * ``mode`` — ``"pipeline"`` (default) or ``"standalone"``.
           ``"pipeline"`` emits a thin runner that calls
-          ``src.execute.pymdp.run_simple_pymdp_simulation``.
+          ``src.execute.pymdp.run_pymdp_simulation``.
           ``"standalone"`` emits a self-contained pymdp 1.0.0 script.
     """
 
     def __init__(self, options: Optional[Dict[str, Any]] = None) -> None:
+        """Initialize the instance."""
         self.options = options or {}
         self.mode = str(self.options.get("mode", "pipeline")).lower()
         if self.mode not in {"pipeline", "standalone"}:
@@ -206,6 +216,7 @@ class PyMDPRenderer:
     # Entry points
     # ------------------------------------------------------------------
     def render_file(self, gnn_file_path: Path, output_path: Path) -> Tuple[bool, str]:
+        """Render file."""
         try:
             with open(gnn_file_path, "r", encoding="utf-8") as f:
                 content = f.read()
@@ -227,6 +238,7 @@ class PyMDPRenderer:
     def render_spec(
         self, gnn_spec: Dict[str, Any], output_path: Path
     ) -> Tuple[bool, str, List[str]]:
+        """Render spec."""
         try:
             model_name = gnn_spec.get("model_name", "GNN_Model")
             code = self._generate_code(gnn_spec, model_name)
@@ -234,11 +246,6 @@ class PyMDPRenderer:
             output_path.write_text(code, encoding="utf-8")
 
             warnings: List[str] = []
-            if not (
-                gnn_spec.get("initialparameterization")
-                or gnn_spec.get("initial_parameterization")
-            ):
-                warnings.append("No initial parameterization found — using defaults")
             if not gnn_spec.get("model_parameters"):
                 warnings.append("No model parameters found — using inferred dimensions")
             return True, f"Generated pymdp 1.0.0 runner: {output_path}", warnings
@@ -250,6 +257,7 @@ class PyMDPRenderer:
     def render_directory(
         self, output_dir: Path, input_dir: Optional[Path] = None
     ) -> Dict[str, Any]:
+        """Render directory."""
         results: Dict[str, Any] = {
             "rendered_files": [],
             "failed_files": [],
@@ -267,17 +275,24 @@ class PyMDPRenderer:
             ok, msg = self.render_file(gnn_file, out)
             if ok:
                 results["rendered_files"].append(
-                    {"input_file": str(gnn_file), "output_file": str(out), "message": msg}
+                    {
+                        "input_file": str(gnn_file),
+                        "output_file": str(out),
+                        "message": msg,
+                    }
                 )
                 results["successful_renders"] += 1
             else:
-                results["failed_files"].append({"input_file": str(gnn_file), "error": msg})
+                results["failed_files"].append(
+                    {"input_file": str(gnn_file), "error": msg}
+                )
         return results
 
     # ------------------------------------------------------------------
     # Code generation
     # ------------------------------------------------------------------
     def _generate_code(self, gnn_spec: Dict[str, Any], model_name: str) -> str:
+        """Generate code."""
         model_display_name = gnn_spec.get("model_name", model_name)
         model_annotation = gnn_spec.get("annotation", "")
         init_params = gnn_spec.get("initialparameterization") or gnn_spec.get(
@@ -303,9 +318,8 @@ class PyMDPRenderer:
             if val is None
         ]
         if missing:
-            self.logger.warning(
-                "Missing initial parameterization entries (defaults will be used at runtime): %s",
-                ",".join(missing),
+            raise ValueError(
+                f"Missing required PyMDP initial parameterization entries: {missing}"
             )
 
         context: Dict[str, Any] = {
@@ -321,11 +335,15 @@ class PyMDPRenderer:
             "C_literal": _json.dumps(C_vector) if C_vector is not None else "None",
             "D_literal": _json.dumps(D_vector) if D_vector is not None else "None",
             "E_literal": _json.dumps(E_vector) if E_vector is not None else "None",
-            "gnn_spec_literal": _json.dumps(
-                _gnn_spec_for_json_embedding(gnn_spec), indent=4, default=str
+            "gnn_spec_literal": _json_to_python_literal(
+                _json.dumps(
+                    _gnn_spec_for_json_embedding(gnn_spec), indent=4, default=str
+                )
             ),
             "num_timesteps": int(
-                (gnn_spec.get("model_parameters") or {}).get("num_timesteps", 20)
+                (gnn_spec.get("model_parameters") or {}).get(
+                    "num_timesteps", init_params.get("num_timesteps", 20)
+                )
             ),
         }
 

@@ -28,7 +28,7 @@ from advanced_visualization import (
     create_timeline_visualization, create_heatmap_visualization,
     DashboardGenerator, generate_dashboard,
     VisualizationDataExtractor, extract_visualization_data,
-    process_advanced_viz_standardized_impl
+    process_advanced_viz,
 )
 
 # Create visualizations
@@ -62,7 +62,7 @@ if D2_AVAILABLE:
 
 ```bash
 # Core interactive visualization
-uv sync --extra visualization
+uv sync
 
 # For D2 diagrams (requires d2 CLI)
 # Install d2: https://d2lang.com/tour/install
@@ -79,9 +79,10 @@ uv sync --extra visualization
 
 This module registers tools with the GNN MCP server (see `mcp.py`):
 
-- `process_advanced_visualization`
 - `check_visualization_capabilities`
+- `get_advanced_visualization_module_info`
 - `list_d2_visualization_types`
+- `process_advanced_visualization`
 
 ## References
 

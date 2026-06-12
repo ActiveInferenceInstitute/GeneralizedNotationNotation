@@ -27,6 +27,8 @@ A-o
 ## InitialParameterization
 A = [[0.9, 0.1], [0.2, 0.8]]
 D = [[0.5, 0.5]]
+num_hidden_states = 2
+num_obs = 2
 
 ## Time
 Static
@@ -38,6 +40,6 @@ s = HiddenState
 o = Observation
 
 ## Footer
-Generated: 2026-04-10T10:24:31.834956
+Generated: 2026-05-25T09:59:34.667751
 
 ## Signature

@@ -137,14 +137,14 @@ function execute_and_save_animation(environment, agents; gifname = "result.gif",
             println(log_msg)
         end
         
-        log_msg = "Generating placeholder convergence plot..."
+        log_msg = "Generating data-not-found convergence plot..."
         if logger !== nothing
             log_message(log_msg, logger)
         else
             println(log_msg)
         end
         
-        # Generate a placeholder convergence plot
+        # Generate an explicit data-not-found convergence plot
         using Plots
         p = plot(
             [0, 100], [0, 0], 
@@ -164,7 +164,7 @@ function execute_and_save_animation(environment, agents; gifname = "result.gif",
             
         savefig(p, convergence_file)
         
-        log_msg = "Placeholder convergence plot saved to $convergence_file"
+        log_msg = "Data-not-found convergence plot saved to $convergence_file"
         if logger !== nothing
             log_message(log_msg, logger)
         else
@@ -293,7 +293,7 @@ function create_readme(output_dir, subdirs)
             elseif occursin("path_visualization", file)
                 "Static visualization of agent paths"
             elseif occursin("convergence", file)
-                "Convergence plot of the inference (may show placeholder if ELBO tracking unavailable)"
+                "Convergence plot of the inference (reports missing ELBO tracking when unavailable)"
             else
                 file
             end

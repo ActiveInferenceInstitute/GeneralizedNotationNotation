@@ -21,14 +21,14 @@ import numpy as np
 # Model configuration
 NUM_STATES = 4
 NUM_OBSERVATIONS = 6
-NUM_ACTIONS = 4
+NUM_ACTIONS = 1
 
 
 def create_params() -> Dict[str, jnp.ndarray]:
     """Create model parameters from GNN specification."""
     return {
-        'A_matrix': jnp.array([[0.7, 0.1, 0.1, 0.1], [0.1, 0.7, 0.1, 0.1], [0.1, 0.1, 0.7, 0.1], [0.1, 0.1, 0.1, 0.7], [0.1, 0.1, 0.4, 0.4], [0.4, 0.4, 0.1, 0.1]]),  # Observation model P(o|s)
-        'B_matrix': jnp.array([[[1.0, 1.0, 1.0, 1.0], [0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0]], [[0.0, 0.0, 0.0, 0.0], [1.0, 1.0, 1.0, 1.0], [0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0]], [[0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0], [1.0, 1.0, 1.0, 1.0], [0.0, 0.0, 0.0, 0.0]], [[0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0], [1.0, 1.0, 1.0, 1.0]]]),  # Transition model P(s'|s,a)
+        'A_matrix': jnp.array([[0.4666666666666666, 0.06666666666666667, 0.06666666666666667, 0.06666666666666667], [0.06666666666666667, 0.4666666666666666, 0.06666666666666667, 0.06666666666666667], [0.06666666666666667, 0.06666666666666667, 0.4666666666666666, 0.06666666666666667], [0.06666666666666667, 0.06666666666666667, 0.06666666666666667, 0.4666666666666666], [0.06666666666666667, 0.06666666666666667, 0.26666666666666666, 0.26666666666666666], [0.26666666666666666, 0.26666666666666666, 0.06666666666666667, 0.06666666666666667]]),  # Observation model P(o|s)
+        'B_matrix': jnp.array([[[0.7000000000000001], [0.10000000000000002], [0.1], [0.1]], [[0.10000000000000002], [0.7000000000000001], [0.2], [0.1]], [[0.10000000000000002], [0.10000000000000002], [0.6], [0.2]], [[0.10000000000000002], [0.10000000000000002], [0.1], [0.6]]]),  # Transition model P(s'|s,a)
         'C_vector': jnp.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0]),  # Preferences over observations
         'D_vector': jnp.array([0.25, 0.25, 0.25, 0.25]),  # Prior over initial states
     }
@@ -411,8 +411,8 @@ if __name__ == "__main__":
     print(f"   EFE for all actions: {result['all_efe_values']}")
 
     # Run multi-step simulation
-    print("\n🔄 Running 15-step simulation...")
-    trajectory = run_simulation(params, num_steps=15)
+    print("\n🔄 Running 50-step simulation...")
+    trajectory = run_simulation(params, num_steps=50)
 
     print(f"   Actions taken: {trajectory['actions']}")
     print(f"   Final belief: {trajectory['final_belief']}")

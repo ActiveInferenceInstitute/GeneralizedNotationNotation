@@ -1,28 +1,30 @@
-# Discopy Translator Module - Agent Scaffolding
+# DisCoPy Translator Execution Sub-module
 
-## Module Overview
+## Overview
 
-**Purpose**: Responsible for `Discopy Translator Module` operations within the GNN pipeline architecture.
-**Category**: Generated Pipeline Component
-**Status**: Development
+Translates between DisCoPy categorical representations and other execution frameworks (particularly JAX). Provides visualization of JAX outputs within the categorical framework.
 
----
+## Architecture
 
-## Core Functionality
+```
+discopy_translator_module/
+├── __init__.py                  # Package exports (26 lines)
+├── translator.py                # DisCoPy ↔ framework translation (234 lines)
+└── visualize_jax_output.py      # JAX output visualization (270 lines)
+```
 
-### Primary Responsibilities
-DisCoPy Translator Module for GNN Processing Pipeline
+## Key Functions
 
-This module provides translation functionality from GNN specifications 
-to DisCoPy categorical diagrams with JAX evaluation capabilities. JAX Output Visualization for DisCoPy Diagrams
+- **`translate_to_jax(diagram)`** — Converts DisCoPy diagrams to JAX-compatible tensor networks.
+- **`visualize_jax_output(results, output_dir)`** — Renders JAX computation results as categorical visualizations.
+- **Cross-framework bridging** — Enables consistent analysis across categorical and numerical representations.
 
-This module provides visualization capabilities for JAX eval
+## Dependencies
 
-### Extracted Code Entities
+- `discopy`, `jax` (optional, graceful degradation)
 
-- **Classes**: No specific classes exported.
-- **Functions**: create_summary_visualization, evaluate_diagram_with_jax, gnn_file_to_discopy_diagram, gnn_file_to_discopy_matrix_diagram, plot_multiple_tensor_outputs, plot_tensor_output
+## Parent Module
 
-## Implementation Details
+See [execute/AGENTS.md](../AGENTS.md) for the overall execution architecture.
 
-This module follows the Thin Orchestrator Pattern. It is governed by the Zero-Mock testing policy.
+**Version**: 1.6.0

@@ -8,7 +8,7 @@ import json
 import logging
 import re
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, cast
 
 logger = logging.getLogger(__name__)
 
@@ -19,21 +19,21 @@ from ..viz_base import MATPLOTLIB_AVAILABLE, np, plt
 def parse_raw_output(raw_output: str) -> Dict[str, Any]:
     """
     Parse JAX simulation raw output text to extract additional data.
-    
+
     The raw_output contains simulation details like:
     - Actions taken array
     - Final belief
     - Average EFE
     - EFE for all actions
     - Model shape information
-    
+
     Args:
         raw_output: The raw stdout text from JAX execution
-        
+
     Returns:
         Dictionary with extracted simulation data
     """
-    extracted = {
+    extracted: dict[str, Any] = {
         "actions_from_output": [],
         "final_belief": [],
         "average_efe": None,
@@ -47,36 +47,38 @@ def parse_raw_output(raw_output: str) -> Dict[str, Any]:
 
     try:
         # Extract actions array: "Actions taken: [0 0 0 0 ... 0]"
-        actions_match = re.search(r'Actions taken:\s*\[([^\]]+)\]', raw_output)
+        actions_match = re.search(r"Actions taken:\s*\[([^\]]+)\]", raw_output)
         if actions_match:
             actions_str = actions_match.group(1)
             extracted["actions_from_output"] = [int(x) for x in actions_str.split()]
             extracted["num_simulation_steps"] = len(extracted["actions_from_output"])
 
         # Extract final belief: "Final belief: [0. 0. 0.]"
-        belief_match = re.search(r'Final belief:\s*\[([^\]]+)\]', raw_output)
+        belief_match = re.search(r"Final belief:\s*\[([^\]]+)\]", raw_output)
         if belief_match:
             belief_str = belief_match.group(1)
-            extracted["final_belief"] = [float(x.replace('.', '0.') if x == '.' else x)
-                                         for x in belief_str.split()]
+            extracted["final_belief"] = [
+                float(x.replace(".", "0.") if x == "." else x)
+                for x in belief_str.split()
+            ]
 
         # Extract average EFE: "Average EFE: 0.0003"
-        avg_efe_match = re.search(r'Average EFE:\s*([\d.eE+-]+)', raw_output)
+        avg_efe_match = re.search(r"Average EFE:\s*([\d.eE+-]+)", raw_output)
         if avg_efe_match:
             extracted["average_efe"] = float(avg_efe_match.group(1))
 
         # Extract EFE for all actions: "EFE for all actions: [0.00986223 0.00986223 0.00986223]"
-        efe_all_match = re.search(r'EFE for all actions:\s*\[([^\]]+)\]', raw_output)
+        efe_all_match = re.search(r"EFE for all actions:\s*\[([^\]]+)\]", raw_output)
         if efe_all_match:
             efe_str = efe_all_match.group(1)
             extracted["efe_all_actions"] = [float(x) for x in efe_str.split()]
 
         # Extract model shapes
-        shape_patterns = [
-            (r'A matrix shape:\s*\((\d+),\s*(\d+)\)', 'A_shape'),
-            (r'B matrix shape:\s*\((\d+),\s*(\d+),\s*(\d+)\)', 'B_shape'),
-            (r'C vector shape:\s*\((\d+),\)', 'C_shape'),
-            (r'D vector shape:\s*\((\d+),\)', 'D_shape'),
+        shape_patterns: list[Any] = [
+            (r"A matrix shape:\s*\((\d+),\s*(\d+)\)", "A_shape"),
+            (r"B matrix shape:\s*\((\d+),\s*(\d+),\s*(\d+)\)", "B_shape"),
+            (r"C vector shape:\s*\((\d+),\)", "C_shape"),
+            (r"D vector shape:\s*\((\d+),\)", "D_shape"),
         ]
         for pattern, key in shape_patterns:
             match = re.search(pattern, raw_output)
@@ -85,9 +87,9 @@ def parse_raw_output(raw_output: str) -> Dict[str, Any]:
 
         # Extract number of states/actions/observations
         for key, pattern in [
-            ('num_states', r'Number of states:\s*(\d+)'),
-            ('num_observations', r'Number of observations:\s*(\d+)'),
-            ('num_actions', r'Number of actions:\s*(\d+)'),
+            ("num_states", r"Number of states:\s*(\d+)"),
+            ("num_observations", r"Number of observations:\s*(\d+)"),
+            ("num_actions", r"Number of actions:\s*(\d+)"),
         ]:
             match = re.search(pattern, raw_output)
             if match:
@@ -110,7 +112,7 @@ def load_simulation_results_json(jax_dir: Path) -> Optional[Dict[str, Any]]:
         Parsed simulation results or None if not found
     """
     # Check multiple possible locations for simulation_results.json
-    possible_paths = [
+    possible_paths: list[Any] = [
         jax_dir / "simulation_results.json",
         jax_dir / "simulation_data" / "simulation_results.json",
         jax_dir / "jax_outputs" / "simulation_results.json",
@@ -119,10 +121,10 @@ def load_simulation_results_json(jax_dir: Path) -> Optional[Dict[str, Any]]:
     for path in possible_paths:
         if path.exists():
             try:
-                with open(path, 'r') as f:
+                with open(path, "r") as f:
                     data = json.load(f)
                     logger.info(f"Loaded JAX simulation results from {path}")
-                    return data
+                    return cast("dict[str, Any] | None", data)
             except Exception as e:
                 logger.warning(f"Failed to load {path}: {e}")
 
@@ -130,9 +132,7 @@ def load_simulation_results_json(jax_dir: Path) -> Optional[Dict[str, Any]]:
 
 
 def generate_analysis_from_logs(
-    execution_dir: Path,
-    output_dir: Path,
-    verbose: bool = False
+    execution_dir: Path, output_dir: Path, verbose: bool = False
 ) -> List[str]:
     """
     Generate analysis and visualizations from JAX execution logs.
@@ -145,7 +145,7 @@ def generate_analysis_from_logs(
     Returns:
         List of generated visualization file paths
     """
-    visualizations = []
+    visualizations: list[Any] = []
 
     try:
         # Find JAX execution results
@@ -171,7 +171,7 @@ def generate_analysis_from_logs(
                 results_files = list(exec_logs_dir.glob("*_results.json"))
                 for results_file in results_files:
                     try:
-                        with open(results_file, 'r') as f:
+                        with open(results_file, "r") as f:
                             data = json.load(f)
 
                         viz_files = create_jax_visualizations(
@@ -192,7 +192,7 @@ def create_visualizations_from_structured_data(
     sim_results: Dict[str, Any],
     output_dir: Path,
     model_name: str,
-    verbose: bool = False
+    verbose: bool = False,
 ) -> List[str]:
     """
     Create rich visualizations from structured JAX simulation results JSON.
@@ -206,7 +206,7 @@ def create_visualizations_from_structured_data(
     Returns:
         List of generated file paths
     """
-    visualizations = []
+    visualizations: list[Any] = []
 
     if not MATPLOTLIB_AVAILABLE:
         logger.warning("Matplotlib not available, skipping JAX visualizations")
@@ -218,8 +218,12 @@ def create_visualizations_from_structured_data(
     trace = sim_results.get("simulation_trace", sim_results)
     beliefs = trace.get("beliefs", sim_results.get("beliefs", []))
     actions = trace.get("actions", sim_results.get("actions", []))
-    efe_history = trace.get("efe_history", sim_results.get("metrics", {}).get("expected_free_energy", []))
-    belief_confidence = trace.get("belief_confidence", sim_results.get("metrics", {}).get("belief_confidence", []))
+    efe_history = trace.get(
+        "efe_history", sim_results.get("metrics", {}).get("expected_free_energy", [])
+    )
+    belief_confidence = trace.get(
+        "belief_confidence", sim_results.get("metrics", {}).get("belief_confidence", [])
+    )
     model_params = sim_results.get("model_parameters", {})
 
     # 1. Belief Evolution Heatmap
@@ -228,28 +232,32 @@ def create_visualizations_from_structured_data(
             fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(14, 10))
 
             beliefs_arr = np.array(beliefs)
-            im = ax1.imshow(beliefs_arr.T, aspect='auto', cmap='Blues', origin='lower')
-            ax1.set_xlabel("Time Step", fontweight='bold')
-            ax1.set_ylabel("State", fontweight='bold')
-            ax1.set_title(f"JAX Belief Evolution Heatmap - {model_name}", fontweight='bold', fontsize=14)
-            plt.colorbar(im, ax=ax1, label='Belief Probability')
+            im = ax1.imshow(beliefs_arr.T, aspect="auto", cmap="Blues", origin="lower")
+            ax1.set_xlabel("Time Step", fontweight="bold")
+            ax1.set_ylabel("State", fontweight="bold")
+            ax1.set_title(
+                f"JAX Belief Evolution Heatmap - {model_name}",
+                fontweight="bold",
+                fontsize=14,
+            )
+            plt.colorbar(im, ax=ax1, label="Belief Probability")
 
             # Plot belief entropy
-            entropies = []
+            entropies: list[Any] = []
             for b in beliefs:
                 b_arr = np.array(b)
                 entropy = -np.sum(b_arr * np.log(b_arr + 1e-10))
                 entropies.append(entropy)
-            ax2.plot(entropies, 'o-', color='darkblue', linewidth=2, markersize=6)
-            ax2.fill_between(range(len(entropies)), entropies, alpha=0.3, color='blue')
-            ax2.set_xlabel("Time Step", fontweight='bold')
-            ax2.set_ylabel("Belief Entropy (nats)", fontweight='bold')
-            ax2.set_title("Belief Entropy Over Time", fontweight='bold')
+            ax2.plot(entropies, "o-", color="darkblue", linewidth=2, markersize=6)
+            ax2.fill_between(range(len(entropies)), entropies, alpha=0.3, color="blue")
+            ax2.set_xlabel("Time Step", fontweight="bold")
+            ax2.set_ylabel("Belief Entropy (nats)", fontweight="bold")
+            ax2.set_title("Belief Entropy Over Time", fontweight="bold")
             ax2.grid(True, alpha=0.3)
 
             plt.tight_layout()
             viz_file = output_dir / f"{model_name}_jax_belief_evolution.png"
-            plt.savefig(viz_file, dpi=300, bbox_inches='tight')
+            plt.savefig(viz_file, dpi=300, bbox_inches="tight")
             plt.close()
             visualizations.append(str(viz_file))
             logger.info(f"Generated belief evolution: {viz_file.name}")
@@ -269,19 +277,28 @@ def create_visualizations_from_structured_data(
                 efe_1d = efe_arr
 
             x = range(len(efe_1d))
-            ax.plot(x, efe_history, 'o-', color='coral', linewidth=2, markersize=8)
-            ax.fill_between(x, efe_1d, alpha=0.3, color='coral')
-            ax.axhline(y=np.mean(efe_1d), color='red', linestyle='--',
-                      linewidth=2, label=f'Mean EFE: {np.mean(efe_1d):.4f}')
-            ax.set_xlabel("Time Step", fontweight='bold', fontsize=12)
-            ax.set_ylabel("Expected Free Energy", fontweight='bold', fontsize=12)
-            ax.set_title(f"JAX Expected Free Energy - {model_name}", fontweight='bold', fontsize=14)
+            ax.plot(x, efe_history, "o-", color="coral", linewidth=2, markersize=8)
+            ax.fill_between(x, efe_1d, alpha=0.3, color="coral")
+            ax.axhline(
+                y=np.mean(efe_1d),
+                color="red",
+                linestyle="--",
+                linewidth=2,
+                label=f"Mean EFE: {np.mean(efe_1d):.4f}",
+            )
+            ax.set_xlabel("Time Step", fontweight="bold", fontsize=12)
+            ax.set_ylabel("Expected Free Energy", fontweight="bold", fontsize=12)
+            ax.set_title(
+                f"JAX Expected Free Energy - {model_name}",
+                fontweight="bold",
+                fontsize=14,
+            )
             ax.grid(True, alpha=0.3)
             ax.legend(fontsize=10)
 
             plt.tight_layout()
             viz_file = output_dir / f"{model_name}_jax_efe.png"
-            plt.savefig(viz_file, dpi=300, bbox_inches='tight')
+            plt.savefig(viz_file, dpi=300, bbox_inches="tight")
             plt.close()
             visualizations.append(str(viz_file))
             logger.info(f"Generated EFE plot: {viz_file.name}")
@@ -294,36 +311,46 @@ def create_visualizations_from_structured_data(
             fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(16, 5))
 
             # Action distribution
-            action_counts = {}
+            action_counts: dict[Any, Any] = {}
             for a in actions:
                 action_counts[a] = action_counts.get(a, 0) + 1
 
             sorted_actions = sorted(action_counts.keys())
             counts = [action_counts[a] for a in sorted_actions]
-            bars = ax1.bar(sorted_actions, counts, color='steelblue', alpha=0.8, edgecolor='navy')
-            ax1.set_xlabel("Action", fontweight='bold')
-            ax1.set_ylabel("Count", fontweight='bold')
-            ax1.set_title(f"Action Distribution ({len(actions)} steps)", fontweight='bold')
-            ax1.grid(True, alpha=0.3, axis='y')
+            bars = ax1.bar(
+                sorted_actions, counts, color="steelblue", alpha=0.8, edgecolor="navy"
+            )
+            ax1.set_xlabel("Action", fontweight="bold")
+            ax1.set_ylabel("Count", fontweight="bold")
+            ax1.set_title(
+                f"Action Distribution ({len(actions)} steps)", fontweight="bold"
+            )
+            ax1.grid(True, alpha=0.3, axis="y")
 
             # Add count labels
             for bar, count in zip(bars, counts):
-                ax1.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 0.3,
-                        str(count), ha='center', va='bottom', fontweight='bold')
+                ax1.text(
+                    bar.get_x() + bar.get_width() / 2,
+                    bar.get_height() + 0.3,
+                    str(count),
+                    ha="center",
+                    va="bottom",
+                    fontweight="bold",
+                )
 
             # Action timeline
             x = range(len(actions))
-            ax2.step(x, actions, where='mid', linewidth=2, color='steelblue')
-            ax2.scatter(x, actions, s=40, color='navy', zorder=5)
-            ax2.set_xlabel("Time Step", fontweight='bold')
-            ax2.set_ylabel("Action", fontweight='bold')
-            ax2.set_title("Action Timeline", fontweight='bold')
+            ax2.step(x, actions, where="mid", linewidth=2, color="steelblue")
+            ax2.scatter(x, actions, s=40, color="navy", zorder=5)
+            ax2.set_xlabel("Time Step", fontweight="bold")
+            ax2.set_ylabel("Action", fontweight="bold")
+            ax2.set_title("Action Timeline", fontweight="bold")
             ax2.grid(True, alpha=0.3)
             ax2.set_yticks(sorted(set(actions)))
 
             plt.tight_layout()
             viz_file = output_dir / f"{model_name}_jax_actions.png"
-            plt.savefig(viz_file, dpi=300, bbox_inches='tight')
+            plt.savefig(viz_file, dpi=300, bbox_inches="tight")
             plt.close()
             visualizations.append(str(viz_file))
             logger.info(f"Generated action analysis: {viz_file.name}")
@@ -335,17 +362,21 @@ def create_visualizations_from_structured_data(
         try:
             fig, ax = plt.subplots(figsize=(14, 5))
             x = range(len(belief_confidence))
-            ax.plot(x, belief_confidence, 'o-', color='green', linewidth=2, markersize=6)
-            ax.fill_between(x, belief_confidence, alpha=0.3, color='green')
-            ax.set_xlabel("Time Step", fontweight='bold')
-            ax.set_ylabel("Max Belief Probability", fontweight='bold')
-            ax.set_title(f"JAX Belief Confidence - {model_name}", fontweight='bold', fontsize=14)
+            ax.plot(
+                x, belief_confidence, "o-", color="green", linewidth=2, markersize=6
+            )
+            ax.fill_between(x, belief_confidence, alpha=0.3, color="green")
+            ax.set_xlabel("Time Step", fontweight="bold")
+            ax.set_ylabel("Max Belief Probability", fontweight="bold")
+            ax.set_title(
+                f"JAX Belief Confidence - {model_name}", fontweight="bold", fontsize=14
+            )
             ax.set_ylim(0, 1.1)
             ax.grid(True, alpha=0.3)
 
             plt.tight_layout()
             viz_file = output_dir / f"{model_name}_jax_confidence.png"
-            plt.savefig(viz_file, dpi=300, bbox_inches='tight')
+            plt.savefig(viz_file, dpi=300, bbox_inches="tight")
             plt.close()
             visualizations.append(str(viz_file))
             logger.info(f"Generated confidence plot: {viz_file.name}")
@@ -357,7 +388,12 @@ def create_visualizations_from_structured_data(
         fig = plt.figure(figsize=(16, 12))
 
         # Title
-        fig.suptitle(f"JAX Active Inference Analysis - {model_name}", fontsize=16, fontweight='bold', y=0.98)
+        fig.suptitle(
+            f"JAX Active Inference Analysis - {model_name}",
+            fontsize=16,
+            fontweight="bold",
+            y=0.98,
+        )
 
         # Create 2x2 grid
         ax1 = fig.add_subplot(2, 2, 1)  # Beliefs heatmap
@@ -368,7 +404,7 @@ def create_visualizations_from_structured_data(
         # 1. Beliefs mini heatmap
         if beliefs:
             beliefs_arr = np.array(beliefs)
-            im = ax1.imshow(beliefs_arr.T, aspect='auto', cmap='Blues', origin='lower')
+            im = ax1.imshow(beliefs_arr.T, aspect="auto", cmap="Blues", origin="lower")
             ax1.set_xlabel("Time Step")
             ax1.set_ylabel("State")
             ax1.set_title("Belief Evolution")
@@ -376,7 +412,7 @@ def create_visualizations_from_structured_data(
 
         # 2. EFE mini plot
         if efe_history:
-            ax2.plot(efe_history, 'o-', color='coral', markersize=4)
+            ax2.plot(efe_history, "o-", color="coral", markersize=4)
             ax2.set_xlabel("Time Step")
             ax2.set_ylabel("EFE")
             ax2.set_title("Expected Free Energy")
@@ -384,32 +420,32 @@ def create_visualizations_from_structured_data(
 
         # 3. Actions mini plot
         if actions:
-            ax3.step(range(len(actions)), actions, where='mid', color='steelblue')
+            ax3.step(range(len(actions)), actions, where="mid", color="steelblue")
             ax3.set_xlabel("Time Step")
             ax3.set_ylabel("Action")
             ax3.set_title("Action Selection")
             ax3.grid(True, alpha=0.3)
 
         # 4. Summary statistics
-        ax4.axis('off')
+        ax4.axis("off")
         # Pre-compute formatted values to avoid f-string issues
-        avg_efe_str = f"{np.mean(efe_history):.6f}" if efe_history else 'N/A'
-        final_conf_str = f"{belief_confidence[-1]:.4f}" if belief_confidence else 'N/A'
-        timesteps_str = str(len(actions)) if actions else 'N/A'
-        diversity_str = f"{len(set(actions))} unique actions" if actions else 'N/A'
+        avg_efe_str = f"{np.mean(efe_history):.6f}" if efe_history else "N/A"
+        final_conf_str = f"{belief_confidence[-1]:.4f}" if belief_confidence else "N/A"
+        timesteps_str = str(len(actions)) if actions else "N/A"
+        diversity_str = f"{len(set(actions))} unique actions" if actions else "N/A"
 
         summary_text = f"""
 JAX Active Inference Model Summary
-{'='*40}
+{"=" * 40}
 
 Model: {model_name}
 Framework: JAX (Pure Functional)
 
 Simulation Statistics:
   Timesteps: {timesteps_str}
-  States: {model_params.get('num_states', 'N/A')}
-  Observations: {model_params.get('num_observations', 'N/A')}
-  Actions: {model_params.get('num_actions', 'N/A')}
+  States: {model_params.get("num_states", "N/A")}
+  Observations: {model_params.get("num_observations", "N/A")}
+  Actions: {model_params.get("num_actions", "N/A")}
 
 Performance Metrics:
   Avg EFE: {avg_efe_str}
@@ -417,16 +453,23 @@ Performance Metrics:
   Action Diversity: {diversity_str}
 
 Validation:
-  Beliefs Valid: {sim_results.get('validation', {}).get('all_beliefs_valid', 'N/A')}
-  Actions Valid: {sim_results.get('validation', {}).get('actions_in_range', 'N/A')}
+  Beliefs Valid: {sim_results.get("validation", {}).get("all_beliefs_valid", "N/A")}
+  Actions Valid: {sim_results.get("validation", {}).get("actions_in_range", "N/A")}
 """
-        ax4.text(0.1, 0.9, summary_text, transform=ax4.transAxes, fontsize=10,
-                verticalalignment='top', fontfamily='monospace',
-                bbox={"boxstyle": 'round', "facecolor": 'lightblue', "alpha": 0.3})
+        ax4.text(
+            0.1,
+            0.9,
+            summary_text,
+            transform=ax4.transAxes,
+            fontsize=10,
+            verticalalignment="top",
+            fontfamily="monospace",
+            bbox={"boxstyle": "round", "facecolor": "lightblue", "alpha": 0.3},
+        )
 
         plt.tight_layout(rect=[0, 0, 1, 0.96])
         viz_file = output_dir / f"{model_name}_jax_dashboard.png"
-        plt.savefig(viz_file, dpi=300, bbox_inches='tight')
+        plt.savefig(viz_file, dpi=300, bbox_inches="tight")
         plt.close()
         visualizations.append(str(viz_file))
         logger.info(f"Generated summary dashboard: {viz_file.name}")
@@ -437,24 +480,21 @@ Validation:
 
 
 def create_jax_visualizations(
-    data: Dict[str, Any],
-    output_dir: Path,
-    model_name: str,
-    verbose: bool = False
+    data: Dict[str, Any], output_dir: Path, model_name: str, verbose: bool = False
 ) -> List[str]:
     """
     Create visualizations from JAX simulation data.
-    
+
     Args:
         data: Execution results dictionary
         output_dir: Output directory
         model_name: Name of the model
         verbose: Enable verbose logging
-        
+
     Returns:
         List of generated file paths
     """
-    visualizations = []
+    visualizations: list[Any] = []
 
     if not MATPLOTLIB_AVAILABLE:
         logger.warning("Matplotlib not available, skipping JAX visualizations")
@@ -480,21 +520,25 @@ def create_jax_visualizations(
     if free_energy:
         try:
             fig, ax = plt.subplots(figsize=(12, 5))
-            ax.plot(free_energy, 'b-', linewidth=2, marker='o', markersize=8)
-            ax.set_xlabel("Measurement Point", fontweight='bold')
-            ax.set_ylabel("Expected Free Energy", fontweight='bold')
-            ax.set_title(f"JAX Free Energy - {model_name}", fontweight='bold')
+            ax.plot(free_energy, "b-", linewidth=2, marker="o", markersize=8)
+            ax.set_xlabel("Measurement Point", fontweight="bold")
+            ax.set_ylabel("Expected Free Energy", fontweight="bold")
+            ax.set_title(f"JAX Free Energy - {model_name}", fontweight="bold")
             ax.grid(True, alpha=0.3)
             ax.fill_between(range(len(free_energy)), free_energy, alpha=0.3)
 
             # Add average EFE annotation if available
             if parsed["average_efe"] is not None:
-                ax.axhline(y=parsed["average_efe"], color='r', linestyle='--',
-                          label=f'Avg EFE: {parsed["average_efe"]:.4f}')
+                ax.axhline(
+                    y=parsed["average_efe"],
+                    color="r",
+                    linestyle="--",
+                    label=f"Avg EFE: {parsed['average_efe']:.4f}",
+                )
                 ax.legend()
 
             viz_file = output_dir / f"{model_name}_jax_free_energy.png"
-            plt.savefig(viz_file, dpi=300, bbox_inches='tight')
+            plt.savefig(viz_file, dpi=300, bbox_inches="tight")
             plt.close()
             visualizations.append(str(viz_file))
             logger.info(f"Generated free energy plot: {viz_file.name}")
@@ -505,24 +549,38 @@ def create_jax_visualizations(
     if actions:
         try:
             fig, ax = plt.subplots(figsize=(10, 5))
-            action_counts = {}
+            action_counts: dict[Any, Any] = {}
             for a in actions:
                 action_counts[a] = action_counts.get(a, 0) + 1
 
-            bars = ax.bar(list(action_counts.keys()), list(action_counts.values()),
-                         color='steelblue', alpha=0.7, edgecolor='navy')
-            ax.set_xlabel("Action", fontweight='bold')
-            ax.set_ylabel("Count", fontweight='bold')
-            ax.set_title(f"JAX Action Distribution ({len(actions)} steps) - {model_name}", fontweight='bold')
-            ax.grid(True, alpha=0.3, axis='y')
+            bars = ax.bar(
+                list(action_counts.keys()),
+                list(action_counts.values()),
+                color="steelblue",
+                alpha=0.7,
+                edgecolor="navy",
+            )
+            ax.set_xlabel("Action", fontweight="bold")
+            ax.set_ylabel("Count", fontweight="bold")
+            ax.set_title(
+                f"JAX Action Distribution ({len(actions)} steps) - {model_name}",
+                fontweight="bold",
+            )
+            ax.grid(True, alpha=0.3, axis="y")
 
             # Add count labels on bars
             for bar, count in zip(bars, action_counts.values()):
-                ax.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 0.5,
-                       str(count), ha='center', va='bottom', fontweight='bold')
+                ax.text(
+                    bar.get_x() + bar.get_width() / 2,
+                    bar.get_height() + 0.5,
+                    str(count),
+                    ha="center",
+                    va="bottom",
+                    fontweight="bold",
+                )
 
             viz_file = output_dir / f"{model_name}_jax_action_dist.png"
-            plt.savefig(viz_file, dpi=300, bbox_inches='tight')
+            plt.savefig(viz_file, dpi=300, bbox_inches="tight")
             plt.close()
             visualizations.append(str(viz_file))
             logger.info(f"Generated action distribution: {viz_file.name}")
@@ -534,11 +592,11 @@ def create_jax_visualizations(
         try:
             fig, ax = plt.subplots(figsize=(14, 4))
             x = range(len(actions))
-            ax.step(x, actions, where='mid', linewidth=2, color='steelblue')
-            ax.scatter(x, actions, s=30, color='navy', zorder=5)
-            ax.set_xlabel("Time Step", fontweight='bold')
-            ax.set_ylabel("Action", fontweight='bold')
-            ax.set_title(f"JAX Action Timeline - {model_name}", fontweight='bold')
+            ax.step(x, actions, where="mid", linewidth=2, color="steelblue")
+            ax.scatter(x, actions, s=30, color="navy", zorder=5)
+            ax.set_xlabel("Time Step", fontweight="bold")
+            ax.set_ylabel("Action", fontweight="bold")
+            ax.set_title(f"JAX Action Timeline - {model_name}", fontweight="bold")
             ax.grid(True, alpha=0.3)
             ax.set_xlim(-0.5, len(actions) - 0.5)
 
@@ -547,7 +605,7 @@ def create_jax_visualizations(
             ax.set_yticks(unique_actions)
 
             viz_file = output_dir / f"{model_name}_jax_action_timeline.png"
-            plt.savefig(viz_file, dpi=300, bbox_inches='tight')
+            plt.savefig(viz_file, dpi=300, bbox_inches="tight")
             plt.close()
             visualizations.append(str(viz_file))
             logger.info(f"Generated action timeline: {viz_file.name}")
@@ -560,20 +618,20 @@ def create_jax_visualizations(
             fig, ax = plt.subplots(figsize=(10, 5))
             efe_values = parsed["efe_all_actions"]
             x = range(len(efe_values))
-            bars = ax.bar(x, efe_values, color='coral', alpha=0.7, edgecolor='darkred')
-            ax.set_xlabel("Action", fontweight='bold')
-            ax.set_ylabel("Expected Free Energy", fontweight='bold')
-            ax.set_title(f"JAX EFE by Action - {model_name}", fontweight='bold')
-            ax.grid(True, alpha=0.3, axis='y')
+            bars = ax.bar(x, efe_values, color="coral", alpha=0.7, edgecolor="darkred")
+            ax.set_xlabel("Action", fontweight="bold")
+            ax.set_ylabel("Expected Free Energy", fontweight="bold")
+            ax.set_title(f"JAX EFE by Action - {model_name}", fontweight="bold")
+            ax.grid(True, alpha=0.3, axis="y")
             ax.set_xticks(x)
 
             # Highlight minimum EFE action
             min_idx = np.argmin(efe_values)
-            bars[min_idx].set_color('green')
+            bars[min_idx].set_color("green")
             bars[min_idx].set_alpha(0.9)
 
             viz_file = output_dir / f"{model_name}_jax_efe_comparison.png"
-            plt.savefig(viz_file, dpi=300, bbox_inches='tight')
+            plt.savefig(viz_file, dpi=300, bbox_inches="tight")
             plt.close()
             visualizations.append(str(viz_file))
             logger.info(f"Generated EFE comparison: {viz_file.name}")
@@ -584,11 +642,11 @@ def create_jax_visualizations(
     if parsed["model_shapes"]:
         try:
             fig, ax = plt.subplots(figsize=(10, 6))
-            ax.axis('off')
+            ax.axis("off")
 
             # Build summary text
             shapes = parsed["model_shapes"]
-            summary_lines = [
+            summary_lines: list[Any] = [
                 "JAX Active Inference Model Summary",
                 "─" * 40,
                 "",
@@ -597,33 +655,47 @@ def create_jax_visualizations(
                 "",
             ]
 
-            if 'num_states' in shapes:
+            if "num_states" in shapes:
                 summary_lines.append(f"States: {shapes.get('num_states', 'N/A')}")
-            if 'num_observations' in shapes:
-                summary_lines.append(f"Observations: {shapes.get('num_observations', 'N/A')}")
-            if 'num_actions' in shapes:
+            if "num_observations" in shapes:
+                summary_lines.append(
+                    f"Observations: {shapes.get('num_observations', 'N/A')}"
+                )
+            if "num_actions" in shapes:
                 summary_lines.append(f"Actions: {shapes.get('num_actions', 'N/A')}")
 
             summary_lines.append("")
             summary_lines.append("Matrix Shapes:")
-            for key in ['A_shape', 'B_shape', 'C_shape', 'D_shape']:
+            for key in ["A_shape", "B_shape", "C_shape", "D_shape"]:
                 if key in shapes:
-                    summary_lines.append(f"  {key.replace('_shape', '')}: {shapes[key]}")
+                    summary_lines.append(
+                        f"  {key.replace('_shape', '')}: {shapes[key]}"
+                    )
 
             if parsed["num_simulation_steps"] > 0:
                 summary_lines.append("")
-                summary_lines.append(f"Simulation: {parsed['num_simulation_steps']} steps")
+                summary_lines.append(
+                    f"Simulation: {parsed['num_simulation_steps']} steps"
+                )
 
             if parsed["average_efe"] is not None:
                 summary_lines.append(f"Avg EFE: {parsed['average_efe']:.6f}")
 
             summary_text = "\n".join(summary_lines)
-            ax.text(0.5, 0.5, summary_text, ha='center', va='center', fontsize=12,
-                   fontfamily='monospace', transform=ax.transAxes,
-                   bbox={"boxstyle": 'round', "facecolor": 'lightblue', "alpha": 0.3})
+            ax.text(
+                0.5,
+                0.5,
+                summary_text,
+                ha="center",
+                va="center",
+                fontsize=12,
+                fontfamily="monospace",
+                transform=ax.transAxes,
+                bbox={"boxstyle": "round", "facecolor": "lightblue", "alpha": 0.3},
+            )
 
             viz_file = output_dir / f"{model_name}_jax_model_summary.png"
-            plt.savefig(viz_file, dpi=300, bbox_inches='tight')
+            plt.savefig(viz_file, dpi=300, bbox_inches="tight")
             plt.close()
             visualizations.append(str(viz_file))
             logger.info(f"Generated model summary: {viz_file.name}")
@@ -643,13 +715,13 @@ def create_jax_visualizations(
             else:
                 ax.plot(beliefs_arr, linewidth=2)
 
-            ax.set_xlabel("Time Step", fontweight='bold')
-            ax.set_ylabel("Belief", fontweight='bold')
-            ax.set_title(f"JAX Belief Trajectory - {model_name}", fontweight='bold')
+            ax.set_xlabel("Time Step", fontweight="bold")
+            ax.set_ylabel("Belief", fontweight="bold")
+            ax.set_title(f"JAX Belief Trajectory - {model_name}", fontweight="bold")
             ax.grid(True, alpha=0.3)
 
             viz_file = output_dir / f"{model_name}_jax_beliefs.png"
-            plt.savefig(viz_file, dpi=300, bbox_inches='tight')
+            plt.savefig(viz_file, dpi=300, bbox_inches="tight")
             plt.close()
             visualizations.append(str(viz_file))
             logger.info(f"Generated belief trajectory: {viz_file.name}")
@@ -659,28 +731,28 @@ def create_jax_visualizations(
     return visualizations
 
 
-
-
-def extract_simulation_data(execution_dir: Path, logger: Optional[logging.Logger] = None) -> Dict[str, Any]:
+def extract_simulation_data(
+    execution_dir: Path, logger: Optional[logging.Logger] = None
+) -> Dict[str, Any]:
     """
     Extract JAX simulation data from execution outputs.
-    
+
     Args:
         execution_dir: Directory containing execution results
         logger: Logger instance
-        
+
     Returns:
         Dictionary with extracted simulation data
     """
     if logger is None:
         logger = logging.getLogger(__name__)
 
-    data = {
+    data: dict[str, Any] = {
         "actions": [],
         "beliefs": [],
         "free_energy": [],
         "model_name": "",
-        "framework": "jax"
+        "framework": "jax",
     }
 
     try:
@@ -688,7 +760,7 @@ def extract_simulation_data(execution_dir: Path, logger: Optional[logging.Logger
         if exec_logs_dir.exists():
             results_files = list(exec_logs_dir.glob("*_results.json"))
             if results_files:
-                with open(results_files[0], 'r') as f:
+                with open(results_files[0], "r") as f:
                     results = json.load(f)
                 sim_data = results.get("simulation_data", {})
                 data.update(sim_data)
@@ -699,10 +771,9 @@ def extract_simulation_data(execution_dir: Path, logger: Optional[logging.Logger
     return data
 
 
-__all__ = [
+__all__: list[Any] = [
     "generate_analysis_from_logs",
     "create_jax_visualizations",
     "extract_simulation_data",
     "parse_raw_output",
 ]
-

@@ -20,29 +20,33 @@ from .matrix_editor import (
 from .processor import run_gui
 
 
-def gui_2(target_dir: Path, output_dir: Path, logger: logging.Logger, **kwargs) -> Dict[str, Any]:
+def gui_2(
+    target_dir: Path, output_dir: Path, logger: logging.Logger, **kwargs: Any
+) -> Dict[str, Any]:
     """
     Run GUI 2: Visual Matrix Editor for GNN Models
-    
+
     Args:
         target_dir: Directory containing GNN files to load (prefers POMDP templates)
-        output_dir: Output directory for results  
+        output_dir: Output directory for results
         logger: Logger instance
         **kwargs: Additional options (headless, export_filename, etc.)
-        
+
     Returns:
         Dictionary with execution results and status
     """
     try:
         # Extract GUI 2 specific parameters
-        headless = kwargs.get('headless', False)
-        export_filename = kwargs.get('export_filename', 'visual_model_gui2.md')
-        open_browser = kwargs.get('open_browser', True)
-        verbose = kwargs.get('verbose', False)
+        headless = kwargs.get("headless", False)
+        export_filename = kwargs.get("export_filename", "visual_model_gui2.md")
+        open_browser = kwargs.get("open_browser", True)
+        verbose = kwargs.get("verbose", False)
 
         logger.info("🎯 Starting GUI 2: Visual Matrix Editor")
 
-        success = run_gui(
+        from . import processor as _processor
+
+        success = _processor.run_gui(
             target_dir=target_dir,
             output_dir=output_dir,
             logger=logger,
@@ -52,20 +56,25 @@ def gui_2(target_dir: Path, output_dir: Path, logger: logging.Logger, **kwargs) 
             open_browser=open_browser,
         )
 
-        result = {
+        result: dict[str, Any] = {
             "gui_type": "gui_2",
             "description": "Visual Matrix Editor for GNN Models",
             "success": success,
             "output_file": str(output_dir / export_filename) if success else None,
-            "backend": "gradio+plotly" if not headless else "headless",
+            "backend": "gradio+plotly"
+            if not headless and _processor._GUI_BACKEND is not None
+            else "headless"
+            if headless
+            else "none",
+            "backend_reason": _processor._GUI_BACKEND_REASON,
             "features": [
                 "Visual matrix representation and editing",
                 "Drag-and-drop state space modification",
                 "Real-time GNN markdown generation",
                 "POMDP template-based initialization",
                 "Interactive heatmaps and plots",
-                "Matrix dimension validation"
-            ]
+                "Matrix dimension validation",
+            ],
         }
 
         if success:
@@ -82,7 +91,7 @@ def gui_2(target_dir: Path, output_dir: Path, logger: logging.Logger, **kwargs) 
             "description": "Visual Matrix Editor for GNN Models",
             "success": False,
             "error": str(e),
-            "backend": "error"
+            "backend": "error",
         }
 
 
@@ -98,16 +107,16 @@ def get_gui_2_info() -> Dict[str, Any]:
             "POMDP template initialization",
             "Matrix validation and consistency checking",
             "Multi-tab interface (A, B, C, D matrices)",
-            "Vector and tensor visualization"
+            "Vector and tensor visualization",
         ],
         "requirements": ["gradio", "plotly", "numpy"],
         "export_format": "GNN Markdown (.md)",
         "interface_type": "visual-drag-drop",
-        "template_base": "Active Inference POMDP"
+        "template_base": "Active Inference POMDP",
     }
 
 
-__all__ = [
+__all__: list[Any] = [
     "gui_2",
     "get_gui_2_info",
     "run_gui",

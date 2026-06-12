@@ -394,14 +394,20 @@ GNN Files → parse_gnn_file() → gnn_to_mermaid() → Mermaid Files
 
 ### Test Files
 
-- `src/tests/test_oxdraw_integration.py` - Integration tests
-- `src/tests/test_mermaid_converter.py` - Converter unit tests
-- `src/tests/test_mermaid_parser.py` - Parser unit tests
+- `src/tests/gui/test_oxdraw_integration.py` - Integration tests
+- `src/tests/visualization/test_mermaid_converter.py` - Converter unit tests
+- `src/tests/visualization/test_mermaid_parser.py` - Parser unit tests
 
 ### Test Coverage
 
-- **Current**: New module (comprehensive tests included)
-- **Target**: 90%+
+Measure on demand:
+
+```bash
+uv run --extra dev python -m pytest src/tests/gui/test_oxdraw_integration.py \
+    src/tests/visualization/test_mermaid_converter.py \
+    src/tests/visualization/test_mermaid_parser.py \
+    --cov=src/gui/oxdraw --cov-report=term-missing
+```
 
 ### Key Test Scenarios
 
@@ -509,7 +515,7 @@ for error in errors:
 
 ## Version History
 
-### Current Version: 1.0.0
+### Current Version: 1.6.0
 
 **Features**:
 
@@ -550,6 +556,6 @@ for error in errors:
 
 ---
 
-**Last Updated**: 2026-01-21  
+**Last Updated**: 2026-04-16  
 **Maintainer**: GNN Pipeline Team  
 **Status**: ✅ Ready for Testing

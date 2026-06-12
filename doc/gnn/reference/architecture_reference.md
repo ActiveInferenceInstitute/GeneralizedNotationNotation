@@ -1,14 +1,14 @@
 # GNN Architecture Reference
 
-**Version**: v2.0.0  
-**Last Updated**: 2026-03-24  
+**Version**: v1.6.0 Engine (Bundle v2.0.0)  
+**Last Updated**: 2026-04-15  
 **Status**: ✅ Production Ready  
 **Modules**: 38+ · **Pipeline steps**: 25 · **Renderers**: 9 backends (see [../implementations/README.md](../implementations/README.md)) · **Tests**: see [../../../README.md](../../../README.md)  
 
 **GNN Architecture Team**  
 **Version**: 2.0.0  
 **Status**: Production Ready  
-**Last Updated**: 2026-03-24  
+**Last Updated**: 2026-04-15  
 
 Implementation details of the thin orchestrator pattern and cross-module integration.
 
@@ -95,9 +95,9 @@ def main() -> int:
     return run_script()  # ← Pure orchestration
 ```
 
-#### ### Modular Implementation Layer
+#### Modular Implementation Layer
 
-c/visualization/**init**.py)
+Example: `src/visualization/__init__.py`
 
 ```python
 # Exposes core functionality with safe imports
@@ -146,13 +146,11 @@ src/8_visualization.py:
 Code generation to execution transfer:
 
 src/11_render.py → output/11_render_output/
-├── actinf_pomdp_agent_pymdp.py      (Generated PyMDP code)
 ├── actinf_pomdp_agent_rxinfer.jl    (Generated RxInfer code) 
 └── render_summary.json              (Generation metadata)
 
 src/12_execute.py:
 ├── Discovers generated files in output/11_render_output/
-├── Executes: subprocess.run(["python", "actinf_pomdp_agent_pymdp.py"])
 └── Captures: execution results, timing, memory usage
 ```
 
@@ -190,7 +188,6 @@ src/type_checker/
 │   ├── analyze_variable_types() → Dict[str, Any]
 │   ├── analyze_connections() → Dict[str, Any]
 │   └── estimate_computational_complexity() → Dict[str, Any]
-├── checker.py                         # GNNTypeChecker (line 174)
 │   ├── check_file() → Tuple[bool, List[str], List[str], Dict[str, Any]]
 │   ├── _check_required_sections()
 │   └── _collect_variable_analysis()

@@ -10,30 +10,29 @@ from typing import Any, Dict
 
 logger = logging.getLogger(__name__)
 
+
 def validate_system() -> Dict[str, Any]:
     """
     Validate the system requirements for GNN with UV support.
-    
+
     Returns:
         Dictionary with system validation results
     """
     try:
         from .uv_management import check_system_requirements, check_uv_availability
+
         return {
             "success": check_system_requirements() and check_uv_availability(),
-            "message": "System validation completed with UV support"
+            "message": "System validation completed with UV support",
         }
     except Exception as e:
-        return {
-            "success": False,
-            "error": str(e),
-            "error_type": type(e).__name__
-        }
+        return {"success": False, "error": str(e), "error_type": type(e).__name__}
+
 
 def get_environment_info() -> Dict[str, Any]:
     """
     Get comprehensive environment information.
-    
+
     Returns:
         Dictionary with environment information
     """
@@ -46,20 +45,18 @@ def get_environment_info() -> Dict[str, Any]:
         return {
             "uv_info": uv_info,
             "package_versions": package_versions,
-            "status": "healthy"
+            "status": "healthy",
         }
 
     except Exception as e:
         logger.error(f"Failed to get environment info: {e}")
-        return {
-            "error": str(e),
-            "status": "error"
-        }
+        return {"error": str(e), "status": "error"}
+
 
 def get_uv_status() -> Dict[str, Any]:
     """
     Get UV status and configuration.
-    
+
     Returns:
         Dictionary with UV status information
     """
@@ -72,13 +69,9 @@ def get_uv_status() -> Dict[str, Any]:
         return {
             "uv_available": uv_available,
             "uv_info": uv_info,
-            "status": "healthy" if uv_available else "unavailable"
+            "status": "healthy" if uv_available else "unavailable",
         }
 
     except Exception as e:
         logger.error(f"Failed to get UV status: {e}")
-        return {
-            "uv_available": False,
-            "error": str(e),
-            "status": "error"
-        }
+        return {"uv_available": False, "error": str(e), "status": "error"}

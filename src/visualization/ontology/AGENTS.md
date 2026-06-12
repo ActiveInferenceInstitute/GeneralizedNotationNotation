@@ -1,26 +1,25 @@
-# Ontology - Agent Scaffolding
+# Visualization Ontology Sub-module
 
-## Module Overview
+## Overview
 
-**Purpose**: Responsible for `Ontology` operations within the GNN pipeline architecture.
-**Category**: Generated Pipeline Component
-**Status**: Development
+Ontology-specific visualization for Active Inference terminology. Generates visual mappings between GNN model elements and Active Inference ontology concepts.
 
----
+## Architecture
 
-## Core Functionality
+```
+ontology/
+├── __init__.py       # Package exports (3 lines)
+└── visualizer.py     # Ontology visualization engine (240 lines)
+```
 
-### Primary Responsibilities
-Ontology Visualization Module
+## Key Functions
 
-This module provides specialized functionality for visualizing ontology annotations
-from GNN models using real matplotlib functionality.
+- **`visualize_ontology_mappings(model, ontology, output_dir)`** — Creates visual diagrams showing how model variables map to Active Inference concepts.
+- **Term highlighting** — Color-codes model elements by ontology category (beliefs, observations, actions, preferences).
+- **Coverage reporting** — Shows which ontology terms are present and which are missing from the model.
 
-### Extracted Code Entities
+## Parent Module
 
-- **Classes**: OntologyVisualizer
-- **Functions**: create_ontology_table, extract_ontology_mappings, visualize_directory, visualize_ontology
+See [visualization/AGENTS.md](../AGENTS.md) for the overall visualization architecture.
 
-## Implementation Details
-
-This module follows the Thin Orchestrator Pattern. It is governed by the Zero-Mock testing policy.
+**Version**: 1.6.0

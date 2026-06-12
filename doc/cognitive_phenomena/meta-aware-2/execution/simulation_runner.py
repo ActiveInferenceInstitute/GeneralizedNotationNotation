@@ -105,7 +105,7 @@ class SimulationRunner:
         complete_results = {
             'config': self.config,
             'simulation_results': {},
-            # Compatibility alias expected by tests
+# Public alias expected by tests
             'results': {},
             'analysis_summary': {},
             'figure_paths': {},
@@ -215,7 +215,7 @@ class SimulationRunner:
             analysis_results = self._compute_additional_analysis(results)
             # Expose under a top-level 'analysis' key for consumers/tests
             results['analysis'] = analysis_results
-            # Also merge for backward compatibility where flat keys were expected
+            # Also merge flat keys for direct result consumers.
             results.update(analysis_results)
             
             # Log simulation completion

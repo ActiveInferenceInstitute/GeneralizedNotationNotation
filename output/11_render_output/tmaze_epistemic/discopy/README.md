@@ -13,7 +13,7 @@ Generated from GNN POMDP Model: **T-Maze Epistemic Foraging Agent**
 - Agent must decide: go directly to an arm (exploit) or visit cue location first (explore)
 - Demonstrates epistemic foraging: Active Inference naturally balances exploration vs exploitation
 - The Expected Free Energy decomposes into epistemic (information gain) + instrumental (reward) value
-- **Generation Date**: 2026-04-10 10:25:04
+- **Generation Date**: 2026-05-22 06:18:15
 
 ## POMDP Dimensions
 
@@ -24,10 +24,6 @@ Generated from GNN POMDP Model: **T-Maze Epistemic Foraging Agent**
 ## Active Inference Matrices
 
 ### Available Matrices/Vectors:
-- **A Matrix (Likelihood)**: 4×4 - Maps hidden states to observations
-- **B Matrix (Transition)**: 4×4×4 - State transitions given actions
-- **C Vector (Preferences)**: Length 4 - Preferences over observations
-- **D Vector (Prior)**: Length 4 - Prior beliefs over states
 
 
 ## Generated Files

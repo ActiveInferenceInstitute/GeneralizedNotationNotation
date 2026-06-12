@@ -2,11 +2,11 @@
 
 Real conventions drawn from `src/tests/conftest.py`, `src/tests/runner.py`, and test files.
 
-**Last Updated**: 2026-03-24
+**Last Updated**: 2026-04-15
 
 ## Real-Implementation Policy
 
-All 91 test files follow a strict **real-implementation** policy enforced by code review and stated in `TEST_SUITE_SUMMARY.md`:
+All test files (134+ as of April 2026) follow a strict **real-implementation** policy enforced by code review and stated in `TEST_SUITE_SUMMARY.md`:
 
 - ❌ No standard testing substitution libraries (like patching)
 - ❌ No monkeypatching of functions or classes
@@ -57,9 +57,9 @@ def test_audio_backend_missing():
 
 ```bash
 # Selective execution by marker
-PYTHONPATH=src python -m pytest src/tests/ -m fast -q
-PYTHONPATH=src python -m pytest src/tests/ -m "not slow" -q
-PYTHONPATH=src python -m pytest src/tests/ -m "integration and not slow" -q
+uv run --extra dev python -m pytest src/tests/ -m fast -q
+uv run --extra dev python -m pytest src/tests/ -m "not slow" -q
+uv run --extra dev python -m pytest src/tests/ -m "integration and not slow" -q
 ```
 
 ## Fixture Convention (conftest.py)
@@ -72,7 +72,7 @@ All shared fixtures live in `conftest.py` (601 lines). Standard fixtures:
 | `sample_gnn_file` | session | `input/gnn_files/actinf_pomdp_agent.md` |
 | `test_data_dir` | session | `src/tests/test_data/` |
 | `output_dir` | session | `output/2_tests_output/` |
-| `mcp_server_tools` | module | Live MCP server — all 131 tools registered |
+| `mcp_server_tools` | module | Live MCP server registered tool inventory from the current MCP audit |
 
 ## Resource Monitoring
 
@@ -148,7 +148,7 @@ omit = ["src/tests/*", "src/**/__pycache__/*"]
 Generate HTML report:
 
 ```bash
-PYTHONPATH=src python -m pytest src/tests/ \
+uv run --extra dev python -m pytest src/tests/ \
   --cov=src --cov-report=html --cov-report=term-missing -q
 # → htmlcov/index.html
 ```

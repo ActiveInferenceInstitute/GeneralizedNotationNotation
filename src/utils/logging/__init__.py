@@ -8,6 +8,8 @@ This subpackage provides centralized logging configuration with:
 - File-based logging with rotation
 """
 
+from typing import Any
+
 from .logging_utils import (
     BasicPipelineLogger,
     CorrelationFormatter,
@@ -15,7 +17,7 @@ from .logging_utils import (
     setup_step_logging,
 )
 
-__all__ = [
+__all__: list[Any] = [
     "BasicPipelineLogger",
     "CorrelationFormatter",
     "setup_step_logging",

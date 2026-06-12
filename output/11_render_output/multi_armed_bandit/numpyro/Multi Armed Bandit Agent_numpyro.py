@@ -17,14 +17,14 @@ try:
     import jax.numpy as jnp
     import jax.random as jrandom
 except ImportError:
-    print("ERROR: JAX not installed. Install with: uv sync --extra probabilistic-programming")
+    print("ERROR: JAX not installed. Install with: uv sync")
     sys.exit(1)
 
 try:
     import numpyro
     import numpyro.distributions as dist
 except ImportError:
-    print("ERROR: NumPyro not installed. Install with: uv sync --extra probabilistic-programming")
+    print("ERROR: NumPyro not installed. Install with: uv sync")
     sys.exit(1)
 
 import numpy as np
@@ -38,22 +38,34 @@ def run_simulation(seed: int = 42):
     # --- Model Parameters ---
     num_states = 3
     num_obs = 3
-    num_actions = 2
-    T = 15
+    num_actions = 3
+    T = 30
 
     A = jnp.array([
-        [1.000000, 0.000000, 0.000000],
-        [0.000000, 1.000000, 0.000000],
-        [0.000000, 0.000000, 1.000000]
+        [0.100000, 0.500000, 0.500000],
+        [0.300000, 0.400000, 0.300000],
+        [0.600000, 0.100000, 0.200000]
     ])
     C = jnp.array([0.000000, 1.000000, 3.000000])
     D = jnp.array([0.333333, 0.333333, 0.333333])
     
-    B = jnp.tile(jnp.array([
-        [1.000000, 0.000000, 0.000000],
-        [0.000000, 1.000000, 0.000000],
-        [0.000000, 0.000000, 1.000000]
-    ])[:, :, None], (1, 1, 2))
+    B_slices = []
+    B_slices.append(jnp.array([
+        [0.900000, 0.050000, 0.050000],
+        [0.050000, 0.900000, 0.050000],
+        [0.050000, 0.050000, 0.900000]
+    ]))
+    B_slices.append(jnp.array([
+        [0.900000, 0.050000, 0.050000],
+        [0.050000, 0.900000, 0.050000],
+        [0.050000, 0.050000, 0.900000]
+    ]))
+    B_slices.append(jnp.array([
+        [0.900000, 0.050000, 0.050000],
+        [0.050000, 0.900000, 0.050000],
+        [0.050000, 0.050000, 0.900000]
+    ]))
+    B = jnp.stack(B_slices, axis=2)
 
     # --- Simulation State ---
     beliefs_history = []

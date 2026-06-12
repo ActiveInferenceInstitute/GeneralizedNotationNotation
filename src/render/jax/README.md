@@ -49,7 +49,7 @@ graph TD
 Additional dependencies depend on the generator:
 
 - **`render_gnn_to_jax` (general model)**: emits a script that uses **only** `jax`, `jax.numpy`, and `numpy`.
-- **`render_gnn_to_jax_pomdp` (POMDP solver)**: emits a script that uses `jax` and attempts to import **Optax** (with a “continue without” fallback).
+- **`render_gnn_to_jax_pomdp` (POMDP solver)**: emits a script that uses `jax` and attempts to import **Optax**; when Optax is absent, the generated script records that it is continuing without Optax-specific optimization helpers.
 - **`render_gnn_to_jax_combined` (combined model)**: emits a script that uses **Flax** and **Optax**.
 
 ### Hardware Support

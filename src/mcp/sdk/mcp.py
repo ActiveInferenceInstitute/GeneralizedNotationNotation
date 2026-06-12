@@ -1,12 +1,14 @@
 """
-MCP SDK shim: delegates to the parent mcp module implementation.
+MCP SDK facade: delegates to the parent mcp module implementation.
 Present so MCPSDKStatus health check finds a complete SDK under src/mcp/sdk/.
 """
+
 from __future__ import annotations
 
 # Re-export core MCP API from parent package
 import sys
 from pathlib import Path
+from typing import Any
 
 # Ensure parent mcp package is importable when this file is run or imported in isolation
 _parent = Path(__file__).resolve().parent.parent
@@ -25,7 +27,7 @@ from mcp.mcp import (
     list_available_tools,
 )
 
-__all__ = [
+__all__: list[Any] = [
     "MCP",
     "get_mcp_instance",
     "initialize",

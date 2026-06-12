@@ -3,19 +3,19 @@
 pymdp 1.0.0 runner for Hidden Markov Model Baseline
 
 This file was generated from a GNN specification by
-``src/render/pymdp/pymdp_renderer.py``. It delegates the actual rollout
+``render/pymdp/pymdp_renderer.py``. It delegates the actual rollout
 to the GNN pipeline's tested execution module
-(``src.execute.pymdp.run_simple_pymdp_simulation``), which in turn calls
+(``execute.pymdp.run_pymdp_simulation``), which in turn calls
 real pymdp 1.0.0 (JAX-first) under the hood.
 
 Model:        Hidden Markov Model Baseline
 Description:  
-Generated:    2026-04-10 10:25:04
+Generated:    2026-05-22 06:18:15
 
 State Space:
   - Hidden States: 4
   - Observations:  6
-  - Actions:       4
+  - Actions:       1
 
 Initial matrices present in GNN spec:
   - A (likelihood):   Present
@@ -44,7 +44,7 @@ if sys.path and sys.path[0] and sys.path[0].endswith("pymdp"):
 _gnn_root = os.environ.get("GNN_PROJECT_ROOT")
 if _gnn_root:
     _repo = Path(_gnn_root).resolve()
-    sys.path.insert(0, str(_repo))
+    sys.path.insert(0, str(_repo / "src"))
 else:
     _cur = Path(__file__).resolve().parent
     _found = None
@@ -62,7 +62,7 @@ else:
             file=sys.stderr,
         )
         sys.exit(1)
-    sys.path.insert(0, str(_found))
+    sys.path.insert(0, str(_found / "src"))
 
 # ---------------------------------------------------------------------------
 # pymdp 1.0.0 presence check (hard requirement)
@@ -71,7 +71,7 @@ try:
     import pymdp  # noqa: F401
     from pymdp.agent import Agent  # noqa: F401
     if not hasattr(Agent, "update_empirical_prior"):
-        raise ImportError("legacy pymdp (<1.0.0) detected")
+        raise ImportError("unsupported pymdp (<1.0.0) detected")
     print("PyMDP 1.0.0+ detected (JAX-first Agent).")
 except ImportError as e:
     print(
@@ -82,7 +82,7 @@ except ImportError as e:
     )
     sys.exit(1)
 
-from src.execute.pymdp import execute_pymdp_simulation
+from execute.pymdp import execute_pymdp_simulation
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
@@ -91,8 +91,8 @@ logger = logging.getLogger(__name__)
 def main() -> int:
     """Run a pymdp 1.0.0 simulation for the GNN model embedded in this file."""
     # Matrices embedded verbatim from the GNN spec.
-    A_data = [[0.7, 0.1, 0.1, 0.1], [0.1, 0.7, 0.1, 0.1], [0.1, 0.1, 0.7, 0.1], [0.1, 0.1, 0.1, 0.7], [0.1, 0.1, 0.4, 0.4], [0.4, 0.4, 0.1, 0.1]]
-    B_data = [[0.7, 0.1, 0.1, 0.1], [0.1, 0.7, 0.2, 0.1], [0.1, 0.1, 0.6, 0.2], [0.1, 0.1, 0.1, 0.6]]
+    A_data = [[0.4666666666666666, 0.06666666666666667, 0.06666666666666667, 0.06666666666666667], [0.06666666666666667, 0.4666666666666666, 0.06666666666666667, 0.06666666666666667], [0.06666666666666667, 0.06666666666666667, 0.4666666666666666, 0.06666666666666667], [0.06666666666666667, 0.06666666666666667, 0.06666666666666667, 0.4666666666666666], [0.06666666666666667, 0.06666666666666667, 0.26666666666666666, 0.26666666666666666], [0.26666666666666666, 0.26666666666666666, 0.06666666666666667, 0.06666666666666667]]
+    B_data = [[[0.7000000000000001], [0.10000000000000002], [0.1], [0.1]], [[0.10000000000000002], [0.7000000000000001], [0.2], [0.1]], [[0.10000000000000002], [0.10000000000000002], [0.6], [0.2]], [[0.10000000000000002], [0.10000000000000002], [0.1], [0.6]]]
     C_data = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
     D_data = [0.25, 0.25, 0.25, 0.25]
     E_data = None
@@ -104,74 +104,149 @@ def main() -> int:
     "description": "A standard discrete Hidden Markov Model with:\n- 4 hidden states with Markovian dynamics\n- 6 observation symbols\n- Fixed transition and emission matrices\n- No action selection (passive inference only)\n- Suitable for sequence modeling and state estimation tasks",
     "model_parameters": {
         "num_hidden_states": 4,
+        "num_observations": 6,
+        "num_timesteps": 50,
         "num_obs": 6,
-        "num_actions": 4,
-        "simulation_params": {},
-        "num_timesteps": 15
+        "num_actions": 1,
+        "b_tensor_order": "next_state_previous_state_action",
+        "num_state_factors": 2,
+        "num_modalities": 1,
+        "state_factors": [
+            {
+                "name": "s",
+                "size": 4,
+                "dimensions": [
+                    4,
+                    1
+                ],
+                "type": "float",
+                "comment": "Hidden state belief (posterior)",
+                "index": 2
+            },
+            {
+                "name": "s_prime",
+                "size": 4,
+                "dimensions": [
+                    4,
+                    1
+                ],
+                "type": "float",
+                "comment": "Next hidden state",
+                "index": 3
+            }
+        ],
+        "observation_modalities": [
+            {
+                "name": "o",
+                "size": 6,
+                "dimensions": [
+                    6,
+                    1
+                ],
+                "type": "float",
+                "comment": "Current observation (one-hot)",
+                "index": 0
+            }
+        ],
+        "control_factors": [],
+        "passive_model": True,
+        "simulation_params": {}
     },
     "initialparameterization": {
         "A": [
             [
-                0.7,
-                0.1,
-                0.1,
-                0.1
+                0.4666666666666666,
+                0.06666666666666667,
+                0.06666666666666667,
+                0.06666666666666667
             ],
             [
-                0.1,
-                0.7,
-                0.1,
-                0.1
+                0.06666666666666667,
+                0.4666666666666666,
+                0.06666666666666667,
+                0.06666666666666667
             ],
             [
-                0.1,
-                0.1,
-                0.7,
-                0.1
+                0.06666666666666667,
+                0.06666666666666667,
+                0.4666666666666666,
+                0.06666666666666667
             ],
             [
-                0.1,
-                0.1,
-                0.1,
-                0.7
+                0.06666666666666667,
+                0.06666666666666667,
+                0.06666666666666667,
+                0.4666666666666666
             ],
             [
-                0.1,
-                0.1,
-                0.4,
-                0.4
+                0.06666666666666667,
+                0.06666666666666667,
+                0.26666666666666666,
+                0.26666666666666666
             ],
             [
-                0.4,
-                0.4,
-                0.1,
-                0.1
+                0.26666666666666666,
+                0.26666666666666666,
+                0.06666666666666667,
+                0.06666666666666667
             ]
         ],
         "B": [
             [
-                0.7,
-                0.1,
-                0.1,
-                0.1
+                [
+                    0.7000000000000001
+                ],
+                [
+                    0.10000000000000002
+                ],
+                [
+                    0.1
+                ],
+                [
+                    0.1
+                ]
             ],
             [
-                0.1,
-                0.7,
-                0.2,
-                0.1
+                [
+                    0.10000000000000002
+                ],
+                [
+                    0.7000000000000001
+                ],
+                [
+                    0.2
+                ],
+                [
+                    0.1
+                ]
             ],
             [
-                0.1,
-                0.1,
-                0.6,
-                0.2
+                [
+                    0.10000000000000002
+                ],
+                [
+                    0.10000000000000002
+                ],
+                [
+                    0.6
+                ],
+                [
+                    0.2
+                ]
             ],
             [
-                0.1,
-                0.1,
-                0.1,
-                0.6
+                [
+                    0.10000000000000002
+                ],
+                [
+                    0.10000000000000002
+                ],
+                [
+                    0.1
+                ],
+                [
+                    0.6
+                ]
             ]
         ],
         "C": [
@@ -189,6 +264,202 @@ def main() -> int:
             0.25
         ]
     },
+    "structured_pomdp": {
+        "matrices": {
+            "A": [
+                [
+                    0.7,
+                    0.1,
+                    0.1,
+                    0.1
+                ],
+                [
+                    0.1,
+                    0.7,
+                    0.1,
+                    0.1
+                ],
+                [
+                    0.1,
+                    0.1,
+                    0.7,
+                    0.1
+                ],
+                [
+                    0.1,
+                    0.1,
+                    0.1,
+                    0.7
+                ],
+                [
+                    0.1,
+                    0.1,
+                    0.4,
+                    0.4
+                ],
+                [
+                    0.4,
+                    0.4,
+                    0.1,
+                    0.1
+                ]
+            ],
+            "B": [
+                [
+                    0.7,
+                    0.1,
+                    0.1,
+                    0.1
+                ],
+                [
+                    0.1,
+                    0.7,
+                    0.2,
+                    0.1
+                ],
+                [
+                    0.1,
+                    0.1,
+                    0.6,
+                    0.2
+                ],
+                [
+                    0.1,
+                    0.1,
+                    0.1,
+                    0.6
+                ]
+            ],
+            "D": [
+                0.25,
+                0.25,
+                0.25,
+                0.25
+            ],
+            "C": [
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        "matrix_provenance": {
+            "A": {
+                "source": "InitialParameterization",
+                "shape": [
+                    6,
+                    4
+                ],
+                "derived": False
+            },
+            "B": {
+                "source": "InitialParameterization",
+                "shape": [
+                    4,
+                    4,
+                    1
+                ],
+                "derived": False,
+                "source_order": "next_state_previous_state",
+                "canonical_order": "next_state_previous_state_action"
+            },
+            "D": {
+                "source": "InitialParameterization",
+                "shape": [
+                    4
+                ],
+                "derived": False
+            },
+            "C": {
+                "source": "passive_model_adapter",
+                "shape": [
+                    6
+                ],
+                "derived": True,
+                "reason": "zero preferences for passive HMM/Markov model"
+            }
+        },
+        "state_factors": [
+            {
+                "name": "s",
+                "size": 4,
+                "dimensions": [
+                    4,
+                    1
+                ],
+                "type": "float",
+                "comment": "Hidden state belief (posterior)",
+                "index": 2
+            },
+            {
+                "name": "s_prime",
+                "size": 4,
+                "dimensions": [
+                    4,
+                    1
+                ],
+                "type": "float",
+                "comment": "Next hidden state",
+                "index": 3
+            }
+        ],
+        "observation_modalities": [
+            {
+                "name": "o",
+                "size": 6,
+                "dimensions": [
+                    6,
+                    1
+                ],
+                "type": "float",
+                "comment": "Current observation (one-hot)",
+                "index": 0
+            }
+        ],
+        "control_factors": [],
+        "adapter_notes": [
+            "passive_model_zero_preferences"
+        ]
+    },
+    "matrix_provenance": {
+        "A": {
+            "source": "InitialParameterization",
+            "shape": [
+                6,
+                4
+            ],
+            "derived": False
+        },
+        "B": {
+            "source": "InitialParameterization",
+            "shape": [
+                4,
+                4,
+                1
+            ],
+            "derived": False,
+            "source_order": "next_state_previous_state",
+            "canonical_order": "next_state_previous_state_action"
+        },
+        "D": {
+            "source": "InitialParameterization",
+            "shape": [
+                4
+            ],
+            "derived": False
+        },
+        "C": {
+            "source": "passive_model_adapter",
+            "shape": [
+                6
+            ],
+            "derived": True,
+            "reason": "zero preferences for passive HMM/Markov model"
+        }
+    },
+    "canonical_pomdp_schema": "canonical_pomdp_v1",
     "variables": [
         {
             "name": "A",
@@ -352,7 +623,7 @@ def main() -> int:
     if D_data is not None: gnn_spec["initialparameterization"]["D"] = D_data
     if E_data is not None: gnn_spec["initialparameterization"]["E"] = E_data
     gnn_spec.setdefault("model_parameters", {})
-    gnn_spec["model_parameters"].setdefault("num_timesteps", 15)
+    gnn_spec["model_parameters"].setdefault("num_timesteps", 50)
 
     output_dir = Path(os.environ.get("PYMDP_OUTPUT_DIR", "output/pymdp_simulations/Hidden Markov Model Baseline"))
     output_dir.mkdir(parents=True, exist_ok=True)

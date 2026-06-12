@@ -16,6 +16,7 @@ logger = logging.getLogger(__name__)
 @dataclass
 class ModelNode:
     """A model in the dependency graph."""
+
     name: str
     index: int
     variable_count: int = 0
@@ -25,6 +26,7 @@ class ModelNode:
 @dataclass
 class ModelEdge:
     """A dependency between two models."""
+
     source_model: str
     target_model: str
     shared_variables: List[str] = field(default_factory=list)
@@ -34,16 +36,17 @@ class ModelEdge:
 @dataclass
 class DependencyGraph:
     """Graph of inter-model dependencies."""
+
     nodes: List[ModelNode] = field(default_factory=list)
     edges: List[ModelEdge] = field(default_factory=list)
 
     def to_mermaid(self) -> str:
         """Render as Mermaid flowchart."""
-        lines = ["graph TD"]
+        lines: list[Any] = ["graph TD"]
 
         for node in self.nodes:
             label = f"{node.name}\\n({node.variable_count} vars)"
-            lines.append(f"    {node.name}[\"{label}\"]")
+            lines.append(f'    {node.name}["{label}"]')
 
         for edge in self.edges:
             label_str = f"|{edge.label}|" if edge.label else ""
@@ -53,7 +56,7 @@ class DependencyGraph:
 
     def to_adjacency_list(self) -> str:
         """Render as plain-text adjacency list."""
-        lines = ["Dependency Graph:"]
+        lines: list[Any] = ["Dependency Graph:"]
         for node in self.nodes:
             deps = [e.target_model for e in self.edges if e.source_model == node.name]
             if deps:
@@ -83,17 +86,23 @@ def build_dependency_graph(
     # Create nodes
     for i, model in enumerate(models):
         name = model.get("name", f"Model_{i}")
-        graph.nodes.append(ModelNode(
-            name=name,
-            index=i,
-            variable_count=model.get("variable_count", len(model.get("variables", []))),
-            connection_count=model.get("connection_count", len(model.get("connections", []))),
-        ))
+        graph.nodes.append(
+            ModelNode(
+                name=name,
+                index=i,
+                variable_count=model.get(
+                    "variable_count", len(model.get("variables", []))
+                ),
+                connection_count=model.get(
+                    "connection_count", len(model.get("connections", []))
+                ),
+            )
+        )
 
     # Detect shared variables (cross-model references)
     var_sets: List[Set[str]] = []
     for model in models:
-        vars_ = set()
+        vars_: set[Any] = set()
         for v in model.get("variables", []):
             vname = v.get("name", "") if isinstance(v, dict) else str(v)
             vars_.add(vname)
@@ -106,15 +115,19 @@ def build_dependency_graph(
             if shared:
                 source = graph.nodes[i].name
                 target = graph.nodes[j].name
-                graph.edges.append(ModelEdge(
-                    source_model=source,
-                    target_model=target,
-                    shared_variables=sorted(shared),
-                    label=f"shared: {', '.join(sorted(shared))}",
-                ))
+                graph.edges.append(
+                    ModelEdge(
+                        source_model=source,
+                        target_model=target,
+                        shared_variables=sorted(shared),
+                        label=f"shared: {', '.join(sorted(shared))}",
+                    )
+                )
                 logger.debug(f"Edge: {source} → {target} ({len(shared)} shared vars)")
 
-    logger.info(f"📊 Dependency graph: {len(graph.nodes)} models, {len(graph.edges)} edges")
+    logger.info(
+        f"📊 Dependency graph: {len(graph.nodes)} models, {len(graph.edges)} edges"
+    )
     return graph
 
 
@@ -133,14 +146,17 @@ def render_graph_from_file(
         Rendered graph string.
     """
     from pathlib import Path
+
     content = Path(file_path).read_text(encoding="utf-8")
 
     import sys
+
     src_dir = str(Path(__file__).parent.parent)
     if src_dir not in sys.path:
         sys.path.insert(0, src_dir)
 
     from gnn.multimodel import parse_multimodel
+
     models = parse_multimodel(content, file_path=file_path)
 
     # Assign names from file sections or indices

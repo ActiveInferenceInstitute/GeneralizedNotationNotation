@@ -39,7 +39,7 @@ from model_registry import ModelRegistry, process_model_registry
 ## Testing
 
 ```bash
-uv run python -m pytest src/tests/test_model_registry_integration.py -v
+uv run uv run --extra dev python -m pytest src/tests/model_registry/test_model_registry_overall.py src/tests/model_registry/test_model_registry_roundtrip.py -v
 ```
 
 

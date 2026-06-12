@@ -1,0 +1,208 @@
+
+# Processed by GNN Pipeline Template
+# Original file: input/gnn_files/pomdp_gridworld/pomdp_gridworld_3x3.md
+# Processed on: 2026-05-22T06:10:26.462030
+# Options: {'verbose': False, 'recursive': True, 'example_param': 'default_value'}
+
+# GNN Example: POMDP GridWorld 3x3
+# GNN Version: 1.0
+
+## GNNSection
+ActInfPOMDP
+
+## GNNVersionAndFlags
+GNN v1
+
+## ModelName
+POMDP GridWorld 3x3
+
+## ModelAnnotation
+Discrete 3x3 GridWorld POMDP for strict cross-framework validation. The model has one hidden state factor with 9 grid cells, one observation modality with noisy cell observations, and one control factor with 5 boundary-clamped actions: up, down, left, right, and stay.
+
+## StateSpaceBlock
+A[9,9,type=float]      # Likelihood matrix: observations by hidden states
+B[9,9,5,type=float]    # Transition tensor: next_state, previous_state, action
+C[9,type=float]        # Log-preferences over observations
+D[9,type=float]        # Prior over initial hidden state
+E[5,type=float]        # Policy prior over actions
+
+s[9,1,type=float]      # Current hidden state distribution
+s_prime[9,1,type=float] # Next hidden state distribution
+o[9,1,type=int]        # Current observation
+π[5,type=float]        # Policy distribution over actions
+u[1,type=int]          # Action index
+G[π,type=float]        # Expected Free Energy per action
+t[1,type=int]          # Discrete time step
+
+## Connections
+D>s
+s-A
+A-o
+s-B
+B>u
+u>s_prime
+C>G
+E>π
+G>π
+π>u
+s>s_prime
+
+## InitialParameterization
+A={
+  (0.85000, 0.01875, 0.01875, 0.01875, 0.01875, 0.01875, 0.01875, 0.01875, 0.01875),
+  (0.01875, 0.85000, 0.01875, 0.01875, 0.01875, 0.01875, 0.01875, 0.01875, 0.01875),
+  (0.01875, 0.01875, 0.85000, 0.01875, 0.01875, 0.01875, 0.01875, 0.01875, 0.01875),
+  (0.01875, 0.01875, 0.01875, 0.85000, 0.01875, 0.01875, 0.01875, 0.01875, 0.01875),
+  (0.01875, 0.01875, 0.01875, 0.01875, 0.85000, 0.01875, 0.01875, 0.01875, 0.01875),
+  (0.01875, 0.01875, 0.01875, 0.01875, 0.01875, 0.85000, 0.01875, 0.01875, 0.01875),
+  (0.01875, 0.01875, 0.01875, 0.01875, 0.01875, 0.01875, 0.85000, 0.01875, 0.01875),
+  (0.01875, 0.01875, 0.01875, 0.01875, 0.01875, 0.01875, 0.01875, 0.85000, 0.01875),
+  (0.01875, 0.01875, 0.01875, 0.01875, 0.01875, 0.01875, 0.01875, 0.01875, 0.85000)
+}
+
+B={
+  (
+    (1.0, 0.0, 1.0, 0.0, 1.0),
+    (0.0, 0.0, 1.0, 0.0, 0.0),
+    (0.0, 0.0, 0.0, 0.0, 0.0),
+    (1.0, 0.0, 0.0, 0.0, 0.0),
+    (0.0, 0.0, 0.0, 0.0, 0.0),
+    (0.0, 0.0, 0.0, 0.0, 0.0),
+    (0.0, 0.0, 0.0, 0.0, 0.0),
+    (0.0, 0.0, 0.0, 0.0, 0.0),
+    (0.0, 0.0, 0.0, 0.0, 0.0)
+  ),
+  (
+    (0.0, 0.0, 0.0, 1.0, 0.0),
+    (1.0, 0.0, 0.0, 0.0, 1.0),
+    (0.0, 0.0, 1.0, 0.0, 0.0),
+    (0.0, 0.0, 0.0, 0.0, 0.0),
+    (1.0, 0.0, 0.0, 0.0, 0.0),
+    (0.0, 0.0, 0.0, 0.0, 0.0),
+    (0.0, 0.0, 0.0, 0.0, 0.0),
+    (0.0, 0.0, 0.0, 0.0, 0.0),
+    (0.0, 0.0, 0.0, 0.0, 0.0)
+  ),
+  (
+    (0.0, 0.0, 0.0, 0.0, 0.0),
+    (0.0, 0.0, 0.0, 1.0, 0.0),
+    (1.0, 0.0, 0.0, 1.0, 1.0),
+    (0.0, 0.0, 0.0, 0.0, 0.0),
+    (0.0, 0.0, 0.0, 0.0, 0.0),
+    (1.0, 0.0, 0.0, 0.0, 0.0),
+    (0.0, 0.0, 0.0, 0.0, 0.0),
+    (0.0, 0.0, 0.0, 0.0, 0.0),
+    (0.0, 0.0, 0.0, 0.0, 0.0)
+  ),
+  (
+    (0.0, 1.0, 0.0, 0.0, 0.0),
+    (0.0, 0.0, 0.0, 0.0, 0.0),
+    (0.0, 0.0, 0.0, 0.0, 0.0),
+    (0.0, 0.0, 1.0, 0.0, 1.0),
+    (0.0, 0.0, 1.0, 0.0, 0.0),
+    (0.0, 0.0, 0.0, 0.0, 0.0),
+    (1.0, 0.0, 0.0, 0.0, 0.0),
+    (0.0, 0.0, 0.0, 0.0, 0.0),
+    (0.0, 0.0, 0.0, 0.0, 0.0)
+  ),
+  (
+    (0.0, 0.0, 0.0, 0.0, 0.0),
+    (0.0, 1.0, 0.0, 0.0, 0.0),
+    (0.0, 0.0, 0.0, 0.0, 0.0),
+    (0.0, 0.0, 0.0, 1.0, 0.0),
+    (0.0, 0.0, 0.0, 0.0, 1.0),
+    (0.0, 0.0, 1.0, 0.0, 0.0),
+    (0.0, 0.0, 0.0, 0.0, 0.0),
+    (1.0, 0.0, 0.0, 0.0, 0.0),
+    (0.0, 0.0, 0.0, 0.0, 0.0)
+  ),
+  (
+    (0.0, 0.0, 0.0, 0.0, 0.0),
+    (0.0, 0.0, 0.0, 0.0, 0.0),
+    (0.0, 1.0, 0.0, 0.0, 0.0),
+    (0.0, 0.0, 0.0, 0.0, 0.0),
+    (0.0, 0.0, 0.0, 1.0, 0.0),
+    (0.0, 0.0, 0.0, 1.0, 1.0),
+    (0.0, 0.0, 0.0, 0.0, 0.0),
+    (0.0, 0.0, 0.0, 0.0, 0.0),
+    (1.0, 0.0, 0.0, 0.0, 0.0)
+  ),
+  (
+    (0.0, 0.0, 0.0, 0.0, 0.0),
+    (0.0, 0.0, 0.0, 0.0, 0.0),
+    (0.0, 0.0, 0.0, 0.0, 0.0),
+    (0.0, 1.0, 0.0, 0.0, 0.0),
+    (0.0, 0.0, 0.0, 0.0, 0.0),
+    (0.0, 0.0, 0.0, 0.0, 0.0),
+    (0.0, 1.0, 1.0, 0.0, 1.0),
+    (0.0, 0.0, 1.0, 0.0, 0.0),
+    (0.0, 0.0, 0.0, 0.0, 0.0)
+  ),
+  (
+    (0.0, 0.0, 0.0, 0.0, 0.0),
+    (0.0, 0.0, 0.0, 0.0, 0.0),
+    (0.0, 0.0, 0.0, 0.0, 0.0),
+    (0.0, 0.0, 0.0, 0.0, 0.0),
+    (0.0, 1.0, 0.0, 0.0, 0.0),
+    (0.0, 0.0, 0.0, 0.0, 0.0),
+    (0.0, 0.0, 0.0, 1.0, 0.0),
+    (0.0, 1.0, 0.0, 0.0, 1.0),
+    (0.0, 0.0, 1.0, 0.0, 0.0)
+  ),
+  (
+    (0.0, 0.0, 0.0, 0.0, 0.0),
+    (0.0, 0.0, 0.0, 0.0, 0.0),
+    (0.0, 0.0, 0.0, 0.0, 0.0),
+    (0.0, 0.0, 0.0, 0.0, 0.0),
+    (0.0, 0.0, 0.0, 0.0, 0.0),
+    (0.0, 1.0, 0.0, 0.0, 0.0),
+    (0.0, 0.0, 0.0, 0.0, 0.0),
+    (0.0, 0.0, 0.0, 1.0, 0.0),
+    (0.0, 1.0, 0.0, 1.0, 1.0)
+  )
+}
+
+C={(0.0, 0.1, 0.3, 0.1, 0.4, 0.8, 0.3, 0.8, 3.0)}
+
+D={(1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)}
+
+E={(0.2, 0.2, 0.2, 0.2, 0.2)}
+
+## Equations
+State inference uses the observation likelihood and previous predictive belief. Action selection minimizes expected free energy under the shared transition tensor.
+
+## Time
+Time=t
+Dynamic
+Discrete
+ModelTimeHorizon=15
+
+## ActInfOntologyAnnotation
+A=LikelihoodMatrix
+B=TransitionMatrix
+C=LogPreferenceVector
+D=PriorOverHiddenStates
+E=Habit
+G=ExpectedFreeEnergy
+s=HiddenState
+s_prime=NextHiddenState
+o=Observation
+π=PolicyVector
+u=Action
+t=Time
+
+## ModelParameters
+num_hidden_states: 9
+num_obs: 9
+num_actions: 5
+num_timesteps: 15
+random_seed: 42
+b_tensor_order: next_state_previous_state_action
+grid_rows: 3
+grid_cols: 3
+goal_state: 8
+action_labels: up,down,left,right,stay
+
+## Footer
+POMDP GridWorld 3x3 v1 - canonical cross-framework GNN fixture.
+

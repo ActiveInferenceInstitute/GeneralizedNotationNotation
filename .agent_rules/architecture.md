@@ -62,13 +62,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent))
 
 from utils.pipeline_template import create_standardized_pipeline_script
-
-try:
-    from module_name import process_module
-except ImportError:
-    def process_module(target_dir, output_dir, logger, **kwargs):
-        logger.warning("module_name not available - using fallback")
-        return True
+from module_name import process_module
 
 run_script = create_standardized_pipeline_script(
     "N_module.py",
@@ -118,7 +112,7 @@ Step 3 (GNN Parse)
 
 | Utility | Purpose |
 |---------|---------|
-| `EnhancedArgumentParser` | Centralized arg parsing with fallback |
+| `EnhancedArgumentParser` | Centralized arg parsing with explicit defaults |
 | `setup_step_logging` | Standardized logging with correlation IDs |
 | `get_output_dir_for_script` | Standardized output directory creation |
 | `performance_tracker` | Resource usage monitoring |
@@ -138,4 +132,4 @@ Step 3 (GNN Parse)
 
 ---
 
-**Last Updated**: March 2026 | **Pipeline Version**: 1.3.0
+**Last Updated**: 2026-05-20 | **Pipeline Version**: 1.6.0

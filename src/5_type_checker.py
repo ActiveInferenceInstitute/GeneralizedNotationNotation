@@ -32,7 +32,7 @@ If you encounter errors:
 import logging
 import sys
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent))
@@ -43,9 +43,12 @@ from type_checker import GNNTypeChecker
 from utils.pipeline_template import create_standardized_pipeline_script
 
 
-def _type_check_dispatch(target_dir: Path, output_dir: Path, logger: logging.Logger, **kwargs: Any) -> bool:
+def _type_check_dispatch(
+    target_dir: Path, output_dir: Path, logger: logging.Logger, **kwargs: Any
+) -> bool:
     """Dispatch to GNNTypeChecker."""
     return GNNTypeChecker().validate_gnn_files(target_dir, output_dir, **kwargs)
+
 
 run_script = create_standardized_pipeline_script(
     "5_type_checker.py",
@@ -53,13 +56,15 @@ run_script = create_standardized_pipeline_script(
     "Type checking and validation of GNN files",
     additional_arguments={
         "strict": {"type": bool, "help": "Enable strict validation mode"},
-        "estimate_resources": {"type": bool, "help": "Enable resource estimation"}
-    }
+        "estimate_resources": {"type": bool, "help": "Enable resource estimation"},
+    },
 )
+
 
 def main() -> int:
     """Main entry point for the type checker step."""
-    return run_script()
+    return cast("int", run_script())
+
 
 if __name__ == "__main__":
     raise SystemExit(main())

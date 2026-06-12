@@ -1,16 +1,19 @@
 # GNN Documentation Index
 
-This index provides navigation to all documentation in the GNN repository, organized by category.
+**Role**: Flat, link-heavy index of `doc/` (and key repo links). For narrative onboarding use [README.md](README.md); for a guided tour use [START_HERE.md](START_HERE.md); for step-by-step curricula use [learning_paths.md](learning_paths.md); for topic relationship links use [CROSS_REFERENCE_INDEX.md](CROSS_REFERENCE_INDEX.md).
+
+The human-oriented **documentation hub** is [README.md](README.md). Repository root [README](../README.md) is the project overview.
 
 ## Quick Links
 
 | Getting Started | Core Reference | Frameworks |
 |-----------------|----------------|------------|
-| [README](../README.md) | [GNN Syntax](gnn/reference/gnn_syntax.md) | [PyMDP](pymdp/README.md) |
-| [Setup Guide](../SETUP_GUIDE.md) | [Architecture](../ARCHITECTURE.md) | [RxInfer.jl](rxinfer/README.md) |
-| [CLAUDE.md](../CLAUDE.md) | [Pipeline Steps](gnn/operations/gnn_tools.md) | [ActiveInference.jl](activeinference_jl/README.md) |
-| [CHANGELOG.md](./CHANGELOG.md) | Version history & release notes | [Contributing](README.md#contributing) |
-| [QUICK_REFERENCE.md](./QUICK_REFERENCE.md) | Commands & GNN syntax quick ref | [GNN Spec](gnn/reference/gnn_syntax.md) |
+| [Documentation hub](README.md) | [GNN Syntax](gnn/reference/gnn_syntax.md) | [PyMDP](pymdp/README.md) |
+| [START_HERE](START_HERE.md) | [PIPELINE_SCRIPTS](PIPELINE_SCRIPTS.md) | [RxInfer.jl](rxinfer/README.md) |
+| [Project README](../README.md) | [Architecture](../ARCHITECTURE.md) | [ActiveInference.jl](activeinference_jl/README.md) |
+| [Setup Guide](SETUP.md) | [SPEC.md](SPEC.md) (doc versioning) | [CLAUDE.md](../CLAUDE.md) (commands, step table) |
+| [CHANGELOG.md](./CHANGELOG.md) | [gnn_tools](gnn/operations/gnn_tools.md) | [Contributing](../CONTRIBUTING.md) |
+| [QUICK_REFERENCE.md](./QUICK_REFERENCE.md) | [Quick reference](QUICK_REFERENCE.md) (commands & syntax) | [Doc audit](development/docs_audit.py) |
 
 ---
 
@@ -185,7 +188,7 @@ This index provides navigation to all documentation in the GNN repository, organ
 
 ---
 
-## Archive & Legacy
+## Archive
 
 - [Archive](archive/) - Archived documentation
 - [Other](other/) - Miscellaneous documents
@@ -204,7 +207,9 @@ doc/
 ├── arc-agi/             # ARC-AGI integration
 ├── archive/             # Archived docs
 ├── audio/               # Audio processing
+├── autogenlib/          # AutoGenLib integration
 ├── axiom/               # Axiom integration
+├── bnlearn/             # bnlearn / Bayesian networks
 ├── catcolab/            # Category theory
 ├── cerebrum/            # Neural modeling
 ├── cognitive_phenomena/ # Cognitive science models
@@ -212,7 +217,8 @@ doc/
 ├── d2/                  # D2 diagrams
 ├── dependencies/        # Dependency info
 ├── deployment/          # Deployment guides
-├── development/         # Dev guides
+├── dev/                 # src/ doc inventory tooling
+├── development/         # Dev guides, docs_audit
 ├── discopy/             # DisCoPy integration
 ├── dspy/                # DSPy integration
 ├── execution/           # Execution docs
@@ -233,6 +239,7 @@ doc/
 ├── pedalboard/          # Audio effects
 ├── performance/         # Performance docs
 ├── petri_nets/          # Petri nets
+├── pipeline/            # Pipeline documentation
 ├── pkl/                 # PKL format
 ├── poe-world/           # PoE World
 ├── pomdp/               # POMDP theory
@@ -256,6 +263,8 @@ doc/
 └── x402/                # X402 protocol
 ```
 
+Also maintained: [expected_dirs.txt](expected_dirs.txt) (machine-oriented list of the same top-level names).
+
 ---
 
-*Last updated: February 2026*
+*Last updated: 2026-04-12*

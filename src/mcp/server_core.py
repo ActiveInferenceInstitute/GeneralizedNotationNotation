@@ -27,15 +27,15 @@ from .mcp import MCP, get_mcp_instance, initialize
 class MCPServer:
     """
     MCP Server implementation for handling JSON-RPC requests.
-    
+
     This class provides a server implementation that can handle
     MCP protocol requests and responses.
     """
 
-    def __init__(self, mcp_instance: Optional[MCP] = None):
+    def __init__(self, mcp_instance: Optional[MCP] = None) -> None:
         """
         Initialize the MCP server.
-        
+
         Args:
             mcp_instance: MCP instance to use for tool execution
         """
@@ -49,7 +49,7 @@ class MCPServer:
             "initialize": self._handle_initialize,
             "notifications/initialized": self._handle_initialized,
             "shutdown": self._handle_shutdown,
-            "exit": self._handle_exit
+            "exit": self._handle_exit,
         }
 
     def start(self) -> bool:
@@ -62,20 +62,28 @@ class MCPServer:
         logger.info("MCP server started")
         return True
 
-    def register_tool(self, name: str, func: Callable, schema: Dict[str, Any], description: str) -> bool:
+    def register_tool(
+        self, name: str, func: Callable, schema: Dict[str, Any], description: str
+    ) -> bool:
         """
         Register a tool with the server.
-        
+
         Args:
             name: Name of the tool
             func: Function to execute
             schema: JSON schema for arguments
             description: Description of the tool
-            
+
         Returns:
-            True if registration succeeded
+            True if the tool is present in the registry after the call,
+            False if registration raised an exception.
         """
-        return self.mcp.register_tool(name, func, schema, description)
+        try:
+            self.mcp.register_tool(name, func, schema, description)
+        except Exception as e:
+            logger.error(f"register_tool failed for {name}: {e}")
+            return False
+        return name in self.mcp.tools
 
     def stop(self) -> bool:
         """Stop the MCP server."""
@@ -90,22 +98,28 @@ class MCPServer:
     def handle_request(self, request: Dict[str, Any]) -> Dict[str, Any]:
         """
         Handle an incoming JSON-RPC request.
-        
+
         Args:
             request: JSON-RPC request dictionary
-            
+
         Returns:
             JSON-RPC response dictionary
         """
         try:
             if not isinstance(request, dict):
-                return self._create_error_response(-32700, "Parse error", "Invalid JSON")
+                return self._create_error_response(
+                    -32700, "Parse error", "Invalid JSON"
+                )
 
             if "jsonrpc" not in request or request["jsonrpc"] != "2.0":
-                return self._create_error_response(-32600, "Invalid Request", "Missing or invalid jsonrpc field")
+                return self._create_error_response(
+                    -32600, "Invalid Request", "Missing or invalid jsonrpc field"
+                )
 
             if "method" not in request:
-                return self._create_error_response(-32600, "Invalid Request", "Missing method field")
+                return self._create_error_response(
+                    -32600, "Invalid Request", "Missing method field"
+                )
 
             method = request["method"]
             params = request.get("params", {})
@@ -119,23 +133,29 @@ class MCPServer:
                     result = self.mcp.execute_tool(method, params)
                     return self._create_success_response(result, request_id)
                 else:
-                    return self._create_error_response(-32601, "Method not found", f"Method '{method}' not found", request_id)
+                    return self._create_error_response(
+                        -32601,
+                        "Method not found",
+                        f"Method '{method}' not found",
+                        request_id,
+                    )
 
         except MCPError as e:
-            return self._create_error_response(e.code, type(e).__name__, str(e), request.get("id"))
+            return self._create_error_response(
+                e.code, type(e).__name__, str(e), request.get("id")
+            )
         except Exception as e:
             logger.error(f"Unexpected error handling request: {e}")
-            return self._create_error_response(-32603, "Internal error", str(e), request.get("id"))
+            return self._create_error_response(
+                -32603, "Internal error", str(e), request.get("id")
+            )
 
     def _handle_initialize(self, params: Dict[str, Any]) -> Dict[str, Any]:
         """Handle initialize request."""
         return {
             "protocolVersion": "2024-11-05",
             "capabilities": self.mcp.get_capabilities(),
-            "serverInfo": {
-                "name": "GNN MCP Server",
-                "version": "1.0.0"
-            }
+            "serverInfo": {"name": "GNN MCP Server", "version": "1.0.0"},
         }
 
     def _handle_initialized(self, params: Dict[str, Any]) -> Dict[str, Any]:
@@ -169,7 +189,15 @@ class MCPServer:
             raise MCPInvalidParamsError("Resource URI is required")
 
         result = self.mcp.get_resource(uri)
-        return {"contents": [{"uri": uri, "mimeType": result["mime_type"], "text": json.dumps(result["content"])}]}
+        return {
+            "contents": [
+                {
+                    "uri": uri,
+                    "mimeType": result["mime_type"],
+                    "text": json.dumps(result["content"]),
+                }
+            ]
+        }
 
     def _handle_shutdown(self, params: Dict[str, Any]) -> Dict[str, Any]:
         """Handle shutdown request."""
@@ -183,22 +211,18 @@ class MCPServer:
 
     def _create_success_response(self, result: Any, request_id: Any) -> Dict[str, Any]:
         """Create a successful JSON-RPC response."""
-        response = {
-            "jsonrpc": "2.0",
-            "result": result
-        }
+        response: dict[str, Any] = {"jsonrpc": "2.0", "result": result}
         if request_id is not None:
             response["id"] = request_id
         return response
 
-    def _create_error_response(self, code: int, message: str, data: Any = None, request_id: Any = None) -> Dict[str, Any]:
+    def _create_error_response(
+        self, code: int, message: str, data: Any = None, request_id: Any = None
+    ) -> Dict[str, Any]:
         """Create an error JSON-RPC response."""
-        response = {
+        response: dict[str, Any] = {
             "jsonrpc": "2.0",
-            "error": {
-                "code": code,
-                "message": message
-            }
+            "error": {"code": code, "message": message},
         }
         if data is not None:
             response["error"]["data"] = data
@@ -220,16 +244,17 @@ def start_mcp_server(mcp_instance: Optional[MCP] = None) -> bool:
 
 def register_tools(mcp: Optional[MCP] = None) -> bool:
     """
-    Register tools with the MCP instance.
-    
-    Args:
-        mcp: Optional MCP instance. If None, uses the global instance.
-        
-    Returns:
-        True if registration succeeded
+    Discover all pipeline modules' ``mcp.py`` files and call their
+    ``register_tools`` hooks against the supplied MCP instance (or the global
+    singleton). Returns True only when every discovered module registered
+    without error.
+
+    This is a thin wrapper around :meth:`MCP.discover_modules` for tests and
+    scripts that already hold an MCP instance they want to populate.
     """
     try:
-        return True
+        target = mcp if mcp is not None else get_mcp_instance()
+        return bool(target.discover_modules())
     except Exception as e:
         logger.error(f"Failed to register tools: {e}")
         return False

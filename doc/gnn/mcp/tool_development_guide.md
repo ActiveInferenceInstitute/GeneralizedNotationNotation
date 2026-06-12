@@ -2,7 +2,7 @@
 
 How to add real, tested MCP tools to any GNN pipeline module.
 
-**Last Updated**: 2026-03-24
+**Last Updated**: 2026-04-15
 
 ## Design Principles
 
@@ -11,7 +11,7 @@ All GNN MCP tools follow four non-negotiable constraints enforced by `test_mcp_a
 1. **Real named functions** — no lambdas, no `None`, no generic wrappers like `list_functions`
 2. **Non-empty descriptions** — every tool must have a docstring or explicit description
 3. **Logger call** — `register_tools()` must call `logger.info(f"Registered N tools")` with the real count
-4. **Zero placeholders** — the function must do real work, not just return a placeholder
+4. **Real behavior** — the function must do real work, not just return an empty result
 
 ## Module File Structure
 
@@ -57,7 +57,7 @@ def register_tools(server: Any) -> None:
         """Return <module> module version and capabilities."""
         return {
             "module": "<module>",
-            "version": "2.0.0",
+            "version": "1.6.0",
             "capabilities": ["feature_a", "feature_b"],
         }
 
@@ -96,7 +96,7 @@ def register_tools(server: Any) -> None:
 - [ ] All functions are **named** (`def my_tool():`, not `lambda:`)
 - [ ] All functions have a **docstring** (the description passed to `register_tool`)
 - [ ] The `logger.info` count matches the actual number of `server.register_tool` calls
-- [ ] Functions call **real module code** (not `return {}` placeholders)
+- [ ] Functions call **real module code** and return structured results
 - [ ] `AGENTS.md` for the module lists the new tools
 - [ ] The module's `doc/gnn/modules/NN_<module>.md` has an MCP Tools section
 
@@ -104,10 +104,10 @@ def register_tools(server: Any) -> None:
 
 ```bash
 # Full MCP audit (part of src/tests/; suite counts in repository README.md)
-uv run pytest src/tests/test_mcp_audit.py -v
+uv run --extra dev python -m pytest src/tests/mcp/test_mcp_audit.py -v
 
 # Focus on your new module
-uv run pytest src/tests/test_mcp_audit.py -v -k "<module>"
+uv run --extra dev python -m pytest src/tests/mcp/test_mcp_audit.py -v -k "<module>"
 
 # Generate the tool inventory JSON
 uv run python src/mcp/validate_tools.py
@@ -119,8 +119,8 @@ uv run python src/mcp/validate_tools.py
 | Test Class | What It Checks |
 |------------|---------------|
 | `TestMCPModuleDiscovery` | 22 modules × 2: module registered + `register_tools` is callable |
-| `TestMCPDomainTools` | 131 tools × 2: tool callable + description not empty |
-| `TestMCPToolRealness` | No generic placeholders (`list_functions`, `call_function`) |
+| `TestMCPDomainTools` | Registered domain tools: tool callable + description not empty |
+| `TestMCPToolRealness` | No generic catch-all tools (`list_functions`, `call_function`) |
 | `TestMCPLoggingCoverage` | Every `mcp.py` calls `logger.info` in `register_tools` |
 | `TestMCPAuditReport` | JSON report generated with correct schema |
 
@@ -132,7 +132,7 @@ If you are adding a **brand-new** pipeline module (e.g., step 25+):
 
 1. Create `src/<module>/mcp.py` following the pattern above
 2. Register the module in `src/mcp/mcp_instance.py`'s `_discover_modules()` list
-3. Add a row to the `TestMCPModuleDiscovery` fixture in `src/tests/test_mcp_audit.py`
+3. Add a row to the `TestMCPModuleDiscovery` fixture in `src/tests/mcp/test_mcp_audit.py`
 4. Update `doc/gnn/mcp/tool_reference.md` with the new tools
 5. Create `doc/gnn/modules/NN_<module>.md` with an MCP Tools section
 

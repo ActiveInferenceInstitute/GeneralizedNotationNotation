@@ -1,0 +1,89 @@
+{
+  "schema": "gnn_model_family_manifest_v1",
+  "acceptance_profile_defaults": {
+    "required_steps": [3, 5, 6, 15, 16, 23],
+    "evidence_steps": [11, 12],
+    "allow_unsupported_steps": []
+  },
+  "families": [
+    {
+      "name": "basics",
+      "description": "Minimal perception fixtures used for parser and validator smoke coverage.",
+      "target_dir": "input/gnn_files/basics",
+      "frameworks": "pymdp",
+      "representative_files": ["dynamic_perception.md"]
+    },
+    {
+      "name": "discrete",
+      "description": "Discrete POMDP and HMM-style active inference fixtures.",
+      "target_dir": "input/gnn_files/discrete",
+      "frameworks": "pymdp",
+      "representative_files": ["actinf_pomdp_agent.md", "simple_mdp.md"]
+    },
+    {
+      "name": "continuous",
+      "description": "Continuous-state and stochastic-dynamics fixtures.",
+      "target_dir": "input/gnn_files/continuous",
+      "frameworks": "jax",
+      "representative_files": ["continuous_navigation.md", "stochastic_dynamics.md"],
+      "acceptance_profile": {
+        "evidence_steps": [],
+        "allow_unsupported_steps": [11, 12],
+        "unsupported_step_reasons": {
+          "11": "Continuous fixtures use non-POMDP matrices that current code renderers intentionally skip for v1.9.",
+          "12": "No executable script is expected when Step 11 is profiled as unsupported for continuous fixtures."
+        }
+      }
+    },
+    {
+      "name": "hierarchical",
+      "description": "Hierarchical and temporal model fixtures.",
+      "target_dir": "input/gnn_files/hierarchical",
+      "frameworks": "pymdp",
+      "representative_files": ["hierarchical_pomdp.md", "temporal_hierarchy.md"],
+      "acceptance_profile": {
+        "evidence_steps": [],
+        "allow_unsupported_steps": [11, 12],
+        "unsupported_step_reasons": {
+          "11": "Hierarchical fixtures require cross-level matrix semantics that current POMDP renderers intentionally skip for v1.9.",
+          "12": "No executable script is expected when Step 11 is profiled as unsupported for hierarchical fixtures."
+        }
+      }
+    },
+    {
+      "name": "multiagent",
+      "description": "Multi-agent coordination and swarm fixtures.",
+      "target_dir": "input/multi_agent_models",
+      "frameworks": "rxinfer",
+      "representative_files": ["multi_agent_coordination.md"]
+    },
+    {
+      "name": "precision",
+      "description": "Precision weighting and curiosity-driven fixtures.",
+      "target_dir": "input/gnn_files/precision",
+      "frameworks": "pymdp",
+      "representative_files": ["curiosity_driven_agent.md", "precision_weighted.md"]
+    },
+    {
+      "name": "structured",
+      "description": "Structured factor graph and posterior fixtures.",
+      "target_dir": "input/gnn_files/structured",
+      "frameworks": "pymdp",
+      "representative_files": ["factor_graph_model.md"]
+    },
+    {
+      "name": "gridworld",
+      "description": "Gridworld POMDP fixture used for cross-framework acceptance checks.",
+      "target_dir": "input/gnn_files/pomdp_gridworld",
+      "frameworks": "pymdp",
+      "representative_files": ["pomdp_gridworld_3x3.md"]
+    },
+    {
+      "name": "scaling-study",
+      "description": "PyMDP scaling-study fixtures, sampled conservatively for acceptance.",
+      "target_dir": "input/gnn_files/pymdp_scaling_study",
+      "frameworks": "pymdp",
+      "representative_files": ["pymdp_scaling_N2_T10.md", "pymdp_scaling_N4_T10.md"]
+    }
+  ]
+}

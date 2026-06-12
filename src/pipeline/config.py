@@ -6,37 +6,74 @@ Pipeline configuration module.
 import json
 import logging
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, cast
 
 logger = logging.getLogger(__name__)
 
 # Make PyYAML optional to avoid hard failures during import time
 try:
-    import yaml  # type: ignore
+    import yaml
+
     _YAML_AVAILABLE = True
 except ImportError:
-    yaml = None  # type: ignore
+    yaml = cast(Any, None)
     _YAML_AVAILABLE = False
 
 # Pipeline configuration
-STEP_METADATA = {
-    "0_template": {"name": "Template", "description": "Pipeline template and initialization"},
-    "1_setup": {"name": "Setup", "description": "Environment setup and dependency installation"},
+STEP_METADATA: dict[str, Any] = {
+    "0_template": {
+        "name": "Template",
+        "description": "Pipeline template and initialization",
+    },
+    "1_setup": {
+        "name": "Setup",
+        "description": "Environment setup and dependency installation",
+    },
     "2_tests": {"name": "Tests", "description": "Comprehensive test suite execution"},
-    "3_gnn": {"name": "GNN Processing", "description": "GNN file discovery and parsing"},
-    "4_model_registry": {"name": "Model Registry", "description": "Model registry management"},
+    "3_gnn": {
+        "name": "GNN Processing",
+        "description": "GNN file discovery and parsing",
+    },
+    "4_model_registry": {
+        "name": "Model Registry",
+        "description": "Model registry management",
+    },
     "5_type_checker": {"name": "Type Checker", "description": "GNN syntax validation"},
-    "6_validation": {"name": "Validation", "description": "Advanced validation and consistency"},
+    "6_validation": {
+        "name": "Validation",
+        "description": "Advanced validation and consistency",
+    },
     "7_export": {"name": "Export", "description": "Multi-format export"},
-    "8_visualization": {"name": "Visualization", "description": "Graph and matrix visualization"},
-    "9_advanced_viz": {"name": "Advanced Visualization", "description": "Advanced visualization"},
-    "10_ontology": {"name": "Ontology", "description": "Active Inference Ontology processing"},
-    "11_render": {"name": "Render", "description": "Code generation for simulation environments"},
-    "12_execute": {"name": "Execute", "description": "Execute rendered simulation scripts"},
+    "8_visualization": {
+        "name": "Visualization",
+        "description": "Graph and matrix visualization",
+    },
+    "9_advanced_viz": {
+        "name": "Advanced Visualization",
+        "description": "Advanced visualization",
+    },
+    "10_ontology": {
+        "name": "Ontology",
+        "description": "Active Inference Ontology processing",
+    },
+    "11_render": {
+        "name": "Render",
+        "description": "Code generation for simulation environments",
+    },
+    "12_execute": {
+        "name": "Execute",
+        "description": "Execute rendered simulation scripts",
+    },
     "13_llm": {"name": "LLM", "description": "LLM-enhanced analysis"},
-    "14_ml_integration": {"name": "ML Integration", "description": "Machine learning integration"},
+    "14_ml_integration": {
+        "name": "ML Integration",
+        "description": "Machine learning integration",
+    },
     "15_audio": {"name": "Audio", "description": "Audio generation"},
-    "16_analysis": {"name": "Analysis", "description": "Advanced analysis and statistics"},
+    "16_analysis": {
+        "name": "Analysis",
+        "description": "Advanced analysis and statistics",
+    },
     "17_integration": {"name": "Integration", "description": "System integration"},
     "18_security": {"name": "Security", "description": "Security validation"},
     "19_research": {"name": "Research", "description": "Research tools"},
@@ -44,24 +81,36 @@ STEP_METADATA = {
     "21_mcp": {"name": "MCP", "description": "Model Context Protocol processing"},
     "22_gui": {"name": "GUI", "description": "Interactive GNN constructor"},
     "23_report": {"name": "Report", "description": "Comprehensive report generation"},
-    "24_intelligent_analysis": {"name": "Intelligent Analysis", "description": "AI-powered pipeline analysis and optimization"}
+    "24_intelligent_analysis": {
+        "name": "Intelligent Analysis",
+        "description": "AI-powered pipeline analysis and optimization",
+    },
 }
+
 
 class StepConfig:
     """Configuration for a pipeline step."""
 
-    def __init__(self, step_name: str, **kwargs):
+    def __init__(self, step_name: str, **kwargs: Any) -> None:
+        """Initialize the instance."""
         self.step_name = step_name
-        self.enabled = kwargs.get('enabled', True)
-        self.timeout = kwargs.get('timeout', 300)
-        self.retries = kwargs.get('retries', 3)
-        self.dependencies = kwargs.get('dependencies', [])
-        self.parameters = kwargs.get('parameters', {})
+        self.enabled = kwargs.get("enabled", True)
+        self.timeout = kwargs.get("timeout", 3600)
+        self.retries = kwargs.get("retries", 3)
+        self.dependencies = kwargs.get("dependencies", [])
+        self.parameters = kwargs.get("parameters", {})
+        self.required = kwargs.get("required", True)
+        self.output_subdir = kwargs.get(
+            "output_subdir", f"{step_name.removesuffix('.py')}_output"
+        )
+        self.performance_tracking = kwargs.get("performance_tracking", True)
+
 
 class PipelineConfig:
     """Pipeline configuration manager."""
 
-    def __init__(self, config_path: Optional[Path] = None):
+    def __init__(self, config_path: Optional[Path] = None) -> None:
+        """Initialize the instance."""
         self.config_path = config_path or Path("pipeline_config.yaml")
         self.config = self._load_settings_from_path()
 
@@ -69,8 +118,8 @@ class PipelineConfig:
         """Load pipeline settings dict from ``config_path`` (YAML or JSON)."""
         if self.config_path.exists():
             try:
-                with open(self.config_path, 'r') as f:
-                    if self.config_path.suffix in ('.yaml', '.yml'):
+                with open(self.config_path, "r") as f:
+                    if self.config_path.suffix in (".yaml", ".yml"):
                         if _YAML_AVAILABLE:
                             return yaml.safe_load(f) or {}
                         else:
@@ -78,11 +127,26 @@ class PipelineConfig:
                             # Downstream code should use sensible defaults
                             return {}
                     else:
-                        return json.load(f)
+                        return cast("dict[str, Any]", json.load(f))
             except (json.JSONDecodeError, OSError, ValueError) as e:
                 logger.debug("Could not parse config file %s: %s", self.config_path, e)
                 return {}
         return {}
+
+    @property
+    def steps(self) -> Dict[str, StepConfig]:
+        """Return configured step objects keyed by canonical step script name."""
+        config_steps = self.config.get("steps", {})
+        if isinstance(config_steps, dict):
+            return {
+                step_name: StepConfig(step_name, **step_data)
+                for step_name, step_data in config_steps.items()
+                if isinstance(step_data, dict)
+            }
+        return {
+            f"{step_name}.py": self.get_step_config(f"{step_name}.py")
+            for step_name in STEP_METADATA
+        }
 
     def get_step_config(self, step_name: str) -> StepConfig:
         """Get configuration for a specific step."""
@@ -92,55 +156,59 @@ class PipelineConfig:
     def save_config(self) -> None:
         """Save configuration to file."""
         try:
-            with open(self.config_path, 'w') as f:
-                if self.config_path.suffix in ('.yaml', '.yml') and _YAML_AVAILABLE:
-                    yaml.dump(self.config, f)  # type: ignore
+            with open(self.config_path, "w") as f:
+                if self.config_path.suffix in (".yaml", ".yml") and _YAML_AVAILABLE:
+                    yaml.dump(self.config, f)
                 else:
                     json.dump(self.config, f, indent=2)
         except (OSError, ValueError) as e:
             logger.debug("Config save failed (%s), attempting JSON recovery", e)
             try:
-                json_path = self.config_path.with_suffix('.json')
-                with open(json_path, 'w') as jf:
+                json_path = self.config_path.with_suffix(".json")
+                with open(json_path, "w") as jf:
                     json.dump(self.config, jf, indent=2)
             except (OSError, TypeError, ValueError) as e:
                 logger.debug("JSON recovery config save also failed: %s", e)
+
 
 def get_pipeline_config() -> dict:
     """Get pipeline configuration as a plain dict for compatibility with tests."""
     cfg = PipelineConfig()
     data = cfg.config if isinstance(cfg.config, dict) else {}
     # Ensure required keys exist for tests with sensible defaults
-    if 'steps' not in data:
-        data['steps'] = list(STEP_METADATA.keys())
-    if 'timeout' not in data:
-        data['timeout'] = 300
-    if 'parallel' not in data:
-        data['parallel'] = True
+    if "steps" not in data:
+        data["steps"] = list(STEP_METADATA.keys())
+    if "timeout" not in data:
+        data["timeout"] = 3600
+    if "parallel" not in data:
+        data["parallel"] = True
     return data
+
 
 def get_pipeline_config_dict() -> Dict[str, Any]:
     """Get the pipeline configuration as a plain dict (compatibility helper)."""
     cfg = PipelineConfig()
     return cfg.config if isinstance(cfg.config, dict) else {}
 
+
 def set_pipeline_config(config: PipelineConfig) -> None:
     """Set the pipeline configuration."""
     config.save_config()
 
+
 def get_output_dir_for_script(script_name: str, base_output_dir: Path) -> Path:
     """Get output directory for a specific script.
-    
+
     Use a consistent numbered '<N_name>_output' directory for every step to
     keep the pipeline coherent and simple.
-    
+
     Args:
         script_name: Name of the pipeline script (e.g., "3_gnn.py" or "3_gnn")
         base_output_dir: Base output directory (usually "output/")
-        
+
     Returns:
         Path to step-specific output directory
-        
+
     Note:
         This function prevents nested directories by detecting if base_output_dir
         already ends with the expected output directory name.
@@ -149,7 +217,7 @@ def get_output_dir_for_script(script_name: str, base_output_dir: Path) -> Path:
     normalized = script_stem  # e.g., '7_export'
 
     # Map stems to standardized numbered output directories
-    strict_mapping = {
+    strict_mapping: dict[str, Any] = {
         "0_template": base_output_dir / "0_template_output",
         "1_setup": base_output_dir / "1_setup_output",
         "2_tests": base_output_dir / "2_tests_output",
@@ -178,7 +246,7 @@ def get_output_dir_for_script(script_name: str, base_output_dir: Path) -> Path:
     }
 
     # Accept '.py' suffix keys as well
-    if script_name.endswith('.py'):
+    if script_name.endswith(".py"):
         normalized = script_name[:-3]
 
     # Get expected output directory name for this script
@@ -196,17 +264,21 @@ def get_output_dir_for_script(script_name: str, base_output_dir: Path) -> Path:
         # We're inside a step output directory - use the parent's parent as base
         # This handles cases like passing "output/10_ontology_output/results" as base
         actual_base = base_output_dir
-        while actual_base.name.endswith("_output") or "_output" in actual_base.parts[-2:]:
+        while (
+            actual_base.name.endswith("_output") or "_output" in actual_base.parts[-2:]
+        ):
             if actual_base.parent.name == "output":
                 break
             actual_base = actual_base.parent
-        base_output_dir = actual_base.parent if actual_base.name.endswith("_output") else actual_base
+        base_output_dir = (
+            actual_base.parent if actual_base.name.endswith("_output") else actual_base
+        )
 
     # Exact matches
     if script_name in strict_mapping:
-        return strict_mapping[script_name]
+        return cast("Path", strict_mapping[script_name])
     if normalized in strict_mapping:
-        return strict_mapping[normalized]
+        return cast("Path", strict_mapping[normalized])
 
     # Default recovery
     return base_output_dir / expected_dir_name

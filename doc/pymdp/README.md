@@ -1,26 +1,25 @@
 # PyMDP Documentation (pymdp 1.0.0 / JAX-first)
 
-**Signposts:** [AGENTS.md](AGENTS.md) · [doc/INDEX.md](../INDEX.md)
+**Signposts:** [AGENTS.md](AGENTS.md) · [doc/INDEX.md](../INDEX.md) · [doc/SPEC.md](../SPEC.md) (versioning)
 
 This folder documents how this repository integrates
 [pymdp 1.0.0](https://github.com/infer-actively/pymdp) in the render/execute/
 analysis pipeline (Steps 11, 12, 16).
 
-pymdp 1.0.0 is the **JAX-first rewrite** of the library. The legacy NumPy API
-(`utils.obj_array`, `Agent.infer_states(obs)` with no `empirical_prior`, etc.)
-is only reachable through the `pymdp.legacy` namespace, which this repository
-does **not** consume.
+pymdp 1.0.0 is the **JAX-first rewrite** of the library. This repository
+uses the JAX-first API only (`Agent.infer_states(obs, empirical_prior=...)`,
+JAX arrays, and explicit PRNG keys).
 
 ## Start Here
 
 - [`gnn_pymdp.md`](gnn_pymdp.md) — GNN → pymdp 1.0.0 integration contract
   (matrix shapes, rollout loop, embedded code samples).
+- [`pymdp_performance_guide.md`](pymdp_performance_guide.md) — performance
+  notes (JAX/JIT, batching, memory) and **Systematic Scaling Studies**.
+- [`run_pymdp_gnn_scaling_analysis.py`](../../scripts/run_pymdp_gnn_scaling_analysis.py) —
+  The automated orchestrator for PyMDP performance sweeps.
 - [`pymdp_1_0_0_alignment_matrix.md`](pymdp_1_0_0_alignment_matrix.md) —
   upstream 1.0.0 claim mapping and local status.
-- [`pymdp_advanced_tutorials.md`](pymdp_advanced_tutorials.md) — extended
-  examples (aspirational; not all are pipeline contracts).
-- [`pymdp_performance_guide.md`](pymdp_performance_guide.md) — performance
-  notes (JAX/JIT, batching, memory).
 - [`pymdp_pomdp/README.md`](pymdp_pomdp/README.md) — reference scripts under
   `doc/pymdp/pymdp_pomdp/` and their boundaries.
 
@@ -67,15 +66,17 @@ upstream context only.
 
 ## Upstream Agent API regression tests
 
-- `src/tests/test_pymdp_1_0_0_upstream_api.py` — asserts the installed wheel's
-  `Agent` / `utils` behaviour used by `execute/pymdp/simple_simulation.py`
-  (no mocks). Covers:
+- `src/tests/execute/test_pymdp_1_0_0_upstream_api.py` — asserts the installed wheel's
+  `Agent` / `utils` behaviour used by `execute/pymdp/simulation.py`
+  through direct package calls. Covers:
     - Metadata version ≥ 1.0.0
     - `Agent.update_empirical_prior` presence
     - Single-step `infer_states` → `infer_policies` → `sample_action`
     - `empirical_prior` carry-through via `update_empirical_prior`
     - Optional `E` habit vector matches policy count
-- `src/tests/test_pymdp_contracts.py` — exercises the full GNN
+- `src/tests/execute/test_pymdp_contracts.py` — exercises the full GNN
   render → execute → analysis path against real pymdp 1.0.0.
-- `src/tests/test_execute_pymdp_integration.py` — exercises the JAX-first
-  Agent directly and the pipeline's `run_simple_pymdp_simulation`.
+- `src/tests/execute/test_execute_pymdp_integration.py` — exercises the JAX-first
+  Agent directly and the pipeline's `run_pymdp_simulation`.
+- `src/tests/execute/test_discrete_models_pymdp.py` — checks passive 2-D `B`,
+  factored T-maze preservation, matrix provenance, and execution output schema.

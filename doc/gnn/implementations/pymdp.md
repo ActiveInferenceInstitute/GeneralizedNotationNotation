@@ -1,148 +1,96 @@
 # PyMDP Framework Implementation
 
-> **GNN Integration Layer**: Python
-> **Framework Base**: `pymdp` (Python Package)
-> **Simulation Architecture**: Online True POMDP Generative Model
-> **Documentation Version**: 2.0.0
+> **GNN Integration Layer**: Python  
+> **Framework Base**: `inferactively-pymdp>=1.0.0`  
+> **Simulation Architecture**: Structured POMDP execution  
+> **Documentation Version**: 2.1.0
 
 ## Overview
 
-The Generalized Notation Notation (GNN) pipeline translates theoretical model specifications into executable Python code natively utilizing the `pymdp` framework. As the primary reference implementation within the Active Inference ecosystem, PyMDP operates as the mathematical ground truth for multi-framework correlation auditing.
+The GNN pipeline renders discrete POMDP-style model specifications into
+PyMDP 1.0.0 runner scripts, executes those scripts through Step 12, and
+analyzes the resulting `pymdp_simulation_v1` JSON in Step 16.
 
-This document details the exact mechanisms through which a GNN JSON specification is extracted, built into a PyMDP `Agent` node, evaluated continuously within an independent generative POMDP environment, and serialized into high-fidelity telemetry artifacts.
+PyMDP integration is strict about matrix provenance and schema shape. Single
+factor models expose canonical `A`, `B`, `C`, `D`, and optional `E`; factored
+models preserve named components such as `A_loc`, `A_rew`, `B_loc`, `B_ctx`,
+and `D_ctx` before composing a PyMDP joint contract for execution.
 
 ## Architecture
 
-The PyMDP implementation relies on three interconnected architectures:
+The implementation is split across three current surfaces:
 
-1. **Parameter Parsing**: `pomdp_processor.py` (Translating GNN variable states into multidimensional numpy matrices)
-2. **Generative Loop Generation**: `pymdp_renderer.py` (Building the target python script wrapping the agent inside a mathematical observation loop)
-3. **Execution Context**: `pymdp_runner.py` (Executing the generated python script and managing filesystem persistence)
+1. **POMDP extraction**: `src/gnn/pomdp_extractor.py` builds a structured model
+   spec with modality maps, state-factor maps, control-factor maps, matrix
+   shapes, and `matrix_provenance`.
+2. **Rendering**: `src/render/pymdp/pymdp_renderer.py` exposes
+   `render_gnn_to_pymdp(...)` and writes PyMDP 1.0 runner scripts. The default
+   script delegates to `src.execute.pymdp.run_pymdp_simulation`.
+3. **Execution and analysis**: `src/execute/pymdp/simulation.py` writes
+   `pymdp_simulation_v1`; `src/analysis/pymdp/analyzer.py` consumes only that
+   schema for PyMDP-specific plots and summaries.
 
-### Model Initialization & Variable Extraction
+## Matrix Contract
 
-Unlike strict typing systems, PyMDP initializes parameter matrices primarily using pure Numpy objects.
+PyMDP 1.0 expects a list of JAX arrays with a leading batch dimension:
 
-GNN maps structural definitions dynamically into `pymdp.agent.Agent` instantiation endpoints:
+| Symbol | Shape |
+|---|---|
+| `A[m]` | `(batch, num_obs[m], num_states[0], num_states[1], ...)` |
+| `B[f]` | `(batch, num_states[f], num_states[f], num_controls[f])` |
+| `C[m]` | `(batch, num_obs[m])` |
+| `D[f]` | `(batch, num_states[f])` |
+| `E` | `(batch, num_policies)` when present |
 
-- **State Space (`num_states`)**: Inferred dynamically from the row dimensionality of the `B` transition matrix (e.g. `B_matrix.shape[1]`)
-- **Action Space (`num_actions`)**: Inferred dynamically from the depth dimensionality of the `B` control matrix (e.g. `B_matrix.shape[2]`)
-- **Observation Space (`num_obs`)**: Inferred dynamically from the row dimensionality of the `A` likelihood matrix (e.g. `A_matrix.shape[0]`)
+The GNN extractor records whether matrices came from direct single-factor
+declarations, passive-model adapters, time-indexed transition projection, or
+factored joint composition. A 2-D `B` matrix is passive/single-action dynamics,
+not a list of actions. Passive HMM-style models omit `control_fac_idx`, because
+PyMDP 1.0 requires every listed control factor to have more than one control.
 
-```python
-# Extraction logic utilized by GNN to safely route specifications
-agent = Agent(
-    A=A_matrix,           # Likelihood mapping of Observation = f(State)
-    B=B_matrix,           # Transition mapping of State(t+1) = f(State(t), Action)
-    C=C_vector,           # Target Preference dist (Risk/Reward)
-    D=D_vector,           # Prior initialization density
-    policy_len=1,         # Depth 1 horizons by default in standard evaluation
-    inference_algo="MMP", # Marginal Message Passing
-    use_utility=True      # Essential for Expected Free Energy activation
-)
-```
+## Execution Schema
 
-## Perception-Action Loop (The Generative Process)
+Step 12 writes `simulation_results.json` with
+`"schema_version": "pymdp_simulation_v1"`. Required content includes:
 
-A critical mandate of the cross-framework environment comparison is isolating the belief structure *from* the generative process entirely. PyMDP accomplishes this correctly by implementing a purely stochastic mathematical simulation that wraps around the agent instance itself.
+- observations by modality
+- hidden states by state factor
+- actions by control factor
+- posterior beliefs by state factor
+- expected and variational free energy traces
+- policy posterior / action probabilities
+- validation fields
+- matrix provenance
+- runtime metadata
 
-The execution template builds the following sequence:
-
-1. **Initialize Environmental True State**:
-   The true environment begins by sampling the Prior definition `D`.
-
-   ```python
-   # Stochastic draw from Prior distribution
-   true_state = utils.sample(D_vector)
-   ```
-
-2. **Step-wise Environment Generation**:
-   The environment draws an observation exclusively from the true state using the Likelihood `A` matrix, shielding the agent from oracle knowledge.
-
-   ```python
-   # Stochastic draw from A matrix conditioned on current True State
-   observation = utils.sample(A_matrix[:, true_state])
-   ```
-
-3. **Inference and Control Calculation (Agent)**:
-   The PyMDP agent ingests the singular step observation to update its belief and calculate EFE.
-
-   ```python
-   qs = agent.infer_states([observation])
-   q_pi, efe = agent.infer_policies()
-   action = agent.sample_action()
-   ```
-
-4. **Environment Transition**:
-   The `true_state` physically shifts through spacetime based on the transition likelihood of the `B` matrix, conditioned by the generated $Action$.
-
-   ```python
-   # Stochastic environment decay/shift
-   true_state = utils.sample(B_matrix[:, true_state, int(action[0])])
-   ```
-
-## Expected Free Energy Mechanics
-
-PyMDP mathematically factors Expected Free Energy (EFE), stored internally as `neg_efe`, incorporating two principal components:
-
-1. **Ambiguity** (Expected Uncertainty): The entropy of the likelihood matrix `A` conditioned on predicted states.
-2. **Risk** (Expected Divergence): The Kullback-Leibler (KL) divergence between the predicted observation distribution and the pre-defined target preference vector `C`.
-
-*Important Tracking Detail*: By mathematical convention within PyMDP, EFE is minimized as a negative quantity (`neg_efe`). Therefore, more optimal action selections natively resolve to *higher* (closer to 0) EFE values, conversely represented against frameworks that minimize positive EFE vectors.
-
-## Telemetry & Logging Output
-
-At runtime, the PyMDP orchestrator records a full state continuum into memory and eventually dumps the structure out to the `12_execute` block as `simulation_results.json`.
-
-**Logged Vectors:**
-
-- `beliefs`: Array depth `[num_timesteps, num_states]` recording posterior $Q(S|O)$.
-- `actions`: Array length `[num_timesteps]` corresponding to index arrays of integer actions executed.
-- `observations`: Array length `[num_timesteps]` logging the exact stochastic emission generated mathematically by the true environment.
-- `efe_history`: **2-Dimensional Tensor** `[num_timesteps, num_policies]`. While previously flattened dynamically, GNN extracts the comprehensive EFE vectors for *all possible decisions* evaluated at that timestep to allow high-fidelity plotting in downstream analysis engines.
-
-```json
-"simulation_trace": {
-  "observations": [1, 1, 1, 0, 2],
-  "beliefs": [[0.05, 0.89, 0.05], [0.003, 0.99, 0.003], ...],
-  "actions": [0, 0, 0, 1, 2],
-  "efe_history": [
-    [-1.19, -1.19, -1.96], 
-    [-0.68, -0.68, -1.45], 
-    ...
-  ] 
-}
-```
-
-The telemetry package operates with extremely high resilience, guaranteeing zero missing timesteps and zero floating-point `NaN` propagation across pipeline stages during standard tests.
-
----
+Step 16 rejects older PyMDP result shapes for PyMDP analysis and reports clear
+diagnostics instead of trying to recover flat traces.
 
 ## Source Code Connections
 
-| Pipeline Stage | Module | Key Function | Lines |
-|---|---|---|---|
-| Rendering | [pymdp_renderer.py](../../../src/render/pymdp/pymdp_renderer.py) | `render_gnn_to_pymdp()` | Entry point |
-| Execution | [pymdp_runner.py](../../../src/execute/pymdp/pymdp_runner.py) | `execute_pymdp_script_with_outputs()` | L77-220 |
-| Pre-validation | [pymdp_runner.py](../../../src/execute/pymdp/pymdp_runner.py) | `validate_and_clean_pymdp_script()` | L22-75 |
-| Trace Generation | [pymdp_runner.py](../../../src/execute/pymdp/pymdp_runner.py) | `generate_simulation_trace()` | L264-304 |
-| Analysis | [analyzer.py](../../../src/analysis/pymdp/analyzer.py) | `generate_analysis_from_logs()` | — |
-| Cross-Framework | [visualizations.py](../../../src/analysis/visualizations.py) | `generate_unified_comparison()` | — |
+| Pipeline Stage | Module | Public Surface |
+|---|---|---|
+| Extraction | [pomdp_extractor.py](../../../src/gnn/pomdp_extractor.py) | `extract_pomdp_from_file(...)` |
+| Rendering | [pymdp_renderer.py](../../../src/render/pymdp/pymdp_renderer.py) | `render_gnn_to_pymdp(...)` |
+| Execution | [simulation.py](../../../src/execute/pymdp/simulation.py) | `run_pymdp_simulation(...)` |
+| Analysis | [analyzer.py](../../../src/analysis/pymdp/analyzer.py) | `generate_analysis_from_logs(...)` |
+| Visualization | [visualizer.py](../../../src/analysis/pymdp/visualizer.py) | `PyMDPVisualizer` |
 
----
+## Verification
 
-## Improvement Opportunities
+```bash
+uv run --extra dev python -m pytest \
+    src/tests/execute/test_pymdp_contracts.py \
+    src/tests/execute/test_discrete_models_pymdp.py \
+    src/tests/analysis/test_analysis_post_simulation.py \
+    src/tests/visualization/test_visualization_matrices.py \
+    -q --tb=short
+```
 
-| ID | Area | Description | Impact |
-|---|---|---|---|
-| P-1 | Rendering | Matrix normalization is inlined — could be extracted into a shared utility | Low |
-| P-2 | Execution | ~~The runner had duplicate `env = os.environ.copy()` lines~~ | ✅ FIXED |
-| P-3 | Analysis | PyMDP analyzer imports `PyMDPVisualizer` which could fail silently | Low |
-| P-4 | Telemetry | `simple_simulation.py` could validate A/B/C/D shapes before simulation | Medium |
+## See Also
 
-## See Also / Next Steps
-
-- **[Cross-Framework Methodology](../integration/framework_integration_guide.md)**: Details on the correlation methodology and benchmarking metrics.
-- **[Architecture Reference](../reference/architecture_reference.md)**: Deep dive into the pipeline orchestrator and module integration.
-- **[GNN Implementations Index](README.md)**: Return to the master framework implementer manifest.
-- **[Back to GNN START_HERE](../../START_HERE.md)**
+- **[GNN → pymdp Integration Guide](../../pymdp/gnn_pymdp.md)**: Local PyMDP
+  1.0 contract and rollout details.
+- **[Cross-Framework Methodology](../integration/framework_integration_guide.md)**:
+  Framework comparison context.
+- **[GNN Implementations Index](README.md)**: Return to the framework index.

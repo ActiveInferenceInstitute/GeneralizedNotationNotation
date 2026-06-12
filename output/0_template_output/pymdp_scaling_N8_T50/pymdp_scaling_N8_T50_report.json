@@ -1,0 +1,12 @@
+{
+  "input_file": "input/gnn_files/pymdp_scaling_study/pymdp_scaling_N8_T50.md",
+  "output_file": "output/0_template_output/pymdp_scaling_N8_T50/pymdp_scaling_N8_T50_processed.md",
+  "timestamp": "2026-05-22T06:10:26.423955",
+  "file_size_bytes": 7189,
+  "file_size_lines": 100,
+  "processing_options": {
+    "verbose": false,
+    "recursive": true,
+    "example_param": "default_value"
+  }
+}

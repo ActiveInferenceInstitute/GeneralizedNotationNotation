@@ -10,10 +10,11 @@ import asyncio
 import json
 import logging
 import os
-from typing import AsyncGenerator, List, Optional
+from typing import Any, AsyncGenerator, List, Optional
 
 try:
     import aiohttp
+
     AIOHTTP_AVAILABLE = True
 except ImportError as e:
     AIOHTTP_AVAILABLE = False
@@ -30,6 +31,7 @@ from .base_provider import (
 
 logger = logging.getLogger(__name__)
 
+
 class PerplexityProvider(BaseLLMProvider):
     """Perplexity implementation of the LLM provider interface."""
 
@@ -41,23 +43,23 @@ class PerplexityProvider(BaseLLMProvider):
         "llama-3.1-sonar-small-128k-chat",
         "llama-3.1-sonar-large-128k-chat",
         "llama-3.1-8b-instruct",
-        "llama-3.1-70b-instruct"
+        "llama-3.1-70b-instruct",
     )
 
     DEFAULT_MODEL = "llama-3.1-sonar-large-128k-online"
     BASE_URL = "https://api.perplexity.ai"
 
-    def __init__(self, api_key: Optional[str] = None, **kwargs):
+    def __init__(self, api_key: Optional[str] = None, **kwargs: Any) -> None:
         """
         Initialize Perplexity provider.
-        
+
         Args:
             api_key: Perplexity API key (if None, will try environment variables)
             **kwargs: Additional Perplexity-specific configuration
         """
         super().__init__(api_key, **kwargs)
-        self.api_key = api_key or os.getenv('PERPLEXITY_API_KEY')
-        self.session = None
+        self.api_key = api_key or os.getenv("PERPLEXITY_API_KEY")
+        self.session: Any = None
 
     @property
     def provider_type(self) -> ProviderType:
@@ -77,37 +79,41 @@ class PerplexityProvider(BaseLLMProvider):
     def initialize(self) -> bool:
         """
         Initialize the Perplexity client.
-        
+
         Returns:
             True if initialization successful, False otherwise
         """
         if not AIOHTTP_AVAILABLE:
-            logger.error(f"Cannot initialize Perplexity provider: aiohttp is not available ({AIOHTTP_IMPORT_ERROR})")
+            logger.error(
+                f"Cannot initialize Perplexity provider: aiohttp is not available ({AIOHTTP_IMPORT_ERROR})"
+            )
             logger.error("Install aiohttp with: uv pip install aiohttp>=3.9.0")
             return False
 
         if not self.api_key:
-            logger.debug("Perplexity API key not provided - Perplexity provider will not be available")
+            logger.debug(
+                "Perplexity API key not provided - Perplexity provider will not be available"
+            )
             return False
 
         try:
             # Initialize aiohttp session with proper headers
-            headers = {
+            headers: dict[str, Any] = {
                 "Authorization": f"Bearer {self.api_key}",
                 "Content-Type": "application/json",
-                "Accept": "application/json"
+                "Accept": "application/json",
             }
 
             if not AIOHTTP_AVAILABLE:
-                raise ImportError(f"aiohttp is required but not available: {AIOHTTP_IMPORT_ERROR}")
+                raise ImportError(
+                    f"aiohttp is required but not available: {AIOHTTP_IMPORT_ERROR}"
+                )
 
             connector = aiohttp.TCPConnector(limit=100, limit_per_host=30)
             timeout = aiohttp.ClientTimeout(total=300)  # 5 minute timeout
 
             self.session = aiohttp.ClientSession(
-                headers=headers,
-                connector=connector,
-                timeout=timeout
+                headers=headers, connector=connector, timeout=timeout
             )
 
             self._is_initialized = True
@@ -115,16 +121,18 @@ class PerplexityProvider(BaseLLMProvider):
             return True
 
         except Exception as e:
-            logger.debug(f"Perplexity provider initialization issue (will use other providers if available): {e}")
+            logger.debug(
+                f"Perplexity provider initialization issue (will use other providers if available): {e}"
+            )
             return False
 
     def validate_config(self, config: LLMConfig) -> bool:
         """
         Validate Perplexity-specific configuration.
-        
+
         Args:
             config: LLM configuration to validate
-            
+
         Returns:
             True if configuration is valid, False otherwise
         """
@@ -147,17 +155,15 @@ class PerplexityProvider(BaseLLMProvider):
         return True
 
     async def generate_response(
-        self,
-        messages: List[LLMMessage],
-        config: Optional[LLMConfig] = None
+        self, messages: List[LLMMessage], config: Optional[LLMConfig] = None
     ) -> LLMResponse:
         """
         Generate a response using Perplexity API.
-        
+
         Args:
             messages: List of messages for the conversation
             config: Optional configuration parameters
-            
+
         Returns:
             Standardized LLM response
         """
@@ -173,18 +179,14 @@ class PerplexityProvider(BaseLLMProvider):
 
         # Convert messages to Perplexity format (follows OpenAI convention)
         perplexity_messages = [
-            {
-                "role": msg.role,
-                "content": msg.content
-            }
-            for msg in messages
+            {"role": msg.role, "content": msg.content} for msg in messages
         ]
 
         # Prepare request payload
-        payload = {
+        payload: dict[str, Any] = {
             "model": config.model or self.default_model,
             "messages": perplexity_messages,
-            "stream": False
+            "stream": False,
         }
 
         # Add optional parameters
@@ -197,8 +199,7 @@ class PerplexityProvider(BaseLLMProvider):
 
         try:
             async with self.session.post(
-                f"{self.BASE_URL}/chat/completions",
-                json=payload
+                f"{self.BASE_URL}/chat/completions", json=payload
             ) as response:
                 response.raise_for_status()
                 data = await response.json()
@@ -210,7 +211,7 @@ class PerplexityProvider(BaseLLMProvider):
                     usage_dict = {
                         "prompt_tokens": data["usage"].get("prompt_tokens", 0),
                         "completion_tokens": data["usage"].get("completion_tokens", 0),
-                        "total_tokens": data["usage"].get("total_tokens", 0)
+                        "total_tokens": data["usage"].get("total_tokens", 0),
                     }
 
                 return LLMResponse(
@@ -223,30 +224,32 @@ class PerplexityProvider(BaseLLMProvider):
                         "response_id": data.get("id"),
                         "created": data.get("created"),
                         "citations": data.get("citations", []),
-                        "web_results": data.get("web_results", [])
-                    }
+                        "web_results": data.get("web_results", []),
+                    },
                 )
 
         except Exception as e:
             # Handle both aiohttp.ClientError and other exceptions
-            if AIOHTTP_AVAILABLE and hasattr(e, '__module__') and 'aiohttp' in e.__module__:
+            if (
+                AIOHTTP_AVAILABLE
+                and hasattr(e, "__module__")
+                and "aiohttp" in e.__module__
+            ):
                 logger.error(f"Perplexity API call failed: {e}")
             else:
                 logger.error(f"Perplexity API call failed: {e}")
             raise
 
     async def generate_stream(
-        self,
-        messages: List[LLMMessage],
-        config: Optional[LLMConfig] = None
+        self, messages: List[LLMMessage], config: Optional[LLMConfig] = None
     ) -> AsyncGenerator[str, None]:
         """
         Generate a streaming response using Perplexity API.
-        
+
         Args:
             messages: List of messages for the conversation
             config: Optional configuration parameters
-            
+
         Yields:
             Chunks of the response content
         """
@@ -264,18 +267,14 @@ class PerplexityProvider(BaseLLMProvider):
 
         # Convert messages to Perplexity format
         perplexity_messages = [
-            {
-                "role": msg.role,
-                "content": msg.content
-            }
-            for msg in messages
+            {"role": msg.role, "content": msg.content} for msg in messages
         ]
 
         # Prepare request payload
-        payload = {
+        payload: dict[str, Any] = {
             "model": config.model or self.default_model,
             "messages": perplexity_messages,
-            "stream": True
+            "stream": True,
         }
 
         # Add optional parameters
@@ -288,28 +287,31 @@ class PerplexityProvider(BaseLLMProvider):
 
         try:
             async with self.session.post(
-                f"{self.BASE_URL}/chat/completions",
-                json=payload
+                f"{self.BASE_URL}/chat/completions", json=payload
             ) as response:
                 response.raise_for_status()
 
                 async for line in response.content:
-                    line_text = line.decode('utf-8').strip()
+                    line_text = line.decode("utf-8").strip()
 
-                    if line_text.startswith('data: '):
+                    if line_text.startswith("data: "):
                         data_str = line_text[6:]  # Remove 'data: ' prefix
 
-                        if data_str == '[DONE]':
+                        if data_str == "[DONE]":
                             break
 
                         try:
                             chunk_data = json.loads(data_str)
-                            if (chunk_data.get("choices") and
-                                chunk_data["choices"][0].get("delta") and
-                                chunk_data["choices"][0]["delta"].get("content")):
+                            if (
+                                chunk_data.get("choices")
+                                and chunk_data["choices"][0].get("delta")
+                                and chunk_data["choices"][0]["delta"].get("content")
+                            ):
                                 yield chunk_data["choices"][0]["delta"]["content"]
                         except json.JSONDecodeError:
-                            logger.debug("Skipping malformed streaming chunk: %s", data_str[:100])
+                            logger.debug(
+                                "Skipping malformed streaming chunk: %s", data_str[:100]
+                            )
                             continue
 
         except Exception as e:
@@ -319,23 +321,25 @@ class PerplexityProvider(BaseLLMProvider):
     def is_online_model(self, model_name: str) -> bool:
         """
         Check if a model has online search capabilities.
-        
+
         Args:
             model_name: Name of the model to check
-            
+
         Returns:
             True if model has online search, False otherwise
         """
         return "online" in model_name.lower()
 
-    def construct_search_prompt(self, query: str, gnn_context: str = "") -> List[LLMMessage]:
+    def construct_search_prompt(
+        self, query: str, gnn_context: str = ""
+    ) -> List[LLMMessage]:
         """
         Construct a search-optimized prompt for Perplexity.
-        
+
         Args:
             query: The search query
             gnn_context: Optional GNN context for domain-specific search
-            
+
         Returns:
             List of formatted messages optimized for search
         """
@@ -353,23 +357,20 @@ class PerplexityProvider(BaseLLMProvider):
 
         return [
             LLMMessage(role="system", content=system_prompt),
-            LLMMessage(role="user", content=user_content)
+            LLMMessage(role="user", content=user_content),
         ]
 
     async def search_and_analyze(
-        self,
-        query: str,
-        gnn_content: str = "",
-        model: Optional[str] = None
+        self, query: str, gnn_content: str = "", model: Optional[str] = None
     ) -> LLMResponse:
         """
         Perform a search-enhanced analysis using Perplexity's online capabilities.
-        
+
         Args:
             query: The search query or analysis request
             gnn_content: Optional GNN content to analyze
             model: Optional model to use (defaults to online model)
-            
+
         Returns:
             Search-enhanced LLM response with citations
         """
@@ -388,12 +389,14 @@ class PerplexityProvider(BaseLLMProvider):
         prompt = f"Analyze this GNN model for {task}: {content}"
 
         async def _run() -> LLMResponse:
+            """Run operation."""
             return await self.generate_response(
-                [{"role": "user", "content": prompt}]
+                [LLMMessage(role="user", content=prompt)]
             )
 
         def _extract(result: Any) -> str:
-            return result.content if hasattr(result, 'content') else str(result)
+            """Extract operation."""
+            return result.content if hasattr(result, "content") else str(result)
 
         try:
             result = asyncio.run(_run())
@@ -401,6 +404,7 @@ class PerplexityProvider(BaseLLMProvider):
         except RuntimeError:
             # Already inside a running event loop – delegate to a worker thread
             def _thread_run() -> LLMResponse:
+                """Handle thread run for internal callers."""
                 return asyncio.run(_run())
 
             with concurrent.futures.ThreadPoolExecutor(max_workers=1) as pool:

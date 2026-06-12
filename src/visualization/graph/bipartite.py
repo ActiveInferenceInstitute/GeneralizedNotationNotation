@@ -4,16 +4,17 @@ from __future__ import annotations
 
 import logging
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any, Dict, List, cast
 
 try:
     import matplotlib
 
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
+
     MATPLOTLIB_AVAILABLE = True
 except (ImportError, RecursionError):
-    plt = None
+    plt = cast(Any, None)
     MATPLOTLIB_AVAILABLE = False
 
 try:
@@ -21,10 +22,10 @@ try:
 
     NETWORKX_AVAILABLE = True
 except (ImportError, RecursionError, AttributeError, ValueError):
-    nx = None
+    nx = cast(Any, None)
     NETWORKX_AVAILABLE = False
 
-from visualization.plotting.utils import safe_tight_layout, save_plot_safely
+from ..plotting.utils import safe_tight_layout, save_plot_safely
 
 logger = logging.getLogger(__name__)
 
@@ -46,14 +47,10 @@ def generate_variable_parameter_bipartite(
         return out
 
     var_names = {
-        v.get("name")
-        for v in variables
-        if isinstance(v, dict) and v.get("name")
+        str(v.get("name")) for v in variables if isinstance(v, dict) and v.get("name")
     }
     param_names_set = {
-        str(p["name"])
-        for p in parameters
-        if isinstance(p, dict) and p.get("name")
+        str(p["name"]) for p in parameters if isinstance(p, dict) and p.get("name")
     }
     if not param_names_set:
         return out
@@ -100,7 +97,7 @@ def generate_variable_parameter_bipartite(
             node_size=900,
             alpha=0.9,
         )
-        labels = {}
+        labels: dict[Any, Any] = {}
         for n in B.nodes():
             d = B.nodes[n]
             if d.get("kind") == "parameter":
@@ -120,6 +117,8 @@ def generate_variable_parameter_bipartite(
         logger.debug("Bipartite plot skipped: %s", e)
         try:
             plt.close()
-        except Exception:
-            pass
+        except Exception as close_error:
+            logger.debug(
+                "Matplotlib close after bipartite failure also failed: %s", close_error
+            )
     return out

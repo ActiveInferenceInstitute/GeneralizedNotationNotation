@@ -1,41 +1,42 @@
-# Modules - Agent Scaffolding
+# Documentation Module Agent Sync Maps
 
-## Module Overview
+## Purpose
+This directory serves as a dynamically synchronized documentation index for the 25 distinct `Modules` existing in the backend architecture.
 
-**Purpose**: This directory serves as a categorized documentation index for the `Modules` layer of the GNN Framework.
+**Status**: Synced to Python Source
 
-**Category**: Documentation Index
+## Reconciled Agent Maps
+Every document located inside this folder (`00_template.md` through `24_intelligent_analysis.md`) is accurately aligned with its respective `src/module/AGENTS.md` counterpart ensuring LLM Context layers learn current module parameters.
 
 ## Contained Indices
 
-- [Step 2: Tests — Test Suite Execution](02_tests.md)
-- [Step 9: Advanced Visualization — 3D, Interactive, and POMDP Viz](09_advanced_viz.md)
-- [Step 17: Integration — Cross-Module Processing](17_integration.md)
-- [Step 15: Audio — Sonification and Analysis](15_audio.md)
-- [Step 16: Analysis — Statistical and Post-Simulation Analysis](16_analysis.md)
-- [Step 6: Validation — Semantic Validation and QA](06_validation.md)
-- [Step 5: Type Checker — GNN Type Validation](05_type_checker.md)
-- [Step 13: LLM — Large Language Model Processing](13_llm.md)
-- [Step 4: Model Registry — Versioning and Lifecycle](04_model_registry.md)
-- [Step 11: Render — POMDP-Aware Code Generation](11_render.md)
-- [Step 14: ML Integration — Machine Learning Framework Integration](14_ml_integration.md)
-- [Step 19: Research — Research Processing](19_research.md)
-- [Step 12: Execute — Script Execution Across Frameworks](12_execute.md)
-- [`main.py` — Pipeline Orchestrator](main.md)
-- [Step 22: GUI — Interactive GNN Constructor](22_gui.md)
-- [`__init__.py` — Core Package Module](init.md)
-- [Step 8: Visualization — Matrix and Network Graphs](08_visualization.md)
-- [Step 3: GNN — File Discovery and Parsing](03_gnn.md)
-- [Step 7: Export — Multi-Format Serialization](07_export.md)
-- [Step 21: MCP — Model Context Protocol Server](21_mcp.md)
-- [Step 18: Security — Validation and Scanning](18_security.md)
-- [Step 0: Template — Pipeline Pattern Demonstration](00_template.md)
-- [Step 20: Website — Static Website Generation](20_website.md)
-- [Step 1: Setup — Environment and Dependency Management](01_setup.md)
-- [Step 10: Ontology — Term Mapping and Validation](10_ontology.md)
-- [Step 24: Intelligent Analysis — LLM-Powered Pipeline Analysis](24_intelligent_analysis.md)
-- [Step 23: Report — Pipeline Report Generation](23_report.md)
+| # | Document | Module path | One-line purpose |
+|---|----------|-------------|-------------------|
+| 0 | [00_template.md](00_template.md) | `src/template/` | Scaffold for new GNN models from templates |
+| 1 | [01_setup.md](01_setup.md) | `src/setup/` | Environment setup: uv sync, dep validation |
+| 2 | [02_tests.md](02_tests.md) | `src/tests/` | Test orchestration (delegates to pytest) |
+| 3 | [03_gnn.md](03_gnn.md) | `src/gnn/` | GNN parsing and discovery |
+| 4 | [04_model_registry.md](04_model_registry.md) | `src/model_registry/` | Model metadata registration |
+| 5 | [05_type_checker.md](05_type_checker.md) | `src/type_checker/` | Static validation + resource estimation |
+| 6 | [06_validation.md](06_validation.md) | `src/validation/` | Deep consistency checking |
+| 7 | [07_export.md](07_export.md) | `src/export/` | Multi-format export (JSON, XML, GraphML, etc.) |
+| 8 | [08_visualization.md](08_visualization.md) | `src/visualization/` | Diagrams, connectivity plots |
+| 9 | [09_advanced_viz.md](09_advanced_viz.md) | `src/advanced_visualization/` | Interactive + 3D visualizations |
+| 10 | [10_ontology.md](10_ontology.md) | `src/ontology/` | Active Inference ontology mapping |
+| 11 | [11_render.md](11_render.md) | `src/render/` | Code generation for all frameworks |
+| 12 | [12_execute.md](12_execute.md) | `src/execute/` | Simulation execution |
+| 13 | [13_llm.md](13_llm.md) | `src/llm/` | LLM analysis & enrichment |
+| 14 | [14_ml_integration.md](14_ml_integration.md) | `src/ml_integration/` | PyTorch/JAX array export |
+| 15 | [15_audio.md](15_audio.md) | `src/audio/` | Audio rendering (SAPF, pedalboard) |
+| 16 | [16_analysis.md](16_analysis.md) | `src/analysis/` | Post-simulation statistical analysis |
+| 17 | [17_integration.md](17_integration.md) | `src/integration/` | Cross-system integration |
+| 18 | [18_security.md](18_security.md) | `src/security/` | Security scan + provenance checks |
+| 19 | [19_research.md](19_research.md) | `src/research/` | Rule-based research artifact generation |
+| 20 | [20_website.md](20_website.md) | `src/website/` | HTML dashboard generation (hard import) |
+| 21 | [21_mcp.md](21_mcp.md) | `src/mcp/` | Model Context Protocol server (hard import) |
+| 22 | [22_gui.md](22_gui.md) | `src/gui/` | Interactive GUI |
+| 23 | [23_report.md](23_report.md) | `src/report/` | Consolidated pipeline report |
+| 24 | [24_intelligent_analysis.md](24_intelligent_analysis.md) | `src/intelligent_analysis/` | LLM-assisted remediation (hard import) |
 
-
-## Implementation Details
-This is a static reference directory. The above files can be explicitly referenced by external LLMs to retrieve detailed syntax and operational knowledge for GNN generation tasks.
+## External Usage
+Model Context Protocol servers routing to this directory pull the real-implementation capability dictionary defined inside the core testing frameworks.

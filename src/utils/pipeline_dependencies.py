@@ -8,16 +8,17 @@ for pipeline steps when dependencies are missing or incompatible.
 
 import importlib
 import logging
-import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
+import subprocess  # nosec B404
 import sys
 from contextlib import contextmanager
 from dataclasses import dataclass, field
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, Callable, Dict, List, Optional, cast
 
 
 @dataclass
 class DependencyResult:
     """Result of a dependency check."""
+
     available: bool
     version: Optional[str] = None
     error: Optional[str] = None
@@ -28,11 +29,11 @@ class DependencyResult:
 @dataclass
 class StepDependencyInfo:
     """Information about step dependencies."""
+
     required: List[str] = field(default_factory=list)
     optional: List[str] = field(default_factory=list)
     fallbacks: Dict[str, str] = field(default_factory=dict)
     validators: Dict[str, Callable] = field(default_factory=dict)
-
 
 
 class PipelineDependencyManager:
@@ -40,14 +41,14 @@ class PipelineDependencyManager:
     Pipeline dependency manager with graceful degradation support.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
+        """Initialize the instance."""
         self.logger = logging.getLogger(__name__)
-        self.dependency_cache = {}
+        self.dependency_cache: Dict[str, DependencyResult] = {}
         self.step_configs = self._initialize_step_configs()
 
-# ... (omitting middle lines for brevity in thought process, but tool needs exact match.
-# Actually, replace_file_content needs exact match. I should use multi_replace for this file since changes are scattered.)
-
+    # ... (omitting middle lines for brevity in thought process, but tool needs exact match.
+    # Actually, replace_file_content needs exact match. I should use multi_replace for this file since changes are scattered.)
 
     def _initialize_step_configs(self) -> Dict[str, StepDependencyInfo]:
         """Initialize dependency configurations for each pipeline step."""
@@ -64,7 +65,7 @@ class PipelineDependencyManager:
                 required=["matplotlib"],
                 optional=["seaborn", "networkx", "plotly"],
                 fallbacks={"seaborn": "matplotlib", "networkx": "basic_graph"},
-                validators={"matplotlib": self._validate_matplotlib}
+                validators={"matplotlib": self._validate_matplotlib},
             ),
             "11_render": StepDependencyInfo(
                 required=["pathlib", "json"],
@@ -77,8 +78,8 @@ class PipelineDependencyManager:
                     "pymdp": "fallback_simulation",
                     "jax": "numpy_fallback",
                     "julia": "skip_julia",
-                    "discopy": "basic_category"
-                }
+                    "discopy": "basic_category",
+                },
             ),
             "15_audio": StepDependencyInfo(
                 required=["pathlib"],
@@ -87,19 +88,21 @@ class PipelineDependencyManager:
                     "librosa": "basic_audio",
                     "soundfile": "wave_fallback",
                     "pedalboard": "basic_effects",
-                    "pydub": "simple_audio"
-                }
+                    "pydub": "simple_audio",
+                },
             ),
         }
 
-    def check_dependency(self, module_name: str, use_cache: bool = True) -> DependencyResult:
+    def check_dependency(
+        self, module_name: str, use_cache: bool = True
+    ) -> DependencyResult:
         """
         Check if a dependency is available.
-        
+
         Args:
             module_name: Name of the module to check
             use_cache: Whether to use cached results
-            
+
         Returns:
             DependencyResult with availability information
         """
@@ -113,7 +116,7 @@ class PipelineDependencyManager:
             result.available = True
 
             # Try to get version information
-            version_attrs = ['__version__', 'version', 'VERSION']
+            version_attrs: list[Any] = ["__version__", "version", "VERSION"]
             for attr in version_attrs:
                 if hasattr(module, attr):
                     result.version = str(getattr(module, attr))
@@ -136,10 +139,10 @@ class PipelineDependencyManager:
     def check_step_dependencies(self, step_name: str) -> Dict[str, Any]:
         """
         Check all dependencies for a specific pipeline step.
-        
+
         Args:
             step_name: Name of the pipeline step
-            
+
         Returns:
             Dictionary with dependency check results
         """
@@ -147,11 +150,11 @@ class PipelineDependencyManager:
             return {
                 "step": step_name,
                 "status": "unknown",
-                "error": f"No dependency configuration for step {step_name}"
+                "error": f"No dependency configuration for step {step_name}",
             }
 
         config = self.step_configs[step_name]
-        results = {
+        results: dict[str, Any] = {
             "step": step_name,
             "status": "healthy",
             "required": {},
@@ -159,11 +162,11 @@ class PipelineDependencyManager:
             "fallbacks_available": {},
             "warnings": [],
             "errors": [],
-            "recommendations": []
+            "recommendations": [],
         }
 
         # Check required dependencies
-        critical_missing = []
+        critical_missing: list[Any] = []
         for dep in config.required:
             dep_result = self.check_dependency(dep)
             results["required"][dep] = dep_result
@@ -173,7 +176,7 @@ class PipelineDependencyManager:
                 results["errors"].append(f"Required dependency missing: {dep}")
 
         # Check optional dependencies
-        optional_missing = []
+        optional_missing: list[Any] = []
         for dep in config.optional:
             dep_result = self.check_dependency(dep)
             results["optional"][dep] = dep_result
@@ -218,7 +221,8 @@ class PipelineDependencyManager:
         """Validate matplotlib can create figures without errors."""
         try:
             import matplotlib
-            matplotlib.use('Agg')  # Use non-interactive backend
+
+            matplotlib.use("Agg")  # Use non-interactive backend
             import matplotlib.pyplot as plt
 
             # Test basic figure creation
@@ -230,14 +234,14 @@ class PipelineDependencyManager:
             return False
 
     @contextmanager
-    def graceful_import(self, module_name: str, step_name: Optional[str] = None):
+    def graceful_import(self, module_name: str, step_name: Optional[str] = None) -> Any:
         """
         Context manager for graceful imports with recovery handling.
-        
+
         Args:
             module_name: Module to import
             step_name: Pipeline step name for recovery lookup
-            
+
         Yields:
             Either the imported module or None if unavailable
         """
@@ -245,7 +249,9 @@ class PipelineDependencyManager:
             module = importlib.import_module(module_name)
             yield module
         except ImportError:
-            self.logger.warning(f"{module_name} not available - graceful degradation enabled")
+            self.logger.warning(
+                f"{module_name} not available - graceful degradation enabled"
+            )
 
             # Check for recovery
             if step_name and step_name in self.step_configs:
@@ -256,21 +262,23 @@ class PipelineDependencyManager:
 
             yield None
 
-    def generate_dependency_report(self, steps: List[str] = None) -> Dict[str, Any]:
+    def generate_dependency_report(
+        self, steps: (List[str]) | None = None
+    ) -> Dict[str, Any]:
         """
         Generate comprehensive dependency report for pipeline steps.
-        
+
         Args:
             steps: List of step names to check, or None for all
-            
+
         Returns:
             Comprehensive dependency report
         """
         if steps is None:
             steps = list(self.step_configs.keys())
 
-        report = {
-            "timestamp": __import__('datetime').datetime.now().isoformat(),
+        report: dict[str, Any] = {
+            "timestamp": __import__("datetime").datetime.now().isoformat(),
             "python_version": sys.version,
             "steps": {},
             "summary": {
@@ -280,8 +288,8 @@ class PipelineDependencyManager:
                 "failed_steps": 0,
                 "total_dependencies": 0,
                 "available_dependencies": 0,
-                "missing_dependencies": 0
-            }
+                "missing_dependencies": 0,
+            },
         }
 
         for step in steps:
@@ -297,7 +305,10 @@ class PipelineDependencyManager:
                 report["summary"]["failed_steps"] += 1
 
             # Count dependencies
-            all_deps = {**step_result["required"], **step_result["optional"]}
+            all_deps: dict[Any, Any] = {
+                **step_result["required"],
+                **step_result["optional"],
+            }
             report["summary"]["total_dependencies"] += len(all_deps)
             report["summary"]["available_dependencies"] += sum(
                 1 for dep in all_deps.values() if dep.available
@@ -308,15 +319,16 @@ class PipelineDependencyManager:
 
         return report
 
-    def install_missing_dependencies(self, step_name: str,
-                                   required_only: bool = False) -> Dict[str, bool]:
+    def install_missing_dependencies(
+        self, step_name: str, required_only: bool = False
+    ) -> Dict[str, bool]:
         """
         Attempt to install missing dependencies for a step.
-        
+
         Args:
             step_name: Pipeline step name
             required_only: Only install required dependencies
-            
+
         Returns:
             Dictionary mapping dependency names to installation success
         """
@@ -324,7 +336,7 @@ class PipelineDependencyManager:
             return {}
 
         config = self.step_configs[step_name]
-        installation_results = {}
+        installation_results: dict[Any, Any] = {}
 
         # Get dependencies to install
         deps_to_install = config.required.copy()
@@ -336,8 +348,8 @@ class PipelineDependencyManager:
             if not dep_result.available:
                 try:
                     # Try to install using uv
-                    cmd = ["uv", "pip", "install", dep]
-                    result = subprocess.run(  # nosec B603 -- subprocess calls with controlled/trusted input
+                    cmd: list[Any] = ["uv", "pip", "install", dep]
+                    result = subprocess.run(  # nosec B603
                         cmd, capture_output=True, text=True, timeout=300
                     )
 
@@ -362,8 +374,12 @@ class PipelineDependencyManager:
         return installation_results
 
 
+_PIPELINE_DEPENDENCY_MANAGER: PipelineDependencyManager | None = None
+
+
 def get_pipeline_dependency_manager() -> PipelineDependencyManager:
     """Get singleton instance of pipeline dependency manager."""
-    if not hasattr(get_pipeline_dependency_manager, '_instance'):
-        get_pipeline_dependency_manager._instance = PipelineDependencyManager()
-    return get_pipeline_dependency_manager._instance
+    global _PIPELINE_DEPENDENCY_MANAGER
+    if _PIPELINE_DEPENDENCY_MANAGER is None:
+        _PIPELINE_DEPENDENCY_MANAGER = PipelineDependencyManager()
+    return _PIPELINE_DEPENDENCY_MANAGER

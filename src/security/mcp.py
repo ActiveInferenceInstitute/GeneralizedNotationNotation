@@ -15,8 +15,9 @@ logger = logging.getLogger(__name__)
 from . import process_security
 
 
-def process_security_mcp(target_directory: str, output_directory: str,
-                         verbose: bool = False) -> Dict[str, Any]:
+def process_security_mcp(
+    target_directory: str, output_directory: str, verbose: bool = False
+) -> Dict[str, Any]:
     """
     Run security processing on GNN pipeline files.
 
@@ -67,11 +68,11 @@ def scan_gnn_file_mcp(file_path: str) -> Dict[str, Any]:
             return {"success": False, "error": f"File not found: {file_path}"}
 
         content = fpath.read_text(encoding="utf-8", errors="replace")
-        lines   = content.splitlines()
+        lines = content.splitlines()
 
         issues: List[Dict[str, Any]] = []
         # Check for dangerous patterns
-        danger_patterns = [
+        danger_patterns: list[Any] = [
             ("exec(", "Potential code execution via exec()"),
             ("eval(", "Potential code execution via eval()"),
             ("__import__", "Dynamic import call"),
@@ -81,20 +82,22 @@ def scan_gnn_file_mcp(file_path: str) -> Dict[str, Any]:
         for i, line in enumerate(lines, 1):
             for pattern, description in danger_patterns:
                 if pattern in line:
-                    issues.append({
-                        "line": i,
-                        "pattern": pattern,
-                        "description": description,
-                        "severity": "high",
-                    })
+                    issues.append(
+                        {
+                            "line": i,
+                            "pattern": pattern,
+                            "description": description,
+                            "severity": "high",
+                        }
+                    )
 
         risk_level = "high" if issues else "low"
         return {
-            "success":     True,
-            "file":        str(fpath),
-            "issues_found":len(issues),
-            "issues":      issues,
-            "risk_level":  risk_level,
+            "success": True,
+            "file": str(fpath),
+            "issues_found": len(issues),
+            "issues": issues,
+            "risk_level": risk_level,
             "total_lines": len(lines),
         }
     except Exception as e:
@@ -115,9 +118,12 @@ def get_security_report_mcp(output_directory: str) -> Dict[str, Any]:
     try:
         out_dir = Path(output_directory)
         if not out_dir.exists():
-            return {"success": False, "error": f"Directory not found: {output_directory}"}
+            return {
+                "success": False,
+                "error": f"Directory not found: {output_directory}",
+            }
 
-        reports = []
+        reports: list[Any] = []
         for jf in sorted(out_dir.rglob("*security*.json"))[:5]:
             try:
                 reports.append({"file": jf.name, "data": json.loads(jf.read_text())})
@@ -125,10 +131,10 @@ def get_security_report_mcp(output_directory: str) -> Dict[str, Any]:
                 logger.debug(f"Could not parse security report {jf.name}: {e}")
 
         return {
-            "success":          True,
+            "success": True,
             "output_directory": str(out_dir),
-            "reports_found":    len(reports),
-            "reports":          reports,
+            "reports_found": len(reports),
+            "reports": reports,
         }
     except Exception as e:
         logger.error(f"get_security_report_mcp error: {e}", exc_info=True)
@@ -142,7 +148,7 @@ def list_security_checks_mcp() -> Dict[str, Any]:
     Returns:
         Dictionary with check names, descriptions, and severity levels.
     """
-    checks = {
+    checks: dict[str, Any] = {
         "dependency_cve_scan": {
             "description": "CVE scan of Python dependencies",
             "severity": "high",
@@ -169,39 +175,67 @@ def list_security_checks_mcp() -> Dict[str, Any]:
 
 # ── MCP Registration ────────────────────────────────────────────────────────
 
-def register_tools(mcp_instance) -> None:
+
+def register_tools(mcp_instance: Any) -> None:
     """Register security tools with the MCP server."""
 
     mcp_instance.register_tool(
         "process_security",
         process_security_mcp,
-        {"type": "object", "properties": {
-            "target_directory": {"type": "string", "description": "Directory with GNN / pipeline files to scan"},
-            "output_directory": {"type": "string", "description": "Security report output directory"},
-            "verbose":          {"type": "boolean", "default": False},
-        }, "required": ["target_directory", "output_directory"]},
+        {
+            "type": "object",
+            "properties": {
+                "target_directory": {
+                    "type": "string",
+                    "description": "Directory with GNN / pipeline files to scan",
+                },
+                "output_directory": {
+                    "type": "string",
+                    "description": "Security report output directory",
+                },
+                "verbose": {"type": "boolean", "default": False},
+            },
+            "required": ["target_directory", "output_directory"],
+        },
         "Run security scanning and compliance checks on GNN pipeline files.",
-        module=__package__, category="security",
+        module=__package__,
+        category="security",
     )
 
     mcp_instance.register_tool(
         "scan_gnn_file",
         scan_gnn_file_mcp,
-        {"type": "object", "properties": {
-            "file_path": {"type": "string", "description": "Path to the GNN file to scan"},
-        }, "required": ["file_path"]},
+        {
+            "type": "object",
+            "properties": {
+                "file_path": {
+                    "type": "string",
+                    "description": "Path to the GNN file to scan",
+                },
+            },
+            "required": ["file_path"],
+        },
         "Perform a lightweight security scan of a single GNN file for injection patterns.",
-        module=__package__, category="security",
+        module=__package__,
+        category="security",
     )
 
     mcp_instance.register_tool(
         "get_security_report",
         get_security_report_mcp,
-        {"type": "object", "properties": {
-            "output_directory": {"type": "string", "description": "Directory with saved security reports"},
-        }, "required": ["output_directory"]},
+        {
+            "type": "object",
+            "properties": {
+                "output_directory": {
+                    "type": "string",
+                    "description": "Directory with saved security reports",
+                },
+            },
+            "required": ["output_directory"],
+        },
         "Read and return saved security scan reports from a previous security processing run.",
-        module=__package__, category="security",
+        module=__package__,
+        category="security",
     )
 
     mcp_instance.register_tool(
@@ -209,7 +243,8 @@ def register_tools(mcp_instance) -> None:
         list_security_checks_mcp,
         {},
         "Return the list of security checks performed (CVE scan, injection detection, path traversal, etc.).",
-        module=__package__, category="security",
+        module=__package__,
+        category="security",
     )
 
     logger.info("security module MCP tools registered (4 tools).")

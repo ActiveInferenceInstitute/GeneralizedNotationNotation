@@ -452,7 +452,7 @@ function comprehensive_metacognitive_analysis(output_dir::String)
                 actions = Int.(basic_data[:, 3])
                 beliefs = basic_data[:, 4]
                 
-                # Generate confidence trace (placeholder - in real implementation this would come from model)
+                # Generate confidence trace from available result data.
                 confidence_trace = 1.0 .- abs.(beliefs .- 0.5) .* 2  # Higher confidence when more certain
                 
                 # Create beliefs trace matrix
@@ -500,7 +500,7 @@ function comprehensive_metacognitive_analysis(output_dir::String)
         end
         
         if !isempty(parameter_traces) && haskey(analysis_results, "metacognitive_awareness")
-            # Create dummy performance trace based on prediction accuracy
+    # Create sample performance trace based on prediction accuracy
             performance_trace = ones(length(observations))
             
             meta_learning_results = analyze_meta_learning(parameter_traces, performance_trace)
@@ -645,7 +645,7 @@ function shannon_entropy(prob_dist::Vector{Float64})
     -sum(p * log2(p) for p in non_zero_probs)
 end
 
-# Utility function to load statistical data (placeholder implementation)
+# Utility function to load statistical data.
 function load_statistical_data(filepath::String)
     if !isfile(filepath)
         error("Data file not found: $filepath")

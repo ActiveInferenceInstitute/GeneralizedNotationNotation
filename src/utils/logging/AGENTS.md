@@ -1,43 +1,48 @@
-# Logging Utilities Module
+# Logging Sub-module
 
-## Purpose
+## Overview
 
-This module provides centralized logging utilities for the GNN processing pipeline. It standardizes log formatting, file handling, and output across all pipeline steps.
+Centralized, production-grade logging infrastructure for the GNN pipeline. Provides correlation-aware tracing across all 25 steps, visual progress indicators, and multi-format structured output (JSON-L + Text).
 
-## Key Files
+## Architecture
 
-- `logging_utils.py` - Core logging configuration and utilities
+Follows the **Thin Orchestrator** pattern where individual steps delegate to this centralized system to ensure consistent formatting and deduplication.
 
-## Functionality
-
-- Configurable log levels (DEBUG, INFO, WARNING, ERROR)
-- File and console logging handlers
-- Timestamped log entries
-- Pipeline step-specific loggers
-- Performance metrics logging
-
-## Usage
-
-```python
-from utils.logging.logging_utils import setup_logging, get_logger
-
-# Setup logging for a pipeline step
-setup_logging(verbose=True, log_file="output/step.log")
-
-# Get a logger for a module
-logger = get_logger(__name__)
-logger.info("Processing started")
+```
+logging/
+├── __init__.py          # Public API exports
+├── logging_utils.py     # Core implementation (Hardened v1.6.0)
+├── AGENTS.md            # Agent capabilities and status
+├── README.md            # Developer usage guide
+└── SPEC.md              # Technical specification
 ```
 
-## Integration Points
+## Hardening Achievements (v1.6.0)
 
-- All 25 pipeline step scripts use these utilities
-- MCP tools log through this system
-- Test framework uses consistent logging
+- **Remediated Duplication**: Fixed a handler collision between root and step-level handlers that caused duplicate terminal output.
+- **Unified Tracing**: Established a single-source-of-truth for correlation IDs, ensuring logs from subprocesses are correctly tagged and formatted.
+- **Logging Facade**: `src/utils/logging_utils.py` delegates to the structured logging system.
 
-## Maintenance
+## Key Capabilities
 
-When modifying logging:
-1. Maintain backward compatibility with existing log formats
-2. Ensure thread-safe logging for parallel execution
-3. Test log rotation and file handling
+- **`setup_step_logging`** — Comprehensive configuration with auto-detection of terminal capabilities.
+- **`log_step_*` Suite** — Semantic logging with visual icons (🚀, ✅, ⚠️, ❌) and progress tracking.
+- **`timed_operation`** — Context manager for automatic $O(N)$ performance instrumentation.
+- **Structured JSON-L** — Concurrent machine-readable logging for downstream analysis.
+- **`logging.TRACE` (numeric 5)** — Registered for high-volume parser diagnostics; enable root/handlers at TRACE when debugging parse traces without flooding default `--verbose` output.
+
+## Features
+
+- **Correlation Tracing**: `[ID:STEP]` tags on every line for cross-module debugging.
+- **Rich Aesthetics**: Vibrant terminal output with glassmorphism-compatible visual logging.
+- **Performance Aware**: Integrated memory and duration tracking in every log line.
+- **Resilient Initialization**: Defensive handler management prevents double-logging even with redundant calls.
+
+## Documentation
+- [Technical Specification](SPEC.md)
+- [Developer Guide](README.md)
+
+---
+**Version**: 1.6.0  
+**Status**: Production Hardened  
+**Pipeline Integration**: Steps 0-24

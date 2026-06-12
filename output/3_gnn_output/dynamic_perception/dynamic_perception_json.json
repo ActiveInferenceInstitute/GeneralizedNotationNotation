@@ -80,7 +80,7 @@
       "weight": null
     }
   ],
-  "created_at": "2026-04-10T10:24:31.838755",
+  "created_at": "2026-05-25T09:59:34.672300",
   "equations": [],
   "extensions": {
     "footer": "Dynamic Perception Model v1 - GNN Representation.\nPassive observer — no actions, no policies.\nDemonstrates temporal belief updating via variational inference.",
@@ -88,7 +88,7 @@
     "signature": "Cryptographic signature goes here"
   },
   "model_name": "Dynamic Perception Model",
-  "modified_at": "2026-04-10T10:24:31.838755",
+  "modified_at": "2026-05-25T09:59:34.672300",
   "ontology_mappings": [
     {
       "description": null,
@@ -172,6 +172,24 @@
           0.5
         ]
       ]
+    },
+    {
+      "description": null,
+      "name": "num_hidden_states",
+      "type_hint": null,
+      "value": 2
+    },
+    {
+      "description": null,
+      "name": "num_obs",
+      "type_hint": null,
+      "value": 2
+    },
+    {
+      "description": null,
+      "name": "num_timesteps",
+      "type_hint": null,
+      "value": 10
     }
   ],
   "time_specification": {

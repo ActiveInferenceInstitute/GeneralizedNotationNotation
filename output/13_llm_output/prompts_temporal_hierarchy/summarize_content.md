@@ -1,12 +1,28 @@
 # SUMMARIZE_CONTENT
 
-Here's a concise summary:
+Here is a structured summary of the GNN Representation:
 
-**Overview:** This model represents a hierarchical active inference agent that uses three-level temporal hierarchies (Level 0, Level 1, and Level 2) to learn from sensorimotor data and make decisions based on strategic information. The model is composed of four key variables:
+**Summary:**
+This model represents an ActInfPomDP agent that uses active inference (AI) to generate predictions based on sensorimotor and tactical information, while controlling strategic actions in a grid-world environment. The model consists of three main components:
 
-1. **Hidden states**: A set of vectors representing the state trajectories of each level
-2. **Observations**: A set of vectors representing the actions or control flows at each level
-3. **Actions/Controls**: A set of vectors representing the actions and controls at each level
-4. **Key Variables**: A matrix containing information about the model's structure, including hidden states, observations, actions, and strategic summaries.
-5. **Critical Parameters**: Key hyperparameters that control the behavior of the model (e.g., the number of levels, the rate of action updates)
-6. **Notable Features**: Unique aspects of this model design, such as special properties or constraints related to the agent's structure, actions, and strategic interactions.
+1. **ActInfo**: A hierarchical neural network represented by a set of layers with different activation functions for each layer. Each layer has two inputs (`D0`) and one output (`G0`). The activations are computed based on the input data, which is fed into the layers using an adversarial loss function (A/L) to generate predictions.
+
+2. **ActInfo****: A hierarchical neural network represented by a set of layers with different activation functions for each layer. Each layer has two inputs (`D0`) and one output (`G0`). The activations are computed based on the input data, which is fed into the layers using an adversarial loss function (A/L) to generate predictions.
+
+3. **ActInfo****: A hierarchical neural network represented by a set of layers with different activation functions for each layer. Each layer has two inputs (`D0`) and one output (`G0`). The activations are computed based on the input data, which is fed into the layers using an adversarial loss function (A/L) to generate predictions.
+
+**Key Variables:**
+
+1. **hidden states**: [list with brief descriptions]
+   - `D`: D-state of the agent and its actions.
+   - `B`: B-state of the agent and its actions, which are computed based on the input data.
+   - `C`: C-state of the agent and its actions, which are computed based on the input data.
+
+2. **observations**: [list with brief descriptions]
+   - `A`: A-states of the agents (top-level)
+   - `B`: B-states of the agents (bottom-level)
+3. **actions/controls**: [list with brief descriptions]
+   - `D1`: D-state of the agent and its actions, which are computed based on the input data.
+   - `C1`: C-state of the agent and its actions, which are computed based on the input data.
+4. **actions/controls**: [list with brief descriptions]
+   - `D2`: D-state of the agent and its actions

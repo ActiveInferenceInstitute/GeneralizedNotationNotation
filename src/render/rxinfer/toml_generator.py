@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 def render_gnn_to_rxinfer_toml(
     gnn_spec: Dict[str, Any],
     output_path: Path,
-    options: Optional[Dict[str, Any]] = None
+    options: Optional[Dict[str, Any]] = None,
 ) -> Tuple[bool, str, List[str]]:
     """
     Generate an executable Julia script for RxInfer.jl from a GNN specification.
@@ -23,9 +23,11 @@ def render_gnn_to_rxinfer_toml(
     """
     try:
         options = options or {}
-        generate_toml = options.get('generate_toml', False)
+        generate_toml = options.get("generate_toml", False)
 
-        logger.info(f"Generating RxInfer Julia script at {output_path.with_suffix('.jl')}")
+        logger.info(
+            f"Generating RxInfer Julia script at {output_path.with_suffix('.jl')}"
+        )
 
         # Extract model information
         model_name = gnn_spec.get("name", "GNN_Model")
@@ -39,18 +41,35 @@ def render_gnn_to_rxinfer_toml(
             init_param_section = gnn_spec["initial_parameterization"]
             # Look for parameter assignments in the format "A={...}"
             for param_name in ["A", "B", "C", "D", "E"]:
-                if param_name not in initial_params and param_name in str(init_param_section):
+                if param_name not in initial_params and param_name in str(
+                    init_param_section
+                ):
                     # Extract the parameter value from the section
-                    param_value = _extract_parameter_from_section(init_param_section, param_name)
+                    param_value = _extract_parameter_from_section(
+                        init_param_section, param_name
+                    )
                     if param_value:
                         initial_params[param_name] = param_value
 
         # Parse the parameter matrices from the GNN format
-        A_matrix = _parse_gnn_matrix(initial_params.get("A", "{(1.0, 0.0, 0.0), (0.0, 1.0, 0.0), (0.0, 0.0, 1.0)}"))
-        B_matrix = _parse_gnn_3d_matrix(initial_params.get("B", "{( (1.0,0.0,0.0), (0.0,1.0,0.0), (0.0,0.0,1.0) ), ( (0.0,1.0,0.0), (1.0,0.0,0.0), (0.0,0.0,1.0) ), ( (0.0,0.0,1.0), (0.0,1.0,0.0), (1.0,0.0,0.0) )}"))
+        A_matrix = _parse_gnn_matrix(
+            initial_params.get(
+                "A", "{(1.0, 0.0, 0.0), (0.0, 1.0, 0.0), (0.0, 0.0, 1.0)}"
+            )
+        )
+        B_matrix = _parse_gnn_3d_matrix(
+            initial_params.get(
+                "B",
+                "{( (1.0,0.0,0.0), (0.0,1.0,0.0), (0.0,0.0,1.0) ), ( (0.0,1.0,0.0), (1.0,0.0,0.0), (0.0,0.0,1.0) ), ( (0.0,0.0,1.0), (0.0,1.0,0.0), (1.0,0.0,0.0) )}",
+            )
+        )
         C_vector = _parse_gnn_vector(initial_params.get("C", "(0.0, 0.0, 1.0)"))
-        D_vector = _parse_gnn_vector(initial_params.get("D", "(0.33333, 0.33333, 0.33333)"))
-        E_vector = _parse_gnn_vector(initial_params.get("E", "(0.33333, 0.33333, 0.33333)"))
+        D_vector = _parse_gnn_vector(
+            initial_params.get("D", "(0.33333, 0.33333, 0.33333)")
+        )
+        E_vector = _parse_gnn_vector(
+            initial_params.get("E", "(0.33333, 0.33333, 0.33333)")
+        )
 
         # Get dimensions
         num_states = len(D_vector)
@@ -58,7 +77,7 @@ def render_gnn_to_rxinfer_toml(
         num_actions = len(B_matrix)
 
         # Default time horizon
-        T = options.get('time_horizon', 10)
+        T = options.get("time_horizon", 10)
 
         # Generate comprehensive Julia code
         julia_code = _generate_rxinfer_pomdp_code(
@@ -72,23 +91,23 @@ def render_gnn_to_rxinfer_toml(
             num_states=num_states,
             num_obs=num_obs,
             num_actions=num_actions,
-            T=T
+            T=T,
         )
 
         # Write Julia script
-        julia_path = output_path.with_suffix('.jl')
+        julia_path = output_path.with_suffix(".jl")
         julia_path.parent.mkdir(parents=True, exist_ok=True)
-        with open(julia_path, 'w', encoding='utf-8') as f:
+        with open(julia_path, "w", encoding="utf-8") as f:
             f.write(julia_code)
 
-        artifacts = [str(julia_path.resolve())]
+        artifacts: list[Any] = [str(julia_path.resolve())]
         msg = f"Successfully wrote RxInfer Julia script to {julia_path}"
 
         # Optionally generate TOML if flagged
         if generate_toml:
             toml_config = _create_toml_config_structure(gnn_spec, options)
-            toml_path = output_path.with_suffix('.toml')
-            with open(toml_path, 'w', encoding='utf-8') as f:
+            toml_path = output_path.with_suffix(".toml")
+            with open(toml_path, "w", encoding="utf-8") as f:
                 _write_toml_with_exact_formatting(f, toml_config)
             artifacts.append(str(toml_path.resolve()))
             msg += f" and TOML to {toml_path}"
@@ -101,53 +120,54 @@ def render_gnn_to_rxinfer_toml(
         logger.error(msg, exc_info=True)
         return False, msg, []
 
+
 def _parse_gnn_matrix(matrix_str: str) -> List[List[float]]:
     """
     Parse GNN matrix notation into Python list of lists.
-    
+
     Args:
         matrix_str: String representation of matrix from GNN file
-        
+
     Returns:
         List of lists representing the matrix
     """
     try:
         # Remove outer braces and split by rows
         matrix_str = matrix_str.strip()
-        if matrix_str.startswith('{') and matrix_str.endswith('}'):
+        if matrix_str.startswith("{") and matrix_str.endswith("}"):
             matrix_str = matrix_str[1:-1]
 
         # Handle the specific GNN format: "(1.0, 0.0, 0.0), (0.0, 1.0, 0.0), (0.0, 0.0, 1.0)"
         # Split by "), (" to separate rows
-        parts = matrix_str.split('), (')
+        parts = matrix_str.split("), (")
         if len(parts) > 1:
-            matrix = []
+            matrix: list[Any] = []
             for i, part in enumerate(parts):
                 # Clean up outer parentheses
                 if i == 0:
-                    part = part[1:] if part.startswith('(') else part
+                    part = part[1:] if part.startswith("(") else part
                 if i == len(parts) - 1:
-                    part = part[:-1] if part.endswith(')') else part
+                    part = part[:-1] if part.endswith(")") else part
 
                 # Split by comma and convert to floats
-                elements = [float(e.strip()) for e in part.split(',')]
+                elements = [float(e.strip()) for e in part.split(",")]
                 matrix.append(elements)
             return matrix
 
         # Recovery: try parsing as individual rows
-        rows = []
+        rows: list[Any] = []
         current_row = ""
         brace_count = 0
 
         for char in matrix_str:
-            if char == '(':
+            if char == "(":
                 brace_count += 1
-            elif char == ')':
+            elif char == ")":
                 brace_count -= 1
 
             current_row += char
 
-            if brace_count == 0 and char == ')':
+            if brace_count == 0 and char == ")":
                 # End of a row
                 rows.append(current_row.strip())
                 current_row = ""
@@ -158,11 +178,11 @@ def _parse_gnn_matrix(matrix_str: str) -> List[List[float]]:
             if row.strip():
                 # Remove outer parentheses and split by comma
                 row_content = row.strip()
-                if row_content.startswith('(') and row_content.endswith(')'):
+                if row_content.startswith("(") and row_content.endswith(")"):
                     row_content = row_content[1:-1]
 
                 # Split by comma and convert to floats
-                elements = [float(e.strip()) for e in row_content.split(',')]
+                elements = [float(e.strip()) for e in row_content.split(",")]
                 matrix.append(elements)
 
         return matrix
@@ -171,42 +191,43 @@ def _parse_gnn_matrix(matrix_str: str) -> List[List[float]]:
         # Return identity matrix as recovery
         return [[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]]
 
+
 def _parse_gnn_3d_matrix(matrix_str: str) -> List[List[List[float]]]:
     """
     Parse GNN 3D matrix notation (for B matrix) into Python list of lists of lists.
-    
+
     Args:
         matrix_str: String representation of 3D matrix from GNN file
-        
+
     Returns:
         List of lists of lists representing the 3D matrix
     """
     try:
         # Remove outer braces
         matrix_str = matrix_str.strip()
-        if matrix_str.startswith('{') and matrix_str.endswith('}'):
+        if matrix_str.startswith("{") and matrix_str.endswith("}"):
             matrix_str = matrix_str[1:-1]
 
         # Split by action matrices (looking for ), ( pattern at the top level)
-        action_matrices = []
+        action_matrices: list[Any] = []
         current_matrix = ""
         brace_count = 0
 
         for char in matrix_str:
-            if char == '(':
+            if char == "(":
                 brace_count += 1
-            elif char == ')':
+            elif char == ")":
                 brace_count -= 1
 
             current_matrix += char
 
-            if brace_count == 0 and char == ')':
+            if brace_count == 0 and char == ")":
                 # End of an action matrix
                 action_matrices.append(current_matrix.strip())
                 current_matrix = ""
 
         # Parse each action matrix
-        tensor = []
+        tensor: list[Any] = []
         for action_matrix in action_matrices:
             if action_matrix.strip():
                 # Parse the 2D matrix for this action
@@ -222,15 +243,15 @@ def _parse_gnn_3d_matrix(matrix_str: str) -> List[List[List[float]]]:
             # B={ ( (1.0,0.0,0.0), (0.0,1.0,0.0), (0.0,0.0,1.0) ), ( (0.0,1.0,0.0), (1.0,0.0,0.0), (0.0,0.0,1.0) ), ( (0.0,0.0,1.0), (0.0,1.0,0.0), (1.0,0.0,0.0) ) }
 
             # Split by "), (" to separate action matrices
-            parts = matrix_str.split('), (')
+            parts = matrix_str.split("), (")
             if len(parts) > 1:
                 tensor = []
                 for i, part in enumerate(parts):
                     # Clean up outer parentheses
                     if i == 0:
-                        part = part[1:] if part.startswith('(') else part
+                        part = part[1:] if part.startswith("(") else part
                     if i == len(parts) - 1:
-                        part = part[:-1] if part.endswith(')') else part
+                        part = part[:-1] if part.endswith(")") else part
 
                     # Parse the action matrix
                     action_matrix = _parse_gnn_matrix(part)
@@ -243,43 +264,47 @@ def _parse_gnn_3d_matrix(matrix_str: str) -> List[List[List[float]]]:
         return [
             [[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]],
             [[0.0, 1.0, 0.0], [1.0, 0.0, 0.0], [0.0, 0.0, 1.0]],
-            [[0.0, 0.0, 1.0], [0.0, 1.0, 0.0], [1.0, 0.0, 0.0]]
+            [[0.0, 0.0, 1.0], [0.0, 1.0, 0.0], [1.0, 0.0, 0.0]],
         ]
+
 
 def _parse_gnn_vector(vector_str: str) -> List[float]:
     """
     Parse GNN vector notation into Python list.
-    
+
     Args:
         vector_str: String representation of vector from GNN file
-        
+
     Returns:
         List representing the vector
     """
     try:
         # Remove outer braces and parentheses
         vector_str = vector_str.strip()
-        if vector_str.startswith('{') and vector_str.endswith('}'):
+        if vector_str.startswith("{") and vector_str.endswith("}"):
             vector_str = vector_str[1:-1]
-        if vector_str.startswith('(') and vector_str.endswith(')'):
+        if vector_str.startswith("(") and vector_str.endswith(")"):
             vector_str = vector_str[1:-1]
 
         # Split by comma and convert to floats
-        elements = [float(e.strip()) for e in vector_str.split(',')]
+        elements = [float(e.strip()) for e in vector_str.split(",")]
         return elements
     except Exception as e:
         logger.warning(f"Failed to parse vector {vector_str}: {e}")
         # Return uniform vector as recovery
         return [0.33333, 0.33333, 0.33333]
 
-def _extract_parameter_from_section(section_content: str, param_name: str) -> Optional[str]:
+
+def _extract_parameter_from_section(
+    section_content: str, param_name: str
+) -> Optional[str]:
     """
     Extract a parameter value from a GNN section content.
-    
+
     Args:
         section_content: The content of a GNN section
         param_name: The name of the parameter to extract
-        
+
     Returns:
         The parameter value as a string, or None if not found
     """
@@ -288,25 +313,25 @@ def _extract_parameter_from_section(section_content: str, param_name: str) -> Op
         import re
 
         # First try to find the parameter assignment line
-        lines = section_content.split('\n')
+        lines = section_content.split("\n")
         for line in lines:
             line = line.strip()
             if line.startswith(f"{param_name}="):
                 # Extract everything after the equals sign
-                value_part = line[len(f"{param_name}="):].strip()
-                if value_part.startswith('{') and value_part.endswith('}'):
+                value_part = line[len(f"{param_name}=") :].strip()
+                if value_part.startswith("{") and value_part.endswith("}"):
                     return value_part
-                elif value_part.startswith('{'):
+                elif value_part.startswith("{"):
                     # Multi-line parameter, need to find the closing brace
                     start_idx = section_content.find(line)
                     brace_count = 0
                     for i, char in enumerate(section_content[start_idx:]):
-                        if char == '{':
+                        if char == "{":
                             brace_count += 1
-                        elif char == '}':
+                        elif char == "}":
                             brace_count -= 1
                             if brace_count == 0:
-                                return section_content[start_idx:start_idx + i + 1]
+                                return section_content[start_idx : start_idx + i + 1]
 
         # Recovery regex pattern
         pattern = rf"{param_name}\s*=\s*(\{{[^}}]*\}})"
@@ -319,6 +344,7 @@ def _extract_parameter_from_section(section_content: str, param_name: str) -> Op
         logger.warning(f"Failed to extract parameter {param_name}: {e}")
         return None
 
+
 def _generate_rxinfer_pomdp_code(
     model_name: str,
     model_annotation: str,
@@ -330,7 +356,7 @@ def _generate_rxinfer_pomdp_code(
     num_states: int,
     num_obs: int,
     num_actions: int,
-    T: int
+    T: int,
 ) -> str:
     """
     Generate comprehensive RxInfer.jl POMDP code based on the RxInfer.jl example.
@@ -347,9 +373,9 @@ def _generate_rxinfer_pomdp_code(
     A_prior = _create_dirichlet_prior(A_matrix)
     B_prior = _create_dirichlet_prior_3d(B_matrix)
 
-    model_func_name = model_name.lower().replace(' ', '_').replace('-', '_')
+    model_func_name = model_name.lower().replace(" ", "_").replace("-", "_")
 
-    code = f'''# RxInfer.jl POMDP Model for {model_name}
+    code = f"""# RxInfer.jl POMDP Model for {model_name}
 # Generated from GNN specification
 # {model_annotation}
 
@@ -548,17 +574,19 @@ end
 println("- C Preferences: [$(join(C_vector, ", "))]")
 println("- D Prior: [$(join(D_vector, ", "))]")
 println("- E Habit: [$(join(E_vector, ", "))]")
-'''
+"""
 
     return code
 
+
 def _matrix_to_julia(matrix: List[List[float]]) -> str:
     """Convert Python matrix to Julia matrix string."""
-    rows = []
+    rows: list[Any] = []
     for row in matrix:
         row_str = "[" + ", ".join(str(x) for x in row) + "]"
         rows.append(row_str)
     return "[" + ", ".join(rows) + "]"
+
 
 def _tensor_to_julia(tensor: List[List[List[float]]]) -> str:
     """Convert Python 3D tensor to Julia tensor string."""
@@ -566,20 +594,22 @@ def _tensor_to_julia(tensor: List[List[List[float]]]) -> str:
         return "[]"
 
     # Handle 3D tensor (actions x states x states)
-    action_matrices = []
+    action_matrices: list[Any] = []
     for action_matrix in tensor:
         matrix_str = _matrix_to_julia(action_matrix)
         action_matrices.append(matrix_str)
 
     return "[" + ", ".join(action_matrices) + "]"
 
+
 def _vector_to_julia(vector: List[float]) -> str:
     """Convert Python vector to Julia vector string."""
     return "[" + ", ".join(str(x) for x in vector) + "]"
 
+
 def _create_dirichlet_prior(matrix: List[List[float]]) -> str:
     """Create Dirichlet prior for matrix."""
-    rows = []
+    rows: list[Any] = []
     for row in matrix:
         # Add small regularization to avoid zeros
         regularized_row = [x + 0.1 for x in row]
@@ -587,19 +617,21 @@ def _create_dirichlet_prior(matrix: List[List[float]]) -> str:
         rows.append(row_str)
     return "[" + ", ".join(rows) + "]"
 
+
 def _create_dirichlet_prior_3d(tensor: List[List[List[float]]]) -> str:
     """Create Dirichlet prior for 3D tensor."""
     if not tensor:
         return "[]"
 
-    action_matrices = []
+    action_matrices: list[Any] = []
     for action_matrix in tensor:
         matrix_str = _create_dirichlet_prior(action_matrix)
         action_matrices.append(matrix_str)
 
     return "[" + ", ".join(action_matrices) + "]"
 
-def _write_toml_with_exact_formatting(f, config):
+
+def _write_toml_with_exact_formatting(f: Any, config: Any) -> Any:
     """
     Write TOML with exact formatting to match the gold standard.
     This function writes sections in a specific order with comments and formatting.
@@ -621,7 +653,7 @@ def _write_toml_with_exact_formatting(f, config):
     f.write("# Number of inference iterations\n")
     f.write(f"nr_iterations = {config['model']['nr_iterations']}\n\n")
 
-    f.write("# Number of agents in the simulation (currently fixed at 4)\n")
+    f.write("# Number of agents in the simulation\n")
     f.write(f"nr_agents = {config['model']['nr_agents']}\n\n")
 
     f.write("# Temperature parameter for the softmin function\n")
@@ -631,7 +663,9 @@ def _write_toml_with_exact_formatting(f, config):
     f.write(f"intermediate_steps = {config['model']['intermediate_steps']}\n\n")
 
     f.write("# Whether to save intermediate results\n")
-    f.write(f"save_intermediates = {str(config['model']['save_intermediates']).lower()}\n\n")
+    f.write(
+        f"save_intermediates = {str(config['model']['save_intermediates']).lower()}\n\n"
+    )
 
     # Matrices section
     f.write("#\n# State Space Matrices\n#\n")
@@ -641,9 +675,9 @@ def _write_toml_with_exact_formatting(f, config):
     f.write("# State transition matrix\n")
     f.write("# [1 dt 0 0; 0 1 0 0; 0 0 1 dt; 0 0 0 1]\n")
     f.write("A = [\n")
-    for i, row in enumerate(config['model']['matrices']['A']):
+    for i, row in enumerate(config["model"]["matrices"]["A"]):
         f.write(f"    {row}")
-        if i < len(config['model']['matrices']['A']) - 1:
+        if i < len(config["model"]["matrices"]["A"]) - 1:
             f.write(",\n")
         else:
             f.write("\n")
@@ -653,9 +687,9 @@ def _write_toml_with_exact_formatting(f, config):
     f.write("# Control input matrix\n")
     f.write("# [0 0; dt 0; 0 0; 0 dt]\n")
     f.write("B = [\n")
-    for i, row in enumerate(config['model']['matrices']['B']):
+    for i, row in enumerate(config["model"]["matrices"]["B"]):
         f.write(f"    {row}")
-        if i < len(config['model']['matrices']['B']) - 1:
+        if i < len(config["model"]["matrices"]["B"]) - 1:
             f.write(",\n")
         else:
             f.write("\n")
@@ -665,9 +699,9 @@ def _write_toml_with_exact_formatting(f, config):
     f.write("# Observation matrix\n")
     f.write("# [1 0 0 0; 0 0 1 0]\n")
     f.write("C = [\n")
-    for i, row in enumerate(config['model']['matrices']['C']):
+    for i, row in enumerate(config["model"]["matrices"]["C"]):
         f.write(f"    {row}")
-        if i < len(config['model']['matrices']['C']) - 1:
+        if i < len(config["model"]["matrices"]["C"]) - 1:
             f.write(",\n")
         else:
             f.write("\n")
@@ -678,18 +712,24 @@ def _write_toml_with_exact_formatting(f, config):
     f.write("[priors]\n")
 
     f.write("# Prior on initial state\n")
-    f.write(f"initial_state_variance = {config['priors']['initial_state_variance']}\n\n")
+    f.write(
+        f"initial_state_variance = {config['priors']['initial_state_variance']}\n\n"
+    )
 
     f.write("# Prior on control inputs\n")
     f.write(f"control_variance = {config['priors']['control_variance']}\n\n")
 
     f.write("# Goal constraints variance\n")
     # Use scientific notation with exact format to match gold standard
-    f.write(f"goal_constraint_variance = {config['priors']['goal_constraint_variance']:.1e}\n\n")
+    f.write(
+        f"goal_constraint_variance = {config['priors']['goal_constraint_variance']:.1e}\n\n"
+    )
 
     f.write("# Parameters for GammaShapeRate prior on constraint parameters\n")
     f.write(f"gamma_shape = {config['priors']['gamma_shape']}  # 3/2\n")
-    f.write(f"gamma_scale_factor = {config['priors']['gamma_scale_factor']}  # γ^2/2\n\n")
+    f.write(
+        f"gamma_scale_factor = {config['priors']['gamma_scale_factor']}  # γ^2/2\n\n"
+    )
 
     # Visualization section
     f.write("#\n# Visualization parameters\n#\n")
@@ -714,37 +754,40 @@ def _write_toml_with_exact_formatting(f, config):
     f.write(f"target_alpha = {config['visualization']['target_alpha']}\n\n")
 
     f.write("# Color palette\n")
-    f.write(f"color_palette = \"{config['visualization']['color_palette']}\"\n\n")
+    f.write(f'color_palette = "{config["visualization"]["color_palette"]}"\n\n')
 
     # Environments section
     f.write("#\n# Environment definitions\n#\n")
 
     # Door environment
-    if 'door' in config['environments'] and config['environments']['door']['obstacles']:
-        env = config['environments']['door']
+    if "door" in config["environments"] and config["environments"]["door"]["obstacles"]:
+        env = config["environments"]["door"]
         f.write("[environments.door]\n")
-        f.write(f"description = \"{env['description']}\"\n\n")
-        for obstacle in env['obstacles']:
+        f.write(f'description = "{env["description"]}"\n\n')
+        for obstacle in env["obstacles"]:
             f.write("[[environments.door.obstacles]]\n")
             f.write(f"center = {obstacle['center']}\n")
             f.write(f"size = {obstacle['size']}\n\n")
 
     # Wall environment
-    if 'wall' in config['environments'] and config['environments']['wall']['obstacles']:
-        env = config['environments']['wall']
+    if "wall" in config["environments"] and config["environments"]["wall"]["obstacles"]:
+        env = config["environments"]["wall"]
         f.write("[environments.wall]\n")
-        f.write(f"description = \"{env['description']}\"\n\n")
-        for obstacle in env['obstacles']:
+        f.write(f'description = "{env["description"]}"\n\n')
+        for obstacle in env["obstacles"]:
             f.write("[[environments.wall.obstacles]]\n")
             f.write(f"center = {obstacle['center']}\n")
             f.write(f"size = {obstacle['size']}\n\n")
 
     # Combined environment
-    if 'combined' in config['environments'] and config['environments']['combined']['obstacles']:
-        env = config['environments']['combined']
+    if (
+        "combined" in config["environments"]
+        and config["environments"]["combined"]["obstacles"]
+    ):
+        env = config["environments"]["combined"]
         f.write("[environments.combined]\n")
-        f.write(f"description = \"{env['description']}\"\n\n")
-        for obstacle in env['obstacles']:
+        f.write(f'description = "{env["description"]}"\n\n')
+        for obstacle in env["obstacles"]:
             f.write("[[environments.combined.obstacles]]\n")
             f.write(f"center = {obstacle['center']}\n")
             f.write(f"size = {obstacle['size']}\n\n")
@@ -752,12 +795,33 @@ def _write_toml_with_exact_formatting(f, config):
     # Agents section
     f.write("#\n# Agent configurations\n#\n")
 
-    for agent in config['agents']:
+    for agent in config["agents"]:
         f.write("[[agents]]\n")
-        f.write(f"id = {agent['id']}\n")
+        f.write(f"id = {json_dumps_scalar(agent['id'])}\n")
         f.write(f"radius = {agent['radius']}\n")
         f.write(f"initial_position = {agent['initial_position']}\n")
         f.write(f"target_position = {agent['target_position']}\n\n")
+
+    # Agent topology section
+    topology = config.get("topology")
+    if isinstance(topology, dict):
+        f.write("#\n# Agent topology\n#\n")
+        f.write("[topology]\n")
+        f.write(f'type = "{topology.get("type", "agent_population")}"\n')
+        f.write(f"agent_ids = {_toml_array(topology.get('agent_ids', []))}\n")
+        if topology.get("message_passing"):
+            f.write(f'message_passing = "{topology["message_passing"]}"\n')
+        f.write("\n")
+        for edge in topology.get("edges", []):
+            if isinstance(edge, dict):
+                f.write("[[topology.edges]]\n")
+                f.write(f"source = {json_dumps_scalar(edge['source'])}\n")
+                f.write(f"target = {json_dumps_scalar(edge['target'])}\n\n")
+        for cluster in topology.get("clusters", []):
+            if isinstance(cluster, dict):
+                f.write("[[topology.clusters]]\n")
+                f.write(f'name = "{cluster["name"]}"\n')
+                f.write(f"agent_ids = {_toml_array(cluster.get('agent_ids', []))}\n\n")
 
     # Experiments section
     f.write("#\n# Experiment configurations\n#\n")
@@ -767,54 +831,64 @@ def _write_toml_with_exact_formatting(f, config):
     f.write(f"seeds = {config['experiments']['seeds']}\n\n")
 
     f.write("# Base directory for results\n")
-    f.write(f"results_dir = \"{config['experiments']['results_dir']}\"\n\n")
+    f.write(f'results_dir = "{config["experiments"]["results_dir"]}"\n\n')
 
     f.write("# Filename templates\n")
-    f.write(f"animation_template = \"{config['experiments']['animation_template']}\"\n")
-    f.write(f"control_vis_filename = \"{config['experiments']['control_vis_filename']}\"\n")
-    f.write(f"obstacle_distance_filename = \"{config['experiments']['obstacle_distance_filename']}\"\n")
-    f.write(f"path_uncertainty_filename = \"{config['experiments']['path_uncertainty_filename']}\"\n")
+    f.write(f'animation_template = "{config["experiments"]["animation_template"]}"\n')
+    f.write(
+        f'control_vis_filename = "{config["experiments"]["control_vis_filename"]}"\n'
+    )
+    f.write(
+        f'obstacle_distance_filename = "{config["experiments"]["obstacle_distance_filename"]}"\n'
+    )
+    f.write(
+        f'path_uncertainty_filename = "{config["experiments"]["path_uncertainty_filename"]}"\n'
+    )
     # Add a space at the end of the last line to match gold standard
-    f.write(f"convergence_filename = \"{config['experiments']['convergence_filename']}\" ")
+    f.write(
+        f'convergence_filename = "{config["experiments"]["convergence_filename"]}" '
+    )
+
 
 def _create_toml_config_structure(
-    gnn_spec: Dict[str, Any],
-    options: Dict[str, Any]
+    gnn_spec: Dict[str, Any], options: Dict[str, Any]
 ) -> Dict[str, Any]:
     """
     Create the TOML configuration structure from a GNN specification.
-    
+
     Args:
         gnn_spec: Dictionary containing the GNN specification
         options: Additional options for TOML generation
-        
+
     Returns:
         Dictionary representing the TOML configuration
     """
-    params = gnn_spec.get("initialparameterization", {})
+    params = _initial_parameterization(gnn_spec)
+    agents = _extract_agents(gnn_spec)
 
     # Start with a standard structure based on the config.toml example
-    toml_config = {
+    toml_config: dict[str, Any] = {
         "model": {
             "dt": params.get("dt", 1.0),
             "gamma": params.get("gamma", 1.0),
             "nr_steps": params.get("nr_steps", 40),
             "nr_iterations": params.get("nr_iterations", 350),
-            "nr_agents": params.get("nr_agents", 4),
+            "nr_agents": len(agents),
             "softmin_temperature": params.get("softmin_temperature", 10.0),
             "intermediate_steps": params.get("intermediate_steps", 10),
-            "save_intermediates": str(params.get("save_intermediates", False)).lower().strip().startswith("true"),
-            "matrices": _extract_matrices(gnn_spec)
+            "save_intermediates": str(params.get("save_intermediates", False))
+            .lower()
+            .strip()
+            .startswith("true"),
+            "matrices": _extract_matrices(gnn_spec),
         },
-
         "priors": {
             "initial_state_variance": params.get("initial_state_variance", 100.0),
             "control_variance": params.get("control_variance", 0.1),
             "goal_constraint_variance": params.get("goal_constraint_variance", 1e-5),
             "gamma_shape": params.get("gamma_shape", 1.5),
-            "gamma_scale_factor": params.get("gamma_scale_factor", 0.5)
+            "gamma_scale_factor": params.get("gamma_scale_factor", 0.5),
         },
-
         "visualization": {
             "x_limits": params.get("x_limits", [-20, 20]),
             "y_limits": params.get("y_limits", [-20, 20]),
@@ -824,20 +898,52 @@ def _create_toml_config_structure(
             "plot_height": params.get("plot_height", 400),
             "agent_alpha": params.get("agent_alpha", 1.0),
             "target_alpha": params.get("target_alpha", 0.2),
-            "color_palette": params.get("color_palette", "tab10")
+            "color_palette": params.get("color_palette", "tab10"),
         },
-
         "environments": _extract_environments(gnn_spec),
-        "agents": _extract_agents(gnn_spec),
-        "experiments": _extract_experiments(gnn_spec)
+        "agents": agents,
+        "topology": _extract_agent_topology(params, agents),
+        "experiments": _extract_experiments(gnn_spec),
     }
 
     return toml_config
 
+
+def _toml_array(value: Any) -> str:
+    """Return a TOML-compatible array literal for simple scalar lists."""
+    if not isinstance(value, list):
+        return "[]"
+    return "[" + ", ".join(json_dumps_scalar(item) for item in value) + "]"
+
+
+def json_dumps_scalar(value: Any) -> str:
+    """Serialize scalar values using TOML-compatible JSON scalar syntax."""
+    import json
+
+    if isinstance(value, (str, int, float, bool)) or value is None:
+        return json.dumps(value)
+    if isinstance(value, list):
+        return _toml_array(value)
+    return json.dumps(str(value))
+
+
+def _initial_parameterization(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
+    """Return normalized initial-parameterization keys from public GNN specs."""
+    for key in (
+        "initialparameterization",
+        "initial_parameterization",
+        "InitialParameterization",
+    ):
+        value = gnn_spec.get(key)
+        if isinstance(value, dict):
+            return value
+    return {}
+
+
 def _extract_matrices(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
     """Extract state space matrices from the GNN specification."""
-    matrices = {}
-    params = gnn_spec.get("initialparameterization", {})
+    matrices: dict[Any, Any] = {}
+    params = _initial_parameterization(gnn_spec)
 
     # Use provided matrices if available, otherwise use defaults
     if "A" in params:
@@ -848,107 +954,110 @@ def _extract_matrices(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
             [1.0, 1.0, 0.0, 0.0],
             [0.0, 1.0, 0.0, 0.0],
             [0.0, 0.0, 1.0, 1.0],
-            [0.0, 0.0, 0.0, 1.0]
+            [0.0, 0.0, 0.0, 1.0],
         ]
 
     if "B" in params:
         matrices["B"] = params["B"]
     else:
         # Default control input matrix [0 0; dt 0; 0 0; 0 dt]
-        matrices["B"] = [
-            [0.0, 0.0],
-            [1.0, 0.0],
-            [0.0, 0.0],
-            [0.0, 1.0]
-        ]
+        matrices["B"] = [[0.0, 0.0], [1.0, 0.0], [0.0, 0.0], [0.0, 1.0]]
 
     if "C" in params:
         matrices["C"] = params["C"]
     else:
         # Default observation matrix [1 0 0 0; 0 0 1 0]
-        matrices["C"] = [
-            [1.0, 0.0, 0.0, 0.0],
-            [0.0, 0.0, 1.0, 0.0]
-        ]
+        matrices["C"] = [[1.0, 0.0, 0.0, 0.0], [0.0, 0.0, 1.0, 0.0]]
 
     return matrices
 
+
 def _extract_environments(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
     """Extract environment definitions from the GNN specification."""
-    params = gnn_spec.get("initialparameterization", {})
+    params = _initial_parameterization(gnn_spec)
 
-    environments = {
+    environments: dict[str, Any] = {
         "door": {
             "description": "Two parallel walls with a gap between them",
-            "obstacles": []
+            "obstacles": [],
         },
         "wall": {
             "description": "A single wall obstacle in the center",
-            "obstacles": []
+            "obstacles": [],
         },
         "combined": {
             "description": "A combination of walls and obstacles",
-            "obstacles": []
-        }
+            "obstacles": [],
+        },
     }
 
     if "door_obstacle_center_1" in params and "door_obstacle_size_1" in params:
-        environments["door"]["obstacles"].append({
-            "center": params["door_obstacle_center_1"],
-            "size": params["door_obstacle_size_1"]
-        })
+        environments["door"]["obstacles"].append(
+            {
+                "center": params["door_obstacle_center_1"],
+                "size": params["door_obstacle_size_1"],
+            }
+        )
     if "door_obstacle_center_2" in params and "door_obstacle_size_2" in params:
-        environments["door"]["obstacles"].append({
-            "center": params["door_obstacle_center_2"],
-            "size": params["door_obstacle_size_2"]
-        })
+        environments["door"]["obstacles"].append(
+            {
+                "center": params["door_obstacle_center_2"],
+                "size": params["door_obstacle_size_2"],
+            }
+        )
 
     if "wall_obstacle_center" in params and "wall_obstacle_size" in params:
-        environments["wall"]["obstacles"].append({
-            "center": params["wall_obstacle_center"],
-            "size": params["wall_obstacle_size"]
-        })
+        environments["wall"]["obstacles"].append(
+            {
+                "center": params["wall_obstacle_center"],
+                "size": params["wall_obstacle_size"],
+            }
+        )
 
     if "combined_obstacle_center_1" in params and "combined_obstacle_size_1" in params:
-        environments["combined"]["obstacles"].append({
-            "center": params["combined_obstacle_center_1"],
-            "size": params["combined_obstacle_size_1"]
-        })
+        environments["combined"]["obstacles"].append(
+            {
+                "center": params["combined_obstacle_center_1"],
+                "size": params["combined_obstacle_size_1"],
+            }
+        )
     if "combined_obstacle_center_2" in params and "combined_obstacle_size_2" in params:
-        environments["combined"]["obstacles"].append({
-            "center": params["combined_obstacle_center_2"],
-            "size": params["combined_obstacle_size_2"]
-        })
+        environments["combined"]["obstacles"].append(
+            {
+                "center": params["combined_obstacle_center_2"],
+                "size": params["combined_obstacle_size_2"],
+            }
+        )
     if "combined_obstacle_center_3" in params and "combined_obstacle_size_3" in params:
-        environments["combined"]["obstacles"].append({
-            "center": params["combined_obstacle_center_3"],
-            "size": params["combined_obstacle_size_3"]
-        })
+        environments["combined"]["obstacles"].append(
+            {
+                "center": params["combined_obstacle_center_3"],
+                "size": params["combined_obstacle_size_3"],
+            }
+        )
 
     return environments
 
+
 def _extract_agents(gnn_spec: Dict[str, Any]) -> List[Dict[str, Any]]:
     """Extract agent configurations from the GNN specification."""
-    params = gnn_spec.get("initialparameterization", {})
-    nr_agents = params.get("nr_agents", 0)
-    agents = []
+    params = _initial_parameterization(gnn_spec)
+    nr_agents = _coerce_positive_int(params.get("nr_agents"))
 
     if nr_agents > 0:
-        for i in range(1, nr_agents + 1):
-            agent_id = params.get(f"agent{i}_id")
-            radius = params.get(f"agent{i}_radius")
-            initial_pos = params.get(f"agent{i}_initial_position")
-            target_pos = params.get(f"agent{i}_target_position")
+        compact_agents = _extract_compact_agents(params, nr_agents)
+        if compact_agents is not None:
+            return compact_agents
 
-            if all(v is not None for v in [agent_id, radius, initial_pos, target_pos]):
-                agents.append({
-                    "id": agent_id,
-                    "radius": radius,
-                    "initial_position": initial_pos,
-                    "target_position": target_pos
-                })
-        if len(agents) == nr_agents:
-            return agents
+        indexed_agents = _extract_indexed_agents(params, nr_agents)
+        if len(indexed_agents) == nr_agents:
+            return indexed_agents
+
+        raise ValueError(
+            "nr_agents was provided but agent configuration is incomplete. "
+            "Provide compact agent_ids/agent_initial_positions/agent_target_positions "
+            "or complete agent{i}_id/agent{i}_initial_position/agent{i}_target_position keys."
+        )
 
     # Recovery to default agents if extraction fails
     return [
@@ -956,40 +1065,268 @@ def _extract_agents(gnn_spec: Dict[str, Any]) -> List[Dict[str, Any]]:
             "id": 1,
             "radius": 2.5,
             "initial_position": [-4.0, 10.0],
-            "target_position": [-10.0, -10.0]
+            "target_position": [-10.0, -10.0],
         },
         {
             "id": 2,
             "radius": 1.5,
             "initial_position": [-10.0, 5.0],
-            "target_position": [10.0, -15.0]
+            "target_position": [10.0, -15.0],
         },
         {
             "id": 3,
             "radius": 1.0,
             "initial_position": [-15.0, -10.0],
-            "target_position": [10.0, 10.0]
+            "target_position": [10.0, 10.0],
         },
         {
             "id": 4,
             "radius": 2.5,
             "initial_position": [0.0, -10.0],
-            "target_position": [-10.0, 15.0]
-        }
+            "target_position": [-10.0, 15.0],
+        },
     ]
+
+
+def _coerce_positive_int(value: Any) -> int:
+    """Coerce a value to a positive int, returning 0 for missing/invalid values."""
+    try:
+        coerced = int(value)
+    except (TypeError, ValueError):
+        return 0
+    return max(0, coerced)
+
+
+def _as_list(value: Any) -> list[Any] | None:
+    """Return value as a list when it is list-like enough for TOML config."""
+    return value if isinstance(value, list) else None
+
+
+def _extract_compact_agents(
+    params: Dict[str, Any], nr_agents: int
+) -> List[Dict[str, Any]] | None:
+    """Extract agents from compact vectorized InitialParameterization keys."""
+    agent_ids = _as_list(params.get("agent_ids"))
+    initial_positions = _as_list(params.get("agent_initial_positions"))
+    target_positions = _as_list(params.get("agent_target_positions"))
+    if agent_ids is None and initial_positions is None and target_positions is None:
+        return None
+    radii = _as_list(params.get("agent_radii")) or _as_list(params.get("agent_radius"))
+    default_radius = params.get("agent_default_radius", 1.0)
+    required = {
+        "agent_ids": agent_ids,
+        "agent_initial_positions": initial_positions,
+        "agent_target_positions": target_positions,
+    }
+    missing = [name for name, value in required.items() if value is None]
+    if missing:
+        raise ValueError(f"Missing compact multi-agent keys: {', '.join(missing)}")
+    assert agent_ids is not None
+    assert initial_positions is not None
+    assert target_positions is not None
+    lengths = {
+        "agent_ids": len(agent_ids),
+        "agent_initial_positions": len(initial_positions),
+        "agent_target_positions": len(target_positions),
+    }
+    if any(length != nr_agents for length in lengths.values()):
+        raise ValueError(
+            f"Compact multi-agent lengths must match nr_agents={nr_agents}: {lengths}"
+        )
+    if radii is not None and len(radii) != nr_agents:
+        raise ValueError(
+            f"agent_radii length {len(radii)} must match nr_agents={nr_agents}"
+        )
+    return [
+        {
+            "id": agent_ids[index],
+            "radius": radii[index] if radii is not None else default_radius,
+            "initial_position": initial_positions[index],
+            "target_position": target_positions[index],
+        }
+        for index in range(nr_agents)
+    ]
+
+
+def _extract_indexed_agents(
+    params: Dict[str, Any], nr_agents: int
+) -> List[Dict[str, Any]]:
+    """Extract indexed agent{i}_... agent definitions."""
+    agents: List[Dict[str, Any]] = []
+    for i in range(1, nr_agents + 1):
+        agent_id = params.get(f"agent{i}_id")
+        radius = params.get(f"agent{i}_radius", params.get("agent_default_radius", 1.0))
+        initial_pos = params.get(f"agent{i}_initial_position")
+        target_pos = params.get(f"agent{i}_target_position")
+
+        if all(v is not None for v in [agent_id, radius, initial_pos, target_pos]):
+            agents.append(
+                {
+                    "id": agent_id,
+                    "radius": radius,
+                    "initial_position": initial_pos,
+                    "target_position": target_pos,
+                }
+            )
+    return agents
+
+
+def _extract_agent_topology(
+    params: Dict[str, Any], agents: List[Dict[str, Any]]
+) -> Dict[str, Any]:
+    """Extract explicit multi-agent topology metadata for TOML and execution."""
+    agent_ids = [agent["id"] for agent in agents if "id" in agent]
+    raw_edges, edges_present = _first_present(
+        params, ("agent_edges", "topology_edges", "edges"), []
+    )
+    raw_clusters, clusters_present = _first_present(
+        params, ("agent_clusters", "topology_clusters", "clusters"), {}
+    )
+    edges = _normalize_topology_edges(raw_edges, strict=edges_present)
+    clusters = _normalize_topology_clusters(raw_clusters, strict=clusters_present)
+    topology_type = params.get("agent_topology_type") or params.get("topology_type")
+    if topology_type is None:
+        if clusters:
+            topology_type = "clustered"
+        elif edges:
+            topology_type = "network"
+        else:
+            topology_type = "agent_population"
+    topology: Dict[str, Any] = {
+        "type": str(topology_type),
+        "agent_ids": agent_ids,
+        "edges": edges,
+        "clusters": clusters,
+    }
+    message_passing = params.get("message_passing") or params.get(
+        "agent_message_passing"
+    )
+    if message_passing:
+        topology["message_passing"] = str(message_passing)
+    _validate_topology_references(topology, agent_ids)
+    return topology
+
+
+def _validate_topology_references(
+    topology: Dict[str, Any], agent_ids: List[Any]
+) -> None:
+    """Reject topology records that reference undeclared agents."""
+    declared = set(agent_ids)
+    for edge in topology.get("edges", []):
+        if not isinstance(edge, dict):
+            continue
+        for endpoint_name in ("source", "target"):
+            endpoint = edge.get(endpoint_name)
+            if endpoint not in declared:
+                raise ValueError(
+                    f"Topology edge {endpoint_name} references undeclared agent {endpoint!r}"
+                )
+    for cluster in topology.get("clusters", []):
+        if not isinstance(cluster, dict):
+            continue
+        for agent_id in cluster.get("agent_ids", []):
+            if agent_id not in declared:
+                raise ValueError(
+                    f"Topology cluster {cluster.get('name', '<unnamed>')} "
+                    f"references undeclared agent {agent_id!r}"
+                )
+
+
+def _first_present(
+    params: Dict[str, Any], keys: tuple[str, ...], default: Any
+) -> tuple[Any, bool]:
+    """Return the first present parameter value and whether any key was present."""
+    for key in keys:
+        if key in params:
+            return params[key], True
+    return default, False
+
+
+def _normalize_topology_edges(
+    raw_edges: Any, *, strict: bool = False
+) -> List[Dict[str, Any]]:
+    """Normalize compact edge lists into explicit source/target records."""
+    if not isinstance(raw_edges, list):
+        if strict:
+            raise ValueError("Topology edges must be a list")
+        return []
+    edges: List[Dict[str, Any]] = []
+    for raw_edge in raw_edges:
+        if isinstance(raw_edge, dict):
+            source = raw_edge.get("source", raw_edge.get("from"))
+            target = raw_edge.get("target", raw_edge.get("to"))
+        elif isinstance(raw_edge, (list, tuple)) and len(raw_edge) >= 2:
+            source, target = raw_edge[0], raw_edge[1]
+        else:
+            if strict:
+                raise ValueError(f"Malformed topology edge: {raw_edge!r}")
+            continue
+        if source is None or target is None:
+            if strict:
+                raise ValueError(
+                    f"Topology edge requires source and target: {raw_edge!r}"
+                )
+            continue
+        edges.append({"source": source, "target": target})
+    return edges
+
+
+def _normalize_topology_clusters(
+    raw_clusters: Any, *, strict: bool = False
+) -> List[Dict[str, Any]]:
+    """Normalize dict/list cluster definitions into TOML table records."""
+    clusters: List[Dict[str, Any]] = []
+    if isinstance(raw_clusters, dict):
+        for name, agent_ids in raw_clusters.items():
+            if isinstance(agent_ids, list):
+                clusters.append({"name": str(name), "agent_ids": agent_ids})
+            elif strict:
+                raise ValueError(f"Topology cluster {name!r} members must be a list")
+        return clusters
+    if isinstance(raw_clusters, list):
+        for index, raw_cluster in enumerate(raw_clusters, start=1):
+            if isinstance(raw_cluster, dict):
+                agent_ids = raw_cluster.get("agent_ids") or raw_cluster.get("agents")
+                if isinstance(agent_ids, list):
+                    clusters.append(
+                        {
+                            "name": str(raw_cluster.get("name", f"cluster_{index}")),
+                            "agent_ids": agent_ids,
+                        }
+                    )
+                elif strict:
+                    raise ValueError(
+                        f"Topology cluster {raw_cluster.get('name', index)!r} "
+                        "members must be a list"
+                    )
+            elif strict:
+                raise ValueError(f"Malformed topology cluster: {raw_cluster!r}")
+        return clusters
+    if strict:
+        raise ValueError("Topology clusters must be a dict or list")
+    return clusters
+
 
 def _extract_experiments(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
     """Extract experiment configurations from the GNN specification."""
-    params = gnn_spec.get("initialparameterization", {})
+    params = _initial_parameterization(gnn_spec)
 
     # Use experiment settings from GNN spec if available, otherwise use defaults
-    experiments = {
+    experiments: dict[str, Any] = {
         "seeds": params.get("experiment_seeds", [42, 123]),
         "results_dir": params.get("results_dir", "results"),
-        "animation_template": params.get("animation_template", "{environment}_{seed}.gif"),
-        "control_vis_filename": params.get("control_vis_filename", "control_signals.gif"),
-        "obstacle_distance_filename": params.get("obstacle_distance_filename", "obstacle_distance.png"),
-        "path_uncertainty_filename": params.get("path_uncertainty_filename", "path_uncertainty.png"),
-        "convergence_filename": params.get("convergence_filename", "convergence.png")
+        "animation_template": params.get(
+            "animation_template", "{environment}_{seed}.gif"
+        ),
+        "control_vis_filename": params.get(
+            "control_vis_filename", "control_signals.gif"
+        ),
+        "obstacle_distance_filename": params.get(
+            "obstacle_distance_filename", "obstacle_distance.png"
+        ),
+        "path_uncertainty_filename": params.get(
+            "path_uncertainty_filename", "path_uncertainty.png"
+        ),
+        "convergence_filename": params.get("convergence_filename", "convergence.png"),
     }
     return experiments

@@ -10,9 +10,9 @@
 
 **Status**: ✅ Production Ready
 
-**Version**: 1.1.3
+**Version**: 1.6.0
 
-**Last Updated**: 2026-03-17
+**Last Updated**: 2026-04-24
 
 ---
 
@@ -72,8 +72,15 @@
 - **Output**: Python scripts under `numpyro/` when the renderer is available
 
 #### Stan (Stan)
-- **Purpose**: Probabilistic programming backend
-- **Output**: Stan models under `stan/` when the renderer is available
+- **Purpose**: Probabilistic programming model backend
+- **Output**: Stan models under `stan/` when requested
+
+#### BNLearn (Python)
+- **Purpose**: Bayesian network / causal model backend
+- **Output**: Python scripts under `bnlearn/` when requested
+
+The canonical framework inventory lives in `framework_registry.py`; update that
+registry before changing public framework lists, MCP enums, or processor configs.
 
 ---
 
@@ -81,18 +88,19 @@
 
 ### Public Functions
 
-#### `process_render(target_dir: Path, output_dir: Path, verbose: bool = False, frameworks=None, strict_validation: bool = True, **kwargs) -> bool`
+#### `process_render(target_dir: Path, output_dir: Path, verbose: bool = False, frameworks: Optional[List[str] | str] = None, strict_validation: bool = True, strict_framework_success: bool = False, **kwargs) -> Union[bool, int]`
 **Description**: Main rendering processing function called by orchestrator (11_render.py). Processes GNN files and generates code for multiple simulation frameworks.
 
 **Parameters**:
 - `target_dir` (Path): Directory containing GNN files to process
 - `output_dir` (Path): Output directory for rendered files
 - `verbose` (bool): Enable verbose logging (default: False)
-- `frameworks` (Optional[List[str]]): Restrict to a subset of frameworks (default: all available)
+- `frameworks` (Optional[List[str] | str]): Restrict rendering to a subset of frameworks. Accepts `None`/`"all"` for all configured frameworks, `"lite"` for `pymdp`, `jax`, `discopy`, and `bnlearn`, or a comma-separated string such as `"pymdp,jax"`.
 - `strict_validation` (bool): Passed to POMDP extraction (`True` by default)
+- `strict_framework_success` (bool): When `True`, every requested framework render must succeed for every input file. Explicit framework requests such as `"pymdp"` or `"pymdp,jax"` are strict even when this flag is omitted; `"all"` and `"lite"` keep aggregate pipeline policy unless the flag is set.
 - `**kwargs`: Additional options forwarded to framework renderers (e.g. `timesteps`, `simulation_params`)
 
-**Returns**: `bool` - True if processing succeeded, False otherwise
+**Returns**: `Union[bool, int]` - `True` when the render policy succeeds, `False` when it fails, or `2` when no input files are found.
 
 **Example**:
 ```python
@@ -104,7 +112,8 @@ success = process_render(
     output_dir=Path("output/11_render_output"),
     verbose=True,
     frameworks=["pymdp", "rxinfer"],
-    strict_validation=True
+    strict_validation=True,
+    strict_framework_success=True,
 )
 ```
 
@@ -124,16 +133,15 @@ success = process_render(
 
 **Location**: `src/render/processor.py`
 
-### Generator helpers (`generators.py`)
+### Canonical POMDP render helpers
 
-`src/render/generators.py` also exports convenience generators used by parts of the module:
+For POMDP targets, `render_gnn_spec(...)` and Step 11 both route through the same validated renderers:
 
-- `generate_pymdp_code(model_data: Dict, output_path: Optional[Union[str, Path]] = None) -> str`
-- `generate_rxinfer_code(model_data: Dict, output_path: Optional[Union[str, Path]] = None) -> str`
-- `generate_activeinference_jl_code(model_data: Dict, output_path: Optional[Union[str, Path]] = None) -> str`
-- `generate_discopy_code(model_data: Dict, output_path: Optional[Union[str, Path]] = None) -> str`
+- `render_gnn_to_pymdp(...)`
+- `render_gnn_to_rxinfer(...)`
+- `render_gnn_to_activeinference_jl(...)`
 
-These functions take a loosely-structured `model_data` dictionary and return code as a string (and optionally write it to `output_path`). The authoritative, pipeline-facing interface remains `process_render(...)`.
+The shared contract is `canonical_pomdp_v1`; B is stored as `(next_state, previous_state, action)`.
 
 #### `get_module_info() -> Dict[str, Any]`
 **Description**: Get information about the render module capabilities.
@@ -235,7 +243,19 @@ RXINFER_CONFIG = {
 }
 ```
 
-Configuration is primarily controlled by the Step 11 orchestrator (`src/11_render.py`) and forwarded parameters to `process_render(...)`. Avoid documenting configuration keys that are not implemented in code.
+Configuration is primarily controlled by the Step 11 orchestrator (`src/11_render.py`) and forwarded parameters to `process_render(...)`. Avoid documenting configuration keys that are not backed by code.
+
+Step 11 CLI options relevant to framework scoping:
+
+```bash
+uv run python src/11_render.py \
+    --target-dir input/gnn_files \
+    --output-dir output \
+    --frameworks pymdp \
+    --strict-framework-success
+```
+
+Explicit `--frameworks` selections are strict by default. `--strict-framework-success` applies the same all-requested-frameworks policy to broader `"all"` or `"lite"` runs.
 
 ---
 
@@ -256,11 +276,11 @@ success, message, files = render_gnn_spec(
 
 ### Multi-Framework Rendering
 ```python
-from render.renderer import generate_pymdp_code, generate_rxinfer_code
+from render.renderer import render_gnn_spec
 
-# Generate code for multiple frameworks
-pymdp_code = generate_pymdp_code(model_data)
-rxinfer_code = generate_rxinfer_code(model_data)
+for framework in ["pymdp", "rxinfer", "activeinference_jl"]:
+    success, message, files = render_gnn_spec(model_data, framework, "output/11_render_output")
+    assert success, message
 ```
 
 ### Custom Framework Options
@@ -278,6 +298,16 @@ options = {
 }
 ```
 
+### Scoped Pipeline Rendering
+```bash
+uv run python src/main.py \
+    --only-steps 11 \
+    --target-dir input/gnn_files/pymdp_scaling_study \
+    --output-dir output/pymdp_scaling_pipeline \
+    --frameworks pymdp \
+    --strict-framework-success
+```
+
 ---
 
 ## Output Specification
@@ -289,7 +319,7 @@ options = {
   - `activeinference_jl/<model_name>_activeinference.jl`
   - `jax/<model_name>_jax.py`
   - `discopy/<model_name>_discopy.py`
-  - optional backends (when available): `pytorch/`, `numpyro/`, `stan/`
+  - optional/requested backends: `pytorch/`, `numpyro/`, `stan/`, `bnlearn/`
 - `render_processing_summary.json` - Processing summary
 
 ### Output Directory Structure
@@ -302,9 +332,10 @@ output/11_render_output/
     ├── activeinference_jl/
     ├── jax/
     ├── discopy/
-    ├── pytorch/        # if available
-    ├── numpyro/        # if available
-    └── stan/           # if available
+    ├── pytorch/        # if requested and available
+    ├── numpyro/        # if requested and available
+    ├── stan/           # if requested and available
+    └── bnlearn/        # if requested and available
 ```
 
 ---
@@ -324,10 +355,10 @@ Performance is tracked by the pipeline execution summaries and render summary JS
 4. **Configuration Errors**: Invalid framework options
 
 ### Recovery Strategies
-- **Framework Recovery**: Try alternative frameworks
-- **Template Simplification**: Use simpler templates
-- **Partial Generation**: Generate what is possible
-- **Error Documentation**: Provide detailed error reports
+- **Framework Scope**: Use `--frameworks <name>` to isolate a backend while debugging.
+- **Strict Policy**: Use explicit `--frameworks` selections for focused strict runs; add `--strict-framework-success` when `"all"` or `"lite"` should also fail on any framework render failure.
+- **Partial Generation**: Omit strict framework success when exploratory runs should keep usable artifacts.
+- **Error Documentation**: Review `render_processing_summary.json`, including `failed_framework_renderings`.
 
 ---
 
@@ -355,14 +386,17 @@ GNN Parsing → Model Validation → Framework Selection → Code Generation →
 ## Testing
 
 ### Test Files
-- `src/tests/test_render_integration.py` - Integration tests
-- `src/tests/test_render_overall.py` - Overall functionality tests
-- `src/tests/test_render_performance.py` - Performance tests
+- `src/tests/render/test_render_integration.py` - Integration tests
+- `src/tests/render/test_render_overall.py` - Overall functionality tests
+- `src/tests/render/test_render_performance.py` - Performance tests
 
 ### Test Coverage
-- **Current**: 78%
-- **Target**: 85%+
+Measure on demand:
 
+```bash
+uv run --extra dev python -m pytest src/tests/test_render*.py \
+    --cov=src/render --cov-report=term-missing
+```
 ### Key Test Scenarios
 1. Multi-framework code generation
 2. Framework-specific optimizations

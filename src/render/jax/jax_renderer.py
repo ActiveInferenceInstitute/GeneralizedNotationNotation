@@ -12,14 +12,18 @@ Leverages JAX's JIT, vmap, pmap, and supports Optax/Flax integration.
 @Web: https://arxiv.org/abs/1304.1118
 @Web: https://www.cs.cmu.edu/~ggordon/jpineau-ggordon-thrun.ijcai03.pdf
 """
+
 import logging
 import re
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional, Tuple
+from typing import Any, Callable, Dict, List, Optional, Tuple, cast
 
 import numpy as np
 
+from render.pomdp_contract import build_canonical_pomdp_spec
+
 logger = logging.getLogger(__name__)
+
 
 def _render_to_path(
     generator_fn: Callable[[Dict[str, Any], Optional[Dict[str, Any]]], str],
@@ -32,7 +36,7 @@ def _render_to_path(
     try:
         code = generator_fn(gnn_spec, options)
         output_path.parent.mkdir(parents=True, exist_ok=True)
-        with open(output_path, 'w') as f:
+        with open(output_path, "w") as f:
             f.write(code)
         logger.info(f"{label} code written to {output_path}")
         return True, f"{label} generated successfully.", [str(output_path)]
@@ -41,67 +45,87 @@ def _render_to_path(
         return False, str(e), []
 
 
-def render_gnn_to_jax(gnn_spec: Dict[str, Any], output_path: Path, options: Optional[Dict[str, Any]] = None) -> Tuple[bool, str, List[str]]:
+def render_gnn_to_jax(
+    gnn_spec: Dict[str, Any],
+    output_path: Path,
+    options: Optional[Dict[str, Any]] = None,
+) -> Tuple[bool, str, List[str]]:
     """Render a GNN specification to a general JAX model implementation.
 
     @Web: https://github.com/google/jax
     @Web: https://flax.readthedocs.io
     """
-    return _render_to_path(_generate_jax_model_code, "JAX model", gnn_spec, output_path, options)
+    return _render_to_path(
+        _generate_jax_model_code, "JAX model", gnn_spec, output_path, options
+    )
 
 
-def render_gnn_to_jax_pomdp(gnn_spec: Dict[str, Any], output_path: Path, options: Optional[Dict[str, Any]] = None) -> Tuple[bool, str, List[str]]:
+def render_gnn_to_jax_pomdp(
+    gnn_spec: Dict[str, Any],
+    output_path: Path,
+    options: Optional[Dict[str, Any]] = None,
+) -> Tuple[bool, str, List[str]]:
     """Render a GNN POMDP specification to a JAX POMDP solver implementation.
 
     @Web: https://pfjax.readthedocs.io
     @Web: https://arxiv.org/abs/1304.1118
     @Web: https://www.cs.cmu.edu/~ggordon/jpineau-ggordon-thrun.ijcai03.pdf
     """
-    return _render_to_path(_generate_jax_pomdp_code, "JAX POMDP", gnn_spec, output_path, options)
+    return _render_to_path(
+        _generate_jax_pomdp_code, "JAX POMDP", gnn_spec, output_path, options
+    )
 
 
-def render_gnn_to_jax_combined(gnn_spec: Dict[str, Any], output_path: Path, options: Optional[Dict[str, Any]] = None) -> Tuple[bool, str, List[str]]:
+def render_gnn_to_jax_combined(
+    gnn_spec: Dict[str, Any],
+    output_path: Path,
+    options: Optional[Dict[str, Any]] = None,
+) -> Tuple[bool, str, List[str]]:
     """Render a GNN specification to a combined JAX implementation (hierarchical, multi-agent, or continuous).
 
     @Web: https://github.com/google/jax
     @Web: https://optax.readthedocs.io
     """
-    return _render_to_path(_generate_jax_combined_code, "JAX combined", gnn_spec, output_path, options)
+    return _render_to_path(
+        _generate_jax_combined_code, "JAX combined", gnn_spec, output_path, options
+    )
+
 
 # --- Internal code generation helpers ---
+
 
 def _parse_gnn_matrix_string(matrix_str: str) -> np.ndarray:
     """Parse GNN matrix string format to numpy array."""
     try:
         # Remove comments and clean up
-        lines = matrix_str.split('\n')
-        cleaned_lines = []
+        lines = matrix_str.split("\n")
+        cleaned_lines: list[Any] = []
         for line in lines:
-            if '#' in line:
-                line = line.split('#')[0]
+            if "#" in line:
+                line = line.split("#")[0]
             line = line.strip()
             if line:
                 cleaned_lines.append(line)
 
         # Reconstruct the matrix string
-        matrix_str = ' '.join(cleaned_lines)
+        matrix_str = " ".join(cleaned_lines)
 
         # Handle A matrix format: { (1.0, 0.0, 0.0), (0.0, 1.0, 0.0), (0.0, 0.0, 1.0) }
-        if matrix_str.startswith('{') and matrix_str.endswith('}'):
+        if matrix_str.startswith("{") and matrix_str.endswith("}"):
             inner = matrix_str[1:-1].strip()
 
             # Split by commas, but be careful with nested tuples
-            rows = []
+            rows: list[Any] = []
             current_row = ""
             paren_count = 0
 
             for char in inner:
-                if char == '(':
+                if char == "(":
                     paren_count += 1
-                elif char == ')':
+                elif char == ")":
                     paren_count -= 1
 
-                if char == ',' and paren_count == 0:
+                if char == "," and paren_count == 0:
                     # End of a row
                     if current_row.strip():
                         rows.append(current_row.strip())
@@ -114,29 +138,37 @@ def _parse_gnn_matrix_string(matrix_str: str) -> np.ndarray:
                 rows.append(current_row.strip())
 
             # Parse each row
-            matrix = []
+            matrix: list[Any] = []
             for row in rows:
                 row = row.strip()
                 try:
-                    if row.startswith('(') and row.endswith(')'):
+                    if row.startswith("(") and row.endswith(")"):
                         # Parse tuple row
                         inner_row = row[1:-1]
-                        row_values = [float(x.strip()) for x in inner_row.split(',') if x.strip()]
+                        row_values = [
+                            float(x.strip()) for x in inner_row.split(",") if x.strip()
+                        ]
                         matrix.append(row_values)
-                    elif row.startswith('((') and row.endswith('))'):
+                    elif row.startswith("((") and row.endswith("))"):
                         # Parse nested tuple row (for B matrix)
                         inner_row = row[2:-2]
                         # Split by '),('
-                        nested_tuples = inner_row.split('),(')
-                        row_values = []
+                        nested_tuples = inner_row.split("),(")
+                        nested_row_values: list[list[float]] = []
                         for nested_tuple in nested_tuples:
-                            nested_tuple = nested_tuple.strip('()')
-                            tuple_values = [float(x.strip()) for x in nested_tuple.split(',') if x.strip()]
-                            row_values.append(tuple_values)
-                        matrix.append(row_values)
+                            nested_tuple = nested_tuple.strip("()")
+                            tuple_values = [
+                                float(x.strip())
+                                for x in nested_tuple.split(",")
+                                if x.strip()
+                            ]
+                            nested_row_values.append(tuple_values)
+                        matrix.append(nested_row_values)
                     else:
                         # Try to parse as simple values
-                        row_values = [float(x.strip()) for x in row.split(',') if x.strip()]
+                        row_values = [
+                            float(x.strip()) for x in row.split(",") if x.strip()
+                        ]
                         if row_values:
                             matrix.append(row_values)
                 except Exception as e:
@@ -165,29 +197,48 @@ def _parse_gnn_matrix_string(matrix_str: str) -> np.ndarray:
         logger.warning(f"Failed to parse matrix string: {e}")
         return np.array([[1.0]])  # Default recovery
 
+
 def _extract_gnn_matrices(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
     """Extract A, B, C, D matrices from GNN specification."""
-    matrices = {}
+    matrices: dict[Any, Any] = {}
 
     # --- Primary: Handle POMDP processor format ---
     if "model_parameters" in gnn_spec:
         logger.info("Extracting matrices from POMDP processor format")
+        init_candidate = gnn_spec.get("initialparameterization", {})
+        if isinstance(init_candidate, dict) and all(
+            key in init_candidate for key in ("A", "B", "C", "D")
+        ):
+            try:
+                gnn_spec = build_canonical_pomdp_spec(gnn_spec)
+                logger.info("Canonicalized POMDP matrices for JAX renderer")
+            except Exception as exc:
+                logger.warning(
+                    "Could not canonicalize POMDP matrices for JAX renderer: %s",
+                    exc,
+                )
 
         model_params = gnn_spec["model_parameters"]
         n_states = model_params.get("num_hidden_states", 3)
         n_obs = model_params.get("num_obs", 3)
         n_actions = model_params.get("num_actions", 3)
 
-        logger.info(f"Extracted variable dimensions: {{n_states: {n_states}, n_obs: {n_obs}, n_actions: {n_actions}}}")
+        logger.info(
+            f"Extracted variable dimensions: {{n_states: {n_states}, n_obs: {n_obs}, n_actions: {n_actions}}}"
+        )
 
         # Create default matrices based on dimensions
-        default_matrices = {
-            'A': np.eye(n_obs, n_states),  # Identity-like likelihood matrix
-            'B': np.stack([np.eye(n_states) for _ in range(n_actions)], axis=2),  # Identity transitions for each action
-            'C': np.zeros(n_obs),  # Zero preferences
-            'D': np.ones(n_states) / n_states  # Uniform prior
+        default_matrices: dict[str, Any] = {
+            "A": np.eye(n_obs, n_states),  # Identity-like likelihood matrix
+            "B": np.stack(
+                [np.eye(n_states) for _ in range(n_actions)], axis=2
+            ),  # Identity transitions for each action
+            "C": np.zeros(n_obs),  # Zero preferences
+            "D": np.ones(n_states) / n_states,  # Uniform prior
         }
-        logger.info(f"Created default matrices: A={default_matrices['A'].shape}, B={default_matrices['B'].shape}, C={default_matrices['C'].shape}, D={default_matrices['D'].shape}")
+        logger.info(
+            f"Created default matrices: A={default_matrices['A'].shape}, B={default_matrices['B'].shape}, C={default_matrices['C'].shape}, D={default_matrices['D'].shape}"
+        )
 
         # Initialize matrices with defaults
         matrices.update(default_matrices)
@@ -199,23 +250,10 @@ def _extract_gnn_matrices(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
         if "B" in init_params:
             B_matrix = init_params["B"]
             if isinstance(B_matrix, (list, np.ndarray)) and len(B_matrix) > 0:
-                # B matrix shape should be (n_states, n_states, n_actions) or similar
-                if isinstance(B_matrix, list):
-                    if len(B_matrix) > 0 and isinstance(B_matrix[0], list) and len(B_matrix[0]) > 0 and isinstance(B_matrix[0][0], list):
-                        # B is (actions, states, observations) or similar nested structure
-                        n_actions_from_b = len(B_matrix)
-                    else:
-                        n_actions_from_b = 1  # Default recovery
-                else:
-                    # B is numpy array
-                    if len(B_matrix.shape) >= 3:
-                        n_actions_from_b = B_matrix.shape[2]  # Last dimension is actions
-                    else:
-                        n_actions_from_b = 1  # Default recovery
-
-                if n_actions_from_b > 1:  # Only override if we got a meaningful value
-                    n_actions = n_actions_from_b
-                    logger.info(f"Corrected n_actions from B matrix: {n_actions}")
+                B_array = np.asarray(B_matrix, dtype=float)
+                n_actions_from_b = B_array.shape[2] if B_array.ndim >= 3 else 1
+                n_actions = n_actions_from_b
+                logger.info(f"Corrected n_actions from B matrix: {n_actions}")
 
             # Also check for explicit dimensions in model_params that might override
             if "B" in gnn_spec.get("model_params", {}):
@@ -227,11 +265,17 @@ def _extract_gnn_matrices(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
                             n_actions_from_spec = int(shape_parts[2])
                             if n_actions_from_spec > 1:
                                 n_actions = n_actions_from_spec
-                                logger.info(f"Corrected n_actions from B matrix specification: {n_actions}")
+                                logger.info(
+                                    f"Corrected n_actions from B matrix specification: {n_actions}"
+                                )
                         except (ValueError, IndexError):
-                            logger.debug("Could not extract n_actions from B matrix spec shape_parts")
+                            logger.debug(
+                                "Could not extract n_actions from B matrix spec shape_parts"
+                            )
         if init_params:
-            logger.info("Found initialparameterization, extracting actual matrix values")
+            logger.info(
+                "Found initialparameterization, extracting actual matrix values"
+            )
 
             # Extract A matrix
             if "A" in init_params:
@@ -241,8 +285,10 @@ def _extract_gnn_matrices(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
                     if isinstance(A_data, (list, tuple)):
                         A_matrix = np.array(A_data)
                         if A_matrix.ndim == 2:
-                            matrices['A'] = A_matrix
-                            logger.info(f"Successfully extracted A matrix: shape {A_matrix.shape}")
+                            matrices["A"] = A_matrix
+                            logger.info(
+                                f"Successfully extracted A matrix: shape {A_matrix.shape}"
+                            )
                 except Exception as e:
                     logger.warning(f"Failed to extract A matrix: {e}")
 
@@ -253,13 +299,20 @@ def _extract_gnn_matrices(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
                     # Handle both list and tuple (POMDP extractor returns tuples)
                     if isinstance(B_data, (list, tuple)):
                         B_matrix = np.array(B_data)
-                        if B_matrix.ndim == 3:
-                            # POMDP extractor returns B as (actions, rows, cols)
-                            # JAX renderer expects B as (rows, cols, actions)
-                            # Transpose from (actions, rows, cols) to (rows, cols, actions)
-                            B_matrix = np.transpose(B_matrix, (1, 2, 0))
-                            matrices['B'] = B_matrix
-                            logger.info(f"Successfully extracted B matrix: shape {B_matrix.shape} (transposed)")
+                    elif isinstance(B_data, np.ndarray):
+                        B_matrix = B_data
+                    else:
+                        B_matrix = np.array([])
+                    if B_matrix.ndim == 2:
+                        matrices["B"] = B_matrix[:, :, np.newaxis]
+                        logger.info(
+                            f"Successfully extracted passive B matrix: shape {matrices['B'].shape}"
+                        )
+                    elif B_matrix.ndim == 3:
+                        matrices["B"] = B_matrix
+                        logger.info(
+                            f"Successfully extracted B matrix: shape {B_matrix.shape}"
+                        )
                 except Exception as e:
                     logger.warning(f"Failed to extract B matrix: {e}")
 
@@ -270,8 +323,10 @@ def _extract_gnn_matrices(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
                     if isinstance(C_data, list):
                         C_vector = np.array(C_data)
                         if C_vector.ndim == 1:
-                            matrices['C'] = C_vector
-                            logger.info(f"Successfully extracted C vector: shape {C_vector.shape}")
+                            matrices["C"] = C_vector
+                            logger.info(
+                                f"Successfully extracted C vector: shape {C_vector.shape}"
+                            )
                 except Exception as e:
                     logger.warning(f"Failed to extract C vector: {e}")
 
@@ -282,8 +337,10 @@ def _extract_gnn_matrices(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
                     if isinstance(D_data, list):
                         D_vector = np.array(D_data)
                         if D_vector.ndim == 1:
-                            matrices['D'] = D_vector
-                            logger.info(f"Successfully extracted D vector: shape {D_vector.shape}")
+                            matrices["D"] = D_vector
+                            logger.info(
+                                f"Successfully extracted D vector: shape {D_vector.shape}"
+                            )
                 except Exception as e:
                     logger.warning(f"Failed to extract D vector: {e}")
 
@@ -292,17 +349,17 @@ def _extract_gnn_matrices(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
         logger.info("Extracting matrices from GNN JSON export structure")
 
         # Extract variable dimensions from statespaceblock
-        var_dims = {}
+        var_dims: dict[Any, Any] = {}
         for var_data in gnn_spec.get("statespaceblock", []):
             var_name = var_data.get("id", "")
             dimensions_str = var_data.get("dimensions", "")
             # Parse dimensions like "3,3,type=float" -> [3, 3]
             if dimensions_str:
-                dims_parts = dimensions_str.split(',')
-                dims = []
+                dims_parts = dimensions_str.split(",")
+                dims: list[Any] = []
                 for part in dims_parts:
                     part = part.strip()
-                    if part.startswith('type='):
+                    if part.startswith("type="):
                         break
                     try:
                         dims.append(int(part))
@@ -316,96 +373,124 @@ def _extract_gnn_matrices(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
         if "A" in var_dims:
             dims = var_dims["A"]
             if len(dims) >= 2:
-                default_matrices['A'] = np.eye(dims[0], dims[1])  # Identity matrix
+                default_matrices["A"] = np.eye(dims[0], dims[1])  # Identity matrix
                 logger.info(f"Created default A matrix with dimensions {dims}")
 
         if "B" in var_dims:
             dims = var_dims["B"]
             if len(dims) >= 3:
                 # Create identity-like transition matrix
-                default_matrices['B'] = np.eye(dims[0], dims[1])[:, :, np.newaxis]
-                default_matrices['B'] = np.repeat(default_matrices['B'], dims[2], axis=2)
+                default_matrices["B"] = np.eye(dims[0], dims[1])[:, :, np.newaxis]
+                default_matrices["B"] = np.repeat(
+                    default_matrices["B"], dims[2], axis=2
+                )
                 logger.info(f"Created default B matrix with dimensions {dims}")
 
         if "C" in var_dims:
             dims = var_dims["C"]
             if len(dims) >= 1:
-                default_matrices['C'] = np.zeros(dims[0])  # Zero preferences
+                default_matrices["C"] = np.zeros(dims[0])  # Zero preferences
                 logger.info(f"Created default C vector with dimensions {dims}")
 
         if "D" in var_dims:
             dims = var_dims["D"]
             if len(dims) >= 1:
-                default_matrices['D'] = np.ones(dims[0]) / dims[0]  # Uniform prior
+                default_matrices["D"] = np.ones(dims[0]) / dims[0]  # Uniform prior
                 logger.info(f"Created default D vector with dimensions {dims}")
 
         # Initialize matrices with defaults
         matrices.update(default_matrices)
 
         # Extract actual parameter values from InitialParameterization
-        initial_params = gnn_spec.get("raw_sections", {}).get("InitialParameterization", "")
+        initial_params = gnn_spec.get("raw_sections", {}).get(
+            "InitialParameterization", ""
+        )
         if initial_params:
             # Parse A matrix
-            a_match = re.search(r'A\s*=\s*\{([^}]+)\}', initial_params, re.DOTALL)
+            a_match = re.search(r"A\s*=\s*\{([^}]+)\}", initial_params, re.DOTALL)
             if a_match:
                 try:
                     a_str = a_match.group(1).strip()
                     parsed_matrix = _parse_gnn_matrix_string(f"{{{a_str}}}")
                     if parsed_matrix.shape != (1, 1):
-                        matrices['A'] = parsed_matrix
-                        logger.info(f"Successfully parsed A matrix from InitialParameterization: shape {parsed_matrix.shape}")
-                    elif 'A' in default_matrices:
-                        improved_matrix = _create_improved_default_matrix('A', default_matrices['A'], a_str)
-                        matrices['A'] = improved_matrix
-                        logger.info(f"Used improved default A matrix: shape {improved_matrix.shape}")
+                        matrices["A"] = parsed_matrix
+                        logger.info(
+                            f"Successfully parsed A matrix from InitialParameterization: shape {parsed_matrix.shape}"
+                        )
+                    elif "A" in default_matrices:
+                        improved_matrix = _create_improved_default_matrix(
+                            "A", default_matrices["A"], a_str
+                        )
+                        matrices["A"] = improved_matrix
+                        logger.info(
+                            f"Used improved default A matrix: shape {improved_matrix.shape}"
+                        )
                 except Exception as e:
                     logger.warning(f"Failed to parse A matrix: {e}")
 
             # Parse B matrix
-            b_match = re.search(r'B\s*=\s*\{([^}]+)\}', initial_params, re.DOTALL)
+            b_match = re.search(r"B\s*=\s*\{([^}]+)\}", initial_params, re.DOTALL)
             if b_match:
                 try:
                     b_str = b_match.group(1).strip()
                     parsed_matrix = _parse_gnn_matrix_string(f"{{{b_str}}}")
                     if parsed_matrix.shape != (1, 1):
-                        matrices['B'] = parsed_matrix
-                        logger.info(f"Successfully parsed B matrix from InitialParameterization: shape {parsed_matrix.shape}")
-                    elif 'B' in default_matrices:
-                        improved_matrix = _create_improved_default_matrix('B', default_matrices['B'], b_str)
-                        matrices['B'] = improved_matrix
-                        logger.info(f"Used improved default B matrix: shape {improved_matrix.shape}")
+                        matrices["B"] = parsed_matrix
+                        logger.info(
+                            f"Successfully parsed B matrix from InitialParameterization: shape {parsed_matrix.shape}"
+                        )
+                    elif "B" in default_matrices:
+                        improved_matrix = _create_improved_default_matrix(
+                            "B", default_matrices["B"], b_str
+                        )
+                        matrices["B"] = improved_matrix
+                        logger.info(
+                            f"Used improved default B matrix: shape {improved_matrix.shape}"
+                        )
                 except Exception as e:
                     logger.warning(f"Failed to parse B matrix: {e}")
 
             # Parse C vector
-            c_match = re.search(r'C\s*=\s*\{([^}]+)\}', initial_params, re.DOTALL)
+            c_match = re.search(r"C\s*=\s*\{([^}]+)\}", initial_params, re.DOTALL)
             if c_match:
                 try:
                     c_str = c_match.group(1).strip()
                     parsed_vector = _parse_gnn_matrix_string(f"{{{c_str}}}")
                     if parsed_vector.shape != (1, 1):
-                        matrices['C'] = parsed_vector.flatten()
-                        logger.info(f"Successfully parsed C vector from InitialParameterization: shape {parsed_vector.flatten().shape}")
-                    elif 'C' in default_matrices:
-                        improved_vector = _create_improved_default_matrix('C', default_matrices['C'], c_str)
-                        matrices['C'] = improved_vector
-                        logger.info(f"Used improved default C vector: shape {improved_vector.shape}")
+                        matrices["C"] = parsed_vector.flatten()
+                        logger.info(
+                            f"Successfully parsed C vector from InitialParameterization: shape {parsed_vector.flatten().shape}"
+                        )
+                    elif "C" in default_matrices:
+                        improved_vector = _create_improved_default_matrix(
+                            "C", default_matrices["C"], c_str
+                        )
+                        matrices["C"] = improved_vector
+                        logger.info(
+                            f"Used improved default C vector: shape {improved_vector.shape}"
+                        )
                 except Exception as e:
                     logger.warning(f"Failed to parse C vector: {e}")
 
             # Parse D vector
-            d_match = re.search(r'D\s*=\s*\{([^}]+)\}', initial_params, re.DOTALL)
+            d_match = re.search(r"D\s*=\s*\{([^}]+)\}", initial_params, re.DOTALL)
             if d_match:
                 try:
                     d_str = d_match.group(1).strip()
                     parsed_vector = _parse_gnn_matrix_string(f"{{{d_str}}}")
                     if parsed_vector.shape != (1, 1):
-                        matrices['D'] = parsed_vector.flatten()
-                        logger.info(f"Successfully parsed D vector from InitialParameterization: shape {parsed_vector.flatten().shape}")
-                    elif 'D' in default_matrices:
-                        improved_vector = _create_improved_default_matrix('D', default_matrices['D'], d_str)
-                        matrices['D'] = improved_vector
-                        logger.info(f"Used improved default D vector: shape {improved_vector.shape}")
+                        matrices["D"] = parsed_vector.flatten()
+                        logger.info(
+                            f"Successfully parsed D vector from InitialParameterization: shape {parsed_vector.flatten().shape}"
+                        )
+                    elif "D" in default_matrices:
+                        improved_vector = _create_improved_default_matrix(
+                            "D", default_matrices["D"], d_str
+                        )
+                        matrices["D"] = improved_vector
+                        logger.info(
+                            f"Used improved default D vector: shape {improved_vector.shape}"
+                        )
                 except Exception as e:
                     logger.warning(f"Failed to parse D vector: {e}")
 
@@ -417,14 +502,16 @@ def _extract_gnn_matrices(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
         var_dims = {}
         for _, var_data in enumerate(gnn_spec.get("variables", [])):
             var_name = var_data.get("id", "")  # Use 'id' instead of 'name'
-            dimensions_str = var_data.get("dimensions", "")  # This is a string like "3,3,type=float"
+            dimensions_str = var_data.get(
+                "dimensions", ""
+            )  # This is a string like "3,3,type=float"
 
             # Parse dimensions string like "3,3,type=float" -> [3, 3]
             if var_name and dimensions_str:
                 dims = []
-                for part in dimensions_str.split(','):
+                for part in dimensions_str.split(","):
                     part = part.strip()
-                    if part.startswith('type='):
+                    if part.startswith("type="):
                         break
                     try:
                         dims.append(int(part))
@@ -436,7 +523,9 @@ def _extract_gnn_matrices(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
                     var_dims[var_name] = dims
                     logger.info(f"Found variable '{var_name}' with dimensions {dims}")
                 else:
-                    logger.warning(f"Could not parse dimensions for variable '{var_name}': '{dimensions_str}'")
+                    logger.warning(
+                        f"Could not parse dimensions for variable '{var_name}': '{dimensions_str}'"
+                    )
 
         logger.info(f"Extracted variable dimensions: {var_dims}")
 
@@ -445,96 +534,126 @@ def _extract_gnn_matrices(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
         if "A" in var_dims:
             dims = var_dims["A"]
             if len(dims) >= 2:
-                default_matrices['A'] = np.eye(dims[0], dims[1])  # Identity matrix
-                logger.info(f"Created default A matrix with dimensions {dims} -> shape {default_matrices['A'].shape}")
+                default_matrices["A"] = np.eye(dims[0], dims[1])  # Identity matrix
+                logger.info(
+                    f"Created default A matrix with dimensions {dims} -> shape {default_matrices['A'].shape}"
+                )
 
         if "B" in var_dims:
             dims = var_dims["B"]
             if len(dims) >= 3:
                 # Create identity-like transition matrix
-                default_matrices['B'] = np.eye(dims[0], dims[1])[:, :, np.newaxis]
-                default_matrices['B'] = np.repeat(default_matrices['B'], dims[2], axis=2)
-                logger.info(f"Created default B matrix with dimensions {dims} -> shape {default_matrices['B'].shape}")
+                default_matrices["B"] = np.eye(dims[0], dims[1])[:, :, np.newaxis]
+                default_matrices["B"] = np.repeat(
+                    default_matrices["B"], dims[2], axis=2
+                )
+                logger.info(
+                    f"Created default B matrix with dimensions {dims} -> shape {default_matrices['B'].shape}"
+                )
 
         if "C" in var_dims:
             dims = var_dims["C"]
             if len(dims) >= 1:
-                default_matrices['C'] = np.zeros(dims[0])  # Zero preferences
-                logger.info(f"Created default C vector with dimensions {dims} -> shape {default_matrices['C'].shape}")
+                default_matrices["C"] = np.zeros(dims[0])  # Zero preferences
+                logger.info(
+                    f"Created default C vector with dimensions {dims} -> shape {default_matrices['C'].shape}"
+                )
 
         if "D" in var_dims:
             dims = var_dims["D"]
             if len(dims) >= 1:
-                default_matrices['D'] = np.ones(dims[0]) / dims[0]  # Uniform prior
-                logger.info(f"Created default D vector with dimensions {dims} -> shape {default_matrices['D'].shape}")
+                default_matrices["D"] = np.ones(dims[0]) / dims[0]  # Uniform prior
+                logger.info(
+                    f"Created default D vector with dimensions {dims} -> shape {default_matrices['D'].shape}"
+                )
 
         # Initialize matrices with defaults (will be overwritten if parameter parsing succeeds)
         matrices.update(default_matrices)
-        logger.info(f"Initialized matrices with shapes: A={matrices.get('A', 'None')}, B={matrices.get('B', 'None')}, C={matrices.get('C', 'None')}, D={matrices.get('D', 'None')}")
+        logger.info(
+            f"Initialized matrices with shapes: A={matrices.get('A', 'None')}, B={matrices.get('B', 'None')}, C={matrices.get('C', 'None')}, D={matrices.get('D', 'None')}"
+        )
 
         # Extract actual parameter values from InitialParameterization if available
         initial_params = gnn_spec.get("InitialParameterization", "")
         if initial_params:
-            logger.info("Found InitialParameterization section, attempting to parse matrix values")
+            logger.info(
+                "Found InitialParameterization section, attempting to parse matrix values"
+            )
 
             # Parse A matrix
-            a_match = re.search(r'A\s*=\s*\{([^}]+)\}', initial_params, re.DOTALL)
+            a_match = re.search(r"A\s*=\s*\{([^}]+)\}", initial_params, re.DOTALL)
             if a_match:
                 try:
                     a_str = a_match.group(1).strip()
                     parsed_matrix = _parse_gnn_matrix_string(f"{{{a_str}}}")
                     if parsed_matrix.shape != (1, 1):
-                        matrices['A'] = parsed_matrix
-                        logger.info(f"Successfully parsed A matrix from InitialParameterization: shape {parsed_matrix.shape}")
-                    elif 'A' in default_matrices:
+                        matrices["A"] = parsed_matrix
+                        logger.info(
+                            f"Successfully parsed A matrix from InitialParameterization: shape {parsed_matrix.shape}"
+                        )
+                    elif "A" in default_matrices:
                         # Use default matrix with correct dimensions
-                        matrices['A'] = default_matrices['A']
-                        logger.info(f"Used default A matrix: shape {default_matrices['A'].shape}")
+                        matrices["A"] = default_matrices["A"]
+                        logger.info(
+                            f"Used default A matrix: shape {default_matrices['A'].shape}"
+                        )
                 except Exception as e:
                     logger.warning(f"Failed to parse A matrix: {e}")
 
             # Parse B matrix
-            b_match = re.search(r'B\s*=\s*\{([^}]+)\}', initial_params, re.DOTALL)
+            b_match = re.search(r"B\s*=\s*\{([^}]+)\}", initial_params, re.DOTALL)
             if b_match:
                 try:
                     b_str = b_match.group(1).strip()
                     parsed_matrix = _parse_gnn_matrix_string(f"{{{b_str}}}")
                     if parsed_matrix.shape != (1, 1):
-                        matrices['B'] = parsed_matrix
-                        logger.info(f"Successfully parsed B matrix from InitialParameterization: shape {parsed_matrix.shape}")
-                    elif 'B' in default_matrices:
-                        matrices['B'] = default_matrices['B']
-                        logger.info(f"Used default B matrix: shape {default_matrices['B'].shape}")
+                        matrices["B"] = parsed_matrix
+                        logger.info(
+                            f"Successfully parsed B matrix from InitialParameterization: shape {parsed_matrix.shape}"
+                        )
+                    elif "B" in default_matrices:
+                        matrices["B"] = default_matrices["B"]
+                        logger.info(
+                            f"Used default B matrix: shape {default_matrices['B'].shape}"
+                        )
                 except Exception as e:
                     logger.warning(f"Failed to parse B matrix: {e}")
 
             # Parse C vector
-            c_match = re.search(r'C\s*=\s*\{([^}]+)\}', initial_params, re.DOTALL)
+            c_match = re.search(r"C\s*=\s*\{([^}]+)\}", initial_params, re.DOTALL)
             if c_match:
                 try:
                     c_str = c_match.group(1).strip()
                     parsed_vector = _parse_gnn_matrix_string(f"{{{c_str}}}")
                     if parsed_vector.shape != (1, 1):
-                        matrices['C'] = parsed_vector.flatten()
-                        logger.info(f"Successfully parsed C vector from InitialParameterization: shape {parsed_vector.flatten().shape}")
-                    elif 'C' in default_matrices:
-                        matrices['C'] = default_matrices['C']
-                        logger.info(f"Used default C vector: shape {default_matrices['C'].shape}")
+                        matrices["C"] = parsed_vector.flatten()
+                        logger.info(
+                            f"Successfully parsed C vector from InitialParameterization: shape {parsed_vector.flatten().shape}"
+                        )
+                    elif "C" in default_matrices:
+                        matrices["C"] = default_matrices["C"]
+                        logger.info(
+                            f"Used default C vector: shape {default_matrices['C'].shape}"
+                        )
                 except Exception as e:
                     logger.warning(f"Failed to parse C vector: {e}")
 
             # Parse D vector
-            d_match = re.search(r'D\s*=\s*\{([^}]+)\}', initial_params, re.DOTALL)
+            d_match = re.search(r"D\s*=\s*\{([^}]+)\}", initial_params, re.DOTALL)
             if d_match:
                 try:
                     d_str = d_match.group(1).strip()
                     parsed_vector = _parse_gnn_matrix_string(f"{{{d_str}}}")
                     if parsed_vector.shape != (1, 1):
-                        matrices['D'] = parsed_vector.flatten()
-                        logger.info(f"Successfully parsed D vector from InitialParameterization: shape {parsed_vector.flatten().shape}")
-                    elif 'D' in default_matrices:
-                        matrices['D'] = default_matrices['D']
-                        logger.info(f"Used default D vector: shape {default_matrices['D'].shape}")
+                        matrices["D"] = parsed_vector.flatten()
+                        logger.info(
+                            f"Successfully parsed D vector from InitialParameterization: shape {parsed_vector.flatten().shape}"
+                        )
+                    elif "D" in default_matrices:
+                        matrices["D"] = default_matrices["D"]
+                        logger.info(
+                            f"Used default D vector: shape {default_matrices['D'].shape}"
+                        )
                 except Exception as e:
                     logger.warning(f"Failed to parse D vector: {e}")
 
@@ -553,17 +672,27 @@ def _extract_gnn_matrices(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
                         if parsed_matrix.shape != (1, 1):
                             # Parsing succeeded with meaningful dimensions
                             matrices[param_name] = parsed_matrix
-                            logger.info(f"Successfully parsed {param_name} matrix from string: shape {parsed_matrix.shape}")
+                            logger.info(
+                                f"Successfully parsed {param_name} matrix from string: shape {parsed_matrix.shape}"
+                            )
                         elif param_name in default_matrices:
                             # Parsing failed but we have default dimensions - use improved matrix
-                            improved_matrix = _create_improved_default_matrix(param_name, default_matrices[param_name], param_value)
+                            improved_matrix = _create_improved_default_matrix(
+                                param_name, default_matrices[param_name], param_value
+                            )
                             matrices[param_name] = improved_matrix
-                            logger.info(f"Used improved default {param_name} matrix based on context: shape {improved_matrix.shape}")
+                            logger.info(
+                                f"Used improved default {param_name} matrix based on context: shape {improved_matrix.shape}"
+                            )
                         else:
                             # Parsing failed and no defaults - try dimension inference from context
-                            inferred_matrix = _infer_matrix_from_context(param_name, param_value, var_dims)
+                            inferred_matrix = _infer_matrix_from_context(
+                                param_name, param_value, var_dims
+                            )
                             matrices[param_name] = inferred_matrix
-                            logger.info(f"Inferred {param_name} matrix from context: shape {inferred_matrix.shape}")
+                            logger.info(
+                                f"Inferred {param_name} matrix from context: shape {inferred_matrix.shape}"
+                            )
 
                     elif isinstance(param_value, (list, tuple)):
                         matrices[param_name] = np.array(param_value)
@@ -580,7 +709,9 @@ def _extract_gnn_matrices(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
                     # Create recovery matrix based on parameter name and expected dimensions
                     fallback_matrix = _create_fallback_matrix(param_name, var_dims)
                     matrices[param_name] = fallback_matrix
-                    logger.info(f"Created recovery {param_name} matrix: shape {fallback_matrix.shape}")
+                    logger.info(
+                        f"Created recovery {param_name} matrix: shape {fallback_matrix.shape}"
+                    )
                     continue
 
     else:
@@ -588,60 +719,63 @@ def _extract_gnn_matrices(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
         logger.info("Extracting matrices from raw text format")
 
         # Extract InitialParameterization section
-        init_params = gnn_spec.get('InitialParameterization', '')
+        init_params = gnn_spec.get("InitialParameterization", "")
         if not init_params:
             logger.warning("No InitialParameterization found in GNN spec")
             return matrices
 
         # Parse A matrix (observation model)
-        a_match = re.search(r'A\s*=\s*\[(.*?)\]', init_params, re.DOTALL)
+        a_match = re.search(r"A\s*=\s*\[(.*?)\]", init_params, re.DOTALL)
         if a_match:
             try:
                 a_str = a_match.group(1).strip()
                 a_matrix = _parse_matrix_string(a_str)
-                matrices['A'] = a_matrix
+                matrices["A"] = a_matrix
             except Exception as e:
                 logger.error(f"Failed to parse A matrix: {e}")
 
         # Parse B matrix (transition model)
-        b_match = re.search(r'B\s*=\s*\[(.*?)\]', init_params, re.DOTALL)
+        b_match = re.search(r"B\s*=\s*\[(.*?)\]", init_params, re.DOTALL)
         if b_match:
             try:
                 b_str = b_match.group(1).strip()
                 b_matrix = _parse_matrix_string(b_str)
-                matrices['B'] = b_matrix
+                matrices["B"] = b_matrix
             except Exception as e:
                 logger.error(f"Failed to parse B matrix: {e}")
 
         # Parse C vector (preferences)
-        c_match = re.search(r'C\s*=\s*\[(.*?)\]', init_params, re.DOTALL)
+        c_match = re.search(r"C\s*=\s*\[(.*?)\]", init_params, re.DOTALL)
         if c_match:
             try:
                 c_str = c_match.group(1).strip()
                 c_vector = _parse_vector_string(c_str)
-                matrices['C'] = c_vector
+                matrices["C"] = c_vector
             except Exception as e:
                 logger.error(f"Failed to parse C vector: {e}")
 
         # Parse D vector (priors)
-        d_match = re.search(r'D\s*=\s*\[(.*?)\]', init_params, re.DOTALL)
+        d_match = re.search(r"D\s*=\s*\[(.*?)\]", init_params, re.DOTALL)
         if d_match:
             try:
                 d_str = d_match.group(1).strip()
                 d_vector = _parse_vector_string(d_str)
-                matrices['D'] = d_vector
+                matrices["D"] = d_vector
             except Exception as e:
                 logger.error(f"Failed to parse D vector: {e}")
 
     return matrices
 
-def _create_improved_default_matrix(param_name: str, default_matrix: np.ndarray, param_value: str) -> np.ndarray:
+
+def _create_improved_default_matrix(
+    param_name: str, default_matrix: np.ndarray, param_value: str
+) -> np.ndarray:
     """Create an improved default matrix based on context clues from the failed parsing."""
     # Try to extract numerical values from the failed parsing string
     import re
 
     # Look for numerical patterns in the string
-    numbers = re.findall(r'-?\d+\.?\d*', param_value)
+    numbers = re.findall(r"-?\d+\.?\d*", param_value)
 
     if numbers and len(numbers) > 1:
         # We found numbers, try to use them to improve the default matrix
@@ -652,7 +786,7 @@ def _create_improved_default_matrix(param_name: str, default_matrix: np.ndarray,
                 # For A matrix, try to create observation model with extracted values
                 shape = default_matrix.shape
                 new_matrix = np.zeros(shape)
-                for i, val in enumerate(float_numbers[:np.prod(shape)]):
+                for i, val in enumerate(float_numbers[: np.prod(shape)]):
                     row = i // shape[1]
                     col = i % shape[1]
                     if row < shape[0] and col < shape[1]:
@@ -668,7 +802,7 @@ def _create_improved_default_matrix(param_name: str, default_matrix: np.ndarray,
                 # For B matrix, create transition model with extracted values
                 shape = default_matrix.shape
                 new_matrix = np.zeros(shape)
-                for i, val in enumerate(float_numbers[:np.prod(shape)]):
+                for i, val in enumerate(float_numbers[: np.prod(shape)]):
                     # Map linear index to 3D coordinates
                     idx_2d = i % (shape[0] * shape[1])
                     action = i // (shape[0] * shape[1])
@@ -689,7 +823,7 @@ def _create_improved_default_matrix(param_name: str, default_matrix: np.ndarray,
                 # For vectors, use extracted values directly
                 shape = default_matrix.shape
                 new_vector = np.zeros(shape)
-                for i, val in enumerate(float_numbers[:shape[0]]):
+                for i, val in enumerate(float_numbers[: shape[0]]):
                     new_vector[i] = val
 
                 # Normalize if it's a probability vector (D, E)
@@ -702,12 +836,18 @@ def _create_improved_default_matrix(param_name: str, default_matrix: np.ndarray,
 
                 return new_vector
         except (ValueError, TypeError, IndexError):
-            logger.debug("Could not improve matrix from parameterization for %s, using default", param_name)
+            logger.debug(
+                "Could not improve matrix from parameterization for %s, using default",
+                param_name,
+            )
 
     # If we can't improve it, return the default
     return default_matrix
 
-def _infer_matrix_from_context(param_name: str, param_value: str, var_dims: dict) -> np.ndarray:
+
+def _infer_matrix_from_context(
+    param_name: str, param_value: str, var_dims: dict
+) -> np.ndarray:
     """Infer matrix dimensions and create appropriate matrix when no defaults are available."""
 
     # Try to infer dimensions from variable information
@@ -720,7 +860,7 @@ def _infer_matrix_from_context(param_name: str, param_value: str, var_dims: dict
             "B": [2, 2, 2],  # 2 states x 2 states x 2 actions
             "C": [2],  # 2 observations
             "D": [2],  # 2 states
-            "E": [2]   # 2 actions
+            "E": [2],  # 2 actions
         }.get(param_name, [2])
 
     # Create appropriate matrix based on parameter type
@@ -730,55 +870,59 @@ def _infer_matrix_from_context(param_name: str, param_value: str, var_dims: dict
         matrix = np.eye(min(shape)) + 0.1 * np.random.rand(*shape)
         # Normalize rows
         matrix = matrix / matrix.sum(axis=1, keepdims=True)
-        return matrix
+        return cast(np.ndarray, matrix)
 
     elif param_name == "B":
         # Transition model - create identity-like transitions with some noise
         shape = tuple(dims) if len(dims) >= 3 else (2, 2, 2)
         matrix = np.zeros(shape)
         for a in range(shape[2]):
-            action_matrix = np.eye(shape[0], shape[1]) + 0.1 * np.random.rand(shape[0], shape[1])
+            action_matrix = np.eye(shape[0], shape[1]) + 0.1 * np.random.rand(
+                shape[0], shape[1]
+            )
             matrix[:, :, a] = action_matrix / action_matrix.sum(axis=1, keepdims=True)
-        return matrix
+        return cast(np.ndarray, matrix)
 
     elif param_name == "C":
         # Preferences - slight preference for later observations
-        shape = dims[0] if dims else 2
-        vector = np.linspace(0.1, 1.0, shape)
-        return vector
+        vector_len = int(dims[0]) if dims else 2
+        vector = np.linspace(0.1, 1.0, vector_len)
+        return cast(np.ndarray, vector)
 
     elif param_name == "D":
         # Prior - uniform
-        shape = dims[0] if dims else 2
-        return np.ones(shape) / shape
+        vector_len = int(dims[0]) if dims else 2
+        return cast(np.ndarray, np.ones(vector_len) / vector_len)
 
     elif param_name == "E":
         # Action prior - uniform
-        shape = dims[0] if dims else 2
-        return np.ones(shape) / shape
+        vector_len = int(dims[0]) if dims else 2
+        return cast(np.ndarray, np.ones(vector_len) / vector_len)
 
     else:
         # Generic recovery
-        shape = dims[0] if dims else 2
-        return np.ones(shape) / shape
+        vector_len = int(dims[0]) if dims else 2
+        return cast(np.ndarray, np.ones(vector_len) / vector_len)
+
 
 def _create_fallback_matrix(param_name: str, var_dims: dict) -> np.ndarray:
     """Create a recovery matrix when all else fails."""
     return _infer_matrix_from_context(param_name, "", var_dims)
 
+
 def _parse_matrix_string(matrix_str: str) -> np.ndarray:
     """Parse matrix string to numpy array."""
     # Remove extra whitespace and newlines
-    matrix_str = re.sub(r'\s+', ' ', matrix_str.strip())
+    matrix_str = re.sub(r"\s+", " ", matrix_str.strip())
 
     # Split by rows and parse each row
-    rows = []
-    for row_str in matrix_str.split(';'):
+    rows: list[Any] = []
+    for row_str in matrix_str.split(";"):
         row_str = row_str.strip()
         if row_str:
             # Parse row as list of floats
-            row_values = []
-            for val_str in row_str.split(','):
+            row_values: list[Any] = []
+            for val_str in row_str.split(","):
                 val_str = val_str.strip()
                 if val_str:
                     try:
@@ -799,14 +943,15 @@ def _parse_matrix_string(matrix_str: str) -> np.ndarray:
 
     return np.array(rows)
 
+
 def _parse_vector_string(vector_str: str) -> np.ndarray:
     """Parse vector string to numpy array."""
     # Remove extra whitespace
-    vector_str = re.sub(r'\s+', ' ', vector_str.strip())
+    vector_str = re.sub(r"\s+", " ", vector_str.strip())
 
     # Parse as list of floats
-    values = []
-    for val_str in vector_str.split(','):
+    values: list[Any] = []
+    for val_str in vector_str.split(","):
         val_str = val_str.strip()
         if val_str:
             try:
@@ -820,22 +965,25 @@ def _parse_vector_string(vector_str: str) -> np.ndarray:
 
     return np.array(values)
 
-def _generate_jax_model_code(gnn_spec: Dict[str, Any], options: Optional[Dict[str, Any]]) -> str:
+
+def _generate_jax_model_code(
+    gnn_spec: Dict[str, Any], options: Optional[Dict[str, Any]]
+) -> str:
     """Generate general JAX model code from GNN specification.
-    
+
     This generates standalone JAX code that only requires jax and jax.numpy,
     without external dependencies like Flax or Optax.
     """
 
     try:
-        model_name = gnn_spec.get('ModelName', 'GNNModel').replace(' ', '_')
+        model_name = gnn_spec.get("ModelName", "GNNModel").replace(" ", "_")
         matrices = _extract_gnn_matrices(gnn_spec)
 
         # Pre-compute dimensions to avoid f-string issues
-        A_matrix = matrices.get('A', np.array([[1.0]]))
-        B_matrix = matrices.get('B', np.array([[[1.0]]]))
-        C_vector = matrices.get('C', np.array([0.0, 1.0]))
-        D_vector = matrices.get('D', np.array([0.5, 0.5]))
+        A_matrix = matrices.get("A", np.array([[1.0]]))
+        B_matrix = matrices.get("B", np.array([[[1.0]]]))
+        C_vector = matrices.get("C", np.array([0.0, 1.0]))
+        D_vector = matrices.get("D", np.array([0.5, 0.5]))
 
         # Safely get dimensions
         try:
@@ -848,9 +996,12 @@ def _generate_jax_model_code(gnn_spec: Dict[str, Any], options: Optional[Dict[st
             num_observations = 1
             num_actions = 1
 
-        # Extract num_timesteps from model_parameters (default 20 for backward compat)
-        model_params = gnn_spec.get('model_parameters', {})
-        num_timesteps = model_params.get('num_timesteps', 20)
+        # Extract num_timesteps from model_parameters.
+        model_params = gnn_spec.get("model_parameters", {})
+        init_params = gnn_spec.get("initialparameterization", {})
+        num_timesteps = model_params.get(
+            "num_timesteps", init_params.get("num_timesteps", 20)
+        )
 
         # Convert matrices to lists for f-string insertion
         A_list = A_matrix.tolist()
@@ -1292,6 +1443,7 @@ if __name__ == "__main__":
     except Exception as e:
         logger.error(f"Error in _generate_jax_model_code: {e}")
         import traceback
+
         logger.error(f"Traceback: {traceback.format_exc()}")
         # Return a minimal working code as recovery
         return '''"""
@@ -1309,19 +1461,22 @@ if __name__ == "__main__":
     print("JAX model created (recovery implementation)")
 '''
 
-def _generate_jax_pomdp_code(gnn_spec: Dict[str, Any], options: Optional[Dict[str, Any]]) -> str:
+
+def _generate_jax_pomdp_code(
+    gnn_spec: Dict[str, Any], options: Optional[Dict[str, Any]]
+) -> str:
     """Generate JAX POMDP solver code from GNN specification."""
 
     try:
-        model_name = gnn_spec.get('ModelName', 'POMDPModel').replace(' ', '_')
+        model_name = gnn_spec.get("ModelName", "POMDPModel").replace(" ", "_")
         matrices = _extract_gnn_matrices(gnn_spec)
 
         # Get dimensions with error handling
         try:
-            A_matrix = matrices.get('A', np.array([[1.0]]))
-            B_matrix = matrices.get('B', np.array([[[1.0]]]))
-            C_vector = matrices.get('C', np.array([0.0, 1.0]))
-            D_vector = matrices.get('D', np.array([0.5, 0.5]))
+            A_matrix = matrices.get("A", np.array([[1.0]]))
+            B_matrix = matrices.get("B", np.array([[[1.0]]]))
+            C_vector = matrices.get("C", np.array([0.0, 1.0]))
+            D_vector = matrices.get("D", np.array([0.5, 0.5]))
 
             logger.info(f"A matrix shape: {A_matrix.shape}")
             logger.info(f"B matrix shape: {B_matrix.shape}")
@@ -1354,7 +1509,9 @@ def _generate_jax_pomdp_code(gnn_spec: Dict[str, Any], options: Optional[Dict[st
             C_vector = np.array([0.0, 1.0])
             D_vector = np.array([0.5, 0.5])
 
-        logger.info(f"Final dimensions: states={num_states}, observations={num_observations}, actions={num_actions}")
+        logger.info(
+            f"Final dimensions: states={num_states}, observations={num_observations}, actions={num_actions}"
+        )
 
         code = f'''"""
 JAX POMDP Solver Generated from GNN Specification: {model_name}
@@ -1610,6 +1767,7 @@ if __name__ == "__main__":
     except Exception as e:
         logger.error(f"Error in _generate_jax_pomdp_code: {e}")
         import traceback
+
         logger.error(f"Traceback: {traceback.format_exc()}")
         # Return a minimal working code as recovery
         return '''"""
@@ -1627,10 +1785,13 @@ if __name__ == "__main__":
     print("JAX POMDP solver created (recovery implementation)")
 '''
 
-def _generate_jax_combined_code(gnn_spec: Dict[str, Any], options: Optional[Dict[str, Any]]) -> str:
+
+def _generate_jax_combined_code(
+    gnn_spec: Dict[str, Any], options: Optional[Dict[str, Any]]
+) -> str:
     """Generate JAX code for hierarchical/multi-agent/continuous models."""
 
-    model_name = gnn_spec.get('ModelName', 'CombinedModel').replace(' ', '_')
+    model_name = gnn_spec.get("ModelName", "CombinedModel").replace(" ", "_")
 
     code = f'''"""
 JAX Combined Model Generated from GNN Specification: {model_name}
@@ -1668,7 +1829,7 @@ class {model_name}Combined(nn.Module):
         self.hierarchical_weights = []
         for level in range(self.num_hierarchical_levels):
             level_weight = self.param(
-                f"hierarchical_{level}",
+                f"hierarchical_{{level}}",
                 nn.initializers.normal(0.1),
                 (self.num_agents, self.num_agents),
             )
@@ -1797,7 +1958,7 @@ class {model_name}Combined(nn.Module):
     def get_parameters(self) -> Dict[str, jnp.ndarray]:
         """Get all model parameters."""
         return {
-            'hierarchical_weights': self.hierarchical_weights,
+        "hierarchical_weights": self.hierarchical_weights,
             'communication_matrix': getattr(self, 'communication_matrix', None),
             'continuous_encoder': self.continuous_encoder.variables if hasattr(self, 'continuous_encoder') else None,
             'continuous_decoder': self.continuous_decoder.variables if hasattr(self, 'continuous_decoder') else None

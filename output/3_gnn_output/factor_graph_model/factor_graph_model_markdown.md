@@ -74,6 +74,14 @@ D_pos = [[0.333, 0.333, 0.333]]
 D_vel = [[0.5, 0.5]]
 C_vis = [[2.0, -0.5, -0.5, -0.5, -0.5, -0.5]]
 C_prop = [[1.0, -1.0, 0.0, 0.0]]
+num_positions = 3
+num_velocities = 2
+num_visual_obs = 6
+num_proprio_obs = 4
+num_actions = 2
+num_timesteps = 25
+num_modalities = 2
+num_state_factors = 2
 
 ## Time
 Dynamic
@@ -99,6 +107,6 @@ F = VariationalFreeEnergy
 t = Time
 
 ## Footer
-Generated: 2026-04-10T10:24:33.250056
+Generated: 2026-05-25T09:51:15.353246
 
 ## Signature
