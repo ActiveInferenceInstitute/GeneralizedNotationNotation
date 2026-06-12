@@ -34,10 +34,10 @@ pytest -m slow          # slow/performance tests only
 ## Test Statistics
 
 - **Total test files**: 184 (155 in subdirectories + 29 at root)
-- **Test collection baseline**: 2,399 collected with the command-of-record
+- **Test collection baseline**: 2,411 collected with the command-of-record
   collect pass and the two local Ollama integration files ignored
 - **Pass/skip baseline**: the latest recorded command-of-record full run with the
-  two local Ollama integration files ignored is 2,381 passed, 17 skipped, 1 xfailed
+  two local Ollama integration files ignored is 2,393 passed, 17 skipped, 1 xfailed
 - **Fast-test duration**: 1-3 minutes
 - **Full-suite duration**: varies by optional backend availability; latest
   command-of-record run completed in 12:09
@@ -646,8 +646,8 @@ If issues persist:
 ### Test Coverage
 
 - **184 test files** across root and module-specific directories
-- **2,399 collected tests** in the current command-of-record collect pass with Ollama integration tests ignored
-- **Latest recorded full suite evidence** with the same Ollama integration excludes: 2,381 passed, 17 skipped, 1 xfailed
+- **2,411 collected tests** in the current command-of-record collect pass with Ollama integration tests ignored
+- **Latest recorded full suite evidence** with the same Ollama integration excludes: 2,393 passed, 17 skipped, 1 xfailed
 - **Comprehensive module coverage** for all major modules
 - **Specialized test areas** for specific functionality
 - **Integration tests** for cross-module functionality
@@ -682,7 +682,7 @@ Module coverage mirrors the maintained source tree. Use `rg --files src/tests -g
 
 ## Test Execution Results
 
-Latest measured collect-only inventory (2026-06-12): 184 `test_*.py` files and 2,399 collected tests with the Ollama integration files excluded. Latest recorded full command-of-record evidence with the same excludes: 2,381 passed, 17 skipped, 1 xfailed.
+Latest measured collect-only inventory (2026-06-12): 186 `test_*.py` files and 2,411 collected tests with the Ollama integration files excluded. Latest recorded full command-of-record evidence with the same excludes: 2,393 passed, 17 skipped, 1 xfailed.
 
 ```bash
 uv run --extra dev python -m pytest src/tests/ -q --tb=no \

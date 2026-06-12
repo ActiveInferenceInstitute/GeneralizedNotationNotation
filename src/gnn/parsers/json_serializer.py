@@ -63,7 +63,12 @@ class JSONSerializer(BaseGNNSerializer):
                 for param in model.parameters
             ],
             "equations": [
-                str(eq)
+                {
+                    "label": getattr(eq, "label", None),
+                    "content": getattr(eq, "content", ""),
+                    "format": getattr(eq, "format", "latex"),
+                    "description": getattr(eq, "description", ""),
+                }
                 for eq in (model.equations if hasattr(model, "equations") else [])
             ],
             "time_specification": self._serialize_time_spec(model.time_specification)
