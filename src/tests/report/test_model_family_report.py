@@ -15,9 +15,9 @@ def test_model_family_acceptance_report_renders_status_table() -> None:
                 "name": "basics",
                 "status": "passed",
                 "step_status_counts": {"passed": 3, "failed": 0, "skipped": 22},
-                "raw_steps": {"11": "failed", "12": "passed"},
+                "raw_steps": {"11": "skipped", "12": "passed"},
                 "step_evidence": {
-                    "11": {"acceptance": "allowed_unsupported"},
+                    "11": {"acceptance": "profiled_unsupported_skip"},
                     "12": {"acceptance": "required"},
                 },
                 "interpretability_summary": {"model_count": 2},
@@ -28,4 +28,4 @@ def test_model_family_acceptance_report_renders_status_table() -> None:
     markdown = render_model_family_acceptance_markdown(ledger)
 
     assert "# GNN Model Family Acceptance Ledger" in markdown
-    assert "| basics | passed | 2 | 3 | 0 | 22 | 1 | 1 |" in markdown
+    assert "| basics | passed | 2 | 3 | 0 | 22 | 0 | 1 |" in markdown

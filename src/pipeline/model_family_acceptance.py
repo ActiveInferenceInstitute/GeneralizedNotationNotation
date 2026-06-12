@@ -52,7 +52,7 @@ DEFAULT_ACCEPTANCE_PROFILE = {
     "required_steps": [3, 5, 6, 15, 16, 23],
     "evidence_steps": [11, 12],
     "allow_unsupported_steps": [],
-    "allow_unsupported_reason_patterns": [],
+    "unsupported_step_reasons": {},
 }
 DEFAULT_FAMILY_TIMEOUT_SECONDS = int(
     os.environ.get("GNN_MODEL_FAMILY_TIMEOUT_SECONDS", "180")
@@ -170,17 +170,25 @@ def _normalize_acceptance_profile(
     profile = dict(DEFAULT_ACCEPTANCE_PROFILE)
     profile.update(defaults)
     profile.update(override)
+    unsupported_step_reasons_raw = profile.get("unsupported_step_reasons", {})
+    if unsupported_step_reasons_raw is None:
+        unsupported_step_reasons_raw = {}
+    if not isinstance(unsupported_step_reasons_raw, dict):
+        raise ValueError(
+            "Acceptance profile unsupported_step_reasons must be an object"
+        )
+    unsupported_step_reasons: Dict[str, str] = {}
+    for step_raw, reason_raw in unsupported_step_reasons_raw.items():
+        reason = str(reason_raw).strip()
+        if reason:
+            unsupported_step_reasons[str(step_raw)] = reason
     return {
         "required_steps": _coerce_step_list(profile.get("required_steps")),
         "evidence_steps": _coerce_step_list(profile.get("evidence_steps")),
         "allow_unsupported_steps": _coerce_step_list(
             profile.get("allow_unsupported_steps")
         ),
-        "allow_unsupported_reason_patterns": [
-            str(item)
-            for item in profile.get("allow_unsupported_reason_patterns", [])
-            if str(item).strip()
-        ],
+        "unsupported_step_reasons": unsupported_step_reasons,
     }
 
 
@@ -209,15 +217,35 @@ def _run_one_family(
     family_dir.mkdir(parents=True, exist_ok=True)
     staged_input.mkdir(parents=True, exist_ok=True)
     copied_files = _stage_representative_files(family, staged_input)
-    command = _pipeline_command(staged_input, pipeline_output, only_steps, frameworks)
+    acceptance_profile = family.acceptance_profile or dict(DEFAULT_ACCEPTANCE_PROFILE)
+    profiled_unsupported_steps = _profiled_unsupported_steps(
+        only_steps, acceptance_profile
+    )
+    command = _pipeline_command(
+        staged_input,
+        pipeline_output,
+        only_steps,
+        frameworks,
+        skip_steps=profiled_unsupported_steps,
+    )
     completed = runner(command)
     return_code = int(completed.returncode)
     pipeline_summary = _load_pipeline_summary(pipeline_output)
-    acceptance_profile = family.acceptance_profile or dict(DEFAULT_ACCEPTANCE_PROFILE)
-    raw_step_status = _build_step_status(only_steps, return_code, pipeline_summary)
-    missing_summary_steps = _missing_summary_steps(only_steps, pipeline_summary)
+    raw_step_status = _build_step_status(
+        only_steps,
+        return_code,
+        pipeline_summary,
+        profiled_unsupported_steps=profiled_unsupported_steps,
+    )
+    missing_summary_steps = _missing_summary_steps(
+        only_steps, pipeline_summary, profiled_unsupported_steps
+    )
     step_evidence = _build_step_evidence(
-        raw_step_status, pipeline_output, missing_summary_steps
+        raw_step_status,
+        pipeline_output,
+        missing_summary_steps,
+        profiled_unsupported_steps=profiled_unsupported_steps,
+        acceptance_profile=acceptance_profile,
     )
     step_status = _apply_acceptance_profile(
         raw_step_status, step_evidence, acceptance_profile
@@ -251,6 +279,9 @@ def _run_one_family(
         "return_code": return_code,
         "status": "passed" if pipeline_passed else "failed",
         "acceptance_profile": acceptance_profile,
+        "profiled_unsupported_steps": [
+            str(step) for step in sorted(profiled_unsupported_steps)
+        ],
         "pipeline_summary": _summarize_pipeline(pipeline_summary),
         "stdout_tail": _tail_text(completed.stdout),
         "stderr_tail": _tail_text(completed.stderr),
@@ -289,6 +320,8 @@ def _pipeline_command(
     output_dir: Path,
     only_steps: str | None,
     frameworks: str | None,
+    *,
+    skip_steps: set[int] | None = None,
 ) -> List[str]:
     command = [
         sys.executable,
@@ -300,6 +333,10 @@ def _pipeline_command(
     ]
     if only_steps:
         command.extend(["--only-steps", only_steps])
+    if skip_steps:
+        command.extend(
+            ["--skip-steps", ",".join(str(step) for step in sorted(skip_steps))]
+        )
     if frameworks:
         command.extend(["--frameworks", frameworks])
     command.append("--skip-llm")
@@ -332,15 +369,20 @@ def _build_step_status(
     only_steps: str | None,
     return_code: int,
     pipeline_summary: Dict[str, Any] | None = None,
+    *,
+    profiled_unsupported_steps: set[int] | None = None,
 ) -> Dict[str, str]:
     selected = set(PIPELINE_STEPS if not only_steps else _parse_step_list(only_steps))
     summary_statuses = _extract_summary_step_statuses(pipeline_summary)
+    profiled_unsupported_steps = profiled_unsupported_steps or set()
     status: Dict[str, str] = {}
     for step in PIPELINE_STEPS:
         if step not in selected:
             status[str(step)] = "skipped"
         elif str(step) in summary_statuses:
             status[str(step)] = summary_statuses[str(step)]
+        elif step in profiled_unsupported_steps:
+            status[str(step)] = "skipped"
         elif pipeline_summary is not None:
             status[str(step)] = "failed"
         else:
@@ -375,12 +417,15 @@ def _profile_required_steps(acceptance_profile: Dict[str, Any]) -> set[int]:
 
 
 def _missing_summary_steps(
-    only_steps: str | None, pipeline_summary: Dict[str, Any] | None
+    only_steps: str | None,
+    pipeline_summary: Dict[str, Any] | None,
+    profiled_unsupported_steps: set[int] | None = None,
 ) -> set[str]:
     """Return selected step ids absent from an available pipeline summary."""
     if pipeline_summary is None:
         return set()
     selected = set(PIPELINE_STEPS if not only_steps else _parse_step_list(only_steps))
+    selected -= profiled_unsupported_steps or set()
     summary_statuses = _extract_summary_step_statuses(pipeline_summary)
     return {str(step) for step in selected if str(step) not in summary_statuses}
 
@@ -455,15 +500,30 @@ def _build_step_evidence(
     raw_step_status: Dict[str, str],
     pipeline_output: Path,
     missing_summary_steps: set[str] | None = None,
+    *,
+    profiled_unsupported_steps: set[int] | None = None,
+    acceptance_profile: Dict[str, Any] | None = None,
 ) -> Dict[str, Dict[str, Any]]:
     evidence: Dict[str, Dict[str, Any]] = {}
     missing_summary_steps = missing_summary_steps or set()
+    profiled_unsupported_steps = profiled_unsupported_steps or set()
+    unsupported_reasons = (acceptance_profile or dict(DEFAULT_ACCEPTANCE_PROFILE)).get(
+        "unsupported_step_reasons", {}
+    )
     render_reason = _render_skip_or_failure_reason(pipeline_output)
     execution_reason = _execution_skip_or_failure_reason(pipeline_output)
     for step, status in raw_step_status.items():
         reason = None
         evidence_status = status
-        if step in missing_summary_steps:
+        if int(step) in profiled_unsupported_steps and status == "skipped":
+            reason = str(
+                unsupported_reasons.get(
+                    step,
+                    "profiled unsupported model family step",
+                )
+            )
+            evidence_status = "skipped"
+        elif step in missing_summary_steps:
             reason = "missing_summary_evidence"
             evidence_status = "failed"
         elif step == "11":
@@ -481,7 +541,11 @@ def _build_step_evidence(
         evidence[step] = {
             "raw_status": status,
             "status": evidence_status,
-            "acceptance": "required",
+            "acceptance": (
+                "profiled_unsupported_skip"
+                if int(step) in profiled_unsupported_steps and status == "skipped"
+                else "required"
+            ),
             "reason": reason,
             "artifact_links": artifact_links,
         }
@@ -500,24 +564,21 @@ def _apply_acceptance_profile(
     allowed_steps = set(
         _coerce_step_list(acceptance_profile["allow_unsupported_steps"])
     )
-    patterns = [
-        str(pattern)
-        for pattern in acceptance_profile.get("allow_unsupported_reason_patterns", [])
-    ]
     for step in allowed_steps:
         key = str(step)
         evidence = step_evidence.get(key, {})
-        reason = str(evidence.get("reason") or "")
-        if (
-            effective.get(key) in {"failed", "skipped"}
-            and reason
-            and _matches_any_pattern(reason, patterns)
-        ):
+        if evidence.get("acceptance") == "profiled_unsupported_skip":
             effective[key] = "skipped"
-            evidence["status"] = "skipped"
-            evidence["acceptance"] = "allowed_unsupported"
-            evidence["reason"] = reason
     return effective
+
+
+def _profiled_unsupported_steps(
+    only_steps: str | None, acceptance_profile: Dict[str, Any]
+) -> set[int]:
+    """Return profile-declared unsupported evidence steps selected for this run."""
+    selected = set(PIPELINE_STEPS if not only_steps else _parse_step_list(only_steps))
+    profiled = set(_coerce_step_list(acceptance_profile["allow_unsupported_steps"]))
+    return selected & profiled
 
 
 def _selected_steps_passed(
@@ -538,7 +599,8 @@ def _selected_steps_passed(
         if (
             status == "skipped"
             and step in allowed_steps
-            and step_evidence.get(key, {}).get("acceptance") == "allowed_unsupported"
+            and step_evidence.get(key, {}).get("acceptance")
+            == "profiled_unsupported_skip"
         ):
             continue
         return False
@@ -553,10 +615,12 @@ def _pipeline_run_outcome_acceptable(
     """Reject contradictory run outcomes unless all failures are profiled skips."""
     if return_code in {0, 2} and _summary_status_is_acceptable(pipeline_summary):
         return True
-    return any(
-        evidence.get("acceptance") == "allowed_unsupported"
+    if return_code == 0 and any(
+        evidence.get("acceptance") == "profiled_unsupported_skip"
         for evidence in step_evidence.values()
-    )
+    ):
+        return True
+    return False
 
 
 def _summary_status_is_acceptable(pipeline_summary: Dict[str, Any]) -> bool:
@@ -564,10 +628,6 @@ def _summary_status_is_acceptable(pipeline_summary: Dict[str, Any]) -> bool:
     if not status:
         return True
     return status in ACCEPTABLE_SUMMARY_STATUSES
-
-
-def _matches_any_pattern(reason: str, patterns: Sequence[str]) -> bool:
-    return any(pattern and pattern in reason for pattern in patterns)
 
 
 def _render_skip_or_failure_reason(pipeline_output: Path) -> str | None:

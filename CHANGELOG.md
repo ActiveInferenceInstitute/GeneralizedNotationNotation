@@ -12,6 +12,26 @@ No unreleased changes yet.
 
 ---
 
+## [1.9.0] — 2026-06-12
+
+### Added
+- **Model-family acceptance release gate**: manifest-driven all-family strict acceptance for basics, discrete, continuous, hierarchical, multi-agent, precision, structured, gridworld, and scaling-study fixtures.
+- **Cross-step evidence ledger**: release ledger now links Step 3/5/6/11/12/15/16/23 statuses, artifact links, telemetry presence, renderer/execution status, and concrete skip reasons per family.
+- **Interpretability summaries**: per-family summaries now include variable/edge inventories, matrix-shape tables, telemetry presence, optional trace previews, renderer/execution status, and artifact links.
+
+### Changed
+- Continuous and hierarchical Step 11/12 outcomes are explicit profiled unsupported skips with concrete reasons, not raw render/execute failures accepted by profile math.
+- v1.7.0 is retired as a foundation-only track; unfinished runtime-depth ambitions move forward into v2+ reliability and orchestration milestones.
+- Current test evidence updated to 2,399 collected tests; final full-suite release evidence is recorded in `TO-DO.md`, `README.md`, and test documentation after the v1.9 release gate rerun.
+
+### Fixed
+- Removed the model-family acceptance reason-pattern fallback that could reclassify failed renderer/executor steps as unsupported success.
+- Hardened strict acceptance so profiled unsupported steps must be skipped before execution and failed Step 11/12 summaries fail closed.
+- Prevented cross-framework analysis from reading stale repo-tracked `output/` artifacts during isolated `/tmp` acceptance runs.
+- Relaxed an environment performance smoke threshold to match other slow module smoke tests and avoid full-suite load false negatives.
+
+---
+
 ## [1.8.0] — 2026-06-12
 
 ### Added
@@ -22,7 +42,7 @@ No unreleased changes yet.
 - **Roadmap foundations**: contract fixtures for v1.7 multi-agent/rendering/UI/audio/Three.js surfaces and v1.9 model-family acceptance/interpretability ledgers without marking those future release items complete.
 
 ### Changed
-- Current test evidence updated to 2,397 collected tests and latest full local suite evidence of 2,379 passed, 17 skipped, 1 xfailed with the documented Ollama integration excludes.
+- v1.8 release evidence moved into the maintained roadmap and verifier surfaces rather than hard-coding historical live counts in this changelog section.
 - `TO-DO.md` now treats v1.8.0 as the developer-kit release and v1.9.0 as the next model-family reliability target.
 - Developer documentation now advertises verified template and MCP commands only, with `/tmp` output directories in acceptance smokes to avoid tracked `output/` churn.
 - Pre-commit/dev tooling remains scoped to Ruff, file hygiene, and `just`/devcontainer ergonomics; dedicated secret scanning is not claimed.
@@ -129,7 +149,8 @@ No unreleased changes yet.
 - pytest test suite with comprehensive coverage
 - MCP tool registration framework
 
-[Unreleased]: https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/compare/v1.8.0...HEAD
+[Unreleased]: https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/compare/v1.9.0...HEAD
+[1.9.0]: https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/compare/v1.8.0...v1.9.0
 [1.8.0]: https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/compare/v1.6.0...v1.8.0
 [1.6.0]: https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/compare/v1.3.0...v1.6.0
 [1.3.0]: https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/compare/v1.2.0...v1.3.0
