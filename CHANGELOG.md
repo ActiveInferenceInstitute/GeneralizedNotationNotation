@@ -12,6 +12,24 @@ No unreleased changes yet.
 
 ---
 
+## [2.0.0] — 2026-06-12
+
+### Added
+- **Semantic fidelity release gate**: `scripts/run_semantic_fidelity_gate.py` writes `gnn_semantic_fidelity_ledger_v1` artifacts for maintained model families.
+- **Strict semantic contracts**: representative fixtures now preserve model identity, variables, edges, dimensions, parameter shapes, equations, time, and ontology mappings across JSON parse/serialize/parse checks.
+- **Cross-framework reliability release gate**: `scripts/run_cross_framework_reliability.py` writes `gnn_cross_framework_reliability_ledger_v1` artifacts with compatible, required, and unsupported backend statuses.
+- **GridWorld three-backend comparison**: GridWorld is profiled for PyMDP, RxInfer, and ActiveInference.jl, including seed, trace length, matrix-shape, and matrix-provenance parity.
+
+### Changed
+- GridWorld model-family acceptance now requests PyMDP, RxInfer, and ActiveInference.jl for the v2 comparison fixture instead of a PyMDP-only profile.
+- Roadmap next target moves to v3.0.0 for durable streams, long-running sessions, and auditable container plans.
+
+### Fixed
+- JSON serialization now emits equation objects instead of lossy stringified dataclasses, preventing silent semantic round-trip drift.
+- Cross-framework reliability no longer certifies aggregate Step 12 success without successful non-skipped execution-detail rows and current simulation payloads for required backends.
+
+---
+
 ## [1.9.0] — 2026-06-12
 
 ### Added
@@ -149,7 +167,8 @@ No unreleased changes yet.
 - pytest test suite with comprehensive coverage
 - MCP tool registration framework
 
-[Unreleased]: https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/compare/v1.9.0...HEAD
+[Unreleased]: https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/compare/v2.0.0...HEAD
+[2.0.0]: https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/compare/v1.9.0...v2.0.0
 [1.9.0]: https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/compare/v1.8.0...v1.9.0
 [1.8.0]: https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/compare/v1.6.0...v1.8.0
 [1.6.0]: https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/compare/v1.3.0...v1.6.0

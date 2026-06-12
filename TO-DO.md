@@ -1,20 +1,11 @@
 # TO-DO — GNN Pipeline Roadmap
 
 **Last Updated**: 2026-06-12
-**Current Version**: 1.9.0
-**Next Target**: v2.0.0 (semantic fidelity and cross-framework reliability)
+**Current Version**: 2.0.0
+**Next Target**: v3.0.0 (long-running orchestration, durable streams, and auditable container plans)
 
-**Current Evidence (2026-06-12)**: v1.9.0 focused family/report suite
-`17 passed`; command-of-record collect-only inventory is `2399` collected tests
-across 184 `test_*.py` files with the documented Ollama integration ignores.
-Latest full local suite evidence with the same Ollama ignores is
-`2381 passed, 17 skipped, 1 xfailed`. The all-family strict acceptance passed
-for 9 families; continuous/hierarchical Step 11/12 recorded as profiled
-unsupported skips with `0` raw failed Step 11/12 counts. v1.8.0 focused
-release smokes passed for `gnn templates list`, `gnn templates show
-pomdp-gridworld-3x3`, dry-run `gnn pull` to `/tmp/gnn-pull`, and authenticated
-MCP HTTP tests (`12 passed`; combined CLI/MCP/capability suite `32 passed`);
-`just lint` passes.
+**Current Evidence (2026-06-12)**: v2.0.0 semantic fidelity gate passed for 9 families (`gnn_semantic_fidelity_ledger_v1`); cross-framework reliability gate passed for 9 families (`gnn_cross_framework_reliability_ledger_v1`) with GridWorld compared PyMDP, RxInfer, and ActiveInference.jl and all other unprofiled backends recorded with explicit unsupported statuses. Command-of-record collect-only inventory is `2411` collected tests across 186 `test_*.py` files with the documented Ollama integration ignores. Latest full local suite evidence with the same Ollama ignores is `2393 passed, 17 skipped, 1 xfailed`. v1.9 all-family strict acceptance remains green for 9 families; continuous and hierarchical Step 11/12 remain profiled unsupported skips with `0` raw failed Step 11/12 counts. v1.8.0 focused release smokes passed for `gnn templates list`, `gnn templates show pomdp-gridworld-3x3`, dry-run `gnn pull` to `/tmp/gnn-pull`, and authenticated
+MCP HTTP tests (`12 passed`; combined CLI/MCP/capability suite `32 passed`); `just lint` passes.
 
 ---
 
@@ -111,12 +102,21 @@ uv run --extra dev python src/main.py --target-dir input/gnn_files/discrete --ou
 
 ---
 
-## 🧪 v2.0.0 — Semantic Fidelity & Cross-Framework Reliability
+## ✅ v2.0.0 — Semantic Fidelity & Cross-Framework Reliability (Released)
 
 > **Scope**: Upgrade GNN from broad fixture acceptance to stronger semantic preservation, cross-format round trips, and cross-framework equivalence checks.
+> **Released**: 2026-06-12 (tag: `v2.0.0`)
 
-- [ ] **Semantic Round-Trip Gates** — Require representative model families to preserve variables, edges, dimensions, and key matrix contracts across maintained formats.
-- [ ] **Cross-Framework Result Comparisons** — Compare compatible PyMDP, RxInfer, JAX, NumPyro, PyTorch, ActiveInference.jl, and DisCoPy outputs with explicit skipped/failed states for unavailable frameworks.
+- [x] **Semantic Round-Trip Gates** — Require representative model families to preserve variables, edges, dimensions, parameter shapes, equations, time, and ontology mappings across the maintained strict JSON interchange path. `scripts/run_semantic_fidelity_gate.py` passed for all 9 manifest families and wrote `gnn_semantic_fidelity_ledger_v1` artifacts.
+- [x] **Cross-Framework Result Comparisons** — Compare compatible backend outputs through `scripts/run_cross_framework_reliability.py`; required backends need Step 11/12 evidence, successful non-skipped Step 12 execution detail rows, current simulation payloads, matching seeds when present, trace lengths, and matrix-shape/provenance parity. The all-family gate passed for 9 families; GridWorld compared PyMDP, RxInfer, and ActiveInference.jl, while JAX, NumPyro, PyTorch, and DisCoPy remain explicit unsupported statuses unless profiled for a compatible family.
+
+### Acceptance
+```bash
+uv run --extra dev python -m pytest src/tests/pipeline/test_semantic_fidelity_gate.py src/tests/pipeline/test_cross_framework_reliability.py -q
+uv run --extra dev python scripts/run_semantic_fidelity_gate.py --manifest input/model_family_manifest.json --output-dir /tmp/gnn-semantic-fidelity --strict
+uv run --extra dev python scripts/run_cross_framework_reliability.py --manifest input/model_family_manifest.json --output-dir /tmp/gnn-cross-framework --strict
+uv run --extra dev python scripts/run_model_family_acceptance.py --manifest input/model_family_manifest.json --output-dir /tmp/gnn-family-acceptance-all --strict
+```
 
 ---
 

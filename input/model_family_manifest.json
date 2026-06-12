@@ -75,7 +75,7 @@
       "name": "gridworld",
       "description": "Gridworld POMDP fixture used for cross-framework acceptance checks.",
       "target_dir": "input/gnn_files/pomdp_gridworld",
-      "frameworks": "pymdp",
+      "frameworks": "pymdp,rxinfer,activeinference_jl",
       "representative_files": ["pomdp_gridworld_3x3.md"]
     },
     {

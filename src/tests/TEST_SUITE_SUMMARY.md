@@ -16,8 +16,8 @@ The GNN Processing Pipeline test suite provides comprehensive coverage across al
 - **Directory Layout**: 34 maintained first-level directories under `src/tests/`; 32 contain direct test files
 - **Root-Level Tests**: 29 `test_*.py` files at `src/tests/`
 - **Subdirectory Tests**: 155 `test_*.py` files under module/helper directories
-- **Collected Tests**: 2,399 with `uv run --extra dev python -m pytest --collect-only src/tests/ -q --tb=no --ignore=src/tests/llm/test_llm_ollama.py --ignore=src/tests/llm/test_llm_ollama_integration.py` (2026-06-12)
-- **Latest Full Run Evidence**: `uv run --extra dev python -m pytest src/tests/ -q --tb=no --ignore=src/tests/llm/test_llm_ollama.py --ignore=src/tests/llm/test_llm_ollama_integration.py`: 2,381 passed, 17 skipped, 1 xfailed.
+- **Collected Tests**: 2,411 with `uv run --extra dev python -m pytest --collect-only src/tests/ -q --tb=no --ignore=src/tests/llm/test_llm_ollama.py --ignore=src/tests/llm/test_llm_ollama_integration.py` (2026-06-12)
+- **Latest Full Run Evidence**: `uv run --extra dev python -m pytest src/tests/ -q --tb=no --ignore=src/tests/llm/test_llm_ollama.py --ignore=src/tests/llm/test_llm_ollama_integration.py`: 2,393 passed, 17 skipped, 1 xfailed.
 
 ---
 
@@ -284,8 +284,8 @@ output/2_tests_output/
 The GNN Processing Pipeline test suite provides comprehensive, production-ready testing infrastructure with:
 
 - 184 test files across root and module-specific directories
-- 2,399 collected tests in the current command-of-record collect pass with Ollama integration tests ignored
-- Latest recorded full command-of-record evidence: 2,381 passed, 17 skipped, 1 xfailed
+- 2,411 collected tests in the current command-of-record collect pass with Ollama integration tests ignored
+- Latest recorded full command-of-record evidence: 2,393 passed, 17 skipped, 1 xfailed
 - Real data and real implementations throughout core paths
 - Comprehensive error handling and recovery testing
 - Module coverage for all 25 pipeline steps

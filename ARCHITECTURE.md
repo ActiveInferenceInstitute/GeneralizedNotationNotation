@@ -3,7 +3,7 @@
 This guide details the architecture of the Generalized Notation Notation (GNN) system. It complements `DOCS.md` and `doc/pipeline/README.md` with an implementation-oriented perspective for developers.
 
 **Last Updated**: 2026-06-12
-**Version**: 1.9.0
+**Version**: 2.0.0
 **Status**: Maintained
 **Pipeline Steps**: 25 (0-24)
 
@@ -323,7 +323,7 @@ Each agent implements comprehensive performance monitoring:
 
 ---
 
-**Architecture Version**: 1.9.0
+**Architecture Version**: 2.0.0
 **Last Updated**: 2026-06-12
 **Status**: ✅ Production Ready
 **Compliance**: Thin orchestrator pattern

@@ -114,6 +114,11 @@ def run_audit() -> List[str]:
         and "**Next Target**: v2.0.0" not in todo_text
     ):
         failures.append("TO-DO.md: v1.9.0 release must set v2.0.0 as next target")
+    if (
+        "**Current Version**: 2.0.0" in todo_text
+        and "**Next Target**: v3.0.0" not in todo_text
+    ):
+        failures.append("TO-DO.md: v2.0.0 release must set v3.0.0 as next target")
 
     readme_tests = _read("src/tests/README.md")
     maintained_dirs, direct_test_dirs = _maintained_test_directory_counts()
@@ -190,6 +195,19 @@ def run_audit() -> List[str]:
             "collect-only inventory",
             "full suite evidence",
         ),
+        "Semantic Round-Trip Gates": (
+            "semantic fidelity gate passed for 9 families",
+            "gnn_semantic_fidelity_ledger_v1",
+            "variables, edges, dimensions, parameter shapes, equations, time, and ontology mappings",
+            "scripts/run_semantic_fidelity_gate.py",
+        ),
+        "Cross-Framework Result Comparisons": (
+            "cross-framework reliability gate passed for 9 families",
+            "gnn_cross_framework_reliability_ledger_v1",
+            "GridWorld compared PyMDP, RxInfer, and ActiveInference.jl",
+            "explicit unsupported statuses",
+            "scripts/run_cross_framework_reliability.py",
+        ),
     }
     for item in guarded_pending_items:
         if f"- [x] **{item}**" in todo_text:
@@ -244,6 +262,26 @@ def run_audit() -> List[str]:
     ):
         if not _exists(required):
             failures.append(f"v1.9 model-family contract missing: {required}")
+
+    for required in (
+        "scripts/run_semantic_fidelity_gate.py",
+        "scripts/run_cross_framework_reliability.py",
+        "src/pipeline/semantic_fidelity.py",
+        "src/pipeline/cross_framework_reliability.py",
+        "src/report/semantic_fidelity.py",
+        "src/report/cross_framework_reliability.py",
+        "src/tests/pipeline/test_semantic_fidelity_gate.py",
+        "src/tests/pipeline/test_cross_framework_reliability.py",
+    ):
+        if not _exists(required):
+            failures.append(f"v2.0 reliability contract missing: {required}")
+
+    if "pymdp,rxinfer,activeinference_jl" not in _read(
+        "input/model_family_manifest.json"
+    ):
+        failures.append(
+            "input/model_family_manifest.json: GridWorld must profile a real multi-backend comparison"
+        )
 
     if "WebSocket" in todo_text:
         if not _contains(
