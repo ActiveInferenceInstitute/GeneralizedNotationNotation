@@ -12,8 +12,9 @@ include:
 
 - Classes:
   - `PyMDPSimulation`
-  - `PyMDPVisualizer` (soft import from analysis package)
+  - `create_demo_pymdp_simulation`
 - Execution:
+  - `run_pymdp_simulation(...)`
   - `execute_pymdp_simulation_from_gnn(...)`
   - `execute_pymdp_simulation(...)`
 - Validation:
@@ -48,8 +49,8 @@ Do not document non-exported helper names as public contract.
   from pymdp.agent import Agent
   from pymdp import utils as pymdp_utils
   ```
-- No "recovery" / fallback Agent is shipped; if pymdp 1.0.0+ is not importable
-  the execution path fails fast via `simple_simulation._require_pymdp_1`.
+- If pymdp 1.0.0+ is not importable, the execution path reports an explicit
+  failed status via `simulation._require_pymdp_1`.
 - Rollout loop uses the canonical 1.0.0 pattern:
   `infer_states(empirical_prior=…, return_info=True)` →
   `infer_policies(qs)` → `sample_action(q_pi, rng_key=…)` →
@@ -59,7 +60,7 @@ Do not document non-exported helper names as public contract.
 
 - `executor.py`
 - `pymdp_simulation.py`
-- `simple_simulation.py`
+- `simulation.py`
 - `pymdp_runner.py`
 - `validator.py`
 - `package_detector.py`
@@ -68,6 +69,7 @@ Do not document non-exported helper names as public contract.
 ## Documentation Maintenance Rules
 
 - Keep signatures and examples aligned with implemented functions.
-- Keep claims testable by `src/tests/test_execute_pymdp_*.py`, integration tests,
-  and `src/tests/test_pymdp_1_0_0_upstream_api.py` (installed `Agent` API).
+- Keep claims testable by `src/tests/execute/test_execute_pymdp_*.py`,
+  integration tests, and
+  `src/tests/execute/test_pymdp_1_0_0_upstream_api.py` (installed `Agent` API).
 - Keep wording concise; avoid capability claims not exercised in code.

@@ -61,7 +61,7 @@ Perception involves active exploration of the environment through eye movements,
 #### Cross-Modal Plasticity
 - **Visual-Auditory Integration**: Temporal and spatial correspondence
 - **McGurk Effect**: Speech perception influenced by visual lip movements
-- **Rubber Hand Illusion**: Illusory ownership of fake limbs
+- **Rubber Hand Illusion**: Illusory ownership of artificial limbs
 - **Ventriloquist Effect**: Mislocalization of sound sources
 
 #### Sensory Substitution

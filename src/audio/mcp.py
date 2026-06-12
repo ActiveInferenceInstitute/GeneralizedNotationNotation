@@ -55,7 +55,9 @@ def process_audio_mcp(
             "success": success,
             "target_directory": target_directory,
             "output_directory": output_directory,
-            "message": "Audio processing completed successfully" if success else "Audio processing failed",
+            "message": "Audio processing completed successfully"
+            if success
+            else "Audio processing failed",
         }
     except Exception as e:
         logger.error(f"process_audio_mcp error: {e}", exc_info=True)
@@ -112,7 +114,9 @@ def analyze_audio_characteristics_mcp(audio_file_path: str) -> Dict[str, Any]:
         Dictionary with audio characteristics and analysis metadata.
     """
     try:
-        result = analyze_audio_characteristics(Path(audio_file_path))
+        result = analyze_audio_characteristics(
+            {"file_path": str(Path(audio_file_path))}
+        )
         if isinstance(result, dict):
             return {"success": True, **result}
         return {"success": True, "characteristics": result}
@@ -153,7 +157,7 @@ def validate_audio_content_mcp(audio_file_path: str) -> Dict[str, Any]:
         Dictionary with validation result, diagnostics, and any error details.
     """
     try:
-        result = validate_audio_content(Path(audio_file_path))
+        result = validate_audio_content(str(audio_file_path))
         if isinstance(result, dict):
             return {"success": True, **result}
         return {"success": bool(result), "valid": bool(result)}
@@ -165,7 +169,7 @@ def validate_audio_content_mcp(audio_file_path: str) -> Dict[str, Any]:
 # ── MCP Registration ──────────────────────────────────────────────────────────
 
 
-def register_tools(mcp_instance) -> None:
+def register_tools(mcp_instance: Any) -> None:
     """Register audio domain tools with the MCP server."""
 
     mcp_instance.register_tool(
@@ -174,14 +178,21 @@ def register_tools(mcp_instance) -> None:
         {
             "type": "object",
             "properties": {
-                "target_directory": {"type": "string", "description": "Directory containing GNN files"},
-                "output_directory": {"type": "string", "description": "Audio output directory"},
-                "verbose":          {"type": "boolean", "default": False},
+                "target_directory": {
+                    "type": "string",
+                    "description": "Directory containing GNN files",
+                },
+                "output_directory": {
+                    "type": "string",
+                    "description": "Audio output directory",
+                },
+                "verbose": {"type": "boolean", "default": False},
             },
             "required": ["target_directory", "output_directory"],
         },
         "Run GNN audio processing pipeline: convert GNN models to audio files.",
-        module=__package__, category="audio",
+        module=__package__,
+        category="audio",
     )
 
     mcp_instance.register_tool(
@@ -189,7 +200,8 @@ def register_tools(mcp_instance) -> None:
         check_audio_backends_mcp,
         {},
         "Check which audio generation backends (scipy, soundfile, pedalboard, wave) are available.",
-        module=__package__, category="audio",
+        module=__package__,
+        category="audio",
     )
 
     mcp_instance.register_tool(
@@ -197,7 +209,8 @@ def register_tools(mcp_instance) -> None:
         get_audio_generation_options_mcp,
         {},
         "Return all configurable audio generation options with defaults and valid ranges.",
-        module=__package__, category="audio",
+        module=__package__,
+        category="audio",
     )
 
     mcp_instance.register_tool(
@@ -206,12 +219,16 @@ def register_tools(mcp_instance) -> None:
         {
             "type": "object",
             "properties": {
-                "audio_file_path": {"type": "string", "description": "Path to the audio file to analyse"},
+                "audio_file_path": {
+                    "type": "string",
+                    "description": "Path to the audio file to analyse",
+                },
             },
             "required": ["audio_file_path"],
         },
         "Analyse characteristics of a GNN-generated audio file (duration, RMS, spectral centroid, etc.).",
-        module=__package__, category="audio",
+        module=__package__,
+        category="audio",
     )
 
     mcp_instance.register_tool(
@@ -220,12 +237,16 @@ def register_tools(mcp_instance) -> None:
         {
             "type": "object",
             "properties": {
-                "audio_file_path": {"type": "string", "description": "Path to the audio file to validate"},
+                "audio_file_path": {
+                    "type": "string",
+                    "description": "Path to the audio file to validate",
+                },
             },
             "required": ["audio_file_path"],
         },
         "Validate a GNN-generated audio file: header, sample count, amplitude bounds.",
-        module=__package__, category="audio",
+        module=__package__,
+        category="audio",
     )
 
     mcp_instance.register_tool(
@@ -233,7 +254,8 @@ def register_tools(mcp_instance) -> None:
         get_audio_module_info_mcp,
         {},
         "Return version, feature flags, supported backends and formats of the GNN audio module.",
-        module=__package__, category="audio",
+        module=__package__,
+        category="audio",
     )
 
     logger.info("audio module MCP tools registered (6 tools).")

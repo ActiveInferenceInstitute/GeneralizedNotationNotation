@@ -10,9 +10,11 @@ Extracted from processor.py for maintainability.
 import logging
 import time
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any, Dict, List, cast
 
 _module_logger = logging.getLogger(__name__)
+
+from visualization.matrix_visualizer import MatrixVisualizer as _MatrixVisualizer
 
 from ._shared import (
     MATPLOTLIB_AVAILABLE,
@@ -27,16 +29,6 @@ from ._shared import (
     validate_visualization_data,
 )
 
-try:
-    from visualization.matrix_visualizer import MatrixVisualizer as _MatrixVisualizer
-except ImportError:
-    try:
-        from src.visualization.matrix_visualizer import (
-            MatrixVisualizer as _MatrixVisualizer,
-        )
-    except ImportError:
-        _MatrixVisualizer = None
-
 
 def _generate_3d_visualization(
     model_name: str,
@@ -44,13 +36,11 @@ def _generate_3d_visualization(
     output_dir: Path,
     export_formats: List[str],
     dependencies: Dict[str, bool],
-    logger: logging.Logger
+    logger: logging.Logger,
 ) -> AdvancedVisualizationAttempt:
     """Generate 3D network visualization"""
     attempt = AdvancedVisualizationAttempt(
-        viz_type="3d",
-        model_name=model_name,
-        status="skipped"
+        viz_type="3d", model_name=model_name, status="skipped"
     )
 
     start_time = time.time()
@@ -58,7 +48,7 @@ def _generate_3d_visualization(
     try:
         if MATPLOTLIB_AVAILABLE and plt and np:
             fig = plt.figure(figsize=(10, 8))
-            ax = fig.add_subplot(111, projection='3d')
+            ax = cast(Any, fig.add_subplot(111, projection="3d"))
 
             variables = model_data.get("variables", [])
             connections = model_data.get("connections", [])
@@ -66,7 +56,9 @@ def _generate_3d_visualization(
             validation_results = validate_visualization_data(model_data, logger)
 
             if not validation_results["overall_valid"]:
-                logger.warning(f"Poor data quality for 3D visualization of {model_name}")
+                logger.warning(
+                    f"Poor data quality for 3D visualization of {model_name}"
+                )
                 if validation_results["errors"]:
                     logger.error(f"Errors: {validation_results['errors']}")
                 if validation_results["warnings"]:
@@ -79,29 +71,29 @@ def _generate_3d_visualization(
                 len(variables)
                 positions = _calculate_semantic_positions(variables, connections)
 
-                type_color_map = {
-                    'likelihood_matrix': '#FF6B6B',
-                    'transition_matrix': '#4ECDC4',
-                    'preference_vector': '#45B7D1',
-                    'prior_vector': '#96CEB4',
-                    'hidden_state': '#FECA57',
-                    'observation': '#FF9FF3',
-                    'policy': '#A8E6CF',
-                    'action': '#DCE9BE',
-                    'unknown': '#CCCCCC'
+                type_color_map: dict[str, Any] = {
+                    "likelihood_matrix": "#FF6B6B",
+                    "transition_matrix": "#4ECDC4",
+                    "preference_vector": "#45B7D1",
+                    "prior_vector": "#96CEB4",
+                    "hidden_state": "#FECA57",
+                    "observation": "#FF9FF3",
+                    "policy": "#A8E6CF",
+                    "action": "#DCE9BE",
+                    "unknown": "#CCCCCC",
                 }
 
-                node_sizes = []
-                node_colors = []
+                node_sizes: list[Any] = []
+                node_colors: list[Any] = []
 
                 for var in variables:
                     var.get("name", "unknown")
                     var_type = var.get("var_type", "unknown")
                     dimensions = var.get("dimensions", [])
 
-                    base_size = 50
+                    base_size = 50.0
                     if isinstance(dimensions, list) and len(dimensions) > 0:
-                        dim_product = 1
+                        dim_product = 1.0
                         for dim in dimensions[:2]:
                             if isinstance(dim, (int, float)):
                                 dim_product *= dim
@@ -109,12 +101,30 @@ def _generate_3d_visualization(
                         base_size *= size_multiplier
 
                     node_sizes.append(base_size)
-                    node_colors.append(type_color_map.get(var_type, '#CCCCCC'))
+                    node_colors.append(type_color_map.get(var_type, "#CCCCCC"))
 
-                for i, (pos, color, size) in enumerate(zip(positions, node_colors, node_sizes)):
-                    ax.scatter(pos[0], pos[1], pos[2], c=color, s=size, alpha=0.8, edgecolors='black')
-                    ax.text(pos[0], pos[1], pos[2], variables[i].get("name", f"Var{i}"),
-                           fontsize=8, ha='center', va='center', fontweight='bold')
+                for i, (pos, color, size) in enumerate(
+                    zip(positions, node_colors, node_sizes)
+                ):
+                    ax.scatter(
+                        pos[0],
+                        pos[1],
+                        pos[2],
+                        c=color,
+                        s=size,
+                        alpha=0.8,
+                        edgecolors="black",
+                    )
+                    ax.text(
+                        pos[0],
+                        pos[1],
+                        pos[2],
+                        variables[i].get("name", f"Var{i}"),
+                        fontsize=8,
+                        ha="center",
+                        va="center",
+                        fontweight="bold",
+                    )
 
                 if connections:
                     for conn_info in connections:
@@ -134,27 +144,41 @@ def _generate_3d_visualization(
                                         if var.get("name") == target_var:
                                             target_idx = idx
 
-                                    if source_idx is not None and target_idx is not None:
+                                    if (
+                                        source_idx is not None
+                                        and target_idx is not None
+                                    ):
                                         source_pos = positions[source_idx]
                                         target_pos = positions[target_idx]
 
-                                        ax.plot([source_pos[0], target_pos[0]],
-                                               [source_pos[1], target_pos[1]],
-                                               [source_pos[2], target_pos[2]],
-                                               'gray', alpha=0.5, linewidth=2)
+                                        ax.plot(
+                                            [source_pos[0], target_pos[0]],
+                                            [source_pos[1], target_pos[1]],
+                                            [source_pos[2], target_pos[2]],
+                                            "gray",
+                                            alpha=0.5,
+                                            linewidth=2,
+                                        )
 
-                                        ax.scatter(target_pos[0], target_pos[1], target_pos[2],
-                                                 c='red', s=30, marker='>', alpha=0.7)
+                                        ax.scatter(
+                                            target_pos[0],
+                                            target_pos[1],
+                                            target_pos[2],
+                                            c="red",
+                                            s=30,
+                                            marker=">",
+                                            alpha=0.7,
+                                        )
 
-                ax.set_xlabel('X Dimension')
-                ax.set_ylabel('Y Dimension')
-                ax.set_zlabel('Z Dimension')
-                ax.set_title(f'3D Model Structure: {model_name}')
+                ax.set_xlabel("X Dimension")
+                ax.set_ylabel("Y Dimension")
+                ax.set_zlabel("Z Dimension")
+                ax.set_title(f"3D Model Structure: {model_name}")
 
                 plt.tight_layout()
 
                 output_file = output_dir / f"{model_name}_3d_visualization.png"
-                plt.savefig(output_file, dpi=150, bbox_inches='tight')
+                plt.savefig(output_file, dpi=150, bbox_inches="tight")
                 plt.close()
 
                 attempt.status = "success"
@@ -165,17 +189,25 @@ def _generate_3d_visualization(
                 attempt.status = "skipped"
 
         elif not dependencies.get("plotly"):
-            logger.info(f"Skipping 3D visualization for {model_name} (plotly not available)")
+            logger.info(
+                f"Skipping 3D visualization for {model_name} (plotly not available)"
+            )
             attempt.fallback_used = True
             _generate_fallback_report(model_name, "3d", output_dir, model_data, logger)
             attempt.status = "success"
-            attempt.output_files.append(str(output_dir / f"{model_name}_3d_fallback.html"))
+            attempt.output_files.append(
+                str(output_dir / f"{model_name}_3d_fallback.html")
+            )
         else:
-            logger.info(f"3D visualization for {model_name} - using matplotlib recovery")
+            logger.info(
+                f"3D visualization for {model_name} - using matplotlib recovery"
+            )
             attempt.fallback_used = True
             _generate_fallback_report(model_name, "3d", output_dir, model_data, logger)
             attempt.status = "success"
-            attempt.output_files.append(str(output_dir / f"{model_name}_3d_fallback.html"))
+            attempt.output_files.append(
+                str(output_dir / f"{model_name}_3d_fallback.html")
+            )
 
     except Exception as e:
         logger.error(f"Failed to generate 3D visualization for {model_name}: {e}")
@@ -193,24 +225,28 @@ def _generate_interactive_dashboard(
     output_dir: Path,
     export_formats: List[str],
     dependencies: Dict[str, bool],
-    logger: logging.Logger
+    logger: logging.Logger,
 ) -> AdvancedVisualizationAttempt:
     """Generate interactive dashboard"""
     attempt = AdvancedVisualizationAttempt(
-        viz_type="dashboard",
-        model_name=model_name,
-        status="skipped"
+        viz_type="dashboard", model_name=model_name, status="skipped"
     )
 
     start_time = time.time()
 
     try:
         if not (dependencies.get("plotly") or dependencies.get("bokeh")):
-            logger.info(f"Skipping dashboard for {model_name} (no interactive libraries available)")
+            logger.info(
+                f"Skipping dashboard for {model_name} (no interactive libraries available)"
+            )
             attempt.fallback_used = True
-            _generate_fallback_report(model_name, "dashboard", output_dir, model_data, logger)
+            _generate_fallback_report(
+                model_name, "dashboard", output_dir, model_data, logger
+            )
             attempt.status = "success"
-            attempt.output_files.append(str(output_dir / f"{model_name}_dashboard_fallback.html"))
+            attempt.output_files.append(
+                str(output_dir / f"{model_name}_dashboard_fallback.html")
+            )
         else:
             import plotly.express as px
             import plotly.graph_objects as go
@@ -220,7 +256,7 @@ def _generate_interactive_dashboard(
 
             num_vars = len(variables)
             len(connections)
-            var_types = {}
+            var_types: dict[Any, Any] = {}
             for v in variables:
                 v_type = v.get("var_type", "unknown")
                 var_types[v_type] = var_types.get(v_type, 0) + 1
@@ -228,7 +264,7 @@ def _generate_interactive_dashboard(
             fig_types = px.pie(
                 values=list(var_types.values()),
                 names=list(var_types.keys()),
-                title="Variable Type Distribution"
+                title="Variable Type Distribution",
             )
 
             adj_matrix = np.zeros((num_vars, num_vars)) if np is not None else []
@@ -252,7 +288,7 @@ def _generate_interactive_dashboard(
                     x=var_names,
                     y=var_names,
                     title="Adjacency Matrix",
-                    color_continuous_scale="Viridis"
+                    color_continuous_scale="Viridis",
                 )
             else:
                 fig_adj = go.Figure().add_annotation(text="NumPy not available")
@@ -262,28 +298,38 @@ def _generate_interactive_dashboard(
             if np is not None and len(positions) > 0:
                 x, y, z = positions[:, 0], positions[:, 1], positions[:, 2]
 
-                colors = []
-                type_color_map = {
-                    'likelihood_matrix': 1, 'transition_matrix': 2,
-                    'preference_vector': 3, 'prior_vector': 4,
-                    'hidden_state': 5, 'observation': 6,
-                    'policy': 7, 'action': 8
+                colors: list[Any] = []
+                type_color_map: dict[str, Any] = {
+                    "likelihood_matrix": 1,
+                    "transition_matrix": 2,
+                    "preference_vector": 3,
+                    "prior_vector": 4,
+                    "hidden_state": 5,
+                    "observation": 6,
+                    "policy": 7,
+                    "action": 8,
                 }
                 for v in variables:
                     colors.append(type_color_map.get(v.get("var_type"), 0))
 
-                fig_3d = go.Figure(data=[go.Scatter3d(
-                    x=x, y=y, z=z,
-                    mode='markers+text',
-                    marker={
-                        "size": 8,
-                        "color": colors,
-                        "colorscale": 'Viridis',
-                        "opacity": 0.8
-                    },
-                    text=var_names,
-                    hoverinfo='text'
-                )])
+                fig_3d = go.Figure(
+                    data=[
+                        go.Scatter3d(
+                            x=x,
+                            y=y,
+                            z=z,
+                            mode="markers+text",
+                            marker={
+                                "size": 8,
+                                "color": colors,
+                                "colorscale": "Viridis",
+                                "opacity": 0.8,
+                            },
+                            text=var_names,
+                            hoverinfo="text",
+                        )
+                    ]
+                )
 
                 for conn in connections:
                     normalized_conn = normalize_connection_format(conn)
@@ -296,27 +342,31 @@ def _generate_interactive_dashboard(
                                 s_idx = var_names.index(s)
                                 t_idx = var_names.index(t)
 
-                                fig_3d.add_trace(go.Scatter3d(
-                                    x=[positions[s_idx, 0], positions[t_idx, 0]],
-                                    y=[positions[s_idx, 1], positions[t_idx, 1]],
-                                    z=[positions[s_idx, 2], positions[t_idx, 2]],
-                                    mode='lines',
-                                    line={"color": 'gray', "width": 1},
-                                    opacity=0.5,
-                                    showlegend=False
-                                ))
+                                fig_3d.add_trace(
+                                    go.Scatter3d(
+                                        x=[positions[s_idx, 0], positions[t_idx, 0]],
+                                        y=[positions[s_idx, 1], positions[t_idx, 1]],
+                                        z=[positions[s_idx, 2], positions[t_idx, 2]],
+                                        mode="lines",
+                                        line={"color": "gray", "width": 1},
+                                        opacity=0.5,
+                                        showlegend=False,
+                                    )
+                                )
                 fig_3d.update_layout(title="Interactive 3D Structure")
             else:
                 fig_3d = go.Figure().add_annotation(text="Cannot generate 3D plot")
 
             output_file = output_dir / f"{model_name}_interactive_dashboard.html"
 
-            with open(output_file, 'w') as f:
-                f.write(f"<html><head><title>GNN Dashboard: {model_name}</title></head><body>")
+            with open(output_file, "w") as f:
+                f.write(
+                    f"<html><head><title>GNN Dashboard: {model_name}</title></head><body>"
+                )
                 f.write(f"<h1>GNN Model Dashboard: {model_name}</h1>")
                 f.write("<hr>")
                 f.write("<h2>Variable Distribution</h2>")
-                f.write(fig_types.to_html(full_html=False, include_plotlyjs='cdn'))
+                f.write(fig_types.to_html(full_html=False, include_plotlyjs="cdn"))
                 f.write("<h2>Adjacency Matrix</h2>")
                 f.write(fig_adj.to_html(full_html=False, include_plotlyjs=False))
                 f.write("<h2>3D Network Structure</h2>")
@@ -342,13 +392,11 @@ def _generate_pomdp_transition_analysis(
     model_data: Dict,
     output_dir: Path,
     dependencies: Dict[str, bool],
-    logger: logging.Logger
+    logger: logging.Logger,
 ) -> AdvancedVisualizationAttempt:
     """Generate POMDP transition matrix (B matrix) analysis"""
     attempt = AdvancedVisualizationAttempt(
-        viz_type="pomdp_transitions",
-        model_name=model_name,
-        status="in_progress"
+        viz_type="pomdp_transitions", model_name=model_name, status="in_progress"
     )
 
     start_time = time.time()
@@ -368,16 +416,18 @@ def _generate_pomdp_transition_analysis(
         parameters = model_data.get("parameters", [])
         matrices = mv.extract_matrix_data_from_parameters(parameters)
 
-        if 'B' not in matrices:
+        if "B" not in matrices:
             attempt.status = "skipped"
-            attempt.error_message = "Not applicable to this model type (B matrix not found)"
+            attempt.error_message = (
+                "Not applicable to this model type (B matrix not found)"
+            )
             return attempt
 
-        B_matrix = matrices['B']
+        B_matrix = matrices["B"]
 
         if B_matrix.ndim == 3:
             num_actions = B_matrix.shape[0]
-            fig, axes = plt.subplots(1, num_actions, figsize=(5*num_actions, 5))
+            fig, axes = plt.subplots(1, num_actions, figsize=(5 * num_actions, 5))
             if num_actions == 1:
                 axes = [axes]
 
@@ -385,15 +435,31 @@ def _generate_pomdp_transition_analysis(
                 transition_slice = B_matrix[action_idx, :, :]
 
                 if SEABORN_AVAILABLE and sns:
-                    sns.heatmap(transition_slice, annot=True, fmt='.2f',
-                              cmap='Blues', ax=axes[action_idx], cbar=True)
+                    sns.heatmap(
+                        transition_slice,
+                        annot=True,
+                        fmt=".2f",
+                        cmap="Blues",
+                        ax=axes[action_idx],
+                        cbar=True,
+                    )
                 else:
-                    im = axes[action_idx].imshow(transition_slice, cmap='Blues', aspect='auto')
+                    im = axes[action_idx].imshow(
+                        transition_slice, cmap="Blues", aspect="auto"
+                    )
                     plt.colorbar(im, ax=axes[action_idx])
                     for i in range(transition_slice.shape[0]):
                         for j in range(transition_slice.shape[1]):
-                            axes[action_idx].text(j, i, f'{transition_slice[i, j]:.2f}',
-                                                 ha='center', va='center', color='white' if transition_slice[i, j] > 0.5 else 'black')
+                            axes[action_idx].text(
+                                j,
+                                i,
+                                f"{transition_slice[i, j]:.2f}",
+                                ha="center",
+                                va="center",
+                                color="white"
+                                if transition_slice[i, j] > 0.5
+                                else "black",
+                            )
 
                 axes[action_idx].set_title(f"Transition Matrix (Action {action_idx})")
                 axes[action_idx].set_xlabel("Next State")
@@ -401,26 +467,30 @@ def _generate_pomdp_transition_analysis(
         else:
             fig, ax = plt.subplots(figsize=(8, 6))
             if SEABORN_AVAILABLE and sns:
-                sns.heatmap(B_matrix, annot=True, fmt='.2f', cmap='Blues', ax=ax)
+                sns.heatmap(B_matrix, annot=True, fmt=".2f", cmap="Blues", ax=ax)
             else:
-                im = ax.imshow(B_matrix, cmap='Blues', aspect='auto')
+                im = ax.imshow(B_matrix, cmap="Blues", aspect="auto")
                 plt.colorbar(im, ax=ax)
             ax.set_title("Transition Matrix (B)")
             ax.set_xlabel("Next State")
             ax.set_ylabel("Previous State")
 
-        plt.suptitle(f"POMDP Transition Analysis: {model_name}", fontsize=14, fontweight='bold')
+        plt.suptitle(
+            f"POMDP Transition Analysis: {model_name}", fontsize=14, fontweight="bold"
+        )
         plt.tight_layout()
 
         output_file = output_dir / f"{model_name}_pomdp_transitions.png"
-        plt.savefig(output_file, dpi=300, bbox_inches='tight')
+        plt.savefig(output_file, dpi=300, bbox_inches="tight")
         plt.close()
 
         attempt.status = "success"
         attempt.output_files = [str(output_file)]
 
     except Exception as e:
-        logger.error(f"Failed to generate POMDP transition analysis for {model_name}: {e}")
+        logger.error(
+            f"Failed to generate POMDP transition analysis for {model_name}: {e}"
+        )
         attempt.status = "failed"
         attempt.error_message = str(e)
     finally:
@@ -434,13 +504,11 @@ def _generate_policy_visualization(
     model_data: Dict,
     output_dir: Path,
     dependencies: Dict[str, bool],
-    logger: logging.Logger
+    logger: logging.Logger,
 ) -> AdvancedVisualizationAttempt:
     """Generate policy distribution visualizations"""
     attempt = AdvancedVisualizationAttempt(
-        viz_type="policy",
-        model_name=model_name,
-        status="in_progress"
+        viz_type="policy", model_name=model_name, status="in_progress"
     )
 
     start_time = time.time()
@@ -454,7 +522,7 @@ def _generate_policy_visualization(
         variables = model_data.get("variables", [])
         parameters = model_data.get("parameters", [])
 
-        policy_data = {}
+        policy_data: dict[Any, Any] = {}
 
         for var in variables:
             if isinstance(var, dict):
@@ -470,8 +538,8 @@ def _generate_policy_visualization(
         mv = _MatrixVisualizer()
         matrices = mv.extract_matrix_data_from_parameters(parameters)
 
-        if 'E' in matrices:
-            policy_data['E'] = matrices['E']
+        if "E" in matrices:
+            policy_data["E"] = matrices["E"]
 
         if not policy_data:
             attempt.status = "skipped"
@@ -479,7 +547,7 @@ def _generate_policy_visualization(
             return attempt
 
         num_policies = len(policy_data)
-        fig, axes = plt.subplots(1, num_policies, figsize=(5*num_policies, 5))
+        fig, axes = plt.subplots(1, num_policies, figsize=(5 * num_policies, 5))
         if num_policies == 1:
             axes = [axes]
 
@@ -499,11 +567,13 @@ def _generate_policy_visualization(
             axes[idx].set_ylim(0, 1)
             axes[idx].grid(True, alpha=0.3)
 
-        plt.suptitle(f"Policy Visualization: {model_name}", fontsize=14, fontweight='bold')
+        plt.suptitle(
+            f"Policy Visualization: {model_name}", fontsize=14, fontweight="bold"
+        )
         plt.tight_layout()
 
         output_file = output_dir / f"{model_name}_policy_visualization.png"
-        plt.savefig(output_file, dpi=300, bbox_inches='tight')
+        plt.savefig(output_file, dpi=300, bbox_inches="tight")
         plt.close()
 
         attempt.status = "success"
@@ -524,13 +594,11 @@ def _generate_network_metrics(
     model_data: Dict,
     output_dir: Path,
     dependencies: Dict[str, bool],
-    logger: logging.Logger
+    logger: logging.Logger,
 ) -> AdvancedVisualizationAttempt:
     """Generate network analysis metrics and visualizations"""
     attempt = AdvancedVisualizationAttempt(
-        viz_type="network_metrics",
-        model_name=model_name,
-        status="in_progress"
+        viz_type="network_metrics", model_name=model_name, status="in_progress"
     )
 
     start_time = time.time()
@@ -543,6 +611,7 @@ def _generate_network_metrics(
 
         try:
             import networkx as nx
+
             nx_available = True
         except ImportError:
             nx_available = False
@@ -555,7 +624,7 @@ def _generate_network_metrics(
             attempt.error_message = "Insufficient network data"
             return attempt
 
-        output_files = []
+        output_files: list[Any] = []
 
         if nx_available:
             G = nx.DiGraph()
@@ -574,55 +643,72 @@ def _generate_network_metrics(
                             if source and target:
                                 G.add_edge(source, target)
 
-            metrics = {
+            metrics: dict[str, Any] = {
                 "nodes": G.number_of_nodes(),
                 "edges": G.number_of_edges(),
                 "density": nx.density(G) if G.number_of_nodes() > 1 else 0,
-                "avg_clustering": nx.average_clustering(G.to_undirected()) if G.number_of_nodes() > 1 else 0,
+                "avg_clustering": nx.average_clustering(G.to_undirected())
+                if G.number_of_nodes() > 1
+                else 0,
             }
 
             if G.number_of_nodes() > 0:
                 try:
                     degree_centrality = nx.degree_centrality(G)
-                    metrics["max_degree_centrality"] = max(degree_centrality.values()) if degree_centrality else 0
+                    metrics["max_degree_centrality"] = (
+                        max(degree_centrality.values()) if degree_centrality else 0
+                    )
                 except (nx.NetworkXError, ValueError, ZeroDivisionError) as e:
                     logger.debug("Centrality metrics failed on degenerate graph: %s", e)
 
             fig, axes = plt.subplots(1, 2, figsize=(16, 6))
 
             pos = nx.spring_layout(G, k=1, iterations=50, seed=42)
-            nx.draw(G, pos, ax=axes[0], with_labels=True, node_color='lightblue',
-                   node_size=500, font_size=8, arrows=True, edge_color='gray')
+            nx.draw(
+                G,
+                pos,
+                ax=axes[0],
+                with_labels=True,
+                node_color="lightblue",
+                node_size=500,
+                font_size=8,
+                arrows=True,
+                edge_color="gray",
+            )
             axes[0].set_title("Network Graph")
 
             metric_names = list(metrics.keys())
             metric_values = [metrics[k] for k in metric_names]
             axes[1].bar(range(len(metric_names)), metric_values, alpha=0.7)
             axes[1].set_xticks(range(len(metric_names)))
-            axes[1].set_xticklabels(metric_names, rotation=45, ha='right')
+            axes[1].set_xticklabels(metric_names, rotation=45, ha="right")
             axes[1].set_title("Network Metrics")
             axes[1].set_ylabel("Value")
             axes[1].grid(True, alpha=0.3)
 
-            plt.suptitle(f"Network Analysis: {model_name}", fontsize=14, fontweight='bold')
+            plt.suptitle(
+                f"Network Analysis: {model_name}", fontsize=14, fontweight="bold"
+            )
             plt.tight_layout()
 
             output_file = output_dir / f"{model_name}_network_metrics.png"
-            plt.savefig(output_file, dpi=300, bbox_inches='tight')
+            plt.savefig(output_file, dpi=300, bbox_inches="tight")
             plt.close()
             output_files.append(str(output_file))
         else:
             fig, ax = plt.subplots(figsize=(8, 6))
 
-            stats = {
+            stats: dict[str, Any] = {
                 "Variables": len(variables),
                 "Connections": len(connections),
-                "Avg Connections/Node": len(connections) / len(variables) if variables else 0
+                "Avg Connections/Node": len(connections) / len(variables)
+                if variables
+                else 0,
             }
 
             ax.bar(range(len(stats)), list(stats.values()), alpha=0.7)
             ax.set_xticks(range(len(stats)))
-            ax.set_xticklabels(list(stats.keys()), rotation=45, ha='right')
+            ax.set_xticklabels(list(stats.keys()), rotation=45, ha="right")
             ax.set_title(f"Network Statistics: {model_name}")
             ax.set_ylabel("Count")
             ax.grid(True, alpha=0.3)
@@ -630,7 +716,7 @@ def _generate_network_metrics(
             plt.tight_layout()
 
             output_file = output_dir / f"{model_name}_network_metrics.png"
-            plt.savefig(output_file, dpi=300, bbox_inches='tight')
+            plt.savefig(output_file, dpi=300, bbox_inches="tight")
             plt.close()
             output_files.append(str(output_file))
 
@@ -648,9 +734,7 @@ def _generate_network_metrics(
 
 
 def _generate_d2_visualizations_safe(
-    model_data: Dict[str, Any],
-    output_dir: Path,
-    logger: logging.Logger
+    model_data: Dict[str, Any], output_dir: Path, logger: logging.Logger
 ) -> AdvancedVisualizationAttempt:
     """
     Generate D2 diagram visualizations for GNN models.
@@ -665,9 +749,7 @@ def _generate_d2_visualizations_safe(
     """
     model_name = model_data.get("model_name", "unknown_model")
     attempt = AdvancedVisualizationAttempt(
-        viz_type="d2_diagrams",
-        model_name=model_name,
-        status="in_progress"
+        viz_type="d2_diagrams", model_name=model_name, status="in_progress"
     )
 
     start_time = time.time()
@@ -696,9 +778,7 @@ def _generate_d2_visualizations_safe(
         d2_output_dir.mkdir(parents=True, exist_ok=True)
 
         results = visualizer.generate_all_diagrams_for_model(
-            model_data,
-            d2_output_dir,
-            formats=["svg", "png"]
+            model_data, d2_output_dir, formats=["svg", "png"]
         )
 
         successful = 0
@@ -709,7 +789,9 @@ def _generate_d2_visualizations_safe(
                     attempt.output_files.append(str(output_file))
                 logger.info(f"Generated D2 diagram: {result.diagram_name}")
             else:
-                logger.warning(f"Failed D2 diagram {result.diagram_name}: {result.error_message}")
+                logger.warning(
+                    f"Failed D2 diagram {result.diagram_name}: {result.error_message}"
+                )
 
         if successful > 0:
             attempt.status = "success"
@@ -729,8 +811,7 @@ def _generate_d2_visualizations_safe(
 
 
 def _generate_pipeline_d2_diagrams_safe(
-    output_dir: Path,
-    logger: logging.Logger
+    output_dir: Path, logger: logging.Logger
 ) -> AdvancedVisualizationAttempt:
     """
     Generate D2 diagrams for GNN pipeline architecture.
@@ -743,9 +824,7 @@ def _generate_pipeline_d2_diagrams_safe(
         AdvancedVisualizationAttempt tracking the generation
     """
     attempt = AdvancedVisualizationAttempt(
-        viz_type="d2_pipeline_diagrams",
-        model_name="gnn_pipeline",
-        status="in_progress"
+        viz_type="d2_pipeline_diagrams", model_name="gnn_pipeline", status="in_progress"
     )
 
     start_time = time.time()
@@ -775,9 +854,7 @@ def _generate_pipeline_d2_diagrams_safe(
 
         flow_spec = visualizer.generate_pipeline_flow_diagram(include_frameworks=True)
         flow_result = visualizer.compile_d2_diagram(
-            flow_spec,
-            d2_output_dir,
-            formats=["svg", "png"]
+            flow_spec, d2_output_dir, formats=["svg", "png"]
         )
 
         if flow_result.success:
@@ -787,9 +864,7 @@ def _generate_pipeline_d2_diagrams_safe(
 
         framework_spec = visualizer.generate_framework_mapping_diagram()
         framework_result = visualizer.compile_d2_diagram(
-            framework_spec,
-            d2_output_dir,
-            formats=["svg", "png"]
+            framework_spec, d2_output_dir, formats=["svg", "png"]
         )
 
         if framework_result.success:
@@ -799,9 +874,7 @@ def _generate_pipeline_d2_diagrams_safe(
 
         concepts_spec = visualizer.generate_active_inference_concepts_diagram()
         concepts_result = visualizer.compile_d2_diagram(
-            concepts_spec,
-            d2_output_dir,
-            formats=["svg", "png"]
+            concepts_spec, d2_output_dir, formats=["svg", "png"]
         )
 
         if concepts_result.success:
@@ -809,7 +882,7 @@ def _generate_pipeline_d2_diagrams_safe(
                 attempt.output_files.append(str(output_file))
             logger.info("Generated Active Inference concepts diagram")
 
-        total_results = [flow_result, framework_result, concepts_result]
+        total_results: list[Any] = [flow_result, framework_result, concepts_result]
         successful = sum(1 for r in total_results if r.success)
 
         if successful > 0:

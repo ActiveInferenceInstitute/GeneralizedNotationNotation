@@ -1,11 +1,21 @@
-# Discopy Translator Module
+# DisCoPy Translator Module
 
-## Overview
-This module handles `Discopy Translator Module` components.
-
-## Available Members
-- **Classes**: No specific classes exported.
-- **Functions**: create_summary_visualization, evaluate_diagram_with_jax, gnn_file_to_discopy_diagram, gnn_file_to_discopy_matrix_diagram, plot_multiple_tensor_outputs, plot_tensor_output
+Translates between DisCoPy categorical representations and JAX tensor computations.
 
 ## Usage
-Import necessary members directly to orchestrate tasks related to Discopy Translator Module.
+
+```python
+from execute.discopy_translator_module import translate_and_visualize
+
+translate_and_visualize(diagram_path, jax_output, output_dir)
+```
+
+## Components
+
+- `translator.py` — DisCoPy ↔ JAX translation (234 lines)
+- `visualize_jax_output.py` — JAX result visualization (270 lines)
+
+## See Also
+
+- [Parent: execute/README.md](../README.md)
+- [AGENTS.md](AGENTS.md) — Architecture documentation

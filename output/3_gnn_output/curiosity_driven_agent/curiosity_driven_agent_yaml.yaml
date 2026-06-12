@@ -115,10 +115,10 @@ connections:
   target_variables:
   - u
   weight: null
-created_at: '2026-04-10T10:24:33.664588'
+created_at: '2026-05-25T09:51:15.633652'
 equations: []
 model_name: Curiosity-Driven Active Inference Agent
-modified_at: '2026-04-10T10:24:33.664589'
+modified_at: '2026-05-25T09:51:15.633654'
 ontology_mappings:
 - description: null
   ontology_term: LikelihoodMatrix
@@ -328,6 +328,30 @@ parameters:
     - 0.25
     - 0.25
     - 0.25
+- description: null
+  name: epistemic_weight
+  type_hint: null
+  value: 1.0
+- description: null
+  name: instrumental_weight
+  type_hint: null
+  value: 1.0
+- description: null
+  name: num_actions
+  type_hint: null
+  value: 4
+- description: null
+  name: num_hidden_states
+  type_hint: null
+  value: 5
+- description: null
+  name: num_obs
+  type_hint: null
+  value: 5
+- description: null
+  name: num_timesteps
+  type_hint: null
+  value: 30
 - description: null
   name: γ
   type_hint: null

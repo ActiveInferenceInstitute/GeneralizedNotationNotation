@@ -16,10 +16,10 @@ logger = logging.getLogger(__name__)
 
 from . import (
     check_dependencies,
-    execute_gnn_model,
-    execute_pymdp_simulation,
+    execute_simulation_from_gnn,
     process_execute,
 )
+from .pymdp.execute_pymdp import execute_from_gnn_file as _pymdp_execute_from_gnn_file
 
 # ── Domain tools ─────────────────────────────────────────────────────────────
 
@@ -44,16 +44,33 @@ def process_execute_mcp(
         Dictionary with success flag and processing summary.
     """
     try:
-        success = process_execute(
+        raw = process_execute(
             target_dir=Path(target_directory),
             output_dir=Path(output_directory),
             verbose=verbose,
         )
+        # Phase 1.1 contract: process_execute may return bool OR int (0/1/2).
+        # Coerce to MCP bool envelope, surfacing the "skipped" case separately.
+        if isinstance(raw, bool):
+            success = raw
+            skipped = False
+        else:  # int
+            success = raw in (0, 2)  # 2 = skipped/warnings = not an error
+            skipped = raw == 2
+        if skipped:
+            message = "Execute processing skipped (no work found)"
+        else:
+            message = (
+                "Execute processing completed"
+                if success
+                else "Execute processing failed"
+            )
         return {
             "success": success,
+            "skipped": skipped,
             "target_directory": target_directory,
             "output_directory": output_directory,
-            "message": "Execute processing completed" if success else "Execute processing failed",
+            "message": message,
         }
     except Exception as e:
         logger.error(f"process_execute_mcp error: {e}", exc_info=True)
@@ -63,33 +80,32 @@ def process_execute_mcp(
 def execute_gnn_model_mcp(
     gnn_file_path: str,
     output_directory: str,
-    steps: int = 10,
-    verbose: bool = False,
 ) -> Dict[str, Any]:
     """
-    Execute a single GNN model file and return simulation results.
+    Execute a single GNN model file via the pipeline executor.
 
-    Parses the GNN file, constructs the corresponding POMDP/Active Inference
-    model, runs `steps` inference iterations, and saves outputs.
+    Delegates to ``execute.execute_simulation_from_gnn`` which dispatches to
+    ``GNNExecutor`` (PyMDP by default). The timestep count is read from the
+    GNN spec's ``Time`` section by the underlying simulator; callers that need
+    to override it should edit the model file.
 
     Args:
-        gnn_file_path: Path to the `.md` GNN model file.
+        gnn_file_path: Path to the ``.md`` GNN model file.
         output_directory: Directory to save execution artifacts.
-        steps: Number of simulation steps to run (default 10).
-        verbose: Enable verbose logging.
 
     Returns:
-        Dictionary with success flag, step count, and output file paths.
+        Dictionary with success flag and execution metadata. The underlying
+        return value is merged into the top-level dict.
     """
     try:
-        result = execute_gnn_model(
-            gnn_file=Path(gnn_file_path),
-            output_dir=Path(output_directory),
-            steps=steps,
-            verbose=verbose,
+        result = execute_simulation_from_gnn(
+            Path(gnn_file_path),
+            Path(output_directory),
         )
         if isinstance(result, dict):
-            return {"success": True, **result}
+            merged: dict[str, Any] = {"success": bool(result.get("success", True))}
+            merged.update(result)
+            return merged
         return {"success": bool(result), "result": result}
     except Exception as e:
         logger.error(f"execute_gnn_model_mcp error: {e}", exc_info=True)
@@ -99,34 +115,35 @@ def execute_gnn_model_mcp(
 def execute_pymdp_simulation_mcp(
     gnn_file_path: str,
     output_directory: str,
-    timesteps: int = 20,
-    verbose: bool = False,
 ) -> Dict[str, Any]:
     """
     Run a PyMDP Active Inference simulation from a GNN model file.
 
-    Converts the GNN specification to pymdp matrices (A, B, C, D),
-    instantiates an `Agent`, and runs `timesteps` perception-action cycles.
+    Parses the GNN file into a spec dict, then calls
+    ``execute.pymdp.execute_pymdp.execute_from_gnn_file``, which converts the
+    spec to pymdp matrices (A, B, C, D), instantiates a pymdp ``Agent``, and
+    runs the perception-action loop for the timesteps declared in the model.
 
     Args:
         gnn_file_path: Path to the GNN model file.
-        output_directory: Directory to write simulation log and plots.
-        timesteps: Number of timesteps to simulate (default 20).
-        verbose: Enable verbose logging.
+        output_directory: Directory to write the simulation log and plots.
 
     Returns:
-        Dictionary with success flag, timesteps run, VFE trajectory, and output paths.
+        Dictionary with success flag and the simulator's results dict merged
+        at the top level (keys like ``timesteps_run``, ``output_files``, etc.).
     """
     try:
-        result = execute_pymdp_simulation(
-            gnn_file=Path(gnn_file_path),
-            output_dir=Path(output_directory),
-            timesteps=timesteps,
-            verbose=verbose,
+        success, results = _pymdp_execute_from_gnn_file(
+            Path(gnn_file_path),
+            Path(output_directory),
+            correlation_id="mcp",
         )
-        if isinstance(result, dict):
-            return {"success": True, **result}
-        return {"success": bool(result), "result": result}
+        payload: Dict[str, Any] = {"success": bool(success)}
+        if isinstance(results, dict):
+            payload.update(results)
+        else:
+            payload["result"] = results
+        return payload
     except Exception as e:
         logger.error(f"execute_pymdp_simulation_mcp error: {e}", exc_info=True)
         return {"success": False, "error": str(e)}
@@ -164,13 +181,14 @@ def get_execute_module_info_mcp() -> Dict[str, Any]:
     """
     try:
         import importlib
+
         mod = importlib.import_module(__package__)
-        version  = getattr(mod, "__version__", "unknown")
+        version = getattr(mod, "__version__", "unknown")
         features = getattr(mod, "FEATURES", {})
         return {
-            "success":  True,
-            "module":   __package__,
-            "version":  version,
+            "success": True,
+            "module": __package__,
+            "version": version,
             "features": features,
             "tools": [
                 "process_execute",
@@ -188,7 +206,7 @@ def get_execute_module_info_mcp() -> Dict[str, Any]:
 # ── MCP Registration ──────────────────────────────────────────────────────────
 
 
-def register_tools(mcp_instance) -> None:
+def register_tools(mcp_instance: Any) -> None:
     """Register execute domain tools with the MCP server."""
 
     mcp_instance.register_tool(
@@ -197,14 +215,21 @@ def register_tools(mcp_instance) -> None:
         {
             "type": "object",
             "properties": {
-                "target_directory": {"type": "string", "description": "Directory with GNN files"},
-                "output_directory": {"type": "string", "description": "Execution output directory"},
-                "verbose":          {"type": "boolean", "default": False},
+                "target_directory": {
+                    "type": "string",
+                    "description": "Directory with GNN files",
+                },
+                "output_directory": {
+                    "type": "string",
+                    "description": "Execution output directory",
+                },
+                "verbose": {"type": "boolean", "default": False},
             },
             "required": ["target_directory", "output_directory"],
         },
         "Run GNN execution processing: validate and execute all GNN model files in a directory.",
-        module=__package__, category="execute",
+        module=__package__,
+        category="execute",
     )
 
     mcp_instance.register_tool(
@@ -213,15 +238,20 @@ def register_tools(mcp_instance) -> None:
         {
             "type": "object",
             "properties": {
-                "gnn_file_path":    {"type": "string", "description": "Path to the GNN model file (.md)"},
-                "output_directory": {"type": "string", "description": "Directory to save execution results"},
-                "steps":            {"type": "integer", "default": 10, "description": "Simulation steps"},
-                "verbose":          {"type": "boolean", "default": False},
+                "gnn_file_path": {
+                    "type": "string",
+                    "description": "Path to the GNN model file (.md)",
+                },
+                "output_directory": {
+                    "type": "string",
+                    "description": "Directory to save execution results",
+                },
             },
             "required": ["gnn_file_path", "output_directory"],
         },
-        "Execute a single GNN model file: parse, construct POMDP, run N inference steps.",
-        module=__package__, category="execute",
+        "Execute a single GNN model file via GNNExecutor (PyMDP default); timesteps come from the model's Time section.",
+        module=__package__,
+        category="execute",
     )
 
     mcp_instance.register_tool(
@@ -230,15 +260,20 @@ def register_tools(mcp_instance) -> None:
         {
             "type": "object",
             "properties": {
-                "gnn_file_path":    {"type": "string", "description": "Path to the GNN model file"},
-                "output_directory": {"type": "string", "description": "Directory for simulation outputs"},
-                "timesteps":        {"type": "integer", "default": 20, "description": "Number of simulation timesteps"},
-                "verbose":          {"type": "boolean", "default": False},
+                "gnn_file_path": {
+                    "type": "string",
+                    "description": "Path to the GNN model file",
+                },
+                "output_directory": {
+                    "type": "string",
+                    "description": "Directory for simulation outputs",
+                },
             },
             "required": ["gnn_file_path", "output_directory"],
         },
-        "Run a PyMDP Active Inference simulation from a GNN model (A/B/C/D matrices → Agent → perception-action loop).",
-        module=__package__, category="execute",
+        "Run a PyMDP Active Inference simulation from a GNN model (A/B/C/D matrices -> Agent -> perception-action loop).",
+        module=__package__,
+        category="execute",
     )
 
     mcp_instance.register_tool(
@@ -246,7 +281,8 @@ def register_tools(mcp_instance) -> None:
         check_execute_dependencies_mcp,
         {},
         "Check which execution backend dependencies (pymdp, numpy, scipy, jax) are installed.",
-        module=__package__, category="execute",
+        module=__package__,
+        category="execute",
     )
 
     mcp_instance.register_tool(
@@ -254,7 +290,8 @@ def register_tools(mcp_instance) -> None:
         get_execute_module_info_mcp,
         {},
         "Return version, feature flags, and API surface of the GNN execute module.",
-        module=__package__, category="execute",
+        module=__package__,
+        category="execute",
     )
 
     logger.info("execute module MCP tools registered (5 real domain tools).")

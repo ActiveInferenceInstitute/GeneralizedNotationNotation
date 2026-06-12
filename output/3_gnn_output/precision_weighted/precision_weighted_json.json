@@ -179,7 +179,7 @@
       "weight": null
     }
   ],
-  "created_at": "2026-04-10T10:24:33.651113",
+  "created_at": "2026-05-25T09:51:15.622340",
   "equations": [],
   "extensions": {
     "footer": "Precision-Weighted Active Inference Agent v1 - GNN Representation.\nDemonstrates attentional modulation via sensory precision ω.\nPolicy precision γ controls exploitation vs exploration trade-off.",
@@ -187,7 +187,7 @@
     "signature": "Cryptographic signature goes here"
   },
   "model_name": "Precision-Weighted Active Inference Agent",
-  "modified_at": "2026-04-10T10:24:33.651114",
+  "modified_at": "2026-05-25T09:51:15.622341",
   "ontology_mappings": [
     {
       "description": null,
@@ -416,6 +416,42 @@
           0.5
         ]
       ]
+    },
+    {
+      "description": null,
+      "name": "num_hidden_states",
+      "type_hint": null,
+      "value": 3
+    },
+    {
+      "description": null,
+      "name": "num_obs",
+      "type_hint": null,
+      "value": 3
+    },
+    {
+      "description": null,
+      "name": "num_actions",
+      "type_hint": null,
+      "value": 3
+    },
+    {
+      "description": null,
+      "name": "sensory_precision",
+      "type_hint": null,
+      "value": 4.0
+    },
+    {
+      "description": null,
+      "name": "policy_precision",
+      "type_hint": null,
+      "value": 2.0
+    },
+    {
+      "description": null,
+      "name": "num_timesteps",
+      "type_hint": null,
+      "value": 30
     }
   ],
   "time_specification": {

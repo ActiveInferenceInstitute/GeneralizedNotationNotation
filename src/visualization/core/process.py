@@ -5,24 +5,26 @@ from __future__ import annotations
 import json
 import logging
 from pathlib import Path
-from typing import Any, Dict, List, Set
+from typing import Any, Dict, List, Set, cast
 
 from advanced_visualization._shared import normalize_connection_format
+from gnn.discovery import is_model_source_path
 from utils.logging.logging_utils import (
     log_step_error,
     log_step_start,
     log_step_success,
     log_step_warning,
 )
-from visualization.analysis.combined_analysis import (
+
+from ..analysis.combined_analysis import (
     generate_combined_analysis,
     generate_combined_visualizations,
 )
-from visualization.core.parsed_model import (
+from ..core.parsed_model import (
     load_visualization_model,
     write_stale_json_note_if_needed,
 )
-from visualization.graph import (
+from ..graph import (
     generate_network_visualizations,
     generate_variable_parameter_bipartite,
 )
@@ -33,6 +35,7 @@ logger = logging.getLogger(__name__)
 def _filter_connections(
     connections: List[Dict[str, Any]], var_names: Set[str]
 ) -> List[Dict[str, Any]]:
+    """Handle filter connections for internal callers."""
     out: List[Dict[str, Any]] = []
     for conn in connections:
         if not isinstance(conn, dict):
@@ -40,7 +43,9 @@ def _filter_connections(
         n = normalize_connection_format(conn)
         sources = n.get("source_variables") or []
         targets = n.get("target_variables") or []
-        if any(s in var_names for s in sources) and any(t in var_names for t in targets):
+        if any(s in var_names for s in sources) and any(
+            t in var_names for t in targets
+        ):
             out.append(conn)
     return out
 
@@ -51,6 +56,7 @@ def process_visualization(
     verbose: bool = False,
     **kwargs: Any,
 ) -> bool:
+    """Process visualization."""
     logger_v = logging.getLogger("visualization")
     try:
         log_step_start(logger_v, "Processing visualizations")
@@ -58,7 +64,9 @@ def process_visualization(
         results_dir = output_dir
         results_dir.mkdir(parents=True, exist_ok=True)
 
-        gnn_files = list(target_dir.glob("*.md"))
+        gnn_files = [
+            path for path in target_dir.glob("*.md") if is_model_source_path(path)
+        ]
         if not gnn_files:
             gnn_files = list(target_dir.glob("*.gnn"))
         if not gnn_files:
@@ -82,7 +90,7 @@ def process_visualization(
             except Exception as e:
                 logger_v.error("Error generating combined visualizations: %s", e)
 
-        results_summary = {
+        results_summary: dict[str, Any] = {
             "processed_files": len(gnn_files),
             "total_visualizations": len(all_visualizations),
             "visualization_files": all_visualizations,
@@ -100,7 +108,7 @@ def process_visualization(
         else:
             log_step_error(logger_v, "No visualizations generated")
 
-        return results_summary["success"]
+        return cast("bool", results_summary["success"])
 
     except Exception as e:
         log_step_error(logger_v, f"Visualization processing failed: {e}")
@@ -110,7 +118,8 @@ def process_visualization(
 def process_single_gnn_file(
     gnn_file: Path, results_dir: Path, verbose: bool = False
 ) -> List[str]:
-    from visualization.matrix.visualizer import MatrixVisualizer
+    """Process single gnn file."""
+    from ..matrix.visualizer import MatrixVisualizer
 
     with open(gnn_file, encoding="utf-8") as f:
         content = f.read()
@@ -146,7 +155,9 @@ def process_single_gnn_file(
         original_vars = len(parsed_data.get("variables", []))
         original_conns = len(parsed_data.get("connections", []))
         parsed_data["variables"] = parsed_data["variables"][:100]
-        var_names = {var["name"] for var in parsed_data["variables"] if isinstance(var, dict)}
+        var_names = {
+            var["name"] for var in parsed_data["variables"] if isinstance(var, dict)
+        }
         parsed_data["connections"] = _filter_connections(
             parsed_data.get("connections", []), var_names
         )
@@ -214,6 +225,9 @@ def process_single_gnn_file(
                         m_name, m_data, m_path, tensor_type="transition"
                     ):
                         visualizations.append(str(m_path))
+                    html_path = model_dir / f"{model_name}_{m_name}_threejs.html"
+                    if mv.generate_threejs_tensor_explorer(m_name, m_data, html_path):
+                        visualizations.append(str(html_path))
                     analysis_path = model_dir / f"{model_name}_{m_name}_analysis.png"
                     mv.generate_pomdp_transition_analysis(m_data, analysis_path)
                     visualizations.append(str(analysis_path))

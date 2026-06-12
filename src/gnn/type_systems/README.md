@@ -1,27 +1,22 @@
-# Type System Implementations
+# GNN Type Systems
 
-This directory contains type system implementations of GNN models:
+Type system definitions and cross-language mappings for GNN model type checking.
 
-- `haskell.hs` - Haskell strongly-typed implementation
-- `scala.scala` - Scala categorical implementation
-- `categorical.scala` - Categorical structures in Scala
-- `mapping.md` - Mapping between GNN model elements and type system representations
-- `examples/` - Example implementations of concrete GNN models
+## Contents
 
-## Recent Enhancements
+| File | Language | Purpose |
+|------|----------|---------|
+| `categorical.scala` | Scala | Categorical/functorial type definitions |
+| `haskell.hs` | Haskell | Algebraic data type definitions |
+| `scala.scala` | Scala | Type annotations for Scala DSL |
+| `mapping.md` | Markdown | Cross-system type mapping documentation |
+| `examples/` | Mixed | Example type annotations |
 
-The type systems have been updated to better align with concrete GNN models:
+## Usage
 
-1. Added explicit `HabitVector` (E) representation in both Scala and Haskell implementations
-2. Created a mapping document to show how each element in concrete models maps to the type systems
-3. Added a POMDP example that demonstrates how to represent the `actinf_pomdp_agent.md` model using the type systems
+Referenced by `type_checker/processor.py` during Step 5 (type checking).
 
-## Coverage Note
+## See Also
 
-The current implementations provide strong theoretical foundations for Active Inference models but still don't fully capture all elements of concrete GNN models like the one in `src/gnn/gnn_examples/actinf_pomdp_agent.md`. Remaining gaps include:
-
-1. The connection syntax between variables is implied rather than explicit in its full detail
-2. Initial parameterization values are not directly represented in a standardized way
-3. Time representation needs enhancement to better match the GNN specification
-
-Future extensions will address these remaining gaps to ensure complete coverage of all GNN model features.
+- [Parent: gnn/README.md](../README.md)
+- [AGENTS.md](AGENTS.md) — Architecture documentation

@@ -14,8 +14,6 @@ The GNN MCP implementation provides:
 
 ## Architecture
 
-## Architecture
-
 ```mermaid
 graph TD
     Client[MCP Client] --> Transport{Transport Layer}
@@ -62,10 +60,13 @@ The central MCP server implementation that:
 - Ideal for local process communication
 
 #### HTTP Server (`server_http.py`)
-- HTTP-based JSON-RPC server
-- Supports both GET and POST requests
-- Configurable host and port
-- Suitable for network-based access
+- HTTP-based JSON-RPC server for local orchestration
+- Defaults to `127.0.0.1`
+- Supports bearer-token auth through `GNN_MCP_TOKEN`
+- Supports per-client rate limiting through `GNN_MCP_RATE_LIMIT_PER_MINUTE`
+- Exposes only a safe tool allowlist by default; unsafe tools require explicit opt-in
+- Denies resource reads by default; expose individual URIs with `GNN_MCP_SAFE_RESOURCES`
+- Filters HTTP capability responses to the same safe tool/resource surface
 
 ### 3. Command Line Interface (`cli.py`)
 
@@ -82,7 +83,7 @@ python -m src.mcp.cli status
 
 # Start server
 python -m src.mcp.cli server --transport stdio
-python -m src.mcp.cli server --transport http --host 0.0.0.0 --port 8080
+GNN_MCP_TOKEN=local-dev-token python -m src.mcp.cli server --transport http --host 127.0.0.1 --port 8080
 ```
 
 ### 4. Meta-Tools (`meta_mcp.py`)
@@ -133,8 +134,8 @@ Server introspection and diagnostic tools:
 - Enhancement suggestions
 - Natural language explanations
 
-### Site (`src/site/mcp.py`)
-- HTML site generation
+### Website (`src/website/mcp.py`)
+- HTML website generation
 - Report aggregation
 - Interactive elements
 
@@ -162,10 +163,16 @@ Server introspection and diagnostic tools:
 python -m src.mcp.cli server --transport stdio
 ```
 
-#### HTTP Transport (For network access)
+#### HTTP Transport (Local JSON-RPC orchestration)
 ```bash
-python -m src.mcp.cli server --transport http --host 0.0.0.0 --port 8080
+GNN_MCP_TOKEN=local-dev-token python -m src.mcp.cli server --transport http --host 127.0.0.1 --port 8080
 ```
+
+HTTP tool execution and resource reads are guarded separately. Tool calls are
+limited to the safe HTTP allowlist, while `mcp.resource.get` returns an error
+unless the requested URI is listed in `GNN_MCP_SAFE_RESOURCES`.
+Rate limiting is evaluated before bearer authentication so bad-token traffic is
+throttled by the same per-client limit.
 
 ### 2. Using the CLI
 
@@ -278,15 +285,22 @@ python -m src.mcp.cli execute get_mcp_performance_metrics
 - **HTTP**: Network accessible, consider HTTPS for production
 
 ### Authentication
-- No built-in authentication (relies on transport security)
-- Implement authentication for network deployments
-- Use stdio transport for maximum security
+- HTTP transport requires `Authorization: Bearer <GNN_MCP_TOKEN>` by default.
+- Missing or invalid bearer tokens receive `401` before JSON-RPC execution.
+- Unauthenticated HTTP is only available for explicit loopback development with
+  `GNN_MCP_ALLOW_INSECURE_LOCAL=1`; non-loopback clients still receive `401`.
+- Resource reads over HTTP are denied unless the exact URI is included in
+  `GNN_MCP_SAFE_RESOURCES`.
+- HTTP capability discovery lists only tools and resources exposed by those
+  allowlists.
+- Use stdio transport for maximum security.
 
 ### Recommendations
 1. Use stdio transport for local-only access
-2. Configure HTTPS for HTTP transport if needed
-3. Implement authentication for untrusted networks
-4. Monitor access logs and performance metrics
+2. Keep HTTP bound to `127.0.0.1` unless a separate trusted reverse proxy is used
+3. Set `GNN_MCP_TOKEN` for every HTTP run
+4. Set `GNN_MCP_SAFE_RESOURCES` only for resource URIs that are safe to expose
+5. Monitor access logs and performance metrics
 
 ## Development and Extension
 
@@ -393,6 +407,7 @@ When contributing to the MCP implementation:
 
 - [Model Context Protocol Specification](https://modelcontextprotocol.io/)
 - [JSON-RPC 2.0 Specification](https://www.jsonrpc.org/specification)
+- **[Comprehensive MCP Documentation](MCP_DOCUMENTATION.md)** — Full implementation guide with 133+ tools registered
 - [GNN Project Documentation](../../doc/)
 - [MCP Integration Guide](../../doc/mcp/gnn_mcp_model_context_protocol.md)
 - Project overview: ../../README.md

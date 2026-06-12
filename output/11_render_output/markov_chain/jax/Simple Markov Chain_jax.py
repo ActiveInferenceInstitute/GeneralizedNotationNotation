@@ -28,7 +28,7 @@ def create_params() -> Dict[str, jnp.ndarray]:
     """Create model parameters from GNN specification."""
     return {
         'A_matrix': jnp.array([[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]]),  # Observation model P(o|s)
-        'B_matrix': jnp.array([[[1.0], [0.0], [0.0]], [[0.0], [1.0], [0.0]], [[0.0], [0.0], [1.0]]]),  # Transition model P(s'|s,a)
+        'B_matrix': jnp.array([[[0.7], [0.3], [0.1]], [[0.19999999999999998], [0.4], [0.3]], [[0.09999999999999999], [0.3], [0.6]]]),  # Transition model P(s'|s,a)
         'C_vector': jnp.array([0.0, 0.0, 0.0]),  # Preferences over observations
         'D_vector': jnp.array([0.5, 0.3, 0.2]),  # Prior over initial states
     }
@@ -411,8 +411,8 @@ if __name__ == "__main__":
     print(f"   EFE for all actions: {result['all_efe_values']}")
 
     # Run multi-step simulation
-    print("\n🔄 Running 15-step simulation...")
-    trajectory = run_simulation(params, num_steps=15)
+    print("\n🔄 Running 40-step simulation...")
+    trajectory = run_simulation(params, num_steps=40)
 
     print(f"   Actions taken: {trajectory['actions']}")
     print(f"   Final belief: {trajectory['final_belief']}")

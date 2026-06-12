@@ -50,7 +50,9 @@ def analyze_variable_types(variables: List[Dict[str, Any]]) -> Dict[str, Any]:
 
         dim_key = f"{dim_count}D"
         type_analysis["dimension_analysis"]["dimension_distribution"][dim_key] = (
-            type_analysis["dimension_analysis"]["dimension_distribution"].get(dim_key, 0)
+            type_analysis["dimension_analysis"]["dimension_distribution"].get(
+                dim_key, 0
+            )
             + 1
         )
 
@@ -60,7 +62,9 @@ def analyze_variable_types(variables: List[Dict[str, Any]]) -> Dict[str, Any]:
         total_elements += elements
 
     if variables:
-        type_analysis["dimension_analysis"]["avg_dimensions"] = total_dimensions / len(variables)
+        type_analysis["dimension_analysis"]["avg_dimensions"] = total_dimensions / len(
+            variables
+        )
 
     type_analysis["complexity_metrics"]["total_elements"] = total_elements
     type_analysis["complexity_metrics"]["estimated_memory_bytes"] = total_elements * 8
@@ -152,8 +156,8 @@ def estimate_computational_complexity(
         total_elements * total_connections
     )
     complexity["inference_complexity"]["memory_bandwidth_gb_s"] = (
-        (total_elements * 8) / (1024 * 1024 * 1024)
-    )
+        total_elements * 8
+    ) / (1024 * 1024 * 1024)
 
     if total_elements > 1000:
         complexity["inference_complexity"]["parallelization_potential"] = "high"
@@ -173,5 +177,3 @@ def estimate_computational_complexity(
         complexity["resource_requirements"]["cpu_cores_recommended"] = 4
 
     return complexity
-
-

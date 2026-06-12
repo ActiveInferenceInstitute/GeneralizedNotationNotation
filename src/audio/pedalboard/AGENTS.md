@@ -429,14 +429,17 @@ GNN Model → Effects Mapping → Chain Creation → Audio Processing → Output
 ## Testing
 
 ### Test Files
-- `src/tests/test_audio_overall.py` - Audio module tests
-- `src/tests/test_audio_generation.py` - Audio generation tests
-- `src/tests/test_audio_integration.py` - Pipeline integration tests for audio outputs
+- `src/tests/audio/test_audio_overall.py` - Audio module tests
+- `src/tests/audio/test_audio_generation.py` - Audio generation tests
+- `src/tests/audio/test_audio_integration.py` - Pipeline integration tests for audio outputs
 
 ### Test Coverage
-- **Current**: 80%
-- **Target**: 90%+
+Measure on demand:
 
+```bash
+uv run --extra dev python -m pytest src/tests/test_pedalboard*.py \
+    --cov=src/audio/pedalboard --cov-report=term-missing
+```
 ### Key Test Scenarios
 1. Effects chain creation and validation
 2. Audio processing accuracy and quality
@@ -447,10 +450,10 @@ GNN Model → Effects Mapping → Chain Creation → Audio Processing → Output
 ### Test Commands
 ```bash
 # Run Pedalboard-specific tests
-pytest src/tests/test_audio_pedalboard*.py -v
+uv run --extra dev python -m pytest src/tests/test_audio_pedalboard*.py -v
 
 # Run with coverage
-pytest src/tests/test_audio_pedalboard*.py --cov=src/audio/pedalboard --cov-report=term-missing
+uv run --extra dev python -m pytest src/tests/test_audio_pedalboard*.py --cov=src/audio/pedalboard --cov-report=term-missing
 ```
 
 ---
@@ -535,7 +538,7 @@ result = process_pedalboard_audio(audio_data, effects_chain, debug=True, verbose
 
 ## Version History
 
-### Current Version: 1.0.0
+### Current Version: 1.6.0
 
 **Features**:
 - Complete Pedalboard effects integration
@@ -570,7 +573,7 @@ result = process_pedalboard_audio(audio_data, effects_chain, debug=True, verbose
 
 ---
 
-**Last Updated**: 2026-01-21
+**Last Updated**: 2026-04-16
 **Maintainer**: Audio Processing Team
 **Status**: ✅ Production Ready
 

@@ -19,7 +19,7 @@ _FRONTMATTER_RE = re.compile(
 )
 
 # Known front-matter fields with types
-_KNOWN_FIELDS = {
+_KNOWN_FIELDS: dict[str, Any] = {
     "author": str,
     "version": str,
     "framework_targets": list,
@@ -49,7 +49,7 @@ def parse_frontmatter(content: str) -> Tuple[Dict[str, Any], str]:
         return {}, content
 
     yaml_block = match.group(1)
-    remaining = content[match.end():]
+    remaining = content[match.end() :]
 
     metadata = _parse_yaml_simple(yaml_block)
     if metadata:
@@ -73,6 +73,7 @@ def _parse_yaml_simple(yaml_text: str) -> Dict[str, Any]:
     # Try PyYAML first if available
     try:
         import yaml
+
         parsed = yaml.safe_load(yaml_text)
         if isinstance(parsed, dict):
             return parsed

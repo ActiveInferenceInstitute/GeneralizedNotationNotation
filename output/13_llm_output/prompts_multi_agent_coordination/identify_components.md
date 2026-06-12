@@ -1,33 +1,17 @@
 # IDENTIFY_COMPONENTS
 
-You've already provided a comprehensive overview of the GNN specification. Here's a concise summary:
+Based on the document:
 
-1. **State Variables (Hidden States)**:
+The GNN specification provides a framework for modeling complex interactions between agents in a cooperative environment, where each agent can influence the actions of others while also influencing their own state. The specification allows for explicit communication channels to facilitate coordination and cooperation among agents.
+
+Here is a systematic breakdown of the components involved in the implementation:
+
+1. **State Variables**:
    - Variable names and dimensions
-   - What each state represents conceptually
+   - What each variable represents conceptually
    - State space structure (discrete/continuous, finite/infinite)
 
 2. **Observation Variables**:
    - Observation modalities and their meanings
    - Sensor/measurement interpretations
    - Noise models or uncertainty characterization
-
-3. **Action/Control Variables**:
-   - Available actions and their effects
-   - Control policies and decision variables
-   - Action space properties
-
-4. **Model Matrices**:
-   - A matrices: Observation models P(o|s)
-   - B matrices: Transition dynamics P(s'|s,u)
-   - C matrices: Preferences/goals
-   - D matrices: Prior beliefs over initial states
-
-5. **Parameters and Hyperparameters**:
-   - Precision parameters (γ, α, etc.)
-   - Learning rates and adaptation parameters
-   - Fixed vs. learnable parameters
-
-6. **Temporal Structure**:
-   - Time horizons and temporal dependencies
-   - Dynamic vs. static components

@@ -1,5 +1,5 @@
 {
-  "processed_files": 9,
+  "processed_files": 10,
   "success": true,
   "hypotheses_generated": [
     {
@@ -159,6 +159,31 @@
       ]
     },
     {
+      "file": "time_varying_dynamics.md",
+      "model_family": "pomdp",
+      "dimension_count": 7,
+      "hypotheses": [
+        {
+          "type": "connectivity_enrichment",
+          "description": "Investigate potential missing causal links between model components",
+          "rationale": "Graph density is 0.14 (6 connections, 7 variables). Sparse graphs may miss important dependencies.",
+          "priority": "medium"
+        },
+        {
+          "type": "precision_modulation",
+          "description": "Add precision parameters to modulate sensory and policy uncertainty",
+          "rationale": "The model lacks precision parameters. Active Inference with precision weighting better captures attentional modulation and epistemic confidence.",
+          "priority": "high"
+        },
+        {
+          "type": "parameter_learning",
+          "description": "Add Dirichlet concentration parameters for online model learning",
+          "rationale": "Static A and B matrices cannot adapt. Adding concentration parameters (a, b) enables Bayesian learning from experience.",
+          "priority": "medium"
+        }
+      ]
+    },
+    {
       "file": "two_state_bistable.md",
       "model_family": "pomdp",
       "dimension_count": 10,
@@ -241,6 +266,7 @@
     "actinf_pomdp_agent.md": "pomdp",
     "hmm_baseline.md": "hmm",
     "bnlearn_causal_model.md": "hmm",
+    "time_varying_dynamics.md": "pomdp",
     "two_state_bistable.md": "pomdp",
     "markov_chain.md": "hmm",
     "tmaze_epistemic.md": "pomdp"

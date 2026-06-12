@@ -4,19 +4,20 @@ Test Configuration Classes for GNN Processing Pipeline.
 This module provides data classes for test execution configuration and results.
 """
 
-from dataclasses import asdict, dataclass
-from typing import List, Optional
+from dataclasses import asdict, dataclass, field
+from typing import Any, List, Optional
 
 
 @dataclass
 class TestExecutionConfig:
     """Configuration for test execution."""
+
     timeout_seconds: int = 3600  # Increased to 60 minutes for comprehensive test suite
     max_failures: int = 10
     parallel: bool = True
     coverage: bool = True
     verbose: bool = False
-    markers: List[str] = None
+    markers: List[str] = field(default_factory=list)
     memory_limit_mb: int = 2048
     cpu_limit_percent: int = 80
 
@@ -24,6 +25,7 @@ class TestExecutionConfig:
 @dataclass
 class TestExecutionResult:
     """Results from test execution."""
+
     success: bool
     tests_run: int
     tests_passed: int
@@ -36,6 +38,6 @@ class TestExecutionResult:
     stdout: str = ""
     stderr: str = ""
 
-    def to_dict(self):
+    def to_dict(self) -> Any:
         """Convert to dictionary."""
         return asdict(self)

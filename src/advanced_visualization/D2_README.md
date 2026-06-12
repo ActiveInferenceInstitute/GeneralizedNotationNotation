@@ -72,7 +72,7 @@ All Python dependencies are included in the main GNN pipeline. Install using UV:
 uv sync
 
 # Or install with visualization extras
-uv sync --extra visualization
+uv sync
 ```
 
 ## Usage
@@ -370,14 +370,14 @@ for warning in result.warnings:
 
 ## Testing
 
-Comprehensive tests are provided in `src/tests/test_d2_visualizer.py`:
+Comprehensive tests are provided in `src/tests/visualization/test_d2_visualizer.py`:
 
 ```bash
 # Run D2 visualizer tests
-pytest src/tests/test_d2_visualizer.py -v
+uv run --extra dev python -m pytest src/tests/visualization/test_d2_visualizer.py -v
 
 # Run with coverage
-pytest src/tests/test_d2_visualizer.py --cov=src/advanced_visualization/d2_visualizer
+uv run --extra dev python -m pytest src/tests/visualization/test_d2_visualizer.py --cov=src/advanced_visualization/d2_visualizer
 ```
 
 **Test Coverage:**

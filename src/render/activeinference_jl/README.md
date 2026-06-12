@@ -1,111 +1,43 @@
-# ActiveInference.jl Rendering Module
+# ActiveInference.jl Render Module
 
-This submodule handles code generation specifically for ActiveInference.jl simulations.
+This module renders validated GNN POMDP specifications to executable ActiveInference.jl scripts.
 
-## Overview
+## Public Surface
 
-ActiveInference.jl is a Julia implementation of Active Inference providing comprehensive support for hierarchical planning and temporal dynamics. This module generates complete, executable ActiveInference.jl simulation code from GNN specifications.
+- `render_gnn_to_activeinference_jl(gnn_spec, output_path, options=None)`
+- Step 11 calls this renderer through `render.pomdp_processor.POMDPRenderProcessor`.
+- `render_gnn_spec(..., "activeinference_jl", ...)` routes to the same canonical renderer for POMDP specs.
 
-## Module Structure
+## Contract
 
-```
-src/render/activeinference_jl/
-├── __init__.py                         # Module initialization
-├── README.md                           # This documentation
-├── AGENTS.md                           # Detailed agent scaffolding
-├── activeinference_renderer.py         # Main renderer
-├── activeinference_renderer_fixed.py   # Fixed renderer version
-└── activeinference_renderer_simple.py  # Simplified renderer
-```
+The renderer consumes `canonical_pomdp_v1` data:
 
-## Core Components
+- `A`: observation likelihood, shape `(observation, state)`
+- `B`: transition tensor, shape `(next_state, previous_state, action)`
+- `C`: observation preferences
+- `D`: initial hidden-state prior
+- `E`: policy prior when present
+- matrix provenance and runtime metadata
 
-### ActiveInference Renderer (`activeinference_renderer.py`)
+Generated scripts import ActiveInference.jl and write `simulation_results.json` with schema `activeinference_jl_simulation_v1`.
 
-**Purpose**: Generate executable ActiveInference.jl code from GNN models
+## Outputs
 
-**Key Functions**:
-- `generate_activeinference_code()` - Main code generation
-- `render_agent()` - Agent configuration
-- `render_hierarchical_structure()` - Hierarchical planning support
-- `generate_inference_loop()` - Inference loop generation
-
-### Simplified Renderer (`activeinference_renderer_simple.py`)
-
-**Purpose**: Provide simpler rendering for basic models
-
-**Features**:
-- Minimal dependencies
-- Faster generation
-- Suitable for simple models
-
-## ActiveInference.jl Rendering Pipeline
-
-```mermaid
-graph TD
-    GNN[GNN Model] --> Parse[Parse GNN]
-    Parse --> Extract[Extract Components]
-    
-    Extract --> Agent[Agent Structure]
-    Extract --> Generative[Generative Model]
-    Extract --> Hierarchical[Hierarchical Levels]
-    
-    Agent --> Convert[Convert to ActiveInference.jl]
-    Generative --> Convert
-    Hierarchical --> Convert
-    
-    Convert --> Generate[Generate Code]
-    Generate --> Julia[Julia Script]
-    Generate --> Analysis[Analysis Suite]
-    
-    Julia --> Output[ActiveInference.jl Code]
-    Analysis --> Output
+```text
+output/11_render_output/<model>/activeinference_jl/
+├── <model>_activeinference.jl
+└── README.md
 ```
 
-## Features
+Step 12 collects runtime outputs into:
 
-- Full hierarchical Active Inference agent support
-- Temporal dynamics handling
-- Multi-level planning
-- Julia optimization support
-- Performance profiling integration
-
-## Usage
-
-```python
-from render.activeinference_jl import generate_activeinference_jl_code
-
-code = generate_activeinference_jl_code(
-    model_data=parsed_gnn_model,
-    output_path="output.jl"
-)
+```text
+output/12_execute_output/<model>/activeinference_jl/simulation_data/simulation_results.json
 ```
 
-## Output
+## Verification
 
-Generated Julia code includes:
-- Complete agent structure
-- Hierarchical planning loops
-- Inference implementation
-- Result collection
-- Performance metrics
-
-## Dependencies
-
-- `julia` - Julia runtime (optional, recovery: skip Julia generation)
-- `ActiveInference.jl` - Julia package (must be installed in Julia)
-
-## Testing
-
-Comprehensive Julia tests ensure:
-- Syntax correctness
-- Execution success
-- Output validation
-- Performance characteristics
-
----
-
-**Last Updated**: October 28, 2025  
-**Status**: ✅ Production Ready
-
-
+```bash
+julia --startup-file=no -e 'using ActiveInference, JSON, Distributions, StatsBase'
+uv run --extra dev python -m pytest src/tests/pipeline/test_pomdp_gridworld_cross_framework.py -q --tb=short
+```

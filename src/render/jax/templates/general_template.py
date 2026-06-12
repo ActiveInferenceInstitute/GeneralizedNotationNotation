@@ -228,8 +228,8 @@ class JAXActiveInferenceTrainer:
         
         # Initialize model parameters
         self.key = jax.random.PRNGKey(0)
-        dummy_input = jnp.ones((1, model.n_observations))
-        self.params = model.init(self.key, dummy_input)['params']
+        sample_input = jnp.ones((1, model.n_observations))
+        self.params = model.init(self.key, sample_input)['params']
         self.opt_state = self.optimizer.init(self.params)
         
         logger.info(f"Trainer initialized with {model.n_states} states, {model.n_observations} observations, {model.n_actions} actions")

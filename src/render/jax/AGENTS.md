@@ -149,8 +149,8 @@ The generators attempt to make the produced files self-contained; installation o
 
 JAX-specific behaviour is covered indirectly by the render integration tests:
 
-- `src/tests/test_render_overall.py`
-- `src/tests/test_render_integration.py`
+- `src/tests/render/test_render_overall.py`
+- `src/tests/render/test_render_integration.py`
 
 These tests assert that:
 

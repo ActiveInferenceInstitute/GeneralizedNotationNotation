@@ -3,14 +3,14 @@
 pymdp 1.0.0 runner for Deep Planning Horizon POMDP
 
 This file was generated from a GNN specification by
-``src/render/pymdp/pymdp_renderer.py``. It delegates the actual rollout
+``render/pymdp/pymdp_renderer.py``. It delegates the actual rollout
 to the GNN pipeline's tested execution module
-(``src.execute.pymdp.run_simple_pymdp_simulation``), which in turn calls
+(``execute.pymdp.run_pymdp_simulation``), which in turn calls
 real pymdp 1.0.0 (JAX-first) under the hood.
 
 Model:        Deep Planning Horizon POMDP
 Description:  
-Generated:    2026-04-10 10:25:04
+Generated:    2026-05-22 06:18:15
 
 State Space:
   - Hidden States: 4
@@ -44,7 +44,7 @@ if sys.path and sys.path[0] and sys.path[0].endswith("pymdp"):
 _gnn_root = os.environ.get("GNN_PROJECT_ROOT")
 if _gnn_root:
     _repo = Path(_gnn_root).resolve()
-    sys.path.insert(0, str(_repo))
+    sys.path.insert(0, str(_repo / "src"))
 else:
     _cur = Path(__file__).resolve().parent
     _found = None
@@ -62,7 +62,7 @@ else:
             file=sys.stderr,
         )
         sys.exit(1)
-    sys.path.insert(0, str(_found))
+    sys.path.insert(0, str(_found / "src"))
 
 # ---------------------------------------------------------------------------
 # pymdp 1.0.0 presence check (hard requirement)
@@ -71,7 +71,7 @@ try:
     import pymdp  # noqa: F401
     from pymdp.agent import Agent  # noqa: F401
     if not hasattr(Agent, "update_empirical_prior"):
-        raise ImportError("legacy pymdp (<1.0.0) detected")
+        raise ImportError("unsupported pymdp (<1.0.0) detected")
     print("PyMDP 1.0.0+ detected (JAX-first Agent).")
 except ImportError as e:
     print(
@@ -82,7 +82,7 @@ except ImportError as e:
     )
     sys.exit(1)
 
-from src.execute.pymdp import execute_pymdp_simulation
+from execute.pymdp import execute_pymdp_simulation
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
@@ -92,7 +92,7 @@ def main() -> int:
     """Run a pymdp 1.0.0 simulation for the GNN model embedded in this file."""
     # Matrices embedded verbatim from the GNN spec.
     A_data = [[0.9, 0.05, 0.025, 0.025], [0.05, 0.9, 0.025, 0.025], [0.025, 0.025, 0.9, 0.05], [0.025, 0.025, 0.05, 0.9]]
-    B_data = [[[0.9, 0.1, 0.0, 0.0], [0.0, 0.9, 0.1, 0.0], [0.0, 0.0, 0.9, 0.1], [0.1, 0.0, 0.0, 0.9]], [[0.9, 0.0, 0.0, 0.1], [0.1, 0.9, 0.0, 0.0], [0.0, 0.1, 0.9, 0.0], [0.0, 0.0, 0.1, 0.9]], [[0.8, 0.1, 0.1, 0.0], [0.0, 0.8, 0.1, 0.1], [0.1, 0.0, 0.8, 0.1], [0.1, 0.1, 0.0, 0.8]], [[0.7, 0.1, 0.1, 0.1], [0.1, 0.7, 0.1, 0.1], [0.1, 0.1, 0.7, 0.1], [0.1, 0.1, 0.1, 0.7]]]
+    B_data = [[[0.9, 0.9, 0.8, 0.7000000000000001], [0.0, 0.1, 0.0, 0.10000000000000002], [0.0, 0.0, 0.1, 0.10000000000000002], [0.1, 0.0, 0.1, 0.1]], [[0.1, 0.0, 0.1, 0.10000000000000002], [0.9, 0.9, 0.8, 0.7000000000000001], [0.0, 0.1, 0.0, 0.10000000000000002], [0.0, 0.0, 0.1, 0.1]], [[0.0, 0.0, 0.1, 0.10000000000000002], [0.1, 0.0, 0.1, 0.10000000000000002], [0.9, 0.9, 0.8, 0.7000000000000001], [0.0, 0.1, 0.0, 0.1]], [[0.0, 0.1, 0.0, 0.10000000000000002], [0.0, 0.0, 0.1, 0.10000000000000002], [0.1, 0.0, 0.1, 0.10000000000000002], [0.9, 0.9, 0.8, 0.7]]]
     C_data = [-1.0, -0.5, -0.5, 2.0]
     D_data = [0.25, 0.25, 0.25, 0.25]
     E_data = None
@@ -106,8 +106,117 @@ def main() -> int:
         "num_hidden_states": 4,
         "num_obs": 4,
         "num_actions": 4,
-        "simulation_params": {},
-        "num_timesteps": 15
+        "planning_horizon": 5,
+        "num_policies": 64,
+        "num_timesteps": 30,
+        "b_tensor_order": "next_state_previous_state_action",
+        "num_state_factors": 6,
+        "num_modalities": 1,
+        "state_factors": [
+            {
+                "name": "s",
+                "size": 4,
+                "dimensions": [
+                    4,
+                    1
+                ],
+                "type": "float",
+                "comment": "Current hidden state belief",
+                "index": 1
+            },
+            {
+                "name": "s_tau1",
+                "size": 4,
+                "dimensions": [
+                    4,
+                    1
+                ],
+                "type": "float",
+                "comment": "Predicted state at tau=1",
+                "index": 2
+            },
+            {
+                "name": "s_tau2",
+                "size": 4,
+                "dimensions": [
+                    4,
+                    1
+                ],
+                "type": "float",
+                "comment": "Predicted state at tau=2",
+                "index": 3
+            },
+            {
+                "name": "s_tau3",
+                "size": 4,
+                "dimensions": [
+                    4,
+                    1
+                ],
+                "type": "float",
+                "comment": "Predicted state at tau=3",
+                "index": 4
+            },
+            {
+                "name": "s_tau4",
+                "size": 4,
+                "dimensions": [
+                    4,
+                    1
+                ],
+                "type": "float",
+                "comment": "Predicted state at tau=4",
+                "index": 5
+            },
+            {
+                "name": "s_tau5",
+                "size": 4,
+                "dimensions": [
+                    4,
+                    1
+                ],
+                "type": "float",
+                "comment": "Predicted state at tau=5",
+                "index": 6
+            }
+        ],
+        "observation_modalities": [
+            {
+                "name": "o",
+                "size": 4,
+                "dimensions": [
+                    4,
+                    1
+                ],
+                "type": "float",
+                "comment": "Current observation",
+                "index": 1
+            }
+        ],
+        "control_factors": [
+            {
+                "name": "\u03c0",
+                "size": 64,
+                "dimensions": [
+                    64
+                ],
+                "type": "float",
+                "comment": "Policy distribution (over T-step action sequences)",
+                "index": 1
+            },
+            {
+                "name": "u",
+                "size": 1,
+                "dimensions": [
+                    1
+                ],
+                "type": "float",
+                "comment": "Selected first action from best policy",
+                "index": 2
+            }
+        ],
+        "passive_model": False,
+        "simulation_params": {}
     },
     "initialparameterization": {
         "A": [
@@ -140,104 +249,104 @@ def main() -> int:
             [
                 [
                     0.9,
-                    0.1,
-                    0.0,
-                    0.0
+                    0.9,
+                    0.8,
+                    0.7000000000000001
                 ],
                 [
                     0.0,
-                    0.9,
                     0.1,
-                    0.0
+                    0.0,
+                    0.10000000000000002
                 ],
                 [
                     0.0,
                     0.0,
-                    0.9,
+                    0.1,
+                    0.10000000000000002
+                ],
+                [
+                    0.1,
+                    0.0,
+                    0.1,
                     0.1
-                ],
-                [
-                    0.1,
-                    0.0,
-                    0.0,
-                    0.9
                 ]
             ],
             [
                 [
+                    0.1,
+                    0.0,
+                    0.1,
+                    0.10000000000000002
+                ],
+                [
                     0.9,
+                    0.9,
+                    0.8,
+                    0.7000000000000001
+                ],
+                [
+                    0.0,
+                    0.1,
+                    0.0,
+                    0.10000000000000002
+                ],
+                [
                     0.0,
                     0.0,
+                    0.1,
                     0.1
-                ],
-                [
-                    0.1,
-                    0.9,
-                    0.0,
-                    0.0
-                ],
-                [
-                    0.0,
-                    0.1,
-                    0.9,
-                    0.0
-                ],
-                [
-                    0.0,
-                    0.0,
-                    0.1,
-                    0.9
                 ]
             ],
             [
                 [
+                    0.0,
+                    0.0,
+                    0.1,
+                    0.10000000000000002
+                ],
+                [
+                    0.1,
+                    0.0,
+                    0.1,
+                    0.10000000000000002
+                ],
+                [
+                    0.9,
+                    0.9,
                     0.8,
-                    0.1,
-                    0.1,
-                    0.0
+                    0.7000000000000001
                 ],
                 [
                     0.0,
-                    0.8,
                     0.1,
+                    0.0,
                     0.1
-                ],
-                [
-                    0.1,
-                    0.0,
-                    0.8,
-                    0.1
-                ],
-                [
-                    0.1,
-                    0.1,
-                    0.0,
-                    0.8
                 ]
             ],
             [
                 [
-                    0.7,
+                    0.0,
                     0.1,
+                    0.0,
+                    0.10000000000000002
+                ],
+                [
+                    0.0,
+                    0.0,
                     0.1,
-                    0.1
+                    0.10000000000000002
                 ],
                 [
                     0.1,
-                    0.7,
+                    0.0,
                     0.1,
-                    0.1
+                    0.10000000000000002
                 ],
                 [
-                    0.1,
-                    0.1,
-                    0.7,
-                    0.1
-                ],
-                [
-                    0.1,
-                    0.1,
-                    0.1,
+                    0.9,
+                    0.9,
+                    0.8,
                     0.7
                 ]
             ]
@@ -255,6 +364,329 @@ def main() -> int:
             0.25
         ]
     },
+    "structured_pomdp": {
+        "matrices": {
+            "A": [
+                [
+                    0.9,
+                    0.05,
+                    0.025,
+                    0.025
+                ],
+                [
+                    0.05,
+                    0.9,
+                    0.025,
+                    0.025
+                ],
+                [
+                    0.025,
+                    0.025,
+                    0.9,
+                    0.05
+                ],
+                [
+                    0.025,
+                    0.025,
+                    0.05,
+                    0.9
+                ]
+            ],
+            "B": [
+                [
+                    [
+                        0.9,
+                        0.1,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        0.9,
+                        0.1,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        0.9,
+                        0.1
+                    ],
+                    [
+                        0.1,
+                        0.0,
+                        0.0,
+                        0.9
+                    ]
+                ],
+                [
+                    [
+                        0.9,
+                        0.0,
+                        0.0,
+                        0.1
+                    ],
+                    [
+                        0.1,
+                        0.9,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        0.1,
+                        0.9,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        0.1,
+                        0.9
+                    ]
+                ],
+                [
+                    [
+                        0.8,
+                        0.1,
+                        0.1,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        0.8,
+                        0.1,
+                        0.1
+                    ],
+                    [
+                        0.1,
+                        0.0,
+                        0.8,
+                        0.1
+                    ],
+                    [
+                        0.1,
+                        0.1,
+                        0.0,
+                        0.8
+                    ]
+                ],
+                [
+                    [
+                        0.7,
+                        0.1,
+                        0.1,
+                        0.1
+                    ],
+                    [
+                        0.1,
+                        0.7,
+                        0.1,
+                        0.1
+                    ],
+                    [
+                        0.1,
+                        0.1,
+                        0.7,
+                        0.1
+                    ],
+                    [
+                        0.1,
+                        0.1,
+                        0.1,
+                        0.7
+                    ]
+                ]
+            ],
+            "C": [
+                -1.0,
+                -0.5,
+                -0.5,
+                2.0
+            ],
+            "D": [
+                0.25,
+                0.25,
+                0.25,
+                0.25
+            ]
+        },
+        "matrix_provenance": {
+            "A": {
+                "source": "InitialParameterization",
+                "shape": [
+                    4,
+                    4
+                ],
+                "derived": False
+            },
+            "B": {
+                "source": "InitialParameterization",
+                "shape": [
+                    4,
+                    4,
+                    4
+                ],
+                "derived": False,
+                "source_order": "action_previous_state_next_state",
+                "canonical_order": "next_state_previous_state_action"
+            },
+            "C": {
+                "source": "InitialParameterization",
+                "shape": [
+                    4
+                ],
+                "derived": False
+            },
+            "D": {
+                "source": "InitialParameterization",
+                "shape": [
+                    4
+                ],
+                "derived": False
+            }
+        },
+        "state_factors": [
+            {
+                "name": "s",
+                "size": 4,
+                "dimensions": [
+                    4,
+                    1
+                ],
+                "type": "float",
+                "comment": "Current hidden state belief",
+                "index": 1
+            },
+            {
+                "name": "s_tau1",
+                "size": 4,
+                "dimensions": [
+                    4,
+                    1
+                ],
+                "type": "float",
+                "comment": "Predicted state at tau=1",
+                "index": 2
+            },
+            {
+                "name": "s_tau2",
+                "size": 4,
+                "dimensions": [
+                    4,
+                    1
+                ],
+                "type": "float",
+                "comment": "Predicted state at tau=2",
+                "index": 3
+            },
+            {
+                "name": "s_tau3",
+                "size": 4,
+                "dimensions": [
+                    4,
+                    1
+                ],
+                "type": "float",
+                "comment": "Predicted state at tau=3",
+                "index": 4
+            },
+            {
+                "name": "s_tau4",
+                "size": 4,
+                "dimensions": [
+                    4,
+                    1
+                ],
+                "type": "float",
+                "comment": "Predicted state at tau=4",
+                "index": 5
+            },
+            {
+                "name": "s_tau5",
+                "size": 4,
+                "dimensions": [
+                    4,
+                    1
+                ],
+                "type": "float",
+                "comment": "Predicted state at tau=5",
+                "index": 6
+            }
+        ],
+        "observation_modalities": [
+            {
+                "name": "o",
+                "size": 4,
+                "dimensions": [
+                    4,
+                    1
+                ],
+                "type": "float",
+                "comment": "Current observation",
+                "index": 1
+            }
+        ],
+        "control_factors": [
+            {
+                "name": "\u03c0",
+                "size": 64,
+                "dimensions": [
+                    64
+                ],
+                "type": "float",
+                "comment": "Policy distribution (over T-step action sequences)",
+                "index": 1
+            },
+            {
+                "name": "u",
+                "size": 1,
+                "dimensions": [
+                    1
+                ],
+                "type": "float",
+                "comment": "Selected first action from best policy",
+                "index": 2
+            }
+        ],
+        "adapter_notes": []
+    },
+    "matrix_provenance": {
+        "A": {
+            "source": "InitialParameterization",
+            "shape": [
+                4,
+                4
+            ],
+            "derived": False
+        },
+        "B": {
+            "source": "InitialParameterization",
+            "shape": [
+                4,
+                4,
+                4
+            ],
+            "derived": False,
+            "source_order": "action_previous_state_next_state",
+            "canonical_order": "next_state_previous_state_action"
+        },
+        "C": {
+            "source": "InitialParameterization",
+            "shape": [
+                4
+            ],
+            "derived": False
+        },
+        "D": {
+            "source": "InitialParameterization",
+            "shape": [
+                4
+            ],
+            "derived": False
+        }
+    },
+    "canonical_pomdp_schema": "canonical_pomdp_v1",
     "variables": [
         {
             "name": "D",
@@ -317,46 +749,6 @@ def main() -> int:
             ],
             "type": "float",
             "comment": "Predicted state at tau=5"
-        },
-        {
-            "name": "G_tau1",
-            "dimensions": [
-                64
-            ],
-            "type": "float",
-            "comment": "EFE contribution at tau=1"
-        },
-        {
-            "name": "G_tau2",
-            "dimensions": [
-                64
-            ],
-            "type": "float",
-            "comment": "EFE contribution at tau=2"
-        },
-        {
-            "name": "G_tau3",
-            "dimensions": [
-                64
-            ],
-            "type": "float",
-            "comment": "EFE contribution at tau=3"
-        },
-        {
-            "name": "G_tau4",
-            "dimensions": [
-                64
-            ],
-            "type": "float",
-            "comment": "EFE contribution at tau=4"
-        },
-        {
-            "name": "G_tau5",
-            "dimensions": [
-                64
-            ],
-            "type": "float",
-            "comment": "EFE contribution at tau=5"
         },
         {
             "name": "F",
@@ -607,7 +999,7 @@ def main() -> int:
     if D_data is not None: gnn_spec["initialparameterization"]["D"] = D_data
     if E_data is not None: gnn_spec["initialparameterization"]["E"] = E_data
     gnn_spec.setdefault("model_parameters", {})
-    gnn_spec["model_parameters"].setdefault("num_timesteps", 15)
+    gnn_spec["model_parameters"].setdefault("num_timesteps", 30)
 
     output_dir = Path(os.environ.get("PYMDP_OUTPUT_DIR", "output/pymdp_simulations/Deep Planning Horizon POMDP"))
     output_dir.mkdir(parents=True, exist_ok=True)

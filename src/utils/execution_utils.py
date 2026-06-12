@@ -9,13 +9,14 @@ rather than buffering all output until completion.
 
 import logging
 import os
-import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
+import subprocess  # nosec B404
 import sys
 import threading
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
 
 logger = logging.getLogger(__name__)
+
 
 def execute_command_streaming(
     cmd: List[str],
@@ -24,11 +25,11 @@ def execute_command_streaming(
     timeout: Optional[int] = None,
     print_stdout: bool = True,
     print_stderr: bool = True,
-    capture_output: bool = True
+    capture_output: bool = True,
 ) -> Dict[str, Any]:
     """
     Execute a command with real-time output streaming.
-    
+
     Args:
         cmd: Command and arguments list
         cwd: Working directory
@@ -37,7 +38,7 @@ def execute_command_streaming(
         print_stdout: Whether to print stdout to sys.stdout in real-time
         print_stderr: Whether to print stderr to sys.stderr in real-time
         capture_output: Whether to return captured stdout/stderr in the result
-        
+
     Returns:
         Dictionary containing:
         - exit_code: Process exit code
@@ -57,20 +58,20 @@ def execute_command_streaming(
     process_env["PYTHONUNBUFFERED"] = "1"
 
     # buffers for captured output
-    stdout_captured = []
-    stderr_captured = []
+    stdout_captured: list[Any] = []
+    stderr_captured: list[Any] = []
 
     # detailed result structure
-    result = {
+    result: dict[str, Any] = {
         "exit_code": -1,
         "stdout": "",
         "stderr": "",
-        "status": "UNKNOWN"
+        "status": "UNKNOWN",
     }
 
     try:
         # Start process with pipes
-        process = subprocess.Popen(  # nosec B603 -- subprocess calls with controlled/trusted input
+        process = subprocess.Popen(  # nosec B603
             cmd,
             cwd=cwd,
             env=process_env,
@@ -78,13 +79,14 @@ def execute_command_streaming(
             stderr=subprocess.PIPE,
             text=True,
             bufsize=1,  # Line buffered
-            universal_newlines=True
+            universal_newlines=True,
         )
 
         # Reader threads
-        def read_stream(stream, is_stderr):
+        def read_stream(stream: Any, is_stderr: Any) -> Any:
+            """Read stream."""
             try:
-                for line in iter(stream.readline, ''):
+                for line in iter(stream.readline, ""):
                     if not line:
                         break
 
@@ -107,8 +109,12 @@ def execute_command_streaming(
                 stream.close()
 
         # Start threads
-        stdout_thread = threading.Thread(target=read_stream, args=(process.stdout, False))
-        stderr_thread = threading.Thread(target=read_stream, args=(process.stderr, True))
+        stdout_thread = threading.Thread(
+            target=read_stream, args=(process.stdout, False)
+        )
+        stderr_thread = threading.Thread(
+            target=read_stream, args=(process.stderr, True)
+        )
 
         stdout_thread.daemon = True
         stderr_thread.daemon = True

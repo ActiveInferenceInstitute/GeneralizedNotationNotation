@@ -2,7 +2,7 @@
 """
 DisCoPy Categorical Diagram Generation
 Generated from GNN Model: Hidden Markov Model Baseline
-Generated: 2026-04-10 10:25:04
+Generated: 2026-05-22 06:18:15
 
 This script creates categorical diagrams representing the Active Inference model
 structure using DisCoPy's compositional framework.
@@ -59,7 +59,7 @@ import json
 # Model parameters extracted from GNN specification
 NUM_STATES = 4
 NUM_OBSERVATIONS = 6
-NUM_ACTIONS = 4
+NUM_ACTIONS = 1
 
 print("🔬 DisCoPy Categorical Diagram Generation")
 print(f"📊 State Space: {NUM_STATES} states, {NUM_OBSERVATIONS} observations, {NUM_ACTIONS} actions")
@@ -205,7 +205,7 @@ def export_circuit_data(circuit_dict, analysis_results, output_dir="discopy_diag
     # Export circuit information
     circuit_info = {
         'model_name': 'Hidden Markov Model Baseline',
-        'timestamp': '2026-04-10 10:25:04',
+        'timestamp': '2026-05-22 06:18:15',
         'parameters': {
             'num_states': NUM_STATES,
             'num_observations': NUM_OBSERVATIONS, 

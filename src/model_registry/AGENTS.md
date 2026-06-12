@@ -10,9 +10,9 @@
 
 **Status**: ✅ Production Ready
 
-**Version**: 1.1.3
+**Version**: 1.6.0
 
-**Last Updated**: 2026-01-21
+**Last Updated**: 2026-04-16
 
 ---
 
@@ -272,13 +272,16 @@ output/4_model_registry_output/
 
 ### Test Files
 
-- `src/tests/test_model_registry_overall.py`
+- `src/tests/model_registry/test_model_registry_overall.py`
 
 ### Test Coverage
 
-- **Current**: 80%
-- **Target**: 85%+
+Measure on demand:
 
+```bash
+uv run --extra dev python -m pytest src/tests/test_model_registry*.py \
+    --cov=src/model_registry --cov-report=term-missing
+```
 ---
 
 

@@ -11,40 +11,46 @@ import logging
 import time
 from contextlib import contextmanager
 from pathlib import Path
-from typing import Any, Callable, Dict, Optional, Tuple, TypeVar
+from typing import Any, Callable, Dict, Iterator, Optional, Tuple, TypeVar, cast
 
 import psutil
 
 logger = logging.getLogger(__name__)
 
 # Type variable for generic function decorators
-T = TypeVar('T')
+T = TypeVar("T")
+
 
 def get_current_memory_usage() -> float:
     """Get current memory usage in MB with error handling."""
     try:
         import psutil
+
         process = psutil.Process()
-        return process.memory_info().rss / 1024 / 1024  # Convert bytes to MB
+        return cast(
+            "float", process.memory_info().rss / 1024 / 1024
+        )  # Convert bytes to MB
     except (ImportError, Exception):
         return 0.0
+
 
 class ResourceTracker:
     """Tracks resource usage during operations."""
 
-    def __init__(self):
+    def __init__(self) -> None:
+        """Initialize the instance."""
         self.start_time = time.time()
         self.end_time: Optional[float] = None
         self.start_memory = psutil.Process().memory_info().rss / 1024 / 1024  # MB
         self.peak_memory = self.start_memory
         self.current_memory = self.start_memory
 
-    def update(self):
+    def update(self) -> Any:
         """Update current resource measurements."""
         self.current_memory = psutil.Process().memory_info().rss / 1024 / 1024
         self.peak_memory = max(self.peak_memory, self.current_memory)
 
-    def stop(self):
+    def stop(self) -> Any:
         """Stop tracking and calculate final metrics."""
         self.end_time = time.time()
         self.update()
@@ -59,47 +65,52 @@ class ResourceTracker:
     @property
     def memory_used(self) -> float:
         """Get current memory usage in MB."""
-        return self.current_memory - self.start_memory
+        return cast("float", self.current_memory - self.start_memory)
 
     @property
     def max_memory_mb(self) -> float:
         """Get peak memory usage in MB."""
-        return self.peak_memory
+        return cast("float", self.peak_memory)
 
     def to_dict(self) -> Dict[str, float]:
         """Convert metrics to dictionary."""
         return {
             "duration_seconds": self.duration,
             "memory_used_mb": self.memory_used,
-            "peak_memory_mb": self.peak_memory
+            "peak_memory_mb": self.peak_memory,
         }
 
+
 @contextmanager
-def performance_tracker() -> ResourceTracker:
+def performance_tracker() -> Iterator[ResourceTracker]:
     """Context manager for tracking performance metrics."""
-    tracker = ResourceTracker()
+    tracker: ResourceTracker = ResourceTracker()
     try:
         yield tracker
     finally:
         tracker.stop()
 
+
 def track_peak_memory(func: Callable[..., T]) -> Callable[..., Tuple[T, float]]:
     """Decorator to track peak memory usage of a function."""
+
     @functools.wraps(func)
-    def wrapper(*args, **kwargs) -> Tuple[T, float]:
+    def wrapper(*args: Any, **kwargs: Any) -> Tuple[T, float]:
+        """Provide wrapper behavior."""
         tracker = ResourceTracker()
         try:
             result = func(*args, **kwargs)
             return result, tracker.peak_memory
         finally:
             tracker.stop()
+
     return wrapper
+
 
 @contextmanager
 def with_resource_limits(
-    max_memory_mb: Optional[float] = None,
-    max_time_seconds: Optional[float] = None
-):
+    max_memory_mb: Optional[float] = None, max_time_seconds: Optional[float] = None
+) -> Any:
     """Context manager to enforce resource limits.
 
     - Memory limit is enforced on delta usage within the context, not absolute RSS,
@@ -122,24 +133,25 @@ def with_resource_limits(
         if max_time_seconds is not None:
             elapsed = time.time() - start_time
             if elapsed > max_time_seconds:
-                raise RuntimeError(f"Time limit exceeded: {elapsed:.1f}s > {max_time_seconds}s")
+                raise RuntimeError(
+                    f"Time limit exceeded: {elapsed:.1f}s > {max_time_seconds}s"
+                )
+
 
 def check_disk_space(
-    path: Path,
-    required_mb: float,
-    buffer_factor: float = 1.1
+    path: Path, required_mb: float, buffer_factor: float = 1.1
 ) -> bool:
     """
     Check if sufficient disk space is available.
-    
+
     Args:
         path: Path to check
         required_mb: Required space in MB
         buffer_factor: Safety factor (e.g., 1.1 = 10% extra)
-        
+
     Returns:
         True if sufficient space available
-        
+
     Raises:
         RuntimeError if insufficient space
     """
@@ -160,18 +172,19 @@ def check_disk_space(
     if free_mb < required_with_buffer:
         raise RuntimeError(
             f"Insufficient disk space: {free_mb:.1f}MB free, "
-            f"need {required_with_buffer:.1f}MB ({required_mb:.1f}MB + {buffer_factor*100-100:.0f}% buffer)"
+            f"need {required_with_buffer:.1f}MB ({required_mb:.1f}MB + {buffer_factor * 100 - 100:.0f}% buffer)"
         )
 
     return True
 
+
 def estimate_resources(model_file: Path) -> Dict[str, float]:
     """
     Estimate resource requirements for processing a model.
-    
+
     Args:
         model_file: Path to GNN model file
-        
+
     Returns:
         Dictionary with estimated resources:
         - time: Estimated processing time in seconds
@@ -194,18 +207,20 @@ def estimate_resources(model_file: Path) -> Dict[str, float]:
     return {
         "time": time_estimate,
         "memory_mb": memory_estimate,
-        "disk_mb": disk_estimate
+        "disk_mb": disk_estimate,
     }
 
-def log_resource_usage(logger: logging.Logger, tracker: ResourceTracker):
+
+def log_resource_usage(logger: logging.Logger, tracker: ResourceTracker) -> Any:
     """Log resource usage metrics."""
     metrics = tracker.to_dict()
     logger.info(
         "Resource usage - Time: %.2fs, Memory: %.1fMB (Peak: %.1fMB)",
         metrics["duration_seconds"],
         metrics["memory_used_mb"],
-        metrics["peak_memory_mb"]
+        metrics["peak_memory_mb"],
     )
+
 
 def get_system_info() -> Dict[str, Any]:
     """Get system information and resource availability."""
@@ -225,8 +240,9 @@ def get_system_info() -> Dict[str, Any]:
         "disk_usage": {
             str(path): psutil.disk_usage(str(path)).percent
             for path in [Path.home(), Path.cwd()]
-        }
+        },
     }
+
 
 if __name__ == "__main__":
     # Example usage

@@ -9,51 +9,50 @@ import logging
 import re
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any, Dict, List, cast
 
 from utils.pipeline_template import log_step_error, log_step_start, log_step_success
 
+logger = logging.getLogger(__name__)
+
 
 def process_security(
-    target_dir: Path,
-    output_dir: Path,
-    verbose: bool = False,
-    **kwargs
+    target_dir: Path, output_dir: Path, verbose: bool = False, **kwargs: Any
 ) -> bool:
     """
     Process security validation for GNN files.
-    
+
     Args:
         target_dir: Directory containing GNN files to process
         output_dir: Directory to save results
         verbose: Enable verbose output
         **kwargs: Additional arguments
-        
+
     Returns:
         True if processing successful, False otherwise
     """
-    logger = logging.getLogger("security")
+    step_logger = logging.getLogger("security")
 
     try:
-        log_step_start(logger, "Processing security")
+        log_step_start(step_logger, "Processing security")
 
         results_dir = output_dir
         results_dir.mkdir(parents=True, exist_ok=True)
 
-        results = {
+        results: dict[str, Any] = {
             "timestamp": datetime.now().isoformat(),
             "processed_files": 0,
             "success": True,
             "errors": [],
             "security_checks": [],
             "vulnerabilities": [],
-            "recommendations": []
+            "recommendations": [],
         }
 
         # Find GNN files
         gnn_files = list(target_dir.glob("*.md"))
         if not gnn_files:
-            logger.warning("No GNN files found for security processing")
+            step_logger.warning("No GNN files found for security processing")
             results["success"] = False
             results["errors"].append("No GNN files found")
         else:
@@ -71,67 +70,72 @@ def process_security(
                     results["vulnerabilities"].extend(vulnerabilities)
 
                     # Generate security recommendations
-                    recommendations = generate_security_recommendations(gnn_file, verbose)
+                    recommendations = generate_security_recommendations(
+                        gnn_file, verbose
+                    )
                     results["recommendations"].extend(recommendations)
 
                 except Exception as e:
-                    error_info = {
+                    error_info: dict[str, Any] = {
                         "file": str(gnn_file),
                         "error": str(e),
-                        "error_type": type(e).__name__
+                        "error_type": type(e).__name__,
                     }
                     results["errors"].append(error_info)
-                    logger.error(f"Error processing {gnn_file}: {e}")
+                    step_logger.error(f"Error processing {gnn_file}: {e}")
 
         # Save detailed results
         results_file = results_dir / "security_results.json"
-        with open(results_file, 'w') as f:
+        with open(results_file, "w") as f:
             json.dump(results, f, indent=2)
 
         # Generate security summary
         summary = generate_security_summary(results)
         summary_file = results_dir / "security_summary.md"
-        with open(summary_file, 'w') as f:
+        with open(summary_file, "w") as f:
             f.write(summary)
 
         if results["success"]:
-            log_step_success(logger, "Security processing completed successfully")
+            log_step_success(step_logger, "Security processing completed successfully")
         else:
-            log_step_error(logger, "Security processing failed")
+            log_step_error(step_logger, "Security processing failed")
 
-        return results["success"]
+        return cast("bool", results["success"])
 
     except Exception as e:
-        log_step_error(logger, "Security processing failed", {"error": str(e)})
+        log_step_error(step_logger, "Security processing failed", error=str(e))
         return False
+
 
 def perform_security_check(file_path: Path, verbose: bool = False) -> Dict[str, Any]:
     """Perform security checks on a GNN file."""
     try:
-        with open(file_path, 'r') as f:
+        with open(file_path, "r") as f:
             content = f.read()
 
         # Calculate file hash
         file_hash = hashlib.sha256(content.encode()).hexdigest()
 
         # Check for sensitive patterns
-        sensitive_patterns = [
-            r'password\s*[:=]',
-            r'secret\s*[:=]',
-            r'api_key\s*[:=]',
-            r'token\s*[:=]',
-            r'private_key\s*[:=]'
+        sensitive_patterns: list[Any] = [
+            r"password\s*[:=]",
+            r"secret\s*[:=]",
+            r"api_key\s*[:=]",
+            r"token\s*[:=]",
+            r"private_key\s*[:=]",
         ]
 
-        found_patterns = []
+        found_patterns: list[Any] = []
         for pattern in sensitive_patterns:
             matches = re.finditer(pattern, content, re.IGNORECASE)
             for match in matches:
-                found_patterns.append({
-                    "pattern": pattern,
-                    "line": content[:match.start()].count('\n') + 1,
-                    "context": match.group(0)
-                })
+                found_patterns.append(
+                    {
+                        "pattern": pattern,
+                        "line": content[: match.start()].count("\n") + 1,
+                        "context": match.group(0),
+                    }
+                )
 
         # Check file permissions (simplified)
         file_permissions = "readable"
@@ -144,13 +148,16 @@ def perform_security_check(file_path: Path, verbose: bool = False) -> Dict[str, 
             "sensitive_patterns": found_patterns,
             "file_permissions": file_permissions,
             "security_score": calculate_security_score(found_patterns),
-            "check_timestamp": datetime.now().isoformat()
+            "check_timestamp": datetime.now().isoformat(),
         }
 
     except Exception as e:
         raise Exception(f"Failed to perform security check on {file_path}: {e}") from e
 
-def check_vulnerabilities(file_path: Path, verbose: bool = False) -> List[Dict[str, Any]]:
+
+def check_vulnerabilities(
+    file_path: Path, verbose: bool = False
+) -> List[Dict[str, Any]]:
     """
     Check for security vulnerabilities in a GNN file.
 
@@ -158,94 +165,113 @@ def check_vulnerabilities(file_path: Path, verbose: bool = False) -> List[Dict[s
     1. Regex pattern matching for GNN markdown files
     2. Python AST analysis for generated .py files (eval, exec, os.system detection)
     """
-    vulnerabilities = []
+    vulnerabilities: list[Any] = []
 
     try:
-        with open(file_path, 'r') as f:
+        with open(file_path, "r") as f:
             content = f.read()
 
         # -- Technique 1: Regex patterns (for GNN markdown and all files) --
-        vuln_patterns = [
-            (r'eval\s*\(', "Code injection vulnerability"),
-            (r'exec\s*\(', "Code execution vulnerability"),
-            (r'import\s+os\s*', "OS command injection risk"),
-            (r'subprocess\s*\.', "Subprocess execution risk"),
-            (r'subprocess\.call\s*\(', "Subprocess call -- potential command injection"),
-            (r'subprocess\.Popen\s*\(', "Subprocess Popen -- potential command injection"),
-            (r'file\s*\(', "Previous file() call"),
+        vuln_patterns: list[Any] = [
+            (r"eval\s*\(", "Code injection vulnerability"),
+            (r"exec\s*\(", "Code execution vulnerability"),
+            (r"import\s+os\s*", "OS command injection risk"),
+            (r"subprocess\s*\.", "Subprocess execution risk"),
+            (
+                r"subprocess\.call\s*\(",
+                "Subprocess call -- potential command injection",
+            ),
+            (
+                r"subprocess\.Popen\s*\(",
+                "Subprocess Popen -- potential command injection",
+            ),
+            (r"file\s*\(", "Previous file() call"),
         ]
 
         for pattern, description in vuln_patterns:
             for match in re.finditer(pattern, content, re.IGNORECASE):
-                vulnerabilities.append({
-                    "file_path": str(file_path),
-                    "file_name": file_path.name,
-                    "vulnerability_type": description,
-                    "detection_method": "regex",
-                    "pattern": pattern,
-                    "line": content[:match.start()].count('\n') + 1,
-                    "context": match.group(0)[:80],
-                    "severity": "medium"
-                })
+                vulnerabilities.append(
+                    {
+                        "file_path": str(file_path),
+                        "file_name": file_path.name,
+                        "vulnerability_type": description,
+                        "detection_method": "regex",
+                        "pattern": pattern,
+                        "line": content[: match.start()].count("\n") + 1,
+                        "context": match.group(0)[:80],
+                        "severity": "medium",
+                    }
+                )
 
         # Check for hardcoded credentials
-        credential_patterns = [
+        credential_patterns: list[Any] = [
             r'password\s*[:=]\s*["\'][^"\']{4,}["\']',
             r'secret\s*[:=]\s*["\'][^"\']{4,}["\']',
-            r'api_key\s*[:=]\s*["\'][^"\']{8,}["\']'
+            r'api_key\s*[:=]\s*["\'][^"\']{8,}["\']',
         ]
 
         for pattern in credential_patterns:
             for match in re.finditer(pattern, content, re.IGNORECASE):
-                vulnerabilities.append({
-                    "file_path": str(file_path),
-                    "file_name": file_path.name,
-                    "vulnerability_type": "Hardcoded credentials",
-                    "detection_method": "regex",
-                    "pattern": pattern,
-                    "line": content[:match.start()].count('\n') + 1,
-                    "context": "[REDACTED]",
-                    "severity": "high"
-                })
+                vulnerabilities.append(
+                    {
+                        "file_path": str(file_path),
+                        "file_name": file_path.name,
+                        "vulnerability_type": "Hardcoded credentials",
+                        "detection_method": "regex",
+                        "pattern": pattern,
+                        "line": content[: match.start()].count("\n") + 1,
+                        "context": "[REDACTED]",
+                        "severity": "high",
+                    }
+                )
 
         # -- Technique 2: AST analysis for Python files --
-        if file_path.suffix == '.py':
+        if file_path.suffix == ".py":
             ast_vulns = _check_python_ast(file_path, content)
             vulnerabilities.extend(ast_vulns)
 
         # -- Technique 3: File permission check using os.access --
         import os as _os
+
         is_world_writable = _os.access(str(file_path), _os.W_OK)
-        if is_world_writable and file_path.suffix == '.py':
+        if is_world_writable and file_path.suffix == ".py":
             # Generated .py files shouldn't be world-writable in shared environments
             try:
                 import stat
+
                 file_stat = file_path.stat()
                 mode = file_stat.st_mode
                 world_write = bool(mode & stat.S_IWOTH)
                 if world_write:
-                    vulnerabilities.append({
-                        "file_path": str(file_path),
-                        "file_name": file_path.name,
-                        "vulnerability_type": "World-writable file permissions",
-                        "detection_method": "permission_check",
-                        "pattern": "stat.S_IWOTH",
-                        "line": 0,
-                        "context": f"Mode: {oct(mode)}",
-                        "severity": "low"
-                    })
+                    vulnerabilities.append(
+                        {
+                            "file_path": str(file_path),
+                            "file_name": file_path.name,
+                            "vulnerability_type": "World-writable file permissions",
+                            "detection_method": "permission_check",
+                            "pattern": "stat.S_IWOTH",
+                            "line": 0,
+                            "context": f"Mode: {oct(mode)}",
+                            "severity": "low",
+                        }
+                    )
             except OSError:
-                logger.debug("Permission check failed on %s (platform limitation)", file_path.name)
+                logger.debug(
+                    "Permission check failed on %s (platform limitation)",
+                    file_path.name,
+                )
 
     except Exception as e:
-        vulnerabilities.append({
-            "file_path": str(file_path),
-            "file_name": file_path.name,
-            "vulnerability_type": "File access error",
-            "detection_method": "file_read",
-            "error": str(e),
-            "severity": "low"
-        })
+        vulnerabilities.append(
+            {
+                "file_path": str(file_path),
+                "file_name": file_path.name,
+                "vulnerability_type": "File access error",
+                "detection_method": "file_read",
+                "error": str(e),
+                "severity": "low",
+            }
+        )
 
     return vulnerabilities
 
@@ -273,23 +299,25 @@ def _check_python_ast(file_path: Path, content: str) -> List[Dict[str, Any]]:
     """
     import ast
 
-    vulns = []
+    vulns: list[Any] = []
 
     try:
         tree = ast.parse(content, filename=str(file_path))
     except SyntaxError as e:
-        return [{
-            "file_path": str(file_path),
-            "file_name": file_path.name,
-            "vulnerability_type": "Syntax error (cannot AST scan)",
-            "detection_method": "ast_parse",
-            "line": e.lineno or 0,
-            "context": str(e),
-            "severity": "info"
-        }]
+        return [
+            {
+                "file_path": str(file_path),
+                "file_name": file_path.name,
+                "vulnerability_type": "Syntax error (cannot AST scan)",
+                "detection_method": "ast_parse",
+                "line": e.lineno or 0,
+                "context": str(e),
+                "severity": "info",
+            }
+        ]
 
     # Dangerous function call patterns
-    DANGEROUS_CALLS = {
+    DANGEROUS_CALLS: dict[str, Any] = {
         "eval": ("Code injection via eval()", "high"),
         "exec": ("Code injection via exec()", "high"),
         "compile": ("Dynamic code compilation", "medium"),
@@ -297,7 +325,7 @@ def _check_python_ast(file_path: Path, content: str) -> List[Dict[str, Any]]:
     }
 
     # Dangerous attribute access patterns: obj.method()
-    DANGEROUS_METHODS = {
+    DANGEROUS_METHODS: dict[Any, Any] = {
         ("os", "system"): ("OS command injection via os.system()", "high"),
         ("os", "popen"): ("OS command injection via os.popen()", "high"),
         ("subprocess", "call"): ("Subprocess execution", "medium"),
@@ -319,16 +347,18 @@ def _check_python_ast(file_path: Path, content: str) -> List[Dict[str, Any]]:
             func_name = node.func.id
             if func_name in DANGEROUS_CALLS:
                 desc, severity = DANGEROUS_CALLS[func_name]
-                vulns.append({
-                    "file_path": str(file_path),
-                    "file_name": file_path.name,
-                    "vulnerability_type": desc,
-                    "detection_method": "ast_analysis",
-                    "pattern": f"{func_name}()",
-                    "line": line,
-                    "context": f"{func_name}() call at line {line}",
-                    "severity": severity
-                })
+                vulns.append(
+                    {
+                        "file_path": str(file_path),
+                        "file_name": file_path.name,
+                        "vulnerability_type": desc,
+                        "detection_method": "ast_analysis",
+                        "pattern": f"{func_name}()",
+                        "line": line,
+                        "context": f"{func_name}() call at line {line}",
+                        "severity": severity,
+                    }
+                )
 
         # Attribute calls: os.system(), pickle.loads(), etc.
         elif isinstance(node.func, ast.Attribute):
@@ -338,78 +368,94 @@ def _check_python_ast(file_path: Path, content: str) -> List[Dict[str, Any]]:
                 key = (obj_name, method_name)
                 if key in DANGEROUS_METHODS:
                     desc, severity = DANGEROUS_METHODS[key]
-                    vulns.append({
-                        "file_path": str(file_path),
-                        "file_name": file_path.name,
-                        "vulnerability_type": desc,
-                        "detection_method": "ast_analysis",
-                        "pattern": f"{obj_name}.{method_name}()",
-                        "line": line,
-                        "context": f"{obj_name}.{method_name}() at line {line}",
-                        "severity": severity
-                    })
+                    vulns.append(
+                        {
+                            "file_path": str(file_path),
+                            "file_name": file_path.name,
+                            "vulnerability_type": desc,
+                            "detection_method": "ast_analysis",
+                            "pattern": f"{obj_name}.{method_name}()",
+                            "line": line,
+                            "context": f"{obj_name}.{method_name}() at line {line}",
+                            "severity": severity,
+                        }
+                    )
 
     return vulns
 
-def generate_security_recommendations(file_path: Path, verbose: bool = False) -> List[Dict[str, Any]]:
+
+def generate_security_recommendations(
+    file_path: Path, verbose: bool = False
+) -> List[Dict[str, Any]]:
     """Generate security recommendations for a GNN file."""
-    recommendations = []
+    recommendations: list[Any] = []
 
     try:
-        with open(file_path, 'r') as f:
+        with open(file_path, "r") as f:
             content = f.read()
 
         # Check for basic security practices
-        if not re.search(r'#\s*Security', content, re.IGNORECASE):
-            recommendations.append({
-                "file_path": str(file_path),
-                "file_name": file_path.name,
-                "recommendation": "Add security documentation section",
-                "priority": "medium",
-                "description": "Consider adding a security section to document security considerations"
-            })
-
-        # Check for input validation
-        if re.search(r'input\s*[:=]', content, re.IGNORECASE):
-            if not re.search(r'validate|check|verify', content, re.IGNORECASE):
-                recommendations.append({
+        if not re.search(r"#\s*Security", content, re.IGNORECASE):
+            recommendations.append(
+                {
                     "file_path": str(file_path),
                     "file_name": file_path.name,
-                    "recommendation": "Add input validation",
-                    "priority": "high",
-                    "description": "Input validation should be implemented for all user inputs"
-                })
+                    "recommendation": "Add security documentation section",
+                    "priority": "medium",
+                    "description": "Consider adding a security section to document security considerations",
+                }
+            )
+
+        # Check for input validation
+        if re.search(r"input\s*[:=]", content, re.IGNORECASE):
+            if not re.search(r"validate|check|verify", content, re.IGNORECASE):
+                recommendations.append(
+                    {
+                        "file_path": str(file_path),
+                        "file_name": file_path.name,
+                        "recommendation": "Add input validation",
+                        "priority": "high",
+                        "description": "Input validation should be implemented for all user inputs",
+                    }
+                )
 
         # Check for error handling
-        if not re.search(r'try\s*:|except\s*:', content, re.IGNORECASE):
-            recommendations.append({
-                "file_path": str(file_path),
-                "file_name": file_path.name,
-                "recommendation": "Add error handling",
-                "priority": "medium",
-                "description": "Implement proper error handling for robust security"
-            })
+        if not re.search(r"try\s*:|except\s*:", content, re.IGNORECASE):
+            recommendations.append(
+                {
+                    "file_path": str(file_path),
+                    "file_name": file_path.name,
+                    "recommendation": "Add error handling",
+                    "priority": "medium",
+                    "description": "Implement proper error handling for robust security",
+                }
+            )
 
         # Check for logging
-        if not re.search(r'log|logging', content, re.IGNORECASE):
-            recommendations.append({
-                "file_path": str(file_path),
-                "file_name": file_path.name,
-                "recommendation": "Add security logging",
-                "priority": "medium",
-                "description": "Implement security event logging for monitoring"
-            })
+        if not re.search(r"log|logging", content, re.IGNORECASE):
+            recommendations.append(
+                {
+                    "file_path": str(file_path),
+                    "file_name": file_path.name,
+                    "recommendation": "Add security logging",
+                    "priority": "medium",
+                    "description": "Implement security event logging for monitoring",
+                }
+            )
 
     except Exception as e:
-        recommendations.append({
-            "file_path": str(file_path),
-            "file_name": file_path.name,
-            "recommendation": "File access error",
-            "priority": "low",
-            "description": f"Could not analyze file: {e}"
-        })
+        recommendations.append(
+            {
+                "file_path": str(file_path),
+                "file_name": file_path.name,
+                "recommendation": "File access error",
+                "priority": "low",
+                "description": f"Could not analyze file: {e}",
+            }
+        )
 
     return recommendations
+
 
 def calculate_security_score(vulnerabilities: List[Dict]) -> float:
     """Calculate a security score based on vulnerabilities."""
@@ -417,11 +463,7 @@ def calculate_security_score(vulnerabilities: List[Dict]) -> float:
         return 100.0
 
     # Weight vulnerabilities by severity
-    severity_weights = {
-        "high": 10.0,
-        "medium": 5.0,
-        "low": 1.0
-    }
+    severity_weights: dict[str, Any] = {"high": 10.0, "medium": 5.0, "low": 1.0}
 
     total_score = 0.0
     for vuln in vulnerabilities:
@@ -436,31 +478,32 @@ def calculate_security_score(vulnerabilities: List[Dict]) -> float:
     score = max(0.0, 100.0 - (total_score / max_possible_score) * 100.0)
     return score
 
+
 def generate_security_summary(results: Dict[str, Any]) -> str:
     """Generate a security summary report."""
     summary = f"""
 # Security Analysis Summary
 
-**Generated**: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
+**Generated**: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
 
 ## Processing Results
-- **Files Processed**: {results.get('processed_files', 0)}
-- **Success**: {results.get('success', False)}
-- **Errors**: {len(results.get('errors', []))}
+- **Files Processed**: {results.get("processed_files", 0)}
+- **Success**: {results.get("success", False)}
+- **Errors**: {len(results.get("errors", []))}
 
 ## Security Results
-- **Security Checks**: {len(results.get('security_checks', []))}
-- **Vulnerabilities Found**: {len(results.get('vulnerabilities', []))}
-- **Recommendations**: {len(results.get('recommendations', []))}
+- **Security Checks**: {len(results.get("security_checks", []))}
+- **Vulnerabilities Found**: {len(results.get("vulnerabilities", []))}
+- **Recommendations**: {len(results.get("recommendations", []))}
 
 ## Vulnerability Summary
 """
 
-    vulnerabilities = results.get('vulnerabilities', [])
+    vulnerabilities = results.get("vulnerabilities", [])
     if vulnerabilities:
-        high_vulns = [v for v in vulnerabilities if v.get('severity') == 'high']
-        medium_vulns = [v for v in vulnerabilities if v.get('severity') == 'medium']
-        low_vulns = [v for v in vulnerabilities if v.get('severity') == 'low']
+        high_vulns = [v for v in vulnerabilities if v.get("severity") == "high"]
+        medium_vulns = [v for v in vulnerabilities if v.get("severity") == "medium"]
+        low_vulns = [v for v in vulnerabilities if v.get("severity") == "low"]
 
         summary += f"- **High Severity**: {len(high_vulns)}\n"
         summary += f"- **Medium Severity**: {len(medium_vulns)}\n"
@@ -475,10 +518,10 @@ def generate_security_summary(results: Dict[str, Any]) -> str:
 
     summary += "\n## Recommendations\n"
 
-    recommendations = results.get('recommendations', [])
+    recommendations = results.get("recommendations", [])
     if recommendations:
-        high_recs = [r for r in recommendations if r.get('priority') == 'high']
-        medium_recs = [r for r in recommendations if r.get('priority') == 'medium']
+        high_recs = [r for r in recommendations if r.get("priority") == "high"]
+        medium_recs = [r for r in recommendations if r.get("priority") == "medium"]
 
         if high_recs:
             summary += "\n### High Priority Recommendations\n"

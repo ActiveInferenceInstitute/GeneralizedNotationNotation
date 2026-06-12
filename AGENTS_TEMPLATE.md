@@ -477,7 +477,7 @@ def process_tool(args):
 - **Coverage Target**: Maintain >95% test coverage for new code
 - **Edge Cases**: Test all error scenarios and boundary conditions
 - **Performance Tests**: Include timing and memory usage validation
-- **Real Data**: Use actual representative data, not mocks or synthetic data
+- **Real Data**: Use actual representative data
 
 ### Agent Development Best Practices
 

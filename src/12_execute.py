@@ -29,8 +29,10 @@ If you encounter errors:
   - Verify execute configuration and requirements
 """
 
+import argparse
 import sys
 from pathlib import Path
+from typing import cast
 
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent))
@@ -47,40 +49,63 @@ run_script = create_standardized_pipeline_script(
             "flag": "--render-output-dir",
             "type": Path,
             "default": None,
-            "help": "Explicit path to the 11_render_output directory to execute (avoids filesystem heuristics)"
+            "help": "Explicit path to the 11_render_output directory to execute (avoids filesystem heuristics)",
         },
         "frameworks": {
             "flag": "--frameworks",
             "type": str,
             "default": "all",
-            "help": "Frameworks to execute (all, lite, or comma-separated list: pymdp,jax,discopy,rxinfer,activeinference_jl,pytorch,numpyro)"
+            "help": "Frameworks to execute (all, lite, or comma-separated list: pymdp,jax,discopy,rxinfer,activeinference_jl,pytorch,numpyro)",
         },
         "timeout": {
             "flag": "--timeout",
             "type": int,
-            "default": 300,
-            "help": "Maximum execution time in seconds for subprocesses"
+            "default": 3600,
+            "help": "Maximum execution time in seconds for each subprocess (default: 3600s = 1 hour)",
         },
         "distributed": {
             "flag": "--distributed",
             "action": "store_true",
-            "help": "Run scripts and model parameter sweeps in parallel across a Ray/Dask cluster"
+            "help": "Run scripts and model parameter sweeps in parallel across a Ray/Dask cluster",
+        },
+        "execution_workers": {
+            "flag": "--execution-workers",
+            "type": int,
+            "default": 1,
+            "help": "Number of local or distributed workers for rendered script execution (default: 1)",
         },
         "backend": {
             "flag": "--backend",
             "type": str,
             "choices": ["ray", "dask"],
             "default": "ray",
-            "help": "Backend to use for distributed execution (default is ray)"
-        }
+            "help": "Backend to use for distributed execution (default is ray)",
+        },
+        "execution_benchmark_repeats": {
+            "flag": "--execution-benchmark-repeats",
+            "type": int,
+            "default": 1,
+            "help": "Sequential benchmark repeats per script; reports median duration when >1",
+        },
+        "execution_summary_detail": {
+            "flag": "--execution-summary-detail",
+            "action": argparse.BooleanOptionalAction,
+            "default": False,
+            "help": (
+                "Also write summaries/execution_summary_detail.json with full per-script "
+                "payloads (aggregate execution_summary.json stays slim)"
+            ),
+        },
     },
     default_target_dir="output/11_render_output",
     default_recursive=True,
 )
 
+
 def main() -> int:
     """Main entry point for the execute step."""
-    return run_script()
+    return cast("int", run_script())
+
 
 if __name__ == "__main__":
     raise SystemExit(main())

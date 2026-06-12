@@ -11,6 +11,8 @@ and benchmarking.
 @Web: https://pfjax.readthedocs.io
 """
 
+from typing import Any
+
 from .jax_runner import (
     execute_jax_script,
     find_jax_scripts,
@@ -18,9 +20,9 @@ from .jax_runner import (
     run_jax_scripts,
 )
 
-__all__ = [
-    'run_jax_scripts',
-    'execute_jax_script',
-    'find_jax_scripts',
-    'is_jax_available'
+__all__: list[Any] = [
+    "run_jax_scripts",
+    "execute_jax_script",
+    "find_jax_scripts",
+    "is_jax_available",
 ]

@@ -9,7 +9,6 @@ src/export/
 ├── __init__.py                    # Module initialization and exports
 ├── README.md                      # This documentation
 ├── AGENTS.md                      # Agent scaffolding documentation
-├── PAI.md                         # PAI context documentation
 ├── SPEC.md                        # Module specification
 ├── core.py                        # Pipeline integration adapter
 ├── processor.py                   # Export orchestration and GNN parsing

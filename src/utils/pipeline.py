@@ -11,23 +11,34 @@ from typing import Any, List, Optional, Tuple
 
 logger = logging.getLogger(__name__)
 
-def get_output_dir_for_script(script_name: str, base_output_dir: Path = None) -> Path:
+
+def get_output_dir_for_script(
+    script_name: str, base_output_dir: (Path) | None = None
+) -> Path:
     """Get output directory for a script, delegating to pipeline.config to avoid circular imports."""
     try:
         from pipeline.config import get_output_dir_for_script as _get_output_dir
-        return _get_output_dir(script_name, base_output_dir if base_output_dir is not None else Path("output"))
+
+        return _get_output_dir(
+            script_name,
+            base_output_dir if base_output_dir is not None else Path("output"),
+        )
     except (ImportError, Exception):
         # Recovery implementation if pipeline.config is not available
         if base_output_dir is None:
             base_output_dir = Path("output")
         script_stem = Path(script_name).stem
-        normalized = script_stem if not script_name.endswith('.py') else script_name[:-3]
+        normalized = (
+            script_stem if not script_name.endswith(".py") else script_name[:-3]
+        )
         return base_output_dir / f"{normalized}_output"
 
-def setup_step_logging(step_name: str, verbose: bool = False):
+
+def setup_step_logging(step_name: str, verbose: bool = False) -> Any:
     """Set up logging for a pipeline step, delegating to logging_utils."""
     try:
-        from .logging_utils import setup_step_logging as _setup_step_logging
+        from .logging.logging_utils import setup_step_logging as _setup_step_logging
+
         return _setup_step_logging(step_name, verbose)
     except ImportError:
         # Recovery logging setup
@@ -38,10 +49,12 @@ def setup_step_logging(step_name: str, verbose: bool = False):
             logger.setLevel(logging.INFO)
         return logger
 
+
 class _DefaultStepArgs:
     """Default pipeline step arguments returned by RecoveryArgumentParser."""
 
     def __init__(self, step_name: str) -> None:
+        """Initialize the instance."""
         self.verbose = False
         self.output_dir = Path("output")
         self.step_name = step_name
@@ -53,46 +66,37 @@ class RecoveryArgumentParser:
     """
 
     @staticmethod
-    def parse_step_arguments(step_name):
+    def parse_step_arguments(step_name: Any) -> Any:
         """Return default args (verbose=False, output_dir='output')."""
         return _DefaultStepArgs(step_name)
+
 
 def get_pipeline_utilities(step_name: str, verbose: bool = False) -> Tuple[Any, ...]:
     """
     Get pipeline utilities for a step.
-    
+
     Args:
         step_name: Name of the pipeline step
         verbose: Enable verbose output
-        
+
     Returns:
         Tuple of pipeline utilities
     """
-    try:
-        # Try to import actual utilities
-        from .argument_utils import ArgumentParser
-        from .logging_utils import setup_step_logging
+    from .argument_utils import ArgumentParser
+    from .logging.logging_utils import setup_step_logging
 
-        logger = setup_step_logging(step_name, verbose)
-        parser = ArgumentParser
+    logger = setup_step_logging(step_name, verbose)
+    return logger, ArgumentParser
 
-        return logger, parser
-
-    except ImportError:
-        # Recovery to default utilities
-        logger = setup_step_logging(step_name, verbose)
-        parser = RecoveryArgumentParser()
-
-        return logger, parser
 
 def validate_output_directory(output_dir: Path, step_name: str) -> bool:
     """
     Validate output directory for a pipeline step.
-    
+
     Args:
         output_dir: Output directory path
         step_name: Name of the pipeline step
-        
+
     Returns:
         True if directory is valid, False otherwise
     """
@@ -105,7 +109,10 @@ def validate_output_directory(output_dir: Path, step_name: str) -> bool:
         try:
             import os as _os
             import tempfile as _tempfile
-            with _tempfile.NamedTemporaryFile(mode='w', dir=output_dir, delete=False) as _tmp:
+
+            with _tempfile.NamedTemporaryFile(
+                mode="w", dir=output_dir, delete=False
+            ) as _tmp:
                 _tmp.write("test")
             _os.replace(_tmp.name, str(test_file))
             test_file.unlink()
@@ -120,15 +127,16 @@ def validate_output_directory(output_dir: Path, step_name: str) -> bool:
         logger.error(f"Failed to validate output directory {output_dir}: {e}")
         return False
 
+
 def execute_pipeline_step_template(
     step_name: str,
     step_description: str,
-    main_function,
-    import_dependencies: Optional[List[str]] = None
-):
+    main_function: Any,
+    import_dependencies: Optional[List[str]] = None,
+) -> Any:
     """
     Execute a pipeline step using the standard template.
-    
+
     Args:
         step_name: Name of the pipeline step
         step_description: Description of the step
@@ -140,7 +148,8 @@ def execute_pipeline_step_template(
         logger = setup_step_logging(step_name, verbose=True)
 
         # Log step start
-        from .logging_utils import log_step_start
+        from .logging.logging_utils import log_step_start
+
         log_step_start(logger, step_description)
 
         # Import dependencies if specified
@@ -156,13 +165,15 @@ def execute_pipeline_step_template(
         result = main_function()
 
         # Log step completion
-        from .logging_utils import log_step_success
+        from .logging.logging_utils import log_step_success
+
         log_step_success(logger, f"{step_description} completed successfully")
 
         return result
 
     except Exception as e:
         # Log step error
-        from .logging_utils import log_step_error
+        from .logging.logging_utils import log_step_error
+
         log_step_error(logger, f"{step_description} failed: {e}")
         raise

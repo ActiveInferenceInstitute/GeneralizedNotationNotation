@@ -15,24 +15,46 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
-from typing import Any, Dict, List, Optional, Protocol, Type, TypeVar, Union
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Dict,
+    List,
+    Optional,
+    Protocol,
+    Type,
+    TypeVar,
+    Union,
+    cast,
+)
+
+if TYPE_CHECKING:
+    from gnn.types import ValidationResult
 
 logger = logging.getLogger(__name__)
 
 # Type variables for generic types
-T = TypeVar('T')
-K = TypeVar('K')
-V = TypeVar('V')
+T = TypeVar("T")
+E = TypeVar("E", bound=Enum)
+K = TypeVar("K")
+V = TypeVar("V")
 
 # ================================
 # EXCEPTIONS AND ERRORS
 # ================================
 
+
 class ParseError(Exception):
     """Base exception for parsing errors."""
 
-    def __init__(self, message: str, line: Optional[int] = None,
-                 column: Optional[int] = None, source: Optional[str] = None):
+    def __init__(
+        self,
+        message: str,
+        line: Optional[int] = None,
+        column: Optional[int] = None,
+        source: Optional[str] = None,
+    ) -> None:
+        """Initialize the instance."""
         self.message = message
         self.line = line
         self.column = column
@@ -50,24 +72,27 @@ class ParseError(Exception):
                 msg = f"Line {self.line}, Column {self.column}: {msg}"
         return msg
 
+
 class ValidationError(Exception):
     """Exception for validation errors."""
-    pass
+
 
 class ValidationWarning(Warning):
     """Warning for validation issues."""
-    pass
+
 
 class ConversionError(Exception):
     """Exception for format conversion errors."""
-    pass
+
 
 # ================================
 # ENUMS AND CONSTANTS
 # ================================
 
+
 class GNNFormat(Enum):
     """Enumeration of all supported GNN formats."""
+
     MARKDOWN = "markdown"
     SCALA = "scala"
     LEAN = "lean"
@@ -92,8 +117,10 @@ class GNNFormat(Enum):
     HASKELL = "haskell"
     PICKLE = "pickle"
 
+
 class VariableType(Enum):
     """Types of variables in Active Inference."""
+
     HIDDEN_STATE = "hidden_state"
     OBSERVATION = "observation"
     ACTION = "action"
@@ -103,8 +130,10 @@ class VariableType(Enum):
     PREFERENCE_VECTOR = "preference_vector"
     PRIOR_VECTOR = "prior_vector"
 
+
 class DataType(Enum):
     """Data types for GNN variables."""
+
     CATEGORICAL = "categorical"
     CONTINUOUS = "continuous"
     BINARY = "binary"
@@ -112,32 +141,38 @@ class DataType(Enum):
     FLOAT = "float"
     COMPLEX = "complex"
 
+
 class ConnectionType(Enum):
     """Types of connections between variables."""
+
     DIRECTED = "directed"
     UNDIRECTED = "undirected"
     CONDITIONAL = "conditional"
     BIDIRECTIONAL = "bidirectional"
 
+
 # ================================
 # AST NODE HIERARCHY
 # ================================
 
+
 @dataclass
 class ASTNode:
     """Base class for all AST nodes."""
+
     node_type: str = ""
     source_location: Optional[Dict[str, Any]] = None
     metadata: Dict[str, Any] = field(default_factory=dict)
     id: str = field(default_factory=lambda: str(uuid.uuid4()))
 
-    def __post_init__(self):
+    def __post_init__(self) -> Any:
+        """Normalize fields after dataclass initialization."""
         if not self.node_type:
             self.node_type = self.__class__.__name__
 
-    def get_children(self) -> List['ASTNode']:
+    def get_children(self) -> List["ASTNode"]:
         """Get all child nodes."""
-        children = []
+        children: list[Any] = []
         for value in self.__dict__.values():
             if isinstance(value, ASTNode):
                 children.append(value)
@@ -145,13 +180,15 @@ class ASTNode:
                 children.extend([item for item in value if isinstance(item, ASTNode)])
         return children
 
-    def accept(self, visitor: 'ASTVisitor') -> Any:
+    def accept(self, visitor: "ASTVisitor") -> Any:
         """Accept a visitor for traversal."""
         return visitor.visit(self)
+
 
 @dataclass
 class Variable(ASTNode):
     """AST node for variable definitions."""
+
     name: str = ""
     var_type: VariableType = VariableType.HIDDEN_STATE
     dimensions: List[int] = field(default_factory=list)
@@ -159,93 +196,115 @@ class Variable(ASTNode):
     description: Optional[str] = None
     constraints: Dict[str, Any] = field(default_factory=dict)
 
-    def __post_init__(self):
+    def __post_init__(self) -> Any:
+        """Normalize fields after dataclass initialization."""
         super().__post_init__()
         self.node_type = "Variable"
+
 
 @dataclass
 class Connection(ASTNode):
     """AST node for connections between variables."""
+
     source_variables: List[str] = field(default_factory=list)
     target_variables: List[str] = field(default_factory=list)
     connection_type: ConnectionType = ConnectionType.DIRECTED
     weight: Optional[float] = None
     description: Optional[str] = None
 
-    def __post_init__(self):
+    def __post_init__(self) -> Any:
+        """Normalize fields after dataclass initialization."""
         super().__post_init__()
         self.node_type = "Connection"
+
 
 @dataclass
 class Parameter(ASTNode):
     """AST node for parameter assignments."""
+
     name: str = ""
     value: Any = None
     type_hint: Optional[str] = None
     description: Optional[str] = None
 
-    def __post_init__(self):
+    def __post_init__(self) -> Any:
+        """Normalize fields after dataclass initialization."""
         super().__post_init__()
         self.node_type = "Parameter"
+
 
 @dataclass
 class Equation(ASTNode):
     """AST node for mathematical equations."""
+
     label: Optional[str] = None
     content: str = ""
     format: str = "latex"  # latex, mathml, ascii
     description: Optional[str] = None
 
-    def __post_init__(self):
+    def __post_init__(self) -> Any:
+        """Normalize fields after dataclass initialization."""
         super().__post_init__()
         self.node_type = "Equation"
+
 
 @dataclass
 class TimeSpecification(ASTNode):
     """AST node for time configuration."""
+
     time_type: str = "Static"  # "Static", "Dynamic"
     discretization: Optional[str] = None  # "DiscreteTime", "ContinuousTime"
     horizon: Optional[Union[int, str]] = None
     step_size: Optional[float] = None
 
-    def __post_init__(self):
+    def __post_init__(self) -> Any:
+        """Normalize fields after dataclass initialization."""
         super().__post_init__()
         self.node_type = "TimeSpecification"
+
 
 @dataclass
 class OntologyMapping(ASTNode):
     """AST node for ontology mappings."""
+
     variable_name: str = ""
     ontology_term: str = ""
     description: Optional[str] = None
 
-    def __post_init__(self):
+    def __post_init__(self) -> Any:
+        """Normalize fields after dataclass initialization."""
         super().__post_init__()
         self.node_type = "OntologyMapping"
+
 
 @dataclass
 class Section(ASTNode):
     """AST node for GNN sections."""
+
     section_name: str = ""
     content: List[ASTNode] = field(default_factory=list)
     raw_content: Optional[str] = None
 
-    def __post_init__(self):
+    def __post_init__(self) -> Any:
+        """Normalize fields after dataclass initialization."""
         super().__post_init__()
         self.node_type = "Section"
+
 
 # ================================
 # INTERNAL REPRESENTATION
 # ================================
 
+
 @dataclass
 class GNNInternalRepresentation:
     """
     Unified internal representation for GNN models across all formats.
-    
+
     This is the canonical representation that all parsers convert to
     and all serializers convert from.
     """
+
     # Core identification
     model_name: str
     version: str = "1.0"
@@ -282,10 +341,12 @@ class GNNInternalRepresentation:
 
     def get_connections_for_variable(self, variable_name: str) -> List[Connection]:
         """Get all connections involving a specific variable."""
-        connections = []
+        connections: list[Any] = []
         for conn in self.connections:
-            if (variable_name in conn.source_variables or
-                variable_name in conn.target_variables):
+            if (
+                variable_name in conn.source_variables
+                or variable_name in conn.target_variables
+            ):
                 connections.append(conn)
         return connections
 
@@ -298,7 +359,7 @@ class GNNInternalRepresentation:
 
     def validate_structure(self) -> List[str]:
         """Validate the internal structure and return any issues."""
-        issues = []
+        issues: list[Any] = []
 
         # Check required fields
         if not self.model_name:
@@ -318,28 +379,43 @@ class GNNInternalRepresentation:
         # Check ontology mapping references
         for mapping in self.ontology_mappings:
             if not self.get_variable_by_name(mapping.variable_name):
-                issues.append(f"Ontology mapping references unknown variable: {mapping.variable_name}")
+                issues.append(
+                    f"Ontology mapping references unknown variable: {mapping.variable_name}"
+                )
 
         return issues
 
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary representation."""
-        def serialize_obj(obj):
+
+        def serialize_obj(obj: Any) -> Any:
             """Helper to serialize objects with enums to dict."""
             if isinstance(obj, Enum):
                 return obj.value
-            elif hasattr(obj, '__dict__'):
-                result = {}
+            elif hasattr(obj, "__dict__"):
+                result: dict[Any, Any] = {}
                 for key, value in obj.__dict__.items():
                     if isinstance(value, Enum):
                         result[key] = value.value
                     elif isinstance(value, list):
-                        result[key] = [serialize_obj(item) if hasattr(item, '__dict__') else
-                                     item.value if isinstance(item, Enum) else item for item in value]
+                        result[key] = [
+                            serialize_obj(item)
+                            if hasattr(item, "__dict__")
+                            else item.value
+                            if isinstance(item, Enum)
+                            else item
+                            for item in value
+                        ]
                     elif isinstance(value, dict):
-                        result[key] = {k: serialize_obj(v) if hasattr(v, '__dict__') else
-                                     v.value if isinstance(v, Enum) else v for k, v in value.items()}
-                    elif hasattr(value, '__dict__'):
+                        result[key] = {
+                            k: serialize_obj(v)
+                            if hasattr(v, "__dict__")
+                            else v.value
+                            if isinstance(v, Enum)
+                            else v
+                            for k, v in value.items()
+                        }
+                    elif hasattr(value, "__dict__"):
                         result[key] = serialize_obj(value)
                     else:
                         result[key] = value
@@ -347,27 +423,41 @@ class GNNInternalRepresentation:
             else:
                 return obj
 
-        return {
-            'model_name': self.model_name,
-            'version': self.version,
-            'annotation': self.annotation,
-            'variables': [serialize_obj(var) for var in self.variables],
-            'connections': [serialize_obj(conn) for conn in self.connections],
-            'parameters': [serialize_obj(param) for param in self.parameters],
-            'equations': [serialize_obj(eq) for eq in self.equations],
-            'time_specification': serialize_obj(self.time_specification) if self.time_specification else None,
-            'ontology_mappings': [serialize_obj(mapping) for mapping in self.ontology_mappings],
-            'source_format': self.source_format.value if self.source_format else None,
-            'created_at': self.created_at.isoformat(),
-            'modified_at': self.modified_at.isoformat(),
-            'checksum': self.checksum,
-            'extensions': self.extensions,
-            'raw_sections': self.raw_sections
+        result: dict[str, Any] = {
+            "model_name": self.model_name,
+            "version": self.version,
+            "annotation": self.annotation,
+            "variables": [serialize_obj(var) for var in self.variables],
+            "connections": [serialize_obj(conn) for conn in self.connections],
+            "parameters": [serialize_obj(param) for param in self.parameters],
+            "equations": [serialize_obj(eq) for eq in self.equations],
+            "time_specification": serialize_obj(self.time_specification)
+            if self.time_specification
+            else None,
+            "ontology_mappings": [
+                serialize_obj(mapping) for mapping in self.ontology_mappings
+            ],
+            "source_format": self.source_format.value if self.source_format else None,
+            "created_at": self.created_at.isoformat(),
+            "modified_at": self.modified_at.isoformat(),
+            "checksum": self.checksum,
+            "extensions": self.extensions,
+            "raw_sections": self.raw_sections,
         }
+
+        # Renderer-facing parameter views.
+        if self.parameters:
+            merged = {str(p.name).strip(): p.value for p in self.parameters if p.name}
+            result["initialparameterization"] = merged
+            result["model_parameters"] = merged
+
+        return result
+
 
 # ================================
 # VISITOR PATTERN
 # ================================
+
 
 class ASTVisitor(ABC):
     """Abstract base class for AST visitors."""
@@ -375,16 +465,17 @@ class ASTVisitor(ABC):
     @abstractmethod
     def visit(self, node: ASTNode) -> Any:
         """Visit an AST node."""
-        pass
 
     def visit_children(self, node: ASTNode) -> List[Any]:
         """Visit all children of a node."""
         return [child.accept(self) for child in node.get_children()]
 
+
 class PrintVisitor(ASTVisitor):
     """Visitor that prints the AST structure."""
 
-    def __init__(self, indent: int = 0):
+    def __init__(self, indent: int = 0) -> None:
+        """Initialize the instance."""
         self.indent = indent
 
     def visit(self, node: ASTNode) -> str:
@@ -392,9 +483,9 @@ class PrintVisitor(ASTVisitor):
         indent_str = "  " * self.indent
         result = f"{indent_str}{node.node_type}"
 
-        if hasattr(node, 'name'):
+        if hasattr(node, "name"):
             result += f": {node.name}"
-        elif hasattr(node, 'label') and node.label:
+        elif hasattr(node, "label") and node.label:
             result += f": {node.label}"
 
         # Visit children with increased indentation
@@ -404,24 +495,27 @@ class PrintVisitor(ASTVisitor):
 
         return result
 
+
 # ================================
 # PARSER PROTOCOLS AND INTERFACES
 # ================================
 
+
 class GNNParser(Protocol):
     """Protocol defining the interface for GNN parsers."""
 
-    def parse_file(self, file_path: str) -> 'ParseResult':
+    def parse_file(self, file_path: str) -> "ParseResult":
         """Parse a GNN file and return the result."""
         ...
 
-    def parse_string(self, content: str) -> 'ParseResult':
+    def parse_string(self, content: str) -> "ParseResult":
         """Parse GNN content from a string."""
         ...
 
     def get_supported_extensions(self) -> List[str]:
         """Get file extensions supported by this parser."""
         ...
+
 
 class GNNSerializer(Protocol):
     """Protocol defining the interface for GNN serializers."""
@@ -430,24 +524,30 @@ class GNNSerializer(Protocol):
         """Serialize a GNN model to string format."""
         ...
 
-    def serialize_to_file(self, model: GNNInternalRepresentation, file_path: str) -> None:
+    def serialize_to_file(
+        self, model: GNNInternalRepresentation, file_path: str
+    ) -> None:
         """Serialize a GNN model to a file."""
         ...
+
 
 # ================================
 # PARSE RESULT
 # ================================
 
+
 @dataclass
 class ParseResult:
     """Result of parsing a GNN specification."""
+
     model: GNNInternalRepresentation
     success: bool = True
     errors: List[str] = field(default_factory=list)
     warnings: List[str] = field(default_factory=list)
     parse_time: Optional[float] = None
     source_file: Optional[str] = None
-    validation_result: Optional['ValidationResult'] = None
+    validation_result: Optional["ValidationResult"] = None
+    metadata: Dict[str, Any] = field(default_factory=dict)
 
     def has_errors(self) -> bool:
         """Check if there are any errors."""
@@ -457,23 +557,26 @@ class ParseResult:
         """Check if there are any warnings."""
         return bool(self.warnings)
 
-    def add_error(self, error: str):
+    def add_error(self, error: str) -> Any:
         """Add an error to the result."""
         self.errors.append(error)
         self.success = False
 
-    def add_warning(self, warning: str):
+    def add_warning(self, warning: str) -> Any:
         """Add a warning to the result."""
         self.warnings.append(warning)
+
 
 # ================================
 # BASE PARSER IMPLEMENTATION
 # ================================
 
+
 class BaseGNNParser(ABC):
     """Abstract base class for GNN parsers."""
 
-    def __init__(self):
+    def __init__(self) -> None:
+        """Initialize the instance."""
         self.current_file: Optional[str] = None
         self.current_line: int = 0
         self.current_column: int = 0
@@ -481,36 +584,34 @@ class BaseGNNParser(ABC):
     @abstractmethod
     def parse_file(self, file_path: str) -> ParseResult:
         """Parse a GNN file."""
-        pass
 
     @abstractmethod
     def parse_string(self, content: str) -> ParseResult:
         """Parse GNN content from string."""
-        pass
 
     @abstractmethod
     def get_supported_extensions(self) -> List[str]:
         """Get supported file extensions."""
-        pass
 
-    def create_parse_error(self, message: str,
-                          line: Optional[int] = None,
-                          column: Optional[int] = None) -> ParseError:
+    def create_parse_error(
+        self, message: str, line: Optional[int] = None, column: Optional[int] = None
+    ) -> ParseError:
         """Create a parse error with location information."""
         return ParseError(
             message=message,
             line=line or self.current_line,
             column=column or self.current_column,
-            source=self.current_file
+            source=self.current_file,
         )
 
-    def create_empty_model(self, name: str = "Unnamed Model") -> GNNInternalRepresentation:
+    def create_empty_model(
+        self, name: str = "Unnamed Model"
+    ) -> GNNInternalRepresentation:
         """Create an empty GNN model."""
         return GNNInternalRepresentation(
-            model_name=name,
-            created_at=datetime.now(),
-            modified_at=datetime.now()
+            model_name=name, created_at=datetime.now(), modified_at=datetime.now()
         )
+
 
 # ================================
 # UTILITY FUNCTIONS
@@ -520,13 +621,13 @@ class BaseGNNParser(ABC):
 def normalize_variable_name(name: str) -> str:
     """
     Normalize variable name for consistent reference.
-    
+
     This function ensures that variable names are treated consistently
     throughout the codebase, regardless of case or minor variations.
-    
+
     Args:
         name: Variable name to normalize
-        
+
     Returns:
         Normalized variable name
     """
@@ -534,28 +635,29 @@ def normalize_variable_name(name: str) -> str:
     name = name.strip()
 
     # Handle special Unicode characters like π
-    if name == 'π' or name.lower() == 'pi':
-        return 'π'  # Standardize on Unicode π
+    if name == "π" or name.lower() == "pi":
+        return "π"  # Standardize on Unicode π
 
     # Keep case sensitivity for specific Active Inference standard variables
-    if name in ['A', 'B', 'C', 'D', 'E', 'F', 'G']:
+    if name in ["A", "B", "C", "D", "E", "F", "G"]:
         return name
 
     return name
+
 
 def parse_dimensions(dim_str: str) -> List[int]:
     """Parse dimension string like '[2,3,4]' or '[2,3,type=float]' into list of integers."""
     try:
         # Remove brackets and split by comma
-        dim_str = dim_str.strip('[]')
+        dim_str = dim_str.strip("[]")
         if not dim_str:
             return []
 
-        dimensions = []
-        for dim in dim_str.split(','):
+        dimensions: list[Any] = []
+        for dim in dim_str.split(","):
             dim = dim.strip()
             # Stop parsing if we encounter a type specification
-            if dim.startswith('type='):
+            if dim.startswith("type="):
                 break
             if dim.isdigit():
                 dimensions.append(int(dim))
@@ -567,7 +669,10 @@ def parse_dimensions(dim_str: str) -> List[int]:
     except (ValueError, TypeError, AttributeError):
         return [1]  # Default dimension
 
-def safe_enum_convert(enum_class: Type[T], value: Any, default: Optional[T] = None) -> Optional[T]:
+
+def safe_enum_convert(
+    enum_class: Type[E], value: Any, default: Optional[E] = None
+) -> Optional[E]:
     """Safely convert string to enum, handling case insensitivity.
 
     Returns the converted enum value, the provided default, or None if no
@@ -593,20 +698,24 @@ def safe_enum_convert(enum_class: Type[T], value: Any, default: Optional[T] = No
         try:
             return enum_class(value.upper())
         except ValueError as e:
-            logger.debug("All enum conversions failed, falling through to default: %s", e)
+            logger.debug(
+                "All enum conversions failed, falling through to default: %s", e
+            )
 
     return default
 
+
 # Tier 1: exact single-uppercase-letter Active Inference matrix/vector conventions
 _ACTINF_SINGLE_CHAR: Dict[str, VariableType] = {
-    'A': VariableType.LIKELIHOOD_MATRIX,
-    'B': VariableType.TRANSITION_MATRIX,
-    'C': VariableType.PREFERENCE_VECTOR,
-    'D': VariableType.PRIOR_VECTOR,
-    'E': VariableType.POLICY,           # Habit / initial policy prior
-    'F': VariableType.HIDDEN_STATE,     # Variational free energy → state space
-    'G': VariableType.POLICY,           # Expected free energy drives policy
+    "A": VariableType.LIKELIHOOD_MATRIX,
+    "B": VariableType.TRANSITION_MATRIX,
+    "C": VariableType.PREFERENCE_VECTOR,
+    "D": VariableType.PRIOR_VECTOR,
+    "E": VariableType.POLICY,  # Habit / initial policy prior
+    "F": VariableType.HIDDEN_STATE,  # Variational free energy → state space
+    "G": VariableType.POLICY,  # Expected free energy drives policy
 }
+
 
 def infer_variable_type(name: str) -> VariableType:
     """
@@ -626,55 +735,59 @@ def infer_variable_type(name: str) -> VariableType:
     name_lower = name.lower()
 
     # Tier 1: exact single-char matches
-    if name == 'π' or name_lower == 'pi':
+    if name == "π" or name_lower == "pi":
         return VariableType.POLICY
     if name in _ACTINF_SINGLE_CHAR:
         return _ACTINF_SINGLE_CHAR[name]
 
     # Tier 2: lowercase first-char prefix conventions
-    if name_lower.startswith('s'):
+    if name_lower.startswith("s"):
         return VariableType.HIDDEN_STATE
-    if name_lower.startswith('o'):
+    if name_lower.startswith("o"):
         return VariableType.OBSERVATION
-    if name_lower.startswith('u') or name_lower.startswith('a'):
+    if name_lower.startswith("u") or name_lower.startswith("a"):
         return VariableType.ACTION
 
     # Tier 3: substring match for longer descriptive names
-    if 'state' in name_lower or 'hidden' in name_lower:
+    if "state" in name_lower or "hidden" in name_lower:
         return VariableType.HIDDEN_STATE
-    if 'obs' in name_lower or 'perception' in name_lower:
+    if "obs" in name_lower or "perception" in name_lower:
         return VariableType.OBSERVATION
-    if 'action' in name_lower or 'control' in name_lower:
+    if "action" in name_lower or "control" in name_lower:
         return VariableType.ACTION
-    if 'policy' in name_lower or 'pi' in name_lower or 'habit' in name_lower:
+    if "policy" in name_lower or "pi" in name_lower or "habit" in name_lower:
         return VariableType.POLICY
-    if 'prior' in name_lower:
+    if "prior" in name_lower:
         return VariableType.PRIOR_VECTOR
-    if 'likelihood' in name_lower:
+    if "likelihood" in name_lower:
         return VariableType.LIKELIHOOD_MATRIX
-    if 'transition' in name_lower:
+    if "transition" in name_lower:
         return VariableType.TRANSITION_MATRIX
-    if 'preference' in name_lower or 'utility' in name_lower:
+    if "preference" in name_lower or "utility" in name_lower:
         return VariableType.PREFERENCE_VECTOR
 
     return VariableType.HIDDEN_STATE
+
 
 def parse_connection_operator(op: str) -> ConnectionType:
     """Parse connection operator string to ConnectionType."""
     op = op.strip()
 
-    if op in ['>', '->']:
+    if op in [">", "->"]:
         return ConnectionType.DIRECTED
-    elif op == '-':
+    elif op == "-":
         return ConnectionType.UNDIRECTED
-    elif op == '|':
+    elif op == "|":
         return ConnectionType.CONDITIONAL
-    elif op == '<->':
+    elif op == "<->":
         return ConnectionType.BIDIRECTIONAL
     else:
         return ConnectionType.DIRECTED  # Default
 
-def extract_embedded_json_data(content: str, patterns: List[str]) -> Optional[Dict[str, Any]]:
+
+def extract_embedded_json_data(
+    content: str, patterns: List[str]
+) -> Optional[Dict[str, Any]]:
     """Extract embedded JSON model data from source file content.
 
     Tries each pattern in order, returning the first successfully parsed JSON object.
@@ -688,11 +801,12 @@ def extract_embedded_json_data(content: str, patterns: List[str]) -> Optional[Di
     """
     import json
     import re
+
     for pattern in patterns:
         match = re.search(pattern, content, re.DOTALL | re.MULTILINE)
         if match:
             try:
-                return json.loads(match.group(1))
+                return cast("dict[str, Any] | None", json.loads(match.group(1)))
             except json.JSONDecodeError as e:
                 logger.debug("Pattern did not yield valid JSON, trying next: %s", e)
                 continue
@@ -700,14 +814,32 @@ def extract_embedded_json_data(content: str, patterns: List[str]) -> Optional[Di
 
 
 # Export all public classes and functions
-__all__ = [
-    'ParseError', 'ValidationError', 'ValidationWarning', 'ConversionError',
-    'GNNFormat', 'VariableType', 'DataType', 'ConnectionType',
-    'ASTNode', 'Variable', 'Connection', 'Parameter', 'Equation',
-    'TimeSpecification', 'OntologyMapping', 'Section',
-    'GNNInternalRepresentation', 'ParseResult',
-    'ASTVisitor', 'PrintVisitor',
-    'BaseGNNParser',  # GNNParser and GNNSerializer Protocols are internal; use BaseGNNParser ABC
-    'normalize_variable_name', 'parse_dimensions', 'infer_variable_type', 'parse_connection_operator',
-    'safe_enum_convert', 'extract_embedded_json_data',
+__all__: list[Any] = [
+    "ParseError",
+    "ValidationError",
+    "ValidationWarning",
+    "ConversionError",
+    "GNNFormat",
+    "VariableType",
+    "DataType",
+    "ConnectionType",
+    "ASTNode",
+    "Variable",
+    "Connection",
+    "Parameter",
+    "Equation",
+    "TimeSpecification",
+    "OntologyMapping",
+    "Section",
+    "GNNInternalRepresentation",
+    "ParseResult",
+    "ASTVisitor",
+    "PrintVisitor",
+    "BaseGNNParser",  # GNNParser and GNNSerializer Protocols are internal; use BaseGNNParser ABC
+    "normalize_variable_name",
+    "parse_dimensions",
+    "infer_variable_type",
+    "parse_connection_operator",
+    "safe_enum_convert",
+    "extract_embedded_json_data",
 ]

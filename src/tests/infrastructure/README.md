@@ -1,11 +1,17 @@
-# Infrastructure
+# Test Infrastructure
 
-## Overview
-This module handles `Infrastructure` components.
+Core test runner, configuration, monitoring, and reporting infrastructure.
 
-## Available Members
-- **Classes**: ResourceMonitor, TestExecutionConfig, TestExecutionResult, TestRunner
-- **Functions**: build_pytest_command, check_test_dependencies, extract_collection_errors, flatten_pipeline_test_summary, generate_error_report, generate_fallback_report, generate_markdown_report, generate_report, generate_timeout_report, get_stats, parse_coverage_statistics, parse_test_statistics, run_tests, start_monitoring, stop_monitoring, to_dict
+## Components
 
-## Usage
-Import necessary members directly to orchestrate tasks related to Infrastructure.
+| File | Lines | Purpose |
+|------|------:|---------|
+| `test_runner.py` | 296 | Custom pytest runner with progress tracking |
+| `utils.py` | 365 | Shared infrastructure utilities |
+| `report_generator.py` | 130 | HTML/JSON test report generation |
+| `resource_monitor.py` | 99 | Memory/CPU monitoring during tests |
+| `test_config.py` | 41 | Environment detection and marker config |
+
+## See Also
+
+- [Parent: tests/README.md](../README.md)

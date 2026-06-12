@@ -56,6 +56,12 @@ E = [[0.333, 0.333, 0.333]]
 ω = [[4.0]]
 γ = [[2.0]]
 β = [[0.5]]
+num_hidden_states = 3
+num_obs = 3
+num_actions = 3
+sensory_precision = 4.0
+policy_precision = 2.0
+num_timesteps = 30
 
 ## Time
 Dynamic
@@ -80,6 +86,6 @@ F = VariationalFreeEnergy
 t = Time
 
 ## Footer
-Generated: 2026-04-10T10:24:33.652043
+Generated: 2026-05-25T09:51:15.623637
 
 ## Signature

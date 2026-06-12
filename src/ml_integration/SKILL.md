@@ -68,9 +68,10 @@ uv sync --extra ml-ai
 
 This module registers tools with the GNN MCP server (see `mcp.py`):
 
-- `process_ml_integration`
 - `check_ml_frameworks`
+- `get_ml_module_info`
 - `list_ml_integration_targets`
+- `process_ml_integration`
 
 ## References
 

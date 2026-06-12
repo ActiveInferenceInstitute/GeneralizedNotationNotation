@@ -3,14 +3,14 @@
 pymdp 1.0.0 runner for Two State Bistable POMDP
 
 This file was generated from a GNN specification by
-``src/render/pymdp/pymdp_renderer.py``. It delegates the actual rollout
+``render/pymdp/pymdp_renderer.py``. It delegates the actual rollout
 to the GNN pipeline's tested execution module
-(``src.execute.pymdp.run_simple_pymdp_simulation``), which in turn calls
+(``execute.pymdp.run_pymdp_simulation``), which in turn calls
 real pymdp 1.0.0 (JAX-first) under the hood.
 
 Model:        Two State Bistable POMDP
 Description:  
-Generated:    2026-04-10 10:25:04
+Generated:    2026-05-22 06:18:15
 
 State Space:
   - Hidden States: 2
@@ -44,7 +44,7 @@ if sys.path and sys.path[0] and sys.path[0].endswith("pymdp"):
 _gnn_root = os.environ.get("GNN_PROJECT_ROOT")
 if _gnn_root:
     _repo = Path(_gnn_root).resolve()
-    sys.path.insert(0, str(_repo))
+    sys.path.insert(0, str(_repo / "src"))
 else:
     _cur = Path(__file__).resolve().parent
     _found = None
@@ -62,7 +62,7 @@ else:
             file=sys.stderr,
         )
         sys.exit(1)
-    sys.path.insert(0, str(_found))
+    sys.path.insert(0, str(_found / "src"))
 
 # ---------------------------------------------------------------------------
 # pymdp 1.0.0 presence check (hard requirement)
@@ -71,7 +71,7 @@ try:
     import pymdp  # noqa: F401
     from pymdp.agent import Agent  # noqa: F401
     if not hasattr(Agent, "update_empirical_prior"):
-        raise ImportError("legacy pymdp (<1.0.0) detected")
+        raise ImportError("unsupported pymdp (<1.0.0) detected")
     print("PyMDP 1.0.0+ detected (JAX-first Agent).")
 except ImportError as e:
     print(
@@ -82,7 +82,7 @@ except ImportError as e:
     )
     sys.exit(1)
 
-from src.execute.pymdp import execute_pymdp_simulation
+from execute.pymdp import execute_pymdp_simulation
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
@@ -92,7 +92,7 @@ def main() -> int:
     """Run a pymdp 1.0.0 simulation for the GNN model embedded in this file."""
     # Matrices embedded verbatim from the GNN spec.
     A_data = [[0.8, 0.2], [0.2, 0.8]]
-    B_data = [[[0.8, 0.3], [0.2, 0.7]], [[0.3, 0.8], [0.7, 0.2]]]
+    B_data = [[[0.7272727272727273, 0.2727272727272727], [0.22222222222222227, 0.7777777777777778]], [[0.2727272727272727, 0.7272727272727273], [0.7777777777777778, 0.22222222222222227]]]
     C_data = [0.0, 2.0]
     D_data = [0.5, 0.5]
     E_data = [0.5, 0.5]
@@ -106,8 +106,71 @@ def main() -> int:
         "num_hidden_states": 2,
         "num_obs": 2,
         "num_actions": 2,
-        "simulation_params": {},
-        "num_timesteps": 15
+        "num_timesteps": 20,
+        "b_tensor_order": "next_state_previous_state_action",
+        "num_state_factors": 2,
+        "num_modalities": 1,
+        "state_factors": [
+            {
+                "name": "s",
+                "size": 2,
+                "dimensions": [
+                    2,
+                    1
+                ],
+                "type": "float",
+                "comment": "Current state belief",
+                "index": 2
+            },
+            {
+                "name": "s_prime",
+                "size": 2,
+                "dimensions": [
+                    2,
+                    1
+                ],
+                "type": "float",
+                "comment": "Next state belief",
+                "index": 3
+            }
+        ],
+        "observation_modalities": [
+            {
+                "name": "o",
+                "size": 2,
+                "dimensions": [
+                    2,
+                    1
+                ],
+                "type": "float",
+                "comment": "Current observation",
+                "index": 0
+            }
+        ],
+        "control_factors": [
+            {
+                "name": "\u03c0",
+                "size": 2,
+                "dimensions": [
+                    2
+                ],
+                "type": "float",
+                "comment": "Policy over actions",
+                "index": 2
+            },
+            {
+                "name": "u",
+                "size": 1,
+                "dimensions": [
+                    1
+                ],
+                "type": "float",
+                "comment": "Chosen action",
+                "index": 3
+            }
+        ],
+        "passive_model": False,
+        "simulation_params": {}
     },
     "initialparameterization": {
         "A": [
@@ -123,22 +186,22 @@ def main() -> int:
         "B": [
             [
                 [
-                    0.8,
-                    0.3
+                    0.7272727272727273,
+                    0.2727272727272727
                 ],
                 [
-                    0.2,
-                    0.7
+                    0.22222222222222227,
+                    0.7777777777777778
                 ]
             ],
             [
                 [
-                    0.3,
-                    0.8
+                    0.2727272727272727,
+                    0.7272727272727273
                 ],
                 [
-                    0.7,
-                    0.2
+                    0.7777777777777778,
+                    0.22222222222222227
                 ]
             ]
         ],
@@ -155,6 +218,199 @@ def main() -> int:
             0.5
         ]
     },
+    "structured_pomdp": {
+        "matrices": {
+            "A": [
+                [
+                    0.8,
+                    0.2
+                ],
+                [
+                    0.2,
+                    0.8
+                ]
+            ],
+            "B": [
+                [
+                    [
+                        0.8,
+                        0.3
+                    ],
+                    [
+                        0.2,
+                        0.7
+                    ]
+                ],
+                [
+                    [
+                        0.3,
+                        0.8
+                    ],
+                    [
+                        0.7,
+                        0.2
+                    ]
+                ]
+            ],
+            "C": [
+                0.0,
+                2.0
+            ],
+            "D": [
+                0.5,
+                0.5
+            ],
+            "E": [
+                0.5,
+                0.5
+            ]
+        },
+        "matrix_provenance": {
+            "A": {
+                "source": "InitialParameterization",
+                "shape": [
+                    2,
+                    2
+                ],
+                "derived": False
+            },
+            "B": {
+                "source": "InitialParameterization",
+                "shape": [
+                    2,
+                    2,
+                    2
+                ],
+                "derived": False,
+                "source_order": "action_previous_state_next_state",
+                "canonical_order": "next_state_previous_state_action"
+            },
+            "C": {
+                "source": "InitialParameterization",
+                "shape": [
+                    2
+                ],
+                "derived": False
+            },
+            "D": {
+                "source": "InitialParameterization",
+                "shape": [
+                    2
+                ],
+                "derived": False
+            },
+            "E": {
+                "source": "InitialParameterization",
+                "shape": [
+                    2
+                ],
+                "derived": False
+            }
+        },
+        "state_factors": [
+            {
+                "name": "s",
+                "size": 2,
+                "dimensions": [
+                    2,
+                    1
+                ],
+                "type": "float",
+                "comment": "Current state belief",
+                "index": 2
+            },
+            {
+                "name": "s_prime",
+                "size": 2,
+                "dimensions": [
+                    2,
+                    1
+                ],
+                "type": "float",
+                "comment": "Next state belief",
+                "index": 3
+            }
+        ],
+        "observation_modalities": [
+            {
+                "name": "o",
+                "size": 2,
+                "dimensions": [
+                    2,
+                    1
+                ],
+                "type": "float",
+                "comment": "Current observation",
+                "index": 0
+            }
+        ],
+        "control_factors": [
+            {
+                "name": "\u03c0",
+                "size": 2,
+                "dimensions": [
+                    2
+                ],
+                "type": "float",
+                "comment": "Policy over actions",
+                "index": 2
+            },
+            {
+                "name": "u",
+                "size": 1,
+                "dimensions": [
+                    1
+                ],
+                "type": "float",
+                "comment": "Chosen action",
+                "index": 3
+            }
+        ],
+        "adapter_notes": []
+    },
+    "matrix_provenance": {
+        "A": {
+            "source": "InitialParameterization",
+            "shape": [
+                2,
+                2
+            ],
+            "derived": False
+        },
+        "B": {
+            "source": "InitialParameterization",
+            "shape": [
+                2,
+                2,
+                2
+            ],
+            "derived": False,
+            "source_order": "action_previous_state_next_state",
+            "canonical_order": "next_state_previous_state_action"
+        },
+        "C": {
+            "source": "InitialParameterization",
+            "shape": [
+                2
+            ],
+            "derived": False
+        },
+        "D": {
+            "source": "InitialParameterization",
+            "shape": [
+                2
+            ],
+            "derived": False
+        },
+        "E": {
+            "source": "InitialParameterization",
+            "shape": [
+                2
+            ],
+            "derived": False
+        }
+    },
+    "canonical_pomdp_schema": "canonical_pomdp_v1",
     "variables": [
         {
             "name": "A",
@@ -322,7 +578,7 @@ def main() -> int:
     if D_data is not None: gnn_spec["initialparameterization"]["D"] = D_data
     if E_data is not None: gnn_spec["initialparameterization"]["E"] = E_data
     gnn_spec.setdefault("model_parameters", {})
-    gnn_spec["model_parameters"].setdefault("num_timesteps", 15)
+    gnn_spec["model_parameters"].setdefault("num_timesteps", 20)
 
     output_dir = Path(os.environ.get("PYMDP_OUTPUT_DIR", "output/pymdp_simulations/Two State Bistable POMDP"))
     output_dir.mkdir(parents=True, exist_ok=True)

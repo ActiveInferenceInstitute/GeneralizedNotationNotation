@@ -60,7 +60,7 @@ def compute_variational_free_energy(
     observations: np.ndarray,
     beliefs: np.ndarray,
     A_matrix: np.ndarray,
-    prior: Optional[np.ndarray] = None
+    prior: Optional[np.ndarray] = None,
 ) -> float:
     """
     Compute variational free energy: F = E_q[ln q(s)] - E_q[ln p(o,s)]
@@ -120,7 +120,7 @@ def compute_expected_free_energy(
     B_matrix: np.ndarray,
     C_vector: np.ndarray,
     policy: int,
-    horizon: int = 1
+    horizon: int = 1,
 ) -> float:
     """
     Compute expected free energy G for a given policy.
@@ -187,8 +187,7 @@ def compute_expected_free_energy(
 
 
 def compute_information_gain(
-    prior_beliefs: np.ndarray,
-    posterior_beliefs: np.ndarray
+    prior_beliefs: np.ndarray, posterior_beliefs: np.ndarray
 ) -> float:
     """Compute information gain IG = D_KL(posterior || prior) in nats."""
     return compute_kl_divergence(posterior_beliefs, prior_beliefs)
@@ -198,7 +197,7 @@ def analyze_active_inference_metrics(
     beliefs_trajectory: List[List[float]],
     free_energy_trajectory: List[float],
     actions: List[int],
-    model_name: str
+    model_name: str,
 ) -> Dict[str, Any]:
     """
     Compute comprehensive Active Inference metrics from simulation data.
@@ -212,10 +211,10 @@ def analyze_active_inference_metrics(
     Returns:
         Dictionary with Active Inference analysis metrics
     """
-    analysis = {
+    analysis: dict[str, Any] = {
         "model_name": model_name,
         "num_timesteps": len(beliefs_trajectory),
-        "metrics": {}
+        "metrics": {},
     }
 
     if not beliefs_trajectory:
@@ -225,22 +224,26 @@ def analyze_active_inference_metrics(
     beliefs_array = np.array(beliefs_trajectory)
 
     # Belief entropy over time
-    entropy_trajectory = [compute_shannon_entropy(b) for b in beliefs_trajectory]
+    entropy_trajectory = [
+        compute_shannon_entropy(np.asarray(b)) for b in beliefs_trajectory
+    ]
     analysis["metrics"]["belief_entropy"] = {
         "trajectory": entropy_trajectory,
         "mean": float(np.mean(entropy_trajectory)),
         "std": float(np.std(entropy_trajectory)),
         "final": entropy_trajectory[-1] if entropy_trajectory else 0.0,
-        "trend": "decreasing" if len(entropy_trajectory) > 1 and entropy_trajectory[-1] < entropy_trajectory[0] else "stable"
+        "trend": "decreasing"
+        if len(entropy_trajectory) > 1
+        and entropy_trajectory[-1] < entropy_trajectory[0]
+        else "stable",
     }
 
     # Information gain between consecutive timesteps
     if len(beliefs_trajectory) > 1:
-        info_gain = []
+        info_gain: list[Any] = []
         for t in range(1, len(beliefs_trajectory)):
             ig = compute_information_gain(
-                np.array(beliefs_trajectory[t - 1]),
-                np.array(beliefs_trajectory[t])
+                np.array(beliefs_trajectory[t - 1]), np.array(beliefs_trajectory[t])
             )
             info_gain.append(ig)
 
@@ -248,7 +251,7 @@ def analyze_active_inference_metrics(
             "trajectory": info_gain,
             "total": float(np.sum(info_gain)),
             "mean": float(np.mean(info_gain)),
-            "peak_timestep": int(np.argmax(info_gain)) + 1
+            "peak_timestep": int(np.argmax(info_gain)) + 1,
         }
 
     # Free energy analysis
@@ -259,13 +262,17 @@ def analyze_active_inference_metrics(
             "initial": float(fe_array[0]),
             "final": float(fe_array[-1]),
             "min": float(np.min(fe_array)),
-            "reduction": float(fe_array[0] - fe_array[-1]) if len(fe_array) > 1 else 0.0,
-            "converged": bool(np.std(fe_array[-5:]) < 0.01) if len(fe_array) >= 5 else False
+            "reduction": float(fe_array[0] - fe_array[-1])
+            if len(fe_array) > 1
+            else 0.0,
+            "converged": bool(np.std(fe_array[-5:]) < 0.01)
+            if len(fe_array) >= 5
+            else False,
         }
 
     # Action analysis
     if actions:
-        action_counts = {}
+        action_counts: dict[Any, Any] = {}
         for a in actions:
             action_counts[str(a)] = action_counts.get(str(a), 0) + 1
         analysis["metrics"]["action_distribution"] = action_counts
@@ -279,7 +286,7 @@ def analyze_active_inference_metrics(
     analysis["metrics"]["certainty"] = {
         "trajectory": certainty_trajectory,
         "mean": float(np.mean(certainty_trajectory)),
-        "final": certainty_trajectory[-1] if certainty_trajectory else 0.0
+        "final": certainty_trajectory[-1] if certainty_trajectory else 0.0,
     }
 
     return analysis

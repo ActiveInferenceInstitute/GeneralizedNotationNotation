@@ -6,7 +6,7 @@ from __future__ import annotations
 
 import logging
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any, Dict, List, cast
 
 import numpy as np
 
@@ -18,29 +18,26 @@ try:
 
     MATPLOTLIB_AVAILABLE = True
 except (ImportError, RecursionError):
-    plt = None
+    plt = cast(Any, None)
     MATPLOTLIB_AVAILABLE = False
 
-from visualization.core.parsed_model import load_visualization_model
-from visualization.plotting.utils import safe_tight_layout, save_plot_safely
+from ..core.parsed_model import load_visualization_model
+from ..plotting.utils import safe_tight_layout, save_plot_safely
 
 logger = logging.getLogger(__name__)
 
-_save_plot_safely = save_plot_safely
-_safe_tight_layout = safe_tight_layout
-
 
 def _viz_var_type(var_info: Dict[str, Any]) -> str:
-    if not isinstance(var_info, dict):
-        return "unknown"
-    return str(
-        var_info.get("var_type", var_info.get("type", var_info.get("node_type", "unknown")))
-    )
+    """Extract variable type — delegates to :func:`visualization.compat.viz_compat.viz_var_type`."""
+    from ..compat.viz_compat import viz_var_type
+
+    return viz_var_type(var_info)
 
 
 def generate_combined_analysis(
     parsed_data: Dict[str, Any], output_dir: Path, model_name: str
 ) -> List[str]:
+    """Generate combined analysis."""
     visualizations: List[str] = []
 
     if not MATPLOTLIB_AVAILABLE:
@@ -56,10 +53,19 @@ def generate_combined_analysis(
                 type_counts: Dict[str, int] = {}
                 for var_type in var_types:
                     type_counts[var_type] = type_counts.get(var_type, 0) + 1
-                ax1.pie(type_counts.values(), labels=type_counts.keys(), autopct="%1.1f%%")
+                ax1.pie(
+                    type_counts.values(), labels=type_counts.keys(), autopct="%1.1f%%"
+                )
                 ax1.set_title("Variable Type Distribution")
             else:
-                ax1.text(0.5, 0.5, "No variable type data", transform=ax1.transAxes, ha="center", va="center")
+                ax1.text(
+                    0.5,
+                    0.5,
+                    "No variable type data",
+                    transform=ax1.transAxes,
+                    ha="center",
+                    va="center",
+                )
                 ax1.set_title("Variable Type Distribution (No Data)")
 
         connections = parsed_data.get("connections", [])
@@ -82,7 +88,10 @@ def generate_combined_analysis(
                     target_counts[target] = target_counts.get(target, 0) + 1
 
             all_nodes = set(source_counts.keys()) | set(target_counts.keys())
-            node_counts = [source_counts.get(node, 0) + target_counts.get(node, 0) for node in all_nodes]
+            node_counts = [
+                source_counts.get(node, 0) + target_counts.get(node, 0)
+                for node in all_nodes
+            ]
 
             if node_counts:
                 ax2.hist(
@@ -96,7 +105,14 @@ def generate_combined_analysis(
                 ax2.set_xlabel("Number of Connections")
                 ax2.set_ylabel("Frequency")
             else:
-                ax2.text(0.5, 0.5, "No connection data", transform=ax2.transAxes, ha="center", va="center")
+                ax2.text(
+                    0.5,
+                    0.5,
+                    "No connection data",
+                    transform=ax2.transAxes,
+                    ha="center",
+                    va="center",
+                )
                 ax2.set_title("Node Connection Count Distribution (No Data)")
 
         parameters = parsed_data.get("parameters", [])
@@ -110,7 +126,9 @@ def generate_combined_analysis(
                             arr = np.array(value)
                             matrix_sizes.append(int(arr.size))
                         except Exception:
+
                             def count_elements(obj: Any) -> int:
+                                """Provide count elements behavior."""
                                 if isinstance(obj, (int, float)):
                                     return 1
                                 if isinstance(obj, (list, tuple)):
@@ -120,30 +138,55 @@ def generate_combined_analysis(
                             matrix_sizes.append(count_elements(value))
 
         if matrix_sizes:
-            ax3.hist(matrix_sizes, bins=min(10, len(matrix_sizes)), alpha=0.7, color="lightgreen", edgecolor="black")
+            ax3.hist(
+                matrix_sizes,
+                bins=min(10, len(matrix_sizes)),
+                alpha=0.7,
+                color="lightgreen",
+                edgecolor="black",
+            )
             ax3.set_title("Matrix Size Distribution")
             ax3.set_xlabel("Matrix Size (elements)")
             ax3.set_ylabel("Frequency")
         else:
-            ax3.text(0.5, 0.5, "No matrix data", transform=ax3.transAxes, ha="center", va="center")
+            ax3.text(
+                0.5,
+                0.5,
+                "No matrix data",
+                transform=ax3.transAxes,
+                ha="center",
+                va="center",
+            )
             ax3.set_title("Matrix Size Distribution (No Data)")
 
         raw_sections = parsed_data.get("raw_sections", {})
         if raw_sections:
             section_lengths = [len(str(content)) for content in raw_sections.values()]
             section_names = list(raw_sections.keys())
-            ax4.bar(range(len(section_names)), section_lengths, alpha=0.7, color="orange")
+            ax4.bar(
+                range(len(section_names)), section_lengths, alpha=0.7, color="orange"
+            )
             ax4.set_title("Section Content Length")
             ax4.set_xlabel("Sections")
             ax4.set_ylabel("Content Length (characters)")
             ax4.set_xticks(range(len(section_names)))
             ax4.set_xticklabels(
-                [name[:20] + "..." if len(name) > 20 else name for name in section_names],
+                [
+                    name[:20] + "..." if len(name) > 20 else name
+                    for name in section_names
+                ],
                 rotation=45,
                 ha="right",
             )
         else:
-            ax4.text(0.5, 0.5, "No section data", transform=ax4.transAxes, ha="center", va="center")
+            ax4.text(
+                0.5,
+                0.5,
+                "No section data",
+                transform=ax4.transAxes,
+                ha="center",
+                va="center",
+            )
             ax4.set_title("Section Content Length (No Data)")
 
         plt.suptitle(f"{model_name} - Combined Analysis", fontsize=16)
@@ -155,8 +198,12 @@ def generate_combined_analysis(
 
         visualizations.append(str(plot_file))
 
-        visualizations.extend(_generate_standalone_panels(parsed_data, output_dir, model_name))
-        visualizations.extend(_generate_generative_model_diagram(parsed_data, output_dir, model_name))
+        visualizations.extend(
+            _generate_standalone_panels(parsed_data, output_dir, model_name)
+        )
+        visualizations.extend(
+            _generate_generative_model_diagram(parsed_data, output_dir, model_name)
+        )
 
     except Exception as e:
         print(f"Error generating combined analysis: {e}")
@@ -167,6 +214,7 @@ def generate_combined_analysis(
 def _generate_standalone_panels(
     parsed_data: Dict[str, Any], output_dir: Path, model_name: str
 ) -> List[str]:
+    """Generate standalone panels."""
     visualizations: List[str] = []
 
     if not MATPLOTLIB_AVAILABLE:
@@ -186,12 +234,25 @@ def _generate_standalone_panels(
                             matrix_sizes.append(int(arr.size))
                             matrix_names.append(param.get("name", "Unknown"))
                         except (ValueError, TypeError):
-                            logger.debug("Skipping non-numeric matrix data for param '%s'", param.get("name", "?"))
+                            logger.debug(
+                                "Skipping non-numeric matrix data for param '%s'",
+                                param.get("name", "?"),
+                            )
 
         if matrix_sizes:
             fig, ax = plt.subplots(figsize=(10, 6))
-            bars = ax.bar(matrix_names, matrix_sizes, alpha=0.7, color="lightgreen", edgecolor="black")
-            ax.set_title(f"{model_name} - Matrix Size Distribution", fontsize=14, fontweight="bold")
+            bars = ax.bar(
+                matrix_names,
+                matrix_sizes,
+                alpha=0.7,
+                color="lightgreen",
+                edgecolor="black",
+            )
+            ax.set_title(
+                f"{model_name} - Matrix Size Distribution",
+                fontsize=14,
+                fontweight="bold",
+            )
             ax.set_xlabel("Matrix Parameter")
             ax.set_ylabel("Size (elements)")
             for bar, size in zip(bars, matrix_sizes):
@@ -216,14 +277,25 @@ def _generate_standalone_panels(
             fig, ax = plt.subplots(figsize=(12, 6))
             section_lengths = [len(str(content)) for content in raw_sections.values()]
             section_names = list(raw_sections.keys())
-            colors = plt.cm.viridis(np.linspace(0, 1, len(section_names)))
-            ax.bar(range(len(section_names)), section_lengths, alpha=0.7, color=colors, edgecolor="black")
-            ax.set_title(f"{model_name} - Section Content Length", fontsize=14, fontweight="bold")
+            colors = plt.get_cmap("viridis")(np.linspace(0, 1, len(section_names)))
+            ax.bar(
+                range(len(section_names)),
+                section_lengths,
+                alpha=0.7,
+                color=colors,
+                edgecolor="black",
+            )
+            ax.set_title(
+                f"{model_name} - Section Content Length", fontsize=14, fontweight="bold"
+            )
             ax.set_xlabel("Sections")
             ax.set_ylabel("Content Length (characters)")
             ax.set_xticks(range(len(section_names)))
             ax.set_xticklabels(
-                [name[:15] + "..." if len(name) > 15 else name for name in section_names],
+                [
+                    name[:15] + "..." if len(name) > 15 else name
+                    for name in section_names
+                ],
                 rotation=45,
                 ha="right",
                 fontsize=9,
@@ -242,9 +314,23 @@ def _generate_standalone_panels(
                 type_counts: Dict[str, int] = {}
                 for var_type in var_types:
                     type_counts[var_type] = type_counts.get(var_type, 0) + 1
-                colors = plt.cm.Set3(np.linspace(0, 1, len(type_counts)))
-                ax.pie(type_counts.values(), labels=type_counts.keys(), autopct="%1.1f%%", colors=colors)
-                ax.set_title(f"{model_name} - Variable Type Distribution", fontsize=14, fontweight="bold")
+                pie_colors = [
+                    tuple(color)
+                    for color in plt.get_cmap("Set3")(
+                        np.linspace(0, 1, len(type_counts))
+                    )
+                ]
+                ax.pie(
+                    list(type_counts.values()),
+                    labels=list(type_counts.keys()),
+                    autopct="%1.1f%%",
+                    colors=pie_colors,
+                )
+                ax.set_title(
+                    f"{model_name} - Variable Type Distribution",
+                    fontsize=14,
+                    fontweight="bold",
+                )
                 safe_tight_layout()
                 plot_file = output_dir / f"{model_name}_variable_type_distribution.png"
                 save_plot_safely(plot_file, dpi=300, bbox_inches="tight")
@@ -260,6 +346,7 @@ def _generate_standalone_panels(
 def _generate_generative_model_diagram(
     parsed_data: Dict[str, Any], output_dir: Path, model_name: str
 ) -> List[str]:
+    """Generate generative model diagram."""
     visualizations: List[str] = []
 
     if not MATPLOTLIB_AVAILABLE:
@@ -272,7 +359,7 @@ def _generate_generative_model_diagram(
         ax.set_aspect("equal")
         ax.axis("off")
 
-        positions = {
+        positions: dict[str, Any] = {
             "D": (2, 8),
             "s": (2, 6),
             "s'": (5, 6),
@@ -286,7 +373,7 @@ def _generate_generative_model_diagram(
             "u": (5, 3),
         }
 
-        node_colors = {
+        node_colors: dict[str, Any] = {
             "D": "#98D8C8",
             "s": "#7EC8E3",
             "s'": "#7EC8E3",
@@ -302,11 +389,22 @@ def _generate_generative_model_diagram(
 
         for node_name, (x, y) in positions.items():
             color = node_colors.get(node_name, "lightgray")
-            circle = plt.Circle((x, y), 0.4, color=color, ec="black", linewidth=2, zorder=2)
+            circle = plt.Circle(
+                (x, y), 0.4, color=color, ec="black", linewidth=2, zorder=2
+            )
             ax.add_patch(circle)
-            ax.text(x, y, node_name, ha="center", va="center", fontsize=12, fontweight="bold", zorder=3)
+            ax.text(
+                x,
+                y,
+                node_name,
+                ha="center",
+                va="center",
+                fontsize=12,
+                fontweight="bold",
+                zorder=3,
+            )
 
-        edges = [
+        edges: list[Any] = [
             ("D", "s", "Prior"),
             ("s", "A", "Likelihood"),
             ("A", "o", "Observation"),
@@ -345,7 +443,7 @@ def _generate_generative_model_diagram(
             pad=20,
         )
 
-        legend_items = [
+        legend_items: list[Any] = [
             ("D", "Prior (Initial State Belief)", "#98D8C8"),
             ("s/s'", "Hidden State", "#7EC8E3"),
             ("A", "Likelihood Matrix", "#F7DC6F"),
@@ -360,7 +458,9 @@ def _generate_generative_model_diagram(
 
         legend_y = 1.5
         for symbol, desc, color in legend_items:
-            ax.add_patch(plt.Rectangle((6.5, legend_y), 0.3, 0.3, color=color, ec="black"))
+            ax.add_patch(
+                plt.Rectangle((6.5, legend_y), 0.3, 0.3, color=color, ec="black")
+            )
             ax.text(6.95, legend_y + 0.15, f"{symbol}: {desc}", fontsize=8, va="center")
             legend_y -= 0.4
 
@@ -379,13 +479,14 @@ def _generate_generative_model_diagram(
 def generate_combined_visualizations(
     gnn_files: List[Path], results_dir: Path, verbose: bool = False
 ) -> List[str]:
+    """Generate combined visualizations."""
     visualizations: List[str] = []
 
     if not MATPLOTLIB_AVAILABLE:
         return visualizations
 
     try:
-        from visualization.parser import GNNParser
+        from ..parser import GNNParser
 
         all_variables: List[Dict[str, Any]] = []
         all_connections: List[Dict[str, Any]] = []
@@ -409,12 +510,16 @@ def generate_combined_visualizations(
                 all_connections.extend(connections)
                 for var_name, var_info in variables.items():
                     dimensions = var_info.get("dimensions", [])
-                    if len(dimensions) >= 2 and all(isinstance(d, int) for d in dimensions[:2]):
+                    if len(dimensions) >= 2 and all(
+                        isinstance(d, int) for d in dimensions[:2]
+                    ):
                         all_matrices.append(
                             {
                                 "name": var_name,
                                 "shape": dimensions,
-                                "size": dimensions[0] * dimensions[1] if len(dimensions) >= 2 else 0,
+                                "size": dimensions[0] * dimensions[1]
+                                if len(dimensions) >= 2
+                                else 0,
                             }
                         )
             except Exception as e:
@@ -430,11 +535,13 @@ def generate_combined_visualizations(
             ax1.pie(type_counts.values(), labels=type_counts.keys(), autopct="%1.1f%%")
             ax1.set_title("Overall Variable Type Distribution")
 
-        file_stats = []
+        file_stats: list[Any] = []
         for gnn_file in gnn_files:
             with open(gnn_file, encoding="utf-8") as f:
                 content = f.read()
-            file_parsed = load_visualization_model(gnn_file, content, results_dir, verbose=verbose)
+            file_parsed = load_visualization_model(
+                gnn_file, content, results_dir, verbose=verbose
+            )
             file_stats.append(
                 {
                     "name": gnn_file.stem,
@@ -450,8 +557,20 @@ def generate_combined_visualizations(
             conn_counts = [stat["connections"] for stat in file_stats]
             x = range(len(file_names))
             width = 0.35
-            ax2.bar([i - width / 2 for i in x], var_counts, width, label="Variables", alpha=0.7)
-            ax2.bar([i + width / 2 for i in x], conn_counts, width, label="Connections", alpha=0.7)
+            ax2.bar(
+                [i - width / 2 for i in x],
+                var_counts,
+                width,
+                label="Variables",
+                alpha=0.7,
+            )
+            ax2.bar(
+                [i + width / 2 for i in x],
+                conn_counts,
+                width,
+                label="Connections",
+                alpha=0.7,
+            )
             ax2.set_title("File Comparison")
             ax2.set_xlabel("Files")
             ax2.set_ylabel("Count")
@@ -460,7 +579,7 @@ def generate_combined_visualizations(
             ax2.legend()
 
         if all_matrices:
-            matrix_sizes = []
+            matrix_sizes: list[Any] = []
             for m in all_matrices:
                 if isinstance(m, dict) and "size" in m:
                     matrix_sizes.append(m["size"])
@@ -485,9 +604,13 @@ def generate_combined_visualizations(
                     conn_type = f"{conn['source']}->{conn['target']}"
                     connection_types[conn_type] = connection_types.get(conn_type, 0) + 1
             if connection_types:
-                top_connections = sorted(connection_types.items(), key=lambda x: x[1], reverse=True)[:10]
+                top_connections = sorted(
+                    connection_types.items(), key=lambda x: x[1], reverse=True
+                )[:10]
                 conn_names, conn_counts2 = zip(*top_connections)
-                ax4.barh(range(len(conn_names)), conn_counts2, alpha=0.7, color="orange")
+                ax4.barh(
+                    range(len(conn_names)), conn_counts2, alpha=0.7, color="orange"
+                )
                 ax4.set_title("Top Connection Types")
                 ax4.set_xlabel("Count")
                 ax4.set_yticks(range(len(conn_names)))

@@ -6,11 +6,16 @@ This module provides streamlined rendering capabilities for GNN specifications t
 ActiveInference.jl code, focusing on core functionality and scientific validity.
 """
 
+import base64
+import json
 import logging
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
 logger = logging.getLogger(__name__)
+
+from render.pomdp_contract import build_canonical_pomdp_spec
+
 
 def _matrix_to_julia(matrix_data: Any) -> str:
     """
@@ -20,12 +25,13 @@ def _matrix_to_julia(matrix_data: Any) -> str:
     # Handle string input (if coming from string-based GNN spec)
     if isinstance(matrix_data, str):
         matrix_data = matrix_data.strip()
-        if matrix_data.startswith('[') or matrix_data.startswith('('):
+        if matrix_data.startswith("[") or matrix_data.startswith("("):
             try:
                 import ast
+
                 matrix_data = ast.literal_eval(matrix_data)
-            except (ValueError, SyntaxError):
-                pass  # nosec B110 -- intentional: keep as string if parsing fails
+            except (ValueError, SyntaxError) as e:
+                logger.debug("Leaving matrix string unparsed for Julia output: %s", e)
 
     # Normalize tuple to list for unified handling
     if isinstance(matrix_data, tuple):
@@ -35,9 +41,9 @@ def _matrix_to_julia(matrix_data: Any) -> str:
         if len(matrix_data) > 0 and isinstance(matrix_data[0], (list, tuple)):
             if len(matrix_data[0]) > 0 and isinstance(matrix_data[0][0], (list, tuple)):
                 # 3D matrix (B matrix)
-                slices = []
+                slices: list[Any] = []
                 for slice_data in matrix_data:
-                    rows = []
+                    rows: list[Any] = []
                     for row in slice_data:
                         if isinstance(row, (tuple, list)):
                             row_values = " ".join(str(x) for x in row)
@@ -67,21 +73,23 @@ def _matrix_to_julia(matrix_data: Any) -> str:
 def render_gnn_to_activeinference_jl(
     gnn_spec: Dict[str, Any],
     output_path: Path,
-    options: Optional[Dict[str, Any]] = None
+    options: Optional[Dict[str, Any]] = None,
 ) -> Tuple[bool, str, List[str]]:
     """
     Render a GNN specification to ActiveInference.jl script.
-    
+
     Args:
         gnn_spec: The GNN specification as a Python dictionary
         output_path: Path where the Julia script will be saved
         options: Rendering options
-        
+
     Returns:
         Tuple of (success: bool, message: str, artifact_uris: List[str])
     """
     try:
-        logger.info(f"Rendering GNN specification to ActiveInference.jl script for model: {gnn_spec.get('name', 'unknown')}")
+        logger.info(
+            f"Rendering GNN specification to ActiveInference.jl script for model: {gnn_spec.get('name', 'unknown')}"
+        )
 
         # Extract model information from GNN spec
         model_info = extract_model_info(gnn_spec)
@@ -93,10 +101,12 @@ def render_gnn_to_activeinference_jl(
         output_path.parent.mkdir(parents=True, exist_ok=True)
 
         # Write the Julia script
-        with open(output_path, 'w', encoding='utf-8') as f:
+        with open(output_path, "w", encoding="utf-8") as f:
             f.write(julia_script)
 
-        success_msg = f"Successfully rendered ActiveInference.jl script to {output_path.name}"
+        success_msg = (
+            f"Successfully rendered ActiveInference.jl script to {output_path.name}"
+        )
         logger.info(success_msg)
         return True, success_msg, [str(output_path.resolve())]
 
@@ -105,20 +115,44 @@ def render_gnn_to_activeinference_jl(
         logger.error(error_msg, exc_info=True)
         return False, error_msg, []
 
+
 def extract_model_info(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
     """
     Extract relevant model information from GNN specification for ActiveInference.jl.
     Robustly handles GNN state space and parameter extraction from multiple sources.
     """
-    model_info = {
+    canonical_spec = build_canonical_pomdp_spec(gnn_spec)
+    model_params = canonical_spec["model_parameters"]
+    return {
+        "name": canonical_spec.get("model_name")
+        or canonical_spec.get("name", "gnn_model"),
+        "description": canonical_spec.get(
+            "description", "GNN model converted to ActiveInference.jl"
+        ),
+        "n_states": [int(model_params["num_hidden_states"])],
+        "n_observations": [int(model_params["num_obs"])],
+        "n_controls": [int(model_params["num_actions"])],
+        "n_timesteps": int(model_params.get("num_timesteps", 20)),
+        "random_seed": int(
+            model_params.get("random_seed", model_params.get("seed", 42))
+        ),
+        "action_precision": float(
+            model_params.get("action_precision", model_params.get("gamma", 4.0))
+        ),
+        "spec_json": json.dumps(canonical_spec, sort_keys=True),
+    }
+
+    model_info: dict[str, Any] = {
         "name": gnn_spec.get("name", "gnn_model"),
-        "description": gnn_spec.get("description", "GNN model converted to ActiveInference.jl"),
+        "description": gnn_spec.get(
+            "description", "GNN model converted to ActiveInference.jl"
+        ),
         "n_states": [],
         "n_observations": [],
         "n_controls": [],
         "n_timesteps": 20,  # Default, will be overridden if in GNN spec
         "policy_length": 1,
-        "metadata": {}
+        "metadata": {},
     }
 
     # --- Primary extraction: from POMDP processor format (model_parameters) ---
@@ -126,7 +160,7 @@ def extract_model_info(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
     n_states = model_params.get("num_hidden_states")
     n_obs = model_params.get("num_obs")
     n_actions = model_params.get("num_actions")
-    n_timesteps = model_params.get("num_timesteps", 20)  # Default 20 for backward compat
+    n_timesteps = model_params.get("num_timesteps", 20)
     model_info["n_timesteps"] = n_timesteps
 
     # --- Recovery 1: from original statespaceblock format ---
@@ -139,20 +173,26 @@ def extract_model_info(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
                 # Hidden state: e.g., '3,1,type=float'
                 try:
                     n_states = int(dims.split(",")[0])
-                except (ValueError, TypeError, IndexError):
-                    pass  # nosec B110 -- intentional: dimension parsing is best-effort
+                except (ValueError, TypeError, IndexError) as e:
+                    logger.debug("Could not infer state dimension from %r: %s", dims, e)
             elif var_id == "o" and n_obs is None:
                 # Observation: e.g., '3,1,type=int'
                 try:
                     n_obs = int(dims.split(",")[0])
-                except (ValueError, TypeError, IndexError):
-                    pass  # nosec B110 -- intentional: dimension parsing is best-effort
+                except (ValueError, TypeError, IndexError) as e:
+                    logger.debug(
+                        "Could not infer observation dimension from %r: %s",
+                        dims,
+                        e,
+                    )
             elif var_id == "u" and n_actions is None:
                 # Action: e.g., '1,type=int' (but see B for action count)
                 try:
                     n_actions = int(dims.split(",")[0])
-                except (ValueError, TypeError, IndexError):
-                    pass  # nosec B110 -- intentional: dimension parsing is best-effort
+                except (ValueError, TypeError, IndexError) as e:
+                    logger.debug(
+                        "Could not infer action dimension from %r: %s", dims, e
+                    )
             elif var_id == "A" and (n_obs is None or n_states is None):
                 # A matrix: e.g., '3,3,type=float'
                 try:
@@ -160,8 +200,8 @@ def extract_model_info(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
                         n_obs = int(dims.split(",")[0])
                     if n_states is None:
                         n_states = int(dims.split(",")[1])
-                except (ValueError, TypeError, IndexError):
-                    pass  # nosec B110 -- intentional: dimension parsing is best-effort
+                except (ValueError, TypeError, IndexError) as e:
+                    logger.debug("Could not infer A dimensions from %r: %s", dims, e)
             elif var_id == "B" and (n_states is None or n_actions is None):
                 # B matrix: e.g., '3,3,3,type=float'
                 try:
@@ -169,13 +209,14 @@ def extract_model_info(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
                         n_states = int(dims.split(",")[0])
                     if n_actions is None:
                         n_actions = int(dims.split(",")[2])
-                except (ValueError, TypeError, IndexError):
-                    pass  # nosec B110 -- intentional: dimension parsing is best-effort
+                except (ValueError, TypeError, IndexError) as e:
+                    logger.debug("Could not infer B dimensions from %r: %s", dims, e)
 
     # --- Recovery 2: from raw ModelParameters section ---
     if n_states is None or n_obs is None or n_actions is None:
         params = gnn_spec.get("raw_sections", {}).get("ModelParameters", "")
         import re
+
         if n_states is None:
             m_states = re.search(r"num_hidden_states:\s*(\d+)", params)
             if m_states:
@@ -203,7 +244,9 @@ def extract_model_info(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
                     if n_states is None and isinstance(A_matrix[0], list):
                         n_states = len(A_matrix[0])  # cols = states
             except (KeyError, TypeError, IndexError) as e:
-                logger.debug("A matrix dimension extraction skipped (best-effort): %s", e)
+                logger.debug(
+                    "A matrix dimension extraction skipped (best-effort): %s", e
+                )
 
         # Try B matrix for n_states, n_actions
         if "B" in init_params and (n_states is None or n_actions is None):
@@ -215,18 +258,22 @@ def extract_model_info(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
                     if n_states is None and isinstance(B_matrix[0], list):
                         n_states = len(B_matrix[0])  # rows = states
             except (KeyError, TypeError, IndexError) as e:
-                logger.debug("B matrix dimension extraction skipped (best-effort): %s", e)
+                logger.debug(
+                    "B matrix dimension extraction skipped (best-effort): %s", e
+                )
 
     # --- Final validation ---
     if n_states is None or n_obs is None or n_actions is None:
-        missing = []
+        missing: list[Any] = []
         if n_states is None:
             missing.append("n_states")
         if n_obs is None:
             missing.append("n_obs")
         if n_actions is None:
             missing.append("n_actions")
-        raise ValueError(f"Could not extract {missing} from GNN spec. Available keys: {list(gnn_spec.keys())}")
+        raise ValueError(
+            f"Could not extract {missing} from GNN spec. Available keys: {list(gnn_spec.keys())}"
+        )
 
     model_info["n_states"] = [n_states]
     model_info["n_observations"] = [n_obs]
@@ -247,35 +294,329 @@ def extract_model_info(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
     model_info["E"] = initial_params.get("E")
 
     # A, B, C, D are required; E (habit/policy prior) is optional
-    required = {"A": model_info["A"], "B": model_info["B"], "C": model_info["C"], "D": model_info["D"]}
+    required: dict[str, Any] = {
+        "A": model_info["A"],
+        "B": model_info["B"],
+        "C": model_info["C"],
+        "D": model_info["D"],
+    }
     missing = [k for k, v in required.items() if v is None]
     if missing:
-        raise ValueError(f"Missing required matrices {missing} in initialparameterization.")
+        raise ValueError(
+            f"Missing required matrices {missing} in initialparameterization."
+        )
 
     # Generate uniform E if not provided (many models don't define explicit habits)
     if model_info["E"] is None:
         n_act = model_info["n_controls"][0] if model_info["n_controls"] else 3
         model_info["E"] = [1.0 / n_act] * n_act
-        logger.info(f"Generated uniform E vector ({n_act} actions) — model has no explicit habit prior")
+        logger.info(
+            f"Generated uniform E vector ({n_act} actions) — model has no explicit habit prior"
+        )
 
     # --- Metadata ---
     model_info["metadata"] = {
         "original_format": "GNN",
         "conversion_timestamp": "auto-generated",
-        "source_sections": list(gnn_spec.keys())
+        "source_sections": list(gnn_spec.keys()),
     }
     return model_info
+
+
+def _generate_canonical_activeinference_script(model_info: Dict[str, Any]) -> str:
+    """Generate a strict ActiveInference.jl script from canonical POMDP matrices."""
+    model_name = str(model_info["name"])
+    n_states = int(model_info["n_states"][0])
+    n_observations = int(model_info["n_observations"][0])
+    n_actions = int(model_info["n_controls"][0])
+    n_timesteps = int(model_info["n_timesteps"])
+    random_seed = int(model_info["random_seed"])
+    action_precision = float(model_info["action_precision"])
+    spec_json = str(model_info["spec_json"])
+    spec_json_b64 = base64.b64encode(spec_json.encode("utf-8")).decode("ascii")
+    model_name_literal = json.dumps(model_name)
+    b_tensor_order_literal = json.dumps("next_state_previous_state_action")
+
+    return f'''#!/usr/bin/env julia
+# ActiveInference.jl discrete POMDP simulation
+# Generated from GNN Model: {model_name}
+
+using Pkg
+using ActiveInference
+using Distributions
+using LinearAlgebra
+using Random
+using StatsBase
+using JSON
+using Base64
+using Dates
+
+const SCHEMA_VERSION = "activeinference_jl_simulation_v1"
+const MODEL_NAME = {model_name_literal}
+const NUM_STATES = {n_states}
+const NUM_OBSERVATIONS = {n_observations}
+const NUM_ACTIONS = {n_actions}
+const TIME_STEPS = {n_timesteps}
+const RANDOM_SEED = {random_seed}
+const ACTION_PRECISION = {action_precision}
+const B_TENSOR_ORDER = {b_tensor_order_literal}
+const GNN_SPEC_JSON_B64 = "{spec_json_b64}"
+const GNN_SPEC = JSON.parse(String(base64decode(GNN_SPEC_JSON_B64)))
+
+function package_version(name::String)
+    for (_, dep) in Pkg.dependencies()
+        if dep.name == name
+            return string(dep.version)
+        end
+    end
+    return "unknown"
+end
+
+function to_float_matrix(raw)
+    rows = collect(raw)
+    matrix = zeros(Float64, length(rows), length(collect(rows[1])))
+    for row in eachindex(rows)
+        values = collect(rows[row])
+        for column in eachindex(values)
+            matrix[row, column] = Float64(values[column])
+        end
+    end
+    return matrix
+end
+
+function to_float_tensor(raw)
+    blocks = collect(raw)
+    rows = length(blocks)
+    columns = length(collect(blocks[1]))
+    actions = length(collect(collect(blocks[1])[1]))
+    tensor = zeros(Float64, rows, columns, actions)
+    for next_state in 1:rows
+        block = collect(blocks[next_state])
+        for previous_state in 1:columns
+            values = collect(block[previous_state])
+            for action in 1:actions
+                tensor[next_state, previous_state, action] = Float64(values[action])
+            end
+        end
+    end
+    return tensor
+end
+
+function normalize_vector(values)
+    vector = Float64.(collect(values))
+    total = sum(vector)
+    if !isfinite(total) || total <= 0
+        error("probability vector has invalid mass")
+    end
+    return vector ./ total
+end
+
+function normalize_columns!(matrix)
+    for column in 1:size(matrix, 2)
+        total = sum(matrix[:, column])
+        if !isfinite(total) || total <= 0
+            error("matrix column has invalid probability mass")
+        end
+        matrix[:, column] ./= total
+    end
+    return matrix
+end
+
+function normalize_tensor!(tensor)
+    for action in 1:size(tensor, 3)
+        for previous_state in 1:size(tensor, 2)
+            total = sum(tensor[:, previous_state, action])
+            if !isfinite(total) || total <= 0
+                error("transition column has invalid probability mass")
+            end
+            tensor[:, previous_state, action] ./= total
+        end
+    end
+    return tensor
+end
+
+function softmax(values)
+    shifted = values .- maximum(values)
+    weights = exp.(shifted)
+    return weights ./ sum(weights)
+end
+
+function categorical_index(probabilities)
+    safe_probs = max.(probabilities, 1e-16)
+    safe_probs ./= sum(safe_probs)
+    return rand(Categorical(safe_probs))
+end
+
+function compute_efe(belief, action, A, B, C_pref)
+    predicted_state = B[:, :, action] * belief
+    predicted_state = max.(predicted_state, 1e-16)
+    predicted_state ./= sum(predicted_state)
+    predicted_obs = A * predicted_state
+    predicted_obs = max.(predicted_obs, 1e-16)
+    predicted_obs ./= sum(predicted_obs)
+
+    ambiguity = 0.0
+    for state in eachindex(predicted_state)
+        likelihood = max.(A[:, state], 1e-16)
+        ambiguity -= predicted_state[state] * sum(likelihood .* log.(likelihood))
+    end
+
+    preferred = max.(C_pref, 1e-16)
+    risk = sum(predicted_obs .* (log.(predicted_obs) .- log.(preferred)))
+    return ambiguity + risk
+end
+
+function select_action(belief, A, B, C_pref)
+    efe_values = [compute_efe(belief, action, A, B, C_pref) for action in 1:size(B, 3)]
+    policy = softmax(-ACTION_PRECISION .* efe_values)
+    action = categorical_index(policy)
+    return action, efe_values, policy
+end
+
+function validate_dimensions(A, B, C, D)
+    if size(A) != (NUM_OBSERVATIONS, NUM_STATES)
+        error("A shape $(size(A)) does not match expected ($NUM_OBSERVATIONS, $NUM_STATES)")
+    end
+    if size(B) != (NUM_STATES, NUM_STATES, NUM_ACTIONS)
+        error("B shape $(size(B)) does not match expected ($NUM_STATES, $NUM_STATES, $NUM_ACTIONS)")
+    end
+    if length(C) != NUM_OBSERVATIONS
+        error("C length $(length(C)) does not match expected $NUM_OBSERVATIONS")
+    end
+    if length(D) != NUM_STATES
+        error("D length $(length(D)) does not match expected $NUM_STATES")
+    end
+end
+
+function run_simulation()
+    Random.seed!(RANDOM_SEED)
+    initial = GNN_SPEC["initialparameterization"]
+    A = normalize_columns!(to_float_matrix(initial["A"]))
+    B = normalize_tensor!(to_float_tensor(initial["B"]))
+    C = Float64.(collect(initial["C"]))
+    D = normalize_vector(initial["D"])
+    E = haskey(initial, "E") ? normalize_vector(initial["E"]) : fill(1.0 / NUM_ACTIONS, NUM_ACTIONS)
+    validate_dimensions(A, B, C, D)
+
+    C_pref = softmax(C)
+    current_state = categorical_index(D)
+    current_belief = copy(D)
+
+    observations = Int[]
+    true_states = Int[]
+    actions = Int[]
+    beliefs = Vector{{Vector{{Float64}}}}()
+    efe_per_action = Vector{{Vector{{Float64}}}}()
+    selected_efe = Float64[]
+    policy_posterior = Vector{{Vector{{Float64}}}}()
+
+    for step in 1:TIME_STEPS
+        observation = categorical_index(A[:, current_state])
+        likelihood = A[observation, :]
+        updated = current_belief .* likelihood
+        if sum(updated) <= 0
+            error("belief update produced zero mass at step $step")
+        end
+        current_belief = updated ./ sum(updated)
+
+        action, efe_values, policy = select_action(current_belief, A, B, C_pref)
+        next_probs = B[:, current_state, action]
+        current_state = categorical_index(next_probs)
+        predicted = B[:, :, action] * current_belief
+        current_belief = predicted ./ sum(predicted)
+
+        push!(observations, observation - 1)
+        push!(true_states, current_state - 1)
+        push!(actions, action - 1)
+        push!(beliefs, copy(current_belief))
+        push!(efe_per_action, copy(efe_values))
+        push!(selected_efe, efe_values[action])
+        push!(policy_posterior, copy(policy))
+    end
+
+    validation = Dict(
+        "all_beliefs_valid" => all(b -> all(v -> 0.0 <= v <= 1.0, b), beliefs),
+        "beliefs_sum_to_one" => all(b -> isapprox(sum(b), 1.0; atol=1e-6), beliefs),
+        "actions_in_range" => all(a -> 0 <= a < NUM_ACTIONS, actions),
+        "all_valid" => true
+    )
+    validation["all_valid"] = validation["all_beliefs_valid"] &&
+        validation["beliefs_sum_to_one"] &&
+        validation["actions_in_range"]
+
+    return Dict(
+        "schema_version" => SCHEMA_VERSION,
+        "success" => true,
+        "framework" => "ActiveInference.jl",
+        "model_name" => MODEL_NAME,
+        "num_timesteps" => TIME_STEPS,
+        "observations_by_modality" => Dict("joint_observation" => observations),
+        "hidden_states_by_factor" => Dict("joint_state" => true_states),
+        "actions_by_control_factor" => Dict("joint_action" => actions),
+        "beliefs_by_factor" => Dict("joint_state" => beliefs),
+        "expected_free_energy" => selected_efe,
+        "efe_per_action" => efe_per_action,
+        "variational_free_energy" => Float64[],
+        "policy_posterior" => policy_posterior,
+        "observations" => observations,
+        "true_states" => true_states,
+        "actions" => actions,
+        "beliefs" => beliefs,
+        "model_parameters" => Dict(
+            "A_shape" => collect(size(A)),
+            "B_shape" => collect(size(B)),
+            "C_shape" => [length(C)],
+            "D_shape" => [length(D)],
+            "E_shape" => [length(E)],
+            "num_states" => NUM_STATES,
+            "num_observations" => NUM_OBSERVATIONS,
+            "num_actions" => NUM_ACTIONS
+        ),
+        "matrix_provenance" => get(GNN_SPEC, "matrix_provenance", Dict()),
+        "runtime_metadata" => Dict(
+            "random_seed" => RANDOM_SEED,
+            "schema_version" => SCHEMA_VERSION,
+            "generated_at" => string(now()),
+            "activeinference_jl_version" => package_version("ActiveInference"),
+            "julia_version" => string(VERSION)
+        ),
+        "metrics" => Dict(
+            "expected_free_energy" => selected_efe,
+            "policy_posterior" => policy_posterior,
+            "belief_confidence" => [maximum(b) for b in beliefs]
+        ),
+        "validation" => validation
+    )
+end
+
+function main()
+    results = run_simulation()
+    open("simulation_results.json", "w") do file
+        JSON.print(file, results, 2)
+    end
+    println("ActiveInference.jl simulation wrote simulation_results.json")
+    return results["validation"]["all_valid"] ? 0 : 1
+end
+
+if abspath(PROGRAM_FILE) == @__FILE__
+    exit(main())
+end
+'''
+
 
 def generate_activeinference_script(model_info: Dict[str, Any]) -> str:
     """
     Generate a streamlined ActiveInference.jl script content.
-    
+
     Args:
         model_info: Extracted model information
-        
+
     Returns:
         Generated Julia script as string
     """
+    if "spec_json" in model_info:
+        return _generate_canonical_activeinference_script(model_info)
+
     # Extract dimensions
     n_states = model_info["n_states"][0]
     n_obs = model_info["n_observations"][0]
@@ -289,7 +630,7 @@ def generate_activeinference_script(model_info: Dict[str, Any]) -> str:
     if isinstance(B_matrix, list):
         logger.debug(f"B_matrix is list with len {len(B_matrix)}")
         if len(B_matrix) > 0 and isinstance(B_matrix[0], list):
-             logger.debug(f"B_matrix[0] is list with len {len(B_matrix[0])}")
+            logger.debug(f"B_matrix[0] is list with len {len(B_matrix[0])}")
     else:
         logger.debug(f"B_matrix type is {type(B_matrix)}")
 
@@ -299,22 +640,30 @@ def generate_activeinference_script(model_info: Dict[str, Any]) -> str:
     # The parser sometimes splits tuples incorrectly, leaving strings like '(1.0' instead of tuples
     if isinstance(B_matrix, (list, tuple)) and len(B_matrix) > 0:
         if isinstance(B_matrix[0], list) and len(B_matrix[0]) > 0:
-            if len(B_matrix[0]) > 0 and isinstance(B_matrix[0][0], str) and '(' in B_matrix[0][0]:
+            if (
+                len(B_matrix[0]) > 0
+                and isinstance(B_matrix[0][0], str)
+                and "(" in B_matrix[0][0]
+            ):
                 # Reconstruct B matrix from mangled format
-                fixed_B = []
+                fixed_B: list[Any] = []
                 for slice_data in B_matrix:
                     # Each slice should be a 2D matrix (list of rows)
-                    fixed_slice = []
-                    current_row = []
+                    fixed_slice: list[Any] = []
+                    current_row: list[Any] = []
                     for item in slice_data:
                         if isinstance(item, str):
                             # Extract number from string like '(1.0' or '0.0)'
-                            num_str = item.replace('(', '').replace(')', '').strip()
+                            num_str = item.replace("(", "").replace(")", "").strip()
                             if num_str:
                                 try:
                                     current_row.append(float(num_str))
-                                except ValueError:
-                                    pass  # nosec B110 -- intentional: skip non-numeric token in matrix
+                                except ValueError as e:
+                                    logger.debug(
+                                        "Skipping malformed B matrix scalar %r: %s",
+                                        num_str,
+                                        e,
+                                    )
                         elif isinstance(item, (int, float)):
                             current_row.append(float(item))
 
@@ -332,14 +681,18 @@ def generate_activeinference_script(model_info: Dict[str, Any]) -> str:
 
                 if fixed_B:
                     B_matrix = fixed_B
-                    logger.info(f"Fixed mangled B matrix: {len(B_matrix)} slices of {len(B_matrix[0])}x{len(B_matrix[0][0])}")
+                    logger.info(
+                        f"Fixed mangled B matrix: {len(B_matrix)} slices of {len(B_matrix[0])}x{len(B_matrix[0][0])}"
+                    )
 
     # Fix n_actions from actual B matrix if mismatch
     # B matrix shape is (states, states, actions) after fixing
     if isinstance(B_matrix, (list, tuple)) and len(B_matrix) > 0:
         actual_n_actions = len(B_matrix)
         if actual_n_actions != n_actions:
-            logger.info(f"Correcting n_actions from {n_actions} to {actual_n_actions} based on B matrix")
+            logger.info(
+                f"Correcting n_actions from {n_actions} to {actual_n_actions} based on B matrix"
+            )
             n_actions = actual_n_actions
 
     C_vector = model_info["C"]
@@ -743,20 +1096,19 @@ println("Model: $MODEL_NAME")
 
     return script
 
+
 # Main rendering function that can be called from other modules
 def render_gnn_to_activeinference_combined(
-    gnn_spec: Dict[str, Any],
-    output_dir: Path,
-    options: Optional[Dict[str, Any]] = None
+    gnn_spec: Dict[str, Any], output_dir: Path, options: Optional[Dict[str, Any]] = None
 ) -> Tuple[bool, str, List[str]]:
     """
     Render a GNN specification to ActiveInference.jl script (simplified version).
-    
+
     Args:
         gnn_spec: The GNN specification as a Python dictionary
         output_dir: Directory where outputs will be saved
         options: Rendering options
-        
+
     Returns:
         Tuple of (success: bool, message: str, artifact_uris: List[str])
     """
@@ -768,7 +1120,9 @@ def render_gnn_to_activeinference_combined(
 
     # Render main script
     main_path = output_dir / f"{model_name}.jl"
-    success, msg, artifacts = render_gnn_to_activeinference_jl(gnn_spec, main_path, options)
+    success, msg, artifacts = render_gnn_to_activeinference_jl(
+        gnn_spec, main_path, options
+    )
 
     if success:
         return True, f"ActiveInference.jl script rendered: {msg}", artifacts

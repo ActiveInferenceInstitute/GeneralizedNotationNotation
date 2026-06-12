@@ -4,7 +4,7 @@
 
 This file is the **GitHub-oriented entry point**: GNN concepts, deep links into language and pipeline docs, repository layout, CI, and local validation. The narrative overview, badges, publication block, and long examples live in the root [README.md](../README.md).
 
-**Last updated**: 2026-03-24
+**Last updated**: 2026-05-08
 
 ---
 
@@ -33,7 +33,7 @@ This file is the **GitHub-oriented entry point**: GNN concepts, deep links into 
 
 ## What GNN is
 
-- **Notation**: Models are written as **Markdown** with labeled sections (for example `## GNNSection`, `## StateSpaceBlock`, `## Connections`, `## InitialParameterization`, ontology annotations). The normative and reference material is split across [doc/gnn/gnn_syntax.md](../doc/gnn/gnn_syntax.md) (v1.1 living spec), [doc/gnn/reference/gnn_syntax.md](../doc/gnn/reference/gnn_syntax.md) (examples and patterns), and the [language hub](../doc/gnn/language/README.md).
+- **Notation**: Models are written as **Markdown** with labeled sections (for example `## GNNSection`, `## StateSpaceBlock`, `## Connections`, `## InitialParameterization`, ontology annotations). The normative and reference material is split across [doc/gnn/reference/gnn_syntax.md](../doc/gnn/reference/gnn_syntax.md) (v1.6.0 living spec), [doc/gnn/tutorials/gnn_examples_doc.md](../doc/gnn/tutorials/gnn_examples_doc.md) (examples and patterns), and the [language hub](../doc/gnn/language/README.md).
 - **Processing**: A single orchestrator ([src/main.py](../src/main.py)) runs the numbered steps in order (or a subset via `--only-steps` / `--skip-steps`). Step **3** produces parsed representations consumed by type checking, validation, export, visualization, ontology, render, LLM, and related steps; **11 → 12** is the main **generate code → run simulation** bridge. See [doc/gnn/reference/architecture_reference.md](../doc/gnn/reference/architecture_reference.md) and [doc/gnn/reference/technical_reference.md](../doc/gnn/reference/technical_reference.md).
 - **Architecture**: Each step is a **thin orchestrator** (`src/N_*.py`) delegating to `src/<module>/` with `AGENTS.md` and usually `processor.py`. Diagram and conventions: root [AGENTS.md](../AGENTS.md), [ARCHITECTURE.md](../ARCHITECTURE.md), [src/README.md](../src/README.md).
 
@@ -278,8 +278,8 @@ Configured in [dependabot.yml](dependabot.yml):
 
 | Workflow | Triggers | What it runs |
 |----------|----------|--------------|
-| [ci.yml](workflows/ci.yml) | `push` and `pull_request` to `main` (`opened`, `synchronize`, `reopened`, `ready_for_review`); **`paths-ignore`**: `**/*.md`, `doc/**`. `workflow_dispatch` | **test**: matrix 3.11 / 3.12 / 3.13 — Ruff on 3.12, `pytest` + JUnit/summary; MCP ≥ 131 on 3.12. **security**: Bandit SARIF → `upload-sarif` + artifact. |
-| [docs-audit.yml](workflows/docs-audit.yml) | `push` / `pull_request` to `main` when paths include `**/*.md`, `doc/**`, root `AGENTS.md`, `CLAUDE.md`, `README.md`, `SKILL.md`, or `doc/development/docs_audit.py`. `workflow_dispatch` | `uv sync --frozen --extra dev`, `uv run python doc/development/docs_audit.py --strict` |
+| [ci.yml](workflows/ci.yml) | `push` and `pull_request` to `main` (`opened`, `synchronize`, `reopened`, `ready_for_review`); **`paths-ignore`**: `**/*.md`, `doc/**`. `workflow_dispatch` | **test**: matrix 3.11 / 3.12 / 3.13; Python 3.12 also runs Ruff format/check over `src scripts`, terminology audits, docs audit, GNN doc patterns, mypy, collect-only, focused PyMDP/POMDP tests, and MCP ≥ 130. All matrix entries run pytest + JUnit/summary. **security**: Bandit SARIF → `upload-sarif` + artifact. |
+| [docs-audit.yml](workflows/docs-audit.yml) | `push` / `pull_request` to `main` when paths include `**/*.md`, `doc/**`, root `AGENTS.md`, `CLAUDE.md`, `README.md`, `SKILL.md`, or `doc/development/docs_audit.py`. `workflow_dispatch` | `uv sync --frozen --extra dev`, strict docs audit with anchors, repository/doc terminology audits, and GNN doc-pattern audit. |
 | [actionlint.yml](workflows/actionlint.yml) | `push` / `pull_request` when `.github/workflows/**` changes. `workflow_dispatch` | `rhysd/actionlint@v1.7.11` |
 | [dependency-review.yml](workflows/dependency-review.yml) | `pull_request` to `main`. `workflow_dispatch` | `fail-on-severity: high`, AGPL deny list, PR comment summary on failure ([fork limitations](https://docs.github.com/en/code-security/supply-chain-security/understanding-your-software-supply-chain/about-dependency-review#dependency-review-for-forked-repositories)). |
 | [codeql.yml](workflows/codeql.yml) | `push` / `pull_request` (paths-ignore doc-only), weekly schedule, `workflow_dispatch` | `init` → `uv sync --frozen --extra dev` → `analyze` (Python). |
@@ -310,19 +310,31 @@ flowchart TB
 From the repository root:
 
 ```bash
-uv run python doc/development/docs_audit.py --strict
 actionlint .github/workflows/*.yml
 
 uv sync --frozen --extra dev
-uv run pytest -m "not pipeline and not mcp" --tb=short -q
-
-uv run ruff check src/
-uv run bandit -r src -c pyproject.toml --severity-level medium --confidence-level medium
+uv run --extra dev ruff format --check src scripts
+uv run --extra dev ruff check src scripts
+uv run --extra dev python scripts/check_repo_terminology.py --strict
+uv run --extra dev python scripts/check_maintained_doc_terms.py --strict
+uv run --extra dev python doc/development/docs_audit.py --strict --check-anchors --no-write
+uv run --extra dev python scripts/check_gnn_doc_patterns.py --strict
+uv run --extra dev mypy src --show-error-codes
+uv run --extra dev bandit -r src -c pyproject.toml -q
+uv run --extra dev python -m pytest --collect-only src/tests/ -q --tb=no \
+  --ignore=src/tests/llm/test_llm_ollama.py \
+  --ignore=src/tests/llm/test_llm_ollama_integration.py
+uv run --extra dev python -m pytest \
+  src/tests/execute/test_pymdp_contracts.py \
+  src/tests/execute/test_discrete_models_pymdp.py \
+  src/tests/visualization/test_visualization_matrices.py \
+  -q --tb=short
+uv run --extra dev python -m pytest -m "not pipeline and not mcp" --tb=short -q
 # Same output as CI security job (SARIF for artifacts / code scanning):
-# uv run bandit -r src -c pyproject.toml --severity-level medium --confidence-level medium -f sarif -o bandit-results.sarif
+# uv run --extra dev bandit -r src -c pyproject.toml --severity-level medium --confidence-level medium -f sarif -o bandit-results.sarif
 ```
 
-Full local suite (broader than default CI marker filter): `uv run pytest src/tests/ -v`. Ollama integration tests may need a local daemon; see [README.md](../README.md) and [pytest.ini](../pytest.ini).
+Full local suite (broader than default CI marker filter): `uv run --extra dev python -m pytest src/tests/ -q --tb=no --ignore=src/tests/llm/test_llm_ollama.py --ignore=src/tests/llm/test_llm_ollama_integration.py`. Ollama integration tests may need a local daemon; see [README.md](../README.md) and [pytest.ini](../pytest.ini).
 
 ---
 

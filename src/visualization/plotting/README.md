@@ -1,11 +1,14 @@
-# Plotting
+# Visualization Plotting
 
-## Overview
-This module handles `Plotting` components.
+Shared Matplotlib utilities used across all visualization sub-packages.
 
-## Available Members
-- **Classes**: No specific classes exported.
-- **Functions**: safe_tight_layout, save_plot_safely
+## Exports
 
-## Usage
-Import necessary members directly to orchestrate tasks related to Plotting.
+- `plt` — Matplotlib pyplot when available
+- `save_plot_safely()` — Safe file writer with error recovery
+- `safe_tight_layout()` — Tight layout with fallback for headless rendering
+- `MATPLOTLIB_AVAILABLE` — Boolean flag for dependency checking
+
+## Dependencies
+
+- `matplotlib` (optional; plotting calls report unavailable state when absent)

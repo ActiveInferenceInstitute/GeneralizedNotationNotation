@@ -10,9 +10,9 @@
 
 **Status**: ✅ Production Ready
 
-**Version**: 1.0.0
+**Version**: 1.6.0
 
-**Last Updated**: 2026-03-24
+**Last Updated**: 2026-04-16
 
 ---
 
@@ -38,14 +38,13 @@
 
 ### Public Functions
 
-#### `run_tests(logger, output_dir, verbose=False, include_slow=False, fast_only=True, comprehensive=False, generate_coverage=False, auto_fallback=True) -> bool`
+#### `run_tests(logger, output_dir, verbose=False, fast_only=True, comprehensive=False, generate_coverage=False, auto_fallback=True) -> bool`
 **Description**: Main test execution function called by orchestrator (2_tests.py). Routes to appropriate test execution mode based on parameters.
 
 **Parameters**:
 - `logger` (logging.Logger): Logger instance for progress reporting
 - `output_dir` (Path): Output directory for test results
 - `verbose` (bool): Enable verbose output (default: False)
-- `include_slow` (bool): Include slow tests (deprecated, use comprehensive instead) (default: False)
 - `fast_only` (bool): Run only fast tests (default: True)
 - `comprehensive` (bool): Run comprehensive test suite - all tests (default: False)
 - `generate_coverage` (bool): Generate coverage reports (default: False)
@@ -55,7 +54,7 @@
 
 **Behavior**:
 - If `comprehensive=True`: Runs all tests via `run_comprehensive_tests()`
-- If `fast_only=True` and `comprehensive=False`: Runs fast tests via `run_fast_pipeline_tests()`. If that fails and `auto_fallback=True` and the execution report shows **zero tests collected**, falls back to `run_comprehensive_tests()`
+- If `fast_only=True` and `comprehensive=False`: Runs fast tests via `run_fast_pipeline_tests()`. If that fails and `auto_fallback=True` and the execution report shows **zero tests collected**, retries with `run_comprehensive_tests()`
 - Otherwise: Runs reliable fast tests via `run_fast_reliable_tests()`
 
 **Strict markers**: `pyproject.toml` enables `--strict-markers`. Unregistered markers (for example `anyio` without `pytest-anyio`) break collection. Prefer sync tests that call `asyncio.run()` for short async checks when the environment may omit dev extras; with `uv sync --extra dev`, `pytest-asyncio` and `@pytest.mark.asyncio` are available.
@@ -448,7 +447,7 @@ Follow the naming convention:
 
 Example:
 ```python
-# src/tests/test_template_overall.py
+# src/tests/template/test_template_overall.py
 import pytest
 from pathlib import Path
 
@@ -470,8 +469,8 @@ def test_new_module_complex():
 ## Testing
 
 ### Test Files
-- **120+** `test_*.py` modules under `src/tests/` (exact count drifts; use `find src/tests -maxdepth 1 -name 'test_*.py' | wc -l`)
-- **~1,906** tests in a typical full run with standard Ollama ignores (see root `CLAUDE.md` / `README.md` for the exact `pytest` command)
+- **166** `test_*.py` modules under `src/tests/` as measured on 2026-05-14
+- **2,256** collected tests with standard Ollama integration ignores as measured by collect-only on 2026-05-14
 - **20+ test categories** for organized execution
 - **25+ test markers** for selective execution
 
@@ -486,7 +485,7 @@ def test_new_module_complex():
 ### Test Execution Modes
 1. **Fast Tests** (`--fast-only`): 1-3 minutes, essential validation
 2. **Comprehensive Tests** (`--comprehensive`): 5-15 minutes, all tests including slow/performance
-3. **Reliable Tests** (recovery): Essential tests only, 90-second timeout
+3. **Reliable Tests**: Essential tests only, 90-second timeout
 
 ### Key Test Scenarios
 1. **Module Import Validation**: All modules can be imported and have expected structure
@@ -499,7 +498,7 @@ def test_new_module_complex():
 
 ### Test Quality Standards
 - **No Simulated Usage**: All tests use real implementations per testing policy
-- **Real Data**: All tests use real, representative data (no synthetic/placeholder data)
+- **Real Data**: All tests use real, representative data
 - **Real Dependencies**: Tests use real dependencies (skip if unavailable, never simulated)
 - **File-Based Assertions**: Tests assert on real file outputs and artifacts
 - **Error Recovery**: Tests validate error handling with real failure modes

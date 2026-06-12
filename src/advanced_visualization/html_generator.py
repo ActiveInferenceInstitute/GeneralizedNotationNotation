@@ -15,19 +15,23 @@ class HTMLVisualizationGenerator:
     Generates rich HTML visualizations from GNN model data.
     """
 
-    def generate_advanced_visualization(self, extracted_data: Dict[str, Any], model_name: str) -> str:
+    def generate_advanced_visualization(
+        self, extracted_data: Dict[str, Any], model_name: str
+    ) -> str:
         """
         Generate a comprehensive HTML visualization for a GNN model.
-        
+
         Args:
             extracted_data: Data extracted from GNN file
             model_name: Name of the model
-            
+
         Returns:
             HTML content as string
         """
         if not extracted_data.get("success", False):
-            return self._generate_error_page(model_name, extracted_data.get("errors", ["Unknown error"]))
+            return self._generate_error_page(
+                model_name, extracted_data.get("errors", ["Unknown error"])
+            )
 
         blocks = extracted_data.get("blocks", [])
         connections = extracted_data.get("connections", [])
@@ -317,19 +321,19 @@ class HTMLVisualizationGenerator:
             <div class="model-info">
                 <div class="info-card">
                     <h4>Model Name</h4>
-                    <p>{model_info.get('name', 'Unknown')}</p>
+                    <p>{model_info.get("name", "Unknown")}</p>
                 </div>
                 <div class="info-card">
                     <h4>Version</h4>
-                    <p>{model_info.get('version', 'Unknown')}</p>
+                    <p>{model_info.get("version", "Unknown")}</p>
                 </div>
                 <div class="info-card">
                     <h4>Format</h4>
-                    <p>{model_info.get('source_format', 'Unknown')}</p>
+                    <p>{model_info.get("source_format", "Unknown")}</p>
                 </div>
                 <div class="info-card">
                     <h4>Created</h4>
-                    <p>{model_info.get('created_at', 'Unknown')[:10] if model_info.get('created_at') else 'Unknown'}</p>
+                    <p>{model_info.get("created_at", "Unknown")[:10] if model_info.get("created_at") else "Unknown"}</p>
                 </div>
             </div>
         </div>
@@ -365,13 +369,13 @@ class HTMLVisualizationGenerator:
         for block in blocks:
             html += f"""
                 <div class="block-card">
-                    <div class="block-name">{block.get('name', 'Unknown')}</div>
+                    <div class="block-name">{block.get("name", "Unknown")}</div>
                     <div class="block-details">
-                        <span class="block-type">{block.get('type', 'Unknown')}</span>
-                        <span class="block-type">{block.get('data_type', 'Unknown')}</span>
+                        <span class="block-type">{block.get("type", "Unknown")}</span>
+                        <span class="block-type">{block.get("data_type", "Unknown")}</span>
                         <br>
-                        <strong>Dimensions:</strong> {block.get('dimensions', [])}
-                        {f"<br><strong>Description:</strong> {block.get('description', '')}" if block.get('description') else ''}
+                        <strong>Dimensions:</strong> {block.get("dimensions", [])}
+                        {f"<br><strong>Description:</strong> {block.get('description', '')}" if block.get("description") else ""}
                     </div>
                 </div>
 """
@@ -391,10 +395,10 @@ class HTMLVisualizationGenerator:
                 <li class="connection-item">
                     <div class="connection-header">Connection {i}</div>
                     <div class="connection-details">
-                        <strong>From:</strong> {', '.join(conn.get('from', []))}<br>
-                        <strong>To:</strong> {', '.join(conn.get('to', []))}<br>
-                        <strong>Type:</strong> {conn.get('type', 'Unknown')}
-                        {f"<br><strong>Description:</strong> {conn.get('description', '')}" if conn.get('description') else ''}
+                        <strong>From:</strong> {", ".join(conn.get("from", []))}<br>
+                        <strong>To:</strong> {", ".join(conn.get("to", []))}<br>
+                        <strong>Type:</strong> {conn.get("type", "Unknown")}
+                        {f"<br><strong>Description:</strong> {conn.get('description', '')}" if conn.get("description") else ""}
                     </div>
                 </li>
 """
@@ -415,9 +419,9 @@ class HTMLVisualizationGenerator:
             for param in parameters:
                 html += f"""
                 <div class="parameter-card">
-                    <div class="parameter-name">{param.get('name', 'Unknown')}</div>
-                    <div class="parameter-value">{json.dumps(param.get('value', 'Unknown'), indent=2)}</div>
-                    {f"<div style='margin-top: 5px; font-size: 0.8em; opacity: 0.8;'>{param.get('description', '')}</div>" if param.get('description') else ''}
+                    <div class="parameter-name">{param.get("name", "Unknown")}</div>
+                    <div class="parameter-value">{json.dumps(param.get("value", "Unknown"), indent=2)}</div>
+                    {f"<div style='margin-top: 5px; font-size: 0.8em; opacity: 0.8;'>{param.get('description', '')}</div>" if param.get("description") else ""}
                 </div>
 """
 
@@ -437,9 +441,9 @@ class HTMLVisualizationGenerator:
             for eq in equations:
                 html += f"""
                 <li class="equation-item">
-                    <div class="equation-label">{eq.get('label', 'Equation')}</div>
-                    <div class="equation-content">{eq.get('content', '')}</div>
-                    {f"<div style='margin-top: 10px; font-size: 0.9em; opacity: 0.8;'>{eq.get('description', '')}</div>" if eq.get('description') else ''}
+                    <div class="equation-label">{eq.get("label", "Equation")}</div>
+                    <div class="equation-content">{eq.get("content", "")}</div>
+                    {f"<div style='margin-top: 10px; font-size: 0.9em; opacity: 0.8;'>{eq.get('description', '')}</div>" if eq.get("description") else ""}
                 </li>
 """
 
@@ -451,7 +455,7 @@ class HTMLVisualizationGenerator:
         # Add footer
         html += f"""
         <div class="footer">
-            <p>Generated on {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} | GNN Advanced Visualization System</p>
+            <p>Generated on {datetime.now().strftime("%Y-%m-%d %H:%M:%S")} | GNN Advanced Visualization System</p>
         </div>
     </div>
 </body>
@@ -463,11 +467,11 @@ class HTMLVisualizationGenerator:
     def _generate_error_page(self, model_name: str, errors: List[str]) -> str:
         """
         Generate an error page when visualization data extraction fails.
-        
+
         Args:
             model_name: Name of the model
             errors: List of error messages
-            
+
         Returns:
             HTML content for error page
         """

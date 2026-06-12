@@ -154,6 +154,10 @@ The developers have outlined several areas for future enhancement [3]:
 
 **Documentation**: While comprehensive, the documentation assumes significant background knowledge in computational modeling [1][3].
 
+## Security considerations
+
+Julia execution shares the usual risks of running generated simulation code: use trusted GNN inputs, keep dependencies updated, and avoid embedding secrets in model files or logs you redistribute.
+
 ## Conclusion
 
 ActiveInference.jl represents a significant contribution to computational cognitive science, providing researchers with a powerful, performant, and theoretically grounded tool for active inference modeling [1][2][3]. By combining Julia's computational advantages with sophisticated Bayesian inference capabilities, the package enables new possibilities for empirical research in computational psychiatry and cognitive neuroscience [3].

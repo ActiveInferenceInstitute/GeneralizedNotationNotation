@@ -65,6 +65,13 @@ C_Σ = [[0.05, 0.0], [0.0, 0.05]]
 Σ = [[0.5, 0.0], [0.0, 0.5]]
 Π_o = [[10.0, 0.0], [0.0, 10.0]]
 Π_x = [[20.0, 0.0], [0.0, 20.0]]
+state_dim = 2
+obs_dim = 2
+action_dim = 2
+dt = 0.01
+simulation_time = 10.0
+goal_x = 1.0
+goal_y = 1.0
 
 ## Time
 Dynamic
@@ -90,6 +97,6 @@ G = ExpectedFreeEnergy
 t = ContinuousTime
 
 ## Footer
-Generated: 2026-04-10T10:24:34.042345
+Generated: 2026-05-25T09:51:15.791013
 
 ## Signature

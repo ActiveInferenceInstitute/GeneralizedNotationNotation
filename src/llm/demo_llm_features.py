@@ -10,13 +10,14 @@ import logging
 import sys
 from contextlib import contextmanager
 from pathlib import Path
+from typing import Any
 
 # Add the project root to the path
 project_root = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(project_root))
 
 # Import the enhanced LLM operations
-from src.llm.llm_operations import (
+from llm.llm_operations import (
     LLMOperations,
     analyze_gnn_structure,
     enhance_gnn,
@@ -132,9 +133,10 @@ DiscreteTime: True
 ModelTimeHorizon: 50
 """
 
-def demo_backward_compatibility() -> None:
-    """Demonstrate that existing code still works with enhanced system."""
-    print("Testing Backward Compatibility...")
+
+def demo_convenience_functions() -> None:
+    """Demonstrate the public convenience functions."""
+    print("Testing Convenience Functions...")
 
     with _demo_section("Testing convenience functions"):
         summary = summarize_gnn(SAMPLE_GNN_CONTENT, max_length=200)
@@ -148,17 +150,21 @@ def demo_backward_compatibility() -> None:
         for i, q in enumerate(questions, 1):
             print(f"   {i}. {q[:80]}...")
 
+
 def demo_enhanced_capabilities() -> None:
     """Demonstrate new capabilities enabled by multi-provider system."""
     print("\nTesting Enhanced Capabilities...")
 
     with _demo_section("Enhancement suggestions"):
         enhancements = enhance_gnn(SAMPLE_GNN_CONTENT)
-        print(f"Enhancement suggestions generated ({len(enhancements)} chars): {enhancements[:150]}...")
+        print(
+            f"Enhancement suggestions generated ({len(enhancements)} chars): {enhancements[:150]}..."
+        )
 
     with _demo_section("Validation"):
         validation = validate_gnn(SAMPLE_GNN_CONTENT)
         print(f"Validation completed ({len(validation)} chars): {validation[:150]}...")
+
 
 def demo_processor_modes() -> None:
     """Demonstrate processor configuration.
@@ -172,6 +178,7 @@ def demo_processor_modes() -> None:
         ops = LLMOperations()
         print(f"Processor: {ops.get_processor_info()}")
         print(f"Available providers: {ops.get_available_providers()}")
+
 
 def demo_real_world_usage() -> None:
     """Demonstrate real-world usage scenarios."""
@@ -231,9 +238,10 @@ def demo_error_handling() -> None:
         print(f"Result with no keys: {result[:100]}...")
 
     with _demo_section("Testing recovery"):
-        legacy_ops = LLMOperations()
-        result = legacy_ops.summarize_gnn(SAMPLE_GNN_CONTENT, max_length=50)
+        ops = LLMOperations()
+        result = ops.summarize_gnn(SAMPLE_GNN_CONTENT, max_length=50)
         print(f"Result: {result[:100]}...")
+
 
 def main() -> None:
     """Run all demonstration scenarios."""
@@ -241,7 +249,7 @@ def main() -> None:
     print("=" * 50)
 
     # Run all demonstration scenarios
-    demo_backward_compatibility()
+    demo_convenience_functions()
     demo_enhanced_capabilities()
     demo_processor_modes()
     demo_real_world_usage()
@@ -251,12 +259,16 @@ def main() -> None:
     print("✅ Demonstration completed!")
     print("\nKey improvements:")
     print("• Multi-provider support (OpenAI, OpenRouter, Perplexity)")
-    print("• Backward compatibility with existing code")
+    print("• Public convenience functions for common analysis tasks")
     print("• Enhanced analysis capabilities (enhancement, validation)")
     print("• Robust error handling and recovery mechanisms")
     print("• Async support with sync wrappers")
     print("• Provider selection based on task requirements")
 
+
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    )
     main()

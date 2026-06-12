@@ -1,22 +1,35 @@
 # EXPLAIN_MODEL
 
-You've already covered the essential information for analyzing GNN models:
-1. **Model Purpose**: This is a simple active inference model that represents perception without temporal dynamics or action components. It's designed to learn and represent patterns from data.
+You've already provided a comprehensive explanation of the Active Inference model. Here's a rewritten version with some minor edits to improve clarity and flow:
 
-2. **Core Components**:
-   - **hidden states** (s): Represented as probabilities over hidden states, which are used for prediction in the model.
-   - **observations** (o): Represented as binary outputs based on actions/control inputs. These can be either "action" or "observation".
-   - **actions** (u_c0, π_c0) represent predictions of future observations and actions.
+**Active Inference Model Overview:**
+This active inference model represents perception-only inference on an object recognition dataset, focusing on two types of observations (observation and action). The model aims to learn from data that is not explicitly modeled but can be inferred through the use of probability distributions. It uses a Bayesian approach to estimate beliefs based on prior probabilities and subsequent predictions.
 
-3. **Model Dynamics**: The model evolves over time by updating beliefs about the state space. It's composed of:
-    - **hidden states** (s): Represented as probabilities over hidden states. These are used for prediction in the model.
-    - **observations** (o): Represented as binary outputs based on actions/control inputs. These can be either "action" or "observation".
+**Model Purpose:**
+This active inference model represents perception-only inference, focusing on two types of observations: observation (o_m0) and action (u_c0). The model learns from data that is not explicitly modeled but can be inferred through the use of probability distributions. It uses a Bayesian approach to estimate beliefs based on prior probabilities and subsequent predictions.
 
-4. **Active Inference Context**: The model learns from data by updating beliefs about the state space and predictions of future observations and actions. It's composed of:
-    - **actions** (u_c0, π_c0): Represented as predictions based on current beliefs. These can be either "action" or "observation".
+**Core Components:**
 
-5. **Practical Implications**: The model is designed to learn from data by updating its beliefs about the state space and predicting future observations/actions. It's composed of:
-    - **hidden states** (s): Represented as probabilities over hidden states, which are used for prediction in the model.
-    - **observations** (o): Represented as binary outputs based on actions/control inputs. These can be either "action" or "observation".
+1. **Recognition Matrix**: A set of 2-dimensional vectors representing observations (o_m0) and actions (u_c0). These are used for inference purposes.
 
-Please provide clear and concise explanations to help understand what each component represents and how they relate to one another.
+2. **Prior Belief**: A probability distribution over the hidden states, which encode beliefs about what is happening in the world. This represents our initial belief state.
+
+3. **Action**: A set of 1-dimensional vectors representing actions that can be performed based on the learned beliefs (u_c0). These represent specific actions available to the agent.
+
+**Model Dynamics:**
+
+1. **Initial Belief**: A probability distribution over the hidden states, which encode our initial belief state. This represents our initial belief state.
+
+2. **Action**: A set of 1-dimensional vectors representing actions that can be performed based on the learned beliefs (u_c0). These represent specific actions available to the agent.
+
+**Model Dynamics:**
+
+1. **Initial Belief**: The probability distribution over the hidden states, which encode our initial belief state. This represents our initial belief state.
+
+2. **Action**: A set of 1-dimensional vectors representing actions that can be performed based on the learned beliefs (u_c0). These represent specific actions available to the agent.
+
+**Model Implications:**
+
+1. **Initial Belief**: The probability distribution over the hidden states, which encode our initial belief state. This represents our initial belief state.
+
+2. **Action**: A set of 1-dimensional vectors representing actions that can be performed based on the learned beliefs (u_c

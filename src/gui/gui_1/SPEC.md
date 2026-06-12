@@ -1,8 +1,23 @@
-# Specification: Gui 1
+# GUI 1 — Technical Specification
 
-## Design Requirements
-This module (`gui_1`) maps structural logic to the overall execution graph.
-It ensures that `Gui 1` tasks resolve without runtime dependency loops.
+**Version**: 1.6.0
 
-## Components
-Expected available types: No specific classes exported.
+## Purpose
+
+First-generation GNN model constructor GUI using tkinter.
+
+## Features
+
+- Model structure editor (states, observations, actions)
+- Matrix entry widgets
+- File I/O (load/save GNN files)
+
+## Technology
+
+- `tkinter` (standard library)
+- Cross-platform (Windows, macOS, Linux)
+
+## Input/Output
+
+- Input: Existing GNN files or blank canvas
+- Output: GNN model files in markdown format

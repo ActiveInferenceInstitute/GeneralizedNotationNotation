@@ -10,9 +10,9 @@
 
 **Status**: ✅ Production Ready
 
-**Version**: 1.0.0
+**Version**: 1.6.0
 
-**Last Updated**: 2026-01-21
+**Last Updated**: 2026-04-16
 
 ---
 
@@ -380,7 +380,7 @@ The `navigation.html` file provides comprehensive navigation to all pipeline out
 - `pipeline.config` - Configuration management
 
 ### Imported By
-- `src/tests/test_gui_overall.py` - GUI module tests
+- `src/tests/gui/test_gui_overall.py` - GUI module tests
 - `main.py` - Pipeline orchestration
 
 ### Data Flow
@@ -393,13 +393,16 @@ GNN Files → GUI Construction → Visual Editing → Model Validation → GNN E
 ## Testing
 
 ### Test Files
-- `src/tests/test_gui_functionality.py` - GUI functionality tests
-- `src/tests/test_oxdraw_integration.py` - oxdraw integration tests
+- `src/tests/gui/test_gui_functionality.py` - GUI functionality tests
+- `src/tests/gui/test_oxdraw_integration.py` - oxdraw integration tests
 
 ### Test Coverage
-- **Current**: 68%
-- **Target**: 85%+
+Measure on demand:
 
+```bash
+uv run --extra dev python -m pytest src/tests/test_gui*.py \
+    --cov=src/gui --cov-report=term-missing
+```
 ### Key Test Scenarios
 1. GUI startup and shutdown in headless mode
 2. Component creation and editing workflows
@@ -518,7 +521,7 @@ def construct_model_tool(components: List[Dict]) -> Dict[str, Any]:
 
 ## Version History
 
-### Current Version: 1.0.0
+### Current Version: 1.6.0
 
 **Features**:
 - Multiple GUI implementations (GUI 1, GUI 2, GUI 3, oxdraw)
@@ -548,10 +551,10 @@ def construct_model_tool(components: List[Dict]) -> Dict[str, Any]:
 
 ---
 
-**Last Updated**: 2026-01-21
+**Last Updated**: 2026-04-16
 **Maintainer**: GNN Pipeline Team
 **Status**: ✅ Production Ready
-**Version**: 1.0.0
+**Version**: 1.6.0
 **Architecture Compliance**: ✅ 100% Thin Orchestrator Pattern
 
 

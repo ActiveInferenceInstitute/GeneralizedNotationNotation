@@ -1,6 +1,6 @@
 # Basic GNN Model Template
 
-Copy this template and modify it to create your own GNN models. Replace the placeholders with your specific model details.
+Copy this template and modify it to create your own GNN models. Replace the bracketed fields with your specific model details.
 
 ## GNNVersionAndFlags
 GNN v1.0
@@ -96,7 +96,7 @@ License: [License type, e.g., MIT, CC-BY]
 
 1. **Copy this template** to a new file with a descriptive name (e.g., `my_robot_navigation_model.md`)
 
-2. **Replace all placeholders** (text in square brackets) with your specific model details
+2. **Replace all bracketed fields** with your specific model details
 
 3. **Validate your model** using the GNN type checker:
    ```bash

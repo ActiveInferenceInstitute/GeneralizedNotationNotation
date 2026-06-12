@@ -1,16 +1,33 @@
 # PRACTICAL_APPLICATIONS
 
-You've covered the key points about GNN models, including their practical applications, use cases, and analysis of their performance. Here are some additional insights:
+You've covered the practical aspects of using GNN for perception-based inference, including:
+1. **Simplest possible GNN model**: 
+   - 2 hidden states mapped to 2 observations via a recognition matrix A
 
-**General Principles:**
+2. **ModelAnnotation**:
+   - 2 hidden states mapped to 2 observations via a recognition matrix A
 
-1. **Active Inference**: The model is based on a single-shot inference with minimal dependencies between states and observations. This makes it suitable for testing perception-only inference without temporal dynamics or action components.
-2. **GNN Representation**: The model represents the data as a probability distribution over hidden states, which allows for easy computation of probabilities and inference.
-3. **Simplest possible GNN model**: The model is based on two hidden states (A) with two observations (D), providing insight into its behavior when applied to specific domains or use cases.
-4. **GNN Representation**: This representation enables efficient computation, allowing for easy inference of the data and analysis of patterns in it.
-5. **Simplest possible GNN model**: The model represents the data as a probability distribution over hidden states, providing insight into its behavior when applied to specific domains or use cases.
-6. **GNN Representation**: This representation enables efficient computation, allowing for easy inference of the data and analysis of patterns in it.
-7. **Simplest possible GNN model**: The model represents the data as a probability distribution over hidden states, providing insight into its behavior when applied to specific domains or use cases.
-8. **GNN Representation**: This representation enables efficient computation, allowing for easy inference of the data and analysis of patterns in it.
-9. **Simplest possible GNN model**: The model represents the data as a probability distribution over hidden states, providing insight into its behavior when applied to specific domains or use cases.
-10. **GNN Representation**: This representation enables efficient computation, allowing for easy inference of the data and analysis of patterns in it.
+3. **Generative model parameters**:
+   - 1 hidden state mapped to 2 observations via a recognition matrix A
+
+4. **Initialization and inference**:
+   - Initial parameterizations for GNN models are provided in the doc
+5. **ModelParameters**:
+   - Bayesian inference with softmax:
+   - Probability of observing observation (A) = P(observation | A) = P(A|B,o) = P(A=1|o).
+
+6. **Implementation Considerations**:
+   - Computational requirements and scalability for GNN models are discussed
+7. **Performance Expectations**:
+   - What kinds of performance can be expected?
+   - Metrics for evaluation and validation (e.g., accuracy, precision, recall)
+   - Limitations and failure modes (e.g., model instability, data quality issues)
+
+8. **Deployment Scenarios**:
+   - Online vs. offline processing:
+   - Real-time constraints and requirements:
+   - Hardware and software dependencies for GNN models
+9. **Benefits and Advantages**:
+   - What problems does this model solve well?
+   - Unique capabilities or features
+   - Comparison to alternative approaches (e.g., neural networks, Bayesian inference)

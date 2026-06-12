@@ -24,7 +24,7 @@ python src/main.py --only-steps 8 --verbose
 ```python
 from pathlib import Path
 from visualization import (
-    GNNVisualizer, MatrixVisualizer, GraphVisualizer,
+    GNNVisualizer, MatrixVisualizer,
     generate_graph_visualization, generate_matrix_visualization,
     generate_visualizations, process_visualization,
 )
@@ -44,7 +44,7 @@ process_visualization(Path("input/gnn_files"), Path("output/8_visualization_outp
 
 ## Key Exports
 
-- `GNNVisualizer` / `GraphVisualizer` — main visualization classes
+- `GNNVisualizer` — main visualization class
 - `MatrixVisualizer` — matrix-specific visualization
 - `generate_graph_visualization` — network graph plots
 - `generate_matrix_visualization` — matrix heatmaps
@@ -66,7 +66,7 @@ Visualization uses a four-tier recovery system:
 uv sync
 
 # For additional viz backends
-uv sync --extra visualization
+uv sync
 ```
 
 ## Output
@@ -79,10 +79,10 @@ uv sync --extra visualization
 
 This module registers tools with the GNN MCP server (see `mcp.py`):
 
-- `process_visualization`
+- `get_visualization_module_info`
 - `get_visualization_options`
 - `list_visualization_artifacts`
-- `get_visualization_module_info`
+- `process_visualization`
 
 ## References
 

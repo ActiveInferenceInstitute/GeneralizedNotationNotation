@@ -14,16 +14,24 @@ import logging
 import sys
 from datetime import datetime
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple, Union, cast
+
+from .framework_registry import (
+    get_available_renderers as _registry_get_available_renderers,
+)
+from .framework_registry import (
+    get_supported_frameworks as _registry_get_supported_frameworks,
+)
 
 if TYPE_CHECKING:
     from gnn.types import GNNInternalRepresentation
 
 try:
     import numpy as np
+
     NUMPY_AVAILABLE = True
 except ImportError:
-    np = None  # type: ignore[assignment]
+    np = cast(Any, None)
     NUMPY_AVAILABLE = False
 
 # Ensure src and project root are on the path for cross-module imports
@@ -36,20 +44,45 @@ if str(_project_root) not in sys.path:
 
 logger = logging.getLogger(__name__)
 
+
+def _render_succeeded(
+    *,
+    success_count: int,
+    total_files: int,
+    total_framework_successes: int,
+    total_framework_attempts: int,
+    strict_framework_success: bool = False,
+) -> bool | int:
+    """Evaluate render success while preserving partial success for normal pipelines."""
+    if total_files == 0:
+        return 2
+    if total_framework_attempts > 0:
+        if strict_framework_success:
+            return (
+                success_count == total_files
+                and total_framework_successes == total_framework_attempts
+            )
+        framework_success_rate = (
+            total_framework_successes / total_framework_attempts
+        ) * 100
+        return framework_success_rate >= 80.0 or success_count > 0
+    return success_count == total_files
+
+
 def validate_pomdp_for_rendering(pomdp_space: Any) -> Tuple[bool, List[str]]:
     """
     Validate POMDP space for rendering requirements.
-    
+
     Args:
         pomdp_space: Extracted POMDP space object
-        
+
     Returns:
         Tuple of (is_valid, error_messages)
     """
-    errors = []
+    errors: list[Any] = []
 
     # Check basic dimensions
-    if not hasattr(pomdp_space, 'num_states') or pomdp_space.num_states is None:
+    if not hasattr(pomdp_space, "num_states") or pomdp_space.num_states is None:
         errors.append("Missing number of states")
     elif isinstance(pomdp_space.num_states, list):
         if any(n <= 0 for n in pomdp_space.num_states):
@@ -57,10 +90,13 @@ def validate_pomdp_for_rendering(pomdp_space: Any) -> Tuple[bool, List[str]]:
     elif pomdp_space.num_states <= 0:
         errors.append("Invalid number of states (must be positive)")
 
-    if not hasattr(pomdp_space, 'num_observations') or pomdp_space.num_observations is None:
+    if (
+        not hasattr(pomdp_space, "num_observations")
+        or pomdp_space.num_observations is None
+    ):
         errors.append("Missing number of observations")
 
-    if not hasattr(pomdp_space, 'num_actions') or pomdp_space.num_actions is None:
+    if not hasattr(pomdp_space, "num_actions") or pomdp_space.num_actions is None:
         errors.append("Missing number of actions")
 
     return len(errors) == 0, errors
@@ -100,18 +136,19 @@ def normalize_matrices(pomdp_space: Any, logger: logging.Logger) -> Any:
             uniform = np.ones(m.shape[0], dtype=np.float64) / m.shape[0]
             for col_idx in np.where(zero_mask.flatten())[0]:
                 m[:, col_idx] = uniform
-        return m
+        return cast(np.ndarray, m)
 
     try:
         # Normalize A matrix (Observation model)
         # Columns should sum to 1.0 over the observation dimension
-        if hasattr(pomdp_space, 'A_matrix') and pomdp_space.A_matrix is not None:
+        if hasattr(pomdp_space, "A_matrix") and pomdp_space.A_matrix is not None:
             A = pomdp_space.A_matrix
             if isinstance(A, list) and len(A) > 0 and isinstance(A[0], np.ndarray):
                 # Factorial structure: list of per-modality arrays
                 pomdp_space.A_matrix = [_normalize_columns(a) for a in A]
                 logger.debug(f"Normalized {len(A)} A-matrix modalities")
-            elif isinstance(A, np.ndarray):
+            else:
+                A = np.asarray(A, dtype=np.float64)
                 if A.ndim == 2:
                     pomdp_space.A_matrix = _normalize_columns(A)
                 elif A.ndim == 3:
@@ -123,11 +160,11 @@ def normalize_matrices(pomdp_space: Any, logger: logging.Logger) -> Any:
 
         # Normalize B matrix (Transition model)
         # Columns should sum to 1.0 over next-state dimension, per action
-        if hasattr(pomdp_space, 'B_matrix') and pomdp_space.B_matrix is not None:
+        if hasattr(pomdp_space, "B_matrix") and pomdp_space.B_matrix is not None:
             B = pomdp_space.B_matrix
             if isinstance(B, list) and len(B) > 0 and isinstance(B[0], np.ndarray):
                 # Factorial structure: list of per-factor transition arrays
-                normalized_B = []
+                normalized_B: list[Any] = []
                 for b in B:
                     b = np.asarray(b, dtype=np.float64)
                     if b.ndim == 3:
@@ -139,7 +176,7 @@ def normalize_matrices(pomdp_space: Any, logger: logging.Logger) -> Any:
                     normalized_B.append(b)
                 pomdp_space.B_matrix = normalized_B
                 logger.debug(f"Normalized {len(B)} B-matrix factors")
-            elif isinstance(B, np.ndarray):
+            else:
                 B = np.asarray(B, dtype=np.float64)
                 if B.ndim == 3:
                     # (next_state, current_state, action)
@@ -162,8 +199,9 @@ def process_render(
     verbose: bool = False,
     frameworks: Optional[List[str]] = None,
     strict_validation: bool = True,
+    strict_framework_success: bool = False,
     **kwargs: Any,
-) -> bool:
+) -> Union[bool, int]:
     """
     Process render for GNN specifications with POMDP-aware processing.
 
@@ -187,6 +225,18 @@ def process_render(
         logger.info(f"Processing GNN files in: {target_dir}")
         logger.info(f"Output directory: {output_dir}")
 
+        if isinstance(frameworks, str):
+            explicit_framework_request = frameworks.strip().lower() not in {
+                "",
+                "all",
+                "lite",
+            }
+        else:
+            explicit_framework_request = frameworks is not None
+        strict_framework_success = (
+            strict_framework_success or explicit_framework_request
+        )
+
         # Ensure output directory exists
         output_dir.mkdir(parents=True, exist_ok=True)
 
@@ -198,8 +248,8 @@ def process_render(
                 from render.pomdp_processor import POMDPRenderProcessor
             except ImportError:
                 # Recovery to src-prefixed imports
-                from src.gnn.pomdp_extractor import extract_pomdp_from_file
-                from src.render.pomdp_processor import POMDPRenderProcessor
+                from gnn.pomdp_extractor import extract_pomdp_from_file
+                from render.pomdp_processor import POMDPRenderProcessor
 
             pomdp_available = True
         except ImportError as e:
@@ -208,27 +258,41 @@ def process_render(
             pomdp_available = False
 
         # Find GNN files
-        gnn_files = []
-        for pattern in ['*.md', '*.json', '*.yaml', '*.yml']:
+        from gnn.discovery import is_model_source_path
+
+        gnn_files: list[Any] = []
+        for pattern in ["*.md", "*.json", "*.yaml", "*.yml"]:
             gnn_files.extend(target_dir.glob(pattern))
+        gnn_files = [path for path in gnn_files if is_model_source_path(path)]
 
         if not gnn_files:
             logger.warning(f"No GNN files found in {target_dir}")
-            return True
+            # Exit-code 2: no input. Distinguishes "nothing to render" from
+            # "rendered successfully".
+            return 2
 
         logger.info(f"Found {len(gnn_files)} GNN files to process")
 
         # Processing configuration — frameworks=None means all frameworks
+
+        if frameworks is not None and isinstance(frameworks, str):
+            if frameworks.lower() == "all":
+                frameworks = None
+            elif frameworks.lower() == "lite":
+                frameworks = ["pymdp", "jax", "discopy", "bnlearn"]
+            else:
+                frameworks = [f.strip() for f in frameworks.split(",")]
 
         if frameworks:
             logger.info(f"Target frameworks: {frameworks}")
         else:
             logger.info("Target frameworks: all available")
 
-        results = {}
+        results: dict[Any, Any] = {}
         success_count = 0
         total_framework_successes = 0
         total_framework_attempts = 0
+        failed_framework_renderings: list[dict[str, str]] = []
 
         if pomdp_available:
             # Use POMDP-aware processing
@@ -237,21 +301,31 @@ def process_render(
                     logger.info(f"Processing: {gnn_file}")
 
                     # Extract POMDP state space from GNN file
-                    pomdp_space = extract_pomdp_from_file(gnn_file, strict_validation=strict_validation)
+                    pomdp_space = extract_pomdp_from_file(
+                        gnn_file, strict_validation=strict_validation
+                    )
 
                     if pomdp_space is None:
-                        logger.warning(f"Could not extract POMDP from {gnn_file}, trying basic rendering")
+                        logger.warning(
+                            f"Could not extract POMDP from {gnn_file}, trying basic rendering"
+                        )
                         # Fall back to basic processing for this file
-                        file_result = _process_single_gnn_file_basic(gnn_file, output_dir, verbose, **kwargs)
+                        file_result = _process_single_gnn_file_basic(
+                            gnn_file, output_dir, verbose, **kwargs
+                        )
                         results[str(gnn_file)] = file_result
-                        if file_result['success']:
+                        if file_result["success"]:
                             success_count += 1
                         continue
 
-                    logger.info(f"Extracted POMDP '{pomdp_space.model_name}' with {pomdp_space.num_states} states, {pomdp_space.num_observations} observations, {pomdp_space.num_actions} actions")
+                    logger.info(
+                        f"Extracted POMDP '{pomdp_space.model_name}' with {pomdp_space.num_states} states, {pomdp_space.num_observations} observations, {pomdp_space.num_actions} actions"
+                    )
 
                     # Validate POMDP space
-                    is_valid, validation_errors = validate_pomdp_for_rendering(pomdp_space)
+                    is_valid, validation_errors = validate_pomdp_for_rendering(
+                        pomdp_space
+                    )
                     if not is_valid:
                         if strict_validation:
                             err_msg = (
@@ -282,40 +356,55 @@ def process_render(
 
                     # Process POMDP for all frameworks
                     processing_result = file_processor.process_pomdp_for_all_frameworks(
-                        pomdp_space, gnn_file_path=gnn_file, frameworks=frameworks, **kwargs
+                        pomdp_space,
+                        gnn_file_path=gnn_file,
+                        frameworks=frameworks,
+                        **kwargs,
                     )
-                    processing_result['base_output_dir'] = str(file_output_dir)
+                    processing_result["base_output_dir"] = str(file_output_dir)
 
                     results[str(gnn_file)] = processing_result
 
-                    if processing_result['overall_success']:
+                    if processing_result["overall_success"]:
                         success_count += 1
                         logger.info(f"Successfully processed {gnn_file.name}")
                     else:
                         logger.error(f"Failed to process {gnn_file.name}")
 
                     # Count framework-level successes
-                    for _, result in processing_result['framework_results'].items():
+                    for framework_name, result in processing_result[
+                        "framework_results"
+                    ].items():
                         total_framework_attempts += 1
-                        if result['success']:
+                        if result["success"]:
                             total_framework_successes += 1
+                        else:
+                            failed_framework_renderings.append(
+                                {
+                                    "file": str(gnn_file),
+                                    "framework": framework_name,
+                                    "message": str(result.get("message", "")),
+                                }
+                            )
 
                 except Exception as e:
                     error_msg = f"Error processing {gnn_file}: {e}"
                     logger.error(error_msg)
                     results[str(gnn_file)] = {
-                        'overall_success': False,
-                        'framework_results': {},
-                        'error': error_msg
+                        "overall_success": False,
+                        "framework_results": {},
+                        "error": error_msg,
                     }
         else:
             # Use basic rendering
             for gnn_file in gnn_files:
                 try:
                     logger.info(f"Processing (basic): {gnn_file}")
-                    file_result = _process_single_gnn_file_basic(gnn_file, output_dir, verbose, **kwargs)
+                    file_result = _process_single_gnn_file_basic(
+                        gnn_file, output_dir, verbose, **kwargs
+                    )
                     results[str(gnn_file)] = file_result
-                    if file_result['success']:
+                    if file_result["success"]:
                         success_count += 1
                         logger.info(f"Processed {gnn_file.name}")
                     else:
@@ -324,32 +413,37 @@ def process_render(
                 except Exception as e:
                     error_msg = f"Error processing {gnn_file}: {e}"
                     logger.error(error_msg)
-                    results[str(gnn_file)] = {
-                        'success': False,
-                        'error': error_msg
-                    }
+                    results[str(gnn_file)] = {"success": False, "error": error_msg}
 
         # Create overall processing summary
-        summary = {
-            'timestamp': datetime.now().isoformat(),
-            'processing_type': 'POMDP-aware rendering' if pomdp_available else 'Basic rendering',
-            'total_files': len(gnn_files),
-            'successful_files': success_count,
-            'failed_files': len(gnn_files) - success_count,
-            'total_framework_attempts': total_framework_attempts,
-            'successful_framework_renderings': total_framework_successes,
-            'framework_success_rate': (total_framework_successes / total_framework_attempts * 100) if total_framework_attempts > 0 else 0,
-            'configuration': {
-                'frameworks': frameworks or 'all',
-                'strict_validation': strict_validation,
-                'verbose': verbose,
-                'pomdp_processing_available': pomdp_available
+        summary: dict[str, Any] = {
+            "timestamp": datetime.now().isoformat(),
+            "processing_type": "POMDP-aware rendering"
+            if pomdp_available
+            else "Basic rendering",
+            "total_files": len(gnn_files),
+            "successful_files": success_count,
+            "failed_files": len(gnn_files) - success_count,
+            "total_framework_attempts": total_framework_attempts,
+            "successful_framework_renderings": total_framework_successes,
+            "framework_success_rate": (
+                total_framework_successes / total_framework_attempts * 100
+            )
+            if total_framework_attempts > 0
+            else 0,
+            "configuration": {
+                "frameworks": frameworks or "all",
+                "strict_validation": strict_validation,
+                "strict_framework_success": strict_framework_success,
+                "verbose": verbose,
+                "pomdp_processing_available": pomdp_available,
             },
-            'file_results': results
+            "failed_framework_renderings": failed_framework_renderings,
+            "file_results": results,
         }
 
-        summary_file = output_dir / 'render_processing_summary.json'
-        with open(summary_file, 'w') as f:
+        summary_file = output_dir / "render_processing_summary.json"
+        with open(summary_file, "w") as f:
             json.dump(summary, f, indent=2)
 
         # Create overview documentation
@@ -358,65 +452,78 @@ def process_render(
         logger.info("Render processing completed")
         logger.info(f"Files: {success_count}/{len(gnn_files)} successful")
         if pomdp_available:
-            logger.info(f"Framework renderings: {total_framework_successes}/{total_framework_attempts} successful ({summary['framework_success_rate']:.1f}%)")
+            logger.info(
+                f"Framework renderings: {total_framework_successes}/{total_framework_attempts} successful ({summary['framework_success_rate']:.1f}%)"
+            )
+            if failed_framework_renderings:
+                logger.warning(
+                    "Framework render failures: %s",
+                    "; ".join(
+                        f"{Path(item['file']).name}:{item['framework']}"
+                        for item in failed_framework_renderings[:10]
+                    ),
+                )
+                if len(failed_framework_renderings) > 10:
+                    logger.warning(
+                        "Additional framework render failures omitted from log: %d",
+                        len(failed_framework_renderings) - 10,
+                    )
         logger.info(f"Summary saved to: {summary_file}")
 
-        # Consider rendering successful if:
-        # 1. At least one file was processed successfully, OR
-        # 2. At least 80% of framework renderings succeeded
-        if pomdp_available and total_framework_attempts > 0:
-            framework_success_rate = (total_framework_successes / total_framework_attempts) * 100
-            return framework_success_rate >= 80.0 or success_count > 0
-        else:
-            return success_count == len(gnn_files)
+        return _render_succeeded(
+            success_count=success_count,
+            total_files=len(gnn_files),
+            total_framework_successes=total_framework_successes,
+            total_framework_attempts=total_framework_attempts,
+            strict_framework_success=strict_framework_success,
+        )
 
     except Exception as e:
         logger.error(f"Render processing failed: {e}")
         return False
 
-def _process_single_gnn_file_basic(gnn_file: Path, output_dir: Path, verbose: bool, **kwargs) -> Dict[str, Any]:
+
+def _process_single_gnn_file_basic(
+    gnn_file: Path, output_dir: Path, verbose: bool, **kwargs: Any
+) -> Dict[str, Any]:
     """
     Basic processing for a single GNN file without POMDP extraction.
-    
+
     Args:
         gnn_file: GNN file to process
         output_dir: Output directory
         verbose: Enable verbose logging
         **kwargs: Additional processing options
-        
+
     Returns:
         Processing result dictionary
     """
     try:
         # Import basic generators
         from .generators import (
-            generate_activeinference_jl_code,
             generate_bnlearn_code,
             generate_discopy_code,
             generate_pymdp_code,
-            generate_rxinfer_code,
         )
 
         # Create basic model data from filename
-        model_data = {
-            'model_name': gnn_file.stem,
-            'variables': [],
-            'connections': []
+        model_data: dict[str, Any] = {
+            "model_name": gnn_file.stem,
+            "variables": [],
+            "connections": [],
         }
 
         # Create file-specific output directory
         file_output_dir = output_dir / gnn_file.stem
         file_output_dir.mkdir(parents=True, exist_ok=True)
 
-        generated_files = []
+        generated_files: list[Any] = []
 
         # Generate code for each framework
-        frameworks = {
-            'pymdp': (generate_pymdp_code, '.py'),
-            'rxinfer': (generate_rxinfer_code, '.jl'),
-            'activeinference_jl': (generate_activeinference_jl_code, '.jl'),
-            'discopy': (generate_discopy_code, '.py'),
-            'bnlearn': (generate_bnlearn_code, '.py')
+        frameworks: dict[str, Any] = {
+            "pymdp": (generate_pymdp_code, ".py"),
+            "discopy": (generate_discopy_code, ".py"),
+            "bnlearn": (generate_bnlearn_code, ".py"),
         }
 
         for framework_name, (generator_func, extension) in frameworks.items():
@@ -428,32 +535,39 @@ def _process_single_gnn_file_basic(gnn_file: Path, output_dir: Path, verbose: bo
                 # Generate code
                 code = generator_func(model_data)
                 if code:
-                    output_file = framework_dir / f"{gnn_file.stem}_{framework_name}{extension}"
-                    with open(output_file, 'w') as f:
+                    output_file = (
+                        framework_dir / f"{gnn_file.stem}_{framework_name}{extension}"
+                    )
+                    with open(output_file, "w") as f:
                         f.write(code)
                     generated_files.append(str(output_file))
 
             except Exception as e:
-                logger.warning(f"Failed to generate {framework_name} code for {gnn_file}: {e}")
+                logger.warning(
+                    f"Failed to generate {framework_name} code for {gnn_file}: {e}"
+                )
 
         return {
-            'success': len(generated_files) > 0,
-            'message': f"Generated {len(generated_files)} files" if generated_files else "No files generated",
-            'generated_files': generated_files,
-            'output_directory': str(file_output_dir)
+            "success": len(generated_files) > 0,
+            "message": f"Generated {len(generated_files)} files"
+            if generated_files
+            else "No files generated",
+            "generated_files": generated_files,
+            "output_directory": str(file_output_dir),
         }
 
     except Exception as e:
         return {
-            'success': False,
-            'message': f"Basic processing failed: {e}",
-            'generated_files': []
+            "success": False,
+            "message": f"Basic processing failed: {e}",
+            "generated_files": [],
         }
+
 
 def _create_overview_documentation(output_dir: Path, summary: Dict[str, Any]) -> None:
     """
     Create overview documentation for the rendering results.
-    
+
     Args:
         output_dir: Output directory
         summary: Processing summary data
@@ -461,44 +575,46 @@ def _create_overview_documentation(output_dir: Path, summary: Dict[str, Any]) ->
     try:
         doc_content = f"""# GNN Rendering Results
 
-Generated: {summary['timestamp']}
-Processing Type: **{summary['processing_type']}**
+Generated: {summary["timestamp"]}
+Processing Type: **{summary["processing_type"]}**
 
 ## Summary
 
-- **Total Files**: {summary['total_files']}
-- **Successfully Processed**: {summary['successful_files']}
-- **Failed**: {summary['failed_files']}
+- **Total Files**: {summary["total_files"]}
+- **Successfully Processed**: {summary["successful_files"]}
+- **Failed**: {summary["failed_files"]}
 """
 
-        if summary['total_framework_attempts'] > 0:
-            doc_content += f"""- **Framework Renderings**: {summary['successful_framework_renderings']}/{summary['total_framework_attempts']} ({summary['framework_success_rate']:.1f}% success rate)
+        if summary["total_framework_attempts"] > 0:
+            doc_content += f"""- **Framework Renderings**: {summary["successful_framework_renderings"]}/{summary["total_framework_attempts"]} ({summary["framework_success_rate"]:.1f}% success rate)
 """
 
         doc_content += f"""
 ## Configuration
 
-- **Frameworks**: {summary['configuration']['frameworks']}
-- **Strict Validation**: {summary['configuration']['strict_validation']}
-- **Verbose**: {summary['configuration']['verbose']}
-- **POMDP Processing**: {'✅ Available' if summary['configuration'].get('pomdp_processing_available', False) else '❌ Not Available'}
+- **Frameworks**: {summary["configuration"]["frameworks"]}
+- **Strict Validation**: {summary["configuration"]["strict_validation"]}
+- **Verbose**: {summary["configuration"]["verbose"]}
+- **POMDP Processing**: {"✅ Available" if summary["configuration"].get("pomdp_processing_available", False) else "❌ Not Available"}
 
 ## File Results
 
 """
 
-        for file_path, result in summary['file_results'].items():
+        for file_path, result in summary["file_results"].items():
             file_name = Path(file_path).name
-            if result.get('overall_success', result.get('success', False)):
+            if result.get("overall_success", result.get("success", False)):
                 doc_content += f"- ✅ **{file_name}** - Successfully processed\n"
 
                 # Add framework details if available
-                if 'framework_results' in result:
-                    for framework, framework_result in result['framework_results'].items():
-                        status = "✅" if framework_result['success'] else "❌"
+                if "framework_results" in result:
+                    for framework, framework_result in result[
+                        "framework_results"
+                    ].items():
+                        status = "✅" if framework_result["success"] else "❌"
                         doc_content += f"  - {status} {framework}: {framework_result.get('message', 'N/A')}\n"
             else:
-                error_msg = result.get('error', result.get('message', 'Unknown error'))
+                error_msg = result.get("error", result.get("message", "Unknown error"))
                 doc_content += f"- ❌ **{file_name}** - {error_msg}\n"
 
         doc_content += f"""
@@ -514,7 +630,11 @@ The rendered files are organized in implementation-specific subfolders:
 │   ├── rxinfer/            # RxInfer.jl Julia simulations
 │   ├── activeinference_jl/ # ActiveInference.jl Julia simulations
 │   ├── jax/                # JAX Python simulations
-│   └── discopy/            # DisCoPy categorical diagrams
+│   ├── discopy/            # DisCoPy categorical diagrams
+│   ├── pytorch/            # PyTorch simulations
+│   ├── numpyro/            # NumPyro simulations
+│   ├── stan/               # Stan models
+│   └── bnlearn/            # Bayesian network scripts
 └── render_processing_summary.json  # Detailed results
 ```
 
@@ -536,8 +656,8 @@ Each framework subdirectory contains:
 *Generated by GNN Render Processor v1.0*
 """
 
-        doc_file = output_dir / 'README.md'
-        with open(doc_file, 'w') as f:
+        doc_file = output_dir / "README.md"
+        with open(doc_file, "w") as f:
             f.write(doc_content)
 
         logger.info(f"Created overview documentation: {doc_file}")
@@ -545,21 +665,22 @@ Each framework subdirectory contains:
     except Exception as e:
         logger.warning(f"Failed to create overview documentation: {e}")
 
+
 def render_gnn_spec(
     gnn_spec: "Union[GNNInternalRepresentation, Dict[str, Any]]",
     target: str,
     output_directory: Union[str, Path],
-    options: Optional[Dict[str, Any]] = None
+    options: Optional[Dict[str, Any]] = None,
 ) -> Tuple[bool, str, List[str]]:
     """
     Render a GNN specification to a target language with POMDP awareness.
-    
+
     Args:
         gnn_spec: GNN specification dictionary
         target: Target language/environment
         output_directory: Output directory for generated code
         options: Additional options
-        
+
     Returns:
         Tuple of (success, message, output_files: List[str])
     """
@@ -567,24 +688,89 @@ def render_gnn_spec(
         output_dir = Path(output_directory)
         output_dir.mkdir(parents=True, exist_ok=True)
 
-        pass
-
         # Generator-based renderers: target → (generator_name, file_suffix)
-        _GENERATOR_TARGETS = {
-            "pymdp": ("generate_pymdp_code", "_pymdp.py"),
-            "rxinfer": ("generate_rxinfer_code", "_rxinfer.jl"),
-            "activeinference_jl": ("generate_activeinference_jl_code", "_activeinference.jl"),
+        _GENERATOR_TARGETS: dict[str, Any] = {
             "discopy": ("generate_discopy_code", "_discopy.py"),
             "bnlearn": ("generate_bnlearn_code", "_bnlearn.py"),
         }
 
         target_lower = target.lower()
-        model_name = gnn_spec.get('model_name', 'model')
-        files = []
+        if isinstance(gnn_spec, dict):
+            model_name = str(gnn_spec.get("model_name", "model"))
+            gnn_spec_mapping = gnn_spec
+        else:
+            model_name = gnn_spec.model_name or "model"
+            gnn_spec_mapping = {
+                "model_name": gnn_spec.model_name,
+                "variables": gnn_spec.variables,
+                "connections": gnn_spec.connections,
+                "parameters": gnn_spec.parameters,
+            }
+        files: list[Any] = []
+
+        if target_lower in {
+            "pymdp",
+            "rxinfer",
+            "activeinference_jl",
+            "pytorch",
+            "numpyro",
+        }:
+            from .pomdp_contract import build_canonical_pomdp_spec
+
+            canonical_spec = build_canonical_pomdp_spec(gnn_spec_mapping)
+            if target_lower == "pymdp":
+                from .pymdp.pymdp_renderer import render_gnn_to_pymdp
+
+                output_file = output_dir / f"{model_name}_pymdp.py"
+                success, msg, _warnings = render_gnn_to_pymdp(
+                    canonical_spec, output_file, options
+                )
+                return (True, msg, [str(output_file)]) if success else (False, msg, [])
+            if target_lower == "rxinfer":
+                from .rxinfer.rxinfer_renderer import render_gnn_to_rxinfer
+
+                output_file = output_dir / f"{model_name}_rxinfer.jl"
+                success, msg, _warnings = render_gnn_to_rxinfer(
+                    canonical_spec, output_file, options
+                )
+                artifacts = [str(output_file)]
+                metadata_file = output_file.with_suffix(".metadata.json")
+                if metadata_file.exists():
+                    artifacts.append(str(metadata_file))
+                return (True, msg, artifacts) if success else (False, msg, [])
+
+            if target_lower == "activeinference_jl":
+                from .activeinference_jl.activeinference_renderer import (
+                    render_gnn_to_activeinference_jl,
+                )
+
+                output_file = output_dir / f"{model_name}_activeinference.jl"
+                success, msg, artifacts = render_gnn_to_activeinference_jl(
+                    canonical_spec, output_file, options
+                )
+                return (True, msg, artifacts) if success else (False, msg, [])
+
+            if target_lower == "pytorch":
+                from .pytorch.pytorch_renderer import render_gnn_to_pytorch
+
+                output_file = output_dir / f"{model_name}_pytorch.py"
+                success, msg, artifacts = render_gnn_to_pytorch(
+                    canonical_spec, output_file, options
+                )
+                return (True, msg, artifacts) if success else (False, msg, [])
+
+            from .numpyro.numpyro_renderer import render_gnn_to_numpyro
+
+            output_file = output_dir / f"{model_name}_numpyro.py"
+            success, msg, artifacts = render_gnn_to_numpyro(
+                canonical_spec, output_file, options
+            )
+            return (True, msg, artifacts) if success else (False, msg, [])
 
         if target_lower in _GENERATOR_TARGETS:
             gen_name, suffix = _GENERATOR_TARGETS[target_lower]
             from . import generators
+
             generate_fn = getattr(generators, gen_name)
             code = generate_fn(gnn_spec)
             output_file = output_dir / f"{model_name}{suffix}"
@@ -592,10 +778,25 @@ def render_gnn_spec(
                 output_file.write_text(code)
                 files.append(str(output_file))
 
+        elif target_lower == "stan":
+            from .stan import render_stan
+
+            code = render_stan(
+                list(gnn_spec_mapping.get("variables", [])),
+                list(gnn_spec_mapping.get("connections", [])),
+                model_name=model_name,
+            )
+            output_file = output_dir / f"{model_name}_stan.stan"
+            output_file.write_text(code)
+            files.append(str(output_file))
+
         elif target_lower == "rxinfer_toml":
             try:
                 from .rxinfer import render_gnn_to_rxinfer_toml
-                success, msg, art = render_gnn_to_rxinfer_toml(gnn_spec, output_dir)
+
+                success, msg, art = render_gnn_to_rxinfer_toml(
+                    gnn_spec_mapping, output_dir
+                )
                 if success:
                     return True, msg, art
             except ImportError:
@@ -604,8 +805,11 @@ def render_gnn_spec(
         elif target_lower == "discopy_combined":
             try:
                 from .discopy import render_gnn_to_discopy
+
                 output_file = output_dir / f"{model_name}_discopy.py"
-                success, msg, _warnings = render_gnn_to_discopy(gnn_spec, output_file)
+                success, msg, _warnings = render_gnn_to_discopy(
+                    gnn_spec_mapping, output_file
+                )
                 return (True, msg, [str(output_file)]) if success else (False, msg, [])
             except ImportError:
                 return False, "DisCoPy renderer not available", []
@@ -613,8 +817,9 @@ def render_gnn_spec(
         elif target_lower in ("jax", "jax_pomdp"):
             try:
                 from .jax.jax_renderer import render_gnn_to_jax
+
                 output_file = output_dir / f"{model_name}_jax.py"
-                success, msg, art = render_gnn_to_jax(gnn_spec, output_file)
+                success, msg, art = render_gnn_to_jax(gnn_spec_mapping, output_file)
                 if success:
                     return True, msg, art
             except ImportError:
@@ -633,13 +838,19 @@ def render_gnn_spec(
 
 
 def get_module_info() -> Dict[str, Any]:
-    """Get information about the enhanced render module."""
+    """Get information about the render module."""
+    # Import here (not at module top) to avoid circular init when this module is
+    # imported before ``render/__init__.py`` finishes loading.
+    try:
+        from . import __version__ as _version
+    except Exception:  # noqa: BLE001
+        _version = "unknown"
     return {
-        "name": "Enhanced Render Module",
-        "version": "2.0.0",
+        "name": "Render Module",
+        "version": _version,
         "description": "POMDP-aware code generation for GNN specifications",
-        "supported_targets": ["pymdp", "rxinfer", "activeinference_jl", "jax", "discopy", "bnlearn"],
-        "available_targets": ["pymdp", "rxinfer", "activeinference_jl", "discopy", "bnlearn"],
+        "supported_targets": _registry_get_supported_frameworks(),
+        "available_targets": _registry_get_supported_frameworks(),
         "features": [
             "POMDP state space extraction",
             "Modular framework injection",
@@ -649,75 +860,18 @@ def get_module_info() -> Dict[str, Any]:
             "ActiveInference.jl code generation",
             "JAX code generation",
             "DisCoPy categorical diagram generation",
+            "PyTorch code generation",
+            "NumPyro code generation",
+            "Stan model generation",
             "bnlearn bayesian network generation",
-            "Structured documentation generation"
+            "Structured documentation generation",
         ],
-        "supported_formats": ["python", "julia", "python_script"],
-        "processing_modes": ["basic", "pomdp_aware"]
+        "supported_formats": ["python", "julia", "stan", "python_script"],
+        "processing_modes": ["basic", "pomdp_aware"],
     }
 
-AVAILABLE_RENDERERS: Dict[str, Dict[str, Any]] = {
-    "pymdp": {
-        "name": "PyMDP",
-        "description": "Python Markov Decision Process library for Active Inference",
-        "language": "Python",
-        "file_extension": ".py",
-        "supported_features": ["POMDP", "MDP", "Belief State Updates", "Active Inference"],
-        "function": "render_gnn_to_pymdp",
-        "output_format": "python",
-        "pomdp_compatible": True
-    },
-    "rxinfer": {
-        "name": "RxInfer.jl",
-        "description": "Julia reactive message passing inference engine",
-        "language": "Julia",
-        "file_extension": ".jl",
-        "supported_features": ["Message Passing", "Probabilistic Programming", "Bayesian Inference"],
-        "function": "render_gnn_to_rxinfer",
-        "output_format": "julia",
-        "pomdp_compatible": True
-    },
-    "activeinference_jl": {
-        "name": "ActiveInference.jl",
-        "description": "Julia Active Inference library",
-        "language": "Julia",
-        "file_extension": ".jl",
-        "supported_features": ["Free Energy Minimization", "Active Inference", "POMDP"],
-        "function": "render_gnn_to_activeinference_jl",
-        "output_format": "julia",
-        "pomdp_compatible": True
-    },
-    "jax": {
-        "name": "JAX",
-        "description": "High-performance numerical computing with automatic differentiation",
-        "language": "Python",
-        "file_extension": ".py",
-        "supported_features": ["GPU Acceleration", "Automatic Differentiation", "JIT Compilation"],
-        "function": "render_gnn_to_jax",
-        "output_format": "python",
-        "pomdp_compatible": True
-    },
-    "discopy": {
-        "name": "DisCoPy",
-        "description": "Python library for computing with string diagrams",
-        "language": "Python",
-        "file_extension": ".py",
-        "supported_features": ["Categorical Diagrams", "String Diagrams", "Compositional Models"],
-        "function": "render_gnn_to_discopy",
-        "output_format": "python",
-        "pomdp_compatible": True
-    },
-    "bnlearn": {
-        "name": "bnlearn",
-        "description": "Python package for learning the graphical structure of Bayesian networks",
-        "language": "Python",
-        "file_extension": ".py",
-        "supported_features": ["Structure Learning", "Parameter Learning", "Exact Inference", "Causal Discovery"],
-        "function": "render_gnn_to_bnlearn",
-        "output_format": "python",
-        "pomdp_compatible": True
-    }
-}
+
+AVAILABLE_RENDERERS: Dict[str, Dict[str, Any]] = _registry_get_available_renderers()
 
 
 def get_available_renderers() -> Dict[str, Dict[str, Any]]:

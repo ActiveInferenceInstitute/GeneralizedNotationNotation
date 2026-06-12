@@ -1,7 +1,7 @@
 {
-  "timestamp": "2026-04-10T10:35:39.408974",
-  "mcp_version": "1.1.3",
-  "tools_count": 133,
+  "timestamp": "2026-05-22T06:35:07.742069",
+  "mcp_version": "1.6.0",
+  "tools_count": 132,
   "resources_count": 1,
   "tools": [
     {
@@ -104,14 +104,14 @@
     },
     {
       "name": "execute_gnn_model",
-      "description": "Execute a single GNN model file: parse, construct POMDP, run N inference steps.",
+      "description": "Execute a single GNN model file via GNNExecutor (PyMDP default); timesteps come from the model's Time section.",
       "module": "src.execute",
       "category": "execute",
       "version": "1.0.0"
     },
     {
       "name": "execute_pymdp_simulation",
-      "description": "Run a PyMDP Active Inference simulation from a GNN model (A/B/C/D matrices \u2192 Agent \u2192 perception-action loop).",
+      "description": "Run a PyMDP Active Inference simulation from a GNN model (A/B/C/D matrices -> Agent -> perception-action loop).",
       "module": "src.execute",
       "category": "execute",
       "version": "1.0.0"
@@ -530,6 +530,20 @@
       "version": "1.0.0"
     },
     {
+      "name": "mcp.list_available_resources",
+      "description": "List all resources currently registered with the MCP registry.",
+      "module": "",
+      "category": "",
+      "version": "1.0.0"
+    },
+    {
+      "name": "mcp.list_available_tools",
+      "description": "List all tools currently registered with the MCP registry.",
+      "module": "",
+      "category": "",
+      "version": "1.0.0"
+    },
+    {
       "name": "model_registry.get_model",
       "description": "Get a model from the registry by ID",
       "module": "",
@@ -726,29 +740,8 @@
       "version": "1.0.0"
     },
     {
-      "name": "run_all_tests",
-      "description": "Run comprehensive test suite for the GNN pipeline.",
-      "module": "",
-      "category": "",
-      "version": "1.0.0"
-    },
-    {
-      "name": "run_integration_tests",
-      "description": "Run integration test suite for the GNN pipeline.",
-      "module": "",
-      "category": "",
-      "version": "1.0.0"
-    },
-    {
       "name": "run_round_trip_tests",
       "description": "Run comprehensive round-trip tests on GNN files across all supported formats.",
-      "module": "",
-      "category": "",
-      "version": "1.0.0"
-    },
-    {
-      "name": "run_unit_tests",
-      "description": "Run unit test suite for the GNN pipeline.",
       "module": "",
       "category": "",
       "version": "1.0.0"
@@ -946,21 +939,23 @@
     }
   ],
   "status": "healthy",
-  "registered_modules": 31,
+  "registered_modules": 32,
   "registered_module_names": [
     "research",
-    "pipeline",
+    "visualization",
     "ml_integration",
     "intelligent_analysis",
+    "pipeline",
+    "analysis",
     "model_registry",
     "security",
     "integration",
     "website",
     "setup",
-    "tests",
     "template",
     "render",
     "utils",
+    "lsp",
     "mcp",
     "cli",
     "ontology",
@@ -969,15 +964,14 @@
     "gui",
     "type_checker",
     "api",
+    "doc",
     "report",
     "sapf",
-    "analysis",
+    "llm",
+    "execute",
     "export",
     "validation",
     "advanced_visualization",
-    "visualization",
-    "llm",
-    "execute",
     "sympy_mcp"
   ],
   "target_dir": "input/gnn_files/discrete",

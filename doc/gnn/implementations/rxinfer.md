@@ -248,8 +248,8 @@ RxInfer exports a comprehensive JSON artifact to `simulation_results.json`:
 
 | Pipeline Stage | Module                                                                 | Key Function                    | Lines  |
 | -------------- | ---------------------------------------------------------------------- | ------------------------------- | ------ |
-| Rendering      | [rxinfer_renderer.py](../../../src/render/rxinfer/rxinfer_renderer.py) | `_generate_rxinfer_code()`      | —      |
-| Entry Point    | [rxinfer_renderer.py](../../../src/render/rxinfer/rxinfer_renderer.py) | `render_to_rxinfer()`           | —      |
+| Rendering      | [rxinfer_renderer.py](../../../src/render/rxinfer/rxinfer_renderer.py) | `render_gnn_to_rxinfer(...)`    | —      |
+| Entry Point    | [processor.py](../../../src/render/processor.py)                       | `render_gnn_spec(...)`          | —      |
 | Execution      | [rxinfer_runner.py](../../../src/execute/rxinfer/rxinfer_runner.py)    | `execute_rxinfer_script()`      | 84-175 |
 | Julia Check    | [rxinfer_runner.py](../../../src/execute/rxinfer/rxinfer_runner.py)    | `is_julia_available()`          | 18-51  |
 | Analysis       | [analyzer.py](../../../src/analysis/rxinfer/analyzer.py)               | `generate_analysis_from_logs()` | —      |

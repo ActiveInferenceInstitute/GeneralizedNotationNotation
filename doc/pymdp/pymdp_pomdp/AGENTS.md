@@ -1,6 +1,6 @@
 # Pymdp Pomdp - Agent Scaffolding
 
-## Module Overview
+## Overview
 
 **Purpose**: Responsible for `Pymdp Pomdp` operations within the GNN pipeline architecture.
 **Category**: Generated Pipeline Component
@@ -26,4 +26,4 @@ This module provides plo
 
 ## Implementation Details
 
-This module follows the Thin Orchestrator Pattern. It is governed by the Zero-Mock testing policy.
+This module follows the Thin Orchestrator Pattern. It is governed by the real-implementation testing policy.

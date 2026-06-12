@@ -10,7 +10,7 @@ selection, recovery mechanisms, and provides high-level methods for GNN analysis
 import logging
 import os
 from enum import Enum
-from typing import Any, AsyncGenerator, Dict, List, Optional, Union
+from typing import Any, AsyncGenerator, Dict, List, Optional, Union, cast
 
 from .defaults import DEFAULT_OLLAMA_MODEL
 from .providers import (
@@ -30,8 +30,10 @@ from .providers.perplexity_provider import PerplexityProvider
 
 logger = logging.getLogger(__name__)
 
+
 class AnalysisType(Enum):
     """Types of GNN analysis that can be performed."""
+
     SUMMARY = "summary"
     STRUCTURE = "structure"
     QUESTIONS = "questions"
@@ -40,10 +42,11 @@ class AnalysisType(Enum):
     COMPARISON = "comparison"
     SEARCH_ENHANCED = "search_enhanced"
 
+
 def load_api_keys_from_env() -> Dict[str, str]:
     """
     Load API keys from environment variables.
-    
+
     Returns:
         Dictionary mapping provider names to API keys
     """
@@ -54,7 +57,7 @@ def load_api_keys_from_env() -> Dict[str, str]:
         from dotenv import load_dotenv
 
         # Look for .env file in the llm directory
-        env_file = Path(__file__).parent / '.env'
+        env_file = Path(__file__).parent / ".env"
         if env_file.exists():
             load_dotenv(env_file)
             logger.debug(f"Loaded .env file from {env_file}")
@@ -65,55 +68,60 @@ def load_api_keys_from_env() -> Dict[str, str]:
     except Exception as e:
         logger.warning(f"Error loading .env file: {e}")
 
-    api_keys = {}
+    api_keys: dict[Any, Any] = {}
 
     # OpenAI
-    if openai_key := os.getenv('OPENAI_API_KEY'):
-        api_keys['openai'] = openai_key
+    if openai_key := os.getenv("OPENAI_API_KEY"):
+        api_keys["openai"] = openai_key
 
     # OpenRouter
-    if openrouter_key := os.getenv('OPENROUTER_API_KEY'):
-        api_keys['openrouter'] = openrouter_key
+    if openrouter_key := os.getenv("OPENROUTER_API_KEY"):
+        api_keys["openrouter"] = openrouter_key
 
     # Perplexity
-    if perplexity_key := os.getenv('PERPLEXITY_API_KEY'):
-        api_keys['perplexity'] = perplexity_key
+    if perplexity_key := os.getenv("PERPLEXITY_API_KEY"):
+        api_keys["perplexity"] = perplexity_key
 
     # Ollama runs locally and doesn't need an API key; detect via env toggle
-    if os.getenv('OLLAMA_DISABLED', '0') not in ('1', 'true', 'True'):
-        api_keys['ollama'] = 'local'
+    if os.getenv("OLLAMA_DISABLED", "0") not in ("1", "true", "True"):
+        api_keys["ollama"] = "local"
 
     logger.info(f"Initialized {len(api_keys)} provider(s)")
-    if 'ollama' in api_keys and all(k not in api_keys for k in ('openai','openrouter','perplexity')):
-        logger.info("No cloud API keys detected. Defaulting to local Ollama for LLM operations.")
+    if "ollama" in api_keys and all(
+        k not in api_keys for k in ("openai", "openrouter", "perplexity")
+    ):
+        logger.info(
+            "No cloud API keys detected. Defaulting to local Ollama for LLM operations."
+        )
     return api_keys
+
 
 def get_default_provider_configs() -> Dict[str, Dict[str, Any]]:
     """
     Get default provider configurations from environment variables.
-    
+
     Returns:
         Dictionary with provider-specific configurations
     """
-    configs = {
-        'openai': {
-            'organization': os.getenv('OPENAI_ORG_ID'),
-            'base_url': os.getenv('OPENAI_BASE_URL')
+    configs: dict[str, Any] = {
+        "openai": {
+            "organization": os.getenv("OPENAI_ORG_ID"),
+            "base_url": os.getenv("OPENAI_BASE_URL"),
         },
-        'openrouter': {
-            'site_url': os.getenv('OPENROUTER_SITE_URL', 'http://localhost'),
-            'site_name': os.getenv('OPENROUTER_SITE_NAME', 'GNN Pipeline')
+        "openrouter": {
+            "site_url": os.getenv("OPENROUTER_SITE_URL", "http://localhost"),
+            "site_name": os.getenv("OPENROUTER_SITE_NAME", "GNN Pipeline"),
         },
-        'perplexity': {
+        "perplexity": {
             # Perplexity-specific configs can be added here
         },
-        'ollama': {
+        "ollama": {
             # Override with OLLAMA_MODEL; repository default in llm.defaults
-            'default_model': os.getenv('OLLAMA_MODEL', DEFAULT_OLLAMA_MODEL),
+            "default_model": os.getenv("OLLAMA_MODEL", DEFAULT_OLLAMA_MODEL),
             # Enforce low latency
-            'default_max_tokens': int(os.getenv('OLLAMA_MAX_TOKENS', '256')),
-            'timeout': float(os.getenv('OLLAMA_TIMEOUT', '60')),
-            'base_url': os.getenv('OLLAMA_HOST')
+            "default_max_tokens": int(os.getenv("OLLAMA_MAX_TOKENS", "256")),
+            "timeout": float(os.getenv("OLLAMA_TIMEOUT", "60")),
+            "base_url": os.getenv("OLLAMA_HOST"),
         },
     }
 
@@ -144,28 +152,34 @@ def get_preferred_providers_from_env() -> List[ProviderType]:
     Returns:
         List of providers in order of preference
     """
-    default_provider = os.getenv('DEFAULT_PROVIDER', 'ollama').lower()
+    default_provider = os.getenv("DEFAULT_PROVIDER", "ollama").lower()
 
-    known_providers = {'openai', 'openrouter', 'perplexity', 'ollama'}
+    known_providers: set[Any] = {"openai", "openrouter", "perplexity", "ollama"}
 
     # Prioritize Ollama as the default since it doesn't require API keys
-    preferred = []
+    preferred: list[Any] = []
 
     # Always put Ollama first if available, then others
-    if default_provider == 'ollama' or default_provider not in known_providers:
+    if default_provider == "ollama" or default_provider not in known_providers:
         preferred.append(ProviderType.OLLAMA)
 
     # Add other providers in order
-    for provider_type in [ProviderType.OPENAI, ProviderType.OPENROUTER, ProviderType.PERPLEXITY, ProviderType.OLLAMA]:
+    for provider_type in [
+        ProviderType.OPENAI,
+        ProviderType.OPENROUTER,
+        ProviderType.PERPLEXITY,
+        ProviderType.OLLAMA,
+    ]:
         if provider_type not in preferred:
             preferred.append(provider_type)
 
     return preferred
 
+
 class LLMProcessor:
     """
     Main LLM processor that coordinates multiple providers for GNN analysis.
-    
+
     Provides a unified interface for accessing different LLM providers with
     automatic recovery, load balancing, and provider-specific optimizations.
     """
@@ -174,11 +188,11 @@ class LLMProcessor:
         self,
         preferred_providers: Optional[List[ProviderType]] = None,
         api_keys: Optional[Dict[str, str]] = None,
-        provider_configs: Optional[Dict[str, Dict[str, Any]]] = None
-    ):
+        provider_configs: Optional[Dict[str, Dict[str, Any]]] = None,
+    ) -> None:
         """
         Initialize the LLM processor.
-        
+
         Args:
             preferred_providers: List of providers in order of preference
             api_keys: Dictionary mapping provider names to API keys
@@ -195,10 +209,14 @@ class LLMProcessor:
         self.provider_configs = _merge_provider_configs(provider_configs)
         self._initialized = False
 
+        # Circuit breaker state
+        self._circuit_breakers: Dict[ProviderType, int] = {}
+        self.MAX_FAILURES = 2
+
     async def initialize(self) -> bool:
         """
         Initialize all available providers.
-        
+
         Returns:
             True if at least one provider initialized successfully
         """
@@ -212,21 +230,29 @@ class LLMProcessor:
                     initialized_count += 1
                     logger.info(f"Initialized {provider_type.value} provider")
                 else:
-                    logger.debug(f"Could not initialize {provider_type.value} provider (may not be configured)")
+                    logger.debug(
+                        f"Could not initialize {provider_type.value} provider (may not be configured)"
+                    )
 
             except Exception as e:
-                logger.debug(f"Optional provider {provider_type.value} not available: {e}")
+                logger.debug(
+                    f"Optional provider {provider_type.value} not available: {e}"
+                )
 
         self._initialized = initialized_count > 0
 
         if self._initialized:
-            logger.info(f"LLM Processor initialized with {initialized_count}/{len(ProviderType)} providers")
+            logger.info(
+                f"LLM Processor initialized with {initialized_count}/{len(ProviderType)} providers"
+            )
         else:
             logger.debug("No LLM providers initialized - using recovery analysis")
 
         return self._initialized
 
-    def _create_provider(self, provider_type: ProviderType) -> Optional[BaseLLMProvider]:
+    def _create_provider(
+        self, provider_type: ProviderType
+    ) -> Optional[BaseLLMProvider]:
         """
         Create a provider instance based on type.
 
@@ -241,14 +267,25 @@ class LLMProcessor:
 
         try:
             if provider_type == ProviderType.OPENAI:
-                return get_openai_provider_class()(api_key=api_key, **config)
+                return cast(
+                    "BaseLLMProvider | None",
+                    get_openai_provider_class()(api_key=api_key, **config),
+                )
             elif provider_type == ProviderType.OPENROUTER:
-                return get_openrouter_provider_class()(api_key=api_key, **config)
+                return cast(
+                    "BaseLLMProvider | None",
+                    get_openrouter_provider_class()(api_key=api_key, **config),
+                )
             elif provider_type == ProviderType.PERPLEXITY:
-                return get_perplexity_provider_class()(api_key=api_key, **config)
+                return cast(
+                    "BaseLLMProvider | None",
+                    get_perplexity_provider_class()(api_key=api_key, **config),
+                )
             elif provider_type == ProviderType.OLLAMA:
                 # Ollama doesn't need an API key, just configuration
-                return get_ollama_provider_class()(**config)
+                return cast(
+                    "BaseLLMProvider | None", get_ollama_provider_class()(**config)
+                )
             else:
                 logger.error(f"Unknown provider type: {provider_type}")
                 return None
@@ -263,22 +300,24 @@ class LLMProcessor:
     def get_provider(self, provider_type: ProviderType) -> Optional[BaseLLMProvider]:
         """
         Get a specific provider instance.
-        
+
         Args:
             provider_type: Type of provider to retrieve
-            
+
         Returns:
             Provider instance or None if not available
         """
         return self.providers.get(provider_type)
 
-    def get_best_provider_for_task(self, analysis_type: AnalysisType) -> Optional[BaseLLMProvider]:
+    def get_best_provider_for_task(
+        self, analysis_type: AnalysisType
+    ) -> Optional[BaseLLMProvider]:
         """
         Select the best provider for a specific analysis type.
-        
+
         Args:
             analysis_type: Type of analysis to perform
-            
+
         Returns:
             Best provider for the task or None if no providers available
         """
@@ -286,19 +325,43 @@ class LLMProcessor:
             return None
 
         # Provider preferences based on task type
-        task_preferences = {
-            AnalysisType.SEARCH_ENHANCED: [ProviderType.PERPLEXITY, ProviderType.OPENROUTER, ProviderType.OPENAI],
-            AnalysisType.STRUCTURE: [ProviderType.OPENAI, ProviderType.OPENROUTER, ProviderType.PERPLEXITY],
+        task_preferences: dict[Any, Any] = {
+            AnalysisType.SEARCH_ENHANCED: [
+                ProviderType.PERPLEXITY,
+                ProviderType.OPENROUTER,
+                ProviderType.OPENAI,
+            ],
+            AnalysisType.STRUCTURE: [
+                ProviderType.OPENAI,
+                ProviderType.OPENROUTER,
+                ProviderType.PERPLEXITY,
+            ],
             AnalysisType.SUMMARY: [
                 ProviderType.OLLAMA,
                 ProviderType.OPENAI,
                 ProviderType.OPENROUTER,
                 ProviderType.PERPLEXITY,
             ],
-            AnalysisType.QUESTIONS: [ProviderType.OPENAI, ProviderType.OPENROUTER, ProviderType.PERPLEXITY],
-            AnalysisType.ENHANCEMENT: [ProviderType.OPENROUTER, ProviderType.OPENAI, ProviderType.PERPLEXITY],
-            AnalysisType.VALIDATION: [ProviderType.OPENAI, ProviderType.OPENROUTER, ProviderType.PERPLEXITY],
-            AnalysisType.COMPARISON: [ProviderType.OPENROUTER, ProviderType.OPENAI, ProviderType.PERPLEXITY]
+            AnalysisType.QUESTIONS: [
+                ProviderType.OPENAI,
+                ProviderType.OPENROUTER,
+                ProviderType.PERPLEXITY,
+            ],
+            AnalysisType.ENHANCEMENT: [
+                ProviderType.OPENROUTER,
+                ProviderType.OPENAI,
+                ProviderType.PERPLEXITY,
+            ],
+            AnalysisType.VALIDATION: [
+                ProviderType.OPENAI,
+                ProviderType.OPENROUTER,
+                ProviderType.PERPLEXITY,
+            ],
+            AnalysisType.COMPARISON: [
+                ProviderType.OPENROUTER,
+                ProviderType.OPENAI,
+                ProviderType.PERPLEXITY,
+            ],
         }
 
         preferred_order = task_preferences.get(analysis_type, self.preferred_providers)
@@ -326,12 +389,31 @@ class LLMProcessor:
         """
         if not self.providers:
             raise RuntimeError("No providers available")
-        if provider_type and provider_type in self.providers:
+
+        def _is_healthy(ptype: ProviderType) -> bool:
+            """Return whether healthy."""
+            return self._circuit_breakers.get(ptype, 0) < self.MAX_FAILURES
+
+        if (
+            provider_type
+            and provider_type in self.providers
+            and _is_healthy(provider_type)
+        ):
             return self.providers[provider_type]
+
         if analysis_type is not None:
             best = self.get_best_provider_for_task(analysis_type)
-            if best:
+            if best and _is_healthy(best.provider_type):
                 return best
+
+        # Find first healthy provider
+        for p_type, provider in self.providers.items():
+            if _is_healthy(p_type):
+                return provider
+
+        logger.warning(
+            "All LLM providers tripping circuit breaker. Blindly returning first provider."
+        )
         return next(iter(self.providers.values()))
 
     async def analyze_gnn(
@@ -339,7 +421,8 @@ class LLMProcessor:
         gnn_content: str,
         analysis_type: AnalysisType = AnalysisType.SUMMARY,
         provider_type: Optional[ProviderType] = None,
-        config: Optional[LLMConfig] = None
+        config: Optional[LLMConfig] = None,
+        additional_context: Optional[Dict[str, Any]] = None,
     ) -> LLMResponse:
         """
         Analyze GNN content using the appropriate provider.
@@ -359,40 +442,53 @@ class LLMProcessor:
         provider = self._select_provider(provider_type, analysis_type)
 
         # Handle search-enhanced analysis for Perplexity
-        if (analysis_type == AnalysisType.SEARCH_ENHANCED and
-            isinstance(provider, PerplexityProvider)):
+        if analysis_type == AnalysisType.SEARCH_ENHANCED and isinstance(
+            provider, PerplexityProvider
+        ):
             query = "Analyze this GNN model and provide insights based on current Active Inference research"
             return await provider.search_and_analyze(query, gnn_content)
 
         # Format messages based on analysis type
         messages = provider.format_gnn_analysis_prompt(gnn_content, analysis_type.value)
+        if additional_context:
+            messages.append(
+                LLMMessage(
+                    role="user",
+                    content=f"Additional analysis context: {additional_context}",
+                )
+            )
 
         try:
             return await provider.generate_response(messages, config)
         except Exception as e:
             logger.error(f"Analysis failed with {provider.provider_type.value}: {e}")
             # Try recovery provider
-            return await self._try_fallback_analysis(gnn_content, analysis_type, provider_type, config)
+            return await self._try_fallback_analysis(
+                gnn_content, analysis_type, provider_type, config
+            )
 
     async def _try_fallback_analysis(
         self,
         gnn_content: str,
         analysis_type: AnalysisType,
         excluded_provider: Optional[ProviderType],
-        config: Optional[LLMConfig]
+        config: Optional[LLMConfig],
     ) -> LLMResponse:
         """Try analysis with recovery providers."""
         available_providers = [
-            p for p_type, p in self.providers.items()
-            if p_type != excluded_provider
+            p for p_type, p in self.providers.items() if p_type != excluded_provider
         ]
 
         for provider in available_providers:
             try:
-                messages = provider.format_gnn_analysis_prompt(gnn_content, analysis_type.value)
+                messages = provider.format_gnn_analysis_prompt(
+                    gnn_content, analysis_type.value
+                )
                 return await provider.generate_response(messages, config)
             except Exception as e:
-                logger.warning(f"Recovery failed with {provider.provider_type.value}: {e}")
+                logger.warning(
+                    f"Recovery failed with {provider.provider_type.value}: {e}"
+                )
                 continue
 
         raise RuntimeError("All providers failed for analysis")
@@ -401,16 +497,16 @@ class LLMProcessor:
         self,
         messages: List[LLMMessage],
         provider_type: Optional[ProviderType] = None,
-        config: Optional[LLMConfig] = None
+        config: Optional[LLMConfig] = None,
     ) -> AsyncGenerator[str, None]:
         """
         Generate streaming response.
-        
+
         Args:
             messages: Conversation messages
             provider_type: Specific provider to use (optional)
             config: LLM configuration (optional)
-            
+
         Yields:
             Response chunks
         """
@@ -426,20 +522,20 @@ class LLMProcessor:
         self,
         gnn_content: str,
         analysis_type: AnalysisType = AnalysisType.SUMMARY,
-        config: Optional[LLMConfig] = None
+        config: Optional[LLMConfig] = None,
     ) -> Dict[str, Optional[LLMResponse]]:
         """
         Compare responses from multiple providers for the same GNN content.
-        
+
         Args:
             gnn_content: The GNN file content to analyze
             analysis_type: Type of analysis to perform
             config: LLM configuration (optional)
-            
+
         Returns:
             Dictionary mapping provider names to their responses
         """
-        results = {}
+        results: dict[Any, Any] = {}
 
         provider_names = [pt.value for pt in self.providers]
         coros = [
@@ -449,6 +545,7 @@ class LLMProcessor:
 
         # Execute all analyses in parallel
         import asyncio
+
         responses = await asyncio.gather(*coros, return_exceptions=True)
         for provider_name, response in zip(provider_names, responses):
             if isinstance(response, Exception):
@@ -464,11 +561,12 @@ class LLMProcessor:
         provider: BaseLLMProvider,
         gnn_content: str,
         analysis_type: AnalysisType,
-        config: Optional[LLMConfig]
+        config: Optional[LLMConfig],
     ) -> LLMResponse:
         """Helper method for provider-specific analysis."""
-        if (analysis_type == AnalysisType.SEARCH_ENHANCED and
-            isinstance(provider, PerplexityProvider)):
+        if analysis_type == AnalysisType.SEARCH_ENHANCED and isinstance(
+            provider, PerplexityProvider
+        ):
             query = "Analyze this GNN model and provide insights based on current Active Inference research"
             return await provider.search_and_analyze(query, gnn_content)
 
@@ -478,7 +576,7 @@ class LLMProcessor:
     def get_provider_info(self) -> Dict[str, Dict[str, Any]]:
         """
         Get information about all available providers.
-        
+
         Returns:
             Dictionary with provider information
         """
@@ -494,7 +592,7 @@ class LLMProcessor:
                 await provider.close()
             except Exception as e:
                 logger.error(f"Error closing provider: {e}")
- 
+
         self.providers.clear()
         self._initialized = False
         logger.info("LLM Processor closed")
@@ -506,11 +604,11 @@ class LLMProcessor:
         model_name: Optional[str] = None,
         max_tokens: Optional[int] = None,
         temperature: Optional[float] = None,
-        config: Optional[LLMConfig] = None
+        config: Optional[LLMConfig] = None,
     ) -> LLMResponse:
         """
         Get a response from an LLM provider.
-        
+
         Args:
             messages: List of conversation messages
             provider_type: Specific provider to use (optional)
@@ -518,7 +616,7 @@ class LLMProcessor:
             max_tokens: Maximum tokens in response (optional)
             temperature: Temperature for generation (optional)
             config: Full LLM configuration (optional)
-            
+
         Returns:
             LLM response
         """
@@ -541,40 +639,68 @@ class LLMProcessor:
         try:
             return await provider.generate_response(messages, config)
         except Exception as e:
-            logger.error(f"Response generation failed with {provider.provider_type.value}: {e}")
+            logger.error(
+                f"Response generation failed with {provider.provider_type.value}: {e}"
+            )
+            self._circuit_breakers[provider.provider_type] = (
+                self._circuit_breakers.get(provider.provider_type, 0) + 1
+            )
+
             # Try recovery providers
             for fallback_provider in self.providers.values():
-                if fallback_provider != provider:
+                if (
+                    fallback_provider != provider
+                    and self._circuit_breakers.get(fallback_provider.provider_type, 0)
+                    < self.MAX_FAILURES
+                ):
                     try:
-                        logger.info(f"Trying recovery provider: {fallback_provider.provider_type.value}")
-                        return await fallback_provider.generate_response(messages, config)
+                        logger.info(
+                            f"Trying recovery provider: {fallback_provider.provider_type.value}"
+                        )
+                        response = await fallback_provider.generate_response(
+                            messages, config
+                        )
+                        # Reset circuit breaker on success
+                        self._circuit_breakers[fallback_provider.provider_type] = 0
+                        return response
                     except Exception as fallback_e:
-                        logger.warning(f"Recovery provider {fallback_provider.provider_type.value} also failed: {fallback_e}")
+                        self._circuit_breakers[fallback_provider.provider_type] = (
+                            self._circuit_breakers.get(
+                                fallback_provider.provider_type, 0
+                            )
+                            + 1
+                        )
+                        logger.warning(
+                            f"Recovery provider {fallback_provider.provider_type.value} also failed: {fallback_e}"
+                        )
                         continue
 
             # If all providers fail, raise the original exception
             raise e
 
+
 # Global processor instance for easy access
 _global_processor: Optional[LLMProcessor] = None
+
 
 def get_processor() -> Optional[LLMProcessor]:
     """Get the global LLM processor instance."""
     return _global_processor
 
+
 async def initialize_global_processor(
     preferred_providers: Optional[List[ProviderType]] = None,
     api_keys: Optional[Dict[str, str]] = None,
-    provider_configs: Optional[Dict[str, Dict[str, Any]]] = None
+    provider_configs: Optional[Dict[str, Dict[str, Any]]] = None,
 ) -> LLMProcessor:
     """
     Initialize the global LLM processor instance.
-    
+
     Args:
         preferred_providers: List of providers in order of preference
         api_keys: Dictionary mapping provider names to API keys
         provider_configs: Provider-specific configuration options
-        
+
     Returns:
         Initialized LLM processor
     """
@@ -593,20 +719,22 @@ async def initialize_global_processor(
     _global_processor = LLMProcessor(
         preferred_providers=preferred_providers,
         api_keys=api_keys,
-        provider_configs=provider_configs
+        provider_configs=provider_configs,
     )
 
     await _global_processor.initialize()
     return _global_processor
 
+
 async def create_processor_from_env() -> LLMProcessor:
     """
     Create and initialize an LLM processor using environment variables.
-    
+
     Returns:
         Initialized LLM processor configured from environment
     """
     return await initialize_global_processor()
+
 
 async def close_global_processor() -> None:
     """Close the global LLM processor instance."""
@@ -616,19 +744,20 @@ async def close_global_processor() -> None:
         await _global_processor.close()
         _global_processor = None
 
+
 class GNNLLMProcessor:
     """
     Specialized LLM processor for GNN model analysis and enhancement.
-    
+
     This class provides GNN-specific analysis capabilities including
     model interpretation, validation, enhancement suggestions, and
     natural language explanations.
     """
 
-    def __init__(self, base_processor: Optional[LLMProcessor] = None):
+    def __init__(self, base_processor: Optional[LLMProcessor] = None) -> None:
         """
         Initialize the GNN LLM processor.
-        
+
         Args:
             base_processor: Base LLM processor to use for operations
         """
@@ -638,7 +767,7 @@ class GNNLLMProcessor:
     async def initialize(self) -> bool:
         """
         Initialize the GNN LLM processor.
-        
+
         Returns:
             True if initialization successful
         """
@@ -649,7 +778,11 @@ class GNNLLMProcessor:
             logger.error(f"Failed to initialize GNN LLM processor: {e}")
             return False
 
-    async def analyze_gnn_model(self, gnn_content: str, analysis_type: Union[AnalysisType, str] = AnalysisType.SUMMARY) -> Dict[str, Any]:
+    async def analyze_gnn_model(
+        self,
+        gnn_content: str,
+        analysis_type: Union[AnalysisType, str] = AnalysisType.SUMMARY,
+    ) -> Dict[str, Any]:
         """
         Analyze a GNN model using LLM capabilities.
 
@@ -666,10 +799,7 @@ class GNNLLMProcessor:
             {"success": False, "error": ..., "error_type": ...}.
         """
         if not self.initialized:
-            return {
-                "success": False,
-                "error": "GNN LLM processor not initialized"
-            }
+            return {"success": False, "error": "GNN LLM processor not initialized"}
 
         try:
             if isinstance(analysis_type, AnalysisType):
@@ -687,24 +817,20 @@ class GNNLLMProcessor:
                 "analysis_type": analysis_type,
                 "response": response.content,
                 "provider": response.provider if response.provider else "unknown",
-                "model": response.model,
-                "usage": response.usage
+                "model": response.model_used,
+                "usage": response.usage,
             }
 
         except Exception as e:
-            return {
-                "success": False,
-                "error": str(e),
-                "error_type": type(e).__name__
-            }
+            return {"success": False, "error": str(e), "error_type": type(e).__name__}
 
     async def generate_model_explanation(self, gnn_content: str) -> Dict[str, Any]:
         """
         Generate a natural language explanation of a GNN model.
-        
+
         Args:
             gnn_content: GNN model content as string
-        
+
         Returns:
             Dictionary with explanation results
         """
@@ -713,10 +839,10 @@ class GNNLLMProcessor:
     async def suggest_enhancements(self, gnn_content: str) -> Dict[str, Any]:
         """
         Suggest enhancements for a GNN model.
-        
+
         Args:
             gnn_content: GNN model content as string
-        
+
         Returns:
             Dictionary with enhancement suggestions
         """
@@ -725,16 +851,18 @@ class GNNLLMProcessor:
     async def validate_model(self, gnn_content: str) -> Dict[str, Any]:
         """
         Validate a GNN model using LLM analysis.
-        
+
         Args:
             gnn_content: GNN model content as string
-        
+
         Returns:
             Dictionary with validation results
         """
         return await self.analyze_gnn_model(gnn_content, "validation")
 
-    async def compare_models(self, gnn_content_1: str, gnn_content_2: str) -> Dict[str, Any]:
+    async def compare_models(
+        self, gnn_content_1: str, gnn_content_2: str
+    ) -> Dict[str, Any]:
         """
         Compare two GNN models.
 
@@ -750,31 +878,26 @@ class GNNLLMProcessor:
             {"success": False, "error": ..., "error_type": ...}.
         """
         if not self.initialized:
-            return {
-                "success": False,
-                "error": "GNN LLM processor not initialized"
-            }
+            return {"success": False, "error": "GNN LLM processor not initialized"}
 
         try:
             # Create a combined analysis request
             combined_content = f"Model 1:\n{gnn_content_1}\n\nModel 2:\n{gnn_content_2}"
-            response = await self.base_processor.analyze_gnn(combined_content, AnalysisType.COMPARISON)
+            response = await self.base_processor.analyze_gnn(
+                combined_content, AnalysisType.COMPARISON
+            )
 
             return {
                 "success": True,
                 "analysis_type": "comparison",
                 "response": response.content,
                 "provider": response.provider if response.provider else "unknown",
-                "model": response.model,
-                "usage": response.usage
+                "model": response.model_used,
+                "usage": response.usage,
             }
 
         except Exception as e:
-            return {
-                "success": False,
-                "error": str(e),
-                "error_type": type(e).__name__
-            }
+            return {"success": False, "error": str(e), "error_type": type(e).__name__}
 
     async def close(self) -> None:
         """Close the GNN LLM processor."""
@@ -785,21 +908,23 @@ class GNNLLMProcessor:
 def create_gnn_llm_processor() -> GNNLLMProcessor:
     """
     Create a GNN LLM processor with default configuration.
-    
+
     Returns:
         GNNLLMProcessor instance
     """
     return GNNLLMProcessor()
 
 
-async def analyze_gnn_with_llm(gnn_content: str, analysis_type: str = "summary") -> Dict[str, Any]:
+async def analyze_gnn_with_llm(
+    gnn_content: str, analysis_type: str = "summary"
+) -> Dict[str, Any]:
     """
     Convenience function to analyze GNN content with LLM.
-    
+
     Args:
         gnn_content: GNN model content as string
         analysis_type: Type of analysis to perform
-    
+
     Returns:
         Dictionary with analysis results
     """
@@ -816,74 +941,85 @@ async def analyze_gnn_with_llm(gnn_content: str, analysis_type: str = "summary")
 async def explain_gnn_model(gnn_content: str) -> Dict[str, Any]:
     """
     Convenience function to explain a GNN model.
-    
+
     Args:
         gnn_content: GNN model content as string
-    
+
     Returns:
         Dictionary with explanation results
     """
     return await analyze_gnn_with_llm(gnn_content, "summary")
 
-def analyze_gnn_model(gnn_content: str, analysis_type: Union[AnalysisType, str] = "summary") -> Dict[str, Any]:
+
+def analyze_gnn_model(
+    gnn_content: str, analysis_type: Union[AnalysisType, str] = "summary"
+) -> Dict[str, Any]:
     """
     Analyze a GNN model using LLM capabilities.
-    
+
     Args:
         gnn_content: GNN model content as string
         analysis_type: Type of analysis to perform
-    
+
     Returns:
         Dictionary with analysis results
     """
     import asyncio
 
     try:
-        result = asyncio.run(analyze_gnn_with_llm(gnn_content, analysis_type))
+        analysis_name = (
+            analysis_type.value
+            if isinstance(analysis_type, AnalysisType)
+            else analysis_type
+        )
+        result = asyncio.run(analyze_gnn_with_llm(gnn_content, analysis_name))
         return result
 
     except Exception as e:
-        return {
-            "success": False,
-            "error": str(e),
-            "error_type": type(e).__name__
-        }
+        return {"success": False, "error": str(e), "error_type": type(e).__name__}
+
 
 def generate_explanation(gnn_content: str) -> Dict[str, Any]:
     """
     Generate a natural language explanation for a GNN model.
-    
+
     Args:
         gnn_content: GNN model content as string
-    
+
     Returns:
         Dictionary with explanation results
     """
     import asyncio
+
     try:
         result = asyncio.run(explain_gnn_model(gnn_content))
         return result
     except Exception as e:
         return {"success": False, "error": str(e), "error_type": type(e).__name__}
 
+
 def enhance_model(gnn_content: str) -> Dict[str, Any]:
     """
     Suggest enhancements for a GNN model using LLM.
-    
+
     Args:
         gnn_content: GNN model content as string
-    
+
     Returns:
         Dictionary with enhancement suggestions
     """
     import asyncio
+
     try:
         processor = GNNLLMProcessor()
+
         async def _run() -> Dict[str, Any]:
+            """Run operation."""
             await processor.initialize()
             result = await processor.suggest_enhancements(gnn_content)
             await processor.close()
             return result
+
         return asyncio.run(_run())
     except Exception as e:
         return {"success": False, "error": str(e), "error_type": type(e).__name__}

@@ -1,7 +1,7 @@
 # GNN Paper: Generalized Notation Notation
 
-**Version**: v2.0.0
-**Last Updated**: 2026-03-24
+**Version**: v1.6.0 Engine (Bundle v2.0.0)
+**Last Updated**: 2026-04-23
 **Status**: ✅ Production Ready
 **Modules**: 38+ · **Pipeline steps**: 25 · **Renderers**: 9 backends (see [implementations/README.md](implementations/README.md)) · **Tests**: see [README.md](../../README.md)
 
@@ -70,7 +70,25 @@ Updated information on GNN can be found at Github [10] or in Coda [11].
 
 ### 2.2 GNN punctuation
 
+GNN utilizes standard ASCII characters to represent Active Inference generative models. Key punctuation rules include:
+- **Variable Declarations**: Formatted as `NAME[dim_1, dim_2, ..., key=value]`. Variables are alphanumeric and case-sensitive. The `type` key is required (e.g., `A[3,3, type=float]`).
+- **Default Value Hints**: Extended syntax supports `default=uniform`, `zeros`, `ones`, or `eye` (e.g., `W[4,4, type=float, default=zeros]`).
+- **Connection Operators**: Relationships between state-space variables are denoted by specific operators:
+  - `>` signifies a causal or directed edge (e.g., `D>s` for prior to hidden state).
+  - `-` signifies an undirected or bidirectional edge (e.g., `s-A` for state to likelihood mapping).
+- **Annotations**: Colons `:` can be used to annotate edges for documentation and rendering (e.g., `G>π:policy_selection`).
+- **Initial Parameterization**: Matrices and tensors are parameterized using outer braces `{...}` for the full tensor and inner parentheses `(...)` for rows or slices.
+
 ### 2.3 GNN source file structure
+
+A GNN source file is a UTF-8 Markdown file (`.md`) organized into ordered sections, denoted by level-2 headers (`##`). The strict schema validator enforces the following required sections in sequence:
+1. `## GNNSection`: A short, space-free identifier for the model (e.g., `ActInfPOMDP`).
+2. `## GNNVersionAndFlags`: Indicates the GNN specification version, such as `GNN v1.1`.
+3. `## ModelName`: A human-readable title for the generative model.
+4. `## StateSpaceBlock`: The core declaration block where all variables, matrices, and dimensions are defined.
+5. `## Connections`: A structured list of directed and undirected edges forming the causal structure of the model.
+
+Optional sections, such as `## ModelAnnotation`, `## InitialParameterization`, `## Metadata`, and `## ActInf Ontology Annotation`, can be included to provide further semantic, mathematical, and historical context.
 
 ## 3 Step-by-Step GNN
 
@@ -83,6 +101,47 @@ Friston, and Whyte 2022 [3] [4]. Just as the goal of the initial step-by-step pa
 was to start simple and progressively add model features till one has arrived at a
 full Active Inference generative model, here we use that exact same progression
 to demonstrate the flexibility of GNN.
+
+For instance, the classic T-Maze Epistemic Foraging Agent from this tutorial can be formally represented in GNN as follows. This snippet highlights the structural mapping of the POMDP state space and its connections:
+
+```gnn
+## GNNSection
+ActInfPOMDP
+
+## GNNVersionAndFlags
+GNN v1.1
+
+## ModelName
+T-Maze Epistemic Foraging Agent
+
+## StateSpaceBlock
+# Hidden state factors
+s_loc[4,1,type=float]        # Location state: (0:center, 1:left, 2:right, 3:cue)
+s_ctx[2,1,type=float]        # Context state: (0:reward_left, 1:reward_right)
+
+# Observation modalities
+o_loc[4,1,type=int]          # Location observation
+o_rew[3,1,type=int]          # Reward/cue observation
+
+# Generative model matrices
+A_loc[4,4,type=float]        # Location likelihood: P(o_loc | s_loc)
+A_rew[3,4,2,type=float]      # Reward likelihood: P(o_rew | s_loc, s_ctx)
+
+# Policy and action
+pi[4,type=float]             # Policy over 4 actions
+u[1,type=int]                # Selected action
+G[pi,type=float]             # Expected Free Energy per policy
+
+## Connections
+s_loc-A_loc
+A_loc-o_loc
+s_loc-A_rew
+s_ctx-A_rew
+A_rew-o_rew
+G>pi
+pi>u
+```
+This plain-text scaffolding provides both humans and machines with a concise, unambiguous representation of the generative model's epistemic and instrumental properties.
 
 ## 4 Expressing GNN: The Triple Play
 
@@ -132,12 +191,31 @@ the mental processes and structures described by Active Inference. GNN provides
 a means to specify these models in a formal and precise manner, allowing for their
 implementation and testing in computational simulations. Critically, GNN as a
 pseudocode does not restrict which programming language or package ultimately
-implements the particular generative model in question. As already multiple
-software implementations of Active Inference exist with only more on the horizon
-[6], GNN will aid the backwards- and forwards-compatibility of the field. This
-flexible capability of GNN will enable researchers to explore the implications
-of various cognitive models, advancing understanding of active inference and
-catalyzing applications across diverse domains.
+implements the particular generative model in question. 
+
+### 4.5 Neurosymbolic Context Analysis
+
+As of GNN v1.6.0, the Triple Play formulation is heavily augmented by localized Neurosymbolic Analysis. The integration operates via:
+1. **Structural Semantic Extraction:** Mapping matrix nodes into Active Inference ontological databases.
+2. **LLM Synthesis:** Translating complex categorical topologies into heuristically approachable natural language streams, generating self-documenting executable architectures.
+3. **Execution Recovery Heuristics:** Automatically triggering heuristic code recovery when downstream solvers fail, driving a continuous reinforcement iteration loop against explicit execution environments.
+
+```mermaid
+graph LR
+    A[GNN Structural State] --> B{Ontological Mapping}
+    B --> C[Edge-Based LLM Parsing]
+    C --> D[Executable Source Code generation]
+    D --> E{Execution Success?}
+    E -->|No| F[Heuristic Circuit Breaker]
+    F --> C
+    E -->|Yes| G[Intelligent Analysis Report]
+```
+
+### 4.6 Execution and Metric Logging
+
+To advance the pragmatics of cognitive modeling, the GNN ecosystem provides built-in mechanisms for executing rendered models and instrumenting them to extract native behavioral metrics. When models are executed via the pipeline (e.g., Step 12 Execute), variables such as Variational Free Energy (VFE) and Expected Free Energy (EFE) are logged continuously over the simulation horizon.
+
+These execution traces allow researchers to empirically investigate the theoretical properties of Active Inference. For example, recent validation testing spanning state-space dimensions $N \in \{3, 9, 27\}$ confirmed that an agent's initial VFE scales tightly with $O(\ln(N))$ prior to active uncertainty resolution, aligning cleanly with analytical flat-prior expectations. The automated analysis layer (Step 16) directly consumes these traces to generate trajectory and energy convergence plots, rendering complex behavioral phenomena directly legible to end-users without requiring manual metric extraction. Furthermore, extensive performance scaling experiments on PyMDP execution up to $N=20$ state-space and observation permutations across $T=3000$ timesteps have confirmed a deterministic $O(N^\alpha)$ runtime complexity well within a stabilized 20-minute execution threshold, enabling robust benchmark generation for large-scale generative models.
 
 ## 5 Discussion
 

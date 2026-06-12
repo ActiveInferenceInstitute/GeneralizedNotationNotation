@@ -1,85 +1,34 @@
 # ActiveInference.jl Analysis Module
 
-Framework-specific analysis for ActiveInference.jl simulation results.
+Framework-specific analysis for ActiveInference.jl execution results.
 
-## Overview
+## Public Surface
 
-This submodule provides analysis and visualization capabilities for ActiveInference.jl (Julia) simulations. It includes both Python analyzers for pipeline integration and Julia analysis suites for advanced statistical analysis.
+- `generate_analysis_from_logs(execution_results_dir, output_dir, verbose=False)`
+- Step 16 calls this analyzer for current `activeinference_jl` Step 12 outputs.
 
-## Module Structure
+## Input Contract
 
-```
-analysis/activeinference_jl/
-├── __init__.py                      # Module exports
-├── analyzer.py                      # Python analyzer for pipeline integration
-├── analysis_suite.jl                # Julia analysis suite
-├── advanced_pomdp_analysis.jl       # Advanced POMDP analysis
-├── statistical_analysis.jl          # Statistical methods
-├── uncertainty_quantification.jl    # Uncertainty analysis
-├── multi_scale_temporal_analysis.jl # Temporal dynamics
-├── meta_cognitive_analysis.jl       # Meta-cognitive analysis
-├── visualization_suite.jl           # Julia visualization
-└── visualization_utils.jl           # Visualization helpers
+The primary input is:
+
+```text
+output/12_execute_output/<model>/activeinference_jl/simulation_data/simulation_results.json
 ```
 
-## Key Components
+The JSON schema is `activeinference_jl_simulation_v1` and includes observations by modality, hidden states by factor, actions by control factor, beliefs by factor, expected free energy, policy posterior, validation, matrix provenance, and runtime metadata.
 
-### Python Analyzer (`analyzer.py`)
+## Outputs
 
-Pipeline-integrated analyzer:
+The analyzer writes plots under:
 
-```python
-from analysis.activeinference_jl.analyzer import generate_analysis_from_logs
-
-results = generate_analysis_from_logs(
-    execution_dir=Path("output/12_execute_output"),
-    output_dir=Path("output/16_analysis_output/activeinference_jl"),
-    verbose=True
-)
+```text
+output/16_analysis_output/activeinference_jl/
 ```
 
-### Julia Analysis Suites
+Generated plots include belief heatmaps, action traces, observation traces, and expected-free-energy traces.
 
-Advanced analysis in native Julia:
+## Verification
 
-- **analysis_suite.jl**: Core analysis functions
-- **advanced_pomdp_analysis.jl**: POMDP-specific analysis
-- **statistical_analysis.jl**: Statistical methods
-- **uncertainty_quantification.jl**: Bayesian uncertainty
-- **multi_scale_temporal_analysis.jl**: Multi-scale dynamics
-- **meta_cognitive_analysis.jl**: Higher-order inference analysis
-
-## Capabilities
-
-- Free energy convergence analysis
-- Belief precision tracking
-- Action selection analysis
-- Multi-scale temporal dynamics
-- Uncertainty quantification
-- Meta-cognitive metrics
-
-## Data Flow
-
+```bash
+uv run --extra dev python -m pytest src/tests/pipeline/test_pomdp_gridworld_cross_framework.py -q --tb=short
 ```
-ActiveInference.jl Execution (Step 12)
-    ↓
-Python Analyzer (pipeline integration)
-    ↓
-├── Parse simulation outputs
-├── Extract metrics
-└── Generate summaries
-    ↓
-Julia Analysis (optional deep analysis)
-    ↓
-├── Advanced statistics
-├── Uncertainty quantification
-└── Multi-scale analysis
-    ↓
-Analysis Output (Step 16)
-```
-
----
-
-**Framework:** ActiveInference.jl (Julia)
-**Version:** 1.1.3
-**Status:** Production Ready

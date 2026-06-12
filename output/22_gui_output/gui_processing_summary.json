@@ -1,5 +1,5 @@
 {
-  "mode": "headless",
+  "mode": "interactive",
   "gui_types": [
     "gui_1",
     "gui_2"
@@ -10,7 +10,8 @@
       "description": "Form-based Interactive GNN Constructor",
       "success": true,
       "output_file": "output/22_gui_output/constructed_model_gui1.md",
-      "backend": "headless",
+      "backend": "none",
+      "backend_reason": "gradio import does not expose Blocks",
       "features": [
         "Component management via forms",
         "State space editing",
@@ -23,7 +24,8 @@
       "description": "Visual Matrix Editor for GNN Models",
       "success": true,
       "output_file": "output/22_gui_output/visual_model_gui2.md",
-      "backend": "headless",
+      "backend": "none",
+      "backend_reason": "gradio import does not expose Blocks",
       "features": [
         "Visual matrix representation and editing",
         "Drag-and-drop state space modification",

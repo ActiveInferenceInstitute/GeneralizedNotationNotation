@@ -1,0 +1,115 @@
+{
+  "framework": "pymdp",
+  "model_name": "time_varying_dynamics",
+  "script_name": "Time-Varying Transition Dynamics Agent_pymdp.py",
+  "script_path": "output/11_render_output/time_varying_dynamics/pymdp/Time-Varying Transition Dynamics Agent_pymdp.py",
+  "success": true,
+  "return_code": 0,
+  "execution_time": 1.91073,
+  "timestamp": "2026-05-22T06:18:57.993329",
+  "simulation_data": {
+    "traces": [],
+    "free_energy": [],
+    "states": [],
+    "observations": [
+      1,
+      0,
+      2,
+      2,
+      2,
+      0,
+      0,
+      2,
+      2,
+      2
+    ],
+    "actions": [
+      1,
+      1,
+      0,
+      0,
+      0,
+      1,
+      1,
+      0,
+      0,
+      0
+    ],
+    "policy": [],
+    "raw_output": "PyMDP 1.0.0+ detected (JAX-first Agent).\n",
+    "raw_error": "2026-05-22 06:18:58,517 - INFO - Running pymdp 1.0.0 rollout for Time-Varying Transition Dynamics Agent\n2026-05-22 06:18:58,517 - INFO - Output directory: output/pymdp_simulations/Time-Varying Transition Dynamics Agent\n2026-05-22 06:18:58,517 - INFO - Executing PyMDP simulation (correlation_id: render_generated_script)\n2026-05-22 06:18:58,517 - INFO - Starting pymdp 1.0.0 rollout (JAX backend)\n2026-05-22 06:18:58,517 - INFO - Dimensions: No=3, Ns=3, Nu=2 | T=10, batch=1, policy_len=1\n2026-05-22 06:18:58,522 - INFO - Unable to initialize backend 'tpu': INTERNAL: Failed to open libtpu.so: dlopen(libtpu.so, 0x0001): tried: 'libtpu.so' (no such file), '/System/Volumes/Preboot/Cryptexes/OSlibtpu.so' (no such file), '/usr/lib/libtpu.so' (no such file, not in dyld cache), 'libtpu.so' (no such file)\n2026-05-22 06:18:58,687 - INFO - pymdp 1.0.0 Agent built (batch_size=1)\n2026-05-22 06:18:59,375 - INFO - t=00 obs=1 belief=[0.1, 0.798, 0.103] action=1 next_state=0\n2026-05-22 06:18:59,416 - INFO - t=01 obs=0 belief=[0.665, 0.254, 0.081] action=1 next_state=2\n2026-05-22 06:18:59,458 - INFO - t=02 obs=2 belief=[0.013, 0.043, 0.944] action=0 next_state=2\n2026-05-22 06:18:59,499 - INFO - t=03 obs=2 belief=[0.009, 0.019, 0.973] action=0 next_state=2\n2026-05-22 06:18:59,541 - INFO - t=04 obs=2 belief=[0.008, 0.016, 0.976] action=0 next_state=2\n2026-05-22 06:18:59,583 - INFO - t=05 obs=0 belief=[0.645, 0.078, 0.277] action=1 next_state=1\n2026-05-22 06:18:59,625 - INFO - t=06 obs=0 belief=[0.826, 0.068, 0.106] action=1 next_state=2\n2026-05-22 06:18:59,666 - INFO - t=07 obs=2 belief=[0.013, 0.025, 0.962] action=0 next_state=2\n2026-05-22 06:18:59,708 - INFO - t=08 obs=2 belief=[0.008, 0.017, 0.975] action=0 next_state=2\n2026-05-22 06:18:59,750 - INFO - t=09 obs=2 belief=[0.008, 0.016, 0.976] action=0 next_state=0\n2026-05-22 06:18:59,751 - INFO - Saved simulation results to output/pymdp_simulations/Time-Varying Transition Dynamics Agent/simulation_results.json\n2026-05-22 06:18:59,751 - INFO - PyMDP simulation completed successfully\n2026-05-22 06:18:59,751 - INFO - Simulation completed successfully\n2026-05-22 06:18:59,751 - INFO -   framework:    PyMDP\n2026-05-22 06:18:59,751 - INFO -   pymdp ver:    1.0.0\n2026-05-22 06:18:59,751 - INFO -   backend:      jax\n2026-05-22 06:18:59,751 - INFO -   num_timesteps:10\n",
+    "beliefs": [
+      [
+        0.09969788789749146,
+        0.7975831031799316,
+        0.1027190163731575
+      ],
+      [
+        0.6648162603378296,
+        0.25420692563056946,
+        0.08097677677869797
+      ],
+      [
+        0.013170176185667515,
+        0.04319736734032631,
+        0.9436324834823608
+      ],
+      [
+        0.008668112568557262,
+        0.018691567704081535,
+        0.9726402759552002
+      ],
+      [
+        0.007943781092762947,
+        0.01632961817085743,
+        0.9757265448570251
+      ],
+      [
+        0.645197331905365,
+        0.07768625766038895,
+        0.2771163582801819
+      ],
+      [
+        0.825545072555542,
+        0.06817036122083664,
+        0.10628453642129898
+      ],
+      [
+        0.013148589059710503,
+        0.024623118340969086,
+        0.9622282981872559
+      ],
+      [
+        0.00826413743197918,
+        0.017038559541106224,
+        0.9746973514556885
+      ],
+      [
+        0.007891793735325336,
+        0.016169939190149307,
+        0.9759382605552673
+      ]
+    ],
+    "num_timesteps": 10
+  },
+  "execution_benchmark_repeats": 1,
+  "execution_metadata": {
+    "executor": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python",
+    "stdout_length": 41,
+    "stderr_length": 2327,
+    "output_directory": "output/12_execute_output/time_varying_dynamics/pymdp"
+  },
+  "execution_time_mean": 1.91073,
+  "execution_time_std": 0.0,
+  "execution_time_samples": [
+    1.91073
+  ],
+  "collected_outputs": {
+    "visualizations": [],
+    "simulation_data": [
+      "output/12_execute_output/time_varying_dynamics/pymdp/simulation_data/simulation_results.json"
+    ],
+    "traces": [],
+    "other": []
+  }
+}

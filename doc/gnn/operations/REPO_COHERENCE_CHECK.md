@@ -1,7 +1,7 @@
 # GNN Repo Coherence Check
 
-**Version**: v2.0.0  
-**Last Updated**: 2026-03-24  
+**Version**: v1.6.0 Engine (Bundle v2.0.0)  
+**Last Updated**: 2026-04-15  
 **Status**: ✅ Production Ready  
 **Modules**: 38+ · **Pipeline steps**: 25 · **Renderers**: 9 backends (see [../implementations/README.md](../implementations/README.md)) · **Tests**: see [../../../README.md](../../../README.md)  
 
@@ -25,13 +25,13 @@ This document validates the complete GNN pipeline architecture. For current impl
 
 ## Executive Summary
 
-This document serves as a comprehensive checklist and analysis framework for validating the entire GNN (Generalized Notation Notation) codebase against established standards, patterns, and best practices. It covers all 25 pipeline steps (0-24) and 29 specialized modules, ensuring architectural compliance, code quality, documentation completeness, and integration consistency.
+This document serves as a comprehensive checklist and analysis framework for validating the entire GNN (Generalized Notation Notation) codebase against established standards, patterns, and best practices. It covers all 25 pipeline steps (0-24) and 31 Python packages under `src/`, ensuring architectural compliance, code quality, documentation completeness, and integration consistency.
 
 ### High-Level Coherence Metrics
 
-- **Total Pipeline Steps**: 25 (0_template.py through 23_report.py, steps 0-24)
+- **Total Pipeline Steps**: 25 (0_template.py through 24_intelligent_analysis.py, steps 0-24)
 
-- **Total Modules**: 29 specialized agent modules
+- **Total Modules**: 31 Python packages under `src/`
 - **AGENTS.md Files**: 41 documentation files (including sub-modules)
 - **Architecture Pattern**: Thin orchestrator with modular implementation
 - **Testing Policy**: No substitutions - real data and real code paths only (some previous tests still use substitutions - see Section 16.1)
@@ -561,7 +561,7 @@ graph LR
 
 - [ ] **mcp.py Exists**: Module has `mcp.py` file (where applicable)
 - [ ] **Tool Registration**: Tools properly registered
-- [ ] **Tool Implementation**: Tools have real implementations (no placeholders)
+- [ ] **Tool Implementation**: Tools have real implementations
 - [ ] **Tool Documentation**: Tools documented in AGENTS.md
 
 #### MCP Integration Pattern
@@ -783,7 +783,7 @@ def test_processing():
 
 ### 5.2 Real Data Processing
 
-**Requirement**: Tests must use real, representative data - no synthetic or placeholder datasets.
+**Requirement**: Tests must use real, representative data.
 
 #### P5.2 Scalability validation checklist
 
@@ -1230,7 +1230,7 @@ uv run python src/3_gnn.py --test-mode
 
 # Run specific test module
 
-pytest src/tests/test_validation.py -v
+uv run --extra dev python -m pytest src/tests/validation/test_validation_overall.py -v
 
 ```
 
@@ -1441,7 +1441,7 @@ def test_processing(patched_process):
 
 ## 15. Conclusion
 
-This mega-prompt provides a comprehensive framework for validating repo-wide coherence across all 25 pipeline steps and 29 specialized modules. Use it systematically to:
+This mega-prompt provides a comprehensive framework for validating repo-wide coherence across all 25 pipeline steps and 31 Python packages under `src/`. Use it systematically to:
 
 1. **Identify Issues**: Find architectural, code quality, and documentation issues
 2. **Score Compliance**: Calculate compliance scores for each validation area
@@ -1461,7 +1461,7 @@ This mega-prompt provides a comprehensive framework for validating repo-wide coh
 ---
 
 **Status**: Production Ready
-**Version**: v2.0.0
+**Version**: v1.6.0 Engine (Bundle v2.0.0)
 **Coverage**: 25 pipeline steps, 29 modules, 41 AGENTS.md files
 
 ---
@@ -1474,12 +1474,12 @@ This mega-prompt provides a comprehensive framework for validating repo-wide coh
 
 **Affected Files**:
 
-- `src/tests/test_pipeline_warnings_fix.py`
-- `src/tests/test_pipeline_recovery.py`
-- `src/tests/test_pipeline_error_scenarios.py`
+- `src/tests/utils/test_pipeline_warnings_fix.py`
+- `src/tests/pipeline/test_pipeline_recovery.py`
+- `src/tests/pipeline/test_pipeline_error_scenarios.py`
 - `src/tests/test_fast_suite.py`
-- `src/tests/test_d2_visualizer.py`
-- `src/tests/test_advanced_visualization_overall.py`
+- `src/tests/visualization/test_d2_visualizer.py`
+- `src/tests/advanced_visualization/test_advanced_visualization_overall.py`
 - `src/tests/conftest.py`
 
 **Priority**: High

@@ -14,7 +14,7 @@ import shutil
 from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
-from typing import List, Optional
+from typing import Any, List, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -22,6 +22,7 @@ logger = logging.getLogger(__name__)
 @dataclass
 class StepDiff:
     """Diff for a single pipeline step between two runs."""
+
     step_name: str
     prev_status: str
     curr_status: str
@@ -34,6 +35,7 @@ class StepDiff:
 @dataclass
 class DiffReport:
     """Comparison between two pipeline runs."""
+
     current_timestamp: str
     previous_timestamp: str
     step_diffs: List[StepDiff] = field(default_factory=list)
@@ -44,9 +46,11 @@ class DiffReport:
 
     def to_markdown(self) -> str:
         """Render diff as Markdown section for PIPELINE_REPORT.md."""
-        lines = [f"## Run Comparison ({self.overall_badge})"]
+        lines: list[Any] = [f"## Run Comparison ({self.overall_badge})"]
         lines.append("")
-        lines.append(f"Comparing **{self.current_timestamp}** vs **{self.previous_timestamp}**")
+        lines.append(
+            f"Comparing **{self.current_timestamp}** vs **{self.previous_timestamp}**"
+        )
         lines.append("")
 
         if self.new_failures:
@@ -107,8 +111,12 @@ def compare_runs(current: Path, previous: Path) -> DiffReport:
             previous_timestamp="unknown",
         )
 
-    curr_steps = {s["name"]: s for s in curr_data.get("steps", []) if isinstance(s, dict)}
-    prev_steps = {s["name"]: s for s in prev_data.get("steps", []) if isinstance(s, dict)}
+    curr_steps = {
+        s["name"]: s for s in curr_data.get("steps", []) if isinstance(s, dict)
+    }
+    prev_steps = {
+        s["name"]: s for s in prev_data.get("steps", []) if isinstance(s, dict)
+    }
 
     report = DiffReport(
         current_timestamp=curr_data.get("timestamp", "unknown"),
@@ -127,14 +135,14 @@ def compare_runs(current: Path, previous: Path) -> DiffReport:
 
         delta_pct = ((curr_dur - prev_dur) / prev_dur * 100) if prev_dur > 0 else 0
 
-        is_new_failure = (
-            curr_status.lower() in ("failed", "error")
-            and prev_status.lower() not in ("failed", "error")
-        )
-        is_fixed = (
-            prev_status.lower() in ("failed", "error")
-            and curr_status.lower() not in ("failed", "error")
-        )
+        is_new_failure = curr_status.lower() in (
+            "failed",
+            "error",
+        ) and prev_status.lower() not in ("failed", "error")
+        is_fixed = prev_status.lower() in (
+            "failed",
+            "error",
+        ) and curr_status.lower() not in ("failed", "error")
         is_regression = is_new_failure or delta_pct > 20
 
         sd = StepDiff(

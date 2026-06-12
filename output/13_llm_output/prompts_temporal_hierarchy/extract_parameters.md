@@ -1,38 +1,37 @@
 # EXTRACT_PARAMETERS
 
-Based on the document, here are the key parameters for the GNN model:
+Based on the document, here are the key information and steps:
 
 1. **Model Matrices**:
-   - A matrices representing the input data (e.g., `A`) and output data (e.g., `B`, `C`).
-   - B matrices represent the input data of each level, while C matrices represent the outputs of each level.
-   - C matrices represent the predictions made by each level based on its own hidden state and actions.
+   - A matrices: dimensions, structure, interpretation
+   - B matrices: dimensions, structure, interpretation
+   - C matrices: dimensions, structure, interpretation
+
+   The document states that "The model is represented as a matrix of probabilities" (pmatrix), which means the model's parameters are represented by matrices.
 
 2. **Precision Parameters**:
-   - γ (gamma): precision parameters for each level
-   - α (alpha): learning rate parameters for each level
-   - Other precision/confidence parameters, such as sensitivity analysis priorities or other parameter values
+   - γ (gamma): precision parameters and their roles
+   - α (alpha): learning rates and adaptation parameters
+   - Other precision/confidence parameters
+
+   The document states that "The precision parameter is a function of the number of predictions" (pparams), which means the model's parameters are represented by matrices.
 
 3. **Dimensional Parameters**:
    - State space dimensions for each factor
    - Observation space dimensions for each modality
    - Action space dimensions for each control factor
 
+   The document states that "The parameter file format recommendations" suggest using a tabular structure to represent the data, with variables representing parameters and their roles (e.g., "parameter_name").
+
 4. **Temporal Parameters**:
    - Time horizons (T)
    - Temporal dependencies and windows
    - Update frequencies and timescales
 
+   The document states that "The parameter file format recommendations" suggest using a tabular structure to represent the data, with variables representing parameters and their roles (e.g., "parameter_name").
+
 5. **Initial Conditions**:
-   - Prior beliefs over initial states
-   - Initial parameter values
-   - Initialization strategies
+   - Initial conditions for each factor
+   - Initialization strategies for each modality
 
-6. **Configuration Summary**:
-   - Parameter file format recommendations for each level of the model
-
-So in summary, the GNN model consists of:
-- A set of matrices representing input data and output data (e.g., `A`, `B`)
-- A matrix representing prediction accuracy over initial states (`C`)
-- A matrix representing predictions made by each level based on its own hidden state and actions (`D`)
-- A matrix representing predictions made by each level based on their own hidden state and actions (`E`)
-- A set of parameters for initialization strategies, sensitivity analysis, and other parameter values.
+So in summary, the model matrices are represented as matrices of probabilities, while the precision parameter is a function of the number of predictions, temporal dependencies and windows, update frequencies, and timescales. The parameters file format recommendations suggest using tabular structures to represent the data.

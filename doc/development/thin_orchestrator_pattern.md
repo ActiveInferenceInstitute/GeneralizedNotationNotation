@@ -33,7 +33,7 @@ src/
 │   ├── pymdp/                      # PyMDP-specific rendering
 │   │   ├── __init__.py
 │   │   ├── pymdp_renderer.py
-│   │   └── pymdp_converter.py
+│   │   └── pymdp_templates.py
 │   ├── rxinfer/                    # RxInfer.jl-specific rendering
 │   │   ├── __init__.py
 │   │   └── rxinfer_renderer.py
@@ -138,10 +138,10 @@ def generate_pymdp_code(model_data: Dict) -> str:
     # ...
 ```
 
-### Wrong: Long Method Definitions in Numbered Scripts
+### Wrong: Long Domain Logic in Numbered Scripts
 
 ```python
-# WRONG: Any method >20 lines should be in modular files
+# WRONG: domain behavior belongs in modular files
 def process_complex_rendering_logic():
     """This is too long for a numbered script."""
     # 50+ lines of implementation
@@ -150,7 +150,7 @@ def process_complex_rendering_logic():
 
 ## 🧪 Testing Pattern
 
-### Test File (`src/tests/test_render_integration.py`)
+### Test File (`src/tests/render/test_render_integration.py`)
 
 ```python
 #!/usr/bin/env python3
@@ -198,7 +198,7 @@ class TestRenderIntegration:
 2. **Create the module directory** (e.g., `src/new_step/`): Organize core functionality
 3. **Create modular files** (e.g., `src/new_step/processor.py`): Implement core logic
 4. **Update module `__init__.py`**: Import and expose functions
-5. **Create tests** (e.g., `src/tests/test_new_step_integration.py`): Comprehensive testing
+5. **Create tests** (e.g., `src/tests/new_step/test_new_step_integration.py`): Comprehensive testing
 
 ### For Existing Steps
 
@@ -210,10 +210,11 @@ class TestRenderIntegration:
 ## 📋 Checklist for Compliance
 
 - [ ] Numbered scripts contain only orchestration logic
+- [ ] Numbered scripts stay at or below 150 lines
 - [ ] Core methods are defined in modular files within module folders
 - [ ] Module `__init__.py` imports and exposes functions from modular files
 - [ ] All methods are tested in `src/tests/`
-- [ ] No method definitions >20 lines in numbered scripts
+- [ ] Helper methods in numbered scripts remain small and focused
 - [ ] Clear separation between pipeline flow and domain logic
 - [ ] Comprehensive error handling and logging
 - [ ] Proper argument parsing and validation
@@ -221,32 +222,9 @@ class TestRenderIntegration:
 ## 🔍 Validation Commands
 
 ```bash
-# Check for long methods in numbered scripts
-find src/ -name "*.py" -maxdepth 1 | grep -E "[0-9]+_.*\.py" | xargs -I {} python -c "
-import ast
-with open('{}', 'r') as f:
-    tree = ast.parse(f.read())
-for node in ast.walk(tree):
-    if isinstance(node, ast.FunctionDef) and len(node.body) > 20:
-        print('{}: {} has {} lines'.format('{}', node.name, len(node.body)))
-"
+# Enforce the numbered-script line budget and basic script structure
+uv run --extra dev python -m pytest src/tests/pipeline/test_pipeline_scripts.py::TestPipelineScriptDiscovery -q
 
-# Check module imports
-python -c "
-import sys
-sys.path.insert(0, 'src')
-for i in range(23):
-    try:
-        script = f'{i:02d}_*.py'
-        import glob
-        files = glob.glob(f'src/{script}')
-        if files:
-            print(f'Checking {files[0]}')
-            with open(files[0], 'r') as f:
-                content = f.read()
-                if 'def ' in content and len(content.split('def ')) > 5:
-                    print(f'  WARNING: {files[0]} may contain too many function definitions')
-    except Exception as e:
-        print(f'Error checking step {i}: {e}')
-"
+# Inspect current numbered-script sizes
+rg --files src -g '[0-9]*_*.py' | sort -V | xargs wc -l
 ```

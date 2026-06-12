@@ -31,6 +31,7 @@ If you encounter errors:
 
 import sys
 from pathlib import Path
+from typing import cast
 
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent))
@@ -46,14 +47,22 @@ run_script = create_standardized_pipeline_script(
         "advanced_stats": {
             "flag": "--advanced-stats",
             "action": "store_true",
-            "help": "Enable advanced statistical distributions and extended visualizations"
-        }
-    }
+            "help": "Enable advanced statistical distributions and extended visualizations",
+        },
+        "generate_animations": {
+            "flag": "--no-animations",
+            "action": "store_false",
+            "default": True,
+            "help": "Disable Step 16 GIF animation artifacts",
+        },
+    },
 )
+
 
 def main() -> int:
     """Main entry point for the analysis step."""
-    return run_script()
+    return cast("int", run_script())
+
 
 if __name__ == "__main__":
     raise SystemExit(main())

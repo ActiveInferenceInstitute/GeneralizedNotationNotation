@@ -63,18 +63,18 @@ class TestEnvironmentModuleIntegration:
     @pytest.mark.integration
     def test_all_modules_have_info(self) -> None:
         """Test all modules provide info."""
-        modules_with_info = [
-            'gnn',
-            'render',
-            'report',
-            'audio',
-            'visualization'
+        modules_with_info: list[Any] = [
+            "gnn",
+            "render",
+            "report",
+            "audio",
+            "visualization",
         ]
 
         for module_name in modules_with_info:
             try:
                 module = __import__(module_name)
-                if hasattr(module, 'get_module_info'):
+                if hasattr(module, "get_module_info"):
                     info = module.get_module_info()
                     assert info is not None
             except ImportError:
@@ -101,7 +101,9 @@ class TestEnvironmentPipelineIntegration:
         src_dir = Path(__file__).parent.parent
 
         # Check for numbered script files
-        scripts = list(src_dir.glob("[0-9]*.py")) + list(src_dir.glob("[0-9][0-9]_*.py"))
+        scripts = list(src_dir.glob("[0-9]*.py")) + list(
+            src_dir.glob("[0-9][0-9]_*.py")
+        )
 
         # Should find some pipeline scripts
         assert isinstance(scripts, list)

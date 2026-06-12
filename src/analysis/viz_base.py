@@ -11,16 +11,17 @@ Usage:
 
 import logging
 from pathlib import Path
-from typing import Optional
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
 # --- Centralized matplotlib setup (shared via visualization._viz_compat) ---
 from visualization._viz_compat import MATPLOTLIB_AVAILABLE, np, plt, sns
 
-patches = None
+patches: Any = None
 try:
     import matplotlib.patches as _patches
+
     patches = _patches
 except (ImportError, AttributeError) as e:
     logger.debug("matplotlib.patches not available: %s", e)
@@ -29,8 +30,8 @@ except (ImportError, AttributeError) as e:
 def safe_savefig(
     output_path: Path,
     dpi: int = 300,
-    bbox_inches: str = 'tight',
-    log: Optional[logging.Logger] = None
+    bbox_inches: str = "tight",
+    log: Optional[logging.Logger] = None,
 ) -> Optional[str]:
     """
     Save the current matplotlib figure and close it.
@@ -64,15 +65,14 @@ def safe_savefig(
             plt.close()
         except (OSError, ValueError) as e:
             logger.debug(f"plt.close() failed (non-fatal): {e}")
-            pass  # nosec B110 -- intentional: plt.close() failure is non-fatal
         return None
 
 
-__all__ = [
-    'plt',
-    'np',
-    'patches',
-    'sns',
-    'MATPLOTLIB_AVAILABLE',
-    'safe_savefig',
+__all__: list[Any] = [
+    "plt",
+    "np",
+    "patches",
+    "sns",
+    "MATPLOTLIB_AVAILABLE",
+    "safe_savefig",
 ]

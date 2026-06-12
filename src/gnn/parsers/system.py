@@ -7,7 +7,7 @@ This module provides the main parsing system functionality.
 
 import logging
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Type, Union
+from typing import Any, Dict, List, Optional, Type, Union, cast
 
 from .alloy_serializer import AlloySerializer
 from .asn1_serializer import ASN1Serializer
@@ -66,7 +66,7 @@ from .znotation_serializer import ZNotationSerializer
 logger = logging.getLogger(__name__)
 
 # Registry of all available parsers and serializers
-PARSER_REGISTRY: Dict[GNNFormat, Type['GNNParser']] = {
+PARSER_REGISTRY: Dict[GNNFormat, Type["GNNParser"]] = {
     GNNFormat.MARKDOWN: MarkdownGNNParser,
     GNNFormat.SCALA: ScalaGNNParser,
     GNNFormat.LEAN: LeanGNNParser,
@@ -89,7 +89,7 @@ PARSER_REGISTRY: Dict[GNNFormat, Type['GNNParser']] = {
     GNNFormat.TLA_PLUS: TLAParser,
     GNNFormat.AGDA: AgdaParser,
     GNNFormat.HASKELL: HaskellGNNParser,
-    GNNFormat.PICKLE: PickleGNNParser
+    GNNFormat.PICKLE: PickleGNNParser,
 }
 
 SERIALIZER_REGISTRY: Dict[GNNFormat, Type] = {
@@ -114,28 +114,27 @@ SERIALIZER_REGISTRY: Dict[GNNFormat, Type] = {
     GNNFormat.TLA_PLUS: TLASerializer,
     GNNFormat.AGDA: AgdaSerializer,
     GNNFormat.HASKELL: FunctionalSerializer,
-    GNNFormat.PICKLE: BinarySerializer
+    GNNFormat.PICKLE: BinarySerializer,
 }
+
 
 class GNNParsingSystem:
     """
     Unified GNN Parsing System
-    
+
     Provides comprehensive parsing, serialization, and conversion capabilities
     for all supported GNN specification formats.
     """
 
-    def __init__(self, strict_validation: bool = True):
+    def __init__(self, strict_validation: bool = True) -> None:
         """
         Initialize the parsing system.
-        
+
         Args:
             strict_validation: Whether to perform strict validation
         """
         self.strict_validation = strict_validation
         self.parsers: Dict[GNNFormat, GNNParser] = {}
-        # Maintain previous alias for older callers/tests that expect `_parsers`
-        self._parsers = self.parsers
         self.serializers: Dict[GNNFormat, Any] = {}
         self.converter = FormatConverter()
         self.validator = GNNValidator()
@@ -143,7 +142,7 @@ class GNNParsingSystem:
         self._initialize_parsers()
         self._initialize_serializers()
 
-    def _initialize_parsers(self):
+    def _initialize_parsers(self) -> Any:
         """Initialize all available parsers."""
         for format_type, parser_class in PARSER_REGISTRY.items():
             try:
@@ -151,23 +150,26 @@ class GNNParsingSystem:
             except Exception as e:
                 logger.warning(f"Failed to initialize parser for {format_type}: {e}")
 
-    def _initialize_serializers(self):
+    def _initialize_serializers(self) -> Any:
         """Initialize all available serializers."""
         for format_type, serializer_class in SERIALIZER_REGISTRY.items():
             try:
                 self.serializers[format_type] = serializer_class()
             except Exception as e:
-                logger.warning(f"Failed to initialize serializer for {format_type}: {e}")
+                logger.warning(
+                    f"Failed to initialize serializer for {format_type}: {e}"
+                )
 
-    def parse_file(self, file_path: Union[str, Path],
-                   format_hint: Optional[GNNFormat] = None) -> ParseResult:
+    def parse_file(
+        self, file_path: Union[str, Path], format_hint: Optional[GNNFormat] = None
+    ) -> ParseResult:
         """
         Parse a GNN file.
-        
+
         Args:
             file_path: Path to the file to parse
             format_hint: Optional format hint
-            
+
         Returns:
             ParseResult containing the parsed model
         """
@@ -185,23 +187,22 @@ class GNNParsingSystem:
         if parser is None:
             raise ValueError(f"Unsupported format: {format_hint}")
         # Ensure parsers accept either str or Path
-        if hasattr(parser, 'parse_file'):
-            return parser.parse_file(file_path)
+        if hasattr(parser, "parse_file"):
+            return parser.parse_file(str(file_path))
         else:
             # Recovery: call parse_string on file content
-            with open(file_path, 'r', encoding='utf-8') as f:
+            with open(file_path, "r", encoding="utf-8") as f:
                 content = f.read()
             return parser.parse_string(content)
 
-    def parse_string(self, content: str,
-                     format: GNNFormat) -> ParseResult:
+    def parse_string(self, content: str, format: GNNFormat) -> ParseResult:
         """
         Parse GNN content from string.
-        
+
         Args:
             content: String content to parse
             format: Format of the content
-            
+
         Returns:
             ParseResult containing the parsed model
         """
@@ -226,31 +227,36 @@ class GNNParsingSystem:
             logger.error(f"Parsing failed for format {format}: {e}")
             raise ParseError(f"Failed to parse {format} content: {e}") from e
 
-    def convert(self, model: GNNInternalRepresentation,
-                from_format: GNNFormat,
-                to_format: GNNFormat) -> GNNInternalRepresentation:
+    def convert(
+        self,
+        model: GNNInternalRepresentation,
+        from_format: GNNFormat,
+        to_format: GNNFormat,
+    ) -> GNNInternalRepresentation:
         """
         Convert a model from one format to another.
-        
+
         Args:
             model: The model to convert
             from_format: Source format
             to_format: Target format
-            
+
         Returns:
             Converted model
         """
-        return self.converter.convert(model, from_format, to_format)
+        return cast(
+            "GNNInternalRepresentation",
+            self.converter.convert(model, from_format.value, to_format.value),
+        )
 
-    def serialize(self, model: GNNInternalRepresentation,
-                  format: GNNFormat) -> str:
+    def serialize(self, model: GNNInternalRepresentation, format: GNNFormat) -> str:
         """
         Serialize a model to string.
-        
+
         Args:
             model: The model to serialize
             format: Target format
-            
+
         Returns:
             Serialized string
         """
@@ -260,17 +266,20 @@ class GNNParsingSystem:
         serializer = self.serializers[format]
 
         try:
-            return serializer.serialize(model)
+            return cast("str", serializer.serialize(model))
         except Exception as e:
             logger.error(f"Serialization failed for format {format}: {e}")
             raise ParseError(f"Failed to serialize to {format}: {e}") from e
 
-    def serialize_to_file(self, model: GNNInternalRepresentation,
-                          file_path: Union[str, Path],
-                          format: Optional[GNNFormat] = None):
+    def serialize_to_file(
+        self,
+        model: GNNInternalRepresentation,
+        file_path: Union[str, Path],
+        format: Optional[GNNFormat] = None,
+    ) -> Any:
         """
         Serialize a model to file.
-        
+
         Args:
             model: The model to serialize
             file_path: Output file path
@@ -287,76 +296,76 @@ class GNNParsingSystem:
 
         # Write to file
         file_path.parent.mkdir(parents=True, exist_ok=True)
-        with open(file_path, 'w', encoding='utf-8') as f:
+        with open(file_path, "w", encoding="utf-8") as f:
             f.write(content)
 
     def _detect_format(self, file_path: Path) -> GNNFormat:
         """
         Detect format from file extension.
-        
+
         Args:
             file_path: Path to the file
-            
+
         Returns:
             Detected format
         """
         extension = file_path.suffix.lower()
 
-        format_map = {
-            '.md': GNNFormat.MARKDOWN,
-            '.scala': GNNFormat.SCALA,
-            '.lean': GNNFormat.LEAN,
-            '.v': GNNFormat.COQ,
-            '.py': GNNFormat.PYTHON,
-            '.bnf': GNNFormat.BNF,
-            '.ebnf': GNNFormat.EBNF,
-            '.thy': GNNFormat.ISABELLE,
-            '.mac': GNNFormat.MAXIMA,
-            '.xml': GNNFormat.XML,
-            '.pnml': GNNFormat.PNML,
-            '.json': GNNFormat.JSON,
-            '.proto': GNNFormat.PROTOBUF,
-            '.yaml': GNNFormat.YAML,
-            '.yml': GNNFormat.YAML,
-            '.xsd': GNNFormat.XSD,
-            '.asn1': GNNFormat.ASN1,
-            '.pkl': GNNFormat.PKL,
-            '.als': GNNFormat.ALLOY,
-            '.zed': GNNFormat.Z_NOTATION,
-            '.tla': GNNFormat.TLA_PLUS,
-            '.agda': GNNFormat.AGDA,
-            '.hs': GNNFormat.HASKELL
+        format_map: dict[str, Any] = {
+            ".md": GNNFormat.MARKDOWN,
+            ".scala": GNNFormat.SCALA,
+            ".lean": GNNFormat.LEAN,
+            ".v": GNNFormat.COQ,
+            ".py": GNNFormat.PYTHON,
+            ".bnf": GNNFormat.BNF,
+            ".ebnf": GNNFormat.EBNF,
+            ".thy": GNNFormat.ISABELLE,
+            ".mac": GNNFormat.MAXIMA,
+            ".xml": GNNFormat.XML,
+            ".pnml": GNNFormat.PNML,
+            ".json": GNNFormat.JSON,
+            ".proto": GNNFormat.PROTOBUF,
+            ".yaml": GNNFormat.YAML,
+            ".yml": GNNFormat.YAML,
+            ".xsd": GNNFormat.XSD,
+            ".asn1": GNNFormat.ASN1,
+            ".pkl": GNNFormat.PKL,
+            ".als": GNNFormat.ALLOY,
+            ".zed": GNNFormat.Z_NOTATION,
+            ".tla": GNNFormat.TLA_PLUS,
+            ".agda": GNNFormat.AGDA,
+            ".hs": GNNFormat.HASKELL,
         }
 
         if extension in format_map:
-            return format_map[extension]
+            return cast("GNNFormat", format_map[extension])
         else:
             raise ValueError(f"Unknown file extension: {extension}")
 
     def _detect_format_from_content(self, content: str) -> GNNFormat:
         """
         Detect format from content.
-        
+
         Args:
             content: File content
-            
+
         Returns:
             Detected format
         """
         # Simple heuristics for format detection
-        if content.startswith('<?xml'):
+        if content.startswith("<?xml"):
             return GNNFormat.XML
-        elif content.startswith('{') or content.startswith('['):
+        elif content.startswith("{") or content.startswith("["):
             return GNNFormat.JSON
-        elif '---' in content[:100]:
+        elif "---" in content[:100]:
             return GNNFormat.YAML
-        elif 'syntax' in content.lower() or 'grammar' in content.lower():
+        elif "syntax" in content.lower() or "grammar" in content.lower():
             return GNNFormat.BNF
-        elif 'theorem' in content.lower() or 'lemma' in content.lower():
+        elif "theorem" in content.lower() or "lemma" in content.lower():
             return GNNFormat.LEAN
-        elif 'import' in content.lower() and 'scala' in content.lower():
+        elif "import" in content.lower() and "scala" in content.lower():
             return GNNFormat.SCALA
-        elif 'import' in content.lower() and 'python' in content.lower():
+        elif "import" in content.lower() and "python" in content.lower():
             return GNNFormat.PYTHON
         else:
             # Default to markdown for unknown formats
@@ -368,10 +377,13 @@ class GNNParsingSystem:
 
     def get_available_parsers(self) -> Dict[GNNFormat, str]:
         """Get available parsers with their descriptions."""
-        return {format: parser.__class__.__name__
-                for format, parser in self.parsers.items()}
+        return {
+            format: parser.__class__.__name__ for format, parser in self.parsers.items()
+        }
 
     def get_available_serializers(self) -> Dict[GNNFormat, str]:
         """Get available serializers with their descriptions."""
-        return {format: serializer.__class__.__name__
-                for format, serializer in self.serializers.items()}
+        return {
+            format: serializer.__class__.__name__
+            for format, serializer in self.serializers.items()
+        }

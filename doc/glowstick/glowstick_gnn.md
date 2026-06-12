@@ -532,7 +532,7 @@ impl<S, O, A> TypedDisCoPyTranslator<S, O, A> {
 **Challenge**: Existing GNN pipeline is Python-based
 **Solution**:
 - PyO3 bindings for seamless Python-Rust interop
-- Gradual migration: implement new features in Rust, maintain backward compatibility
+- Gradual migration: implement new features in Rust and document breaking changes
 - WebAssembly compilation for browser-based tools
 
 ## Future Directions

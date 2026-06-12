@@ -1,7 +1,7 @@
 # GNN DSL Manual
 
-**Version**: v2.0.0  
-**Last Updated**: 2026-03-24  
+**Version**: v1.6.0 Engine (Bundle v2.0.0)  
+**Last Updated**: 2026-04-15  
 **Status**: ✅ Production Ready  
 **Modules**: 38+ · **Pipeline steps**: 25 · **Renderers**: 9 backends (see [../implementations/README.md](../implementations/README.md)) · **Tests**: see [../../../README.md](../../../README.md)  
 
@@ -32,7 +32,7 @@ python src/5_type_checker.py --target-dir input/gnn_files --strict
 | ,      | A comma is used to separate items in a list.                                     | X,Y           | List with X and Y as elements                      |
 | ##     | A double hashtag signals a new section in the Markdown file.                     | ## Section123 | Has "Section123" as a section name                  |
 | #      | A hashtag signals the title header in the Markdown file.                         | # Title123    | Has "Title123" as model title                       |
-| ###    | A triple hashtag is a comment line in the Markdown file.                         | ### Comment123| Has "Comment123" as a comment                     |
+| #      | Inside variable/connection blocks, lines starting with `#` are comments.         | # Comment123  | Inline comment (skipped by parser)                 |
 | {}     | Curly brackets are specification of exact values for a variable.                 | X{1}          | X equals 1 exactly                                 |
 | -      | Hyphen is an undirected causal edge between two variables.                       | X-Y           | Undirected relation between X and Y                |
 | ()     | Parentheses are used to group expressions.                                       | X^(Y_2)       | X with a superscript that is Y with a subscript 2  |

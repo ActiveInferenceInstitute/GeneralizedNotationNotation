@@ -1,5 +1,7 @@
-"""Shim: ontology visualizer lives in visualization.ontology."""
+"""Facade: ontology visualizer lives in visualization.ontology."""
 
-from visualization.ontology import OntologyVisualizer
+from typing import Any
 
-__all__ = ["OntologyVisualizer"]
+from .ontology import OntologyVisualizer
+
+__all__: list[Any] = ["OntologyVisualizer"]

@@ -15,7 +15,7 @@ import sys
 import time
 from typing import List, Optional
 
-# --- Re-export everything from sub-modules for backward compatibility ---
+# --- Public exports from setup sub-modules ---
 from .constants import VENV_DIR
 from .dependency_setup import (
     install_jax_and_test,
@@ -36,8 +36,13 @@ logger = logging.getLogger(__name__)
 
 
 # --- Callable Main Function ---
-def perform_full_setup(verbose: bool = False, recreate_venv: bool = False, dev: bool = False,
-                      extras: Optional[List[str]] = None, skip_jax_test: bool = False) -> int:
+def perform_full_setup(
+    verbose: bool = False,
+    recreate_venv: bool = False,
+    dev: bool = False,
+    extras: Optional[List[str]] = None,
+    skip_jax_test: bool = False,
+) -> int:
     """
     Performs the full setup using UV: creates environment and installs dependencies.
     This function is intended to be called by other scripts.
@@ -59,14 +64,18 @@ def perform_full_setup(verbose: bool = False, recreate_venv: bool = False, dev: 
     # Ensure we have a console handler with a clear format
     if not logger.handlers:
         console_handler = logging.StreamHandler(sys.stdout)
-        console_handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(message)s'))
+        console_handler.setFormatter(
+            logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
+        )
         logger.addHandler(console_handler)
         logger.propagate = False
 
     start_time = time.time()
     logger.info("🚀 Starting UV environment setup...")
     logger.info(f"📁 Project root: {PROJECT_ROOT}")
-    logger.info(f"⚙️ Configuration: verbose={verbose}, recreate_venv={recreate_venv}, dev={dev}, extras={extras}, skip_jax_test={skip_jax_test}")
+    logger.info(
+        f"⚙️ Configuration: verbose={verbose}, recreate_venv={recreate_venv}, dev={dev}, extras={extras}, skip_jax_test={skip_jax_test}"
+    )
     sys.stdout.flush()
 
     try:
@@ -110,9 +119,13 @@ def perform_full_setup(verbose: bool = False, recreate_venv: bool = False, dev: 
         # After dependency install, ensure JAX/Optax/Flax are present and working
         if not skip_jax_test:
             if not install_jax_and_test(verbose=verbose):
-                logger.warning("JAX/Optax/Flax installation or self-test failed, but continuing setup.")
+                logger.warning(
+                    "JAX/Optax/Flax installation or self-test failed, but continuing setup."
+                )
         else:
-            logger.warning("JAX/Optax/Flax testing was skipped. JAX functionality may not be available.")
+            logger.warning(
+                "JAX/Optax/Flax testing was skipped. JAX functionality may not be available."
+            )
 
         total_duration = time.time() - start_time
         logger.info("\n🎉 UV setup completed successfully!")
@@ -124,7 +137,7 @@ def perform_full_setup(verbose: bool = False, recreate_venv: bool = False, dev: 
             logger.info(f"  source {VENV_DIR}/bin/activate")
         logger.info("\nTo run commands in the UV environment:")
         logger.info("  uv run python src/main.py --help")
-        logger.info("  uv run pytest src/tests/")
+        logger.info("  uv run --extra dev python -m pytest src/tests/")
         sys.stdout.flush()
         return 0
 
@@ -132,26 +145,42 @@ def perform_full_setup(verbose: bool = False, recreate_venv: bool = False, dev: 
         logger.error(f"❌ UV setup failed: {e}")
         if verbose:
             import traceback
+
             logger.error(traceback.format_exc())
         sys.stdout.flush()
         return 1
+
 
 # --- Main Execution (for direct script running) ---
 
 if __name__ == "__main__":
     # Basic argument parsing for direct execution
-    parser = argparse.ArgumentParser(description="Direct execution of GNN project setup script with UV (environment and dependencies).")
-    parser.add_argument("--verbose", action="store_true", help="Enable verbose (DEBUG level) logging.")
-    parser.add_argument("--recreate-venv", action="store_true", help="Recreate UV environment even if it already exists.")
-    parser.add_argument("--dev", action="store_true", help="Install development dependencies.")
-    parser.add_argument("--extras", nargs="+", help="Install optional dependency groups (e.g., ml-ai llm visualization).")
+    parser = argparse.ArgumentParser(
+        description="Direct execution of GNN project setup script with UV (environment and dependencies)."
+    )
+    parser.add_argument(
+        "--verbose", action="store_true", help="Enable verbose (DEBUG level) logging."
+    )
+    parser.add_argument(
+        "--recreate-venv",
+        action="store_true",
+        help="Recreate UV environment even if it already exists.",
+    )
+    parser.add_argument(
+        "--dev", action="store_true", help="Install development dependencies."
+    )
+    parser.add_argument(
+        "--extras",
+        nargs="+",
+        help="Install optional dependency groups (e.g., ml-ai llm visualization).",
+    )
     cli_args = parser.parse_args()
 
     if not logging.getLogger().hasHandlers():
         logging.basicConfig(
             level=logging.DEBUG if cli_args.verbose else logging.INFO,
-            format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-            stream=sys.stdout
+            format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+            stream=sys.stdout,
         )
 
     logger.info("Running src/setup/setup.py directly with UV...")
@@ -159,7 +188,7 @@ if __name__ == "__main__":
         verbose=cli_args.verbose,
         recreate_venv=cli_args.recreate_venv,
         dev=cli_args.dev,
-        extras=cli_args.extras
+        extras=cli_args.extras,
     )
     if exit_code == 0:
         logger.info("Direct execution of setup.py with UV completed.")

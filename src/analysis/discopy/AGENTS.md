@@ -37,5 +37,5 @@ analysis/discopy/
 
 ---
 
-**Version:** 1.1.3
+**Version:** 1.6.0
 **Last Updated:** 2026-01-23

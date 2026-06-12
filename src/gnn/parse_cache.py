@@ -10,7 +10,7 @@ import hashlib
 import json
 import logging
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, cast
 
 logger = logging.getLogger(__name__)
 
@@ -23,12 +23,15 @@ class ParseCache:
     unchanged sections return cached results instantly.
     """
 
-    def __init__(self, cache_dir: Optional[Path] = None):
+    def __init__(self, cache_dir: Optional[Path] = None) -> None:
+        """Initialize the instance."""
         self.cache_dir = cache_dir or Path(".parse_cache")
         self.cache_dir.mkdir(parents=True, exist_ok=True)
         self._stats = {"hits": 0, "misses": 0}
 
-    def get_section(self, file_path: str, section_name: str, section_content: str) -> Optional[Dict[str, Any]]:
+    def get_section(
+        self, file_path: str, section_name: str, section_content: str
+    ) -> Optional[Dict[str, Any]]:
         """
         Look up cached parse result for a section.
 
@@ -49,14 +52,20 @@ class ParseCache:
                     data = json.load(f)
                 self._stats["hits"] += 1
                 logger.debug(f"Cache hit: {section_name} ({key[:8]})")
-                return data
+                return cast("dict[str, Any] | None", data)
             except (json.JSONDecodeError, OSError) as e:
                 logger.debug("Corrupted cache entry, treating as miss: %s", e)
 
         self._stats["misses"] += 1
         return None
 
-    def set_section(self, file_path: str, section_name: str, section_content: str, result: Dict[str, Any]) -> None:
+    def set_section(
+        self,
+        file_path: str,
+        section_name: str,
+        section_content: str,
+        result: Dict[str, Any],
+    ) -> None:
         """
         Store parse result for a section.
 
@@ -113,7 +122,9 @@ class ParseCache:
             "hit_ratio": round(ratio, 3),
         }
 
-    def _cache_key(self, file_path: str, section_name: str, section_content: str) -> str:
+    def _cache_key(
+        self, file_path: str, section_name: str, section_content: str
+    ) -> str:
         """Generate unique cache key for a file+section+content combination."""
         prefix = hashlib.sha256(file_path.encode()).hexdigest()[:8]
         content_hash = hashlib.sha256(section_content.encode()).hexdigest()[:12]

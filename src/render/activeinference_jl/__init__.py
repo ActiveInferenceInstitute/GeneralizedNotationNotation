@@ -5,6 +5,8 @@ This module provides streamlined rendering capabilities for GNN specifications t
 ActiveInference.jl code, focusing on core POMDP functionality.
 """
 
+from typing import Any
+
 from .activeinference_renderer import (
     extract_model_info,
     generate_activeinference_script,
@@ -12,9 +14,9 @@ from .activeinference_renderer import (
     render_gnn_to_activeinference_jl,
 )
 
-__all__ = [
-    'render_gnn_to_activeinference_jl',
-    'render_gnn_to_activeinference_combined',
-    'extract_model_info',
-    'generate_activeinference_script'
+__all__: list[Any] = [
+    "render_gnn_to_activeinference_jl",
+    "render_gnn_to_activeinference_combined",
+    "extract_model_info",
+    "generate_activeinference_script",
 ]

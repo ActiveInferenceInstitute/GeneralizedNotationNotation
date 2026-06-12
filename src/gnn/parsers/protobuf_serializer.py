@@ -10,7 +10,7 @@ class ProtobufSerializer(BaseGNNSerializer):
 
     def serialize(self, model: GNNInternalRepresentation) -> str:
         """Convert GNN model to Protocol Buffers format with embedded model data."""
-        lines = []
+        lines: list[Any] = []
 
         # Proto3 syntax
         lines.append('syntax = "proto3";')
@@ -91,70 +91,104 @@ class ProtobufSerializer(BaseGNNSerializer):
         lines.append("")
 
         # Embed complete model data as JSON in comments for round-trip fidelity
-        model_data = {
-            'model_name': model.model_name,
-            'annotation': model.annotation,
-            'variables': [
+        model_data: dict[str, Any] = {
+            "model_name": model.model_name,
+            "annotation": model.annotation,
+            "variables": [
                 {
-                    'name': var.name,
-                    'var_type': var.var_type.value if hasattr(var, 'var_type') else 'hidden_state',
-                    'data_type': var.data_type.value if hasattr(var, 'data_type') else 'categorical',
-                    'dimensions': var.dimensions if hasattr(var, 'dimensions') else []
+                    "name": var.name,
+                    "var_type": var.var_type.value
+                    if hasattr(var, "var_type")
+                    else "hidden_state",
+                    "data_type": var.data_type.value
+                    if hasattr(var, "data_type")
+                    else "categorical",
+                    "dimensions": var.dimensions if hasattr(var, "dimensions") else [],
                 }
                 for var in model.variables
             ],
-            'connections': [
+            "connections": [
                 {
-                    'source_variables': conn.source_variables if hasattr(conn, 'source_variables') else [],
-                    'target_variables': conn.target_variables if hasattr(conn, 'target_variables') else [],
-                    'connection_type': conn.connection_type.value if hasattr(conn, 'connection_type') else 'directed'
+                    "source_variables": conn.source_variables
+                    if hasattr(conn, "source_variables")
+                    else [],
+                    "target_variables": conn.target_variables
+                    if hasattr(conn, "target_variables")
+                    else [],
+                    "connection_type": conn.connection_type.value
+                    if hasattr(conn, "connection_type")
+                    else "directed",
                 }
                 for conn in model.connections
             ],
-            'parameters': [
+            "parameters": [
                 {
-                    'name': param.name,
-                    'value': param.value,
-                    'param_type': getattr(param, 'param_type', 'constant')
+                    "name": param.name,
+                    "value": param.value,
+                    "param_type": getattr(param, "param_type", "constant"),
                 }
                 for param in model.parameters
             ],
-            'equations': [str(eq) for eq in (model.equations if hasattr(model, 'equations') else [])],
-            'time_specification': self._serialize_time_spec(model.time_specification) if hasattr(model, 'time_specification') and model.time_specification else None,
-            'ontology_mappings': self._serialize_ontology_mappings(model.ontology_mappings) if hasattr(model, 'ontology_mappings') else []
+            "equations": [
+                str(eq)
+                for eq in (model.equations if hasattr(model, "equations") else [])
+            ],
+            "time_specification": self._serialize_time_spec(model.time_specification)
+            if hasattr(model, "time_specification") and model.time_specification
+            else None,
+            "ontology_mappings": self._serialize_ontology_mappings(
+                model.ontology_mappings
+            )
+            if hasattr(model, "ontology_mappings")
+            else [],
         }
 
         # Add embedded JSON data for complete round-trip
-        lines.append("/* MODEL_DATA: " + json.dumps(model_data, separators=(',', ':')) + " */")
+        lines.append(
+            "/* MODEL_DATA: " + json.dumps(model_data, separators=(",", ":")) + " */"
+        )
         lines.append("")
 
         # Add individual variable, connection, and parameter comments for parsing
         lines.append("// Variables:")
         for var in model.variables:
-            lines.append(f"// Variable: {var.name} ({var.var_type.value if hasattr(var, 'var_type') else 'unknown'})")
+            lines.append(
+                f"// Variable: {var.name} ({var.var_type.value if hasattr(var, 'var_type') else 'unknown'})"
+            )
 
         lines.append("// Connections:")
         for conn in model.connections:
-            sources = ','.join(conn.source_variables) if hasattr(conn, 'source_variables') else 'unknown'
-            targets = ','.join(conn.target_variables) if hasattr(conn, 'target_variables') else 'unknown'
-            conn_type = conn.connection_type.value if hasattr(conn, 'connection_type') else 'directed'
+            sources = (
+                ",".join(conn.source_variables)
+                if hasattr(conn, "source_variables")
+                else "unknown"
+            )
+            targets = (
+                ",".join(conn.target_variables)
+                if hasattr(conn, "target_variables")
+                else "unknown"
+            )
+            conn_type = (
+                conn.connection_type.value
+                if hasattr(conn, "connection_type")
+                else "directed"
+            )
             lines.append(f"// Connection: {sources} --{conn_type}--> {targets}")
 
         lines.append("// Parameters:")
         for param in model.parameters:
             lines.append(f"// Parameter: {param.name} = {param.value}")
 
-        return '\n'.join(lines)
+        return "\n".join(lines)
 
-    def _serialize_time_spec(self, time_spec) -> Dict[str, Any]:
+    def _serialize_time_spec(self, time_spec: Any) -> Dict[str, Any]:
         """Serialize TimeSpecification object to dict."""
-        if not time_spec or not hasattr(time_spec, '__dict__'):
+        if not time_spec or not hasattr(time_spec, "__dict__"):
             return {}
 
         return {
-            'time_type': getattr(time_spec, 'time_type', 'Static'),
-            'discretization': getattr(time_spec, 'discretization', None),
-            'horizon': getattr(time_spec, 'horizon', None),
-            'step_size': getattr(time_spec, 'step_size', None)
+            "time_type": getattr(time_spec, "time_type", "Static"),
+            "discretization": getattr(time_spec, "discretization", None),
+            "horizon": getattr(time_spec, "horizon", None),
+            "step_size": getattr(time_spec, "step_size", None),
         }
-

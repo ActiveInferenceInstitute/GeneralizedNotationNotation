@@ -42,10 +42,10 @@ def parse_jax_output(output_path: Path) -> Optional[Dict[str, Any]]:
         return None
 
     try:
-        with open(output_path, 'r') as f:
+        with open(output_path, "r") as f:
             raw = json.load(f)
 
-        normalized = {
+        normalized: dict[str, Any] = {
             "model_name": raw.get("model_name", "unknown"),
             "framework": "JAX",
             "timesteps": raw.get("timesteps") or raw.get("T", 0),
@@ -55,7 +55,7 @@ def parse_jax_output(output_path: Path) -> Optional[Dict[str, Any]]:
             "free_energy": _extract_free_energy_trace(raw),
             "elapsed_seconds": raw.get("elapsed_seconds") or raw.get("elapsed", 0.0),
             "device": raw.get("device", "cpu"),
-            "parse_timestamp": datetime.now().isoformat()
+            "parse_timestamp": datetime.now().isoformat(),
         }
 
         return normalized
@@ -77,7 +77,7 @@ def _extract_belief_trajectory(raw: Dict[str, Any]) -> List[List[float]]:
 
     if isinstance(beliefs, list):
         # Normalize: ensure it's a list of float lists
-        result = []
+        result: list[Any] = []
         for belief in beliefs:
             if isinstance(belief, list):
                 result.append([float(b) for b in belief])
@@ -117,7 +117,7 @@ def compute_convergence_metrics(parsed: Dict[str, Any]) -> Dict[str, Any]:
     Returns:
         Dict with convergence statistics
     """
-    metrics = {
+    metrics: dict[str, Any] = {
         "total_timesteps": parsed.get("timesteps", 0),
         "final_free_energy": None,
         "mean_free_energy": None,
@@ -139,16 +139,22 @@ def compute_convergence_metrics(parsed: Dict[str, Any]) -> Dict[str, Any]:
         if len(fe_trace) >= 2:
             mean = metrics["mean_free_energy"]
             variance = sum((v - mean) ** 2 for v in fe_trace) / len(fe_trace)
-            metrics["free_energy_std"] = variance ** 0.5
+            metrics["free_energy_std"] = variance**0.5
 
             # Residual over last 10 timesteps
             last_10 = fe_trace[-10:] if len(fe_trace) >= 10 else fe_trace
             if len(last_10) >= 2:
-                residuals = [abs(last_10[i] - last_10[i-1]) for i in range(1, len(last_10))]
+                residuals = [
+                    abs(last_10[i] - last_10[i - 1]) for i in range(1, len(last_10))
+                ]
                 metrics["residual_last_10"] = sum(residuals) / len(residuals)
 
                 # Convergence: residual < 1% of |mean FE|
-                threshold = 0.01 * abs(metrics["mean_free_energy"]) if abs(metrics["mean_free_energy"]) > 1e-8 else 0.001
+                threshold = (
+                    0.01 * abs(metrics["mean_free_energy"])
+                    if abs(metrics["mean_free_energy"]) > 1e-8
+                    else 0.001
+                )
                 metrics["converged"] = metrics["residual_last_10"] < threshold
 
     if beliefs:
@@ -158,8 +164,13 @@ def compute_convergence_metrics(parsed: Dict[str, Any]) -> Dict[str, Any]:
         if beliefs[-1]:
             metrics["belief_entropy_final"] = _categorical_entropy(beliefs[-1])
 
-        if metrics["belief_entropy_initial"] is not None and metrics["belief_entropy_final"] is not None:
-            metrics["entropy_decreased"] = metrics["belief_entropy_final"] < metrics["belief_entropy_initial"]
+        if (
+            metrics["belief_entropy_initial"] is not None
+            and metrics["belief_entropy_final"] is not None
+        ):
+            metrics["entropy_decreased"] = (
+                metrics["belief_entropy_final"] < metrics["belief_entropy_initial"]
+            )
 
     return metrics
 
@@ -186,7 +197,7 @@ def extract_array_statistics(parsed: Dict[str, Any]) -> Dict[str, Any]:
     Returns:
         Dict mapping array names to their statistics
     """
-    stats = {}
+    stats: dict[Any, Any] = {}
 
     # Beliefs trajectory
     beliefs = parsed.get("beliefs", [])
@@ -198,7 +209,7 @@ def extract_array_statistics(parsed: Dict[str, Any]) -> Dict[str, Any]:
                 "min": min(flat),
                 "max": max(flat),
                 "mean": sum(flat) / len(flat),
-                "timesteps": len(beliefs)
+                "timesteps": len(beliefs),
             }
 
     # Free energy
@@ -211,40 +222,36 @@ def extract_array_statistics(parsed: Dict[str, Any]) -> Dict[str, Any]:
             "min": min(fe),
             "max": max(fe),
             "mean": sum(fe) / len(fe),
-            "total_change": fe[-1] - fe[0]
+            "total_change": fe[-1] - fe[0],
         }
 
     # Actions
     actions = parsed.get("actions", [])
     if actions:
-        action_counts = {}
+        action_counts: dict[Any, Any] = {}
         for a in actions:
             key = str(a)
             action_counts[key] = action_counts.get(key, 0) + 1
         stats["actions"] = {
             "count": len(actions),
             "distribution": action_counts,
-            "unique_actions": len(action_counts)
+            "unique_actions": len(action_counts),
         }
 
     # Observations
     obs = parsed.get("observations", [])
     if obs:
-        obs_counts = {}
+        obs_counts: dict[Any, Any] = {}
         for o in obs:
             key = str(o)
             obs_counts[key] = obs_counts.get(key, 0) + 1
-        stats["observations"] = {
-            "count": len(obs),
-            "distribution": obs_counts
-        }
+        stats["observations"] = {"count": len(obs), "distribution": obs_counts}
 
     return stats
 
 
 def collect_jax_results(
-    output_dir: Path,
-    model_name: Optional[str] = None
+    output_dir: Path, model_name: Optional[str] = None
 ) -> List[Dict[str, Any]]:
     """
     Collect and parse all JAX result JSON files from an output directory.
@@ -256,21 +263,23 @@ def collect_jax_results(
     Returns:
         List of parsed result dicts with convergence metrics and array statistics
     """
-    results = []
+    results: list[Any] = []
 
     if not output_dir.exists():
         logger.warning(f"Output directory not found: {output_dir}")
         return results
 
     # Find JAX output JSON files
-    json_files = (list(output_dir.glob("**/*_jax*.json")) +
-                  list(output_dir.glob("**/*jax*.json")) +
-                  list(output_dir.glob("**/jax_output*.json")) +
-                  list(output_dir.glob("**/execution_log.json")))
+    json_files = (
+        list(output_dir.glob("**/*_jax*.json"))
+        + list(output_dir.glob("**/*jax*.json"))
+        + list(output_dir.glob("**/jax_output*.json"))
+        + list(output_dir.glob("**/execution_log.json"))
+    )
 
     # Deduplicate
-    seen = set()
-    unique_files = []
+    seen: set[Any] = set()
+    unique_files: list[Any] = []
     for f in json_files:
         if str(f) not in seen:
             seen.add(str(f))
@@ -294,9 +303,11 @@ def collect_jax_results(
         parsed["array_statistics"] = extract_array_statistics(parsed)
 
         results.append(parsed)
-        logger.info(f"Parsed JAX results from {json_file.name}: "
-                   f"timesteps={parsed['timesteps']}, "
-                   f"converged={parsed['convergence_metrics']['converged']}")
+        logger.info(
+            f"Parsed JAX results from {json_file.name}: "
+            f"timesteps={parsed['timesteps']}, "
+            f"converged={parsed['convergence_metrics']['converged']}"
+        )
 
     return results
 
@@ -314,9 +325,11 @@ def format_jax_report(results: List[Dict[str, Any]]) -> str:
     if not results:
         return "# JAX Inference Results\n\nNo results found.\n"
 
-    lines = ["# JAX Active Inference Results\n",
-             f"**Generated**: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n",
-             f"**Models analyzed**: {len(results)}\n\n"]
+    lines: list[Any] = [
+        "# JAX Active Inference Results\n",
+        f"**Generated**: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n",
+        f"**Models analyzed**: {len(results)}\n\n",
+    ]
 
     for r in results:
         model = r.get("model_name", "unknown")
@@ -334,7 +347,9 @@ def format_jax_report(results: List[Dict[str, Any]]) -> str:
         if conv.get("final_free_energy") is not None:
             lines.append(f"- **Final Free Energy**: {conv['final_free_energy']:.4f}")
         if conv.get("residual_last_10") is not None:
-            lines.append(f"- **Residual (last 10 steps)**: {conv['residual_last_10']:.6f}")
+            lines.append(
+                f"- **Residual (last 10 steps)**: {conv['residual_last_10']:.6f}"
+            )
         if conv.get("belief_entropy_initial") is not None:
             h_i = conv["belief_entropy_initial"]
             h_f = conv.get("belief_entropy_final", "N/A")

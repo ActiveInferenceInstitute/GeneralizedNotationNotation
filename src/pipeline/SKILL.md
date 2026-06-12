@@ -87,9 +87,10 @@ health = run_enhanced_health_check()
 
 This module registers tools with the GNN MCP server (see `mcp.py`):
 
-- `run_pipeline`
+- `get_pipeline_config_info`
 - `get_pipeline_status`
-- `list_pipeline_steps`
+- `get_pipeline_steps`
+- `validate_pipeline_dependencies`
 
 ## References
 

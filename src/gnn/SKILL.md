@@ -92,9 +92,15 @@ Parsed models are consumed by downstream steps:
 This module registers tools with the GNN MCP server (see `mcp.py`):
 
 - `get_gnn_documentation`
-- `validate_gnn_content`
+- `get_gnn_module_info`
+- `get_gnn_schema_info`
 - `parse_gnn_content`
 - `process_gnn_directory`
+- `run_round_trip_tests`
+- `validate_cross_format_consistency_content`
+- `validate_directory_cross_format_consistency`
+- `validate_gnn_content`
+- `validate_schema_definitions_consistency`
 
 ## References
 

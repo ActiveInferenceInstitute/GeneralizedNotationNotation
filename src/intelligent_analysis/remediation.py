@@ -9,7 +9,7 @@ Provides:
 
 import logging
 from dataclasses import dataclass
-from typing import Optional
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -17,10 +17,11 @@ logger = logging.getLogger(__name__)
 @dataclass
 class RemediationPlan:
     """A proposed fix for a contract violation."""
+
     violation_summary: str
     suggested_code: str
-    insertion_point: str   # "top", "after_imports", "before_return"
-    confidence: float      # 0.0–1.0
+    insertion_point: str  # "top", "after_imports", "before_return"
+    confidence: float  # 0.0–1.0
     auto_apply: bool = False
 
     def to_diff(self) -> str:
@@ -29,7 +30,7 @@ class RemediationPlan:
 
 
 # Known fix templates per violation type
-_FIX_TEMPLATES = {
+_FIX_TEMPLATES: dict[Any, Any] = {
     ("pymdp", "import"): {
         "code": "import numpy as np\nfrom pymdp import utils\nfrom pymdp.agent import Agent",
         "point": "top",
@@ -51,12 +52,12 @@ _FIX_TEMPLATES = {
         "confidence": 0.9,
     },
     ("jax", "variable_A"): {
-        "code": "A = jnp.eye(num_states)  # Likelihood matrix placeholder",
+        "code": "A = jnp.eye(num_states)  # Default likelihood matrix",
         "point": "after_imports",
         "confidence": 0.6,
     },
     ("jax", "variable_B"): {
-        "code": "B = jnp.zeros((num_states, num_states, num_actions))  # Transition matrix placeholder",
+        "code": "B = jnp.zeros((num_states, num_states, num_actions))  # Default transition matrix",
         "point": "after_imports",
         "confidence": 0.6,
     },
@@ -68,7 +69,7 @@ _FIX_TEMPLATES = {
 }
 
 
-def suggest_fix(violation) -> Optional[RemediationPlan]:
+def suggest_fix(violation: Any) -> Optional[RemediationPlan]:
     """
     Propose a fix for a given ContractViolation.
 

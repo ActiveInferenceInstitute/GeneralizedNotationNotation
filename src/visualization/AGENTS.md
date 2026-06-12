@@ -10,9 +10,9 @@
 
 **Status**: ✅ Production Ready
 
-**Version**: 1.1.3
+**Version**: 1.6.0
 
-**Last Updated**: 2026-03-23
+**Last Updated**: 2026-05-12
 
 ---
 
@@ -49,7 +49,7 @@
 
 **Returns**: `True` if at least one artifact was generated
 
-**Data loading**: [core/parsed_model.py](core/parsed_model.py) `load_visualization_model` prefers `{model}_parsed.json` from step 3; fallback is [parse/markdown.py](parse/markdown.py) `parse_gnn_content`.
+**Data loading**: [core/parsed_model.py](core/parsed_model.py) `load_visualization_model` prefers `{model}_parsed.json` from step 3; when structured JSON is unavailable, [parse/markdown.py](parse/markdown.py) `parse_gnn_content` provides the explicit raw-Markdown parser path.
 
 **Example**:
 ```python
@@ -88,6 +88,10 @@ success = process_visualization(
 ---
 
 ## Dependencies
+
+### Shared Modules
+- `theme.py` — Centralised color palette, figure defaults, edge styles (new: 2026-05-12)
+- `compat/viz_compat.py` — Safe matplotlib/numpy/seaborn imports + `viz_var_type()` helper
 
 ### Required Dependencies
 - `matplotlib` - Plotting and visualization
@@ -241,14 +245,14 @@ GNN Files → Graph Extraction → Layout Calculation → Visualization Generati
 ## Testing
 
 ### Test Files
-- `src/tests/test_visualization_matrices.py` - Matrix visualization tests
-- `src/tests/test_visualization_comprehensive.py` - Comprehensive real-data tests
-- `src/tests/test_visualization_overall.py` - Module-level tests
-- `src/tests/test_visualization_ontology.py` - Ontology visualization tests
-- `src/tests/test_visualization_artifacts.py` - Artifact / manifest tests
+- `src/tests/visualization/test_visualization_matrices.py` - Matrix visualization tests
+- `src/tests/visualization/test_visualization_comprehensive.py` - Comprehensive real-data tests
+- `src/tests/visualization/test_visualization_overall.py` - Module-level tests
+- `src/tests/visualization/test_visualization_ontology.py` - Ontology visualization tests
+- `src/tests/visualization/test_visualization_artifacts.py` - Artifact / manifest tests
 
 ### Test Coverage
-- **Measurement**: `uv run pytest src/tests/test_visualization_*.py --cov=src.visualization --cov-report=term-missing` (do not treat a fixed percentage in this file as canonical).
+- **Measurement**: `uv run --extra dev python -m pytest src/tests/test_visualization_*.py --cov=src.visualization --cov-report=term-missing` (do not treat a fixed percentage in this file as canonical).
 
 ### Key Test Scenarios
 1. Graph visualization with various layouts
@@ -308,7 +312,7 @@ uv sync
 
 **Alternative**: Install visualization optional group:
 ```bash
-uv sync --extra visualization
+uv sync
 ```
 
 #### 3. Large Model Visualization Failures
@@ -431,7 +435,7 @@ python src/8_visualization.py --verbose --target-dir input/gnn_files
 
 ## Version History
 
-### Current Version: 1.1.3
+### Current Version: 1.6.0
 
 **Features**:
 - Graph visualization generation
@@ -465,10 +469,10 @@ python src/8_visualization.py --verbose --target-dir input/gnn_files
 
 ---
 
-**Last Updated**: 2026-03-23
+**Last Updated**: 2026-05-12
 **Maintainer**: GNN Pipeline Team
 **Status**: ✅ Production Ready
-**Version**: 1.1.3
+**Version**: 1.6.0
 **Architecture Compliance**: ✅ 100% Thin Orchestrator Pattern
 
 ---

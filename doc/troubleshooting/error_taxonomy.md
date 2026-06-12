@@ -82,7 +82,7 @@ SOLUTION: Add third column or reduce state space to 2
 | VAL-201 | Probability Violation | Probabilities outside [0,1] range | Negative values, values > 1 |
 | VAL-202 | Normalization Error | Probability distributions don't sum to 1 | Manual calculation errors |
 | VAL-203 | Incompatible Time Settings | Time specification conflicts | Static model with dynamics |
-| VAL-204 | Ontology Mapping Error | Invalid Active Inference ontology terms | Typos, deprecated terms |
+| VAL-204 | Ontology Mapping Error | Invalid Active Inference ontology terms | Typos, retired terms |
 
 ### 3. **Runtime Errors** (Code: RUN-xxx)
 

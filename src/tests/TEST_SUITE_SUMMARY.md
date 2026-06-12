@@ -1,6 +1,6 @@
 # GNN Pipeline Test Suite - Comprehensive Summary
 
-**Last Updated**: 2026-01-21  
+**Last Updated**: 2026-06-11
 **Status**: ✅ Production Ready  
 **Test Infrastructure Version**: 2.0.1
 
@@ -8,17 +8,16 @@
 
 ## Executive Summary
 
-The GNN Processing Pipeline test suite provides comprehensive coverage across all 25 pipeline steps and 28 specialized modules. All tests follow strict quality standards with no simulated usage, real data processing, and comprehensive error handling.
+The GNN Processing Pipeline test suite provides comprehensive coverage across all 25 pipeline steps and the maintained source modules under `src/`. Tests prioritize real code paths, representative data, and explicit skip behavior for unavailable optional services.
 
 ### Key Metrics
 
-- **Total Test Files**: 91
-- **Total Test Functions**: 734+
-- **Test Categories**: 24
-- **Test Markers**: 25+
-- **Assertions**: 1,250+ across test files
-- **Success Rate**: 100% (348/348 fast tests passed in latest run, 734 total collected)
-- **Execution Time**: Fast (1-2 min) | Comprehensive (3-5 min)
+- **Total Test Files**: 184 `test_*.py` files
+- **Directory Layout**: 34 maintained first-level directories under `src/tests/`; 32 contain direct test files
+- **Root-Level Tests**: 29 `test_*.py` files at `src/tests/`
+- **Subdirectory Tests**: 155 `test_*.py` files under module/helper directories
+- **Collected Tests**: 2,399 with `uv run --extra dev python -m pytest --collect-only src/tests/ -q --tb=no --ignore=src/tests/llm/test_llm_ollama.py --ignore=src/tests/llm/test_llm_ollama_integration.py` (2026-06-12)
+- **Latest Full Run Evidence**: `uv run --extra dev python -m pytest src/tests/ -q --tb=no --ignore=src/tests/llm/test_llm_ollama.py --ignore=src/tests/llm/test_llm_ollama_integration.py`: 2,381 passed, 17 skipped, 1 xfailed.
 
 ---
 
@@ -28,13 +27,14 @@ The GNN Processing Pipeline test suite provides comprehensive coverage across al
 
 ```
 src/tests/
-├── 2_tests.py              # Thin orchestrator (CLI entry point)
+├── ../2_tests.py           # Thin orchestrator (CLI entry point)
 ├── runner.py               # Core test execution logic
 ├── conftest.py             # Pytest fixtures and configuration
 ├── __init__.py             # Module exports and utilities
 ├── README.md               # Comprehensive documentation
 ├── AGENTS.md               # Technical API documentation
-└── test_*.py               # 54 test files organized by module
+├── <module>/test_*.py      # 155 module/helper test files
+└── test_*.py               # 29 cross-cutting root test files
 ```
 
 ### Execution Modes
@@ -58,17 +58,16 @@ src/tests/
 
 ## Test Quality Standards
 
-### ✅ No Simulated Usage Policy
+### Real Usage Policy
 
-All tests follow strict "no mocks" policy:
-- ✅ No `unittest.simulated` imports or usage
-- ✅ No monkeypatching of functions or classes
-- ✅ Real code paths executed in all tests
-- ✅ Real data used throughout (no synthetic/placeholder data)
-- ✅ Real dependencies (skip if unavailable, never simulated)
-- ✅ File-based assertions on real artifacts
+All tests follow strict real-implementation policy:
+- No replacement of production behavior for core paths
+- Real code paths executed in module and integration tests
+- Real data or representative fixtures used throughout
+- Real dependencies are used when available; optional integrations skip cleanly when unavailable
+- File-based assertions on real artifacts
 
-### ✅ Real Implementation Testing
+### Real Implementation Testing
 
 - **Real Methods**: All tests execute actual module functions
 - **Real Data**: Tests use representative GNN files and data structures
@@ -76,7 +75,7 @@ All tests follow strict "no mocks" policy:
 - **Real File I/O**: Tests assert on real file outputs in `output/` directories
 - **Real Subprocesses**: Pipeline tests run actual numbered scripts via subprocess
 
-### ✅ Comprehensive Error Handling
+### Comprehensive Error Handling
 
 - **Error Scenarios**: Tests cover all error conditions with real failure modes
 - **Graceful Degradation**: Tests validate recovery behavior when dependencies unavailable
@@ -85,32 +84,9 @@ All tests follow strict "no mocks" policy:
 
 ---
 
-## Module Coverage Matrix
+## Coverage Layout
 
-| Module | Test Files | Test Functions | Status | Coverage |
-|--------|------------|----------------|--------|----------|
-| **GNN** | 5 | ~80 | ✅ Complete | High |
-| **Render** | 2 | ~30 | ✅ Complete | High |
-| **MCP** | 5 | ~50 | ✅ Complete | High |
-| **Audio** | 4 | ~40 | ✅ Complete | High |
-| **Visualization** | 4 | ~50 | ✅ Complete | High |
-| **Pipeline** | 8 | ~100 | ✅ Complete | High |
-| **Export** | 1 | ~12 | ✅ Complete | Medium |
-| **Execute** | Integrated | ~20 | ✅ Complete | Medium |
-| **LLM** | 3 | ~30 | ✅ Complete | High |
-| **Ontology** | 1 | ~12 | ✅ Complete | Medium |
-| **Website** | 1 | ~12 | ✅ Complete | Medium |
-| **Report** | 4 | ~40 | ✅ Complete | High |
-| **Environment** | 3 | ~30 | ✅ Complete | High |
-| **GUI** | 2 | ~20 | ✅ Complete | Medium |
-| **Advanced Viz** | 1 | ~17 | ✅ Complete | High |
-| **Core Modules** | 1 | ~30 | ✅ Complete | High |
-| **Fast Suite** | 1 | ~22 | ✅ Complete | High |
-| **Coverage** | 2 | ~10 | ✅ Complete | Medium |
-| **Performance** | 2 | ~20 | ✅ Complete | Medium |
-| **Integration** | 1 | ~8 | ✅ Complete | Medium |
-| **Error Recovery** | 1 | ~13 | ✅ Complete | Medium |
-| **Total** | **91** | **734+** | **✅ Complete** | **High** |
+The suite mirrors the source tree: module-focused tests live in `src/tests/<module>/`, while root-level `src/tests/test_*.py` files cover cross-cutting environment, coverage, and runner behavior. Mechanical AGENTS/README coverage for maintained test subdirectories is enforced by `doc/development/docs_audit.py --strict`.
 
 ---
 
@@ -161,8 +137,8 @@ python src/2_tests.py --comprehensive --verbose
 
 ### Run Specific Module Tests
 ```bash
-pytest src/tests/test_gnn_overall.py -v
-pytest src/tests/test_render_overall.py -v
+uv run --extra dev python -m pytest src/tests/gnn/test_gnn_overall.py -v
+uv run --extra dev python -m pytest src/tests/render/test_render_overall.py -v
 ```
 
 ### Run by Marker
@@ -232,7 +208,7 @@ output/2_tests_output/
 
 ### Writing Tests
 
-1. **No Mocks**: Always use real implementations
+1. **Real Implementations**: Always use real code paths
 2. **Real Data**: Use representative test data
 3. **Comprehensive Assertions**: Test both success and failure cases
 4. **Error Handling**: Wrap optional dependencies in try/except
@@ -307,13 +283,12 @@ output/2_tests_output/
 
 The GNN Processing Pipeline test suite provides comprehensive, production-ready testing infrastructure with:
 
-✅ **1,522+ tests functions** across **91 test files**  
-✅ **100% no-simulated policy compliance**  
-✅ **Real data and real implementations** throughout  
-✅ **Comprehensive error handling** and recovery testing  
-✅ **Complete module coverage** for all 25 pipeline steps  
-✅ **Well-documented** with clear examples and best practices  
-✅ **Production-ready** with 100% success rate in latest execution
+- 184 test files across root and module-specific directories
+- 2,399 collected tests in the current command-of-record collect pass with Ollama integration tests ignored
+- Latest recorded full command-of-record evidence: 2,381 passed, 17 skipped, 1 xfailed
+- Real data and real implementations throughout core paths
+- Comprehensive error handling and recovery testing
+- Module coverage for all 25 pipeline steps
+- AGENTS/README documentation coverage for maintained test subdirectories
 
 The test infrastructure is mature, comprehensive, and ready for production use.
-

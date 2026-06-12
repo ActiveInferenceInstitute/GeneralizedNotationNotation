@@ -10,9 +10,9 @@
 
 **Status**: ✅ Production Ready
 
-**Version**: 1.0.0
+**Version**: 1.6.0
 
-**Last Updated**: 2026-04-10
+**Last Updated**: 2026-04-16
 
 ---
 
@@ -34,6 +34,9 @@
 - Distribution analysis and correlation studies
 - **PyMDP Visualization** - belief evolution, state sequences, performance metrics plots
 - **Cross-framework comparison** - uses whatever execution (Step 12) produced. `_extract_simulation_metrics` (in `analyzer.py`) prefers `simulation_data/simulation_results.json` (and other canonical JSON) before `execution_logs/*_results.json`, so backends that write full traces to `simulation_data/` (e.g. RxInfer) are not masked by sparse structured logs. DisCoPy: inline `simulation_data.analysis` / `parameters` from structured logs populate `circuit_info`; if still missing, `simulation_data/circuit_info.json` is merged when present. bnlearn structured logs populate `model_parameters` when vector traces are absent. If every run for a framework was skipped (`skipped: true` in the execution summary), logs INFO instead of WARNING for bnlearn. Otherwise missing data is reported as "[framework] No simulation data found". Python backends are in core `uv sync`; Julia coverage needs Julia + packages installed, then re-run Step 12.
+- **GridWorld animations** - current PyMDP, RxInfer.jl, and ActiveInference.jl
+  schemas emit belief GIFs, 3x3 state trajectory GIFs, a cross-framework
+  trajectory GIF, and `cross_framework/gridworld_analysis_manifest.json`.
 
 ---
 
@@ -53,6 +56,8 @@
 - `include_complexity` (bool, optional): Include complexity metrics (default: True)
 - `include_quality` (bool, optional): Include quality assessment (default: True)
 - `benchmark_iterations` (int, optional): Number of benchmark iterations (default: 5)
+- `generate_animations` (bool, optional): Generate current-schema GridWorld GIF
+  artifacts (default: True; CLI: `--no-animations` disables this)
 - `**kwargs`: Additional analysis options
 
 **Returns**: `bool` - True if analysis succeeded, False otherwise
@@ -258,14 +263,17 @@ GNN Files → Analysis → Statistical Reports → Model Comparisons → Optimiz
 ## Testing
 
 ### Test Files
-- `src/tests/test_analysis_overall.py` - Module-level tests
-- `src/tests/test_analysis_post_simulation.py` - Post-simulation analysis tests
-- `src/tests/test_analysis_extraction.py` - Result extraction tests
+- `src/tests/analysis/test_analysis_overall.py` - Module-level tests
+- `src/tests/analysis/test_analysis_post_simulation.py` - Post-simulation analysis tests
+- `src/tests/analysis/test_analysis_extraction.py` - Result extraction tests
 
 ### Test Coverage
-- **Current**: 80%
-- **Target**: 90%+
+Measure on demand:
 
+```bash
+uv run --extra dev python -m pytest src/tests/test_analysis*.py \
+    --cov=src/analysis --cov-report=term-missing
+```
 ### Key Test Scenarios
 1. Statistical analysis with various model sizes
 2. Complexity metric calculation accuracy
@@ -325,7 +333,7 @@ def process_analysis_mcp(target_directory: str, output_directory: str, verbose: 
 
 ## Version History
 
-### Current Version: 1.0.0
+### Current Version: 1.6.0
 
 **Features**:
 - Statistical analysis
@@ -358,10 +366,10 @@ def process_analysis_mcp(target_directory: str, output_directory: str, verbose: 
 
 ---
 
-**Last Updated**: 2026-04-10
+**Last Updated**: 2026-04-16
 **Maintainer**: GNN Pipeline Team
 **Status**: ✅ Production Ready
-**Version**: 1.0.0
+**Version**: 1.6.0
 **Architecture Compliance**: ✅ 100% Thin Orchestrator Pattern
 
 

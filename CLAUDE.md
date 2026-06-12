@@ -30,6 +30,14 @@ python src/main.py --only-steps 1 --dev
 # Step 1 default: ``uv sync`` core dependencies (includes JAX / NumPyro / PyTorch / DisCoPy for step 12).
 # ``--setup-core-only`` skips the JAX self-test during setup only.
 
+# Using just (recommended task runner)
+just                         # List all recipes
+just test                    # Fast test suite
+just lint                    # Ruff lint
+just pipeline                # Full pipeline
+just render-health           # Check all 8 renderer backends
+just test-mod render         # Test a specific module
+
 # Run tests
 pytest src/tests/ -v
 pytest src/tests/test_gnn_*.py -v  # Module-specific tests
@@ -64,13 +72,13 @@ All 25 pipeline steps follow a consistent pattern:
 **Accepted `processor.py` alternatives** (5 modules use these patterns):
 - `setup/`, `tests/`, `validation/`: Logic lives directly in `__init__.py` — functionally equivalent
 - `model_registry/`: Uses `registry.py` as primary logic file — clearly named
-- `website/`: Uses `renderer.py` + `generator.py`; `processor.py` is a thin shim that re-exports from renderer
+- `website/`: Uses `renderer.py` + `generator.py`; `processor.py` is the public processing entry point and delegates to those helpers
 
-**Hard imports** (steps 20, 21, 24): The website, mcp, and intelligent_analysis step scripts use direct (non-try/except) imports because these modules are pipeline-required and must always be present. All three document this with an inline `# Hard import: X is a core module` comment. All other steps use soft imports with graceful degradation fallbacks.
+**Hard imports** (steps 20, 21, 24): The website, mcp, and intelligent_analysis step scripts use direct (non-try/except) imports because these modules are pipeline-required and must always be present. All three document this with an inline `# Hard import: X is a core module` comment. Other steps report dependency import problems through explicit warning/error statuses.
 
-**`src/sapf/` module**: This is a compatibility shim, not a numbered pipeline step. It re-exports functions from `audio.sapf` so that `import sapf` works without duplicating code. The actual SAPF implementation lives in `src/audio/sapf/`.
+**`src/sapf/` module**: This is a public SAPF entry point, not a numbered pipeline step. It exports functions from `audio.sapf` so that SAPF callers use one canonical implementation. The SAPF implementation lives in `src/audio/sapf/`.
 
-**Research module (Step 19)**: Uses rule-based static analysis (no external LLM required). The `FEATURES = {'fallback_mode': True}` flag in `__init__.py` indicates it operates without LLM dependencies, not that it is incomplete.
+**Research module (Step 19)**: Uses rule-based static analysis and does not require an external LLM. Its `FEATURES` metadata describes available capabilities rather than partial implementation status.
 
 ### 25-Step Pipeline (0-24)
 
@@ -122,7 +130,7 @@ Step 12 (Execute) runs scripts for every framework (PyMDP, RxInfer.jl, ActiveInf
 | `src/gnn/` | GNN parsing, discovery, validation |
 | `src/render/` | Code generation for all frameworks |
 | `src/execute/` | Simulation execution |
-| `src/tests/` | Test suite (`uv sync --extra dev` then `uv run pytest src/tests/ -q --tb=no --ignore=src/tests/test_llm_ollama.py --ignore=src/tests/test_llm_ollama_integration.py`: 1,924 passed, 28 skipped, 2026-04-10; enable those files when local `ollama` is available) |
+| `src/tests/` | Test suite (`uv sync --extra dev` then `uv run pytest src/tests/ -q --tb=no --ignore=src/tests/llm/test_llm_ollama.py --ignore=src/tests/llm/test_llm_ollama_integration.py`; use current run output for pass/skip counts; enable those files when local `ollama` is available) |
 | `input/gnn_files/` | Sample GNN model files |
 | `output/` | Generated outputs (25 step-specific folders) |
 | `doc/gnn/reference/gnn_syntax.md` | Complete GNN syntax specification |
@@ -169,11 +177,76 @@ s=HiddenState
 # Install specific optional groups using UV
 uv sync --extra dev                  # Development tools
 uv sync --extra api                  # REST API server (FastAPI + uvicorn)
-uv sync --extra llm                  # Redundant with core (kept for compatibility); base install already includes openai, ollama, dotenv, aiohttp
+uv sync --extra llm                  # Redundant with core; base install already includes openai, ollama, dotenv, aiohttp
 uv sync --extra visualization        # Same pins as core (pandas, plotly, seaborn, h5py); optional alias
 uv sync --extra inference            # bnlearn only; same pin as core; optional alias
 uv sync --extra audio                # Audio processing
 uv sync --extra gui                  # GUI interfaces
-uv sync --extra execution-frameworks # Same pins as core Step 12 stack (compatibility / explicit sync)
+uv sync --extra execution-frameworks # Same pins as core Step 12 stack for explicit sync
 uv sync --all-extras                 # Everything
 ```
+
+# === COGNILAYER (auto-generated, do not delete) ===
+
+## CogniLayer v3 Active
+Persistent memory is ON.
+ON FIRST USER MESSAGE in this session, briefly tell the user:
+  'CogniLayer v3 active — persistent memory is on. Type /cognihelp for available commands.'
+Say it ONCE, keep it short, then continue with their request.
+
+## Memory Tools
+You have access to the `cognilayer` MCP server:
+- memory_search(query) — search memory semantically
+- memory_write(content) — save important information
+- file_search(query) — search project files (PRD, docs...)
+- decision_log(query) — find past decisions
+
+When unsure about context or project history,
+ALWAYS search memory first via memory_search.
+When you need info from PRD or docs, use file_search
+INSTEAD of reading the entire file.
+
+## VERIFY-BEFORE-ACT — MANDATORY
+When memory_search returns a fact marked with ⚠ STALE:
+1. ALWAYS read the source file and verify the fact still holds
+2. If the fact changed -> update it via memory_write
+3. NEVER make changes based on STALE facts without verification
+
+## PROACTIVE MEMORY — IMPORTANT
+When you discover something important during work, SAVE IT IMMEDIATELY:
+- Bug and fix -> memory_write(type="error_fix")
+- Pitfall/danger -> memory_write(type="gotcha")
+- Exact procedure -> memory_write(type="procedure")
+- How components communicate -> memory_write(type="api_contract")
+- Performance issue -> memory_write(type="performance")
+- Important command -> memory_write(type="command")
+DO NOT wait for /harvest — session may crash.
+
+## RUNNING BRIDGE — CRITICAL
+After completing each task AUTOMATICALLY update session bridge:
+  session_bridge(action="save", content="Progress: ...; Open: ...")
+This is Tier 1 — do it yourself, don't announce, it's part of the job.
+
+## Safety Rules — MANDATORY
+- Before ANY deploy, push, ssh, pm2, docker, db migration:
+  1. ALWAYS call verify_identity(action_type="...") first
+  2. If it returns BLOCKED — STOP and ask the user
+  3. If it returns VERIFIED — READ the target server to the user and request confirmation
+
+## Git Rules
+- Commit often, small atomic changes. Format: "[type] what and why"
+- commit = Tier 1 (do it yourself). push = Tier 3 (verify_identity).
+
+## Project DNA: generalized-notation-notation
+Stack: unknown
+Style: [unknown]
+Structure: .agent_rules, .benchmarks, .github, .hypothesis, .pytest_cache, .ruff_cache, doc, input
+Deploy: [NOT SET]
+Active: [new session]
+Last: [first session]
+
+## Last Session Bridge
+[Emergency bridge — running bridge was not updated]
+No changes or facts in this session.
+
+# === END COGNILAYER ===

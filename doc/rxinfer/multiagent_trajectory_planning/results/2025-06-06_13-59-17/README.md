@@ -18,7 +18,7 @@ Generated at: 2025-06-06 14:01:29
 - `obstacle_distance.png` - Heatmap of distances to obstacles
 - `path_uncertainty.png` - Visualization of path uncertainties
 - `path_visualization.png` - Static visualization of agent paths
-- `convergence.png` - Convergence plot of the inference (may show placeholder if ELBO tracking unavailable)
+- `convergence.png` - Convergence plot of the inference (reports missing ELBO tracking when unavailable)
 
 ### Environment Heatmaps
 - `door_environment_heatmap.png` - Distance field visualization for door environment

@@ -28,19 +28,25 @@ def run_simulation():
     num_states = 2
     num_obs = 2
     num_actions = 2
-    T = 15
+    T = 20
 
     A = torch.tensor([
-        [1.000000, 0.000000],
-        [0.000000, 1.000000]
+        [0.800000, 0.200000],
+        [0.200000, 0.800000]
     ], dtype=torch.float64)
     C = torch.tensor([0.000000, 2.000000], dtype=torch.float64)
     D = torch.tensor([0.500000, 0.500000], dtype=torch.float64)
     
-    B = torch.tensor([
-        [1.000000, 0.000000],
-        [0.000000, 1.000000]
-    ], dtype=torch.float64).unsqueeze(2).expand(-1, -1, 2).clone()
+    B_slices = []
+    B_slices.append(torch.tensor([
+        [0.727273, 0.222222],
+        [0.272727, 0.777778]
+    ], dtype=torch.float64))
+    B_slices.append(torch.tensor([
+        [0.272727, 0.777778],
+        [0.727273, 0.222222]
+    ], dtype=torch.float64))
+    B = torch.stack(B_slices, dim=2)
 
     # --- Simulation State ---
     beliefs_history = []

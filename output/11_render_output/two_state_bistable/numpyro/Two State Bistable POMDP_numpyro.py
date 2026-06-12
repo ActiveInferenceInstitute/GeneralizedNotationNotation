@@ -17,14 +17,14 @@ try:
     import jax.numpy as jnp
     import jax.random as jrandom
 except ImportError:
-    print("ERROR: JAX not installed. Install with: uv sync --extra probabilistic-programming")
+    print("ERROR: JAX not installed. Install with: uv sync")
     sys.exit(1)
 
 try:
     import numpyro
     import numpyro.distributions as dist
 except ImportError:
-    print("ERROR: NumPyro not installed. Install with: uv sync --extra probabilistic-programming")
+    print("ERROR: NumPyro not installed. Install with: uv sync")
     sys.exit(1)
 
 import numpy as np
@@ -39,19 +39,25 @@ def run_simulation(seed: int = 42):
     num_states = 2
     num_obs = 2
     num_actions = 2
-    T = 15
+    T = 20
 
     A = jnp.array([
-        [1.000000, 0.000000],
-        [0.000000, 1.000000]
+        [0.800000, 0.200000],
+        [0.200000, 0.800000]
     ])
     C = jnp.array([0.000000, 2.000000])
     D = jnp.array([0.500000, 0.500000])
     
-    B = jnp.tile(jnp.array([
-        [1.000000, 0.000000],
-        [0.000000, 1.000000]
-    ])[:, :, None], (1, 1, 2))
+    B_slices = []
+    B_slices.append(jnp.array([
+        [0.727273, 0.222222],
+        [0.272727, 0.777778]
+    ]))
+    B_slices.append(jnp.array([
+        [0.272727, 0.777778],
+        [0.727273, 0.222222]
+    ]))
+    B = jnp.stack(B_slices, axis=2)
 
     # --- Simulation State ---
     beliefs_history = []

@@ -10,45 +10,53 @@ import json
 import logging
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, cast
 
 try:
     import numpy as np
+
     NUMPY_AVAILABLE = True
 except ImportError:
-    np = None  # type: ignore[assignment]
+    np = cast(Any, None)
     NUMPY_AVAILABLE = False
 
 try:
     import matplotlib
-    matplotlib.use('Agg')
+
+    matplotlib.use("Agg")
     import matplotlib.pyplot as plt
+
     MATPLOTLIB_AVAILABLE = True
 except ImportError:
     MATPLOTLIB_AVAILABLE = False
-    plt = None  # type: ignore[assignment]
+    plt = cast(Any, None)
 
 try:
     import seaborn as sns
+
     SEABORN_AVAILABLE = True
 except ImportError:
-    sns = None  # type: ignore[assignment]
+    sns = cast(Any, None)
     SEABORN_AVAILABLE = False
 
-try:
-    from visualization.matrix_visualizer import MatrixVisualizer as _MatrixVisualizer
-except ImportError:
-    try:
-        from src.visualization.matrix_visualizer import (
-            MatrixVisualizer as _MatrixVisualizer,
-        )
-    except ImportError:
-        _MatrixVisualizer = None  # type: ignore[assignment,misc]
+
+class _LazyMatrixVisualizer:
+    """Defer MatrixVisualizer import until advanced visualization actually needs it."""
+
+    def __call__(self) -> Any:
+        """Invoke the callable instance."""
+        from visualization.matrix_visualizer import MatrixVisualizer
+
+        return MatrixVisualizer()
+
+
+_MatrixVisualizer = _LazyMatrixVisualizer()
 
 
 @dataclass
 class AdvancedVisualizationAttempt:
     """Track individual visualization attempts"""
+
     viz_type: str
     model_name: str
     status: str  # "success", "failed", "skipped"
@@ -61,6 +69,7 @@ class AdvancedVisualizationAttempt:
 @dataclass
 class AdvancedVisualizationResults:
     """Aggregate results for advanced visualization processing"""
+
     total_attempts: int = 0
     successful: int = 0
     failed: int = 0
@@ -80,13 +89,15 @@ def normalize_connection_format(conn_info: Dict[str, Any]) -> Dict[str, Any]:
         return {
             "source_variables": [conn_info["source"]],
             "target_variables": [conn_info["target"]],
-            **{k: v for k, v in conn_info.items() if k not in ["source", "target"]}
+            **{k: v for k, v in conn_info.items() if k not in ["source", "target"]},
         }
     else:
         return conn_info
 
 
-def _calculate_semantic_positions(variables: List[Dict], connections: List[Dict]):
+def _calculate_semantic_positions(
+    variables: List[Dict], connections: List[Dict]
+) -> Any:
     """
     Calculate meaningful 3D positions for variables based on semantic relationships.
 
@@ -163,8 +174,8 @@ def _generate_fallback_report(
     viz_type: str,
     output_dir: Path,
     model_data: Dict,
-    logger: logging.Logger
-):
+    logger: logging.Logger,
+) -> Any:
     """Generate recovery HTML report when advanced libraries unavailable"""
     html_content = f"""<!DOCTYPE html>
 <html>
@@ -198,7 +209,9 @@ def _generate_fallback_report(
     logger.info(f"Generated recovery report: {output_file}")
 
 
-def validate_visualization_data(model_data: Dict, logger: logging.Logger) -> Dict[str, Any]:
+def validate_visualization_data(
+    model_data: Dict, logger: logging.Logger
+) -> Dict[str, Any]:
     """
     Validate that visualization data is complete and meaningful.
 
@@ -209,12 +222,12 @@ def validate_visualization_data(model_data: Dict, logger: logging.Logger) -> Dic
     Returns:
         Validation results dictionary
     """
-    validation_results = {
+    validation_results: dict[str, Any] = {
         "overall_valid": True,
         "warnings": [],
         "errors": [],
         "data_quality": {},
-        "recommendations": []
+        "recommendations": [],
     }
 
     try:
@@ -223,7 +236,7 @@ def validate_visualization_data(model_data: Dict, logger: logging.Logger) -> Dic
             validation_results["overall_valid"] = False
             return validation_results
 
-        required_keys = ["variables", "connections"]
+        required_keys: list[Any] = ["variables", "connections"]
         for key in required_keys:
             if key not in model_data:
                 validation_results["warnings"].append(f"Missing key: {key}")
@@ -242,10 +255,14 @@ def validate_visualization_data(model_data: Dict, logger: logging.Logger) -> Dic
                 if isinstance(var, dict) and "name" in var and "var_type" in var:
                     valid_vars += 1
                 else:
-                    validation_results["warnings"].append(f"Invalid variable structure: {var}")
+                    validation_results["warnings"].append(
+                        f"Invalid variable structure: {var}"
+                    )
 
             validation_results["data_quality"]["valid_variables"] = valid_vars
-            validation_results["data_quality"]["variable_validity_rate"] = valid_vars / len(variables)
+            validation_results["data_quality"]["variable_validity_rate"] = (
+                valid_vars / len(variables)
+            )
 
             if valid_vars < len(variables) * 0.8:
                 validation_results["warnings"].append("Low variable validity rate")
@@ -258,22 +275,28 @@ def validate_visualization_data(model_data: Dict, logger: logging.Logger) -> Dic
 
             valid_connections = 0
             for conn in connections:
-                if isinstance(conn, dict) and ("source_variables" in conn or "target_variables" in conn):
+                if isinstance(conn, dict) and (
+                    "source_variables" in conn or "target_variables" in conn
+                ):
                     valid_connections += 1
                 else:
-                    validation_results["warnings"].append(f"Invalid connection structure: {conn}")
+                    validation_results["warnings"].append(
+                        f"Invalid connection structure: {conn}"
+                    )
 
             validation_results["data_quality"]["valid_connections"] = valid_connections
-            validation_results["data_quality"]["connection_validity_rate"] = valid_connections / len(connections)
+            validation_results["data_quality"]["connection_validity_rate"] = (
+                valid_connections / len(connections)
+            )
 
-        pomdp_indicators = {
+        pomdp_indicators: dict[str, Any] = {
             "likelihood_matrix": 0,
             "transition_matrix": 0,
             "preference_vector": 0,
             "prior_vector": 0,
             "hidden_state": 0,
             "observation": 0,
-            "policy": 0
+            "policy": 0,
         }
 
         for var in variables:
@@ -288,28 +311,42 @@ def validate_visualization_data(model_data: Dict, logger: logging.Logger) -> Dic
         pomdp_score = sum(pomdp_indicators.values())
         if pomdp_score >= 3:
             validation_results["data_quality"]["is_pomdp_model"] = True
-            validation_results["data_quality"]["pomdp_completeness"] = pomdp_score / len(pomdp_indicators)
+            validation_results["data_quality"]["pomdp_completeness"] = (
+                pomdp_score / len(pomdp_indicators)
+            )
         else:
             validation_results["data_quality"]["is_pomdp_model"] = False
-            validation_results["warnings"].append("Model does not appear to be a complete POMDP")
+            validation_results["warnings"].append(
+                "Model does not appear to be a complete POMDP"
+            )
 
         if validation_results["data_quality"].get("variable_validity_rate", 1) < 0.9:
-            validation_results["recommendations"].append("Review variable parsing - high invalidity rate")
+            validation_results["recommendations"].append(
+                "Review variable parsing - high invalidity rate"
+            )
 
         if validation_results["data_quality"].get("connection_validity_rate", 1) < 0.9:
-            validation_results["recommendations"].append("Review connection parsing - high invalidity rate")
+            validation_results["recommendations"].append(
+                "Review connection parsing - high invalidity rate"
+            )
 
         if pomdp_score < 3:
-            validation_results["recommendations"].append("Model may not be a complete POMDP - check GNN structure")
+            validation_results["recommendations"].append(
+                "Model may not be a complete POMDP - check GNN structure"
+            )
 
         if validation_results["errors"]:
             validation_results["overall_valid"] = False
         elif len(validation_results["warnings"]) > 2:
             validation_results["overall_valid"] = False
-            validation_results["warnings"].append("Too many warnings - data quality may be poor")
+            validation_results["warnings"].append(
+                "Too many warnings - data quality may be poor"
+            )
 
         if logger:
-            logger.info(f"Validation completed: {validation_results['overall_valid']} (errors: {len(validation_results['errors'])}, warnings: {len(validation_results['warnings'])})")
+            logger.info(
+                f"Validation completed: {validation_results['overall_valid']} (errors: {len(validation_results['errors'])}, warnings: {len(validation_results['warnings'])})"
+            )
 
     except Exception as e:
         validation_results["errors"].append(f"Validation error: {e}")

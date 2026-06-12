@@ -16,7 +16,7 @@ import logging
 from datetime import datetime
 from html import escape
 from pathlib import Path
-from typing import List, Optional
+from typing import Any, List, Optional, cast
 
 logger = logging.getLogger(__name__)
 
@@ -68,7 +68,13 @@ def render_dashboard(
     timestamp = summary.get("timestamp", datetime.now().isoformat())
     total_dur = summary.get("total_duration", "N/A")
     success = summary.get("success", None)
-    badge = "🟢 SUCCESS" if success is True else "🔴 FAILED" if success is False else "⚪ UNKNOWN"
+    badge = (
+        "🟢 SUCCESS"
+        if success is True
+        else "🔴 FAILED"
+        if success is False
+        else "⚪ UNKNOWN"
+    )
 
     html = _TEMPLATE.format(
         title="GNN Pipeline Dashboard",
@@ -93,31 +99,36 @@ def render_dashboard(
 
 # ─── Internal Helpers ────────────────────────────────────────────────────────────
 
+
 def _load_json(path: Path) -> dict:
+    """Load json."""
     if path.exists():
         try:
             with open(path) as f:
-                return json.load(f)
+                return cast("dict[Any, Any]", json.load(f))
         except (json.JSONDecodeError, OSError) as e:
             logger.debug("Could not load JSON from %s: %s", path, e)
     return {}
 
+
 def _render_mermaid_graph(summary: dict) -> str:
+    """Render mermaid graph."""
     target_dir = summary.get("target_dir")
     if not target_dir:
         return ""
-    
+
     target_path = Path(target_dir)
     if not target_path.exists():
         return ""
-        
+
     try:
         from gnn.dep_graph import render_graph_from_file
+
         # Find first .gnn file
         gnn_files = list(target_path.glob("*.gnn"))
         if not gnn_files:
             return ""
-            
+
         return render_graph_from_file(str(gnn_files[0]), output_format="mermaid")
     except Exception as e:
         logger.warning(f"Could not render dependency graph to dashboard: {e}")
@@ -125,13 +136,16 @@ def _render_mermaid_graph(summary: dict) -> str:
 
 
 def _discover_step_dirs(results_dir: Path) -> List[Path]:
+    """Discover step dirs."""
     return sorted(
-        d for d in results_dir.iterdir()
+        d
+        for d in results_dir.iterdir()
         if d.is_dir() and d.name[0].isdigit() and "_output" in d.name
     )
 
 
 def _status_color(status: str) -> str:
+    """Handle status color for internal callers."""
     s = str(status).lower()
     if s in ("success", "passed"):
         return "#22c55e"
@@ -143,7 +157,8 @@ def _status_color(status: str) -> str:
 
 
 def _render_sidebar(steps: List[dict], step_dirs: List[Path]) -> str:
-    items = []
+    """Render sidebar."""
+    items: list[Any] = []
     if steps:
         for s in steps:
             name = escape(s.get("name", "?"))
@@ -153,7 +168,7 @@ def _render_sidebar(steps: List[dict], step_dirs: List[Path]) -> str:
                 f'<div class="step-item" onclick="showStep(\'{escape(name)}\')">'
                 f'<span class="dot" style="background:{color}"></span>'
                 f'<span class="step-name">{name}</span>'
-                f'</div>'
+                f"</div>"
             )
     elif step_dirs:
         for d in step_dirs:
@@ -161,12 +176,13 @@ def _render_sidebar(steps: List[dict], step_dirs: List[Path]) -> str:
                 f'<div class="step-item">'
                 f'<span class="dot" style="background:#6b7280"></span>'
                 f'<span class="step-name">{escape(d.name)}</span>'
-                f'</div>'
+                f"</div>"
             )
     return "\n".join(items)
 
 
 def _render_timeline_svg(steps: List[dict]) -> str:
+    """Render timeline svg."""
     if not steps:
         return '<p class="muted">No timing data available.</p>'
 
@@ -177,7 +193,7 @@ def _render_timeline_svg(steps: List[dict]) -> str:
     bar_width = 500
     svg_height = len(steps) * (bar_height + padding) + 20
 
-    bars = []
+    bars: list[Any] = []
     for i, s in enumerate(steps):
         name = escape(s.get("name", "?"))
         dur = s.get("duration_seconds", 0)
@@ -189,19 +205,18 @@ def _render_timeline_svg(steps: List[dict]) -> str:
             f'<rect x="{label_width}" y="{y}" width="{w}" height="{bar_height}" '
             f'rx="4" fill="{color}" opacity="0.85"/>'
             f'<text x="{label_width + w + 6}" y="{y + 18}" font-size="11" fill="#9ca3af">'
-            f'{dur:.1f}s</text>'
+            f"{dur:.1f}s</text>"
         )
 
     return (
         f'<svg width="{label_width + bar_width + 60}" height="{svg_height}" '
-        f'xmlns="http://www.w3.org/2000/svg">\n'
-        + "\n".join(bars)
-        + "\n</svg>"
+        f'xmlns="http://www.w3.org/2000/svg">\n' + "\n".join(bars) + "\n</svg>"
     )
 
 
 def _render_step_details(steps: List[dict], step_dirs: List[Path]) -> str:
-    sections = []
+    """Render step details."""
+    sections: list[Any] = []
     dir_map = {d.name: d for d in step_dirs}
 
     for s in steps:
@@ -218,24 +233,27 @@ def _render_step_details(steps: List[dict], step_dirs: List[Path]) -> str:
             files = sorted(f.name for f in d.rglob("*") if f.is_file())[:15]
             if files:
                 file_list = "".join(f"<li>{escape(f)}</li>" for f in files)
-                more = "<li><em>…and more</em></li>" if len(list(d.rglob("*"))) > 15 else ""
+                more = (
+                    "<li><em>…and more</em></li>"
+                    if len(list(d.rglob("*"))) > 15
+                    else ""
+                )
                 artifacts_html = f"<ul class='artifact-list'>{file_list}{more}</ul>"
 
         sections.append(
             f'<div class="step-detail" id="step-{escape(name)}">'
             f'<h3><span class="dot" style="background:{color}"></span> {name}</h3>'
-            f'<p>Status: <strong>{escape(status)}</strong> · Duration: {dur:.1f}s</p>'
-            f'{artifacts_html}'
-            f'</div>'
+            f"<p>Status: <strong>{escape(status)}</strong> · Duration: {dur:.1f}s</p>"
+            f"{artifacts_html}"
+            f"</div>"
         )
 
     return "\n".join(sections)
 
 
 def _render_stats(summary: dict, step_dirs: List[Path]) -> str:
-    total_files = sum(
-        sum(1 for f in d.rglob("*") if f.is_file()) for d in step_dirs
-    )
+    """Render stats."""
+    total_files = sum(sum(1 for f in d.rglob("*") if f.is_file()) for d in step_dirs)
     total_size = sum(
         sum(f.stat().st_size for f in d.rglob("*") if f.is_file()) for d in step_dirs
     )
@@ -246,7 +264,7 @@ def _render_stats(summary: dict, step_dirs: List[Path]) -> str:
         f'<div class="stat-label">Steps</div></div>'
         f'<div class="stat-card"><div class="stat-value">{total_files}</div>'
         f'<div class="stat-label">Artifacts</div></div>'
-        f'<div class="stat-card"><div class="stat-value">{total_size/1024:.0f} KB</div>'
+        f'<div class="stat-card"><div class="stat-value">{total_size / 1024:.0f} KB</div>'
         f'<div class="stat-label">Total Size</div></div>'
     )
 

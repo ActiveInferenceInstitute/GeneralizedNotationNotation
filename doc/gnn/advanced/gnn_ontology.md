@@ -1,7 +1,7 @@
 # GNN Ontology Guide
 
-**Version**: v2.0.0  
-**Last Updated**: 2026-03-24  
+**Version**: v1.6.0 Engine (Bundle v2.0.0)  
+**Last Updated**: 2026-04-15  
 **Status**: ✅ Production Ready  
 **Modules**: 38+ · **Pipeline steps**: 25 · **Renderers**: 9 backends (see [../implementations/README.md](../implementations/README.md)) · **Tests**: see [../../../README.md](../../../README.md)  
 
@@ -37,8 +37,8 @@ GNN ontology processing is integrated into the 25-step processing pipeline:
 # Process ontology validation
 python src/main.py --only-steps "3,10" --target-dir input/gnn_files --verbose
 
-# Strict ontology validation
-python src/10_ontology.py --target-dir input/gnn_files --output-dir output --strict-validation
+# Run ontology step directly
+python src/10_ontology.py --target-dir input/gnn_files --output-dir output --verbose
 ```
 
 ## Active Inference Ontology
@@ -195,7 +195,7 @@ Ontology processing integrates throughout the pipeline:
 ### Model Development
 
 - **Early Validation**: Validate ontology early in model development
-- **Strict Mode**: Use strict validation for production models
+- **Verbose Mode**: Use `--verbose` for detailed validation output
 - **Documentation**: Document ontology term usage
 - **Consistency**: Maintain consistency with Active Inference theory
 
@@ -215,5 +215,5 @@ Ontology processing integrates throughout the pipeline:
 ---
 
 **Status**: ✅ Production Ready  
-**Last Updated**: 2026-03-24  
-**Version**: v2.0.0
+**Last Updated**: 2026-04-15  
+**Version**: v1.6.0 Engine (Bundle v2.0.0)
