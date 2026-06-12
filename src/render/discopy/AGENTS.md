@@ -20,6 +20,7 @@
 2. Map GNN variables to DisCoPy `Box`es and connections to wires.
 3. Emit a `main()` in the generated script that assembles and (when `discopy.drawing` is present) renders the diagram.
 4. Surface warnings for missing `InitialParameterization`, `ModelParameters`, and `Connections` sections rather than hard-failing.
+5. Validate and emit matrix permutation metadata when supplied by parsed GNN data; current permutation support is metadata-only and does not reorder generated diagram wires or boxes.
 
 ### What this module is **not**
 
@@ -48,7 +49,7 @@ def render_gnn_to_discopy(
 **Parameters**:
 - `gnn_spec` — Parsed GNN spec dict (output of `gnn.parse_gnn_file`).
 - `output_path` — Destination `.py` path for the generated script. Parent directories are created.
-- `options` — Optional dict forwarded to `DisCoPyRenderer`. Currently unused by the generator but reserved for future template knobs.
+- `options` — Optional dict forwarded to `DisCoPyRenderer`. `matrix_permutations` is consumed for metadata validation; other keys are reserved for future template knobs.
 
 **Returns**: `(success, message, warnings)` where `warnings` is a list of human-readable strings describing missing optional sections in the spec.
 
@@ -93,6 +94,7 @@ python -m render.render --target discopy --gnn-file input/gnn_files/actinf_pomdp
 A single Python file (`<output_path>`) containing:
 - Imports (`discopy`, `discopy.drawing`, `numpy`).
 - Box and type declarations derived from `gnn_spec.variables`.
+- `MATRIX_PERMUTATION_METADATA` and `MATRIX_PERMUTATION_APPLIED_TO_DIAGRAM = False` when valid matrix permutation records are present.
 - A `main()` that composes the diagram and calls `diagram.draw(...)` when DisCoPy drawing backends are available.
 - A `__main__` guard so the script is runnable standalone.
 
@@ -150,6 +152,7 @@ GNN spec → render_gnn_to_discopy → <output>.py → execute.discopy runs scri
 
 - The generated script assumes DisCoPy's Python API; categorical features that require `pytket` or `lambeq` are not emitted. These were aspirational in prior drafts and have been removed from this document.
 - JAX-backed diagram evaluation is not supported. See `render/jax/` for a JAX-specific renderer with a different code-path.
+- Matrix permutation support is currently a validated metadata contract. The emitted DisCoPy diagram is still built from the parsed variable and connection structure; non-identity permutation metadata is not yet reflected as reordered diagram construction.
 
 ---
 

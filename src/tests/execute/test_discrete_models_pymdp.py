@@ -294,6 +294,7 @@ def test_pymdp_analysis_extractor(model_file: str, tmp_path: Path) -> None:
 
 @pytest.mark.integration
 @pytest.mark.slow
+@pytest.mark.timeout(900)
 def test_all_discrete_models_e2e(tmp_path: Path) -> None:
     """
     Run the full pipeline (process_render → process_execute → process_analysis)

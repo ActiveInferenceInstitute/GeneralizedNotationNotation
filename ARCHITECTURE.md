@@ -2,8 +2,8 @@
 
 This guide details the architecture of the Generalized Notation Notation (GNN) system. It complements `DOCS.md` and `doc/pipeline/README.md` with an implementation-oriented perspective for developers.
 
-**Last Updated**: 2026-05-08
-**Version**: 1.6.0
+**Last Updated**: 2026-06-12
+**Version**: 1.9.0
 **Status**: Maintained
 **Pipeline Steps**: 25 (0-24)
 
@@ -20,10 +20,10 @@ This guide details the architecture of the Generalized Notation Notation (GNN) s
 ### Quality Assurance Principles
 
 - **Real Implementation Testing**: All tests use real code paths and actual data dependencies
-- **Comprehensive Coverage**: >95% test coverage with performance and integration validation
+- **Comprehensive Coverage**: Use current CI/local test output for exact coverage and pass counts
 - **Real Data Processing**: Tests and examples use explicit, runnable data
-- **Performance Standards**: Sub-30-minute execution time, <2GB memory usage for standard workloads
-- **Error Rate Targets**: <1% critical failure rate, >99% step completion success rate
+- **Performance Standards**: Publish performance and memory figures only from current measured runs
+- **Error Rate Targets**: Publish failure-rate claims only from current measured runs
 
 ### Agent Architecture Principles
 
@@ -323,8 +323,8 @@ Each agent implements comprehensive performance monitoring:
 
 ---
 
-**Architecture Version**: 1.6.0
-**Last Updated**: 2026-05-08
+**Architecture Version**: 1.9.0
+**Last Updated**: 2026-06-12
 **Status**: ✅ Production Ready
 **Compliance**: Thin orchestrator pattern
 **Latest Validation**: See current test and pipeline runs

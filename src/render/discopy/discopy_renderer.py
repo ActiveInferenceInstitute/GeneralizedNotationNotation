@@ -15,10 +15,13 @@ Author: GNN DisCoPy Integration
 Date: 2024
 """
 
+import json
 import logging
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
+
+from .symmetry import build_matrix_permutation_metadata
 
 
 class DisCoPyRenderer:
@@ -162,6 +165,10 @@ class DisCoPyRenderer:
 
         # Extract connections if available
         gnn_spec.get("connections", [])
+        symmetry_metadata = build_matrix_permutation_metadata(
+            gnn_spec, self.options.get("matrix_permutations")
+        )
+        symmetry_metadata_json = json.dumps(symmetry_metadata, indent=2)
 
         # Generate the Python code
         code = f'''#!/usr/bin/env python3
@@ -175,43 +182,12 @@ structure using DisCoPy's compositional framework.
 """
 
 import sys
-import subprocess
 
-# Ensure DisCoPy is installed before importing
 try:
     import discopy
-    print("✅ DisCoPy is available")
 except ImportError:
-    print("📦 DisCoPy not found - installing...")
-    try:
-        # Try UV first (as per project rules)
-        result = subprocess.run(
-            [sys.executable, "-m", "uv", "pip", "install", "discopy"],
-            capture_output=True,
-            text=True,
-            timeout=180
-        )
-        if result.returncode != 0:
-            # Recovery to pip if UV fails
-            print("⚠️  UV install failed, trying pip...")
-            result = subprocess.run(
-                [sys.executable, "-m", "pip", "install", "discopy"],
-                capture_output=True,
-                text=True,
-                timeout=180
-            )
-        if result.returncode == 0:
-            print("✅ DisCoPy installed successfully")
-            import discopy
-        else:
-            print(f"❌ Failed to install DisCoPy: {{result.stderr}}")
-            sys.exit(1)
-    except subprocess.TimeoutExpired:
-        print("❌ DisCoPy installation timed out")
-        sys.exit(1)
-    except Exception as e:
-        print(f"❌ Error installing DisCoPy: {{e}}")
-        sys.exit(1)
+    print("DisCoPy is not installed. Install the project render extras before running this script.")
+    sys.exit(1)
 
 from discopy import *
 from discopy.monoidal import Ty, Box, Id
@@ -226,6 +202,28 @@ import json
 NUM_STATES = {num_states}
 NUM_OBSERVATIONS = {num_observations}
 NUM_ACTIONS = {num_actions}
+MATRIX_PERMUTATION_METADATA = {symmetry_metadata_json}
+MATRIX_PERMUTATION_APPLIED_TO_DIAGRAM = False
+
+def validate_matrix_permutation_metadata(metadata):
+    """Validate generated matrix permutation metadata before exporting diagrams."""
+    if not isinstance(metadata, dict):
+        raise ValueError("Matrix permutation metadata must be a dictionary")
+    for matrix_name, record in metadata.items():
+        if record.get("axis") != "rows":
+            raise ValueError(f"Unsupported permutation axis for {{matrix_name}}")
+        shape = record.get("shape")
+        permutation = record.get("permutation")
+        if not isinstance(shape, list) or not isinstance(permutation, list):
+            raise ValueError(f"Invalid permutation metadata for {{matrix_name}}")
+        if not shape:
+            raise ValueError(f"Missing matrix shape for {{matrix_name}}")
+        if len(permutation) != int(shape[0]):
+            raise ValueError(f"Permutation length mismatch for {{matrix_name}}")
+        if sorted(int(item) for item in permutation) != list(range(int(shape[0]))):
+            raise ValueError(f"Permutation indices mismatch for {{matrix_name}}")
+
+validate_matrix_permutation_metadata(MATRIX_PERMUTATION_METADATA)
 
 print("🔬 DisCoPy Categorical Diagram Generation")
 print(f"📊 State Space: {{NUM_STATES}} states, {{NUM_OBSERVATIONS}} observations, {{NUM_ACTIONS}} actions")
@@ -378,6 +376,8 @@ def export_circuit_data(circuit_dict, analysis_results, output_dir="discopy_diag
             'num_actions': NUM_ACTIONS
         }},
         'components': list(circuit_dict['components'].keys()),
+        'matrix_permutation_metadata': MATRIX_PERMUTATION_METADATA,
+        'matrix_permutation_applied_to_diagram': MATRIX_PERMUTATION_APPLIED_TO_DIAGRAM,
         'analysis': analysis_results
     }}
     

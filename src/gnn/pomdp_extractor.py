@@ -55,6 +55,7 @@ class POMDPStateSpace:
     matrix_provenance: Optional[Dict[str, Dict[str, Any]]] = None
     passive_model: bool = False
     adapter_notes: Optional[List[str]] = None
+    initial_parameterization: Optional[Dict[str, Any]] = None
 
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary representation."""
@@ -83,6 +84,7 @@ class POMDPStateSpace:
             "matrix_provenance": self.matrix_provenance,
             "passive_model": self.passive_model,
             "adapter_notes": self.adapter_notes,
+            "initial_parameterization": self.initial_parameterization,
         }
 
 
@@ -227,6 +229,7 @@ class POMDPExtractor:
                 matrix_provenance=matrix_provenance,
                 passive_model=passive_model,
                 adapter_notes=adapter_notes,
+                initial_parameterization=initial_params,
             )
 
             # Validate if strict validation enabled
@@ -614,12 +617,31 @@ class POMDPExtractor:
             if line.startswith("#") or not line:
                 continue
 
-            # Check if this line starts a parameter definition
+            # Check if this line starts a matrix/vector block parameter definition.
             if "={" in line and not in_param_block:
                 # Start of parameter block
                 param_name = line.split("={")[0].strip()
+                raw_value = line.split("=", 1)[1].strip()
+                raw_inner = (
+                    raw_value[1:-1].strip()
+                    if raw_value.startswith("{") and raw_value.endswith("}")
+                    else ""
+                )
+                if ":" in raw_inner:
+                    try:
+                        params[param_name] = self._parse_assignment_value(raw_value)
+                    except Exception as e:
+                        self.logger.warning(
+                            f"Failed to parse parameter {param_name}: {e}"
+                        )
+                    current_param = None
+                    current_value = ""
+                    continue
+
                 current_param = param_name
-                current_value = line.split("={")[1]
+                current_value = (
+                    raw_value[1:] if raw_value.startswith("{") else raw_value
+                )
 
                 # Check if parameter ends on the same line
                 if "}" in current_value:
@@ -637,6 +659,17 @@ class POMDPExtractor:
                 else:
                     # Multi-line parameter
                     in_param_block = True
+
+            elif "=" in line and not in_param_block:
+                param_name, raw_value = line.split("=", 1)
+                param_name = param_name.strip()
+                raw_value = raw_value.strip()
+                if not param_name:
+                    continue
+                try:
+                    params[param_name] = self._parse_assignment_value(raw_value)
+                except Exception as e:
+                    self.logger.warning(f"Failed to parse parameter {param_name}: {e}")
 
             elif in_param_block and current_param:
                 # Continue collecting parameter value
@@ -659,7 +692,16 @@ class POMDPExtractor:
 
         return params
 
-    def _parse_parameter_value(self, value_str: str) -> Union[List, float, int]:
+    def _parse_assignment_value(self, value_str: str) -> Any:
+        """Parse a complete InitialParameterization assignment value."""
+        value_str = value_str.strip()
+        if value_str.startswith("{") and value_str.endswith("}"):
+            inner = value_str[1:-1].strip()
+            if ":" not in inner:
+                value_str = inner
+        return self._parse_parameter_value(value_str)
+
+    def _parse_parameter_value(self, value_str: str) -> Any:
         """Parse parameter value string into appropriate data structure."""
         import ast
 

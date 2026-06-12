@@ -653,7 +653,7 @@ def _write_toml_with_exact_formatting(f: Any, config: Any) -> Any:
     f.write("# Number of inference iterations\n")
     f.write(f"nr_iterations = {config['model']['nr_iterations']}\n\n")
 
-    f.write("# Number of agents in the simulation (currently fixed at 4)\n")
+    f.write("# Number of agents in the simulation\n")
     f.write(f"nr_agents = {config['model']['nr_agents']}\n\n")
 
     f.write("# Temperature parameter for the softmin function\n")
@@ -797,10 +797,31 @@ def _write_toml_with_exact_formatting(f: Any, config: Any) -> Any:
 
     for agent in config["agents"]:
         f.write("[[agents]]\n")
-        f.write(f"id = {agent['id']}\n")
+        f.write(f"id = {json_dumps_scalar(agent['id'])}\n")
         f.write(f"radius = {agent['radius']}\n")
         f.write(f"initial_position = {agent['initial_position']}\n")
         f.write(f"target_position = {agent['target_position']}\n\n")
+
+    # Agent topology section
+    topology = config.get("topology")
+    if isinstance(topology, dict):
+        f.write("#\n# Agent topology\n#\n")
+        f.write("[topology]\n")
+        f.write(f'type = "{topology.get("type", "agent_population")}"\n')
+        f.write(f"agent_ids = {_toml_array(topology.get('agent_ids', []))}\n")
+        if topology.get("message_passing"):
+            f.write(f'message_passing = "{topology["message_passing"]}"\n')
+        f.write("\n")
+        for edge in topology.get("edges", []):
+            if isinstance(edge, dict):
+                f.write("[[topology.edges]]\n")
+                f.write(f"source = {json_dumps_scalar(edge['source'])}\n")
+                f.write(f"target = {json_dumps_scalar(edge['target'])}\n\n")
+        for cluster in topology.get("clusters", []):
+            if isinstance(cluster, dict):
+                f.write("[[topology.clusters]]\n")
+                f.write(f'name = "{cluster["name"]}"\n')
+                f.write(f"agent_ids = {_toml_array(cluster.get('agent_ids', []))}\n\n")
 
     # Experiments section
     f.write("#\n# Experiment configurations\n#\n")
@@ -842,7 +863,8 @@ def _create_toml_config_structure(
     Returns:
         Dictionary representing the TOML configuration
     """
-    params = gnn_spec.get("initialparameterization", {})
+    params = _initial_parameterization(gnn_spec)
+    agents = _extract_agents(gnn_spec)
 
     # Start with a standard structure based on the config.toml example
     toml_config: dict[str, Any] = {
@@ -851,7 +873,7 @@ def _create_toml_config_structure(
             "gamma": params.get("gamma", 1.0),
             "nr_steps": params.get("nr_steps", 40),
             "nr_iterations": params.get("nr_iterations", 350),
-            "nr_agents": params.get("nr_agents", 4),
+            "nr_agents": len(agents),
             "softmin_temperature": params.get("softmin_temperature", 10.0),
             "intermediate_steps": params.get("intermediate_steps", 10),
             "save_intermediates": str(params.get("save_intermediates", False))
@@ -879,17 +901,49 @@ def _create_toml_config_structure(
             "color_palette": params.get("color_palette", "tab10"),
         },
         "environments": _extract_environments(gnn_spec),
-        "agents": _extract_agents(gnn_spec),
+        "agents": agents,
+        "topology": _extract_agent_topology(params, agents),
         "experiments": _extract_experiments(gnn_spec),
     }
 
     return toml_config
 
 
+def _toml_array(value: Any) -> str:
+    """Return a TOML-compatible array literal for simple scalar lists."""
+    if not isinstance(value, list):
+        return "[]"
+    return "[" + ", ".join(json_dumps_scalar(item) for item in value) + "]"
+
+
+def json_dumps_scalar(value: Any) -> str:
+    """Serialize scalar values using TOML-compatible JSON scalar syntax."""
+    import json
+
+    if isinstance(value, (str, int, float, bool)) or value is None:
+        return json.dumps(value)
+    if isinstance(value, list):
+        return _toml_array(value)
+    return json.dumps(str(value))
+
+
+def _initial_parameterization(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
+    """Return normalized initial-parameterization keys from public GNN specs."""
+    for key in (
+        "initialparameterization",
+        "initial_parameterization",
+        "InitialParameterization",
+    ):
+        value = gnn_spec.get(key)
+        if isinstance(value, dict):
+            return value
+    return {}
+
+
 def _extract_matrices(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
     """Extract state space matrices from the GNN specification."""
     matrices: dict[Any, Any] = {}
-    params = gnn_spec.get("initialparameterization", {})
+    params = _initial_parameterization(gnn_spec)
 
     # Use provided matrices if available, otherwise use defaults
     if "A" in params:
@@ -920,7 +974,7 @@ def _extract_matrices(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
 
 def _extract_environments(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
     """Extract environment definitions from the GNN specification."""
-    params = gnn_spec.get("initialparameterization", {})
+    params = _initial_parameterization(gnn_spec)
 
     environments: dict[str, Any] = {
         "door": {
@@ -987,28 +1041,23 @@ def _extract_environments(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
 
 def _extract_agents(gnn_spec: Dict[str, Any]) -> List[Dict[str, Any]]:
     """Extract agent configurations from the GNN specification."""
-    params = gnn_spec.get("initialparameterization", {})
-    nr_agents = params.get("nr_agents", 0)
-    agents: list[Any] = []
+    params = _initial_parameterization(gnn_spec)
+    nr_agents = _coerce_positive_int(params.get("nr_agents"))
 
     if nr_agents > 0:
-        for i in range(1, nr_agents + 1):
-            agent_id = params.get(f"agent{i}_id")
-            radius = params.get(f"agent{i}_radius")
-            initial_pos = params.get(f"agent{i}_initial_position")
-            target_pos = params.get(f"agent{i}_target_position")
+        compact_agents = _extract_compact_agents(params, nr_agents)
+        if compact_agents is not None:
+            return compact_agents
 
-            if all(v is not None for v in [agent_id, radius, initial_pos, target_pos]):
-                agents.append(
-                    {
-                        "id": agent_id,
-                        "radius": radius,
-                        "initial_position": initial_pos,
-                        "target_position": target_pos,
-                    }
-                )
-        if len(agents) == nr_agents:
-            return agents
+        indexed_agents = _extract_indexed_agents(params, nr_agents)
+        if len(indexed_agents) == nr_agents:
+            return indexed_agents
+
+        raise ValueError(
+            "nr_agents was provided but agent configuration is incomplete. "
+            "Provide compact agent_ids/agent_initial_positions/agent_target_positions "
+            "or complete agent{i}_id/agent{i}_initial_position/agent{i}_target_position keys."
+        )
 
     # Recovery to default agents if extraction fails
     return [
@@ -1039,9 +1088,228 @@ def _extract_agents(gnn_spec: Dict[str, Any]) -> List[Dict[str, Any]]:
     ]
 
 
+def _coerce_positive_int(value: Any) -> int:
+    """Coerce a value to a positive int, returning 0 for missing/invalid values."""
+    try:
+        coerced = int(value)
+    except (TypeError, ValueError):
+        return 0
+    return max(0, coerced)
+
+
+def _as_list(value: Any) -> list[Any] | None:
+    """Return value as a list when it is list-like enough for TOML config."""
+    return value if isinstance(value, list) else None
+
+
+def _extract_compact_agents(
+    params: Dict[str, Any], nr_agents: int
+) -> List[Dict[str, Any]] | None:
+    """Extract agents from compact vectorized InitialParameterization keys."""
+    agent_ids = _as_list(params.get("agent_ids"))
+    initial_positions = _as_list(params.get("agent_initial_positions"))
+    target_positions = _as_list(params.get("agent_target_positions"))
+    if agent_ids is None and initial_positions is None and target_positions is None:
+        return None
+    radii = _as_list(params.get("agent_radii")) or _as_list(params.get("agent_radius"))
+    default_radius = params.get("agent_default_radius", 1.0)
+    required = {
+        "agent_ids": agent_ids,
+        "agent_initial_positions": initial_positions,
+        "agent_target_positions": target_positions,
+    }
+    missing = [name for name, value in required.items() if value is None]
+    if missing:
+        raise ValueError(f"Missing compact multi-agent keys: {', '.join(missing)}")
+    assert agent_ids is not None
+    assert initial_positions is not None
+    assert target_positions is not None
+    lengths = {
+        "agent_ids": len(agent_ids),
+        "agent_initial_positions": len(initial_positions),
+        "agent_target_positions": len(target_positions),
+    }
+    if any(length != nr_agents for length in lengths.values()):
+        raise ValueError(
+            f"Compact multi-agent lengths must match nr_agents={nr_agents}: {lengths}"
+        )
+    if radii is not None and len(radii) != nr_agents:
+        raise ValueError(
+            f"agent_radii length {len(radii)} must match nr_agents={nr_agents}"
+        )
+    return [
+        {
+            "id": agent_ids[index],
+            "radius": radii[index] if radii is not None else default_radius,
+            "initial_position": initial_positions[index],
+            "target_position": target_positions[index],
+        }
+        for index in range(nr_agents)
+    ]
+
+
+def _extract_indexed_agents(
+    params: Dict[str, Any], nr_agents: int
+) -> List[Dict[str, Any]]:
+    """Extract indexed agent{i}_... agent definitions."""
+    agents: List[Dict[str, Any]] = []
+    for i in range(1, nr_agents + 1):
+        agent_id = params.get(f"agent{i}_id")
+        radius = params.get(f"agent{i}_radius", params.get("agent_default_radius", 1.0))
+        initial_pos = params.get(f"agent{i}_initial_position")
+        target_pos = params.get(f"agent{i}_target_position")
+
+        if all(v is not None for v in [agent_id, radius, initial_pos, target_pos]):
+            agents.append(
+                {
+                    "id": agent_id,
+                    "radius": radius,
+                    "initial_position": initial_pos,
+                    "target_position": target_pos,
+                }
+            )
+    return agents
+
+
+def _extract_agent_topology(
+    params: Dict[str, Any], agents: List[Dict[str, Any]]
+) -> Dict[str, Any]:
+    """Extract explicit multi-agent topology metadata for TOML and execution."""
+    agent_ids = [agent["id"] for agent in agents if "id" in agent]
+    raw_edges, edges_present = _first_present(
+        params, ("agent_edges", "topology_edges", "edges"), []
+    )
+    raw_clusters, clusters_present = _first_present(
+        params, ("agent_clusters", "topology_clusters", "clusters"), {}
+    )
+    edges = _normalize_topology_edges(raw_edges, strict=edges_present)
+    clusters = _normalize_topology_clusters(raw_clusters, strict=clusters_present)
+    topology_type = params.get("agent_topology_type") or params.get("topology_type")
+    if topology_type is None:
+        if clusters:
+            topology_type = "clustered"
+        elif edges:
+            topology_type = "network"
+        else:
+            topology_type = "agent_population"
+    topology: Dict[str, Any] = {
+        "type": str(topology_type),
+        "agent_ids": agent_ids,
+        "edges": edges,
+        "clusters": clusters,
+    }
+    message_passing = params.get("message_passing") or params.get(
+        "agent_message_passing"
+    )
+    if message_passing:
+        topology["message_passing"] = str(message_passing)
+    _validate_topology_references(topology, agent_ids)
+    return topology
+
+
+def _validate_topology_references(
+    topology: Dict[str, Any], agent_ids: List[Any]
+) -> None:
+    """Reject topology records that reference undeclared agents."""
+    declared = set(agent_ids)
+    for edge in topology.get("edges", []):
+        if not isinstance(edge, dict):
+            continue
+        for endpoint_name in ("source", "target"):
+            endpoint = edge.get(endpoint_name)
+            if endpoint not in declared:
+                raise ValueError(
+                    f"Topology edge {endpoint_name} references undeclared agent {endpoint!r}"
+                )
+    for cluster in topology.get("clusters", []):
+        if not isinstance(cluster, dict):
+            continue
+        for agent_id in cluster.get("agent_ids", []):
+            if agent_id not in declared:
+                raise ValueError(
+                    f"Topology cluster {cluster.get('name', '<unnamed>')} "
+                    f"references undeclared agent {agent_id!r}"
+                )
+
+
+def _first_present(
+    params: Dict[str, Any], keys: tuple[str, ...], default: Any
+) -> tuple[Any, bool]:
+    """Return the first present parameter value and whether any key was present."""
+    for key in keys:
+        if key in params:
+            return params[key], True
+    return default, False
+
+
+def _normalize_topology_edges(
+    raw_edges: Any, *, strict: bool = False
+) -> List[Dict[str, Any]]:
+    """Normalize compact edge lists into explicit source/target records."""
+    if not isinstance(raw_edges, list):
+        if strict:
+            raise ValueError("Topology edges must be a list")
+        return []
+    edges: List[Dict[str, Any]] = []
+    for raw_edge in raw_edges:
+        if isinstance(raw_edge, dict):
+            source = raw_edge.get("source", raw_edge.get("from"))
+            target = raw_edge.get("target", raw_edge.get("to"))
+        elif isinstance(raw_edge, (list, tuple)) and len(raw_edge) >= 2:
+            source, target = raw_edge[0], raw_edge[1]
+        else:
+            if strict:
+                raise ValueError(f"Malformed topology edge: {raw_edge!r}")
+            continue
+        if source is None or target is None:
+            if strict:
+                raise ValueError(
+                    f"Topology edge requires source and target: {raw_edge!r}"
+                )
+            continue
+        edges.append({"source": source, "target": target})
+    return edges
+
+
+def _normalize_topology_clusters(
+    raw_clusters: Any, *, strict: bool = False
+) -> List[Dict[str, Any]]:
+    """Normalize dict/list cluster definitions into TOML table records."""
+    clusters: List[Dict[str, Any]] = []
+    if isinstance(raw_clusters, dict):
+        for name, agent_ids in raw_clusters.items():
+            if isinstance(agent_ids, list):
+                clusters.append({"name": str(name), "agent_ids": agent_ids})
+            elif strict:
+                raise ValueError(f"Topology cluster {name!r} members must be a list")
+        return clusters
+    if isinstance(raw_clusters, list):
+        for index, raw_cluster in enumerate(raw_clusters, start=1):
+            if isinstance(raw_cluster, dict):
+                agent_ids = raw_cluster.get("agent_ids") or raw_cluster.get("agents")
+                if isinstance(agent_ids, list):
+                    clusters.append(
+                        {
+                            "name": str(raw_cluster.get("name", f"cluster_{index}")),
+                            "agent_ids": agent_ids,
+                        }
+                    )
+                elif strict:
+                    raise ValueError(
+                        f"Topology cluster {raw_cluster.get('name', index)!r} "
+                        "members must be a list"
+                    )
+            elif strict:
+                raise ValueError(f"Malformed topology cluster: {raw_cluster!r}")
+        return clusters
+    if strict:
+        raise ValueError("Topology clusters must be a dict or list")
+    return clusters
+
+
 def _extract_experiments(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
     """Extract experiment configurations from the GNN specification."""
-    params = gnn_spec.get("initialparameterization", {})
+    params = _initial_parameterization(gnn_spec)
 
     # Use experiment settings from GNN spec if available, otherwise use defaults
     experiments: dict[str, Any] = {

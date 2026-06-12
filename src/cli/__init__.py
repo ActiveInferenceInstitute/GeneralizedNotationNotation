@@ -12,6 +12,8 @@ Provides:
   gnn preflight  — Run environment & config checks
   gnn health     — Show renderer & dependency status
   gnn serve      — Start Pipeline-as-a-Service API
+  gnn templates  — Inspect maintained GNN templates
+  gnn pull       — Copy a maintained template into an input directory
   gnn lsp        — Launch Language Server
 """
 
@@ -145,6 +147,32 @@ def main(argv: Optional[List[str]] = None) -> int:
     serve_p.add_argument("--host", default="127.0.0.1", help="Bind host")
     serve_p.add_argument("--port", type=int, default=8000, help="Bind port")
 
+    # ── gnn templates ───────────────────────────────────────────────────────
+    templates_p = subparsers.add_parser("templates", help="Inspect template library")
+    templates_sub = templates_p.add_subparsers(
+        dest="templates_command", help="Template commands"
+    )
+    templates_sub.add_parser("list", help="List available templates")
+    templates_show_p = templates_sub.add_parser("show", help="Show one template")
+    templates_show_p.add_argument("name", help="Template name")
+
+    # ── gnn pull ────────────────────────────────────────────────────────────
+    pull_p = subparsers.add_parser("pull", help="Copy a maintained GNN template")
+    pull_p.add_argument("name", help="Template name")
+    pull_p.add_argument(
+        "--output-dir",
+        "-o",
+        type=Path,
+        default=Path("input/gnn_files"),
+        help="Directory to receive the template",
+    )
+    pull_p.add_argument("--dry-run", action="store_true", help="Report without copying")
+    pull_p.add_argument(
+        "--overwrite",
+        action="store_true",
+        help="Replace destination on checksum mismatch",
+    )
+
     # ── gnn watch ────────────────────────────────────────────────────────────
     watch_p = subparsers.add_parser(
         "watch", help="Monitor directory and live-reparse on change"
@@ -191,6 +219,8 @@ def main(argv: Optional[List[str]] = None) -> int:
         "preflight": _cmd_preflight,
         "health": _cmd_health,
         "serve": _cmd_serve,
+        "templates": _cmd_templates,
+        "pull": _cmd_pull,
         "lsp": _cmd_lsp,
         "watch": _cmd_watch,
         "graph": _cmd_graph,
@@ -565,6 +595,41 @@ def _cmd_serve(args: Any) -> Any:
     except ImportError:
         print("❌ FastAPI not installed. Run: pip install fastapi uvicorn")
         return 1
+    return 0
+
+
+def _cmd_templates(args: Any) -> Any:
+    """Inspect the maintained template library."""
+    from .templates import list_templates, show_template
+
+    if getattr(args, "templates_command", None) in {None, "list"}:
+        print(json.dumps({"templates": list_templates()}, indent=2))
+        return 0
+    if args.templates_command == "show":
+        try:
+            print(json.dumps({"template": show_template(args.name)}, indent=2))
+        except KeyError as exc:
+            logger.error(str(exc))
+            return 1
+        return 0
+    return 1
+
+
+def _cmd_pull(args: Any) -> Any:
+    """Copy a maintained template into an input directory."""
+    from .templates import pull_template
+
+    try:
+        result = pull_template(
+            args.name,
+            Path(args.output_dir),
+            dry_run=bool(args.dry_run),
+            overwrite=bool(args.overwrite),
+        )
+    except (KeyError, FileExistsError, FileNotFoundError, OSError) as exc:
+        logger.error(str(exc))
+        return 1
+    print(json.dumps(result, indent=2))
     return 0
 
 
