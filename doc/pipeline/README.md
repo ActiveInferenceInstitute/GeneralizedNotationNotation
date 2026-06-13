@@ -13,6 +13,7 @@ Step 12 (Execute) runs rendered scripts for PyMDP, RxInfer.jl, ActiveInference.j
 - **Source specification**: `../../src/SPEC.md`
 - **Step index (0–24)**: `../../src/STEP_INDEX.md`
 - **Stage hardening review**: [`pipeline_stage_hardening_review.md`](pipeline_stage_hardening_review.md)
+- **Validation evidence guide**: [`validation_evidence_guide.md`](validation_evidence_guide.md)
 - **Orchestrator implementation**: `../../src/main.py`
 
 ## Notes

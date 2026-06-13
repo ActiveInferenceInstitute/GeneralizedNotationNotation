@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Renderer Health Check — Reports availability of all rendering targets.
+Renderer Health Check — Reports importability of renderer generator modules.
 
 Provides:
   - check_renderers(): returns Dict[str, RendererStatus]
@@ -50,7 +50,7 @@ _RENDERERS: dict[str, Any] = {
 
 def check_renderers() -> Dict[str, RendererStatus]:
     """
-    Check availability of all rendering targets.
+    Check importability of all renderer generator modules.
 
     Returns:
         Dict mapping renderer name → RendererStatus.
@@ -84,7 +84,11 @@ def check_renderers() -> Dict[str, RendererStatus]:
 
     available = sum(1 for r in results.values() if r.available)
     total = len(results)
-    logger.info(f"🔧 Renderers: {available}/{total} available")
+    logger.info(
+        "🔧 Renderer generator modules: %s/%s importable",
+        available,
+        total,
+    )
 
     return results
 

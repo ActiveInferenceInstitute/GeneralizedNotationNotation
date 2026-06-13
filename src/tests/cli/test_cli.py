@@ -3,6 +3,7 @@
 import sys
 from io import StringIO
 from pathlib import Path
+from types import SimpleNamespace
 from typing import Any
 
 import pytest
@@ -88,6 +89,76 @@ def test_cli_verbose_flag(tmp_path: Any) -> Any:
     finally:
         if orig_health:
             cli._cmd_health = orig_health
+
+
+def test_cli_health_strict_flag_routes_to_handler() -> Any:
+    """Test that health --strict reaches the handler."""
+    orig_health = getattr(cli, "_cmd_health", None)
+    tracker = CallTracker()
+    cli._cmd_health = tracker
+
+    try:
+        main(["health", "--strict"])
+        assert tracker.call_args is not None
+        args = tracker.call_args[0]
+        assert getattr(args, "strict", False) is True
+    finally:
+        if orig_health:
+            cli._cmd_health = orig_health
+
+
+def test_health_default_informational_when_environment_has_errors(
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    import pipeline.preflight
+    import render.health
+
+    monkeypatch.setattr(
+        render.health,
+        "check_renderers",
+        lambda: {"pymdp": SimpleNamespace(available=True)},
+    )
+    monkeypatch.setattr(
+        pipeline.preflight,
+        "check_environment",
+        lambda: SimpleNamespace(
+            checks_passed=1,
+            checks_failed=1,
+            is_ok=False,
+            issues=[SimpleNamespace(severity="error", message="missing backend")],
+        ),
+    )
+
+    assert cli._cmd_health(SimpleNamespace(strict=False)) == 0
+    captured = capsys.readouterr()
+    assert "generator modules importable" in captured.out
+    assert "pass --strict to fail on errors" in captured.out
+
+
+def test_health_strict_fails_when_environment_has_errors(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    import pipeline.preflight
+    import render.health
+
+    monkeypatch.setattr(
+        render.health,
+        "check_renderers",
+        lambda: {"pymdp": SimpleNamespace(available=True)},
+    )
+    monkeypatch.setattr(
+        pipeline.preflight,
+        "check_environment",
+        lambda: SimpleNamespace(
+            checks_passed=1,
+            checks_failed=1,
+            is_ok=False,
+            issues=[SimpleNamespace(severity="error", message="missing backend")],
+        ),
+    )
+
+    assert cli._cmd_health(SimpleNamespace(strict=True)) == 1
 
 
 def test_cli_subcommand_routing(tmp_path: Any) -> Any:

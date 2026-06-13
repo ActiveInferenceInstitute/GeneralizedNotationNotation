@@ -11,10 +11,23 @@ Provides:
 import logging
 import shutil
 from dataclasses import dataclass, field
+from importlib import import_module
 from pathlib import Path
 from typing import Any, List, Optional
 
 logger = logging.getLogger(__name__)
+
+
+def _import_dependency(module_name: str) -> tuple[Any | None, str | None]:
+    """Import a dependency and distinguish missing modules from broken imports."""
+    try:
+        return import_module(module_name), None
+    except ModuleNotFoundError as e:
+        if e.name == module_name:
+            return None, "missing"
+        return None, f"import failed: {e}"
+    except ImportError as e:
+        return None, f"import failed: {e}"
 
 
 @dataclass
@@ -178,15 +191,22 @@ def check_environment() -> PreflightReport:
 
     # Required packages
     for pkg in ["numpy", "pytest", "yaml"]:
-        try:
-            __import__(pkg)
+        module, error = _import_dependency(pkg)
+        if module is not None:
             report.add_pass(f"Package: {pkg}")
-        except ImportError:
+        elif error == "missing":
             report.add_issue(
                 "dependency",
                 "warning",
                 f"Package not found: {pkg}",
                 fix=f"pip install {pkg}",
+            )
+        else:
+            report.add_issue(
+                "dependency",
+                "warning",
+                f"Package import failed: {pkg} ({error})",
+                fix=f"pip install --upgrade {pkg}",
             )
 
     # Step 12 execution stack (core ``pyproject.toml`` dependencies)
@@ -197,29 +217,44 @@ def check_environment() -> PreflightReport:
         ("numpyro", "numpyro"),
         ("discopy", "discopy"),
     ]:
-        try:
-            m = __import__(mod)
-            ver = getattr(m, "__version__", "?")
+        module, error = _import_dependency(mod)
+        if module is not None:
+            ver = getattr(module, "__version__", "?")
             report.add_pass(f"Package: {label} {ver}")
-        except ImportError:
+        elif error == "missing":
             report.add_issue(
                 "dependency",
                 "error",
                 f"Package not found: {label} (step 12 backend)",
                 fix="uv sync",
             )
+        else:
+            report.add_issue(
+                "dependency",
+                "error",
+                f"Package import failed: {label} (step 12 backend): {error}",
+                fix="uv sync --reinstall-package "
+                f"{label} or adjust compatible dependency versions",
+            )
 
     # Optional packages
     for pkg, purpose in [("pydantic", "schemas"), ("fastapi", "API"), ("pygls", "LSP")]:
-        try:
-            __import__(pkg)
+        module, error = _import_dependency(pkg)
+        if module is not None:
             report.add_pass(f"Optional: {pkg} ({purpose})")
-        except ImportError:
+        elif error == "missing":
             report.add_issue(
                 "dependency",
                 "info",
                 f"Optional package: {pkg} ({purpose})",
                 fix=f"pip install {pkg}",
+            )
+        else:
+            report.add_issue(
+                "dependency",
+                "info",
+                f"Optional package import failed: {pkg} ({purpose}): {error}",
+                fix=f"pip install --upgrade {pkg}",
             )
 
     # Tools

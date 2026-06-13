@@ -17,7 +17,8 @@ Unified command-line interface for the GNN pipeline. Provides subcommands for ru
 | `gnn report` | Generate pipeline report from existing outputs |
 | `gnn reproduce <hash>` | Re-run from a previous run hash (content-addressable) |
 | `gnn preflight` | Run environment & config checks |
-| `gnn health` | Show renderer & dependency status (8/8 renderers) |
+| `gnn health` | Show renderer generator-module availability and environment preflight status |
+| `gnn health --strict` | Exit nonzero when environment preflight reports errors |
 | `gnn serve` | Start Pipeline-as-a-Service API (FastAPI) |
 | `gnn templates list` | List maintained local GNN templates with checksums |
 | `gnn templates show <name>` | Show one maintained template record |
@@ -41,6 +42,7 @@ gnn parse input/gnn_files/discrete/actinf_pomdp_agent.md
 # Check environment
 gnn preflight
 gnn health
+gnn health --strict
 
 # Inspect and dry-run template installation
 gnn templates list

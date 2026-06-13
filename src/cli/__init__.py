@@ -140,7 +140,12 @@ def main(argv: Optional[List[str]] = None) -> int:
     )
 
     # ── gnn health ───────────────────────────────────────────────────────────
-    subparsers.add_parser("health", help="Show renderer & dependency status")
+    health_p = subparsers.add_parser("health", help="Show renderer & dependency status")
+    health_p.add_argument(
+        "--strict",
+        action="store_true",
+        help="Exit nonzero when environment preflight reports errors",
+    )
 
     # ── gnn serve ────────────────────────────────────────────────────────────
     serve_p = subparsers.add_parser("serve", help="Start Pipeline-as-a-Service API")
@@ -571,19 +576,22 @@ def _cmd_health(args: Any) -> Any:
     renderers = check_renderers()
     env = check_environment()
 
-    print("🔧 Renderers:")
+    print("🔧 Renderer generator modules:")
     for name, status in sorted(renderers.items()):
         emoji = "🟢" if status.available else "🔴"
         print(f"  {emoji} {name}")
 
     available = sum(1 for r in renderers.values() if r.available)
-    print(f"\n  {available}/{len(renderers)} available")
+    print(f"\n  {available}/{len(renderers)} generator modules importable")
     print(f"\n🏗️ Environment: {env.checks_passed} passed, {env.checks_failed} failed")
     for issue in env.issues:
         sev = "⚠️" if issue.severity != "error" else "❌"
         print(f"  {sev} {issue.message}")
 
-    return 0
+    if env.checks_failed and not args.strict:
+        print("\nDefault health is informational; pass --strict to fail on errors.")
+
+    return 1 if args.strict and not env.is_ok else 0
 
 
 def _cmd_serve(args: Any) -> Any:

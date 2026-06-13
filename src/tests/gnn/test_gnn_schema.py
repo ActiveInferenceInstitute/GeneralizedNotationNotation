@@ -188,6 +188,143 @@ class TestParseStateSpace:
         assert errors == []
 
 
+class TestValidateMatrixDimensions:
+    def _validate(self, content: str) -> list[Any]:
+        from gnn.schema import parse_state_space, validate_matrix_dimensions
+
+        variables, parse_errors = parse_state_space(content)
+        assert parse_errors == []
+        return validate_matrix_dimensions(content, variables)
+
+    def test_valid_one_line_vector_assignment_passes(self) -> None:
+        content = """
+## StateSpaceBlock
+C[3,type=float]
+
+## InitialParameterization
+C={(0.1, 0.2, 0.7)}
+"""
+
+        assert self._validate(content) == []
+
+    def test_one_line_vector_assignment_dimension_mismatch_fails(self) -> None:
+        content = """
+## StateSpaceBlock
+C[4,type=float]
+
+## InitialParameterization
+C={(0.1, 0.2, 0.7)}
+"""
+
+        errors = self._validate(content)
+
+        assert len(errors) == 1
+        assert errors[0].code == "GNN-E002"
+        assert "declared shape 4" in errors[0].message
+        assert "parameterization has shape 3" in errors[0].message
+
+    def test_valid_3d_tensor_assignment_passes(self) -> None:
+        content = """
+## StateSpaceBlock
+B[3,3,3,type=float]
+
+## InitialParameterization
+B={
+  ( (1.0,0.0,0.0), (0.0,1.0,0.0), (0.0,0.0,1.0) ),
+  ( (0.0,1.0,0.0), (1.0,0.0,0.0), (0.0,0.0,1.0) ),
+  ( (0.0,0.0,1.0), (0.0,1.0,0.0), (1.0,0.0,0.0) )
+}
+"""
+
+        assert self._validate(content) == []
+
+    def test_action_major_3d_tensor_assignment_passes(self) -> None:
+        content = """
+## StateSpaceBlock
+B[4,4,3,type=float]
+
+## InitialParameterization
+B={
+  ( (0.9,0.1,0.0,0.0), (0.0,0.9,0.1,0.0), (0.0,0.0,0.9,0.1), (0.1,0.0,0.0,0.9) ),
+  ( (0.9,0.0,0.0,0.1), (0.1,0.9,0.0,0.0), (0.0,0.1,0.9,0.0), (0.0,0.0,0.1,0.9) ),
+  ( (0.8,0.1,0.1,0.0), (0.1,0.8,0.0,0.1), (0.1,0.0,0.8,0.1), (0.0,0.1,0.1,0.8) )
+}
+"""
+
+        assert self._validate(content) == []
+
+    def test_valid_9x9x5_action_major_tensor_assignment_passes(self) -> None:
+        planes = []
+        for action_index in range(5):
+            rows = []
+            for row_index in range(9):
+                row = ["0.0"] * 9
+                row[(row_index + action_index) % 9] = "1.0"
+                rows.append("(" + ",".join(row) + ")")
+            planes.append("(" + ",".join(rows) + ")")
+        tensor = "{\n" + ",\n".join(planes) + "\n}"
+        content = f"""
+## StateSpaceBlock
+B[9,9,5,type=float]
+
+## InitialParameterization
+B={tensor}
+"""
+
+        assert self._validate(content) == []
+
+    def test_invalid_3d_tensor_assignment_fails(self) -> None:
+        content = """
+## StateSpaceBlock
+B[2,2,2,type=float]
+
+## InitialParameterization
+B={
+  ( (1.0,0.0), (0.0,1.0) ),
+  ( (0.0,1.0), (1.0,0.0) ),
+  ( (0.5,0.5), (0.5,0.5) )
+}
+"""
+
+        errors = self._validate(content)
+
+        assert len(errors) == 1
+        assert errors[0].code == "GNN-E002"
+        assert "declared shape 2x2x2" in errors[0].message
+        assert "parameterization has shape 3x2x2" in errors[0].message
+
+    def test_ragged_tensor_assignment_fails(self) -> None:
+        content = """
+## StateSpaceBlock
+A[2,2,type=float]
+
+## InitialParameterization
+A={(1.0, 0.0), (0.5, 0.25, 0.25)}
+"""
+
+        errors = self._validate(content)
+
+        assert len(errors) == 1
+        assert errors[0].code == "GNN-E002"
+        assert "ragged" in errors[0].message
+
+    def test_packaged_gridworld_template_has_valid_tensor_shape(self) -> None:
+        from gnn.schema import parse_state_space, validate_matrix_dimensions
+
+        template = (
+            Path(__file__).resolve().parents[3]
+            / "src"
+            / "cli"
+            / "template_assets"
+            / "pomdp_gridworld_3x3.md"
+        )
+        content = template.read_text(encoding="utf-8")
+        variables, parse_errors = parse_state_space(content, file_path=str(template))
+
+        assert parse_errors == []
+        assert validate_matrix_dimensions(content, variables, file_path=str(template)) == []
+
+
 class TestValidateGnnObject:
     def test_valid_object_returns_no_errors(self) -> Any:
         from gnn.schema import validate_gnn_object

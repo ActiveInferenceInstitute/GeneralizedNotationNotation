@@ -191,15 +191,17 @@ GNN-1.0
 
 ## Validation
 
-> **✅ Quality Assurance**: All templates validated through type checker
+> **Quality Assurance**: Packaged CLI templates are validated through the public strict GNN validator.
 
-All templates are validated using the type checker:
+Validate the maintained package templates with:
 
 ```bash
-python src/main.py --only-steps 4 --target-dir doc/templates/
+for template in src/cli/template_assets/*.md; do
+  uv run --extra dev gnn validate "$template" --strict
+done
 ```
 
-Templates should pass basic syntax validation and resource estimation.
+The same contract is covered by `src/tests/cli/test_templates_cli.py`.
 
 **Cross-References**: 
 - *Type Checker*: [Validation Tools](../gnn/operations/gnn_tools.md#validation-tools)
@@ -347,4 +349,4 @@ template_system:
 
 **Template System Version**: 1.0  
 **Status**: Production-Ready  
-**Cross-Reference Network**: ✅ Fully Integrated 
+**Cross-Reference Network**: ✅ Fully Integrated

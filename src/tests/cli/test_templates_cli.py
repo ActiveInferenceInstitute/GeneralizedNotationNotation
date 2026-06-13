@@ -33,6 +33,24 @@ def test_template_index_is_externalized_and_has_three_entries() -> None:
 
 
 @pytest.mark.parametrize(
+    "template_path",
+    sorted(
+        (Path(__file__).resolve().parents[3] / "src" / "cli" / "template_assets").glob(
+            "*.md"
+        )
+    ),
+    ids=lambda path: path.name,
+)
+def test_packaged_templates_pass_strict_cli_validation(
+    template_path: Path,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    assert main(["validate", str(template_path), "--strict"]) == 0
+    captured = capsys.readouterr()
+    assert "valid" in captured.out
+
+
+@pytest.mark.parametrize(
     "record",
     [
         {
