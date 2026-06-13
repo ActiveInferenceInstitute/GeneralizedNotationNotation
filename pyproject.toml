@@ -37,7 +37,7 @@ dependencies = [
     "psutil>=5.8.0",
     # HTTP and async communication
     "httpx>=0.27.0",
-    "aiohttp>=3.13.4",  # OpenRouter / Perplexity LLM providers; >= 3.13.4 for CVE-2026-22815
+    "aiohttp>=3.14.0",  # OpenRouter / Perplexity LLM providers; patched for 2026 aiohttp advisories
     # Pygments: official fix for CVE-2026-4539 (AdlLexer ReDoS) — replaced git fork override
     "pygments>=2.20.0",
     # LLM stack (Step 13+); local Ollama + cloud APIs — defaults in ``llm/defaults.py`` / config
@@ -74,7 +74,7 @@ dependencies = [
 [project.optional-dependencies]
 dev = [
     # aiohttp is a core dependency; listed here only so ``uv sync --extra dev`` stays explicit in lockfiles
-    "aiohttp>=3.13.4",
+    "aiohttp>=3.14.0",
     # Testing tools (requests used only in test_pipeline_performance.py)
     "requests>=2.28.0",
     "pytest>=6.0.0",
@@ -108,8 +108,8 @@ dev = [
     # Interactive development
     "ipython>=8.0.0",
     "ipdb>=0.13.0",
-    "jupyterlab>=4.0.0",
-    "jupyter-server>=2.0.0",
+    "jupyterlab>=4.5.7",
+    "jupyter-server>=2.18.0",
     "ipywidgets>=8.0.0",
 
     # Performance profiling and debugging
@@ -158,8 +158,8 @@ graphs = [
 research = [
     # NOTE: jupyterlab/jupyter-server duplicate dev group entries intentionally —
     # research group targets non-developer end-users who don't install dev extras.
-    "jupyterlab>=4.0.0",
-    "jupyter-server>=2.0.0",
+    "jupyterlab>=4.5.7",
+    "jupyter-server>=2.18.0",
     "sympy>=1.12.0",
     "numba>=0.57.0",
     "cython>=3.0.0",
@@ -202,8 +202,8 @@ all = [
     "streamlit>=1.25.0",
 
     # Research and scientific computing
-    "jupyterlab>=4.0.0",
-    "jupyter-server>=2.0.0",
+    "jupyterlab>=4.5.7",
+    "jupyter-server>=2.18.0",
     "sympy>=1.12.0",
     "numba>=0.57.0",
     "cython>=3.0.0",
@@ -224,6 +224,20 @@ Issues = "https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotatio
 
 [project.scripts]
 gnn = "src.cli:main"
+
+[tool.uv]
+# Security floors for transitive packages resolved through optional extras.
+# Keep these as resolver constraints so the packages do not become core runtime
+# dependencies merely because Dependabot tracks them in uv.lock.
+constraint-dependencies = [
+    "gitpython>=3.1.50",
+    "idna>=3.15",
+    "mistune>=3.2.1",
+    "python-multipart>=0.0.27",
+    "starlette>=1.0.1",
+    "tornado>=6.5.6",
+    "urllib3>=2.7.0",
+]
 
 [tool.hatch.build.targets.wheel]
 packages = ["src"]
