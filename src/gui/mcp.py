@@ -6,7 +6,7 @@ This module exposes GUI processing tools via MCP.
 
 import logging
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -103,11 +103,77 @@ def get_gui_module_info_mcp() -> Dict[str, Any]:
                 "process_gui",
                 "list_available_guis",
                 "get_gui_module_info",
+                "oxdraw.convert_to_mermaid",
+                "oxdraw.convert_from_mermaid",
+                "oxdraw.launch_editor",
+                "oxdraw.check_installation",
+                "oxdraw.get_info",
             ],
         }
     except Exception as e:
         logger.error(f"get_gui_module_info_mcp error: {e}", exc_info=True)
         return {"success": False, "error": str(e)}
+
+
+def oxdraw_convert_to_mermaid_mcp(
+    gnn_file_path: str,
+    output_path: Optional[str] = None,
+    include_metadata: bool = True,
+) -> Dict[str, Any]:
+    """Convert a GNN file to Mermaid format through the oxdraw submodule."""
+    from .oxdraw.mcp import tool_convert_to_mermaid
+
+    args: Dict[str, Any] = {
+        "gnn_file_path": gnn_file_path,
+        "include_metadata": include_metadata,
+    }
+    if output_path is not None:
+        args["output_path"] = output_path
+    return tool_convert_to_mermaid(args)
+
+
+def oxdraw_convert_from_mermaid_mcp(
+    mermaid_file_path: str,
+    output_path: Optional[str] = None,
+    validate_ontology: bool = False,
+) -> Dict[str, Any]:
+    """Convert a Mermaid file back to GNN format through the oxdraw submodule."""
+    from .oxdraw.mcp import tool_convert_from_mermaid
+
+    args: Dict[str, Any] = {
+        "mermaid_file_path": mermaid_file_path,
+        "validate_ontology": validate_ontology,
+    }
+    if output_path is not None:
+        args["output_path"] = output_path
+    return tool_convert_from_mermaid(args)
+
+
+def oxdraw_launch_editor_mcp(
+    mermaid_file_path: str,
+    port: int = 5151,
+    host: str = "127.0.0.1",
+) -> Dict[str, Any]:
+    """Launch the oxdraw editor for a Mermaid file."""
+    from .oxdraw.mcp import tool_launch_editor
+
+    return tool_launch_editor(
+        {"mermaid_file_path": mermaid_file_path, "port": port, "host": host}
+    )
+
+
+def oxdraw_check_installation_mcp() -> Dict[str, Any]:
+    """Return oxdraw CLI installation status."""
+    from .oxdraw.mcp import tool_check_installation
+
+    return tool_check_installation({})
+
+
+def oxdraw_get_info_mcp() -> Dict[str, Any]:
+    """Return oxdraw integration metadata."""
+    from .oxdraw.mcp import tool_get_info
+
+    return tool_get_info({})
 
 
 # MCP Registration Function
@@ -165,4 +231,28 @@ def register_tools(mcp_instance: Any) -> Any:
         category="gui",
     )
 
-    logger.info("gui module MCP tools registered (3 domain tools).")
+    oxdraw_tools = {
+        "oxdraw.convert_to_mermaid": oxdraw_convert_to_mermaid_mcp,
+        "oxdraw.convert_from_mermaid": oxdraw_convert_from_mermaid_mcp,
+        "oxdraw.launch_editor": oxdraw_launch_editor_mcp,
+        "oxdraw.check_installation": oxdraw_check_installation_mcp,
+        "oxdraw.get_info": oxdraw_get_info_mcp,
+    }
+    try:
+        from .oxdraw.mcp import register_mcp_tools
+
+        for tool in register_mcp_tools():
+            name = tool["name"]
+            mcp_instance.register_tool(
+                name,
+                oxdraw_tools[name],
+                tool.get("input_schema", {}),
+                tool.get("description", ""),
+                module="src.gui.oxdraw",
+                category="gui",
+            )
+    except Exception as e:
+        logger.error("Failed to register oxdraw MCP tools: %s", e, exc_info=True)
+        raise
+
+    logger.info("gui module MCP tools registered (8 domain tools).")

@@ -90,4 +90,4 @@ uv pip install -e .                   # Install deps
 
 ---
 
-**Pipeline Version**: 2.0.0 | **Steps**: 25 | **Tests**: latest recorded full suite with Ollama integration excludes: 2,393 passed, 17 skipped, 1 xfailed; collect-only inventory is 2,411 tests | **MCP Tools**: verify with `src/tests/mcp/test_mcp_audit.py`
+**Pipeline Version**: 2.0.0 | **Steps**: 25 | **Tests**: use the command of record in the repository `README.md` for current collect/pass evidence | **MCP Tools**: verify with `src/tests/mcp/test_mcp_audit.py`

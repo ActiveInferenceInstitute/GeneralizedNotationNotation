@@ -1,3 +1,8 @@
+---
+name: gnn-src-doc-reference
+description: Source-adjacent GNN implementation documentation. Use when working with static reference notes under `src/doc/` or checking that implementation-near documentation is intentionally non-runtime.
+---
+
 # Core Skill: `doc_reference`
 
 **Function**: Internal source-adjacent documentation and reference notes supporting `src/` implementation and maintenance.
@@ -30,4 +35,3 @@ This module is a **static documentation directory** — it does not export runti
 This module registers tools with the GNN MCP server (see `mcp.py`):
 
 - None
-

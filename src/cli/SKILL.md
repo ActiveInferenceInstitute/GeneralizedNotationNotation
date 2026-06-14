@@ -1,3 +1,8 @@
+---
+name: gnn-cli
+description: GNN command-line interface dispatch and health checks. Use when invoking the `gnn` CLI, validating subcommand availability, or checking command-line access to pipeline modules.
+---
+
 # Core Skill: `cli_dispatch`
 
 **Function**: Unified command-line interface dispatching 12 subcommands to their respective GNN pipeline module APIs.

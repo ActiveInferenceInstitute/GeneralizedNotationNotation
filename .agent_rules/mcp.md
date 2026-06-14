@@ -114,14 +114,14 @@ def register_tools(mcp=None) -> None:
 
 | Step | Module | Tools |
 |------|--------|-------|
-| 3 | gnn | `gnn_parse`, `gnn_validate`, `gnn_serialize`, `gnn_discover` |
-| 5 | type_checker | `validate_gnn_types`, `check_syntax`, `estimate_resources` |
-| 7 | export | `export_to_json`, `export_to_xml`, `export_to_yaml`, `export_to_graphml` |
-| 8 | visualization | `visualize_graph`, `visualize_matrices`, `export_visualization` |
-| 11 | render | `render_pymdp`, `render_rxinfer`, `render_activeinference`, `render_jax`, `render_discopy` |
-| 13 | llm | `analyze_gnn`, `explain_model`, `suggest_improvements` |
-| 15 | audio | `generate_sapf`, `sonify_model` |
-| 21 | mcp | Central registry — 133 tools total across 33 modules |
+| 3 | gnn | `parse_gnn_content`, `validate_gnn_content`, `process_gnn_directory`, `get_gnn_documentation` |
+| 5 | type_checker | `validate_gnn_files`, `validate_single_gnn_file` |
+| 7 | export | `process_export`, `export_single_gnn_file`, `list_export_formats`, `validate_export_format` |
+| 8 | visualization | `process_visualization`, `get_visualization_options`, `list_visualization_artifacts` |
+| 11 | render | `process_render`, `list_render_frameworks`, `render_gnn_to_format` |
+| 13 | llm | `process_llm`, `analyze_gnn_with_llm`, `generate_llm_documentation`, `get_llm_providers` |
+| 15 | audio | `process_audio`, `check_audio_backends`, `get_audio_generation_options` |
+| 21 | mcp | Central registry; verify live inventory with `src/tests/mcp/test_mcp_audit.py` |
 
 ---
 
@@ -129,12 +129,11 @@ def register_tools(mcp=None) -> None:
 
 ```bash
 # List all registered tools
-curl http://localhost:8000/tools
+python -m src.mcp.cli list
 
 # Call a tool
-curl -X POST http://localhost:8000/tools/gnn_parse \
-  -H "Content-Type: application/json" \
-  -d '{"file_path": "model.md"}'
+python -m src.mcp.cli execute parse_gnn_content \
+  --params '{"content":"## GNNSection\nActInfPOMDP\n","format_hint":"markdown","enhanced_validation":true}'
 
 # Run MCP step to register all tools
 python src/21_mcp.py --target-dir input/gnn_files --output-dir output --verbose
@@ -147,8 +146,8 @@ python src/21_mcp.py --target-dir input/gnn_files --output-dir output --verbose
 All module `mcp.py` files auto-register with the central registry at startup:
 - **Discovery**: Automatic via `src/mcp/processor.py::register_module_tools()`
 - **No manual configuration** needed — modules found by directory scan
-- **133 tools** across 33 modules (verified by MCP audit on 2026-05-20)
+- **Inventory**: Run `uv run --extra dev python -m pytest src/tests/mcp/test_mcp_audit.py -q` for the current registered tool/module contract
 
 ---
 
-**Last Updated**: 2026-05-20 | **Status**: Maintained Standard
+**Last Updated**: 2026-06-14 | **Status**: Maintained Standard

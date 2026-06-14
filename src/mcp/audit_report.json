@@ -1,8 +1,8 @@
 {
-  "modules_total": 31,
-  "modules_loaded": 31,
+  "modules_total": 32,
+  "modules_loaded": 32,
   "modules_errored": 0,
-  "tools_total": 133,
+  "tools_total": 137,
   "tools_list": [
     {
       "name": "analyze_audio_characteristics",
@@ -70,8 +70,8 @@
     },
     {
       "name": "check_uv_project_status",
-      "module": "",
-      "category": "",
+      "module": "src.setup",
+      "category": "setup",
       "fn": "check_uv_project_status_mcp",
       "documented": true,
       "description": "Checks the status of a UV project including pyproject.toml, uv.lock, and virtual environment."
@@ -110,8 +110,8 @@
     },
     {
       "name": "ensure_directory_exists",
-      "module": "",
-      "category": "",
+      "module": "src.setup",
+      "category": "setup",
       "fn": "ensure_directory_exists_mcp",
       "documented": true,
       "description": "Ensures a directory exists, creating it if necessary. Returns the absolute path."
@@ -150,8 +150,8 @@
     },
     {
       "name": "find_project_gnn_files",
-      "module": "",
-      "category": "",
+      "module": "src.setup",
+      "category": "setup",
       "fn": "find_project_gnn_files_mcp",
       "documented": true,
       "description": "Finds all GNN (.md) files in a specified directory within the project."
@@ -214,8 +214,8 @@
     },
     {
       "name": "get_environment_info",
-      "module": "",
-      "category": "",
+      "module": "src.utils",
+      "category": "utils",
       "fn": "get_environment_info_tool",
       "documented": true,
       "description": "Get environment information including Python packages, environment variables, and paths."
@@ -230,32 +230,32 @@
     },
     {
       "name": "get_file_info",
-      "module": "",
-      "category": "",
+      "module": "src.utils",
+      "category": "utils",
       "fn": "get_file_info_tool",
       "documented": true,
       "description": "Get detailed information about a file or directory including size, permissions, and contents."
     },
     {
       "name": "get_gnn_documentation",
-      "module": "",
-      "category": "",
+      "module": "src.gnn",
+      "category": "gnn",
       "fn": "get_gnn_documentation",
       "documented": true,
       "description": "Retrieve the content of a GNN documentation file, schema definition, or grammar specification."
     },
     {
       "name": "get_gnn_module_info",
-      "module": "",
-      "category": "",
+      "module": "src.gnn",
+      "category": "gnn",
       "fn": "get_gnn_module_info",
       "documented": true,
       "description": "Get comprehensive information about the GNN module capabilities and features."
     },
     {
       "name": "get_gnn_schema_info",
-      "module": "",
-      "category": "",
+      "module": "src.gnn",
+      "category": "gnn",
       "fn": "get_gnn_schema_info",
       "documented": true,
       "description": "Get comprehensive information about the GNN schema structure and validation rules."
@@ -302,8 +302,8 @@
     },
     {
       "name": "get_logging_info",
-      "module": "",
-      "category": "",
+      "module": "src.utils",
+      "category": "utils",
       "fn": "get_logging_info_tool",
       "documented": true,
       "description": "Get current logging configuration and status for all loggers."
@@ -318,24 +318,24 @@
     },
     {
       "name": "get_pipeline_config_info",
-      "module": "",
-      "category": "",
+      "module": "src.pipeline",
+      "category": "pipeline",
       "fn": "get_pipeline_config_info_tool",
       "documented": true,
       "description": "Get detailed pipeline configuration information and settings."
     },
     {
       "name": "get_pipeline_status",
-      "module": "",
-      "category": "",
+      "module": "src.pipeline",
+      "category": "pipeline",
       "fn": "get_pipeline_status_tool",
       "documented": true,
       "description": "Get current pipeline execution status, recent logs, and execution statistics."
     },
     {
       "name": "get_pipeline_steps",
-      "module": "",
-      "category": "",
+      "module": "src.pipeline",
+      "category": "pipeline",
       "fn": "get_pipeline_steps_tool",
       "documented": true,
       "description": "Get information about all available pipeline steps, their metadata, and dependencies."
@@ -382,24 +382,24 @@
     },
     {
       "name": "get_standard_output_paths",
-      "module": "",
-      "category": "",
+      "module": "src.setup",
+      "category": "setup",
       "fn": "get_standard_output_paths_mcp",
       "documented": true,
       "description": "Gets a dictionary of standard output directory paths (e.g., for type_check, visualization), creating them if needed."
     },
     {
       "name": "get_system_info",
-      "module": "",
-      "category": "",
+      "module": "src.utils",
+      "category": "utils",
       "fn": "get_system_info_tool",
       "documented": true,
       "description": "Get comprehensive system information including CPU, memory, disk, and platform details."
     },
     {
       "name": "get_uv_environment_info",
-      "module": "",
-      "category": "",
+      "module": "src.setup",
+      "category": "setup",
       "fn": "get_uv_environment_info_mcp",
       "documented": true,
       "description": "Gets information about the current UV environment including paths and status."
@@ -486,8 +486,8 @@
     },
     {
       "name": "install_uv_dependency",
-      "module": "",
-      "category": "",
+      "module": "src.setup",
+      "category": "setup",
       "fn": "install_uv_dependency_mcp",
       "documented": true,
       "description": "Installs a dependency using UV with optional extras support."
@@ -605,41 +605,97 @@
       "description": "List all visualization artifacts (PNG, SVG, HTML, PDF) in an output directory."
     },
     {
+      "name": "mcp.list_available_resources",
+      "module": "src.mcp",
+      "category": "mcp",
+      "fn": "list_core_resources",
+      "documented": true,
+      "description": "List all resources currently registered with the MCP registry."
+    },
+    {
+      "name": "mcp.list_available_tools",
+      "module": "src.mcp",
+      "category": "mcp",
+      "fn": "list_core_tools",
+      "documented": true,
+      "description": "List all tools currently registered with the MCP registry."
+    },
+    {
       "name": "model_registry.get_model",
-      "module": "",
-      "category": "",
+      "module": "src.model_registry",
+      "category": "model_registry",
       "fn": "get_model",
       "documented": true,
       "description": "Get a model from the registry by ID"
     },
     {
       "name": "model_registry.list_models",
-      "module": "",
-      "category": "",
+      "module": "src.model_registry",
+      "category": "model_registry",
       "fn": "list_models",
       "documented": true,
       "description": "List all models in the registry"
     },
     {
       "name": "model_registry.register_model",
-      "module": "",
-      "category": "",
+      "module": "src.model_registry",
+      "category": "model_registry",
       "fn": "register_model",
       "documented": true,
       "description": "Register a model in the model registry"
     },
     {
       "name": "model_registry.search_models",
-      "module": "",
-      "category": "",
+      "module": "src.model_registry",
+      "category": "model_registry",
       "fn": "search_models",
       "documented": true,
       "description": "Search models in the registry by name, description, or tags"
     },
     {
+      "name": "oxdraw.check_installation",
+      "module": "src.gui.oxdraw",
+      "category": "gui",
+      "fn": "oxdraw_check_installation_mcp",
+      "documented": true,
+      "description": "Check if oxdraw CLI is installed and available"
+    },
+    {
+      "name": "oxdraw.convert_from_mermaid",
+      "module": "src.gui.oxdraw",
+      "category": "gui",
+      "fn": "oxdraw_convert_from_mermaid_mcp",
+      "documented": true,
+      "description": "Convert Mermaid flowchart edited in oxdraw back to GNN format"
+    },
+    {
+      "name": "oxdraw.convert_to_mermaid",
+      "module": "src.gui.oxdraw",
+      "category": "gui",
+      "fn": "oxdraw_convert_to_mermaid_mcp",
+      "documented": true,
+      "description": "Convert a GNN Active Inference model to Mermaid flowchart format for visual editing in oxdraw"
+    },
+    {
+      "name": "oxdraw.get_info",
+      "module": "src.gui.oxdraw",
+      "category": "gui",
+      "fn": "oxdraw_get_info_mcp",
+      "documented": true,
+      "description": "Get oxdraw integration module information and capabilities"
+    },
+    {
+      "name": "oxdraw.launch_editor",
+      "module": "src.gui.oxdraw",
+      "category": "gui",
+      "fn": "oxdraw_launch_editor_mcp",
+      "documented": true,
+      "description": "Launch interactive oxdraw editor for visual GNN model construction"
+    },
+    {
       "name": "parse_gnn_content",
-      "module": "",
-      "category": "",
+      "module": "src.gnn",
+      "category": "gnn",
       "fn": "parse_gnn_content",
       "documented": true,
       "description": "Parse GNN content with enhanced multi-format support and return structured model representation."
@@ -686,8 +742,8 @@
     },
     {
       "name": "process_gnn_directory",
-      "module": "",
-      "category": "",
+      "module": "src.gnn",
+      "category": "gnn",
       "fn": "process_gnn_directory",
       "documented": true,
       "description": "Process a directory of GNN files with enhanced validation and testing capabilities."
@@ -829,36 +885,12 @@
       "description": "Render a single GNN file (runs Step 11 render; does not currently filter to one framework)."
     },
     {
-      "name": "run_all_tests",
-      "module": "",
-      "category": "",
-      "fn": "run_all_tests_mcp",
-      "documented": true,
-      "description": "Run comprehensive test suite for the GNN pipeline."
-    },
-    {
-      "name": "run_integration_tests",
-      "module": "",
-      "category": "",
-      "fn": "run_integration_tests_mcp",
-      "documented": true,
-      "description": "Run integration test suite for the GNN pipeline."
-    },
-    {
       "name": "run_round_trip_tests",
-      "module": "",
-      "category": "",
+      "module": "src.gnn",
+      "category": "gnn",
       "fn": "run_round_trip_tests",
       "documented": true,
       "description": "Run comprehensive round-trip tests on GNN files across all supported formats."
-    },
-    {
-      "name": "run_unit_tests",
-      "module": "",
-      "category": "",
-      "fn": "run_unit_tests_mcp",
-      "documented": true,
-      "description": "Run unit test suite for the GNN pipeline."
     },
     {
       "name": "scan_gnn_file",
@@ -870,104 +902,104 @@
     },
     {
       "name": "setup_uv_project_structure",
-      "module": "",
-      "category": "",
+      "module": "src.setup",
+      "category": "setup",
       "fn": "setup_uv_project_structure_mcp",
       "documented": true,
       "description": "Sets up a new UV project structure with standard directories and configuration."
     },
     {
       "name": "sympy_analyze_stability",
-      "module": "",
-      "category": "",
+      "module": "src.mcp.sympy_mcp",
+      "category": "sympy_mcp",
       "fn": "analyze_stability_tool_sync",
       "documented": true,
       "description": "Analyze system stability using eigenvalue analysis"
     },
     {
       "name": "sympy_cleanup",
-      "module": "",
-      "category": "",
+      "module": "src.mcp.sympy_mcp",
+      "category": "sympy_mcp",
       "fn": "cleanup_sympy_tool_sync",
       "documented": true,
       "description": "Clean up SymPy MCP integration and reset state"
     },
     {
       "name": "sympy_get_latex",
-      "module": "",
-      "category": "",
+      "module": "src.mcp.sympy_mcp",
+      "category": "sympy_mcp",
       "fn": "get_latex_tool_sync",
       "documented": true,
       "description": "Convert a mathematical expression to LaTeX format"
     },
     {
       "name": "sympy_initialize",
-      "module": "",
-      "category": "",
+      "module": "src.mcp.sympy_mcp",
+      "category": "sympy_mcp",
       "fn": "initialize_sympy_tool_sync",
       "documented": true,
       "description": "Initialize SymPy MCP integration"
     },
     {
       "name": "sympy_simplify_expression",
-      "module": "",
-      "category": "",
+      "module": "src.mcp.sympy_mcp",
+      "category": "sympy_mcp",
       "fn": "simplify_expression_tool_sync",
       "documented": true,
       "description": "Simplify a mathematical expression to canonical form"
     },
     {
       "name": "sympy_solve_equation",
-      "module": "",
-      "category": "",
+      "module": "src.mcp.sympy_mcp",
+      "category": "sympy_mcp",
       "fn": "solve_equation_tool_sync",
       "documented": true,
       "description": "Solve an equation algebraically for a specified variable"
     },
     {
       "name": "sympy_validate_equation",
-      "module": "",
-      "category": "",
+      "module": "src.mcp.sympy_mcp",
+      "category": "sympy_mcp",
       "fn": "validate_equation_tool_sync",
       "documented": true,
       "description": "Validate a mathematical equation using SymPy symbolic processing"
     },
     {
       "name": "sympy_validate_matrix",
-      "module": "",
-      "category": "",
+      "module": "src.mcp.sympy_mcp",
+      "category": "sympy_mcp",
       "fn": "validate_matrix_tool_sync",
       "documented": true,
       "description": "Validate matrix properties including stochasticity constraints"
     },
     {
       "name": "sync_uv_dependencies",
-      "module": "",
-      "category": "",
+      "module": "src.setup",
+      "category": "setup",
       "fn": "sync_uv_dependencies_mcp",
       "documented": true,
       "description": "Syncs dependencies using UV from pyproject.toml and updates the lock file."
     },
     {
       "name": "template.get_info",
-      "module": "",
-      "category": "",
+      "module": "src.template",
+      "category": "template",
       "fn": "get_template_info",
       "documented": true,
       "description": "Get information about the template step"
     },
     {
       "name": "template.process_directory",
-      "module": "",
-      "category": "",
+      "module": "src.template",
+      "category": "template",
       "fn": "process_directory",
       "documented": true,
       "description": "Process all files in a directory using the template processor"
     },
     {
       "name": "template.process_file",
-      "module": "",
-      "category": "",
+      "module": "src.template",
+      "category": "template",
       "fn": "process_file",
       "documented": true,
       "description": "Process a file using the template processor"
@@ -982,24 +1014,24 @@
     },
     {
       "name": "validate_cross_format_consistency_content",
-      "module": "",
-      "category": "",
+      "module": "src.gnn",
+      "category": "gnn",
       "fn": "validate_cross_format_consistency_content",
       "documented": true,
       "description": "Validate cross-format consistency for GNN content across all supported formats."
     },
     {
       "name": "validate_dependencies",
-      "module": "",
-      "category": "",
+      "module": "src.utils",
+      "category": "utils",
       "fn": "validate_dependencies_tool",
       "documented": true,
       "description": "Validate system dependencies and required packages for the GNN pipeline."
     },
     {
       "name": "validate_directory_cross_format_consistency",
-      "module": "",
-      "category": "",
+      "module": "src.gnn",
+      "category": "gnn",
       "fn": "validate_directory_cross_format_consistency",
       "documented": true,
       "description": "Validate cross-format consistency for files in a directory with comprehensive analysis."
@@ -1014,8 +1046,8 @@
     },
     {
       "name": "validate_gnn_content",
-      "module": "",
-      "category": "",
+      "module": "src.gnn",
+      "category": "gnn",
       "fn": "validate_gnn_content",
       "documented": true,
       "description": "Enhanced validation of GNN file content with comprehensive testing capabilities."
@@ -1030,8 +1062,8 @@
     },
     {
       "name": "validate_gnn_files",
-      "module": "",
-      "category": "",
+      "module": "src.type_checker",
+      "category": "type_checker",
       "fn": "validate_gnn_files_mcp",
       "documented": true,
       "description": "Validate GNN files for syntax and type correctness."
@@ -1046,24 +1078,24 @@
     },
     {
       "name": "validate_pipeline_dependencies",
-      "module": "",
-      "category": "",
+      "module": "src.pipeline",
+      "category": "pipeline",
       "fn": "validate_pipeline_dependencies_tool",
       "documented": true,
       "description": "Validate pipeline step dependencies and identify missing or circular dependencies."
     },
     {
       "name": "validate_schema_definitions_consistency",
-      "module": "",
-      "category": "",
+      "module": "src.gnn",
+      "category": "gnn",
       "fn": "validate_schema_definitions_consistency",
       "documented": true,
       "description": "Validate consistency between GNN schema definition files across different formats."
     },
     {
       "name": "validate_single_gnn_file",
-      "module": "",
-      "category": "",
+      "module": "src.type_checker",
+      "category": "type_checker",
       "fn": "validate_single_gnn_file_mcp",
       "documented": true,
       "description": "Validate a single GNN file for syntax and type correctness."
@@ -1071,7 +1103,7 @@
   ],
   "spot_checks_ok": 14,
   "spot_checks_err": 0,
-  "logging_ok": 29,
+  "logging_ok": 31,
   "logging_miss": 0,
   "issues": []
 }

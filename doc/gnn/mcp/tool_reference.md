@@ -1,7 +1,6 @@
 # GNN MCP Tool Quick Reference
 
-All 131 real tools registered by the GNN MCP server (v1.6.0 Engine; reference refreshed 2026-04-20).  
-Sorted alphabetically by domain. For full per-domain documentation see **[../modules/21_mcp.md](../modules/21_mcp.md)**.
+Audit-backed quick reference for the GNN MCP server tool surface. Use `src/tests/mcp/test_mcp_audit.py` and `src/mcp/validate_tools.py` for the current live count. For full per-domain documentation see **[../modules/21_mcp.md](../modules/21_mcp.md)**.
 
 ## Full Tool Table
 
@@ -86,5 +85,4 @@ Sorted alphabetically by domain. For full per-domain documentation see **[../mod
 | website | `list_generated_website_pages` | List all generated website pages |
 | website | `process_website` | Generate static HTML website from pipeline output |
 
-**Measured 2026-05-14: 133 tools and 1 resource in `src/tests/mcp/test_mcp_audit.py`**  
-Verified by `src/tests/mcp/test_mcp_audit.py` as part of the full `src/tests/` suite (current pass/skip counts: repository [README.md](../../../README.md)).
+Use `src/tests/mcp/test_mcp_audit.py` for the current registered tool/resource contract. The audit verifies module discovery, callable tools, non-empty module/category metadata, canonical JSON schemas, and the parent GUI exposure of nested `oxdraw.*` tools.

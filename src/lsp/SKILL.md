@@ -1,3 +1,8 @@
+---
+name: gnn-lsp-server
+description: GNN Language Server Protocol integration. Use when starting editor diagnostics, checking hover behavior, or validating LSP support for GNN files.
+---
+
 # Core Skill: `lsp_server`
 
 **Function**: Language Server Protocol implementation providing real-time GNN file diagnostics and hover information for LSP-compatible editors.
@@ -38,4 +43,3 @@ start_server()
 This module registers tools with the GNN MCP server (see `mcp.py`):
 
 - None
-

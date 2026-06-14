@@ -6,8 +6,9 @@ Validates that every registered MCP tool is:
   2. Real (callable, named function — not a lambda or None)
   3. Documented (non-empty description string)
   4. Has a named backing function (not anonymous)
-  5. Callable live via execute_tool with no required arguments (spot-check)
-  6. Registered from a module that logs its registration (static check)
+  5. Exposes non-empty module/category metadata and valid JSON schemas
+  6. Callable live via execute_tool with no required arguments (spot-check)
+  7. Registered from a module that logs its registration (static check)
 
 All sub-checks are reported as distinct pytest assertions so individual
 failures pinpoint the exact problem.
@@ -96,55 +97,65 @@ class TestMCPModuleDiscovery:
     """Verify that MCP discover_modules loads all expected pipeline modules."""
 
     EXPECTED_MODULES = (
-        "gnn",
-        "utils",
-        "website",
-        "analysis",
-        "render",
-        "export",
-        "validation",
-        "ontology",
-        "visualization",
-        "report",
-        "integration",
-        "security",
-        "research",
-        "sapf",
-        "audio",
-        "execute",
-        "llm",
         "advanced_visualization",
-        "ml_integration",
+        "analysis",
+        "api",
+        "audio",
+        "cli",
+        "doc",
+        "execute",
+        "export",
+        "gnn",
+        "integration",
         "intelligent_analysis",
+        "llm",
+        "lsp",
+        "mcp",
+        "ml_integration",
+        "model_registry",
+        "ontology",
         "gui",
         "pipeline",
+        "render",
+        "report",
+        "research",
+        "sapf",
+        "security",
+        "setup",
+        "sympy_mcp",
+        "template",
+        "type_checker",
+        "utils",
+        "validation",
+        "visualization",
+        "website",
     )
+    ZERO_TOOL_MODULES = ("doc", "lsp")
 
     @pytest.mark.parametrize("mod_name", EXPECTED_MODULES)
     def test_expected_module_loaded(
         self, mod_name: str, all_modules: Dict[str, Any], all_tools: Dict[str, Any]
     ) -> None:
-        """Each expected pipeline module must be discovered OR contribute tools.
-
-        The fixture now waits for recovery registration to stabilise, so both
-        sources should be populated. A module that neither appears in
-        all_modules nor contributes any tool is a genuine registration failure.
-        """
-        known = mod_name in all_modules
-        has_tools = any(
-            mod_name in (getattr(t, "module", "") or "") for t in all_tools.values()
-        )
-        assert known or has_tools, (
-            f"Module '{mod_name}' not discovered and contributed no tools. "
+        """Each expected runtime MCP module must be discovered and loaded."""
+        assert mod_name in all_modules, (
+            f"Module '{mod_name}' not discovered. "
             f"Known modules: {sorted(all_modules.keys())}"
+        )
+        assert all_modules[mod_name].status == "loaded", (
+            f"Module '{mod_name}' status is {all_modules[mod_name].status!r}: "
+            f"{all_modules[mod_name].error_message}"
         )
 
     @pytest.mark.parametrize("mod_name", EXPECTED_MODULES)
     def test_expected_module_has_tools(
         self, mod_name: str, all_modules: Dict[str, Any], all_tools: Dict[str, Any]
     ) -> None:
-        """Each expected module must contribute at least 1 registered tool."""
+        """Every functional module except documented no-tool modules contributes tools."""
         info = all_modules.get(mod_name)
+        if mod_name in self.ZERO_TOOL_MODULES:
+            assert info is not None
+            assert info.tools_count == 0
+            return
         from_info = (info.tools_count >= 1) if info else False
         from_tools = any(
             mod_name in (getattr(t, "module", "") or "") for t in all_tools.values()
@@ -209,6 +220,33 @@ class TestMCPToolRealness:
         assert undocumented == [], (
             f"{len(undocumented)} tools have no description: {undocumented}"
         )
+
+    def test_all_tools_have_module_and_category_metadata(
+        self, all_tools: Dict[str, Any]
+    ) -> None:
+        """Every tool must expose usable module/category metadata to clients."""
+        missing_module: list[str] = []
+        missing_category: list[str] = []
+        for name, tool in all_tools.items():
+            if not (getattr(tool, "module", "") or "").strip():
+                missing_module.append(name)
+            if not (getattr(tool, "category", "") or "").strip():
+                missing_category.append(name)
+        assert missing_module == [], f"Tools missing module metadata: {missing_module}"
+        assert missing_category == [], (
+            f"Tools missing category metadata: {missing_category}"
+        )
+
+    def test_all_tools_have_valid_json_schemas(
+        self, all_tools: Dict[str, Any]
+    ) -> None:
+        """Every registered tool schema must satisfy MCPTool's schema contract."""
+        invalid: dict[str, list[str]] = {}
+        for name, tool in all_tools.items():
+            issues = tool.validate_schema()
+            if issues:
+                invalid[name] = issues
+        assert invalid == {}, f"Tools with invalid schemas: {invalid}"
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -310,6 +348,12 @@ class TestMCPDomainTools:
         # pipeline
         "get_pipeline_steps",
         "get_pipeline_status",
+        # nested GUI/oxdraw tools exposed by the parent GUI MCP module
+        "oxdraw.convert_to_mermaid",
+        "oxdraw.convert_from_mermaid",
+        "oxdraw.check_installation",
+        "oxdraw.get_info",
+        "oxdraw.launch_editor",
         # GNN gold-standard spot-check
         "validate_gnn_content",
         "parse_gnn_content",
@@ -496,9 +540,9 @@ class TestMCPAuditReport:
             "tools": tools_list,
         }
 
-        # Write to project location
-        out = Path(__file__).parent.parent / "mcp_audit_report.json"
+        out = tmp_path / "mcp_audit_report.json"
         out.write_text(json.dumps(report, indent=2))
+        assert out.exists()
 
         # Assertions on the report
         assert report["tools_total"] >= 50, (

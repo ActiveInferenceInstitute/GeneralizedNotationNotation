@@ -35,145 +35,157 @@ src/
 ## Available MCP Tools
 
 ### Core GNN Processing (`gnn/mcp.py`)
-- `parse_gnn_file` - Parse and validate GNN files
-- `validate_gnn_syntax` - Syntax checking and error reporting
-- `extract_model_metadata` - Extract model information
-- `list_gnn_examples` - Discover available example models
+- `parse_gnn_content` - Parse GNN content into a structured model representation
+- `validate_gnn_content` - Validate GNN content across supported validation levels
+- `process_gnn_directory` - Process a directory of GNN files
+- `get_gnn_documentation` - Retrieve maintained GNN format documentation
 
 ### Export Tools (`export/mcp.py`)
-- `export_to_json` - Convert GNN to JSON format
-- `export_to_xml` - Convert GNN to XML format  
-- `export_to_graphml` - Generate GraphML for network analysis
+- `process_export` - Export GNN files from a directory
+- `export_single_gnn_file` - Export one GNN file
 - `list_export_formats` - Show available export formats
+- `validate_export_format` - Check whether an export format is supported
 
 ### Visualization Tools (`visualization/mcp.py`)
-- `generate_factor_graph` - Create factor graph diagrams
-- `visualize_model_structure` - Generate model structure plots
-- `create_connection_diagram` - Visualize variable connections
-- `export_visualization_formats` - List available image formats
+- `process_visualization` - Run graph and matrix visualization
+- `get_visualization_options` - List configurable visualization options
+- `list_visualization_artifacts` - List generated visualization artifacts
+- `get_visualization_module_info` - Return visualization module metadata
 
 ### Ontology Tools (`ontology/mcp.py`)
+- `process_ontology` - Run ontology annotation processing
 - `validate_ontology_terms` - Check Active Inference ontology compliance
-- `map_gnn_to_ontology` - Create ontology mappings
-- `query_ontology_database` - Search ontology terms
-- `generate_ontology_report` - Create ontology analysis reports
+- `extract_ontology_annotations` - Extract ontology annotations from GNN content
+- `list_standard_ontology_terms` - List maintained ontology terms
 
 ### LLM Integration Tools (`llm/mcp.py`)
-- `analyze_model_with_llm` - AI-powered model analysis
-- `generate_model_explanation` - Natural language model descriptions
-- `suggest_model_improvements` - AI recommendations for model enhancement
-- `compare_models` - LLM-based model comparison
+- `process_llm` - Run LLM analysis over GNN files
+- `analyze_gnn_with_llm` - AI-powered GNN model analysis
+- `generate_llm_documentation` - Natural-language documentation generation
+- `get_llm_providers` - Report configured provider availability
+
+### GUI and oxdraw Tools (`gui/mcp.py`)
+- `process_gui` - Generate GUI artifacts
+- `list_available_guis` - List GUI implementations
+- `oxdraw.convert_to_mermaid` - Convert GNN to Mermaid for visual editing
+- `oxdraw.convert_from_mermaid` - Convert Mermaid back to GNN
+- `oxdraw.check_installation` - Check oxdraw CLI availability
 
 ## Using MCP Tools
 
 ### Direct Python Access
 ```python
-from src.mcp import mcp_instance
+from src.mcp import initialize, mcp_instance
 
-# List all available tools
-tools = mcp_instance.tools
-print(f"Available tools: {list(tools.keys())}")
+initialize(halt_on_missing_sdk=False, force_proceed_flag=True, force_refresh=True)
+print(sorted(mcp_instance.tools))
 
-# Use a specific tool
-result = mcp_instance.call_tool("parse_gnn_file", {
-    "file_path": "examples/basic_model.md"
-})
+result = mcp_instance.execute_tool(
+    "parse_gnn_content",
+    {
+        "content": "## GNNSection\nActInfPOMDP\n",
+        "format_hint": "markdown",
+        "enhanced_validation": True,
+    },
+)
 ```
 
 ### HTTP Server
 ```bash
 # Start MCP HTTP server
-python src/mcp/server_http.py --port 8000
+GNN_MCP_TOKEN=local-dev-token \
+  python -m src.mcp.cli server --transport http --host 127.0.0.1 --port 8080
 
-# Make HTTP requests
-curl -X POST http://localhost:8000/tools/parse_gnn_file \
+# Execute an HTTP-safe tool through JSON-RPC
+curl -X POST http://127.0.0.1:8080/ \
+  -H "Authorization: Bearer local-dev-token" \
   -H "Content-Type: application/json" \
-  -d '{"file_path": "examples/basic_model.md"}'
+  -d '{"jsonrpc":"2.0","id":"status","method":"get_pipeline_status","params":{}}'
 ```
 
 ### STDIO Server (for AI assistants)
 ```bash
 # Start STDIO server for AI assistant integration
-python src/mcp/server_stdio.py
+python -m src.mcp.cli server --transport stdio
 ```
 
 ### Command Line Interface
 ```bash
-# Use MCP CLI tool
-python src/mcp/cli.py list-tools
-python src/mcp/cli.py call parse_gnn_file examples/basic_model.md
+# List capabilities and inspect a tool
+python -m src.mcp.cli list
+python -m src.mcp.cli info parse_gnn_content
+
+# Execute a tool
+python -m src.mcp.cli execute parse_gnn_content \
+  --params '{"content":"## GNNSection\nActInfPOMDP\n","format_hint":"markdown","enhanced_validation":true}'
 ```
 
 ## Tool Schema Examples
 
-### GNN File Parsing Tool
+### GNN Content Parsing Tool
 ```json
 {
-  "name": "parse_gnn_file",
-  "description": "Parse and validate a GNN file, extracting model components",
+  "name": "parse_gnn_content",
+  "description": "Parse GNN content with enhanced multi-format support and return structured model representation.",
   "inputSchema": {
     "type": "object",
     "properties": {
-      "file_path": {
+      "content": {
         "type": "string",
-        "description": "Path to the GNN file to parse"
+        "description": "GNN file content to parse"
       },
-      "validate_syntax": {
-        "type": "boolean", 
-        "description": "Whether to perform syntax validation",
+      "format_hint": {
+        "type": "string",
+        "enum": ["markdown", "json", "xml", "yaml", "binary"],
+        "default": "markdown"
+      },
+      "enhanced_validation": {
+        "type": "boolean",
         "default": true
       }
     },
-    "required": ["file_path"]
-  },
-  "outputSchema": {
-    "type": "object",
-    "properties": {
-      "model_name": {"type": "string"},
-      "state_space": {"type": "object"},
-      "connections": {"type": "array"},
-      "validation_errors": {"type": "array"}
-    }
+    "required": ["content"]
   }
 }
 ```
 
-### Model Visualization Tool
+### Render Tool
 ```json
 {
-  "name": "generate_factor_graph",
-  "description": "Generate a factor graph visualization of a GNN model",
+  "name": "process_render",
+  "description": "Render GNN models in a directory to all supported code frameworks.",
   "inputSchema": {
     "type": "object",
     "properties": {
-      "gnn_file": {"type": "string"},
-      "output_format": {
+      "target_directory": {
         "type": "string",
-        "enum": ["png", "svg", "pdf"],
-        "default": "png"
+        "description": "Directory containing GNN files"
       },
-      "layout": {
-        "type": "string", 
-        "enum": ["spring", "circular", "hierarchical"],
-        "default": "spring"
+      "output_directory": {
+        "type": "string",
+        "description": "Directory to write rendered outputs"
+      },
+      "verbose": {
+        "type": "boolean",
+        "default": false
       }
     },
-    "required": ["gnn_file"]
+    "required": ["target_directory", "output_directory"]
   }
 }
 ```
 
 ## Pipeline Integration
 
-### Step 7: MCP Integration Analysis
+### Step 21: MCP Processing
 The pipeline includes dedicated MCP analysis:
 
 ```bash
 # Run MCP integration check
-python src/main.py --only-steps 7
+python src/main.py --only-steps 21 --target-dir input/gnn_files --verbose
 
 # Generate MCP integration report
-python src/21_mcp.py --output-dir output/
+python src/21_mcp.py --target-dir input/gnn_files --output-dir output --verbose
 ```
 
 The MCP step generates comprehensive reports including:
@@ -206,20 +218,28 @@ def my_new_tool(param1: str, param2: int = 10) -> dict:
 
 2. **Register the tool**:
 ```python
-def register_tools():
+def register_tools(mcp_instance):
     """Register all tools from this module."""
-    tools = {
-        "my_new_tool": my_new_tool
-    }
-    
-    from src.mcp import mcp_instance
-    for name, func in tools.items():
-        mcp_instance.register_tool(name, func)
+    mcp_instance.register_tool(
+        "my_new_tool",
+        my_new_tool,
+        {
+            "type": "object",
+            "properties": {
+                "param1": {"type": "string"},
+                "param2": {"type": "integer", "default": 10},
+            },
+            "required": ["param1"],
+        },
+        "Run my new module action.",
+        module=__package__,
+        category="my_module",
+    )
 ```
 
 3. **Test the tool**:
 ```bash
-python src/mcp/cli.py call my_new_tool '{"param1": "test"}'
+python -m src.mcp.cli execute my_new_tool --params '{"param1":"test"}'
 ```
 
 ### Tool Design Principles
@@ -257,10 +277,10 @@ python src/mcp/cli.py call my_new_tool '{"param1": "test"}'
 
 ```bash
 # Run with verbose MCP logging
-python src/mcp/cli.py --verbose list-tools
+python -m src.mcp.cli --verbose list
 
 # Test tool with debugging
-python src/mcp/cli.py --debug call tool_name parameters
+python -m src.mcp.cli --verbose execute tool_name --params '{}'
 ```
 
 ## API Reference
@@ -271,12 +291,11 @@ from src.mcp import mcp_instance
 
 # Tool management
 mcp_instance.register_tool(name, function)
-mcp_instance.list_tools()
-mcp_instance.call_tool(name, parameters)
+mcp_instance.list_available_tools()
+mcp_instance.execute_tool(name, parameters)
 
 # Schema inspection  
-mcp_instance.get_tool_schema(name)
-mcp_instance.validate_input(name, parameters)
+mcp_instance.get_tool_info(name)
 ```
 
 ### Server Components
@@ -295,36 +314,25 @@ mcp_instance.validate_input(name, parameters)
 ### LLM Assistant Integration
 ```python
 # Example of AI assistant using MCP tools
-from src.mcp import mcp_instance
+from pathlib import Path
+
+from src.mcp import initialize, mcp_instance
 
 def analyze_user_model(file_path: str) -> str:
-    # Parse the model
-    parse_result = mcp_instance.call_tool("parse_gnn_file", {
-        "file_path": file_path
+    initialize(halt_on_missing_sdk=False, force_proceed_flag=True)
+    content = Path(file_path).read_text()
+    parse_result = mcp_instance.execute_tool("parse_gnn_content", {
+        "content": content,
+        "format_hint": "markdown",
+        "enhanced_validation": True,
     })
-    
-    # Generate visualization
-    viz_result = mcp_instance.call_tool("generate_factor_graph", {
-        "gnn_file": file_path,
-        "output_format": "png"
-    })
-    
-    # Get AI analysis
-    analysis = mcp_instance.call_tool("analyze_model_with_llm", {
-        "model_data": parse_result,
-        "analysis_type": "comprehensive"
-    })
-    
-    return analysis["explanation"]
+    return parse_result.get("summary", str(parse_result))
 ```
 
 ### External Tool Integration
 ```bash
-# External Python script using MCP HTTP API
-import requests
-
-response = requests.post("http://localhost:8000/tools/validate_gnn_syntax", 
-                        json={"file_path": "my_model.md"})
-result = response.json()
-print(f"Validation result: {result}")
-``` 
+curl -X POST http://127.0.0.1:8080/ \
+  -H "Authorization: Bearer local-dev-token" \
+  -H "Content-Type: application/json" \
+  -d '{"jsonrpc":"2.0","id":"cap","method":"mcp.capabilities","params":{}}'
+```

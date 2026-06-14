@@ -76,6 +76,7 @@ class MCP:
         self._error_count = 0
         self._lock = threading.RLock()
         self._module_import_lock = threading.RLock()
+        self._registration_context = threading.local()
 
         self._performance_metrics = MCPPerformanceMetrics()
         self._tool_execution_times: Dict[str, List[float]] = defaultdict(list)
@@ -325,7 +326,10 @@ class MCP:
                     sympy_module.register_tools
                 ):
                     tools_before = len(self.tools)
-                    sympy_module.register_tools(self)
+                    with self._tool_registration_context(
+                        module="src.mcp.sympy_mcp", category="sympy_mcp"
+                    ):
+                        sympy_module.register_tools(self)
                     tools_added = len(self.tools) - tools_before
 
                     self.modules["sympy_mcp"] = MCPModuleInfo(
@@ -425,7 +429,10 @@ class MCP:
                 tools_before = len(self.tools)
                 resources_before = len(self.resources)
 
-                module.register_tools(self)
+                with self._tool_registration_context(
+                    module=f"src.{module_name}", category=module_name
+                ):
+                    module.register_tools(self)
 
                 tools_added = len(self.tools) - tools_before
                 resources_added = len(self.resources) - resources_before
@@ -530,6 +537,85 @@ class MCP:
                 module_path.relative_to(root_resolved / top_level_name)
             except (OSError, ValueError):
                 sys.modules.pop(loaded_name, None)
+
+    @contextmanager
+    def _tool_registration_context(self, module: str, category: str) -> Any:
+        """Attach default module metadata while a module registers MCP tools."""
+        previous = getattr(self._registration_context, "value", None)
+        self._registration_context.value = {"module": module, "category": category}
+        try:
+            yield
+        finally:
+            if previous is None:
+                try:
+                    del self._registration_context.value
+                except AttributeError:
+                    pass
+            else:
+                self._registration_context.value = previous
+
+    def _default_tool_metadata(self, module: str, category: str) -> Tuple[str, str]:
+        """Return explicit metadata or discovery-context defaults."""
+        context = getattr(self._registration_context, "value", {}) or {}
+        resolved_module = module or str(context.get("module") or "")
+        resolved_category = category or str(context.get("category") or "")
+        if not resolved_category and resolved_module:
+            resolved_category = resolved_module.rsplit(".", 1)[-1]
+        return resolved_module, resolved_category
+
+    @staticmethod
+    def _strip_legacy_schema_keys(value: Any) -> Any:
+        """Remove non-JSON-schema legacy keys while preserving nested structure."""
+        if isinstance(value, dict):
+            return {
+                key: MCP._strip_legacy_schema_keys(item)
+                for key, item in value.items()
+                if key != "optional"
+            }
+        if isinstance(value, list):
+            return [MCP._strip_legacy_schema_keys(item) for item in value]
+        return value
+
+    @classmethod
+    def _normalize_tool_schema(cls, schema: Dict[str, Any]) -> Dict[str, Any]:
+        """Normalize legacy MCP schemas into JSON-schema object form."""
+        if not schema:
+            return {"type": "object", "properties": {}}
+
+        if schema.get("type") == "object" or "properties" in schema:
+            normalized = cls._strip_legacy_schema_keys(dict(schema))
+            normalized["type"] = "object"
+            properties = normalized.get("properties")
+            if not isinstance(properties, dict):
+                normalized["properties"] = {}
+            if "required" in normalized and not isinstance(normalized["required"], list):
+                normalized["required"] = []
+            return normalized
+
+        properties: Dict[str, Any] = {}
+        required: List[str] = []
+        for field_name, field_schema in schema.items():
+            if not isinstance(field_schema, dict):
+                properties[field_name] = {"description": str(field_schema)}
+                required.append(field_name)
+                continue
+
+            is_optional = bool(field_schema.get("optional", False)) or (
+                "default" in field_schema and "optional" not in field_schema
+            )
+            properties[field_name] = cast(
+                "Dict[str, Any]", cls._strip_legacy_schema_keys(field_schema)
+            )
+            if not is_optional:
+                required.append(field_name)
+
+        normalized_schema: Dict[str, Any] = {
+            "type": "object",
+            "properties": properties,
+        }
+        if required:
+            normalized_schema["required"] = required
+        return normalized_schema
 
     def register_tool(
         self,
@@ -636,6 +722,9 @@ class MCP:
                 if required_fields:
                     schema["required"] = required_fields
 
+            schema = self._normalize_tool_schema(schema)
+            module, category = self._default_tool_metadata(module, category)
+
             tool = MCPTool(
                 name=name,
                 func=func,
@@ -698,6 +787,8 @@ class MCP:
             encryption: Whether the resource is encrypted
         """
         with self._lock:
+            module, category = self._default_tool_metadata(module, category)
+
             if uri_template in self.resources:
                 logger.warning(
                     f"Resource '{uri_template}' already registered, overwriting"

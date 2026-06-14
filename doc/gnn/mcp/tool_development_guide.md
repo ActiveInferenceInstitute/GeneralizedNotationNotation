@@ -111,7 +111,6 @@ uv run --extra dev python -m pytest src/tests/mcp/test_mcp_audit.py -v -k "<modu
 
 # Generate the tool inventory JSON
 uv run python src/mcp/validate_tools.py
-# → src/tests/mcp_audit_report.json
 ```
 
 ## What the Audit Tests

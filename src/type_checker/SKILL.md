@@ -1,3 +1,8 @@
+---
+name: gnn-type-checker
+description: GNN structural type checking and resource estimation. Use when validating GNN dimensions, syntax, type consistency, or generated type-checker reports.
+---
+
 # Core Skill: `type_check`
 
 **Function**: Evaluates GNN structural schemas assigning validation integers and load capacities producing automated Abstract Model Cards.

@@ -480,12 +480,14 @@ The GNN processing pipeline consists of exactly 25 steps (0-24), executed in ord
 
 ### MCP Tools (Step 21)
 
-The MCP step exposes every pipeline module as a callable tool. As of v1.6.0 there are **131 real tools** across 38+ domains:
+The MCP step exposes pipeline modules as callable tools through the central MCP registry. Use the audit commands for the current module/tool count rather than copying a stale snapshot into prose:
 
 ```bash
-# Run the MCP audit to list all tools
+# Validate the MCP tool contract
+uv run --extra dev python -m pytest src/tests/mcp/test_mcp_audit.py -q
+
+# Generate a live inventory report
 uv run python src/mcp/validate_tools.py
-# → generates src/tests/mcp_audit_report.json
 
 # Or via pytest (full suite totals: repository README.md)
 uv run --extra dev python -m pytest src/tests/mcp/test_mcp_audit.py -v
@@ -498,6 +500,7 @@ Key tool groups:
 | audio | `process_audio`, `check_audio_backends`, `get_audio_generation_options` |
 | execute | `execute_gnn_model`, `execute_pymdp_simulation`, `check_execute_dependencies` |
 | llm | `analyze_gnn_with_llm`, `generate_llm_documentation`, `get_llm_providers` |
+| gui | `process_gui`, `list_available_guis`, `oxdraw.convert_to_mermaid` |
 | validation | `validate_gnn_file`, `check_schema_compliance`, `get_validation_report` |
 | render | `render_gnn_to_format`, `list_render_frameworks` |
 | gnn | `parse_gnn_content`, `validate_gnn_content` |

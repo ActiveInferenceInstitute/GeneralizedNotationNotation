@@ -166,32 +166,21 @@ python src/21_mcp.py \
     --mcp-overall-timeout 60
 ```
 
-### Registered tool inventory (snapshot)
+### Registered Tool Inventory
 
 The MCP auto-discovers every module under `src/` that exposes `mcp.py`. A live
-run currently registers **133 tools** and **1 resource** across **33 modules**.
-Use the audit script for an up-to-date, ground-truth list:
+run should load all runtime MCP modules, expose canonical JSON schemas, and set
+non-empty module/category metadata for every registered tool. Use the audit
+tests for the current ground-truth inventory:
 
 ```bash
+uv run --extra dev python -m pytest src/tests/mcp/test_mcp_audit.py -q
 PYTHONPATH=src uv run python src/mcp/validate_tools.py
 ```
 
-Per-module tool counts below are a snapshot; use the audit command above for
-current counts:
-
-| Module | Tools | Module | Tools |
-|--------|-------|--------|-------|
-| advanced_visualization | 4 | api | 5 |
-| analysis | 4 | audio | 5 |
-| execute | 5 | export | 4 |
-| gnn (+ sympy + meta) | 47 | gui | 3 |
-| integration | 4 | intelligent_analysis | 3 |
-| llm | 5 | ml_integration | 4 |
-| ontology | 4 | render | 4 |
-| report | 5 | research | 4 |
-| sapf | 4 | security | 4 |
-| validation | 4 | visualization | 4 |
-| website | 5 | cli | 2 |
+The parent `gui` MCP module exposes the nested `oxdraw.*` tools; `doc` and
+`lsp` intentionally register no callable tools while still participating in
+module discovery.
 
 ## Installation and Setup
 
