@@ -90,7 +90,7 @@ graph TD
 
 **Returns**: `True` if setup succeeded
 
-**Note**: Default path runs `uv sync` for core dependencies, which include Step 12 backends (JAX, NumPyro, PyTorch, DisCoPy), LLM clients, interactive visualization (pandas, plotly, seaborn, h5py), and the bnlearn backend. `SETUP_DEFAULT_PIPELINE_EXTRAS` is empty by default. Step 22 (GUI) needs Gradio: `uv sync --extra gui` (otherwise the GUI step runs headless and emits recovery artifacts only).
+**Note**: Default path runs `uv sync` for core dependencies, which include Step 12 core backends (JAX, NumPyro, DisCoPy), LLM clients, and interactive visualization (pandas, plotly, seaborn, h5py). PyTorch and bnlearn remain supported optional backends but are manual installs while the current Torch advisory has no patched release. `SETUP_DEFAULT_PIPELINE_EXTRAS` is empty by default. Step 22 (GUI) needs Gradio: `uv sync --extra gui` (otherwise the GUI step runs headless and emits recovery artifacts only).
 
 #### `setup_uv_environment(verbose=False, recreate=False, dev=False, extras=None, install_all_extras=False, skip_jax_test=False, output_dir=None) -> bool`
 **Description**: Set up UV virtual environment with dependencies using native UV sync

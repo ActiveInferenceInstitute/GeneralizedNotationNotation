@@ -256,9 +256,9 @@ class DependencyManager:
             DependencyInfo(
                 "torch",
                 min_version="1.8.0",
-                install_command="uv add torch",
+                install_command="uv pip install torch",
                 fallback_available=True,
-                description="Deep learning",
+                description="Optional PyTorch backend; install manually until the no-patch torch advisory is resolved",
             )
         )
         self.dependency_groups["machine_learning"] = ml

@@ -53,21 +53,22 @@ dependencies = [
     "inferactively-pymdp>=1.0.0",
     "equinox>=0.11.0",  # pymdp 1.0.0 Agent is an equinox Module
     "multimethod>=1.11",  # pymdp 1.0.0 dispatch
-    # Step 12 execution backends (JAX, NumPyro, PyTorch, DisCoPy)
+    # Step 12 execution backends (JAX, NumPyro, DisCoPy)
+    # PyTorch remains supported by the renderer/executor but is intentionally
+    # not locked as a default dependency while GHSA-rrmf-rvhw-rf47 has no
+    # patched torch release. The bnlearn package is also omitted from the
+    # default lock because its pgmpy dependency pulls torch transitively.
     "jax[cpu]>=0.7.0,<0.10",  # upper bound keeps numpyro 0.20.x import-compatible
     "jaxlib>=0.7.0,<0.10",
     "flax>=0.7.0",
     "optax>=0.1.0",
     "numpyro>=0.14",
-    "torch>=2.0.0",
     "discopy>=1.1.0",
     # Interactive visualization (Step 9 advanced viz Plotly dashboards; steps 8/16)
     "pandas>=1.3.0",
     "plotly>=5.15.0",
     "seaborn>=0.12.0",
     "h5py>=3.8.0",
-    # Step 12 bnlearn backend (Bayesian network scripts)
-    "bnlearn>=0.7.0",
 ]
 
 # Development dependencies (enhanced for comprehensive development workflow)
@@ -127,8 +128,9 @@ api = [
     "uvicorn[standard]>=0.23.0",
 ]
 
-# Deep learning: transformer/scientific packages beyond core Step 12 backends
-# (torch is a core dependency; scipy/scikit-learn uses are deferred imports)
+# Deep learning: transformer/scientific packages beyond core Step 12 backends.
+# PyTorch is installed manually by users who need that backend until a patched
+# torch release is available for GHSA-rrmf-rvhw-rf47.
 ml-ai = [
     "transformers>=4.25.0",
     "scipy>=1.7.0",

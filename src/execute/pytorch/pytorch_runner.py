@@ -86,7 +86,7 @@ def execute_pytorch_script(
             logger.debug(f"✅ Dependency available: {dep}")
         except ImportError:
             logger.error(f"❌ Missing required dependency: {dep}")
-            logger.error("Install with: uv sync --extra ml-ai")
+            logger.error("Install PyTorch manually with: uv pip install torch")
             return False
 
     # Syntax validation

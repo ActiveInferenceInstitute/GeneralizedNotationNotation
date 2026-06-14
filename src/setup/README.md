@@ -86,9 +86,11 @@ install_jax_and_test(verbose: bool = False) -> bool
 Valid group names are defined in `OPTIONAL_GROUPS` (`constants.py`):
 `dev`, `api`, `ml-ai`, `audio`, `gui`, `graphs`, `research`, `scaling`, `all`.
 
-Step 12 backends (JAX, NumPyro, PyTorch, DisCoPy), LLM clients, interactive
-visualization packages, and bnlearn are already in `[project.dependencies]`, so
-`uv sync` installs them without any extra.
+Step 12 core backends (JAX, NumPyro, DisCoPy), LLM clients, and interactive
+visualization packages are already in `[project.dependencies]`, so `uv sync`
+installs them without any extra. PyTorch and bnlearn remain supported by the
+renderer/executor code paths, but are manual installs while the current Torch
+advisory has no patched release.
 
 ### Validators (`validator`)
 

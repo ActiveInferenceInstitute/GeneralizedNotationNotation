@@ -805,7 +805,7 @@ def check_environment_health(verbose: bool = False) -> Dict[str, Any]:
     optional_checks: dict[str, Any] = {
         "llm": {"packages": ["openai"], "extra": "llm"},
         "visualization": {"packages": ["plotly"], "extra": "visualization"},
-        "ml": {"packages": ["torch"], "extra": "ml-ai"},
+        "ml": {"packages": ["scipy"], "extra": "ml-ai"},
         "audio": {"packages": ["librosa"], "extra": "audio"},
     }
 

@@ -29,9 +29,10 @@ else:
 
 MIN_PYTHON_VERSION = (3, 11)
 
-# Extra ``uv sync --extra …`` groups for step 1 when non-empty. Step 12 backends,
-# LLM clients, interactive visualization, and bnlearn are core dependencies;
-# default setup therefore needs no extra sync flags.
+# Extra ``uv sync --extra …`` groups for step 1 when non-empty. Core Step 12
+# backends, LLM clients, and interactive visualization are default dependencies;
+# PyTorch and bnlearn remain manual optional backends until the current no-patch
+# torch advisory can be resolved safely.
 SETUP_DEFAULT_PIPELINE_EXTRAS: tuple[str, ...] = ()
 
 OPTIONAL_GROUPS: dict[str, Any] = {

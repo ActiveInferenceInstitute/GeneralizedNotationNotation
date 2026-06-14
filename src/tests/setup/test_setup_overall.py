@@ -16,7 +16,7 @@ class TestSetupModule:
 
         assert SETUP_DEFAULT_PIPELINE_EXTRAS == ()
 
-    def test_pyproject_core_lists_step12_backends(self) -> Any:
+    def test_pyproject_core_lists_safe_default_backends(self) -> Any:
         import tomllib
         from pathlib import Path
 
@@ -25,11 +25,11 @@ class TestSetupModule:
         blob = " ".join(data["project"]["dependencies"]).lower()
         assert "jax" in blob
         assert "jaxlib" in blob
-        assert "torch" in blob
         assert "numpyro" in blob
         assert "discopy" in blob
         assert "plotly" in blob
-        assert "bnlearn" in blob
+        assert "torch" not in blob
+        assert "bnlearn" not in blob
 
     def test_build_step_command_passes_setup_core_only(self) -> Any:
         """main.py forwards --setup-core-only to 1_setup when set on pipeline args."""

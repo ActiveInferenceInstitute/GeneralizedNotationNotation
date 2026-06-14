@@ -57,11 +57,13 @@ optional groups are requested). `**kwargs` accepts:
 - `install_optional` (bool) — install optional groups
 - `optional_groups` (str) — comma-separated group names (see `OPTIONAL_GROUPS`)
 
-Default path: `uv sync` for core deps. Step 12 backends (JAX, NumPyro, PyTorch,
-DisCoPy), interactive visualization (pandas, plotly, seaborn, h5py), and the bnlearn
-backend are in `[project.dependencies]` and therefore installed without any `--extra`.
-`SETUP_DEFAULT_PIPELINE_EXTRAS` is empty by default because core dependencies already
-cover Step 12 backends, LLM clients, interactive visualization packages, and bnlearn.
+Default path: `uv sync` for core deps. Step 12 core backends (JAX, NumPyro,
+DisCoPy), interactive visualization (pandas, plotly, seaborn, h5py), and LLM
+clients are in `[project.dependencies]` and therefore installed without any
+`--extra`. PyTorch and bnlearn are still supported by render/execute code paths,
+but remain manual installs while the current Torch advisory has no patched
+release. `SETUP_DEFAULT_PIPELINE_EXTRAS` is empty by default because core
+dependencies already cover the default pipeline runtime.
 Step 22 (GUI) additionally needs `uv sync --extra gui` to pull Gradio.
 
 ### Module-level Public Functions
