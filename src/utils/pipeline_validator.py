@@ -86,32 +86,36 @@ def validate_step_prerequisites(
                 # Not found at either location
                 warning_msg = f"Missing prerequisite output directory: {expected_output_dir}. Step {req_step} may not have been executed."
                 result["warnings"].append(warning_msg)
+                result["errors"].append(warning_msg)
+                result["passed"] = False
 
             # Check for specific required files based on step type
             if req_step == "3_gnn.py":
                 # Check for parsed GNN files
-                gnn_output_dir = args.output_dir / "3_gnn_output"
+                gnn_output_dir = expected_output_dir
                 if gnn_output_dir.exists():
                     # Look for parsed files at any depth
                     parsed_files = list(gnn_output_dir.rglob("*_parsed.json"))
                     if not parsed_files:
-                        result["warnings"].append(
-                            "No parsed GNN files found in 3_gnn_output"
-                        )
+                        warning_msg = f"No parsed GNN files found in {gnn_output_dir.name}"
+                        result["warnings"].append(warning_msg)
+                        result["errors"].append(warning_msg)
+                        result["passed"] = False
                     # Note: Parsed files in model-specific subdirectories (e.g., 3_gnn_output/model_name/model_name_parsed.json)
                     # is the correct and intended structure - no warning needed
 
             elif req_step == "11_render.py":
                 # Check for rendered simulation code
-                render_output_dir = args.output_dir / "11_render_output"
+                render_output_dir = expected_output_dir
                 if render_output_dir.exists():
                     rendered_files = list(render_output_dir.rglob("*.py")) + list(
                         render_output_dir.rglob("*.jl")
                     )
                     if not rendered_files:
-                        result["warnings"].append(
-                            "No rendered simulation files found in 11_render_output"
-                        )
+                        warning_msg = f"No rendered simulation files found in {render_output_dir.name}"
+                        result["warnings"].append(warning_msg)
+                        result["errors"].append(warning_msg)
+                        result["passed"] = False
 
     return result
 
@@ -261,9 +265,17 @@ def check_pipeline_readiness(
     script_names = [step[0] for step in steps_to_execute]
 
     if any(step in script_names for step in gnn_dependent_steps):
-        gnn_files = list(args.target_dir.rglob("*.md")) + list(
-            args.target_dir.rglob("*.gnn")
-        )
+        from gnn.discovery import is_model_source_path
+        from gnn.parsers.common import get_supported_gnn_extensions
+
+        gnn_files: list[Path] = []
+        for ext in get_supported_gnn_extensions():
+            gnn_files.extend(args.target_dir.rglob(f"*{ext}"))
+        gnn_files = [
+            path
+            for path in dict.fromkeys(gnn_files)
+            if is_model_source_path(path)
+        ]
         if not gnn_files:
             readiness_check["blocking_issues"].append(
                 f"No GNN files found in {args.target_dir}"

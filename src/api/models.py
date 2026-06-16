@@ -34,6 +34,10 @@ class ProcessRequest(BaseModel):
         default="input/gnn_files",
         description="Directory containing GNN files to process",
     )
+    output_dir: str = Field(
+        default="output",
+        description="Directory where pipeline outputs should be written",
+    )
     steps: Optional[List[int]] = Field(
         default=None,
         description="Specific pipeline steps to run (e.g., [3,5,8]). None = all steps.",
@@ -48,6 +52,7 @@ class ProcessRequest(BaseModel):
         json_schema_extra={
             "example": {
                 "target_dir": "input/gnn_files",
+                "output_dir": "output",
                 "steps": [3, 5, 6, 8],
                 "verbose": True,
             }
@@ -60,6 +65,10 @@ class ToolRequest(BaseModel):
 
     target_dir: str = Field(
         default="input/gnn_files", description="Directory containing GNN files"
+    )
+    output_dir: str = Field(
+        default="output",
+        description="Directory where pipeline outputs should be written",
     )
     verbose: bool = Field(default=False)
     kwargs: Dict[str, Any] = Field(

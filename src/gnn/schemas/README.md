@@ -11,7 +11,7 @@ Schema files defining the structural contracts for valid GNN models across multi
 | `xsd.xsd` | XML Schema | XML format validation |
 | `proto.proto` | Protocol Buffers | Binary format definition |
 | `asn1.asn1` | ASN.1 | Formal notation schema |
-| `pkl.pkl` | Pickle | Serialization reference |
+| `pkl.pkl` | PKL | Textual Apple PKL DSL serialization reference |
 
 ## Usage
 

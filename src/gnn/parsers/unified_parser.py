@@ -21,6 +21,7 @@ from .common import (
     GNNInternalRepresentation,
     ParseError,
     ParseResult,
+    detect_gnn_format_from_path,
 )
 
 logger = logging.getLogger(__name__)
@@ -194,35 +195,12 @@ class UnifiedGNNParser:
         """
         extension = file_path.suffix.lower()
 
-        # Extension-based detection
-        extension_map: dict[str, Any] = {
-            ".md": GNNFormat.MARKDOWN,
-            ".scala": GNNFormat.SCALA,
-            ".lean": GNNFormat.LEAN,
-            ".v": GNNFormat.COQ,
-            ".py": GNNFormat.PYTHON,
-            ".bnf": GNNFormat.BNF,
-            ".ebnf": GNNFormat.EBNF,
-            ".thy": GNNFormat.ISABELLE,
-            ".mac": GNNFormat.MAXIMA,
-            ".xml": GNNFormat.XML,
-            ".pnml": GNNFormat.PNML,
-            ".json": GNNFormat.JSON,
-            ".proto": GNNFormat.PROTOBUF,
-            ".yaml": GNNFormat.YAML,
-            ".yml": GNNFormat.YAML,
-            ".xsd": GNNFormat.XSD,
-            ".asn1": GNNFormat.ASN1,
-            ".als": GNNFormat.ALLOY,
-            ".zed": GNNFormat.Z_NOTATION,
-            ".tla": GNNFormat.TLA_PLUS,
-            ".agda": GNNFormat.AGDA,
-            ".hs": GNNFormat.HASKELL,
-            ".pkl": GNNFormat.PICKLE,
-        }
+        try:
+            detected = detect_gnn_format_from_path(file_path)
+        except ValueError:
+            return self._detect_format_from_content(file_path)
 
-        if extension in extension_map:
-            detected = extension_map[extension]
+        if extension:
 
             # For ambiguous extensions, use content-based detection
             if extension in [".xml", ".py"]:
@@ -231,9 +209,6 @@ class UnifiedGNNParser:
                     return content_detected
 
             return cast("GNNFormat", detected)
-
-        # Content-based detection for unknown extensions
-        return self._detect_format_from_content(file_path)
 
     def _detect_format_from_content(self, file_path: Path) -> GNNFormat:
         """

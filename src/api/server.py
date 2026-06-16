@@ -13,7 +13,6 @@ Run with:
 
 import logging
 from datetime import datetime
-from pathlib import Path
 from typing import Any, Dict
 
 logger = logging.getLogger(__name__)
@@ -39,6 +38,7 @@ from api.models import (
     ToolRequest,
     ToolsResponse,
 )
+from api.path_utils import PathValidationError, resolve_repo_path
 
 # Application metadata
 app = FastAPI(
@@ -87,31 +87,23 @@ async def submit_process_job(
     Accepts a target directory and optional step selection.
     Returns a job ID for polling with GET /api/v1/jobs/{job_id}.
     """
-    # Validate target directory exists
-    target_path = Path(request.target_dir)
-    if not target_path.exists():
-        # Try relative to repo root
-        repo_root = Path(__file__).parent.parent.parent
-        target_path = repo_root / request.target_dir
-
-    if not target_path.exists():
-        raise HTTPException(
-            status_code=400, detail=f"Target directory not found: {request.target_dir}"
-        )
-
-    # Enforce path boundary: resolved path must stay within repo root
-    repo_root = Path(__file__).parent.parent.parent.resolve()
     try:
-        resolved = target_path.resolve()
-        resolved.relative_to(repo_root)
-    except ValueError as err:
-        raise HTTPException(
-            status_code=400,
-            detail=f"Target directory must be within the repository root: {request.target_dir}",
-        ) from err
+        target_path = resolve_repo_path(
+            request.target_dir,
+            purpose="Target directory",
+            must_exist=True,
+        )
+        output_path = resolve_repo_path(
+            request.output_dir,
+            purpose="Output directory",
+            create=True,
+        )
+    except PathValidationError as err:
+        raise HTTPException(status_code=400, detail=str(err)) from err
 
     job_id = job_mgr.create_job(
         target_dir=str(target_path),
+        output_dir=str(output_path),
         steps=request.steps,
         skip_steps=request.skip_steps,
         verbose=request.verbose,
@@ -200,28 +192,25 @@ async def invoke_tool(
     if step not in job_mgr.PIPELINE_STEPS:
         raise HTTPException(status_code=404, detail=f"Unknown pipeline step: {step}")
 
-    target_path = Path(request.target_dir)
-    if not target_path.exists():
-        repo_root = Path(__file__).parent.parent.parent
-        target_path = repo_root / request.target_dir
-
-    if not target_path.exists():
-        raise HTTPException(
-            status_code=400, detail=f"Target directory not found: {request.target_dir}"
-        )
-
-    # Enforce path boundary: resolved path must stay within repo root
-    _repo_root = Path(__file__).parent.parent.parent.resolve()
     try:
-        target_path.resolve().relative_to(_repo_root)
-    except ValueError as err:
-        raise HTTPException(
-            status_code=400,
-            detail=f"Target directory must be within the repository root: {request.target_dir}",
-        ) from err
+        target_path = resolve_repo_path(
+            request.target_dir,
+            purpose="Target directory",
+            must_exist=True,
+        )
+        output_path = resolve_repo_path(
+            request.output_dir,
+            purpose="Output directory",
+            create=True,
+        )
+    except PathValidationError as err:
+        raise HTTPException(status_code=400, detail=str(err)) from err
 
     job_id = job_mgr.create_job(
-        target_dir=str(target_path), steps=[step], verbose=request.verbose
+        target_dir=str(target_path),
+        output_dir=str(output_path),
+        steps=[step],
+        verbose=request.verbose,
     )
 
     background_tasks.add_task(job_mgr.execute_job_async, job_id)

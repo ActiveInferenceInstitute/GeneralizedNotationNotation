@@ -17,12 +17,15 @@ from typing import Any, Dict, List, Optional
 
 logger = logging.getLogger(__name__)
 
+from api.path_utils import resolve_repo_path
+
 # In-memory job store (cleared on restart — research tool, not production service)
 _JOBS: Dict[str, dict] = {}
 
 
 def create_job(
     target_dir: str,
+    output_dir: Optional[str] = None,
     steps: Optional[List[int]] = None,
     skip_steps: Optional[List[int]] = None,
     verbose: bool = False,
@@ -33,6 +36,7 @@ def create_job(
 
     Args:
         target_dir: Directory containing GNN files
+        output_dir: Directory where pipeline outputs should be written
         steps: Specific steps to run (None = all)
         skip_steps: Steps to skip
         verbose: Enable verbose output
@@ -41,6 +45,17 @@ def create_job(
     Returns:
         Unique job ID string
     """
+    target_path = resolve_repo_path(
+        target_dir,
+        purpose="Target directory",
+        must_exist=True,
+    )
+    output_path = resolve_repo_path(
+        output_dir or "output",
+        purpose="Output directory",
+        create=True,
+    )
+
     job_id = str(uuid.uuid4())
     _JOBS[job_id] = {
         "job_id": job_id,
@@ -48,7 +63,7 @@ def create_job(
         "created_at": datetime.now().isoformat(),
         "started_at": None,
         "completed_at": None,
-        "target_dir": target_dir,
+        "target_dir": str(target_path),
         "steps": steps,
         "skip_steps": skip_steps,
         "verbose": verbose,
@@ -58,10 +73,12 @@ def create_job(
         "steps_failed": [],
         "exit_code": None,
         "error_message": None,
-        "output_dir": None,
+        "output_dir": str(output_path),
         "process": None,  # subprocess handle (not serializable, stripped in get_job)
     }
-    logger.info(f"Created job {job_id} for target={target_dir}, steps={steps}")
+    logger.info(
+        f"Created job {job_id} for target={target_path}, output={output_path}, steps={steps}"
+    )
     return job_id
 
 
@@ -138,7 +155,7 @@ async def execute_job_async(job_id: str) -> None:
     cmd: list[Any] = [sys.executable, str(main_script)]
     cmd += ["--target-dir", str(job["target_dir"])]
 
-    output_dir = repo_root / "output"
+    output_dir = Path(job.get("output_dir") or (repo_root / "output"))
     cmd += ["--output-dir", str(output_dir)]
     job["output_dir"] = str(output_dir)
 

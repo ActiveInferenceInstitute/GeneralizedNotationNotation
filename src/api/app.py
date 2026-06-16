@@ -36,6 +36,8 @@ _src_dir = str(Path(__file__).parent.parent)
 if _src_dir not in sys.path:
     sys.path.insert(0, _src_dir)
 
+from api.path_utils import PathValidationError, resolve_repo_path  # noqa: E402,I001
+
 
 # ── In-memory run store ──────────────────────────────────────────────────────────
 
@@ -125,19 +127,32 @@ if FASTAPI_AVAILABLE:
             """Submit a pipeline run for background execution."""
             from pipeline.hasher import compute_run_hash
 
-            # Enforce path boundary: resolved path must stay within repo root
-            _repo_root = Path(__file__).parent.parent.parent.resolve()
             try:
-                Path(request.target_dir).resolve().relative_to(_repo_root)
-            except ValueError as err:
+                target_path = resolve_repo_path(
+                    request.target_dir,
+                    purpose="Target directory",
+                    must_exist=True,
+                )
+                output_path = resolve_repo_path(
+                    request.output_dir,
+                    purpose="Output directory",
+                    create=True,
+                )
+            except PathValidationError as err:
                 raise HTTPException(
                     status_code=400,
-                    detail=f"Target directory must be within the repository root: {request.target_dir}",
+                    detail=str(err),
                 ) from err
 
             run_hash = compute_run_hash(
-                Path(request.target_dir),
+                target_path,
                 config={"skip_steps": request.skip_steps, "skip_llm": request.skip_llm},
+            )
+            normalized_request = request.model_copy(
+                update={
+                    "target_dir": str(target_path),
+                    "output_dir": str(output_path),
+                }
             )
 
             if run_hash in _runs and _runs[run_hash]["status"] == "running":
@@ -151,13 +166,13 @@ if FASTAPI_AVAILABLE:
             run_entry: dict[str, Any] = {
                 "status": "queued",
                 "started_at": datetime.now().isoformat(),
-                "request": request.model_dump(),
+                "request": normalized_request.model_dump(),
                 "steps_completed": 0,
                 "errors": [],
                 "events": [],
             }
             _runs[run_hash] = run_entry
-            background_tasks.add_task(_execute_pipeline, run_hash, request)
+            background_tasks.add_task(_execute_pipeline, run_hash, normalized_request)
             return RunStatus(
                 run_hash=run_hash, status="queued", started_at=run_entry["started_at"]
             )

@@ -13,7 +13,12 @@ from .alloy_serializer import AlloySerializer
 from .asn1_serializer import ASN1Serializer
 from .binary_parser import PickleGNNParser
 from .binary_serializer import BinarySerializer
-from .common import GNNInternalRepresentation, GNNParser, ParseError
+from .common import (
+    GNNInternalRepresentation,
+    GNNParser,
+    ParseError,
+    detect_gnn_format_from_path,
+)
 
 # Import converters and validators
 from .converters import FormatConverter
@@ -188,12 +193,15 @@ class GNNParsingSystem:
             raise ValueError(f"Unsupported format: {format_hint}")
         # Ensure parsers accept either str or Path
         if hasattr(parser, "parse_file"):
-            return parser.parse_file(str(file_path))
+            result = parser.parse_file(str(file_path))
         else:
             # Recovery: call parse_string on file content
             with open(file_path, "r", encoding="utf-8") as f:
                 content = f.read()
-            return parser.parse_string(content)
+            result = parser.parse_string(content)
+        result.model.source_format = format_hint
+        result.source_file = str(file_path)
+        return result
 
     def parse_string(self, content: str, format: GNNFormat) -> ParseResult:
         """
@@ -309,38 +317,7 @@ class GNNParsingSystem:
         Returns:
             Detected format
         """
-        extension = file_path.suffix.lower()
-
-        format_map: dict[str, Any] = {
-            ".md": GNNFormat.MARKDOWN,
-            ".scala": GNNFormat.SCALA,
-            ".lean": GNNFormat.LEAN,
-            ".v": GNNFormat.COQ,
-            ".py": GNNFormat.PYTHON,
-            ".bnf": GNNFormat.BNF,
-            ".ebnf": GNNFormat.EBNF,
-            ".thy": GNNFormat.ISABELLE,
-            ".mac": GNNFormat.MAXIMA,
-            ".xml": GNNFormat.XML,
-            ".pnml": GNNFormat.PNML,
-            ".json": GNNFormat.JSON,
-            ".proto": GNNFormat.PROTOBUF,
-            ".yaml": GNNFormat.YAML,
-            ".yml": GNNFormat.YAML,
-            ".xsd": GNNFormat.XSD,
-            ".asn1": GNNFormat.ASN1,
-            ".pkl": GNNFormat.PKL,
-            ".als": GNNFormat.ALLOY,
-            ".zed": GNNFormat.Z_NOTATION,
-            ".tla": GNNFormat.TLA_PLUS,
-            ".agda": GNNFormat.AGDA,
-            ".hs": GNNFormat.HASKELL,
-        }
-
-        if extension in format_map:
-            return cast("GNNFormat", format_map[extension])
-        else:
-            raise ValueError(f"Unknown file extension: {extension}")
+        return detect_gnn_format_from_path(file_path)
 
     def _detect_format_from_content(self, content: str) -> GNNFormat:
         """

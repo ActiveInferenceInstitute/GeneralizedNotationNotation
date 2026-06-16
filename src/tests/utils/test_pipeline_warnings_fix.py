@@ -31,7 +31,10 @@ from typing import Any
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 from pipeline.config import get_output_dir_for_script
-from utils.pipeline_validator import validate_step_prerequisites
+from utils.pipeline_validator import (
+    check_pipeline_readiness,
+    validate_step_prerequisites,
+)
 
 
 @dataclass
@@ -131,11 +134,12 @@ class TestPipelineWarningsFix:
         # Test validation for step that depends on 3_gnn.py
         result = validate_step_prerequisites("5_type_checker.py", args, logger)
 
-        # Should pass (validation doesn't fail) but with warning
-        assert result["passed"], "Prerequisite validation should pass (non-blocking)"
+        # Missing prerequisite outputs should fail the prerequisite check.
+        assert result["passed"] is False, "Prerequisite validation should fail"
         assert len(result["warnings"]) > 0, (
             "Should have warning about missing directory"
         )
+        assert len(result["errors"]) > 0, "Should record missing output as an error"
         assert any("missing" in w.lower() for w in result["warnings"]), (
             "Should warn about missing prerequisite directory"
         )
@@ -204,9 +208,15 @@ class TestPipelineWarningsFix:
         output_dir.mkdir()
 
         # Create prerequisite directories
-        (output_dir / "3_gnn_output").mkdir()
+        gnn_output = output_dir / "3_gnn_output"
+        gnn_output.mkdir()
+        model_output = gnn_output / "test_model"
+        model_output.mkdir()
+        (model_output / "test_model_parsed.json").write_text('{"ModelName": "test"}')
         (output_dir / "5_type_checker_output").mkdir()
-        (output_dir / "11_render_output").mkdir()
+        render_output = output_dir / "11_render_output"
+        render_output.mkdir()
+        (render_output / "test_render.py").write_text("print('rendered')\n")
 
         # Create real args object
         args = PipelineArgs(output_dir=output_dir)
@@ -218,6 +228,19 @@ class TestPipelineWarningsFix:
 
         # Should pass without warnings since all prerequisites exist
         assert result["passed"], "Prerequisite validation should pass"
+
+    def test_readiness_uses_registered_gnn_extensions(self, tmp_path: Any) -> None:
+        """Readiness should discover all parser-registered input extensions."""
+        target_dir = tmp_path / "input"
+        output_dir = tmp_path / "output"
+        target_dir.mkdir()
+        (target_dir / "model.json").write_text('{"model_name": "JsonModel"}')
+        args = PipelineArgs(output_dir=output_dir, target_dir=target_dir)
+
+        result = check_pipeline_readiness([("5_type_checker.py", "Type check")], args)
+
+        assert result["ready"] is True
+        assert not result["blocking_issues"]
 
     # Note: If checking for transitive dependencies is outside scope,
     # there may still be a warning about 3_gnn.py not being a direct prerequisite

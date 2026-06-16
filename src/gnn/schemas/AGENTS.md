@@ -14,14 +14,14 @@ schemas/
 ├── xsd.xsd         # XML Schema Definition for GNN XML format
 ├── proto.proto      # Protocol Buffers schema
 ├── asn1.asn1        # ASN.1 schema definition
-└── pkl.pkl          # Pickle schema reference
+└── pkl.pkl          # PKL DSL schema reference
 ```
 
 ## Purpose
 
 - **Validation anchors** — Used by `gnn/schema_validator.py` to validate parsed models.
 - **Format contracts** — Define the expected structure for each serialization format.
-- **Cross-format consistency** — Ensure semantic equivalence across JSON, YAML, XML, and binary representations.
+- **Cross-format consistency** — Ensure semantic equivalence across JSON, YAML, XML, PKL, and binary pickle representations.
 
 ## Usage
 

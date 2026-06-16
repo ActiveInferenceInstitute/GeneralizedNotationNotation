@@ -226,7 +226,7 @@ class ValidationStrategy:
             ".xml": "xml",
             ".yaml": "yaml",
             ".yml": "yaml",
-            ".pkl": "pickle",
+            ".pkl": "pkl",
             ".pickle": "pickle",
             ".gnn": "gnn",
         }

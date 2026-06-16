@@ -15,6 +15,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Sequence, Tuple, cast
 
 from gnn.discovery import is_model_source_path
+from gnn.parsers.common import get_extension_for_format, get_supported_gnn_extensions
 from utils import log_step_error, log_step_start, log_step_success
 
 
@@ -66,7 +67,7 @@ def process_gnn_multi_format(
 
     # Import the comprehensive GNN parsing system
     try:
-        from gnn.parsers import GNNFormat, GNNParsingSystem
+        from gnn.parsers import GNNParsingSystem
     except Exception as e:  # pragma: no cover - defensive
         log_step_error(logger, f"Failed to import GNN parsing system: {e}")
         return False
@@ -95,31 +96,7 @@ def process_gnn_multi_format(
         # Discover GNN files
         target_path = Path(target_dir)
         gnn_files: List[Path] = []
-        extensions: list[Any] = [
-            ".md",
-            ".markdown",
-            ".json",
-            ".xml",
-            ".yaml",
-            ".yml",
-            ".py",
-            ".jl",
-            ".hs",
-            ".lean",
-            ".v",
-            ".thy",
-            ".max",
-            ".proto",
-            ".xsd",
-            ".asn1",
-            ".pkl",
-            ".als",
-            ".z",
-            ".tla",
-            ".agda",
-            ".bnf",
-            ".ebnf",
-        ]
+        extensions = get_supported_gnn_extensions()
         if recursive:
             for ext in extensions:
                 gnn_files.extend(target_path.rglob(f"*{ext}"))
@@ -156,33 +133,6 @@ def process_gnn_multi_format(
                 "total_formats_generated": 0,
                 "formats_per_file": {},
             },
-        }
-
-        # Per-format extension mapping
-        extension_map: Dict[Any, str] = {
-            GNNFormat.MARKDOWN: ".md",
-            GNNFormat.JSON: ".json",
-            GNNFormat.XML: ".xml",
-            GNNFormat.PNML: ".pnml",
-            GNNFormat.YAML: ".yaml",
-            GNNFormat.SCALA: ".scala",
-            GNNFormat.PROTOBUF: ".proto",
-            GNNFormat.PKL: ".pkl",
-            GNNFormat.XSD: ".xsd",
-            GNNFormat.ASN1: ".asn1",
-            GNNFormat.LEAN: ".lean",
-            GNNFormat.COQ: ".v",
-            GNNFormat.PYTHON: ".py",
-            GNNFormat.BNF: ".bnf",
-            GNNFormat.EBNF: ".ebnf",
-            GNNFormat.ISABELLE: ".thy",
-            GNNFormat.MAXIMA: ".max",
-            GNNFormat.ALLOY: ".als",
-            GNNFormat.Z_NOTATION: ".z",
-            GNNFormat.TLA_PLUS: ".tla",
-            GNNFormat.AGDA: ".agda",
-            GNNFormat.HASKELL: ".hs",
-            GNNFormat.PICKLE: ".pkl",
         }
 
         for file_path in gnn_files:
@@ -242,7 +192,7 @@ def process_gnn_multi_format(
 
                 for format_enum in formats_to_emit:
                     try:
-                        ext = extension_map.get(format_enum, f".{format_enum.value}")
+                        ext = get_extension_for_format(format_enum)
                         out_file = (
                             file_output_dir
                             / f"{file_path.stem}_{format_enum.value}{ext}"

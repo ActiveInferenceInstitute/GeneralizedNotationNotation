@@ -664,7 +664,9 @@ def _log_pipeline_step_completion(
             )
         return
 
-    if status_for_logging == "PARTIAL_SUCCESS" or "WARNING" in status_for_logging:
+    if status_for_logging == "PARTIAL_SUCCESS" or (
+        isinstance(status_for_logging, str) and "WARNING" in status_for_logging
+    ):
         logger.warning(
             f"⚠️ Step {actual_step_number} completed with warnings in {step_duration:.2f}s"
         )

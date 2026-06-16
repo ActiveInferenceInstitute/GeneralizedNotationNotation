@@ -145,7 +145,7 @@ class GNNParser:
             ".xml": "xml",
             ".yaml": "yaml",
             ".yml": "yaml",
-            ".pkl": "binary",
+            ".pkl": "pkl",
             ".pickle": "binary",
         }
 
@@ -1028,7 +1028,7 @@ class GNNValidator:
             ".xml": "xml",
             ".yaml": "yaml",
             ".yml": "yaml",
-            ".pkl": "pickle",
+            ".pkl": "pkl",
             ".pickle": "pickle",
         }
         return cast("str", format_map.get(suffix, "unknown"))

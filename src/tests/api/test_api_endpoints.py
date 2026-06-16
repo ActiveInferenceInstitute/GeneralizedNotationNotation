@@ -1,5 +1,6 @@
 """Tests for the GNN API endpoints."""
 
+from pathlib import Path
 from typing import Any
 
 import pytest
@@ -99,6 +100,100 @@ def test_api_submit_run_success() -> Any:
             pipeline.hasher.compute_run_hash = orig_hasher
         if orig_execute:
             api_app._execute_pipeline = orig_execute
+
+
+@pytest.mark.skipif(not FASTAPI_AVAILABLE, reason="FastAPI not installed")
+def test_api_submit_run_rejects_output_outside_repo() -> None:
+    """The run API should validate output_dir as well as target_dir."""
+    from fastapi.testclient import TestClient
+
+    app = create_app()
+    client = TestClient(app)
+
+    response = client.post(
+        "/api/v1/run",
+        json={"target_dir": ".", "output_dir": "../outside-repo-output"},
+    )
+
+    assert response.status_code == 400
+    assert "Output directory" in response.json()["detail"]
+
+
+@pytest.mark.skipif(not FASTAPI_AVAILABLE, reason="FastAPI not installed")
+def test_api_submit_run_stores_normalized_output_dir(monkeypatch: Any) -> None:
+    """Queued run metadata should preserve the caller-selected output dir."""
+    from fastapi.testclient import TestClient
+
+    import api.app as api_app
+    import pipeline.hasher
+
+    app = create_app()
+    client = TestClient(app)
+    run_hash = "output_dir_contract_hash"
+    output_dir = "output/api_contract_test"
+
+    orig_hasher = getattr(pipeline.hasher, "compute_run_hash", None)
+    orig_execute = getattr(api_app, "_execute_pipeline", None)
+    api_app._runs.pop(run_hash, None)
+
+    async def _complete_pipeline_immediately(*args: Any, **kwargs: Any) -> None:
+        return None
+
+    monkeypatch.setattr(pipeline.hasher, "compute_run_hash", lambda *a, **k: run_hash)
+    monkeypatch.setattr(api_app, "_execute_pipeline", _complete_pipeline_immediately)
+
+    try:
+        response = client.post(
+            "/api/v1/run",
+            json={"target_dir": ".", "output_dir": output_dir},
+        )
+
+        assert response.status_code == 200
+        stored_output = api_app._runs[run_hash]["request"]["output_dir"]
+        assert Path(stored_output).resolve() == (
+            Path(__file__).resolve().parents[3] / output_dir
+        ).resolve()
+    finally:
+        api_app._runs.pop(run_hash, None)
+        if orig_hasher:
+            pipeline.hasher.compute_run_hash = orig_hasher
+        if orig_execute:
+            api_app._execute_pipeline = orig_execute
+
+
+@pytest.mark.asyncio
+async def test_job_processor_uses_requested_output_dir(monkeypatch: Any) -> None:
+    """Async job execution should pass the job's output_dir to src/main.py."""
+    from api import processor as job_mgr
+
+    captured_cmd: list[str] = []
+
+    class FakeProcess:
+        returncode = 0
+
+        async def communicate(self) -> tuple[bytes, bytes]:
+            return b"", b""
+
+    async def fake_create_subprocess_exec(*cmd: str, **kwargs: Any) -> FakeProcess:
+        captured_cmd.extend(cmd)
+        return FakeProcess()
+
+    monkeypatch.setattr(
+        job_mgr.asyncio,
+        "create_subprocess_exec",
+        fake_create_subprocess_exec,
+    )
+
+    requested_output = "output/job_contract_test"
+    job_id = job_mgr.create_job(target_dir=".", output_dir=requested_output, steps=[3])
+    try:
+        await job_mgr.execute_job_async(job_id)
+        output_arg = captured_cmd[captured_cmd.index("--output-dir") + 1]
+        assert Path(output_arg).resolve() == (
+            Path(__file__).resolve().parents[3] / requested_output
+        ).resolve()
+    finally:
+        job_mgr._JOBS.pop(job_id, None)
 
 
 def test_api_availability_flag() -> Any:

@@ -22,9 +22,13 @@ When a document says “100% round-trip,” it refers to the **formats exercised
 | API / entry | Policy | Where |
 |-------------|--------|--------|
 | **`discover_gnn_files()`** | Narrow globs: `*.md`, `*.gnn`, `*.txt`; filters common non-model filenames | `processor.py` |
-| **`process_gnn_multi_format()`** (Step **3**) | Broad extension list so serialized formats (JSON, YAML, Lean, etc.) under the target tree are discovered | `multi_format_processor.py` (list is inline next to discovery loop) |
+| **`process_gnn_multi_format()`** (Step **3**) | Broad registered extension list so serialized formats (JSON, YAML, Lean, etc.) under the target tree are discovered | `parsers/common.py` (`FORMAT_EXTENSION_MAP`) consumed by `multi_format_processor.py` |
 
 Do not assume the two lists stay identical: lightweight discovery favors typical author workflows; the pipeline step favors full multi-format round-tripping from a folder of mixed artifacts.
+
+### `.pkl` and pickle policy
+
+`.pkl` is the textual Apple PKL DSL extension. Binary pickle payloads should use `.pickle`; legacy binary pickle bytes found in `.pkl` are detected by content and routed to the pickle parser with a warning.
 
 ## Components
 

@@ -8,7 +8,13 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
 
 ## [Unreleased]
 
-No unreleased changes yet.
+### Changed
+- **GNN parser extension policy**: `.pkl` is reserved for textual PKL DSL by default; clearly binary pickle payloads in `.pkl` are routed to the pickle parser with a warning, and `.pickle` is the canonical binary pickle extension.
+- **API output directories**: API run and job submissions now validate `target_dir` and `output_dir` as repository-local directories and preserve caller-selected output directories during async execution.
+
+### Fixed
+- **Pipeline prerequisite checks**: Missing prerequisite output artifacts now fail the prerequisite check instead of only emitting warnings, and readiness checks use the registered GNN extension list.
+- **Pipeline completion logging**: Non-warning statuses no longer take the warning branch because of a truthy string condition.
 
 ---
 

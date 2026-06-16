@@ -15,6 +15,7 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
+from pathlib import Path
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -116,6 +117,103 @@ class GNNFormat(Enum):
     AGDA = "agda"
     HASKELL = "haskell"
     PICKLE = "pickle"
+
+
+FORMAT_EXTENSION_MAP: Dict[str, GNNFormat] = {
+    ".md": GNNFormat.MARKDOWN,
+    ".markdown": GNNFormat.MARKDOWN,
+    ".gnn": GNNFormat.MARKDOWN,
+    ".scala": GNNFormat.SCALA,
+    ".lean": GNNFormat.LEAN,
+    ".v": GNNFormat.COQ,
+    ".py": GNNFormat.PYTHON,
+    ".bnf": GNNFormat.BNF,
+    ".ebnf": GNNFormat.EBNF,
+    ".thy": GNNFormat.ISABELLE,
+    ".mac": GNNFormat.MAXIMA,
+    ".max": GNNFormat.MAXIMA,
+    ".xml": GNNFormat.XML,
+    ".pnml": GNNFormat.PNML,
+    ".json": GNNFormat.JSON,
+    ".proto": GNNFormat.PROTOBUF,
+    ".yaml": GNNFormat.YAML,
+    ".yml": GNNFormat.YAML,
+    ".xsd": GNNFormat.XSD,
+    ".asn1": GNNFormat.ASN1,
+    ".pkl": GNNFormat.PKL,
+    ".pickle": GNNFormat.PICKLE,
+    ".als": GNNFormat.ALLOY,
+    ".z": GNNFormat.Z_NOTATION,
+    ".zed": GNNFormat.Z_NOTATION,
+    ".tla": GNNFormat.TLA_PLUS,
+    ".agda": GNNFormat.AGDA,
+    ".hs": GNNFormat.HASKELL,
+}
+
+FORMAT_OUTPUT_EXTENSION_MAP: Dict[GNNFormat, str] = {
+    GNNFormat.MARKDOWN: ".md",
+    GNNFormat.SCALA: ".scala",
+    GNNFormat.LEAN: ".lean",
+    GNNFormat.COQ: ".v",
+    GNNFormat.PYTHON: ".py",
+    GNNFormat.BNF: ".bnf",
+    GNNFormat.EBNF: ".ebnf",
+    GNNFormat.ISABELLE: ".thy",
+    GNNFormat.MAXIMA: ".max",
+    GNNFormat.XML: ".xml",
+    GNNFormat.PNML: ".pnml",
+    GNNFormat.JSON: ".json",
+    GNNFormat.PROTOBUF: ".proto",
+    GNNFormat.YAML: ".yaml",
+    GNNFormat.XSD: ".xsd",
+    GNNFormat.ASN1: ".asn1",
+    GNNFormat.PKL: ".pkl",
+    GNNFormat.PICKLE: ".pickle",
+    GNNFormat.ALLOY: ".als",
+    GNNFormat.Z_NOTATION: ".z",
+    GNNFormat.TLA_PLUS: ".tla",
+    GNNFormat.AGDA: ".agda",
+    GNNFormat.HASKELL: ".hs",
+}
+
+
+def is_binary_pickle_payload(file_path: Union[str, Path]) -> bool:
+    """Return True when a path clearly contains binary pickle bytes."""
+    path = Path(file_path)
+    try:
+        sample = path.read_bytes()[:16]
+    except OSError:
+        return False
+    return sample.startswith(b"\x80") or b"\x00" in sample
+
+
+def detect_gnn_format_from_path(file_path: Union[str, Path]) -> GNNFormat:
+    """Detect a GNN format from path extension and deterministic pickle routing."""
+    path = Path(file_path)
+    extension = path.suffix.lower()
+    if extension == ".pkl" and is_binary_pickle_payload(path):
+        logger.warning(
+            "Binary pickle payload detected in .pkl file %s; prefer .pickle for binary pickle inputs.",
+            path,
+        )
+        return GNNFormat.PICKLE
+    try:
+        return FORMAT_EXTENSION_MAP[extension]
+    except KeyError as exc:
+        raise ValueError(f"Unknown file extension: {extension}") from exc
+
+
+def get_supported_gnn_extensions(include_binary_pickle: bool = True) -> List[str]:
+    """Return registered input extensions for GNN model discovery."""
+    extensions = sorted(FORMAT_EXTENSION_MAP)
+    if not include_binary_pickle:
+        extensions = [ext for ext in extensions if ext != ".pickle"]
+    return extensions
+
+
+def get_extension_for_format(format_type: GNNFormat) -> str:
+    """Return the canonical output extension for a GNN format."""
+    return FORMAT_OUTPUT_EXTENSION_MAP.get(format_type, f".{format_type.value}")
 
 
 class VariableType(Enum):

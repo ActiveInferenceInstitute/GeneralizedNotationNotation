@@ -6,6 +6,7 @@ _detect_format, _detect_format_from_content, get_supported_formats,
 get_available_parsers, get_available_serializers, parse_file error paths.
 """
 
+import pickle
 import sys
 import tempfile
 from pathlib import Path
@@ -137,9 +138,68 @@ class TestGNNParsingSystemDetectFormat:
     def test_scala_detected(self) -> Any:
         assert self.ps._detect_format(self._path_with_ext(".scala")) == GNNFormat.SCALA
 
+    def test_text_pkl_detected_as_pkl(self, tmp_path: Path) -> None:
+        pkl_file = tmp_path / "model.pkl"
+        pkl_file.write_text(
+            'class GNNModel {\n  name: String = "TextPKL"\n}\n'
+            '/* MODEL_DATA: {"model_name":"TextPKL","variables":[],"connections":[],"parameters":[]} */\n'
+        )
+
+        assert self.ps._detect_format(pkl_file) == GNNFormat.PKL
+
+    def test_binary_pkl_detected_as_pickle(self, tmp_path: Path) -> None:
+        pkl_file = tmp_path / "model.pkl"
+        with pkl_file.open("wb") as f:
+            pickle.dump(
+                {
+                    "model_name": "BinaryPKL",
+                    "variables": [],
+                    "connections": [],
+                    "parameters": [],
+                },
+                f,
+            )
+
+        assert self.ps._detect_format(pkl_file) == GNNFormat.PICKLE
+
+    def test_pickle_extension_detected_as_pickle(self) -> None:
+        assert self.ps._detect_format(self._path_with_ext(".pickle")) == GNNFormat.PICKLE
+
     def test_unknown_extension_raises(self) -> Any:
         with pytest.raises(ValueError):
             self.ps._detect_format(self._path_with_ext(".unknownxyz"))
+
+    def test_parse_text_pkl_uses_pkl_parser(self, tmp_path: Path) -> None:
+        pkl_file = tmp_path / "model.pkl"
+        pkl_file.write_text(
+            'class GNNModel {\n  name: String = "TextPKL"\n}\n'
+            '/* MODEL_DATA: {"model_name":"TextPKL","variables":[],"connections":[],"parameters":[]} */\n'
+        )
+
+        result = self.ps.parse_file(pkl_file)
+
+        assert result.success is True
+        assert result.model.model_name == "TextPKL"
+        assert result.model.source_format == GNNFormat.PKL
+
+    def test_parse_binary_pkl_uses_pickle_parser(self, tmp_path: Path) -> None:
+        pkl_file = tmp_path / "model.pkl"
+        with pkl_file.open("wb") as f:
+            pickle.dump(
+                {
+                    "model_name": "BinaryPKL",
+                    "variables": [],
+                    "connections": [],
+                    "parameters": [],
+                },
+                f,
+            )
+
+        result = self.ps.parse_file(pkl_file)
+
+        assert result.success is True
+        assert result.model.model_name == "BinaryPKL"
+        assert result.model.source_format == GNNFormat.PICKLE
 
 
 class TestGNNParsingSystemDetectFormatFromContent:
