@@ -28,7 +28,7 @@ class TestPipelineStepIntegration:
     ) -> None:
         """Test data flows correctly from GNN to render step."""
         if not sample_gnn_files:
-            pytest.skip("No sample GNN files available")
+            raise AssertionError("No sample GNN files available")
 
         from gnn import parse_gnn_file
         from render import generate_pymdp_code

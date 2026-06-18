@@ -46,7 +46,7 @@ def test_network_stats_gnn_edge_orientation_and_ontology_legend(tmp_path: Path) 
     }
     paths = generate_network_visualizations(parsed, out, "mini")
     if not paths:
-        pytest.skip("networkx/matplotlib not available for graph generation")
+        raise AssertionError("networkx/matplotlib not available for graph generation")
 
     stats_path = out / "mini_network_stats.json"
     assert stats_path.is_file()

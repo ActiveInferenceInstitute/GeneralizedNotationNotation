@@ -368,64 +368,75 @@ class TestDiskIOPerformance:
 
 
 class TestNetworkOperationTiming:
-    """Test suite for network operation timing using real network requests."""
+    """Test network timing against deterministic local HTTP endpoints."""
 
     @pytest.mark.integration
     def test_api_request_timing(self, isolated_environment: Any) -> Any:
-        """Test API request timing and performance with real requests."""
-        pytest.importorskip("requests")
-        import requests
+        """Test API request timing and performance without public network access."""
+        import functools
+        import threading
+        from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 
         from utils.network_utils import timed_request
 
-        # Use a reliable public API
-        test_url = "https://www.google.com"
+        (isolated_environment / "index.html").write_text("ok", encoding="utf-8")
+        handler = functools.partial(
+            SimpleHTTPRequestHandler, directory=str(isolated_environment)
+        )
+        server = ThreadingHTTPServer(("127.0.0.1", 0), handler)
+        thread = threading.Thread(target=server.serve_forever, daemon=True)
+        thread.start()
 
         try:
             with performance_tracker():
-                result = timed_request(test_url, timeout=5)
-
-            if not result.get("success"):
-                pytest.skip(f"Network request failed (offline?): {result.get('error')}")
+                result = timed_request(
+                    f"http://127.0.0.1:{server.server_port}/index.html",
+                    timeout=5,
+                )
 
             assert result["status_code"] == 200
             assert result["success"] is True
             assert result["response_time"] > 0
-            # Remove arbitrary timing assertion as real network calls vary
-
-        except (requests.RequestException, ConnectionError):
-            pytest.skip("Network unavailable, skipping real network test")
+            assert result["content_length"] == 2
+        finally:
+            server.shutdown()
+            server.server_close()
 
     @pytest.mark.integration
     def test_batch_request_performance(self, isolated_environment: Any) -> Any:
-        """Test batch request performance with real requests."""
-        pytest.importorskip("requests")
-        import requests
+        """Test batch request performance against local deterministic endpoints."""
+        import functools
+        import threading
+        from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 
         from utils.network_utils import batch_request
 
-        # Use reliable public APIs
-        urls: list[Any] = [
-            "https://www.google.com",
-            "https://www.github.com",
-            "https://www.python.org",
-        ]
+        for index in range(3):
+            (isolated_environment / f"page-{index}.txt").write_text(
+                f"page {index}", encoding="utf-8"
+            )
+        handler = functools.partial(
+            SimpleHTTPRequestHandler, directory=str(isolated_environment)
+        )
+        server = ThreadingHTTPServer(("127.0.0.1", 0), handler)
+        thread = threading.Thread(target=server.serve_forever, daemon=True)
+        thread.start()
 
         try:
+            urls: list[Any] = [
+                f"http://127.0.0.1:{server.server_port}/page-{index}.txt"
+                for index in range(3)
+            ]
             with performance_tracker():
                 results = batch_request(urls, timeout=5)
 
-            # Check if we have connectivity
-            if not any(r.get("success") for r in results):
-                pytest.skip("No network connectivity, skipping batch test")
-
             assert isinstance(results, list)
             assert len(results) == 3
-            # We don't assert all succeed as some might fail due to network issues
-            # but the mechanism should work
-
-        except (requests.RequestException, ConnectionError):
-            pytest.skip("Network unavailable, skipping real network test")
+            assert all(r.get("success") for r in results)
+            assert [r.get("status_code") for r in results] == [200, 200, 200]
+        finally:
+            server.shutdown()
+            server.server_close()
 
 
 class TestResourceScaling:

@@ -203,7 +203,7 @@ class TestRenderDisCoPyTranslator:
 
             return translator
         except Exception:
-            pytest.skip("render.discopy.translator not importable")
+            raise AssertionError("render.discopy.translator not importable")
 
     def test_module_importable(self) -> Any:
         self._import_translator()

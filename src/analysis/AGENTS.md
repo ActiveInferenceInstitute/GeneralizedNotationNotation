@@ -58,9 +58,9 @@
 - `benchmark_iterations` (int, optional): Number of benchmark iterations (default: 5)
 - `generate_animations` (bool, optional): Generate current-schema GridWorld GIF
   artifacts (default: True; CLI: `--no-animations` disables this). This is
-  the canonical programmatic key. Legacy callers may pass `no_animations`, but
-  it is normalized as the inverse and conflicts with `generate_animations` are
-  rejected.
+  the canonical programmatic key. Compatibility callers may pass
+  `no_animations`, but it is normalized as the inverse and conflicts with
+  `generate_animations` are rejected.
 - `**kwargs`: Additional analysis options
 
 **Returns**: `True` if analysis artifacts were produced, `2` when there is no

@@ -186,13 +186,16 @@ graph TD
 - **MCP registration**: `discover_modules` walks `src/*/mcp.py` on startup; see
   `src/mcp/processor.py` for the worker pool configuration.
 - **Tests command of record**: `uv run --extra dev python -m pytest src/tests/ -q
-  --tb=no --ignore=src/tests/llm/test_llm_ollama.py
+  --tb=no -rsx --ignore=src/tests/llm/test_llm_ollama.py
   --ignore=src/tests/llm/test_llm_ollama_integration.py`. Re-include the two Ollama files
-  when `ollama` is installed and reachable.
-- **Current test inventory (2026-06-13)**: 186 `test_*.py` files under `src/tests/`;
-  the command-of-record collect pass with Ollama integration tests ignored collected 2,428 tests.
-  Refresh full-suite evidence before publishing a new pass/fail total; the previous recorded
-  run with the same Ollama integration excludes was 2,393 passed, 17 skipped, 1 xfailed.
+  when `ollama` is installed and reachable. Latest local evidence (2026-06-18):
+  2,495 passed, 0 skipped, 0 xfailed.
+- **Default dev suite**: FastAPI, websocket bridge, and LSP tests run under the
+  `dev` extra; browser, public-network, live GUI, audio-DSP, and Ollama
+  integrations remain explicit opt-in surfaces rather than hidden default-suite skips.
+- **Public POMDP output**: root `output/` is published from the maintained
+  `input/gnn_files/pomdp_gridworld` fixture and validated with
+  `uv run --extra dev python scripts/check_pomdp_gridworld_outputs.py output`.
 - All 25 orchestrator scripts comply with the <150 line thin orchestrator pattern.
 - Maintained source/test documentation coverage is enforced by `doc/development/docs_audit.py --strict`.
 

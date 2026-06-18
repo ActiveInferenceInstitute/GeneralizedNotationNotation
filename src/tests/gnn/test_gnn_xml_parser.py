@@ -51,7 +51,7 @@ class TestXMLGNNParser:
 
             return XMLGNNParser()
         except ImportError:
-            pytest.skip("xml_parser not importable")
+            raise AssertionError("xml_parser not importable")
 
     def test_parse_string_returns_parse_result(self) -> Any:
         parser = self._get_parser()
@@ -80,7 +80,7 @@ class TestXMLGNNParser:
         parser = self._get_parser()
         result = parser.parse_string(MINIMAL_XML)
         if result is None:
-            pytest.skip("parser returned None for minimal XML")
+            raise AssertionError("parser returned None for minimal XML")
         # ParseResult has a .model attribute
         assert hasattr(result, "model") or hasattr(result, "model_name")
 
@@ -92,7 +92,7 @@ class TestPNMLParser:
 
             return PNMLParser()
         except ImportError:
-            pytest.skip("PNMLParser not importable")
+            raise AssertionError("PNMLParser not importable")
 
     def test_parse_string_returns_result(self) -> Any:
         parser = self._get_parser()

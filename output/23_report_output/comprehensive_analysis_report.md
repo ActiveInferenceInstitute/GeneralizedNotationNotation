@@ -1,14 +1,14 @@
 # 🎯 GNN Pipeline Comprehensive Analysis Report
 
-**Generated:** 2026-06-18T07:59:02.122153  
+**Generated:** 2026-06-18T09:10:58.981410  
 **Pipeline Output Directory:** output  
 **Health Score:** 95.0/100
 
 ## 📊 Pipeline Overview
 
 - **Total Steps Analyzed:** 24
-- **Total Files Processed:** 350
-- **Total Size:** 37.03 MB
+- **Total Files Processed:** 344
+- **Total Size:** 36.97 MB
 - **Success Rate:** 100.0%
 
 ## ⚡ Performance Metrics
@@ -21,7 +21,7 @@
 
 - **Files:** 7
 - **Size:** 0.01 MB
-- **Last Modified:** 2026-06-18T07:51:00.849752
+- **Last Modified:** 2026-06-18T09:02:45.330652
 - **Status:** success
 
 - **File Types:** .json: 4, .md: 3
@@ -32,7 +32,7 @@
 
 - **Files:** 2
 - **Size:** 0.01 MB
-- **Last Modified:** 2026-06-18T07:51:05.202379
+- **Last Modified:** 2026-06-18T09:02:49.387524
 - **Status:** success
 
 - **File Types:** .json: 2
@@ -41,20 +41,20 @@
 ### ✅ 2 Tests Output
 
 - **Files:** 6
-- **Size:** 4.95 MB
-- **Last Modified:** 2026-06-18T07:52:50.528754
+- **Size:** 4.97 MB
+- **Last Modified:** 2026-06-18T09:04:36.034892
 - **Status:** success
 
 - **File Types:** .log: 1, .txt: 1, .md: 1, .csv: 1, .png: 1, .json: 1
 - **Key Files:**
-  - pytest_reliable_output.txt (0.5 MB)
+  - pytest_reliable_output.txt (0.51 MB)
 - **Dependencies:** Complete
 
 ### ✅ 3 Gnn Output
 
 - **Files:** 26
 - **Size:** 0.28 MB
-- **Last Modified:** 2026-06-18T07:52:50.684963
+- **Last Modified:** 2026-06-18T09:04:36.174379
 - **Status:** success
 
 - **File Types:** .json: 5, .als: 1, .xml: 1, .pickle: 1, .xsd: 1, .max: 1, .tla: 1, .proto: 1, .lean: 1, .bnf: 1, .scala: 1, .thy: 1, .py: 1, .z: 1, .yaml: 1, .pkl: 1, .agda: 1, .hs: 1, .md: 1, .asn1: 1, .v: 1, .ebnf: 1
@@ -66,7 +66,7 @@
 
 - **Files:** 1
 - **Size:** 0.0 MB
-- **Last Modified:** 2026-06-18T07:52:50.770993
+- **Last Modified:** 2026-06-18T09:04:36.270633
 - **Status:** success
 
 - **File Types:** .json: 1
@@ -78,7 +78,7 @@
 
 - **Files:** 9
 - **Size:** 0.82 MB
-- **Last Modified:** 2026-06-18T07:52:51.555668
+- **Last Modified:** 2026-06-18T09:04:37.018953
 - **Status:** success
 
 - **File Types:** .json: 1, .md: 1, .png: 7
@@ -88,7 +88,7 @@
 
 - **Files:** 2
 - **Size:** 0.0 MB
-- **Last Modified:** 2026-06-18T07:52:51.683968
+- **Last Modified:** 2026-06-18T09:04:37.128694
 - **Status:** success
 
 - **File Types:** .json: 2
@@ -100,7 +100,7 @@
 
 - **Files:** 7
 - **Size:** 0.08 MB
-- **Last Modified:** 2026-06-18T07:52:51.774801
+- **Last Modified:** 2026-06-18T09:04:37.226940
 - **Status:** success
 
 - **File Types:** .json: 3, .graphml: 1, .xml: 1, .gexf: 1, .pkl: 1
@@ -114,7 +114,7 @@
 
 - **Files:** 23
 - **Size:** 7.06 MB
-- **Last Modified:** 2026-06-18T07:52:55.408995
+- **Last Modified:** 2026-06-18T09:04:41.670364
 - **Status:** success
 
 - **File Types:** .json: 4, .png: 12, .txt: 1, .csv: 4, .html: 2
@@ -128,7 +128,7 @@
 
 - **Files:** 20
 - **Size:** 2.34 MB
-- **Last Modified:** 2026-06-18T07:53:04.655350
+- **Last Modified:** 2026-06-18T09:04:51.066415
 - **Status:** success
 
 - **File Types:** .png: 10, .html: 1, .json: 1, .d2: 4, .svg: 4
@@ -142,7 +142,7 @@
 
 - **Files:** 4
 - **Size:** 0.01 MB
-- **Last Modified:** 2026-06-18T07:53:04.915507
+- **Last Modified:** 2026-06-18T09:04:51.334245
 - **Status:** success
 
 - **File Types:** .json: 4
@@ -152,7 +152,7 @@
 
 - **Files:** 28
 - **Size:** 0.25 MB
-- **Last Modified:** 2026-06-18T07:53:41.853703
+- **Last Modified:** 2026-06-18T09:05:25.609694
 - **Status:** success
 
 - **File Types:** .md: 10, .json: 9, .jl: 2, .py: 6, .stan: 1
@@ -166,7 +166,7 @@
 
 - **Files:** 23
 - **Size:** 0.18 MB
-- **Last Modified:** 2026-06-18T07:53:41.912395
+- **Last Modified:** 2026-06-18T09:05:25.658364
 - **Status:** success
 
 - **File Types:** .log: 7, .json: 15, .md: 1
@@ -176,7 +176,7 @@
 
 - **Files:** 56
 - **Size:** 0.23 MB
-- **Last Modified:** 2026-06-18T07:58:40.526800
+- **Last Modified:** 2026-06-18T09:10:33.580034
 - **Status:** success
 
 - **File Types:** .json: 28, .md: 28
@@ -190,7 +190,7 @@
 
 - **Files:** 1
 - **Size:** 0.0 MB
-- **Last Modified:** 2026-06-18T07:58:41.441188
+- **Last Modified:** 2026-06-18T09:10:34.634672
 - **Status:** success
 
 - **File Types:** .json: 1
@@ -200,7 +200,7 @@
 
 - **Files:** 18
 - **Size:** 8.76 MB
-- **Last Modified:** 2026-06-18T07:58:41.789352
+- **Last Modified:** 2026-06-18T09:10:35.011707
 - **Status:** success
 
 - **File Types:** .wav: 15, .json: 2, .md: 1
@@ -212,14 +212,14 @@
 
 ### ✅ 16 Analysis Output
 
-- **Files:** 80
-- **Size:** 9.49 MB
-- **Last Modified:** 2026-06-18T07:58:58.660763
+- **Files:** 74
+- **Size:** 9.4 MB
+- **Last Modified:** 2026-06-18T09:10:51.628864
 - **Status:** success
 
-- **File Types:** .json: 5, .md: 3, .png: 65, .gif: 7
+- **File Types:** .json: 5, .md: 3, .png: 59, .gif: 7
 - **Key Files:**
-  - analysis_results.json (0.03 MB)
+  - analysis_results.json (0.06 MB)
   - analysis_summary.md (0.0 MB)
 - **Dependencies:** Complete
 
@@ -227,7 +227,7 @@
 
 - **Files:** 5
 - **Size:** 0.01 MB
-- **Last Modified:** 2026-06-18T07:58:59.250547
+- **Last Modified:** 2026-06-18T09:10:52.311647
 - **Status:** success
 
 - **File Types:** .json: 3, .md: 2
@@ -237,7 +237,7 @@
 
 - **Files:** 2
 - **Size:** 0.0 MB
-- **Last Modified:** 2026-06-18T07:58:59.366798
+- **Last Modified:** 2026-06-18T09:10:52.445431
 - **Status:** success
 
 - **File Types:** .json: 1, .md: 1
@@ -247,7 +247,7 @@
 
 - **Files:** 2
 - **Size:** 0.0 MB
-- **Last Modified:** 2026-06-18T07:58:59.452121
+- **Last Modified:** 2026-06-18T09:10:52.599744
 - **Status:** success
 
 - **File Types:** .md: 1, .json: 1
@@ -256,8 +256,8 @@
 ### ✅ 20 Website Output
 
 - **Files:** 19
-- **Size:** 2.42 MB
-- **Last Modified:** 2026-06-18T07:58:59.565071
+- **Size:** 2.43 MB
+- **Last Modified:** 2026-06-18T09:10:52.858324
 - **Status:** success
 
 - **File Types:** .html: 8, .json: 1, .png: 10
@@ -271,7 +271,7 @@
 
 - **Files:** 3
 - **Size:** 0.06 MB
-- **Last Modified:** 2026-06-18T07:59:01.604012
+- **Last Modified:** 2026-06-18T09:10:58.015746
 - **Status:** success
 
 - **File Types:** .json: 3
@@ -284,7 +284,7 @@
 
 - **Files:** 6
 - **Size:** 0.07 MB
-- **Last Modified:** 2026-06-18T07:59:02.014887
+- **Last Modified:** 2026-06-18T09:10:58.879137
 - **Status:** success
 
 - **File Types:** .json: 3, .md: 2, .html: 1
@@ -307,12 +307,12 @@
 
 | File Type | Count | Total Size (MB) |
 |-----------|-------|-----------------|
-| .json | 100 | 0.75 |
+| .json | 100 | 0.81 |
 | .md | 55 | 0.11 |
-| .log | 8 | 4.38 |
-| .txt | 2 | 0.5 |
+| .log | 8 | 4.39 |
+| .txt | 2 | 0.51 |
 | .csv | 5 | 0.0 |
-| .png | 105 | 16.22 |
+| .png | 99 | 16.07 |
 | .als | 1 | 0.01 |
 | .xml | 2 | 0.02 |
 | .pickle | 1 | 0.01 |
@@ -335,7 +335,7 @@
 | .ebnf | 1 | 0.01 |
 | .graphml | 1 | 0.0 |
 | .gexf | 1 | 0.0 |
-| .html | 12 | 4.95 |
+| .html | 12 | 4.96 |
 | .d2 | 4 | 0.0 |
 | .svg | 4 | 0.11 |
 | .jl | 2 | 0.05 |
@@ -389,7 +389,7 @@
 - [mcp.html](../20_website_output/mcp.html) (0.01 MB)
 - [pipeline.html](../20_website_output/pipeline.html) (0.02 MB)
 - [index.html](../20_website_output/index.html) (0.02 MB)
-- [analysis.html](../20_website_output/analysis.html) (0.04 MB)
+- [analysis.html](../20_website_output/analysis.html) (0.05 MB)
 - [gnn_files.html](../20_website_output/gnn_files.html) (0.01 MB)
 - [visualization.html](../20_website_output/visualization.html) (0.02 MB)
 - [reports.html](../20_website_output/reports.html) (0.09 MB)
@@ -398,8 +398,8 @@
 
 ## 📈 Pipeline Execution Summary
 
-- **Start Time:** 2026-06-18T07:51:00.774345
-- **End Time:** 2026-06-18T07:59:02.049751
+- **Start Time:** 2026-06-18T09:02:45.269386
+- **End Time:** 2026-06-18T09:10:58.906781
 - **Overall Status:** SUCCESS
 - **Total Steps:** 23
 

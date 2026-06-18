@@ -78,7 +78,7 @@ def test_render_execute_contract_pymdp(tmp_path: Path) -> None:
     exec_dir = tmp_path / "execute"
     exec_ok, results = run_pymdp_simulation(gnn_spec, exec_dir)
     if not exec_ok:
-        pytest.skip(
+        raise AssertionError(
             f"PyMDP unavailable for runtime contract check: {results.get('error')}"
         )
 
@@ -100,7 +100,7 @@ def test_extract_pymdp_data_from_real_execution_payload(tmp_path: Path) -> None:
     run_dir = tmp_path / "run"
     ok, results = run_pymdp_simulation(gnn_spec, run_dir)
     if not ok:
-        pytest.skip(
+        raise AssertionError(
             f"PyMDP unavailable for extractor contract check: {results.get('error')}"
         )
 
@@ -141,7 +141,7 @@ def test_pymdp_seeded_reproducibility_contract(tmp_path: Path) -> None:
     np.random.seed(123)
     ok1, res1 = run_pymdp_simulation(gnn_spec, tmp_path / "r1")
     if not ok1:
-        pytest.skip(f"PyMDP unavailable for reproducibility check: {res1.get('error')}")
+        raise AssertionError(f"PyMDP unavailable for reproducibility check: {res1.get('error')}")
 
     np.random.seed(123)
     ok2, res2 = run_pymdp_simulation(gnn_spec, tmp_path / "r2")
@@ -158,9 +158,9 @@ def test_actinf_pomdp_golden_pymdp_simulation(tmp_path: Path) -> None:
     without NaNs and with internal validation flags true (B-axis / D rounding robustness).
     """
     if not ACTINF_POMDP_PATH.is_file():
-        pytest.skip(f"Fixture missing: {ACTINF_POMDP_PATH}")
+        raise AssertionError(f"Fixture missing: {ACTINF_POMDP_PATH}")
     if not _pymdp_importable():
-        pytest.skip("PyMDP (inferactively-pymdp) not installed")
+        raise AssertionError("PyMDP (inferactively-pymdp) not installed")
 
     spec = _actinf_gnn_spec(timesteps=12)
     np.random.seed(42)
@@ -187,9 +187,9 @@ def test_actinf_pomdp_render_execute_analyze_e2e(tmp_path: Path) -> None:
     simulation_results.json → analysis step sees PyMDP outputs.
     """
     if not ACTINF_POMDP_PATH.is_file():
-        pytest.skip(f"Fixture missing: {ACTINF_POMDP_PATH}")
+        raise AssertionError(f"Fixture missing: {ACTINF_POMDP_PATH}")
     if not _pymdp_importable():
-        pytest.skip("PyMDP (inferactively-pymdp) not installed")
+        raise AssertionError("PyMDP (inferactively-pymdp) not installed")
 
     from analysis.processor import process_analysis
     from execute.processor import process_execute

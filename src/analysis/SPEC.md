@@ -21,7 +21,7 @@ Post-simulation analysis and metrics for GNN model execution.
 ## Contracts
 - `generate_animations` is the canonical Step 16 flag. The CLI enables
   animations by default and `--no-animations` sets `generate_animations=False`.
-- Legacy `no_animations` is accepted only as an inverse compatibility key when
+- Compatibility `no_animations` is accepted only as an inverse key when
   `generate_animations` is absent. Supplying conflicting values is a hard
   argument error.
 - Empty or missing input directories return exit code `2` so the pipeline can

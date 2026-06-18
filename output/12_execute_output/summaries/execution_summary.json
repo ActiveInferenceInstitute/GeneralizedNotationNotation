@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-06-18T07:53:05.638724",
+  "timestamp": "2026-06-18T09:04:52.080655",
   "target_directory": "input/gnn_files/pomdp_gridworld",
   "output_directory": "output/12_execute_output",
   "total_scripts_found": 8,
@@ -16,13 +16,13 @@
       "success": true,
       "skipped": false,
       "return_code": 0,
-      "execution_time": 1.079646,
-      "timestamp": "2026-06-18T07:53:06.057812",
+      "execution_time": 1.077094,
+      "timestamp": "2026-06-18T09:04:52.501384",
       "execution_benchmark_repeats": 1,
-      "execution_time_mean": 1.079646,
+      "execution_time_mean": 1.077094,
       "execution_time_std": 0.0,
       "execution_time_samples": [
-        1.079646
+        1.077094
       ],
       "structured_result_file": "output/12_execute_output/pomdp_gridworld_3x3/numpyro/execution_logs/POMDP GridWorld 3x3_numpyro.py_results.json",
       "output_file": "output/12_execute_output/pomdp_gridworld_3x3/numpyro/execution_logs/POMDP GridWorld 3x3_numpyro.py_execution.log",
@@ -53,13 +53,13 @@
       "success": true,
       "skipped": false,
       "return_code": 0,
-      "execution_time": 2.853709,
-      "timestamp": "2026-06-18T07:53:07.163687",
+      "execution_time": 2.698324,
+      "timestamp": "2026-06-18T09:04:53.612721",
       "execution_benchmark_repeats": 1,
-      "execution_time_mean": 2.853709,
+      "execution_time_mean": 2.698324,
       "execution_time_std": 0.0,
       "execution_time_samples": [
-        2.853709
+        2.698324
       ],
       "structured_result_file": "output/12_execute_output/pomdp_gridworld_3x3/pymdp/execution_logs/POMDP GridWorld 3x3_pymdp.py_results.json",
       "output_file": "output/12_execute_output/pomdp_gridworld_3x3/pymdp/execution_logs/POMDP GridWorld 3x3_pymdp.py_execution.log",
@@ -93,7 +93,7 @@
       "error": "Dependency not installed: torch",
       "error_type": "DependencyNotInstalled",
       "execution_time": 0,
-      "timestamp": "2026-06-18T07:53:10.043310",
+      "timestamp": "2026-06-18T09:04:56.341825",
       "execution_metadata": {},
       "stdout_length": 0,
       "stderr_length": 0
@@ -107,13 +107,13 @@
       "success": true,
       "skipped": false,
       "return_code": 0,
-      "execution_time": 1.040676,
-      "timestamp": "2026-06-18T07:53:10.315339",
+      "execution_time": 0.993259,
+      "timestamp": "2026-06-18T09:04:56.622360",
       "execution_benchmark_repeats": 1,
-      "execution_time_mean": 1.040676,
+      "execution_time_mean": 0.993259,
       "execution_time_std": 0.0,
       "execution_time_samples": [
-        1.040676
+        0.993259
       ],
       "structured_result_file": "output/12_execute_output/pomdp_gridworld_3x3/jax/execution_logs/POMDP GridWorld 3x3_jax.py_results.json",
       "output_file": "output/12_execute_output/pomdp_gridworld_3x3/jax/execution_logs/POMDP GridWorld 3x3_jax.py_execution.log",
@@ -144,13 +144,13 @@
       "success": true,
       "skipped": false,
       "return_code": 0,
-      "execution_time": 0.311177,
-      "timestamp": "2026-06-18T07:53:11.690771",
+      "execution_time": 0.298156,
+      "timestamp": "2026-06-18T09:04:57.923511",
       "execution_benchmark_repeats": 1,
-      "execution_time_mean": 0.311177,
+      "execution_time_mean": 0.298156,
       "execution_time_std": 0.0,
       "execution_time_samples": [
-        0.311177
+        0.298156
       ],
       "structured_result_file": "output/12_execute_output/pomdp_gridworld_3x3/discopy/execution_logs/POMDP GridWorld 3x3_discopy.py_results.json",
       "output_file": "output/12_execute_output/pomdp_gridworld_3x3/discopy/execution_logs/POMDP GridWorld 3x3_discopy.py_execution.log",
@@ -184,7 +184,7 @@
       "error": "Dependency not installed: bnlearn",
       "error_type": "DependencyNotInstalled",
       "execution_time": 0,
-      "timestamp": "2026-06-18T07:53:12.025214",
+      "timestamp": "2026-06-18T09:04:58.246946",
       "execution_metadata": {},
       "stdout_length": 0,
       "stderr_length": 0
@@ -198,13 +198,13 @@
       "success": true,
       "skipped": false,
       "return_code": 0,
-      "execution_time": 6.579807,
-      "timestamp": "2026-06-18T07:53:12.025270",
+      "execution_time": 6.349163,
+      "timestamp": "2026-06-18T09:04:58.246990",
       "execution_benchmark_repeats": 1,
-      "execution_time_mean": 6.579807,
+      "execution_time_mean": 6.349163,
       "execution_time_std": 0.0,
       "execution_time_samples": [
-        6.579807
+        6.349163
       ],
       "structured_result_file": "output/12_execute_output/pomdp_gridworld_3x3/rxinfer/execution_logs/POMDP GridWorld 3x3_rxinfer.jl_results.json",
       "output_file": "output/12_execute_output/pomdp_gridworld_3x3/rxinfer/execution_logs/POMDP GridWorld 3x3_rxinfer.jl_execution.log",
@@ -236,13 +236,13 @@
       "success": true,
       "skipped": false,
       "return_code": 0,
-      "execution_time": 10.428846,
-      "timestamp": "2026-06-18T07:53:23.802569",
+      "execution_time": 9.351349,
+      "timestamp": "2026-06-18T09:05:09.391758",
       "execution_benchmark_repeats": 1,
-      "execution_time_mean": 10.428846,
+      "execution_time_mean": 9.351349,
       "execution_time_std": 0.0,
       "execution_time_samples": [
-        10.428846
+        9.351349
       ],
       "structured_result_file": "output/12_execute_output/pomdp_gridworld_3x3/activeinference_jl/execution_logs/POMDP GridWorld 3x3_activeinference.jl_results.json",
       "output_file": "output/12_execute_output/pomdp_gridworld_3x3/activeinference_jl/execution_logs/POMDP GridWorld 3x3_activeinference.jl_execution.log",

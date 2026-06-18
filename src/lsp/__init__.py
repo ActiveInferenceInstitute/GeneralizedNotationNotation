@@ -45,7 +45,10 @@ try:
         Position,
         Range,
     )
-    from pygls.server import LanguageServer
+    try:
+        from pygls.server import LanguageServer
+    except ImportError:
+        from pygls.lsp.server import LanguageServer
 
     PYGLS_AVAILABLE = True
 except ImportError:

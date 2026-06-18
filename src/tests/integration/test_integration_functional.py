@@ -198,7 +198,6 @@ class TestIntegrationFunctional:
         assert data["processed_files"] == 2
 
     @pytest.mark.unit
-    @pytest.mark.skipif(not _has_networkx(), reason="networkx not installed")
     def test_graph_stats_with_networkx(
         self, multi_gnn_dir: Any, output_dir: Any
     ) -> Any:
@@ -216,7 +215,6 @@ class TestIntegrationFunctional:
         assert stats["edges"] >= 0
 
     @pytest.mark.unit
-    @pytest.mark.skipif(not _has_networkx(), reason="networkx not installed")
     def test_cross_references_between_files(
         self, multi_gnn_dir: Any, output_dir: Any
     ) -> Any:

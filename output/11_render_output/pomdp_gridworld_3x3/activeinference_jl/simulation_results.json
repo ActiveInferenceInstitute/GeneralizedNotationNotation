@@ -254,7 +254,7 @@
     "activeinference_jl_version": "0.1.2",
     "julia_version": "1.12.1",
     "schema_version": "activeinference_jl_simulation_v1",
-    "generated_at": "2026-06-18T07:53:40.813"
+    "generated_at": "2026-06-18T09:05:24.718"
   },
   "expected_free_energy": [
     3.3550622703395,

@@ -51,9 +51,9 @@ def _assert_julia_packages() -> None:
             timeout=120,
         )
     except FileNotFoundError as exc:
-        pytest.skip(f"Julia executable not available for strict backend gate: {exc}")
+        raise AssertionError(f"Julia executable not available for strict backend gate: {exc}")
     except subprocess.TimeoutExpired as exc:
-        pytest.skip(
+        raise AssertionError(
             "Julia package gate timed out before backend execution; "
             f"command={cmd!r} timeout={exc.timeout}s"
         )
@@ -62,7 +62,7 @@ def _assert_julia_packages() -> None:
         and "Package " in result.stderr
         and " not found" in result.stderr
     ):
-        pytest.skip(
+        raise AssertionError(
             "Optional Julia backend packages are not installed for strict "
             f"cross-framework execution: {result.stderr.strip()}"
         )
@@ -90,7 +90,7 @@ def _assert_julia_parse(script: Path) -> None:
     )
 
 
-def test_julia_package_gate_skips_missing_optional_backend_packages(
+def test_julia_package_gate_fails_missing_optional_backend_packages(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     def fake_run(*_args: object, **_kwargs: object) -> subprocess.CompletedProcess[str]:
@@ -106,7 +106,7 @@ def test_julia_package_gate_skips_missing_optional_backend_packages(
 
     monkeypatch.setattr(subprocess, "run", fake_run)
 
-    with pytest.raises(pytest.skip.Exception, match="Optional Julia backend packages"):
+    with pytest.raises(AssertionError, match="Optional Julia backend packages"):
         _assert_julia_packages()
 
 

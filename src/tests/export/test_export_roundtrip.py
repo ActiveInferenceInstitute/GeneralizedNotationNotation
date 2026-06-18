@@ -35,7 +35,6 @@ def test_export_registry_includes_canonical_formats() -> Any:
         )
 
 
-@pytest.mark.skipif(not SAMPLE.exists(), reason="Sample GNN corpus unavailable")
 def test_export_to_json_roundtrip_preserves_structure(tmp_path: Any) -> Any:
     from export import export_to_json
     from gnn import parse_gnn_file
@@ -54,7 +53,6 @@ def test_export_to_json_roundtrip_preserves_structure(tmp_path: Any) -> Any:
     assert len(loaded) > 0, "Exported JSON is empty — roundtrip lost all data"
 
 
-@pytest.mark.skipif(not SAMPLE.exists(), reason="Sample GNN corpus unavailable")
 def test_process_export_handles_missing_target_dir(tmp_path: Any) -> Any:
     from export.processor import process_export
 

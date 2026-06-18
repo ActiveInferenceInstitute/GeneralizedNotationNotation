@@ -3,7 +3,10 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from audio.processor import _process_audio_streaming
+from audio.processor import (
+    _process_audio_streaming,
+    _resolve_execution_summary_artifact,
+)
 from audio.streaming import (
     chunks_from_frames,
     frames_from_execution_trace,
@@ -150,6 +153,33 @@ def test_audio_streaming_follows_step12_summary_structured_result(
     assert summary["frame_count"] == 2
     assert summary["telemetry_provenance"] == [str(structured_result)]
     assert summary["chunks"][0]["metadata"]["last_action"] == 0
+
+
+def test_audio_summary_artifact_resolver_handles_execution_rooted_relative_paths(
+    tmp_path: Path,
+) -> None:
+    execution_dir = tmp_path / "output" / "12_execute_output"
+    summary_dir = execution_dir / "summaries"
+    structured_result = (
+        execution_dir
+        / "pomdp_gridworld_3x3"
+        / "pymdp"
+        / "execution_logs"
+        / "pomdp_gridworld_3x3_pymdp_results.json"
+    )
+    structured_result.parent.mkdir(parents=True)
+    summary_dir.mkdir(parents=True)
+    structured_result.write_text('{"simulation_data": {}}', encoding="utf-8")
+
+    resolved = _resolve_execution_summary_artifact(
+        "output/12_execute_output/pomdp_gridworld_3x3/pymdp/execution_logs/"
+        "pomdp_gridworld_3x3_pymdp_results.json",
+        summary_dir,
+        execution_dir,
+    )
+
+    assert resolved == structured_result.resolve()
+    assert "summaries/output/12_execute_output" not in str(resolved)
 
 
 def test_audio_streaming_rejects_summary_pointer_outside_execution_dir(

@@ -4,14 +4,15 @@ Okay, let's dissect this GNN specification for the GridWorld POMDP fixture with 
 
 **1. Graph Structure:**
 
-*   **Nodes (Variables):** The core of this specification lies in its representation of the POMDP’s state space. We can infer a graph structure based on the provided information:
-    *   **State Variables:**  The GridWorld itself is represented by a set of state variables, likely representing the agent's location (x, y coordinates) within the 3x3 grid. These are implicitly defined as the core elements of the POMDP.
-    *   **Action Variables:** Five discrete actions are defined – we can assume these correspond to movement commands (e.g., North, South, East, West).  These become nodes in our graph representing the possible control signals.
-    *   **Observation Variables:** The observation space is implicitly defined by the emission probabilities within the POMDP. These observations will likely be related to sensor readings that provide information about the agent's environment (e.g., presence of obstacles, proximity to a goal).
-    *   **Hidden State Variables:**  The underlying hidden state of the GridWorld – the true location of any obstacles or the goal – is central to the POMDP and drives the inference process.
-*   **Edges (Relationships):** The connections within this graph are dictated by the Active Inference framework:
-    *   **Transition Edges (A Matrix):** These represent the probabilistic transitions between states given an action.  The `B` matrix, explicitly stored as `(next_state, previous_state, action)`, directly encodes these transition probabilities. The edges will be directed, reflecting that taking an action *changes* the state.
-    *   **Observation Edges (C Matrix):** These connect hidden states to observations.  The C matrix represents how likely a particular observation is given the true underlying hidden state.
-    *   **Reward Edges (D Matrix):** While not explicitly stated, the reward function within the POMDP implicitly defines edges from states to rewards, influencing the agent’s policy learning.
+*   **Nodes (Variables):** The core of this specification lies in its representation as a POMDP, which inherently defines a graph structure. We can identify several key nodes:
+    *   **State Variables:** These are the fundamental elements defining the environment's state.  The description mentions “3x3 trajectory GIFs,” strongly suggesting three spatial dimensions (x, y, z) and potentially a temporal dimension represented by the 15 timesteps. The state space is therefore likely 3D – (x, y, z), where each can take on a discrete set of values.
+    *   **Action Variables:** Five actions are explicitly defined. These will be represented as nodes in the graph, corresponding to the possible movements or manipulations within the GridWorld.
+    *   **Observation Variables:** The emission process (step 16) generates observations based on the current state.  The exact nature of these observations isn’t fully specified but they are clearly linked to the state variables through the emission matrix ‘C’.
+    *   **Control Variables:** These aren't explicitly listed, but implicitly present in the A/B/C/D matrices which govern transitions and emissions.
 
-* **Graph Topology:** The topology is fundamentally a *network* representing the agent's interaction with its environment. It’s a Markov Decision Process (MDP) represented in a probabilistic
+*   **Edges (Relationships):** The edges represent probabilistic dependencies between these nodes. 
+    *   **Transition Edges (A Matrix):**  The `A` matrix defines the transition probabilities – how likely is it to move from one state to another given an action? This will be a directed graph, with arrows indicating conditional probability transitions.
+    *   **Emission Edges (C Matrix):** The `C` matrix dictates the observation probabilities – what’s the likelihood of observing a particular outcome given the current state and action? Again, this is a directed graph.
+    *   **Control Variable Edges:** These are implicitly defined by the A/B/C matrices, representing the influence of control variables on the system's dynamics.
+
+*   **Graph Topology:** The topology is fundamentally a *Markov Decision Process (MDP) graph*, reflecting the sequential nature of the problem. It’s likely a relatively dense graph due to the five actions and the potential for

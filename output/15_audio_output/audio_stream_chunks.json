@@ -2,9 +2,9 @@
   "schema": "gnn_audio_stream_chunks_v1",
   "status": "ready",
   "streaming_safe": true,
-  "frame_count": 150,
-  "duration_frames": 150,
-  "chunk_count": 5,
+  "frame_count": 225,
+  "duration_frames": 225,
+  "chunk_count": 8,
   "chunks": [
     {
       "index": 0,
@@ -53,16 +53,49 @@
     {
       "index": 4,
       "frame_start": 128,
-      "frame_count": 22,
+      "frame_count": 32,
       "amplitude": 1.0,
-      "frequency_hz": 298.58567492836687,
+      "frequency_hz": 328.58567492836687,
       "metadata": {
         "mean_free_energy": 2.1195224976122287,
+        "last_action": 3
+      }
+    },
+    {
+      "index": 5,
+      "frame_start": 160,
+      "frame_count": 32,
+      "amplitude": 1.0,
+      "frequency_hz": 249.331,
+      "metadata": {
+        "mean_free_energy": 0.9777,
+        "last_action": 0
+      }
+    },
+    {
+      "index": 6,
+      "frame_start": 192,
+      "frame_count": 32,
+      "amplitude": 1.0,
+      "frequency_hz": 339.8544543170816,
+      "metadata": {
+        "mean_free_energy": 2.495148477236053,
+        "last_action": 3
+      }
+    },
+    {
+      "index": 7,
+      "frame_start": 224,
+      "frame_count": 1,
+      "amplitude": 1.0,
+      "frequency_hz": 260.8393681101851,
+      "metadata": {
+        "mean_free_energy": 0.8613122703395023,
         "last_action": 1
       }
     }
   ],
-  "telemetry_source_count": 11,
+  "telemetry_source_count": 17,
   "telemetry_provenance": [
     "output/12_execute_output/pomdp_gridworld_3x3/activeinference_jl/execution_logs/POMDP GridWorld 3x3_activeinference.jl_results.json",
     "output/12_execute_output/pomdp_gridworld_3x3/activeinference_jl/simulation_data/simulation_results.json",
@@ -74,6 +107,12 @@
     "output/12_execute_output/pomdp_gridworld_3x3/pymdp/execution_logs/POMDP GridWorld 3x3_pymdp.py_results.json",
     "output/12_execute_output/pomdp_gridworld_3x3/pymdp/simulation_data/simulation_results.json",
     "output/12_execute_output/pomdp_gridworld_3x3/rxinfer/execution_logs/POMDP GridWorld 3x3_rxinfer.jl_results.json",
-    "output/12_execute_output/pomdp_gridworld_3x3/rxinfer/simulation_data/simulation_results.json"
+    "output/12_execute_output/pomdp_gridworld_3x3/rxinfer/simulation_data/simulation_results.json",
+    "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/12_execute_output/pomdp_gridworld_3x3/numpyro/execution_logs/POMDP GridWorld 3x3_numpyro.py_results.json",
+    "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/12_execute_output/pomdp_gridworld_3x3/pymdp/execution_logs/POMDP GridWorld 3x3_pymdp.py_results.json",
+    "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/12_execute_output/pomdp_gridworld_3x3/jax/execution_logs/POMDP GridWorld 3x3_jax.py_results.json",
+    "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/12_execute_output/pomdp_gridworld_3x3/discopy/execution_logs/POMDP GridWorld 3x3_discopy.py_results.json",
+    "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/12_execute_output/pomdp_gridworld_3x3/rxinfer/execution_logs/POMDP GridWorld 3x3_rxinfer.jl_results.json",
+    "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/12_execute_output/pomdp_gridworld_3x3/activeinference_jl/execution_logs/POMDP GridWorld 3x3_activeinference.jl_results.json"
   ]
 }

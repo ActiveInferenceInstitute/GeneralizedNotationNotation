@@ -22,7 +22,7 @@ class TestNormalizeConnectionFormat:
 
             return normalize_connection_format
         except ImportError:
-            pytest.skip("advanced_visualization._shared not importable")
+            raise AssertionError("advanced_visualization._shared not importable")
 
     def test_new_format_passthrough(self) -> Any:
         fn = self._fn()
@@ -72,7 +72,7 @@ class TestCalculateSemanticPositions:
 
             return _calculate_semantic_positions
         except ImportError:
-            pytest.skip("advanced_visualization._shared not importable")
+            raise AssertionError("advanced_visualization._shared not importable")
 
     def test_empty_variables_returns_empty(self) -> Any:
         fn = self._fn()
@@ -81,21 +81,21 @@ class TestCalculateSemanticPositions:
         assert len(result) == 0
 
     def test_single_variable_returns_one_position(self) -> Any:
-        pytest.importorskip("numpy")
+        __import__("importlib").import_module("numpy")
         fn = self._fn()
         variables: list[Any] = [{"name": "s"}]
         result = fn(variables, [])
         assert len(result) == 1
 
     def test_multiple_variables_correct_count(self) -> Any:
-        pytest.importorskip("numpy")
+        __import__("importlib").import_module("numpy")
         fn = self._fn()
         variables = [{"name": f"v{i}"} for i in range(4)]
         result = fn(variables, [])
         assert len(result) == 4
 
     def test_positions_are_3d(self) -> Any:
-        pytest.importorskip("numpy")
+        __import__("importlib").import_module("numpy")
         fn = self._fn()
         variables: list[Any] = [{"name": "A"}, {"name": "B"}]
         result = fn(variables, [])
@@ -109,7 +109,7 @@ class TestValidateVisualizationData:
 
             return validate_visualization_data
         except ImportError:
-            pytest.skip("advanced_visualization._shared not importable")
+            raise AssertionError("advanced_visualization._shared not importable")
 
     def _logger(self) -> Any:
         return logging.getLogger("test")

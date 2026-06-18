@@ -20,7 +20,6 @@ REPO_ROOT = SRC.parent
 SAMPLE_GNN = REPO_ROOT / "input" / "gnn_files" / "basics" / "static_perception.md"
 
 
-@pytest.mark.skipif(not SAMPLE_GNN.exists(), reason="Sample GNN unavailable")
 def test_register_and_lookup_roundtrip(tmp_path: Any) -> Any:
     registry_path = tmp_path / "registry.json"
     registry = ModelRegistry(registry_path)
@@ -35,7 +34,6 @@ def test_register_and_lookup_roundtrip(tmp_path: Any) -> Any:
     assert found.model_id == ids[0]
 
 
-@pytest.mark.skipif(not SAMPLE_GNN.exists(), reason="Sample GNN unavailable")
 def test_registry_persists_across_instances(tmp_path: Any) -> Any:
     registry_path = tmp_path / "registry.json"
     r1 = ModelRegistry(registry_path)
@@ -47,7 +45,6 @@ def test_registry_persists_across_instances(tmp_path: Any) -> Any:
     assert len(r2.list_models()) >= 1
 
 
-@pytest.mark.skipif(not SAMPLE_GNN.exists(), reason="Sample GNN unavailable")
 def test_search_models_finds_by_name(tmp_path: Any) -> Any:
     registry = ModelRegistry(tmp_path / "r.json")
     registry.register_model(SAMPLE_GNN)
@@ -62,7 +59,6 @@ def test_registry_handles_empty_lookup(tmp_path: Any) -> Any:
     assert registry.get_model("nonexistent-id") is None
 
 
-@pytest.mark.skipif(not SAMPLE_GNN.exists(), reason="Sample GNN unavailable")
 def test_registry_delete_removes_model(tmp_path: Any) -> Any:
     registry = ModelRegistry(tmp_path / "r.json")
     registry.register_model(SAMPLE_GNN)

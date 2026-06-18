@@ -6,7 +6,7 @@ Generated from GNN POMDP Model: **POMDP GridWorld 3x3**
 
 - **Model Name**: POMDP GridWorld 3x3
 - **Model Description**: Discrete 3x3 GridWorld POMDP for strict cross-framework validation. The model has one hidden state factor with 9 grid cells, one observation modality with noisy cell observations, and one control factor with 5 boundary-clamped actions: up, down, left, right, and stay.
-- **Generation Date**: 2026-06-18 07:53:05
+- **Generation Date**: 2026-06-18 09:04:51
 
 ## POMDP Dimensions
 

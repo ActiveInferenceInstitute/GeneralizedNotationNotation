@@ -29,7 +29,7 @@
 
 - Multi-format GNN parsing (markdown, JSON, YAML, etc.)
 - **22** registered serializers for **23** `GNNFormat` values (PNML: parse-only in `SERIALIZER_REGISTRY` — see [SPEC.md](SPEC.md)); covers Scala, Lean, Coq, Python, BNF, EBNF, Isabelle, Maxima, XML, JSON, Protobuf, YAML, XSD, ASN.1, PKL, Alloy, Z-notation, TLA+, Agda, Haskell, Pickle, Markdown
-- `.pkl` is treated as textual PKL DSL by default; binary pickle inputs should use `.pickle`, with legacy binary `.pkl` routed by content detection and logged as a warning.
+- `.pkl` is treated as textual PKL DSL by default; binary pickle inputs should use `.pickle`, with previous-format binary `.pkl` routed by content detection and logged as a warning.
 - Round-trip validation (parse → serialize → parse)
 - Cross-format consistency checking
 

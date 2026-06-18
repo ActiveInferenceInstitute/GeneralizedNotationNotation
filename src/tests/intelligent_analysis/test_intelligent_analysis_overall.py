@@ -546,7 +546,7 @@ def test_module_completeness() -> Any:
                 f"Missing component: {component}"
             )
     except ImportError:
-        pytest.skip("intelligent_analysis module not available")
+        raise AssertionError("intelligent_analysis module not available")
 
 
 @pytest.mark.slow
@@ -570,7 +570,7 @@ class TestIntelligentAnalysisMCP:
 
             return mcp
         except Exception:
-            pytest.skip("intelligent_analysis.mcp not importable")
+            raise AssertionError("intelligent_analysis.mcp not importable")
 
     def test_module_importable(self) -> Any:
         self._import_mcp()

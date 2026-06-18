@@ -253,7 +253,9 @@ def parse_gnn_file(
             "success": True,
             "file_path": str(file_path),
             "file_name": file_path.name,
-            "file_size": file_path.stat().st_size,
+            "file_size": file_path.stat().st_size
+            if file_path.exists()
+            else len(content.encode("utf-8")),
             "sections": sections,
             "variables": variables,
             "structure_info": structure_info,

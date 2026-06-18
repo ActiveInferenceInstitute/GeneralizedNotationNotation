@@ -145,7 +145,7 @@ class TestAnalysisOverall:
             assert data["processed_files"] == 1
             assert len(data["statistical_analysis"]) == 1
         except ImportError:
-            pytest.skip(
+            raise AssertionError(
                 "Skipping analysis test due to missing dependencies (numpy/matplotlib)"
             )
         except Exception as e:
@@ -165,7 +165,7 @@ class TestAnalysisOverall:
         assert result == 2, f"expected exit-code 2 for no-input, got {result!r}"
 
     def test_generate_animations_normalization_contract(self) -> None:
-        """Step 16 uses generate_animations as canonical and supports legacy inverse."""
+        """Step 16 uses generate_animations as canonical and supports compatibility inverse."""
         from analysis.processor import _normalize_generate_animations
 
         logger = logging.getLogger("test_analysis_animation_contract")

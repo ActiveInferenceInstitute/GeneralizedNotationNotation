@@ -1,7 +1,7 @@
 #!/usr/bin/env julia
 # RxInfer.jl discrete POMDP simulation
 # Generated from GNN Model: POMDP GridWorld 3x3
-# Generated: 2026-06-18 07:53:05
+# Generated: 2026-06-18 09:04:51
 
 using Pkg
 using RxInfer

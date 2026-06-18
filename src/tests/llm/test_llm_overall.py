@@ -141,7 +141,7 @@ def test_llm_module_completeness() -> Any:
         for component in required_components:
             assert hasattr(llm, component), f"Missing component: {component}"
     except ImportError:
-        pytest.skip("LLM module not available")
+        raise AssertionError("LLM module not available")
 
 
 @pytest.mark.slow

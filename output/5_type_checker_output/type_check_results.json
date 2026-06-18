@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-06-18T07:52:51.012481",
+  "timestamp": "2026-06-18T09:04:36.503763",
   "processed_files": 3,
   "success": true,
   "errors": [],
@@ -11,7 +11,7 @@
       "errors": [],
       "warnings": [],
       "type_issues": [],
-      "validation_timestamp": "2026-06-18T07:52:51.012641",
+      "validation_timestamp": "2026-06-18T09:04:36.503936",
       "resource_estimation": {
         "complexity_tier": "large",
         "estimated_memory_bytes": 0,
@@ -136,7 +136,7 @@
           "type": "float"
         }
       ],
-      "validation_timestamp": "2026-06-18T07:52:51.013839",
+      "validation_timestamp": "2026-06-18T09:04:36.505157",
       "dimension_compatibility": {
         "compatible": true,
         "issues": [],
@@ -225,7 +225,7 @@
           "type": "42"
         }
       ],
-      "validation_timestamp": "2026-06-18T07:52:51.015693",
+      "validation_timestamp": "2026-06-18T09:04:36.507135",
       "resource_estimation": {
         "complexity_tier": "small",
         "estimated_memory_bytes": 0,
@@ -244,7 +244,7 @@
       "types_found": [],
       "type_distribution": {},
       "total_variables": 0,
-      "analysis_timestamp": "2026-06-18T07:52:51.013809"
+      "analysis_timestamp": "2026-06-18T09:04:36.505124"
     },
     {
       "file_path": "input/gnn_files/pomdp_gridworld/pomdp_gridworld_3x3.md",
@@ -403,7 +403,7 @@
         "int": 3
       },
       "total_variables": 27,
-      "analysis_timestamp": "2026-06-18T07:52:51.015669"
+      "analysis_timestamp": "2026-06-18T09:04:36.507112"
     },
     {
       "file_path": "input/gnn_files/pomdp_gridworld/AGENTS.md",
@@ -425,7 +425,7 @@
         "42": 1
       },
       "total_variables": 2,
-      "analysis_timestamp": "2026-06-18T07:52:51.016404"
+      "analysis_timestamp": "2026-06-18T09:04:36.507910"
     }
   ]
 }

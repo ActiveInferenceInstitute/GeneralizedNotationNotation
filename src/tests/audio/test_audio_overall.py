@@ -141,7 +141,7 @@ def test_audio_module_completeness() -> Any:
         for component in required_components:
             assert hasattr(audio, component), f"Missing component: {component}"
     except ImportError:
-        pytest.skip("Audio module not available")
+        raise AssertionError("Audio module not available")
 
 
 @pytest.mark.slow

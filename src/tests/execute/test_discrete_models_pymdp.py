@@ -80,7 +80,7 @@ def test_pomdp_extraction(model_file: str) -> None:
 
     path = DISCRETE_DIR / model_file
     if not path.is_file():
-        pytest.skip(f"Fixture missing: {path}")
+        raise AssertionError(f"Fixture missing: {path}")
 
     pomdp = extract_pomdp_from_file(path, strict_validation=False)
     assert pomdp is not None, f"Extraction failed for {model_file}"
@@ -166,7 +166,7 @@ def test_pymdp_render(model_file: str, tmp_path: Path) -> None:
 
     path = DISCRETE_DIR / model_file
     if not path.is_file():
-        pytest.skip(f"Fixture missing: {path}")
+        raise AssertionError(f"Fixture missing: {path}")
 
     pomdp = extract_pomdp_from_file(path, strict_validation=False)
     assert pomdp is not None, f"Extraction failed for {model_file}"
@@ -199,11 +199,11 @@ def test_pymdp_render(model_file: str, tmp_path: Path) -> None:
 def test_pymdp_execute(model_file: str, tmp_path: Path) -> None:
     """Every discrete model should execute and produce valid simulation results."""
     if not _pymdp_importable():
-        pytest.skip("PyMDP (inferactively-pymdp) not installed")
+        raise AssertionError("PyMDP (inferactively-pymdp) not installed")
 
     path = DISCRETE_DIR / model_file
     if not path.is_file():
-        pytest.skip(f"Fixture missing: {path}")
+        raise AssertionError(f"Fixture missing: {path}")
 
     from execute.pymdp.simulation import run_pymdp_simulation
 
@@ -247,11 +247,11 @@ def test_pymdp_execute(model_file: str, tmp_path: Path) -> None:
 def test_pymdp_analysis_extractor(model_file: str, tmp_path: Path) -> None:
     """Analysis extractor should consume simulation results from each model."""
     if not _pymdp_importable():
-        pytest.skip("PyMDP (inferactively-pymdp) not installed")
+        raise AssertionError("PyMDP (inferactively-pymdp) not installed")
 
     path = DISCRETE_DIR / model_file
     if not path.is_file():
-        pytest.skip(f"Fixture missing: {path}")
+        raise AssertionError(f"Fixture missing: {path}")
 
     from analysis.framework_extractors import extract_pymdp_data
     from execute.pymdp.simulation import run_pymdp_simulation
@@ -261,7 +261,7 @@ def test_pymdp_analysis_extractor(model_file: str, tmp_path: Path) -> None:
     np.random.seed(42)
     ok, results = run_pymdp_simulation(gnn_spec, tmp_path / "run")
     if not ok:
-        pytest.skip(f"Execution failed for {model_file}: {results.get('error')}")
+        raise AssertionError(f"Execution failed for {model_file}: {results.get('error')}")
 
     # Write results to the expected location for the extractor
     model_stem = model_file.replace(".md", "")
@@ -303,7 +303,7 @@ def test_all_discrete_models_e2e(tmp_path: Path) -> None:
     import shutil
 
     if not _pymdp_importable():
-        pytest.skip("PyMDP (inferactively-pymdp) not installed")
+        raise AssertionError("PyMDP (inferactively-pymdp) not installed")
 
     from analysis.processor import process_analysis
     from execute.processor import process_execute

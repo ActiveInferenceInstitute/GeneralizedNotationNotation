@@ -14,7 +14,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 PROJECT_ROOT = Path(__file__).parent.parent.parent.parent
-pipeline = pytest.importorskip("pipeline")
+pipeline = __import__("importlib").import_module("pipeline")
 
 
 class TestPipelineModuleComprehensive:
@@ -147,7 +147,7 @@ def test_pipeline_module_completeness() -> Any:
         for component in required_components:
             assert hasattr(pipeline, component), f"Missing component: {component}"
     except ImportError:
-        pytest.skip("Pipeline module not available")
+        raise AssertionError("Pipeline module not available")
 
 
 @pytest.mark.slow

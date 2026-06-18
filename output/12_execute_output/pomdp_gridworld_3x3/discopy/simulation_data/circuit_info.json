@@ -1,6 +1,6 @@
 {
   "model_name": "POMDP GridWorld 3x3",
-  "timestamp": "2026-06-18 07:53:05",
+  "timestamp": "2026-06-18 09:04:51",
   "parameters": {
     "num_states": 9,
     "num_observations": 9,

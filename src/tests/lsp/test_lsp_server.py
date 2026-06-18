@@ -61,9 +61,9 @@ def test_create_server_graceful() -> None:
         lsp_mod.PYGLS_AVAILABLE = original_flag
 
 
-@pytest.mark.skipif(not PYGLS_AVAILABLE, reason="pygls not installed")
 def test_create_server_success() -> None:
     """Test that create_server returns a LanguageServer instance if available."""
+    assert PYGLS_AVAILABLE is True
     server = create_server()
     assert server is not None
     # Check if a few expected features are registered (internal to pygls)

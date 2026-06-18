@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-06-18T07:58:43.232392",
+  "timestamp": "2026-06-18T09:10:37.605540",
   "processed_files": 1,
   "success": true,
   "errors": [],
@@ -561,7 +561,7 @@
         "variable_connection_correlation": 0.1896551724137931,
         "line_position_correlation": 0.0
       },
-      "analysis_timestamp": "2026-06-18T07:58:43.236176"
+      "analysis_timestamp": "2026-06-18T09:10:37.609612"
     }
   ],
   "complexity_metrics": [
@@ -573,18 +573,18 @@
       "structural_complexity": 25.099999999999998,
       "maintainability_index": 100.0,
       "technical_debt": 3.8000000000000003,
-      "analysis_timestamp": "2026-06-18T07:58:43.237413"
+      "analysis_timestamp": "2026-06-18T09:10:37.610932"
     }
   ],
   "performance_benchmarks": [
     {
       "file_path": "input/gnn_files/pomdp_gridworld/pomdp_gridworld_3x3.md",
       "file_name": "pomdp_gridworld_3x3.md",
-      "parse_time": 0.0011365419995854609,
+      "parse_time": 0.0011359580003045266,
       "memory_usage": 24476,
       "complexity_score": 69,
       "estimated_runtime": 0.6900000000000001,
-      "benchmark_timestamp": "2026-06-18T07:58:43.238595"
+      "benchmark_timestamp": "2026-06-18T09:10:37.612111"
     }
   ],
   "model_comparisons": [],
@@ -595,51 +595,9 @@
     "output/16_analysis_output/pymdp/pomdp_gridworld_3x3_pymdp_belief_trace.png",
     "output/16_analysis_output/pymdp/pomdp_gridworld_3x3_pymdp_belief_convergence.png",
     "output/16_analysis_output/pymdp/pomdp_gridworld_3x3_pymdp_action_frequencies.png",
-    "output/16_analysis_output/pytorch/pomdp_gridworld_3x3_pytorch_belief_trace.png",
-    "output/16_analysis_output/pytorch/pomdp_gridworld_3x3_pytorch_belief_convergence.png",
-    "output/16_analysis_output/pytorch/pomdp_gridworld_3x3_pytorch_action_frequencies.png",
-    "output/16_analysis_output/pytorch/pomdp_gridworld_3x3_pytorch_belief_trace.png",
-    "output/16_analysis_output/pytorch/pomdp_gridworld_3x3_pytorch_belief_convergence.png",
-    "output/16_analysis_output/pytorch/pomdp_gridworld_3x3_pytorch_action_frequencies.png",
-    "output/16_analysis_output/pytorch/pomdp_gridworld_3x3_pytorch_belief_trace.png",
-    "output/16_analysis_output/pytorch/pomdp_gridworld_3x3_pytorch_belief_convergence.png",
-    "output/16_analysis_output/pytorch/pomdp_gridworld_3x3_pytorch_action_frequencies.png",
-    "output/16_analysis_output/pytorch/pomdp_gridworld_3x3_pytorch_belief_trace.png",
-    "output/16_analysis_output/pytorch/pomdp_gridworld_3x3_pytorch_belief_convergence.png",
-    "output/16_analysis_output/pytorch/pomdp_gridworld_3x3_pytorch_action_frequencies.png",
-    "output/16_analysis_output/pytorch/pomdp_gridworld_3x3_pytorch_belief_trace.png",
-    "output/16_analysis_output/pytorch/pomdp_gridworld_3x3_pytorch_belief_convergence.png",
-    "output/16_analysis_output/pytorch/pomdp_gridworld_3x3_pytorch_action_frequencies.png",
-    "output/16_analysis_output/pytorch/pomdp_gridworld_3x3_pytorch_belief_trace.png",
-    "output/16_analysis_output/pytorch/pomdp_gridworld_3x3_pytorch_belief_convergence.png",
-    "output/16_analysis_output/pytorch/pomdp_gridworld_3x3_pytorch_action_frequencies.png",
-    "output/16_analysis_output/pytorch/pomdp_gridworld_3x3_pytorch_belief_trace.png",
-    "output/16_analysis_output/pytorch/pomdp_gridworld_3x3_pytorch_belief_convergence.png",
-    "output/16_analysis_output/pytorch/pomdp_gridworld_3x3_pytorch_action_frequencies.png",
     "output/16_analysis_output/jax/pomdp_gridworld_3x3_jax_belief_trace.png",
     "output/16_analysis_output/jax/pomdp_gridworld_3x3_jax_belief_convergence.png",
     "output/16_analysis_output/jax/pomdp_gridworld_3x3_jax_action_frequencies.png",
-    "output/16_analysis_output/bnlearn/pomdp_gridworld_3x3_bnlearn_belief_trace.png",
-    "output/16_analysis_output/bnlearn/pomdp_gridworld_3x3_bnlearn_belief_convergence.png",
-    "output/16_analysis_output/bnlearn/pomdp_gridworld_3x3_bnlearn_action_frequencies.png",
-    "output/16_analysis_output/bnlearn/pomdp_gridworld_3x3_bnlearn_belief_trace.png",
-    "output/16_analysis_output/bnlearn/pomdp_gridworld_3x3_bnlearn_belief_convergence.png",
-    "output/16_analysis_output/bnlearn/pomdp_gridworld_3x3_bnlearn_action_frequencies.png",
-    "output/16_analysis_output/bnlearn/pomdp_gridworld_3x3_bnlearn_belief_trace.png",
-    "output/16_analysis_output/bnlearn/pomdp_gridworld_3x3_bnlearn_belief_convergence.png",
-    "output/16_analysis_output/bnlearn/pomdp_gridworld_3x3_bnlearn_action_frequencies.png",
-    "output/16_analysis_output/bnlearn/pomdp_gridworld_3x3_bnlearn_belief_trace.png",
-    "output/16_analysis_output/bnlearn/pomdp_gridworld_3x3_bnlearn_belief_convergence.png",
-    "output/16_analysis_output/bnlearn/pomdp_gridworld_3x3_bnlearn_action_frequencies.png",
-    "output/16_analysis_output/bnlearn/pomdp_gridworld_3x3_bnlearn_belief_trace.png",
-    "output/16_analysis_output/bnlearn/pomdp_gridworld_3x3_bnlearn_belief_convergence.png",
-    "output/16_analysis_output/bnlearn/pomdp_gridworld_3x3_bnlearn_action_frequencies.png",
-    "output/16_analysis_output/bnlearn/pomdp_gridworld_3x3_bnlearn_belief_trace.png",
-    "output/16_analysis_output/bnlearn/pomdp_gridworld_3x3_bnlearn_belief_convergence.png",
-    "output/16_analysis_output/bnlearn/pomdp_gridworld_3x3_bnlearn_action_frequencies.png",
-    "output/16_analysis_output/bnlearn/pomdp_gridworld_3x3_bnlearn_belief_trace.png",
-    "output/16_analysis_output/bnlearn/pomdp_gridworld_3x3_bnlearn_belief_convergence.png",
-    "output/16_analysis_output/bnlearn/pomdp_gridworld_3x3_bnlearn_action_frequencies.png",
     "output/16_analysis_output/rxinfer/pomdp_gridworld_3x3_rxinfer_belief_trace.png",
     "output/16_analysis_output/rxinfer/pomdp_gridworld_3x3_rxinfer_belief_convergence.png",
     "output/16_analysis_output/rxinfer/pomdp_gridworld_3x3_rxinfer_action_frequencies.png",
@@ -707,13 +665,13 @@
   ],
   "overall_statistics": {},
   "framework_comparison": {
-    "timestamp": "2026-06-18T07:58:49.901810",
+    "timestamp": "2026-06-18T09:10:41.867729",
     "frameworks": {
       "numpyro": {
         "success_count": 1,
         "total_count": 1,
         "execution_times": [
-          1.079646
+          1.077094
         ],
         "output_files": [
           "output/12_execute_output/pomdp_gridworld_3x3/numpyro/execution_logs/POMDP GridWorld 3x3_numpyro.py_execution.log"
@@ -721,20 +679,329 @@
         "implementation_dirs": [
           "output/12_execute_output/pomdp_gridworld_3x3/numpyro"
         ],
-        "beliefs": [],
-        "actions": [],
-        "observations": [],
-        "free_energy": [],
-        "num_timesteps": null,
-        "validation": {},
+        "beliefs": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        ],
+        "actions": [
+          1,
+          3,
+          3,
+          4,
+          3,
+          1,
+          2,
+          1,
+          4,
+          3,
+          4,
+          4,
+          2,
+          3,
+          0
+        ],
+        "observations": [
+          0,
+          3,
+          4,
+          0,
+          5,
+          5,
+          8,
+          7,
+          7,
+          7,
+          8,
+          8,
+          8,
+          7,
+          8
+        ],
+        "free_energy": [
+          [
+            3.3550620079040527,
+            3.271937131881714,
+            3.3550620079040527,
+            3.271937131881714,
+            3.3550620079040527
+          ],
+          [
+            3.3550620079040527,
+            3.271937131881714,
+            3.3550620079040527,
+            3.271937131881714,
+            3.3550620079040527
+          ],
+          [
+            3.3550620079040527,
+            3.271937131881714,
+            3.3550620079040527,
+            3.271937131881714,
+            3.3550620079040527
+          ],
+          [
+            3.3550620079040527,
+            3.271937131881714,
+            3.3550620079040527,
+            3.271937131881714,
+            3.3550620079040527
+          ],
+          [
+            3.3550620079040527,
+            3.271937131881714,
+            3.3550620079040527,
+            3.271937131881714,
+            3.3550620079040527
+          ],
+          [
+            3.3550620079040527,
+            3.271937131881714,
+            3.3550620079040527,
+            3.271937131881714,
+            3.3550620079040527
+          ],
+          [
+            3.3550620079040527,
+            3.271937131881714,
+            3.3550620079040527,
+            3.271937131881714,
+            3.3550620079040527
+          ],
+          [
+            3.3550620079040527,
+            3.271937131881714,
+            3.3550620079040527,
+            3.271937131881714,
+            3.3550620079040527
+          ],
+          [
+            3.3550620079040527,
+            3.271937131881714,
+            3.3550620079040527,
+            3.271937131881714,
+            3.3550620079040527
+          ],
+          [
+            3.3550620079040527,
+            3.271937131881714,
+            3.3550620079040527,
+            3.271937131881714,
+            3.3550620079040527
+          ],
+          [
+            3.3550620079040527,
+            3.271937131881714,
+            3.3550620079040527,
+            3.271937131881714,
+            3.3550620079040527
+          ],
+          [
+            3.3550620079040527,
+            3.271937131881714,
+            3.3550620079040527,
+            3.271937131881714,
+            3.3550620079040527
+          ],
+          [
+            3.3550620079040527,
+            3.271937131881714,
+            3.3550620079040527,
+            3.271937131881714,
+            3.3550620079040527
+          ],
+          [
+            3.3550620079040527,
+            3.271937131881714,
+            3.3550620079040527,
+            3.271937131881714,
+            3.3550620079040527
+          ],
+          [
+            3.3550620079040527,
+            3.271937131881714,
+            3.3550620079040527,
+            3.271937131881714,
+            3.3550620079040527
+          ]
+        ],
+        "num_timesteps": 15,
+        "validation": {
+          "beliefs_in_range": true,
+          "beliefs_sum_to_one": true,
+          "actions_in_range": true,
+          "all_valid": true
+        },
         "model_parameters": {},
-        "data_source": null
+        "data_source": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/12_execute_output/pomdp_gridworld_3x3/numpyro/simulation_data/simulation_results.json"
       },
       "pymdp": {
         "success_count": 1,
         "total_count": 1,
         "execution_times": [
-          2.853709
+          2.698324
         ],
         "output_files": [
           "output/12_execute_output/pomdp_gridworld_3x3/pymdp/execution_logs/POMDP GridWorld 3x3_pymdp.py_execution.log"
@@ -742,39 +1009,370 @@
         "implementation_dirs": [
           "output/12_execute_output/pomdp_gridworld_3x3/pymdp"
         ],
-        "beliefs": [],
-        "actions": [],
-        "observations": [],
-        "free_energy": [],
-        "num_timesteps": null,
-        "validation": {},
-        "model_parameters": {},
-        "data_source": null
-      },
-      "pytorch": {
-        "success_count": 0,
-        "total_count": 1,
-        "execution_times": [],
-        "output_files": [
-          ""
+        "beliefs": [
+          [
+            1.0,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18
+          ],
+          [
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            1.0,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18
+          ],
+          [
+            2.2204500197172533e-16,
+            2.2204500197172533e-16,
+            2.2204500197172533e-16,
+            2.2204500197172533e-16,
+            1.0,
+            2.2204500197172533e-16,
+            2.2204500197172533e-16,
+            1.00660641592378e-14,
+            2.2204500197172533e-16
+          ],
+          [
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            9.796065902352154e-18,
+            1.0,
+            9.796065902352154e-18
+          ],
+          [
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            1.0
+          ],
+          [
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            1.0
+          ],
+          [
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            1.0
+          ],
+          [
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            1.0
+          ],
+          [
+            2.2204500197172533e-16,
+            2.2204500197172533e-16,
+            2.2204500197172533e-16,
+            1.00660641592378e-14,
+            2.2204500197172533e-16,
+            2.2204500197172533e-16,
+            2.2204500197172533e-16,
+            2.2204500197172533e-16,
+            1.0
+          ],
+          [
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            2.2694328762657855e-16,
+            9.796065902352154e-18,
+            1.0
+          ],
+          [
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            5.1141433987826e-18,
+            4.898039982211284e-18,
+            1.0
+          ],
+          [
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            1.0
+          ],
+          [
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            1.0
+          ],
+          [
+            2.2204500197172533e-16,
+            2.2204500197172533e-16,
+            1.00660641592378e-14,
+            2.2204500197172533e-16,
+            2.2204500197172533e-16,
+            2.2204500197172533e-16,
+            2.2204500197172533e-16,
+            2.2204500197172533e-16,
+            1.0
+          ],
+          [
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            2.2204500197172533e-16,
+            9.796065902352154e-18,
+            9.796065902352154e-18,
+            1.0
+          ]
         ],
-        "implementation_dirs": [
-          ""
+        "actions": [
+          1,
+          3,
+          1,
+          3,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
         ],
-        "beliefs": [],
-        "actions": [],
-        "observations": [],
-        "free_energy": [],
-        "num_timesteps": null,
-        "validation": {},
-        "model_parameters": {},
-        "data_source": null
+        "observations": [
+          0,
+          3,
+          7,
+          7,
+          8,
+          8,
+          8,
+          8,
+          3,
+          8,
+          8,
+          8,
+          8,
+          2,
+          8
+        ],
+        "free_energy": [
+          [
+            0.10875000804662704,
+            0.19187501072883606,
+            0.10875000804662704,
+            0.19187501072883606,
+            0.10875000804662704
+          ],
+          [
+            0.10875000804662704,
+            0.3581250309944153,
+            0.19187501072883606,
+            0.4412500560283661,
+            0.19187501072883606
+          ],
+          [
+            0.19187501072883606,
+            0.7737500071525574,
+            0.19187501072883606,
+            0.7737500071525574,
+            0.4412500560283661
+          ],
+          [
+            0.4412500560283661,
+            0.7737500071525574,
+            0.3581250309944153,
+            2.6024999618530273,
+            0.7737500071525574
+          ],
+          [
+            0.7737500071525574,
+            2.6024999618530273,
+            0.7737500071525574,
+            2.6024999618530273,
+            2.6024999618530273
+          ],
+          [
+            0.7737500071525574,
+            2.6024999618530273,
+            0.7737500071525574,
+            2.6024999618530273,
+            2.6024999618530273
+          ],
+          [
+            0.7737500071525574,
+            2.6024999618530273,
+            0.7737500071525574,
+            2.6024999618530273,
+            2.6024999618530273
+          ],
+          [
+            0.7737500071525574,
+            2.6024999618530273,
+            0.7737500071525574,
+            2.6024999618530273,
+            2.6024999618530273
+          ],
+          [
+            0.7737500071525574,
+            2.6024999618530273,
+            0.7737500071525574,
+            2.6024999618530273,
+            2.6024999618530273
+          ],
+          [
+            0.7737500071525574,
+            2.6024999618530273,
+            0.7737500071525574,
+            2.6024999618530273,
+            2.6024999618530273
+          ],
+          [
+            0.7737500071525574,
+            2.6024999618530273,
+            0.7737500071525574,
+            2.6024999618530273,
+            2.6024999618530273
+          ],
+          [
+            0.7737500071525574,
+            2.6024999618530273,
+            0.7737500071525574,
+            2.6024999618530273,
+            2.6024999618530273
+          ],
+          [
+            0.7737500071525574,
+            2.6024999618530273,
+            0.7737500071525574,
+            2.6024999618530273,
+            2.6024999618530273
+          ],
+          [
+            0.7737500071525574,
+            2.6024999618530273,
+            0.7737500071525574,
+            2.6024999618530273,
+            2.6024999618530273
+          ],
+          [
+            0.7737500071525574,
+            2.6024999618530273,
+            0.7737500071525574,
+            2.6024999618530273,
+            2.6024999618530273
+          ]
+        ],
+        "num_timesteps": 15,
+        "validation": {
+          "all_beliefs_valid": true,
+          "beliefs_sum_to_one": true,
+          "actions_in_range": true,
+          "pymdp_version_ge_1_0_0": true,
+          "all_valid": true
+        },
+        "model_parameters": {
+          "A_shape": [
+            9,
+            9
+          ],
+          "B_shape": [
+            9,
+            9,
+            5
+          ],
+          "C_shape": [
+            9
+          ],
+          "D_shape": [
+            9
+          ],
+          "num_states": 9,
+          "num_observations": 9,
+          "num_actions": 5,
+          "batch_size": 1,
+          "policy_len": 1,
+          "gamma": 16.0,
+          "alpha": 16.0
+        },
+        "data_source": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/12_execute_output/pomdp_gridworld_3x3/pymdp/simulation_data/simulation_results.json",
+        "belief_confidence": [
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ]
       },
       "jax": {
         "success_count": 1,
         "total_count": 1,
         "execution_times": [
-          1.040676
+          0.993259
         ],
         "output_files": [
           "output/12_execute_output/pomdp_gridworld_3x3/jax/execution_logs/POMDP GridWorld 3x3_jax.py_execution.log"
@@ -782,20 +1380,364 @@
         "implementation_dirs": [
           "output/12_execute_output/pomdp_gridworld_3x3/jax"
         ],
-        "beliefs": [],
-        "actions": [],
-        "observations": [],
-        "free_energy": [],
-        "num_timesteps": null,
-        "validation": {},
-        "model_parameters": {},
-        "data_source": null
+        "beliefs": [
+          [
+            0.9999995231628418,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.9999995231628418,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.9999995231628418,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        ],
+        "actions": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "observations": [
+          8,
+          0,
+          0,
+          0,
+          0,
+          0,
+          4,
+          0,
+          0,
+          0,
+          0,
+          8,
+          0,
+          0,
+          0
+        ],
+        "free_energy": [
+          [
+            0.6258753538131714,
+            2.3848183155059814,
+            0.6258753538131714,
+            2.3848185539245605,
+            0.6258753538131714
+          ],
+          [
+            0.6258753538131714,
+            2.3848183155059814,
+            0.6258753538131714,
+            2.3848185539245605,
+            0.6258753538131714
+          ],
+          [
+            0.6258753538131714,
+            2.3848183155059814,
+            0.6258753538131714,
+            2.3848185539245605,
+            0.6258753538131714
+          ],
+          [
+            0.6258753538131714,
+            2.3848183155059814,
+            0.6258753538131714,
+            2.3848185539245605,
+            0.6258753538131714
+          ],
+          [
+            0.6258753538131714,
+            2.3848183155059814,
+            0.6258753538131714,
+            2.3848185539245605,
+            0.6258753538131714
+          ],
+          [
+            0.6258753538131714,
+            2.3848183155059814,
+            0.6258753538131714,
+            2.3848185539245605,
+            0.6258753538131714
+          ],
+          [
+            0.6258753538131714,
+            2.3848183155059814,
+            0.6258753538131714,
+            2.3848185539245605,
+            0.6258753538131714
+          ],
+          [
+            0.6258753538131714,
+            2.3848183155059814,
+            0.6258753538131714,
+            2.3848185539245605,
+            0.6258753538131714
+          ],
+          [
+            0.6258753538131714,
+            2.3848183155059814,
+            0.6258753538131714,
+            2.3848185539245605,
+            0.6258753538131714
+          ],
+          [
+            0.6258753538131714,
+            2.3848183155059814,
+            0.6258753538131714,
+            2.3848185539245605,
+            0.6258753538131714
+          ],
+          [
+            0.6258753538131714,
+            2.3848183155059814,
+            0.6258753538131714,
+            2.3848185539245605,
+            0.6258753538131714
+          ],
+          [
+            0.6258753538131714,
+            2.3848183155059814,
+            0.6258753538131714,
+            2.3848185539245605,
+            0.6258753538131714
+          ],
+          [
+            0.6258753538131714,
+            2.3848183155059814,
+            0.6258753538131714,
+            2.3848185539245605,
+            0.6258753538131714
+          ],
+          [
+            0.6258753538131714,
+            2.3848183155059814,
+            0.6258753538131714,
+            2.3848185539245605,
+            0.6258753538131714
+          ],
+          [
+            0.6258753538131714,
+            2.3848183155059814,
+            0.6258753538131714,
+            2.3848185539245605,
+            0.6258753538131714
+          ]
+        ],
+        "num_timesteps": 15,
+        "validation": {
+          "all_beliefs_valid": true,
+          "beliefs_sum_to_one": true,
+          "actions_in_range": true
+        },
+        "model_parameters": {
+          "A_shape": [
+            9,
+            9
+          ],
+          "B_shape": [
+            9,
+            9,
+            5
+          ],
+          "C_shape": [
+            9
+          ],
+          "D_shape": [
+            9
+          ],
+          "num_states": 9,
+          "num_observations": 9,
+          "num_actions": 5
+        },
+        "data_source": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/12_execute_output/pomdp_gridworld_3x3/jax/simulation_data/simulation_results.json",
+        "belief_confidence": [
+          0.9999995231628418,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          0.9999995231628418,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          0.9999995231628418,
+          1.0,
+          1.0,
+          1.0
+        ]
       },
       "discopy": {
         "success_count": 1,
         "total_count": 1,
         "execution_times": [
-          0.311177
+          0.298156
         ],
         "output_files": [
           "output/12_execute_output/pomdp_gridworld_3x3/discopy/execution_logs/POMDP GridWorld 3x3_discopy.py_execution.log"
@@ -809,33 +1751,37 @@
         "free_energy": [],
         "num_timesteps": null,
         "validation": {},
-        "model_parameters": {},
-        "data_source": null
-      },
-      "bnlearn": {
-        "success_count": 0,
-        "total_count": 1,
-        "execution_times": [],
-        "output_files": [
-          ""
-        ],
-        "implementation_dirs": [
-          ""
-        ],
-        "beliefs": [],
-        "actions": [],
-        "observations": [],
-        "free_energy": [],
-        "num_timesteps": null,
-        "validation": {},
-        "model_parameters": {},
-        "data_source": null
+        "model_parameters": {
+          "num_states": 9,
+          "num_observations": 9,
+          "num_actions": 5
+        },
+        "data_source": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/12_execute_output/pomdp_gridworld_3x3/discopy/execution_logs/POMDP GridWorld 3x3_discopy.py_results.json",
+        "circuit_info": {
+          "model_name": "pomdp_gridworld_3x3",
+          "components": [
+            "A_matrix",
+            "B_matrix",
+            "C_vector",
+            "D_vector",
+            "E_vector",
+            "state_inference",
+            "policy_inference",
+            "action_selection"
+          ],
+          "num_components": 8,
+          "parameters": {
+            "num_states": 9,
+            "num_observations": 9,
+            "num_actions": 5
+          }
+        }
       },
       "rxinfer": {
         "success_count": 1,
         "total_count": 1,
         "execution_times": [
-          6.579807
+          6.349163
         ],
         "output_files": [
           "output/12_execute_output/pomdp_gridworld_3x3/rxinfer/execution_logs/POMDP GridWorld 3x3_rxinfer.jl_execution.log"
@@ -843,20 +1789,278 @@
         "implementation_dirs": [
           "output/12_execute_output/pomdp_gridworld_3x3/rxinfer"
         ],
-        "beliefs": [],
-        "actions": [],
-        "observations": [],
-        "free_energy": [],
-        "num_timesteps": null,
-        "validation": {},
-        "model_parameters": {},
-        "data_source": null
+        "beliefs": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "actions": [
+          2,
+          0,
+          2,
+          3,
+          2,
+          1,
+          0,
+          3,
+          1,
+          3,
+          1,
+          1,
+          4,
+          3,
+          1
+        ],
+        "observations": [
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          3,
+          0,
+          1,
+          4,
+          5,
+          1,
+          8,
+          8,
+          8
+        ],
+        "free_energy": [
+          3.3550622703395,
+          3.3550622703395,
+          3.3550622703395,
+          3.2719372703395,
+          3.3550622703395,
+          3.271937270339502,
+          3.3550622703395,
+          3.2719372703395,
+          3.022562270339501,
+          2.6900622703395016,
+          0.8613122703395023,
+          0.8613122703395023,
+          0.8613122703395023,
+          0.8613122703395023,
+          0.8613122703395023
+        ],
+        "num_timesteps": 15,
+        "validation": {
+          "all_beliefs_valid": true,
+          "actions_in_range": true,
+          "all_valid": true,
+          "beliefs_sum_to_one": true
+        },
+        "model_parameters": {
+          "num_observations": 9,
+          "E_shape": [
+            5
+          ],
+          "A_shape": [
+            9,
+            9
+          ],
+          "D_shape": [
+            9
+          ],
+          "B_shape": [
+            9,
+            9,
+            5
+          ],
+          "num_actions": 5,
+          "C_shape": [
+            9
+          ],
+          "num_states": 9
+        },
+        "data_source": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/12_execute_output/pomdp_gridworld_3x3/rxinfer/simulation_data/simulation_results.json",
+        "belief_confidence": [
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ]
       },
       "activeinference_jl": {
         "success_count": 1,
         "total_count": 1,
         "execution_times": [
-          10.428846
+          9.351349
         ],
         "output_files": [
           "output/12_execute_output/pomdp_gridworld_3x3/activeinference_jl/execution_logs/POMDP GridWorld 3x3_activeinference.jl_execution.log"
@@ -864,155 +2068,543 @@
         "implementation_dirs": [
           "output/12_execute_output/pomdp_gridworld_3x3/activeinference_jl"
         ],
-        "beliefs": [],
-        "actions": [],
-        "observations": [],
-        "free_energy": [],
-        "num_timesteps": null,
-        "validation": {},
-        "model_parameters": {},
-        "data_source": null
+        "beliefs": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "actions": [
+          2,
+          0,
+          2,
+          3,
+          2,
+          1,
+          0,
+          3,
+          1,
+          3,
+          1,
+          1,
+          4,
+          3,
+          1
+        ],
+        "observations": [
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          3,
+          0,
+          1,
+          4,
+          5,
+          1,
+          8,
+          8,
+          8
+        ],
+        "free_energy": [
+          3.3550622703395,
+          3.3550622703395,
+          3.3550622703395,
+          3.2719372703395,
+          3.3550622703395,
+          3.271937270339502,
+          3.3550622703395,
+          3.2719372703395,
+          3.022562270339501,
+          2.6900622703395016,
+          0.8613122703395023,
+          0.8613122703395023,
+          0.8613122703395023,
+          0.8613122703395023,
+          0.8613122703395023
+        ],
+        "num_timesteps": 15,
+        "validation": {
+          "all_beliefs_valid": true,
+          "actions_in_range": true,
+          "all_valid": true,
+          "beliefs_sum_to_one": true
+        },
+        "model_parameters": {
+          "num_observations": 9,
+          "E_shape": [
+            5
+          ],
+          "A_shape": [
+            9,
+            9
+          ],
+          "D_shape": [
+            9
+          ],
+          "B_shape": [
+            9,
+            9,
+            5
+          ],
+          "num_actions": 5,
+          "C_shape": [
+            9
+          ],
+          "num_states": 9
+        },
+        "data_source": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/12_execute_output/pomdp_gridworld_3x3/activeinference_jl/simulation_data/simulation_results.json",
+        "belief_confidence": [
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ]
       }
     },
     "comparisons": {
       "success_rates": {
         "numpyro": 1.0,
         "pymdp": 1.0,
-        "pytorch": 0.0,
         "jax": 1.0,
         "discopy": 1.0,
-        "bnlearn": 0.0,
         "rxinfer": 1.0,
         "activeinference_jl": 1.0
       },
       "performance_comparison": {
         "numpyro": {
-          "mean": 1.079646,
+          "mean": 1.077094,
           "std": 0.0,
-          "min": 1.079646,
-          "max": 1.079646
+          "min": 1.077094,
+          "max": 1.077094
         },
         "pymdp": {
-          "mean": 2.853709,
+          "mean": 2.698324,
           "std": 0.0,
-          "min": 2.853709,
-          "max": 2.853709
+          "min": 2.698324,
+          "max": 2.698324
         },
         "jax": {
-          "mean": 1.040676,
+          "mean": 0.993259,
           "std": 0.0,
-          "min": 1.040676,
-          "max": 1.040676
+          "min": 0.993259,
+          "max": 0.993259
         },
         "discopy": {
-          "mean": 0.311177,
+          "mean": 0.298156,
           "std": 0.0,
-          "min": 0.311177,
-          "max": 0.311177
+          "min": 0.298156,
+          "max": 0.298156
         },
         "rxinfer": {
-          "mean": 6.579807,
+          "mean": 6.349163,
           "std": 0.0,
-          "min": 6.579807,
-          "max": 6.579807
+          "min": 6.349163,
+          "max": 6.349163
         },
         "activeinference_jl": {
-          "mean": 10.428846,
+          "mean": 9.351349,
           "std": 0.0,
-          "min": 10.428846,
-          "max": 10.428846
+          "min": 9.351349,
+          "max": 9.351349
         }
       },
-      "metric_agreement": {},
+      "metric_agreement": {
+        "numpyro_vs_pymdp": {
+          "confidence_correlation": 0.0,
+          "same_dimensions": true
+        },
+        "numpyro_vs_jax": {
+          "confidence_correlation": 0.0,
+          "same_dimensions": true
+        },
+        "numpyro_vs_rxinfer": {
+          "confidence_correlation": 0.0,
+          "same_dimensions": true
+        },
+        "numpyro_vs_activeinference_jl": {
+          "confidence_correlation": 0.0,
+          "same_dimensions": true
+        },
+        "pymdp_vs_jax": {
+          "confidence_correlation": 0.0,
+          "same_dimensions": true
+        },
+        "pymdp_vs_rxinfer": {
+          "confidence_correlation": 0.0,
+          "same_dimensions": true
+        },
+        "pymdp_vs_activeinference_jl": {
+          "confidence_correlation": 0.0,
+          "same_dimensions": true
+        },
+        "jax_vs_rxinfer": {
+          "confidence_correlation": 0.0,
+          "same_dimensions": true
+        },
+        "jax_vs_activeinference_jl": {
+          "confidence_correlation": 0.0,
+          "same_dimensions": true
+        },
+        "rxinfer_vs_activeinference_jl": {
+          "confidence_correlation": 0.0,
+          "same_dimensions": true
+        }
+      },
       "data_coverage": {
         "numpyro": {
-          "has_beliefs": false,
-          "has_actions": false,
-          "has_observations": false,
-          "has_free_energy": false,
+          "has_beliefs": true,
+          "has_actions": true,
+          "has_observations": true,
+          "has_free_energy": true,
           "has_circuit_info": false,
-          "num_timesteps": null,
-          "validation_passed": null,
-          "data_source": null
+          "num_timesteps": 15,
+          "validation_passed": true,
+          "data_source": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/12_execute_output/pomdp_gridworld_3x3/numpyro/simulation_data/simulation_results.json"
         },
         "pymdp": {
-          "has_beliefs": false,
-          "has_actions": false,
-          "has_observations": false,
-          "has_free_energy": false,
+          "has_beliefs": true,
+          "has_actions": true,
+          "has_observations": true,
+          "has_free_energy": true,
           "has_circuit_info": false,
-          "num_timesteps": null,
-          "validation_passed": null,
-          "data_source": null
-        },
-        "pytorch": {
-          "has_beliefs": false,
-          "has_actions": false,
-          "has_observations": false,
-          "has_free_energy": false,
-          "has_circuit_info": false,
-          "num_timesteps": null,
-          "validation_passed": null,
-          "data_source": null
+          "num_timesteps": 15,
+          "validation_passed": true,
+          "data_source": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/12_execute_output/pomdp_gridworld_3x3/pymdp/simulation_data/simulation_results.json"
         },
         "jax": {
-          "has_beliefs": false,
-          "has_actions": false,
-          "has_observations": false,
-          "has_free_energy": false,
+          "has_beliefs": true,
+          "has_actions": true,
+          "has_observations": true,
+          "has_free_energy": true,
           "has_circuit_info": false,
-          "num_timesteps": null,
-          "validation_passed": null,
-          "data_source": null
+          "num_timesteps": 15,
+          "validation_passed": true,
+          "data_source": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/12_execute_output/pomdp_gridworld_3x3/jax/simulation_data/simulation_results.json"
         },
         "discopy": {
           "has_beliefs": false,
           "has_actions": false,
           "has_observations": false,
           "has_free_energy": false,
-          "has_circuit_info": false,
+          "has_circuit_info": true,
           "num_timesteps": null,
           "validation_passed": null,
-          "data_source": null
-        },
-        "bnlearn": {
-          "has_beliefs": false,
-          "has_actions": false,
-          "has_observations": false,
-          "has_free_energy": false,
-          "has_circuit_info": false,
-          "num_timesteps": null,
-          "validation_passed": null,
-          "data_source": null
+          "data_source": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/12_execute_output/pomdp_gridworld_3x3/discopy/execution_logs/POMDP GridWorld 3x3_discopy.py_results.json"
         },
         "rxinfer": {
-          "has_beliefs": false,
-          "has_actions": false,
-          "has_observations": false,
-          "has_free_energy": false,
+          "has_beliefs": true,
+          "has_actions": true,
+          "has_observations": true,
+          "has_free_energy": true,
           "has_circuit_info": false,
-          "num_timesteps": null,
-          "validation_passed": null,
-          "data_source": null
+          "num_timesteps": 15,
+          "validation_passed": true,
+          "data_source": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/12_execute_output/pomdp_gridworld_3x3/rxinfer/simulation_data/simulation_results.json"
         },
         "activeinference_jl": {
-          "has_beliefs": false,
-          "has_actions": false,
-          "has_observations": false,
-          "has_free_energy": false,
+          "has_beliefs": true,
+          "has_actions": true,
+          "has_observations": true,
+          "has_free_energy": true,
           "has_circuit_info": false,
-          "num_timesteps": null,
-          "validation_passed": null,
-          "data_source": null
+          "num_timesteps": 15,
+          "validation_passed": true,
+          "data_source": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/12_execute_output/pomdp_gridworld_3x3/activeinference_jl/simulation_data/simulation_results.json"
         }
       },
-      "simulation_statistics": {}
+      "simulation_statistics": {
+        "numpyro": {
+          "belief_dims": [
+            15,
+            9
+          ],
+          "mean_confidence": 1.0,
+          "final_belief": [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "efe_mean": 3.321812057495117,
+          "efe_std": 0.040722706237368476,
+          "efe_min": 3.271937131881714,
+          "efe_max": 3.3550620079040527
+        },
+        "pymdp": {
+          "belief_dims": [
+            15,
+            9
+          ],
+          "mean_confidence": 1.0,
+          "final_belief": [
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            2.2204500197172533e-16,
+            9.796065902352154e-18,
+            9.796065902352154e-18,
+            1.0
+          ],
+          "efe_mean": 1.496383322874705,
+          "efe_std": 1.026448292417668,
+          "efe_min": 0.10875000804662704,
+          "efe_max": 2.6024999618530273
+        },
+        "jax": {
+          "belief_dims": [
+            15,
+            9
+          ],
+          "mean_confidence": 0.9999999046325684,
+          "final_belief": [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "efe_mean": 1.3294525861740112,
+          "efe_std": 0.8617026069618303,
+          "efe_min": 0.6258753538131714,
+          "efe_max": 2.3848185539245605
+        },
+        "rxinfer": {
+          "belief_dims": [
+            15,
+            9
+          ],
+          "mean_confidence": 1.0,
+          "final_belief": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "efe_mean": 2.4406872703395015,
+          "efe_std": 1.1291953255895684,
+          "efe_min": 0.8613122703395023,
+          "efe_max": 3.3550622703395
+        },
+        "activeinference_jl": {
+          "belief_dims": [
+            15,
+            9
+          ],
+          "mean_confidence": 1.0,
+          "final_belief": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "efe_mean": 2.4406872703395015,
+          "efe_std": 1.1291953255895684,
+          "efe_min": 0.8613122703395023,
+          "efe_max": 3.3550622703395
+        }
+      }
     },
     "metrics": {
-      "total_frameworks": 8,
+      "total_frameworks": 6,
       "total_successful": 6,
-      "total_executions": 8,
-      "overall_success_rate": 0.75
+      "total_executions": 6,
+      "overall_success_rate": 1.0
     }
   },
   "framework_comparison_report": "output/16_analysis_output/cross_framework/framework_comparison_report.md",

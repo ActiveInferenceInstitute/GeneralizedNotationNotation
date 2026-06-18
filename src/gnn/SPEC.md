@@ -28,7 +28,7 @@ Do not assume the two lists stay identical: lightweight discovery favors typical
 
 ### `.pkl` and pickle policy
 
-`.pkl` is the textual Apple PKL DSL extension. Binary pickle payloads should use `.pickle`; legacy binary pickle bytes found in `.pkl` are detected by content and routed to the pickle parser with a warning.
+`.pkl` is the textual Apple PKL DSL extension. Binary pickle payloads should use `.pickle`; previous-format binary pickle bytes found in `.pkl` are detected by content and routed to the pickle parser with a warning.
 
 ## Components
 

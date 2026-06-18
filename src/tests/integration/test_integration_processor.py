@@ -100,7 +100,7 @@ components:
 
     def test_circular_dependency_detection(self, tmp_path: Any) -> Any:
         """Should detect circular dependencies when networkx available."""
-        pytest.importorskip("networkx")
+        __import__("importlib").import_module("networkx")
 
         # Create files with circular references
         # A -> B -> C -> A

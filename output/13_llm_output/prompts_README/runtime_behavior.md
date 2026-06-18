@@ -6,22 +6,23 @@ Prompt:
 
 Response:
 
-Okay, let's break down what’s happening when this GNN model runs and how it behaves across the different settings you’ve described, focusing on the core principles of Active Inference and how a Graph Neural Network (GNN) is being used within that framework.
+Okay, let's break down what’s happening when this GNN model runs and how its behavior would manifest across different settings, drawing on the principles of Active Inference and GNN specifications. This is a fascinating example designed for rigorous cross-framework validation – let’s unpack it.
 
-**Core Behavior: A Simulated Agent Learning to Navigate**
+**1. Core Execution Flow & Active Inference Principles:**
 
-At its heart, this system represents an agent learning to navigate a 3x3 GridWorld environment using Active Inference. Here's a step-by-step breakdown of what happens during execution:
+At its heart, this system isn't just simulating a GridWorld; it’s implementing an *Active Inference* model. Here's how the execution unfolds:
 
-1. **The POMDP Framework:** The model is built around a Partially Observable Markov Decision Process (POMDP). This means the agent doesn’t have complete knowledge about its surroundings. It receives noisy observations and must infer the underlying state of the world based on those observations *and* its prior beliefs.  This is crucial for Active Inference – it's not just about reacting to immediate sensory input, but actively constructing a model of the world to predict what will happen next.
+* **The GNN as a Predictive Model:** The 3x3 GridWorld fixture represents the agent's environment.  The GNN is trained to predict (infer) what observations will be received given its current internal state and actions. Crucially, it doesn’t just passively receive observations; it *actively* chooses actions to minimize surprise – that is, to make its predictions about the world more accurate.
+* **Belief State:** The 9 hidden states within the GNN represent the agent's *belief state*. This belief state isn’t a simple representation of location. It encodes the agent’s probabilistic understanding of:
+    *  Its own position in the grid.
+    *  The likely states of other agents (if there were any – this fixture is single-agent).
+    *  The likely properties of the environment (e.g., whether a particular cell is “open” or “blocked”).
+* **Action Selection:** The agent selects actions (`up`, `down`, etc.) based on its belief state and a learned policy. This policy is what’s being optimized by the GNN – it learns to choose actions that lead to observations that are most consistent with its current understanding of the world.  The preference for the lower-right goal observation indicates an initial bias towards reaching that location, driving exploration.
+* **Observation Emission:** The noisy identity emissions represent the actual sensory input the agent receives. This noise is critical – it forces the GNN to learn robust representations and handle uncertainty. 
 
-2. **The GNN as an Internal Model:** The GNN isn’t simply processing observations; it’s building and updating an *internal representation* of the GridWorld.  Think of it like this:
-   * **Nodes:** Each node in the graph likely represents a potential state or location within the 3x3 grid (e.g., each cell).
-   * **Edges:** The edges represent relationships between these states – how likely is it to transition from one cell to another?  The GNN learns these transition probabilities through experience.
-   * **Features:** Each node and edge has features associated with them, representing information like:
-      * **State Representation:** What the agent *believes* about its location (e.g., “I’m in the top-left cell”).
-      * **Sensory Information:** The noisy observations it receives from the environment.
-      * **Action Representations:**  How different actions (up, down, etc.) are likely to affect the state.
+**2. Running the Commands & Framework Interactions:**
 
-3. **Active Inference Cycle – Prediction & Error Minimization:** This is where Active Inference comes in:
-   * **Prediction:** Based on its current internal model (the GNN), the agent *predicts* what observation it will receive if it takes a particular action.  The GNN’s learned transition probabilities are used to generate this prediction.
-   * **Error Calculation:** The system compares the predicted observation with the actual, noisy observation received from the environment.
+Let’s dissect the commands:
+
+* **`uv run pytest ...`**:  This runs unit tests within the `src/tests/pipeline/...` directory. It's a crucial step for verifying that the core components of the GNN and its interaction with the GridWorld fixture are working correctly *before* running the full simulation.
+* **`uv run python src/main.

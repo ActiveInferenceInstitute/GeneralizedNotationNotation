@@ -67,10 +67,6 @@ def test_gnn_pipeline_config_defaults() -> Any:
     assert args["recursive"] is True
 
 
-@pytest.mark.skipif(
-    not os.path.exists("src/ontology/act_inf_ontology_terms.json"),
-    reason="Missing ontology file for validation test",
-)
 def test_config_validation_success() -> Any:
     """Test validation of default config."""
     config = GNNPipelineConfig()

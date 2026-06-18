@@ -291,4 +291,4 @@ class TestRenderExecuteIntegration:
                     assert len(content) > 0
 
         except Exception as e:
-            pytest.skip(f"Render failed (acceptable): {e}")
+            raise AssertionError(f"Render failed (acceptable): {e}")

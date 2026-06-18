@@ -1,6 +1,6 @@
 # GeneralizedNotationNotation (GNN)
 
-**Last Updated**: 2026-06-13
+**Last Updated**: 2026-06-18
 
 <div align="center">
 
@@ -48,12 +48,13 @@
 ### 📚 Initial Publication
 
 **Smékal, J., & Friedman, D. A. (2023)**. *Generalized Notation Notation for Active Inference Models*. Active Inference Journal.  
-**Last Updated**: 2026-06-13
+**Last Updated**: 2026-06-18
 **Version**: 2.0.0
 **Status**: Beta package with maintained validation gates (Active Inference Institute)
 
-**Test Suite Inventory (measured 2026-06-13)**: 186 `test_*.py` files under `src/tests/`; `uv run --extra dev python -m pytest --collect-only src/tests/ -q --tb=no --ignore=src/tests/llm/test_llm_ollama.py --ignore=src/tests/llm/test_llm_ollama_integration.py` collected 2,428 tests. Refresh full-suite evidence before publishing a new pass/fail total; the previous recorded run with the same Ollama integration excludes was 2,393 passed, 17 skipped, 1 xfailed.
-**Features (v2.0.0)**: semantic fidelity ledgers across all maintained model families, strict JSON parse/serialize/parse preservation for variables, edges, dimensions, parameter shapes, equations, time, and ontology mappings; cross-framework reliability ledgers with explicit compatible/unsupported backend statuses; GridWorld comparison across PyMDP, RxInfer, and ActiveInference.jl; model-family acceptance and interpretability ledgers; maintained template CLI (`gnn templates list`, `gnn templates show`, `gnn pull`); authenticated local MCP HTTP orchestration; structured PyMDP 1.0 POMDP execution; PyMDP Scaling Study; and MCP Full Module Exposure.
+**Test Suite Evidence (verified 2026-06-18)**: command of record is `uv run --extra dev python -m pytest src/tests/ -q --tb=no -rsx --ignore=src/tests/llm/test_llm_ollama.py --ignore=src/tests/llm/test_llm_ollama_integration.py`; latest local evidence is 2,495 passed, 0 skipped, and 0 xfailed. Re-enable the two Ollama files only when `ollama` is installed and reachable.
+**Published Output Evidence (verified 2026-06-18)**: root `output/` is a POMDP GridWorld full-pipeline publication generated from `input/gnn_files/pomdp_gridworld` with `--frameworks all` and validated by `uv run --extra dev python scripts/check_pomdp_gridworld_outputs.py output`.
+**Features (v2.0.0)**: semantic fidelity ledgers across all maintained model families, strict JSON parse/serialize/parse preservation for variables, edges, dimensions, parameter shapes, equations, time, and ontology mappings; cross-framework reliability ledgers with explicit compatible/unsupported backend statuses; GridWorld comparison across PyMDP, RxInfer, and ActiveInference.jl; model-family acceptance and interpretability ledgers; maintained template CLI (`gnn templates list`, `gnn templates show`, `gnn pull`); authenticated local MCP HTTP orchestration; structured PyMDP 1.0 POMDP execution; static/headless GUI publication; PyMDP Scaling Study; and MCP Full Module Exposure.
 **Next Target**: v3.0.0 long-running orchestration, durable observation streams, and auditable container plans.
 📖 **DOI:** [10.5281/zenodo.7803328](https://doi.org/10.5281/zenodo.7803328)  
 📁 **Archive:** [zenodo.org/records/7803328](https://zenodo.org/records/7803328)
@@ -830,6 +831,11 @@ python src/22_gui.py --gui-types "oxdraw" --interactive --verbose  # oxdraw only
 # Launch via main pipeline (headless mode)
 python src/main.py --only-steps 22 --verbose
 ```
+
+Headless pipeline mode is a first-class success path: it writes static GUI
+navigation/status artifacts under `output/22_gui_output/` without requiring live
+Gradio servers. Use `--interactive` only when browser-served GUI sessions are
+intended.
 
 #### 🏗️ GUI Details
 

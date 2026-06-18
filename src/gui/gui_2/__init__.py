@@ -66,6 +66,11 @@ def gui_2(
             else "headless"
             if headless
             else "none",
+            "status": "static_headless_mode"
+            if _processor._GUI_BACKEND is None
+            else "headless_mode"
+            if headless
+            else "interactive_mode",
             "backend_reason": _processor._GUI_BACKEND_REASON,
             "features": [
                 "Visual matrix representation and editing",

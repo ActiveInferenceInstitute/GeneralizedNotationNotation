@@ -104,7 +104,7 @@ learning_rate = 0.01
             assert result is None or hasattr(result, "exists")
         except Exception as e:
             # May require additional dependencies
-            pytest.skip(f"Dashboard generation requires additional dependencies: {e}")
+            raise AssertionError(f"Dashboard generation requires additional dependencies: {e}")
 
 
 class TestVisualizationDataExtractor:
@@ -144,7 +144,7 @@ learning_rate = 0.01
             assert result is not None
             assert isinstance(result, dict)
         except Exception as e:
-            pytest.skip(f"Data extraction failed: {e}")
+            raise AssertionError(f"Data extraction failed: {e}")
 
     def test_extract_from_file_failure_returns_full_shape(self, tmp_path: Any) -> Any:
         """Failure path returns all 13 keys matching the success shape."""
@@ -227,10 +227,6 @@ class TestD2Visualization:
 
         assert isinstance(D2_AVAILABLE, bool)
 
-    @pytest.mark.skipif(
-        not pytest.importorskip("advanced_visualization").D2_AVAILABLE,
-        reason="D2 not available",
-    )
     def test_d2_visualizer_import(self) -> None:
         """Test D2Visualizer can be imported when available."""
         from advanced_visualization import D2Visualizer
@@ -245,7 +241,7 @@ class TestD2Visualization:
         from advanced_visualization import D2_AVAILABLE, process_gnn_file_with_d2
 
         if not D2_AVAILABLE or process_gnn_file_with_d2 is None:
-            pytest.skip("D2 visualization not available")
+            raise AssertionError("D2 visualization not available")
 
         gnn_content = """# D2 Test Model
 
@@ -265,7 +261,7 @@ state -> state
             assert "gnn.parser" not in caplog.text
             assert "Failed to parse GNN file" not in caplog.text
         except Exception as e:
-            pytest.skip(f"D2 processing failed: {e}")
+            raise AssertionError(f"D2 processing failed: {e}")
 
 
 class TestProcessAdvancedViz:
@@ -310,7 +306,7 @@ Dynamic
                 or result is not None
             )
         except ImportError as e:
-            pytest.skip(f"Advanced visualization requires additional dependencies: {e}")
+            raise AssertionError(f"Advanced visualization requires additional dependencies: {e}")
 
     def test_process_with_viz_types(self, safe_filesystem: Any) -> None:
         """Test processing with different visualization types."""
@@ -341,7 +337,7 @@ s[3]
                 # Should not crash
                 assert result is not None or result is True or result is False
             except ImportError:
-                pytest.skip(
+                raise AssertionError(
                     f"Visualization type {viz_type} requires additional dependencies"
                 )
             except Exception:

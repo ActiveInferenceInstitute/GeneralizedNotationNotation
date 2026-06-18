@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 """Phase 4.2 regression tests for lsp (Step 22 support).
 
-Uses real GNN syntax to exercise completion,
-diagnostic, and hover paths. Skips cleanly when pygls / LSP deps absent.
+Uses real GNN syntax to exercise completion, diagnostic, and hover paths.
 """
 
 import sys
@@ -77,17 +76,15 @@ def test_extract_line_defaults_to_1_when_nothing_matches() -> Any:
     assert line == 1
 
 
-def test_create_server_without_pygls_returns_something_or_skips() -> Any:
-    """If pygls is unavailable, create_server either returns None or
-    raises a clean ImportError. A TypeError or uncaught exception would be
-    a regression."""
+def test_create_server_returns_server_or_none_without_uncaught_error() -> Any:
+    """create_server returns a server when pygls is installed and None otherwise."""
     import lsp
 
     try:
         server = lsp.create_server()
-    except ImportError:
-        pytest.skip("pygls unavailable — LSP real-server path skipped by design")
     except Exception as e:
         pytest.fail(f"create_server() raised unexpected {type(e).__name__}: {e}")
-    # Any non-exception return is acceptable.
-    assert server is not None or True  # allow None return when pygls is unavailable
+    if lsp.PYGLS_AVAILABLE:
+        assert server is not None
+    else:
+        assert server is None

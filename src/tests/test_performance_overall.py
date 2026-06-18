@@ -42,7 +42,7 @@ class TestPerformanceBasics:
             assert hasattr(mem_info, "rss"), "Memory info should have RSS"
             assert mem_info.rss > 0, "RSS should be positive"
         except ImportError:
-            pytest.skip("psutil not available for memory tracking")
+            raise AssertionError("psutil not available for memory tracking")
 
     def test_gnn_parsing_performance(self, safe_filesystem: Any) -> None:
         """Test GNN parsing completes in reasonable time."""

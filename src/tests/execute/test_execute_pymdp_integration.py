@@ -87,9 +87,6 @@ def _build_minimal_agent(num_actions: int = 2) -> Any:
 
 
 # ---------------------------------------------------------------------------
-@pytest.mark.skipif(not PYMDP_AVAILABLE, reason="inferactively-pymdp not installed")
-@pytest.mark.skipif(not PYMDP_IS_1_0_0_PLUS, reason="pymdp < 1.0.0 (JAX Agent missing)")
-@pytest.mark.skipif(not EXECUTE_MODULE_AVAILABLE, reason="Execute module not available")
 class TestPyMDPRealExecution:
     """Exercise real pymdp 1.0.0 via the JAX-first Agent."""
 
@@ -156,7 +153,6 @@ class TestPyMDPRealExecution:
 
 
 # ---------------------------------------------------------------------------
-@pytest.mark.skipif(not EXECUTE_MODULE_AVAILABLE, reason="Execute module not available")
 class TestPyMDPErrorHandling:
     """Package detection returns sensible structure even in odd environments."""
 
@@ -178,8 +174,6 @@ class TestPyMDPErrorHandling:
 
 
 # ---------------------------------------------------------------------------
-@pytest.mark.skipif(not PYMDP_AVAILABLE, reason="inferactively-pymdp not installed")
-@pytest.mark.skipif(not PYMDP_IS_1_0_0_PLUS, reason="pymdp < 1.0.0 (JAX Agent missing)")
 class TestPyMDPJAXFirstAPI:
     """Regression tests for the 1.0.0 JAX-first API used by the pipeline."""
 

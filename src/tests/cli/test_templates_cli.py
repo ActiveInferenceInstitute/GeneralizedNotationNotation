@@ -143,7 +143,7 @@ def test_pull_template_rejects_symlink_destination(tmp_path: Path) -> None:
     try:
         destination.symlink_to(outside)
     except OSError:
-        pytest.skip("symlink creation is not available on this platform")
+        raise AssertionError("symlink creation is not available on this platform")
 
     with pytest.raises(FileExistsError, match="symlink"):
         pull_template("actinf-pomdp-2state", tmp_path, dry_run=True)
@@ -190,7 +190,7 @@ def test_pull_cli_unknown_template_fails() -> None:
 def test_template_cli_works_from_installed_wheel_outside_repo(tmp_path: Path) -> None:
     uv = shutil.which("uv")
     if uv is None:
-        pytest.skip("uv executable is required for wheel smoke")
+        raise AssertionError("uv executable is required for wheel smoke")
 
     repo_root = Path(__file__).resolve().parents[3]
     dist_dir = tmp_path / "dist"

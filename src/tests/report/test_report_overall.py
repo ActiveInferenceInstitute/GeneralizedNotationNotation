@@ -143,7 +143,7 @@ def test_report_module_completeness() -> None:
         for component in required_components:
             assert hasattr(report, component), f"Missing component: {component}"
     except ImportError:
-        pytest.skip("Report module not available")
+        raise AssertionError("Report module not available")
 
 
 @pytest.mark.slow

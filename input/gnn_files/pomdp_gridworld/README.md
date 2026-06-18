@@ -12,11 +12,11 @@ framework, statistical analysis, per-framework PNG plots, per-framework belief a
 `output/16_analysis_output/cross_framework/`.
 
 ```bash
-uv run pytest src/tests/pipeline/test_pomdp_gridworld_cross_framework.py -q --tb=short
+uv run --extra dev python -m pytest src/tests/pipeline/test_pomdp_gridworld_cross_framework.py -q --tb=short
 ```
 
 ```bash
-uv run python src/main.py --only-steps "3,5,8,11,12,16" --target-dir input/gnn_files/pomdp_gridworld --frameworks "pymdp,rxinfer,activeinference_jl" --verbose
+uv run --extra dev python src/main.py --only-steps "3,5,8,11,12,16" --target-dir input/gnn_files/pomdp_gridworld --frameworks "pymdp,rxinfer,activeinference_jl" --verbose
 ```
 
 ## Public root-output publication
@@ -45,7 +45,9 @@ Then validate the generated tree before committing:
 uv run --extra dev python scripts/check_pomdp_gridworld_outputs.py output
 ```
 
-The publication contract requires one parsed GridWorld model, successful render
-artifacts for all registered render targets, successful execution evidence for
-PyMDP/RxInfer.jl/ActiveInference.jl, GridWorld PNG/GIF analysis artifacts, and
-POMDP-specific report and website pages.
+The publication contract requires one parsed GridWorld model, render artifacts
+for all registered render targets (`pymdp`, `rxinfer`, `activeinference_jl`,
+`jax`, `discopy`, `pytorch`, `numpyro`, `stan`, and `bnlearn`), successful
+execution evidence for PyMDP/RxInfer.jl/ActiveInference.jl, explicit
+success/skipped/error accounting for optional runtime surfaces, GridWorld
+PNG/GIF analysis artifacts, and POMDP-specific report and website pages.

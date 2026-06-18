@@ -1,18 +1,18 @@
 {
   "version": "1.0.0",
-  "updated_at": "2026-06-18T07:52:50.770856",
+  "updated_at": "2026-06-18T09:04:36.270499",
   "models": {
     "README": {
       "model_id": "README",
       "name": "POMDP GridWorld Fixtures",
       "description": "Maintained 3x3 discrete GridWorld POMDP fixture for cross-framework validation.",
-      "created_at": "2026-06-18T07:52:50.770225",
-      "updated_at": "2026-06-18T07:52:50.770443",
+      "created_at": "2026-06-18T09:04:36.269981",
+      "updated_at": "2026-06-18T09:04:36.270136",
       "versions": {
         "1.0.0": {
           "version": "1.0.0",
           "file_path": "input/gnn_files/pomdp_gridworld/README.md",
-          "created_at": "2026-06-18T07:52:50.770261",
+          "created_at": "2026-06-18T09:04:36.270023",
           "metadata": {},
           "hash": "af8c150dbe41854de662367d21780ed179d4fe119c0bc633ff989b9fd8ec3c70"
         }
@@ -25,13 +25,13 @@
       "model_id": "pomdp_gridworld_3x3",
       "name": "GNN Example: POMDP GridWorld 3x3",
       "description": "ActInfPOMDP",
-      "created_at": "2026-06-18T07:52:50.770535",
-      "updated_at": "2026-06-18T07:52:50.770569",
+      "created_at": "2026-06-18T09:04:36.270215",
+      "updated_at": "2026-06-18T09:04:36.270243",
       "versions": {
         "1.0": {
           "version": "1.0",
           "file_path": "input/gnn_files/pomdp_gridworld/pomdp_gridworld_3x3.md",
-          "created_at": "2026-06-18T07:52:50.770538",
+          "created_at": "2026-06-18T09:04:36.270218",
           "metadata": {},
           "hash": "a87cdc89163bcd1b612f902d21ad16f95e3d25c7ff59e3718fa0179b1bc4d302"
         }
@@ -44,13 +44,13 @@
       "model_id": "AGENTS",
       "name": "POMDP GridWorld Fixture Agent Guide",
       "description": "This directory contains the maintained GridWorld POMDP fixture used to verify that one GNN model can run through render, execute, analysis, and visualization for PyMDP, RxInfer.jl, and ActiveInference.jl.",
-      "created_at": "2026-06-18T07:52:50.770742",
-      "updated_at": "2026-06-18T07:52:50.770779",
+      "created_at": "2026-06-18T09:04:36.270403",
+      "updated_at": "2026-06-18T09:04:36.270424",
       "versions": {
         "1.0.0": {
           "version": "1.0.0",
           "file_path": "input/gnn_files/pomdp_gridworld/AGENTS.md",
-          "created_at": "2026-06-18T07:52:50.770746",
+          "created_at": "2026-06-18T09:04:36.270405",
           "metadata": {},
           "hash": "00c1379c38d2b2c12198e91b4d063130b1b9c2928d72f629bf45b2d4240bbb2a"
         }

@@ -19,7 +19,6 @@ if str(SRC) not in sys.path:
 ONTOLOGY_TERMS = SRC / "ontology" / "act_inf_ontology_terms.json"
 
 
-@pytest.mark.skipif(not ONTOLOGY_TERMS.exists(), reason="Ontology terms file missing")
 def test_ontology_terms_file_loads_and_contains_core_concepts() -> Any:
     """The shipped ontology must contain Active Inference foundational terms.
 

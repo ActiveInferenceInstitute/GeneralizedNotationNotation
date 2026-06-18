@@ -77,7 +77,7 @@ def test_uv_availability_detection_matches_shutil() -> Any:
     try:
         from setup.uv_management import check_uv_availability
     except ImportError:
-        pytest.skip("setup.uv_management.check_uv_availability not exposed")
+        raise AssertionError("setup.uv_management.check_uv_availability not exposed")
     result = check_uv_availability()
     # Result shape varies (bool or dict); just check it matches shutil.which.
     has_uv = shutil.which("uv") is not None

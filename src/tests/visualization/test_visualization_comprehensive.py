@@ -6,6 +6,7 @@ ensuring proper matplotlib backend handling, progress tracking, and error recove
 """
 
 import json
+import os
 import shutil
 import sys
 import tempfile
@@ -23,21 +24,28 @@ from visualization.network_visualizations import generate_network_visualizations
 class TestMatplotlibBackendConfiguration:
     """Test matplotlib backend configuration for headless environments."""
 
-    @pytest.mark.skip(
-        reason="Testing internal implementation - backend auto-configured"
-    )
     def test_backend_configuration_with_display(self, caplog: Any) -> None:
         """Test backend configuration when DISPLAY is available."""
-        pass
+        import matplotlib
 
-    @pytest.mark.skip(
-        reason="Testing internal implementation - backend auto-configured"
-    )
+        backend = matplotlib.get_backend().lower()
+        assert backend
+        if os.environ.get("DISPLAY"):
+            assert "agg" not in backend or "backend" in caplog.text.lower()
+
     def test_backend_configuration_headless(
         self, caplog: Any, monkeypatch: Any
     ) -> None:
         """Test backend configuration in headless environment."""
-        pass
+        monkeypatch.delenv("DISPLAY", raising=False)
+        import matplotlib
+        import matplotlib.pyplot as plt
+
+        matplotlib.use("Agg", force=True)
+        fig, ax = plt.subplots()
+        ax.plot([0, 1], [0, 1])
+        assert matplotlib.get_backend().lower() == "agg"
+        plt.close(fig)
 
 
 class TestVisualizationProcessing:

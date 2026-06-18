@@ -44,7 +44,7 @@ class TestAudioGNNIntegration:
         from gnn import parse_gnn_file
 
         if not sample_gnn_files:
-            pytest.skip("No sample GNN files available")
+            raise AssertionError("No sample GNN files available")
 
         gnn_file = list(sample_gnn_files.values())[0]
         parsed = parse_gnn_file(gnn_file)

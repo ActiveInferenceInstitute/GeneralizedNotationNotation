@@ -132,7 +132,6 @@ def test_process_execute_tool_handles_empty_directory(
     assert isinstance(result["success"], bool)
 
 
-@pytest.mark.skipif(not SAMPLE_GNN.exists(), reason="Sample GNN not available")
 def test_execute_gnn_model_tool_accepts_real_gnn(
     registered_tools: Dict[str, Any], tmp_path: Path
 ) -> None:
@@ -144,7 +143,6 @@ def test_execute_gnn_model_tool_accepts_real_gnn(
     assert "error" not in result or isinstance(result["error"], str)
 
 
-@pytest.mark.skipif(not SAMPLE_GNN.exists(), reason="Sample GNN not available")
 def test_execute_pymdp_simulation_tool_accepts_real_gnn(
     registered_tools: Dict[str, Any], tmp_path: Path
 ) -> None:

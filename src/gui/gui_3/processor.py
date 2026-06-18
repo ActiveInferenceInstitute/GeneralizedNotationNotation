@@ -63,15 +63,11 @@ def run_gui(
         if headless or _GUI_BACKEND is None:
             # Generate design artifacts without launching GUI
             if _GUI_BACKEND is None:
-                if headless:
-                    logger.info(
-                        "Gradio not installed; generating recovery artifacts only "
-                        "(expected for default pipeline — use uv sync --extra gui for interactive UI)"
-                    )
-                else:
-                    logger.warning(
-                        "Gradio not available - generating recovery artifacts only"
-                    )
+                logger.info(
+                    "Gradio not available; generating static headless GUI 3 "
+                    "artifacts (expected for default pipeline; use "
+                    "uv sync --extra gui for interactive UI)"
+                )
                 logger.info("Install GUI support with: uv sync --extra gui")
             else:
                 logger.info(
@@ -99,7 +95,7 @@ def run_gui(
                             "backend": _GUI_BACKEND or "none",
                             "status": "headless_mode"
                             if _GUI_BACKEND
-                            else "fallback_mode",
+                            else "static_headless_mode",
                             "analysis": design_analysis,
                             "export_path": str(starter_path),
                             "headless_mode": True,

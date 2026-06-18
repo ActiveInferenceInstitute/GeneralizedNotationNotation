@@ -137,7 +137,6 @@ def test_process_render_tool_handles_empty_directory(
     assert isinstance(result.get("success"), bool)
 
 
-@pytest.mark.skipif(not SAMPLE_GNN.exists(), reason="Sample GNN not available")
 def test_render_gnn_to_format_tool_accepts_real_gnn(
     registered_tools: Dict[str, Any], tmp_path: Path
 ) -> None:

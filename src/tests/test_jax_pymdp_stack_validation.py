@@ -19,6 +19,6 @@ from utils.jax_stack_validation import run_jax_stack_probe_subprocess
 def test_jax_stack_probe_matches_setup() -> None:
     """``utils.jax_stack_validation`` must succeed under ``.venv/bin/python``."""
     if not Path(VENV_PYTHON).exists():
-        pytest.skip(f"No project interpreter at {VENV_PYTHON}; run uv sync")
+        raise AssertionError(f"No project interpreter at {VENV_PYTHON}; run uv sync")
     ok, out = run_jax_stack_probe_subprocess(Path(VENV_PYTHON), PROJECT_ROOT)
     assert ok, out[:4000] if out else "(no output)"

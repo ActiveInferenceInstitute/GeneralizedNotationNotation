@@ -3,7 +3,7 @@
   "launched": false,
   "export_file": "output/22_gui_output/visual_model_gui2.md",
   "gui_type": "visual_matrix_editor",
-  "status": "fallback_mode",
+  "status": "static_headless_mode",
   "backend_reason": "gradio import does not expose Blocks",
   "visual_data_file": "output/22_gui_output/visual_matrices.json",
   "features": [

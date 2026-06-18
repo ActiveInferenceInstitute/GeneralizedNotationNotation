@@ -26,7 +26,7 @@ class TestSAPFCodeValidation:
         try:
             from audio.sapf.sapf_gnn_processor import validate_sapf_code
         except ImportError:
-            pytest.skip("SAPF validation not available")
+            raise AssertionError("SAPF validation not available")
 
         valid_code = """
 ; Valid SAPF code
@@ -47,7 +47,7 @@ final_audio play
         try:
             from audio.sapf.sapf_gnn_processor import validate_sapf_code
         except ImportError:
-            pytest.skip("SAPF validation not available")
+            raise AssertionError("SAPF validation not available")
 
         # Test empty code
         is_valid, issues = validate_sapf_code("")
@@ -85,7 +85,7 @@ class TestSAPFStandaloneFunctions:
         try:
             from audio.sapf.sapf_gnn_processor import convert_gnn_to_sapf
         except ImportError:
-            pytest.skip("SAPF conversion function not available")
+            raise AssertionError("SAPF conversion function not available")
 
         gnn_content = """
 ## ModelName
@@ -114,7 +114,7 @@ Static
         try:
             from audio.sapf.audio_generators import generate_oscillator_audio
         except ImportError:
-            pytest.skip("SAPF oscillator function not available")
+            raise AssertionError("SAPF oscillator function not available")
 
         audio = generate_oscillator_audio(440.0, 0.5, 1.0, 44100, "sine")
 
@@ -129,7 +129,7 @@ Static
         try:
             from audio.sapf.audio_generators import apply_envelope
         except ImportError:
-            pytest.skip("SAPF envelope function not available")
+            raise AssertionError("SAPF envelope function not available")
 
         # Create test audio
         test_audio = np.ones(44100, dtype=np.float32)  # 1 second of constant signal
@@ -148,7 +148,7 @@ Static
         try:
             from audio.sapf.audio_generators import mix_audio_channels
         except ImportError:
-            pytest.skip("SAPF mixing function not available")
+            raise AssertionError("SAPF mixing function not available")
 
         # Create test audio channels
         channel1 = np.ones(1000) * 0.5

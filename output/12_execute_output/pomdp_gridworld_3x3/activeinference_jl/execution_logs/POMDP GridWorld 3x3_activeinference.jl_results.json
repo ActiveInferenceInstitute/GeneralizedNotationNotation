@@ -5,8 +5,8 @@
   "script_path": "output/11_render_output/pomdp_gridworld_3x3/activeinference_jl/POMDP GridWorld 3x3_activeinference.jl",
   "success": true,
   "return_code": 0,
-  "execution_time": 10.428846,
-  "timestamp": "2026-06-18T07:53:23.802569",
+  "execution_time": 9.351349,
+  "timestamp": "2026-06-18T09:05:09.391758",
   "simulation_data": {
     "traces": [],
     "free_energy": [
@@ -410,10 +410,10 @@
     "stderr_length": 0,
     "output_directory": "output/12_execute_output/pomdp_gridworld_3x3/activeinference_jl"
   },
-  "execution_time_mean": 10.428846,
+  "execution_time_mean": 9.351349,
   "execution_time_std": 0.0,
   "execution_time_samples": [
-    10.428846
+    9.351349
   ],
   "collected_outputs": {
     "visualizations": [],

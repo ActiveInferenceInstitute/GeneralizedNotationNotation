@@ -1,19 +1,19 @@
 # EXPLAIN_MODEL
 
-Okay, let’s dissect this GNN specification for the “POMDP GridWorld 3x3” – a fascinating example designed for strict cross-framework validation within Active Inference research. Here's a detailed analysis:
+Okay, let’s dissect this GNN specification for the “POMDP GridWorld 3x3” model. This is a carefully constructed Active Inference model designed to simulate a simple gridworld navigation problem with noisy observations and an agent actively trying to minimize its uncertainty.
 
 **1. Model Purpose:**
 
-This GNN specification represents a simplified, discrete grid world environment where an agent must navigate to a goal state (marked as ‘8’ in the 3x3 grid). It’s designed to test and validate Active Inference models by providing a controlled setting for learning optimal policies under noisy observations and uncertainty about the underlying state.  Essentially, it's a miniature version of a classic reinforcement learning problem framed within an Active Inference paradigm.
+This model represents a fundamental problem in robotics, artificial intelligence, and cognitive science: *navigation within an uncertain environment*. Specifically, it’s built for strict cross-framework validation – meaning it's designed to be easily tested against other models of similar design, facilitating comparisons and ensuring consistent results across different implementations.  It mimics the scenario where a robot or agent needs to find a goal state in a 3x3 grid while dealing with imperfect information about its surroundings.
 
 **2. Core Components:**
 
-* **Hidden States (s_f0, s_f1, ... s_f8):** These represent the agent’s belief about its location on the 3x3 grid.  Each state *s<sub>f</sub>* is a probability distribution over the nine grid cells. This means that at any given time, the agent doesn't know exactly where it is; instead, it has a *belief* – a probability assigned to each cell indicating how likely it is to be in that location. The ‘f’ suffix indicates this is a factor (a hidden state).
-* **Observations (o_m0, o_m1, ... o_m8):** These are the noisy observations the agent receives about its environment.  The model specifies 9 observation modalities (indexed by *m*), each potentially providing information about one or more grid cells. The values in the `o` array represent the strength of these observations – likely scaled to account for noise.
-* **Actions/Controls (u_c0, π_c0, ...):**  The agent has five discrete actions: ‘up’, ‘down’, ‘left’, ‘right’, and ‘stay’. The `u` variable represents the chosen action at each time step, while `π` is the policy distribution – a probability over these actions. This allows for exploration of different strategies.
+*   **Hidden States (s[9,1]):** These represent the agent’s belief about its location within the 3x3 grid.  The `s[9,1]` tensor is a *distribution* over the nine possible cell locations in the grid. Each element of this vector represents the probability that the agent is located in a specific cell. The dimensions (9x1) indicate there are 9 cells and 1 dimension representing the probability distribution across those cells. This is crucial for Active Inference – the agent doesn’t know its exact location, but it *believes* it's somewhere within the grid.
+
+*   **Observations (o[9,1]):** These represent what the agent perceives about its environment. The `o[9,1]` tensor is a *discrete* observation of one cell at a time. Each element represents the probability that the agent has observed a specific cell.  The model introduces noise into these observations – meaning the true distribution over hidden states isn't perfectly reflected in the observed data. This simulates real-world sensor limitations.
+
+*   **Actions/Controls (u[1], π[5]):** The agent has five discrete actions it can take: ‘up’, ‘down’, ‘left’, ‘right’, and ‘stay’.  `u[1]` represents the index of the chosen action (0=up, 1=down, etc.). `π[5]` is a *policy distribution* – it defines the probability of choosing each action. The model doesn't just randomly choose actions; it’s learning a policy to maximize its information gain and reach the goal state.
 
 **3. Model Dynamics:**
 
-The model’s dynamics are governed by the following key relationships:
-
-* **Transition (B):** The transition tensor *B* dictates how the agent's belief about its hidden state (*s<sub>prime</sub>*) changes based on the action taken (*u*) and the previous belief (*s*).  Notice that many transitions are set to 0.0,
+The

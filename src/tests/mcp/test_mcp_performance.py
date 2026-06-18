@@ -230,7 +230,7 @@ class TestMCPBenchmarks:
         tools = list_available_tools()
 
         if not tools:
-            pytest.skip("No tools registered")
+            raise AssertionError("No tools registered")
 
         # Measure tool access overhead
         start = time.time()

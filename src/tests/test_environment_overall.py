@@ -4,6 +4,7 @@ Test Environment Overall Tests
 This file contains comprehensive tests for the environment module functionality.
 """
 
+import subprocess
 import sys
 from pathlib import Path
 from typing import Any
@@ -82,12 +83,28 @@ class TestEnvironmentFunctionality:
 
     @pytest.mark.slow
     @pytest.mark.unit
-    def test_dependency_installation(self) -> None:
-        """Test dependency installation functionality."""
+    def test_dependency_installation(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        """Dependency installation must request the maintained dev test extras."""
         from setup import install_dependencies
+        from setup import uv_management
 
-        result = install_dependencies(verbose=False)
+        commands: list[list[str]] = []
+
+        def fake_run(command: list[str], **kwargs: Any) -> subprocess.CompletedProcess[str]:
+            commands.append([str(part) for part in command])
+            return subprocess.CompletedProcess(command, 0, stdout="Python 3.12.0", stderr="")
+
+        monkeypatch.setattr(uv_management.subprocess, "run", fake_run)
+        monkeypatch.setattr(
+            uv_management,
+            "get_installed_package_versions",
+            lambda verbose=False: {},
+        )
+
+        result = install_dependencies(verbose=False, dev=True)
         assert isinstance(result, bool)
+        assert result is True
+        assert any(command[1:4] == ["sync", "--extra", "dev"] for command in commands)
 
     @pytest.mark.unit
     def test_python_version_check(self) -> None:
@@ -134,8 +151,8 @@ def test_environment_module_completeness() -> None:
 
         for component in required_components:
             assert hasattr(setup, component), f"Missing component: {component}"
-    except ImportError:
-        pytest.skip("Environment module not available")
+    except ImportError as exc:
+        raise AssertionError("Environment module must be importable") from exc
 
 
 @pytest.mark.slow

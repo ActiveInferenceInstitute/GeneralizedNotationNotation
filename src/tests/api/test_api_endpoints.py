@@ -5,21 +5,14 @@ from typing import Any
 
 import pytest
 
-# Import the API app factory
-try:
-    from api.app import FASTAPI_AVAILABLE, create_app
-except ImportError:
-    try:
-        from api.app import FASTAPI_AVAILABLE, create_app
-    except ImportError:
-        FASTAPI_AVAILABLE = False
+from api.app import FASTAPI_AVAILABLE, create_app
 
 
-@pytest.mark.skipif(not FASTAPI_AVAILABLE, reason="FastAPI not installed")
 def test_api_health_endpoint() -> Any:
     """Test the health check endpoint."""
     from fastapi.testclient import TestClient
 
+    assert FASTAPI_AVAILABLE is True
     app = create_app()
     client = TestClient(app)
 
@@ -31,7 +24,6 @@ def test_api_health_endpoint() -> Any:
     assert "version" in data
 
 
-@pytest.mark.skipif(not FASTAPI_AVAILABLE, reason="FastAPI not installed")
 def test_api_list_runs_empty() -> Any:
     """Test listing runs when none have been submitted."""
     from fastapi.testclient import TestClient
@@ -47,7 +39,6 @@ def test_api_list_runs_empty() -> Any:
     assert isinstance(response.json(), dict)
 
 
-@pytest.mark.skipif(not FASTAPI_AVAILABLE, reason="FastAPI not installed")
 def test_api_submit_run_invalid_payload() -> Any:
     """Test submitting a run with invalid JSON."""
     from fastapi.testclient import TestClient
@@ -60,7 +51,6 @@ def test_api_submit_run_invalid_payload() -> Any:
     assert response.status_code == 422
 
 
-@pytest.mark.skipif(not FASTAPI_AVAILABLE, reason="FastAPI not installed")
 def test_api_submit_run_success() -> Any:
     """Test successful run submission."""
     from fastapi.testclient import TestClient
@@ -102,7 +92,6 @@ def test_api_submit_run_success() -> Any:
             api_app._execute_pipeline = orig_execute
 
 
-@pytest.mark.skipif(not FASTAPI_AVAILABLE, reason="FastAPI not installed")
 def test_api_submit_run_rejects_output_outside_repo() -> None:
     """The run API should validate output_dir as well as target_dir."""
     from fastapi.testclient import TestClient
@@ -119,7 +108,6 @@ def test_api_submit_run_rejects_output_outside_repo() -> None:
     assert "Output directory" in response.json()["detail"]
 
 
-@pytest.mark.skipif(not FASTAPI_AVAILABLE, reason="FastAPI not installed")
 def test_api_submit_run_stores_normalized_output_dir(monkeypatch: Any) -> None:
     """Queued run metadata should preserve the caller-selected output dir."""
     from fastapi.testclient import TestClient

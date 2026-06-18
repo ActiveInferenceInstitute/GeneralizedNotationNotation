@@ -10,7 +10,7 @@ real pymdp 1.0.0 (JAX-first) under the hood.
 
 Model:        POMDP GridWorld 3x3
 Description:  
-Generated:    2026-06-18 07:53:05
+Generated:    2026-06-18 09:04:51
 
 State Space:
   - Hidden States: 9

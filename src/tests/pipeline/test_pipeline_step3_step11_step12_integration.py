@@ -36,7 +36,7 @@ class TestStep3ParseProducesModel:
         try:
             from gnn.parser import GNNParsingSystem
         except ImportError:
-            pytest.skip("GNN parser not available")
+            raise AssertionError("GNN parser not available")
         parser = GNNParsingSystem()
         with tempfile.NamedTemporaryFile(suffix=".md", mode="w", delete=False) as f:
             f.write(MINIMAL_GNN_CONTENT)
@@ -52,7 +52,7 @@ class TestStep3ParseProducesModel:
         try:
             from gnn.parser import GNNParsingSystem
         except ImportError:
-            pytest.skip("GNN parser not available")
+            raise AssertionError("GNN parser not available")
         parser = GNNParsingSystem()
         with tempfile.NamedTemporaryFile(suffix=".md", mode="w", delete=False) as f:
             f.write(MINIMAL_GNN_CONTENT)
@@ -70,11 +70,11 @@ class TestStep3ParseProducesModel:
     def test_existing_gnn_file_parses_without_exception(self) -> Any:
         """Real GNN input files parse successfully."""
         if not GNN_FILE_PATH.exists():
-            pytest.skip(f"Sample GNN file not found: {GNN_FILE_PATH}")
+            raise AssertionError(f"Sample GNN file not found: {GNN_FILE_PATH}")
         try:
             from gnn.parser import GNNParsingSystem
         except ImportError:
-            pytest.skip("GNN parser not available")
+            raise AssertionError("GNN parser not available")
         parser = GNNParsingSystem()
         result = parser.parse_file(GNN_FILE_PATH)
         assert result is not None
@@ -124,7 +124,7 @@ class TestStep11RenderConsumesParseOutput:
         try:
             from render.jax.jax_renderer import _extract_gnn_matrices
         except ImportError:
-            pytest.skip("jax_renderer not available")
+            raise AssertionError("jax_renderer not available")
         result = _extract_gnn_matrices(self._minimal_spec())
         assert isinstance(result, dict)
 
@@ -133,7 +133,7 @@ class TestStep11RenderConsumesParseOutput:
         try:
             from render.jax.jax_renderer import render_gnn_to_jax
         except ImportError:
-            pytest.skip("jax_renderer not available")
+            raise AssertionError("jax_renderer not available")
         out_file = tmp_path / "integration_test_model_jax.py"
         success, message, artifacts = render_gnn_to_jax(self._minimal_spec(), out_file)
         if success:

@@ -198,7 +198,7 @@ class TestReportProcessing:
         from report import process_report
 
         if not sample_gnn_files:
-            pytest.skip("No sample GNN files available")
+            raise AssertionError("No sample GNN files available")
 
         logger = logging.getLogger("test_report")
         output_dir = tmp_path / "output"
@@ -218,7 +218,7 @@ class TestReportProcessing:
         from report import analyze_gnn_file
 
         if not sample_gnn_files:
-            pytest.skip("No sample GNN files available")
+            raise AssertionError("No sample GNN files available")
 
         gnn_file = sample_gnn_files["simple"]
         result = analyze_gnn_file(gnn_file)

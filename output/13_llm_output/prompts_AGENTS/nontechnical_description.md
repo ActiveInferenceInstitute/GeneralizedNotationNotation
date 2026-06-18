@@ -6,30 +6,27 @@ Prompt:
 
 Response:
 
-Okay, let’s break down this “GridWorld POMDP Fixture” – it's essentially a carefully designed test case for a really clever type of artificial intelligence. Think of it like setting up a very specific puzzle for a robot to solve, and then meticulously checking if the robot solved it correctly. 
+Okay, let’s break down this “GridWorld POMDP Fixture Agent Guide” in a way that makes sense for anyone – not just someone deeply familiar with computer science or robotics.
 
-**What is it?**
+**What is it? A Test Case for Smart Robots**
 
-This entire setup is built around a simple game: a small grid (like a tiny chessboard) with an agent that needs to navigate it. The agent doesn’t have perfect information – it only *thinks* it knows where things are, and its “thinking” is what we're trying to test. 
+Imagine you're building a robot that needs to navigate a simple maze. This guide provides a specific, controlled environment – a 3x3 grid – designed to test how well a particular “brain” (a GNN model) can make decisions and learn in this situation.  It’s essentially a very carefully crafted experiment for a robot learning system.
 
-**The Core Idea: Active Inference**
+**The Goal: Verifying a Robot's Thinking Process**
 
-This isn’t just about a robot moving around randomly. This setup uses something called "Active Inference."  Here’s the basic idea:
+This entire setup is about *verifying* that a specific AI model – the “GNN” – works correctly across different software platforms. Think of it like running a standardized test to make sure your robot understands and responds appropriately in this maze. 
 
-* **Beliefs:** The agent has beliefs about its surroundings – it *assumes* things are in certain places based on what it sees and what it knows about how the world works.
-* **Action:** Because the agent doesn't know for sure, it takes actions (like moving left or right) to *test* those beliefs.  It’s essentially saying, “If I think there’s a wall here, let me move forward and see if I bump into it.” 
-* **Updating Beliefs:** Based on the results of its actions – whether it hit something, moved freely, etc. – the agent updates its beliefs about where things actually are.  It's constantly refining its understanding of the world.
+**How it Works (Simplified)**
 
-**The Fixture (the Test Case)**
+1. **The Maze:** The "GridWorld" is a simple, digital maze represented as a grid.  The robot starts somewhere within the maze.
+2. **POMDP – A Robot’s Uncertainty:** This isn't just about knowing where the exit *is*. It’s about the robot being uncertain. Maybe it can't see everything clearly, or maybe its sensors aren't perfect. The “POMDP” part means the robot has to deal with this uncertainty while trying to find the best way out.
+3. **The GNN – The Robot’s Brain:**  The "GNN model" is a type of artificial intelligence that learns how to navigate by analyzing information from its sensors (the grid). It's like giving the robot a set of rules and letting it learn through trial and error, but in a very structured way.
+4. **Running the Test:** The instructions (`uv run ...`) tell the system to:
+   * **Render:**  Create a visual representation of the maze and the robot’s movements.
+   * **Execute:** Let the GNN model make decisions about which direction to move based on what it sees in the maze.
+   * **Analyze:**  Look at how well the GNN is performing – is it getting closer to the exit? 
+   * **Visualize:** Create graphs and animations that show the robot's journey and its decision-making process.
 
-This “fixture” is a specific version of this game that’s been created to rigorously test how well an AI model can perform Active Inference. It has:
+**Key Pieces of Information**
 
-* **A Defined Grid:** A small, 3x3 grid where the agent operates.
-* **Specific Rules:**  The rules of the game are fixed – how the agent moves and what happens when it interacts with things on the grid.
-* **Pre-Set Data:** The model uses pre-defined data (the “B” matrix) to describe how the world changes based on the agent’s actions. This ensures a consistent test environment.
-
-**How It's Tested – A Multi-Framework Approach**
-
-The really clever part is that this fixture is designed to be tested using *multiple* different AI frameworks:
-
-* **PyMDP, RxInfer.jl, and Active
+* **“Frameworks” (PyMDP, Rx

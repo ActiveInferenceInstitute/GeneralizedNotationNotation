@@ -30,7 +30,7 @@ def require_audio() -> Any:
     try:
         import audio.generator  # noqa: F401
     except ImportError:
-        pytest.skip("audio.generator not available")
+        raise AssertionError("audio.generator not available")
 
 
 class TestGenerateTonalRepresentation:

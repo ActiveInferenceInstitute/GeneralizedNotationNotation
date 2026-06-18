@@ -1,32 +1,21 @@
 # ANALYZE_STRUCTURE
 
-Okay, let's dissect this GNN specification for the "POMDP GridWorld 3x3" with a rigorous, expert-level analysis. This is a well-structured Active Inference model designed to be a robust cross-framework validation fixture.
+Okay, let's dissect this GNN specification for the "POMDP GridWorld 3x3" with a rigorous, expert-level analysis. This is a classic example designed to validate Active Inference principles within a discrete grid world setting.
 
 **1. Graph Structure:**
 
-* **Nodes (Variables):** The GNN defines 14 nodes:
-    * `A` (9x9 float matrix) - Likelihood Matrix
-    * `B` (9x9x5 float tensor) – Transition Tensor
-    * `C` (9 float vector) – Log-Preference Vector
-    * `D` (9 float vector) – Prior over Initial Hidden State
-    * `E` (5 float vector) – Policy Prior over Actions
-    * `s` (9x1 float vector) - Current Hidden State Distribution
-    * `s_prime` (9x1 float vector) - Next Hidden State Distribution
-    * `o` (9x1 int vector) – Current Observation
-    * `π` (5 float vector) – Policy Distribution over Actions
-    * `u` (1x1 int scalar) – Action Index
-    * `G` (π float tensor) – Expected Free Energy per action
-    * `t` (1x1 int scalar) – Discrete Time Step
-* **Edges (Connections):** The connections define the Active Inference relationships:
-    * `D > s`: Prior over initial hidden state influences the current state distribution.
-    * `s - A`: Current state distribution is influenced by the observation likelihood matrix.
-    * `A - o`:  The likelihood of observations depends on the current hidden state.
-    * `s - B`: The current state distribution predicts the next state distribution via transition probabilities.
-    * `B > u`: Transition tensor determines the action selected (based on minimizing expected free energy).
-    * `u > s_prime`: Action taken results in a change to the next hidden state distribution.
-    * `C > G`: Log-preference vector guides the minimization of expected free energy.
-    * `E > π`: Policy prior shapes the policy distribution over actions.
-    * `G > π`: Expected Free Energy influences action selection (policy update).
-    * `π > u`:  Policy distribution determines which action is chosen.
-    * `s > s_prime`: The current state distribution predicts the next state distribution.
+* **Nodes (Variables):** The GNN defines 9 primary variables:
+    * `s` (Hidden State): A 9x1 matrix representing the probability distribution over the 9 grid cells at each time step. This is the core hidden state factor.
+    * `s_prime` (Next Hidden State):  A 9x1 matrix, mirroring `s`, predicting the next hidden state distribution.
+    * `o` (Observation): A 9x1 vector representing the current noisy observation – a single cell's value.
+    * `π` (Policy Vector): A 5x1 vector defining the probability of taking each of the 5 actions (up, down, left, right, stay).
+    * `u` (Action Index): A 1x1 scalar representing the chosen action (0-4).
+    * `G` (Expected Free Energy):  A π x 1 matrix, where each row represents the expected free energy for taking a specific action given the current belief.
+    * `t` (Time Step): A 1x1 scalar tracking the discrete time step.
+    * `A` (Likelihood Matrix): A 9x9x3 float tensor representing the likelihood of observing the observation 'o' given each hidden state configuration. This is a crucial element for Active Inference, quantifying how well different states explain the observation.
+    * `B` (Transition Tensor): A 9x9x5 float tensor defining the transition probabilities between hidden states based on actions.  The specific structure here (next_state, previous_state, action) is standard for POMDPs.
+    * `C` (Log-Preference Vector): A 9x1 vector representing the log-preference for each observation 'o'. This guides the agent toward more preferred observations.
+    * `D` (Prior Over Initial Hidden State): A 9x1 float tensor, providing a prior distribution over the initial hidden state configuration.
+    * `E` (Habit): A 5x1 float vector representing the prior policy – the agent’s tendency to take certain actions regardless of its beliefs.
 
+* **Edges (

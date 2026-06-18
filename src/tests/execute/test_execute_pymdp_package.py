@@ -7,7 +7,9 @@ the correct PyMDP package (inferactively-pymdp) and wrong variants.
 """
 
 import sys
+import subprocess
 from pathlib import Path
+from typing import Any
 
 import pytest
 
@@ -29,9 +31,6 @@ except ImportError as e:
     IMPORT_ERROR = str(e)
 
 
-@pytest.mark.skipif(
-    not PACKAGE_DETECTOR_AVAILABLE, reason="Package detector not available"
-)
 class TestPyMDPPackageDetection:
     """Test PyMDP package detection functionality."""
 
@@ -80,21 +79,34 @@ class TestPyMDPPackageDetection:
         assert isinstance(validation["instructions"], str)
         assert isinstance(validation["can_auto_install"], bool)
 
-    def test_attempt_pymdp_auto_install(self) -> None:
-        """Test auto-installation attempt (may fail if package already installed)."""
-        # This test may fail if package is already installed, which is fine
+    def test_attempt_pymdp_auto_install(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """Auto-install should report UV sync behavior without mutating the test venv."""
+        from execute.pymdp import package_detector
+
+        commands: list[list[str]] = []
+
+        def fake_run(command: list[str], **kwargs: Any) -> subprocess.CompletedProcess[str]:
+            commands.append([str(part) for part in command])
+            return subprocess.CompletedProcess(
+                command,
+                0,
+                stdout="synchronized",
+                stderr="",
+            )
+
+        monkeypatch.setattr(package_detector.subprocess, "run", fake_run)
+
         success, message = attempt_pymdp_auto_install(use_uv=True)
 
         assert isinstance(success, bool)
         assert isinstance(message, str)
-        # If already installed, success might be True or False
-        # Either way, we should get a message
+        assert success is True
         assert len(message) > 0
+        assert commands == [["uv", "sync"]]
 
 
-@pytest.mark.skipif(
-    not PACKAGE_DETECTOR_AVAILABLE, reason="Package detector not available"
-)
 class TestPyMDPPackageDetectionIntegration:
     """Integration tests for package detection."""
 
@@ -141,9 +153,6 @@ class TestPyMDPPackageDetectionIntegration:
         )
 
 
-@pytest.mark.skipif(
-    not PACKAGE_DETECTOR_AVAILABLE, reason="Package detector not available"
-)
 class TestPyMDPRealInstallation:
     """Test package detection with real PyMDP installation (if available)."""
 
@@ -170,7 +179,7 @@ class TestPyMDPRealInstallation:
             # PyMDP not installed - detection should reflect this
             detection = detect_pymdp_installation()
             assert detection["installed"] is False
-            pytest.skip("PyMDP not installed - skipping real installation test")
+            raise AssertionError("PyMDP not installed - skipping real installation test")
 
     def test_real_installation_validation(self) -> None:
         """Test validation with real PyMDP installation."""
@@ -188,7 +197,7 @@ class TestPyMDPRealInstallation:
                 assert validation["ready"] is False
                 assert "inferactively-pymdp" in validation["instructions"].lower()
         except ImportError:
-            pytest.skip("PyMDP not installed - skipping real installation test")
+            raise AssertionError("PyMDP not installed - skipping real installation test")
 
     def test_wrong_package_detection(self) -> None:
         """Test that wrong package variant is detected if present."""

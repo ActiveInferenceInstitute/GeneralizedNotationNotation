@@ -27,7 +27,7 @@ class TestRenderingSpeed:
     ) -> Any:
         """Test single file rendering completes quickly."""
         if not sample_gnn_files:
-            pytest.skip("No sample GNN files available")
+            raise AssertionError("No sample GNN files available")
 
         import logging
 
@@ -98,7 +98,7 @@ class TestCodeGenerationPerformance:
     def test_pymdp_generation_speed(self, tmp_path: Any, sample_gnn_files: Any) -> Any:
         """Test PyMDP code generation speed."""
         if not sample_gnn_files:
-            pytest.skip("No sample GNN files available")
+            raise AssertionError("No sample GNN files available")
 
         from render import PyMDPRenderer
 
@@ -120,7 +120,7 @@ class TestCodeGenerationPerformance:
     ) -> Any:
         """Test rendering to multiple frameworks is efficient."""
         if not sample_gnn_files:
-            pytest.skip("No sample GNN files available")
+            raise AssertionError("No sample GNN files available")
 
         from render import PyMDPRenderer, get_supported_frameworks
 
@@ -150,7 +150,7 @@ class TestRenderThroughput:
     ) -> Any:
         """Test batch rendering throughput."""
         if not sample_gnn_files or len(sample_gnn_files) < 2:
-            pytest.skip("Need multiple sample GNN files")
+            raise AssertionError("Need multiple sample GNN files")
 
         import logging
 
@@ -217,7 +217,7 @@ class TestRenderBenchmarks:
     ) -> Any:
         """Benchmark code generation."""
         if not sample_gnn_files:
-            pytest.skip("No sample GNN files available")
+            raise AssertionError("No sample GNN files available")
 
         from render import PyMDPRenderer
 
@@ -256,7 +256,7 @@ class TestRenderMemoryPerformance:
         requiring psutil. Fresh renderer instances mirror typical per-file pipeline use.
         """
         if not sample_gnn_files:
-            pytest.skip("No sample GNN files available")
+            raise AssertionError("No sample GNN files available")
 
         from render import PyMDPRenderer
 

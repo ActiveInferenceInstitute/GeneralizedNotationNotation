@@ -1089,10 +1089,12 @@ def _extract_simulation_metrics(
         raw_path = Path(str(path_value))
         candidates = [raw_path]
         if not raw_path.is_absolute():
-            candidates = [
-                execution_output_dir / raw_path,
-                execution_output_dir.parent / raw_path,
-            ]
+            candidates.extend(
+                [
+                    execution_output_dir / raw_path,
+                    execution_output_dir.parent / raw_path,
+                ]
+            )
         for candidate in candidates:
             try:
                 resolved = candidate.resolve()
@@ -1107,6 +1109,31 @@ def _extract_simulation_metrics(
         )
         return None
 
+    def _derive_framework_output_dir(detail: Dict[str, Any]) -> Path | None:
+        """Derive the current-run model/framework output directory from Step 12 details."""
+        impl_dir = _resolve_current_output_path(detail.get("implementation_directory"))
+        if impl_dir and impl_dir.exists():
+            return impl_dir
+
+        for path_key in ("structured_result_file", "output_file", "simulation_data"):
+            artifact_path = _resolve_current_output_path(detail.get(path_key))
+            if not artifact_path:
+                continue
+            candidate = artifact_path if artifact_path.is_dir() else artifact_path.parent
+            if candidate.name == "execution_logs":
+                candidate = candidate.parent
+            if candidate.exists():
+                return candidate
+
+        model_name = detail.get("model_name")
+        if model_name:
+            candidate = execution_output_dir / str(model_name) / framework.lower().replace(
+                ".", "_"
+            ).replace(" ", "_")
+            if candidate.exists():
+                return candidate
+        return None
+
     for detail in details:
         framework_key = framework.lower().replace(".", "_").replace(" ", "_")
         # Collect execution time from the detail record
@@ -1117,7 +1144,7 @@ def _extract_simulation_metrics(
             logger.debug("  [%s] Skipping non-successful execution detail", framework)
             continue
 
-        impl_dir = _resolve_current_output_path(detail.get("implementation_directory"))
+        impl_dir = _derive_framework_output_dir(detail)
         if not impl_dir or not impl_dir.exists():
             logger.debug(
                 "  [%s] implementation directory missing or outside current output tree",

@@ -59,7 +59,7 @@ def _normalize_generate_animations(
     """Normalize Step 16 animation flags.
 
     ``generate_animations`` is the canonical contract. ``no_animations`` is
-    accepted only as a legacy inverse when the canonical key is absent.
+    accepted only as a compatibility inverse when the canonical key is absent.
     """
     has_canonical = kwargs.get("generate_animations") is not None
     has_legacy = kwargs.get("no_animations") is not None
@@ -75,10 +75,10 @@ def _normalize_generate_animations(
             if legacy_generate != generate_animations:
                 raise ValueError(
                     "Ambiguous animation flags: generate_animations conflicts with "
-                    "legacy no_animations; use generate_animations as source of truth"
+                    "compatibility no_animations; use generate_animations as source of truth"
                 )
             logger.warning(
-                "Both generate_animations and legacy no_animations supplied; "
+                "Both generate_animations and compatibility no_animations supplied; "
                 "using generate_animations=%s",
                 generate_animations,
             )
@@ -90,7 +90,7 @@ def _normalize_generate_animations(
             kwargs["no_animations"], "no_animations"
         )
         logger.warning(
-            "Legacy no_animations supplied; normalized to generate_animations=%s",
+            "Compatibility no_animations supplied; normalized to generate_animations=%s",
             generate_animations,
         )
         return generate_animations
@@ -124,11 +124,29 @@ def _scope_from_execution_summary(
     if not isinstance(details, list):
         details = []
 
+    successful_detail_frameworks: set[str] = set()
     for detail in details:
         if not isinstance(detail, dict):
             continue
-        if detail.get("framework") and not has_requested_frameworks:
-            frameworks.add(_normalize_framework_name(detail["framework"]))
+        framework = (
+            _normalize_framework_name(detail["framework"])
+            if detail.get("framework")
+            else None
+        )
+        has_result_pointer = bool(
+            detail.get("structured_result_file")
+            or detail.get("simulation_data")
+            or detail.get("output_file")
+        )
+        if (
+            framework
+            and detail.get("success", False)
+            and not detail.get("skipped", False)
+            and has_result_pointer
+        ):
+            successful_detail_frameworks.add(framework)
+        if framework and not has_requested_frameworks:
+            frameworks.add(framework)
         if detail.get("model_name"):
             models.add(str(detail["model_name"]))
         script_path = detail.get("script_path") or detail.get("script")
@@ -140,6 +158,9 @@ def _scope_from_execution_summary(
                     if not has_requested_frameworks:
                         frameworks.add(part)
                     break
+
+    if successful_detail_frameworks:
+        frameworks = successful_detail_frameworks
 
     return {
         "frameworks": frameworks or None,

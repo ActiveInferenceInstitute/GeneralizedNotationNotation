@@ -5,8 +5,8 @@
   "script_path": "output/11_render_output/pomdp_gridworld_3x3/rxinfer/POMDP GridWorld 3x3_rxinfer.jl",
   "success": true,
   "return_code": 0,
-  "execution_time": 6.579807,
-  "timestamp": "2026-06-18T07:53:12.025270",
+  "execution_time": 6.349163,
+  "timestamp": "2026-06-18T09:04:58.246990",
   "simulation_data": {
     "traces": [],
     "free_energy": [
@@ -410,10 +410,10 @@
     "stderr_length": 0,
     "output_directory": "output/12_execute_output/pomdp_gridworld_3x3/rxinfer"
   },
-  "execution_time_mean": 6.579807,
+  "execution_time_mean": 6.349163,
   "execution_time_std": 0.0,
   "execution_time_samples": [
-    6.579807
+    6.349163
   ],
   "collected_outputs": {
     "visualizations": [],

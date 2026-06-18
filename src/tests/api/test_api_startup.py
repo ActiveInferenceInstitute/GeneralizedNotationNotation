@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 """Phase 4.2 regression tests for api (REST module).
 
-Uses real FastAPI TestClient when available,
-skips cleanly when optional deps absent.
+Uses real FastAPI app objects from the default dev environment.
 """
 
 import sys
@@ -17,14 +16,11 @@ if str(SRC) not in sys.path:
 
 
 def _get_app() -> Any:
-    """Return the FastAPI app object, or skip if unavailable."""
-    try:
-        from api import server
-    except ImportError as e:
-        pytest.skip(f"api module unavailable: {e}")
+    """Return the FastAPI app object."""
+    from api import server
+
     app = getattr(server, "app", None)
-    if app is None:
-        pytest.skip("api.server does not expose .app attribute")
+    assert app is not None, "api.server does not expose .app attribute"
     return app
 
 
@@ -53,10 +49,7 @@ def test_api_openapi_schema_is_well_formed() -> Any:
     with 'paths' and 'info' sections per the OpenAPI 3.0 spec."""
     app = _get_app()
     # FastAPI offers .openapi() directly — no need to start a server.
-    try:
-        schema = app.openapi()
-    except Exception as e:
-        pytest.skip(f"App not initialized enough for openapi(): {e}")
+    schema = app.openapi()
     assert isinstance(schema, dict)
     assert "paths" in schema
     assert "info" in schema

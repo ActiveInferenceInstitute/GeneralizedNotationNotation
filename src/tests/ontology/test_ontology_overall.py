@@ -140,7 +140,7 @@ def test_ontology_module_completeness() -> Any:
         for component in required_components:
             assert hasattr(ontology, component), f"Missing component: {component}"
     except ImportError:
-        pytest.skip("Ontology module not available")
+        raise AssertionError("Ontology module not available")
 
 
 @pytest.mark.slow

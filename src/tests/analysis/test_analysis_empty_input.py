@@ -39,7 +39,7 @@ def test_process_analysis_returns_2_when_no_gnn_files(
     try:
         from analysis.processor import process_analysis
     except ImportError:
-        pytest.skip(
+        raise AssertionError(
             "analysis.processor not importable (expected when optional deps missing)"
         )
     output_dir = tmp_path / "analysis_output"
@@ -57,7 +57,7 @@ def test_process_analysis_returns_2_when_target_dir_missing(
     try:
         from analysis.processor import process_analysis
     except ImportError:
-        pytest.skip(
+        raise AssertionError(
             "analysis.processor not importable (expected when optional deps missing)"
         )
     output_dir = tmp_path / "analysis_output"

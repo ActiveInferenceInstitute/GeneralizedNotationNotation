@@ -25,6 +25,7 @@
       "success": true,
       "output_file": "output/22_gui_output/visual_model_gui2.md",
       "backend": "none",
+      "status": "static_headless_mode",
       "backend_reason": "gradio import does not expose Blocks",
       "features": [
         "Visual matrix representation and editing",

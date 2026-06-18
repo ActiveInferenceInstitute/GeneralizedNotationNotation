@@ -143,7 +143,7 @@ def test_website_module_completeness() -> Any:
         for component in required_components:
             assert hasattr(website, component), f"Missing component: {component}"
     except ImportError:
-        pytest.skip("Website module not available")
+        raise AssertionError("Website module not available")
 
 
 @pytest.mark.slow

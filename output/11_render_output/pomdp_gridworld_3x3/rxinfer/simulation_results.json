@@ -254,7 +254,7 @@
     "julia_version": "1.12.1",
     "rxinfer_version": "4.6.6",
     "schema_version": "rxinfer_simulation_v1",
-    "generated_at": "2026-06-18T07:53:21.232"
+    "generated_at": "2026-06-18T09:05:06.848"
   },
   "expected_free_energy": [
     3.3550622703395,

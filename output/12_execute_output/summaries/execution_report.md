@@ -1,6 +1,6 @@
 # GNN Script Execution Report
 
-**Generated:** 2026-06-18T07:53:05.638724
+**Generated:** 2026-06-18T09:04:52.080655
 **Target Directory:** input/gnn_files/pomdp_gridworld
 **Output Directory:** output/12_execute_output
 
@@ -28,7 +28,7 @@
 - **Executor:** /Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python
 - **Path:** `output/11_render_output/pomdp_gridworld_3x3/pymdp/POMDP GridWorld 3x3_pymdp.py`
 - **Return Code:** 0
-- **Execution Time:** 2.85 seconds
+- **Execution Time:** 2.70 seconds
 - **Detailed Output:** output/12_execute_output/pomdp_gridworld_3x3/pymdp/execution_logs/POMDP GridWorld 3x3_pymdp.py_execution.log
 
 ### POMDP GridWorld 3x3_pytorch.py - ⏭️ SKIPPED
@@ -44,7 +44,7 @@
 - **Executor:** /Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python
 - **Path:** `output/11_render_output/pomdp_gridworld_3x3/jax/POMDP GridWorld 3x3_jax.py`
 - **Return Code:** 0
-- **Execution Time:** 1.04 seconds
+- **Execution Time:** 0.99 seconds
 - **Detailed Output:** output/12_execute_output/pomdp_gridworld_3x3/jax/execution_logs/POMDP GridWorld 3x3_jax.py_execution.log
 
 ### POMDP GridWorld 3x3_discopy.py - ✅ SUCCESS
@@ -53,7 +53,7 @@
 - **Executor:** /Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python
 - **Path:** `output/11_render_output/pomdp_gridworld_3x3/discopy/POMDP GridWorld 3x3_discopy.py`
 - **Return Code:** 0
-- **Execution Time:** 0.31 seconds
+- **Execution Time:** 0.30 seconds
 - **Detailed Output:** output/12_execute_output/pomdp_gridworld_3x3/discopy/execution_logs/POMDP GridWorld 3x3_discopy.py_execution.log
 
 ### POMDP GridWorld 3x3_bnlearn.py - ⏭️ SKIPPED
@@ -69,7 +69,7 @@
 - **Executor:** julia
 - **Path:** `output/11_render_output/pomdp_gridworld_3x3/rxinfer/POMDP GridWorld 3x3_rxinfer.jl`
 - **Return Code:** 0
-- **Execution Time:** 6.58 seconds
+- **Execution Time:** 6.35 seconds
 - **Detailed Output:** output/12_execute_output/pomdp_gridworld_3x3/rxinfer/execution_logs/POMDP GridWorld 3x3_rxinfer.jl_execution.log
 
 ### POMDP GridWorld 3x3_activeinference.jl - ✅ SUCCESS
@@ -78,7 +78,7 @@
 - **Executor:** julia
 - **Path:** `output/11_render_output/pomdp_gridworld_3x3/activeinference_jl/POMDP GridWorld 3x3_activeinference.jl`
 - **Return Code:** 0
-- **Execution Time:** 10.43 seconds
+- **Execution Time:** 9.35 seconds
 - **Detailed Output:** output/12_execute_output/pomdp_gridworld_3x3/activeinference_jl/execution_logs/POMDP GridWorld 3x3_activeinference.jl_execution.log
 
 ## Next Steps

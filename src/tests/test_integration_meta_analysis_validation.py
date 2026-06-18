@@ -169,7 +169,7 @@ def test_validate_sim_json_unreadable(tmp_path: Path) -> None:
 
 
 def test_compute_meta_statistics_smoke() -> None:
-    pytest.importorskip("numpy")
+    __import__("importlib").import_module("numpy")
     records: list[Any] = [
         SweepRecord(
             "p_N2_T10",
@@ -201,7 +201,7 @@ def test_compute_meta_statistics_smoke() -> None:
 
 def test_compute_meta_statistics_loglog_pymdp_by_t() -> None:
     """At least two N values at fixed T yields a slope entry for that T."""
-    pytest.importorskip("numpy")
+    __import__("importlib").import_module("numpy")
     records: list[Any] = [
         SweepRecord(
             "pymdp_scaling_N2_T100",

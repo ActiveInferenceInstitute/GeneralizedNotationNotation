@@ -37,7 +37,6 @@ except ImportError as e:
     IMPORT_ERROR = str(e)
 
 
-@pytest.mark.skipif(not RENDER_AVAILABLE, reason="Render module not available")
 class TestRenderIntegration:
     """Integration tests for render module."""
 
@@ -150,7 +149,7 @@ B = [[0.9, 0.05, 0.05], [0.05, 0.9, 0.05], [0.05, 0.05, 0.9]]
 
         except Exception as e:
             # Render might fail if dependencies missing, that's ok for integration test
-            pytest.skip(f"Render dependencies not available: {e}")
+            raise AssertionError(f"Render dependencies not available: {e}")
 
     @pytest.mark.integration
     @pytest.mark.slow
@@ -220,10 +219,9 @@ B = [[0.9, 0.05, 0.05], [0.05, 0.9, 0.05], [0.05, 0.05, 0.9]]
 
         except Exception as e:
             # This is an integration test - failures from missing deps are acceptable
-            pytest.skip(f"Render dependencies not available: {e}")
+            raise AssertionError(f"Render dependencies not available: {e}")
 
 
-@pytest.mark.skipif(not RENDER_AVAILABLE, reason="Render module not available")
 class TestRenderOutputStructure:
     """Tests for render output directory structure."""
 
@@ -257,7 +255,7 @@ class TestRenderOutputStructure:
                     )
 
         except Exception as e:
-            pytest.skip(f"Render dependencies not available: {e}")
+            raise AssertionError(f"Render dependencies not available: {e}")
 
     @pytest.mark.unit
     def test_render_creates_documentation(
@@ -277,4 +275,4 @@ class TestRenderOutputStructure:
             # This is informational - not a failure if missing
 
         except Exception as e:
-            pytest.skip(f"Render dependencies not available: {e}")
+            raise AssertionError(f"Render dependencies not available: {e}")

@@ -110,8 +110,8 @@ RxInfer.jl, and ActiveInference.jl schemas and writes per-framework belief GIFs,
 per-framework 3x3 state trajectory GIFs, a side-by-side cross-framework trajectory
 GIF, and `cross_framework/gridworld_analysis_manifest.json`. Use
 `--no-animations` on Step 16 to suppress GIF artifacts. Programmatic callers
-should pass `generate_animations`; legacy `no_animations` is normalized as its
-inverse only when the canonical key is absent.
+should pass `generate_animations`; compatibility `no_animations` is normalized
+as its inverse only when the canonical key is absent.
 
 Return contract: `process_analysis` returns `True` when analysis artifacts are
 produced, `2` for warning-only recovery such as no input, and `False` for hard

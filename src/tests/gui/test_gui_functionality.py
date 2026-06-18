@@ -240,6 +240,7 @@ class TestGUIConfiguration:
             assert summary["results"]["gui_2"]["success"] is True
             assert summary["results"]["gui_1"]["backend"] == "none"
             assert summary["results"]["gui_2"]["backend"] == "none"
+            assert summary["results"]["gui_2"]["status"] == "static_headless_mode"
         finally:
             if original_gradio is None:
                 sys.modules.pop("gradio", None)

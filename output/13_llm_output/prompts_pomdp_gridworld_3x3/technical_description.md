@@ -6,18 +6,23 @@ Prompt:
 
 Response:
 
-Okay, let's break down this GNN specification for the POMDP GridWorld 3x3 model in detail, focusing on its technical aspects and how it relates to Active Inference. This is a meticulously designed example intended for strict cross-framework validation – a key goal of this kind of modeling.
+Okay, let's break down this GNN specification for the POMDP GridWorld 3x3 model in detail, focusing on its technical aspects and how it relates to Active Inference. This is a meticulously designed model intended for strict cross-framework validation – a key goal of Active Inference research.
 
 **1. Overall Model Architecture & Purpose:**
 
-* **Type:** Discrete 3x3 GridWorld POMDP (Partially Observable Markov Decision Process).  This means the agent operates in a grid environment, has limited observability, and must make decisions to achieve a goal while navigating uncertainty.
-* **Framework Validation Focus:** The model is explicitly designed for rigorous testing across different GNN frameworks. This suggests a standardized structure and clear definitions are crucial.
-* **Active Inference Foundation:** At its core, this model embodies Active Inference principles.  The agent isn't just passively receiving observations; it’s *actively* constructing its internal state representation (hidden states) to best explain the incoming sensory data and guide its actions.
+This GNN model represents a discrete POMDP (Partially Observable Markov Decision Process) environment, specifically a 3x3 GridWorld. The core purpose is to train a GNN to learn an optimal policy for navigating this gridworld while dealing with noisy observations.  It’s designed as a benchmark for evaluating and comparing different GNN architectures within the Active Inference framework.
 
-**2. GNN Version & Components (Version 1.0):**
+**2. Key Components & Their Technical Specifications:**
 
-* **GNN v1:** Indicates a specific version of the GNN implementation being used.  Versioning is critical for reproducibility and tracking changes.
-* **StateSpaceBlock:** This block represents the core of the hidden state representation. Let's dissect its elements:
-    * `A[9,9,type=float]`: The *Likelihood Matrix*. This is a crucial element. It defines how likely each possible hidden state configuration (9 cells in this 3x3 grid) is to produce a given observation (`o`).  The values here represent the agent's prior belief about the world’s state.
-    * `B[9,9,5,type=float]`: The *Transition Tensor*. This describes how the hidden states evolve over time based on actions. It’s a 9x9x5 tensor, meaning for each of the 9 hidden states and each of the 5 possible actions (up, down, left, right, stay), it provides a probability distribution over the next hidden state. The `previous_state` component is particularly important in POMDPs – the agent doesn’t just consider the current state but also its belief about the previous state.
-    * `C[9,type=float]`: *Log-Preferences Over Observations*. This tensor encodes the agent's preferences for different observations given a particular hidden state.  
+* **GNN Version & Flags (GNN v1):** This indicates the specific version of the GNN implementation being used.
+* **ModelName (POMDP GridWorld 3x3):** Clearly identifies the environment and its size.
+* **ModelAnnotation:**  This provides crucial context:
+    * **Discrete 3x3 GridWorld POMDP:**  The environment is a discrete grid with 9 cells, making it manageable for training. The POMDP aspect means the agent doesn't have complete knowledge of the state; observations are noisy.
+    * **Strict Cross-Framework Validation:** This highlights the model’s design goal – to be easily testable and comparable across different GNN implementations and Active Inference approaches.
+
+**3. State Space Block (s, s_prime, o):**
+
+This block defines how the agent's internal state is represented and updated:
+    * **A[9,9,type=float] (Likelihood Matrix):** This 9x9 matrix represents the probability of observing a particular cell given the hidden state.  The values are pre-defined (e.g., `(0.85000, ...)`), and this is where the "noisy observation" comes in. The noise isn't explicitly modeled here; it’s assumed to be inherent in how the observations are generated from the underlying hidden state.
+    * **B[9,9,5,type=float] (Transition Tensor):** This 9x9x5 tensor defines the transition dynamics of the environment.  It contains probabilities for:
+        * `next_state`: The probability of transitioning to a specific cell given the current hidden state and

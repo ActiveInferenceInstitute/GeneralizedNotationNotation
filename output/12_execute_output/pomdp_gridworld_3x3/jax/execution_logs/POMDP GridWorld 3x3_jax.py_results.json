@@ -5,8 +5,8 @@
   "script_path": "output/11_render_output/pomdp_gridworld_3x3/jax/POMDP GridWorld 3x3_jax.py",
   "success": true,
   "return_code": 0,
-  "execution_time": 1.040676,
-  "timestamp": "2026-06-18T07:53:10.315339",
+  "execution_time": 0.993259,
+  "timestamp": "2026-06-18T09:04:56.622360",
   "simulation_data": {
     "traces": [],
     "free_energy": [
@@ -227,10 +227,10 @@
     "stderr_length": 0,
     "output_directory": "output/12_execute_output/pomdp_gridworld_3x3/jax"
   },
-  "execution_time_mean": 1.040676,
+  "execution_time_mean": 0.993259,
   "execution_time_std": 0.0,
   "execution_time_samples": [
-    1.040676
+    0.993259
   ],
   "collected_outputs": {
     "visualizations": [],

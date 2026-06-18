@@ -47,7 +47,7 @@ class TestPipelineDiscovery:
                 script_name = str(script)
                 assert script_name.endswith(".py")
         except ImportError:
-            pytest.skip("Pipeline discovery not available")
+            raise AssertionError("Pipeline discovery not available")
         except Exception:
             assert isinstance(scripts, list)
 
@@ -67,7 +67,7 @@ class TestPipelineDiscovery:
                 script_name = str(script)
                 assert script_name.endswith(".py")
         except ImportError:
-            pytest.skip("Pipeline discovery not available")
+            raise AssertionError("Pipeline discovery not available")
         except Exception:
             assert isinstance(scripts, list)
 

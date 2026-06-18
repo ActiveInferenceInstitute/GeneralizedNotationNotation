@@ -22,6 +22,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
+import ast
 from pathlib import Path
 from typing import Any
 
@@ -58,6 +59,29 @@ class TestPipelineScriptDiscovery:
             "Numbered pipeline scripts should stay at or below "
             f"{MAX_NUMBERED_SCRIPT_LINES} lines; move logic/docs into module files: "
             f"{over_limit}"
+        )
+
+        structural_violations: list[tuple[str, str]] = []
+        for path in script_paths:
+            tree = ast.parse(path.read_text(encoding="utf-8"))
+            class_defs = [
+                node.name for node in tree.body if isinstance(node, ast.ClassDef)
+            ]
+            function_defs = [
+                node.name
+                for node in tree.body
+                if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))
+            ]
+            if class_defs:
+                structural_violations.append((path.name, f"classes={class_defs}"))
+            if len(function_defs) > 2:
+                structural_violations.append(
+                    (path.name, f"too_many_functions={function_defs}")
+                )
+
+        assert not structural_violations, (
+            "Numbered scripts must stay thin: no classes and at most two "
+            f"module-level functions per script. Violations: {structural_violations}"
         )
 
     @pytest.mark.unit
@@ -148,7 +172,7 @@ class TestPipelineScriptDiscovery:
         """Test that each pipeline script has proper structure and imports."""
         script_path = SRC_DIR / script_name
         if not script_path.exists():
-            pytest.skip(f"Script {script_name} not found")
+            raise AssertionError(f"Script {script_name} not found")
         content = script_path.read_text()
         assert len(content) > 0, f"Script {script_name} is empty"
         assert content.startswith("#!/usr/bin/env python3"), (
@@ -195,7 +219,7 @@ class TestPipelineScriptImports:
         """Each script should respond to --help without error."""
         script_path = SRC_DIR / script_name
         if not script_path.exists():
-            pytest.skip(f"Script {script_name} not found")
+            raise AssertionError(f"Script {script_name} not found")
         result = subprocess.run(
             [sys.executable, str(script_path), "--help"],
             capture_output=True,
@@ -235,9 +259,9 @@ class TestPipelineScriptExecution:
     ) -> None:
         script_path = SRC_DIR / script_name
         if not script_path.exists():
-            pytest.skip(f"Script {script_name} not found")
+            raise AssertionError(f"Script {script_name} not found")
         if not SMOKE_GNN.exists():
-            pytest.skip(f"Smoke GNN not found: {SMOKE_GNN}")
+            raise AssertionError(f"Smoke GNN not found: {SMOKE_GNN}")
         with tempfile.TemporaryDirectory() as td:
             tmp = Path(td)
             input_dir = tmp / "gnn_in"
@@ -285,9 +309,9 @@ class TestPipelineScriptExecution:
             import execute
             import render
         except ImportError:
-            pytest.skip("Full pipeline modules not available")
+            raise AssertionError("Full pipeline modules not available")
         if not SMOKE_GNN.exists():
-            pytest.skip(f"Smoke GNN not found: {SMOKE_GNN}")
+            raise AssertionError(f"Smoke GNN not found: {SMOKE_GNN}")
         with tempfile.TemporaryDirectory() as td:
             tmp = Path(td)
             input_dir = tmp / "input" / "gnn_files"
@@ -592,7 +616,7 @@ class TestStep15AudioComprehensive:
             assert success
             assert audio_path.exists()
         except Exception as e:
-            pytest.skip(f"SAPF audio backend unavailable: {e}")
+            raise AssertionError(f"SAPF audio backend unavailable: {e}")
 
 
 class TestStep14ReportComprehensive:

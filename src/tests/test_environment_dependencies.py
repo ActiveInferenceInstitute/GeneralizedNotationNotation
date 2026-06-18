@@ -89,23 +89,31 @@ class TestAudioDependencies:
 
     @pytest.mark.fast
     def test_librosa_availability(self) -> Any:
-        """Test librosa availability."""
-        try:
-            import librosa
+        """Test librosa availability or structured optional-backend reporting."""
+        from audio import check_audio_backends
 
-            assert hasattr(librosa, "__version__")
-        except ImportError:
-            pytest.skip("librosa not installed")
+        backends = check_audio_backends()
+        if importlib.util.find_spec("librosa") is None:
+            assert backends["librosa"] == {"available": False, "version": None}
+            return
+        import librosa
+
+        assert hasattr(librosa, "__version__")
+        assert backends["librosa"]["available"] is True
 
     @pytest.mark.fast
     def test_soundfile_availability(self) -> Any:
-        """Test soundfile availability."""
-        try:
-            import soundfile
+        """Test soundfile availability or structured optional-backend reporting."""
+        from audio import check_audio_backends
 
-            assert hasattr(soundfile, "__version__")
-        except ImportError:
-            pytest.skip("soundfile not installed")
+        backends = check_audio_backends()
+        if importlib.util.find_spec("soundfile") is None:
+            assert backends["soundfile"] == {"available": False, "version": None}
+            return
+        import soundfile
+
+        assert hasattr(soundfile, "__version__")
+        assert backends["soundfile"]["available"] is True
 
 
 class TestMLDependencies:
@@ -137,7 +145,7 @@ class TestMLDependencies:
                 or hasattr(pymdp, "__version__")
             ), "pymdp missing expected attributes"
         except ImportError:
-            pytest.skip("pymdp not installed")
+            pytest.fail("pymdp is a required default execution dependency")
 
 
 class TestDependencyVersions:
@@ -180,19 +188,16 @@ class TestDependencyConflicts:
     @pytest.mark.fast
     def test_visualization_imports_compatible(self) -> Any:
         """Test visualization imports are compatible."""
-        try:
-            import matplotlib
+        import matplotlib
 
-            matplotlib.use("Agg")
-            import matplotlib.pyplot as plt
+        matplotlib.use("Agg")
+        import matplotlib.pyplot as plt
 
-            fig, ax = plt.subplots()
-            line_objs = ax.plot([1, 2, 3])
-            assert len(line_objs) == 1, "Expected one line object from plot"
-            assert fig is not None, "Figure should be created"
-            plt.close(fig)
-        except Exception as e:
-            pytest.skip(f"Visualization compatibility issue: {e}")
+        fig, ax = plt.subplots()
+        line_objs = ax.plot([1, 2, 3])
+        assert len(line_objs) == 1, "Expected one line object from plot"
+        assert fig is not None, "Figure should be created"
+        plt.close(fig)
 
 
 class TestOptionalDependencies:

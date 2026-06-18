@@ -155,54 +155,124 @@ def parse_gnn_content(content: str) -> Dict[str, Any]:
         Dictionary with parsed GNN data
     """
     try:
-        # Basic parsing - extract sections and variables
-        sections: dict[Any, Any] = {}
-        variables: list[Any] = []
+        from gnn import parse_gnn_file
+
+        parsed = parse_gnn_file("inline_export_input.md", content=content)
+        raw_sections = parsed.get("sections", {}) if parsed.get("success") else {}
+        raw_variables = parsed.get("variables", []) if parsed.get("success") else []
+        sections = _normalize_export_sections(raw_sections, content)
+        variables = _normalize_export_variables(raw_variables, content)
         connections: list[Any] = []
+        section_iterables: list[Any] = []
+        if isinstance(sections, dict):
+            section_iterables = [
+                section_lines
+                for section_name, section_lines in sections.items()
+                if "connection" in str(section_name).lower()
+            ]
+        else:
+            section_iterables = [content.splitlines()]
 
-        lines = content.split("\n")
-        current_section = None
-
-        for line in lines:
-            line = line.strip()
-            if not line:
-                continue
-
-            # Check for section headers
-            if line.startswith("#"):
-                current_section = line.lstrip("#").strip()
-                sections[current_section] = []
-            elif current_section:
-                sections[current_section].append(line)
-
-                # Extract variables and connections
-                if ":" in line and "=" not in line:
-                    # Variable definition
-                    var_parts = line.split(":", 1)
-                    if len(var_parts) == 2:
-                        variables.append(
-                            {"name": var_parts[0].strip(), "type": var_parts[1].strip()}
-                        )
-                elif "->" in line or "→" in line:
-                    # Connection definition
-                    conn_parts = line.split("->" if "->" in line else "→", 1)
-                    if len(conn_parts) == 2:
-                        connections.append(
-                            {
-                                "source": conn_parts[0].strip(),
-                                "target": conn_parts[1].strip(),
-                            }
-                        )
-
+        for section_lines in section_iterables:
+            if isinstance(section_lines, str):
+                iterable = section_lines.splitlines()
+            else:
+                iterable = section_lines if isinstance(section_lines, list) else []
+            for line in iterable:
+                text = str(line).strip()
+                operator = "->" if "->" in text else "→" if "→" in text else None
+                if not operator:
+                    continue
+                source, target = text.split(operator, 1)
+                connections.append(
+                    {"source": source.strip(), "target": target.strip()}
+                )
         return {
             "sections": sections,
             "variables": variables,
             "connections": connections,
             "raw_content": content,
+            "canonical_parse": parsed,
         }
 
     except Exception as e:
         return {"error": str(e), "raw_content": content}
+
+
+def _normalize_export_sections(sections: Any, content: str) -> Dict[str, List[str]]:
+    """Normalize canonical parser sections for compatibility export formatters."""
+    if isinstance(sections, dict):
+        normalized: Dict[str, List[str]] = {}
+        for name, value in sections.items():
+            if isinstance(value, str):
+                normalized[str(name)] = value.splitlines()
+            elif isinstance(value, list):
+                normalized[str(name)] = [str(item) for item in value]
+            else:
+                normalized[str(name)] = [str(value)]
+        return normalized
+
+    parsed_sections: Dict[str, List[str]] = {}
+    current_name: Optional[str] = None
+    current_lines: List[str] = []
+    for line in content.splitlines():
+        stripped = line.strip()
+        if stripped.startswith("#"):
+            if current_name is not None:
+                parsed_sections[current_name] = current_lines
+            current_name = stripped.lstrip("#").strip() or "Untitled"
+            current_lines = []
+            continue
+        if current_name is not None:
+            current_lines.append(line)
+    if current_name is not None:
+        parsed_sections[current_name] = current_lines
+
+    if isinstance(sections, list):
+        for section_name in sections:
+            parsed_sections.setdefault(str(section_name), [])
+    return parsed_sections
+
+
+def _normalize_export_variables(
+    variables: Any, content: str
+) -> List[Dict[str, str]]:
+    """Normalize canonical parser variables for compatibility graph/XML exporters."""
+    normalized: List[Dict[str, str]] = []
+    if isinstance(variables, list):
+        for variable in variables:
+            if isinstance(variable, dict):
+                normalized.append(
+                    {
+                        "name": str(variable.get("name", "")),
+                        "type": str(variable.get("type", variable.get("var_type", ""))),
+                    }
+                )
+            else:
+                normalized.append({"name": str(variable), "type": ""})
+
+    types_by_name: Dict[str, str] = {}
+    in_variables = False
+    for line in content.splitlines():
+        stripped = line.strip()
+        if stripped.startswith("#"):
+            in_variables = stripped.lstrip("#").strip().lower() == "variables"
+            continue
+        if not in_variables or ":" not in stripped:
+            continue
+        name, var_type = stripped.split(":", 1)
+        types_by_name[name.strip()] = var_type.strip()
+
+    if types_by_name:
+        seen = {item["name"] for item in normalized}
+        for item in normalized:
+            if item["name"] in types_by_name:
+                item["type"] = types_by_name[item["name"]]
+        for name, var_type in types_by_name.items():
+            if name not in seen:
+                normalized.append({"name": name, "type": var_type})
+
+    return normalized
 
 
 def export_model(

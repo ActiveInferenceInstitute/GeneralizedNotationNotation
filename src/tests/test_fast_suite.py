@@ -141,9 +141,9 @@ class TestFastExport:
             export_to_json_gnn(test_data, output_file)
             assert output_file.exists(), "Export file should be created"
         except ImportError:
-            pytest.skip("Export functionality not available")
+            raise AssertionError("Export functionality not available")
         except Exception as e:
-            pytest.skip(f"Export test failed: {e}")
+            raise AssertionError(f"Export test failed: {e}")
 
 
 class TestFastVisualization:
@@ -249,7 +249,7 @@ class TestFastIntegration:
             assert len(content) > 0, "File should have content"
             assert "## ModelName" in content, "Should contain model name"
         except Exception as e:
-            pytest.skip(f"Basic pipeline flow test failed: {e}")
+            raise AssertionError(f"Basic pipeline flow test failed: {e}")
 
     @pytest.mark.integration
     def test_test_environment_setup(self) -> Any:

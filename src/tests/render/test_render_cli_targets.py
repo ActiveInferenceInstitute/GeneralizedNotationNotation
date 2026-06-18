@@ -57,7 +57,6 @@ def _parse_sample() -> dict:
     return spec
 
 
-@pytest.mark.skipif(not SAMPLE_GNN.exists(), reason="Sample GNN not available")
 @pytest.mark.parametrize("target", CLI_TARGETS)
 def test_every_cli_target_dispatches(target: str, tmp_path: Path) -> None:
     gnn_spec = _parse_sample()

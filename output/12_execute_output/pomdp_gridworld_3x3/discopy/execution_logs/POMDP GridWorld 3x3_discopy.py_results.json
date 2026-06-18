@@ -5,8 +5,8 @@
   "script_path": "output/11_render_output/pomdp_gridworld_3x3/discopy/POMDP GridWorld 3x3_discopy.py",
   "success": true,
   "return_code": 0,
-  "execution_time": 0.311177,
-  "timestamp": "2026-06-18T07:53:11.690771",
+  "execution_time": 0.298156,
+  "timestamp": "2026-06-18T09:04:57.923511",
   "simulation_data": {
     "traces": [],
     "free_energy": [],
@@ -55,10 +55,10 @@
     "stderr_length": 0,
     "output_directory": "output/12_execute_output/pomdp_gridworld_3x3/discopy"
   },
-  "execution_time_mean": 0.311177,
+  "execution_time_mean": 0.298156,
   "execution_time_std": 0.0,
   "execution_time_samples": [
-    0.311177
+    0.298156
   ],
   "collected_outputs": {
     "visualizations": [],

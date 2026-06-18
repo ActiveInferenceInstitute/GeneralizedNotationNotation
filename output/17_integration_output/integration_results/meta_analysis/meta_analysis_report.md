@@ -8,12 +8,12 @@
 
 | Framework | Runs | Avg Runtime | Min | Max | Avg ms/step |
 |---|---|---|---|---|---|
-| activeinference_jl | 1 | 10.4s | 10.4s | 10.4s | 695.26 |
+| activeinference_jl | 1 | 9.4s | 9.4s | 9.4s | 623.42 |
 | discopy | 1 | 0.3s | 0.3s | 0.3s | — |
-| jax | 1 | 1.0s | 1.0s | 1.0s | 69.38 |
-| numpyro | 1 | 1.1s | 1.1s | 1.1s | 71.98 |
-| pymdp | 1 | 2.9s | 2.9s | 2.9s | 190.25 |
-| rxinfer | 1 | 6.6s | 6.6s | 6.6s | 438.65 |
+| jax | 1 | 1.0s | 1.0s | 1.0s | 66.22 |
+| numpyro | 1 | 1.1s | 1.1s | 1.1s | 71.81 |
+| pymdp | 1 | 2.7s | 2.7s | 2.7s | 179.89 |
+| rxinfer | 1 | 6.3s | 6.3s | 6.3s | 423.28 |
 
 ## Simulation Quality Metrics
 
@@ -46,11 +46,11 @@ Analysis of generated runner complexity and compute throughput.
 
 | Model | Framework | Throughput (Steps/sec) |
 |---|---|---|
-| T=15 | numpyro | 13.89 |
-| T=15 | pymdp | 5.26 |
-| T=15 | jax | 14.41 |
-| T=15 | rxinfer | 2.28 |
-| T=15 | activeinference_jl | 1.44 |
+| T=15 | numpyro | 13.93 |
+| T=15 | pymdp | 5.56 |
+| T=15 | jax | 15.10 |
+| T=15 | rxinfer | 2.36 |
+| T=15 | activeinference_jl | 1.60 |
 
 ### Code Complexity Scaling
 
@@ -75,14 +75,14 @@ Analysis of generated runner complexity and compute throughput.
 
 | Framework | Runs OK | Median runtime (s) | Mean (s) |
 |---|---|---|---|
-| activeinference_jl | 1 | 10.4288 | 10.4288 |
+| activeinference_jl | 1 | 9.3513 | 9.3513 |
 | bnlearn | 0 | — | — |
-| discopy | 1 | 0.3112 | 0.3112 |
-| jax | 1 | 1.0407 | 1.0407 |
-| numpyro | 1 | 1.0796 | 1.0796 |
-| pymdp | 1 | 2.8537 | 2.8537 |
+| discopy | 1 | 0.2982 | 0.2982 |
+| jax | 1 | 0.9933 | 0.9933 |
+| numpyro | 1 | 1.0771 | 1.0771 |
+| pymdp | 1 | 2.6983 | 2.6983 |
 | pytorch | 0 | — | — |
-| rxinfer | 1 | 6.5798 | 6.5798 |
+| rxinfer | 1 | 6.3492 | 6.3492 |
 
 
 ## Step 3 serialization footprint

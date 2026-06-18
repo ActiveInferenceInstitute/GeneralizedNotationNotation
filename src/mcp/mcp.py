@@ -565,7 +565,7 @@ class MCP:
 
     @staticmethod
     def _strip_legacy_schema_keys(value: Any) -> Any:
-        """Remove non-JSON-schema legacy keys while preserving nested structure."""
+        """Remove non-JSON-schema compatibility keys while preserving nested structure."""
         if isinstance(value, dict):
             return {
                 key: MCP._strip_legacy_schema_keys(item)
@@ -578,7 +578,7 @@ class MCP:
 
     @classmethod
     def _normalize_tool_schema(cls, schema: Dict[str, Any]) -> Dict[str, Any]:
-        """Normalize legacy MCP schemas into JSON-schema object form."""
+        """Normalize compatibility MCP schemas into JSON-schema object form."""
         if not schema:
             return {"type": "object", "properties": {}}
 

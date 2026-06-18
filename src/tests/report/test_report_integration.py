@@ -110,7 +110,7 @@ class TestReportGNNIntegration:
         from report import analyze_gnn_file
 
         if not sample_gnn_files:
-            pytest.skip("No sample GNN files available")
+            raise AssertionError("No sample GNN files available")
 
         gnn_file = list(sample_gnn_files.values())[0]
         result = analyze_gnn_file(gnn_file)
@@ -127,7 +127,7 @@ class TestReportGNNIntegration:
         from report import process_report
 
         if not sample_gnn_files:
-            pytest.skip("No sample GNN files available")
+            raise AssertionError("No sample GNN files available")
 
         logger = logging.getLogger("test_report")
         output_dir = tmp_path / "output"

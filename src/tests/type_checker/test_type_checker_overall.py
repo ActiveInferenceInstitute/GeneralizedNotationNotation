@@ -91,7 +91,6 @@ s[5,1]  # Duplicate!
         assert result["valid"] is False
         assert len(result.get("errors", [])) > 0
 
-    @pytest.mark.skipif(os.getuid() == 0, reason="root can read any file")
     def test_check_unreadable_file_returns_error(self, safe_filesystem: Any) -> Any:
         """Checking a file without read permission should return invalid safely."""
         locked = safe_filesystem.create_file("locked.md", "## ModelName\nLocked\n")

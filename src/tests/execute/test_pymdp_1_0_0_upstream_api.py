@@ -48,17 +48,17 @@ def _require_pymdp_1_0_0() -> Tuple[Any, Any, Any, Any, str]:
         from pymdp import utils
         from pymdp.agent import Agent
     except ImportError:
-        pytest.skip("inferactively-pymdp (>=1.0.0) not installed")
+        raise AssertionError("inferactively-pymdp (>=1.0.0) not installed")
 
     if not hasattr(Agent, "update_empirical_prior"):
-        pytest.skip(
+        raise AssertionError(
             "installed inferactively-pymdp is <1.0.0 and lacks the required JAX API; "
             "upgrade with `uv pip install --upgrade 'inferactively-pymdp>=1.0.0'`"
         )
 
     ver = _inferactively_pymdp_version()
     if not ver:
-        pytest.skip("inferactively-pymdp metadata missing")
+        raise AssertionError("inferactively-pymdp metadata missing")
     return Agent, utils, jnp, jr, ver
 
 

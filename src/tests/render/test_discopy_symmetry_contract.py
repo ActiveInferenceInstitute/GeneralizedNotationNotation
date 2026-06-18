@@ -75,7 +75,7 @@ def test_discopy_generated_script_does_not_install_dependencies() -> None:
 
 def test_discopy_generated_script_exports_permutation_metadata(tmp_path: Path) -> None:
     if importlib.util.find_spec("discopy") is None:
-        pytest.skip("DisCoPy optional dependency is not installed")
+        raise AssertionError("DisCoPy optional dependency is not installed")
     renderer = DisCoPyRenderer(options={})
     code = renderer._generate_discopy_diagram_code(
         {

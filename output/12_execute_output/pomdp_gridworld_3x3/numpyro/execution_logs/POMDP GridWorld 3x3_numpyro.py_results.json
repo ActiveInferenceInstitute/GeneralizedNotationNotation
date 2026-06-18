@@ -5,8 +5,8 @@
   "script_path": "output/11_render_output/pomdp_gridworld_3x3/numpyro/POMDP GridWorld 3x3_numpyro.py",
   "success": true,
   "return_code": 0,
-  "execution_time": 1.079646,
-  "timestamp": "2026-06-18T07:53:06.057812",
+  "execution_time": 1.077094,
+  "timestamp": "2026-06-18T09:04:52.501384",
   "simulation_data": {
     "traces": [],
     "free_energy": [],
@@ -46,7 +46,7 @@
       0
     ],
     "policy": [],
-    "raw_output": "NumPyro POMDP simulation complete: 15 timesteps in 0.672s\nResults saved to: output/12_execute_output/pomdp_gridworld_3x3/numpyro/simulation_data/simulation_results.json\nValidation: {'beliefs_in_range': True, 'beliefs_sum_to_one': True, 'actions_in_range': True, 'all_valid': True}\n",
+    "raw_output": "NumPyro POMDP simulation complete: 15 timesteps in 0.628s\nResults saved to: output/12_execute_output/pomdp_gridworld_3x3/numpyro/simulation_data/simulation_results.json\nValidation: {'beliefs_in_range': True, 'beliefs_sum_to_one': True, 'actions_in_range': True, 'all_valid': True}\n",
     "raw_error": "",
     "beliefs": [
       [
@@ -224,10 +224,10 @@
     "stderr_length": 0,
     "output_directory": "output/12_execute_output/pomdp_gridworld_3x3/numpyro"
   },
-  "execution_time_mean": 1.079646,
+  "execution_time_mean": 1.077094,
   "execution_time_std": 0.0,
   "execution_time_samples": [
-    1.079646
+    1.077094
   ],
   "collected_outputs": {
     "visualizations": [],

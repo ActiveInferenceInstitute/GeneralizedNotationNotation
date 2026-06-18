@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-06-18T07:53:05.042703",
+  "timestamp": "2026-06-18T09:04:51.474153",
   "source_file": "input/gnn_files/pomdp_gridworld/pomdp_gridworld_3x3.md",
   "model_name": "POMDP GridWorld 3x3",
   "pomdp_dimensions": {

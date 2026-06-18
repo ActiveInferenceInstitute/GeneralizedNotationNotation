@@ -380,7 +380,7 @@ class TestMCPDomainTools:
     ) -> None:
         """Each domain tool's backing function must be a named callable (not a lambda)."""
         if tool_name not in all_tools:
-            pytest.skip(
+            raise AssertionError(
                 f"Tool '{tool_name}' not registered — see test_domain_tool_registered"
             )
         tool = all_tools[tool_name]
@@ -422,7 +422,7 @@ class TestMCPToolExecution:
     def test_zero_arg_tool_executes(self, tool_name: str, mcp_initialized: Any) -> None:
         """Each zero-arg tool must execute without exception and return a dict."""
         if tool_name not in mcp_initialized.tools:
-            pytest.skip(f"Tool '{tool_name}' not registered")
+            raise AssertionError(f"Tool '{tool_name}' not registered")
         result = mcp_initialized.execute_tool(tool_name, {})
         assert isinstance(result, dict), (
             f"Tool '{tool_name}' returned {type(result)}, expected dict"

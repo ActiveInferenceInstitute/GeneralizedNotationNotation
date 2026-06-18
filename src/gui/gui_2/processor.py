@@ -76,15 +76,11 @@ def run_gui(
         if headless or _GUI_BACKEND is None:
             # Generate headless artifacts for GUI 2
             if _GUI_BACKEND is None:
-                if headless:
-                    logger.info(
-                        "Gradio not installed; generating recovery artifacts only "
-                        "(expected for default pipeline — use uv sync --extra gui for interactive UI)"
-                    )
-                else:
-                    logger.warning(
-                        "Gradio not available - generating recovery artifacts only"
-                    )
+                logger.info(
+                    "Gradio not available; generating static headless GUI 2 "
+                    "artifacts (expected for default pipeline; use "
+                    "uv sync --extra gui for interactive UI)"
+                )
                 if _GUI_BACKEND_REASON:
                     logger.info(f"GUI backend unavailable: {_GUI_BACKEND_REASON}")
                 logger.info("Install GUI support with: uv sync --extra gui")
@@ -111,7 +107,7 @@ def run_gui(
                     "launched": False,
                     "export_file": str(starter_path),
                     "gui_type": "visual_matrix_editor",
-                    "status": "fallback_mode"
+                    "status": "static_headless_mode"
                     if _GUI_BACKEND is None
                     else "headless_mode",
                     "backend_reason": _GUI_BACKEND_REASON,

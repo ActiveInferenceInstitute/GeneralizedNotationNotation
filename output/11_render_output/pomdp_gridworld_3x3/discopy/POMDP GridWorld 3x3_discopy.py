@@ -2,7 +2,7 @@
 """
 DisCoPy Categorical Diagram Generation
 Generated from GNN Model: POMDP GridWorld 3x3
-Generated: 2026-06-18 07:53:05
+Generated: 2026-06-18 09:04:51
 
 This script creates categorical diagrams representing the Active Inference model
 structure using DisCoPy's compositional framework.
@@ -196,7 +196,7 @@ def export_circuit_data(circuit_dict, analysis_results, output_dir="discopy_diag
     # Export circuit information
     circuit_info = {
         'model_name': 'POMDP GridWorld 3x3',
-        'timestamp': '2026-06-18 07:53:05',
+        'timestamp': '2026-06-18 09:04:51',
         'parameters': {
             'num_states': NUM_STATES,
             'num_observations': NUM_OBSERVATIONS, 

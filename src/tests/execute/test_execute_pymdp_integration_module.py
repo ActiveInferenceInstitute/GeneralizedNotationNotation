@@ -79,7 +79,7 @@ class TestGNNPyMDPIntegration:
     def test_gnn_parsing(self, gnn_file: Any) -> Any:
         """Test GNN file parsing and parameter extraction."""
         if not gnn_file.exists():
-            pytest.skip(f"GNN file not found: {gnn_file}")
+            raise AssertionError(f"GNN file not found: {gnn_file}")
 
         parser = MarkdownGNNParser()
         parsed_data = parser.parse_file(gnn_file)
@@ -98,7 +98,7 @@ class TestGNNPyMDPIntegration:
     def test_pymdp_renderer_exists(self, gnn_file: Any) -> Any:
         """Test PyMDP renderer can be instantiated and has render_file method."""
         if not gnn_file.exists():
-            pytest.skip(f"GNN file not found: {gnn_file}")
+            raise AssertionError(f"GNN file not found: {gnn_file}")
 
         renderer = PyMDPRenderer()
 
@@ -107,10 +107,6 @@ class TestGNNPyMDPIntegration:
         assert hasattr(renderer, "render_directory")
         assert callable(renderer.render_file)
 
-    @pytest.mark.skipif(
-        not jax_pymdp_stack_ok(),
-        reason="JAX + inferactively-pymdp>=1.0 required",
-    )
     def test_pymdp_simulation_creation(self) -> Any:
         """Test PyMDP simulation with GNN-derived parameters."""
         config = _explicit_three_state_config()
@@ -118,10 +114,6 @@ class TestGNNPyMDPIntegration:
         simulation = PyMDPSimulation(config)
         assert simulation is not None
 
-    @pytest.mark.skipif(
-        not jax_pymdp_stack_ok(),
-        reason="JAX + inferactively-pymdp>=1.0 required",
-    )
     def test_pymdp_simulation_run(self) -> Any:
         """Test running a PyMDP simulation."""
         config = _explicit_three_state_config()
@@ -139,7 +131,7 @@ class TestGNNPyMDPIntegration:
     def test_full_integration(self, gnn_file: Any, tmp_path: Any) -> Any:
         """Test full GNN-to-PyMDP integration pipeline."""
         if not gnn_file.exists():
-            pytest.skip(f"GNN file not found: {gnn_file}")
+            raise AssertionError(f"GNN file not found: {gnn_file}")
 
         # Step 1: Render GNN file to PyMDP code
         renderer = PyMDPRenderer()

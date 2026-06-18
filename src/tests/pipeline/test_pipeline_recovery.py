@@ -120,7 +120,7 @@ class TestAsyncAwaitRecovery:
         if not (
             os.getenv("OPENAI_API_KEY") or os.getenv("OLLAMA_DISABLED", "0") == "0"
         ):
-            pytest.skip("No LLM providers available (no API keys and Ollama disabled)")
+            raise AssertionError("No LLM providers available (no API keys and Ollama disabled)")
         maybe_result = analyze_gnn_file_with_llm(sample_gnn_file)
         result = (
             asyncio.run(maybe_result)
@@ -142,7 +142,7 @@ class TestAsyncAwaitRecovery:
         if not (
             os.getenv("OPENAI_API_KEY") or os.getenv("OLLAMA_DISABLED", "0") == "0"
         ):
-            pytest.skip("No LLM providers available (no API keys and Ollama disabled)")
+            raise AssertionError("No LLM providers available (no API keys and Ollama disabled)")
         result = analyze_gnn_file_with_llm(sample_gnn_file)
 
         assert isinstance(result, dict)
@@ -192,7 +192,7 @@ class TestHardwareInitialization:
         devices = initialize_jax_devices()
 
         if not devices:
-            pytest.skip("JAX devices unavailable in this environment")
+            raise AssertionError("JAX devices unavailable in this environment")
         assert str(devices[0])
 
     def test_execution_hardware_recovery(
@@ -231,7 +231,7 @@ class TestResourceManagementRecovery:
         try:
             assert check_disk_space(test_environment, required_mb=1)
         except RuntimeError:
-            pytest.skip("Insufficient disk space on test system")
+            raise AssertionError("Insufficient disk space on test system")
 
 
 class TestErrorReportingRecovery:

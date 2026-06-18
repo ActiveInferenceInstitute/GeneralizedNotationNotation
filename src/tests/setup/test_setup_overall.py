@@ -190,8 +190,10 @@ class TestSetupIntegration:
         """Test setup_environment utility."""
         from setup import setup_environment
 
-        # Should return success (True) or dict with status
-        result = setup_environment()
+        # The default suite runs inside the maintained dev environment. Calling the
+        # core-only default here would run ``uv sync`` without ``--extra dev`` and
+        # prune packages that later tests require in the same pytest process.
+        result = setup_environment(dev=True, skip_jax_test=True)
         assert result is not None
 
     def test_install_dependencies_function(self) -> Any:

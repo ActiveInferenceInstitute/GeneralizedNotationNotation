@@ -29,7 +29,7 @@ def mod() -> Any:
 
         return m
     except ImportError:
-        pytest.skip("render.jax.jax_renderer not importable")
+        raise AssertionError("render.jax.jax_renderer not importable")
 
 
 class TestParseGnnMatrixString:

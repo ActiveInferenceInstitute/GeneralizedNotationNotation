@@ -148,7 +148,7 @@ def test_export_module_completeness() -> None:
         for component in required_components:
             assert hasattr(export, component), f"Missing component: {component}"
     except ImportError:
-        pytest.skip("Export module not available")
+        raise AssertionError("Export module not available")
 
 
 @pytest.mark.slow

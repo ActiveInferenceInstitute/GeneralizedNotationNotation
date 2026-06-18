@@ -8,7 +8,9 @@ This directory contains the maintained GridWorld POMDP fixture used to verify th
 
 - Keep fixtures small enough for strict local and CI runs.
 - Preserve explicit `A/B/C/D/E` matrices and matrix provenance comments.
-- Generated render, execute, and analysis artifacts belong under ignored output trees.
+- Generated render, execute, and analysis artifacts belong under `output/`;
+  public root-output refreshes may be staged only after the POMDP output verifier
+  passes.
 
 ## Public Surfaces
 
@@ -22,7 +24,7 @@ This directory contains the maintained GridWorld POMDP fixture used to verify th
 ## Verification
 
 ```bash
-uv run python src/main.py --only-steps "3,5,8,11,12,16" --target-dir input/gnn_files/pomdp_gridworld --frameworks "pymdp,rxinfer,activeinference_jl" --verbose
+uv run --extra dev python src/main.py --only-steps "3,5,8,11,12,16" --target-dir input/gnn_files/pomdp_gridworld --frameworks "pymdp,rxinfer,activeinference_jl" --verbose
 ```
 
 For public root-output refreshes, replace `output/` with a fresh full-pipeline

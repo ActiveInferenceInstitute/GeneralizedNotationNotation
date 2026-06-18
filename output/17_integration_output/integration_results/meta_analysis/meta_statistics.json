@@ -5,11 +5,11 @@
       "records_total": 1,
       "successful_runs": 1,
       "success_rate": 1.0,
-      "runtime_median_s": 10.428846,
-      "runtime_mean_s": 10.428846,
-      "runtime_min_s": 10.428846,
-      "runtime_max_s": 10.428846,
-      "sum_median_proxy_s": 10.428846
+      "runtime_median_s": 9.351349,
+      "runtime_mean_s": 9.351349,
+      "runtime_min_s": 9.351349,
+      "runtime_max_s": 9.351349,
+      "sum_median_proxy_s": 9.351349
     },
     "bnlearn": {
       "records_total": 1,
@@ -25,41 +25,41 @@
       "records_total": 1,
       "successful_runs": 1,
       "success_rate": 1.0,
-      "runtime_median_s": 0.311177,
-      "runtime_mean_s": 0.311177,
-      "runtime_min_s": 0.311177,
-      "runtime_max_s": 0.311177,
-      "sum_median_proxy_s": 0.311177
+      "runtime_median_s": 0.298156,
+      "runtime_mean_s": 0.298156,
+      "runtime_min_s": 0.298156,
+      "runtime_max_s": 0.298156,
+      "sum_median_proxy_s": 0.298156
     },
     "jax": {
       "records_total": 1,
       "successful_runs": 1,
       "success_rate": 1.0,
-      "runtime_median_s": 1.040676,
-      "runtime_mean_s": 1.040676,
-      "runtime_min_s": 1.040676,
-      "runtime_max_s": 1.040676,
-      "sum_median_proxy_s": 1.040676
+      "runtime_median_s": 0.993259,
+      "runtime_mean_s": 0.993259,
+      "runtime_min_s": 0.993259,
+      "runtime_max_s": 0.993259,
+      "sum_median_proxy_s": 0.993259
     },
     "numpyro": {
       "records_total": 1,
       "successful_runs": 1,
       "success_rate": 1.0,
-      "runtime_median_s": 1.079646,
-      "runtime_mean_s": 1.079646,
-      "runtime_min_s": 1.079646,
-      "runtime_max_s": 1.079646,
-      "sum_median_proxy_s": 1.079646
+      "runtime_median_s": 1.077094,
+      "runtime_mean_s": 1.077094,
+      "runtime_min_s": 1.077094,
+      "runtime_max_s": 1.077094,
+      "sum_median_proxy_s": 1.077094
     },
     "pymdp": {
       "records_total": 1,
       "successful_runs": 1,
       "success_rate": 1.0,
-      "runtime_median_s": 2.853709,
-      "runtime_mean_s": 2.853709,
-      "runtime_min_s": 2.853709,
-      "runtime_max_s": 2.853709,
-      "sum_median_proxy_s": 2.853709
+      "runtime_median_s": 2.698324,
+      "runtime_mean_s": 2.698324,
+      "runtime_min_s": 2.698324,
+      "runtime_max_s": 2.698324,
+      "sum_median_proxy_s": 2.698324
     },
     "pytorch": {
       "records_total": 1,
@@ -75,11 +75,11 @@
       "records_total": 1,
       "successful_runs": 1,
       "success_rate": 1.0,
-      "runtime_median_s": 6.579807,
-      "runtime_mean_s": 6.579807,
-      "runtime_min_s": 6.579807,
-      "runtime_max_s": 6.579807,
-      "sum_median_proxy_s": 6.579807
+      "runtime_median_s": 6.349163,
+      "runtime_mean_s": 6.349163,
+      "runtime_min_s": 6.349163,
+      "runtime_max_s": 6.349163,
+      "sum_median_proxy_s": 6.349163
     }
   },
   "per_cell_best_framework": [],

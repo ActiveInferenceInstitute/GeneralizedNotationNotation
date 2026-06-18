@@ -155,7 +155,7 @@ def test_visualization_module_completeness() -> Any:
         for component in required_components:
             assert hasattr(visualization, component), f"Missing component: {component}"
     except ImportError:
-        pytest.skip("Visualization module not available")
+        raise AssertionError("Visualization module not available")
 
 
 @pytest.mark.slow

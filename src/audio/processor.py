@@ -265,11 +265,9 @@ def _load_execution_summary_telemetries(
         structured_result_file = detail.get("structured_result_file")
         if not isinstance(structured_result_file, str) or not structured_result_file:
             continue
-        structured_path = Path(structured_result_file)
-        if not structured_path.is_absolute():
-            structured_path = (summary_dir / structured_path).resolve()
-        else:
-            structured_path = structured_path.resolve()
+        structured_path = _resolve_execution_summary_artifact(
+            structured_result_file, summary_dir, execution_output_dir
+        )
         try:
             structured_path.relative_to(execution_output_dir.resolve())
         except ValueError:
@@ -285,6 +283,50 @@ def _load_execution_summary_telemetries(
                 (str(structured_path), {"simulation_data": simulation_data})
             )
     return telemetries
+
+
+def _resolve_execution_summary_artifact(
+    path_value: str, summary_dir: Path, execution_output_dir: Path
+) -> Path:
+    """Resolve Step 12 summary artifact paths relative to the execution root.
+
+    Step 12 summaries may contain absolute paths, paths rooted at
+    ``12_execute_output``, paths rooted at the pipeline output directory, or
+    paths relative to ``summaries/``.  Prefer candidates that exist under the
+    execution output root so Step 15 does not synthesize duplicated paths like
+    ``summaries/output/12_execute_output/...``.
+    """
+    raw_path = Path(path_value)
+    execution_root = execution_output_dir.resolve()
+    if raw_path.is_absolute():
+        return raw_path.resolve()
+
+    candidates: list[Path] = []
+    parts = raw_path.parts
+    if execution_output_dir.name in parts:
+        index = parts.index(execution_output_dir.name)
+        suffix = Path(*parts[index + 1 :]) if index + 1 < len(parts) else Path()
+        candidates.append(execution_root / suffix)
+        candidates.append(execution_root.parent / raw_path)
+
+    candidates.extend(
+        [
+            execution_root / raw_path,
+            execution_root.parent / raw_path,
+            summary_dir / raw_path,
+        ]
+    )
+
+    for candidate in candidates:
+        resolved = candidate.resolve()
+        try:
+            resolved.relative_to(execution_root)
+        except ValueError:
+            continue
+        if resolved.exists():
+            return resolved
+
+    return (execution_root / raw_path).resolve()
 
 
 def _dedupe_telemetries(

@@ -38,7 +38,7 @@ class TestMCPToolExecution:
             assert callable(tool_info["function"])
 
         except ImportError:
-            pytest.skip("GNN MCP not available")
+            raise AssertionError("GNN MCP not available")
         except Exception as e:
             # Should handle registration errors gracefully
             assert "error" in str(e).lower() or "import" in str(e).lower()
@@ -61,7 +61,7 @@ class TestMCPToolExecution:
                 assert callable(tool_info["function"])
 
         except ImportError:
-            pytest.skip("Export MCP not available")
+            raise AssertionError("Export MCP not available")
         except Exception as e:
             # Should handle registration errors gracefully
             assert "error" in str(e).lower() or "import" in str(e).lower()
@@ -82,7 +82,7 @@ class TestMCPToolExecution:
             assert callable(tool_info["function"])
 
         except ImportError:
-            pytest.skip("Utils MCP not available")
+            raise AssertionError("Utils MCP not available")
         except Exception as e:
             # Should handle registration errors gracefully
             assert "error" in str(e).lower() or "import" in str(e).lower()

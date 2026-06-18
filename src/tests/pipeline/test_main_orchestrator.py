@@ -195,7 +195,7 @@ class TestStepExecution:
     def test_run_core_step(self) -> None:
         script = SRC_DIR / "3_gnn.py"
         if not script.exists():
-            pytest.skip("3_gnn.py missing")
+            raise AssertionError("3_gnn.py missing")
         with tempfile.TemporaryDirectory() as td:
             outdir = Path(td) / "output"
             target_dir = PROJECT_ROOT / "input" / "gnn_files" / "discrete"

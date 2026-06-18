@@ -6,6 +6,7 @@ import socket
 from typing import Any, cast
 
 import pytest
+import websockets
 
 from gui.websocket_bridge import (
     GUI_WEBSOCKET_MESSAGE_TYPES,
@@ -87,7 +88,6 @@ async def test_gui_bridge_rejects_nonlocal_host() -> None:
 
 @pytest.mark.asyncio
 async def test_gui_bridge_runs_local_websocket_exchange() -> None:
-    websockets = pytest.importorskip("websockets")
     port = _free_local_port()
     initial = [
         GUIWebSocketMessage(

@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-06-18T07:58:46.233926",
+  "timestamp": "2026-06-18T09:10:38.136044",
   "execution_results_dir": "output/12_execute_output/pomdp_gridworld_3x3",
   "framework_results": {
     "rxinfer": {
@@ -398,16 +398,16 @@
         "mean_fe": 0.9777
       },
       "execution_time": {
-        "rxinfer": 6.579807,
-        "numpyro": 1.079646,
-        "activeinference_jl": 10.428846,
-        "pymdp": 2.853709,
-        "jax": 1.040676,
-        "discopy": 0.311177
+        "rxinfer": 6.349163,
+        "numpyro": 1.077094,
+        "activeinference_jl": 9.351349,
+        "pymdp": 2.698324,
+        "jax": 0.993259,
+        "discopy": 0.298156
       },
       "fastest_execution": {
         "framework": "discopy",
-        "time": 0.311177
+        "time": 0.298156
       },
       "success_rates": {
         "rxinfer": true,

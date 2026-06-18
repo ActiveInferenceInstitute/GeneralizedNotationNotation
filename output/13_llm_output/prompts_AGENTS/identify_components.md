@@ -1,22 +1,25 @@
 # IDENTIFY_COMPONENTS
 
-Okay, let's meticulously dissect this GNN specification for the POMDP GridWorld Fixture Agent Guide, applying our expertise in Active Inference, Bayesian inference, and GNN specifications.  This is a classic setup designed to test the core functionality of various probabilistic modeling frameworks – PyMDP, RxInfer.jl, and ActiveInference.jl – within a controlled environment.
+Okay, let’s dissect this GNN specification for the “POMDP GridWorld Fixture Agent Guide” using an Active Inference framework. This is a carefully constructed test case designed to validate the core functionality of several probabilistic modeling libraries (PyMDP, RxInfer.jl, and ActiveInference.jl).
 
-**1. State Variables (Hidden States)**
+**Overall Assessment:** This document describes a simplified POMDP environment – a 3x3 grid world – used for benchmarking GNN models. The emphasis on preserving matrices and provenance suggests a focus on rigorous scientific validation rather than rapid prototyping.  The inclusion of the ontology metadata indicates an intent to integrate Active Inference with knowledge representation and reasoning.
 
-* **Variable Names & Dimensions:** The specification doesn't explicitly define the state variables themselves, but it implies a discrete state space based on the "3x3" gridworld reference. We can reasonably assume the states represent the agent’s location within this grid.
-* **Conceptual Representation:** Each state represents the agent's (x, y) coordinates within the 3x3 grid.  This is a fundamental assumption in many POMDP formulations.
-* **State Space Structure:** The state space is *discrete*, *finite*, and *grid-based*. It consists of 9 possible states: (0,0), (0,1), (0,2), (1,0), (1,1), (1,2), (2,0), (2,1), (2,2).  This is a standard representation for this type of problem.
+**1. State Variables (Hidden States):**
 
+* **Variable Names:** The specification doesn’t explicitly define state variables, but we can infer them from the context:
+    * `s`: Represents the agent's location within the 3x3 grid world.
+* **Dimensions:**  Since it’s a 3x3 grid, the state space is discrete and has dimensions of 9 (3 x 3).
+* **Conceptual Representation:** The hidden state ‘s’ represents the agent’s coordinates (row, column) within the grid. This is a fundamental element in Active Inference – the agent doesn't directly perceive its location; it *infers* it based on observations and actions.
+* **State Space Structure:** Discrete, Finite.  The agent can only occupy one of 9 possible locations at any given time step.
 
-**2. Observation Variables**
+**2. Observation Variables:**
 
-* **Observation Modalities & Meanings:** The specification mentions "render," implying visual observations. We can infer that the agent receives observations based on its current location in the gridworld.
-* **Sensor/Measurement Interpretations:**  The observation is likely a representation of the agent’s *visual perception* – what it sees at its current location. This is inherently noisy and uncertain.
-* **Noise Models / Uncertainty Characterization:** The specification doesn't detail the noise model, but we can reasonably assume that observations are corrupted by Gaussian noise (or similar).  This is typical in POMDPs to represent sensor uncertainty.  The lack of explicit noise parameters suggests a simplified setup for testing purposes.
+* **Observation Modalities:** The observation modality is implicitly the agent’s perception of its environment. We can assume this involves sensing the surrounding grid cells.
+* **Sensor/Measurement Interpretations:**  The agent receives an observation that *potentially* indicates its location, but with noise and uncertainty. This aligns perfectly with Active Inference's core assumption: observations are noisy representations of the true state.
+* **Noise Models / Uncertainty Characterization:** The specification doesn’t detail a specific noise model. However, the use of transition matrices (B) implies that there is inherent uncertainty in how actions affect the agent’s location.  We can assume a Gaussian noise distribution around the true transition dynamics, reflecting the imperfect nature of movement and sensor readings.
 
+**3. Action/Control Variables:**
 
-**3. Action/Control Variables**
-
-* **Available Actions & Effects:** The specification states there are “five actions.” These likely correspond to the four cardinal directions (North, South, East, West) plus potentially "Stay" or "Do Nothing." Each action would move the agent one step in the corresponding direction, subject to grid boundaries.
-* **Control Policies & Decision Variables:** The agent’s control policy is represented by a mapping from its current state
+* **Available Actions:** The specification states “five actions.” These are likely:
+    * `u_1`: Move North
+    * `u_2`: Move
