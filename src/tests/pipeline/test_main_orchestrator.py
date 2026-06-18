@@ -434,6 +434,75 @@ class TestEndToEndIntegration:
         assert _pipeline_exit_code("PARTIAL_SUCCESS") == 2
         assert _pipeline_exit_code("FAILED") == 1
 
+    def test_step_exit_code_two_maps_to_warning_status(self) -> None:
+        """Child exit code 2 should remain warning, not become failed."""
+        from main import _status_from_step_exit_code
+        from utils.error_handling import status_from_exit_code
+
+        assert _status_from_step_exit_code(0) == "SUCCESS"
+        assert _status_from_step_exit_code(0, ["dep warning"]) == (
+            "SUCCESS_WITH_WARNINGS"
+        )
+        assert _status_from_step_exit_code(2) == "SUCCESS_WITH_WARNINGS"
+        assert _status_from_step_exit_code(1) == "FAILED"
+        assert _status_from_step_exit_code(2) == status_from_exit_code(2)
+
+    def test_critical_script_set_comes_from_step_metadata(self) -> None:
+        """Critical script behavior should be driven by StepConfiguration metadata."""
+        from main import CRITICAL_SCRIPTS
+        from utils.argument_utils import StepConfiguration
+
+        expected = {
+            f"{step_name}.py"
+            for step_name, config in StepConfiguration.STEP_CONFIGS.items()
+            if config.get("critical")
+        }
+
+        assert CRITICAL_SCRIPTS == expected
+        assert CRITICAL_SCRIPTS == {
+            "0_template.py",
+            "1_setup.py",
+            "3_gnn.py",
+            "5_type_checker.py",
+            "6_validation.py",
+            "7_export.py",
+            "11_render.py",
+        }
+
+    def test_finalize_pipeline_summary_mixed_noncritical_failure_is_warning(
+        self,
+    ) -> None:
+        """Few non-critical failures produce warning status; critical failures fail."""
+        from datetime import datetime
+
+        from main import _finalize_pipeline_summary
+
+        summary: dict[str, Any] = {
+            "start_time": datetime.now().isoformat(),
+            "steps": [
+                {"status": "SUCCESS"},
+                {"status": "FAILED"},
+                {"status": "SUCCESS_WITH_WARNINGS"},
+                {"status": "SUCCESS"},
+            ],
+            "performance_summary": {
+                "peak_memory_mb": 0.0,
+                "total_steps": 4,
+                "failed_steps": 1,
+                "critical_failures": 0,
+                "successful_steps": 3,
+                "warnings": 1,
+            },
+        }
+
+        _finalize_pipeline_summary(summary)
+
+        assert summary["overall_status"] == "PARTIAL_SUCCESS"
+
+        summary["performance_summary"]["critical_failures"] = 1
+        _finalize_pipeline_summary(summary)
+        assert summary["overall_status"] == "FAILED"
+
     def test_pipeline_summary_step_numbering(self) -> None:
         """Test that pipeline summary uses correct step numbering."""
         # Test that step numbers reflect execution order, not script names

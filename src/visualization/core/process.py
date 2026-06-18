@@ -5,7 +5,7 @@ from __future__ import annotations
 import json
 import logging
 from pathlib import Path
-from typing import Any, Dict, List, Set, cast
+from typing import Any, Dict, List, Set, Union
 
 from advanced_visualization._shared import normalize_connection_format
 from gnn.discovery import is_model_source_path
@@ -50,12 +50,48 @@ def _filter_connections(
     return out
 
 
+def discover_visualization_files(target_dir: Path, recursive: bool = True) -> List[Path]:
+    """Discover visualization inputs with explicit recursive semantics."""
+    if not target_dir.exists() or not target_dir.is_dir():
+        return []
+
+    matcher = target_dir.rglob if recursive else target_dir.glob
+    files = [
+        path
+        for path in matcher("*.md")
+        if path.is_file() and is_model_source_path(path)
+    ]
+    files.extend(path for path in matcher("*.gnn") if path.is_file())
+    return sorted(set(files), key=lambda path: path.relative_to(target_dir).as_posix())
+
+
+def _write_visualization_summary(
+    results_dir: Path,
+    gnn_files: List[Path],
+    visualizations: List[str],
+    warnings: List[str],
+    errors: List[str],
+) -> None:
+    """Write the Step 8 run summary even for warning-only outcomes."""
+    summary: dict[str, Any] = {
+        "processed_files": len(gnn_files),
+        "total_visualizations": len(visualizations),
+        "visualization_files": visualizations,
+        "warnings": warnings,
+        "errors": errors,
+        "success": len(visualizations) > 0,
+    }
+    summary_file = results_dir / "visualization_summary.json"
+    with open(summary_file, "w", encoding="utf-8") as f:
+        json.dump(summary, f, indent=2)
+
+
 def process_visualization(
     target_dir: Path,
     output_dir: Path,
     verbose: bool = False,
     **kwargs: Any,
-) -> bool:
+) -> Union[bool, int]:
     """Process visualization."""
     logger_v = logging.getLogger("visualization")
     try:
@@ -63,24 +99,30 @@ def process_visualization(
 
         results_dir = output_dir
         results_dir.mkdir(parents=True, exist_ok=True)
+        recursive = bool(kwargs.get("recursive", True))
+        logger_v.info("Visualization discovery recursive=%s", recursive)
 
-        gnn_files = [
-            path for path in target_dir.glob("*.md") if is_model_source_path(path)
-        ]
+        gnn_files = discover_visualization_files(target_dir, recursive=recursive)
         if not gnn_files:
-            gnn_files = list(target_dir.glob("*.gnn"))
-        if not gnn_files:
-            log_step_warning(logger_v, "No GNN files found for visualization")
-            return True
+            warning = (
+                f"No GNN files found for visualization in {target_dir} "
+                f"(recursive={recursive})"
+            )
+            log_step_warning(logger_v, warning)
+            _write_visualization_summary(results_dir, [], [], [warning], [])
+            return 2
 
         all_visualizations: List[str] = []
+        processing_errors: List[str] = []
         for gnn_file in gnn_files:
             try:
                 all_visualizations.extend(
                     process_single_gnn_file(gnn_file, results_dir, verbose)
                 )
             except Exception as e:
-                logger_v.error("Error processing %s: %s", gnn_file, e)
+                message = f"Error processing {gnn_file}: {e}"
+                processing_errors.append(message)
+                logger_v.warning(message)
 
         if len(gnn_files) > 1:
             try:
@@ -88,27 +130,29 @@ def process_visualization(
                     generate_combined_visualizations(gnn_files, results_dir, verbose)
                 )
             except Exception as e:
-                logger_v.error("Error generating combined visualizations: %s", e)
+                message = f"Error generating combined visualizations: {e}"
+                processing_errors.append(message)
+                logger_v.warning(message)
 
-        results_summary: dict[str, Any] = {
-            "processed_files": len(gnn_files),
-            "total_visualizations": len(all_visualizations),
-            "visualization_files": all_visualizations,
-            "success": len(all_visualizations) > 0,
-        }
+        all_visualizations = sorted(set(all_visualizations))
+        _write_visualization_summary(
+            results_dir, gnn_files, all_visualizations, [], processing_errors
+        )
 
-        summary_file = results_dir / "visualization_summary.json"
-        with open(summary_file, "w") as f:
-            json.dump(results_summary, f, indent=2)
-
-        if results_summary["success"]:
+        if all_visualizations:
             log_step_success(
                 logger_v, f"Generated {len(all_visualizations)} visualizations"
             )
+            if processing_errors:
+                log_step_warning(
+                    logger_v,
+                    f"Visualization completed with {len(processing_errors)} warning(s)",
+                )
+                return 2
+            return True
         else:
-            log_step_error(logger_v, "No visualizations generated")
-
-        return cast("bool", results_summary["success"])
+            log_step_warning(logger_v, "No visualizations generated")
+            return 2
 
     except Exception as e:
         log_step_error(logger_v, f"Visualization processing failed: {e}")

@@ -148,6 +148,13 @@ logger = setup_step_logging("3_gnn", verbose=True)
 
 **Returns**: `List[str]` - Command-line argument list
 
+#### `audit_step_contracts() -> Dict[str, Any]`
+**Description**: Audit registered step contracts for drift between `STEP_ARGUMENTS`, `StepConfiguration`, parser defaults, and command-builder propagation.
+
+**Returns**: `Dict[str, Any]` - Contract audit summary with per-step mismatches and aggregate status
+
+**Contract**: `StepConfiguration` is the shared source for step defaults and critical-step metadata. Exit codes are canonical across numbered scripts and the main orchestrator: `0=success`, `1=error`, `2=success with warnings/skipped`.
+
 #### `validate_and_convert_paths(args: argparse.Namespace) -> argparse.Namespace`
 **Description**: Validate and convert string paths to Path objects
 

@@ -27,6 +27,11 @@ src/visualization/
 
 **Data path:** When step 3 has written `output/3_gnn_output/{model}/{model}_parsed.json` and it is at least as new as the source `.md`, visualization uses that JSON for variables, connections, parameters, ontology, and `raw_sections`. Otherwise it parses markdown with `parse_gnn_content`.
 
+**Discovery contract:** `process_visualization(..., recursive=True)` searches
+subdirectories for `*.md` / `*.gnn` inputs. `recursive=False` searches only the
+top-level target directory. Discovery is deterministic and exposed as
+`discover_visualization_files`.
+
 ### Visualization Pipeline
 
 ```mermaid
@@ -110,7 +115,8 @@ flowchart LR
 
 | Symbol | Role |
 |--------|------|
-| `process_visualization` | Step-8 batch: all `*.md` / `*.gnn` in `target_dir` → per-model folder under `output_dir` |
+| `process_visualization` | Step-8 batch: discovered `*.md` / `*.gnn` in `target_dir` -> per-model folder under `output_dir`; returns `True`, warning code `2`, or `False` |
+| `discover_visualization_files` | [`core/process.py`](core/process.py): deterministic input discovery honoring `recursive` |
 | `load_visualization_model` | [`core/parsed_model.py`](core/parsed_model.py): JSON-first from step 3, else markdown |
 | `parse_gnn_content` | [`parse/markdown.py`](parse/markdown.py): explicit raw-Markdown parser |
 | `GNNParser` | [`parse/gnn_file_parser.py`](parse/gnn_file_parser.py): file-oriented parse (e.g. multi-file combined chart) |
@@ -196,7 +202,10 @@ No central `config` dict in this module. Use pipeline output layout (so step-3 J
 
 ## Error handling
 
-Failures in network, matrix, or combined branches are isolated per subsection. `process_visualization` returns `True` if the run produced at least one output path in total.
+Failures in network, matrix, or combined branches are isolated per subsection.
+`process_visualization` returns `True` if the run produced at least one output
+path in total, `2` for no-input/no-artifact warning outcomes, and `False` for
+hard processing failures.
 
 ## Tests
 

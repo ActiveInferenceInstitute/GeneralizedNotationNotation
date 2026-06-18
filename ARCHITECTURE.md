@@ -191,7 +191,7 @@ flowchart LR
 
 ## Error Handling
 
-- Exit codes: 0=success, 1=critical error, 2=success with warnings
+- Exit codes: 0=success, 1=error, 2=success with warnings/skipped
 - Continuation policy controlled via config (fail-fast vs continue)
 - Rich diagnostics persisted alongside artifacts
 
@@ -225,7 +225,7 @@ Adding new pipeline steps and modules follows a well-established pattern that en
 - Implement `src/N_newstep.py` following the thin orchestrator pattern
 - Handle argument parsing, logging setup, and output directory management
 - Delegate all domain logic to the module implementation
-- Return standardized exit codes (0=success, 1=critical error, 2=success with warnings)
+- Return standardized exit codes (0=success, 1=error, 2=success with warnings/skipped)
 
 ### 3. **Implement Agent Module**
 

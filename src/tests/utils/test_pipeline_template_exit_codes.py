@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 """Tests for the widened exit-code contract in utils.pipeline_template.
 
-Contract under test (src/utils/pipeline_template.py::_coerce_exit_code):
+Contract under test:
+  canonical wording: 0=success, 1=error, 2=success with warnings/skipped
+  src/utils/pipeline_template.py::_coerce_exit_code delegates to shared helpers.
   bool  -> True→0, False→1
   int   -> passthrough (0, 1, 2, ...); 2 emits a warning log line
   other -> coerced via bool()
@@ -19,6 +21,7 @@ SRC = Path(__file__).resolve().parents[2]
 if str(SRC) not in sys.path:
     sys.path.insert(0, str(SRC))
 
+from utils.error_handling import pipeline_exit_code, status_from_exit_code  # noqa: E402
 from utils.pipeline_template import _coerce_exit_code  # noqa: E402
 
 
@@ -67,3 +70,19 @@ def test_truthy_string_coerces_to_zero(logger: Any) -> Any:
 
 def test_empty_string_coerces_to_one(logger: Any) -> Any:
     assert _coerce_exit_code("", "test_step", logger) == 1
+
+
+def test_shared_status_from_exit_code_contract() -> None:
+    assert status_from_exit_code(0) == "SUCCESS"
+    assert status_from_exit_code(0, ["dependency warning"]) == (
+        "SUCCESS_WITH_WARNINGS"
+    )
+    assert status_from_exit_code(2) == "SUCCESS_WITH_WARNINGS"
+    assert status_from_exit_code(1) == "FAILED"
+
+
+def test_shared_pipeline_exit_code_contract() -> None:
+    assert pipeline_exit_code("SUCCESS") == 0
+    assert pipeline_exit_code("SUCCESS_WITH_WARNINGS") == 2
+    assert pipeline_exit_code("PARTIAL_SUCCESS") == 2
+    assert pipeline_exit_code("FAILED") == 1

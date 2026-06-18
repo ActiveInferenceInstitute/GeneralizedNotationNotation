@@ -7,7 +7,11 @@ Implementation: visualization.core.process, visualization.plotting, visualizatio
 
 from typing import Any
 
-from .core.process import process_single_gnn_file, process_visualization
+from .core.process import (
+    discover_visualization_files,
+    process_single_gnn_file,
+    process_visualization,
+)
 from .matrix.compat import (
     generate_matrix_visualizations,
     parse_matrix_data,
@@ -20,6 +24,7 @@ from .plotting.utils import (
 
 __all__: list[Any] = [
     "process_visualization",
+    "discover_visualization_files",
     "process_single_gnn_file",
     "parse_gnn_content",
     "parse_matrix_data",

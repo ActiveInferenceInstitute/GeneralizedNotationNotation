@@ -44,7 +44,7 @@
 
 ### Public Functions
 
-#### `process_analysis(target_dir: Path, output_dir: Path, logger: Optional[logging.Logger] = None, **kwargs) -> bool`
+#### `process_analysis(target_dir: Path, output_dir: Path, logger: Optional[logging.Logger] = None, **kwargs) -> bool | int`
 **Description**: Main analysis processing function called by orchestrator (16_analysis.py). Performs comprehensive statistical analysis, complexity metrics, and performance benchmarking.
 
 **Parameters**:
@@ -57,10 +57,14 @@
 - `include_quality` (bool, optional): Include quality assessment (default: True)
 - `benchmark_iterations` (int, optional): Number of benchmark iterations (default: 5)
 - `generate_animations` (bool, optional): Generate current-schema GridWorld GIF
-  artifacts (default: True; CLI: `--no-animations` disables this)
+  artifacts (default: True; CLI: `--no-animations` disables this). This is
+  the canonical programmatic key. Legacy callers may pass `no_animations`, but
+  it is normalized as the inverse and conflicts with `generate_animations` are
+  rejected.
 - `**kwargs`: Additional analysis options
 
-**Returns**: `bool` - True if analysis succeeded, False otherwise
+**Returns**: `True` if analysis artifacts were produced, `2` when there is no
+input or other warning-only recovery, and `False` for hard failures.
 
 **Example**:
 ```python

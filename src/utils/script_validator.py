@@ -459,7 +459,7 @@ class PipelineScriptValidator:
                     issue_type="missing_exit_codes",
                     severity="warning",
                     line_number=None,
-                    message="Missing proper exit codes (return 0/1)",
+                    message="Missing proper exit codes (return 0/1/2)",
                     suggestion="Return 0 for success, 1 for failure",
                 )
             )

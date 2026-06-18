@@ -12,7 +12,11 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
-from visualization.core.process import process_single_gnn_file
+from visualization.core.process import (
+    discover_visualization_files,
+    process_single_gnn_file,
+    process_visualization,
+)
 from visualization.graph.network_visualizations import generate_network_visualizations
 
 
@@ -124,3 +128,36 @@ def test_viz_manifest_json_after_process_single_gnn_file(tmp_path: Path) -> None
     if stats_path.is_file():
         stats = json.loads(stats_path.read_text(encoding="utf-8"))
         assert "gnn_edge_orientation" in stats
+
+
+@pytest.mark.unit
+def test_visualization_discovery_honors_recursive_flag(tmp_path: Path) -> None:
+    source = tmp_path / "models"
+    nested = source / "nested"
+    nested.mkdir(parents=True)
+    root_file = source / "root_model.gnn"
+    nested_file = nested / "nested_model.gnn"
+    root_file.write_text("root", encoding="utf-8")
+    nested_file.write_text("nested", encoding="utf-8")
+
+    non_recursive = discover_visualization_files(source, recursive=False)
+    recursive = discover_visualization_files(source, recursive=True)
+
+    assert non_recursive == [root_file]
+    assert recursive == sorted(
+        [root_file, nested_file], key=lambda path: path.relative_to(source).as_posix()
+    )
+
+
+@pytest.mark.unit
+def test_process_visualization_empty_input_returns_warning_code(tmp_path: Path) -> None:
+    source = tmp_path / "empty"
+    source.mkdir()
+    output = tmp_path / "viz_output"
+
+    result = process_visualization(source, output, recursive=False)
+
+    assert result == 2
+    summary = json.loads((output / "visualization_summary.json").read_text())
+    assert summary["processed_files"] == 0
+    assert summary["warnings"]

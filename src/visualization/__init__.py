@@ -28,6 +28,7 @@ from .ontology_visualizer import OntologyVisualizer
 
 # Import processor functions
 from .processor import (
+    discover_visualization_files,
     generate_matrix_visualizations,
     parse_gnn_content,
     parse_matrix_data,
@@ -109,6 +110,7 @@ __all__: list[Any] = [
     "OntologyVisualizer",
     "process_matrix_visualization",
     "process_visualization",
+    "discover_visualization_files",
     "generate_graph_visualization",
     "generate_matrix_visualization",
     "generate_visualizations",

@@ -53,7 +53,8 @@ run_script = create_standardized_pipeline_script(
             "flag": "--no-animations",
             "action": "store_false",
             "default": True,
-            "help": "Disable Step 16 GIF animation artifacts",
+            "dest": "generate_animations",
+            "help": "Disable Step 16 GridWorld GIF animation artifacts (enabled by default)",
         },
     },
 )

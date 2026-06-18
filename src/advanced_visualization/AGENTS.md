@@ -42,7 +42,7 @@
 
 ### Public Functions
 
-#### `process_advanced_viz(target_dir, output_dir, logger, **kwargs) -> bool`
+#### `process_advanced_viz(target_dir, output_dir, logger, **kwargs) -> bool | int`
 
 **Description**: Main advanced visualization processing function called by orchestrator ([9_advanced_viz.py](../9_advanced_viz.py)). Implementation: [processor.py](processor.py).
 
@@ -56,7 +56,9 @@
 - `export_formats` (List[str]): Export formats ["html", "json", "png"], default: ["html", "json"]
 - `**kwargs**: Additional options
 
-**Returns**: `True` if visualization succeeded
+**Returns**: `True` when at least one advanced visualization artifact is
+produced, `2` when the step completes with warning-only recovery such as missing
+Step 3 model data or optional-only skips, and `False` for hard failures.
 
 **Example**:
 
@@ -165,6 +167,10 @@ See [D2_README.md](D2_README.md) for comprehensive D2 integration documentation.
 - `export_formats` (List[str]): Formats to export (default: `["html", "json"]`)
   - Supported: `["html", "json", "png", "svg", "pdf"]`
   - D2 diagrams support: `["svg", "png", "pdf"]`
+
+No model data is a warning-only outcome, not artifact success. `viz_type` and
+`interactive` gate output creation; interactive dashboards are generated only
+when an interactive type is requested and `interactive=True`.
 
 #### D2 Configuration
 

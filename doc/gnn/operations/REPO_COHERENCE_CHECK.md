@@ -71,7 +71,7 @@ For each script `N_[module_name].py`, verify:
 - [ ] **Argument Parsing**: Uses `EnhancedArgumentParser.parse_step_arguments()` or `create_standardized_pipeline_script()`
 - [ ] **Core Logic Delegation**: All domain logic delegated to module functions (e.g., `process_render()`, `process_validation()`)
 - [ ] **No Inline Implementations**: No function definitions > 20 lines in numbered scripts
-- [ ] **Exit Codes**: Returns proper exit codes (0=success, 1=error, 2=warnings)
+- [ ] **Exit Codes**: Returns proper exit codes (0=success, 1=error, 2=success with warnings/skipped)
 - [ ] **Output Directory**: Uses `get_output_dir_for_script()` for centralized output management
 - [ ] **Error Handling**: Uses `log_step_error()`, `log_step_warning()` for structured error reporting
 - [ ] **Visual Logging**: Uses visual logging utilities where appropriate

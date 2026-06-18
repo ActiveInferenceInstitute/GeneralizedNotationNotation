@@ -23,7 +23,7 @@ import logging
 import time
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional, cast
+from typing import Any, Dict, List, Optional, Union, cast
 
 # Import matplotlib for plotting (with recovery for headless environments)
 try:
@@ -168,7 +168,7 @@ def _load_gnn_models(
     if not results_file.exists():
         logger.warning(f"GNN processing results not found at {results_file}")
         # Try to find any parsed JSON files in the GNN output directory
-        parsed_files = list(gnn_output_dir.glob("**/*_parsed.json"))
+        parsed_files = sorted(gnn_output_dir.glob("**/*_parsed.json"))
         logger.info(f"Found {len(parsed_files)} parsed files in {gnn_output_dir}")
         if parsed_files:
             logger.info(f"Found {len(parsed_files)} parsed files, loading directly")
@@ -196,7 +196,12 @@ def _load_gnn_models(
         processed_files = processing_results.get("processed_files", [])
         logger.info(f"Found {len(processed_files)} processed files in results")
 
-        for result in processed_files:
+        for result in sorted(
+            processed_files,
+            key=lambda item: str(
+                item.get("parsed_model_file") or item.get("file_name") or ""
+            ),
+        ):
             if result.get(
                 "parse_success"
             ):  # Note: it's "parse_success" not "parsing_success"
@@ -338,7 +343,7 @@ def process_advanced_viz(
     interactive: bool = True,
     export_formats: Optional[List[str]] = None,
     **kwargs: Any,
-) -> bool:
+) -> Union[bool, int]:
     """
     Main advanced visualization processing function.
 
@@ -352,7 +357,8 @@ def process_advanced_viz(
         **kwargs: Additional arguments
 
     Returns:
-        True if processing succeeded (with possible warnings)
+        True if artifacts were produced, 2 for warning-only/no-data recovery,
+        False for hard failures.
     """
     logger = logger or logging.getLogger(__name__)
     logger.info("=" * 80)
@@ -386,10 +392,10 @@ def process_advanced_viz(
                 logger.warning("No GNN models found for advanced visualization")
                 results.warnings.append("No GNN models found")
                 _save_results(output_dir, results, logger)
-                return True  # Not a failure, just no data
+                return 2  # Not a hard failure, but no artifacts were possible.
 
             # Process each model
-            for model_name, model_data in gnn_models.items():
+            for model_name, model_data in sorted(gnn_models.items()):
                 logger.info(f"Processing advanced visualizations for: {model_name}")
 
                 # Helper to track attempt results
@@ -554,11 +560,11 @@ def process_advanced_viz(
         # 1. At least some visualizations succeeded, OR
         # 2. No attempts were made (no data), OR
         # 3. Only failures are skipped optional features (no actual errors)
-        return (
-            results.successful > 0
-            or results.total_attempts == 0
-            or (results.failed == 0 and results.skipped > 0)
-        )
+        if results.successful > 0:
+            return True
+        if results.total_attempts == 0 or (results.failed == 0 and results.skipped > 0):
+            return 2
+        return False
 
     except Exception as e:
         logger.error(f"Advanced visualization processing failed: {e}")

@@ -5,6 +5,7 @@ This module tests the pipeline's behavior under various error conditions,
 dependency failures, and edge cases to ensure robust operation.
 """
 
+import json
 import subprocess
 import sys
 import tempfile
@@ -86,19 +87,23 @@ class TestFileOperationErrorScenarios:
 
     @pytest.mark.unit
     def test_missing_input_directory(self, temp_directories: Any) -> Any:
-        """Test pipeline behavior when input directory is missing."""
+        """Missing visualization input is a warning, not a hard crash."""
         non_existent_dir = temp_directories["temp_dir"] / "non_existent"
-        try:
-            from visualization import process_visualization
+        from visualization import process_visualization
 
-            result = process_visualization(
-                target_dir=non_existent_dir,
-                output_dir=temp_directories["output_dir"],
-                verbose=True,
-            )
-            assert isinstance(result, bool)
-        except Exception as e:
-            assert "does not exist" in str(e) or "not found" in str(e)
+        result = process_visualization(
+            target_dir=non_existent_dir,
+            output_dir=temp_directories["output_dir"],
+            verbose=True,
+        )
+
+        assert result == 2
+        summary_path = temp_directories["output_dir"] / "visualization_summary.json"
+        summary = json.loads(summary_path.read_text(encoding="utf-8"))
+        assert summary["success"] is False
+        assert summary["processed_files"] == 0
+        assert summary["total_visualizations"] == 0
+        assert summary["warnings"]
 
     @pytest.mark.unit
     def test_readonly_output_directory(self, temp_directories: Any) -> Any:

@@ -42,7 +42,7 @@ flowchart TD
   - Handle argument parsing and logging setup
   - Call modular functions with proper parameters
   - Provide recovery implementations if modules unavailable
-  - Return standardized exit codes (0=success, 1=error)
+  - Return standardized exit codes (0=success, 1=error, 2=success with warnings/skipped)
 
 ### 3. Modular Scripts in Folders
 - **Location**: `src/template/`, `src/setup/`, `src/validation/`, etc.

@@ -38,6 +38,67 @@ _FRAMEWORK_DIR_NAMES: set[Any] = {
 }
 
 
+def _coerce_bool_flag(value: Any, flag_name: str) -> bool:
+    """Coerce bool-like CLI/config values without treating every string as truthy."""
+    if isinstance(value, bool):
+        return value
+    if isinstance(value, int) and value in {0, 1}:
+        return bool(value)
+    if isinstance(value, str):
+        normalized = value.strip().lower()
+        if normalized in {"1", "true", "yes", "on"}:
+            return True
+        if normalized in {"0", "false", "no", "off"}:
+            return False
+    raise ValueError(f"{flag_name} must be a boolean value, got {value!r}")
+
+
+def _normalize_generate_animations(
+    kwargs: Dict[str, Any], logger: logging.Logger
+) -> bool:
+    """Normalize Step 16 animation flags.
+
+    ``generate_animations`` is the canonical contract. ``no_animations`` is
+    accepted only as a legacy inverse when the canonical key is absent.
+    """
+    has_canonical = kwargs.get("generate_animations") is not None
+    has_legacy = kwargs.get("no_animations") is not None
+
+    if has_canonical:
+        generate_animations = _coerce_bool_flag(
+            kwargs["generate_animations"], "generate_animations"
+        )
+        if has_legacy:
+            legacy_generate = not _coerce_bool_flag(
+                kwargs["no_animations"], "no_animations"
+            )
+            if legacy_generate != generate_animations:
+                raise ValueError(
+                    "Ambiguous animation flags: generate_animations conflicts with "
+                    "legacy no_animations; use generate_animations as source of truth"
+                )
+            logger.warning(
+                "Both generate_animations and legacy no_animations supplied; "
+                "using generate_animations=%s",
+                generate_animations,
+            )
+        logger.info("Step 16 GridWorld animations enabled: %s", generate_animations)
+        return generate_animations
+
+    if has_legacy:
+        generate_animations = not _coerce_bool_flag(
+            kwargs["no_animations"], "no_animations"
+        )
+        logger.warning(
+            "Legacy no_animations supplied; normalized to generate_animations=%s",
+            generate_animations,
+        )
+        return generate_animations
+
+    logger.info("Step 16 GridWorld animations enabled: True (default)")
+    return True
+
+
 def _normalize_framework_name(framework: Any) -> str:
     """Normalize framework names used by execution summaries and paths."""
     return str(framework).lower().replace(".", "_").replace(" ", "_")
@@ -236,12 +297,11 @@ def process_analysis(
             "model_comparisons": [],
             "visualization_files": [],
         }
-        generate_animations_arg = kwargs.get("generate_animations")
-        generate_animations = (
-            bool(kwargs.get("no_animations", True))
-            if generate_animations_arg is None
-            else bool(generate_animations_arg)
-        )
+        try:
+            generate_animations = _normalize_generate_animations(kwargs, logger)
+        except ValueError as e:
+            log_step_error(logger, str(e))
+            return False
 
         # Resolve execution results directory once at the top so all branches can reference it
         try:
@@ -260,7 +320,7 @@ def process_analysis(
         if not gnn_files:
             logger.warning("No GNN files found for analysis")
             # Exit-code 2: no input is a warning, not an error. Per CLAUDE.md
-            # "exit codes: 0=success, 1=error, 2=warnings" taxonomy, a missing
+            # "exit codes: 0=success, 1=error, 2=success with warnings/skipped" taxonomy, a missing
             # input dir is "nothing to do" — not a real failure.
             return 2
         else:

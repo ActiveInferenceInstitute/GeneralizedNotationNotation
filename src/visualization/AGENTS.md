@@ -38,18 +38,26 @@
 
 ### Public Functions
 
-#### `process_visualization(target_dir, output_dir, verbose=False, **kwargs) -> bool`
+#### `process_visualization(target_dir, output_dir, verbose=False, **kwargs) -> bool | int`
 **Description**: Main visualization processing function called by orchestrator ([8_visualization.py](../8_visualization.py)). Implementation: [core/process.py](core/process.py).
 
 **Parameters**:
 - `target_dir` (Path): Directory containing GNN files
 - `output_dir` (Path): Output directory for visualizations
 - `verbose` (bool): Enable verbose logging (default: False)
+- `recursive` (bool): When `True`, discover `*.md` / `*.gnn` inputs below
+  nested directories; when `False`, inspect only the target directory itself.
 - `**kwargs`: Additional visualization options
 
-**Returns**: `True` if at least one artifact was generated
+**Returns**: `True` if at least one artifact was generated, `2` for warning-only
+outcomes such as no inputs or no generated artifacts, and `False` for hard
+processing failures.
 
 **Data loading**: [core/parsed_model.py](core/parsed_model.py) `load_visualization_model` prefers `{model}_parsed.json` from step 3; when structured JSON is unavailable, [parse/markdown.py](parse/markdown.py) `parse_gnn_content` provides the explicit raw-Markdown parser path.
+
+**Discovery**: [core/process.py](core/process.py) `discover_visualization_files`
+is the shared helper used by Step 8. It sorts paths deterministically and uses
+recursive matching only when the `recursive` flag is true.
 
 **Example**:
 ```python

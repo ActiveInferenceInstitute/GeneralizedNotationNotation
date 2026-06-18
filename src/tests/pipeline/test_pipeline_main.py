@@ -98,7 +98,7 @@ D: 0.6 0.4
             )  # nosec B603
 
             # Check that pipeline completed (may have warnings but should not fail)
-            # Exit code 0 = success, 1 = warning/non-critical failure, 2 = success with warnings
+            # Exit code 0 = success, 1 = error, 2 = success with warnings/skipped
             assert result.returncode in [0, 1, 2], (
                 f"Pipeline failed with code {result.returncode}: {result.stderr[-500:]}"
             )

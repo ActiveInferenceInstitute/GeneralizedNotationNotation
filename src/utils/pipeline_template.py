@@ -16,6 +16,7 @@ from utils.pipeline import (
     setup_step_logging,
     validate_output_directory,
 )
+from utils.error_handling import coerce_step_exit_code
 from utils.structured_logging import (  # noqa: F401 - standard pipeline imports
     log_step_error,
     log_step_start,
@@ -27,32 +28,67 @@ UTILS_AVAILABLE = True
 
 
 def _create_fallback_parser(
-    description: str, additional_arguments: Optional[Dict[str, Any]] = None
+    description: str,
+    additional_arguments: Optional[Dict[str, Any]] = None,
+    step_name: Optional[str] = None,
 ) -> argparse.ArgumentParser:
     """Create a recovery argument parser with standard arguments."""
     parser = argparse.ArgumentParser(description=description)
+    added_args: set[str] = set()
 
-    # Standard arguments - use None for defaults that get set by pipeline template
-    parser.add_argument(
-        "--target-dir",
-        type=Path,
-        default=None,
-        help="Target directory containing files to process",
-    )
-    parser.add_argument(
-        "--output-dir",
-        type=Path,
-        default=Path("output"),
-        help="Output directory for generated artifacts",
-    )
-    parser.add_argument(
-        "--recursive", action="store_true", help="Process files recursively"
-    )
-    parser.add_argument("--verbose", action="store_true", help="Enable verbose output")
+    try:
+        from utils.argument_utils import ArgumentParser, StepConfiguration
+
+        config_key = (
+            step_name.replace(".py", "")
+            if step_name and step_name.endswith(".py")
+            else step_name
+        )
+        config = StepConfiguration.get_step_config(config_key or "")
+        step_defaults = config.get("defaults", {})
+        for arg_name in config.get("required_args", []) + config.get(
+            "optional_args", []
+        ):
+            arg_def = ArgumentParser.ARGUMENT_DEFINITIONS.get(arg_name)
+            if not arg_def:
+                continue
+            if arg_name in step_defaults:
+                arg_def = arg_def.with_default(step_defaults[arg_name])
+            arg_def.add_to_parser(parser)
+            added_args.add(arg_name)
+    except Exception as exc:
+        logging.warning("Step-config fallback parser setup failed: %s", exc)
+
+    if not added_args:
+        # Standard arguments - use shared defaults when no step config is available.
+        parser.add_argument(
+            "--target-dir",
+            type=Path,
+            default=None,
+            help="Target directory containing files to process",
+        )
+        parser.add_argument(
+            "--output-dir",
+            type=Path,
+            default=Path("output"),
+            help="Output directory for generated artifacts",
+        )
+        parser.add_argument(
+            "--recursive",
+            action=argparse.BooleanOptionalAction,
+            default=True,
+            help="Process files recursively",
+        )
+        parser.add_argument(
+            "--verbose", action="store_true", help="Enable verbose output"
+        )
+        added_args.update({"target_dir", "output_dir", "recursive", "verbose"})
 
     # Add additional arguments if provided
     if additional_arguments:
         for arg_name, arg_config in additional_arguments.items():
+            if arg_name in added_args:
+                continue
             if isinstance(arg_config, dict):
                 # Use custom flag if provided, otherwise default to --{arg_name}
                 config_copy = arg_config.copy()
@@ -96,14 +132,14 @@ def _parse_step_args(
                 unsupported_extra_args,
             )
             return _create_fallback_parser(
-                fallback_parser_description, additional_arguments or {}
+                fallback_parser_description, additional_arguments or {}, step_name
             ).parse_args()
 
         return ArgumentParser.parse_step_arguments(step_name)
     except Exception as e:
         logging.warning(f"Enhanced parser failed for {step_name}, using recovery: {e}")
         return _create_fallback_parser(
-            fallback_parser_description, additional_arguments or {}
+            fallback_parser_description, additional_arguments or {}, step_name
         ).parse_args()
 
 
@@ -136,16 +172,29 @@ def _coerce_exit_code(result: Any, step_name: str, logger: logging.Logger) -> in
 
     Contract: module_function may return bool or int.
       bool: True→0 (success), False→1 (error)
-      int: passthrough (0=success, 1=error, 2=warnings/skipped)
+      int: passthrough (0=success, 1=error, 2=success with warnings/skipped)
     Other truthy/falsy types are coerced via bool().
     """
-    if isinstance(result, bool):
-        return 0 if result else 1
-    if isinstance(result, int):
-        if result == 2:
-            log_step_warning(logger, f"{step_name} completed with warnings (exit 2)")
-        return result
-    return 0 if bool(result) else 1
+    return coerce_step_exit_code(
+        result,
+        step_name=step_name,
+        logger=logger,
+        warning_callback=lambda message: log_step_warning(logger, message),
+    )
+
+
+def _resolve_recursive_default(step_name: str, fallback_default: bool) -> bool:
+    """Resolve recursive default from StepConfiguration when available."""
+    try:
+        from utils.argument_utils import StepConfiguration
+
+        config_key = step_name[:-3] if step_name.endswith(".py") else step_name
+        defaults = StepConfiguration.get_step_config(config_key).get("defaults", {})
+        if "recursive" in defaults:
+            return bool(defaults["recursive"])
+    except Exception:
+        pass
+    return fallback_default
 
 
 def create_standardized_pipeline_script(
@@ -177,12 +226,15 @@ def create_standardized_pipeline_script(
             target_dir, step_output_dir = _resolve_dirs(
                 parsed_args, step_name, default_target_dir
             )
+            recursive_default = _resolve_recursive_default(
+                step_name, default_recursive
+            )
 
             result = module_function(
                 target_dir=target_dir,
                 output_dir=step_output_dir,
                 logger=logger,
-                recursive=getattr(parsed_args, "recursive", default_recursive),
+                recursive=getattr(parsed_args, "recursive", recursive_default),
                 verbose=getattr(parsed_args, "verbose", False),
                 **{
                     k: v

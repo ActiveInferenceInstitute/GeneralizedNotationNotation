@@ -345,6 +345,9 @@ class ExitCode:
     SUCCESS = 0
     CRITICAL_ERROR = 1
     SUCCESS_WITH_WARNINGS = 2
+    ERROR = CRITICAL_ERROR
+
+    CONTRACT = "0=success, 1=error, 2=success with warnings/skipped"
 
     @staticmethod
     def from_error_severity(severity: PipelineErrorSeverity) -> int:
@@ -355,6 +358,71 @@ class ExitCode:
             PipelineErrorSeverity.HIGH: ExitCode.CRITICAL_ERROR,
             PipelineErrorSeverity.CRITICAL: ExitCode.CRITICAL_ERROR,
         }.get(severity, ExitCode.CRITICAL_ERROR)
+
+
+CRITICAL_STEP_NUMBERS: frozenset[int] = frozenset({0, 1, 3, 5, 6, 7, 11})
+
+
+def _step_number_from_name(step_name: str) -> Optional[int]:
+    """Extract a numbered pipeline step prefix from a script or config name."""
+    try:
+        prefix = str(step_name).split("_", 1)[0]
+        return int(prefix)
+    except (TypeError, ValueError):
+        return None
+
+
+def is_critical_pipeline_step(step_name: str) -> bool:
+    """Return whether a numbered pipeline step is critical to pipeline validity."""
+    step_number = _step_number_from_name(step_name.replace(".py", ""))
+    return step_number in CRITICAL_STEP_NUMBERS if step_number is not None else False
+
+
+def coerce_step_exit_code(
+    result: Any,
+    step_name: str = "pipeline_step",
+    logger: Optional[logging.Logger] = None,
+    warning_callback: Optional[Callable[[str], None]] = None,
+) -> int:
+    """Coerce a processor return value to the canonical pipeline exit code.
+
+    Contract: ``bool`` remains backward compatible (``True`` -> 0,
+    ``False`` -> 1), ``int`` passes through, and all other values are coerced
+    by truthiness. Integer ``2`` is the warning/skipped continuation path.
+    """
+    if isinstance(result, bool):
+        return ExitCode.SUCCESS if result else ExitCode.ERROR
+
+    if isinstance(result, int):
+        if result == ExitCode.SUCCESS_WITH_WARNINGS:
+            message = f"{step_name} completed with warnings (exit 2)"
+            if warning_callback is not None:
+                warning_callback(message)
+            elif logger is not None:
+                logger.warning(message)
+        return result
+
+    return ExitCode.SUCCESS if bool(result) else ExitCode.ERROR
+
+
+def status_from_exit_code(
+    exit_code: int, dependency_warnings: Optional[List[Any]] = None
+) -> str:
+    """Map a child process exit code to the canonical pipeline step status."""
+    if exit_code == ExitCode.SUCCESS:
+        return "SUCCESS_WITH_WARNINGS" if dependency_warnings else "SUCCESS"
+    if exit_code == ExitCode.SUCCESS_WITH_WARNINGS:
+        return "SUCCESS_WITH_WARNINGS"
+    return "FAILED"
+
+
+def pipeline_exit_code(overall_status: str) -> int:
+    """Map final pipeline status to the public process exit contract."""
+    if overall_status == "SUCCESS":
+        return ExitCode.SUCCESS
+    if overall_status in {"SUCCESS_WITH_WARNINGS", "PARTIAL_SUCCESS"}:
+        return ExitCode.SUCCESS_WITH_WARNINGS
+    return ExitCode.ERROR
 
 
 def generate_correlation_id(prefix: str = "gnn") -> str:

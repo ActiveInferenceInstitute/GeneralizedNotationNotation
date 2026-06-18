@@ -18,6 +18,15 @@ Post-simulation analysis and metrics for GNN model execution.
 - GridWorld GIF animation and manifest generation for current PyMDP,
   RxInfer.jl, and ActiveInference.jl schemas
 
+## Contracts
+- `generate_animations` is the canonical Step 16 flag. The CLI enables
+  animations by default and `--no-animations` sets `generate_animations=False`.
+- Legacy `no_animations` is accepted only as an inverse compatibility key when
+  `generate_animations` is absent. Supplying conflicting values is a hard
+  argument error.
+- Empty or missing input directories return exit code `2` so the pipeline can
+  report `SUCCESS_WITH_WARNINGS` instead of a false success or hard crash.
+
 ## Key Exports
 ```python
 from analysis import process_analysis, PostSimulationAnalyzer

@@ -2,7 +2,7 @@
 
 ## Overview
 
-All **25** numbered entrypoints **`src/N_*.py`** (steps **0–24**) follow the **thin orchestrator** pattern: parse CLI args, configure logging and output dirs, delegate to **`src/<module>/`**, return standard exit codes (0 success, 1 error, 2 warnings). Domain logic lives in modules, not in the numbered scripts.
+All **25** numbered entrypoints **`src/N_*.py`** (steps **0–24**) follow the **thin orchestrator** pattern: parse CLI args, configure logging and output dirs, delegate to **`src/<module>/`**, return standard exit codes (0=success, 1=error, 2=success with warnings/skipped). Domain logic lives in modules, not in the numbered scripts.
 
 **Authoritative step matrix** (timeouts, dependencies, recovery): [`src/STEP_INDEX.md`](../src/STEP_INDEX.md). **Commands and test notes**: [`CLAUDE.md`](../CLAUDE.md).
 

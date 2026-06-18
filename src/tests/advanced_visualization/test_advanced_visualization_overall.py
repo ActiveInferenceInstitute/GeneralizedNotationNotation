@@ -348,6 +348,28 @@ s[3]
                 # Some viz types may fail without proper data, that's OK
                 pass
 
+    def test_process_advanced_viz_empty_input_returns_warning_code(
+        self, tmp_path: Any
+    ) -> None:
+        """No Step 3 models is warning-only recovery, not artifact success."""
+        import json
+        import logging
+
+        from advanced_visualization import process_advanced_viz
+
+        output_dir = tmp_path / "9_advanced_viz_output"
+        result = process_advanced_viz(
+            target_dir=tmp_path / "empty_input",
+            output_dir=output_dir,
+            logger=logging.getLogger("test_advanced_viz_empty"),
+        )
+
+        assert result == 2
+        summary = json.loads(
+            (output_dir / "advanced_viz_summary.json").read_text(encoding="utf-8")
+        )
+        assert summary["warnings"] == ["No GNN models found"]
+
 
 class TestVisualizationCreation:
     """Test individual visualization creation functions."""

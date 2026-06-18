@@ -41,7 +41,7 @@ All numbered pipeline scripts (0-24) MUST follow the thin orchestrator pattern:
 - Orchestrator scripts: <150 lines
 - No domain logic in orchestrators
 - All processing in module directories
-- Standardized exit codes (0=success, 1=error, 2=warnings)
+- Standardized exit codes (0=success, 1=error, 2=success with warnings/skipped)
 
 ### Module Structure
 

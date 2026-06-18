@@ -392,7 +392,7 @@ def main(parsed_args: Any) -> int:
         parsed_args: Parsed command line arguments
 
     Returns:
-        Exit code (0=success, 1=error, 2=warnings)
+        Exit code (0=success, 1=error, 2=success with warnings/skipped)
     """
 
     # CUSTOMIZE: Update the step description for your specific step

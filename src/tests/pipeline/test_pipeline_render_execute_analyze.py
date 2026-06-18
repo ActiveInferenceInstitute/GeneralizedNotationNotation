@@ -115,7 +115,7 @@ E={(0.33333, 0.33333, 0.33333)}
         """Full render → execute → analyze flow completes with structured exit codes.
 
         Each step's return value must be bool OR int (Phase 1.1 widened contract:
-        0=success, 1=error, 2=skipped/warnings). Exceptions are real failures.
+        0=success, 1=error, 2=success with warnings/skipped). Exceptions are real failures.
         """
         dirs = pipeline_directories
 

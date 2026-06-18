@@ -2,6 +2,11 @@
 
 This module provides comprehensive advanced visualization capabilities for GNN models, including interactive dashboards, 3D visualizations, and sophisticated data analysis visualizations.
 
+`process_advanced_viz` returns `True` when artifacts are produced, `2` for
+warning-only recovery such as missing Step 3 model data or optional-only skips,
+and `False` for hard failures. Output creation is gated by `viz_type` and
+`interactive`; interactive dashboards are not emitted when `interactive=False`.
+
 ## Module Structure
 
 ```

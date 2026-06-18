@@ -82,7 +82,12 @@ sys.path.insert(0, str(SCRIPT_DIR))
 
 from dataclasses import fields
 
-from utils.argument_utils import ArgumentParser, PipelineArguments
+from utils.argument_utils import ArgumentParser, PipelineArguments, StepConfiguration
+from utils.error_handling import (
+    is_critical_pipeline_step,
+    pipeline_exit_code as _shared_pipeline_exit_code,
+    status_from_exit_code as _shared_status_from_exit_code,
+)
 
 # Structured logging and visual progress tracking are maintained pipeline
 # surfaces; import errors should fail loudly during startup.
@@ -143,15 +148,19 @@ PIPELINE_STEPS: tuple[PipelineStep, ...] = (
     ("24_intelligent_analysis.py", "Intelligent pipeline analysis"),
 )
 
-CRITICAL_SCRIPTS: set[str] = {
-    "0_template.py",
-    "1_setup.py",
-    "3_gnn.py",
-    "5_type_checker.py",
-    "6_validation.py",
-    "7_export.py",
-    "11_render.py",
-}
+def _derive_critical_scripts() -> set[str]:
+    """Return script filenames marked critical by StepConfiguration metadata."""
+    return {
+        f"{step_name}.py"
+        for step_name, config in StepConfiguration.STEP_CONFIGS.items()
+        if config.get("critical", is_critical_pipeline_step(step_name))
+    }
+
+
+# Metadata-driven cache used by the orchestrator hot path. The critical-step
+# contract lives in StepConfiguration and utils.error_handling; do not maintain
+# a second hand-written critical-step list here.
+CRITICAL_SCRIPTS: set[str] = _derive_critical_scripts()
 
 SAFE_WARNING_PATTERNS: tuple[str, ...] = (
     r"matplotlib.*?backend",
@@ -780,11 +789,14 @@ def _finalize_pipeline_summary(pipeline_summary: dict[str, Any]) -> None:
 
 def _pipeline_exit_code(overall_status: str) -> int:
     """Map final pipeline status to the public process exit contract."""
-    if overall_status == "SUCCESS":
-        return 0
-    if overall_status in {"SUCCESS_WITH_WARNINGS", "PARTIAL_SUCCESS"}:
-        return 2
-    return 1
+    return _shared_pipeline_exit_code(overall_status)
+
+
+def _status_from_step_exit_code(
+    exit_code: int, dependency_warnings: Optional[list[Any]] = None
+) -> str:
+    """Map a child step exit code to the pipeline step status contract."""
+    return _shared_status_from_exit_code(exit_code, dependency_warnings)
 
 
 def _pipeline_summary_path(output_dir: Path) -> Path:
@@ -1189,7 +1201,10 @@ def execute_pipeline_step(
 
                 exit_code = result.get("exit_code", -1)
                 if exit_code != 0:
-                    worst_exit_code = exit_code
+                    if exit_code == 2 and worst_exit_code == 0:
+                        worst_exit_code = 2
+                    elif exit_code != 2:
+                        worst_exit_code = exit_code
                     logger.warning(
                         f"  -> Folder {folder.name} execution returned code {exit_code}"
                     )
@@ -1239,14 +1254,11 @@ def execute_pipeline_step(
                 )
 
         # Determine status
-        if step_result["exit_code"] == 0:
-            step_result["status"] = "SUCCESS"
-            # Check for any dependency warnings that might affect downstream steps
-            if step_result["dependency_warnings"]:
-                step_result["status"] = "SUCCESS_WITH_WARNINGS"
-        else:
+        step_result["status"] = _status_from_step_exit_code(
+            step_result["exit_code"], step_result["dependency_warnings"]
+        )
+        if step_result["status"] == "FAILED":
             # Respect the child process exit code to avoid masking failures
-            step_result["status"] = "FAILED"
             # Log detailed failure information
             logger.error(
                 f"Step {script_name} failed with exit code {step_result['exit_code']}"
@@ -1255,6 +1267,8 @@ def execute_pipeline_step(
                 logger.error(
                     f"Error output: {step_result['stderr'][:500]}..."
                 )  # Limit to first 500 chars
+        elif step_result["exit_code"] == 2:
+            logger.warning(f"Step {script_name} completed with warnings")
 
         # Steps determine their own output directories via get_output_dir_for_script
 

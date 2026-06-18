@@ -164,6 +164,31 @@ class TestAnalysisOverall:
         result = process_analysis(empty_dir, output_dir)
         assert result == 2, f"expected exit-code 2 for no-input, got {result!r}"
 
+    def test_generate_animations_normalization_contract(self) -> None:
+        """Step 16 uses generate_animations as canonical and supports legacy inverse."""
+        from analysis.processor import _normalize_generate_animations
+
+        logger = logging.getLogger("test_analysis_animation_contract")
+
+        assert _normalize_generate_animations({}, logger) is True
+        assert (
+            _normalize_generate_animations({"generate_animations": False}, logger)
+            is False
+        )
+        assert _normalize_generate_animations({"no_animations": True}, logger) is False
+        assert (
+            _normalize_generate_animations(
+                {"generate_animations": True, "no_animations": False},
+                logger,
+            )
+            is True
+        )
+        with pytest.raises(ValueError, match="Ambiguous animation flags"):
+            _normalize_generate_animations(
+                {"generate_animations": True, "no_animations": True},
+                logger,
+            )
+
     def test_execution_scope_filters_stale_frameworks(
         self, safe_filesystem: Any
     ) -> None:

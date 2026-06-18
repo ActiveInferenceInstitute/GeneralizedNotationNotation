@@ -66,7 +66,7 @@ Steps are controlled via [`input/config.yaml`](../input/config.yaml) using the *
 | 10 | **README** | Link to module's usage documentation |
 | 11 | **SPEC.md** | Link to module's technical specification |
 | 12 | **Frameworks** | External frameworks / libraries used |
-| 13 | **Exit Codes** | Supported exit codes (0=success, 1=error, 2=warnings) |
+| 13 | **Exit Codes** | Supported exit codes (0=success, 1=error, 2=success with warnings/skipped) |
 | 14 | **Timeout (s)** | Default timeout for this step in seconds |
 | 15 | **Dependencies** | Upstream step dependencies (data flow) |
 | 16 | **Recovery Behavior** | What happens when optional deps are missing |

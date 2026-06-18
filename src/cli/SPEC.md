@@ -8,7 +8,7 @@ Provide a unified `gnn` CLI entry point that dispatches to pipeline module APIs.
 
 1. **Subcommand routing**: 12 subcommands (`run`, `validate`, `parse`, `render`, `report`, `reproduce`, `preflight`, `health`, `serve`, `lsp`, `watch`, `graph`)
 2. **Lazy imports**: Each handler imports its target module only when invoked
-3. **Standard exit codes**: 0=success, 1=error
+3. **Standard exit codes**: 0=success, 1=error, 2=success with warnings/skipped
 4. **Verbose mode**: `--verbose` / `-v` flag enables DEBUG logging globally
 5. **Path management**: All handlers ensure `src/` is on `sys.path`
 

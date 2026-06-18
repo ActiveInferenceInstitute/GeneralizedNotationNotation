@@ -8,13 +8,15 @@ all pipeline steps with centralized configuration and type safety.
 import argparse
 import logging
 import re
-from dataclasses import dataclass, field, fields
+import sys
+from dataclasses import dataclass, field, fields, replace
 from pathlib import Path
 from types import MappingProxyType
 from typing import Any, Dict, List, Optional, Type
 
 # Import config loading functionality
 from .config_loader import GNNPipelineConfig, load_config
+from .error_handling import is_critical_pipeline_step
 
 logger = logging.getLogger(__name__)
 
@@ -31,12 +33,19 @@ class ArgumentDefinition:
     choices: Optional[List[str]] = None
     action: str | type[argparse.Action] | None = None
     nargs: str | int | None = None
+    dest: Optional[str] = None
     # When True with store_true/store_false, default is SUPPRESS so YAML/config can supply values
     use_suppress: bool = False
+
+    def with_default(self, default: Any) -> "ArgumentDefinition":
+        """Return a copy with a different default while preserving all metadata."""
+        return replace(self, default=default)
 
     def add_to_parser(self, parser: argparse.ArgumentParser) -> None:
         """Add this argument to an ArgumentParser."""
         kwargs: Dict[str, Any] = {"help": self.help_text}
+        if self.dest is not None:
+            kwargs["dest"] = self.dest
 
         if isinstance(self.action, str):
             kwargs["action"] = self.action
@@ -176,6 +185,7 @@ class PipelineArguments:
     simulation_params: str = "{}"
     timeout: int = 300
     advanced_stats: bool = False
+    generate_animations: bool = True
 
     def __post_init__(self) -> None:
         """Post-initialization validation and path resolution."""
@@ -639,7 +649,11 @@ class ArgumentParser:
                 flag="--no-animations",
                 action="store_false",
                 default=True,
-                help_text="Disable Step 16 animation artifacts",
+                dest="generate_animations",
+                help_text=(
+                    "Disable Step 16 GridWorld GIF animation artifacts "
+                    "(enabled by default)"
+                ),
             ),
         }
     )
@@ -877,6 +891,7 @@ class ArgumentParser:
                         choices=arg_def.choices,
                         action=arg_def.action,
                         nargs=arg_def.nargs,
+                        dest=arg_def.dest,
                         use_suppress=arg_def.use_suppress,
                     )
                 arg_def.add_to_parser(parser)
@@ -998,6 +1013,8 @@ class ArgumentParser:
                         setattr(parsed_args, arg_name, 1)
                     elif arg_name == "advanced_stats":
                         setattr(parsed_args, arg_name, False)
+                    elif arg_name == "generate_animations":
+                        setattr(parsed_args, arg_name, True)
                     else:
                         setattr(parsed_args, arg_name, None)
 
@@ -1083,6 +1100,8 @@ class ArgumentParser:
                 setattr(fallback_args, arg_name, 1)
             elif arg_name == "execution_summary_detail":
                 setattr(fallback_args, arg_name, False)
+            elif arg_name == "generate_animations":
+                setattr(fallback_args, arg_name, True)
             else:
                 setattr(fallback_args, arg_name, None)
 
@@ -1097,6 +1116,7 @@ class StepConfiguration:
     STEP_CONFIGS = MappingProxyType(
         {
             "0_template": {
+                "critical": True,
                 "required_args": ["target_dir", "output_dir"],
                 "optional_args": ["recursive", "verbose", "simulate_error"],
                 "defaults": {
@@ -1107,6 +1127,7 @@ class StepConfiguration:
                 "description": "Standardized pipeline step template",
             },
             "1_setup": {
+                "critical": True,
                 "required_args": ["target_dir", "output_dir"],
                 "optional_args": [
                     "recursive",
@@ -1130,6 +1151,7 @@ class StepConfiguration:
                 "description": "Project Setup & Environment Configuration",
             },
             "2_tests": {
+                "critical": False,
                 "required_args": [],
                 "optional_args": [
                     "target_dir",
@@ -1148,6 +1170,7 @@ class StepConfiguration:
                 "description": "Test Execution & Validation",
             },
             "3_gnn": {
+                "critical": True,
                 "required_args": ["target_dir", "output_dir"],
                 "optional_args": [
                     "recursive",
@@ -1166,6 +1189,7 @@ class StepConfiguration:
                 "description": "GNN Discovery & Basic Parse",
             },
             "4_model_registry": {
+                "critical": False,
                 "required_args": ["target_dir", "output_dir"],
                 "optional_args": ["recursive", "verbose", "registry_path"],
                 "defaults": {
@@ -1176,6 +1200,7 @@ class StepConfiguration:
                 "description": "Model Registry & Versioning",
             },
             "5_type_checker": {
+                "critical": True,
                 "required_args": ["target_dir", "output_dir"],
                 "optional_args": [
                     "recursive",
@@ -1192,6 +1217,7 @@ class StepConfiguration:
                 "description": "Type Checking & Resource Estimation",
             },
             "6_validation": {
+                "critical": True,
                 "required_args": ["target_dir", "output_dir"],
                 "optional_args": ["recursive", "verbose", "strict", "profile"],
                 "defaults": {
@@ -1203,18 +1229,21 @@ class StepConfiguration:
                 "description": "Validation & Quality Assurance",
             },
             "7_export": {
+                "critical": True,
                 "required_args": ["target_dir", "output_dir"],
                 "optional_args": ["recursive", "verbose"],
                 "defaults": {"recursive": True, "verbose": False},
                 "description": "GNN Export & Format Conversion",
             },
             "8_visualization": {
+                "critical": False,
                 "required_args": ["target_dir", "output_dir"],
                 "optional_args": ["recursive", "verbose"],
                 "defaults": {"recursive": True, "verbose": False},
                 "description": "Basic Visualization Generation",
             },
             "9_advanced_viz": {
+                "critical": False,
                 "required_args": ["target_dir", "output_dir"],
                 "optional_args": [
                     "recursive",
@@ -1233,12 +1262,14 @@ class StepConfiguration:
                 "description": "Advanced Visualization & Exploration",
             },
             "10_ontology": {
+                "critical": False,
                 "required_args": ["target_dir", "output_dir"],
                 "optional_args": ["recursive", "verbose", "ontology_terms_file"],
                 "defaults": {"recursive": True, "verbose": False},
                 "description": "Ontology Processing & Validation",
             },
             "11_render": {
+                "critical": True,
                 "required_args": ["target_dir", "output_dir"],
                 "optional_args": [
                     "recursive",
@@ -1252,6 +1283,7 @@ class StepConfiguration:
                 "description": "Simulator Code Generation",
             },
             "12_execute": {
+                "critical": False,
                 "required_args": ["target_dir", "output_dir"],
                 "optional_args": [
                     "recursive",
@@ -1274,6 +1306,7 @@ class StepConfiguration:
                 "description": "Simulator Execution",
             },
             "13_llm": {
+                "critical": False,
                 "required_args": ["target_dir", "output_dir"],
                 "optional_args": ["recursive", "verbose", "llm_tasks", "llm_timeout"],
                 "defaults": {
@@ -1285,12 +1318,14 @@ class StepConfiguration:
                 "description": "LLM Analysis & Processing",
             },
             "14_ml_integration": {
+                "critical": False,
                 "required_args": ["target_dir", "output_dir"],
                 "optional_args": ["recursive", "verbose"],
                 "defaults": {"recursive": True, "verbose": False},
                 "description": "Machine Learning Integration",
             },
             "15_audio": {
+                "critical": False,
                 "required_args": ["target_dir", "output_dir"],
                 "optional_args": [
                     "recursive",
@@ -1311,34 +1346,45 @@ class StepConfiguration:
                 "description": "Audio Generation & Processing",
             },
             "16_analysis": {
+                "critical": False,
                 "required_args": ["target_dir", "output_dir"],
-                "optional_args": ["recursive", "verbose", "advanced_stats"],
+                "optional_args": [
+                    "recursive",
+                    "verbose",
+                    "advanced_stats",
+                    "generate_animations",
+                ],
                 "defaults": {
                     "recursive": True,
                     "verbose": False,
                     "advanced_stats": False,
+                    "generate_animations": True,
                 },
                 "description": "Advanced Analysis & Reporting",
             },
             "17_integration": {
+                "critical": False,
                 "required_args": ["target_dir", "output_dir"],
                 "optional_args": ["recursive", "verbose"],
                 "defaults": {"recursive": True, "verbose": False},
                 "description": "API Gateway & Plugin System",
             },
             "18_security": {
+                "critical": False,
                 "required_args": ["target_dir", "output_dir"],
                 "optional_args": ["recursive", "verbose"],
                 "defaults": {"recursive": True, "verbose": False},
                 "description": "Security & Compliance Features",
             },
             "19_research": {
+                "critical": False,
                 "required_args": ["target_dir", "output_dir"],
                 "optional_args": ["recursive", "verbose"],
                 "defaults": {"recursive": True, "verbose": False},
                 "description": "Research Workflow Enhancement",
             },
             "20_website": {
+                "critical": False,
                 "required_args": ["target_dir", "output_dir"],
                 "optional_args": ["recursive", "verbose", "website_html_filename"],
                 "defaults": {
@@ -1349,6 +1395,7 @@ class StepConfiguration:
                 "description": "HTML Website Generation",
             },
             "21_mcp": {
+                "critical": False,
                 "required_args": ["target_dir", "output_dir"],
                 "optional_args": [
                     "recursive",
@@ -1368,6 +1415,7 @@ class StepConfiguration:
                 "description": "Model Context Protocol Processing",
             },
             "22_gui": {
+                "critical": False,
                 "required_args": ["target_dir", "output_dir"],
                 "optional_args": [
                     "recursive",
@@ -1388,12 +1436,14 @@ class StepConfiguration:
                 "description": "Interactive GUI for Constructing/Editing GNN Models",
             },
             "23_report": {
+                "critical": False,
                 "required_args": ["target_dir", "output_dir"],
                 "optional_args": ["recursive", "verbose"],
                 "defaults": {"recursive": True, "verbose": False},
                 "description": "Comprehensive Analysis Report Generation",
             },
             "24_intelligent_analysis": {
+                "critical": False,
                 "required_args": ["target_dir", "output_dir"],
                 "optional_args": [
                     "verbose",
@@ -1530,20 +1580,9 @@ Examples:
                 step_defaults = config.get("defaults", {})
                 arg_def = ArgumentParser.ARGUMENT_DEFINITIONS[arg_name]
 
-                # Override default with step-specific value
+                # Override default with step-specific value without losing metadata.
                 if arg_name in step_defaults:
-                    modified_arg_def = ArgumentDefinition(
-                        flag=arg_def.flag,
-                        arg_type=arg_def.arg_type,
-                        default=step_defaults[arg_name],
-                        required=arg_def.required,
-                        help_text=arg_def.help_text,
-                        choices=arg_def.choices,
-                        action=arg_def.action,
-                        nargs=arg_def.nargs,
-                        use_suppress=arg_def.use_suppress,
-                    )
-                    modified_arg_def.add_to_parser(parser)
+                    arg_def.with_default(step_defaults[arg_name]).add_to_parser(parser)
                 else:
                     arg_def.add_to_parser(parser)
             else:
@@ -1690,11 +1729,14 @@ def build_step_command_args(
                 if arg_def.action == "store_true":
                     if arg_value:
                         cmd.append(flag)
+                elif arg_def.action == "store_false":
+                    if arg_value is False:
+                        cmd.append(flag)
                 elif arg_def.action is argparse.BooleanOptionalAction:
-                    # Only pass the flag if True; omit if False (don't pass --no-flag)
-                    # This ensures compatibility with steps that may not support --no-flag
                     if arg_value is True:
                         cmd.append(flag)
+                    elif arg_value is False and arg_def.default is True:
+                        cmd.append(f"--no-{flag.removeprefix('--')}")
                 elif isinstance(arg_value, list):
                     cmd.append(flag)
                     cmd.extend(str(item) for item in arg_value)
@@ -1716,11 +1758,141 @@ def get_pipeline_step_info() -> Dict[str, Any]:
             "required_args": config.get("required_args", []),
             "optional_args": config.get("optional_args", []),
             "defaults": config.get("defaults", {}),
+            "critical": config.get("critical", False),
             "total_args": len(config.get("required_args", []))
             + len(config.get("optional_args", [])),
         }
 
     return step_info
+
+
+def audit_step_contracts(
+    python_executable: Optional[str] = None, script_dir: Optional[Path] = None
+) -> List[Dict[str, Any]]:
+    """Audit shared step contracts without executing any numbered step.
+
+    The audit is intentionally static: it verifies that the declarative step
+    config, parser defaults, critical-step metadata, and command builder agree.
+    """
+    issues: list[dict[str, Any]] = []
+    python_executable = python_executable or sys.executable
+    script_dir = script_dir or Path("src")
+
+    for step_name, config in StepConfiguration.STEP_CONFIGS.items():
+        step_key = f"{step_name}.py"
+        configured_args = config.get("required_args", []) + config.get(
+            "optional_args", []
+        )
+        declared_args = ArgumentParser.STEP_ARGUMENTS.get(step_key)
+        if declared_args is None:
+            issues.append(
+                {
+                    "step": step_name,
+                    "kind": "missing_step_arguments",
+                    "message": f"{step_key} missing from STEP_ARGUMENTS",
+                }
+            )
+        elif list(declared_args) != list(configured_args):
+            issues.append(
+                {
+                    "step": step_name,
+                    "kind": "argument_mismatch",
+                    "message": "STEP_ARGUMENTS and StepConfiguration differ",
+                    "step_arguments": list(declared_args),
+                    "step_configuration": list(configured_args),
+                }
+            )
+
+        expected_critical = is_critical_pipeline_step(step_name)
+        if bool(config.get("critical", False)) != expected_critical:
+            issues.append(
+                {
+                    "step": step_name,
+                    "kind": "critical_mismatch",
+                    "message": "critical metadata does not match canonical set",
+                    "expected": expected_critical,
+                    "actual": bool(config.get("critical", False)),
+                }
+            )
+
+        parser = ArgumentParser.create_step_parser(step_key)
+        try:
+            parsed_defaults = parser.parse_args([])
+        except SystemExit as exc:
+            issues.append(
+                {
+                    "step": step_name,
+                    "kind": "default_parse_error",
+                    "message": f"default parser exited with {exc.code}",
+                }
+            )
+            continue
+
+        for arg_name, expected in config.get("defaults", {}).items():
+            if hasattr(parsed_defaults, arg_name):
+                actual = getattr(parsed_defaults, arg_name)
+                if actual != expected:
+                    issues.append(
+                        {
+                            "step": step_name,
+                            "kind": "default_mismatch",
+                            "argument": arg_name,
+                            "expected": expected,
+                            "actual": actual,
+                        }
+                    )
+
+        if "recursive" in configured_args:
+            recursive_enabled = parser.parse_args(["--recursive"])
+            recursive_disabled = parser.parse_args(["--no-recursive"])
+            if getattr(recursive_enabled, "recursive", None) is not True:
+                issues.append(
+                    {
+                        "step": step_name,
+                        "kind": "recursive_parse_mismatch",
+                        "message": "--recursive did not parse to True",
+                    }
+                )
+            if getattr(recursive_disabled, "recursive", None) is not False:
+                issues.append(
+                    {
+                        "step": step_name,
+                        "kind": "recursive_parse_mismatch",
+                        "message": "--no-recursive did not parse to False",
+                    }
+                )
+
+            disabled_cmd = build_step_command_args(
+                step_name,
+                PipelineArguments(recursive=False),
+                python_executable,
+                script_dir / step_key,
+            )
+            if "--no-recursive" not in disabled_cmd:
+                issues.append(
+                    {
+                        "step": step_name,
+                        "kind": "recursive_command_mismatch",
+                        "message": "recursive=False did not propagate as --no-recursive",
+                    }
+                )
+
+    step16_cmd = build_step_command_args(
+        "16_analysis",
+        PipelineArguments(generate_animations=False),
+        python_executable,
+        script_dir / "16_analysis.py",
+    )
+    if "--no-animations" not in step16_cmd:
+        issues.append(
+            {
+                "step": "16_analysis",
+                "kind": "animation_command_mismatch",
+                "message": "generate_animations=False did not propagate as --no-animations",
+            }
+        )
+
+    return issues
 
 
 # Validation utility for the entire pipeline

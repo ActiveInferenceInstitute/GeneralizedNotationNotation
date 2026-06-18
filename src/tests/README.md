@@ -84,7 +84,7 @@ The test infrastructure follows the **thin orchestrator pattern**, where `2_test
 - Sets up logging and visual output
 - Manages output directory creation
 - Delegates to `tests.run_tests()` from `tests/__init__.py`
-- Returns standardized exit codes (0=success, 1=failure)
+- Returns standardized exit codes (0=success, 1=error, 2=success with warnings/skipped)
 
 **runner.py** (Core Implementation):
 
