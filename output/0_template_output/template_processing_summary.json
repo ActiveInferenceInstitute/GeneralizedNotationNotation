@@ -1,13 +1,13 @@
 {
-  "timestamp": "2026-05-22T06:10:26.463274",
+  "timestamp": "2026-06-18T07:51:00.849671",
   "step_name": "template",
-  "input_directory": "input/gnn_files",
+  "input_directory": "input/gnn_files/pomdp_gridworld",
   "output_directory": "output/0_template_output",
-  "total_files": 47,
-  "successful_files": 47,
+  "total_files": 3,
+  "successful_files": 3,
   "failed_files": 0,
   "processing_options": {
-    "verbose": false,
+    "verbose": true,
     "recursive": true,
     "example_param": "default_value"
   },

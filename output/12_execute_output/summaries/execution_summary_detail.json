@@ -1,0 +1,1756 @@
+{
+  "timestamp": "2026-06-18T07:53:05.638724",
+  "target_directory": "input/gnn_files/pomdp_gridworld",
+  "output_directory": "output/12_execute_output",
+  "total_scripts_found": 8,
+  "successful_executions": 6,
+  "failed_executions": 0,
+  "skipped_executions": 2,
+  "execution_details": [
+    {
+      "script_path": "output/11_render_output/pomdp_gridworld_3x3/numpyro/POMDP GridWorld 3x3_numpyro.py",
+      "script_name": "POMDP GridWorld 3x3_numpyro.py",
+      "framework": "numpyro",
+      "model_name": "pomdp_gridworld_3x3",
+      "executor": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python",
+      "success": true,
+      "return_code": 0,
+      "stdout": "NumPyro POMDP simulation complete: 15 timesteps in 0.672s\nResults saved to: output/12_execute_output/pomdp_gridworld_3x3/numpyro/simulation_data/simulation_results.json\nValidation: {'beliefs_in_range': True, 'beliefs_sum_to_one': True, 'actions_in_range': True, 'all_valid': True}\n",
+      "stderr": "",
+      "execution_time": 1.079646,
+      "timestamp": "2026-06-18T07:53:06.057812",
+      "execution_benchmark_repeats": 1,
+      "execution_time_mean": 1.079646,
+      "execution_time_std": 0.0,
+      "execution_time_samples": [
+        1.079646
+      ],
+      "simulation_data": {
+        "traces": [],
+        "free_energy": [],
+        "states": [],
+        "observations": [
+          0,
+          3,
+          4,
+          0,
+          5,
+          5,
+          8,
+          7,
+          7,
+          7,
+          8,
+          8,
+          8,
+          7,
+          8
+        ],
+        "actions": [
+          1,
+          3,
+          3,
+          4,
+          3,
+          1,
+          2,
+          1,
+          4,
+          3,
+          4,
+          4,
+          2,
+          3,
+          0
+        ],
+        "policy": [],
+        "raw_output": "NumPyro POMDP simulation complete: 15 timesteps in 0.672s\nResults saved to: output/12_execute_output/pomdp_gridworld_3x3/numpyro/simulation_data/simulation_results.json\nValidation: {'beliefs_in_range': True, 'beliefs_sum_to_one': True, 'actions_in_range': True, 'all_valid': True}\n",
+        "raw_error": "",
+        "beliefs": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        ],
+        "num_timesteps": 15
+      },
+      "structured_result_file": "output/12_execute_output/pomdp_gridworld_3x3/numpyro/execution_logs/POMDP GridWorld 3x3_numpyro.py_results.json",
+      "output_file": "output/12_execute_output/pomdp_gridworld_3x3/numpyro/execution_logs/POMDP GridWorld 3x3_numpyro.py_execution.log",
+      "implementation_directory": "output/12_execute_output/pomdp_gridworld_3x3/numpyro",
+      "collected_outputs": {
+        "visualizations": [],
+        "simulation_data": [
+          "output/12_execute_output/pomdp_gridworld_3x3/numpyro/simulation_data/simulation_results.json"
+        ],
+        "traces": [],
+        "other": []
+      },
+      "skipped": false
+    },
+    {
+      "script_path": "output/11_render_output/pomdp_gridworld_3x3/pymdp/POMDP GridWorld 3x3_pymdp.py",
+      "script_name": "POMDP GridWorld 3x3_pymdp.py",
+      "framework": "pymdp",
+      "model_name": "pomdp_gridworld_3x3",
+      "executor": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python",
+      "success": true,
+      "return_code": 0,
+      "stdout": "PyMDP 1.0.0+ detected (JAX-first Agent).\n",
+      "stderr": "2026-06-18 07:53:07,779 - INFO - Running pymdp 1.0.0 rollout for POMDP GridWorld 3x3\n2026-06-18 07:53:07,779 - INFO - Output directory: output/pymdp_simulations/POMDP GridWorld 3x3\n2026-06-18 07:53:07,779 - INFO - Executing PyMDP simulation (correlation_id: render_generated_script)\n2026-06-18 07:53:07,779 - INFO - Starting pymdp 1.0.0 rollout (JAX backend)\n2026-06-18 07:53:07,779 - INFO - Dimensions: No=9, Ns=9, Nu=5 | T=15, batch=1, policy_len=1\n2026-06-18 07:53:07,784 - INFO - Unable to initialize backend 'tpu': INTERNAL: Failed to open libtpu.so: dlopen(libtpu.so, 0x0001): tried: 'libtpu.so' (no such file), '/System/Volumes/Preboot/Cryptexes/OSlibtpu.so' (no such file), '/Users/4d/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/libtpu.so' (no such file), '/usr/lib/libtpu.so' (no such file, not in dyld cache), 'libtpu.so' (no such file)\n2026-06-18 07:53:07,991 - INFO - pymdp 1.0.0 Agent built (batch_size=1)\n2026-06-18 07:53:08,906 - INFO - t=00 obs=0 belief=[1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0] action=1 next_state=3\n2026-06-18 07:53:08,975 - INFO - t=01 obs=3 belief=[0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0] action=3 next_state=4\n2026-06-18 07:53:09,039 - INFO - t=02 obs=7 belief=[0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0] action=1 next_state=7\n2026-06-18 07:53:09,105 - INFO - t=03 obs=7 belief=[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0] action=3 next_state=8\n2026-06-18 07:53:09,169 - INFO - t=04 obs=8 belief=[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0] action=1 next_state=8\n2026-06-18 07:53:09,229 - INFO - t=05 obs=8 belief=[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0] action=1 next_state=8\n2026-06-18 07:53:09,293 - INFO - t=06 obs=8 belief=[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0] action=1 next_state=8\n2026-06-18 07:53:09,390 - INFO - t=07 obs=8 belief=[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0] action=1 next_state=8\n2026-06-18 07:53:09,453 - INFO - t=08 obs=3 belief=[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0] action=1 next_state=8\n2026-06-18 07:53:09,516 - INFO - t=09 obs=8 belief=[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0] action=1 next_state=8\n2026-06-18 07:53:09,578 - INFO - t=10 obs=8 belief=[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0] action=1 next_state=8\n2026-06-18 07:53:09,641 - INFO - t=11 obs=8 belief=[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0] action=1 next_state=8\n2026-06-18 07:53:09,704 - INFO - t=12 obs=8 belief=[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0] action=1 next_state=8\n2026-06-18 07:53:09,766 - INFO - t=13 obs=2 belief=[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0] action=1 next_state=8\n2026-06-18 07:53:09,828 - INFO - t=14 obs=8 belief=[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0] action=1 next_state=8\n2026-06-18 07:53:09,829 - INFO - Saved simulation results to output/pymdp_simulations/POMDP GridWorld 3x3/simulation_results.json\n2026-06-18 07:53:09,829 - INFO - PyMDP simulation completed successfully\n2026-06-18 07:53:09,830 - INFO - Simulation completed successfully\n2026-06-18 07:53:09,830 - INFO -   framework:    PyMDP\n2026-06-18 07:53:09,830 - INFO -   pymdp ver:    1.0.0\n2026-06-18 07:53:09,830 - INFO -   backend:      jax\n2026-06-18 07:53:09,830 - INFO -   num_timesteps:15\n",
+      "execution_time": 2.853709,
+      "timestamp": "2026-06-18T07:53:07.163687",
+      "execution_benchmark_repeats": 1,
+      "execution_time_mean": 2.853709,
+      "execution_time_std": 0.0,
+      "execution_time_samples": [
+        2.853709
+      ],
+      "simulation_data": {
+        "traces": [],
+        "free_energy": [],
+        "states": [],
+        "observations": [
+          0,
+          3,
+          7,
+          7,
+          8,
+          8,
+          8,
+          8,
+          3,
+          8,
+          8,
+          8,
+          8,
+          2,
+          8
+        ],
+        "actions": [
+          1,
+          3,
+          1,
+          3,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "policy": [],
+        "raw_output": "PyMDP 1.0.0+ detected (JAX-first Agent).\n",
+        "raw_error": "2026-06-18 07:53:07,779 - INFO - Running pymdp 1.0.0 rollout for POMDP GridWorld 3x3\n2026-06-18 07:53:07,779 - INFO - Output directory: output/pymdp_simulations/POMDP GridWorld 3x3\n2026-06-18 07:53:07,779 - INFO - Executing PyMDP simulation (correlation_id: render_generated_script)\n2026-06-18 07:53:07,779 - INFO - Starting pymdp 1.0.0 rollout (JAX backend)\n2026-06-18 07:53:07,779 - INFO - Dimensions: No=9, Ns=9, Nu=5 | T=15, batch=1, policy_len=1\n2026-06-18 07:53:07,784 - INFO - Unable to initialize backend 'tpu': INTERNAL: Failed to open libtpu.so: dlopen(libtpu.so, 0x0001): tried: 'libtpu.so' (no such file), '/System/Volumes/Preboot/Cryptexes/OSlibtpu.so' (no such file), '/Users/4d/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/libtpu.so' (no such file), '/usr/lib/libtpu.so' (no such file, not in dyld cache), 'libtpu.so' (no such file)\n2026-06-18 07:53:07,991 - INFO - pymdp 1.0.0 Agent built (batch_size=1)\n2026-06-18 07:53:08,906 - INFO - t=00 obs=0 belief=[1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0] action=1 next_state=3\n2026-06-18 07:53:08,975 - INFO - t=01 obs=3 belief=[0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0] action=3 next_state=4\n2026-06-18 07:53:09,039 - INFO - t=02 obs=7 belief=[0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0] action=1 next_state=7\n2026-06-18 07:53:09,105 - INFO - t=03 obs=7 belief=[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0] action=3 next_state=8\n2026-06-18 07:53:09,169 - INFO - t=04 obs=8 belief=[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0] action=1 next_state=8\n2026-06-18 07:53:09,229 - INFO - t=05 obs=8 belief=[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0] action=1 next_state=8\n2026-06-18 07:53:09,293 - INFO - t=06 obs=8 belief=[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0] action=1 next_state=8\n2026-06-18 07:53:09,390 - INFO - t=07 obs=8 belief=[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0] action=1 next_state=8\n2026-06-18 07:53:09,453 - INFO - t=08 obs=3 belief=[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0] action=1 next_state=8\n2026-06-18 07:53:09,516 - INFO - t=09 obs=8 belief=[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0] action=1 next_state=8\n2026-06-18 07:53:09,578 - INFO - t=10 obs=8 belief=[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0] action=1 next_state=8\n2026-06-18 07:53:09,641 - INFO - t=11 obs=8 belief=[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0] action=1 next_state=8\n2026-06-18 07:53:09,704 - INFO - t=12 obs=8 belief=[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0] action=1 next_state=8\n2026-06-18 07:53:09,766 - INFO - t=13 obs=2 belief=[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0] action=1 next_state=8\n2026-06-18 07:53:09,828 - INFO - t=14 obs=8 belief=[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0] action=1 next_state=8\n2026-06-18 07:53:09,829 - INFO - Saved simulation results to output/pymdp_simulations/POMDP GridWorld 3x3/simulation_results.json\n2026-06-18 07:53:09,829 - INFO - PyMDP simulation completed successfully\n2026-06-18 07:53:09,830 - INFO - Simulation completed successfully\n2026-06-18 07:53:09,830 - INFO -   framework:    PyMDP\n2026-06-18 07:53:09,830 - INFO -   pymdp ver:    1.0.0\n2026-06-18 07:53:09,830 - INFO -   backend:      jax\n2026-06-18 07:53:09,830 - INFO -   num_timesteps:15\n",
+        "beliefs": [
+          [
+            1.0,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18
+          ],
+          [
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            1.0,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18
+          ],
+          [
+            2.2204500197172533e-16,
+            2.2204500197172533e-16,
+            2.2204500197172533e-16,
+            2.2204500197172533e-16,
+            1.0,
+            2.2204500197172533e-16,
+            2.2204500197172533e-16,
+            1.00660641592378e-14,
+            2.2204500197172533e-16
+          ],
+          [
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            9.796065902352154e-18,
+            1.0,
+            9.796065902352154e-18
+          ],
+          [
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            1.0
+          ],
+          [
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            1.0
+          ],
+          [
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            1.0
+          ],
+          [
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            1.0
+          ],
+          [
+            2.2204500197172533e-16,
+            2.2204500197172533e-16,
+            2.2204500197172533e-16,
+            1.00660641592378e-14,
+            2.2204500197172533e-16,
+            2.2204500197172533e-16,
+            2.2204500197172533e-16,
+            2.2204500197172533e-16,
+            1.0
+          ],
+          [
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            2.2694328762657855e-16,
+            9.796065902352154e-18,
+            1.0
+          ],
+          [
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            5.1141433987826e-18,
+            4.898039982211284e-18,
+            1.0
+          ],
+          [
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            1.0
+          ],
+          [
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            1.0
+          ],
+          [
+            2.2204500197172533e-16,
+            2.2204500197172533e-16,
+            1.00660641592378e-14,
+            2.2204500197172533e-16,
+            2.2204500197172533e-16,
+            2.2204500197172533e-16,
+            2.2204500197172533e-16,
+            2.2204500197172533e-16,
+            1.0
+          ],
+          [
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            4.898039982211284e-18,
+            2.2204500197172533e-16,
+            9.796065902352154e-18,
+            9.796065902352154e-18,
+            1.0
+          ]
+        ],
+        "num_timesteps": 15
+      },
+      "structured_result_file": "output/12_execute_output/pomdp_gridworld_3x3/pymdp/execution_logs/POMDP GridWorld 3x3_pymdp.py_results.json",
+      "output_file": "output/12_execute_output/pomdp_gridworld_3x3/pymdp/execution_logs/POMDP GridWorld 3x3_pymdp.py_execution.log",
+      "implementation_directory": "output/12_execute_output/pomdp_gridworld_3x3/pymdp",
+      "collected_outputs": {
+        "visualizations": [],
+        "simulation_data": [
+          "output/12_execute_output/pomdp_gridworld_3x3/pymdp/simulation_data/simulation_results.json"
+        ],
+        "traces": [],
+        "other": []
+      },
+      "skipped": false
+    },
+    {
+      "script_path": "output/11_render_output/pomdp_gridworld_3x3/pytorch/POMDP GridWorld 3x3_pytorch.py",
+      "script_name": "POMDP GridWorld 3x3_pytorch.py",
+      "framework": "pytorch",
+      "model_name": "pomdp_gridworld_3x3",
+      "executor": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python",
+      "success": false,
+      "skipped": true,
+      "return_code": null,
+      "stdout": "",
+      "stderr": "",
+      "execution_time": 0,
+      "timestamp": "2026-06-18T07:53:10.043310",
+      "error": "Dependency not installed: torch",
+      "error_type": "DependencyNotInstalled",
+      "execution_metadata": {}
+    },
+    {
+      "script_path": "output/11_render_output/pomdp_gridworld_3x3/jax/POMDP GridWorld 3x3_jax.py",
+      "script_name": "POMDP GridWorld 3x3_jax.py",
+      "framework": "jax",
+      "model_name": "pomdp_gridworld_3x3",
+      "executor": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python",
+      "success": true,
+      "return_code": 0,
+      "stdout": "============================================================\nJAX Active Inference Model: GNNModel\n============================================================\n\n\u2705 Model parameters created\n   A matrix shape: (9, 9)\n   B matrix shape: (9, 9, 5)\n   C vector shape: (9,)\n   D vector shape: (9,)\n\nGNNModel Model Summary (Pure JAX Implementation):\n- Number of states: 9\n- Number of observations: 9\n- Number of actions: 5\n- Parameters: A matrix, B matrix, C vector, D vector\n\nKey Functions:\n- create_params(): Create model parameters\n- belief_update(): Bayesian belief update\n- compute_expected_free_energy(): Compute EFE for action\n- choose_action(): Choose action with minimum EFE\n- simulate_step(): One step of Active Inference\n- run_simulation(): Full simulation over observations\n\n\n\ud83e\uddea Running test simulation...\n\n\ud83d\udcca Simulation Results:\n   Initial belief: [1. 0. 0. 0. 0. 0. 0. 0. 0.]\n   Updated belief: [1. 0. 0. 0. 0. 0. 0. 0. 0.]\n   Selected action: 0\n   Expected free energy: 0.6259\n   EFE for all actions: [0.62587535 2.3848183  0.62587535 2.3848186  0.62587535]\n\n\ud83d\udd04 Running 15-step simulation...\n   Actions taken: [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]\n   Final belief: [1. 0. 0. 0. 0. 0. 0. 0. 0.]\n   Average EFE: 1.3295\n\n\ud83d\udcbe Saved simulation results to: output/12_execute_output/pomdp_gridworld_3x3/jax/simulation_data/simulation_results.json\n\n\u2705 JAX Active Inference model test successful!\n",
+      "stderr": "",
+      "execution_time": 1.040676,
+      "timestamp": "2026-06-18T07:53:10.315339",
+      "execution_benchmark_repeats": 1,
+      "execution_time_mean": 1.040676,
+      "execution_time_std": 0.0,
+      "execution_time_samples": [
+        1.040676
+      ],
+      "simulation_data": {
+        "traces": [],
+        "free_energy": [
+          0.6259,
+          1.3295
+        ],
+        "states": [],
+        "observations": [
+          8,
+          0,
+          0,
+          0,
+          0,
+          0,
+          4,
+          0,
+          0,
+          0,
+          0,
+          8,
+          0,
+          0,
+          0
+        ],
+        "actions": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "policy": [],
+        "raw_output": "============================================================\nJAX Active Inference Model: GNNModel\n============================================================\n\n\u2705 Model parameters created\n   A matrix shape: (9, 9)\n   B matrix shape: (9, 9, 5)\n   C vector shape: (9,)\n   D vector shape: (9,)\n\nGNNModel Model Summary (Pure JAX Implementation):\n- Number of states: 9\n- Number of observations: 9\n- Number of actions: 5\n- Parameters: A matrix, B matrix, C vector, D vector\n\nKey Functions:\n- create_params(): Create model parameters\n- belief_update(): Bayesian belief update\n- compute_expected_free_energy(): Compute EFE for action\n- choose_action(): Choose action with minimum EFE\n- simulate_step(): One step of Active Inference\n- run_simulation(): Full simulation over observations\n\n\n\ud83e\uddea Running test simulation...\n\n\ud83d\udcca Simulation Results:\n   Initial belief: [1. 0. 0. 0. 0. 0. 0. 0. 0.]\n   Updated belief: [1. 0. 0. 0. 0. 0. 0. 0. 0.]\n   Selected action: 0\n   Expected free energy: 0.6259\n   EFE for all actions: [0.62587535 2.3848183  0.62587535 2.3848186  0.62587535]\n\n\ud83d\udd04 Running 15-step simulation...\n   Actions taken: [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]\n   Final belief: [1. 0. 0. 0. 0. 0. 0. 0. 0.]\n   Average EFE: 1.3295\n\n\ud83d\udcbe Saved simulation results to: output/12_execute_output/pomdp_gridworld_3x3/jax/simulation_data/simulation_results.json\n\n\u2705 JAX Active Inference model test successful!\n",
+        "raw_error": "",
+        "beliefs": [
+          [
+            0.9999995231628418,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.9999995231628418,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.9999995231628418,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        ],
+        "num_timesteps": 15
+      },
+      "structured_result_file": "output/12_execute_output/pomdp_gridworld_3x3/jax/execution_logs/POMDP GridWorld 3x3_jax.py_results.json",
+      "output_file": "output/12_execute_output/pomdp_gridworld_3x3/jax/execution_logs/POMDP GridWorld 3x3_jax.py_execution.log",
+      "implementation_directory": "output/12_execute_output/pomdp_gridworld_3x3/jax",
+      "collected_outputs": {
+        "visualizations": [],
+        "simulation_data": [
+          "output/12_execute_output/pomdp_gridworld_3x3/jax/simulation_data/simulation_results.json"
+        ],
+        "traces": [],
+        "other": []
+      },
+      "skipped": false
+    },
+    {
+      "script_path": "output/11_render_output/pomdp_gridworld_3x3/discopy/POMDP GridWorld 3x3_discopy.py",
+      "script_name": "POMDP GridWorld 3x3_discopy.py",
+      "framework": "discopy",
+      "model_name": "pomdp_gridworld_3x3",
+      "executor": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python",
+      "success": true,
+      "return_code": 0,
+      "stdout": "\ud83d\udd2c DisCoPy Categorical Diagram Generation\n\ud83d\udcca State Space: 9 states, 9 observations, 5 actions\n============================================================\nDisCoPy Categorical Diagrams - GNN Generated\nModel: POMDP GridWorld 3x3\n============================================================\n\u2713 Defined basic types: S (states), O (observations), A (actions), P (probabilities)\n\u2713 Defined 8 model components as morphisms\n\n\ud83c\udfd7\ufe0f  Building Active Inference circuit...\n\u26a0\ufe0f  Prior composition type mismatch (S @ P @ C does not compose with StateInf @ P: S @ P @ O @ P != O @ P.), using perception-action loop\n\u2713 Created perception-action loop\n\n\ud83d\udd0d Analyzing circuit structure...\n\ud83d\udcca Circuit Analysis:\n  - Number of components: 8\n  - Perception-action loop domain: O\n  - Perception-action loop codomain: A\n  - Generative model domain: O\n  - Generative model codomain: A\n\n\ud83e\udde9 Component Details:\n  - A_matrix: S \u2192 O @ P\n  - B_matrix: S @ A \u2192 S @ P\n  - C_vector: Ty() \u2192 O @ P\n  - D_vector: Ty() \u2192 S @ P\n  - E_vector: Ty() \u2192 A @ P\n  - state_inference: O \u2192 S @ P\n  - policy_inference: S @ P \u2192 A @ P\n  - action_selection: A @ P \u2192 A\n\n\ud83d\udd17 Compositional Structure:\n  - Loop composition depth: 3\n  - Model composition depth: 3\n\n\ud83d\udcbe Exporting circuit data to discopy_diagrams/...\n\u2713 Exported analysis: discopy_diagrams/circuit_analysis.json\n\u2713 Exported circuit info: discopy_diagrams/circuit_info.json\n\n\u2705 DisCoPy categorical diagram generation completed successfully!\n\ud83d\udcca Circuit analysis and data export successful\n\n\ud83c\udf89 Categorical representation of Active Inference model complete!\n",
+      "stderr": "",
+      "execution_time": 0.311177,
+      "timestamp": "2026-06-18T07:53:11.690771",
+      "execution_benchmark_repeats": 1,
+      "execution_time_mean": 0.311177,
+      "execution_time_std": 0.0,
+      "execution_time_samples": [
+        0.311177
+      ],
+      "simulation_data": {
+        "traces": [],
+        "free_energy": [],
+        "states": [],
+        "observations": [],
+        "actions": [],
+        "policy": [],
+        "raw_output": "\ud83d\udd2c DisCoPy Categorical Diagram Generation\n\ud83d\udcca State Space: 9 states, 9 observations, 5 actions\n============================================================\nDisCoPy Categorical Diagrams - GNN Generated\nModel: POMDP GridWorld 3x3\n============================================================\n\u2713 Defined basic types: S (states), O (observations), A (actions), P (probabilities)\n\u2713 Defined 8 model components as morphisms\n\n\ud83c\udfd7\ufe0f  Building Active Inference circuit...\n\u26a0\ufe0f  Prior composition type mismatch (S @ P @ C does not compose with StateInf @ P: S @ P @ O @ P != O @ P.), using perception-action loop\n\u2713 Created perception-action loop\n\n\ud83d\udd0d Analyzing circuit structure...\n\ud83d\udcca Circuit Analysis:\n  - Number of components: 8\n  - Perception-action loop domain: O\n  - Perception-action loop codomain: A\n  - Generative model domain: O\n  - Generative model codomain: A\n\n\ud83e\udde9 Component Details:\n  - A_matrix: S \u2192 O @ P\n  - B_matrix: S @ A \u2192 S @ P\n  - C_vector: Ty() \u2192 O @ P\n  - D_vector: Ty() \u2192 S @ P\n  - E_vector: Ty() \u2192 A @ P\n  - state_inference: O \u2192 S @ P\n  - policy_inference: S @ P \u2192 A @ P\n  - action_selection: A @ P \u2192 A\n\n\ud83d\udd17 Compositional Structure:\n  - Loop composition depth: 3\n  - Model composition depth: 3\n\n\ud83d\udcbe Exporting circuit data to discopy_diagrams/...\n\u2713 Exported analysis: discopy_diagrams/circuit_analysis.json\n\u2713 Exported circuit info: discopy_diagrams/circuit_info.json\n\n\u2705 DisCoPy categorical diagram generation completed successfully!\n\ud83d\udcca Circuit analysis and data export successful\n\n\ud83c\udf89 Categorical representation of Active Inference model complete!\n",
+        "raw_error": "",
+        "diagrams": [
+          "Generation",
+          "structure",
+          "Analysis",
+          "data",
+          "info",
+          "generation",
+          "analysis"
+        ],
+        "components": [
+          "A_matrix",
+          "B_matrix",
+          "C_vector",
+          "D_vector",
+          "E_vector",
+          "state_inference",
+          "policy_inference",
+          "action_selection"
+        ],
+        "analysis": {
+          "num_components": 8,
+          "loop_domain": "O",
+          "loop_codomain": "A",
+          "model_domain": "O",
+          "model_codomain": "A"
+        },
+        "parameters": {
+          "num_states": 9,
+          "num_observations": 9,
+          "num_actions": 5
+        }
+      },
+      "structured_result_file": "output/12_execute_output/pomdp_gridworld_3x3/discopy/execution_logs/POMDP GridWorld 3x3_discopy.py_results.json",
+      "output_file": "output/12_execute_output/pomdp_gridworld_3x3/discopy/execution_logs/POMDP GridWorld 3x3_discopy.py_execution.log",
+      "implementation_directory": "output/12_execute_output/pomdp_gridworld_3x3/discopy",
+      "collected_outputs": {
+        "visualizations": [],
+        "simulation_data": [
+          "output/12_execute_output/pomdp_gridworld_3x3/discopy/simulation_data/circuit_analysis.json",
+          "output/12_execute_output/pomdp_gridworld_3x3/discopy/simulation_data/circuit_info.json"
+        ],
+        "traces": [],
+        "other": []
+      },
+      "skipped": false
+    },
+    {
+      "script_path": "output/11_render_output/pomdp_gridworld_3x3/bnlearn/POMDP GridWorld 3x3_bnlearn.py",
+      "script_name": "POMDP GridWorld 3x3_bnlearn.py",
+      "framework": "bnlearn",
+      "model_name": "pomdp_gridworld_3x3",
+      "executor": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python",
+      "success": false,
+      "skipped": true,
+      "return_code": null,
+      "stdout": "",
+      "stderr": "",
+      "execution_time": 0,
+      "timestamp": "2026-06-18T07:53:12.025214",
+      "error": "Dependency not installed: bnlearn",
+      "error_type": "DependencyNotInstalled",
+      "execution_metadata": {}
+    },
+    {
+      "script_path": "output/11_render_output/pomdp_gridworld_3x3/rxinfer/POMDP GridWorld 3x3_rxinfer.jl",
+      "script_name": "POMDP GridWorld 3x3_rxinfer.jl",
+      "framework": "rxinfer",
+      "model_name": "pomdp_gridworld_3x3",
+      "executor": "julia",
+      "success": true,
+      "return_code": 0,
+      "stdout": "RxInfer.jl simulation wrote simulation_results.json\n",
+      "stderr": "",
+      "execution_time": 6.579807,
+      "timestamp": "2026-06-18T07:53:12.025270",
+      "execution_metadata": {},
+      "execution_benchmark_repeats": 1,
+      "execution_time_mean": 6.579807,
+      "execution_time_std": 0.0,
+      "execution_time_samples": [
+        6.579807
+      ],
+      "simulation_data": {
+        "traces": [],
+        "free_energy": [
+          3.3550622703395,
+          3.3550622703395,
+          3.3550622703395,
+          3.2719372703395,
+          3.3550622703395,
+          3.271937270339502,
+          3.3550622703395,
+          3.2719372703395,
+          3.022562270339501,
+          2.6900622703395016,
+          0.8613122703395023,
+          0.8613122703395023,
+          0.8613122703395023,
+          0.8613122703395023,
+          0.8613122703395023
+        ],
+        "states": [],
+        "observations": [
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          3,
+          0,
+          1,
+          4,
+          5,
+          1,
+          8,
+          8,
+          8
+        ],
+        "actions": [
+          2,
+          0,
+          2,
+          3,
+          2,
+          1,
+          0,
+          3,
+          1,
+          3,
+          1,
+          1,
+          4,
+          3,
+          1
+        ],
+        "policy": [],
+        "raw_output": "RxInfer.jl simulation wrote simulation_results.json\n",
+        "raw_error": "",
+        "schema_version": "rxinfer_simulation_v1",
+        "beliefs": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "true_states": [
+          0,
+          0,
+          0,
+          1,
+          0,
+          3,
+          0,
+          1,
+          4,
+          5,
+          8,
+          8,
+          8,
+          8,
+          8
+        ],
+        "expected_free_energy": [
+          3.3550622703395,
+          3.3550622703395,
+          3.3550622703395,
+          3.2719372703395,
+          3.3550622703395,
+          3.271937270339502,
+          3.3550622703395,
+          3.2719372703395,
+          3.022562270339501,
+          2.6900622703395016,
+          0.8613122703395023,
+          0.8613122703395023,
+          0.8613122703395023,
+          0.8613122703395023,
+          0.8613122703395023
+        ],
+        "policy_posterior": [
+          [
+            0.1727443961427012,
+            0.24088340578594716,
+            0.1727443961427012,
+            0.2408834057859493,
+            0.1727443961427012
+          ],
+          [
+            0.1727443961427012,
+            0.24088340578594716,
+            0.1727443961427012,
+            0.2408834057859493,
+            0.1727443961427012
+          ],
+          [
+            0.1727443961427012,
+            0.24088340578594716,
+            0.1727443961427012,
+            0.2408834057859493,
+            0.1727443961427012
+          ],
+          [
+            0.1727443961427012,
+            0.24088340578594716,
+            0.1727443961427012,
+            0.2408834057859493,
+            0.1727443961427012
+          ],
+          [
+            0.1356279079507625,
+            0.36775434156993725,
+            0.09726266108953752,
+            0.2637271814390002,
+            0.1356279079507625
+          ],
+          [
+            0.1727443961427012,
+            0.24088340578594716,
+            0.1727443961427012,
+            0.2408834057859493,
+            0.1727443961427012
+          ],
+          [
+            0.09726266108953766,
+            0.26372718143900153,
+            0.13562790795076146,
+            0.3677543415699378,
+            0.13562790795076146
+          ],
+          [
+            0.1727443961427012,
+            0.24088340578594716,
+            0.1727443961427012,
+            0.2408834057859493,
+            0.1727443961427012
+          ],
+          [
+            0.1356279079507625,
+            0.36775434156993725,
+            0.09726266108953752,
+            0.2637271814390002,
+            0.1356279079507625
+          ],
+          [
+            0.03965727838412203,
+            0.4065774732943346,
+            0.03965727838412168,
+            0.40657747329433386,
+            0.10753049664308793
+          ],
+          [
+            0.00012601219712696303,
+            0.9983694776453916,
+            0.000175717695579764,
+            0.0006643962309506895,
+            0.0006643962309506895
+          ],
+          [
+            0.00022172873348362052,
+            0.33318551417767756,
+            0.00022172873348362093,
+            0.33318551417767756,
+            0.33318551417767756
+          ],
+          [
+            0.00022172873348362052,
+            0.33318551417767756,
+            0.00022172873348362093,
+            0.33318551417767756,
+            0.33318551417767756
+          ],
+          [
+            0.00022172873348362052,
+            0.33318551417767756,
+            0.00022172873348362093,
+            0.33318551417767756,
+            0.33318551417767756
+          ],
+          [
+            0.00022172873348362052,
+            0.33318551417767756,
+            0.00022172873348362093,
+            0.33318551417767756,
+            0.33318551417767756
+          ]
+        ],
+        "validation": {
+          "all_beliefs_valid": true,
+          "actions_in_range": true,
+          "all_valid": true,
+          "beliefs_sum_to_one": true
+        },
+        "model_parameters": {
+          "num_observations": 9,
+          "E_shape": [
+            5
+          ],
+          "A_shape": [
+            9,
+            9
+          ],
+          "D_shape": [
+            9
+          ],
+          "B_shape": [
+            9,
+            9,
+            5
+          ],
+          "num_actions": 5,
+          "C_shape": [
+            9
+          ],
+          "num_states": 9
+        }
+      },
+      "structured_result_file": "output/12_execute_output/pomdp_gridworld_3x3/rxinfer/execution_logs/POMDP GridWorld 3x3_rxinfer.jl_results.json",
+      "output_file": "output/12_execute_output/pomdp_gridworld_3x3/rxinfer/execution_logs/POMDP GridWorld 3x3_rxinfer.jl_execution.log",
+      "implementation_directory": "output/12_execute_output/pomdp_gridworld_3x3/rxinfer",
+      "collected_outputs": {
+        "visualizations": [],
+        "simulation_data": [
+          "output/12_execute_output/pomdp_gridworld_3x3/rxinfer/simulation_data/simulation_results.json"
+        ],
+        "traces": [],
+        "other": []
+      },
+      "skipped": false
+    },
+    {
+      "script_path": "output/11_render_output/pomdp_gridworld_3x3/activeinference_jl/POMDP GridWorld 3x3_activeinference.jl",
+      "script_name": "POMDP GridWorld 3x3_activeinference.jl",
+      "framework": "activeinference_jl",
+      "model_name": "pomdp_gridworld_3x3",
+      "executor": "julia",
+      "success": true,
+      "return_code": 0,
+      "stdout": "ActiveInference.jl simulation wrote simulation_results.json\n",
+      "stderr": "",
+      "execution_time": 10.428846,
+      "timestamp": "2026-06-18T07:53:23.802569",
+      "execution_benchmark_repeats": 1,
+      "execution_time_mean": 10.428846,
+      "execution_time_std": 0.0,
+      "execution_time_samples": [
+        10.428846
+      ],
+      "simulation_data": {
+        "traces": [],
+        "free_energy": [
+          3.3550622703395,
+          3.3550622703395,
+          3.3550622703395,
+          3.2719372703395,
+          3.3550622703395,
+          3.271937270339502,
+          3.3550622703395,
+          3.2719372703395,
+          3.022562270339501,
+          2.6900622703395016,
+          0.8613122703395023,
+          0.8613122703395023,
+          0.8613122703395023,
+          0.8613122703395023,
+          0.8613122703395023
+        ],
+        "states": [],
+        "observations": [
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          3,
+          0,
+          1,
+          4,
+          5,
+          1,
+          8,
+          8,
+          8
+        ],
+        "actions": [
+          2,
+          0,
+          2,
+          3,
+          2,
+          1,
+          0,
+          3,
+          1,
+          3,
+          1,
+          1,
+          4,
+          3,
+          1
+        ],
+        "policy": [],
+        "raw_output": "ActiveInference.jl simulation wrote simulation_results.json\n",
+        "raw_error": "",
+        "schema_version": "activeinference_jl_simulation_v1",
+        "beliefs": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "true_states": [
+          0,
+          0,
+          0,
+          1,
+          0,
+          3,
+          0,
+          1,
+          4,
+          5,
+          8,
+          8,
+          8,
+          8,
+          8
+        ],
+        "expected_free_energy": [
+          3.3550622703395,
+          3.3550622703395,
+          3.3550622703395,
+          3.2719372703395,
+          3.3550622703395,
+          3.271937270339502,
+          3.3550622703395,
+          3.2719372703395,
+          3.022562270339501,
+          2.6900622703395016,
+          0.8613122703395023,
+          0.8613122703395023,
+          0.8613122703395023,
+          0.8613122703395023,
+          0.8613122703395023
+        ],
+        "policy_posterior": [
+          [
+            0.1727443961427012,
+            0.24088340578594716,
+            0.1727443961427012,
+            0.2408834057859493,
+            0.1727443961427012
+          ],
+          [
+            0.1727443961427012,
+            0.24088340578594716,
+            0.1727443961427012,
+            0.2408834057859493,
+            0.1727443961427012
+          ],
+          [
+            0.1727443961427012,
+            0.24088340578594716,
+            0.1727443961427012,
+            0.2408834057859493,
+            0.1727443961427012
+          ],
+          [
+            0.1727443961427012,
+            0.24088340578594716,
+            0.1727443961427012,
+            0.2408834057859493,
+            0.1727443961427012
+          ],
+          [
+            0.1356279079507625,
+            0.36775434156993725,
+            0.09726266108953752,
+            0.2637271814390002,
+            0.1356279079507625
+          ],
+          [
+            0.1727443961427012,
+            0.24088340578594716,
+            0.1727443961427012,
+            0.2408834057859493,
+            0.1727443961427012
+          ],
+          [
+            0.09726266108953766,
+            0.26372718143900153,
+            0.13562790795076146,
+            0.3677543415699378,
+            0.13562790795076146
+          ],
+          [
+            0.1727443961427012,
+            0.24088340578594716,
+            0.1727443961427012,
+            0.2408834057859493,
+            0.1727443961427012
+          ],
+          [
+            0.1356279079507625,
+            0.36775434156993725,
+            0.09726266108953752,
+            0.2637271814390002,
+            0.1356279079507625
+          ],
+          [
+            0.03965727838412203,
+            0.4065774732943346,
+            0.03965727838412168,
+            0.40657747329433386,
+            0.10753049664308793
+          ],
+          [
+            0.00012601219712696303,
+            0.9983694776453916,
+            0.000175717695579764,
+            0.0006643962309506895,
+            0.0006643962309506895
+          ],
+          [
+            0.00022172873348362052,
+            0.33318551417767756,
+            0.00022172873348362093,
+            0.33318551417767756,
+            0.33318551417767756
+          ],
+          [
+            0.00022172873348362052,
+            0.33318551417767756,
+            0.00022172873348362093,
+            0.33318551417767756,
+            0.33318551417767756
+          ],
+          [
+            0.00022172873348362052,
+            0.33318551417767756,
+            0.00022172873348362093,
+            0.33318551417767756,
+            0.33318551417767756
+          ],
+          [
+            0.00022172873348362052,
+            0.33318551417767756,
+            0.00022172873348362093,
+            0.33318551417767756,
+            0.33318551417767756
+          ]
+        ],
+        "validation": {
+          "all_beliefs_valid": true,
+          "actions_in_range": true,
+          "all_valid": true,
+          "beliefs_sum_to_one": true
+        },
+        "model_parameters": {
+          "num_observations": 9,
+          "E_shape": [
+            5
+          ],
+          "A_shape": [
+            9,
+            9
+          ],
+          "D_shape": [
+            9
+          ],
+          "B_shape": [
+            9,
+            9,
+            5
+          ],
+          "num_actions": 5,
+          "C_shape": [
+            9
+          ],
+          "num_states": 9
+        }
+      },
+      "structured_result_file": "output/12_execute_output/pomdp_gridworld_3x3/activeinference_jl/execution_logs/POMDP GridWorld 3x3_activeinference.jl_results.json",
+      "output_file": "output/12_execute_output/pomdp_gridworld_3x3/activeinference_jl/execution_logs/POMDP GridWorld 3x3_activeinference.jl_execution.log",
+      "implementation_directory": "output/12_execute_output/pomdp_gridworld_3x3/activeinference_jl",
+      "collected_outputs": {
+        "visualizations": [],
+        "simulation_data": [
+          "output/12_execute_output/pomdp_gridworld_3x3/activeinference_jl/simulation_data/simulation_results.json"
+        ],
+        "traces": [],
+        "other": []
+      },
+      "skipped": false
+    }
+  ],
+  "framework_status": {
+    "numpyro": {
+      "status": "success",
+      "executions": 1
+    },
+    "pymdp": {
+      "status": "success",
+      "executions": 1
+    },
+    "pytorch": {
+      "status": "skipped",
+      "executions": 1,
+      "error": "Dependency not installed: torch"
+    },
+    "jax": {
+      "status": "success",
+      "executions": 1
+    },
+    "discopy": {
+      "status": "success",
+      "executions": 1
+    },
+    "bnlearn": {
+      "status": "skipped",
+      "executions": 1,
+      "error": "Dependency not installed: bnlearn"
+    },
+    "rxinfer": {
+      "status": "success",
+      "executions": 1
+    },
+    "activeinference_jl": {
+      "status": "success",
+      "executions": 1
+    }
+  },
+  "execution_mode": "local",
+  "execution_workers": 1,
+  "backend": null,
+  "execution_benchmark_repeats": 1,
+  "execution_summary_detail": true,
+  "success": true,
+  "render_failures": [],
+  "missing_render_scripts": [],
+  "requested_frameworks": [
+    "pymdp",
+    "jax",
+    "discopy",
+    "rxinfer",
+    "activeinference_jl",
+    "pytorch",
+    "numpyro",
+    "bnlearn"
+  ],
+  "total_scripts": 8,
+  "success_rate": 100.0,
+  "execution_summary_format": "detail_v1"
+}

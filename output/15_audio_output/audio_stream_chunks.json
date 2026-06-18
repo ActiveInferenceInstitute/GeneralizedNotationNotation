@@ -1,0 +1,79 @@
+{
+  "schema": "gnn_audio_stream_chunks_v1",
+  "status": "ready",
+  "streaming_safe": true,
+  "frame_count": 150,
+  "duration_frames": 150,
+  "chunk_count": 5,
+  "chunks": [
+    {
+      "index": 0,
+      "frame_start": 0,
+      "frame_count": 32,
+      "amplitude": 1.0,
+      "frequency_hz": 290.47751697829847,
+      "metadata": {
+        "mean_free_energy": 2.349250565943282,
+        "last_action": 0
+      }
+    },
+    {
+      "index": 1,
+      "frame_start": 32,
+      "frame_count": 32,
+      "amplitude": 1.0,
+      "frequency_hz": 280.0,
+      "metadata": {
+        "mean_free_energy": 0.0,
+        "last_action": 4
+      }
+    },
+    {
+      "index": 2,
+      "frame_start": 64,
+      "frame_count": 32,
+      "amplitude": 1.0,
+      "frequency_hz": 235.0,
+      "metadata": {
+        "mean_free_energy": 0.0,
+        "last_action": 1
+      }
+    },
+    {
+      "index": 3,
+      "frame_start": 96,
+      "frame_count": 32,
+      "amplitude": 1.0,
+      "frequency_hz": 328.9611387032651,
+      "metadata": {
+        "mean_free_energy": 2.1320379567755032,
+        "last_action": 3
+      }
+    },
+    {
+      "index": 4,
+      "frame_start": 128,
+      "frame_count": 22,
+      "amplitude": 1.0,
+      "frequency_hz": 298.58567492836687,
+      "metadata": {
+        "mean_free_energy": 2.1195224976122287,
+        "last_action": 1
+      }
+    }
+  ],
+  "telemetry_source_count": 11,
+  "telemetry_provenance": [
+    "output/12_execute_output/pomdp_gridworld_3x3/activeinference_jl/execution_logs/POMDP GridWorld 3x3_activeinference.jl_results.json",
+    "output/12_execute_output/pomdp_gridworld_3x3/activeinference_jl/simulation_data/simulation_results.json",
+    "output/12_execute_output/pomdp_gridworld_3x3/discopy/execution_logs/POMDP GridWorld 3x3_discopy.py_results.json",
+    "output/12_execute_output/pomdp_gridworld_3x3/jax/execution_logs/POMDP GridWorld 3x3_jax.py_results.json",
+    "output/12_execute_output/pomdp_gridworld_3x3/jax/simulation_data/simulation_results.json",
+    "output/12_execute_output/pomdp_gridworld_3x3/numpyro/execution_logs/POMDP GridWorld 3x3_numpyro.py_results.json",
+    "output/12_execute_output/pomdp_gridworld_3x3/numpyro/simulation_data/simulation_results.json",
+    "output/12_execute_output/pomdp_gridworld_3x3/pymdp/execution_logs/POMDP GridWorld 3x3_pymdp.py_results.json",
+    "output/12_execute_output/pomdp_gridworld_3x3/pymdp/simulation_data/simulation_results.json",
+    "output/12_execute_output/pomdp_gridworld_3x3/rxinfer/execution_logs/POMDP GridWorld 3x3_rxinfer.jl_results.json",
+    "output/12_execute_output/pomdp_gridworld_3x3/rxinfer/simulation_data/simulation_results.json"
+  ]
+}

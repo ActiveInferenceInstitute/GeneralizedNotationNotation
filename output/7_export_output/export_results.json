@@ -1,115 +1,51 @@
 {
-  "timestamp": "2026-05-22T06:17:42.791513",
-  "source_directory": "input/gnn_files/discrete",
+  "timestamp": "2026-06-18T07:52:51.771281",
+  "source_directory": "input/gnn_files/pomdp_gridworld",
   "output_directory": "output/7_export_output",
   "files_exported": [
     {
-      "file_name": "predictive_coding_agent.md",
-      "file_path": "input/gnn_files/continuous/predictive_coding_agent.md",
+      "file_name": "pomdp_gridworld_3x3.md",
+      "file_path": "input/gnn_files/pomdp_gridworld/pomdp_gridworld_3x3.md",
       "exports": {
         "json": {
           "success": true,
-          "export_file": "output/7_export_output/predictive_coding_agent/predictive_coding_agent_json.json",
-          "file_size": 29062
+          "export_file": "output/7_export_output/pomdp_gridworld_3x3/pomdp_gridworld_3x3_json.json",
+          "file_size": 53119
         },
         "xml": {
           "success": true,
-          "export_file": "output/7_export_output/predictive_coding_agent/predictive_coding_agent_xml.xml",
-          "file_size": 1380
+          "export_file": "output/7_export_output/pomdp_gridworld_3x3/pomdp_gridworld_3x3_xml.xml",
+          "file_size": 945
         },
         "graphml": {
           "success": true,
-          "export_file": "output/7_export_output/predictive_coding_agent/predictive_coding_agent_graphml.graphml",
-          "file_size": 2026
+          "export_file": "output/7_export_output/pomdp_gridworld_3x3/pomdp_gridworld_3x3_graphml.graphml",
+          "file_size": 1454
         },
         "gexf": {
           "success": true,
-          "export_file": "output/7_export_output/predictive_coding_agent/predictive_coding_agent_gexf.gexf",
-          "file_size": 1660
+          "export_file": "output/7_export_output/pomdp_gridworld_3x3/pomdp_gridworld_3x3_gexf.gexf",
+          "file_size": 1190
         },
         "pickle": {
           "success": true,
-          "export_file": "output/7_export_output/predictive_coding_agent/predictive_coding_agent_pickle.pkl",
-          "file_size": 15399
-        }
-      },
-      "success": true
-    },
-    {
-      "file_name": "stochastic_dynamics.md",
-      "file_path": "input/gnn_files/continuous/stochastic_dynamics.md",
-      "exports": {
-        "json": {
-          "success": true,
-          "export_file": "output/7_export_output/stochastic_dynamics/stochastic_dynamics_json.json",
-          "file_size": 19248
-        },
-        "xml": {
-          "success": true,
-          "export_file": "output/7_export_output/stochastic_dynamics/stochastic_dynamics_xml.xml",
-          "file_size": 722
-        },
-        "graphml": {
-          "success": true,
-          "export_file": "output/7_export_output/stochastic_dynamics/stochastic_dynamics_graphml.graphml",
-          "file_size": 1162
-        },
-        "gexf": {
-          "success": true,
-          "export_file": "output/7_export_output/stochastic_dynamics/stochastic_dynamics_gexf.gexf",
-          "file_size": 946
-        },
-        "pickle": {
-          "success": true,
-          "export_file": "output/7_export_output/stochastic_dynamics/stochastic_dynamics_pickle.pkl",
-          "file_size": 11115
-        }
-      },
-      "success": true
-    },
-    {
-      "file_name": "continuous_navigation.md",
-      "file_path": "input/gnn_files/continuous/continuous_navigation.md",
-      "exports": {
-        "json": {
-          "success": true,
-          "export_file": "output/7_export_output/continuous_navigation/continuous_navigation_json.json",
-          "file_size": 30382
-        },
-        "xml": {
-          "success": true,
-          "export_file": "output/7_export_output/continuous_navigation/continuous_navigation_xml.xml",
-          "file_size": 1516
-        },
-        "graphml": {
-          "success": true,
-          "export_file": "output/7_export_output/continuous_navigation/continuous_navigation_graphml.graphml",
-          "file_size": 2278
-        },
-        "gexf": {
-          "success": true,
-          "export_file": "output/7_export_output/continuous_navigation/continuous_navigation_gexf.gexf",
-          "file_size": 1796
-        },
-        "pickle": {
-          "success": true,
-          "export_file": "output/7_export_output/continuous_navigation/continuous_navigation_pickle.pkl",
-          "file_size": 15109
+          "export_file": "output/7_export_output/pomdp_gridworld_3x3/pomdp_gridworld_3x3_pickle.pkl",
+          "file_size": 27714
         }
       },
       "success": true
     }
   ],
   "summary": {
-    "total_files": 3,
-    "successful_exports": 3,
+    "total_files": 1,
+    "successful_exports": 1,
     "failed_exports": 0,
     "formats_generated": {
-      "json": 3,
-      "xml": 3,
-      "graphml": 3,
-      "gexf": 3,
-      "pickle": 3
+      "json": 1,
+      "xml": 1,
+      "graphml": 1,
+      "gexf": 1,
+      "pickle": 1
     }
   }
 }

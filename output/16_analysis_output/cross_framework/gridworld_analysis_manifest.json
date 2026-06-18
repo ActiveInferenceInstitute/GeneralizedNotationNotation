@@ -1,0 +1,131 @@
+{
+  "schema_version": "gridworld_analysis_manifest_v1",
+  "model_names": [
+    "pomdp_gridworld_3x3"
+  ],
+  "frameworks": [
+    "activeinference_jl",
+    "pymdp",
+    "rxinfer"
+  ],
+  "source_results": [
+    {
+      "framework": "activeinference_jl",
+      "model_name": "pomdp_gridworld_3x3",
+      "schema_version": "activeinference_jl_simulation_v1",
+      "source_path": "output/12_execute_output/pomdp_gridworld_3x3/activeinference_jl/simulation_data/simulation_results.json",
+      "num_timesteps": 15,
+      "validation": {
+        "all_beliefs_valid": true,
+        "actions_in_range": true,
+        "all_valid": true,
+        "beliefs_sum_to_one": true
+      }
+    },
+    {
+      "framework": "pymdp",
+      "model_name": "pomdp_gridworld_3x3",
+      "schema_version": "pymdp_simulation_v1",
+      "source_path": "output/12_execute_output/pomdp_gridworld_3x3/pymdp/simulation_data/simulation_results.json",
+      "num_timesteps": 15,
+      "validation": {
+        "all_beliefs_valid": true,
+        "beliefs_sum_to_one": true,
+        "actions_in_range": true,
+        "pymdp_version_ge_1_0_0": true,
+        "all_valid": true
+      }
+    },
+    {
+      "framework": "rxinfer",
+      "model_name": "pomdp_gridworld_3x3",
+      "schema_version": "rxinfer_simulation_v1",
+      "source_path": "output/12_execute_output/pomdp_gridworld_3x3/rxinfer/simulation_data/simulation_results.json",
+      "num_timesteps": 15,
+      "validation": {
+        "all_beliefs_valid": true,
+        "actions_in_range": true,
+        "all_valid": true,
+        "beliefs_sum_to_one": true
+      }
+    }
+  ],
+  "matrix_provenance_equal": true,
+  "outputs": {
+    "statistics": [
+      "cross_framework/framework_comparison_data.json",
+      "cross_framework/framework_comparison_report.md",
+      "cross_framework/pomdp_gridworld_3x3_post_simulation_analysis.json",
+      "cross_model_comparison_report.md"
+    ],
+    "png": [
+      "activeinference_jl/pomdp_gridworld_3x3_activeinference_jl_action_frequencies.png",
+      "activeinference_jl/pomdp_gridworld_3x3_activeinference_jl_belief_convergence.png",
+      "activeinference_jl/pomdp_gridworld_3x3_activeinference_jl_belief_trace.png",
+      "activeinference_jl/pomdp_gridworld_3x3_activeinference_jl_free_energy.png",
+      "activeinference_jl/pomdp_gridworld_3x3_activeinference_jl_observations.png",
+      "bnlearn/pomdp_gridworld_3x3_bnlearn_action_frequencies.png",
+      "bnlearn/pomdp_gridworld_3x3_bnlearn_belief_convergence.png",
+      "bnlearn/pomdp_gridworld_3x3_bnlearn_belief_trace.png",
+      "cross_framework/confidence_comparison.png",
+      "cross_framework/cross_framework_comparison.png",
+      "cross_framework/efe_convergence_comparison.png",
+      "cross_framework/framework_performance_comparison.png",
+      "cross_framework/framework_radar.png",
+      "cross_framework/framework_success_rates.png",
+      "cross_framework/unified_dashboard/unified_action_efe_comparison.png",
+      "cross_framework/unified_dashboard/unified_belief_comparison.png",
+      "cross_framework/unified_dashboard/unified_entropy_comparison.png",
+      "discopy/pomdp_gridworld_3x3_discopy_circuit_summary.png",
+      "discopy/pomdp_gridworld_3x3_discopy_component_flow.png",
+      "discopy/pomdp_gridworld_3x3_discopy_structure_card.png",
+      "jax/pomdp_gridworld_3x3_jax_action_frequencies.png",
+      "jax/pomdp_gridworld_3x3_jax_actions.png",
+      "jax/pomdp_gridworld_3x3_jax_belief_convergence.png",
+      "jax/pomdp_gridworld_3x3_jax_belief_evolution.png",
+      "jax/pomdp_gridworld_3x3_jax_belief_trace.png",
+      "jax/pomdp_gridworld_3x3_jax_confidence.png",
+      "jax/pomdp_gridworld_3x3_jax_dashboard.png",
+      "jax/pomdp_gridworld_3x3_jax_efe.png",
+      "jax/pomdp_gridworld_3x3_jax_observations.png",
+      "numpyro/pomdp_gridworld_3x3_numpyro_action_frequencies.png",
+      "numpyro/pomdp_gridworld_3x3_numpyro_belief_convergence.png",
+      "numpyro/pomdp_gridworld_3x3_numpyro_belief_trace.png",
+      "numpyro/pomdp_gridworld_3x3_numpyro_free_energy.png",
+      "numpyro/pomdp_gridworld_3x3_numpyro_observations.png",
+      "pymdp/pomdp_gridworld_3x3_pymdp_action_frequencies.png",
+      "pymdp/pomdp_gridworld_3x3_pymdp_belief_convergence.png",
+      "pymdp/pomdp_gridworld_3x3_pymdp_belief_trace.png",
+      "pymdp/pomdp_gridworld_3x3_pymdp_free_energy.png",
+      "pymdp/pomdp_gridworld_3x3_pymdp_observations.png",
+      "pymdp/pomdp_gridworld_3x3_pymdp_vfe_vs_efe.png",
+      "pytorch/pomdp_gridworld_3x3_pytorch_action_frequencies.png",
+      "pytorch/pomdp_gridworld_3x3_pytorch_belief_convergence.png",
+      "pytorch/pomdp_gridworld_3x3_pytorch_belief_trace.png",
+      "rxinfer/pomdp_gridworld_3x3_rxinfer_accuracy.png",
+      "rxinfer/pomdp_gridworld_3x3_rxinfer_action_frequencies.png",
+      "rxinfer/pomdp_gridworld_3x3_rxinfer_belief_convergence.png",
+      "rxinfer/pomdp_gridworld_3x3_rxinfer_belief_entropy.png",
+      "rxinfer/pomdp_gridworld_3x3_rxinfer_belief_evolution.png",
+      "rxinfer/pomdp_gridworld_3x3_rxinfer_belief_heatmap.png",
+      "rxinfer/pomdp_gridworld_3x3_rxinfer_belief_trace.png",
+      "rxinfer/pomdp_gridworld_3x3_rxinfer_free_energy.png",
+      "rxinfer/pomdp_gridworld_3x3_rxinfer_obs_vs_true.png",
+      "rxinfer/pomdp_gridworld_3x3_rxinfer_observations.png"
+    ],
+    "gif": [
+      "cross_framework/gridworld_animations/gridworld_cross_framework_trajectory.gif",
+      "cross_framework/gridworld_animations/pomdp_gridworld_3x3_activeinference_jl_belief_evolution.gif",
+      "cross_framework/gridworld_animations/pomdp_gridworld_3x3_activeinference_jl_state_trajectory.gif",
+      "cross_framework/gridworld_animations/pomdp_gridworld_3x3_pymdp_belief_evolution.gif",
+      "cross_framework/gridworld_animations/pomdp_gridworld_3x3_pymdp_state_trajectory.gif",
+      "cross_framework/gridworld_animations/pomdp_gridworld_3x3_rxinfer_belief_evolution.gif",
+      "cross_framework/gridworld_animations/pomdp_gridworld_3x3_rxinfer_state_trajectory.gif"
+    ],
+    "dashboard": [
+      "cross_framework/unified_dashboard/unified_action_efe_comparison.png",
+      "cross_framework/unified_dashboard/unified_belief_comparison.png",
+      "cross_framework/unified_dashboard/unified_entropy_comparison.png"
+    ]
+  }
+}

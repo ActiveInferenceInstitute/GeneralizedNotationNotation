@@ -436,7 +436,7 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; backgrou
   <aside class="sidebar">
     <div class="sidebar-logo">
       <h2>GNN Pipeline</h2>
-      <p>Generated 2026-05-25 09:54</p>
+      <p>Generated 2026-06-18 08:04</p>
     </div>
     <nav class="sidebar-nav">
       <div class="nav-section">
@@ -457,88 +457,112 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; backgrou
     
 <div class="page-header">
   <h1>📋 Reports</h1>
-  <p class="subtitle">74 report artifacts collected from pipeline output</p>
+  <p class="subtitle">70 report artifacts collected from pipeline output</p>
 </div>
 <div class="section">
 <details>
-  <summary>pipeline_execution_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">00_pipeline_summary · 31164 bytes</span></summary>
+  <summary>pipeline_execution_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">00_pipeline_summary · 228169 bytes</span></summary>
   <div class="details-body"><pre>{
-    "run_hash": "a2b2179cb869",
+    "run_hash": "db5356d89391",
     "file_hashes": {
-        "basics/dynamic_perception.md": "b0abd0b673915c98093150d78c1b4b1442287c7bc094f1fe42b07a1730f2258c",
-        "basics/static_perception.md": "5bdf61e8d8c20a935957c41900b40d9edb19e8eac8b237b85e604b158c0c8d70",
-        "continuous/continuous_navigation.md": "bb6eaaf3114149fd8d77ccf5ca79f165aadf094be77ad6a66d76d7613551fea0",
-        "continuous/predictive_coding_agent.md": "447738f0a679abdeab23770fb3307128e32c4d688cdcb98123f748d2740025b7",
-        "continuous/stochastic_dynamics.md": "32f1012362a1d599b876d75cf19c0fb5a29acbcb16b549997b6c9b489de32731",
-        "discrete/actinf_pomdp_agent.md": "76291fde1990d152b0b21fff1733fc7cca5eb61eb16972fb0b4e606cf41df804",
-        "discrete/bnlearn_causal_model.md": "d108293a713435c668aec0bea48bb880f760ed5bd803e61347911e02fc36d067",
-        "discrete/deep_planning_horizon.md": "e8b373d391621f25c2f26f9a15e0d8d470f01b028ce83d129e1a08bdf8ad3e3b",
-        "discrete/hmm_baseline.md": "a13b695360a4d62cf4104d1404a74aa1ceb8514682469ab3296d166f7fff8265",
-        "discrete/markov_chain.md": "0614662a15ff5ceb77b0d3002a10099b6b96e86b22757ea91c07edfb964ebcfb",
-        "discrete/multi_armed_bandit.md": "14590a5fb0c59081ee201da2fd8dc0951f6f146b736836633e1ba25deb5b8c1a",
-        "discrete/simple_mdp.md": "36ae32ba9404ca2f0ae5fc575cecb7d645c95088f04399d53fc2f947b6b0cb3c",
-        "discrete/time_varying_dynamics.md": "8be45efe9dd1fa0081340b48802fe221995a3fba93bab4e39c368193e4dac806",
-        "discrete</pre></div>
-</details>
-<details>
-  <summary>index.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">00_pipeline_summary · 15719 bytes</span></summary>
-  <div class="details-body"><pre>{
-  "a2b2179cb869": {
-    "summary_path": "output/00_pipeline_summary/pipeline_execution_summary.json",
-    "config": {
-      "args": {
-        "target_dir": "input/gnn_files",
+        "AGENTS.md": "00c1379c38d2b2c12198e91b4d063130b1b9c2928d72f629bf45b2d4240bbb2a",
+        "README.md": "af8c150dbe41854de662367d21780ed179d4fe119c0bc633ff989b9fd8ec3c70",
+        "pomdp_gridworld_3x3.md": "a87cdc89163bcd1b612f902d21ad16f95e3d25c7ff59e3718fa0179b1bc4d302"
+    },
+    "start_time": "2026-06-18T07:51:00.774345",
+    "arguments": {
+        "target_dir": "input/gnn_files/pomdp_gridworld",
         "output_dir": "output",
         "recursive": true,
-        "verbose": false,
+        "verbose": true,
         "log_format": "human",
         "enable_round_trip": true,
         "enable_cross_format": true,
         "skip_steps": null,
-        "only_steps": "3",
-        "strict": false,
+        "only_steps": null,
+        "autonomous": false,
+        "strict": true,
         "estimate_resources": false,
         "profile": false,
         "simulate_error": false,
         "registry_path": null,
         "ontology_terms_file": "src/ontology/act_inf_ontology_terms.json",
         "pipeline_summary_file": "output/00_pipeline_summary/pipeline_execution_summary.json",
-        "llm_tasks": "all",
-        "llm_timeout": 360,
-        "website_html_filename": "gnn_pipeline_summary_website.html",
+        "llm_tasks": null,
+        "llm_timeout": null,
+        "website_html_filename": null,
         "recreate_venv": false,
-        "dev": false,
+        "dev": true,
         "setup_core_only": false,
         "install_optional": false,
         "optional_groups": null,
         "frameworks": "all",
-        "strict_framework_success": false,
+        "strict_framework_success": true,
+        "render_output_dir": null,
+        "distributed": false,
+        "execution_workers": 1,
+        "backend": "ray"</pre></div>
+</details>
+<details>
+  <summary>index.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">00_pipeline_summary · 2944 bytes</span></summary>
+  <div class="details-body"><pre>{
+  "db5356d89391": {
+    "summary_path": "output/00_pipeline_summary/pipeline_execution_summary.json",
+    "config": {
+      "args": {
+        "target_dir": "input/gnn_files/pomdp_gridworld",
+        "output_dir": "output",
+        "recursive": true,
+        "verbose": true,
+        "log_format": "human",
+        "enable_round_trip": true,
+        "enable_cross_format": true,
+        "skip_steps": null,
+        "only_steps": null,
+        "autonomous": false,
+        "strict": true,
+        "estimate_resources": false,
+        "profile": false,
+        "simulate_error": false,
+        "registry_path": null,
+        "ontology_terms_file": "src/ontology/act_inf_ontology_terms.json",
+        "pipeline_summary_file": "output/00_pipeline_summary/pipeline_execution_summary.json",
+        "llm_tasks": null,
+        "llm_timeout": null,
+        "website_html_filename": null,
+        "recreate_venv": false,
+        "dev": true,
+        "setup_core_only": false,
+        "install_optional": false,
+        "optional_groups": null,
+        "frameworks": "all",
+        "strict_framework_success": true,
         "render_output_dir": null,
         "distributed": false,
         "execution_workers": 1,
         "backend": "ray",
         "serialize_preset": "full",
         "execution_benchmark_repeats": 1,
-        "execution_summary_detail": false,
+        "execution_summary_detail": true,
         "duration": 30.0,
         "audio_backend": "auto",
         "sonification": true,
         "full_analysis": false,
         "fast_only": true,
-        "inc</pre></div>
+  </pre></div>
 </details>
 <details>
-  <summary>template_processing_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">0_template_output · 374 bytes</span></summary>
+  <summary>template_processing_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">0_template_output · 387 bytes</span></summary>
   <div class="details-body"><pre>{
-  "timestamp": "2026-05-22T06:10:26.463274",
+  "timestamp": "2026-06-18T07:51:00.849671",
   "step_name": "template",
-  "input_directory": "input/gnn_files",
+  "input_directory": "input/gnn_files/pomdp_gridworld",
   "output_directory": "output/0_template_output",
-  "total_files": 47,
-  "successful_files": 47,
+  "total_files": 3,
+  "successful_files": 3,
   "failed_files": 0,
   "processing_options": {
-    "verbose": false,
+    "verbose": true,
     "recursive": true,
     "example_param": "default_value"
   },
@@ -546,223 +570,49 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; backgrou
 }</pre></div>
 </details>
 <details>
-  <summary>pymdp_scaling_N8_T100_report.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">0_template_output · 395 bytes</span></summary>
+  <summary>AGENTS_report.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">0_template_output · 344 bytes</span></summary>
   <div class="details-body"><pre>{
-  "input_file": "input/gnn_files/pymdp_scaling_study/pymdp_scaling_N8_T100.md",
-  "output_file": "output/0_template_output/pymdp_scaling_N8_T100/pymdp_scaling_N8_T100_processed.md",
-  "timestamp": "2026-05-22T06:10:26.401328",
-  "file_size_bytes": 7193,
-  "file_size_lines": 100,
+  "input_file": "input/gnn_files/pomdp_gridworld/AGENTS.md",
+  "output_file": "output/0_template_output/AGENTS/AGENTS_processed.md",
+  "timestamp": "2026-06-18T07:51:00.849575",
+  "file_size_bytes": 1503,
+  "file_size_lines": 32,
   "processing_options": {
-    "verbose": false,
+    "verbose": true,
     "recursive": true,
     "example_param": "default_value"
   }
 }</pre></div>
 </details>
 <details>
-  <summary>simple_mdp_report.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">0_template_output · 351 bytes</span></summary>
+  <summary>README_report.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">0_template_output · 344 bytes</span></summary>
   <div class="details-body"><pre>{
-  "input_file": "input/gnn_files/discrete/simple_mdp.md",
-  "output_file": "output/0_template_output/simple_mdp/simple_mdp_processed.md",
-  "timestamp": "2026-05-22T06:10:26.459725",
-  "file_size_bytes": 3311,
-  "file_size_lines": 154,
+  "input_file": "input/gnn_files/pomdp_gridworld/README.md",
+  "output_file": "output/0_template_output/README/README_processed.md",
+  "timestamp": "2026-06-18T07:51:00.848963",
+  "file_size_bytes": 1996,
+  "file_size_lines": 51,
   "processing_options": {
-    "verbose": false,
+    "verbose": true,
     "recursive": true,
     "example_param": "default_value"
   }
 }</pre></div>
 </details>
 <details>
-  <summary>pymdp_scaling_N4_T100_report.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">0_template_output · 394 bytes</span></summary>
+  <summary>pomdp_gridworld_3x3_report.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">0_template_output · 384 bytes</span></summary>
   <div class="details-body"><pre>{
-  "input_file": "input/gnn_files/pymdp_scaling_study/pymdp_scaling_N4_T100.md",
-  "output_file": "output/0_template_output/pymdp_scaling_N4_T100/pymdp_scaling_N4_T100_processed.md",
-  "timestamp": "2026-05-22T06:10:26.444460",
-  "file_size_bytes": 2037,
-  "file_size_lines": 92,
+  "input_file": "input/gnn_files/pomdp_gridworld/pomdp_gridworld_3x3.md",
+  "output_file": "output/0_template_output/pomdp_gridworld_3x3/pomdp_gridworld_3x3_processed.md",
+  "timestamp": "2026-06-18T07:51:00.849301",
+  "file_size_bytes": 5485,
+  "file_size_lines": 201,
   "processing_options": {
-    "verbose": false,
+    "verbose": true,
     "recursive": true,
     "example_param": "default_value"
   }
 }</pre></div>
-</details>
-<details>
-  <summary>two_state_bistable_report.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">0_template_output · 375 bytes</span></summary>
-  <div class="details-body"><pre>{
-  "input_file": "input/gnn_files/discrete/two_state_bistable.md",
-  "output_file": "output/0_template_output/two_state_bistable/two_state_bistable_processed.md",
-  "timestamp": "2026-05-22T06:10:26.461017",
-  "file_size_bytes": 2742,
-  "file_size_lines": 160,
-  "processing_options": {
-    "verbose": false,
-    "recursive": true,
-    "example_param": "default_value"
-  }
-}</pre></div>
-</details>
-<details>
-  <summary>pymdp_scaling_N128_T100_ontology_report.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">10_ontology_output · 5024 bytes</span></summary>
-  <div class="details-body"><pre>{
-  "file_path": "input/gnn_files/pymdp_scaling_study/pymdp_scaling_N128_T100.md",
-  "file_name": "pymdp_scaling_N128_T100.md",
-  "ontology_data": {
-    "concepts": [],
-    "relations": [],
-    "properties": [],
-    "annotations": [
-      "A=LikelihoodMatrix",
-      "B=TransitionMatrix",
-      "C=LogPreferenceVector",
-      "D=PriorOverHiddenStates",
-      "G=ExpectedFreeEnergy",
-      "F=VariationalFreeEnergy",
-      "s=HiddenState",
-      "o=Observation",
-      "pi=PolicyVector",
-      "u=Action",
-      "t=Time"
-    ]
-  },
-  "validation_result": {
-    "valid_annotations": [
-      "A=LikelihoodMatrix",
-      "B=TransitionMatrix",
-      "C=LogPreferenceVector",
-      "D=PriorOverHiddenStates",
-      "G=ExpectedFreeEnergy",
-      "F=VariationalFreeEnergy",
-      "s=HiddenState",
-      "o=Observation",
-      "pi=PolicyVector",
-      "u=Action",
-      "t=Time"
-    ],
-    "invalid_annotations": [],
-    "matched_terms": {
-      "A": {
-        "annotation": "A=LikelihoodMatrix",
-        "term_name": "LikelihoodMatrix",
-        "description": "A probabilistic mapping from hidden states to observations (e.g., 'A' matrix in some formulations, or sensorimotor contingencies).",
-        "uri": "obo:TEMP_000061",
-        "key": "A",
-        "value": "LikelihoodMatrix",
-        "comment": null
-      },
-      "B": {
-        "annotation": "B=TransitionMatrix",
-        "term_name": "TransitionMatrix",
-        "description": "A probabilistic mapping defining the dynamics of hidden states over </pre></div>
-</details>
-<details>
-  <summary>pymdp_scaling_N8_T50_ontology_report.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">10_ontology_output · 5018 bytes</span></summary>
-  <div class="details-body"><pre>{
-  "file_path": "input/gnn_files/pymdp_scaling_study/pymdp_scaling_N8_T50.md",
-  "file_name": "pymdp_scaling_N8_T50.md",
-  "ontology_data": {
-    "concepts": [],
-    "relations": [],
-    "properties": [],
-    "annotations": [
-      "A=LikelihoodMatrix",
-      "B=TransitionMatrix",
-      "C=LogPreferenceVector",
-      "D=PriorOverHiddenStates",
-      "G=ExpectedFreeEnergy",
-      "F=VariationalFreeEnergy",
-      "s=HiddenState",
-      "o=Observation",
-      "pi=PolicyVector",
-      "u=Action",
-      "t=Time"
-    ]
-  },
-  "validation_result": {
-    "valid_annotations": [
-      "A=LikelihoodMatrix",
-      "B=TransitionMatrix",
-      "C=LogPreferenceVector",
-      "D=PriorOverHiddenStates",
-      "G=ExpectedFreeEnergy",
-      "F=VariationalFreeEnergy",
-      "s=HiddenState",
-      "o=Observation",
-      "pi=PolicyVector",
-      "u=Action",
-      "t=Time"
-    ],
-    "invalid_annotations": [],
-    "matched_terms": {
-      "A": {
-        "annotation": "A=LikelihoodMatrix",
-        "term_name": "LikelihoodMatrix",
-        "description": "A probabilistic mapping from hidden states to observations (e.g., 'A' matrix in some formulations, or sensorimotor contingencies).",
-        "uri": "obo:TEMP_000061",
-        "key": "A",
-        "value": "LikelihoodMatrix",
-        "comment": null
-      },
-      "B": {
-        "annotation": "B=TransitionMatrix",
-        "term_name": "TransitionMatrix",
-        "description": "A probabilistic mapping defining the dynamics of hidden states over time, </pre></div>
-</details>
-<details>
-  <summary>pymdp_scaling_N16_T100_ontology_report.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">10_ontology_output · 5022 bytes</span></summary>
-  <div class="details-body"><pre>{
-  "file_path": "input/gnn_files/pymdp_scaling_study/pymdp_scaling_N16_T100.md",
-  "file_name": "pymdp_scaling_N16_T100.md",
-  "ontology_data": {
-    "concepts": [],
-    "relations": [],
-    "properties": [],
-    "annotations": [
-      "A=LikelihoodMatrix",
-      "B=TransitionMatrix",
-      "C=LogPreferenceVector",
-      "D=PriorOverHiddenStates",
-      "G=ExpectedFreeEnergy",
-      "F=VariationalFreeEnergy",
-      "s=HiddenState",
-      "o=Observation",
-      "pi=PolicyVector",
-      "u=Action",
-      "t=Time"
-    ]
-  },
-  "validation_result": {
-    "valid_annotations": [
-      "A=LikelihoodMatrix",
-      "B=TransitionMatrix",
-      "C=LogPreferenceVector",
-      "D=PriorOverHiddenStates",
-      "G=ExpectedFreeEnergy",
-      "F=VariationalFreeEnergy",
-      "s=HiddenState",
-      "o=Observation",
-      "pi=PolicyVector",
-      "u=Action",
-      "t=Time"
-    ],
-    "invalid_annotations": [],
-    "matched_terms": {
-      "A": {
-        "annotation": "A=LikelihoodMatrix",
-        "term_name": "LikelihoodMatrix",
-        "description": "A probabilistic mapping from hidden states to observations (e.g., 'A' matrix in some formulations, or sensorimotor contingencies).",
-        "uri": "obo:TEMP_000061",
-        "key": "A",
-        "value": "LikelihoodMatrix",
-        "comment": null
-      },
-      "B": {
-        "annotation": "B=TransitionMatrix",
-        "term_name": "TransitionMatrix",
-        "description": "A probabilistic mapping defining the dynamics of hidden states over ti</pre></div>
 </details>
 <details>
   <summary>AGENTS_ontology_report.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">10_ontology_output · 575 bytes</span></summary>
@@ -794,10 +644,52 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; backgrou
 }</pre></div>
 </details>
 <details>
-  <summary>pymdp_scaling_N4_T50_ontology_report.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">10_ontology_output · 5018 bytes</span></summary>
+  <summary>README_ontology_report.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">10_ontology_output · 575 bytes</span></summary>
   <div class="details-body"><pre>{
-  "file_path": "input/gnn_files/pymdp_scaling_study/pymdp_scaling_N4_T50.md",
-  "file_name": "pymdp_scaling_N4_T50.md",
+  "file_path": "input/gnn_files/pomdp_gridworld/README.md",
+  "file_name": "README.md",
+  "ontology_data": {
+    "concepts": [],
+    "relations": [],
+    "properties": [],
+    "annotations": []
+  },
+  "validation_result": {
+    "valid_annotations": [],
+    "invalid_annotations": [],
+    "matched_terms": {},
+    "suggestions": [],
+    "coverage_score": 0.0
+  },
+  "summary": {
+    "total_concepts": 0,
+    "total_relations": 0,
+    "total_properties": 0,
+    "total_annotations": 0,
+    "valid_annotations": 0,
+    "invalid_annotations": 0,
+    "coverage_score": 0.0
+  }
+}</pre></div>
+</details>
+<details>
+  <summary>ontology_results.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">10_ontology_output · 276 bytes</span></summary>
+  <div class="details-body"><pre>{
+  "processed_files": 3,
+  "reports": [
+    "output/10_ontology_output/README_ontology_report.json",
+    "output/10_ontology_output/pomdp_gridworld_3x3_ontology_report.json",
+    "output/10_ontology_output/AGENTS_ontology_report.json"
+  ],
+  "success": true,
+  "errors": []
+}</pre></div>
+</details>
+<details>
+  <summary>pomdp_gridworld_3x3_ontology_report.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">10_ontology_output · 5388 bytes</span></summary>
+  <div class="details-body"><pre>{
+  "file_path": "input/gnn_files/pomdp_gridworld/pomdp_gridworld_3x3.md",
+  "file_name": "pomdp_gridworld_3x3.md",
   "ontology_data": {
     "concepts": [],
     "relations": [],
@@ -807,11 +699,12 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; backgrou
       "B=TransitionMatrix",
       "C=LogPreferenceVector",
       "D=PriorOverHiddenStates",
+      "E=Habit",
       "G=ExpectedFreeEnergy",
-      "F=VariationalFreeEnergy",
       "s=HiddenState",
+      "s_prime=NextHiddenState",
       "o=Observation",
-      "pi=PolicyVector",
+      "\u03c0=PolicyVector",
       "u=Action",
       "t=Time"
     ]
@@ -822,11 +715,12 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; backgrou
       "B=TransitionMatrix",
       "C=LogPreferenceVector",
       "D=PriorOverHiddenStates",
+      "E=Habit",
       "G=ExpectedFreeEnergy",
-      "F=VariationalFreeEnergy",
       "s=HiddenState",
+      "s_prime=NextHiddenState",
       "o=Observation",
-      "pi=PolicyVector",
+      "\u03c0=PolicyVector",
       "u=Action",
       "t=Time"
     ],
@@ -844,64 +738,62 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; backgrou
       "B": {
         "annotation": "B=TransitionMatrix",
         "term_name": "TransitionMatrix",
-        "description": "A probabilistic mapping defining the dynamics of hidden states over time, </pre></div>
+        "description": "A probabilistic mapping defining the d</pre></div>
 </details>
 <details>
-  <summary>render_processing_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">11_render_output · 57478 bytes</span></summary>
+  <summary>render_processing_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">11_render_output · 6181 bytes</span></summary>
   <div class="details-body"><pre>{
-  "timestamp": "2026-05-22T06:18:15.525778",
+  "timestamp": "2026-06-18T07:53:05.055603",
   "processing_type": "POMDP-aware rendering",
-  "total_files": 10,
-  "successful_files": 10,
+  "total_files": 1,
+  "successful_files": 1,
   "failed_files": 0,
-  "total_framework_attempts": 90,
-  "successful_framework_renderings": 90,
+  "total_framework_attempts": 9,
+  "successful_framework_renderings": 9,
   "framework_success_rate": 100.0,
   "configuration": {
     "frameworks": "all",
     "strict_validation": true,
-    "strict_framework_success": false,
-    "verbose": false,
+    "strict_framework_success": true,
+    "verbose": true,
     "pomdp_processing_available": true
   },
   "failed_framework_renderings": [],
   "file_results": {
-    "input/gnn_files/discrete/simple_mdp.md": {
+    "input/gnn_files/pomdp_gridworld/pomdp_gridworld_3x3.md": {
       "overall_success": true,
       "framework_results": {
         "pymdp": {
           "success": true,
-          "message": "Generated pymdp 1.0.0 runner: output/11_render_output/simple_mdp/pymdp/Simple MDP Agent_pymdp.py",
+          "message": "Generated pymdp 1.0.0 runner: output/11_render_output/pomdp_gridworld_3x3/pymdp/POMDP GridWorld 3x3_pymdp.py",
           "output_files": [
-            "output/11_render_output/simple_mdp/pymdp/Simple MDP Agent_pymdp.py"
+            "output/11_render_output/pomdp_gridworld_3x3/pymdp/POMDP GridWorld 3x3_pymdp.py"
           ],
-          "output_directory": "output/11_render_output/simple_mdp/pymdp",
+          "output_directory": "output/11_render_output/pomdp_gridworld_3x3/pymdp",
           "warnings": [],
           "code_metrics": {
-            "lines_of_code": 746,
-            "total_lines": 779,
+            "lines_of_code": 1949,
+            "total_lines": 1982,
             "functions": 1,
             "classes": 0
           }
         },
         "rxinfer": {
           "success": true,
-          "message": "Generated RxInfer.jl simulation script: output/11_render_output/simple_mdp/rxinfer/Simple MDP Agent_rxinfer.jl",
+          "message": "Generated RxInfer.jl simulation script: output/11_render_output/pomdp_gridworld_3x3/rxinfer/POMDP GridWorld 3x3_rxinfer.jl",
           "output_files": [
-            "output/11_render_output/simple_mdp/rxinfer/Simple MDP Agent_rxinfer.jl"
-          ],
-          "out</pre></div>
+            "output/11_render_output/pomdp_gridworld_3x</pre></div>
 </details>
 <details>
-  <summary>processing_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">11_render_output · 605 bytes</span></summary>
+  <summary>processing_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">11_render_output · 624 bytes</span></summary>
   <div class="details-body"><pre>{
-  "timestamp": "2026-05-22T06:18:15.465306",
-  "source_file": "input/gnn_files/discrete/simple_mdp.md",
-  "model_name": "Simple MDP Agent",
+  "timestamp": "2026-06-18T07:53:05.042703",
+  "source_file": "input/gnn_files/pomdp_gridworld/pomdp_gridworld_3x3.md",
+  "model_name": "POMDP GridWorld 3x3",
   "pomdp_dimensions": {
-    "num_states": 4,
-    "num_observations": 4,
-    "num_actions": 4
+    "num_states": 9,
+    "num_observations": 9,
+    "num_actions": 5
   },
   "frameworks_requested": [
     "pymdp",
@@ -929,240 +821,625 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; backgrou
 }</pre></div>
 </details>
 <details>
-  <summary>processing_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">11_render_output · 621 bytes</span></summary>
+  <summary>simulation_results.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">11_render_output · 14027 bytes</span></summary>
   <div class="details-body"><pre>{
-  "timestamp": "2026-05-22T06:18:15.505628",
-  "source_file": "input/gnn_files/discrete/two_state_bistable.md",
-  "model_name": "Two State Bistable POMDP",
-  "pomdp_dimensions": {
-    "num_states": 2,
-    "num_observations": 2,
-    "num_actions": 2
-  },
-  "frameworks_requested": [
-    "pymdp",
-    "rxinfer",
-    "activeinference_jl",
-    "jax",
-    "discopy",
-    "pytorch",
-    "numpyro",
-    "stan",
-    "bnlearn"
-  ],
-  "frameworks_processed": [
-    "pymdp",
-    "rxinfer",
-    "activeinference_jl",
-    "jax",
-    "discopy",
-    "pytorch",
-    "numpyro",
-    "stan",
-    "bnlearn"
-  ],
-  "frameworks_failed": []
-}</pre></div>
+  "metrics": {
+    "expected_free_energy": [
+      3.3550622703395,
+      3.3550622703395,
+      3.3550622703395,
+      3.2719372703395,
+      3.3550622703395,
+      3.271937270339502,
+      3.3550622703395,
+      3.2719372703395,
+      3.022562270339501,
+      2.6900622703395016,
+      0.8613122703395023,
+      0.8613122703395023,
+      0.8613122703395023,
+      0.8613122703395023,
+      0.8613122703395023
+    ],
+    "policy_posterior": [
+      [
+        0.1727443961427012,
+        0.24088340578594716,
+        0.1727443961427012,
+        0.2408834057859493,
+        0.1727443961427012
+      ],
+      [
+        0.1727443961427012,
+        0.24088340578594716,
+        0.1727443961427012,
+        0.2408834057859493,
+        0.1727443961427012
+      ],
+      [
+        0.1727443961427012,
+        0.24088340578594716,
+        0.1727443961427012,
+        0.2408834057859493,
+        0.1727443961427012
+      ],
+      [
+        0.1727443961427012,
+        0.24088340578594716,
+        0.1727443961427012,
+        0.2408834057859493,
+        0.1727443961427012
+      ],
+      [
+        0.1356279079507625,
+        0.36775434156993725,
+        0.09726266108953752,
+        0.2637271814390002,
+        0.1356279079507625
+      ],
+      [
+        0.1727443961427012,
+        0.24088340578594716,
+        0.1727443961427012,
+        0.2408834057859493,
+        0.1727443961427012
+      ],
+      [
+        0.09726266108953766,
+        0.26372718143900153,
+        0.13562790795076146,
+        0.367754</pre></div>
 </details>
 <details>
-  <summary>processing_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">11_render_output · 619 bytes</span></summary>
+  <summary>simulation_results.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">11_render_output · 14068 bytes</span></summary>
   <div class="details-body"><pre>{
-  "timestamp": "2026-05-22T06:18:15.495736",
-  "source_file": "input/gnn_files/discrete/bnlearn_causal_model.md",
-  "model_name": "Bnlearn Causal Model",
-  "pomdp_dimensions": {
-    "num_states": 2,
-    "num_observations": 2,
-    "num_actions": 2
-  },
-  "frameworks_requested": [
-    "pymdp",
-    "rxinfer",
-    "activeinference_jl",
-    "jax",
-    "discopy",
-    "pytorch",
-    "numpyro",
-    "stan",
-    "bnlearn"
-  ],
-  "frameworks_processed": [
-    "pymdp",
-    "rxinfer",
-    "activeinference_jl",
-    "jax",
-    "discopy",
-    "pytorch",
-    "numpyro",
-    "stan",
-    "bnlearn"
-  ],
-  "frameworks_failed": []
-}</pre></div>
+  "metrics": {
+    "expected_free_energy": [
+      3.3550622703395,
+      3.3550622703395,
+      3.3550622703395,
+      3.2719372703395,
+      3.3550622703395,
+      3.271937270339502,
+      3.3550622703395,
+      3.2719372703395,
+      3.022562270339501,
+      2.6900622703395016,
+      0.8613122703395023,
+      0.8613122703395023,
+      0.8613122703395023,
+      0.8613122703395023,
+      0.8613122703395023
+    ],
+    "policy_posterior": [
+      [
+        0.1727443961427012,
+        0.24088340578594716,
+        0.1727443961427012,
+        0.2408834057859493,
+        0.1727443961427012
+      ],
+      [
+        0.1727443961427012,
+        0.24088340578594716,
+        0.1727443961427012,
+        0.2408834057859493,
+        0.1727443961427012
+      ],
+      [
+        0.1727443961427012,
+        0.24088340578594716,
+        0.1727443961427012,
+        0.2408834057859493,
+        0.1727443961427012
+      ],
+      [
+        0.1727443961427012,
+        0.24088340578594716,
+        0.1727443961427012,
+        0.2408834057859493,
+        0.1727443961427012
+      ],
+      [
+        0.1356279079507625,
+        0.36775434156993725,
+        0.09726266108953752,
+        0.2637271814390002,
+        0.1356279079507625
+      ],
+      [
+        0.1727443961427012,
+        0.24088340578594716,
+        0.1727443961427012,
+        0.2408834057859493,
+        0.1727443961427012
+      ],
+      [
+        0.09726266108953766,
+        0.26372718143900153,
+        0.13562790795076146,
+        0.367754</pre></div>
 </details>
 <details>
-  <summary>processing_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">11_render_output · 625 bytes</span></summary>
+  <summary>simulation_results.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">11_render_output · 4438 bytes</span></summary>
   <div class="details-body"><pre>{
-  "timestamp": "2026-05-22T06:18:15.515719",
-  "source_file": "input/gnn_files/discrete/tmaze_epistemic.md",
-  "model_name": "T-Maze Epistemic Foraging Agent",
-  "pomdp_dimensions": {
-    "num_states": 4,
-    "num_observations": 4,
-    "num_actions": 4
-  },
-  "frameworks_requested": [
-    "pymdp",
-    "rxinfer",
-    "activeinference_jl",
-    "jax",
-    "discopy",
-    "pytorch",
-    "numpyro",
-    "stan",
-    "bnlearn"
-  ],
-  "frameworks_processed": [
-    "pymdp",
-    "rxinfer",
-    "activeinference_jl",
-    "jax",
-    "discopy",
-    "pytorch",
-    "numpyro",
-    "stan",
-    "bnlearn"
-  ],
-  "frameworks_failed": []
-}</pre></div>
+  "model_name": "numpyro_pomdp",
+  "framework": "numpyro",
+  "num_timesteps": 15,
+  "num_states": 9,
+  "num_observations": 9,
+  "num_actions": 5,
+  "beliefs": [
+    [
+      1.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    [</pre></div>
 </details>
 <details>
-  <summary>execution_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">12_execute_output · 103430 bytes</span></summary>
+  <summary>execution_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">12_execute_output · 10938 bytes</span></summary>
   <div class="details-body"><pre>{
-  "timestamp": "2026-05-22T06:18:16.204944",
-  "target_directory": "input/gnn_files/discrete",
+  "timestamp": "2026-06-18T07:53:05.638724",
+  "target_directory": "input/gnn_files/pomdp_gridworld",
   "output_directory": "output/12_execute_output",
-  "total_scripts_found": 80,
-  "successful_executions": 70,
+  "total_scripts_found": 8,
+  "successful_executions": 6,
   "failed_executions": 0,
-  "skipped_executions": 10,
+  "skipped_executions": 2,
   "execution_details": [
     {
-      "script_path": "output/11_render_output/markov_chain/numpyro/Simple Markov Chain_numpyro.py",
-      "script_name": "Simple Markov Chain_numpyro.py",
+      "script_path": "output/11_render_output/pomdp_gridworld_3x3/numpyro/POMDP GridWorld 3x3_numpyro.py",
+      "script_name": "POMDP GridWorld 3x3_numpyro.py",
       "framework": "numpyro",
-      "model_name": "markov_chain",
-      "executor": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python",
-      "success": false,
-      "skipped": true,
-      "return_code": null,
-      "error": "Dependency not installed: numpyro",
-      "error_type": "DependencyNotInstalled",
-      "execution_time": 0,
-      "timestamp": "2026-05-22T06:18:16.582227",
-      "stdout_length": 0,
-      "stderr_length": 0
-    },
-    {
-      "script_path": "output/11_render_output/markov_chain/pymdp/Simple Markov Chain_pymdp.py",
-      "script_name": "Simple Markov Chain_pymdp.py",
-      "framework": "pymdp",
-      "model_name": "markov_chain",
-      "executor": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python",
+      "model_name": "pomdp_gridworld_3x3",
+      "executor": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python",
       "success": true,
       "skipped": false,
       "return_code": 0,
-      "execution_time": 3.350892,
-      "timestamp": "2026-05-22T06:18:16.594303",
+      "execution_time": 1.079646,
+      "timestamp": "2026-06-18T07:53:06.057812",
       "execution_benchmark_repeats": 1,
-      "execution_time_mean": 3.350892,
+      "execution_time_mean": 1.079646,
       "execution_time_std": 0.0,
-      </pre></div>
+      "execution_time_samples": [
+        1.079646
+      ],
+      "structured_result_file": "output/12_execute_output/pomdp_gridworld_3x3/numpyro/execution_logs/POMDP GridWorld 3x3_numpyro.py_results.json",
+      "output_file": "output/12_execute_output/pomdp_gridworld_3x3/numpyro/execution_logs/POMDP GridWorld 3x3_numpyro.py_execution.log",
+      "implementation_directory": "output/12_execute_output/pomdp_gridworld_3x3/numpyro",
+      "stdout_length": 281,
+      "stderr_length": 0,
+      "collected_outputs_summary": {
+        "visualizations": {
+          "count": 0
+        },
+        "simulation_data"</pre></div>
 </details>
 <details>
-  <summary>Simple Markov Chain_bnlearn.py_results.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">12_execute_output · 4537 bytes</span></summary>
+  <summary>execution_summary_detail.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">12_execute_output · 53957 bytes</span></summary>
   <div class="details-body"><pre>{
-  "framework": "bnlearn",
-  "model_name": "markov_chain",
-  "script_name": "Simple Markov Chain_bnlearn.py",
-  "script_path": "output/11_render_output/markov_chain/bnlearn/Simple Markov Chain_bnlearn.py",
+  "timestamp": "2026-06-18T07:53:05.638724",
+  "target_directory": "input/gnn_files/pomdp_gridworld",
+  "output_directory": "output/12_execute_output",
+  "total_scripts_found": 8,
+  "successful_executions": 6,
+  "failed_executions": 0,
+  "skipped_executions": 2,
+  "execution_details": [
+    {
+      "script_path": "output/11_render_output/pomdp_gridworld_3x3/numpyro/POMDP GridWorld 3x3_numpyro.py",
+      "script_name": "POMDP GridWorld 3x3_numpyro.py",
+      "framework": "numpyro",
+      "model_name": "pomdp_gridworld_3x3",
+      "executor": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python",
+      "success": true,
+      "return_code": 0,
+      "stdout": "NumPyro POMDP simulation complete: 15 timesteps in 0.672s\nResults saved to: output/12_execute_output/pomdp_gridworld_3x3/numpyro/simulation_data/simulation_results.json\nValidation: {'beliefs_in_range': True, 'beliefs_sum_to_one': True, 'actions_in_range': True, 'all_valid': True}\n",
+      "stderr": "",
+      "execution_time": 1.079646,
+      "timestamp": "2026-06-18T07:53:06.057812",
+      "execution_benchmark_repeats": 1,
+      "execution_time_mean": 1.079646,
+      "execution_time_std": 0.0,
+      "execution_time_samples": [
+        1.079646
+      ],
+      "simulation_data": {
+        "traces": [],
+        "free_energy": [],
+        "states": [],
+        "observations": [
+          0,
+          3,
+          4,
+          0,
+          5,
+          5,
+          8,
+          7,
+          7,
+         </pre></div>
+</details>
+<details>
+  <summary>POMDP GridWorld 3x3_rxinfer.jl_results.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">12_execute_output · 7339 bytes</span></summary>
+  <div class="details-body"><pre>{
+  "framework": "rxinfer",
+  "model_name": "pomdp_gridworld_3x3",
+  "script_name": "POMDP GridWorld 3x3_rxinfer.jl",
+  "script_path": "output/11_render_output/pomdp_gridworld_3x3/rxinfer/POMDP GridWorld 3x3_rxinfer.jl",
   "success": true,
   "return_code": 0,
-  "execution_time": 2.035671,
-  "timestamp": "2026-05-22T06:18:25.020953",
+  "execution_time": 6.579807,
+  "timestamp": "2026-06-18T07:53:12.025270",
+  "simulation_data": {
+    "traces": [],
+    "free_energy": [
+      3.3550622703395,
+      3.3550622703395,
+      3.3550622703395,
+      3.2719372703395,
+      3.3550622703395,
+      3.271937270339502,
+      3.3550622703395,
+      3.2719372703395,
+      3.022562270339501,
+      2.6900622703395016,
+      0.8613122703395023,
+      0.8613122703395023,
+      0.8613122703395023,
+      0.8613122703395023,
+      0.8613122703395023
+    ],
+    "states": [],
+    "observations": [
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      3,
+      0,
+      1,
+      4,
+      5,
+      1,
+      8,
+      8,
+      8
+    ],
+    "actions": [
+      2,
+      0,
+      2,
+      3,
+      2,
+      1,
+      0,
+      3,
+      1,
+      3,
+      1,
+      1,
+      4,
+      3,
+      1
+    ],
+    "policy": [],
+    "raw_output": "RxInfer.jl simulation wrote simulation_results.json\n",
+    "raw_error": "",
+    "schema_version": "rxinfer_simulation_v1",
+    "beliefs": [
+      [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+       </pre></div>
+</details>
+<details>
+  <summary>simulation_results.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">12_execute_output · 14027 bytes</span></summary>
+  <div class="details-body"><pre>{
+  "metrics": {
+    "expected_free_energy": [
+      3.3550622703395,
+      3.3550622703395,
+      3.3550622703395,
+      3.2719372703395,
+      3.3550622703395,
+      3.271937270339502,
+      3.3550622703395,
+      3.2719372703395,
+      3.022562270339501,
+      2.6900622703395016,
+      0.8613122703395023,
+      0.8613122703395023,
+      0.8613122703395023,
+      0.8613122703395023,
+      0.8613122703395023
+    ],
+    "policy_posterior": [
+      [
+        0.1727443961427012,
+        0.24088340578594716,
+        0.1727443961427012,
+        0.2408834057859493,
+        0.1727443961427012
+      ],
+      [
+        0.1727443961427012,
+        0.24088340578594716,
+        0.1727443961427012,
+        0.2408834057859493,
+        0.1727443961427012
+      ],
+      [
+        0.1727443961427012,
+        0.24088340578594716,
+        0.1727443961427012,
+        0.2408834057859493,
+        0.1727443961427012
+      ],
+      [
+        0.1727443961427012,
+        0.24088340578594716,
+        0.1727443961427012,
+        0.2408834057859493,
+        0.1727443961427012
+      ],
+      [
+        0.1356279079507625,
+        0.36775434156993725,
+        0.09726266108953752,
+        0.2637271814390002,
+        0.1356279079507625
+      ],
+      [
+        0.1727443961427012,
+        0.24088340578594716,
+        0.1727443961427012,
+        0.2408834057859493,
+        0.1727443961427012
+      ],
+      [
+        0.09726266108953766,
+        0.26372718143900153,
+        0.13562790795076146,
+        0.367754</pre></div>
+</details>
+<details>
+  <summary>POMDP GridWorld 3x3_numpyro.py_results.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">12_execute_output · 3752 bytes</span></summary>
+  <div class="details-body"><pre>{
+  "framework": "numpyro",
+  "model_name": "pomdp_gridworld_3x3",
+  "script_name": "POMDP GridWorld 3x3_numpyro.py",
+  "script_path": "output/11_render_output/pomdp_gridworld_3x3/numpyro/POMDP GridWorld 3x3_numpyro.py",
+  "success": true,
+  "return_code": 0,
+  "execution_time": 1.079646,
+  "timestamp": "2026-06-18T07:53:06.057812",
   "simulation_data": {
     "traces": [],
     "free_energy": [],
     "states": [],
-    "observations": [],
-    "actions": [],
+    "observations": [
+      0,
+      3,
+      4,
+      0,
+      5,
+      5,
+      8,
+      7,
+      7,
+      7,
+      8,
+      8,
+      8,
+      7,
+      8
+    ],
+    "actions": [
+      1,
+      3,
+      3,
+      4,
+      3,
+      1,
+      2,
+      1,
+      4,
+      3,
+      4,
+      4,
+      2,
+      3,
+      0
+    ],
     "policy": [],
-    "raw_output": "\u2705 Starting bnlearn analysis for Simple Markov Chain\n[bnlearn]&gt; Auto generate placeholders for the CPTs.\n[bnlearn] &gt;CPT for S:\n+--------+-----------+-----------+-----------+-----------+\n| S_prev | S_prev(0) | S_prev(0) | S_prev(1) | S_prev(1) |\n+--------+-----------+-----------+-----------+-----------+\n| A      | A(0)      | A(1)      | A(0)      | A(1)      |\n+--------+-----------+-----------+-----------+-----------+\n| S(0)   | 0.5       | 0.5       | 0.5       | 0.5       |\n+--------+-----------+-----------+-----------+-----------+\n| S(1)   | 0.5       | 0.5       | 0.5       | 0.5       |\n+--------+-----------+-----------+-----------+-----------+\n[bnlearn] &gt;CPT for O:\n+------+------+------+\n| S    | S(0) | S(1) |\n+------+------+------+\n| O(0) | 0.5  | 0.5  |\n+------+------+------+\n| O(1) | 0.5  | 0.5  |\n+------+------+------+\n[bnlearn] &gt;CPT for A:\n+------+-----+\n| A(0) | 0.5 |\n+------+-----+\n| A(1) | 0.5 |\n+------+-----+\n[bnlearn] &gt;CPT for S_prev:\n+-----------+-----+\n</pre></div>
+    "raw_output": "NumPyro POMDP simulation complete: 15 timesteps in 0.672s\nResults saved to: output/12_execute_output/pomdp_gridworld_3x3/numpyro/simulation_data/simulation_results.json\nValidation: {'beliefs_in_range': True, 'beliefs_sum_to_one': True, 'actions_in_range': True, 'all_valid': True}\n",
+    "raw_error": "",
+    "beliefs": [
+      [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+ </pre></div>
 </details>
 <details>
-  <summary>Simple Markov Chain_discopy.py_results.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">12_execute_output · 3617 bytes</span></summary>
+  <summary>llm_results.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">13_llm_output · 103919 bytes</span></summary>
   <div class="details-body"><pre>{
-  "framework": "discopy",
-  "model_name": "markov_chain",
-  "script_name": "Simple Markov Chain_discopy.py",
-  "script_path": "output/11_render_output/markov_chain/discopy/Simple Markov Chain_discopy.py",
-  "success": true,
-  "return_code": 0,
-  "execution_time": 0.242372,
-  "timestamp": "2026-05-22T06:18:22.515025",
-  "simulation_data": {
-    "traces": [],
-    "free_energy": [],
-    "states": [],
-    "observations": [],
-    "actions": [],
-    "policy": [],
-    "raw_output": "\u2705 DisCoPy is available\n\ud83d\udd2c DisCoPy Categorical Diagram Generation\n\ud83d\udcca State Space: 3 states, 3 observations, 1 actions\n============================================================\nDisCoPy Categorical Diagrams - GNN Generated\nModel: Simple Markov Chain\n============================================================\n\u2713 Defined basic types: S (states), O (observations), A (actions), P (probabilities)\n\u2713 Defined 8 model components as morphisms\n\n\ud83c\udfd7\ufe0f  Building Active Inference circuit...\n\u26a0\ufe0f  Prior composition type mismatch (S @ P @ C does not compose with StateInf @ P: S @ P @ O @ P != O @ P.), using perception-action loop\n\u2713 Created perception-action loop\n\n\ud83d\udd0d Analyzing circuit structure...\n\ud83d\udcca Circuit Analysis:\n  - Number of components: 8\n  - Perception-action loop domain: O\n  - Perception-action loop codomain: A\n  - Generative model domain: O\n  - Generative model codomain: A\n\n\ud83e\udde9 Component Details:\n </pre></div>
-</details>
-<details>
-  <summary>circuit_analysis.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">12_execute_output · 119 bytes</span></summary>
-  <div class="details-body"><pre>{
-  "num_components": 8,
-  "loop_domain": "O",
-  "loop_codomain": "A",
-  "model_domain": "O",
-  "model_codomain": "A"
-}</pre></div>
-</details>
-<details>
-  <summary>circuit_info.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">12_execute_output · 491 bytes</span></summary>
-  <div class="details-body"><pre>{
-  "model_name": "Simple Markov Chain",
-  "timestamp": "2026-05-22 06:18:15",
-  "parameters": {
-    "num_states": 3,
-    "num_observations": 3,
-    "num_actions": 1
-  },
-  "components": [
-    "A_matrix",
-    "B_matrix",
-    "C_vector",
-    "D_vector",
-    "E_vector",
-    "state_inference",
-    "policy_inference",
-    "action_selection"
-  ],
-  "analysis": {
-    "num_components": 8,
-    "loop_domain": "O",
-    "loop_codomain": "A",
-    "model_domain": "O",
-    "model_codomain": "A"
-  }
-}</pre></div>
-</details>
-<details>
-  <summary>llm_results.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">13_llm_output · 851063 bytes</span></summary>
-  <div class="details-body"><pre>{
-  "timestamp": "2026-05-22T06:23:38.249048",
-  "processed_files": 47,
+  "timestamp": "2026-06-18T07:53:43.528230",
+  "processed_files": 3,
   "success": true,
   "errors": [],
   "auth_errors": [],
@@ -1170,22 +1447,14 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; backgrou
     "ollama": {
       "available": true,
       "models": [
-        "smollm2:135m-instruct-q4_K_S",
-        "llama3.2:latest",
-        "gemma3:4b",
         "nomic-embed-text:latest",
-        "hermes3:latest",
-        "qwen3:4b",
-        "llama3.2:1b"
+        "gemma3:4b"
       ],
-      "selected_model": "smollm2:135m-instruct-q4_K_S"
+      "selected_model": "gemma3:4b"
     },
     "openai": {
-      "available": true,
-      "models": [
-        "gpt-4",
-        "gpt-3.5-turbo"
-      ],
+      "available": false,
+      "models": [],
       "selected_model": null
     },
     "anthropic": {
@@ -1196,560 +1465,538 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; backgrou
   },
   "analysis_results": [
     {
-      "file_path": "input/gnn_files/basics/static_perception.md",
-      "file_name": "static_perception.md",
-      "file_size": 1669,
-      "line_count": 95,
+      "file_path": "input/gnn_files/pomdp_gridworld/AGENTS.md",
+      "file_name": "AGENTS.md",
+      "file_size": 1503,
+      "line_count": 32,
       "variables": [
         {
-          "name": "Example",
-          "definition": "Example: Static",
+          "name": "num_timesteps",
+          "definition": "num_timesteps: 15",
+          "line": 17
+        },
+        {
+          "name": "random_seed",
+          "definition": "random_seed: 42",
+          "line": 17
+        }
+      ],
+      "connections": [],
+      "sections": [
+        {
+          "name": "POMDP GridWorld Fixture Agent Guide",
           "line": 1
         },
         {
-          "name": "Version",
-          "definition": "Version: 1",
+          "name": "Purpose",
           "line": 3
         },
         {
-          "name": "model",
-          "definition": "model: perception",
-          "line": 5
+          "name": "Ownership Boundary",
+          "line": 7
         },
         {
-          "name": "model",
-          "definition": "model: P",
-          "line": 26
+          "name": "Public Surfaces",
+          "line": 13
         },
         {
-          "name": "matrix",
-          "definition": "matrix: P",
-          "line": 33
-        },
-        {
-          "na</pre></div>
+          "name": "Verification",
+          "line": 22
+        }
+      ],
+      "semantic_analysis": {
+        "variable_count": 2,
+        "connection_co</pre></div>
 </details>
 <details>
-  <summary>7b609f5f5751f57a443e121173d030778ad5c6382b2c2059c3fc36e6d592b731.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">13_llm_output · 2382 bytes</span></summary>
+  <summary>bc24991a56742e35eccf962c6b8eb8c45fd7d02faffb846dd002b0ca5676cf42.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">13_llm_output · 2627 bytes</span></summary>
   <div class="details-body"><pre>{
-  "key": "7b609f5f5751f57a443e121173d030778ad5c6382b2c2059c3fc36e6d592b731",
-  "model": "smollm2:135m-instruct-q4_K_S",
-  "timestamp": "2026-05-22T06:33:00.159542",
-  "content_length": 1610,
+  "key": "bc24991a56742e35eccf962c6b8eb8c45fd7d02faffb846dd002b0ca5676cf42",
+  "model": "gemma3:4b",
+  "timestamp": "2026-06-18T07:56:14.129217",
+  "content_length": 2323,
   "prompt_length": 61,
-  "response": "```python\nimport pymdp\nfrom pymdpi import PyMDPScalingN2T100\n\n# Define the input data and model annotations\ninput_data = [\n    {\n        \"type\": \"float\",\n        \"name\": \"InputData\",\n        \"shape\": [[], [], []]\n    },\n    {\n        \"type\": \"int\",\n        \"name\": \"NumPyArrayType\",\n        \"shape\": [[]]\n    }\n]\nmodel_annotations = [\n    {\n        \"type\": \"float\",\n        \"name\": \"ModelName\",\n        \"shape\": [[]]\n    }\n]\n```\nThis code generates a list of input data and model annotations for the PyMDP Scaling N2 T100 model. The `input_data` is defined as a dictionary with two keys: `type`, which represents the type of data to be loaded, and `shape`, which defines the shape of each element in the data.\nThe `model_annotations` list contains annotations for each input data item. Each annotation has three keys: `name`, `shape`, and `value`. The `input_data` dictionary is defined as a dictionary with two keys: `type` representing the type of data to be loaded, and `shape` representing the shape of each element in the data.\nThe code generates a list of input data items for the PyMDP Scaling N2 T100 model using the `input_data` dictionary as an argument. The `model_annotations` list contains annotatio</pre></div>
+  "response": "Okay, let's break down this GNN model specification in detail, focusing on the technical aspects and how it leverages Active Inference principles within a GridWorld POMDP framework. This is a meticulously designed testbed for cross-framework validation, heavily reliant on graph neural networks (GNNs) to represent and reason about the agent\u2019s situation.\n\n**1. Core Framework: 3x3 GridWorld POMDP**\n\n* **Discrete Environment:** The foundation is a 3x3 discrete GridWorld. This severely limits state space complexity while still providing enough nuance for meaningful testing.\n* **POMDP Structure:** It's explicitly defined as a Partially Observable Markov Decision Process (POMDP). This means the agent doesn\u2019t have complete knowledge of its environment; it receives noisy observations, and crucially, the system considers future consequences of actions \u2013 a key element of Active Inference.\n* **State Space:** 9 hidden states are maintained within this grid. Each state represents a specific location on the 3x3 grid (e.g., (0,0), (0,1), ..., (2,2)). The discrete nature is fundamental for GNN representation.\n* **Observation Space:**  There are 9 observations corresponding to each of the 9 states. These observations are *noisy identity emissions*. This means that</pre></div>
 </details>
 <details>
-  <summary>224cacac785776359d7a2abe49c1a1944c4aa761cbd9e5c7c5a5b56583deaba1.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">13_llm_output · 1386 bytes</span></summary>
+  <summary>cbb93bba75a975d318fd55ec433810ca65e63b3cea92225977c27a1a1a864d30.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">13_llm_output · 2664 bytes</span></summary>
   <div class="details-body"><pre>{
-  "key": "224cacac785776359d7a2abe49c1a1944c4aa761cbd9e5c7c5a5b56583deaba1",
-  "model": "smollm2:135m-instruct-q4_K_S",
-  "timestamp": "2026-05-22T06:27:18.558667",
-  "content_length": 7520,
-  "prompt_length": 97,
-  "response": "```python\nimport numpy as np\nfrom pymdp import *  # pylint: disable=line-number-inflated-for-use\n\n\ndef generate_pomd(\n    graph = None,\n    num_hidden_states = 8,\n    num_actions = 8,\n    num_timesteps = 100,\n    num_ontology_annotations = 32,\n    num_labels = 64,\n    num_nodes=512\n):\n  \"\"\"Generate a graph topology from the given data.\n\n  Args:\n    graph (list[Dict]): A list of dictionaries representing the graph nodes and edges.\n    num_hidden_states (int): The number of hidden states in the graph.\n    num_actions (int): The number of actions to be taken by each node.\n    num_timesteps (int): The number of timesteps for each action.\n    num_ontology_annotations (int): The number of nodes with labeled outputs and labels from the ontology annotations.\n    num_labels (int): The number of nodes with labeled outputs and labels from the ontology annotations.\n\n  Returns:\n    list[Dict]: A list containing a dictionary representing the graph topology.\n  \"\"\"\n  # Generate a random graph topology using PyMDP Scaling Suite\n  graph = generate_pomd(num_hidden_states, num_actions, num_timesteps)\n  return graph\n```"
-}</pre></div>
+  "key": "cbb93bba75a975d318fd55ec433810ca65e63b3cea92225977c27a1a1a864d30",
+  "model": "gemma3:4b",
+  "timestamp": "2026-06-18T07:55:29.936211",
+  "content_length": 2323,
+  "prompt_length": 3235,
+  "response": "Okay, let\u2019s dissect this GNN specification for the 3x3 GridWorld POMDP fixture. This is a carefully designed benchmark specifically geared towards rigorous cross-framework validation of Active Inference implementations \u2013 a crucial aspect of ensuring the robustness and correctness of these models.\n\n**1. Model Purpose:**\n\nThis model represents a simplified agent navigating a grid world to reach a goal state. It\u2019s essentially a foundational example used for testing and comparing different probabilistic inference engines (PyMDP, RxInfer.jl, and ActiveInference.jl) in their ability to accurately represent and reason about an agent's interaction with its environment. The core purpose is not necessarily to model a complex real-world scenario but rather to provide a controlled setting to evaluate the underlying theoretical principles of Active Inference \u2013 specifically, how an agent constructs beliefs about its state and uses those beliefs to guide action selection.\n\n**2. Core Components:**\n\n*   **Hidden States (s_f0, s_f1, ... s_f8):** These represent the agent\u2019s internal belief about its location within the 3x3 grid world. Each hidden state corresponds to a specific cell in the grid.  Crucially, the model doesn't explicitly track the *exact</pre></div>
 </details>
 <details>
-  <summary>14d271259420a12681faa09047418ae1bbf78cc5c0a6b3bc155408b02bec60f6.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">13_llm_output · 2514 bytes</span></summary>
+  <summary>b0363ece86a66732eade01be0ee30e26c311aee42b40060152ba5fe95ca854d0.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">13_llm_output · 2703 bytes</span></summary>
   <div class="details-body"><pre>{
-  "key": "14d271259420a12681faa09047418ae1bbf78cc5c0a6b3bc155408b02bec60f6",
-  "model": "smollm2:135m-instruct-q4_K_S",
-  "timestamp": "2026-05-22T06:28:27.284931",
-  "content_length": 2673639,
-  "prompt_length": 2674710,
-  "response": "Based on the provided information, here are some steps to generate a systematic breakdown of the generated code:\n\n1. **Generate Code**: Use the `generate_ontology` function from PyMDP to create the ontology data structure for generating the code. This generates an object with 64 objects representing different entities (e.g., \"A\", \"B\", etc.). The `generate_ontology` function is used to generate a dictionary of objects, which are then stored in the `objects` list.\n\n2. **Generate Code**: Use the `generate_ontology` function from PyMDP to create the ontology data structure for generating the code. This generates an object with 64 objects representing different entities (e.g., \"A\", \"B\", etc.). The `generate_ontology` function is used to generate a dictionary of objects, which are then stored in the `objects` list.\n\n3. **Generate Code**: Use the `generate_ontology` function from PyMDP to create the ontology data structure for generating the code. This generates an object with 64 objects representing different entities (e.g., \"A\", \"B\", etc.). The `generate_ontology` function is used to generate a dictionary of objects, which are then stored in the `objects` list.\n\n4. **Generate Code**: Use the `generate_ontology` function from P</pre></div>
+  "key": "b0363ece86a66732eade01be0ee30e26c311aee42b40060152ba5fe95ca854d0",
+  "model": "gemma3:4b",
+  "timestamp": "2026-06-18T07:54:01.054418",
+  "content_length": 1830,
+  "prompt_length": 2632,
+  "response": "Okay, here\u2019s a concise yet comprehensive summary of the \u201cPOMDP GridWorld Fixture Agent Guide\u201d GNN specification, designed for someone familiar with Active Inference concepts:\n\n**1. Model Overview:**\n\nThis GNN specification defines a POMDP (Partially Observable Markov Decision Process) agent operating within a 3x3 gridworld environment. The model is designed as a benchmark fixture to rigorously test the core functionalities \u2013 render, execute, analysis, and visualization \u2013 of PyMDP, RxInfer.jl, and ActiveInference.jl frameworks. It\u2019s essentially a controlled experiment for validating GNN implementations within this specific Active Inference context.\n\n**2. Key Variables:**\n\n*   **Hidden States:**\n    *   `x`: Agent's (noisy) x-coordinate in the gridworld. This represents the agent\u2019s internal estimate of its location, subject to uncertainty.\n    *   `y`: Agent\u2019s (noisy) y-coordinate in the gridworld \u2013 similarly representing an uncertain belief about the agent\u2019s position.\n*   **Observations:** The agent receives observations based on its current state and the environment's true state. These are likely noisy sensor readings that provide imperfect information about the agent's location.\n*   **Actions/Controls:**</pre></div>
 </details>
 <details>
-  <summary>7a71f8fcd0ea5f775568f1a544cb7efda8ca4c2501fbc84de4e2bc1fd5e24d88.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">13_llm_output · 810 bytes</span></summary>
+  <summary>3c08ac0a9a3b735fa8e6d31de00457cf941af903ff4b18769be03bcc0fc5c521.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">13_llm_output · 2701 bytes</span></summary>
   <div class="details-body"><pre>{
-  "key": "7a71f8fcd0ea5f775568f1a544cb7efda8ca4c2501fbc84de4e2bc1fd5e24d88",
-  "model": "smollm2:135m-instruct-q4_K_S",
-  "timestamp": "2026-05-22T06:28:30.593334",
-  "content_length": 2673639,
-  "prompt_length": 2674541,
-  "response": "Based on the document, here are some key structural analysis points:\n\n1. **Graph Structure**:\n   - Number of variables and their types\n   - Connection patterns (directed/undirected edges)\n   - Graph topology (hierarchical, network, etc.)\n\n2. **Variable Analysis**:\n   - State space dimensionality for each variable\n   - Dependencies and conditional relationships\n   - Temporal vs. static variables \n\n3. **Mathematical Structure**:\n   - Matrix dimensions and compatibility\n   - Parameter structure and organization  \n   - Symmetries or special properties"
-}</pre></div>
+  "key": "3c08ac0a9a3b735fa8e6d31de00457cf941af903ff4b18769be03bcc0fc5c521",
+  "model": "gemma3:4b",
+  "timestamp": "2026-06-18T07:56:31.206597",
+  "content_length": 2323,
+  "prompt_length": 104,
+  "response": "Okay, let's break down what\u2019s happening when this GNN model runs and how it behaves across the different settings you\u2019ve described, focusing on the core principles of Active Inference and how a Graph Neural Network (GNN) is being used within that framework.\n\n**Core Behavior: A Simulated Agent Learning to Navigate**\n\nAt its heart, this system represents an agent learning to navigate a 3x3 GridWorld environment using Active Inference. Here's a step-by-step breakdown of what happens during execution:\n\n1. **The POMDP Framework:** The model is built around a Partially Observable Markov Decision Process (POMDP). This means the agent doesn\u2019t have complete knowledge about its surroundings. It receives noisy observations and must infer the underlying state of the world based on those observations *and* its prior beliefs.  This is crucial for Active Inference \u2013 it's not just about reacting to immediate sensory input, but actively constructing a model of the world to predict what will happen next.\n\n2. **The GNN as an Internal Model:** The GNN isn\u2019t simply processing observations; it\u2019s building and updating an *internal representation* of the GridWorld.  Think of it like this:\n   * **Nodes:** Each node in the graph likely represents a poten</pre></div>
 </details>
 <details>
-  <summary>ml_integration_results.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">14_ml_integration_output · 9694 bytes</span></summary>
+  <summary>ml_integration_results.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">14_ml_integration_output · 2679 bytes</span></summary>
   <div class="details-body"><pre>{
   "status": "completed",
-  "target_dir": "input/gnn_files/discrete",
+  "target_dir": "input/gnn_files/pomdp_gridworld",
   "output_dir": "output/14_ml_integration_output",
   "models_trained": [
     {
-      "type": "decision_tree",
-      "framework": "sklearn",
-      "task": "family_classification",
-      "train_accuracy": 1.0,
-      "cv_mean_accuracy": 0.5833333333333333,
-      "cv_std": 0.1800205749557739,
-      "n_folds": 3,
-      "n_samples": 10,
-      "n_features": 14,
-      "feature_names": [
-        "num_states",
-        "num_observations",
-        "num_actions",
-        "num_variables",
-        "connectivity_ratio",
-        "max_dimension",
-        "total_parameters",
-        "planning_horizon",
-        "directed_connections",
-        "undirected_connections",
-        "has_precision",
-        "has_learning",
-        "has_ontology",
-        "has_parameterization"
-      ],
-      "artifact_path": "output/14_ml_integration_output/gnn_decision_tree.pkl",
-      "feature_importance": {
-        "num_states": 0.0,
-        "num_observations": 0.0,
-        "num_actions": 0.0,
-        "num_variables": 0.0,
-        "connectivity_ratio": 0.0,
-        "max_dimension": 0.0,
-        "total_parameters": 0.0,
-        "planning_horizon": 0.3571428571428571,
-        "directed_connections": 0.6428571428571428,
-        "undirected_connections": 0.0,
-        "has_precision": 0.0,
-        "has_learning": 0.0,
-        "has_ontology": 0.0,
-        "has_parameterization": 0.0
-      },
-      "top_features": [
-        [
-          "directed_connect</pre></div>
+      "source": "README.md",
+      "type": "structural_analysis",
+      "framework": "internal_stats",
+      "accuracy": 1.0,
+      "note": "sklearn not available",
+      "model_family": "unknown",
+      "num_states": 0,
+      "total_parameters": 0
+    },
+    {
+      "source": "pomdp_gridworld_3x3.md",
+      "type": "structural_analysis",
+      "framework": "internal_stats",
+      "accuracy": 1.0,
+      "note": "sklearn not available",
+      "model_family": "pomdp",
+      "num_states": 9,
+      "total_parameters": 538
+    },
+    {
+      "source": "AGENTS.md",
+      "type": "structural_analysis",
+      "framework": "internal_stats",
+      "accuracy": 1.0,
+      "note": "sklearn not available",
+      "model_family": "unknown",
+      "num_states": 0,
+      "total_parameters": 0
+    }
+  ],
+  "feature_importance": {},
+  "cross_validation": {},
+  "framework_status": {
+    "sklearn": "missing"
+  },
+  "extracted_features": [
+    {
+      "file_name": "README.md",
+      "model_family": "unknown",
+      "num_variables": 0,
+      "num_states": 0,
+      "num_observations": 0,
+      "num_actions": 0,
+      "max_dimension": 0,
+      "total_parameters": 0,
+      "connectivity_ratio": 0.0,
+      "directed_connections": 0,
+      "undirected_connections": 0,
+      "has_precision": false,
+      "has_learning": false,
+      "has_ontology": fa</pre></div>
 </details>
 <details>
-  <summary>audio_results.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">15_audio_output · 12399 bytes</span></summary>
+  <summary>audio_results.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">15_audio_output · 6598 bytes</span></summary>
   <div class="details-body"><pre>{
-  "timestamp": "2026-05-22T06:33:09.905516",
-  "processed_files": 10,
+  "timestamp": "2026-06-18T07:58:41.601125",
+  "processed_files": 3,
   "success": true,
   "errors": [],
   "audio_files_generated": [
     {
-      "file_path": "input/gnn_files/discrete/simple_mdp.md",
-      "file_name": "simple_mdp.md",
+      "file_path": "input/gnn_files/pomdp_gridworld/README.md",
+      "file_name": "README.md",
       "audio_files": {
-        "tonal": "output/15_audio_output/simple_mdp_tonal.wav",
-        "rhythmic": "output/15_audio_output/simple_mdp_rhythmic.wav",
-        "ambient": "output/15_audio_output/simple_mdp_ambient.wav"
+        "tonal": "output/15_audio_output/README_tonal.wav",
+        "rhythmic": "output/15_audio_output/README_rhythmic.wav",
+        "ambient": "output/15_audio_output/README_ambient.wav"
       },
-      "variables_count": 67,
+      "variables_count": 1,
       "connections_count": 0,
-      "generation_timestamp": "2026-05-22T06:33:10.045918"
+      "generation_timestamp": "2026-06-18T07:58:41.617169"
     },
     {
-      "file_path": "input/gnn_files/discrete/multi_armed_bandit.md",
-      "file_name": "multi_armed_bandit.md",
+      "file_path": "input/gnn_files/pomdp_gridworld/pomdp_gridworld_3x3.md",
+      "file_name": "pomdp_gridworld_3x3.md",
       "audio_files": {
-        "tonal": "output/15_audio_output/multi_armed_bandit_tonal.wav",
-        "rhythmic": "output/15_audio_output/multi_armed_bandit_rhythmic.wav",
-        "ambient": "output/15_audio_output/multi_armed_bandit_ambient.wav"
+        "tonal": "output/15_audio_output/pomdp_gridworld_3x3_tonal.wav",
+        "rhythmic": "output/15_audio_output/pomdp_gridworld_3x3_rhythmic.wav",
+        "ambient": "output/15_audio_output/pomdp_gridworld_3x3_ambient.wav"
       },
-      "variables_count": 60,
-      "connections_count": 2,
-      "generation_timestamp": "2026-05-22T06:33:10.179119"
+      "variables_count": 58,
+      "connections_count": 0,
+      "generation_timestamp": "2026-06-18T07:58:41.755002"
     },
     {
-      "file_path": "input/gnn_files/discrete/deep_planning_horizon.md",
-      "file_name": "deep_planning_horizon.md",
+      "file_path": "input/gnn_files/pomdp_gridworld/AGENTS.md",
+      "file_name": "AGENTS.md",
       "audio_files": {
-        "tonal": "output/15_audio_output/deep_planning_horizon_tonal.wav",
-        "rhythmic": "output/15_audio_output/deep_planning_horizon_rhythmic.wav",
-        "ambient": "output/15_audio_output/deep_planning_horizon_ambient.wav"
+        "tonal": "output/15_audio_output/AGENTS_tonal.wav",
+        "rhythmic": "output/15_audio_output/AGENTS_rhythmic.wav",
+        "ambient": "output/15_audio_output/AGENTS_ambient.wav"
       },
-      "vari</pre></div>
+      "variables_count": 2,
+      "connections_count": 0,
+      "generation_timest</pre></div>
 </details>
 <details>
-  <summary>analysis_results.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">16_analysis_output · 481225 bytes</span></summary>
+  <summary>audio_stream_chunks.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">15_audio_output · 2649 bytes</span></summary>
   <div class="details-body"><pre>{
-  "timestamp": "2026-05-22T06:33:12.450763",
-  "processed_files": 10,
+  "schema": "gnn_audio_stream_chunks_v1",
+  "status": "ready",
+  "streaming_safe": true,
+  "frame_count": 150,
+  "duration_frames": 150,
+  "chunk_count": 5,
+  "chunks": [
+    {
+      "index": 0,
+      "frame_start": 0,
+      "frame_count": 32,
+      "amplitude": 1.0,
+      "frequency_hz": 290.47751697829847,
+      "metadata": {
+        "mean_free_energy": 2.349250565943282,
+        "last_action": 0
+      }
+    },
+    {
+      "index": 1,
+      "frame_start": 32,
+      "frame_count": 32,
+      "amplitude": 1.0,
+      "frequency_hz": 280.0,
+      "metadata": {
+        "mean_free_energy": 0.0,
+        "last_action": 4
+      }
+    },
+    {
+      "index": 2,
+      "frame_start": 64,
+      "frame_count": 32,
+      "amplitude": 1.0,
+      "frequency_hz": 235.0,
+      "metadata": {
+        "mean_free_energy": 0.0,
+        "last_action": 1
+      }
+    },
+    {
+      "index": 3,
+      "frame_start": 96,
+      "frame_count": 32,
+      "amplitude": 1.0,
+      "frequency_hz": 328.9611387032651,
+      "metadata": {
+        "mean_free_energy": 2.1320379567755032,
+        "last_action": 3
+      }
+    },
+    {
+      "index": 4,
+      "frame_start": 128,
+      "frame_count": 22,
+      "amplitude": 1.0,
+      "frequency_hz": 298.58567492836687,
+      "metadata": {
+        "mean_free_energy": 2.1195224976122287,
+        "last_action": 1
+      }
+    }
+  ],
+  "telemetry_source_count": 11,
+  "telemetry_provenance": [
+    "output/12_execute_output/pomdp_gridworld_3x3/activeinference_jl/execution_lo</pre></div>
+</details>
+<details>
+  <summary>analysis_results.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">16_analysis_output · 35927 bytes</span></summary>
+  <div class="details-body"><pre>{
+  "timestamp": "2026-06-18T07:58:43.232392",
+  "processed_files": 1,
   "success": true,
   "errors": [],
   "statistical_analysis": [
     {
-      "file_path": "input/gnn_files/discrete/simple_mdp.md",
-      "file_name": "simple_mdp.md",
-      "file_size": 3322,
-      "line_count": 154,
+      "file_path": "input/gnn_files/pomdp_gridworld/pomdp_gridworld_3x3.md",
+      "file_name": "pomdp_gridworld_3x3.md",
+      "file_size": 5491,
+      "line_count": 201,
       "variables": [
         {
           "name": "Example",
-          "definition": "Example: Simple",
+          "definition": "Example: POMDP",
           "line": 1,
-          "type": "Simple"
+          "type": "POMDP"
         },
         {
           "name": "Version",
           "definition": "Version: 1",
-          "line": 3,
+          "line": 2,
           "type": "1"
         },
         {
           "name": "actions",
-          "definition": "actions: stay",
-          "line": 27,
-          "type": "stay"
+          "definition": "actions: up",
+          "line": 14,
+          "type": "up"
         },
         {
           "name": "matrix",
-          "definition": "matrix: A",
-          "line": 33,
-          "type": "A"
+          "definition": "matrix: observations",
+          "line": 17,
+          "type": "observations"
         },
         {
-          "name": "model",
-          "definition": "model: identity",
-          "line": 35,
-          "type": "identity"
+          "name": "tensor",
+          "definition": "tensor: next_state",
+          "line": 18,
+          "type": "next_state"
         },
         {
-          "name": "matrix",
-          "definition": "matrix: B",
-          "line": 37,
-          "type": "B"
+          "name": "num_hidden_states",
+          "definition": "num_hidden_states: 9",
+          "line": 189,
+          "type": "9"
         },
         {
-          "name": "vector",
-          "definition": "vector: C",
-          "line": 41,
-          "type": "C"
+          "name": "num_obs",
+          "definition": "num_obs: 9",
+          "line": 190,
+          "type": "9"
         },
         {
-          "name": "vector",
-          "definition": "vector: D",
-          "line": 45,
-          "type": "D"
+          "name": "num_actions",
+          "definition": "num_actions: 5",
+          "line": 191,
+          "type": "5"
         },
         {
-          "name": "A",
-          "definition": "A: 4x4",
-          "line": 83,
-          "type": "4x4"
-      </pre></div>
+          "name": "num_tim</pre></div>
 </details>
 <details>
-  <summary>hmm_baseline_post_simulation_analysis.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">16_analysis_output · 10860 bytes</span></summary>
+  <summary>framework_comparison_data.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">16_analysis_output · 7949 bytes</span></summary>
   <div class="details-body"><pre>{
-  "timestamp": "2026-05-22T06:34:18.911269",
-  "execution_results_dir": "output/12_execute_output/hmm_baseline",
-  "framework_results": {
-    "bnlearn": {
-      "framework": "bnlearn",
-      "result_count": 1,
-      "analyses": []
-    },
-    "discopy": {
-      "framework": "discopy",
-      "result_count": 1,
-      "analyses": []
-    },
-    "jax": {
-      "framework": "jax",
-      "result_count": 1,
-      "analyses": []
-    },
-    "pytorch": {
-      "framework": "pytorch",
-      "result_count": 1,
-      "analyses": []
-    },
-    "pymdp": {
-      "framework": "pymdp",
-      "result_count": 1,
-      "analyses": []
-    },
-    "activeinference_jl": {
-      "framework": "activeinference_jl",
-      "result_count": 1,
-      "analyses": [
-        {
-          "framework": "activeinference_jl",
-          "model_name": "hmm_baseline",
-          "free_energy_count": 50,
-          "free_energy_values": [
-            1.4611328393284475,
-            1.4607860074180836,
-            1.4600515654985085,
-            1.4668279716393833,
-            1.461138792622786,
-            1.4587937596941953,
-            1.4910844251991984,
-            1.479538763334763,
-            1.523572650604578,
-            1.4454274870824908,
-            1.4727803271561002,
-            1.459841741311768,
-            1.4570171166517214,
-            1.479192780914653,
-            1.4594243377077285,
-            1.4448217576231106,
-            1.479967100954199,
-            1.4632499839149806,
-            1.4752541498</pre></div>
-</details>
-<details>
-  <summary>multi_armed_bandit_post_simulation_analysis.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">16_analysis_output · 16706 bytes</span></summary>
-  <div class="details-body"><pre>{
-  "timestamp": "2026-05-22T06:34:18.898355",
-  "execution_results_dir": "output/12_execute_output/multi_armed_bandit",
-  "framework_results": {
-    "bnlearn": {
-      "framework": "bnlearn",
-      "result_count": 1,
-      "analyses": []
-    },
-    "discopy": {
-      "framework": "discopy",
-      "result_count": 1,
-      "analyses": []
-    },
-    "jax": {
-      "framework": "jax",
-      "result_count": 1,
-      "analyses": []
-    },
-    "pytorch": {
-      "framework": "pytorch",
-      "result_count": 1,
-      "analyses": []
-    },
-    "pymdp": {
-      "framework": "pymdp",
-      "result_count": 2,
-      "analyses": [
-        {
-          "framework": "pymdp",
-          "model_name": "Multi Armed Bandit Agent",
-          "free_energy_count": 30,
-          "free_energy_values": [
-            [
-              1.0429868698120117,
-              1.0429868698120117,
-              1.0429868698120117
-            ],
-            [
-              0.9494011402130127,
-              0.9494011402130127,
-              0.9494011402130127
-            ],
-            [
-              1.2687733173370361,
-              1.2687733173370361,
-              1.2687733173370361
-            ],
-            [
-              1.6417853832244873,
-              1.6417853832244873,
-              1.6417853832244873
-            ],
-            [
-              1.8677210807800293,
-              1.8677210807800293,
-              1.8677210807800293
-            ],
-            [
-              1.3989670276641846,
-             </pre></div>
-</details>
-<details>
-  <summary>framework_comparison_data.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">16_analysis_output · 63166 bytes</span></summary>
-  <div class="details-body"><pre>{
-  "timestamp": "2026-05-22T06:34:44.799793",
+  "timestamp": "2026-06-18T07:58:49.901810",
   "frameworks": {
     "numpyro": {
+      "success_count": 1,
+      "total_count": 1,
+      "execution_times": [
+        1.079646
+      ],
+      "output_files": [
+        "output/12_execute_output/pomdp_gridworld_3x3/numpyro/execution_logs/POMDP GridWorld 3x3_numpyro.py_execution.log"
+      ],
+      "implementation_dirs": [
+        "output/12_execute_output/pomdp_gridworld_3x3/numpyro"
+      ],
+      "beliefs": [],
+      "actions": [],
+      "observations": [],
+      "free_energy": [],
+      "num_timesteps": null,
+      "validation": {},
+      "model_parameters": {},
+      "data_source": null
+    },
+    "pymdp": {
+      "success_count": 1,
+      "total_count": 1,
+      "execution_times": [
+        2.853709
+      ],
+      "output_files": [
+        "output/12_execute_output/pomdp_gridworld_3x3/pymdp/execution_logs/POMDP GridWorld 3x3_pymdp.py_execution.log"
+      ],
+      "implementation_dirs": [
+        "output/12_execute_output/pomdp_gridworld_3x3/pymdp"
+      ],
+      "beliefs": [],
+      "actions": [],
+      "observations": [],
+      "free_energy": [],
+      "num_timesteps": null,
+      "validation": {},
+      "model_parameters": {},
+      "data_source": null
+    },
+    "pytorch": {
       "success_count": 0,
-      "total_count": 10,
+      "total_count": 1,
       "execution_times": [],
       "output_files": [
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
         ""
       ],
       "implementation_dirs": [
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
         ""
       ],
-      "beliefs": [
-        [
-          1.0,
-          0.0,
-          0.0
-        ],
-        [
-          1.0,
-          0.0,
-          0.0
-        ],
-        [
-          1.0,
-          0.0,
-          0.0
-        ],
-        [
-          0.0,
-          0.0,
-          0.9999999403953552
-        ],
-        [
-          0.0,
-          0.0,
-          1.0
-        ],
-        [
-          0.0,
-          0.0,
-          1.0
-        ],
-        [
-          0.0,
-          1.0,
-          0.0
-        ],
-        [
-          0.0,
-          1.0,
-          0.0
-        ],
-        [
-          0.0,
-          1.0,
-          0.0
-        ],
-        [
-          0.0,
-          1.0,
-          0.0
-        ],
-        [
-          0.0,
-          0.0,
-          1.0
-        ],
-        [
-          0.0,
-          0.0,
-          1.0
-        ],
-        [
-          0.0,
-          0.0,
-          1.0
-        ],
-        [
-          0.0,
-          1.0,
-          0.0
-        ],
-        [
-          0.0,
-          1.0,
-          0.0
-        ],
-        [
-        </pre></div>
+      "beliefs": [],
+      "actions": [],
+      "observations": [],
+      "f</pre></div>
 </details>
 <details>
-  <summary>actinf_pomdp_agent_post_simulation_analysis.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">16_analysis_output · 7819 bytes</span></summary>
+  <summary>pomdp_gridworld_3x3_post_simulation_analysis.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">16_analysis_output · 12222 bytes</span></summary>
   <div class="details-body"><pre>{
-  "timestamp": "2026-05-22T06:34:18.908341",
-  "execution_results_dir": "output/12_execute_output/actinf_pomdp_agent",
+  "timestamp": "2026-06-18T07:58:46.233926",
+  "execution_results_dir": "output/12_execute_output/pomdp_gridworld_3x3",
   "framework_results": {
-    "bnlearn": {
-      "framework": "bnlearn",
-      "result_count": 1,
-      "analyses": []
-    },
-    "discopy": {
-      "framework": "discopy",
-      "result_count": 1,
-      "analyses": []
-    },
-    "jax": {
-      "framework": "jax",
-      "result_count": 1,
-      "analyses": []
-    },
-    "pytorch": {
-      "framework": "pytorch",
-      "result_count": 1,
-      "analyses": []
-    },
-    "pymdp": {
-      "framework": "pymdp",
-      "result_count": 1,
-      "analyses": []
-    },
-    "activeinference_jl": {
-      "framework": "activeinference_jl",
+    "rxinfer": {
+      "framework": "rxinfer",
       "result_count": 1,
       "analyses": [
         {
-          "framework": "activeinference_jl",
-          "model_name": "actinf_pomdp_agent",
-          "free_energy_count": 30,
+          "framework": "rxinfer",
+          "model_name": "pomdp_gridworld_3x3",
+          "free_energy_count": 15,
           "free_energy_values": [
-            1.1990840975349355,
-            0.6748293340493613,
-            0.6844802599506191,
-            0.6850275431793631,
-            0.6850579828580426,
-            0.6850596740596255,
-            0.6850597680156032,
-            0.685059773235381,
-            0.6850597735253687,
-            0.6850597735414792,
-            0.685059773542374,
-            0.6850597735419266,
-            0.6850597735423989,
-            0.6850597735424252,
-            0.6850597735424262,
-            0.6850597735424262,
-            0.6850597735424262,
-            0.6850597735424262,
-        </pre></div>
+            3.3550622703395,
+            3.3550622703395,
+            3.3550622703395,
+            3.2719372703395,
+            3.3550622703395,
+            3.271937270339502,
+            3.3550622703395,
+            3.2719372703395,
+            3.022562270339501,
+            2.6900622703395016,
+            0.8613122703395023,
+            0.8613122703395023,
+            0.8613122703395023,
+            0.8613122703395023,
+            0.8613122703395023
+          ],
+          "mean_free_energy": 2.4406872703395015,
+          "std_free_energy": 1.1291953255895684,
+          "min_free_energy": 0.8613122703395023,
+          "max_free_energy": 3.3550622703395,
+          "free_energy_trend": -0.22681249999999972,
+          "free_energy_decreasing": "True",
+          "convergence_variance": 0.0,
+          "converged": true
+        },
+        {
+          "framework": "rxinfer",
+          "model_name": "pomdp_gridworld_3x3",
+          "policy_count": 15,
+          "policy_entropy": [
+            1.5957547906289211,
+            1.5957547906289211,
+            1.5957547906289211,
+            1.59</pre></div>
 </details>
 <details>
-  <summary>integration_results.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">17_integration_output · 661 bytes</span></summary>
+  <summary>gridworld_analysis_manifest.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">16_analysis_output · 6228 bytes</span></summary>
   <div class="details-body"><pre>{
-  "processed_files": 10,
+  "schema_version": "gridworld_analysis_manifest_v1",
+  "model_names": [
+    "pomdp_gridworld_3x3"
+  ],
+  "frameworks": [
+    "activeinference_jl",
+    "pymdp",
+    "rxinfer"
+  ],
+  "source_results": [
+    {
+      "framework": "activeinference_jl",
+      "model_name": "pomdp_gridworld_3x3",
+      "schema_version": "activeinference_jl_simulation_v1",
+      "source_path": "output/12_execute_output/pomdp_gridworld_3x3/activeinference_jl/simulation_data/simulation_results.json",
+      "num_timesteps": 15,
+      "validation": {
+        "all_beliefs_valid": true,
+        "actions_in_range": true,
+        "all_valid": true,
+        "beliefs_sum_to_one": true
+      }
+    },
+    {
+      "framework": "pymdp",
+      "model_name": "pomdp_gridworld_3x3",
+      "schema_version": "pymdp_simulation_v1",
+      "source_path": "output/12_execute_output/pomdp_gridworld_3x3/pymdp/simulation_data/simulation_results.json",
+      "num_timesteps": 15,
+      "validation": {
+        "all_beliefs_valid": true,
+        "beliefs_sum_to_one": true,
+        "actions_in_range": true,
+        "pymdp_version_ge_1_0_0": true,
+        "all_valid": true
+      }
+    },
+    {
+      "framework": "rxinfer",
+      "model_name": "pomdp_gridworld_3x3",
+      "schema_version": "rxinfer_simulation_v1",
+      "source_path": "output/12_execute_output/pomdp_gridworld_3x3/rxinfer/simulation_data/simulation_results.json",
+      "num_timesteps": 15,
+      "validation": {
+        "all_beliefs_valid": true,
+        "actions_in_</pre></div>
+</details>
+<details>
+  <summary>numpyro_analysis.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">16_analysis_output · 555 bytes</span></summary>
+  <div class="details-body"><pre>{
+  "framework": "numpyro",
+  "model_name": "pomdp_gridworld_3x3",
+  "num_timesteps": 15,
+  "num_states": 9,
+  "validation": {
+    "beliefs_in_range": true,
+    "beliefs_sum_to_one": true,
+    "actions_in_range": true,
+    "all_valid": true
+  },
+  "metrics": {
+    "mean_belief_entropy": 0.0,
+    "final_belief_entropy": -0.0,
+    "mean_confidence": 1.0,
+    "final_confidence": 1.0,
+    "action_distribution": {
+      "0": 1,
+      "1": 3,
+      "2": 2,
+      "3": 5,
+      "4": 4
+    },
+    "mean_efe": 3.321812057495117
+  },
+  "plots_generated": true
+}</pre></div>
+</details>
+<details>
+  <summary>integration_results.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">17_integration_output · 642 bytes</span></summary>
+  <div class="details-body"><pre>{
+  "processed_files": 3,
   "success": true,
   "errors": [],
   "system_graph_stats": {
-    "nodes": 46,
-    "edges": 96,
-    "cycles": 85,
-    "isolated_nodes": 3,
-    "components": 4
+    "nodes": 12,
+    "edges": 14,
+    "cycles": 3,
+    "isolated_nodes": 1,
+    "components": 2
   },
   "issues": [
-    "Isolated components (no connections): ['t', 'u_t', 'C_loc']"
+    "Isolated components (no connections): ['t']"
   ],
   "meta_analysis": {
-    "records": 80,
+    "records": 8,
     "plots": [],
     "report": "output/17_integration_output/integration_results/meta_analysis/meta_analysis_report.md",
     "validation_json": "output/17_integration_output/integration_results/meta_analysis/sweep_validation.json",
@@ -1758,52 +2005,22 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; backgrou
 }</pre></div>
 </details>
 <details>
-  <summary>meta_statistics.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">17_integration_output · 2371 bytes</span></summary>
+  <summary>meta_statistics.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">17_integration_output · 2313 bytes</span></summary>
   <div class="details-body"><pre>{
   "schema_version": "1.0",
   "per_framework": {
     "activeinference_jl": {
-      "records_total": 10,
-      "successful_runs": 10,
+      "records_total": 1,
+      "successful_runs": 1,
       "success_rate": 1.0,
-      "runtime_median_s": 7.8398685,
-      "runtime_mean_s": 7.8458742,
-      "runtime_min_s": 7.81918,
-      "runtime_max_s": 7.87912,
-      "sum_median_proxy_s": 78.458742
+      "runtime_median_s": 10.428846,
+      "runtime_mean_s": 10.428846,
+      "runtime_min_s": 10.428846,
+      "runtime_max_s": 10.428846,
+      "sum_median_proxy_s": 10.428846
     },
     "bnlearn": {
-      "records_total": 10,
-      "successful_runs": 10,
-      "success_rate": 1.0,
-      "runtime_median_s": 2.049705,
-      "runtime_mean_s": 2.0648845,
-      "runtime_min_s": 2.029279,
-      "runtime_max_s": 2.198489,
-      "sum_median_proxy_s": 20.648845
-    },
-    "discopy": {
-      "records_total": 10,
-      "successful_runs": 10,
-      "success_rate": 1.0,
-      "runtime_median_s": 0.242281,
-      "runtime_mean_s": 0.24190940000000002,
-      "runtime_min_s": 0.233388,
-      "runtime_max_s": 0.248717,
-      "sum_median_proxy_s": 2.419094
-    },
-    "jax": {
-      "records_total": 10,
-      "successful_runs": 10,
-      "success_rate": 1.0,
-      "runtime_median_s": 0.8340205,
-      "runtime_mean_s": 0.8607922,
-      "runtime_min_s": 0.785111,
-      "runtime_max_s": 1.004013,
-      "sum_median_proxy_s": 8.607922
-    },
-    "numpyro": {
-      "records_total": 10,
+      "records_total": 1,
       "successful_runs": 0,
       "success_rate": 0.0,
       "runtime_median_s": null,
@@ -1812,12 +2029,43 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; backgrou
       "runtime_max_s": null,
       "sum_median_proxy_s": 0.0
     },
+    "discopy": {
+      "records_total": 1,
+      "successful_runs": 1,
+      "success_rate": 1.0,
+      "runtime_median_s": 0.311177,
+      "runtime_mean_s": 0.311177,
+      "runtime_min_s": 0.311177,
+      "runtime_max_s": 0.311177,
+      "sum_median_proxy_s": 0.311177
+    },
+    "jax": {
+      "records_total": 1,
+      "successful_runs": 1,
+      "success_rate": 1.0,
+      "runtime_median_s": 1.040676,
+      "runtime_mean_s": 1.040676,
+      "runtime_min_s": 1.040676,
+      "runtime_max_s": 1.040676,
+      "sum_median_proxy_s": 1.040676
+    },
+    "numpyro": {
+      "records_total": 1,
+      "successful_runs": 1,
+      "success_rate": 1.0,
+      "runtime_median_s": 1.079646,
+      "runtime_mean_s": 1.079646,
+      "runtime_min_s": 1.079646,
+      "runtime_max_s": 1.079646,
+      "sum_median_proxy_s": 1.079646
+    },
     "pymdp": {
-      "records_total": 10,
-      "</pre></div>
+      "records_total": 1,
+      "successful_runs": 1,
+</pre></div>
 </details>
 <details>
-  <summary>sweep_validation.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">17_integration_output · 290 bytes</span></summary>
+  <summary>sweep_validation.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">17_integration_output · 231 bytes</span></summary>
   <div class="details-body"><pre>{
   "schema_version": "1.0",
   "issues": [],
@@ -1829,13 +2077,7 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; backgrou
   "grid": {
     "n_values": [],
     "t_values": [
-      3,
-      10,
-      20,
-      25,
-      30,
-      40,
-      50
+      15
     ],
     "expected_cells": 0,
     "record_cells": 0
@@ -1843,104 +2085,109 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; backgrou
 }</pre></div>
 </details>
 <details>
-  <summary>security_results.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">18_security_output · 9876 bytes</span></summary>
+  <summary>security_results.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">18_security_output · 3556 bytes</span></summary>
   <div class="details-body"><pre>{
-  "timestamp": "2026-05-22T06:35:05.675919",
-  "processed_files": 10,
+  "timestamp": "2026-06-18T07:58:59.364847",
+  "processed_files": 3,
   "success": true,
   "errors": [],
   "security_checks": [
     {
-      "file_path": "input/gnn_files/discrete/simple_mdp.md",
-      "file_name": "simple_mdp.md",
-      "file_hash": "36ae32ba9404ca2f0ae5fc575cecb7d645c95088f04399d53fc2f947b6b0cb3c",
-      "file_size": 3322,
+      "file_path": "input/gnn_files/pomdp_gridworld/README.md",
+      "file_name": "README.md",
+      "file_hash": "af8c150dbe41854de662367d21780ed179d4fe119c0bc633ff989b9fd8ec3c70",
+      "file_size": 1996,
       "sensitive_patterns": [],
       "file_permissions": "readable",
       "security_score": 100.0,
-      "check_timestamp": "2026-05-22T06:35:05.676223"
+      "check_timestamp": "2026-06-18T07:58:59.365158"
     },
     {
-      "file_path": "input/gnn_files/discrete/multi_armed_bandit.md",
-      "file_name": "multi_armed_bandit.md",
-      "file_hash": "14590a5fb0c59081ee201da2fd8dc0951f6f146b736836633e1ba25deb5b8c1a",
-      "file_size": 3332,
+      "file_path": "input/gnn_files/pomdp_gridworld/pomdp_gridworld_3x3.md",
+      "file_name": "pomdp_gridworld_3x3.md",
+      "file_hash": "a87cdc89163bcd1b612f902d21ad16f95e3d25c7ff59e3718fa0179b1bc4d302",
+      "file_size": 5491,
       "sensitive_patterns": [],
       "file_permissions": "readable",
       "security_score": 100.0,
-      "check_timestamp": "2026-05-22T06:35:05.676816"
+      "check_timestamp": "2026-06-18T07:58:59.365742"
     },
     {
-      "file_path": "input/gnn_files/discrete/deep_planning_horizon.md",
-      "file_name": "deep_planning_horizon.md",
-      "file_hash": "e8b373d391621f25c2f26f9a15e0d8d470f01b028ce83d129e1a08bdf8ad3e3b",
-      "file_size": 3776,
+      "file_path": "input/gnn_files/pomdp_gridworld/AGENTS.md",
+      "file_name": "AGENTS.md",
+      "file_hash": "00c1379c38d2b2c12198e91b4d063130b1b9c2928d72f629bf45b2d4240bbb2a",
+      "file_size": 1503,
       "sensitive_patterns": [],
       "file_permissions": "readable",
       "security_score": 100.0,
-      "check_timestamp": "2026-05-22T06:35:05.677194"
-    },
+      "check_timestamp": "2026-06-18T07:58:59.366331"
+    }
+  ],
+  "vulnerabilities": [],
+  "recommendations": [
     {
-      "file_path": "input/gnn_files/discrete/actinf_pomdp_agent.md",
-      "file_name": "actinf_pomdp_agent.md",
-      "file_hash": "76291fde1990d152b0b21fff1733fc7cca5eb61eb16972fb0b4e606cf41df8</pre></div>
+      "file_path": "input/gnn_files/pomdp_gridworld/README.md",
+      "file_name": "README.md",
+      "recommendation": "Add security documentation section",
+ </pre></div>
 </details>
 <details>
-  <summary>research_results.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">19_research_output · 12335 bytes</span></summary>
+  <summary>research_results.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">19_research_output · 2624 bytes</span></summary>
   <div class="details-body"><pre>{
-  "processed_files": 10,
+  "processed_files": 3,
   "success": true,
   "hypotheses_generated": [
     {
-      "file": "simple_mdp.md",
-      "model_family": "pomdp",
-      "dimension_count": 9,
+      "file": "README.md",
+      "model_family": "unknown",
+      "dimension_count": 0,
       "hypotheses": [
+        {
+          "type": "ontology_annotation",
+          "description": "Add ActInfOntologyAnnotation section for variable semantic labeling",
+          "rationale": "Ontology annotations enable automatic cross-framework compatibility checks and improve model documentation.",
+          "priority": "low"
+        }
+      ]
+    },
+    {
+      "file": "pomdp_gridworld_3x3.md",
+      "model_family": "pomdp",
+      "dimension_count": 10,
+      "hypotheses": [
+        {
+          "type": "dimensionality_check",
+          "description": "Consider whether full joint inference is necessary for all state factors",
+          "rationale": "Moderate dimensionality detected (max 405 elements). Factored inference may be more efficient.",
+          "priority": "medium"
+        },
         {
           "type": "connectivity_enrichment",
           "description": "Investigate potential missing causal links between model components",
-          "rationale": "Graph density is 0.14 (10 connections, 9 variables). Sparse graphs may miss important dependencies.",
+          "rationale": "Graph density is 0.12 (11 connections, 10 variables). Sparse graphs may miss important dependencies.",
           "priority": "medium"
         },
         {
           "type": "precision_modulation",
           "description": "Add precision parameters to modulate sensory and policy uncertainty",
-          "rationale": "The model lacks precision parameters. Active Inference with precision weighting better captures attentional modulation and epistemic confidence.",
-          "priority": "high"
-        },
-        {
-          "type": "planning_horizon",
-          "description": "Define explicit planning horizon T for tractable policy inference",
-          "rationale": "Unbounded time horizon requires truncation for policy selection. Setting T=3-5 enables efficient Expected Free Energy computation.",
-          "priority": "medium"
-        },
-        {
-          "type": "parameter_learning",
-          "description": "Add Dirichlet concentration parameters for online model learning",
-          "rationale": "Static A and B matrices cannot adapt. Adding concentration parameters (a, b) enables Bayesian learning from experience.",
-</pre></div>
+          "rationale": "The model lacks precision parameters. Act</pre></div>
 </details>
 <details>
-  <summary>installed_packages.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">1_setup_output · 6510 bytes</span></summary>
+  <summary>installed_packages.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">1_setup_output · 5989 bytes</span></summary>
   <div class="details-body"><pre>{
   "shellingham": "1.5.4",
-  "semopy": "2.3.11",
   "pycodestyle": "2.14.0",
   "ml_dtypes": "0.5.4",
   "termcolor": "3.3.0",
   "python-discovery": "1.2.2",
-  "threadpoolctl": "3.6.0",
   "pytest-benchmark": "5.2.3",
   "uri-template": "1.3.0",
   "requests": "2.33.1",
-  "generalized-notation-notation": "1.6.0",
   "rfc3339-validator": "0.1.4",
   "pexpect": "4.9.0",
   "fqdn": "1.5.1",
   "toolz": "1.1.0",
   "traitlets": "5.14.3",
-  "psy": "0.0.1",
-  "tornado": "6.5.5",
   "multidict": "6.7.1",
   "nest-asyncio": "1.6.0",
   "asttokens": "3.0.1",
@@ -1950,12 +2197,11 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; backgrou
   "ptyprocess": "0.7.0",
   "lark": "1.3.1",
   "isoduration": "20.11.0",
-  "jupyterlab": "4.5.6",
   "matplotlib": "3.10.9",
   "iniconfig": "2.3.0",
+  "marshmallow": "3.26.2",
   "sphinxcontrib-htmlhelp": "2.1.0",
   "nodeenv": "1.10.0",
-  "mistune": "3.2.0",
   "webencodings": "0.5.1",
   "json5": "0.14.0",
   "jsonpickle": "4.1.1",
@@ -1965,28 +2211,35 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; backgrou
   "cfgv": "3.5.0",
   "jsonschema-specifications": "2025.9.1",
   "executing": "2.2.1",
+  "jax": "0.9.2",
   "orbax-checkpoint": "0.11.36",
   "opt_einsum": "3.4.0",
-  "bnlearn": "0.13.0",
   "defusedxml": "0.7.1",
   "python-json-logger": "4.1.0",
-  "statsmodels": "0.14.6",
   "inferactively-pymdp": "1.0.0",
   "ipython": "9.13.0",
   "etils": "1.14.0",
-  "datazets": "1.1.3",
-  "aiohttp": "3.13.5",
   "rich": "15.0.0",
   "jupyterlab_server": "2.28.0",
   "propcache": "0.4.1",
   "absl-py": "2.4.0",
   "openai": "2.32.0",
-  "networkx": "3.6.</pre></div>
+  "networkx": "3.6.1",
+  "pytest-cov": "7.1.0",
+  "ruff": "0.15.12",
+  "websocket-client": "1.9.0",
+  "jaxlib": "0.9.2",
+  "jsonschema": "4.26.0",
+  "contourpy": "1.3.3",
+  "tomlkit": "0.14.0",
+  "jiter": "0.14.0",
+  "babel": "2.18.0",
+  "seaborn": "0</pre></div>
 </details>
 <details>
-  <summary>environment_setup_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">1_setup_output · 8857 bytes</span></summary>
+  <summary>environment_setup_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">1_setup_output · 8231 bytes</span></summary>
   <div class="details-body"><pre>{
-  "timestamp": "2026-05-22T06:10:29.955592",
+  "timestamp": "2026-06-18T07:51:03.675186",
   "validation": {
     "system_requirements": true,
     "uv_environment": true,
@@ -1994,20 +2247,20 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; backgrou
     "jax_installation": true,
     "jax_stack_functional": true,
     "overall_status": true,
-    "python_version": "3.13.11"
+    "python_version": "3.12.13"
   },
   "configuration": {
     "extras_installed": [],
     "dev_dependencies": true,
     "install_all_extras": false,
-    "venv_path": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv",
-    "python_version": "3.13.11 (main, Dec  5 2025, 21:16:49) [Clang 21.1.4 ]"
+    "venv_path": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv",
+    "python_version": "3.12.13 (main, Apr  7 2026, 21:09:58) [Clang 22.1.1 ]"
   },
   "uv_info": {
-    "project_root": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation",
-    "uv_environment_path": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv",
-    "python_version": "3.13.11",
-    "platform": "macOS-26.5-arm64-arm-64bit-Mach-O",
+    "project_root": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation",
+    "uv_environment_path": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv",
+    "python_version": "3.12.13",
+    "platform": "macOS-26.5.1-arm64-arm-64bit",
     "uv_setup_status": {
       "system_requirements": true,
       "uv_environment": true,
@@ -2015,21 +2268,23 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; backgrou
       "jax_installation": true,
       "jax_stack_functional": true,
       "overall_status": true,
-      "python_version": "3.13.11"
+      "python_version": "3.12.13"
     },
     "installed_packages": {
       "shellingham": "1.5.4",
-      "semopy": "2.3.11",
       "pycodestyle": "2.14.0",
       "ml_dtypes": "0.5.4",
       "termcolor": "3.3.0",
       "python-discovery": "1.2.2",
-      "threadpoolctl": "3.6.0",
       "pytest-benchmark": "5.2.3",
       "uri-template": "1.3.0",
       "requests": "2.33.1",
-      "generalized-notation-notation": "1.6.0",
-      "rfc3339-validator": "0.</pre></div>
+      "rfc3339-validator": "0.1.4",
+      "pexpect": "4.9.0",
+      "fqdn": "1.5.1",
+      "toolz": "1.1.0",
+      "traitlets": "5.14.3",
+      "mu</pre></div>
 </details>
 <details>
   <summary>website_results.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">20_website_output · 37 bytes</span></summary>
@@ -2039,14 +2294,14 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; backgrou
 }</pre></div>
 </details>
 <details>
-  <summary>mcp_processing_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">21_mcp_output · 892 bytes</span></summary>
+  <summary>mcp_processing_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">21_mcp_output · 899 bytes</span></summary>
   <div class="details-body"><pre>{
-  "timestamp": "2026-05-22T06:35:07.743033",
-  "target_dir": "input/gnn_files/discrete",
+  "timestamp": "2026-06-18T07:59:01.603926",
+  "target_dir": "input/gnn_files/pomdp_gridworld",
   "output_dir": "output/21_mcp_output",
   "processing_status": "completed",
   "mcp_version": "1.6.0",
-  "tools_registered": 132,
+  "tools_registered": 137,
   "registered_modules_count": 32,
   "registered_modules": [
     "research",
@@ -2083,11 +2338,11 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; backgrou
     "sympy_mcp"
   ],
   "resources_count": 1,
-  "message": "MCP processing completed - 132 tools registered from 32 modules"
+  "message": "MCP processing completed - 137 tools registered from 32 modules"
 }</pre></div>
 </details>
 <details>
-  <summary>registered_tools.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">21_mcp_output · 28593 bytes</span></summary>
+  <summary>registered_tools.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">21_mcp_output · 30493 bytes</span></summary>
   <div class="details-body"><pre>[
   {
     "name": "analyze_audio_characteristics",
@@ -2136,11 +2391,11 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; backgrou
    </pre></div>
 </details>
 <details>
-  <summary>mcp_results.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">21_mcp_output · 31501 bytes</span></summary>
+  <summary>mcp_results.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">21_mcp_output · 33488 bytes</span></summary>
   <div class="details-body"><pre>{
-  "timestamp": "2026-05-22T06:35:07.742069",
+  "timestamp": "2026-06-18T07:59:01.602655",
   "mcp_version": "1.6.0",
-  "tools_count": 132,
+  "tools_count": 137,
   "resources_count": 1,
   "tools": [
     {
@@ -2248,15 +2503,21 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; backgrou
 }</pre></div>
 </details>
 <details>
-  <summary>visual_matrices.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">22_gui_output · 2431 bytes</span></summary>
+  <summary>visual_matrices.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">22_gui_output · 11864 bytes</span></summary>
   <div class="details-body"><pre>{
   "visual_matrices": {
     "A": {
       "type": "matrix",
-      "rows": 3,
-      "cols": 3,
+      "rows": 9,
+      "cols": 9,
       "values": [
         [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
           0.0,
           0.0,
           0.0
@@ -2264,112 +2525,114 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; backgrou
         [
           0.0,
           0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
           0.0
         ],
         [
           0.0,
           0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
           0.0
-        ]
-      ],
-      "description": "Likelihood matrix",
-      "editable": true
-    },
-    "B": {
-      "type": "tensor",
-      "depth": 3,
-      "rows": 3,
-      "cols": 3,
-      "values": [
-        [
-          [
-            0.0,
-            0.0,
-            0.0
-          ],
-          [
-            0.0,
-            0.0,
-            0.0
-          ],
-          [
-            0.0,
-            0.0,
-            0.0
-          ]
         ],
         [
-          [
-            0.0,
-            0.0,
-            0.0
-          ],
-          [
-            0.0,
-            0.0,
-            0.0
-          ],
-          [
-            0.0,
-            0.0,
-            0.0
-          ]
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
         ],
         [
-          [
-            0.0,
-            0.0,
-            0.0
-          ],
-          [
-            0.0,
-            0.0,
-            0.0
-          ],
-          [
-            0.0,
-            0.0,
-            0.0
-          ]
-        ]
-      ],
-      "description": "Transition matrices",
-      "editable": true,
-      "current_slice": 0
-    },
-    "C": {
-      "type": "vector",
-      "size": 3,
-      "values": [
-        0.0,
-        0.0,
-        0.0
-      ],
-      "description": "Preference vector",
-      </pre></div>
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+    </pre></div>
 </details>
 <details>
-  <summary>report_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">23_report_output · 797909 bytes</span></summary>
+  <summary>report_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">23_report_output · 309915 bytes</span></summary>
   <div class="details-body"><pre>{
-  "report_generation_time": "2026-05-22T06:35:08.287197",
+  "report_generation_time": "2026-06-18T07:59:02.122153",
   "pipeline_output_directory": "output",
   "steps": {
     "0_template_output": {
       "directory": "output/0_template_output",
       "exists": true,
-      "file_count": 95,
-      "total_size_mb": 69.48,
+      "file_count": 7,
+      "total_size_mb": 0.01,
       "file_types": {
         ".json": {
-          "count": 48,
-          "total_size_mb": 0.017569541931152344
+          "count": 4,
+          "total_size_mb": 0.0013914108276367188
         },
         ".md": {
-          "count": 47,
-          "total_size_mb": 69.46048831939697
+          "count": 3,
+          "total_size_mb": 0.009226799011230469
         }
       },
-      "last_modified": "2026-05-22T06:10:26.463338",
+      "last_modified": "2026-06-18T07:51:00.849752",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -2389,10 +2652,10 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; backgrou
       "file_types": {
         ".json": {
           "count": 2,
-          "total_size_mb": 0.014655113220214844
+          "total_size_mb": 0.013561248779296875
         }
       },
-      "last_modified": "2026-05-22T06:10:31.255863",
+      "last_modified": "2026-06-18T07:51:05.202379",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -2402,19 +2665,19 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; backgrou
       "directory": "output/2_tests_output",
       "exists": true,
       "file_count": 6,
-      "total_size_mb": 4.55,
+      "total_size_mb": 4.95,
       "file_types": {
         ".log": {
           "count": 1,
-          "total_size_mb": 4.016046524047852
+          "total_size_mb": 4.370488166809082
         },
         ".tx</pre></div>
 </details>
 <details>
-  <summary>report_generation_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">23_report_output · 537 bytes</span></summary>
+  <summary>report_generation_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">23_report_output · 523 bytes</span></summary>
   <div class="details-body"><pre>{
   "report_generation_summary": {
-    "generation_time": "2026-05-22T06:35:08.403075",
+    "generation_time": "2026-06-18T07:59:02.163183",
     "pipeline_directory": "output",
     "report_directory": "output/23_report_output",
     "health_score": 95.0,
@@ -2426,18 +2689,18 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; backgrou
     "pipeline_summary": {
       "total_steps": 24,
       "successful_steps": 24,
-      "total_files": 2937,
-      "total_size_mb": 2794.8200000000006,
+      "total_files": 350,
+      "total_size_mb": 37.03,
       "success_rate": 100.0
     }
   }
 }</pre></div>
 </details>
 <details>
-  <summary>report_processing_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">23_report_output · 631 bytes</span></summary>
+  <summary>report_processing_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">23_report_output · 637 bytes</span></summary>
   <div class="details-body"><pre>{
-  "timestamp": "2026-05-22T06:35:08.485541",
-  "target_dir": "input/gnn_files/discrete",
+  "timestamp": "2026-06-18T07:59:02.180407",
+  "target_dir": "input/gnn_files/pomdp_gridworld",
   "output_dir": "output/23_report_output",
   "pipeline_output_dir": "output",
   "processing_status": "completed",
@@ -2449,7 +2712,7 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; backgrou
     "PIPELINE_REPORT.md"
   ],
   "report_count": 4,
-  "visualizations_discovered": 171,
+  "visualizations_discovered": 37,
   "html_reports_generated": 1,
   "html_validation_status": "valid",
   "html_validation_errors": [],
@@ -2463,13 +2726,13 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; backgrou
 <details>
   <summary>intelligent_analysis_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">24_intelligent_analysis_output · 443 bytes</span></summary>
   <div class="details-body"><pre>{
-  "timestamp": "2026-05-22T06:35:10.995632",
+  "timestamp": "2026-06-18T07:59:03.256644",
   "overall_status": "SUCCESS",
   "health_score": 85.0,
   "failure_count": 0,
   "red_flag_count": 0,
-  "yellow_flag_count": 7,
-  "bottleneck_count": 5,
+  "yellow_flag_count": 5,
+  "bottleneck_count": 2,
   "recommendation_count": 6,
   "recovery_plan_length": 0,
   "recovery_plan": [],
@@ -2478,54 +2741,54 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; backgrou
 }</pre></div>
 </details>
 <details>
-  <summary>analysis_data.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">24_intelligent_analysis_output · 12445 bytes</span></summary>
+  <summary>analysis_data.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">24_intelligent_analysis_output · 11701 bytes</span></summary>
   <div class="details-body"><pre>{
-  "timestamp": "2026-05-22T06:35:10.994756",
+  "timestamp": "2026-06-18T07:59:03.256203",
   "analysis": {
     "overall_status": "SUCCESS",
-    "total_duration": 1482.193771,
+    "total_duration": 481.421897,
     "step_count": 24,
     "failures": [],
     "warnings": [
       {
-        "step": "13_llm.py",
-        "message": "] llm - INFO - \ud83d\udce6 Cache: 0 hits, 175 misses, 175 new entries (0.0% hit ratio)\n2026-05-22 06:33:08,414 [70fc6d7a:13_llm] llm - INFO - \u2705 LLM processing completed successfully [step_number=None]\n2026-05-22 06:33:08,414 [70fc6d7a:13_llm] llm.providers.ollama_provider - INFO - Ollama provider closed\n2026-05-22 06:33:08,414 [70fc6d7a:13_llm] llm.providers.openai_provider - INFO - OpenAI provider connection closed\n2026-05-22 06:33:08,414 [70fc6d7a:13_llm] llm.llm_processor - INFO - LLM Processor closed\n"
+        "step": "15_audio.py",
+        "message": "ecute_output/pomdp_gridworld_3x3/activeinference_jl/execution_logs/POMDP GridWorld 3x3_activeinference.jl_results.json: [Errno 2] No such file or directory: '/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/12_execute_output/summaries/output/12_execute_output/pomdp_gridworld_3x3/activeinference_jl/execution_logs/POMDP GridWorld 3x3_activeinference.jl_results.json'\n2026-06-18 07:58:41,789 [2589e2ec:15_audio] audio - INFO - \u2705 Audio processing completed successfully [step_number=None]\n"
       },
       {
-        "step": "17_integration.py",
-        "message": "egration_output/integration_results/meta_analysis/meta_analysis_report.md\n2026-05-22 06:35:05,547 [4486b395:17_integration] integration - INFO - Meta-analysis: 80 records, 0 plots; validation=output/17_integration_output/integration_results/meta_analysis/sweep_validation.json; statistics=output/17_integration_output/integration_results/meta_analysis/meta_statistics.json\n2026-05-22 06:35:05,547 [4486b395:17_integration] integration - INFO - \u2705 Integration processing completed: 46 nodes, 96 edges\n\n"
+        "step": "16_analysis.py",
+        "message": "model_comparison_report.md\n2026-06-18 07:58:58,653 [2484f8dc:16_analysis] analysis - INFO - Generated cross-model comparison report: output/16_analysis_output/cross_model_comparison_report.md\n2026-06-18 07:58:58,659 [2484f8dc:16_analysis] analysis - INFO - Generated GridWorld analysis manifest: output/16_analysis_output/cross_framework/gridworld_analysis_manifest.json\n2026-06-18 07:58:58,660 [2484f8dc:16_analysis] analysis - INFO - \u2705 Analysis processing completed successfully [step_number=None]\n"
       },
       {
         "step": "22_gui.py",
-        "message": "26-05-22 06:35:08,109 [328d39eb:22_gui] gui.processor - INFO - \ud83d\udcca GU</pre></div>
+        "message": "026-06-18 07:59:02,001 [c90d184b:22_gui] gui.processor - INFO - \ud83d\udcca GUI processing su</pre></div>
 </details>
 <details>
-  <summary>test_execution_report.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">2_tests_output · 712 bytes</span></summary>
+  <summary>test_execution_report.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">2_tests_output · 710 bytes</span></summary>
   <div class="details-body"><pre>{
   "execution_summary": {
     "test_mode": "fast_pipeline",
-    "command": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python -m pytest --tb=short --maxfail=5 --durations=10 -ra --timeout 600 -q -m not slow --ignore=src/tests/llm/test_llm_ollama.py --ignore=src/tests/llm/test_llm_ollama_integration.py --ignore=src/tests/test_pipeline_performance.py --ignore=src/tests/test_pipeline_recovery.py --ignore=src/tests/test_report_integration.py src/tests/",
+    "command": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python -m pytest --tb=short --maxfail=5 --durations=10 -ra --timeout 600 -v -m not slow --ignore=src/tests/llm/test_llm_ollama.py --ignore=src/tests/llm/test_llm_ollama_integration.py --ignore=src/tests/test_pipeline_performance.py --ignore=src/tests/test_pipeline_recovery.py --ignore=src/tests/test_report_integration.py src/tests/",
     "exit_code": 0,
-    "tests_run": 2199,
-    "tests_passed": 2185,
+    "tests_run": 2406,
+    "tests_passed": 2385,
     "tests_failed": 0,
-    "tests_skipped": 14,
+    "tests_skipped": 21,
     "tests_errors": 0,
     "collection_errors": 0,
     "coverage": {},
-    "timestamp": "2026-05-22 06:16:00"
+    "timestamp": "2026-06-18 07:52:50"
   }
 }</pre></div>
 </details>
 <details>
-  <summary>gnn_processing_results.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">3_gnn_output · 16333 bytes</span></summary>
+  <summary>gnn_processing_results.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">3_gnn_output · 6671 bytes</span></summary>
   <div class="details-body"><pre>{
-  "timestamp": "2026-05-25T09:51:15.769572",
-  "source_directory": "input/gnn_files/continuous",
+  "timestamp": "2026-06-18T07:52:50.669353",
+  "source_directory": "input/gnn_files/pomdp_gridworld",
   "output_directory": "output/3_gnn_output",
   "processing_config": {
     "recursive": true,
-    "verbose": false,
+    "verbose": true,
     "serialize_preset": "full",
     "supported_formats": [
       "markdown",
@@ -2590,191 +2853,174 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; backgrou
       "python": "PythonSerializer",
       "bnf": "GrammarSerializer",
       "ebnf": "GrammarSerializer",
-      "isabelle":</pre></div>
+      "isabel</pre></div>
 </details>
 <details>
-  <summary>gnn_processing_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">3_gnn_output · 239 bytes</span></summary>
+  <summary>gnn_processing_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">3_gnn_output · 165 bytes</span></summary>
   <div class="details-body"><pre>{
-  "total_files": 3,
-  "successful_parses": 3,
+  "total_files": 1,
+  "successful_parses": 1,
   "failed_parses": 0,
-  "total_formats_generated": 66,
+  "total_formats_generated": 22,
   "formats_per_file": {
-    "predictive_coding_agent.md": 22,
-    "stochastic_dynamics.md": 22,
-    "continuous_navigation.md": 22
+    "pomdp_gridworld_3x3.md": 22
   }
 }</pre></div>
 </details>
 <details>
-  <summary>format_statistics.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">3_gnn_output · 1767 bytes</span></summary>
+  <summary>format_statistics.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">3_gnn_output · 1756 bytes</span></summary>
   <div class="details-body"><pre>{
   "markdown": {
-    "successful": 3,
+    "successful": 1,
     "failed": 0,
-    "total_size": 6087
+    "total_size": 4462
   },
   "scala": {
-    "successful": 3,
+    "successful": 1,
     "failed": 0,
-    "total_size": 19562
+    "total_size": 7698
   },
   "lean": {
-    "successful": 3,
+    "successful": 1,
     "failed": 0,
-    "total_size": 20720
+    "total_size": 7849
   },
   "coq": {
-    "successful": 3,
+    "successful": 1,
     "failed": 0,
-    "total_size": 19781
+    "total_size": 7629
   },
   "python": {
-    "successful": 3,
+    "successful": 1,
     "failed": 0,
-    "total_size": 33440
+    "total_size": 14055
   },
   "bnf": {
-    "successful": 3,
+    "successful": 1,
     "failed": 0,
-    "total_size": 20686
+    "total_size": 8028
   },
   "ebnf": {
-    "successful": 3,
+    "successful": 1,
     "failed": 0,
-    "total_size": 20686
+    "total_size": 8028
   },
   "isabelle": {
-    "successful": 3,
+    "successful": 1,
     "failed": 0,
-    "total_size": 19923
+    "total_size": 7666
   },
   "maxima": {
-    "successful": 3,
+    "successful": 1,
     "failed": 0,
-    "total_size": 21787
+    "total_size": 11271
   },
   "xml": {
-    "successful": 3,
+    "successful": 1,
     "failed": 0,
-    "total_size": 35205
+    "total_size": 14982
   },
   "json": {
-    "successful": 3,
+    "successful": 1,
     "failed": 0,
-    "total_size": 34291
+    "total_size": 19739
   },
   "protobuf": {
-    "successful": 3,
+    "successful": 1,
     "failed": 0,
-    "total_size": 26682
+    "total_size": 12652
   },
   "yaml": {
-    "successful": 3,
+    "successful": 1,
     "failed": 0,
-    "total_size": 20880
+    "total_size": 11616
   },
   "xsd": {
-    "successful": 3,
+    "successful": 1,
     "failed": 0,
-    "total_size": 22972
+    "total_size": 8575
   },
   "asn1": {
-    "successful": 3,
+    "successful": 1,
     "failed": 0,
-    "total_size": 29471
+    "total_size": 10190
   },
   "pkl": {
-    "successful": 3,
+    "successful": 1,
     "failed": 0,
-    "total_size": 46348
+    "total_size": 21234
   },
   "alloy": {
-    "successful": 3,
+    "successful": 1,
     "failed": 0,
-    "total_size": 31317
+    "total_size": 13463
   },
   "z_notation": {
-    "successful": 3,
+    "successful": 1,
     "failed": 0,
-    "total_size": 21879
+    "total_size": 8159
   },
   "tla_plus": {
-    "successful": 3,
+    "successful": 1,
     "failed": 0,
-    </pre></div>
+    "total_s</pre></div>
 </details>
 <details>
-  <summary>pymdp_scaling_N8_T100_parsed.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">3_gnn_output · 56342 bytes</span></summary>
+  <summary>pomdp_gridworld_3x3_parsed.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">3_gnn_output · 53163 bytes</span></summary>
   <div class="details-body"><pre>{
-  "model_name": "PyMDP Scaling N8 T100",
+  "model_name": "POMDP GridWorld 3x3",
   "version": "1.0",
-  "annotation": "PyMDP runtime scaling sweep with noisy observation and stochastic transitions.",
+  "annotation": "Discrete 3x3 GridWorld POMDP for strict cross-framework validation. The model has one hidden state factor with 9 grid cells, one observation modality with noisy cell observations, and one control factor with 5 boundary-clamped actions: up, down, left, right, and stay.",
   "variables": [
     {
       "node_type": "Variable",
       "source_location": null,
       "metadata": {},
-      "id": "b7ff3f64-acfb-40ef-8dae-3f13325ca438",
-      "name": "s",
-      "var_type": "hidden_state",
-      "dimensions": [
-        8,
-        1
-      ],
-      "data_type": "float",
-      "description": null,
-      "constraints": {}
-    },
-    {
-      "node_type": "Variable",
-      "source_location": null,
-      "metadata": {},
-      "id": "d895344d-41ed-4923-9f9e-9c962e28e8c0",
-      "name": "o",
-      "var_type": "observation",
-      "dimensions": [
-        8,
-        1
-      ],
-      "data_type": "integer",
-      "description": null,
-      "constraints": {}
-    },
-    {
-      "node_type": "Variable",
-      "source_location": null,
-      "metadata": {},
-      "id": "9d5623eb-6a96-48da-bb92-54568fa340b2",
+      "id": "597e7710-7d2c-4f22-8547-3fb17ae6534b",
       "name": "A",
       "var_type": "likelihood_matrix",
       "dimensions": [
-        8,
-        8
+        9,
+        9
       ],
       "data_type": "float",
-      "description": null,
+      "description": "Likelihood matrix: observations by hidden states",
       "constraints": {}
     },
     {
       "node_type": "Variable",
       "source_location": null,
       "metadata": {},
-      "id": "87bf688f-bf45-4818-bf59-4b2bc7fc36b8",
+      "id": "ab680f4f-ab7e-4e64-97c6-4a8d1332c647",
       "name": "B",
       "var_type": "transition_matrix",
       "dimensions": [
-        8,
-        8,
-        8
+        9,
+        9,
+        5
       ],
       "data_type": "float",
-      "description": null,</pre></div>
+      "description": "Transition tensor: next_state, previous_state, action",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "cc9b7014-3eee-41f4-9004-c81668e9df10",
+      "name": "C",
+      "var_type": "preference_vector",
+      "dimensions": [
+        9
+      ],
+      "data_type": "float",
+      "description": "Log-preferences over observations",
+      "constraints": {}</pre></div>
 </details>
 <details>
-  <summary>pymdp_scaling_N8_T100_json.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">3_gnn_output · 19619 bytes</span></summary>
+  <summary>pomdp_gridworld_3x3_json.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">3_gnn_output · 19739 bytes</span></summary>
   <div class="details-body"><pre>{
-  "annotation": "PyMDP runtime scaling sweep with noisy observation and stochastic transitions.",
+  "annotation": "Discrete 3x3 GridWorld POMDP for strict cross-framework validation. The model has one hidden state factor with 9 grid cells, one observation modality with noisy cell observations, and one control factor with 5 boundary-clamped actions: up, down, left, right, and stay.",
   "checksum": null,
   "connections": [
     {
@@ -2825,208 +3071,129 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; backgrou
       "connection_type": "directed",
       "description": null,
       "source_variables": [
-        "C"
-      ],
-      "target_variables": [
-        "G"
-      ],
-      "weight": null
-    },
-    {
-      "connection_type": "directed",
-      "description": null,
-      "source_variables": [
-        "G"
-      ],
-      "target_variables": [
-        "π"
-      ],
-      "weight": null
-    },
-    {
-      "connection_type": "directed",
-      "description": null,
-      "source_variables": [
-        "π"
+        "B"
       ],
       "target_variables": [
         "u"
       ],
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": null,
+      "source_variables": [
+        "u"
+      ],
+      "target_variables": [
+        "s_prime"
+      ],
       "weig</pre></div>
 </details>
 <details>
-  <summary>model_registry.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">4_model_registry_output · 6697 bytes</span></summary>
+  <summary>model_registry.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">4_model_registry_output · 2270 bytes</span></summary>
   <div class="details-body"><pre>{
   "version": "1.0.0",
-  "updated_at": "2026-05-22T06:17:19.473745",
+  "updated_at": "2026-06-18T07:52:50.770856",
   "models": {
-    "simple_mdp": {
-      "model_id": "simple_mdp",
-      "name": "GNN Example: Simple MDP (Fully Observable)",
+    "README": {
+      "model_id": "README",
+      "name": "POMDP GridWorld Fixtures",
+      "description": "Maintained 3x3 discrete GridWorld POMDP fixture for cross-framework validation.",
+      "created_at": "2026-06-18T07:52:50.770225",
+      "updated_at": "2026-06-18T07:52:50.770443",
+      "versions": {
+        "1.0.0": {
+          "version": "1.0.0",
+          "file_path": "input/gnn_files/pomdp_gridworld/README.md",
+          "created_at": "2026-06-18T07:52:50.770261",
+          "metadata": {},
+          "hash": "af8c150dbe41854de662367d21780ed179d4fe119c0bc633ff989b9fd8ec3c70"
+        }
+      },
+      "tags": [],
+      "metadata": {},
+      "current_version": "1.0.0"
+    },
+    "pomdp_gridworld_3x3": {
+      "model_id": "pomdp_gridworld_3x3",
+      "name": "GNN Example: POMDP GridWorld 3x3",
       "description": "ActInfPOMDP",
-      "created_at": "2026-05-22T06:17:19.473112",
-      "updated_at": "2026-05-22T06:17:19.473211",
+      "created_at": "2026-06-18T07:52:50.770535",
+      "updated_at": "2026-06-18T07:52:50.770569",
       "versions": {
         "1.0": {
           "version": "1.0",
-          "file_path": "input/gnn_files/discrete/simple_mdp.md",
-          "created_at": "2026-05-22T06:17:19.473136",
+          "file_path": "input/gnn_files/pomdp_gridworld/pomdp_gridworld_3x3.md",
+          "created_at": "2026-06-18T07:52:50.770538",
           "metadata": {},
-          "hash": "36ae32ba9404ca2f0ae5fc575cecb7d645c95088f04399d53fc2f947b6b0cb3c"
+          "hash": "a87cdc89163bcd1b612f902d21ad16f95e3d25c7ff59e3718fa0179b1bc4d302"
         }
       },
       "tags": [],
       "metadata": {},
       "current_version": "1.0"
     },
-    "multi_armed_bandit": {
-      "model_id": "multi_armed_bandit",
-      "name": "GNN Example: Multi-Armed Bandit",
-      "description": "ActInfPOMDP",
-      "created_at": "2026-05-22T06:17:19.473276",
-      "updated_at": "2026-05-22T06:17:19.473297",
-      "versions": {
-        "1.0": {
-          "version": "1.0",
-          "file_path": "input/gnn_files/discrete/multi_armed_bandit.md",
-          "created_at": "2026-05-22T06:17:19.473278",
-          "metadata": {},
-          "hash": "14590a5fb0c59081ee201da2fd8dc0951f6f146b736836633e1ba25deb5b8c1a"
-        }
-      },
-      "tags": [],
-      "metadata": {},
-      "current_version": "1.0"
-    },
-    "deep_planning_horizon": {
-      "model_id": "deep_planning_horizon",
-      "name": "GNN Example: Deep Planning Horizon</pre></div>
+    "AGENTS": {
+      "model_id": "AGENTS",
+      "name": "PO</pre></div>
 </details>
 <details>
-  <summary>type_check_results.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">5_type_checker_output · 34441 bytes</span></summary>
+  <summary>type_check_results.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">5_type_checker_output · 10837 bytes</span></summary>
   <div class="details-body"><pre>{
-  "timestamp": "2026-05-22T06:17:41.374834",
+  "timestamp": "2026-06-18T07:52:51.012481",
   "processed_files": 3,
   "success": true,
   "errors": [],
   "validation_results": [
     {
-      "file_path": "input/gnn_files/continuous/predictive_coding_agent.md",
-      "file_name": "predictive_coding_agent.md",
-      "valid": false,
-      "errors": [
-        "Duplicate variable names: parameters, level, error, precision, belief"
-      ],
+      "file_path": "input/gnn_files/pomdp_gridworld/README.md",
+      "file_name": "README.md",
+      "valid": true,
+      "errors": [],
+      "warnings": [],
+      "type_issues": [],
+      "validation_timestamp": "2026-06-18T07:52:51.012641",
+      "resource_estimation": {
+        "complexity_tier": "large",
+        "estimated_memory_bytes": 0,
+        "total_parameters": 36,
+        "variables": 0,
+        "connections": 21,
+        "flops_estimate": 5000.0,
+        "complexity_score": 10
+      }
+    },
+    {
+      "file_path": "input/gnn_files/pomdp_gridworld/pomdp_gridworld_3x3.md",
+      "file_name": "pomdp_gridworld_3x3.md",
+      "valid": true,
+      "errors": [],
       "warnings": [
-        "Type issue: Unknown type 'Predictive' for variable 'Example'",
         "Type issue: Unknown type '1' for variable 'Version'",
-        "Type issue: Unknown type 'sensory' for variable 'hierarchy'",
-        "Type issue: Unknown type 'predicts' for variable 'level'",
-        "Type issue: Unknown type 'predicts' for variable 'level'",
-        "Type issue: Unknown type 'mean' for variable 'belief'",
-        "Type issue: Unknown type 'o' for variable 'error'",
-        "Type issue: Unknown type 'mu_dot' for variable 'error'",
-        "Type issue: Unknown type 'o' for variable 'parameters'",
-        "Type issue: Unknown type 'mu_dot' for variable 'parameters'",
-        "Type issue: Unknown type 'confidence' for variable 'precision'",
-        "Type issue: Unknown type 'confidence' for variable 'precision'",
-        "Type issue: Unknown type 'centered' for variable 'belief'",
-        "Type issue: Unknown type 'moderate' for variable 'covariance'",
-        "Type issue: Unknown type 'high' for variable 'precision'",
-        "Type issue: Unknown type 'moderate' for variable '</pre></div>
+        "Type issue: Unknown type 'up' for variable 'actions'",
+        "Type issue: Unknown type 'observations' for variable 'matrix'",
+        "Type issue: Unknown type 'next_state' for variable 'tensor'",
+        "Type issue: Unknown type '9' for variable 'num_hidden_states'",
+        "Type issue: Unknown type '9' for variable 'num_obs'",
+        "Type issue: Unknown type '5' for variable 'num_actions'",
+        "Type issue: Unknown type '15' for variable 'num_timesteps'",
+        "Type issue: Unknown type '42' for variable 'random_seed'",
+        "Type issue: Unknown type 'next_state_prev</pre></div>
 </details>
 <details>
-  <summary>validation_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">6_validation_output · 1179 bytes</span></summary>
+  <summary>validation_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">6_validation_output · 319 bytes</span></summary>
   <div class="details-body"><pre>{
-  "total_files": 27,
-  "successful_validations": 27,
+  "total_files": 1,
+  "successful_validations": 1,
   "failed_validations": 0,
   "validation_scores": {
     "semantic": [
-      1.0,
-      1.0,
-      1.0,
-      1.0,
-      1.0,
-      1.0,
-      1.0,
-      1.0,
-      1.0,
-      1.0,
-      1.0,
-      1.0,
-      1.0,
-      1.0,
-      1.0,
-      1.0,
-      1.0,
-      1.0,
-      1.0,
-      1.0,
-      1.0,
-      1.0,
-      1.0,
-      1.0,
-      1.0,
-      1.0,
       1.0
     ],
     "performance": [
-      0.7,
-      0.7,
-      0.7,
-      0.7,
-      0.7,
-      0.7,
-      0.7,
-      0.7,
-      0.7,
-      0.7,
-      0.7,
-      0.7,
-      0.7,
-      0.7,
-      0.7,
-      0.7,
-      0.7,
-      0.7,
-      0.7,
-      0.7,
-      0.7,
-      0.7,
-      0.7,
-      0.7,
-      0.7,
-      0.7,
       0.7
     ],
     "consistency": [
-      1.0,
-      1.0,
-      1.0,
-      1.0,
-      1.0,
-      1.0,
-      1.0,
-      1.0,
-      1.0,
-      1.0,
-      1.0,
-      1.0,
-      1.0,
-      1.0,
-      1.0,
-      1.0,
-      1.0,
-      1.0,
-      1.0,
-      1.0,
-      1.0,
-      1.0,
-      1.0,
-      1.0,
-      1.0,
-      1.0,
       1.0
     ],
     "avg_semantic_score": 1.0,
@@ -3036,26 +3203,18 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; backgrou
 }</pre></div>
 </details>
 <details>
-  <summary>validation_results.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">6_validation_output · 47485 bytes</span></summary>
+  <summary>validation_results.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">6_validation_output · 2311 bytes</span></summary>
   <div class="details-body"><pre>{
-  "timestamp": "2026-05-22T06:17:42.679251",
-  "source_directory": "input/gnn_files/continuous",
+  "timestamp": "2026-06-18T07:52:51.682919",
+  "source_directory": "input/gnn_files/pomdp_gridworld",
   "source_directories": [
-    "input/gnn_files/basics",
-    "input/gnn_files/hierarchical",
-    "input/gnn_files/multiagent",
-    "input/gnn_files/pymdp_scaling_study",
-    "input/gnn_files/discrete",
-    "input/gnn_files/structured",
-    "input/gnn_files/pomdp_gridworld",
-    "input/gnn_files/precision",
-    "input/gnn_files/continuous"
+    "input/gnn_files/pomdp_gridworld"
   ],
   "output_directory": "output/6_validation_output",
   "files_validated": [
     {
-      "file_name": "predictive_coding_agent.md",
-      "file_path": "input/gnn_files/continuous/predictive_coding_agent.md",
+      "file_name": "pomdp_gridworld_3x3.md",
+      "file_path": "input/gnn_files/pomdp_gridworld/pomdp_gridworld_3x3.md",
       "validations": {
         "semantic": {
           "file_path": "unknown",
@@ -3082,289 +3241,184 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; backgrou
               "learning_operations": 0,
               "complexity_class": "O(1)",
               "bottleneck_block": null,
-              "bot</pre></div>
+              "bottleneck_operations": 0
+            },
+            "parallelization_potential": {
+              "parallelizable_blocks": 0,
+              "sequential_dependencies": 0,
+              "parallel_efficiency": 0.0,
+              "gpu_amenable": false,
+              "distributed_a</pre></div>
 </details>
 <details>
-  <summary>export_results.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">7_export_output · 3803 bytes</span></summary>
+  <summary>export_results.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">7_export_output · 1514 bytes</span></summary>
   <div class="details-body"><pre>{
-  "timestamp": "2026-05-22T06:17:42.791513",
-  "source_directory": "input/gnn_files/discrete",
+  "timestamp": "2026-06-18T07:52:51.771281",
+  "source_directory": "input/gnn_files/pomdp_gridworld",
   "output_directory": "output/7_export_output",
   "files_exported": [
     {
-      "file_name": "predictive_coding_agent.md",
-      "file_path": "input/gnn_files/continuous/predictive_coding_agent.md",
+      "file_name": "pomdp_gridworld_3x3.md",
+      "file_path": "input/gnn_files/pomdp_gridworld/pomdp_gridworld_3x3.md",
       "exports": {
         "json": {
           "success": true,
-          "export_file": "output/7_export_output/predictive_coding_agent/predictive_coding_agent_json.json",
-          "file_size": 29062
+          "export_file": "output/7_export_output/pomdp_gridworld_3x3/pomdp_gridworld_3x3_json.json",
+          "file_size": 53119
         },
         "xml": {
           "success": true,
-          "export_file": "output/7_export_output/predictive_coding_agent/predictive_coding_agent_xml.xml",
-          "file_size": 1380
+          "export_file": "output/7_export_output/pomdp_gridworld_3x3/pomdp_gridworld_3x3_xml.xml",
+          "file_size": 945
         },
         "graphml": {
           "success": true,
-          "export_file": "output/7_export_output/predictive_coding_agent/predictive_coding_agent_graphml.graphml",
-          "file_size": 2026
+          "export_file": "output/7_export_output/pomdp_gridworld_3x3/pomdp_gridworld_3x3_graphml.graphml",
+          "file_size": 1454
         },
         "gexf": {
           "success": true,
-          "export_file": "output/7_export_output/predictive_coding_agent/predictive_coding_agent_gexf.gexf",
-          "file_size": 1660
+          "export_file": "output/7_export_output/pomdp_gridworld_3x3/pomdp_gridworld_3x3_gexf.gexf",
+          "file_size": 1190
         },
         "pickle": {
           "success": true,
-          "export_file": "output/7_export_output/predictive_coding_agent/predictive_coding_agent_pickle.pkl",
-          "file_size": 15399
+          "export_file": "output/7_export_output/pomdp_gridworld_3x3/pomdp_gridworld_3x3_pickle.pkl",
+          "file_size": 27714
         }
       },
       "success": true
-    },
-    {
-      "file_name": "stochastic_dynamics.md",
-      "file_path": "input/gnn_files/continuous/stochastic_dynamics.md",
-      "exports": {
-        "json": {
-          </pre></div>
+    }
+  ],
+  "summary": {
+    "total_files": 1,
+    "successful_exports": 1,
+    "failed_exports": 0,
+    "formats_generated": {
+      "json": 1,
+      "xml": 1,
+      "graphml": 1,
+      "gexf": 1,
+      "pickle":</pre></div>
 </details>
 <details>
   <summary>export_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">7_export_output · 180 bytes</span></summary>
   <div class="details-body"><pre>{
-  "total_files": 3,
-  "successful_exports": 3,
+  "total_files": 1,
+  "successful_exports": 1,
   "failed_exports": 0,
   "formats_generated": {
-    "json": 3,
-    "xml": 3,
-    "graphml": 3,
-    "gexf": 3,
-    "pickle": 3
+    "json": 1,
+    "xml": 1,
+    "graphml": 1,
+    "gexf": 1,
+    "pickle": 1
   }
 }</pre></div>
 </details>
 <details>
-  <summary>predictive_coding_agent_json.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">7_export_output · 29062 bytes</span></summary>
+  <summary>pomdp_gridworld_3x3_json.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">7_export_output · 53119 bytes</span></summary>
   <div class="details-body"><pre>{
-  "model_name": "Predictive Coding Active Inference Agent",
+  "model_name": "POMDP GridWorld 3x3",
   "version": "1.0",
-  "annotation": "A continuous-state Active Inference agent implementing predictive coding:\n\n- Two-level predictive hierarchy: sensory predictions and dynamics predictions\n- Prediction errors drive belief updating via gradient descent on free energy\n- Precision-weighted prediction errors enable attentional modulation\n- Sensory level: predicts observations from hidden causes\n- Dynamics level: predicts state evolution from generative dynamics\n- Action minimizes expected free energy by changing sensory input\n- Uses generalized coordinates of motion (position, velocity, acceleration)\n- Demonstrates the core predictive processing framework underlying Active Inference",
+  "annotation": "Discrete 3x3 GridWorld POMDP for strict cross-framework validation. The model has one hidden state factor with 9 grid cells, one observation modality with noisy cell observations, and one control factor with 5 boundary-clamped actions: up, down, left, right, and stay.",
   "variables": [
     {
       "node_type": "Variable",
       "source_location": null,
       "metadata": {},
-      "id": "8e61fc83-854d-42bb-bc2c-eedc1f19185f",
-      "name": "mu",
-      "var_type": "hidden_state",
+      "id": "597e7710-7d2c-4f22-8547-3fb17ae6534b",
+      "name": "A",
+      "var_type": "likelihood_matrix",
       "dimensions": [
-        3,
-        1
+        9,
+        9
       ],
       "data_type": "float",
-      "description": "State belief: mean of hidden cause (3D)",
+      "description": "Likelihood matrix: observations by hidden states",
       "constraints": {}
     },
     {
       "node_type": "Variable",
       "source_location": null,
       "metadata": {},
-      "id": "7a50273e-c32a-4245-bd64-b68b36a44c4b",
-      "name": "mu_dot",
-      "var_type": "hidden_state",
+      "id": "ab680f4f-ab7e-4e64-97c6-4a8d1332c647",
+      "name": "B",
+      "var_type": "transition_matrix",
       "dimensions": [
-        3,
-        1
+        9,
+        9,
+        5
       ],
       "data_type": "float",
-      "description": "Velocity of hidden cause (first temporal deriva</pre></div>
+      "description": "Transition tensor: next_state, previous_state, action",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "cc9b7014-3eee-41f4-9004-c81668e9df10",
+      "name": "C",
+      "var_type": "preference_vector",
+      "dimensions": [
+        9
+      ],
+      "data_type": "float",
+      "description": "Log-preferences over observations",
+      "constraints": {}</pre></div>
 </details>
 <details>
-  <summary>stochastic_dynamics_json.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">7_export_output · 19248 bytes</span></summary>
+  <summary>visualization_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">8_visualization_output · 1798 bytes</span></summary>
   <div class="details-body"><pre>{
-  "model_name": "Stochastic Continuous Dynamics Agent",
-  "version": "1.0",
-  "annotation": "A continuous-state Active Inference agent whose dynamics include\nexplicit process and observation noise. This sample exercises the\ncontinuous-time path of the language: Time=Continuous, state as a\nmulti-dimensional vector, and Equations containing noise terms ε_state\nand ε_obs that downstream renderers must handle.\n\n- 4-dimensional continuous hidden state (e.g., position + velocity in 2D)\n- 2-dimensional continuous observation (noisy position readout)\n- Linear Gaussian dynamics: ẋ = Fx + Gu + ε_state\n- Linear Gaussian observation: o = Hx + ε_obs\n- Precision parameters γ_state (process) and γ_obs (observation)\n\nUsed to validate that downstream backends either generate SDE solvers\n(Stan via latent-variable sampling, NumPyro) or raise a clean\n\"unsupported feature\" warning (PyMDP, which is discrete-only).",
-  "variables": [
-    {
-      "node_type": "Variable",
-      "source_location": null,
-      "metadata": {},
-      "id": "60aadbd7-8101-48c6-9173-f2c2fb59c90c",
-      "name": "x",
-      "var_type": "hidden_state",
-      "dimensions": [
-        4,
-        1
-      ],
-      "data_type": "float",
-      "description": "Continuous hidden state vector",
-      "constraints": {}
-    },
-    {
-      "node_type": "Variable",
-      "source_location": null,
-      "metadata": {},
-      "id": "ab1e8d3c-7c74-4b8a-b93a-80fdeaccb0bc",
-      "name": "o",
-      "var_type": "observation",
-  </pre></div>
-</details>
-<details>
-  <summary>continuous_navigation_json.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">7_export_output · 30382 bytes</span></summary>
-  <div class="details-body"><pre>{
-  "model_name": "Continuous State Navigation Agent",
-  "version": "1.0",
-  "annotation": "A continuous-state Active Inference agent navigating a 2D environment:\n- Hidden states: 2D position (x, y) as Gaussian belief\n- Observations: noisy position measurements with Gaussian noise\n- Actions: 2D velocity commands (dx, dy)\n- Uses Laplace approximation for Gaussian belief updating\n- Generalized coordinates of motion for smooth trajectories",
-  "variables": [
-    {
-      "node_type": "Variable",
-      "source_location": null,
-      "metadata": {},
-      "id": "47f7321d-1a93-44ea-9992-f8901f5d78b9",
-      "name": "μ",
-      "var_type": "hidden_state",
-      "dimensions": [
-        2,
-        1
-      ],
-      "data_type": "float",
-      "description": "Mean of position belief (x, y)",
-      "constraints": {}
-    },
-    {
-      "node_type": "Variable",
-      "source_location": null,
-      "metadata": {},
-      "id": "f1ed32d4-36f2-4e04-a6b0-f5c1b7eb1ef6",
-      "name": "Σ",
-      "var_type": "hidden_state",
-      "dimensions": [
-        2,
-        2
-      ],
-      "data_type": "float",
-      "description": "Covariance of position belief",
-      "constraints": {}
-    },
-    {
-      "node_type": "Variable",
-      "source_location": null,
-      "metadata": {},
-      "id": "1e2c585d-c086-4298-99d6-244d6c555886",
-      "name": "μ_prime",
-      "var_type": "hidden_state",
-      "dimensions": [
-        2,
-        1
-      ],
-      "data_type": "float",
-      "description": "Next positi</pre></div>
-</details>
-<details>
-  <summary>visualization_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">8_visualization_output · 14583 bytes</span></summary>
-  <div class="details-body"><pre>{
-  "processed_files": 10,
-  "total_visualizations": 165,
+  "processed_files": 1,
+  "total_visualizations": 18,
   "visualization_files": [
-    "output/8_visualization_output/simple_mdp/simple_mdp_network_graph.png",
-    "output/8_visualization_output/simple_mdp/simple_mdp_network_stats.json",
-    "output/8_visualization_output/simple_mdp/simple_mdp_ontology_legend.txt",
     "True",
-    "output/8_visualization_output/simple_mdp/simple_mdp_variable_parameter_bipartite.png",
-    "output/8_visualization_output/simple_mdp/simple_mdp_A_heatmap.png",
-    "output/8_visualization_output/simple_mdp/simple_mdp_B_tensor.png",
-    "output/8_visualization_output/simple_mdp/simple_mdp_B_analysis.png",
-    "output/8_visualization_output/simple_mdp/simple_mdp_C_heatmap.png",
-    "output/8_visualization_output/simple_mdp/simple_mdp_D_heatmap.png",
-    "output/8_visualization_output/simple_mdp/simple_mdp_combined_analysis.png",
-    "output/8_visualization_output/simple_mdp/simple_mdp_matrix_size_distribution.png",
-    "output/8_visualization_output/simple_mdp/simple_mdp_section_content_length.png",
-    "output/8_visualization_output/simple_mdp/simple_mdp_variable_type_distribution.png",
-    "output/8_visualization_output/simple_mdp/simple_mdp_generative_model.png",
-    "output/8_visualization_output/simple_mdp/simple_mdp_viz_manifest.json",
-    "output/8_visualization_output/multi_armed_bandit/multi_armed_bandit_network_graph.png",
-    "output/8_visualization_output/multi_armed_bandit/multi_armed_bandit_network_stats.json",
-    "output/8_visualiza</pre></div>
+    "output/8_visualization_output/pomdp_gridworld_3x3/pomdp_gridworld_3x3_A_heatmap.png",
+    "output/8_visualization_output/pomdp_gridworld_3x3/pomdp_gridworld_3x3_B_analysis.png",
+    "output/8_visualization_output/pomdp_gridworld_3x3/pomdp_gridworld_3x3_B_tensor.png",
+    "output/8_visualization_output/pomdp_gridworld_3x3/pomdp_gridworld_3x3_B_threejs.html",
+    "output/8_visualization_output/pomdp_gridworld_3x3/pomdp_gridworld_3x3_C_heatmap.png",
+    "output/8_visualization_output/pomdp_gridworld_3x3/pomdp_gridworld_3x3_D_heatmap.png",
+    "output/8_visualization_output/pomdp_gridworld_3x3/pomdp_gridworld_3x3_E_heatmap.png",
+    "output/8_visualization_output/pomdp_gridworld_3x3/pomdp_gridworld_3x3_combined_analysis.png",
+    "output/8_visualization_output/pomdp_gridworld_3x3/pomdp_gridworld_3x3_generative_model.png",
+    "output/8_visualization_output/pomdp_gridworld_3x3/pomdp_gridworld_3x3_matrix_size_distribution.png",
+    "output/8_visualization_output/pomdp_gridworld_3x3/pomdp_gridworld_3x3_network_graph.png",
+    "output/8_visualization_output/pomdp_gridworld_3x3/pomdp_gridworld_3x3_network_stats.json",
+    "output/8_visualization_output/pomdp_gridworld_3x3/pomdp_gridworld_3x3_ontology_legend.txt",
+    "output/8_visualization_output/pomdp_gridworld_3x3/pomdp_gridworld_3x3_section_content_length.png",
+    "output/8_visualization_output/pomdp_gridworld_3x3/pomdp_gridworld_3</pre></div>
 </details>
 <details>
-  <summary>simple_mdp_viz_manifest.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">8_visualization_output · 1457 bytes</span></summary>
+  <summary>pomdp_gridworld_3x3_viz_manifest.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">8_visualization_output · 1920 bytes</span></summary>
   <div class="details-body"><pre>{
-  "model_name": "simple_mdp",
+  "model_name": "pomdp_gridworld_3x3",
   "viz_meta": {
     "source": "parsed_json",
-    "json_path": "output/3_gnn_output/simple_mdp/simple_mdp_parsed.json",
+    "json_path": "output/3_gnn_output/pomdp_gridworld_3x3/pomdp_gridworld_3x3_parsed.json",
     "json_stale": false
   },
-  "artifact_count": 15,
+  "artifact_count": 17,
   "artifacts": [
-    "output/8_visualization_output/simple_mdp/simple_mdp_network_graph.png",
-    "output/8_visualization_output/simple_mdp/simple_mdp_network_stats.json",
-    "output/8_visualization_output/simple_mdp/simple_mdp_ontology_legend.txt",
+    "output/8_visualization_output/pomdp_gridworld_3x3/pomdp_gridworld_3x3_network_graph.png",
+    "output/8_visualization_output/pomdp_gridworld_3x3/pomdp_gridworld_3x3_network_stats.json",
+    "output/8_visualization_output/pomdp_gridworld_3x3/pomdp_gridworld_3x3_ontology_legend.txt",
     "True",
-    "output/8_visualization_output/simple_mdp/simple_mdp_variable_parameter_bipartite.png",
-    "output/8_visualization_output/simple_mdp/simple_mdp_A_heatmap.png",
-    "output/8_visualization_output/simple_mdp/simple_mdp_B_tensor.png",
-    "output/8_visualization_output/simple_mdp/simple_mdp_B_analysis.png",
-    "output/8_visualization_output/simple_mdp/simple_mdp_C_heatmap.png",
-    "output/8_visualization_output/simple_mdp/simple_mdp_D_heatmap.png",
-    "output/8_visualization_output/simple_mdp/simple_mdp_combined_analysis.png",
-    "output/8_visualization_output/simple_mdp/simple_mdp_matrix_size_distribution.png",
-    "output/8_visualization_output/simple_mdp/simple_mdp_section_content_length.png",
-    "output/8_visualization_output/simple_mdp/simple_mdp_variable_type_distribution.png",
-    "output/8_visualization_output/simple_mdp/simple_mdp_generative_model.png"
-  ],
-  "variable_count": 11,
-  "connection_count": 10,
-  "parameter_count": 8,
-  "ontology_label_count": 11
-}</pre></div>
+    "output/8_visualization_output/pomdp_gridworld_3x3/pomdp_gridworld_3x3_variable_parameter_bipartite.png",
+    "output/8_visualization_output/pomdp_gridworld_3x3/pomdp_gridworld_3x3_A_heatmap.png",
+    "output/8_visualization_output/pomdp_gridworld_3x3/pomdp_gridworld_3x3_B_tensor.png",
+    "output/8_visualization_output/pomdp_gridworld_3x3/pomdp_gridworld_3x3_B_threejs.html",
+    "output/8_visualization_output/pomdp_gridworld_3x3/pomdp_gridworld_3x3_B_analysis.png",
+    "output/8_visualization_output/pomdp_gridworld_3x3/pomdp_gridworld_3x3_C_heatmap.png",
+    "output/8_visualization_output/pomdp_gridworld_3x3/pomdp_gridworld_3x3_D_heatmap.png",
+    "output/8_visualization_output/pomdp_gridworld_3x3/pomdp_gridworld_3x3_E_heatmap.png",
+    "output/8_visualization_output/pomdp_gridworld_3x3/pomdp_gridworld_3x3_combined_analysis.png",
+    "output/8_visualization_output/pomdp_gridworld_3x3/pomdp_gridworld_3x3_matrix_size_distribution.png",</pre></div>
 </details>
 <details>
-  <summary>simple_mdp_network_stats.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">8_visualization_output · 775 bytes</span></summary>
-  <div class="details-body"><pre>{
-  "total_variables": 11,
-  "total_connections": 10,
-  "variable_types": {
-    "likelihood_matrix": 1,
-    "transition_matrix": 1,
-    "preference_vector": 1,
-    "prior_vector": 1,
-    "hidden_state": 3,
-    "observation": 1,
-    "policy": 2,
-    "action": 1
-  },
-  "connection_types": {
-    "D-&gt;s": 1,
-    "s-&gt;A": 1,
-    "s-&gt;s_prime": 1,
-    "A-&gt;o": 1,
-    "s-&gt;B": 1,
-    "C-&gt;G": 1,
-    "G-&gt;\u03c0": 1,
-    "\u03c0-&gt;u": 1,
-    "B-&gt;u": 1,
-    "u-&gt;s_prime": 1
-  },
-  "gnn_edge_orientation": {
-    "directed_variable_pairs": 7,
-    "undirected_variable_pairs": 3
-  },
-  "network_properties": {
-    "num_nodes": 10,
-    "num_edges": 10,
-    "density": 0.1111111111111111,
-    "is_strongly_connected": false,
-    "is_weakly_connected": true,
-    "average_clustering": 0.0
-  }
-}</pre></div>
-</details>
-<details>
-  <summary>two_state_bistable_network_stats.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">8_visualization_output · 780 bytes</span></summary>
+  <summary>pomdp_gridworld_3x3_network_stats.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">8_visualization_output · 780 bytes</span></summary>
   <div class="details-body"><pre>{
   "total_variables": 12,
   "total_connections": 11,
@@ -3382,14 +3436,14 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; backgrou
     "D-&gt;s": 1,
     "s-&gt;A": 1,
     "A-&gt;o": 1,
-    "s-&gt;s_prime": 1,
     "s-&gt;B": 1,
+    "B-&gt;u": 1,
+    "u-&gt;s_prime": 1,
     "C-&gt;G": 1,
     "E-&gt;\u03c0": 1,
     "G-&gt;\u03c0": 1,
     "\u03c0-&gt;u": 1,
-    "B-&gt;u": 1,
-    "u-&gt;s_prime": 1
+    "s-&gt;s_prime": 1
   },
   "gnn_edge_orientation": {
     "directed_variable_pairs": 8,
@@ -3406,57 +3460,168 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; backgrou
 }</pre></div>
 </details>
 <details>
-  <summary>two_state_bistable_viz_manifest.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">8_visualization_output · 1794 bytes</span></summary>
+  <summary>pomdp_gridworld_3x3_B_threejs.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">8_visualization_output · 6742 bytes</span></summary>
   <div class="details-body"><pre>{
-  "model_name": "two_state_bistable",
-  "viz_meta": {
-    "source": "parsed_json",
-    "json_path": "output/3_gnn_output/two_state_bistable/two_state_bistable_parsed.json",
-    "json_stale": false
-  },
-  "artifact_count": 16,
-  "artifacts": [
-    "output/8_visualization_output/two_state_bistable/two_state_bistable_network_graph.png",
-    "output/8_visualization_output/two_state_bistable/two_state_bistable_network_stats.json",
-    "output/8_visualization_output/two_state_bistable/two_state_bistable_ontology_legend.txt",
-    "True",
-    "output/8_visualization_output/two_state_bistable/two_state_bistable_variable_parameter_bipartite.png",
-    "output/8_visualization_output/two_state_bistable/two_state_bistable_A_heatmap.png",
-    "output/8_visualization_output/two_state_bistable/two_state_bistable_B_tensor.png",
-    "output/8_visualization_output/two_state_bistable/two_state_bistable_B_analysis.png",
-    "output/8_visualization_output/two_state_bistable/two_state_bistable_C_heatmap.png",
-    "output/8_visualization_output/two_state_bistable/two_state_bistable_D_heatmap.png",
-    "output/8_visualization_output/two_state_bistable/two_state_bistable_E_heatmap.png",
-    "output/8_visualization_output/two_state_bistable/two_state_bistable_combined_analysis.png",
-    "output/8_visualization_output/two_state_bistable/two_state_bistable_matrix_size_distribution.png",
-    "output/8_visualization_output/two_state_bistable/two_state_bistable_section_content_length.png",
-    "output/8_vi</pre></div>
+  "name": "B",
+  "shape": [
+    9,
+    9,
+    5
+  ],
+  "values": [
+    [
+      [
+        1.0,
+        0.0,
+        1.0,
+        0.0,
+        1.0
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    ],
+    [
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0
+      ],
+      [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+  </pre></div>
 </details>
 <details>
-  <summary>advanced_viz_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">9_advanced_viz_output · 14528 bytes</span></summary>
+  <summary>advanced_viz_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">9_advanced_viz_output · 5537 bytes</span></summary>
   <div class="details-body"><pre>{
-  "timestamp": "2026-05-22T06:18:14.714377",
-  "total_attempts": 28,
-  "successful": 25,
+  "timestamp": "2026-06-18T07:53:04.654900",
+  "total_attempts": 10,
+  "successful": 10,
   "failed": 0,
-  "skipped": 3,
+  "skipped": 0,
   "total_duration_ms": 0.0,
   "output_files": [
-    "output/9_advanced_viz_output/predictive_coding_agent_3d_visualization.png",
-    "output/9_advanced_viz_output/predictive_coding_agent_statistical_analysis.png",
-    "output/9_advanced_viz_output/predictive_coding_agent_matrix_correlations.png",
-    "output/9_advanced_viz_output/predictive_coding_agent_policy_visualization.png",
-    "output/9_advanced_viz_output/predictive_coding_agent_interactive_dashboard.html",
-    "output/9_advanced_viz_output/predictive_coding_agent_interactive_dashboard.html",
-    "output/9_advanced_viz_output/predictive_coding_agent_network_metrics.png",
-    "output/9_advanced_viz_output/d2_diagrams/Predictive Coding Active Inference Agent/predictive_coding_active_inference_agent_structure.svg",
-    "output/9_advanced_viz_output/d2_diagrams/Predictive Coding Active Inference Agent/predictive_coding_active_inference_agent_structure.png",
-    "output/9_advanced_viz_output/stochastic_dynamics_3d_visualization.png",
-    "output/9_advanced_viz_output/stochastic_dynamics_statistical_analysis.png",
-    "output/9_advanced_viz_output/stochastic_dynamics_matrix_correlations.png",
-    "output/9_advanced_viz_output/stochastic_dynamics_policy_visualization.png",
-    "output/9_advanced_viz_output/stochastic_dynamics_interactive_dashboard.html",
-    "output/9_advanced_viz_output/stochastic_dynami</pre></div>
+    "output/9_advanced_viz_output/pomdp_gridworld_3x3_3d_visualization.png",
+    "output/9_advanced_viz_output/pomdp_gridworld_3x3_statistical_analysis.png",
+    "output/9_advanced_viz_output/pomdp_gridworld_3x3_matrix_correlations.png",
+    "output/9_advanced_viz_output/pomdp_gridworld_3x3_pomdp_transitions.png",
+    "output/9_advanced_viz_output/pomdp_gridworld_3x3_policy_visualization.png",
+    "output/9_advanced_viz_output/pomdp_gridworld_3x3_interactive_dashboard.html",
+    "output/9_advanced_viz_output/pomdp_gridworld_3x3_interactive_dashboard.html",
+    "output/9_advanced_viz_output/pomdp_gridworld_3x3_network_metrics.png",
+    "output/9_advanced_viz_output/d2_diagrams/POMDP GridWorld 3x3/pomdp_gridworld_3x3_structure.svg",
+    "output/9_advanced_viz_output/d2_diagrams/POMDP GridWorld 3x3/pomdp_gridworld_3x3_structure.png",
+    "output/9_advanced_viz_output/d2_diagrams/pipeline/gnn_pipeline_flow.svg",
+    "output/9_advanced_viz_output/d2_diagrams/pipeline/gnn_pipeline_flow.png",
+    "output/9_advanced_viz_output/d2_diagrams/pipeline/framework_integration.svg",
+    "output/9_advanced_viz_output/d2_diagrams/pipeline/framework_integration.png",
+    "output/9_advanced_viz_output/d2_diagrams/pipeline/active_inference_concepts.svg",
+    "output/9_advanced_viz_output/d2_diagrams/pipeline/active_inference_conc</pre></div>
 </details></div>
   </main>
 </body>

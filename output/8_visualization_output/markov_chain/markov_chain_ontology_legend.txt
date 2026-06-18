@@ -1,8 +1,0 @@
-variable	ontology_term
-A	EmissionMatrix
-B	TransitionMatrix
-D	InitialStateDistribution
-o	Observation
-s	HiddenState
-s_prime	NextHiddenState
-t	Time

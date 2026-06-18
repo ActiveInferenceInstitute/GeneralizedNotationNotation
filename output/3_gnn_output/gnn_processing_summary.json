@@ -1,10 +1,9 @@
 {
-  "total_files": 2,
-  "successful_parses": 2,
+  "total_files": 1,
+  "successful_parses": 1,
   "failed_parses": 0,
-  "total_formats_generated": 44,
+  "total_formats_generated": 22,
   "formats_per_file": {
-    "stigmergic_swarm.md": 22,
-    "multi_agent_coordination.md": 22
+    "pomdp_gridworld_3x3.md": 22
   }
 }

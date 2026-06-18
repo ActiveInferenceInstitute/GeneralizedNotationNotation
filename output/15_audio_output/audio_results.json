@@ -1,205 +1,72 @@
 {
-  "timestamp": "2026-05-22T06:33:09.905516",
-  "processed_files": 10,
+  "timestamp": "2026-06-18T07:58:41.601125",
+  "processed_files": 3,
   "success": true,
   "errors": [],
   "audio_files_generated": [
     {
-      "file_path": "input/gnn_files/discrete/simple_mdp.md",
-      "file_name": "simple_mdp.md",
+      "file_path": "input/gnn_files/pomdp_gridworld/README.md",
+      "file_name": "README.md",
       "audio_files": {
-        "tonal": "output/15_audio_output/simple_mdp_tonal.wav",
-        "rhythmic": "output/15_audio_output/simple_mdp_rhythmic.wav",
-        "ambient": "output/15_audio_output/simple_mdp_ambient.wav"
+        "tonal": "output/15_audio_output/README_tonal.wav",
+        "rhythmic": "output/15_audio_output/README_rhythmic.wav",
+        "ambient": "output/15_audio_output/README_ambient.wav"
       },
-      "variables_count": 67,
+      "variables_count": 1,
       "connections_count": 0,
-      "generation_timestamp": "2026-05-22T06:33:10.045918"
+      "generation_timestamp": "2026-06-18T07:58:41.617169"
     },
     {
-      "file_path": "input/gnn_files/discrete/multi_armed_bandit.md",
-      "file_name": "multi_armed_bandit.md",
+      "file_path": "input/gnn_files/pomdp_gridworld/pomdp_gridworld_3x3.md",
+      "file_name": "pomdp_gridworld_3x3.md",
       "audio_files": {
-        "tonal": "output/15_audio_output/multi_armed_bandit_tonal.wav",
-        "rhythmic": "output/15_audio_output/multi_armed_bandit_rhythmic.wav",
-        "ambient": "output/15_audio_output/multi_armed_bandit_ambient.wav"
+        "tonal": "output/15_audio_output/pomdp_gridworld_3x3_tonal.wav",
+        "rhythmic": "output/15_audio_output/pomdp_gridworld_3x3_rhythmic.wav",
+        "ambient": "output/15_audio_output/pomdp_gridworld_3x3_ambient.wav"
       },
-      "variables_count": 60,
-      "connections_count": 2,
-      "generation_timestamp": "2026-05-22T06:33:10.179119"
+      "variables_count": 58,
+      "connections_count": 0,
+      "generation_timestamp": "2026-06-18T07:58:41.755002"
     },
     {
-      "file_path": "input/gnn_files/discrete/deep_planning_horizon.md",
-      "file_name": "deep_planning_horizon.md",
+      "file_path": "input/gnn_files/pomdp_gridworld/AGENTS.md",
+      "file_name": "AGENTS.md",
       "audio_files": {
-        "tonal": "output/15_audio_output/deep_planning_horizon_tonal.wav",
-        "rhythmic": "output/15_audio_output/deep_planning_horizon_rhythmic.wav",
-        "ambient": "output/15_audio_output/deep_planning_horizon_ambient.wav"
+        "tonal": "output/15_audio_output/AGENTS_tonal.wav",
+        "rhythmic": "output/15_audio_output/AGENTS_rhythmic.wav",
+        "ambient": "output/15_audio_output/AGENTS_ambient.wav"
       },
-      "variables_count": 83,
+      "variables_count": 2,
       "connections_count": 0,
-      "generation_timestamp": "2026-05-22T06:33:10.361217"
-    },
-    {
-      "file_path": "input/gnn_files/discrete/actinf_pomdp_agent.md",
-      "file_name": "actinf_pomdp_agent.md",
-      "audio_files": {
-        "tonal": "output/15_audio_output/actinf_pomdp_agent_tonal.wav",
-        "rhythmic": "output/15_audio_output/actinf_pomdp_agent_rhythmic.wav",
-        "ambient": "output/15_audio_output/actinf_pomdp_agent_ambient.wav"
-      },
-      "variables_count": 73,
-      "connections_count": 0,
-      "generation_timestamp": "2026-05-22T06:33:10.511630"
-    },
-    {
-      "file_path": "input/gnn_files/discrete/hmm_baseline.md",
-      "file_name": "hmm_baseline.md",
-      "audio_files": {
-        "tonal": "output/15_audio_output/hmm_baseline_tonal.wav",
-        "rhythmic": "output/15_audio_output/hmm_baseline_rhythmic.wav",
-        "ambient": "output/15_audio_output/hmm_baseline_ambient.wav"
-      },
-      "variables_count": 49,
-      "connections_count": 0,
-      "generation_timestamp": "2026-05-22T06:33:10.617762"
-    },
-    {
-      "file_path": "input/gnn_files/discrete/bnlearn_causal_model.md",
-      "file_name": "bnlearn_causal_model.md",
-      "audio_files": {
-        "tonal": "output/15_audio_output/bnlearn_causal_model_tonal.wav",
-        "rhythmic": "output/15_audio_output/bnlearn_causal_model_rhythmic.wav",
-        "ambient": "output/15_audio_output/bnlearn_causal_model_ambient.wav"
-      },
-      "variables_count": 37,
-      "connections_count": 0,
-      "generation_timestamp": "2026-05-22T06:33:10.695011"
-    },
-    {
-      "file_path": "input/gnn_files/discrete/time_varying_dynamics.md",
-      "file_name": "time_varying_dynamics.md",
-      "audio_files": {
-        "tonal": "output/15_audio_output/time_varying_dynamics_tonal.wav",
-        "rhythmic": "output/15_audio_output/time_varying_dynamics_rhythmic.wav",
-        "ambient": "output/15_audio_output/time_varying_dynamics_ambient.wav"
-      },
-      "variables_count": 42,
-      "connections_count": 0,
-      "generation_timestamp": "2026-05-22T06:33:10.781470"
-    },
-    {
-      "file_path": "input/gnn_files/discrete/two_state_bistable.md",
-      "file_name": "two_state_bistable.md",
-      "audio_files": {
-        "tonal": "output/15_audio_output/two_state_bistable_tonal.wav",
-        "rhythmic": "output/15_audio_output/two_state_bistable_rhythmic.wav",
-        "ambient": "output/15_audio_output/two_state_bistable_ambient.wav"
-      },
-      "variables_count": 69,
-      "connections_count": 0,
-      "generation_timestamp": "2026-05-22T06:33:10.928586"
-    },
-    {
-      "file_path": "input/gnn_files/discrete/markov_chain.md",
-      "file_name": "markov_chain.md",
-      "audio_files": {
-        "tonal": "output/15_audio_output/markov_chain_tonal.wav",
-        "rhythmic": "output/15_audio_output/markov_chain_rhythmic.wav",
-        "ambient": "output/15_audio_output/markov_chain_ambient.wav"
-      },
-      "variables_count": 46,
-      "connections_count": 0,
-      "generation_timestamp": "2026-05-22T06:33:11.029802"
-    },
-    {
-      "file_path": "input/gnn_files/discrete/tmaze_epistemic.md",
-      "file_name": "tmaze_epistemic.md",
-      "audio_files": {
-        "tonal": "output/15_audio_output/tmaze_epistemic_tonal.wav",
-        "rhythmic": "output/15_audio_output/tmaze_epistemic_rhythmic.wav",
-        "ambient": "output/15_audio_output/tmaze_epistemic_ambient.wav"
-      },
-      "variables_count": 116,
-      "connections_count": 0,
-      "generation_timestamp": "2026-05-22T06:33:11.287307"
+      "generation_timestamp": "2026-06-18T07:58:41.775291"
     }
   ],
   "sonification_results": [
     {
-      "file_path": "input/gnn_files/discrete/simple_mdp.md",
-      "sonification_file": "output/15_audio_output/simple_mdp_sonification.wav",
-      "dynamics_analyzed": 1,
-      "sonification_type": "model_dynamics",
-      "generation_timestamp": "2026-05-22T06:33:10.050912"
-    },
-    {
-      "file_path": "input/gnn_files/discrete/multi_armed_bandit.md",
-      "sonification_file": "output/15_audio_output/multi_armed_bandit_sonification.wav",
-      "dynamics_analyzed": 2,
-      "sonification_type": "model_dynamics",
-      "generation_timestamp": "2026-05-22T06:33:10.186534"
-    },
-    {
-      "file_path": "input/gnn_files/discrete/deep_planning_horizon.md",
-      "sonification_file": "output/15_audio_output/deep_planning_horizon_sonification.wav",
+      "file_path": "input/gnn_files/pomdp_gridworld/README.md",
+      "sonification_file": "output/15_audio_output/README_sonification.wav",
       "dynamics_analyzed": 0,
       "sonification_type": "model_dynamics",
-      "generation_timestamp": "2026-05-22T06:33:10.363118"
+      "generation_timestamp": "2026-06-18T07:58:41.622402"
     },
     {
-      "file_path": "input/gnn_files/discrete/actinf_pomdp_agent.md",
-      "sonification_file": "output/15_audio_output/actinf_pomdp_agent_sonification.wav",
-      "dynamics_analyzed": 1,
-      "sonification_type": "model_dynamics",
-      "generation_timestamp": "2026-05-22T06:33:10.517336"
-    },
-    {
-      "file_path": "input/gnn_files/discrete/hmm_baseline.md",
-      "sonification_file": "output/15_audio_output/hmm_baseline_sonification.wav",
+      "file_path": "input/gnn_files/pomdp_gridworld/pomdp_gridworld_3x3.md",
+      "sonification_file": "output/15_audio_output/pomdp_gridworld_3x3_sonification.wav",
       "dynamics_analyzed": 0,
       "sonification_type": "model_dynamics",
-      "generation_timestamp": "2026-05-22T06:33:10.619205"
+      "generation_timestamp": "2026-06-18T07:58:41.759465"
     },
     {
-      "file_path": "input/gnn_files/discrete/bnlearn_causal_model.md",
-      "sonification_file": "output/15_audio_output/bnlearn_causal_model_sonification.wav",
+      "file_path": "input/gnn_files/pomdp_gridworld/AGENTS.md",
+      "sonification_file": "output/15_audio_output/AGENTS_sonification.wav",
       "dynamics_analyzed": 0,
       "sonification_type": "model_dynamics",
-      "generation_timestamp": "2026-05-22T06:33:10.696407"
-    },
-    {
-      "file_path": "input/gnn_files/discrete/time_varying_dynamics.md",
-      "sonification_file": "output/15_audio_output/time_varying_dynamics_sonification.wav",
-      "dynamics_analyzed": 2,
-      "sonification_type": "model_dynamics",
-      "generation_timestamp": "2026-05-22T06:33:10.789276"
-    },
-    {
-      "file_path": "input/gnn_files/discrete/two_state_bistable.md",
-      "sonification_file": "output/15_audio_output/two_state_bistable_sonification.wav",
-      "dynamics_analyzed": 2,
-      "sonification_type": "model_dynamics",
-      "generation_timestamp": "2026-05-22T06:33:10.936009"
-    },
-    {
-      "file_path": "input/gnn_files/discrete/markov_chain.md",
-      "sonification_file": "output/15_audio_output/markov_chain_sonification.wav",
-      "dynamics_analyzed": 2,
-      "sonification_type": "model_dynamics",
-      "generation_timestamp": "2026-05-22T06:33:11.037831"
-    },
-    {
-      "file_path": "input/gnn_files/discrete/tmaze_epistemic.md",
-      "sonification_file": "output/15_audio_output/tmaze_epistemic_sonification.wav",
-      "dynamics_analyzed": 2,
-      "sonification_type": "model_dynamics",
-      "generation_timestamp": "2026-05-22T06:33:11.295553"
+      "generation_timestamp": "2026-06-18T07:58:41.780545"
     }
   ],
   "audio_analysis": [
     {
-      "file_path": "input/gnn_files/discrete/simple_mdp.md",
+      "file_path": "input/gnn_files/pomdp_gridworld/README.md",
       "audio_characteristics": {
         "tonal": {
           "error": "No module named 'soundfile'"
@@ -215,7 +82,7 @@
       "temporal_analysis": {}
     },
     {
-      "file_path": "input/gnn_files/discrete/multi_armed_bandit.md",
+      "file_path": "input/gnn_files/pomdp_gridworld/pomdp_gridworld_3x3.md",
       "audio_characteristics": {
         "tonal": {
           "error": "No module named 'soundfile'"
@@ -231,119 +98,7 @@
       "temporal_analysis": {}
     },
     {
-      "file_path": "input/gnn_files/discrete/deep_planning_horizon.md",
-      "audio_characteristics": {
-        "tonal": {
-          "error": "No module named 'soundfile'"
-        },
-        "rhythmic": {
-          "error": "No module named 'soundfile'"
-        },
-        "ambient": {
-          "error": "No module named 'soundfile'"
-        }
-      },
-      "spectral_analysis": {},
-      "temporal_analysis": {}
-    },
-    {
-      "file_path": "input/gnn_files/discrete/actinf_pomdp_agent.md",
-      "audio_characteristics": {
-        "tonal": {
-          "error": "No module named 'soundfile'"
-        },
-        "rhythmic": {
-          "error": "No module named 'soundfile'"
-        },
-        "ambient": {
-          "error": "No module named 'soundfile'"
-        }
-      },
-      "spectral_analysis": {},
-      "temporal_analysis": {}
-    },
-    {
-      "file_path": "input/gnn_files/discrete/hmm_baseline.md",
-      "audio_characteristics": {
-        "tonal": {
-          "error": "No module named 'soundfile'"
-        },
-        "rhythmic": {
-          "error": "No module named 'soundfile'"
-        },
-        "ambient": {
-          "error": "No module named 'soundfile'"
-        }
-      },
-      "spectral_analysis": {},
-      "temporal_analysis": {}
-    },
-    {
-      "file_path": "input/gnn_files/discrete/bnlearn_causal_model.md",
-      "audio_characteristics": {
-        "tonal": {
-          "error": "No module named 'soundfile'"
-        },
-        "rhythmic": {
-          "error": "No module named 'soundfile'"
-        },
-        "ambient": {
-          "error": "No module named 'soundfile'"
-        }
-      },
-      "spectral_analysis": {},
-      "temporal_analysis": {}
-    },
-    {
-      "file_path": "input/gnn_files/discrete/time_varying_dynamics.md",
-      "audio_characteristics": {
-        "tonal": {
-          "error": "No module named 'soundfile'"
-        },
-        "rhythmic": {
-          "error": "No module named 'soundfile'"
-        },
-        "ambient": {
-          "error": "No module named 'soundfile'"
-        }
-      },
-      "spectral_analysis": {},
-      "temporal_analysis": {}
-    },
-    {
-      "file_path": "input/gnn_files/discrete/two_state_bistable.md",
-      "audio_characteristics": {
-        "tonal": {
-          "error": "No module named 'soundfile'"
-        },
-        "rhythmic": {
-          "error": "No module named 'soundfile'"
-        },
-        "ambient": {
-          "error": "No module named 'soundfile'"
-        }
-      },
-      "spectral_analysis": {},
-      "temporal_analysis": {}
-    },
-    {
-      "file_path": "input/gnn_files/discrete/markov_chain.md",
-      "audio_characteristics": {
-        "tonal": {
-          "error": "No module named 'soundfile'"
-        },
-        "rhythmic": {
-          "error": "No module named 'soundfile'"
-        },
-        "ambient": {
-          "error": "No module named 'soundfile'"
-        }
-      },
-      "spectral_analysis": {},
-      "temporal_analysis": {}
-    },
-    {
-      "file_path": "input/gnn_files/discrete/tmaze_epistemic.md",
+      "file_path": "input/gnn_files/pomdp_gridworld/AGENTS.md",
       "audio_characteristics": {
         "tonal": {
           "error": "No module named 'soundfile'"
@@ -358,5 +113,84 @@
       "spectral_analysis": {},
       "temporal_analysis": {}
     }
-  ]
+  ],
+  "audio_streaming": {
+    "schema": "gnn_audio_stream_chunks_v1",
+    "status": "ready",
+    "streaming_safe": true,
+    "frame_count": 150,
+    "duration_frames": 150,
+    "chunk_count": 5,
+    "chunks": [
+      {
+        "index": 0,
+        "frame_start": 0,
+        "frame_count": 32,
+        "amplitude": 1.0,
+        "frequency_hz": 290.47751697829847,
+        "metadata": {
+          "mean_free_energy": 2.349250565943282,
+          "last_action": 0
+        }
+      },
+      {
+        "index": 1,
+        "frame_start": 32,
+        "frame_count": 32,
+        "amplitude": 1.0,
+        "frequency_hz": 280.0,
+        "metadata": {
+          "mean_free_energy": 0.0,
+          "last_action": 4
+        }
+      },
+      {
+        "index": 2,
+        "frame_start": 64,
+        "frame_count": 32,
+        "amplitude": 1.0,
+        "frequency_hz": 235.0,
+        "metadata": {
+          "mean_free_energy": 0.0,
+          "last_action": 1
+        }
+      },
+      {
+        "index": 3,
+        "frame_start": 96,
+        "frame_count": 32,
+        "amplitude": 1.0,
+        "frequency_hz": 328.9611387032651,
+        "metadata": {
+          "mean_free_energy": 2.1320379567755032,
+          "last_action": 3
+        }
+      },
+      {
+        "index": 4,
+        "frame_start": 128,
+        "frame_count": 22,
+        "amplitude": 1.0,
+        "frequency_hz": 298.58567492836687,
+        "metadata": {
+          "mean_free_energy": 2.1195224976122287,
+          "last_action": 1
+        }
+      }
+    ],
+    "telemetry_source_count": 11,
+    "telemetry_provenance": [
+      "output/12_execute_output/pomdp_gridworld_3x3/activeinference_jl/execution_logs/POMDP GridWorld 3x3_activeinference.jl_results.json",
+      "output/12_execute_output/pomdp_gridworld_3x3/activeinference_jl/simulation_data/simulation_results.json",
+      "output/12_execute_output/pomdp_gridworld_3x3/discopy/execution_logs/POMDP GridWorld 3x3_discopy.py_results.json",
+      "output/12_execute_output/pomdp_gridworld_3x3/jax/execution_logs/POMDP GridWorld 3x3_jax.py_results.json",
+      "output/12_execute_output/pomdp_gridworld_3x3/jax/simulation_data/simulation_results.json",
+      "output/12_execute_output/pomdp_gridworld_3x3/numpyro/execution_logs/POMDP GridWorld 3x3_numpyro.py_results.json",
+      "output/12_execute_output/pomdp_gridworld_3x3/numpyro/simulation_data/simulation_results.json",
+      "output/12_execute_output/pomdp_gridworld_3x3/pymdp/execution_logs/POMDP GridWorld 3x3_pymdp.py_results.json",
+      "output/12_execute_output/pomdp_gridworld_3x3/pymdp/simulation_data/simulation_results.json",
+      "output/12_execute_output/pomdp_gridworld_3x3/rxinfer/execution_logs/POMDP GridWorld 3x3_rxinfer.jl_results.json",
+      "output/12_execute_output/pomdp_gridworld_3x3/rxinfer/simulation_data/simulation_results.json"
+    ]
+  }
 }

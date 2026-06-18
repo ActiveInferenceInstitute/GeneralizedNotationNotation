@@ -24,3 +24,9 @@ This directory contains the maintained GridWorld POMDP fixture used to verify th
 ```bash
 uv run python src/main.py --only-steps "3,5,8,11,12,16" --target-dir input/gnn_files/pomdp_gridworld --frameworks "pymdp,rxinfer,activeinference_jl" --verbose
 ```
+
+For public root-output refreshes, replace `output/` with a fresh full-pipeline
+run over `pomdp_gridworld_3x3.md` using `--frameworks all`, then run
+`uv run --extra dev python scripts/check_pomdp_gridworld_outputs.py output`
+before staging generated artifacts. The checker is the publication gate for
+parse, render, execute, analysis, report, website, and summary handoffs.

@@ -1,0 +1,32 @@
+{
+  "model_name": "pomdp_gridworld_3x3",
+  "viz_meta": {
+    "source": "parsed_json",
+    "json_path": "output/3_gnn_output/pomdp_gridworld_3x3/pomdp_gridworld_3x3_parsed.json",
+    "json_stale": false
+  },
+  "artifact_count": 17,
+  "artifacts": [
+    "output/8_visualization_output/pomdp_gridworld_3x3/pomdp_gridworld_3x3_network_graph.png",
+    "output/8_visualization_output/pomdp_gridworld_3x3/pomdp_gridworld_3x3_network_stats.json",
+    "output/8_visualization_output/pomdp_gridworld_3x3/pomdp_gridworld_3x3_ontology_legend.txt",
+    "True",
+    "output/8_visualization_output/pomdp_gridworld_3x3/pomdp_gridworld_3x3_variable_parameter_bipartite.png",
+    "output/8_visualization_output/pomdp_gridworld_3x3/pomdp_gridworld_3x3_A_heatmap.png",
+    "output/8_visualization_output/pomdp_gridworld_3x3/pomdp_gridworld_3x3_B_tensor.png",
+    "output/8_visualization_output/pomdp_gridworld_3x3/pomdp_gridworld_3x3_B_threejs.html",
+    "output/8_visualization_output/pomdp_gridworld_3x3/pomdp_gridworld_3x3_B_analysis.png",
+    "output/8_visualization_output/pomdp_gridworld_3x3/pomdp_gridworld_3x3_C_heatmap.png",
+    "output/8_visualization_output/pomdp_gridworld_3x3/pomdp_gridworld_3x3_D_heatmap.png",
+    "output/8_visualization_output/pomdp_gridworld_3x3/pomdp_gridworld_3x3_E_heatmap.png",
+    "output/8_visualization_output/pomdp_gridworld_3x3/pomdp_gridworld_3x3_combined_analysis.png",
+    "output/8_visualization_output/pomdp_gridworld_3x3/pomdp_gridworld_3x3_matrix_size_distribution.png",
+    "output/8_visualization_output/pomdp_gridworld_3x3/pomdp_gridworld_3x3_section_content_length.png",
+    "output/8_visualization_output/pomdp_gridworld_3x3/pomdp_gridworld_3x3_variable_type_distribution.png",
+    "output/8_visualization_output/pomdp_gridworld_3x3/pomdp_gridworld_3x3_generative_model.png"
+  ],
+  "variable_count": 12,
+  "connection_count": 11,
+  "parameter_count": 15,
+  "ontology_label_count": 12
+}

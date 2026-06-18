@@ -1,0 +1,28 @@
+{
+  "model_name": "POMDP GridWorld 3x3",
+  "timestamp": "2026-06-18 07:53:05",
+  "parameters": {
+    "num_states": 9,
+    "num_observations": 9,
+    "num_actions": 5
+  },
+  "components": [
+    "A_matrix",
+    "B_matrix",
+    "C_vector",
+    "D_vector",
+    "E_vector",
+    "state_inference",
+    "policy_inference",
+    "action_selection"
+  ],
+  "matrix_permutation_metadata": {},
+  "matrix_permutation_applied_to_diagram": false,
+  "analysis": {
+    "num_components": 8,
+    "loop_domain": "O",
+    "loop_codomain": "A",
+    "model_domain": "O",
+    "model_codomain": "A"
+  }
+}

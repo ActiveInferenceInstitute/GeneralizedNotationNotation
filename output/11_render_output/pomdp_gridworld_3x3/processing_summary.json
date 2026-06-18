@@ -1,0 +1,33 @@
+{
+  "timestamp": "2026-06-18T07:53:05.042703",
+  "source_file": "input/gnn_files/pomdp_gridworld/pomdp_gridworld_3x3.md",
+  "model_name": "POMDP GridWorld 3x3",
+  "pomdp_dimensions": {
+    "num_states": 9,
+    "num_observations": 9,
+    "num_actions": 5
+  },
+  "frameworks_requested": [
+    "pymdp",
+    "rxinfer",
+    "activeinference_jl",
+    "jax",
+    "discopy",
+    "pytorch",
+    "numpyro",
+    "stan",
+    "bnlearn"
+  ],
+  "frameworks_processed": [
+    "pymdp",
+    "rxinfer",
+    "activeinference_jl",
+    "jax",
+    "discopy",
+    "pytorch",
+    "numpyro",
+    "stan",
+    "bnlearn"
+  ],
+  "frameworks_failed": []
+}

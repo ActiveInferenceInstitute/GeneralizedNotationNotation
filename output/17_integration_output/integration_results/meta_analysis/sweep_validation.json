@@ -9,13 +9,7 @@
   "grid": {
     "n_values": [],
     "t_values": [
-      3,
-      10,
-      20,
-      25,
-      30,
-      40,
-      50
+      15
     ],
     "expected_cells": 0,
     "record_cells": 0

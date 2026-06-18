@@ -1,6 +1,6 @@
 # Type Check Summary
 
-**Generated**: 2026-05-22 06:17:41
+**Generated**: 2026-06-18 07:52:51
 
 ## Processing Results
 - **Files Processed**: 3
@@ -9,16 +9,16 @@
 
 ## Validation Results
 - **Files Validated**: 3
-- **Valid Files**: 1
-- **Invalid Files**: 2
+- **Valid Files**: 3
+- **Invalid Files**: 0
 
 ## Type Analysis
 - **Type Analyses**: 3
-- **Total Variables**: 107
+- **Total Variables**: 29
 
 ## Graphical Abstracts
 \n![Type Validity Mosaic](visualizations/type_validity_mosaic.png)\n\n![Issue Distribution](visualizations/type_issue_distribution.png)\n\n![Dimension Compatibility Abstract](visualizations/dimension_compatibility_abstract.png)\n\n![Global Type Category Distribution](visualizations/type_category_distribution.png)\n\n
-### Model Baseball Cards Preview\n\n![Model Card Preview](visualizations/cards/predictive_coding_agent.md_card.png)\n\n![Model Card Preview](visualizations/cards/stochastic_dynamics.md_card.png)\n\n
+### Model Baseball Cards Preview\n\n![Model Card Preview](visualizations/cards/README.md_card.png)\n\n![Model Card Preview](visualizations/cards/pomdp_gridworld_3x3.md_card.png)\n\n
 *(Remaining 1 Model Cards are located in `visualizations/cards/`)*\n
 ## Error Summary
 - No errors encountered\n

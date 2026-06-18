@@ -1,17 +1,17 @@
 
 # Security Analysis Summary
 
-**Generated**: 2026-05-22 06:35:05
+**Generated**: 2026-06-18 07:58:59
 
 ## Processing Results
-- **Files Processed**: 10
+- **Files Processed**: 3
 - **Success**: True
 - **Errors**: 0
 
 ## Security Results
-- **Security Checks**: 10
+- **Security Checks**: 3
 - **Vulnerabilities Found**: 0
-- **Recommendations**: 20
+- **Recommendations**: 8
 
 ## Vulnerability Summary
 - No vulnerabilities found
@@ -19,6 +19,6 @@
 ## Recommendations
 
 ### Medium Priority Recommendations
-- **simple_mdp.md**: Add security documentation section
-- **simple_mdp.md**: Add error handling
-- **multi_armed_bandit.md**: Add security documentation section
+- **README.md**: Add security documentation section
+- **README.md**: Add error handling
+- **README.md**: Add security logging

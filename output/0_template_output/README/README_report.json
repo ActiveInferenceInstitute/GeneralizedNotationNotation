@@ -1,11 +1,11 @@
 {
   "input_file": "input/gnn_files/pomdp_gridworld/README.md",
   "output_file": "output/0_template_output/README/README_processed.md",
-  "timestamp": "2026-05-22T06:10:26.461916",
-  "file_size_bytes": 1097,
-  "file_size_lines": 20,
+  "timestamp": "2026-06-18T07:51:00.848963",
+  "file_size_bytes": 1996,
+  "file_size_lines": 51,
   "processing_options": {
-    "verbose": false,
+    "verbose": true,
     "recursive": true,
     "example_param": "default_value"
   }

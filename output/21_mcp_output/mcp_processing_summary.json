@@ -1,10 +1,10 @@
 {
-  "timestamp": "2026-05-22T06:35:07.743033",
-  "target_dir": "input/gnn_files/discrete",
+  "timestamp": "2026-06-18T07:59:01.603926",
+  "target_dir": "input/gnn_files/pomdp_gridworld",
   "output_dir": "output/21_mcp_output",
   "processing_status": "completed",
   "mcp_version": "1.6.0",
-  "tools_registered": 132,
+  "tools_registered": 137,
   "registered_modules_count": 32,
   "registered_modules": [
     "research",
@@ -41,5 +41,5 @@
     "sympy_mcp"
   ],
   "resources_count": 1,
-  "message": "MCP processing completed - 132 tools registered from 32 modules"
+  "message": "MCP processing completed - 137 tools registered from 32 modules"
 }

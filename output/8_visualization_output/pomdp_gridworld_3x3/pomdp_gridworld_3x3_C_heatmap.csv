@@ -1,0 +1,6 @@
+Matrix: C
+"Shape: (1, 9)"
+Data type: float64
+
+Col 0,Col 1,Col 2,Col 3,Col 4,Col 5,Col 6,Col 7,Col 8
+Row 0,0.0,0.1,0.3,0.1,0.4,0.8,0.3,0.8,3.0

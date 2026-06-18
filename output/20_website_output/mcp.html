@@ -436,7 +436,7 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; backgrou
   <aside class="sidebar">
     <div class="sidebar-logo">
       <h2>GNN Pipeline</h2>
-      <p>Generated 2026-05-25 09:54</p>
+      <p>Generated 2026-06-18 08:04</p>
     </div>
     <nav class="sidebar-nav">
       <div class="nav-section">
@@ -457,11 +457,25 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; backgrou
     
 <div class="page-header">
   <h1>🔧 MCP Tools Registry</h1>
-  <p class="subtitle">113 tools registered across all modules via the Model Context Protocol</p>
+  <p class="subtitle">137 tools registered across all modules via the Model Context Protocol</p>
 </div>
 
 <div class="section">
-  <div class="section-title">core <span class="pill badge-pending" style="margin-left:6px">37</span></div>
+  <div class="section-title">cli <span class="pill badge-pending" style="margin-left:6px">2</span></div>
+  
+<div class="tool-card">
+  <div class="tool-name">cli.health</div>
+  <div class="tool-mod">cli · cli</div>
+  <div class="tool-desc">Return CLI module health and list of available subcommands</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">cli.preflight</div>
+  <div class="tool-mod">cli · cli</div>
+  <div class="tool-desc">Check pipeline environment readiness</div>
+</div>
+</div>
+<div class="section">
+  <div class="section-title">core <span class="pill badge-pending" style="margin-left:6px">29</span></div>
   
 <div class="tool-card">
   <div class="tool-name">check_uv_project_status</div>
@@ -557,46 +571,6 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; backgrou
   <div class="tool-name">setup_uv_project_structure</div>
   <div class="tool-mod">core</div>
   <div class="tool-desc">Sets up a new UV project structure with standard directories and configuration.</div>
-</div>
-<div class="tool-card">
-  <div class="tool-name">sympy_analyze_stability</div>
-  <div class="tool-mod">core</div>
-  <div class="tool-desc">Analyze system stability using eigenvalue analysis</div>
-</div>
-<div class="tool-card">
-  <div class="tool-name">sympy_cleanup</div>
-  <div class="tool-mod">core</div>
-  <div class="tool-desc">Clean up SymPy MCP integration and reset state</div>
-</div>
-<div class="tool-card">
-  <div class="tool-name">sympy_get_latex</div>
-  <div class="tool-mod">core</div>
-  <div class="tool-desc">Convert a mathematical expression to LaTeX format</div>
-</div>
-<div class="tool-card">
-  <div class="tool-name">sympy_initialize</div>
-  <div class="tool-mod">core</div>
-  <div class="tool-desc">Initialize SymPy MCP integration</div>
-</div>
-<div class="tool-card">
-  <div class="tool-name">sympy_simplify_expression</div>
-  <div class="tool-mod">core</div>
-  <div class="tool-desc">Simplify a mathematical expression to canonical form</div>
-</div>
-<div class="tool-card">
-  <div class="tool-name">sympy_solve_equation</div>
-  <div class="tool-mod">core</div>
-  <div class="tool-desc">Solve an equation algebraically for a specified variable</div>
-</div>
-<div class="tool-card">
-  <div class="tool-name">sympy_validate_equation</div>
-  <div class="tool-mod">core</div>
-  <div class="tool-desc">Validate a mathematical equation using SymPy symbolic processing</div>
-</div>
-<div class="tool-card">
-  <div class="tool-name">sympy_validate_matrix</div>
-  <div class="tool-mod">core</div>
-  <div class="tool-desc">Validate matrix properties including stochasticity constraints</div>
 </div>
 <div class="tool-card">
   <div class="tool-name">sync_uv_dependencies</div>
@@ -695,6 +669,35 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; backgrou
   <div class="tool-name">process_analysis</div>
   <div class="tool-mod">src.analysis · analysis</div>
   <div class="tool-desc">Run statistical and complexity analysis on GNN files in a directory.</div>
+</div>
+</div>
+<div class="section">
+  <div class="section-title">src.api <span class="pill badge-pending" style="margin-left:6px">5</span></div>
+  
+<div class="tool-card">
+  <div class="tool-name">gnn_cancel_job</div>
+  <div class="tool-mod">src.api · api</div>
+  <div class="tool-desc">Cancel a GNN pipeline job.</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">gnn_get_job_status</div>
+  <div class="tool-mod">src.api · api</div>
+  <div class="tool-desc">Retrieve the status of a GNN pipeline job.</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">gnn_get_pipeline_tools</div>
+  <div class="tool-mod">src.api · api</div>
+  <div class="tool-desc">List available pipeline steps.</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">gnn_list_jobs</div>
+  <div class="tool-mod">src.api · api</div>
+  <div class="tool-desc">List recent GNN pipeline jobs.</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">gnn_submit_job</div>
+  <div class="tool-mod">src.api · api</div>
+  <div class="tool-desc">Submit a GNN pipeline processing job.</div>
 </div>
 </div>
 <div class="section">
@@ -804,6 +807,35 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; backgrou
 </div>
 </div>
 <div class="section">
+  <div class="section-title">src.gui.oxdraw <span class="pill badge-pending" style="margin-left:6px">5</span></div>
+  
+<div class="tool-card">
+  <div class="tool-name">oxdraw.check_installation</div>
+  <div class="tool-mod">src.gui.oxdraw · gui</div>
+  <div class="tool-desc">Check if oxdraw CLI is installed and available</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">oxdraw.convert_from_mermaid</div>
+  <div class="tool-mod">src.gui.oxdraw · gui</div>
+  <div class="tool-desc">Convert Mermaid flowchart edited in oxdraw back to GNN format</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">oxdraw.convert_to_mermaid</div>
+  <div class="tool-mod">src.gui.oxdraw · gui</div>
+  <div class="tool-desc">Convert a GNN Active Inference model to Mermaid flowchart format for visual editing in oxdraw</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">oxdraw.get_info</div>
+  <div class="tool-mod">src.gui.oxdraw · gui</div>
+  <div class="tool-desc">Get oxdraw integration module information and capabilities</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">oxdraw.launch_editor</div>
+  <div class="tool-mod">src.gui.oxdraw · gui</div>
+  <div class="tool-desc">Launch interactive oxdraw editor for visual GNN model construction</div>
+</div>
+</div>
+<div class="section">
   <div class="section-title">src.integration <span class="pill badge-pending" style="margin-left:6px">4</span></div>
   
 <div class="tool-card">
@@ -876,6 +908,50 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; backgrou
 </div>
 </div>
 <div class="section">
+  <div class="section-title">src.mcp.sympy_mcp <span class="pill badge-pending" style="margin-left:6px">8</span></div>
+  
+<div class="tool-card">
+  <div class="tool-name">sympy_analyze_stability</div>
+  <div class="tool-mod">src.mcp.sympy_mcp · sympy_mcp</div>
+  <div class="tool-desc">Analyze system stability using eigenvalue analysis</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">sympy_cleanup</div>
+  <div class="tool-mod">src.mcp.sympy_mcp · sympy_mcp</div>
+  <div class="tool-desc">Clean up SymPy MCP integration and reset state</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">sympy_get_latex</div>
+  <div class="tool-mod">src.mcp.sympy_mcp · sympy_mcp</div>
+  <div class="tool-desc">Convert a mathematical expression to LaTeX format</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">sympy_initialize</div>
+  <div class="tool-mod">src.mcp.sympy_mcp · sympy_mcp</div>
+  <div class="tool-desc">Initialize SymPy MCP integration</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">sympy_simplify_expression</div>
+  <div class="tool-mod">src.mcp.sympy_mcp · sympy_mcp</div>
+  <div class="tool-desc">Simplify a mathematical expression to canonical form</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">sympy_solve_equation</div>
+  <div class="tool-mod">src.mcp.sympy_mcp · sympy_mcp</div>
+  <div class="tool-desc">Solve an equation algebraically for a specified variable</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">sympy_validate_equation</div>
+  <div class="tool-mod">src.mcp.sympy_mcp · sympy_mcp</div>
+  <div class="tool-desc">Validate a mathematical equation using SymPy symbolic processing</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">sympy_validate_matrix</div>
+  <div class="tool-mod">src.mcp.sympy_mcp · sympy_mcp</div>
+  <div class="tool-desc">Validate matrix properties including stochasticity constraints</div>
+</div>
+</div>
+<div class="section">
   <div class="section-title">src.ml_integration <span class="pill badge-pending" style="margin-left:6px">4</span></div>
   
 <div class="tool-card">
@@ -921,6 +997,30 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; backgrou
   <div class="tool-name">validate_ontology_terms</div>
   <div class="tool-mod">src.ontology · ontology</div>
   <div class="tool-desc">Validate ontology term names against the Active Inference Ontology.</div>
+</div>
+</div>
+<div class="section">
+  <div class="section-title">src.pipeline <span class="pill badge-pending" style="margin-left:6px">4</span></div>
+  
+<div class="tool-card">
+  <div class="tool-name">get_pipeline_config_info</div>
+  <div class="tool-mod">src.pipeline · pipeline</div>
+  <div class="tool-desc">Get detailed pipeline configuration information and settings.</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">get_pipeline_status</div>
+  <div class="tool-mod">src.pipeline · pipeline</div>
+  <div class="tool-desc">Get current pipeline execution status, recent logs, and execution statistics.</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">get_pipeline_steps</div>
+  <div class="tool-mod">src.pipeline · pipeline</div>
+  <div class="tool-desc">Get information about all available pipeline steps, their metadata, and dependencies.</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">validate_pipeline_dependencies</div>
+  <div class="tool-mod">src.pipeline · pipeline</div>
+  <div class="tool-desc">Validate pipeline step dependencies and identify missing or circular dependencies.</div>
 </div>
 </div>
 <div class="section">
@@ -1001,6 +1101,25 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; backgrou
 </div>
 </div>
 <div class="section">
+  <div class="section-title">src.sapf <span class="pill badge-pending" style="margin-left:6px">3</span></div>
+  
+<div class="tool-card">
+  <div class="tool-name">get_sapf_module_info</div>
+  <div class="tool-mod">src.sapf · audio</div>
+  <div class="tool-desc">Return metadata about the SAPF audio synthesis module (version, formats, capabilities).</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">list_audio_artifacts</div>
+  <div class="tool-mod">src.sapf · audio</div>
+  <div class="tool-desc">List audio and SAPF script artifacts in an output directory.</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">process_sapf</div>
+  <div class="tool-mod">src.sapf · audio</div>
+  <div class="tool-desc">Generate SAPF audio from GNN Active Inference models using SuperCollider synthesis.</div>
+</div>
+</div>
+<div class="section">
   <div class="section-title">src.security <span class="pill badge-pending" style="margin-left:6px">4</span></div>
   
 <div class="tool-card">
@@ -1022,6 +1141,35 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; backgrou
   <div class="tool-name">scan_gnn_file</div>
   <div class="tool-mod">src.security · security</div>
   <div class="tool-desc">Perform a lightweight security scan of a single GNN file for injection patterns.</div>
+</div>
+</div>
+<div class="section">
+  <div class="section-title">src.utils <span class="pill badge-pending" style="margin-left:6px">5</span></div>
+  
+<div class="tool-card">
+  <div class="tool-name">get_environment_info</div>
+  <div class="tool-mod">src.utils · utils</div>
+  <div class="tool-desc">Get environment information including Python packages, environment variables, and paths.</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">get_file_info</div>
+  <div class="tool-mod">src.utils · utils</div>
+  <div class="tool-desc">Get detailed information about a file or directory including size, permissions, and contents.</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">get_logging_info</div>
+  <div class="tool-mod">src.utils · utils</div>
+  <div class="tool-desc">Get current logging configuration and status for all loggers.</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">get_system_info</div>
+  <div class="tool-mod">src.utils · utils</div>
+  <div class="tool-desc">Get comprehensive system information including CPU, memory, disk, and platform details.</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">validate_dependencies</div>
+  <div class="tool-mod">src.utils · utils</div>
+  <div class="tool-desc">Validate system dependencies and required packages for the GNN pipeline.</div>
 </div>
 </div>
 <div class="section">
