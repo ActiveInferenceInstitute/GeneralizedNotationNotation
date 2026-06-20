@@ -34,7 +34,10 @@ def main() -> int:
     variables_json = _PROJECT_ROOT / "output" / "data" / "manuscript_variables.json"
     if not variables_json.is_file():
         subprocess.run(
-            [sys.executable, str(_PROJECT_ROOT / "scripts" / "z_generate_manuscript_variables.py")],
+            [
+                sys.executable,
+                str(_PROJECT_ROOT / "scripts" / "z_generate_manuscript_variables.py"),
+            ],
             cwd=str(_PROJECT_ROOT),
             check=False,
         )

@@ -17,7 +17,6 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
-
 ALL_RENDER_TARGETS: tuple[str, ...] = (
     "pymdp",
     "rxinfer",
@@ -104,7 +103,9 @@ def _first_mapping_value(mapping: dict[str, Any]) -> dict[str, Any]:
 
 
 def _check_pipeline_summary(output_dir: Path, report: ContractReport) -> None:
-    summary_path = output_dir / "00_pipeline_summary" / "pipeline_execution_summary.json"
+    summary_path = (
+        output_dir / "00_pipeline_summary" / "pipeline_execution_summary.json"
+    )
     summary = _load_json(summary_path, report)
     if not isinstance(summary, dict):
         return
@@ -116,20 +117,31 @@ def _check_pipeline_summary(output_dir: Path, report: ContractReport) -> None:
     )
 
     steps = summary.get("steps", [])
-    report.require(isinstance(steps, list) and len(steps) >= 25, "Pipeline summary must include all 25 numbered steps.")
+    report.require(
+        isinstance(steps, list) and len(steps) >= 25,
+        "Pipeline summary must include all 25 numbered steps.",
+    )
     if isinstance(steps, list):
         bad_steps: list[str] = []
         for step in steps:
             if not isinstance(step, dict):
                 continue
-            step_name = str(step.get("script_name") or step.get("step") or step.get("name") or "unknown")
+            step_name = str(
+                step.get("script_name")
+                or step.get("step")
+                or step.get("name")
+                or "unknown"
+            )
             exit_code = step.get("exit_code")
             status = str(step.get("status", "")).lower()
             if exit_code not in (0, 2, None) or status in {"failed", "error"}:
-                bad_steps.append(f"{step_name}: status={status!r} exit_code={exit_code!r}")
+                bad_steps.append(
+                    f"{step_name}: status={status!r} exit_code={exit_code!r}"
+                )
         report.require(
             not bad_steps,
-            "Pipeline summary contains non-success/non-warning steps: " + "; ".join(bad_steps),
+            "Pipeline summary contains non-success/non-warning steps: "
+            + "; ".join(bad_steps),
         )
     report.note("pipeline summary")
 
@@ -138,10 +150,20 @@ def _check_parse_outputs(output_dir: Path, report: ContractReport) -> None:
     summary_path = output_dir / "3_gnn_output" / "gnn_processing_summary.json"
     summary = _load_json(summary_path, report)
     if isinstance(summary, dict):
-        report.require(summary.get("total_files") == 1, "Step 3 should process exactly one GridWorld model.")
-        report.require(summary.get("successful_parses") == 1, "Step 3 should parse the GridWorld model successfully.")
-    parsed_candidates = sorted((output_dir / "3_gnn_output").glob(f"**/{GRIDWORLD_STEM}*_parsed.json"))
-    report.require(bool(parsed_candidates), "Step 3 parsed GridWorld JSON artifact is missing.")
+        report.require(
+            summary.get("total_files") == 1,
+            "Step 3 should process exactly one GridWorld model.",
+        )
+        report.require(
+            summary.get("successful_parses") == 1,
+            "Step 3 should parse the GridWorld model successfully.",
+        )
+    parsed_candidates = sorted(
+        (output_dir / "3_gnn_output").glob(f"**/{GRIDWORLD_STEM}*_parsed.json")
+    )
+    report.require(
+        bool(parsed_candidates), "Step 3 parsed GridWorld JSON artifact is missing."
+    )
     report.note("parse outputs")
 
 
@@ -151,31 +173,56 @@ def _check_render_outputs(output_dir: Path, report: ContractReport) -> None:
     if not isinstance(summary, dict):
         return
 
-    report.require(summary.get("total_files") == 1, "Step 11 should render exactly one GridWorld model.")
-    report.require(summary.get("successful_files") == 1, "Step 11 should mark the GridWorld file successful.")
+    report.require(
+        summary.get("total_files") == 1,
+        "Step 11 should render exactly one GridWorld model.",
+    )
+    report.require(
+        summary.get("successful_files") == 1,
+        "Step 11 should mark the GridWorld file successful.",
+    )
     report.require(
         not summary.get("failed_framework_renderings"),
         "Step 11 has failed framework renderings: "
         + json.dumps(summary.get("failed_framework_renderings"), sort_keys=True),
     )
 
-    file_result = _first_mapping_value(summary.get("file_results", {}) if isinstance(summary.get("file_results"), dict) else {})
+    file_result = _first_mapping_value(
+        summary.get("file_results", {})
+        if isinstance(summary.get("file_results"), dict)
+        else {}
+    )
     framework_results = file_result.get("framework_results", {})
-    report.require(isinstance(framework_results, dict), "Step 11 summary lacks framework_results mapping.")
+    report.require(
+        isinstance(framework_results, dict),
+        "Step 11 summary lacks framework_results mapping.",
+    )
     if isinstance(framework_results, dict):
         missing = [name for name in ALL_RENDER_TARGETS if name not in framework_results]
-        report.require(not missing, f"Step 11 did not attempt all render targets: {missing}")
+        report.require(
+            not missing, f"Step 11 did not attempt all render targets: {missing}"
+        )
         failed = [
             f"{name}: {result.get('message', '')}"
             for name, result in framework_results.items()
-            if name in ALL_RENDER_TARGETS and isinstance(result, dict) and not result.get("success")
+            if name in ALL_RENDER_TARGETS
+            and isinstance(result, dict)
+            and not result.get("success")
         ]
-        report.require(not failed, "Step 11 render target failures: " + "; ".join(failed))
+        report.require(
+            not failed, "Step 11 render target failures: " + "; ".join(failed)
+        )
 
     for framework in ALL_RENDER_TARGETS:
         framework_dir = render_dir / GRIDWORLD_STEM / framework
-        report.require(framework_dir.exists(), f"Missing Step 11 framework directory: {framework_dir}")
-        report.require(any(framework_dir.glob("*")), f"Step 11 framework directory is empty: {framework_dir}")
+        report.require(
+            framework_dir.exists(),
+            f"Missing Step 11 framework directory: {framework_dir}",
+        )
+        report.require(
+            any(framework_dir.glob("*")),
+            f"Step 11 framework directory is empty: {framework_dir}",
+        )
     report.note("render outputs")
 
 
@@ -196,23 +243,42 @@ def _simulation_payloads(output_dir: Path, framework: str) -> list[dict[str, Any
 
 
 def _check_execute_outputs(output_dir: Path, report: ContractReport) -> None:
-    summary_path = output_dir / "12_execute_output" / "summaries" / "execution_summary.json"
+    summary_path = (
+        output_dir / "12_execute_output" / "summaries" / "execution_summary.json"
+    )
     summary = _load_json(summary_path, report)
     if isinstance(summary, dict):
         encoded = json.dumps(summary, sort_keys=True).lower()
         report.require(
-            any(token in encoded for token in ("succeeded", "failed", "skipped", "success_count", "failure_count")),
+            any(
+                token in encoded
+                for token in (
+                    "succeeded",
+                    "failed",
+                    "skipped",
+                    "success_count",
+                    "failure_count",
+                )
+            ),
             "Step 12 summary should include explicit success/skipped/error accounting.",
         )
 
     for framework in STRICT_EXECUTION_TARGETS:
         payloads = _simulation_payloads(output_dir, framework)
-        report.require(payloads, f"Missing Step 12 collected simulation results for {framework}.")
+        report.require(
+            payloads, f"Missing Step 12 collected simulation results for {framework}."
+        )
         if not payloads:
             continue
         payload = payloads[0]
-        report.require(payload.get("success") is True, f"{framework} simulation payload is not successful.")
-        report.require(payload.get("num_timesteps") == 15, f"{framework} should report 15 timesteps.")
+        report.require(
+            payload.get("success") is True,
+            f"{framework} simulation payload is not successful.",
+        )
+        report.require(
+            payload.get("num_timesteps") == 15,
+            f"{framework} should report 15 timesteps.",
+        )
         report.require(
             payload.get("model_parameters", {}).get("B_shape") == [9, 9, 5],
             f"{framework} should preserve GridWorld B shape [9, 9, 5].",
@@ -226,7 +292,9 @@ def _check_execute_outputs(output_dir: Path, report: ContractReport) -> None:
 
 def _check_analysis_outputs(output_dir: Path, report: ContractReport) -> None:
     analysis_dir = output_dir / "16_analysis_output"
-    manifest_path = analysis_dir / "cross_framework" / "gridworld_analysis_manifest.json"
+    manifest_path = (
+        analysis_dir / "cross_framework" / "gridworld_analysis_manifest.json"
+    )
     manifest = _load_json(manifest_path, report)
     if isinstance(manifest, dict):
         frameworks = sorted(manifest.get("frameworks", []))
@@ -239,16 +307,31 @@ def _check_analysis_outputs(output_dir: Path, report: ContractReport) -> None:
             "GridWorld analysis manifest should confirm matching matrix provenance.",
         )
         outputs = manifest.get("outputs", {})
-        report.require(bool(outputs.get("png")), "GridWorld analysis manifest should list PNG outputs.")
-        report.require(len(outputs.get("gif", [])) >= 7, "GridWorld analysis manifest should list GridWorld GIF outputs.")
-        report.require(bool(outputs.get("statistics")), "GridWorld analysis manifest should list statistics outputs.")
+        report.require(
+            bool(outputs.get("png")),
+            "GridWorld analysis manifest should list PNG outputs.",
+        )
+        report.require(
+            len(outputs.get("gif", [])) >= 7,
+            "GridWorld analysis manifest should list GridWorld GIF outputs.",
+        )
+        report.require(
+            bool(outputs.get("statistics")),
+            "GridWorld analysis manifest should list statistics outputs.",
+        )
 
     pngs = sorted(analysis_dir.glob("**/*.png"))
     gifs = sorted(analysis_dir.glob("**/*.gif"))
     report.require(bool(pngs), "Step 16 PNG analysis outputs are missing.")
     report.require(bool(gifs), "Step 16 GIF animation outputs are missing.")
-    report.require(all(path.stat().st_size > 0 for path in pngs[:10]), "One or more Step 16 PNG outputs are empty.")
-    report.require(all(path.stat().st_size > 0 for path in gifs), "One or more Step 16 GIF outputs are empty.")
+    report.require(
+        all(path.stat().st_size > 0 for path in pngs[:10]),
+        "One or more Step 16 PNG outputs are empty.",
+    )
+    report.require(
+        all(path.stat().st_size > 0 for path in gifs),
+        "One or more Step 16 GIF outputs are empty.",
+    )
     report.note("analysis outputs")
 
 
@@ -267,9 +350,17 @@ def _check_report_and_website_outputs(output_dir: Path, report: ContractReport) 
     )
 
     website_dir = output_dir / "20_website_output"
-    required_pages = ("index.html", "pipeline.html", "reports.html", "analysis.html", "visualization.html")
+    required_pages = (
+        "index.html",
+        "pipeline.html",
+        "reports.html",
+        "analysis.html",
+        "visualization.html",
+    )
     for page in required_pages:
-        report.require((website_dir / page).exists(), f"Step 20 website page is missing: {page}")
+        report.require(
+            (website_dir / page).exists(), f"Step 20 website page is missing: {page}"
+        )
     website_pages = [website_dir / page for page in required_pages]
     report.require(
         any(_text_contains_marker(path) for path in website_pages),

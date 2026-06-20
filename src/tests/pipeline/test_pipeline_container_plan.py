@@ -13,16 +13,14 @@ forces a CRITICAL — proving the review is wired and has teeth).
 
 import sys
 from pathlib import Path
-from typing import Any
+from typing import Any, Sequence
 
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
-REAL_CONFIG = (
-    Path(__file__).parent.parent.parent.parent / "input" / "config.yaml"
-)
+REAL_CONFIG = Path(__file__).parent.parent.parent.parent / "input" / "config.yaml"
 
 
-def _write_config(tmp_path: Path, skip_steps: list[int]) -> Path:
+def _write_config(tmp_path: Path, skip_steps: "Sequence[object]") -> Path:
     """Write a minimal real YAML config with the given skip_steps."""
     import yaml
 
@@ -77,9 +75,7 @@ class TestCommandShape:
         from pipeline.pipeline_container_plan import plan_for_pipeline
 
         cfg = _write_config(tmp_path, [])
-        plan = plan_for_pipeline(
-            cfg, target_dir="input/gnn_files", output_dir="output"
-        )
+        plan = plan_for_pipeline(cfg, target_dir="input/gnn_files", output_dir="output")
         command = plan.specs[0].command
         assert "src/main.py" in command
         i = command.index("--target-dir")

@@ -58,4 +58,6 @@ def test_check_environment_reports_step12_broken_import_as_import_failure(
         and "Package import failed: numpyro (step 12 backend)" in issue.message
         for issue in report.issues
     )
-    assert not any("Package not found: numpyro" in issue.message for issue in report.issues)
+    assert not any(
+        "Package not found: numpyro" in issue.message for issue in report.issues
+    )

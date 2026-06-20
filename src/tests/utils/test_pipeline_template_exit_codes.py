@@ -74,9 +74,7 @@ def test_empty_string_coerces_to_one(logger: Any) -> Any:
 
 def test_shared_status_from_exit_code_contract() -> None:
     assert status_from_exit_code(0) == "SUCCESS"
-    assert status_from_exit_code(0, ["dependency warning"]) == (
-        "SUCCESS_WITH_WARNINGS"
-    )
+    assert status_from_exit_code(0, ["dependency warning"]) == ("SUCCESS_WITH_WARNINGS")
     assert status_from_exit_code(2) == "SUCCESS_WITH_WARNINGS"
     assert status_from_exit_code(1) == "FAILED"
 

@@ -134,9 +134,7 @@ def _step_label(record: Dict[str, Any], fallback_index: int) -> str:
     return f"step_{fallback_index}"
 
 
-def _build_trace_from_summary(
-    trace_id: str, summary: Dict[str, Any]
-) -> ExecutionTrace:
+def _build_trace_from_summary(trace_id: str, summary: Dict[str, Any]) -> ExecutionTrace:
     """Reconstruct an execution trace from a parsed run summary.
 
     One event is appended per step record, in run order. The event ``step`` is
@@ -156,9 +154,7 @@ def _build_trace_from_summary(
         label = _step_label(record, index)
         status = record.get("status")
         action = status if isinstance(status, str) and status else "UNKNOWN"
-        payload = json.dumps(record, sort_keys=True, ensure_ascii=False).encode(
-            "utf-8"
-        )
+        payload = json.dumps(record, sort_keys=True, ensure_ascii=False).encode("utf-8")
         trace = trace.append_event(
             step=label,
             action=action,
@@ -168,9 +164,7 @@ def _build_trace_from_summary(
     return trace
 
 
-def _build_trace_from_dirs(
-    trace_id: str, run_output_dir: Path
-) -> ExecutionTrace:
+def _build_trace_from_dirs(trace_id: str, run_output_dir: Path) -> ExecutionTrace:
     """Reconstruct a trace from the sorted set of existing step dirs.
 
     Used when no execution summary is present. Step directories are sorted by
@@ -411,7 +405,9 @@ def verify_run_manifests(
                 summary = json.loads(summary_path.read_text(encoding="utf-8"))
                 expected = _build_trace_from_summary(trace_id, summary)
             except (json.JSONDecodeError, ValueError):
-                problems.append("trace: execution summary is unreadable; cannot re-bind trace")
+                problems.append(
+                    "trace: execution summary is unreadable; cannot re-bind trace"
+                )
                 expected = None
         else:
             expected = _build_trace_from_dirs(trace_id, run_dir)

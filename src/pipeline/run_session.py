@@ -18,7 +18,7 @@ import os
 import tempfile
 from enum import Enum
 from pathlib import Path
-from typing import List, Optional, Union
+from typing import List, Optional, Sequence, Union
 
 from pydantic import BaseModel, Field
 
@@ -72,7 +72,7 @@ def _compute_session_hash(unit_ids: List[str], hash_length: int = 12) -> str:
 
 def start_session(
     session_id: str,
-    units: List[Union[str, WorkUnit]],
+    units: Sequence[Union[str, WorkUnit]],
     created_by: str = "",
 ) -> RunSession:
     """Create a fresh run session from unit ids or WorkUnit instances.
@@ -162,7 +162,9 @@ def checkpoint(session: RunSession, path: Union[str, Path]) -> Path:
 
     # Unique temp file in the same directory (mkstemp avoids PID-reuse clobber);
     # os.replace is atomic on POSIX so a crash leaves the prior manifest intact.
-    fd, tmp_name = tempfile.mkstemp(dir=str(dest.parent), prefix=f"{dest.name}.", suffix=".tmp")
+    fd, tmp_name = tempfile.mkstemp(
+        dir=str(dest.parent), prefix=f"{dest.name}.", suffix=".tmp"
+    )
     tmp = Path(tmp_name)
     try:
         with os.fdopen(fd, "w", encoding="utf-8") as fh:

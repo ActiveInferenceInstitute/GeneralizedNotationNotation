@@ -261,7 +261,9 @@ def test_pymdp_analysis_extractor(model_file: str, tmp_path: Path) -> None:
     np.random.seed(42)
     ok, results = run_pymdp_simulation(gnn_spec, tmp_path / "run")
     if not ok:
-        raise AssertionError(f"Execution failed for {model_file}: {results.get('error')}")
+        raise AssertionError(
+            f"Execution failed for {model_file}: {results.get('error')}"
+        )
 
     # Write results to the expected location for the extractor
     model_stem = model_file.replace(".md", "")

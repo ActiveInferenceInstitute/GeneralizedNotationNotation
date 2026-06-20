@@ -6,8 +6,8 @@ This module tests the package detection logic that distinguishes between
 the correct PyMDP package (inferactively-pymdp) and wrong variants.
 """
 
-import sys
 import subprocess
+import sys
 from pathlib import Path
 from typing import Any
 
@@ -79,15 +79,15 @@ class TestPyMDPPackageDetection:
         assert isinstance(validation["instructions"], str)
         assert isinstance(validation["can_auto_install"], bool)
 
-    def test_attempt_pymdp_auto_install(
-        self, monkeypatch: pytest.MonkeyPatch
-    ) -> None:
+    def test_attempt_pymdp_auto_install(self, monkeypatch: pytest.MonkeyPatch) -> None:
         """Auto-install should report UV sync behavior without mutating the test venv."""
         from execute.pymdp import package_detector
 
         commands: list[list[str]] = []
 
-        def fake_run(command: list[str], **kwargs: Any) -> subprocess.CompletedProcess[str]:
+        def fake_run(
+            command: list[str], **kwargs: Any
+        ) -> subprocess.CompletedProcess[str]:
             commands.append([str(part) for part in command])
             return subprocess.CompletedProcess(
                 command,
@@ -179,7 +179,9 @@ class TestPyMDPRealInstallation:
             # PyMDP not installed - detection should reflect this
             detection = detect_pymdp_installation()
             assert detection["installed"] is False
-            raise AssertionError("PyMDP not installed - skipping real installation test")
+            raise AssertionError(
+                "PyMDP not installed - skipping real installation test"
+            )
 
     def test_real_installation_validation(self) -> None:
         """Test validation with real PyMDP installation."""
@@ -197,7 +199,9 @@ class TestPyMDPRealInstallation:
                 assert validation["ready"] is False
                 assert "inferactively-pymdp" in validation["instructions"].lower()
         except ImportError:
-            raise AssertionError("PyMDP not installed - skipping real installation test")
+            raise AssertionError(
+                "PyMDP not installed - skipping real installation test"
+            )
 
     def test_wrong_package_detection(self) -> None:
         """Test that wrong package variant is detected if present."""

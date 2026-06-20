@@ -120,7 +120,9 @@ class TestAsyncAwaitRecovery:
         if not (
             os.getenv("OPENAI_API_KEY") or os.getenv("OLLAMA_DISABLED", "0") == "0"
         ):
-            raise AssertionError("No LLM providers available (no API keys and Ollama disabled)")
+            raise AssertionError(
+                "No LLM providers available (no API keys and Ollama disabled)"
+            )
         maybe_result = analyze_gnn_file_with_llm(sample_gnn_file)
         result = (
             asyncio.run(maybe_result)
@@ -142,7 +144,9 @@ class TestAsyncAwaitRecovery:
         if not (
             os.getenv("OPENAI_API_KEY") or os.getenv("OLLAMA_DISABLED", "0") == "0"
         ):
-            raise AssertionError("No LLM providers available (no API keys and Ollama disabled)")
+            raise AssertionError(
+                "No LLM providers available (no API keys and Ollama disabled)"
+            )
         result = analyze_gnn_file_with_llm(sample_gnn_file)
 
         assert isinstance(result, dict)

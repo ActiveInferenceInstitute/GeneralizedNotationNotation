@@ -216,7 +216,7 @@ def test_duplicate_unit_ids_rejected() -> None:
     assert len(start_session("ok", ["a", "b", "c"]).units) == 3
 
 
-def test_checkpoint_temp_is_unique_not_pid_only(tmp_path) -> None:
+def test_checkpoint_temp_is_unique_not_pid_only(tmp_path: Path) -> None:
     """Repeated checkpoints to the same path leave a loadable manifest and no temp residue."""
     from pipeline.run_session import (
         UnitStatus,

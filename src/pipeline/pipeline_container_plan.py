@@ -34,8 +34,8 @@ from pipeline.container_plan import (
 # Documented stand-in image, pinned by a full sha256 digest so the generated
 # plan passes the UNPINNED_IMAGE security check. Replace the digest with the
 # real published GNN pipeline image digest in production by passing ``image=``.
-PINNED_PIPELINE_IMAGE = (
-    "ghcr.io/generalizednotationnotation/gnn-pipeline@sha256:" + ("0" * 64)
+PINNED_PIPELINE_IMAGE = "ghcr.io/generalizednotationnotation/gnn-pipeline@sha256:" + (
+    "0" * 64
 )
 
 

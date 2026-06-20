@@ -12,7 +12,7 @@ import sys
 from dataclasses import dataclass, field, fields, replace
 from pathlib import Path
 from types import MappingProxyType
-from typing import Any, Dict, List, Optional, Type
+from typing import Any, Dict, List, Optional, Type, cast
 
 # Import config loading functionality
 from .config_loader import GNNPipelineConfig, load_config
@@ -1759,8 +1759,8 @@ def get_pipeline_step_info() -> Dict[str, Any]:
             "optional_args": config.get("optional_args", []),
             "defaults": config.get("defaults", {}),
             "critical": config.get("critical", False),
-            "total_args": len(config.get("required_args", []))
-            + len(config.get("optional_args", [])),
+            "total_args": len(cast("list[Any]", config.get("required_args", [])))
+            + len(cast("list[Any]", config.get("optional_args", []))),
         }
 
     return step_info
@@ -1780,8 +1780,8 @@ def audit_step_contracts(
 
     for step_name, config in StepConfiguration.STEP_CONFIGS.items():
         step_key = f"{step_name}.py"
-        configured_args = config.get("required_args", []) + config.get(
-            "optional_args", []
+        configured_args = cast("list[Any]", config.get("required_args", [])) + cast(
+            "list[Any]", config.get("optional_args", [])
         )
         declared_args = ArgumentParser.STEP_ARGUMENTS.get(step_key)
         if declared_args is None:
@@ -1828,7 +1828,9 @@ def audit_step_contracts(
             )
             continue
 
-        for arg_name, expected in config.get("defaults", {}).items():
+        for arg_name, expected in cast(
+            "dict[str, Any]", config.get("defaults", {})
+        ).items():
             if hasattr(parsed_defaults, arg_name):
                 actual = getattr(parsed_defaults, arg_name)
                 if actual != expected:

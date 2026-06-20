@@ -107,7 +107,11 @@ def main() -> None:
     nosub_bg = "#f6d4d4"
     stripe_bg = "#eef2f6"
 
-    for (r, c), cell in table.get_cells().items() if hasattr(table, "get_cells") else table.get_celld().items():
+    for (r, c), cell in (
+        table.get_cells().items()
+        if hasattr(table, "get_cells")
+        else table.get_celld().items()
+    ):
         cell.set_edgecolor("#9aa6b2")
         cell.set_linewidth(0.6)
         if r == 0:

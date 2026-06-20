@@ -322,7 +322,10 @@ A={(1.0, 0.0), (0.5, 0.25, 0.25)}
         variables, parse_errors = parse_state_space(content, file_path=str(template))
 
         assert parse_errors == []
-        assert validate_matrix_dimensions(content, variables, file_path=str(template)) == []
+        assert (
+            validate_matrix_dimensions(content, variables, file_path=str(template))
+            == []
+        )
 
 
 class TestValidateGnnObject:

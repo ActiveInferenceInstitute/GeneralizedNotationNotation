@@ -50,7 +50,9 @@ def _filter_connections(
     return out
 
 
-def discover_visualization_files(target_dir: Path, recursive: bool = True) -> List[Path]:
+def discover_visualization_files(
+    target_dir: Path, recursive: bool = True
+) -> List[Path]:
     """Discover visualization inputs with explicit recursive semantics."""
     if not target_dir.exists() or not target_dir.is_dir():
         return []

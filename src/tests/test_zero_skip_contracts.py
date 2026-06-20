@@ -5,7 +5,6 @@ from __future__ import annotations
 import inspect
 from pathlib import Path
 
-
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 
 
@@ -87,6 +86,8 @@ def test_public_contract_surface_ledger_is_covered_from_src_tests() -> None:
     }
 
     missing = [
-        contract for contract, token in public_contracts.items() if token not in test_corpus
+        contract
+        for contract, token in public_contracts.items()
+        if token not in test_corpus
     ]
     assert not missing, f"Public contract ledger missing test references: {missing}"

@@ -85,7 +85,11 @@ from dataclasses import fields
 from utils.argument_utils import ArgumentParser, PipelineArguments, StepConfiguration
 from utils.error_handling import (
     is_critical_pipeline_step,
+)
+from utils.error_handling import (
     pipeline_exit_code as _shared_pipeline_exit_code,
+)
+from utils.error_handling import (
     status_from_exit_code as _shared_status_from_exit_code,
 )
 
@@ -147,6 +151,7 @@ PIPELINE_STEPS: tuple[PipelineStep, ...] = (
     ("23_report.py", "Report generation"),
     ("24_intelligent_analysis.py", "Intelligent pipeline analysis"),
 )
+
 
 def _derive_critical_scripts() -> set[str]:
     """Return script filenames marked critical by StepConfiguration metadata."""

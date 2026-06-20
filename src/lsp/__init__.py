@@ -45,8 +45,11 @@ try:
         Position,
         Range,
     )
+
     try:
-        from pygls.server import LanguageServer
+        # pygls exposes no typed attribute for this compat path; older pygls
+        # had LanguageServer on pygls.server, current versions on pygls.lsp.server.
+        from pygls.server import LanguageServer  # type: ignore[attr-defined]
     except ImportError:
         from pygls.lsp.server import LanguageServer
 

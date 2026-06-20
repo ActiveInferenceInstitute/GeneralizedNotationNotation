@@ -237,9 +237,7 @@ class TestMCPToolRealness:
             f"Tools missing category metadata: {missing_category}"
         )
 
-    def test_all_tools_have_valid_json_schemas(
-        self, all_tools: Dict[str, Any]
-    ) -> None:
+    def test_all_tools_have_valid_json_schemas(self, all_tools: Dict[str, Any]) -> None:
         """Every registered tool schema must satisfy MCPTool's schema contract."""
         invalid: dict[str, list[str]] = {}
         for name, tool in all_tools.items():

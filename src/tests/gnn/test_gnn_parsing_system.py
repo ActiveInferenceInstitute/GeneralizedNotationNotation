@@ -163,7 +163,9 @@ class TestGNNParsingSystemDetectFormat:
         assert self.ps._detect_format(pkl_file) == GNNFormat.PICKLE
 
     def test_pickle_extension_detected_as_pickle(self) -> None:
-        assert self.ps._detect_format(self._path_with_ext(".pickle")) == GNNFormat.PICKLE
+        assert (
+            self.ps._detect_format(self._path_with_ext(".pickle")) == GNNFormat.PICKLE
+        )
 
     def test_unknown_extension_raises(self) -> Any:
         with pytest.raises(ValueError):

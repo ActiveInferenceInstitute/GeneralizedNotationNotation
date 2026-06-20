@@ -97,7 +97,9 @@ def validate_step_prerequisites(
                     # Look for parsed files at any depth
                     parsed_files = list(gnn_output_dir.rglob("*_parsed.json"))
                     if not parsed_files:
-                        warning_msg = f"No parsed GNN files found in {gnn_output_dir.name}"
+                        warning_msg = (
+                            f"No parsed GNN files found in {gnn_output_dir.name}"
+                        )
                         result["warnings"].append(warning_msg)
                         result["errors"].append(warning_msg)
                         result["passed"] = False
@@ -272,9 +274,7 @@ def check_pipeline_readiness(
         for ext in get_supported_gnn_extensions():
             gnn_files.extend(args.target_dir.rglob(f"*{ext}"))
         gnn_files = [
-            path
-            for path in dict.fromkeys(gnn_files)
-            if is_model_source_path(path)
+            path for path in dict.fromkeys(gnn_files) if is_model_source_path(path)
         ]
         if not gnn_files:
             readiness_check["blocking_issues"].append(

@@ -138,9 +138,10 @@ def test_api_submit_run_stores_normalized_output_dir(monkeypatch: Any) -> None:
 
         assert response.status_code == 200
         stored_output = api_app._runs[run_hash]["request"]["output_dir"]
-        assert Path(stored_output).resolve() == (
-            Path(__file__).resolve().parents[3] / output_dir
-        ).resolve()
+        assert (
+            Path(stored_output).resolve()
+            == (Path(__file__).resolve().parents[3] / output_dir).resolve()
+        )
     finally:
         api_app._runs.pop(run_hash, None)
         if orig_hasher:
@@ -177,9 +178,10 @@ async def test_job_processor_uses_requested_output_dir(monkeypatch: Any) -> None
     try:
         await job_mgr.execute_job_async(job_id)
         output_arg = captured_cmd[captured_cmd.index("--output-dir") + 1]
-        assert Path(output_arg).resolve() == (
-            Path(__file__).resolve().parents[3] / requested_output
-        ).resolve()
+        assert (
+            Path(output_arg).resolve()
+            == (Path(__file__).resolve().parents[3] / requested_output).resolve()
+        )
     finally:
         job_mgr._JOBS.pop(job_id, None)
 

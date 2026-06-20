@@ -141,7 +141,9 @@ def test_pymdp_seeded_reproducibility_contract(tmp_path: Path) -> None:
     np.random.seed(123)
     ok1, res1 = run_pymdp_simulation(gnn_spec, tmp_path / "r1")
     if not ok1:
-        raise AssertionError(f"PyMDP unavailable for reproducibility check: {res1.get('error')}")
+        raise AssertionError(
+            f"PyMDP unavailable for reproducibility check: {res1.get('error')}"
+        )
 
     np.random.seed(123)
     ok2, res2 = run_pymdp_simulation(gnn_spec, tmp_path / "r2")

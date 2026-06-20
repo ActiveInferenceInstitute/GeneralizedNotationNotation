@@ -184,9 +184,7 @@ def parse_gnn_content(content: str) -> Dict[str, Any]:
                 if not operator:
                     continue
                 source, target = text.split(operator, 1)
-                connections.append(
-                    {"source": source.strip(), "target": target.strip()}
-                )
+                connections.append({"source": source.strip(), "target": target.strip()})
         return {
             "sections": sections,
             "variables": variables,
@@ -234,9 +232,7 @@ def _normalize_export_sections(sections: Any, content: str) -> Dict[str, List[st
     return parsed_sections
 
 
-def _normalize_export_variables(
-    variables: Any, content: str
-) -> List[Dict[str, str]]:
+def _normalize_export_variables(variables: Any, content: str) -> List[Dict[str, str]]:
     """Normalize canonical parser variables for compatibility graph/XML exporters."""
     normalized: List[Dict[str, str]] = []
     if isinstance(variables, list):

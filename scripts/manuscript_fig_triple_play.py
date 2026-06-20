@@ -35,7 +35,18 @@ def load_variables() -> dict:
         return json.load(fh)
 
 
-def draw_box(ax, xy, w, h, text, facecolor, edgecolor, fontsize=11, fontweight="bold", textcolor="white"):
+def draw_box(
+    ax,
+    xy,
+    w,
+    h,
+    text,
+    facecolor,
+    edgecolor,
+    fontsize=11,
+    fontweight="bold",
+    textcolor="white",
+):
     """Draw a rounded box centered at xy with wrapped text."""
     x, y = xy
     box = FancyBboxPatch(
@@ -146,11 +157,17 @@ def main() -> Path:
     )
 
     # Fan-out arrows from source to each target
-    draw_arrow(ax, (src_xy[0] + 1.35, src_xy[1] + 0.3), (text_xy[0] - 2.05, text_xy[1] - 0.3))
+    draw_arrow(
+        ax, (src_xy[0] + 1.35, src_xy[1] + 0.3), (text_xy[0] - 2.05, text_xy[1] - 0.3)
+    )
     draw_arrow(ax, (src_xy[0] + 1.35, src_xy[1]), (graph_xy[0] - 2.05, graph_xy[1]))
-    draw_arrow(ax, (src_xy[0] + 1.35, src_xy[1] - 0.3), (exec_xy[0] - 2.05, exec_xy[1] + 0.3))
+    draw_arrow(
+        ax, (src_xy[0] + 1.35, src_xy[1] - 0.3), (exec_xy[0] - 2.05, exec_xy[1] + 0.3)
+    )
 
-    ax.set_title("The GNN Triple Play", fontsize=18, fontweight="bold", color="#0f172a", pad=14)
+    ax.set_title(
+        "The GNN Triple Play", fontsize=18, fontweight="bold", color="#0f172a", pad=14
+    )
     ax.text(
         5.0,
         0.15,

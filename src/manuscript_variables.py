@@ -38,7 +38,7 @@ except ModuleNotFoundError:  # pragma: no cover - exercised only on <3.11
 try:
     import yaml as _yaml
 except ModuleNotFoundError:  # pragma: no cover - yaml is a GNN dependency
-    _yaml = None  # type: ignore[assignment]
+    _yaml = None
 
 __all__ = ["generate_variables", "save_variables"]
 
@@ -95,7 +95,9 @@ def _count_packages(src_dir: Path) -> int:
     return sum(
         1
         for child in src_dir.iterdir()
-        if child.is_dir() and not _is_excluded(child) and (child / "__init__.py").is_file()
+        if child.is_dir()
+        and not _is_excluded(child)
+        and (child / "__init__.py").is_file()
     )
 
 
@@ -108,7 +110,9 @@ def _count_test_functions(tests_dir: Path) -> tuple[int, int]:
         if _is_excluded(py):
             continue
         file_count += 1
-        func_count += len(pattern.findall(py.read_text(encoding="utf-8", errors="ignore")))
+        func_count += len(
+            pattern.findall(py.read_text(encoding="utf-8", errors="ignore"))
+        )
     return file_count, func_count
 
 
@@ -275,11 +279,15 @@ def generate_variables(project_root: Path) -> dict[str, str]:
     backend_names = [name for _, name in backends]
 
     example_count = _count_files(project_root / "input" / "gnn_files", "*.md")
-    family_dir_count = sum(
-        1
-        for c in (project_root / "input" / "gnn_files").iterdir()
-        if c.is_dir() and not _is_excluded(c)
-    ) if (project_root / "input" / "gnn_files").is_dir() else 0
+    family_dir_count = (
+        sum(
+            1
+            for c in (project_root / "input" / "gnn_files").iterdir()
+            if c.is_dir() and not _is_excluded(c)
+        )
+        if (project_root / "input" / "gnn_files").is_dir()
+        else 0
+    )
     figure_count = _count_files(project_root / "output", "*.png")
     doc_file_count = _count_files(project_root / "doc", "*.md")
 

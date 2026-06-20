@@ -51,7 +51,9 @@ def _assert_julia_packages() -> None:
             timeout=120,
         )
     except FileNotFoundError as exc:
-        raise AssertionError(f"Julia executable not available for strict backend gate: {exc}")
+        raise AssertionError(
+            f"Julia executable not available for strict backend gate: {exc}"
+        )
     except subprocess.TimeoutExpired as exc:
         raise AssertionError(
             "Julia package gate timed out before backend execution; "
@@ -185,6 +187,7 @@ def test_gridworld_fixture_directory_renders_only_model_sources(
     assert sorted(summary["file_results"]) == [str(GRIDWORLD_FILE)]
 
 
+@pytest.mark.pipeline
 @pytest.mark.integration
 @pytest.mark.slow
 def test_gridworld_render_execute_analyze_visualize_strict(tmp_path: Path) -> None:

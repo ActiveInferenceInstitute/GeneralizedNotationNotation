@@ -13,7 +13,7 @@ import hashlib
 import logging
 import time
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Type, Union, cast
+from typing import Any, Dict, List, Optional, Type, Union
 
 from .common import (
     BaseGNNParser,
@@ -201,14 +201,13 @@ class UnifiedGNNParser:
             return self._detect_format_from_content(file_path)
 
         if extension:
-
             # For ambiguous extensions, use content-based detection
             if extension in [".xml", ".py"]:
                 content_detected = self._detect_format_from_content(file_path)
                 if content_detected != detected:
                     return content_detected
 
-            return cast("GNNFormat", detected)
+        return detected
 
     def _detect_format_from_content(self, file_path: Path) -> GNNFormat:
         """

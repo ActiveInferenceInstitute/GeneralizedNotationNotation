@@ -37,7 +37,9 @@ class TestDependencyErrorScenarios:
             importlib.util.find_spec("pymdp") is None
             or importlib.util.find_spec("jax") is None
         ):
-            raise AssertionError("pymdp + jax required for PyMDPSimulation instantiation")
+            raise AssertionError(
+                "pymdp + jax required for PyMDPSimulation instantiation"
+            )
         from execute.pymdp.pymdp_simulation import PyMDPSimulation
 
         with pytest.raises(

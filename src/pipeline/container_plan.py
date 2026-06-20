@@ -281,11 +281,7 @@ def security_review(plan: ContainerPlan) -> List[Finding]:
                 )
             )
         for key, value in spec.env.items():
-            if (
-                _SECRET_KEY_RE.search(key)
-                and value
-                and not _REFERENCE_RE.match(value)
-            ):
+            if _SECRET_KEY_RE.search(key) and value and not _REFERENCE_RE.match(value):
                 findings.append(
                     Finding(
                         severity="HIGH",
@@ -335,7 +331,11 @@ def security_review(plan: ContainerPlan) -> List[Finding]:
                     )
                 )
         # Shared host namespaces break container isolation.
-        for ns_field, ns_value in (("network", spec.network), ("pid", spec.pid), ("ipc", spec.ipc)):
+        for ns_field, ns_value in (
+            ("network", spec.network),
+            ("pid", spec.pid),
+            ("ipc", spec.ipc),
+        ):
             if ns_value == "host":
                 findings.append(
                     Finding(
@@ -346,7 +346,9 @@ def security_review(plan: ContainerPlan) -> List[Finding]:
                     )
                 )
         # Added capabilities that materially weaken isolation.
-        dangerous_added = sorted(c for c in spec.cap_add if c.upper() in _DANGEROUS_CAPS)
+        dangerous_added = sorted(
+            c for c in spec.cap_add if c.upper() in _DANGEROUS_CAPS
+        )
         if dangerous_added:
             findings.append(
                 Finding(

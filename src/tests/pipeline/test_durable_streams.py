@@ -212,12 +212,25 @@ def test_replay_no_field_framing_collision() -> None:
     """NEGATIVE: distinct field splits must NOT share a replay digest (length-prefix framing)."""
     from pipeline.durable_streams import ExecutionTrace, TraceEvent, replay_trace
 
-    a = ExecutionTrace(trace_id="a", events=[TraceEvent(seq=0, step="a|b", action="c", payload_checksum="h")])
-    b = ExecutionTrace(trace_id="b", events=[TraceEvent(seq=0, step="a", action="b|c", payload_checksum="h")])
+    a = ExecutionTrace(
+        trace_id="a",
+        events=[TraceEvent(seq=0, step="a|b", action="c", payload_checksum="h")],
+    )
+    b = ExecutionTrace(
+        trace_id="b",
+        events=[TraceEvent(seq=0, step="a", action="b|c", payload_checksum="h")],
+    )
     assert replay_trace(a) != replay_trace(b)
 
     # A separator-bearing payload_checksum cannot forge a second event either.
-    one = ExecutionTrace(trace_id="o", events=[TraceEvent(seq=0, step="s1", action="a1", payload_checksum="h1\x1e1|s2|a2|h2")])
+    one = ExecutionTrace(
+        trace_id="o",
+        events=[
+            TraceEvent(
+                seq=0, step="s1", action="a1", payload_checksum="h1\x1e1|s2|a2|h2"
+            )
+        ],
+    )
     two = ExecutionTrace(
         trace_id="t",
         events=[
@@ -242,7 +255,7 @@ def test_array_checksum_is_byte_order_canonical() -> None:
     assert m_native.dtype == m_swapped.dtype == "int32"
 
 
-def test_array_manifest_validation_has_teeth(tmp_path) -> None:
+def test_array_manifest_validation_has_teeth(tmp_path: Path) -> None:
     """NEGATIVE: a bogus checksum or unparseable dtype on an ARRAY manifest is rejected."""
     from pipeline.durable_streams import (
         StreamKind,
@@ -251,8 +264,14 @@ def test_array_manifest_validation_has_teeth(tmp_path) -> None:
     )
 
     bad = StreamManifest(
-        stream_id="s", kind=StreamKind.ARRAY, dtype="not-a-dtype", shape=[2, 2],
-        source="x", chunk_size=1, n_elements=4, checksum="totally-wrong-checksum",
+        stream_id="s",
+        kind=StreamKind.ARRAY,
+        dtype="not-a-dtype",
+        shape=[2, 2],
+        source="x",
+        chunk_size=1,
+        n_elements=4,
+        checksum="totally-wrong-checksum",
     )
     problems = validate_stream_manifest(bad, tmp_path)
     assert any("sha256 hex" in p for p in problems)

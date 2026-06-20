@@ -85,14 +85,17 @@ class TestEnvironmentFunctionality:
     @pytest.mark.unit
     def test_dependency_installation(self, monkeypatch: pytest.MonkeyPatch) -> None:
         """Dependency installation must request the maintained dev test extras."""
-        from setup import install_dependencies
-        from setup import uv_management
+        from setup import install_dependencies, uv_management
 
         commands: list[list[str]] = []
 
-        def fake_run(command: list[str], **kwargs: Any) -> subprocess.CompletedProcess[str]:
+        def fake_run(
+            command: list[str], **kwargs: Any
+        ) -> subprocess.CompletedProcess[str]:
             commands.append([str(part) for part in command])
-            return subprocess.CompletedProcess(command, 0, stdout="Python 3.12.0", stderr="")
+            return subprocess.CompletedProcess(
+                command, 0, stdout="Python 3.12.0", stderr=""
+            )
 
         monkeypatch.setattr(uv_management.subprocess, "run", fake_run)
         monkeypatch.setattr(

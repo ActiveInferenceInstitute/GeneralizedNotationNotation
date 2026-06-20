@@ -28,11 +28,11 @@ OUT_PNG = REPO_ROOT / "output" / "figures" / "gnn_pipeline_dag.png"
 
 # Phase -> color (stable, ordered for the legend).
 PHASE_COLORS: dict[str, str] = {
-    "Global": "#9CA3AF",       # gray
-    "Core": "#2563EB",         # blue
-    "Analysis": "#7C3AED",     # purple
-    "Simulation": "#DC2626",   # red
-    "Output": "#059669",       # green
+    "Global": "#9CA3AF",  # gray
+    "Core": "#2563EB",  # blue
+    "Analysis": "#7C3AED",  # purple
+    "Simulation": "#DC2626",  # red
+    "Output": "#059669",  # green
 }
 
 
@@ -98,7 +98,9 @@ def main() -> None:
     # x = topological "depth" (longest path from a source); y = spread within layer.
     # Add a virtual chain on step number so isolated/sequence ordering is stable.
     depth: dict[int, int] = {}
-    for n in nx.topological_sort(g) if nx.is_directed_acyclic_graph(g) else sorted(steps):
+    for n in (
+        nx.topological_sort(g) if nx.is_directed_acyclic_graph(g) else sorted(steps)
+    ):
         preds = list(g.predecessors(n))
         depth[n] = 0 if not preds else max(depth[p] for p in preds) + 1
 
@@ -120,37 +122,65 @@ def main() -> None:
 
     fig, ax = plt.subplots(figsize=(18, 10))
     nx.draw_networkx_edges(
-        g, pos, ax=ax, edge_color="#94A3B8", width=1.3,
-        arrows=True, arrowstyle="-|>", arrowsize=12,
-        connectionstyle="arc3,rad=0.08", min_source_margin=16, min_target_margin=16,
+        g,
+        pos,
+        ax=ax,
+        edge_color="#94A3B8",
+        width=1.3,
+        arrows=True,
+        arrowstyle="-|>",
+        arrowsize=12,
+        connectionstyle="arc3,rad=0.08",
+        min_source_margin=16,
+        min_target_margin=16,
     )
     nx.draw_networkx_nodes(
-        g, pos, ax=ax, node_color=node_colors, node_size=2300,
-        edgecolors="#1E293B", linewidths=1.2,
+        g,
+        pos,
+        ax=ax,
+        node_color=node_colors,
+        node_size=2300,
+        edgecolors="#1E293B",
+        linewidths=1.2,
     )
     nx.draw_networkx_labels(
-        g, pos, labels=labels, ax=ax, font_size=7.5,
-        font_color="white", font_weight="bold",
+        g,
+        pos,
+        labels=labels,
+        ax=ax,
+        font_size=7.5,
+        font_color="white",
+        font_weight="bold",
     )
 
-    legend_handles = [
-        mpatches.Patch(color=c, label=p) for p, c in PHASE_COLORS.items()
-    ]
+    legend_handles = [mpatches.Patch(color=c, label=p) for p, c in PHASE_COLORS.items()]
     ax.legend(
-        handles=legend_handles, title="Phase", loc="upper left",
-        bbox_to_anchor=(1.005, 1.0), frameon=True, fontsize=10, title_fontsize=11,
+        handles=legend_handles,
+        title="Phase",
+        loc="upper left",
+        bbox_to_anchor=(1.005, 1.0),
+        frameon=True,
+        fontsize=10,
+        title_fontsize=11,
     )
 
     n_steps = len(steps)
     ax.set_title(
         "GNN 25-Step Processing Pipeline",
-        fontsize=20, fontweight="bold", pad=16,
+        fontsize=20,
+        fontweight="bold",
+        pad=16,
     )
     ax.text(
-        0.5, -0.04,
+        0.5,
+        -0.04,
         f"{n_steps} steps ({min(steps)}–{max(steps)}) · "
         f"{len(edges)} hard data dependencies · colored by execution phase",
-        transform=ax.transAxes, ha="center", va="top", fontsize=10, color="#475569",
+        transform=ax.transAxes,
+        ha="center",
+        va="top",
+        fontsize=10,
+        color="#475569",
     )
     ax.set_axis_off()
     fig.tight_layout()

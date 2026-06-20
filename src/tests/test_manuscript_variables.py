@@ -9,11 +9,17 @@ from __future__ import annotations
 
 import json
 import re
+import sys
 from pathlib import Path
 
 import pytest
 
-from src.manuscript_variables import generate_variables, save_variables
+# Import the producer by its canonical top-level name (src/ on path), matching the
+# repo convention (`from pipeline.X import ...`). Importing it as `src.manuscript_variables`
+# makes mypy (mypy_path=src) resolve the same file under two module names and fail.
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+
+from manuscript_variables import generate_variables, save_variables  # noqa: E402
 
 _PROJECT_ROOT = Path(__file__).resolve().parents[2]
 
@@ -48,8 +54,9 @@ def test_determinism(variables: dict[str, str]) -> None:
 
 def test_version_matches_pyproject(variables: dict[str, str]) -> None:
     text = (_PROJECT_ROOT / "pyproject.toml").read_text(encoding="utf-8")
-    expected = re.search(r'^\s*version\s*=\s*"([^"]+)"', text, re.MULTILINE).group(1)
-    assert variables["GNN_VERSION"] == expected
+    match = re.search(r'^\s*version\s*=\s*"([^"]+)"', text, re.MULTILINE)
+    assert match is not None
+    assert variables["GNN_VERSION"] == match.group(1)
 
 
 def test_step_count_matches_step_modules(variables: dict[str, str]) -> None:
@@ -60,7 +67,9 @@ def test_step_count_matches_step_modules(variables: dict[str, str]) -> None:
 
 def test_family_count_matches_manifest(variables: dict[str, str]) -> None:
     manifest = json.loads(
-        (_PROJECT_ROOT / "input" / "model_family_manifest.json").read_text(encoding="utf-8")
+        (_PROJECT_ROOT / "input" / "model_family_manifest.json").read_text(
+            encoding="utf-8"
+        )
     )
     assert variables["GNN_FAMILY_COUNT"] == str(len(manifest["families"]))
 
@@ -76,7 +85,9 @@ def test_backend_count_matches_registry(variables: dict[str, str]) -> None:
 
 def test_mcp_tool_count_matches_audit(variables: dict[str, str]) -> None:
     audit = json.loads(
-        (_PROJECT_ROOT / "src" / "mcp" / "audit_report.json").read_text(encoding="utf-8")
+        (_PROJECT_ROOT / "src" / "mcp" / "audit_report.json").read_text(
+            encoding="utf-8"
+        )
     )
     assert variables["GNN_MCP_TOOL_COUNT"] == str(audit["tools_total"])
 

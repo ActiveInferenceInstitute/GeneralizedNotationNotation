@@ -1119,7 +1119,9 @@ def _extract_simulation_metrics(
             artifact_path = _resolve_current_output_path(detail.get(path_key))
             if not artifact_path:
                 continue
-            candidate = artifact_path if artifact_path.is_dir() else artifact_path.parent
+            candidate = (
+                artifact_path if artifact_path.is_dir() else artifact_path.parent
+            )
             if candidate.name == "execution_logs":
                 candidate = candidate.parent
             if candidate.exists():
@@ -1127,9 +1129,11 @@ def _extract_simulation_metrics(
 
         model_name = detail.get("model_name")
         if model_name:
-            candidate = execution_output_dir / str(model_name) / framework.lower().replace(
-                ".", "_"
-            ).replace(" ", "_")
+            candidate = (
+                execution_output_dir
+                / str(model_name)
+                / framework.lower().replace(".", "_").replace(" ", "_")
+            )
             if candidate.exists():
                 return candidate
         return None

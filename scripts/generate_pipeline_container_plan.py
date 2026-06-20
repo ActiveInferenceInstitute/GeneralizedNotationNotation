@@ -62,7 +62,10 @@ def main() -> int:
     if findings:
         print(f"Security review found {len(findings)} issue(s):", file=sys.stderr)
         for f in findings:
-            print(f"  [{f.severity}] {f.code} ({f.spec_name}): {f.message}", file=sys.stderr)
+            print(
+                f"  [{f.severity}] {f.code} ({f.spec_name}): {f.message}",
+                file=sys.stderr,
+            )
         return 1
 
     print("Security review: clean (0 findings).")

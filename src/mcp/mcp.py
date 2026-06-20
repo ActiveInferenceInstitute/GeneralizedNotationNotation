@@ -585,12 +585,14 @@ class MCP:
         if schema.get("type") == "object" or "properties" in schema:
             normalized = cls._strip_legacy_schema_keys(dict(schema))
             normalized["type"] = "object"
-            properties = normalized.get("properties")
-            if not isinstance(properties, dict):
+            existing_properties = normalized.get("properties")
+            if not isinstance(existing_properties, dict):
                 normalized["properties"] = {}
-            if "required" in normalized and not isinstance(normalized["required"], list):
+            if "required" in normalized and not isinstance(
+                normalized["required"], list
+            ):
                 normalized["required"] = []
-            return normalized
+            return cast("Dict[str, Any]", normalized)
 
         properties: Dict[str, Any] = {}
         required: List[str] = []

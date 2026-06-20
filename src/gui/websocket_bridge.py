@@ -170,7 +170,7 @@ async def run_local_gui_bridge(
             "GUI WebSocket bridge is local-only; bind to 127.0.0.1, localhost, or ::1"
         )
     try:
-        import websockets  # type: ignore[import-not-found]
+        import websockets
     except ImportError as exc:
         raise RuntimeError(
             "Install the optional websockets package to launch the GUI bridge"

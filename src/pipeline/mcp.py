@@ -202,16 +202,31 @@ def get_v3_orchestration_capabilities() -> Dict[str, Any]:
         "safe_by_design": True,
         "contracts": {
             "durable_streams": [
-                "StreamManifest", "ExecutionTrace", "trace_integrity",
-                "validate_stream_manifest", "replay_trace", "verify_replay",
+                "StreamManifest",
+                "ExecutionTrace",
+                "trace_integrity",
+                "validate_stream_manifest",
+                "replay_trace",
+                "verify_replay",
             ],
             "run_session": [
-                "RunSession", "WorkUnit", "start_session", "mark", "checkpoint",
-                "load_session", "remaining_units", "status_report", "cancel_safe_cleanup",
+                "RunSession",
+                "WorkUnit",
+                "start_session",
+                "mark",
+                "checkpoint",
+                "load_session",
+                "remaining_units",
+                "status_report",
+                "cancel_safe_cleanup",
             ],
             "container_plan": [
-                "ContainerPlan", "generate_container_plan", "security_review",
-                "compute_plan_hash", "serialize_plan", "plan_to_compose",
+                "ContainerPlan",
+                "generate_container_plan",
+                "security_review",
+                "compute_plan_hash",
+                "serialize_plan",
+                "plan_to_compose",
             ],
         },
     }
@@ -233,10 +248,17 @@ def run_v3_container_security_review() -> Dict[str, Any]:
         )
         insecure = cp.ContainerPlan(
             plan_id="insecure-demo",
-            specs=[cp.ContainerSpec(
-                name="bad", image="img:latest", privileged=True, user="root",
-                env={"DB_PASSWORD": "hunter2"}, read_only_rootfs=False, cap_drop=[],
-            )],
+            specs=[
+                cp.ContainerSpec(
+                    name="bad",
+                    image="img:latest",
+                    privileged=True,
+                    user="root",
+                    env={"DB_PASSWORD": "hunter2"},
+                    read_only_rootfs=False,
+                    cap_drop=[],
+                )
+            ],
         )
         insecure_findings = cp.security_review(insecure)
         return {
@@ -272,19 +294,25 @@ def run_v3_orchestration_self_check() -> Dict[str, Any]:
         with tempfile.TemporaryDirectory(prefix="gnn-v3-mcp-") as tmp:
             wd = _Path(tmp)
             manifest = ds.StreamManifest.from_array("s", np.arange(6, dtype=np.float64))
-            results["streams_array_valid"] = ds.validate_stream_manifest(manifest, wd) == []
+            results["streams_array_valid"] = (
+                ds.validate_stream_manifest(manifest, wd) == []
+            )
             fp = wd / "d.bin"
             fp.write_bytes(b"payload")
             fm = ds.StreamManifest.from_file("f", fp)
             fp.write_bytes(b"payload-TAMPERED")
-            results["streams_tamper_detected"] = len(ds.validate_stream_manifest(fm, wd)) > 0
+            results["streams_tamper_detected"] = (
+                len(ds.validate_stream_manifest(fm, wd)) > 0
+            )
 
         sess = rs.start_session("mcp", ["a", "b"])
         sess = rs.mark(sess, "a", rs.UnitStatus.DONE)
         rep = rs.status_report(sess)
         results["session_status_math"] = rep["completed"] == 1 and not rep["done"]
 
-        plan = cp.generate_container_plan("mcp", [{"name": "r", "image": "i@sha256:" + "a" * 64}])
+        plan = cp.generate_container_plan(
+            "mcp", [{"name": "r", "image": "i@sha256:" + "a" * 64}]
+        )
         results["container_hardened_clean"] = cp.security_review(plan) == []
 
         return {

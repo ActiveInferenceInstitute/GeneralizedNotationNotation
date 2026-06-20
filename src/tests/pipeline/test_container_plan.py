@@ -231,8 +231,16 @@ class TestSafetyContract:
 
         tree = ast.parse(Path(container_plan.__file__).read_text())
         forbidden_imports = {
-            "subprocess", "docker", "kubernetes", "socket", "requests",
-            "urllib", "http", "asyncio", "paramiko", "pty",
+            "subprocess",
+            "docker",
+            "kubernetes",
+            "socket",
+            "requests",
+            "urllib",
+            "http",
+            "asyncio",
+            "paramiko",
+            "pty",
         }
         forbidden_calls = {"system", "popen", "exec", "eval", "spawn", "fork"}
         bad_imports: list[str] = []
@@ -259,22 +267,32 @@ def test_unpinned_image_strict_digest_rejects_fake_digests() -> None:
     from pipeline import container_plan as cp
 
     for bad_image in (
-        "evil.com/x:latest@sha256:zzzz",            # non-hex digest
-        "ubuntu:@sha256:nonsense",                  # malformed
-        "x@sha256:" + ("z" * 64),                   # 64 non-hex chars
-        "x@sha256:" + ("a" * 63),                   # too short
-        "registry/app:latest",                      # mutable tag, no digest
+        "evil.com/x:latest@sha256:zzzz",  # non-hex digest
+        "ubuntu:@sha256:nonsense",  # malformed
+        "x@sha256:" + ("z" * 64),  # 64 non-hex chars
+        "x@sha256:" + ("a" * 63),  # too short
+        "registry/app:latest",  # mutable tag, no digest
     ):
-        plan = cp.ContainerPlan(plan_id="p", specs=[cp.ContainerSpec(name="s", image=bad_image)])
+        plan = cp.ContainerPlan(
+            plan_id="p", specs=[cp.ContainerSpec(name="s", image=bad_image)]
+        )
         codes = {f.code for f in cp.security_review(plan)}
-        assert "UNPINNED_IMAGE" in codes, f"{bad_image!r} should be flagged UNPINNED_IMAGE"
+        assert "UNPINNED_IMAGE" in codes, (
+            f"{bad_image!r} should be flagged UNPINNED_IMAGE"
+        )
     # A real 64-hex digest is accepted (no UNPINNED finding).
     good = cp.ContainerPlan(
         plan_id="p",
-        specs=[cp.ContainerSpec(
-            name="s", image="registry/app@sha256:" + ("a" * 64), user="nonroot",
-            read_only_rootfs=True, cap_drop=["ALL"], resources=cp.ResourceLimits(cpu="1", memory="1Mi"),
-        )],
+        specs=[
+            cp.ContainerSpec(
+                name="s",
+                image="registry/app@sha256:" + ("a" * 64),
+                user="nonroot",
+                read_only_rootfs=True,
+                cap_drop=["ALL"],
+                resources=cp.ResourceLimits(cpu="1", memory="1Mi"),
+            )
+        ],
     )
     assert "UNPINNED_IMAGE" not in {f.code for f in cp.security_review(good)}
 
@@ -283,13 +301,26 @@ def test_sensitive_host_mount_is_critical() -> None:
     """NEGATIVE: mounting the host root or docker socket is a CRITICAL escape risk."""
     from pipeline import container_plan as cp
 
-    for host_mount in ("/:/host", "/var/run/docker.sock:/var/run/docker.sock", "/proc:/proc", "/etc:/etc"):
+    for host_mount in (
+        "/:/host",
+        "/var/run/docker.sock:/var/run/docker.sock",
+        "/proc:/proc",
+        "/etc:/etc",
+    ):
         plan = cp.ContainerPlan(
             plan_id="p",
-            specs=[cp.ContainerSpec(name="s", image="i@sha256:" + ("a" * 64), mounts=[host_mount])],
+            specs=[
+                cp.ContainerSpec(
+                    name="s", image="i@sha256:" + ("a" * 64), mounts=[host_mount]
+                )
+            ],
         )
         findings = cp.security_review(plan)
-        crit = [f for f in findings if f.code == "SENSITIVE_HOST_MOUNT" and f.severity == "CRITICAL"]
+        crit = [
+            f
+            for f in findings
+            if f.code == "SENSITIVE_HOST_MOUNT" and f.severity == "CRITICAL"
+        ]
         assert crit, f"{host_mount!r} should yield a CRITICAL SENSITIVE_HOST_MOUNT"
 
 
@@ -299,10 +330,15 @@ def test_host_namespace_and_dangerous_caps_flagged() -> None:
 
     plan = cp.ContainerPlan(
         plan_id="p",
-        specs=[cp.ContainerSpec(
-            name="s", image="i@sha256:" + ("a" * 64),
-            network="host", pid="host", cap_add=["SYS_ADMIN", "NET_ADMIN"],
-        )],
+        specs=[
+            cp.ContainerSpec(
+                name="s",
+                image="i@sha256:" + ("a" * 64),
+                network="host",
+                pid="host",
+                cap_add=["SYS_ADMIN", "NET_ADMIN"],
+            )
+        ],
     )
     codes = {f.code: f.severity for f in cp.security_review(plan)}
     assert codes.get("HOST_NETWORK") == "HIGH"

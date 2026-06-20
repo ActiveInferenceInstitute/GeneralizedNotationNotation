@@ -289,7 +289,9 @@ def _numeric_dimensions(dimensions: list[str]) -> list[int] | None:
         return None
 
 
-def _shape_for_comparison(actual_shape: list[int], expected_shape: list[int]) -> list[int]:
+def _shape_for_comparison(
+    actual_shape: list[int], expected_shape: list[int]
+) -> list[int]:
     """Normalize established GNN parameter layout conventions for comparison."""
     if len(expected_shape) == 1 and len(actual_shape) == 2 and actual_shape[0] == 1:
         return actual_shape[1:]

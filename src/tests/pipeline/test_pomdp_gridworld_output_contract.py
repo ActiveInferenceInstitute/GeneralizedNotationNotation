@@ -8,7 +8,6 @@ import sys
 from pathlib import Path
 from typing import Any
 
-
 REPO_ROOT = Path(__file__).resolve().parents[3]
 CHECKER_PATH = REPO_ROOT / "scripts" / "check_pomdp_gridworld_outputs.py"
 
@@ -60,8 +59,7 @@ def _minimal_valid_output_tree(root: Path) -> None:
     )
 
     framework_results = {
-        name: {"success": True, "message": "ok"}
-        for name in checker.ALL_RENDER_TARGETS
+        name: {"success": True, "message": "ok"} for name in checker.ALL_RENDER_TARGETS
     }
     _write_json(
         root / "11_render_output" / "render_processing_summary.json",
@@ -77,7 +75,13 @@ def _minimal_valid_output_tree(root: Path) -> None:
         },
     )
     for framework in checker.ALL_RENDER_TARGETS:
-        suffix = ".stan" if framework == "stan" else ".jl" if framework in {"rxinfer", "activeinference_jl"} else ".py"
+        suffix = (
+            ".stan"
+            if framework == "stan"
+            else ".jl"
+            if framework in {"rxinfer", "activeinference_jl"}
+            else ".py"
+        )
         _write_text(
             root
             / "11_render_output"
@@ -130,10 +134,18 @@ def _minimal_valid_output_tree(root: Path) -> None:
         "png",
     )
     for idx in range(7):
-        _write_text(root / "16_analysis_output" / "cross_framework" / f"gif_{idx}.gif", "gif")
+        _write_text(
+            root / "16_analysis_output" / "cross_framework" / f"gif_{idx}.gif", "gif"
+        )
 
     _write_text(root / "23_report_output" / "report.md", "POMDP GridWorld report")
-    for page in ("index.html", "pipeline.html", "reports.html", "analysis.html", "visualization.html"):
+    for page in (
+        "index.html",
+        "pipeline.html",
+        "reports.html",
+        "analysis.html",
+        "visualization.html",
+    ):
         _write_text(root / "20_website_output" / page, "POMDP GridWorld website")
 
 

@@ -50,7 +50,9 @@ def _atomic_write_text(path: Path, text: str) -> None:
     """Atomically write ``text`` to ``path`` (tmp file in same dir + os.replace)."""
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
-    fd, tmp_name = tempfile.mkstemp(dir=str(path.parent), prefix=path.name, suffix=".tmp")
+    fd, tmp_name = tempfile.mkstemp(
+        dir=str(path.parent), prefix=path.name, suffix=".tmp"
+    )
     try:
         with os.fdopen(fd, "w", encoding="utf-8") as fh:
             fh.write(text)
@@ -354,14 +356,15 @@ def validate_stream_manifest(
         expected_elements = prod(manifest.shape) if manifest.shape else 0
         if manifest.n_elements != expected_elements:
             problems.append(
-                f"n_elements {manifest.n_elements} != prod(shape) "
-                f"{expected_elements}"
+                f"n_elements {manifest.n_elements} != prod(shape) {expected_elements}"
             )
         # ARRAY streams carry no payload to re-hash, but the manifest's own fields
         # must still be well-formed: a 64-hex checksum and a parseable dtype. Without
         # these the validator would pass a manifest with a bogus checksum/dtype.
         if not _SHA256_HEX_RE.match(manifest.checksum):
-            problems.append(f"checksum is not a 64-char sha256 hex digest: {manifest.checksum!r}")
+            problems.append(
+                f"checksum is not a 64-char sha256 hex digest: {manifest.checksum!r}"
+            )
         if not manifest.dtype:
             problems.append("dtype is empty")
         else:

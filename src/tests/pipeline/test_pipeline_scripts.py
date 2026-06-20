@@ -16,13 +16,13 @@ All tests execute real scripts via subprocess with isolated temp directories
 and assert on real artifacts.
 """
 
+import ast
 import logging
 import re
 import shutil
 import subprocess
 import sys
 import tempfile
-import ast
 from pathlib import Path
 from typing import Any
 

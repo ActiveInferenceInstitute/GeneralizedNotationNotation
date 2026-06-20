@@ -3,6 +3,7 @@
 import logging
 import sys
 from pathlib import Path
+from typing import Any, cast
 
 import pytest
 
@@ -196,7 +197,9 @@ def test_critical_metadata_matches_canonical_set() -> None:
 
 def test_registered_step_parsers_support_recursive_round_trip() -> None:
     for step_name, config in StepConfiguration.STEP_CONFIGS.items():
-        all_args = config.get("required_args", []) + config.get("optional_args", [])
+        all_args = cast("list[Any]", config.get("required_args", [])) + cast(
+            "list[Any]", config.get("optional_args", [])
+        )
         if "recursive" not in all_args:
             continue
 
@@ -209,16 +212,18 @@ def test_registered_step_parsers_support_recursive_round_trip() -> None:
             ["--no-recursive"]
         )
 
-        assert default_args.recursive == config.get("defaults", {}).get(
-            "recursive", True
-        )
+        assert default_args.recursive == cast(
+            "dict[str, Any]", config.get("defaults", {})
+        ).get("recursive", True)
         assert enabled_args.recursive is True
         assert disabled_args.recursive is False
 
 
 def test_fallback_parser_matches_step_recursive_defaults() -> None:
     for step_name, config in StepConfiguration.STEP_CONFIGS.items():
-        all_args = config.get("required_args", []) + config.get("optional_args", [])
+        all_args = cast("list[Any]", config.get("required_args", [])) + cast(
+            "list[Any]", config.get("optional_args", [])
+        )
         if "recursive" not in all_args:
             continue
 
@@ -227,9 +232,9 @@ def test_fallback_parser_matches_step_recursive_defaults() -> None:
         fallback_default = fallback.parse_args([])
         fallback_disabled = fallback.parse_args(["--no-recursive"])
 
-        assert fallback_default.recursive == config.get("defaults", {}).get(
-            "recursive", True
-        )
+        assert fallback_default.recursive == cast(
+            "dict[str, Any]", config.get("defaults", {})
+        ).get("recursive", True)
         assert fallback_disabled.recursive is False
 
 

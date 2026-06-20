@@ -42,11 +42,7 @@ _HARDCODE_MIN = 10
 
 
 def _section_files(manuscript_dir: Path) -> list[Path]:
-    return [
-        p
-        for p in sorted(manuscript_dir.glob("*.md"))
-        if p.name not in _EXCLUDED
-    ]
+    return [p for p in sorted(manuscript_dir.glob("*.md")) if p.name not in _EXCLUDED]
 
 
 def _strip_code(text: str) -> str:
@@ -57,8 +53,12 @@ def _strip_code(text: str) -> str:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Manuscript token/citation integrity gate")
-    parser.add_argument("--strict", action="store_true", help="treat hard-coded counts as failures")
+    parser = argparse.ArgumentParser(
+        description="Manuscript token/citation integrity gate"
+    )
+    parser.add_argument(
+        "--strict", action="store_true", help="treat hard-coded counts as failures"
+    )
     args = parser.parse_args()
 
     manuscript_dir = _PROJECT_ROOT / "manuscript"
@@ -108,7 +108,9 @@ def main() -> int:
             continue
         for value, key in config_counts.items():
             if re.search(rf"(?<!\d){re.escape(value)}(?!\d)", line):
-                config_hardcoded.append(f"config.yaml: {stripped.split(':')[0]} hard-codes {value} (use a description without the number; {{{{{key}}}}} does not resolve in config.yaml)")
+                config_hardcoded.append(
+                    f"config.yaml: {stripped.split(':')[0]} hard-codes {value} (use a description without the number; {{{{{key}}}}} does not resolve in config.yaml)"
+                )
 
     unknown_tokens: list[str] = []
     dangling_cites: list[str] = []
@@ -130,7 +132,9 @@ def main() -> int:
         no_tokens = _TOKEN_RE.sub("", body)
         for value, key in hardcode_targets.items():
             if re.search(rf"(?<!\d){re.escape(value)}(?!\d)", no_tokens):
-                hardcoded.append(f"{path.name}: literal {value} should be {{{{{key}}}}}")
+                hardcoded.append(
+                    f"{path.name}: literal {value} should be {{{{{key}}}}}"
+                )
 
     print(f"Sections checked: {len(_section_files(manuscript_dir))}")
     print(f"Known tokens: {len(known_tokens)} | Bib keys: {len(bib_keys)}")
@@ -159,7 +163,9 @@ def main() -> int:
     if ok and not hardcoded:
         print("\n✅ Manuscript token/citation integrity: clean")
     elif ok:
-        print("\n✅ No unknown tokens or dangling citations (hard-coded warnings above)")
+        print(
+            "\n✅ No unknown tokens or dangling citations (hard-coded warnings above)"
+        )
     else:
         print("\n❌ Manuscript integrity gate FAILED")
     return 0 if ok else 1

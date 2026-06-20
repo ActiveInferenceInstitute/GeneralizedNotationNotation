@@ -12,11 +12,11 @@ from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional
 
 from pipeline.config import get_output_dir_for_script
+from utils.error_handling import coerce_step_exit_code
 from utils.pipeline import (
     setup_step_logging,
     validate_output_directory,
 )
-from utils.error_handling import coerce_step_exit_code
 from utils.structured_logging import (  # noqa: F401 - standard pipeline imports
     log_step_error,
     log_step_start,
@@ -226,9 +226,7 @@ def create_standardized_pipeline_script(
             target_dir, step_output_dir = _resolve_dirs(
                 parsed_args, step_name, default_target_dir
             )
-            recursive_default = _resolve_recursive_default(
-                step_name, default_recursive
-            )
+            recursive_default = _resolve_recursive_default(step_name, default_recursive)
 
             result = module_function(
                 target_dir=target_dir,

@@ -104,7 +104,9 @@ learning_rate = 0.01
             assert result is None or hasattr(result, "exists")
         except Exception as e:
             # May require additional dependencies
-            raise AssertionError(f"Dashboard generation requires additional dependencies: {e}")
+            raise AssertionError(
+                f"Dashboard generation requires additional dependencies: {e}"
+            )
 
 
 class TestVisualizationDataExtractor:
@@ -306,7 +308,9 @@ Dynamic
                 or result is not None
             )
         except ImportError as e:
-            raise AssertionError(f"Advanced visualization requires additional dependencies: {e}")
+            raise AssertionError(
+                f"Advanced visualization requires additional dependencies: {e}"
+            )
 
     def test_process_with_viz_types(self, safe_filesystem: Any) -> None:
         """Test processing with different visualization types."""
