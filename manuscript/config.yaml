@@ -1,0 +1,52 @@
+# Template-format manuscript configuration for GeneralizedNotationNotation.
+# Scaffolded from the project README/AGENTS context; update before publication.
+
+paper:
+  title: "GeneralizedNotationNotation: A Text Language for Active Inference Models"
+  subtitle: "A text language and modular processing pipeline for Active Inference generative models"
+  version: "2.0.0"
+  date: "2026-06-12"
+
+authors:
+  - name: "Daniel Ari Friedman"
+    orcid: "0000-0001-6232-9096"
+    email: "daniel@activeinference.institute"
+    affiliation: "Active Inference Institute"
+    corresponding: true
+
+publication:
+  doi: ""
+  version_doi: ""
+  version_record: ""
+  github_repository: "https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation"
+  year: "2026"
+  transmission_bookends:
+    enabled: false
+    max_prior_releases: 5
+    show_steganography: false
+
+keywords:
+  - "GNN"
+  - "active inference"
+  - "generative models"
+  - "model notation"
+  - "pipeline automation"
+
+metadata:
+  license: "CC-BY-NC-SA-4.0"
+  language: "en"
+
+manuscript_dir: "manuscript"
+
+render:
+  formats:
+    pdf: true
+    html: true
+    slides: true
+    docx: false
+    epub: false
+
+bibliography:
+  references_path: "manuscript/references.bib"
+  fail_on_missing: true
+  fail_on_unused: false
