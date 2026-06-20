@@ -7,7 +7,7 @@ container, contacts a cluster, or opens a device/sensor stream.
 
 All three live in `src/pipeline/` and follow the repository conventions (Pydantic v2 models,
 `from pipeline.X import Y` imports, atomic file writes, deterministic hashing). They are exercised by
-no-mocks unit tests in `src/tests/pipeline/` and an end-to-end gate
+real-implementation unit tests in `src/tests/pipeline/` and an end-to-end gate
 (`scripts/run_v3_orchestration_acceptance.py`).
 
 ## 1. Durable Observation Streams — `pipeline.durable_streams`
@@ -62,7 +62,7 @@ three contracts).
 ## Reproduce
 
 ```bash
-# Unit contracts (no mocks; includes negative controls):
+# Unit contracts (real objects only; includes negative controls):
 PYTHONPATH=src uv run python -m pytest \
   src/tests/pipeline/test_durable_streams.py \
   src/tests/pipeline/test_run_session.py \

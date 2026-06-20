@@ -40,7 +40,7 @@ def main() -> int:
     parser.add_argument(
         "--image",
         default=None,
-        help="Digest-pinned image (default: documented placeholder digest).",
+        help="Digest-pinned image (default: documented stand-in digest).",
     )
     parser.add_argument(
         "--out",

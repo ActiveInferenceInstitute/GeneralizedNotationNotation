@@ -32,7 +32,7 @@ _SECRET_KEY_RE = re.compile(r"PASSWORD|SECRET|TOKEN|KEY", re.IGNORECASE)
 # A "${...}" style indirect reference is NOT a plaintext secret.
 _REFERENCE_RE = re.compile(r"^\$\{[^}]+\}$")
 # A properly pinned image ends with a full 64-hex-char sha256 digest. A mere
-# "@sha256:" substring (with a fake/short/non-hex digest, or a trailing mutable
+# "@sha256:" substring (with a forged/short/non-hex digest, or a trailing mutable
 # tag) is NOT a valid pin.
 _DIGEST_PIN_RE = re.compile(r"@sha256:[0-9a-f]{64}$")
 # Host paths whose mount into a container enables trivial host escape.

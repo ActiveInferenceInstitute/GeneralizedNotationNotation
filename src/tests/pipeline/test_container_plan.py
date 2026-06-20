@@ -2,8 +2,8 @@
 """
 Tests for pipeline/container_plan.py — auditable container plans.
 
-No mocks: all tests use real Pydantic models, real serialization, and real
-hashing. Includes positive (clean hardened plan) and negative-control
+Real objects only: all tests use real Pydantic models, real serialization, and
+real hashing. Includes positive (clean hardened plan) and negative-control
 (deliberately insecure plan) security-review tests, deterministic-hash checks,
 rollback semantics, and a source-level safety assertion proving the module has
 no container-execution path.

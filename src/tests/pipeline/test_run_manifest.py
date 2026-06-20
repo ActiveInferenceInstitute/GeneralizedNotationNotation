@@ -2,7 +2,7 @@
 """
 Tests for pipeline/run_manifest.py — durable run manifest emission.
 
-No mocks: every test builds a REAL fake run output directory under ``tmp_path``
+Real objects only: every test builds a REAL synthetic run output directory under ``tmp_path``
 with real ``N_*_output/`` step subdirectories, real JSON artifact files, and a
 real ``pipeline_execution_summary.json``. Assertions use real serialization,
 real sha256 checksums (via durable_streams), and a NEGATIVE control that proves

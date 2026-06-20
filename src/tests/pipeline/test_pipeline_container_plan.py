@@ -3,7 +3,7 @@
 Tests for pipeline/pipeline_container_plan.py — hardened container plan for
 running the GNN pipeline.
 
-No mocks: all tests use real Pydantic models, real YAML files (real
+Real objects only: all tests use real Pydantic models, real YAML files (real
 input/config.yaml plus real tmp_path YAML), real serialization, and the real
 static security review. Includes a positive control (the generated plan reviews
 clean), command-shape assertions (src/main.py + dirs + skip-steps propagation),

@@ -10,7 +10,7 @@ embedded in the plan is data describing how the pipeline *would* be launched;
 nothing here invokes it.
 
 Public API:
-  - PINNED_PIPELINE_IMAGE: documented placeholder image pinned by digest
+  - PINNED_PIPELINE_IMAGE: documented stand-in image pinned by digest
   - read_skip_steps(config_path): parse pipeline.skip_steps from config YAML
   - build_pipeline_command(target_dir, output_dir, skip_steps): run argv
   - plan_for_pipeline(config_path, *, image, target_dir, output_dir, previous):
@@ -31,7 +31,7 @@ from pipeline.container_plan import (
     security_review,
 )
 
-# Documented placeholder image, pinned by a full sha256 digest so the generated
+# Documented stand-in image, pinned by a full sha256 digest so the generated
 # plan passes the UNPINNED_IMAGE security check. Replace the digest with the
 # real published GNN pipeline image digest in production by passing ``image=``.
 PINNED_PIPELINE_IMAGE = (

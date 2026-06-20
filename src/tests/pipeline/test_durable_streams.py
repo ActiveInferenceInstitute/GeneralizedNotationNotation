@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Tests for pipeline/durable_streams.py — no mocks, real numpy + tmp_path."""
+"""Tests for pipeline/durable_streams.py — real numpy + tmp_path, real objects only."""
 
 import sys
 from pathlib import Path
@@ -216,7 +216,7 @@ def test_replay_no_field_framing_collision() -> None:
     b = ExecutionTrace(trace_id="b", events=[TraceEvent(seq=0, step="a", action="b|c", payload_checksum="h")])
     assert replay_trace(a) != replay_trace(b)
 
-    # A separator-bearing payload_checksum cannot fake a second event either.
+    # A separator-bearing payload_checksum cannot forge a second event either.
     one = ExecutionTrace(trace_id="o", events=[TraceEvent(seq=0, step="s1", action="a1", payload_checksum="h1\x1e1|s2|a2|h2")])
     two = ExecutionTrace(
         trace_id="t",

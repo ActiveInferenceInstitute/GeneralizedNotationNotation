@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Tests for pipeline/run_session.py — resumable run sessions (no mocks)."""
+"""Tests for pipeline/run_session.py — resumable run sessions (real objects only)."""
 
 import sys
 from pathlib import Path

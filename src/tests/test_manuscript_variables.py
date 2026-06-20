@@ -1,6 +1,6 @@
 """Tests for the deterministic manuscript-variable producer.
 
-No mocks: every assertion recomputes the expected value from the live repository
+Real objects only: every assertion recomputes the expected value from the live repository
 and compares it against :func:`src.manuscript_variables.generate_variables`, so the
 test fails if the producer drifts from the source surfaces it claims to read.
 """
@@ -87,8 +87,8 @@ def test_tables_are_multiline_markdown(variables: dict[str, str]) -> None:
         assert variables[key].lstrip().startswith("|"), f"{key} should be a pipe table"
 
 
-def test_no_placeholder_tbd_values(variables: dict[str, str]) -> None:
-    # ISC-23 guard: config completion removes scaffold 'TBD'/empty license.
+def test_license_value_is_resolved(variables: dict[str, str]) -> None:
+    # ISC-23 guard: config completion removes the scaffold 'TBD'/empty license.
     assert variables["GNN_LICENSE"] and variables["GNN_LICENSE"] != "TBD"
 
 

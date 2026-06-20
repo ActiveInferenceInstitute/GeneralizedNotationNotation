@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""Tests for pipeline/session_acceptance.py — resumable acceptance (no mocks).
+"""Tests for pipeline/session_acceptance.py — resumable acceptance (real objects only).
 
 Every ``runner`` injected below is a real deterministic callable that writes
 real on-disk pipeline-summary artifacts and returns a real
-``subprocess.CompletedProcess`` — no mocking framework is used anywhere. The
+``subprocess.CompletedProcess`` — no test-double framework is used anywhere. The
 families exercised are real entries from the maintained model-family manifest,
 whose representative fixtures exist on disk; only the pipeline *execution* is
 replaced by the injected runner so no real pipeline runs.
