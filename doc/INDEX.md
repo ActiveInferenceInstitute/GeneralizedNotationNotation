@@ -84,6 +84,7 @@ The human-oriented **documentation hub** is [README.md](README.md). Repository r
 ### Pipeline Steps
 
 - [Pipeline README](gnn/operations/gnn_tools.md) - Pipeline overview
+- [v3.0.0 Long-Running Orchestration](pipeline/v3_orchestration.md) - Safe-by-design orchestration contracts (durable streams, run sessions, container plans) + acceptance gate + MCP tools
 - Step 0: Template initialization
 - Step 1: Environment setup
 - Step 2: Test execution
@@ -267,4 +268,4 @@ Also maintained: [expected_dirs.txt](expected_dirs.txt) (machine-oriented list o
 
 ---
 
-*Last updated: 2026-04-12*
+*Last updated: 2026-06-20 — package v3.0.0 ("Long-Running Orchestration")*

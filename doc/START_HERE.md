@@ -40,6 +40,7 @@ The `doc/gnn/` subdirectory contains the immediate specifications, guides, and i
 Documents explaining how to run, scale, and fix the processing pipeline.
 
 - **[Execution (`doc/execution/`)](execution/)**: Framework availability checks and multi-environment orchestration.
+- **[v3.0.0 Long-Running Orchestration](pipeline/v3_orchestration.md)**: Safe-by-design contracts (durable observation streams, resumable run sessions, auditable container plans) that produce and check data only — no live infrastructure mutation — plus the strict acceptance gate and 3 new MCP tools.
 - **[Troubleshooting (`doc/troubleshooting/`)](troubleshooting/)**: Master FAQ, error taxonomy, and resolutions for specific script warnings.
 - **[Dependencies (`doc/dependencies/`)](dependencies/)**: Core vs. optional libraries, and Julia/Python interoperability.
 

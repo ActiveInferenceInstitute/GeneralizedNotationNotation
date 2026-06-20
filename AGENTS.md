@@ -52,6 +52,17 @@ The GNN (Generalized Notation Notation) Pipeline is a comprehensive 25-step syst
 - **[sapf/](src/sapf/AGENTS.md)** - SAPF public entry point (implementation in `src/audio/sapf/`)
 - **[doc/](src/doc/AGENTS.md)** - In-repo technical documentation subtree
 
+### v3.0.0 Long-Running Orchestration Modules (`src/pipeline/`)
+
+Safe-by-design contracts and additive live wiring introduced in v3.0.0 ("Long-Running Orchestration"). The three core contracts are pure data layers that generate, validate, and serialize plans without mutating any live infrastructure.
+
+- **`durable_streams.py`** - Durable observation streams: pure, replayable file/array stream manifests and traces (foundation laid before any live sensor/device stream)
+- **`run_session.py`** - Resumable run-session management: durable run manifests, status inspection, and resume semantics for extended acceptance runs
+- **`container_plan.py`** - Auditable container plans: validated, hardened container plans with static security review and rollback semantics
+- **`session_acceptance.py`** - Live wiring that wraps the manifest-driven model-family acceptance runner in a resumable run session
+- **`run_manifest.py`** - Additive, real-object emission turning a completed pipeline run's `output/` artifacts into durable, replayable v3 artifacts
+- **`pipeline_container_plan.py`** - Generates an auditable, hardened container plan for running the GNN pipeline, derived from the real pipeline config
+
 ### Documentation Agents
 
 - **[gnn/](doc/gnn/AGENTS.md)** - GNN Documentation System
@@ -234,7 +245,7 @@ graph TD
 
 ## Module Status Matrix
 
-Module-level status is maintained in each module's own `AGENTS.md` and test files.
+Module-level status is maintained in each module's own `AGENTS.md` and test files. As of v3.0.0, the `src/pipeline/` orchestration contracts (`durable_streams`, `run_session`, `container_plan`) and their live wiring (`session_acceptance`, `run_manifest`, `pipeline_container_plan`) are validated by the strict `scripts/run_v3_orchestration_acceptance.py` gate.
 
 ---
 
@@ -491,6 +502,21 @@ Each module provides specialized agent capabilities for different aspects of Act
 - Executive summary creation
 - Performance visualization
 
+### ⏳ **Long-Running Orchestration (v3.0.0)** - Durable, Safe-by-Design Runs
+
+Released in v3.0.0 ("Long-Running Orchestration"), this capability adds three safe-by-design `src/pipeline/` contracts plus additive live wiring, with no live infrastructure mutation:
+
+- **Durable observation streams** (`durable_streams.py`): replayable file/array stream manifests and traces for long observation runs
+- **Resumable run sessions** (`run_session.py`, wired live via `session_acceptance.py`): durable, resumable manifests for extended model-family acceptance runs
+- **Auditable container plans** (`container_plan.py`, `pipeline_container_plan.py`): validated, hardened container plans with static security review and rollback semantics, derived from the real pipeline config
+- **Durable run artifacts** (`run_manifest.py`): turns a completed run's `output/` into replayable v3 artifacts
+- **3 new MCP tools** exposing these contracts to agents
+- **Strict acceptance gate**: `scripts/run_v3_orchestration_acceptance.py` exercises all three contracts end to end with positive and negative checks and fails closed
+
+```bash
+uv run --extra dev python scripts/run_v3_orchestration_acceptance.py
+```
+
 ---
 
 ## Learned User Preferences
@@ -515,7 +541,7 @@ Each module provides specialized agent capabilities for different aspects of Act
 
 ---
 
-**Last Updated**: 2026-06-13
-**Pipeline Version**: 2.0.0
+**Last Updated**: 2026-06-20
+**Pipeline Version**: 3.0.0 ("Long-Running Orchestration")
 **Total Steps**: 25 (0-24)
 **Status**: Maintained

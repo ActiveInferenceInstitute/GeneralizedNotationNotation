@@ -262,6 +262,9 @@ Welcome to the documentation for Generalized Notation Notation (GNN), a standard
 - **[Pipeline Architecture](gnn/reference/architecture_reference.md)** - Technical architecture
   - *Development*: [Development Guide](development/README.md)
   - *API Integration*: [API Documentation](api/README.md)
+- **[v3.0.0 Long-Running Orchestration](pipeline/v3_orchestration.md)** - Safe-by-design orchestration contracts: durable observation streams, resumable run sessions, and auditable container plans (data only — no live infrastructure mutation), plus the strict acceptance gate and 3 new MCP tools
+  - *Safety model*: Inert with respect to infrastructure (produces plans/manifests/traces; promotion to live behavior is gated to a later release)
+  - *Reproduce*: `scripts/run_v3_orchestration_acceptance.py --strict`
 
 ### API Reference & Integration
 >
@@ -314,7 +317,7 @@ Welcome to the documentation for Generalized Notation Notation (GNN), a standard
   - *Quality Assurance*: Testing and validation requirements
   - *Security Releases*: Critical vulnerability response process
 - **[Releases](releases/README.md)** - Release management and version history
-  - *Current Version*: v1.3.0 with comprehensive feature additions
+  - *Current Version*: v3.0.0 ("Long-Running Orchestration") — see [v3.0.0 Orchestration](pipeline/v3_orchestration.md)
   - *Version History*: Detailed change tracking since project inception
   - *Upgrade Guides*: Migration assistance between major versions
 
@@ -420,5 +423,5 @@ recent_additions: [doc_SPEC_versioning_policy, docs_audit_strict_gate]
 ---
 
 **Status**: Comprehensive and Production-Ready  
-**Documentation**: GNN syntax v1.1 · Python package **1.3.0** ([pyproject.toml](../pyproject.toml)) · See [SPEC.md](SPEC.md)  
+**Documentation**: GNN syntax v1.1 · Python package **3.0.0** ("Long-Running Orchestration") ([pyproject.toml](../pyproject.toml)) · See [SPEC.md](SPEC.md) and [v3.0.0 Orchestration](pipeline/v3_orchestration.md)  
 **Cross-Reference Network**: ✅ [Fully Integrated](CROSS_REFERENCE_INDEX.md)

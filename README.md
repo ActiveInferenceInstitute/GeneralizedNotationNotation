@@ -55,7 +55,7 @@
 **Test Suite Evidence (verified 2026-06-18)**: command of record is `uv run --extra dev python -m pytest src/tests/ -q --tb=no -rsx --ignore=src/tests/llm/test_llm_ollama.py --ignore=src/tests/llm/test_llm_ollama_integration.py`; latest local evidence is 2,495 passed, 0 skipped, and 0 xfailed. Re-enable the two Ollama files only when `ollama` is installed and reachable.
 **Published Output Evidence (verified 2026-06-18)**: root `output/` is a POMDP GridWorld full-pipeline publication generated from `input/gnn_files/pomdp_gridworld` with `--frameworks all` and validated by `uv run --extra dev python scripts/check_pomdp_gridworld_outputs.py output`.
 **Features (v2.0.0)**: semantic fidelity ledgers across all maintained model families, strict JSON parse/serialize/parse preservation for variables, edges, dimensions, parameter shapes, equations, time, and ontology mappings; cross-framework reliability ledgers with explicit compatible/unsupported backend statuses; GridWorld comparison across PyMDP, RxInfer, and ActiveInference.jl; model-family acceptance and interpretability ledgers; maintained template CLI (`gnn templates list`, `gnn templates show`, `gnn pull`); authenticated local MCP HTTP orchestration; structured PyMDP 1.0 POMDP execution; static/headless GUI publication; PyMDP Scaling Study; and MCP Full Module Exposure.
-**Next Target**: v3.0.0 long-running orchestration, durable observation streams, and auditable container plans.
+**New in v3.0.0 ("Long-Running Orchestration")**: three safe-by-design `src/pipeline/` contracts — durable observation streams, resumable run sessions, and auditable container plans — plus additive live wiring, a strict acceptance gate (`scripts/run_v3_orchestration_acceptance.py`), and 3 new MCP tools. No live infrastructure mutation; every module generates, validates, replays, or plans data only. See [doc/pipeline/v3_orchestration.md](./doc/pipeline/v3_orchestration.md).
 📖 **DOI:** [10.5281/zenodo.7803328](https://doi.org/10.5281/zenodo.7803328)  
 📁 **Archive:** [zenodo.org/records/7803328](https://zenodo.org/records/7803328)
 
@@ -206,6 +206,16 @@ graph LR
 2. **📊 Graphical Models**: The structure defined in GNN (variables and their connections) can be visualized as graphical models (e.g., factor graphs), clarifying dependencies and model architecture.
 
 3. **⚙️ Executable Cognitive Models**: GNN specifications can serve as a high-level blueprint or pseudocode for implementing executable simulations in various programming environments. This ensures consistency and aids in the translation from theory to practice.
+
+### ⏱️ Long-Running Orchestration (v3.0.0)
+
+GNN v3.0.0 adds **safe-by-design** orchestration so extended model-family acceptance runs can be observed, resumed, and planned **without any live infrastructure mutation** — each contract generates, validates, replays, or plans data only:
+
+- **Durable observation streams** (`pipeline.durable_streams`): file- and array-backed stream manifests with content checksums plus replayable, integrity-checked execution traces — tampering and reordering are detected, and replays are deterministically verifiable.
+- **Resumable run sessions** (`pipeline.run_session`): immutable-style run manifests with atomic checkpoints, status reports, resume plans, and path-escape-safe cancellation cleanup, so an interrupted run never corrupts its prior checkpoint.
+- **Auditable container plans** (`pipeline.container_plan`): declarative, deterministically hashed container/run plans that describe what *would* execute — no container is ever started.
+
+These ship with additive live wiring (`session_acceptance.py`, `run_manifest.py`, `pipeline_container_plan.py`), a strict end-to-end acceptance gate (`scripts/run_v3_orchestration_acceptance.py`), and 3 new MCP tools. Full API reference: [doc/pipeline/v3_orchestration.md](./doc/pipeline/v3_orchestration.md).
 
 ### 📋 Structured File Format
 

@@ -26,6 +26,7 @@ _FIGURES = [
     ("manuscript_fig_backend_matrix.py", "gnn_backend_capability_matrix.png"),
     ("manuscript_fig_repo_metrics.py", "gnn_repo_metrics.png"),
     ("manuscript_fig_triple_play.py", "gnn_triple_play.png"),
+    ("manuscript_fig_orchestration.py", "gnn_orchestration.png"),
 ]
 
 
