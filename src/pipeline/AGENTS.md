@@ -10,6 +10,13 @@
 
 **Status**: ✅ Production Ready
 
+**v3.0.0 orchestration (safe-by-design, no live mutation)**: `durable_streams.py` (stream
+manifests + replayable execution traces), `run_session.py` (resumable run sessions with atomic
+checkpoint/resume + path-safe cleanup), and `container_plan.py` (auditable container plans + static
+security review + rollback). These generate/validate **data only** — no container or cluster is
+executed. Acceptance: `scripts/run_v3_orchestration_acceptance.py --strict`. Reference:
+[`doc/pipeline/v3_orchestration.md`](../../doc/pipeline/v3_orchestration.md).
+
 **Version**: 1.6.0
 
 **Last Updated**: 2026-04-16

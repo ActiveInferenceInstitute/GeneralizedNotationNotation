@@ -8,6 +8,17 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
 
 ## [Unreleased]
 
+### Added
+- **v3.0.0 long-running orchestration foundation (safe-by-design, no live mutation)**: three new
+  `src/pipeline/` modules — `durable_streams.py` (file/array `StreamManifest` with content checksums,
+  `ExecutionTrace` integrity + deterministic replay), `run_session.py` (resumable `RunSession`
+  manifests, atomic checkpoint/resume, status inspection, path-safe cancellation cleanup), and
+  `container_plan.py` (hardened container plan generation, static security review with
+  CRITICAL/HIGH/MEDIUM/LOW findings, rollback descriptors, deterministic plan hashes). Backed by 40
+  no-mocks unit tests with negative controls, a strict end-to-end acceptance gate
+  (`scripts/run_v3_orchestration_acceptance.py`), three new MCP tools (`tools_total` 137→140), and a
+  doc page at `doc/pipeline/v3_orchestration.md`. No container/cluster is ever executed.
+
 ### Changed
 - **GNN parser extension policy**: `.pkl` is reserved for textual PKL DSL by default; clearly binary pickle payloads in `.pkl` are routed to the pickle parser with a warning, and `.pickle` is the canonical binary pickle extension.
 - **API output directories**: API run and job submissions now validate `target_dir` and `output_dir` as repository-local directories and preserve caller-selected output directories during async execution.

@@ -19,7 +19,25 @@ src/pipeline/
 ├── discovery.py                  # Pipeline discovery
 ├── mcp.py                        # MCP integration
 ├── verify_pipeline.py            # Pipeline verification
+├── durable_streams.py            # v3: stream manifests + replayable execution traces
+├── run_session.py                # v3: resumable run sessions (checkpoint/resume/cleanup)
+├── container_plan.py             # v3: auditable container plans + static security review
 ```
+
+### v3.0.0 Long-Running Orchestration (safe-by-design)
+
+Three modules provide the foundation for long-running, resumable, deployable-by-plan runs **without
+any live infrastructure mutation** (no container execution, no cluster/sensor calls):
+
+- **`durable_streams.py`** — `StreamManifest` (file/array, content-checksummed) and `ExecutionTrace`
+  with integrity checks + deterministic replay.
+- **`run_session.py`** — `RunSession` manifests with atomic checkpoint/resume, status inspection, and
+  path-safe cancellation cleanup.
+- **`container_plan.py`** — hardened container plan generation, static `security_review`
+  (CRITICAL/HIGH/MEDIUM/LOW), rollback descriptors, and deterministic plan hashes.
+
+Full reference: [`doc/pipeline/v3_orchestration.md`](../../doc/pipeline/v3_orchestration.md). Acceptance
+gate: `PYTHONPATH=src uv run python scripts/run_v3_orchestration_acceptance.py --strict`.
 
 ### Pipeline Flow
 

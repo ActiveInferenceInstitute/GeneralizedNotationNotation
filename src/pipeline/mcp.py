@@ -190,6 +190,114 @@ def get_pipeline_config_info(mcp_instance_ref: Any) -> Dict[str, Any]:
         return {"success": False, "error": str(e)}
 
 
+def get_v3_orchestration_capabilities() -> Dict[str, Any]:
+    """Describe the v3.0.0 long-running orchestration contracts (streams, sessions, plans).
+
+    Returns:
+        Inventory of the three safe-by-design orchestration modules and their public API.
+    """
+    return {
+        "success": True,
+        "version": "3.0.0",
+        "safe_by_design": True,
+        "contracts": {
+            "durable_streams": [
+                "StreamManifest", "ExecutionTrace", "trace_integrity",
+                "validate_stream_manifest", "replay_trace", "verify_replay",
+            ],
+            "run_session": [
+                "RunSession", "WorkUnit", "start_session", "mark", "checkpoint",
+                "load_session", "remaining_units", "status_report", "cancel_safe_cleanup",
+            ],
+            "container_plan": [
+                "ContainerPlan", "generate_container_plan", "security_review",
+                "compute_plan_hash", "serialize_plan", "plan_to_compose",
+            ],
+        },
+    }
+
+
+def run_v3_container_security_review() -> Dict[str, Any]:
+    """Demonstrate the auditable-container-plan security review with teeth.
+
+    Generates a hardened default plan (expected clean) and reviews a deliberately
+    insecure plan (expected to flag CRITICAL/HIGH findings), proving the static review
+    discriminates. Performs no execution — pure data inspection.
+    """
+    try:
+        from pipeline import container_plan as cp
+
+        hardened = cp.generate_container_plan(
+            "demo",
+            [{"name": "runner", "image": "ghcr.io/gnn/runner@sha256:" + "a" * 64}],
+        )
+        insecure = cp.ContainerPlan(
+            plan_id="insecure-demo",
+            specs=[cp.ContainerSpec(
+                name="bad", image="img:latest", privileged=True, user="root",
+                env={"DB_PASSWORD": "hunter2"}, read_only_rootfs=False, cap_drop=[],
+            )],
+        )
+        insecure_findings = cp.security_review(insecure)
+        return {
+            "success": True,
+            "hardened_findings": [f.model_dump() for f in cp.security_review(hardened)],
+            "insecure_findings": [f.model_dump() for f in insecure_findings],
+            "review_has_teeth": len(insecure_findings) >= 4
+            and any(f.severity == "CRITICAL" for f in insecure_findings),
+        }
+    except Exception as e:  # pragma: no cover - defensive MCP boundary
+        logger.error(f"v3 container security review failed: {e}")
+        return {"success": False, "error": str(e)}
+
+
+def run_v3_orchestration_self_check() -> Dict[str, Any]:
+    """Run lightweight in-process checks of all three v3 contracts and report pass counts.
+
+    Builds real (in-memory / temp) artifacts — a stream manifest with a tamper negative
+    control, a session status computation, and a container security review — and confirms
+    each contract behaves. No external services touched.
+    """
+    try:
+        import tempfile
+        from pathlib import Path as _Path
+
+        import numpy as np
+
+        from pipeline import container_plan as cp
+        from pipeline import durable_streams as ds
+        from pipeline import run_session as rs
+
+        results: Dict[str, bool] = {}
+        with tempfile.TemporaryDirectory(prefix="gnn-v3-mcp-") as tmp:
+            wd = _Path(tmp)
+            manifest = ds.StreamManifest.from_array("s", np.arange(6, dtype=np.float64))
+            results["streams_array_valid"] = ds.validate_stream_manifest(manifest, wd) == []
+            fp = wd / "d.bin"
+            fp.write_bytes(b"payload")
+            fm = ds.StreamManifest.from_file("f", fp)
+            fp.write_bytes(b"payload-TAMPERED")
+            results["streams_tamper_detected"] = len(ds.validate_stream_manifest(fm, wd)) > 0
+
+        sess = rs.start_session("mcp", ["a", "b"])
+        sess = rs.mark(sess, "a", rs.UnitStatus.DONE)
+        rep = rs.status_report(sess)
+        results["session_status_math"] = rep["completed"] == 1 and not rep["done"]
+
+        plan = cp.generate_container_plan("mcp", [{"name": "r", "image": "i@sha256:" + "a" * 64}])
+        results["container_hardened_clean"] = cp.security_review(plan) == []
+
+        return {
+            "success": all(results.values()),
+            "checks": results,
+            "passed": sum(1 for v in results.values() if v),
+            "total": len(results),
+        }
+    except Exception as e:  # pragma: no cover - defensive MCP boundary
+        logger.error(f"v3 orchestration self-check failed: {e}")
+        return {"success": False, "error": str(e)}
+
+
 def register_tools(mcp_instance: Any) -> None:
     """
     Register pipeline management tools with the MCP server.
@@ -243,6 +351,41 @@ def register_tools(mcp_instance: Any) -> None:
         function=get_pipeline_config_info_tool,
         schema={},
         description="Get detailed pipeline configuration information and settings.",
+    )
+
+    # v3.0.0 long-running orchestration tools (safe-by-design: no live mutation).
+    def get_v3_orchestration_capabilities_tool() -> Any:
+        """Return v3 orchestration capabilities tool."""
+        return get_v3_orchestration_capabilities()
+
+    def run_v3_container_security_review_tool() -> Any:
+        """Return v3 container security review tool."""
+        return run_v3_container_security_review()
+
+    def run_v3_orchestration_self_check_tool() -> Any:
+        """Return v3 orchestration self-check tool."""
+        return run_v3_orchestration_self_check()
+
+    mcp_instance.register_tool(
+        name="get_v3_orchestration_capabilities",
+        function=get_v3_orchestration_capabilities_tool,
+        schema={},
+        description="Describe the v3.0.0 long-running orchestration contracts: durable observation "
+        "streams, resumable run sessions, and auditable container plans (safe-by-design, no live mutation).",
+    )
+    mcp_instance.register_tool(
+        name="run_v3_container_security_review",
+        function=run_v3_container_security_review_tool,
+        schema={},
+        description="Run the auditable container-plan static security review on a hardened and an "
+        "insecure example, proving the review flags privileged/root/unpinned/secret findings.",
+    )
+    mcp_instance.register_tool(
+        name="run_v3_orchestration_self_check",
+        function=run_v3_orchestration_self_check_tool,
+        schema={},
+        description="Run in-process checks of all three v3 orchestration contracts (stream manifest "
+        "tamper detection, session status math, container review) and report pass counts.",
     )
 
     logger.info("Successfully registered pipeline MCP tools")

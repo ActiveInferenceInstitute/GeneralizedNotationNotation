@@ -120,13 +120,71 @@ uv run --extra dev python scripts/run_model_family_acceptance.py --manifest inpu
 
 ---
 
+## 📄 v2.1.0 — Auto-Injected Manuscript & Communication Surface (Landed locally; not yet tagged)
+
+> **Scope**: A publishable manuscript describing the GNN language and the {{GNN_STEP_COUNT}}-step
+> pipeline, where every quantitative value is auto-injected from the live repository — nothing
+> hard-coded — rendered through the docxology/template manuscript pipeline.
+> **Status**: Built and verified locally (uncommitted). Render: 26-page PDF, 0 unresolved tokens,
+> 0 dangling citations/figures, cross-vendor (GPT-5.4 Forge) audited.
+
+- [x] **Deterministic manuscript-variable producer** — `src/manuscript_variables.py` + thin
+  `scripts/z_generate_manuscript_variables.py` introspect the live repo and emit 38 `{{TOKEN}}`
+  values (steps, families, backends, MCP tools from the audit ledger, tests, corpora, source scale).
+  Byte-identical across runs; 12 no-mock unit tests cross-check each count against its source surface.
+- [x] **Evidence-bound manuscript** — `manuscript/` promoted from generic scaffold to 9 authored
+  sections + glossary with real GNN content (StateSpaceBlock/A–B–C–D matrices, Triple Play, pipeline),
+  7 verified `references.bib` entries, and zero hard-coded numbers (enforced by a new
+  `scripts/check_manuscript_tokens.py` gate with a negative-control test).
+- [x] **Generated figures** — 5 deterministic generators (`scripts/manuscript_fig_*.py`) → pipeline
+  DAG, family×framework matrix, backend registry, repo-metrics, Triple Play; all embedded in the PDF.
+- [ ] **Publication metadata** — assign a manuscript DOI / Zenodo record and fill `manuscript/config.yaml`
+  `publication.doi`/`version_doi` before any public release.
+
+### Acceptance
+```bash
+uv run --extra dev python -m pytest src/tests/test_manuscript_variables.py -q
+uv run python scripts/z_generate_manuscript_variables.py   # regenerates output/data/manuscript_variables.json
+uv run python scripts/check_manuscript_tokens.py            # 0 unknown tokens / 0 dangling cites / 0 hard-coded counts
+# Render (from the sibling docxology/template checkout):
+#   uv run python scripts/03_render_pdf.py --project GeneralizedNotationNotation
+```
+
+---
+
 ## 🌱 v3.0.0 — Long-Running Orchestration & Distributed Ecology Plans
 
 > **Scope**: Prepare safe long-running orchestration, durable observation streams, and auditable container plans before any live infrastructure mutation.
+> **Status**: Foundation contracts landed locally (uncommitted) as three safe-by-design `src/pipeline/`
+> modules with no-mocks tests, a strict acceptance gate, and MCP tools. No live mutation is performed.
 
-- [ ] **Durable Observation Streams** — Standardize file/array stream manifests and replayable execution traces before adding live sensors or device-backed streams.
-- [ ] **Long-Running Pipeline Sessions** — Add resumable run manifests, status inspection, and cancellation-safe cleanup for extended model-family acceptance runs.
-- [ ] **Auditable Container Plans** — Generate validated container plans with security review and rollback semantics; do not mutate real clusters.
+- [x] **Durable Observation Streams** — `src/pipeline/durable_streams.py`: `StreamManifest` (file/array) with
+  content checksums, `ExecutionTrace` with `trace_integrity` (monotonic/contiguous/no-dup), atomic IO, and a
+  deterministic `replay_trace`/`verify_replay`. Tampered streams and gapped traces are caught (negative controls).
+- [x] **Long-Running Pipeline Sessions** — `src/pipeline/run_session.py`: `RunSession`/`WorkUnit` manifests,
+  atomic `checkpoint`/`load_session`, `remaining_units`/`resume_plan`, `status_report`, and
+  `cancel_safe_cleanup` (removes only non-DONE artifacts, path-escape-safe, idempotent).
+- [x] **Auditable Container Plans** — `src/pipeline/container_plan.py`: `generate_container_plan` (hardened
+  default: non-root, read-only rootfs, cap-drop ALL, pinned-digest image, resource limits), static
+  `security_review` (CRITICAL/HIGH/MEDIUM/LOW findings), `RollbackDescriptor`, deterministic `plan_hash`.
+  **No cluster/container is ever executed** (source-level safety test enforces this).
+
+> Evidence: 40 no-mocks unit tests green (`src/tests/pipeline/test_{durable_streams,run_session,container_plan}.py`);
+> full `src/tests/pipeline` suite 333 passed (no regression); MCP audit PASS with 3 new tools
+> (`tools_total` 137→140); `just lint`/ruff clean.
+
+### Acceptance
+```bash
+# Unit contracts (no mocks, with negative controls):
+PYTHONPATH=src uv run python -m pytest src/tests/pipeline/test_durable_streams.py \
+  src/tests/pipeline/test_run_session.py src/tests/pipeline/test_container_plan.py -q
+# End-to-end acceptance gate (fails closed; --inject-defect exits non-zero):
+PYTHONPATH=src uv run python scripts/run_v3_orchestration_acceptance.py --strict
+```
+
+> **Remaining for a tagged v3.0.0 release**: wire the session manifest into the live
+> `model_family_acceptance` runner and the stream/trace contracts into Step 12 execution, then
+> exercise an extended multi-family run end to end (the contracts above are the prerequisite foundation).
 
 ---
 

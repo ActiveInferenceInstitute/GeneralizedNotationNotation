@@ -2,7 +2,7 @@
   "modules_total": 32,
   "modules_loaded": 32,
   "modules_errored": 0,
-  "tools_total": 137,
+  "tools_total": 140,
   "tools_list": [
     {
       "name": "analyze_audio_characteristics",
@@ -403,6 +403,14 @@
       "fn": "get_uv_environment_info_mcp",
       "documented": true,
       "description": "Gets information about the current UV environment including paths and status."
+    },
+    {
+      "name": "get_v3_orchestration_capabilities",
+      "module": "src.pipeline",
+      "category": "pipeline",
+      "fn": "get_v3_orchestration_capabilities_tool",
+      "documented": true,
+      "description": "Describe the v3.0.0 long-running orchestration contracts: durable observation streams, resumable run sessions, and audit"
     },
     {
       "name": "get_validation_report",
@@ -891,6 +899,22 @@
       "fn": "run_round_trip_tests",
       "documented": true,
       "description": "Run comprehensive round-trip tests on GNN files across all supported formats."
+    },
+    {
+      "name": "run_v3_container_security_review",
+      "module": "src.pipeline",
+      "category": "pipeline",
+      "fn": "run_v3_container_security_review_tool",
+      "documented": true,
+      "description": "Run the auditable container-plan static security review on a hardened and an insecure example, proving the review flags "
+    },
+    {
+      "name": "run_v3_orchestration_self_check",
+      "module": "src.pipeline",
+      "category": "pipeline",
+      "fn": "run_v3_orchestration_self_check_tool",
+      "documented": true,
+      "description": "Run in-process checks of all three v3 orchestration contracts (stream manifest tamper detection, session status math, co"
     },
     {
       "name": "scan_gnn_file",
