@@ -18,6 +18,13 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
   no-mocks unit tests with negative controls, a strict end-to-end acceptance gate
   (`scripts/run_v3_orchestration_acceptance.py`), three new MCP tools (`tools_total` 137→140), and a
   doc page at `doc/pipeline/v3_orchestration.md`. No container/cluster is ever executed.
+- **v3.0.0 additive live-pipeline integration (safe-by-design)**: `session_acceptance.py` (resumable,
+  checkpointed model-family acceptance runs), `run_manifest.py` (emit durable `StreamManifest`s + a
+  replayable `ExecutionTrace` from a completed run's `output/`, with re-validation), and
+  `pipeline_container_plan.py` (generate a `security_review`-clean container plan from `input/config.yaml`),
+  each with a CLI under `scripts/` and no-mocks tests. Verified on real run artifacts (105 manifests +
+  a 25-event trace) and the real config; full `src/tests/pipeline` suite 362 passed. The 25-step
+  critical path is unmodified.
 
 ### Changed
 - **GNN parser extension policy**: `.pkl` is reserved for textual PKL DSL by default; clearly binary pickle payloads in `.pkl` are routed to the pickle parser with a warning, and `.pickle` is the canonical binary pickle extension.

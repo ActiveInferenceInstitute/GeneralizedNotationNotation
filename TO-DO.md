@@ -155,31 +155,45 @@ uv run python scripts/check_manuscript_tokens.py            # 0 unknown tokens /
 ## 🌱 v3.0.0 — Long-Running Orchestration & Distributed Ecology Plans
 
 > **Scope**: Prepare safe long-running orchestration, durable observation streams, and auditable container plans before any live infrastructure mutation.
-> **Status**: Foundation contracts landed locally (uncommitted) as three safe-by-design `src/pipeline/`
-> modules with no-mocks tests, a strict acceptance gate, and MCP tools. No live mutation is performed.
+> **Status**: Foundation contracts AND additive live-pipeline integration have landed on `main` as
+> safe-by-design `src/pipeline/` modules with no-mocks tests, a strict acceptance gate, and MCP tools —
+> no live mutation is performed. The items below remain **unchecked**: a tagged v3.0.0 release still
+> requires the release-readiness gates (all-family strict acceptance ledgers + release evidence) that
+> the v1.9/v2.0 releases carry. The capability is foundation-complete; the *release* is not yet cut.
 
-- [x] **Durable Observation Streams** — `src/pipeline/durable_streams.py`: `StreamManifest` (file/array) with
-  content checksums, `ExecutionTrace` with `trace_integrity` (monotonic/contiguous/no-dup), atomic IO, and a
-  deterministic `replay_trace`/`verify_replay`. Tampered streams and gapped traces are caught (negative controls).
-- [x] **Long-Running Pipeline Sessions** — `src/pipeline/run_session.py`: `RunSession`/`WorkUnit` manifests,
-  atomic `checkpoint`/`load_session`, `remaining_units`/`resume_plan`, `status_report`, and
-  `cancel_safe_cleanup` (removes only non-DONE artifacts, path-escape-safe, idempotent).
-- [x] **Auditable Container Plans** — `src/pipeline/container_plan.py`: `generate_container_plan` (hardened
-  default: non-root, read-only rootfs, cap-drop ALL, pinned-digest image, resource limits), static
-  `security_review` (CRITICAL/HIGH/MEDIUM/LOW findings), `RollbackDescriptor`, deterministic `plan_hash`.
-  **No cluster/container is ever executed** (source-level safety test enforces this).
+- [ ] **Durable Observation Streams** *(foundation landed)* — `src/pipeline/durable_streams.py`:
+  `StreamManifest` (file/array) with content checksums, `ExecutionTrace` with `trace_integrity`
+  (monotonic/contiguous/no-dup), atomic IO, deterministic `replay_trace`/`verify_replay`. Live wiring:
+  `src/pipeline/run_manifest.py` emits manifests + a trace from a completed run's `output/`.
+- [ ] **Long-Running Pipeline Sessions** *(foundation landed)* — `src/pipeline/run_session.py`:
+  `RunSession`/`WorkUnit` manifests, atomic `checkpoint`/`load_session`, `remaining_units`/`resume_plan`,
+  `status_report`, path-escape-safe idempotent `cancel_safe_cleanup`. Live wiring:
+  `src/pipeline/session_acceptance.py` runs model-family acceptance family-by-family with resume.
+- [ ] **Auditable Container Plans** *(foundation landed)* — `src/pipeline/container_plan.py`:
+  hardened `generate_container_plan` (non-root, read-only rootfs, cap-drop ALL, pinned-digest image,
+  resource limits), static `security_review` (incl. host-mount/host-namespace/dangerous-cap findings),
+  `RollbackDescriptor`, deterministic `plan_hash`. Live wiring:
+  `src/pipeline/pipeline_container_plan.py` builds a reviewed plan from `input/config.yaml`.
+  **No cluster/container is ever executed** (AST-level safety test enforces this).
 
-> Evidence: 40 no-mocks unit tests green (`src/tests/pipeline/test_{durable_streams,run_session,container_plan}.py`);
-> full `src/tests/pipeline` suite 333 passed (no regression); MCP audit PASS with 3 new tools
-> (`tools_total` 137→140); `just lint`/ruff clean.
+> Evidence (foundation + integration): 69 no-mocks unit tests green across
+> `src/tests/pipeline/test_{durable_streams,run_session,container_plan,session_acceptance,run_manifest,pipeline_container_plan}.py`;
+> full `src/tests/pipeline` suite 362 passed (no regression); MCP audit PASS (`tools_total` 137→140);
+> cross-vendor (Forge) audited; `just lint`/ruff clean. **Remaining for the tagged release**: release-readiness
+> ledgers from an extended all-family run through the session/stream-instrumented path.
 
 ### Acceptance
 ```bash
 # Unit contracts (no mocks, with negative controls):
 PYTHONPATH=src uv run python -m pytest src/tests/pipeline/test_durable_streams.py \
-  src/tests/pipeline/test_run_session.py src/tests/pipeline/test_container_plan.py -q
+  src/tests/pipeline/test_run_session.py src/tests/pipeline/test_container_plan.py \
+  src/tests/pipeline/test_session_acceptance.py src/tests/pipeline/test_run_manifest.py \
+  src/tests/pipeline/test_pipeline_container_plan.py -q
 # End-to-end acceptance gate (fails closed; --inject-defect exits non-zero):
 PYTHONPATH=src uv run python scripts/run_v3_orchestration_acceptance.py --strict
+# Live wiring on real artifacts:
+PYTHONPATH=src uv run python scripts/emit_run_manifest.py output --out /tmp/v3_run_manifest
+PYTHONPATH=src uv run python scripts/generate_pipeline_container_plan.py --config input/config.yaml --out /tmp/gnn_plan.json
 ```
 
 > **Remaining for a tagged v3.0.0 release**: wire the session manifest into the live

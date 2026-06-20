@@ -74,6 +74,28 @@ PYTHONPATH=src uv run python scripts/run_v3_orchestration_acceptance.py --strict
 PYTHONPATH=src uv run python scripts/run_v3_orchestration_acceptance.py --inject-defect  # exits non-zero
 ```
 
+## Live integration (additive — does not modify the 25-step path)
+
+Three additional modules wire the contracts above onto real pipeline data. They are pure
+(read existing artifacts / config, produce manifests/plans/sessions) and never execute the pipeline,
+a container, or a cluster:
+
+| Module / CLI | What it does |
+|---|---|
+| `pipeline.session_acceptance` / `scripts/run_session_acceptance.py` | Runs model-family acceptance **family-by-family** wrapped in a `RunSession`, checkpointing after each family so an extended run is resumable (`--resume` skips already-DONE families). |
+| `pipeline.run_manifest` / `scripts/emit_run_manifest.py` | Walks a **completed** run's `output/` dir and emits a `StreamManifest` per artifact plus an `ExecutionTrace` from `pipeline_execution_summary.json`; `verify_run_manifests` re-validates (detects tampering). |
+| `pipeline.pipeline_container_plan` / `scripts/generate_pipeline_container_plan.py` | Reads `input/config.yaml` and generates a hardened, `security_review`-clean container plan for running the GNN pipeline (honoring `skip_steps`). |
+
+```bash
+# Emit durable manifests + a replayable trace from the latest completed run:
+PYTHONPATH=src uv run python scripts/emit_run_manifest.py output --out output/v3_run_manifest
+# Generate an auditable container plan for the pipeline from the real config:
+PYTHONPATH=src uv run python scripts/generate_pipeline_container_plan.py --config input/config.yaml --out /tmp/gnn_plan.json
+# Resumable model-family acceptance session:
+PYTHONPATH=src uv run python scripts/run_session_acceptance.py --manifest input/model_family_manifest.json \
+  --output-dir /tmp/gnn-session --session /tmp/gnn-session/session.json --resume
+```
+
 ## Safety model
 
 These modules are deliberately inert with respect to infrastructure: they produce and check
