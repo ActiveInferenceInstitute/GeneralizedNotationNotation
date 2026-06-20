@@ -8,21 +8,30 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
 
 ## [Unreleased]
 
+---
+
+## [3.0.0] — 2026-06-20
+
+> **Long-Running Orchestration & Distributed Ecology Plans.** Safe-by-design durable observation
+> streams, resumable run sessions, and auditable container plans. Release gates re-run green for all
+> 9 model families (semantic fidelity, cross-framework reliability, model-family acceptance); CI
+> matrix restored to green.
+
 ### Added
-- **v3.0.0 long-running orchestration foundation (safe-by-design, no live mutation)**: three new
+- **v3.0.0 long-running orchestration (safe-by-design, no live mutation)**: three new
   `src/pipeline/` modules — `durable_streams.py` (file/array `StreamManifest` with content checksums,
   `ExecutionTrace` integrity + deterministic replay), `run_session.py` (resumable `RunSession`
   manifests, atomic checkpoint/resume, status inspection, path-safe cancellation cleanup), and
   `container_plan.py` (hardened container plan generation, static security review with
   CRITICAL/HIGH/MEDIUM/LOW findings, rollback descriptors, deterministic plan hashes). Backed by 40
-  no-mocks unit tests with negative controls, a strict end-to-end acceptance gate
+  real-objects-only unit tests with negative controls, a strict end-to-end acceptance gate
   (`scripts/run_v3_orchestration_acceptance.py`), three new MCP tools (`tools_total` 137→140), and a
   doc page at `doc/pipeline/v3_orchestration.md`. No container/cluster is ever executed.
 - **v3.0.0 additive live-pipeline integration (safe-by-design)**: `session_acceptance.py` (resumable,
   checkpointed model-family acceptance runs), `run_manifest.py` (emit durable `StreamManifest`s + a
   replayable `ExecutionTrace` from a completed run's `output/`, with re-validation), and
   `pipeline_container_plan.py` (generate a `security_review`-clean container plan from `input/config.yaml`),
-  each with a CLI under `scripts/` and no-mocks tests. Verified on real run artifacts (105 manifests +
+  each with a CLI under `scripts/` and real-objects-only tests. Verified on real run artifacts (105 manifests +
   a 25-event trace) and the real config; full `src/tests/pipeline` suite 362 passed. The 25-step
   critical path is unmodified.
 

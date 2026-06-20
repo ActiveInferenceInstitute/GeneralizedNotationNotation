@@ -48,8 +48,8 @@
 ### 📚 Initial Publication
 
 **Smékal, J., & Friedman, D. A. (2023)**. *Generalized Notation Notation for Active Inference Models*. Active Inference Journal.  
-**Last Updated**: 2026-06-18
-**Version**: 2.0.0
+**Last Updated**: 2026-06-20
+**Version**: 3.0.0
 **Status**: Beta package with maintained validation gates (Active Inference Institute)
 
 **Test Suite Evidence (verified 2026-06-18)**: command of record is `uv run --extra dev python -m pytest src/tests/ -q --tb=no -rsx --ignore=src/tests/llm/test_llm_ollama.py --ignore=src/tests/llm/test_llm_ollama_integration.py`; latest local evidence is 2,495 passed, 0 skipped, and 0 xfailed. Re-enable the two Ollama files only when `ollama` is installed and reachable.

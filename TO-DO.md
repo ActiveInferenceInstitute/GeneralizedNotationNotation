@@ -1,8 +1,17 @@
 # TO-DO — GNN Pipeline Roadmap
 
-**Last Updated**: 2026-06-12
-**Current Version**: 2.0.0
-**Next Target**: v3.0.0 (long-running orchestration, durable streams, and auditable container plans)
+**Last Updated**: 2026-06-20
+**Current Version**: 3.0.0
+**Next Target**: v4.0.0 (bounded autonomy and reviewed self-editing workflows)
+
+**v3.0.0 release evidence (2026-06-20)**: the three v3.0.0 long-running orchestration
+contracts landed (durable observation streams, resumable run sessions, auditable
+container plans) with no-mocks unit tests and a strict fail-closed acceptance gate
+(`scripts/run_v3_orchestration_acceptance.py`); the standing release gates were re-run
+green for all 9 families — semantic fidelity, cross-framework reliability, and
+model-family acceptance all passed for 9 families — so the orchestration foundation ships
+without regressing the v2.0.0 reliability surface. CI matrix restored to green
+(ruff format/check, four doc audits, and `mypy src` all pass).
 
 **Current Evidence (2026-06-12)**: v2.0.0 semantic fidelity gate passed for 9 families (`gnn_semantic_fidelity_ledger_v1`); cross-framework reliability gate passed for 9 families (`gnn_cross_framework_reliability_ledger_v1`) with GridWorld compared PyMDP, RxInfer, and ActiveInference.jl and all other unprofiled backends recorded with explicit unsupported statuses. Command-of-record collect-only inventory is `2411` collected tests across 186 `test_*.py` files with the documented Ollama integration ignores. Latest full local suite evidence with the same Ollama ignores is `2393 passed, 17 skipped, 1 xfailed`. v1.9 all-family strict acceptance remains green for 9 families; continuous and hierarchical Step 11/12 remain profiled unsupported skips with `0` raw failed Step 11/12 counts. v1.8.0 focused release smokes passed for `gnn templates list`, `gnn templates show pomdp-gridworld-3x3`, dry-run `gnn pull` to `/tmp/gnn-pull`, and authenticated
 MCP HTTP tests (`12 passed`; combined CLI/MCP/capability suite `32 passed`); `just lint` passes.
@@ -152,24 +161,25 @@ uv run python scripts/check_manuscript_tokens.py            # 0 unknown tokens /
 
 ---
 
-## 🌱 v3.0.0 — Long-Running Orchestration & Distributed Ecology Plans
+## ✅ v3.0.0 — Long-Running Orchestration & Distributed Ecology Plans (Released)
 
-> **Scope**: Prepare safe long-running orchestration, durable observation streams, and auditable container plans before any live infrastructure mutation.
-> **Status**: Foundation contracts AND additive live-pipeline integration have landed on `main` as
-> safe-by-design `src/pipeline/` modules with no-mocks tests, a strict acceptance gate, and MCP tools —
-> no live mutation is performed. The items below remain **unchecked**: a tagged v3.0.0 release still
-> requires the release-readiness gates (all-family strict acceptance ledgers + release evidence) that
-> the v1.9/v2.0 releases carry. The capability is foundation-complete; the *release* is not yet cut.
+> **Released**: 2026-06-20 (tag: `v3.0.0`)
+> **Scope**: Safe long-running orchestration, durable observation streams, and auditable container
+> plans — all safe-by-design (no live infrastructure mutation).
+> **Status**: The three contracts landed on `main` as `src/pipeline/` modules with real-objects-only
+> unit tests, a strict fail-closed acceptance gate, MCP tools, and additive live-pipeline integration.
+> The standing release gates were re-run green for all 9 families (see the release-evidence block at
+> the top of this file); the CI matrix is restored to green.
 
-- [ ] **Durable Observation Streams** *(foundation landed)* — `src/pipeline/durable_streams.py`:
+- [x] **Durable Observation Streams** *(foundation landed)* — `src/pipeline/durable_streams.py`:
   `StreamManifest` (file/array) with content checksums, `ExecutionTrace` with `trace_integrity`
   (monotonic/contiguous/no-dup), atomic IO, deterministic `replay_trace`/`verify_replay`. Live wiring:
   `src/pipeline/run_manifest.py` emits manifests + a trace from a completed run's `output/`.
-- [ ] **Long-Running Pipeline Sessions** *(foundation landed)* — `src/pipeline/run_session.py`:
+- [x] **Long-Running Pipeline Sessions** *(foundation landed)* — `src/pipeline/run_session.py`:
   `RunSession`/`WorkUnit` manifests, atomic `checkpoint`/`load_session`, `remaining_units`/`resume_plan`,
   `status_report`, path-escape-safe idempotent `cancel_safe_cleanup`. Live wiring:
   `src/pipeline/session_acceptance.py` runs model-family acceptance family-by-family with resume.
-- [ ] **Auditable Container Plans** *(foundation landed)* — `src/pipeline/container_plan.py`:
+- [x] **Auditable Container Plans** *(foundation landed)* — `src/pipeline/container_plan.py`:
   hardened `generate_container_plan` (non-root, read-only rootfs, cap-drop ALL, pinned-digest image,
   resource limits), static `security_review` (incl. host-mount/host-namespace/dangerous-cap findings),
   `RollbackDescriptor`, deterministic `plan_hash`. Live wiring:

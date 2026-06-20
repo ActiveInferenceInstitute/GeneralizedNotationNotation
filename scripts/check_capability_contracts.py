@@ -208,6 +208,21 @@ def run_audit() -> List[str]:
             "explicit unsupported statuses",
             "scripts/run_cross_framework_reliability.py",
         ),
+        "Durable Observation Streams": (
+            "src/pipeline/durable_streams.py",
+            "scripts/run_v3_orchestration_acceptance.py",
+            "model-family acceptance all passed for 9 families",
+        ),
+        "Long-Running Pipeline Sessions": (
+            "src/pipeline/run_session.py",
+            "src/pipeline/session_acceptance.py",
+            "model-family acceptance all passed for 9 families",
+        ),
+        "Auditable Container Plans": (
+            "src/pipeline/container_plan.py",
+            "scripts/run_v3_orchestration_acceptance.py",
+            "model-family acceptance all passed for 9 families",
+        ),
     }
     for item in guarded_pending_items:
         if f"- [x] **{item}**" in todo_text:
