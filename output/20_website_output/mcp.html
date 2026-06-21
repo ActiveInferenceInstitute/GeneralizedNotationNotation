@@ -436,7 +436,7 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; backgrou
   <aside class="sidebar">
     <div class="sidebar-logo">
       <h2>GNN Pipeline</h2>
-      <p>Generated 2026-06-18 10:12</p>
+      <p>Generated 2026-06-20 13:32</p>
     </div>
     <nav class="sidebar-nav">
       <div class="nav-section">
@@ -457,7 +457,7 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; backgrou
     
 <div class="page-header">
   <h1>🔧 MCP Tools Registry</h1>
-  <p class="subtitle">137 tools registered across all modules via the Model Context Protocol</p>
+  <p class="subtitle">140 tools registered across all modules via the Model Context Protocol</p>
 </div>
 
 <div class="section">
@@ -1000,7 +1000,7 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; backgrou
 </div>
 </div>
 <div class="section">
-  <div class="section-title">src.pipeline <span class="pill badge-pending" style="margin-left:6px">4</span></div>
+  <div class="section-title">src.pipeline <span class="pill badge-pending" style="margin-left:6px">7</span></div>
   
 <div class="tool-card">
   <div class="tool-name">get_pipeline_config_info</div>
@@ -1016,6 +1016,21 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; backgrou
   <div class="tool-name">get_pipeline_steps</div>
   <div class="tool-mod">src.pipeline · pipeline</div>
   <div class="tool-desc">Get information about all available pipeline steps, their metadata, and dependencies.</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">get_v3_orchestration_capabilities</div>
+  <div class="tool-mod">src.pipeline · pipeline</div>
+  <div class="tool-desc">Describe the v3.0.0 long-running orchestration contracts: durable observation streams, resumable run sessions, and auditable container plans (safe-by-design, no live mutation).</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">run_v3_container_security_review</div>
+  <div class="tool-mod">src.pipeline · pipeline</div>
+  <div class="tool-desc">Run the auditable container-plan static security review on a hardened and an insecure example, proving the review flags privileged/root/unpinned/secret findings.</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">run_v3_orchestration_self_check</div>
+  <div class="tool-mod">src.pipeline · pipeline</div>
+  <div class="tool-desc">Run in-process checks of all three v3 orchestration contracts (stream manifest tamper detection, session status math, container review) and report pass counts.</div>
 </div>
 <div class="tool-card">
   <div class="tool-name">validate_pipeline_dependencies</div>
