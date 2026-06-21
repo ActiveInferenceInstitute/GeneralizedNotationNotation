@@ -131,6 +131,30 @@ graph TD
   %% styling intentionally omitted (theme-controlled)
 ```
 
+## Long-Running Orchestration (v3.0.0)
+
+Version 3.0.0 ("Long-Running Orchestration") adds a safe-by-design surface under `src/pipeline/` for durable, resumable, and auditable pipeline runs. The defining property is that no module mutates live infrastructure: every contract generates, validates, replays, or plans **data only**, so the entire surface is inspectable before anything is acted upon. See [doc/pipeline/v3_orchestration.md](doc/pipeline/v3_orchestration.md) for the full reference.
+
+### Three Safe-by-Design Contracts
+
+- **Durable observation streams** (`src/pipeline/durable_streams.py`): append-only, replayable records of pipeline observations. Streams are written and read back as synthetic data, never as live side effects.
+- **Resumable run sessions** (`src/pipeline/run_session.py`): session state that captures progress so a run can be resumed deterministically. Sessions describe what would resume; they do not execute steps themselves.
+- **Auditable container plans** (`src/pipeline/container_plan.py`): declarative container execution plans emitted as inspectable data, allowing the intended environment to be reviewed without launching any container.
+
+### Data-Only Inspectable Surface
+
+The three contracts compose into a single inspectable surface. Each produces a serializable artifact — a stream, a session record, or a plan — that can be validated and replayed independently. Because nothing in this layer performs live mutation, an operator (or an automated gate) can examine the complete intended behavior of a long-running run before it touches any real resource.
+
+### Additive Live Wiring
+
+The contracts are wired into the pipeline additively, leaving existing behavior unchanged:
+
+- `src/pipeline/session_acceptance.py` — validates session state against acceptance criteria.
+- `src/pipeline/run_manifest.py` — assembles the run manifest from session and stream data.
+- `src/pipeline/pipeline_container_plan.py` — derives container plans from pipeline configuration.
+
+A strict acceptance gate, `scripts/run_v3_orchestration_acceptance.py`, exercises these contracts end-to-end, and three new MCP tools expose the orchestration surface to agent clients.
+
 ## Current Implementation Status
 
 ### Components
