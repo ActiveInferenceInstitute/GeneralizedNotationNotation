@@ -6,9 +6,9 @@
 
 ## Overview
 
-This directory contains comprehensive documentation for advanced visualization capabilities within the GNN (Generalized Notation Notation) ecosystem. Advanced visualization enables interactive dashboards, 3D visualizations, and sophisticated data analysis visualizations for Active Inference models.
+This directory documents Step 9 advanced visualization within the GNN (Generalized Notation Notation) ecosystem. The maintained contract is artifact generation: statistical plots, POMDP-specific panels, network metrics, optional Plotly/HTML dashboards, and optional D2 diagrams.
 
-**Status**: ✅ Production Ready  
+**Status**: Maintained
 **Version**: 1.0
 
 ## Quick Navigation
@@ -43,31 +43,27 @@ This directory contains comprehensive documentation for advanced visualization c
 
 ## Advanced Visualization Overview
 
-Advanced visualization in GNN enables:
+Advanced visualization in GNN currently enables:
 
 ### Interactive Dashboards
-- **Comprehensive Dashboards**: Complete model analysis dashboards
-- **Real-Time Updates**: Dynamic dashboard updates
-- **Custom Components**: Customizable dashboard components
-- **Multi-Model Comparison**: Comparative analysis across models
+- **Optional HTML Dashboards**: Generated only when an interactive/dashboard visualization type is requested and `interactive=True`
+- **Model Analysis Pages**: Derived from extracted GNN model data and recorded in the Step 9 summary
+- **Dependency-Aware Output**: Optional branches skip or fall back when required packages are unavailable
 
 ### 3D Visualization
-- **3D Graph Visualization**: Three-dimensional network visualization
-- **3D Matrix Visualization**: Three-dimensional matrix representation
-- **Spatial Analysis**: Spatial model analysis
-- **Interactive 3D Navigation**: Interactive 3D exploration
+- **3D-Style Artifacts**: Static visualization artifacts generated from model structure or matrix data
+- **POMDP Panels**: Transition, policy, and matrix-oriented outputs when the parsed model contains compatible data
 
 ### Sophisticated Data Analysis
 - **Statistical Visualization**: Advanced statistical plots
-- **Time Series Analysis**: Temporal model dynamics visualization
 - **Multi-Dimensional Analysis**: Multi-dimensional data visualization
-- **Custom Analysis**: Custom analysis visualization generation
+- **Network Metrics**: Node/edge and topology summaries derived from parsed model structure
 
 ### Key Features
-- **HTML Dashboard Generation**: Complete HTML dashboard generation
-- **Interactive Components**: Plotly-based interactive components
+- **HTML Dashboard Generation**: Optional HTML dashboard generation
+- **Interactive Components**: Plotly-based components where supported
 - **Data Extraction**: Comprehensive data extraction from GNN models
-- **Performance Optimization**: Efficient advanced visualization generation
+- **Warning-Code Recovery**: `process_advanced_viz` returns `2` for no-data or optional-only skip outcomes
 
 ## Integration with Pipeline
 
@@ -82,7 +78,7 @@ This documentation is integrated with the 25-step GNN processing pipeline:
    - Interactive dashboard generation (Step 9: Advanced Visualization)
    - 3D visualization creation
    - Sophisticated data analysis visualization
-   - Real-time visualization updates
+   - No live update contract is currently claimed
 
 3. **Integration** (Steps 17-24): System coordination and output
    - Advanced visualization results integrated into comprehensive outputs
@@ -127,8 +123,6 @@ All documentation in this module adheres to professional standards:
 
 ---
 
-**Status**: ✅ Production Ready  
+**Status**: Maintained
 **Compliance**: Professional documentation standards  
-**Maintenance**: Regular updates with new advanced visualization features and integration capabilities
-
-
+**Maintenance**: Keep claims tied to implemented Step 9 outputs and dependency fallbacks

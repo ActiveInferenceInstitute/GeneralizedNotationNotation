@@ -15,9 +15,9 @@ authors:
     corresponding: true
 
 publication:
-  doi: ""
-  version_doi: ""
-  version_record: ""
+  doi: "10.5281/zenodo.7803327"
+  version_doi: "10.5281/zenodo.7803328"
+  version_record: "https://zenodo.org/records/7803328"
   github_repository: "https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation"
   year: "2026"
   transmission_bookends:

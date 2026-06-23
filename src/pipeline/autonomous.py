@@ -6,10 +6,40 @@ repository source files, commit changes, or mutate live infrastructure.
 
 from __future__ import annotations
 
+import hashlib
 import json
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List
+
+from pipeline.container_plan import (
+    ResourceLimits,
+    generate_container_plan,
+    security_review,
+)
+from pipeline.pipeline_container_plan import PINNED_PIPELINE_IMAGE
+
+VALIDATOR_COMMANDS = [
+    "uv run --frozen --extra dev python scripts/check_capability_contracts.py --strict",
+    "uv run --frozen --extra dev python doc/development/docs_audit.py --strict --check-anchors --no-write",
+    "PYTHONPATH=src uv run --frozen python -m pytest src/tests/pipeline/test_autonomous_contract.py -q",
+]
+
+AUTONOMY_POLICY = {
+    "schema": "gnn_autonomy_policy_v1",
+    "mode": "proposal_only",
+    "source_mutation_allowed": False,
+    "cluster_mutation_allowed": False,
+    "requires_human_approval": True,
+    "approval_token_required": "human-reviewed",
+    "forbidden_actions": [
+        "write_source_file",
+        "apply_patch_to_repository",
+        "git_commit",
+        "container_run",
+        "cluster_mutation",
+    ],
+}
 
 
 def collect_observation_streams(target_dir: Path) -> List[Dict[str, Any]]:
@@ -42,18 +72,37 @@ def collect_observation_streams(target_dir: Path) -> List[Dict[str, Any]]:
 
 
 def build_container_plan(target_dir: Path) -> Dict[str, Any]:
-    """Return a generated container plan, never a live orchestration mutation."""
-    return {
-        "schema": "gnn_container_plan_v1",
-        "target_dir": str(target_dir),
-        "services": [
+    plan = generate_container_plan(
+        "gnn-autonomous-proposal-review",
+        [
             {
-                "name": "gnn-worker",
-                "image": "python:3.12-slim",
-                "command": "uv run python src/main.py --target-dir /workspace/input/gnn_files",
-                "replicas": 1,
+                "name": "gnn-autonomous-review",
+                "image": PINNED_PIPELINE_IMAGE,
+                "command": [
+                    "python",
+                    "src/main.py",
+                    "--autonomous",
+                    "--target-dir",
+                    str(target_dir),
+                    "--output-dir",
+                    "output",
+                ],
+                "mounts": ["gnn-output:/app/output"],
+                "resources": ResourceLimits(cpu="1.0", memory="1Gi"),
             }
         ],
+    )
+    findings = security_review(plan)
+    payload = plan.model_dump()
+    payload.update(
+        {
+            "target_dir": str(target_dir),
+            "security_review_findings": [finding.model_dump() for finding in findings],
+            "security_review_clean": not findings,
+        }
+    )
+    return {
+        **payload,
         "dry_run": True,
         "mutation_performed": False,
         "cluster_mutation_performed": False,
@@ -68,13 +117,7 @@ def run_autonomous_proposal_loop(
     autonomous_dir.mkdir(parents=True, exist_ok=True)
     gnn_files = sorted(target_dir.rglob("*.md")) if target_dir.exists() else []
     candidates = [
-        {
-            "candidate_id": f"candidate-{index + 1}",
-            "source_file": str(path),
-            "proposal": "Evaluate matrix dimensions, execution telemetry, and validation errors before applying any model patch.",
-            "patch_artifact": str(autonomous_dir / f"candidate-{index + 1}.gnn.patch"),
-            "source_mutation_performed": False,
-        }
+        _build_candidate(index, path, autonomous_dir)
         for index, path in enumerate(gnn_files[:max_candidates])
     ]
     for candidate in candidates:
@@ -90,6 +133,9 @@ def run_autonomous_proposal_loop(
         "observation_streams": collect_observation_streams(target_dir),
         "container_plan": build_container_plan(target_dir),
         "evaluation_report": evaluation_report,
+        "autonomy_policy": dict(AUTONOMY_POLICY),
+        "review_workflow": _review_workflow_summary(),
+        "audit_log": _audit_log(candidates, evaluation_report),
         "source_mutation_performed": False,
         "cluster_mutation_performed": False,
     }
@@ -113,6 +159,31 @@ def run_autonomous_proposal_loop(
     return report
 
 
+def _build_candidate(index: int, path: Path, autonomous_dir: Path) -> Dict[str, Any]:
+    fingerprint = _file_sha256(path)
+    candidate_id = f"candidate-{index + 1}-{fingerprint[:8]}"
+    return {
+        "candidate_id": candidate_id,
+        "source_file": str(path),
+        "source_sha256": fingerprint,
+        "source_summary": _source_summary(path),
+        "proposal": (
+            "Evaluate matrix dimensions, execution telemetry, validation artifacts, "
+            "and interpretability outputs before applying any model patch."
+        ),
+        "patch_artifact": str(autonomous_dir / f"{candidate_id}.gnn.patch"),
+        "review_gate": _review_gate(candidate_id),
+        "rollback_descriptor": {
+            "schema": "gnn_autonomous_rollback_v1",
+            "strategy": "discard_proposal_artifact",
+            "source_file": str(path),
+            "original_sha256": fingerprint,
+            "source_mutation_performed": False,
+        },
+        "source_mutation_performed": False,
+    }
+
+
 def _candidate_patch_text(candidate: Dict[str, Any]) -> str:
     """Build a non-applied candidate GNN patch artifact."""
     source_file = candidate["source_file"]
@@ -121,7 +192,7 @@ def _candidate_patch_text(candidate: Dict[str, Any]) -> str:
         f"--- a/{source_file}\n"
         f"+++ b/{source_file}\n"
         "@@\n"
-        "# Proposal only: inspect validation, telemetry, and matrix dimensions before editing this GNN file.\n"
+        "# Proposal only: inspect validation, telemetry, matrix dimensions, and human review state before editing this GNN file.\n"
     )
 
 
@@ -141,10 +212,14 @@ def _build_evaluation_report(
                 "status": "proposal_only",
                 "patch_artifact": candidate["patch_artifact"],
                 "score": score_candidate_proposal(candidate, evidence),
+                "review_gate": candidate["review_gate"],
+                "application_allowed": False,
+                "rollback_descriptor": candidate["rollback_descriptor"],
                 "source_mutation_performed": False,
             }
             for candidate in candidates
         ],
+        "autonomy_policy": dict(AUTONOMY_POLICY),
         "source_mutation_performed": False,
         "cluster_mutation_performed": False,
     }
@@ -154,6 +229,10 @@ def collect_evaluation_evidence(output_dir: Path) -> Dict[str, Any]:
     """Collect existing validator and execution artifacts used for scoring."""
     execution_summaries = sorted(output_dir.rglob("execution_summary.json"))
     validation_artifacts = sorted(output_dir.rglob("*validation*.json"))
+    semantic_ledgers = sorted(output_dir.rglob("*semantic*fidelity*.json"))
+    reliability_ledgers = sorted(output_dir.rglob("*cross*framework*.json"))
+    interpretability_artifacts = sorted(output_dir.rglob("*interpretability*.json"))
+    report_artifacts = sorted(output_dir.rglob("*report*.json"))
     parsed_execution_summaries = [
         _load_json_object(path) for path in execution_summaries
     ]
@@ -162,17 +241,21 @@ def collect_evaluation_evidence(output_dir: Path) -> Dict[str, Any]:
         for summary in parsed_execution_summaries
         if isinstance(summary.get("success_rate"), (int, float))
     ]
+    failed_counts = [_failed_count(summary) for summary in parsed_execution_summaries]
     return {
-        "validator_commands": [
-            "uv run --extra dev python scripts/check_capability_contracts.py --strict",
-            "uv run --extra dev python doc/development/docs_audit.py --strict --check-anchors --no-write",
-            "uv run --extra dev python -m pytest src/tests/pipeline/test_autonomous_contract.py -q",
-        ],
+        "validator_commands": list(VALIDATOR_COMMANDS),
         "execution_summary_files": [str(path) for path in execution_summaries],
         "validation_artifact_files": [str(path) for path in validation_artifacts],
+        "semantic_fidelity_ledger_files": [str(path) for path in semantic_ledgers],
+        "cross_framework_ledger_files": [str(path) for path in reliability_ledgers],
+        "interpretability_artifact_files": [
+            str(path) for path in interpretability_artifacts
+        ],
+        "report_artifact_files": [str(path) for path in report_artifacts],
         "execution_success_rate_mean": (
             sum(success_rates) / len(success_rates) if success_rates else None
         ),
+        "execution_failed_count_total": sum(failed_counts),
     }
 
 
@@ -192,9 +275,29 @@ def score_candidate_proposal(
     if isinstance(success_rate, (int, float)):
         score += min(15, int(success_rate // 10))
         reasons.append("execution_summary_available")
+        if success_rate >= 99:
+            score += 5
+            reasons.append("high_execution_success_rate")
+    if evidence.get("execution_failed_count_total") == 0 and evidence.get(
+        "execution_summary_files"
+    ):
+        score += 5
+        reasons.append("no_execution_failures_reported")
     if evidence.get("validation_artifact_files"):
         score += 10
         reasons.append("validation_artifacts_available")
+    if evidence.get("semantic_fidelity_ledger_files"):
+        score += 5
+        reasons.append("semantic_fidelity_ledger_available")
+    if evidence.get("cross_framework_ledger_files"):
+        score += 5
+        reasons.append("cross_framework_ledger_available")
+    if evidence.get("interpretability_artifact_files"):
+        score += 5
+        reasons.append("interpretability_artifacts_available")
+    if evidence.get("report_artifact_files"):
+        score += 5
+        reasons.append("report_artifacts_available")
     bounded_score = max(0, min(100, score))
     return {
         "value": bounded_score,
@@ -203,6 +306,8 @@ def score_candidate_proposal(
             "review_with_validators" if bounded_score >= 70 else "needs_more_evidence"
         ),
         "reasons": reasons,
+        "application_allowed": False,
+        "required_review_state": "human-reviewed",
     }
 
 
@@ -215,6 +320,88 @@ def _load_json_object(path: Path) -> Dict[str, Any]:
     return payload if isinstance(payload, dict) else {}
 
 
+def _failed_count(summary: Dict[str, Any]) -> int:
+    for key in ("failed_count", "failed", "failure_count"):
+        value = summary.get(key)
+        if isinstance(value, int):
+            return max(0, value)
+    details = summary.get("execution_details")
+    if isinstance(details, list):
+        return sum(
+            1
+            for detail in details
+            if isinstance(detail, dict)
+            and str(detail.get("status", "")).upper() in {"FAILED", "ERROR"}
+        )
+    return 0
+
+
+def _file_sha256(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def _source_summary(path: Path) -> Dict[str, Any]:
+    text = path.read_text(encoding="utf-8", errors="replace")
+    return {
+        "line_count": len(text.splitlines()),
+        "byte_count": len(text.encode("utf-8")),
+        "section_count": sum(1 for line in text.splitlines() if line.startswith("#")),
+        "matrix_mentions": sum(
+            text.count(token) for token in ("A", "B", "C", "D", "E")
+        ),
+        "has_model_name": "ModelName" in text,
+    }
+
+
+def _review_gate(candidate_id: str) -> Dict[str, Any]:
+    return {
+        "schema": "gnn_autonomous_review_gate_v1",
+        "candidate_id": candidate_id,
+        "required_state": "human-reviewed",
+        "current_state": "proposal-only",
+        "approval_token": None,
+        "application_allowed": False,
+        "reviewer_actions": [
+            "inspect_patch_artifact",
+            "run_validator_commands",
+            "record_human_approval_before_any_source_edit",
+        ],
+    }
+
+
+def _review_workflow_summary() -> Dict[str, Any]:
+    return {
+        "schema": "gnn_autonomous_review_workflow_v1",
+        "states": ["proposal-only", "human-reviewed", "manually-applied"],
+        "initial_state": "proposal-only",
+        "automatic_transition_to_manual_apply": False,
+        "required_validator_commands": list(VALIDATOR_COMMANDS),
+    }
+
+
+def _audit_log(
+    candidates: List[Dict[str, Any]], evaluation_report: Dict[str, Any]
+) -> List[Dict[str, Any]]:
+    return [
+        {
+            "event": "autonomous_proposals_emitted",
+            "candidate_count": len(candidates),
+            "source_mutation_performed": False,
+            "cluster_mutation_performed": False,
+        },
+        {
+            "event": "candidate_scores_recorded",
+            "decision_count": len(evaluation_report.get("decisions", [])),
+            "application_allowed": False,
+        },
+        {
+            "event": "human_review_required",
+            "required_state": "human-reviewed",
+            "automatic_apply_available": False,
+        },
+    ]
+
+
 def _evaluation_report_markdown(report: Dict[str, Any]) -> str:
     """Render a compact Markdown evaluation report."""
     lines = [
@@ -225,5 +412,12 @@ def _evaluation_report_markdown(report: Dict[str, Any]) -> str:
         f"- Candidate count: {report['candidate_count']}",
         "- Source mutation performed: false",
         "- Cluster mutation performed: false",
+        "- Human review required before any source edit: true",
     ]
+    for decision in report.get("decisions", []):
+        score = decision.get("score", {})
+        lines.append(
+            f"- {decision['candidate_id']}: {score.get('value', 'n/a')}/100 "
+            f"({score.get('recommendation', 'unknown')})"
+        )
     return "\n".join(lines) + "\n"

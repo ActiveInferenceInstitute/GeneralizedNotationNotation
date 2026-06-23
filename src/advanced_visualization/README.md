@@ -1,6 +1,6 @@
 # Advanced Visualization Module
 
-This module provides comprehensive advanced visualization capabilities for GNN models, including interactive dashboards, 3D visualizations, and sophisticated data analysis visualizations.
+This module provides Step 9 advanced visualization artifacts for GNN models: statistical plots, POMDP-specific panels, network metrics, optional Plotly/HTML dashboards, and optional D2 diagrams.
 
 `process_advanced_viz` returns `True` when artifacts are produced, `2` for
 warning-only recovery such as missing Step 3 model data or optional-only skips,
@@ -36,8 +36,8 @@ graph TB
     end
     
     subgraph "Output Generation"
-        Dashboards[Interactive Dashboards]
-        HTMLViz[HTML Visualizations]
+        Dashboards[Optional HTML Dashboards]
+        HTMLViz[HTML Summaries]
         D2Diagrams[D2 Diagrams]
     end
     
@@ -186,14 +186,6 @@ Main orchestrator for advanced visualization capabilities.
   - Supports multiple visualization types and export formats
   - Returns list of generated file paths
 
-- `_generate_3d_visualization(extracted_data: Dict[str, Any], model_name: str) -> str`
-  - Creates 3D interactive visualizations
-  - Uses Three.js for web-based 3D rendering
-
-- `_generate_interactive_visualization(extracted_data: Dict[str, Any], model_name: str) -> str`
-  - Generates interactive 2D visualizations
-  - Includes zoom, pan, and selection capabilities
-
 #### Usage
 
 ```python
@@ -212,22 +204,17 @@ generated_files = visualizer.generate_visualizations(
 ## Visualization Types
 
 ### 1. Interactive Dashboards
-- Comprehensive model overview
-- Real-time data exploration
-- Interactive filtering and sorting
-- Export capabilities
+- Generated only for dashboard/interactive visualization types when `interactive=True`
+- HTML output backed by extracted model data and available optional dependencies
+- Degrades to recorded skips or static artifacts when optional dependencies are absent
 
 ### 2. 3D Visualizations
-- Three-dimensional model representation
-- Interactive rotation and zoom
-- Layer-based visualization
-- Animation support
+- Static 3D-style model or matrix artifacts produced by the Step 9 processor
+- Output depends on `viz_type`, model data availability, and plotting dependencies
 
 ### 3. Network Graphs
-- Interactive node-link diagrams
-- Force-directed layouts
-- Node clustering and grouping
-- Edge weight visualization
+- Network metrics and graph artifacts derived from parsed GNN structure
+- Interactive behavior is limited to optional Plotly/HTML outputs
 
 ### 4. Statistical Analysis
 - Variable type distribution pie charts
@@ -252,16 +239,14 @@ generated_files = visualizer.generate_visualizations(
 
 ### 7. Interactive Plotly Dashboards
 - Multi-panel interactive dashboard
-- Real-time matrix exploration
 - Network graph interaction
 - Model statistics tables
-- HTML and PNG export support
+- HTML output when Plotly support is available and requested
 
 ### 8. Matrix Visualizations
 - Heatmap representations
-- Interactive matrix exploration
 - Value highlighting
-- Export to various formats
+- Static image artifacts and JSON manifests
 
 ## Data Processing Pipeline
 
@@ -298,7 +283,13 @@ stats = extractor.get_model_statistics(data)
 ```python
 # Create visualizations
 visualizer = AdvancedVisualizer()
-files = visualizer.generate_visualizations(data, model_name, output_dir)
+files = visualizer.generate_visualizations(
+    content=gnn_content,
+    model_name=model_name,
+    output_dir=output_dir,
+    viz_type="all",
+    interactive=True,
+)
 ```
 
 ### 4. Dashboard Assembly
@@ -324,41 +315,39 @@ if not success:
     # Save error page for debugging
 ```
 
-## Performance Optimization
+## Performance and Resource Notes
 
-### Caching Strategies
-- **Data Extraction**: Cache extracted data to avoid reprocessing
-- **Visualization Generation**: Cache generated visualizations
-- **Dashboard Assembly**: Incremental dashboard updates
-
-### Memory Management
-- **Large Models**: Streaming data processing for large models
-- **Resource Cleanup**: Automatic cleanup of temporary files
-- **Memory Monitoring**: Track memory usage during processing
+- Generate a specific `viz_type` instead of `"all"` when only one artifact family is needed.
+- Use `interactive=False` to skip interactive/dashboard branches.
+- Treat timing and memory numbers as run-specific; measure them in the current environment before publishing performance claims.
 
 ## Integration with Pipeline
 
 ### Pipeline Step 9: Advanced Visualization
 ```python
-# Called from 9_advanced_viz.py
-def process_advanced_visualization(target_dir, output_dir, **kwargs):
-    visualizer = AdvancedVisualizer()
-    return visualizer.generate_visualizations(
-        content=content,
-        model_name=model_name,
-        output_dir=output_dir
-    )
+from advanced_visualization.processor import process_advanced_viz
+
+result = process_advanced_viz(
+    target_dir=Path("input/gnn_files"),
+    output_dir=Path("output/9_advanced_viz_output"),
+    logger=logger,
+    viz_type="all",
+    interactive=True,
+    export_formats=["html", "json"],
+)
 ```
 
 ### Output Structure
 ```
-output/advanced_visualization/
-├── dashboard.html                  # Main interactive dashboard
-├── 3d_visualization.html          # 3D model visualization
-├── network_graph.html             # Interactive network graph
-├── statistics.html                # Statistical analysis
-├── matrix_heatmap.html           # Matrix visualization
-└── error_report.html             # Error diagnostics (if any)
+output/9_advanced_viz_output/
+├── advanced_viz_summary.json
+├── {model}_3d_visualization.png
+├── {model}_interactive_dashboard.html      # only when interactive output is requested and available
+├── {model}_matrix_correlations.png
+├── {model}_network_metrics.png
+├── {model}_policy_visualization.png
+├── {model}_pomdp_transitions.png
+└── {model}_statistical_analysis.png
 ```
 
 ## Configuration Options
@@ -367,24 +356,15 @@ output/advanced_visualization/
 ```python
 # Configuration options
 config = {
-    'interactive': True,           # Enable interactive features
-    'export_formats': ['html', 'png', 'svg'],  # Export formats
-    'visualization_types': ['dashboard', '3d', 'network'],  # Viz types
-    'strict_validation': True,     # Strict data validation
-    'performance_mode': False      # Performance optimization
+    "viz_type": "all",
+    "interactive": True,
+    "export_formats": ["html", "json"],
 }
 ```
 
-### Customization
-```python
-# Custom visualization parameters
-visualizer = AdvancedVisualizer()
-visualizer.set_custom_parameters({
-    'color_scheme': 'viridis',
-    'animation_speed': 1.0,
-    'interaction_level': 'full'
-})
-```
+The public Step 9 controls are `viz_type`, `interactive`, and `export_formats`.
+Do not document additional tuning flags unless they are implemented in the
+public API.
 
 ## Testing and Validation
 
@@ -415,28 +395,14 @@ def test_pipeline_integration():
 
 ### Optional Dependencies
 - **plotly**: Interactive visualizations
-- **bokeh**: Advanced interactive plots
-- **three.js**: 3D visualizations (via HTML)
-- **d3.js**: Data-driven documents (via HTML)
+- **seaborn**: Enhanced statistical panels
+- **d2 CLI**: D2 diagram compilation; missing D2 records a skip instead of failing the whole step
 
 ## Performance Metrics
 
-### Latest Performance Results ✅
-- **3D Visualization Generation**: ~300ms
-- **Statistical Analysis Generation**: ~400ms
-- **Complete Pipeline**: ~1-2s for full visualization suite
-- **Memory Usage**: ~50-100MB (stable across model sizes)
-
-### Processing Times
-- **Small Models** (< 100 variables): < 1 second ✅
-- **Medium Models** (100-1000 variables): 1-2 seconds ✅
-- **Large Models** (> 1000 variables): 2-5 seconds ✅
-
-### Memory Usage
-- **Base Memory**: ~50MB ✅
-- **Per Model**: ~10-100MB depending on complexity ✅
-- **Peak Memory**: 1.5-2x base usage during processing ✅
-- **Resource Cleanup**: Automatic cleanup and optimization ✅
+Do not treat this README as the source of performance numbers. Measure
+current processing time and memory from a fresh run when performance is part of
+the claim.
 
 ## Troubleshooting
 
@@ -451,7 +417,7 @@ Solution: Install optional dependencies or use recovery visualizations
 #### 2. Memory Issues
 ```
 Error: MemoryError during large model processing
-Solution: Enable performance mode or process in chunks
+Solution: Generate a narrower viz_type, run with interactive=False, or reduce the target set
 ```
 
 #### 3. Visualization Failures
@@ -460,28 +426,23 @@ Error: Failed to generate 3D visualization
 Solution: Check browser compatibility or use 2D recovery
 ```
 
-### Debug Mode
-```python
-# Enable debug mode for detailed logging
-visualizer = AdvancedVisualizer(debug=True)
-```
+Use the pipeline `--verbose` flag or the provided logger for diagnostics; the
+`AdvancedVisualizer` constructor does not expose a public debug constructor flag.
 
 ## Future Enhancements
 
 ### Planned Features
-- **Real-time Updates**: Live visualization updates
 - **Collaborative Features**: Multi-user visualization sessions
 - **Advanced Analytics**: Machine learning-based insights
-- **Mobile Support**: Responsive design for mobile devices
+- **Mobile Support**: Responsive review of generated HTML artifacts
 
 ### Performance Improvements
 - **WebGL Rendering**: Hardware-accelerated 3D rendering
-- **Streaming Processing**: Real-time data streaming
-- **Caching Optimization**: Advanced caching strategies
+- **Live Processing Contracts**: Add only after implementation and tests define live-data semantics
 
 ## Summary
 
-The Advanced Visualization module provides comprehensive visualization capabilities for GNN models, including interactive dashboards, 3D visualizations, and sophisticated data analysis. The module is designed with robust error handling, performance optimization, and extensive customization options to support various use cases in Active Inference research and development.
+The Advanced Visualization module provides artifact-generating visualization capabilities for GNN models, including statistical panels, POMDP-specific plots, network metrics, optional dashboards, and D2 diagrams. Its documentation should stay tied to implemented outputs, dependency fallbacks, and the `process_advanced_viz` return contract.
 
 ## License and Citation
 

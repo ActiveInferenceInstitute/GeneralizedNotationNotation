@@ -2,13 +2,13 @@
 
 ## Module Overview
 
-**Purpose**: Advanced visualization, interactive plots, 3D visualizations, and dashboard generation for GNN models
+**Purpose**: Advanced visualization artifact generation for GNN models: statistical panels, POMDP plots, network metrics, optional Plotly/HTML dashboards, and optional D2 diagrams
 
 **Pipeline Step**: Step 9: Advanced visualization (9_advanced_viz.py)
 
 **Category**: Advanced Visualization / Interactive Analysis
 
-**Status**: ✅ Production Ready
+**Status**: Maintained
 
 **Version**: 1.6.0
 
@@ -20,18 +20,17 @@
 
 ### Primary Responsibilities
 
-1. Generate interactive 3D visualizations
-2. Create dynamic dashboard interfaces
+1. Generate 3D-style visualization artifacts
+2. Create optional HTML dashboard artifacts
 3. Produce advanced statistical plots
-4. Generate interactive HTML visualizations
-5. Provide multi-dimensional data exploration
+4. Generate optional interactive HTML visualizations when dependencies and flags allow
+5. Provide multi-dimensional model summaries
 6. Generate professional D2 (Declarative Diagramming) diagrams
 
 ### Key Capabilities
 
 - 3D network topology visualization
 - Interactive Plotly dashboards
-- Time-series animation
 - Multi-panel comparative analysis
 - HTML-based interactive reports
 - **D2 diagram generation for GNN models and pipeline architecture**
@@ -114,15 +113,13 @@ success = process_advanced_viz(
 
 - **Multi-Panel Dashboard**: Variable types, matrix overview, network graph, statistics
 - **Interactive Matrix Explorer**: Zoom, pan, and explore matrix heatmaps
-- **Real-Time Updates**: Dynamic visualization updates based on model data
-- **Export Support**: HTML and PNG export formats
-- **Responsive Design**: Adapts to different screen sizes
+- **Export Support**: HTML output when requested and available
+- **Static Fallbacks**: Recorded skips or static artifacts when optional dependencies are unavailable
 
 ### Interactive Dashboard
 
-- Real-time model exploration (when plotly available)
-- Parameter adjustment interface
-- Multi-view synchronized displays
+- Model-summary dashboard artifacts when requested and `interactive=True`
+- Multi-view reports assembled from extracted model data
 - HTML-based interactive reports
 
 ### D2 Diagram Generation (NEW)
@@ -159,14 +156,14 @@ See [D2_README.md](D2_README.md) for comprehensive D2 integration documentation.
 #### Interactive Features
 
 - `interactive` (bool): Enable interactive features (default: `True`)
-  - When `True`: Generates Plotly-based interactive visualizations
-  - When `False`: Generates static matplotlib visualizations
+  - When `True`: Allows interactive/dashboard branches for matching `viz_type` values
+  - When `False`: Skips interactive/dashboard branches
 
 #### Export Formats
 
 - `export_formats` (List[str]): Formats to export (default: `["html", "json"]`)
-  - Supported: `["html", "json", "png", "svg", "pdf"]`
-  - D2 diagrams support: `["svg", "png", "pdf"]`
+  - Supported by Step 9 core outputs: `["html", "json", "png"]`
+  - D2 diagrams support additional formats when the D2 CLI is installed
 
 No model data is a warning-only outcome, not artifact success. `viz_type` and
 `interactive` gate output creation; interactive dashboards are generated only
@@ -179,11 +176,8 @@ when an interactive type is requested and `interactive=True`.
 - `d2_theme` (str): Theme for D2 diagrams (default: `"default"`)
   - Options: `"default"`, `"dark"`, `"light"`, `"professional"`
 
-#### Performance Tuning
-
-- `max_nodes` (int): Maximum nodes for 3D visualization (default: `1000`)
-- `simplify_large_models` (bool): Simplify large models automatically (default: `True`)
-- `enable_animations` (bool): Enable animated visualizations (default: `False`)
+No additional public performance-tuning flags are documented for this module.
+Generate a narrower `viz_type` or use `interactive=False` to reduce work.
 
 ---
 
@@ -198,7 +192,6 @@ when an interactive type is requested and `interactive=True`.
 
 - `plotly` - Interactive visualizations (recovery: static plots)
 - `seaborn` - Enhanced statistical plots (recovery: matplotlib)
-- `bokeh` - Interactive dashboards (recovery: HTML report)
 - **`d2` CLI** - D2 diagram compilation (recovery: skip D2 diagrams, log warning)
 
 ---
@@ -299,35 +292,12 @@ output/9_advanced_viz_output/
 
 ## Performance Characteristics
 
-### Latest Execution (After Comprehensive Fixes)
+### Measurement Policy
 
-- **Duration**: ~1-2s for complete visualization pipeline
-- **Status**: ✅ FULLY OPERATIONAL
-- **Fixes Applied**:
-  - ✅ Fixed model data loading from GNN processing results
-  - ✅ Implemented real 3D visualizations using matplotlib
-  - ✅ Implemented statistical analysis plots
-  - ✅ Fixed import paths and module structure
-  - ✅ Added comprehensive error handling and fallbacks
-
-### Expected Performance
-
-- **Fast Path**: ~1-2s for basic visualizations (3D, statistical)
-- **Slow Path**: ~2-5s for comprehensive analysis with multiple formats
-- **Memory**: ~50-100MB for large models
-
-### Real-World Performance (Latest Test)
-
-- **3D Visualization**: Generated successfully in ~400ms
-- **Statistical Analysis**: Generated successfully in ~850ms
-- **State Transitions**: Generated successfully in ~200ms
-- **Belief Evolution**: Generated successfully in ~940ms
-- **Policy Visualization**: Generated successfully in ~750ms
-- **Matrix Correlations**: Generated successfully in ~860ms
-- **Timeline Visualization**: Generated successfully in ~790ms
-- **State Space Analysis**: Generated successfully in ~800ms
-- **Belief Flow Visualization**: Generated successfully in ~900ms
-- **Total Pipeline**: 8 successful visualizations in ~6.5s
+- This document is not the source of fixed runtime or memory numbers.
+- Measure current performance from a fresh local or CI run when making a performance claim.
+- Use narrower `viz_type` values or `interactive=False` when a run should avoid optional dashboard work.
+- Treat optional dependency skips and no-data outcomes through the documented warning-code path rather than as artifact success.
 
 ---
 
@@ -335,11 +305,11 @@ output/9_advanced_viz_output/
 
 ### Graceful Degradation
 
-- **No Plotly**: Generate matplotlib-based 3D visualizations ✅
-- **No Bokeh**: Create static HTML reports ✅
-- **Large Models**: Simplify visualization, provide warnings ✅
-- **Parsing Failures**: Return structured error information ✅
-- **Missing Dependencies**: Use available libraries with fallbacks ✅
+- **No Plotly**: Generate static/matplotlib artifacts where supported
+- **No D2 CLI**: Skip D2-specific diagram rendering and report the optional dependency state
+- **Large Models**: Prefer narrower `viz_type` runs and recorded warnings
+- **Parsing Failures**: Return structured error information
+- **Missing Dependencies**: Use available libraries with fallbacks
 
 ### Robust Error Recovery
 
@@ -352,7 +322,7 @@ output/9_advanced_viz_output/
 
 ## Recent Improvements
 
-### Comprehensive Module Enhancement ✅
+### Comprehensive Module Enhancement
 
 **Major Fixes Applied**:
 
@@ -364,11 +334,11 @@ output/9_advanced_viz_output/
 
 **Key Improvements**:
 
-- ✅ Real 3D scatter plots with variable type color coding
-- ✅ Statistical analysis with pie charts, bar charts, and model metrics
-- ✅ Proper data extraction with graceful error handling
-- ✅ HTML dashboard generation with interactive components
-- ✅ Performance optimization with matplotlib backend configuration
+- 3D-style scatter plots with variable type color coding
+- Statistical analysis with pie charts, bar charts, and model metrics
+- Data extraction with graceful error handling
+- Optional HTML dashboard generation with interactive components
+- Matplotlib backend configuration for noninteractive execution environments
 
 ### Latest Major Enhancement (October 13, 2025)
 
@@ -404,7 +374,6 @@ output/9_advanced_viz_output/
 
 - **D2 CLI**: Integrates with D2 diagramming tool for professional diagrams
 - **Plotly**: Optional integration for interactive visualizations
-- **Bokeh**: Optional integration for advanced dashboards
 
 ### Data Flow
 
@@ -449,18 +418,21 @@ uv run --extra dev python -m pytest src/tests/test_advanced_visualization*.py \
 
 ### Tools Registered
 
-- `advanced_visualization.generate_3d` - Generate 3D visualizations
-- `advanced_visualization.create_dashboard` - Create interactive dashboards
-- `advanced_visualization.generate_d2` - Generate D2 diagrams
-- `advanced_visualization.analyze_statistics` - Generate statistical plots
+- `process_advanced_visualization` - Run Step 9 advanced visualization processing for a target directory
+- `check_visualization_capabilities` - Report optional dependency and feature availability
+- `list_d2_visualization_types` - List D2 diagram categories and D2 requirements
+- `get_advanced_visualization_module_info` - Return module metadata, feature flags, and tool inventory
 
 ### Tool Endpoints
 
 ```python
-@mcp_tool("advanced_visualization.generate_3d")
-def generate_3d_visualization_tool(model_data: Dict[str, Any]) -> Dict[str, Any]:
-    """Generate 3D network visualization"""
-    # Implementation
+def process_advanced_visualization_mcp(
+    target_directory: str,
+    output_directory: str,
+    verbose: bool = False,
+    generate_d2: bool = True,
+) -> Dict[str, Any]:
+    """Process advanced visualization for GNN files."""
 ```
 
 ### MCP File Location
@@ -544,7 +516,7 @@ python src/9_advanced_viz.py --target-dir input/ --verbose
 ### Roadmap
 
 - **Next Version**: Enhanced D2 diagram features
-- **Future**: Real-time visualization streaming
+- **Future**: Explicit live or streaming contracts only after implementation and tests exist
 
 ---
 
@@ -567,9 +539,9 @@ python src/9_advanced_viz.py --target-dir input/ --verbose
 
 **Last Updated**: 2026-05-12
 **Maintainer**: GNN Pipeline Team
-**Status**: ✅ Production Ready
+**Status**: Maintained
 **Version**: 1.6.0
-**Architecture Compliance**: ✅ 100% Thin Orchestrator Pattern
+**Architecture Compliance**: Thin Orchestrator Pattern
 
 
 ---

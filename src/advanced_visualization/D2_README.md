@@ -395,19 +395,18 @@ uv run --extra dev python -m pytest src/tests/visualization/test_d2_visualizer.p
 
 ## Performance
 
-### Typical Performance Metrics
+### Measurement Policy
 
-- **Diagram Generation**: ~50-200ms per diagram
-- **D2 Compilation**: ~500-2000ms per format
-- **Total per Model**: ~2-6 seconds for all diagrams
-- **Memory Usage**: ~10-50MB per diagram
+- This guide does not define fixed D2 runtime or memory targets.
+- Measure diagram generation and compilation time from a fresh run when performance matters.
+- Treat D2 compilation as optional: when the D2 CLI is absent, Step 9 records the skip instead of silently claiming compiled artifacts.
 
 ### Optimization Tips
 
 1. **Use SVG format by default**: Fastest compilation, smallest file size
 2. **Batch compilations**: Generate all diagrams in one call
 3. **Choose appropriate layout engine**: Dagre is fastest, ELK for quality
-4. **Cache compiled diagrams**: D2 files can be version controlled and recompiled
+4. **Retain source diagrams**: D2 files can be version controlled and recompiled
 
 ## Integration with GNN Pipeline
 
@@ -511,4 +510,4 @@ d2 version
 
 **Last Updated**: October 28, 2025  
 **Module Version**: 1.0.0  
-**Status**: ✅ Production Ready
+**Status**: Maintained
