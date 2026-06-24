@@ -11,6 +11,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
 ### Fixed
 - Hardened MCP execution and LLM entry points against arbitrary local file access and script execution by enforcing repository-local path validation, source-file extension checks, and Step 11 render-summary gating for `process_execute_mcp`.
 - Escaped bnlearn generated-code metadata as Python literals, coerced generated timestep literals, and sanitized generated artifact filename stems to prevent code injection and path traversal through model names.
+- Resolved default-branch Dependabot alerts by raising patched dependency floors and refreshing `uv.lock` for `msgpack` 1.2.1, `jupyter-server` 2.20.0, `jupyterlab` 4.6.0, and `bleach` 6.4.0.
 
 ---
 

@@ -41,6 +41,10 @@ We are committed to ensuring the security of the GeneralizedNotationNotation (GN
 | 2026-05-07 | CVE-2026-22815 | aiohttp | Verified locked at 3.13.5; tightened floor to ≥ 3.13.4 (header/trailer DoS) |
 | 2026-05-07 | CVE-2026-21441 | urllib3 | Verified locked at 2.6.3 (decompression bomb bypass fix) |
 | 2026-05-07 | CVE-2026-24049 | setuptools/wheel | Accepted risk — `wheel.unpack` path traversal not reachable in GNN workflows (see below) |
+| 2026-06-24 | GHSA-6v7p-g79w-8964 | msgpack | Upgraded 1.1.2 → 1.2.1 (Unpacker reuse out-of-bounds read/crash fix) |
+| 2026-06-24 | GHSA-vmhf-c436-hxj4 | jupyterlab | Upgraded 4.5.8 → 4.6.0 (extension manager stored XSS fix; patched in 4.5.9) |
+| 2026-06-24 | GHSA-fcw5-x6j4-ccmp, CVE-2026-44727 | jupyter-server | Upgraded 2.19.0 → 2.20.0 (`Nbconvert*Handler` sandbox CSP fix) |
+| 2026-06-24 | GHSA-gj48-438w-jh9v, GHSA-g75f-g53v-794x, GHSA-8rfp-98v4-mmr6 | bleach | Upgraded 6.3.0 → 6.4.0 (URI sanitization and linkify CPU exhaustion fixes) |
 
 > **ℹ️ Known Accepted Risks**: The following vulnerabilities are documented and accepted:
 >
