@@ -8,6 +8,10 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
 
 ## [Unreleased]
 
+### Fixed
+- Hardened MCP execution and LLM entry points against arbitrary local file access and script execution by enforcing repository-local path validation, source-file extension checks, and Step 11 render-summary gating for `process_execute_mcp`.
+- Escaped bnlearn generated-code metadata as Python literals, coerced generated timestep literals, and sanitized generated artifact filename stems to prevent code injection and path traversal through model names.
+
 ---
 
 ## [3.0.0] — 2026-06-20

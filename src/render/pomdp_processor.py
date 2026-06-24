@@ -9,6 +9,7 @@ into various rendering implementations (PyMDP, RxInfer, ActiveInference.jl, etc.
 import itertools
 import json
 import logging
+import re
 from datetime import datetime
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union, cast
@@ -22,6 +23,13 @@ if TYPE_CHECKING:
     from gnn.pomdp_extractor import POMDPStateSpace
 
 logger = logging.getLogger(__name__)
+
+
+def _safe_output_stem(value: Any, fallback: str = "pomdp_model") -> str:
+    stem = re.sub(r"[^A-Za-z0-9_.-]+", "_", str(value)).strip("._")
+    if not stem:
+        return fallback
+    return stem[:120]
 
 
 def _normalise_prob_vector(values: np.ndarray) -> np.ndarray:
@@ -893,7 +901,7 @@ class POMDPRenderProcessor:
             from .pymdp.pymdp_renderer import render_gnn_to_pymdp
 
             model_name = gnn_spec.get("name", "pomdp_model")
-            output_file = output_dir / f"{model_name}_pymdp.py"
+            output_file = output_dir / f"{_safe_output_stem(model_name)}_pymdp.py"
 
             # Validate state spaces are present before rendering
             validation_result = self._validate_state_spaces_in_spec(gnn_spec, "pymdp")
@@ -946,7 +954,7 @@ class POMDPRenderProcessor:
             from .rxinfer.rxinfer_renderer import render_gnn_to_rxinfer
 
             model_name = gnn_spec.get("name", "pomdp_model")
-            output_file = output_dir / f"{model_name}_rxinfer.jl"
+            output_file = output_dir / f"{_safe_output_stem(model_name)}_rxinfer.jl"
 
             # Validate state spaces are present before rendering
             validation_result = self._validate_state_spaces_in_spec(gnn_spec, "rxinfer")
@@ -996,7 +1004,9 @@ class POMDPRenderProcessor:
             )
 
             model_name = gnn_spec.get("name", "pomdp_model")
-            output_file = output_dir / f"{model_name}_activeinference.jl"
+            output_file = output_dir / (
+                f"{_safe_output_stem(model_name)}_activeinference.jl"
+            )
 
             # Validate state spaces are present before rendering
             validation_result = self._validate_state_spaces_in_spec(
@@ -1047,7 +1057,7 @@ class POMDPRenderProcessor:
             from .jax.jax_renderer import render_gnn_to_jax
 
             model_name = gnn_spec.get("name", "pomdp_model")
-            output_file = output_dir / f"{model_name}_jax.py"
+            output_file = output_dir / f"{_safe_output_stem(model_name)}_jax.py"
 
             # Pre-render validation: verify state spaces are present before rendering
             validation_result = self._validate_state_spaces_in_spec(gnn_spec, "jax")
@@ -1096,7 +1106,7 @@ class POMDPRenderProcessor:
             from .discopy.discopy_renderer import render_gnn_to_discopy
 
             model_name = gnn_spec.get("name", "pomdp_model")
-            output_file = output_dir / f"{model_name}_discopy.py"
+            output_file = output_dir / f"{_safe_output_stem(model_name)}_discopy.py"
 
             success, message, warnings = render_gnn_to_discopy(
                 gnn_spec, output_file, kwargs
@@ -1124,7 +1134,7 @@ class POMDPRenderProcessor:
             from .generators import generate_bnlearn_code
 
             model_name = gnn_spec.get("name", "pomdp_model")
-            output_file = output_dir / f"{model_name}_bnlearn.py"
+            output_file = output_dir / f"{_safe_output_stem(model_name)}_bnlearn.py"
 
             code = generate_bnlearn_code(gnn_spec, output_file)
             success = bool(code)
@@ -1152,7 +1162,7 @@ class POMDPRenderProcessor:
             from .pytorch.pytorch_renderer import render_gnn_to_pytorch
 
             model_name = gnn_spec.get("name", "pomdp_model")
-            output_file = output_dir / f"{model_name}_pytorch.py"
+            output_file = output_dir / f"{_safe_output_stem(model_name)}_pytorch.py"
 
             # Build options dict with timesteps if available
             options: dict[Any, Any] = {}
@@ -1186,7 +1196,7 @@ class POMDPRenderProcessor:
             from .numpyro.numpyro_renderer import render_gnn_to_numpyro
 
             model_name = gnn_spec.get("name", "pomdp_model")
-            output_file = output_dir / f"{model_name}_numpyro.py"
+            output_file = output_dir / f"{_safe_output_stem(model_name)}_numpyro.py"
 
             # Build options dict with timesteps if available
             options: dict[Any, Any] = {}
@@ -1220,7 +1230,7 @@ class POMDPRenderProcessor:
             from .stan import render_stan
 
             model_name = gnn_spec.get("name", "pomdp_model")
-            output_file = output_dir / f"{model_name}_stan.stan"
+            output_file = output_dir / f"{_safe_output_stem(model_name)}_stan.stan"
             code = render_stan(
                 list(gnn_spec.get("variables", [])),
                 list(gnn_spec.get("connections", [])),

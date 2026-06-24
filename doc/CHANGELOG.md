@@ -2,7 +2,7 @@
 
 **Hub**: [README.md](README.md).
 
-> **Latest update**: April 2026  
+> **Latest update**: June 2026
 > **Status**: Maintained
 
 This document tracks notable changes, additions, and improvements to the GNN documentation ecosystem.
@@ -10,6 +10,12 @@ This document tracks notable changes, additions, and improvements to the GNN doc
 ---
 
 ## Version History
+
+### Unreleased
+
+#### Security documentation
+
+- **doc/security/codex_security_remediation_2026-06-24.md** — Documents the Codex Security standard scan remediation for MCP execution, LLM MCP file boundaries, generated bnlearn code escaping, generated artifact filename stems, and focused verification evidence.
 
 ### v2.0.0 (March 2026)
 
@@ -67,4 +73,4 @@ Approximate scale (order of magnitude): hundreds of Markdown files under `doc/`,
 
 ---
 
-*Last updated: April 2026*
+*Last updated: June 2026*

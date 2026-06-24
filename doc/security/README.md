@@ -10,6 +10,10 @@ This comprehensive security guide covers all aspects of GNN security, from devel
 
 **Security Philosophy**: Defense in depth with zero-trust principles for AI/ML workflows.
 
+## Recent Remediation Notes
+
+- [Codex Security Remediation - 2026-06-24](codex_security_remediation_2026-06-24.md): MCP execution path hardening, LLM MCP repository-local file boundaries, bnlearn generated-code escaping, safe generated artifact stems, and focused regression evidence.
+
 ## 🔐 **Core Security Principles**
 
 ### **1. Input Validation and Sanitization**

@@ -49,3 +49,24 @@ def test_discrete_pomdp_models_render_to_julia_frameworks(
     assert "using Base64" in text
     assert "base64decode" in text
     assert "JSON.parse(raw" not in text
+
+
+def test_pomdp_bnlearn_renderer_sanitizes_output_filename(tmp_path: Path) -> None:
+    output_dir = tmp_path / "bnlearn"
+    output_dir.mkdir()
+    processor = POMDPRenderProcessor(tmp_path)
+
+    result = processor._call_bnlearn_renderer(
+        {
+            "name": "../../escape",
+            "model_name": "../../escape",
+            "model_parameters": {},
+        },
+        output_dir,
+    )
+
+    assert result["success"] is True
+    artifact_path = Path(result["artifacts"][0]).resolve()
+    artifact_path.relative_to(output_dir.resolve())
+    assert artifact_path.name == "escape_bnlearn.py"
+    assert not (tmp_path.parent / "escape_bnlearn.py").exists()

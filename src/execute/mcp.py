@@ -14,12 +14,58 @@ from typing import Any, Dict
 
 logger = logging.getLogger(__name__)
 
+from api.path_utils import PathValidationError, resolve_repo_path
+
 from . import (
     check_dependencies,
     execute_simulation_from_gnn,
     process_execute,
 )
 from .pymdp.execute_pymdp import execute_from_gnn_file as _pymdp_execute_from_gnn_file
+
+_GNN_MODEL_SUFFIXES = {".md", ".json", ".yaml", ".yml"}
+
+
+def _resolve_gnn_model_path(path_value: str, *, purpose: str) -> Path:
+    path = resolve_repo_path(
+        path_value,
+        purpose=purpose,
+        must_exist=True,
+        must_be_dir=False,
+    )
+    if not path.is_file():
+        raise PathValidationError(f"{purpose} must be a file: {path_value}")
+    if path.suffix.lower() not in _GNN_MODEL_SUFFIXES:
+        allowed = ", ".join(sorted(_GNN_MODEL_SUFFIXES))
+        raise PathValidationError(
+            f"{purpose} must be a GNN source file ({allowed}): {path_value}"
+        )
+    return path
+
+
+def _resolve_output_directory(path_value: str, *, purpose: str) -> Path:
+    return resolve_repo_path(
+        path_value,
+        purpose=purpose,
+        must_be_dir=True,
+        create=True,
+    )
+
+
+def _resolve_render_output_directory(path_value: str) -> Path:
+    path = resolve_repo_path(
+        path_value,
+        purpose="Render output directory",
+        must_exist=True,
+        must_be_dir=True,
+    )
+    summary_file = path / "render_processing_summary.json"
+    if not summary_file.is_file():
+        raise PathValidationError(
+            "Render output directory must contain render_processing_summary.json"
+        )
+    return path
+
 
 # ── Domain tools ─────────────────────────────────────────────────────────────
 
@@ -30,13 +76,13 @@ def process_execute_mcp(
     verbose: bool = False,
 ) -> Dict[str, Any]:
     """
-    Run GNN execution processing for all GNN files in a directory.
+    Run execution for trusted Step 11 rendered implementations.
 
-    Discovers all `.md` GNN files in `target_directory`, validates them,
-    and executes each model using the configured execution backend.
+    Executes only scripts referenced by the Step 11
+    `render_processing_summary.json` in `target_directory`.
 
     Args:
-        target_directory: Directory containing GNN files.
+        target_directory: Repository-local Step 11 render output directory.
         output_directory: Directory to save execution results.
         verbose: Enable verbose logging.
 
@@ -44,10 +90,17 @@ def process_execute_mcp(
         Dictionary with success flag and processing summary.
     """
     try:
+        target_path = _resolve_render_output_directory(target_directory)
+        output_path = _resolve_output_directory(
+            output_directory,
+            purpose="Execution output directory",
+        )
         raw = process_execute(
-            target_dir=Path(target_directory),
-            output_dir=Path(output_directory),
+            target_dir=target_path,
+            output_dir=output_path,
             verbose=verbose,
+            render_output_dir=target_path,
+            require_render_summary=True,
         )
         # Phase 1.1 contract: process_execute may return bool OR int (0/1/2).
         # Coerce to MCP bool envelope, surfacing the "skipped" case separately.
@@ -68,8 +121,8 @@ def process_execute_mcp(
         return {
             "success": success,
             "skipped": skipped,
-            "target_directory": target_directory,
-            "output_directory": output_directory,
+            "target_directory": str(target_path),
+            "output_directory": str(output_path),
             "message": message,
         }
     except Exception as e:
@@ -98,9 +151,17 @@ def execute_gnn_model_mcp(
         return value is merged into the top-level dict.
     """
     try:
+        gnn_path = _resolve_gnn_model_path(
+            gnn_file_path,
+            purpose="GNN model file",
+        )
+        output_path = _resolve_output_directory(
+            output_directory,
+            purpose="Execution output directory",
+        )
         result = execute_simulation_from_gnn(
-            Path(gnn_file_path),
-            Path(output_directory),
+            gnn_path,
+            output_path,
         )
         if isinstance(result, dict):
             merged: dict[str, Any] = {"success": bool(result.get("success", True))}
@@ -133,9 +194,17 @@ def execute_pymdp_simulation_mcp(
         at the top level (keys like ``timesteps_run``, ``output_files``, etc.).
     """
     try:
+        gnn_path = _resolve_gnn_model_path(
+            gnn_file_path,
+            purpose="GNN model file",
+        )
+        output_path = _resolve_output_directory(
+            output_directory,
+            purpose="PyMDP output directory",
+        )
         success, results = _pymdp_execute_from_gnn_file(
-            Path(gnn_file_path),
-            Path(output_directory),
+            gnn_path,
+            output_path,
             correlation_id="mcp",
         )
         payload: Dict[str, Any] = {"success": bool(success)}
@@ -217,7 +286,7 @@ def register_tools(mcp_instance: Any) -> None:
             "properties": {
                 "target_directory": {
                     "type": "string",
-                    "description": "Directory with GNN files",
+                    "description": "Repository-local Step 11 render output directory",
                 },
                 "output_directory": {
                     "type": "string",
@@ -227,7 +296,7 @@ def register_tools(mcp_instance: Any) -> None:
             },
             "required": ["target_directory", "output_directory"],
         },
-        "Run GNN execution processing: validate and execute all GNN model files in a directory.",
+        "Run trusted Step 11 rendered scripts listed in render_processing_summary.json.",
         module=__package__,
         category="execute",
     )

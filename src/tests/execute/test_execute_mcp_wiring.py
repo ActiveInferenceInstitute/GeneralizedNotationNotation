@@ -11,9 +11,11 @@ must always return a dictionary with a ``success`` key and must never raise
 
 from __future__ import annotations
 
+import json
+import shutil
 import sys
 from pathlib import Path
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict, Generator, List, Tuple
 
 import pytest
 
@@ -60,6 +62,22 @@ SAMPLE_GNN = (
     / "discrete"
     / "actinf_pomdp_agent.md"
 )
+
+
+@pytest.fixture
+def repo_output_scratch(request: pytest.FixtureRequest) -> Generator[Path, None, None]:
+    base = (
+        Path(__file__).resolve().parents[3]
+        / "output"
+        / "test_execute_mcp_security"
+        / request.node.name
+    )
+    shutil.rmtree(base, ignore_errors=True)
+    base.mkdir(parents=True, exist_ok=True)
+    try:
+        yield base
+    finally:
+        shutil.rmtree(base, ignore_errors=True)
 
 
 def _assert_dict_result(result: Any) -> Dict[str, Any]:
@@ -116,26 +134,25 @@ def test_get_execute_module_info_returns_metadata(
 
 
 def test_process_execute_tool_handles_empty_directory(
-    registered_tools: Dict[str, Any], tmp_path: Path
+    registered_tools: Dict[str, Any], repo_output_scratch: Path
 ) -> None:
     # Name the directory with the 11_render_output suffix so the
     # processor's priority-2 heuristic stops at our empty dir instead of
     # falling back to real output/11_render_output globs (which would
     # run long-lived rendered scripts).
-    empty_dir = tmp_path / "11_render_output"
+    empty_dir = repo_output_scratch / "11_render_output"
     empty_dir.mkdir()
-    out_dir = tmp_path / "out"
+    out_dir = repo_output_scratch / "out"
     result = _assert_dict_result(
         registered_tools["process_execute"](str(empty_dir), str(out_dir))
     )
-    # success may be False (no files) but the tool must not blow up.
     assert isinstance(result["success"], bool)
 
 
 def test_execute_gnn_model_tool_accepts_real_gnn(
-    registered_tools: Dict[str, Any], tmp_path: Path
+    registered_tools: Dict[str, Any], repo_output_scratch: Path
 ) -> None:
-    out_dir = tmp_path / "exec_out"
+    out_dir = repo_output_scratch / "exec_out"
     result = _assert_dict_result(
         registered_tools["execute_gnn_model"](str(SAMPLE_GNN), str(out_dir))
     )
@@ -143,10 +160,117 @@ def test_execute_gnn_model_tool_accepts_real_gnn(
     assert "error" not in result or isinstance(result["error"], str)
 
 
-def test_execute_pymdp_simulation_tool_accepts_real_gnn(
-    registered_tools: Dict[str, Any], tmp_path: Path
+def test_execute_gnn_model_tool_rejects_python_payload(
+    registered_tools: Dict[str, Any], repo_output_scratch: Path
 ) -> None:
-    out_dir = tmp_path / "pymdp_out"
+    marker = repo_output_scratch / "payload-ran"
+    payload = repo_output_scratch / "payload.py"
+    payload.write_text(
+        f"from pathlib import Path\nPath({str(marker)!r}).write_text('ran')\n",
+        encoding="utf-8",
+    )
+
+    result = _assert_dict_result(
+        registered_tools["execute_gnn_model"](
+            str(payload),
+            str(repo_output_scratch / "exec_out"),
+        )
+    )
+
+    assert result["success"] is False
+    assert "GNN source file" in result["error"]
+    assert not marker.exists()
+
+
+def test_process_execute_tool_rejects_unmanifested_render_tree(
+    registered_tools: Dict[str, Any], repo_output_scratch: Path
+) -> None:
+    render_dir = repo_output_scratch / "11_render_output"
+    script_dir = render_dir / "model" / "activeinference_jl"
+    script_dir.mkdir(parents=True)
+    marker = repo_output_scratch / "render-payload-ran"
+    (script_dir / "payload.py").write_text(
+        f"from pathlib import Path\nPath({str(marker)!r}).write_text('ran')\n",
+        encoding="utf-8",
+    )
+
+    result = _assert_dict_result(
+        registered_tools["process_execute"](
+            str(render_dir),
+            str(repo_output_scratch / "execute_out"),
+        )
+    )
+
+    assert result["success"] is False
+    assert "render_processing_summary.json" in result["error"]
+    assert not marker.exists()
+
+
+def test_process_execute_tool_accepts_manifested_render_tree(
+    registered_tools: Dict[str, Any], repo_output_scratch: Path
+) -> None:
+    render_dir = repo_output_scratch / "11_render_output"
+    script_dir = render_dir / "model" / "pymdp"
+    script_dir.mkdir(parents=True)
+    marker = repo_output_scratch / "manifested-payload-ran"
+    script_path = script_dir / "payload.py"
+    script_path.write_text(
+        f"from pathlib import Path\nPath({str(marker)!r}).write_text('ran')\n",
+        encoding="utf-8",
+    )
+    summary = {
+        "file_results": {
+            str(repo_output_scratch / "model.md"): {
+                "framework_results": {
+                    "pymdp": {
+                        "success": True,
+                        "output_files": [str(script_path)],
+                    }
+                }
+            }
+        }
+    }
+    (render_dir / "render_processing_summary.json").write_text(
+        json.dumps(summary),
+        encoding="utf-8",
+    )
+
+    result = _assert_dict_result(
+        registered_tools["process_execute"](
+            str(render_dir),
+            str(repo_output_scratch / "execute_out"),
+        )
+    )
+
+    assert result["success"] is True
+    assert marker.read_text(encoding="utf-8") == "ran"
+
+
+def test_process_execute_tool_rejects_outside_render_directory(
+    registered_tools: Dict[str, Any], tmp_path: Path, repo_output_scratch: Path
+) -> None:
+    render_dir = tmp_path / "11_render_output"
+    render_dir.mkdir()
+    (render_dir / "render_processing_summary.json").write_text(
+        '{"file_results": {}}',
+        encoding="utf-8",
+    )
+
+    result = _assert_dict_result(
+        registered_tools["process_execute"](
+            str(render_dir),
+            str(repo_output_scratch / "execute_out"),
+        )
+    )
+
+    assert result["success"] is False
+    assert "repository root" in result["error"]
+
+
+def test_execute_pymdp_simulation_tool_accepts_real_gnn(
+    registered_tools: Dict[str, Any], repo_output_scratch: Path
+) -> None:
+    out_dir = repo_output_scratch / "pymdp_out"
     result = _assert_dict_result(
         registered_tools["execute_pymdp_simulation"](str(SAMPLE_GNN), str(out_dir))
     )

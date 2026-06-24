@@ -14,11 +14,62 @@ from typing import Any, Dict, Optional
 
 logger = logging.getLogger(__name__)
 
+from api.path_utils import PathValidationError, resolve_repo_path
+
 from . import (
     analyze_gnn_file_with_llm,
     generate_documentation,
     process_llm,
 )
+
+_GNN_MODEL_SUFFIXES = {".md", ".json", ".yaml", ".yml"}
+
+
+def _resolve_gnn_model_path(path_value: str, *, purpose: str) -> Path:
+    path = resolve_repo_path(
+        path_value,
+        purpose=purpose,
+        must_exist=True,
+        must_be_dir=False,
+    )
+    if not path.is_file():
+        raise PathValidationError(f"{purpose} must be a file: {path_value}")
+    if path.suffix.lower() not in _GNN_MODEL_SUFFIXES:
+        allowed = ", ".join(sorted(_GNN_MODEL_SUFFIXES))
+        raise PathValidationError(
+            f"{purpose} must be a GNN source file ({allowed}): {path_value}"
+        )
+    return path
+
+
+def _resolve_input_directory(path_value: str, *, purpose: str) -> Path:
+    return resolve_repo_path(
+        path_value,
+        purpose=purpose,
+        must_exist=True,
+        must_be_dir=True,
+    )
+
+
+def _resolve_output_directory(path_value: str, *, purpose: str) -> Path:
+    return resolve_repo_path(
+        path_value,
+        purpose=purpose,
+        must_be_dir=True,
+        create=True,
+    )
+
+
+def _resolve_output_file(path_value: str, *, purpose: str) -> Path:
+    path = resolve_repo_path(
+        path_value,
+        purpose=purpose,
+        must_be_dir=False,
+    )
+    if path.exists() and path.is_dir():
+        raise PathValidationError(f"{purpose} must be a file path: {path_value}")
+    return path
+
 
 # ── Domain tools ─────────────────────────────────────────────────────────────
 
@@ -43,15 +94,23 @@ def process_llm_mcp(
         Dictionary with success flag and processing summary.
     """
     try:
+        target_path = _resolve_input_directory(
+            target_directory,
+            purpose="LLM target directory",
+        )
+        output_path = _resolve_output_directory(
+            output_directory,
+            purpose="LLM output directory",
+        )
         success = process_llm(
-            target_dir=Path(target_directory),
-            output_dir=Path(output_directory),
+            target_dir=target_path,
+            output_dir=output_path,
             verbose=verbose,
         )
         return {
             "success": success,
-            "target_directory": target_directory,
-            "output_directory": output_directory,
+            "target_directory": str(target_path),
+            "output_directory": str(output_path),
             "message": "LLM processing completed"
             if success
             else "LLM processing failed",
@@ -82,7 +141,11 @@ def analyze_gnn_with_llm_mcp(
         Dictionary with success flag, analysis type, and LLM output.
     """
     try:
-        result = analyze_gnn_file_with_llm(Path(gnn_file_path))
+        gnn_path = _resolve_gnn_model_path(
+            gnn_file_path,
+            purpose="GNN model file",
+        )
+        result = analyze_gnn_file_with_llm(gnn_path)
         if isinstance(result, dict):
             return {"success": True, **result}
         return {"success": True, "analysis": str(result)}
@@ -114,7 +177,18 @@ def generate_llm_documentation_mcp(
     try:
         # Read the GNN file and build a lightweight analysis dict
         # that matches the signature of generate_documentation(file_analysis).
-        gnn_path = Path(gnn_file_path)
+        gnn_path = _resolve_gnn_model_path(
+            gnn_file_path,
+            purpose="GNN model file",
+        )
+        resolved_output_path = (
+            _resolve_output_file(
+                output_path,
+                purpose="LLM documentation output path",
+            )
+            if output_path
+            else None
+        )
         content = (
             gnn_path.read_text(encoding="utf-8", errors="replace")
             if gnn_path.exists()
@@ -157,8 +231,8 @@ def generate_llm_documentation_mcp(
 
         if isinstance(result, dict):
             # Optionally write to disk if output_path was provided
-            if output_path:
-                out = Path(output_path)
+            if resolved_output_path:
+                out = resolved_output_path
                 out.parent.mkdir(parents=True, exist_ok=True)
                 if format == "text":
                     out.write_text(

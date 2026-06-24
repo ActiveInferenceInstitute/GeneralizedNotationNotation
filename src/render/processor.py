@@ -11,6 +11,7 @@ This module provides comprehensive rendering capabilities that:
 
 import json
 import logging
+import re
 import sys
 from datetime import datetime
 from pathlib import Path
@@ -43,6 +44,13 @@ if str(_project_root) not in sys.path:
     sys.path.insert(0, str(_project_root))
 
 logger = logging.getLogger(__name__)
+
+
+def _safe_output_stem(value: Any, fallback: str = "model") -> str:
+    stem = re.sub(r"[^A-Za-z0-9_.-]+", "_", str(value)).strip("._")
+    if not stem:
+        return fallback
+    return stem[:120]
 
 
 def _render_succeeded(
@@ -707,6 +715,7 @@ def render_gnn_spec(
                 "parameters": gnn_spec.parameters,
             }
         files: list[Any] = []
+        output_stem = _safe_output_stem(model_name)
 
         if target_lower in {
             "pymdp",
@@ -721,7 +730,7 @@ def render_gnn_spec(
             if target_lower == "pymdp":
                 from .pymdp.pymdp_renderer import render_gnn_to_pymdp
 
-                output_file = output_dir / f"{model_name}_pymdp.py"
+                output_file = output_dir / f"{output_stem}_pymdp.py"
                 success, msg, _warnings = render_gnn_to_pymdp(
                     canonical_spec, output_file, options
                 )
@@ -729,7 +738,7 @@ def render_gnn_spec(
             if target_lower == "rxinfer":
                 from .rxinfer.rxinfer_renderer import render_gnn_to_rxinfer
 
-                output_file = output_dir / f"{model_name}_rxinfer.jl"
+                output_file = output_dir / f"{output_stem}_rxinfer.jl"
                 success, msg, _warnings = render_gnn_to_rxinfer(
                     canonical_spec, output_file, options
                 )
@@ -744,7 +753,7 @@ def render_gnn_spec(
                     render_gnn_to_activeinference_jl,
                 )
 
-                output_file = output_dir / f"{model_name}_activeinference.jl"
+                output_file = output_dir / f"{output_stem}_activeinference.jl"
                 success, msg, artifacts = render_gnn_to_activeinference_jl(
                     canonical_spec, output_file, options
                 )
@@ -753,7 +762,7 @@ def render_gnn_spec(
             if target_lower == "pytorch":
                 from .pytorch.pytorch_renderer import render_gnn_to_pytorch
 
-                output_file = output_dir / f"{model_name}_pytorch.py"
+                output_file = output_dir / f"{output_stem}_pytorch.py"
                 success, msg, artifacts = render_gnn_to_pytorch(
                     canonical_spec, output_file, options
                 )
@@ -761,7 +770,7 @@ def render_gnn_spec(
 
             from .numpyro.numpyro_renderer import render_gnn_to_numpyro
 
-            output_file = output_dir / f"{model_name}_numpyro.py"
+            output_file = output_dir / f"{output_stem}_numpyro.py"
             success, msg, artifacts = render_gnn_to_numpyro(
                 canonical_spec, output_file, options
             )
@@ -773,7 +782,7 @@ def render_gnn_spec(
 
             generate_fn = getattr(generators, gen_name)
             code = generate_fn(gnn_spec)
-            output_file = output_dir / f"{model_name}{suffix}"
+            output_file = output_dir / f"{output_stem}{suffix}"
             if code:
                 output_file.write_text(code)
                 files.append(str(output_file))
@@ -786,7 +795,7 @@ def render_gnn_spec(
                 list(gnn_spec_mapping.get("connections", [])),
                 model_name=model_name,
             )
-            output_file = output_dir / f"{model_name}_stan.stan"
+            output_file = output_dir / f"{output_stem}_stan.stan"
             output_file.write_text(code)
             files.append(str(output_file))
 
@@ -806,7 +815,7 @@ def render_gnn_spec(
             try:
                 from .discopy import render_gnn_to_discopy
 
-                output_file = output_dir / f"{model_name}_discopy.py"
+                output_file = output_dir / f"{output_stem}_discopy.py"
                 success, msg, _warnings = render_gnn_to_discopy(
                     gnn_spec_mapping, output_file
                 )
@@ -818,7 +827,7 @@ def render_gnn_spec(
             try:
                 from .jax.jax_renderer import render_gnn_to_jax
 
-                output_file = output_dir / f"{model_name}_jax.py"
+                output_file = output_dir / f"{output_stem}_jax.py"
                 success, msg, art = render_gnn_to_jax(gnn_spec_mapping, output_file)
                 if success:
                     return True, msg, art

@@ -48,6 +48,12 @@ We are committed to ensuring the security of the GeneralizedNotationNotation (GN
 > - **CVE-2026-24049** (setuptools / bundled wheel): Path traversal in `wheel.unpack()`. `setuptools` 81.0.0 vendors wheel code that may be affected. Mitigation: GNN never calls `wheel unpack` or processes untrusted `.whl` archives at runtime; this is a build-tool-only surface. Monitor for a setuptools release that bundles `wheel >= 0.46.2`.
 > - ~~**CVE-2022-42969** / **PYSEC-2022-42969** (`py` 1.11.0)~~: Resolved — `py` package is no longer present in the dependency graph (removed from `uv.lock` as of 2026-05-07).
 
+## Recent Internal Security Remediation
+
+| Date | Assessment | Scope | Outcome |
+|------|------------|-------|---------|
+| 2026-06-24 | Codex Security standard scan | MCP execution, MCP LLM file access, generated bnlearn code, generated artifact paths | Closed four reportable findings with repository-local MCP path validation, Step 11 render-summary execution gating, generated-code literal escaping, safe output filename stems, and regression tests. See [Codex Security Remediation - 2026-06-24](doc/security/codex_security_remediation_2026-06-24.md). |
+
 ## Dependency automation and local audits
 
 - **Dependabot**: Version updates are configured in [`.github/dependabot.yml`](.github/dependabot.yml) (Python/`uv.lock` and GitHub Actions). Review alerts under **GitHub → Security → Dependabot**.

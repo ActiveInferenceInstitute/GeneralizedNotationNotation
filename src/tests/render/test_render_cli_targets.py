@@ -165,3 +165,47 @@ def test_generator_accepts_minimal_valid_model_data() -> Any:
     # Should produce SOMETHING (the emitted code string), not "".
     assert isinstance(result, str)
     assert len(result) > 100, "Generator with valid input should emit nontrivial code"
+
+
+def test_bnlearn_generator_keeps_model_metadata_inside_literals() -> None:
+    from render import generators
+
+    model_name = (
+        'Injected";\n__import__("pathlib").Path("/tmp/gnn-pwned").write_text("x")\n#'
+    )
+    code = generators.generate_bnlearn_code(
+        {
+            "model_name": model_name,
+            "source_file": 'source"; __import__("os").system("id") #.md',
+            "model_parameters": {
+                "num_timesteps": "1); __import__('os').system('id') #"
+            },
+        }
+    )
+
+    compile(code, "<generated-bnlearn>", "exec")
+    assert f"GENERATED_MODEL_NAME = {model_name!r}" in code
+    assert '\n__import__("pathlib")' not in code
+    assert "n_samples = max(1000, 15 * 20)" in code
+
+
+def test_render_gnn_spec_sanitizes_generated_output_filename(tmp_path: Path) -> None:
+    malicious_name = "../../escape"
+
+    ok, message, artifacts = render_gnn_spec(
+        {
+            "model_name": malicious_name,
+            "variables": [],
+            "connections": [],
+            "model_parameters": {},
+        },
+        "bnlearn",
+        tmp_path,
+    )
+
+    assert ok, message
+    assert artifacts
+    artifact_path = Path(artifacts[0]).resolve()
+    artifact_path.relative_to(tmp_path.resolve())
+    assert artifact_path.name == "escape_bnlearn.py"
+    assert not (tmp_path.parent / "escape_bnlearn.py").exists()

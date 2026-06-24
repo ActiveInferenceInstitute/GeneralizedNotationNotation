@@ -674,6 +674,7 @@ def process_execute(
             1, int(kwargs.get("execution_benchmark_repeats", 1))
         )
         execution_summary_detail = bool(kwargs.get("execution_summary_detail", False))
+        require_render_summary = bool(kwargs.get("require_render_summary", False))
 
         # Initialize execution results
         execution_results: dict[str, Any] = {
@@ -719,10 +720,20 @@ def process_execute(
             )
             execution_results["render_failures"] = render_failures
 
-            # Find executable scripts, filtered by requested frameworks
-            executable_scripts = find_executable_scripts(
-                render_output_dir, verbose, logger, requested_frameworks
-            )
+            if allowed_render_scripts is None and require_render_summary:
+                log_step_warning(
+                    logger,
+                    f"Render summary contract not found or invalid: {render_output_dir / 'render_processing_summary.json'}",
+                )
+                execution_results["missing_render_summary"] = str(
+                    render_output_dir / "render_processing_summary.json"
+                )
+                executable_scripts = []
+            else:
+                executable_scripts = find_executable_scripts(
+                    render_output_dir, verbose, logger, requested_frameworks
+                )
+
             if allowed_render_scripts is not None:
                 before_filter = len(executable_scripts)
                 executable_scripts = [
