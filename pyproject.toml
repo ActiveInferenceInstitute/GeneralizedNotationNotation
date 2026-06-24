@@ -58,8 +58,8 @@ dependencies = [
     # not locked as a default dependency while GHSA-rrmf-rvhw-rf47 has no
     # patched torch release. The bnlearn package is also omitted from the
     # default lock because its pgmpy dependency pulls torch transitively.
-    "jax[cpu]>=0.7.0,<0.10",  # upper bound keeps numpyro 0.20.x import-compatible
-    "jaxlib>=0.7.0,<0.10",
+    "jax[cpu]>=0.7.0,<0.11",  # upper bound keeps numpyro 0.20.x import-compatible
+    "jaxlib>=0.7.0,<0.11",
     "flax>=0.7.0",
     "optax>=0.1.0",
     "msgpack>=1.2.1",
