@@ -1,0 +1,48 @@
+# AII sidecar — InstituteOS metadata. Schema: instituteos.platform.aii_sidecar
+meta:
+  updated: '2026-06-30'
+repo:
+  name: GeneralizedNotationNotation
+  slug: generalizednotationnotation
+  full_name: ActiveInferenceInstitute/GeneralizedNotationNotation
+  description: '[🚀 Quick Start](#-quick-start) • [📖 Documentation](#-documentation)
+    • [🎯 Examples](#-examples) • [🛠️ Tools](#%EF%B8%8F-tools-and-utilities) • [🤝 Contributing](#-contributing)'
+institute:
+  category: research-software
+  maturity: released
+  steward: Active Inference Institute
+ecosystem:
+  links:
+    github: https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation
+    website: https://www.activeinference.org
+artifacts:
+- path: README.md
+  kind: doc
+  description: Repository overview.
+- path: src
+  kind: code
+  description: Source tree.
+- path: pyproject.toml
+  kind: code
+  description: Python package config.
+provenance:
+  license: see-license-file
+  citation:
+    doi: 10.5281/zenodo.7803328
+instituteos:
+  tags:
+  - active
+  - active-inference
+  - active-inference-notation
+  - inference
+  - python
+capabilities:
+- python-package
+- tested
+- notebooks
+- containerized
+- dataset
+tasks:
+  test:
+    cmd: python -m pytest
+    description: Run the test suite.
