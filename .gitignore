@@ -378,6 +378,16 @@ yarn-error.log*
 # ============================================================================
 # Add any project-specific patterns below this line
 
+# Local Cursor IDE state (not project source)
+.cursor/hooks/state/
+
+# Unused devcontainer config
+.devcontainer/
+
+# Generated CI report artifacts (see .github/workflows/ci.yml)
+bandit-results/
+pytest-junit-*/
+
 # ============================================================================
 # SETUP AND MAINTENANCE NOTES
 # ============================================================================
