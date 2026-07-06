@@ -29,7 +29,7 @@ def test_audio_backend_missing():
     ...
 ```
 
-## Pytest Markers (21 defined in conftest.py)
+## Pytest Markers (20 defined in conftest.py)
 
 | Marker | Description |
 |--------|-------------|
@@ -38,7 +38,6 @@ def test_audio_backend_missing():
 | `performance` | Performance and resource usage tests |
 | `slow` | Tests taking significant time |
 | `fast` | Quick tests for rapid feedback |
-| `safe_to_fail` | Can run without side effects (336 functions) |
 | `destructive` | May modify system state |
 | `external` | Requires external dependencies |
 | `core` | Core module tests |
@@ -64,7 +63,7 @@ uv run --extra dev python -m pytest src/tests/ -m "integration and not slow" -q
 
 ## Fixture Convention (conftest.py)
 
-All shared fixtures live in `conftest.py` (601 lines). Standard fixtures:
+All shared fixtures live in `conftest.py` (418 lines). Standard fixtures:
 
 | Fixture | Scope | Description |
 |---------|-------|-------------|

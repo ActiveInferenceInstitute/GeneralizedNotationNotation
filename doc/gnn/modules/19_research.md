@@ -14,6 +14,7 @@ This module provides comprehensive research tools and experimental features for 
 src/research/
 ├── __init__.py                    # Module initialization and exports
 ├── README.md                      # This documentation
+├── processor.py                   # process_research + rule-based hypothesis-generation helpers
 └── mcp.py                         # Model Context Protocol integration
 ```
 
@@ -93,27 +94,27 @@ success = process_research(
 )
 ```
 
-#### `perform_research_analysis(data: Dict[str, Any], analysis_type: str = "comprehensive") -> Dict[str, Any]`
-**Description**: Perform advanced research analysis using rule-based expert system.
+#### `generate_rule_based_hypotheses(content: str, model_family: str, dims: Dict[str, List[int]], connections: Dict[str, int]) -> List[Dict[str, Any]]`
+**Description**: Generate research hypotheses via rule-based static analysis (dimensionality-reduction and sparse-connectivity diagnostics, among other domain-specific rules for Active Inference / generative model research).
 
 **Parameters**:
-- `data` (Dict[str, Any]): Research data to analyze (parsed GNN models)
-- `analysis_type` (str): Type of analysis ("comprehensive", "statistical", "experimental")
+- `content` (str): Raw GNN file content
+- `model_family` (str): Detected model family (see `detect_model_family`)
+- `dims` (Dict[str, List[int]]): Extracted state-space dimensions (see `extract_state_space_dims`)
+- `connections` (Dict[str, int]): Connection counts (see `count_connections`)
 
-**Returns**: `Dict[str, Any]` - Research analysis results with:
-- `hypotheses` (List[Dict]): Generated research hypotheses
-- `complexity_analysis` (Dict): Complexity metrics and diagnostics
-- `structural_diagnostics` (Dict): Structural analysis results
-- `recommendations` (List[str]): Research recommendations
+**Returns**: `List[Dict[str, Any]]` - Hypotheses, each with `type`, `description`, `rationale`, and `priority` (`"high"`/`"medium"`/`"low"`)
 
-#### `generate_research_report(analysis_results: Dict[str, Any], output_format: str = "markdown") -> str`
-**Description**: Generate research report from analysis results with evidence-based justifications.
+#### `detect_model_family(content: str) -> str`
+**Description**: Detect the Active Inference model family from raw GNN file content.
 
-**Parameters**:
-- `analysis_results` (Dict[str, Any]): Results from research analysis
-- `output_format` (str): Output format ("markdown", "html", "json")
+#### `extract_state_space_dims(content: str) -> Dict[str, List[int]]`
+**Description**: Extract structured state-space variable dimensions from GNN file content.
 
-**Returns**: `str` - Research report as formatted string with evidence and justifications
+#### `count_connections(content: str) -> Dict[str, int]`
+**Description**: Count connections in GNN file content, used to compute variable-to-connection ratios for sparsity diagnostics.
+
+**Note**: There is no separate report-generation function — `process_research` itself writes both `research_results.json` and a markdown `research_report.md` (grouped by hypothesis priority) directly to `output_dir`.
 
 ---
 
@@ -162,25 +163,27 @@ success = process_research(
 )
 ```
 
-### Advanced Research Analysis
+### Rule-Based Hypothesis Generation
 ```python
-from research.analyzer import perform_research_analysis
-
-results = perform_research_analysis(
-    data=experimental_data,
-    analysis_type="experimental"
+from pathlib import Path
+from research.processor import (
+    detect_model_family,
+    extract_state_space_dims,
+    count_connections,
+    generate_rule_based_hypotheses,
 )
+
+content = Path("models/my_model.md").read_text()
+model_family = detect_model_family(content)
+dims = extract_state_space_dims(content)
+connections = count_connections(content)
+
+hypotheses = generate_rule_based_hypotheses(content, model_family, dims, connections)
+for h in hypotheses:
+    print(f"[{h['priority']}] {h['type']}: {h['description']}")
 ```
 
-### Research Report Generation
-```python
-from research.generator import generate_research_report
-
-report = generate_research_report(
-    analysis_results=results,
-    output_format="markdown"
-)
-```
+Report generation is not a separate call — `process_research` writes `research_results.json` and `research_report.md` automatically as part of processing.
 
 ---
 

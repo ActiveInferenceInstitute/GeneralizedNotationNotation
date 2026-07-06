@@ -2,6 +2,12 @@
 
 Audit-backed quick reference for the GNN MCP server tool surface. Use `src/tests/mcp/test_mcp_audit.py` and `src/mcp/validate_tools.py` for the current live count. For full per-domain documentation see **[../modules/21_mcp.md](../modules/21_mcp.md)**.
 
+**Note:** The table below documents a representative subset of the tool
+surface, not the full live-registered set. The live MCP registry currently
+reports **140 tools across 32 modules** — see the generated
+[`src/mcp/audit_report.json`](../../../src/mcp/audit_report.json) for the
+authoritative current count (regenerate with `uv run python src/mcp/validate_tools.py`).
+
 ## Full Tool Table
 
 | Domain | Tool | Description |

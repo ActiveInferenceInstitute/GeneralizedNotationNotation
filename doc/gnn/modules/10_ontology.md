@@ -351,7 +351,7 @@ def extract_ontology_terms_tool(gnn_content: str) -> List[str]:
 **Solution**:
 - Check term spelling and case sensitivity
 - Verify ontology terms file includes all required terms
-- Use `--strict-validation=False` for lenient validation
+- Note: `strict_validation` is a Python-level options key (`ontology.utils.get_ontology_processing_options()`); there is no `--strict-validation` CLI flag on `src/10_ontology.py`, and `process_ontology()` does not currently read this key, so it has no effect on validation strictness either way
 - Review ontology terms file structure
 
 #### Issue 3: Semantic mapping incomplete

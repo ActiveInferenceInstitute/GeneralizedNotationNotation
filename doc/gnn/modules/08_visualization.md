@@ -345,7 +345,7 @@ uv sync
 - Manual override: Set sampling parameters in config
 - Alternative: Visualize model subsets
 
-**Prevention**: Use `--sample-large-models` flag when processing
+**Prevention**: No dedicated CLI flag exists for this; sampling for large models is automatic within `src/visualization/`, not user-configurable via `src/8_visualization.py` arguments
 
 #### 4. Memory Issues During Visualization
 **Symptom**: Out of memory errors or system slowdown

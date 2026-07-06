@@ -35,12 +35,12 @@ that consume them will skip gracefully.
 | # | Section | Requirement | Parser hook |
 |---|---------|-------------|-------------|
 | 1 | `## GNNSection` | **Required** | `_parse_gnn_section` |
-| 2 | `## GNNVersionAndFlags` | **Required** | `_parse_version_flags` |
+| 2 | `## GNNVersionAndFlags` | **Required** | `_parse_version_section` |
 | 3 | `## ModelName` | **Required** | `_parse_model_name` |
 | 4 | `## ModelAnnotation` | Optional | `_parse_annotation` |
 | 5 | `## StateSpaceBlock` | **Required** | `_parse_state_space` |
 | 6 | `## Connections` | **Required** | `_parse_connections` |
-| 7 | `## InitialParameterization` | **Required** | `_parse_initial_parameters` |
+| 7 | `## InitialParameterization` | **Required** | `_parse_parameters` |
 | 8 | `## Equations` | **Required** | `_parse_equations` |
 | 9 | `## Time` | **Required** | `_parse_time` |
 | 10 | `## ActInfOntologyAnnotation` | **Required** | `_parse_ontology` |
@@ -231,6 +231,11 @@ ModelTimeHorizon=10
 
 ## Complete Minimal Example
 
+This example includes every section listed as **Required** in the table above
+(`GNNSection`, `GNNVersionAndFlags`, `ModelName`, `StateSpaceBlock`,
+`Connections`, `InitialParameterization`, `Equations`, `Time`,
+`ActInfOntologyAnnotation`, `ModelParameters`, `Footer`, `Signature`):
+
 ```gnn
 ## GNNSection
 ActInfPOMDP
@@ -253,21 +258,29 @@ A>o
 ## InitialParameterization
 A={(0.9,0.1),(0.1,0.9)}
 
+## Equations
+# Observation likelihood: o = A @ s
+
 ## Time
 Static
 
-```
-
-## Ontology Mapping
-
-```gnn
 ## ActInfOntologyAnnotation
 s=HiddenState
 o=Observation
 A=RecognitionMatrix
+
+## ModelParameters
+num_hidden_states: 2
+num_obs: 2
+
+## Footer
+Simple Static Model - GNN Representation.
+
+## Signature
+Cryptographic signature goes here
 ```
 
-This syntax produces models that parse cleanly and execute correctly in the GNN pipeline.
+This syntax produces models that parse cleanly and execute correctly in the GNN pipeline. Note that the underlying parser (`src/gnn/schema.py::REQUIRED_SECTIONS`) only strictly enforces `GNNSection`, `GNNVersionAndFlags`, `ModelName`, `StateSpaceBlock`, and `Connections`; the remaining sections above are conventionally expected by downstream pipeline steps even though the type checker does not reject their absence.
 
 ## Variable naming conventions
 

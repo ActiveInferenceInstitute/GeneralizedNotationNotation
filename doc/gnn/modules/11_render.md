@@ -442,7 +442,7 @@ def generate_pymdp_tool(model_data, options=None):
 **Solution**:
 - Ensure GNN model has complete state space, observations, actions
 - Verify connections follow POMDP structure (s->o, s->s, a->s)
-- Use `--strict-validation=False` for lenient validation
+- `strict_validation` is a `process_render()` Python API parameter (default `True`), not a CLI flag; call `process_render(..., strict_validation=False)` directly for lenient POMDP validation. The CLI does expose `--strict-framework-success`, which instead controls whether a failed framework render fails the whole step
 - Review POMDP requirements in documentation
 
 #### Issue 3: Generated code doesn't execute

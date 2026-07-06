@@ -68,15 +68,16 @@ graph LR
 ### GNN Specification
 
 ```
-## GNN v1
+## GNNVersionAndFlags
+GNN v1
 
 # Static Perception Model
 
-## Model annotations
+## ModelAnnotation
 This model relates a single hidden state to a single observable modality.
 It is a static model showing basic perception without time dynamics.
 
-## State space block
+## StateSpaceBlock
 D[2,1,type=float]  # Prior (2-dimensional column vector)
 s[2,1,type=float]  # Hidden state (2-dimensional column vector)
 A[2,2,type=float]  # Recognition matrix (2x2 matrix)
@@ -87,7 +88,7 @@ D-s
 s-A
 A-o
 
-## Initial Parameterization
+## InitialParameterization
 D={0.5,0.5}
 o={1,0}
 A={(.9,.1),(.2,.8)}
@@ -98,7 +99,7 @@ A={(.9,.1),(.2,.8)}
 ## Time
 Static
 
-## Active Inference Ontology
+## ActInfOntologyAnnotation
 A=RecognitionMatrix
 D=Prior
 s=HiddenState
@@ -138,15 +139,16 @@ graph LR
 ### GNN Specification
 
 ```
-## GNN v1
+## GNNVersionAndFlags
+GNN v1
 
 # Dynamic Perception Model
 
-## Model annotations
+## ModelAnnotation
 This model relates a single hidden state to a single observable modality.
 It is a dynamic model because it tracks changes in the hidden state through time.
 
-## State space block
+## StateSpaceBlock
 D[2,1,type=float]    # Prior
 B[2,1,type=float]    # Transition matrix
 s_t[2,1,type=float]  # Hidden state at time t
@@ -161,7 +163,7 @@ A-o
 s_t-B
 B-s_t+1
 
-## Initial Parameterization
+## InitialParameterization
 
 ## Equations
 s_{tau=1}=softmax((1/2)(ln(D)+ln(B^dagger_tau*s_{tau+1})+ln(trans(A)o_tau))
@@ -172,7 +174,7 @@ Dynamic
 DiscreteTime=s_t
 ModelTimeHorizon=Unbounded
 
-## Active Inference Ontology
+## ActInfOntologyAnnotation
 A=RecognitionMatrix
 B=TransitionMatrix
 D=Prior
@@ -221,16 +223,17 @@ graph TD
 ### GNN Specification
 
 ```
-## GNN v1
+## GNNVersionAndFlags
+GNN v1
 
 # Dynamic Perception with Policy Selection Model
 
-## Model annotations
+## ModelAnnotation
 This model relates a single hidden state to a single observable modality.
 It is a dynamic model because it tracks changes in the hidden state through time.
 There is Action applied via policy selection (π).
 
-## State space block
+## StateSpaceBlock
 A[2,2,type=float]       # Recognition matrix
 D[2,1,type=float]       # Prior
 B[2,len(π),1,type=float] # Transition matrix (policy-dependent)
@@ -250,7 +253,7 @@ B-s_t+1
 C>G
 G>π
 
-## Initial Parameterization
+## InitialParameterization
 
 ## Equations
 s_{pi,tau=1}=sigma((1/2)(lnD+ln(B^dagger_{pi,tau}s_{pi,tau+1}))+lnA^T*o_tau)
@@ -263,7 +266,7 @@ Dynamic
 DiscreteTime=s_t
 ModelTimeHorizon=Unbounded
 
-## Active Inference Ontology
+## ActInfOntologyAnnotation
 A=RecognitionMatrix
 B=TransitionMatrix
 C=Preference
@@ -321,17 +324,18 @@ graph TD
 ### GNN Specification
 
 ```
-## GNN v1
+## GNNVersionAndFlags
+GNN v1
 
 # Dynamic Perception with Flexible Policy Selection Model
 
-## Model annotations
+## ModelAnnotation
 This model relates a single hidden state to a single observable modality.
 It is a dynamic model because it tracks changes in the hidden state through time.
 There is Action applied via policy selection (π), and uncertainty about action
 via the beta parameter.
 
-## State space block
+## StateSpaceBlock
 A[2,2,type=float]       # Recognition matrix
 D[2,1,type=float]       # Prior
 B[2,len(π),1,type=float] # Transition matrix (policy-dependent)
@@ -357,7 +361,7 @@ E>π
 β-γ
 γ>π
 
-## Initial Parameterization
+## InitialParameterization
 
 ## Equations
 F_pi=sum_tau(s_{pi,tau}*(ln(s_{pi,tau})-(1/2)(ln(B_{pi,tau-1}s_{pi,tau-1})+ln(B^dagger_{pi,tau}s_{pi,tau+1}))-A^To_tau))
@@ -373,7 +377,7 @@ Dynamic
 DiscreteTime=s_t
 ModelTimeHorizon=Unbounded
 
-## Active Inference Ontology
+## ActInfOntologyAnnotation
 A=RecognitionMatrix
 B=TransitionMatrix
 C=Preference

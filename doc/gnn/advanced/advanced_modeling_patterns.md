@@ -85,9 +85,7 @@ class TransitionModule:
 
 ### Policy Tree Optimization
 
-```python
-# Policy Tree Optimization example
-```
+**Planned — not yet implemented.** There is no dedicated policy-tree-optimization pattern or module in `src/` today. The closest existing capability is the `policy_tree` output type in `src/advanced_visualization` (`src/advanced_visualization/mcp.py`), which visualizes the action-sequence tree of a planning agent but does not perform optimization over it.
 
 2. [Multi-Agent Systems](#multi-agent-systems)
 3. [Learning and Adaptation](#learning-and-adaptation)
@@ -800,49 +798,6 @@ ModuleUpdateSchedule={perception:1, attention:2, memory:3, planning:5, motor:1}
 
 ### Pattern: Nested Compositional Models
 
-```gnn
-## StateSpaceBlock
-# ... Compositional model implementations ...
-```
-
----
-
-## 7. Dynamic Fallback Cascading (v1.5)
-
-### Pattern: Execution Rescue Telemetry 
-
-**Use Case**: Autonomous agent pipelines requiring heuristic simulation recovery when rigid framework rendering fails.
-
-```gnn
-## StateSpaceBlock
-# Primary Simulation States
-s_f0[10,1,type=int]     # High_fidelity_state (ideal modeling)
-s_f1[2,1,type=int]      # High_fidelity_actions
-
-# Secondary Heuristic State
-s_f2[4,1,type=int]      # Low_fidelity_proxy
-s_f3[2,1,type=int]      # Sub_optimal_actions
-
-# Solver Matrix
-A_f0[10,2,type=float]   # Formal RxInfer Matrix
-A_f1[4,2,type=float]    # LLM-Guided Heuristic Matrix
-
-## Connections
-(s_f0, s_f1) -> (A_f0)
-(s_f2, s_f3) -> (A_f1)
-
-# The Explicit Solver Escalation topology
-(A_f0) -> execution_success_polling
-(execution_success_polling) -> (A_f1:heuristic_override)
-
-## ActInf Ontology Annotation
-s_f0=FormalTargetSpace
-s_f2=HeuristicProxySpace
-execution_success_polling=CircuitBreaker
-```
-
-This pattern leverages the Step 24 `Intelligent Analysis` module to record formal solver diagnostics and explicitly route operators to a secondary heuristic analysis path without masking the primary solver status.
-
 **Use Case**: Hierarchical composition of cognitive processes.
 
 ```gnn
@@ -891,7 +846,45 @@ subsystem_activation_threshold={(0.3, 0.5, 0.2)}  # Different activation levels
 
 ---
 
-## 7. Domain-Specific Patterns
+## 7. Dynamic Fallback Cascading (v1.5)
+
+### Pattern: Execution Rescue Telemetry
+
+**Use Case**: Autonomous agent pipelines requiring heuristic simulation recovery when rigid framework rendering fails.
+
+```gnn
+## StateSpaceBlock
+# Primary Simulation States
+s_f0[10,1,type=int]     # High_fidelity_state (ideal modeling)
+s_f1[2,1,type=int]      # High_fidelity_actions
+
+# Secondary Heuristic State
+s_f2[4,1,type=int]      # Low_fidelity_proxy
+s_f3[2,1,type=int]      # Sub_optimal_actions
+
+# Solver Matrix
+A_f0[10,2,type=float]   # Formal RxInfer Matrix
+A_f1[4,2,type=float]    # LLM-Guided Heuristic Matrix
+
+## Connections
+(s_f0, s_f1) -> (A_f0)
+(s_f2, s_f3) -> (A_f1)
+
+# The Explicit Solver Escalation topology
+(A_f0) -> execution_success_polling
+(execution_success_polling) -> (A_f1:heuristic_override)
+
+## ActInf Ontology Annotation
+s_f0=FormalTargetSpace
+s_f2=HeuristicProxySpace
+execution_success_polling=CircuitBreaker
+```
+
+This pattern leverages the Step 24 `Intelligent Analysis` module to record formal solver diagnostics and explicitly route operators to a secondary heuristic analysis path without masking the primary solver status.
+
+---
+
+## 8. Domain-Specific Patterns
 
 ### Pattern: Social Cognition
 
@@ -899,8 +892,6 @@ subsystem_activation_threshold={(0.3, 0.5, 0.2)}  # Different activation levels
 
 ```gnn
 ## StateSpaceBlock
-s_f0[Ns, 1, type=float]  # Fast hidden state
-s_f1[Ns, 1, type=float]  # Slow hidden state
 # Self-model
 s_f0[4,1,type=int]     # Own_mental_state
 s_f1[3,1,type=int]     # Own_intentions

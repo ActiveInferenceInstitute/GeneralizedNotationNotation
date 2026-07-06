@@ -186,7 +186,7 @@ The pipeline consists of the following steps (0-24):
 ### Simulation & Analysis (Steps 10-16)
 
 - **Step 10**: Active Inference ontology processing
-- **Step 11**: Code rendering for PyMDP, RxInfer, ActiveInference.jl, DisCoPy, JAX, Stan, PyTorch, NumPyro
+- **Step 11**: Code rendering for PyMDP, RxInfer.jl, ActiveInference.jl, DisCoPy, JAX, PyTorch, NumPyro, Stan, bnlearn (9 backends)
 - **Step 12**: Execution of rendered simulation scripts
 - **Step 13**: Neurosymbolic LLM Context Analysis and LLM execution guidance
 - **Step 14**: Machine learning integration

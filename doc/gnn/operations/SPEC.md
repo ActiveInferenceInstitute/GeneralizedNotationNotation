@@ -8,7 +8,7 @@ MCP tools surface pipeline capabilities.
 ## Contents
 | File | Purpose |
 |------|---------|
-| `gnn_tools.md` | Operator-facing tool index (131 MCP tools + pipeline scripts) |
+| `gnn_tools.md` | Operator-facing tool index (subset of the live MCP registry — 140 tools across 32 modules per `src/mcp/audit_report.json` — plus pipeline scripts) |
 | `gnn_troubleshooting.md` | Common failure modes + remediation |
 | `REPO_COHERENCE_CHECK.md` | Cross-module consistency audit procedure |
 | `resource_metrics.md` | Resource estimation from Step 5 type checker |

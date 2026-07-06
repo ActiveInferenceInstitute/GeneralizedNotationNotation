@@ -60,6 +60,7 @@ JAX, NumPyro, PyTorch, and DisCoPy are **core** dependencies (`uv sync`). If the
 - Comprehensive error logging
 - Result capture and validation
 - Execution timeout handling
+- Distributed execution across a Ray or Dask cluster for parallel script/parameter-sweep dispatch (`src/execute/distributed.py`, `--distributed`, `--execution-workers`, `--backend {ray,dask}`)
 
 ---
 
@@ -81,7 +82,10 @@ JAX, NumPyro, PyTorch, and DisCoPy are **core** dependencies (`uv sync`). If the
   - Comma-separated: `"pymdp,jax"` for specific frameworks
 - `simulation_engine` (str): Engine to use ("auto", "pymdp", "rxinfer", etc., default: "auto")
 - `validate_only` (bool): Only validate scripts, don't execute (default: False)
-- `timeout` (int): Execution timeout per script in seconds (default: 300)
+- `timeout` (int): Execution timeout per script in seconds (default: 3600, CLI: `--timeout`)
+- `distributed` (bool): Run scripts and parameter sweeps in parallel across a Ray/Dask cluster (default: False, CLI: `--distributed`)
+- `execution_workers` (int): Number of local or distributed workers for rendered script execution (default: 1, CLI: `--execution-workers`)
+- `backend` (str): Backend for distributed execution, `"ray"` or `"dask"` (default: `"ray"`, CLI: `--backend {ray,dask}`)
 - `parallel` (bool): Execute scripts in parallel (default: False)
 - `**kwargs`: Additional framework-specific options
 
@@ -171,10 +175,15 @@ elif not detection.get("correct_package"):
   - `"discopy"`: Use DisCoPy for categorical diagrams
 
 #### Execution Parameters
-- `timeout` (int): Execution timeout in seconds (default: `60`)
+- `timeout` (int): Execution timeout in seconds (default: `3600`)
 - `validate_only` (bool): Only validate scripts, don't execute (default: `False`)
 - `capture_output` (bool): Capture stdout/stderr (default: `True`)
 - `parallel_execution` (bool): Execute scripts in parallel (default: `False`)
+
+#### Distributed Execution
+- `distributed` (bool, CLI: `--distributed`): Run scripts and model parameter sweeps in parallel across a Ray/Dask cluster (default: `False`)
+- `execution_workers` (int, CLI: `--execution-workers`): Number of local or distributed workers for rendered script execution (default: `1`)
+- `backend` (str, CLI: `--backend {ray,dask}`): Backend to use for distributed execution (default: `"ray"`); implemented by `src/execute/distributed.py`'s `Dispatcher` class
 
 #### Framework-Specific Configuration
 - `julia_path` (str): Path to Julia executable (default: auto-detect)
@@ -209,6 +218,17 @@ success = process_execute(
     output_dir=Path("output/12_execute_output"),
     simulation_engine="auto"
 )
+```
+
+### Distributed Execution
+```bash
+# Fan out rendered scripts / parameter sweeps across a local or remote Ray cluster
+python src/12_execute.py --target-dir output/11_render_output --output-dir output \
+  --distributed --execution-workers 4 --backend ray
+
+# Use Dask instead of Ray
+python src/12_execute.py --target-dir output/11_render_output --output-dir output \
+  --distributed --execution-workers 4 --backend dask
 ```
 
 ---
@@ -262,7 +282,7 @@ output/12_execute_output/
 - **Julia unavailable**: Log warning, skip Julia scripts
 - **JAX unavailable**: Log warning, skip JAX scripts
 - **Script errors**: Capture stderr, continue with other scripts
-- **Timeout**: 60s per script (configurable)
+- **Timeout**: 3600s per script (configurable via `--timeout`)
 
 ### Error Categories
 1. **Dependency Errors**: Framework not installed
@@ -380,7 +400,7 @@ def run_simulation_tool(script_path: str, framework: str) -> Dict[str, Any]:
 **Symptom**: Scripts timeout before completion  
 **Cause**: Simulation too complex or timeout too short  
 **Solution**:
-- Increase timeout: `--timeout 600` (10 minutes)
+- Increase timeout beyond the default 3600s (1 hour): `--timeout 7200` (2 hours)
 - Simplify model complexity
 - Use faster frameworks (JAX) for large models
 - Process models individually instead of batch
@@ -389,7 +409,7 @@ def run_simulation_tool(script_path: str, framework: str) -> Dict[str, Any]:
 
 ## Version History
 
-### Current Version: 1.0.0
+### Current Version: 1.6.0
 
 **Features**:
 - Multi-framework execution support
@@ -397,12 +417,12 @@ def run_simulation_tool(script_path: str, framework: str) -> Dict[str, Any]:
 - Comprehensive error logging
 - Result capture and validation
 - Execution timeout handling
+- Distributed execution across a Ray/Dask cluster (`--distributed`, `--execution-workers`, `--backend`)
 
 **Known Issues**:
 - None currently
 
 ### Roadmap
-- **Next Version**: Enhanced parallel execution
 - **Future**: Real-time execution monitoring
 
 ---

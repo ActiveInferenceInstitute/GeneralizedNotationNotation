@@ -3,7 +3,7 @@
 **Version**: v1.6.0 Engine (Bundle v2.0.0)  
 **Last Updated**: 2026-04-14  
 **Status**: ✅ Production Ready  
-**Modules**: 38+ · **Pipeline steps**: 25 · **Renderers**: 9 backend guides in this directory · **Tests**: see [../../../README.md](../../../README.md)  
+**Modules**: 38+ · **Pipeline steps**: 25 · **Renderers**: 9 backends wired under `src/render/` (8 with dedicated guides in this directory, plus `bnlearn`) · **Tests**: see [../../../README.md](../../../README.md)
 
 This directory contains documentation and references for the Implementations domain of Generalized Notation Notation (GNN).
 
@@ -16,8 +16,13 @@ This directory contains documentation and references for the Implementations dom
 - **[RxInfer.jl](rxinfer.md)**: Reactive message passing and declarative probabilistic programming in Julia (`RxInfer.jl`). Reached 1.0 Correlation Baseline.
 - **[ActiveInference.jl](activeinference_jl.md)**: Dedicated discrete-state Active Inference simulation in Julia (`ActiveInference.jl`).
 - **[DisCoPy](discopy.md)**: Categorical string diagrams enabling advanced symmetry representations and compositional verification semantics for Multi-Agent Topologies (`discopy`).
-- **[CatColab](catcolab.md)**: Topos Institute framework mapping structural logic into Schema and Ologs, acting as a categorical twin.
 - **[Stan](stan.md)**: Stan model code generation from GNN variables and connections (structural heuristics; no full Active Inference semantics).
+
+`bnlearn` (Bayesian network structure/parameter learning) is also a wired `src/render/` backend (see `generate_bnlearn_code` in `src/render/generators.py`) but does not yet have a dedicated guide in this directory.
+
+### Related integration (not a render backend)
+
+- **[CatColab](catcolab.md)**: Topos Institute framework mapping GNN's `Step 7` export output into Schema/Stock-and-Flow/Olog categorical structures. This is an export-layer (`src/export/`) integration, not a `src/render/` renderer backend — there is no CatColab entry in `src/render/framework_registry.py` and no `--frameworks catcolab` render/execute path.
 
 ## Navigation
 

@@ -71,11 +71,13 @@ src/llm/
 - `output_dir` (Path): Output directory for LLM analyses
 - `verbose` (bool): Enable verbose logging (default: False)
 - `analysis_type` (str, optional): Type of analysis ("comprehensive", "summary", "explain", "optimize") (default: "comprehensive")
-- `provider` (str, optional): LLM provider ("auto", "openai", "anthropic", "ollama") (default: "auto")
+- `provider` (str, optional): LLM provider ("auto", "openai", "openrouter", "perplexity", "ollama") (default: "auto")
   - `"auto"`: Automatically select best available provider (checks API keys, then Ollama)
-  - `"openai"`: Use OpenAI API (requires OPENAI_API_KEY)
-  - `"anthropic"`: Use Anthropic API (requires ANTHROPIC_API_KEY)
+  - `"openai"`: Use OpenAI API (requires OPENAI_API_KEY; implemented in `src/llm/providers/openai_provider.py`)
+  - `"openrouter"`: Use OpenRouter API (requires OPENROUTER_API_KEY; implemented in `src/llm/providers/openrouter_provider.py`)
+  - `"perplexity"`: Use Perplexity API (requires PERPLEXITY_API_KEY; implemented in `src/llm/providers/perplexity_provider.py`)
   - `"ollama"`: Use local Ollama (requires Ollama installation)
+  - Note: `src/llm/providers/` has no `anthropic_provider.py`. `ANTHROPIC_API_KEY` only surfaces as an availability flag in the diagnostic provider matrix (see below) and in auth-error attribution; there is no wired Anthropic provider to select via this parameter.
 - `llm_tasks` (str, optional): Specific tasks ("all", "summarize", "explain", "optimize") (default: "all")
 - `llm_timeout` (int, optional): Timeout for LLM API calls in seconds (default: 60)
 - `max_tokens` (int, optional): Maximum tokens in response (default: 2000)
@@ -182,8 +184,10 @@ success = process_llm(
 - `provider` (str): LLM provider to use (default: `"auto"`)
   - `"auto"`: Automatically select best available provider
   - `"openai"`: Use OpenAI API (requires OPENAI_API_KEY)
-  - `"anthropic"`: Use Anthropic API (requires ANTHROPIC_API_KEY)
+  - `"openrouter"`: Use OpenRouter API (requires OPENROUTER_API_KEY)
+  - `"perplexity"`: Use Perplexity API (requires PERPLEXITY_API_KEY)
   - `"ollama"`: Use local Ollama (requires Ollama installation)
+  - No `"anthropic"` provider is implemented (`src/llm/providers/` has no Anthropic provider file); `ANTHROPIC_API_KEY` only appears as an availability flag in the provider matrix, not as a selectable provider
 
 #### Analysis Type
 - `analysis_type` (str): Type of analysis to perform (default: `"comprehensive"`)
@@ -225,9 +229,9 @@ success = process_llm(
 - `pathlib` - File operations
 
 ### Optional Dependencies
-- `openai` — OpenAI API
-- `anthropic` — Anthropic API (when used by callers)
+- `openai` — OpenAI API (also backs the OpenRouter provider, which uses the OpenAI-compatible client)
 - `ollama` (PyPI) — Python client; if import fails or `chat` is missing, `OllamaProvider` uses the `ollama` CLI when on `PATH`
+- Note: there is no `anthropic` package dependency in use — no code in `src/llm/` imports `anthropic`; `ANTHROPIC_API_KEY` is only checked for presence in the provider matrix
 
 ### Internal Dependencies
 - `utils.pipeline_template` - Logging utilities
@@ -637,7 +641,7 @@ configs['ollama']['default_max_tokens'] = 1024
 
 ### External Integration
 - **OpenAI API**: Cloud-based LLM analysis
-- **Anthropic API**: Cloud-based LLM analysis
+- **OpenRouter / Perplexity APIs**: Cloud-based LLM analysis
 - **Ollama**: Local LLM execution for privacy and offline use
 
 ### Data Flow
@@ -661,7 +665,7 @@ configs['ollama']['default_max_tokens'] = 1024
 ### Current Version: 1.0.0
 
 **Features**:
-- Multi-provider LLM support (OpenAI, Anthropic, Ollama)
+- Multi-provider LLM support (OpenAI, OpenRouter, Perplexity, Ollama)
 - Automatic Ollama recovery
 - Context-aware prompt generation
 - Structured output parsing

@@ -55,7 +55,7 @@ graph TD
 2. Provide standardized interface for tool execution across modules
 3. Enable inter-module communication and resource sharing
 4. Manage MCP server lifecycle and client connections
-5. Support multiple MCP transport protocols (stdio, HTTP, WebSocket)
+5. Support multiple MCP transport protocols (stdio, HTTP)
 
 ### Key Capabilities
 - Tool registration and discovery system
@@ -173,11 +173,6 @@ success = process_mcp(
 - **Use Case**: Remote tool access and web integration
 - **Implementation**: `mcp.server_http`
 
-#### WebSocket Transport
-- **Purpose**: Real-time bidirectional communication
-- **Use Case**: Live tool execution and streaming results
-- **Implementation**: `mcp.server_websocket`
-
 ---
 
 ## Dependencies
@@ -190,7 +185,6 @@ success = process_mcp(
 
 ### Optional Dependencies
 - `aiohttp` - HTTP server implementation (recovery: basic HTTP)
-- `websockets` - WebSocket server (recovery: polling-based)
 - `fastapi` - REST API framework (recovery: basic HTTP)
 
 ### Internal Dependencies
@@ -203,7 +197,7 @@ success = process_mcp(
 
 ### Environment Variables
 - `MCP_SERVER_PORT` - MCP server port (default: 8080)
-- `MCP_TRANSPORT` - Transport protocol ("stdio", "http", "websocket")
+- `MCP_TRANSPORT` - Transport protocol ("stdio", "http")
 - `MCP_LOG_LEVEL` - MCP logging level ("DEBUG", "INFO", "WARNING", "ERROR")
 - `MCP_TIMEOUT` - MCP request timeout (default: 30 seconds)
 

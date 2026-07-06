@@ -62,11 +62,8 @@ python src/5_type_checker.py --target-dir input/gnn_files \
 
 | Name | Kind | Purpose |
 |------|------|---------|
-| `GNNTypeChecker` | class | Per-directory orchestrator; holds configuration + results. |
-| `check_gnn_file(path: Path) -> TypeCheckResult` | function | Single-file entry point (used by LSP, MCP). |
-| `process_type_checking(target_dir, output_dir, ...) -> bool\|int` | function | Pipeline-standard processor (Phase 0.1 contract). |
-| `estimate_resources(model) -> ResourceEstimate` | function | Delegated to `estimation_strategies.py`. |
-| `render_trading_card(model, output_path)` | function | Delegated to `visualizer.py`. |
+| `GNNTypeChecker` | class | Orchestrator (`src/type_checker/checking/core.py`); `check_file(path)` validates a single file, `validate_gnn_files(target_dir, output_dir, ...)` validates a directory, `generate_report(...)` and `generate_json_data(...)` write the Markdown/JSON summaries. |
+| `estimate_file_resources(content: str) -> Dict[str, Any]` | function | Estimates computational resources (state/observation/action space size, parameters, FLOPs, memory, complexity class) for one GNN file's content; defined in `src/type_checker/checking/core.py`, bridging to `estimation/estimator.py`. |
 
 ## Validation Rules
 
@@ -87,7 +84,7 @@ errors, 2 when no GNN files are found (per Phase 1.1 contract).
 
 ## Resource Estimation Outputs
 
-For each model, `estimate_resources()` produces:
+For each model, `estimate_file_resources(content)` produces:
 
 ```
 {

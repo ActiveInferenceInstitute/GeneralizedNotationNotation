@@ -32,7 +32,10 @@ This document serves as a comprehensive checklist and analysis framework for val
 - **Total Pipeline Steps**: 25 (0_template.py through 24_intelligent_analysis.py, steps 0-24)
 
 - **Total Modules**: 31 Python packages under `src/`
-- **AGENTS.md Files**: 41 documentation files (including sub-modules)
+- **AGENTS.md Files**: 124 documentation files (including sub-modules) as of
+  this writing — this count drifts as modules are added; re-verify with
+  `find src -name AGENTS.md | wc -l` rather than trusting this hand-maintained
+  snapshot
 - **Architecture Pattern**: Thin orchestrator with modular implementation
 - **Testing Policy**: No substitutions - real data and real code paths only (some previous tests still use substitutions - see Section 16.1)
 - **Documentation Standard**: AGENTS.md + README.md for each module

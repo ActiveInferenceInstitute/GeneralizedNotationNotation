@@ -88,7 +88,7 @@ A GNN source file is a UTF-8 Markdown file (`.md`) organized into ordered sectio
 4. `## StateSpaceBlock`: The core declaration block where all variables, matrices, and dimensions are defined.
 5. `## Connections`: A structured list of directed and undirected edges forming the causal structure of the model.
 
-Optional sections, such as `## ModelAnnotation`, `## InitialParameterization`, `## Metadata`, and `## ActInf Ontology Annotation`, can be included to provide further semantic, mathematical, and historical context.
+Optional sections, such as `## ModelAnnotation`, `## InitialParameterization`, `## ModelParameters`, and `## ActInfOntologyAnnotation`, can be included to provide further semantic, mathematical, and historical context.
 
 ## 3 Step-by-Step GNN
 

@@ -99,39 +99,28 @@ success = process_security(
 )
 ```
 
-#### `validate_model_security(file_path: Path, security_level: str = "standard") -> Dict[str, Any]`
-**Description**: Validate security aspects of a GNN model file.
+#### `perform_security_check(file_path: Path, verbose: bool = False) -> Dict[str, Any]`
+**Description**: Perform a security check on a single GNN file (sensitive-pattern scanning and hashing).
 
 **Parameters**:
-- `file_path` (Path): Path to GNN file to validate
-- `security_level` (str): Security validation level ("basic", "standard", "strict")
+- `file_path` (Path): Path to GNN file to check
+- `verbose` (bool): Enable verbose output (default: False)
 
-**Returns**: `Dict[str, Any]` - Security validation results with:
-- `passed` (bool): Whether validation passed
-- `vulnerabilities` (List[Dict]): List of detected vulnerabilities
-- `security_score` (float): Security score (0.0-1.0)
-- `recommendations` (List[str]): Security improvement recommendations
+**Returns**: `Dict[str, Any]` - Security check results with:
+- `file_hash` (str): SHA-256 hash of the file contents
+- `sensitive_patterns` (List[Dict]): Detected sensitive patterns (e.g. `password`, `api_key`, `secret`)
+- `file_permissions` (str): Simplified file permission summary
+- `security_score` (float): Security score computed from detected patterns
+- `check_timestamp` (str): ISO timestamp of the check
 
-#### `check_access_permissions(file_path: Path, operation: str) -> bool`
-**Description**: Check access permissions for file operations.
+#### `check_vulnerabilities(file_path: Path, verbose: bool = False) -> List[Dict[str, Any]]`
+**Description**: Check a GNN (or generated Python) file for security vulnerabilities and unsafe file permissions. Combines regex pattern matching (e.g. `eval(`, `exec(`, `subprocess.*`) with Python AST analysis of generated `.py` files, and flags world-writable files via `os.access`.
 
 **Parameters**:
 - `file_path` (Path): File path to check
-- `operation` (str): Operation to check ("read", "write", "execute")
+- `verbose` (bool): Enable verbose output (default: False)
 
-**Returns**: `bool` - True if operation is permitted, False otherwise
-- `operation`: Operation to validate
-
-**Returns**: `True` if access is permitted
-
-#### `detect_threats(content, threat_types=None) -> List[Dict[str, Any]]`
-**Description**: Detect potential security threats in content
-
-**Parameters**:
-- `content`: Content to analyze
-- `threat_types`: Types of threats to detect
-
-**Returns**: List of detected threat indicators
+**Returns**: `List[Dict[str, Any]]` - Detected vulnerabilities, each with `vulnerability_type`, `detection_method` (`"regex"`, `"ast"`, or `"permission_check"`), and the matched `line`/`pattern`.
 
 ---
 
@@ -208,31 +197,32 @@ success = process_security(
 
 ### Model Security Check
 ```python
-from security.processor import validate_model_security
+from security.processor import perform_security_check
 
-security_result = validate_model_security(
+security_result = perform_security_check(
     file_path="models/sensitive_model.md",
-    security_level="strict"
+    verbose=True
 )
 
-if security_result["passed"]:
-    print("Model security validation passed")
-else:
-    print("Security issues found:")
-    for issue in security_result["issues"]:
-        print(f"  - {issue}")
+print(f"Security score: {security_result['security_score']}")
+if security_result["sensitive_patterns"]:
+    print("Sensitive patterns found:")
+    for pattern in security_result["sensitive_patterns"]:
+        print(f"  - {pattern['context']} (line {pattern['line']})")
 ```
 
-### Access Control Check
+### Vulnerability Check
 ```python
-from security.processor import check_access_permissions
+from security.processor import check_vulnerabilities
 
-if check_access_permissions("models/confidential.md", "read"):
-    print("Access granted")
-    # Proceed with model processing
+vulnerabilities = check_vulnerabilities("models/confidential.md")
+
+if vulnerabilities:
+    print("Vulnerabilities found:")
+    for vuln in vulnerabilities:
+        print(f"  - {vuln['vulnerability_type']} (line {vuln['line']})")
 else:
-    print("Access denied")
-    # Handle unauthorized access
+    print("No vulnerabilities detected")
 ```
 
 ---

@@ -106,6 +106,18 @@ graph TD
 
 **Returns**: `True` if setup succeeded
 
+#### `setup_complete_environment(verbose=False, recreate=False, install_optional=False, optional_groups=None, output_dir=None) -> bool`
+**Description**: Complete environment setup with optional dependencies (system requirements check, UV environment creation, core dependency install, then optional dependency groups). `setup_orchestrator` calls this instead of `setup_uv_environment` whenever `install_optional` or `optional_groups` is requested.
+
+**Parameters**:
+- `verbose`: Enable verbose logging
+- `recreate`: Recreate environment if it exists
+- `install_optional`: Install optional dependencies
+- `optional_groups`: Specific optional groups to install (`None` installs all groups)
+- `output_dir`: Output directory for setup logs
+
+**Returns**: `True` if setup succeeded
+
 #### `install_uv_dependencies(verbose=False, dev=False, extras=None, install_all_extras=False) -> bool`
 **Description**: Install UV dependencies using `uv sync` from pyproject.toml
 

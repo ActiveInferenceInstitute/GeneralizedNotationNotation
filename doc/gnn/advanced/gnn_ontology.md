@@ -92,8 +92,10 @@ with open("input/gnn_files/model.md") as f:
 result = parse_gnn_ontology_section(content)
 
 # Returns dict with:
-# - annotations: ["A=LikelihoodMatrix", "B=TransitionMatrix", ...]
-# - raw_section: the raw ActInfOntologyAnnotation text
+# - concepts: [str, ...]        (from "Concept:"/"Concepts:" lines)
+# - relations: [str, ...]       (from "Relation:"/"Relations:" lines)
+# - properties: [str, ...]      (from "Property:"/"Properties:" lines)
+# - annotations: [str, ...]     (KEY=VALUE lines, e.g. "A=LikelihoodMatrix")
 ```
 
 ### Ontology Validation
@@ -113,9 +115,11 @@ result = validate_annotations(
     ontology_terms=ontology_terms
 )
 # result includes:
-# - valid: [{term, description, uri}]
-# - invalid: [{term, suggestions: [closest_matches]}]
-# - stats: {total, passed, failed}
+# - valid_annotations: [str, ...]      (annotations that matched a term)
+# - invalid_annotations: [str, ...]    (annotations with no matching term)
+# - matched_terms: {key: {annotation, term_name, description, uri, key, value, comment}}
+# - suggestions: [{annotation, suggested_term, description}]
+# - coverage_score: float              (valid / total)
 ```
 
 ### Term Mapping
@@ -128,9 +132,11 @@ from ontology.processor import process_gnn_ontology
 # Process ontology for a single GNN file (parse + validate + report)
 result = process_gnn_ontology("input/gnn_files/model.md")
 # Returns:
-# - annotations: parsed KEY=VALUE mappings
-# - validation: per-annotation valid/invalid results
-# - stats: {total_annotations, passed, failed}
+# - success: bool
+# - file_path: str
+# - ontology_data: dict          (from parse_gnn_ontology_section)
+# - validation_result: dict      (from validate_annotations)
+# - ontology_terms: dict         (from load_defined_ontology_terms)
 ```
 
 ## Ontology Processing Workflow

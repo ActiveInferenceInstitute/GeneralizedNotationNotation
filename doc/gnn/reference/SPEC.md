@@ -20,7 +20,7 @@ Everything outside this subtree treats these files as ground truth.
 ## Versioning
 - GNN language version: tracked in `gnn_syntax.md` header
 - Document bundle version: inherits from [`doc/gnn/SPEC.md`](../SPEC.md)
-- Package version: v1.6.0 (matches `pyproject.toml`)
+- Package version: v3.0.0 (matches `pyproject.toml`)
 
 ## Status
 Maintained. Every file in this subtree is referenced from `doc/gnn/README.md`

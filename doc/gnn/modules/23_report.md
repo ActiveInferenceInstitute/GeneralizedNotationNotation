@@ -12,12 +12,18 @@ This module provides comprehensive report generation capabilities for GNN pipeli
 
 ```
 src/report/
-├── __init__.py                    # Module initialization and exports
-├── README.md                      # This documentation
-├── analyzer.py                    # Report analysis system
-├── formatters.py                  # Report formatting utilities
-├── generator.py                   # Report generation system
-└── mcp.py                        # Model Context Protocol integration
+├── __init__.py                       # Module initialization and exports
+├── README.md                         # This documentation
+├── analyzer.py                       # Report analysis system
+├── cross_framework_reliability.py    # Markdown rendering for cross-framework reliability ledgers
+├── diff_report.py                    # Diff-aware reporting — compares runs to detect regressions
+├── formatters.py                     # Report formatting utilities
+├── generator.py                      # Report generation system
+├── mcp.py                            # Model Context Protocol integration
+├── model_family.py                   # Markdown rendering for model-family acceptance ledgers
+├── pipeline_report.py                # Auto-generates PIPELINE_REPORT.md after each run
+├── processor.py                      # Report processor module (process_report entry point)
+└── semantic_fidelity.py              # Markdown rendering for the semantic fidelity gate
 ```
 
 ## Agent Identity & Capabilities

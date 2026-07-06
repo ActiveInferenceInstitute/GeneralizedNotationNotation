@@ -63,7 +63,7 @@ When writing GNN expressions:
 2. **Dimensionality** should be specified using square brackets, e.g., `X[2,3]` for a 2×3 matrix
 3. **Causal relationships** should be denoted with directed (>) or undirected (-) edges
 4. **Mathematical operations** should use standard operators (+, -, *, /)
-5. **Comments** can be added using triple hashtags (###)
+5. **Comments** can be added using a single hashtag (#)
 
 ## GNN Source File Structure
 
@@ -91,7 +91,7 @@ Specification of GNN release and optional flags that govern the file's interpret
 
 7. **Time**: Discrete or continuous time settings and horizons, including whether the model is static or dynamic, how time is represented, and the time horizon for simulation.
 
-8. **ActInf Ontology Annotation**: Mapping of variables to Active Inference Ontology terms, which standardizes the interpretation of variables and facilitates cross-model comparison.
+8. **ActInfOntologyAnnotation**: Mapping of variables to Active Inference Ontology terms, which standardizes the interpretation of variables and facilitates cross-model comparison.
 
 9. **Footer and Signature**: File closure and provenance information, potentially including cryptographic signatures for verification.
 
@@ -117,7 +117,7 @@ GNN files are processed through a comprehensive 25-step pipeline orchestrated by
 
 ### Rendering and Execution (Steps 11, 12)
 
-- `11_render.py`: Code generation for PyMDP, RxInfer, ActiveInference.jl, DisCoPy, JAX, Stan, PyTorch, NumPyro
+- `11_render.py`: Code generation for PyMDP, RxInfer.jl, ActiveInference.jl, DisCoPy, JAX, PyTorch, NumPyro, Stan, bnlearn (9 backends)
 - `12_execute.py`: Execution of rendered simulation scripts
 
 ### Analysis and Reporting (Steps 13, 16, 23, 24)
@@ -170,7 +170,7 @@ GNN supports an incremental approach to model development, allowing practitioner
 4. Incorporating temporal components for dynamic models
 5. Adding policy selection mechanisms for active inference
 
-The examples in `src/gnn/gnn_examples/` demonstrate this progression from simple to complex models, following the tutorial by Smith et al. (2022).
+The examples under `input/gnn_files/` (e.g. `basics/`, `discrete/`, `hierarchical/`) demonstrate this progression from simple to complex models, following the tutorial by Smith et al. (2022). (`src/gnn/gnn_examples/` contains a single reference model, `actinf_pomdp_agent.md`.)
 
 ## Step-by-Step Example: Static to Dynamic Models
 
@@ -207,7 +207,7 @@ Dynamic
 DiscreteTime=t
 ModelTimeHorizon=10
 
-## ActInf Ontology Annotation
+## ActInfOntologyAnnotation
 s=HiddenState
 o=Observation
 A=StateTransitionMatrix

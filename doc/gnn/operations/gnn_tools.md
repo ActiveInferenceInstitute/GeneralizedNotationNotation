@@ -26,7 +26,6 @@ graph TD
     
     CONVERT --> PYCODE[Python Code Generator]
     CONVERT --> JULIACODE[Julia Code Generator]
-    CONVERT --> LATEXGEN[LaTeX Generator]
     
     VALID --> SYNTAX[Syntax Checker]
     VALID --> SEMANT[Semantic Validator]
@@ -50,10 +49,10 @@ graph TD
 The repository provides parsing through the `gnn` CLI and Step 3 orchestrator:
 
 ```bash
-# Parse files with the CLI
-uv run gnn parse --target-dir input/gnn_files --output-dir output
+# Parse a single file with the CLI (positional file argument)
+uv run gnn parse input/gnn_files/discrete/actinf_pomdp_agent.md --format json
 
-# Parse via step-3 script
+# Parse via step-3 script (directory-oriented, used by the pipeline)
 uv run python src/3_gnn.py --target-dir input/gnn_files --output-dir output --verbose
 ```
 
@@ -61,9 +60,9 @@ uv run python src/3_gnn.py --target-dir input/gnn_files --output-dir output --ve
 
 | Command | Description | Output |
 |----------|-------------|--------|
-| `uv run gnn parse --target-dir <dir> --output-dir <dir>` | Parse and serialize GNN models | `output/3_gnn_output/` |
-| `uv run gnn validate --target-dir <dir>` | Validate GNN syntax and structure | validation report + exit status |
-| `uv run python src/main.py --only-steps "3,5"` | Parse then type-check | `output/3_gnn_output/`, `output/5_type_checker_output/` |
+| `uv run gnn parse <file> [--format json\|yaml\|summary]` | Parse and serialize a single GNN model | stdout (JSON/YAML/summary) |
+| `uv run gnn validate <file> [--strict]` | Validate GNN syntax and structure | validation report + exit status |
+| `uv run python src/main.py --only-steps "3,5"` | Parse then type-check (all files in `--target-dir`) | `output/3_gnn_output/`, `output/5_type_checker_output/` |
 
 ## Visualization Tools
 
@@ -97,10 +96,10 @@ graph TD
 #### Command-Line Interface
 
 ```bash
-# Generate graph outputs through the CLI
-uv run gnn graph --target-dir input/gnn_files --output-dir output
+# Generate a dependency graph for a single file through the CLI
+uv run gnn graph input/gnn_files/discrete/actinf_pomdp_agent.md --format mermaid
 
-# Or run visualization step directly
+# Or run visualization step directly (directory-oriented, used by the pipeline)
 uv run python src/main.py --only-steps "8,9" --target-dir input/gnn_files --verbose
 ```
 
@@ -132,12 +131,15 @@ python src/11_render.py --target-dir input/gnn_files --output-dir output --verbo
 python src/12_execute.py --frameworks "pymdp,jax" --verbose
 ```
 
-### GNN to LaTeX Converter
+### GNN Export Formats
 
-The export step (Step 7) generates multiple output formats including LaTeX:
+The export step (Step 7) serializes GNN models to several structured
+formats (JSON, XML, GraphML, GEXF, pickle, plaintext summary, plaintext
+DSL — see `src/export/formatters.py` and `list_export_formats` for the
+live list). There is currently no LaTeX export target in `src/export/`.
 
 ```bash
-# Export GNN models to multiple formats
+# Export GNN models to all supported formats
 python src/7_export.py --target-dir input/gnn_files --output-dir output --verbose
 ```
 
@@ -282,16 +284,16 @@ Access the repository at: [https://github.com/ActiveInferenceInstitute/GNN-Model
 Basic usage:
 
 ```bash
-# Parse and validate a GNN file
-uv run gnn validate --target-dir input/gnn_files
+# Validate a single GNN file
+uv run gnn validate input/gnn_files/discrete/actinf_pomdp_agent.md
 
-# Parse GNN files
-uv run gnn parse --target-dir input/gnn_files --output-dir output
+# Parse a single GNN file
+uv run gnn parse input/gnn_files/discrete/actinf_pomdp_agent.md --format json
 
-# Visualize a GNN model
-uv run gnn graph --target-dir input/gnn_files --output-dir output
+# Visualize (dependency graph) a single GNN model
+uv run gnn graph input/gnn_files/discrete/actinf_pomdp_agent.md --format mermaid
 
-# Run the full pipeline
+# Run the full pipeline (directory-oriented)
 uv run python src/main.py --target-dir input/gnn_files --verbose
 ```
 

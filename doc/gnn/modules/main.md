@@ -29,7 +29,7 @@ When using `--only-steps`, dependencies are automatically included:
 | 12 (Execute) | 3, 11 |
 | 16 (Analysis) | 3, 7 |
 | 23 (Report) | 8, 13 |
-| 24 (Intelligent Analysis) | 23 |
+| 24 (Intelligent Analysis) | all prior steps (0–23) |
 
 ### Execution Infrastructure
 

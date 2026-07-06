@@ -12,15 +12,14 @@ This module provides comprehensive static HTML website generation capabilities f
 
 ```
 src/website/
-├── __init__.py                    # Module initialization and exports
-├── README.md                      # This documentation
-├── generator.py                    # Core website generation
-├── templates/                      # HTML templates
-│   ├── base.html                  # Base template
-│   ├── index.html                 # Homepage template
-│   ├── visualization.html         # Visualization page template
-│   ├── report.html                # Report page template
-│   └── analysis.html              # Analysis page template
+├── __init__.py                     # Module initialization and exports
+├── README.md                       # This documentation
+├── generator.py                    # WebsiteGenerator / generate_website: core multi-page site generation
+├── renderer.py                     # WebsiteRenderer, process_website, and HTML/asset embedding helpers
+├── dashboard.py                    # render_dashboard: self-contained single-file HTML pipeline dashboard
+├── processor.py                    # Thin facade re-exporting process_website from renderer.py
+└── mcp.py                          # Model Context Protocol integration
+```
 
 ## Agent Identity & Capabilities
 

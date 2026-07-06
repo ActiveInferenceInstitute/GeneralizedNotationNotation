@@ -2,7 +2,7 @@
 
 ## Architectural Mapping
 
-**Orchestrator**: `src/24_intelligent_analysis.py` (44 lines)
+**Orchestrator**: `src/24_intelligent_analysis.py` (53 lines)
 **Implementation Layer**: `src/intelligent_analysis/`
 
 ## Module Description
@@ -48,7 +48,9 @@ intelligent_analysis/
 ├── __init__.py       # Public API exports, module utilities, tool checks
 ├── AGENTS.md         # This documentation
 ├── processor.py      # Core analysis processing logic and report generation
-└── analyzer.py       # IntelligentAnalyzer class, health scoring, pattern detection
+├── analyzer.py       # IntelligentAnalyzer class, health scoring, pattern detection
+├── mcp.py            # Model Context Protocol integration for intelligent analysis tools
+└── remediation.py    # Auto-suggest fixes for contract violations (RemediationPlan)
 ```
 
 ## Key Components

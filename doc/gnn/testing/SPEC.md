@@ -5,7 +5,11 @@ Testing strategy, coverage expectations, and quality gates for GNN.
 Complements `src/tests/` which holds the actual test suite.
 
 ## Coverage Gates
-- Minimum coverage: **40%** (gate fails below 31%)
+- No coverage threshold is currently enforced: `pyproject.toml` configures
+  `[tool.coverage.run]`/`[tool.coverage.report]` (source paths and exclusion
+  lines) but sets no `fail_under`, and no `.github/workflows/*.yml` job
+  passes `--cov-fail-under` for this suite. Coverage is measured and
+  reported, not gated.
 - Real-implementation policy: tests use real
   dependencies or skip-with-guard when deps are unavailable
 - Test naming: `src/tests/test_{module}_*.py`

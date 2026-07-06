@@ -250,7 +250,7 @@ When the full PyMDP library is unavailable, the execution step (Step 12) skips t
 - **Synchronous Execution:** All agents complete a phase before the next phase begins for any agent (default).
 - **Asynchronous Execution:** (Advanced) Agents may operate on different clocks or with event-driven updates. This would require more detailed specification if supported.
 
-### 5.3. Shared Environment
+### 5.4. Shared Environment
 
 If a shared environment exists, it can be modeled as a special GNN component or a set of global variables that agents can perceive and influence.
 

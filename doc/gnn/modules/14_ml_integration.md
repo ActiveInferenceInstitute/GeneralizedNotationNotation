@@ -47,7 +47,7 @@ Main function for processing machine learning integration tasks.
 ### Primary Responsibilities
 1. Integrate machine learning frameworks with GNN models
 2. Provide model training and validation capabilities
-3. Support multiple ML frameworks (PyTorch, TensorFlow, JAX)
+3. Train classifiers on GNN structural features using scikit-learn (Decision Tree, Random Forest); PyTorch/TensorFlow/JAX are not currently implemented
 4. Enable model optimization and hyperparameter tuning
 5. Generate ML-ready datasets from GNN specifications
 
@@ -71,11 +71,7 @@ Main function for processing machine learning integration tasks.
 - `output_dir` (Path): Output directory for ML integration results
 - `verbose` (bool): Enable verbose logging (default: False)
 - `logger` (Optional[logging.Logger]): Logger instance for progress reporting (default: None)
-- `model_type` (str, optional): ML model type ("auto", "supervised", "unsupervised") (default: "auto")
-- `training_mode` (str, optional): Training mode ("train", "evaluate", "predict") (default: "train")
-- `framework` (str, optional): ML framework ("auto", "sklearn", "pytorch", "tensorflow", "jax") (default: "auto")
-- `hyperparameter_optimization` (bool, optional): Enable hyperparameter optimization (default: False)
-- `**kwargs`: Additional ML-specific options
+- `**kwargs`: Accepted but not read by `process_ml_integration` — the function signature is `(target_dir, output_dir, recursive=False, verbose=False, **kwargs)` and no `model_type`, `training_mode`, `framework`, or `hyperparameter_optimization` key is ever pulled out of `kwargs`. Passing these values (e.g. via CLI flags, if added) currently has no effect; training always follows the scikit-learn path described below.
 
 **Returns**: `bool` - True if ML integration processing succeeded, False otherwise
 
@@ -85,15 +81,10 @@ from ml_integration import process_ml_integration
 from pathlib import Path
 import logging
 
-logger = logging.getLogger(__name__)
 success = process_ml_integration(
     target_dir=Path("input/gnn_files"),
     output_dir=Path("output/14_ml_integration_output"),
-    logger=logger,
     verbose=True,
-    model_type="supervised",
-    training_mode="train",
-    framework="sklearn"
 )
 ```
 
@@ -101,37 +92,18 @@ success = process_ml_integration(
 
 ## ML Framework Support
 
-### PyTorch Integration
-**Status**: ✅ Supported
-**Features**:
-- Neural network model generation from GNN specifications
-- Custom loss functions for Active Inference models
-- Training loop automation with early stopping
-- Model checkpointing and serialization
-
-### TensorFlow/Keras Integration
-**Status**: ✅ Supported
-**Features**:
-- TensorFlow model generation and training
-- Custom layers for cognitive modeling
-- TensorBoard integration for visualization
-- Model export for deployment
-
-### JAX/Flax Integration
-**Status**: ✅ Supported
-**Features**:
-- JAX-based model implementation
-- Functional programming approach for cognitive models
-- JIT compilation for performance
-- Flax neural network library integration
-
 ### Scikit-learn Integration
-**Status**: ✅ Supported
+**Status**: ✅ Supported — this is the only ML framework actually implemented in `src/ml_integration/processor.py`
 **Features**:
-- Traditional ML model generation
-- Feature engineering and preprocessing
-- Model evaluation and comparison
-- Integration with cognitive modeling workflows
+- Extracts structural features per GNN file (`num_states`, `num_observations`, `num_actions`, `num_variables`, `connectivity_ratio`, `max_dimension`, `total_parameters`, `has_precision`, `has_learning`, `has_ontology`, `has_parameterization`)
+- Trains a `DecisionTreeClassifier` (`max_depth=4`) and a `RandomForestClassifier` (`n_estimators=10`, `max_depth=4`) side by side for comparison
+- Classifies `model_family` when at least two distinct families are present across the input files; otherwise falls back to a `small`/`medium`/`large` complexity classification based on `total_parameters`
+- Cross-validates (up to 5-fold, capped by sample count and the smallest class count) and reports mean/std accuracy plus per-model feature importance (top 5 features)
+- Requires at least 2 GNN files with extractable features and a working `scikit-learn`/`numpy` install; otherwise falls back to writing a `structural_analysis` entry per file with no model trained
+- Serializes each trained classifier to a `.pkl` artifact (`gnn_decision_tree.pkl`, `gnn_random_forest.pkl`) in the output directory
+
+### PyTorch / TensorFlow-Keras / JAX-Flax
+`src/ml_integration/processor.py` has no imports of or references to `torch`, `tensorflow`, or `jax` — this module trains only the scikit-learn classifiers described above. Neural-network training, custom loss functions, TensorBoard integration, and JIT-compiled models are outside this module's current scope.
 
 ---
 

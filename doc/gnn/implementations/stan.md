@@ -26,9 +26,8 @@ RxInfer.jl, ActiveInference.jl, or JAX.
 
 | Stage | Module | Description |
 |-------|--------|-------------|
-| Rendering (Step 11) | `src/render/stan/stan_renderer.py` | GNN → Stan program string |
-| Code emission | `_emit_data_block`, `_emit_parameters_block`, `_emit_model_block` | Classify + format variables per block |
-| Matrix formatting | `_matrix_to_stan` | Tuple / list literals → Stan array syntax |
+| Rendering (Step 11) | `src/render/stan/stan_renderer.py` | GNN → Stan program string, via `render_stan(variables, connections, model_name)` |
+| Type mapping | `_stan_type` | Maps GNN dtype + dimensions to Stan `data`/`parameters` type declarations |
 | Output | `model.stan` in per-model/per-framework dir | Written by `render/processor.py` |
 
 ## GNN Parameter Ingestion
@@ -120,17 +119,17 @@ model {
 The Stan backend is selected via the standard render step:
 
 ```bash
-python src/11_render.py --target-dir input/gnn_files --output-dir output --targets stan
+python src/11_render.py --target-dir input/gnn_files --output-dir output --frameworks stan
 ```
 
 Direct programmatic use:
 
 ```python
-from render.stan.stan_renderer import render_gnn_to_stan
+from render.stan.stan_renderer import render_stan
 
-with open("my_model.md") as f:
-    gnn_dict = parse_gnn_string(f.read())
-stan_code = render_gnn_to_stan(gnn_dict)
+# variables/connections are parsed GNN dicts (see src/render/processor.py
+# for how they're built from a GNN spec before being passed to render_stan)
+stan_code = render_stan(variables, connections, model_name="my_model")
 with open("out/my_model.stan", "w") as f:
     f.write(stan_code)
 ```

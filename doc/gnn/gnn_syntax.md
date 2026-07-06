@@ -35,8 +35,12 @@ For CI, type-checking, and pipeline validation, prefer examples that satisfy the
 |---------|---------|
 | `## ModelAnnotation` | Free-text description of the model |
 | `## InitialParameterization` | Concrete matrix / vector values |
-| `## Metadata` | Key-value metadata (author, date, tags) |
-| `## ActInf Ontology Annotation` | Variable semantic bindings to Ontological domains |
+| `## Equations` | LaTeX-rendered formulas defining model dynamics and relationships between variables |
+| `## Time` | Static/Dynamic setting, discrete/continuous time variable, and model time horizon |
+| `## ActInfOntologyAnnotation` | Variable semantic bindings to Ontological domains |
+| `## ModelParameters` | Key-value numeric parameters for the model (e.g. counts, horizons, simulation settings) |
+| `## Footer` | Closes the file and allows read-in from either end |
+| `## Signature` | Cryptographic signature block / provenance information |
 
 ---
 
@@ -138,12 +142,12 @@ on its own line. Each model block must contain its own `## GNNSection` and
 
 ---
 
-## 7 ActInf Ontology Annotation (v1.5)
+## 7 ActInfOntologyAnnotation (v1.5)
 
 To bind internal variables to external semantic meaning, construct a list mapping variables to CamelCase ontological states. This is requisite for the Neurosymbolic LLM Context Analysis features in `13_llm.py` and heuristics tracking in `24_intelligent_analysis.py`.
 
 ```gnn
-## ActInf Ontology Annotation
+## ActInfOntologyAnnotation
 s=HiddenState
 o=Observation
 A=StateTransitionMatrix
@@ -164,6 +168,6 @@ B=ObservationLikelihoodMatrix
 
 | Warning Code | Meaning |
 |--------------|---------|
-| `GNN-W001` | Variable declared but never used in connections |
+| `GNN-W001` | Variable declared but never used in connections (**planned, not yet enforced** — no emitting code in `src/gnn/schema.py`) |
 | `GNN-W002` | Connection references undeclared variable |
 | `GNN-W003` | Parameterization provided for undeclared variable |

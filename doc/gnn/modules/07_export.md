@@ -65,24 +65,25 @@ src/export/
 
 ### Public Functions
 
-#### `generate_exports(target_dir, output_dir, verbose=False) -> bool`
+#### `process_export(target_dir, output_dir, verbose=False, **kwargs) -> bool`
 
-**Description**: Main export processing function. Exports all GNN `.md` files in `target_dir` to multiple formats.
+**Description**: Main export processing function (`src/export/processor.py`), invoked by `src/7_export.py`. Loads the parsed GNN results written by Step 3 (`gnn_processing_results.json`) from the base output directory and exports each parsed model to multiple formats.
 
 **Parameters**:
 
 - `target_dir` (Path): Directory containing GNN files
 - `output_dir` (Path): Output directory for exports
 - `verbose` (bool): Enable verbose logging (default: False)
+- `**kwargs`: Additional processing options, including `formats`
 
 **Returns**: `True` if all exports succeeded
 
 **Example**:
 
 ```python
-from export import generate_exports
+from export import process_export
 
-success = generate_exports(
+success = process_export(
     target_dir=Path("input/gnn_files"),
     output_dir=Path("output/7_export_output"),
     verbose=True
@@ -164,9 +165,9 @@ success = generate_exports(
 ### Basic Usage
 
 ```python
-from export import generate_exports
+from export import process_export
 
-success = generate_exports(
+success = process_export(
     target_dir=Path("input/gnn_files"),
     output_dir=Path("output/7_export_output"),
     verbose=True
@@ -307,7 +308,7 @@ output/7_export_output/
 
 ### Tools Registered
 
-- `generate_exports` — Generate multi-format exports for GNN files in a directory
+- `process_export` — Generate multi-format exports for GNN files in a directory
 - `export_single_gnn_file` — Export a single GNN file to all supported formats
 - `export.list_functions` — List callable functions in the export module
 - `export.call_function` — Call any public function by name with keyword arguments

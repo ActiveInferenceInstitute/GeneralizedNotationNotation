@@ -112,21 +112,29 @@ G[1,type=float]      # Expected Free Energy for action selection
 t[1,type=int]        # Time step
 
 ## Connections
+# Each connection is a single "source>target" (directed) or "source-target"
+# (undirected) pair with no spaces — see the Connections grammar in
+# doc/gnn/reference/gnn_syntax.md for the full rule.
+
 # Prior influences initial state
-(D_f0) -> (s_f0)
+D_f0>s_f0
 
 # Position determines what agent observes
-(s_f0) -> (A_m0)
-(A_m0) -> (o_m0)
+s_f0>A_m0
+A_m0>o_m0
 
 # Position and action determine next position
-(s_f0, u_c0) -> (B_f0)
-(B_f0) -> s_f0_next
+s_f0>B_f0
+u_c0>B_f0
+B_f0>s_f0_next
 
 # Preferences and expected outcomes influence action selection
-(C_m0, A_m0, B_f0, s_f0) > G
-G > pi_c0
-(pi_c0) -> u_c0
+C_m0>G
+A_m0>G
+B_f0>G
+s_f0>G
+G>pi_c0
+pi_c0>u_c0
 
 ## InitialParameterization
 # A_m0: Agent can perfectly observe its position (identity matrix)

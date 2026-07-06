@@ -61,10 +61,12 @@ Pkg.add(["Catlab", "AlgebraicDynamics", "AlgebraicPetri"])
 
 ## Export GNN → CatColab
 
+> **Note**: `src/export/` does not currently emit a dedicated CatColab format — Step 7 has no `--format` flag and no `catcolab` exporter. It produces generic JSON/XML/GraphML/GEXF/Pickle exports (see `src/export/formatters.py`). A CatColab-compatible JSON export is a planned feature; today, use the generic JSON export as the starting point for a manual or scripted conversion.
+
 ```bash
-# Export to CatColab-compatible JSON via Step 7
-python src/7_export.py --target-dir input/gnn_files/ --format catcolab --verbose
-# Output: output/7_export_output/<model>/model_catcolab.json
+# Generate the generic multi-format export via Step 7 (JSON, XML, GraphML, GEXF, Pickle)
+python src/7_export.py --target-dir input/gnn_files/ --verbose
+# Output: output/7_export_output/<model>/model.json (generic GNN JSON, not CatColab-specific)
 
 # Or run the full pipeline with export
 python src/main.py --only-steps "3,7" --verbose
@@ -105,7 +107,7 @@ python src/main.py --only-steps "3,7" --verbose
 
 ```bash
 # Render GNN model to DisCoPy string diagram (for CatColab import)
-python src/11_render.py --target-dir input/gnn_files/ --framework discopy
+python src/11_render.py --target-dir input/gnn_files/ --frameworks discopy
 ```
 
 ## Telemetry Output

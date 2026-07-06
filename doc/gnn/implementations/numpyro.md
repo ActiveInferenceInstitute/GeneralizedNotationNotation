@@ -125,10 +125,10 @@ PYTHONPATH=src python -c "from execute.numpyro import check_numpyro; print(check
 
 ```bash
 # Render GNN to NumPyro script
-python src/11_render.py --target-dir input/gnn_files/ --framework numpyro
+python src/11_render.py --target-dir input/gnn_files/ --frameworks numpyro
 
 # Execute with MCMC inference
-python src/12_execute.py --target-dir input/gnn_files/ --framework numpyro
+python src/12_execute.py --target-dir input/gnn_files/ --frameworks numpyro
 
 # Or use MCP tool
 # Call: execute_gnn_model(path="...", framework="numpyro")

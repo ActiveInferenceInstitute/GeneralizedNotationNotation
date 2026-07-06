@@ -14,6 +14,8 @@ This module provides comprehensive system integration capabilities for the GNN p
 src/integration/
 ├── __init__.py                    # Module initialization and exports
 ├── README.md                      # This documentation
+├── processor.py                   # process_integration: dependency-graph coordination and consistency checks
+├── meta_analysis/                 # Parameter-sweep runtime/simulation meta-analysis (collector, statistics, validator, visualizer)
 └── mcp.py                         # Model Context Protocol integration
 ```
 
@@ -95,15 +97,7 @@ success = process_integration(
 )
 ```
 
-#### `coordinate_pipeline_modules() -> Dict[str, Any]`
-**Description**: Coordinates all pipeline modules for integrated operation using dependency graph analysis.
-
-**Returns**: `Dict[str, Any]` - Coordination results with:
-- `modules` (List[str]): List of coordinated modules
-- `dependency_graph` (Dict): Module dependency graph
-- `cycles_detected` (List[List[str]]): Detected circular dependencies
-- `status` (str): Coordination status ("success", "partial", "failed")
-- `statistics` (Dict[str, Any]): Graph statistics (nodes, edges, density)
+**Note**: Dependency-graph coordination is performed internally by `process_integration` itself (there is no separate `coordinate_pipeline_modules()` function). It builds a `networkx` directed graph of components, detects cycles and isolated nodes, and stores the results under `results["system_graph_stats"]` with keys `nodes`, `edges`, `cycles`, `isolated_nodes`, and `components`.
 
 ---
 

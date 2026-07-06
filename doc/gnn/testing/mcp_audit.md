@@ -35,16 +35,17 @@ The audit file contains six test classes (`TestMCPModuleDiscovery`, `TestMCPTool
 
 ### `TestMCPModuleDiscovery`
 
-22 expected modules × 2 parametrized checks = **44 tests**
+32 expected modules × 2 parametrized checks = **64 tests**
 
 ```python
-EXPECTED_MODULES = [
-    "gnn", "utils", "website", "analysis", "render", "export",
-    "validation", "ontology", "visualization", "report", "integration",
-    "security", "research", "sapf", "audio", "execute", "llm",
-    "advanced_visualization", "ml_integration", "intelligent_analysis",
-    "gui", "pipeline",
-]
+EXPECTED_MODULES = (
+    "advanced_visualization", "analysis", "api", "audio", "cli", "doc",
+    "execute", "export", "gnn", "integration", "intelligent_analysis",
+    "llm", "lsp", "mcp", "ml_integration", "model_registry", "ontology",
+    "gui", "pipeline", "render", "report", "research", "sapf", "security",
+    "setup", "sympy_mcp", "template", "type_checker", "utils", "validation",
+    "visualization", "website",
+)
 ```
 
 - `test_expected_module_loaded` — module appears in `all_modules` OR contributes tools
@@ -64,7 +65,8 @@ EXPECTED_MODULES = [
 
 ### `TestMCPDomainTools`
 
-76 expected tool names × 1 check = **76 tests**:
+74 expected tool names × 2 parametrized checks
+(`test_domain_tool_registered` + `test_domain_tool_is_callable`) = **148 tests**:
 
 ```python
 DOMAIN_TOOLS = [

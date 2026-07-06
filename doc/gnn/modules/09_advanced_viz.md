@@ -66,7 +66,7 @@ src/advanced_visualization/
 
 ### Public Functions
 
-#### `process_advanced_viz_standardized_impl(target_dir, output_dir, logger, **kwargs) -> bool`
+#### `process_advanced_viz(target_dir, output_dir, logger=None, viz_type="all", interactive=True, export_formats=None, **kwargs) -> bool | int`
 
 **Description**: Main advanced visualization processing function called by orchestrator (9_advanced_viz.py)
 
@@ -80,14 +80,14 @@ src/advanced_visualization/
 - `export_formats` (List[str]): Export formats ["html", "json", "png"], default: ["html", "json"]
 - `**kwargs**: Additional options
 
-**Returns**: `True` if visualization succeeded
+**Returns**: `True`/`1` if artifacts were produced, `2` for warning-only/no-data recovery, `False` for hard failures
 
 **Example**:
 
 ```python
-from advanced_visualization.processor import process_advanced_viz_standardized_impl
+from advanced_visualization.processor import process_advanced_viz
 
-success = process_advanced_viz_standardized_impl(
+success = process_advanced_viz(
     target_dir=Path("input/gnn_files"),
     output_dir=Path("output/9_advanced_viz_output"),
     logger=logger,
@@ -226,9 +226,9 @@ See [D2_README.md](../../../src/advanced_visualization/D2_README.md) for compreh
 ### Basic Usage
 
 ```python
-from advanced_visualization.processor import process_advanced_viz_standardized_impl
+from advanced_visualization.processor import process_advanced_viz
 
-success = process_advanced_viz_standardized_impl(
+success = process_advanced_viz(
     target_dir=Path("input/gnn_files"),
     output_dir=Path("output/9_advanced_viz_output"),
     logger=logger,
@@ -239,7 +239,7 @@ success = process_advanced_viz_standardized_impl(
 ### Interactive Dashboard
 
 ```python
-success = process_advanced_viz_standardized_impl(
+success = process_advanced_viz(
     target_dir=Path("input/gnn_files"),
     output_dir=Path("output/9_advanced_viz_output"),
     logger=logger,
@@ -253,7 +253,7 @@ success = process_advanced_viz_standardized_impl(
 
 ```python
 # Generate only D2 diagrams
-success = process_advanced_viz_standardized_impl(
+success = process_advanced_viz(
     target_dir=Path("input/gnn_files"),
     output_dir=Path("output/9_advanced_viz_output"),
     logger=logger,

@@ -102,10 +102,10 @@ PYTHONPATH=src python -c "from execute.pytorch import check_pytorch; print(check
 
 ```bash
 # Render GNN to PyTorch script
-python src/11_render.py --target-dir input/gnn_files/ --framework pytorch
+python src/11_render.py --target-dir input/gnn_files/ --frameworks pytorch
 
 # Execute PyTorch script
-python src/12_execute.py --target-dir input/gnn_files/ --framework pytorch
+python src/12_execute.py --target-dir input/gnn_files/ --frameworks pytorch
 
 # Or use the MCP tool
 # Call: execute_gnn_model(path="...", framework="pytorch")

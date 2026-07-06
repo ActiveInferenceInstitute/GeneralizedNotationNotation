@@ -117,7 +117,7 @@ uv run python src/mcp/validate_tools.py
 
 | Test Class | What It Checks |
 |------------|---------------|
-| `TestMCPModuleDiscovery` | 22 modules × 2: module registered + `register_tools` is callable |
+| `TestMCPModuleDiscovery` | 32 modules × 2: module registered + `register_tools` is callable |
 | `TestMCPDomainTools` | Registered domain tools: tool callable + description not empty |
 | `TestMCPToolRealness` | No generic catch-all tools (`list_functions`, `call_function`) |
 | `TestMCPLoggingCoverage` | Every `mcp.py` calls `logger.info` in `register_tools` |
@@ -130,8 +130,11 @@ If your new tools follow the canonical pattern above, the audit will pass automa
 If you are adding a **brand-new** pipeline module (e.g., step 25+):
 
 1. Create `src/<module>/mcp.py` following the pattern above
-2. Register the module in `src/mcp/mcp_instance.py`'s `_discover_modules()` list
-3. Add a row to the `TestMCPModuleDiscovery` fixture in `src/tests/mcp/test_mcp_audit.py`
+2. No manual registration step is needed: `MCP.discover_modules()` in
+   `src/mcp/mcp.py` dynamically scans the `src/` directory at runtime for
+   any subdirectory containing an `mcp.py` file and loads it automatically
+   (there is no static module list or `mcp_instance.py` to edit)
+3. Add the module name to `EXPECTED_MODULES` in `src/tests/mcp/test_mcp_audit.py`
 4. Update `doc/gnn/mcp/tool_reference.md` with the new tools
 5. Create `doc/gnn/modules/NN_<module>.md` with an MCP Tools section
 
