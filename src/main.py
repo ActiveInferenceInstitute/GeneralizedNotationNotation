@@ -124,32 +124,9 @@ from utils.visual_logging import (
 STRUCTURED_LOGGING_AVAILABLE = True
 PipelineStep = tuple[str, str]
 
-PIPELINE_STEPS: tuple[PipelineStep, ...] = (
-    ("0_template.py", "Template initialization"),
-    ("1_setup.py", "Environment setup"),
-    ("2_tests.py", "Test suite execution"),
-    ("3_gnn.py", "GNN file processing"),
-    ("4_model_registry.py", "Model registry"),
-    ("5_type_checker.py", "Type checking"),
-    ("6_validation.py", "Validation"),
-    ("7_export.py", "Multi-format export"),
-    ("8_visualization.py", "Visualization"),
-    ("9_advanced_viz.py", "Advanced visualization"),
-    ("10_ontology.py", "Ontology processing"),
-    ("11_render.py", "Code rendering"),
-    ("12_execute.py", "Execution"),
-    ("13_llm.py", "LLM processing"),
-    ("14_ml_integration.py", "ML integration"),
-    ("15_audio.py", "Audio processing"),
-    ("16_analysis.py", "Analysis"),
-    ("17_integration.py", "Integration"),
-    ("18_security.py", "Security"),
-    ("19_research.py", "Research"),
-    ("20_website.py", "Website generation"),
-    ("21_mcp.py", "Model Context Protocol processing"),
-    ("22_gui.py", "GUI (Interactive GNN Constructor)"),
-    ("23_report.py", "Report generation"),
-    ("24_intelligent_analysis.py", "Intelligent pipeline analysis"),
+# Derive PIPELINE_STEPS from the canonical step registry
+from pipeline.step_registry import (
+    PIPELINE_STEPS_TUPLE as PIPELINE_STEPS,  # type: ignore[assignment]  # noqa: E402
 )
 
 

@@ -6,8 +6,9 @@ from typing import Any
 """
 Pipeline module for centralized configuration and utilities.
 """
+from pipeline.step_registry import STEP_METADATA_DICT as STEP_METADATA  # noqa: F401
+
 from .config import (
-    STEP_METADATA,
     PipelineConfig,
     StepConfig,
     get_output_dir_for_script,

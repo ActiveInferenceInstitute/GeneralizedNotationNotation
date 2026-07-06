@@ -19,73 +19,10 @@ except ImportError:
     yaml = cast(Any, None)
     _YAML_AVAILABLE = False
 
-# Pipeline configuration
-STEP_METADATA: dict[str, Any] = {
-    "0_template": {
-        "name": "Template",
-        "description": "Pipeline template and initialization",
-    },
-    "1_setup": {
-        "name": "Setup",
-        "description": "Environment setup and dependency installation",
-    },
-    "2_tests": {"name": "Tests", "description": "Comprehensive test suite execution"},
-    "3_gnn": {
-        "name": "GNN Processing",
-        "description": "GNN file discovery and parsing",
-    },
-    "4_model_registry": {
-        "name": "Model Registry",
-        "description": "Model registry management",
-    },
-    "5_type_checker": {"name": "Type Checker", "description": "GNN syntax validation"},
-    "6_validation": {
-        "name": "Validation",
-        "description": "Advanced validation and consistency",
-    },
-    "7_export": {"name": "Export", "description": "Multi-format export"},
-    "8_visualization": {
-        "name": "Visualization",
-        "description": "Graph and matrix visualization",
-    },
-    "9_advanced_viz": {
-        "name": "Advanced Visualization",
-        "description": "Advanced visualization",
-    },
-    "10_ontology": {
-        "name": "Ontology",
-        "description": "Active Inference Ontology processing",
-    },
-    "11_render": {
-        "name": "Render",
-        "description": "Code generation for simulation environments",
-    },
-    "12_execute": {
-        "name": "Execute",
-        "description": "Execute rendered simulation scripts",
-    },
-    "13_llm": {"name": "LLM", "description": "LLM-enhanced analysis"},
-    "14_ml_integration": {
-        "name": "ML Integration",
-        "description": "Machine learning integration",
-    },
-    "15_audio": {"name": "Audio", "description": "Audio generation"},
-    "16_analysis": {
-        "name": "Analysis",
-        "description": "Advanced analysis and statistics",
-    },
-    "17_integration": {"name": "Integration", "description": "System integration"},
-    "18_security": {"name": "Security", "description": "Security validation"},
-    "19_research": {"name": "Research", "description": "Research tools"},
-    "20_website": {"name": "Website", "description": "Static HTML website generation"},
-    "21_mcp": {"name": "MCP", "description": "Model Context Protocol processing"},
-    "22_gui": {"name": "GUI", "description": "Interactive GNN constructor"},
-    "23_report": {"name": "Report", "description": "Comprehensive report generation"},
-    "24_intelligent_analysis": {
-        "name": "Intelligent Analysis",
-        "description": "AI-powered pipeline analysis and optimization",
-    },
-}
+# Pipeline configuration derived from canonical step registry
+from pipeline.step_registry import (
+    STEP_METADATA_DICT as STEP_METADATA,  # noqa: E402,F401
+)
 
 
 class StepConfig:
@@ -213,41 +150,29 @@ def get_output_dir_for_script(script_name: str, base_output_dir: Path) -> Path:
         This function prevents nested directories by detecting if base_output_dir
         already ends with the expected output directory name.
     """
+    from pipeline.step_registry import output_dir_for_stem
+
     script_stem = Path(script_name).stem
     normalized = script_stem  # e.g., '7_export'
 
-    # Map stems to standardized numbered output directories
-    strict_mapping: dict[str, Any] = {
-        "0_template": base_output_dir / "0_template_output",
-        "1_setup": base_output_dir / "1_setup_output",
-        "2_tests": base_output_dir / "2_tests_output",
-        "3_gnn": base_output_dir / "3_gnn_output",
-        "4_model_registry": base_output_dir / "4_model_registry_output",
-        "5_type_checker": base_output_dir / "5_type_checker_output",
-        "6_validation": base_output_dir / "6_validation_output",
-        "7_export": base_output_dir / "7_export_output",
-        "8_visualization": base_output_dir / "8_visualization_output",
-        "9_advanced_viz": base_output_dir / "9_advanced_viz_output",
-        "10_ontology": base_output_dir / "10_ontology_output",
-        "11_render": base_output_dir / "11_render_output",
-        "12_execute": base_output_dir / "12_execute_output",
-        "13_llm": base_output_dir / "13_llm_output",
-        "14_ml_integration": base_output_dir / "14_ml_integration_output",
-        "15_audio": base_output_dir / "15_audio_output",
-        "16_analysis": base_output_dir / "16_analysis_output",
-        "17_integration": base_output_dir / "17_integration_output",
-        "18_security": base_output_dir / "18_security_output",
-        "19_research": base_output_dir / "19_research_output",
-        "20_website": base_output_dir / "20_website_output",
-        "21_mcp": base_output_dir / "21_mcp_output",
-        "22_gui": base_output_dir / "22_gui_output",
-        "23_report": base_output_dir / "23_report_output",
-        "24_intelligent_analysis": base_output_dir / "24_intelligent_analysis_output",
-    }
+    # Try exact match from step registry
+    mapped = output_dir_for_stem(normalized)
+    if mapped is not None:
+        result = base_output_dir / mapped
+        # Prevent nesting
+        if base_output_dir.name == mapped:
+            return base_output_dir
+        return result
 
     # Accept '.py' suffix keys as well
     if script_name.endswith(".py"):
         normalized = script_name[:-3]
+        mapped = output_dir_for_stem(normalized)
+        if mapped is not None:
+            result = base_output_dir / mapped
+            if base_output_dir.name == mapped:
+                return base_output_dir
+            return result
 
     # Get expected output directory name for this script
     expected_dir_name = f"{normalized}_output"
@@ -273,12 +198,6 @@ def get_output_dir_for_script(script_name: str, base_output_dir: Path) -> Path:
         base_output_dir = (
             actual_base.parent if actual_base.name.endswith("_output") else actual_base
         )
-
-    # Exact matches
-    if script_name in strict_mapping:
-        return cast("Path", strict_mapping[script_name])
-    if normalized in strict_mapping:
-        return cast("Path", strict_mapping[normalized])
 
     # Default recovery
     return base_output_dir / expected_dir_name

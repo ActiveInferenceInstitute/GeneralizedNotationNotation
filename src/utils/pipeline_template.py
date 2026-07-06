@@ -263,33 +263,8 @@ CommonModuleParams: dict[str, Any] = {
     "setup_core_only": bool,  # For setup: skip post-sync JAX/PyMDP self-test
 }
 
-# Standardized naming conventions for module functions
-STANDARD_MODULE_FUNCTION_NAMES: dict[str, Any] = {
-    "1_setup": "process_setup",
-    "2_tests": "run_tests",
-    "3_gnn": "process_gnn_files",
-    "4_model_registry": "process_model_registry",
-    "5_type_checker": "process_type_checking",
-    "6_validation": "process_validation",
-    "7_export": "process_export",
-    "8_visualization": "process_visualization",
-    "9_advanced_viz": "process_advanced_viz",
-    "10_ontology": "process_ontology",
-    "11_render": "process_render",
-    "12_execute": "process_execute",
-    "13_llm": "process_llm",
-    "14_ml_integration": "process_ml_integration",
-    "15_audio": "process_audio",
-    "16_analysis": "process_analysis",
-    "17_integration": "process_integration",
-    "18_security": "process_security",
-    "19_research": "process_research",
-    "20_website": "process_website",
-    "21_mcp": "process_mcp",
-    "22_gui": "process_gui",
-    "23_report": "process_report",
-    "24_intelligent_analysis": "process_intelligent_analysis",
-}
+# Standardized naming conventions for module functions — derived from canonical step registry
+from pipeline.step_registry import STANDARD_MODULE_FUNCTION_NAMES  # noqa: E402
 
 # Standard additional arguments for each step
 STEP_ADDITIONAL_ARGUMENTS: dict[str, Any] = {

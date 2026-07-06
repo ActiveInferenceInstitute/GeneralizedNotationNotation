@@ -225,8 +225,7 @@ def validate_matrix_permutation_metadata(metadata):
 
 validate_matrix_permutation_metadata(MATRIX_PERMUTATION_METADATA)
 
-print("🔬 DisCoPy Categorical Diagram Generation")
-print(f"📊 State Space: {{NUM_STATES}} states, {{NUM_OBSERVATIONS}} observations, {{NUM_ACTIONS}} actions")
+_logger = logging.getLogger(__name__)
 
 # Define basic types for Active Inference
 def define_types():

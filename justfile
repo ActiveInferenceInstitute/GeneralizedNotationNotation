@@ -156,3 +156,49 @@ setup-clean:
 validate-stack:
     PYTHONPATH=src uv run python -c "from utils.jax_stack_validation import verify_jax_pymdp_stack; \
         verify_jax_pymdp_stack(); print('✅ JAX + PyMDP stack OK')"
+
+# ─────────────────────────────────────────────
+# Performance
+# ─────────────────────────────────────────────
+
+# Run performance benchmark tests (pipeline performance group)
+bench:
+    uv run pytest src/tests/pipeline/test_pipeline_performance.py \
+        -v --tb=short \
+        -m "performance" \
+        --benchmark-save=baseline
+
+# Run performance tests and compare against saved baseline
+bench-compare:
+    uv run pytest src/tests/pipeline/test_pipeline_performance.py \
+        -v --tb=short \
+        -m "performance" \
+        --benchmark-compare=baseline
+
+# ─────────────────────────────────────────────
+# Step Registry
+# ─────────────────────────────────────────────
+
+# List all 25 pipeline steps from the canonical registry
+steps:
+    PYTHONPATH=src uv run python -c "
+from pipeline.step_registry import STEPS
+for s in STEPS:
+    tags = ','.join(sorted(s.tags))
+    print(f'{s.script_name:30s} {tags}')
+print()
+print(f'Total: {len(STEPS)} steps')
+print(f'Core:  {len([s for s in STEPS if \"core\" in s.tags])}')
+print(f'LLM:   {len([s for s in STEPS if \"llm\" in s.tags])}')
+"
+
+# Export step registry as JSON (useful for tooling)
+steps-json:
+    PYTHONPATH=src uv run python -c "
+import json
+from pipeline.step_registry import STEPS
+data = [{'script_name': s.script_name, 'description': s.description,
+         'module_function': s.module_function, 'tags': sorted(s.tags)}
+        for s in STEPS]
+print(json.dumps(data, indent=2))
+"

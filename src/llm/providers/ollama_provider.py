@@ -47,9 +47,9 @@ class OllamaProvider(BaseLLMProvider):
 
     DEFAULT_MODEL = DEFAULT_OLLAMA_MODEL
 
-    def __init__(self, **kwargs: Any) -> None:
+    def __init__(self, api_key: Optional[str] = None, **kwargs: Any) -> None:
         """Initialize the instance."""
-        super().__init__(api_key=None, **kwargs)
+        super().__init__(api_key=api_key, **kwargs)
         self.base_url = kwargs.get("base_url")  # optional custom host
         self.default_model_override = kwargs.get("default_model")
         self.default_max_tokens = kwargs.get("default_max_tokens", 256)

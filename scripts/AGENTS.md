@@ -29,3 +29,12 @@ The primary agents deployed in this module are:
 - All scripts must contain structured `argparse` implementations mapped for headless CI.
 - Orchestrators must implement explicit safety guardrails for resource-intensive operations.
 - Automated manifest generation is required for all batch processing studies.
+
+## Shared Utilities — `lib/`
+
+The [`lib/`](lib/) subdirectory provides shared utility functions used across multiple audit scripts:
+
+- [`lib/AGENTS.md`](lib/AGENTS.md) — Agent-facing documentation
+- [`lib/README.md`](lib/README.md) — Quick reference
+- [`lib/SPEC.md`](lib/SPEC.md) — Specification
+- [`lib/shared.py`](lib/shared.py) — `repo_root()`, `should_skip_path()`, `is_generated_output()`, `add_strict_flag()`, `exit_with_findings()`

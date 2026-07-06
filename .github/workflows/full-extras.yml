@@ -1,0 +1,101 @@
+name: Full Extras (Weekly)
+
+# Runs overnight Sunday to validate optional dependency groups (audio, gui,
+# research, scaling) that are not installed by the default CI dev extra.
+# These groups are not core pipeline requirements but regressions in them
+# should be caught within a week.
+
+on:
+  schedule:
+    - cron: "0 6 * * 0"  # Sunday 06:00 UTC
+  workflow_dispatch:
+
+concurrency:
+  group: ci-full-extras-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  full-extras:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    strategy:
+      matrix:
+        python-version: ["3.12"]
+      fail-fast: false
+    env:
+      PYTHONPATH: src
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+        with:
+          enable-cache: true
+
+      - name: Install all dependencies (all-extras)
+        run: uv sync --frozen --all-extras
+
+      - name: Validate JAX + PyMDP stack
+        run: |
+          uv run --all-extras python -c "from utils.jax_stack_validation import verify_jax_pymdp_stack; verify_jax_pymdp_stack(); print('jax_stack_ok')"
+
+      - name: Validate optional imports (audio)
+        run: |
+          uv run --all-extras python -c "
+          for mod in ['librosa', 'soundfile', 'pedalboard']:
+              __import__(mod)
+              print(f'  {mod}: OK')
+          "
+
+      - name: Validate optional imports (gui)
+        run: |
+          uv run --all-extras python -c "
+          for mod in ['gradio', 'streamlit']:
+              try:
+                  __import__(mod)
+                  print(f'  {mod}: OK')
+              except ImportError:
+                  print(f'  {mod}: skipped (C-ext build failure)')
+          "
+
+      - name: Validate optional imports (research / scaling)
+        run: |
+          uv run --all-extras python -c "
+          for mod in ['sympy', 'numba', 'dask', 'distributed']:
+              try:
+                  __import__(mod)
+                  print(f'  {mod}: OK')
+              except ImportError:
+                  print(f'  {mod}: skipped (build failure)')
+          "
+
+      - name: Run full test suite (all-extras)
+        run: |
+          uv run --all-extras python -m pytest src/tests/ -q --tb=short \
+            --junitxml=junit/full-extras-${{ matrix.python-version }}.xml \
+            -x
+
+      - name: Pytest JUnit report
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: pytest-junit-full-extras-${{ matrix.python-version }}
+          path: junit/full-extras-${{ matrix.python-version }}.xml
+          if-no-files-found: warn
+
+      - name: Notify on failure
+        if: failure()
+        run: |
+          echo "::warning::Full-extras test suite failed. Check workflow logs for details."

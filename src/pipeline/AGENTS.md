@@ -496,8 +496,18 @@ def get_pipeline_config_tool():
 
 
 ---
+
 ## Documentation
 - **[README](README.md)**: Module Overview
 - **[AGENTS](AGENTS.md)**: Agentic Workflows
 - **[SPEC](SPEC.md)**: Architectural Specification
 - **[SKILL](SKILL.md)**: Capability API
+
+## Step Registry — `step_registry.py`
+
+The canonical pipeline step registry lives in [`step_registry.py`](step_registry.py). Every other step list in the codebase derives from this single source of truth.
+
+- **Key types:** `StepInfo` (frozen dataclass), `STEPS` (ordered list of 25 entries).
+- **Lookup:** `step_for_name("11_render")`, `step_for_stem("11_render")`.
+- **Filtering:** `get_core_steps()` → 24 steps, `get_llm_steps()` → 1 step.
+- **Adding a new step:** Add one `StepInfo(...)` to `STEPS` — all downstream consumers update automatically.

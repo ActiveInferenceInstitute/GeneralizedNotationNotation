@@ -263,8 +263,14 @@ def start_server() -> Any:
 def get_module_info() -> dict:
     """Return module metadata for composability and MCP discovery."""
     return {
-        "name": "lsp",
         "version": __version__,
-        "description": "Language Server Protocol support for GNN files",
-        "features": FEATURES,
+        "description": "GNN Language Server Protocol implementation",
     }
+
+
+__all__ = [
+    "create_server",
+    "start_server",
+    "get_module_info",
+    "__version__",
+]

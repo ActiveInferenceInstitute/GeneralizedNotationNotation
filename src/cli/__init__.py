@@ -695,3 +695,11 @@ def get_module_info() -> dict:
         "description": "Unified command-line interface with subcommands",
         "features": FEATURES,
     }
+
+
+__all__ = [
+    "main",
+    "get_module_info",
+    "FEATURES",
+    "__version__",
+]
