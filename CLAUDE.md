@@ -37,6 +37,9 @@ just lint                    # Ruff lint
 just pipeline                # Full pipeline
 just render-health           # Check all 8 renderer backends
 just test-mod render         # Test a specific module
+just steps                   # List all 25 pipeline steps from step registry
+just bench                   # Run performance benchmarks
+just audit                   # Run documentation audit
 
 # Run tests
 pytest src/tests/ -v
@@ -82,6 +85,9 @@ All 25 pipeline steps follow a consistent pattern:
 
 ### 25-Step Pipeline (0-24)
 
+The canonical source of truth for all 25 steps is `src/pipeline/step_registry.py`
+(accessible via `PYTHONPATH=src uv run python -c "from pipeline.step_registry import STEPS; [print(f'{s.script_name:30s} tags={sorted(s.tags)}') for s in STEPS]"`).
+
 | Steps 0-9 (Core) | Steps 10-16 (Simulation) | Steps 17-24 (Output) |
 |------------------|--------------------------|----------------------|
 | 0: Template init | 10: Ontology | 17: Integration |
@@ -125,6 +131,7 @@ Step 12 (Execute) runs scripts for every framework (PyMDP, RxInfer.jl, ActiveInf
 
 | Path | Purpose |
 |------|---------|
+| `src/pipeline/step_registry.py` | Canonical 25-step pipeline registry (single source of truth) |
 | `src/main.py` | Main pipeline orchestrator |
 | `src/N_*.py` | Pipeline step scripts (0-24) |
 | `src/gnn/` | GNN parsing, discovery, validation |

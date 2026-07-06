@@ -2,26 +2,61 @@
 
 ## Purpose
 
-This folder hosts the explicit, stateless developer workflow validation agents responsible for maintaining continuous documentation compliance and performance benchmarking across the GNN ecosystem.
+This folder hosts the explicit, stateless developer workflow validation agents responsible for maintaining continuous documentation compliance, performance benchmarking, and pipeline orchestration across the GNN ecosystem.
 
 ## Components
 
-The primary agents deployed in this module are:
+### Audit & Compliance (6 scripts)
 
-- `check_gnn_doc_patterns.py` (Pattern Validation Agent): Recursively scans `.md` files to eradicate obsolete architectural references to staled imports (e.g., `gnn.parser`), retired routing, and retired file syntax. Operates defensively via CI implementations `--strict` enforcing non-zero process exits.
-- `check_maintained_doc_terms.py` (Maintained Documentation Terminology Agent): Scans maintained Markdown for exact retired PyMDP surface references and stale policy phrases while excluding generated output and archive paths.
-- `run_pymdp_gnn_scaling_analysis.py` (Study Orchestrator Agent v1.1.0): A thin orchestrator that programmatically generates configured GNN matrices (N×T parameter grids with controlled noise) and invokes the main `src/main.py` pipeline to conduct scientific scaling analysis. It features a **Visual Logger** for real-time progress tracking and a **preflight resource gate** to protect against O(n³) disk expansion.
+| Script | Purpose | Strict CI Gate |
+|--------|---------|:--------------:|
+| `check_repo_terminology.py` | Scans maintained source for banned terminology | ✅ `--strict` |
+| `check_maintained_doc_terms.py` | Scans maintained Markdown for stale framework terms | ✅ `--strict` |
+| `check_gnn_doc_patterns.py` | Scans `doc/` + `src/gnn/` for stale import paths, retired routing, and banned patterns | ✅ `--strict` |
+| `check_capability_contracts.py` | Validates capability-contract claims against measured codebase state | ✅ exit 1 on mismatch |
+| `check_manuscript_tokens.py` | Validates manuscript token values against generated variables | ✅ `--strict` |
+| `check_pomdp_gridworld_outputs.py` | End-to-end GridWorld output validity check for the canonical POMDP test case | ✅ exit 1 on mismatch |
 
-## PyMDP Scaling Contract (v1.2.0)
+### Pipeline Orchestration (7 scripts)
 
-- **Configuration**: Driven by `scripts/pymdp_scaling_config.yaml`. Supports `max_n`, `max_file_size_mb`, and `min_free_disk_mb` safety guards, plus **`matplotlib_headless`** (sets `MPLBACKEND=Agg` on pipeline subprocesses), **`gnn_serialize_preset`** (`full` | `minimal`, forwarded as `--serialize-preset`), and **`execution_benchmark_repeats`** (forwarded as `--execution-benchmark-repeats` when > 1).
-- **Visual Meta-Analysis**: Generates log-log scaling curves, runtime heatmaps, and accuracy-entropy correlation plots using a high-contrast scientific theme.
-- **Statistical Reporting**: Automatically fits scaling laws ($O(N^\alpha)$, $O(T^\beta)$) and calculates regression coefficients ($R^2$, $r$) for performance and quality metrics.
-- **Resource Gating**: Reports volume usage, shortfall, and planned total estimated bytes. Aligned in policy terms with **Pipeline Step 5** (type checker `GNNResourceEstimator`).
-- **Observability**: Generates a detailed `pymdp_scaling_run_manifest.json` recording effective configuration, resolved paths, planned grid cells, and phase statuses.
-- **Concurrency**: `execution_workers` supports parallel Step 12 execution. `distributed: true` enables Ray/Dask dispatch for cluster-style workloads.
-- **Composability**: Runs `3,11,12` and `17` as distinct phases to ensure integration reports are only published on successful execution.
-- **Output Isolation**: Uses a dedicated `pipeline_output_dir` (default: `output/pymdp_scaling_pipeline`) to avoid polluting the shared `output/` tree.
+| Script | Purpose | Delegates To |
+|--------|---------|:------------:|
+| `emit_run_manifest.py` | Thin CLI: emit durable v3 run manifests for a COMPLETED pipeline run | `pipeline.run_manifest` |
+| `generate_pipeline_container_plan.py` | Generate auditable container plan from pipeline config | `pipeline.pipeline_container_plan` |
+| `run_cross_framework_reliability.py` | Run profiled cross-framework reliability checks for maintained families | `pipeline.cross_framework_reliability` |
+| `run_model_family_acceptance.py` | Run model-family acceptance tests (non-resumable) | `pipeline.model_family_acceptance` |
+| `run_session_acceptance.py` | Run resumable, session-wrapped model-family acceptance | `pipeline.session_acceptance` |
+| `run_semantic_fidelity_gate.py` | Run semantic fidelity gate for maintained model families | `pipeline.semantic_fidelity` |
+| `run_v3_orchestration_acceptance.py` | End-to-end v3.0.0 orchestration acceptance gate (durable streams, run sessions, container plans) | `pipeline.*` |
+
+### Manuscript Figure Generation (7 scripts)
+
+| Script | Figure / Purpose |
+|--------|-----------------|
+| `manuscript_build_figures.py` | Build all manuscript figures (dispatches to backends) |
+| `manuscript_fig_backend_matrix.py` | Backend matrix heatmap figure |
+| `manuscript_fig_family_framework.py` | Model-family / framework compatibility figure |
+| `manuscript_fig_orchestration.py` | v3.0.0 orchestration architecture figure |
+| `manuscript_fig_pipeline_dag.py` | Pipeline DAG figure (25-step flow) |
+| `manuscript_fig_repo_metrics.py` | Repository metrics figure |
+| `manuscript_fig_triple_play.py` | Triple Play approach concept figure |
+
+### Performance & Analysis (3 scripts)
+
+| Script | Purpose |
+|--------|---------|
+| `run_pymdp_gnn_scaling_analysis.py` | Parameter grid scaling study (NxT) with visual meta-analysis and scaling-law fitting |
+| `pymdp_spec_generator.py` | Generate pymdp specification from config |
+| `z_generate_manuscript_variables.py` | Generate manuscript variable tokens from analysis outputs |
+
+## Shared Utilities — `lib/`
+
+The [`lib/`](lib/) subdirectory provides shared utility functions for multiple audit scripts:
+
+- `lib/shared.py` — `repo_root()`, `should_skip_path()`, `is_generated_output()`, `add_strict_flag()`, `exit_with_findings()`
+- [`lib/AGENTS.md`](lib/AGENTS.md) — Documentation
+- [`lib/README.md`](lib/README.md) — Quick reference
+- [`lib/SPEC.md`](lib/SPEC.md) — Specification
 
 ## Operational Standards
 
@@ -29,12 +64,4 @@ The primary agents deployed in this module are:
 - All scripts must contain structured `argparse` implementations mapped for headless CI.
 - Orchestrators must implement explicit safety guardrails for resource-intensive operations.
 - Automated manifest generation is required for all batch processing studies.
-
-## Shared Utilities — `lib/`
-
-The [`lib/`](lib/) subdirectory provides shared utility functions used across multiple audit scripts:
-
-- [`lib/AGENTS.md`](lib/AGENTS.md) — Agent-facing documentation
-- [`lib/README.md`](lib/README.md) — Quick reference
-- [`lib/SPEC.md`](lib/SPEC.md) — Specification
-- [`lib/shared.py`](lib/shared.py) — `repo_root()`, `should_skip_path()`, `is_generated_output()`, `add_strict_flag()`, `exit_with_findings()`
+- All scripts follow the **thin orchestrator pattern**: parse args -> delegate to `src/` module -> return exit code (0/1/2). No domain logic lives in scripts.
