@@ -134,12 +134,12 @@ def validate_pipeline_dependencies(mcp_instance_ref: Any) -> Dict[str, Any]:
         validation_result = validate_deps()
 
         # Additional analysis
-        dependency_graph: dict[Any, Any] = {}
-        missing_deps: list[Any] = []
-        circular_deps: list[Any] = []
+        dependency_graph: dict[str, list[Any]] = {}
+        missing_deps: list[dict[str, Any]] = []
+        circular_deps: list[dict[str, Any]] = []
 
         for step_name, metadata in STEP_METADATA.items():
-            deps = metadata.get("dependencies", [])
+            deps: list[Any] = metadata.get("dependencies", [])
             dependency_graph[step_name] = deps
 
             # Check for missing dependencies
