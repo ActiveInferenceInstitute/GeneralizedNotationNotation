@@ -11,7 +11,6 @@ from typing import Any, cast
 
 import numpy as np
 import pytest
-
 from analysis.processor import process_analysis
 from execute.processor import process_execute
 from gnn.pomdp_extractor import extract_pomdp_from_file
@@ -143,6 +142,7 @@ def test_gridworld_extraction_uses_canonical_dimensions() -> None:
     )
 
 
+@pytest.mark.skipif(not shutil.which("julia"), reason="Julia not available")
 @pytest.mark.integration
 def test_gridworld_render_helpers_use_canonical_framework_renderers(
     tmp_path: Path,

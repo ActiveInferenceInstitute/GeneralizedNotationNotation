@@ -197,6 +197,7 @@ import numpy as np
 # not by this script. This script focuses on circuit construction and data export.
 from pathlib import Path
 import json
+import logging
 
 # Model parameters extracted from GNN specification
 NUM_STATES = {num_states}

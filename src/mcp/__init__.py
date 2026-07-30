@@ -10,6 +10,7 @@ from typing import Any
 # -- Core API: the five classes and the instance factory most callers need ----------
 from .exceptions import (
     MCPError,
+    MCPToolExecutionError,
     MCPToolNotFoundError,
     MCPValidationError,
 )
@@ -31,6 +32,9 @@ from .server import MCPServer as _JSONRPCServer  # noqa: E402
 MCPServer = _JSONRPCServer
 JSONRPCServer = _JSONRPCServer
 
+# list_available_tools is an alias for get_available_tools
+list_available_tools = get_available_tools
+
 # -- Module metadata -----------------------------------------------------------------
 __version__ = "1.6.0"
 __author__ = "Active Inference Institute"
@@ -44,6 +48,9 @@ FEATURES: dict[str, Any] = {
     "server_implementation": True,
     "mcp_integration": True,
     "performance_monitoring": True,
+    "caching": True,
+    "rate_limiting": True,
+    "concurrent_control": True,
 }
 
 
@@ -78,8 +85,11 @@ __all__: list[str] = [
     "get_available_tools",
     # Exception classes (most common)
     "MCPError",
+    "MCPToolExecutionError",
     "MCPToolNotFoundError",
     "MCPValidationError",
+    # Aliases
+    "list_available_tools",
     # Metadata
     "FEATURES",
     "__version__",

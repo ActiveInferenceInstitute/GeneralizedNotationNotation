@@ -11,6 +11,7 @@ PROJECT_ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_SKIP_ALLOWLIST = {
     "src/tests/llm/test_llm_ollama.py",
     "src/tests/llm/test_llm_ollama_integration.py",
+    "src/tests/pipeline/test_pomdp_gridworld_cross_framework.py",
 }
 
 

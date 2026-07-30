@@ -42,7 +42,10 @@ if str(SRC_DIR) not in sys.path:
     except Exception:
         pass
 
-from utils.test_utils import (
+# Import from the *package-sibling* utils/ (not the local tests.utils pkg).
+# src/ is on sys.path via tests/__init__.py bootstrap, so "src.utils" resolves
+# to src/utils/ which is the intended source of test_utils.py.
+from src.utils.test_utils import (
     COVERAGE_TARGETS,
     PROJECT_ROOT,
     SRC_DIR,
