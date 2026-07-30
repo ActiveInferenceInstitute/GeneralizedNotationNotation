@@ -144,3 +144,8 @@ def get_core_steps() -> List[StepInfo]:
 def get_llm_steps() -> List[StepInfo]:
     """Return only LLM-tagged steps."""
     return [s for s in STEPS if "llm" in s.tags]
+
+
+def discover_steps() -> Dict[int, StepInfo]:
+    """Return a dict mapping step number (from script_stem) to StepInfo."""
+    return {int(s.script_stem.split("_")[0]): s for s in STEPS}

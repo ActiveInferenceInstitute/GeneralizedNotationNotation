@@ -32,8 +32,9 @@ from .server import MCPServer as _JSONRPCServer  # noqa: E402
 MCPServer = _JSONRPCServer
 JSONRPCServer = _JSONRPCServer
 
-# list_available_tools is an alias for get_available_tools
+# list_available_tools and list_available_resources are aliases for get_available_tools
 list_available_tools = get_available_tools
+list_available_resources = get_available_tools
 
 # -- Module metadata -----------------------------------------------------------------
 __version__ = "1.6.0"
@@ -90,6 +91,7 @@ __all__: list[str] = [
     "MCPValidationError",
     # Aliases
     "list_available_tools",
+    "list_available_resources",
     # Metadata
     "FEATURES",
     "__version__",

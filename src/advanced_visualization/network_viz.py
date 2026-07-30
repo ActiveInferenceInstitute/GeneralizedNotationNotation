@@ -267,7 +267,7 @@ def _generate_interactive_dashboard(
                 title="Variable Type Distribution",
             )
 
-            adj_matrix = np.zeros((num_vars, num_vars)) if np is not None else []
+            adj_matrix: Any = np.zeros((num_vars, num_vars)) if np is not None else []
             var_names = [v.get("name", f"v{i}") for i, v in enumerate(variables)]
 
             if np is not None:

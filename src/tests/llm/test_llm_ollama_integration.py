@@ -515,6 +515,7 @@ class TestOllamaIntegrationEnd2End:
         ollama_path = shutil.which("ollama")
         if not ollama_path:
             pytest.skip("ollama CLI not in PATH")
+        assert ollama_path is not None
         assert Path(ollama_path).exists()
 
     def test_ollama_service_running(self) -> Any:

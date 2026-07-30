@@ -279,7 +279,7 @@ known_first_party = ["src"]
 python_version = "3.11"
 mypy_path = "src"
 explicit_package_bases = true
-exclude = "(^src/output/|^src/__init__\\.py$)"
+exclude = "(^src/output/|^src/__init__\\.py$|^.venv/)"
 warn_return_any = true
 warn_unused_configs = false
 disallow_untyped_defs = true
@@ -327,6 +327,7 @@ module = [
     "requests.*",
     "scipy.*",
     "seaborn.*",
+    "sphinx.*",
     "sklearn.*",
     "soundfile.*",
     "streamlit.*",

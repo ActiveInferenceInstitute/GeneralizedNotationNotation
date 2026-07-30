@@ -9,7 +9,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   && rm -rf /var/lib/apt/lists/*
 
 # Install uv — pinned version for reproducible builds (supply-chain hardening)
-ARG UV_VERSION=0.7.8
+ARG UV_VERSION=0.12.0
 RUN curl -LsSf "https://astral.sh/uv/${UV_VERSION}/install.sh" | sh
 ENV PATH="/root/.local/bin:$PATH"
 

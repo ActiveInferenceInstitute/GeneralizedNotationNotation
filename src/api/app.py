@@ -347,7 +347,7 @@ if FASTAPI_AVAILABLE:
                     continue
 
                 step = steps[step_num]
-                ctx.trigger_step_start(step.name, step_num)
+                ctx.trigger_step_start(step.description, step_num)
 
                 step_start = time.time()
                 # Simulate execution time
@@ -355,7 +355,7 @@ if FASTAPI_AVAILABLE:
 
                 # Record step (actual execution would call step.func)
                 ctx.record_step(
-                    step.name,
+                    step.description,
                     step_num=step_num,
                     status="SUCCESS",
                     duration=time.time() - step_start,

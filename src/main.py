@@ -126,7 +126,7 @@ PipelineStep = tuple[str, str]
 
 # Derive PIPELINE_STEPS from the canonical step registry
 from pipeline.step_registry import (
-    PIPELINE_STEPS_TUPLE as PIPELINE_STEPS,  # type: ignore[assignment]  # noqa: E402
+    PIPELINE_STEPS_TUPLE as PIPELINE_STEPS,  # noqa: E402
 )
 
 
