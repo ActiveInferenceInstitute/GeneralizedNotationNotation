@@ -10,14 +10,15 @@ Authors: AXIOM Research Team
 Institution: VERSES AI / Active Inference Institute
 """
 
-import numpy as np
-import matplotlib.pyplot as plt
-import matplotlib.patches as patches
-from matplotlib.colors import ListedColormap
-import seaborn as sns
 from pathlib import Path
-from typing import List, Dict, Tuple, Optional, Any
+from typing import Any, Dict, List, Optional, Tuple
+
+import matplotlib.patches as patches
+import matplotlib.pyplot as plt
+import numpy as np
 import pandas as pd
+import seaborn as sns
+from matplotlib.colors import ListedColormap
 
 # Set style
 plt.style.use('seaborn-v0_8-darkgrid')
@@ -575,12 +576,12 @@ def test_visualization_utilities():
     s_slot[:, 5:7] = 0.05 + 0.1 * np.random.rand(K_slots, 2)  # Shapes
     z_slot_present = np.random.choice([True, False], K_slots, p=[0.8, 0.2])
     
-    fig1 = visualize_slots(s_slot, z_slot_present)
+    visualize_slots(s_slot, z_slot_present)
     print("✓ Slot visualization created")
     
     # Test reward history
     rewards = np.cumsum(np.random.randn(1000) * 0.1) + np.random.randn(1000) * 0.5
-    fig2 = plot_reward_history(rewards)
+    plot_reward_history(rewards)
     print("✓ Reward history plot created")
     
     # Test model complexity
@@ -594,7 +595,7 @@ def test_visualization_utilities():
             'total_parameters': 1000 + i * 20
         })
     
-    fig3 = plot_model_complexity(complexity_history)
+    plot_model_complexity(complexity_history)
     print("✓ Model complexity plot created")
     
     # Test performance metrics
@@ -608,7 +609,7 @@ def test_visualization_utilities():
             'memory_usage': 100 + i * 5 + 10 * np.random.randn()
         })
     
-    fig4 = plot_performance_metrics(performance_history)
+    plot_performance_metrics(performance_history)
     print("✓ Performance metrics plot created")
     
     plt.show()

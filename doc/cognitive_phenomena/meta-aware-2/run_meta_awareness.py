@@ -10,19 +10,20 @@ version that exactly replicates the original implementation functionality.
 Part of the GeneralizedNotationNotation (GNN) project.
 """
 
-import sys
 import argparse
-import traceback
+import sys
 import time
+import traceback
 from pathlib import Path
-from typing import Optional, List
+from typing import List, Optional
 
 # Add current directory to Python path for imports
 sys.path.append(str(Path(__file__).parent))
 
-from execution.simulation_runner import run_simulation_from_config, SimulationRunner
 from config.gnn_parser import load_gnn_config
+from execution.simulation_runner import SimulationRunner, run_simulation_from_config
 from simulation_logging.simulation_logger import create_logger
+
 
 def main():
     """Main entry point for meta-awareness simulation."""
@@ -206,6 +207,7 @@ def run_tests():
     """Run the test suite."""
     try:
         import unittest
+
         from tests.test_simulation import TestSimulation, TestValidationAgainstPaper
         
         print("=" * 60)
@@ -256,11 +258,11 @@ def print_results_summary(results: dict):
         total_figures = sum(len(paths) if isinstance(paths, dict) else 1 
                            for paths in figure_paths.values())
         print(f"  Figures generated: {total_figures}")
-        print(f"    Location: ./figures/")
+        print("    Location: ./figures/")
     
     # Results saved
-    print(f"  Results saved to: ./results/")
-    print(f"  Logs saved to: ./logs/")
+    print("  Results saved to: ./results/")
+    print("  Logs saved to: ./logs/")
     
     print()
     print("✓ Meta-awareness computational phenomenology simulation complete!")
@@ -354,8 +356,9 @@ def test_logging_system():
             print(f"  ❌ {log_type}: {log_path} (missing)")
     
     print("\n8. Testing memory and performance tracking...")
-    import psutil
     import os
+
+    import psutil
     process = psutil.Process(os.getpid())
     memory_mb = process.memory_info().rss / 1024 / 1024
     print(f"Current memory usage: {memory_mb:.2f} MB")

@@ -10,12 +10,13 @@ Authors: AXIOM Research Team
 Institution: VERSES AI / Active Inference Institute
 """
 
+from typing import Dict, List, Optional, Tuple, Union
+
 import numpy as np
-import scipy.stats as stats
 import scipy.special as special
-from scipy.optimize import minimize
-from typing import Tuple, Dict, List, Optional, Union
+import scipy.stats as stats
 from numpy.typing import NDArray
+from scipy.optimize import minimize
 
 # Type aliases for clarity
 Matrix = NDArray[np.float64]
@@ -50,7 +51,7 @@ class BayesianUtils:
                                   nu: float, psi: Matrix) -> float:
         """Log probability of Normal-Inverse-Wishart distribution."""
         
-        d = len(mu)
+        len(mu)
         
         # NIW log probability
         log_prob = 0.0
@@ -100,8 +101,8 @@ class VariationalInference:
                                       mixing_weights: Vector) -> Matrix:
         """Update assignment probabilities (E-step)."""
         
-        K = len(mixing_weights)
-        N = log_likelihoods.shape[0]
+        len(mixing_weights)
+        log_likelihoods.shape[0]
         
         # Add log mixing weights
         log_responsibilities = log_likelihoods + np.log(mixing_weights + 1e-10)
@@ -307,7 +308,7 @@ class StructureLearningUtils:
                 shape=predictive_scale,
                 df=predictive_df
             )
-        except:
+        except Exception:
             log_prob = -np.inf
         
         return log_prob
@@ -346,7 +347,7 @@ class StructureLearningUtils:
         """Compute variational free energy for a component."""
         
         # Simplified free energy computation
-        n = stats.get('n', 0)
+        stats.get('n', 0)
         log_likelihood = stats.get('log_likelihood', 0)
         
         # Prior contribution (simplified)
@@ -417,7 +418,7 @@ def test_mathematical_utilities():
     # Test variational inference
     print("Testing variational inference...")
     np.random.seed(42)
-    data = np.random.randn(100, 3)
+    np.random.randn(100, 3)
     log_likelihoods = np.random.randn(100, 5)
     mixing_weights = np.array([0.3, 0.2, 0.2, 0.15, 0.15])
     

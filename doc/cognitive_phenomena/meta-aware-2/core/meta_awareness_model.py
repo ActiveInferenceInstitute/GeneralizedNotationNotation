@@ -10,20 +10,22 @@ and is fully configurable through GNN specification files.
 Part of the meta-aware-2 "golden spike" GNN-specified executable implementation.
 """
 
-import numpy as np
-import time
-import psutil
-import os
-from typing import Dict, Any, List, Tuple, Optional, Union
-from dataclasses import dataclass, field
 import logging
-from pathlib import Path
+import os
 
 # Import configuration and utilities
 import sys
+import time
+from dataclasses import dataclass, field
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Tuple, Union
+
+import numpy as np
+import psutil
+
 sys.path.append(str(Path(__file__).parent.parent))
 
-from config.gnn_parser import ModelConfig, LevelConfig, load_gnn_config
+from config.gnn_parser import LevelConfig, ModelConfig, load_gnn_config
 from utils.math_utils import MathUtils
 
 logger = logging.getLogger(__name__)
@@ -284,7 +286,7 @@ class MetaAwarenessModel:
         if not validation_config.get('check_matrix_dimensions', True):
             return
         
-        tolerance = validation_config.get('tolerance', 1e-10)
+        validation_config.get('tolerance', 1e-10)
         
         # Check likelihood matrices
         for matrix_name, matrix in self.A_matrices.items():
@@ -534,7 +536,7 @@ class MetaAwarenessModel:
         
         # Compute attentional charge using observation posterior (not prior)
         O1_bar = self.state.obs_posteriors[perception_level][:, t]  # Use actual observation
-        O1_pred = self.state.obs_priors[perception_level][:, t]     # Predicted observation
+        self.state.obs_priors[perception_level][:, t]     # Predicted observation
         
         AtC = self.math_utils.compute_attentional_charge(
             O1_bar, A1_bar, 
@@ -717,7 +719,7 @@ class MetaAwarenessModel:
     def _compute_expected_free_energy(self, level_name: str, policy_idx: int, t: int) -> float:
         """Compute expected free energy for a specific policy."""
         # This is a simplified version - full implementation would depend on specific model structure
-        level_config = self.levels[level_name]
+        self.levels[level_name]
         
         # Get predicted states under policy
         if policy_idx == 0:  # Stay policy

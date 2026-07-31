@@ -12,26 +12,49 @@ Institution: VERSES AI / Active Inference Institute
 Based on: Heins et al. (2025) - arXiv:2505.24784
 """
 
-import numpy as np
-import matplotlib.pyplot as plt
-from pathlib import Path
-from typing import Dict, List, Tuple, Optional, Any
-from dataclasses import dataclass, field
-import logging
-from datetime import datetime
-import pickle
 import json
+import logging
+import pickle
+from dataclasses import dataclass, field
+from datetime import datetime
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Tuple
+
+import matplotlib.pyplot as plt
+import numpy as np
+from modules.identity_mixture_model import IdentityMixtureModel
+from modules.planning import ActiveInferencePlanning
+from modules.recurrent_mixture_model import RecurrentMixtureModel
 
 # Import AXIOM components
 from modules.slot_mixture_model import SlotMixtureModel
-from modules.identity_mixture_model import IdentityMixtureModel
-from modules.transition_mixture_model import TransitionMixtureModel
-from modules.recurrent_mixture_model import RecurrentMixtureModel
 from modules.structure_learning import StructureLearning
-from modules.planning import ActiveInferencePlanning
-from utils.math_utils import *
-from utils.visualization_utils import *
-from utils.performance_utils import *
+from modules.transition_mixture_model import TransitionMixtureModel
+from utils.math_utils import (
+    dirichlet_entropy,
+    dirichlet_expectation,
+    entropy,
+    expected_free_energy,
+    kl_divergence,
+    log_categorical,
+    log_multivariate_normal,
+    log_sum_exp,
+    normalize_log_probabilities,
+    softmax_policy,
+    stick_breaking_weights,
+)
+from utils.performance_utils import (
+    PerformanceTracker,
+    get_memory_stats,
+    record_metric,
+    track_operation,
+)
+from utils.visualization_utils import (
+    plot_model_complexity,
+    plot_performance_metrics,
+    plot_reward_history,
+    visualize_slots,
+)
 
 # Configure logging
 logging.basicConfig(
@@ -236,7 +259,7 @@ class AxiomAgent:
             
             # 3. Identity classification via iMM
             with self.performance_tracker.track_operation("identity_mixture_model"):
-                identity_assignments = self.imm.inference(self.s_slot[:, 2:7])  # Color + shape features
+                self.imm.inference(self.s_slot[:, 2:7])  # Color + shape features
             
             # 4. Context feature construction for rMM
             with self.performance_tracker.track_operation("context_features"):
@@ -381,7 +404,7 @@ class AxiomAgent:
         if not self.config.save_visualizations:
             return
         
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        datetime.now().strftime("%Y%m%d_%H%M%S")
         viz_dir = self.config.output_dir / "visualizations" / f"step_{self.timestep:06d}"
         viz_dir.mkdir(parents=True, exist_ok=True)
         

@@ -50,7 +50,9 @@ try:
         # pygls expose LanguageServer on pygls.server (older) or pygls.lsp.server (newer).
         # Mypy only sees the venv stub; suppress the attr-defined here — the
         # try/except handles both locations at runtime.
-        from pygls.server import LanguageServer  # type: ignore[attr-defined]  # noqa: E402
+        from pygls.server import (
+            LanguageServer,  # type: ignore[attr-defined]  # noqa: E402
+        )
     except ImportError:
         from pygls.lsp.server import LanguageServer
 

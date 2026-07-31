@@ -10,14 +10,15 @@ from Sandved-Smith et al. (2021) and custom analysis visualizations.
 Part of the meta-aware-2 "golden spike" GNN-specified executable implementation.
 """
 
-import numpy as np
-import matplotlib.pyplot as plt
-import matplotlib.patches as patches
-from matplotlib.colors import LinearSegmentedColormap, BoundaryNorm
-import seaborn as sns
-from pathlib import Path
-from typing import Dict, Any, List, Optional, Union, Tuple
 import json
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Tuple, Union
+
+import matplotlib.patches as patches
+import matplotlib.pyplot as plt
+import numpy as np
+import seaborn as sns
+from matplotlib.colors import BoundaryNorm, LinearSegmentedColormap
 
 # Set style for publication-quality figures
 plt.style.use('seaborn-v0_8-whitegrid')
@@ -423,7 +424,7 @@ class FigureGenerator:
         variabilities = [np.std(precision_values[name]) for name in level_names]
         colors = [self.level_colors.get(name, 'gray') for name in level_names]
         
-        bars = ax.bar(range(len(level_names)), variabilities, color=colors, alpha=0.7)
+        ax.bar(range(len(level_names)), variabilities, color=colors, alpha=0.7)
         ax.set_xticks(range(len(level_names)))
         ax.set_xticklabels([name.title() for name in level_names], rotation=45)
         ax.set_ylabel('Standard Deviation')
@@ -445,7 +446,7 @@ class FigureGenerator:
             # Add correlation values
             for i in range(len(level_names)):
                 for j in range(len(level_names)):
-                    text = ax.text(j, i, f'{correlation_matrix[i, j]:.2f}',
+                    ax.text(j, i, f'{correlation_matrix[i, j]:.2f}',
                                  ha="center", va="center", color="black")
             
             plt.colorbar(im, ax=ax, shrink=0.8)
@@ -565,14 +566,14 @@ class FigureGenerator:
         summary_text = "Free Energy Summary:\n\n"
         
         if all_G_values:
-            summary_text += f"Expected Free Energy (G):\n"
+            summary_text += "Expected Free Energy (G):\n"
             summary_text += f"  Mean: {np.mean(all_G_values):.3f}\n"
             summary_text += f"  Std:  {np.std(all_G_values):.3f}\n"
             summary_text += f"  Min:  {np.min(all_G_values):.3f}\n"
             summary_text += f"  Max:  {np.max(all_G_values):.3f}\n\n"
         
         if all_F_values:
-            summary_text += f"Variational Free Energy (F):\n"
+            summary_text += "Variational Free Energy (F):\n"
             summary_text += f"  Mean: {np.mean(all_F_values):.3f}\n"
             summary_text += f"  Std:  {np.std(all_F_values):.3f}\n"
             summary_text += f"  Min:  {np.min(all_F_values):.3f}\n"
@@ -664,9 +665,9 @@ class FigureGenerator:
         x = np.arange(len(categories))
         width = 0.35
         
-        bars1 = ax.bar(x - width/2, values_2level, width, label='2-Level', 
+        ax.bar(x - width/2, values_2level, width, label='2-Level', 
                       color=self.level_colors['attention'], alpha=0.7)
-        bars2 = ax.bar(x + width/2, values_3level, width, label='3-Level', 
+        ax.bar(x + width/2, values_3level, width, label='3-Level', 
                       color=self.level_colors['meta_awareness'], alpha=0.7)
         
         ax.set_ylabel('Value')
@@ -690,9 +691,9 @@ class FigureGenerator:
         
         x = np.arange(len(prec_categories))
         
-        bars1 = ax.bar(x - width/2, prec_values_2level, width, label='2-Level', 
+        ax.bar(x - width/2, prec_values_2level, width, label='2-Level', 
                       color=self.level_colors['attention'], alpha=0.7)
-        bars2 = ax.bar(x + width/2, prec_values_3level, width, label='3-Level', 
+        ax.bar(x + width/2, prec_values_3level, width, label='3-Level', 
                       color=self.level_colors['meta_awareness'], alpha=0.7)
         
         ax.set_ylabel('Precision (γ)')
@@ -944,7 +945,7 @@ if __name__ == "__main__":
     # Save analysis summary
     summary_path = generator.save_analysis_summary(sample_results)
     
-    print(f"Test figures generated:")
+    print("Test figures generated:")
     print(f"  Figure 7: {fig7_path}")
     print(f"  Figure 10: {fig10_path}")
     print(f"  Figure 11: {fig11_path}")

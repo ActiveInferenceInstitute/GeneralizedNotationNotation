@@ -6,10 +6,12 @@ This script tests the extracted visualization utilities to ensure
 they work correctly without requiring the full PyMDP simulation.
 """
 
-import numpy as np
-from pathlib import Path
 import tempfile
+from pathlib import Path
+
+import numpy as np
 from pymdp_gridworld_visualizer import GridworldVisualizer, create_visualizer
+
 
 def test_visualization():
     """Test visualization utilities"""
@@ -45,7 +47,7 @@ def test_visualization():
         
         # Test factory function
         try:
-            visualizer2 = create_visualizer(grid_layout, temp_path, show_plots=False)
+            create_visualizer(grid_layout, temp_path, show_plots=False)
             print("✓ Successfully created visualizer using factory function")
         except Exception as e:
             print(f"✗ Factory function failed: {e}")

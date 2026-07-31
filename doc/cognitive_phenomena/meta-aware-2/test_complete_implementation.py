@@ -15,20 +15,21 @@ This test suite validates:
 - Performance meets standards
 """
 
-import numpy as np
-import matplotlib.pyplot as plt
-import unittest
 import json
 import time
+import unittest
 from pathlib import Path
-from typing import Dict, Any, List
+from typing import Any, Dict, List
 
+import matplotlib.pyplot as plt
+import numpy as np
 from config.gnn_parser import load_gnn_config
 from core.meta_awareness_model import MetaAwarenessModel
 from execution.simulation_runner import SimulationRunner
-from visualization.figure_generator import FigureGenerator
 from utils.math_utils import MathUtils
 from verification import PaperVerification
+from visualization.figure_generator import FigureGenerator
+
 
 class TestCompleteImplementation(unittest.TestCase):
     """Comprehensive test suite for complete meta-aware-2 implementation."""
@@ -307,7 +308,7 @@ class TestCompleteImplementation(unittest.TestCase):
         # Benchmark figure generation
         figure_gen = FigureGenerator(output_dir=self.output_dir)
         start_time = time.time()
-        fig_path = figure_gen.generate_figure_7(results, "performance_test")
+        figure_gen.generate_figure_7(results, "performance_test")
         figure_time = time.time() - start_time
         
         self.assertLess(figure_time, 5.0)  # 5 seconds max
@@ -387,13 +388,22 @@ class TestCompleteImplementation(unittest.TestCase):
         
         # Import convenience functions
         from utils.math_utils import (
-            softmax, softmax_dim2, normalise, normalize,
-            precision_weighted_likelihood, bayesian_model_average,
-            compute_attentional_charge, expected_free_energy,
-            variational_free_energy, update_precision_beliefs,
-            policy_posterior, discrete_choice, generate_oddball_sequence,
-            setup_transition_matrices, setup_likelihood_matrices,
-            compute_entropy_terms
+            bayesian_model_average,
+            compute_attentional_charge,
+            compute_entropy_terms,
+            discrete_choice,
+            expected_free_energy,
+            generate_oddball_sequence,
+            normalise,
+            normalize,
+            policy_posterior,
+            precision_weighted_likelihood,
+            setup_likelihood_matrices,
+            setup_transition_matrices,
+            softmax,
+            softmax_dim2,
+            update_precision_beliefs,
+            variational_free_energy,
         )
         
         # Test that they all work
@@ -434,15 +444,15 @@ def run_comprehensive_test():
     
     # Print summary
     print(f"\n{'='*80}")
-    print(f"Test Summary:")
+    print("Test Summary:")
     print(f"Tests run: {result.testsRun}")
     print(f"Failures: {len(result.failures)}")
     print(f"Errors: {len(result.errors)}")
     
     if result.wasSuccessful():
-        print(f"✓ ALL TESTS PASSED! Meta-aware-2 implementation is complete and accurate.")
+        print("✓ ALL TESTS PASSED! Meta-aware-2 implementation is complete and accurate.")
     else:
-        print(f"⚠ Some tests failed. See details above.")
+        print("⚠ Some tests failed. See details above.")
     
     print(f"{'='*80}")
     
@@ -475,7 +485,7 @@ def demo_simulation_results():
             precision = results['precision_values']['perception']
             print(f"Precision range: [{np.min(precision):.3f}, {np.max(precision):.3f}]")
         
-        print(f"Simulation completed successfully ✓")
+        print("Simulation completed successfully ✓")
     
     print(f"\n{'='*80}")
     print("All simulations match expected patterns from original implementation!")

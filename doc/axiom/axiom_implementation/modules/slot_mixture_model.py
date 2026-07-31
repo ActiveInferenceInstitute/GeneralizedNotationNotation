@@ -6,11 +6,12 @@ Implements the sMM from the AXIOM architecture, performing object-centric
 decomposition of pixel observations into K competing object slots.
 """
 
-import numpy as np
-from typing import Tuple, Dict, Any, Optional
-from scipy.stats import multivariate_normal
-from scipy.special import logsumexp
 import logging
+from typing import Any, Dict, Optional, Tuple
+
+import numpy as np
+from scipy.special import logsumexp
+from scipy.stats import multivariate_normal
 
 logger = logging.getLogger(__name__)
 

@@ -6,10 +6,11 @@ Implements the tMM from the AXIOM architecture, modeling object dynamics
 as piecewise linear trajectories with switching linear dynamical systems.
 """
 
-import numpy as np
-from typing import Tuple, Dict, Any, Optional
-from scipy.stats import multivariate_normal
 import logging
+from typing import Any, Dict, Optional, Tuple
+
+import numpy as np
+from scipy.stats import multivariate_normal
 
 logger = logging.getLogger(__name__)
 

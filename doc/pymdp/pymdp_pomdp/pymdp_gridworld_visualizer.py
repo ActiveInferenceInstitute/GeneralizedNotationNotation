@@ -17,13 +17,15 @@ Author: GNN PyMDP Integration
 Date: 2024
 """
 
-import numpy as np
-import matplotlib.pyplot as plt
-import matplotlib.patches as patches
-import seaborn as sns
-from pathlib import Path
-from typing import Dict, List, Tuple, Optional, Any
 import warnings
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Tuple
+
+import matplotlib.patches as patches
+import matplotlib.pyplot as plt
+import numpy as np
+import seaborn as sns
+
 warnings.filterwarnings('ignore')
 
 
@@ -136,7 +138,7 @@ class GridworldVisualizer:
         # Add text annotations
         for i in range(self.grid_size):
             for j in range(self.grid_size):
-                text = ax.text(j, i, f'{belief_grid[i, j]:.2f}',
+                ax.text(j, i, f'{belief_grid[i, j]:.2f}',
                              ha="center", va="center", color="white", fontsize=8)
         
         ax.set_title(title, fontsize=14, fontweight='bold')
@@ -357,7 +359,7 @@ class GridworldVisualizer:
             
             belief_grid = belief_traces[step].reshape(self.grid_size, self.grid_size)
             
-            im = ax.imshow(belief_grid, cmap='viridis', aspect='equal', vmin=0, vmax=1)
+            ax.imshow(belief_grid, cmap='viridis', aspect='equal', vmin=0, vmax=1)
             ax.set_title(f'Step {step}', fontsize=10)
             ax.set_xticks([])
             ax.set_yticks([])
@@ -445,12 +447,12 @@ class GridworldVisualizer:
             
             # Plot average expected free energy
             ax3_twin = ax3.twinx()
-            line1 = ax3.plot(time_steps, avg_efe, 'g-', linewidth=2, alpha=0.7, label='Avg EFE')
+            ax3.plot(time_steps, avg_efe, 'g-', linewidth=2, alpha=0.7, label='Avg EFE')
             
             # Plot selected actions as bars (adjust for length mismatch)
             action_time_steps = range(min(len(time_steps), len(actions)))
             action_values = actions[:len(action_time_steps)]
-            bars = ax3_twin.bar(action_time_steps, action_values, alpha=0.5, color='orange', label='Actions')
+            ax3_twin.bar(action_time_steps, action_values, alpha=0.5, color='orange', label='Actions')
             
             ax3.set_title('Policy Analysis', fontweight='bold')
             ax3.set_xlabel('Time Step')
@@ -516,7 +518,7 @@ class GridworldVisualizer:
             # Add grid and values
             for i in range(self.grid_size):
                 for j in range(self.grid_size):
-                    text = ax6.text(j, i, f'{final_beliefs[i, j]:.2f}',
+                    ax6.text(j, i, f'{final_beliefs[i, j]:.2f}',
                                    ha="center", va="center", color="white", fontsize=8)
             
             # Mark final position

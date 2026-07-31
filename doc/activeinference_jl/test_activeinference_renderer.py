@@ -4,8 +4,8 @@ Standalone test script for ActiveInference.jl renderer.
 This script tests the renderer without importing the problematic numpy-dependent modules.
 """
 
-import sys
 import json
+import sys
 from pathlib import Path
 
 # Add src directory to Python path (from doc/activeinference_jl location)
@@ -42,9 +42,9 @@ def test_activeinference_renderer():
     try:
         # Import only the ActiveInference.jl renderer (avoiding numpy)
         from render.activeinference_jl.activeinference_renderer import (
-            render_gnn_to_activeinference_jl,
             extract_model_info,
-            generate_activeinference_script
+            generate_activeinference_script,
+            render_gnn_to_activeinference_jl,
         )
         
         print("✅ Successfully imported ActiveInference.jl renderer")
@@ -52,7 +52,7 @@ def test_activeinference_renderer():
         # Test model info extraction
         print("\n🔧 Testing model info extraction...")
         model_info = extract_model_info(sample_gnn_spec)
-        print(f"✅ Extracted model info:")
+        print("✅ Extracted model info:")
         print(f"   - Name: {model_info['name']}")
         print(f"   - States: {model_info['n_states']}")
         print(f"   - Observations: {model_info['n_observations']}")

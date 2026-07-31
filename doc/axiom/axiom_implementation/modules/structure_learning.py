@@ -6,9 +6,10 @@ Implements online structure learning with component expansion and
 Bayesian Model Reduction (BMR) for AXIOM mixture models.
 """
 
-import numpy as np
-from typing import Dict, Any, List, Tuple
 import logging
+from typing import Any, Dict, List, Tuple
+
+import numpy as np
 
 logger = logging.getLogger(__name__)
 

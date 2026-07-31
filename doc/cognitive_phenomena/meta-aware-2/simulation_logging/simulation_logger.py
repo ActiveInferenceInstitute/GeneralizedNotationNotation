@@ -10,15 +10,17 @@ the meta-awareness computational phenomenology pipeline.
 Part of the meta-aware-2 "golden spike" GNN-specified executable implementation.
 """
 
+import json
 import logging
 import sys
-import json
 import time
+from dataclasses import asdict, dataclass
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, Any, Optional, Union, List
-from dataclasses import dataclass, asdict
+from typing import Any, Dict, List, Optional, Union
+
 import numpy as np
+
 
 @dataclass
 class SimulationMetrics:

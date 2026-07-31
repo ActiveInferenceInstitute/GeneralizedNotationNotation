@@ -7,8 +7,8 @@ Original file is located at
     https://colab.research.google.com/drive/1IiMWXRF3tGbVh9Ywm0LuD_Lmurvta04Q
 """
 
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
 from google.colab import files
 
 
@@ -66,10 +66,10 @@ X1bar = np.zeros((2,T))     ### perception posterior (standard vs oddball)
 
 O = np.zeros(T)             ### observations (standard vs oddball)
 
-O[int(T/5)]=1;              ### generative process determined by experimenter
-O[int(2*T/5)]=1;              ### generative process determined by experimenter
-O[int(3*T/5)]=1;              ### generative process determined by experimenter
-O[int(4*T/5)]=1;              ### generative process determined by experimenter
+O[int(T/5)]=1              ### generative process determined by experimenter
+O[int(2*T/5)]=1              ### generative process determined by experimenter
+O[int(3*T/5)]=1              ### generative process determined by experimenter
+O[int(4*T/5)]=1              ### generative process determined by experimenter
 
 
 O1 = np.zeros((2,T))        ### observation prior (standard vs oddball)
@@ -345,10 +345,10 @@ X1bar = np.zeros((2,T))     ### perception posterior (standard vs oddball)
 
 O = np.zeros(T)             ### observations (standard vs oddball)
 
-O[int(T/5)]=1;              ### generative process determined by experimenter
-O[int(2*T/5)]=1;              ### generative process determined by experimenter
-O[int(3*T/5)]=1;              ### generative process determined by experimenter
-O[int(4*T/5)]=1;              ### generative process determined by experimenter
+O[int(T/5)]=1              ### generative process determined by experimenter
+O[int(2*T/5)]=1              ### generative process determined by experimenter
+O[int(3*T/5)]=1              ### generative process determined by experimenter
+O[int(4*T/5)]=1              ### generative process determined by experimenter
 
 
 O1 = np.zeros((2,T))        ### observation prior (standard vs oddball)

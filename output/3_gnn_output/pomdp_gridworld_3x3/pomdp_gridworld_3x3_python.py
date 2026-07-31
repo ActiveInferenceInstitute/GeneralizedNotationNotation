@@ -4,8 +4,10 @@ Discrete 3x3 GridWorld POMDP for strict cross-framework validation. The model ha
 Generated: 2026-06-18T09:04:36.163178
 """
 
+from typing import Any, Dict, List
+
 import numpy as np
-from typing import Dict, List, Any
+
 
 class POMDPGridWorld3x3Model:
     """GNN Model: POMDP GridWorld 3x3"""

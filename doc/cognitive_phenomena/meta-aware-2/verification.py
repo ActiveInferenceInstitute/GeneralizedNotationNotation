@@ -10,18 +10,18 @@ This module ensures exact correspondence with the paper's computational methods,
 parameter values, and expected behaviors.
 """
 
-import numpy as np
-import matplotlib.pyplot as plt
-from typing import Dict, Any, List, Tuple, Optional
-from pathlib import Path
 import json
 import logging
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Tuple
 
+import matplotlib.pyplot as plt
+import numpy as np
 from config.gnn_parser import load_gnn_config
 from core.meta_awareness_model import MetaAwarenessModel
 from execution.simulation_runner import SimulationRunner
-from utils.math_utils import MathUtils
 from simulation_logging.simulation_logger import create_logger
+from utils.math_utils import MathUtils
 
 logger = logging.getLogger(__name__)
 
@@ -536,7 +536,6 @@ class PaperVerification:
         baseline_mw = self._analyze_mind_wandering(baseline_results)
         
         # Test with modified precision bounds
-        modified_config = self.config
         # This is a simplified test - in practice you'd create new configs
         
         return {
@@ -677,7 +676,7 @@ if __name__ == "__main__":
     
     report = run_verification()
     
-    print(f"\nVerification Summary:")
+    print("\nVerification Summary:")
     print(f"Total tests: {report['summary']['total_tests']}")
     print(f"Passed tests: {report['summary']['passed_tests']}")
     print(f"Success rate: {report['summary']['success_rate']:.1%}")
@@ -688,4 +687,4 @@ if __name__ == "__main__":
     else:
         print(f"\n⚠ {report['summary']['total_tests'] - report['summary']['passed_tests']} tests failed or incomplete")
     
-    print(f"\nDetailed report saved to: verification_report.json") 
+    print("\nDetailed report saved to: verification_report.json") 

@@ -14,17 +14,19 @@ import sys
 import time
 import traceback
 from pathlib import Path
-from typing import Dict, Any, Optional, Union, List
+from typing import Any, Dict, List, Optional, Union
+
 import numpy as np
 
 # Add parent directory to path for imports
 sys.path.append(str(Path(__file__).parent.parent))
 
-from config.gnn_parser import load_gnn_config, ModelConfig
+from config.gnn_parser import ModelConfig, load_gnn_config
 from core.meta_awareness_model import MetaAwarenessModel
 from simulation_logging.simulation_logger import SimulationLogger, create_logger
-from visualization.figure_generator import FigureGenerator
 from utils.math_utils import MathUtils
+from visualization.figure_generator import FigureGenerator
+
 
 class SimulationRunner:
     """
@@ -653,7 +655,7 @@ if __name__ == "__main__":
             log_level=args.log_level
         )
         
-        print(f"Simulation completed successfully!")
+        print("Simulation completed successfully!")
         print(f"Results saved to: {args.output}")
         print(f"Total duration: {results['execution_info']['total_duration']:.2f} seconds")
         

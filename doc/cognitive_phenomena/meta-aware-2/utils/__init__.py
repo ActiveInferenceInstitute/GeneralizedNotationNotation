@@ -5,7 +5,9 @@ to avoid import errors when running broader repository tests.
 """
 
 import numpy as _np
+
 from .math_utils import MathUtils
+
 
 def softmax(x):
     x = _np.asarray(x, dtype=float)

@@ -9,16 +9,18 @@ Authors: AXIOM Research Team
 Institution: VERSES AI / Active Inference Institute
 """
 
-import time
-import psutil
-import threading
-from contextlib import contextmanager
-from typing import Dict, List, Optional, Any, Union
-from dataclasses import dataclass, field
-from collections import defaultdict, deque
-import numpy as np
 import json
+import threading
+import time
+from collections import defaultdict, deque
+from contextlib import contextmanager
+from dataclasses import dataclass, field
 from pathlib import Path
+from typing import Any, Dict, List, Optional, Union
+
+import numpy as np
+import psutil
+
 
 @dataclass
 class PerformanceMetrics:
@@ -504,7 +506,7 @@ def benchmark_matrix_operations(size: int = 1000, iterations: int = 10):
     
     start_time = time.time()
     for _ in range(iterations):
-        C = A @ B
+        A @ B
     results['matrix_multiply_time'] = (time.time() - start_time) / iterations
     
     # Eigenvalue decomposition
@@ -516,7 +518,7 @@ def benchmark_matrix_operations(size: int = 1000, iterations: int = 10):
     # Matrix inversion
     start_time = time.time()
     for _ in range(iterations):
-        A_inv = np.linalg.inv(A + 1e-6 * np.eye(size))
+        np.linalg.inv(A + 1e-6 * np.eye(size))
     results['matrix_inverse_time'] = (time.time() - start_time) / iterations
     
     return results
@@ -524,7 +526,7 @@ def benchmark_matrix_operations(size: int = 1000, iterations: int = 10):
 def benchmark_bayesian_inference(n_data: int = 1000, n_components: int = 10, iterations: int = 5):
     """Benchmark Bayesian inference operations."""
     
-    from .math_utils import VariationalInference, BayesianUtils
+    from .math_utils import BayesianUtils, VariationalInference
     
     results = {}
     
@@ -537,7 +539,7 @@ def benchmark_bayesian_inference(n_data: int = 1000, n_components: int = 10, ite
     
     start_time = time.time()
     for _ in range(iterations):
-        responsibilities = VariationalInference.update_assignment_probabilities(
+        VariationalInference.update_assignment_probabilities(
             log_likelihoods, mixing_weights
         )
     results['vi_estep_time'] = (time.time() - start_time) / iterations

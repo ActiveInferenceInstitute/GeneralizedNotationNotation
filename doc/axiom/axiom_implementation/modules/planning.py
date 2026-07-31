@@ -6,9 +6,10 @@ Implements active inference planning using expected free energy
 minimization for AXIOM agent control.
 """
 
-import numpy as np
-from typing import Dict, Any, List, Tuple, Optional
 import logging
+from typing import Any, Dict, List, Optional, Tuple
+
+import numpy as np
 
 logger = logging.getLogger(__name__)
 
@@ -199,7 +200,7 @@ class ActiveInferencePlanning:
             _, dynamics_predictions, reward_prediction = self.models['rmm'].inference(
                 f_continuous, d_discrete, action, 0.0
             )
-        except:
+        except Exception:
             # Fallback if rMM inference fails
             dynamics_predictions = np.ones((s_slot.shape[0], self.models['tmm'].L_active)) / self.models['tmm'].L_active
             reward_prediction = np.random.normal(0, 0.1)
@@ -207,7 +208,7 @@ class ActiveInferencePlanning:
         # Apply dynamics using tMM
         try:
             s_slot_next = self.models['tmm'].inference(s_slot, dynamics_predictions)
-        except:
+        except Exception:
             # Fallback dynamics
             s_slot_next = s_slot + np.random.normal(0, 0.01, s_slot.shape)
             s_slot_next = np.clip(s_slot_next, 0, 1)  # Keep in bounds

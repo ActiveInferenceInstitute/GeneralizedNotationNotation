@@ -6,17 +6,19 @@ This script tests the JSON serialization fixes for numpy types
 that were causing the original PyMDP simulation to fail.
 """
 
-import numpy as np
 import json
-from pathlib import Path
-import tempfile
 import shutil
+import tempfile
+from pathlib import Path
+
+import numpy as np
 from pymdp_utils import (
+    clean_trace_for_serialization,
     convert_numpy_for_json,
     safe_json_dump,
-    clean_trace_for_serialization,
-    save_simulation_results
+    save_simulation_results,
 )
+
 
 def test_numpy_serialization():
     """Test numpy type serialization that was causing the original error"""
@@ -49,7 +51,7 @@ def test_numpy_serialization():
     
     # Test that it's now JSON serializable
     try:
-        json_str = json.dumps(converted)
+        json.dumps(converted)
         print("✓ Successfully converted to JSON string")
     except Exception as e:
         print(f"✗ JSON conversion failed: {e}")
@@ -61,7 +63,7 @@ def test_numpy_serialization():
     print(f"Cleaned trace keys: {list(cleaned.keys())}")
     
     try:
-        json_str = json.dumps(cleaned)
+        json.dumps(cleaned)
         print("✓ Successfully cleaned and converted to JSON")
     except Exception as e:
         print(f"✗ Cleaned trace JSON conversion failed: {e}")
@@ -80,7 +82,7 @@ def test_numpy_serialization():
             
             # Try to load it back
             with open(test_file, 'r') as f:
-                loaded_data = json.load(f)
+                json.load(f)
             print("✓ Successfully loaded back from JSON")
         else:
             print("✗ Failed to save JSON file")
@@ -97,7 +99,7 @@ def test_numpy_serialization():
     
     converted_metrics = convert_numpy_for_json(test_metrics)
     try:
-        json_str = json.dumps(converted_metrics)
+        json.dumps(converted_metrics)
         print("✓ Performance metrics successfully serialized")
     except Exception as e:
         print(f"✗ Performance metrics serialization failed: {e}")

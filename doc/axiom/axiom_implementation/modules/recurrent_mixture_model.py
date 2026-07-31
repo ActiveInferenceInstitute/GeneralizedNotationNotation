@@ -6,10 +6,11 @@ Implements the rMM from the AXIOM architecture, modeling dependencies
 between objects, actions, and rewards for sparse interaction modeling.
 """
 
-import numpy as np
-from typing import Tuple, Dict, Any, Optional
-from scipy.stats import multivariate_normal, dirichlet
 import logging
+from typing import Any, Dict, Optional, Tuple
+
+import numpy as np
+from scipy.stats import dirichlet, multivariate_normal
 
 logger = logging.getLogger(__name__)
 

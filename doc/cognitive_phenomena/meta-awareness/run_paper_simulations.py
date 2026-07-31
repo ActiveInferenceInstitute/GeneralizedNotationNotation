@@ -13,28 +13,30 @@ https://doi.org/10.1093/nc/niab018
 Single entry point to generate all paper figures and verify implementation accuracy.
 """
 
-import numpy as np
-import matplotlib.pyplot as plt
 import os
-from typing import Dict, Any
+from typing import Any, Dict
+
+import matplotlib.pyplot as plt
+import numpy as np
 
 # Import our implementation modules
 from sandved_smith_2021 import (
-    SandvedSmithModel, 
-    run_figure_7_simulation, 
-    run_figure_10_simulation, 
-    run_figure_11_simulation
-)
-from visualizations import (
-    plot_figure_7, 
-    plot_figure_10, 
-    plot_figure_11,
-    plot_precision_dynamics,
-    plot_free_energy_dynamics,
-    save_all_figures,
-    display_results_summary
+    SandvedSmithModel,
+    run_figure_7_simulation,
+    run_figure_10_simulation,
+    run_figure_11_simulation,
 )
 from test_implementation import run_comprehensive_test
+from visualizations import (
+    display_results_summary,
+    plot_figure_7,
+    plot_figure_10,
+    plot_figure_11,
+    plot_free_energy_dynamics,
+    plot_precision_dynamics,
+    save_all_figures,
+)
+
 
 def verify_implementation():
     """Run comprehensive verification of implementation accuracy."""
@@ -79,8 +81,8 @@ def reproduce_figure_10():
     fig = plot_figure_10(results, save_path="figures_fig10/figure_10.png")
     
     # Create additional analysis figures
-    fig_precision = plot_precision_dynamics(results, save_path="figures_fig10/precision_dynamics.png")
-    fig_free_energy = plot_free_energy_dynamics(results, save_path="figures_fig10/free_energy_dynamics.png")
+    plot_precision_dynamics(results, save_path="figures_fig10/precision_dynamics.png")
+    plot_free_energy_dynamics(results, save_path="figures_fig10/free_energy_dynamics.png")
     
     # Display results summary
     display_results_summary(results)
@@ -101,8 +103,8 @@ def reproduce_figure_11():
     fig = plot_figure_11(results, save_path="figures_fig11/figure_11.png")
     
     # Create additional analysis figures
-    fig_precision = plot_precision_dynamics(results, save_path="figures_fig11/precision_dynamics.png")
-    fig_free_energy = plot_free_energy_dynamics(results, save_path="figures_fig11/free_energy_dynamics.png")
+    plot_precision_dynamics(results, save_path="figures_fig11/precision_dynamics.png")
+    plot_free_energy_dynamics(results, save_path="figures_fig11/free_energy_dynamics.png")
     
     # Display results summary
     display_results_summary(results)
@@ -132,7 +134,7 @@ def compare_models():
     focused_2level = np.mean(results_2level['x2'] == 0) * 100
     focused_3level = np.mean(results_3level['x2'] == 0) * 100
     
-    print(f"Focused attention time:")
+    print("Focused attention time:")
     print(f"  2-level model: {focused_2level:.1f}%")
     print(f"  3-level model: {focused_3level:.1f}%")
     
@@ -140,7 +142,7 @@ def compare_models():
     transitions_2level = np.sum(np.diff(results_2level['x2']) != 0)
     transitions_3level = np.sum(np.diff(results_3level['x2']) != 0)
     
-    print(f"\nAttentional state transitions:")
+    print("\nAttentional state transitions:")
     print(f"  2-level model: {transitions_2level}")
     print(f"  3-level model: {transitions_3level}")
     
@@ -148,7 +150,7 @@ def compare_models():
     gamma_A1_mean_2level = np.mean(results_2level['gamma_A1'])
     gamma_A1_mean_3level = np.mean(results_3level['gamma_A1'])
     
-    print(f"\nMean perceptual precision:")
+    print("\nMean perceptual precision:")
     print(f"  2-level model: {gamma_A1_mean_2level:.3f}")
     print(f"  3-level model: {gamma_A1_mean_3level:.3f}")
     
@@ -194,7 +196,7 @@ def validate_against_paper():
     model_3 = SandvedSmithModel(T=100, three_level=True, random_seed=42)
     results_3 = model_3.run_simulation()
     
-    focused_3level = np.mean(results_3['x2'] == 0) * 100
+    np.mean(results_3['x2'] == 0) * 100
     
     # Three-level model should show improved attentional stability
     # (This is a general expectation from the paper)

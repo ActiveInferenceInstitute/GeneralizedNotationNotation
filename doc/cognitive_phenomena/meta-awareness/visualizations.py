@@ -4,10 +4,12 @@ Visualization functions for Sandved-Smith et al. (2021) computational phenomenol
 Generates Figures 7, 10, and 11 from the paper.
 """
 
-import numpy as np
-import matplotlib.pyplot as plt
-from typing import Dict, Any, Optional
 import os
+from typing import Any, Dict, Optional
+
+import matplotlib.pyplot as plt
+import numpy as np
+
 
 def setup_matplotlib_style():
     """Set up matplotlib style for publication-quality figures."""
@@ -359,7 +361,7 @@ def display_results_summary(results: Dict[str, Any]) -> None:
     focused_time = np.sum(x2 == 0) / T * 100
     distracted_time = np.sum(x2 == 1) / T * 100
     
-    print(f"\nAttentional State Distribution:")
+    print("\nAttentional State Distribution:")
     print(f"  - Focused: {focused_time:.1f}%")
     print(f"  - Distracted: {distracted_time:.1f}%")
     
@@ -368,7 +370,7 @@ def display_results_summary(results: Dict[str, Any]) -> None:
     distractions = np.sum(state_changes == 1)  # Transitions to distracted
     refocuses = np.sum(state_changes == -1)    # Transitions to focused
     
-    print(f"\nMind-wandering Episodes:")
+    print("\nMind-wandering Episodes:")
     print(f"  - Number of distractions: {distractions}")
     print(f"  - Number of refocuses: {refocuses}")
     
@@ -392,13 +394,13 @@ def display_results_summary(results: Dict[str, Any]) -> None:
     
     # Precision statistics
     gamma_A1 = results['gamma_A1']
-    print(f"\nPerceptual Precision (γ_A1):")
+    print("\nPerceptual Precision (γ_A1):")
     print(f"  - Mean: {np.mean(gamma_A1):.3f}")
     print(f"  - Range: [{np.min(gamma_A1):.3f}, {np.max(gamma_A1):.3f}]")
     
     if 'gamma_A2' in results:
         gamma_A2 = results['gamma_A2']
-        print(f"\nAttentional Precision (γ_A2):")
+        print("\nAttentional Precision (γ_A2):")
         print(f"  - Mean: {np.mean(gamma_A2):.3f}")
         print(f"  - Range: [{np.min(gamma_A2):.3f}, {np.max(gamma_A2):.3f}]")
     

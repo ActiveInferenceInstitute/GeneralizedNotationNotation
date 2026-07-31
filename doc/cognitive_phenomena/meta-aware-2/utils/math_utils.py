@@ -9,9 +9,10 @@ Supports arbitrary state space dimensions while maintaining numerical stability.
 Part of the meta-aware-2 "golden spike" GNN-specified executable implementation.
 """
 
-import numpy as np
-from typing import Union, Tuple, Optional, List
 import logging
+from typing import List, Optional, Tuple, Union
+
+import numpy as np
 
 logger = logging.getLogger(__name__)
 

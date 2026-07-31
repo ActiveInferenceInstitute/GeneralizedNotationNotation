@@ -10,13 +10,13 @@ No external dependencies like Flax or Optax are required.
 @Web: https://github.com/google/jax
 """
 
+from functools import partial
+from typing import Any, Dict, Tuple
+
 import jax
 import jax.numpy as jnp
-from jax import jit, vmap
-from functools import partial
-from typing import Dict, Any, Tuple
 import numpy as np
-
+from jax import jit, vmap
 
 # Model configuration
 NUM_STATES = 9
@@ -148,6 +148,7 @@ batched_compute_expected_free_energy = jax.vmap(compute_expected_free_energy, in
 
 # Optional pmap for multiple devices if available
 import os
+
 try:
     if len(jax.devices()) > 1 and os.environ.get("JAX_ENABLE_PMAP", "1") == "1":
         # Multi-device data parallelism
@@ -403,7 +404,7 @@ if __name__ == "__main__":
     # Run one simulation step
     result = simulate_step(params, initial_belief, test_obs)
 
-    print(f"\n📊 Simulation Results:")
+    print("\n📊 Simulation Results:")
     print(f"   Initial belief: {initial_belief}")
     print(f"   Updated belief: {result['belief']}")
     print(f"   Selected action: {result['action']}")

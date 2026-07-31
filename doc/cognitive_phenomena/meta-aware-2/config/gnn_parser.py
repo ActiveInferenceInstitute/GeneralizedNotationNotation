@@ -10,6 +10,7 @@ Part of the meta-aware-2 "golden spike" GNN-specified executable implementation.
 """
 
 import os
+
 try:
     import toml
 except ImportError:  # Fallback for environments without toml
@@ -20,11 +21,12 @@ except ImportError:  # Fallback for environments without toml
             import json
             return json.load(f)
     toml = _TomlFallback()  # type: ignore
-import numpy as np
-from typing import Dict, Any, List, Tuple, Optional, Union
+import logging
 from dataclasses import dataclass, field
 from pathlib import Path
-import logging
+from typing import Any, Dict, List, Optional, Tuple, Union
+
+import numpy as np
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -319,7 +321,7 @@ class GNNConfigParser:
     
     def _validate_matrix_dimensions(self):
         """Validate that matrix dimensions are consistent with level definitions."""
-        tolerance = self.model_config.validation_config.get('tolerance', 1e-10)
+        self.model_config.validation_config.get('tolerance', 1e-10)
         
         # Check transition matrices
         for matrix_name, matrix in self.model_config.transition_matrices.items():

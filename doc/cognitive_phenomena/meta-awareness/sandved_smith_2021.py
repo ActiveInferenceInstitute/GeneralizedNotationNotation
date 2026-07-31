@@ -16,27 +16,45 @@ This module implements both the two-level (attention) and three-level (meta-awar
 models described in the paper, with exact replication of the computational methods.
 """
 
-import numpy as np
-from typing import Dict, Any, Optional, Tuple
 import warnings
+from typing import Any, Dict, Optional, Tuple
+
+import numpy as np
+
 warnings.filterwarnings('ignore')
 
 # Import our utility functions
-import sys, pathlib as _p
+import pathlib as _p
+import sys
+
 _here = _p.Path(__file__).parent
 sys.path.insert(0, str(_here))
-from utils import (
-    softmax, softmax_dim2, normalise, precision_weighted_likelihood,
-    bayesian_model_average, compute_attentional_charge, expected_free_energy,
-    variational_free_energy, update_precision_beliefs, policy_posterior,
-    discrete_choice, generate_oddball_sequence, setup_transition_matrices,
-    setup_likelihood_matrices, compute_entropy_terms
+from visualizations import (
+    display_results_summary,
+    plot_figure_7,
+    plot_figure_10,
+    plot_figure_11,
+    save_all_figures,
 )
 
-from visualizations import (
-    plot_figure_7, plot_figure_10, plot_figure_11, save_all_figures,
-    display_results_summary
+from utils import (
+    bayesian_model_average,
+    compute_attentional_charge,
+    compute_entropy_terms,
+    discrete_choice,
+    expected_free_energy,
+    generate_oddball_sequence,
+    normalise,
+    policy_posterior,
+    precision_weighted_likelihood,
+    setup_likelihood_matrices,
+    setup_transition_matrices,
+    softmax,
+    softmax_dim2,
+    update_precision_beliefs,
+    variational_free_energy,
 )
+
 
 class SandvedSmithModel:
     """

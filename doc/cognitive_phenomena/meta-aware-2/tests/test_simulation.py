@@ -11,17 +11,18 @@ Part of the meta-aware-2 "golden spike" GNN-specified executable implementation.
 
 import sys
 import unittest
-import numpy as np
 from pathlib import Path
 
+import numpy as np
 
 # Add parent directory to path for imports
 sys.path.append(str(Path(__file__).parent.parent))
 
-from config.gnn_parser import load_gnn_config, ModelConfig
+from config.gnn_parser import ModelConfig, load_gnn_config
 from core.meta_awareness_model import MetaAwarenessModel
-from utils.math_utils import MathUtils
 from execution.simulation_runner import SimulationRunner
+from utils.math_utils import MathUtils
+
 
 class TestSimulation(unittest.TestCase):
     """Test suite for meta-awareness simulation."""
@@ -223,7 +224,7 @@ attention = [1.0, 4.0]
     def test_error_handling(self):
         """Test error handling for invalid configurations."""
         # Test with non-existent config file
-        with self.assertRaises(Exception):
+        with self.assertRaises(FileNotFoundError):
             load_gnn_config("nonexistent_config.toml")
         
         # Test with invalid precision bounds
@@ -233,7 +234,7 @@ attention = [1.0, 4.0]
         # This should not crash but may generate warnings
         try:
             model = MetaAwarenessModel(config, random_seed=42)
-            results = model.run_simulation("default")
+            model.run_simulation("default")
         except Exception as e:
             # If it does raise an exception, it should be informative
             self.assertIsInstance(e, Exception)

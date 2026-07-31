@@ -15,12 +15,13 @@ Author: GNN PyMDP Integration
 Date: 2024
 """
 
-import numpy as np
 import json
+import logging
 import pickle
 from pathlib import Path
-from typing import Any, Dict, List, Union, Optional
-import logging
+from typing import Any, Dict, List, Optional, Union
+
+import numpy as np
 
 
 def convert_numpy_for_json(obj: Any) -> Any:
@@ -123,7 +124,6 @@ def validate_trace_data(trace: Dict[str, Any]) -> bool:
                     'rewards', 'beliefs', 'positions']
     
     # Optional keys that may be present in enhanced traces
-    optional_keys = ['policies', 'expected_free_energies', 'variational_free_energies']
     
     for key in required_keys:
         if key not in trace:

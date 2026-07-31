@@ -7,7 +7,9 @@ helpers referenced by sandved_smith_2021.py. Implementations use numpy and are n
 stable.
 """
 from __future__ import annotations
+
 import numpy as np
+
 
 def softmax(x: np.ndarray, axis: int = -1) -> np.ndarray:
     x = np.asarray(x, dtype=float)
@@ -120,8 +122,10 @@ Utility functions for Sandved-Smith et al. (2021) computational phenomenology mo
 Mathematical operations for active inference with hierarchical precision control.
 """
 
+from typing import Tuple, Union
+
 import numpy as np
-from typing import Union, Tuple
+
 
 def softmax(X: Union[np.ndarray, list]) -> np.ndarray:
     """
