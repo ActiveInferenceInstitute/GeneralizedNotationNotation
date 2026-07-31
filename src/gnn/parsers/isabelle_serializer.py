@@ -1,3 +1,8 @@
+"""GNN Isabelle serializer.
+
+Serializes GNN internal representations to Isabelle format.
+"""
+
 import json
 from typing import Any, cast
 

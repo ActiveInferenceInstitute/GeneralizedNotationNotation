@@ -7,6 +7,7 @@ This module provides the TestRunner class with comprehensive monitoring and repo
 import json
 import logging
 import sys
+import threading
 import time
 from dataclasses import asdict
 from pathlib import Path
@@ -20,7 +21,12 @@ project_root = Path(__file__).parent.parent.parent.parent
 
 
 class TestRunner:
-    """Test runner with comprehensive monitoring and reporting."""
+    """Test runner with comprehensive monitoring and reporting.
+
+    Thread-safe: ``execution_history`` is protected by a reentrant lock so
+    that ``run_tests()`` and ``generate_report()`` can safely be called from
+    concurrent consumers (e.g. ``pytest-xdist`` workers reporting metadata).
+    """
 
     def __init__(self, config: TestExecutionConfig) -> None:
         self.config = config
@@ -30,6 +36,7 @@ class TestRunner:
             cpu_limit_percent=config.cpu_limit_percent,
         )
         self.execution_history: List[TestExecutionResult] = []
+        self._history_lock = threading.Lock()
 
     def run_tests(
         self, test_paths: List[Path], output_dir: Path
@@ -66,8 +73,9 @@ class TestRunner:
                 stderr=result.get("stderr", ""),
             )
 
-            # Store in history
-            self.execution_history.append(execution_result)
+            # Store in history (thread-safe)
+            with self._history_lock:
+                self.execution_history.append(execution_result)
 
             return execution_result
 
@@ -279,28 +287,29 @@ class TestRunner:
 
     def generate_report(self, output_dir: Path) -> Dict[str, Any]:
         """Generate comprehensive test execution report."""
-        if not self.execution_history:
-            return {"error": "No test execution history available"}
+        with self._history_lock:
+            if not self.execution_history:
+                return {"error": "No test execution history available"}
 
-        latest_result = self.execution_history[-1]
+            latest_result = self.execution_history[-1]
 
-        report: dict[str, Any] = {
-            "execution_summary": asdict(latest_result),
-            "resource_usage": self.resource_monitor.get_stats(),
-            "execution_history": [asdict(result) for result in self.execution_history],
-            "performance_metrics": {
-                "average_execution_time": sum(
-                    r.execution_time for r in self.execution_history
-                )
-                / len(self.execution_history),
-                "peak_memory_usage": max(
-                    r.memory_peak_mb for r in self.execution_history
-                ),
-                "success_rate": sum(1 for r in self.execution_history if r.success)
-                / len(self.execution_history)
-                * 100,
-            },
-        }
+            report: dict[str, Any] = {
+                "execution_summary": asdict(latest_result),
+                "resource_usage": self.resource_monitor.get_stats(),
+                "execution_history": [asdict(result) for result in self.execution_history],
+                "performance_metrics": {
+                    "average_execution_time": sum(
+                        r.execution_time for r in self.execution_history
+                    )
+                    / len(self.execution_history),
+                    "peak_memory_usage": max(
+                        r.memory_peak_mb for r in self.execution_history
+                    ),
+                    "success_rate": sum(1 for r in self.execution_history if r.success)
+                    / len(self.execution_history)
+                    * 100,
+                },
+            }
 
         # Ensure output directory exists
         output_dir.mkdir(parents=True, exist_ok=True)

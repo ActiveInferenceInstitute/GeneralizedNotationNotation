@@ -1,3 +1,8 @@
+"""GNN base (abstract) serializer.
+
+Serializes GNN internal representations to base (abstract) format.
+"""
+
 import json
 from abc import ABC, abstractmethod
 from typing import Any, Dict, List, cast

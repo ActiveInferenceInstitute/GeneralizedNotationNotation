@@ -1,3 +1,8 @@
+"""GNN Markdown serializer.
+
+Serializes GNN internal representations to Markdown format.
+"""
+
 from datetime import datetime
 from typing import Any
 

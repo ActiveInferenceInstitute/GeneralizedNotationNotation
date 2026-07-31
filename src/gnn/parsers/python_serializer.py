@@ -1,3 +1,8 @@
+"""GNN Python serializer.
+
+Serializes GNN internal representations to Python format.
+"""
+
 import json
 from datetime import datetime
 from typing import Any

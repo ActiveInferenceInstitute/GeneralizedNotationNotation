@@ -1,3 +1,8 @@
+"""GNN Z-notation serializer.
+
+Serializes GNN internal representations to Z-notation format.
+"""
+
 import json
 from typing import Any, cast
 

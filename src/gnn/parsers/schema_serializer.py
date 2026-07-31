@@ -1,3 +1,8 @@
+"""GNN schema (abstract) serializer.
+
+Serializes GNN internal representations to schema (abstract) format.
+"""
+
 from .base_serializer import BaseGNNSerializer
 from .common import GNNInternalRepresentation
 from .xsd_serializer import XSDSerializer

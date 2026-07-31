@@ -1,3 +1,8 @@
+"""GNN Protocol Buffers serializer.
+
+Serializes GNN internal representations to Protocol Buffers format.
+"""
+
 import json
 from typing import Any, Dict
 

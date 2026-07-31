@@ -1,3 +1,8 @@
+"""GNN XSD serializer.
+
+Serializes GNN internal representations to XSD format.
+"""
+
 import json
 from typing import Any, Dict, cast
 

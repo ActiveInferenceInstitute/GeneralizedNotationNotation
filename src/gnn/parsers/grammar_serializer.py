@@ -1,3 +1,8 @@
+"""GNN grammar/BNF serializer.
+
+Serializes GNN internal representations to grammar/BNF format.
+"""
+
 import json
 from typing import Any
 

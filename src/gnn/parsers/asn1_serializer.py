@@ -1,3 +1,8 @@
+"""GNN ASN.1 serializer.
+
+Serializes GNN internal representations to ASN.1 format.
+"""
+
 from typing import Any
 
 from .base_serializer import BaseGNNSerializer

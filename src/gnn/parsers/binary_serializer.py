@@ -1,3 +1,8 @@
+"""GNN binary serializer.
+
+Serializes GNN internal representations to binary format.
+"""
+
 import base64
 import pickle  # nosec B403
 from typing import Any

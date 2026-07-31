@@ -1,3 +1,8 @@
+"""GNN Alloy serializer.
+
+Serializes GNN internal representations to Alloy format.
+"""
+
 from typing import Any, cast
 
 from .base_serializer import BaseGNNSerializer

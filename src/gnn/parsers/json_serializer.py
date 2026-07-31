@@ -1,3 +1,8 @@
+"""GNN JSON serializer.
+
+Serializes GNN internal representations to JSON format.
+"""
+
 import json
 from typing import Any
 

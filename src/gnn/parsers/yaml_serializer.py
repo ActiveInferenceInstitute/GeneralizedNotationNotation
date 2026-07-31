@@ -1,3 +1,8 @@
+"""GNN YAML serializer.
+
+Serializes GNN internal representations to YAML format.
+"""
+
 from typing import Any, Dict, cast
 
 try:

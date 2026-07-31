@@ -1,3 +1,8 @@
+"""GNN Coq serializer.
+
+Serializes GNN internal representations to Coq format.
+"""
+
 import json
 from typing import Any, cast
 

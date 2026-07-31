@@ -1,3 +1,8 @@
+"""GNN XML serializer.
+
+Serializes GNN internal representations to XML format.
+"""
+
 import json
 import xml.etree.ElementTree as ET  # nosec B405
 from typing import Any

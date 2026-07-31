@@ -1,3 +1,8 @@
+"""GNN Maxima serializer.
+
+Serializes GNN internal representations to Maxima format.
+"""
+
 import json
 from typing import Any
 

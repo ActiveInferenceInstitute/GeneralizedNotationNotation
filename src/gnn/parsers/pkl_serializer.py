@@ -1,3 +1,8 @@
+"""GNN PKL (pickle) serializer.
+
+Serializes GNN internal representations to PKL (pickle) format.
+"""
+
 import json
 from datetime import datetime
 from typing import Any

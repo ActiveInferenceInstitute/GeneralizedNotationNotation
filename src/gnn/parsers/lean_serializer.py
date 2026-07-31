@@ -1,3 +1,8 @@
+"""GNN Lean serializer.
+
+Serializes GNN internal representations to Lean format.
+"""
+
 import json
 from typing import Any, cast
 

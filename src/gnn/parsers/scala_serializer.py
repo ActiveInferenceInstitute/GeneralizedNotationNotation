@@ -1,3 +1,8 @@
+"""GNN Scala serializer.
+
+Serializes GNN internal representations to Scala format.
+"""
+
 import json
 from typing import Any
 

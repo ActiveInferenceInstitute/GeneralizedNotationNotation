@@ -1,3 +1,8 @@
+"""GNN functional serializer.
+
+Serializes GNN internal representations to functional format.
+"""
+
 import json
 from typing import Any, cast
 

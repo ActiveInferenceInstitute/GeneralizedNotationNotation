@@ -1,3 +1,8 @@
+"""GNN temporal serializer.
+
+Serializes GNN internal representations to temporal format.
+"""
+
 import json
 from typing import Any, cast
 
