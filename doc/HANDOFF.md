@@ -11,7 +11,7 @@
 
 | Metric | Value | Status |
 |--------|-------|--------|
-| Tests passing | 2649/2649 | ✅ |
+| Tests passing | 2638/2638 | ✅ |
 | Tests failing | 0 | ✅ |
 | Tests skipped | 0 | ✅ |
 | Mypy errors | 0 (758 files) | ✅ |
