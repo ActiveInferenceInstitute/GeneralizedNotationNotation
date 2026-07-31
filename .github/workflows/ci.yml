@@ -150,10 +150,15 @@ jobs:
 
           count = count_mcp_tools()
           print(f"MCP tools: {count}")
-          if count < 130:
-              raise SystemExit(f"MCP tool count regression: {count} < 130")
+          if count < 140:
+              raise SystemExit(f"MCP tool count regression: {count} < 140")
           print("MCP tool count OK")
           PY
+
+      - name: v3 orchestration acceptance gate
+        if: matrix.python-version == '3.12'
+        run: |
+          PYTHONPATH=src uv run --extra dev python scripts/run_v3_orchestration_acceptance.py --strict
 
   security:
     runs-on: ubuntu-latest

@@ -18,6 +18,8 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
 - `dag.py`: Added `raise_on_circular` parameter to `resolve_execution_order`; when `True`, circular dependencies raise `ValueError` instead of silently appending unresolved steps as the last execution tier. Added 5 unit tests for DAG resolution behavior.
 - `conftest.py`: Added `_auto_seed_rng` autouse function-scope fixture that calls `np.random.seed(0)` before every test, providing a deterministic baseline for unseeded tests.
 - `ci.yml`: Set `PYTHONHASHSEED=0` in test job environment for deterministic dict iteration across runs (removes non-reproducibility risk from unsorted JSON keys).
+- `ci.yml`: Added `scripts/run_v3_orchestration_acceptance.py --strict` as a CI step (19/19 v3 acceptance checks) — the acceptance gate previously never ran in CI.
+- `ci.yml` + `mcp-audit.yml`: Raised MCP tool-count guard threshold from 130 to 140 to match the actual tool count, preventing silent tool-count regressions.
 - `pyproject.toml`: Added `fail_under = 50` threshold to `[tool.coverage.run]` — coverage was measured but never enforced.
 
 ---

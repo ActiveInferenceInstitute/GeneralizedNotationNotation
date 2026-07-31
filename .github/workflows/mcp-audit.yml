@@ -33,6 +33,6 @@ jobs:
           from tests.mcp.test_mcp_audit import count_mcp_tools
           count = count_mcp_tools()
           print(f'MCP tool count: {count}')
-          assert count > 129, 'MCP tool count ' + str(count) + ' is below 130'
+          assert count > 139, f'MCP tool count {count} is below 140'
           print('OK')
           "
