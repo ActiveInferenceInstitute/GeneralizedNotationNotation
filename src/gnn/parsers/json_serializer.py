@@ -1,6 +1,6 @@
-"""Serializer for JSON data interchange format.
+"""GNN JSON serializer.
 
-Public classes: JSONSerializer
+Serializes GNN internal representations to JSON format.
 """
 
 import json

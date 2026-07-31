@@ -1,6 +1,6 @@
-"""Serializer for BNF/EBNF grammar format with embedded data support.
+"""GNN grammar/BNF serializer.
 
-Public classes: GrammarSerializer
+Serializes GNN internal representations to grammar/BNF format.
 """
 
 import json

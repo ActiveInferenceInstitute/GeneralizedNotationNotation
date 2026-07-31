@@ -1,6 +1,6 @@
-"""Serializer for XML format with deterministic output.
+"""GNN XML serializer.
 
-Public classes: XMLSerializer
+Serializes GNN internal representations to XML format.
 """
 
 import json

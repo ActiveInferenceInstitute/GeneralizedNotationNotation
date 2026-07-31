@@ -1,6 +1,6 @@
-"""Enhanced serializer for Protocol Buffers format with complete model preservation.
+"""GNN Protocol Buffers serializer.
 
-Public classes: ProtobufSerializer
+Serializes GNN internal representations to Protocol Buffers format.
 """
 
 import json

@@ -1,6 +1,6 @@
-"""Serializer for Z notation formal specification language.
+"""GNN Z-notation serializer.
 
-Public classes: ZNotationSerializer
+Serializes GNN internal representations to Z-notation format.
 """
 
 import json

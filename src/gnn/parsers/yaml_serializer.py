@@ -1,6 +1,6 @@
-"""Serializer for YAML configuration format.
+"""GNN YAML serializer.
 
-Public classes: YAMLSerializer
+Serializes GNN internal representations to YAML format.
 """
 
 from typing import Any, Dict, cast

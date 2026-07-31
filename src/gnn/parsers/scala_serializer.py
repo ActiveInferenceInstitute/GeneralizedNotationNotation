@@ -1,6 +1,6 @@
-"""Serializer for Scala categorical specifications.
+"""GNN Scala serializer.
 
-Public classes: ScalaSerializer
+Serializes GNN internal representations to Scala format.
 """
 
 import json

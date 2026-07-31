@@ -1,6 +1,6 @@
-"""Serializer for binary formats (Pickle) with enhanced round-trip support.
+"""GNN binary serializer.
 
-Public classes: BinarySerializer
+Serializes GNN internal representations to binary format.
 """
 
 import base64

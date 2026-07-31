@@ -100,6 +100,7 @@ def build_pytest_command(
     timeout_seconds: int = 600,
     max_failures: int = 20,
     parallel: bool = True,
+    parallel_dist: str = "worksteal",
     verbose: bool = False,
     generate_coverage: bool = True,
     fast_only: bool = False,
@@ -116,6 +117,7 @@ def build_pytest_command(
         timeout_seconds: Maximum execution time per test (default: 600)
         max_failures: Maximum number of test failures before stopping (default: 20)
         parallel: Enable parallel test execution (default: True)
+        parallel_dist: Distribution strategy for xdist (default: "worksteal")
         verbose: Enable verbose output (default: False)
         generate_coverage: Generate coverage reports (default: True)
         fast_only: Run only fast tests, exclude slow tests (default: False)
@@ -164,6 +166,7 @@ def build_pytest_command(
     # Add parallel execution if enabled
     if parallel:
         cmd.extend(["-n", "auto"])
+        cmd.extend(["--dist", parallel_dist])
 
     # Add test path
     cmd.append(str(TEST_DIR))

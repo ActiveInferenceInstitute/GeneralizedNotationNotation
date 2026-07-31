@@ -1,6 +1,6 @@
-"""Serializer for Alloy model checking language.
+"""GNN Alloy serializer.
 
-Public classes: AlloySerializer
+Serializes GNN internal representations to Alloy format.
 """
 
 from typing import Any, cast

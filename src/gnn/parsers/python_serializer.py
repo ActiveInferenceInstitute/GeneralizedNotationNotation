@@ -1,6 +1,6 @@
-"""Serializer for Python format.
+"""GNN Python serializer.
 
-Public classes: PythonSerializer
+Serializes GNN internal representations to Python format.
 """
 
 import json

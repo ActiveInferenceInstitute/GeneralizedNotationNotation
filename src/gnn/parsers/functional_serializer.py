@@ -1,6 +1,6 @@
-"""Serializer for functional programming languages.
+"""GNN functional serializer.
 
-Public classes: FunctionalSerializer
+Serializes GNN internal representations to functional format.
 """
 
 import json

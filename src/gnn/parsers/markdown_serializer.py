@@ -1,6 +1,6 @@
-"""Serializer for GNN Markdown format.
+"""GNN Markdown serializer.
 
-Public classes: MarkdownSerializer
+Serializes GNN internal representations to Markdown format.
 """
 
 from datetime import datetime

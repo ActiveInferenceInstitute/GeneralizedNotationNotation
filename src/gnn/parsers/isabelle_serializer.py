@@ -1,6 +1,6 @@
-"""Serializer for Isabelle/HOL format.
+"""GNN Isabelle serializer.
 
-Public classes: IsabelleSerializer
+Serializes GNN internal representations to Isabelle format.
 """
 
 import json

@@ -1,6 +1,6 @@
-"""Serializer for Maxima symbolic computation format with embedded data support.
+"""GNN Maxima serializer.
 
-Public classes: MaximaSerializer
+Serializes GNN internal representations to Maxima format.
 """
 
 import json

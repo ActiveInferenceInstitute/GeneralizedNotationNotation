@@ -1,6 +1,6 @@
-"""Serializer for Coq format.
+"""GNN Coq serializer.
 
-Public classes: CoqSerializer
+Serializes GNN internal representations to Coq format.
 """
 
 import json

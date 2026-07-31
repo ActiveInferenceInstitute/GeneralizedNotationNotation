@@ -101,13 +101,15 @@ jobs:
             src/tests/visualization/test_visualization_matrices.py \
             -q --tb=short
 
-      - name: Run unit and integration tests (skip pipeline & MCP)
+      - name: Run unit and integration tests (parallel, skip pipeline & MCP)
         id: pytest
         run: |
           mkdir -p junit
           uv run --extra dev python -m pytest -m "not pipeline and not mcp" \
             --tb=short \
             -q \
+            -n auto --dist worksteal \
+            --cov=src --cov-report=term-missing --cov-report=json:junit/coverage-${{ matrix.python-version }}.json \
             --junitxml=junit/pytest-${{ matrix.python-version }}.xml
 
       - name: Pytest JUnit report
@@ -116,6 +118,14 @@ jobs:
         with:
           name: pytest-junit-${{ matrix.python-version }}
           path: junit/pytest-${{ matrix.python-version }}.xml
+          if-no-files-found: warn
+
+      - name: Coverage report artifact
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: coverage-${{ matrix.python-version }}
+          path: junit/coverage-${{ matrix.python-version }}.json
           if-no-files-found: warn
 
       - name: Test job summary

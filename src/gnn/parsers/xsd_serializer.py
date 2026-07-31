@@ -1,6 +1,6 @@
-"""Serializer for XML Schema Definition format.
+"""GNN XSD serializer.
 
-Public classes: XSDSerializer
+Serializes GNN internal representations to XSD format.
 """
 
 import json

@@ -1,6 +1,6 @@
-"""Serializer for Lean theorem prover format.
+"""GNN Lean serializer.
 
-Public classes: LeanSerializer
+Serializes GNN internal representations to Lean format.
 """
 
 import json

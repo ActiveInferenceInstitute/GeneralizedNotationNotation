@@ -1,6 +1,6 @@
-"""Enhanced serializer for Apple PKL configuration format with complete model preservation.
+"""GNN PKL (pickle) serializer.
 
-Public classes: PKLSerializer
+Serializes GNN internal representations to PKL (pickle) format.
 """
 
 import json

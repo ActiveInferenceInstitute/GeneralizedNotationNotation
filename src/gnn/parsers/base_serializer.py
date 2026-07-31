@@ -1,6 +1,6 @@
-"""Base class for all GNN serializers with common utility methods.
+"""GNN base (abstract) serializer.
 
-Public classes: BaseGNNSerializer
+Serializes GNN internal representations to base (abstract) format.
 """
 
 import json

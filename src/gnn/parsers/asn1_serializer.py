@@ -1,6 +1,6 @@
-"""Serializer for ASN.
+"""GNN ASN.1 serializer.
 
-Public classes: ASN1Serializer
+Serializes GNN internal representations to ASN.1 format.
 """
 
 from typing import Any

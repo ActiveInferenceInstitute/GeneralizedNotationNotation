@@ -1,6 +1,6 @@
-"""Serializer for temporal logic languages.
+"""GNN temporal serializer.
 
-Public classes: TemporalSerializer, TLASerializer, AgdaSerializer
+Serializes GNN internal representations to temporal format.
 """
 
 import json

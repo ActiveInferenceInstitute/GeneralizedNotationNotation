@@ -1,6 +1,6 @@
-"""Serializer for formal schema languages.
+"""GNN schema (abstract) serializer.
 
-Public classes: SchemaSerializer
+Serializes GNN internal representations to schema (abstract) format.
 """
 
 from .base_serializer import BaseGNNSerializer
