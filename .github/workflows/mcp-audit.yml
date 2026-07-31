@@ -1,22 +1,15 @@
 name: MCP audit
-
-# Dedicated MCP tool-count audit. Guards against accidental tool
-# registration regressions by running the count check in isolation.
-
 on:
   push:
     branches: [main]
   pull_request:
     branches: [main]
   workflow_dispatch:
-
 concurrency:
   group: mcp-audit-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
-
 permissions:
   contents: read
-
 jobs:
   mcp-tool-count:
     runs-on: ubuntu-latest
@@ -24,20 +17,22 @@ jobs:
     env:
       PYTHONPATH: src
     steps:
-      - uses: actions/checkout@v6
-
-      - name: Set up Python
-        uses: actions/setup-python@v6
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-
-      - name: Install uv
-        uses: astral-sh/setup-uv@v7
+      - uses: astral-sh/setup-uv@v3
         with:
           enable-cache: true
-
-      - name: Install dependencies (dev)
-        run: uv sync --frozen --extra dev
-
+      - run: uv sync --frozen --extra dev
       - name: MCP tool count audit
-        run: uv run --extra dev python -m pytest src/tests/mcp/ -q --tb=short -k count_mcp_tools
+        run: |
+          uv run --extra dev python -c "
+          import sys
+          sys.path.insert(0, 'src')
+          from tests.mcp.test_mcp_audit import count_mcp_tools
+          count = count_mcp_tools()
+          print(f'MCP tool count: {count}')
+          assert count > 129, 'MCP tool count ' + str(count) + ' is below 130'
+          print('OK')
+          "
