@@ -319,6 +319,7 @@ module = [
     "psutil.*",
     "pygls.*",
     "pygments.*",
+    "pkg_resources.*",
     "pytest_timeout.*",
     "pytest_cov.*",
     "discopy.*",

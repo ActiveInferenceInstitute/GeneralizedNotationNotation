@@ -1,3 +1,8 @@
+"""Provides helper functions: add_component_to_markdown, update_component_states, remove_component_from_markdown, parse_components_from_markdown, and 5 more.
+
+Public functions: add_component_to_markdown, update_component_states, remove_component_from_markdown, parse_components_from_markdown, parse_state_space_from_markdown, _ensure_state_space_section, add_state_space_entry, update_state_space_entry, remove_state_space_entry
+"""
+
 from __future__ import annotations
 
 import logging

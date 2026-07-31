@@ -1,3 +1,8 @@
+"""Test suite for Integration module.
+
+Public classes: TestIntegrationOverall
+"""
+
 import json
 from typing import Any
 

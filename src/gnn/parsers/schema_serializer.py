@@ -1,3 +1,8 @@
+"""Serializer for formal schema languages.
+
+Public classes: SchemaSerializer
+"""
+
 from .base_serializer import BaseGNNSerializer
 from .common import GNNInternalRepresentation
 from .xsd_serializer import XSDSerializer

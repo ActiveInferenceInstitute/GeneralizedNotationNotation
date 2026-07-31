@@ -1,3 +1,8 @@
+"""Provides helper functions: _dimension_count, build_gui.
+
+Public functions: _dimension_count, build_gui
+"""
+
 from __future__ import annotations
 
 import logging

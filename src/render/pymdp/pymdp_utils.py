@@ -1,3 +1,8 @@
+"""Provides helper functions: _numpy_array_to_string, format_list_recursive, generate_pymdp_matrix_definition, generate_pymdp_agent_instantiation.
+
+Public functions: _numpy_array_to_string, format_list_recursive, generate_pymdp_matrix_definition, generate_pymdp_agent_instantiation
+"""
+
 # It's good practice to have a logger for utils too, if they might log errors/warnings
 import logging
 import re

@@ -1,3 +1,8 @@
+"""Serializer for YAML configuration format.
+
+Public classes: YAMLSerializer
+"""
+
 from typing import Any, Dict, cast
 
 try:

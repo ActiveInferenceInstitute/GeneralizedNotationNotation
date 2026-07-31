@@ -1,4 +1,9 @@
 #!/usr/bin/env python3
+"""Provides helper functions: verify_duplication.
+
+Public functions: verify_duplication
+"""
+
 import io
 import logging
 import sys

@@ -1,15 +1,13 @@
 #!/usr/bin/env python3
-from __future__ import annotations
-
-from typing import Any, cast
-
 """
 Website renderer module for GNN pipeline.
 """
 
+from __future__ import annotations
+
 import logging
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any, Dict, List, cast
 
 logger = logging.getLogger(__name__)
 

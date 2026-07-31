@@ -1,3 +1,8 @@
+"""Serializer for XML format with deterministic output.
+
+Public classes: XMLSerializer
+"""
+
 import json
 import xml.etree.ElementTree as ET  # nosec B405
 from typing import Any

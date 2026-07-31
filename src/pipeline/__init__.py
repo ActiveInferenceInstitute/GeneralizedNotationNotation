@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
+"""
+Pipeline module for centralized configuration and utilities.
+"""
+
 from __future__ import annotations
 
 from typing import Any
 
-"""
-Pipeline module for centralized configuration and utilities.
-"""
 from pipeline.step_registry import STEP_METADATA_DICT as STEP_METADATA  # noqa: F401
 
 from .config import (

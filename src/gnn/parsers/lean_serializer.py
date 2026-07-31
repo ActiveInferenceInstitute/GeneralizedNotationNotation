@@ -1,3 +1,8 @@
+"""Serializer for Lean theorem prover format.
+
+Public classes: LeanSerializer
+"""
+
 import json
 from typing import Any, cast
 

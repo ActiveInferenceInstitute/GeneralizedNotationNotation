@@ -1,3 +1,8 @@
+"""Public API for the matrix package.
+
+Re-exports Any, generate_matrix_visualizations, parse_matrix_data, MatrixVisualizer, process_matrix_visualization from submodules.
+"""
+
 from typing import Any
 
 from .compat import generate_matrix_visualizations, parse_matrix_data

@@ -1,3 +1,8 @@
+"""Provides helper functions: test_semantic_contract_contains_release_fields, test_semantic_compare_fails_on_dropped_variable, test_semantic_compare_fails_on_lost_edge, test_semantic_compare_fails_on_changed_dimension, and 3 more.
+
+Public functions: test_semantic_contract_contains_release_fields, test_semantic_compare_fails_on_dropped_variable, test_semantic_compare_fails_on_lost_edge, test_semantic_compare_fails_on_changed_dimension, test_semantic_compare_fails_on_changed_matrix_shape, test_semantic_gate_writes_passed_ledger, test_semantic_gate_fails_unsupported_success_claim
+"""
+
 from __future__ import annotations
 
 from copy import deepcopy

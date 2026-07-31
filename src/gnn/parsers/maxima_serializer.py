@@ -1,3 +1,8 @@
+"""Serializer for Maxima symbolic computation format with embedded data support.
+
+Public classes: MaximaSerializer
+"""
+
 import json
 from typing import Any
 

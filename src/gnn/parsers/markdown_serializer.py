@@ -1,3 +1,8 @@
+"""Serializer for GNN Markdown format.
+
+Public classes: MarkdownSerializer
+"""
+
 from datetime import datetime
 from typing import Any
 

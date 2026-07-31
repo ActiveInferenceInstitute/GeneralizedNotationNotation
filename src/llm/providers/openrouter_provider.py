@@ -1,8 +1,4 @@
 #!/usr/bin/env python3
-from __future__ import annotations
-
-from typing import Any, cast
-
 """
 OpenRouter LLM Provider
 
@@ -11,11 +7,13 @@ through a unified interface. OpenRouter provides access to models from
 OpenAI, Anthropic, Google, Meta, and other providers.
 """
 
+from __future__ import annotations
+
 import asyncio
 import json
 import logging
 import os
-from typing import Any, AsyncGenerator, Dict, List, Optional
+from typing import Any, AsyncGenerator, Dict, List, Optional, cast
 
 try:
     import aiohttp

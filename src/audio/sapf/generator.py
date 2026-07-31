@@ -1,3 +1,8 @@
+"""Provides helper functions: generate_sapf_audio.
+
+Public functions: generate_sapf_audio
+"""
+
 import logging
 from pathlib import Path
 from typing import Any

@@ -1,8 +1,4 @@
 #!/usr/bin/env python3
-from __future__ import annotations
-
-from typing import Any
-
 """
 Website generator module for GNN pipeline.
 
@@ -16,6 +12,8 @@ from GNN pipeline artifacts. Produces 7+ pages:
   - reports.html       — JSON/text report viewer
   - mcp.html           — MCP tools registry across all modules
 """
+
+from __future__ import annotations
 
 import json
 import logging

@@ -1,3 +1,8 @@
+"""Provides helper functions: test_threejs_tensor_explorer_writes_html_and_json, test_threejs_tensor_explorer_browser_canvas_smoke, test_threejs_tensor_explorer_reports_fallback_when_cdn_blocked.
+
+Public functions: test_threejs_tensor_explorer_writes_html_and_json, test_threejs_tensor_explorer_browser_canvas_smoke, test_threejs_tensor_explorer_reports_fallback_when_cdn_blocked
+"""
+
 from __future__ import annotations
 
 import json

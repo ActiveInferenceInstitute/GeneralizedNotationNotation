@@ -1,3 +1,8 @@
+"""Provides helper functions: _explicit_pomdp_spec, test_bnlearn_generator, test_pymdp_generator, test_activeinference_jl_generator, and 4 more.
+
+Public functions: _explicit_pomdp_spec, test_bnlearn_generator, test_pymdp_generator, test_activeinference_jl_generator, test_rxinfer_generator, test_discopy_generator, test_matrix_to_julia, test_sanitizers
+"""
+
 from typing import Any
 
 import pytest

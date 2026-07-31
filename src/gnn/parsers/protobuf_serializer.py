@@ -1,3 +1,8 @@
+"""Enhanced serializer for Protocol Buffers format with complete model preservation.
+
+Public classes: ProtobufSerializer
+"""
+
 import json
 from typing import Any, Dict
 

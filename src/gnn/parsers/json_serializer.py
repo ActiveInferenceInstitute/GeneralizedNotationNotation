@@ -1,3 +1,8 @@
+"""Serializer for JSON data interchange format.
+
+Public classes: JSONSerializer
+"""
+
 import json
 from typing import Any
 

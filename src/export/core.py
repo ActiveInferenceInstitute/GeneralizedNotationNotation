@@ -1,3 +1,8 @@
+"""Provides helper functions: export_gnn_files.
+
+Public functions: export_gnn_files
+"""
+
 import logging
 from pathlib import Path
 from typing import Any

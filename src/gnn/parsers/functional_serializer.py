@@ -1,3 +1,8 @@
+"""Serializer for functional programming languages.
+
+Public classes: FunctionalSerializer
+"""
+
 import json
 from typing import Any, cast
 

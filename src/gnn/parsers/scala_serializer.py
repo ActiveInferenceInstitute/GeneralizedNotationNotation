@@ -1,3 +1,8 @@
+"""Serializer for Scala categorical specifications.
+
+Public classes: ScalaSerializer
+"""
+
 import json
 from typing import Any
 

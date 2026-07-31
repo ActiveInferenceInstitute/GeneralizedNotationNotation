@@ -1,3 +1,8 @@
+"""Provides helper functions: test_model_interpretability_summary_extracts_variables_edges_and_traces, test_family_interpretability_markdown_is_compact.
+
+Public functions: test_model_interpretability_summary_extracts_variables_edges_and_traces, test_family_interpretability_markdown_is_compact
+"""
+
 from __future__ import annotations
 
 import json

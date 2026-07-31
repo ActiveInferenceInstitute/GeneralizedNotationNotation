@@ -1,3 +1,8 @@
+"""Serializer for ASN.
+
+Public classes: ASN1Serializer
+"""
+
 from typing import Any
 
 from .base_serializer import BaseGNNSerializer

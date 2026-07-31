@@ -1,3 +1,8 @@
+"""Provides helper functions: get_pipeline_scripts.
+
+Public functions: get_pipeline_scripts
+"""
+
 import glob
 import logging
 import os

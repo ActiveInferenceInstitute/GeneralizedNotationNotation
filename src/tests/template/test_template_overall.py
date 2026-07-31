@@ -1,3 +1,8 @@
+"""Test suite for Template module functionality.
+
+Public classes: TestTemplateModule, TestCorrelationIdGeneration, TestFileValidation, TestProcessing, TestSafeExecution, TestUtilityPatterns, TestTemplateUtils
+"""
+
 from typing import Any
 
 

@@ -1,8 +1,4 @@
 #!/usr/bin/env python3
-from __future__ import annotations
-
-from typing import Any, cast
-
 """
 Matrix Visualization Module for GNN Processing Pipeline
 
@@ -11,9 +7,12 @@ including heatmaps, statistics, and analysis of model parameters.
 Specialized support for 3D tensors like POMDP transition matrices.
 """
 
+from __future__ import annotations
+
 import csv
 import json
 import logging
+from typing import Any, cast
 
 from ..compat.viz_compat import MATPLOTLIB_AVAILABLE, np, plt, sns
 from ..plotting.utils import safe_tight_layout

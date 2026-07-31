@@ -1,14 +1,12 @@
 #!/usr/bin/env python3
-from __future__ import annotations
-
-from typing import Any
-
 """Programmatic pipeline execution adapters.
 
 The main orchestration engine lives in :mod:`main`. This module provides a
 small importable surface that delegates actual work to the numbered step
 scripts through ``main.py``.
 """
+
+from __future__ import annotations
 
 import logging
 import sys

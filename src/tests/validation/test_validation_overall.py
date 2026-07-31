@@ -1,3 +1,8 @@
+"""Test suite for Validation module.
+
+Public classes: TestValidationOverall, TestConsistencyChecker, TestValidationMCP, TestPerformanceProfiler, TestValidationInit
+"""
+
 from typing import Any
 
 import pytest

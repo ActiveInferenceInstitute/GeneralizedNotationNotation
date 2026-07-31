@@ -1,3 +1,8 @@
+"""Test suite for Security module.
+
+Public classes: TestSecurityOverall
+"""
+
 from typing import Any
 
 import pytest

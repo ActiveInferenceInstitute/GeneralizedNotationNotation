@@ -1,3 +1,8 @@
+"""Serializer for Alloy model checking language.
+
+Public classes: AlloySerializer
+"""
+
 from typing import Any, cast
 
 from .base_serializer import BaseGNNSerializer

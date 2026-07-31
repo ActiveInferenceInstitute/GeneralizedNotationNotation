@@ -1,3 +1,8 @@
+"""Public API for the core package.
+
+Re-exports Any, load_visualization_model, resolve_gnn_step3_output_dir, process_single_gnn_file, process_visualization from submodules.
+"""
+
 from typing import Any
 
 from .parsed_model import load_visualization_model, resolve_gnn_step3_output_dir

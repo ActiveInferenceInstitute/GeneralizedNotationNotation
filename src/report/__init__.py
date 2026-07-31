@@ -1,13 +1,13 @@
-from __future__ import annotations
-
-from typing import Any
-
 """
 report module for GNN Processing Pipeline.
 
 Consolidates pipeline outputs (per-step artifacts, logs, metrics) into HTML
 and Markdown reports consumed by Step 23.
 """
+
+from __future__ import annotations
+
+from typing import Any
 
 __version__ = "1.6.0"
 FEATURES: dict[str, Any] = {

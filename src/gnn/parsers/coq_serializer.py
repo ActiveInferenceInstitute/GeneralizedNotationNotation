@@ -1,3 +1,8 @@
+"""Serializer for Coq format.
+
+Public classes: CoqSerializer
+"""
+
 import json
 from typing import Any, cast
 

@@ -1,3 +1,8 @@
+"""Test suite for Model Registry module.
+
+Public classes: TestModelRegistryOverall
+"""
+
 from typing import Any
 
 import pytest

@@ -1,3 +1,8 @@
+"""Base class for all GNN serializers with common utility methods.
+
+Public classes: BaseGNNSerializer
+"""
+
 import json
 from abc import ABC, abstractmethod
 from typing import Any, Dict, List, cast

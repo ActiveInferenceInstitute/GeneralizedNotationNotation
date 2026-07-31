@@ -1,3 +1,8 @@
+"""Serializer for XML Schema Definition format.
+
+Public classes: XSDSerializer
+"""
+
 import json
 from typing import Any, Dict, cast
 

@@ -1,19 +1,17 @@
 #!/usr/bin/env python3
-from __future__ import annotations
-
-from typing import Any, cast
-
 """
 GUI 3: State Space Design Studio Processor
 Low-dependency visual design interface for Active Inference models
 """
+
+from __future__ import annotations
 
 import json
 import logging
 import os
 import tempfile
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any, Dict, cast
 
 try:
     import gradio as gr

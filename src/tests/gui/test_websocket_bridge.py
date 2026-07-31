@@ -1,3 +1,8 @@
+"""Provides helper functions: test_gui_websocket_message_types_are_explicit, test_gui_websocket_message_round_trips, test_gui_websocket_rejects_unknown_type, test_build_initial_messages_uses_model_load, and 5 more.
+
+Public functions: test_gui_websocket_message_types_are_explicit, test_gui_websocket_message_round_trips, test_gui_websocket_rejects_unknown_type, test_build_initial_messages_uses_model_load, test_gui_bridge_state_load_patch_and_export_flow, test_gui_bridge_rejects_nonlocal_host, test_gui_bridge_runs_local_websocket_exchange, _free_local_port, _connect_with_retry
+"""
+
 from __future__ import annotations
 
 import asyncio

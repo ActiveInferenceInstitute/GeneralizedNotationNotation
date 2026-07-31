@@ -1,3 +1,8 @@
+"""Provides helper functions: _frontmatter_fields, test_all_source_skills_have_discovery_frontmatter, test_all_source_skills_declare_mcp_tool_surface.
+
+Public functions: _frontmatter_fields, test_all_source_skills_have_discovery_frontmatter, test_all_source_skills_declare_mcp_tool_surface
+"""
+
 from __future__ import annotations
 
 from pathlib import Path

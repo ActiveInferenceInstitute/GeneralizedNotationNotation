@@ -1,3 +1,8 @@
+"""Provides helper functions: test_pipeline_execution_does_not_import_posix_resource_module, test_import_to_package_name_mapping_handles_common_mismatches.
+
+Public functions: test_pipeline_execution_does_not_import_posix_resource_module, test_import_to_package_name_mapping_handles_common_mismatches
+"""
+
 from __future__ import annotations
 
 import ast

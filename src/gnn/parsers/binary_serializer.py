@@ -1,3 +1,8 @@
+"""Serializer for binary formats (Pickle) with enhanced round-trip support.
+
+Public classes: BinarySerializer
+"""
+
 import base64
 import pickle  # nosec B403
 from typing import Any

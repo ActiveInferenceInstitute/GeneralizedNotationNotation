@@ -1,3 +1,10 @@
+"""Test suite for Analysis module.
+
+Public classes: TestAnalysisOverall, TestPostSimulationVisualization, TestAnalysisModuleImports, TestActiveInferenceJLAnalyzer, TestDisCoPyAnalyzer, TestJAXAnalyzer, TestPyMDPAnalyzer, TestRxInferAnalyzer, TestAnalyzerSimulationMetrics
+
+Public functions: _gridworld_payload, test_gridworld_animation_suite_and_manifest
+"""
+
 import json
 import logging
 from pathlib import Path

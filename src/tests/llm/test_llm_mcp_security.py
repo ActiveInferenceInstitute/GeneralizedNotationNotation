@@ -1,3 +1,8 @@
+"""Provides helper functions: test_analyze_gnn_with_llm_rejects_outside_file_before_provider, test_generate_llm_documentation_rejects_outside_output_before_generation.
+
+Public functions: test_analyze_gnn_with_llm_rejects_outside_file_before_provider, test_generate_llm_documentation_rejects_outside_output_before_generation
+"""
+
 from __future__ import annotations
 
 import sys

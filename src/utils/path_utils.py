@@ -1,3 +1,8 @@
+"""Provides helper functions: get_relative_path_if_possible.
+
+Public functions: get_relative_path_if_possible
+"""
+
 from pathlib import Path
 from typing import Optional
 

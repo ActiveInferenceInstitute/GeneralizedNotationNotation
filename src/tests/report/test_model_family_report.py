@@ -1,3 +1,8 @@
+"""Provides helper functions: test_model_family_acceptance_report_renders_status_table.
+
+Public functions: test_model_family_acceptance_report_renders_status_table
+"""
+
 from __future__ import annotations
 
 from report.model_family import render_model_family_acceptance_markdown

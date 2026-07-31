@@ -1,3 +1,8 @@
+"""Serializer for temporal logic languages.
+
+Public classes: TemporalSerializer, TLASerializer, AgdaSerializer
+"""
+
 import json
 from typing import Any, cast
 

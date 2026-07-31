@@ -1,13 +1,11 @@
-from __future__ import annotations
-
-from typing import Any, cast
-
 """
 GNN Visualizer Module
 
 This module provides the main visualization functionality for GNN models.
 It generates comprehensive state-space visualizations of GNN files and models.
 """
+
+from __future__ import annotations
 
 import ast
 import datetime
@@ -16,7 +14,7 @@ import logging
 import os
 import re
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional, Union, cast
 
 from gnn.discovery import is_model_source_path
 from pipeline.config import get_output_dir_for_script

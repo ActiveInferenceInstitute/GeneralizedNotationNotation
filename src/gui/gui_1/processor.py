@@ -1,3 +1,8 @@
+"""Provides helper functions: run_gui, _load_first_markdown.
+
+Public functions: run_gui, _load_first_markdown
+"""
+
 from __future__ import annotations
 
 import json

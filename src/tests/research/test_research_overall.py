@@ -1,3 +1,8 @@
+"""Test suite for Research module.
+
+Public classes: TestResearchOverall
+"""
+
 from typing import Any
 
 import pytest

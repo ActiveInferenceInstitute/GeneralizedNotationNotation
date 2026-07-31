@@ -1,3 +1,8 @@
+"""Provides helper functions: get_system_info.
+
+Public functions: get_system_info
+"""
+
 import logging
 import os
 import sys

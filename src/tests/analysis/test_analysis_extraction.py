@@ -1,3 +1,8 @@
+"""Provides helper functions: temp_activeinference_output, temp_discopy_output, test_extract_activeinference_jl_data, test_extract_discopy_data.
+
+Public functions: temp_activeinference_output, temp_discopy_output, test_extract_activeinference_jl_data, test_extract_discopy_data
+"""
+
 import csv
 import json
 from typing import Any

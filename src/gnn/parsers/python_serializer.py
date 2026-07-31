@@ -1,3 +1,8 @@
+"""Serializer for Python format.
+
+Public classes: PythonSerializer
+"""
+
 import json
 from datetime import datetime
 from typing import Any

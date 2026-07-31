@@ -1,14 +1,12 @@
 #!/usr/bin/env python3
-from __future__ import annotations
-
-from typing import Any
-
 """
 Base LLM Provider
 
 Abstract base class defining the interface for all LLM providers.
 This ensures consistent behavior across different provider implementations.
 """
+
+from __future__ import annotations
 
 import logging
 from abc import ABC, abstractmethod

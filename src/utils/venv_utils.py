@@ -1,3 +1,8 @@
+"""Provides helper functions: get_venv_python.
+
+Public functions: get_venv_python
+"""
+
 from __future__ import annotations
 
 import logging

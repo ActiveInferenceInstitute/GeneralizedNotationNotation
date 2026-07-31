@@ -1,3 +1,8 @@
+"""Provides helper functions: test_capability_contracts_are_current, test_capability_contracts_fail_strict_by_default.
+
+Public functions: test_capability_contracts_are_current, test_capability_contracts_fail_strict_by_default
+"""
+
 from __future__ import annotations
 
 import pytest

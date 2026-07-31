@@ -1,3 +1,8 @@
+"""Provides helper functions: read_message, write_message, handle_initialize, handle_hover, and 2 more.
+
+Public functions: read_message, write_message, handle_initialize, handle_hover, publish_diagnostics, start_lsp
+"""
+
 import json
 import logging
 import sys

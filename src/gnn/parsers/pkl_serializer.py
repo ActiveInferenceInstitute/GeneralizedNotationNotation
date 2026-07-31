@@ -1,3 +1,8 @@
+"""Enhanced serializer for Apple PKL configuration format with complete model preservation.
+
+Public classes: PKLSerializer
+"""
+
 import json
 from datetime import datetime
 from typing import Any

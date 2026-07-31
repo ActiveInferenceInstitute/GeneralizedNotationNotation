@@ -1,3 +1,8 @@
+"""Test suite for Type Checker module.
+
+Public classes: TestTypeCheckerOverall
+"""
+
 import os
 from pathlib import Path
 from typing import Any, cast

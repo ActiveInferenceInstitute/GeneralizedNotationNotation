@@ -1,3 +1,8 @@
+"""Serializer for Z notation formal specification language.
+
+Public classes: ZNotationSerializer
+"""
+
 import json
 from typing import Any, cast
 

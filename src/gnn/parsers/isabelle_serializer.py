@@ -1,3 +1,8 @@
+"""Serializer for Isabelle/HOL format.
+
+Public classes: IsabelleSerializer
+"""
+
 import json
 from typing import Any, cast
 

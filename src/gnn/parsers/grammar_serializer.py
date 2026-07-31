@@ -1,3 +1,8 @@
+"""Serializer for BNF/EBNF grammar format with embedded data support.
+
+Public classes: GrammarSerializer
+"""
+
 import json
 from typing import Any
 
