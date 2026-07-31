@@ -37,6 +37,7 @@ jobs:
       fail-fast: false
     env:
       PYTHONPATH: src
+      PYTHONHASHSEED: "0"
     steps:
       - uses: actions/checkout@v6
 

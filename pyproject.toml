@@ -376,6 +376,7 @@ omit = [
     "*/venv/*",
     "*/.venv/*",
 ]
+fail_under = 50
 
 [tool.coverage.report]
 exclude_lines = [

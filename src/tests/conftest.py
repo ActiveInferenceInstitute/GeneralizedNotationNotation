@@ -75,16 +75,30 @@ def pytest_collection_modifyitems(config: Any, items: list) -> None:
 # -----------------------------------------------------------------------------
 
 
+@pytest.fixture(autouse=True, scope="function")
+def _auto_seed_rng() -> None:
+    """Ensure every test function starts with deterministic random state."""
+    import numpy as np
+
+    np.random.seed(0)
+
+
 @pytest.fixture(scope="session")
-def test_config() -> Dict[str, Any]:
+def test_config() -> Generator[Dict[str, Any], None, None]:
     """Session-wide test configuration."""
-    return {
+    temp_dir = tempfile.mkdtemp()
+    config = {
         "test_mode": True,
         "safe_mode": True,
-        "temp_dir": tempfile.mkdtemp(),
+        "temp_dir": temp_dir,
         "max_test_duration": 300,
         "memory_limit_mb": 1024,
     }
+    yield config
+    # Cleanup: remove the temporary directory created for this session
+    import shutil
+
+    shutil.rmtree(temp_dir, ignore_errors=True)
 
 
 @pytest.fixture(scope="session")

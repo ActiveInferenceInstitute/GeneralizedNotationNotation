@@ -18,6 +18,7 @@ def resolve_execution_order(
     step_dependencies: Dict[int, List[int]],
     total_steps: int = 25,
     skip_steps: (Set[int]) | None = None,
+    raise_on_circular: bool = False,
 ) -> List[List[int]]:
     """
     Topologically sort pipeline steps into parallel execution tiers.
@@ -29,10 +30,15 @@ def resolve_execution_order(
         step_dependencies: step_num → [dependency_step_nums]
         total_steps: total number of steps in the pipeline
         skip_steps: step numbers to exclude from execution
+        raise_on_circular: if True, raise ValueError on circular deps
+                          instead of appending them as the last tier
 
     Returns:
         List of tiers, each tier is a list of step numbers.
         Example: [[0, 1], [2, 3], [4], ...]
+
+    Raises:
+        ValueError: if raise_on_circular=True and circular deps detected
     """
     skip_steps = skip_steps or set()
 
@@ -67,9 +73,10 @@ def resolve_execution_order(
     resolved = {s for tier in tiers for s in tier}
     unresolved = all_steps - resolved
     if unresolved:
-        logger.warning(
-            f"⚠️ Circular dependencies detected for steps: {sorted(unresolved)}"
-        )
+        msg = f"⚠️ Circular dependencies detected for steps: {sorted(unresolved)}"
+        logger.warning(msg)
+        if raise_on_circular:
+            raise ValueError(msg)
         tiers.append(sorted(unresolved))
 
     return tiers
