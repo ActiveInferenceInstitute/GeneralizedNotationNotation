@@ -135,7 +135,7 @@ class BaseLLMProvider(ABC):
         """
 
     @abstractmethod
-    async def generate_stream(
+    def generate_stream(
         self, messages: List[LLMMessage], config: Optional[LLMConfig] = None
     ) -> AsyncGenerator[str, None]:
         """
