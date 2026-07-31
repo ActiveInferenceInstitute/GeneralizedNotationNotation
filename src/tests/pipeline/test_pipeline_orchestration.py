@@ -190,3 +190,57 @@ class TestPipelineStateManagement:
         is_valid = validate_pipeline_config(config)
         # Could be True or dict with validation results
         assert is_valid is not None
+
+
+class TestDAG:
+    """Tests for pipeline DAG topological sort and circular dep handling."""
+
+    @pytest.mark.fast
+    def test_dag_linear_steps(self) -> None:
+        """Linear dependency chain: 0→1→2 resolves correctly."""
+        from pipeline.dag import resolve_execution_order
+
+        deps = {1: [0], 2: [1]}
+        tiers = resolve_execution_order(deps, total_steps=3)
+        assert len(tiers) >= 2
+        # 0 must appear before 2
+        flat = [s for tier in tiers for s in tier]
+        assert flat.index(0) < flat.index(2)
+
+    @pytest.mark.fast
+    def test_dag_independent_steps(self) -> None:
+        """Independent steps (no deps) land in the same tier."""
+        from pipeline.dag import resolve_execution_order
+
+        tiers = resolve_execution_order({}, total_steps=5)
+        assert len(tiers) == 1
+        assert sorted(tiers[0]) == [0, 1, 2, 3, 4]
+
+    @pytest.mark.fast
+    def test_dag_circular_deps_warns_by_default(self) -> None:
+        """Circular dependencies are appended as last tier (backward compat)."""
+        from pipeline.dag import resolve_execution_order
+
+        deps = {0: [2], 2: [0]}
+        tiers = resolve_execution_order(deps, total_steps=3)
+        # lenient mode: does NOT raise; unresolved appended to last tier
+        assert len(tiers) >= 2
+        flat = [s for tier in tiers for s in tier]
+        assert 0 in flat and 2 in flat
+
+    @pytest.mark.fast
+    def test_dag_circular_deps_raises_when_strict(self) -> None:
+        """With raise_on_circular=True, circular deps raise ValueError."""
+        from pipeline.dag import resolve_execution_order
+
+        deps = {0: [2], 2: [0]}
+        with pytest.raises(ValueError, match="Circular dependencies"):
+            resolve_execution_order(deps, total_steps=3, raise_on_circular=True)
+
+    @pytest.mark.fast
+    def test_dag_no_raise_on_valid(self) -> None:
+        """raise_on_circular=True does not raise on valid DAG."""
+        from pipeline.dag import resolve_execution_order
+
+        tiers = resolve_execution_order({}, total_steps=4, raise_on_circular=True)
+        assert len(tiers) == 1

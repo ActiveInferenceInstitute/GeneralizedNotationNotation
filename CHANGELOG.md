@@ -12,6 +12,13 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
 - Hardened MCP execution and LLM entry points against arbitrary local file access and script execution by enforcing repository-local path validation, source-file extension checks, and Step 11 render-summary gating for `process_execute_mcp`.
 - Escaped bnlearn generated-code metadata as Python literals, coerced generated timestep literals, and sanitized generated artifact filename stems to prevent code injection and path traversal through model names.
 - Resolved default-branch Dependabot alerts by raising patched dependency floors and refreshing `uv.lock` for `msgpack` 1.2.1, `jupyter-server` 2.20.0, `jupyterlab` 4.6.0, and `bleach` 6.4.0.
+- Fixed session-scope `test_config` fixture in `conftest.py` to clean up its temporary directory after shutdown (was leaking via `tempfile.mkdtemp()` without finalizer).
+
+### Changed
+- `dag.py`: Added `raise_on_circular` parameter to `resolve_execution_order`; when `True`, circular dependencies raise `ValueError` instead of silently appending unresolved steps as the last execution tier. Added 5 unit tests for DAG resolution behavior.
+- `conftest.py`: Added `_auto_seed_rng` autouse function-scope fixture that calls `np.random.seed(0)` before every test, providing a deterministic baseline for unseeded tests.
+- `ci.yml`: Set `PYTHONHASHSEED=0` in test job environment for deterministic dict iteration across runs (removes non-reproducibility risk from unsorted JSON keys).
+- `pyproject.toml`: Added `fail_under = 50` threshold to `[tool.coverage.run]` — coverage was measured but never enforced.
 
 ---
 
