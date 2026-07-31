@@ -27,7 +27,7 @@ const LOG_LEVEL = Logging.Info
 # Core required packages (always needed)
 const CORE_PACKAGES = [
     "ActiveInference",
-    "Distributions", 
+    "Distributions",
     "LinearAlgebra",
     "Random",
     "Statistics",
@@ -37,7 +37,43 @@ const CORE_PACKAGES = [
     "DelimitedFiles"
 ]
 
-# Statistical analysis packages
+# Julia 1.12 / DistributionsAD compat workaround (GNN known issue):
+# Distributions >= 0.25.127 (2026-06) requires @check_args checks to carry an
+# offending value, but DistributionsAD 0.6.58 (archived at
+# https://github.com/TuringLang/DistributionsAD.jl) still uses the legacy
+# single-condition form in its ReverseDiff extension. The fix patches the
+# installed ext file with the new tuple syntax.
+# Can be removed when a fixed DistributionsAD ships.
+function patch_distributionsad_reversediff()
+    """Fix DistributionsAD ReverseDiff @check_args for Julia 1.12+."""
+    found = false
+    for depot_dir in DEPOT_PATH
+        dad_dir = joinpath(depot_dir, "packages", "DistributionsAD")
+        if !isdir(dad_dir)
+            continue
+        end
+        for hash_dir in readdir(dad_dir; join=true)
+            ext_file = joinpath(hash_dir, "ext", "DistributionsADReverseDiffExt.jl")
+            if isfile(ext_file)
+                content = read(ext_file, String)
+                old_call = "@check_args(Gamma, α > zero(α) && θ > zero(θ))"
+                new_call = "@check_args(Gamma, (α, α > zero(α)), (θ, θ > zero(θ)))"
+                if occursin(old_call, content)
+                    new_content = replace(content, old_call => new_call)
+                    # Ensure writable
+                    try; chmod(ext_file, 0o644); catch; end
+                    write(ext_file, new_content)
+                    @info "✅ Patched $ext_file for Julia 1.12 / DistributionsAD compat"
+                    found = true
+                end
+            end
+        end
+    end
+    if !found
+        @info "ℹ️ DistributionsAD not found in depot — may not be installed yet"
+    end
+    return found
+end
 const STATS_PACKAGES = [
     "StatsBase",
     "HypothesisTests",
@@ -169,7 +205,7 @@ function setup_project_environment(config::SetupConfig)
         @error "❌ Failed to activate project environment: $e"
         return false
     end
-    
+
     # Check for Project.toml
     project_toml = joinpath(project_dir, "Project.toml")
     if !isfile(project_toml)
@@ -436,6 +472,10 @@ function run_setup_process(config::SetupConfig)
         # Final validation
         @info ""
         @info "🔍 Running final validation..."
+
+        # Patch DistributionsAD ReverseDiff ext (Julia 1.12 compat workaround)
+        patch_distributionsad_reversediff()
+
         validation_success = validate_environment(config)
         
         # Generate report

@@ -17,7 +17,8 @@
 | Mypy errors | 0 (758 files) | ✅ |
 | Ruff errors | 0 | ✅ |
 | TODOs/FIXMEs in src/ | 0 | ✅ |
-| Docstring coverage | 735/760 files (96.7%) | ✅ |
+| Module docstring coverage | 760/760 (100%) | ✅ |
+| pip-audit vulnerabilities | 0 | ✅ |
 | Doc pages | 609 | ✅ |
 | Python source files | 760 | ✅ |
 | Git tracked files | 2514 | ✅ |
@@ -86,20 +87,37 @@ Comprehensive `doc/uv_0.12.0_compatibility_audit.md` (442 lines) covering:
 
 ## 3. Known Issues
 
-### 3.1 ActiveInference.jl on Julia 1.12
+### 3.1 ActiveInference.jl on Julia 1.12 — RESOLVED
 
-**Issue:** `ActiveInference.jl` fails to precompile due to `ActionModels.jl` → `ReverseDiff.jl` lock conflict on Julia ≥1.12.
+**Issue:** `ActiveInference.jl` failed to precompile on Julia ≥1.12 due to
+`DistributionsAD` 0.6.58 (archived at `TuringLang/DistributionsAD.jl`) using
+legacy `@check_args(Gamma, α > zero(α) && θ > zero(θ))` syntax that was made
+invalid by `Distributions` ≥0.25.127 (June 2026).
 
-**Workaround applied:** The `activeinference_jl` backend is excluded from test execution. Code generation/rendering works via `RxInfer` + `Meta.parseall()` validation. ActiveInference.jl is installed but not used in tests.
+**Fix applied (2026-07-31):**
+1. Upstream patch prepared for the archived `DistributionsAD.jl` ext file —
+   `@check_args(Gamma, (α, α > zero(α)), (θ, θ > zero(θ)))`
+2. Local depot patched — ActiveInference.jl now precompiles and executes on
+   Julia 1.12.6
+3. `src/execute/activeinference_jl/setup_environment.jl` now applies the same
+   patch automatically during environment setup via `patch_distributionsad_reversediff()`
+4. Full end-to-end smoke test: GNN render → ActiveInference.jl script →
+   `simulation_results.json` produced successfully
 
-**Long-term fix options:**
-1. Pin to Julia 1.11.x in CI
-2. Submit fix to `ActiveInference.jl` upstream
-3. Update `ActionModels.jl` to resolve the lock conflict
+**Long-term:** The fix is upstream at `TuringLang/DistributionsAD.jl` (archived).
+If an active fork ships `DistributionsAD` ≥0.6.59, the patch function in
+`setup_environment.jl` should be updated or removed.
 
-### 3.2 Dependabot Advisories
+### 3.2 Dependabot Advisories — RESOLVED (2026-07-31)
 
-GitHub reports 41 vulnerabilities (28 high, 12 moderate, 1 low) — pre-existing dependency advisory alerts, not related to code changes. These are in the lockfile and affect transitive dependencies.
+48 advisories across 5 packages resolved by lock upgrade:
+- `jupyterlab` 4.6.0 → 4.6.2 (5 CVEs)
+- `mistune` 3.2.1 → 3.3.4 (10 CVEs)
+- `pillow` 12.2.0 → 12.3.0 (15 CVEs)
+- `setuptools` 81.0.0 → 83.0.0 (2 CVEs)  
+- `soupsieve` 2.8.3 → 2.9.1 (16 CVEs)
+
+Verified: `pip-audit` reports 0 known vulnerabilities.
 
 ### 3.3 Parallel Test Execution
 
@@ -118,21 +136,18 @@ The `lsp/` module requires `pygls` which is an optional dependency. The `Languag
 
 ### 4.1 High Priority
 
-1. **Dependabot vulnerability resolution** — 41 advisories need package updates:
-   - Audit `uv.lock` for fixable packages with `uv pip audit`
-   - Update constraint-dependencies in `pyproject.toml`
-   - Run `uv lock --upgrade-package <pkg>` for each fixable advisory
+1. **[RESOLVED] Dependabot vulnerability resolution** — resolved by locking upgrades.
+   See §3.2 for details.
 
-2. **Test documentation** — 25 files without docstrings need coverage:
-   - `src/mcp/` (6 files)
-   - `src/gnn/` (4 files)
-   - `src/execute/` (3 files)
-   - `src/analysis/` (2 files)
-   - Other misc files
+2. **[RESOLVED] Module docstrings** — all 760 Python source files now have
+   first-statement PEP 257 module docstrings. 70 were added via content-aware
+   generation from class/function docstrings; 10 were relocated from
+   after-import positions. Script: `scripts/add_module_docstrings.py`.
 
 ### 4.2 Medium Priority
 
-3. **ActiveInference.jl upstream fix** — Submit PR to `ActiveInferenceInstitute/ActiveInference.jl` to fix the Julia 1.12 precompilation issue
+3. **[RESOLVED] ActiveInference.jl upstream fix** — DistributionsAD ReverseDiff ext
+   patched; setup_environment.jl now auto-applies the fix. See §3.1 for full details.
 
 4. **Parallel test infrastructure** — Refactor shared state to enable `-n auto` parallel execution:
    - Make `TestRunner.execution_history` thread-safe
