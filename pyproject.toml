@@ -346,6 +346,7 @@ minversion = "6.0"
 addopts = "-ra -q --strict-markers --strict-config --durations=20"
 testpaths = ["src/tests", "tests"]
 python_files = ["test_*.py", "*_test.py"]
+norecursedirs = [".git", ".venv", "__pycache__", "*.egg-info"]
 python_classes = ["Test*"]
 python_functions = ["test_*"]
 markers = [

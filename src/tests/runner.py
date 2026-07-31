@@ -186,10 +186,6 @@ class TestRunner:
                 ]
             )
 
-        # Add parallel execution if enabled (disabled for now to avoid hanging)
-        # if self.config.parallel:
-        #     cmd.extend(["-n", "auto"])
-
         # Add test paths
         cmd.extend([str(path) for path in test_paths])
 

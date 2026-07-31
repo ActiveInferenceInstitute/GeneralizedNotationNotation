@@ -148,8 +148,7 @@ class BaseLLMProvider(ABC):
         Yields:
             Chunks of the response content
         """
-        if False:
-            yield ""
+        # Subclasses must implement streaming
 
     def construct_system_prompt(self, domain_context: str = "") -> str:
         """
