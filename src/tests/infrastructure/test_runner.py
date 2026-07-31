@@ -7,6 +7,7 @@ This module provides the TestRunner class with comprehensive monitoring and repo
 import json
 import logging
 import sys
+import threading
 import time
 from dataclasses import asdict
 from pathlib import Path
@@ -30,6 +31,7 @@ class TestRunner:
             cpu_limit_percent=config.cpu_limit_percent,
         )
         self.execution_history: List[TestExecutionResult] = []
+        self._history_lock = threading.Lock()
 
     def run_tests(
         self, test_paths: List[Path], output_dir: Path
@@ -279,10 +281,10 @@ class TestRunner:
 
     def generate_report(self, output_dir: Path) -> Dict[str, Any]:
         """Generate comprehensive test execution report."""
-        if not self.execution_history:
-            return {"error": "No test execution history available"}
-
-        latest_result = self.execution_history[-1]
+        with self._history_lock:
+            if not self.execution_history:
+                return {"error": "No test execution history available"}
+            latest_result = self.execution_history[-1]
 
         report: dict[str, Any] = {
             "execution_summary": asdict(latest_result),

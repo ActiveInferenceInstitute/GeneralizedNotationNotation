@@ -350,6 +350,9 @@ python_files = ["test_*.py", "*_test.py"]
 norecursedirs = [".git", ".venv", "__pycache__", "*.egg-info"]
 python_classes = ["Test*"]
 python_functions = ["test_*"]
+# pytest-xdist is optional (extra dev dep in pyproject.toml).
+# Enable with: python -m pytest -n auto <path>
+# Julia, shared-output, and pipeline integration tests need serial exec.
 markers = [
     "slow: marks tests as slow (deselect with '-m \"not slow\"')",
     "integration: marks tests as integration tests",
