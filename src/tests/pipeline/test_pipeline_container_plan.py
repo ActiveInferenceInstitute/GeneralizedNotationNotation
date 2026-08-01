@@ -39,7 +39,7 @@ class TestPlanIsClean:
         )
 
         assert REAL_CONFIG.exists(), f"missing real config: {REAL_CONFIG}"
-        plan = plan_for_pipeline(REAL_CONFIG)
+        plan = plan_for_pipeline(REAL_CONFIG, image="ghcr.io/gnn/runner@sha256:" + "a" * 64)
         findings = review_pipeline_plan(plan)
         assert findings == [], f"expected clean plan, got: {findings}"
 
@@ -50,7 +50,7 @@ class TestPlanIsClean:
         )
 
         cfg = _write_config(tmp_path, [13, 15])
-        plan = plan_for_pipeline(cfg)
+        plan = plan_for_pipeline(cfg, image="ghcr.io/gnn/runner@sha256:" + "a" * 64)
         assert review_pipeline_plan(plan) == []
 
     def test_hardened_defaults_present(self, tmp_path: Path) -> Any:

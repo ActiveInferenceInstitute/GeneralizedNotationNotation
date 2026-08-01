@@ -626,7 +626,7 @@ def _pipeline_run_outcome_acceptable(
 def _summary_status_is_acceptable(pipeline_summary: Dict[str, Any]) -> bool:
     status = str(pipeline_summary.get("overall_status", "")).strip().upper()
     if not status:
-        return True
+        return False
     return status in ACCEPTABLE_SUMMARY_STATUSES
 
 

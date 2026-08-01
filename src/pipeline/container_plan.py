@@ -34,7 +34,10 @@ _REFERENCE_RE = re.compile(r"^\$\{[^}]+\}$")
 # A properly pinned image ends with a full 64-hex-char sha256 digest. A mere
 # "@sha256:" substring (with a forged/short/non-hex digest, or a trailing mutable
 # tag) is NOT a valid pin.
-_DIGEST_PIN_RE = re.compile(r"@sha256:[0-9a-f]{64}$")
+# A digest pin must be a full 64-hex sha256 digest AND contain at least one
+# non-zero hex digit — an all-zero digest (e.g. a placeholder like
+# "0"*64) is not a pin to any real image.
+_DIGEST_PIN_RE = re.compile(r"@sha256:(?=[0-9a-f]*[1-9a-f])[0-9a-f]{64}$")
 # Host paths whose mount into a container enables trivial host escape.
 _SENSITIVE_HOST_MOUNTS = (
     "/",

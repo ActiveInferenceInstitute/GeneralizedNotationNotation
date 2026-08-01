@@ -271,6 +271,7 @@ def test_unpinned_image_strict_digest_rejects_fake_digests() -> None:
         "ubuntu:@sha256:nonsense",  # malformed
         "x@sha256:" + ("z" * 64),  # 64 non-hex chars
         "x@sha256:" + ("a" * 63),  # too short
+        "x@sha256:" + ("0" * 64),  # all-zero placeholder is NOT a real pin
         "registry/app:latest",  # mutable tag, no digest
     ):
         plan = cp.ContainerPlan(

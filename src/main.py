@@ -481,13 +481,14 @@ def _write_preliminary_pipeline_summary(
         prelim_summary["preliminary"] = True
 
         prelim_path = (
-            output_dir / "00_pipeline_summary" / "pipeline_execution_summary.json"
+            output_dir / "00_pipeline_summary" / "preliminary_summary.json"
         )
         prelim_path.parent.mkdir(parents=True, exist_ok=True)
         with open(prelim_path, "w") as f:
             json.dump(prelim_summary, f, indent=4, default=str)
         logger.info(
-            f"📝 Preliminary pipeline summary written for intelligent analysis ({len(prelim_summary.get('steps', []))} steps)"
+            f"📝 Preliminary pipeline summary written ({len(prelim_summary.get('steps', []))} steps — "
+            f"final summary path is 00_pipeline_summary/pipeline_execution_summary.json)"
         )
     except Exception as prelim_err:
         logger.warning(f"Could not write preliminary summary: {prelim_err}")

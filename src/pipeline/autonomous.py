@@ -71,13 +71,15 @@ def collect_observation_streams(target_dir: Path) -> List[Dict[str, Any]]:
     return streams
 
 
-def build_container_plan(target_dir: Path) -> Dict[str, Any]:
+def build_container_plan(
+    target_dir: Path, *, image: str = PINNED_PIPELINE_IMAGE
+) -> Dict[str, Any]:
     plan = generate_container_plan(
         "gnn-autonomous-proposal-review",
         [
             {
                 "name": "gnn-autonomous-review",
-                "image": PINNED_PIPELINE_IMAGE,
+                "image": image,
                 "command": [
                     "python",
                     "src/main.py",
@@ -110,7 +112,11 @@ def build_container_plan(target_dir: Path) -> Dict[str, Any]:
 
 
 def run_autonomous_proposal_loop(
-    target_dir: Path, output_dir: Path, *, max_candidates: int = 3
+    target_dir: Path,
+    output_dir: Path,
+    *,
+    max_candidates: int = 3,
+    image: str = PINNED_PIPELINE_IMAGE,
 ) -> Dict[str, Any]:
     """Write bounded candidate-evaluation artifacts without modifying source files."""
     autonomous_dir = output_dir / "autonomous"
@@ -131,7 +137,7 @@ def run_autonomous_proposal_loop(
         "candidate_count": len(candidates),
         "candidates": candidates,
         "observation_streams": collect_observation_streams(target_dir),
-        "container_plan": build_container_plan(target_dir),
+        "container_plan": build_container_plan(target_dir, image=image),
         "evaluation_report": evaluation_report,
         "autonomy_policy": dict(AUTONOMY_POLICY),
         "review_workflow": _review_workflow_summary(),
