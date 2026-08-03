@@ -294,11 +294,11 @@ end
 makedocs(;
     modules=[ActiveInference, ActiveInference.Environments],
     authors="Jonathan Ehrenreich Laursen, Samuel William Nehrer",
-    repo="<https://github.com/ilabcode/ActiveInference.jl/blob/{commit}{path}#{line}>",
+    repo="<https://github.com/ComputationalPsychiatry/ActiveInference.jl/blob/{commit}{path}#{line}>",
     sitename="ActiveInference.jl",
     format=Documenter.HTML(;
         prettyurls=get(ENV, "CI", "false") == "true",
-        canonical="<https://ilabcode.github.io/ActiveInference.jl>",
+        canonical="<https://computationalpsychiatry.github.io/ActiveInference.jl/>",
         edit_link="master",
         assets=[],
     ),
@@ -344,7 +344,7 @@ makedocs(;
 )
 
 deploydocs(;
-    repo="github.com/ilabcode/ActiveInference.jl",
+    repo="github.com/ComputationalPsychiatry/ActiveInference.jl",
     devbranch="master",
 )
 
@@ -547,7 +547,7 @@ FILE: docs/julia_files/Fitting.jl
 
 # Model fitting in '**ActiveInference**' is mediated through '**ActionModels**', which is our sister package for implementing and fitting various behavioural models to data. The core of '**ActionModels**' is the action model function, which takes a single observation, runs the inference scheme (updating the agent's beliefs), and calculates the probability distribution over actions from which the agent samples its actions
 
-# *(Check out the [ActionModels documentation](https://ilabcode.github.io/ActionModels.jl/dev/markdowns/Introduction/) for more details)*
+# *(Check out the [ActionModels documentation](https://computationalpsychiatry.github.io/ActionModels.jl/dev/) for more details)*
 
 using Pkg#hide
 using ActiveInference#hide
@@ -1992,7 +1992,7 @@ In many cases, we want to be able to draw conclusions about specific observed ph
 #### Model Fitting with ActionModels.jl
 
 Model fitting in '**ActiveInference**' is mediated through '**ActionModels**', which is our sister package for implementing and fitting various behavioural models to data. The core of '**ActionModels**' is the action model function, which takes a single observation, runs the inference scheme (updating the agent's beliefs), and calculates the probability distribution over actions from which the agent samples its actions.
-*(Check out the [ActionModels documentation](https://ilabcode.github.io/ActionModels.jl/dev/markdowns/Introduction/) for more details)*
+*(Check out the [ActionModels documentation](https://computationalpsychiatry.github.io/ActionModels.jl/dev/) for more details)*
 
 To demonstrate this, let's define a very simple generative model with a single state factor and two possible actions, and then initialize our active inference object:
 
@@ -2545,7 +2545,7 @@ CurrentModule = ActiveInference
 
 # ActiveInference
 
-Documentation for [ActiveInference](https://github.com/ilabcode/ActiveInference.jl).
+Documentation for [ActiveInference](https://github.com/ComputationalPsychiatry/ActiveInference.jl).
 
 ```@index
 ```
@@ -7079,7 +7079,7 @@ FILE: .github/agent_output.PNG
 FILE: .github/dependabot.yml
 ================================================
 
-# Docs: <https://docs.github.com/en/github/administering-a-repository/keeping-your-dependencies-updated-automatically>
+# Docs: <https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/about-dependabot-version-updates>
 
 version: 2
 

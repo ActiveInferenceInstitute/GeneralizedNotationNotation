@@ -1034,9 +1034,9 @@ end
 
 ## References
 
-- [RxInfer.jl Documentation](https://rxinfer.ml/docs/)
-- [ReactiveMP.jl Documentation](https://reactivemp.github.io/ReactiveMP.jl/stable/)
-- [GraphPPL.jl Documentation](https://biaslab.github.io/GraphPPL.jl/stable/)
+- [RxInfer.jl Documentation](https://docs.rxinfer.com/stable/)
+- [ReactiveMP.jl Documentation](https://github.com/biaslab/ReactiveMP.jl)
+- [GraphPPL.jl Documentation](https://github.com/biaslab/GraphPPL.jl)
 - [Active Inference Tutorial](../gnn/about_gnn.md)
 - [GNN Specification](../gnn/reference/gnn_syntax.md)
 - [Matrix Algebra in Active Inference](../gnn/integration/gnn_implementation.md)
@@ -1045,6 +1045,6 @@ end
 
 For RxInfer-specific issues:
 1. Check the [RxInfer.jl GitHub Issues](https://github.com/biaslab/RxInfer.jl/issues)
-2. Review [ReactiveMP examples](https://reactivemp.github.io/ReactiveMP.jl/stable/examples/)
+2. Review [ReactiveMP examples](https://github.com/biaslab/ReactiveMP.jl)
 3. Consult the [GNN troubleshooting guide](../troubleshooting/README.md)
 4. Post questions in [GNN Discussions](https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/discussions) 

@@ -208,7 +208,7 @@ Ontology processing integrates throughout the pipeline:
 ## Related Documentation
 
 - **[Ontology Module](../../../src/ontology/AGENTS.md)**: Implementation details
-- **[Active Inference Ontology](https://activeinference.org/ontology)**: Official ontology documentation
+- **[Active Inference Ontology](ontology_system.md)**: In-repo ontology documentation
 - **[GNN Tools](../operations/gnn_tools.md)**: Complete GNN tools reference
 - **[GNN Standards](../reference/gnn_standards.md)**: GNN domain knowledge and standards
 

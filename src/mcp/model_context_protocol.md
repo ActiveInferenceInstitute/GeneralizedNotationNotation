@@ -256,7 +256,7 @@ For developers looking to implement MCP in their projects, the most straightforw
 Citations:
 [1] <https://www.anthropic.com/news/model-context-protocol>
 [2] <https://modelcontextprotocol.io/docs/concepts/architecture>
-[3] <https://spec.modelcontextprotocol.io/specification/>
+[3] <https://modelcontextprotocol.io/specification/2025-06-18/>
 [4] <https://openai.github.io/openai-agents-python/mcp/>
 [5] <https://www.npmjs.com/package/@modelcontextprotocol/sdk>
 [6] <https://github.com/mcp-club/sdk>
@@ -289,7 +289,7 @@ Citations:
 [33] <https://www.reddit.com/r/docker/comments/1h6yxwf/introducing_dockermcp_a_mcp_server_for_docker/>
 [34] <https://www.npmjs.com/package/@modelcontextprotocol/server-postgres>
 [35] <https://mcp-framework.com/docs/installation/>
-[36] <https://modelcontextprotocol.io/development/updates>
+[36] <https://modelcontextprotocol.io/specification/2025-06-18/changelog>
 [37] <https://www.docker.com/blog/the-model-context-protocol-simplifying-building-ai-apps-with-anthropic-claude-desktop-and-docker/>
 [38] <https://www.npmjs.com/package/@modelcontextprotocol/server-everything>
 [39] <https://www.npmjs.com/package/mcp-sdk?activeTab=dependencies>
@@ -303,15 +303,15 @@ Citations:
 [47] <https://www.builder.io/blog/mcp-server>
 [48] <https://modelcontextprotocol.io/quickstart/client>
 [49] <https://www.k2view.com/model-context-protocol/>
-[50] <https://googleapis.github.io/genai-toolbox/getting-started/mcp_quickstart/>
+[50] <https://github.com/googleapis/genai-toolbox>
 [51] <https://www.leanware.co/insights/model-context-protocol-guide>
 [52] <https://github.com/modelcontextprotocol/quickstart-resources>
 [53] <https://www.reddit.com/r/LocalLLaMA/comments/1jz2cj6/building_a_simple_mcp_server_step_by_step_guide/>
 [54] <https://www.youtube.com/watch?v=jLM6n4mdRuA>
 [55] <https://modelcontextprotocol.io/quickstart/server>
 [56] <https://raw.githubusercontent.com/modelcontextprotocol/modelcontextprotocol/main/schema/2025-03-26/schema.ts>
-[57] <https://raw.githubusercontent.com/modelcontextprotocol/typescript-sdk/refs/heads/main/src/server/index.ts>
-[58] <https://raw.githubusercontent.com/modelcontextprotocol/typescript-sdk/refs/heads/main/src/types.ts>
-[59] <https://raw.githubusercontent.com/modelcontextprotocol/typescript-sdk/refs/heads/main/src/server/mcp.ts>
-[60] <https://raw.githubusercontent.com/modelcontextprotocol/typescript-sdk/refs/heads/main/src/server/completable.ts>
+[57] <https://github.com/modelcontextprotocol/typescript-sdk>
+[58] <https://github.com/modelcontextprotocol/typescript-sdk>
+[59] <https://github.com/modelcontextprotocol/typescript-sdk>
+[60] <https://github.com/modelcontextprotocol/typescript-sdk>
 [61] <https://raw.githubusercontent.com/modelcontextprotocol/servers/refs/heads/main/README.md>

@@ -209,7 +209,7 @@ end
 
 ### External
 - **[RxInfer.jl GitHub](https://github.com/biaslab/RxInfer.jl)**
-- **[RxInfer Documentation](https://biaslab.github.io/RxInfer.jl/)**
+- **[RxInfer Documentation](https://docs.rxinfer.com/stable/)**
 
 ---
 

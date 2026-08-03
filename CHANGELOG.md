@@ -126,7 +126,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
 - **Test suite alignment**: `test_type_checker_overall.py` rewired to target production `processor.py` orchestrator
 - **Deprecated marker removed**: `safe_to_fail` marker replaced with standard `xfail` in `pyproject.toml` and `pytest.ini`
 - **Default local LLM**: Ollama default tag is `smollm2:135m-instruct-q4_K_S` (`llm.defaults.DEFAULT_OLLAMA_MODEL`); override with `OLLAMA_MODEL` or `input/config.yaml` `llm.model`.
-- **Core dependencies**: `openai`, `ollama`, `python-dotenv`, and `aiohttp` are installed with the base package (LLM step and OpenRouter/Perplexity providers work without `uv sync --extra llm`).
+- **Core dependencies**: `openai`, `ollama`, `python-dotenv`, and `aiohttp` are installed with the base package (LLM step and OpenRouter/Perplexity providers work from a plain `uv sync`).
 
 ---
 
@@ -211,6 +211,6 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
 [1.8.0]: https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/compare/v1.6.0...v1.8.0
 [1.6.0]: https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/compare/v1.3.0...v1.6.0
 [1.3.0]: https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/compare/v1.2.0...v1.3.0
-[1.2.0]: https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/compare/v1.1.0...v1.2.0
-[1.1.0]: https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/compare/v1.0.0...v1.1.0
-[1.0.0]: https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/releases/tag/v1.0.0
+[1.2.0]: https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/releases
+[1.1.0]: https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/releases
+[1.0.0]: https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/releases

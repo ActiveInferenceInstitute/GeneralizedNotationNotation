@@ -459,9 +459,9 @@ def monitor_performance(func):
 
 ## 📚 Additional Resources
 
-- **PyMDP Performance Guide**: [PyMDP Documentation](https://pymdp.readthedocs.io/en/latest/performance.html)
+- **PyMDP Performance Guide**: [PyMDP Documentation](https://pypi.org/project/inferactively-pymdp/)
 - **JAX Performance Tips**: [JAX Documentation](https://jax.readthedocs.io/en/latest/notebooks/Common_Gotchas_in_JAX.html)
-- **NumPy Performance**: [NumPy Performance Guidelines](https://numpy.org/doc/stable/user/basics.performance.html)
+- **NumPy Performance**: [NumPy Performance Guidelines](https://numpy.org/doc/stable/user/)
 - **Profiling Tools**: `cProfile`, `py-spy`, `memory_profiler`
 
 ---

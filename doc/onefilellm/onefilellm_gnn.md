@@ -54,7 +54,7 @@ onefilellm \
   ./local/sim_pymdp.ipynb \
   https://zenodo.org/records/7803328 \
   --crawl-max-depth 2 \
-  --alias-add gnn_spec "https://raw.githubusercontent.com/ActiveInferenceInstitute/GeneralizedNotationNotation/main/spec/{0}.md" \
+  --alias-add gnn_spec "https://raw.githubusercontent.com/ActiveInferenceInstitute/GeneralizedNotationNotation/main/doc/gnn/reference/{0}.md" \
   gnn_spec GNN_Specification
 ```
 
@@ -132,7 +132,7 @@ By piping all three through OneFileLLM, a modeler can hand a single prompt to an
 Create reusable shorthand for spec modules:
 
 ```bash
-onefilellm --alias-add gnnsec "https://raw.githubusercontent.com/ActiveInferenceInstitute/GeneralizedNotationNotation/main/spec/{0}.md"
+onefilellm --alias-add gnnsec "https://raw.githubusercontent.com/ActiveInferenceInstitute/GeneralizedNotationNotation/main/doc/gnn/reference/{0}.md"
 onefilellm gnnsec State_Space gnnsec Likelihood_Matrix gnnsec Policy_Prior
 ```
 
@@ -244,7 +244,7 @@ onefilellm ...                                      # re-scrape
 With a single command pair—`onefilellm` → `llm`—researchers can now move from **idea to empirically grounded Active Inference model** within minutes, backed by rigorous notation and optimal prompt engineering.
 
 [1] <https://github.com/jimmc414/onefilellm>
-[2] <https://github.com/jimmc414/onefilellm/blob/main/README.md>
+[2] <https://github.com/jimmc414/onefilellm>
 [3] <https://zenodo.org/record/7803328>
 [4] <https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation>
 [5] <https://github.com/jimmc414/1filellm/blob/main/requirements.txt>
@@ -272,7 +272,7 @@ With a single command pair—`onefilellm` → `llm`—researchers can now move f
 [27] <https://journals.aps.org/prd/authors/general-notation-terminology>
 [28] <https://coda.io/@active-inference-institute/generalized-notation-notation>
 [29] <https://learn.saylor.org/mod/page/view.php?id=27241>
-[30] <https://www.activeinference.institute/research>
+[30] <https://www.activeinference.institute/>
 [31] <https://pypi.org/project/gnn/>
 [32] <https://journals.aps.org/authors/general-notation-terminology>
 [33] <https://bookdown.org/a_shaker/STM1001_Topic_0/notation-summary.html>

@@ -196,7 +196,7 @@ graph TD
     class EDIT,VIZ,SIM,SHARE,SYNTAX,COMPLETE,CHECK,GRAPH,EQ,RUN,PLOT,EXPORT,URL feature;
 ```
 
-Access the web editor at: [https://gnn-editor.activeinference.org](https://gnn-editor.activeinference.org)
+Build and edit models visually with the [GNN GUI tooling](../../gui_oxdraw/README.md).
 
 ### IDE Plugins
 
@@ -275,7 +275,7 @@ mindmap
       Tool Use
 ```
 
-Access the repository at: [https://github.com/ActiveInferenceInstitute/GNN-Models](https://github.com/ActiveInferenceInstitute/GNN-Models)
+Browse example models under [input/gnn_files/](../../../input/gnn_files/) and the [example gallery](../tutorials/gnn_examples_doc.md).
 
 ## Installation and Setup
 
@@ -301,20 +301,20 @@ uv run python src/main.py --target-dir input/gnn_files --verbose
 
 ### Official Documentation
 
-- [GNN Specification](https://activeinferenceinstitute.github.io/gnn/specification)
-- [API Reference](https://activeinferenceinstitute.github.io/gnn/api)
-- [Tutorials](https://activeinferenceinstitute.github.io/gnn/tutorials)
+- [GNN Specification](../reference/gnn_syntax.md)
+- [API Reference](../../api/README.md)
+- [Tutorials](../tutorials/quickstart_tutorial.md)
 
 ### Learning Resources
 
-- [GNN Introduction](https://activeinferenceinstitute.github.io/gnn/intro)
+- [GNN Introduction](../gnn_overview.md)
 - [Active Inference Institute YouTube](https://www.youtube.com/@ActiveInference)
-- [Example Gallery](https://activeinferenceinstitute.github.io/gnn/examples)
+- [Example Gallery](../tutorials/gnn_examples_doc.md)
 
 ### Community
 
 - [GitHub Repository](https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation)
-- [Discussion Forum](https://forum.activeinference.org/c/gnn)
+- [GitHub Discussions](https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/discussions)
 - [Issue Tracker](https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/issues)
 
 ## Step 4 GNN type checker

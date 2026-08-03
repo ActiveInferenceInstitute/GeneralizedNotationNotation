@@ -373,7 +373,7 @@ def extract_ontology_terms_tool(gnn_content: str) -> List[str]:
 
 ### External Resources
 - [Active Inference Institute](https://activeinference.institute/)
-- [Active Inference Ontology Documentation](https://activeinference.org/ontology)
+- [Active Inference Ontology Documentation](../../doc/gnn/advanced/ontology_system.md)
 
 ---
 

@@ -760,7 +760,7 @@ impl<Backend: BurnBackend, T: Tokenizer> Llama<Backend, T> {
 impl RopeFrequencyScaling {
     /// Applies frequency scaling by parts following Llama 3.1's scheme.
     ///
-    /// Adapted from: <https://github.com/meta-llama/llama-models/blob/main/models/llama3/reference_impl/model.py#L45>
+    /// Adapted from: <https://github.com/meta-llama/llama-models>
     pub fn freq_scaling_by_parts<Backend: BurnBackend>(
         &self,
         freqs: BurnTensor<Backend, 1>,

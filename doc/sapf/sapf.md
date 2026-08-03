@@ -275,7 +275,7 @@ The language's design philosophy of achieving maximum expressiveness with minima
 [22] https://stackoverflow.com/questions/75664039/my-pre-processing-for-audio-file-not-working
 [23] https://leomccormack.github.io/Spatial_Audio_Framework/files.html
 [24] https://docs.aveva.com/bundle/pi-server-l-da-smt/page/1022355.html
-[25] https://stg.wbdg.org/FFC/NAVFAC/ATESS/05_navfac_far_east_ufc_scif_sapf_oct_2024.pdf
+[25] (removed — internal staging host, not a public reference)
 [26] https://help.sap.com/docs/SAP_APPLICATION_INTERFACE_FRAMEWORK/1cefaed5b7a3471cb08564e54d5ba866/48be1a54ab881f6ee10000000a441470.html
 [27] https://supercollider.github.io/examples.html
 [28] http://www.cs.cmu.edu/afs/cs/academic/class/1.3.0-s12/www/recis/rec03.pdf

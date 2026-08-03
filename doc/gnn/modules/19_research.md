@@ -349,7 +349,7 @@ def analyze_research_data_tool(data, analysis_type="comprehensive"):
 - [Research Module](../../../src/research/../research/README.md)
 
 ### External Resources
-- [Active Inference Research](https://activeinference.org/research)
+- [Active Inference Research](../../research/README.md)
 
 ---
 

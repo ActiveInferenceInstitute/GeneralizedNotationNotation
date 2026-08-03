@@ -383,7 +383,7 @@ python src/7_export.py --target-dir input/ --verbose
 ### External Resources
 
 - [GraphML Specification](http://graphml.graphdrawing.org/)
-- [GEXF Format](https://gephi.org/gexf/format/)
+- [GEXF Format](https://gexf.net/)
 - [NetworkX Documentation](https://networkx.org/)
 
 ---

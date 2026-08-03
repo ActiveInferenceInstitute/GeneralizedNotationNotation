@@ -18,7 +18,7 @@ The goal of integrating `muscle-mem` with GNN is to get computationally intensiv
 
 This document explores how `muscle-mem` could be applied to the GNN ecosystem. It's unexplored territory, so all feedback is welcome!
 
-* Read [Muscle Mem - Removing LLM calls from Agents](https://pig-dot-dev.github.io/muscle-mem-docs/) for more context on the original `muscle-mem` project.
+* Read [Muscle Mem - Removing LLM calls from Agents](https://github.com/pig-dot-dev/muscle-mem) for more context on the original `muscle-mem` project.
 * Join [Muscle Mem discord](https://discord.gg/N2z5aZzHAc) for feedback.
 
 **Dev Log (Original Muscle-Mem Project)**

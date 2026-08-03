@@ -344,7 +344,7 @@ def generate_audio_tool(gnn_content: str, duration: float = 30.0) -> Dict[str, A
 - [Pedalboard Documentation](../../../src/audio/../../doc/pedalboard/)
 
 ### External Resources
-- [SAPF Specification](https://github.com/activeinference/sapf)
+- [SAPF Specification](../../sapf/README.md)
 - [Pedalboard Documentation](https://github.com/spotify/pedalboard)
 - [Librosa Documentation](https://librosa.org/)
 

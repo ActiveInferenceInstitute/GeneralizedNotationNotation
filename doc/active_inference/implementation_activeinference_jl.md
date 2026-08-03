@@ -98,7 +98,7 @@ graph LR
 - **[Computational Patterns](computational_patterns.md)**
 
 ### External
-- **[ActiveInference.jl GitHub](https://github.com/ActiveInference/ActiveInference.jl)**
+- **[ActiveInference.jl GitHub](https://github.com/ComputationalPsychiatry/ActiveInference.jl)**
 
 ---
 

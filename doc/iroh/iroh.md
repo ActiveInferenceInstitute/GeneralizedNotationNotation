@@ -338,7 +338,7 @@ Iroh represents a significant advancement in peer-to-peer networking technology,
 [18] https://repository.tudelft.nl/file/File_52da36a3-e95e-47a0-aa08-778e4a37786c
 [19] https://www.iroh.computer/proto
 [20] https://github.com/n0-computer/iroh-willow
-[21] https://willowprotocol.org/more/projects-and-communities/index.html
+[21] https://willowprotocol.org/
 [22] https://www.reddit.com/r/AvatarVsBattles/comments/11u6n0b/how_powerful_is_iroh/
 [23] https://github.com/n0-computer
 [24] http://forum.malleable.systems/t/the-willow-protocol/161
@@ -391,7 +391,7 @@ Iroh represents a significant advancement in peer-to-peer networking technology,
 [71] https://news.ycombinator.com/item?id=39026791
 [72] https://www.iroh.computer/blog/iroh-0-25-0-custom-protocols-for-all
 [73] https://crates.io/crates/iroh-gossip/range/%5E0.24.0
-[74] https://aigateway.envoyproxy.io/docs/capabilities/metrics/
+[74] https://aigateway.envoyproxy.io/
 [75] https://www.linkedin.com/posts/iroh_redux-toolkit-query-rtk-queryis-a-powerful-activity-7231598794176397313-stpb
 [76] https://en.wikipedia.org/wiki/Iroh
 [77] https://crates.io/crates/iroh-metrics

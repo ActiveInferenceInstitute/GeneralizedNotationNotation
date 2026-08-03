@@ -79,7 +79,7 @@ The mathematical rigor of quadray coordinates, combined with their philosophical
 [15] http://www.math.uni-rostock.de/~richter/W-DR2007.pdf
 [16] http://www.4dsolutions.net/ocn/oop7.html
 [17] https://groups.io/g/hypercomplex/topic/miscellaneous_quadrays/92331884
-[18] https://github.com/quadratichq/quadratic
+[18] https://github.com/quadratichq
 [19] http://www.4dsolutions.net/ocn/pygeom.html
 [20] https://www.linkedin.com/in/4dsolutions
 [21] https://www.minortriad.com/quadray.html
@@ -89,7 +89,7 @@ The mathematical rigor of quadray coordinates, combined with their philosophical
 [25] http://www.4dsolutions.net/ocn/pyqvectors.html
 [26] https://princeton.academia.edu/kirbyurner
 [27] https://en.wikipedia.org/wiki/Synergetics_(Fuller)
-[28] https://docs.quadratichq.com/company/quadratic-is-source-available
+[28] https://docs.quadratichq.com/
 [29] https://www.synergeticlatticefieldtheory.org/synergetics.html
 [30] http://12degreesoffreedom.org/isotropicvectormatrix.html
 [31] https://cosmometry.com/ch-8-isotropic-vector-matrix/

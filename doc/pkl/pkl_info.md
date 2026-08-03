@@ -247,7 +247,7 @@ This comprehensive ecosystem demonstrates Apple's commitment to creating not jus
 [38] https://rock-the-prototype.com/en/programming-languages-frameworks/pkl-apple-programming-language-for-control-in-configuration-management/
 [39] https://configu.com/blog/apple-pkl-code-example-concepts-how-to-get-started/
 [40] https://pkl-lang.org/main/current/language-tutorial/01_basic_config.html
-[41] https://moonrepo.dev/docs/guides/pkl-config
+[41] https://moonrepo.dev/
 [42] https://getstream.io/blog/configuration-as-code/
 [43] https://stackoverflow.com/questions/65765367/how-to-list-all-my-github-repositories-public-and-private-in-the-terminal-with
 [44] https://github.com/marketplace/actions/pkl-java

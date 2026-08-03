@@ -119,7 +119,7 @@ The project appears to be in active development with sophisticated cryptographic
 [10] https://alphasigmacapitalresearch.substack.com/p/nock-nock-whos-there-the-future-of
 [11] https://forum.nockchain.org/t/what-is-nockchain/598
 [12] https://twitter.com/i/status/1759313608851218675
-[13] https://www.nockchain.org/writing/
+[13] https://www.nockchain.org/
 [14] https://www.nockchain.org/introducing/
 [15] https://urbitguide.com/what-is-nockchain/
 [16] https://www.rootdata.com/Projects/detail/Nockchain?k=MTEwNTA%3D
@@ -133,7 +133,7 @@ The project appears to be in active development with sophisticated cryptographic
 [24] https://www.rootdata.com/Projects/detail/Nockpool?k=MTc2Mzg%3D
 [25] https://dropstab.com/coins/nockchain
 [26] https://101blockchains.com/blockchain-development-tools/
-[27] https://www.nockchain.org/faq/
+[27] https://www.nockchain.org/
 [28] https://icodrops.com/nockchain/
 [29] https://x.com/nockchain/status/1864082190256218431
 [30] https://www.dextools.io/app/en/solana/pair-explorer/ENDyunqABSwMvfUoRxsNA1N2QLhXeZQTYrnPZUQdnygP

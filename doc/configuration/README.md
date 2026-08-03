@@ -205,7 +205,7 @@ mcp:
 ontology:
   # Active Inference Ontology integration
   enabled: true
-  ontology_url: "https://github.com/ActiveInferenceInstitute/ActiveInferenceOntology"
+  ontology_url: "https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/tree/main/doc/gnn/advanced/ontology_system.md"
   local_ontology_path: "ontologies/"
   
   # Validation
