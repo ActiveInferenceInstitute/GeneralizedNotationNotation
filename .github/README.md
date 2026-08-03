@@ -4,7 +4,7 @@
 
 This file is the **GitHub-oriented entry point**: GNN concepts, deep links into language and pipeline docs, repository layout, CI, and local validation. The narrative overview, badges, publication block, and long examples live in the root [README.md](../README.md).
 
-**Last updated**: 2026-05-08
+**Last updated**: 2026-08-02
 
 ---
 
@@ -320,6 +320,9 @@ uv run --extra dev python scripts/check_maintained_doc_terms.py --strict
 uv run --extra dev python doc/development/docs_audit.py --strict --check-anchors --no-write
 uv run --extra dev python scripts/check_gnn_doc_patterns.py --strict
 uv run --extra dev mypy src --show-error-codes
+# Optional: external-URL health across maintained docs (informational — bot-blocked
+# hosts like crates.io/paperswithcode can false-positive; not wired into CI)
+uv run --extra dev python scripts/check_external_links.py
 uv run --extra dev bandit -r src -c pyproject.toml -q
 uv run --extra dev python -m pytest --collect-only src/tests/ -q --tb=no \
   --ignore=src/tests/llm/test_llm_ollama.py \

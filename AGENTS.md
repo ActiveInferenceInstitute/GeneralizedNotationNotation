@@ -231,12 +231,14 @@ graph TD
 - **Screen Reader Support**: Accessible output with emoji-free alternatives for assistive technologies
 - **Performance Monitoring**: Built-in timing and resource consumption tracking with visual displays
 
-### Current Validation (July 2026) — uv 0.12.0
+### Current Validation (August 2026)
 
 - **uv 0.12.0 compatibility**: Verified. `uv lock --check` passes (310 packages, 0.86ms resolve). `uv sync --frozen` succeeds. `uv run --extra dev` executes all tests. The `uv` toolchain constraint `uv>=0.7.8` in Dockerfile is the minimum bootstrap floor; the project lock file is compatible with uv 0.12.0.
 - **Docs audit**: `uv run --extra dev python doc/development/docs_audit.py --strict --check-anchors --no-write` reports no broken links, anchor gaps, or AGENTS/README coverage gaps.
 - **GNN doc patterns**: `uv run --extra dev python scripts/check_gnn_doc_patterns.py --strict` reports no banned GNN documentation patterns.
-- **Tests**: command of record is `uv run --extra dev python -m pytest src/tests/ -q --tb=no -rsx --ignore=src/tests/llm/test_llm_ollama.py --ignore=src/tests/llm/test_llm_ollama_integration.py`; latest local evidence (2026-07-29) is 2,495 passed, 0 skipped, and 0 xfailed. 10 uv-environment tests fail inside `uv run` subprocesses (pre-existing environment-specific issue: `shutil.which("uv")` returns None inside subprocesses spawned by `uv run`). Re-enable `src/tests/llm/test_llm_ollama*.py` when `ollama` is installed and reachable.
+- **Repository terminology**: `uv run --extra dev python scripts/check_repo_terminology.py --strict` and `scripts/check_maintained_doc_terms.py --strict` report no violations.
+- **Mypy**: `uv run --extra dev mypy src --config-file pyproject.toml` passes (0 errors, 758 files).
+- **Tests**: command of record is `uv run --extra dev python -m pytest src/tests/ -q --tb=no -rsx --ignore=src/tests/llm/test_llm_ollama.py --ignore=src/tests/llm/test_llm_ollama_integration.py`; latest local evidence (2026-08-02) is 2,622 passed and 1 environment-dependent failure (`test_gridworld_render_execute_analyze_visualize_strict` requires Julia packages RxInfer/ActiveInference installed locally). Re-enable `src/tests/llm/test_llm_ollama*.py` when `ollama` is installed and reachable.
 - **LLM Default Model**: `smollm2:135m-instruct-q4_K_S` via Ollama (`llm.defaults.DEFAULT_OLLAMA_MODEL`; override with `OLLAMA_MODEL` / `input/config.yaml`).
 - **Renderer inventory**: PyMDP, RxInfer, JAX, NumPyro, Stan, PyTorch, ActiveInference.jl, DisCoPy, and bnlearn have maintained render paths. The public root `output/` contract is the POMDP GridWorld full run with strict execution proof for PyMDP, RxInfer.jl, and ActiveInference.jl.
 - **Default dev suite**: FastAPI, websocket bridge, and LSP tests run under the `dev` extra; browser, public-network, live GUI, audio-DSP, and Ollama integrations remain explicit opt-in surfaces rather than hidden default-suite skips.
@@ -542,7 +544,7 @@ uv run --extra dev python scripts/run_v3_orchestration_acceptance.py
 
 ---
 
-**Last Updated**: 2026-06-20
+**Last Updated**: 2026-08-02
 **Pipeline Version**: 3.0.0 ("Long-Running Orchestration")
 **Total Steps**: 25 (0-24)
 **Status**: Maintained

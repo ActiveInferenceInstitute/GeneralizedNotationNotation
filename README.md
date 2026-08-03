@@ -1,6 +1,6 @@
 # GeneralizedNotationNotation (GNN)
 
-**Last Updated**: 2026-06-20
+**Last Updated**: 2026-08-02
 
 <div align="center">
 
@@ -52,12 +52,11 @@
 **Version**: 3.0.0
 **Status**: Beta package with maintained validation gates (Active Inference Institute)
 
-**uv 0.12.0 Compatibility (verified 2026-07-30)**: `uv lock --check` passes (310 packages, 0.86ms resolve). `uv sync --frozen` succeeds. The project lock file is compatible with uv 0.12.0. Ruff lint is clean (`ruff check src/` passes). MyPy reports 4 pre-existing errors (unrelated to uv 0.12.0). The Dockerfile constraint `uv>=0.7.8` is the minimum bootstrap floor.
+**uv 0.12.0 Compatibility (verified 2026-07-30)**: `uv lock --check` passes (310 packages, 0.86ms resolve). `uv sync --frozen` succeeds. The project lock file is compatible with uv 0.12.0. Ruff lint is clean (`ruff check src/` passes). MyPy is clean (`mypy src/` passes, 758 files, as of 2026-08-02). The Dockerfile constraint `uv>=0.7.8` is the minimum bootstrap floor.
 
-**Test Suite Evidence (verified 2026-07-30)**: command of record is `uv run --extra dev python -m pytest src/tests/ -q --tb=no -rsx --ignore=src/tests/llm/test_llm_ollama.py --ignore=src/tests/llm/test_llm_ollama_integration.py`; latest local evidence is 2,495 passed, 0 skipped, and 0 xfailed. 10 uv-environment tests fail inside `uv run` subprocesses (pre-existing environment-specific issue: `shutil.which("uv")` returns None inside subprocesses spawned by `uv run`). Re-enable the two Ollama files only when `ollama` is installed and reachable.
+**Test Suite Evidence (verified 2026-08-02)**: command of record is `uv run --extra dev python -m pytest src/tests/ -q --tb=no -rsx --ignore=src/tests/llm/test_llm_ollama.py --ignore=src/tests/llm/test_llm_ollama_integration.py`; latest local evidence is 2,622 passed and 1 environment-dependent failure (`test_gridworld_render_execute_analyze_visualize_strict`, which requires the Julia packages RxInfer/ActiveInference installed locally — see `doc/HANDOFF.md`). Re-enable the two Ollama files only when `ollama` is installed and reachable.
 **Published Output Evidence (verified 2026-06-18)**: root `output/` is a POMDP GridWorld full-pipeline publication generated from `input/gnn_files/pomdp_gridworld` with `--frameworks all` and validated by `uv run --extra dev python scripts/check_pomdp_gridworld_outputs.py output`.
 **Features (v2.0.0)**: semantic fidelity ledgers across all maintained model families, strict JSON parse/serialize/parse preservation for variables, edges, dimensions, parameter shapes, equations, time, and ontology mappings; cross-framework reliability ledgers with explicit compatible/unsupported backend statuses; GridWorld comparison across PyMDP, RxInfer, and ActiveInference.jl; model-family acceptance and interpretability ledgers; maintained template CLI (`gnn templates list`, `gnn templates show`, `gnn pull`); authenticated local MCP HTTP orchestration; structured PyMDP 1.0 POMDP execution; static/headless GUI publication; PyMDP Scaling Study; and MCP Full Module Exposure.
-**Features (v3.0.0)**: three safe-by-design `src/pipeline/` orchestration contracts — durable observation streams, resumable run sessions, and auditable container plans — plus additive live wiring (session acceptance, run manifests, pipeline container planning), a strict acceptance gate (`scripts/run_v3_orchestration_acceptance.py`), and 3 new MCP tools; all data-only with no live infrastructure mutation (every module generates, validates, replays, or plans data).
 **New in v3.0.0 ("Long-Running Orchestration")**: three safe-by-design `src/pipeline/` contracts — durable observation streams, resumable run sessions, and auditable container plans — plus additive live wiring, a strict acceptance gate (`scripts/run_v3_orchestration_acceptance.py`), and 3 new MCP tools. No live infrastructure mutation; every module generates, validates, replays, or plans data only. See [doc/pipeline/v3_orchestration.md](./doc/pipeline/v3_orchestration.md).
 📖 **DOI:** [10.5281/zenodo.7803328](https://doi.org/10.5281/zenodo.7803328)  
 📁 **Archive:** [zenodo.org/records/7803328](https://zenodo.org/records/7803328)
@@ -100,18 +99,18 @@ GNN addresses the challenge of communicating Active Inference models, which are 
 ```text
 GeneralizedNotationNotation/
 ├── 📄 README.md, AGENTS.md, DOCS.md, ARCHITECTURE.md  # Core documentation
-├── 📁 src/                    # 25-step pipeline + 33 top-level source/doc dirs
+├── 📁 src/                    # 25-step pipeline + 32 module directories
 │   ├── main.py               # 🎯 Main orchestrator - run this!
 │   ├── 0_template.py → 24_intelligent_analysis.py  # Numbered pipeline scripts
 │   ├── gnn/, render/, execute/, llm/, ...  # Agent modules
 │   └── tests/                # Comprehensive test suite
-├── 📁 doc/                    # 605 Markdown files under doc/ (plus assets; see doc/README.md)
+├── 📁 doc/                    # 610 Markdown files under doc/ (plus assets; see doc/README.md)
 │   ├── gnn/                  # GNN language specification
 │   ├── pymdp/, rxinfer/      # Framework integration guides
 │   └── cognitive_phenomena/  # Example cognitive models
 ├── 📁 input/                  # Input GNN files and configuration
 │   └── gnn_files/            # Sample GNN model files
-├── 📁 output/                 # Local generated pipeline outputs (ignored except .gitkeep)
+├── 📁 output/                 # Pipeline outputs (tracked per repo policy)
 └── 📄 pyproject.toml, pytest.ini  # Configuration files
 ```
 

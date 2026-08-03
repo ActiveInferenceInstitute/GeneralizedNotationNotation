@@ -268,4 +268,4 @@ Also maintained: [expected_dirs.txt](expected_dirs.txt) (machine-oriented list o
 
 ---
 
-*Last updated: 2026-06-20 — package v3.0.0 ("Long-Running Orchestration")*
+*Last updated: 2026-08-02 — package v3.0.0 ("Long-Running Orchestration")*
