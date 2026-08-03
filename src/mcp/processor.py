@@ -33,51 +33,15 @@ def register_module_tools(module_name: (str) | None = None) -> Any:
 
     # --- Auto-discover mode (no module_name given) ---
     if module_name is None:
-        # Known pipeline modules that expose an mcp sub-module
-        pipeline_modules: list[Any] = [
-            "template",
-            "setup",
-            "tests",
-            "gnn",
-            "model_registry",
-            "type_checker",
-            "validation",
-            "export",
-            "visualization",
-            "advanced_visualization",
-            "ontology",
-            "render",
-            "execute",
-            "llm",
-            "ml_integration",
-            "audio",
-            "analysis",
-            "integration",
-            "security",
-            "research",
-            "website",
-            "mcp",
-            "gui",
-            "report",
-            "intelligent_analysis",
-        ]
-        registered: list = []
-        for mod_name in pipeline_modules:
-            for module_path in (f"src.{mod_name}.mcp", f"{mod_name}.mcp"):
-                try:
-                    mod = importlib.import_module(module_path)
-                    if hasattr(mod, "register_tools") and callable(mod.register_tools):
-                        mod.register_tools(mcp_instance)
-                        logger.debug(f"Auto-registered tools for module: {mod_name}")
-                    break
-                except (ImportError, ModuleNotFoundError):
-                    continue
-                except Exception as e:
-                    logger.debug(f"register_tools failed for {mod_name}: {e}")
-                    break
+        # Full discovery delegates to MCP.discover_modules(), which scans the
+        # src/ tree for src/*/mcp.py (the same code path process_mcp/initialize
+        # use). This keeps tool registration identical regardless of entry
+        # point and avoids a hand-maintained module list that drifts from the
+        # actual tree.
+        mcp_instance.discover_modules()
         # Return the current tool list so callers can inspect what was registered
         try:
-            registered = mcp_instance.list_available_tools()
+            registered = cast(list[Any], mcp_instance.list_available_tools())
         except Exception:
             registered = []
         logger.info(
@@ -313,12 +277,14 @@ def process_mcp(
                 logger,
                 f"MCP processing completed successfully - {tools_count} tools from {registered_count} modules registered",
             )
-        else:
-            log_step_warning(
-                logger, "MCP processing completed with no modules registered"
-            )
+            return True
 
-        return True
+        # Zero modules registered means the discovery/registration step did not
+        # fulfil its purpose (every src/*/mcp.py import failed or timed out).
+        # Report it as a failure so the orchestrator does not treat a broken
+        # tool-registration pass as success.
+        log_step_error(logger, "MCP processing failed: no modules registered")
+        return False
 
     except Exception as e:
         log_step_error(logger, f"MCP processing failed: {e}")

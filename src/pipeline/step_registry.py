@@ -49,39 +49,114 @@ class StepInfo:
 # Canonical step list — ordered, authoritative
 # ---------------------------------------------------------------------------
 STEPS: List[StepInfo] = [
-    StepInfo("0_template", "Template initialization", "process_template", frozenset({"core"})),
-    StepInfo("1_setup", "Environment setup", "process_setup", frozenset({"core"}),
-             additional_args_key="1_setup"),
-    StepInfo("2_tests", "Test suite execution", "run_tests", frozenset({"core", "tests"})),
-    StepInfo("3_gnn", "GNN file processing", "process_gnn_files", frozenset({"core"})),
-    StepInfo("4_model_registry", "Model registry", "process_model_registry", frozenset({"core"})),
-    StepInfo("5_type_checker", "Type checking", "process_type_checking", frozenset({"core"}),
-             additional_args_key="5_type_checker"),
+    StepInfo(
+        "0_template",
+        "Template initialization",
+        "process_template_standardized",
+        frozenset({"core"}),
+    ),
+    StepInfo(
+        "1_setup",
+        "Environment setup",
+        "setup_orchestrator",
+        frozenset({"core"}),
+        additional_args_key="1_setup",
+    ),
+    StepInfo(
+        "2_tests",
+        "Test suite execution",
+        "_test_runner_wrapper",
+        frozenset({"core", "tests"}),
+    ),
+    StepInfo(
+        "3_gnn", "GNN file processing", "process_gnn_multi_format", frozenset({"core"})
+    ),
+    StepInfo(
+        "4_model_registry",
+        "Model registry",
+        "process_model_registry",
+        frozenset({"core"}),
+    ),
+    StepInfo(
+        "5_type_checker",
+        "Type checking",
+        "_type_check_dispatch",
+        frozenset({"core"}),
+        additional_args_key="5_type_checker",
+    ),
     StepInfo("6_validation", "Validation", "process_validation", frozenset({"core"})),
     StepInfo("7_export", "Multi-format export", "process_export", frozenset({"core"})),
-    StepInfo("8_visualization", "Visualization", "process_visualization", frozenset({"core"})),
-    StepInfo("9_advanced_viz", "Advanced visualization", "process_advanced_viz", frozenset({"core"})),
-    StepInfo("10_ontology", "Ontology processing", "process_ontology", frozenset({"core"}),
-             additional_args_key="10_ontology"),
+    StepInfo(
+        "8_visualization", "Visualization", "process_visualization", frozenset({"core"})
+    ),
+    StepInfo(
+        "9_advanced_viz",
+        "Advanced visualization",
+        "process_advanced_viz",
+        frozenset({"core"}),
+    ),
+    StepInfo(
+        "10_ontology",
+        "Ontology processing",
+        "process_ontology",
+        frozenset({"core"}),
+        additional_args_key="10_ontology",
+    ),
     StepInfo("11_render", "Code rendering", "process_render", frozenset({"core"})),
     StepInfo("12_execute", "Execution", "process_execute", frozenset({"core"})),
-    StepInfo("13_llm", "LLM processing", "process_llm", frozenset({"llm"}),
-             additional_args_key="13_llm"),
-    StepInfo("14_ml_integration", "ML integration", "process_ml_integration", frozenset({"core"})),
+    StepInfo(
+        "13_llm",
+        "LLM processing",
+        "process_llm",
+        frozenset({"llm"}),
+        additional_args_key="13_llm",
+    ),
+    StepInfo(
+        "14_ml_integration",
+        "ML integration",
+        "process_ml_integration",
+        frozenset({"core"}),
+    ),
     StepInfo("15_audio", "Audio processing", "process_audio", frozenset({"core"})),
     StepInfo("16_analysis", "Analysis", "process_analysis", frozenset({"core"})),
-    StepInfo("17_integration", "Integration", "process_integration", frozenset({"core"})),
+    StepInfo(
+        "17_integration", "Integration", "process_integration", frozenset({"core"})
+    ),
     StepInfo("18_security", "Security", "process_security", frozenset({"core"})),
     StepInfo("19_research", "Research", "process_research", frozenset({"core"})),
-    StepInfo("20_website", "Website generation", "process_website", frozenset({"core"}),
-             additional_args_key="20_website"),
-    StepInfo("21_mcp", "Model Context Protocol processing", "process_mcp", frozenset({"core"}),
-             additional_args_key="21_mcp"),
-    StepInfo("22_gui", "GUI (Interactive GNN Constructor)", "process_gui", frozenset({"core"})),
-    StepInfo("23_report", "Report generation", "process_report", frozenset({"core"}),
-             additional_args_key="23_report"),
-    StepInfo("24_intelligent_analysis", "Intelligent pipeline analysis",
-             "process_intelligent_analysis", frozenset({"core"})),
+    StepInfo(
+        "20_website",
+        "Website generation",
+        "process_website",
+        frozenset({"core"}),
+        additional_args_key="20_website",
+    ),
+    StepInfo(
+        "21_mcp",
+        "Model Context Protocol processing",
+        "process_mcp",
+        frozenset({"core"}),
+        additional_args_key="21_mcp",
+    ),
+    StepInfo(
+        "22_gui",
+        "GUI (Interactive GNN Constructor)",
+        "process_gui",
+        frozenset({"core"}),
+    ),
+    StepInfo(
+        "23_report",
+        "Report generation",
+        "process_report",
+        frozenset({"core"}),
+        additional_args_key="23_report",
+    ),
+    StepInfo(
+        "24_intelligent_analysis",
+        "Intelligent pipeline analysis",
+        "process_intelligent_analysis",
+        frozenset({"core"}),
+    ),
 ]
 
 # ---------------------------------------------------------------------------
@@ -112,9 +187,7 @@ def output_dir_for_stem(stem: str) -> Optional[str]:
 # ---------------------------------------------------------------------------
 # Re-export aliases for existing code and tests
 # ---------------------------------------------------------------------------
-PIPELINE_STEPS_TUPLE = tuple(
-    (step.script_name, step.description) for step in STEPS
-)
+PIPELINE_STEPS_TUPLE = tuple((step.script_name, step.description) for step in STEPS)
 
 STEP_METADATA_DICT: Dict[str, Dict[str, str]] = {
     step.script_stem: {"name": step.description, "description": step.description}

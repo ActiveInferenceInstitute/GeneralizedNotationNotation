@@ -955,7 +955,7 @@ def _handle_pipeline_failure(
     summary_path = _pipeline_summary_path(args.output_dir)
     summary_path.parent.mkdir(parents=True, exist_ok=True)
     with open(summary_path, "w") as f:
-        json.dump(pipeline_summary, f, indent=4)
+        json.dump(pipeline_summary, f, indent=4, default=str)
 
     log_step_error(logger, f"Pipeline failed: {str(error)}")
     return 1

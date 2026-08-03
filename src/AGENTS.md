@@ -188,8 +188,9 @@ graph TD
 - **Tests command of record**: `uv run --extra dev python -m pytest src/tests/ -q
   --tb=no -rsx --ignore=src/tests/llm/test_llm_ollama.py
   --ignore=src/tests/llm/test_llm_ollama_integration.py`. Re-include the two Ollama files
-  when `ollama` is installed and reachable. Latest local evidence (2026-06-18):
-  2,495 passed, 0 skipped, 0 xfailed.
+  when `ollama` is installed and reachable. Latest local evidence (2026-08-03):
+  2,642 passed, 0 failed (command of record); 2,668 passed, 0 failed with Julia
+  backends and Ollama enabled.
 - **Default dev suite**: FastAPI, websocket bridge, and LSP tests run under the
   `dev` extra; browser, public-network, live GUI, audio-DSP, and Ollama
   integrations remain explicit opt-in surfaces rather than hidden default-suite skips.
@@ -344,7 +345,7 @@ pytest --cov=src --cov-report=term-missing
 
 ---
 
-**Last Updated**: 2026-06-12
-**Pipeline Version**: 2.0.0
+**Last Updated**: 2026-08-03
+**Pipeline Version**: 3.0.0
 **Total Steps**: 25 (0-24)
 **Status**: Maintained

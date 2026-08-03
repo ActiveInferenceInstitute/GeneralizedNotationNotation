@@ -204,10 +204,10 @@ class GNNParser:
     def _parse_binary_file(self, file_path: Path) -> ParsedGNN:
         """Parse binary files (pickle format)."""
         try:
-            import pickle  # nosec B403
+            from .parsers.binary_parser import safe_pickle_load
 
             with open(file_path, "rb") as f:
-                data = pickle.load(f)  # nosec B301
+                data = safe_pickle_load(f)
 
             # Convert pickle data to ParsedGNN format
             return self._convert_pickle_to_parsed_gnn(data)

@@ -691,21 +691,18 @@ class TestPipelineScriptIntegration:
             if not script_path.exists():
                 continue
             content = script_path.read_text()
-            uses_template = "create_standardized_pipeline_script" in content
-            _has_argument_parser = "ArgumentParser" in content
-            has_argparse = "argparse" in content
-            if uses_template:
+            if "create_standardized_pipeline_script" in content:
+                # The standardized factory registers --target-dir/--output-dir/
+                # --verbose centrally; scripts using it need not mention them.
                 logging.info(
                     f"Script {script_name} uses standardized pipeline template - arguments handled automatically"
                 )
-            elif has_argparse:
+                continue
+            has_argparse = "argparse" in content or "ArgumentParser" in content
+            if has_argparse:
                 for arg in common_args:
-                    arg_found = (
-                        arg in content
-                        or arg.replace("--", "").replace("-", "_") in content
-                        or "target_dir" in content
-                        or ("output_dir" in content)
-                    )
+                    normalized = arg.replace("--", "").replace("-", "_")
+                    arg_found = arg in content or normalized in content
                     assert arg_found, (
                         f"Script {script_name} should handle {arg} or equivalent"
                     )

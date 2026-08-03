@@ -86,6 +86,7 @@ class MCP:
         self._cache_timestamp = 0.0
         self._cache_ttl = 300.0  # 5 minutes
         self._discovery_cache_lock = threading.Lock()
+        self._registration_lock = threading.RLock()
 
         self._active_executions: Dict[str, int] = defaultdict(int)
         self._execution_lock = threading.Lock()
@@ -426,16 +427,22 @@ class MCP:
             # Register tools and resources from the module
             register_start = time.time()
             if hasattr(module, "register_tools") and callable(module.register_tools):
-                tools_before = len(self.tools)
-                resources_before = len(self.resources)
+                # The tools_added delta must be computed atomically: under the
+                # concurrent discovery executor a sibling module can otherwise
+                # register between the before/after length reads and have its
+                # tools misattributed to this module (e.g. the zero-tool `doc`
+                # module spuriously reporting one tool).
+                with self._registration_lock:
+                    tools_before = len(self.tools)
+                    resources_before = len(self.resources)
 
-                with self._tool_registration_context(
-                    module=f"src.{module_name}", category=module_name
-                ):
-                    module.register_tools(self)
+                    with self._tool_registration_context(
+                        module=f"src.{module_name}", category=module_name
+                    ):
+                        module.register_tools(self)
 
-                tools_added = len(self.tools) - tools_before
-                resources_added = len(self.resources) - resources_before
+                    tools_added = len(self.tools) - tools_before
+                    resources_added = len(self.resources) - resources_before
                 register_time = time.time() - register_start
 
                 module_load_time = time.time() - module_start

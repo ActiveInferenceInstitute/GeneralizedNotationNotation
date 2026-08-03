@@ -46,8 +46,9 @@ class TestProviderContract:
         PROVIDER_CHECKLIST,
         ids=[p[1] for p in PROVIDER_CHECKLIST],
     )
-    def test_provider_importable(self, module_name: str, class_name: str,
-                                 import_path: str) -> None:
+    def test_provider_importable(
+        self, module_name: str, class_name: str, import_path: str
+    ) -> None:
         """Each provider class imports cleanly and inherits from BaseLLMProvider."""
         mod = __import__(import_path, fromlist=[class_name])
         cls: type = getattr(mod, class_name)

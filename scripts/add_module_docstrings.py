@@ -5,6 +5,7 @@ Inserts a PEP 257 module docstring as the first statement (after shebang/encodin
 comment lines, before `from __future__` imports). Content is derived from the
 file's own top-level classes and functions so it stays accurate.
 """
+
 from __future__ import annotations
 
 import ast
@@ -39,7 +40,11 @@ def leading_comment_lines(text: str) -> tuple[list[str], int]:
                 continue
             # Treat a run of comment lines as a header block worth keeping only if
             # it looks like a license/attribution header.
-            if "license" in stripped.lower() or "copyright" in stripped.lower() or "author" in stripped.lower():
+            if (
+                "license" in stripped.lower()
+                or "copyright" in stripped.lower()
+                or "author" in stripped.lower()
+            ):
                 leading.append(lines[i])
                 i += 1
                 continue
@@ -88,7 +93,9 @@ def describe_module(path: pathlib.Path, tree: ast.Module) -> str:
         if len(classes) > 4:
             names += f", and {len(classes) - 4} more"
         primary_doc = classes[0][1] if classes[0][1] else ""
-        first_sentence = re.split(r"[.\n]", primary_doc)[0].strip() if primary_doc else ""
+        first_sentence = (
+            re.split(r"[.\n]", primary_doc)[0].strip() if primary_doc else ""
+        )
         if first_sentence and len(first_sentence) > 12:
             parts.append(first_sentence.rstrip(".") + ".")
         else:
@@ -138,13 +145,19 @@ def add_docstring(path: pathlib.Path) -> str | None:
     # Verify it still parses and the docstring is now first statement.
     tree2 = ast.parse(new_text)
     first = tree2.body[0]
-    assert isinstance(first, ast.Expr) and isinstance(first.value, ast.Constant), f"docstring not first statement in {path}"
+    assert isinstance(first, ast.Expr) and isinstance(first.value, ast.Constant), (
+        f"docstring not first statement in {path}"
+    )
     path.write_text(new_text)
     return docstring
 
 
 def main() -> None:
-    py_files = sorted(p for p in ROOT.rglob("*.py") if ".venv" not in str(p) and "__pycache__" not in str(p))
+    py_files = sorted(
+        p
+        for p in ROOT.rglob("*.py")
+        if ".venv" not in str(p) and "__pycache__" not in str(p)
+    )
     added = 0
     for p in py_files:
         result = add_docstring(p)

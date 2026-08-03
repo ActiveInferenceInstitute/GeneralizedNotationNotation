@@ -50,7 +50,7 @@ def _assert_julia_packages() -> None:
         "--project=/tmp/julia_test_env",
         "--startup-file=no",
         "-e",
-        "using RxInfer, JSON, Distributions, StatsBase; println(\"OK\")",
+        'using RxInfer, JSON, Distributions, StatsBase; println("OK")',
     ]
     try:
         result = subprocess.run(  # nosec B603 B607

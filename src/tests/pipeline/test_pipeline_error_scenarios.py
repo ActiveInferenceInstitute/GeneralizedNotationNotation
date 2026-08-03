@@ -109,25 +109,32 @@ class TestFileOperationErrorScenarios:
 
     @pytest.mark.unit
     def test_readonly_output_directory(self, temp_directories: Any) -> Any:
-        """Test pipeline behavior with read-only output directory."""
+        """A read-only output directory never receives partial artifacts.
+
+        Processing must either raise ``PermissionError`` (graceful refusal) or
+        complete without writing into the read-only directory.
+        """
         readonly_dir = temp_directories["temp_dir"] / "readonly"
         readonly_dir.mkdir()
-        readonly_dir.chmod(292)
+        readonly_dir.chmod(0o444)
         try:
             from gnn import process_gnn_directory
 
-            result = process_gnn_directory(
-                temp_directories["input_dir"],
-                output_dir=readonly_dir,
+            try:
+                result = process_gnn_directory(
+                    temp_directories["input_dir"],
+                    output_dir=readonly_dir,
+                )
+            except PermissionError:
+                return  # graceful refusal is an acceptable outcome
+            assert isinstance(result, dict)
+            assert "status" in result
+            assert list(readonly_dir.iterdir()) == [], (
+                "read-only output directory received writes"
             )
-            assert isinstance(result, (bool, dict))
-        except PermissionError:
-            pass
-        except Exception:
-            pass
         finally:
             try:
-                readonly_dir.chmod(493)
+                readonly_dir.chmod(0o755)
             except Exception:
                 pass
 

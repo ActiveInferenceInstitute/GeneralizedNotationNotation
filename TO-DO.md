@@ -17,11 +17,10 @@ durable observation streams, resumable run sessions, and auditable container
 plans. All CI gates and the full pipeline have been exercised locally on
 2026-08-02:
 
-- Full test suite: **2,658 passed / 0 failed / 0 skipped** (no ignores;
+- Full test suite: **2,668 passed / 0 failed / 0 skipped** (no ignores;
   `JULIA_PROJECT=/tmp/julia_test_env`; Ollama `smollm2:135m-instruct-q4_K_S`).
 - `run_v3_orchestration_acceptance.py --strict`: **19/19 checks passed**.
-- Full pipeline (`src/main.py --target-dir input/gnn_files`, isolated
-  output): **25/25 steps, 0 failed, 100% success rate**.
+- Full pipeline (`src/main.py --target-dir input/gnn_files --output-dir /tmp/gnn_full_run`): **25/25 steps, 0 failed, 100% success rate**.
 - `uv lock --check`, capability contracts, manuscript tokens, pomdp-outputs
   check, semantic fidelity gate, bandit (0 Medium/High), run-manifest
   emission, container plan (0 findings): all clean.

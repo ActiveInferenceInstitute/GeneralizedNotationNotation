@@ -10,6 +10,8 @@ License: MIT
 """
 
 import base64
+import builtins
+import io
 import logging
 import pickle  # nosec B403
 from typing import Any, Dict, List, cast
@@ -17,14 +19,106 @@ from typing import Any, Dict, List, cast
 logger = logging.getLogger(__name__)
 
 from .common import (
+    ASTNode,
     BaseGNNParser,
+    Connection,
+    ConnectionType,
     DataType,
+    Equation,
+    GNNFormat,
     GNNInternalRepresentation,
+    OntologyMapping,
     Parameter,
     ParseResult,
+    TimeSpecification,
     Variable,
     VariableType,
 )
+
+# ---------------------------------------------------------------------------
+# Restricted unpickling for untrusted .pickle input (CVE-2023-23933 class).
+# Only plain data containers and the repo's own GNN model classes may be
+# reconstructed; any other global (which could execute code via __reduce__)
+# raises UnpicklingError and routes to the textual fallback parse.
+# ---------------------------------------------------------------------------
+_RESTRICTED_UNPICKLE_ALLOWLIST: Dict[str, set[str]] = {
+    "builtins": {
+        "str",
+        "int",
+        "float",
+        "bool",
+        "bytes",
+        "complex",
+        "list",
+        "dict",
+        "tuple",
+        "set",
+        "frozenset",
+        "NoneType",
+    },
+    "datetime": {
+        "datetime",
+        "date",
+        "time",
+        "timedelta",
+        "timezone",
+    },
+    # The parser can be imported as a package (gnn.parsers.common) or, when src/
+    # is on sys.path, as a top-level module (parsers.common); both are allowed.
+    "gnn.parsers.common": {
+        "ASTNode",
+        "Connection",
+        "ConnectionType",
+        "DataType",
+        "Equation",
+        "GNNFormat",
+        "GNNInternalRepresentation",
+        "OntologyMapping",
+        "Parameter",
+        "ParseResult",
+        "TimeSpecification",
+        "Variable",
+        "VariableType",
+    },
+    "parsers.common": {
+        "ASTNode",
+        "Connection",
+        "ConnectionType",
+        "DataType",
+        "Equation",
+        "GNNFormat",
+        "GNNInternalRepresentation",
+        "OntologyMapping",
+        "Parameter",
+        "ParseResult",
+        "TimeSpecification",
+        "Variable",
+        "VariableType",
+    },
+}
+
+
+class _RestrictedUnpickler(pickle.Unpickler):  # nosec B301 - allowlist-gated
+    """Unpickler that refuses any global outside the GNN safe allowlist."""
+
+    def find_class(self, module: str, name: str) -> Any:
+        """Block arbitrary class reconstruction; only allowlist is permitted."""
+        if name not in _RESTRICTED_UNPICKLE_ALLOWLIST.get(module, set()):
+            raise pickle.UnpicklingError(
+                "GNN restricted unpickler refused to reconstruct "
+                f"{module}.{name} from untrusted input"
+            )
+        return super().find_class(module, name)
+
+
+def safe_pickle_load(file_obj: Any) -> Any:
+    """pickle.load gated by the GNN restricted unpickler."""
+    return _RestrictedUnpickler(file_obj).load()
+
+
+def safe_pickle_loads(data: bytes) -> Any:
+    """pickle.loads gated by the GNN restricted unpickler."""
+    return _RestrictedUnpickler(io.BytesIO(data)).load()
 
 
 class PickleGNNParser(BaseGNNParser):
@@ -43,7 +137,7 @@ class PickleGNNParser(BaseGNNParser):
         try:
             # Try binary read first
             with open(file_path, "rb") as f:
-                data = pickle.load(f)  # nosec B301
+                data = safe_pickle_load(f)
             return self._parse_pickle_data(data)
         except Exception as binary_error:
             # If binary fails, try reading as base64-encoded text
@@ -64,7 +158,7 @@ class PickleGNNParser(BaseGNNParser):
         try:
             # Try to decode base64 content
             binary_data = base64.b64decode(content)
-            data = pickle.loads(binary_data)  # nosec B301
+            data = safe_pickle_loads(binary_data)
             return self._parse_pickle_data(data)
         except Exception as e:
             result = ParseResult(model=self.create_empty_model())

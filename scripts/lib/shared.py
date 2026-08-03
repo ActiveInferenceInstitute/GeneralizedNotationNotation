@@ -15,19 +15,21 @@ def repo_root() -> Path:
 
 
 # Common skip-path fragments used across audit scripts
-DEFAULT_SKIP_PARTS: FrozenSet[str] = frozenset({
-    ".git",
-    ".venv",
-    ".mypy_cache",
-    ".pytest_cache",
-    ".ruff_cache",
-    "__pycache__",
-    "archive",
-    "build",
-    "dist",
-    "node_modules",
-    "output",
-})
+DEFAULT_SKIP_PARTS: FrozenSet[str] = frozenset(
+    {
+        ".git",
+        ".venv",
+        ".mypy_cache",
+        ".pytest_cache",
+        ".ruff_cache",
+        "__pycache__",
+        "archive",
+        "build",
+        "dist",
+        "node_modules",
+        "output",
+    }
+)
 
 
 # Common generated-output-path detectors
@@ -52,8 +54,9 @@ def is_generated_output(rel: Path) -> bool:
     return False
 
 
-def should_skip_path(path: Path, root: Path,
-                     extra_skip_parts: Optional[Set[str]] = None) -> bool:
+def should_skip_path(
+    path: Path, root: Path, extra_skip_parts: Optional[Set[str]] = None
+) -> bool:
     """Return True when a path should be excluded from scanning.
 
     Args:
@@ -76,7 +79,8 @@ def should_skip_path(path: Path, root: Path,
 def add_strict_flag(parser: argparse.ArgumentParser) -> None:
     """Add a standard ``--strict`` flag to a script's argument parser."""
     parser.add_argument(
-        "--strict", action="store_true",
+        "--strict",
+        action="store_true",
         help="Exit 1 if any finding is present.",
     )
 

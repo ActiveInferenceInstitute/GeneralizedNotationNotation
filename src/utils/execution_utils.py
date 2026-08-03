@@ -9,6 +9,7 @@ rather than buffering all output until completion.
 
 import logging
 import os
+import signal
 import subprocess  # nosec B404
 import sys
 import threading
@@ -70,7 +71,9 @@ def execute_command_streaming(
     }
 
     try:
-        # Start process with pipes
+        # Start process with pipes, in its own process group so a timeout can
+        # kill the whole tree (grandchildren included) rather than only the
+        # direct child (whose subprocesses would otherwise keep running).
         process = subprocess.Popen(  # nosec B603
             cmd,
             cwd=cwd,
@@ -80,6 +83,7 @@ def execute_command_streaming(
             text=True,
             bufsize=1,  # Line buffered
             universal_newlines=True,
+            start_new_session=True,
         )
 
         # Reader threads
@@ -134,7 +138,16 @@ def execute_command_streaming(
             result["status"] = "SUCCESS" if exit_code == 0 else "FAILED"
 
         except subprocess.TimeoutExpired:
-            process.kill()
+            # Kill the whole process group so grandchildren do not survive the
+            # reported timeout / FAILED status.
+            try:
+                os.killpg(os.getpgid(process.pid), signal.SIGKILL)
+            except (ProcessLookupError, PermissionError, AttributeError):
+                process.kill()  # fallback: direct child only
+            try:
+                process.wait(timeout=5)
+            except subprocess.TimeoutExpired:
+                process.kill()
             result["status"] = "TIMEOUT"
             result["exit_code"] = -1
             # Try to join threads briefly
@@ -150,6 +163,9 @@ def execute_command_streaming(
     # Combine captured output
     if capture_output:
         result["stdout"] = "".join(stdout_captured)
-        result["stderr"] = "".join(stderr_captured)
+        captured_stderr = "".join(stderr_captured)
+        # Preserve the launch/execution error message (set in the except
+        # branch) when the subprocess never produced captured stderr.
+        result["stderr"] = captured_stderr or result.get("stderr", "")
 
     return result

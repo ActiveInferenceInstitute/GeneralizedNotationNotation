@@ -64,13 +64,15 @@ class TestStepRegistryStructural:
                 f"Mismatch: {step.output_dir_name} vs {step.script_stem}"
             )
 
-    def test_module_function_looks_plausible(self) -> None:
-        """Module function names follow process_<name> or run_<name>."""
-        for step in STEPS:
-            func = step.module_function
-            assert func.startswith("process_") or func.startswith("run_"), (
-                f"Unusual function name: {func}"
-            )
+    def test_module_function_resolves_on_all_steps(self) -> None:
+        """Every step's module_function is a real callable on its numbered script.
+
+        Supersedes the former prefix-only "plausibility" check: metadata is only
+        valid when the named function actually exists and is callable on the
+        script module (enforced by
+        ``test_module_functions_resolve_on_numbered_scripts``).
+        """
+        assert all(step.module_function for step in STEPS)
 
 
 class TestStepRegistryLookups:
@@ -139,12 +141,31 @@ class TestDerivedExportAliases:
 
     def test_standard_module_function_names(self) -> None:
         """STANDARD_MODULE_FUNCTION_NAMES maps all stems to functions."""
-        assert set(STANDARD_MODULE_FUNCTION_NAMES.keys()) == {s.script_stem for s in STEPS}
+        assert set(STANDARD_MODULE_FUNCTION_NAMES.keys()) == {
+            s.script_stem for s in STEPS
+        }
         for stem, func in STANDARD_MODULE_FUNCTION_NAMES.items():
             step = step_for_stem(stem)
             assert step is not None
             assert func == step.module_function, (
                 f"Function mismatch for {stem}: {func} vs {step.module_function}"
+            )
+
+    def test_module_functions_resolve_on_numbered_scripts(self) -> None:
+        """Registry module_function names resolve to callables on the scripts.
+
+        The registry is the canonical step list; its ``module_function``
+        metadata must match what each numbered script actually delegates to
+        (the callable passed to ``create_standardized_pipeline_script``).
+        """
+        import importlib
+
+        for step in STEPS:
+            module = importlib.import_module(step.script_stem)
+            func = getattr(module, step.module_function, None)
+            assert callable(func), (
+                f"{step.script_stem}: registry function {step.module_function!r} "
+                "is not callable on the script module"
             )
 
 

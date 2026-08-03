@@ -585,35 +585,35 @@ class TestEndToEndIntegration:
         validate_pipeline_summary(invalid_summary, logger)
 
     def test_pipeline_step_execution_order(self) -> None:
-        """Test that steps execute in the correct dependency order."""
-        # Test that pipeline steps execute in dependency order
-        # GNN processing should run before type checking
-        # Type checking should run before validation
-        # etc.
+        """Dependency tiers produced by the real DAG resolver are topologically valid."""
+        from pipeline.dag import resolve_execution_order
 
-        # This test verifies the dependency resolution logic
-        # is working correctly in the main pipeline orchestrator
-
-        # Sample pipeline steps for testing
-
-        # Test that dependency resolution works
-        # 5_type_checker.py should depend on 3_gnn.py
-        # 6_validation.py should depend on 3_gnn.py and 5_type_checker.py
-        # etc.
-
-        expected_dependencies: dict[Any, Any] = {
-            5: [3],  # 5_type_checker.py needs 3_gnn.py
-            6: [3, 5],  # 6_validation.py needs 3_gnn.py and 5_type_checker.py
-            7: [3],  # 7_export.py needs 3_gnn.py
-            8: [3],  # 8_visualization.py needs 3_gnn.py
-            9: [3],  # 9_advanced_viz.py needs 3_gnn.py
+        # Documented data-flow dependencies (src/AGENTS.md § Data Dependencies):
+        # step N -> [dependency step numbers that must run before N]
+        dependencies: dict[int, list[int]] = {
+            4: [3],  # registry needs parsed models
+            5: [3],  # type checker needs parsed models
+            6: [3, 5],  # validation needs parsed models + type info
+            7: [3],  # export needs parsed models
+            8: [3],  # visualization needs parsed models
+            9: [3],  # advanced viz needs parsed models
+            11: [3],  # render needs parsed models
+            12: [11],  # execute needs rendered code
+            13: [3],  # LLM needs parsed models
+            16: [12],  # analysis needs execution results
+            23: [16],  # report needs analysis results
         }
-
-        # Verify dependency relationships
-        for step_num, deps in expected_dependencies.items():
-            assert 3 in deps, (
-                f"Step {step_num} should depend on step 3 (GNN processing)"
-            )
+        tiers = resolve_execution_order(dependencies, total_steps=25)
+        flat = [step for tier in tiers for step in tier]
+        assert sorted(flat) == list(range(25)), (
+            "every step 0-24 must be resolved exactly once"
+        )
+        position = {step: index for index, step in enumerate(flat)}
+        for step, deps in dependencies.items():
+            for dep in deps:
+                assert position[dep] < position[step], (
+                    f"dependency order violated: step {dep} must precede step {step}"
+                )
 
     def test_pipeline_summary_metadata_completeness(self) -> None:
         """Test that pipeline summary includes all required metadata."""
