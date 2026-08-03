@@ -183,10 +183,54 @@ bot-blocked bucket.
   `check_gnn_doc_patterns.py --strict`: clean.
 - `mypy src/ --config-file pyproject.toml`: 0 errors (758 files).
 - `ruff check src/ scripts/` + `ruff format --check`: clean (scripts/ included).
-- Full test suite: 2,622 passed / 1 environment-dependent failure (Julia
-  packages not installed locally).
 - `scripts/check_external_links.py`: exercised; all replacements re-verified
   with HTTP 200.
+- Full test suite (no ignores, `JULIA_PROJECT=/tmp/julia_test_env`, Ollama
+  `smollm2:135m-instruct-q4_K_S`): **2,658 passed / 0 failed / 0 skipped**;
+  command-of-record suite (Ollama files ignored): **2,632 passed / 0 failed /
+  0 skipped**. Ollama LLM files: **26 passed**.
+
+### Full CI-gate parity (2026-08-02, all exercised locally)
+
+- `uv lock --check`: resolved 310 packages, clean.
+- `scripts/run_v3_orchestration_acceptance.py --strict`: **19/19 checks
+  passed** (durable streams, run sessions, container plans).
+- `scripts/check_capability_contracts.py`: capability contracts verified.
+- `scripts/check_manuscript_tokens.py --strict`: clean (38 tokens, 14 bib
+  keys).
+- `scripts/check_pomdp_gridworld_outputs.py output`: clean across render,
+  execute, analysis, report, and website outputs.
+- `bandit -r src -c pyproject.toml --severity-level medium`: **0 Medium /
+  0 High** (9 Low, pre-existing benign: subprocess imports with `nosec`,
+  B105 false positives on example strings such as `hunter2`/`human-reviewed`
+  in test/example code).
+- `gnn preflight`: 19/20 — the single warning is `torch` absent, which is
+  intentional (GHSA-rrmf-rvhw-rf47 has no patched torch release; the lock
+  omits torch and bnlearn's pgmpy per `pyproject.toml`). CLAUDE.md,
+  SETUP_GUIDE.md, and doc/SETUP.md all document torch as manual-optional —
+  docs verified accurate.
+- `gnn health`: 15/16 (same intentional torch warning); 9/9 generator modules
+  importable.
+- `scripts/emit_run_manifest.py output`: trace_integrity_ok True,
+  re-validation clean (0 problems).
+- `scripts/generate_pipeline_container_plan.py`: security review clean
+  (0 findings).
+- `scripts/run_semantic_fidelity_gate.py --strict`: passed.
+
+### Full pipeline run (definitive docs-claims validation)
+
+`python src/main.py --target-dir input/gnn_files --output-dir /tmp/gnn_full_run`
+with `JULIA_PROJECT=/tmp/julia_test_env`: **25/25 steps, 0 failed, 100%
+success rate, 12m total**. Three SUCCESS_WITH_WARNINGS, all expected:
+step 9 Playwright driver install (browser-viz opt-in surface), step 12
+ActiveInference.jl absent from the Julia env at run time (pymdp + rxinfer
+executed; the package was then installed and patched per
+`src/execute/activeinference_jl/setup_environment.jl` — the full
+`using JSON, Distributions, StatsBase, RxInfer, ActiveInference` probe now
+passes, so a re-run has no Julia warning), step 24 smollm2 hallucinated code →
+robust rule-based fallback (graceful by design). The v4.0.0 autonomous smoke
+(`--autonomous`) wrote 3 proposal-only candidates under
+`/tmp/gnn-autonomous-smoke/autonomous` with no source edits or mutations.
 
 ## Files touched
 

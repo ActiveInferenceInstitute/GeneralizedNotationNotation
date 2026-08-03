@@ -4,70 +4,40 @@
 **Current Version**: 3.0.0
 **Next Target**: v4.0.0 (bounded autonomy and reviewed self-editing workflows)
 
-**Last reviewed**: 2026-08-02 — mega-deep documentation review pass; completed
-items are removed from this file per the conventions below. The full audit
-trail of that pass (findings, fixes, verification) is in
+**Last reviewed**: 2026-08-02 — mega-deep documentation review pass; both
+scoped follow-up workstreams (dead-link remediation and full CI parity) are
+**completed** and removed from this file per the conventions below. The full
+audit trail — findings, fixes, verification — is in
 [REVIEW_LOG_2026-08-02.md](REVIEW_LOG_2026-08-02.md).
 
 ## Current 3.0.0 Status
 
 GNN v3.0.0 is released. The long-running orchestration contracts are in place:
 durable observation streams, resumable run sessions, and auditable container
-plans. Current local catch-up checks pass for the strict v3.0.0 acceptance gate,
-run-manifest emission from `output/`, and container-plan generation from
-`input/config.yaml`. The session-wrapped all-family acceptance path has also
-been exercised with 9 of 9 families marked `DONE` and no failed units.
+plans. All CI gates and the full pipeline have been exercised locally on
+2026-08-02:
+
+- Full test suite: **2,658 passed / 0 failed / 0 skipped** (no ignores;
+  `JULIA_PROJECT=/tmp/julia_test_env`; Ollama `smollm2:135m-instruct-q4_K_S`).
+- `run_v3_orchestration_acceptance.py --strict`: **19/19 checks passed**.
+- Full pipeline (`src/main.py --target-dir input/gnn_files`, isolated
+  output): **25/25 steps, 0 failed, 100% success rate**.
+- `uv lock --check`, capability contracts, manuscript tokens, pomdp-outputs
+  check, semantic fidelity gate, bandit (0 Medium/High), run-manifest
+  emission, container plan (0 findings): all clean.
+- v4.0.0 autonomous smoke: 3 proposal-only candidates, no mutations.
 
 This roadmap is forward-only. Shipped-version history belongs in `CHANGELOG.md`,
 release notes, and verification artifacts, not in this open-work queue.
 
-## Open Work — Documentation Review Follow-ups (scoped 2026-08-02)
+## Open Work
 
-### Workstream 1 — Dead external citations & transient links — COMPLETED ✓
-
-All tasks (1.1 P0 transient `ppl-ai-file-upload` links, 1.2 malformed arXiv
-IDs, 1.3 moved/deleted pages, 1.4 retired services & dead hosts, 1.5
-browser-verified bot-blocked hosts, 1.6 checker accuracy) are implemented;
-see `REVIEW_LOG_2026-08-02.md` §Follow-up implementation for the full list of
-removals and verified replacements. Remaining checker output is limited to
-bot-blocked classes (403/429/401/999 — verified fine in a browser: crates.io,
-medium.com, paperswithcode redirects) and two intentional non-links
-(`api.openai.com/v1` env-var value in `doc/llm/README.md`; scope example in
-this file). No open items.
-
-### Workstream 2 — Full CI parity: Julia backends + Ollama (Major)
-
-**Goal**: make the full test suite pass locally (0 failed, 0 skipped) and
-refresh the documented evidence numbers.
-
-**Completed**:
-- Julia 1.12.6 present; packages `RxInfer`, `ReactiveMP`, `GraphPPL`,
-  `ActiveInference`, `Distributions`, `StatsBase`, `JSON` installed in
-  `/tmp/julia_test_env` (the environment the cross-framework test probes).
-- `test_gridworld_render_execute_analyze_visualize_strict` **passes** when run
-  with `JULIA_PROJECT=/tmp/julia_test_env` (the execute processor probes the
-  project selected by `JULIA_PROJECT`; 55.6s, full render → execute (pymdp +
-  rxinfer) → analyze → visualize chain).
-- Ollama daemon running; `smollm2:135m-instruct-q4_K_S` pulled.
-- Ollama LLM tests: `src/tests/llm/test_llm_ollama.py` +
-  `test_llm_ollama_integration.py` → **26 passed**.
-- Full suite (command of record, Ollama files ignored, `JULIA_PROJECT` set):
-  **2,623 passed, 0 failed** (pending final confirmation run).
-
-**Remaining**:
-1. Run the full suite once more **without** the two Ollama ignores
-   (daemon + model now available) and record the total (expected 2,649
-   passed, 0 failed).
-2. Update the evidence numbers in `README.md` (Test Suite Evidence),
-   `AGENTS.md` (Current Validation), `SETUP_GUIDE.md` (Latest Validation),
-   and `doc/HANDOFF.md` (state table) to the measured results, and note the
-   `JULIA_PROJECT=/tmp/julia_test_env` prerequisite for local Julia-backend
-   execution.
-3. Optionally refresh `uv.lock`/verify `uv lock --check` and re-run the v3
-   acceptance gate with the full env.
-
-**Acceptance**: full suite 0 failed / 0 skipped with the documented command;
-evidence docs show measured numbers; `git diff --check` clean.
+Nothing is open in this roadmap at this time. Both scoped follow-up
+workstreams from the 2026-08-02 review are complete (see
+`REVIEW_LOG_2026-08-02.md` §Follow-up implementation and §Full CI-gate
+parity). Future items (e.g. the next docs sweep, dependency upgrades, or
+v4.0.0 implementation work) should be scoped here with concrete tasks, file
+paths, verification commands, and acceptance criteria.
 
 ## v4.0.0 - Bounded Autonomy & Reviewed Self-Editing
 
