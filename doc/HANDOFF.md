@@ -3,7 +3,9 @@
 > **Status**: Superseded snapshot. This document records the 2026-07-30 audit
 > pass. Current repository state and the docs-review pass of 2026-08-02 are
 > tracked in [REVIEW_LOG_2026-08-02.md](../REVIEW_LOG_2026-08-02.md) and
-> [TO-DO.md](../TO-DO.md).
+> [TO-DO.md](../TO-DO.md). Follow-up 2026-08-02: the strict GridWorld
+> cross-framework test and the Ollama LLM tests now pass locally (see
+> REVIEW_LOG §Follow-up implementation).
 
 **Handoff type:** Comprehensive audit, test suite review, and improvement pass
 **Date:** 2026-07-30

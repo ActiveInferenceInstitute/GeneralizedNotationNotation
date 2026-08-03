@@ -298,4 +298,4 @@ constraints. Notable floors as of 2026-08-02:
 **Last Updated**: 2026-08-02
 **Pipeline Version**: 3.0.0
 **Status**: ✅ Production Ready (Linux & macOS)
-**Latest Validation**: 2622 passed / 1 environment-dependent failure (Julia backend packages not installed locally) on 2026-08-02; see `doc/HANDOFF.md` and the test-suite command of record in `README.md` for the canonical numbers.
+**Latest Validation**: 2,632 passed / 0 failed / 0 skipped on 2026-08-02 (command of record; Julia backend execution via `JULIA_PROJECT=/tmp/julia_test_env`, see `README.md`). With a local Ollama daemon the full suite is 2,658 passed / 0 failed.

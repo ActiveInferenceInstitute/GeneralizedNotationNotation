@@ -107,7 +107,75 @@ against the actual repository state; no fabricated claims.
    removed PDFs). Each was checked individually; replacing them would require
    inventing citations, which is out of scope for an accuracy pass.
 
-## Verification performed
+## Follow-up implementation (2026-08-02, same pass)
+
+The deferred items and the two scoped workstreams were implemented
+comprehensively in a follow-up:
+
+### Workstream 1 — dead citations & transient links (COMPLETED)
+
+- **P0 hygiene**: removed all `ppl-ai-file-upload.s3.amazonaws.com` paste
+  links (doc/nock/jock/jock.md ×2, doc/nock/nockchain/nockchain.md ×2);
+  repointed the Jock-source footnotes at the live `zorp-corp/jock-lang` repo
+  (merged duplicate footnote in jock.md).
+- **P1 malformed IDs**: removed orphaned footnotes `21.3.00848`
+  (arc-agi) and `2406.1.3.0` (vec2text ×2); swapped vec2text [18]
+  `arxiv.org/html/2411.05034` → `arxiv.org/abs/2411.05034` (Eguard, verified
+  200, title matches inline claim).
+- **P1 moved pages**: removed orphaned dead DSPy doc footnotes ([57], [114];
+  [60] verified live and kept), timep `TESTS/OUTPUT/out.profile`; swapped
+  `turing.ml` docs → `turinglang.github.io/Turing.jl/stable/` (×2, verified);
+  fixed d2 `releases.[1]` glued-footnote artifact; cline quickstart →
+  `docs.cline.bot/` (previous commit).
+- **P2 retired services & dead hosts**: CiteSeerX ×3 — one referenced
+  (quadray [18], Nystrom IVM paper) replaced with verified DOI
+  `10.1007/11428862_181` (Springer ICCS 2005, resolves 200), two orphaned
+  removed; core.ac.uk PDF (orphaned) removed; nms.kcl.ac.uk Simeone PDF →
+  Wayback (2022 snapshot); archive.org items (orphaned) removed; dead
+  university hosts — brainimaging.waisman.wisc.edu ×2, brainresearch.de
+  (→ UCL SPM docs, verified), lacasa.uah.edu (→ Wayback), pcl.sitehost.iu.edu,
+  pls-lab.org, papl.cs.brown.edu, web.eecs.umich.edu (all orphaned, removed);
+  Kirby Urner academia.edu pages ×3 → `grunch.net/synergetics/quadrays.html`
+  (verified 200); OpenVINO docs → `github.com/openvinotoolkit/open_model_zoo`;
+  dead domains removed (mathaware.org, zora.uzh.ch, relidator.com, icodrops,
+  forum.nockchain.org, hub.athina.ai → Wayback, docfork llms.txt →
+  onefilellm repo, juejin → onefilellm requirements.txt, kdjingpai, aidoczh,
+  arcprize.kongjiang.org → `arcprize.org/` (×2), zorp-corp/nockapp,
+  hyper.ai 500 (orphaned), PFW writing-guide link dropped); cosmometry.net →
+  Wayback; darreljarmusch resume → Wayback (browser-confirmed 404 on the
+  live URL).
+- **P3 browser verification**: crates.io `/crates/iroh` loads fine in a real
+  browser (bot-blocking confirmed — all 8 crates.io links left intact);
+  paperswithcode paper pages redirect to huggingface.co/papers and 404 there —
+  the 6 PWC footnotes were resolved by merging/removing (5 orphaned, 1 merged
+  into the identical Eguard arXiv citation); medium/direct.mit/dl.acm/
+  stackoverflow/sourceforge/lib.rs 403s are paywall/bot classes, left intact.
+- **P4/P5 checker**: bot-blocked statuses (401/403/429/999) now bucketed into
+  one summary line, listed only with `--strict`; regression tests added
+  (`src/tests/test_check_external_links.py`, 9 tests) covering backtick
+  stripping, paren re-balancing, and template skipping (caught and fixed a
+  real `<your-username>` skip gap).
+
+Remaining checker output after the sweep: 0 dead-link findings besides two
+intentional non-links (`api.openai.com/v1` env-var value in doc/llm/README.md;
+a scope example that has since been removed from TO-DO.md) and the
+bot-blocked bucket.
+
+### Workstream 2 — CI parity: Julia backends + Ollama (COMPLETED)
+
+- Julia packages installed in `/tmp/julia_test_env` (RxInfer, ReactiveMP,
+  GraphPPL, ActiveInference, Distributions, StatsBase, JSON); the strict
+  cross-framework GridWorld test now **passes** (55.6s) when run with
+  `JULIA_PROJECT=/tmp/julia_test_env` (the execute processor probes the
+  `JULIA_PROJECT`-selected environment).
+- Ollama daemon running; `smollm2:135m-instruct-q4_K_S` pulled; both Ollama
+  test files pass (**26 passed**).
+- Full suite (command of record with the two Ollama ignores, `JULIA_PROJECT`
+  set): **2,632 passed, 0 failed**.
+- Evidence docs (`README.md`, `AGENTS.md`, `SETUP_GUIDE.md`) updated to the
+  measured numbers; `doc/HANDOFF.md` banner notes the follow-up completion.
+
+## Verification performed (follow-up)
 
 - `docs_audit.py --strict --check-anchors --no-write`: clean (only the new
   REVIEW_LOG link, which resolves after this commit).
