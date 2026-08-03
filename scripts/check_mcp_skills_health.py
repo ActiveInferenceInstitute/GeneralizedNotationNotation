@@ -248,6 +248,43 @@ def _module_package_resolve(module_dir: Path, symbol: str) -> bool:
     return False
 
 
+def _resolvability_findings(skill: Path, rel: Path) -> tuple[list[str], int]:
+    """Resolver-only checks (API imports, Key Exports, Key Commands), no MCP.
+
+    Returned as a ``(findings, checks)`` pair so it can be unit-tested without
+    a live MCP discovery.
+    """
+    findings: list[str] = []
+    checks = 0
+    text = skill.read_text(encoding="utf-8")
+    module_dir = skill.parent
+
+    for mod, symbol in _imports_from_block("".join(_py_blocks(text))):
+        checks += 1
+        ok = _resolve(mod, None) if symbol is None else _resolve(mod, symbol)
+        if not ok:
+            target = (
+                f"import {mod}" if symbol is None else f"from {mod} import {symbol}"
+            )
+            findings.append(f"{rel}: unresolved {target}")
+
+    for symbol in re.findall(r"`([A-Za-z_]\w*)`", _section(text, "Key Exports")):
+        checks += 1
+        if symbol in _MCP_KNOBS:
+            continue  # documented initialize() configuration knobs
+        if not _module_package_resolve(module_dir, symbol):
+            findings.append(
+                f"{rel}: Key Export {symbol!r} not resolvable on {module_dir.name}"
+            )
+
+    for m in re.finditer(r"python\s+(src/(?:[0-9]+_)?\w+\.py)", text):
+        checks += 1
+        if not (SRC / m.group(1).split("/", 1)[1]).exists():
+            findings.append(f"{rel}: documented command script {m.group(1)} missing")
+
+    return findings, checks
+
+
 def audit_skills() -> list[str]:
     """Verify every SKILL.md documents a resolvable surface; return findings."""
     findings: list[str] = []
@@ -261,42 +298,20 @@ def audit_skills() -> list[str]:
     )
     checks = 0
     for skill in skill_files:
-        text = skill.read_text(encoding="utf-8")
         rel = skill.relative_to(REPO)
-        module_dir = skill.parent
+        local, local_checks = _resolvability_findings(skill, rel)
+        findings.extend(local)
+        checks += local_checks
 
-        for mod, symbol in _imports_from_block("".join(_py_blocks(text))):
-            checks += 1
-            ok = _resolve(mod, None) if symbol is None else _resolve(mod, symbol)
-            if not ok:
-                target = (
-                    f"import {mod}" if symbol is None else f"from {mod} import {symbol}"
-                )
-                findings.append(f"{rel}: unresolved {target}")
-
-        for symbol in re.findall(r"`([A-Za-z_]\w*)`", _section(text, "Key Exports")):
-            checks += 1
-            if symbol in _MCP_KNOBS:
-                continue  # documented initialize() configuration knobs
-            if not _module_package_resolve(module_dir, symbol):
-                findings.append(
-                    f"{rel}: Key Export {symbol!r} not resolvable on {module_dir.name}"
-                )
-
-        for line in _section(text, "MCP Tools").splitlines():
+        for line in _section(
+            skill.read_text(encoding="utf-8"), "MCP Tools"
+        ).splitlines():
             if not line.strip().startswith("- "):
                 continue  # prose notes (e.g. deliberate exclusions) are not claims
             for tool in re.findall(r"`([A-Za-z_]\w*)`", line):
                 checks += 1
                 if tool not in live_tools:
                     findings.append(f"{rel}: MCP tool {tool!r} not registered")
-
-        for m in re.finditer(r"python\s+(src/(?:[0-9]+_)?\w+\.py)", text):
-            checks += 1
-            if not (SRC / m.group(1).split("/", 1)[1]).exists():
-                findings.append(
-                    f"{rel}: documented command script {m.group(1)} missing"
-                )
 
     print(f"Skills: {len(skill_files)} SKILL.md files, {checks} checks")
     return findings
