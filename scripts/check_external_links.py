@@ -97,7 +97,7 @@ SKIP_HOSTS = {
     "colbert-server",
     "<server-ip",
 }
-TEMPLATE_MARKERS = ("{", "}", "<server-ip", "server:port", "yourdomain")
+TEMPLATE_MARKERS = ("{", "}", "server:port", "yourdomain")
 
 
 def _is_generated(path: Path) -> bool:
@@ -122,9 +122,25 @@ def _should_skip_url(url: str) -> bool:
         return True
     if host == "example.com" or host.endswith(".example.com"):
         return True
-    if any(m in url for m in TEMPLATE_MARKERS):
+    # Angle-bracket templates (<your-username>, <server-ip>) never appear in
+    # real URLs; the regex character class stops at '>' so captures may be
+    # truncated mid-template.
+    if "<" in url or any(m in url for m in TEMPLATE_MARKERS):
         return True
     return False
+
+
+def _normalize_url(raw: str) -> str:
+    """Trim trailing punctuation/backticks and re-balance a cut-off paren.
+
+    The URL regex character class stops at ``)``, truncating links such as
+    ``https://learn.microsoft.com/.../ms256108(v=vs.85)`` before the closing
+    paren; append it back when the capture is unbalanced.
+    """
+    url = raw.rstrip(".,;:!?`")
+    if url.count("(") > url.count(")"):
+        url += ")"
+    return url
 
 
 def collect() -> dict[str, list[str]]:
@@ -147,11 +163,7 @@ def collect() -> dict[str, list[str]]:
             except (UnicodeDecodeError, OSError):
                 continue
             for m in URL_RE.finditer(text):
-                url = m.group(0).rstrip(".,;:!?`")
-                # Re-balance a trailing paren the character class cut off
-                # (e.g. https://learn.microsoft.com/.../ms256108(v=vs.85)).
-                if url.count("(") > url.count(")"):
-                    url += ")"
+                url = _normalize_url(m.group(0))
                 if _should_skip_url(url):
                     continue
                 urls.setdefault(url, []).append(str(path.relative_to(ROOT)))
