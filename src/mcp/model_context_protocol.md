@@ -295,7 +295,7 @@ Citations:
 [39] <https://www.npmjs.com/package/mcp-sdk?activeTab=dependencies>
 [40] <https://github.com/modelcontextprotocol/python-sdk>
 [41] <https://dev.to/suzuki0430/the-easiest-way-to-set-up-mcp-with-claude-desktop-and-docker-desktop-5o>
-[42] <https://docs.cline.bot/mcp-servers/mcp-quickstart>
+[42] <https://docs.cline.bot/>
 [43] <https://github.com/modelcontextprotocol>
 [44] <https://www.reddit.com/r/Codeium/comments/1izjv13/a_hello_world_mcp_server_tutorial_beginner/>
 [45] <https://glama.ai/blog/2024-11-25-model-context-protocol-quickstart>

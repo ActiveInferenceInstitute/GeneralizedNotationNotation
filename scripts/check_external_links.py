@@ -147,7 +147,7 @@ def collect() -> dict[str, list[str]]:
             except (UnicodeDecodeError, OSError):
                 continue
             for m in URL_RE.finditer(text):
-                url = m.group(0).rstrip(".,;:!?")
+                url = m.group(0).rstrip(".,;:!?`")
                 if _should_skip_url(url):
                     continue
                 urls.setdefault(url, []).append(str(path.relative_to(ROOT)))
