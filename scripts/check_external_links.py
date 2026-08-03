@@ -232,11 +232,27 @@ def main() -> int:
     print("summary:", dict(sorted(counts.items())))
     print()
 
+    # 403/429/999 are bot-blocking / rate-limiting classes: the URL is usually
+    # fine in a real browser (verified: crates.io, medium.com, paperswithcode).
+    BOT_BLOCKED = {"401", "403", "429", "999"}
+    bot_blocked = {c for c in by_code if c in BOT_BLOCKED}
+    if bot_blocked:
+        n = sum(len(by_code[c]) for c in bot_blocked)
+        codes = ", ".join(sorted(bot_blocked))
+        print(
+            f"{n} bot-blocked/rate-limited response(s) ({codes}) — verify in a "
+            f"browser before acting (use --strict to list them)"
+        )
+        print()
+
     interesting = {
         c
         for c in by_code
         if c.startswith("ERR") or (c.isdigit() and int(c) >= args.min_status)
     }
+    interesting -= BOT_BLOCKED
+    if args.strict:
+        interesting |= bot_blocked
     dead = 0
     for code in sorted(
         interesting, key=lambda c: (not c.isdigit(), int(c) if c.isdigit() else 0)
