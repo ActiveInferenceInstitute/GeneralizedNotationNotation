@@ -9,13 +9,16 @@ logger = logging.getLogger(__name__)
 # Timeout configuration in seconds
 STEP_TIMEOUTS: dict[str, Any] = {
     "2_tests.py": {"default": 900, "comprehensive": 1200},
-    "9_advanced_viz.py": 300,
+    "3_gnn.py": 300,  # multi-format serialization incl. dense scaling-study tensors
+    "7_export.py": 300,  # multi-format export incl. dense scaling-study tensors
+    "8_visualization.py": 600,  # matrix heatmaps incl. dense scaling-study tensors (~6.5 min)
+    "9_advanced_viz.py": 600,
     "13_llm.py": 900,  # 72 LLM calls (9 prompts × 8 files), ~12s each
-    "16_analysis.py": 300,  # 9+ models × multi-framework visualization generation
+    "16_analysis.py": 900,  # per-model analysis incl. dense scaling-study tensors
     "17_integration.py": 300,  # Dependency graph + system checks
     "22_gui.py": 600,
     "11_render.py": 300,
-    "12_execute.py": 3600,
+    "12_execute.py": 7200,  # every model executed across all frameworks (scaling study is heavy)
 }
 
 DEFAULT_TIMEOUT = 180

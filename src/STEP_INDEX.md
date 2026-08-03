@@ -9,7 +9,7 @@
 Steps are controlled via [`input/config.yaml`](../input/config.yaml) using the **testing matrix**:
 
 - **Global steps** (0, 1, 2): Toggled individually via `testing_matrix.global_steps`
-- **Processing steps** (3–24): Routed per-folder via `testing_matrix.folders`
+- **Processing steps** (3–24): Routed per-folder via `testing_matrix` (every folder runs the full step list via `default_steps`)
 
 > See [`SPEC.md`](SPEC.md) for full matrix configuration documentation.
 > For the maintained hardening goal, stage-by-stage operating contract, and

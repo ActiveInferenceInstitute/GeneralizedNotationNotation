@@ -33,45 +33,45 @@ A three-level hierarchical Active Inference agent with distinct temporal scales:
 
 # Level 0: Fast sensorimotor (4 states, 3 obs, 3 actions)
 
-A0[3,4,type=float]         # Level 0 likelihood: P(fast_obs | fast_state)
-B0[4,4,3,type=float]       # Level 0 transitions: P(fast_state' | fast_state, fast_action)
-C0[3,type=float]           # Level 0 preferences (modulated by Level 1)
-D0[4,type=float]           # Level 0 prior over initial states
-s0[4,1,type=float]         # Level 0 hidden state belief
-o0[3,1,type=int]           # Level 0 observation
+A_level0[3,4,type=float]         # Level 0 likelihood: P(fast_obs | fast_state)
+B_level0[4,4,3,type=float]       # Level 0 transitions: P(fast_state' | fast_state, fast_action)
+C_level0[3,type=float]           # Level 0 preferences (modulated by Level 1)
+D_level0[4,type=float]           # Level 0 prior over initial states
+s_level0[4,1,type=float]         # Level 0 hidden state belief
+o_level0[3,1,type=int]           # Level 0 observation
 pi0[3,type=float]          # Level 0 policy
-u0[1,type=int]             # Level 0 action
+u_level0[1,type=int]             # Level 0 action
 G0[pi0,type=float]         # Level 0 Expected Free Energy
 
 # Level 1: Medium tactical (3 states, 4 obs, 3 actions)
 
-A1[4,3,type=float]         # Level 1 likelihood: P(tactic_obs | tactic_state)
-B1[3,3,3,type=float]       # Level 1 transitions
-C1[4,type=float]           # Level 1 preferences (modulated by Level 2)
-D1[3,type=float]           # Level 1 prior (modulated by Level 2 predictions)
-s1[3,1,type=float]         # Level 1 hidden state belief
-o1[4,1,type=float]         # Level 1 observation (= summary of Level 0 state trajectory)
+A_level1[4,3,type=float]         # Level 1 likelihood: P(tactic_obs | tactic_state)
+B_level1[3,3,3,type=float]       # Level 1 transitions
+C_level1[4,type=float]           # Level 1 preferences (modulated by Level 2)
+D_level1[3,type=float]           # Level 1 prior (modulated by Level 2 predictions)
+s_level1[3,1,type=float]         # Level 1 hidden state belief
+o_level1[4,1,type=float]         # Level 1 observation (= summary of Level 0 state trajectory)
 pi1[3,type=float]          # Level 1 policy
-u1[1,type=int]             # Level 1 action
+u_level1[1,type=int]             # Level 1 action
 G1[pi1,type=float]         # Level 1 Expected Free Energy
 
 # Level 2: Slow strategic (2 states, 3 obs, 2 actions)
 
-A2[3,2,type=float]         # Level 2 likelihood: P(strategy_obs | strategy_state)
-B2[2,2,2,type=float]       # Level 2 transitions
-C2[3,type=float]           # Level 2 preferences (fixed strategic goals)
-D2[2,type=float]           # Level 2 prior over strategies
-s2[2,1,type=float]         # Level 2 hidden state belief
-o2[3,1,type=float]         # Level 2 observation (= summary of Level 1 outcomes)
+A_level2[3,2,type=float]         # Level 2 likelihood: P(strategy_obs | strategy_state)
+B_level2[2,2,2,type=float]       # Level 2 transitions
+C_level2[3,type=float]           # Level 2 preferences (fixed strategic goals)
+D_level2[2,type=float]           # Level 2 prior over strategies
+s_level2[2,1,type=float]         # Level 2 hidden state belief
+o_level2[3,1,type=float]         # Level 2 observation (= summary of Level 1 outcomes)
 pi2[2,type=float]          # Level 2 policy
-u2[1,type=int]             # Level 2 action
+u_level2[1,type=int]             # Level 2 action
 G2[pi2,type=float]         # Level 2 Expected Free Energy
 
 # Timescale parameters
 
-tau0[1,type=float]         # Level 0 time constant (0.1s)
-tau1[1,type=float]         # Level 1 time constant (1.0s)
-tau2[1,type=float]         # Level 2 time constant (10.0s)
+tau_level0[1,type=float]         # Level 0 time constant (0.1s)
+tau_level1[1,type=float]         # Level 1 time constant (1.0s)
+tau_level2[1,type=float]         # Level 2 time constant (10.0s)
 
 # Time
 
@@ -81,86 +81,104 @@ t[1,type=int]              # Global discrete time counter
 
 # Level 0 (fast) internal loop
 
-D0>s0
-s0-A0
-A0-o0
-C0>G0
+D_level0>s_level0
+s_level0-A_level0
+A_level0-o_level0
+C_level0>G0
 G0>pi0
-pi0>u0
-B0>u0
+pi0>u_level0
+B_level0>u_level0
 
 # Level 1 (medium) internal loop
 
-D1>s1
-s1-A1
-A1-o1
-C1>G1
+D_level1>s_level1
+s_level1-A_level1
+A_level1-o_level1
+C_level1>G1
 G1>pi1
-pi1>u1
-B1>u1
+pi1>u_level1
+B_level1>u_level1
 
 # Level 2 (slow) internal loop
 
-D2>s2
-s2-A2
-A2-o2
-C2>G2
+D_level2>s_level2
+s_level2-A_level2
+A_level2-o_level2
+C_level2>G2
 G2>pi2
-pi2>u2
-B2>u2
+pi2>u_level2
+B_level2>u_level2
 
 # Top-down causal flow (context modulates subordinate levels)
 
-s2>C1
-s1>C0
-s2>D1
+s_level2>C_level1
+s_level1>C_level0
+s_level2>D_level1
 
 # Bottom-up evidential flow (observations inform superior levels)
 
-s0>o1
-s1>o2
+s_level0>o_level1
+s_level1>o_level2
 
 ## InitialParameterization
 
 # Level 0: Sensorimotor (fast, reflexive)
 
-A0={
+A_level0={
   (0.85, 0.05, 0.05, 0.05),
   (0.05, 0.85, 0.05, 0.05),
   (0.05, 0.05, 0.85, 0.05)
 }
 
-C0={(0.0, -1.0, 1.0)}
-D0={(0.25, 0.25, 0.25, 0.25)}
+C_level0={(0.0, -1.0, 1.0)}
+D_level0={(0.25, 0.25, 0.25, 0.25)}
 
 # Level 1: Tactical
 
-A1={
+A_level1={
   (0.8, 0.1, 0.1),
   (0.1, 0.8, 0.1),
   (0.1, 0.1, 0.8),
   (0.1, 0.1, 0.1)
 }
 
-C1={(-0.5, 1.0, 1.5, -1.0)}
-D1={(0.33, 0.33, 0.34)}
+C_level1={(-0.5, 1.0, 1.5, -1.0)}
+D_level1={(0.33, 0.33, 0.34)}
 
 # Level 2: Strategic
 
-A2={
+A_level2={
   (0.9, 0.1),
   (0.1, 0.9),
   (0.1, 0.1)
 }
 
-C2={(-1.0, 2.0, 0.5)}
-D2={(0.5, 0.5)}
+C_level2={(-1.0, 2.0, 0.5)}
+D_level2={(0.5, 0.5)}
 
 # Timescale constants
 
-tau0={(0.1)}
-tau1={(1.0)}
-tau2={(10.0)}
+tau_level0={(0.1)}
+tau_level1={(1.0)}
+tau_level2={(10.0)}
+
+# B: per-level transition matrices (added for POMDP/pymdp rendering)
+
+B_level0={
+  ( (0.9,0.05,0.05,0.0), (0.05,0.9,0.05,0.0), (0.05,0.05,0.9,0.0), (0.0,0.0,0.0,1.0) ),
+  ( (0.05,0.9,0.05,0.0), (0.9,0.05,0.05,0.0), (0.05,0.05,0.9,0.0), (0.0,0.0,0.0,1.0) ),
+  ( (0.9,0.05,0.05,0.0), (0.05,0.9,0.05,0.0), (0.05,0.05,0.9,0.0), (0.0,0.0,0.0,1.0) )
+}
+
+B_level1={
+  ( (0.9,0.05,0.05), (0.05,0.9,0.05), (0.05,0.05,0.9) ),
+  ( (0.05,0.9,0.05), (0.9,0.05,0.05), (0.05,0.05,0.9) ),
+  ( (0.9,0.05,0.05), (0.05,0.9,0.05), (0.05,0.05,0.9) )
+}
+
+B_level2={
+  ( (0.95, 0.05), (0.05, 0.95) )
+}
 
 ## Equations
 
@@ -189,40 +207,43 @@ ModelTimeHorizon=100
 
 ## ActInfOntologyAnnotation
 
-A0=FastLikelihoodMatrix
-B0=FastTransitionMatrix
-C0=FastPreferenceVector
-D0=FastPrior
-s0=FastHiddenState
-o0=FastObservation
+A_level0=FastLikelihoodMatrix
+B_level0=FastTransitionMatrix
+C_level0=FastPreferenceVector
+D_level0=FastPrior
+s_level0=FastHiddenState
+o_level0=FastObservation
 pi0=FastPolicyVector
-u0=FastAction
+u_level0=FastAction
 G0=FastExpectedFreeEnergy
-A1=TacticalLikelihoodMatrix
-B1=TacticalTransitionMatrix
-C1=TacticalPreferenceVector
-D1=TacticalPrior
-s1=TacticalHiddenState
-o1=TacticalObservation
+A_level1=TacticalLikelihoodMatrix
+B_level1=TacticalTransitionMatrix
+C_level1=TacticalPreferenceVector
+D_level1=TacticalPrior
+s_level1=TacticalHiddenState
+o_level1=TacticalObservation
 pi1=TacticalPolicyVector
-u1=TacticalAction
+u_level1=TacticalAction
 G1=TacticalExpectedFreeEnergy
-A2=StrategicLikelihoodMatrix
-B2=StrategicTransitionMatrix
-C2=StrategicPreferenceVector
-D2=StrategicPrior
-s2=StrategicHiddenState
-o2=StrategicObservation
+A_level2=StrategicLikelihoodMatrix
+B_level2=StrategicTransitionMatrix
+C_level2=StrategicPreferenceVector
+D_level2=StrategicPrior
+s_level2=StrategicHiddenState
+o_level2=StrategicObservation
 pi2=StrategicPolicyVector
-u2=StrategicAction
+u_level2=StrategicAction
 G2=StrategicExpectedFreeEnergy
-tau0=FastTimeConstant
-tau1=TacticalTimeConstant
-tau2=StrategicTimeConstant
+tau_level0=FastTimeConstant
+tau_level1=TacticalTimeConstant
+tau_level2=StrategicTimeConstant
 t=Time
 
 ## ModelParameters
 
+num_hidden_states: 24
+num_obs: 36
+num_actions: 3
 num_levels: 3
 num_states_l0: 4
 num_obs_l0: 3

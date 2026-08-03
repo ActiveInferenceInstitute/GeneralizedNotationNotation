@@ -93,16 +93,9 @@ C_m1-o_m1
 # Simplified uniform mapping for each goal
 
 A_m0={
-  (
-    (0.7, 0.1, 0.1, 0.1),
-    (0.1, 0.7, 0.1, 0.1),
-    (0.2, 0.2, 0.8, 0.8)
-  ),
-  (
-    (0.1, 0.7, 0.1, 0.1),
-    (0.7, 0.1, 0.1, 0.1),
-    (0.2, 0.2, 0.8, 0.8)
-  )
+  ( (0.7, 0.1), (0.1, 0.7), (0.1, 0.1), (0.1, 0.1) ),
+  ( (0.1, 0.7), (0.7, 0.1), (0.1, 0.1), (0.1, 0.1) ),
+  ( (0.2, 0.2), (0.2, 0.2), (0.8, 0.8), (0.8, 0.8) )
 }
 
 # A_m1: proprioceptive depends only on location
@@ -127,6 +120,20 @@ C_m0={(0.0, 0.0, 1.0)}
 # C_m1: neutral
 
 C_m1={(0.5, 0.5)}
+
+# B_f0: location transitions (depends on action)
+
+B_f0={
+  ( (0.9,0.1,0.0,0.0), (0.1,0.9,0.0,0.0), (0.0,0.0,0.9,0.1), (0.0,0.0,0.1,0.9) ),
+  ( (0.1,0.9,0.0,0.0), (0.0,0.1,0.9,0.0), (0.0,0.0,0.1,0.9), (0.9,0.0,0.0,0.1) ),
+  ( (0.9,0.0,0.0,0.1), (0.1,0.9,0.0,0.0), (0.0,0.1,0.9,0.0), (0.0,0.0,0.1,0.9) )
+}
+
+# B_f1: goal transitions (static)
+
+B_f1={
+  ( (1.0, 0.0), (0.0, 1.0) )
+}
 
 ## Equations
 
@@ -156,8 +163,8 @@ o_m1=ObservationModality1
 u=Action
 A_m0=LikelihoodMatrixModality0
 A_m1=LikelihoodMatrixModality1
-B_f0=TransitionMatrixFactor0
-B_f1=TransitionMatrixFactor1
+
+
 D_f0=PriorFactor0
 D_f1=PriorFactor1
 C_m0=PreferenceModality0
@@ -165,6 +172,8 @@ C_m1=PreferenceModality1
 
 ## ModelParameters
 
+num_hidden_states: 8
+num_obs: 6
 num_hidden_states_factor0: 4
 num_hidden_states_factor1: 2
 num_obs_modality0: 3

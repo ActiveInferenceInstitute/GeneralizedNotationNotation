@@ -351,33 +351,36 @@ class POMDPExtractor:
                     "comment": comment,
                 }
 
-                # Categorize variables
-                if (
-                    var_name.lower() in ["s", "s_prime"]
-                    or "state" in (comment or "").lower()
-                ):
+                # Categorize variables. Name prefixes are authoritative first
+                # (s* = state, o* = observation, u/pi* = action); matrix/vector
+                # parameters (A/B/C/D/E/F/G or A_*/B_*...) are never state-space
+                # variables regardless of comment wording; comment keywords are
+                # the fallback heuristic.
+                name_lower = var_name.lower()
+                if name_lower.startswith("s"):
                     variables["state_variables"].append(var_info)
-                elif (
-                    var_name.lower() in ["o"]
-                    or "observation" in (comment or "").lower()
+                elif name_lower.startswith("o"):
+                    variables["observation_variables"].append(var_info)
+                elif name_lower in ["u", "π"] or name_lower.startswith(("u", "pi")):
+                    variables["action_variables"].append(var_info)
+                elif var_name in ["A", "B", "C", "D", "E", "F", "G"] or any(
+                    var_name.startswith(f"{prefix}_")
+                    for prefix in ("A", "B", "C", "D", "E", "F", "G")
                 ):
+                    # These are matrix/vector parameters, not state space variables
+                    continue
+                elif "state" in (comment or "").lower():
+                    variables["state_variables"].append(var_info)
+                elif "observation" in (comment or "").lower():
                     variables["observation_variables"].append(var_info)
                 elif (
-                    var_name.lower() in ["u", "π"]
-                    or "action" in (comment or "").lower()
+                    "action" in (comment or "").lower()
                     or "policy" in (comment or "").lower()
                 ):
                     variables["action_variables"].append(var_info)
                 else:
                     # Default categorization based on typical Active Inference naming
-                    if var_name in ["A", "B", "C", "D", "E", "F", "G"] or any(
-                        var_name.startswith(f"{prefix}_")
-                        for prefix in ("A", "B", "C", "D", "E", "F", "G")
-                    ):
-                        # These are matrix/vector parameters, not state space variables
-                        continue
-                    else:
-                        variables["state_variables"].append(var_info)
+                    variables["state_variables"].append(var_info)
 
         return variables
 

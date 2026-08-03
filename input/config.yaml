@@ -113,55 +113,21 @@ testing_matrix:
     2_tests: true # Test suite execution
 
   # Default steps for folders not explicitly listed below
-  default_steps: [3, 5, 6, 10]
+  default_steps: [
+    3, 4, 5, 6, 7, 8, 9, 10, 11, 12,
+    # 13, # LLM folder routing omitted here; use pipeline.skip_steps or --skip-llm to disable globally
+    14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24,
+  ]
 
   # Folder-specific step configurations
   # Each key = subdirectory name in input/gnn_files/
   # Each value = list of step numbers to run on that folder
-  folders:
-    # POMDP agents (full pipeline — all steps)
-    discrete: [
-        3,
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        # 13, # LLM folder routing omitted here; use pipeline.skip_steps or --skip-llm to disable globally
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
-        23,
-        24,
-      ]
-
-    # Basic perception models
-    basics: [3, 5, 6, 10] # Parse, type-check, validate, ontology
-
-    # Continuous-space models
-    continuous: [3, 5, 6] # Parse and type-check
-
-    # Hierarchical models
-    hierarchical: [3, 5, 6] # Parse and type-check
-
-    # Multi-agent models
-    multiagent: [3, 5, 6] # Parse and type-check
-
-    # Precision-weighted models
-    precision: [3, 5, 6] # Parse and type-check
-
-    # Structured / factor graph models
-    structured: [3, 5, 6] # Parse and type-check
+  #
+  # Every folder runs the FULL pipeline (parse -> render -> simulate ->
+  # visualize -> analyze -> report -> website). All GNN files are POMDP/pymdp
+  # renderable and RxInfer + general-framework simulatable, so every model is
+  # taken end-to-end. Step 13 (LLM) is handled globally via the llm section.
+  folders: {}
 
 # LLM settings (Step 13)
 llm:

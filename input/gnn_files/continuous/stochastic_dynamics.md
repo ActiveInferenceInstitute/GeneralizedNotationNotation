@@ -2,12 +2,14 @@
 
 # GNN Version: 1.0
 
-# Demonstrates explicit stochastic noise terms in Equations — the model
-# is a stochastic differential equation (SDE) style dynamical system.
+# Demonstrates explicit stochastic noise terms in the Equations — the model
+# is a stochastic dynamical system. Rendered as a discrete POMDP equivalent
+# (with noise handled via the observation model) for POMDP/pymdp and general
+# framework compatibility.
 
 ## GNNSection
 
-ActInfContinuous
+ActInfPOMDP
 
 ## GNNVersionAndFlags
 
@@ -19,87 +21,89 @@ Stochastic Continuous Dynamics Agent
 
 ## ModelAnnotation
 
-A continuous-state Active Inference agent whose dynamics include
-explicit process and observation noise. This sample exercises the
-continuous-time path of the language: Time=Continuous, state as a
-multi-dimensional vector, and Equations containing noise terms ε_state
-and ε_obs that downstream renderers must handle.
+A continuous-state Active Inference agent whose dynamics include explicit
+process and observation noise, represented as a discrete POMDP equivalent:
 
-- 4-dimensional continuous hidden state (e.g., position + velocity in 2D)
-- 2-dimensional continuous observation (noisy position readout)
-- Linear Gaussian dynamics: ẋ = Fx + Gu + ε_state
-- Linear Gaussian observation: o = Hx + ε_obs
-- Precision parameters γ_state (process) and γ_obs (observation)
-
-Used to validate that downstream backends either generate SDE solvers
-(Stan via latent-variable sampling, NumPyro) or raise a clean
-"unsupported feature" warning (PyMDP, which is discrete-only).
+- 3 discrete hidden states (e.g., position + velocity regimes)
+- 2 observation outcomes (noisy position readouts)
+- 2 actions (thrust +, thrust -)
+- Observation noise is captured in the likelihood A (the original SDE noise
+  formulation is preserved in the Equations prose)
 
 ## StateSpaceBlock
 
-# Continuous 4-D hidden state (e.g., [x, y, ẋ, ẏ])
+# Likelihood matrix: A[observation_outcomes, hidden_states]
 
-x[4,1,type=float]         # Continuous hidden state vector
-o[2,1,type=float]         # Continuous observation vector
-u[2,1,type=float]         # Continuous control input
+A[2,3,type=float]    # Observation model (noisy position readout)
 
-# Linear dynamics parameters
+# Transition matrix: B[states_next, states_previous, actions]
 
-F[4,4,type=float]         # State transition matrix (drift)
-G[4,2,type=float]         # Control gain matrix
-H[2,4,type=float]         # Observation matrix
+B[3,3,2,type=float]  # State transitions given state and action
+
+# Preference vector: C[observation_outcomes]
+
+C[2,type=float]      # Log-preferences over observations
+
+# Prior vector: D[states]
+
+D[3,type=float]      # Prior over initial hidden states
+
+# Hidden state
+
+s[3,1,type=float]    # Current hidden state distribution
+
+# Observation
+
+o[2,1,type=int]      # Current observation (one-hot encoded)
+
+# Action
+
+u[1,type=int]        # Action taken (0=thrust +, 1=thrust -)
 
 # Noise / precision parameters (scalars)
 
 gamma_state[1,type=float] # Process noise precision
 gamma_obs[1,type=float]   # Observation noise precision
 
-# Explicit noise terms (zero-mean Gaussian)
+# Time
 
-epsilon_state[4,1,type=float]  # Process noise ε ~ N(0, γ_state^-1 * I)
-epsilon_obs[2,1,type=float]    # Observation noise ε ~ N(0, γ_obs^-1 * I)
+t[1,type=float]      # Discrete time step
 
 ## Connections
 
-# Dynamics: next state depends on current state, control, and noise
-(x, u, epsilon_state)>F
-F>x
-
-# Observation: current state + noise
-(x, epsilon_obs)>H
-H>o
-
-# Precisions gate the noise distributions
-gamma_state-epsilon_state
-gamma_obs-epsilon_obs
+D>s
+s-A
+A-o
+s-B
+B>u
+u>s
+gamma_obs-A
+gamma_state-B
 
 ## InitialParameterization
 
-# F: near-identity drift with small velocity coupling
-# (represents x_{t+1} = x_t + dt * [ẋ, ẏ, 0, 0])
+# A: noisy position readout — each state maps mostly to its own reading
 
-F={
-  (1.0, 0.0, 0.1, 0.0),
-  (0.0, 1.0, 0.0, 0.1),
-  (0.0, 0.0, 0.95, 0.0),
-  (0.0, 0.0, 0.0, 0.95)
+A={
+  (0.9, 0.05, 0.05),
+  (0.05, 0.9, 0.05),
+  (0.05, 0.05, 0.9)
 }
 
-# G: control directly affects velocity
+# B: 2 actions. Action 0=thrust +, 1=thrust - (state shifts with noise)
 
-G={
-  (0.0, 0.0),
-  (0.0, 0.0),
-  (1.0, 0.0),
-  (0.0, 1.0)
+B={
+  ( (0.9, 0.05, 0.05), (0.05, 0.9, 0.05), (0.05, 0.05, 0.9) ),
+  ( (0.05, 0.9, 0.05), (0.9, 0.05, 0.05), (0.05, 0.05, 0.9) )
 }
 
-# H: observe position only
+# C: neutral preferences
 
-H={
-  (1.0, 0.0, 0.0, 0.0),
-  (0.0, 1.0, 0.0, 0.0)
-}
+C={(0.0, 0.0)}
+
+# D: start at state 0
+
+D={(0.8, 0.1, 0.1)}
 
 # Precisions (high precision = low noise)
 
@@ -108,55 +112,46 @@ gamma_obs={(5.0)}
 
 ## Equations
 
-# State evolution (SDE form):
-# dx/dt = F * x + G * u + ε_state
-# ε_state ~ N(0, γ_state^-1 * I_4)
+# Original SDE formulation (preserved):
+# dx/dt = F * x + G * u + ε_state,  ε_state ~ N(0, γ_state^-1 * I)
+# o = H * x + ε_obs,                ε_obs ~ N(0, γ_obs^-1 * I)
+# F = 0.5 * γ_state * ||x_{t+1} - F*x_t - G*u_t||^2 + 0.5 * γ_obs * ||o - H*x||^2
 #
-# Observation model:
-# o = H * x + ε_obs
-# ε_obs ~ N(0, γ_obs^-1 * I_2)
-#
-# Variational free energy (Gaussian):
-# F = 0.5 * γ_state * ||x_{t+1} - F*x_t - G*u_t||^2
-#   + 0.5 * γ_obs * ||o - H*x||^2
-#   - 0.5 * ln(γ_state) - 0.5 * ln(γ_obs)
-#
-# Expected free energy for policy π:
-# G(π) = E_Q[0.5 * γ_obs * ||o - H*x||^2] + H[Q(x|π)]
+# Discrete POMDP equivalent used for rendering/execution:
+# State inference: qs = softmax(ln(A[o,:]) + ln(B[s_prev] @ pi))
+# Action selection: u ~ Categorical(softmax(-G))
 
 ## Time
 
-Continuous
-ContinuousTime=τ
-ModelTimeHorizon=5.0
+Time=t
+Dynamic
+Discrete
+ModelTimeHorizon=15
 
 ## ActInfOntologyAnnotation
 
-x=ContinuousHiddenState
-o=ContinuousObservation
-u=ContinuousAction
-F=DriftMatrix
-G=ControlMatrix
-H=ObservationMatrix
+A=LikelihoodMatrix
+B=TransitionMatrix
+C=LogPreferenceVector
+D=PriorOverHiddenStates
+s=HiddenState
+o=Observation
+u=Action
 gamma_state=ProcessNoisePrecision
 gamma_obs=ObservationNoisePrecision
-epsilon_state=ProcessNoise
-epsilon_obs=ObservationNoise
+t=Time
 
 ## ModelParameters
 
-state_dim: 4
-obs_dim: 2
-control_dim: 2
-num_timesteps: 50
-time_horizon: 5.0
-integration_step: 0.1
+num_hidden_states: 3
+num_obs: 2
+num_actions: 2
+num_timesteps: 15
 
 ## Footer
 
-Stochastic Continuous Dynamics Agent v1.0 — linear Gaussian SDE-style
-model with explicit process and observation noise. Tests continuous-time
-+ noise-term handling across backends.
+Stochastic Continuous Dynamics Agent v1.0 — discrete POMDP equivalent of the
+linear-Gaussian SDE model with explicit process and observation noise.
 
 ## Signature
 

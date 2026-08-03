@@ -1,9 +1,9 @@
 # GNN Example: Continuous State Navigation Agent
 # GNN Version: 1.0
-# Active Inference agent with continuous (Gaussian) state space.
+# Active Inference navigation agent (discrete POMDP equivalent of the continuous 2D navigator)
 
 ## GNNSection
-ActInfContinuous
+ActInfPOMDP
 
 ## GNNVersionAndFlags
 GNN v1
@@ -12,140 +12,113 @@ GNN v1
 Continuous State Navigation Agent
 
 ## ModelAnnotation
-A continuous-state Active Inference agent navigating a 2D environment:
-- Hidden states: 2D position (x, y) as Gaussian belief
-- Observations: noisy position measurements with Gaussian noise
-- Actions: 2D velocity commands (dx, dy)
-- Uses Laplace approximation for Gaussian belief updating
-- Generalized coordinates of motion for smooth trajectories
+An Active Inference navigation agent: the original continuous (Gaussian)
+2D-navigation model is represented here as a discretized POMDP equivalent so
+it renders and executes with pymdp, RxInfer, and the general simulation
+frameworks:
+- Hidden states: 3 discrete locations (start L0, corridor L1, goal L2)
+- Observations: 3 noisy location readings
+- Actions: 4 discrete actions (stay, +x, +y, -x)
+- Preferences favor the goal location L2
 
 ## StateSpaceBlock
-# Continuous state (2D position belief as Gaussian)
-μ[2,1,type=float]      # Mean of position belief (x, y)
-Σ[2,2,type=float]      # Covariance of position belief
-μ_prime[2,1,type=float] # Next position mean (predicted)
+# Likelihood matrix: A[observation_outcomes, hidden_states]
+A[3,3,type=float]    # Observation model (noisy location readings)
 
-# Generalized coordinates
-μ_dot[2,1,type=float]  # Velocity (first motion derivative)
-μ_ddot[2,1,type=float] # Acceleration (second motion derivative)
+# Transition matrix: B[states_next, states_previous, actions]
+B[3,3,4,type=float]  # State transitions given state and action
 
-# Observation model (Gaussian)
-A_μ[2,2,type=float]    # Observation mean mapping (identity + noise)
-A_Σ[2,2,type=float]    # Observation noise covariance
-o[2,1,type=float]      # Observation (noisy position measurement)
+# Preference vector: C[observation_outcomes]
+C[3,type=float]      # Log-preferences over observations (goal = L2)
 
-# Dynamics model (linear Gaussian)
-B_f[2,2,type=float]    # State transition matrix (flow)
-B_u[2,2,type=float]    # Action effect matrix
+# Prior vector: D[states]
+D[3,type=float]      # Prior over initial hidden states (start at L0)
 
-# Preferences (target position as Gaussian)
-C_μ[2,1,type=float]    # Target position (preference mean)
-C_Σ[2,2,type=float]    # Preference uncertainty
+# Hidden state
+s[3,1,type=float]    # Current hidden state distribution
+s_prime[3,1,type=float] # Next hidden state distribution
+
+# Observation
+o[3,1,type=int]      # Current observation
 
 # Action
-u[2,1,type=float]      # Continuous velocity command
+u[1,type=int]        # Discrete action (0=stay, 1=+x, 2=+y, 3=-x)
 
 # Free Energy quantities
-F[1,type=float]        # Variational Free Energy (scalar)
-G[1,type=float]        # Expected Free Energy (scalar)
-ε_o[2,1,type=float]    # Sensory prediction error
-ε_x[2,1,type=float]    # Dynamic prediction error
-
-# Precision
-Π_o[2,2,type=float]    # Sensory precision matrix (inverse noise cov)
-Π_x[2,2,type=float]    # Dynamic precision matrix
+F[1,type=float]      # Variational Free Energy (scalar)
+G[1,type=float]      # Expected Free Energy (scalar)
 
 # Time
-t[1,type=float]        # Continuous time
+t[1,type=float]      # Discrete time step
 
 ## Connections
-μ-A_μ
-A_μ-o
-A_Σ-ε_o
-o-ε_o
-ε_o-F
-Π_o-F
-μ-B_f
-B_f-μ_prime
-B_u-μ_prime
-u-B_u
-ε_x-F
-Π_x-F
-C_μ-G
-C_Σ-G
-μ_prime-G
+D>s
+s-A
+A-o
+s-B
+B>u
+u>s_prime
+s>s_prime
+C>G
 G>u
-μ-Σ
-Σ-Π_o
 
 ## InitialParameterization
-# Identity observation mapping
-A_μ={(1.0, 0.0), (0.0, 1.0)}
+# A: noisy location readings — each location maps mostly to its own reading
+A={
+  (0.9, 0.05, 0.05),
+  (0.05, 0.9, 0.05),
+  (0.05, 0.05, 0.9)
+}
 
-# Observation noise (moderate uncertainty)
-A_Σ={(0.1, 0.0), (0.0, 0.1)}
+# B: 4 actions. Action 0=stay, 1=+x (L0->L1), 2=+y, 3=-x (L1->L0)
+B={
+  ( (0.9, 0.05, 0.05), (0.05, 0.9, 0.05), (0.05, 0.05, 0.9) ),
+  ( (0.05, 0.9, 0.05), (0.9, 0.05, 0.05), (0.05, 0.05, 0.9) ),
+  ( (0.9, 0.05, 0.05), (0.05, 0.9, 0.05), (0.05, 0.05, 0.9) ),
+  ( (0.05, 0.9, 0.05), (0.9, 0.05, 0.05), (0.05, 0.05, 0.9) )
+}
 
-# State transition (identity: position persists without action)
-B_f={(1.0, 0.0), (0.0, 1.0)}
-B_u={(0.1, 0.0), (0.0, 0.1)}
+# C: preference for the goal observation (L2)
+C={(-1.0, -1.0, 3.0)}
 
-# Target: goal position at (1.0, 1.0)
-C_μ={(1.0), (1.0)}
-C_Σ={(0.05, 0.0), (0.0, 0.05)}
-
-# Initial belief: starting at origin with moderate uncertainty
-μ={(0.0), (0.0)}
-Σ={(0.5, 0.0), (0.0, 0.5)}
-
-# Precision matrices (inverse of covariance)
-Π_o={(10.0, 0.0), (0.0, 10.0)}
-Π_x={(20.0, 0.0), (0.0, 20.0)}
+# D: start at L0
+D={(0.9, 0.05, 0.05)}
 
 ## Equations
-# Sensory prediction error: ε_o = o - A_μ * μ
-# Dynamic prediction error: ε_x = μ_dot - (B_f * μ + B_u * u)
-# Free Energy: F = 0.5 * (ε_o^T Π_o ε_o + ε_x^T Π_x ε_x)
-# Belief update: dμ/dt = -∂F/∂μ (gradient descent on VFE)
-# Action: u = -∂G/∂u (minimize Expected Free Energy w.r.t. action)
+# Standard Active Inference update equations
+# State inference: qs = softmax(ln(A[o,:]) + ln(B[s_prev] @ pi))
+# Policy inference: G(pi) = sum_t EFE(pi,t)
+# Action selection: u ~ Categorical(softmax(-G))
+# Discretized equivalent of the continuous (Gaussian) 2D navigator.
 
 ## Time
 Time=t
 Dynamic
-Continuous
-ModelTimeHorizon=10.0
+Discrete
+ModelTimeHorizon=15
 
 ## ActInfOntologyAnnotation
-μ=BeliefMean
-Σ=BeliefCovariance
-A_μ=ObservationMeanMapping
-A_Σ=ObservationNoise
+A=LikelihoodMatrix
+B=TransitionMatrix
+C=LogPreferenceVector
+D=PriorOverHiddenStates
+s=HiddenState
+s_prime=NextHiddenState
 o=Observation
-B_f=DynamicsMatrix
-B_u=ActionEffectMatrix
-C_μ=PreferenceMean
-C_Σ=PreferenceCovariance
-u=ContinuousAction
+u=Action
 F=VariationalFreeEnergy
 G=ExpectedFreeEnergy
-ε_o=SensoryPredictionError
-ε_x=DynamicPredictionError
-Π_o=SensoryPrecision
-Π_x=DynamicPrecision
-t=ContinuousTime
+t=Time
 
 ## ModelParameters
-state_dim: 2
-obs_dim: 2
-action_dim: 2
-dt: 0.01
-simulation_time: 10.0
-goal_x: 1.0
-goal_y: 1.0
+num_hidden_states: 3
+num_obs: 3
+num_actions: 4
+num_timesteps: 15
 
 ## Footer
 Continuous State Navigation Agent v1 - GNN Representation.
-Uses Laplace approximation for Gaussian belief updating.
-Generalized coordinates enable smooth predictive control.
+Discrete POMDP equivalent of the continuous (Gaussian) 2D navigator.
 
 ## Signature
 Cryptographic signature goes here

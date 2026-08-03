@@ -2,11 +2,12 @@
 
 # GNN Version: 1.0
 
-# Continuous-state agent using hierarchical prediction error minimization
+# Predictive coding agent (discrete POMDP equivalent of the continuous
+# predictive-processing agent, for POMDP/pymdp and general framework rendering)
 
 ## GNNSection
 
-ActInfContinuous
+ActInfPOMDP
 
 ## GNNVersionAndFlags
 
@@ -18,182 +19,133 @@ Predictive Coding Active Inference Agent
 
 ## ModelAnnotation
 
-A continuous-state Active Inference agent implementing predictive coding:
+A predictive-coding Active Inference agent represented as a discrete POMDP
+equivalent (the original continuous predictive-processing formulation is
+preserved in the Equations prose):
 
-- Two-level predictive hierarchy: sensory predictions and dynamics predictions
-- Prediction errors drive belief updating via gradient descent on free energy
-- Precision-weighted prediction errors enable attentional modulation
-- Sensory level: predicts observations from hidden causes
-- Dynamics level: predicts state evolution from generative dynamics
-- Action minimizes expected free energy by changing sensory input
-- Uses generalized coordinates of motion (position, velocity, acceleration)
-- Demonstrates the core predictive processing framework underlying Active Inference
+- 3 hidden states (prediction-error regimes)
+- 4 observation outcomes (sensory readouts)
+- 2 actions (attend / explore)
+- Precision-weighted likelihood and transition structure
 
 ## StateSpaceBlock
 
-# Generalized coordinates of motion (hidden causes)
+# Likelihood matrix: A[observation_outcomes, hidden_states]
 
-mu[3,1,type=float]         # State belief: mean of hidden cause (3D)
-mu_dot[3,1,type=float]     # Velocity of hidden cause (first temporal derivative)
-Sigma[3,3,type=float]      # Covariance of hidden cause belief
+A[4,3,type=float]    # Observation model (precision-weighted readouts)
 
-# Sensory prediction error hierarchy
+# Transition matrix: B[states_next, states_previous, actions]
 
-e_s[4,1,type=float]        # Sensory prediction error: o - g(mu)
-e_d[3,1,type=float]        # Dynamics prediction error: mu_dot - f(mu)
+B[3,3,2,type=float]  # State transitions given state and action
 
-# Generative model parameters
+# Preference vector: C[observation_outcomes]
 
-g_params[12,type=float]    # Sensory mapping parameters: o = g(mu, g_params) + noise
-f_params[9,type=float]     # Dynamics parameters: mu_dot = f(mu, f_params) + noise
+C[4,type=float]      # Log-preferences over observations
 
-# Precision matrices (inverse covariance of noise)
+# Prior vector: D[states]
 
-Pi_s[4,4,type=float]       # Sensory precision: confidence in observations
-Pi_d[3,3,type=float]       # Dynamics precision: confidence in dynamics model
+D[3,type=float]      # Prior over initial hidden states
 
-# Observations
+# Hidden state
 
-o[4,1,type=float]          # Continuous observation vector (4D sensory input)
+s[3,1,type=float]    # Current hidden state distribution
+
+# Observation
+
+o[4,1,type=int]      # Current observation (one-hot encoded)
 
 # Action
 
-u[2,1,type=float]          # Continuous action (2D motor command)
+u[1,type=int]        # Action taken (0=attend, 1=explore)
 
 # Free energy quantities
 
-F[1,type=float]            # Variational Free Energy (scalar)
-F_s[1,type=float]          # Sensory contribution to VFE
-F_d[1,type=float]          # Dynamics contribution to VFE
-
-# Preferences (target attractor)
-
-mu_star[3,1,type=float]    # Desired state (prior expectation / set-point)
+F[1,type=float]      # Variational Free Energy (scalar)
 
 # Time
 
-t[1,type=float]            # Continuous time
+t[1,type=float]      # Discrete time step
 
 ## Connections
 
-mu-g_params
-g_params-o
-o-e_s
-mu-e_s
-Pi_s-e_s
-e_s-F_s
-mu-f_params
-f_params-mu_dot
-mu_dot-e_d
-Pi_d-e_d
-e_d-F_d
-F_s>F
-F_d>F
-F>mu
+D>s
+s-A
+A-o
+s-B
+B>u
+u>s
+C>F
 F>u
-mu_star-F
-mu-Sigma
-Sigma-Pi_s
 
 ## InitialParameterization
 
-# Initial state belief: centered at origin
+# A: precision-weighted observation mapping (each state -> distinct readout)
 
-mu={(0.0), (0.0), (0.0)}
-mu_dot={(0.0), (0.0), (0.0)}
-
-# Initial covariance: moderate uncertainty
-
-Sigma={
-  (1.0, 0.0, 0.0),
-  (0.0, 1.0, 0.0),
-  (0.0, 0.0, 1.0)
+A={
+  (0.9, 0.05, 0.05),
+  (0.05, 0.9, 0.05),
+  (0.05, 0.05, 0.9),
+  (0.05, 0.9, 0.05)
 }
 
-# Sensory precision: high (trusts observations)
+# B: 2 actions. Action 0=attend (self-persistent), 1=explore (state shift)
 
-Pi_s={
-  (8.0, 0.0, 0.0, 0.0),
-  (0.0, 8.0, 0.0, 0.0),
-  (0.0, 0.0, 8.0, 0.0),
-  (0.0, 0.0, 0.0, 8.0)
+B={
+  ( (0.9, 0.05, 0.05), (0.05, 0.9, 0.05), (0.05, 0.05, 0.9) ),
+  ( (0.05, 0.9, 0.05), (0.9, 0.05, 0.05), (0.05, 0.05, 0.9) )
 }
 
-# Dynamics precision: moderate
+# C: neutral-to-positive preferences over readouts
 
-Pi_d={
-  (4.0, 0.0, 0.0),
-  (0.0, 4.0, 0.0),
-  (0.0, 0.0, 4.0)
-}
+C={(0.0, 0.5, 1.0, 0.5)}
 
-# Desired state: attractor at (1.0, 1.0, 0.5)
+# D: uniform prior over prediction-error regimes
 
-mu_star={(1.0), (1.0), (0.5)}
+D={(0.4, 0.4, 0.2)}
 
 ## Equations
 
+# Predictive coding formulation (preserved from the continuous agent):
 # Sensory prediction error: e_s = o - g(mu)
-
 # Dynamics prediction error: e_d = mu_dot - f(mu)
-
-# Variational Free Energy
-
-# F = (1/2) *e_s^T Pi_s e_s + (1/2)* e_d^T Pi_d e_d
-
-# Belief update (gradient descent on F)
-
-# d(mu)/dt = mu_dot - kappa_mu * dF/d(mu)
-
-# Action (gradient descent on F w.r.t. action)
-
-# d(u)/dt = -kappa_u *dF/d(u) = -kappa_u* dg/du^T Pi_s e_s
-
-# This implements active inference: action changes sensory input to minimize prediction error
+# Variational Free Energy: F = (1/2) e_s^T Pi_s e_s + (1/2) e_d^T Pi_d e_d
+# Belief update: d(mu)/dt = mu_dot - kappa_mu * dF/d(mu)
+# Action: d(u)/dt = -kappa_u * dF/d(u)
+#
+# Discrete POMDP equivalent used for rendering/execution:
+# State inference: qs = softmax(ln(A[o,:]) + ln(B[s_prev] @ pi))
+# Action selection: u ~ Categorical(softmax(-G))
 
 ## Time
 
 Time=t
 Dynamic
-Continuous
-ModelTimeHorizon=5.0
+Discrete
+ModelTimeHorizon=15
 
 ## ActInfOntologyAnnotation
 
-mu=BeliefMean
-mu_dot=BeliefVelocity
-Sigma=BeliefCovariance
-e_s=SensoryPredictionError
-e_d=DynamicPredictionError
-g_params=SensoryMappingParameters
-f_params=DynamicsParameters
-Pi_s=SensoryPrecision
-Pi_d=DynamicPrecision
+A=LikelihoodMatrix
+B=TransitionMatrix
+C=LogPreferenceVector
+D=PriorOverHiddenStates
+s=HiddenState
 o=Observation
-u=ContinuousAction
+u=Action
 F=VariationalFreeEnergy
-F_s=SensoryFreeEnergy
-F_d=DynamicFreeEnergy
-mu_star=PriorExpectation
-t=ContinuousTime
+t=Time
 
 ## ModelParameters
 
-state_dim: 3
-obs_dim: 4
-action_dim: 2
-dt: 0.01
-simulation_time: 5.0
-learning_rate_belief: 1.0
-learning_rate_action: 0.1
+num_hidden_states: 3
+num_obs: 4
+num_actions: 2
+num_timesteps: 15
 
 ## Footer
 
 Predictive Coding Active Inference Agent v1 - GNN Representation.
-Implements the core predictive processing architecture:
-  perception = minimizing sensory prediction errors,
-  action = minimizing expected sensory prediction errors.
-Precision parameters enable attentional modulation.
+Discrete POMDP equivalent of the continuous predictive-coding agent.
 
 ## Signature
 

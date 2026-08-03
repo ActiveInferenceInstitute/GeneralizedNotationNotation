@@ -30,26 +30,26 @@ Two Active Inference agents cooperating on a joint task:
 
 # Agent 1
 
-A1[4,4,type=float]     # Agent 1 likelihood
-B1[4,4,3,type=float]   # Agent 1 transitions (3 actions)
-C1[4,type=float]       # Agent 1 preferences
-D1[4,type=float]       # Agent 1 prior
-s1[4,1,type=float]     # Agent 1 hidden state
-s1_prime[4,1,type=float] # Agent 1 next hidden state
-o1[4,1,type=int]       # Agent 1 observations (includes Agent 2 obs)
+A_agent1[4,4,type=float]     # Agent 1 likelihood
+B_agent1[4,4,3,type=float]   # Agent 1 transitions (3 actions)
+C_agent1[4,type=float]       # Agent 1 preferences
+D_agent1[4,type=float]       # Agent 1 prior
+s_agent1[4,1,type=float]     # Agent 1 hidden state
+x_next1[4,1,type=float] # Agent 1 next hidden state
+o_agent1[4,1,type=int]       # Agent 1 observations (includes Agent 2 obs)
 π1[3,type=float]       # Agent 1 policy
 u1[1,type=int]         # Agent 1 action
 G1[π1,type=float]      # Agent 1 EFE
 
 # Agent 2
 
-A2[4,4,type=float]     # Agent 2 likelihood
-B2[4,4,3,type=float]   # Agent 2 transitions (3 actions)
-C2[4,type=float]       # Agent 2 preferences
-D2[4,type=float]       # Agent 2 prior
-s2[4,1,type=float]     # Agent 2 hidden state
-s2_prime[4,1,type=float] # Agent 2 next hidden state
-o2[4,1,type=int]       # Agent 2 observations (includes Agent 1 obs)
+A_agent2[4,4,type=float]     # Agent 2 likelihood
+B_agent2[4,4,3,type=float]   # Agent 2 transitions (3 actions)
+C_agent2[4,type=float]       # Agent 2 preferences
+D_agent2[4,type=float]       # Agent 2 prior
+s_agent2[4,1,type=float]     # Agent 2 hidden state
+x_next2[4,1,type=float] # Agent 2 next hidden state
+o_agent2[4,1,type=int]       # Agent 2 observations (includes Agent 1 obs)
 π2[3,type=float]       # Agent 2 policy
 u2[1,type=int]         # Agent 2 action
 G2[π2,type=float]      # Agent 2 EFE
@@ -65,38 +65,38 @@ t[1,type=int]
 
 ## Connections
 
-D1>s1
-s1-A1
-A1-o1
-s1>s1_prime
-C1>G1
+D_agent1>s_agent1
+s_agent1-A_agent1
+A_agent1-o_agent1
+s_agent1>x_next1
+C_agent1>G1
 G1>π1
 π1>u1
-B1>u1
-D2>s2
-s2-A2
-A2-o2
-s2>s2_prime
-C2>G2
+B_agent1>u1
+D_agent2>s_agent2
+s_agent2-A_agent2
+A_agent2-o_agent2
+s_agent2>x_next2
+C_agent2>G2
 G2>π2
 π2>u2
-B2>u2
+B_agent2>u2
 u1>s_joint
 u2>s_joint
 s_joint-o_joint
-o1-s_joint
-o2-s_joint
+o_agent1-s_joint
+o_agent2-s_joint
 
 ## InitialParameterization
 
-A1={
+A_agent1={
   (0.85, 0.05, 0.05, 0.05),
   (0.05, 0.85, 0.05, 0.05),
   (0.05, 0.05, 0.85, 0.05),
   (0.05, 0.05, 0.05, 0.85)
 }
 
-A2={
+A_agent2={
   (0.85, 0.05, 0.05, 0.05),
   (0.05, 0.85, 0.05, 0.05),
   (0.05, 0.05, 0.85, 0.05),
@@ -105,18 +105,18 @@ A2={
 
 # Shared cooperative preference: goal = state 4 (index 3)
 
-C1={(-1.0, -1.0, -1.0, 2.0)}
-C2={(-1.0, -1.0, -1.0, 2.0)}
-D1={(0.25, 0.25, 0.25, 0.25)}
-D2={(0.25, 0.25, 0.25, 0.25)}
+C_agent1={(-1.0, -1.0, -1.0, 2.0)}
+C_agent2={(-1.0, -1.0, -1.0, 2.0)}
+D_agent1={(0.25, 0.25, 0.25, 0.25)}
+D_agent2={(0.25, 0.25, 0.25, 0.25)}
 
-B1={
+B_agent1={
   ( (0.9,0.1,0.0,0.0), (0.0,0.9,0.1,0.0), (0.0,0.0,0.9,0.1), (0.1,0.0,0.0,0.9) ),
   ( (0.9,0.0,0.0,0.1), (0.1,0.9,0.0,0.0), (0.0,0.1,0.9,0.0), (0.0,0.0,0.1,0.9) ),
   ( (0.8,0.1,0.1,0.0), (0.1,0.8,0.0,0.1), (0.1,0.0,0.8,0.1), (0.0,0.1,0.1,0.8) )
 }
 
-B2={
+B_agent2={
   ( (0.9,0.1,0.0,0.0), (0.0,0.9,0.1,0.0), (0.0,0.0,0.9,0.1), (0.1,0.0,0.0,0.9) ),
   ( (0.9,0.0,0.0,0.1), (0.1,0.9,0.0,0.0), (0.0,0.1,0.9,0.0), (0.0,0.0,0.1,0.9) ),
   ( (0.8,0.1,0.1,0.0), (0.1,0.8,0.0,0.1), (0.1,0.0,0.8,0.1), (0.0,0.1,0.1,0.8) )
@@ -141,23 +141,23 @@ ModelTimeHorizon=20
 
 ## ActInfOntologyAnnotation
 
-A1=LikelihoodMatrix
-B1=TransitionMatrix
-C1=LogPreferenceVector
-D1=PriorOverHiddenStates
-s1=Agent1HiddenState
-s1_prime=Agent1NextHiddenState
-o1=Agent1Observation
+A_agent1=LikelihoodMatrix
+B_agent1=TransitionMatrix
+C_agent1=LogPreferenceVector
+D_agent1=PriorOverHiddenStates
+s_agent1=Agent1HiddenState
+x_next1=Agent1NextHiddenState
+o_agent1=Agent1Observation
 π1=Agent1PolicyVector
 u1=Agent1Action
 G1=Agent1ExpectedFreeEnergy
-A2=LikelihoodMatrix
-B2=TransitionMatrix
-C2=LogPreferenceVector
-D2=PriorOverHiddenStates
-s2=Agent2HiddenState
-s2_prime=Agent2NextHiddenState
-o2=Agent2Observation
+A_agent2=LikelihoodMatrix
+B_agent2=TransitionMatrix
+C_agent2=LogPreferenceVector
+D_agent2=PriorOverHiddenStates
+s_agent2=Agent2HiddenState
+x_next2=Agent2NextHiddenState
+o_agent2=Agent2Observation
 π2=Agent2PolicyVector
 u2=Agent2Action
 G2=Agent2ExpectedFreeEnergy
@@ -167,6 +167,9 @@ t=Time
 
 ## ModelParameters
 
+num_hidden_states: 16
+num_obs: 16
+num_actions: 3
 num_agents: 2
 num_hidden_states_per_agent: 4
 num_obs_per_agent: 4
