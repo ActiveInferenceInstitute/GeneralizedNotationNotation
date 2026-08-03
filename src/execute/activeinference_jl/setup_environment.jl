@@ -40,7 +40,7 @@ const CORE_PACKAGES = [
 # Julia 1.12 / DistributionsAD compat workaround (GNN known issue):
 # Distributions >= 0.25.127 (2026-06) requires @check_args checks to carry an
 # offending value, but DistributionsAD 0.6.58 (archived at
-# https://github.com/TuringLang/DistributionsAD.jl) still uses the legacy
+# https://github.com/TuringLang/DistributionsAD.jl) still uses the older
 # single-condition form in its ReverseDiff extension. The fix patches the
 # installed ext file with the new tuple syntax.
 # Can be removed when a fixed DistributionsAD ships.

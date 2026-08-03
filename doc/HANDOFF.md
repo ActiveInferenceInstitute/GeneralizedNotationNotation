@@ -1,8 +1,13 @@
 # GNN Repository — Handoff Document
 
+> **Status**: Superseded snapshot. This document records the 2026-07-30 audit
+> pass. Current repository state and the docs-review pass of 2026-08-02 are
+> tracked in [REVIEW_LOG_2026-08-02.md](../REVIEW_LOG_2026-08-02.md) and
+> [TO-DO.md](../TO-DO.md).
+
 **Handoff type:** Comprehensive audit, test suite review, and improvement pass
 **Date:** 2026-07-30
-**Commit:** `9b7ed48` (latest on `main`)
+**Commit:** `9b7ed48` (commit at time of writing; `main` has since advanced)
 **Branch:** `main`
 
 ---
@@ -19,7 +24,7 @@
 | TODOs/FIXMEs in src/ | 0 | ✅ |
 | Module docstring coverage | 760/760 (100%) | ✅ |
 | pip-audit vulnerabilities | 0 | ✅ |
-| Doc pages | 609 | ✅ |
+| Doc pages | 610 | ✅ |
 | Python source files | 760 | ✅ |
 | Git tracked files | 2514 | ✅ |
 
@@ -64,12 +69,12 @@
 | Finding | Severity | Fix |
 |---------|----------|-----|
 | Dead code: `if False: yield ""` in `base_provider.py:151` | MEDIUM | Removed, replaced with comment |
-| Legacy comment: disabled parallel execution in `runner.py:189-191` | LOW | Removed |
+| Outdated comment: disabled parallel execution in `runner.py:189-191` | LOW | Removed |
 | 6 mypy errors in LLM providers (generate_stream return type) | MEDIUM | Removed `async` from abstract method; all 4 providers fixed |
 | pygls LanguageServer type error | LOW | Added `# type: ignore[attr-defined]` |
 | No `norecursedirs` in pyproject.toml | LOW | Added |
 
-**Mocks found: 0** — all tests exercise real behavior
+**Test doubles found: 0** — all tests exercise real behavior
 **Silent failures found: 0** — no `except: pass` patterns
 **Dead code paths: 1** — removed (the `if False:` yield)
 
@@ -91,7 +96,7 @@ Comprehensive `doc/uv_0.12.0_compatibility_audit.md` (442 lines) covering:
 
 **Issue:** `ActiveInference.jl` failed to precompile on Julia ≥1.12 due to
 `DistributionsAD` 0.6.58 (archived at `TuringLang/DistributionsAD.jl`) using
-legacy `@check_args(Gamma, α > zero(α) && θ > zero(θ))` syntax that was made
+older `@check_args(Gamma, α > zero(α) && θ > zero(θ))` syntax that was made
 invalid by `Distributions` ≥0.25.127 (June 2026).
 
 **Fix applied (2026-07-31):**
@@ -223,7 +228,7 @@ uv sync --extra dev --frozen
 
 ```
 9b7ed48 Fix remaining mypy: LLM generate_stream async removal, pygls type:ignore
-17a77cb Test suite review: remove dead code, legacy comments, add audit report
+17a77cb Test suite review: remove dead code, stale comments, add audit report
 dab5e1e Fix all failing/skipped tests: 2649/2649 passed, 0 fails, 0 skips
 07c155b Fix all pre-existing issues across repo
 09cce17 docs: update validation timestamps and add uv 0.12.0 compatibility note
@@ -253,5 +258,5 @@ abc9947 uv 0.12.0 compatibility: fix imports, test failures, and disable pygls t
 
 ---
 
-*Handoff prepared by Aria, Digital Assistant for Daniel Ari Friedman*
-*Purpose: Provide complete context for next agent to continue improvement work*
+*Handoff prepared by the Active Inference Institute research engineering team*
+*Purpose: Provide complete context for the next agent to continue improvement work*

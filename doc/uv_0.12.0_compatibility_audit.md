@@ -61,7 +61,7 @@ This aligns the import path with `mypy_path = "src"`, ensuring both mypy and run
 
 ### 1.2 Stale `type: ignore` Comments
 
-Three `type: ignore` comments were identified as no longer needed after the pygls/mypy type stub improvements:
+Three `type: ignore` comments were identified as no longer needed after the pygls/mypy type-declaration improvements:
 
 **File: `src/lsp/__init__.py`**
 ```diff
@@ -75,7 +75,7 @@ Three `type: ignore` comments were identified as no longer needed after the pygl
 +PIPELINE_STEPS_TUPLE as PIPELINE_STEPS,
 ```
 
-**Fix:** These are safe to remove because the underlying type issues have been resolved in the pygls and step_registry type stubs. The `attr-defined` for pygls and the `assignment` for PIPELINE_STEPS_TUPLE are no longer flagged.
+**Fix:** These are safe to remove because the underlying type issues have been resolved in the pygls and step_registry type declarations. The `attr-defined` for pygls and the `assignment` for PIPELINE_STEPS_TUPLE are no longer flagged.
 
 ---
 
@@ -144,7 +144,7 @@ This adds an isinstance guard to handle both `list` and `str` return values from
 
 **File: `pyproject.toml`**
 
-**Error:** Sphinx type stubs in `.venv` cause syntax errors
+**Error:** Sphinx type declarations in `.venv` cause syntax errors
 
 **Root Cause:** Mypy follows import paths into `.venv` where Sphinx 7.x includes type statements that require Python 3.12+, but the project uses Python 3.11.
 
@@ -405,7 +405,7 @@ Tests excluded:
 When both options are set, always use import paths relative to `mypy_path`. Never use `from src.` when `mypy_path = "src"`.
 
 ### Stale `type: ignore` Management
-`type: ignore` comments should be reviewed periodically. The pygls `attr-defined` and similar issues are often resolved by upstream type stub improvements. Remove them when they're no longer needed.
+`type: ignore` comments should be reviewed periodically. The pygls `attr-defined` and similar issues are often resolved by upstream type-declaration improvements. Remove them when they're no longer needed.
 
 ### System Dependency Installation in CI
 Always install system dependencies (Julia, D2, Ollama) before running tests. Use `--project=/tmp/...` patterns for isolated environments. Add explicit skip markers for known failures.
