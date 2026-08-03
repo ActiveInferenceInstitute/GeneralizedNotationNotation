@@ -26,7 +26,7 @@ A normal `uv sync` / core install includes:
 
 - Scientific stack: numpy, matplotlib, networkx, PyYAML, psutil, httpx
 - Active Inference: `inferactively-pymdp`
-- **LLM (Step 13+)**: `openai`, `ollama` (client), `python-dotenv`, `aiohttp` (no `uv sync --extra llm` required)
+- **LLM (Step 13+)**: `openai`, `ollama` (client), `python-dotenv`, `aiohttp` (core dependencies — no extra required)
 - Dev tooling when using `--extra dev`: pytest, ruff, black, etc.
 
 ### Complete Setup (With Optional Packages)
@@ -38,99 +38,86 @@ For full functionality including Active Inference, machine learning, and visuali
 uv sync --all-extras
 ```
 
-Or install specific groups:
+Or install specific groups (canonical list in `pyproject.toml` → `[project.optional-dependencies]`):
 
 ```bash
-# Install just Active Inference (JAX + PyMDP)
-uv sync --extra active-inference
+# Install machine-learning extras (transformers, scipy, scikit-learn)
+uv sync --extra ml-ai
 
-# Install visualization libraries
-uv sync --extra visualization
+# Install audio processing extras
+uv sync --extra audio
 
-# Optional: ``--extra llm`` (same packages as core; kept for older docs/scripts)
-uv sync --extra llm
+# Install GUI interfaces
+uv sync --extra gui
 ```
 
 ## Optional Package Groups
 
-The GNN pipeline supports the following optional package groups:
+The GNN pipeline declares the following optional package groups (all installable
+with `uv sync --extra <group>` or together with `uv sync --all-extras`):
 
-### 1. **active-inference** - High-Performance Computing
+### 1. **dev** - Development Tooling
 
-- **Packages**: `jax[cpu]`, `jaxlib`, `optax`, `flax`
-- **Use case**: Fast numerical computing, automatic differentiation, JIT compilation
-- **Size**: ~500MB
-- **Installation**:
+- **Packages**: pytest, pytest-cov, pytest-xdist, ruff, mypy, black, isort,
+  flake8, pylint, bandit, sphinx, jupyterlab, py-spy, and related dev tools
+- **Use case**: Testing, linting, type checking, documentation builds
+- **Installation**: `uv sync --extra dev`
 
-  ```bash
-  uv sync --extra active-inference
-  ```
+### 2. **api** - REST API Server
 
-### 2. **pymdp** - Active Inference Framework
+- **Packages**: `fastapi`, `uvicorn[standard]`
+- **Use case**: Running the GNN REST API server (`src/api/`)
+- **Installation**: `uv sync --extra api`
 
-- **Packages**: `inferactively-pymdp`
-- **Use case**: Active Inference agents, POMDP modeling, free energy principle
-- **Size**: ~50MB
-- **Note**: Already included in core dependencies (`pyproject.toml`)
+### 3. **ml-ai** - Machine Learning
 
-- **PyMDP Example**:
-
-  ```python
-  import pymdp
-  from pymdp import utils
-  from pymdp.agent import Agent
-
-  num_obs = [3, 5]
-  num_states = [3, 2, 2]
-  num_controls = [3, 1, 1]
-  
-  A_matrix = utils.random_A_matrix(num_obs, num_states)
-  B_matrix = utils.random_B_matrix(num_states, num_controls)
-  C_vector = utils.obj_array_uniform(num_obs)
-  
-  my_agent = Agent(A=A_matrix, B=B_matrix, C=C_vector)
-  observation = [1, 4]
-  qs = my_agent.infer_states(observation)
-  ```
-
-### 3. **visualization** - Data Visualization
-
-- **Packages**: `plotly`, `seaborn`, `bokeh`, `h5py`
-- **Use case**: Interactive plots, statistical graphics, dashboards
-- **Size**: ~100MB
-- **Installation**:
-
-  ```bash
-  uv sync --extra visualization
-  ```
+- **Packages**: `transformers`, `scipy`, `scikit-learn`
+- **Use case**: Deep learning and scientific computing beyond the core Step 12
+  backends (PyTorch is intentionally not locked as a dependency while
+  GHSA-rrmf-rvhw-rf47 has no patched release; install `torch` manually if you
+  need the PyTorch backend)
+- **Installation**: `uv sync --extra ml-ai`
 
 ### 4. **audio** - Audio Processing & Sonification
 
-- **Packages**: `librosa`, `soundfile`, `pedalboard`, `pydub`, `pyaudio`
-- **Use case**: Audio analysis, sonification of model dynamics
-- **Size**: ~150MB
-- **Installation**:
+- **Packages**: `librosa`, `soundfile`, `pedalboard`
+- **Use case**: Audio analysis, sonification of model dynamics (Step 15)
+- **Installation**: `uv sync --extra audio`
 
-  ```bash
-  uv sync --extra audio
-  ```
+### 5. **gui** - Interactive GUI
 
-### 5. **llm** - LLM Integration
+- **Packages**: `gradio`, `streamlit`
+- **Use case**: GUI interfaces for model construction (Step 22)
+- **Installation**: `uv sync --extra gui`
 
-- **Packages**: `openai`, `ollama`, `python-dotenv`, `aiohttp` (also in **core** `dependencies`)
-- **Use case**: AI-enhanced analysis, OpenRouter/Perplexity providers, local Ollama client
-- **Installation**: Included in `uv sync`; `uv sync --extra llm` remains a no-op superset for compatibility
+### 6. **graphs** - Graphviz Bindings
 
-### 6. **ml-ai** - Machine Learning
+- **Packages**: `graphviz`
+- **Use case**: System Graphviz graph layouts (Steps 8-9)
+- **Installation**: `uv sync --extra graphs`
 
-- **Packages**: `torch`, `torchvision`, `torchaudio`, `transformers`, `scipy`, `scikit-learn`
-- **Use case**: Deep learning, neural networks, model training
-- **Size**: ~2GB
-- **Installation**:
+### 7. **research** - Research & Notebooks
 
-  ```bash
-  uv sync --extra ml-ai
-  ```
+- **Packages**: `sympy`, `numba`, `cython`, `jupyterlab`, `jupyter-server`, `bleach`
+- **Use case**: Notebook-based research workflows for non-developer users
+- **Installation**: `uv sync --extra research`
+
+### 8. **scaling** - Distributed Execution
+
+- **Packages**: `dask`, `distributed`, `ray`
+- **Use case**: Distributed execution of parameter sweeps (`execute/distributed.py`)
+- **Installation**: `uv sync --extra scaling`
+
+### 9. **all** - Everything
+
+- **Packages**: union of every group above
+- **Installation**: `uv sync --all-extras`
+
+> **Core vs optional**: `inferactively-pymdp`, `jax[cpu]`, `jaxlib`, `flax`,
+> `optax`, `numpyro`, and `discopy` are **core** dependencies installed by a
+> plain `uv sync` — no extra is required for the Step 12 Python backends.
+> Julia backends (RxInfer.jl, ActiveInference.jl) additionally require a local
+> Julia installation.
 
 ## Installation Methods
 
@@ -140,14 +127,13 @@ The GNN pipeline supports the following optional package groups:
 
 ```bash
 # List available groups (shown in pyproject.toml [project.optional-dependencies])
-# Groups: dev, api, active-inference, probabilistic-programming, ml-ai, llm,
-#         visualization, audio, gui, graphs, research, scaling, database, all
+# Groups: dev, api, ml-ai, audio, gui, graphs, research, scaling, all
 
 # Install all optional packages
 uv sync --all-extras
 
 # Install specific groups
-uv sync --extra active-inference --extra visualization --extra llm
+uv sync --extra ml-ai --extra audio --extra gui
 ```
 
 ### Method 2: Using Setup Module
@@ -281,25 +267,24 @@ uv pip install inferactively-pymdp --python .venv/bin/python
 
 ## Package Versions (Current)
 
+Versions are pinned in `uv.lock`; `pyproject.toml` declares the floor
+constraints. Notable floors as of 2026-08-02:
+
 ### Core Dependencies
 
-- Python: 3.11+
-- numpy: 2.4.2
-- scipy: 1.16.2
-- matplotlib: 3.10.3
-- pandas: 2.3.0
-- networkx: 3.5
-- pytest: 8.4.2
+- Python: 3.11+ (`>=3.11,<3.14`)
+- `inferactively-pymdp>=1.0.0` (JAX-first rewrite)
+- `jax[cpu]>=0.7.0,<0.10`, `jaxlib`, `flax`, `optax`, `numpyro>=0.14`
+- numpy, matplotlib, networkx, pyyaml, pandas, plotly, seaborn, h5py
 
 ### Optional Dependencies
 
-- JAX: 0.7.2
-- Optax: 0.2.6
-- Flax: 0.12.0
-- PyMDP: 0.0.7.1 (inferactively-pymdp)
-- Plotly: 6.3.1
-- Altair: 5.5.0
-- Seaborn: 0.13.2
+- See `[project.optional-dependencies]` in `pyproject.toml` and `uv.lock`
+  for the resolved versions of `dev`, `api`, `ml-ai`, `audio`, `gui`,
+  `graphs`, `research`, and `scaling` groups.
+
+> Run `uv lock --check` and `uv sync --frozen` for the authoritative resolved
+> set.
 
 ## References
 
@@ -310,7 +295,7 @@ uv pip install inferactively-pymdp --python .venv/bin/python
 
 ---
 
-**Last Updated**: 2026-05-08
-**Pipeline Version**: 1.6.0
+**Last Updated**: 2026-08-02
+**Pipeline Version**: 3.0.0
 **Status**: ✅ Production Ready (Linux & macOS)
-**Latest Validation**: 100% Success (25/25 steps)
+**Latest Validation**: 2622 passed / 1 environment-dependent failure (Julia backend packages not installed locally) on 2026-08-02; see `doc/HANDOFF.md` and the test-suite command of record in `README.md` for the canonical numbers.

@@ -178,11 +178,19 @@ The GNN pipeline supports multiple Active Inference simulation frameworks. Each 
 
 | Framework | Status | Install Method | Primary Use Case | GPU Support |
 |-----------|--------|----------------|------------------|-------------|
-| **DisCoPy** | ✅ Built-in | Included | Categorical diagrams | No |
-| **ActiveInference.jl** | ✅ Auto | Julia | Complete Active Inference | No |
-| **PyMDP** | ⚠️ Optional | pip | Python Active Inference | No |
-| **JAX** | ⚠️ Optional | pip | GPU-accelerated inference | Yes |
+| **PyMDP** | ✅ Core | `uv sync` | Python Active Inference (pymdp 1.0.0) | No |
+| **JAX** | ✅ Core | `uv sync` | GPU-accelerated inference | Yes |
+| **NumPyro** | ✅ Core | `uv sync` | Probabilistic programming | Yes |
+| **DisCoPy** | ✅ Core | `uv sync` | Categorical diagrams | No |
+| **ActiveInference.jl** | ⚠️ Optional | Julia | Complete Active Inference | No |
 | **RxInfer.jl** | ⚠️ Optional | Julia | Bayesian message passing | No |
+| **PyTorch** | ⚠️ Optional | manual `torch` | Deep learning backend | Yes |
+
+PyMDP, JAX, NumPyro, and DisCoPy are **core** Python dependencies installed by
+a normal `uv sync` (see `pyproject.toml`). The Julia frameworks require a local
+Julia install (tested on Julia 1.12; see `doc/HANDOFF.md`). PyTorch is
+supported by the renderer/executor but intentionally not locked while
+GHSA-rrmf-rvhw-rf47 has no patched torch release.
 
 ### Quick Install (Recommended)
 
@@ -491,10 +499,10 @@ julia -e 'using Pkg; Pkg.add("ActiveInference"); Pkg.add("RxInfer")'
 ### Framework Documentation
 
 - **DisCoPy**: [https://discopy.org/](https://discopy.org/)
-- **ActiveInference.jl**: [https://github.com/biaslab/ActiveInference.jl](https://github.com/biaslab/ActiveInference.jl)
+- **ActiveInference.jl**: [https://github.com/ComputationalPsychiatry/ActiveInference.jl](https://github.com/ComputationalPsychiatry/ActiveInference.jl)
 - **PyMDP**: [https://github.com/infer-actively/pymdp](https://github.com/infer-actively/pymdp)
 - **JAX**: [https://jax.readthedocs.io/](https://jax.readthedocs.io/)
-- **RxInfer.jl**: [https://rxinfer.ml/](https://rxinfer.ml/)
+- **RxInfer.jl**: [https://docs.rxinfer.com/stable/](https://docs.rxinfer.com/stable/)
 
 ## 🛠️ Troubleshooting Dependency Conflicts
 

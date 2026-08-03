@@ -6,11 +6,18 @@ This document provides a comprehensive guide to optional dependencies in the GNN
 
 | Framework | Status | Purpose | Install Command | Pipeline Step |
 |-----------|--------|---------|-----------------|---|
-| PyMDP | Core | POMDP agent simulation | `uv sync` | 12 (Execute) |
-| Flax | Core | JAX neural networks | `uv sync` | 12 (Execute) |
-| RxInfer.jl | Optional | Julia probabilistic inference | `julia -e 'import Pkg; Pkg.add("RxInfer")'` | 12 (Execute) |
+| PyMDP | Core | POMDP agent simulation (pymdp 1.0.0) | `uv sync` | 12 (Execute) |
+| JAX + Flax | Core | JAX neural networks | `uv sync` | 12 (Execute) |
+| NumPyro | Core | Probabilistic programming | `uv sync` | 12 (Execute) |
+| DisCoPy | Core | Category theory / string diagrams | `uv sync` | 12 (Execute) |
+| RxInfer.jl | Optional (Julia) | Julia probabilistic inference | `julia -e 'import Pkg; Pkg.add("RxInfer")'` | 12 (Execute) |
+| ActiveInference.jl | Optional (Julia) | Julia Active Inference | `julia -e 'import Pkg; Pkg.add("ActiveInference")'` | 12 (Execute) |
+| PyTorch | Optional (manual) | Deep learning backend | `uv pip install torch` | 12 (Execute) |
 | Plotly | Core | Interactive visualizations | `uv sync` | 8-9 (Visualization) |
-| GraphViz | Optional | Advanced graph layouts | `apt-get install graphviz` (system) | 8-9 (Visualization) |
+| GraphViz | Optional | Advanced graph layouts | `brew install graphviz` / `apt-get install graphviz` | 8-9 (Visualization) |
+
+> Core status reflects `[project.dependencies]` in `pyproject.toml` (2026-08-02).
+> Julia backends additionally require a local Julia install.
 
 ---
 
@@ -45,7 +52,7 @@ ERROR:src.execute.pymdp.executor:PyMDP import failed: No module named 'pymdp.age
 - ✅ Pipeline continues successfully
 - ✅ DisCoPy and ActiveInference.jl still work
 - ⚠️ PyMDP simulations are skipped
-- Result: 2/7 frameworks working (29% execution success rate)
+- Result: Python core backends (JAX, NumPyro, DisCoPy) still run; only the PyMDP backend is skipped
 
 **When to install**:
 
@@ -88,7 +95,7 @@ ModuleNotFoundError: No module named 'flax'
 - ✅ Pipeline continues successfully
 - ✅ JAX rendering still works (code generation succeeds)
 - ⚠️ JAX simulations fail to execute
-- Result: 2/7 frameworks working (29% execution success rate)
+- Result: other core backends (PyMDP, NumPyro, DisCoPy) still run; only the JAX backend is skipped
 
 **When to install**:
 
@@ -130,7 +137,7 @@ Run `import Pkg; Pkg.add("RxInfer")` to install the RxInfer package.
 - ✅ Pipeline continues successfully
 - ✅ RxInfer code rendering still works
 - ⚠️ RxInfer simulations fail to execute
-- Result: 2/7 frameworks working (29% execution success rate)
+- Result: Python core backends run; Julia backends (RxInfer.jl, ActiveInference.jl) are skipped without Julia
 
 **When to install**:
 
@@ -224,7 +231,7 @@ Download from: <https://graphviz.org/download/>
 **Best for**: Quick testing, CI/CD pipelines, resource-constrained environments
 
 ```bash
-# Core-only installation - no optional dependencies
+# Core-only installation — includes PyMDP, JAX/Flax, NumPyro, DisCoPy
 uv sync
 ```
 
@@ -232,45 +239,51 @@ uv sync
 
 - ✅ Full pipeline works
 - ✅ All rendering (code generation) works
-- ⚠️ Execution (Step 12) has limited framework support
-- ✅ Test suite runs (90% pass rate)
+- ✅ Step 12 Python backends run (PyMDP, JAX, NumPyro, DisCoPy)
+- ⚠️ Julia backends (RxInfer.jl, ActiveInference.jl) and PyTorch require manual installs
 
-**Framework support**: DisCoPy ✅, ActiveInference.jl ✅
+**Framework support**: PyMDP ✅, JAX+Flax ✅, NumPyro ✅, DisCoPy ✅
 
 ### Strategy 2: Standard Installation (Balanced)
 
 **Best for**: Most users, development, standard workloads
 
 ```bash
-# Install core + common optional dependencies
 uv sync
-uv pip install inferactively-pymdp flax  # Optional frameworks
+# Optional: Julia frameworks
+julia -e 'import Pkg; Pkg.add(["RxInfer", "ActiveInference"])'
 ```
 
 **Result**:
 
 - ✅ Full pipeline works
-- ✅ Most frameworks available
-- ✅ Execution mostly works
+- ✅ Python core frameworks available
+- ✅ Julia backends available when Julia is installed
 
-**Framework support**: PyMDP ✅, JAX+Flax ✅, DisCoPy ✅, ActiveInference.jl ✅, RxInfer ❌
+**Framework support**: PyMDP ✅, JAX+Flax ✅, NumPyro ✅, DisCoPy ✅, RxInfer.jl ✅ (with Julia), ActiveInference.jl ✅ (with Julia)
 
 ### Strategy 3: Complete Installation (All Features)
 
 **Best for**: Comprehensive testing, research, all frameworks
 
 ```bash
-# Install core Python runtime dependencies
+# Core Python runtime dependencies
 uv sync
 
-# Then separately install Julia packages
-julia -e 'import Pkg; Pkg.add(["RxInfer"])'
+# Optional extras (see pyproject.toml for the canonical group list)
+uv sync --all-extras
 
-# And system dependencies
+# Julia packages
+julia -e 'import Pkg; Pkg.add(["RxInfer", "ActiveInference"])'
+
+# System dependencies
 # macOS:
 brew install graphviz
 # Linux:
 sudo apt-get install graphviz
+
+# PyTorch backend (manual; see pyproject.toml note on GHSA-rrmf-rvhw-rf47)
+uv pip install torch
 ```
 
 **Result**:
@@ -435,7 +448,7 @@ A: Minimum 1. The success criteria: "60% or at least 1 framework succeeds" - so 
 A: Yes. The pipeline detects available frameworks at execution time. Install a new framework and re-run Step 12.
 
 **Q: What's the best framework to start with?**  
-A: DisCoPy or ActiveInference.jl - they're already installed. Add PyMDP + Flax for Python framework coverage.
+A: PyMDP, JAX, NumPyro, and DisCoPy are installed with the core `uv sync` — start with those. Add the Julia frameworks (RxInfer.jl, ActiveInference.jl) if you have Julia installed.
 
 ---
 
@@ -472,4 +485,4 @@ If you encounter issues with optional dependencies:
 
 ---
 
-**Status**: ✅ Current for Pipeline v2.1.0
+**Status**: ✅ Current for Pipeline v3.0.0 (verified 2026-08-02 — framework statuses reflect `[project.dependencies]` in `pyproject.toml`)

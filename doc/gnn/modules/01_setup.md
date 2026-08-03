@@ -227,7 +227,7 @@ from setup.setup import setup_uv_environment
 success = setup_uv_environment(
     verbose=True,
     dev=True,
-    extras=["llm", "visualization", "audio"]
+    extras=["audio", "gui", "ml-ai"]
 )
 ```
 

@@ -196,7 +196,7 @@ from setup import (
     check_system_requirements,
 )
 
-setup_uv_environment(verbose=True, dev=True, extras=["llm", "visualization", "audio"])
+setup_uv_environment(verbose=True, dev=True, extras=["audio", "gui", "ml-ai"])
 
 add_uv_dependency("requests>=2.28.0", dev=False, verbose=True)
 add_uv_dependency("pytest>=7.0.0", dev=True, verbose=True)
