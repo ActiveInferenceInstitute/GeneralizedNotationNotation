@@ -64,7 +64,7 @@ The mathematical rigor of quadray coordinates, combined with their philosophical
 
 [1] https://en.wikipedia.org/wiki/Quadray_coordinates
 [2] https://www.grunch.net/synergetics/quadintro.html
-[3] https://www.academia.edu/124663526/Quadray_Coordinates
+[3] https://www.grunch.net/synergetics/quadrays.html
 [4] https://www.youtube.com/watch?v=faC6gbcoJzw
 [5] https://www.reddit.com/r/Geometry/comments/117v6xc/the_isotropic_vector_matrix_of_fullers_synergetics/
 [6] http://randylangel.com/uploads/3/4/3/1/343179/1-pager_-_vector_equilibrium_v1.pdf
@@ -72,8 +72,8 @@ The mathematical rigor of quadray coordinates, combined with their philosophical
 [8] http://4dsolutions.net/ocn/winterhaven/worksheets/urner_whvn_worksheet1.pdf
 [9] https://github.com/nitml/Quadcopter-Project
 [10] https://mathworld.wolfram.com/TetrahedralEquation.html
-[11] https://cosmometry.net/vector-equilibrium-&-isotropic-vector-matrix
-[12] https://www.darreljarmusch.com/Resume_Darrel.pdf
+[11] https://web.archive.org/web/20240914141821/https://cosmometry.net/vector-equilibrium-&-isotropic-vector-matrix
+[12] https://web.archive.org/web/20250518212312/https://www.darreljarmusch.com/Resume_Darrel.pdf
 [13] https://www.grunch.net/synergetics/quadvols.html
 [14] https://github.com/docxology/QuadCraft/blob/main/docs/quadray_coordinates.md
 [15] http://www.math.uni-rostock.de/~richter/W-DR2007.pdf
@@ -87,7 +87,6 @@ The mathematical rigor of quadray coordinates, combined with their philosophical
 [23] https://www.youtube.com/watch?v=KML0JM6B2LA
 [24] https://www.grunch.net/synergetics/quadcolors.html
 [25] http://www.4dsolutions.net/ocn/pyqvectors.html
-[26] https://princeton.academia.edu/kirbyurner
 [27] https://en.wikipedia.org/wiki/Synergetics_(Fuller)
 [28] https://docs.quadratichq.com/
 [29] https://www.synergeticlatticefieldtheory.org/synergetics.html
@@ -345,7 +344,7 @@ The work of the quadray coordinate community represents a remarkable example of 
 [4] https://www.grunch.net/synergetics/quadintro.html
 [5] https://permacultureglobal.org/users/11942-darrel-jarmusch
 [6] http://www.4dsolutions.net/ocn/pyqvectors.html
-[7] https://princeton.academia.edu/kirbyurner
+[7] https://www.grunch.net/synergetics/quadrays.html
 [8] https://www.linkedin.com/in/4dsolutions
 [9] https://www.youtube.com/watch?v=V9-s9RXjeLs
 [10] https://www.youtube.com/watch?v=faC6gbcoJzw
@@ -356,15 +355,14 @@ The work of the quadray coordinate community represents a remarkable example of 
 [15] https://www.grunch.net/synergetics/4dcode.html
 [16] https://www.cosmic-core.org/free/article-49-geometry-platonic-solids-part-10-cuboctahedron-rhombic-dodecahedron/
 [17] https://en.wikipedia.org/wiki/Rhombic_dodecahedron
-[18] https://citeseerx.ist.psu.edu/document?repid=rep1&type=pdf&doi=ef376b920de825536d50139680b9635bdaebd6f5
+[18] https://doi.org/10.1007/11428862_181
 [19] https://www.qfbox.info/4d/vis/01-intro
-[20] https://www.academia.edu/124663526/Quadray_Coordinates
+[20] https://www.grunch.net/synergetics/quadrays.html
 [21] https://www.youtube.com/watch?v=0CNcItrI8f0
 [22] https://www.grunch.net/synergetics/quadshapes.html
 [23] https://csuepress.columbusstate.edu/cgi/viewcontent.cgi?article=1981&context=bibliography_faculty
 [24] https://www.youtube.com/watch?v=KML0JM6B2LA
 [25] https://github.com/orobix/quadra
-[26] https://archive.org/details/buckminster-fuller-synergetics-explorations-in-the-geometry-of-thinking
 [27] https://dn790004.ca.archive.org/0/items/buckminster-fuller-synergetics-explorations-in-the-geometry-of-thinking/Buckminster%20Fuller%20-%20Synergetics%20Explorations%20in%20the%20Geometry%20of%20Thinking.pdf
 [28] https://www.wikiwand.com/en/articles/Synergetic
 [29] http://blog.hasslberger.com/2010/10/tetrahedral_coordinates_mathem-print.html
@@ -380,14 +378,12 @@ The work of the quadray coordinate community represents a remarkable example of 
 [39] https://github.com/Barbosik/QuadNode
 [40] https://www.mikechambers.com/blog/post/2011-03-21-javascript-quadtree-implementation/
 [41] https://github.com/meteotest/quadkeys
-[42] https://archive.org/details/github.com-Qv2ray-Qv2ray_-_2020-06-01_13-34-16
 [43] https://p5js.org/reference/p5/quad/
 [44] https://www.cvxpy.org/examples/basic/quadratic_program.html
 [45] https://www.reddit.com/r/Firearms/comments/p726zf/what_is_the_best_cartridge_to_kill_a_robot/
 [46] https://coda.io/@daniel-ari-friedman/math4wisdom/quadcraft-166
 [47] https://coda.io/@daniel-ari-friedman/math4wisdom/benrayfield-169
 [48] https://coderanch.com/t/755031/a/1.3.0/collins.txt?download_attachment=true
-[49] https://archive.org/download/csw21/CSW21.txt
 [50] https://id.scribd.com/document/421490488/ProductCreationTemplate-2019-04-09
 [51] https://cosmometry.com/ch-8-isotropic-vector-matrix/
 [52] https://github.com/qpsolvers/qpsolvers

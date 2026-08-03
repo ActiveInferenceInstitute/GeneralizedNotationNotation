@@ -779,7 +779,7 @@ results=fit_model(multi_subject_model, show_progress=false);#hide
 
 # ```
 
-# '**Turing**' allows us to run distributed `MCMCDistributed()` or threaded `MCMCThreads()` parallel sampling. The default is to run chains serially `MCMCSerial()`. For information on the available samplers see the [Turing documentation](https://turing.ml/dev/docs/using-turing/samplers/)
+# '**Turing**' allows us to run distributed `MCMCDistributed()` or threaded `MCMCThreads()` parallel sampling. The default is to run chains serially `MCMCSerial()`. For information on the available samplers see the [Turing documentation](https://turinglang.github.io/Turing.jl/stable/)
 
 #
 
@@ -2138,7 +2138,7 @@ results = fit_model(
 )
 ```
 
-'**Turing**' allows us to run distributed `MCMCDistributed()` or threaded `MCMCThreads()` parallel sampling. The default is to run chains serially `MCMCSerial()`. For information on the available samplers see the [Turing documentation](https://turing.ml/dev/docs/using-turing/samplers/).
+'**Turing**' allows us to run distributed `MCMCDistributed()` or threaded `MCMCThreads()` parallel sampling. The default is to run chains serially `MCMCSerial()`. For information on the available samplers see the [Turing documentation](https://turinglang.github.io/Turing.jl/stable/).
 
 #### Results
 

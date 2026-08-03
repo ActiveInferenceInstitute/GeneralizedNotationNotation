@@ -128,7 +128,7 @@ The project's emphasis on practical implementation over theoretical exposition a
 The open-source nature of the project, combined with its educational focus and practical utility, positions it to have lasting impact on how type inference algorithms are taught, understood, and implemented in future programming language projects [1].
 
 [1] https://github.com/cu1ch3n/type-inference-zoo
-[2] https://docs.openvino.ai/2023.3/omz_demos.html
+[2] https://github.com/openvinotoolkit/open_model_zoo
 [3] https://flatirons.com/blog/functional-programming-languages/
 [4] https://research.cs.queensu.ca/home/jana/papers/polyunions/
 [5] https://i.cs.hku.hk/~bruno/papers/icfp2019.pdf
@@ -146,7 +146,6 @@ The open-source nature of the project, combined with its educational focus and p
 [17] https://hkuplg.github.io/2023/06/15/mechanized-type-inference/
 [18] https://theory.stanford.edu/~aiken/publications/papers/popl91.pdf
 [19] https://arxiv.org/abs/1306.6032
-[20] https://papl.cs.brown.edu/2020/Type_Inference.html
 [21] https://pldi25.sigplan.org/details/pldi-2025-papers/89/Practical-Type-Inference-with-Levels
 [22] https://deepai.org/publication/hityper-a-hybrid-static-type-inference-framework-with-neural-prediction
 [23] https://en.wikipedia.org/wiki/Hindley%E2%80%93Milner_type_system
@@ -158,5 +157,4 @@ The open-source nature of the project, combined with its educational focus and p
 [29] https://zoo.cuichen.cc/playground
 [30] https://zoo.cuichen.cc/quick-reference
 [31] https://zoo.cuichen.cc/research
-[32] https://www.pls-lab.org/Bidirectional_typechecking
 [33] http://dagstuhl.sunsite.rwth-aachen.de/opus/frontdoor.php

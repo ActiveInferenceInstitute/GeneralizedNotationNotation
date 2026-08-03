@@ -122,7 +122,7 @@ This reformulation suggests that vec2text's iterative correction can be understo
 
 From a **cognitive security** perspective—examining how information systems interact with human cognitive processes—the intersection of these technologies raises important considerations:
 
-**Privacy Implications**: vec2text's ability to reconstruct sensitive information from embeddings challenges assumptions about privacy protection in vector databases[18][19]. This has particular relevance for applications storing medical records, personal communications, or proprietary documents.
+**Privacy Implications**: vec2text's ability to reconstruct sensitive information from embeddings challenges assumptions about privacy protection in vector databases[18]. This has particular relevance for applications storing medical records, personal communications, or proprietary documents.
 
 **Interpretability and Trust**: The combination of embedding inversion with Active Inference modeling could provide new approaches to understanding how AI systems process and represent information, potentially improving transparency and trust.
 
@@ -213,8 +213,7 @@ The convergence of these fields represents not just a technical advancement, but
 [15] https://zenodo.org/records/7803328
 [16] https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/
 [17] https://www.geeksforgeeks.org/deep-learning/variational-inference-in-bayesian-neural-networks/
-[18] https://arxiv.org/html/2411.05034
-[19] https://paperswithcode.com/paper/mitigating-privacy-risks-in-llm-embeddings
+[18] https://arxiv.org/abs/2411.05034
 [20] https://publish.obsidian.md/active-inference/knowledge_base/cognitive/active_inference
 [21] https://github.com/vec2text/vec2text?tab=readme-ov-file
 [22] https://www.youtube.com/watch?v=3tYOBVIOLyU
@@ -241,7 +240,6 @@ The convergence of these fields represents not just a technical advancement, but
 [43] https://galileo.ai/blog/mastering-rag-how-to-select-an-embedding-model
 [44] https://deepai.org/publication/vec2text-with-round-trip-translations
 [45] https://huggingface.co/blog/static-embeddings
-[46] https://paperswithcode.com/paper/vec2vec-a-compact-neural-network-approach-for
 [47] https://www.ittc.ku.edu/~bluo/download/hayet2022emnlp.pdf
 [48] https://arxiv.org/html/2412.15241v3
 [49] https://openaccess.thecvf.com/content/CVPR2021/supplemental/Lin_Vx2Text_End-to-End_Learning_CVPR_2021_supplemental.pdf
@@ -250,7 +248,6 @@ The convergence of these fields represents not just a technical advancement, but
 [52] https://arxiv.org/html/2410.19315v2
 [53] https://direct.mit.edu/books/oa-monograph/5299/chapter/3724202/The-Generative-Models-of-Active-Inference
 [54] https://direct.mit.edu/neco/article-abstract/36/5/963/119791/An-Overview-of-the-Free-Energy-Principle-and?redirectedFrom=fulltext
-[55] https://core.ac.uk/download/pdf/288349048.pdf
 [56] https://www.sciencedirect.com/science/article/pii/S0149763420304668
 [57] https://pubmed.ncbi.nlm.nih.gov/37550277/
 [58] https://ar5iv.labs.arxiv.org/html/2401.12418
@@ -279,16 +276,13 @@ The convergence of these fields represents not just a technical advancement, but
 [81] https://arxiv.org/pdf/2004.07426.pdf
 [82] https://www.pnas.org/doi/10.1073/pnas.2003794117
 [83] https://arxiv.org/pdf/2507.07700.pdf
-[84] https://paperswithcode.com/paper/transferable-embedding-inversion-attack
 [85] https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4951516
-[86] https://arxiv.org/html/2406.1.3.0v1
 [87] https://openaccess.thecvf.com/content_ICCV_2017/papers/Li_Towards_End-To-End_Text_ICCV_2017_paper.pdf
 [88] https://arxiv.org/pdf/2504.00147.pdf
 [89] https://arxiv.org/abs/2411.05034
 [90] https://cs224d.stanford.edu/reports/OshriBarak.pdf
 [91] https://openreview.net/forum?id=0bS3M8COYS
 [92] https://core.ac.uk/download/79545253.pdf
-[93] https://arxiv.org/abs/2406.1.3.0
 [94] https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/blob/main/doc/gnn/reference/gnn_syntax.md
 [95] https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/tree/main/src
 [96] https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/tree/main/src/gnn

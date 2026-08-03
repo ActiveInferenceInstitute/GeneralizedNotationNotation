@@ -168,7 +168,7 @@ The package's integration with the broader Julia ecosystem for cognitive modelin
 [2] https://www.mdpi.com/1099-4300/27/1/62
 [3] https://github.com/ComputationalPsychiatry/ActionModels.jl
 [4] https://pmc.ncbi.nlm.nih.gov/articles/PMC8956124/
-[5] https://nms.kcl.ac.uk/osvaldo.simeone/freeenergymin.pdf
+[5] https://web.archive.org/web/20220519012431/https://nms.kcl.ac.uk/osvaldo.simeone/freeenergymin.pdf
 [6] https://direct.mit.edu/books/oa-monograph/chapter-pdf/2246582/c004100_9780262369978.pdf
 [7] https://research.aalto.fi/fi/datasets/turinglangturingjl-v0240
 [8] https://www.sciencedirect.com/science/article/pii/S0925231.3.020903
@@ -200,7 +200,6 @@ The package's integration with the broader Julia ecosystem for cognitive modelin
 [34] https://arxiv.org/pdf/2207.06415.pdf
 [35] https://scholar.harvard.edu/files/schwartz/files/8-freeenergy.pdf
 [36] https://publish.obsidian.md/active-inference/knowledge_base/mathematics/variational_free_energy
-[37] https://paperswithcode.com/paper/pymdp-a-python-library-for-active-inference
 [38] https://enccs.github.io/julia-for-hpc/
 [39] https://julialang.org
 [40] https://juliahighperformance.com

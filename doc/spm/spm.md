@@ -112,7 +112,7 @@ SPM's comprehensive functionality, robust statistical foundations, and extensive
 [18] https://www.fil.ion.ucl.ac.uk/spm/course/slides20-oct/06_Voxel_Based_Morphometry.pdf
 [19] https://github.com/spm/spm12
 [20] https://andysbrainbook.readthedocs.io/en/latest/SPM/SPM_Short_Course/SPM_04_Preprocessing.html
-[21] https://brainresearch.de/Methods/fMRI/Preprocessing/SPM_Preprocessing.html
+[21] https://www.fil.ion.ucl.ac.uk/spm/doc/
 [22] https://www.fil.ion.ucl.ac.uk/spm/ext/
 [23] https://andysbrainbook.readthedocs.io/en/latest/SPM/SPM_Short_Course/SPM_Intermezzo_Toolboxes.html
 [24] https://github.com/spm-toolboxes
@@ -120,7 +120,6 @@ SPM's comprehensive functionality, robust statistical foundations, and extensive
 [26] https://www.osc.edu/resources/available_software/software_list/matlab/spm
 [27] https://www.numberanalytics.com/blog/ultimate-guide-statistical-parametric-mapping-anatomical-research-methods
 [28] https://mriquestions.com/uploads/3/4/5/7/34572113/spm12_manual.pdf
-[29] http://brainimaging.waisman.wisc.edu/~oakes/spm/SPM99_Introduction.pdf
 [30] https://spm1d.org
 [31] https://jsheunis.github.io/2018-06-28-spm12-matlab-scripting-tutorial-1/
 [32] https://www.nitrc.org/projects/bm_spm_viewer/
@@ -140,7 +139,6 @@ SPM's comprehensive functionality, robust statistical foundations, and extensive
 [46] https://andysbrainbook.readthedocs.io/en/latest/SPM/SPM_Short_Course/SPM_06_Scripting.html
 [47] https://www.fil.ion.ucl.ac.uk/spm/course/slides10-vancouver/02_General_Linear_Model.pdf
 [48] https://www.youtube.com/watch?v=uO945o3yuL0
-[49] https://brainimaging.waisman.wisc.edu/~oakes/teaching/Lectures/GLM_Analysis.pdf
 [50] https://www.youtube.com/watch?v=zSqBoB1GrDk
 [51] https://www.tnu.ethz.ch/fileadmin/user_upload/teaching/Methods_Models2016/02_Preprocessing_HS2016_Tutorial.pdf
 [52] https://andysbrainbook.readthedocs.io/en/latest/SPM/SPM_Short_Course/SPM_Statistics/SPM_04_Stats_General_Linear_Model.html

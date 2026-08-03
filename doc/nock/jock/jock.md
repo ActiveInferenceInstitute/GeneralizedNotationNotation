@@ -141,9 +141,8 @@ This code illustrates defining a class with methods and instantiating objects.
 
 ## Conclusion
 
-Jock represents a modern, high-level language for the Nock ecosystem, combining expressive syntax, a robust type system, and seamless integration with Urbit and Hoon. Its architecture enables both practical programming and formal reasoning, making it a compelling choice for developers targeting Nock-based platforms. The repository provides a comprehensive foundation for language development, testing, and future expansion[1].
+Jock represents a modern, high-level language for the Nock ecosystem, combining expressive syntax, a robust type system, and seamless integration with Urbit and Hoon. Its architecture enables both practical programming and formal reasoning, making it a compelling choice for developers targeting Nock-based platforms. The repository provides a comprehensive foundation for language development, testing, and future expansion[2].
 
-[1] https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/343060/6c2825a0-7e1f-40b8-bfdb-985b88a60757/paste.txt
 [2] https://github.com/zorp-corp/jock-lang
 [3] https://www.reddit.com/r/Julia/comments/odr8mh/the_julia_programming_language_repository_summary/
 [4] https://idratherbewriting.com/2014/12/22/most-common-programming-languages-tech-writers-in-my-survey-know/
@@ -481,4 +480,4 @@ func fib(n:@) -> @ {
 
 Jock offers a modern, expressive, and technically robust language for Nock-based systems, with a focus on formal reasoning, practical syntax, and deep integration with Urbit and Hoon. The repository provides extensive code, tests, and documentation for both language users and contributors[1].
 
-[1] https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/343060/6c2825a0-7e1f-40b8-bfdb-985b88a60757/paste.txt
+[1] https://github.com/zorp-corp/jock-lang

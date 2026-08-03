@@ -490,8 +490,6 @@ Citations:
 [54] <https://dspy.ai>
 [55] <https://github.com/stanfordnlp/dspy/issues/276>
 [56] <https://github.com/stanfordnlp/dspy/blob/main/docs/docs/cheatsheet.md>
-[57] <https://github.com/stanfordnlp/dspy/blob/main/docs/docs/deep-dive/modules/multi-chain-comparison.md>
-[58] <https://www.aidoczh.com/dspy/api/modules/ChainOfThought/ChainOfThought.html>
 [59] <https://github.com/stanfordnlp/dspy/blob/main/dspy/predict/react.py>
 [60] <https://github.com/stanfordnlp/dspy/blob/main/docs/docs/learn/programming/modules.md>
 [61] <https://github.com/stanfordnlp/dspy/blob/main/dspy/predict/multi_chain_comparison.py>
@@ -547,7 +545,6 @@ Citations:
 [111] <https://blog.gopenai.com/unveiling-dspy-a-powerful-framework-for-building-intelligent-llm-applications-3875bd0fd80e>
 [112] <https://glasp.co/un782hnbkv3syx54/p/aab2d91f53abd98dfb0b>
 [113] <https://gist.github.com/jrknox1977/847c869fe9ee3b0723a9007427c38ef6>
-[114] <https://github.com/stanfordnlp/dspy/blob/main/docs/docs/deep-dive/modules/chain-of-thought-with-hint.md>
 [115] <https://stackoverflow.com/questions/78623315/keyerror-temperature-in-dspy-chainofthought>
 [116] <https://docs.egg-ai.com/examples/dspy_react/>
 [117] <https://dspy.ai/api/modules/Module/>

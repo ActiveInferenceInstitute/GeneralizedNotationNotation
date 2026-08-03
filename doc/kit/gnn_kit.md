@@ -348,5 +348,4 @@ This synergy yields significant benefits:
 This integration directly addresses the need to make complex systems like Active Inference models more understandable, manageable, and interoperable with cutting-edge AI techniques. The explicit, formal nature of GNN, when coupled with `kit`'s versatile codebase intelligence and LLM integration capabilities, establishes a powerful and principled toolkit for researchers and developers at the confluence of these rapidly evolving fields.
 
 ---
-*This analysis was developed applying principles of analytical writing, such as those outlined in guides like "How to Write an Analysis" by Purdue University Fort Wayne.* 
-*([https://www.pfw.edu/offices/learning-support/documents/how-to-write-an-analysis.pdf](https://www.pfw.edu/offices/learning-support/documents/how-to-write-an-analysis.pdf))*
+*This analysis was developed applying principles of analytical writing, such as those outlined in guides like "How to Write an Analysis" by Purdue University Fort Wayne.*

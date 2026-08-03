@@ -107,9 +107,8 @@ Nockchain represents a unique approach to blockchain technology by:
 
 The project appears to be in active development with sophisticated cryptographic capabilities, suggesting it's positioned as a next-generation blockchain platform emphasizing formal verification, zero-knowledge proofs, and functional programming principles.
 
-[1] https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/343060/d6948f28-a712-4d0f-86aa-fb34c4bf0ff0/paste.txt
+[1] https://github.com/zorp-corp/jock-lang
 [2] https://github.com/zorp-corp/nockchain
-[3] https://github.com/zorp-corp/nockapp
 [4] https://github.com/zorp-corp
 [5] https://github.com/zorp-corp/jock-lang
 [6] https://www.nockchain.org/nockchain-is-now-open-source/
@@ -117,7 +116,6 @@ The project appears to be in active development with sophisticated cryptographic
 [8] https://www.nockchain.org/nockvm/
 [9] https://github.com/0xmoei/nockchain
 [10] https://alphasigmacapitalresearch.substack.com/p/nock-nock-whos-there-the-future-of
-[11] https://forum.nockchain.org/t/what-is-nockchain/598
 [12] https://twitter.com/i/status/1759313608851218675
 [13] https://www.nockchain.org/
 [14] https://www.nockchain.org/introducing/
@@ -127,14 +125,12 @@ The project appears to be in active development with sophisticated cryptographic
 [18] https://www.nockchain.org/autism-is-all-you-need/
 [19] https://www.nockchain.org/proofpower/
 [20] https://www.youtube.com/watch?v=TlZGbF8wr8o
-[21] https://relidator.com/blog/analysis-of-nockchain-a-zk-proof-of-work-blockchain
 [22] https://www.alexmurshak.com/p/hacking-state-38-logan-allen-zorp
 [23] https://cryptorank.io/price/nockchain
 [24] https://www.rootdata.com/Projects/detail/Nockpool?k=MTc2Mzg%3D
 [25] https://dropstab.com/coins/nockchain
 [26] https://101blockchains.com/blockchain-development-tools/
 [27] https://www.nockchain.org/
-[28] https://icodrops.com/nockchain/
 [29] https://x.com/nockchain/status/1864082190256218431
 [30] https://www.dextools.io/app/en/solana/pair-explorer/ENDyunqABSwMvfUoRxsNA1N2QLhXeZQTYrnPZUQdnygP
 [31] https://x.com/nockchain?lang=en
@@ -553,4 +549,4 @@ pub fn vec_to_hoon_list(slab: &mut NounSlab, vec: Vec) -> Noun {
 
 This technical deep dive reveals Nockchain's sophisticated implementation spanning multiple layers: a complete functional programming language (Jock), a comprehensive type system, efficient compilation to Nock bytecode, robust testing infrastructure, and integration with the broader NockApp ecosystem. The codebase demonstrates production-ready software engineering practices with extensive error handling, comprehensive testing, and performance optimizations throughout the compilation pipeline.
 
-[1] https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/343060/d6948f28-a712-4d0f-86aa-fb34c4bf0ff0/paste.txt
+[1] https://github.com/zorp-corp/jock-lang

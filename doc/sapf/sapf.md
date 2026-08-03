@@ -262,7 +262,6 @@ The language's design philosophy of achieving maximum expressiveness with minima
 [9] https://github.com/lfnoise/sapf/releases/tag/v0.1.21
 [10] https://scsynth.org/t/sound-as-pure-form-open-sourced-repo-on-github/11164
 [11] https://www.youtube.com/watch?v=FY2WYXOdXoM
-[12] https://hyper.ai/en/headlines/0a8e79b30f1fcffb28e3f2cd11fb29b7
 [13] https://archives.ismir.net/ismir2019/paper/000063.pdf
 [14] http://articles.ircam.fr/textes/Hackbarth10a/index.pdf
 [15] https://hexdocs.pm/postfix/Postfix.Stack.html
