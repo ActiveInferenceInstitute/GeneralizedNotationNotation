@@ -13,6 +13,7 @@ This folder hosts the explicit, stateless developer workflow validation agents r
 | `check_repo_terminology.py` | Scans maintained source for banned terminology | ✅ `--strict` |
 | `check_maintained_doc_terms.py` | Scans maintained Markdown for stale framework terms | ✅ `--strict` |
 | `check_gnn_doc_patterns.py` | Scans `doc/` + `src/gnn/` for stale import paths, retired routing, and banned patterns | ✅ `--strict` |
+| `check_external_links.py` | Scans maintained docs for dead external (http/https) URLs — informational, not CI-wired | ⚪ no (flaky external checks) |
 | `check_capability_contracts.py` | Validates capability-contract claims against measured codebase state | ✅ exit 1 on mismatch |
 | `check_manuscript_tokens.py` | Validates manuscript token values against generated variables | ✅ `--strict` |
 | `check_pomdp_gridworld_outputs.py` | End-to-end GridWorld output validity check for the canonical POMDP test case | ✅ exit 1 on mismatch |
