@@ -148,6 +148,10 @@ def collect() -> dict[str, list[str]]:
                 continue
             for m in URL_RE.finditer(text):
                 url = m.group(0).rstrip(".,;:!?`")
+                # Re-balance a trailing paren the character class cut off
+                # (e.g. https://learn.microsoft.com/.../ms256108(v=vs.85)).
+                if url.count("(") > url.count(")"):
+                    url += ")"
                 if _should_skip_url(url):
                     continue
                 urls.setdefault(url, []).append(str(path.relative_to(ROOT)))
