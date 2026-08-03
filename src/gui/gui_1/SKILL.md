@@ -17,9 +17,9 @@ The `gui_1` module provides the core web-based or local graphical user interface
 
 ## MCP Tools
 
-This module registers tools with the GNN MCP server (see `mcp.py`):
-
-- `gui_status`
+`mcp.py` exposes a discovery hook (`register_gui_tools`) that triggers tool
+registration on the parent `gui` module; the `gui_1` submodule itself defines
+no standalone tools.
 
 ## References
 

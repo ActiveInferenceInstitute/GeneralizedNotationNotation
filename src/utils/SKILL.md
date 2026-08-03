@@ -30,7 +30,7 @@ python -c "from utils import generate_pipeline_health_report; print(generate_pip
 | `pipeline_template` | `log_step_start`, `log_step_success`, `log_step_error`, `log_step_warning` | Visual step logging |
 | `logging` | `PipelineLogger`, `setup_step_logging`, `StructuredLogger` | Structured logging |
 | `error_handling` | `ErrorRecoveryManager`, `PipelineErrorHandler`, `generate_correlation_id` | Error handling & recovery |
-| `configuration` | `ConfigurationManager`, `get_config`, `set_config`, `validate_config` | Pipeline configuration |
+| `configuration` | `config_loader`, `get_config_value`, `set_config_value`, `validate_config` | Pipeline configuration |
 | `dependency` | `DependencyValidator`, `DependencyAuditor`, `validate_pipeline_dependencies` | Dependency management |
 | `performance` | `PerformanceTracker`, `track_operation_standalone` | Performance monitoring |
 
@@ -48,8 +48,8 @@ from utils import (
     format_error_message, get_recovery_manager,
 
     # Configuration
-    ConfigurationManager, get_config, set_config, validate_config,
-    get_pipeline_config, load_config, save_config,
+    config_loader, get_config_value, set_config_value, validate_config,
+    load_config, save_config,
 
     # Dependencies
     DependencyValidator, validate_pipeline_dependencies,
@@ -70,6 +70,7 @@ log_step_start(logger, "Processing started")
 log_step_success(logger, "Processing completed")
 
 # Configuration management
+from pipeline.config import get_pipeline_config
 config = get_pipeline_config()
 validate_config(config)
 

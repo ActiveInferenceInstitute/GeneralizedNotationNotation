@@ -61,11 +61,11 @@ src/tests/
 
 ## MCP Tools
 
-This module registers tools with the GNN MCP server (see `mcp.py`):
-
-- `run_all_tests`
-- `run_integration_tests`
-- `run_unit_tests`
+This module defines MCP tools in `mcp.py` (`run_all_tests`,
+`run_integration_tests`, `run_unit_tests`) with working handlers, but the
+`tests` package is deliberately excluded from MCP auto-discovery
+(`discovery_excluded_dirs={"tests"}` in `src/mcp/mcp.py`), so these tools are
+not registered on the live GNN MCP server.
 
 ## References
 

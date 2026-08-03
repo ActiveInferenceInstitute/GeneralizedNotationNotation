@@ -26,7 +26,7 @@ python src/12_execute.py --frameworks "lite" --verbose
 
 ```python
 from execute import (
-    ExecutionEngine, GNNExecutor, execute_gnn_model, run_simulation,
+    GNNExecutor, execute_gnn_model, run_simulation,
     execute_pymdp_simulation_from_gnn, execute_pymdp_simulation,
     validate_execution_environment, process_execute,
     execute_script_safely
@@ -44,14 +44,14 @@ result = run_simulation(config)
 # Validate execution environment before running
 env_report = validate_execution_environment()
 
-# Use the ExecutionEngine class
-engine = ExecutionEngine()
+# Use the GNNExecutor class
+engine = GNNExecutor()
 ```
 
 ## Key Exports
 
 - `process_execute` — main pipeline processing function
-- `ExecutionEngine` / `GNNExecutor` — execution engine classes
+- `GNNExecutor` — execution engine class
 - `execute_gnn_model` / `run_simulation` — model execution functions
 - `execute_pymdp_simulation_from_gnn` / `execute_pymdp_simulation` — PyMDP-specific
 - `validate_execution_environment` — pre-execution validation
