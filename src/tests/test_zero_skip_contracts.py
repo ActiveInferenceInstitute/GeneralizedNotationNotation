@@ -12,6 +12,7 @@ DEFAULT_SKIP_ALLOWLIST = {
     "src/tests/llm/test_llm_ollama.py",
     "src/tests/llm/test_llm_ollama_integration.py",
     "src/tests/pipeline/test_pomdp_gridworld_cross_framework.py",
+    "src/tests/render/test_rxinfer_viz_log_contract.py",
 }
 
 
