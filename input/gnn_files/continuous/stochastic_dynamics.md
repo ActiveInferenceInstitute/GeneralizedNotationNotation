@@ -82,12 +82,12 @@ gamma_state-B
 
 ## InitialParameterization
 
-# A: noisy position readout — each state maps mostly to its own reading
+# A: noisy position readout — states 0 and 1 map to their own readings; state 2
+# is ambiguous (half/half), consistent with the A[2,3] declaration (2 obs × 3 states)
 
 A={
-  (0.9, 0.05, 0.05),
-  (0.05, 0.9, 0.05),
-  (0.05, 0.05, 0.9)
+  (0.9, 0.1, 0.5),
+  (0.1, 0.9, 0.5)
 }
 
 # B: 2 actions. Action 0=thrust +, 1=thrust - (state shifts with noise)

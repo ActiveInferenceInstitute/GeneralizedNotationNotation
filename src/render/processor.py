@@ -268,9 +268,17 @@ def process_render(
         # Find GNN files
         from gnn.discovery import is_model_source_path
 
+        # Reuse discovery (apply default target dir like the named args), honoring
+        # recursion so nested exemplar folders (discrete/, basics/, pomdp_gridworld/,
+        # etc.) are found — not just top-level "*.md".
+        recursive = bool(kwargs.get("recursive", True))
         gnn_files: list[Any] = []
-        for pattern in ["*.md", "*.json", "*.yaml", "*.yml"]:
-            gnn_files.extend(target_dir.glob(pattern))
+        if recursive:
+            for pattern in ["*.md", "*.json", "*.yaml", "*.yml"]:
+                gnn_files.extend(target_dir.rglob(pattern))
+        else:
+            for pattern in ["*.md", "*.json", "*.yaml", "*.yml"]:
+                gnn_files.extend(target_dir.glob(pattern))
         gnn_files = [path for path in gnn_files if is_model_source_path(path)]
 
         if not gnn_files:
