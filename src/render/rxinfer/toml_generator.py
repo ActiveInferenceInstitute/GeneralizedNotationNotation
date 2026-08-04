@@ -121,178 +121,155 @@ def render_gnn_to_rxinfer_toml(
         return False, msg, []
 
 
+def _strip_outer_braces(s: str) -> str:
+    """Remove one layer of outer curly braces if the whole string is wrapped."""
+    s = s.strip()
+    if s.startswith("{") and s.endswith("}"):
+        return s[1:-1].strip()
+    return s
+
+
+def _strip_outer_parens_wrapper(s: str) -> str:
+    """
+    Remove one outer pair of parentheses only when they wrap the entire content
+    (the matching close paren is the final character). This lets us accept both
+    '((a,b,c),(d,e,f))' and '(a,b,c),(d,e,f)' forms while leaving partially
+    parenthesized input untouched.
+    """
+    s = s.strip()
+    if not s.startswith("("):
+        return s
+    depth = 0
+    for i, ch in enumerate(s):
+        if ch == "(":
+            depth += 1
+        elif ch == ")":
+            depth -= 1
+            if depth == 0:
+                if i == len(s) - 1:
+                    return s[1:-1].strip()
+                return s
+    return s
+
+
+def _split_top_level_groups(content: str) -> List[str]:
+    """
+    Split a string into top-level comma-separated groups, counting commas at
+    parenthesis/brace depth 0 so that commas inside nested tuples are preserved.
+    """
+    groups: List[str] = []
+    depth = 0
+    brace_depth = 0
+    start = 0
+    for i, ch in enumerate(content):
+        if ch == "(":
+            depth += 1
+        elif ch == ")":
+            depth -= 1
+        elif ch == "{":
+            brace_depth += 1
+        elif ch == "}":
+            brace_depth -= 1
+        elif ch == "," and depth == 0 and brace_depth == 0:
+            groups.append(content[start:i].strip())
+            start = i + 1
+    groups.append(content[start:].strip())
+    return groups
+
+
+def _parse_float_row(token: str, context_name: str) -> List[float]:
+    """Parse a single tuple token like '(0.9,0.05,0.05)' into a list of floats."""
+    token = token.strip()
+    if not token:
+        raise ValueError(f"Failed to parse {context_name}: empty element")
+    token = _strip_outer_parens_wrapper(token)
+    elements = [float(x.strip()) for x in token.split(",") if x.strip() != ""]
+    if not elements:
+        raise ValueError(
+            f"Failed to parse {context_name}: no numeric elements in {token!r}"
+        )
+    return elements
+
+
 def _parse_gnn_matrix(matrix_str: str) -> List[List[float]]:
     """
-    Parse GNN matrix notation into Python list of lists.
+    Parse GNN matrix notation into a Python list of lists.
 
-    Args:
-        matrix_str: String representation of matrix from GNN file
+    Accepts the parenthesized-tuple forms used in GNN exemplar files, e.g.:
+      '((0.9,0.05,0.05),(0.05,0.9,0.05),(0.05,0.05,0.9))'
+      '{(0.9,0.05,0.05),(0.05,0.9,0.05),(0.05,0.05,0.9)}'
+    as well as the multi-line brace form:
+      '{\n  (1.0, 0.0, 0.0),\n  (0.0, 1.0, 0.0)\n}'
 
-    Returns:
-        List of lists representing the matrix
+    Raises:
+        ValueError: if the input cannot be parsed into a rectangular matrix.
     """
-    try:
-        # Remove outer braces and split by rows
-        matrix_str = matrix_str.strip()
-        if matrix_str.startswith("{") and matrix_str.endswith("}"):
-            matrix_str = matrix_str[1:-1]
+    s = _strip_outer_braces(matrix_str)
+    s = _strip_outer_parens_wrapper(s)
+    row_tokens = _split_top_level_groups(s)
+    if not row_tokens or all(not t for t in row_tokens):
+        raise ValueError(
+            f"Failed to parse matrix {matrix_str!r}: no rows found"
+        )
 
-        # Handle the specific GNN format: "(1.0, 0.0, 0.0), (0.0, 1.0, 0.0), (0.0, 0.0, 1.0)"
-        # Split by "), (" to separate rows
-        parts = matrix_str.split("), (")
-        if len(parts) > 1:
-            matrix: list[Any] = []
-            for i, part in enumerate(parts):
-                # Clean up outer parentheses
-                if i == 0:
-                    part = part[1:] if part.startswith("(") else part
-                if i == len(parts) - 1:
-                    part = part[:-1] if part.endswith(")") else part
+    matrix: List[List[float]] = []
+    for token in row_tokens:
+        matrix.append(_parse_float_row(token, f"matrix {matrix_str!r}"))
 
-                # Split by comma and convert to floats
-                elements = [float(e.strip()) for e in part.split(",")]
-                matrix.append(elements)
-            return matrix
-
-        # Recovery: try parsing as individual rows
-        rows: list[Any] = []
-        current_row = ""
-        brace_count = 0
-
-        for char in matrix_str:
-            if char == "(":
-                brace_count += 1
-            elif char == ")":
-                brace_count -= 1
-
-            current_row += char
-
-            if brace_count == 0 and char == ")":
-                # End of a row
-                rows.append(current_row.strip())
-                current_row = ""
-
-        # Parse each row
-        matrix = []
-        for row in rows:
-            if row.strip():
-                # Remove outer parentheses and split by comma
-                row_content = row.strip()
-                if row_content.startswith("(") and row_content.endswith(")"):
-                    row_content = row_content[1:-1]
-
-                # Split by comma and convert to floats
-                elements = [float(e.strip()) for e in row_content.split(",")]
-                matrix.append(elements)
-
-        return matrix
-    except Exception as e:
-        logger.warning(f"Failed to parse matrix {matrix_str}: {e}")
-        # Return identity matrix as recovery
-        return [[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]]
+    # Validate the matrix is rectangular.
+    if matrix:
+        ncols = len(matrix[0])
+        for row in matrix:
+            if len(row) != ncols:
+                raise ValueError(
+                    f"Failed to parse matrix {matrix_str!r}: "
+                    f"rows have inconsistent lengths"
+                )
+    return matrix
 
 
 def _parse_gnn_3d_matrix(matrix_str: str) -> List[List[List[float]]]:
     """
-    Parse GNN 3D matrix notation (for B matrix) into Python list of lists of lists.
+    Parse GNN 3D matrix notation (e.g. the B transition tensor) into a Python
+    list of 2D matrices.
 
-    Args:
-        matrix_str: String representation of 3D matrix from GNN file
+    Accepts the nested parenthesized form used in the exemplars, e.g.:
+      '{( (0.9,0.05,0.05), (0.05,0.9,0.05), (0.05,0.05,0.9) ), ( (...),... )}'
 
-    Returns:
-        List of lists of lists representing the 3D matrix
+    Raises:
+        ValueError: if the input cannot be parsed into a 3D tensor.
     """
-    try:
-        # Remove outer braces
-        matrix_str = matrix_str.strip()
-        if matrix_str.startswith("{") and matrix_str.endswith("}"):
-            matrix_str = matrix_str[1:-1]
+    s = _strip_outer_braces(matrix_str)
+    s = _strip_outer_parens_wrapper(s)
+    action_tokens = _split_top_level_groups(s)
+    if not action_tokens or all(not t for t in action_tokens):
+        raise ValueError(
+            f"Failed to parse 3D matrix {matrix_str!r}: no action matrices found"
+        )
 
-        # Split by action matrices (looking for ), ( pattern at the top level)
-        action_matrices: list[Any] = []
-        current_matrix = ""
-        brace_count = 0
-
-        for char in matrix_str:
-            if char == "(":
-                brace_count += 1
-            elif char == ")":
-                brace_count -= 1
-
-            current_matrix += char
-
-            if brace_count == 0 and char == ")":
-                # End of an action matrix
-                action_matrices.append(current_matrix.strip())
-                current_matrix = ""
-
-        # Parse each action matrix
-        tensor: list[Any] = []
-        for action_matrix in action_matrices:
-            if action_matrix.strip():
-                # Parse the 2D matrix for this action
-                matrix = _parse_gnn_matrix(action_matrix)
-                tensor.append(matrix)
-
-        return tensor
-    except Exception as e:
-        logger.warning(f"Failed to parse 3D matrix {matrix_str}: {e}")
-        # Try alternative parsing for the specific GNN format
-        try:
-            # Handle the specific format from the GNN file
-            # B={ ( (1.0,0.0,0.0), (0.0,1.0,0.0), (0.0,0.0,1.0) ), ( (0.0,1.0,0.0), (1.0,0.0,0.0), (0.0,0.0,1.0) ), ( (0.0,0.0,1.0), (0.0,1.0,0.0), (1.0,0.0,0.0) ) }
-
-            # Split by "), (" to separate action matrices
-            parts = matrix_str.split("), (")
-            if len(parts) > 1:
-                tensor = []
-                for i, part in enumerate(parts):
-                    # Clean up outer parentheses
-                    if i == 0:
-                        part = part[1:] if part.startswith("(") else part
-                    if i == len(parts) - 1:
-                        part = part[:-1] if part.endswith(")") else part
-
-                    # Parse the action matrix
-                    action_matrix = _parse_gnn_matrix(part)
-                    tensor.append(action_matrix)
-                return tensor
-        except Exception as e2:
-            logger.warning(f"Alternative parsing also failed: {e2}")
-
-        # Return default 3D matrix as recovery
-        return [
-            [[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]],
-            [[0.0, 1.0, 0.0], [1.0, 0.0, 0.0], [0.0, 0.0, 1.0]],
-            [[0.0, 0.0, 1.0], [0.0, 1.0, 0.0], [1.0, 0.0, 0.0]],
-        ]
+    tensor: List[List[List[float]]] = []
+    for token in action_tokens:
+        tensor.append(_parse_gnn_matrix(token))
+    return tensor
 
 
 def _parse_gnn_vector(vector_str: str) -> List[float]:
     """
-    Parse GNN vector notation into Python list.
+    Parse GNN vector notation into a Python list of floats.
 
-    Args:
-        vector_str: String representation of vector from GNN file
+    Accepts e.g. '(0.25, 0.25, 0.25, 0.25)' or '{(0.0, 0.0, 0.0, 3.0)}'.
 
-    Returns:
-        List representing the vector
+    Raises:
+        ValueError: if the input cannot be parsed.
     """
-    try:
-        # Remove outer braces and parentheses
-        vector_str = vector_str.strip()
-        if vector_str.startswith("{") and vector_str.endswith("}"):
-            vector_str = vector_str[1:-1]
-        if vector_str.startswith("(") and vector_str.endswith(")"):
-            vector_str = vector_str[1:-1]
-
-        # Split by comma and convert to floats
-        elements = [float(e.strip()) for e in vector_str.split(",")]
-        return elements
-    except Exception as e:
-        logger.warning(f"Failed to parse vector {vector_str}: {e}")
-        # Return uniform vector as recovery
-        return [0.33333, 0.33333, 0.33333]
+    s = _strip_outer_braces(vector_str)
+    s = _strip_outer_parens_wrapper(s)
+    elements = [float(x.strip()) for x in s.split(",") if x.strip() != ""]
+    if not elements:
+        raise ValueError(
+            f"Failed to parse vector {vector_str!r}: no numeric elements"
+        )
+    return elements
 
 
 def _extract_parameter_from_section(

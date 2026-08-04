@@ -30,6 +30,7 @@
 - POMDP-aware rendering via `POMDPRenderProcessor` (per-model/per-framework output folders)
 - Framework compatibility checks and matrix normalization before rendering
 - Structured summaries written to `render_processing_summary.json`
+- **Recursive exemplar discovery**: GNN spec files are discovered recursively with `rglob`, so nested exemplar folders under `input/gnn_files/**` (e.g. `discrete/`, `continuous/`, `basics/`, `hierarchical/`) are all rendered. All **45** exemplar GNN files render to and execute under RxInfer.jl (45/45 render + execute).
 
 ### Supported Frameworks
 

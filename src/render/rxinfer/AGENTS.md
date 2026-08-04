@@ -4,6 +4,10 @@
 
 Render validated GNN POMDP specs to executable RxInfer.jl scripts.
 
+Exemplar discovery is **recursive**: all GNN spec files under `input/gnn_files/**`
+(nested folders such as `discrete/`, `continuous/`, `basics/`) are discovered and rendered.
+All **45** exemplar GNN files render to and execute under RxInfer.jl (45/45 render + execute).
+
 ## Ownership Boundary
 
 - Maintain `render_gnn_to_rxinfer(...)` as the canonical RxInfer render surface.

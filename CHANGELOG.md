@@ -13,6 +13,11 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
 - Escaped bnlearn generated-code metadata as Python literals, coerced generated timestep literals, and sanitized generated artifact filename stems to prevent code injection and path traversal through model names.
 - Resolved default-branch Dependabot alerts by raising patched dependency floors and refreshing `uv.lock` for `msgpack` 1.2.1, `jupyter-server` 2.20.0, `jupyterlab` 4.6.0, and `bleach` 6.4.0.
 - Fixed session-scope `test_config` fixture in `conftest.py` to clean up its temporary directory after shutdown (was leaking via `tempfile.mkdtemp()` without finalizer).
+- Made render exemplar discovery recursive so all nested GNN spec files under `input/gnn_files/**` are found and rendered to RxInfer.jl. Previously only a shallow subset of the exemplar tree was discovered. All 45 exemplar GNN files now render to RxInfer.jl.
+- Fixed an exemplar dimension bug in `input/gnn_files/continuous/stochastic_dynamics.md`: the `A` matrix was declared `A[2,3]` (2 observations × 3 hidden states) but parameterized as a 3×3 matrix, which caused Julia RxInfer dimension validation to fail at execute time. Corrected the `A` matrix rows to a 2-row (2×3) parameterization consistent with the declaration.
+
+### Verified
+- **45/45 exemplar GNN files render to RxInfer.jl and execute under RxInfer.jl.** (Recursive discovery + `stochastic_dynamics.md` dimension fix.)
 
 ### Changed
 - `dag.py`: Added `raise_on_circular` parameter to `resolve_execution_order`; when `True`, circular dependencies raise `ValueError` instead of silently appending unresolved steps as the last execution tier. Added 5 unit tests for DAG resolution behavior.
