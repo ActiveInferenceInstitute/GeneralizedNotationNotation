@@ -133,6 +133,56 @@ This documentation is integrated with the 25-step GNN processing pipeline:
 
 See [src/AGENTS.md](../../src/AGENTS.md) for complete pipeline documentation.
 
+## Render → Execute → Log → Visualize lifecycle
+
+The RxInfer.jl lifecycle moves a GNN spec through four stages, producing distinct
+artifact types at each step. All 45 exemplar GNN files under `input/gnn_files/**`
+render to and execute under RxInfer.jl (45/45 render + execute).
+
+### 1. Render (Step 11)
+
+`src/render/rxinfer/` consumes `canonical_pomdp_v1` specs and emits an executable
+RxInfer.jl script per model:
+
+```text
+output/11_render_output/<model>/rxinfer/<model>_rxinfer.jl
+```
+
+### 2. Execute (Step 12)
+
+`src/execute/rxinfer/` runs the rendered `.jl` under Julia with RxInfer.jl. The
+script writes the **required** result artifact in its working directory:
+
+```text
+<model>/rxinfer/simulation_data/simulation_results.json   # rxinfer_simulation_v1
+```
+
+### 3. Log (Step 12, best-effort)
+
+The same executed script optionally writes structured runtime logging, guarded so
+it never fails the run:
+
+```text
+simulation.log          # human-readable chronological trace
+simulation_log.json     # machine-readable structured events
+```
+
+### 4. Visualize (Steps 12 + 16)
+
+Two complementary visualization layers exist:
+
+- **Julia-native (best-effort, emitted at render/execute time)** — `Plots.jl`
+  figures when Plots rendering is available:
+  `belief_evolution.png`, `efe_over_time.png`, `policy_posterior.png`.
+- **Step-16 matplotlib analysis** — `src/analysis/rxinfer/` produces the full
+  per-exemplar set from `rxinfer_simulation_v1`, written under
+  `output/16_analysis_output/rxinfer/`: `belief_evolution`, `obs_vs_true`,
+  `belief_heatmap`, `belief_entropy`, `accuracy`, `action_frequencies`,
+  `belief_convergence`, `belief_trace`, `free_energy`, and `observations`.
+
+All log and visualization artifacts are best-effort and backward-compatible with
+`rxinfer_simulation_v1`; only `simulation_results.json` is required.
+
 ## Usage Examples
 
 ### Running Validation

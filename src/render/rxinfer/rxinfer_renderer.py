@@ -175,6 +175,19 @@ using JSON
 using Base64
 using Dates
 
+# --- Optional Julia-native plotting via Plots.jl (matplotlib-free PNGs).
+# Guarded so a missing Plots installation/backend degrades gracefully and the
+# script NEVER fails to run because of plotting. @eval runs `using Plots` at
+# module top level so its exports (plot, heatmap, savefig, ...) become
+# available everywhere.
+const PLOTS_READY = try
+    @eval using Plots
+    true
+catch e
+    println("⚠️ Plots unavailable; PNG plotting disabled: $e")
+    false
+end
+
 const SCHEMA_VERSION = "rxinfer_simulation_v1"
 const MODEL_NAME = {model_name_literal}
 const NUM_STATES = {num_states}
@@ -413,12 +426,130 @@ function run_simulation()
     )
 end
 
+# --- Structured per-step execution log (JSON Lines: one record per step).
+# Captures per-step beliefs / action / EFE / policy posterior / validation,
+# written alongside simulation_results.json. Pure JSON + Base stdlib, and
+# guarded so logging can never crash the simulation.
+function write_execution_log(results)
+    log_path = "simulation.log"
+    beliefs = get(get(results, "beliefs_by_factor", Dict()), "joint_state", results["beliefs"])
+    actions = results["actions"]
+    efe = results["expected_free_energy"]
+    efe_per_action = results["efe_per_action"]
+    policy = results["policy_posterior"]
+    validation = get(results, "validation", Dict())
+
+    open(log_path, "w") do file
+        for step in 1:TIME_STEPS
+            record = Dict(
+                "event" => "step",
+                "step" => step,
+                "model_name" => MODEL_NAME,
+                "schema_version" => SCHEMA_VERSION,
+                "belief" => beliefs[step],
+                "action" => actions[step],
+                "expected_free_energy" => efe[step],
+                "efe_per_action" => efe_per_action[step],
+                "policy_posterior" => policy[step],
+                "validation" => validation
+            )
+            JSON.print(file, record)
+            println(file)
+        end
+        summary = Dict(
+            "event" => "summary",
+            "schema_version" => SCHEMA_VERSION,
+            "model_name" => MODEL_NAME,
+            "num_steps" => TIME_STEPS,
+            "validation" => validation
+        )
+        JSON.print(file, summary)
+        println(file)
+    end
+
+    # Complete structured JSON sidecar for downstream tooling that prefers a
+    # single document over JSONL.
+    full_log = Dict(
+        "schema_version" => SCHEMA_VERSION,
+        "model_name" => MODEL_NAME,
+        "format" => "jsonl",
+        "num_steps" => TIME_STEPS,
+        "validation" => validation,
+        "log_file" => log_path
+    )
+    open("simulation_log.json", "w") do file
+        JSON.print(file, full_log, 2)
+    end
+
+    println("RxInfer.jl simulation wrote $log_path and simulation_log.json")
+    return log_path
+end
+
+# --- Julia-native visualization via Plots.jl (matplotlib-free PNGs).
+# Everything is wrapped in try/catch so a missing Plots backend degrades to a
+# warning and NEVER prevents the simulation from running to completion.
+function write_plots(results)
+    if !PLOTS_READY
+        println("⚠️ Skipping PNG plots (Plots backend not available)")
+        return
+    end
+    try
+        beliefs = get(get(results, "beliefs_by_factor", Dict()), "joint_state", results["beliefs"])
+        efe = results["expected_free_energy"]
+        policy = results["policy_posterior"]
+
+        if !isempty(beliefs)
+            belief_mat = hcat(beliefs...)
+            steps = 1:size(belief_mat, 2)
+            p1 = plot(
+                title = "Belief Evolution over Time",
+                xlabel = "Time step",
+                ylabel = "Belief mass",
+                legend = :outertopright
+            )
+            for state in 1:size(belief_mat, 1)
+                plot!(p1, steps, belief_mat[state, :], label = "State $state")
+            end
+            savefig(p1, "belief_evolution.png")
+        end
+
+        if !isempty(efe)
+            p2 = plot(
+                1:length(efe), efe,
+                title = "Expected Free Energy over Time",
+                xlabel = "Time step",
+                ylabel = "Action EFE",
+                label = "selected EFE",
+                legend = :topright
+            )
+            savefig(p2, "efe_over_time.png")
+        end
+
+        if !isempty(policy)
+            policy_mat = hcat(policy...)
+            p3 = heatmap(policy_mat,
+                title = "Policy Posterior over Time",
+                xlabel = "Time step",
+                ylabel = "Action",
+                color = :viridis
+            )
+            savefig(p3, "policy_posterior.png")
+        end
+
+        println("RxInfer.jl simulation wrote PNG plots (belief_evolution.png, efe_over_time.png, policy_posterior.png)")
+    catch e
+        println("⚠️ Plotting skipped (Plots backend unavailable): $e")
+    end
+end
+
 function main()
     results = run_simulation()
     open("simulation_results.json", "w") do file
         JSON.print(file, results, 2)
     end
     println("RxInfer.jl simulation wrote simulation_results.json")
+    write_execution_log(results)
+    write_plots(results)
     return results["validation"]["all_valid"] ? 0 : 1
 end
 

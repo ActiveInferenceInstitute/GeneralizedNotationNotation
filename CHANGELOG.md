@@ -8,6 +8,10 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
 
 ## [Unreleased]
 
+### Added
+- **Guarded Julia-native visualization + structured logging in generated RxInfer scripts**: rendered `*_rxinfer.jl` scripts always write `simulation_results.json` (`rxinfer_simulation_v1`) and additionally emit best-effort, guarded artifacts that never cause execution failure — an optional structured runtime log (`simulation.log` / `simulation_log.json`) and optional `Plots.jl` figures (`belief_evolution.png`, `efe_over_time.png`, `policy_posterior.png`) when Plots rendering is available.
+- **Comprehensive Step-16 RxInfer analysis**: `src/analysis/rxinfer/` produces the full per-exemplar 10-type visualization set from `rxinfer_simulation_v1` results under `output/16_analysis_output/rxinfer/` — `belief_evolution`, `obs_vs_true`, `belief_heatmap`, `belief_entropy`, `accuracy`, `action_frequencies`, `belief_convergence`, `belief_trace`, `free_energy`, and `observations`. All figures are best-effort and backward-compatible with `rxinfer_simulation_v1`.
+
 ### Fixed
 - Hardened MCP execution and LLM entry points against arbitrary local file access and script execution by enforcing repository-local path validation, source-file extension checks, and Step 11 render-summary gating for `process_execute_mcp`.
 - Escaped bnlearn generated-code metadata as Python literals, coerced generated timestep literals, and sanitized generated artifact filename stems to prevent code injection and path traversal through model names.

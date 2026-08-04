@@ -17,6 +17,25 @@ Generates Julia code using the RxInfer.jl reactive message-passing framework.
 - Julia script files (`.jl`) using RxInfer API
 - TOML parameter files
 
+## Generated-Script Output Contract
+
+Each rendered `.jl` script emits one required artifact plus optional guarded outputs.
+
+### Required
+- `simulation_results.json` — always written, schema `rxinfer_simulation_v1`
+  (observations, hidden states, actions, beliefs by factor, expected free energy,
+  policy posterior, matrix provenance, runtime metadata, validation, metrics).
+
+### Optional (best-effort, never cause execution failure)
+- `simulation.log` — human-readable chronological trace.
+- `simulation_log.json` — machine-readable structured runtime events.
+- `belief_evolution.png`, `efe_over_time.png`, `policy_posterior.png` — Julia-native
+  `Plots.jl` figures emitted only when Plots rendering is available.
+
+All optional artifacts are guarded: a missing dependency, failed write, or plotting
+error is caught and logged, and the script continues to write `simulation_results.json`
+normally. Step 12 `main()` returns non-zero only if `validation.all_valid` is false.
+
 ## Architecture
 
 ```
