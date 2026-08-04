@@ -72,7 +72,7 @@ def test_generated_source_contains_viz_and_log_blocks(tmp_path: Path) -> None:
     assert "try" in source
     assert "catch e" in source
     assert "simulation_results.json" in source
-    assert 'JSON.print(file, results, 2)' in source
+    assert "JSON.print(file, results, 2)" in source
     assert '"schema_version" => SCHEMA_VERSION' in source
 
 
@@ -81,12 +81,10 @@ def test_generated_source_contains_viz_and_log_blocks(tmp_path: Path) -> None:
 # (truthy) so a normal unit run stays fast; set that env var to exercise it.
 
 
+@pytest.mark.skipif(JULIA is None, reason="julia is not on PATH")
 @pytest.mark.skipif(
-    JULIA is None, reason="julia is not on PATH"
-)
-@pytest.mark.skipif(
-    not (os.environ.get("RANDOM_SIMULATION_ENABLED") or "").strip().lower()
-    in {"1", "true", "yes", "on"},
+    (os.environ.get("RANDOM_SIMULATION_ENABLED") or "").strip().lower()
+    not in {"1", "true", "yes", "on"},
     reason="RANDOM_SIMULATION_ENABLED not set; execution test is optional",
 )
 def test_rendered_script_emits_results_log_and_png(tmp_path: Path) -> None:

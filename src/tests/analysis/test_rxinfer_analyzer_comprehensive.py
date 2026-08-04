@@ -20,9 +20,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 from analysis.rxinfer.analyzer import create_rxinfer_visualizations
 from analysis.viz_base import MATPLOTLIB_AVAILABLE
 
-pytestmark = pytest.mark.skipif(
-    not MATPLOTLIB_AVAILABLE, reason="matplotlib required"
-)
+pytestmark = pytest.mark.skipif(not MATPLOTLIB_AVAILABLE, reason="matplotlib required")
 
 # The full plot set a complete rxinfer result should emit.
 EXPECTED_PLOT_TYPES = [
@@ -207,7 +205,9 @@ def test_dict_shaped_result_handled(tmp_path: Path) -> None:
     names = _basenames(paths)
     for plot_type in CORE_PLOT_TYPES:
         expected = f"dictmod_rxinfer_{plot_type}.png"
-        assert expected in names, f"core plot missing for dict-shaped result: {expected}"
+        assert expected in names, (
+            f"core plot missing for dict-shaped result: {expected}"
+        )
     for plot_type in EXPECTED_PLOT_TYPES:
         assert f"dictmod_rxinfer_{plot_type}.png" in names
 
