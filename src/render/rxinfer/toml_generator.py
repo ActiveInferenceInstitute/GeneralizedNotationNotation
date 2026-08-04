@@ -208,9 +208,7 @@ def _parse_gnn_matrix(matrix_str: str) -> List[List[float]]:
     s = _strip_outer_parens_wrapper(s)
     row_tokens = _split_top_level_groups(s)
     if not row_tokens or all(not t for t in row_tokens):
-        raise ValueError(
-            f"Failed to parse matrix {matrix_str!r}: no rows found"
-        )
+        raise ValueError(f"Failed to parse matrix {matrix_str!r}: no rows found")
 
     matrix: List[List[float]] = []
     for token in row_tokens:
@@ -266,9 +264,7 @@ def _parse_gnn_vector(vector_str: str) -> List[float]:
     s = _strip_outer_parens_wrapper(s)
     elements = [float(x.strip()) for x in s.split(",") if x.strip() != ""]
     if not elements:
-        raise ValueError(
-            f"Failed to parse vector {vector_str!r}: no numeric elements"
-        )
+        raise ValueError(f"Failed to parse vector {vector_str!r}: no numeric elements")
     return elements
 
 

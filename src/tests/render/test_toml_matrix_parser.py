@@ -29,9 +29,7 @@ class TestParseGnnMatrix:
 
     def test_valid_single_line_fully_parenthesized(self) -> Any:
         """'((a,b,c),(d,e,f),(g,h,i))' form parses into a list of lists."""
-        result = _parse_gnn_matrix(
-            "((0.9,0.05,0.05),(0.05,0.9,0.05),(0.05,0.05,0.9))"
-        )
+        result = _parse_gnn_matrix("((0.9,0.05,0.05),(0.05,0.9,0.05),(0.05,0.05,0.9))")
         assert result == [
             [0.9, 0.05, 0.05],
             [0.05, 0.9, 0.05],
@@ -40,9 +38,7 @@ class TestParseGnnMatrix:
 
     def test_valid_brace_wrapped_single_line(self) -> Any:
         """'{(a,b,c),(d,e,f),(g,h,i)}' form parses identically to the bare form."""
-        result = _parse_gnn_matrix(
-            "{(0.9,0.05,0.05),(0.05,0.9,0.05),(0.05,0.05,0.9)}"
-        )
+        result = _parse_gnn_matrix("{(0.9,0.05,0.05),(0.05,0.9,0.05),(0.05,0.05,0.9)}")
         assert result == [
             [0.9, 0.05, 0.05],
             [0.05, 0.9, 0.05],
