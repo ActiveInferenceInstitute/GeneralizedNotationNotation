@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""
-Comprehensive tests for the RxInfer Step-16 analyzer visualizations.
+"""Comprehensive tests for the RxInfer Step-16 analyzer visualizations.
 
 Validates that ``create_rxinfer_visualizations`` robustly renders a
 comprehensive, consistent PNG set for synthetic ``rxinfer_simulation_v1``

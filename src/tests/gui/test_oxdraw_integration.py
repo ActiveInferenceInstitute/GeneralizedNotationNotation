@@ -376,7 +376,7 @@ class TestProcessOxdraw:
             launch_editor=False,
         )
 
-        assert success
+        assert success, 'oxdraw processing should succeed'
         assert output_dir.exists()
 
         # Check for results file

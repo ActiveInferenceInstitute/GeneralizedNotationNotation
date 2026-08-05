@@ -574,7 +574,7 @@ class TestStep11LLMComprehensive:
             "## ModelName\nTestModel\n## Connections\ns>o"
         )
         assert isinstance(description, str)
-        assert description  # non-empty
+        assert description, 'generated description should be non-empty'
 
 
 class TestStep20WebsiteComprehensive:
@@ -613,7 +613,7 @@ class TestStep15AudioComprehensive:
             audio_path = isolated_temp_dir / "test_audio.wav"
             sapf_code = "440.0 = base_freq"
             success = generator.generate_from_sapf(sapf_code, audio_path, duration=1.0)
-            assert success
+            assert success, 'SAPF audio generation should succeed'
             assert audio_path.exists()
         except Exception as e:
             raise AssertionError(f"SAPF audio backend unavailable: {e}")

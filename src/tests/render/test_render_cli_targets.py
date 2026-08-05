@@ -204,7 +204,7 @@ def test_render_gnn_spec_sanitizes_generated_output_filename(tmp_path: Path) -> 
     )
 
     assert ok, message
-    assert artifacts
+    assert artifacts, 'render should produce artifacts'
     artifact_path = Path(artifacts[0]).resolve()
     artifact_path.relative_to(tmp_path.resolve())
     assert artifact_path.name == "escape_bnlearn.py"

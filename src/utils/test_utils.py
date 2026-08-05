@@ -232,9 +232,9 @@ def run_tests(target_dir: Path, output_dir: Path, verbose: bool = False) -> bool
     """Basic test execution function."""
     try:
         # Import from tests module if available
-        from tests.test_runner_modular import ModularTestRunner
+        from tests.test_runner_modular import _ModularTestRunner
 
-        runner = ModularTestRunner(
+        runner = _ModularTestRunner(
             type(
                 "Args",
                 (),

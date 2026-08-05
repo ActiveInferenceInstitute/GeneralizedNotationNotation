@@ -30,7 +30,7 @@ class TestParseString:
     def test_non_json_content_returns_failure(self, parser: Any) -> Any:
         result = parser.parse_string("## GNNSection\nActInfPOMDP")
         assert result.success is False
-        assert result.errors  # at least one error message
+        assert result.errors, 'non-JSON content should produce error messages'
 
     def test_invalid_json_returns_failure(self, parser: Any) -> Any:
         result = parser.parse_string("{bad json:")

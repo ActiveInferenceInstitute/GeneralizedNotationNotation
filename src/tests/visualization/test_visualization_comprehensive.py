@@ -34,7 +34,7 @@ class TestMatplotlibBackendConfiguration:
         import matplotlib
 
         backend = matplotlib.get_backend().lower()
-        assert backend
+        assert backend, 'matplotlib backend should be configured'
 
     def test_backend_configuration_headless(
         self, caplog: Any, monkeypatch: Any

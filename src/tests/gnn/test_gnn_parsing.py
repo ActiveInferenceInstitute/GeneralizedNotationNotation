@@ -133,7 +133,7 @@ class TestMarkdownParser:
         """Test parsing valid markdown GNN content."""
         parser = MarkdownGNNParser()
         result = parser.parse_string(sample_markdown)
-        assert result.success
+        assert result.success, 'Markdown GNN parsing should succeed'
         assert result.model.model_name == "TestModel"
 
     @pytest.mark.unit
@@ -248,7 +248,7 @@ Model with special chars: !@#$%^&*()
         test_file.write_text(sample_markdown)
 
         result = parser.parse_file(test_file)
-        assert result.success
+        assert result.success, 'Markdown file parsing should succeed'
 
     @pytest.mark.unit
     @pytest.mark.fast
@@ -274,7 +274,7 @@ class TestScalaParser:
         """Test parsing valid Scala GNN content."""
         parser = ScalaGNNParser()
         result = parser.parse_string(sample_scala)
-        assert result.success
+        assert result.success, 'Scala GNN parsing should succeed'
 
     @pytest.mark.unit
     @pytest.mark.fast
@@ -329,7 +329,7 @@ class TestLeanParser:
         """Test parsing valid Lean content."""
         parser = LeanGNNParser()
         result = parser.parse_string(sample_lean)
-        assert result.success
+        assert result.success, 'Lean GNN parsing should succeed'
 
     @pytest.mark.unit
     @pytest.mark.fast
@@ -383,7 +383,7 @@ class TestCoqParser:
 
         parser = CoqGNNParser()
         result = parser.parse_string(sample_coq)
-        assert result.success
+        assert result.success, 'Coq GNN parsing should succeed'
 
     @pytest.mark.unit
     @pytest.mark.fast

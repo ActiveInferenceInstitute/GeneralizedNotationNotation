@@ -1,7 +1,7 @@
 """
 Modular test runner sub-module.
 
-Provides ModularTestRunner class for category-based test execution
+Provides _ModularTestRunner class for category-based test execution
 with resource monitoring, timeout handling, and comprehensive reporting.
 
 Also provides create_test_runner() factory and monitor_memory() utility.
@@ -30,7 +30,7 @@ def _isolated_pipeline_output_dir(base_output_dir: Any) -> str:
     return str(Path(base_output_dir) / "isolated_pipeline_outputs")
 
 
-class ModularTestRunner:
+class _ModularTestRunner:
     """Test runner with comprehensive error handling and reporting."""
 
     def __init__(self, args: Any, logger: logging.Logger) -> None:
@@ -64,7 +64,7 @@ class ModularTestRunner:
         self.sapf_errors: list[str] = []
 
         self.logger.info(
-            f"Initialized ModularTestRunner with {len(MODULAR_TEST_CATEGORIES)} categories"
+            f"Initialized _ModularTestRunner with {len(MODULAR_TEST_CATEGORIES)} categories"
         )
 
     def _monitor_resources_during_test(self) -> Any:
@@ -876,9 +876,9 @@ class ModularTestRunner:
         self.logger.info(f"{'=' * 80}")
 
 
-def create_test_runner(args: Any, logger: logging.Logger) -> ModularTestRunner:
-    """Factory function to create a ModularTestRunner instance."""
-    return ModularTestRunner(args, logger)
+def create_test_runner(args: Any, logger: logging.Logger) -> _ModularTestRunner:
+    """Factory function to create a _ModularTestRunner instance."""
+    return _ModularTestRunner(args, logger)
 
 
 def monitor_memory(logger: logging.Logger, threshold_mb: int = 2000) -> Any:

@@ -147,7 +147,7 @@ def test_pymdp_seeded_reproducibility_contract(tmp_path: Path) -> None:
 
     np.random.seed(123)
     ok2, res2 = run_pymdp_simulation(gnn_spec, tmp_path / "r2")
-    assert ok2
+    assert ok2, 'second PyMDP simulation run should succeed'
 
     assert res1["observations"] == res2["observations"]
     assert res1["actions"] == res2["actions"]
@@ -241,7 +241,7 @@ def test_actinf_pomdp_render_execute_analyze_e2e(tmp_path: Path) -> None:
     assert beliefs and obs, "payload should include beliefs and observations"
 
     analysis_ok = process_analysis(in_dir, analysis_out, verbose=False)
-    assert analysis_ok
+    assert analysis_ok, 'analysis step should succeed'
 
     try:
         import matplotlib  # noqa: F401

@@ -184,7 +184,7 @@ def run_comprehensive_tests(
     """
     logger.info("Running comprehensive test suite (all categories)")
 
-    from .test_runner_modular import ModularTestRunner
+    from .test_runner_modular import _ModularTestRunner
 
     class ComprehensiveArgs:
         def __init__(self, output_dir: Any, verbose: Any) -> None:
@@ -194,7 +194,7 @@ def run_comprehensive_tests(
             self.parallel = False
 
     args = ComprehensiveArgs(output_dir, verbose)
-    runner = ModularTestRunner(args, logger)
+    runner = _ModularTestRunner(args, logger)
     results = runner.run_all_categories()
 
     success = results.get("overall_success", False)

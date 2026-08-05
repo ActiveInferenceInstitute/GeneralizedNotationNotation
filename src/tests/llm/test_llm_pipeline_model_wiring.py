@@ -71,7 +71,7 @@ async def test_async_summarize_with_ollama_model_uses_ollama_provider_and_config
     )
     assert out == "summary text"
     processor = cast(Any, ops.processor)
-    assert processor.called
+    assert processor.called, 'recording processor should have been called'
     call_kw = processor.call_args
     assert call_kw["provider_type"] == ProviderType.OLLAMA
     assert isinstance(call_kw["config"], LLMConfig)

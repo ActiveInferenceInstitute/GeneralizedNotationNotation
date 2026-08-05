@@ -38,7 +38,7 @@ from utils.pipeline_validator import (
 
 
 @dataclass
-class PipelineArgs:
+class _PipelineArgs:
     """Simulated-free replacement for pipeline arguments."""
 
     output_dir: Path
@@ -70,7 +70,7 @@ class TestPipelineWarningsFix:
         type_checker_output_dir.mkdir()
 
         # Create real args object
-        args = PipelineArgs(output_dir=output_dir)
+        args = _PipelineArgs(output_dir=output_dir)
 
         logger = logging.getLogger("test")
 
@@ -104,7 +104,7 @@ class TestPipelineWarningsFix:
         parsed_file.write_text('{"ModelName": "test"}')
 
         # Create real args object
-        args = PipelineArgs(output_dir=output_dir)
+        args = _PipelineArgs(output_dir=output_dir)
 
         logger = logging.getLogger("test")
 
@@ -127,7 +127,7 @@ class TestPipelineWarningsFix:
         # Don't create the prerequisite directory
 
         # Create real args object
-        args = PipelineArgs(output_dir=output_dir)
+        args = _PipelineArgs(output_dir=output_dir)
 
         logger = logging.getLogger("test")
 
@@ -219,7 +219,7 @@ class TestPipelineWarningsFix:
         (render_output / "test_render.py").write_text("print('rendered')\n")
 
         # Create real args object
-        args = PipelineArgs(output_dir=output_dir)
+        args = _PipelineArgs(output_dir=output_dir)
 
         logger = logging.getLogger("test")
 
@@ -235,7 +235,7 @@ class TestPipelineWarningsFix:
         output_dir = tmp_path / "output"
         target_dir.mkdir()
         (target_dir / "model.json").write_text('{"model_name": "JsonModel"}')
-        args = PipelineArgs(output_dir=output_dir, target_dir=target_dir)
+        args = _PipelineArgs(output_dir=output_dir, target_dir=target_dir)
 
         result = check_pipeline_readiness([("5_type_checker.py", "Type check")], args)
 

@@ -18,7 +18,7 @@ except ImportError:
     from cli import main
 
 
-class CallTracker:
+class _CallTracker:
     def __init__(self) -> None:
         self.called = False
         self.call_args: tuple[Any, ...] | None = None
@@ -64,7 +64,7 @@ def test_cli_validate_parser(tmp_path: Any) -> Any:
     test_file.touch()
 
     orig_validate = getattr(cli, "_cmd_validate", None)
-    tracker = CallTracker()
+    tracker = _CallTracker()
     cli._cmd_validate = tracker
 
     try:
@@ -78,7 +78,7 @@ def test_cli_validate_parser(tmp_path: Any) -> Any:
 def test_cli_verbose_flag(tmp_path: Any) -> Any:
     """Test that the --verbose flag is correctly handled."""
     orig_health = getattr(cli, "_cmd_health", None)
-    tracker = CallTracker()
+    tracker = _CallTracker()
     cli._cmd_health = tracker
 
     try:
@@ -94,7 +94,7 @@ def test_cli_verbose_flag(tmp_path: Any) -> Any:
 def test_cli_health_strict_flag_routes_to_handler() -> Any:
     """Test that health --strict reaches the handler."""
     orig_health = getattr(cli, "_cmd_health", None)
-    tracker = CallTracker()
+    tracker = _CallTracker()
     cli._cmd_health = tracker
 
     try:
@@ -178,7 +178,7 @@ def test_cli_subcommand_routing(tmp_path: Any) -> Any:
 
     for cmd_name, handler_name in commands:
         orig_handler = getattr(cli, handler_name, None)
-        tracker = CallTracker()
+        tracker = _CallTracker()
         setattr(cli, handler_name, tracker)
 
         try:

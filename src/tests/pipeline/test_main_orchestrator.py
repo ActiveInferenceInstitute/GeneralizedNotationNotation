@@ -185,7 +185,7 @@ class TestVirtualEnvironmentHandling:
     @pytest.mark.unit
     def test_python_executable_detection(self) -> None:
         python_executable = sys.executable
-        assert python_executable
+        assert python_executable, 'python executable should be detected'
 
 
 class TestStepExecution:

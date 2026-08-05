@@ -164,7 +164,7 @@ def test_gridworld_render_helpers_use_canonical_framework_renderers(
         output_dir = tmp_path / framework
         ok, message, artifacts = render_gnn_spec(spec, framework, output_dir)
         assert ok, f"{framework} render failed: {message}"
-        assert artifacts
+        assert artifacts, 'render should produce artifacts'
         rendered = Path(artifacts[0])
         assert rendered.exists()
         text = rendered.read_text(encoding="utf-8")
@@ -188,7 +188,7 @@ def test_gridworld_fixture_directory_renders_only_model_sources(
         strict_validation=True,
         strict_framework_success=True,
     )
-    assert render_ok
+    assert render_ok, 'strict pipeline render should succeed'
 
     summary = json.loads(
         (render_out / "render_processing_summary.json").read_text(encoding="utf-8")
@@ -222,7 +222,7 @@ def test_gridworld_render_execute_analyze_visualize_strict(tmp_path: Path) -> No
         strict_validation=True,
         strict_framework_success=True,
     )
-    assert render_ok
+    assert render_ok, 'pipeline render should succeed'
 
     for framework in FRAMEWORKS:
         scripts = sorted((render_out / GRIDWORLD_FILE.stem / framework).glob("*"))
@@ -238,7 +238,7 @@ def test_gridworld_render_execute_analyze_visualize_strict(tmp_path: Path) -> No
         render_output_dir=render_out,
         timeout=240,
     )
-    assert exec_ok
+    assert exec_ok, 'execution step should succeed'
 
     exec_frameworks = ("pymdp", "rxinfer")
     payloads = {
@@ -257,7 +257,7 @@ def test_gridworld_render_execute_analyze_visualize_strict(tmp_path: Path) -> No
         assert payload.get("matrix_provenance", {}) == pymdp_provenance
 
     analysis_ok = process_analysis(input_dir, analysis_out, verbose=False)
-    assert analysis_ok
+    assert analysis_ok, 'analysis step should succeed'
     visualizations = list(analysis_out.rglob("*.png"))
     assert visualizations, "Step 16 should create visualizations"
     cross_framework = (

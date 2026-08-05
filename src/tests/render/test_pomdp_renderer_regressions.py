@@ -42,7 +42,7 @@ def test_discrete_pomdp_models_render_to_julia_frameworks(
     ok, message, artifacts = render_gnn_spec(spec, framework, tmp_path / framework)
 
     assert ok, message
-    assert artifacts
+    assert artifacts, 'render should produce artifacts'
     rendered = Path(artifacts[0])
     assert rendered.exists()
     text = rendered.read_text(encoding="utf-8")

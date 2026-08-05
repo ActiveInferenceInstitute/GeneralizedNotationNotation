@@ -82,7 +82,7 @@ class TestNumPyroRenderer:
 
         output = tmp_path / "numpyro_syntax.py"
         success, _, _ = render_gnn_to_numpyro(_small_gnn_spec(), output)
-        assert success
+        assert success, 'NumPyro render should succeed'
 
         # Compile check — raises SyntaxError on malformed code
         py_compile.compile(str(output), doraise=True)
@@ -93,7 +93,7 @@ class TestNumPyroRenderer:
 
         output = tmp_path / "numpyro_ast.py"
         success, _, _ = render_gnn_to_numpyro(_small_gnn_spec(), output)
-        assert success
+        assert success, 'NumPyro render should succeed'
 
         code = output.read_text(encoding="utf-8")
         tree = ast.parse(code)
@@ -112,7 +112,7 @@ class TestNumPyroRenderer:
 
         output = tmp_path / "numpyro_imports.py"
         success, _, _ = render_gnn_to_numpyro(_small_gnn_spec(), output)
-        assert success
+        assert success, 'NumPyro render should succeed'
 
         code = output.read_text(encoding="utf-8")
         assert "import numpyro" in code or "from numpyro" in code, (
@@ -128,7 +128,7 @@ class TestNumPyroRenderer:
 
         output = tmp_path / "numpyro_name.py"
         success, _, _ = render_gnn_to_numpyro(_small_gnn_spec(), output)
-        assert success
+        assert success, 'NumPyro render should succeed'
 
         code = output.read_text(encoding="utf-8")
         assert "render_e2e_test" in code, "Model name not found in output"
@@ -142,7 +142,7 @@ class TestNumPyroRenderer:
         spec["model_parameters"]["num_timesteps"] = 42
 
         success, _, _ = render_gnn_to_numpyro(spec, output)
-        assert success
+        assert success, 'NumPyro render should succeed'
 
         code = output.read_text(encoding="utf-8")
         assert "42" in code, "Custom num_timesteps not reflected in output"
