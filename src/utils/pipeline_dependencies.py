@@ -12,7 +12,7 @@ import subprocess  # nosec B404
 import sys
 from contextlib import contextmanager
 from dataclasses import dataclass, field
-from typing import Any, Callable, Dict, List, Optional, cast
+from typing import Any, Callable, Dict, List, Optional
 
 
 @dataclass

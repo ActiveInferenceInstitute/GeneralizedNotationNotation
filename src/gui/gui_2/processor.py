@@ -6,7 +6,6 @@ Handles the main processing logic for the visual matrix editing interface.
 
 from __future__ import annotations
 
-import json
 import logging
 import os
 import tempfile

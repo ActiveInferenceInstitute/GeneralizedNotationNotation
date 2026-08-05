@@ -2,7 +2,6 @@
 HTML report generation for the resource estimator.
 """
 
-import json
 import os
 from typing import Any
 
@@ -11,7 +10,7 @@ from utils.matplotlib_setup import apply_env_backend_if_set
 apply_env_backend_if_set()
 
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any, Dict
 
 import matplotlib.pyplot as plt
 

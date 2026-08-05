@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-from typing import Any, Dict, cast
+from typing import Any, Dict
 
 
 def get_module_info() -> Dict[str, Any]:

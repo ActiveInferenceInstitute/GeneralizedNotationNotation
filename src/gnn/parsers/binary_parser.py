@@ -10,7 +10,6 @@ License: MIT
 """
 
 import base64
-import builtins
 import io
 import logging
 import pickle  # nosec B403
@@ -19,18 +18,11 @@ from typing import Any, Dict, List, cast
 logger = logging.getLogger(__name__)
 
 from .common import (
-    ASTNode,
     BaseGNNParser,
-    Connection,
-    ConnectionType,
     DataType,
-    Equation,
-    GNNFormat,
     GNNInternalRepresentation,
-    OntologyMapping,
     Parameter,
     ParseResult,
-    TimeSpecification,
     Variable,
     VariableType,
 )

@@ -3,7 +3,7 @@ Markdown report generation for the resource estimator.
 """
 
 from pathlib import Path
-from typing import Any, Dict, Optional, Union
+from typing import Any, Dict, Optional
 
 
 def generate_markdown_report(

@@ -21,7 +21,7 @@ from __future__ import annotations
 import csv
 import logging
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple, cast
+from typing import Any, Dict, List, Optional, cast
 
 from .collector import SweepRecord
 

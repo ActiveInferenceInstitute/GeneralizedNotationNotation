@@ -13,7 +13,7 @@ try:
     import httpx
 except ImportError:
     httpx = cast(Any, None)
-from typing import Any, Dict, List, cast
+from typing import Any, Dict, List
 
 logger = logging.getLogger(__name__)
 

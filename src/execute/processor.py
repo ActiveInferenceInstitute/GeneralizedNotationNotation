@@ -20,7 +20,6 @@ from pathlib import Path
 from typing import Any, Dict, List, Literal, Optional, Tuple, Union, cast
 
 from utils.logging.logging_utils import (
-    PipelineLogger,
     log_step_error,
     log_step_start,
     log_step_success,

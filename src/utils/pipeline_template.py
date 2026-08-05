@@ -15,7 +15,6 @@ from pipeline.config import get_output_dir_for_script
 from utils.error_handling import coerce_step_exit_code
 from utils.pipeline import (
     setup_step_logging,
-    validate_output_directory,
 )
 from utils.structured_logging import (  # noqa: F401 - standard pipeline imports
     log_step_error,
@@ -192,8 +191,12 @@ def _resolve_recursive_default(step_name: str, fallback_default: bool) -> bool:
         defaults = StepConfiguration.get_step_config(config_key).get("defaults", {})
         if "recursive" in defaults:
             return bool(defaults["recursive"])
-    except Exception:
-        pass
+    except ImportError:
+        pass  # StepConfiguration not available — use fallback
+    except Exception as e:
+        logging.getLogger(__name__).debug(
+            "Failed to resolve recursive default for %s: %s", step_name, e
+        )
     return fallback_default
 
 

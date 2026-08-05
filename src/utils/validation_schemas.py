@@ -20,7 +20,7 @@ Typical usage::
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any, Dict, Iterable, List, Optional
+from typing import Any, Dict, Iterable, Optional
 
 __all__: list[Any] = [
     "validate_model_data",

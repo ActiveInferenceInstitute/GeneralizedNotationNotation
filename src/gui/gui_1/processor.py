@@ -5,7 +5,6 @@ Public functions: run_gui, _load_first_markdown
 
 from __future__ import annotations
 
-import json
 import logging
 import os
 import tempfile

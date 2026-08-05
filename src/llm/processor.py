@@ -11,7 +11,7 @@ import shutil
 import subprocess  # nosec B404
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, cast
+from typing import Any, List, cast
 
 try:
     import yaml
@@ -159,7 +159,9 @@ def _start_ollama_if_needed(logger: Any) -> tuple[bool, list[str]]:
             # Give it a moment to start up
             import time
 
-            time.sleep(3)
+            ollama_startup_wait = float(os.environ.get("OLLAMA_STARTUP_WAIT", "3"))
+            if ollama_startup_wait > 0:
+                time.sleep(ollama_startup_wait)
 
             # Try to check again
             try:

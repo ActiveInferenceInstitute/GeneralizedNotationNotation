@@ -16,7 +16,6 @@ Features:
 
 import importlib
 import json
-import logging
 import platform
 import subprocess  # nosec B404
 import sys
@@ -25,11 +24,6 @@ from pathlib import Path
 from typing import Any, Dict, List, cast
 
 from utils.logging.logging_utils import setup_step_logging
-from utils.structured_logging import (
-    log_step_error,
-    log_step_success,
-    log_step_warning,
-)
 
 from .config import get_pipeline_config
 from .diagnostic_enhancer import PipelineDiagnosticEnhancer

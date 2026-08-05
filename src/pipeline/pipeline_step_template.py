@@ -43,7 +43,7 @@ import sys
 from pathlib import Path
 from typing import Any, Dict, cast
 
-from pipeline import get_output_dir_for_script, get_pipeline_config
+from pipeline import get_output_dir_for_script
 
 # Standard imports for all pipeline steps
 from utils import (

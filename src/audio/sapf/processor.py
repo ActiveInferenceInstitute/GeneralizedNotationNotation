@@ -7,7 +7,7 @@ This module provides SAPF audio processing capabilities.
 
 import logging
 from pathlib import Path
-from typing import Any, Dict, Optional, cast
+from typing import Any, Dict, Optional
 
 logger = logging.getLogger(__name__)
 

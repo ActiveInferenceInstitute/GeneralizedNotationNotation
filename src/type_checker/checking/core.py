@@ -10,7 +10,7 @@ import logging
 import re
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, cast
+from typing import Any, Dict, cast
 
 from utils.pipeline_template import log_step_error, log_step_start, log_step_success
 
