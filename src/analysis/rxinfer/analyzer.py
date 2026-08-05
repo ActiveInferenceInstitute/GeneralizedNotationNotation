@@ -641,16 +641,31 @@ def create_rxinfer_visualizations(
                 except (OSError, ValueError):
                     pass
 
-    # 9. Free Energy (expected / variational free energy over time)
+    # 9. Free Energy (per-iteration VFE or expected free energy over time)
     if free_energy:
         try:
             fe_arr = np.asarray(free_energy, dtype=float)
             fig, ax = plt.subplots(figsize=(12, 4))
             ax.plot(fe_arr, color="crimson", linewidth=2, marker="o", markersize=3)
             ax.fill_between(range(len(fe_arr)), fe_arr, alpha=0.3, color="crimson")
-            ax.set_xlabel("Time Step")
-            ax.set_ylabel("Free Energy")
-            ax.set_title(f"RxInfer Free Energy - {model_name}", fontweight="bold")
+            # Label accurately: VFE is per-iteration when from variational_free_energy
+            fe_key = (
+                "vfe_per_iteration"
+                if data.get("vfe_per_iteration") is not None
+                else "variational_free_energy"
+                if data.get("variational_free_energy") is not None
+                else "expected_free_energy"
+            )
+            is_per_iteration = fe_key in (
+                "vfe_per_iteration",
+                "variational_free_energy",
+            )
+            xlabel = "Inference Iteration" if is_per_iteration else "Time Step"
+            ylabel = "Variational Free Energy" if is_per_iteration else "Free Energy"
+            ax.set_xlabel(xlabel)
+            ax.set_ylabel(ylabel)
+            title_prefix = "VFE (per-iteration)" if is_per_iteration else "Free Energy"
+            ax.set_title(f"RxInfer {title_prefix} - {model_name}", fontweight="bold")
             ax.grid(True, alpha=0.3)
 
             viz_file = output_dir / f"{model_name}_rxinfer_free_energy.png"

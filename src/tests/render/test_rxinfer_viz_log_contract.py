@@ -112,20 +112,22 @@ def test_rendered_script_emits_results_log_and_png(tmp_path: Path) -> None:
     assert results["success"] is True
     assert results["validation"]["all_valid"] is True
 
-    # Strengthened validation fields (Mahakala C4 fix).
+    # Strengthened validation fields.
     assert "inference_converged" in results["validation"]
     assert "vfe_present" in results["validation"]
     assert "belief_entropy_ok" in results["validation"]
+    assert "belief_accuracy_ok" in results["validation"]
+    assert "belief_accuracy" in results["validation"]
 
-    # Per-iteration VFE trace (Mahakala C1 fix).
+    # Per-iteration VFE trace.
     vfe = results.get("variational_free_energy", [])
     assert len(vfe) > 0, "VFE trace must not be empty"
     assert all(v > 0 for v in vfe), "VFE values must be positive"
 
-    # uses_real_rxinfer conditional on actual infer() success (Mahakala C2 fix).
+    # uses_real_rxinfer conditional on actual infer() success.
     assert results["runtime_metadata"]["uses_real_rxinfer"] is True
 
-    # No fallback in stdout (Mahakala C2 fix — no Bayesian filter fallback).
+    # No fallback in stdout.
     assert "falling back" not in completed.stdout
 
     # Structured per-step log emitted.

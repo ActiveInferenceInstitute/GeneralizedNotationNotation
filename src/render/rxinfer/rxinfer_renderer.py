@@ -485,20 +485,41 @@ function run_simulation()
     min_entropy = is_identity_A ? 0.0 : 0.1  # skip for fully observable
     belief_entropy_ok = all(b -> belief_entropy(b) >= min_entropy, beliefs)
 
+    # Belief accuracy: check that argmax(belief) matches the true state
+    # for a majority of timesteps. This catches systematic inference failures
+    # where beliefs are valid distributions but point at the wrong state.
+    belief_accuracy = 0.0
+    if length(beliefs) == length(true_states) && length(beliefs) > 0
+        correct = 0
+        for t in 1:length(beliefs)
+            if argmax(beliefs[t]) == (true_states[t] + 1)  # true_states are 0-indexed
+                correct += 1
+            end
+        end
+        belief_accuracy = Float64(correct) / length(beliefs)
+    end
+    # For identity A (fully observable), accuracy should be very high
+    # For non-identity A, lower accuracy is expected but >0 is required
+    min_accuracy = is_identity_A ? 0.5 : 0.0
+    belief_accuracy_ok = belief_accuracy >= min_accuracy
+
     validation = Dict(
         "all_beliefs_valid" => all(b -> all(v -> 0.0 <= v <= 1.0, b), beliefs),
         "beliefs_sum_to_one" => all(b -> isapprox(sum(b), 1.0; atol=1e-6), beliefs),
         "actions_in_range" => all(a -> 0 <= a < NUM_ACTIONS, actions),
         "inference_converged" => inference_converged,
         "vfe_present" => vfe_present,
-        "belief_entropy_ok" => belief_entropy_ok
+        "belief_entropy_ok" => belief_entropy_ok,
+        "belief_accuracy" => belief_accuracy,
+        "belief_accuracy_ok" => belief_accuracy_ok
     )
     validation["all_valid"] = validation["all_beliefs_valid"] &&
         validation["beliefs_sum_to_one"] &&
         validation["actions_in_range"] &&
         validation["inference_converged"] &&
         validation["vfe_present"] &&
-        validation["belief_entropy_ok"]
+        validation["belief_entropy_ok"] &&
+        validation["belief_accuracy_ok"]
 
     # Compute script SHA256 for reproducibility tracking
     script_sha = try
@@ -554,7 +575,8 @@ function run_simulation()
             "script_sha256" => script_sha,
             "inference_converged" => inference_converged,
             "uses_real_rxinfer" => uses_real_rxinfer,
-            "model_kind" => MODEL_KIND
+            "model_kind" => MODEL_KIND,
+            "belief_accuracy" => belief_accuracy
         ),
         "metrics" => Dict(
             "expected_free_energy" => selected_efe,
@@ -813,7 +835,10 @@ def render_gnn_to_rxinfer(
 
 
 def build_rxinfer_execution_metadata(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
-    """Build Step 12 execution metadata for declared RxInfer agent populations."""
+    """Build Step 12 execution metadata for declared RxInfer agent populations.
+
+    Self-contained — does not import from the deprecated toml_generator.py.
+    """
     initial = gnn_spec.get("initialparameterization") or gnn_spec.get(
         "initial_parameterization"
     )
@@ -824,9 +849,7 @@ def build_rxinfer_execution_metadata(gnn_spec: Dict[str, Any]) -> Dict[str, Any]
     if not agents:
         return {}
 
-    from .toml_generator import _extract_agent_topology
-
-    topology = _extract_agent_topology(initial, agents)
+    topology = _extract_agent_topology_inline(initial, agents)
     return {
         "schema": "gnn_rxinfer_execution_metadata_v1",
         "agent_count": len(agents),
@@ -835,40 +858,88 @@ def build_rxinfer_execution_metadata(gnn_spec: Dict[str, Any]) -> Dict[str, Any]
     }
 
 
-def _extract_declared_rxinfer_agents(params: Dict[str, Any]) -> List[Dict[str, Any]]:
-    """Extract explicitly declared agents without inventing default agents."""
-    from .toml_generator import (
-        _coerce_positive_int,
-        _extract_compact_agents,
-        _extract_indexed_agents,
+def _coerce_positive_int_inline(value: Any) -> int:
+    """Coerce a value to a positive int, returning 0 for missing/invalid values."""
+    try:
+        coerced = int(value)
+    except (TypeError, ValueError):
+        return 0
+    return max(0, coerced)
+
+
+def _as_list_inline(value: Any) -> Optional[list]:
+    """Return value as a list when it is list-like enough."""
+    return value if isinstance(value, list) else None
+
+
+def _extract_compact_agents_inline(
+    params: Dict[str, Any], nr_agents: int
+) -> Optional[List[Dict[str, Any]]]:
+    """Extract agents from compact vectorized InitialParameterization keys."""
+    agent_ids = _as_list_inline(params.get("agent_ids"))
+    initial_positions = _as_list_inline(params.get("agent_initial_positions"))
+    target_positions = _as_list_inline(params.get("agent_target_positions"))
+    if agent_ids is None and initial_positions is None and target_positions is None:
+        return None
+    radii = _as_list_inline(params.get("agent_radii")) or _as_list_inline(
+        params.get("agent_radius")
     )
-
-    nr_agents = _coerce_positive_int(params.get("nr_agents"))
-    if nr_agents > 0:
-        compact_agents = _extract_compact_agents(params, nr_agents)
-        if compact_agents is not None:
-            return compact_agents
-
-        indexed_agents = _extract_indexed_agents(params, nr_agents)
-        if len(indexed_agents) == nr_agents:
-            return indexed_agents
-
+    default_radius = params.get("agent_default_radius", 1.0)
+    required = {
+        "agent_ids": agent_ids,
+        "agent_initial_positions": initial_positions,
+        "agent_target_positions": target_positions,
+    }
+    missing = [name for name, value in required.items() if value is None]
+    if missing:
+        raise ValueError(f"Missing compact multi-agent keys: {', '.join(missing)}")
+    assert agent_ids is not None
+    assert initial_positions is not None
+    assert target_positions is not None
+    lengths = {
+        "agent_ids": len(agent_ids),
+        "agent_initial_positions": len(initial_positions),
+        "agent_target_positions": len(target_positions),
+    }
+    if any(length != nr_agents for length in lengths.values()):
         raise ValueError(
-            "nr_agents was provided but agent configuration is incomplete. "
-            "Provide compact agent_ids/agent_initial_positions/agent_target_positions "
-            "or complete agent{i}_id/agent{i}_initial_position/agent{i}_target_position keys."
+            f"Compact multi-agent lengths must match nr_agents={nr_agents}: {lengths}"
         )
-
-    indexed_count = _infer_indexed_agent_count(params)
-    if indexed_count <= 0:
-        return []
-    indexed_agents = _extract_indexed_agents(params, indexed_count)
-    if len(indexed_agents) != indexed_count:
+    if radii is not None and len(radii) != nr_agents:
         raise ValueError(
-            "Indexed agent configuration is incomplete. Provide complete "
-            "agent{i}_id/agent{i}_initial_position/agent{i}_target_position keys."
+            f"agent_radii length {len(radii)} must match nr_agents={nr_agents}"
         )
-    return indexed_agents
+    return [
+        {
+            "id": agent_ids[index],
+            "radius": radii[index] if radii is not None else default_radius,
+            "initial_position": initial_positions[index],
+            "target_position": target_positions[index],
+        }
+        for index in range(nr_agents)
+    ]
+
+
+def _extract_indexed_agents_inline(
+    params: Dict[str, Any], nr_agents: int
+) -> List[Dict[str, Any]]:
+    """Extract indexed agent{i}_... agent definitions."""
+    agents: List[Dict[str, Any]] = []
+    for i in range(1, nr_agents + 1):
+        agent_id = params.get(f"agent{i}_id")
+        radius = params.get(f"agent{i}_radius", params.get("agent_default_radius", 1.0))
+        initial_pos = params.get(f"agent{i}_initial_position")
+        target_pos = params.get(f"agent{i}_target_position")
+        if all(v is not None for v in [agent_id, radius, initial_pos, target_pos]):
+            agents.append(
+                {
+                    "id": agent_id,
+                    "radius": radius,
+                    "initial_position": initial_pos,
+                    "target_position": target_pos,
+                }
+            )
+    return agents
 
 
 def _infer_indexed_agent_count(params: Dict[str, Any]) -> int:
@@ -879,6 +950,112 @@ def _infer_indexed_agent_count(params: Dict[str, Any]) -> int:
         if match:
             agent_indices.add(int(match.group(1)))
     return max(agent_indices) if agent_indices else 0
+
+
+def _extract_declared_rxinfer_agents(params: Dict[str, Any]) -> List[Dict[str, Any]]:
+    """Extract explicitly declared agents without inventing default agents.
+
+    Self-contained — does not import from the deprecated toml_generator.py.
+    """
+    nr_agents = _coerce_positive_int_inline(params.get("nr_agents"))
+    if nr_agents > 0:
+        compact_agents = _extract_compact_agents_inline(params, nr_agents)
+        if compact_agents is not None:
+            return compact_agents
+        indexed_agents = _extract_indexed_agents_inline(params, nr_agents)
+        if len(indexed_agents) == nr_agents:
+            return indexed_agents
+        raise ValueError(
+            "nr_agents was provided but agent configuration is incomplete. "
+            "Provide compact agent_ids/agent_initial_positions/agent_target_positions "
+            "or complete agent{i}_id/agent{i}_initial_position/agent{i}_target_position keys."
+        )
+
+    indexed_count = _infer_indexed_agent_count(params)
+    if indexed_count <= 0:
+        return []
+    indexed_agents = _extract_indexed_agents_inline(params, indexed_count)
+    if len(indexed_agents) != indexed_count:
+        raise ValueError(
+            "Indexed agent configuration is incomplete. Provide complete "
+            "agent{i}_id/agent{i}_initial_position/agent{i}_target_position keys."
+        )
+    return indexed_agents
+
+
+def _extract_agent_topology_inline(
+    params: Dict[str, Any], agents: List[Dict[str, Any]]
+) -> Dict[str, Any]:
+    """Extract explicit multi-agent topology metadata for execution.
+
+    Self-contained — does not import from the deprecated toml_generator.py.
+    """
+    agent_ids = [agent["id"] for agent in agents if "id" in agent]
+
+    # Edges
+    raw_edges = (
+        params.get("agent_edges")
+        or params.get("topology_edges")
+        or params.get("edges", [])
+    )
+    edges: List[Dict[str, Any]] = []
+    if isinstance(raw_edges, list):
+        for raw_edge in raw_edges:
+            if isinstance(raw_edge, dict):
+                source = raw_edge.get("source", raw_edge.get("from"))
+                target = raw_edge.get("target", raw_edge.get("to"))
+            elif isinstance(raw_edge, (list, tuple)) and len(raw_edge) >= 2:
+                source, target = raw_edge[0], raw_edge[1]
+            else:
+                continue
+            if source is not None and target is not None:
+                edges.append({"source": source, "target": target})
+
+    # Clusters
+    raw_clusters = (
+        params.get("agent_clusters")
+        or params.get("topology_clusters")
+        or params.get("clusters", {})
+    )
+    clusters: List[Dict[str, Any]] = []
+    if isinstance(raw_clusters, dict):
+        for name, agent_ids_list in raw_clusters.items():
+            if isinstance(agent_ids_list, list):
+                clusters.append({"name": str(name), "agent_ids": agent_ids_list})
+    elif isinstance(raw_clusters, list):
+        for index, raw_cluster in enumerate(raw_clusters, start=1):
+            if isinstance(raw_cluster, dict):
+                ids = raw_cluster.get("agent_ids") or raw_cluster.get("agents")
+                if isinstance(ids, list):
+                    clusters.append(
+                        {
+                            "name": str(raw_cluster.get("name", f"cluster_{index}")),
+                            "agent_ids": ids,
+                        }
+                    )
+
+    # Topology type
+    topology_type = params.get("agent_topology_type") or params.get("topology_type")
+    if topology_type is None:
+        if clusters:
+            topology_type = "clustered"
+        elif edges:
+            topology_type = "network"
+        else:
+            topology_type = "agent_population"
+
+    topology: Dict[str, Any] = {
+        "type": str(topology_type),
+        "agent_ids": agent_ids,
+        "edges": edges,
+        "clusters": clusters,
+    }
+    message_passing = params.get("message_passing") or params.get(
+        "agent_message_passing"
+    )
+    if message_passing:
+        topology["message_passing"] = str(message_passing)
+    return topology
 
 
 def _write_rxinfer_execution_metadata(

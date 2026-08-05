@@ -21,7 +21,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
 - **Accurate pipeline labeling**: All docs and code comments now describe the pipeline as "offline batch inference (Bayesian smoothing) with post-hoc EFE policy evaluation" rather than "active inference". The forward pass is labeled "forward simulation for data collection" not "Bayesian filter".
 - **Analyzer VFE handling**: `_normalise_free_energy()` now prefers `vfe_per_iteration` as the authoritative per-iteration VFE source, falling back to `variational_free_energy` and then `expected_free_energy`.
 
-### Fixed (Mahakala C1–C5)
+### Fixed (RxInfer integration hardening — C1–C5)
 - **C1: VFE trace is a fabricated constant** — FIXED. The per-iteration VFE vector from `result.free_energy` is now reported directly, not replicated across timesteps.
 - **C2: `uses_real_rxinfer` hardcoded true even on fallback** — FIXED. Now conditional on actual `infer()` success; the fallback path that could set it incorrectly has been removed entirely.
 - **C3: Batch infer() is post-hoc smoothing, not active inference** — FIXED (labeled accurately). Docs and comments now describe the pipeline as offline batch inference with post-hoc policy evaluation.
