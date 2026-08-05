@@ -2,13 +2,16 @@
 """GIF animation generator for RxInfer simulation results.
 
 Produces animated GIF files using matplotlib FuncAnimation showing
-belief evolution, state tracking, actions, and VFE convergence over time.
+belief evolution, state tracking, actions, VFE convergence, and the
+bayesian graphical model with node colors dynamically updating.
 
-Requires matplotlib with a working backend (Agg for headless).
+Publication-quality white minimal style. Uses the GNN Connections
+section to draw the graphical model structure (nodes and edges).
 """
 
 import colorsys
 import logging
+import re
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
@@ -18,6 +21,7 @@ matplotlib.use("Agg")
 import matplotlib.animation as animation
 import matplotlib.pyplot as plt
 import numpy as np
+from matplotlib.colors import BoundaryNorm, ListedColormap
 
 from .animator import (
     _normalize_actions,
@@ -30,6 +34,230 @@ from .animator import (
 logger = logging.getLogger(__name__)
 
 
+def _parse_gnn_connections(
+    data: Dict[str, Any],
+) -> tuple[dict[str, tuple[float, float]], list[tuple[str, str]]]:
+    """Parse GNN connections to get node positions and edges.
+
+    Returns (node_positions, edges) where node_positions maps node name
+    to (x, y) coordinates in a left-to-right temporal layout.
+    """
+    spec = data.get("gnn_spec", {})
+    if isinstance(spec, str):
+        import json
+
+        try:
+            spec = json.loads(spec)
+        except Exception:
+            spec = {}
+
+    connections_raw = spec.get("connections", [])
+    if not connections_raw:
+        # Fallback: use the connections from the GNN file content if embedded
+        spec_b64 = data.get("runtime_metadata", {}).get("gnn_spec_b64", "")
+        if not spec_b64:
+            return {}, []
+        import base64
+
+        try:
+            spec = json.loads(base64.b64decode(spec_b64).decode("utf-8"))
+            connections_raw = spec.get("connections", [])
+        except Exception:
+            return {}, []
+
+    # Parse connections like "D>s", "s-A", "s>s_prime"
+    edges: list[tuple[str, str]] = []
+    nodes: set[str] = set()
+    for conn in connections_raw:
+        conn_str = str(conn).strip()
+        # GNN uses > for directed, - for undirected
+        for sep in [">", "-"]:
+            if sep in conn_str:
+                parts = conn_str.split(sep, 1)
+                if len(parts) == 2:
+                    src, tgt = parts[0].strip(), parts[1].strip()
+                    edges.append((src, tgt))
+                    nodes.add(src)
+                    nodes.add(tgt)
+                    break
+
+    # If no connections parsed, try to build from standard POMDP structure
+    if not nodes:
+        # Standard POMDP nodes: D -> s -> s' -> o, A -> o, B -> s', C -> G, u -> s'
+        nodes = {"D", "s", "s'", "o", "A", "B", "C", "u", "G"}
+        edges = [
+            ("D", "s"),
+            ("s", "o"),
+            ("A", "o"),
+            ("s", "s'"),
+            ("B", "s'"),
+            ("u", "s'"),
+            ("C", "G"),
+            ("G", "u"),
+        ]
+
+    # Layout: left-to-right temporal chain
+    # Group nodes by temporal role
+    col0 = []  # priors/params
+    col1 = []  # states
+    col2 = []  # observations
+    col3 = []  # policy/action
+
+    for n in sorted(nodes):
+        if n in ("D", "A", "B", "C", "E"):
+            col0.append(n)
+        elif n in ("s", "s'", "s_f0", "s_f1", "s_prime"):
+            col1.append(n)
+        elif n in ("o", "o_m0", "y"):
+            col2.append(n)
+        elif n in ("u", "pi", "G", "F"):
+            col3.append(n)
+        else:
+            col1.append(n)
+
+    positions: dict[str, tuple[float, float]] = {}
+    for i, n in enumerate(col0):
+        positions[n] = (0.0, 1.0 - i * 0.3)
+    for i, n in enumerate(col1):
+        positions[n] = (0.33, 1.0 - i * 0.3)
+    for i, n in enumerate(col2):
+        positions[n] = (0.66, 1.0 - i * 0.3)
+    for i, n in enumerate(col3):
+        positions[n] = (1.0, 1.0 - i * 0.3)
+
+    return positions, edges
+
+
+def _node_value(
+    node_name: str,
+    step: int,
+    beliefs: list,
+    observations: list,
+    actions: list,
+    true_states: list,
+    vfe: list,
+) -> float:
+    """Get the current 'value' (probability or intensity) for a node at a step."""
+    if step < 0:
+        return 0.0
+    if node_name in ("s", "s_f0", "s_f1"):
+        if step < len(beliefs):
+            return float(max(beliefs[step]))  # max belief = confidence
+        return 0.0
+    elif node_name in ("s'", "s_prime"):
+        if step > 0 and step - 1 < len(beliefs):
+            return float(max(beliefs[step - 1]))
+        return 0.0
+    elif node_name in ("o", "o_m0", "y"):
+        if step < len(observations):
+            return float(observations[step]) / max(max(observations) + 1, 1)
+        return 0.0
+    elif node_name in ("u",):
+        if step < len(actions):
+            return float(actions[step]) / max(max(actions) + 1, 1)
+        return 0.0
+    elif node_name in ("D", "A", "B", "C", "E"):
+        return 0.5  # static parameters
+    elif node_name in ("G", "F", "pi"):
+        if step < len(vfe):
+            return min(float(vfe[step]) / 10.0, 1.0)
+        return 0.0
+    return 0.0
+
+
+def _draw_graph_model(
+    ax,
+    positions,
+    edges,
+    step,
+    beliefs,
+    observations,
+    actions,
+    true_states,
+    vfe,
+    state_colors,
+):
+    """Draw the bayesian graphical model on the given axes."""
+    ax.set_xlim(-0.1, 1.1)
+    ax.set_ylim(-0.15, 1.15)
+    ax.set_aspect("equal")
+    ax.axis("off")
+
+    # Draw edges
+    for src, tgt in edges:
+        if src in positions and tgt in positions:
+            x1, y1 = positions[src]
+            x2, y2 = positions[tgt]
+            ax.annotate(
+                "",
+                xy=(x2, y2),
+                xytext=(x1, y1),
+                arrowprops=dict(
+                    arrowstyle="->", color="#888", lw=1.2, shrinkA=18, shrinkB=18
+                ),
+            )
+
+    # Draw nodes
+    for name, (x, y) in positions.items():
+        val = _node_value(name, step, beliefs, observations, actions, true_states, vfe)
+
+        # Color: use belief confidence for state nodes, gray for params
+        if name in ("s", "s'", "s_f0", "s_f1", "s_prime"):
+            # Color by argmax state
+            if step < len(beliefs) and name in ("s", "s_f0", "s_f1"):
+                argmax = int(np.argmax(beliefs[step]))
+                color = state_colors[argmax % len(state_colors)]
+                alpha = 0.3 + 0.7 * val  # brighter when more confident
+            elif step > 0 and step - 1 < len(beliefs) and name in ("s'", "s_prime"):
+                argmax = int(np.argmax(beliefs[step - 1]))
+                color = state_colors[argmax % len(state_colors)]
+                alpha = 0.3 + 0.7 * val
+            else:
+                color = (0.7, 0.7, 0.7)
+                alpha = 0.5
+        elif name in ("o", "o_m0", "y"):
+            # Color by observation value
+            if step < len(observations):
+                obs_idx = observations[step]
+                color = state_colors[obs_idx % len(state_colors)]
+                alpha = 0.8
+            else:
+                color = (0.7, 0.7, 0.7)
+                alpha = 0.5
+        elif name in ("u",):
+            if step < len(actions):
+                act_idx = actions[step]
+                color = state_colors[act_idx % len(state_colors)]
+                alpha = 0.8
+            else:
+                color = (0.7, 0.7, 0.7)
+                alpha = 0.5
+        elif name in ("G", "F"):
+            # VFE: red intensity
+            color = (1.0, 0.3, 0.3)
+            alpha = 0.3 + 0.7 * val
+        else:
+            # Parameters: light gray
+            color = (0.85, 0.85, 0.85)
+            alpha = 0.9
+
+        circle = plt.Circle(
+            (x, y), 0.05, color=color, alpha=alpha, ec="#333", lw=1.5, zorder=5
+        )
+        ax.add_patch(circle)
+        ax.text(
+            x,
+            y - 0.09,
+            name,
+            ha="center",
+            va="top",
+            fontsize=9,
+            color="#333",
+            fontweight="bold",
+            zorder=6,
+        )
+
+
 def generate_gif_animation(
     data: Dict[str, Any],
     output_path: Path,
@@ -39,10 +267,10 @@ def generate_gif_animation(
 ) -> str:
     """Generate an animated GIF from RxInfer simulation results.
 
-    The GIF shows a 2x2 panel:
+    The GIF shows a 2x2 panel in publication-quality white style:
     - Top-left: Belief bar chart (colors per state, heights = probability)
-    - Top-right: True state vs argmax(belief) heatmap
-    - Bottom-left: Actions timeline
+    - Top-right: State tracking heatmap (proper discrete colors)
+    - Bottom-left: Bayesian graphical model (nodes/edges, node colors dynamic)
     - Bottom-right: VFE convergence line
 
     Args:
@@ -67,23 +295,28 @@ def generate_gif_animation(
 
     n_steps = len(beliefs)
     n_states = len(beliefs[0]) if beliefs else 0
-    n_actions = max(actions) + 1 if actions else 0
 
     beliefs_arr = np.array(beliefs)
 
-    # Color palette — convert HSL to RGB for matplotlib
+    # Parse graphical model structure
+    positions, edges = _parse_gnn_connections(data)
+
+    # Color palette — distinct colors for each state (publication style)
     state_colors = []
-    for i in range(n_states):
+    for i in range(max(n_states, 1)):
         hue = i / max(n_states, 1)
-        r, g, b = colorsys.hls_to_rgb(hue, 0.55, 0.7)
+        r, g, b = colorsys.hls_to_rgb(hue, 0.5, 0.7)
         state_colors.append((r, g, b))
 
-    # Create figure with 2x2 subplots
-    fig, axes = plt.subplots(2, 2, figsize=(12, 8))
-    fig.suptitle(f"RxInfer Animation — {model_name}", fontsize=14, fontweight="bold")
-    fig.patch.set_facecolor("#1a1a2e")
+    # Create figure — white publication style
+    plt.style.use("default")
+    fig, axes = plt.subplots(2, 2, figsize=(12, 8), facecolor="white")
+    fig.suptitle(
+        f"RxInfer — {model_name}", fontsize=13, fontweight="bold", color="#222"
+    )
+    fig.subplots_adjust(hspace=0.35, wspace=0.3)
 
-    # --- Pre-compute VFE range ---
+    # Pre-compute VFE range
     vfe_arr = np.array(vfe) if vfe else np.array([0.0])
     vfe_min = float(vfe_arr.min()) if len(vfe_arr) > 0 else 0.0
     vfe_max = float(vfe_arr.max()) if len(vfe_arr) > 0 else 1.0
@@ -93,38 +326,45 @@ def generate_gif_animation(
         """Update function for each animation frame."""
         for ax in axes.flat:
             ax.clear()
-
         step = min(frame, n_steps - 1)
 
-        # --- Top-left: Belief bar chart ---
+        # === Top-left: Belief bar chart ===
         ax1 = axes[0, 0]
-        ax1.set_facecolor("#16213e")
+        ax1.set_facecolor("white")
         belief = beliefs_arr[step]
         x_pos = np.arange(n_states)
-        bars = ax1.bar(
-            x_pos, belief, color=state_colors, edgecolor="#0f3460", linewidth=0.5
-        )
+        ax1.bar(x_pos, belief, color=state_colors, edgecolor="#333", linewidth=0.5)
         ax1.set_ylim(0, 1.0)
         ax1.set_xlim(-0.5, n_states - 0.5)
-        ax1.set_title("Belief Evolution", color="#00d4ff", fontsize=10)
-        ax1.set_xlabel("State", color="#888", fontsize=8)
-        ax1.set_ylabel("Probability", color="#888", fontsize=8)
-        ax1.tick_params(colors="#888", labelsize=7)
-        for j, b in enumerate(bars):
+        ax1.set_title(f"Belief (t={step + 1})", fontsize=10, color="#222")
+        ax1.set_xlabel("State", fontsize=9, color="#444")
+        ax1.set_ylabel("P(state)", fontsize=9, color="#444")
+        ax1.tick_params(colors="#444", labelsize=8)
+        ax1.spines["top"].set_visible(False)
+        ax1.spines["right"].set_visible(False)
+        for j in range(n_states):
             ax1.text(
-                b.get_x() + b.get_width() / 2,
-                b.get_height() + 0.02,
+                j,
+                belief[j] + 0.02,
                 f"{belief[j]:.2f}",
                 ha="center",
                 va="bottom",
-                color="#ccc",
-                fontsize=6,
+                color="#444",
+                fontsize=7,
             )
 
-        # --- Top-right: State heatmap ---
+        # === Top-right: State tracking heatmap ===
         ax2 = axes[0, 1]
-        ax2.set_facecolor("#16213e")
-        # Show argmax(belief), true state, and observation up to current step
+        ax2.set_facecolor("white")
+        # Discrete colormap for state indices
+        if n_states > 1:
+            cmap = ListedColormap(state_colors[:n_states])
+            bounds = np.arange(n_states + 1) - 0.5
+            norm = BoundaryNorm(bounds, cmap.N)
+        else:
+            cmap = ListedColormap([state_colors[0]])
+            norm = None
+
         if step >= 0:
             argmax_beliefs = np.argmax(beliefs_arr[: step + 1], axis=1)
             ts = (
@@ -138,67 +378,61 @@ def generate_gif_animation(
                 else np.zeros(step + 1, dtype=int)
             )
 
-            # Build a 3-row heatmap: argmax, true, obs
-            heatmap_data = np.zeros((3, step + 1))
-            for t in range(step + 1):
-                heatmap_data[0, t] = argmax_beliefs[t] / max(n_states - 1, 1)
-                heatmap_data[1, t] = ts[t] / max(n_states - 1, 1)
-                heatmap_data[2, t] = (
-                    obs[t] / max(n_states - 1, 1) if n_states > 1 else 0.5
+            heatmap_data = np.vstack([argmax_beliefs, ts, obs])
+            if norm:
+                ax2.imshow(
+                    heatmap_data,
+                    aspect="auto",
+                    cmap=cmap,
+                    norm=norm,
+                    interpolation="nearest",
+                )
+            else:
+                ax2.imshow(
+                    heatmap_data, aspect="auto", cmap=cmap, interpolation="nearest"
                 )
 
-            ax2.imshow(
-                heatmap_data,
-                aspect="auto",
-                cmap="hsv",
-                vmin=0,
-                vmax=1,
-                interpolation="nearest",
-            )
             ax2.set_yticks([0, 1, 2])
-            ax2.set_yticklabels(["Belief", "True", "Obs"], color="#888", fontsize=7)
-            ax2.set_title("State Tracking", color="#00d4ff", fontsize=10)
-            ax2.set_xlabel("Timestep", color="#888", fontsize=8)
-            ax2.tick_params(colors="#888", labelsize=7)
+            ax2.set_yticklabels(["Belief", "True", "Obs"], fontsize=8, color="#444")
+            ax2.set_title("State Tracking", fontsize=10, color="#222")
+            ax2.set_xlabel("Timestep", fontsize=9, color="#444")
+            ax2.tick_params(colors="#444", labelsize=7)
 
-        # --- Bottom-left: Actions timeline ---
+        # === Bottom-left: Bayesian graphical model ===
         ax3 = axes[1, 0]
-        ax3.set_facecolor("#16213e")
-        if actions and step < len(actions):
-            action_seq = actions[: step + 1]
-            for t, a in enumerate(action_seq):
-                hue = a / max(n_actions, 1)
-                ar, ag, ab = colorsys.hls_to_rgb(hue, 0.45, 0.6)
-                color = (ar, ag, ab)
-                ax3.bar(t, 1, color=color, edgecolor="#0f3460", linewidth=0.3)
-            ax3.set_xlim(-0.5, n_steps - 0.5)
-            ax3.set_ylim(0, 1)
-            ax3.set_title("Actions", color="#00d4ff", fontsize=10)
-            ax3.set_xlabel("Timestep", color="#888", fontsize=8)
-            ax3.tick_params(colors="#888", labelsize=7)
-            ax3.set_yticks([])
+        ax3.set_facecolor("white")
+        _draw_graph_model(
+            ax3,
+            positions,
+            edges,
+            step,
+            beliefs,
+            observations,
+            actions,
+            true_states,
+            vfe,
+            state_colors,
+        )
+        ax3.set_title("Graphical Model", fontsize=10, color="#222")
 
-        # --- Bottom-right: VFE convergence ---
+        # === Bottom-right: VFE convergence ===
         ax4 = axes[1, 1]
-        ax4.set_facecolor("#16213e")
+        ax4.set_facecolor("white")
         if vfe and len(vfe) > 0:
-            # Show VFE up to current step (map step to VFE iteration)
             vfe_step = min(int(step * len(vfe) / max(n_steps, 1)), len(vfe) - 1)
             vfe_x = np.arange(vfe_step + 1)
             vfe_y = vfe_arr[: vfe_step + 1]
-            ax4.fill_between(vfe_x, vfe_y, vfe_min, alpha=0.3, color="#ff6b6b")
-            ax4.plot(vfe_x, vfe_y, color="#ff6b6b", linewidth=2)
-            ax4.scatter(
-                [vfe_step],
-                [vfe_y[-1] if len(vfe_y) > 0 else 0],
-                color="#ff6b6b",
-                s=30,
-                zorder=5,
-            )
+            ax4.fill_between(vfe_x, vfe_y, vfe_min, alpha=0.2, color="#c0392b")
+            ax4.plot(vfe_x, vfe_y, color="#c0392b", linewidth=1.5)
+            if len(vfe_y) > 0:
+                ax4.scatter([vfe_step], [vfe_y[-1]], color="#c0392b", s=25, zorder=5)
             ax4.set_ylim(vfe_min - 0.1 * vfe_range, vfe_max + 0.1 * vfe_range)
-        ax4.set_title("VFE Convergence", color="#00d4ff", fontsize=10)
-        ax4.set_xlabel("Iteration", color="#888", fontsize=8)
-        ax4.tick_params(colors="#888", labelsize=7)
+        ax4.set_title("VFE Convergence", fontsize=10, color="#222")
+        ax4.set_xlabel("Iteration", fontsize=9, color="#444")
+        ax4.set_ylabel("VFE", fontsize=9, color="#444")
+        ax4.tick_params(colors="#444", labelsize=7)
+        ax4.spines["top"].set_visible(False)
+        ax4.spines["right"].set_visible(False)
 
         # Step indicator
         fig.text(
@@ -206,8 +440,8 @@ def generate_gif_animation(
             0.02,
             f"Step {step + 1}/{n_steps}",
             ha="center",
-            color="#00d4ff",
-            fontsize=10,
+            color="#222",
+            fontsize=9,
             fontweight="bold",
         )
 
