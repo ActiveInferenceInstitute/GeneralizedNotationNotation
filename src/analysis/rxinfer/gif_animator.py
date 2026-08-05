@@ -634,7 +634,38 @@ def generate_gif_animation(
     anim.save(str(output_path), writer=writer)  # type: ignore[arg-type]
     plt.close(fig)
 
-    logger.info(f"Generated GIF animation: {output_path}")
+    # Write reproducibility manifest sidecar
+    import hashlib
+    import json
+    from datetime import datetime, timezone
+
+    rt = data.get("runtime_metadata", {})
+    spec_str = json.dumps(data.get("gnn_spec", {}), sort_keys=True)
+    manifest = {
+        "gnn_spec_sha256": hashlib.sha256(spec_str.encode()).hexdigest(),
+        "julia_version": rt.get("julia_version", "unknown"),
+        "rxinfer_version": rt.get("rxinfer_version", "unknown"),
+        "seed": rt.get("random_seed", "unknown"),
+        "timesteps": data.get("num_timesteps", "unknown"),
+        "inference_iterations": data.get("model_parameters", {}).get(
+            "inference_iterations", "unknown"
+        ),
+        "belief_accuracy": data.get("validation", {}).get("belief_accuracy"),
+        "inference_converged": data.get("validation", {}).get(
+            "inference_converged"
+        ),
+        "uses_real_rxinfer": rt.get("uses_real_rxinfer"),
+        "model_kind": rt.get("model_kind", "unknown"),
+        "num_states": data.get("model_parameters", {}).get("num_states"),
+        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "generator": "gif_animator.py",
+    }
+    manifest_path = output_path.with_suffix(".manifest.json")
+    manifest_path.write_text(
+        json.dumps(manifest, indent=2, sort_keys=True), encoding="utf-8"
+    )
+
+    logger.info("Generated GIF animation: %s", output_path)
     return str(output_path)
 
 
