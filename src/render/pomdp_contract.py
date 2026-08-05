@@ -301,15 +301,10 @@ def detect_model_kind(gnn_spec: Dict[str, Any]) -> ModelKind:
     if "dirichlet" in spec_str or "learning" in section:
         return ModelKind.LEARNING
 
-    # Factored: multiple hidden state factors
+    # Factored: multiple hidden state factors — only when explicit num_factors > 1
+    # or when there are genuinely separate factor declarations (not just s and s_prime)
     model_params = gnn_spec.get("model_parameters", {})
-    variables = gnn_spec.get("variables", [])
-    state_factors = [
-        v
-        for v in variables
-        if isinstance(v, dict) and "s" in str(v.get("name", "")).lower()
-    ]
-    if len(state_factors) > 1 or model_params.get("num_factors", 1) > 1:
+    if model_params.get("num_factors", 1) > 1:
         return ModelKind.FACTORED
 
     return ModelKind.FLAT

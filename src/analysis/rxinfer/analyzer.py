@@ -47,6 +47,7 @@ _CORE_PLOT_TYPES: List[str] = [
     "free_energy",
     "observations",
     "efe_per_action_heatmap",
+    "convergence_diagnostics",
 ]
 
 
@@ -185,6 +186,69 @@ def _normalise_efe_per_action(data: Dict[str, Any]) -> List[List[float]]:
     return _as_2d_list(eaa)
 
 
+def _compute_convergence_diagnostics(free_energy: List[float]) -> Dict[str, Any]:
+    """Compute convergence diagnostics from a per-iteration VFE trace.
+
+    The ``variational_free_energy`` / ``vfe_per_iteration`` trace (length =
+    INFERENCE_ITERATIONS) is the real convergence signal from RxInfer's
+    variational message passing. This helper derives three diagnostics from it:
+
+    * ``vfe_slope`` — slope of a linear regression over the *full* trace. A
+      sustained negative slope indicates the variational bound is still
+      improving; a slope near zero indicates the trace has flattened.
+    * ``convergence_rate`` — slope of a linear regression over the *last 10*
+      iterations. The tail slope estimates how fast VFE is still moving once
+      the bulk of the descent is done.
+    * ``iterations_to_convergence`` — first (1-indexed) iteration at which the
+      absolute step-to-step VFE change drops below ``1e-4``, or ``None`` if the
+      trace never settles. A lower value means the model posterior converged
+      earlier in inference.
+
+    Returns a ``convergence_diagnostics`` dict suitable for storing under a
+    ``convergence_diagnostics`` key in the analysis results. Missing / empty
+    traces yield a dict of ``None`` values (never raising).
+    """
+    diagnostics: Dict[str, Any] = {
+        "vfe_slope": None,
+        "convergence_rate": None,
+        "iterations_to_convergence": None,
+        "total_iterations": int(len(free_energy)),
+    }
+    if np is None or not free_energy:
+        return diagnostics
+
+    trace = np.asarray([float(x) for x in free_energy], dtype=float)
+    n = trace.size
+    if n == 0:
+        return diagnostics
+
+    iterations = np.arange(n, dtype=float)
+
+    # Full-trace linear regression slope (vfe_slope)
+    if n >= 2:
+        slope, _intercept = np.polyfit(iterations, trace, 1)
+        diagnostics["vfe_slope"] = float(slope)
+
+    # Tail slope over the last 10 iterations (convergence_rate)
+    tail = min(10, n)
+    if tail >= 2:
+        tail_iters = iterations[-tail:]
+        tail_vfe = trace[-tail:]
+        rate, _intercept = np.polyfit(tail_iters, tail_vfe, 1)
+        diagnostics["convergence_rate"] = float(rate)
+
+    # First iteration where the step-to-step change settles below threshold.
+    # deltas[k] = |VFE[k+1] - VFE[k]|; a settle at deltas[k] corresponds to the
+    # (k+2)-th 1-indexed iteration.
+    if n >= 2:
+        deltas = np.abs(np.diff(trace))
+        settled = np.flatnonzero(deltas < 1e-4)
+        if settled.size:
+            diagnostics["iterations_to_convergence"] = int(settled[0] + 2)
+
+    return diagnostics
+
+
 # ---------------------------------------------------------------------------
 # Current-model helpers
 # ---------------------------------------------------------------------------
@@ -270,6 +334,23 @@ def generate_analysis_from_logs(
                         )
                         visualizations.extend(viz_files)
 
+                        # D7: also produce an animated GIF alongside the PNGs.
+                        try:
+                            from .gif_animator import generate_gif_animation
+
+                            gif_path: Path = output_dir / (
+                                f"{model_name}_rxinfer_animation.gif"
+                            )
+                            gif_file = generate_gif_animation(
+                                data, gif_path, model_name=model_name
+                            )
+                            if gif_file:
+                                visualizations.append(gif_file)
+                        except Exception as e:
+                            logger.warning(
+                                f"GIF generation failed for {model_name}: {e}"
+                            )
+
                     except Exception as e:
                         logger.warning(f"Failed to process {results_file}: {e}")
 
@@ -316,6 +397,11 @@ def create_rxinfer_visualizations(
     actions = _normalise_actions(data)
     free_energy = _normalise_free_energy(data)
     efe_per_action = _normalise_efe_per_action(data)
+
+    # --- Convergence diagnostics (D5): derived from the per-iteration VFE trace
+    convergence_diagnostics = _compute_convergence_diagnostics(free_energy)
+    # Store under a dedicated key so the diagnostics ride along in the results.
+    data["convergence_diagnostics"] = convergence_diagnostics
 
     beliefs_arr = np.asarray(beliefs, dtype=float) if beliefs else np.zeros((0, 0))
     have_beliefs = beliefs_arr.ndim >= 1
@@ -675,6 +761,72 @@ def create_rxinfer_visualizations(
             logger.info(f"Generated free energy: {viz_file.name}")
         except Exception as e:
             logger.warning(f"Failed to create free energy plot: {e}")
+            if plt is not None:
+                try:
+                    plt.close()
+                except (OSError, ValueError):
+                    pass
+
+    # 9b. Convergence Diagnostics (D5): VFE slope / tail rate / iterations to converge
+    if free_energy:
+        try:
+            diag = convergence_diagnostics
+            fe_arr = np.asarray(free_energy, dtype=float)
+            fig, ax = plt.subplots(figsize=(12, 4.5))
+            ax.plot(fe_arr, color="crimson", linewidth=2, marker="o", markersize=3)
+            ax.fill_between(range(len(fe_arr)), fe_arr, alpha=0.3, color="crimson")
+            ax.set_xlabel("Inference Iteration")
+            ax.set_ylabel("Variational Free Energy")
+            ax.set_title(
+                f"RxInfer Convergence Diagnostics - {model_name}", fontweight="bold"
+            )
+            ax.grid(True, alpha=0.3)
+
+            # Vertical marker at the iteration where VFE first settles
+            itc = diag.get("iterations_to_convergence")
+            if itc is not None and 1 <= itc <= len(fe_arr):
+                ax.axvline(x=itc - 1, color="navy", linestyle="--", alpha=0.7)
+                ax.text(
+                    itc - 1,
+                    fe_arr.max(),
+                    f"Converged @ iter {itc}",
+                    ha="right",
+                    color="navy",
+                    fontsize=9,
+                    fontweight="bold",
+                )
+
+            # Annotate the derived diagnostics
+            slope = diag.get("vfe_slope")
+            rate = diag.get("convergence_rate")
+            annotation_lines: List[str] = []
+            if slope is not None:
+                annotation_lines.append(f"VFE slope        : {slope:.4g}")
+            if rate is not None:
+                annotation_lines.append(f"Conv. rate (last10): {rate:.4g}")
+            annotation_lines.append(
+                f"Converged iter   : {itc if itc is not None else 'n/a'}"
+            )
+            ax.text(
+                0.02,
+                0.98,
+                "\n".join(annotation_lines),
+                transform=ax.transAxes,
+                va="top",
+                fontsize=9,
+                fontfamily="monospace",
+                bbox=dict(
+                    boxstyle="round", facecolor="lightgoldenrodyellow", alpha=0.6
+                ),
+            )
+
+            viz_file = output_dir / f"{model_name}_rxinfer_convergence_diagnostics.png"
+            plt.savefig(viz_file, dpi=300, bbox_inches="tight")
+            plt.close()
+            visualizations.append(str(viz_file))
+            logger.info(f"Generated convergence diagnostics: {viz_file.name}")
+        except Exception as e:
+            logger.warning(f"Failed to create convergence diagnostics plot: {e}")
             if plt is not None:
                 try:
                     plt.close()

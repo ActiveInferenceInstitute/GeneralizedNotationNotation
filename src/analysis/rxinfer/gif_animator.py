@@ -21,7 +21,7 @@ matplotlib.use("Agg")
 import matplotlib.animation as animation
 import matplotlib.pyplot as plt
 import numpy as np
-from matplotlib.colors import BoundaryNorm, ListedColormap
+from matplotlib.colors import BoundaryNorm, ListedColormap, Normalize
 
 from .animator import (
     _normalize_actions,
@@ -34,13 +34,59 @@ from .animator import (
 logger = logging.getLogger(__name__)
 
 
+def _normalize_efe_per_action(data: Dict[str, Any]) -> List[List[float]]:
+    """Extract EFE-per-action as a list of rows (timestep x action)."""
+    eaa = data.get("efe_per_action")
+    if eaa is None:
+        metrics = data.get("metrics")
+        if isinstance(metrics, dict):
+            eaa = metrics.get("efe_per_action")
+    if not eaa:
+        return []
+    rows: List[List[float]] = []
+    for row in eaa:
+        if isinstance(row, (list, tuple)):
+            rows.append([float(x) for x in row])
+    return rows
+
+
+def _normalize_policy_posterior(data: Dict[str, Any]) -> List[List[float]]:
+    """Extract policy posterior as a list of rows (timestep x action prob)."""
+    pp = data.get("policy_posterior")
+    if pp is None:
+        metrics = data.get("metrics")
+        if isinstance(metrics, dict):
+            pp = metrics.get("policy_posterior")
+    if not pp:
+        return []
+    rows: List[List[float]] = []
+    for row in pp:
+        if isinstance(row, (list, tuple)):
+            rows.append([float(x) for x in row])
+    return rows
+
+
 def _parse_gnn_connections(
     data: Dict[str, Any],
 ) -> tuple[dict[str, tuple[float, float]], list[tuple[str, str]]]:
-    """Parse GNN connections to get node positions and edges.
+    """Parse GNN connections into graph node positions and edges.
 
-    Returns (node_positions, edges) where node_positions maps node name
-    to (x, y) coordinates in a left-to-right temporal layout.
+    Extracts the ``connections`` list from the embedded ``gnn_spec`` (a dict or
+    JSON string), falling back to the base64-encoded spec in
+    ``runtime_metadata.gnn_spec_b64`` when the inline field is absent. Nodes
+    are laid out in a left-to-right temporal chain grouped by role (priors,
+    states, observations, policy). If no connections parse, the standard POMDP
+    graphical-model structure (D -> s -> s' -> o with A, B, C, u, G) is used.
+
+    Args:
+        data: The ``rxinfer_simulation_v1`` results dict. May carry the GNN
+            spec as a dict under ``gnn_spec``, a JSON string under ``gnn_spec``,
+            or base64-encoded under ``runtime_metadata.gnn_spec_b64``.
+
+    Returns:
+        A tuple of ``(node_positions, edges)`` where ``node_positions`` maps
+        each node name to its ``(x, y)`` layout coordinate and ``edges`` is a
+        list of ``(source, target)`` node-name pairs.
     """
     spec = data.get("gnn_spec", {})
     if isinstance(spec, str):
@@ -267,11 +313,13 @@ def generate_gif_animation(
 ) -> str:
     """Generate an animated GIF from RxInfer simulation results.
 
-    The GIF shows a 2x2 panel in publication-quality white style:
+    The GIF shows a 2x3 panel in publication-quality white style:
     - Top-left: Belief bar chart (colors per state, heights = probability)
-    - Top-right: State tracking heatmap (proper discrete colors)
+    - Top-centre: State tracking heatmap (proper discrete colors)
+    - Top-right: VFE convergence line
     - Bottom-left: Bayesian graphical model (nodes/edges, node colors dynamic)
-    - Bottom-right: VFE convergence line
+    - Bottom-centre: EFE per action heatmap (per-timestep EFE landscape)
+    - Bottom-right: Policy posterior (stacked action distribution over time)
 
     Args:
         data: Simulation results dict (rxinfer_simulation_v1)
@@ -292,9 +340,20 @@ def generate_gif_animation(
     true_states = _normalize_true_states(data)
     actions = _normalize_actions(data)
     vfe = _normalize_vfe(data)
+    efe_per_action = _normalize_efe_per_action(data)
+    policy_posterior = _normalize_policy_posterior(data)
 
     n_steps = len(beliefs)
     n_states = len(beliefs[0]) if beliefs else 0
+    n_actions = (
+        len(efe_per_action[0])
+        if efe_per_action
+        else (
+            len(policy_posterior[0])
+            if policy_posterior
+            else (max(actions) + 1 if actions else 0)
+        )
+    )
 
     beliefs_arr = np.array(beliefs)
 
@@ -303,24 +362,45 @@ def generate_gif_animation(
 
     # Color palette — distinct colors for each state (publication style)
     state_colors = []
-    for i in range(max(n_states, 1)):
-        hue = i / max(n_states, 1)
+    for i in range(max(max(n_states, n_actions), 1)):
+        hue = i / max(max(n_states, n_actions), 1)
         r, g, b = colorsys.hls_to_rgb(hue, 0.5, 0.7)
         state_colors.append((r, g, b))
 
-    # Create figure — white publication style
+    # Create figure — white publication style (2x3 grid: D6/D8 panels)
     plt.style.use("default")
-    fig, axes = plt.subplots(2, 2, figsize=(12, 8), facecolor="white")
+    fig, axes = plt.subplots(2, 3, figsize=(16, 9), facecolor="white")
     fig.suptitle(
         f"RxInfer — {model_name}", fontsize=13, fontweight="bold", color="#222"
     )
-    fig.subplots_adjust(hspace=0.35, wspace=0.3)
+    fig.subplots_adjust(hspace=0.45, wspace=0.32)
 
     # Pre-compute VFE range
     vfe_arr = np.array(vfe) if vfe else np.array([0.0])
     vfe_min = float(vfe_arr.min()) if len(vfe_arr) > 0 else 0.0
     vfe_max = float(vfe_arr.max()) if len(vfe_arr) > 0 else 1.0
     vfe_range = vfe_max - vfe_min if vfe_max != vfe_min else 1.0
+
+    # Pre-compute EFE range + a single colorbar (D6) so frames stay comparable
+    # and no colorbar accumulates per frame.
+    if efe_per_action and n_actions > 0:
+        eaa_full = np.asarray(
+            [row[:n_actions] for row in efe_per_action], dtype=float
+        ).T
+        efe_vmin = float(np.nanmin(eaa_full)) if eaa_full.size else 0.0
+        efe_vmax = float(np.nanmax(eaa_full)) if eaa_full.size else 1.0
+        if efe_vmin == efe_vmax:
+            efe_vmax = efe_vmin + 1e-6
+        efe_sm = plt.cm.ScalarMappable(
+            cmap="RdBu_r", norm=Normalize(vmin=efe_vmin, vmax=efe_vmax)
+        )
+        efe_sm.set_array([])
+        efe_cb = fig.colorbar(efe_sm, ax=axes[1, 1], fraction=0.046, pad=0.04)
+        efe_cb.set_label("EFE", fontsize=7, color="#444")
+        efe_cb.ax.tick_params(labelsize=6, colors="#444")
+    else:
+        eaa_full = np.empty((0, 0))
+        efe_vmin, efe_vmax = 0.0, 1.0
 
     def animate(frame):
         """Update function for each animation frame."""
@@ -415,8 +495,8 @@ def generate_gif_animation(
         )
         ax3.set_title("Graphical Model", fontsize=10, color="#222")
 
-        # === Bottom-right: VFE convergence ===
-        ax4 = axes[1, 1]
+        # === Top-right: VFE convergence ===
+        ax4 = axes[0, 2]
         ax4.set_facecolor("white")
         if vfe and len(vfe) > 0:
             vfe_step = min(int(step * len(vfe) / max(n_steps, 1)), len(vfe) - 1)
@@ -433,6 +513,105 @@ def generate_gif_animation(
         ax4.tick_params(colors="#444", labelsize=7)
         ax4.spines["top"].set_visible(False)
         ax4.spines["right"].set_visible(False)
+
+        # === Bottom-centre: EFE per action heatmap (D6) ===
+        ax5 = axes[1, 1]
+        ax5.set_facecolor("white")
+        if efe_per_action and n_actions > 0 and step >= 0:
+            n_eaa_steps = min(step + 1, eaa_full.shape[1])
+            if n_eaa_steps > 0:
+                ax5.imshow(
+                    eaa_full[:, :n_eaa_steps],
+                    aspect="auto",
+                    cmap="RdBu_r",
+                    origin="lower",
+                    interpolation="nearest",
+                    vmin=efe_vmin,
+                    vmax=efe_vmax,
+                )
+                ax5.set_yticks(range(n_actions))
+                ax5.set_yticklabels(
+                    [f"A{i + 1}" for i in range(n_actions)], fontsize=7, color="#444"
+                )
+                ax5.set_title("EFE per Action", fontsize=10, color="#222")
+                ax5.set_xlabel("Timestep", fontsize=9, color="#444")
+                ax5.tick_params(colors="#444", labelsize=7)
+            else:
+                ax5.set_title("EFE per Action", fontsize=10, color="#222")
+                ax5.text(
+                    0.5,
+                    0.5,
+                    "No EFE data",
+                    ha="center",
+                    va="center",
+                    color="#888",
+                    fontsize=9,
+                )
+        else:
+            ax5.set_title("EFE per Action", fontsize=10, color="#222")
+            ax5.text(
+                0.5,
+                0.5,
+                "No EFE data",
+                ha="center",
+                va="center",
+                color="#888",
+                fontsize=9,
+            )
+
+        # === Bottom-right: Policy posterior (D8) ===
+        ax6 = axes[1, 2]
+        ax6.set_facecolor("white")
+        if policy_posterior and step >= 0 and n_actions > 0:
+            n_pp_steps = min(step + 1, len(policy_posterior))
+            if n_pp_steps > 0:
+                pp_arr = np.asarray(
+                    [policy_posterior[i][:n_actions] for i in range(n_pp_steps)],
+                    dtype=float,
+                )  # (timestep x action)
+                pp_x = np.arange(n_pp_steps)
+                pp_colors = [
+                    state_colors[i] for i in range(min(n_actions, len(state_colors)))
+                ]
+                ax6.stackplot(
+                    pp_x,
+                    pp_arr.T,
+                    labels=[f"A{i + 1}" for i in range(n_actions)],
+                    colors=pp_colors,
+                    baseline="zero",
+                )
+                ax6.set_xlim(0, max(n_pp_steps - 1, 1))
+                ax6.set_ylim(0, 1.0)
+                ax6.set_title("Policy Posterior", fontsize=10, color="#222")
+                ax6.set_xlabel("Timestep", fontsize=9, color="#444")
+                ax6.set_ylabel("P(action)", fontsize=9, color="#444")
+                ax6.tick_params(colors="#444", labelsize=7)
+                ax6.spines["top"].set_visible(False)
+                ax6.spines["right"].set_visible(False)
+                if n_actions <= 6:
+                    ax6.legend(fontsize=6, loc="center left", frameon=False)
+            else:
+                ax6.text(
+                    0.5,
+                    0.5,
+                    "No policy data",
+                    ha="center",
+                    va="center",
+                    color="#888",
+                    fontsize=9,
+                )
+                ax6.set_title("Policy Posterior", fontsize=10, color="#222")
+        else:
+            ax6.text(
+                0.5,
+                0.5,
+                "No policy data",
+                ha="center",
+                va="center",
+                color="#888",
+                fontsize=9,
+            )
+            ax6.set_title("Policy Posterior", fontsize=10, color="#222")
 
         # Step indicator
         fig.text(
