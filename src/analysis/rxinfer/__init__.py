@@ -13,10 +13,12 @@ from .analyzer import (
     generate_analysis_from_logs,
 )
 from .animator import generate_animated_html
+from .gif_animator import generate_gif_animation
 
 __all__: list[Any] = [
     "generate_analysis_from_logs",
     "create_rxinfer_visualizations",
     "extract_simulation_data",
     "generate_animated_html",
+    "generate_gif_animation",
 ]
