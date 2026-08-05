@@ -64,21 +64,16 @@ class TestRenderTargets:
     def test_render_to_rxinfer_toml(
         self, tmp_path: Any, sample_gnn_spec: Any, test_render_module: Any
     ) -> Any:
-        """Test rendering to RxInfer TOML format."""
-        # Call real render function with actual data
+        """Test that the deprecated rxinfer_toml target is rejected."""
         ok, msg, artifacts = test_render_module.render_gnn_spec(
             sample_gnn_spec, "rxinfer_toml", tmp_path
         )
 
-        # Verify successful rendering
-        assert ok is True, "RxInfer TOML rendering should succeed"
-        assert isinstance(msg, str), "Message should be string"
-        assert isinstance(artifacts, list), "Artifacts should be a list"
-
-        # Verify artifacts are created
-        for artifact in artifacts:
-            artifact_path = tmp_path / artifact
-            assert artifact_path.exists(), f"Artifact {artifact} should be created"
+        # The deprecated TOML target must return False with a helpful message
+        assert ok is False, "rxinfer_toml target should be deprecated and return False"
+        assert isinstance(msg, str)
+        assert "deprecated" in msg.lower(), f"Message should mention deprecation: {msg}"
+        assert artifacts == [], "Deprecated target should produce no artifacts"
 
     @pytest.mark.unit
     def test_render_to_discopy(
