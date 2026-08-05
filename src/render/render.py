@@ -22,12 +22,12 @@ except ImportError as e:
     PYMDP_AVAILABLE = False
 
 try:
-    from .rxinfer import render_gnn_to_rxinfer_toml
+    from .rxinfer import render_gnn_to_rxinfer
 
     RXINFER_AVAILABLE = True
 except ImportError as e:
     logging.warning(f"RxInfer renderer not available: {e}")
-    render_gnn_to_rxinfer_toml = cast(Any, None)
+    render_gnn_to_rxinfer = cast(Any, None)
     RXINFER_AVAILABLE = False
 
 try:

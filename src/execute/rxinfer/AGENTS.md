@@ -14,13 +14,16 @@
 
 ### Primary Responsibilities
 1. Execute RxInfer.jl simulations from generated Julia code
-2. Run reactive message-passing inference on probabilistic models
+2. Run genuine ``@model`` + ``infer()`` variational message-passing inference on probabilistic models
 3. Manage Julia environment and RxInfer.jl execution
 4. Provide analysis and visualization of inference results
 5. Handle RxInfer.jl-specific execution parameters and configurations
 
 ### Key Capabilities
-- Reactive message-passing inference execution
+- Genuine ``@model`` + ``infer()`` variational message-passing inference execution (RxInfer.jl v5.5)
+- **Offline batch inference (Bayesian smoothing)** — the pipeline runs ``infer()``
+  on a pre-collected observation sequence, NOT online active inference. If
+  ``infer()`` fails, the script crashes (no fallback).
 - Julia environment management and package loading
 - Real-time inference monitoring and result streaming
 - Comprehensive result analysis and visualization

@@ -46,6 +46,7 @@ _CORE_PLOT_TYPES: List[str] = [
     "belief_trace",
     "free_energy",
     "observations",
+    "efe_per_action_heatmap",
 ]
 
 
@@ -135,10 +136,25 @@ def _normalise_actions(data: Dict[str, Any]) -> List[float]:
 
 
 def _normalise_free_energy(data: Dict[str, Any]) -> List[float]:
-    """Best available expected / variational free energy trace."""
-    efe = data.get("expected_free_energy")
+    """Best available expected / variational free energy trace.
+
+    The ``variational_free_energy`` field in ``rxinfer_simulation_v1`` is now a
+    per-iteration VFE trace (length = INFERENCE_ITERATIONS), not a per-step
+    constant. This is the real convergence diagnostic from RxInfer's
+    variational message passing. When ``vfe_per_iteration`` is present it is
+    the authoritative source; otherwise we fall back to
+    ``variational_free_energy`` or ``expected_free_energy``.
+    """
+    # Prefer vfe_per_iteration (the explicit per-iteration field)
+    vfe_iter = data.get("vfe_per_iteration")
+    if vfe_iter is not None:
+        vfe_list = _as_flat_list(vfe_iter)
+        if vfe_list:
+            return [float(x) for x in vfe_list]
+    # Fall back to variational_free_energy (also per-iteration now)
+    efe = data.get("variational_free_energy")
     if efe is None:
-        efe = data.get("variational_free_energy")
+        efe = data.get("expected_free_energy")
     efe_list = _as_flat_list(efe)
     if efe_list:
         return [float(x) for x in efe_list]
@@ -299,6 +315,7 @@ def create_rxinfer_visualizations(
     true_states = _normalise_true_states(data)
     actions = _normalise_actions(data)
     free_energy = _normalise_free_energy(data)
+    efe_per_action = _normalise_efe_per_action(data)
 
     beliefs_arr = np.asarray(beliefs, dtype=float) if beliefs else np.zeros((0, 0))
     have_beliefs = beliefs_arr.ndim >= 1
@@ -322,8 +339,8 @@ def create_rxinfer_visualizations(
             else:
                 ax.plot(beliefs_arr, label="Belief", linewidth=2)
 
-            ax.set_xlabel("Time Step", fontweight="bold")
-            ax.set_ylabel("Belief Probability", fontweight="bold")
+            ax.set_xlabel("Time Step")
+            ax.set_ylabel("Belief Probability")
             ax.set_title(f"RxInfer Belief Evolution - {model_name}", fontweight="bold")
             ax.legend()
             ax.grid(True, alpha=0.3)
@@ -348,8 +365,8 @@ def create_rxinfer_visualizations(
             x = range(len(observations))
             ax.scatter(x, observations, label="Observations", alpha=0.7, s=50)
             ax.scatter(x, true_states, label="True States", alpha=0.7, s=50, marker="x")
-            ax.set_xlabel("Time Step", fontweight="bold")
-            ax.set_ylabel("State/Observation", fontweight="bold")
+            ax.set_xlabel("Time Step")
+            ax.set_ylabel("State/Observation")
             ax.set_title(
                 f"RxInfer Observations vs True States - {model_name}", fontweight="bold"
             )
@@ -380,8 +397,8 @@ def create_rxinfer_visualizations(
                 origin="lower",
                 interpolation="nearest",
             )
-            ax.set_xlabel("Time Step", fontweight="bold")
-            ax.set_ylabel("State", fontweight="bold")
+            ax.set_xlabel("Time Step")
+            ax.set_ylabel("State")
             ax.set_title(f"RxInfer Belief Heatmap - {model_name}", fontweight="bold")
             ax.set_yticks(range(beliefs_arr.shape[1]))
             ax.set_yticklabels([f"State {i + 1}" for i in range(beliefs_arr.shape[1])])
@@ -413,8 +430,8 @@ def create_rxinfer_visualizations(
             fig, ax = plt.subplots(figsize=(12, 4))
             ax.plot(entropy, "purple", linewidth=2, marker="o", markersize=3)
             ax.fill_between(range(len(entropy)), entropy, alpha=0.3, color="purple")
-            ax.set_xlabel("Time Step", fontweight="bold")
-            ax.set_ylabel("Belief Entropy (bits)", fontweight="bold")
+            ax.set_xlabel("Time Step")
+            ax.set_ylabel("Belief Entropy (bits)")
             ax.set_title(
                 f"RxInfer Belief Uncertainty - {model_name}", fontweight="bold"
             )
@@ -446,9 +463,11 @@ def create_rxinfer_visualizations(
     # 5. Inference Accuracy (if we have true states + 2D beliefs)
     if have_2d_beliefs and true_states:
         try:
-            inferred_states = np.argmax(beliefs_arr, axis=1) + 1  # 1-indexed
+            inferred_states = np.argmax(
+                beliefs_arr, axis=1
+            )  # 0-indexed (matching Julia output)
             true_arr = np.asarray(true_states[: len(inferred_states)], dtype=float)
-            true_arr = true_arr + 1  # to match 1-indexed inferred states
+            # true_states are 0-indexed from the generated script
             n = min(len(inferred_states), len(true_arr))
 
             matches = (inferred_states[:n] == true_arr[:n]).astype(int)
@@ -462,8 +481,8 @@ def create_rxinfer_visualizations(
                 alpha=0.3,
                 color="green",
             )
-            ax.set_xlabel("Time Step", fontweight="bold")
-            ax.set_ylabel("Cumulative Accuracy (%)", fontweight="bold")
+            ax.set_xlabel("Time Step")
+            ax.set_ylabel("Cumulative Accuracy (%)")
             ax.set_title(
                 f"RxInfer Inference Accuracy - {model_name}", fontweight="bold"
             )
@@ -501,8 +520,8 @@ def create_rxinfer_visualizations(
             unique, counts = np.unique(actions_arr, return_counts=True)
             fig, ax = plt.subplots(figsize=(10, 4))
             ax.bar(unique, counts, color="skyblue", edgecolor="navy")
-            ax.set_xlabel("Action", fontweight="bold")
-            ax.set_ylabel("Frequency", fontweight="bold")
+            ax.set_xlabel("Action")
+            ax.set_ylabel("Frequency")
             ax.set_title(
                 f"RxInfer Action Frequencies - {model_name}", fontweight="bold"
             )
@@ -522,6 +541,41 @@ def create_rxinfer_visualizations(
                 except (OSError, ValueError):
                     pass
 
+    # 6b. EFE Per Action Heatmap (structured EFE landscape over time)
+    if efe_per_action:
+        try:
+            eaa_arr = np.asarray(efe_per_action, dtype=float)
+            fig, ax = plt.subplots(figsize=(14, 5))
+            im = ax.imshow(
+                eaa_arr.T,
+                aspect="auto",
+                cmap="RdBu_r",
+                origin="lower",
+                interpolation="nearest",
+            )
+            ax.set_xlabel("Time Step")
+            ax.set_ylabel("Action")
+            ax.set_title(f"RxInfer EFE per Action - {model_name}")
+            if eaa_arr.shape[1] > 0:
+                ax.set_yticks(range(eaa_arr.shape[1]))
+                ax.set_yticklabels([f"A{i + 1}" for i in range(eaa_arr.shape[1])])
+
+            cbar = plt.colorbar(im, ax=ax)
+            cbar.set_label("Expected Free Energy")
+
+            viz_file = output_dir / f"{model_name}_rxinfer_efe_per_action_heatmap.png"
+            plt.savefig(viz_file, dpi=300, bbox_inches="tight")
+            plt.close()
+            visualizations.append(str(viz_file))
+            logger.info(f"Generated EFE per action heatmap: {viz_file.name}")
+        except Exception as e:
+            logger.warning(f"Failed to create EFE per action heatmap: {e}")
+            if plt is not None:
+                try:
+                    plt.close()
+                except (OSError, ValueError):
+                    pass
+
     # 7. Belief Convergence (max belief probability over time)
     if have_2d_beliefs:
         try:
@@ -534,8 +588,8 @@ def create_rxinfer_visualizations(
                 alpha=0.3,
                 color="brown",
             )
-            ax.set_xlabel("Time Step", fontweight="bold")
-            ax.set_ylabel("Max State Probability", fontweight="bold")
+            ax.set_xlabel("Time Step")
+            ax.set_ylabel("Max State Probability")
             ax.set_title(
                 f"RxInfer Belief Convergence - {model_name}", fontweight="bold"
             )
@@ -568,8 +622,8 @@ def create_rxinfer_visualizations(
                     label="True State",
                     color="steelblue",
                 )
-            ax.set_xlabel("Time Step", fontweight="bold")
-            ax.set_ylabel("State Index", fontweight="bold")
+            ax.set_xlabel("Time Step")
+            ax.set_ylabel("State Index")
             ax.set_title(f"RxInfer Belief Trace - {model_name}", fontweight="bold")
             ax.legend()
             ax.grid(True, alpha=0.3)
@@ -594,8 +648,8 @@ def create_rxinfer_visualizations(
             fig, ax = plt.subplots(figsize=(12, 4))
             ax.plot(fe_arr, color="crimson", linewidth=2, marker="o", markersize=3)
             ax.fill_between(range(len(fe_arr)), fe_arr, alpha=0.3, color="crimson")
-            ax.set_xlabel("Time Step", fontweight="bold")
-            ax.set_ylabel("Free Energy", fontweight="bold")
+            ax.set_xlabel("Time Step")
+            ax.set_ylabel("Free Energy")
             ax.set_title(f"RxInfer Free Energy - {model_name}", fontweight="bold")
             ax.grid(True, alpha=0.3)
 
@@ -618,8 +672,8 @@ def create_rxinfer_visualizations(
             obs_arr = np.asarray(observations, dtype=float)
             fig, ax = plt.subplots(figsize=(12, 4))
             ax.plot(obs_arr, "o-", color="teal", linewidth=2, markersize=4)
-            ax.set_xlabel("Time Step", fontweight="bold")
-            ax.set_ylabel("Observation", fontweight="bold")
+            ax.set_xlabel("Time Step")
+            ax.set_ylabel("Observation")
             ax.set_title(f"RxInfer Observations - {model_name}", fontweight="bold")
             ax.grid(True, alpha=0.3)
 

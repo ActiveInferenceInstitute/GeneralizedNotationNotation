@@ -15,7 +15,7 @@ The primary input is:
 output/12_execute_output/<model>/rxinfer/simulation_data/simulation_results.json
 ```
 
-The JSON schema is `rxinfer_simulation_v1` and includes observations by modality, hidden states by factor, actions by control factor, beliefs by factor, expected free energy, policy posterior, validation, matrix provenance, and runtime metadata.
+The JSON schema is `rxinfer_simulation_v1` and includes observations by modality, hidden states by factor, actions by control factor, beliefs by factor, expected free energy, policy posterior, `variational_free_energy`, `vfe_per_iteration`, validation, matrix provenance, and runtime metadata. The `variational_free_energy` and `vfe_per_iteration` fields are **per-iteration VFE traces** (length = INFERENCE_ITERATIONS) — the real convergence diagnostic from RxInfer's variational message passing, NOT per-step constants. Beliefs are **smoothed posteriors** from batch inference, not filtered (online) beliefs.
 
 ## Outputs
 
@@ -25,7 +25,9 @@ The analyzer writes plots under:
 output/16_analysis_output/rxinfer/
 ```
 
-Generated plots include belief evolution, belief heatmaps, observation/state traces, entropy, and inference accuracy.
+Generated plots include belief evolution, belief heatmaps, observation/state traces,
+entropy, inference accuracy, action frequencies, belief convergence, belief trace,
+free energy, observations, and EFE per action heatmap.
 
 ## Per-Exemplar Visualization Set
 

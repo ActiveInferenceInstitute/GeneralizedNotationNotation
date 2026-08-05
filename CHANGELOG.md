@@ -9,10 +9,40 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
 ## [Unreleased]
 
 ### Added
+- **Per-iteration VFE trace**: `variational_free_energy` and `vfe_per_iteration` in `rxinfer_simulation_v1` now report the full per-iteration VFE vector from RxInfer's `result.free_energy` (length = INFERENCE_ITERATIONS), replacing the fabricated constant that replicated one scalar across all timesteps.
+- **TypedDict contracts**: Added `CanonicalPomdpSpec`, `InitialParameterization`, `RxInferSimulationV1` TypedDict definitions and `ModelKind` enum to `src/render/pomdp_contract.py` for typed renderer contracts.
+- **ModelKind enum**: FLAT, FACTORED, HIERARCHICAL, MULTI_AGENT, CONTINUOUS, LEARNING — detected from the GNN spec and carried in `runtime_metadata.model_kind`.
+- **Belief entropy validation**: `belief_entropy_ok` field rejects degenerate beliefs (Shannon entropy < 0.1 nats) for non-identity A matrices. Fully observable models (identity A) are exempt.
+- **Expanded precompile coverage**: `GnnRxInferModels.jl` now precompiles 6 state-space configurations (2, 3, 4, 8, 9, 16 states) × 7 T values (3–30), covering common GNN exemplar dimensions. Precompile success/failure is logged per config.
+
+### Changed
+- **Removed fallback entirely**: The `try/catch` around `infer()` and the Bayesian filter fallback (~30 lines) have been removed. If `infer()` fails, the script crashes with a non-zero exit code and no results JSON is written. `uses_real_rxinfer` is now conditional on actual `infer()` success — set to `true` only when `infer()` returns.
+- **Strengthened `all_valid`**: Now includes `inference_converged`, `vfe_present`, and `belief_entropy_ok` in addition to the construction-guaranteed checks. Degenerate beliefs and non-converged inference now fail validation.
+- **Accurate pipeline labeling**: All docs and code comments now describe the pipeline as "offline batch inference (Bayesian smoothing) with post-hoc EFE policy evaluation" rather than "active inference". The forward pass is labeled "forward simulation for data collection" not "Bayesian filter".
+- **Analyzer VFE handling**: `_normalise_free_energy()` now prefers `vfe_per_iteration` as the authoritative per-iteration VFE source, falling back to `variational_free_energy` and then `expected_free_energy`.
+
+### Fixed (Mahakala C1–C5)
+- **C1: VFE trace is a fabricated constant** — FIXED. The per-iteration VFE vector from `result.free_energy` is now reported directly, not replicated across timesteps.
+- **C2: `uses_real_rxinfer` hardcoded true even on fallback** — FIXED. Now conditional on actual `infer()` success; the fallback path that could set it incorrectly has been removed entirely.
+- **C3: Batch infer() is post-hoc smoothing, not active inference** — FIXED (labeled accurately). Docs and comments now describe the pipeline as offline batch inference with post-hoc policy evaluation.
+- **C4: `all_valid` is tautological** — FIXED. `all_valid` now includes `inference_converged`, `vfe_present`, and `belief_entropy_ok`.
+- **C5: Beliefs are degenerate** — ADDRESSED. Belief entropy check rejects degenerate beliefs for non-identity A matrices. For fully observable models (identity A), the check is skipped as degeneracy is expected.
+
+### Added (prior)
+- **Genuine RxInfer.jl integration**: Replaced the hand-rolled POMDP step simulator with real RxInfer.jl variational message-passing inference. The canonical renderer (`rxinfer_renderer.py`) now emits Julia scripts that define a generative model using `@model` with `Categorical` / `DiscreteTransition` nodes and run `infer()` with `free_energy=true` to obtain posteriors over hidden states and real variational free energy traces. The `variational_free_energy` field in `rxinfer_simulation_v1` is now populated with real VFE values (previously `Float64[]`).
+- **Committed Julia environment**: Added `Project.toml` + `Manifest.toml` under `src/execute/rxinfer/` pinning RxInfer 5.5.0 and all dependencies. The runner now passes `--project=<env>` instead of bare `julia`, ensuring reproducible, network-independent execution.
+- **Reproducibility tracking**: Generated scripts now include `Random.seed!(seed)` before inference and record the script SHA256, seed, and `uses_real_rxinfer` flag in `runtime_metadata`. Results are byte-identical across runs with the same seed.
+- **Inference convergence check**: The `validation` dict now includes `inference_converged` (VFE stabilized) and `vfe_present` fields alongside the existing `all_valid` / `all_beliefs_valid` / `beliefs_sum_to_one` / `actions_in_range`.
+- **45/45 GNN exemplar files verified**: All 45 GNN spec files across `discrete/`, `continuous/`, `basics/`, `hierarchical/`, `multiagent/`, `precision/`, `pomdp_gridworld/`, `structured/`, and `pymdp_scaling_study/` render and execute successfully with the real `@model` + `infer()` pipeline.
 - **Guarded Julia-native visualization + structured logging in generated RxInfer scripts**: rendered `*_rxinfer.jl` scripts always write `simulation_results.json` (`rxinfer_simulation_v1`) and additionally emit best-effort, guarded artifacts that never cause execution failure — an optional structured runtime log (`simulation.log` / `simulation_log.json`) and optional `Plots.jl` figures (`belief_evolution.png`, `efe_over_time.png`, `policy_posterior.png`) when Plots rendering is available.
 - **Comprehensive Step-16 RxInfer analysis**: `src/analysis/rxinfer/` produces the full per-exemplar 10-type visualization set from `rxinfer_simulation_v1` results under `output/16_analysis_output/rxinfer/` — `belief_evolution`, `obs_vs_true`, `belief_heatmap`, `belief_entropy`, `accuracy`, `action_frequencies`, `belief_convergence`, `belief_trace`, `free_energy`, and `observations`. All figures are best-effort and backward-compatible with `rxinfer_simulation_v1`.
 
+### Deprecated
+- **`toml_generator.py`**: The legacy TOML-based RxInfer renderer is deprecated. The canonical renderer (`rxinfer_renderer.py`) with genuine `@model` + `infer()` code is the only supported path. `render_gnn_to_rxinfer_toml` now emits a `DeprecationWarning` and is removed from the processor wiring and public exports. The file is retained for git history and reference.
+
 ### Fixed
+- Fixed A matrix construction in the generated Julia script: the `hcat` approach transposed the observation/likelihood matrix, causing dimension mismatches for non-square A matrices (e.g. HMM baseline with 6 obs × 4 states). Replaced with explicit row-by-row construction matching the original `to_float_matrix` behavior.
+- Fixed missing `using Pkg` and `using SHA` imports in the generated Julia script, which caused `UndefVarError` when `package_version()` or `sha256()` were called.
 - Hardened MCP execution and LLM entry points against arbitrary local file access and script execution by enforcing repository-local path validation, source-file extension checks, and Step 11 render-summary gating for `process_execute_mcp`.
 - Escaped bnlearn generated-code metadata as Python literals, coerced generated timestep literals, and sanitized generated artifact filename stems to prevent code injection and path traversal through model names.
 - Resolved default-branch Dependabot alerts by raising patched dependency floors and refreshing `uv.lock` for `msgpack` 1.2.1, `jupyter-server` 2.20.0, `jupyterlab` 4.6.0, and `bleach` 6.4.0.

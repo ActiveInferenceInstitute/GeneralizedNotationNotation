@@ -41,10 +41,10 @@
 - **Optimization**: Matrix optimization, memory efficiency
 
 #### RxInfer.jl (Julia)
-- **Purpose**: Probabilistic programming and inference
-- **Features**: Reactive inference engine
-- **Output**: Julia scripts with TOML configuration
-- **Optimization**: Reactive constraints, efficient inference
+- **Purpose**: Genuine `@model` + `infer()` variational message-passing inference
+- **Features**: Real `@model` with `Categorical` / `DiscreteTransition` nodes, `infer()` with `free_energy=true`, real VFE traces
+- **Output**: Julia scripts with embedded `@model` definitions (no TOML — deprecated)
+- **Optimization**: Committed `Project.toml` (RxInfer 5.5.0), `--project=` for reproducible execution, EFE/policy via custom Active Inference logic
 
 #### ActiveInference.jl (Julia)
 - **Purpose**: Active Inference framework implementation
@@ -215,7 +215,7 @@ The shared contract is `canonical_pomdp_v1`; B is stored as `(next_state, previo
 
 ### Framework-Specific Dependencies
 - **PyMDP**: `pymdp` package
-- **RxInfer.jl**: Julia with RxInfer.jl package
+- **RxInfer.jl**: Julia with RxInfer.jl 5.5.0 (committed `Project.toml` under `src/execute/rxinfer/`)
 - **ActiveInference.jl**: Julia with ActiveInference.jl package
 - **DisCoPy**: `discopy` package
 - **JAX**: `jax`, `jaxlib` packages
@@ -238,7 +238,7 @@ PYMDP_CONFIG = {
 }
 
 RXINFER_CONFIG = {
-    'inference_engine': 'reactive',
+    'inference_engine': 'RxInfer variational message-passing (@model + infer(), free_energy=true)',
     'optimization': 'auto',
     'constraints': 'default'
 }

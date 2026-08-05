@@ -122,7 +122,10 @@ uv pip install inferactively-pymdp jax jaxlib optax discopy ollama openai plotly
 
 # Julia packages (in Julia REPL)
 using Pkg
-Pkg.add(["RxInfer", "ActiveInference", "Distributions", "LinearAlgebra"])
+# Instantiate committed RxInfer environment
+julia --startup-file=no --project=src/execute/rxinfer -e 'using Pkg; Pkg.instantiate()'
+# ActiveInference.jl (separate, not in committed project):
+julia -e 'using Pkg; Pkg.add("ActiveInference")'
 
 # System tools (macOS)
 brew install d2

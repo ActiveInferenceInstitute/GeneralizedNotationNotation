@@ -30,7 +30,7 @@ from .processor import (
 from .pymdp import render_gnn_to_pymdp
 from .pymdp.pymdp_renderer import PyMDPRenderer
 from .pytorch import render_gnn_to_pytorch
-from .rxinfer import render_gnn_to_rxinfer, render_gnn_to_rxinfer_toml
+from .rxinfer import render_gnn_to_rxinfer
 from .stan import render_stan
 
 
@@ -85,7 +85,6 @@ __all__: list[Any] = [
     # Specific renderer functions
     "render_gnn_to_pymdp",
     "render_gnn_to_rxinfer",
-    "render_gnn_to_rxinfer_toml",
     "render_gnn_to_discopy",
     "render_gnn_to_activeinference_jl",
     "render_gnn_to_pytorch",

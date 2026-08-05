@@ -34,10 +34,11 @@ EXPECTED_PLOT_TYPES = [
     "belief_trace",
     "free_energy",
     "observations",
+    "efe_per_action_heatmap",
 ]
 
 # Core plots that must always appear when beliefs/observations/true_states exist,
-# even if optional keys (policy_posterior, expected_free_energy) are missing.
+# even if optional keys (policy_posterior, expected_free_energy, efe_per_action) are missing.
 CORE_PLOT_TYPES = [
     "belief_evolution",
     "obs_vs_true",
@@ -171,7 +172,7 @@ def test_full_result_produces_all_ten_plot_types(tmp_path: Path) -> None:
     paths = create_rxinfer_visualizations(results, out, "rich")
     names = _basenames(paths)
 
-    assert len(EXPECTED_PLOT_TYPES) == 10
+    assert len(EXPECTED_PLOT_TYPES) == 11
     for plot_type in EXPECTED_PLOT_TYPES:
         assert f"rich_rxinfer_{plot_type}.png" in names
 

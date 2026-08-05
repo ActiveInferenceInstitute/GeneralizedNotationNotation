@@ -30,7 +30,7 @@ execution/
 The execution subsystem provides support for multiple Active Inference simulation frameworks:
 
 - **PyMDP**: Python Active Inference (primary)
-- **RxInfer.jl**: Julia Bayesian inference
+- **RxInfer.jl**: Julia Bayesian inference via genuine `@model` + `infer()` (committed `Project.toml` + `Manifest.toml` under `src/execute/rxinfer/` pin RxInfer 5.5.0; run with `julia --startup-file=no --project=src/execute/rxinfer <script>`, no runtime `Pkg.add`)
 - **ActiveInference.jl**: Complete Julia implementation
 - **DisCoPy**: Category theory and quantum computing
 - **JAX**: GPU-accelerated tensor operations

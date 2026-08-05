@@ -90,8 +90,10 @@ def test_generated_source_contains_viz_and_log_blocks(tmp_path: Path) -> None:
 def test_rendered_script_emits_results_log_and_png(tmp_path: Path) -> None:
     output_path = _render_simple_mdp(tmp_path)
 
+    # Use the committed Julia project environment under src/execute/rxinfer/
+    rxinfer_project = REPO_ROOT / "src" / "execute" / "rxinfer"
     completed = subprocess.run(
-        [JULIA, "--project=/tmp/rx2", str(output_path)],
+        [str(JULIA), "--startup-file=no", f"--project={rxinfer_project}", str(output_path)],
         cwd=str(tmp_path),
         capture_output=True,
         text=True,
@@ -109,6 +111,22 @@ def test_rendered_script_emits_results_log_and_png(tmp_path: Path) -> None:
     assert results["schema_version"] == "rxinfer_simulation_v1"
     assert results["success"] is True
     assert results["validation"]["all_valid"] is True
+
+    # Strengthened validation fields (Mahakala C4 fix).
+    assert "inference_converged" in results["validation"]
+    assert "vfe_present" in results["validation"]
+    assert "belief_entropy_ok" in results["validation"]
+
+    # Per-iteration VFE trace (Mahakala C1 fix).
+    vfe = results.get("variational_free_energy", [])
+    assert len(vfe) > 0, "VFE trace must not be empty"
+    assert all(v > 0 for v in vfe), "VFE values must be positive"
+
+    # uses_real_rxinfer conditional on actual infer() success (Mahakala C2 fix).
+    assert results["runtime_metadata"]["uses_real_rxinfer"] is True
+
+    # No fallback in stdout (Mahakala C2 fix — no Bayesian filter fallback).
+    assert "falling back" not in completed.stdout
 
     # Structured per-step log emitted.
     log_path = tmp_path / "simulation.log"

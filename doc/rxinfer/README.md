@@ -6,7 +6,7 @@
 
 ## Overview
 
-This directory contains documentation, scripts, and resources for integrating GNN (Generalized Notation Notation) models with **RxInfer.jl**, a Julia-based reactive Bayesian inference framework. RxInfer.jl provides efficient message-passing inference for probabilistic models, making it ideal for Active Inference simulations.
+This directory contains documentation, scripts, and resources for integrating GNN (Generalized Notation Notation) models with **RxInfer.jl**, a Julia-based Bayesian inference framework. RxInfer.jl provides genuine ``@model`` + ``infer()`` variational message-passing inference for probabilistic models, making it ideal for Active Inference simulations.
 
 **Status**: ✅ Production Ready  
 **Version**: 1.0
@@ -73,47 +73,63 @@ This directory contains documentation, scripts, and resources for integrating GN
 
 ### Framework Overview
 
-**RxInfer.jl** is a reactive Bayesian inference framework for Julia that provides:
+**RxInfer.jl** is a Bayesian inference framework for Julia that provides genuine
+`@model` + `infer()` variational message-passing inference over factor graphs:
 
-- **Reactive Probabilistic Programming**: Dynamic model construction and inference
-- **Efficient Message Passing**: Optimized inference algorithms
+- **Genuine `@model` + `infer()` pipeline**: Generative models are defined with
+  `@model` using `Categorical` and `DiscreteTransition` nodes and solved with
+  `infer()` (`free_energy = true`), returning real posteriors over hidden states
+  and genuine variational free energy traces. The pipeline is **offline batch
+  inference (Bayesian smoothing) with post-hoc EFE policy evaluation** — NOT
+  online active inference. If `infer()` fails, the script crashes (no fallback).
+- **Variational Message Passing**: Optimized inference algorithms over factor graphs
 - **Factor Graph Models**: Natural representation of Active Inference models
-- **Streaming Inference**: Real-time belief updating
+- **Reproducible Execution**: A committed Julia environment
+  (`Project.toml` + `Manifest.toml` pinning RxInfer 5.5.0 under
+  `src/execute/rxinfer/`) with `--project=<env>` execution
 - **Multi-agent Support**: Coordinated multi-agent systems
 
 ### GNN to RxInfer.jl Translation
 
 The GNN pipeline translates GNN models to RxInfer.jl through:
 
-1. **Model Parsing**: GNN syntax parsed into structured representation
+1. **Model Parsing**: GNN `canonical_pomdp_v1` syntax parsed into structured representation
 2. **Factor Graph Construction**: Active Inference components mapped to factor graph
-3. **Code Generation**: Julia code generation with RxInfer.jl API
-4. **Configuration Generation**: TOML configuration files for model parameters
-5. **Validation**: Automated validation of generated code
+3. **Code Generation**: Julia code generation with RxInfer.jl `@model` + `infer()` API
+   (emitted by `src/render/rxinfer/rxinfer_renderer.py`)
+4. **Environment Setup**: Committed `Project.toml` + `Manifest.toml` under
+   `src/execute/rxinfer/` pins RxInfer 5.5.0; `setup_environment.jl` uses
+   `Pkg.activate()` + `Pkg.instantiate()` (no runtime `Pkg.add`)
+5. **Validation**: Automated validation of generated code and inference results
 
 ### Validation Process
 
-The `Multiagent_GNN_RxInfer.jl` script validates the translation pipeline:
+The pipeline validates end-to-end render and execution for every exemplar GNN
+model:
 
-#### Stage 1: Baseline Simulation
-- Locates standard "Multi-agent Trajectory Planning" example
-- Runs with original hand-written `config.toml`
-- Establishes baseline for successful execution
+#### Render (Step 11)
+- Discovers all 45 exemplar GNN files under `input/gnn_files/**` and emits an
+  executable `*_rxinfer.jl` script per model via `rxinfer_renderer.py`
 
-#### Stage 2: GNN-Configured Simulation
-- Creates new validation directory
-- Copies Julia script files from original example
-- Replaces `config.toml` with GNN-generated configuration
-- Executes simulation with GNN-derived configuration
-- Compares results with baseline
+#### Execute (Step 12)
+- Runs each rendered `.jl` with
+  `julia --startup-file=no --project=src/execute/rxinfer <script>`
+- `setup_environment.jl` activates and instantiates the committed environment
+  (`Pkg.activate()` + `Pkg.instantiate()`, no runtime `Pkg.add`)
+- Records `random.seed!(seed)` and the script SHA256 in `runtime_metadata`
+  for byte-identical, reproducible runs
 
 ### Validation Success Criteria
 
 Successful validation demonstrates:
-- **Syntactic Correctness**: GNN parser produces valid TOML configuration
-- **Parameter Translation**: GNN parameters correctly translated to RxInfer.jl values
+- **Render Correctness**: GNN spec produces valid Julia with genuine
+  `@model pomdp_model(y, A, B, D, u, T)` using `Categorical` / `DiscreteTransition`
+- **Inference Convergence**: `infer()` with `free_energy = true` converges
+  (validated via `inference_converged` and `vfe_present`)
 - **End-to-End Functionality**: Complete pipeline from GNN model to RxInfer.jl simulation
-- **Result Equivalence**: GNN-configured results match baseline expectations
+- **Real VFE**: `variational_free_energy` is populated with genuine values
+  (previously `Float64[]`); EFE and policy selection remain custom logic
+- **Reproducibility**: Same seed yields byte-identical results
 
 ## Integration with Pipeline
 

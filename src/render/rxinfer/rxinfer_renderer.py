@@ -24,7 +24,14 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
-from render.pomdp_contract import build_canonical_pomdp_spec
+from render.pomdp_contract import (
+    CanonicalPomdpSpec,
+    InitialParameterization,
+    ModelKind,
+    RxInferSimulationV1,
+    build_canonical_pomdp_spec,
+    detect_model_kind,
+)
 
 
 class RxInferRenderer:
@@ -139,12 +146,27 @@ class RxInferRenderer:
     def _generate_canonical_rxinfer_code(
         self, gnn_spec: Dict[str, Any], model_name: str
     ) -> str:
-        """Generate a strict RxInfer.jl script from canonical POMDP matrices."""
+        """Generate a genuine RxInfer.jl script with @model + infer() from canonical POMDP matrices.
+
+        The generated script implements offline batch inference (Bayesian
+        smoothing) with post-hoc EFE policy evaluation — NOT online active
+        inference. The pipeline is:
+
+        - Phase 1: Forward simulation for data collection (hand-rolled EFE)
+        - Phase 2: Real RxInfer ``infer()`` with ``free_energy=true`` — if
+          this fails, the script crashes (no fallback)
+        - Phase 3: Smoothed posterior extraction from ``result.posteriors[:s]``
+        - Phase 4: Post-hoc EFE and policy from smoothed posteriors
+
+        The per-iteration VFE trace (``vfe_per_iteration``) is the real
+        convergence diagnostic. ``variational_free_energy`` is reported as the
+        per-iteration vector (length = INFERENCE_ITERATIONS), not a per-step
+        constant.
+        """
         model_display_name = (
             gnn_spec.get("model_name") or gnn_spec.get("name") or model_name
         )
         model_params = gnn_spec.get("model_parameters", {})
-        initial_params = gnn_spec["initialparameterization"]
         num_states = int(model_params["num_hidden_states"])
         num_observations = int(model_params["num_obs"])
         num_actions = int(model_params["num_actions"])
@@ -153,23 +175,30 @@ class RxInferRenderer:
         action_precision = float(
             model_params.get("action_precision", model_params.get("gamma", 4.0))
         )
+        inference_iterations = int(model_params.get("inference_iterations", 20))
+        model_kind = detect_model_kind(gnn_spec)
+        model_kind_str = model_kind.value
         spec_json = json.dumps(gnn_spec, sort_keys=True)
         spec_json_b64 = base64.b64encode(spec_json.encode("utf-8")).decode("ascii")
         model_name_literal = json.dumps(str(model_display_name))
-        b_tensor_order_literal = json.dumps(
-            str(model_params.get("b_tensor_order", "next_state_previous_state_action"))
-        )
 
         code = f'''#!/usr/bin/env julia
-# RxInfer.jl discrete POMDP simulation
+# RxInfer.jl discrete POMDP simulation — genuine @model + infer() pipeline
 # Generated from GNN Model: {model_display_name}
 # Generated: {self._get_timestamp()}
+#
+# This script uses real RxInfer.jl variational message-passing inference:
+#   - @model defines the generative POMDP with Categorical / DiscreteTransition nodes
+#   - infer() with free_energy=true returns posteriors over hidden states
+#     and real variational free energy traces
+#   - EFE and policy selection remain custom (not RxInfer's domain)
 
 using Pkg
 using RxInfer
 using Distributions
 using LinearAlgebra
 using Random
+using SHA
 using StatsBase
 using JSON
 using Base64
@@ -177,9 +206,7 @@ using Dates
 
 # --- Optional Julia-native plotting via Plots.jl (matplotlib-free PNGs).
 # Guarded so a missing Plots installation/backend degrades gracefully and the
-# script NEVER fails to run because of plotting. @eval runs `using Plots` at
-# module top level so its exports (plot, heatmap, savefig, ...) become
-# available everywhere.
+# script NEVER fails to run because of plotting.
 const PLOTS_READY = try
     @eval using Plots
     true
@@ -196,7 +223,8 @@ const NUM_ACTIONS = {num_actions}
 const TIME_STEPS = {num_timesteps}
 const RANDOM_SEED = {seed}
 const ACTION_PRECISION = {action_precision}
-const B_TENSOR_ORDER = {b_tensor_order_literal}
+const INFERENCE_ITERATIONS = {inference_iterations}
+const MODEL_KIND = "{model_kind_str}"
 const GNN_SPEC_JSON_B64 = "{spec_json_b64}"
 const GNN_SPEC = JSON.parse(String(base64decode(GNN_SPEC_JSON_B64)))
 
@@ -209,68 +237,19 @@ function package_version(name::String)
     return "unknown"
 end
 
-function to_float_matrix(raw)
-    rows = collect(raw)
-    matrix = zeros(Float64, length(rows), length(collect(rows[1])))
-    for row in eachindex(rows)
-        values = collect(rows[row])
-        for column in eachindex(values)
-            matrix[row, column] = Float64(values[column])
-        end
-    end
-    return matrix
-end
+# --- Real RxInfer.jl generative model ---
+# The @model definition is precompiled in the GnnRxInferModels package module.
+# Using `using` loads the precompiled cache (built once via PrecompileTools.jl),
+# eliminating ~85s of JIT compilation on every run.
+#
+# The model is a generative POMDP: hidden states evolve via
+# DiscreteTransition conditioned on the previous state and selected action;
+# observations are emitted via DiscreteTransition through the likelihood
+# matrix A.
 
-function to_float_tensor(raw)
-    blocks = collect(raw)
-    rows = length(blocks)
-    columns = length(collect(blocks[1]))
-    actions = length(collect(collect(blocks[1])[1]))
-    tensor = zeros(Float64, rows, columns, actions)
-    for next_state in 1:rows
-        block = collect(blocks[next_state])
-        for previous_state in 1:columns
-            values = collect(block[previous_state])
-            for action in 1:actions
-                tensor[next_state, previous_state, action] = Float64(values[action])
-            end
-        end
-    end
-    return tensor
-end
+using GnnRxInferModels: pomdp_model
 
-function normalize_vector(values)
-    vector = Float64.(collect(values))
-    total = sum(vector)
-    if !isfinite(total) || total <= 0
-        error("probability vector has invalid mass")
-    end
-    return vector ./ total
-end
-
-function normalize_columns!(matrix)
-    for column in 1:size(matrix, 2)
-        total = sum(matrix[:, column])
-        if !isfinite(total) || total <= 0
-            error("matrix column has invalid probability mass")
-        end
-        matrix[:, column] ./= total
-    end
-    return matrix
-end
-
-function normalize_tensor!(tensor)
-    for action in 1:size(tensor, 3)
-        for previous_state in 1:size(tensor, 2)
-            total = sum(tensor[:, previous_state, action])
-            if !isfinite(total) || total <= 0
-                error("transition column has invalid probability mass")
-            end
-            tensor[:, previous_state, action] ./= total
-        end
-    end
-    return tensor
-end
+# --- Custom EFE computation (Active Inference domain, not RxInfer's) ---
 
 function softmax(values)
     shifted = values .- maximum(values)
@@ -310,6 +289,12 @@ function select_action(belief, A, B, C_pref)
     return action, efe_values, policy
 end
 
+function compute_efe_and_policy(belief, A, B, C_pref)
+    efe_values = [compute_efe(belief, action, A, B, C_pref) for action in 1:size(B, 3)]
+    policy = softmax(-ACTION_PRECISION .* efe_values)
+    return efe_values, policy
+end
+
 function validate_dimensions(A, B, C, D)
     if size(A) != (NUM_OBSERVATIONS, NUM_STATES)
         error("A shape $(size(A)) does not match expected ($NUM_OBSERVATIONS, $NUM_STATES)")
@@ -325,30 +310,74 @@ function validate_dimensions(A, B, C, D)
     end
 end
 
+# --- Offline batch inference (Bayesian smoothing) with post-hoc EFE policy
+# evaluation.
+#
+# This is NOT online active inference. The pipeline is:
+#   Phase 1 — Forward simulation for data collection: run the environment
+#     forward using the hand-rolled EFE to collect observations, actions,
+#     and true states. (The hand-rolled forward filter here is a data
+#     collection mechanism, not a substitute for RxInfer inference.)
+#   Phase 2 — Real RxInfer batch inference: run infer() with
+#     free_energy=true on the collected data. If infer() fails, the script
+#     crashes (exit non-zero). There is NO fallback.
+#   Phase 3 — Posterior extraction: extract per-timestep smoothed posteriors
+#     from result.posteriors[:s].
+#   Phase 4 — Post-hoc EFE/policy from posteriors: compute EFE and policy
+#     from the smoothed posteriors. These are post-hoc policy evaluations,
+#     not online control.
+
+function belief_entropy(belief)
+    # Shannon entropy in nats. Returns 0 for a degenerate point-mass.
+    safe = max.(belief, 1e-16)
+    return -sum(safe .* log.(safe))
+end
+
 function run_simulation()
     Random.seed!(RANDOM_SEED)
     initial = GNN_SPEC["initialparameterization"]
-    A = normalize_columns!(to_float_matrix(initial["A"]))
-    B = normalize_tensor!(to_float_tensor(initial["B"]))
+    A = zeros(Float64, NUM_OBSERVATIONS, NUM_STATES)
+    raw_A = initial["A"]
+    for obs in 1:NUM_OBSERVATIONS
+        row = collect(raw_A[obs])
+        for state in 1:NUM_STATES
+            A[obs, state] = Float64(row[state])
+        end
+    end
+    # B is stored as (next_state, previous_state, action)
+    raw_B = initial["B"]
+    B = zeros(Float64, NUM_STATES, NUM_STATES, NUM_ACTIONS)
+    for ns in 1:NUM_STATES
+        for ps in 1:NUM_STATES
+            for a in 1:NUM_ACTIONS
+                B[ns, ps, a] = Float64(raw_B[ns][ps][a])
+            end
+        end
+    end
     C = Float64.(collect(initial["C"]))
-    D = normalize_vector(initial["D"])
-    E = haskey(initial, "E") ? normalize_vector(initial["E"]) : fill(1.0 / NUM_ACTIONS, NUM_ACTIONS)
+    D = Float64.(collect(initial["D"]))
+    E = haskey(initial, "E") ? Float64.(collect(initial["E"])) : fill(1.0 / NUM_ACTIONS, NUM_ACTIONS)
     validate_dimensions(A, B, C, D)
 
     C_pref = softmax(C)
+
+    # --- Phase 1: Forward simulation for data collection ---
+    # Uses a hand-rolled EFE-based forward filter to collect the observation
+    # and action sequence. This is NOT the inference step — it is data
+    # collection for the subsequent RxInfer batch inference.
     current_state = categorical_index(D)
     current_belief = copy(D)
 
     observations = Int[]
     true_states = Int[]
     actions = Int[]
-    beliefs = Vector{{Vector{{Float64}}}}()
-    efe_per_action = Vector{{Vector{{Float64}}}}()
-    selected_efe = Float64[]
-    policy_posterior = Vector{{Vector{{Float64}}}}()
+    action_seq_full = Int[]  # 1-indexed actions for the model
 
     for step in 1:TIME_STEPS
         observation = categorical_index(A[:, current_state])
+
+        # Simple Bayesian update for the forward-pass belief
+        obs_onehot = [i == observation ? 1.0 : 0.0 for i in 1:NUM_OBSERVATIONS]
         likelihood = A[observation, :]
         updated = current_belief .* likelihood
         if sum(updated) <= 0
@@ -356,30 +385,134 @@ function run_simulation()
         end
         current_belief = updated ./ sum(updated)
 
+        # Action selection via EFE (forward-pass policy)
         action, efe_values, policy = select_action(current_belief, A, B, C_pref)
+
+        # Environment transition
         next_probs = B[:, current_state, action]
         current_state = categorical_index(next_probs)
+
+        # Predict next belief
         predicted = B[:, :, action] * current_belief
         current_belief = predicted ./ sum(predicted)
 
-        push!(observations, observation - 1)
+        push!(observations, observation - 1)  # 0-indexed for JSON
         push!(true_states, current_state - 1)
-        push!(actions, action - 1)
-        push!(beliefs, copy(current_belief))
-        push!(efe_per_action, copy(efe_values))
-        push!(selected_efe, efe_values[action])
-        push!(policy_posterior, copy(policy))
+        push!(actions, action - 1)  # 0-indexed for JSON
+        push!(action_seq_full, action)  # 1-indexed for model
     end
+
+    # --- Phase 2: Real RxInfer batch inference (no fallback) ---
+    # Build one-hot observation sequence for the model
+    obs_seq = [[i == (obs + 1) ? 1.0 : 0.0 for i in 1:NUM_OBSERVATIONS] for obs in observations]
+
+    # The model needs u[1:T-1] for transitions, plus a dummy u[T]
+    model_actions = copy(action_seq_full)
+    while length(model_actions) < TIME_STEPS
+        push!(model_actions, 1)
+    end
+
+    # NO try/catch — if infer() fails, the script crashes with a clear error.
+    # This is deliberate: real RxInfer inference or nothing.
+    result = infer(
+        model = pomdp_model(A=A, B=B, D=D, u=model_actions, T=TIME_STEPS),
+        data = (y = obs_seq,),
+        iterations = INFERENCE_ITERATIONS,
+        free_energy = true
+    )
+
+    uses_real_rxinfer = true  # only reached if infer() succeeded
+
+    # --- Phase 3: Posterior extraction (smoothed posteriors) ---
+    # RxInfer returns posteriors[:s] as Vector of Vector of Categorical.
+    # Outer index = iteration, inner index = time step.
+    # We take the final iteration's posteriors — these are smoothed
+    # (joint) posteriors from batch inference, not filtered (online) beliefs.
+    posteriors_s = result.posteriors[:s]
+    final_iter = posteriors_s[end]
+    if isa(final_iter, Vector)
+        posterior_per_step = final_iter
+    else
+        # Single Categorical (T=1 case)
+        posterior_per_step = [final_iter]
+    end
+
+    beliefs = Vector{{Vector{{Float64}}}}()
+    efe_per_action = Vector{{Vector{{Float64}}}}()
+    selected_efe = Float64[]
+    policy_posterior = Vector{{Vector{{Float64}}}}()
+
+    for t in 1:TIME_STEPS
+        cat_dist = posterior_per_step[t]
+        belief = copy(cat_dist.p)
+        belief = max.(belief, 1e-16)
+        belief ./= sum(belief)
+        push!(beliefs, belief)
+
+        # Phase 4: Post-hoc EFE and policy from the smoothed posterior
+        efe_vals, pol = compute_efe_and_policy(belief, A, B, C_pref)
+        push!(efe_per_action, efe_vals)
+        push!(selected_efe, efe_vals[action_seq_full[t]])
+        push!(policy_posterior, pol)
+    end
+
+    # --- VFE recording: per-iteration trace (the real convergence diagnostic) ---
+    # RxInfer returns one VFE scalar per inference iteration (for the whole
+    # model), NOT per timestep. We record the full per-iteration vector.
+    vfe_per_iteration = Float64.(result.free_energy)  # length = INFERENCE_ITERATIONS
+
+    # variational_free_energy (consumed by the analyzer): report the
+    # per-iteration trace directly. This is per-iteration, not per-step.
+    # Documented clearly in the results dict and the analyzer.
+    variational_free_energy = copy(vfe_per_iteration)
+
+    # Convergence check using the real per-iteration trace
+    if length(vfe_per_iteration) >= 5
+        last_5 = vfe_per_iteration[end-4:end]
+        inference_converged = (maximum(last_5) - minimum(last_5)) < 1e-4
+    elseif length(vfe_per_iteration) >= 2
+        inference_converged = abs(vfe_per_iteration[end] - vfe_per_iteration[end-1]) < 1e-4
+    else
+        inference_converged = false  # too few iterations to assess
+    end
+
+    # --- Strengthened validation ---
+    vfe_present = !isempty(vfe_per_iteration) && all(v -> v > 0, vfe_per_iteration)
+
+    # Belief entropy check — reject degenerate beliefs for non-identity A
+    is_identity_A = all(abs(A[i,j] - (i == j ? 1.0 : 0.0)) < 0.01
+                        for i in 1:size(A,1), j in 1:size(A,2))
+    min_entropy = is_identity_A ? 0.0 : 0.1  # skip for fully observable
+    belief_entropy_ok = all(b -> belief_entropy(b) >= min_entropy, beliefs)
 
     validation = Dict(
         "all_beliefs_valid" => all(b -> all(v -> 0.0 <= v <= 1.0, b), beliefs),
         "beliefs_sum_to_one" => all(b -> isapprox(sum(b), 1.0; atol=1e-6), beliefs),
         "actions_in_range" => all(a -> 0 <= a < NUM_ACTIONS, actions),
-        "all_valid" => true
+        "inference_converged" => inference_converged,
+        "vfe_present" => vfe_present,
+        "belief_entropy_ok" => belief_entropy_ok
     )
     validation["all_valid"] = validation["all_beliefs_valid"] &&
         validation["beliefs_sum_to_one"] &&
-        validation["actions_in_range"]
+        validation["actions_in_range"] &&
+        validation["inference_converged"] &&
+        validation["vfe_present"] &&
+        validation["belief_entropy_ok"]
+
+    # Compute script SHA256 for reproducibility tracking
+    script_sha = try
+        script_path = PROGRAM_FILE
+        if isfile(script_path)
+            open(script_path) do f
+                bytes2hex(sha256(read(f)))
+            end
+        else
+            "unknown"
+        end
+    catch
+        "unknown"
+    end
 
     return Dict(
         "schema_version" => SCHEMA_VERSION,
@@ -393,7 +526,8 @@ function run_simulation()
         "beliefs_by_factor" => Dict("joint_state" => beliefs),
         "expected_free_energy" => selected_efe,
         "efe_per_action" => efe_per_action,
-        "variational_free_energy" => Float64[],
+        "variational_free_energy" => variational_free_energy,
+        "vfe_per_iteration" => vfe_per_iteration,
         "policy_posterior" => policy_posterior,
         "observations" => observations,
         "true_states" => true_states,
@@ -407,7 +541,8 @@ function run_simulation()
             "E_shape" => [length(E)],
             "num_states" => NUM_STATES,
             "num_observations" => NUM_OBSERVATIONS,
-            "num_actions" => NUM_ACTIONS
+            "num_actions" => NUM_ACTIONS,
+            "inference_iterations" => INFERENCE_ITERATIONS
         ),
         "matrix_provenance" => get(GNN_SPEC, "matrix_provenance", Dict()),
         "runtime_metadata" => Dict(
@@ -415,12 +550,17 @@ function run_simulation()
             "schema_version" => SCHEMA_VERSION,
             "generated_at" => string(now()),
             "rxinfer_version" => package_version("RxInfer"),
-            "julia_version" => string(VERSION)
+            "julia_version" => string(VERSION),
+            "script_sha256" => script_sha,
+            "inference_converged" => inference_converged,
+            "uses_real_rxinfer" => uses_real_rxinfer,
+            "model_kind" => MODEL_KIND
         ),
         "metrics" => Dict(
             "expected_free_energy" => selected_efe,
             "policy_posterior" => policy_posterior,
-            "belief_confidence" => [maximum(b) for b in beliefs]
+            "belief_confidence" => [maximum(b) for b in beliefs],
+            "variational_free_energy" => variational_free_energy
         ),
         "validation" => validation
     )
@@ -505,7 +645,13 @@ function write_plots(results)
                 title = "Belief Evolution over Time",
                 xlabel = "Time step",
                 ylabel = "Belief mass",
-                legend = :outertopright
+                legend = :outertopright,
+                size = (900, 450),
+                titlefontsize = 12,
+                guidefontsize = 10,
+                legendfontsize = 8,
+                tickfontsize = 8,
+                linewidth = 2
             )
             for state in 1:size(belief_mat, 1)
                 plot!(p1, steps, belief_mat[state, :], label = "State $state")
@@ -520,7 +666,13 @@ function write_plots(results)
                 xlabel = "Time step",
                 ylabel = "Action EFE",
                 label = "selected EFE",
-                legend = :topright
+                legend = :topright,
+                size = (900, 400),
+                titlefontsize = 12,
+                guidefontsize = 10,
+                legendfontsize = 8,
+                tickfontsize = 8,
+                linewidth = 2
             )
             savefig(p2, "efe_over_time.png")
         end
@@ -531,7 +683,12 @@ function write_plots(results)
                 title = "Policy Posterior over Time",
                 xlabel = "Time step",
                 ylabel = "Action",
-                color = :viridis
+                color = :viridis,
+                colorbar = :right,
+                size = (900, 400),
+                titlefontsize = 12,
+                guidefontsize = 10,
+                tickfontsize = 8
             )
             savefig(p3, "policy_posterior.png")
         end
@@ -544,6 +701,24 @@ end
 
 function main()
     results = run_simulation()
+    # Sanitize NaN/Inf values before JSON serialization (JSON.jl rejects them by default)
+    function sanitize!(x)
+        if isa(x, Float64)
+            if isnan(x) || isinf(x)
+                return 0.0
+            end
+            return x
+        elseif isa(x, Vector)
+            return [sanitize!(v) for v in x]
+        elseif isa(x, Dict)
+            for (k, v) in x
+                x[k] = sanitize!(v)
+            end
+            return x
+        end
+        return x
+    end
+    results = sanitize!(results)
     open("simulation_results.json", "w") do file
         JSON.print(file, results, 2)
     end
@@ -559,393 +734,7 @@ end
 '''
         return code
 
-        # Extract key information from GNN spec
-        # Extract key information from GNN spec
-        model_display_name = gnn_spec.get("model_name", model_name)
-
-        # Extract dimensions from model parameters
-        model_params = gnn_spec.get("model_parameters", {})
-        num_states = model_params.get("num_hidden_states", 3)
-        num_observations = model_params.get("num_obs", 3)
-
-        # Extract num_actions from multiple possible sources (GNN specs vary)
-        # Priority: explicit model param > B matrix dimensions > default
-        initial_params = gnn_spec.get("initial_parameterization", {}) or gnn_spec.get(
-            "initialparameterization", {}
-        )
-        B_data = initial_params.get("B", [])
-
-        # Try to infer num_actions from B matrix if available
-        inferred_actions = None
-        if B_data and isinstance(B_data, list) and len(B_data) > 0:
-            # B is typically [action][next_state][prev_state] or similar
-            inferred_actions = len(B_data)
-
-        num_actions = (
-            model_params.get("num_actions")
-            or model_params.get("num_controls")
-            or model_params.get("n_actions")
-            or inferred_actions
-            or 3  # Default to 3 for proper POMDP simulation
-        )
-
-        # Extract num_timesteps from model parameters.
-        num_timesteps = model_params.get("num_timesteps", 20)
-
-        # Extract action_precision from GNN ModelParameters (RX-3: was hardcoded 4.0)
-        action_precision = model_params.get(
-            "action_precision", model_params.get("gamma", 4.0)
-        )
-        A_data = initial_params.get("A", [])
-        B_data = initial_params.get("B", [])
-        C_data = initial_params.get("C", [])
-        D_data = initial_params.get("D", [])
-
-        # Generate the Julia code
-        code = f'''#!/usr/bin/env julia
-# RxInfer.jl Active Inference Simulation
-# Generated from GNN Model: {model_display_name}
-# Generated: {self._get_timestamp()}
-
-using Pkg
-
-println("📦 Ensuring required packages are installed...")
-try
-    Pkg.add(["RxInfer", "Distributions", "LinearAlgebra", "Random", "StatsBase"])
-catch e
-    println("⚠️  Package install error (might be already installed): $e")
-end
-
-using RxInfer
-using Distributions
-using LinearAlgebra
-using Random
-using StatsBase
-using JSON
-
-Random.seed!(42)
-
-# --- Model Parameters ---
-const NUM_STATES = {num_states}
-const NUM_OBSERVATIONS = {num_observations}
-const NUM_ACTIONS = {num_actions}
-const TIME_STEPS = {num_timesteps}
-
-# Parameter Matrices (from GNN)
-# We use raw Vector of Vectors and convert to Matrix/Tensor for RxInfer
-A_raw = {A_data if A_data else "fill(1.0/NUM_OBSERVATIONS, NUM_OBSERVATIONS, NUM_STATES)"}
-B_raw = {B_data if B_data else "fill(1.0/NUM_STATES, NUM_STATES, NUM_STATES, NUM_ACTIONS)"}
-C_raw = {C_data if C_data else "fill(0.0, NUM_OBSERVATIONS)"}
-D_raw = {D_data if D_data else "fill(1.0/NUM_STATES, NUM_STATES)"}
-
-# Convert to Julia Matrices
-function to_matrix(raw)
-    try
-        if raw isa Matrix
-            return raw
-        end
-        # Handle Tuple or Vector of Tuples/Vectors
-        arr = collect(raw)
-        if !isempty(arr) && (arr[1] isa Tuple || arr[1] isa Vector)
-            rows = [collect(r) for r in arr]
-            return hcat(rows...)'
-        end
-    catch e
-        @warn "to_matrix conversion failed" exception=e
-        println("to_matrix warning: $e")
-    end
-    return raw
-end
-
-function to_tensor(raw)
-    try
-        if raw isa Array{{Float64, 3}}
-            return raw
-        end
-        # Handle Tuple or Vector structure for B[action][row][col]
-        arr = collect(raw)
-        if !isempty(arr)
-            first_action = collect(arr[1])
-            if !isempty(first_action) && (first_action[1] isa Tuple || first_action[1] isa Vector)
-                # 3D case: each element is a matrix (list of rows)
-                n_actions = length(arr)
-                n_rows = length(first_action)
-                first_row = collect(first_action[1])
-                n_cols = length(first_row)
-                
-                tensor = zeros(n_rows, n_cols, n_actions)
-                for a in 1:n_actions
-                    action_data = collect(arr[a])
-                    for r in 1:n_rows
-                        row_data = collect(action_data[r])
-                        for c in 1:n_cols
-                            tensor[r, c, a] = row_data[c]
-                        end
-                    end
-                end
-                return tensor
-            elseif first_action[1] isa Number
-                # 2D case: each element is a flat vector (row of transition matrix)
-                # This is a passive model (HMM/Markov Chain) with no action dimension
-                println("ℹ️  B is 2D (passive model) — expanding to 3D with single action")
-                n_rows = length(arr)
-                n_cols = length(first_action)
-                mat = zeros(n_rows, n_cols)
-                for r in 1:n_rows
-                    row_data = collect(arr[r])
-                    for c in 1:n_cols
-                        mat[r, c] = row_data[c]
-                    end
-                end
-                # Normalize columns
-                for c in 1:n_cols
-                    cs = sum(mat[:, c])
-                    if cs > 0
-                        mat[:, c] ./= cs
-                    end
-                end
-                # Expand to 3D with single action
-                return reshape(mat, n_rows, n_cols, 1)
-            end
-        end
-    catch e
-        @warn "to_tensor conversion failed" exception=e
-        println("to_tensor warning: $e")
-    end
-    return raw
-end
-
-A_matrix = to_matrix(A_raw)
-B_matrix = to_tensor(B_raw) # Handling GNN B format
-C_vector = Vector{{Float64}}(collect(C_raw))
-D_vector = Vector{{Float64}}(collect(D_raw))
-
-# Normalize D_vector to ensure it sums exactly to 1.0 (required for Categorical)
-D_vector = D_vector ./ sum(D_vector)
-
-# Normalize A_matrix columns (each column should sum to 1)
-for j in 1:size(A_matrix, 2)
-    A_matrix[:, j] = A_matrix[:, j] ./ sum(A_matrix[:, j])
-end
-
-# Softmax utility function
-function softmax(x)
-    ex = exp.(x .- maximum(x))
-    return ex ./ sum(ex)
-end
-
-# Convert C (log-preferences) to preferred observation distribution
-C_preferred = softmax(C_vector)
-
-println("A matrix size: $(size(A_matrix))")
-println("B matrix size: $(size(B_matrix))")
-println("C vector (preferences): $C_vector")
-println("C preferred (softmax): $C_preferred")
-println("D vector size: $(size(D_vector))")
-
-
-# --- RxInfer Single-Step Inference Model ---
-# Used for belief updating given a single observation
-@model function belief_update_model(observation, A, prior)
-    # State prior from previous belief
-    s ~ Categorical(prior)
-    # Observation likelihood
-    observation ~ DiscreteTransition(s, A)
-    return s
-end
-
-# --- Expected Free Energy (EFE) Computation ---
-# G(a) = ambiguity + risk
-# ambiguity: expected uncertainty about observations given predicted states
-# risk: KL divergence between expected observations and preferred observations
-function compute_efe(belief, action_idx, A, B, C_pref)
-    # Predicted next state distribution: s' = B[:,:,a] * belief
-    B_a = B[:, :, action_idx]
-    predicted_state = B_a * belief
-    
-    # Normalize (handle numerical issues)
-    predicted_state = max.(predicted_state, 1e-16)
-    predicted_state = predicted_state ./ sum(predicted_state)
-    
-    # Expected observation distribution: o' = A * s'
-    predicted_obs = A * predicted_state
-    predicted_obs = max.(predicted_obs, 1e-16)
-    predicted_obs = predicted_obs ./ sum(predicted_obs)
-    
-    # Ambiguity: expected entropy of observations conditioned on states
-    # H[P(o|s)] weighted by predicted state
-    ambiguity = 0.0
-    for j in 1:length(predicted_state)
-        if predicted_state[j] > 1e-16
-            # Entropy of column j of A (observation distribution for state j)
-            col = A[:, j]
-            col = max.(col, 1e-16)
-            ambiguity -= predicted_state[j] * sum(col .* log.(col))
-        end
-    end
-    
-    # Risk: KL divergence D_KL(predicted_obs || C_preferred)
-    C_safe = max.(C_pref, 1e-16)
-    risk = sum(predicted_obs .* (log.(predicted_obs) .- log.(C_safe)))
-    
-    # EFE = ambiguity + risk (lower is better)
-    return ambiguity + risk
-end
-
-# --- Active Inference Action Selection ---
-function select_action(belief, A, B, C_pref; action_precision={action_precision})
-    n_actions = size(B, 3)
-    efe_values = zeros(n_actions)
-    
-    for a in 1:n_actions
-        efe_values[a] = compute_efe(belief, a, A, B, C_pref)
-    end
-    
-    # Policy via softmax over negative EFE (lower EFE = higher probability)
-    neg_efe = -action_precision .* efe_values
-    action_probs = softmax(neg_efe)
-    
-    # Sample action from policy
-    action = rand(Categorical(action_probs))
-    
-    return action, efe_values, action_probs
-end
-
-# --- One-hot encoding ---
-function one_hot(idx, n)
-    v = zeros(n)
-    v[idx] = 1.0
-    return v
-end
-
-# --- Active Inference Simulation Loop ---
-function run_simulation()
-    println("\\n🧠 Running Active Inference simulation with EFE-based action selection...")
-    
-    # Storage
-    true_states = Vector{{Int}}(undef, TIME_STEPS)
-    observations = Vector{{Int}}(undef, TIME_STEPS)
-    actions = Vector{{Int}}(undef, TIME_STEPS)
-    beliefs = Vector{{Vector{{Float64}}}}(undef, TIME_STEPS)
-    efe_history = Vector{{Vector{{Float64}}}}(undef, TIME_STEPS)
-    action_probs_history = Vector{{Vector{{Float64}}}}(undef, TIME_STEPS)
-    
-    # Initialize environment
-    current_state = rand(Categorical(D_vector))
-    current_belief = copy(D_vector)
-    
-    for t in 1:TIME_STEPS
-        # 1. Environment generates observation
-        true_states[t] = current_state
-        obs = rand(Categorical(A_matrix[:, current_state]))
-        observations[t] = obs
-        
-        # 2. Infer beliefs using RxInfer (single-step Bayesian inference)
-        obs_one_hot = one_hot(obs, NUM_OBSERVATIONS)
-        try
-            result = infer(
-                model = belief_update_model(A=A_matrix, prior=current_belief),
-                data = (observation = obs_one_hot,),
-                iterations = 5
-            )
-            # Extract posterior belief
-            posterior = result.posteriors[:s]
-            final_posterior = posterior[end]
-            current_belief = probvec(final_posterior)
-        catch e
-            # Recovery: manual Bayesian update if RxInfer fails
-            println("  Step $t: RxInfer inference recovery - $e")
-            likelihood = A_matrix[obs, :]
-            unnormalized = current_belief .* likelihood
-            current_belief = unnormalized ./ sum(unnormalized)
-        end
-        
-        # Ensure belief is valid
-        current_belief = max.(current_belief, 1e-16)
-        current_belief = current_belief ./ sum(current_belief)
-        beliefs[t] = copy(current_belief)
-        
-        # 3. Compute EFE and select action (Active Inference!)
-        action, efe_values, action_probs = select_action(
-            current_belief, A_matrix, B_matrix, C_preferred
-        )
-        actions[t] = action
-        efe_history[t] = copy(efe_values)
-        action_probs_history[t] = copy(action_probs)
-        
-        # 4. Environment transitions based on selected action
-        next_probs = B_matrix[:, current_state, action]
-        next_probs = max.(next_probs, 1e-16)
-        next_probs = next_probs ./ sum(next_probs)
-        current_state = rand(Categorical(next_probs))
-        
-        # 5. Update belief for next timestep (predictive prior)
-        B_a = B_matrix[:, :, action]
-        current_belief = B_a * current_belief
-        current_belief = max.(current_belief, 1e-16)
-        current_belief = current_belief ./ sum(current_belief)
-        
-        println("  Step $t: obs=$obs, action=$action, belief_max=$(round(maximum(beliefs[t]), digits=3)), EFE=$(round.(efe_values, digits=3))")
-    end
-    
-    println("\\n✅ Active Inference simulation complete")
-    println("Action distribution: ", StatsBase.countmap(actions))
-    
-    # Compute per-step EFE of selected action
-    selected_efe = [efe_history[t][actions[t]] for t in 1:TIME_STEPS]
-    
-    # Save results
-    results_data = Dict(
-        "framework" => "rxinfer",
-        "model_name" => "{model_display_name}",
-        "time_steps" => TIME_STEPS,
-        "true_states" => true_states,
-        "observations" => observations,
-        "actions" => actions,
-        "beliefs" => beliefs,
-        "efe_history" => selected_efe,
-        "efe_per_action" => efe_history,
-        "action_probabilities" => action_probs_history,
-        "num_states" => NUM_STATES,
-        "num_observations" => NUM_OBSERVATIONS,
-        "num_actions" => NUM_ACTIONS,
-        "preferences" => C_vector,
-        "validation" => Dict(
-            "all_beliefs_valid" => all(b -> all(x -> 0.0 <= x <= 1.0, b), beliefs),
-            "beliefs_sum_to_one" => all(b -> abs(sum(b) - 1.0) < 0.01, beliefs),
-            "actions_in_range" => all(a -> 1 <= a <= NUM_ACTIONS, actions)
-        )
-    )
-    
-    open("simulation_results.json", "w") do f
-        JSON.print(f, results_data, 4)
-    end
-    println("✅ Standardized results saved to simulation_results.json")
-    
-    return beliefs, actions, efe_history
-end
-
-# --- Main ---
-function main()
-    try
-        beliefs, actions, efe_hist = run_simulation()
-        
-        println("✅ RxInfer Active Inference simulation successful")
-        println("📊 Visualizations will be generated by the analysis step")
-        return 0
-    catch e
-        println("❌ Simulation failed: $e")
-        # print stacktrace
-        showerror(stdout, e, catch_backtrace())
-        return 1
-    end
-end
-
-if abspath(PROGRAM_FILE) == @__FILE__
-    exit(main())
-end
-'''
-        return code
+    # ------------------------------------------------------------------
 
     def _get_timestamp(self) -> str:
         """Get current timestamp string."""

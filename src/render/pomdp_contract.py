@@ -1,14 +1,90 @@
 #!/usr/bin/env python3
-"""Canonical POMDP render contract shared by framework renderers."""
+"""Canonical POMDP render contract shared by framework renderers.
+
+This module defines the canonical POMDP specification types and the
+``build_canonical_pomdp_spec()`` function that normalises GNN specs into
+``canonical_pomdp_v1`` form with explicit ``A/B/C/D`` (and optional ``E``)
+matrices and B stored as ``(next_state, previous_state, action)``.
+
+TypedDict definitions (``CanonicalPomdpSpec``, ``InitialParameterization``,
+``RxInferSimulationV1``) and the ``ModelKind`` enum provide typed contracts
+for renderers and consumers.
+"""
 
 from __future__ import annotations
 
 from copy import deepcopy
-from typing import Any, Dict, Iterable, List, Tuple, cast
+from enum import Enum
+from typing import Any, Dict, Iterable, List, Tuple, TypedDict, cast
 
 import numpy as np
 
 CANONICAL_B_ORDER = "next_state_previous_state_action"
+
+
+class ModelKind(Enum):
+    """Detected model structure from the GNN spec.
+
+    FLAT — single-factor POMDP (the common case).
+    FACTORED — multiple independent hidden state factors.
+    HIERARCHICAL — multi-level state hierarchy.
+    MULTI_AGENT — multiple coordinated agents.
+    CONTINUOUS — continuous state/observation spaces.
+    LEARNING — parameter learning (Dirichlet priors, etc.).
+    """
+
+    FLAT = "flat"
+    FACTORED = "factored"
+    HIERARCHICAL = "hierarchical"
+    MULTI_AGENT = "multi_agent"
+    CONTINUOUS = "continuous"
+    LEARNING = "learning"
+
+
+class InitialParameterization(TypedDict, total=False):
+    """The A/B/C/D/E matrices of a canonical POMDP."""
+
+    A: List[List[float]]  # likelihood [obs, state]
+    B: List[List[List[float]]]  # transition [next, prev, action]
+    C: List[float]  # log-preferences over observations
+    D: List[float]  # prior over initial states
+    E: List[float]  # habit / policy prior over actions
+
+
+class CanonicalPomdpSpec(TypedDict, total=False):
+    """Output of ``build_canonical_pomdp_spec()`` — a normalised GNN spec."""
+
+    model_name: str
+    model_parameters: Dict[str, Any]
+    initialparameterization: InitialParameterization
+    initial_parameterization: InitialParameterization
+    matrix_provenance: Dict[str, Any]
+    structured_pomdp: Dict[str, Any]
+    canonical_pomdp_schema: str
+
+
+class RxInferSimulationV1(TypedDict, total=False):
+    """The ``rxinfer_simulation_v1`` output schema from a rendered RxInfer script."""
+
+    schema_version: str
+    success: bool
+    framework: str
+    model_name: str
+    num_timesteps: int
+    observations: List[int]
+    true_states: List[int]
+    actions: List[int]
+    beliefs: List[List[float]]
+    expected_free_energy: List[float]
+    efe_per_action: List[List[float]]
+    variational_free_energy: List[float]  # per-iteration VFE trace
+    vfe_per_iteration: List[float]  # alias for variational_free_energy
+    policy_posterior: List[List[float]]
+    model_parameters: Dict[str, Any]
+    matrix_provenance: Dict[str, Any]
+    runtime_metadata: Dict[str, Any]
+    metrics: Dict[str, Any]
+    validation: Dict[str, Any]
 
 
 def nested_shape(value: Any) -> List[int]:
@@ -193,6 +269,50 @@ def _is_active_inference_matrix_key(key: str) -> bool:
     return key in {"A", "B", "C", "D", "E"} or any(
         key.startswith(f"{prefix}_") for prefix in ("A", "B", "C", "D", "E")
     )
+
+
+def detect_model_kind(gnn_spec: Dict[str, Any]) -> ModelKind:
+    """Detect the model structure from a GNN spec.
+
+    Heuristic detection based on GNN section names, variable declarations,
+    and agent keys. Returns the most specific kind that matches.
+    """
+    spec_str = str(gnn_spec).lower()
+    section = str(gnn_spec.get("gnn_section", "")).lower()
+    initial = gnn_spec.get("initialparameterization") or gnn_spec.get(
+        "initial_parameterization", {}
+    )
+
+    # Multi-agent: nr_agents or agent{i}_ keys
+    if any(k.startswith("agent") or k.startswith("nr_agents") for k in initial):
+        return ModelKind.MULTI_AGENT
+    if "multiagent" in section or "multi_agent" in spec_str:
+        return ModelKind.MULTI_AGENT
+
+    # Hierarchical: multi-level state hierarchy
+    if "hierarchical" in section or "hierarchy" in spec_str:
+        return ModelKind.HIERARCHICAL
+
+    # Continuous: continuous state/observation declarations
+    if "continuous" in section or "stochastic_dynamics" in spec_str:
+        return ModelKind.CONTINUOUS
+
+    # Learning: Dirichlet priors / parameter learning
+    if "dirichlet" in spec_str or "learning" in section:
+        return ModelKind.LEARNING
+
+    # Factored: multiple hidden state factors
+    model_params = gnn_spec.get("model_parameters", {})
+    variables = gnn_spec.get("variables", [])
+    state_factors = [
+        v
+        for v in variables
+        if isinstance(v, dict) and "s" in str(v.get("name", "")).lower()
+    ]
+    if len(state_factors) > 1 or model_params.get("num_factors", 1) > 1:
+        return ModelKind.FACTORED
+
+    return ModelKind.FLAT
 
 
 def build_canonical_pomdp_spec(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:

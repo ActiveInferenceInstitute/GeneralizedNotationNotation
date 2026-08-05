@@ -154,9 +154,9 @@ src/render/
 │   └── pymdp_utils.py            # PyMDP utilities
 ├── rxinfer/                       # RxInfer.jl code generation
 │   ├── __init__.py               # RxInfer module initialization
-│   ├── rxinfer_renderer.py       # RxInfer renderer
+│   ├── rxinfer_renderer.py       # Canonical renderer — genuine @model + infer()
 │   ├── gnn_parser.py             # GNN parser for RxInfer
-│   └── toml_generator.py         # TOML configuration generator
+│   └── toml_generator.py         # DEPRECATED legacy TOML generator (retained for history)
 ├── activeinference_jl/            # ActiveInference.jl code generation
 │   ├── __init__.py               # ActiveInference.jl module initialization
 │   └── activeinference_renderer.py # ActiveInference.jl renderer

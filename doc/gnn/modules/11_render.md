@@ -70,9 +70,9 @@ graph TD
 
 #### RxInfer.jl (Julia)
 - **Purpose**: Probabilistic programming and inference
-- **Features**: Reactive inference engine
-- **Output**: Julia scripts with TOML configuration
-- **Optimization**: Reactive constraints, efficient inference
+- **Features**: Genuine `@model` + `infer()` variational message passing (`Categorical` / `DiscreteTransition` nodes, `free_energy = true`)
+- **Output**: Julia scripts via `src/render/rxinfer/rxinfer_renderer.py` (the legacy TOML generator `toml_generator.py` is deprecated)
+- **Optimization**: Variational constraints, efficient inference
 
 #### ActiveInference.jl (Julia)
 - **Purpose**: Active Inference framework implementation
@@ -234,7 +234,7 @@ The shared contract is `canonical_pomdp_v1`, with B stored as `(next_state, prev
 
 ### Framework-Specific Dependencies
 - **PyMDP**: `pymdp` package
-- **RxInfer.jl**: Julia with RxInfer.jl package
+- **RxInfer.jl**: Julia with the RxInfer.jl package (committed `Project.toml` + `Manifest.toml` under `src/execute/rxinfer/` pin RxInfer 5.5.0)
 - **ActiveInference.jl**: Julia with ActiveInference.jl package
 - **DisCoPy**: `discopy` package
 - **JAX**: `jax`, `jaxlib` packages
@@ -257,7 +257,7 @@ PYMDP_CONFIG = {
 }
 
 RXINFER_CONFIG = {
-    'inference_engine': 'reactive',
+    'inference_engine': 'rxinfer_jl',
     'optimization': 'auto',
     'constraints': 'default'
 }

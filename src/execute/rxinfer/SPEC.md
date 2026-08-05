@@ -4,21 +4,22 @@
 
 ## Execution Model
 
-- Julia subprocess execution via `julia` command
-- Pre-flight: Julia + RxInfer package validation
-- Reactive message-passing inference execution
+- Julia subprocess execution via `julia --startup-file=no --project=src/execute/rxinfer <script>`
+- Pre-flight: Julia + committed RxInfer environment validation (`setup_environment.jl` → `Pkg.activate()` + `Pkg.instantiate()`, no runtime `Pkg.add`)
+- Genuine `@model` + `infer()` variational message-passing inference (`free_energy = true`)
 - Timeout: inherits from Step 12 timeout (1800s default)
 
 ## Input
 
-- Julia/TOML scripts from `output/11_render_output/rxinfer/`
+- `.jl` scripts from `output/11_render_output/rxinfer/` (genuine `@model pomdp_model` scripts; the legacy TOML path is deprecated)
 
 ## Output
 
-- `simulation_results.json` — Message-passing inference results
+- `simulation_results.json` — genuine variational message-passing inference results, schema `rxinfer_simulation_v1`
+- `variational_free_energy` populated with genuine VFE values (previously `Float64[]`)
 - Execution logs (stdout/stderr)
-- Convergence diagnostics
+- Convergence diagnostics (`inference_converged`, `vfe_present`)
 
 ## Dependencies
 
-- `julia >= 1.8` with `RxInfer.jl` package
+- `julia >= 1.8`; RxInfer 5.5.0 and all deps pinned by the committed `Project.toml` + `Manifest.toml` in this directory

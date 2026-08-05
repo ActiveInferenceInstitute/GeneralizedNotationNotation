@@ -101,8 +101,14 @@ def execute_rxinfer_script(
     try:
         # Different handling based on file type
         if script_path.suffix.lower() == ".jl":
-            # For Julia files, run directly with julia
-            cmd: list[Any] = ["julia", str(script_path)]
+            # For Julia files, run with the committed RxInfer project environment
+            rxinfer_project = Path(__file__).parent.resolve()
+            cmd: list[Any] = [
+                "julia",
+                "--startup-file=no",
+                f"--project={rxinfer_project}",
+                str(script_path),
+            ]
             logger.debug(f"Running command: {' '.join(cmd)}")
 
             # Execute the Julia script

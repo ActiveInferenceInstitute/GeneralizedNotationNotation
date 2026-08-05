@@ -10,7 +10,7 @@ This document provides a comprehensive guide to optional dependencies in the GNN
 | JAX + Flax | Core | JAX neural networks | `uv sync` | 12 (Execute) |
 | NumPyro | Core | Probabilistic programming | `uv sync` | 12 (Execute) |
 | DisCoPy | Core | Category theory / string diagrams | `uv sync` | 12 (Execute) |
-| RxInfer.jl | Optional (Julia) | Julia probabilistic inference | `julia -e 'import Pkg; Pkg.add("RxInfer")'` | 12 (Execute) |
+| RxInfer.jl | Optional (Julia) | Julia probabilistic inference | `julia --startup-file=no --project=src/execute/rxinfer -e 'using Pkg; Pkg.instantiate()'` | 12 (Execute) |
 | ActiveInference.jl | Optional (Julia) | Julia Active Inference | `julia -e 'import Pkg; Pkg.add("ActiveInference")'` | 12 (Execute) |
 | PyTorch | Optional (manual) | Deep learning backend | `uv pip install torch` | 12 (Execute) |
 | Plotly | Core | Interactive visualizations | `uv sync` | 8-9 (Visualization) |
@@ -111,17 +111,22 @@ ModuleNotFoundError: No module named 'flax'
 
 ### RxInfer.jl - Optional Julia Framework
 
-**Status**: ❌ Not installed by default (OPTIONAL)
+**Status**: ❌ Requires Julia; RxInfer is pinned by a committed Julia environment (not installed by default)
 
-**What it does**: Enables execution of Julia code for probabilistic inference simulations using RxInfer
+**What it does**: Enables execution of Julia code for probabilistic inference simulations using RxInfer via a genuine `@model` + `infer()` variational message-passing pipeline.
 
 **Used in**: Step 12 (Execute) - RxInfer execution
 
-**Installation**:
+**Installation**: RxInfer 5.5.0 and all Julia dependencies are pinned by the
+committed environment under `src/execute/rxinfer/` (`Project.toml` +
+`Manifest.toml`). Install by activating + instantiating that environment — there
+is no runtime `Pkg.add`:
 
 ```bash
-julia -e 'import Pkg; Pkg.add("RxInfer")'
+julia --startup-file=no --project=src/execute/rxinfer -e 'using Pkg; Pkg.instantiate()'
 ```
+
+The runner invokes `julia --startup-file=no --project=src/execute/rxinfer <script>`.
 
 **Prerequisites**: Julia must be installed (`julia --version`)
 
@@ -129,7 +134,7 @@ julia -e 'import Pkg; Pkg.add("RxInfer")'
 
 ```
 ERROR: LoadError: ArgumentError: Package RxInfer not found in current path.
-Run `import Pkg; Pkg.add("RxInfer")` to install the RxInfer package.
+Run `julia --startup-file=no --project=src/execute/rxinfer -e 'using Pkg; Pkg.instantiate()'` to instantiate the committed RxInfer environment.
 ```
 
 **Impact on pipeline**:
@@ -251,7 +256,10 @@ uv sync
 ```bash
 uv sync
 # Optional: Julia frameworks
-julia -e 'import Pkg; Pkg.add(["RxInfer", "ActiveInference"])'
+# RxInfer.jl — instantiate the committed env (no runtime Pkg.add)
+julia --startup-file=no --project=src/execute/rxinfer -e 'using Pkg; Pkg.instantiate()'
+# ActiveInference.jl — see its own setup
+julia -e 'import Pkg; Pkg.add("ActiveInference")'
 ```
 
 **Result**:
@@ -274,7 +282,10 @@ uv sync
 uv sync --all-extras
 
 # Julia packages
-julia -e 'import Pkg; Pkg.add(["RxInfer", "ActiveInference"])'
+# RxInfer.jl — instantiate the committed env (no runtime Pkg.add)
+julia --startup-file=no --project=src/execute/rxinfer -e 'using Pkg; Pkg.instantiate()'
+# ActiveInference.jl — see its own setup
+julia -e 'import Pkg; Pkg.add("ActiveInference")'
 
 # System dependencies
 # macOS:
@@ -367,13 +378,13 @@ grep -i "successfully loaded" output/21_mcp_output/*.log
 
 ### Issue: RxInfer simulations skipped
 
-**Cause**: RxInfer.jl package not installed in Julia
+**Cause**: RxInfer.jl environment not instantiated / Julia not found
 
 **Solutions**:
 
-1. Install RxInfer: `julia -e 'import Pkg; Pkg.add("RxInfer")'`
+1. Instantiate the committed RxInfer env: `julia --startup-file=no --project=src/execute/rxinfer -e 'using Pkg; Pkg.instantiate()'` (no runtime `Pkg.add`)
 2. Verify Julia: `julia --version`
-3. Check installation: `julia -e 'using RxInfer'`
+3. Check installation: `julia --startup-file=no --project=src/execute/rxinfer -e 'using RxInfer'`
 
 ### Issue: Advanced visualizations not generating
 
@@ -395,7 +406,8 @@ grep -i "successfully loaded" output/21_mcp_output/*.log
 # Install everything for maximum features
 uv sync
 # Plus Julia packages
-julia -e 'import Pkg; Pkg.add(["RxInfer"])'
+# RxInfer.jl — instantiate the committed env (no runtime Pkg.add)
+julia --startup-file=no --project=src/execute/rxinfer -e 'using Pkg; Pkg.instantiate()'
 # Plus system dependencies
 brew install graphviz  # or apt-get on Linux
 ```

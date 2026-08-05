@@ -1,11 +1,15 @@
 """
 Module for generating RxInfer.jl TOML configuration files from GNN specifications.
 
-This module converts GNN (Generalized Notation Notation) specifications
-to TOML configuration files compatible with RxInfer.jl simulations.
+.. deprecated::
+    This module is deprecated. The canonical RxInfer renderer is
+    ``rxinfer_renderer.py``, which emits genuine ``@model`` + ``infer()``
+    Julia code. This module is retained for git history and reference only.
+    Use ``render_gnn_to_rxinfer()`` from ``rxinfer_renderer.py`` instead.
 """
 
 import logging
+import warnings
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
@@ -20,7 +24,18 @@ def render_gnn_to_rxinfer_toml(
     """
     Generate an executable Julia script for RxInfer.jl from a GNN specification.
     Creates a proper POMDP model with Active Inference structure.
+
+    .. deprecated::
+        Use ``render_gnn_to_rxinfer()`` from ``rxinfer_renderer.py`` instead.
+        This module will be removed in a future release.
     """
+    warnings.warn(
+        "render_gnn_to_rxinfer_toml is deprecated. "
+        "Use render_gnn_to_rxinfer() from rxinfer_renderer.py instead, "
+        "which emits genuine @model + infer() RxInfer.jl code.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
     try:
         options = options or {}
         generate_toml = options.get("generate_toml", False)

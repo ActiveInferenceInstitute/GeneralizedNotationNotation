@@ -19,7 +19,7 @@ The renderer consumes `canonical_pomdp_v1` data:
 - `E`: policy prior when present
 - matrix provenance and runtime metadata
 
-Generated scripts import RxInfer.jl and write `simulation_results.json` with schema `rxinfer_simulation_v1`.
+Generated scripts import RxInfer.jl and write `simulation_results.json` with schema `rxinfer_simulation_v1`. The canonical renderer (`rxinfer_renderer.py`) emits a genuine Julia script per model defining `@model function pomdp_model(y, A, B, D, u, T)` with `Categorical` / `DiscreteTransition` nodes and runs `infer()` with `free_energy = true`, returning real posteriors and a genuine variational free energy trace. The legacy TOML-based `toml_generator.py` is **deprecated** (`render_gnn_to_rxinfer_toml` emits a `DeprecationWarning`).
 
 ## Generated-script outputs
 
@@ -37,8 +37,9 @@ directory, serialized with schema `rxinfer_simulation_v1`:
 - `observations_by_modality`, `hidden_states_by_factor`, `actions_by_control_factor`
 - `beliefs_by_factor`, `expected_free_energy`, `efe_per_action`, `policy_posterior`
 - `observations`, `true_states`, `actions`, `beliefs`
+- `variational_free_energy` (genuine VFE trace from `infer()` `free_energy`; previously `Float64[]`)
 - `model_parameters` (matrix shapes and dimensions)
-- `matrix_provenance` and `runtime_metadata` (seed, schema version, RxInfer/Julia versions)
+- `matrix_provenance` and `runtime_metadata` (seed, script SHA256, `uses_real_rxinfer: true`, schema version, RxInfer/Julia versions)
 - `validation` (belief validity, normalisation, action range) and `metrics`
 
 Step 12 `main()` returns a non-zero exit code if `validation.all_valid` is false, so
@@ -95,6 +96,6 @@ Julia-native Plots PNGs) are collected into the same
 ## Verification
 
 ```bash
-julia --startup-file=no -e 'using RxInfer, JSON, Distributions, StatsBase'
+julia --startup-file=no --project=src/execute/rxinfer -e 'using RxInfer, JSON, Distributions, StatsBase'
 uv run --extra dev python -m pytest src/tests/pipeline/test_pomdp_gridworld_cross_framework.py -q --tb=short
 ```

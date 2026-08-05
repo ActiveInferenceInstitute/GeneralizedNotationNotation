@@ -110,7 +110,7 @@ Step 3 (GNN Parse) produces parsed models consumed by steps 5-8, 10-11, 13. Step
 Code generation and execution support multiple backends:
 
 - **PyMDP** (Python): `render/pymdp/`, `execute/pymdp/`
-- **RxInfer.jl** (Julia): `render/rxinfer/`, `execute/rxinfer/`
+- **RxInfer.jl** (Julia): `render/rxinfer/`, `execute/rxinfer/` — genuine `@model` + `infer()` with committed `Project.toml` (RxInfer 5.5.0)
 - **ActiveInference.jl** (Julia): `render/activeinference_jl/`, `execute/activeinference_jl/`
 - **JAX** (Python): `render/jax/`, `execute/jax/`
 - **DisCoPy** (Python): `render/discopy/`, `execute/discopy/`

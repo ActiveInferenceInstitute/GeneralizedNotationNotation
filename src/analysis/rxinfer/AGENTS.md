@@ -2,7 +2,7 @@
 
 ## Overview
 
-Framework-specific analyzer for RxInfer.jl simulation results. Part of the Analysis module (Step 16).
+Framework-specific analyzer for RxInfer.jl simulation results. Part of the Analysis module (Step 16). Consumes the genuine `@model` + `infer()` pipeline outputs: `rxinfer_simulation_v1` with real smoothed posteriors and a `variational_free_energy` trace populated with per-iteration VFE values (length = INFERENCE_ITERATIONS), enabling real convergence and free-energy analysis. Validation includes `inference_converged`, `vfe_present`, and `belief_entropy_ok`.
 
 ## Module Structure
 

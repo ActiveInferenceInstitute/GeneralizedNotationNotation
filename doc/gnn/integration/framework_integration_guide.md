@@ -65,7 +65,7 @@ framework-specific behavior at each stage.
 | Framework | Render Target | Script Type | Executor | Data Extractor | Analysis Metrics |
 |-----------|---------------|-------------|----------|----------------|------------------|
 | **PyMDP** | `render/pymdp/` | `.py` | Python `subprocess` | `extract_pymdp_data()` | Beliefs, actions, free energy, observations |
-| **RxInfer.jl** | `render/rxinfer/` | `.jl` | Julia `subprocess` | `extract_rxinfer_data()` | Posterior distributions |
+| **RxInfer.jl** | `render/rxinfer/` | `.jl` | Julia `subprocess` | `extract_rxinfer_data()` | Posterior distributions + genuine VFE |
 | **ActiveInference.jl** | `render/activeinference_jl/` | `.jl` | Julia `subprocess` | `extract_activeinference_jl_data()` | Full Active Inference fields from CSV |
 | **JAX** | `render/jax/` | `.py` | Python `subprocess` | — | GPU-accelerated simulation output |
 | **DisCoPy** | `render/discopy/` | `.py` | Python `subprocess` | `extract_discopy_data()` | Diagram executions, categorical outputs |
@@ -100,14 +100,21 @@ error handling.
 
 ### RxInfer.jl Pipeline Details
 
-**Render:** Generates probabilistic programming model definitions using the `@model`
-macro, inference configuration, and observation generation. Supports TOML-based
-configuration.
+**Render:** `src/render/rxinfer/rxinfer_renderer.py` emits a genuine Julia script per
+model defining `@model function pomdp_model(y, A, B, D, u, T)` with `Categorical`
+and `DiscreteTransition` nodes (the legacy TOML-based `toml_generator.py` is
+deprecated). The script runs `infer()` with `free_energy = true`.
 
-**Execute:** Julia subprocess with a package-availability check for `RxInfer`.
+**Execute:** Julia subprocess invoking
+`julia --startup-file=no --project=src/execute/rxinfer <script>`. The committed
+`Project.toml` + `Manifest.toml` under `src/execute/rxinfer/` pin RxInfer 5.5.0;
+`setup_environment.jl` activates and instantiates it (`Pkg.activate()` +
+`Pkg.instantiate()`, no runtime `Pkg.add`). Each run records `Random.seed!(seed)`
+and the script SHA256 in `runtime_metadata`.
 
-**Analyze:** `extract_rxinfer_data()` reads posterior distributions from JSON/CSV output
-files in `rxinfer_outputs_*/`.
+**Analyze:** `extract_rxinfer_data()` reads posterior distributions plus the genuine
+`variational_free_energy` trace from `rxinfer_simulation_v1`
+(`simulation_data/simulation_results.json`).
 
 ### JAX Pipeline Details
 

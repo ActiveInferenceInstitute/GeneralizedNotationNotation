@@ -292,7 +292,7 @@ Use the current `output/*/00_pipeline_summary/pipeline_execution_summary.json` a
 
 ### External Integration
 - **PyMDP**: Executes Python Active Inference simulations
-- **Julia Runtime**: Executes Julia simulation scripts (RxInfer.jl, ActiveInference.jl)
+- **Julia Runtime**: Executes Julia simulation scripts (RxInfer.jl, ActiveInference.jl). RxInfer.jl runs the genuine `@model` + `infer()` pipeline under the committed `Project.toml` + `Manifest.toml` at `src/execute/rxinfer/` via `julia --startup-file=no --project=src/execute/rxinfer <script>`.
 - **JAX**: Executes JAX-based simulations
 - **DisCoPy**: Executes categorical diagram computations
 
@@ -372,7 +372,7 @@ def run_simulation_tool(script_path: str, framework: str) -> Dict[str, Any]:
 **Solution**:
 - Install framework dependencies: `uv pip install inferactively-pymdp jax`
 - **Note**: The correct PyMDP package name is `inferactively-pymdp`, not `pymdp`
-- For Julia: Install packages via `julia -e 'using Pkg; Pkg.add("RxInfer")'`
+- For Julia RxInfer: Instantiate committed environment: `julia --startup-file=no --project=src/execute/rxinfer -e 'using Pkg; Pkg.instantiate()'`
 - Check framework-specific requirements in documentation
 
 #### Issue 2a: Wrong PyMDP package installed

@@ -2,6 +2,16 @@
 
 This project demonstrates multi-agent trajectory planning using probabilistic inference with the RxInfer.jl framework. The approach allows multiple agents to navigate through environments with obstacles while avoiding collisions between agents.
 
+> **⚠️ Deprecated TOML validation workflow.** This example was previously used
+> as the baseline for the GNN-to-RxInfer **TOML** validation workflow, where a
+> GNN-generated `config.toml` was substituted for a hand-written one as a
+> drop-in replacement. That TOML-based approach is **deprecated**. The canonical
+> pipeline now renders genuine `@model` + `infer()` Julia scripts via
+> `src/render/rxinfer/rxinfer_renderer.py` and executes them under the committed
+> `Project.toml` + `Manifest.toml` environment in `src/execute/rxinfer/`
+>(`julia --startup-file=no --project=src/execute/rxinfer <script>`,
+> no runtime `Pkg.add`). This directory is retained as a standalone example.
+
 ## Project Structure
 
 ### Core Files

@@ -183,7 +183,7 @@ The GNN pipeline supports multiple Active Inference simulation frameworks. Each 
 | **NumPyro** | ✅ Core | `uv sync` | Probabilistic programming | Yes |
 | **DisCoPy** | ✅ Core | `uv sync` | Categorical diagrams | No |
 | **ActiveInference.jl** | ⚠️ Optional | Julia | Complete Active Inference | No |
-| **RxInfer.jl** | ⚠️ Optional | Julia | Bayesian message passing | No |
+| **RxInfer.jl** | ⚠️ Optional | Julia | Genuine @model + infer() Bayesian inference | No |
 | **PyTorch** | ⚠️ Optional | manual `torch` | Deep learning backend | Yes |
 
 PyMDP, JAX, NumPyro, and DisCoPy are **core** Python dependencies installed by
@@ -330,33 +330,34 @@ uv run python -c "import jax; print(f'JAX devices: {jax.devices()}')"
 
 #### RxInfer.jl (⚠️ Optional)
 
-RxInfer.jl provides reactive Bayesian inference via message passing.
+RxInfer.jl provides genuine `@model` + `infer()` variational message-passing Bayesian inference.
 
 **Requirements**:
 
-- Julia 1.6+ installed
-- RxInfer.jl Julia package
+- Julia 1.10+ installed
+- Committed `Project.toml` + `Manifest.toml` under `src/execute/rxinfer/`
 
-**Installation**:
+**Installation** (uses committed environment — no runtime `Pkg.add` needed):
 
 ```bash
-# Install via Julia package manager
-julia -e 'using Pkg; Pkg.add("RxInfer")'
-julia -e 'using Pkg; Pkg.add("ReactiveMP")'
-julia -e 'using Pkg; Pkg.add("GraphPPL")'
+# Instantiate the committed Julia environment (one-time)
+julia --startup-file=no --project=src/execute/rxinfer -e 'using Pkg; Pkg.instantiate()'
+
+# Or use the setup script
+julia --startup-file=no --project=src/execute/rxinfer src/execute/rxinfer/setup_environment.jl
 ```
 
 **Capabilities**:
 
-- Reactive probabilistic programming
-- Efficient message-passing inference
-- Factor graph models
-- Streaming inference
+- Real `@model` definitions with `Categorical` / `DiscreteTransition` nodes
+- Real `infer()` calls returning posteriors over hidden states and real VFE traces
+- Reproducible: committed `Project.toml` pins RxInfer 5.5.0 and all dependencies
+- Runner passes `--project=src/execute/rxinfer` for reproducible, network-independent execution
 
 **Verification**:
 
 ```bash
-julia -e 'using RxInfer; println("RxInfer.jl OK")'
+julia --startup-file=no --project=src/execute/rxinfer -e 'using RxInfer; println("RxInfer.jl ", pkgversion(RxInfer))'
 ```
 
 ### Framework Selection Strategies
@@ -463,19 +464,30 @@ uv run python -c "import jax; print(jax.devices())"
 uv run python src/11_render.py --target-dir input/gnn_files --force-regenerate
 ```
 
+**Symptom**: Julia packages not found or `UndefVarError: Pkg not defined`
+
+**Solution**: Use the committed `Project.toml` — do not run bare `julia`:
+
+```bash
+# Instantiate the committed environment (one-time)
+julia --startup-file=no --project=src/execute/rxinfer -e 'using Pkg; Pkg.instantiate()'
+
+# Always run scripts with --project
+julia --startup-file=no --project=src/execute/rxinfer <script.jl>
+```
+
 #### Julia Framework Issues
 
 **Symptom**: Julia packages not found
 
-**Solution**:
+**Solution**: For RxInfer.jl, use the committed environment under `src/execute/rxinfer/`:
 
 ```bash
-# Update Julia packages
-julia -e 'using Pkg; Pkg.update()'
-julia -e 'using Pkg; Pkg.gc()'  # Clean package cache
+# Instantiate committed RxInfer environment
+julia --startup-file=no --project=src/execute/rxinfer -e 'using Pkg; Pkg.instantiate()'
 
-# Reinstall if needed
-julia -e 'using Pkg; Pkg.add("ActiveInference"); Pkg.add("RxInfer")'
+# For ActiveInference.jl (separate environment):
+julia -e 'using Pkg; Pkg.add("ActiveInference")'
 ```
 
 ### Framework Performance Comparison

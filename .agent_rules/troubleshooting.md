@@ -31,7 +31,7 @@ Peak memory: ~36MB | Total: ~2m53s
 
 | Error | Fix |
 |-------|-----|
-| `Package RxInfer not found` | `julia -e 'using Pkg; Pkg.add("RxInfer")'` |
+| `Package RxInfer not found` | `julia --startup-file=no --project=src/execute/rxinfer -e 'using Pkg; Pkg.instantiate()'` |
 | `Julia not found in PATH` | Install from julialang.org, add to `~/.zshrc` |
 | Slow first run | Normal — Julia compiles packages on first use (~2–5 min) |
 

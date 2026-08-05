@@ -35,7 +35,7 @@ for fw, info in status.items():
 
 - **Julia package**: `RxInfer`
 - **Check command**: `julia -e "using RxInfer; println(\"RxInfer available\")"`
-- **Install**: `julia -e 'import Pkg; Pkg.add("RxInfer")'`
+- **Install**: RxInfer 5.5.0 and all Julia deps are pinned by the committed environment at `src/execute/rxinfer/` (`Project.toml` + `Manifest.toml`); `setup_environment.jl` runs `Pkg.activate()` + `Pkg.instantiate()` — no runtime `Pkg.add`. Execution: `julia --startup-file=no --project=src/execute/rxinfer <script>`.
 
 ### ActiveInference.jl
 
@@ -61,7 +61,7 @@ The execute module automatically detects available frameworks and logs them:
 2025-11-19 11:07:11 [execute] INFO - ✅ ActiveInference.jl available
 2025-11-19 11:07:11 [execute] INFO - ❌ PyMDP not available (install with: uv sync)
 2025-11-19 11:07:11 [execute] INFO - ❌ Flax not available (JAX requires Flax - install with: uv sync)
-2025-11-19 11:07:11 [execute] INFO - ❌ RxInfer not available (optional - install Julia first, then: julia -e 'import Pkg; Pkg.add("RxInfer")')
+2025-11-19 11:07:11 [execute] INFO - ❌ RxInfer not available (optional - install Julia, then `julia --project=src/execute/rxinfer -e 'using Pkg; Pkg.instantiate()'`)
 ```
 
 ### During Execution
@@ -136,7 +136,7 @@ DisCoPy (Python)
 
 RxInfer.jl (Julia)
 ├── Julia runtime
-└── RxInfer.jl package
+└── RxInfer.jl package  (pinned RxInfer 5.5.0 via committed Project.toml + Manifest.toml in src/execute/rxinfer/)
 
 ActiveInference.jl (Julia)
 ├── Julia runtime
@@ -165,7 +165,10 @@ uv pip install inferactively-pymdp flax
 
 ```bash
 uv sync
-julia -e 'import Pkg; Pkg.add(["RxInfer", "ActiveInference"])'
+# RxInfer.jl: activate + instantiate the committed env (no Pkg.add)
+julia --project=src/execute/rxinfer -e 'using Pkg; Pkg.instantiate()'
+# ActiveInference.jl: see its own setup
+julia -e 'import Pkg; Pkg.add("ActiveInference")'
 # Result: All 7 frameworks work
 ```
 
@@ -190,8 +193,8 @@ julia -e 'import Pkg; Pkg.add(["RxInfer", "ActiveInference"])'
 
 1. Check Julia version: `julia --version`
 2. Verify packages: `julia -e "import Pkg; Pkg.status()"`
-3. Add missing: `julia -e 'import Pkg; Pkg.add("RxInfer")'`
-4. Update: `julia -e 'import Pkg; Pkg.update()'`
+3. Re-instantiate the committed RxInfer env (no runtime `Pkg.add`): `julia --startup-file=no --project=src/execute/rxinfer -e 'using Pkg; Pkg.instantiate()'`
+4. Update: `julia --startup-file=no --project=src/execute/rxinfer -e 'import Pkg; Pkg.update()'`
 
 ### Mixed Python/Julia Errors
 

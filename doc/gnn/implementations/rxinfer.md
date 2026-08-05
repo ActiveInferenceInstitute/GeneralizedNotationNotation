@@ -2,22 +2,29 @@
 # RxInfer.jl Framework Implementation
 
 > **GNN Integration Layer**: Julia
-> **Framework Base**: `RxInfer.jl` (Reactive Message Passing)
-> **Simulation Architecture**: Online True POMDP Generative Model
+> **Framework Base**: `RxInfer.jl` (genuine `@model` + `infer()` variational message passing)
+> **Simulation Architecture**: POMDP generative model via `@model` + `infer()`
 > **Documentation Version**: 2.0.0
 
 ## Overview
 
 The Generalized Notation Notation (GNN) pipeline translates theoretical model
 specifications into executable Julia code natively utilizing the `RxInfer.jl`
-ecosystem. RxInfer is a reactive probabilistic programming framework built on
+ecosystem. RxInfer is a probabilistic programming framework built on
 Forney-style factor graphs, where belief propagation is expressed as message
 passing over graphical model edges. Within the GNN cross-framework comparison,
 RxInfer serves as the primary Bayesian message-passing reference implementation
 and is the only framework in the pipeline that performs inference through a
 declarative probabilistic programming model (via the `@model` macro).
 
-This document details the full data flow from GNN JSON specification through Julia factor graph construction, reactive belief updating, explicit Expected Free Energy (EFE) computation, and JSON telemetry serialization.
+The canonical renderer (`src/render/rxinfer/rxinfer_renderer.py`) emits a
+genuine Julia script per exemplar model that defines
+`@model function pomdp_model(y, A, B, D, u, T)` using `Categorical` and
+`DiscreteTransition` nodes and runs `infer()` with `free_energy = true` — no
+hand-rolled step simulator. This document details the full data flow from GNN
+JSON specification through Julia factor graph construction, genuine variational
+message-passing inference, real variational free energy (VFE) capture, explicit
+Expected Free Energy (EFE) computation, and JSON telemetry serialization.
 
 ## Architecture
 
@@ -111,24 +118,36 @@ This is where RxInfer differs fundamentally from all other frameworks.
 Belief updating is performed via a **declarative probabilistic model**:
 
 ```julia
-@model function belief_update_model(observation, A, prior)
-    s ~ Categorical(prior)
-    observation ~ DiscreteTransition(s, A)
-    return s
+@model function pomdp_model(y, A, B, D, u, T)
+    s[1] ~ Categorical(D)
+    y[1] ~ DiscreteTransition(s[1], A)
+    for t in 2:T
+        s[t] ~ DiscreteTransition(s[t-1], B[:, :, u[t-1]])
+        y[t] ~ DiscreteTransition(s[t], A)
+    end
 end
 ```
 
-The `@model` macro compiles this into a Forney-style factor graph. RxInfer then runs **5 iterations** of variational message passing to compute the posterior:
+The `@model` macro compiles this into a Forney-style factor graph. RxInfer then
+runs variational message passing over the whole trajectory via `infer()` with
+`free_energy = true`:
 
 ````julia
 result = infer(
-    model = belief_update_model(A=A_matrix, prior=current_belief),
-    data = (observation = obs_one_hot,),
-    iterations = 5
+    model = pomdp_model(A=A_matrix, B=B_matrix, D=D_vector, u=action_seq, T=T),
+    data = (y = observation_seq,),
+    free_energy = true
 )
-posterior = result.posteriors[:s]
-**Recovery Mechanism**: If RxInfer's inference engine fails (e.g., due to
-numerical issues), the system falls back to manual Bayesian updating:
+posterior = result.posteriors[:s]        # Vector of Categorical posterior beliefs
+vfe_trace = [Float64(f) for f in result.free_energy]  # genuine VFE per iteration
+````
+
+`result.posteriors[:s]` yields the per-timestep posterior beliefs, and
+`result.free_energy` supplies the real variational free energy trace that feeds
+the `variational_free_energy` field (genuine values — previously `Float64[]`).
+The pipeline records `Random.seed!(seed)` and the script SHA256 in
+`runtime_metadata`. If RxInfer's inference engine fails (e.g. numerical issues),
+some downstream paths fall back to manual Bayesian updating:
 
 ```julia
 catch e
@@ -136,7 +155,7 @@ catch e
     unnormalized = current_belief .* likelihood
     current_belief = unnormalized ./ sum(unnormalized)
 end
-````
+```
 
 ### Step 4: Expected Free Energy Computation and Action Selection
 
@@ -221,6 +240,8 @@ RxInfer exports a comprehensive JSON artifact to `simulation_results.json`:
 | `efe_per_action`    | `[T, A]` | Full EFE vector across all actions   |
 | `action_probs`      | `[T, A]` | Softmax policy probabilities         |
 | `preferences`       | `[A]`    | Raw C vector                         |
+| `variational_free_energy` | `[T]` | Genuine VFE trace from `infer()` `free_energy` (previously `Float64[]`) |
+| `runtime_metadata`  | `obj`    | Seed, script SHA256, `uses_real_rxinfer: true` |
 | `val.all_valid`     | `bool`   | All belief entries in `[0, 1]`       |
 | `val.sum_to_one`    | `bool`   | All belief vectors sum to 1.0 ± 0.01 |
 | `val.action_bounds` | `bool`   | All actions in `[1, NUM_ACTIONS]`    |
@@ -235,7 +256,7 @@ RxInfer exports a comprehensive JSON artifact to `simulation_results.json`:
 
 | Package         | Purpose                     |
 | --------------- | --------------------------- |
-| `RxInfer`       | Reactive prob programming   |
+| `RxInfer`       | Genuine `@model` + `infer()` variational inference |
 | `Distributions` | `Categorical` dist sampling |
 | `LinearAlgebra` | Matrix operations           |
 | `Random`        | PRNG seeding                |

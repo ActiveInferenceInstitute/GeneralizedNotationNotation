@@ -525,13 +525,13 @@ class TestStep9RenderComprehensive:
         self, sample_gnn_files: Any, isolated_temp_dir: Any
     ) -> None:
         """PyMDP and RxInfer renderers are importable + callable (real signature)."""
-        from render import render_gnn_to_pymdp, render_gnn_to_rxinfer_toml
+        from render import render_gnn_to_pymdp, render_gnn_to_rxinfer
 
         # Real signatures accept a parsed GNN spec dict. Full rendering is
         # covered by test_render_cli_targets; here we just validate the
         # public symbols resolve to real callables.
         assert callable(render_gnn_to_pymdp)
-        assert callable(render_gnn_to_rxinfer_toml)
+        assert callable(render_gnn_to_rxinfer)
 
 
 class TestStep10ExecuteComprehensive:

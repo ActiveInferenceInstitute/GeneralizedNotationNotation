@@ -82,25 +82,27 @@ def run_simulation(n_steps=10):
 ## RxInfer.jl (Julia)
 
 ```julia
-# Generated Julia code
-using RxInfer, Distributions, LinearAlgebra, Random
+# Generated Julia code — genuine @model + infer() pipeline
+using RxInfer, Distributions, LinearAlgebra, Random, SHA, JSON
 
-const A_MATRIX = [0.9 0.1; 0.1 0.9; 0.5 0.5]
-const B_MATRIX = cat([0.9 0.1; 0.1 0.9], [0.5 0.5; 0.5 0.5], dims=3)
-
-@model function active_inference_model(n_timesteps)
-    s = randomvar(n_timesteps)
-    o = randomvar(n_timesteps)
-    s[1] ~ Categorical(D_VECTOR)
-    for t in 2:n_timesteps
-        s[t] ~ Categorical(B_MATRIX[:, s[t-1], 1])
-        o[t] ~ Categorical(A_MATRIX[:, s[t]])
+@model function pomdp_model(y, A, B, D, u, T)
+    s[1] ~ Categorical(D)
+    y[1] ~ DiscreteTransition(s[1], A)
+    for t in 2:T
+        s[t] ~ DiscreteTransition(s[t-1], B[:, :, u[t-1]])
+        y[t] ~ DiscreteTransition(s[t], A)
     end
-    return s, o
 end
+
+result = infer(
+    model = pomdp_model(A=A, B=B, D=D, u=actions, T=T),
+    data = (y = observations,),
+    iterations = 20,
+    free_energy = true  # real VFE traces
+)
 ```
 
-**Setup**: `julia src/execute/rxinfer/setup_environment.jl --verbose`
+**Setup**: `julia --startup-file=no --project=src/execute/rxinfer src/execute/rxinfer/setup_environment.jl --verbose`
 
 ---
 

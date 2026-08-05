@@ -103,6 +103,14 @@ RxInfer.jl and ActiveInference.jl generated scripts write current JSON schemas:
 
 Both schemas include observations by modality, hidden states by factor, actions by control factor, beliefs by factor, expected free energy, policy posterior, validation, matrix provenance, and runtime metadata.
 
+RxInfer.jl runs the genuine `@model` + `infer()` pipeline under the committed
+`Project.toml` + `Manifest.toml` at `src/execute/rxinfer/` (RxInfer 5.5.0). The
+runner invokes `julia --startup-file=no --project=src/execute/rxinfer <script>`;
+`setup_environment.jl` activates + instantiates the environment (no runtime
+`Pkg.add`). `rxinfer_simulation_v1` carries a genuine `variational_free_energy`
+trace (previously `Float64[]`) and records the seed + script SHA256
+(`uses_real_rxinfer: true`) in `runtime_metadata`.
+
 ### `julia_setup.py`
 
 Julia environment management helpers for RxInfer.jl and ActiveInference.jl.

@@ -4,18 +4,18 @@
 
 ## Purpose
 
-Generates Julia code using the RxInfer.jl reactive message-passing framework.
+Generates Julia code using the RxInfer.jl genuine `@model` + `infer()` variational message-passing framework.
 
 ## Code Generation
 
-- Maps GNN model structure to RxInfer factor graph specification
-- Generates probabilistic model definition and inference queries
-- Produces TOML configuration for model parameters
+- Maps GNN `canonical_pomdp_v1` model structure to an RxInfer factor graph specification
+- Generates a genuine generative model (`@model function pomdp_model(y, A, B, D, u, T)`) with `Categorical` / `DiscreteTransition` nodes and an `infer()` call with `free_energy = true`
+- `variational_free_energy` is populated with genuine values (previously `Float64[]`); EFE and policy selection remain custom Active Inference logic
 
 ## Output
 
-- Julia script files (`.jl`) using RxInfer API
-- TOML parameter files
+- Julia script files (`.jl`) using the RxInfer API
+- The legacy TOML parameter path (`toml_generator.py`) is **deprecated**; the genuine `@model` + `infer()` renderer is the only supported path
 
 ## Generated-Script Output Contract
 
@@ -40,11 +40,13 @@ normally. Step 12 `main()` returns non-zero only if `validation.all_valid` is fa
 
 ```
 rxinfer/
-├── rxinfer_renderer.py     # Core renderer (625 lines)
-├── toml_generator.py       # TOML config generation (995 lines)
+├── rxinfer_renderer.py     # Core renderer — genuine @model + infer() (625 lines)
+├── toml_generator.py       # DEPRECATED TOML config generation (retained for history/reference)
 └── ...
 ```
 
 ## Dependencies
 
-Target: `julia >= 1.8`, `RxInfer.jl >= 3.0`
+Target: `julia >= 1.8`, RxInfer 5.5.0 (pinned by the committed `Project.toml` +
+`Manifest.toml` under `src/execute/rxinfer/`; execution via
+`julia --startup-file=no --project=src/execute/rxinfer <script>`).

@@ -2,64 +2,107 @@
 
 ## Overview
 
-This document details the process of using Generalized Notation Notation (GNN) to specify, generate, and validate a configuration for an `RxInfer.jl` model. We use the "Multi-agent Trajectory Planning" example from `RxInferExamples.jl` to demonstrate a full round-trip engineering use case.
+This document details how GNN specifies, renders, and executes genuine
+`RxInfer.jl` models. The canonical renderer (`src/render/rxinfer/rxinfer_renderer.py`)
+turns a GNN POMDP specification into an executable Julia script that defines a
+generative model with `@model` and solves it with `infer()`. Execution is fully
+reproducible via a committed Julia environment.
 
-The core objective is to show that a model specified in GNN can produce a configuration file that is a drop-in replacement for the original, human-written configuration. This validates the GNN-to-RxInfer rendering pipeline and demonstrates a powerful workflow for model management and deployment.
+## The Genuine Pipeline
 
-## The Workflow
+The pipeline has three main components:
 
-The process involves three main components:
-1.  **The Original RxInfer Example**: A pre-existing, functional Julia project that serves as our baseline.
-2.  **The GNN-Rendered Configuration**: A `config.toml` file generated from a formal GNN specification of the model.
-3.  **The Validation Script**: A Julia script that automates the testing process to ensure the GNN-generated config works identically to the original.
+1.  **The GNN Specification**: A `canonical_pomdp_v1` model description
+    (`input/gnn_files/**`) with the canonical matrices `A, B, C, D` over
+    states, observations, and actions.
+2.  **The Rendered Julia Script**: `rxinfer_renderer.py` emits
+    `output/11_render_output/<model>/rxinfer/<model>_rxinfer.jl`, defining a
+    genuine generative model:
 
-### 1. The Original RxInfer Example
+    ```julia
+    @model function pomdp_model(y, A, B, D, u, T)
+        s[1] ~ Categorical(D)
+        y[1] ~ DiscreteTransition(s[1], A)
+        for t in 2:T
+            s[t] ~ DiscreteTransition(s[t-1], B[:, :, u[t-1]])
+            y[t] ~ DiscreteTransition(s[t], A)
+        end
+    end
+    ```
 
-The base for our demonstration is the "Multi-agent Trajectory Planning" example. The original, unmodified source code for this example is located in the repository at:
+    Hidden states evolve via `DiscreteTransition` (the `B` matrices) and are
+    emitted through the likelihood matrix `A`. This is genuine RxInfer.jl
+    variational message-passing — not a hand-rolled step simulator.
+3.  **The Runner / Environment**: `src/execute/rxinfer/` executes the script
+    under a committed `Project.toml` + `Manifest.toml` pinning RxInfer 5.5.0.
 
+### Inference
+
+The rendered script calls `infer()` with `free_energy = true`:
+
+```julia
+result = infer(
+    model = pomdp_model(A=A, B=B, D=D, u=action_seq, T=T_infer),
+    data  = (y = observation_seq,),
+    free_energy = true
+)
 ```
-doc/rxinfer/RxInferExamples.jl/scripts/Advanced Examples/Multi-agent Trajectory Planning/
-```
 
-This directory contains the Julia source code and an original `config.toml` which defines the model parameters, simulation settings, and environment.
+`result.posteriors[:s]` yields real posterior beliefs and `result.free_energy`
+feeds the `variational_free_energy` trace (genuine values, previously
+`Float64[]`). EFE and policy selection remain custom logic outside RxInfer's
+domain.
 
-### 2. The GNN-Rendered Configuration
+### Environment & Reproducibility
 
-Using the GNN toolchain, a formal GNN model description is created to represent the multi-agent trajectory model. The GNN renderer then processes this file to produce a compatible `config.toml`. For this example, the GNN-generated configuration is located at:
+- `Project.toml` + `Manifest.toml` under `src/execute/rxinfer/` pin RxInfer 5.5.0
+  and all dependencies.
+- The runner invokes `julia --startup-file=no --project=src/execute/rxinfer <script>`.
+- `setup_environment.jl` uses `Pkg.activate()` + `Pkg.instantiate()` — there is
+  **no runtime `Pkg.add`**.
+- Each script calls `Random.seed!(seed)` before inference and records the seed and
+  script SHA256 in `runtime_metadata` (`uses_real_rxinfer: true`), giving
+  byte-identical results across runs with the same seed.
 
-```
-output/gnn_rendered_simulators/rxinfer_toml/rxinfer_multiagent_gnn/Multi-agent Trajectory Planning_config.toml
-```
+### Validation
 
-The goal is to prove that this file is functionally identical to the original `config.toml`.
+All 45 exemplar GNN files under `input/gnn_files/**` render to and execute under
+RxInfer.jl (45/45). Step 6 validation now includes `inference_converged` and
+`vfe_present`, confirming genuine convergence of the variational free energy.
 
-### 3. The Validation Script: `Multiagent_GNN_RxInfer.jl`
+## Legacy TOML Approach (Deprecated)
 
-To automate the validation, we use the `doc/rxinfer/Multiagent_GNN_RxInfer.jl` script. This script performs the following steps, logging its progress to the console:
+Earlier versions of the pipeline rendered a `config.toml` and used the
+`multiagent_trajectory_planning/` example with a GNN-generated `config.toml` as a
+drop-in replacement for a hand-written one. That path is **deprecated**:
 
-1.  **Check Paths**: Verifies that the original RxInfer example script and the GNN-generated configuration file exist at their expected locations.
-2.  **Run Original Script**: Executes the original "Multi-agent Trajectory Planning" script using its own `config.toml`. This serves as a baseline to ensure the original example runs correctly.
-3.  **Validate GNN Config**: Loads and performs a basic validation of the GNN-generated `config.toml` to ensure it's well-formed and contains the expected sections.
-4.  **Create a Test Environment**:
-    *   Creates a new directory: `doc/rxinfer/multiagent_trajectory_planning/`.
-    *   Copies all files from the original example directory into this new directory, *except* for the original `config.toml`.
-5.  **Inject GNN Config**: Copies the GNN-generated `config.toml` into the new test directory. At this point, the test directory contains the original source code but with the GNN-generated configuration.
-6.  **Run Modified Script**: Executes the Julia script from the test directory using the GNN configuration.
+- `src/render/rxinfer/toml_generator.py` (`render_gnn_to_rxinfer_toml`) now emits a
+  `DeprecationWarning` and is removed from processor wiring and public exports.
+  It is retained only for git history and reference.
+- The `Multiagent_GNN_RxInfer.jl` validation script and the TOML-based workflow it
+  described are no longer the supported path.
 
-Successful execution of this final step demonstrates that the GNN-generated configuration is a valid, drop-in replacement for the original, thus verifying the integrity of the GNN-to-RxInfer pipeline for this use case.
+The genuine `@model` + `infer()` pipeline above is the only supported render and
+execute path.
 
-## How to Run the Validation
-
-To run the entire validation process, execute the main Julia script from the repository root:
+## How to Run the Pipeline
 
 ```bash
-julia doc/rxinfer/Multiagent_GNN_RxInfer.jl
+# Render step
+uv run --extra dev python src/main.py --only-steps "3,5,8,11,12,16" \
+  --target-dir input/gnn_files --frameworks rxinfer --verbose
 ```
 
-The script will print logs to the console, showing the outcome of each step. A successful run will complete with an exit code of 0, confirming that the GNN-produced configuration works as expected.
+Execution happens automatically for `rxinfer` frameworks; results land in
+`<model>/rxinfer/simulation_data/simulation_results.json`
+(`rxinfer_simulation_v1`).
 
 ## Conclusion
 
-This engineering use case demonstrates a key capability of the GNN ecosystem: the ability to formally specify a complex model and reliably generate target-specific, executable configuration files. This workflow promotes reproducibility, modularity, and enables a robust, programmatic toolchain for managing and deploying scientific models across different simulation environments like `RxInfer.jl`.
+GNN provides a single canonical source of truth that reaches genuine RxInfer.jl
+inference through `@model` + `infer()`. The committed Julia environment and
+seeded, digest-tracked execution make the result reproducible, modular, and
+robust across models and runs.
 
-There are connections to CEREBRUM and other topics, via GNN as well as directly/separately. 
+There are connections to CEREBRUM and other topics, via GNN as well as
+directly/separately.
