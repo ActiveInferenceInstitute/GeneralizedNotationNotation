@@ -340,15 +340,33 @@ def test_per_factor_returns_empty_for_single_informative_factor() -> None:
     assert compute_per_factor_beliefs(with_degenerate) == {}
 
 
-def test_per_factor_raises_when_sizes_contradict_belief_length() -> None:
-    """Factors present but inconsistent with the joint width is a loud failure."""
+def test_per_factor_raises_when_joint_composed_sizes_contradict() -> None:
+    """A size mismatch in a JOINT-COMPOSED (multi_agent) payload is loud."""
     results = build_factored_results(
         factor_sizes=(("s_agent1", 4), ("s_agent2", 4)), n_steps=3
     )
     results["model_parameters"]["state_factors"][1]["size"] = 5
+    results.setdefault("runtime_metadata", {})["model_kind"] = "multi_agent"
 
     with pytest.raises(ValueError, match="joint states"):
         compute_per_factor_beliefs(results)
+
+
+def test_per_factor_descriptive_mismatch_is_structural_absence() -> None:
+    """Non-composed kinds with descriptive factors (e.g. flat s/s_prime) get {}.
+
+    Flat exemplars legitimately declare next-state aliases as two "factors"
+    over a single chain; the belief space is NOT their product, so per-factor
+    recovery does not apply — this must not raise (it broke GIF generation
+    for most of the 46-model batch before the kind gate existed).
+    """
+    results = build_factored_results(factor_sizes=(("s", 3), ("s_prime", 3)), n_steps=3)
+    # Beliefs are 3-wide (the chain), not 9-wide (the bogus product).
+    results["beliefs"] = [[0.2, 0.3, 0.5] for _ in range(3)]
+    results["beliefs_by_factor"] = {"joint_state": results["beliefs"]}
+    results.setdefault("runtime_metadata", {})["model_kind"] = "flat"
+
+    assert compute_per_factor_beliefs(results) == {}
 
 
 def test_per_factor_raises_when_factor_descriptor_is_malformed() -> None:

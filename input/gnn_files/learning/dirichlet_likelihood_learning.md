@@ -169,6 +169,9 @@ num_hidden_states: 3
 num_obs: 3
 num_actions: 2
 num_timesteps: 15
+# Joint state + likelihood learning needs more VMP sweeps than fixed-A
+# inference; 40 iterations converges cleanly even at T=100 batch runs.
+inference_iterations: 40
 
 ## Footer
 

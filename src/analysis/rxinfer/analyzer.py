@@ -354,10 +354,24 @@ def compute_per_factor_beliefs(data: Dict[str, Any]) -> Dict[str, List[List[floa
         joint_size *= size
     belief_width = len(beliefs[0])
     if joint_size != belief_width:
-        raise ValueError(
-            f"state_factors {list(zip(names, sizes))} imply {joint_size} joint "
-            f"states but beliefs carry {belief_width} per timestep"
-        )
+        # Whether a size mismatch is a contract violation depends on how the
+        # payload was rendered. Joint-composed payloads (multi-agent) MUST
+        # decompose — a mismatch there is renderer/analyzer breakage and
+        # raises. For every other kind the state_factors list is descriptive
+        # metadata that does not define the belief space: flat exemplars
+        # legitimately declare next-state aliases (``s``/``s_prime``) as two
+        # "factors" over a 3-state chain, and native factored/hierarchical
+        # payloads carry per-factor marginals directly in beliefs_by_factor
+        # instead of a flattened joint. Those are structurally not
+        # decomposable joints, so the answer is {} — not an error.
+        kind = str((data.get("runtime_metadata") or {}).get("model_kind", "flat"))
+        if kind == "multi_agent":
+            raise ValueError(
+                f"state_factors {list(zip(names, sizes))} imply {joint_size} "
+                f"joint states but beliefs carry {belief_width} per timestep "
+                f"in a joint-composed multi_agent payload"
+            )
+        return {}
 
     marginals: Dict[str, List[List[float]]] = {names[i]: [] for i in informative}
     for step, row in enumerate(beliefs):
