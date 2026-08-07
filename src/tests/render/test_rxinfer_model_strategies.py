@@ -8,7 +8,7 @@ Pins two invariants the 2026-08-05 red-team review found broken:
    "Hierarchy" in its name and made every exemplar one doc-comment away
    from a render failure).
 2. Every GNN exemplar renders through the real pipeline path (the
-   "46/46 render" contract), with the intended kind taxonomy.
+   "29/29 render" contract), with the intended kind taxonomy.
 
 Pure Python — no Julia required, zero skips.
 """
@@ -40,7 +40,7 @@ from render.rxinfer.rxinfer_renderer import render_gnn_to_rxinfer
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
 GNN_FILES = PROJECT_ROOT / "input" / "gnn_files"
 
-EXEMPLAR_COUNT = 46
+EXEMPLAR_COUNT = 29
 
 # The intended kind for every non-flat exemplar; everything else is FLAT.
 EXPECTED_NON_FLAT = {
@@ -77,7 +77,7 @@ def _canonical_spec(gnn_file: Path) -> dict:
 class TestExemplarKindTaxonomy:
     """Every exemplar detects its intended kind through the real path."""
 
-    def test_all_46_exemplars_detect_expected_kind(self) -> None:
+    def test_all_exemplars_detect_expected_kind(self) -> None:
         mismatches = []
         for gnn_file in _exemplar_files():
             rel = str(gnn_file.relative_to(GNN_FILES))
@@ -89,8 +89,8 @@ class TestExemplarKindTaxonomy:
                 )
         assert not mismatches, "kind misdetections:\n" + "\n".join(mismatches)
 
-    def test_all_46_exemplars_render(self, tmp_path: Path) -> None:
-        """The 46/46 render contract, through the public renderer entry.
+    def test_all_exemplars_render(self, tmp_path: Path) -> None:
+        """The full-corpus render contract, through the public renderer entry.
 
         Every kind now renders — natively for flat / hierarchical two-level /
         factored / continuous / learning, and via the documented joint

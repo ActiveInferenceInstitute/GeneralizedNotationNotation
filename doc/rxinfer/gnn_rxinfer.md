@@ -300,7 +300,7 @@ RxInfer.jl is a powerful Julia package for Bayesian inference on factor graphs u
 > `Manifest.toml` pinning RxInfer 5.5.0 under `src/execute/rxinfer/`), invoked via
 > `julia --startup-file=no --project=src/execute/rxinfer <script>`.
 > `setup_environment.jl` uses `Pkg.activate()` + `Pkg.instantiate()` — there is no
-> runtime `Pkg.add`. All 45 exemplar GNN files render and execute successfully.
+> runtime `Pkg.add`. All 29 exemplar GNN files render and execute successfully.
 
 ## Getting started
 

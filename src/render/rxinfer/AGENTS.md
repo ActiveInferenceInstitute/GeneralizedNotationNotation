@@ -30,7 +30,7 @@ Validation includes ``inference_converged``, ``vfe_present``, and
 
 Exemplar discovery is **recursive**: all GNN spec files under `input/gnn_files/**`
 (nested folders such as `discrete/`, `continuous/`, `basics/`) are discovered and rendered.
-All **46** exemplar GNN files render to and execute under RxInfer.jl (46/46 render + execute).
+All **29** exemplar GNN files render to and execute under RxInfer.jl (29/29 render + execute).
 
 ## Ownership Boundary
 

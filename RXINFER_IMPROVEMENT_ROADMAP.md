@@ -5,9 +5,14 @@
 Verified by execution (pinned in `src/tests/render/test_rxinfer_model_strategies.py`;
 full suite 2,796 passed / 0 failed):
 
-- **46/46 GNN files render** through the real pipeline path; kind taxonomy is
-  structural: 37 flat, 3 continuous, 2 hierarchical, 1 learning, 2 multi-agent,
-  1 factored. Detection reads typed fields only (GNNSection, per-level/per-agent
+- **29/29 GNN files render** through the real pipeline path; kind taxonomy is
+  structural: 20 flat, 3 continuous, 2 hierarchical, 1 learning, 2 multi-agent,
+  1 factored. (Corpus curated 2026-08-07: 17 redundant files pruned — 14
+  scaling-study T-variants differing only in a runtime constant, the three
+  21 MB generated N128 specs, N2, and factor_graph_model, whose factored
+  coverage is owned by factorized_posterior. The scaling sweep regenerates
+  its full grid from scripts/pymdp_scaling_config.yaml on demand; a
+  representative N4–N64 T100 ladder stays in the corpus. −67 MB.) Detection reads typed fields only (GNNSection, per-level/per-agent
   matrix keys, explicit counts, F/H/Q/R presence, `dirichlet_*` keys).
 - **Every ModelKind has a live generator** — the stub base class is gone:
   - FLAT: canonical batch generator, plus an **online mode** (A1) — per-timestep
@@ -67,7 +72,7 @@ commit messages.
 ## Open Work
 
 ### M8. GIF batch + CHANGELOG results (in progress)
-The 46-model 100-timestep GIF batch is regenerating with the current animator
+The 29-model 100-timestep GIF batch is regenerating with the current animator
 (white style, per-factor panels, manifests) into
 `~/Downloads/rxinfer_animations/`; superseded dark-mode GIFs live in
 `superseded_dark_mode/`. When complete: regenerate the dashboard from the new

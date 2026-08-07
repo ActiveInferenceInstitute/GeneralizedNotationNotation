@@ -66,7 +66,7 @@ domain.
 
 ### Validation
 
-All 45 exemplar GNN files under `input/gnn_files/**` render to and execute under
+All 29 exemplar GNN files under `input/gnn_files/**` render to and execute under
 RxInfer.jl (45/45). Step 6 validation now includes `inference_converged` and
 `vfe_present`, confirming genuine convergence of the variational free energy.
 

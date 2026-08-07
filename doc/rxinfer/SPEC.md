@@ -19,7 +19,7 @@ message-passing integration:
   `julia --startup-file=no --project=src/execute/rxinfer <script>`.
   `setup_environment.jl` uses `Pkg.activate()` + `Pkg.instantiate()` — no
   runtime `Pkg.add`.
-- All 45 exemplar GNN files render and execute successfully. Step 6 validation
+- All 29 exemplar GNN files render and execute successfully. Step 6 validation
   includes `inference_converged` and `vfe_present`.
 
 ## Components

@@ -79,9 +79,11 @@ This directory contains documentation, scripts, and resources for integrating GN
 - **Genuine `@model` + `infer()` pipeline**: Generative models are defined with
   `@model` using `Categorical` and `DiscreteTransition` nodes and solved with
   `infer()` (`free_energy = true`), returning real posteriors over hidden states
-  and genuine variational free energy traces. The pipeline is **offline batch
-  inference (Bayesian smoothing) with post-hoc EFE policy evaluation** — NOT
-  online active inference. If `infer()` fails, the script crashes (no fallback).
+  and genuine variational free energy traces. The default pipeline is **offline
+  batch inference (Bayesian smoothing) with post-hoc EFE policy evaluation**;
+  an optional **online mode** (`inference_mode: online`) runs `infer()` per
+  timestep with the filtered posterior driving action selection. If `infer()`
+  fails, the script crashes (no fallback).
 - **Variational Message Passing**: Optimized inference algorithms over factor graphs
 - **Factor Graph Models**: Natural representation of Active Inference models
 - **Reproducible Execution**: A committed Julia environment
@@ -108,7 +110,7 @@ The pipeline validates end-to-end render and execution for every exemplar GNN
 model:
 
 #### Render (Step 11)
-- Discovers all 45 exemplar GNN files under `input/gnn_files/**` and emits an
+- Discovers all 29 exemplar GNN files under `input/gnn_files/**` and emits an
   executable `*_rxinfer.jl` script per model via `rxinfer_renderer.py`
 
 #### Execute (Step 12)
@@ -152,8 +154,8 @@ See [src/AGENTS.md](../../src/AGENTS.md) for complete pipeline documentation.
 ## Render → Execute → Log → Visualize lifecycle
 
 The RxInfer.jl lifecycle moves a GNN spec through four stages, producing distinct
-artifact types at each step. All 46 exemplar GNN files under `input/gnn_files/**`
-render to and execute under RxInfer.jl (46/46 render + execute), dispatched by
+artifact types at each step. All 29 exemplar GNN files under `input/gnn_files/**`
+render to and execute under RxInfer.jl (29/29 render + execute), dispatched by
 detected ModelKind to native flat/hierarchical/factored/continuous/learning
 generators (multi-agent renders as the documented joint composition).
 
