@@ -7,10 +7,9 @@ the expected structure, embedded data, and white publication style.
 from __future__ import annotations
 
 import json
+import math
 from pathlib import Path
 from typing import Any
-
-import pytest
 
 from analysis.rxinfer.gif_animator import generate_gif_animation
 
@@ -134,6 +133,115 @@ def test_white_publication_style(tmp_path: Path) -> None:
     # The function uses plt.style.use("default") which is white
     # Verify the file was created (the style is applied inside the function)
     assert output.exists()
+
+
+def _build_factored_results(
+    factor_sizes: tuple[tuple[str, int], ...] = (
+        ("s_agent1", 4),
+        ("s_agent2", 4),
+        ("s_joint", 16),
+    ),
+    n_steps: int = 5,
+) -> dict[str, Any]:
+    """Build a multi-factor result: beliefs over the flattened 256-state joint space."""
+    sizes = [size for _, size in factor_sizes]
+    joint_size = math.prod(sizes)
+    beliefs = []
+    for t in range(n_steps):
+        raw = [float(((t + 1) * (k + 3)) % 7) + 0.5 for k in range(joint_size)]
+        total = sum(raw)
+        beliefs.append([value / total for value in raw])
+
+    return {
+        "schema_version": "rxinfer_simulation_v1",
+        "success": True,
+        "framework": "RxInfer.jl",
+        "model_name": "multi_agent_coordination",
+        "num_timesteps": n_steps,
+        "beliefs": beliefs,
+        "observations": [t % 4 for t in range(n_steps)],
+        "true_states": [t % 4 for t in range(n_steps)],
+        "actions": [t % 2 for t in range(n_steps)],
+        "vfe_per_iteration": [6.11 - 0.1 * i for i in range(12)],
+        "model_parameters": {
+            "num_states": joint_size,
+            "num_state_factors": len(factor_sizes),
+            "state_factors": [
+                {"name": name, "size": size} for name, size in factor_sizes
+            ],
+        },
+        "runtime_metadata": {"uses_real_rxinfer": True, "model_kind": "factored"},
+    }
+
+
+def test_factored_model_gif_and_manifest(tmp_path: Path) -> None:
+    """A 256-state (4,4,16) factored payload renders a GIF plus its manifest sidecar."""
+    results = _build_factored_results()
+    assert len(results["beliefs"][0]) == 256
+
+    output = tmp_path / "multi_agent.gif"
+    path = generate_gif_animation(results, output, "multi_agent_coordination")
+
+    assert Path(path).exists()
+    assert Path(path).stat().st_size > 1000
+    with open(output, "rb") as f:
+        assert f.read(6) in (b"GIF87a", b"GIF89a")
+
+    manifest_path = output.with_suffix(".manifest.json")
+    assert manifest_path.exists()
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    assert manifest["generator"] == "gif_animator.py"
+    assert manifest["num_states"] == 256
+
+
+def test_state_factors_change_the_rendered_panel(tmp_path: Path) -> None:
+    """The factor panels really replace the joint bar chart, byte-for-byte.
+
+    Rendering is deterministic, so an identical payload yields identical GIF
+    bytes. Dropping only ``state_factors`` therefore isolates the panel swap:
+    the same beliefs must render differently once the factor structure is known.
+    """
+    factored = _build_factored_results(n_steps=3)
+    same_again = _build_factored_results(n_steps=3)
+    flat = _build_factored_results(n_steps=3)
+    del flat["model_parameters"]["state_factors"]
+
+    first = tmp_path / "factored.gif"
+    second = tmp_path / "factored_again.gif"
+    third = tmp_path / "flat.gif"
+    generate_gif_animation(factored, first, "M")
+    generate_gif_animation(same_again, second, "M")
+    generate_gif_animation(flat, third, "M")
+
+    assert first.read_bytes() == second.read_bytes(), "rendering is not deterministic"
+    assert first.read_bytes() != third.read_bytes(), (
+        "state_factors did not change the rendered panel"
+    )
+
+
+def test_factored_model_with_degenerate_factor(tmp_path: Path) -> None:
+    """Size-1 factors count toward the reshape but never get their own panel."""
+    results = _build_factored_results(
+        factor_sizes=(("s_agent1", 9), ("s_agent2", 9), ("signal_decay", 1)),
+        n_steps=4,
+    )
+    assert len(results["beliefs"][0]) == 81
+
+    output = tmp_path / "swarm.gif"
+    path = generate_gif_animation(results, output, "stigmergic_swarm")
+    assert Path(path).exists()
+    assert Path(path).stat().st_size > 1000
+
+
+def test_flat_model_keeps_joint_belief_panel(tmp_path: Path) -> None:
+    """A payload without state_factors still renders the original joint-belief panel."""
+    results = _build_synthetic_results()
+    assert "model_parameters" not in results
+
+    output = tmp_path / "flat.gif"
+    path = generate_gif_animation(results, output, "FlatModel")
+    assert Path(path).exists()
+    assert Path(path).stat().st_size > 1000
 
 
 def test_multiple_frames(tmp_path: Path) -> None:

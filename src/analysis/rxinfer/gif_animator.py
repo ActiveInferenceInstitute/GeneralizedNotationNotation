@@ -9,9 +9,12 @@ Publication-quality white minimal style. Uses the GNN Connections
 section to draw the graphical model structure (nodes and edges).
 """
 
+import base64
 import colorsys
+import hashlib
+import json
 import logging
-import re
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
@@ -23,6 +26,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.colors import BoundaryNorm, ListedColormap, Normalize
 
+from .analyzer import compute_per_factor_beliefs
 from .animator import (
     _normalize_actions,
     _normalize_beliefs,
@@ -32,6 +36,12 @@ from .animator import (
 )
 
 logger = logging.getLogger(__name__)
+
+
+def _hue_palette(count: int) -> List[tuple[float, float, float]]:
+    """Evenly spaced publication-style RGB colors for `count` categories."""
+    span = max(count, 1)
+    return [colorsys.hls_to_rgb(i / span, 0.5, 0.7) for i in range(span)]
 
 
 def _normalize_efe_per_action(data: Dict[str, Any]) -> List[List[float]]:
@@ -90,8 +100,6 @@ def _parse_gnn_connections(
     """
     spec = data.get("gnn_spec", {})
     if isinstance(spec, str):
-        import json
-
         try:
             spec = json.loads(spec)
         except Exception:
@@ -103,8 +111,6 @@ def _parse_gnn_connections(
         spec_b64 = data.get("runtime_metadata", {}).get("gnn_spec_b64", "")
         if not spec_b64:
             return {}, []
-        import base64
-
         try:
             spec = json.loads(base64.b64decode(spec_b64).decode("utf-8"))
             connections_raw = spec.get("connections", [])
@@ -314,7 +320,12 @@ def generate_gif_animation(
     """Generate an animated GIF from RxInfer simulation results.
 
     The GIF shows a 2x3 panel in publication-quality white style:
-    - Top-left: Belief bar chart (colors per state, heights = probability)
+    - Top-left: Belief bar chart (colors per state, heights = probability). For
+      multi-factor models (``model_parameters.state_factors`` describing more
+      than one factor of size > 1) this panel is subdivided into one bar
+      sub-panel per factor showing that factor's marginal, since a joint bar
+      chart over 256 or 729 states is unreadable. Joint entropy is annotated on
+      the first sub-panel.
     - Top-centre: State tracking heatmap (proper discrete colors)
     - Top-right: VFE convergence line
     - Bottom-left: Bayesian graphical model (nodes/edges, node colors dynamic)
@@ -357,15 +368,26 @@ def generate_gif_animation(
 
     beliefs_arr = np.array(beliefs)
 
+    # Per-factor marginals (D4): empty for flat / single-factor models, in which
+    # case the top-left panel stays the joint belief bar chart.
+    per_factor = compute_per_factor_beliefs(data)
+    factor_names = list(per_factor)
+    factor_traces = {
+        name: np.asarray(per_factor[name], dtype=float) for name in factor_names
+    }
+    factor_palettes = {
+        name: _hue_palette(factor_traces[name].shape[1]) for name in factor_names
+    }
+
+    # Joint entropy per timestep, annotated on the factor panels.
+    belief_clipped = np.clip(beliefs_arr, 1e-10, 1.0)
+    joint_entropy = -np.sum(belief_clipped * np.log2(belief_clipped), axis=1)
+
     # Parse graphical model structure
     positions, edges = _parse_gnn_connections(data)
 
     # Color palette — distinct colors for each state (publication style)
-    state_colors = []
-    for i in range(max(max(n_states, n_actions), 1)):
-        hue = i / max(max(n_states, n_actions), 1)
-        r, g, b = colorsys.hls_to_rgb(hue, 0.5, 0.7)
-        state_colors.append((r, g, b))
+    state_colors = _hue_palette(max(n_states, n_actions))
 
     # Create figure — white publication style (2x3 grid: D6/D8 panels)
     plt.style.use("default")
@@ -374,6 +396,17 @@ def generate_gif_animation(
         f"RxInfer — {model_name}", fontsize=13, fontweight="bold", color="#222"
     )
     fig.subplots_adjust(hspace=0.45, wspace=0.32)
+
+    # Subdivide the top-left cell into one sub-panel per factor (D4).
+    if factor_names:
+        top_left_spec = axes[0, 0].get_subplotspec()
+        axes[0, 0].remove()
+        inner_grid = top_left_spec.subgridspec(1, len(factor_names), wspace=0.45)
+        factor_axes = [fig.add_subplot(inner_grid[i]) for i in range(len(factor_names))]
+        animated_axes = factor_axes + list(axes.flat)[1:]
+    else:
+        factor_axes = []
+        animated_axes = list(axes.flat)
 
     # Pre-compute VFE range
     vfe_arr = np.array(vfe) if vfe else np.array([0.0])
@@ -404,34 +437,68 @@ def generate_gif_animation(
 
     def animate(frame):
         """Update function for each animation frame."""
-        for ax in axes.flat:
+        for ax in animated_axes:
             ax.clear()
         step = min(frame, n_steps - 1)
 
-        # === Top-left: Belief bar chart ===
-        ax1 = axes[0, 0]
-        ax1.set_facecolor("white")
-        belief = beliefs_arr[step]
-        x_pos = np.arange(n_states)
-        ax1.bar(x_pos, belief, color=state_colors, edgecolor="#333", linewidth=0.5)
-        ax1.set_ylim(0, 1.0)
-        ax1.set_xlim(-0.5, n_states - 0.5)
-        ax1.set_title(f"Belief (t={step + 1})", fontsize=10, color="#222")
-        ax1.set_xlabel("State", fontsize=9, color="#444")
-        ax1.set_ylabel("P(state)", fontsize=9, color="#444")
-        ax1.tick_params(colors="#444", labelsize=8)
-        ax1.spines["top"].set_visible(False)
-        ax1.spines["right"].set_visible(False)
-        for j in range(n_states):
-            ax1.text(
-                j,
-                belief[j] + 0.02,
-                f"{belief[j]:.2f}",
-                ha="center",
-                va="bottom",
+        # === Top-left: per-factor marginals (D4) or joint belief bar chart ===
+        if factor_axes:
+            for panel, name in zip(factor_axes, factor_names):
+                marginal = factor_traces[name][step]
+                factor_size = marginal.shape[0]
+                panel.set_facecolor("white")
+                panel.bar(
+                    np.arange(factor_size),
+                    marginal,
+                    color=factor_palettes[name],
+                    edgecolor="#333",
+                    linewidth=0.4,
+                )
+                panel.set_ylim(0, 1.0)
+                panel.set_xlim(-0.5, factor_size - 0.5)
+                panel.set_title(name, fontsize=9, color="#222")
+                panel.set_xlabel("State", fontsize=7, color="#444")
+                panel.tick_params(colors="#444", labelsize=6)
+                panel.spines["top"].set_visible(False)
+                panel.spines["right"].set_visible(False)
+                # Only the leftmost panel carries the shared probability scale.
+                if panel is not factor_axes[0]:
+                    panel.set_yticklabels([])
+            factor_axes[0].set_ylabel("P(factor state)", fontsize=8, color="#444")
+            factor_axes[0].text(
+                0.02,
+                0.98,
+                f"H(joint)={joint_entropy[step]:.2f} bits",
+                transform=factor_axes[0].transAxes,
+                ha="left",
+                va="top",
                 color="#444",
                 fontsize=7,
             )
+        else:
+            ax1 = axes[0, 0]
+            ax1.set_facecolor("white")
+            belief = beliefs_arr[step]
+            x_pos = np.arange(n_states)
+            ax1.bar(x_pos, belief, color=state_colors, edgecolor="#333", linewidth=0.5)
+            ax1.set_ylim(0, 1.0)
+            ax1.set_xlim(-0.5, n_states - 0.5)
+            ax1.set_title(f"Belief (t={step + 1})", fontsize=10, color="#222")
+            ax1.set_xlabel("State", fontsize=9, color="#444")
+            ax1.set_ylabel("P(state)", fontsize=9, color="#444")
+            ax1.tick_params(colors="#444", labelsize=8)
+            ax1.spines["top"].set_visible(False)
+            ax1.spines["right"].set_visible(False)
+            for j in range(n_states):
+                ax1.text(
+                    j,
+                    belief[j] + 0.02,
+                    f"{belief[j]:.2f}",
+                    ha="center",
+                    va="bottom",
+                    color="#444",
+                    fontsize=7,
+                )
 
         # === Top-right: State tracking heatmap ===
         ax2 = axes[0, 1]
@@ -635,10 +702,6 @@ def generate_gif_animation(
     plt.close(fig)
 
     # Write reproducibility manifest sidecar
-    import hashlib
-    import json
-    from datetime import datetime, timezone
-
     rt = data.get("runtime_metadata", {})
     spec_str = json.dumps(data.get("gnn_spec", {}), sort_keys=True)
     manifest = {
@@ -651,9 +714,7 @@ def generate_gif_animation(
             "inference_iterations", "unknown"
         ),
         "belief_accuracy": data.get("validation", {}).get("belief_accuracy"),
-        "inference_converged": data.get("validation", {}).get(
-            "inference_converged"
-        ),
+        "inference_converged": data.get("validation", {}).get("inference_converged"),
         "uses_real_rxinfer": rt.get("uses_real_rxinfer"),
         "model_kind": rt.get("model_kind", "unknown"),
         "num_states": data.get("model_parameters", {}).get("num_states"),

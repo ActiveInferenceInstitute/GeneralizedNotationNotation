@@ -1,0 +1,358 @@
+"""Tests for the cross-framework comparison module (roadmap A6).
+
+The HTML renderer is a pure function over ``FrameworkRun`` records, so the
+bulk of this file runs unconditionally with no Julia and no subprocesses,
+asserting on real data structures. Exit-code classification is exercised
+against real files on disk. Only the end-to-end run against a live Julia
+toolchain is gated.
+
+Public functions:
+- test_julia_project_paths_resolve
+- test_every_renderer_accepts_the_shared_spec
+- test_html_reports_status_and_reasons_for_every_framework
+- test_html_embeds_belief_payload_for_successful_frameworks
+- test_html_renders_when_every_framework_failed
+- test_chart_payload_reads_beliefs_by_factor
+- test_clean_exit_with_results_is_success
+- test_exit_one_with_results_is_validation_failed
+- test_nonzero_exit_without_results_is_execution_failed
+- test_clean_exit_without_results_is_execution_failed
+- test_malformed_results_json_is_invalid_results
+- test_stderr_excerpt_keeps_the_leading_diagnostic
+- test_stderr_excerpt_surfaces_an_error_buried_in_precompile_noise
+- test_missing_gnn_file_raises
+- test_live_cross_framework_comparison
+"""
+
+from __future__ import annotations
+
+import json
+import os
+import re
+import shutil
+from pathlib import Path
+
+import pytest
+
+from analysis.rxinfer.cross_framework import (
+    ACTIVEINFERENCE_JULIA_PROJECT,
+    FRAMEWORKS,
+    RXINFER_JULIA_PROJECT,
+    FrameworkRun,
+    _chart_payload,
+    _classify_exit,
+    _stderr_excerpt,
+    render_comparison_html,
+    run_cross_framework_comparison,
+)
+
+PROJECT_ROOT = Path(__file__).resolve().parents[3]
+SIMPLE_MDP = PROJECT_ROOT / "input" / "gnn_files" / "discrete" / "simple_mdp.md"
+
+JULIA = shutil.which("julia")
+
+
+def _results(beliefs: list[list[float]], *, all_valid: bool = True) -> dict:
+    """Build a minimal results payload in the shape the frameworks emit."""
+    return {
+        "framework": "canned",
+        "num_timesteps": len(beliefs),
+        "beliefs": beliefs,
+        "variational_free_energy": [3.0, 2.5, 2.1],
+        "model_parameters": {"num_states": len(beliefs[0]) if beliefs else 0},
+        "validation": {
+            "all_valid": all_valid,
+            "belief_accuracy": 0.75,
+            "inference_converged": True,
+        },
+    }
+
+
+def _canned_runs() -> list[FrameworkRun]:
+    """Two frameworks with results, one unavailable."""
+    return [
+        FrameworkRun(
+            framework="rxinfer",
+            status="success",
+            detail="completed with exit code 0",
+            results=_results([[0.7, 0.3], [0.6, 0.4], [0.9, 0.1]]),
+        ),
+        FrameworkRun(
+            framework="pymdp",
+            status="validation_failed",
+            detail="run completed but reported failed validation (exit code 1)",
+            results=_results([[0.5, 0.5], [0.55, 0.45], [0.8, 0.2]], all_valid=False),
+        ),
+        FrameworkRun(
+            framework="activeinference_jl",
+            status="unavailable",
+            detail="julia is not on PATH",
+        ),
+    ]
+
+
+def _payload_from_html(html_text: str) -> dict:
+    """Extract the embedded chart JSON from the rendered page."""
+    marker = '<script id="cf-chart-data" type="application/json">'
+    start = html_text.index(marker) + len(marker)
+    end = html_text.index("</script>", start)
+    return json.loads(html_text[start:end].replace("<\\/", "</"))
+
+
+# --- path derivation (CF-7) ---------------------------------------------------
+
+
+def test_julia_project_paths_resolve() -> None:
+    """Both Julia project dirs are CWD-independent and carry a Project.toml."""
+    assert RXINFER_JULIA_PROJECT == PROJECT_ROOT / "src" / "execute" / "rxinfer"
+    assert (
+        ACTIVEINFERENCE_JULIA_PROJECT
+        == PROJECT_ROOT / "src" / "execute" / "activeinference_jl"
+    )
+    assert (RXINFER_JULIA_PROJECT / "Project.toml").is_file()
+    assert (ACTIVEINFERENCE_JULIA_PROJECT / "Project.toml").is_file()
+
+
+# --- renderer input contract (CF-1) -------------------------------------------
+
+
+def test_every_renderer_accepts_the_shared_spec(tmp_path: Path) -> None:
+    """All three renderers take the one parsed spec dict, not the GNN file path.
+
+    Guards the defect where PyMDP and ActiveInference.jl were handed a Path and
+    therefore always failed. No Julia and no subprocess: rendering only.
+    """
+    from gnn.pomdp_extractor import extract_pomdp_from_file
+    from render.activeinference_jl.activeinference_renderer import (
+        render_gnn_to_activeinference_jl,
+    )
+    from render.pomdp_processor import pomdp_to_gnn_spec
+    from render.pymdp.pymdp_renderer import render_gnn_to_pymdp
+    from render.rxinfer.rxinfer_renderer import render_gnn_to_rxinfer
+
+    assert SIMPLE_MDP.is_file(), f"missing exemplar: {SIMPLE_MDP}"
+    pomdp_space = extract_pomdp_from_file(SIMPLE_MDP, strict_validation=True)
+    assert pomdp_space is not None
+    spec = pomdp_to_gnn_spec(pomdp_space)
+    assert isinstance(spec, dict)
+
+    renderers = {
+        "rxinfer": (render_gnn_to_rxinfer, "model_rxinfer.jl"),
+        "pymdp": (render_gnn_to_pymdp, "model_pymdp.py"),
+        "activeinference_jl": (
+            render_gnn_to_activeinference_jl,
+            "model_activeinference.jl",
+        ),
+    }
+    for framework, (renderer, filename) in renderers.items():
+        script_path = tmp_path / filename
+        success, message, _warnings = renderer(spec, script_path)
+        assert success, f"{framework} render failed: {message}"
+        assert script_path.is_file()
+        assert script_path.stat().st_size > 0
+
+    # The PyMDP runner must honour PYMDP_OUTPUT_DIR so results land in the
+    # per-framework directory rather than output/pymdp_simulations/ under CWD.
+    assert "PYMDP_OUTPUT_DIR" in (tmp_path / "model_pymdp.py").read_text(
+        encoding="utf-8"
+    )
+
+
+# --- pure HTML rendering ------------------------------------------------------
+
+
+def test_html_reports_status_and_reasons_for_every_framework(tmp_path: Path) -> None:
+    """Every framework contributes a status cell and a human-readable reason."""
+    runs = _canned_runs()
+    out = Path(render_comparison_html("simple_mdp", runs, tmp_path / "cmp.html"))
+    assert out.is_file()
+    text = out.read_text(encoding="utf-8")
+
+    for run in runs:
+        assert run.framework in text
+        assert run.status in text
+        assert run.detail in text
+
+    assert "julia is not on PATH" in text
+    assert "1/3 frameworks succeeded" in text
+
+
+def test_html_embeds_belief_payload_for_successful_frameworks(tmp_path: Path) -> None:
+    """The chart payload carries belief trajectories for every framework with results."""
+    runs = _canned_runs()
+    out = Path(render_comparison_html("simple_mdp", runs, tmp_path / "cmp.html"))
+    text = out.read_text(encoding="utf-8")
+
+    payload = _payload_from_html(text)
+    frameworks = [entry["framework"] for entry in payload["series"]]
+    assert frameworks == ["rxinfer", "pymdp"]
+    assert payload["num_states"] == 2
+    assert payload["num_steps"] == 3
+    assert payload["series"][0]["beliefs"] == [[0.7, 0.3], [0.6, 0.4], [0.9, 0.1]]
+    assert len({entry["color"] for entry in payload["series"]}) == 2
+
+    # Self-contained scrubber controls, no external dependencies.
+    assert 'id="cf-play"' in text
+    assert 'id="cf-slider"' in text
+    assert 'id="cf-canvas"' in text
+    assert "http://" not in text and "https://" not in text
+
+
+def test_html_renders_when_every_framework_failed(tmp_path: Path) -> None:
+    """An all-failed comparison still renders, with each failure reason shown."""
+    runs = [
+        FrameworkRun("rxinfer", "render_failed", "renderer rejected the spec"),
+        FrameworkRun("pymdp", "execution_failed", "exit code 2, no results"),
+        FrameworkRun("activeinference_jl", "invalid_results", "not valid JSON"),
+    ]
+    out = Path(render_comparison_html("broken_model", runs, tmp_path / "cmp.html"))
+    text = out.read_text(encoding="utf-8")
+
+    assert "0/3 frameworks succeeded" in text
+    assert "renderer rejected the spec" in text
+    assert "exit code 2, no results" in text
+    assert "not valid JSON" in text
+    assert "No framework produced belief trajectories." in text
+    assert _payload_from_html(text)["series"] == []
+
+
+def test_chart_payload_reads_beliefs_by_factor() -> None:
+    """Factored RxInfer payloads expose their first factor's beliefs."""
+    run = FrameworkRun(
+        framework="rxinfer",
+        status="success",
+        detail="ok",
+        results={"beliefs_by_factor": {"factor_0": [[0.2, 0.8], [0.4, 0.6]]}},
+    )
+    payload = _chart_payload([run])
+    assert payload["series"][0]["beliefs"] == [[0.2, 0.8], [0.4, 0.6]]
+    assert payload["num_steps"] == 2
+
+
+# --- exit-code classification (CF-3) ------------------------------------------
+
+
+def test_clean_exit_with_results_is_success(tmp_path: Path) -> None:
+    """Exit 0 plus a results file is the only clean success."""
+    results_path = tmp_path / "simulation_results.json"
+    results_path.write_text(json.dumps(_results([[1.0, 0.0]])), encoding="utf-8")
+
+    run = _classify_exit("rxinfer", 0, "", results_path)
+    assert run.status == "success"
+    assert run.results is not None
+    assert run.results["beliefs"] == [[1.0, 0.0]]
+
+
+def test_exit_one_with_results_is_validation_failed(tmp_path: Path) -> None:
+    """Exit 1 with results keeps the payload but flags failed validation."""
+    results_path = tmp_path / "simulation_results.json"
+    results_path.write_text(
+        json.dumps(_results([[0.5, 0.5]], all_valid=False)), encoding="utf-8"
+    )
+
+    run = _classify_exit("pymdp", 1, "", results_path)
+    assert run.status == "validation_failed"
+    assert run.results is not None
+    assert "validation" in run.detail
+
+
+def test_nonzero_exit_without_results_is_execution_failed(tmp_path: Path) -> None:
+    """A crashed run with no results is an execution failure with no payload."""
+    run = _classify_exit(
+        "activeinference_jl", 2, "ERROR: LoadError\nstack frame", tmp_path / "none.json"
+    )
+    assert run.status == "execution_failed"
+    assert run.results is None
+    assert "exit code 2" in run.detail
+
+
+def test_clean_exit_without_results_is_execution_failed(tmp_path: Path) -> None:
+    """Exit 0 that writes nothing violates the results contract."""
+    run = _classify_exit("rxinfer", 0, "", tmp_path / "simulation_results.json")
+    assert run.status == "execution_failed"
+    assert "not written" in run.detail
+
+
+def test_malformed_results_json_is_invalid_results(tmp_path: Path) -> None:
+    """Unparseable results are reported, never swallowed."""
+    results_path = tmp_path / "simulation_results.json"
+    results_path.write_text("{not json", encoding="utf-8")
+
+    run = _classify_exit("rxinfer", 0, "", results_path)
+    assert run.status == "invalid_results"
+    assert run.results is None
+
+
+def test_stderr_excerpt_keeps_the_leading_diagnostic() -> None:
+    """Long Julia stack traces keep their first line, where the cause is printed."""
+    stderr = "\n".join(
+        ["ERROR: LoadError: ArgumentError: Package ActiveInference is not installed"]
+        + [f"stack frame {i}" for i in range(60)]
+    )
+    excerpt = _stderr_excerpt(stderr)
+
+    assert "Package ActiveInference is not installed" in excerpt
+    assert "stack frame 59" in excerpt
+    assert "lines elided" in excerpt
+    assert len(excerpt.splitlines()) < 30
+
+
+def test_stderr_excerpt_surfaces_an_error_buried_in_precompile_noise() -> None:
+    """Julia precompile chatter must not push the real cause out of the excerpt.
+
+    Reproduces the observed shape: dozens of "precompile OK" lines, the actual
+    error in the middle, then a long stack trace.
+    """
+    stderr = "\n".join(
+        [f"  precompile OK: config {i}" for i in range(40)]
+        + ["ERROR: LoadError: Half-edge has been found: z_37"]
+        + [f"  [{i}] stack frame" for i in range(40)]
+    )
+    excerpt = _stderr_excerpt(stderr)
+
+    assert "Half-edge has been found: z_37" in excerpt
+    assert "lines elided" in excerpt
+    assert len(excerpt.splitlines()) <= (8 + 1 + 3 + 12)
+
+
+# --- entry point contract -----------------------------------------------------
+
+
+def test_missing_gnn_file_raises(tmp_path: Path) -> None:
+    """A missing GNN file is a loud FileNotFoundError, not an empty string."""
+    with pytest.raises(FileNotFoundError):
+        run_cross_framework_comparison(tmp_path / "nope.md", tmp_path / "out")
+
+
+# --- live end-to-end run ------------------------------------------------------
+# Requires Julia on PATH and is further gated on RANDOM_SIMULATION_ENABLED
+# (truthy) so a normal unit run stays fast. Julia's first-run precompile
+# exceeds the 300s pytest.ini global timeout, hence the explicit override.
+
+
+@pytest.mark.skipif(JULIA is None, reason="julia is not on PATH")
+@pytest.mark.skipif(
+    (os.environ.get("RANDOM_SIMULATION_ENABLED") or "").strip().lower()
+    not in {"1", "true", "yes", "on"},
+    reason="RANDOM_SIMULATION_ENABLED not set; live cross-framework run is optional",
+)
+@pytest.mark.timeout(900)
+def test_live_cross_framework_comparison(tmp_path: Path) -> None:
+    """The full pipeline renders, runs, and compares the simple_mdp exemplar."""
+    assert SIMPLE_MDP.is_file(), f"missing exemplar: {SIMPLE_MDP}"
+
+    html_path = Path(run_cross_framework_comparison(SIMPLE_MDP, tmp_path / "cmp"))
+    assert html_path.is_file()
+    text = html_path.read_text(encoding="utf-8")
+
+    for framework in FRAMEWORKS:
+        assert framework in text
+
+    reasons = re.findall(r'<td class="reason">(.*?)</td>', text)
+    payload = _payload_from_html(text)
+    frameworks_with_beliefs = {entry["framework"] for entry in payload["series"]}
+    assert "rxinfer" in frameworks_with_beliefs, (
+        "RxInfer produced no belief trajectory. Per-framework reasons: "
+        + "; ".join(f"{fw}={reason}" for fw, reason in zip(FRAMEWORKS, reasons))
+    )
+    assert payload["num_steps"] > 0

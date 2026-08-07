@@ -39,6 +39,7 @@ _CORE_PLOT_TYPES: List[str] = [
     "belief_evolution",
     "obs_vs_true",
     "belief_heatmap",
+    "per_factor_beliefs",
     "belief_entropy",
     "accuracy",
     "action_frequencies",
@@ -249,6 +250,106 @@ def _compute_convergence_diagnostics(free_energy: List[float]) -> Dict[str, Any]
     return diagnostics
 
 
+def compute_per_factor_beliefs(data: Dict[str, Any]) -> Dict[str, List[List[float]]]:
+    """Recover per-factor belief marginals from a flattened joint belief trace.
+
+    Multi-agent / multi-factor models are rendered onto a single flat joint
+    state space: the renderer enumerates ``itertools.product`` over
+    ``state_factors`` in list order (C order, first factor slowest-varying) and
+    builds A / B / D against that enumeration. A 256-state joint belief for
+    ``(s_agent1=4, s_agent2=4, s_joint=16)`` is therefore a reshapeable
+    ``4 x 4 x 16`` tensor, and each factor's marginal is the sum over the other
+    axes.
+
+    Args:
+        data: An ``rxinfer_simulation_v1`` results dict. The factor structure is
+            read from ``model_parameters.state_factors``, a list of
+            ``{"name": str, "size": int}`` echoed from the GNN spec.
+
+    Returns:
+        A mapping of factor name to a per-timestep list of marginals, covering
+        only factors with ``size > 1``. Size-1 factors participate in the
+        reshape (they carry a real axis in the flattening) but are omitted from
+        the output because a one-state distribution is always ``[1.0]``.
+
+        An **empty dict** signals structural absence rather than failure, in
+        three cases: ``state_factors`` is missing (flat models, or artifacts
+        written before the key existed), there are no beliefs to decompose, or
+        fewer than two factors have ``size > 1`` (the joint space *is* the
+        single factor, so the marginal would just be the belief itself).
+
+    Raises:
+        ValueError: When ``state_factors`` is present but cannot describe the
+            beliefs — a malformed descriptor, duplicate factor names, ragged
+            belief rows, a size product that contradicts the joint width, or a
+            timestep carrying no probability mass. These are contract
+            violations between renderer and analyzer, never quietly absorbed.
+    """
+    model_parameters = data.get("model_parameters")
+    if not isinstance(model_parameters, dict):
+        return {}
+    factors = model_parameters.get("state_factors")
+    if not isinstance(factors, list) or not factors:
+        return {}
+
+    beliefs = _normalise_beliefs(data)
+    if not beliefs:
+        return {}
+
+    names: List[str] = []
+    sizes: List[int] = []
+    for index, factor in enumerate(factors):
+        if not isinstance(factor, dict) or factor.get("name") is None:
+            raise ValueError(f"state_factors[{index}] is missing a 'name': {factor!r}")
+        if factor.get("size") is None:
+            raise ValueError(f"state_factors[{index}] is missing a 'size': {factor!r}")
+        names.append(str(factor["name"]))
+        sizes.append(int(factor["size"]))
+
+    informative = [index for index, size in enumerate(sizes) if size > 1]
+    if len(informative) < 2:
+        return {}
+
+    if len(set(names)) != len(names):
+        raise ValueError(f"state_factors carry duplicate factor names: {names}")
+
+    if np is None:
+        raise RuntimeError("numpy is required to compute per-factor beliefs")
+
+    joint_size = 1
+    for size in sizes:
+        joint_size *= size
+    belief_width = len(beliefs[0])
+    if joint_size != belief_width:
+        raise ValueError(
+            f"state_factors {list(zip(names, sizes))} imply {joint_size} joint "
+            f"states but beliefs carry {belief_width} per timestep"
+        )
+
+    marginals: Dict[str, List[List[float]]] = {names[i]: [] for i in informative}
+    for step, row in enumerate(beliefs):
+        if len(row) != belief_width:
+            raise ValueError(
+                f"belief row at timestep {step} has width {len(row)}, "
+                f"expected {belief_width}"
+            )
+        q_nd = np.asarray(row, dtype=float).reshape(sizes)
+        for i in informative:
+            other_axes = tuple(j for j in range(len(sizes)) if j != i)
+            marginal = q_nd.sum(axis=other_axes)
+            mass = float(marginal.sum())
+            if mass <= 0.0:
+                raise ValueError(
+                    f"belief at timestep {step} carries no probability mass "
+                    f"for factor '{names[i]}'"
+                )
+            # Renormalise against accumulated float drift; the joint already
+            # sums to ~1 so this is a correction, not a rescue.
+            marginals[names[i]].append([float(v) for v in marginal / mass])
+
+    return marginals
+
+
 # ---------------------------------------------------------------------------
 # Current-model helpers
 # ---------------------------------------------------------------------------
@@ -403,6 +504,10 @@ def create_rxinfer_visualizations(
     # Store under a dedicated key so the diagnostics ride along in the results.
     data["convergence_diagnostics"] = convergence_diagnostics
 
+    # --- Per-factor belief marginals (D4): empty for flat / single-factor models
+    per_factor_beliefs = compute_per_factor_beliefs(data)
+    data["per_factor_beliefs"] = per_factor_beliefs
+
     beliefs_arr = np.asarray(beliefs, dtype=float) if beliefs else np.zeros((0, 0))
     have_beliefs = beliefs_arr.ndim >= 1
     have_2d_beliefs = beliefs_arr.ndim == 2 and beliefs_arr.shape[0] > 0
@@ -504,6 +609,50 @@ def create_rxinfer_visualizations(
                     plt.close()
                 except (OSError, ValueError):
                     pass
+
+    # 3b. Per-Factor Belief Marginals (D4): one small-multiple panel per factor
+    if per_factor_beliefs:
+        factor_names = list(per_factor_beliefs)
+        n_factors = len(factor_names)
+        n_cols = min(3, n_factors)
+        n_rows = (n_factors + n_cols - 1) // n_cols
+        fig, panels = plt.subplots(
+            n_rows,
+            n_cols,
+            figsize=(6.0 * n_cols, 3.5 * n_rows),
+            squeeze=False,
+            layout="constrained",
+        )
+        for index, name in enumerate(factor_names):
+            ax = panels[index // n_cols][index % n_cols]
+            trajectory = np.asarray(per_factor_beliefs[name], dtype=float)
+            factor_size = trajectory.shape[1]
+            for state_index in range(factor_size):
+                ax.plot(
+                    trajectory[:, state_index],
+                    linewidth=2,
+                    label=f"State {state_index + 1}",
+                )
+            ax.set_xlabel("Time Step")
+            ax.set_ylabel("Marginal Probability")
+            ax.set_ylim(0, 1.05)
+            ax.set_title(f"{name} ({factor_size} states)", fontweight="bold")
+            ax.grid(True, alpha=0.3)
+            # Timesteps are discrete — no fractional ticks.
+            ax.locator_params(axis="x", integer=True)
+            if factor_size <= 8:
+                ax.legend(fontsize=8)
+        for index in range(n_factors, n_rows * n_cols):
+            panels[index // n_cols][index % n_cols].axis("off")
+
+        fig.suptitle(
+            f"RxInfer Per-Factor Belief Marginals - {model_name}", fontweight="bold"
+        )
+        viz_file = output_dir / f"{model_name}_rxinfer_per_factor_beliefs.png"
+        plt.savefig(viz_file, dpi=300, bbox_inches="tight")
+        plt.close()
+        visualizations.append(str(viz_file))
+        logger.info(f"Generated per-factor beliefs: {viz_file.name}")
 
     # 4. Belief Entropy (uncertainty tracking over time)
     if have_2d_beliefs:
@@ -903,5 +1052,6 @@ def extract_simulation_data(
 __all__: list[Any] = [
     "generate_analysis_from_logs",
     "create_rxinfer_visualizations",
+    "compute_per_factor_beliefs",
     "extract_simulation_data",
 ]

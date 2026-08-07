@@ -8,6 +8,8 @@ results, handles both dict-shaped array keys and missing optional keys
 returned file exists on disk with nonzero size.
 """
 
+import json
+import math
 import sys
 from pathlib import Path
 from typing import Any
@@ -16,10 +18,11 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
-from analysis.rxinfer.analyzer import create_rxinfer_visualizations
-from analysis.viz_base import MATPLOTLIB_AVAILABLE
-
-pytestmark = pytest.mark.skipif(not MATPLOTLIB_AVAILABLE, reason="matplotlib required")
+from analysis.rxinfer.analyzer import (
+    compute_per_factor_beliefs,
+    create_rxinfer_visualizations,
+    generate_analysis_from_logs,
+)
 
 # The full plot set a complete rxinfer result should emit.
 EXPECTED_PLOT_TYPES = [
@@ -223,6 +226,219 @@ def test_empty_result_does_not_raise(tmp_path: Path) -> None:
     out = tmp_path / "viz"
     paths = create_rxinfer_visualizations(results, out, "empty")
     assert isinstance(paths, list)
+
+
+def build_factored_results(
+    *,
+    factor_sizes: tuple[tuple[str, int], ...] = (
+        ("s_agent1", 4),
+        ("s_agent2", 4),
+        ("s_joint", 16),
+    ),
+    n_steps: int = 6,
+) -> dict[str, Any]:
+    """Build a multi-factor result whose beliefs live on the flattened joint space.
+
+    The joint state count is the product of the factor sizes, matching the
+    C-order ``itertools.product`` flattening the renderer uses. Beliefs are
+    deterministic, strictly positive and normalised per timestep.
+    """
+    sizes = [size for _, size in factor_sizes]
+    joint_size = math.prod(sizes)
+    beliefs = []
+    for t in range(n_steps):
+        raw = [float(((t + 1) * (k + 3)) % 7) + 0.5 for k in range(joint_size)]
+        total = sum(raw)
+        beliefs.append([value / total for value in raw])
+
+    return {
+        "schema_version": "rxinfer_simulation_v1",
+        "success": True,
+        "framework": "RxInfer.jl",
+        "num_timesteps": n_steps,
+        "beliefs": beliefs,
+        "observations": [t % 3 for t in range(n_steps)],
+        "true_states": [t % 3 for t in range(n_steps)],
+        "actions": [t % 2 for t in range(n_steps)],
+        "model_parameters": {
+            "num_states": joint_size,
+            "num_state_factors": len(factor_sizes),
+            "state_factors": [
+                {"name": name, "size": size} for name, size in factor_sizes
+            ],
+        },
+    }
+
+
+def _joint_from_marginals(marginals: list[list[float]]) -> list[float]:
+    """Flatten an outer product of marginals in C order (first factor slowest)."""
+    joint = [1.0]
+    for marginal in marginals:
+        joint = [value * component for value in joint for component in marginal]
+    return joint
+
+
+def test_per_factor_marginals_sum_to_one() -> None:
+    """Every factor marginal is a normalised distribution at every timestep."""
+    results = build_factored_results(n_steps=5)
+    per_factor = compute_per_factor_beliefs(results)
+
+    assert set(per_factor) == {"s_agent1", "s_agent2", "s_joint"}
+    expected_sizes = {"s_agent1": 4, "s_agent2": 4, "s_joint": 16}
+    for name, trajectory in per_factor.items():
+        assert len(trajectory) == 5, f"{name} lost timesteps"
+        for step, marginal in enumerate(trajectory):
+            assert len(marginal) == expected_sizes[name]
+            assert abs(sum(marginal) - 1.0) < 1e-9, (
+                f"{name} marginal at t={step} sums to {sum(marginal)}"
+            )
+            assert all(value >= 0.0 for value in marginal)
+
+
+def test_per_factor_recovers_hand_computed_c_order_marginals() -> None:
+    """A 2x3 joint built by C-order outer product decomposes back to its marginals."""
+    m_first = [0.3, 0.7]
+    m_second = [0.2, 0.5, 0.3]
+    joint = _joint_from_marginals([m_first, m_second])
+
+    # C order: index = i * 3 + j, first factor slowest-varying.
+    assert joint == pytest.approx(
+        [0.3 * 0.2, 0.3 * 0.5, 0.3 * 0.3, 0.7 * 0.2, 0.7 * 0.5, 0.7 * 0.3]
+    )
+
+    results = {
+        "beliefs": [joint, joint],
+        "model_parameters": {
+            "state_factors": [{"name": "s_a", "size": 2}, {"name": "s_b", "size": 3}],
+        },
+    }
+    per_factor = compute_per_factor_beliefs(results)
+
+    assert per_factor["s_a"][0] == pytest.approx(m_first)
+    assert per_factor["s_b"][0] == pytest.approx(m_second)
+    assert per_factor["s_a"][1] == pytest.approx(m_first)
+
+
+def test_per_factor_returns_empty_without_state_factors() -> None:
+    """Artifacts without a state_factors key are structurally flat: {}."""
+    results = build_rxinfer_results()
+    assert "state_factors" not in results["model_parameters"]
+    assert compute_per_factor_beliefs(results) == {}
+
+    del results["model_parameters"]
+    assert compute_per_factor_beliefs(results) == {}
+
+
+def test_per_factor_returns_empty_for_single_informative_factor() -> None:
+    """One informative factor (with or without size-1 companions) yields {}."""
+    single = build_factored_results(factor_sizes=(("s_only", 6),), n_steps=3)
+    assert compute_per_factor_beliefs(single) == {}
+
+    with_degenerate = build_factored_results(
+        factor_sizes=(("s_only", 6), ("signal_decay", 1)), n_steps=3
+    )
+    assert compute_per_factor_beliefs(with_degenerate) == {}
+
+
+def test_per_factor_raises_when_sizes_contradict_belief_length() -> None:
+    """Factors present but inconsistent with the joint width is a loud failure."""
+    results = build_factored_results(
+        factor_sizes=(("s_agent1", 4), ("s_agent2", 4)), n_steps=3
+    )
+    results["model_parameters"]["state_factors"][1]["size"] = 5
+
+    with pytest.raises(ValueError, match="joint states"):
+        compute_per_factor_beliefs(results)
+
+
+def test_per_factor_raises_when_factor_descriptor_is_malformed() -> None:
+    """A factor descriptor missing name/size is a spec error, not absence."""
+    results = build_factored_results(
+        factor_sizes=(("s_agent1", 4), ("s_agent2", 4)), n_steps=3
+    )
+    results["model_parameters"]["state_factors"][0] = {"size": 4}
+
+    with pytest.raises(ValueError, match="name"):
+        compute_per_factor_beliefs(results)
+
+
+def test_size_one_factors_are_skipped_but_kept_in_the_reshape() -> None:
+    """A size-1 factor contributes to flattening yet never reaches the output."""
+    m_first = [0.5, 0.25, 0.25]
+    m_second = [0.1, 0.6, 0.3]
+    joint = _joint_from_marginals([m_first, m_second, [1.0]])
+    assert len(joint) == 9
+
+    results = {
+        "beliefs": [joint],
+        "model_parameters": {
+            "state_factors": [
+                {"name": "s_agent1", "size": 3},
+                {"name": "s_agent2", "size": 3},
+                {"name": "signal_decay", "size": 1},
+            ],
+        },
+    }
+    per_factor = compute_per_factor_beliefs(results)
+
+    assert set(per_factor) == {"s_agent1", "s_agent2"}
+    assert per_factor["s_agent1"][0] == pytest.approx(m_first)
+    assert per_factor["s_agent2"][0] == pytest.approx(m_second)
+
+
+def test_factored_result_emits_per_factor_plot_and_payload(tmp_path: Path) -> None:
+    """The analyzer emits the per-factor PNG and stores the marginals on the payload."""
+    results = build_factored_results(n_steps=5)
+    out = tmp_path / "viz"
+    paths = create_rxinfer_visualizations(results, out, "multi_agent")
+
+    names = _basenames(paths)
+    assert "multi_agent_rxinfer_per_factor_beliefs.png" in names
+    plot = out / "multi_agent_rxinfer_per_factor_beliefs.png"
+    assert plot.stat().st_size > 0
+
+    payload = results["per_factor_beliefs"]
+    assert set(payload) == {"s_agent1", "s_agent2", "s_joint"}
+    assert len(payload["s_joint"]) == 5
+    assert len(payload["s_joint"][0]) == 16
+
+
+def test_flat_result_emits_no_per_factor_plot(tmp_path: Path) -> None:
+    """Flat models get an empty per_factor_beliefs payload and no extra PNG."""
+    results = build_rxinfer_results()
+    out = tmp_path / "viz"
+    paths = create_rxinfer_visualizations(results, out, "flat")
+
+    assert results["per_factor_beliefs"] == {}
+    assert "flat_rxinfer_per_factor_beliefs.png" not in _basenames(paths)
+
+
+def test_generate_analysis_from_logs_emits_gif_and_per_factor(tmp_path: Path) -> None:
+    """End-to-end: a results JSON in a log tree yields the GIF and per-factor outputs."""
+    results = build_factored_results(
+        factor_sizes=(("s_agent1", 4), ("s_agent2", 4)), n_steps=4
+    )
+    model_name = "multi_agent_coordination"
+    sim_dir = tmp_path / "execution" / model_name / "rxinfer" / "simulation_data"
+    sim_dir.mkdir(parents=True)
+    results_file = sim_dir / f"{model_name}_simulation_results.json"
+    results_file.write_text(json.dumps(results), encoding="utf-8")
+
+    out = tmp_path / "viz"
+    paths = generate_analysis_from_logs(tmp_path / "execution", out)
+    names = _basenames(paths)
+
+    assert f"{model_name}_rxinfer_animation.gif" in names
+    assert f"{model_name}_rxinfer_per_factor_beliefs.png" in names
+    for path in paths:
+        assert Path(path).exists() and Path(path).stat().st_size > 0
+
+    # generate_analysis_from_logs returns file paths, not the enriched payload, so
+    # assert the payload enrichment on the same JSON the pipeline reads.
+    payload = json.loads(results_file.read_text(encoding="utf-8"))
+    create_rxinfer_visualizations(payload, out, model_name)
+    assert set(payload["per_factor_beliefs"]) == {"s_agent1", "s_agent2"}
+    assert len(payload["per_factor_beliefs"]["s_agent1"]) == 4
 
 
 def test_synthetic_array_lengths_match(tmp_path: Path) -> None:

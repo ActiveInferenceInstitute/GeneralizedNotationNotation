@@ -13,6 +13,7 @@ from .analyzer import (
     generate_analysis_from_logs,
 )
 from .animator import generate_animated_html
+from .cross_framework import run_cross_framework_comparison
 from .dashboard import generate_dashboard
 from .gif_animator import generate_gif_animation
 
@@ -23,4 +24,5 @@ __all__: list[Any] = [
     "generate_animated_html",
     "generate_gif_animation",
     "generate_dashboard",
+    "run_cross_framework_comparison",
 ]

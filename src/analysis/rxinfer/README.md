@@ -27,7 +27,33 @@ output/16_analysis_output/rxinfer/
 
 Generated plots include belief evolution, belief heatmaps, observation/state traces,
 entropy, inference accuracy, action frequencies, belief convergence, belief trace,
-free energy, observations, and EFE per action heatmap.
+free energy, observations, EFE per action heatmap, convergence diagnostics
+(VFE slope / rate / iterations-to-convergence), and — for multi-factor models —
+per-factor belief-trajectory small-multiples.
+
+### GIF Animations (roadmap D7 + D4 + A7)
+
+`generate_analysis_from_logs` also produces a publication-style animated GIF per
+model (`<model>_rxinfer_animation.gif`) via `generate_gif_animation`: 2×3 panels
+covering beliefs (per-factor marginals when `state_factors` declares >1 factor),
+true/inferred states, the Bayesian graph model, VFE trace, EFE-per-action
+heatmap, and the policy posterior. Each GIF carries a `.manifest.json`
+reproducibility sidecar (GNN spec hash, Julia/RxInfer versions, seed, timesteps,
+inference iterations, belief accuracy). `generate_dashboard` builds a single
+self-contained HTML dashboard over a directory of GIFs + manifests.
+
+### Cross-Framework Comparison (roadmap A6)
+
+`run_cross_framework_comparison(gnn_file, output_dir)` renders the same GNN
+model to RxInfer.jl, PyMDP, and ActiveInference.jl from one parsed spec, runs
+all three, and writes `<model>_comparison.html` into `output_dir` alongside a
+per-framework subdirectory of rendered scripts and raw results.
+
+The page contains a metrics table — including a per-framework status row with
+the reason any framework did not succeed — and an animated belief-trajectory
+chart that overlays every framework's beliefs per hidden state over time,
+colour-coded, with play/pause and a step slider. The chart is a self-contained
+inline canvas script: no external assets, no network access.
 
 ## Per-Exemplar Visualization Set
 
