@@ -103,6 +103,40 @@ C={(0.0, 0.5, 1.0, 0.5)}
 
 D={(0.4, 0.4, 0.2)}
 
+
+# Continuous (linear-Gaussian) parameterization — native RxInfer LGSSM rendering
+# State mu = (mu, mu_dot): generalized coordinates of the predictive-coding belief.
+# F: linearized dynamics f(mu) — mu integrates mu_dot (dt = 0.1); mu_dot leaks toward the flow
+F={
+  (1.0, 0.1),
+  (0.0, 0.8)
+}
+
+# H: linearized sensory mapping g(mu) — identity readout of both generalized coordinates
+H={
+  (1.0, 0.0),
+  (0.0, 1.0)
+}
+
+# Q: dynamics-error covariance Pi_d^-1 (dynamics precision Pi_d = 10)
+Q={
+  (0.1, 0.0),
+  (0.0, 0.1)
+}
+
+# R: sensory-error covariance Pi_s^-1 (sensory precision Pi_s = 4)
+R={
+  (0.25, 0.0),
+  (0.0, 0.25)
+}
+
+# Gaussian prior over initial beliefs: broad/uninformative (D is near-uniform)
+prior_mean={(0.0, 0.0)}
+prior_cov={
+  (1.0, 0.0),
+  (0.0, 1.0)
+}
+
 ## Equations
 
 # Predictive coding formulation (preserved from the continuous agent):

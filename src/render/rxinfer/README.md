@@ -19,7 +19,18 @@ The renderer consumes `canonical_pomdp_v1` data:
 - `E`: policy prior when present
 - matrix provenance and runtime metadata
 
-Generated scripts import RxInfer.jl and write `simulation_results.json` with schema `rxinfer_simulation_v1`. The canonical renderer (`rxinfer_renderer.py`) emits a genuine Julia script per model defining `@model function pomdp_model(y, A, B, D, u, T)` with `Categorical` / `DiscreteTransition` nodes and runs `infer()` with `free_energy = true`, returning real posteriors and a genuine variational free energy trace. The legacy TOML-based `toml_generator.py` is **deprecated** (`render_gnn_to_rxinfer_toml` emits a `DeprecationWarning`).
+Generated scripts import RxInfer.jl and write `simulation_results.json` with schema `rxinfer_simulation_v1`. The canonical renderer (`rxinfer_renderer.py`) dispatches by detected `ModelKind` to per-kind strategies (`model_strategies.py`), each emitting a genuine Julia script that runs `infer()` with `free_energy = true`:
+
+| ModelKind | Strategy | Generated model |
+|---|---|---|
+| FLAT | `FlatStrategy` | `pomdp_model` — batch smoothing, or per-timestep filtering when `inference_mode: online` is declared in ModelParameters (or passed as a render option) |
+| HIERARCHICAL | `HierarchicalStrategy` | `hierarchical_pomdp_model` for two-level exemplars (context latent coupled into the fast prior, mean-field constraints + initialization); 3+ declared levels render as the documented joint composition |
+| FACTORED | `FactoredStrategy` | `factored_pomdp_model` — native mean-field two-factor model with multi-parent likelihood (`DiscreteTransition(s1, A_m0, s2)`), per-factor posteriors |
+| CONTINUOUS | `ContinuousStrategy` | `continuous_pomdp_model` — linear-Gaussian state space (F/H/Q/R + Gaussian prior from InitialParameterization); beliefs are posterior means, sign-agnostic VFE validation |
+| LEARNING | `LearningStrategy` | `learning_pomdp_model` — likelihood matrix A learned as a latent `DirichletCollection` from `dirichlet_A` pseudo-counts; reports learned-A mean and prior/posterior distance to the true A |
+| MULTI_AGENT | `MultiAgentStrategy` | joint composition with true kind stamped; per-agent marginals recovered downstream from the `state_factors` echo |
+
+The legacy TOML-based `toml_generator.py` is **deprecated** (`render_gnn_to_rxinfer_toml` emits a `DeprecationWarning`).
 
 ## Generated-script outputs
 

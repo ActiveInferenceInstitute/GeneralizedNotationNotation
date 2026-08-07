@@ -110,6 +110,41 @@ D={(0.8, 0.1, 0.1)}
 gamma_state={(10.0)}
 gamma_obs={(5.0)}
 
+
+# Continuous (linear-Gaussian) parameterization — native RxInfer LGSSM rendering
+# State x = (position, velocity); Euler discretization (dt = 0.1) of dx/dt = F*x + G*u
+# with mild velocity damping
+F={
+  (1.0, 0.1),
+  (0.0, 0.9)
+}
+
+# H: o = H*x — two noisy position readouts (both observation channels read position)
+H={
+  (1.0, 0.0),
+  (1.0, 0.0)
+}
+
+# Q: process noise covariance = gamma_state^-1 * I (gamma_state = 10.0)
+Q={
+  (0.1, 0.0),
+  (0.0, 0.1)
+}
+
+# R: observation noise covariance = gamma_obs^-1 * I (gamma_obs = 5.0)
+R={
+  (0.2, 0.0),
+  (0.0, 0.2)
+}
+
+# Gaussian prior over the initial state: position fairly certain (D puts 0.8 on state 0),
+# velocity less so
+prior_mean={(0.0, 0.0)}
+prior_cov={
+  (0.5, 0.0),
+  (0.0, 1.0)
+}
+
 ## Equations
 
 # Original SDE formulation (preserved):

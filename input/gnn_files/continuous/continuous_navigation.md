@@ -84,6 +84,40 @@ C={(-1.0, -1.0, 3.0)}
 # D: start at L0
 D={(0.9, 0.05, 0.05)}
 
+
+# Continuous (linear-Gaussian) parameterization — native RxInfer LGSSM rendering
+# State x = (x, y) position of the continuous 2D Gaussian navigator.
+# F: position persists between steps; movement enters as the control input u.
+F={
+  (1.0, 0.0),
+  (0.0, 1.0)
+}
+
+# H: noisy location readings observe the 2D position directly (identity readout)
+H={
+  (1.0, 0.0),
+  (0.0, 1.0)
+}
+
+# Q: process (motion) noise — modest slip per step (discrete B rows keep 0.9 mass)
+Q={
+  (0.05, 0.0),
+  (0.0, 0.05)
+}
+
+# R: observation noise on the location readings (discrete A keeps 0.9 diagonal)
+R={
+  (0.1, 0.0),
+  (0.0, 0.1)
+}
+
+# Gaussian prior over the initial position: start at L0 = origin, fairly certain (D puts 0.9 on L0)
+prior_mean={(0.0, 0.0)}
+prior_cov={
+  (0.5, 0.0),
+  (0.0, 0.5)
+}
+
 ## Equations
 # Standard Active Inference update equations
 # State inference: qs = softmax(ln(A[o,:]) + ln(B[s_prev] @ pi))

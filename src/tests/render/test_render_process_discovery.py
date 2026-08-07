@@ -4,7 +4,7 @@ Verifies the recursive-discovery fix in ``src/render/processor.py``:
 
 1. ``process_render(..., recursive=True)`` (the default) walks nested exemplar
    folders (discrete/, basics/, continuous/, pomdp_gridworld/, ...) and renders
-   every exemplar GNN spec to RxInfer.jl — 45 exemplar ``*.md`` files all
+   every exemplar GNN spec to RxInfer.jl — 46 exemplar ``*.md`` files all
    discovered and rendered.
 2. Passing ``recursive=False`` via kwargs reverts to a top-level-only glob, so
    no nested files are found and ``process_render`` returns exit code ``2``.
@@ -23,7 +23,7 @@ from render.processor import process_render
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
 EXEMPLAR_DIR = REPO_ROOT / "input" / "gnn_files"
-EXPECTED_EXEMPLAR_COUNT = 45
+EXPECTED_EXEMPLAR_COUNT = 46
 
 
 def _count_exemplar_md_files() -> int:
@@ -33,7 +33,7 @@ def _count_exemplar_md_files() -> int:
     return sum(1 for path in EXEMPLAR_DIR.rglob("*.md") if is_model_source_path(path))
 
 
-def test_process_render_recursive_discovers_and_renders_all_45_exemplars(
+def test_process_render_recursive_discovers_and_renders_all_46_exemplars(
     tmp_path: Path,
 ) -> None:
     output_dir = tmp_path / "render_out"
@@ -45,7 +45,7 @@ def test_process_render_recursive_discovers_and_renders_all_45_exemplars(
         verbose=False,
     )
 
-    # Recursive render of 45 exemplars should succeed under the aggregate policy.
+    # Recursive render of 46 exemplars should succeed under the aggregate policy.
     assert result is True or result is not False
 
     summary_path = output_dir / "render_processing_summary.json"
@@ -54,7 +54,7 @@ def test_process_render_recursive_discovers_and_renders_all_45_exemplars(
     )
     summary = json.loads(summary_path.read_text(encoding="utf-8"))
 
-    # (1) Recursive discovery is the fix under test: all 45 exemplars found.
+    # (1) Recursive discovery is the fix under test: all 46 exemplars found.
     assert summary["total_files"] == EXPECTED_EXEMPLAR_COUNT
     assert summary["total_files"] == _count_exemplar_md_files()
 

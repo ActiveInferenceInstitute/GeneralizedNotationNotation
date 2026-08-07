@@ -136,6 +136,14 @@ class RxInferRenderer:
             Generated Julia code string
         """
         canonical_spec = build_canonical_pomdp_spec(gnn_spec)
+        # Renderer options may set inference_mode ("batch" | "online"); a GNN
+        # file's own ModelParameters declaration wins over the option so the
+        # spec stays authoritative.
+        mode = self.options.get("inference_mode")
+        if mode is not None:
+            canonical_spec.setdefault("model_parameters", {}).setdefault(
+                "inference_mode", str(mode)
+            )
         return self._generate_canonical_rxinfer_code(canonical_spec, model_name)
 
     def _generate_canonical_rxinfer_code(
@@ -144,9 +152,7 @@ class RxInferRenderer:
         """Dispatch code generation to the strategy for this detected model kind.
 
         The flat POMDP generator is preserved verbatim as ``FlatStrategy``.
-        Other model kinds route to their strategy, which raises
-        ``NotImplementedError`` until those generators are implemented
-        upstream.
+        Kinds without a native generator raise ``NotImplementedError``.
         """
         model_kind = detect_model_kind(gnn_spec)
         strategy = get_model_strategy(model_kind)

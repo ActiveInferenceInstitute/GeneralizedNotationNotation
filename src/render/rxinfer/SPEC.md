@@ -40,7 +40,8 @@ normally. Step 12 `main()` returns non-zero only if `validation.all_valid` is fa
 
 ```
 rxinfer/
-├── rxinfer_renderer.py     # Core renderer — genuine @model + infer() (625 lines)
+├── rxinfer_renderer.py     # Core renderer — ModelKind dispatch, genuine @model + infer()
+├── model_strategies.py     # Per-kind generators: flat (batch/online), hierarchical, factored, continuous LGSSM, Dirichlet learning, multi-agent joint
 ├── toml_generator.py       # DEPRECATED TOML config generation (retained for history/reference)
 └── ...
 ```
