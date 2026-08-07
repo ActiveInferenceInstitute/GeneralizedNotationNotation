@@ -69,7 +69,7 @@
       "description": "Structured factor graph and posterior fixtures.",
       "target_dir": "input/gnn_files/structured",
       "frameworks": "pymdp",
-      "representative_files": ["factor_graph_model.md"]
+      "representative_files": ["factorized_posterior.md"]
     },
     {
       "name": "gridworld",
@@ -83,7 +83,7 @@
       "description": "PyMDP scaling-study fixtures, sampled conservatively for acceptance.",
       "target_dir": "input/gnn_files/pymdp_scaling_study",
       "frameworks": "pymdp",
-      "representative_files": ["pymdp_scaling_N2_T10.md", "pymdp_scaling_N4_T10.md"]
+      "representative_files": ["pymdp_scaling_N4_T100.md", "pymdp_scaling_N8_T100.md"]
     }
   ]
 }
