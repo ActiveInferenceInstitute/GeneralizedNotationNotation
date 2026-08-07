@@ -13,6 +13,7 @@ for renderers and consumers.
 
 from __future__ import annotations
 
+import re
 from copy import deepcopy
 from enum import Enum
 from typing import Any, Dict, Iterable, List, Tuple, TypedDict, cast
@@ -271,40 +272,96 @@ def _is_active_inference_matrix_key(key: str) -> bool:
     )
 
 
-def detect_model_kind(gnn_spec: Dict[str, Any]) -> ModelKind:
-    """Detect the model structure from a GNN spec.
+_AGENT_MATRIX_KEY = re.compile(r"^[ABCDE]_agent\d+", re.IGNORECASE)
+_LEVEL_MATRIX_KEY = re.compile(r"^[ABCDE]_level\d+", re.IGNORECASE)
+_DIRICHLET_PRIOR_KEY = re.compile(r"^dirichlet_[ABCDE]$", re.IGNORECASE)
+_CONTINUOUS_PARAM_KEYS = frozenset({"F", "H", "Q", "R"})
 
-    Heuristic detection based on GNN section names, variable declarations,
-    and agent keys. Returns the most specific kind that matches.
+
+def _structured_matrix_keys(gnn_spec: Dict[str, Any]) -> List[str]:
+    """Return raw (pre-composition) matrix key names from the spec.
+
+    Per-level / per-agent matrix declarations survive canonicalization only
+    inside ``structured_pomdp['matrices']`` — the top-level
+    ``initialparameterization`` holds the composed joint A/B/C/D.
     """
-    spec_str = str(gnn_spec).lower()
-    section = str(gnn_spec.get("gnn_section", "")).lower()
+    structured = gnn_spec.get("structured_pomdp")
+    if not isinstance(structured, dict):
+        return []
+    matrices = structured.get("matrices")
+    if not isinstance(matrices, dict):
+        return []
+    return [str(key) for key in matrices]
+
+
+def detect_model_kind(gnn_spec: Dict[str, Any]) -> ModelKind:
+    """Detect the model structure from a GNN spec — structurally.
+
+    Detection reads ONLY typed fields: the ``gnn_section`` value (the raw
+    ``## GNNSection`` header, propagated by the extractor), declared matrix
+    key patterns in ``structured_pomdp['matrices']``, explicit agent counts,
+    and explicit ``model_parameters`` keys. Free-text scanning of the spec
+    (the old ``str(gnn_spec)`` substring soup) is deliberately gone: prose in
+    a ModelName or annotation must never change how a model renders.
+
+    Precedence: MULTI_AGENT > HIERARCHICAL > CONTINUOUS > LEARNING >
+    FACTORED > FLAT (multi-agent and hierarchical files also have multiple
+    factors, so the more specific kinds are checked first).
+    """
     initial = gnn_spec.get("initialparameterization") or gnn_spec.get(
         "initial_parameterization", {}
     )
+    if not isinstance(initial, dict):
+        raise ValueError(
+            f"initialparameterization must be a mapping, got {type(initial).__name__}"
+        )
+    initial_keys = [str(key) for key in initial]
+    matrix_keys = _structured_matrix_keys(gnn_spec)
+    all_keys = initial_keys + matrix_keys
+    section = str(gnn_spec.get("gnn_section") or "").lower()
+    model_params = gnn_spec.get("model_parameters", {})
+    if not isinstance(model_params, dict):
+        model_params = {}
 
-    # Multi-agent: nr_agents or agent{i}_ keys
-    if any(k.startswith("agent") or k.startswith("nr_agents") for k in initial):
-        return ModelKind.MULTI_AGENT
-    if "multiagent" in section or "multi_agent" in spec_str:
+    # Multi-agent: an explicit agent count > 1 or per-agent matrix keys.
+    nr_agents = initial.get("nr_agents", model_params.get("nr_agents", 1))
+    try:
+        nr_agents = int(nr_agents)
+    except (TypeError, ValueError):
+        nr_agents = 1
+    if nr_agents > 1 or any(_AGENT_MATRIX_KEY.match(key) for key in all_keys):
         return ModelKind.MULTI_AGENT
 
-    # Hierarchical: multi-level state hierarchy
-    if "hierarchical" in section or "hierarchy" in spec_str:
+    # Hierarchical: declared section or per-level matrix keys.
+    if "hierarchical" in section or any(
+        _LEVEL_MATRIX_KEY.match(key) for key in all_keys
+    ):
         return ModelKind.HIERARCHICAL
 
-    # Continuous: continuous state/observation declarations
-    if "continuous" in section or "stochastic_dynamics" in spec_str:
+    # Continuous: declared section or an explicit continuous
+    # parameterization (F/H/Q/R system matrices or a Gaussian prior).
+    if "continuous" in section:
+        return ModelKind.CONTINUOUS
+    if _CONTINUOUS_PARAM_KEYS.issubset(set(initial_keys)) or {
+        "prior_mean",
+        "prior_cov",
+    }.issubset(set(initial_keys)):
         return ModelKind.CONTINUOUS
 
-    # Learning: Dirichlet priors / parameter learning
-    if "dirichlet" in spec_str or "learning" in section:
+    # Learning: declared section or explicit Dirichlet prior parameter keys
+    # (a prose mention of "Dirichlet" in an annotation must not reroute).
+    if "learning" in section or any(
+        _DIRICHLET_PRIOR_KEY.match(key) for key in initial_keys
+    ):
         return ModelKind.LEARNING
 
-    # Factored: multiple hidden state factors — only when explicit num_factors > 1
-    # or when there are genuinely separate factor declarations (not just s and s_prime)
-    model_params = gnn_spec.get("model_parameters", {})
-    if model_params.get("num_factors", 1) > 1:
+    # Factored: explicit num_factors declaration.
+    num_factors = model_params.get("num_factors", 1)
+    try:
+        num_factors = int(num_factors)
+    except (TypeError, ValueError):
+        num_factors = 1
+    if num_factors > 1:
         return ModelKind.FACTORED
 
     return ModelKind.FLAT

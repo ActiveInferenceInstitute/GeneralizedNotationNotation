@@ -48,6 +48,7 @@ class POMDPStateSpace:
     # Metadata
     model_name: Optional[str] = None
     model_annotation: Optional[str] = None
+    gnn_section: Optional[str] = None  # raw ## GNNSection value (e.g. ActInfPOMDP)
     ontology_mapping: Optional[Dict[str, str]] = None
     num_timesteps: Optional[int] = None  # Simulation timesteps (from ModelParameters)
     model_parameters: Optional[Dict[str, Any]] = None
@@ -138,6 +139,7 @@ class POMDPExtractor:
             # Extract basic information
             model_name = self._extract_model_name(sections)
             model_annotation = self._extract_model_annotation(sections)
+            gnn_section = sections.get("GNNSection", "").strip() or None
 
             # Parse state space block
             state_space_info = self._parse_state_space_block(
@@ -222,6 +224,7 @@ class POMDPExtractor:
                 connections=connections,
                 model_name=model_name,
                 model_annotation=model_annotation,
+                gnn_section=gnn_section,
                 ontology_mapping=ontology_mapping,
                 num_timesteps=num_timesteps,
                 model_parameters=model_parameters,

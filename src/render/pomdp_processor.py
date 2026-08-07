@@ -799,6 +799,7 @@ class POMDPRenderProcessor:
             "name": pomdp_space.model_name or "POMDP_Model",
             "model_name": pomdp_space.model_name or "POMDP_Model",
             "description": pomdp_space.model_annotation or "Extracted POMDP model",
+            "gnn_section": getattr(pomdp_space, "gnn_section", None),
             "model_parameters": {
                 **raw_model_parameters,
                 **canonical_model_parameters,
@@ -1470,6 +1471,17 @@ Refer to the main {framework} documentation for information on how to run the ge
 
         except Exception as e:
             self.logger.warning(f"Failed to create documentation for {framework}: {e}")
+
+
+def pomdp_to_gnn_spec(pomdp_space: "POMDPStateSpace", **kwargs: Any) -> Dict[str, Any]:
+    """Public spec conversion: POMDP state space -> renderer GNN spec dict.
+
+    Callers outside the render package (e.g. analysis-side cross-framework
+    execution) must use this instead of reaching into
+    ``POMDPRenderProcessor._pomdp_to_gnn_spec``. Conversion is pure — no
+    output directory is created or written.
+    """
+    return POMDPRenderProcessor(Path("."))._pomdp_to_gnn_spec(pomdp_space, **kwargs)
 
 
 def process_pomdp_for_frameworks(

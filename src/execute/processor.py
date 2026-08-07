@@ -1134,6 +1134,16 @@ def _build_execution_environment(
 ) -> Dict[str, str]:
     """Build environment variables for a rendered-script subprocess."""
     env = os.environ.copy()
+    # Julia frameworks: default JULIA_PROJECT to the committed framework
+    # environment so `using GnnRxInferModels` / `using ActiveInference`
+    # resolve without an ambient env (e.g. a /tmp test env that may not
+    # exist). An explicitly set JULIA_PROJECT still wins.
+    julia_projects = {
+        "rxinfer": Path(__file__).resolve().parent / "rxinfer",
+        "activeinference_jl": Path(__file__).resolve().parent / "activeinference_jl",
+    }
+    if context.framework in julia_projects:
+        env.setdefault("JULIA_PROJECT", str(julia_projects[context.framework]))
     if context.framework == "pymdp":
         env["PYTHONPATH"] = (
             str(context.script_path.parent) + os.pathsep + env.get("PYTHONPATH", "")

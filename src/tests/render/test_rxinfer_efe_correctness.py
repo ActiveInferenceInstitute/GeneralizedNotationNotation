@@ -49,19 +49,23 @@ def test_generated_code_contains_efe_function(tmp_path: Path) -> None:
 
 
 def test_efe_uses_correct_sign_convention(tmp_path: Path) -> None:
-    """EFE must use the convention: lower EFE is better (softmax(-precision * EFE)).
+    """EFE must use the convention: lower EFE is better.
 
-    The action selection must use softmax(-ACTION_PRECISION * efe_values),
-    not softmax(+ACTION_PRECISION * efe_values).
+    Action selection is softmax(log E - ACTION_PRECISION * efe_values): the
+    habit prior E enters via log-add (uniform E cancels inside softmax) and
+    EFE must be NEGATED (lower EFE = better action), never added.
     """
     source = _render_simple_mdp(tmp_path).read_text(encoding="utf-8")
-    # select_action must negate EFE (lower EFE = better action)
-    assert "softmax(-ACTION_PRECISION" in source, (
-        "Action selection must use softmax(-ACTION_PRECISION * efe) "
-        "(lower EFE = better action)"
+    # select_action and compute_efe_and_policy must negate EFE, with the
+    # habit prior as a log-additive term.
+    assert (
+        "softmax(log.(max.(E_prior, 1e-16)) .- ACTION_PRECISION .* efe_values)"
+        in source
+    ), (
+        "Action selection must use softmax(log E - ACTION_PRECISION * efe) "
+        "(lower EFE = better action, habit prior log-added)"
     )
-    # compute_efe_and_policy must also negate
-    assert "softmax(-ACTION_PRECISION" in source
+    assert "+ ACTION_PRECISION .* efe_values" not in source
 
 
 def test_efe_ambiguity_uses_log_likelihood(tmp_path: Path) -> None:
