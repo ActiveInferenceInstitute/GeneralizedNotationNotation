@@ -152,8 +152,10 @@ See [src/AGENTS.md](../../src/AGENTS.md) for complete pipeline documentation.
 ## Render → Execute → Log → Visualize lifecycle
 
 The RxInfer.jl lifecycle moves a GNN spec through four stages, producing distinct
-artifact types at each step. All 45 exemplar GNN files under `input/gnn_files/**`
-render to and execute under RxInfer.jl (45/45 render + execute).
+artifact types at each step. All 46 exemplar GNN files under `input/gnn_files/**`
+render to and execute under RxInfer.jl (46/46 render + execute), dispatched by
+detected ModelKind to native flat/hierarchical/factored/continuous/learning
+generators (multi-agent renders as the documented joint composition).
 
 ### 1. Render (Step 11)
 
