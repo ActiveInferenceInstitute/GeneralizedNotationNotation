@@ -11,6 +11,8 @@ import math
 from pathlib import Path
 from typing import Any
 
+import pytest
+
 from analysis.rxinfer.gif_animator import generate_gif_animation
 
 
@@ -240,6 +242,101 @@ def test_flat_model_keeps_joint_belief_panel(tmp_path: Path) -> None:
 
     output = tmp_path / "flat.gif"
     path = generate_gif_animation(results, output, "FlatModel")
+    assert Path(path).exists()
+    assert Path(path).stat().st_size > 1000
+
+
+def _build_hierarchical_results(n_steps: int = 8) -> dict[str, Any]:
+    """Build a synthetic two-level hierarchical payload (fast + slow factors)."""
+    n_fast, n_slow, n_actions = 4, 2, 2
+    fast_beliefs = []
+    slow_beliefs = []
+    for t in range(n_steps):
+        fast = [0.05] * n_fast
+        fast[t % n_fast] = 1.0 - 0.05 * (n_fast - 1)
+        fast_beliefs.append(fast)
+        slow = [0.3, 0.7] if t % 2 else [0.7, 0.3]
+        slow_beliefs.append(slow)
+
+    return {
+        "schema_version": "rxinfer_simulation_v1",
+        "success": True,
+        "framework": "RxInfer.jl",
+        "model_name": "hierarchical_agent",
+        "num_timesteps": n_steps,
+        "beliefs_by_factor": {"s_fast": fast_beliefs, "s_slow": slow_beliefs},
+        "observations": [t % n_fast for t in range(n_steps)],
+        "true_states": [t % n_fast for t in range(n_steps)],
+        "actions": [t % n_actions for t in range(n_steps)],
+        "vfe_per_iteration": [5.5 - 0.2 * i for i in range(15)],
+        "gnn_spec": {
+            "connections": ["D>s", "s>o", "A>o", "B>s", "u>s", "C>G", "G>u"],
+        },
+        "model_parameters": {"num_states": n_fast, "num_slow_states": n_slow},
+        "validation": {
+            "inference_converged": True,
+            "context_beliefs_valid": True,
+            "context_beliefs_sum_to_one": True,
+        },
+        "runtime_metadata": {
+            "uses_real_rxinfer": True,
+            "model_kind": "hierarchical",
+        },
+    }
+
+
+def test_hierarchical_kind_renders_and_manifest_records_kind(tmp_path: Path) -> None:
+    """A hierarchical payload (fast/slow beliefs_by_factor) renders via the
+    hierarchical strategy layout and the manifest records model_kind."""
+    results = _build_hierarchical_results()
+    output = tmp_path / "hierarchical_100steps.gif"
+    path = generate_gif_animation(results, output, "hierarchical_agent")
+
+    assert Path(path).exists()
+    assert Path(path).stat().st_size > 1000
+    with open(output, "rb") as f:
+        assert f.read(6) in (b"GIF87a", b"GIF89a")
+
+    manifest = json.loads(
+        output.with_suffix(".manifest.json").read_text(encoding="utf-8")
+    )
+    assert manifest["model_kind"] == "hierarchical"
+
+
+def test_flat_kind_still_renders_and_manifest_records_kind(tmp_path: Path) -> None:
+    """A model_kind='flat' payload still renders, with the kind in the manifest."""
+    results = _build_synthetic_results()
+    assert results["runtime_metadata"]["model_kind"] == "flat"
+    results["gnn_spec"] = {
+        "connections": ["D>s", "s>o", "A>o", "s>s_prime", "B>s_prime", "u>s_prime"],
+    }
+    output = tmp_path / "flat_kind_100steps.gif"
+    path = generate_gif_animation(results, output, "FlatKind")
+
+    assert Path(path).exists()
+    assert Path(path).stat().st_size > 1000
+    manifest = json.loads(
+        output.with_suffix(".manifest.json").read_text(encoding="utf-8")
+    )
+    assert manifest["model_kind"] == "flat"
+
+
+def test_unknown_model_kind_raises_value_error(tmp_path: Path) -> None:
+    """An unknown runtime_metadata.model_kind fails loud with ValueError."""
+    results = _build_synthetic_results()
+    results["runtime_metadata"]["model_kind"] = "quantum"
+    output = tmp_path / "unknown_kind.gif"
+    with pytest.raises(ValueError, match="unknown model_kind 'quantum'"):
+        generate_gif_animation(results, output, "UnknownKind")
+    assert not output.exists()
+
+
+def test_missing_model_kind_defaults_to_flat(tmp_path: Path) -> None:
+    """Legacy payloads without runtime_metadata.model_kind keep working."""
+    results = _build_synthetic_results()
+    del results["runtime_metadata"]["model_kind"]
+    output = tmp_path / "legacy.gif"
+    path = generate_gif_animation(results, output, "LegacyModel")
     assert Path(path).exists()
     assert Path(path).stat().st_size > 1000
 

@@ -180,6 +180,44 @@ def _parse_gnn_connections(
     return positions, edges
 
 
+def _resolve_strategy_layout(data: Dict[str, Any]) -> Dict[str, Any]:
+    """Resolve the graph-panel node layout via the render-side strategy (FP-8).
+
+    Reads ``runtime_metadata.model_kind`` (defaulting to ``"flat"`` when
+    absent, keeping old behavior for payloads written before the field
+    existed) and asks the registered ``ModelStrategy`` for its
+    ``generate_graph_layout(gnn_spec)``. Every registered strategy provides
+    a layout natively.
+
+    Raises:
+        ValueError: When ``model_kind`` is not a known ``ModelKind`` value —
+            loud, never silently absorbed.
+    """
+    from render.pomdp_contract import ModelKind
+    from render.rxinfer.model_strategies import get_model_strategy
+
+    kind_value = str((data.get("runtime_metadata") or {}).get("model_kind", "flat"))
+    try:
+        kind = ModelKind(kind_value)
+    except ValueError as exc:
+        raise ValueError(
+            f"unknown model_kind {kind_value!r} in runtime_metadata; "
+            f"expected one of {[member.value for member in ModelKind]}"
+        ) from exc
+
+    gnn_spec = data.get("gnn_spec", {})
+    if isinstance(gnn_spec, str):
+        try:
+            gnn_spec = json.loads(gnn_spec)
+        except (json.JSONDecodeError, ValueError):
+            gnn_spec = {}
+    if not isinstance(gnn_spec, dict):
+        gnn_spec = {}
+
+    layout = get_model_strategy(kind).generate_graph_layout(gnn_spec)
+    return layout if isinstance(layout, dict) else {}
+
+
 def _node_value(
     node_name: str,
     step: int,
@@ -383,8 +421,15 @@ def generate_gif_animation(
     belief_clipped = np.clip(beliefs_arr, 1e-10, 1.0)
     joint_entropy = -np.sum(belief_clipped * np.log2(belief_clipped), axis=1)
 
-    # Parse graphical model structure
+    # Parse graphical model structure. Node positions are then overridden by
+    # the render-side model strategy's native layout (FP-8) wherever the
+    # strategy declares a coordinate for a parsed node; the GNN-derived node
+    # set and edges stay authoritative for graph structure.
     positions, edges = _parse_gnn_connections(data)
+    strategy_layout = _resolve_strategy_layout(data)
+    for node, coord in strategy_layout.items():
+        if node in positions and isinstance(coord, (tuple, list)) and len(coord) == 2:
+            positions[node] = (float(coord[0]), float(coord[1]))
 
     # Color palette — distinct colors for each state (publication style)
     state_colors = _hue_palette(max(n_states, n_actions))

@@ -250,6 +250,39 @@ def _compute_convergence_diagnostics(free_energy: List[float]) -> Dict[str, Any]
     return diagnostics
 
 
+def summarize_strategy_validation(data: Dict[str, Any]) -> Dict[str, Any]:
+    """Summarize strategy-declared validation fields present in the results (FP-8).
+
+    Reads ``runtime_metadata.model_kind`` (defaulting to ``"flat"`` for
+    payloads written before the field existed), asks the registered
+    render-side ``ModelStrategy`` which validation fields it contributes via
+    ``get_validation_fields()``, and returns ``{field: value}`` for every
+    declared field actually present in the results ``validation`` dict.
+
+    Loud on an unknown kind (``ValueError``); tolerant (field simply absent
+    from the summary) when a declared field is missing from the results.
+    Every registered strategy declares its fields natively.
+    """
+    from render.pomdp_contract import ModelKind
+    from render.rxinfer.model_strategies import get_model_strategy
+
+    kind_value = str((data.get("runtime_metadata") or {}).get("model_kind", "flat"))
+    try:
+        kind = ModelKind(kind_value)
+    except ValueError as exc:
+        raise ValueError(
+            f"unknown model_kind {kind_value!r} in runtime_metadata; "
+            f"expected one of {[member.value for member in ModelKind]}"
+        ) from exc
+
+    fields = get_model_strategy(kind).get_validation_fields()
+
+    validation = data.get("validation")
+    if not isinstance(validation, dict):
+        return {}
+    return {field: validation[field] for field in fields if field in validation}
+
+
 def compute_per_factor_beliefs(data: Dict[str, Any]) -> Dict[str, List[List[float]]]:
     """Recover per-factor belief marginals from a flattened joint belief trace.
 
@@ -507,6 +540,9 @@ def create_rxinfer_visualizations(
     # --- Per-factor belief marginals (D4): empty for flat / single-factor models
     per_factor_beliefs = compute_per_factor_beliefs(data)
     data["per_factor_beliefs"] = per_factor_beliefs
+
+    # --- Strategy-declared validation fields (FP-8): field -> value summary
+    data["validation_summary"] = summarize_strategy_validation(data)
 
     beliefs_arr = np.asarray(beliefs, dtype=float) if beliefs else np.zeros((0, 0))
     have_beliefs = beliefs_arr.ndim >= 1
@@ -1053,5 +1089,6 @@ __all__: list[Any] = [
     "generate_analysis_from_logs",
     "create_rxinfer_visualizations",
     "compute_per_factor_beliefs",
+    "summarize_strategy_validation",
     "extract_simulation_data",
 ]
