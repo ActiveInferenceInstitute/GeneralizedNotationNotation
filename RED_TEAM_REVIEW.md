@@ -2,7 +2,7 @@
 
 **Review date**: 2026-07-31
 **Reviewer**: Adversarial red-team review per `critical_review.red_team_review` (CogSecSkills)
-**Target**: `/home/trim/Documents/Git/HumOS/projects/outside_of_hum/GeneralizedNotationNotation`
+**Target**: `GeneralizedNotationNotation` repository root (local checkout)
 **Mode**: Read-only, defensive-only, no exploitation guidance
 
 ---
