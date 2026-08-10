@@ -8,6 +8,16 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
 
 ## [Unreleased]
 
+### Security (2026-08-10)
+- **Dependency flow closed to zero known advisories.** Dependabot had flagged 22 on the
+  default branch (17 high / 5 moderate). A full-tree `pip-audit` (all extras + dev; PyPI
+  and OSV sources) surfaced 20 across 3 packages, all resolved:
+  - `aiohttp` 3.14.1 → **3.14.3** (core-dep floor bumped; PYSEC-2026-3545/46/47),
+  - `gitpython` 3.1.50 → **3.1.58** constraint floor (15 GHSA advisories; transitive via `streamlit`),
+  - `ray` 2.55.1 → **2.56.0** constraint floor (PYSEC-2026-2273; `scaling` extra).
+- `uv lock` re-resolved to aiohttp 3.14.3 / gitpython 3.1.59 / ray 2.56.1; `pip-audit`
+  re-run reports **"No known vulnerabilities found"** on both advisory sources.
+
 ### Added (M8 — clean GIF batch on the curated corpus, 2026-08-07)
 - **29/29 models executed `all_valid=true` at T=100** in the clean re-run (62 min total, mean 127 s/model, max 216 s), each producing a white-style GIF + reproducibility manifest in `~/Downloads/rxinfer_animations/`; dashboard regenerated over all 29 cards with category + state-size filters and side-by-side compare. Superseded artifacts moved to `superseded_dark_mode/` / `superseded_pre_curation/`.
 - **Corpus curation**: 46 → 29 exemplars (see the `curate:` commit) — 17 redundant files pruned (−67 MB), every ModelKind still covered: 20 flat / 3 continuous / 2 hierarchical / 1 learning / 2 multi-agent / 1 factored.
