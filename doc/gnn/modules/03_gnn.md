@@ -2,7 +2,7 @@
 
 ## Architectural Mapping
 
-**Orchestrator**: `src/3_gnn.py` (30 lines)
+**Orchestrator**: `src/3_gnn.py` (32 lines)
 **Implementation Layer**: `src/gnn/`
 
 ## Module Description

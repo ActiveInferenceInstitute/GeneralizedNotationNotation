@@ -2,7 +2,7 @@
 
 ## Architectural Mapping
 
-**Orchestrator**: `src/2_tests.py` (85 lines)
+**Orchestrator**: `src/2_tests.py` (104 lines)
 **Implementation Layer**: `src/tests/`
 
 ## Module Description

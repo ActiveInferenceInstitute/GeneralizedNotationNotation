@@ -2,7 +2,7 @@
 
 ## Architectural Mapping
 
-**Orchestrator**: `src/4_model_registry.py` (65 lines)
+**Orchestrator**: `src/4_model_registry.py` (60 lines)
 **Implementation Layer**: `src/model_registry/`
 
 ## Module Description

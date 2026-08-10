@@ -2,7 +2,7 @@
 
 ## Architectural Mapping
 
-**Orchestrator**: `src/1_setup.py` (148 lines)
+**Orchestrator**: `src/1_setup.py` (118 lines)
 **Implementation Layer**: `src/setup/`
 
 ## Module Description

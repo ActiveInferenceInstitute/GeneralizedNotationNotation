@@ -2,7 +2,7 @@
 
 ## Architectural Mapping
 
-**Orchestrator**: `src/0_template.py` (64 lines)
+**Orchestrator**: `src/0_template.py` (59 lines)
 **Implementation Layer**: `src/template/`
 
 ## Module Description

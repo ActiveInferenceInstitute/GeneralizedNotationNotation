@@ -2,7 +2,7 @@
 
 ## Architectural Mapping
 
-**Orchestrator**: `src/8_visualization.py` (55 lines)
+**Orchestrator**: `src/8_visualization.py` (58 lines)
 **Implementation Layer**: `src/visualization/`
 
 ## Module Description
