@@ -2,7 +2,7 @@
 
 ## Architectural Mapping
 
-**Orchestrator**: `src/10_ontology.py` (50 lines)
+**Orchestrator**: `src/10_ontology.py` (57 lines)
 **Implementation Layer**: `src/ontology/`
 
 ## Module Description

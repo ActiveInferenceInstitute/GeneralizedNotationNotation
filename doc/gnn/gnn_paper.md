@@ -1,6 +1,6 @@
 # GNN Paper: Generalized Notation Notation
 
-**Version**: v1.6.0 Engine (Bundle v2.0.0)
+**Version**: v3.0.0 Engine (Bundle v2.0.0)
 **Last Updated**: 2026-04-23
 **Status**: ✅ Production Ready
 **Modules**: 38+ · **Pipeline steps**: 25 · **Renderers**: 9 backends (see [implementations/README.md](implementations/README.md)) · **Tests**: see [README.md](../../README.md)
@@ -81,7 +81,7 @@ GNN utilizes standard ASCII characters to represent Active Inference generative 
 
 ### 2.3 GNN source file structure
 
-A GNN source file is a UTF-8 Markdown file (`.md`) organized into ordered sections, denoted by level-2 headers (`##`). The strict schema validator enforces the following required sections in sequence:
+A GNN source file is a UTF-8 Markdown file (`.md`) organized into ordered sections, denoted by level-2 headers (`##`). The strict schema validator requires the following sections; the order below is the authoring convention, but validation itself checks only that each is present:
 1. `## GNNSection`: A short, space-free identifier for the model (e.g., `ActInfPOMDP`).
 2. `## GNNVersionAndFlags`: Indicates the GNN specification version, such as `GNN v1.1`.
 3. `## ModelName`: A human-readable title for the generative model.
@@ -195,7 +195,7 @@ implements the particular generative model in question.
 
 ### 4.5 Neurosymbolic Context Analysis
 
-As of GNN v1.6.0, the Triple Play formulation is heavily augmented by localized Neurosymbolic Analysis. The integration operates via:
+The Triple Play formulation is augmented by the pipeline's research and intelligent-analysis stages (Steps 19 and 24). The integration operates via:
 1. **Structural Semantic Extraction:** Mapping matrix nodes into Active Inference ontological databases.
 2. **LLM Synthesis:** Translating complex categorical topologies into heuristically approachable natural language streams, generating self-documenting executable architectures.
 3. **Execution Recovery Heuristics:** Automatically triggering heuristic code recovery when downstream solvers fail, driving a continuous reinforcement iteration loop against explicit execution environments.
@@ -215,7 +215,7 @@ graph LR
 
 To advance the pragmatics of cognitive modeling, the GNN ecosystem provides built-in mechanisms for executing rendered models and instrumenting them to extract native behavioral metrics. When models are executed via the pipeline (e.g., Step 12 Execute), variables such as Variational Free Energy (VFE) and Expected Free Energy (EFE) are logged continuously over the simulation horizon.
 
-These execution traces allow researchers to empirically investigate the theoretical properties of Active Inference. For example, recent validation testing spanning state-space dimensions $N \in \{3, 9, 27\}$ confirmed that an agent's initial VFE scales tightly with $O(\ln(N))$ prior to active uncertainty resolution, aligning cleanly with analytical flat-prior expectations. The automated analysis layer (Step 16) directly consumes these traces to generate trajectory and energy convergence plots, rendering complex behavioral phenomena directly legible to end-users without requiring manual metric extraction. Furthermore, extensive performance scaling experiments on PyMDP execution up to $N=20$ state-space and observation permutations across $T=3000$ timesteps have confirmed a deterministic $O(N^\alpha)$ runtime complexity well within a stabilized 20-minute execution threshold, enabling robust benchmark generation for large-scale generative models.
+These execution traces allow researchers to empirically investigate the theoretical properties of Active Inference. Validation testing over uniform priors across $N \in \{2, 4, 8\}$ confirms that entropy — and hence an agent's initial VFE prior to active uncertainty resolution — scales as $\ln(N)$, matching analytical flat-prior expectations. The automated analysis layer (Step 16) directly consumes these traces to generate trajectory and energy convergence plots, rendering complex behavioral phenomena legible without manual metric extraction. Performance scaling is exercised by the PyMDP scaling orchestrator (`scripts/run_pymdp_gnn_scaling_analysis.py`) over a configured grid of $N \in \{2, 4, 8, 16, 32, 64, 128\}$ against $T \in \{10, 50, 100\}$, with a per-model wall-clock timeout of 20 minutes. A representative subset — one spec per state-space size from $N=4$ to $N=64$, each at $T=100$ — is retained under `input/gnn_files/pymdp_scaling_study/`; the full grid is generated rather than hand-authored.
 
 ## 5 Discussion
 

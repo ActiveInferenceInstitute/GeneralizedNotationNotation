@@ -2,7 +2,7 @@
 
 ## Architectural Mapping
 
-**Orchestrator**: `src/17_integration.py` (65 lines)
+**Orchestrator**: `src/17_integration.py` (55 lines)
 **Implementation Layer**: `src/integration/`
 
 ## Module Description

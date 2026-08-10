@@ -1,6 +1,6 @@
 # GNN DSL Manual
 
-**Version**: v1.6.0 Engine (Bundle v2.0.0)  
+**Version**: v3.0.0 Engine (Bundle v2.0.0)  
 **Last Updated**: 2026-04-15  
 **Status**: ✅ Production Ready  
 **Modules**: 38+ · **Pipeline steps**: 25 · **Renderers**: 9 backends (see [../implementations/README.md](../implementations/README.md)) · **Tests**: see [../../../README.md](../../../README.md)  
@@ -123,7 +123,7 @@ G=ExpectedFreeEnergy
 t=Time
 ```
 
-*(Note: The example shows grouped variables like `(D_f0,D_f1)`. The current parser logic described focuses on single source/target per line. Grouped variables might be handled by pre-processing or a more complex parsing step not detailed in `src/gnn/parser.py`'s `_process_connections` regex. The documentation here reflects the identified regex capability.)*
+*(Note: The example shows grouped variables like `(D_f0,D_f1)`. The current parser logic described focuses on single source/target per line. Grouped variables might be handled by pre-processing or a more complex parsing step not detailed in the `_process_connections` regex (`src/visualization/parse/gnn_file_parser.py:241`). The documentation here reflects the identified regex capability.)*
 
 ### 3.3. `InitialParameterization`
 
@@ -226,7 +226,7 @@ The section begins with `## ActInfOntologyAnnotation` on its own line. Each subs
 - `OntologyTerm`: The corresponding term from the ontology (e.g., `HiddenState`, `LikelihoodMatrix`).
 - `# Optional comment`: Text after a `#` on the line is an ignored comment.
 
-**Parser Behavior (`src/ontology/mcp.py` - `parse_gnn_ontology_section`):**
+**Parser Behavior (`src/ontology/processor.py:79` - `parse_gnn_ontology_section`):**
 
 - The parser specifically looks for the `## ActInfOntologyAnnotation` header.
 - It reads each line, splitting it at the `=` to get the model variable and the ontology term.

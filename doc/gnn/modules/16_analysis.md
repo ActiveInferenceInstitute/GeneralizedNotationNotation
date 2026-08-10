@@ -2,7 +2,7 @@
 
 ## Architectural Mapping
 
-**Orchestrator**: `src/16_analysis.py` (59 lines)
+**Orchestrator**: `src/16_analysis.py` (69 lines)
 **Implementation Layer**: `src/analysis/`
 
 ## Module Description
@@ -13,12 +13,20 @@ This module provides comprehensive statistical analysis, performance profiling, 
 ```
 src/analysis/
 ├── __init__.py                    # Module initialization and exports
-├── README.md                      # This documentation
 ├── processor.py                   # Main analysis processor
 ├── analyzer.py                    # Statistical analysis functions
+├── framework_extractors.py        # Per-framework result extraction
 ├── post_simulation.py             # Post-simulation analysis
-└── mcp.py                         # Model Context Protocol integration
+├── interpretability.py            # Interpretability metrics
+├── trace_analysis.py              # Execution-trace analysis
+├── visualizations.py              # Shared visualization suite
+├── generate_cross_model_report.py # Cross-model reporting
+├── mcp.py                         # Model Context Protocol integration
+└── <framework>/                   # Per-framework analyzers: rxinfer, pymdp,
+                                   # activeinference_jl, jax, discopy, numpyro, pytorch
 ```
+
+The RxInfer analyzer (`src/analysis/rxinfer/`) is the deepest of these and is documented in [RxInfer Analysis](#rxinfer-analysis) below.
 
 ## Agent Identity & Capabilities
 
@@ -36,7 +44,7 @@ src/analysis/
 
 **Version**: 1.6.0
 
-**Last Updated**: 2026-04-10
+**Last Updated**: 2026-08-07
 
 ---
 
@@ -58,7 +66,47 @@ src/analysis/
 - Distribution analysis and correlation studies
 - **PyMDP Visualization** - belief evolution, state sequences, performance metrics plots
 - **Cross-framework comparison** - uses whatever execution (Step 12) produced. `_extract_simulation_metrics` (in `analyzer.py`) prefers `simulation_data/simulation_results.json` (and other canonical JSON) before `execution_logs/*_results.json`, so backends that write full traces to `simulation_data/` (e.g. RxInfer) are not masked by sparse structured logs. DisCoPy: inline `simulation_data.analysis` / `parameters` from structured logs populate `circuit_info`; if still missing, `simulation_data/circuit_info.json` is merged when present. bnlearn structured logs populate `model_parameters` when vector traces are absent. If every run for a framework was skipped (`skipped: true` in the execution summary), logs INFO instead of WARNING for bnlearn. Otherwise missing data is reported as "[framework] No simulation data found". Python backends are in core `uv sync`; Julia coverage needs Julia + packages installed, then re-run Step 12.
-- **Real RxInfer VFE** - `src/analysis/rxinfer/` now consumes genuine variational free energy: the `variational_free_energy` field in `rxinfer_simulation_v1` is populated with real values from `infer()` (`free_energy = true`), so `free_energy` plots and convergence analysis reflect actual inference (previously the field was a placeholder `Float64[]`).
+- **RxInfer analysis suite** - convergence diagnostics, per-factor belief recovery, per-model GIF animations with reproducibility manifests, an HTML dashboard, and cross-framework comparison. See [RxInfer Analysis](#rxinfer-analysis).
+
+---
+
+## RxInfer Analysis
+
+`src/analysis/rxinfer/` consumes `rxinfer_simulation_v1` payloads written by Step 12 at `output/12_execute_output/<model>/rxinfer/simulation_data/simulation_results.json`, and writes to `output/16_analysis_output/rxinfer/`. The entry point is `generate_analysis_from_logs(execution_results_dir, output_dir, verbose=False)`.
+
+Two properties of the input contract shape everything downstream: `variational_free_energy` and `vfe_per_iteration` are **per-iteration VFE traces** (length = inference iterations), the genuine convergence signal from variational message passing rather than per-step constants; and beliefs are **smoothed posteriors** from batch inference, not filtered online beliefs.
+
+### Visualization suite
+
+Matplotlib PNGs at dpi 300, one set per model, complementary to the optional Julia-native `Plots.jl` figures emitted at execute time: belief evolution, belief heatmap, observation/state traces, belief entropy, inference accuracy, action frequencies, belief convergence, belief trace, free energy, observations, and an EFE-per-action heatmap. Each plot is best-effort — one that cannot be produced (absent matplotlib, missing input arrays) is logged and skipped, never escalated to a step failure.
+
+### Convergence diagnostics
+
+Derived from the per-iteration VFE trace: VFE slope, convergence rate, and iterations-to-convergence.
+
+### Per-factor belief recovery
+
+`compute_per_factor_beliefs(data)` recovers per-factor marginals from a flattened joint belief trace. Multi-factor and multi-agent models render onto a single flat joint state space — the renderer enumerates `itertools.product` over `state_factors` in list order (C order, first factor slowest-varying) — so the joint belief reshapes to a per-factor tensor and each marginal is the sum over the other axes. Factor structure is read from the `model_parameters.state_factors` echo.
+
+An **empty dict signals structural absence, not failure**: no `state_factors` (flat models, or artifacts predating the key), no beliefs, or fewer than two factors of size > 1. Size-1 factors participate in the reshape but are omitted from the output. Genuine contract violations between renderer and analyzer — malformed descriptors, duplicate factor names, ragged belief rows, a size product contradicting the joint width, a timestep with no probability mass — raise `ValueError` rather than being quietly absorbed.
+
+Multi-factor models additionally get per-factor belief-trajectory small-multiples.
+
+### GIF animations and reproducibility manifests
+
+`generate_gif_animation` produces one publication-style animated GIF per model (`<model>_rxinfer_animation.gif`): 2×3 panels covering beliefs (per-factor marginals when `state_factors` declares more than one factor), true vs inferred states, the Bayesian graph model, the VFE trace, the EFE-per-action heatmap, and the policy posterior. Each GIF carries a `.manifest.json` sidecar recording the GNN spec hash, Julia and RxInfer versions, seed, timesteps, inference iterations, and belief accuracy — enough to reproduce the artifact.
+
+### Dashboard
+
+`generate_dashboard` builds a single self-contained HTML dashboard over a directory of GIFs plus manifests, with a model-category filter, a state-size filter, and a side-by-side compare mode that shows any two models' animations and manifest statistics together.
+
+### Strategy validation summary
+
+`summarize_strategy_validation(data)` reads `runtime_metadata.model_kind` (defaulting to `flat` for payloads written before the field existed), asks the registered render-side `ModelStrategy` which validation fields it contributes via `get_validation_fields()`, and returns those fields that are actually present in the results `validation` dict. It is **loud on an unknown kind** (`ValueError`) but tolerant of a declared field being absent. The result is attached to the analysis as `validation_summary`, which keeps the analyzer's validation reporting in step with the renderer's strategies instead of hard-coding a field list.
+
+### Cross-framework comparison
+
+`run_cross_framework_comparison(gnn_file, output_dir)` renders one parsed GNN spec to RxInfer.jl, PyMDP, and ActiveInference.jl, runs all three, and writes `<model>_comparison.html` alongside a per-framework subdirectory of rendered scripts and raw results. The page carries a metrics table — including a per-framework status row giving the reason any framework did not succeed — and an animated belief-trajectory chart overlaying every framework's beliefs per hidden state over time, with play/pause and a step slider. The chart is a self-contained inline canvas script: no external assets, no network access.
 
 ---
 
@@ -233,12 +281,17 @@ output/16_analysis_output/
 ├── model_name_performance_benchmarks.json
 ├── model_name_analysis_summary.md
 ├── analysis_processing_summary.json
-├── pymdp_visualizations/              # NEW: All PyMDP visualizations
+├── pymdp_visualizations/              # All PyMDP visualizations
 │   └── {model_name}/
 │       ├── discrete_states.png
 │       ├── belief_evolution.png
 │       ├── performance_metrics.png
 │       └── action_sequence.png
+├── rxinfer/                           # RxInfer analysis suite
+│   ├── {model_name}_rxinfer_*.png     # Per-model visualization set
+│   ├── {model_name}_rxinfer_animation.gif
+│   ├── {model_name}_rxinfer_animation.manifest.json
+│   └── {model_name}_comparison.html   # When cross-framework comparison is run
 └── comprehensive_visualizations/
 ```
 
@@ -363,7 +416,7 @@ def process_analysis_mcp(target_directory: str, output_directory: str, verbose: 
 
 ## Version History
 
-### Current Version: 1.0.0
+### Current Version: 1.6.0
 
 **Features**:
 - Statistical analysis
@@ -396,7 +449,7 @@ def process_analysis_mcp(target_directory: str, output_directory: str, verbose: 
 
 ---
 
-**Last Updated**: 2026-04-10
+**Last Updated**: 2026-08-07
 **Maintainer**: GNN Pipeline Team
 **Status**: ✅ Production Ready
 **Version**: 1.6.0

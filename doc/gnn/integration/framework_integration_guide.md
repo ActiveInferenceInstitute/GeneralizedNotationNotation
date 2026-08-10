@@ -88,11 +88,16 @@ from JSON output. Supports reading from collected files in `output/pymdp_simulat
 
 ### ActiveInference.jl Pipeline Details
 
-**Render:** Generates Julia scripts using `ActiveInference.jl` with POMDP agent setup,
-environment initialization, and a simulation loop. Creates companion `config.toml` files.
+**Render:** `src/render/activeinference_jl/activeinference_renderer.py` generates Julia
+scripts using `ActiveInference.jl` with POMDP agent setup, environment initialization,
+and a simulation loop.
 
-**Execute:** Julia subprocess with a package-availability check for `ActiveInference`,
-`GraphPPL`. Reads output from `simulation_results.csv`.
+**Execute:** Julia subprocess. The package-availability preflight runs
+`using JSON, Distributions, StatsBase, ActiveInference` (see
+`src/execute/processor.py`). As with RxInfer, Step 12 defaults `JULIA_PROJECT` to the
+committed environment at `src/execute/activeinference_jl/`, whose `Project.toml` is
+deliberately minimal: `ActiveInference` (0.1), `Distributions`, `JSON`, and
+`StatsBase`. Reads output from `simulation_results.csv`.
 
 **Analyze:** `extract_activeinference_jl_data()` performs CSV parsing to extract beliefs,
 actions, free energy, observations, states, and policies, with numerical parsing and
@@ -100,21 +105,68 @@ error handling.
 
 ### RxInfer.jl Pipeline Details
 
-**Render:** `src/render/rxinfer/rxinfer_renderer.py` emits a genuine Julia script per
-model defining `@model function pomdp_model(y, A, B, D, u, T)` with `Categorical`
-and `DiscreteTransition` nodes (the legacy TOML-based `toml_generator.py` is
-deprecated). The script runs `infer()` with `free_energy = true`.
+**Render:** `src/render/rxinfer/rxinfer_renderer.py` is the canonical renderer. It does
+not emit one flat model shape for every spec: it calls `detect_model_kind()`
+(`src/render/pomdp_contract.py`) and dispatches by the detected `ModelKind` to a
+per-kind strategy in `src/render/rxinfer/model_strategies.py`. Detection is
+*structural* — it reads the `GNNSection` value, per-level/per-agent matrix key
+patterns, explicit `nr_agents`/`num_factors`, `F`/`H`/`Q`/`R` keys, and
+`dirichlet_[A-E]` keys — never free text. Every strategy emits a genuine Julia
+script that runs `infer()` with `free_energy = true`.
+
+The `@model` definitions themselves are *not* inlined into each generated script. They
+live in the committed Julia package `src/execute/rxinfer/src/GnnRxInferModels.jl`, and a
+rendered script pulls in the one it needs — for example
+`using GnnRxInferModels: pomdp_model`, then
+`infer(model = pomdp_model(A=A, B=B, D=D, u=model_actions, T=TIME_STEPS), …)`. Keeping
+the models in a package is what lets the environment precompile them ahead of execution;
+the five model functions it defines are `pomdp_model`, `continuous_pomdp_model`,
+`hierarchical_pomdp_model`, `factored_pomdp_model`, and `learning_pomdp_model`. The
+generated script contributes the matrices, the simulation loop, action selection, and
+result serialization.
+
+| `ModelKind` | Strategy | Generated model |
+|---|---|---|
+| `FLAT` | `FlatStrategy` | `pomdp_model` — batch smoothing by default; per-timestep filtering when online mode is selected (below) |
+| `HIERARCHICAL` | `HierarchicalStrategy` | `hierarchical_pomdp_model` — native two-level: the context latent is coupled into the fast-state prior through the column-normalized `A_level2` from the GNN spec, which arrives as the model's `A_ctx` argument. Mean-field constraints *and* marginal initialization are both required on RxInfer 5.5. Three or more declared levels render as the documented joint composition |
+| `FACTORED` | `FactoredStrategy` | `factored_pomdp_model` — native mean-field two-factor model with a multi-parent likelihood, `DiscreteTransition(s1, A_m0, s2)`, yielding per-factor posteriors |
+| `CONTINUOUS` | `ContinuousStrategy` | `continuous_pomdp_model` — native linear-Gaussian state space built from `F`/`H`/`Q`/`R` plus `prior_mean`/`prior_cov` in `InitialParameterization`. Beliefs are posterior *means* alongside `posterior_cov`, and VFE validation is sign-agnostic because a Gaussian Bethe free energy is routinely negative |
+| `LEARNING` | `LearningStrategy` | `learning_pomdp_model` — the likelihood `A` is learned jointly with the states as `DirichletCollection(dirichlet_A)`; `a_learning_improved` is a hard validation gate |
+| `MULTI_AGENT` | `MultiAgentStrategy` | joint composition stamping the true kind. There is no native multi-agent `@model`; per-agent marginals are recovered downstream by `compute_per_factor_beliefs()` (`src/analysis/rxinfer/analyzer.py`) from the `state_factors` echo |
+
+The strategy table is maintained alongside the code in
+[`src/render/rxinfer/README.md`](../../../src/render/rxinfer/README.md). The
+TOML-emitting `toml_generator.py` is retired and retained only as a warning surface —
+`render_gnn_to_rxinfer_toml` raises a `DeprecationWarning`; do not build on it.
+
+**Online mode:** `FLAT` models may run genuine online active inference instead of batch
+smoothing. Select it with `inference_mode: online` in the GNN file's `ModelParameters`
+section, or pass it as a render option; `batch` is the default and any other value is
+rejected at render time. In online mode the generated script calls `infer()` per
+timestep on the observation prefix, and the resulting *filtered* posterior — not a
+smoothed joint posterior — drives action selection via `softmax(log E − γ·EFE)`.
 
 **Execute:** Julia subprocess invoking
-`julia --startup-file=no --project=src/execute/rxinfer <script>`. The committed
-`Project.toml` + `Manifest.toml` under `src/execute/rxinfer/` pin RxInfer 5.5.0;
-`setup_environment.jl` activates and instantiates it (`Pkg.activate()` +
-`Pkg.instantiate()`, no runtime `Pkg.add`). Each run records `Random.seed!(seed)`
-and the script SHA256 in `runtime_metadata`.
+`julia --startup-file=no --project=src/execute/rxinfer <script>`. Step 12 defaults
+`JULIA_PROJECT` to the committed environment for the framework being run
+(`_build_execution_environment()` in `src/execute/processor.py`), so scripts resolve
+their packages without an ambient environment; an explicitly set `JULIA_PROJECT` still
+wins. The committed `Project.toml` + `Manifest.toml` under `src/execute/rxinfer/` pin
+RxInfer 5.5.0 and define the `GnnRxInferModels` package, which precompiles the pomdp,
+continuous, hierarchical, factored, and learning models loudly — a precompilation
+failure surfaces rather than being swallowed. `setup_environment.jl` activates and
+instantiates the environment (`Pkg.activate()` + `Pkg.instantiate()`, no runtime
+`Pkg.add`). Each run records `Random.seed!(seed)` and the script SHA256 in
+`runtime_metadata`, and generated scripts embed
+`const B_TENSOR_ORDER = "next_state_previous_state_action"` so the transition-tensor
+axis order is self-describing.
 
 **Analyze:** `extract_rxinfer_data()` reads posterior distributions plus the genuine
 `variational_free_energy` trace from `rxinfer_simulation_v1`
-(`simulation_data/simulation_results.json`).
+(`simulation_data/simulation_results.json`). Note that `true_states[t]` records the
+state that *emitted* observation `t`, so it is timing-aligned with `beliefs[t]`.
+Continuous models echo `state_factors` and `observation_modalities` as empty, because
+the discrete dual parameterization does not describe the continuous latent.
 
 ### JAX Pipeline Details
 
@@ -151,7 +203,17 @@ After individual framework execution, Step 16 (`src/analysis/analyzer.py`) and S
 3. **`visualize_cross_framework_metrics()`** — native side-by-side metric visualizations.
 4. **`generate_unified_framework_dashboard()`** (`src/analysis/visualizations.py`) —
    generates an interactive HTML/D3.js dashboard comparing beliefs, action
-   distributions, and observation trajectories in the browser.
+   distributions, and observation trajectories in the browser, with category and
+   state-size filters plus a compare mode.
+5. **`run_cross_framework_comparison()`**
+   (`src/analysis/rxinfer/cross_framework.py`) — the RxInfer-anchored cross-framework
+   comparison entry point, reachable as
+   `analysis.rxinfer.cross_framework.run_cross_framework_comparison`.
+
+Alongside the comparison surface, Step 16 emits the full visualization suite,
+convergence diagnostics, per-factor belief recovery via `compute_per_factor_beliefs()`
+(this is how multi-agent and factored runs get per-agent and per-factor marginals), and
+one animated GIF per model accompanied by a `.manifest.json` reproducibility sidecar.
 
 ## Related Documentation
 

@@ -54,6 +54,14 @@ uv run python src/main.py --only-steps "3,5,8,11,12" --verbose
 - [About GNN](about_gnn.md) - Detailed GNN specification
 - [GNN Troubleshooting](operations/gnn_troubleshooting.md) - Common issues and solutions
 
+The keys a model declares in `InitialParameterization` decide which **model
+kind** the renderers dispatch on — discrete `A`/`B`/`C`/`D`/`E`,
+linear-Gaussian `F`/`H`/`Q`/`R`, `dirichlet_*` pseudo-counts, or per-level and
+per-agent suffixes. Detection rules and precedence are specified in
+[gnn_syntax.md § Parameterization families](gnn_syntax.md#parameterization-families);
+the per-kind rendering strategies are documented in
+[src/render/rxinfer/README.md](../../src/render/rxinfer/README.md).
+
 ## 🎯 Modeling and Examples
 
 **Learning to Model:**
@@ -222,6 +230,7 @@ All GNN documentation follows these principles:
 - [Advanced Modeling Patterns](advanced/advanced_modeling_patterns.md)
 - [Architecture Reference](reference/architecture_reference.md)
 - [Framework Integration Guide](integration/framework_integration_guide.md)
+- [GNN Connection Grammar](language/gnn_connection_grammar.md)
 - [GNN DSL Manual](reference/gnn_dsl_manual.md)
 - [GNN Examples](tutorials/gnn_examples_doc.md)
 - [GNN Export Guide](integration/gnn_export.md)
@@ -234,8 +243,11 @@ All GNN documentation follows these principles:
 - [GNN Paper](gnn_paper.md)
 - [GNN Schema](reference/gnn_schema.md)
 - [GNN Standards](reference/gnn_standards.md)
-- [GNN Syntax](reference/gnn_syntax.md)
+- [GNN Syntax Reference](reference/gnn_syntax.md)
+- [GNN Syntax Quick Reference](language/gnn_syntax_quickref.md)
 - [GNN Tools and Resources](operations/gnn_tools.md)
+- [GNN v1.1 Syntax Specification](gnn_syntax.md) — normative
+- [GNN Variable Grammar](language/gnn_variable_grammar.md)
 - [GNN Troubleshooting](operations/gnn_troubleshooting.md)
 - [GNN Type System](reference/gnn_type_system.md)
 - [GNN Visualization Guide](integration/gnn_visualization.md)

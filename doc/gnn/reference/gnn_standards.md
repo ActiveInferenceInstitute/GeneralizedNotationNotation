@@ -1,6 +1,6 @@
 # GNN Standards
 
-**Version**: v1.6.0 Engine (Bundle v2.0.0)  
+**Version**: v3.0.0 Engine (Bundle v2.0.0)  
 **Last Updated**: 2026-04-15  
 **Status**: ✅ Production Ready  
 **Modules**: 38+ · **Pipeline steps**: 25 · **Renderers**: 9 backends (see [../implementations/README.md](../implementations/README.md)) · **Tests**: see [../../../README.md](../../../README.md)  
@@ -41,9 +41,13 @@ src/<module_name>/
 ├── __init__.py          # Public API exports
 ├── processor.py         # Core processing logic
 ├── mcp.py               # MCP tool definitions
-├── AGENTS.md            # Module documentation
-└── tests/               # Module-specific tests
+└── AGENTS.md            # Module documentation
 ```
+
+Tests live centrally in `src/tests/`, not inside the module directory.
+`processor.py` is the convention rather than a hard rule — `setup/`, `tests/`,
+and `validation/` keep their logic in `__init__.py`, `model_registry/` uses
+`registry.py`, and `website/` uses `renderer.py` + `generator.py`.
 
 ### Naming Conventions
 
@@ -83,7 +87,8 @@ def test_with_real_data():
 
 ## GNN File Structure Standards
 
-- **GNN Files**: Markdown-based (.md) with specific sections:
+- **GNN Files**: Markdown-based (.md) with specific sections, in this order:
+  - `GNNSection`: Short, space-free model-class identifier (e.g. `ActInfPOMDP`)
   - `GNNVersionAndFlags`: Version specification and processing flags
   - `ModelName`: Descriptive model identifier
   - `ModelAnnotation`: Free-text explanation of model purpose and features
@@ -116,7 +121,7 @@ Every documentation file in `doc/gnn/` must include this header:
 ```markdown
 # [Title]
 
-**Version**: v1.6.0 Engine (Bundle v2.0.0)  
+**Version**: v3.0.0 Engine (Bundle v2.0.0)  
 **Last Updated**: 2026-04-15  
 **Status**: ✅ Production Ready  
 **Modules**: 38+ · **Pipeline steps**: 25 · **Renderers**: 9 backends (see [../implementations/README.md](../implementations/README.md)) · **Tests**: see [../../../README.md](../../../README.md)  

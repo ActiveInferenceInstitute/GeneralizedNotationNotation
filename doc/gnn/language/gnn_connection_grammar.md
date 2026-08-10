@@ -1,6 +1,6 @@
 # GNN Connection Grammar
 
-**Version**: v1.6.0 Engine (Bundle v2.0.0)  
+**Version**: v3.0.0 Engine (Bundle v2.0.0)  
 **Status**: Formal specification
 
 ---
@@ -43,12 +43,19 @@ s>o:emission                  # state to observation emission
 
 ## Validation Rules
 
-| Rule | Error Code | Description |
-|------|------------|-------------|
-| Known source | `GNN-E003` | Source variable must be declared in `StateSpaceBlock` |
-| Known target | `GNN-E003` | Target variable must be declared in `StateSpaceBlock` |
-| Parseable syntax | `GNN-E005` | Line must match connection grammar |
-| Undeclared ref | `GNN-W002` | Warning if variable appears only in connections |
+| Rule | Code | Severity | Description |
+|------|------|----------|-------------|
+| Known source | `GNN-W002` | warning | Source variable is not declared in `StateSpaceBlock` |
+| Known target | `GNN-W002` | warning | Target variable is not declared in `StateSpaceBlock` |
+| Parseable syntax | `GNN-E005` | error | Line does not match the connection grammar |
+
+An undeclared endpoint is reported as a **warning**, not an error: parsing
+continues and the edge is kept. `GNN-E003` is reserved for this condition in
+the error taxonomy but has no emitting code — `parse_connections` in
+[`src/gnn/schema.py`](../../../src/gnn/schema.py) raises `GNN-W002` for both
+endpoints instead. Cross-validation only happens when the parser is given the
+declared-variable set; parsing a `Connections` block in isolation reports
+neither code.
 
 ## Implementation
 

@@ -8,12 +8,19 @@ Complements `src/tests/` which holds the actual test suite.
 - Coverage threshold enforced via `fail_under = 50` in `pyproject.toml`:
   `[tool.coverage.run] fail_under = 50` — CI will now fail on coverage
   regression below the floor, not just report it.
-- Real-implementation policy: tests use real
-  dependencies or skip-with-guard when deps are unavailable
+- Real-implementation policy: tests exercise real dependencies. A missing
+  surface must fail loudly rather than be skipped or substituted.
+- Zero-skip contract: `src/tests/test_zero_skip_contracts.py` scans every
+  `test_*.py` under `src/tests/` and fails on any `pytest.skip(`,
+  `pytest.importorskip(`, `pytest.xfail(`, `@pytest.mark.skip`,
+  `@pytest.mark.skipif`, or `@pytest.mark.xfail` token. The sole exemption is
+  `DEFAULT_SKIP_ALLOWLIST` in that same module, which lists the files needing
+  software outside the Python environment (the Ollama LLM tests, and the
+  Julia-dependent cross-framework and RxInfer visualization-log tests).
+  Widening that set is a reviewable edit to the contract itself.
 - Test naming: `src/tests/test_{module}_*.py`
-- Baseline at v1.6.0: 2,000+ passing, ≤85 skipped, 0 failures
-  (excluding env-blocked `test_uv_environment.py` and optional
-  `test_llm_ollama*.py` that require a local Ollama)
+- Expected outcome for the default suite is zero failures. Consult the current
+  run output for pass counts rather than a number recorded here.
 
 ## Reproducibility Requirements
 - `PYTHONHASHSEED=0` must be set in the environment for deterministic

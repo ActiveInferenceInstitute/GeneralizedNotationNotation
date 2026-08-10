@@ -1,6 +1,6 @@
 # GNN File Structure
 
-**Version**: v1.6.0 Engine (Bundle v2.0.0)  
+**Version**: v3.0.0 Engine (Bundle v2.0.0)  
 **Last Updated**: 2026-04-15  
 **Status**: ✅ Production Ready  
 **Modules**: 38+ · **Pipeline steps**: 25 · **Renderers**: 9 backends (see [../implementations/README.md](../implementations/README.md)) · **Tests**: see [../../../README.md](../../../README.md)  
@@ -32,7 +32,7 @@ For complete pipeline documentation, see **[src/AGENTS.md](../../../src/AGENTS.m
 
 ## Time section
 
-The **`Time`** block and temporal indexing are documented under [### 8. Time](#8-time) and the [Time](#time) examples in this guide.
+The **`Time`** block and temporal indexing are documented under [9. Time](#9-time) and in the [Time section](#time-section) overview below.
 
 ## Overview
 
@@ -71,37 +71,53 @@ graph TD
     class SIG,FOOT,SIGN sig;
 ```
 
-## Required Sections
+## Sections
 
-A complete GNN file includes the following sections in this order:
+A complete GNN file includes the following sections in this order. Section
+headers are single CamelCase tokens with no spaces — `## StateSpaceBlock`,
+never `## State space block`. Five of them (`GNNSection`,
+`GNNVersionAndFlags`, `ModelName`, `StateSpaceBlock`, `Connections`) are
+enforced by `src/gnn/schema.py::REQUIRED_SECTIONS`; the rest are expected by
+downstream pipeline steps but not rejected in their absence. See the
+obligation table in [`gnn_syntax.md`](gnn_syntax.md#canonical-section-inventory).
 
-### 1. GNN Version and Flags
+### 1. GNN Section
 
-Specifies the version of GNN being used and any optional flags or settings that affect interpretation.
-
-```
-## GNN v1
-flags=latex_rendering,graphviz_compatible
-```
-
-This section indicates compatibility with specific tools or specifications.
-
-### 2. Model Name
-
-Provides a unique identifier for the model, typically as a top-level header.
+A short, space-free identifier naming the model class. Renderers read this
+value when detecting the model kind.
 
 ```
-# Dynamic Perception Model v2.1
+## GNNSection
+ActInfPOMDP
+```
+
+### 2. GNN Version and Flags
+
+Specifies the version of GNN being used and any optional flags that affect
+interpretation.
+
+```
+## GNNVersionAndFlags
+GNN v1.1
+```
+
+### 3. Model Name
+
+Provides a unique identifier for the model.
+
+```
+## ModelName
+Dynamic Perception Model v2.1
 ```
 
 The model name should be concise but descriptive, often including version information.
 
-### 3. Model Annotation
+### 4. Model Annotation
 
 A free-text description of the model, its purpose, context, and key features.
 
 ```
-## Model annotations
+## ModelAnnotation
 This model implements a dynamic perception process with hidden states 
 and observations evolving over time. It demonstrates basic perceptual 
 inference without action selection.
@@ -109,12 +125,12 @@ inference without action selection.
 
 This section helps users understand the model's purpose and scope.
 
-### 4. State Space Block
+### 5. State Space Block
 
 Defines all variables in the model, including their dimensions and types.
 
 ```
-## State space block
+## StateSpaceBlock
 s_t[2,1,type=float]  # Hidden state (2-dimensional column vector)
 o_t[2,1,type=float]  # Observation (2-dimensional column vector)
 A[2,2,type=float]    # Recognition matrix (2x2 matrix)
@@ -125,7 +141,7 @@ t[1,type=int]        # Time index (scalar)
 
 This section is crucial for understanding the model's structure and computational requirements.
 
-### 5. Connections
+### 6. Connections
 
 Describes the causal relationships between variables using directed and undirected edges.
 
@@ -157,20 +173,24 @@ graph LR
     class A,B,D matrix;
 ```
 
-### 6. Initial Parameterization
+### 7. Initial Parameterization
 
 Sets the starting values for parameters and variables in the model.
 
 ```
-## Initial Parameterization
+## InitialParameterization
 D={0.5,0.5}
 A={(.9,.1),(.2,.8)}
 B={(.7,.3),(.3,.7)}
 ```
 
-This section provides the concrete values needed to initialize the model.
+This section provides the concrete values needed to initialize the model. The
+keys declared here also decide which **model kind** the renderers dispatch on
+— see [`gnn_syntax.md` § Parameterization families](../gnn_syntax.md#parameterization-families)
+for the linear-Gaussian (`F`/`H`/`Q`/`R`), Dirichlet (`dirichlet_*`), and
+per-level / per-agent key families.
 
-### 7. Equations
+### 8. Equations
 
 Contains the mathematical formulas that define the model's dynamics, typically expressed in LaTeX.
 
@@ -182,25 +202,26 @@ s_{tau>1}=softmax((1/2)(ln(D)+ln(B^dagger_tau*s_{tau+1})+ln(trans(A)o_tau))
 
 The equations specify how variables evolve and interact over time.
 
-### 8. Time
+### 9. Time
 
 Describes how the model handles time, including whether it's static or dynamic, discrete or continuous.
 
 ```
 ## Time
 Dynamic
-DiscreteTime=s_t
+DiscreteTime=t
 ModelTimeHorizon=10
 ```
 
-This section is crucial for understanding the model's temporal characteristics.
+`DiscreteTime` names the time-index variable — `t` as declared in
+`StateSpaceBlock`, not a time-indexed state such as `s_t`.
 
-### 9. ActInf Ontology Annotation
+### 10. ActInf Ontology Annotation
 
 Maps variables to standardized terms in the Active Inference Ontology for consistent interpretation.
 
 ```
-## Active Inference Ontology
+## ActInfOntologyAnnotation
 A=RecognitionMatrix
 B=TransitionMatrix
 D=Prior
@@ -209,17 +230,21 @@ o_t=Observation
 t=Time
 ```
 
-This mapping enables interoperability with other Active Inference models and tools.
+Terms must exist in
+[`src/ontology/act_inf_ontology_terms.json`](../../../src/ontology/act_inf_ontology_terms.json);
+Step 10 validates them. This mapping enables interoperability with other
+Active Inference models and tools.
 
-### 10. Footer
+### 11. Footer
 
 A closing section that marks the end of the model definition, typically repeating the model name.
 
 ```
-# Dynamic Perception Model v2.1
+## Footer
+Dynamic Perception Model v2.1
 ```
 
-### 11. Signature
+### 12. Signature
 
 Optional cryptographic or authorship information validating the file's provenance.
 
@@ -235,16 +260,21 @@ Hash: a1b2c3d4e5f6g7h8i9j0
 Below is an example of a complete GNN file for a simple dynamic perception model:
 
 ```
-## GNN v1
+## GNNSection
+ActInfPOMDP
 
-# Simple Dynamic Perception Model
+## GNNVersionAndFlags
+GNN v1.1
 
-## Model annotations
+## ModelName
+Simple Dynamic Perception Model
+
+## ModelAnnotation
 This model demonstrates perceptual inference with a 
 two-dimensional hidden state and observation space.
 The model updates beliefs over discrete time steps.
 
-## State space block
+## StateSpaceBlock
 s_t[2,1,type=float]  # Hidden state
 o_t[2,1,type=float]  # Observation
 A[2,2,type=float]    # Recognition matrix
@@ -259,7 +289,7 @@ A-o_t
 s_t-B
 B-s_t+1
 
-## Initial Parameterization
+## InitialParameterization
 D={0.5,0.5}
 A={(.9,.1),(.2,.8)}
 B={(.7,.3),(.3,.7)}
@@ -270,10 +300,10 @@ s_{tau>1}=softmax((1/2)(ln(D)+ln(B^dagger_tau*s_{tau+1})+ln(trans(A)o_tau))
 
 ## Time
 Dynamic
-DiscreteTime=s_t
+DiscreteTime=t
 ModelTimeHorizon=10
 
-## Active Inference Ontology
+## ActInfOntologyAnnotation
 A=RecognitionMatrix
 B=TransitionMatrix
 D=Prior
@@ -281,7 +311,13 @@ s_t=HiddenState
 o_t=Observation
 t=Time
 
-# Simple Dynamic Perception Model
+## ModelParameters
+num_hidden_states: 2
+num_obs: 2
+num_timesteps: 10
+
+## Footer
+Simple Dynamic Perception Model
 
 ## Signature
 Author: Active Inference Institute

@@ -2,16 +2,18 @@
 
 How to add real, tested MCP tools to any GNN pipeline module.
 
-**Last Updated**: 2026-04-15
+**Last Updated**: 2026-08-07
 
 ## Design Principles
 
-All GNN MCP tools follow four non-negotiable constraints enforced by `test_mcp_audit.py`:
+All GNN MCP tools follow six non-negotiable constraints enforced by `test_mcp_audit.py`:
 
 1. **Real named functions** — no lambdas, no `None`, no generic wrappers like `list_functions`
 2. **Non-empty descriptions** — every tool must have a docstring or explicit description
-3. **Logger call** — `register_tools()` must call `logger.info(f"Registered N tools")` with the real count
-4. **Real behavior** — the function must do real work, not just return an empty result
+3. **Valid JSON schema** — every tool passes a schema that satisfies `MCPTool.validate_schema()`
+4. **Non-empty module and category metadata**
+5. **Logger call** — `register_tools()` must call `logger.info(...)` naming the real registered count
+6. **Real behavior** — the function must do real work, and be callable via `execute_tool` with no required arguments
 
 ## Module File Structure
 
@@ -70,26 +72,53 @@ def register_tools(server: Any) -> None:
             }
         }
 
-    # 2️⃣  Register all tools (each needs a name + description)
+    # 2️⃣  Register each tool. The signature is
+    #     register_tool(name, func, schema, description, module=..., category=...)
+    #     — the JSON schema is positional third and is NOT optional in practice:
+    #     the audit validates it, and module/category must be non-empty.
     server.register_tool(
-        name="process_<module>",
-        description="Run <module> processing pipeline on all GNN files in target_dir.",
-        func=process_<module>,
+        "process_<module>",
+        process_<module>,
+        {
+            "type": "object",
+            "properties": {
+                "target_dir": {
+                    "type": "string",
+                    "description": "Directory containing GNN files to process",
+                },
+                "output_dir": {
+                    "type": "string",
+                    "description": "Directory to write results to",
+                },
+            },
+            "required": [],
+        },
+        "Run <module> processing pipeline on all GNN files in target_dir.",
+        module="<module>",
+        category="processing",
     )
     server.register_tool(
-        name="get_<module>_info",
-        description="Return <module> module version and capabilities.",
-        func=get_<module>_info,
+        "get_<module>_info",
+        get_<module>_info,
+        {"type": "object", "properties": {}, "required": []},
+        "Return <module> module version and capabilities.",
+        module="<module>",
+        category="introspection",
     )
     server.register_tool(
-        name="list_<module>_options",
-        description="List configurable options for <module> processing.",
-        func=list_<module>_options,
+        "list_<module>_options",
+        list_<module>_options,
+        {"type": "object", "properties": {}, "required": []},
+        "List configurable options for <module> processing.",
+        module="<module>",
+        category="introspection",
     )
 
-    # 3️⃣  Required logger.info with exact count
+    # 3️⃣  Required logger.info naming the real registered count
     logger.info("Registered 3 <module> MCP tools")
 ```
+
+Every tool must be callable through `execute_tool` **with no arguments**, so keep required-argument lists empty and give parameters sensible defaults.
 
 ## Checklist Before Submitting
 
@@ -117,11 +146,14 @@ uv run python src/mcp/validate_tools.py
 
 | Test Class | What It Checks |
 |------------|---------------|
-| `TestMCPModuleDiscovery` | 32 modules × 2: module registered + `register_tools` is callable |
-| `TestMCPDomainTools` | Registered domain tools: tool callable + description not empty |
-| `TestMCPToolRealness` | No generic catch-all tools (`list_functions`, `call_function`) |
+| `TestMCPModuleDiscovery` | Every expected module is registered and its `register_tools` is callable |
+| `TestMCPToolRealness` | Named backing functions, non-empty module/category metadata, valid JSON schemas, no generic catch-all tools (`list_functions`, `call_function`) |
+| `TestMCPDomainTools` | Each module registers its expected domain tools: callable + description not empty |
+| `TestMCPToolExecution` | Tools are callable live via `execute_tool` with no required arguments |
 | `TestMCPLoggingCoverage` | Every `mcp.py` calls `logger.info` in `register_tools` |
 | `TestMCPAuditReport` | JSON report generated with correct schema |
+
+The expected-module list is `EXPECTED_MODULES` in `src/tests/mcp/test_mcp_audit.py`.
 
 If your new tools follow the canonical pattern above, the audit will pass automatically.
 

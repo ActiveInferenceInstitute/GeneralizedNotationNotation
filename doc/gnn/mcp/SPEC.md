@@ -20,7 +20,7 @@ Every MCP tool implements:
 4. Real-implementation tests: real deps or skip-with-guard
 
 ## Versioning
-Tool reference is tagged with the engine version (currently v1.6.0).
+Tool reference is tagged with the engine version (currently v3.0.0).
 Tools added post-release MUST update `tool_reference.md` before merging.
 
 ## Status

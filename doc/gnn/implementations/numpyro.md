@@ -118,7 +118,7 @@ pip install numpyro "jax[cuda12]" -f https://storage.googleapis.com/jax-releases
 Check availability:
 
 ```bash
-PYTHONPATH=src python -c "from execute.numpyro import check_numpyro; print(check_numpyro())"
+PYTHONPATH=src python -c "from execute.numpyro import is_numpyro_available; print(is_numpyro_available())"
 ```
 
 ## Run
@@ -130,8 +130,10 @@ python src/11_render.py --target-dir input/gnn_files/ --frameworks numpyro
 # Execute with MCMC inference
 python src/12_execute.py --target-dir input/gnn_files/ --frameworks numpyro
 
-# Or use MCP tool
-# Call: execute_gnn_model(path="...", framework="numpyro")
+# The MCP tool takes no framework argument — it dispatches to PyMDP:
+# execute_gnn_model_mcp(gnn_file_path="...", output_directory="...")
+# For a specific backend, call the executor directly:
+# execute_gnn_model(model_path="...", execution_type="numpyro")
 ```
 
 ## Comparison to Other Frameworks

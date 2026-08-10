@@ -1,6 +1,6 @@
 # GNN Syntax Quick Reference
 
-**Version**: v1.6.0 Engine (Bundle v2.0.0)  
+**Version**: v3.0.0 Engine (Bundle v2.0.0)  
 **Status**: Cheatsheet
 
 ---
@@ -63,6 +63,36 @@ NAME[dim₁, dim₂, …, type=<type>, default=<default>]
 
 ---
 
+## Initial Parameterization Keys
+
+| Family | Keys | Selects model kind |
+|--------|------|--------------------|
+| Discrete POMDP | `A` `B` `C` `D` `E` | FLAT (or FACTORED if `num_factors > 1`) |
+| Linear-Gaussian | `F` `H` `Q` `R` `prior_mean` `prior_cov` | CONTINUOUS |
+| Dirichlet priors | `dirichlet_A` … `dirichlet_E` | LEARNING |
+| Per-level | `A_level1`, `B_level2`, … | HIERARCHICAL |
+| Per-agent | `A_agent1`, `B_agent2`, … | MULTI_AGENT |
+
+`B` is ordered `(next_state, previous_state, action)`. A file may declare
+several families at once — the `continuous/` exemplars carry both the
+discrete matrices and the linear-Gaussian block.
+
+---
+
+## ModelParameters
+
+```gnn
+## ModelParameters
+num_hidden_states: 4
+num_obs: 3
+num_actions: 2
+num_timesteps: 20
+inference_mode: online      # batch (default) | online
+inference_iterations: 40    # default 20
+```
+
+---
+
 ## Multi-Model Files (v1.1)
 
 Separate models with `---` on its own line:
@@ -102,7 +132,7 @@ tags:
 |------|---------|
 | `GNN-E001` | Missing required section |
 | `GNN-E002` | Dimension mismatch |
-| `GNN-E003` | Unknown variable in connection |
+| `GNN-E003` | Unknown variable in connection (reserved — emitted as `GNN-W002`) |
 | `GNN-E004` | Duplicate variable declaration |
 | `GNN-E005` | Unparseable connection syntax |
 

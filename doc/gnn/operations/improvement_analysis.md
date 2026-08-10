@@ -1,6 +1,6 @@
 # GNN Pipeline Improvement Analysis
 
-**Version**: v1.6.0 Engine (Bundle v2.0.0)  
+**Version**: v3.0.0 Engine (Bundle v2.0.0)  
 **Last Reviewed**: 2026-06-12
 **Status**: Historical analysis; use `TO-DO.md` and current verifier output for live release status
 **Modules**: 38+ · **Pipeline steps**: 25 · **Renderers**: 9 backends (see [../implementations/README.md](../implementations/README.md)) · **Tests**: see [../../../README.md](../../../README.md)  

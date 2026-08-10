@@ -1,6 +1,6 @@
 # GNN Visualization Guide
 
-**Version**: v1.6.0 Engine (Bundle v2.0.0)  
+**Version**: v3.0.0 Engine (Bundle v2.0.0)  
 **Last Updated**: 2026-04-15  
 **Status**: ✅ Production Ready  
 **Modules**: 38+ · **Pipeline steps**: 25 · **Renderers**: 9 backends (see [../implementations/README.md](../implementations/README.md)) · **Tests**: see [../../../README.md](../../../README.md)  
@@ -39,8 +39,10 @@ GNN visualization is integrated into the 25-step processing pipeline:
 # Generate visualizations
 python src/main.py --only-steps "3,8,9" --target-dir input/gnn_files --verbose
 
-# Generate specific visualization types
-python src/8_visualization.py --target-dir input/gnn_files --output-dir output --visualization-types "graph,matrix"
+# Step 8 has no type-selection flag — it generates the full set.
+# Step 9 does: use --viz-type to pick one advanced visualization.
+python src/8_visualization.py --target-dir input/gnn_files --output-dir output --verbose
+python src/9_advanced_viz.py --target-dir input/gnn_files --output-dir output --viz-type network
 ```
 
 ## Graph Visualization
@@ -152,11 +154,12 @@ Interactive plotting enables dynamic exploration of GNN models with zoom, pan, a
 ### Interactive Plotting Example
 
 ```python
-from visualization.processor import generate_network_visualizations, parse_gnn_content
+from visualization.network_visualizations import generate_network_visualizations
+from visualization.processor import parse_gnn_content
 from pathlib import Path
 
 # Parse GNN content and generate network graph visualizations
-with open("input/gnn_files/model.md") as f:
+with open("input/gnn_files/discrete/actinf_pomdp_agent.md") as f:
     content = f.read()
 parsed = parse_gnn_content(content)
 files = generate_network_visualizations(
@@ -192,17 +195,22 @@ Interactive dashboards combine multiple visualization types:
 ### Advanced Visualization Example
 
 ```python
-from advanced_visualization import process_advanced_visualization
+from pathlib import Path
+
+from advanced_visualization import process_advanced_viz
 
 # Generate advanced visualizations
-success = process_advanced_visualization(
+success = process_advanced_viz(
     target_dir=Path("input/gnn_files"),
     output_dir=Path("output/9_advanced_viz_output"),
-    dashboard=True,
-    three_d=True,
-    verbose=True
+    viz_type="all",        # or: 3d, interactive, dashboard, d2, diagrams,
+                           #     pipeline, statistical, pomdp, network
+    interactive=True,
+    export_formats=None,   # defaults chosen per viz_type
 )
 ```
+
+The same selection is available from the pipeline as `--viz-type` on step 9.
 
 ## Analysis Visualization (Step 16)
 
@@ -315,4 +323,4 @@ Visualization results are integrated throughout the pipeline:
 
 **Status**: ✅ Production Ready  
 **Last Updated**: 2026-04-15  
-**Version**: v1.6.0 Engine (Bundle v2.0.0)
+**Version**: v3.0.0 Engine (Bundle v2.0.0)

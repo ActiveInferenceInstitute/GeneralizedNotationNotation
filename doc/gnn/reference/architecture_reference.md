@@ -1,6 +1,6 @@
 # GNN Architecture Reference
 
-**Version**: v1.6.0 Engine (Bundle v2.0.0)  
+**Version**: v3.0.0 Engine (Bundle v2.0.0)  
 **Last Updated**: 2026-04-15  
 **Status**: ✅ Production Ready  
 **Modules**: 38+ · **Pipeline steps**: 25 · **Renderers**: 9 backends (see [../implementations/README.md](../implementations/README.md)) · **Tests**: see [../../../README.md](../../../README.md)  
@@ -58,9 +58,7 @@ The GNN pipeline consists of exactly 25 steps (0-24), each following the thin or
 
 For module-specific documentation, see each `src/[module]/AGENTS.md` file.
 
-## ### Thin Orchestrator Pattern
-
- (Actual Implementation)
+## Thin Orchestrator Pattern (Actual Implementation)
 
 ### Pattern Definition
 
@@ -83,11 +81,11 @@ from pathlib import Path
 
 # Thin orchestrator: delegates to module
 from utils.pipeline_template import create_standardized_pipeline_script
-from visualization import process_visualization_main  # ← Core implementation
+from visualization import process_visualization  # ← Core implementation
 
 run_script = create_standardized_pipeline_script(
     "8_visualization.py",
-    process_visualization_main,  # ← Delegates to module
+    process_visualization,  # ← Delegates to module
     "Matrix and network visualization processing"
 )
 
@@ -184,16 +182,19 @@ src/gnn/
 Type analysis implementation:
 
 src/type_checker/
-├── analysis_utils.py                  # Core functions (line 13-62)
-│   ├── analyze_variable_types() → Dict[str, Any]
-│   ├── analyze_connections() → Dict[str, Any]
-│   └── estimate_computational_complexity() → Dict[str, Any]
-│   ├── check_file() → Tuple[bool, List[str], List[str], Dict[str, Any]]
-│   ├── _check_required_sections()
-│   └── _collect_variable_analysis()
-└── processor.py                       # GNNTypeChecker (line 20)
-    ├── _validate_type() (line 191)
-    └── _analyze_types() (line 232)
+├── analysis_utils.py                  # Standalone analysis helpers
+│   ├── analyze_variable_types() (line 13)
+│   ├── analyze_connections() (line 78)
+│   └── estimate_computational_complexity() (line 131)
+├── checking/
+│   ├── core.py                        # GNNTypeChecker (line 111)
+│   │   ├── check_file() (line 118)
+│   │   ├── validate_gnn_files() (line 163)
+│   │   └── _analyze_types() (line 320)
+│   ├── dimensions.py                  # Dimension consistency checks
+│   └── rules.py                       # Rule definitions
+├── estimation/                        # GNNResourceEstimator lives here
+└── processor.py                       # Thin re-export facade (17 lines)
 ```
 
 ### Visualization Modules (src/visualization/)
@@ -202,21 +203,27 @@ src/type_checker/
 Visualization implementation hierarchy:
 
 src/visualization/
-├── __init__.py                        # Safe imports (line 15-47)
-├── visualizer.py                      # GNNVisualizer (line 66)
-├── matrix_visualizer.py               # MatrixVisualizer (line 40)
-│   └── generate_matrix_visualizations() (line 941)
-└── processor.py                       # Core processing functions
-    ├── parse_matrix_data() (line 367)
-    ├── generate_matrix_visualizations() (line 403)
-    └── generate_network_visualizations() (line 523)
+├── __init__.py                        # Safe imports
+├── visualizer.py                      # GNNVisualizer (line 61)
+├── matrix_visualizer.py               # Thin re-export facade (15 lines)
+├── processor.py                       # Thin re-export facade (34 lines)
+├── matrix/
+│   ├── visualizer.py                  # MatrixVisualizer (line 171)
+│   │   └── generate_matrix_visualizations() (line 1649)
+│   └── compat.py                      # parse_matrix_data() (line 18)
+└── graph/
+    └── network_visualizations.py      # generate_network_visualizations() (line 82)
 ```
+
+`matrix_visualizer.py` and `processor.py` are re-export facades kept for
+import stability; the implementations moved into the `matrix/` and `graph/`
+subpackages.
 
 ## Framework Integration Points (Implementation Details)
 
 ### PyMDP Integration
 
-**Location:** `src/render/pymdp/` (to be implemented)
+**Location:** `src/render/pymdp/`
 **Template Variables:**
 
 ```python
@@ -233,7 +240,7 @@ agent = pymdp.Agent(A=A, B=B, C=C, D=D, E=E)
 
 ### RxInfer.jl Integration  
 
-**Location:** `src/render/rxinfer/` (to be implemented)
+**Location:** `src/render/rxinfer/`
 **Model Template:**
 
 ```julia
@@ -257,7 +264,7 @@ end
 
 ### DisCoPy Integration
 
-**Location:** `src/render/discopy/` (to be implemented)  
+**Location:** `src/render/discopy/`  
 **Category Theory Mapping:**
 
 ```python
@@ -279,61 +286,60 @@ for conn in connections:
 ### Argument Flow (src/main.py → steps)
 
 ```python
-# Main pipeline argument passing:
+# src/main.py → src/pipeline/execution.py
 def execute_pipeline_step(script_name: str, args: PipelineArguments, logger):
-    cmd = build_step_command_args(
+    cmd = build_step_command_args(         # src/utils/argument_utils.py:1657
         script_name.replace('.py', ''),
-        args,  # Contains: target_dir, output_dir, verbose, etc.
+        args,                              # target_dir, output_dir, verbose, ...
         python_executable,
-        script_path
+        script_path,
     )
-    
-# Each step receives s### Standardized I/O and State Management
-# --target-dir, --output-dir, --```python
-from src.utils.logging_helpers import setup_logging
-from src.utils.io_helpers import get_output_dir_for_script
-
-# Standardized logging setup
-logger = setup_logging(__file__)
-
-# Standardized output directory resolution
-output_dir = get_output_dir_for_script(__file__)
 ```
 
-def get_output_dir_for_script(script_name: str, base_output_dir: Path) -> Path:
-    step_name = script_name.replace('.py', '')
-    return base_output_dir / f"{step_name}_output"
+Each step is invoked as a subprocess and receives the common flags
+(`--target-dir`, `--output-dir`, `--verbose`) plus any step-specific arguments.
 
-# Results in structure
+### Standardized I/O and State Management
 
-# output/
+Step scripts do not wire up logging or output paths by hand. They are built by
+`create_standardized_pipeline_script` (`src/utils/pipeline_template.py`), which
+supplies the logger and the resolved output directory:
 
-# ├── 3_gnn_output/
+```python
+from utils.pipeline_template import create_standardized_pipeline_script
 
-# ├── 5_type_checker_output/  
+run = create_standardized_pipeline_script(
+    "3_gnn.py",
+    process_gnn_multi_format,
+    "GNN file discovery and multi-format parsing",
+)
+```
 
-# ├── 8_visualization_output/
+Output directories are resolved by
+`get_output_dir_for_script` (`src/pipeline/config.py:136`), which maps each
+script to a numbered sibling directory:
 
-# └── 11_render_output/
-
+```text
+output/
+├── 3_gnn_output/
+├── 5_type_checker_output/
+├── 8_visualization_output/
+└── 11_render_output/
 ```
 
 ### Error Handling Pattern
 
+The template wrapper catches exceptions from the module function, logs them,
+and converts the outcome into the pipeline exit-code contract
+(`0` success, `1` error, `2` success with warnings):
+
 ```python
-# Standardized error handling in each step:
 try:
-    success = module_processing_function(target_dir, output_dir, logger, **kwa```python
-try:
-    # Core logic
-    process_data()
+    success = module_processing_function(target_dir, output_dir, logger, **kwargs)
 except Exception as e:
-    logger.error(f"Critical error in processing: {str(e)}")
-    raise
-```
-
-turn 1  # Pipeline continues with next step
-
+    logger.error(f"Critical error in processing: {e}")
+    return 1
+return 0 if success else 1
 ```
 
 ## Dependency Resolution (Actual Implementation)
@@ -363,7 +369,7 @@ Each module includes `mcp.py` with tool registration:
 @server.tool()
 def visualize_gnn_model(content: str, output_path: str) -> dict:
     """Generate visualization for GNN model content."""
-    return process_visualization_main(
+    return process_visualization(
         target_dir=Path(content),
         output_dir=Path(output_path)
     )

@@ -267,9 +267,16 @@ Exported separately containing the full A, B, C, D, E matrices used during simul
 
 ## Cross-Framework Correlation
 
-In the latest pipeline run, ActiveInference.jl achieved:
+The figures below are an **illustrative snapshot from one historical run**, not a
+guarantee — they move with the corpus, the seed, and the model being compared. Read
+current numbers from the live artifacts rather than from this table:
 
-| Metric | Value |
+```bash
+# Step 16 writes the cross-framework comparison here
+ls output/16_analysis_output/cross_framework/
+```
+
+| Metric | Value (snapshot) |
 |---|---|
 | Mean Confidence | 0.9450 |
 | EFE Mean | -0.9795 |
@@ -278,37 +285,60 @@ In the latest pipeline run, ActiveInference.jl achieved:
 | Correlation vs JAX | 0.8910 |
 | Correlation vs RxInfer | 0.8910 |
 
-The slightly lower confidence correlation (compared to the 1.0000 achieved by PyMDP/JAX/RxInfer) is expected because ActiveInference.jl uses its own internal variational inference algorithm, which may converge differently from the explicit Bayesian updates in the other frameworks.
+The shape of the result is the durable part: ActiveInference.jl correlates well with the
+other backends but not perfectly, while PyMDP, JAX, and RxInfer tend to agree with each
+other very closely. That is expected — ActiveInference.jl runs its own internal
+variational inference, which converges differently from the explicit Bayesian updates the
+other frameworks perform.
 
 ---
 
-## Dependencies
+## Dependencies and the committed Julia environment
 
-| Package | Purpose |
-|---|---|
-| `ActiveInference` | Core discrete Active Inference agent |
-| `Distributions` | `Categorical` distribution sampling |
-| `LinearAlgebra` | Matrix operations |
-| `Random` | PRNG seeding (`Random.seed!(42)`) |
-| `Dates` | Timestamp generation |
-| `JSON` | Telemetry serialization |
-| `DelimitedFiles` | CSV export (`writedlm`) |
+`src/execute/activeinference_jl/` is a committed Julia environment with its own
+`Project.toml` + `Manifest.toml`. It is deliberately **minimal** — four declared
+dependencies, nothing more:
+
+| Declared dependency | Compat | Purpose |
+|---|---|---|
+| `ActiveInference` | 0.1 | Core discrete Active Inference agent |
+| `Distributions` | 0.25 | `Categorical` distribution sampling |
+| `JSON` | 1.7 | Telemetry serialization |
+| `StatsBase` | 0.34 | Summary statistics |
+
+Julia stdlib modules the generated script also uses — `LinearAlgebra` for matrix
+operations, `Random` for PRNG seeding, `Dates` for timestamps, and `DelimitedFiles` for
+CSV export via `writedlm` — need no `Project.toml` entry.
+
+`GraphPPL` is **not** a dependency of this environment. It belongs to the RxInfer stack;
+the ActiveInference.jl preflight checks only `JSON`, `Distributions`, `StatsBase`, and
+`ActiveInference`.
+
+Step 12 defaults `JULIA_PROJECT` to this directory when running ActiveInference.jl
+scripts (`_build_execution_environment()` in `src/execute/processor.py`), so the script
+resolves its packages without an ambient environment. An explicitly set `JULIA_PROJECT`
+still wins.
+
+```bash
+julia --startup-file=no --project=src/execute/activeinference_jl \
+  -e 'using ActiveInference, Distributions, JSON, StatsBase'
+```
 
 ---
 
 ## Source Code Connections
 
-| Pipeline Stage | Module | Key Function | Lines |
-|---|---|---|---|
-| Matrix Conversion | [activeinference_renderer.py](../../../src/render/activeinference_jl/activeinference_renderer.py) | `_matrix_to_julia()` | — |
-| Model Extraction | [activeinference_renderer.py](../../../src/render/activeinference_jl/activeinference_renderer.py) | `extract_model_info()` | — |
-| Script Generation | [activeinference_renderer.py](../../../src/render/activeinference_jl/activeinference_renderer.py) | `generate_activeinference_script()` | — |
-| Env Setup | [activeinference_runner.py](../../../src/execute/activeinference_jl/activeinference_runner.py) | `setup_julia_environment()` | L86-159 |
-| Execution | [activeinference_runner.py](../../../src/execute/activeinference_jl/activeinference_runner.py) | `execute_activeinference_script()` | L280-388 |
-| Julia Check | [activeinference_runner.py](../../../src/execute/activeinference_jl/activeinference_runner.py) | `is_julia_available()` | L27-84 |
-| Analysis | [analyzer.py](../../../src/analysis/activeinference_jl/analyzer.py) | `generate_analysis_from_logs()` | — |
-| Trace Reconstruction | [analyzer.py](../../../src/analysis/activeinference_jl/analyzer.py) | `create_trace_reconstruction()` | — |
-| Matrix Heatmaps | [analyzer.py](../../../src/analysis/activeinference_jl/analyzer.py) | `create_model_matrix_heatmaps()` | — |
+| Pipeline Stage | Module | Key Function |
+|---|---|---|
+| Matrix Conversion | [activeinference_renderer.py](../../../src/render/activeinference_jl/activeinference_renderer.py) | `_matrix_to_julia()` |
+| Model Extraction | [activeinference_renderer.py](../../../src/render/activeinference_jl/activeinference_renderer.py) | `extract_model_info()` |
+| Script Generation | [activeinference_renderer.py](../../../src/render/activeinference_jl/activeinference_renderer.py) | `generate_activeinference_script()` |
+| Env Setup | [activeinference_runner.py](../../../src/execute/activeinference_jl/activeinference_runner.py) | `setup_julia_environment()` |
+| Execution | [activeinference_runner.py](../../../src/execute/activeinference_jl/activeinference_runner.py) | `execute_activeinference_script()` |
+| Julia Check | [julia_setup.py](../../../src/execute/julia_setup.py) | `is_julia_available()` (imported by the runner) |
+| Analysis | [analyzer.py](../../../src/analysis/activeinference_jl/analyzer.py) | `generate_analysis_from_logs()` |
+| Trace Reconstruction | [analyzer.py](../../../src/analysis/activeinference_jl/analyzer.py) | `create_trace_reconstruction()` |
+| Matrix Heatmaps | [analyzer.py](../../../src/analysis/activeinference_jl/analyzer.py) | `create_model_matrix_heatmaps()` |
 
 ---
 
@@ -318,7 +348,7 @@ The slightly lower confidence correlation (compared to the 1.0000 achieved by Py
 |---|---|---|---|
 | AIF-1 | Telemetry | ~~No `validation` dict in `simulation_results.json`~~ — now includes `beliefs_in_range`, `beliefs_sum_to_one`, `actions_in_range`, `all_valid` | ✅ FIXED |
 | AIF-2 | Rendering | ~~4 renderer variants existed~~ — deleted `activeinference_jl_renderer.py`, `_fixed.py`, `_simple.py`; only canonical `activeinference_renderer.py` remains | ✅ FIXED |
-| AIF-3 | Execution | Runner is 604 lines with Julia environment setup; `setup_julia_environment()` and `_fallback_environment_setup()` could be shared with `rxinfer_runner.py` — `is_julia_available()` now delegates to shared `julia_setup` module | Medium |
+| AIF-3 | Execution | `is_julia_available()` is now imported from the shared `src/execute/julia_setup.py`, but this runner still defines its own `setup_julia_environment()` and `_fallback_environment_setup()` alongside the shared `julia_setup.setup_julia_environment()` — the remaining duplication to collapse | Medium |
 | AIF-4 | Rendering | ~~`POLICY_LENGTH` was referenced but defined as `POLICY_LEN`~~ — removed orphaned `POLICY_LENGTH`; only `POLICY_LEN` is used | ✅ FIXED |
 | AIF-5 | Analysis | `parse_julia_matrix()` and `parse_julia_vector()` nested helpers could be extracted to shared Julia parsing utility | Low |
 

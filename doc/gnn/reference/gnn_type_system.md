@@ -1,6 +1,6 @@
 # GNN Type System Guide
 
-**Version**: v1.6.0 Engine (Bundle v2.0.0)  
+**Version**: v3.0.0 Engine (Bundle v2.0.0)  
 **Last Updated**: 2026-04-15  
 **Status**: ✅ Production Ready  
 **Modules**: 38+ · **Pipeline steps**: 25 · **Renderers**: 9 backends (see [../implementations/README.md](../implementations/README.md)) · **Tests**: see [../../../README.md](../../../README.md)  
@@ -69,7 +69,9 @@ graph TD
 
 ### Type Validation
 
-Type checking validates model structure and type consistency:
+Type checking validates model structure and type consistency. The import
+below is the stable public path; `resource_estimator.py` re-exports the class,
+which is defined in `src/type_checker/estimation/estimator.py`:
 
 ```python
 from type_checker.resource_estimator import GNNResourceEstimator
@@ -200,4 +202,4 @@ Type checking integrates throughout the pipeline:
 
 **Status**: ✅ Production Ready  
 **Last Updated**: 2026-04-15  
-**Version**: v1.6.0 Engine (Bundle v2.0.0)
+**Version**: v3.0.0 Engine (Bundle v2.0.0)

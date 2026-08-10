@@ -2,7 +2,7 @@
 
 > **GNN Integration Layer**: Stan probabilistic programming language
 > **Framework Base**: Stan (statistical modeling language, MCMC / variational inference)
-> **Documentation Version**: v1.6.0 Engine (Bundle v2.0.0)
+> **Documentation Version**: v3.0.0 Engine (Bundle v2.0.0)
 > **Scope**: **Structural-only.** This backend emits syntactically valid Stan
 > from GNN structure (variables, connections, dimensions); it does NOT encode
 > full Active Inference semantics (no expected-free-energy policy selection,
@@ -168,7 +168,8 @@ toolchain. Integrate into your own CI when needed.
 
 ## Implementation Notes
 
-- Tests: `src/tests/test_render_stan_*.py` (unit) +
+- Tests: `src/tests/render/test_render_stan.py` and
+  `src/tests/test_render_numpyro_stan.py` (unit) +
   `src/tests/render/test_render_cli_targets.py::test_every_cli_target_dispatches[stan]`
   (integration).
 - Backend status: **Active but structural-only**. Maintained as a bridge to

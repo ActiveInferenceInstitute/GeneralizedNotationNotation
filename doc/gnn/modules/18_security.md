@@ -2,7 +2,7 @@
 
 ## Architectural Mapping
 
-**Orchestrator**: `src/18_security.py` (63 lines)
+**Orchestrator**: `src/18_security.py` (55 lines)
 **Implementation Layer**: `src/security/`
 
 ## Module Description

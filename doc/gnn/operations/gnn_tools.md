@@ -1,6 +1,6 @@
 # GNN Tools and Resources
 
-**Version**: v1.6.0 Engine (Bundle v2.0.0)  
+**Version**: v3.0.0 Engine (Bundle v2.0.0)  
 **Last Updated**: 2026-04-15  
 **Status**: Maintained  
 
@@ -210,33 +210,35 @@ GNN support is available for various IDEs:
 
 GNN tools integrate with several Active Inference frameworks:
 
+Step 11 renders to nine backends and Step 12 executes them. `uv run gnn health` reports which are importable in the current environment.
+
 ```mermaid
 graph LR
-    GNN[GNN Tools] --> PYMDP[pymdp]
-    GNN --> INFERACTIVELY[inferactively]
-    GNN --> PYAIXI[pyaixi]
-    GNN --> ACTINFLAB[ActInfLab]
-    
-    subgraph Integration Features
-        EXPORT[Export To Framework]
-        IMPORT[Import From Framework]
-        VALIDATE[Validate Models]
-        SIMULATE[Run Simulations]
-    end
-    
-    PYMDP --- EXPORT
-    PYMDP --- IMPORT
-    PYMDP --- VALIDATE
-    PYMDP --- SIMULATE
-    
+    GNN[GNN Tools] --> RENDER[Step 11 Render]
+    RENDER --> PYMDP[PyMDP]
+    RENDER --> RXINFER[RxInfer.jl]
+    RENDER --> AIFJL[ActiveInference.jl]
+    RENDER --> JAX[JAX]
+    RENDER --> DISCOPY[DisCoPy]
+    RENDER --> BNLEARN[bnlearn]
+    RENDER --> PYTORCH[PyTorch]
+    RENDER --> NUMPYRO[NumPyro]
+    RENDER --> STAN[Stan]
+
     classDef tool fill:#f96,stroke:#333,stroke-width:2px;
     classDef framework fill:#9cf,stroke:#333,stroke-width:1px;
-    classDef feature fill:#cfc,stroke:#333,stroke-width:1px;
-    
-    class GNN tool;
-    class PYMDP,INFERACTIVELY,PYAIXI,ACTINFLAB framework;
-    class EXPORT,IMPORT,VALIDATE,SIMULATE feature;
+
+    class GNN,RENDER tool;
+    class PYMDP,RXINFER,AIFJL,JAX,DISCOPY,BNLEARN,PYTORCH,NUMPYRO,STAN framework;
 ```
+
+| Language | Backends |
+|---|---|
+| Python | PyMDP, JAX, DisCoPy, bnlearn, PyTorch, NumPyro |
+| Julia | RxInfer.jl, ActiveInference.jl |
+| Stan | Stan |
+
+PyMDP requires the `inferactively-pymdp` package — **not** the unrelated PyPI package named `pymdp`. Step 12 detects the wrong variant and reports it explicitly.
 
 ### Integration Examples
 
@@ -590,7 +592,7 @@ python src/main.py --skip-steps "15,16" --verbose
 
 # Run with specific framework execution
 python src/main.py --only-steps "11,12"
-python src/12_execute.py --frameworks "lite" --verbose  # PyMDP, JAX, DisCoPy only
+python src/12_execute.py --frameworks "lite" --verbose  # Python-only: PyMDP, JAX, DisCoPy, bnlearn
 ```
 
 For more detailed information on each module, see **[src/AGENTS.md](../../../src/AGENTS.md)**.

@@ -4,7 +4,7 @@
 > **GNN Integration Layer**: Julia
 > **Framework Base**: `RxInfer.jl` (genuine `@model` + `infer()` variational message passing)
 > **Simulation Architecture**: POMDP generative model via `@model` + `infer()`
-> **Documentation Version**: 2.0.0
+> **Documentation Version**: 3.0.0
 
 ## Overview
 
@@ -17,14 +17,33 @@ RxInfer serves as the primary Bayesian message-passing reference implementation
 and is the only framework in the pipeline that performs inference through a
 declarative probabilistic programming model (via the `@model` macro).
 
-The canonical renderer (`src/render/rxinfer/rxinfer_renderer.py`) emits a
-genuine Julia script per exemplar model that defines
-`@model function pomdp_model(y, A, B, D, u, T)` using `Categorical` and
-`DiscreteTransition` nodes and runs `infer()` with `free_energy = true` — no
-hand-rolled step simulator. This document details the full data flow from GNN
-JSON specification through Julia factor graph construction, genuine variational
-message-passing inference, real variational free energy (VFE) capture, explicit
-Expected Free Energy (EFE) computation, and JSON telemetry serialization.
+The canonical renderer (`src/render/rxinfer/rxinfer_renderer.py`) emits a genuine Julia
+script per exemplar model that runs `infer()` with `free_energy = true` — no hand-rolled
+step simulator. It does not emit one flat model shape for every spec: it calls
+`detect_model_kind()` (`src/render/pomdp_contract.py`) and dispatches by the detected
+`ModelKind` to a per-kind strategy in `src/render/rxinfer/model_strategies.py`. Detection
+is *structural* — the `GNNSection` value, per-level and per-agent matrix key patterns,
+explicit `nr_agents`/`num_factors`, `F`/`H`/`Q`/`R` keys, and `dirichlet_[A-E]` keys —
+never free-text scanning of the source.
+
+| `ModelKind` | Strategy | Generated model |
+|---|---|---|
+| `FLAT` | `FlatStrategy` | `pomdp_model` — batch smoothing by default, or per-timestep filtering in [online mode](#online-mode) |
+| `HIERARCHICAL` | `HierarchicalStrategy` | `hierarchical_pomdp_model` — native two-level; the context latent enters the fast-state prior through the column-normalized `A_level2` (the model's `A_ctx` argument). Mean-field constraints *and* marginal initialization are both required on RxInfer 5.5. Three or more declared levels render as the documented joint composition |
+| `FACTORED` | `FactoredStrategy` | `factored_pomdp_model` — native mean-field two-factor model with a multi-parent likelihood, `DiscreteTransition(s1, A_m0, s2)` |
+| `CONTINUOUS` | `ContinuousStrategy` | `continuous_pomdp_model` — native linear-Gaussian state space from `F`/`H`/`Q`/`R` plus `prior_mean`/`prior_cov`. Beliefs are posterior *means* alongside `posterior_cov`, and VFE validation is sign-agnostic because a Gaussian Bethe free energy is routinely negative |
+| `LEARNING` | `LearningStrategy` | `learning_pomdp_model` — `A` is learned jointly with the states as `DirichletCollection(dirichlet_A)`; `a_learning_improved` is a hard validation gate |
+| `MULTI_AGENT` | `MultiAgentStrategy` | joint composition stamping the true kind. There is no native multi-agent `@model`; per-agent marginals are recovered downstream by `compute_per_factor_beliefs()` from the `state_factors` echo |
+
+The table is maintained next to the code in
+[`src/render/rxinfer/README.md`](../../../src/render/rxinfer/README.md). The TOML-emitting
+`toml_generator.py` is retired and kept only as a warning surface —
+`render_gnn_to_rxinfer_toml()` raises a `DeprecationWarning`.
+
+This document details the full data flow from GNN specification through Julia factor
+graph construction, genuine variational message-passing inference, real variational free
+energy (VFE) capture, explicit Expected Free Energy (EFE) computation, and JSON telemetry
+serialization.
 
 ## Architecture
 
@@ -32,11 +51,34 @@ The RxInfer implementation consists of three interconnected layers:
 
 1. **Parameter Parsing**: `pomdp_processor.py` → `rxinfer_renderer.py`
    (Translating GNN variable states into Julia matrix literals)
-2. **Generative Loop Generation**: `RxInferRenderer._generate_rxinfer...`
-   (Building the Julia script containing the `@model` block, EFE functions,
-   and the generative loop)
+2. **Script Generation**: the selected strategy in `model_strategies.py`
+   (Building the Julia script: matrices, EFE functions, the generative loop,
+   and result serialization)
 3. **Execution Context**: `rxinfer_runner.py`
    (Spawning a Julia subprocess to execute the generated script)
+
+### Where the `@model` blocks live
+
+The `@model` definitions are **not** inlined into each generated script. They live in the
+committed Julia package `src/execute/rxinfer/src/GnnRxInferModels.jl`, which defines
+`pomdp_model`, `continuous_pomdp_model`, `hierarchical_pomdp_model`,
+`factored_pomdp_model`, and `learning_pomdp_model`. A rendered script imports the one it
+needs and calls it:
+
+```julia
+using GnnRxInferModels: pomdp_model
+
+result = infer(
+    model = pomdp_model(A=A, B=B, D=D, u=model_actions, T=TIME_STEPS),
+    data = (y = obs_seq,),
+    iterations = INFERENCE_ITERATIONS,
+    free_energy = true
+)
+```
+
+Holding the models in a package is what allows the environment to precompile them ahead
+of execution. The generated script supplies the matrices, the simulation loop, action
+selection, and telemetry.
 
 ### Source File
 
@@ -144,18 +186,26 @@ vfe_trace = [Float64(f) for f in result.free_energy]  # genuine VFE per iteratio
 
 `result.posteriors[:s]` yields the per-timestep posterior beliefs, and
 `result.free_energy` supplies the real variational free energy trace that feeds
-the `variational_free_energy` field (genuine values — previously `Float64[]`).
-The pipeline records `Random.seed!(seed)` and the script SHA256 in
-`runtime_metadata`. If RxInfer's inference engine fails (e.g. numerical issues),
-some downstream paths fall back to manual Bayesian updating:
+the `variational_free_energy` field. The pipeline records `Random.seed!(seed)` and the
+script SHA256 in `runtime_metadata`.
+
+**There is no inference fallback.** The `infer()` call is deliberately *not* wrapped in
+`try`/`catch`; every strategy emits the comment
 
 ```julia
-catch e
-    likelihood = A_matrix[obs, :]
-    unnormalized = current_belief .* likelihood
-    current_belief = unnormalized ./ sum(unnormalized)
-end
+# NO try/catch — if infer() fails, the script crashes with a clear error.
+# This is deliberate: real RxInfer inference or nothing.
 ```
+
+If variational message passing fails, the run fails loudly. Nothing silently degrades to
+hand-rolled Bayesian updating, because a result produced that way would be reported as
+RxInfer inference while not being RxInfer inference. `try`/`catch` does appear elsewhere
+in a generated script, but only around genuinely optional artifacts — the Plots backend
+probe and the best-effort PNG rendering — where a missing plotting dependency must not
+fail an otherwise valid run.
+
+Step 12 additionally returns a non-zero exit code when `validation.all_valid` is false,
+so invalid inference surfaces rather than passing silently.
 
 ### Step 4: Expected Free Energy Computation and Action Selection
 
@@ -184,13 +234,21 @@ This computes `D_KL(P(o') \ | \ | C)`, the divergence between predicted and pref
 
 #### Action Selection (Softmax Policy)
 
-````julia
-neg_efe = -action_precision .* efe_values
-action_probs = softmax(neg_efe)
-The `action_precision` parameter (configurable via GNN
-`ModelParameters.action_precision` or `ModelParameters.gamma`, default: `4.0`)
-controls the sharpness of action selection. Higher precision → more
-deterministic selection of the lowest-EFE action.
+Action selection is `softmax(log E − γ·EFE)` — the Active Inference policy with a habit
+prior:
+
+```julia
+policy = softmax(log.(max.(E_prior, 1e-16)) .- ACTION_PRECISION .* efe_values)
+```
+
+`E` is the habit (policy) prior from the GNN `E` vector, entering by log-addition. With
+the uniform default `E` the log term is constant and cancels inside the softmax, so
+behavior matches the E-less formula exactly; a non-uniform `E` biases action selection
+toward habitual actions independently of EFE.
+
+The `ACTION_PRECISION` constant (γ) is configurable via GNN
+`ModelParameters.action_precision` or `ModelParameters.gamma`, default `4.0`. Higher
+precision means more deterministic selection of the lowest-EFE action.
 
 ### Step 5: Environment Transition
 
@@ -208,14 +266,31 @@ current_belief = current_belief ./ sum(current_belief)
 
 ---
 
+## Online mode
+
+`FLAT` models default to **batch smoothing**: one `infer()` call over the whole
+trajectory, whose posteriors are smoothed (each timestep's belief is informed by later
+observations). That is the right object for offline analysis, but it is not what an agent
+has available while acting.
+
+Selecting `inference_mode: online` in the GNN file's `ModelParameters` section — or
+passing it as a render option — switches `FlatStrategy` to
+`_generate_online_code()`, which emits genuine online active inference: at each timestep
+the script calls `infer()` on the observation *prefix* only, and the resulting **filtered**
+posterior drives the EFE and habit-based action selection above. `batch` is the default,
+and any value other than `batch` or `online` is rejected at render time.
+
+The generated script records which path it took as
+`const INFERENCE_MODE`, echoed into the result payload as `inference_mode`, so a
+downstream consumer never has to guess whether beliefs are filtered or smoothed.
+
 ## Expected Free Energy: RxInfer vs PyMDP Convention
 
 | Aspect           | RxInfer                       | PyMDP                          |
 | ---------------- | ----------------------------- | ------------------------------ |
 | **Sign Conv**    | Positive (Ambiguity + Risk)   | Negative (`neg_efe`)           |
 | **Optimal Dir**  | Lower is better               | Higher (closer to 0) is better |
-| **Typical Mean** | `~0.72`                       | `~-1.35`                       |
-| **Selection**    | Softmax over `-G * precision` | Softmax over `neg_efe`         |
+| **Selection**    | Softmax over `log E − γ·G`    | Softmax over `neg_efe`         |
 
 Both are mathematically equivalent Active Inference implementations. The sign difference is purely conventional.
 
@@ -227,67 +302,100 @@ RxInfer exports a comprehensive JSON artifact to `simulation_results.json`:
 
 ### Data Schema
 
-| Field               | Shape    | Description                          |
-| ------------------- | -------- | ------------------------------------ |
-| `framework`         | `string` | Always `"rxinfer"`                   |
-| `model_name`        | `string` | From GNN `ModelName`                 |
-| `time_steps`        | `int`    | Number of simulation steps           |
-| `true_states`       | `[T]`    | True hidden states (1-indexed Julia) |
-| `observations`      | `[T]`    | Stochastic emissions from env        |
-| `actions`           | `[T]`    | Selected actions (1-indexed Julia)   |
-| `beliefs`           | `[T, S]` | Full posterior belief distributions  |
-| `efe_history`       | `[T]`    | EFE of the **selected** action       |
-| `efe_per_action`    | `[T, A]` | Full EFE vector across all actions   |
-| `action_probs`      | `[T, A]` | Softmax policy probabilities         |
-| `preferences`       | `[A]`    | Raw C vector                         |
-| `variational_free_energy` | `[T]` | Genuine VFE trace from `infer()` `free_energy` (previously `Float64[]`) |
-| `runtime_metadata`  | `obj`    | Seed, script SHA256, `uses_real_rxinfer: true` |
-| `val.all_valid`     | `bool`   | All belief entries in `[0, 1]`       |
-| `val.sum_to_one`    | `bool`   | All belief vectors sum to 1.0 ± 0.01 |
-| `val.action_bounds` | `bool`   | All actions in `[1, NUM_ACTIONS]`    |
+| Field                        | Shape    | Description                                            |
+| ---------------------------- | -------- | ------------------------------------------------------ |
+| `schema_version`             | `string` | Always `"rxinfer_simulation_v1"`                       |
+| `success`                    | `bool`   | Run completed                                           |
+| `framework`                  | `string` | Always `"RxInfer.jl"`                                  |
+| `model_name`                 | `string` | From GNN `ModelName`                                    |
+| `num_timesteps`              | `int`    | Number of simulation steps                              |
+| `true_states`                | `[T]`    | True hidden states (1-indexed Julia)                    |
+| `observations`               | `[T]`    | Stochastic emissions from the environment               |
+| `actions`                    | `[T]`    | Selected actions (1-indexed Julia)                      |
+| `beliefs`                    | `[T, S]` | Full posterior belief distributions                     |
+| `expected_free_energy`       | `[T]`    | EFE of the **selected** action                          |
+| `efe_per_action`             | `[T, A]` | Full EFE vector across all actions                      |
+| `policy_posterior`           | `[T, A]` | Softmax policy probabilities                            |
+| `variational_free_energy`    | `[T]`    | Genuine VFE trace from `infer()` `free_energy`          |
+| `vfe_per_iteration`          | `[I]`    | Per-iteration free energy for the final inference call  |
+| `observations_by_modality`   | `obj`    | Per-modality view; flat models use `joint_observation`  |
+| `hidden_states_by_factor`    | `obj`    | Per-factor view; flat models use `joint_state`          |
+| `actions_by_control_factor`  | `obj`    | Per-control-factor view; flat models use `joint_action` |
+| `beliefs_by_factor`          | `obj`    | Per-factor beliefs; flat models use `joint_state`       |
+| `model_parameters`           | `obj`    | Matrix shapes, dimensions, `E`, and the `state_factors` / `observation_modalities` echo |
+| `matrix_provenance`          | `obj`    | Where each matrix came from                             |
+| `runtime_metadata`           | `obj`    | Seed, schema version, RxInfer/Julia versions, script SHA256, `uses_real_rxinfer`, `model_kind`, `b_tensor_order`, `belief_accuracy` |
+| `metrics`                    | `obj`    | EFE, policy posterior, belief confidence, VFE           |
+| `validation`                 | `obj`    | `all_beliefs_valid`, `beliefs_sum_to_one`, and the rolled-up `all_valid` |
 
-> **Critical**: RxInfer uses Julia's **1-indexed** convention.
-> All `actions`, `observations`, and `true_states` arrays are 1-indexed.
-> The downstream Python analysis pipeline handles this offset automatically.
+A few conventions worth knowing before consuming this payload:
+
+- **1-indexed.** RxInfer uses Julia's convention, so `actions`, `observations`, and
+  `true_states` are 1-indexed. The downstream Python analysis handles the offset.
+- **`true_states[t]` records the state that *emitted* observation `t`**, which makes it
+  timing-aligned with `beliefs[t]`. Comparing `true_states[t]` against `beliefs[t]` is
+  therefore the correct accuracy comparison — no manual shift.
+- **`runtime_metadata.b_tensor_order`** carries
+  `"next_state_previous_state_action"` from the script's `B_TENSOR_ORDER` constant, so
+  the transition-tensor axis order is self-describing rather than assumed.
+- **Continuous models echo `state_factors` and `observation_modalities` as empty**,
+  because the discrete dual parameterization does not describe the continuous latent.
+- **`validation.all_valid` gates the exit code.** Step 12 returns non-zero when it is
+  false, so invalid inference is surfaced rather than silently accepted.
 
 ---
 
-## Dependencies
+## The Julia environment
 
-| Package         | Purpose                     |
-| --------------- | --------------------------- |
-| `RxInfer`       | Genuine `@model` + `infer()` variational inference |
-| `Distributions` | `Categorical` dist sampling |
-| `LinearAlgebra` | Matrix operations           |
-| `Random`        | PRNG seeding                |
-| `StatsBase`     | Action dist counting        |
-| `JSON`          | Telemetry serialization     |
+`src/execute/rxinfer/` is a committed Julia environment, not something resolved at run
+time. Its `Project.toml` + `Manifest.toml` pin **RxInfer 5.5** (Julia 1.10+) and declare
+the `GnnRxInferModels` package that holds the `@model` blocks, which precompiles the
+pomdp, continuous, hierarchical, factored, and learning models loudly — a precompilation
+failure surfaces instead of being swallowed. `setup_environment.jl` activates and
+instantiates it (`Pkg.activate()` + `Pkg.instantiate()`); there is no runtime `Pkg.add`.
+
+Step 12 defaults `JULIA_PROJECT` to this directory for RxInfer scripts (see
+`_build_execution_environment()` in `src/execute/processor.py`), so a script resolves its
+packages without an ambient environment. An explicitly set `JULIA_PROJECT` still wins.
+
+| Package            | Purpose                                            |
+| ------------------ | -------------------------------------------------- |
+| `RxInfer` (5.5)    | Genuine `@model` + `infer()` variational inference |
+| `Distributions`    | `Categorical` distribution sampling                |
+| `LinearAlgebra`    | Matrix operations                                   |
+| `Random`           | PRNG seeding                                        |
+| `StatsBase`        | Action distribution counting                        |
+| `JSON`             | Telemetry serialization                             |
+| `SHA`              | Script SHA256 for `runtime_metadata`               |
+| `Plots`            | Best-effort Julia-native PNGs (never fatal)        |
+| `PrecompileTools`  | Ahead-of-time model precompilation                 |
+| `Base64`, `Dates`  | Artifact encoding and timestamps                   |
+
+Verify the environment resolves:
+
+```bash
+julia --startup-file=no --project=src/execute/rxinfer \
+  -e 'using RxInfer, JSON, Distributions, StatsBase'
+```
 
 ---
 
 ## Source Code Connections
 
-| Pipeline Stage | Module                                                                 | Key Function                    | Lines  |
-| -------------- | ---------------------------------------------------------------------- | ------------------------------- | ------ |
-| Rendering      | [rxinfer_renderer.py](../../../src/render/rxinfer/rxinfer_renderer.py) | `render_gnn_to_rxinfer(...)`    | —      |
-| Entry Point    | [processor.py](../../../src/render/processor.py)                       | `render_gnn_spec(...)`          | —      |
-| Execution      | [rxinfer_runner.py](../../../src/execute/rxinfer/rxinfer_runner.py)    | `execute_rxinfer_script()`      | 63-157 |
-| Julia Check    | [rxinfer_runner.py](../../../src/execute/rxinfer/rxinfer_runner.py)    | `is_julia_available()`          | 18-51  |
-| Analysis       | [analyzer.py](../../../src/analysis/rxinfer/analyzer.py)               | `generate_analysis_from_logs()` | —      |
-| Visual         | [analyzer.py](../../../src/analysis/rxinfer/analyzer.py)               | `create_rxinfer_visualizations()` | —    |
-| Extraction     | [analyzer.py](../../../src/analysis/rxinfer/analyzer.py)               | `extract_simulation_data()`     | —      |
-
----
-
-## Improvement Opportunities
-
-| ID   | Area      | Description                          | Impact   |
-| ---- | --------- | ------------------------------------ | -------- |
-| RX-1 | Execution | Syntx validate pre-check added       | ✅ FIXED |
-| RX-2 | Rendering | Errors use `@warn` for Julia logging | ✅ FIXED |
-| RX-3 | Rendering | Extract precision from GNN params    | ✅ FIXED |
-| RX-4 | Telemetry | Dashboard unused multi-act EFE       | Medium   |
-| RX-5 | Execution | Shared `check_julia_availability`    | ✅ FIXED |
+| Pipeline Stage | Module                                                                 | Key Function                      |
+| -------------- | ---------------------------------------------------------------------- | --------------------------------- |
+| Rendering      | [rxinfer_renderer.py](../../../src/render/rxinfer/rxinfer_renderer.py) | `render_gnn_to_rxinfer(...)`      |
+| Kind detection | [pomdp_contract.py](../../../src/render/pomdp_contract.py)             | `detect_model_kind(...)`          |
+| Strategies     | [model_strategies.py](../../../src/render/rxinfer/model_strategies.py) | per-`ModelKind` strategy classes  |
+| Model blocks   | [GnnRxInferModels.jl](../../../src/execute/rxinfer/src/GnnRxInferModels.jl) | the five `@model` functions  |
+| Entry Point    | [processor.py](../../../src/render/processor.py)                       | `render_gnn_spec(...)`            |
+| Execution      | [rxinfer_runner.py](../../../src/execute/rxinfer/rxinfer_runner.py)    | `execute_rxinfer_script()`        |
+| Julia Check    | [julia_setup.py](../../../src/execute/julia_setup.py)                  | `is_julia_available()`            |
+| Analysis       | [analyzer.py](../../../src/analysis/rxinfer/analyzer.py)               | `generate_analysis_from_logs()`   |
+| Per-factor     | [analyzer.py](../../../src/analysis/rxinfer/analyzer.py)               | `compute_per_factor_beliefs()`    |
+| Visual         | [analyzer.py](../../../src/analysis/rxinfer/analyzer.py)               | `create_rxinfer_visualizations()` |
+| Extraction     | [analyzer.py](../../../src/analysis/rxinfer/analyzer.py)               | `extract_simulation_data()`       |
+| Cross-framework| [cross_framework.py](../../../src/analysis/rxinfer/cross_framework.py) | `run_cross_framework_comparison()`|
 
 ## See Also / Next Steps
 

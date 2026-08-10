@@ -1,6 +1,6 @@
 # GNN Technical Reference
 
-**Version**: v1.6.0 Engine (Bundle v2.0.0)  
+**Version**: v3.0.0 Engine (Bundle v2.0.0)  
 **Last Updated**: 2026-04-15  
 **Status**: ✅ Production Ready  
 **Modules**: 38+ · **Pipeline steps**: 25 · **Renderers**: 9 backends (see [../implementations/README.md](../implementations/README.md)) · **Tests**: see [../../../README.md](../../../README.md)  
@@ -57,7 +57,7 @@ All pipeline steps follow the thin orchestrator pattern. Each step is documented
 
 ### Stage 1: GNN → Parsed JSON (Step 3)
 
-**Entry Point:** `src/3_gnn.py:_run_gnn_processing()` → `src/gnn/multi_format_processor.py`
+**Entry Point:** `src/3_gnn.py:main()` → `src/gnn/multi_format_processor.py:process_gnn_multi_format()`
 
 **Key Parsing Patterns:**
 
@@ -106,7 +106,7 @@ A-o                         # Likelihood relates to observation
 
 ### Stage 2: Type Analysis (Step 5)  
 
-**Entry Point:** `src/5_type_checker.py:_run_type_check()` → `src/type_checker/analysis_utils.py:analyze_variable_types()`
+**Entry Point:** `src/5_type_checker.py:main()` → `src/type_checker/checking/core.py:GNNTypeChecker`
 
 **Core Analysis Method:** (lines 13-62 in analysis_utils.py)
 
@@ -161,7 +161,7 @@ def analyze_variable_types(variables: List[Dict[str, Any]]) -> Dict[str, Any]:
 
 ### Stage 4: Code Generation (Step 11)
 
-**Entry Point:** `src/11_render.py:_run_render_processing()` → `src/render/`
+**Entry Point:** `src/11_render.py:main()` → `src/render:process_render()`
 
 **Framework Integration Points:**
 
@@ -232,9 +232,13 @@ agent = ActiveInferenceAgent(pomdp)
 
 ### Stage 5: Execution (Step 12)
 
-**Entry Point:** `src/12_execute.py:_run_execute_processing()` → `src/execute/`
+**Entry Point:** `src/12_execute.py:main()` → `src/execute:process_execute()`
 
 **Execution Results:** `output/12_execute_output/execution_results.json`
+
+Illustrative shape with invented values — not a captured run. The
+authoritative RxInfer payload schema is `rxinfer_simulation_v1`, documented in
+[`src/render/rxinfer/README.md`](../../../src/render/rxinfer/README.md):
 
 ```json
 {
@@ -297,16 +301,20 @@ Step 11 (Render) → generated framework code
 #### Type Analysis System
 
 - **Core Analysis:** `src/type_checker/analysis_utils.py:analyze_variable_types()` (line 13)
-- **Validation Logic:** `src/type_checker/checker.py:GNNTypeChecker` (line 174)
+- **Validation Logic:** `src/type_checker/checking/core.py:GNNTypeChecker` (line 111)
 - **Processing Pipeline:** `src/type_checker/processor.py` (line 20)
 
 ## Framework Integration Validation
 
 ### Round-Trip Validation (Step 6)
 
-**Implementation:** `src/6_validation.py:validate_round_trip()`
+**Implementation:** `src/6_validation.py:main()` → `src/validation:process_validation()`
+
+The sketch below is **illustrative pseudocode** for the round-trip property,
+not a function that exists under that name:
 
 ```python
+# Illustrative — not a real symbol
 def validate_round_trip(original_gnn, exported_formats):
     # 1. Parse original GNN
     parsed_original = parse_gnn(original_gnn)
@@ -344,17 +352,22 @@ model = actinf_pomdp_agent()
 
 ## Performance Characteristics
 
+Complexity classes below are derived from the algorithms. The absolute
+throughput and memory figures are **rough order-of-magnitude estimates, not
+benchmark results** — no committed benchmark artifact produces them. Use
+`just bench` for measured numbers.
+
 ### Parsing Performance (Step 3)
 
-- **Markdown GNN:** ~50KB/s sustained throughput
-- **Multi-format Detection:** <10ms per file
-- **Memory Usage:** ~2MB per 1000 variables
+- **Markdown GNN:** order ~50KB/s sustained throughput (estimate)
+- **Multi-format Detection:** order <10ms per file (estimate)
+- **Memory Usage:** order ~2MB per 1000 variables (estimate)
 
 ### Visualization Performance (Step 8)
 
 - **Matrix Generation:** O(n²) for n×n matrices  
 - **Network Layout:** O(n log n) for n nodes
-- **Memory Usage:** ~15MB for 100×100 matrices
+- **Memory Usage:** order ~15MB for 100×100 matrices (estimate)
 
 ### Type Analysis Performance (Step 5)
 
@@ -417,6 +430,9 @@ output/16_analysis_output/
 - **Post-Simulation Loading:** File I/O bound (~10ms per JSON result file)
 - **Active Inference Metrics:** O(T×S) for T timesteps and S states per metric
 - **Cross-Framework Comparison:** O(F×T) for F frameworks and T timesteps
-- **Visualization Generation:** ~200ms per plot (Matplotlib Agg backend)
+- **Visualization Generation:** order ~200ms per plot, Matplotlib Agg backend (estimate)
 
-This technical reference documents actual implementation details rather than speculative capabilities.
+This reference documents implementation structure — module paths, entry
+points, and data flow — verified against the source tree. Timing and memory
+figures are estimates and are labelled as such; treat measured numbers as
+coming from `just bench` only.

@@ -2,7 +2,7 @@
 
 ## Architectural Mapping
 
-**Orchestrator**: `src/22_gui.py` (106 lines)
+**Orchestrator**: `src/22_gui.py` (96 lines)
 **Implementation Layer**: `src/gui/`
 
 ## Module Description

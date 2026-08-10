@@ -2,19 +2,19 @@
 
 Connect any MCP-compatible client to the GNN pipeline and access the registered GNN tools interactively.
 
-**Last Updated**: 2026-04-15
+**Last Updated**: 2026-08-07
 
 ## Prerequisites
 
 ```bash
-# Ensure the GNN package is installed (from repo root)
-pip install -e .
-# or using uv:
-uv pip install -e .
+# Install dependencies (from repo root)
+uv sync
 
-# Verify MCP server starts
-PYTHONPATH=src python src/21_mcp.py --help
+# Verify the MCP server entry point starts
+PYTHONPATH=src uv run python src/21_mcp.py --help
 ```
+
+The examples below write `/path/to/generalizednotationnotation` for the absolute path to your clone — substitute your own. Relative-path examples assume the client's working directory is the repo root.
 
 ## Claude Desktop
 
@@ -25,9 +25,9 @@ Add to `~/Library/Application Support/Claude/claude_desktop_config.json`:
   "mcpServers": {
     "gnn": {
       "command": "python",
-      "args": ["/Users/4d/Documents/GitHub/generalizednotationnotation/src/21_mcp.py"],
+      "args": ["/path/to/generalizednotationnotation/src/21_mcp.py"],
       "env": {
-        "PYTHONPATH": "/Users/4d/Documents/GitHub/generalizednotationnotation/src"
+        "PYTHONPATH": "/path/to/generalizednotationnotation/src"
       }
     }
   }
@@ -36,14 +36,13 @@ Add to `~/Library/Application Support/Claude/claude_desktop_config.json`:
 
 Restart Claude Desktop. You will see **GNN** in the tools palette (🔧 icon). You can then ask Claude:
 
-> *"Parse the file at input/gnn_files/actinf_pomdp_agent.md using parse_gnn_content"*
+> *"Parse the file at input/gnn_files/discrete/actinf_pomdp_agent.md using parse_gnn_content"*
 > *"Run process_validation on my GNN directory"*
 > *"List all registered GNN tools"*
 
 ## VS Code (via MCP extension)
 
-1. Install the **MCP Servers** extension (marketplace ID: `anthropic.mcp`)
-2. Open Settings → MCP → Add Server:
+Recent VS Code builds support MCP servers natively; older ones need an MCP extension from the marketplace. Either way, add a stdio server entry:
 
 ```json
 {
@@ -55,7 +54,7 @@ Restart Claude Desktop. You will see **GNN** in the tools palette (🔧 icon). Y
 }
 ```
 
-1. Reload VS Code. The GNN tools become available in Copilot Chat and inline suggestions.
+Reload VS Code. The GNN tools become available in Copilot Chat and inline suggestions.
 
 ## Cursor
 
@@ -84,7 +83,7 @@ Restart Cursor. In the AI panel, `@gnn` references tools from the GNN server.
       "command": "uv",
       "args": [
         "run",
-        "--project", "/Users/4d/Documents/GitHub/generalizednotationnotation",
+        "--project", "/path/to/generalizednotationnotation",
         "python", "src/21_mcp.py"
       ]
     }

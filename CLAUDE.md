@@ -35,7 +35,7 @@ just                         # List all recipes
 just test                    # Fast test suite
 just lint                    # Ruff lint
 just pipeline                # Full pipeline
-just render-health           # Check all 8 renderer backends
+just render-health           # Check all 9 renderer backends
 just test-mod render         # Test a specific module
 just steps                   # List all 25 pipeline steps from step registry
 just bench                   # Run performance benchmarks

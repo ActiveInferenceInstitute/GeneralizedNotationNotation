@@ -2,7 +2,7 @@
 
 ## Architectural Mapping
 
-**Orchestrator**: `src/12_execute.py` (108 lines)
+**Orchestrator**: `src/12_execute.py` (111 lines)
 **Implementation Layer**: `src/execute/`
 
 ## Module Description
@@ -19,6 +19,7 @@ This module is responsible for running GNN models that have been rendered into f
 | **DisCoPy** | Python | `discopy/` | `*_discopy.py` | ✅ Full support |
 | **PyTorch** | Python | `pytorch/` | `*_pytorch.py` | ✅ Full support |
 | **NumPyro** | Python | `numpyro/` | `*_numpyro.py` | ✅ Full support |
+| **bnlearn** | Python | `bnlearn/` | `*_bnlearn.py` | ✅ Full support |
 
 JAX, NumPyro, PyTorch, and DisCoPy are **core** dependencies (`uv sync`). If the environment is incomplete, their scripts are **skipped** (not failed). Julia frameworks require Julia installed.
 
@@ -28,7 +29,7 @@ JAX, NumPyro, PyTorch, and DisCoPy are **core** dependencies (`uv sync`). If the
 
 ## Module Overview
 
-**Purpose**: Execute rendered simulation scripts across multiple frameworks (PyMDP, RxInfer.jl, ActiveInference.jl, JAX, DisCoPy, PyTorch, NumPyro).
+**Purpose**: Execute rendered simulation scripts across multiple frameworks (PyMDP, RxInfer.jl, ActiveInference.jl, JAX, DisCoPy, PyTorch, NumPyro, bnlearn).
 
 **Pipeline Step**: Step 12: Execution (12_execute.py)
 
@@ -38,7 +39,7 @@ JAX, NumPyro, PyTorch, and DisCoPy are **core** dependencies (`uv sync`). If the
 
 **Version**: 1.6.0
 
-**Last Updated**: 2026-01-21
+**Last Updated**: 2026-08-07
 
 ---
 
@@ -54,6 +55,7 @@ JAX, NumPyro, PyTorch, and DisCoPy are **core** dependencies (`uv sync`). If the
 ### Key Capabilities
 - Multi-framework execution support
 - **Skip vs fail**: JAX, NumPyro, PyTorch, and DisCoPy are **core** dependencies; if the environment is incomplete, scripts are **skipped** (not run) and reported as "skipped" — they do not count as execution failures. Repair with `uv sync`. Julia backends still require a local Julia install.
+- **Committed Julia environments** with `JULIA_PROJECT` defaulting (see below)
 - Graceful degradation when frameworks unavailable
 - Automatic PyMDP package detection (distinguishes correct vs wrong package variants)
 - Path collection with deduplication (prevents nested directory issues)
@@ -61,6 +63,31 @@ JAX, NumPyro, PyTorch, and DisCoPy are **core** dependencies (`uv sync`). If the
 - Result capture and validation
 - Execution timeout handling
 - Distributed execution across a Ray or Dask cluster for parallel script/parameter-sweep dispatch (`src/execute/distributed.py`, `--distributed`, `--execution-workers`, `--backend {ray,dask}`)
+
+---
+
+## Julia Execution Environments
+
+Both Julia backends run against **committed** environments checked into the repository, so a run never depends on an ambient Julia depot or a runtime `Pkg.add`.
+
+| Framework | Environment | Pinned contents |
+|---|---|---|
+| RxInfer.jl | `src/execute/rxinfer/` | The `GnnRxInferModels` package — RxInfer 5.5.0 plus Distributions, JSON, Plots, StatsBase, PrecompileTools. Precompiles the `pomdp`, `continuous`, `hierarchical`, `factored`, and `learning` models loudly: a precompile failure surfaces rather than being swallowed. |
+| ActiveInference.jl | `src/execute/activeinference_jl/` | A deliberately **minimal** environment — ActiveInference 0.1.2, Distributions, JSON, StatsBase, and nothing else. |
+
+### `JULIA_PROJECT` defaulting
+
+`_build_execution_environment` (`src/execute/processor.py`) sets `JULIA_PROJECT` to the committed environment matching the script's framework, using `setdefault` — **an explicitly exported `JULIA_PROJECT` still wins**. This is what lets `using GnnRxInferModels` / `using ActiveInference` resolve without an ambient environment, including under test runners whose temporary depot may not exist.
+
+`setup_environment.jl` activates and instantiates the environment (`Pkg.activate()` + `Pkg.instantiate()`); there is no runtime `Pkg.add`.
+
+### Skip semantics
+
+A backend whose dependency is absent produces a **skipped** result (`skipped: true`) carrying an explicit dependency reason, not a failure. Skips are counted separately from failures in the step summary and are excluded from the failure threshold that determines step success — so the completion line reads, per model, in the shape `N succeeded, M skipped (dependency not installed)`. On a fully-provisioned run the remaining skips are the intentionally-unlocked optional backends (PyTorch, which is not locked while GHSA-rrmf-rvhw-rf47 is unpatched).
+
+### Exit-code contract
+
+Rendered RxInfer scripts end with `return results["validation"]["all_valid"] ? 0 : 1`. The validation block — belief validity, normalisation, action range, and for continuous models VFE finiteness — therefore **drives the process exit code**, so inference that runs to completion but produces invalid posteriors is surfaced as a failed script rather than a silent success. The results payload is still written either way, so a failing run remains diagnosable.
 
 ---
 
@@ -77,9 +104,9 @@ JAX, NumPyro, PyTorch, and DisCoPy are **core** dependencies (`uv sync`). If the
 - `verbose` (bool): Enable verbose logging (default: False)
 - `logger` (Optional[logging.Logger]): Logger instance (default: None)
 - `frameworks` (str): Frameworks to execute ("all", "lite", or comma-separated list, default: "all")
-  - `"all"`: Execute all available frameworks
-  - `"lite"`: Execute only PyMDP, JAX, DisCoPy (no Julia)
-  - Comma-separated: `"pymdp,jax"` for specific frameworks
+  - `"all"`: PyMDP, JAX, DisCoPy, RxInfer.jl, ActiveInference.jl, PyTorch, NumPyro, bnlearn
+  - `"lite"`: the Python-only subset — PyMDP, JAX, DisCoPy, bnlearn (no Julia)
+  - Comma-separated: `"pymdp,jax"` for specific frameworks; names outside the valid set are filtered out
 - `simulation_engine` (str): Engine to use ("auto", "pymdp", "rxinfer", etc., default: "auto")
 - `validate_only` (bool): Only validate scripts, don't execute (default: False)
 - `timeout` (int): Execution timeout per script in seconds (default: 3600, CLI: `--timeout`)
@@ -259,14 +286,9 @@ output/12_execute_output/
 
 ## Performance Characteristics
 
-### Latest Execution
-- **Duration**: 32.5s
-- **Memory**: Peak 19.26 MB, Final 13.96 MB
-- **Status**: SUCCESS_WITH_WARNINGS
-- **Scripts Found**: 5
-- **Scripts Failed**: 5 (dependency issues)
+Per-run duration, memory, and per-script outcomes are recorded in `execution_results.json` and the pipeline execution summary. Read those for current numbers rather than hard-coding a snapshot here.
 
-### Framework Execution Times
+### Framework Execution Times (indicative)
 - **PyMDP**: ~1-5 seconds
 - **RxInfer.jl**: ~10-20 seconds (JIT compilation)
 - **ActiveInference.jl**: ~10-15 seconds
@@ -307,7 +329,7 @@ output/12_execute_output/
 
 ### External Integration
 - **PyMDP**: Executes Python Active Inference simulations
-- **Julia Runtime**: Executes Julia simulation scripts (RxInfer.jl, ActiveInference.jl). RxInfer.jl runs under the committed environment at `src/execute/rxinfer/` (`Project.toml` + `Manifest.toml` pinning RxInfer 5.5.0) via `julia --startup-file=no --project=src/execute/rxinfer <script>`.
+- **Julia Runtime**: Executes Julia simulation scripts (RxInfer.jl, ActiveInference.jl) under the committed environments described in [Julia Execution Environments](#julia-execution-environments). Equivalent by hand: `julia --startup-file=no --project=src/execute/rxinfer <script>`.
 - **JAX**: Executes JAX-based simulations
 - **DisCoPy**: Executes categorical diagram computations
 
@@ -443,7 +465,7 @@ def run_simulation_tool(script_path: str, framework: str) -> Dict[str, Any]:
 
 ---
 
-**Last Updated**: 2026-01-21
+**Last Updated**: 2026-08-07
 **Maintainer**: GNN Pipeline Team
 **Status**: ✅ Production Ready
 **Version**: 1.6.0

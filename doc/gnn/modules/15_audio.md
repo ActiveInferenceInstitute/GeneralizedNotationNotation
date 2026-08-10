@@ -2,7 +2,7 @@
 
 ## Architectural Mapping
 
-**Orchestrator**: `src/15_audio.py` (83 lines)
+**Orchestrator**: `src/15_audio.py` (81 lines)
 **Implementation Layer**: `src/audio/`
 
 ## Module Description

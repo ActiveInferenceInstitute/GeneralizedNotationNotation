@@ -1,14 +1,16 @@
 # Specification: GNN Reference Documentation
 
 ## Scope
-Canonical reference material for the GNN language. This is the normative
-source for syntax, file structure, type system, and grammar rules.
-Everything outside this subtree treats these files as ground truth.
+Working reference material for the GNN language: file structure, type
+system, schema, and style rules, with runnable examples and validation
+commands. The **normative** specification is
+[`doc/gnn/gnn_syntax.md`](../gnn_syntax.md); where this subtree and the
+specification disagree, the specification wins and the file here is the bug.
 
 ## Contents
 | File | Purpose |
 |------|---------|
-| `gnn_syntax.md` | **Canonical syntax reference** — section inventory, required sections (v1.6.0), syntax rules |
+| `gnn_syntax.md` | Practical syntax companion — section obligation table, worked examples, parameterization families |
 | `gnn_file_structure_doc.md` | GNN file anatomy: section order, metadata, expected headings |
 | `gnn_type_system.md` | Variable type annotations (int, float, bool, matrix, tensor) |
 | `gnn_schema.md` | JSON Schema for parsed GNN dicts |
@@ -18,11 +20,13 @@ Everything outside this subtree treats these files as ground truth.
 | `architecture_reference.md` | Pipeline architecture overview |
 
 ## Versioning
-- GNN language version: tracked in `gnn_syntax.md` header
+- GNN language version: tracked in [`doc/gnn/gnn_syntax.md`](../gnn_syntax.md) (v1.1)
 - Document bundle version: inherits from [`doc/gnn/SPEC.md`](../SPEC.md)
 - Package version: v3.0.0 (matches `pyproject.toml`)
 
 ## Status
 Maintained. Every file in this subtree is referenced from `doc/gnn/README.md`
-and should remain consistent with `src/gnn/parsers/markdown_parser.py`.
-Changes to the normative syntax MUST update `gnn_syntax.md` AND the parser.
+and should remain consistent with `src/gnn/schema.py` and
+`src/gnn/parsers/markdown_parser.py`. A change to the normative syntax must
+update [`doc/gnn/gnn_syntax.md`](../gnn_syntax.md), the parser, and the
+affected pages here in the same change.

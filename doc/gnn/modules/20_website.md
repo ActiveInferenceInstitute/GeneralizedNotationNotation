@@ -2,7 +2,7 @@
 
 ## Architectural Mapping
 
-**Orchestrator**: `src/20_website.py` (57 lines)
+**Orchestrator**: `src/20_website.py` (64 lines)
 **Implementation Layer**: `src/website/`
 
 ## Module Description

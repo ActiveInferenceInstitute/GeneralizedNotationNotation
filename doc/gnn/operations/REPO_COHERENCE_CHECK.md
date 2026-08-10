@@ -1,6 +1,6 @@
 # GNN Repo Coherence Check
 
-**Version**: v1.6.0 Engine (Bundle v2.0.0)  
+**Version**: v3.0.0 Engine (Bundle v2.0.0)  
 **Last Updated**: 2026-04-15  
 **Status**: ✅ Production Ready  
 **Modules**: 38+ · **Pipeline steps**: 25 · **Renderers**: 9 backends (see [../implementations/README.md](../implementations/README.md)) · **Tests**: see [../../../README.md](../../../README.md)  
@@ -15,23 +15,21 @@ This document validates the complete GNN pipeline architecture. For current impl
 - [Architecture Reference](../reference/architecture_reference.md): Implementation patterns and cross-module data flow
 - [Technical Reference](../reference/technical_reference.md): Complete entry points and round-trip data flow
 
-- ✅ 25 steps (0-24): All operational with 100% success rate
-- ✅ Execution time: ~2 minutes for full pipeline
-- ✅ Memory usage: < 25MB peak
-- ✅ All modules use thin orchestrator pattern
-- ✅ 38+/38+ modules have AGENTS.md documentation
+- ✅ 25 steps (0-24), each following the thin orchestrator pattern
+- ✅ Every `src/` package ships `AGENTS.md` — enforced by `doc/development/docs_audit.py`, which fails on any missing file
+- ℹ️ Per-run success rate, execution time, and peak memory come from the pipeline execution summary for the run in question; this document does not carry a performance snapshot
 
 ---
 
 ## Executive Summary
 
-This document serves as a comprehensive checklist and analysis framework for validating the entire GNN (Generalized Notation Notation) codebase against established standards, patterns, and best practices. It covers all 25 pipeline steps (0-24) and 31 Python packages under `src/`, ensuring architectural compliance, code quality, documentation completeness, and integration consistency.
+This document serves as a comprehensive checklist and analysis framework for validating the entire GNN (Generalized Notation Notation) codebase against established standards, patterns, and best practices. It covers all 25 pipeline steps (0-24) and 32 Python packages under `src/`, ensuring architectural compliance, code quality, documentation completeness, and integration consistency.
 
 ### High-Level Coherence Metrics
 
 - **Total Pipeline Steps**: 25 (0_template.py through 24_intelligent_analysis.py, steps 0-24)
 
-- **Total Modules**: 31 Python packages under `src/`
+- **Total Modules**: 32 Python packages under `src/`
 - **AGENTS.md Files**: 124 documentation files (including sub-modules) as of
   this writing — this count drifts as modules are added; re-verify with
   `find src -name AGENTS.md | wc -l` rather than trusting this hand-maintained
@@ -1444,7 +1442,7 @@ def test_processing(patched_process):
 
 ## 15. Conclusion
 
-This mega-prompt provides a comprehensive framework for validating repo-wide coherence across all 25 pipeline steps and 31 Python packages under `src/`. Use it systematically to:
+This mega-prompt provides a comprehensive framework for validating repo-wide coherence across all 25 pipeline steps and 32 Python packages under `src/`. Use it systematically to:
 
 1. **Identify Issues**: Find architectural, code quality, and documentation issues
 2. **Score Compliance**: Calculate compliance scores for each validation area
@@ -1464,7 +1462,7 @@ This mega-prompt provides a comprehensive framework for validating repo-wide coh
 ---
 
 **Status**: Production Ready
-**Version**: v1.6.0 Engine (Bundle v2.0.0)
+**Version**: v3.0.0 Engine (Bundle v2.0.0)
 **Coverage**: 25 pipeline steps, 29 modules, 41 AGENTS.md files
 
 ---

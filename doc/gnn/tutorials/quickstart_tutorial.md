@@ -1,6 +1,6 @@
 # GNN Quick Start Tutorial
 
-**Version**: v1.6.0 Engine (Bundle v2.0.0)  
+**Version**: v3.0.0 Engine (Bundle v2.0.0)  
 **Last Updated**: 2026-04-15  
 **Status**: Maintained  
 
@@ -39,7 +39,7 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 uv sync
 
 # Test the installation
-python src/main.py --help
+uv run python src/main.py --help
 ```
 
 ### Create your workspace
@@ -76,7 +76,7 @@ cd my_first_gnn_model
 
 ## 📝 Step 3: Write Your First GNN Model (5 minutes)
 
-Create a file called `grid_agent.gnn`:
+Create a file called `grid_agent.md`:
 
 ```gnn
 ## GNNVersionAndFlags
@@ -92,7 +92,8 @@ Goal is to reach the bottom-right corner.
 
 ## StateSpaceBlock
 # Hidden State Factor: Agent's position
-s_f0[4,1,type=int]   # Position (0:TopLeft, 1:TopRight, 2:BottomLeft, 3:BottomRight/Goal)
+s_f0[4,1,type=int]        # Position (0:TopLeft, 1:TopRight, 2:BottomLeft, 3:BottomRight/Goal)
+s_f0_next[4,1,type=int]   # Next position — every variable used in Connections must be declared here
 
 # Observation: What the agent sees (its current position)
 o_m0[4,1,type=int]   # Observed position (same as true position)
@@ -137,46 +138,52 @@ G>pi_c0
 pi_c0>u_c0
 
 ## InitialParameterization
-# A_m0: Agent can perfectly observe its position (identity matrix)
+
+# Keep comments on their own lines. A "#" inside a matrix literal breaks the
+# parser, which then silently mis-reads the matrix dimensions.
+
+# A_m0: the agent observes its position perfectly (identity matrix)
+
 A_m0={
-  ((1.0, 0.0, 0.0, 0.0),   # If at TopLeft(0), observe TopLeft
-   (0.0, 1.0, 0.0, 0.0),   # If at TopRight(1), observe TopRight  
-   (0.0, 0.0, 1.0, 0.0),   # If at BottomLeft(2), observe BottomLeft
-   (0.0, 0.0, 0.0, 1.0))   # If at BottomRight(3), observe BottomRight
+  (1.0, 0.0, 0.0, 0.0),
+  (0.0, 1.0, 0.0, 0.0),
+  (0.0, 0.0, 1.0, 0.0),
+  (0.0, 0.0, 0.0, 1.0)
 }
 
-# B_f0: Movement transitions [next_pos, current_pos, action]
-# Actions: 0:Up, 1:Down, 2:Left, 3:Right
+# B_f0: movement transitions, indexed [next_position, current_position, action].
+# Actions are 0:Up, 1:Down, 2:Left, 3:Right. Each block below fixes
+# next_position; within a block, rows are current_position and columns are
+# action. Moving into a wall leaves the agent where it is.
+
 B_f0={
-  # next_position = TopLeft(0)
-  (((1.0, 0.0, 1.0, 0.0),   # From positions 0,1,2,3 with action Up(0)
-    (1.0, 0.0, 0.0, 0.0),   # From positions 0,1,2,3 with action Down(1)
-    (1.0, 1.0, 1.0, 1.0),   # From positions 0,1,2,3 with action Left(2) 
-    (0.0, 0.0, 0.0, 0.0))), # From positions 0,1,2,3 with action Right(3)
-    
-  # next_position = TopRight(1)  
-  (((0.0, 1.0, 0.0, 1.0),   # From positions 0,1,2,3 with action Up(0)
-    (0.0, 1.0, 0.0, 0.0),   # From positions 0,1,2,3 with action Down(1)
-    (0.0, 0.0, 0.0, 0.0),   # From positions 0,1,2,3 with action Left(2)
-    (1.0, 1.0, 1.0, 1.0))), # From positions 0,1,2,3 with action Right(3)
-    
-  # next_position = BottomLeft(2)
-  (((0.0, 0.0, 0.0, 0.0),   # From positions 0,1,2,3 with action Up(0)
-    (0.0, 0.0, 1.0, 0.0),   # From positions 0,1,2,3 with action Down(1)
-    (0.0, 0.0, 0.0, 0.0),   # From positions 0,1,2,3 with action Left(2)
-    (0.0, 0.0, 0.0, 0.0))), # From positions 0,1,2,3 with action Right(3)
-    
-  # next_position = BottomRight(3) - GOAL
-  (((0.0, 0.0, 0.0, 0.0),   # From positions 0,1,2,3 with action Up(0)
-    (0.0, 0.0, 0.0, 1.0),   # From positions 0,1,2,3 with action Down(1)
-    (0.0, 0.0, 0.0, 0.0),   # From positions 0,1,2,3 with action Left(2)
-    (0.0, 0.0, 0.0, 0.0)))  # From positions 0,1,2,3 with action Right(3)
+  ( (1.0, 0.0, 1.0, 0.0),
+    (0.0, 0.0, 1.0, 0.0),
+    (1.0, 0.0, 0.0, 0.0),
+    (0.0, 0.0, 0.0, 0.0) ),
+
+  ( (0.0, 0.0, 0.0, 1.0),
+    (1.0, 0.0, 0.0, 1.0),
+    (0.0, 0.0, 0.0, 0.0),
+    (1.0, 0.0, 0.0, 0.0) ),
+
+  ( (0.0, 1.0, 0.0, 0.0),
+    (0.0, 0.0, 0.0, 0.0),
+    (0.0, 1.0, 1.0, 0.0),
+    (0.0, 0.0, 1.0, 0.0) ),
+
+  ( (0.0, 0.0, 0.0, 0.0),
+    (0.0, 1.0, 0.0, 0.0),
+    (0.0, 0.0, 0.0, 1.0),
+    (0.0, 1.0, 0.0, 1.0) )
 }
 
-# C_m0: Preferences (higher values = more preferred)
-C_m0={(-1.0, -1.0, -1.0, 2.0)}  # Strongly prefer goal position (BottomRight)
+# C_m0: preferences over observations — strongly prefer the goal (BottomRight)
 
-# D_f0: Start at TopLeft with certainty
+C_m0={(-1.0, -1.0, -1.0, 2.0)}
+
+# D_f0: start at TopLeft with certainty
+
 D_f0={(1.0, 0.0, 0.0, 0.0)}
 
 ## Equations
@@ -210,7 +217,12 @@ Date: 2024
 Status: Tutorial Example
 ```
 
-Save this as `grid_agent.gnn` in your `my_first_gnn_model` folder.
+Save this as `grid_agent.md` in your `my_first_gnn_model` folder.
+
+> Use the `.md` extension. GNN models are Markdown, and Step 5's discovery
+> globs `*.md` only (`src/type_checker/checking/core.py`) — a `.gnn` file is
+> silently not found, and the step fails with "No GNN files found for type
+> checking".
 
 ## ✅ Step 4: Validate Your Model (2 minutes)
 
@@ -218,10 +230,10 @@ Check if your model is correct:
 
 ```bash
 # Run the GNN type checker (Step 5)
-python src/5_type_checker.py --target-dir my_first_gnn_model/ --verbose
+uv run python src/5_type_checker.py --target-dir my_first_gnn_model/ --verbose
 
 # If successful, you should see:
-# ✅ grid_agent.gnn: Valid GNN model
+# ✅ grid_agent.md: Valid GNN model
 # 📊 Resource estimation: [details]
 ```
 
@@ -235,12 +247,17 @@ Convert your GNN model to executable Python code:
 
 ```bash
 # Generate PyMDP code (Steps 3, 11, 12)
-python src/main.py --only-steps "3,11,12" --target-dir my_first_gnn_model/ --output-dir output/my_first_model/ --verbose
+uv run python src/main.py --only-steps "3,11,12" --target-dir my_first_gnn_model/ --output-dir output/my_first_model/ --verbose
 
-# This creates several outputs:
-# - output/11_render_output/ (executable code for PyMDP, RxInfer, etc.)
-# - output/8_visualization_output/ (model diagrams)
-# - output/7_export_output/ (JSON, XML formats)
+# Every step writes under the --output-dir you passed, so with
+# --output-dir output/my_first_model/ this run creates:
+# - output/my_first_model/3_gnn_output/       (parsed model)
+# - output/my_first_model/11_render_output/   (executable code per framework)
+# - output/my_first_model/12_execute_output/  (simulation results)
+#
+# Visualization and export are steps 8 and 7 — add them to --only-steps
+# to also get output/my_first_model/8_visualization_output/ and
+# output/my_first_model/7_export_output/.
 ```
 
 For more details on code generation, see:
@@ -250,17 +267,36 @@ For more details on code generation, see:
 
 ### Test the generated code
 
+Rendered scripts are not written flat into `11_render_output/`. Each model gets its own
+directory, and each framework a subdirectory beneath it, with the script named after the
+GNN `ModelName`:
+
+```text
+output/my_first_model/11_render_output/
+└── grid_agent/
+    ├── processing_summary.json
+    └── pymdp/
+        ├── README.md
+        └── Simple_Grid_Navigation_Agent_v1.0_pymdp.py
+```
+
+So locate the script rather than assuming a flat filename:
+
 ```bash
-# Navigate to rendered output
-cd output/11_render_output/
+# Find the rendered PyMDP script
+find output/my_first_model/11_render_output -name "*_pymdp.py"
 
-# Run the PyMDP simulation
-python grid_agent_pymdp.py
+# Run it
+uv run python output/my_first_model/11_render_output/grid_agent/pymdp/*_pymdp.py
+```
 
-# You should see the agent's behavior:
-# Time 0: Position=TopLeft, Action=Right
-# Time 1: Position=TopRight, Action=Down  
-# Time 2: Position=BottomRight, Action=Stay (GOAL REACHED!)
+The script prints per-timestep observations, beliefs, and selected actions, then writes
+its results as JSON next to itself. Step 12 does the same thing for every rendered
+backend at once, which is usually what you want:
+
+```bash
+uv run python src/12_execute.py --target-dir my_first_gnn_model/ \
+  --output-dir output/my_first_model/ --frameworks pymdp --verbose
 ```
 
 ## 🎉 Congratulations

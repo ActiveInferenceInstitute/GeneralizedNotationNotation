@@ -2,7 +2,7 @@
 
 ## Architectural Mapping
 
-**Orchestrator**: `src/23_report.py` (63 lines)
+**Orchestrator**: `src/23_report.py` (55 lines)
 **Implementation Layer**: `src/report/`
 
 ## Module Description

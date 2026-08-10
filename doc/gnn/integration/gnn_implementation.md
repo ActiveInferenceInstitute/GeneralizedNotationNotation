@@ -1,6 +1,6 @@
 # GNN Implementation Guide
 
-**Version**: v1.6.0 Engine (Bundle v2.0.0)  
+**Version**: v3.0.0 Engine (Bundle v2.0.0)  
 **Last Updated**: 2026-04-14  
 **Status**: ✅ Production Ready  
 **Modules**: 38+ · **Pipeline steps**: 25 · **Renderers**: 9 backends (see [../implementations/README.md](../implementations/README.md)) · **Tests**: see [../../../README.md](../../../README.md)  
@@ -15,7 +15,8 @@ GNN models are implemented through the processing pipeline's code generation and
 
 - **`src/11_render.py`** → Generate executable code for multiple frameworks
   - See: **[src/render/AGENTS.md](../../../src/render/AGENTS.md)** for rendering details
-  - Supports: PyMDP, RxInfer, ActiveInference.jl, DisCoPy, JAX
+  - Supports nine backends: PyMDP, RxInfer.jl, ActiveInference.jl, JAX, DisCoPy,
+    PyTorch, NumPyro, Stan, bnlearn
 
 **Execution (Step 12)**
 
@@ -54,6 +55,10 @@ flowchart TD
     RENDER --> ACTINF[ActiveInference.jl .jl]
     RENDER --> JAX[JAX .py]
     RENDER --> DISCOPY[DisCoPy .py]
+    RENDER --> TORCH[PyTorch .py]
+    RENDER --> NUMPYRO[NumPyro .py]
+    RENDER --> STAN[Stan .stan]
+    RENDER --> BNLEARN[bnlearn .py]
     BASIC --> PYMDP
     BASIC --> RXINFER
     BASIC --> ACTINF
@@ -79,11 +84,16 @@ from render.processor import render_gnn_spec
 
 success, message, warnings = render_gnn_spec(
     gnn_spec={"model_name": "my_model", ...},
-    target="pymdp",           # pymdp | rxinfer | rxinfer_toml | activeinference_jl | discopy | discopy_combined | jax | jax_pomdp
+    target="pymdp",           # pymdp | rxinfer | activeinference_jl | discopy
+                              # | discopy_combined | bnlearn | jax | jax_pomdp
     output_directory="output/",
     options={}                # Optional additional options
 )
 ```
+
+`RENDER_CLI_TARGETS` in `src/render/render.py` also still accepts `rxinfer_toml`, but that
+target is retired: `render_gnn_spec()` returns `(False, <message>, [])` for it and
+produces no artifacts. Use `rxinfer`, which routes to the canonical renderer.
 
 ### Available Renderers
 
@@ -94,6 +104,24 @@ success, message, warnings = render_gnn_spec(
 | **ActiveInference.jl** | Julia | `.jl` | Free Energy Minimization, Active Inference, POMDP |
 | **JAX** | Python | `.py` | GPU Acceleration, Automatic Differentiation, JIT Compilation |
 | **DisCoPy** | Python | `.py` | Categorical Diagrams, String Diagrams, Compositional Models |
+| **PyTorch** | Python | `.py` | Tensor POMDP; `torch` must be installed manually (GHSA-rrmf-rvhw-rf47) |
+| **NumPyro** | Python | `.py` | NUTS/MCMC posterior inference |
+| **Stan** | Stan | `.stan` | Compiled by CmdStan; no Step 12 executor |
+| **bnlearn** | Python | `.py` | Bayesian network structure and inference |
+
+The registry backing this table is `FRAMEWORK_REGISTRY` in
+`src/render/framework_registry.py`.
+
+#### RxInfer renders by model kind
+
+RxInfer is the one backend that does not emit a single model shape. Its renderer calls
+`detect_model_kind()` (`src/render/pomdp_contract.py`) and dispatches to a per-kind
+strategy in `src/render/rxinfer/model_strategies.py` — `FLAT`, `FACTORED`,
+`HIERARCHICAL`, `MULTI_AGENT`, `CONTINUOUS`, or `LEARNING`. Detection is structural
+(matrix key patterns, declared counts, `F`/`H`/`Q`/`R` and `dirichlet_[A-E]` keys), never
+free-text. See
+[framework_integration_guide.md](framework_integration_guide.md#rxinferjl-pipeline-details)
+for the strategy table.
 
 ### Output Structure
 
@@ -104,7 +132,12 @@ output/11_render_output/
 │   ├── rxinfer/                # RxInfer.jl Julia simulations
 │   ├── activeinference_jl/     # ActiveInference.jl Julia simulations
 │   ├── jax/                    # JAX Python simulations
-│   └── discopy/                # DisCoPy categorical diagrams
+│   ├── discopy/                # DisCoPy categorical diagrams
+│   ├── pytorch/                # PyTorch Python simulations
+│   ├── numpyro/                # NumPyro Python simulations
+│   ├── stan/                   # Stan programs (.stan)
+│   ├── bnlearn/                # bnlearn Bayesian networks
+│   └── processing_summary.json # Per-model render summary
 ├── render_processing_summary.json
 └── README.md                   # Auto-generated overview
 ```
@@ -139,9 +172,13 @@ The `--frameworks` flag supports:
 
 | Value | Frameworks Included |
 |-------|---------------------|
-| `all` (default) | pymdp, jax, discopy, rxinfer, activeinference_jl |
-| `lite` | pymdp, jax, discopy |
+| `all` (default) | pymdp, jax, discopy, rxinfer, activeinference_jl, pytorch, numpyro, bnlearn |
+| `lite` | pymdp, jax, discopy, bnlearn |
 | Custom | Comma-separated, e.g. `"pymdp,jax"` |
+
+The authoritative list is `parse_frameworks_parameter()` in `src/execute/processor.py`.
+Note that Step 11 renders nine backends — the eight above plus Stan, which has no
+executor because Stan programs are compiled and run by CmdStan rather than by Step 12.
 
 ### Script Discovery
 
@@ -154,7 +191,11 @@ The `--frameworks` flag supports:
 - **Working directory**: set to the script's parent directory
 - **Timeout**: 300 seconds (5 minutes) per script
 - **Environment**: `PYTHONPATH` is extended for PyMDP scripts
-- **Julia**: dependency check for RxInfer, ActiveInference, GraphPPL packages
+- **Julia**: preflight `using JSON, Distributions, StatsBase`, plus `RxInfer` when
+  RxInfer is requested and `ActiveInference` when ActiveInference.jl is requested.
+  `JULIA_PROJECT` defaults to the committed environment for the framework being run
+  (`src/execute/rxinfer/` or `src/execute/activeinference_jl/`); an explicitly set
+  `JULIA_PROJECT` still wins.
 
 ### Data Collection
 
@@ -269,6 +310,18 @@ output/16_analysis_output/
 └── cross_framework/                    # Cross-framework comparisons
     └── unified_dashboard/              # Step 23 interactive D3.js dashboard targets
 ```
+
+#### The RxInfer analysis submodule
+
+`src/analysis/rxinfer/` carries capabilities beyond the generic per-framework
+extractors, and they are what produce most of the richer Step 16 artifacts:
+
+| Module | What it provides |
+|---|---|
+| `analyzer.py` | Convergence diagnostics, strategy-validation summaries, and `compute_per_factor_beliefs()` — the un-flattening of joint posteriors into per-factor (per-agent) marginals |
+| `gif_animator.py` / `animator.py` | One animated GIF per model, each with a `.manifest.json` reproducibility sidecar |
+| `dashboard.py` | The dashboard with category and state-size filters plus compare mode |
+| `cross_framework.py` | `run_cross_framework_comparison()`, the RxInfer-anchored comparison entry point |
 
 ---
 

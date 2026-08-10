@@ -18,9 +18,23 @@
 
 ### Primary Responsibilities
 
-1. **Syntax Authority**: Maintains the definitive `.md` parser specifications required to author Active Inference matrices correctly.
+1. **Syntax Authority**: Maintains the definitive `.md` parser specifications required to author Active Inference matrices correctly. [`gnn_syntax.md`](gnn_syntax.md) is the normative specification; `reference/` and `language/` expand it and never override it.
 2. **Architecture Mapping**: Defines the structural rules connecting `language/`, `reference/`, `implementations/`, and `integration/`.
 3. **End-User Guidance**: Houses tutorials, external tool integrations, and operational guides.
+
+### Load-bearing invariant for generation tasks
+
+An agent authoring a GNN file must know that the keys placed in
+`## InitialParameterization` determine the **model kind** the renderers
+dispatch on — discrete `A`/`B`/`C`/`D`/`E` (FLAT / FACTORED),
+linear-Gaussian `F`/`H`/`Q`/`R` plus `prior_mean`/`prior_cov` (CONTINUOUS),
+`dirichlet_[A-E]` pseudo-counts (LEARNING), `[ABCDE]_level<N>`
+(HIERARCHICAL), `[ABCDE]_agent<N>` (MULTI_AGENT). Detection is **structural**:
+prose in a `ModelName` or annotation is never scanned and cannot change how a
+model renders. Rules and precedence live in
+[`gnn_syntax.md` § Parameterization families](gnn_syntax.md#parameterization-families),
+enforced by `detect_model_kind` in
+[`src/render/pomdp_contract.py`](../../src/render/pomdp_contract.py).
 
 ### Subsystem Indices Available
 

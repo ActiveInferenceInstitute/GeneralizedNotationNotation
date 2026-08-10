@@ -18,5 +18,12 @@
 - [GNN Schema Specification](gnn_schema.md)
 
 
+## Precedence
+
+These files expand the specification with worked examples, schemas, and
+validation commands; they do not override it. The normative source is
+[`doc/gnn/gnn_syntax.md`](../gnn_syntax.md) — on any conflict it wins and the
+file here is the bug.
+
 ## Implementation Details
 This is a static reference directory. The above files can be explicitly referenced by external LLMs to retrieve detailed syntax and operational knowledge for GNN generation tasks.

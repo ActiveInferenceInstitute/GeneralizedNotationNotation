@@ -2,7 +2,7 @@
 
 ## Architectural Mapping
 
-**Orchestrator**: `src/21_mcp.py` (53 lines)
+**Orchestrator**: `src/21_mcp.py` (56 lines)
 **Implementation Layer**: `src/mcp/`
 
 ## Module Description

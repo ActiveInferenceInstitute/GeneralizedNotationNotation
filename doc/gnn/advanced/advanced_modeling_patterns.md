@@ -1,6 +1,6 @@
 # Advanced GNN Modeling Patterns
 
-**Version**: v1.6.0 Engine (Bundle v2.0.0)  
+**Version**: v3.0.0 Engine (Bundle v2.0.0)  
 **Last Updated**: 2026-04-14  
 **Status**: ✅ Production Ready  
 **Modules**: 38+ · **Pipeline steps**: 25 · **Renderers**: 9 backends (see [../implementations/README.md](../implementations/README.md)) · **Tests**: see [../../../README.md](../../../README.md)  
@@ -40,6 +40,27 @@ For complete pipeline documentation, see **[src/AGENTS.md](../../../src/AGENTS.m
 ## 🎯 Overview
 
 This guide covers advanced patterns for modeling complex cognitive and behavioral systems using GNN. Each pattern includes theory, implementation, and practical examples.
+
+> **Read the `Connections` blocks below as topology sketches, not as literal GNN.**
+> To keep the structure of each pattern readable, the connection lines in this document
+> use an arrow-and-grouping shorthand — `(s_f0) -> (A_m0) -> (o_m0)`,
+> `(s_f0, u_c0) -> (B_f0)`. Real GNN `Connections` syntax has no arrows, parentheses, or
+> grouping: it is one edge per line using `>` for directed and `-` for undirected, with no
+> spaces, as in
+>
+> ```text
+> D>s
+> s-A
+> s>s_prime
+> C>G
+> ```
+>
+> Copying a `Connections` block from this document straight into a `.md` model will not
+> parse. Translate each grouped arrow into individual `>` / `-` edges first, and see
+> [`doc/gnn/reference/gnn_syntax.md`](../reference/gnn_syntax.md) for the authoritative
+> grammar plus [`input/gnn_files/`](../../../input/gnn_files/) for models that do parse.
+> Everything else here — `StateSpaceBlock` dimensions, `InitialParameterization`, `Time`,
+> and the ontology annotations — is literal GNN.
 
 ## 📚 Table of Contents
 
@@ -92,7 +113,7 @@ class TransitionModule:
 4. [Temporal Dynamics](#temporal-dynamics)
 5. [Uncertainty and Robustness](#uncertainty-and-robustness)
 6. [Compositional Modeling](#compositional-modeling)
-7. [Dynamic Fallback Cascading (v1.5)](#dynamic-fallback-cascading-v15)
+7. [Graceful Degradation in the Pipeline](#7-graceful-degradation-in-the-pipeline)
 8. [Domain-Specific Patterns](#domain-specific-patterns)
 
 ---
@@ -846,41 +867,41 @@ subsystem_activation_threshold={(0.3, 0.5, 0.2)}  # Different activation levels
 
 ---
 
-## 7. Dynamic Fallback Cascading (v1.5)
+## 7. Graceful Degradation in the Pipeline
 
-### Pattern: Execution Rescue Telemetry
+There is no model-level "solver escalation" construct in GNN — no circuit breaker, no
+heuristic-override topology, no dual formal/heuristic matrix pair. Degradation is handled
+by the pipeline, not encoded in your spec, and it works in two deliberately different
+ways depending on what went wrong.
 
-**Use Case**: Autonomous agent pipelines requiring heuristic simulation recovery when rigid framework rendering fails.
+**A missing optional dependency skips a backend.** Step 12 runs a pre-flight check before
+executing Python framework scripts (`src/execute/processor.py`). If the backend's package
+is absent — PyTorch being the common case, since it is intentionally unlocked while
+GHSA-rrmf-rvhw-rf47 has no patched release — that backend is recorded as *skipped* with a
+dependency reason rather than failed. The run continues, downstream visualization and
+reporting receive partial results from the backends that did run, and the logs say
+exactly which were skipped and why.
 
-```gnn
-## StateSpaceBlock
-# Primary Simulation States
-s_f0[10,1,type=int]     # High_fidelity_state (ideal modeling)
-s_f1[2,1,type=int]      # High_fidelity_actions
+**A failed inference does not degrade — it crashes.** This is the opposite policy, and
+the contrast is the point. Every RxInfer strategy emits its `infer()` call without a
+`try`/`catch`, carrying the comment *"NO try/catch — if infer() fails, the script crashes
+with a clear error. This is deliberate: real RxInfer inference or nothing."* A result
+silently produced by hand-rolled Bayesian updating would still be reported as RxInfer
+inference, so the pipeline refuses to produce one. Step 12 likewise exits non-zero when
+`validation.all_valid` is false.
 
-# Secondary Heuristic State
-s_f2[4,1,type=int]      # Low_fidelity_proxy
-s_f3[2,1,type=int]      # Sub_optimal_actions
+The rule underneath both: **absence is reported, wrongness is refused.** A backend you
+could not run is a known gap; a number you cannot trust is worse than no number.
 
-# Solver Matrix
-A_f0[10,2,type=float]   # Formal RxInfer Matrix
-A_f1[4,2,type=float]    # LLM-Guided Heuristic Matrix
+For the analysis side of this, Step 24 (`src/intelligent_analysis/`) scores pipeline
+health, performs failure root-cause analysis, detects per-step warning flags and
+bottlenecks, and writes executive reports. It analyzes execution logs after the fact — it
+does not participate in solver selection or route between model paths.
 
-## Connections
-(s_f0, s_f1) -> (A_f0)
-(s_f2, s_f3) -> (A_f1)
-
-# The Explicit Solver Escalation topology
-(A_f0) -> execution_success_polling
-(execution_success_polling) -> (A_f1:heuristic_override)
-
-## ActInf Ontology Annotation
-s_f0=FormalTargetSpace
-s_f2=HeuristicProxySpace
-execution_success_polling=CircuitBreaker
-```
-
-This pattern leverages the Step 24 `Intelligent Analysis` module to record formal solver diagnostics and explicitly route operators to a secondary heuristic analysis path without masking the primary solver status.
+If you genuinely want to model an agent that switches between a precise and an
+approximate strategy, that is a policy-selection problem, not a fallback mechanism:
+represent both strategies as actions in a single control factor and let expected free
+energy choose between them, as in the policy patterns earlier in this document.
 
 ---
 

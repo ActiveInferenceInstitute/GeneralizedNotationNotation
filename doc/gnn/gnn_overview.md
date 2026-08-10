@@ -1,6 +1,6 @@
 # GNN Overview
 
-**Version**: v1.6.0 Engine (Bundle v2.0.0)
+**Version**: v3.0.0 Engine (Bundle v2.0.0)
 **Last Updated**: 2026-04-14
 **Status**: Maintained
 **Pipeline Steps**: 25
@@ -219,7 +219,8 @@ For more detailed information about specific aspects of GNN, refer to:
 
 ### GNN Language Specification
 
-- [GNN Syntax and Punctuation](reference/gnn_syntax.md): Detailed specification of the notation symbols
+- [GNN v1.1 Syntax Specification](gnn_syntax.md): The normative spec — sections, grammar, parameterization families, error taxonomy
+- [GNN Syntax and Punctuation](reference/gnn_syntax.md): Worked examples and validation commands, read alongside the spec
 - [GNN File Structure](reference/gnn_file_structure_doc.md): Comprehensive guide to GNN file organization
 - [GNN DSL Manual](reference/gnn_dsl_manual.md): Complete Domain-Specific Language reference
 

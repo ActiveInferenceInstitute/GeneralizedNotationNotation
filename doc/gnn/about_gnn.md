@@ -1,6 +1,6 @@
 # About GNN
 
-**Version**: v1.6.0 Engine (Bundle v2.0.0)
+**Version**: v3.0.0 Engine (Bundle v2.0.0)
 **Last Updated**: 2026-04-14
 **Status**: Maintained
 **Pipeline Steps**: 25
@@ -170,7 +170,16 @@ GNN supports an incremental approach to model development, allowing practitioner
 4. Incorporating temporal components for dynamic models
 5. Adding policy selection mechanisms for active inference
 
-The examples under `input/gnn_files/` (e.g. `basics/`, `discrete/`, `hierarchical/`) demonstrate this progression from simple to complex models, following the tutorial by Smith et al. (2022). (`src/gnn/gnn_examples/` contains a single reference model, `actinf_pomdp_agent.md`.)
+The exemplars under `input/gnn_files/` demonstrate this progression from
+simple to complex models, following the tutorial by Smith et al. (2022). They
+are grouped by the structure they exercise: `basics/`, `discrete/`,
+`continuous/`, `hierarchical/`, `learning/`, `multiagent/`, `precision/`,
+`structured/`, `pomdp_gridworld/`, and the `pymdp_scaling_study/` ladder used
+for parametric scaling runs. Several of these directories map onto a
+renderer model kind — see
+[gnn_syntax.md § Parameterization families](gnn_syntax.md#parameterization-families).
+(`src/gnn/gnn_examples/` holds a single reference model,
+`actinf_pomdp_agent.md`.)
 
 ## Step-by-Step Example: Static to Dynamic Models
 
@@ -186,21 +195,34 @@ The progression from static to dynamic models in GNN typically follows these ste
 
 ### Example: Simple Perception Model in GNN
 
+Section headings are single CamelCase tokens with no spaces, and every
+variable declaration carries an explicit `type=`:
+
 ```gnn
-# Simple Perception Model
-## Model Annotation
+## GNNSection
+ActInfPOMDP
+
+## GNNVersionAndFlags
+GNN v1.1
+
+## ModelName
+Simple Perception Model
+
+## ModelAnnotation
 A basic model of perceptual inference with hidden states and observations.
 
-## State Space Block
-s[2]    # Hidden state with 2 possible values
-o[2]    # Observation with 2 possible values
+## StateSpaceBlock
+s[2,type=float]  # Hidden state with 2 possible values
+o[2,type=int]    # Observation with 2 possible values
+A[2,2,type=float]
+B[2,2,type=float]
 
 ## Connections
 s>o     # Hidden states cause observations
 
-## Initial Parameterization
-A=[[0.7,0.3],[0.3,0.7]]  # State transition matrix
-B=[[0.9,0.1],[0.1,0.9]]  # Observation likelihood matrix
+## InitialParameterization
+A={(0.9,0.1),(0.1,0.9)}  # Likelihood matrix: P(o | s)
+B={(0.7,0.3),(0.3,0.7)}  # Transition matrix: P(s' | s)
 
 ## Time
 Dynamic
@@ -210,9 +232,14 @@ ModelTimeHorizon=10
 ## ActInfOntologyAnnotation
 s=HiddenState
 o=Observation
-A=StateTransitionMatrix
-B=ObservationLikelihoodMatrix
+A=LikelihoodMatrix
+B=TransitionMatrix
 ```
+
+`A` is the likelihood (observation) matrix and `B` is the transition matrix.
+Matrix literals use brace-and-tuple notation (`{(…),(…)}`), not Python-style
+nested lists; ontology terms must exist in
+[`src/ontology/act_inf_ontology_terms.json`](../../src/ontology/act_inf_ontology_terms.json).
 
 ## The Triple Play: Modalities
 

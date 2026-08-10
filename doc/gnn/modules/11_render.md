@@ -2,12 +2,12 @@
 
 ## Architectural Mapping
 
-**Orchestrator**: `src/11_render.py` (79 lines)
+**Orchestrator**: `src/11_render.py` (82 lines)
 **Implementation Layer**: `src/render/`
 
 ## Module Description
 
-This module provides **POMDP-aware code generation** for GNN models. It translates parsed GNN/POMDP specifications into executable simulation code for multiple frameworks including PyMDP, RxInfer.jl, ActiveInference.jl, JAX, DisCoPy, and (when available) PyTorch, NumPyro, and Stan.
+This module provides **POMDP-aware code generation** for GNN models. It translates parsed GNN/POMDP specifications into executable simulation code for multiple frameworks including PyMDP, RxInfer.jl, ActiveInference.jl, JAX, DisCoPy, bnlearn, and (when available) PyTorch, NumPyro, and Stan.
 
 
 - **POMDP state space extraction**: extracts Active Inference matrices (A, B, C, D, E) and dimensions from GNN specs.
@@ -41,7 +41,7 @@ graph TD
 
 **Version**: 1.6.0
 
-**Last Updated**: 2026-04-15
+**Last Updated**: 2026-08-07
 
 ---
 
@@ -70,9 +70,32 @@ graph TD
 
 #### RxInfer.jl (Julia)
 - **Purpose**: Probabilistic programming and inference
-- **Features**: Genuine `@model` + `infer()` variational message passing (`Categorical` / `DiscreteTransition` nodes, `free_energy = true`)
-- **Output**: Julia scripts via `src/render/rxinfer/rxinfer_renderer.py` (the legacy TOML generator `toml_generator.py` is deprecated)
+- **Features**: Genuine `@model` + `infer()` variational message passing with `free_energy = true`; per-`ModelKind` strategy dispatch (see below)
+- **Output**: Julia scripts via `src/render/rxinfer/rxinfer_renderer.py`
 - **Optimization**: Variational constraints, efficient inference
+
+##### ModelKind strategy dispatch
+
+`detect_model_kind` (`src/render/pomdp_contract.py`) classifies each spec **structurally** — from the `GNNSection` value, per-level / per-agent matrix key patterns, explicit `nr_agents` / `num_factors`, `F`/`H`/`Q`/`R` keys, and `dirichlet_[A-E]` keys. There is no free-text scanning, and a non-mapping `InitialParameterization` raises `ValueError` rather than being guessed at.
+
+The canonical renderer (`rxinfer_renderer.py`) then dispatches to a per-kind strategy in `src/render/rxinfer/model_strategies.py`. Each strategy emits a genuine Julia script running `infer()`; each raises `ValueError` naming the missing parameterization when a spec reaches it without the matrices its `@model` requires.
+
+| ModelKind | Strategy | Generated model |
+|---|---|---|
+| FLAT | `FlatStrategy` | `pomdp_model` — batch smoothing by default, or per-timestep filtering when `inference_mode: online` is declared in ModelParameters (or passed as a render option) |
+| HIERARCHICAL | `HierarchicalStrategy` | `hierarchical_pomdp_model` for two-level exemplars (context latent coupled into the fast prior via `A_level2`, mean-field constraints + initialization); 3+ declared levels render as the documented joint composition |
+| FACTORED | `FactoredStrategy` | `factored_pomdp_model` — native mean-field two-factor model with multi-parent likelihood (`DiscreteTransition(s1, A_m0, s2)`), per-factor posteriors |
+| CONTINUOUS | `ContinuousStrategy` | `continuous_pomdp_model` — linear-Gaussian state space built from `F`/`H`/`Q`/`R` + Gaussian prior in InitialParameterization; beliefs are posterior means, VFE validation is sign-agnostic |
+| LEARNING | `LearningStrategy` | `learning_pomdp_model` — likelihood matrix `A` learned as a latent `DirichletCollection` from `dirichlet_A` pseudo-counts, jointly with states; reports learned-A mean and prior/posterior distance to the true A |
+| MULTI_AGENT | `MultiAgentStrategy` | joint composition with the true kind stamped in `runtime_metadata`; per-agent marginals are recovered downstream from the `state_factors` echo |
+
+**Online mode (FLAT).** Batch is the default: offline smoothing over the full observation sequence, with expected free energy and the policy computed post-hoc from the smoothed posteriors. Under `inference_mode: online` the script instead calls `infer()` per timestep on the observation prefix, and the *filtered* posterior drives EFE plus habit-prior action selection.
+
+**Action selection.** Generated scripts select actions by `softmax(log E − γ·EFE)`, where `E` is the habit/policy prior.
+
+**Conventions baked into generated scripts.** `B` is ordered `(next_state, previous_state, action)` — the scripts embed `const B_TENSOR_ORDER = "next_state_previous_state_action"`. In the results payload, `true_states[t]` is the state that *emitted* observation `t`, so it is timing-aligned with `beliefs[t]`.
+
+Continuous exemplars carry a **dual parameterization**: discrete `A`/`B`/`C`/`D` (consumed by PyMDP and friends) plus authored `F`/`H`/`Q`/`R`/prior blocks for the native RxInfer LGSSM. Because the discrete parameterization does not describe the continuous latent, continuous results echo `state_factors` and `observation_modalities` as empty.
 
 #### ActiveInference.jl (Julia)
 - **Purpose**: Active Inference framework implementation
@@ -103,6 +126,11 @@ graph TD
 #### Stan (Stan)
 - **Purpose**: Probabilistic programming backend
 - **Output**: Stan models under `stan/` when the renderer is available
+
+#### bnlearn (Python)
+- **Purpose**: Bayesian network structure and parameter learning, exact inference, causal discovery
+- **Output**: Python scripts under `bnlearn/` (`<model>_bnlearn.py`), generated by `render.generators.generate_bnlearn_code`
+- **Notes**: Registered in `render.framework_registry` as POMDP-compatible with no required matrices; `render.health.check_renderers()` reports it alongside the other eight backends
 
 ---
 
@@ -142,7 +170,7 @@ success = process_render(
 
 **Parameters**:
 - `gnn_spec` (Dict[str, Any]): Parsed GNN specification dictionary
-- `target` (str): Target framework ("pymdp", "rxinfer", "activeinference_jl", "jax", "discopy")
+- `target` (str): Target framework ("pymdp", "rxinfer", "activeinference_jl", "jax", "discopy", "bnlearn", "pytorch", "numpyro", "stan")
 - `output_directory` (Union[str, Path]): Output directory for generated code
 - `options` (Optional[Dict[str, Any]]): Framework-specific options (default: None)
 
@@ -216,12 +244,6 @@ The shared contract is `canonical_pomdp_v1`, with B stored as `(next_state, prev
 **Returns**: `Any` - Normalized POMDP state space object
 
 **Location**: `src/render/processor.py`
-
-**Parameters**:
-- `model_data`: GNN model data
-- `output_path`: Optional output file path
-
-**Returns**: Generated JAX code as string
 
 ---
 
@@ -317,6 +339,7 @@ options = {
   - `activeinference_jl/<model_name>_activeinference.jl`
   - `jax/<model_name>_jax.py`
   - `discopy/<model_name>_discopy.py`
+  - `bnlearn/<model_name>_bnlearn.py`
   - optional backends (when available): `pytorch/`, `numpyro/`, `stan/`
 - `render_processing_summary.json` - Processing summary
 
@@ -330,6 +353,7 @@ output/11_render_output/
     ├── activeinference_jl/
     ├── jax/
     ├── discopy/
+    ├── bnlearn/
     ├── pytorch/        # if available
     ├── numpyro/        # if available
     └── stan/           # if available

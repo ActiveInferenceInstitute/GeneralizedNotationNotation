@@ -1,6 +1,6 @@
 # GNN Schema Specification
 
-**Version**: v1.6.0 Engine (Bundle v2.0.0)  
+**Version**: v3.0.0 Engine (Bundle v2.0.0)  
 **Last Updated**: 2026-04-15  
 **Status**: ✅ Production Ready  
 **Modules**: 38+ · **Pipeline steps**: 25 · **Renderers**: 9 backends (see [../implementations/README.md](../implementations/README.md)) · **Tests**: see [../../../README.md](../../../README.md)  
@@ -15,7 +15,7 @@ GNN schema validation is handled by multiple pipeline steps:
   - Implementation: `src/gnn/schema_validator.py`
   - See: **[src/gnn/AGENTS.md](../../../src/gnn/AGENTS.md)**
 - **`src/5_type_checker.py`** → Type and dimensional validation
-  - Implementation: `src/type_checker/type_analysis.py`
+  - Implementation: `src/type_checker/checking/core.py` (`GNNTypeChecker`)
   - See: **[src/type_checker/AGENTS.md](../../../src/type_checker/AGENTS.md)**
 - **`src/6_validation.py`** → Advanced consistency checking
   - See: **[src/validation/AGENTS.md](../../../src/validation/AGENTS.md)**
@@ -39,12 +39,14 @@ For complete pipeline documentation, see **[src/AGENTS.md](../../../src/AGENTS.m
 <name>[<dimensions>,type=<type>]
 ```
 
-**Implementation:** `src/gnn/parser.py:parse_variable_declaration()`
+**Implementation:** `src/gnn/schema.py:parse_state_space()` (strict) / `src/gnn/schema_validator.py:VARIABLE_PATTERN` (permissive)
 
 **Schema Rules:**
 
 - `<name>`: `[a-zA-Z_][a-zA-Z0-9_]*` (identifier pattern)
-- `<dimensions>`: comma-separated integers `\d+(,\d+)*`
+- `<dimensions>`: comma-separated dimension tokens. Usually integers, but the
+  permissive pattern accepts `[^\]]+`, so named references are legal —
+  `G[pi,type=float]` appears in `input/gnn_files/discrete/tmaze_epistemic.md`
 - `<type>`: `int|float|double|bool|string`
 
 **Examples from actinf_pomdp_agent.md:**
@@ -64,7 +66,7 @@ t[1,type=int]               # scalar, integer type
 <source>><target>    # Directed connection
 ```
 
-**Implementation:** `src/gnn/parser.py:parse_connection()`
+**Implementation:** `src/gnn/schema.py:parse_connections()` (strict) / `src/gnn/schema_validator.py:CONNECTION_PATTERN` (permissive)
 
 **Schema Rules:**
 
@@ -86,20 +88,32 @@ A-o          # A relates to o (undirected)
 ## <SectionName>
 ```
 
-**Implementation:** `src/gnn/parser.py:parse_section_header()`
+**Implementation:** `src/gnn/schema.py:validate_required_sections()`
 
-**Required Sections:**
+**Required sections** — the exact contents of
+`src/gnn/schema.py::REQUIRED_SECTIONS`. A missing one is a hard `GNN-E001`
+error:
 
+- `## GNNSection` - Short, space-free model identifier
+- `## GNNVersionAndFlags` - Specification version and optional flags
+- `## ModelName` - Human-readable model title
 - `## StateSpaceBlock` - Variable declarations
 - `## Connections` - Connection specifications
-- `## InitialParameterization` - Parameter values
 
-**Optional Sections:**
+**Not enforced by the validator**, but expected by downstream steps — a model
+without `InitialParameterization` cannot render, and one without
+`ActInfOntologyAnnotation` is invisible to Steps 10, 13, and 24:
 
-- `## ModelName` - Model identifier
 - `## ModelAnnotation` - Description
+- `## InitialParameterization` - Parameter values
 - `## Equations` - Mathematical relations
+- `## Time` - Temporal regime and horizon
 - `## ActInfOntologyAnnotation` - Semantic mappings
+- `## ModelParameters` - Scalar parameters read by renderers
+- `## Footer` / `## Signature` - Closure and provenance
+
+The full obligation table is in
+[`gnn_syntax.md`](gnn_syntax.md#canonical-section-inventory).
 
 ## Round-Trip Data Flow
 
@@ -132,7 +146,7 @@ Output: `output/3_gnn_output/parsed_actinf_pomdp_agent.json`
 
 ### 2. Validate: JSON → Typed JSON
 
-**Entry Point:** `src/5_type_checker.py:analyze_variable_types()`
+**Entry Point:** `src/5_type_checker.py:main()` → `src/type_checker/analysis_utils.py:analyze_variable_types()`
 **Core Method:** `src/type_checker/analysis_utils.py`
 
 Applies type constraints and dimensional analysis:
@@ -169,7 +183,7 @@ Framework targets:
 
 - **PyMDP**: `src/render/pymdp/` → `.py` files
 - **RxInfer.jl**: `src/render/rxinfer/` → `.jl` files
-- **ActiveInference.jl**: `src/render/activeinference/` → `.jl` files
+- **ActiveInference.jl**: `src/render/activeinference_jl/` → `.jl` files
 - **DisCoPy**: `src/render/discopy/` → categorical diagrams
 
 ## Core Method Locations (Actual Implementation)
@@ -202,18 +216,20 @@ src/3_gnn.py (thin orchestrator)
 ```text
 src/5_type_checker.py (thin orchestrator)
 └── src/type_checker/
-    ├── analysis_utils.py (line 1-62)
+    ├── analysis_utils.py                 # standalone helpers, no classes
     │   ├── analyze_variable_types() (line 13)
-    │   ├── analyze_connections() 
-    │   └── estimate_computational_complexity()
-    │   └── GNNTypeChecker (line 174-268)
-    │       ├── check_file() (line 232)
-    │       ├── _check_required_sections()
-    │       └── _collect_variable_analysis()
-    └── processor.py
-        └── GNNTypeChecker (line 20-261)
-            ├── _validate_type() (line 191)
-            └── _analyze_types() (line 232)
+    │   ├── analyze_connections() (line 78)
+    │   └── estimate_computational_complexity() (line 131)
+    ├── checking/
+    │   ├── core.py
+    │   │   └── GNNTypeChecker (line 111)
+    │   │       ├── check_file() (line 118)
+    │   │       ├── validate_gnn_files() (line 163)
+    │   │       └── _analyze_types() (line 320)
+    │   ├── dimensions.py
+    │   └── rules.py
+    ├── estimation/                       # GNNResourceEstimator
+    └── processor.py                      # thin re-export facade (17 lines)
 ```
 
 ### Visualization Pipeline (Steps 8 & 9)
@@ -221,21 +237,25 @@ src/5_type_checker.py (thin orchestrator)
 ```
 src/8_visualization.py (thin orchestrator)
 └── src/visualization/
-    ├── visualizer.py (line 1-73)
-    │   └── GNNVisualizer (line 66)
-    ├── matrix_visualizer.py 
-    │   ├── MatrixVisualizer (line 40)
-    │   └── generate_matrix_visualizations() (line 941)
-    ├── processor.py 
-    │   ├── parse_matrix_data() (line 367)
-    │   ├── generate_matrix_visualizations() (line 403)
-    │   └── generate_network_visualizations() (line 523)
-    └── __init__.py (safe imports with alternatives, line 15-47)
+    ├── visualizer.py
+    │   └── GNNVisualizer (line 61)
+    ├── matrix/
+    │   ├── visualizer.py
+    │   │   ├── MatrixVisualizer (line 171)
+    │   │   └── generate_matrix_visualizations() (line 1649)
+    │   └── compat.py
+    │       └── parse_matrix_data() (line 18)
+    ├── graph/
+    │   └── network_visualizations.py
+    │       └── generate_network_visualizations() (line 82)
+    ├── matrix_visualizer.py               # re-export facade (15 lines)
+    ├── processor.py                       # re-export facade (34 lines)
+    └── __init__.py                        # safe imports with alternatives
 
 src/9_advanced_viz.py (thin orchestrator)
 └── src/advanced_visualization/
     └── visualizer.py
-        └── AdvancedVisualizer (line 34)
+        └── AdvancedVisualizer (line 38)
 ```
 
 ### Export Pipeline (Step 7: Multi-format Export)  
@@ -266,9 +286,11 @@ src/11_render.py (thin orchestrator)
 
 ### Schema Validation Chain
 
-1. **Lexical**: `src/gnn/lexer.py` - tokenization
-2. **Syntactic**: `src/gnn/parser.py` - AST construction  
-3. **Semantic**: `src/type_checker/analysis_utils.py` - type validation
+1. **Lexical / syntactic**: `src/gnn/schema.py` - section, declaration, and
+   connection parsing (there is no separate lexer module)
+2. **Structural**: `src/gnn/parser.py` and `src/gnn/parsers/` - multi-format
+   parsing into the shared model dict
+3. **Semantic**: `src/type_checker/checking/core.py` - type and dimension validation
 4. **Ontological**: `src/ontology/processor.py` - domain validation
 
 ### Framework Integration Points
@@ -283,7 +305,7 @@ src/11_render.py (thin orchestrator)
 ### Variable Validation
 
 ```python
-# src/type_checker/analysis_utils.py:validate_variable()
+# Illustrative pseudocode — not a real symbol
 def validate_variable(var):
     assert var['name'].isidentifier()
     assert all(d > 0 for d in var['dimensions'])
@@ -293,7 +315,7 @@ def validate_variable(var):
 ### Connection Validation  
 
 ```python
-# src/type_checker/analysis_utils.py:validate_connection()
+# Illustrative pseudocode — not a real symbol
 def validate_connection(conn, variables):
     assert conn['source'] in [v['name'] for v in variables]
     assert conn['target'] in [v['name'] for v in variables]
@@ -304,6 +326,7 @@ def validate_connection(conn, variables):
 
 ```python
 # Implemented in src/6_validation.py
+# Illustrative pseudocode — not a real symbol
 def validate_round_trip(original_gnn, exported_formats):
     # Parse original
     parsed = parse_gnn(original_gnn)

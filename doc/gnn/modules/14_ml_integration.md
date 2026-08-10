@@ -2,7 +2,7 @@
 
 ## Architectural Mapping
 
-**Orchestrator**: `src/14_ml_integration.py` (63 lines)
+**Orchestrator**: `src/14_ml_integration.py` (55 lines)
 **Implementation Layer**: `src/ml_integration/`
 
 ## Module Description

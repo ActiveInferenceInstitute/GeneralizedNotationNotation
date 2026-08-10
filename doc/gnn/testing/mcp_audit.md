@@ -49,11 +49,13 @@ EXPECTED_MODULES = (
 ```
 
 - `test_expected_module_loaded` — module appears in `all_modules` OR contributes tools
-- `test_expected_module_has_tools` — module contributes ≥ 1 registered tool
+- `test_expected_module_has_tools` — module contributes ≥ 1 registered tool, *except* the
+  two modules in `ZERO_TOOL_MODULES = ("doc", "lsp")`, which are asserted to load and
+  contribute exactly 0 tools
 
 ### `TestMCPToolRealness`
 
-5 aggregate assertions across all registered tools:
+7 aggregate assertions across all registered tools:
 
 | Test | What It Checks |
 |------|---------------|
@@ -62,6 +64,8 @@ EXPECTED_MODULES = (
 | `test_no_lambda_tools` | `tool.func.__name__ != "<lambda>"` for every tool |
 | `test_all_tools_have_named_functions` | `tool.func.__name__` is non-empty |
 | `test_all_tools_have_descriptions` | `tool.description.strip()` is non-empty |
+| `test_all_tools_have_module_and_category_metadata` | every tool carries module + category metadata |
+| `test_all_tools_have_valid_json_schemas` | every tool's input schema is valid JSON Schema |
 
 ### `TestMCPDomainTools`
 

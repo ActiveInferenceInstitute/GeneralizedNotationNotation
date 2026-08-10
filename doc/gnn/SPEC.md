@@ -11,8 +11,8 @@ The `doc/gnn` module does not contain execution logic mapping directly to the ru
 
 ## Components
 It governs the architectural parsing constraints across three main modalities:
-1. **The Syntax Standard** (`gnn_syntax.md`): Defines variable encodings, connections mapping generative pipelines, and markup validation.
-2. **The Output Target Frameworks**: How GNN compiles down into PyMDP, RxInfer, and JAX logic representation.
+1. **The Syntax Standard** ([`gnn_syntax.md`](gnn_syntax.md)): Defines variable encodings, connections mapping generative pipelines, and markup validation. This is the normative source; `reference/` and `language/` expand it without overriding it.
+2. **The Output Target Frameworks**: How GNN compiles down to the nine render backends (PyMDP, RxInfer.jl, ActiveInference.jl, JAX, DisCoPy, PyTorch, NumPyro, Stan, bnlearn) registered in [`src/render/framework_registry.py`](../../src/render/framework_registry.py). Which code a backend emits depends on the **model kind** detected structurally from the declared parameterization keys — see [`gnn_syntax.md` § Parameterization families](gnn_syntax.md#parameterization-families).
 3. **Agent Integration** (`mcp` / `integration`): How external services can programmatically consume, augment, and output standard GNN files.
 
 ## Interfaces

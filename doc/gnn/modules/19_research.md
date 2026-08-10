@@ -2,7 +2,7 @@
 
 ## Architectural Mapping
 
-**Orchestrator**: `src/19_research.py` (65 lines)
+**Orchestrator**: `src/19_research.py` (55 lines)
 **Implementation Layer**: `src/research/`
 
 ## Module Description

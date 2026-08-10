@@ -2,7 +2,7 @@
 
 ## Architectural Mapping
 
-**Orchestrator**: `src/13_llm.py` (63 lines)
+**Orchestrator**: `src/13_llm.py` (55 lines)
 **Implementation Layer**: `src/llm/`
 
 ## Module Description

@@ -95,7 +95,7 @@ pip install torch torchvision --index-url https://download.pytorch.org/whl/cu121
 `torch` is an optional dependency — the pipeline gracefully skips PyTorch steps if not installed. Check with:
 
 ```bash
-PYTHONPATH=src python -c "from execute.pytorch import check_pytorch; print(check_pytorch())"
+PYTHONPATH=src python -c "from execute.pytorch import is_pytorch_available; print(is_pytorch_available())"
 ```
 
 ## Run
@@ -107,8 +107,10 @@ python src/11_render.py --target-dir input/gnn_files/ --frameworks pytorch
 # Execute PyTorch script
 python src/12_execute.py --target-dir input/gnn_files/ --frameworks pytorch
 
-# Or use the MCP tool
-# Call: execute_gnn_model(path="...", framework="pytorch")
+# The MCP tool takes no framework argument — it dispatches to PyMDP:
+# execute_gnn_model_mcp(gnn_file_path="...", output_directory="...")
+# For a specific backend, call the executor directly:
+# execute_gnn_model(model_path="...", execution_type="pytorch")
 ```
 
 ## Correlation Results

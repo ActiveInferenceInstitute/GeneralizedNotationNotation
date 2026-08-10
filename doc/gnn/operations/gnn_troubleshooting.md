@@ -1,6 +1,6 @@
 # GNN Troubleshooting Guide
 
-**Version**: v1.6.0 Engine (Bundle v2.0.0)  
+**Version**: v3.0.0 Engine (Bundle v2.0.0)  
 **Last Updated**: 2026-04-15  
 **Status**: ✅ Production Ready  
 **Modules**: 38+ · **Pipeline steps**: 25 · **Renderers**: 9 backends (see [../implementations/README.md](../implementations/README.md)) · **Tests**: see [../../../README.md](../../../README.md)  
@@ -114,8 +114,11 @@ MyVariable[2,1,type=float]
 **Cause**: Julia environment issues or RxInfer syntax mismatch.
 **Solution**:
 
-- Run `python src/1_setup.py --check-julia` to verify Julia setup.
-- Check `output/11_render_output/*.jl` for syntax correctness.
+- Run `uv run gnn health` to check renderer and dependency status, including the Julia backends.
+- Verify the committed Julia environment resolves:
+  `julia --startup-file=no --project=src/execute/rxinfer -e 'using RxInfer, JSON, Distributions, StatsBase'`
+- Check `output/11_render_output/<model>/rxinfer/*.jl` for syntax correctness.
+- A script that runs to completion but exits non-zero is reporting failed validation, not a crash: rendered RxInfer scripts exit on `validation.all_valid`. Inspect the `validation` block of `simulation_results.json` to see which check failed.
 
 ### 4. Visualization Issues (Steps 8 & 9)
 
@@ -142,9 +145,11 @@ If a step fails, the pipeline creates a recovery checkpoint.
 **To resume**:
 The current pipeline design is stateless between runs, but you can skip successful steps using `--only-steps`.
 
+`--only-steps` takes a **comma-separated list of integers** — ranges and ellipses are not parsed, and an unparseable value yields an empty step list rather than an error, so spell every step out:
+
 ```bash
 # Skip steps 0-3 if they passed
-python src/main.py --only-steps "4,5,6,7,8..."
+python src/main.py --only-steps "4,5,6,7,8,9,10,11,12"
 ```
 
 ---

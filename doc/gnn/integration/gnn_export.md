@@ -1,6 +1,6 @@
 # GNN Export Guide
 
-**Version**: v1.6.0 Engine (Bundle v2.0.0)  
+**Version**: v3.0.0 Engine (Bundle v2.0.0)  
 **Last Updated**: 2026-04-15  
 **Status**: ✅ Production Ready  
 **Modules**: 38+ · **Pipeline steps**: 25 · **Renderers**: 9 backends (see [../implementations/README.md](../implementations/README.md)) · **Tests**: see [../../../README.md](../../../README.md)  
@@ -34,8 +34,9 @@ GNN export is integrated into the 25-step processing pipeline:
 # Generate exports
 python src/main.py --only-steps "3,7" --target-dir input/gnn_files --verbose
 
-# Export specific formats
-python src/7_export.py --target-dir input/gnn_files --output-dir output --formats "json,xml,graphml"
+# Step 7 has no format-selection flag — it emits every supported format.
+# Select formats by calling the exporters directly (see the API examples below).
+python src/7_export.py --target-dir input/gnn_files --output-dir output --verbose
 ```
 
 ## Supported Export Formats
@@ -56,12 +57,10 @@ python src/7_export.py --target-dir input/gnn_files --output-dir output --format
 - Structured representation
 - Use case: Enterprise integration, validation
 
-#### YAML Export
-
-- Configuration-friendly format
-- Human-readable
-- Hierarchical structure
-- Use case: Configuration management
+> **No YAML exporter ships today.** `src/export/mcp.py` advertises `yaml` in a format
+> list, but `src/export/format_exporters.py` has no YAML writer, so nothing produces it.
+> The formats below plus the two plaintext writers are the complete set. Export to JSON
+> and convert if you need YAML.
 
 ### Graph Formats
 
@@ -225,4 +224,4 @@ Export integrates throughout the pipeline:
 
 **Status**: ✅ Production Ready  
 **Last Updated**: 2026-04-15  
-**Version**: v1.6.0 Engine (Bundle v2.0.0)
+**Version**: v3.0.0 Engine (Bundle v2.0.0)

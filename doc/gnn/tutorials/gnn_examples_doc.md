@@ -1,11 +1,31 @@
 # GNN Examples and Model Progression
 
-**Version**: v1.6.0 Engine (Bundle v2.0.0)  
+**Version**: v3.0.0 Engine (Bundle v2.0.0)  
 **Last Updated**: 2026-04-15  
 **Status**: ✅ Production Ready  
 **Modules**: 38+ · **Pipeline steps**: 25 · **Renderers**: 9 backends (see [../implementations/README.md](../implementations/README.md)) · **Tests**: see [../../../README.md](../../../README.md)  
 
 This document provides practical examples of GNN models, demonstrating how models can be developed with increasing complexity.
+
+The specifications written out below are **teaching examples** — read them to learn the
+notation. The models the pipeline actually ships and exercises live in
+[`input/gnn_files/`](../../../input/gnn_files/), organized by category:
+
+| Category | What it covers |
+|---|---|
+| `basics/` | Static and dynamic perception — the smallest complete models |
+| `discrete/` | Discrete POMDPs: MDPs, HMMs, bandits, T-maze, planning horizon |
+| `continuous/` | Continuous state spaces, carrying both discrete A/B/C/D and native `F`/`H`/`Q`/`R` linear-Gaussian blocks |
+| `hierarchical/` | Multi-level state hierarchies |
+| `learning/` | Dirichlet likelihood learning |
+| `multiagent/` | Multi-agent coordination and stigmergic swarms |
+| `precision/` | Precision-weighted and curiosity-driven agents |
+| `structured/` | Factorized posteriors |
+| `pomdp_gridworld/` | The 3x3 gridworld used for cross-framework comparison |
+| `pymdp_scaling_study/` | A representative state-size ladder for scaling analysis |
+
+Point any pipeline command at a single category — `--target-dir input/gnn_files/basics`
+— to iterate quickly instead of processing the whole corpus.
 
 ## Processing Examples with Pipeline
 
@@ -13,10 +33,10 @@ All examples can be processed through the GNN pipeline for parsing, validation, 
 
 ```bash
 # Process all examples
-python src/main.py --target-dir input/gnn_files --verbose
+uv run python src/main.py --target-dir input/gnn_files --verbose
 
 # Run specific processing steps
-python src/main.py --only-steps "3,5,8,11,12" --target-dir input/gnn_files
+uv run python src/main.py --only-steps "3,5,8,11,12" --target-dir input/gnn_files
 ```
 
 For module-specific documentation:
@@ -152,6 +172,7 @@ It is a dynamic model because it tracks changes in the hidden state through time
 D[2,1,type=float]    # Prior
 B[2,1,type=float]    # Transition matrix
 s_t[2,1,type=float]  # Hidden state at time t
+s_prime[2,1,type=float]  # Hidden state at time t+1
 A[2,2,type=float]    # Recognition matrix
 o_t[2,1,type=float]  # Observation at time t
 t[1,type=int]        # Time index
@@ -159,9 +180,9 @@ t[1,type=int]        # Time index
 ## Connections
 D-s_t
 s_t-A
-A-o
+A-o_t
 s_t-B
-B-s_t+1
+B>s_prime
 
 ## InitialParameterization
 
@@ -241,15 +262,16 @@ B[2,len(π),1,type=float] # Transition matrix (policy-dependent)
 C=[2,1]                 # Preference vector
 G=len(π)                # Expected free energy (one per policy)
 s_t[2,1,type=float]     # Hidden state at time t
+s_prime[2,1,type=float]     # Hidden state at time t+1
 o_t[2,1,type=float]     # Observation at time t
 t[1,type=int]           # Time index
 
 ## Connections
 D-s_t
 s_t-A
-A-o
+A-o_t
 s_t-B
-B-s_t+1
+B>s_prime
 C>G
 G>π
 
@@ -346,15 +368,16 @@ E=[2,1]                 # Prior on action
 β=[1,type=float]        # Precision parameter (beta)
 γ=[1,type=float]        # Inverse temperature (gamma)
 s_t[2,1,type=float]     # Hidden state at time t
+s_prime[2,1,type=float]     # Hidden state at time t+1
 o_t[2,1,type=float]     # Observation at time t
 t[1,type=int]           # Time index
 
 ## Connections
 D-s_t
 s_t-A
-A-o
+A-o_t
 s_t-B
-B-s_t+1
+B>s_prime
 C>G
 G>π
 E>π

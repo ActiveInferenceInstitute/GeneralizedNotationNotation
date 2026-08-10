@@ -1,9 +1,29 @@
 # CatColab Framework Implementation
 
-> **GNN Integration Layer**: Categorical / Structural (bidirectional)
+> **GNN Integration Layer**: Categorical / Structural
 > **Framework Base**: [CatColab](https://catcolab.org) (Topos Institute) + [AlgebraicJulia](https://algebraicjulia.org)
-> **Integration Type**: Bidirectional — GNN → CatColab export and CatColab → GNN import
-> **Documentation Version**: 1.0
+> **Integration Type**: Interoperability design — manual, via exported JSON
+> **Status**: Design document. Not a pipeline backend.
+> **Documentation Version**: 1.1
+
+## Status: design document, not a pipeline backend
+
+Read this before following anything below. CatColab is **not** one of the nine Step 11
+render backends, and no `catcolab` module exists anywhere in `src/`:
+
+- There is **no CatColab export format**. Step 7 (`src/export/`) emits JSON, XML, GraphML,
+  GEXF, pickle, JSON adjacency list, and plaintext summary/DSL. None of them is a
+  CatColab Schema, Stock-and-Flow, Olog, or Petri Net document.
+- There is **no CatColab importer**. `src/gnn/catcolab_importer.py` is absent from the
+  tree; the command shown later in this document is commented out for that reason.
+- Nothing in the pipeline reads from or writes to catcolab.org.
+
+What this document *is*: a conceptual mapping between GNN's numerical Active Inference
+constructs and CatColab's categorical logics, plus a manual workflow using GNN's existing
+JSON export as the hand-off point. Treat the correspondences below as design intent for a
+future integration, not as behavior you can invoke today. The one piece of genuinely
+shipped categorical machinery in this space is the DisCoPy backend
+([discopy.md](discopy.md)), which does render and execute.
 
 ## Overview
 
@@ -13,13 +33,14 @@ GNN and CatColab are **complementary**: GNN specifies the numerical Active Infer
 
 ## Architecture
 
-CatColab integration operates across three pipeline stages:
+A CatColab integration would touch three pipeline stages. Only the DisCoPy rows are
+implemented today; the export row describes a proposed conversion that no code performs:
 
- | Stage | GNN Module | CatColab Role |
-|---|---|---|
- | Export (Step 7) | `src/export/` | GNN JSON → CatColab JSON (Schema/Stock-and-Flow/Olog) |
- | Render (Step 11) | `src/render/discopy/` | DisCoPy string diagrams (shared categorical foundation) |
- | Execute (Step 12) | `src/execute/discopy/` | Categorical evaluation of circuit structure |
+ | Stage | GNN Module | CatColab Role | Status |
+|---|---|---|---|
+ | Export (Step 7) | `src/export/` | GNN JSON → CatColab JSON (Schema/Stock-and-Flow/Olog) | Proposed — convert the existing JSON export by hand |
+ | Render (Step 11) | `src/render/discopy/` | DisCoPy string diagrams (shared categorical foundation) | Implemented |
+ | Execute (Step 12) | `src/execute/discopy/` | Categorical evaluation of circuit structure | Implemented |
 
 ## Conceptual Bridges
 

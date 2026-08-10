@@ -1,6 +1,6 @@
 # GNN Syntax Reference
 
-**Version**: v1.6.0 Engine (Bundle v2.0.0)  
+**Version**: v3.0.0 Engine (Bundle v2.0.0)  
 **Last Updated**: 2026-04-10  
 **Status**: Maintained  
 
@@ -27,34 +27,38 @@ For complete pipeline documentation, see **[src/AGENTS.md](../../../src/AGENTS.m
 
 ## Canonical Section Inventory
 
-A valid GNN file uses the following sections in the order below. All sections
-marked **Required** are validated by `src/gnn/parsers/markdown_parser.py` and
-must appear; sections marked **Optional** may be omitted and pipeline steps
-that consume them will skip gracefully.
+A valid GNN file uses the following sections in the order below. Two distinct
+levels of obligation apply, and it is worth keeping them apart:
 
-| # | Section | Requirement | Parser hook |
-|---|---------|-------------|-------------|
-| 1 | `## GNNSection` | **Required** | `_parse_gnn_section` |
-| 2 | `## GNNVersionAndFlags` | **Required** | `_parse_version_section` |
-| 3 | `## ModelName` | **Required** | `_parse_model_name` |
+- **Enforced** — listed in `src/gnn/schema.py::REQUIRED_SECTIONS`. Absence is
+  a hard error: `validate_required_sections` emits `GNN-E001`
+  (*missing required section*) and the file fails type checking.
+- **Expected** — not checked by the validator, but every sample in
+  `input/gnn_files/` supplies them and downstream renderers and analyzers
+  read them. Omitting one does not fail the type checker; it degrades or
+  skips the steps that consume it.
+
+| # | Section | Obligation | Parser hook |
+|---|---------|------------|-------------|
+| 1 | `## GNNSection` | **Enforced** | `_parse_gnn_section` |
+| 2 | `## GNNVersionAndFlags` | **Enforced** | `_parse_version_section` |
+| 3 | `## ModelName` | **Enforced** | `_parse_model_name` |
 | 4 | `## ModelAnnotation` | Optional | `_parse_annotation` |
-| 5 | `## StateSpaceBlock` | **Required** | `_parse_state_space` |
-| 6 | `## Connections` | **Required** | `_parse_connections` |
-| 7 | `## InitialParameterization` | **Required** | `_parse_parameters` |
-| 8 | `## Equations` | **Required** | `_parse_equations` |
-| 9 | `## Time` | **Required** | `_parse_time` |
-| 10 | `## ActInfOntologyAnnotation` | **Required** | `_parse_ontology` |
-| 11 | `## ModelParameters` | **Required** | `_parse_model_parameters` |
-| 12 | `## Footer` | **Required** | `_parse_footer` |
-| 13 | `## Signature` | **Required** | `_parse_signature` |
+| 5 | `## StateSpaceBlock` | **Enforced** | `_parse_state_space` |
+| 6 | `## Connections` | **Enforced** | `_parse_connections` |
+| 7 | `## InitialParameterization` | Expected | `_parse_parameters` |
+| 8 | `## Equations` | Expected | `_parse_equations` |
+| 9 | `## Time` | Expected | `_parse_time` |
+| 10 | `## ActInfOntologyAnnotation` | Expected | `_parse_ontology` |
+| 11 | `## ModelParameters` | Expected | `_parse_model_parameters` |
+| 12 | `## Footer` | Expected | `_parse_footer` |
+| 13 | `## Signature` | Expected | `_parse_signature` |
 
-The last five sections (Equations, Time, ActInfOntologyAnnotation,
-ModelParameters, Footer, Signature) were promoted from "v1.5 extension" to
-**Required** in v1.6.0 to reflect that every sample in `input/gnn_files/`
-uses them and every renderer / analyzer depends on them downstream. Parsers
-from before v1.6.0 may tolerate their absence; v1.6.0+ type-checker emits
-`GNN-E001` (unknown section) or `GNN-W002` (missing expected section) as
-appropriate.
+Sections 7–13 are what earlier revisions of this page called "v1.5
+extensions". Treat them as mandatory when authoring — a model missing
+`InitialParameterization` cannot render, and one missing
+`ActInfOntologyAnnotation` is invisible to Steps 10, 13, and 24 — but do not
+expect the validator to catch their absence for you.
 
 ### `## Equations`
 
@@ -112,11 +116,23 @@ Canonical keys expected by renderers (not all are required for every model):
 | `num_actions` / `num_controls` / `n_actions` | int | all renderers |
 | `num_timesteps` | int | all renderers |
 | `num_modalities` | int | PyMDP, JAX |
-| `num_factors` | int | PyMDP, RxInfer |
+| `num_factors` | int | PyMDP, RxInfer; `> 1` also selects the FACTORED model kind |
+| `nr_agents` | int | `> 1` selects the MULTI_AGENT model kind |
 | `learning_rate` | float | JAX, PyTorch |
+| `inference_mode` | `batch` (default) / `online` | RxInfer FLAT models — see below |
+| `inference_iterations` | int (default `20`) | RxInfer — variational iterations per `infer()` call |
 
-Omitting canonical keys triggers `GNN-W004`; renderers then fall back on
-dimensions parsed from StateSpaceBlock.
+Omitting a canonical key is not an error; renderers fall back on the
+dimensions parsed from `StateSpaceBlock`.
+
+`inference_mode` chooses how a FLAT model is run. `batch`, the default,
+smooths over the whole observation sequence. `online` runs `infer()` once per
+timestep on the observation prefix, so the filtered posterior — rather than a
+retrospective one — drives expected-free-energy and habit-prior action
+selection. Any value other than `batch` or `online` is rejected. The same
+setting can be passed as a render option, but declaring it here keeps the
+file self-describing. Per-kind strategy details:
+[`src/render/rxinfer/README.md`](../../../src/render/rxinfer/README.md).
 
 ```gnn
 ## ModelParameters
@@ -125,6 +141,8 @@ num_obs: 3
 num_actions: 2
 num_timesteps: 20
 learning_rate: 0.01
+inference_mode: online
+inference_iterations: 40
 ```
 
 ### `## Footer`
@@ -202,6 +220,40 @@ A={(0.9,0.1),(0.2,0.8)}       # Matrix rows
 B={((1,0),(0,1)),((0,1),(1,0))} # 3D tensor
 ```
 
+Three further key families are recognized alongside the discrete POMDP
+matrices `A`/`B`/`C`/`D`/`E`, and a file may carry more than one at once:
+
+```gnn
+## InitialParameterization
+# Linear-Gaussian system (native continuous rendering)
+F={(1.0,0.0),(0.0,1.0)}        # state transition
+H={(1.0,0.0),(0.0,1.0)}        # observation readout
+Q={(0.05,0.0),(0.0,0.05)}      # process noise
+R={(0.1,0.0),(0.0,0.1)}        # observation noise
+prior_mean={(0.0,0.0)}
+prior_cov={(0.5,0.0),(0.0,0.5)}
+
+# Dirichlet pseudo-counts — A becomes a learned latent, not a constant
+dirichlet_A={(8.0,1.0,1.0),(1.0,8.0,1.0),(1.0,1.0,8.0)}
+
+# Per-level (hierarchical) and per-agent (multi-agent) matrix suffixes
+A_level2={(0.8,0.2),(0.2,0.8)}
+B_agent1={((1,0),(0,1)),((0,1),(1,0))}
+```
+
+The `continuous/` exemplars declare **both** the discrete matrices and the
+linear-Gaussian block: each backend reads the family it can execute, and
+nothing cross-validates the two against each other. Which family is present
+determines the model kind the renderer dispatches on — the normative rules
+and precedence order are in
+[`gnn_syntax.md` § Parameterization families](../gnn_syntax.md#parameterization-families).
+
+Expect `GNN-W003` warnings for `H`, `Q`, `R`, `prior_mean`, and `prior_cov`,
+plus a `GNN-E002` on `F`, whenever a file is dual-parameterized: these keys
+are intentionally not mirrored into `StateSpaceBlock`, and `F` collides with
+the scalar Variational Free Energy declaration. Removing the linear-Gaussian
+block to silence them demotes the model from CONTINUOUS to FLAT.
+
 ## Mathematical Operations
 
 ```gnn
@@ -231,10 +283,11 @@ ModelTimeHorizon=10
 
 ## Complete Minimal Example
 
-This example includes every section listed as **Required** in the table above
-(`GNNSection`, `GNNVersionAndFlags`, `ModelName`, `StateSpaceBlock`,
-`Connections`, `InitialParameterization`, `Equations`, `Time`,
-`ActInfOntologyAnnotation`, `ModelParameters`, `Footer`, `Signature`):
+This example includes every **Enforced** and **Expected** section from the
+table above (`GNNSection`, `GNNVersionAndFlags`, `ModelName`,
+`StateSpaceBlock`, `Connections`, `InitialParameterization`, `Equations`,
+`Time`, `ActInfOntologyAnnotation`, `ModelParameters`, `Footer`,
+`Signature`):
 
 ```gnn
 ## GNNSection
@@ -280,11 +333,13 @@ Simple Static Model - GNN Representation.
 Cryptographic signature goes here
 ```
 
-This syntax produces models that parse cleanly and execute correctly in the GNN pipeline. Note that the underlying parser (`src/gnn/schema.py::REQUIRED_SECTIONS`) only strictly enforces `GNNSection`, `GNNVersionAndFlags`, `ModelName`, `StateSpaceBlock`, and `Connections`; the remaining sections above are conventionally expected by downstream pipeline steps even though the type checker does not reject their absence.
+This parses cleanly and executes in the GNN pipeline. Only the five
+**Enforced** sections are strictly checked, per the obligation table above;
+the rest are supplied because downstream steps read them.
 
 ## Variable naming conventions
 
-Use factor/modality indices consistently (`s_f0`, `o_m0`, `u_c0`) as in the [StateSpaceBlock](#statespaceblock) examples above.
+Use factor/modality indices consistently (`s_f0`, `o_m0`, `u_c0`) as in the [Variable Declaration](#variable-declaration) examples above.
 
 ## Connection notation
 

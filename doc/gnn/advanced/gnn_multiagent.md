@@ -1,8 +1,8 @@
 # GNN Multi-Agent Simulation Specification
 
-**Version**: v1.6.0 Engine (Bundle v2.0.0)  
+**Version**: v3.0.0 Engine (Bundle v2.0.0)  
 **Last Updated**: 2026-04-15  
-**Status**: ✅ Production Ready  
+**Status**: Implemented mechanism documented below; block syntax in §2-8 is a design proposal (not yet parsed)  
 **Modules**: 38+ · **Pipeline steps**: 25 · **Renderers**: 9 backends (see [../implementations/README.md](../implementations/README.md)) · **Tests**: see [../../../README.md](../../../README.md)  
 
 ## Pipeline Processing for Multi-Agent Systems
@@ -18,6 +18,9 @@ Multi-agent GNN models are processed through the standard pipeline with addition
 
 - Multi-agent code generation for PyMDP and other frameworks
 - See: **[src/render/AGENTS.md](../../../src/render/AGENTS.md)**
+- For RxInfer specifically, see [How multi-agent models render today](#how-multi-agent-models-render-today)
+  below — the mechanism is joint composition plus downstream marginal recovery, not a
+  native multi-agent model.
 
 ### Execution (Step 12)
 
@@ -37,6 +40,40 @@ python src/main.py --only-steps "3,11,12,16" --target-dir input/gnn_files
 ```
 
 For complete pipeline documentation, see **[src/AGENTS.md](../../../src/AGENTS.md)**.
+
+---
+
+## How multi-agent models render today
+
+Sections 2-8 of this document are a **forward-looking specification**. Read this section
+first for what the pipeline implements right now, because the two differ.
+
+**Detection is structural.** `detect_model_kind()` (`src/render/pomdp_contract.py`)
+classifies a spec as `MULTI_AGENT` when it finds either per-agent matrix keys matching
+`^[ABCDE]_agent\d+` (for example `A_agent1`, `B_agent2`) or an explicit `nr_agents`
+greater than 1. It never scans prose: text in a `ModelName` or annotation cannot change
+how a model renders. Both shipped multi-agent exemplars —
+`input/gnn_files/multiagent/multi_agent_coordination.md` and
+`input/gnn_files/multiagent/stigmergic_swarm.md` — are detected through their per-agent
+matrix keys.
+
+**There is no native multi-agent `@model`.** The RxInfer `MultiAgentStrategy` renders the
+system as a **joint composition** over the combined state space, stamping the true
+detected kind into `runtime_metadata.model_kind`. It does not emit one probabilistic
+model per agent with message passing between them.
+
+**Per-agent marginals are recovered downstream.** Because the generated script echoes the
+spec's `state_factors` into `model_parameters`, Step 16 can un-flatten the joint posterior
+without re-parsing the GNN file. `compute_per_factor_beliefs()`
+(`src/analysis/rxinfer/analyzer.py`) does exactly that, turning joint beliefs into
+per-factor — equivalently, per-agent — marginals for analysis and visualization. This
+recovery step, not a native multi-agent model, is how you get per-agent belief
+trajectories today.
+
+The practical consequence: agents in a rendered RxInfer model are coupled through the
+joint state space rather than through explicit message-passing channels. The
+`AgentsBlock` and `CommunicationBlock` constructs described below are **proposed syntax**
+— they are not yet parsed by `src/gnn/` and appear in no shipped exemplar.
 
 ---
 
@@ -70,7 +107,7 @@ A **Multi-Agent System** is a collection of interacting agents. The GNN specific
 
 To accommodate multi-agent systems, the GNN file structure may be extended with new blocks or by adapting existing ones.
 
-### 3.1. `AgentsBlock` (New Block)
+### 3.1. `AgentsBlock` (proposed — not yet parsed)
 
 This block would be used to declare and configure the agents within the MAS.
 
@@ -124,7 +161,7 @@ Example: `MyAgentTypeA_1.sensor_output` or `TheOnlyB.action_command`.
 
 Communication enables agents to exchange information, coordinate actions, and influence each other. GNN will support several communication patterns.
 
-### 4.1. `CommunicationBlock` (New Block)
+### 4.1. `CommunicationBlock` (proposed — not yet parsed)
 
 This block defines the communication channels and their properties.
 
