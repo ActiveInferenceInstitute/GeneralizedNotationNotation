@@ -160,6 +160,22 @@ class GNNTypeChecker:
         output_path.parent.mkdir(parents=True, exist_ok=True)
         output_path.write_text(json.dumps(results, indent=2), encoding="utf-8")
 
+    def _discover_gnn_files(self, target_dir: Path) -> list[Path]:
+        """Discover GNN specs across every registered non-binary extension.
+
+        The parser stack registers more than just ``.md`` (notably ``.gnn``);
+        a directory holding only a non-markdown spec must still be found.
+        Binary pickle specs are excluded — they are not type-checked. Sorted
+        for deterministic, reproducible discovery.
+        """
+        from gnn.parsers.common import get_supported_gnn_extensions
+
+        return sorted(
+            path
+            for ext in get_supported_gnn_extensions(include_binary_pickle=False)
+            for path in target_dir.rglob(f"*{ext}")
+        )
+
     def validate_gnn_files(
         self, target_dir: Path, output_dir: Path, verbose: bool = False, **kwargs: Any
     ) -> bool:
@@ -192,8 +208,11 @@ class GNNTypeChecker:
                 "type_analysis": [],
             }
 
-            # Find GNN files
-            gnn_files = list(target_dir.rglob("*.md"))
+            # Find GNN files across every registered spec extension (the
+            # parser stack supports more than markdown — discovering only
+            # *.md silently ignored e.g. *.gnn files and reported
+            # "No GNN files found" for a directory that held a valid spec).
+            gnn_files = self._discover_gnn_files(target_dir)
             if not gnn_files:
                 logger.warning("No GNN files found for type checking")
                 results["success"] = False
