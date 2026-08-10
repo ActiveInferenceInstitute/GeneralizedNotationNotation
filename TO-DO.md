@@ -18,7 +18,7 @@ one redundant fixture pruned, −67 MB):
 - Full test suite: **2,797 passed / 0 failed / 2 skipped** (both allowlisted
   environment-gated files; 2,799 collected; Ollama files ignored per the
   command of record).
-- Full pipeline (`src/main.py --target-dir input/gnn_files`): **25/25 steps,
+- Full pipeline (`src/main.py --target-dir input/gnn_files --output-dir /tmp/gnn-full-pipeline`): **25/25 steps,
   0 failed** (2 warnings: optional-viz assets and the deliberately-absent
   Playwright PNG path), 1h28m. Step 12 executes every model under every
   installed backend — including ActiveInference.jl from its committed
