@@ -189,7 +189,7 @@ graph TD
   --tb=no -rsx --ignore=src/tests/llm/test_llm_ollama.py
   --ignore=src/tests/llm/test_llm_ollama_integration.py`. Re-include the two Ollama files
   when `ollama` is installed and reachable. Latest local evidence (2026-08-03):
-  2,642 passed, 0 failed (command of record); 2,668 passed, 0 failed with Julia
+  2,797 passed, 0 failed, 2 allowlisted skips (command of record, 2026-08-07, 29-exemplar corpus); Julia backends run from committed environments
   backends and Ollama enabled.
 - **Default dev suite**: FastAPI, websocket bridge, and LSP tests run under the
   `dev` extra; browser, public-network, live GUI, audio-DSP, and Ollama

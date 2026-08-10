@@ -71,15 +71,15 @@ commit messages.
 
 ## Open Work
 
-### M8. GIF batch + CHANGELOG results (in progress)
-The 29-model 100-timestep GIF batch is regenerating with the current animator
-(white style, per-factor panels, manifests) into
-`~/Downloads/rxinfer_animations/`; superseded dark-mode GIFs live in
-`superseded_dark_mode/`. When complete: regenerate the dashboard from the new
-manifests and record batch results in CHANGELOG. Each model pays full T=100
-JIT in its own Julia process (~hours total); if the batch becomes routine,
-consider extending `@compile_workload` with T=100 entries as a deliberate
-precompile-time/runtime trade.
+### M8. GIF batch — DONE (2026-08-07)
+Clean full re-run on the curated corpus: **29/29 models executed
+`all_valid=true` at T=100** (62 min total, mean 127 s/model, max 216 s) with
+white-style GIF + reproducibility manifest per model in
+`~/Downloads/rxinfer_animations/`; dashboard regenerated over all 29 cards
+(category + size filters, compare mode). Superseded artifacts live in
+`superseded_dark_mode/` / `superseded_pre_curation/`. If the batch becomes
+routine, consider extending `@compile_workload` with T=100 entries as a
+deliberate precompile-time/runtime trade.
 
 ### A3+. Native N-level hierarchical rendering (decision recorded)
 Two-level models render natively. For 3+ levels (temporal_hierarchy), the
@@ -93,7 +93,7 @@ exemplar data.
 ### Dashboard browser verification
 The A5 compare/filter features are covered by deterministic HTML tests; a
 real-browser pass (screenshot + DOM read, accessibility checks) has not been
-run. Do this once the M8 batch gives the dashboard its full 46-GIF data set.
+run. The dashboard now has its full 29-GIF data set.
 
 ## Verification Commands
 

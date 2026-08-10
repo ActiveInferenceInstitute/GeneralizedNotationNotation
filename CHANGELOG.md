@@ -8,6 +8,16 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
 
 ## [Unreleased]
 
+### Added (M8 — clean GIF batch on the curated corpus, 2026-08-07)
+- **29/29 models executed `all_valid=true` at T=100** in the clean re-run (62 min total, mean 127 s/model, max 216 s), each producing a white-style GIF + reproducibility manifest in `~/Downloads/rxinfer_animations/`; dashboard regenerated over all 29 cards with category + state-size filters and side-by-side compare. Superseded artifacts moved to `superseded_dark_mode/` / `superseded_pre_curation/`.
+- **Corpus curation**: 46 → 29 exemplars (see the `curate:` commit) — 17 redundant files pruned (−67 MB), every ModelKind still covered: 20 flat / 3 continuous / 2 hierarchical / 1 learning / 2 multi-agent / 1 factored.
+
+### Fixed (surfaced by the discovery pipeline run, 2026-08-07)
+- `input/model_family_manifest.json` pointed at two pruned exemplars (structured + scaling families) — re-pointed at retained files (`factorized_posterior.md`; `pymdp_scaling_N4/N8_T100.md`).
+- The committed ActiveInference.jl environment could never build on a clean machine: `Optim` declared in Project.toml but absent from the committed Manifest, plus stale compat pins (`GraphPlot 0.4–0.5` vs required 0.6, `TimeSeries 0.23`, archived `LightGraphs`). Earlier runs silently leaned on the ambient Julia depot — masked until the step-12 executor started pinning `JULIA_PROJECT` to committed environments. Environment rebuilt minimal: exactly the packages generated scripts import (ActiveInference, Distributions, JSON, StatsBase).
+- Per-factor recovery gate + learning-exemplar iteration fixes (see prior commit `b0cf1e18`).
+
+
 ### Added (native strategies for every ModelKind, 2026-08-07 wave 2)
 - **46/46 exemplars, every kind live**: new exemplar `learning/dirichlet_likelihood_learning.md`; the 3 continuous exemplars gained faithful dual parameterization (F/H/Q/R/prior_mean/prior_cov authored from their own prose formulations; discrete A/B/C/D retained for other frameworks). Taxonomy: 37 flat / 3 continuous / 2 hierarchical / 1 learning / 2 multi-agent / 1 factored — pinned per-exemplar in tests.
 - **A1 — online active inference mode**: `inference_mode: online` (ModelParameters or render option; spec wins) generates a per-timestep filtering script — `infer()` on the observation prefix, filtered posterior drives EFE+habit action selection. Live-verified `all_valid=true`.
