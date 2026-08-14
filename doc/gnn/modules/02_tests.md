@@ -34,7 +34,7 @@ python src/2_tests.py --comprehensive --verbose
 
 **Status**: ✅ Production Ready
 
-**Version**: 1.6.0
+**Package version**: [pyproject.toml](../../../pyproject.toml) (canonical)
 
 **Last Updated**: 2026-04-15
 

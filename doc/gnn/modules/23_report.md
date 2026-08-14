@@ -40,7 +40,7 @@ src/report/
 
 **Status**: ✅ Production Ready
 
-**Version**: 1.6.0
+**Package version**: [pyproject.toml](../../../pyproject.toml) (canonical)
 
 **Last Updated**: 2026-01-21
 
@@ -473,7 +473,7 @@ def generate_report(pipeline_data, format="html", template="default"):
 
 ## Version History
 
-### Current Version: 1.0.0
+### Current module status
 
 **Features**:
 
@@ -510,7 +510,7 @@ def generate_report(pipeline_data, format="html", template="default"):
 **Last Updated**: 2026-01-21
 **Maintainer**: GNN Pipeline Team
 **Status**: ✅ Production Ready
-**Version**: 1.6.0
+**Package version**: [pyproject.toml](../../../pyproject.toml) (canonical)
 **Architecture Compliance**: ✅ 100% Thin Orchestrator Pattern
 
 

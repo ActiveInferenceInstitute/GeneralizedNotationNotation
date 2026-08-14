@@ -35,7 +35,7 @@ Main function for processing security-related tasks.
 
 **Status**: ✅ Production Ready
 
-**Version**: 1.6.0
+**Package version**: [pyproject.toml](../../../pyproject.toml) (canonical)
 
 **Last Updated**: 2026-01-21
 
@@ -389,7 +389,7 @@ def validate_model_security_tool(file_path, security_level="standard"):
 
 ## Version History
 
-### Current Version: 1.0.0
+### Current module status
 
 **Features**:
 - Security validation
@@ -423,7 +423,7 @@ def validate_model_security_tool(file_path, security_level="standard"):
 **Last Updated**: 2026-01-21
 **Maintainer**: GNN Pipeline Team
 **Status**: ✅ Production Ready
-**Version**: 1.6.0
+**Package version**: [pyproject.toml](../../../pyproject.toml) (canonical)
 **Architecture Compliance**: ✅ 100% Thin Orchestrator Pattern
 
 ---

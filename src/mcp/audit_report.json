@@ -738,7 +738,7 @@
       "category": "execute",
       "fn": "process_execute_mcp",
       "documented": true,
-      "description": "Run GNN execution processing: validate and execute all GNN model files in a directory."
+      "description": "Run trusted Step 11 rendered scripts listed in render_processing_summary.json."
     },
     {
       "name": "process_export",

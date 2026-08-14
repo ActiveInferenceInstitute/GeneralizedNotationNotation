@@ -36,7 +36,7 @@ The GUI module provides **three distinct interactive interfaces** for constructi
 
 **Status**: ✅ Production Ready
 
-**Version**: 1.6.0
+**Package version**: [pyproject.toml](../../../pyproject.toml) (canonical)
 
 **Last Updated**: 2026-01-21
 
@@ -544,7 +544,7 @@ def construct_model_tool(components: List[Dict]) -> Dict[str, Any]:
 
 ## Version History
 
-### Current Version: 1.0.0
+### Current module status
 
 **Features**:
 - Multiple GUI implementations (GUI 1, GUI 2, GUI 3, oxdraw)
@@ -577,7 +577,7 @@ def construct_model_tool(components: List[Dict]) -> Dict[str, Any]:
 **Last Updated**: 2026-01-21
 **Maintainer**: GNN Pipeline Team
 **Status**: ✅ Production Ready
-**Version**: 1.6.0
+**Package version**: [pyproject.toml](../../../pyproject.toml) (canonical)
 **Architecture Compliance**: ✅ 100% Thin Orchestrator Pattern
 
 

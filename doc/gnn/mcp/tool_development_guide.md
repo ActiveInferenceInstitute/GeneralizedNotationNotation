@@ -35,6 +35,7 @@ Here is the canonical pattern, fully annotated:
 """MCP tools for the <module> module."""
 
 import logging
+from importlib.metadata import version
 from typing import Any
 
 logger = logging.getLogger(__name__)
@@ -59,7 +60,7 @@ def register_tools(server: Any) -> None:
         """Return <module> module version and capabilities."""
         return {
             "module": "<module>",
-            "version": "1.6.0",
+            "version": version("generalized-notation-notation"),
             "capabilities": ["feature_a", "feature_b"],
         }
 

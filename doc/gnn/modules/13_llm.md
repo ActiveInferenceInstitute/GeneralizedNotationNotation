@@ -35,7 +35,7 @@ src/llm/
 
 **Status**: ✅ Production Ready
 
-**Version**: 1.6.0
+**Package version**: [pyproject.toml](../../../pyproject.toml) (canonical)
 
 **Last Updated**: 2026-04-10
 
@@ -662,7 +662,7 @@ configs['ollama']['default_max_tokens'] = 1024
 
 ## Version History
 
-### Current Version: 1.0.0
+### Current module status
 
 **Features**:
 - Multi-provider LLM support (OpenAI, OpenRouter, Perplexity, Ollama)
@@ -698,7 +698,7 @@ configs['ollama']['default_max_tokens'] = 1024
 **Last Updated**: 2026-04-10
 **Maintainer**: GNN Pipeline Team
 **Status**: ✅ Production Ready
-**Version**: 1.6.0
+**Package version**: [pyproject.toml](../../../pyproject.toml) (canonical)
 **Architecture Compliance**: ✅ 100% Thin Orchestrator Pattern
 
 

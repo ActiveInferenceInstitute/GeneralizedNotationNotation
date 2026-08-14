@@ -35,7 +35,7 @@ src/website/
 
 **Status**: ✅ Production Ready
 
-**Version**: 1.6.0
+**Package version**: [pyproject.toml](../../../pyproject.toml) (canonical)
 
 **Last Updated**: 2026-01-21
 
@@ -340,7 +340,7 @@ def generate_website_tool(artifacts_dir, output_dir):
 
 ## Version History
 
-### Current Version: 1.0.0
+### Current module status
 
 **Features**:
 - Static HTML website generation
@@ -372,7 +372,7 @@ def generate_website_tool(artifacts_dir, output_dir):
 **Last Updated**: 2026-01-21
 **Maintainer**: GNN Pipeline Team
 **Status**: ✅ Production Ready
-**Version**: 1.6.0
+**Package version**: [pyproject.toml](../../../pyproject.toml) (canonical)
 **Architecture Compliance**: ✅ 100% Thin Orchestrator Pattern
 
 ---

@@ -33,11 +33,11 @@ pytest -m slow          # slow/performance tests only
 
 ## Test Statistics
 
-- **Total test files**: 184 (155 in subdirectories + 29 at root)
-- **Test collection baseline**: 2,799 collected with the command-of-record
-  collect pass and the two local Ollama integration files ignored
-- **Pass/skip baseline**: the latest recorded command-of-record full run with the
-  two local Ollama integration files ignored is 2,393 passed, 17 skipped, 1 xfailed
+- **Live file inventory**: `rg --files src/tests -g 'test_*.py'`
+- **Live collection**: run the command-of-record collect pass with the two
+  local Ollama integration files ignored
+- **Pass/skip receipt**: the root [`README.md`](../../README.md) owns the latest
+  dated full-run evidence; this module guide deliberately does not copy it
 - **Fast-test duration**: 1-3 minutes
 - **Full-suite duration**: varies by optional backend availability; latest
   command-of-record run completed in 12:09
@@ -645,9 +645,10 @@ If issues persist:
 
 ### Test Coverage
 
-- **184 test files** across root and module-specific directories
-- **2,799 collected tests** in the current command-of-record collect pass with Ollama integration tests ignored
-- **Latest recorded full suite evidence** with the same Ollama integration excludes: 2,393 passed, 17 skipped, 1 xfailed
+- **Live inventory** is derived from `rg --files` and pytest collection rather
+  than duplicated here
+- **Latest full-suite evidence** is maintained in the root
+  [`README.md`](../../README.md)
 - **Comprehensive module coverage** for all major modules
 - **Specialized test areas** for specific functionality
 - **Integration tests** for cross-module functionality
@@ -682,7 +683,8 @@ Module coverage mirrors the maintained source tree. Use `rg --files src/tests -g
 
 ## Test Execution Results
 
-Latest measured collect-only inventory (2026-08-07): 186 `test_*.py` files and 2,799 collected tests with the Ollama integration files excluded. Latest recorded full command-of-record evidence with the same excludes: 2,393 passed, 17 skipped, 1 xfailed.
+Run the command below for the current result. The root
+[`README.md`](../../README.md) is the authority for the latest dated receipt.
 
 ```bash
 uv run --extra dev python -m pytest src/tests/ -q --tb=no \

@@ -203,7 +203,7 @@ Profiling done on Ryzen 7 7840U, NVMe SSD, Python 3.11, Ubuntu 22.04. Concurrenc
 | GitHub Stars | 2,600+[1] | 310+[4] |
 | Discussions | `#onefilellm` on Discord | `#gnn` on Active Inference Discord[10] |
 | Tutorials | liquidbrain.net deep-dive[11] | Active InferAnt Streams 14.x[8][10] |
-| Package Index | PyPI release planned Q3-2025 | `pip install gnn-tools` roadmap |
+| Package Index | No verified package release | `gnn-tools` remains unpublished; use repository entry points |
 
 ## Roadmap Synergies
 
@@ -282,7 +282,6 @@ With a single command pair—`onefilellm` → `llm`—researchers can now move f
 [38] <https://x.com/InferenceActive>
 [39] <https://gist.github.com/josephlewisjgl/de0f05b16da4a25a37613c2f1df5894b>
 [40] <https://en.wikipedia.org/wiki/Generalized_coordinates>
-[41] <https://twitter.com/i/status/1864847140712825083>
 [42] <https://www.jmlr.org/papers/volume24/22-0567/22-0567.pdf>
 [43] <https://www.faa.gov/about/office_org/headquarters_offices/ang/redac/redac-sas-201503-gsn-community-standard-v1.pdf>
 [44] <https://www.youtube.com/watch?v=Y3-FMoaEZYE>

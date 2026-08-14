@@ -70,15 +70,15 @@ All 29 exemplar GNN files under `input/gnn_files/**` render to and execute under
 RxInfer.jl (29/29). Step 6 validation now includes `inference_converged` and
 `vfe_present`, confirming genuine convergence of the variational free energy.
 
-## Legacy TOML Approach (Deprecated)
+## Retired TOML approach
 
 Earlier versions of the pipeline rendered a `config.toml` and used the
 `multiagent_trajectory_planning/` example with a GNN-generated `config.toml` as a
-drop-in replacement for a hand-written one. That path is **deprecated**:
+drop-in replacement for a hand-written one. That path is retired:
 
-- `src/render/rxinfer/toml_generator.py` (`render_gnn_to_rxinfer_toml`) now emits a
-  `DeprecationWarning` and is removed from processor wiring and public exports.
-  It is retained only for git history and reference.
+- `src/render/rxinfer/toml_generator.py` (`render_gnn_to_rxinfer_toml`) emits a
+  `DeprecationWarning` and is absent from processor wiring and public exports.
+  Its parsing helpers remain because topology contract tests use them.
 - The `Multiagent_GNN_RxInfer.jl` validation script and the TOML-based workflow it
   described are no longer the supported path.
 

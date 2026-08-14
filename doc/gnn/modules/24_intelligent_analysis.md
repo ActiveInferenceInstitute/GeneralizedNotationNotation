@@ -35,7 +35,7 @@ The intelligent_analysis module provides comprehensive AI-powered analysis of GN
 
 **Status**: Production Ready
 
-**Version**: 1.6.0
+**Package version**: [pyproject.toml](../../../pyproject.toml) (canonical)
 
 **Last Updated**: 2026-04-15
 
@@ -918,7 +918,7 @@ The `_run_llm_analysis()` function is async because it uses the shared `llm.llm_
 
 ## Version History
 
-### Current Version: 2.0.0
+### Current module status
 
 **Features**:
 
@@ -957,7 +957,7 @@ The `_run_llm_analysis()` function is async because it uses the shared `llm.llm_
 **Last Updated**: 2026-04-15
 **Maintainer**: GNN Pipeline Team
 **Status**: Production Ready
-**Version**: 1.6.0
+**Package version**: [pyproject.toml](../../../pyproject.toml) (canonical)
 **Architecture Compliance**: 100% Thin Orchestrator Pattern
 
 ---

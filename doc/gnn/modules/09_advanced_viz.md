@@ -34,7 +34,7 @@ src/advanced_visualization/
 
 **Status**: ✅ Production Ready
 
-**Version**: 1.6.0
+**Package version**: [pyproject.toml](../../../pyproject.toml) (canonical)
 
 **Last Updated**: 2026-01-21
 
@@ -546,7 +546,7 @@ python src/9_advanced_viz.py --target-dir input/ --verbose
 
 ## Version History
 
-### Current Version: 1.0.0
+### Current module status
 
 **Features**:
 
@@ -588,7 +588,7 @@ python src/9_advanced_viz.py --target-dir input/ --verbose
 **Last Updated**: 2026-01-21
 **Maintainer**: GNN Pipeline Team
 **Status**: ✅ Production Ready
-**Version**: 1.6.0
+**Package version**: [pyproject.toml](../../../pyproject.toml) (canonical)
 **Architecture Compliance**: ✅ 100% Thin Orchestrator Pattern
 
 

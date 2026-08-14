@@ -71,15 +71,12 @@ commit messages.
 
 ## Open Work
 
-### M8. GIF batch — DONE (2026-08-07)
-Clean full re-run on the curated corpus: **29/29 models executed
-`all_valid=true` at T=100** (62 min total, mean 127 s/model, max 216 s) with
-white-style GIF + reproducibility manifest per model in
-`~/Downloads/rxinfer_animations/`; dashboard regenerated over all 29 cards
-(category + size filters, compare mode). Superseded artifacts live in
-`superseded_dark_mode/` / `superseded_pre_curation/`. If the batch becomes
-routine, consider extending `@compile_workload` with T=100 entries as a
-deliberate precompile-time/runtime trade.
+### Optional T=100 precompile workloads
+
+The completed M8 batch is recorded in the current-state evidence above. If
+T=100 batch rendering becomes routine, benchmark extending `@compile_workload`
+with representative T=100 entries and record the deliberate
+precompile-time/runtime tradeoff before adopting them.
 
 ### A3+. Native N-level hierarchical rendering (decision recorded)
 Two-level models render natively. For 3+ levels (temporal_hierarchy), the

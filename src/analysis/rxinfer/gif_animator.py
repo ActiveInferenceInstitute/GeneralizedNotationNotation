@@ -221,11 +221,10 @@ def _resolve_strategy_layout(data: Dict[str, Any]) -> Dict[str, Any]:
 def _node_value(
     node_name: str,
     step: int,
-    beliefs: list,
-    observations: list,
-    actions: list,
-    true_states: list,
-    vfe: list,
+    beliefs: List[List[float]],
+    observations: List[int],
+    actions: List[int],
+    vfe: List[float],
 ) -> float:
     """Get the current 'value' (probability or intensity) for a node at a step."""
     if step < 0:
@@ -256,17 +255,16 @@ def _node_value(
 
 
 def _draw_graph_model(
-    ax,
-    positions,
-    edges,
-    step,
-    beliefs,
-    observations,
-    actions,
-    true_states,
-    vfe,
-    state_colors,
-):
+    ax: Any,
+    positions: Dict[str, tuple[float, float]],
+    edges: List[tuple[str, str]],
+    step: int,
+    beliefs: List[List[float]],
+    observations: List[int],
+    actions: List[int],
+    vfe: List[float],
+    state_colors: List[tuple[float, float, float]],
+) -> None:
     """Draw the bayesian graphical model on the given axes."""
     ax.set_xlim(-0.1, 1.1)
     ax.set_ylim(-0.15, 1.15)
@@ -289,7 +287,7 @@ def _draw_graph_model(
 
     # Draw nodes
     for name, (x, y) in positions.items():
-        val = _node_value(name, step, beliefs, observations, actions, true_states, vfe)
+        val = _node_value(name, step, beliefs, observations, actions, vfe)
 
         # Color: use belief confidence for state nodes, gray for params
         if name in ("s", "s'", "s_f0", "s_f1", "s_prime"):
@@ -480,7 +478,7 @@ def generate_gif_animation(
         eaa_full = np.empty((0, 0))
         efe_vmin, efe_vmax = 0.0, 1.0
 
-    def animate(frame):
+    def animate(frame: int) -> List[Any]:
         """Update function for each animation frame."""
         for ax in animated_axes:
             ax.clear()
@@ -601,7 +599,6 @@ def generate_gif_animation(
             beliefs,
             observations,
             actions,
-            true_states,
             vfe,
             state_colors,
         )
@@ -735,6 +732,7 @@ def generate_gif_animation(
             fontsize=9,
             fontweight="bold",
         )
+        return []
 
     # Create animation
     anim = animation.FuncAnimation(
@@ -742,8 +740,8 @@ def generate_gif_animation(
     )
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
-    writer = animation.PillowWriter(fps=fps)  # type: ignore[arg-type]
-    anim.save(str(output_path), writer=writer)  # type: ignore[arg-type]
+    writer = animation.PillowWriter(fps=fps)
+    anim.save(str(output_path), writer=writer)
     plt.close(fig)
 
     # Write reproducibility manifest sidecar

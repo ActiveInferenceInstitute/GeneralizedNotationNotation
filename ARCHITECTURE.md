@@ -171,7 +171,8 @@ A strict acceptance gate, `scripts/run_v3_orchestration_acceptance.py`, exercise
 - All 25 pipeline steps (0-24) implemented with thin orchestrator pattern
 - Agent/module coverage is tracked in `src/AGENTS.md`
 - Complete MCP integration across all applicable modules
-- Full test coverage with >95% coverage for all modules
+- Repository coverage is enforced by the live `pyproject.toml` policy
+  (`fail_under = 50`); use the generated coverage report for per-module detail
 
 **Documentation:**
 
@@ -265,7 +266,8 @@ Adding new pipeline steps and modules follows a well-established pattern that en
 - Implement unit tests for all public functions
 - Add performance tests with timing and memory validation
 - Include error scenario testing with real failure modes
-- Ensure >95% test coverage
+- Meet or raise the coverage floor declared in `pyproject.toml`, with tests
+  focused on the new behavior and failure modes
 
 ### 5. **Document Completely**
 

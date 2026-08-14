@@ -31,6 +31,7 @@ import os
 import re
 import shutil
 from pathlib import Path
+from typing import Any
 
 import pytest
 
@@ -91,12 +92,14 @@ def _canned_runs() -> list[FrameworkRun]:
     ]
 
 
-def _payload_from_html(html_text: str) -> dict:
+def _payload_from_html(html_text: str) -> dict[str, Any]:
     """Extract the embedded chart JSON from the rendered page."""
     marker = '<script id="cf-chart-data" type="application/json">'
     start = html_text.index(marker) + len(marker)
     end = html_text.index("</script>", start)
-    return json.loads(html_text[start:end].replace("<\\/", "</"))
+    payload = json.loads(html_text[start:end].replace("<\\/", "</"))
+    assert isinstance(payload, dict)
+    return payload
 
 
 # --- path derivation (CF-7) ---------------------------------------------------

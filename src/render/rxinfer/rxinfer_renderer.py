@@ -151,8 +151,8 @@ class RxInferRenderer:
     ) -> str:
         """Dispatch code generation to the strategy for this detected model kind.
 
-        The flat POMDP generator is preserved verbatim as ``FlatStrategy``.
-        Kinds without a native generator raise ``NotImplementedError``.
+        The flat POMDP generator is preserved as ``FlatStrategy``. Every
+        registered model kind supplies a concrete generator.
         """
         model_kind = detect_model_kind(gnn_spec)
         strategy = get_model_strategy(model_kind)
@@ -233,7 +233,7 @@ def render_gnn_to_rxinfer(
 def build_rxinfer_execution_metadata(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
     """Build Step 12 execution metadata for declared RxInfer agent populations.
 
-    Self-contained — does not import from the deprecated toml_generator.py.
+    Self-contained — does not import from the retired toml_generator.py.
     """
     initial = gnn_spec.get("initialparameterization") or gnn_spec.get(
         "initial_parameterization"
@@ -351,7 +351,7 @@ def _infer_indexed_agent_count(params: Dict[str, Any]) -> int:
 def _extract_declared_rxinfer_agents(params: Dict[str, Any]) -> List[Dict[str, Any]]:
     """Extract explicitly declared agents without inventing default agents.
 
-    Self-contained — does not import from the deprecated toml_generator.py.
+    Self-contained — does not import from the retired toml_generator.py.
     """
     nr_agents = _coerce_positive_int_inline(params.get("nr_agents"))
     if nr_agents > 0:
@@ -384,7 +384,7 @@ def _extract_agent_topology_inline(
 ) -> Dict[str, Any]:
     """Extract explicit multi-agent topology metadata for execution.
 
-    Self-contained — does not import from the deprecated toml_generator.py.
+    Self-contained — does not import from the retired toml_generator.py.
     """
     agent_ids = [agent["id"] for agent in agents if "id" in agent]
 

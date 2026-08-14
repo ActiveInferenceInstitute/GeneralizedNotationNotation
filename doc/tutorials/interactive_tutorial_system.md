@@ -297,17 +297,14 @@ python src/tutorials/community/challenge_browser.py
 
 ### **💻 Desktop Application**
 
-```bash
-# Install desktop app
-uv pip install gnn-tutorials-desktop
-gnn-tutorials
+No desktop package or `gnn-tutorials` executable is implemented in this
+repository, and `gnn-tutorials-desktop` is not published on PyPI. The desktop
+surface and the feature list below are design targets, not install commands:
 
-# Features:
-# - Full-featured IDE
-# - Offline capability
-# - Advanced debugging tools
-# - Performance profiling
-```
+- Full-featured IDE
+- Offline capability
+- Advanced debugging tools
+- Performance profiling
 
 ### **🌐 Web Interface**
 

@@ -1,6 +1,6 @@
 """Tests for the RxInfer GIF dashboard generator (roadmap A5).
 
-Generates the dashboard against a tmp directory of fake manifest.json files
+Generates the dashboard against a tmp directory of fixture manifest.json files
 plus tiny real GIF files (written via PIL), then asserts the HTML carries the
 category filter, the bucketed state-space-size filter, the compare-mode
 controls, and every model card. Deterministic; no skips.
@@ -36,7 +36,7 @@ def _write_gif(path: Path) -> None:
 
 
 def _build_gif_dir(tmp_path: Path) -> Path:
-    """Populate a tmp dir with fake GIFs + manifest sidecars for all fixtures."""
+    """Populate a tmp dir with fixture GIFs and manifest sidecars."""
     gif_dir = tmp_path / "gifs"
     gif_dir.mkdir()
     for stem, num_states, _bucket, _category in FIXTURE_MODELS:
@@ -67,7 +67,7 @@ def _generate_html(tmp_path: Path) -> str:
 
 
 def test_fixture_gifs_are_real_gif_bytes(tmp_path: Path) -> None:
-    """The placeholder GIFs written for the dashboard are genuine GIF files."""
+    """The minimal GIFs written for the dashboard are genuine GIF files."""
     gif_dir = _build_gif_dir(tmp_path)
     gifs = sorted(gif_dir.glob("*_100steps.gif"))
     assert len(gifs) == len(FIXTURE_MODELS)
@@ -90,7 +90,8 @@ def test_size_bucket_boundaries() -> None:
 
 def test_size_bucket_rejects_unusable_values() -> None:
     """Missing / malformed num_states lands in the unknown bucket."""
-    for bad in (None, "3", -1, 0, True, [3], {}):
+    bad_values: tuple[object, ...] = (None, "3", -1, 0, True, [3], {})
+    for bad in bad_values:
         assert _size_bucket(bad) == UNKNOWN_SIZE_BUCKET
 
 

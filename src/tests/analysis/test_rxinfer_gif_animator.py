@@ -77,7 +77,7 @@ def test_gif_has_correct_format(tmp_path: Path) -> None:
     generate_gif_animation(results, output, "TestModel")
     with open(output, "rb") as f:
         header = f.read(6)
-    assert header in (b"GIF87a", b"GIF89a"), f"Invalid GIF header: {header}"
+    assert header in (b"GIF87a", b"GIF89a"), f"Invalid GIF header: {header!r}"
 
 
 def test_different_state_counts(tmp_path: Path) -> None:
@@ -332,11 +332,11 @@ def test_unknown_model_kind_raises_value_error(tmp_path: Path) -> None:
 
 
 def test_missing_model_kind_defaults_to_flat(tmp_path: Path) -> None:
-    """Legacy payloads without runtime_metadata.model_kind keep working."""
+    """Older payloads without runtime_metadata.model_kind keep working."""
     results = _build_synthetic_results()
     del results["runtime_metadata"]["model_kind"]
-    output = tmp_path / "legacy.gif"
-    path = generate_gif_animation(results, output, "LegacyModel")
+    output = tmp_path / "older_schema.gif"
+    path = generate_gif_animation(results, output, "OlderSchemaModel")
     assert Path(path).exists()
     assert Path(path).stat().st_size > 1000
 

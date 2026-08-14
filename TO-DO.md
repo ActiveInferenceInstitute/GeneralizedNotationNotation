@@ -4,8 +4,8 @@
 **Current Version**: 3.0.0
 **Next Target**: v4.0.0 (bounded autonomy and reviewed self-editing workflows)
 
-**Last reviewed**: 2026-08-07 — RxInfer native-strategy campaign + corpus
-curation + doc/gnn accuracy review. The full audit trail lives in
+**Last reviewed**: 2026-08-13 — documentation contracts, terminology, and
+type-check discovery. The full audit trail lives in
 `CHANGELOG.md` ([Unreleased]) and git history; RxInfer-specific state and
 open items live in [RXINFER_IMPROVEMENT_ROADMAP.md](RXINFER_IMPROVEMENT_ROADMAP.md).
 
@@ -32,9 +32,8 @@ one redundant fixture pruned, −67 MB):
   dashboard regenerated (category + state-size filters, compare mode).
 - `run_v3_orchestration_acceptance.py --strict`: 19/19. Container plan: 0
   findings. Model-family acceptance: green against the updated manifest.
-- Doc gates: docs_audit (anchors included) 0 issues; doc patterns and
-  maintained terms clean; repo terminology count reduced (48 → 43 during the
-  doc review; residual violations are deliberate deprecation wording).
+- Doc gates: docs_audit (anchors included), doc patterns, maintained terms,
+  and repository terminology are clean.
 
 This roadmap is forward-only. Shipped-version history belongs in
 `CHANGELOG.md`, release notes, and verification artifacts.
@@ -46,25 +45,6 @@ This roadmap is forward-only. Shipped-version history belongs in
   native hierarchical rendering (decision recorded: joint composition until
   exemplars declare composed coupling), dashboard real-browser verification
   pass, optional T=100 precompile workloads if batches become routine.
-- **Orchestrator line-count drift** — the per-step docs cite exact
-  orchestrator line counts with no gate checking them; 14 of 25 had rotted
-  silently before the 2026-08-07 doc review corrected them. Decide: add a
-  gate under `scripts/` that verifies the documented counts, or drop exact
-  numbers in favor of the thin-orchestrator invariant (<150 lines).
-  Acceptance: either the gate exists and passes in the default suite, or all
-  module docs carry the invariant instead of literals.
-- **Type-checker `.gnn` discovery** — `src/type_checker/checking/core.py`
-  discovers only `*.md`, while the parser stack supports `.gnn` via
-  `get_supported_gnn_extensions()`. Either extend discovery to the supported
-  extensions or document `.md` as the only supported spec extension
-  everywhere (the quickstart tutorial was corrected to `.md` meanwhile).
-  Acceptance: a `.gnn` fixture is either type-checked or explicitly rejected
-  with a clear message, plus a pinning test.
-- **Doc version banners** — 40 files under `doc/gnn/**` carry
-  "**Version**: v1.6.0 Engine"; actual engine version is 3.0.0
-  (`pyproject.toml`). Sweep them in one pass (kept out of the per-partition
-  doc review to avoid cross-partition churn). Acceptance: no `v1.6.0 Engine`
-  banner remains; a grep-based check added to the docs audit if cheap.
 
 ## v4.0.0 - Bounded Autonomy & Reviewed Self-Editing
 

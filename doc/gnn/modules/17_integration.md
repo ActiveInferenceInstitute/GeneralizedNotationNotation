@@ -37,7 +37,7 @@ Main function for processing system integration tasks.
 
 **Status**: ✅ Production Ready
 
-**Version**: 1.6.0
+**Package version**: [pyproject.toml](../../../pyproject.toml) (canonical)
 
 **Last Updated**: 2026-01-21
 
@@ -281,7 +281,7 @@ def get_integration_status():
 
 ## Version History
 
-### Current Version: 1.0.0
+### Current module status
 
 **Features**:
 - Cross-module coordination
@@ -314,7 +314,7 @@ def get_integration_status():
 **Last Updated**: 2026-01-21
 **Maintainer**: GNN Pipeline Team
 **Status**: ✅ Production Ready
-**Version**: 1.6.0
+**Package version**: [pyproject.toml](../../../pyproject.toml) (canonical)
 **Architecture Compliance**: ✅ 100% Thin Orchestrator Pattern
 
 

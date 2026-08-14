@@ -36,7 +36,7 @@ For the reference model used in tests, those **21** formats achieve **100%** rou
 
 **Status**: ✅ Production Ready
 
-**Version**: 1.6.0
+**Package version**: [pyproject.toml](../../../pyproject.toml) (canonical)
 
 **Last Updated**: 2026-04-12
 
@@ -640,7 +640,7 @@ cat output/3_gnn_output/gnn_processing_summary.json | python -m json.tool
 
 ## Version History
 
-### Current Version: 1.1.3
+### Current module status
 
 **Features**:
 

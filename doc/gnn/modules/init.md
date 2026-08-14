@@ -8,7 +8,7 @@ The `src/__init__.py` file defines the GNN pipeline core package. It provides pa
 
 | Export | Type | Description |
 |--------|------|-------------|
-| `__version__` | `str` | Package version (`1.6.0`) |
+| `__version__` | `str` | Runtime package-version field; distribution metadata is canonical in [pyproject.toml](../../../pyproject.toml). |
 | `FEATURES` | `dict` | Feature flags (`pipeline_orchestration`, `mcp_integration`) |
 | `get_module_info()` | `function` | Returns package metadata and discovered modules |
 

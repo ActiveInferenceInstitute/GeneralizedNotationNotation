@@ -35,7 +35,7 @@ src/audio/
 
 **Status**: 🔄 In Development
 
-**Version**: 1.6.0
+**Package version**: [pyproject.toml](../../../pyproject.toml) (canonical)
 
 **Last Updated**: 2026-01-21
 
@@ -318,7 +318,7 @@ def generate_audio_tool(gnn_content: str, duration: float = 30.0) -> Dict[str, A
 
 ## Version History
 
-### Current Version: 1.0.0
+### Current module status
 
 **Features**:
 - SAPF code generation
@@ -353,7 +353,7 @@ def generate_audio_tool(gnn_content: str, duration: float = 30.0) -> Dict[str, A
 **Last Updated**: 2026-01-21
 **Maintainer**: GNN Pipeline Team
 **Status**: 🔄 In Development
-**Version**: 1.6.0
+**Package version**: [pyproject.toml](../../../pyproject.toml) (canonical)
 **Architecture Compliance**: ✅ 100% Thin Orchestrator Pattern
 
 

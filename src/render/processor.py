@@ -808,13 +808,17 @@ def render_gnn_spec(
             files.append(str(output_file))
 
         elif target_lower == "rxinfer_toml":
-            # Deprecated: toml_generator is no longer wired into the processor.
+            # The TOML emitter is no longer wired into the processor.
             # Use target="rxinfer" for the canonical @model + infer() renderer.
-            return False, (
-                "rxinfer_toml target is deprecated. "
-                'Use target="rxinfer" for the canonical RxInfer.jl renderer '
-                "with genuine @model + infer() code."
-            ), []
+            return (
+                False,
+                (
+                    "rxinfer_toml target is no longer supported. "
+                    'Use target="rxinfer" for the canonical RxInfer.jl renderer '
+                    "with genuine @model + infer() code."
+                ),
+                [],
+            )
 
         elif target_lower == "discopy_combined":
             try:

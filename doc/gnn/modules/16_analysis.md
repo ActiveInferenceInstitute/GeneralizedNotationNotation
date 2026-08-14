@@ -42,7 +42,7 @@ The RxInfer analyzer (`src/analysis/rxinfer/`) is the deepest of these and is do
 
 **Status**: ✅ Production Ready
 
-**Version**: 1.6.0
+**Package version**: [pyproject.toml](../../../pyproject.toml) (canonical)
 
 **Last Updated**: 2026-08-07
 
@@ -416,7 +416,9 @@ def process_analysis_mcp(target_directory: str, output_directory: str, verbose: 
 
 ## Version History
 
-### Current Version: 1.6.0
+### Current package version
+
+See [pyproject.toml](../../../pyproject.toml).
 
 **Features**:
 - Statistical analysis
@@ -452,7 +454,7 @@ def process_analysis_mcp(target_directory: str, output_directory: str, verbose: 
 **Last Updated**: 2026-08-07
 **Maintainer**: GNN Pipeline Team
 **Status**: ✅ Production Ready
-**Version**: 1.6.0
+**Package version**: [pyproject.toml](../../../pyproject.toml) (canonical)
 **Architecture Compliance**: ✅ 100% Thin Orchestrator Pattern
 
 

@@ -66,9 +66,7 @@ class ModelStrategy(ABC):
     @abstractmethod
     def generate_model_code(self, gnn_spec: Dict[str, Any], model_name: str) -> str:
         """Return the Julia ``@model`` code for this model kind."""
-        raise NotImplementedError(
-            f"{type(self).__name__}.generate_model_code is not implemented"
-        )
+        ...
 
     def generate_graph_layout(
         self, gnn_spec: Optional[Dict[str, Any]] = None
@@ -393,7 +391,7 @@ function run_simulation()
     # Build one-hot observation sequence for the model
     obs_seq = [[i == (obs + 1) ? 1.0 : 0.0 for i in 1:NUM_OBSERVATIONS] for obs in observations]
 
-    # The model needs u[1:T-1] for transitions, plus a dummy u[T]
+        # The model needs u[1:T-1] for transitions, plus a padding u[T]
     model_actions = copy(action_seq_full)
     while length(model_actions) < TIME_STEPS
         push!(model_actions, 1)
@@ -2781,7 +2779,7 @@ class ContinuousStrategy(ModelStrategy):
 # Control input u is a sequence of ZERO vectors: the continuous formulations
 # in these exemplars declare no continuous control policy (their discrete
 # stand-ins carry the action set), so the continuous dynamics run passively.
-# That is a declared property of the model, not a placeholder — no EFE,
+        # That is a declared property of the model, not a stand-in — no EFE,
 # policy posterior, or action trace is emitted, because none is defined here.
 #
 # continuous_pomdp_model is fully conjugate, so infer() needs neither

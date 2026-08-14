@@ -79,7 +79,7 @@ Each plot is generated from the current Step-12 `rxinfer_simulation_v1` payload 
 is written per-model. Like the render/execute-time artifacts, these figures are
 best-effort: any plot that cannot be produced (e.g. missing matplotlib or absent
 input arrays) is logged as a warning and skipped, never treated as a failure. The
-set is fully backward-compatible with the `rxinfer_simulation_v1` schema.
+set preserves the fields defined by the `rxinfer_simulation_v1` schema.
 
 ## Verification
 

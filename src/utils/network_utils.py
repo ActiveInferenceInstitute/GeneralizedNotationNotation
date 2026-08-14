@@ -7,14 +7,12 @@ batch operations, and network timing measurements.
 
 import logging
 import time
-from typing import Any
+from typing import Any, Dict, List, cast
 
 try:
     import httpx
 except ImportError:
     httpx = cast(Any, None)
-from typing import Any, Dict, List
-
 logger = logging.getLogger(__name__)
 
 

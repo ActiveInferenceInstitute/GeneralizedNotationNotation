@@ -99,6 +99,7 @@ class TestExemplarKindTaxonomy:
         failures = []
         for gnn_file in _exemplar_files():
             pomdp = extract_pomdp_from_file(gnn_file, strict_validation=True)
+            assert pomdp is not None, f"extraction failed for {gnn_file}"
             spec = pomdp_to_gnn_spec(pomdp)
             script = tmp_path / f"{gnn_file.stem}_rxinfer.jl"
             success, message, _warnings = render_gnn_to_rxinfer(spec, script)
@@ -438,6 +439,7 @@ class TestOnlineInferenceMode:
     def _spec(self) -> dict:
         gnn_file = GNN_FILES / "discrete" / "simple_mdp.md"
         pomdp = extract_pomdp_from_file(gnn_file, strict_validation=True)
+        assert pomdp is not None, f"extraction failed for {gnn_file}"
         return pomdp_to_gnn_spec(pomdp)
 
     def test_online_option_generates_filtering_script(self, tmp_path: Path) -> None:

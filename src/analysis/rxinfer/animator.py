@@ -636,7 +636,7 @@ updateDisplay();
 </body>
 </html>"""
 
-    # Replace placeholders
+    # Substitute template tokens with rendered values.
     html = html.replace("__DATA_JSON__", json.dumps(animation_data))
     html = html.replace("__HTML_TITLE__", html_title)
     html = html.replace(

@@ -42,7 +42,7 @@ graph TD
 
 **Status**: ✅ Production Ready
 
-**Version**: 1.6.0
+**Package version**: [pyproject.toml](../../../pyproject.toml) (canonical)
 
 **Last Updated**: 2026-01-21
 
@@ -405,7 +405,9 @@ Module Tools → MCP Registration → Tool Discovery → Execution Requests → 
 
 ## Version History
 
-### Current Version: 1.6.0
+### Current package version
+
+See [pyproject.toml](../../../pyproject.toml).
 
 **Features**:
 - Tool registration and discovery
@@ -440,7 +442,7 @@ Module Tools → MCP Registration → Tool Discovery → Execution Requests → 
 **Last Updated**: 2026-01-21
 **Maintainer**: GNN Pipeline Team
 **Status**: ✅ Production Ready
-**Version**: 1.6.0
+**Package version**: [pyproject.toml](../../../pyproject.toml) (canonical)
 **Architecture Compliance**: ✅ 100% Thin Orchestrator Pattern
 
 

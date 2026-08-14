@@ -10,10 +10,9 @@ review found the corresponding drift:
    source edit that changes an orchestrator's length fails loudly here
    until the doc is updated (or the count is deliberately dropped).
 
-2. Version banners — 24 docs carried a ``v1.6.0 Engine`` banner two major
-   versions after the engine moved on. Every ``**Version**: vX.Y.Z
-   Engine`` banner under ``doc/`` must carry the current
-   ``pyproject.toml`` version.
+2. Package-version ownership — module docs copied a package version that
+   drifted two major versions behind ``pyproject.toml``. Module docs now point
+   to the package metadata instead of transcribing a moving value.
 
 Pure filesystem checks: no skips, no external tools.
 """
@@ -28,14 +27,10 @@ PROJECT_ROOT = Path(__file__).resolve().parents[2]
 _ORCHESTRATOR_RE = re.compile(
     r"\*\*Orchestrator\*\*:\s*`(?P<script>src/[^`]+\.py)`\s*\((?P<count>\d+)\s+lines?\)"
 )
-_BANNER_RE = re.compile(r"\*\*Version\*\*:\s*v(?P<version>\d+\.\d+\.\d+)\s+Engine")
-
-
-def _pyproject_version() -> str:
-    text = (PROJECT_ROOT / "pyproject.toml").read_text(encoding="utf-8")
-    match = re.search(r'^version\s*=\s*"(?P<v>\d+\.\d+\.\d+)"', text, re.M)
-    assert match, "pyproject.toml carries no version"
-    return match.group("v")
+_MODULE_VERSION_RE = re.compile(
+    r"(?:\*\*Version\*\*|### Current Version):\s*v?\d+\.\d+\.\d+"
+)
+_PACKAGE_VERSION_POINTER = "[pyproject.toml](../../../pyproject.toml)"
 
 
 def test_module_doc_orchestrator_line_counts_match_source() -> None:
@@ -68,21 +63,20 @@ def test_module_doc_orchestrator_line_counts_match_source() -> None:
     assert not mismatches, "stale orchestrator line counts:\n" + "\n".join(mismatches)
 
 
-def test_doc_version_banners_match_pyproject() -> None:
-    """Every '**Version**: vX.Y.Z Engine' banner carries the current version."""
-    current = _pyproject_version()
-    stale: list[str] = []
-    banners = 0
-    for doc in sorted((PROJECT_ROOT / "doc").rglob("*.md")):
-        for match in _BANNER_RE.finditer(doc.read_text(encoding="utf-8")):
-            banners += 1
-            if match.group("version") != current:
-                stale.append(
-                    f"{doc.relative_to(PROJECT_ROOT)}: banner v{match.group('version')} "
-                    f"!= pyproject v{current}"
-                )
-    assert banners >= 20, (
-        f"only {banners} version banners found — banner convention changed; "
-        "update this test's pattern rather than deleting it"
+def test_module_docs_point_to_package_version_source() -> None:
+    """Module docs link to package metadata instead of copying its version."""
+    module_docs = sorted((PROJECT_ROOT / "doc" / "gnn" / "modules").glob("*.md"))
+    copied: list[str] = []
+    pointers = 0
+    for doc in module_docs:
+        text = doc.read_text(encoding="utf-8")
+        pointers += text.count(_PACKAGE_VERSION_POINTER)
+        if _MODULE_VERSION_RE.search(text):
+            copied.append(str(doc.relative_to(PROJECT_ROOT)))
+    assert pointers >= 20, (
+        f"only {pointers} package-version pointers found — the module-doc "
+        "convention changed; update this test and the docs together"
     )
-    assert not stale, "stale engine version banners:\n" + "\n".join(stale)
+    assert not copied, "module docs copy a moving package version:\n" + "\n".join(
+        copied
+    )

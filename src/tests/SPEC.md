@@ -1,13 +1,15 @@
 # Tests Module Specification
 
 ## Overview
-Modular test suite for the GNN Processing Pipeline with 91 test files organized into 24 categories.
+Modular test suite for the GNN Processing Pipeline. The live inventory is
+owned by pytest collection and `categories.py`; this specification does not
+duplicate their changing counts.
 
 ## Components
 
 ### Core Infrastructure
 - `runner.py` - Test runner and execution engine
-- `categories.py` - 24 test categories with all 91 test files
+- `categories.py` - maintained category definitions and file routing
 - `conftest.py` - Pytest configuration and fixtures
 
 ### Test Files

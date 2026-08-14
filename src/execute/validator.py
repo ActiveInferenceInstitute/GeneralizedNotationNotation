@@ -6,10 +6,14 @@ This module provides comprehensive validation of the execution environment
 to ensure safe and reliable execution of GNN pipeline simulations.
 """
 
+import logging
 import platform
 import subprocess  # nosec B404
 import sys
-from typing import Any
+from dataclasses import dataclass, field
+from datetime import datetime
+from pathlib import Path
+from typing import Any, Dict, List, Optional, cast
 
 # psutil is optional; fall back gracefully if unavailable
 try:
@@ -19,11 +23,6 @@ try:
 except Exception:
     psutil = cast(Any, None)
     _PSUTIL_AVAILABLE = False
-import logging
-from dataclasses import dataclass, field
-from datetime import datetime
-from pathlib import Path
-from typing import Any, Dict, List, Optional
 
 
 @dataclass

@@ -30,7 +30,8 @@ Generated scripts import RxInfer.jl and write `simulation_results.json` with sch
 | LEARNING | `LearningStrategy` | `learning_pomdp_model` — likelihood matrix A learned as a latent `DirichletCollection` from `dirichlet_A` pseudo-counts; reports learned-A mean and prior/posterior distance to the true A |
 | MULTI_AGENT | `MultiAgentStrategy` | joint composition with true kind stamped; per-agent marginals recovered downstream from the `state_factors` echo |
 
-The legacy TOML-based `toml_generator.py` is **deprecated** (`render_gnn_to_rxinfer_toml` emits a `DeprecationWarning`).
+The TOML emission entry point in `toml_generator.py` is retired and emits a
+`DeprecationWarning`; topology parsing helpers remain in use by contract tests.
 
 ## Generated-script outputs
 

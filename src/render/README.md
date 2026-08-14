@@ -156,7 +156,7 @@ src/render/
 │   ├── __init__.py               # RxInfer module initialization
 │   ├── rxinfer_renderer.py       # Canonical renderer — genuine @model + infer()
 │   ├── gnn_parser.py             # GNN parser for RxInfer
-│   └── toml_generator.py         # DEPRECATED legacy TOML generator (retained for history)
+│   └── toml_generator.py         # Retired emitter plus topology parsing helpers
 ├── activeinference_jl/            # ActiveInference.jl code generation
 │   ├── __init__.py               # ActiveInference.jl module initialization
 │   └── activeinference_renderer.py # ActiveInference.jl renderer

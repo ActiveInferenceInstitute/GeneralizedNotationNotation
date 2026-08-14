@@ -4,7 +4,10 @@ Configuration Loader for GNN Pipeline
 Handles loading and validation of YAML configuration files for the pipeline.
 """
 
-from typing import Any
+import logging
+from dataclasses import dataclass, field
+from pathlib import Path
+from typing import Any, Dict, List, Optional, cast
 
 try:
     import yaml
@@ -13,11 +16,6 @@ try:
 except ImportError:
     YAML_AVAILABLE = False
     yaml = cast(Any, None)
-
-import logging
-from dataclasses import dataclass, field
-from pathlib import Path
-from typing import Any, Dict, List, Optional
 
 logger = logging.getLogger(__name__)
 

@@ -1463,7 +1463,8 @@ This mega-prompt provides a comprehensive framework for validating repo-wide coh
 
 **Status**: Production Ready
 **Version**: v3.0.0 Engine (Bundle v2.0.0)
-**Coverage**: 25 pipeline steps, 29 modules, 41 AGENTS.md files
+**Coverage**: all 25 pipeline steps plus the live module and `AGENTS.md`
+inventories; derive changing counts from `src/AGENTS.md` and `rg --files`
 
 ---
 

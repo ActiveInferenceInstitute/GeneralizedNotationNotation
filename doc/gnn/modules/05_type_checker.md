@@ -14,8 +14,7 @@ and ontological consistency, estimates computational resources required for
 downstream execution, and emits per-model "trading card" visualizations that
 summarize the findings.
 
-The Type Checker was structurally unified in v1.6.0, consolidating previously
-fragmented validation layers into a single orchestrator class. It operates as
+The Type Checker consolidates validation in a single orchestrator class. It operates as
 the first hard validation stage for every GNN file, prior to code generation
 (Step 11) or simulation (Step 12).
 

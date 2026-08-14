@@ -11,7 +11,7 @@
 
 ## Input
 
-- `.jl` scripts from `output/11_render_output/rxinfer/` (genuine `@model pomdp_model` scripts; the legacy TOML path is deprecated)
+- `.jl` scripts from `output/11_render_output/rxinfer/` (genuine `@model pomdp_model` scripts; the former TOML path is no longer supported)
 
 ## Output
 

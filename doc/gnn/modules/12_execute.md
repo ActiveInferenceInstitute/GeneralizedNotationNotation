@@ -37,7 +37,7 @@ JAX, NumPyro, PyTorch, and DisCoPy are **core** dependencies (`uv sync`). If the
 
 **Status**: ✅ Production Ready
 
-**Version**: 1.6.0
+**Package version**: [pyproject.toml](../../../pyproject.toml) (canonical)
 
 **Last Updated**: 2026-08-07
 
@@ -431,7 +431,9 @@ def run_simulation_tool(script_path: str, framework: str) -> Dict[str, Any]:
 
 ## Version History
 
-### Current Version: 1.6.0
+### Current package version
+
+See [pyproject.toml](../../../pyproject.toml).
 
 **Features**:
 - Multi-framework execution support
@@ -468,7 +470,7 @@ def run_simulation_tool(script_path: str, framework: str) -> Dict[str, Any]:
 **Last Updated**: 2026-08-07
 **Maintainer**: GNN Pipeline Team
 **Status**: ✅ Production Ready
-**Version**: 1.6.0
+**Package version**: [pyproject.toml](../../../pyproject.toml) (canonical)
 **Architecture Compliance**: ✅ 100% Thin Orchestrator Pattern
 
 

@@ -200,7 +200,7 @@ Two complementary visualization layers exist:
   `belief_heatmap`, `belief_entropy`, `accuracy`, `action_frequencies`,
   `belief_convergence`, `belief_trace`, `free_energy`, and `observations`.
 
-All log and visualization artifacts are best-effort and backward-compatible with
+All log and visualization artifacts are best-effort and preserve the fields in
 `rxinfer_simulation_v1`; only `simulation_results.json` is required.
 
 ## Usage Examples
@@ -271,4 +271,4 @@ All documentation in this module adheres to professional standards:
 
 **Status**: ✅ Production Ready  
 **Compliance**: Professional documentation standards  
-**Maintenance**: Regular updates with new RxInfer.jl features and integration capabilities 
+**Maintenance**: Regular updates with new RxInfer.jl features and integration capabilities
