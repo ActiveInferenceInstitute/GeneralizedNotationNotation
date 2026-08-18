@@ -131,7 +131,12 @@ class D2Visualizer:
             label = self._format_variable_label(var_name, var_info, annotations)
 
             d2_lines.extend(
-                [f"    {var_name}: {label} {{", f"      shape: {shape}", "    }", ""]
+                [
+                    f"    {var_name}: {self._d2_label(label)} {{",
+                    f"      shape: {shape}",
+                    "    }",
+                    "",
+                ]
             )
 
         d2_lines.append("  }")
@@ -150,7 +155,8 @@ class D2Visualizer:
                     arrow = self._get_d2_arrow(conn_type)
                     if label:
                         d2_lines.append(
-                            f"  state_space.{source} {arrow} state_space.{target}: {label}"
+                            f"  state_space.{source} {arrow} state_space.{target}: "
+                            f"{self._d2_label(label)}"
                         )
                     else:
                         d2_lines.append(
@@ -238,9 +244,9 @@ class D2Visualizer:
 
             d2_lines.extend(
                 [
-                    f"    {var_name}: {label} {{",
+                    f"    {var_name}: {self._d2_label(label)} {{",
                     "      shape: hexagon",
-                    f"      tooltip: {var_info.get('description', 'POMDP matrix')}",
+                    f"      tooltip: {self._d2_label(var_info.get('description', 'POMDP matrix'))}",
                     "    }",
                     "",
                 ]
@@ -466,7 +472,7 @@ class D2Visualizer:
                     [
                         f"    {fw}: {fw.upper()} {{",
                         f"      shape: {shape}",
-                        f"      label: {label}",
+                        f"      label: {self._d2_label(label)}",
                         "    }",
                         "",
                     ]
@@ -733,6 +739,19 @@ Active Inference Free Energy Principle: {
         has_actinf_annotations = bool(annotations)
 
         return has_pomdp_vars or has_actinf_annotations
+
+    def _d2_label(self, text: str) -> str:
+        """Quote a D2 label when it carries characters D2 treats as reserved.
+
+        D2 accepts unquoted labels with spaces and most punctuation, but ``["
+        and ``]`` delimit arrays (the generator's dimension notation ``A
+        [3×3]``) and ``{``/``}`` delimit blocks, so labels containing those
+        characters must be double-quoted to render literally. Embedded double
+        quotes are escaped; everything else is left verbatim.
+        """
+        if any(ch in text for ch in "[]{}"):
+            return '"' + text.replace('"', '\\"') + '"'
+        return text
 
     def _sanitize_name(self, name: str) -> str:
         """Sanitize name for use in D2 identifiers"""

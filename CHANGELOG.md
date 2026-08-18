@@ -8,6 +8,50 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
 
 ## [Unreleased]
 
+### Added (2026-08-18 — full zero-warn / zero-skip verification pass)
+
+- **Full-suite evidence refreshed to 3,039 passed / 0 failed / 0 skipped** on a
+  fully provisioned environment: D2 CLI (`~/.local/bin/d2`, v0.7.1), Julia
+  RxInfer/StatsBase backends (committed `src/execute/rxinfer` env + a
+  `/tmp/julia_test_env` for the strict GridWorld gate), a local Ollama daemon
+  with `smollm2:135m-instruct-q4_K_S` pulled, and `RANDOM_SIMULATION_ENABLED=1`.
+  The two previously-ignored Ollama files now run, the D2 compilation test and
+  the strict GridWorld cross-framework test now execute instead of skipping,
+  and the two live Julia cross-framework tests run under the env flag. Full
+  run: 3,039 passed in 504s under `-n auto`.
+
+### Fixed (2026-08-18 — flake + warning hygiene)
+
+- **LSP `create_server` transient-race retry.**
+  `test_create_server_returns_server_or_none_without_uncaught_error` retries a
+  single transient `OSError`/`RuntimeError` from pygls construction briefly
+  (mirroring the `get_installed_package_versions` convention) so the
+  intermittent `-n auto` concurrency flake (48 workers, JAX fork contention)
+  no longer fails the full suite; a non-transient exception still fails loudly.
+- **JAX `os.fork()` RuntimeWarning filtered.** Added a scoped `filterwarnings`
+  entry in `pytest.ini` for the benign `os.fork() was called…` RuntimeWarning
+  JAX emits when `ProcessPoolExecutor` forks on Linux; the forked child workers
+  run trivial non-JAX scripts, so the deadlock warning is an environment
+  artifact and no longer surfaces in the warnings summary.
+
+### Fixed (2026-08-18 — optional-surface robustness)
+
+- **D2 diagram generator now emits compilable D2.** The unquoted dimension
+  labels (``A [3×3]``) in the structure/POMDP diagrams were rejected by the D2
+  CLI as array delimiters, so every generated diagram failed to compile once
+  D2 was installed (previously masked by the CLI being absent). A new
+  ``D2Visualizer._d2_label`` helper double-quotes labels containing
+  ``[``/``]``/``{``/``}`` and is applied to the structure, POMDP, and framework
+  mapping label/tooltip sites; all six diagram variants now compile to SVG.
+  Regression-pinned by ``test_generated_diagrams_compile_when_d2_available``.
+- **GridWorld Julia gate now probes the committed RxInfer environment.**
+  ``_assert_julia_packages``/``_assert_julia_parse`` previously gated on a
+  throwaway ``--project=/tmp/julia_test_env`` that does not survive a reboot,
+  while the execute step actually runs from the committed
+  ``src/execute/rxinfer`` environment. The gate now uses the canonical
+  ``RXINFER_JULIA_PROJECT``, so the strict cross-framework test checks exactly
+  the environment it executes against.
+
 ### Fixed (2026-08-17 — meta-analysis robustness)
 
 - **Step 18 integration meta-analysis now completes on the full corpus.** With
@@ -55,8 +99,9 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
 
 ### Fixed (2026-08-17 — `-n auto` fully green)
 
-- **Both residual `-n auto` failures closed** (full suite: 3,006 passed /
-  0 failed / 4 skipped, excl. the two allowlisted Ollama files):
+- **Both residual `-n auto` failures closed** (full suite, as of 2026-08-18:
+  3,039 passed / 0 failed / 0 skipped with D2, Julia backends, Ollama, and
+  `RANDOM_SIMULATION_ENABLED=1` provisioned):
   - `test_gridworld_render_execute_analyze_visualize_strict` now skips cleanly
     when Julia backend packages (RxInfer, Distributions, StatsBase) are absent
     in `/tmp/julia_test_env`, via a cached availability probe that gates the

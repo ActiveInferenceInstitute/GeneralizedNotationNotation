@@ -381,6 +381,25 @@ class TestD2EndToEndProcessing(unittest.TestCase):
             self.assertIsInstance(result, D2GenerationResult)
             self.assertIsNotNone(result.diagram_name)
 
+    @unittest.skipIf(not D2Visualizer().d2_available, "D2 CLI not available")
+    def test_generated_diagrams_compile_when_d2_available(self) -> None:
+        """The generated structure/POMDP diagrams actually compile with D2.
+
+        Regression guard for the unquoted dimension-bracket labels (``A [3×3]``)
+        that D2 rejected as array delimiters; the generator now quotes labels
+        containing ``[``/``]``/``{``/``}`` so they render literally.
+        """
+        results = self.visualizer.generate_all_diagrams_for_model(
+            self.test_model, self.output_dir, formats=["svg"]
+        )
+        for result in results:
+            self.assertTrue(
+                result.success,
+                f"{result.diagram_name} failed to compile: "
+                f"{result.error_message or result.warnings}",
+            )
+            self.assertTrue(len(result.output_files) > 0)
+
 
 @unittest.skipIf(not D2_MODULE_AVAILABLE, "D2 module not available")
 class TestD2ProcessorIntegration(unittest.TestCase):

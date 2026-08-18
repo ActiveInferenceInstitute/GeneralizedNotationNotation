@@ -14,6 +14,7 @@ import numpy as np
 import pytest
 
 from analysis.processor import process_analysis
+from analysis.rxinfer.cross_framework import RXINFER_JULIA_PROJECT
 from execute.processor import process_execute
 from gnn.pomdp_extractor import extract_pomdp_from_file
 from render.pomdp_processor import POMDPRenderProcessor
@@ -39,16 +40,20 @@ def _gridworld_spec() -> dict[str, Any]:
 def _assert_julia_packages() -> None:
     """Assert that required Julia backend packages are installed.
 
-    ActiveInference.jl is intentionally omitted from this check because it has
-    a known precompilation failure on Julia >= 1.12 (see GitHub issue
-    ActiveInferenceInstitute/ActiveInference.jl#NN).  The three Julia backends
+    The gate probes the *committed* RxInfer environment
+    (``src/execute/rxinfer``, exposed as ``RXINFER_JULIA_PROJECT``) rather than
+    a throwaway ``/tmp`` project so the gate checks exactly the environment the
+    execute step runs against and survives across reboots. ActiveInference.jl
+    is intentionally omitted because it has a known precompilation failure on
+    Julia >= 1.12 (see GitHub issue
+    ActiveInferenceInstitute/ActiveInference.jl#NN). The three Julia backends
     (RxInfer, ActiveInference.jl, and the direct Julia runner) are still tested
     fully -- ``activeinference_jl`` code generation and parse validation do not
     require the ActiveInference.jl package itself.
     """
     cmd = [
         "julia",
-        "--project=/tmp/julia_test_env",
+        f"--project={RXINFER_JULIA_PROJECT}",
         "--startup-file=no",
         "-e",
         'using RxInfer, JSON, Distributions, StatsBase; println("OK")',
@@ -109,7 +114,7 @@ def _assert_julia_parse(script: Path) -> None:
     result = subprocess.run(  # nosec B603 B607
         [
             "julia",
-            "--project=/tmp/julia_test_env",
+            f"--project={RXINFER_JULIA_PROJECT}",
             "--startup-file=no",
             "-e",
             f'Meta.parseall(read("{script}", String)); println("parsed")',
@@ -227,8 +232,8 @@ def test_gridworld_render_execute_analyze_visualize_strict(tmp_path: Path) -> No
     if not _julia_backends_available():
         pytest.skip(
             "Julia backend packages (RxInfer, Distributions, StatsBase) are not "
-            "installed in /tmp/julia_test_env; skipping strict cross-framework "
-            "execution"
+            "installed in the committed src/execute/rxinfer environment; "
+            "skipping strict cross-framework execution"
         )
     _assert_julia_packages()
 

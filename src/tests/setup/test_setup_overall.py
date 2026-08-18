@@ -186,15 +186,36 @@ s[3]
 class TestSetupIntegration:
     """Integration tests for setup module."""
 
-    def test_setup_environment_function(self) -> Any:
-        """Test setup_environment utility."""
-        from setup import setup_environment
+    def test_setup_environment_function(self, monkeypatch: Any) -> Any:
+        """setup_environment forwards kwargs to setup_uv_environment.
 
-        # The default suite runs inside the maintained dev environment. Calling the
-        # core-only default here would run ``uv sync`` without ``--extra dev`` and
-        # prune packages that later tests require in the same pytest process.
+        The real ``setup_uv_environment`` path ends in a mutating, non-frozen
+        ``uv sync`` and — on a transient venv-probe failure under
+        ``pytest-xdist`` concurrency — a destructive
+        ``create_uv_environment(recreate=True)`` that ``rmtree``s ``.venv``.
+        Running it inside the default suite rewrites the shared venv out from
+        under sibling workers (the mechanism that corrupted the environment
+        during parallel validation), so the delegate is mocked and this test
+        pins only the argument-forwarding contract — consistent with
+        ``test_environment_overall.py::test_dependency_installation`` and
+        ``test_execute_pymdp_package.py::test_attempt_pymdp_auto_install``.
+        """
+        from setup import setup_environment, uv_management
+
+        calls: list[dict[str, Any]] = []
+
+        def fake_setup_uv_environment(**kwargs: Any) -> bool:
+            calls.append(kwargs)
+            return True
+
+        monkeypatch.setattr(
+            uv_management, "setup_uv_environment", fake_setup_uv_environment
+        )
+
         result = setup_environment(dev=True, skip_jax_test=True)
-        assert result is not None
+        assert result is True
+        assert calls and calls[0].get("dev") is True
+        assert calls[0].get("skip_jax_test") is True
 
     def test_install_dependencies_function(self) -> Any:
         """Test install_dependencies utility."""

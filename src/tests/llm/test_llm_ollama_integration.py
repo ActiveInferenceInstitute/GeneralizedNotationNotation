@@ -6,6 +6,7 @@ These tests validate Ollama detection, model selection, and real LLM processing
 with proper recovery handling when Ollama is not available.
 """
 
+import contextlib
 import json
 import os
 import shutil
@@ -13,7 +14,7 @@ import subprocess  # nosec B404
 import sys
 import tempfile
 from pathlib import Path
-from typing import Any
+from typing import Any, Iterator
 
 import pytest
 
@@ -25,6 +26,40 @@ from llm.processor import (
     _start_ollama_if_needed,
     process_llm,
 )
+
+_LLM_TEST_LOCK_PATH = Path(tempfile.gettempdir()) / "gnn_llm_ollama_tests.lock"
+
+
+@contextlib.contextmanager
+def _serialize_ollama_daemon() -> Iterator[None]:
+    """Serialize real-daemon Ollama tests across pytest-xdist worker processes.
+
+    The ``process_llm`` integration tests each drive the shared local Ollama
+    daemon with real model calls. Under ``-n auto`` on a high-core host they
+    can run concurrently and crash a worker when the daemon is overwhelmed.
+    A cross-process advisory ``flock`` serializes the daemon-bound sections so
+    at most one worker drives the daemon at a time; non-POSIX hosts fall back
+    to no cross-process lock (still serializes same-process threads).
+    """
+    lock_file = open(_LLM_TEST_LOCK_PATH, "w")
+    try:
+        try:
+            import fcntl
+
+            fcntl.flock(lock_file.fileno(), fcntl.LOCK_EX)
+        except (ImportError, OSError):
+            pass
+        try:
+            yield
+        finally:
+            try:
+                import fcntl
+
+                fcntl.flock(lock_file.fileno(), fcntl.LOCK_UN)
+            except (ImportError, OSError):
+                pass
+    finally:
+        lock_file.close()
 
 
 class TestOllamaDetection:
@@ -300,9 +335,10 @@ Minimize free energy while maintaining preferred states.
         llm_output_dir = test_output_dir / "13_llm_output"
         llm_output_dir.mkdir()
 
-        result = process_llm(
-            target_dir=test_gnn_dir, output_dir=llm_output_dir, verbose=True
-        )
+        with _serialize_ollama_daemon():
+            result = process_llm(
+                target_dir=test_gnn_dir, output_dir=llm_output_dir, verbose=True
+            )
 
         # Should complete (success or graceful failure)
         assert isinstance(result, bool)
@@ -351,9 +387,10 @@ Minimize free energy while maintaining preferred states.
         llm_output_dir = test_output_dir / "13_llm_output"
         llm_output_dir.mkdir()
 
-        result = process_llm(
-            target_dir=test_gnn_dir, output_dir=llm_output_dir, verbose=True
-        )
+        with _serialize_ollama_daemon():
+            result = process_llm(
+                target_dir=test_gnn_dir, output_dir=llm_output_dir, verbose=True
+            )
 
         # Should complete
         assert isinstance(result, bool)
@@ -372,13 +409,14 @@ Minimize free energy while maintaining preferred states.
         llm_output_dir.mkdir()
 
         # Use minimal custom prompts to avoid timeouts
-        process_llm(
-            target_dir=test_gnn_dir,
-            output_dir=llm_output_dir,
-            verbose=True,
-            custom_prompts=[],  # Skip custom prompts to speed up test
-            max_prompt_timeout=10,  # 10 second timeout per prompt
-        )
+        with _serialize_ollama_daemon():
+            process_llm(
+                target_dir=test_gnn_dir,
+                output_dir=llm_output_dir,
+                verbose=True,
+                custom_prompts=[],  # Skip custom prompts to speed up test
+                max_prompt_timeout=10,  # 10 second timeout per prompt
+            )
 
         # Check results for model selection - processor saves directly to output_dir
         results_file = llm_output_dir / "llm_results.json"
@@ -413,13 +451,14 @@ Minimize free energy while maintaining preferred states.
         llm_output_dir.mkdir()
 
         # Use minimal custom prompts to avoid timeouts
-        process_llm(
-            target_dir=test_gnn_dir,
-            output_dir=llm_output_dir,
-            verbose=False,
-            custom_prompts=[],  # Skip custom prompts to speed up test
-            max_prompt_timeout=10,  # 10 second timeout per prompt
-        )
+        with _serialize_ollama_daemon():
+            process_llm(
+                target_dir=test_gnn_dir,
+                output_dir=llm_output_dir,
+                verbose=False,
+                custom_prompts=[],  # Skip custom prompts to speed up test
+                max_prompt_timeout=10,  # 10 second timeout per prompt
+            )
 
         # Check for key output files - processor saves directly to output_dir
 

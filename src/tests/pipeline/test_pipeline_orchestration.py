@@ -101,7 +101,15 @@ class TestPipelineExecution:
 
     @pytest.mark.integration
     def test_single_step_execution(self, tmp_path: Any) -> Any:
-        """Test executing a single pipeline step."""
+        """Test executing a single pipeline step.
+
+        Runs the non-mutating GNN step (Step 3). The ``setup`` step (Step 1)
+        is deliberately avoided: it invokes ``src/1_setup.py``, which runs a
+        mutating, non-frozen ``uv sync`` against the shared ``.venv`` and
+        prunes the ``dev`` toolchain (pytest/execnet/xdist) out from under
+        sibling ``pytest-xdist`` workers — the mechanism that corrupted the
+        environment during parallel validation.
+        """
         from pipeline import execute_pipeline_step
 
         # Build step config and pipeline data
@@ -112,7 +120,7 @@ class TestPipelineExecution:
         }
 
         result = execute_pipeline_step(
-            step_name="setup", step_config=step_config, pipeline_data=pipeline_data
+            step_name="gnn", step_config=step_config, pipeline_data=pipeline_data
         )
 
         # Should complete (success or graceful failure)

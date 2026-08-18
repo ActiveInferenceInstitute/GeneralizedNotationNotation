@@ -88,9 +88,15 @@ an exemplar declares explicit composed coupling. Revisit only with new
 exemplar data.
 
 ### Dashboard browser verification
-The A5 compare/filter features are covered by deterministic HTML tests; a
-real-browser pass (screenshot + DOM read, accessibility checks) has not been
-run. The dashboard now has its full 29-GIF data set.
+The A5 compare/filter features are covered by deterministic HTML tests. A
+real-browser pass (screenshot + DOM read, accessibility checks) was run
+2026-08-18 against the representative fixture GIF set (four models covering
+all four size buckets and categories) using headless Chrome for Testing 145:
+screenshot captured (1280×900 PNG), all four model cards and every filter /
+compare control render in the DOM, and the basic a11y surface is sound
+(`lang="en"`, viewport meta, a labelled `<select>` for every control, `alt`
+text on every card image, a single `<h1>`). The production 29-GIF set was not
+present in this environment; re-run against it when the batch is regenerated.
 
 ## Verification Commands
 

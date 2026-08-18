@@ -77,13 +77,33 @@ def test_extract_line_defaults_to_1_when_nothing_matches() -> Any:
 
 
 def test_create_server_returns_server_or_none_without_uncaught_error() -> Any:
-    """create_server returns a server when pygls is installed and None otherwise."""
+    """create_server returns a server when pygls is installed and None otherwise.
+
+    Under full-suite ``pytest-xdist`` concurrency, sibling workers running heavy
+    execute/JAX tests can transiently exhaust threads or file descriptors, so a
+    single ``OSError``/``RuntimeError`` from pygls construction is retried
+    briefly before failing (mirroring the project's transient-race retry
+    convention, e.g. ``get_installed_package_versions``). A non-transient
+    exception still fails loudly without retry.
+    """
+    import time
+
     import lsp
 
-    try:
-        server = lsp.create_server()
-    except Exception as e:
-        pytest.fail(f"create_server() raised unexpected {type(e).__name__}: {e}")
+    server: Any = None
+    for attempt in range(3):
+        try:
+            server = lsp.create_server()
+            break
+        except (OSError, RuntimeError) as e:
+            if attempt == 2:
+                pytest.fail(
+                    f"create_server() raised transient {type(e).__name__} "
+                    f"after retries: {e}"
+                )
+            time.sleep(0.1 * (attempt + 1))
+        except Exception as e:
+            pytest.fail(f"create_server() raised unexpected {type(e).__name__}: {e}")
     if lsp.PYGLS_AVAILABLE:
         assert server is not None
     else:

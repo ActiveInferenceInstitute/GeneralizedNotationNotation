@@ -4,7 +4,7 @@
 **Current Version**: 3.0.0
 **Next Target**: v4.0.0 (bounded autonomy and reviewed self-editing workflows)
 
-**Last reviewed**: 2026-08-17 — all RED_TEAM_REVIEW.md security residuals V-01–V-11 closed, `-n auto` fully green (3,006 passed / 0 failed / 4 skipped), the three HANDOFF §4 test-infrastructure follow-ups resolved, and three clean-start execution regressions fixed: Julia frameworks now execute from their committed `--project` environments (no longer silently skipped against the global depot); the render manifest aggregates across per-folder pipeline invocations; and Step 12 execution is scoped to the current folder, so every rendered model is executed exactly once instead of only the last folder's model (or, post-aggregation, every folder's models ten times). `test_uv_sync_fast` also retries transient `uv sync --check` "outdated" races.
+**Last reviewed**: 2026-08-18 — all RED_TEAM_REVIEW.md security residuals V-01–V-11 closed, `-n auto` fully green with **3,039 passed / 0 failed / 0 skipped** on a fully provisioned environment (D2 CLI, Julia RxInfer/StatsBase backends, a local Ollama daemon with `smollm2:135m-instruct-q4_K_S`, and `RANDOM_SIMULATION_ENABLED=1`), the three HANDOFF §4 test-infrastructure follow-ups resolved, and three clean-start execution regressions fixed: Julia frameworks now execute from their committed `--project` environments (no longer silently skipped against the global depot); the render manifest aggregates across per-folder pipeline invocations; and Step 12 execution is scoped to the current folder, so every rendered model is executed exactly once instead of only the last folder's model (or, post-aggregation, every folder's models ten times). `test_uv_sync_fast` also retries transient `uv sync --check` "outdated" races.
 `doc/ → doc/archive/` reorganization, `argument_utils` + RxInfer strategy
 modularization, and public-API test coverage. The full audit trail lives in
 `CHANGELOG.md` ([Unreleased]) and git history; RxInfer-specific state and
@@ -44,8 +44,9 @@ This roadmap is forward-only. Shipped-version history belongs in
 - **RxInfer-specific open items** — tracked in
   [RXINFER_IMPROVEMENT_ROADMAP.md](RXINFER_IMPROVEMENT_ROADMAP.md): N-level
   native hierarchical rendering (decision recorded: joint composition until
-  exemplars declare composed coupling), dashboard real-browser verification
-  pass, optional T=100 precompile workloads if batches become routine.
+  exemplars declare composed coupling), and optional T=100 precompile
+  workloads if batches become routine. The dashboard real-browser verification
+  pass (screenshot + DOM + a11y) is now complete (2026-08-18).
 
 ### Security follow-ups (residual from the 2026-08-14 red-team wave)
 
@@ -58,9 +59,10 @@ No unchecked security residuals remain at this time.
 
 ### Test-infrastructure follow-ups (from doc/HANDOFF.md §4 — resolved 2026-08-17)
 
-- **Parallel test execution.** `-n auto` is now fully green: 3,006 passed /
-  0 failed / 4 skipped (excl. the two allowlisted Ollama files). The two
-  residual failures are closed: the strict GridWorld cross-framework test now
+- **Parallel test execution.** `-n auto` is now fully green: **3,039 passed /
+  0 failed / 0 skipped** with D2 CLI, Julia RxInfer/StatsBase backends, Ollama,
+  and `RANDOM_SIMULATION_ENABLED=1` provisioned (the two Ollama files now run
+  instead of being ignored). The two residual failures are closed: the strict GridWorld cross-framework test now
   skips cleanly when Julia backend packages are absent (cached availability
   probe), and `get_installed_package_versions` retries transient subprocess /
   incomplete-enumeration races while `test_uv_sync_fast` uses non-mutating
