@@ -328,10 +328,9 @@ from pymdp import utils
 A = utils.obj_array(1)
 A[0] = np.array([[0.9, 0.1], [0.1, 0.9]])
 
-# B matrix (transitions given states and actions)  
+# B matrix (transitions given states and actions)
 B = utils.obj_array(1)
-B[0] = np.array([[[0.8, 0.2], [0.3, 0.7]], 
-                 [[0.2, 0.8], [0.7, 0.3]]])
+B[0] = np.array([[[0.8, 0.2], [0.3, 0.7]], [[0.2, 0.8], [0.7, 0.3]]])
 
 # C vector (preferences)
 C = utils.obj_array([np.array([0.0, 1.0])])

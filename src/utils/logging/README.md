@@ -21,11 +21,7 @@ Attach metadata to your logs for better analysis:
 from utils.logging.logging_utils import PipelineLogger
 
 PipelineLogger.log_structured(
-    logger, 
-    logging.INFO, 
-    "Processed file",
-    file_name="model.md",
-    size_bytes=1024
+    logger, logging.INFO, "Processed file", file_name="model.md", size_bytes=1024
 )
 ```
 

@@ -114,7 +114,7 @@ success = process_audio(
     target_dir=Path("input/gnn_files"),
     output_dir=Path("output/15_audio_output"),
     audio_backend="auto",
-    duration=30.0
+    duration=30.0,
 )
 ```
 

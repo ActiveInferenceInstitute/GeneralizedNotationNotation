@@ -391,39 +391,44 @@ The first step is to parse the GNN file to extract model structure and parameter
 ```python
 import re
 
+
 def parse_gnn_file(file_path):
     """Parse a GNN file and extract sections."""
-    with open(file_path, 'r') as f:
+    with open(file_path, "r") as f:
         content = f.read()
-    
+
     # Regular expressions to extract sections
-    version_match = re.search(r'## GNN (v\d+(?:\.\d+)*)', content)
-    model_name_match = re.search(r'# ([^\n]+)', content)
-    
+    version_match = re.search(r"## GNN (v\d+(?:\.\d+)*)", content)
+    model_name_match = re.search(r"# ([^\n]+)", content)
+
     # Extract state space block
-    state_space_block = re.search(r'## State space block\n(.*?)(?=##)', 
-                                  content, re.DOTALL)
-    
+    state_space_block = re.search(
+        r"## State space block\n(.*?)(?=##)", content, re.DOTALL
+    )
+
     # Extract connections
-    connections_block = re.search(r'## Connections\n(.*?)(?=##)', 
-                                 content, re.DOTALL)
-    
+    connections_block = re.search(r"## Connections\n(.*?)(?=##)", content, re.DOTALL)
+
     # Extract equations
-    equations_block = re.search(r'## Equations\n(.*?)(?=##)', 
-                               content, re.DOTALL)
-    
+    equations_block = re.search(r"## Equations\n(.*?)(?=##)", content, re.DOTALL)
+
     # Return structured data
     return {
-        'version': version_match.group(1) if version_match else None,
-        'model_name': model_name_match.group(1) if model_name_match else None,
-        'state_space': state_space_block.group(1).strip() if state_space_block else None,
-        'connections': connections_block.group(1).strip() if connections_block else None,
-        'equations': equations_block.group(1).strip() if equations_block else None,
+        "version": version_match.group(1) if version_match else None,
+        "model_name": model_name_match.group(1) if model_name_match else None,
+        "state_space": state_space_block.group(1).strip()
+        if state_space_block
+        else None,
+        "connections": connections_block.group(1).strip()
+        if connections_block
+        else None,
+        "equations": equations_block.group(1).strip() if equations_block else None,
         # Add other sections as needed
     }
 
+
 # Usage example
-model_data = parse_gnn_file('path/to/model.gnn')
+model_data = parse_gnn_file("path/to/model.gnn")
 print(f"Model: {model_data['model_name']}")
 print(f"Version: {model_data['version']}")
 ```
@@ -438,33 +443,34 @@ After parsing, you need to initialize the variables with appropriate dimensions.
 import numpy as np
 import re
 
+
 def initialize_variables(state_space_text):
     """Initialize variables based on the state space block."""
     variables = {}
-    
+
     # Split into lines and process each variable definition
-    for line in state_space_text.split('\n'):
-        if not line.strip() or line.strip().startswith('#'):
+    for line in state_space_text.split("\n"):
+        if not line.strip() or line.strip().startswith("#"):
             continue
-            
+
         # Match variable name and dimensions
-        var_match = re.match(r'(\w+)(?:_\w+)?\s*\[([^\]]+)\]', line)
+        var_match = re.match(r"(\w+)(?:_\w+)?\s*\[([^\]]+)\]", line)
         if var_match:
             var_name = var_match.group(1)
             dimensions = var_match.group(2)
-            
+
             # Parse dimensions (handling both numeric and symbolic dimensions)
             dims = []
-            for dim in dimensions.split(','):
+            for dim in dimensions.split(","):
                 dim = dim.strip()
-                if re.match(r'^\d+$', dim):  # Numeric dimension
+                if re.match(r"^\d+$", dim):  # Numeric dimension
                     dims.append(int(dim))
-                elif 'type=' in dim:  # Type specification, ignore for now
+                elif "type=" in dim:  # Type specification, ignore for now
                     continue
                 else:  # Symbolic dimension (e.g., len(π))
                     # Use an explicit default value when the data source is absent
                     dims.append(2)  # Default to 2 for symbolic dimensions
-            
+
             # Create the variable with zeros
             if len(dims) == 1:
                 variables[var_name] = np.zeros(dims[0])
@@ -472,11 +478,12 @@ def initialize_variables(state_space_text):
                 variables[var_name] = np.zeros((dims[0], dims[1]))
             else:
                 variables[var_name] = np.zeros(tuple(dims))
-    
+
     return variables
 
+
 # Usage example
-variables = initialize_variables(model_data['state_space'])
+variables = initialize_variables(model_data["state_space"])
 print("Initialized variables:")
 for name, var in variables.items():
     print(f"{name}: shape {var.shape}")
@@ -491,28 +498,29 @@ Next, establish the connections between variables based on the model's graphical
 ```python
 def parse_connections(connections_text):
     """Parse connections between variables."""
-    connections = {'directed': [], 'undirected': []}
-    
-    for line in connections_text.split('\n'):
+    connections = {"directed": [], "undirected": []}
+
+    for line in connections_text.split("\n"):
         line = line.strip()
-        if not line or line.startswith('#'):
+        if not line or line.startswith("#"):
             continue
-        
+
         # Check for directed connections (A>B)
-        if '>' in line:
-            source, target = line.split('>')
-            connections['directed'].append((source.strip(), target.strip()))
+        if ">" in line:
+            source, target = line.split(">")
+            connections["directed"].append((source.strip(), target.strip()))
         # Check for undirected connections (A-B)
-        elif '-' in line:
-            var1, var2 = line.split('-')
-            connections['undirected'].append((var1.strip(), var2.strip()))
-    
+        elif "-" in line:
+            var1, var2 = line.split("-")
+            connections["undirected"].append((var1.strip(), var2.strip()))
+
     return connections
 
+
 # Usage example
-connections = parse_connections(model_data['connections'])
-print("Directed connections:", connections['directed'])
-print("Undirected connections:", connections['undirected'])
+connections = parse_connections(model_data["connections"])
+print("Directed connections:", connections["directed"])
+print("Undirected connections:", connections["undirected"])
 ```
 
 ## Step 4: Implementing Equations
@@ -525,45 +533,47 @@ The most challenging part is translating GNN equations into code. Here's a templ
 import torch
 import torch.nn.functional as F
 
+
 class GNNModel:
     def __init__(self, variables, connections):
         """Initialize the model with variables and connections."""
         self.variables = variables
         self.connections = connections
-        
+
         # Convert NumPy arrays to PyTorch tensors
         for key, value in self.variables.items():
             if isinstance(value, np.ndarray):
                 self.variables[key] = torch.tensor(value, dtype=torch.float32)
-    
+
     def softmax(self, x):
         """Softmax function."""
         return F.softmax(x, dim=0)
-    
+
     def static_perception_step(self):
         """Implement a simple static perception step."""
         # Example equation: s = softmax(ln(D) + ln(A^T * o))
-        D = self.variables.get('D', torch.ones(1))
-        A = self.variables.get('A', torch.eye(2))
-        o = self.variables.get('o', torch.ones(2, 1))
-        
+        D = self.variables.get("D", torch.ones(1))
+        A = self.variables.get("A", torch.eye(2))
+        o = self.variables.get("o", torch.ones(2, 1))
+
         # Compute the equation
         log_D = torch.log(D + 1e-10)  # Add small value to avoid log(0)
         A_transpose = torch.transpose(A, 0, 1)
         A_transpose_o = torch.matmul(A_transpose, o)
         log_A_transpose_o = torch.log(A_transpose_o + 1e-10)
-        
+
         # Apply softmax
         s = self.softmax(log_D + log_A_transpose_o)
-        
+
         # Update the state variable
-        self.variables['s'] = s
+        self.variables["s"] = s
         return s
-    
+
     def dynamic_perception_step(self, time_step):
         """Implement a dynamic perception step."""
         # Simplified implementation - would need to be expanded for full model
         pass
+
 
 # Usage example
 model = GNNModel(variables, connections)
@@ -686,44 +696,44 @@ For dynamic models, we need to track state over time.
 def dynamic_perception(D, A, B, o_sequence, num_timesteps):
     """
     Implements dynamic perception model.
-    
+
     Args:
         D: Prior (numpy array, shape [n, 1])
         A: Recognition matrix (numpy array, shape [m, n])
         B: Transition matrix (numpy array, shape [n, n])
         o_sequence: Sequence of observations (numpy array, shape [m, T])
         num_timesteps: Number of time steps to simulate
-    
+
     Returns:
         s_sequence: Sequence of inferred states (numpy array, shape [n, T])
     """
     n = D.shape[0]
     T = o_sequence.shape[1]
     s_sequence = np.zeros((n, T))
-    
+
     # Initialize with static perception for the first step
     s_sequence[:, 0:1] = static_perception(D, A, o_sequence[:, 0:1])
-    
+
     # Process remaining time steps
     for t in range(1, T):
         # Prediction step (forward message passing)
-        s_predicted = np.dot(B, s_sequence[:, t-1:t])
-        
+        s_predicted = np.dot(B, s_sequence[:, t - 1 : t])
+
         # Update step (backward message passing)
-        o_t = o_sequence[:, t:t+1]
+        o_t = o_sequence[:, t : t + 1]
         A_transpose = A.T
         A_transpose_o = np.dot(A_transpose, o_t)
-        
+
         # Combine prediction and likelihood
         epsilon = 1e-10
         log_prediction = np.log(s_predicted + epsilon)
         log_likelihood = np.log(A_transpose_o + epsilon)
-        
+
         # Apply softmax
         input_to_softmax = log_prediction + log_likelihood
         exp_input = np.exp(input_to_softmax - np.max(input_to_softmax))
-        s_sequence[:, t:t+1] = exp_input / np.sum(exp_input)
-    
+        s_sequence[:, t : t + 1] = exp_input / np.sum(exp_input)
+
     return s_sequence
 ```
 
@@ -738,20 +748,21 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
+
 class ActiveInferenceModel(nn.Module):
     def __init__(self, state_dim, obs_dim):
         super().__init__()
         self.state_dim = state_dim
         self.obs_dim = obs_dim
-        
+
         # Initialize learnable parameters
         self.A = nn.Parameter(torch.randn(obs_dim, state_dim))
         self.B = nn.Parameter(torch.randn(state_dim, state_dim))
         self.D = nn.Parameter(torch.ones(state_dim, 1))
-        
+
         # Normalize parameters
         self._normalize_parameters()
-    
+
     def _normalize_parameters(self):
         """Ensure matrices are proper probability distributions."""
         # A: columns sum to 1
@@ -760,13 +771,14 @@ class ActiveInferenceModel(nn.Module):
         self.B.data = F.softmax(self.B.data, dim=0)
         # D: sums to 1
         self.D.data = F.softmax(self.D.data, dim=0)
-    
+
     def forward(self, o_sequence):
         """Forward pass through the model."""
         batch_size, seq_len, _ = o_sequence.shape
-        s_sequence = torch.zeros(batch_size, seq_len, self.state_dim, 
-                                device=o_sequence.device)
-        
+        s_sequence = torch.zeros(
+            batch_size, seq_len, self.state_dim, device=o_sequence.device
+        )
+
         # Process each time step
         for t in range(seq_len):
             if t == 0:
@@ -774,21 +786,23 @@ class ActiveInferenceModel(nn.Module):
                 s_t = self.D.expand(batch_size, -1, -1)
             else:
                 # Predict from previous state
-                s_prev = s_sequence[:, t-1].unsqueeze(-1)
+                s_prev = s_sequence[:, t - 1].unsqueeze(-1)
                 s_predicted = torch.bmm(self.B.expand(batch_size, -1, -1), s_prev)
-                
+
                 # Update with new observation
                 o_t = o_sequence[:, t].unsqueeze(-1)
                 A_transpose = self.A.transpose(0, 1).expand(batch_size, -1, -1)
                 likelihood = torch.bmm(A_transpose, o_t)
-                
+
                 # Combine prediction and likelihood
-                s_t = F.softmax(torch.log(s_predicted + 1e-10) + 
-                                torch.log(likelihood + 1e-10), dim=1)
-            
+                s_t = F.softmax(
+                    torch.log(s_predicted + 1e-10) + torch.log(likelihood + 1e-10),
+                    dim=1,
+                )
+
             # Store state
             s_sequence[:, t] = s_t.squeeze(-1)
-        
+
         return s_sequence
 ```
 
@@ -847,30 +861,38 @@ It's often useful to visualize your model's behavior:
 ```python
 import matplotlib.pyplot as plt
 
+
 def plot_state_evolution(s_sequence, true_states=None):
     """Plot the evolution of state beliefs over time."""
     time_steps = s_sequence.shape[1]
     state_dim = s_sequence.shape[0]
-    
+
     plt.figure(figsize=(12, 6))
-    
+
     # Plot each state dimension
     for i in range(state_dim):
-        plt.plot(range(time_steps), s_sequence[i, :], 
-                 label=f'State {i+1}', linewidth=2)
-    
+        plt.plot(
+            range(time_steps), s_sequence[i, :], label=f"State {i + 1}", linewidth=2
+        )
+
     # If true states are provided, plot them as dashed lines
     if true_states is not None:
         for i in range(state_dim):
-            plt.plot(range(time_steps), true_states[i, :], '--', 
-                     label=f'True State {i+1}', linewidth=1)
-    
-    plt.xlabel('Time Step')
-    plt.ylabel('State Belief / Value')
-    plt.title('Evolution of State Beliefs Over Time')
+            plt.plot(
+                range(time_steps),
+                true_states[i, :],
+                "--",
+                label=f"True State {i + 1}",
+                linewidth=1,
+            )
+
+    plt.xlabel("Time Step")
+    plt.ylabel("State Belief / Value")
+    plt.title("Evolution of State Beliefs Over Time")
     plt.legend()
     plt.grid(True, alpha=0.3)
     plt.show()
+
 
 # Example usage
 plot_state_evolution(s_sequence, true_states)

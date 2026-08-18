@@ -92,7 +92,7 @@ success = run_tests(
     output_dir=Path("output/2_tests_output"),
     verbose=True,
     fast_only=True,
-    comprehensive=False
+    comprehensive=False,
 )
 ```
 
@@ -199,23 +199,23 @@ errors = _extract_collection_errors(pytest_stdout, pytest_stderr)
 ### Test Settings
 ```python
 TEST_CONFIG = {
-    'fast_tests': True,
-    'standard_tests': True,
-    'slow_tests': False,
-    'performance_tests': False,
-    'coverage_analysis': True,
-    'parallel_execution': True,
-    'timeout': 300
+    "fast_tests": True,
+    "standard_tests": True,
+    "slow_tests": False,
+    "performance_tests": False,
+    "coverage_analysis": True,
+    "parallel_execution": True,
+    "timeout": 300,
 }
 ```
 
 ### Test Categories
 ```python
 TEST_CATEGORIES = {
-    'unit': ['test_*unit*.py'],
-    'integration': ['test_*integration*.py'],
-    'performance': ['test_*performance*.py'],
-    'slow': ['test_*slow*.py']
+    "unit": ["test_*unit*.py"],
+    "integration": ["test_*integration*.py"],
+    "performance": ["test_*performance*.py"],
+    "slow": ["test_*slow*.py"],
 }
 ```
 
@@ -231,7 +231,7 @@ success = run_tests(
     logger=logger,
     output_dir=Path("output/2_tests_output"),
     verbose=True,
-    comprehensive=True
+    comprehensive=True,
 )
 ```
 
@@ -247,7 +247,7 @@ success = run_tests(
     output_dir=Path("output/2_tests_output"),
     verbose=True,
     fast_only=True,
-    comprehensive=False
+    comprehensive=False,
 )
 ```
 
@@ -263,7 +263,7 @@ success = run_tests(
     output_dir=Path("output/2_tests_output"),
     verbose=True,
     comprehensive=True,
-    generate_coverage=True
+    generate_coverage=True,
 )
 ```
 
@@ -275,9 +275,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 success = run_fast_reliable_tests(
-    logger=logger,
-    output_dir=Path("output/2_tests_output"),
-    verbose=True
+    logger=logger, output_dir=Path("output/2_tests_output"), verbose=True
 )
 ```
 
@@ -292,7 +290,7 @@ success = run_comprehensive_tests(
     logger=logger,
     output_dir=Path("output/2_tests_output"),
     verbose=True,
-    generate_coverage=True
+    generate_coverage=True,
 )
 ```
 
@@ -451,14 +449,11 @@ To add a new test category to `MODULAR_TEST_CATEGORIES` in `runner.py`:
 MODULAR_TEST_CATEGORIES["new_module"] = {
     "name": "New Module Tests",
     "description": "Tests for the new module",
-    "files": [
-        "test_template_overall.py",
-        "test_new_module_integration.py"
-    ],
+    "files": ["test_template_overall.py", "test_new_module_integration.py"],
     "markers": ["new_module"],  # Optional pytest markers
-    "timeout_seconds": 120,      # Category timeout
-    "max_failures": 8,           # Max failures before stopping
-    "parallel": True              # Allow parallel execution
+    "timeout_seconds": 120,  # Category timeout
+    "max_failures": 8,  # Max failures before stopping
+    "parallel": True,  # Allow parallel execution
 }
 ```
 
@@ -475,11 +470,13 @@ Example:
 import pytest
 from pathlib import Path
 
+
 @pytest.mark.fast
 def test_new_module_basic():
     """Test basic functionality."""
     # Test implementation
     pass
+
 
 @pytest.mark.slow
 def test_new_module_complex():

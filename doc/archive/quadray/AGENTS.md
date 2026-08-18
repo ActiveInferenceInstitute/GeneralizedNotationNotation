@@ -115,34 +115,40 @@ See [src/AGENTS.md](../../../src/AGENTS.md) for complete pipeline documentation.
 def transform_to_quadray_coordinates(cartesian_point: np.ndarray) -> QuadrayCoords:
     """
     Transform Cartesian coordinates to Quadray coordinates.
-    
+
     Parameters:
         cartesian_point: 3D point in Cartesian coordinates (x, y, z)
-    
+
     Returns:
         QuadrayCoords 4-tuple (a, b, c, d)
     """
 
-def apply_quadray_transformation(gnn_model: GNNModel, transformation: QuadrayMatrix) -> GNNModel:
+
+def apply_quadray_transformation(
+    gnn_model: GNNModel, transformation: QuadrayMatrix
+) -> GNNModel:
     """
     Apply Quadray transformation to GNN model state space.
-    
+
     Parameters:
         gnn_model: Parsed GNN model structure
         transformation: Quadray transformation matrix
-    
+
     Returns:
         Transformed GNNModel with Quadray coordinate representation
     """
 
-def encode_spatial_prior(quadray_coords: QuadrayCoords, prior_type: str) -> DirichletPrior:
+
+def encode_spatial_prior(
+    quadray_coords: QuadrayCoords, prior_type: str
+) -> DirichletPrior:
     """
     Encode spatial prior using Quadray symmetry.
-    
+
     Parameters:
         quadray_coords: Quadray coordinate representation
         prior_type: Type of prior encoding (probability, zero-minimum, barycentric)
-    
+
     Returns:
         DirichletPrior with simplified encoding
     """

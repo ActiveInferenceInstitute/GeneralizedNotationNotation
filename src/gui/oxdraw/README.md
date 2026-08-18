@@ -58,7 +58,7 @@ from oxdraw import convert_gnn_file_to_mermaid
 # Convert GNN file to Mermaid
 convert_gnn_file_to_mermaid(
     gnn_file_path=Path("input/actinf_pomdp_agent.md"),
-    output_path=Path("output/actinf_pomdp_agent.mmd")
+    output_path=Path("output/actinf_pomdp_agent.mmd"),
 )
 ```
 
@@ -70,9 +70,7 @@ from oxdraw import launch_oxdraw_editor
 
 # Launch editor for visual editing
 launch_oxdraw_editor(
-    mermaid_file=Path("output/actinf_pomdp_agent.mmd"),
-    port=5151,
-    host="127.0.0.1"
+    mermaid_file=Path("output/actinf_pomdp_agent.mmd"), port=5151, host="127.0.0.1"
 )
 
 # Editor opens at http://127.0.0.1:5151
@@ -82,10 +80,7 @@ launch_oxdraw_editor(
 
 ```python
 from pathlib import Path
-from oxdraw import (
-    convert_gnn_file_to_mermaid,
-    convert_mermaid_file_to_gnn
-)
+from oxdraw import convert_gnn_file_to_mermaid, convert_mermaid_file_to_gnn
 
 # Step 1: Convert GNN to Mermaid
 gnn_file = Path("input/model.md")

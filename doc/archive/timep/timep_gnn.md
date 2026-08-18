@@ -32,12 +32,12 @@ GNN's execution layer (`src/execute/`) demonstrates extensive subprocess orchest
 
 ```python
 result = subprocess.run(
-    [sys.executable, str(abs_script_path)], 
-    capture_output=True, 
-    text=True, 
+    [sys.executable, str(abs_script_path)],
+    capture_output=True,
+    text=True,
     env=env,
     cwd=abs_script_path.parent,
-    timeout=300
+    timeout=300,
 )
 ```
 

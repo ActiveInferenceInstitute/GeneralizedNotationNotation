@@ -95,6 +95,7 @@ Pedalboard embeds Steinberg's VST3 SDK and Apple's Audio Unit 2 interface. Loadi
 
 ```python
 from pedalboard import load_plugin
+
 vst = load_plugin("/Library/Audio/Plug-Ins/VST3/RoughRider3.vst3")
 vst.ratio = 15
 ```
@@ -126,8 +127,12 @@ Because Pedalboard drops the GIL during DSP, multiple threads may call separate 
 
 ```python
 import concurrent.futures
+
+
 def process(buf):
     return board(buf, 44_100)
+
+
 with ThreadPoolExecutor() as ex:
     processed = list(ex.map(process, chunks))
 ```
@@ -161,6 +166,8 @@ Spotify employs Pedalboard to augment audio training data for tasks like genre c
 def augment(wav, sr):
     audio = tf.py_function(lambda x: board(x.numpy(), sr), [wav], tf.float32)
     return audio
+
+
 dataset = tf.data.Dataset.from_tensor_slices(files).map(augment, num_parallel_calls=8)
 ```
 
@@ -174,14 +181,14 @@ Because DSP executes outside the GIL, intra-op parallelism remains high, boostin
 from pedalboard import Pedalboard, Chorus, Reverb
 from pedalboard.io import AudioFile
 
-with AudioFile('input.wav', 'r') as f:
+with AudioFile("input.wav", "r") as f:
     audio = f.read(f.frames)
-    rate  = f.samplerate
+    rate = f.samplerate
 
 board = Pedalboard([Chorus(), Reverb(room_size=0.25)])
 wet = board(audio, rate)
 
-with AudioFile('out.wav', 'w', rate) as f:
+with AudioFile("out.wav", "w", rate) as f:
     f.write(wet)
 ```
 
@@ -193,9 +200,10 @@ Pedalboard objects are plugins themselves, enabling constructs like:
 
 ```python
 from pedalboard import Mix, Delay, PitchShift, Gain
+
 passthrough = Gain()
 short = Pedalboard([Delay(0.25), PitchShift(7), Gain(-3)])
-long  = Pedalboard([Delay(0.5),  PitchShift(12), Gain(-6)])
+long = Pedalboard([Delay(0.5), PitchShift(12), Gain(-6)])
 
 board = Pedalboard([Mix([passthrough, short, long])])
 ```

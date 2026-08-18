@@ -101,7 +101,7 @@ success = process_mcp(
     verbose=True,
     mcp_mode="tool_discovery",
     enable_tools=True,
-    transport="stdio"
+    transport="stdio",
 )
 ```
 
@@ -207,24 +207,20 @@ success = process_mcp(
 ### Default Settings
 ```python
 DEFAULT_MCP_SETTINGS = {
-    'server': {
-        'port': 8080,
-        'host': 'localhost',
-        'transport': 'stdio',
-        'timeout': 30,
-        'max_concurrent_requests': 10
+    "server": {
+        "port": 8080,
+        "host": "localhost",
+        "transport": "stdio",
+        "timeout": 30,
+        "max_concurrent_requests": 10,
     },
-    'tools': {
-        'auto_register': True,
-        'validate_schemas': True,
-        'cache_results': True,
-        'rate_limiting': True
+    "tools": {
+        "auto_register": True,
+        "validate_schemas": True,
+        "cache_results": True,
+        "rate_limiting": True,
     },
-    'logging': {
-        'level': 'INFO',
-        'format': 'json',
-        'include_request_id': True
-    }
+    "logging": {"level": "INFO", "format": "json", "include_request_id": True},
 }
 ```
 
@@ -240,7 +236,7 @@ success = process_mcp(
     target_dir=Path("input/gnn_files"),
     output_dir=Path("output/21_mcp_output"),
     logger=logger,
-    mcp_mode="tool_discovery"
+    mcp_mode="tool_discovery",
 )
 ```
 
@@ -250,14 +246,14 @@ from mcp import register_module_tools
 
 tools = [
     {
-        'name': 'gnn_parse',
-        'description': 'Parse GNN model files',
-        'handler': parse_gnn_file,
-        'input_schema': {...}
+        "name": "gnn_parse",
+        "description": "Parse GNN model files",
+        "handler": parse_gnn_file,
+        "input_schema": {...},
     }
 ]
 
-success = register_module_tools('gnn', tools)
+success = register_module_tools("gnn", tools)
 ```
 
 ### Tool Discovery

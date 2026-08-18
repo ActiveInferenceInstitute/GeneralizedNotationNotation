@@ -67,23 +67,26 @@ See [src/AGENTS.md](../../src/AGENTS.md) for complete pipeline documentation.
 def sonify_gnn_model(gnn_model: GNNModel, audio_params: dict) -> AudioSequence:
     """
     Generate audio sequence from GNN model using SAPF.
-    
+
     Parameters:
         gnn_model: Parsed GNN model structure
         audio_params: Audio generation parameters
-    
+
     Returns:
         AudioSequence with sonified model representation
     """
 
-def apply_sapf_processing(audio: AudioSequence, operations: List[SAPFOp]) -> AudioSequence:
+
+def apply_sapf_processing(
+    audio: AudioSequence, operations: List[SAPFOp]
+) -> AudioSequence:
     """
     Apply SAPF concatenative operations to audio sequence.
-    
+
     Parameters:
         audio: Input audio sequence
         operations: List of SAPF operations to apply
-    
+
     Returns:
         Processed AudioSequence
     """

@@ -23,11 +23,17 @@ python src/main.py --only-steps 23 --verbose
 
 ```python
 from report import (
-    process_report, generate_comprehensive_report,
-    analyze_gnn_file, generate_html_report,
-    generate_markdown_report, generate_report,
-    ReportGenerator, ReportFormatter,
-    get_module_info, get_supported_formats, validate_report
+    process_report,
+    generate_comprehensive_report,
+    analyze_gnn_file,
+    generate_html_report,
+    generate_markdown_report,
+    generate_report,
+    ReportGenerator,
+    ReportFormatter,
+    get_module_info,
+    get_supported_formats,
+    validate_report,
 )
 
 # Process report step (used by pipeline)

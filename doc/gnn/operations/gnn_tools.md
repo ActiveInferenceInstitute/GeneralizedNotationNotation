@@ -111,9 +111,7 @@ from pathlib import Path
 
 # Run visualization on parsed GNN output
 process_visualization(
-    target_dir=Path("input/gnn_files"),
-    output_dir=Path("output"),
-    verbose=True
+    target_dir=Path("input/gnn_files"), output_dir=Path("output"), verbose=True
 )
 ```
 

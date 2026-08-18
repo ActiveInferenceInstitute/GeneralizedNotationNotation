@@ -140,11 +140,11 @@ from axiom import create_axiom_agent, run_axiom_experiment, AxiomConfig
 
 # Create configuration
 config = AxiomConfig(
-    K_slots=8,           # Number of object slots
-    V_identities=5,      # Number of identity types
-    L_dynamics=10,       # Number of dynamics modes
-    M_contexts=20,       # Number of context modes
-    output_dir=Path("./axiom_results")
+    K_slots=8,  # Number of object slots
+    V_identities=5,  # Number of identity types
+    L_dynamics=10,  # Number of dynamics modes
+    M_contexts=20,  # Number of context modes
+    output_dir=Path("./axiom_results"),
 )
 
 # Create agent
@@ -155,7 +155,7 @@ results = run_axiom_experiment(
     agent=agent,
     environment=your_environment,
     n_episodes=10,
-    max_steps_per_episode=10000
+    max_steps_per_episode=10000,
 )
 ```
 
@@ -181,11 +181,11 @@ Core mathematical functions for Bayesian inference and Active Inference:
 
 ```python
 from axiom.utils.math_utils import (
-    BayesianUtils,           # Bayesian probability computations
-    VariationalInference,    # Coordinate ascent VI
-    LinearDynamics,          # Linear dynamical systems
-    ActiveInferenceUtils,    # Expected free energy, policies
-    StructureLearningUtils   # Online learning and BMR
+    BayesianUtils,  # Bayesian probability computations
+    VariationalInference,  # Coordinate ascent VI
+    LinearDynamics,  # Linear dynamical systems
+    ActiveInferenceUtils,  # Expected free energy, policies
+    StructureLearningUtils,  # Online learning and BMR
 )
 ```
 
@@ -195,10 +195,10 @@ Comprehensive plotting and analysis utilities:
 
 ```python
 from axiom.utils.visualization_utils import (
-    visualize_slots,         # Object slot visualization
-    plot_reward_history,     # Learning curves
-    plot_model_complexity,   # Component evolution
-    create_axiom_dashboard   # Complete dashboard
+    visualize_slots,  # Object slot visualization
+    plot_reward_history,  # Learning curves
+    plot_model_complexity,  # Component evolution
+    create_axiom_dashboard,  # Complete dashboard
 )
 ```
 
@@ -208,9 +208,9 @@ Real-time performance tracking and optimization analysis:
 
 ```python
 from axiom.utils.performance_utils import (
-    PerformanceTracker,      # Real-time monitoring
-    EfficiencyAnalyzer,      # Bottleneck analysis
-    BenchmarkSuite          # Standardized benchmarks
+    PerformanceTracker,  # Real-time monitoring
+    EfficiencyAnalyzer,  # Bottleneck analysis
+    BenchmarkSuite,  # Standardized benchmarks
 )
 ```
 
@@ -319,14 +319,11 @@ suggestions = analyzer.suggest_optimizations()
 
 ```python
 # Visualize learning progress
-plot_reward_history(agent.history['rewards'])
-plot_model_complexity(agent.history['model_complexity'])
+plot_reward_history(agent.history["rewards"])
+plot_model_complexity(agent.history["model_complexity"])
 
 # Create comprehensive dashboard
-dashboard = create_axiom_dashboard(
-    agent.get_summary(),
-    agent.history
-)
+dashboard = create_axiom_dashboard(agent.get_summary(), agent.history)
 ```
 
 ## Mathematical Foundation
@@ -367,10 +364,11 @@ class CustomEnvironment:
     def reset(self) -> np.ndarray:
         # Return initial observation (H x W x 3 RGB image)
         pass
-    
+
     def step(self, action: int) -> Tuple[np.ndarray, float, bool, dict]:
         # Return (observation, reward, done, info)
         pass
+
 
 # Use with AXIOM
 env = CustomEnvironment()
@@ -381,7 +379,7 @@ results = run_axiom_experiment(agent, env)
 
 ```python
 # Access internal model states
-slot_features = agent.s_slot              # Current object slots
+slot_features = agent.s_slot  # Current object slots
 identity_assignments = agent.imm.z_identity  # Identity assignments
 dynamics_modes = agent.tmm.current_modes  # Active dynamics modes
 

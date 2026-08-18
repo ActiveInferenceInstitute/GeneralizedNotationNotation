@@ -65,7 +65,7 @@ success = process_oxdraw(
     output_dir=Path("output/24_oxdraw_output"),
     logger=logger,
     mode="interactive",
-    launch_editor=True
+    launch_editor=True,
 )
 ```
 
@@ -120,8 +120,7 @@ gnn_model = mermaid_to_gnn(mermaid_content, validate_ontology=True)
 from oxdraw import convert_gnn_file_to_mermaid
 
 convert_gnn_file_to_mermaid(
-    Path("input/actinf_pomdp_agent.md"),
-    Path("output/actinf_pomdp_agent.mmd")
+    Path("input/actinf_pomdp_agent.md"), Path("output/actinf_pomdp_agent.mmd")
 )
 ```
 
@@ -135,8 +134,7 @@ convert_gnn_file_to_mermaid(
 from oxdraw import convert_mermaid_file_to_gnn
 
 gnn_model = convert_mermaid_file_to_gnn(
-    Path("edited_diagram.mmd"),
-    Path("output/edited_model.md")
+    Path("edited_diagram.mmd"), Path("output/edited_model.md")
 )
 ```
 
@@ -175,13 +173,13 @@ gnn_model = convert_mermaid_file_to_gnn(
 
 ```python
 DEFAULT_OXDRAW_SETTINGS = {
-    'mode': 'headless',
-    'port': 5151,
-    'host': '127.0.0.1',
-    'auto_convert': True,
-    'validate_on_save': True,
-    'include_metadata': True,
-    'include_styling': True
+    "mode": "headless",
+    "port": 5151,
+    "host": "127.0.0.1",
+    "auto_convert": True,
+    "validate_on_save": True,
+    "include_metadata": True,
+    "include_styling": True,
 }
 ```
 
@@ -233,7 +231,7 @@ success = process_oxdraw(
     output_dir=Path("output/oxdraw_output"),
     logger=logger,
     mode="headless",
-    auto_convert=True
+    auto_convert=True,
 )
 
 print(f"Conversion {'succeeded' if success else 'failed'}")
@@ -250,7 +248,7 @@ success = process_oxdraw(
     mode="interactive",
     launch_editor=True,
     port=5151,
-    host="127.0.0.1"
+    host="127.0.0.1",
 )
 
 # Editor opens at http://127.0.0.1:5151
@@ -263,14 +261,20 @@ success = process_oxdraw(
 # Run as part of GNN pipeline (Step 22 - GUI module)
 import subprocess
 
-subprocess.run([
-    "python3", "src/22_gui.py",
-    "--target-dir", "input/gnn_files",
-    "--output-dir", "output",
-    "--gui-types", "oxdraw",
-    "--headless",
-    "--verbose"
-])
+subprocess.run(
+    [
+        "python3",
+        "src/22_gui.py",
+        "--target-dir",
+        "input/gnn_files",
+        "--output-dir",
+        "output",
+        "--gui-types",
+        "oxdraw",
+        "--headless",
+        "--verbose",
+    ]
+)
 ```
 
 ---
@@ -311,7 +315,7 @@ from pathlib import Path
 from oxdraw import (
     convert_gnn_file_to_mermaid,
     launch_oxdraw_editor,
-    convert_mermaid_file_to_gnn
+    convert_mermaid_file_to_gnn,
 )
 
 # Step 1: Convert GNN to Mermaid

@@ -72,32 +72,28 @@ The `navigation.html` file provides a centralized navigation interface for all p
 ## Public API
 ```python
 from gui import (
-  # Main processing function
-  process_gui,
-  
-  # Individual GUI runners
-  gui_1,
-  gui_2,
-  gui_3,
-  
-  # Information functions
-  get_available_guis,
-  get_gui_1_info,
-  get_gui_2_info,
-  get_gui_3_info,
-  
-  # Navigation generation
-  generate_html_navigation,
-  
-  # GUI 1 utilities
-  add_component_to_markdown,
-  update_component_states,
-  remove_component_from_markdown,
-  parse_components_from_markdown,
-  parse_state_space_from_markdown,
-  add_state_space_entry,
-  update_state_space_entry,
-  remove_state_space_entry,
+    # Main processing function
+    process_gui,
+    # Individual GUI runners
+    gui_1,
+    gui_2,
+    gui_3,
+    # Information functions
+    get_available_guis,
+    get_gui_1_info,
+    get_gui_2_info,
+    get_gui_3_info,
+    # Navigation generation
+    generate_html_navigation,
+    # GUI 1 utilities
+    add_component_to_markdown,
+    update_component_states,
+    remove_component_from_markdown,
+    parse_components_from_markdown,
+    parse_state_space_from_markdown,
+    add_state_space_entry,
+    update_state_space_entry,
+    remove_state_space_entry,
 )
 ```
 

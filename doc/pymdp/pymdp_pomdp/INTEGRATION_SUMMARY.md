@@ -40,7 +40,7 @@
 ### **Step 11: Render** (`src/11_render.py`)
 ```python
 # GNN → PyMDP code generation
-gnn_spec = parse_gnn_file('actinf_pomdp_agent.md')
+gnn_spec = parse_gnn_file("actinf_pomdp_agent.md")
 rendered_code = render_gnn_to_pymdp(gnn_spec)
 ```
 
@@ -53,6 +53,7 @@ rendered_code = render_gnn_to_pymdp(gnn_spec)
 ```python
 # Execute rendered PyMDP simulations
 from src.execute.pymdp import execute_pymdp_simulation
+
 success, results = execute_pymdp_simulation(gnn_spec, output_dir)
 ```
 
@@ -66,15 +67,15 @@ success, results = execute_pymdp_simulation(gnn_spec, output_dir)
 ### **State Space Configuration**
 ```python
 # From GNN specification to PyMDP matrices
-num_states = gnn_spec['model_parameters']['num_hidden_states']    # → A, B, D dimensions
-num_obs = gnn_spec['model_parameters']['num_obs']                # → A, C dimensions  
-num_actions = gnn_spec['model_parameters']['num_actions']        # → B matrix slices
+num_states = gnn_spec["model_parameters"]["num_hidden_states"]  # → A, B, D dimensions
+num_obs = gnn_spec["model_parameters"]["num_obs"]  # → A, C dimensions
+num_actions = gnn_spec["model_parameters"]["num_actions"]  # → B matrix slices
 
 # B matrix construction (action-conditioned transitions)
 B = utils.obj_array(1)
 B[0] = np.zeros((num_states, num_states, num_actions))
 # B[:,:,0] = action 0 transitions
-# B[:,:,1] = action 1 transitions  
+# B[:,:,1] = action 1 transitions
 # etc.
 ```
 
@@ -92,19 +93,19 @@ B[0] = np.zeros((num_states, num_states, num_actions))
 from pymdp import utils
 from pymdp.agent import Agent
 
-# Authentic matrix construction  
+# Authentic matrix construction
 A = utils.obj_array(1)
 B = utils.obj_array(1)
-C = utils.obj_array(1) 
+C = utils.obj_array(1)
 D = utils.obj_array(1)
 
 # Real Active Inference agent
 agent = Agent(A=A, B=B, C=C, D=D)
 
 # Genuine inference methods
-qs = agent.infer_states(obs)          # Variational message passing
-q_pi, _ = agent.infer_policies()      # Expected free energy minimization
-action = agent.sample_action()        # Policy sampling
+qs = agent.infer_states(obs)  # Variational message passing
+q_pi, _ = agent.infer_policies()  # Expected free energy minimization
+action = agent.sample_action()  # Policy sampling
 ```
 
 ### 📊 **Scientific Capabilities**
@@ -177,12 +178,11 @@ from src.execute.pymdp import execute_pymdp_simulation
 from src.gnn import parse_gnn_file
 
 # Parse GNN file
-gnn_spec = parse_gnn_file('input/gnn_files/actinf_pomdp_agent.md')
+gnn_spec = parse_gnn_file("input/gnn_files/actinf_pomdp_agent.md")
 
 # Execute PyMDP simulation
 success, results = execute_pymdp_simulation(
-    gnn_spec=gnn_spec.to_dict(),
-    output_dir=Path('output/pymdp_test')
+    gnn_spec=gnn_spec.to_dict(), output_dir=Path("output/pymdp_test")
 )
 
 print(f"Success: {success}")
@@ -198,9 +198,7 @@ gnn_specs = [parse_gnn_file(f) for f in gnn_files]
 
 # Batch execution
 batch_results = batch_execute_pymdp(
-    gnn_specs=gnn_specs,
-    base_output_dir=Path('output/batch_pymdp'),
-    num_episodes=10
+    gnn_specs=gnn_specs, base_output_dir=Path("output/batch_pymdp"), num_episodes=10
 )
 ```
 

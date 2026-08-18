@@ -179,14 +179,17 @@ After installation, verify that packages are working:
 ```python
 # Test PyMDP
 from pymdp.agent import Agent
+
 print("✅ PyMDP working!")
 
 # Test JAX
 import jax.numpy as jnp
+
 print("✅ JAX working!")
 
 # Test visualization
 import plotly.express as px
+
 print("✅ Plotly working!")
 ```
 

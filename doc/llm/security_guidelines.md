@@ -21,39 +21,40 @@ Prompt injection attacks attempt to manipulate LLM behavior through malicious in
 ```python
 from llm.security import PromptSanitizer
 
+
 class PromptSanitizer:
     """Sanitize prompts to prevent injection attacks."""
-    
+
     def sanitize_prompt(self, user_input: str, system_prompt: str) -> str:
         """
         Sanitize user input before including in prompts.
-        
+
         Security measures:
         - Remove control characters
         - Escape special tokens
         - Validate input length
         - Detect injection patterns
         """
-        
+
         # Remove control characters
-        sanitized = re.sub(r'[\x00-\x1f\x7f-\x9f]', '', user_input)
-        
+        sanitized = re.sub(r"[\x00-\x1f\x7f-\x9f]", "", user_input)
+
         # Detect injection patterns
         injection_patterns = [
-            r'ignore\s+(previous|above|all)',
-            r'forget\s+(everything|all)',
-            r'new\s+instructions?',
-            r'system\s*:',
-            r'<\|.*?\|>',  # Special tokens
+            r"ignore\s+(previous|above|all)",
+            r"forget\s+(everything|all)",
+            r"new\s+instructions?",
+            r"system\s*:",
+            r"<\|.*?\|>",  # Special tokens
         ]
-        
+
         for pattern in injection_patterns:
             if re.search(pattern, sanitized, re.IGNORECASE):
                 raise SecurityException(f"Potential injection detected: {pattern}")
-        
+
         # Escape special characters
-        sanitized = sanitized.replace('{', '{{').replace('}', '}}')
-        
+        sanitized = sanitized.replace("{", "{{").replace("}", "}}")
+
         return sanitized
 ```
 
@@ -73,30 +74,31 @@ Secure API key management is critical for LLM integration.
 ```python
 from llm.security import APIKeyManager
 
+
 class APIKeyManager:
     """Secure API key management for LLM providers."""
-    
+
     def __init__(self):
         self.key_store = SecureKeyStore()
         self.encryption = KeyEncryption()
-    
+
     def store_api_key(self, provider: str, key: str, user_id: str):
         """Store encrypted API key."""
-        
+
         # Encrypt key before storage
         encrypted_key = self.encryption.encrypt(key)
-        
+
         # Store with metadata
         self.key_store.store(
             provider=provider,
             encrypted_key=encrypted_key,
             user_id=user_id,
-            created_at=datetime.utcnow()
+            created_at=datetime.utcnow(),
         )
-    
+
     def retrieve_api_key(self, provider: str, user_id: str) -> str:
         """Retrieve and decrypt API key."""
-        
+
         encrypted_key = self.key_store.retrieve(provider, user_id)
         return self.encryption.decrypt(encrypted_key)
 ```
@@ -118,31 +120,36 @@ Prevent sensitive data from being included in LLM prompts.
 ```python
 from llm.security import DataSanitizer
 
+
 class DataSanitizer:
     """Sanitize data before sending to LLM."""
-    
+
     def sanitize_gnn_content(self, content: str) -> str:
         """
         Remove sensitive information from GNN content.
-        
+
         Removes:
         - API keys and tokens
         - Personal information
         - Internal paths
         - Sensitive metadata
         """
-        
+
         # Remove API keys
-        content = re.sub(r'api[_-]?key["\']?\s*[:=]\s*["\']?[a-zA-Z0-9_-]+', 
-                        'api_key=REDACTED', content, flags=re.IGNORECASE)
-        
+        content = re.sub(
+            r'api[_-]?key["\']?\s*[:=]\s*["\']?[a-zA-Z0-9_-]+',
+            "api_key=REDACTED",
+            content,
+            flags=re.IGNORECASE,
+        )
+
         # Remove personal information patterns
-        content = re.sub(r'\b\d{3}-\d{2}-\d{4}\b', 'XXX-XX-XXXX', content)  # SSN
-        
+        content = re.sub(r"\b\d{3}-\d{2}-\d{4}\b", "XXX-XX-XXXX", content)  # SSN
+
         # Remove internal paths
-        content = re.sub(r'/home/[^/\s]+', '/home/USER', content)
-        content = re.sub(r'C:\\Users\\[^\\\s]+', 'C:\\Users\\USER', content)
-        
+        content = re.sub(r"/home/[^/\s]+", "/home/USER", content)
+        content = re.sub(r"C:\\Users\\[^\\\s]+", "C:\\Users\\USER", content)
+
         return content
 ```
 
@@ -162,34 +169,35 @@ Implement rate limiting to prevent abuse and control costs.
 ```python
 from llm.security import RateLimiter
 
+
 class RateLimiter:
     """Rate limiting for LLM API calls."""
-    
+
     def __init__(self):
         self.limits = {
-            'requests_per_minute': 60,
-            'requests_per_hour': 1000,
-            'tokens_per_day': 100000
+            "requests_per_minute": 60,
+            "requests_per_hour": 1000,
+            "tokens_per_day": 100000,
         }
         self.usage_tracker = UsageTracker()
-    
+
     def check_rate_limit(self, user_id: str, request_size: int) -> bool:
         """Check if request is within rate limits."""
-        
+
         usage = self.usage_tracker.get_usage(user_id)
-        
+
         # Check per-minute limit
-        if usage.requests_last_minute >= self.limits['requests_per_minute']:
+        if usage.requests_last_minute >= self.limits["requests_per_minute"]:
             return False
-        
+
         # Check per-hour limit
-        if usage.requests_last_hour >= self.limits['requests_per_hour']:
+        if usage.requests_last_hour >= self.limits["requests_per_hour"]:
             return False
-        
+
         # Check token limit
-        if usage.tokens_today + request_size > self.limits['tokens_per_day']:
+        if usage.tokens_today + request_size > self.limits["tokens_per_day"]:
             return False
-        
+
         return True
 ```
 
@@ -231,24 +239,25 @@ Validate all LLM-generated outputs before use.
 ```python
 from llm.security import OutputValidator
 
+
 class OutputValidator:
     """Validate LLM-generated outputs."""
-    
+
     def validate_output(self, output: str, expected_type: str) -> bool:
         """Validate LLM output before use."""
-        
+
         # Check for code injection
         if self.detect_code_injection(output):
             raise SecurityException("Code injection detected in output")
-        
+
         # Check for malicious content
         if self.detect_malicious_content(output):
             raise SecurityException("Malicious content detected")
-        
+
         # Validate structure
         if not self.validate_structure(output, expected_type):
             raise SecurityException("Invalid output structure")
-        
+
         return True
 ```
 

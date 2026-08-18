@@ -95,11 +95,11 @@ RxInfer extracts model dimensions from the GNN specification using a multi-sourc
 ```python
 # Priority chain for num_actions
 num_actions = (
-    model_params.get('num_actions') or      # Explicit GNN model param
-    model_params.get('num_controls') or      # Alternative GNN naming
-    model_params.get('n_actions') or         # Previous naming convention
-    inferred_actions or                      # Inferred from B matrix depth
-    3                                        # Hardcoded default
+    model_params.get("num_actions")  # Explicit GNN model param
+    or model_params.get("num_controls")  # Alternative GNN naming
+    or model_params.get("n_actions")  # Previous naming convention
+    or inferred_actions  # Inferred from B matrix depth
+    or 3  # Hardcoded default
 )
 ```
 

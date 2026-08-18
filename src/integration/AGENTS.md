@@ -66,7 +66,7 @@ success = process_integration(
     logger=logger,
     verbose=True,
     integration_mode="coordinated",
-    validate_dependencies=True
+    validate_dependencies=True,
 )
 ```
 
@@ -110,11 +110,11 @@ Module coordination (dependency graph construction, cycle detection, cross-refer
 ### Default Settings
 ```python
 DEFAULT_INTEGRATION_SETTINGS = {
-    'coordination_enabled': True,
-    'fallback_mode': True,
-    'timeout': 60,
-    'retry_attempts': 3,
-    'parallel_processing': False
+    "coordination_enabled": True,
+    "fallback_mode": True,
+    "timeout": 60,
+    "retry_attempts": 3,
+    "parallel_processing": False,
 }
 ```
 
@@ -130,7 +130,7 @@ success = process_integration(
     target_dir=Path("input/gnn_files"),
     output_dir=Path("output/17_integration_output"),
     logger=logger,
-    integration_mode="coordinated"
+    integration_mode="coordinated",
 )
 ```
 

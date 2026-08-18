@@ -23,13 +23,23 @@ python src/main.py --only-steps 22 --verbose
 
 ```python
 from gui import (
-    process_gui, get_available_guis,
-    gui_1, gui_2, gui_3, oxdraw_gui,
-    get_gui_1_info, get_gui_2_info, get_gui_3_info, get_oxdraw_info,
+    process_gui,
+    get_available_guis,
+    gui_1,
+    gui_2,
+    gui_3,
+    oxdraw_gui,
+    get_gui_1_info,
+    get_gui_2_info,
+    get_gui_3_info,
+    get_oxdraw_info,
     generate_html_navigation,
-    parse_components_from_markdown, parse_state_space_from_markdown,
-    add_component_to_markdown, update_component_states,
-    add_state_space_entry, update_state_space_entry
+    parse_components_from_markdown,
+    parse_state_space_from_markdown,
+    add_component_to_markdown,
+    update_component_states,
+    add_state_space_entry,
+    update_state_space_entry,
 )
 
 # Process GUI step (used by pipeline)
@@ -39,9 +49,9 @@ process_gui(target_dir, output_dir, verbose=True)
 guis = get_available_guis()
 
 # Launch specific GUI
-gui_1()   # Basic
-gui_2()   # Enhanced
-gui_3()   # Full-featured
+gui_1()  # Basic
+gui_2()  # Enhanced
+gui_3()  # Full-featured
 oxdraw_gui()  # Graph drawing canvas
 
 # Parse GNN markdown for GUI

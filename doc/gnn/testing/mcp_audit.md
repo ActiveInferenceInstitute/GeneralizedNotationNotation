@@ -13,11 +13,12 @@ The module-scoped fixture calls `initialize()` and then **convergence-polls** un
 @pytest.fixture(scope="module")
 def mcp_initialized():
     from mcp import initialize, mcp_instance
+
     initialize(halt_on_missing_sdk=False, force_proceed_flag=True)
 
     # Wait up to 5 s for background registration threads to finish
     prev_count = -1
-    for _ in range(25):        # 25 × 0.2 s = 5 s max
+    for _ in range(25):  # 25 × 0.2 s = 5 s max
         current = len(mcp_instance.tools)
         if current == prev_count:
             break
@@ -39,12 +40,38 @@ The audit file contains six test classes (`TestMCPModuleDiscovery`, `TestMCPTool
 
 ```python
 EXPECTED_MODULES = (
-    "advanced_visualization", "analysis", "api", "audio", "cli", "doc",
-    "execute", "export", "gnn", "integration", "intelligent_analysis",
-    "llm", "lsp", "mcp", "ml_integration", "model_registry", "ontology",
-    "gui", "pipeline", "render", "report", "research", "sapf", "security",
-    "setup", "sympy_mcp", "template", "type_checker", "utils", "validation",
-    "visualization", "website",
+    "advanced_visualization",
+    "analysis",
+    "api",
+    "audio",
+    "cli",
+    "doc",
+    "execute",
+    "export",
+    "gnn",
+    "integration",
+    "intelligent_analysis",
+    "llm",
+    "lsp",
+    "mcp",
+    "ml_integration",
+    "model_registry",
+    "ontology",
+    "gui",
+    "pipeline",
+    "render",
+    "report",
+    "research",
+    "sapf",
+    "security",
+    "setup",
+    "sympy_mcp",
+    "template",
+    "type_checker",
+    "utils",
+    "validation",
+    "visualization",
+    "website",
 )
 ```
 
@@ -74,11 +101,19 @@ EXPECTED_MODULES = (
 
 ```python
 DOMAIN_TOOLS = [
-    "process_analysis", "get_analysis_results", "compute_complexity_metrics",
+    "process_analysis",
+    "get_analysis_results",
+    "compute_complexity_metrics",
     "list_analysis_tools",
-    "process_render", "list_render_frameworks", "render_gnn_to_format",
-    "process_export", "list_export_formats", "validate_export_format",
-    "process_validation", "validate_gnn_file", ...
+    "process_render",
+    "list_render_frameworks",
+    "render_gnn_to_format",
+    "process_export",
+    "list_export_formats",
+    "validate_export_format",
+    "process_validation",
+    "validate_gnn_file",
+    ...,
     # (full list: mcp/tool_reference.md)
 ]
 ```

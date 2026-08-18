@@ -15,11 +15,13 @@ def softmax(x):
     e = _np.exp(x - x_max)
     return e / _np.sum(e, axis=-1, keepdims=True)
 
+
 def softmax_dim2(x):
     x = _np.asarray(x, dtype=float)
     x_max = _np.max(x, axis=0, keepdims=True)
     e = _np.exp(x - x_max)
     return e / _np.sum(e, axis=0, keepdims=True)
+
 
 def normalise(A, axis=0, eps: float = 1e-12):
     A = _np.asarray(A, dtype=float)
@@ -27,8 +29,10 @@ def normalise(A, axis=0, eps: float = 1e-12):
     s = _np.where(s == 0, eps, s)
     return A / s
 
+
 def precision_weighted_likelihood(*args, **kwargs):
     return None
+
 
 def bayesian_model_average(values, weights):
     w = _np.asarray(weights, dtype=float)
@@ -36,23 +40,30 @@ def bayesian_model_average(values, weights):
     w = w / (w.sum() if w.sum() != 0 else 1)
     return float((v * w).sum())
 
+
 def compute_attentional_charge(*args, **kwargs):
     return 0.0
+
 
 def expected_free_energy(*args, **kwargs):
     return 0.0
 
+
 def variational_free_energy(*args, **kwargs):
     return 0.0
+
 
 def update_precision_beliefs(*args, **kwargs):
     return None
 
+
 def policy_posterior(*args, **kwargs):
     return None
 
+
 def generate_oddball_sequence(length=10):
     return _np.zeros(length, dtype=int)
+
 
 def discrete_choice(values, temperature: float = 1.0):
     vals = _np.asarray(values, dtype=float)
@@ -64,20 +75,35 @@ def discrete_choice(values, temperature: float = 1.0):
     probs = probs / probs.sum()
     return int(_np.random.choice(len(probs), p=probs))
 
+
 def setup_transition_matrices():
     return None
 
+
 def setup_likelihood_matrices():
     return None
+
 
 def compute_entropy_terms(P, axis=0):
     P = _np.clip(_np.asarray(P, dtype=float), 1e-12, 1.0)
     return -_np.sum(P * _np.log(P), axis=axis)
 
-__all__ = ['MathUtils', 'softmax', 'softmax_dim2', 'normalise',
-           'precision_weighted_likelihood', 'bayesian_model_average',
-           'compute_attentional_charge', 'expected_free_energy',
-           'variational_free_energy', 'update_precision_beliefs',
-           'policy_posterior', 'generate_oddball_sequence', 'discrete_choice',
-           'setup_transition_matrices', 'setup_likelihood_matrices',
-           'compute_entropy_terms']
+
+__all__ = [
+    "MathUtils",
+    "softmax",
+    "softmax_dim2",
+    "normalise",
+    "precision_weighted_likelihood",
+    "bayesian_model_average",
+    "compute_attentional_charge",
+    "expected_free_energy",
+    "variational_free_energy",
+    "update_precision_beliefs",
+    "policy_posterior",
+    "generate_oddball_sequence",
+    "discrete_choice",
+    "setup_transition_matrices",
+    "setup_likelihood_matrices",
+    "compute_entropy_terms",
+]

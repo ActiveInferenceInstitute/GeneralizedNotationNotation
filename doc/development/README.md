@@ -139,35 +139,38 @@ from pathlib import Path
 
 logger = logging.getLogger(__name__)
 
+
 def process_main_logic(args: argparse.Namespace) -> bool:
     """Main processing logic for this step."""
     # Implementation here
     return success
 
+
 def main(args: argparse.Namespace) -> int:
     """Entry point called by main.py pipeline."""
     logger.info(f"Starting Step N: Description")
-    
+
     if not process_main_logic(args):
         logger.error("Step N failed")
         return 1
-        
+
     logger.info("Step N completed successfully")
     return 0
+
 
 if __name__ == "__main__":
     # Standalone execution setup
     parser = argparse.ArgumentParser(description="Step N (Standalone)")
     # Add arguments
     args = parser.parse_args()
-    
+
     # Setup logging for standalone
     from utils.logging_utils import setup_standalone_logging
+
     setup_standalone_logging(
-        level=logging.DEBUG if args.verbose else logging.INFO,
-        logger_name=__name__
+        level=logging.DEBUG if args.verbose else logging.INFO, logger_name=__name__
     )
-    
+
     sys.exit(main(args))
 ```
 
@@ -179,26 +182,27 @@ Each module can provide MCP tools:
 def tool_function(param1: str, param2: int = 10) -> dict:
     """
     Tool description for MCP schema generation.
-    
+
     Args:
         param1: Parameter description
         param2: Optional parameter with default
-        
+
     Returns:
         Result dictionary
     """
     # Implementation
     return {"result": result}
 
+
 def register_tools():
     """Register all tools from this module."""
     from src.mcp import mcp_instance
-    
+
     tools = {
         "module_tool_name": tool_function,
         # Add more tools
     }
-    
+
     for name, func in tools.items():
         mcp_instance.register_tool(name, func)
 ```
@@ -214,8 +218,10 @@ def process_gnn_file(file_path: Path, strict: bool = False) -> Dict[str, Any]:
     """Process a GNN file and return parsed data."""
     pass
 
+
 # Use Union types where appropriate
 from typing import Union, Optional, List, Dict
+
 
 def validate_model(model: Union[str, Path, Dict]) -> Optional[List[str]]:
     """Validate a model, return errors if any."""
@@ -260,13 +266,13 @@ def parse_gnn_file(file_path: Path) -> Dict[str, Any]:
     try:
         if not file_path.exists():
             raise FileNotFoundError(f"GNN file not found: {file_path}")
-            
-        with open(file_path, 'r', encoding='utf-8') as f:
+
+        with open(file_path, "r", encoding="utf-8") as f:
             content = f.read()
-            
+
         # Processing logic
         return parse_content(content)
-        
+
     except json.JSONDecodeError as e:
         raise ValueError(f"Invalid JSON in GNN file: {e}")
     except Exception as e:
@@ -300,45 +306,49 @@ import pytest
 from pathlib import Path
 from src.gnn.parser import parse_gnn_file
 
+
 class TestGNNParser:
     """Test suite for GNN file parsing."""
-    
+
     @pytest.fixture
     def sample_gnn_file(self, tmp_path):
         """Create a sample GNN file for testing."""
         content = """
         # ModelName
         Test Model
-        
+
         # StateSpaceBlock
         s_f0[3,1,type=float]
         """
         file_path = tmp_path / "test_model.md"
         file_path.write_text(content)
         return file_path
-    
+
     def test_parse_valid_file(self, sample_gnn_file):
         """Test parsing a valid GNN file."""
         result = parse_gnn_file(sample_gnn_file)
-        
+
         assert result["model_name"] == "Test Model"
         assert "s_f0" in result["state_space"]
         assert result["state_space"]["s_f0"]["dimensions"] == [3, 1]
-    
+
     def test_parse_missing_file(self):
         """Test error handling for missing files."""
         with pytest.raises(FileNotFoundError):
             parse_gnn_file(Path("nonexistent.md"))
-            
-    @pytest.mark.parametrize("invalid_content,expected_error", [
-        ("# InvalidSection\nContent", "Unknown section"),
-        ("# StateSpaceBlock\ninvalid[format", "Invalid dimension"),
-    ])
+
+    @pytest.mark.parametrize(
+        "invalid_content,expected_error",
+        [
+            ("# InvalidSection\nContent", "Unknown section"),
+            ("# StateSpaceBlock\ninvalid[format", "Invalid dimension"),
+        ],
+    )
     def test_parse_invalid_content(self, tmp_path, invalid_content, expected_error):
         """Test error handling for various invalid content."""
         file_path = tmp_path / "invalid.md"
         file_path.write_text(invalid_content)
-        
+
         with pytest.raises(ValueError, match=expected_error):
             parse_gnn_file(file_path)
 ```

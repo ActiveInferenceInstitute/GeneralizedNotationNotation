@@ -67,7 +67,7 @@ success = process_ml_integration(
     verbose=True,
     model_type="supervised",
     training_mode="train",
-    framework="sklearn"
+    framework="sklearn",
 )
 ```
 
@@ -143,20 +143,20 @@ success = process_ml_integration(
 ### Default Settings
 ```python
 DEFAULT_ML_SETTINGS = {
-    'framework': 'auto',
-    'model_type': 'auto',
-    'training': {
-        'epochs': 100,
-        'batch_size': 32,
-        'validation_split': 0.2,
-        'early_stopping': True,
-        'patience': 10
+    "framework": "auto",
+    "model_type": "auto",
+    "training": {
+        "epochs": 100,
+        "batch_size": 32,
+        "validation_split": 0.2,
+        "early_stopping": True,
+        "patience": 10,
     },
-    'optimization': {
-        'learning_rate': 0.001,
-        'optimizer': 'adam',
-        'loss_function': 'auto'
-    }
+    "optimization": {
+        "learning_rate": 0.001,
+        "optimizer": "adam",
+        "loss_function": "auto",
+    },
 }
 ```
 
@@ -172,7 +172,7 @@ success = process_ml_integration(
     target_dir=Path("input/gnn_files"),
     output_dir=Path("output/14_ml_integration_output"),
     logger=logger,
-    model_type="auto"
+    model_type="auto",
 )
 ```
 
@@ -186,7 +186,7 @@ success = process_ml_integration(
     logger=logger,
     model_type="supervised",
     training_mode="train",
-    ml_framework="torch"
+    ml_framework="torch",
 )
 ```
 

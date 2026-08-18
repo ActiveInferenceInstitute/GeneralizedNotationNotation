@@ -263,11 +263,10 @@ src/gnn/
 from gnn.schema_validator import GNNValidator, ValidationLevel
 
 validator = GNNValidator(
-    validation_level=ValidationLevel.STANDARD,
-    enable_round_trip_testing=False
+    validation_level=ValidationLevel.STANDARD, enable_round_trip_testing=False
 )
 
-result = validator.validate_file('model.md')
+result = validator.validate_file("model.md")
 print(f"Valid: {result.is_valid}")
 print(f"Errors: {len(result.errors)}")
 ```
@@ -322,7 +321,7 @@ success = process_gnn_folder(
     logger=logger,
     validation_level="standard",
     enable_round_trip=False,
-    recursive=True
+    recursive=True,
 )
 ```
 
@@ -354,7 +353,7 @@ Features:
 from gnn.schema_validator import GNNValidator, ValidationLevel
 
 validator = GNNValidator(validation_level=ValidationLevel.STRICT)
-result = validator.validate_file('model.md')
+result = validator.validate_file("model.md")
 
 # Result analysis
 print(f"Validation level: {result.validation_level.value}")
@@ -469,7 +468,7 @@ success = run_comprehensive_gnn_testing(
     output_dir=Path("results/"),
     logger=logger,
     validation_level="standard",
-    enable_round_trip=False
+    enable_round_trip=False,
 )
 ```
 
@@ -485,7 +484,7 @@ success = run_comprehensive_gnn_testing(
 ### Performance Monitoring
 
 ```python
-result = validator.validate_file('model.md')
+result = validator.validate_file("model.md")
 metrics = result.performance_metrics
 
 print(f"Validation time: {metrics.get('validation_time', 0):.3f}s")
@@ -502,6 +501,7 @@ class CustomGNNValidator(GNNValidator):
         if not parsed_gnn.ontology_mappings:
             result.suggestions.append("Consider adding ontology mappings")
 
+
 validator = CustomGNNValidator(validation_level=ValidationLevel.STRICT)
 ```
 
@@ -510,12 +510,14 @@ validator = CustomGNNValidator(validation_level=ValidationLevel.STRICT)
 ```python
 from gnn.parsers.common import BaseGNNParser
 
+
 class NewFormatParser(BaseGNNParser):
     def get_supported_extensions(self) -> List[str]:
-        return ['.newext']
-    
+        return [".newext"]
+
     def parse_file(self, file_path: str) -> ParseResult:
         return self._parse_with_embedded_data(file_path)
+
 
 # Register with system
 parsing_system.register_parser(GNNFormat.NEW_FORMAT, NewFormatParser)

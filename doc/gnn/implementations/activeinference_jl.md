@@ -52,9 +52,9 @@ The `extract_model_info()` function robustly extracts GNN parameters from multip
 ```python
 # Priority chain for parameter extraction
 sources = [
-    gnn_spec.get('initial_parameterization', {}),    # Standard GNN format
-    gnn_spec.get('initialparameterization', {}),      # Alternative casing
-    gnn_spec.get('InitialParameterization', {}),      # Pascal case
+    gnn_spec.get("initial_parameterization", {}),  # Standard GNN format
+    gnn_spec.get("initialparameterization", {}),  # Alternative casing
+    gnn_spec.get("InitialParameterization", {}),  # Pascal case
 ]
 ```
 

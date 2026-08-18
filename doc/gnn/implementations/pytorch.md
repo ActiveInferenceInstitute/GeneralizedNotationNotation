@@ -28,10 +28,12 @@ import torch
 import torch.nn as nn
 
 # Static matrices from GNN spec
-A = torch.tensor(gnn_params["A"], dtype=torch.float32)   # [num_obs, num_states]
-B = torch.tensor(gnn_params["B"], dtype=torch.float32)   # [num_states, num_states, num_actions]
-C = torch.tensor(gnn_params["C"], dtype=torch.float32)   # [num_obs]
-D = torch.tensor(gnn_params["D"], dtype=torch.float32)   # [num_states]
+A = torch.tensor(gnn_params["A"], dtype=torch.float32)  # [num_obs, num_states]
+B = torch.tensor(
+    gnn_params["B"], dtype=torch.float32
+)  # [num_states, num_states, num_actions]
+C = torch.tensor(gnn_params["C"], dtype=torch.float32)  # [num_obs]
+D = torch.tensor(gnn_params["D"], dtype=torch.float32)  # [num_states]
 
 # Optionally make learnable
 A_param = nn.Parameter(A.log())  # log-space for softmax stability
@@ -46,15 +48,15 @@ for t in range(T):
     obs = torch.multinomial(A[:, true_state], 1).item()
 
     # Agent inference: softmax belief update
-    log_likelihood = A[:, :].log()[:, :].T[obs]     # [num_states]
+    log_likelihood = A[:, :].log()[:, :].T[obs]  # [num_states]
     log_prior = D.log() if t == 0 else belief.log()
     belief = torch.softmax(log_likelihood + log_prior, dim=0)
 
     # Policy evaluation: Expected Free Energy
     efe = torch.zeros(num_actions)
     for a in range(num_actions):
-        predicted_state = B[:, :, a] @ belief           # [num_states]
-        predicted_obs   = A @ predicted_state            # [num_obs]
+        predicted_state = B[:, :, a] @ belief  # [num_states]
+        predicted_obs = A @ predicted_state  # [num_obs]
         ambiguity = -(predicted_obs * predicted_obs.log()).sum()
         risk = (predicted_obs * (predicted_obs.log() - C.log())).sum()
         efe[a] = ambiguity + risk

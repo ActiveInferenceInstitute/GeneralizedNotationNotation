@@ -25,29 +25,28 @@ The following SymPy MCP tools are now registered and available through the GNN M
 from src.mcp.mcp import mcp_instance
 
 # Initialize SymPy integration (requires SymPy MCP server)
-result = mcp_instance.execute_tool('sympy_initialize', {})
+result = mcp_instance.execute_tool("sympy_initialize", {})
 
 # Validate a GNN equation
-equation_result = mcp_instance.execute_tool('sympy_validate_equation', {
-    'equation': 'x^2 + 2*x + 1',
-    'context': {}
-})
+equation_result = mcp_instance.execute_tool(
+    "sympy_validate_equation", {"equation": "x^2 + 2*x + 1", "context": {}}
+)
 
 # Simplify an expression
-simplify_result = mcp_instance.execute_tool('sympy_simplify_expression', {
-    'expression': '(x + 1)^2'
-})
+simplify_result = mcp_instance.execute_tool(
+    "sympy_simplify_expression", {"expression": "(x + 1)^2"}
+)
 
 # Get LaTeX representation
-latex_result = mcp_instance.execute_tool('sympy_get_latex', {
-    'expression': 'sqrt(x^2 + 1)'
-})
+latex_result = mcp_instance.execute_tool(
+    "sympy_get_latex", {"expression": "sqrt(x^2 + 1)"}
+)
 
 # Validate matrix stochasticity
-matrix_result = mcp_instance.execute_tool('sympy_validate_matrix', {
-    'matrix_data': [[0.5, 0.3], [0.5, 0.7]],
-    'matrix_type': 'transition'
-})
+matrix_result = mcp_instance.execute_tool(
+    "sympy_validate_matrix",
+    {"matrix_data": [[0.5, 0.3], [0.5, 0.7]], "matrix_type": "transition"},
+)
 ```
 
 ## Integration Architecture
@@ -118,7 +117,8 @@ To use the full SymPy capabilities, you'll need to set up the SymPy MCP server:
 4. **Test Integration**:
    ```python
    from src.mcp.mcp import mcp_instance
-   result = mcp_instance.execute_tool('sympy_initialize', {})
+
+   result = mcp_instance.execute_tool("sympy_initialize", {})
    print(result)  # Should show success when server is running
    ```
 

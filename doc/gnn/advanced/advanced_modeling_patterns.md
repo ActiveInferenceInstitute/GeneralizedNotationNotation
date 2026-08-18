@@ -81,6 +81,7 @@ This guide covers advanced patterns for modeling complex cognitive and behaviora
 # This pattern is more about code structure than GNN model structure
 # but can be used to manage complex GNN model components.
 
+
 class GNNModel:
     def __init__(self, likelihood_module, transition_module):
         self.A = likelihood_module
@@ -90,13 +91,16 @@ class GNNModel:
         # Use injected modules
         pass
 
+
 class LikelihoodModule:
     def calculate(self, obs, state):
         pass
 
+
 class TransitionModule:
     def update(self, state, action):
         pass
+
 
 # Usage:
 # likelihood = LikelihoodModule()
@@ -1043,6 +1047,7 @@ LanguageProcessingWindow=5
 # The Observer pattern can be used to notify different parts of a GNN system
 # when a state changes, e.g., a belief update or a policy change.
 
+
 class Subject:
     def __init__(self):
         self._observers = []
@@ -1057,18 +1062,22 @@ class Subject:
         for observer in self._observers:
             observer.update(state_change)
 
+
 class Observer:
     def update(self, state_change):
         print(f"State changed: {state_change}")
+
 
 class BeliefStateMonitor(Observer):
     def update(self, state_change):
         print(f"Belief state updated: {state_change}")
 
+
 class PolicyExecutor(Observer):
     def update(self, state_change):
         if "policy_ready" in state_change:
             print("Executing new policy based on state change.")
+
 
 # Usage:
 # belief_subject = Subject()
@@ -1157,6 +1166,7 @@ s_learning_coordination[16,1,type=float]
 # The Factory pattern can be used to create different types of GNN agents
 # or modules based on configuration, without specifying the exact class.
 
+
 class AgentFactory:
     @staticmethod
     def create_agent(agent_type, config):
@@ -1169,20 +1179,24 @@ class AgentFactory:
         else:
             raise ValueError("Unknown agent type")
 
+
 class SimpleGNNAgent:
     def __init__(self, config):
         self.config = config
         print(f"Creating Simple GNN Agent with config: {config}")
+
 
 class HierarchicalGNNAgent:
     def __init__(self, config):
         self.config = config
         print(f"Creating Hierarchical GNN Agent with config: {config}")
 
+
 class MultiAgentGNNAgent:
     def __init__(self, config):
         self.config = config
         print(f"Creating Multi-Agent GNN Agent with config: {config}")
+
 
 # Usage:
 # agent1 = AgentFactory.create_agent("simple", {"learning_rate": 0.01})

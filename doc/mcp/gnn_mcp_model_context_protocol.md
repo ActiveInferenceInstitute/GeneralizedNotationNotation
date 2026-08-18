@@ -142,6 +142,7 @@ import mcp.types as types
 
 app = Server("git-prompts-server")
 
+
 @app.list_prompts()
 async def list_prompts() -> list[types.Prompt]:
     return [
@@ -152,27 +153,26 @@ async def list_prompts() -> list[types.Prompt]:
                 types.PromptArgument(
                     name="changes",
                     description="Code diff or explanation of changes",
-                    required=True
+                    required=True,
                 )
-            ]
+            ],
         )
     ]
+
 
 @app.get_prompt()
 async def get_prompt(name: str, arguments: dict[str, str]) -> types.GetPromptResult:
     if name != "git-commit":
         raise ValueError("Unknown prompt")
-    
+
     changes = arguments.get("changes", "")
     return types.GetPromptResult(
         messages=[
             types.PromptMessage(
                 role="user",
                 content=types.TextContent(
-                    type="text",
-                    text=("Generate a Git commit message:\n\n"
-                          f"{changes}")
-                )
+                    type="text", text=(f"Generate a Git commit message:\n\n{changes}")
+                ),
             )
         ]
     )
@@ -196,7 +196,7 @@ discover_payload = {
     "jsonrpc": "2.0",
     "method": "getAvailableTools",
     "params": {},
-    "id": 1
+    "id": 1,
 }
 response = requests.post(mcp_server_url, json=discover_payload)
 tools_catalog = response.json()
@@ -206,7 +206,7 @@ github_payload = {
     "jsonrpc": "2.0",
     "method": "githubTool.getLatestCommits",
     "params": {"repository": "example/repo", "count": 5},
-    "id": 2
+    "id": 2,
 }
 github_response = requests.post(mcp_server_url, json=github_payload)
 latest_commits = github_response.json()
@@ -410,7 +410,7 @@ discovery_payload = {
     "jsonrpc": "2.0",
     "method": "gnn/findModelsByOntologyTerm",
     "params": {"term": "decision-making"},
-    "id": 1
+    "id": 1,
 }
 ```
 
@@ -433,17 +433,15 @@ create_model_payload = {
         "model_name": "Hierarchical_Perception_Action",
         "state_factors": [
             {"name": "s_f0", "dimensions": [3], "type": "categorical"},
-            {"name": "s_f1", "dimensions": [2], "type": "categorical"}
+            {"name": "s_f1", "dimensions": [2], "type": "categorical"},
         ],
-        "observations": [
-            {"name": "o_m0", "dimensions": [4], "type": "categorical"}
-        ],
+        "observations": [{"name": "o_m0", "dimensions": [4], "type": "categorical"}],
         "connections": [
             {"source": "s_f0", "relation": ">", "target": "o_m0"},
-            {"source": "s_f1", "relation": ">", "target": "s_f0"}
-        ]
+            {"source": "s_f1", "relation": ">", "target": "s_f0"},
+        ],
     },
-    "id": 2
+    "id": 2,
 }
 ```
 
@@ -466,9 +464,9 @@ simulation_payload = {
         "model_id": "gnn_example_pymdp_agent",
         "environment": "pymdp",
         "time_steps": 20,
-        "initial_states": {"s_f0": 0, "s_f1": 1}
+        "initial_states": {"s_f0": 0, "s_f1": 1},
     },
-    "id": 3
+    "id": 3,
 }
 ```
 
@@ -485,26 +483,28 @@ import gnn.parser as gnn_parser
 
 app = Server("gnn-model-server")
 
+
 @app.get_resource()
 async def get_resource(resource_id: str) -> types.Resource:
     # Load and parse GNN file
     gnn_content = gnn_parser.load_gnn_file(f"models/{resource_id}.md")
     parsed_model = gnn_parser.parse_gnn_content(gnn_content)
-    
+
     # Return as MCP resource
     return types.Resource(
         id=resource_id,
         type="gnn/model",
-        content=types.TextContent(
-            type="text",
-            text=gnn_content
-        ),
+        content=types.TextContent(type="text", text=gnn_content),
         metadata={
             "model_name": parsed_model.get("ModelName"),
-            "state_factors": len(parsed_model.get("StateSpaceBlock", {}).get("factors", [])),
-            "observation_modalities": len(parsed_model.get("StateSpaceBlock", {}).get("observations", [])),
-            "time_type": parsed_model.get("Time", {}).get("type")
-        }
+            "state_factors": len(
+                parsed_model.get("StateSpaceBlock", {}).get("factors", [])
+            ),
+            "observation_modalities": len(
+                parsed_model.get("StateSpaceBlock", {}).get("observations", [])
+            ),
+            "time_type": parsed_model.get("Time", {}).get("type"),
+        },
     )
 ```
 
@@ -515,24 +515,25 @@ async def get_resource(resource_id: str) -> types.Resource:
 async def validate_model(model_content: str) -> dict:
     # Parse and validate GNN model
     validation_result = gnn_parser.validate_gnn_content(model_content)
-    
+
     return {
         "is_valid": validation_result["is_valid"],
         "errors": validation_result.get("errors", []),
         "warnings": validation_result.get("warnings", []),
-        "resource_estimates": validation_result.get("resource_estimates", {})
+        "resource_estimates": validation_result.get("resource_estimates", {}),
     }
+
 
 @app.register_tool("gnn/translateToPyMDP")
 async def translate_to_pymdp(model_id: str) -> dict:
     # Load GNN model and translate to PyMDP code
     gnn_content = gnn_parser.load_gnn_file(f"models/{model_id}.md")
     pymdp_code = gnn_renderer.render_pymdp(gnn_content)
-    
+
     return {
         "model_id": model_id,
         "target_format": "pymdp",
-        "generated_code": pymdp_code
+        "generated_code": pymdp_code,
     }
 ```
 
@@ -549,36 +550,39 @@ async def list_prompts() -> list[types.Prompt]:
                 types.PromptArgument(
                     name="description",
                     description="Natural language description of the desired Active Inference model",
-                    required=True
+                    required=True,
                 ),
                 types.PromptArgument(
                     name="complexity",
                     description="Desired model complexity (simple, moderate, complex)",
-                    required=False
-                )
-            ]
+                    required=False,
+                ),
+            ],
         )
     ]
+
 
 @app.get_prompt()
 async def get_prompt(name: str, arguments: dict[str, str]) -> types.GetPromptResult:
     if name != "gnn/create-active-inference-model":
         raise ValueError("Unknown prompt")
-    
+
     description = arguments.get("description", "")
     complexity = arguments.get("complexity", "moderate")
-    
+
     return types.GetPromptResult(
         messages=[
             types.PromptMessage(
                 role="user",
                 content=types.TextContent(
                     type="text",
-                    text=(f"Create a GNN model specification with {complexity} complexity "
-                          f"for the following system:\n\n{description}\n\n"
-                          "Include appropriate state factors, observation modalities, "
-                          "connections, and initial parameterization.")
-                )
+                    text=(
+                        f"Create a GNN model specification with {complexity} complexity "
+                        f"for the following system:\n\n{description}\n\n"
+                        "Include appropriate state factors, observation modalities, "
+                        "connections, and initial parameterization."
+                    ),
+                ),
             )
         ]
     )

@@ -97,7 +97,7 @@ from pathlib import Path
 success = process_visualization(
     target_dir=Path("input/gnn_files"),
     output_dir=Path("output/8_visualization_output"),
-    verbose=True
+    verbose=True,
 )
 # Generates: network graphs (PNG), matrix heatmaps (PNG), statistics reports (JSON)
 ```
@@ -134,7 +134,7 @@ from pathlib import Path
 generated_files = process_single_gnn_file(
     gnn_file=Path("input/gnn_files/model.md"),
     results_dir=Path("output/8_visualization_output/model/"),
-    verbose=True
+    verbose=True,
 )
 # generated_files: list of PNG/HTML paths for network graphs and matrix heatmaps
 ```
@@ -163,9 +163,7 @@ with open("input/gnn_files/discrete/actinf_pomdp_agent.md") as f:
     content = f.read()
 parsed = parse_gnn_content(content)
 files = generate_network_visualizations(
-    parsed_data=parsed,
-    output_dir=Path("output/network_viz/"),
-    model_name="my_model"
+    parsed_data=parsed, output_dir=Path("output/network_viz/"), model_name="my_model"
 )
 # Generates force-directed network graph with node types and edge styles
 ```
@@ -203,10 +201,10 @@ from advanced_visualization import process_advanced_viz
 success = process_advanced_viz(
     target_dir=Path("input/gnn_files"),
     output_dir=Path("output/9_advanced_viz_output"),
-    viz_type="all",        # or: 3d, interactive, dashboard, d2, diagrams,
-                           #     pipeline, statistical, pomdp, network
+    viz_type="all",  # or: 3d, interactive, dashboard, d2, diagrams,
+    #     pipeline, statistical, pomdp, network
     interactive=True,
-    export_formats=None,   # defaults chosen per viz_type
+    export_formats=None,  # defaults chosen per viz_type
 )
 ```
 
@@ -241,7 +239,7 @@ Post-simulation analysis (Step 16) provides a suite of visualization functions i
 from analysis.post_simulation import (
     generate_belief_heatmaps,
     generate_free_energy_plots,
-    generate_unified_framework_dashboard
+    generate_unified_framework_dashboard,
 )
 from pathlib import Path
 
@@ -249,13 +247,13 @@ from pathlib import Path
 generate_belief_heatmaps(
     beliefs=[[0.5, 0.3, 0.2], [0.6, 0.2, 0.2], [0.8, 0.1, 0.1]],
     output_path=Path("output/16_analysis_output/pymdp/belief_heatmap.png"),
-    title="PyMDP Belief Evolution"
+    title="PyMDP Belief Evolution",
 )
 
 generate_free_energy_plots(
     free_energy=[10.5, 8.3, 6.1, 4.2, 3.8, 3.5],
     output_path=Path("output/16_analysis_output/pymdp/free_energy.png"),
-    title="PyMDP Free Energy Dynamics"
+    title="PyMDP Free Energy Dynamics",
 )
 
 # Cross-framework unified dashboard
@@ -266,7 +264,7 @@ framework_data = {
 generate_unified_framework_dashboard(
     framework_data=framework_data,
     output_dir=Path("output/16_analysis_output/cross_framework/"),
-    model_name="My POMDP Model"
+    model_name="My POMDP Model",
 )
 ```
 

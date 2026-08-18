@@ -26,6 +26,7 @@ import numpyro
 import numpyro.distributions as dist
 from jax import random
 
+
 def gnn_generative_model(A, B, C, D, T=20):
     """NumPyro probabilistic program for GNN POMDP."""
     # Prior over initial hidden state
@@ -44,8 +45,7 @@ def gnn_generative_model(A, B, C, D, T=20):
             action = numpyro.sample(f"a_{t}", dist.Categorical(probs=C / C.sum()))
             # Transition model: P(s' | s, a)
             true_state = numpyro.sample(
-                f"s_{t+1}",
-                dist.Categorical(probs=B[:, true_state, action])
+                f"s_{t + 1}", dist.Categorical(probs=B[:, true_state, action])
             )
 
     return observations
@@ -59,7 +59,7 @@ GNN matrices become NumPyro concentration parameters:
 import jax.numpy as jnp
 
 # A matrix: Dirichlet prior over likelihood columns
-A_prior = A + 1e-6   # stabilize zeros
+A_prior = A + 1e-6  # stabilize zeros
 A_dist = dist.Dirichlet(concentration=A_prior.T * 10.0)
 A_sample = numpyro.sample("A", A_dist)
 

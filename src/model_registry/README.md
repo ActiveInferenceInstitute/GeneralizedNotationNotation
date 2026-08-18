@@ -216,9 +216,11 @@ from model_registry import process_model_registry
 
 results = process_model_registry(
     target_dir=Path("input/gnn_files"),
-    output_dir=Path("output/4_model_registry_output")
+    output_dir=Path("output/4_model_registry_output"),
 )
-print(f"Registered {results['successful_registrations']} of {results['processed_files']} files")
+print(
+    f"Registered {results['successful_registrations']} of {results['processed_files']} files"
+)
 ```
 
 ## Registry Pipeline
@@ -246,7 +248,7 @@ graph TD
 ```python
 # Discover models in target directory
 models = discover_models(target_dir)
-model_paths = [model['path'] for model in models]
+model_paths = [model["path"] for model in models]
 ```
 
 ### 2. Metadata Extraction
@@ -294,7 +296,7 @@ from model_registry import process_model_registry
 
 results = process_model_registry(
     target_dir=Path("input/gnn_files"),
-    output_dir=Path("output/4_model_registry_output")
+    output_dir=Path("output/4_model_registry_output"),
 )
 ```
 
@@ -342,13 +344,13 @@ output/4_model_registry_output/
 ```python
 # Registry configuration
 config = {
-    'registry_path': 'models/registry',  # Registry storage path
-    'index_enabled': True,              # Enable search indexing
-    'versioning_enabled': True,         # Enable version control
-    'backup_enabled': True,             # Enable automatic backups
-    'cleanup_enabled': True,            # Enable automatic cleanup
-    'max_versions': 10,                 # Maximum versions per model
-    'archive_after_days': 365           # Archive models after days
+    "registry_path": "models/registry",  # Registry storage path
+    "index_enabled": True,  # Enable search indexing
+    "versioning_enabled": True,  # Enable version control
+    "backup_enabled": True,  # Enable automatic backups
+    "cleanup_enabled": True,  # Enable automatic cleanup
+    "max_versions": 10,  # Maximum versions per model
+    "archive_after_days": 365,  # Archive models after days
 }
 ```
 
@@ -357,15 +359,15 @@ config = {
 ```python
 # Metadata configuration
 metadata_config = {
-    'required_fields': ['name', 'description', 'author'],
-    'optional_fields': ['tags', 'performance', 'dependencies'],
-    'validation_rules': {
-        'name': 'min_length:3',
-        'description': 'min_length:10',
-        'performance': 'range:0-1'
+    "required_fields": ["name", "description", "author"],
+    "optional_fields": ["tags", "performance", "dependencies"],
+    "validation_rules": {
+        "name": "min_length:3",
+        "description": "min_length:10",
+        "performance": "range:0-1",
     },
-    'auto_extraction': True,            # Auto-extract metadata
-    'validation_enabled': True          # Enable metadata validation
+    "auto_extraction": True,  # Auto-extract metadata
+    "validation_enabled": True,  # Enable metadata validation
 }
 ```
 
@@ -437,7 +439,7 @@ def test_model_registration():
     model_id = register_model(test_model_path, test_metadata)
     assert model_id is not None
     model_info = get_model_info(model_id)
-    assert model_info['name'] == test_metadata['name']
+    assert model_info["name"] == test_metadata["name"]
 ```
 
 ### Integration Tests

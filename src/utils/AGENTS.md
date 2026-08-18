@@ -53,6 +53,7 @@
 **Example**:
 ```python
 from utils import setup_step_logging
+
 logger = setup_step_logging("3_gnn", verbose=True)
 ```
 
@@ -319,19 +320,19 @@ logger = setup_step_logging("3_gnn", verbose=True)
 ### Logging Configuration
 ```python
 LOGGING_CONFIG = {
-    'console_level': 'INFO',
-    'file_level': 'DEBUG',
-    'correlation_tracking': True,
-    'structured_logging': True
+    "console_level": "INFO",
+    "file_level": "DEBUG",
+    "correlation_tracking": True,
+    "structured_logging": True,
 }
 ```
 
 ### Performance Configuration
 ```python
 PERFORMANCE_CONFIG = {
-    'memory_tracking': True,
-    'timing_tracking': True,
-    'resource_monitoring': True
+    "memory_tracking": True,
+    "timing_tracking": True,
+    "resource_monitoring": True,
 }
 ```
 
@@ -360,9 +361,7 @@ print(f"GNN output directory: {output_dir}")
 from utils.pipeline_template import create_standardized_pipeline_script
 
 run_script = create_standardized_pipeline_script(
-    "3_gnn.py",
-    process_gnn_files,
-    "GNN file processing"
+    "3_gnn.py", process_gnn_files, "GNN file processing"
 )
 
 # Execute the script

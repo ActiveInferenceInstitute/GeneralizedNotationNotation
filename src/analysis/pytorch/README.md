@@ -7,7 +7,9 @@ Framework-specific analysis module for PyTorch simulation outputs.
 ```python
 from analysis.pytorch.analyzer import analyze_pytorch_results
 
-analyze_pytorch_results(results_dir="output/12_execute_output", output_dir="output/16_analysis_output")
+analyze_pytorch_results(
+    results_dir="output/12_execute_output", output_dir="output/16_analysis_output"
+)
 ```
 
 ## Outputs

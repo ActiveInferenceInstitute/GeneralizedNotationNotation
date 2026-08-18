@@ -193,7 +193,7 @@ from pathlib import Path
 success = process_validation(
     target_dir=Path("models/"),
     output_dir=Path("output/6_validation_output/"),
-    verbose=True
+    verbose=True,
 )
 print(f"Validation {'succeeded' if success else 'failed'}")
 ```
@@ -210,7 +210,9 @@ print(f"Errors: {result['errors']}")
 print(f"Warnings: {result['warnings']}")
 
 # Validate from dict (e.g., parsed GNN data)
-result = process_semantic_validation({"raw_sections": {"ModelName": "Test", "StateSpaceBlock": "..."}})
+result = process_semantic_validation(
+    {"raw_sections": {"ModelName": "Test", "StateSpaceBlock": "..."}}
+)
 ```
 
 ### Performance Profiling
@@ -220,7 +222,9 @@ from validation import profile_performance
 
 result = profile_performance("model.gnn")
 print(f"Memory estimate: {result['metrics']['estimated_memory_mb']:.2f} MB")
-print(f"Complexity: {result['metrics']['computational_complexity']['complexity_class']}")
+print(
+    f"Complexity: {result['metrics']['computational_complexity']['complexity_class']}"
+)
 print(f"Score: {result['performance_score']:.2f}")
 ```
 
@@ -310,12 +314,12 @@ output/6_validation_output/
 ```python
 # Validation configuration
 config = {
-    'consistency_checking_enabled': True,  # Enable consistency checking
-    'semantic_validation_enabled': True,   # Enable semantic validation
-    'quality_assessment_enabled': True,    # Enable quality assessment
-    'error_detection_enabled': True,       # Enable error detection
-    'structure_validation_enabled': True,  # Enable structure validation
-    'auto_fix_enabled': False             # Enable automatic error fixing
+    "consistency_checking_enabled": True,  # Enable consistency checking
+    "semantic_validation_enabled": True,  # Enable semantic validation
+    "quality_assessment_enabled": True,  # Enable quality assessment
+    "error_detection_enabled": True,  # Enable error detection
+    "structure_validation_enabled": True,  # Enable structure validation
+    "auto_fix_enabled": False,  # Enable automatic error fixing
 }
 ```
 
@@ -324,11 +328,11 @@ config = {
 ```python
 # Quality configuration
 quality_config = {
-    'completeness_threshold': 0.8,        # Completeness threshold
-    'correctness_threshold': 0.9,         # Correctness threshold
-    'consistency_threshold': 0.85,        # Consistency threshold
-    'clarity_threshold': 0.75,            # Clarity threshold
-    'maintainability_threshold': 0.8      # Maintainability threshold
+    "completeness_threshold": 0.8,  # Completeness threshold
+    "correctness_threshold": 0.9,  # Correctness threshold
+    "consistency_threshold": 0.85,  # Consistency threshold
+    "clarity_threshold": 0.75,  # Clarity threshold
+    "maintainability_threshold": 0.8,  # Maintainability threshold
 }
 ```
 

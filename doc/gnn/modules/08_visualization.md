@@ -134,22 +134,22 @@ success = process_visualization(
 ### Visualization Settings
 ```python
 VISUALIZATION_CONFIG = {
-    'output_format': 'png',
-    'dpi': 300,
-    'figsize': (10, 8),
-    'colormap': 'viridis',
-    'layout_algorithm': 'spring'
+    "output_format": "png",
+    "dpi": 300,
+    "figsize": (10, 8),
+    "colormap": "viridis",
+    "layout_algorithm": "spring",
 }
 ```
 
 ### Graph Settings
 ```python
 GRAPH_CONFIG = {
-    'node_size': 100,
-    'edge_width': 1,
-    'node_color': 'lightblue',
-    'edge_color': 'gray',
-    'layout': 'force_directed'
+    "node_size": 100,
+    "edge_width": 1,
+    "node_color": "lightblue",
+    "edge_color": "gray",
+    "layout": "force_directed",
 }
 ```
 
@@ -162,8 +162,7 @@ GRAPH_CONFIG = {
 from visualization import process_visualization
 
 success = process_visualization(
-    target_dir="input/gnn_files",
-    output_dir="output/8_visualization_output"
+    target_dir="input/gnn_files", output_dir="output/8_visualization_output"
 )
 ```
 
@@ -315,7 +314,8 @@ Registration lives in [`mcp.py`](../../../src/visualization/mcp.py) via `registe
 - Manual fix: Add to your script:
   ```python
   import matplotlib
-  matplotlib.use('Agg')
+
+  matplotlib.use("Agg")
   ```
 
 **Prevention**: Run in environments with display support or ensure `Agg` backend is used
@@ -391,9 +391,9 @@ python src/main.py --only-steps "3,8" --verbose
 **Configuration**:
 ```python
 VISUALIZATION_CONFIG = {
-    'dpi': 600,  # Higher quality
-    'format': 'svg',  # Vector format
-    'figsize': (12, 10)  # Larger canvas
+    "dpi": 600,  # Higher quality
+    "format": "svg",  # Vector format
+    "figsize": (12, 10),  # Larger canvas
 }
 ```
 

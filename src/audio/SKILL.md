@@ -23,12 +23,19 @@ python src/main.py --only-steps 15 --verbose
 
 ```python
 from audio import (
-    AudioGenerator, process_audio, generate_audio_from_gnn,
-    create_sonification, analyze_audio_characteristics,
-    SAPFGNNProcessor, SyntheticAudioGenerator,
-    check_audio_backends, generate_oscillator_audio,
-    apply_envelope, mix_audio_channels,
-    convert_gnn_to_sapf, generate_audio_from_sapf
+    AudioGenerator,
+    process_audio,
+    generate_audio_from_gnn,
+    create_sonification,
+    analyze_audio_characteristics,
+    SAPFGNNProcessor,
+    SyntheticAudioGenerator,
+    check_audio_backends,
+    generate_oscillator_audio,
+    apply_envelope,
+    mix_audio_channels,
+    convert_gnn_to_sapf,
+    generate_audio_from_sapf,
 )
 
 # Process audio step (used by pipeline)

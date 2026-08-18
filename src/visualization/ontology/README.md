@@ -16,6 +16,7 @@ Ontology-aware visualization rendering. Maps Active Inference terms to visual el
 
 ```python
 from visualization.ontology import OntologyVisualizer
+
 viz = OntologyVisualizer()
 viz.render(parsed_model, output_dir)
 ```

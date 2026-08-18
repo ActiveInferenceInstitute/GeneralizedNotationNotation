@@ -119,23 +119,21 @@ if visualizer.d2_available:
             "A": "LikelihoodMatrix",
             "B": "TransitionMatrix",
             # ... more annotations
-        }
+        },
     }
-    
+
     # Generate model structure diagram
     structure_spec = visualizer.generate_model_structure_diagram(model_data)
-    
+
     # Generate POMDP diagram
     pomdp_spec = visualizer.generate_pomdp_diagram(model_data)
-    
+
     # Compile diagrams to SVG and PNG
     output_dir = Path("output/d2_diagrams")
     result = visualizer.compile_d2_diagram(
-        structure_spec,
-        output_dir,
-        formats=["svg", "png"]
+        structure_spec, output_dir, formats=["svg", "png"]
     )
-    
+
     if result.success:
         print(f"Generated {len(result.output_files)} diagram files")
         for file in result.output_files:
@@ -153,9 +151,7 @@ output_dir = Path("output/d2_diagrams")
 
 # Generate all applicable diagrams for a model
 results = visualizer.generate_all_diagrams_for_model(
-    model_data,
-    output_dir,
-    formats=["svg", "png", "pdf"]
+    model_data, output_dir, formats=["svg", "png", "pdf"]
 )
 
 for result in results:
@@ -228,7 +224,7 @@ spec = D2DiagramSpec(
     d2_content=d2_content,
     layout_engine="elk",  # Use ELK for complex layouts
     theme=1,
-    dark_theme=100
+    dark_theme=100,
 )
 ```
 
@@ -241,9 +237,9 @@ spec = D2DiagramSpec(
     name="themed_diagram",
     description="Themed diagram",
     d2_content=d2_content,
-    theme=1,           # Theme ID (see d2 list-themes)
-    dark_theme=100,    # Dark theme ID for adaptive mode
-    sketch_mode=False  # Enable sketch mode for hand-drawn look
+    theme=1,  # Theme ID (see d2 list-themes)
+    dark_theme=100,  # Dark theme ID for adaptive mode
+    sketch_mode=False,  # Enable sketch mode for hand-drawn look
 )
 ```
 
@@ -262,11 +258,7 @@ Supported output formats:
 - **PDF**: Vector PDF (good for documents)
 
 ```python
-result = visualizer.compile_d2_diagram(
-    spec,
-    output_dir,
-    formats=["svg", "png", "pdf"]
-)
+result = visualizer.compile_d2_diagram(spec, output_dir, formats=["svg", "png", "pdf"])
 ```
 
 ## API Reference

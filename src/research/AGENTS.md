@@ -64,7 +64,7 @@ success = process_research(
     output_dir=Path("output/19_research_output"),
     logger=logger,
     verbose=True,
-    analysis_type="comprehensive"
+    analysis_type="comprehensive",
 )
 ```
 
@@ -112,11 +112,11 @@ success = process_research(
 ### Research Settings
 ```python
 RESEARCH_CONFIG = {
-    'analysis_types': ['statistical', 'experimental', 'comparative'],
-    'output_formats': ['markdown', 'html', 'pdf'],
-    'visualization_style': 'publication',
-    'statistical_significance': 0.05,
-    'include_methodology': True
+    "analysis_types": ["statistical", "experimental", "comparative"],
+    "output_formats": ["markdown", "html", "pdf"],
+    "visualization_style": "publication",
+    "statistical_significance": 0.05,
+    "include_methodology": True,
 }
 ```
 
@@ -131,7 +131,7 @@ from research.processor import process_research
 success = process_research(
     target_dir="research_data/",
     output_dir="output/19_research_output",
-    analysis_type="comprehensive"
+    analysis_type="comprehensive",
 )
 ```
 
@@ -143,7 +143,7 @@ hypotheses, report = generate_rule_based_hypotheses(
     content=gnn_content,
     model_name="my_model",
     output_dir=Path("output/19_research_output"),
-    logger=logger
+    logger=logger,
 )
 ```
 

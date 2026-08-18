@@ -10,10 +10,10 @@ from .structure_learning import StructureLearning
 from .transition_mixture_model import TransitionMixtureModel
 
 __all__ = [
-    'SlotMixtureModel',
-    'IdentityMixtureModel', 
-    'TransitionMixtureModel',
-    'RecurrentMixtureModel',
-    'StructureLearning',
-    'ActiveInferencePlanning'
-] 
+    "SlotMixtureModel",
+    "IdentityMixtureModel",
+    "TransitionMixtureModel",
+    "RecurrentMixtureModel",
+    "StructureLearning",
+    "ActiveInferencePlanning",
+]

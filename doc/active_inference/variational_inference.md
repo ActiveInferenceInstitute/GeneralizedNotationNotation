@@ -144,21 +144,21 @@ def forward_pass(A, B, D, observations):
     """Compute filtered beliefs over time."""
     T = len(observations)
     Q = [None] * T
-    
+
     # Initial belief
     o_0 = observations[0]
     Q[0] = A[o_0, :] * D
     Q[0] = Q[0] / Q[0].sum()
-    
+
     for t in range(1, T):
         # Predict
-        Q_pred = B @ Q[t-1]
-        
+        Q_pred = B @ Q[t - 1]
+
         # Update with observation
         o_t = observations[t]
         Q[t] = A[o_t, :] * Q_pred
         Q[t] = Q[t] / Q[t].sum()
-    
+
     return Q
 ```
 
@@ -173,16 +173,16 @@ def backward_pass(A, B, Q_forward, observations):
     """Compute smoothed beliefs."""
     T = len(observations)
     Q = Q_forward.copy()
-    
-    for t in range(T-2, -1, -1):
+
+    for t in range(T - 2, -1, -1):
         # Backward message
         Q_pred = B @ Q_forward[t]
-        backward_msg = B.T @ (Q[t+1] / (Q_pred + 1e-10))
-        
+        backward_msg = B.T @ (Q[t + 1] / (Q_pred + 1e-10))
+
         # Smooth
         Q[t] = Q_forward[t] * backward_msg
         Q[t] = Q[t] / Q[t].sum()
-    
+
     return Q
 ```
 

@@ -20,6 +20,7 @@ This guide provides comprehensive error recovery procedures for the GNN pipeline
 #### Resolution
 ```python
 import sys
+
 sys.setrecursionlimit(3000)  # Increase from default 1000
 
 # If using in code:
@@ -27,6 +28,7 @@ try:
     import numpy as np
 except RecursionError:
     import sys
+
     sys.setrecursionlimit(3000)
     import numpy as np
 ```
@@ -51,8 +53,10 @@ async def analyze_gnn_file(file_path: Path) -> Dict[str, Any]:
         response = await provider.analyze(file_path.read_text())
         return {"analysis": response.strip()}
 
+
 # In synchronous code:
 import asyncio
+
 result = asyncio.run(analyze_gnn_file(file_path))
 ```
 
@@ -79,7 +83,7 @@ def process_gnn_directory_lightweight(directory: Path) -> Dict[str, Any]:
             results[str(file)] = {
                 "status": "processed",
                 "format": "markdown",
-                "size": file.stat().st_size
+                "size": file.stat().st_size,
             }
         except Exception as e:
             results[str(file)] = {"status": "error", "error": str(e)}
@@ -105,12 +109,15 @@ def initialize_jax_devices():
     """Initialize JAX with graceful fallback."""
     try:
         import jax
+
         devices = jax.devices()
     except:
         # Fallback to CPU-only
         import os
-        os.environ['JAX_PLATFORM_NAME'] = 'cpu'
+
+        os.environ["JAX_PLATFORM_NAME"] = "cpu"
         import jax
+
         devices = jax.devices()
     return devices
 ```

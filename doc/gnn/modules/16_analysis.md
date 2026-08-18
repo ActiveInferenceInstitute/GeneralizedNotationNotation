@@ -143,7 +143,7 @@ success = process_analysis(
     logger=logger,
     analysis_type="comprehensive",
     include_performance=True,
-    benchmark_iterations=10
+    benchmark_iterations=10,
 )
 ```
 
@@ -222,9 +222,9 @@ python src/16_analysis.py --target-dir input/gnn_files --output-dir output --no-
 ### Default Settings
 ```python
 DEFAULT_COMPLEXITY_THRESHOLDS = {
-    'cyclomatic_complexity': {'low': 10, 'medium': 20, 'high': 50},
-    'cognitive_complexity': {'low': 5, 'medium': 15, 'high': 35},
-    'structural_complexity': {'low': 100, 'medium': 500, 'high': 1000}
+    "cyclomatic_complexity": {"low": 10, "medium": 20, "high": 50},
+    "cognitive_complexity": {"low": 5, "medium": 15, "high": 35},
+    "structural_complexity": {"low": 100, "medium": 500, "high": 1000},
 }
 ```
 
@@ -240,7 +240,7 @@ success = process_analysis(
     target_dir=Path("input/gnn_files"),
     output_dir=Path("output/16_analysis_output"),
     logger=logger,
-    analysis_type="comprehensive"
+    analysis_type="comprehensive",
 )
 ```
 
@@ -373,7 +373,9 @@ GNN Files → Analysis → Statistical Reports → Model Comparisons → Optimiz
 ### Tool Endpoints
 ```python
 @mcp_tool("process_analysis")
-def process_analysis_mcp(target_directory: str, output_directory: str, verbose: bool = False):
+def process_analysis_mcp(
+    target_directory: str, output_directory: str, verbose: bool = False
+):
     """Process Analysis for GNN files. Exposed via MCP."""
     # Implementation
 ```

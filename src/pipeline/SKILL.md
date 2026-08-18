@@ -29,12 +29,21 @@ python src/main.py --dry-run --verbose
 
 ```python
 from pipeline import (
-    PipelineConfig, StepConfig, STEP_METADATA,
-    get_pipeline_config, set_pipeline_config,
-    run_pipeline, get_pipeline_status, validate_pipeline_config,
-    create_pipeline_config, execute_pipeline_step, execute_pipeline_steps,
-    get_output_dir_for_script, run_enhanced_health_check,
-    EnhancedHealthChecker, StepExecutionResult
+    PipelineConfig,
+    StepConfig,
+    STEP_METADATA,
+    get_pipeline_config,
+    set_pipeline_config,
+    run_pipeline,
+    get_pipeline_status,
+    validate_pipeline_config,
+    create_pipeline_config,
+    execute_pipeline_step,
+    execute_pipeline_steps,
+    get_output_dir_for_script,
+    run_enhanced_health_check,
+    EnhancedHealthChecker,
+    StepExecutionResult,
 )
 
 # Create and run pipeline

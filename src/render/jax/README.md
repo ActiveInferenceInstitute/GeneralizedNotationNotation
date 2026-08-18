@@ -69,7 +69,7 @@ from pathlib import Path
 success, message, files = render_gnn_to_jax_pomdp(
     gnn_spec=parsed_gnn_spec,
     output_path=Path("output/pomdp_solver.py"),
-    options={"optimization_level": "high"}
+    options={"optimization_level": "high"},
 )
 ```
 
@@ -81,8 +81,7 @@ from pathlib import Path
 
 # Render GNN specification to general JAX model
 success, message, files = render_gnn_to_jax(
-    gnn_spec=parsed_gnn_spec,
-    output_path=Path("output/jax_model.py")
+    gnn_spec=parsed_gnn_spec, output_path=Path("output/jax_model.py")
 )
 ```
 
@@ -94,8 +93,7 @@ from pathlib import Path
 
 # Render GNN specification to combined JAX model
 success, message, files = render_gnn_to_jax_combined(
-    gnn_spec=parsed_gnn_spec,
-    output_path=Path("output/combined_model.py")
+    gnn_spec=parsed_gnn_spec, output_path=Path("output/combined_model.py")
 )
 ```
 
@@ -165,7 +163,7 @@ gnn_spec = {
         B = [0.9, 0.1; 0.1, 0.9], [0.1, 0.9; 0.9, 0.1]
         C = [0.0, 1.0]
         D = [0.5, 0.5]
-    """
+    """,
 }
 
 # Generate JAX POMDP solver
@@ -176,6 +174,7 @@ render_gnn_to_jax_pomdp(gnn_spec, Path("simple_pomdp.py"))
 ```python
 # Execute generated POMDP solver
 import subprocess
+
 result = subprocess.run(["python", "simple_pomdp.py"], capture_output=True, text=True)
 print(result.stdout)
 ```
@@ -209,8 +208,9 @@ The JAX renderer is integrated into the pipeline as a Step 11 backend:
 ### Debug Mode
 ```python
 import jax
-jax.config.update('jax_debug_nans', True)
-jax.config.update('jax_debug_infs', True)
+
+jax.config.update("jax_debug_nans", True)
+jax.config.update("jax_debug_infs", True)
 ```
 
 ## Contributing

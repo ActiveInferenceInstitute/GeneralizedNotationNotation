@@ -89,7 +89,8 @@ The configuration process typically involves setting up a language model and con
 
 ```python
 import dspy
-lm = dspy.LM('openai/gpt-4o-mini', api_key='YOUR_API_KEY')
+
+lm = dspy.LM("openai/gpt-4o-mini", api_key="YOUR_API_KEY")
 dspy.configure(lm=lm)
 ```
 
@@ -99,7 +100,7 @@ Using DSPy modules follows a consistent pattern: declare the module with a signa
 
 ```python
 # Declare with a signature
-classify = dspy.ChainOfThought('sentence -> sentiment: bool')
+classify = dspy.ChainOfThought("sentence -> sentiment: bool")
 
 # Call with input argument
 response = classify(sentence="it's a charming and often affecting journey.")
@@ -233,7 +234,7 @@ GNN defines the structure of generative models, including state spaces, observat
 
     ```python
     # Signature for LLM processing user utterance into GNN observation format
-    "user_utterance: str -> symbolic_observation: str" 
+    "user_utterance: str -> symbolic_observation: str"
     # symbolic_observation would be a string parsable by GNN tools
     ```
 
@@ -265,7 +266,9 @@ DSPy modules (`dspy.Predict`, `dspy.ChainOfThought`, `dspy.ReAct`, etc.) can imp
 
     ```python
     # Hypothetical DSPy module for GNN initialization
-    suggest_gnn_params = dspy.ChainOfThought("scenario_description: str -> gnn_parameters_suggestion: dict")
+    suggest_gnn_params = dspy.ChainOfThought(
+        "scenario_description: str -> gnn_parameters_suggestion: dict"
+    )
     ```
 
 - **Semantic Evaluation in Action Selection**:
@@ -356,14 +359,18 @@ To further illustrate the synergy, let's consider some more detailed conceptual 
                 "gnn_candidate_policies, current_world_state_summary, high_level_goal -> refined_policy_evaluations"
             )
 
-        def forward(self, gnn_candidate_policies, current_world_state_summary, high_level_goal):
+        def forward(
+            self, gnn_candidate_policies, current_world_state_summary, high_level_goal
+        ):
             # GNN provides policies like: {policy_id: 'pi_1', actions: ['action_A', 'action_B'], pragmatic_value_gnn: 0.8, epistemic_value_gnn: 0.3}
             # LLM refines by adding semantic alignment scores or risk assessments.
             # e.g., refined_policy_evaluations could be: [{...policy_1_data, semantic_score: 0.9, safety_flag: 'low_risk'}, ...]
             return self.refine_policy_choice(
-                gnn_candidate_policies=str(gnn_candidate_policies), # DSPy expects string inputs for fields generally
+                gnn_candidate_policies=str(
+                    gnn_candidate_policies
+                ),  # DSPy expects string inputs for fields generally
                 current_world_state_summary=current_world_state_summary,
-                high_level_goal=high_level_goal
+                high_level_goal=high_level_goal,
             )
     ```
 
@@ -392,8 +399,8 @@ To further illustrate the synergy, let's consider some more detailed conceptual 
             # LLM might suggest: "s_temperature[1,1,type=float] ### Represents ambient temperature"
             # The gnn_model_context helps LLM avoid name collisions or suggest relevant connections.
             return self.generate_snippet(
-                component_description=component_description, 
-                gnn_model_context=gnn_model_context
+                component_description=component_description,
+                gnn_model_context=gnn_model_context,
             )
     ```
 

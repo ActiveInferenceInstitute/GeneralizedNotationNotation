@@ -123,9 +123,7 @@ from research import process_research
 
 # Process research-related tasks
 success = process_research(
-    target_dir=Path("research_data/"),
-    output_dir=Path("research_output/"),
-    verbose=True
+    target_dir=Path("research_data/"), output_dir=Path("research_output/"), verbose=True
 )
 
 if success:
@@ -170,7 +168,7 @@ from research import validate_research_hypotheses
 hypotheses = [
     "Model A performs better than Model B",
     "Active Inference improves prediction accuracy",
-    "GNN models scale linearly with complexity"
+    "GNN models scale linearly with complexity",
 ]
 
 validation_results = validate_research_hypotheses(hypotheses, experimental_data)
@@ -192,7 +190,7 @@ experiment_config = {
     "type": "comparative_study",
     "variables": ["model_type", "complexity", "performance"],
     "sample_size": 100,
-    "significance_level": 0.05
+    "significance_level": 0.05,
 }
 
 experiment_design = design_experiment(experiment_config)
@@ -324,12 +322,12 @@ output/19_research_output/
 ```python
 # Research configuration
 config = {
-    'significance_level': 0.05,     # Statistical significance level
-    'confidence_level': 0.95,       # Confidence interval level
-    'power_threshold': 0.8,         # Statistical power threshold
-    'effect_size_threshold': 0.1,   # Minimum effect size
-    'sample_size_minimum': 30,      # Minimum sample size
-    'randomization_enabled': True    # Enable randomization
+    "significance_level": 0.05,  # Statistical significance level
+    "confidence_level": 0.95,  # Confidence interval level
+    "power_threshold": 0.8,  # Statistical power threshold
+    "effect_size_threshold": 0.1,  # Minimum effect size
+    "sample_size_minimum": 30,  # Minimum sample size
+    "randomization_enabled": True,  # Enable randomization
 }
 ```
 
@@ -337,11 +335,11 @@ config = {
 ```python
 # Analysis configuration
 analysis_config = {
-    'statistical_tests': ['t_test', 'anova', 'regression'],
-    'effect_size_measures': ['cohens_d', 'eta_squared'],
-    'confidence_intervals': True,
-    'power_analysis': True,
-    'sensitivity_analysis': True
+    "statistical_tests": ["t_test", "anova", "regression"],
+    "effect_size_measures": ["cohens_d", "eta_squared"],
+    "confidence_intervals": True,
+    "power_analysis": True,
+    "sensitivity_analysis": True,
 }
 ```
 
@@ -404,9 +402,9 @@ except ExperimentError as e:
 # Test individual research functions
 def test_research_analysis():
     results = conduct_research_analysis(test_data)
-    assert 'statistical_tests' in results
-    assert 'significant_findings' in results
-    assert 'effect_sizes' in results
+    assert "statistical_tests" in results
+    assert "significant_findings" in results
+    assert "effect_sizes" in results
 ```
 
 ### Integration Tests
@@ -426,9 +424,9 @@ def test_research_pipeline():
 def test_hypothesis_validation():
     validation = validate_research_hypotheses(test_hypotheses, test_data)
     for hypothesis, result in validation.items():
-        assert 'supported' in result
-        assert 'p_value' in result
-        assert 'effect_size' in result
+        assert "supported" in result
+        assert "p_value" in result
+        assert "effect_size" in result
 ```
 
 ## Dependencies

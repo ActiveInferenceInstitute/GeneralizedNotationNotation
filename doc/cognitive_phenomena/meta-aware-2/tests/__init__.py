@@ -2,4 +2,4 @@
 
 from .test_simulation import TestSimulation, TestValidationAgainstPaper
 
-__all__ = ['TestSimulation', 'TestValidationAgainstPaper'] 
+__all__ = ["TestSimulation", "TestValidationAgainstPaper"]

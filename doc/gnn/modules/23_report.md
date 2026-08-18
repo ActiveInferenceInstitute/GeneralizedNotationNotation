@@ -103,7 +103,7 @@ success = process_report(
     verbose=True,
     report_format="comprehensive",
     include_visualizations=True,
-    output_formats=["html", "markdown", "json"]
+    output_formats=["html", "markdown", "json"],
 )
 ```
 
@@ -246,20 +246,20 @@ success = process_report(
 
 ```python
 DEFAULT_REPORT_SETTINGS = {
-    'format': 'html',
-    'template': 'default',
-    'include_visualizations': True,
-    'include_raw_data': False,
-    'compression': False,
-    'max_file_size': '100MB',
-    'sections': {
-        'executive_summary': True,
-        'detailed_analysis': True,
-        'performance_metrics': True,
-        'error_analysis': True,
-        'recommendations': True,
-        'appendices': False
-    }
+    "format": "html",
+    "template": "default",
+    "include_visualizations": True,
+    "include_raw_data": False,
+    "compression": False,
+    "max_file_size": "100MB",
+    "sections": {
+        "executive_summary": True,
+        "detailed_analysis": True,
+        "performance_metrics": True,
+        "error_analysis": True,
+        "recommendations": True,
+        "appendices": False,
+    },
 }
 ```
 
@@ -276,7 +276,7 @@ success = process_report(
     target_dir=Path("input/gnn_files"),
     output_dir=Path("output/23_report_output"),
     logger=logger,
-    report_format="comprehensive"
+    report_format="comprehensive",
 )
 ```
 
@@ -285,15 +285,10 @@ success = process_report(
 ```python
 from report.generator import generate_html_report
 
-data = {
-    'pipeline_results': {...},
-    'analysis_data': {...},
-    'performance_metrics': {...}
-}
+data = {"pipeline_results": {...}, "analysis_data": {...}, "performance_metrics": {...}}
 
 success = generate_html_report(
-    data,
-    Path("output/23_report_output/comprehensive_report.html")
+    data, Path("output/23_report_output/comprehensive_report.html")
 )
 ```
 
@@ -307,7 +302,7 @@ report = generate_comprehensive_report(
     output_dir=Path("output/23_report_output"),
     format="html",
     include_visualizations=True,
-    template="custom"
+    template="custom",
 )
 ```
 

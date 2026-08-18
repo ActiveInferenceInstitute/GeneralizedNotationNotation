@@ -307,9 +307,9 @@ src/11_render.py (thin orchestrator)
 ```python
 # Illustrative pseudocode — not a real symbol
 def validate_variable(var):
-    assert var['name'].isidentifier()
-    assert all(d > 0 for d in var['dimensions'])
-    assert var['type'] in ['int', 'float', 'double', 'bool']
+    assert var["name"].isidentifier()
+    assert all(d > 0 for d in var["dimensions"])
+    assert var["type"] in ["int", "float", "double", "bool"]
 ```
 
 ### Connection Validation  
@@ -317,9 +317,9 @@ def validate_variable(var):
 ```python
 # Illustrative pseudocode — not a real symbol
 def validate_connection(conn, variables):
-    assert conn['source'] in [v['name'] for v in variables]
-    assert conn['target'] in [v['name'] for v in variables]
-    assert conn['type'] in ['directed', 'undirected']
+    assert conn["source"] in [v["name"] for v in variables]
+    assert conn["target"] in [v["name"] for v in variables]
+    assert conn["type"] in ["directed", "undirected"]
 ```
 
 ### Round-Trip Validation

@@ -91,7 +91,7 @@ success = process_website(
     output_dir=Path("output/20_website_output"),
     logger=logger,
     verbose=True,
-    website_html_filename="custom_summary.html"
+    website_html_filename="custom_summary.html",
 )
 ```
 
@@ -147,21 +147,21 @@ success = process_website(
 ### Website Settings
 ```python
 WEBSITE_CONFIG = {
-    'template': 'default',
-    'theme': 'modern',
-    'include_navigation': True,
-    'generate_sitemap': True,
-    'optimize_assets': True
+    "template": "default",
+    "theme": "modern",
+    "include_navigation": True,
+    "generate_sitemap": True,
+    "optimize_assets": True,
 }
 ```
 
 ### Content Settings
 ```python
 CONTENT_CONFIG = {
-    'include_pipeline_summary': True,
-    'include_visualizations': True,
-    'include_reports': True,
-    'include_raw_data': False
+    "include_pipeline_summary": True,
+    "include_visualizations": True,
+    "include_reports": True,
+    "include_raw_data": False,
 }
 ```
 
@@ -173,10 +173,7 @@ CONTENT_CONFIG = {
 ```python
 from website import process_website
 
-success = process_website(
-    target_dir="output/",
-    output_dir="output/20_website_output"
-)
+success = process_website(target_dir="output/", output_dir="output/20_website_output")
 ```
 
 ### HTML Report Generation
@@ -193,8 +190,7 @@ with open("report.html", "w") as f:
 from website import embed_image
 
 success = embed_image(
-    image_path="visualizations/network.png",
-    output_file="website/index.html"
+    image_path="visualizations/network.png", output_file="website/index.html"
 )
 ```
 

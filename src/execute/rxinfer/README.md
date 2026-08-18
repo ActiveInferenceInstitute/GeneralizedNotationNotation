@@ -58,7 +58,7 @@ from execute.rxinfer import run_rxinfer_scripts
 
 results = run_rxinfer_scripts(
     scripts_dir=Path("output/11_render_output"),
-    output_dir=Path("output/12_execute_output")
+    output_dir=Path("output/12_execute_output"),
 )
 ```
 

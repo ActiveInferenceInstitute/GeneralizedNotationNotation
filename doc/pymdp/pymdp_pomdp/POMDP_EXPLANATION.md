@@ -16,22 +16,27 @@ from pymdp import utils
 from pymdp.agent import Agent
 
 # Real PyMDP object arrays
-A = utils.obj_array(1)  
+A = utils.obj_array(1)
 B = utils.obj_array(1)
 C = utils.obj_array(1)
 D = utils.obj_array(1)
 
 # Authentic PyMDP Agent instantiation
-agent = Agent(A=A, B=B, C=C, D=D, 
-              policy_len=5, 
-              inference_horizon=16,
-              use_utility=True,
-              use_states_info_gain=True)
+agent = Agent(
+    A=A,
+    B=B,
+    C=C,
+    D=D,
+    policy_len=5,
+    inference_horizon=16,
+    use_utility=True,
+    use_states_info_gain=True,
+)
 
 # Real PyMDP inference methods
-qs = agent.infer_states(observation)    # Actual variational message passing
+qs = agent.infer_states(observation)  # Actual variational message passing
 q_pi, neg_efe = agent.infer_policies()  # Real policy inference
-action = agent.sample_action()          # Genuine action sampling
+action = agent.sample_action()  # Genuine action sampling
 ```
 
 ## POMDP State Space Architecture
@@ -69,13 +74,15 @@ linear_index = row * GRID_SIZE + col
 
 **Environmental Features:**
 ```python
-GRID_LAYOUT = np.array([
-    [0, 0, 0, 0, 2],  # States 0-4:   goal at state 4
-    [0, 1, 0, 0, 0],  # States 5-9:   wall at state 6
-    [0, 0, 0, 1, 0],  # States 10-14: wall at state 13
-    [0, 0, 0, 0, 0],  # States 15-19: empty area
-    [0, 0, 0, 0, 0]   # States 20-24: starting area
-])
+GRID_LAYOUT = np.array(
+    [
+        [0, 0, 0, 0, 2],  # States 0-4:   goal at state 4
+        [0, 1, 0, 0, 0],  # States 5-9:   wall at state 6
+        [0, 0, 0, 1, 0],  # States 10-14: wall at state 13
+        [0, 0, 0, 0, 0],  # States 15-19: empty area
+        [0, 0, 0, 0, 0],  # States 20-24: starting area
+    ]
+)
 ```
 
 ### Observation Space: O ∈ {0, 1, 2, 3, 4, 5, 6, 7, 8}
@@ -164,19 +171,19 @@ actions = [(-1, 0), (1, 0), (0, 1), (0, -1)]  # N, S, E, W
 for action_idx, action_delta in enumerate(actions):
     for current_state in range(NUM_STATES):
         current_pos = (current_state // GRID_SIZE, current_state % GRID_SIZE)
-        
+
         # Apply action with boundary checking
         new_pos = (
             max(0, min(GRID_SIZE - 1, current_pos[0] + action_delta[0])),
-            max(0, min(GRID_SIZE - 1, current_pos[1] + action_delta[1]))
+            max(0, min(GRID_SIZE - 1, current_pos[1] + action_delta[1])),
         )
-        
+
         # Check wall collisions
         if new_pos in wall_positions:
             next_state = current_state  # Stay in place
         else:
             next_state = new_pos[0] * GRID_SIZE + new_pos[1]
-        
+
         # Set deterministic transition
         B[0][next_state, current_state, action_idx] = 1.0
 
@@ -212,7 +219,7 @@ C = utils.obj_array(1)
 C[0] = np.zeros(NUM_OBSERVATIONS)
 
 # Set log preferences
-C[0][2] = 2.0   # Goal preference (higher = more preferred)
+C[0][2] = 2.0  # Goal preference (higher = more preferred)
 C[0][3] = -2.0  # Hazard avoidance (negative = avoid)
 C[0][1] = -1.0  # Wall avoidance
 # Others remain 0.0 (neutral)

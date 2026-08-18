@@ -241,15 +241,18 @@ from typing import Dict, List, Optional, Tuple
 from dataclasses import dataclass
 from abc import ABC, abstractmethod
 
+
 class LearningMode(Enum):
     PASSIVE = 0
     ACTIVE = 1
     STRATEGIC = 2
     METACOGNITIVE = 3
 
+
 @dataclass
 class LearningState:
     """Comprehensive learning state representation"""
+
     fast_representations: np.ndarray
     associative_links: np.ndarray
     conceptual_knowledge: np.ndarray
@@ -259,65 +262,69 @@ class LearningState:
     exploration_level: float
     metacognitive_awareness: np.ndarray
 
+
 class HierarchicalLearningModel:
     """
     Active Inference implementation of hierarchical learning
     """
-    
+
     def __init__(self, config: Dict):
         self.config = config
         self.initialize_parameters()
-        
+
     def initialize_parameters(self):
         """Initialize learning-specific parameters"""
         # Learning rates for different levels
-        self.fast_learning_rate = self.config.get('fast_learning_rate', 0.3)
-        self.medium_learning_rate = self.config.get('medium_learning_rate', 0.1)
-        self.slow_learning_rate = self.config.get('slow_learning_rate', 0.02)
-        
+        self.fast_learning_rate = self.config.get("fast_learning_rate", 0.3)
+        self.medium_learning_rate = self.config.get("medium_learning_rate", 0.1)
+        self.slow_learning_rate = self.config.get("slow_learning_rate", 0.02)
+
         # Precision parameters
-        self.perceptual_precision = self.config.get('perceptual_precision', 2.0)
-        self.associative_precision = self.config.get('associative_precision', 1.5)
-        self.conceptual_precision = self.config.get('conceptual_precision', 1.0)
-        
+        self.perceptual_precision = self.config.get("perceptual_precision", 2.0)
+        self.associative_precision = self.config.get("associative_precision", 1.5)
+        self.conceptual_precision = self.config.get("conceptual_precision", 1.0)
+
         # Exploration parameters
-        self.curiosity_drive = self.config.get('curiosity_drive', 0.8)
-        self.uncertainty_tolerance = self.config.get('uncertainty_tolerance', 0.6)
-        
+        self.curiosity_drive = self.config.get("curiosity_drive", 0.8)
+        self.uncertainty_tolerance = self.config.get("uncertainty_tolerance", 0.6)
+
         # Forgetting parameters
-        self.fast_decay = self.config.get('fast_decay_rate', 0.1)
-        self.medium_decay = self.config.get('medium_decay_rate', 0.02)
-        self.slow_decay = self.config.get('slow_decay_rate', 0.005)
-        
-    def update_learning(self, experience: Dict[str, np.ndarray],
-                       current_state: LearningState) -> LearningState:
+        self.fast_decay = self.config.get("fast_decay_rate", 0.1)
+        self.medium_decay = self.config.get("medium_decay_rate", 0.02)
+        self.slow_decay = self.config.get("slow_decay_rate", 0.005)
+
+    def update_learning(
+        self, experience: Dict[str, np.ndarray], current_state: LearningState
+    ) -> LearningState:
         """Update learning state through hierarchical belief updating"""
-        
+
         # Compute prediction errors at each level
         fast_pe = self.compute_fast_prediction_error(experience, current_state)
         medium_pe = self.compute_medium_prediction_error(experience, current_state)
         slow_pe = self.compute_slow_prediction_error(experience, current_state)
-        
+
         # Update representations based on prediction errors
         new_fast_repr = self.update_fast_representations(fast_pe, current_state)
         new_assoc_links = self.update_associative_links(medium_pe, current_state)
         new_concepts = self.update_conceptual_knowledge(slow_pe, current_state)
-        
+
         # Update skill levels
         new_skills = self.update_skill_levels(experience, current_state)
-        
+
         # Determine new learning mode
         new_mode = self.select_learning_mode(experience, current_state)
-        
+
         # Update attention allocation
         new_attention = self.update_attention_allocation(fast_pe, medium_pe, slow_pe)
-        
+
         # Compute exploration level
         exploration = self.compute_exploration_level(current_state, experience)
-        
+
         # Update metacognitive awareness
-        metacog_awareness = self.update_metacognitive_awareness(current_state, experience)
-        
+        metacog_awareness = self.update_metacognitive_awareness(
+            current_state, experience
+        )
+
         return LearningState(
             fast_representations=new_fast_repr,
             associative_links=new_assoc_links,
@@ -326,48 +333,52 @@ class HierarchicalLearningModel:
             learning_mode=new_mode,
             attention_allocation=new_attention,
             exploration_level=exploration,
-            metacognitive_awareness=metacog_awareness
+            metacognitive_awareness=metacog_awareness,
         )
-    
-    def compute_fast_prediction_error(self, experience: Dict, 
-                                    state: LearningState) -> np.ndarray:
+
+    def compute_fast_prediction_error(
+        self, experience: Dict, state: LearningState
+    ) -> np.ndarray:
         """Compute prediction error for fast perceptual learning"""
-        sensory_input = experience['sensory']
+        sensory_input = experience["sensory"]
         predicted_sensory = self.predict_sensory(state.fast_representations)
-        
+
         pe = self.perceptual_precision * (sensory_input - predicted_sensory)
         return pe
-    
-    def update_fast_representations(self, prediction_error: np.ndarray,
-                                  state: LearningState) -> np.ndarray:
+
+    def update_fast_representations(
+        self, prediction_error: np.ndarray, state: LearningState
+    ) -> np.ndarray:
         """Update fast perceptual representations"""
         learning_rate = self.modulate_learning_rate(self.fast_learning_rate, state)
-        
+
         # Update with forgetting
         updated_repr = state.fast_representations * (1 - self.fast_decay)
         updated_repr += learning_rate * prediction_error
-        
+
         return updated_repr
-    
-    def modulate_learning_rate(self, base_rate: float, 
-                              state: LearningState) -> float:
+
+    def modulate_learning_rate(self, base_rate: float, state: LearningState) -> float:
         """Modulate learning rate based on attention and surprise"""
         attention_weight = np.mean(state.attention_allocation)
         surprise_weight = 1.0  # Would be computed from prediction error magnitude
         motivation_weight = self.get_motivation_level(state)
-        
-        modulated_rate = base_rate * attention_weight * surprise_weight * motivation_weight
+
+        modulated_rate = (
+            base_rate * attention_weight * surprise_weight * motivation_weight
+        )
         return np.clip(modulated_rate, 0.0, 1.0)
-    
-    def select_learning_mode(self, experience: Dict, 
-                           state: LearningState) -> LearningMode:
+
+    def select_learning_mode(
+        self, experience: Dict, state: LearningState
+    ) -> LearningMode:
         """Select appropriate learning mode based on context and metacognition"""
-        
+
         # Consider task difficulty, prior knowledge, and metacognitive state
         task_difficulty = self.assess_task_difficulty(experience)
         prior_knowledge = self.assess_prior_knowledge(state)
         metacog_level = np.mean(state.metacognitive_awareness)
-        
+
         if metacog_level > 0.8 and task_difficulty > 0.7:
             return LearningMode.METACOGNITIVE
         elif prior_knowledge > 0.6 and task_difficulty > 0.5:

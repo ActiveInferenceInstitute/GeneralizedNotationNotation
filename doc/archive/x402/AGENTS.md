@@ -68,22 +68,23 @@ See [src/AGENTS.md](../../../src/AGENTS.md) for complete pipeline documentation.
 def process_payment_request(amount: Decimal, recipient: str) -> PaymentResult:
     """
     Process X402 payment request.
-    
+
     Parameters:
         amount: Payment amount in stablecoins
         recipient: Payment recipient address
-    
+
     Returns:
         PaymentResult with transaction details
     """
 
+
 def handle_402_response(response: HTTPResponse) -> PaymentHandler:
     """
     Handle HTTP 402 Payment Required response.
-    
+
     Parameters:
         response: HTTP response with 402 status
-    
+
     Returns:
         PaymentHandler for processing payment
     """

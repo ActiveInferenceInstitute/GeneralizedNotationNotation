@@ -61,18 +61,16 @@ from execute.rxinfer import execute_rxinfer_simulation
 from pathlib import Path
 
 config = {
-    'iterations': 100,
-    'convergence_threshold': 1e-6,
-    'data_file': 'observations.csv',
-    'constraints': 'default',
-    'meta': True,
-    'visualization': True
+    "iterations": 100,
+    "convergence_threshold": 1e-6,
+    "data_file": "observations.csv",
+    "constraints": "default",
+    "meta": True,
+    "visualization": True,
 }
 
 results = execute_rxinfer_simulation(
-    Path("output/11_render_output/simulation.jl"),
-    config=config,
-    timeout=600
+    Path("output/11_render_output/simulation.jl"), config=config, timeout=600
 )
 print(f"Inference completed in {results['execution_time']:.2f}s")
 ```
@@ -134,61 +132,61 @@ print(f"Inference completed in {results['execution_time']:.2f}s")
 ### RxInfer.jl Execution Configuration
 ```python
 RXINFER_EXEC_CONFIG = {
-    'inference': {
-        'iterations': 100,              # Maximum inference iterations
-        'tolerance': 1e-6,              # Convergence tolerance
-        'scheduler': 'Asynchronous',    # Inference scheduler
-        'autoupdates': True,            # Automatic model updates
-        'meta': True,                   # Use meta-programming
-        'constraints': 'default'        # Constraint specification
+    "inference": {
+        "iterations": 100,  # Maximum inference iterations
+        "tolerance": 1e-6,  # Convergence tolerance
+        "scheduler": "Asynchronous",  # Inference scheduler
+        "autoupdates": True,  # Automatic model updates
+        "meta": True,  # Use meta-programming
+        "constraints": "default",  # Constraint specification
     },
-    'data': {
-        'format': 'csv',                # Data format
-        'batch_size': 100,              # Batch size for streaming
-        'validation_split': 0.2,        # Train/validation split
-        'normalization': True           # Data normalization
+    "data": {
+        "format": "csv",  # Data format
+        "batch_size": 100,  # Batch size for streaming
+        "validation_split": 0.2,  # Train/validation split
+        "normalization": True,  # Data normalization
     },
-    'execution': {
-        'julia_threads': 4,             # Julia threads
-        'memory_limit': '4GB',          # Memory limit
-        'timeout': 300,                 # Execution timeout (seconds)
-        'cleanup_temp': True            # Clean temporary files
+    "execution": {
+        "julia_threads": 4,  # Julia threads
+        "memory_limit": "4GB",  # Memory limit
+        "timeout": 300,  # Execution timeout (seconds)
+        "cleanup_temp": True,  # Clean temporary files
     },
-    'output': {
-        'save_results': True,           # Save inference results
-        'export_format': 'json',        # Export format
-        'visualization': True,          # Generate visualizations
-        'performance_metrics': True     # Performance monitoring
-    }
+    "output": {
+        "save_results": True,  # Save inference results
+        "export_format": "json",  # Export format
+        "visualization": True,  # Generate visualizations
+        "performance_metrics": True,  # Performance monitoring
+    },
 }
 ```
 
 ### Model Configuration
 ```python
 MODEL_CONFIG = {
-    'structure': 'factor_graph',        # Model structure type
-    'variables': 'random',             # Variable types
-    'factors': 'constraint_based',     # Factor specification
-    'priors': 'informative',           # Prior distributions
-    'likelihoods': 'gaussian'          # Likelihood functions
+    "structure": "factor_graph",  # Model structure type
+    "variables": "random",  # Variable types
+    "factors": "constraint_based",  # Factor specification
+    "priors": "informative",  # Prior distributions
+    "likelihoods": "gaussian",  # Likelihood functions
 }
 ```
 
 ### Performance Configuration
 ```python
 PERFORMANCE_CONFIG = {
-    'optimization': {
-        'compilation': True,            # JIT compilation
-        'caching': True,                # Result caching
-        'parallelization': True,        # Parallel execution
-        'memory_pool': True             # Memory pooling
+    "optimization": {
+        "compilation": True,  # JIT compilation
+        "caching": True,  # Result caching
+        "parallelization": True,  # Parallel execution
+        "memory_pool": True,  # Memory pooling
     },
-    'monitoring': {
-        'memory_usage': True,           # Memory monitoring
-        'cpu_usage': True,              # CPU monitoring
-        'inference_progress': True,     # Progress tracking
-        'error_logging': True           # Error logging
-    }
+    "monitoring": {
+        "memory_usage": True,  # Memory monitoring
+        "cpu_usage": True,  # CPU monitoring
+        "inference_progress": True,  # Progress tracking
+        "error_logging": True,  # Error logging
+    },
 }
 ```
 
@@ -202,18 +200,18 @@ from execute.rxinfer import execute_rxinfer_simulation
 
 # Execute RxInfer.jl simulation
 execution_config = {
-    'iterations': 50,
-    'tolerance': 1e-6,
-    'data_file': 'observations.csv',
-    'constraints': 'default',
-    'meta': True,
-    'scheduler': 'Asynchronous',
-    'visualization': True
+    "iterations": 50,
+    "tolerance": 1e-6,
+    "data_file": "observations.csv",
+    "constraints": "default",
+    "meta": True,
+    "scheduler": "Asynchronous",
+    "visualization": True,
 }
 
 results = execute_rxinfer_simulation(
     julia_script_path="output/11_render_output/model_rxinfer_simulation.jl",
-    config=execution_config
+    config=execution_config,
 )
 
 print(f"Inference converged: {results['converged']}")
@@ -230,18 +228,14 @@ with open("model.jl", "r") as f:
     model_code = f.read()
 
 # Prepare data
-data = {
-    'observations': observation_array,
-    'controls': control_array,
-    'time_steps': 100
-}
+data = {"observations": observation_array, "controls": control_array, "time_steps": 100}
 
 # Configure inference
 inference_config = {
-    'iterations': 100,
-    'constraints': 'custom',
-    'meta': True,
-    'scheduler': 'Asynchronous'
+    "iterations": 100,
+    "constraints": "custom",
+    "meta": True,
+    "scheduler": "Asynchronous",
 }
 
 inference_results = run_rxinfer_inference(model_code, data, inference_config)
@@ -263,9 +257,9 @@ print(f"Version: {validation.get('julia_version', 'Unknown')}")
 print(f"RxInfer.jl available: {validation['rxinfer_available']}")
 print(f"ReactiveMP.jl available: {validation['reactivemp_available']}")
 
-if not validation['environment_ready']:
+if not validation["environment_ready"]:
     print("Issues found:")
-    for issue in validation['issues']:
+    for issue in validation["issues"]:
         print(f"  - {issue}")
 ```
 
@@ -275,21 +269,21 @@ from execute.rxinfer import setup_rxinfer_execution
 
 # Setup execution environment
 setup_config = {
-    'julia_threads': 4,
-    'memory_limit': '4GB',
-    'working_directory': './rxinfer_work',
-    'cleanup_on_exit': True
+    "julia_threads": 4,
+    "memory_limit": "4GB",
+    "working_directory": "./rxinfer_work",
+    "cleanup_on_exit": True,
 }
 
 setup_results = setup_rxinfer_execution(setup_config)
 
-if setup_results['setup_successful']:
+if setup_results["setup_successful"]:
     print("RxInfer.jl environment ready")
     # Proceed with execution
     execute_simulation()
 else:
     print("Setup failed:")
-    for error in setup_results['errors']:
+    for error in setup_results["errors"]:
         print(f"  - {error}")
 ```
 
@@ -340,34 +334,30 @@ output/12_execute_output/
 ### Result Data Structure
 ```python
 inference_results = {
-    'metadata': {
-        'model_name': 'actinf_pomdp_agent',
-        'framework': 'rxinfer',
-        'julia_version': '1.8.5',
-        'rxinfer_version': '2.4.1',
-        'execution_time': 45.67,
-        'timestamp': '2025-10-28T10:30:00Z'
+    "metadata": {
+        "model_name": "actinf_pomdp_agent",
+        "framework": "rxinfer",
+        "julia_version": "1.8.5",
+        "rxinfer_version": "2.4.1",
+        "execution_time": 45.67,
+        "timestamp": "2025-10-28T10:30:00Z",
     },
-    'inference': {
-        'converged': True,
-        'iterations_used': 87,
-        'final_free_energy': -1234.56,
-        'convergence_history': [...]
+    "inference": {
+        "converged": True,
+        "iterations_used": 87,
+        "final_free_energy": -1234.56,
+        "convergence_history": [...],
     },
-    'posteriors': {
-        'variable_1': {
-            'mean': [...],
-            'variance': [...],
-            'samples': [...]
-        },
-        'variable_2': {...}
+    "posteriors": {
+        "variable_1": {"mean": [...], "variance": [...], "samples": [...]},
+        "variable_2": {...},
     },
-    'performance': {
-        'memory_peak': '2.3GB',
-        'cpu_time': 42.15,
-        'messages_passed': 15420,
-        'constraints_satisfied': 98.7
-    }
+    "performance": {
+        "memory_peak": "2.3GB",
+        "cpu_time": 42.15,
+        "messages_passed": 15420,
+        "constraints_satisfied": 98.7,
+    },
 }
 ```
 
@@ -484,7 +474,9 @@ uv run --extra dev python -m pytest src/tests/test_execute_rxinfer*.py --cov=src
 ### Tool Endpoints
 ```python
 @mcp_tool("execute.run_rxinfer_simulation")
-def run_rxinfer_simulation_tool(script_path: str, config: Dict[str, Any]) -> Dict[str, Any]:
+def run_rxinfer_simulation_tool(
+    script_path: str, config: Dict[str, Any]
+) -> Dict[str, Any]:
     """Execute RxInfer.jl simulation with given configuration"""
     return execute_rxinfer_simulation(script_path, config)
 ```

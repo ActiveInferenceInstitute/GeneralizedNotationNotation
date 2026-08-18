@@ -57,7 +57,7 @@ A-s
 ```python
 # Conceptual: Assumes a GNN adapter is registered or used by kit
 # In a real scenario, this might involve a custom SymbolExtractor class.
-symbols = gnn_model_repo.extract_symbols('example_model.md', language='gnn')
+symbols = gnn_model_repo.extract_symbols("example_model.md", language="gnn")
 
 # Expected conceptual output:
 # [
@@ -70,7 +70,6 @@ symbols = gnn_model_repo.extract_symbols('example_model.md', language='gnn')
 # ]
 for symbol in symbols:
     print(f"Found GNN symbol: {symbol.get('name')} of type {symbol.get('type')}")
-
 ```
 **Analysis**: This capability transforms GNN files from static documents into queryable structures, allowing for automated audits, model comparisons based on components, and a deeper understanding of model compositions.
 
@@ -82,7 +81,7 @@ for symbol in symbols:
 file_tree = gnn_model_repo.get_file_tree()
 # Output: [{"path": "gnn_examples_visualization/gnn_test_example.md", "is_dir": False, ...}, ...]
 for item in file_tree:
-    if not item['is_dir'] and item['path'].endswith('.md'):
+    if not item["is_dir"] and item["path"].endswith(".md"):
         print(f"GNN Model File: {item['path']}")
 ```
 **Analysis**: For projects with numerous GNN models, this structured listing is the first step towards programmatic access and batch processing.
@@ -98,10 +97,14 @@ for item in file_tree:
 ```python
 # Find all GNN models that define a variable 'pi' (policy)
 # with its dimensionality. Regex looks for 'pi' followed by '['.
-search_results = gnn_model_repo.search_text(r"π\s*\[") # Using π symbol directly if files are UTF-8
+search_results = gnn_model_repo.search_text(
+    r"π\s*\["
+)  # Using π symbol directly if files are UTF-8
 
 for result in search_results:
-    print(f"Found 'π[' in {result['file']} at line {result['line_number']}: {result['line_content']}")
+    print(
+        f"Found 'π[' in {result['file']} at line {result['line_number']}: {result['line_content']}"
+    )
 ```
 **Analysis**: This aids in tasks like identifying all models employing policy variables, finding specific parameterizations, or locating models that use a particular ontology term in their annotations.
 
@@ -124,13 +127,15 @@ A key goal of GNN is its translation into executable code. `kit` excels at analy
 ```python
 # Assume 'generated_model_code.py' is output from a GNN-to-Python translator
 code_repo = Repository("/path/to/generated_code_directory")
-symbols_in_generated_code = code_repo.extract_symbols('generated_model_code.py')
+symbols_in_generated_code = code_repo.extract_symbols("generated_model_code.py")
 
 for symbol in symbols_in_generated_code:
-    if symbol['type'] == 'class_definition':
+    if symbol["type"] == "class_definition":
         print(f"Generated class: {symbol['name']}")
-    elif symbol['type'] == 'function_definition':
-        print(f"Generated function: {symbol['name']} with signature {symbol.get('signature')}")
+    elif symbol["type"] == "function_definition":
+        print(
+            f"Generated function: {symbol['name']} with signature {symbol.get('signature')}"
+        )
 
 # Analyze dependencies if the generated code is modular
 # dependency_analyzer = code_repo.get_dependency_analyzer()
@@ -144,7 +149,9 @@ The GNN project, as seen in the file structure, has its own Python codebase in `
 
 **Example `kit` Usage:**
 ```python
-gnn_toolkit_repo = Repository("/home/trim/Documents/GitHub/GeneralizedNotationNotation/src")
+gnn_toolkit_repo = Repository(
+    "/home/trim/Documents/GitHub/GeneralizedNotationNotation/src"
+)
 
 # Extract symbols from the GNN main processing script
 main_py_symbols = gnn_toolkit_repo.extract_symbols("main.py")

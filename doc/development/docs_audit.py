@@ -127,9 +127,7 @@ def _strip_code(md: str) -> str:
     no_blocks = FENCED_CODE_RE.sub(
         lambda m: "\n".join("" for _ in m.group(0).splitlines()), md
     )
-    return INLINE_CODE_RE.sub(
-        lambda m: " " * len(m.group(0)), no_blocks
-    )
+    return INLINE_CODE_RE.sub(lambda m: " " * len(m.group(0)), no_blocks)
 
 
 def extract_links(md: str) -> list[str]:
@@ -452,14 +450,22 @@ def audit_doc_agents_structure() -> list[tuple[Path, str]]:
         text = agents.read_text(encoding="utf-8", errors="replace")
         if not any(marker in text for marker in orientation):
             issues.append(
-                (rel, f"missing orientation section (need one of: {', '.join(orientation)})")
+                (
+                    rel,
+                    f"missing orientation section (need one of: {', '.join(orientation)})",
+                )
             )
             continue
         m = re.search(r"## Purpose\s*\n(.*?)(?=\n##[^#]|\Z)", text, re.DOTALL)
         if m:
             body = m.group(1).strip()
             if len(body) < 20:
-                issues.append((rel, f"## Purpose section too short ({len(body)} chars, need >= 20)"))
+                issues.append(
+                    (
+                        rel,
+                        f"## Purpose section too short ({len(body)} chars, need >= 20)",
+                    )
+                )
     return issues
 
 
@@ -482,12 +488,16 @@ def format_strict_issue_detail(
 
     if link_issues:
         chunks.append(f"## Broken relative links ({len(link_issues)})\n")
-        for rel, lineno, href, reason in sorted(link_issues, key=lambda x: (str(x[0]), x[1])):
+        for rel, lineno, href, reason in sorted(
+            link_issues, key=lambda x: (str(x[0]), x[1])
+        ):
             chunks.append(f"  {rel}:{lineno}  `{href}`  → {reason}\n")
 
     if anchor_checked and anchor_issues:
         chunks.append(f"## Bad markdown anchors ({len(anchor_issues)})\n")
-        for rel, lineno, href, reason in sorted(anchor_issues, key=lambda x: (str(x[0]), x[1])):
+        for rel, lineno, href, reason in sorted(
+            anchor_issues, key=lambda x: (str(x[0]), x[1])
+        ):
             chunks.append(f"  {rel}:{lineno}  `{href}`  → {reason}\n")
 
     if spec_issues:
@@ -533,14 +543,14 @@ def format_strict_issue_detail(
         for rel, msg in sorted(doc_agents_structure, key=lambda x: str(x[0])):
             chunks.append(f"  `{rel}`  → {msg}\n")
 
-    chunks.append(
-        "\nTip: full tables also in doc/development/docs_audit_report.md\n"
-    )
+    chunks.append("\nTip: full tables also in doc/development/docs_audit_report.md\n")
     return "".join(chunks)
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Markdown documentation audit for this repository.")
+    parser = argparse.ArgumentParser(
+        description="Markdown documentation audit for this repository."
+    )
     parser.add_argument(
         "--strict",
         action="store_true",
@@ -617,7 +627,9 @@ def main() -> int:
     else:
         lines.append("| Source | Line | Href | Issue |")
         lines.append("|--------|------|------|-------|")
-        for rel, lineno, href, reason in sorted(link_issues, key=lambda x: (str(x[0]), x[1])):
+        for rel, lineno, href, reason in sorted(
+            link_issues, key=lambda x: (str(x[0]), x[1])
+        ):
             lines.append(f"| `{rel}` | {lineno} | `{href}` | {reason} |")
     lines.extend(
         [
@@ -627,13 +639,17 @@ def main() -> int:
         ]
     )
     if not args.check_anchors:
-        lines.append("Not run (pass `--check-anchors` to validate `#fragments` against heading slugs).")
+        lines.append(
+            "Not run (pass `--check-anchors` to validate `#fragments` against heading slugs)."
+        )
     elif not anchor_issues:
         lines.append("None found.")
     else:
         lines.append("| Source | Line | Href | Issue |")
         lines.append("|--------|------|------|-------|")
-        for rel, lineno, href, reason in sorted(anchor_issues, key=lambda x: (str(x[0]), x[1])):
+        for rel, lineno, href, reason in sorted(
+            anchor_issues, key=lambda x: (str(x[0]), x[1])
+        ):
             lines.append(f"| `{rel}` | {lineno} | `{href}` | {reason} |")
     lines.extend(
         [

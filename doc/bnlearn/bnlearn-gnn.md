@@ -31,7 +31,7 @@ Active Inference execution engines (`pymdp`, `rxinfer`) inherently generate traj
 *   This creates a powerful recursive loop where Bayesian structures are continuously updated utilizing real-time simulated outputs:
     ```python
     # After simulation yields a trajectory dataframe `df_sim`
-    learned_structure = bn.structure_learning.fit(df_sim, methodtype='hc', scoretype='bic')
+    learned_structure = bn.structure_learning.fit(df_sim, methodtype="hc", scoretype="bic")
     ```
 
 ### Step 16: Analysis

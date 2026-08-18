@@ -31,11 +31,18 @@ The LLM module supports multiple providers with automatic recovery:
 
 ```python
 from llm import (
-    process_llm, LLMProcessor, LLMAnalyzer,
-    analyze_gnn_file_with_llm, extract_variables, extract_connections,
-    perform_semantic_analysis, generate_model_insights,
-    generate_documentation, generate_llm_summary,
-    get_available_providers, get_module_info
+    process_llm,
+    LLMProcessor,
+    LLMAnalyzer,
+    analyze_gnn_file_with_llm,
+    extract_variables,
+    extract_connections,
+    perform_semantic_analysis,
+    generate_model_insights,
+    generate_documentation,
+    generate_llm_summary,
+    get_available_providers,
+    get_module_info,
 )
 
 # Process LLM step (used by pipeline)

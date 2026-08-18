@@ -25,12 +25,12 @@ The most fundamental module in DSPy. All other modules are built upon `dspy.Pred
 import dspy
 
 # Basic usage
-classify = dspy.Predict('sentence -> sentiment: bool')
+classify = dspy.Predict("sentence -> sentiment: bool")
 response = classify(sentence="This is a wonderful experience.")
 print(response.sentiment)  # True
 
 # With configuration
-predict = dspy.Predict('question -> answer', n=5, temperature=0.7)
+predict = dspy.Predict("question -> answer", n=5, temperature=0.7)
 ```
 
 **Key Features**:
@@ -43,7 +43,7 @@ predict = dspy.Predict('question -> answer', n=5, temperature=0.7)
 
 ```python
 # GNN observation classifier
-gnn_classifier = dspy.Predict('observation_text -> gnn_category: str')
+gnn_classifier = dspy.Predict("observation_text -> gnn_category: str")
 result = gnn_classifier(observation_text="The agent perceives a wall ahead")
 # Returns: "o_wall_detected" or similar GNN-compatible symbol
 ```
@@ -58,13 +58,13 @@ Implements step-by-step reasoning before producing the final output.
 
 ```python
 # Standard usage
-reasoner = dspy.ChainOfThought('question -> answer')
+reasoner = dspy.ChainOfThought("question -> answer")
 response = reasoner(question="What is 27 * 13?")
 print(response.reasoning)  # Step-by-step calculation
-print(response.answer)     # 351
+print(response.answer)  # 351
 
 # With typed output
-math_solver = dspy.ChainOfThought('question -> answer: float')
+math_solver = dspy.ChainOfThought("question -> answer: float")
 response = math_solver(question="What is the probability of rolling a 7 with two dice?")
 # response.answer = 0.1666...
 ```
@@ -82,9 +82,9 @@ class GNNGoalTranslator(dspy.Module):
     def __init__(self):
         super().__init__()
         self.translate = dspy.ChainOfThought(
-            'natural_language_goal, gnn_state_space -> reasoning, gnn_c_matrix: dict'
+            "natural_language_goal, gnn_state_space -> reasoning, gnn_c_matrix: dict"
         )
-    
+
     def forward(self, goal, state_space):
         return self.translate(natural_language_goal=goal, gnn_state_space=state_space)
 ```
@@ -99,8 +99,10 @@ Generates and executes Python code to solve problems.
 
 ```python
 # Code-based problem solving
-calculator = dspy.ProgramOfThought('problem -> answer: float')
-response = calculator(problem="Calculate the compound interest on $1000 at 5% for 10 years")
+calculator = dspy.ProgramOfThought("problem -> answer: float")
+response = calculator(
+    problem="Calculate the compound interest on $1000 at 5% for 10 years"
+)
 ```
 
 **Key Features**:
@@ -114,12 +116,12 @@ response = calculator(problem="Calculate the compound interest on $1000 at 5% fo
 ```python
 # GNN matrix generator
 gnn_generator = dspy.ProgramOfThought(
-    'model_description, state_count: int, obs_count: int -> gnn_a_matrix: list'
+    "model_description, state_count: int, obs_count: int -> gnn_a_matrix: list"
 )
 response = gnn_generator(
     model_description="Sensory mapping where state 0 maps to observation 0 with probability 0.9",
     state_count=3,
-    obs_count=3
+    obs_count=3,
 )
 ```
 
@@ -134,21 +136,22 @@ Implements the Reasoning and Acting paradigm for tool-using agents.
 ```python
 import dspy
 
+
 # Define tools
 def search_wikipedia(query: str) -> list[str]:
     """Search Wikipedia for relevant articles."""
     # Implementation
     pass
 
+
 def calculate(expression: str) -> float:
     """Evaluate a mathematical expression."""
     return eval(expression)
 
+
 # Create agent
 agent = dspy.ReAct(
-    signature='question -> answer',
-    tools=[search_wikipedia, calculate],
-    max_iters=5
+    signature="question -> answer", tools=[search_wikipedia, calculate], max_iters=5
 )
 
 response = agent(question="What is the population of Tokyo divided by 1000?")
@@ -172,7 +175,7 @@ Compares multiple ChainOfThought outputs to select the best response.
 
 ```python
 # Multi-chain comparison
-compare = dspy.MultiChainComparison('question -> answer', n=5)
+compare = dspy.MultiChainComparison("question -> answer", n=5)
 response = compare(question="What caused the 2008 financial crisis?")
 ```
 
@@ -194,12 +197,11 @@ Refines predictions through multiple iterations with different configurations.
 # Refinement with reward function
 def quality_score(response):
     # Score the response quality
-    return len(response.answer) > 50 and 'specific' in response.answer.lower()
+    return len(response.answer) > 50 and "specific" in response.answer.lower()
+
 
 refiner = dspy.Refine(
-    module=dspy.ChainOfThought('question -> answer'),
-    reward_fn=quality_score,
-    N=5
+    module=dspy.ChainOfThought("question -> answer"), reward_fn=quality_score, N=5
 )
 response = refiner(question="Explain photosynthesis")
 ```
@@ -230,7 +232,7 @@ Advanced retrieval using ColBERT's late interaction mechanism.
 
 ```python
 # ColBERT-based retrieval
-colbert = dspy.ColBERTv2(url='http://server:port/index')
+colbert = dspy.ColBERTv2(url="http://server:port/index")
 results = colbert(query="GNN syntax specification", k=10)
 ```
 
@@ -246,7 +248,7 @@ Voting mechanism for selecting the most common response.
 
 ```python
 # Majority voting over multiple predictions
-predict = dspy.ChainOfThought('question -> answer', n=10)
+predict = dspy.ChainOfThought("question -> answer", n=10)
 response = predict(question="Is Python compiled or interpreted?")
 majority_answer = dspy.majority(response.completions.answer)
 ```
@@ -264,17 +266,17 @@ class MultiHopQA(dspy.Module):
     def __init__(self, num_hops=3):
         super().__init__()
         self.num_hops = num_hops
-        self.generate_query = dspy.ChainOfThought('context, question -> search_query')
-        self.generate_answer = dspy.ChainOfThought('context, question -> answer')
+        self.generate_query = dspy.ChainOfThought("context, question -> search_query")
+        self.generate_answer = dspy.ChainOfThought("context, question -> answer")
         self.retrieve = dspy.Retrieve(k=5)
-    
+
     def forward(self, question):
         context = []
         for _ in range(self.num_hops):
             query = self.generate_query(context=context, question=question).search_query
             passages = self.retrieve(query)
             context.extend(passages)
-        
+
         return self.generate_answer(context=context, question=question)
 ```
 
@@ -283,23 +285,23 @@ class MultiHopQA(dspy.Module):
 ```python
 class GNNObservationProcessor(dspy.Module):
     """Process natural language into GNN observation format."""
-    
+
     def __init__(self):
         super().__init__()
         self.extract = dspy.ChainOfThought(
-            'user_input, gnn_obs_schema -> reasoning, symbolic_observation'
+            "user_input, gnn_obs_schema -> reasoning, symbolic_observation"
         )
         self.validate = dspy.Predict(
-            'symbolic_observation, gnn_syntax_rules -> is_valid: bool, corrected_observation'
+            "symbolic_observation, gnn_syntax_rules -> is_valid: bool, corrected_observation"
         )
-    
+
     def forward(self, user_input, obs_schema, syntax_rules):
         extraction = self.extract(user_input=user_input, gnn_obs_schema=obs_schema)
         validation = self.validate(
             symbolic_observation=extraction.symbolic_observation,
-            gnn_syntax_rules=syntax_rules
+            gnn_syntax_rules=syntax_rules,
         )
-        
+
         if validation.is_valid:
             return extraction.symbolic_observation
         return validation.corrected_observation
@@ -320,12 +322,7 @@ All modules support common configuration parameters:
 
 ```python
 # Comprehensive configuration
-module = dspy.ChainOfThought(
-    'input -> output',
-    n=3,
-    temperature=0.7,
-    max_tokens=500
-)
+module = dspy.ChainOfThought("input -> output", n=3, temperature=0.7, max_tokens=500)
 ```
 
 ---
@@ -336,19 +333,19 @@ module = dspy.ChainOfThought(
 
 ```python
 # Track API usage
-lm = dspy.LM('openai/gpt-4o', api_key='...')
+lm = dspy.LM("openai/gpt-4o", api_key="...")
 dspy.configure(lm=lm)
 
 # After running modules
 print(lm.history)  # View call history
-print(lm.usage)    # Token usage statistics
+print(lm.usage)  # Token usage statistics
 ```
 
 ### Inspecting Module Behavior
 
 ```python
 # Inspect predictions
-module = dspy.ChainOfThought('question -> answer')
+module = dspy.ChainOfThought("question -> answer")
 response = module(question="What is DSPy?")
 
 # Access all completions

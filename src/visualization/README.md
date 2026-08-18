@@ -155,7 +155,9 @@ from pathlib import Path
 from visualization.core.parsed_model import load_visualization_model
 
 content = Path("model.md").read_text(encoding="utf-8")
-data = load_visualization_model(Path("model.md"), content, Path("output/8_visualization_output"))
+data = load_visualization_model(
+    Path("model.md"), content, Path("output/8_visualization_output")
+)
 ```
 
 CLI: `python -m visualization` (see [`__main__.py`](__main__.py)).

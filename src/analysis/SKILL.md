@@ -23,14 +23,21 @@ python src/main.py --only-steps 16 --verbose
 
 ```python
 from analysis import (
-    process_analysis, perform_statistical_analysis,
-    calculate_variable_statistics, calculate_connection_statistics,
-    calculate_complexity_metrics, calculate_maintainability_index,
-    analyze_framework_outputs, generate_framework_comparison_report,
-    analyze_simulation_traces, analyze_free_energy,
-    compute_shannon_entropy, compute_kl_divergence,
-    compute_variational_free_energy, compute_expected_free_energy,
-    generate_analysis_summary
+    process_analysis,
+    perform_statistical_analysis,
+    calculate_variable_statistics,
+    calculate_connection_statistics,
+    calculate_complexity_metrics,
+    calculate_maintainability_index,
+    analyze_framework_outputs,
+    generate_framework_comparison_report,
+    analyze_simulation_traces,
+    analyze_free_energy,
+    compute_shannon_entropy,
+    compute_kl_divergence,
+    compute_variational_free_energy,
+    compute_expected_free_energy,
+    generate_analysis_summary,
 )
 
 # Process analysis step (used by pipeline)

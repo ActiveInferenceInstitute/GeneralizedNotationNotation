@@ -27,124 +27,340 @@ NUM_ACTIONS = 5
 def create_params() -> Dict[str, jnp.ndarray]:
     """Create model parameters from GNN specification."""
     return {
-        'A_matrix': jnp.array([[0.85, 0.01875, 0.01875, 0.01875, 0.01875, 0.01875, 0.01875, 0.01875, 0.01875], [0.01875, 0.85, 0.01875, 0.01875, 0.01875, 0.01875, 0.01875, 0.01875, 0.01875], [0.01875, 0.01875, 0.85, 0.01875, 0.01875, 0.01875, 0.01875, 0.01875, 0.01875], [0.01875, 0.01875, 0.01875, 0.85, 0.01875, 0.01875, 0.01875, 0.01875, 0.01875], [0.01875, 0.01875, 0.01875, 0.01875, 0.85, 0.01875, 0.01875, 0.01875, 0.01875], [0.01875, 0.01875, 0.01875, 0.01875, 0.01875, 0.85, 0.01875, 0.01875, 0.01875], [0.01875, 0.01875, 0.01875, 0.01875, 0.01875, 0.01875, 0.85, 0.01875, 0.01875], [0.01875, 0.01875, 0.01875, 0.01875, 0.01875, 0.01875, 0.01875, 0.85, 0.01875], [0.01875, 0.01875, 0.01875, 0.01875, 0.01875, 0.01875, 0.01875, 0.01875, 0.85]]),  # Observation model P(o|s)
-        'B_matrix': jnp.array([[[1.0, 0.0, 1.0, 0.0, 1.0], [0.0, 0.0, 1.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0, 0.0], [1.0, 0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0, 0.0]], [[0.0, 0.0, 0.0, 1.0, 0.0], [1.0, 0.0, 0.0, 0.0, 1.0], [0.0, 0.0, 1.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0, 0.0], [1.0, 0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0, 0.0]], [[0.0, 0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 1.0, 0.0], [1.0, 0.0, 0.0, 1.0, 1.0], [0.0, 0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0, 0.0], [1.0, 0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0, 0.0]], [[0.0, 1.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 1.0, 0.0, 1.0], [0.0, 0.0, 1.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0, 0.0], [1.0, 0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0, 0.0]], [[0.0, 0.0, 0.0, 0.0, 0.0], [0.0, 1.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 1.0, 0.0], [0.0, 0.0, 0.0, 0.0, 1.0], [0.0, 0.0, 1.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0, 0.0], [1.0, 0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0, 0.0]], [[0.0, 0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0, 0.0], [0.0, 1.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 1.0, 0.0], [0.0, 0.0, 0.0, 1.0, 1.0], [0.0, 0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0, 0.0], [1.0, 0.0, 0.0, 0.0, 0.0]], [[0.0, 0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0, 0.0], [0.0, 1.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0, 0.0], [0.0, 1.0, 1.0, 0.0, 1.0], [0.0, 0.0, 1.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0, 0.0]], [[0.0, 0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0, 0.0], [0.0, 1.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 1.0, 0.0], [0.0, 1.0, 0.0, 0.0, 1.0], [0.0, 0.0, 1.0, 0.0, 0.0]], [[0.0, 0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0, 0.0], [0.0, 1.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 1.0, 0.0], [0.0, 1.0, 0.0, 1.0, 1.0]]]),  # Transition model P(s'|s,a)
-        'C_vector': jnp.array([0.0, 0.1, 0.3, 0.1, 0.4, 0.8, 0.3, 0.8, 3.0]),  # Preferences over observations
-        'D_vector': jnp.array([1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]),  # Prior over initial states
+        "A_matrix": jnp.array(
+            [
+                [
+                    0.85,
+                    0.01875,
+                    0.01875,
+                    0.01875,
+                    0.01875,
+                    0.01875,
+                    0.01875,
+                    0.01875,
+                    0.01875,
+                ],
+                [
+                    0.01875,
+                    0.85,
+                    0.01875,
+                    0.01875,
+                    0.01875,
+                    0.01875,
+                    0.01875,
+                    0.01875,
+                    0.01875,
+                ],
+                [
+                    0.01875,
+                    0.01875,
+                    0.85,
+                    0.01875,
+                    0.01875,
+                    0.01875,
+                    0.01875,
+                    0.01875,
+                    0.01875,
+                ],
+                [
+                    0.01875,
+                    0.01875,
+                    0.01875,
+                    0.85,
+                    0.01875,
+                    0.01875,
+                    0.01875,
+                    0.01875,
+                    0.01875,
+                ],
+                [
+                    0.01875,
+                    0.01875,
+                    0.01875,
+                    0.01875,
+                    0.85,
+                    0.01875,
+                    0.01875,
+                    0.01875,
+                    0.01875,
+                ],
+                [
+                    0.01875,
+                    0.01875,
+                    0.01875,
+                    0.01875,
+                    0.01875,
+                    0.85,
+                    0.01875,
+                    0.01875,
+                    0.01875,
+                ],
+                [
+                    0.01875,
+                    0.01875,
+                    0.01875,
+                    0.01875,
+                    0.01875,
+                    0.01875,
+                    0.85,
+                    0.01875,
+                    0.01875,
+                ],
+                [
+                    0.01875,
+                    0.01875,
+                    0.01875,
+                    0.01875,
+                    0.01875,
+                    0.01875,
+                    0.01875,
+                    0.85,
+                    0.01875,
+                ],
+                [
+                    0.01875,
+                    0.01875,
+                    0.01875,
+                    0.01875,
+                    0.01875,
+                    0.01875,
+                    0.01875,
+                    0.01875,
+                    0.85,
+                ],
+            ]
+        ),  # Observation model P(o|s)
+        "B_matrix": jnp.array(
+            [
+                [
+                    [1.0, 0.0, 1.0, 0.0, 1.0],
+                    [0.0, 0.0, 1.0, 0.0, 0.0],
+                    [0.0, 0.0, 0.0, 0.0, 0.0],
+                    [1.0, 0.0, 0.0, 0.0, 0.0],
+                    [0.0, 0.0, 0.0, 0.0, 0.0],
+                    [0.0, 0.0, 0.0, 0.0, 0.0],
+                    [0.0, 0.0, 0.0, 0.0, 0.0],
+                    [0.0, 0.0, 0.0, 0.0, 0.0],
+                    [0.0, 0.0, 0.0, 0.0, 0.0],
+                ],
+                [
+                    [0.0, 0.0, 0.0, 1.0, 0.0],
+                    [1.0, 0.0, 0.0, 0.0, 1.0],
+                    [0.0, 0.0, 1.0, 0.0, 0.0],
+                    [0.0, 0.0, 0.0, 0.0, 0.0],
+                    [1.0, 0.0, 0.0, 0.0, 0.0],
+                    [0.0, 0.0, 0.0, 0.0, 0.0],
+                    [0.0, 0.0, 0.0, 0.0, 0.0],
+                    [0.0, 0.0, 0.0, 0.0, 0.0],
+                    [0.0, 0.0, 0.0, 0.0, 0.0],
+                ],
+                [
+                    [0.0, 0.0, 0.0, 0.0, 0.0],
+                    [0.0, 0.0, 0.0, 1.0, 0.0],
+                    [1.0, 0.0, 0.0, 1.0, 1.0],
+                    [0.0, 0.0, 0.0, 0.0, 0.0],
+                    [0.0, 0.0, 0.0, 0.0, 0.0],
+                    [1.0, 0.0, 0.0, 0.0, 0.0],
+                    [0.0, 0.0, 0.0, 0.0, 0.0],
+                    [0.0, 0.0, 0.0, 0.0, 0.0],
+                    [0.0, 0.0, 0.0, 0.0, 0.0],
+                ],
+                [
+                    [0.0, 1.0, 0.0, 0.0, 0.0],
+                    [0.0, 0.0, 0.0, 0.0, 0.0],
+                    [0.0, 0.0, 0.0, 0.0, 0.0],
+                    [0.0, 0.0, 1.0, 0.0, 1.0],
+                    [0.0, 0.0, 1.0, 0.0, 0.0],
+                    [0.0, 0.0, 0.0, 0.0, 0.0],
+                    [1.0, 0.0, 0.0, 0.0, 0.0],
+                    [0.0, 0.0, 0.0, 0.0, 0.0],
+                    [0.0, 0.0, 0.0, 0.0, 0.0],
+                ],
+                [
+                    [0.0, 0.0, 0.0, 0.0, 0.0],
+                    [0.0, 1.0, 0.0, 0.0, 0.0],
+                    [0.0, 0.0, 0.0, 0.0, 0.0],
+                    [0.0, 0.0, 0.0, 1.0, 0.0],
+                    [0.0, 0.0, 0.0, 0.0, 1.0],
+                    [0.0, 0.0, 1.0, 0.0, 0.0],
+                    [0.0, 0.0, 0.0, 0.0, 0.0],
+                    [1.0, 0.0, 0.0, 0.0, 0.0],
+                    [0.0, 0.0, 0.0, 0.0, 0.0],
+                ],
+                [
+                    [0.0, 0.0, 0.0, 0.0, 0.0],
+                    [0.0, 0.0, 0.0, 0.0, 0.0],
+                    [0.0, 1.0, 0.0, 0.0, 0.0],
+                    [0.0, 0.0, 0.0, 0.0, 0.0],
+                    [0.0, 0.0, 0.0, 1.0, 0.0],
+                    [0.0, 0.0, 0.0, 1.0, 1.0],
+                    [0.0, 0.0, 0.0, 0.0, 0.0],
+                    [0.0, 0.0, 0.0, 0.0, 0.0],
+                    [1.0, 0.0, 0.0, 0.0, 0.0],
+                ],
+                [
+                    [0.0, 0.0, 0.0, 0.0, 0.0],
+                    [0.0, 0.0, 0.0, 0.0, 0.0],
+                    [0.0, 0.0, 0.0, 0.0, 0.0],
+                    [0.0, 1.0, 0.0, 0.0, 0.0],
+                    [0.0, 0.0, 0.0, 0.0, 0.0],
+                    [0.0, 0.0, 0.0, 0.0, 0.0],
+                    [0.0, 1.0, 1.0, 0.0, 1.0],
+                    [0.0, 0.0, 1.0, 0.0, 0.0],
+                    [0.0, 0.0, 0.0, 0.0, 0.0],
+                ],
+                [
+                    [0.0, 0.0, 0.0, 0.0, 0.0],
+                    [0.0, 0.0, 0.0, 0.0, 0.0],
+                    [0.0, 0.0, 0.0, 0.0, 0.0],
+                    [0.0, 0.0, 0.0, 0.0, 0.0],
+                    [0.0, 1.0, 0.0, 0.0, 0.0],
+                    [0.0, 0.0, 0.0, 0.0, 0.0],
+                    [0.0, 0.0, 0.0, 1.0, 0.0],
+                    [0.0, 1.0, 0.0, 0.0, 1.0],
+                    [0.0, 0.0, 1.0, 0.0, 0.0],
+                ],
+                [
+                    [0.0, 0.0, 0.0, 0.0, 0.0],
+                    [0.0, 0.0, 0.0, 0.0, 0.0],
+                    [0.0, 0.0, 0.0, 0.0, 0.0],
+                    [0.0, 0.0, 0.0, 0.0, 0.0],
+                    [0.0, 0.0, 0.0, 0.0, 0.0],
+                    [0.0, 1.0, 0.0, 0.0, 0.0],
+                    [0.0, 0.0, 0.0, 0.0, 0.0],
+                    [0.0, 0.0, 0.0, 1.0, 0.0],
+                    [0.0, 1.0, 0.0, 1.0, 1.0],
+                ],
+            ]
+        ),  # Transition model P(s'|s,a)
+        "C_vector": jnp.array(
+            [0.0, 0.1, 0.3, 0.1, 0.4, 0.8, 0.3, 0.8, 3.0]
+        ),  # Preferences over observations
+        "D_vector": jnp.array(
+            [1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+        ),  # Prior over initial states
     }
 
 
 @jit
-def belief_update(params: Dict[str, jnp.ndarray], belief: jnp.ndarray, 
-                  observation: jnp.ndarray) -> jnp.ndarray:
+def belief_update(
+    params: Dict[str, jnp.ndarray], belief: jnp.ndarray, observation: jnp.ndarray
+) -> jnp.ndarray:
     """
     Bayesian belief update given an observation.
-    
+
     P(s|o) ∝ P(o|s) * P(s) using the A matrix (likelihood)
-    
+
     Args:
         params: Model parameters dictionary
         belief: Current belief state [num_states]
         observation: Observation vector [num_observations]
-        
+
     Returns:
         Updated belief state [num_states]
     """
-    A_matrix = params['A_matrix']
-    
+    A_matrix = params["A_matrix"]
+
     # Compute likelihood P(o|s) for each state
     # For each state s, compute sum over observations: A[o,s] * observation[o]
     likelihood = jnp.dot(observation, A_matrix)  # [num_states]
-    
+
     # Bayesian update: P(s|o) ∝ P(o|s) * P(s)
     updated_belief = belief * likelihood
-    
+
     # Normalize with numerical stability
     normalizer = jnp.sum(updated_belief) + 1e-8
     updated_belief = updated_belief / normalizer
-    
+
     return updated_belief
 
 
 @jit
-def compute_expected_free_energy(params: Dict[str, jnp.ndarray], belief: jnp.ndarray, 
-                                  action: int) -> float:
+def compute_expected_free_energy(
+    params: Dict[str, jnp.ndarray], belief: jnp.ndarray, action: int
+) -> float:
     """
     Compute expected free energy (EFE) for a given action.
-    
+
     EFE = -E[log P(o)] + KL[Q(s')||P(s')]
         = Entropy of predicted observations + KL divergence
-    
+
     Args:
         params: Model parameters dictionary
         belief: Current belief state [num_states]
         action: Action index
-        
+
     Returns:
         Expected free energy value
     """
-    A_matrix = params['A_matrix']
-    B_matrix = params['B_matrix']
-    C_vector = params['C_vector']
-    D_vector = params['D_vector']
-    
+    A_matrix = params["A_matrix"]
+    B_matrix = params["B_matrix"]
+    C_vector = params["C_vector"]
+    D_vector = params["D_vector"]
+
     # Predict next state distribution using B matrix (transitions)
     # B_matrix[:, :, action] is [num_states, num_states]
     next_belief = jnp.dot(B_matrix[:, :, action], belief)
     next_belief = next_belief / (jnp.sum(next_belief) + 1e-8)  # Normalize
-    
+
     # Predict observation distribution using A matrix
     predicted_obs = jnp.dot(A_matrix, next_belief)
     predicted_obs = predicted_obs / (jnp.sum(predicted_obs) + 1e-8)  # Normalize
-    
+
     # Compute epistemic value (expected information gain)
     # This is the negative entropy of predicted observations
     obs_entropy = -jnp.sum(predicted_obs * jnp.log(predicted_obs + 1e-8))
-    
+
     # Compute pragmatic value (expected utility based on preferences)
     # Higher values in C_vector mean more preferred observations
     pragmatic_value = jnp.dot(predicted_obs, C_vector)
-    
+
     # Compute KL divergence between predicted state and prior
     kl_divergence = jnp.sum(
-        jnp.where(next_belief > 1e-8,
-                  next_belief * jnp.log((next_belief + 1e-8) / (D_vector + 1e-8)),
-                  0.0)
+        jnp.where(
+            next_belief > 1e-8,
+            next_belief * jnp.log((next_belief + 1e-8) / (D_vector + 1e-8)),
+            0.0,
+        )
     )
-    
+
     # Expected free energy = uncertainty - utility + complexity
     efe = obs_entropy - pragmatic_value + 0.1 * kl_divergence
-    
+
     return efe
 
 
 @jit
-def choose_action(params: Dict[str, jnp.ndarray], belief: jnp.ndarray) -> Tuple[int, jnp.ndarray]:
+def choose_action(
+    params: Dict[str, jnp.ndarray], belief: jnp.ndarray
+) -> Tuple[int, jnp.ndarray]:
     """
     Choose action with minimum expected free energy.
-    
+
     Args:
         params: Model parameters dictionary
         belief: Current belief state [num_states]
-        
+
     Returns:
         Tuple of (chosen_action_index, efe_values_for_all_actions)
     """
     # Compute EFE for all actions
-    efe_values = jnp.array([
-        compute_expected_free_energy(params, belief, a) 
-        for a in range(NUM_ACTIONS)
-    ])
-    
+    efe_values = jnp.array(
+        [compute_expected_free_energy(params, belief, a) for a in range(NUM_ACTIONS)]
+    )
+
     # Choose action with minimum EFE
     chosen_action = jnp.argmin(efe_values)
-    
+
     return chosen_action, efe_values
+
 
 # Batched operations for parallel execution across multiple agents or parallel rollouts
 # JAX's vmap allows automatic vectorization of functions
 batched_belief_update = jax.vmap(belief_update, in_axes=(None, 0, 0))
-batched_compute_expected_free_energy = jax.vmap(compute_expected_free_energy, in_axes=(None, 0, None))
+batched_compute_expected_free_energy = jax.vmap(
+    compute_expected_free_energy, in_axes=(None, 0, None)
+)
 
 # Optional pmap for multiple devices if available
 import os
@@ -158,133 +374,141 @@ except (RuntimeError, ValueError):
 
 
 @jit
-def state_transition(params: Dict[str, jnp.ndarray], belief: jnp.ndarray, 
-                     action: int) -> jnp.ndarray:
+def state_transition(
+    params: Dict[str, jnp.ndarray], belief: jnp.ndarray, action: int
+) -> jnp.ndarray:
     """
     Predict next state distribution given current belief and action.
-    
+
     Args:
         params: Model parameters dictionary
         belief: Current belief state [num_states]
         action: Action index
-        
+
     Returns:
         Predicted next state distribution [num_states]
     """
-    B_matrix = params['B_matrix']
-    
+    B_matrix = params["B_matrix"]
+
     # Apply transition model
     next_belief = jnp.dot(B_matrix[:, :, action], belief)
-    
+
     # Normalize
     next_belief = next_belief / (jnp.sum(next_belief) + 1e-8)
-    
+
     return next_belief
 
 
-def simulate_step(params: Dict[str, jnp.ndarray], belief: jnp.ndarray, 
-                  observation: jnp.ndarray) -> Dict[str, Any]:
+def simulate_step(
+    params: Dict[str, jnp.ndarray], belief: jnp.ndarray, observation: jnp.ndarray
+) -> Dict[str, Any]:
     """
     Perform one step of Active Inference simulation.
-    
+
     This includes:
     1. Belief update given observation
     2. Action choice based on expected free energy
     3. State prediction for chosen action
-    
+
     Args:
         params: Model parameters dictionary
         belief: Current belief state [num_states]
         observation: Observation vector [num_observations]
-        
+
     Returns:
         Dictionary with simulation results
     """
     # 1. Update belief based on observation
     updated_belief = belief_update(params, belief, observation)
-    
+
     # 2. Choose action
     chosen_action, efe_values = choose_action(params, updated_belief)
-    
+
     # 3. Predict next state
     predicted_next_state = state_transition(params, updated_belief, chosen_action)
-    
+
     return {
-        'belief': updated_belief,
-        'action': chosen_action,
-        'expected_free_energy': efe_values[chosen_action],
-        'all_efe_values': efe_values,
-        'predicted_next_state': predicted_next_state,
+        "belief": updated_belief,
+        "action": chosen_action,
+        "expected_free_energy": efe_values[chosen_action],
+        "all_efe_values": efe_values,
+        "predicted_next_state": predicted_next_state,
     }
 
 
-def run_simulation(params: Dict[str, jnp.ndarray], num_steps: int, 
-                   initial_belief: jnp.ndarray = None, seed: int = 42) -> Dict[str, Any]:
+def run_simulation(
+    params: Dict[str, jnp.ndarray],
+    num_steps: int,
+    initial_belief: jnp.ndarray = None,
+    seed: int = 42,
+) -> Dict[str, Any]:
     """
     Run a full Active Inference simulation interacting with a true
     stochastic POMDP generative environment.
-    
+
     Args:
         params: Model parameters dictionary
         num_steps: Number of simulation timesteps
         initial_belief: Optional initial belief (default: uniform)
         seed: Random seed for stochastic environment generation
-        
+
     Returns:
         Dictionary with simulation trajectory
     """
     key = jax.random.PRNGKey(seed)
-    
+
     # Initialize belief
     if initial_belief is None:
-        belief = params['D_vector'].copy()
+        belief = params["D_vector"].copy()
     else:
         belief = initial_belief
-        
+
     # Initialize true state from Prior
     key, subkey = jax.random.split(key)
-    true_state_idx = jax.random.categorical(subkey, jnp.log(params['D_vector'] + 1e-8))
-    
+    true_state_idx = jax.random.categorical(subkey, jnp.log(params["D_vector"] + 1e-8))
+
     # Storage for trajectory
     beliefs = []
     actions = []
     efes = []
     observations_log = []
-    
+
     # Run simulation
     for t in range(num_steps):
         # 1. Environment generates observation
         key, subkey = jax.random.split(key)
-        obs_probs = params['A_matrix'][:, true_state_idx]
+        obs_probs = params["A_matrix"][:, true_state_idx]
         obs_idx = jax.random.categorical(subkey, jnp.log(obs_probs + 1e-8))
-        
+
         # Create one-hot observation for the agent
-        obs_one_hot = jnp.zeros(params['A_matrix'].shape[0])
+        obs_one_hot = jnp.zeros(params["A_matrix"].shape[0])
         obs_one_hot = obs_one_hot.at[obs_idx].set(1.0)
         observations_log.append(obs_idx)
-        
+
         # 2. Agent perceives and acts
         result = simulate_step(params, belief, obs_one_hot)
-        
-        beliefs.append(result['belief'])
-        actions.append(result['action'])
-        efes.append(result['all_efe_values'])
-        action_idx = int(result['action'])
-        
+
+        beliefs.append(result["belief"])
+        actions.append(result["action"])
+        efes.append(result["all_efe_values"])
+        action_idx = int(result["action"])
+
         # 3. Environment transitions true state
         key, subkey = jax.random.split(key)
-        next_state_probs = params['B_matrix'][:, true_state_idx, action_idx]
-        true_state_idx = jax.random.categorical(subkey, jnp.log(next_state_probs + 1e-8))
-        
+        next_state_probs = params["B_matrix"][:, true_state_idx, action_idx]
+        true_state_idx = jax.random.categorical(
+            subkey, jnp.log(next_state_probs + 1e-8)
+        )
+
         # Update belief for next step (using predicted next state)
-        belief = result['predicted_next_state']
-    
+        belief = result["predicted_next_state"]
+
     return {
-        'beliefs': jnp.stack(beliefs),
-        'actions': jnp.array(actions),
-        'expected_free_energies': jnp.array(efes),
-        'observations': jnp.array(observations_log),
-        'final_belief': belief,
+        "beliefs": jnp.stack(beliefs),
+        "actions": jnp.array(actions),
+        "expected_free_energies": jnp.array(efes),
+        "observations": jnp.array(observations_log),
+        "final_belief": belief,
     }
 
 
@@ -307,8 +531,12 @@ Key Functions:
 """
 
 
-def save_simulation_results(trajectory: Dict[str, Any], params: Dict[str, jnp.ndarray],
-                            model_name: str, output_dir: str = ".") -> str:
+def save_simulation_results(
+    trajectory: Dict[str, Any],
+    params: Dict[str, jnp.ndarray],
+    model_name: str,
+    output_dir: str = ".",
+) -> str:
     """
     Save simulation results to structured JSON for downstream analysis.
 
@@ -333,43 +561,52 @@ def save_simulation_results(trajectory: Dict[str, Any], params: Dict[str, jnp.nd
         "success": True,
         "framework": "jax",
         "model_name": model_name,
-        "num_timesteps": int(len(trajectory['actions'])),
+        "num_timesteps": int(len(trajectory["actions"])),
         "timestamp": datetime.now().isoformat(),
         "simulation_trace": {
-            "observations": trajectory.get('observations', jnp.array([])).tolist(),
-            "beliefs": [b.tolist() for b in trajectory.get('beliefs', [])],
-            "actions": trajectory.get('actions', jnp.array([])).tolist(),
-            "efe_history": trajectory.get('expected_free_energies', jnp.array([])).tolist(),
-            "belief_confidence": [float(max(b)) if len(b) > 0 else 0.0 for b in trajectory.get('beliefs', [])],
+            "observations": trajectory.get("observations", jnp.array([])).tolist(),
+            "beliefs": [b.tolist() for b in trajectory.get("beliefs", [])],
+            "actions": trajectory.get("actions", jnp.array([])).tolist(),
+            "efe_history": trajectory.get(
+                "expected_free_energies", jnp.array([])
+            ).tolist(),
+            "belief_confidence": [
+                float(max(b)) if len(b) > 0 else 0.0
+                for b in trajectory.get("beliefs", [])
+            ],
         },
-        "observations": trajectory.get('observations', jnp.array([])).tolist(),
-        "beliefs": [b.tolist() for b in trajectory['beliefs']],
-        "actions": trajectory['actions'].tolist(),
-        "final_belief": trajectory['final_belief'].tolist(),
+        "observations": trajectory.get("observations", jnp.array([])).tolist(),
+        "beliefs": [b.tolist() for b in trajectory["beliefs"]],
+        "actions": trajectory["actions"].tolist(),
+        "final_belief": trajectory["final_belief"].tolist(),
         "model_parameters": {
-            "A_shape": list(params['A_matrix'].shape),
-            "B_shape": list(params['B_matrix'].shape),
-            "C_shape": list(params['C_vector'].shape),
-            "D_shape": list(params['D_vector'].shape),
+            "A_shape": list(params["A_matrix"].shape),
+            "B_shape": list(params["B_matrix"].shape),
+            "C_shape": list(params["C_vector"].shape),
+            "D_shape": list(params["D_vector"].shape),
             "num_states": NUM_STATES,
             "num_observations": NUM_OBSERVATIONS,
-            "num_actions": NUM_ACTIONS
+            "num_actions": NUM_ACTIONS,
         },
         "metrics": {
-            "expected_free_energy": trajectory['expected_free_energies'].tolist(),
-            "average_efe": float(jnp.mean(trajectory['expected_free_energies'])),
-            "belief_confidence": [float(max(b)) for b in trajectory['beliefs']],
+            "expected_free_energy": trajectory["expected_free_energies"].tolist(),
+            "average_efe": float(jnp.mean(trajectory["expected_free_energies"])),
+            "belief_confidence": [float(max(b)) for b in trajectory["beliefs"]],
         },
         "validation": {
-            "all_beliefs_valid": all(abs(sum(b) - 1.0) < 0.01 for b in trajectory['beliefs']),
+            "all_beliefs_valid": all(
+                abs(sum(b) - 1.0) < 0.01 for b in trajectory["beliefs"]
+            ),
             "beliefs_sum_to_one": True,
-            "actions_in_range": all(0 <= a < NUM_ACTIONS for a in trajectory['actions'])
-        }
+            "actions_in_range": all(
+                0 <= a < NUM_ACTIONS for a in trajectory["actions"]
+            ),
+        },
     }
 
     # Save to JSON
     output_file = os.path.join(output_dir, "simulation_results.json")
-    with open(output_file, 'w') as f:
+    with open(output_file, "w") as f:
         json.dump(results, f, indent=2)
 
     return output_file
@@ -395,7 +632,7 @@ if __name__ == "__main__":
 
     # Test with uniform initial belief
     print("\n🧪 Running test simulation...")
-    initial_belief = params['D_vector']
+    initial_belief = params["D_vector"]
 
     # Create a test observation (one-hot for first observation)
     test_obs = jnp.zeros(NUM_OBSERVATIONS)
@@ -420,7 +657,7 @@ if __name__ == "__main__":
     print(f"   Average EFE: {jnp.mean(trajectory['expected_free_energies']):.4f}")
 
     # Save structured results for analysis step
-    output_dir = os.environ.get('GNN_OUTPUT_DIR', 'jax_outputs')
+    output_dir = os.environ.get("GNN_OUTPUT_DIR", "jax_outputs")
     results_file = save_simulation_results(trajectory, params, "GNNModel", output_dir)
     print(f"\n💾 Saved simulation results to: {results_file}")
 

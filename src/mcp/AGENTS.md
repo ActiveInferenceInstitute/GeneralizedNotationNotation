@@ -69,7 +69,7 @@ success = process_mcp(
     verbose=True,
     mcp_mode="tool_discovery",
     enable_tools=True,
-    transport="stdio"
+    transport="stdio",
 )
 ```
 
@@ -211,7 +211,7 @@ success = process_mcp(
     target_dir=Path("input/gnn_files"),
     output_dir=Path("output/21_mcp_output"),
     logger=logger,
-    mcp_mode="tool_discovery"
+    mcp_mode="tool_discovery",
 )
 ```
 

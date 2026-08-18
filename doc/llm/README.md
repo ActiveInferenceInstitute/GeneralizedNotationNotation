@@ -43,25 +43,26 @@ OPENROUTER_SITE_NAME="GNN Analysis Pipeline"
 import asyncio
 from src.llm import initialize_global_processor, AnalysisType
 
+
 async def analyze_gnn_model():
     # Initialize processor with environment settings
     processor = await initialize_global_processor()
-    
+
     # Read your GNN file
     with open("path/to/your/model.md", "r") as f:
         gnn_content = f.read()
-    
+
     # Analyze the model
     response = await processor.analyze_gnn(
-        gnn_content=gnn_content,
-        analysis_type=AnalysisType.SUMMARY
+        gnn_content=gnn_content, analysis_type=AnalysisType.SUMMARY
     )
-    
+
     print(f"Analysis from {response.provider}:")
     print(response.content)
-    
+
     # Clean up
     await processor.close()
+
 
 # Run the analysis
 asyncio.run(analyze_gnn_model())
@@ -79,7 +80,7 @@ asyncio.run(analyze_gnn_model())
 response = await processor.analyze_gnn(
     gnn_content=content,
     provider_type=ProviderType.OPENAI,
-    analysis_type=AnalysisType.STRUCTURE
+    analysis_type=AnalysisType.STRUCTURE,
 )
 ```
 
@@ -91,15 +92,11 @@ response = await processor.analyze_gnn(
 ```python
 # Use specific model through OpenRouter
 config = LLMConfig(
-    model="anthropic/claude-3.5-sonnet",
-    max_tokens=2000,
-    temperature=0.1
+    model="anthropic/claude-3.5-sonnet", max_tokens=2000, temperature=0.1
 )
 
 response = await processor.analyze_gnn(
-    gnn_content=content,
-    provider_type=ProviderType.OPENROUTER,
-    config=config
+    gnn_content=content, provider_type=ProviderType.OPENROUTER, config=config
 )
 ```
 
@@ -111,13 +108,12 @@ response = await processor.analyze_gnn(
 ```python
 # Search-enhanced analysis with Perplexity
 response = await processor.analyze_gnn(
-    gnn_content=content,
-    analysis_type=AnalysisType.SEARCH_ENHANCED
+    gnn_content=content, analysis_type=AnalysisType.SEARCH_ENHANCED
 )
 
 # Access citations if available
-if response.metadata and 'citations' in response.metadata:
-    print("Sources:", response.metadata['citations'])
+if response.metadata and "citations" in response.metadata:
+    print("Sources:", response.metadata["citations"])
 ```
 
 ## Analysis Types
@@ -126,12 +122,12 @@ The system supports different analysis types optimized for GNN models:
 
 ```python
 class AnalysisType(Enum):
-    SUMMARY = "summary"           # Concise model overview
-    STRUCTURE = "structure"       # Detailed structural analysis  
-    QUESTIONS = "questions"       # Generate insight questions
-    ENHANCEMENT = "enhancement"   # Improvement suggestions
-    VALIDATION = "validation"     # Model validation checks
-    COMPARISON = "comparison"     # Compare with other models
+    SUMMARY = "summary"  # Concise model overview
+    STRUCTURE = "structure"  # Detailed structural analysis
+    QUESTIONS = "questions"  # Generate insight questions
+    ENHANCEMENT = "enhancement"  # Improvement suggestions
+    VALIDATION = "validation"  # Model validation checks
+    COMPARISON = "comparison"  # Compare with other models
     SEARCH_ENHANCED = "search_enhanced"  # Research-augmented analysis
 ```
 
@@ -144,8 +140,7 @@ Compare responses from multiple providers:
 ```python
 # Get analysis from all available providers
 results = await processor.compare_providers(
-    gnn_content=content,
-    analysis_type=AnalysisType.SUMMARY
+    gnn_content=content, analysis_type=AnalysisType.SUMMARY
 )
 
 for provider_name, response in results.items():
@@ -161,7 +156,7 @@ Get real-time streaming responses:
 ```python
 messages = [
     LLMMessage(role="system", content="You are a GNN expert."),
-    LLMMessage(role="user", content=f"Analyze this model: {gnn_content}")
+    LLMMessage(role="user", content=f"Analyze this model: {gnn_content}"),
 ]
 
 async for chunk in processor.generate_stream(messages):
@@ -174,17 +169,10 @@ Fine-tune provider behavior:
 
 ```python
 config = LLMConfig(
-    model="gpt-4o",
-    max_tokens=3000,
-    temperature=0.2,
-    top_p=0.9,
-    frequency_penalty=0.1
+    model="gpt-4o", max_tokens=3000, temperature=0.2, top_p=0.9, frequency_penalty=0.1
 )
 
-response = await processor.analyze_gnn(
-    gnn_content=content,
-    config=config
-)
+response = await processor.analyze_gnn(gnn_content=content, config=config)
 ```
 
 ## Provider Selection Logic
@@ -199,8 +187,7 @@ The system automatically selects the best provider for each task:
 Override with specific provider:
 ```python
 response = await processor.analyze_gnn(
-    gnn_content=content,
-    provider_type=ProviderType.PERPLEXITY
+    gnn_content=content, provider_type=ProviderType.PERPLEXITY
 )
 ```
 
@@ -235,28 +222,30 @@ The LLM processor integrates seamlessly with the GNN pipeline:
 # From pipeline step 11 (11_llm.py)
 from src.llm import get_processor
 
+
 async def analyze_discovered_models(gnn_files):
     processor = get_processor()
-    
+
     if not processor:
         processor = await initialize_global_processor()
-    
+
     results = []
     for gnn_file in gnn_files:
         try:
             response = await processor.analyze_gnn(
-                gnn_content=gnn_file.read_text(),
-                analysis_type=AnalysisType.STRUCTURE
+                gnn_content=gnn_file.read_text(), analysis_type=AnalysisType.STRUCTURE
             )
-            results.append({
-                'file': gnn_file.name,
-                'analysis': response.content,
-                'provider': response.provider,
-                'tokens': response.usage
-            })
+            results.append(
+                {
+                    "file": gnn_file.name,
+                    "analysis": response.content,
+                    "provider": response.provider,
+                    "tokens": response.usage,
+                }
+            )
         except Exception as e:
             logger.error(f"Failed to analyze {gnn_file}: {e}")
-    
+
     return results
 ```
 
@@ -293,20 +282,14 @@ OPENROUTER_SITE_NAME="Your Application Name"
 ```python
 # Custom provider configuration
 provider_configs = {
-    'openai': {
-        'organization': 'org-your-org',
-        'base_url': 'https://api.openai.com/v1'
-    },
-    'openrouter': {
-        'site_url': 'https://myapp.com',
-        'site_name': 'My GNN Analysis App'
-    }
+    "openai": {"organization": "org-your-org", "base_url": "https://api.openai.com/v1"},
+    "openrouter": {"site_url": "https://myapp.com", "site_name": "My GNN Analysis App"},
 }
 
 processor = LLMProcessor(
     preferred_providers=[ProviderType.PERPLEXITY, ProviderType.OPENAI],
-    api_keys={'perplexity': 'pplx-...', 'openai': 'sk-...'},
-    provider_configs=provider_configs
+    api_keys={"perplexity": "pplx-...", "openai": "sk-..."},
+    provider_configs=provider_configs,
 )
 ```
 
@@ -363,13 +346,14 @@ print(f"OpenAI initialization: {'✓' if success else '✗'}")
 # Implement backoff
 import asyncio
 
+
 async def analyze_with_backoff(processor, content, max_retries=3):
     for attempt in range(max_retries):
         try:
             return await processor.analyze_gnn(content)
         except Exception as e:
             if "rate_limit" in str(e).lower() and attempt < max_retries - 1:
-                wait_time = 2 ** attempt
+                wait_time = 2**attempt
                 await asyncio.sleep(wait_time)
                 continue
             raise

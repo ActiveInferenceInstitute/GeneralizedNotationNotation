@@ -75,18 +75,19 @@ src/
 def main():
     """Main pipeline orchestration function."""
     args = ArgumentParser.parse_step_arguments("main.py")
-    
+
     # Define pipeline steps
     pipeline_steps = [
         ("0_template.py", "Template initialization"),
         ("1_setup.py", "Environment setup"),
         # ... other steps
     ]
-    
+
     # Execute each step
     for step_number, (script_name, description) in enumerate(pipeline_steps, 1):
         step_result = execute_pipeline_step(script_name, args, logger)
         # Track results and continue
+
 
 def execute_pipeline_step(script_name: str, args, logger):
     """Execute a single pipeline step."""
@@ -112,15 +113,19 @@ try:
         process_template_standardized,
         generate_correlation_id,
         safe_template_execution,
-        demonstrate_utility_patterns
+        demonstrate_utility_patterns,
     )
+
     TEMPLATE_AVAILABLE = True
 except ImportError:
     TEMPLATE_AVAILABLE = False
+
     # Recovery function definitions if template module is not available
     def process_template_standardized(*args, **kwargs):
         return False
+
     # ... other fallbacks
+
 
 def process_template_standardized_wrapper(
     target_dir: Path,
@@ -128,19 +133,21 @@ def process_template_standardized_wrapper(
     logger,
     recursive: bool = False,
     verbose: bool = False,
-    **kwargs
+    **kwargs,
 ) -> bool:
     """Standardized template processing function."""
     try:
         # Check if template module is available
         if not TEMPLATE_AVAILABLE:
-            log_step_warning(logger, "Template module not available, using recovery functions")
-        
+            log_step_warning(
+                logger, "Template module not available, using recovery functions"
+            )
+
         # Get pipeline configuration
         config = get_pipeline_config()
         step_output_dir = get_output_dir_for_script("0_template.py", output_dir)
         step_output_dir.mkdir(parents=True, exist_ok=True)
-        
+
         # Call modular function
         success = process_template_standardized(
             target_dir=target_dir,
@@ -148,30 +155,33 @@ def process_template_standardized_wrapper(
             logger=logger,
             recursive=recursive,
             verbose=verbose,
-            **kwargs
+            **kwargs,
         )
-        
+
         return success
-        
+
     except Exception as e:
         log_step_error(logger, f"Template processing failed: {e}")
         return False
 
+
 def main():
     """Main template processing function."""
     from utils.argument_utils import ArgumentParser
+
     args = ArgumentParser.parse_step_arguments("0_template.py")
     logger = setup_step_logging("template", args)
-    
+
     success = process_template_standardized_wrapper(
         target_dir=args.target_dir,
         output_dir=args.output_dir,
         logger=logger,
         recursive=args.recursive,
-        verbose=args.verbose
+        verbose=args.verbose,
     )
-    
+
     return 0 if success else 1
+
 
 if __name__ == "__main__":
     sys.exit(main())
@@ -194,7 +204,7 @@ from .processor import (
     validate_file,
     generate_correlation_id,
     safe_template_execution,
-    demonstrate_utility_patterns
+    demonstrate_utility_patterns,
 )
 
 # Version information
@@ -202,7 +212,7 @@ VERSION_INFO = {
     "version": "1.0.0",
     "name": "Template Step",
     "description": "Standardized template for GNN pipeline steps",
-    "author": "GNN Pipeline Team"
+    "author": "GNN Pipeline Team",
 }
 ```
 
@@ -214,48 +224,51 @@ Template Step Processor
 This module contains the core functionality for the template step.
 """
 
+
 def process_template_standardized(
     target_dir: Path,
     output_dir: Path,
     logger: logging.Logger,
     recursive: bool = False,
     verbose: bool = False,
-    **kwargs
+    **kwargs,
 ) -> bool:
     """
     Process files in a directory using the template processor.
-    
+
     This is the core function that implements the actual template processing logic.
     """
     try:
         # Start performance tracking
-        with performance_tracker.track_operation("template_processing", {"verbose": verbose, "recursive": recursive}):
+        with performance_tracker.track_operation(
+            "template_processing", {"verbose": verbose, "recursive": recursive}
+        ):
             # Update logger verbosity if needed
             if verbose:
                 logger.setLevel(logging.DEBUG)
-            
+
             # Set up output directory
             output_dir.mkdir(parents=True, exist_ok=True)
-            
+
             # Log processing parameters
             logger.info(f"Processing files from: {target_dir}")
             logger.info(f"Output directory: {output_dir}")
             logger.info(f"Recursive processing: {recursive}")
-            
+
             # Find files to process
             pattern = "**/*.*" if recursive else "*.*"
             input_files = list(target_dir.glob(pattern))
-            
+
             if not input_files:
                 log_step_warning(logger, f"No files found in {target_dir}")
                 return True  # Not an error, just no files to process
-            
+
             logger.info(f"Found {len(input_files)} files to process")
-            
+
             # Process files
             successful_files = 0
             failed_files = 0
-            
+
             for input_file in input_files:
                 try:
                     success = process_single_file(input_file, output_dir, options)
@@ -264,9 +277,11 @@ def process_template_standardized(
                     else:
                         failed_files += 1
                 except Exception as e:
-                    log_step_error(logger, f"Unexpected error processing {input_file}: {e}")
+                    log_step_error(
+                        logger, f"Unexpected error processing {input_file}: {e}"
+                    )
                     failed_files += 1
-            
+
             # Generate summary report
             summary_file = output_dir / "template_processing_summary.json"
             summary = {
@@ -277,31 +292,39 @@ def process_template_standardized(
                 "total_files": len(input_files),
                 "successful_files": successful_files,
                 "failed_files": failed_files,
-                "performance_metrics": performance_tracker.get_summary()
+                "performance_metrics": performance_tracker.get_summary(),
             }
-            
-            with open(summary_file, 'w') as f:
+
+            with open(summary_file, "w") as f:
                 json.dump(summary, f, indent=2, default=str)
-            
+
             # Determine success
             if failed_files == 0:
-                log_step_success(logger, f"Successfully processed {successful_files} files")
+                log_step_success(
+                    logger, f"Successfully processed {successful_files} files"
+                )
                 return True
             elif successful_files > 0:
-                log_step_warning(logger, f"Partially successful: {failed_files} files failed")
+                log_step_warning(
+                    logger, f"Partially successful: {failed_files} files failed"
+                )
                 return True  # Still consider successful for pipeline continuation
             else:
                 log_step_error(logger, "All files failed to process")
                 return False
-            
+
     except Exception as e:
         log_step_error(logger, f"Template processing failed: {e}")
         return False
 
-def process_single_file(input_file: Path, output_dir: Path, options: Dict[str, Any]) -> bool:
+
+def process_single_file(
+    input_file: Path, output_dir: Path, options: Dict[str, Any]
+) -> bool:
     """Process a single file."""
     # Implementation of single file processing
     pass
+
 
 def validate_file(input_file: Path) -> Dict[str, Any]:
     """Validate a file for processing."""
@@ -350,6 +373,7 @@ python src/1_setup.py --target-dir input/gnn_files --output-dir output --verbose
 ```python
 # Each numbered script imports and calls functions from its module
 from template import process_template_standardized
+
 success = process_template_standardized(target_dir, output_dir, logger, ...)
 ```
 
@@ -396,7 +420,7 @@ success = process_template_standardized(target_dir, output_dir, logger, ...)
        logger: logging.Logger,
        recursive: bool = False,
        verbose: bool = False,
-       **kwargs
+       **kwargs,
    ) -> bool:
        """Standardized new step processing function."""
        # Implementation here

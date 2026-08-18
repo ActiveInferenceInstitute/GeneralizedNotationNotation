@@ -128,7 +128,13 @@ See [src/AGENTS.md](../../src/AGENTS.md) for complete pipeline documentation.
 ```python
 import logging
 from pathlib import Path
-from gnn import discover_gnn_files, parse_gnn_file, GNNParsingSystem, GNNFormat, process_gnn_multi_format
+from gnn import (
+    discover_gnn_files,
+    parse_gnn_file,
+    GNNParsingSystem,
+    GNNFormat,
+    process_gnn_multi_format,
+)
 
 paths = discover_gnn_files(Path("input/gnn_files"))
 info = parse_gnn_file(paths[0])

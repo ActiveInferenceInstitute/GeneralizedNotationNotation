@@ -81,7 +81,7 @@ This module provides specialized agent capabilities for visual construction:
 ```python
 # Headless defaults
 headless = False
-export_filename = 'constructed_model_gui1.md'
+export_filename = "constructed_model_gui1.md"
 open_browser = True
 ```
 

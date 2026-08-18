@@ -62,9 +62,9 @@ Canonicalisation happens inside `_canonicalise_B`:
 
 ```python
 if b_raw.shape[0] == num_actions and b_raw.shape[1] == b_raw.shape[2]:
-    b = b_raw.transpose(2, 1, 0)   # (next, prev, action)
+    b = b_raw.transpose(2, 1, 0)  # (next, prev, action)
 else:
-    b = b_raw                      # already (next, prev, action)
+    b = b_raw  # already (next, prev, action)
 # + column-normalise each action slice
 ```
 
@@ -82,13 +82,16 @@ B = np.stack([np.eye(2), np.roll(np.eye(2), 1, axis=1)], axis=-1).astype(np.floa
 C = np.array([0.0, 1.0], dtype=np.float32)
 D = np.array([0.5, 0.5], dtype=np.float32)
 
-A_list = [jnp.asarray(A)[None, ...]]      # (1, 2, 2)
-B_list = [jnp.asarray(B)[None, ...]]      # (1, 2, 2, 2)
-C_list = [jnp.asarray(C)[None, ...]]      # (1, 2)
-D_list = [jnp.asarray(D)[None, ...]]      # (1, 2)
+A_list = [jnp.asarray(A)[None, ...]]  # (1, 2, 2)
+B_list = [jnp.asarray(B)[None, ...]]  # (1, 2, 2, 2)
+C_list = [jnp.asarray(C)[None, ...]]  # (1, 2)
+D_list = [jnp.asarray(D)[None, ...]]  # (1, 2)
 
 agent = Agent(
-    A=A_list, B=B_list, C=C_list, D=D_list,
+    A=A_list,
+    B=B_list,
+    C=C_list,
+    D=D_list,
     num_controls=[2],
     control_fac_idx=[0],
     policy_len=1,

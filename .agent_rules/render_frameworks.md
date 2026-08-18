@@ -21,6 +21,7 @@
 
 ```python
 """Pure JAX Active Inference — no Flax dependency."""
+
 import jax
 import jax.numpy as jnp
 from jax import random, jit
@@ -31,17 +32,19 @@ B_MATRIX = jnp.array([[[0.9, 0.1], [0.1, 0.9]], [[0.5, 0.5], [0.5, 0.5]]])
 C_VECTOR = jnp.array([0.0, 1.0, 0.0])
 D_VECTOR = jnp.array([0.5, 0.5])
 
+
 @jit
 def belief_update(prior, obs, A):
     posterior = prior * A[obs, :]
     return posterior / jnp.sum(posterior)
 
+
 @jit
 def expected_free_energy(qs, A, B, C, action):
     qs_next = B[:, :, action] @ qs
     qo = A @ qs_next
-    H_qo = -jnp.sum(qo * jnp.log(qo + 1e-10))   # Epistemic
-    pragmatic = jnp.sum(qo * C)                    # Pragmatic
+    H_qo = -jnp.sum(qo * jnp.log(qo + 1e-10))  # Epistemic
+    pragmatic = jnp.sum(qo * C)  # Pragmatic
     return -pragmatic + H_qo
 ```
 
@@ -53,9 +56,11 @@ def expected_free_energy(qs, A, B, C, action):
 
 ```python
 """PyMDP Active Inference."""
+
 try:
     from pymdp.agent import Agent
     from pymdp import utils
+
     PYMDP_AVAILABLE = True
 except ImportError:
     PYMDP_AVAILABLE = False
@@ -65,6 +70,7 @@ A = [[0.9, 0.1], [0.1, 0.9]]  # Likelihood
 B = [[[0.9, 0.1], [0.1, 0.9]]]  # Transition
 C = [0.0, 1.0]  # Preferences
 D = [0.5, 0.5]  # Initial prior
+
 
 def run_simulation(n_steps=10):
     if not PYMDP_AVAILABLE:
@@ -115,10 +121,10 @@ def extract_matrices(gnn_model: Dict[str, Any]) -> Dict[str, np.ndarray]:
     """Extract POMDP matrices from parsed GNN model."""
     init = gnn_model.get("initialparameterization", {})
     return {
-        "A": np.array(init.get("A", np.eye(3))),         # Likelihood
-        "B": np.array(init.get("B", np.eye(3))),         # Transition
-        "C": np.array(init.get("C", np.zeros(3))),        # Preferences
-        "D": np.array(init.get("D", np.ones(3) / 3)),    # Initial prior
+        "A": np.array(init.get("A", np.eye(3))),  # Likelihood
+        "B": np.array(init.get("B", np.eye(3))),  # Transition
+        "C": np.array(init.get("C", np.zeros(3))),  # Preferences
+        "D": np.array(init.get("D", np.ones(3) / 3)),  # Initial prior
     }
 ```
 

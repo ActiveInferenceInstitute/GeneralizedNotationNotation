@@ -37,8 +37,12 @@ python src/main.py --only-steps 11 --verbose
 
 ```python
 from render import (
-    process_render, render_gnn_spec, get_supported_frameworks,
-    validate_render, PyMDPRenderer, JAXRenderer
+    process_render,
+    render_gnn_spec,
+    get_supported_frameworks,
+    validate_render,
+    PyMDPRenderer,
+    JAXRenderer,
 )
 
 # Render for all frameworks (used by pipeline)
@@ -48,7 +52,9 @@ process_render(target_dir, output_dir, verbose=True)
 result = render_gnn_spec(parsed_spec, framework="pymdp")
 
 # Canonical POMDP rendering
-success, message, files = render_gnn_spec(parsed_model, "rxinfer", "output/11_render_output")
+success, message, files = render_gnn_spec(
+    parsed_model, "rxinfer", "output/11_render_output"
+)
 
 # Query supported frameworks
 frameworks = get_supported_frameworks()  # ['pymdp', 'rxinfer', ..., 'stan', 'bnlearn']

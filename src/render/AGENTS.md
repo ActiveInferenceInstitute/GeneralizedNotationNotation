@@ -231,16 +231,16 @@ The shared contract is `canonical_pomdp_v1`; B is stored as `(next_state, previo
 ### Framework Configuration
 ```python
 PYMDP_CONFIG = {
-    'inference_algorithm': 'VMP',
-    'learning_rate': 0.1,
-    'num_iterations': 100,
-    'convergence_threshold': 1e-6
+    "inference_algorithm": "VMP",
+    "learning_rate": 0.1,
+    "num_iterations": 100,
+    "convergence_threshold": 1e-6,
 }
 
 RXINFER_CONFIG = {
-    'inference_engine': 'RxInfer variational message-passing (@model + infer(), free_energy=true)',
-    'optimization': 'auto',
-    'constraints': 'default'
+    "inference_engine": "RxInfer variational message-passing (@model + infer(), free_energy=true)",
+    "optimization": "auto",
+    "constraints": "default",
 }
 ```
 
@@ -271,7 +271,7 @@ success, message, files = render_gnn_spec(
     gnn_spec=model_data,
     target="pymdp",
     output_directory="output/11_render_output",
-    options={"include_examples": True}
+    options={"include_examples": True},
 )
 ```
 
@@ -280,7 +280,9 @@ success, message, files = render_gnn_spec(
 from render.renderer import render_gnn_spec
 
 for framework in ["pymdp", "rxinfer", "activeinference_jl"]:
-    success, message, files = render_gnn_spec(model_data, framework, "output/11_render_output")
+    success, message, files = render_gnn_spec(
+        model_data, framework, "output/11_render_output"
+    )
     assert success, message
 ```
 
@@ -288,14 +290,8 @@ for framework in ["pymdp", "rxinfer", "activeinference_jl"]:
 ```python
 # Framework-specific options
 options = {
-    'pymdp': {
-        'inference_algorithm': 'VMP',
-        'num_iterations': 200
-    },
-    'rxinfer': {
-        'constraints': 'custom',
-        'optimization': 'performance'
-    }
+    "pymdp": {"inference_algorithm": "VMP", "num_iterations": 200},
+    "rxinfer": {"constraints": "custom", "optimization": "performance"},
 }
 ```
 

@@ -265,45 +265,48 @@ import numpy as np
 from typing import Dict, List, Optional
 from dataclasses import dataclass
 
+
 @dataclass
 class LanguageState:
     """Language processing state across hierarchy"""
+
     semantic_concepts: np.ndarray
     syntactic_categories: np.ndarray
     lexical_activations: np.ndarray
     phonological_features: np.ndarray
     discourse_context: np.ndarray
 
+
 class HierarchicalLanguageModel:
     """
     Active Inference implementation of hierarchical language processing
     """
-    
+
     def __init__(self, config: Dict):
         self.config = config
-        self.vocabulary_size = config.get('vocabulary_size', 1000)
-        self.concept_size = config.get('concept_size', 50)
+        self.vocabulary_size = config.get("vocabulary_size", 1000)
+        self.concept_size = config.get("concept_size", 50)
         self.initialize_parameters()
-        
+
     def initialize_parameters(self):
         """Initialize language-specific parameters"""
         # Precision weights for each level
-        self.semantic_precision = self.config.get('semantic_precision', 1.5)
-        self.syntactic_precision = self.config.get('syntactic_precision', 1.2)
-        self.lexical_precision = self.config.get('lexical_precision', 2.0)
-        self.phonological_precision = self.config.get('phonological_precision', 2.5)
-        
+        self.semantic_precision = self.config.get("semantic_precision", 1.5)
+        self.syntactic_precision = self.config.get("syntactic_precision", 1.2)
+        self.lexical_precision = self.config.get("lexical_precision", 2.0)
+        self.phonological_precision = self.config.get("phonological_precision", 2.5)
+
         # Hierarchical transition matrices
         self.phon_to_lex = self.initialize_phonological_lexical_mapping()
         self.lex_to_syn = self.initialize_lexical_syntactic_mapping()
         self.syn_to_sem = self.initialize_syntactic_semantic_mapping()
-        
+
     def process_sentence(self, word_sequence: List[str]) -> LanguageState:
         """Process a sentence through the hierarchical language model"""
-        
+
         # Initialize state
         state = self.initialize_state()
-        
+
         # Process each word incrementally
         for word in word_sequence:
             # Bottom-up activation
@@ -311,20 +314,25 @@ class HierarchicalLanguageModel:
             lexical_activation = self.activate_lexical_candidates(phonological_input)
             syntactic_category = self.determine_syntactic_category(lexical_activation)
             semantic_concept = self.extract_semantic_concept(syntactic_category)
-            
+
             # Top-down prediction and error computation
             predicted_word = self.predict_next_word(state)
             prediction_error = self.compute_prediction_error(word, predicted_word)
-            
+
             # Update beliefs based on prediction error
-            state = self.update_language_beliefs(state, prediction_error,
-                                               lexical_activation, syntactic_category, 
-                                               semantic_concept)
-            
+            state = self.update_language_beliefs(
+                state,
+                prediction_error,
+                lexical_activation,
+                syntactic_category,
+                semantic_concept,
+            )
+
         return state
-        
-    def compute_prediction_error(self, observed_word: str, 
-                               predicted_distribution: np.ndarray) -> np.ndarray:
+
+    def compute_prediction_error(
+        self, observed_word: str, predicted_distribution: np.ndarray
+    ) -> np.ndarray:
         """Compute prediction error for hierarchical language processing"""
         observed_index = self.word_to_index(observed_word)
         prediction_error = np.zeros_like(predicted_distribution)

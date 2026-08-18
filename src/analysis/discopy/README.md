@@ -28,7 +28,7 @@ from analysis.discopy.analyzer import generate_analysis_from_logs
 results = generate_analysis_from_logs(
     execution_dir=Path("output/12_execute_output"),
     output_dir=Path("output/16_analysis_output/discopy"),
-    verbose=True
+    verbose=True,
 )
 ```
 

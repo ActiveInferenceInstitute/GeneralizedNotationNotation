@@ -9,7 +9,7 @@ from execute.discopy import execute_discopy
 
 success = execute_discopy(
     script_path="output/11_render_output/discopy_diagram.py",
-    output_dir="output/12_execute_output"
+    output_dir="output/12_execute_output",
 )
 ```
 

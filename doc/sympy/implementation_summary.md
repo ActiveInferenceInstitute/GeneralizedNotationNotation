@@ -104,10 +104,9 @@ python3 src/main.py --only-steps 7 --verbose
 from src.mcp.mcp import mcp_instance
 
 # Execute SymPy tools through MCP
-result = mcp_instance.execute_tool('sympy_validate_equation', {
-    'equation': 'x^2 + 2*x + 1',
-    'context': {}
-})
+result = mcp_instance.execute_tool(
+    "sympy_validate_equation", {"equation": "x^2 + 2*x + 1", "context": {}}
+)
 ```
 
 ### Pipeline Integration

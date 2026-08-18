@@ -10,6 +10,7 @@ All public functions must have complete type hints:
 from typing import Dict, Any, List, Optional, Tuple
 from pathlib import Path
 
+
 def process_gnn_files(
     target_dir: Path,
     output_dir: Path,
@@ -84,8 +85,10 @@ uv run mypy src/ --strict
 class TestLogger:
     def info(self, message): ...
 
+
 # ✅ CORRECT
 import logging
+
 logger = logging.getLogger("test")
 ```
 
@@ -96,6 +99,7 @@ model = {"name": "example", "states": 2}
 
 # ✅ CORRECT — use actual GNN fixture files
 from tests.conftest import sample_gnn_files
+
 model = parse_gnn_file(sample_gnn_files["basic"])
 ```
 
@@ -136,6 +140,7 @@ Before submitting a new module, verify:
 
 ```python
 import logging
+
 logger = logging.getLogger(__name__)
 
 # Levels:

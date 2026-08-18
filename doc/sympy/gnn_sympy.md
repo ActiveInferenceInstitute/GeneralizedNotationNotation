@@ -76,21 +76,23 @@ def validate_active_inference_matrices(gnn_model: GNNModel) -> ValidationReport:
 ```python
 def analyze_gnn_dynamics(gnn_model: GNNModel) -> DynamicsAnalysis:
     """Analyze temporal dynamics in GNN models"""
-    
+
     if gnn_model.time_settings.is_dynamic:
         # Introduce temporal variable
         sympy_mcp.intro("t", [Assumption.REAL, Assumption.POSITIVE], [])
-        
+
         # Introduce state functions
         for state_var in gnn_model.state_space.variables:
             sympy_mcp.introduce_function(f"{state_var}_t")
-        
+
         # Process differential equations from GNN model
         for eq_str in gnn_model.equations:
             if contains_derivatives(eq_str):
                 expr_key = sympy_mcp.introduce_expression(eq_str)
-                solution_key = sympy_mcp.dsolve_ode(expr_key, extract_function_name(eq_str))
-                
+                solution_key = sympy_mcp.dsolve_ode(
+                    expr_key, extract_function_name(eq_str)
+                )
+
         return DynamicsAnalysis(solutions, stability_analysis)
 ```
 
@@ -187,48 +189,53 @@ def perform_advanced_analysis(gnn_model: GNNModel) -> AdvancedAnalysis:
 ```python
 # src/gnn/sympy_integration.py
 
+
 class GNNSymPyMCP:
     """Integration layer between GNN and SymPy MCP"""
-    
+
     def __init__(self, mcp_client: SymPyMCPClient):
         self.mcp = mcp_client
         self.variable_mapping = {}  # GNN vars -> SymPy vars
         self.expression_cache = {}  # Parsed expressions
-        
+
     def parse_gnn_expression(self, gnn_expr: str, context: GNNContext) -> str:
         """Parse GNN mathematical expression using SymPy MCP"""
         # Convert GNN syntax to SymPy syntax
         sympy_expr = self.convert_gnn_to_sympy_syntax(gnn_expr)
-        
+
         # Introduce necessary variables
         self.ensure_variables_exist(sympy_expr, context)
-        
+
         # Parse expression
         expr_key = self.mcp.introduce_expression(sympy_expr)
         self.expression_cache[gnn_expr] = expr_key
-        
+
         return expr_key
-    
-    def validate_matrix_stochasticity(self, matrix_spec: MatrixSpec) -> ValidationResult:
+
+    def validate_matrix_stochasticity(
+        self, matrix_spec: MatrixSpec
+    ) -> ValidationResult:
         """Validate that a matrix satisfies stochasticity constraints"""
         matrix_key = self.mcp.create_matrix(matrix_spec.components)
-        
+
         # Check row/column sums as appropriate
         if matrix_spec.type == "transition":
             return self.check_column_stochastic(matrix_key)
         elif matrix_spec.type == "observation":
             return self.check_column_stochastic(matrix_key)
-        
+
     def analyze_temporal_dynamics(self, equations: List[str]) -> DynamicsResult:
         """Analyze differential equations in GNN model"""
         results = []
-        
+
         for eq_str in equations:
             if self.contains_time_derivatives(eq_str):
                 expr_key = self.parse_gnn_expression(eq_str, temporal_context)
-                solution_key = self.mcp.dsolve_ode(expr_key, self.extract_function(eq_str))
+                solution_key = self.mcp.dsolve_ode(
+                    expr_key, self.extract_function(eq_str)
+                )
                 results.append(solution_key)
-                
+
         return DynamicsResult(results)
 ```
 
@@ -237,31 +244,32 @@ class GNNSymPyMCP:
 ```python
 # src/type_checker/mathematical_validator.py
 
+
 class MathematicalValidator:
     """Enhanced mathematical validation using SymPy MCP"""
-    
+
     def __init__(self, sympy_mcp: GNNSymPyMCP):
         self.sympy_mcp = sympy_mcp
-        
+
     def validate_gnn_file(self, gnn_file: GNNFile) -> MathValidationReport:
         """Perform comprehensive mathematical validation"""
-        
+
         report = MathValidationReport()
-        
+
         # Validate equations
         for equation in gnn_file.equations:
             validation = self.validate_equation(equation, gnn_file.context)
             report.add_equation_validation(equation, validation)
-            
+
         # Validate matrices
         for matrix_name, matrix_spec in gnn_file.matrices.items():
             validation = self.validate_matrix(matrix_spec, gnn_file.dimensions)
             report.add_matrix_validation(matrix_name, validation)
-            
+
         # Validate dimensional consistency
         dimensional_check = self.validate_dimensions(gnn_file)
         report.add_dimensional_validation(dimensional_check)
-        
+
         return report
 ```
 

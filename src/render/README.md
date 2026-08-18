@@ -348,12 +348,12 @@ results = process_pomdp_for_frameworks(
     pomdp_space=pomdp_space,
     output_dir="output/11_render_output/",
     frameworks=["pymdp", "activeinference_jl", "rxinfer"],
-    strict_validation=True
+    strict_validation=True,
 )
 
 # Results include success/failure for each framework
-for framework, result in results['framework_results'].items():
-    status = "✅" if result['success'] else "❌"
+for framework, result in results["framework_results"].items():
+    status = "✅" if result["success"] else "❌"
     print(f"{status} {framework}: {result['message']}")
 ```
 
@@ -412,12 +412,12 @@ Each framework rendering includes:
 ```python
 # Rendering configuration
 config = {
-    'default_framework': 'pymdp',    # Default rendering framework
-    'template_enabled': True,         # Enable template-based rendering
-    'validation_enabled': True,       # Enable code validation
-    'documentation_enabled': True,    # Enable documentation generation
-    'testing_enabled': True,          # Enable test generation
-    'optimization_enabled': True      # Enable code optimization
+    "default_framework": "pymdp",  # Default rendering framework
+    "template_enabled": True,  # Enable template-based rendering
+    "validation_enabled": True,  # Enable code validation
+    "documentation_enabled": True,  # Enable documentation generation
+    "testing_enabled": True,  # Enable test generation
+    "optimization_enabled": True,  # Enable code optimization
 }
 ```
 
@@ -426,21 +426,21 @@ config = {
 ```python
 # Framework-specific configuration
 framework_config = {
-    'pymdp': {
-        'version': '0.4.0',
-        'include_visualization': True,
-        'include_testing': True
+    "pymdp": {
+        "version": "0.4.0",
+        "include_visualization": True,
+        "include_testing": True,
     },
-    'rxinfer': {
-        'julia_version': '1.9',
-        'include_benchmarks': True,
-        'include_documentation': True
+    "rxinfer": {
+        "julia_version": "1.9",
+        "include_benchmarks": True,
+        "include_documentation": True,
     },
-    'jax': {
-        'jax_version': '0.4.0',
-        'include_gpu_support': True,
-        'include_optimization': True
-    }
+    "jax": {
+        "jax_version": "0.4.0",
+        "include_gpu_support": True,
+        "include_optimization": True,
+    },
 }
 ```
 
@@ -512,9 +512,9 @@ except TemplateError as e:
 # Test individual rendering functions
 def test_pymdp_rendering():
     results = render_gnn_model(test_content, "pymdp", test_dir)
-    assert 'main_script' in results
-    assert 'config_file' in results
-    assert results['main_script'].exists()
+    assert "main_script" in results
+    assert "config_file" in results
+    assert results["main_script"].exists()
 ```
 
 ### Integration Tests
@@ -537,7 +537,7 @@ def test_framework_rendering():
     frameworks = ["pymdp", "rxinfer", "jax"]
     for framework in frameworks:
         results = render_gnn_model(test_content, framework, test_dir)
-        assert results['success']
+        assert results["success"]
 ```
 
 ## Dependencies

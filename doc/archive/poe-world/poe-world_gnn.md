@@ -35,8 +35,8 @@ The PoE-World `Agent` class orchestrates three main phases that correspond to GN
 class Agent:
     def __init__(self, config: Dict[str, Any], world_learner: WorldModelLearner):
         self.world_learner = world_learner  # → s_f_world_knowledge
-        self.mcts = MCTS(config)           # → π_c0 planning_policy
-        self.abstract_planning = True      # → s_f_planning_mode
+        self.mcts = MCTS(config)  # → π_c0 planning_policy
+        self.abstract_planning = True  # → s_f_planning_mode
 ```
 
 **GNN Representation**:
@@ -59,7 +59,7 @@ PoE-World implements the product of experts as:
 class PoEWorldLearner(WorldModelLearner):
     def __init__(self, config: DictConfig):
         self.obj_model_learners: Dict[str, ObjModelLearner] = {}  # Individual experts
-        self.all_obj_types: Optional[List[str]] = None           # Expert categories
+        self.all_obj_types: Optional[List[str]] = None  # Expert categories
 ```
 
 This maps to GNN as **hierarchical Active Inference** where:
@@ -373,47 +373,47 @@ class GNNPoEWorldLearner(PoEWorldLearner):
 ```python
 class GNNSynthesizerIntegration:
     """Integration layer between PoE-World synthesizers and GNN"""
-    
+
     def __init__(self, synthesizers: Dict[str, Synthesizer], gnn_model: GNNModel):
         self.synthesizers = synthesizers
         self.gnn_model = gnn_model
         self.synthesis_factors = self._create_synthesis_factors()
-    
+
     def _create_synthesis_factors(self) -> Dict[str, GNNFactor]:
         """Create GNN factors for each synthesizer type"""
         factors = {}
-        
+
         for synth_name, synthesizer in self.synthesizers.items():
-            factor_id = f's_f_{synth_name}_synthesizer'
+            factor_id = f"s_f_{synth_name}_synthesizer"
             factors[factor_id] = GNNFactor(
                 name=factor_id,
                 dimensions=self._infer_synthesizer_dimensions(synthesizer),
-                factor_type='categorical',
-                description=f'State factor for {synth_name} synthesizer'
+                factor_type="categorical",
+                description=f"State factor for {synth_name} synthesizer",
             )
-        
+
         return factors
-    
-    async def synthesize_with_gnn_context(self, state_transitions: List[StateTransitionTriplet], 
-                                        gnn_context: GNNContext) -> List[str]:
+
+    async def synthesize_with_gnn_context(
+        self, state_transitions: List[StateTransitionTriplet], gnn_context: GNNContext
+    ) -> List[str]:
         """Synthesize expert programs using GNN context"""
-        
+
         # Extract relevant GNN state for synthesis context
         synthesis_context = self.gnn_model.get_synthesis_context(gnn_context)
-        
+
         # Run synthesizers with enhanced context
         synthesized_programs = []
         for synth_name, synthesizer in self.synthesizers.items():
             if self._should_activate_synthesizer(synth_name, synthesis_context):
                 programs = await synthesizer.a_synthesize(
-                    state_transitions, 
-                    gnn_context=synthesis_context
+                    state_transitions, gnn_context=synthesis_context
                 )
                 synthesized_programs.extend(programs)
-        
+
         # Update GNN synthesis factors
         self._update_synthesis_factors(synthesized_programs)
-        
+
         return synthesized_programs
 ```
 
@@ -424,45 +424,48 @@ class GNNSynthesizerIntegration:
 ```python
 class GNNEnhancedMCTS(MCTS):
     """MCTS with GNN Active Inference integration"""
-    
+
     def __init__(self, config: DictConfig, gnn_model: GNNModel):
         super().__init__(config)
         self.gnn_model = gnn_model
         self.active_inference_planner = ActiveInferencePlanner(gnn_model)
-    
-    def search_with_active_inference(self, cur_obj_list: ObjListWithMemory, 
-                                   target_abstract_state: str,
-                                   world_model: WorldModel, 
-                                   iterations: int = 2000) -> List[str]:
+
+    def search_with_active_inference(
+        self,
+        cur_obj_list: ObjListWithMemory,
+        target_abstract_state: str,
+        world_model: WorldModel,
+        iterations: int = 2000,
+    ) -> List[str]:
         """MCTS search enhanced with Active Inference planning"""
-        
+
         # Convert current state to GNN representation
         gnn_state = self.convert_to_gnn_state(cur_obj_list)
-        
+
         # Use Active Inference for initial policy prior
         prior_policy = self.active_inference_planner.compute_policy_prior(
             gnn_state, target_abstract_state
         )
-        
+
         # Enhanced MCTS with Active Inference guidance
         for iteration in range(iterations):
             # Selection with Active Inference bias
             node = self.select_with_ai_bias(self.root, prior_policy)
-            
+
             # Expansion using world model and GNN predictions
             if not node.is_terminal():
                 gnn_transitions = self.gnn_model.predict_transitions(node.state)
                 self.expand_with_gnn_predictions(node, gnn_transitions)
-            
+
             # Simulation with world model validation
             reward = self.simulate_with_world_model_validation(node, world_model)
-            
+
             # Backpropagation with Active Inference updates
             self.backpropagate_with_ai_updates(node, reward)
-            
+
             # Update GNN planning factors
             self.gnn_model.update_planning_factors(iteration, node, reward)
-        
+
         return self.extract_best_action_sequence()
 ```
 
@@ -473,39 +476,43 @@ class GNNEnhancedMCTS(MCTS):
 ```python
 class OCAtariGNNConverter:
     """Convert OCAtari observations to GNN-compatible format"""
-    
+
     def __init__(self, gnn_model: GNNModel):
         self.gnn_model = gnn_model
         self.observation_mapping = self._create_observation_mapping()
-    
+
     def convert_obj_list_to_gnn(self, obj_list: ObjList) -> Dict[str, np.ndarray]:
         """Convert OCAtari ObjList to GNN observation format"""
-        
+
         gnn_observations = {}
-        
+
         # Visual observations (o_m0)
-        gnn_observations['o_m0'] = self._extract_visual_features(obj_list)
-        
-        # Object-centric observations (o_m1)  
-        gnn_observations['o_m1'] = self._extract_object_features(obj_list)
-        
+        gnn_observations["o_m0"] = self._extract_visual_features(obj_list)
+
+        # Object-centric observations (o_m1)
+        gnn_observations["o_m1"] = self._extract_object_features(obj_list)
+
         # State transition observations (o_m2)
-        if hasattr(obj_list, 'history'):
-            gnn_observations['o_m2'] = self._extract_transition_features(obj_list)
-        
+        if hasattr(obj_list, "history"):
+            gnn_observations["o_m2"] = self._extract_transition_features(obj_list)
+
         return gnn_observations
-    
-    def convert_state_transition_triplet(self, triplet: StateTransitionTriplet) -> Dict[str, Any]:
+
+    def convert_state_transition_triplet(
+        self, triplet: StateTransitionTriplet
+    ) -> Dict[str, Any]:
         """Convert state transition triplet to GNN format"""
-        
+
         return {
-            'input_state': self.convert_obj_list_to_gnn(triplet.input_state),
-            'action': self._encode_action(triplet.event),
-            'output_state': self.convert_obj_list_to_gnn(triplet.output_state),
-            'transition_metadata': {
-                'timestamp': triplet.timestamp if hasattr(triplet, 'timestamp') else None,
-                'validity': self._validate_transition(triplet)
-            }
+            "input_state": self.convert_obj_list_to_gnn(triplet.input_state),
+            "action": self._encode_action(triplet.event),
+            "output_state": self.convert_obj_list_to_gnn(triplet.output_state),
+            "transition_metadata": {
+                "timestamp": triplet.timestamp
+                if hasattr(triplet, "timestamp")
+                else None,
+                "validity": self._validate_transition(triplet),
+            },
         }
 ```
 
@@ -554,30 +561,30 @@ s_f_angle_optimization ↔ ConstraintsSynthesizer(physics_optimization)
 ```python
 def generate_gnn_from_poe_config(config_path: str) -> GNNModel:
     """Generate GNN model from PoE-World Hydra configuration"""
-    
+
     # Load PoE-World configuration
     with initialize(config_path="conf"):
         config = compose(config_name=config_path)
-    
+
     # Extract relevant parameters
     task_name = config.task
     agent_params = config.agent
     synthesis_params = config.synthesis
-    
+
     # Create task-specific GNN factors
     task_factors = create_task_specific_factors(task_name)
     agent_factors = create_agent_factors(agent_params)
     synthesis_factors = create_synthesis_factors(synthesis_params)
-    
+
     # Combine into complete GNN model
     all_factors = {**task_factors, **agent_factors, **synthesis_factors}
     connections = infer_factor_connections(all_factors, config)
-    
+
     return GNNModel(
         name=f"PoEWorld_{task_name}_GNN",
         factors=all_factors,
         connections=connections,
-        parameters=extract_gnn_parameters(config)
+        parameters=extract_gnn_parameters(config),
     )
 ```
 
@@ -588,35 +595,37 @@ def generate_gnn_from_poe_config(config_path: str) -> GNNModel:
 ```python
 class GNNParallelProcessor:
     """Integrate PoE-World's parallel processing with GNN updates"""
-    
+
     def __init__(self, gnn_model: GNNModel, slurm_config: Dict[str, Any]):
         self.gnn_model = gnn_model
         self.slurm_config = slurm_config
         self.job_queue = SLURMJobQueue(slurm_config)
         self.gnn_updater = ParallelGNNUpdater(gnn_model)
-    
-    def parallel_expert_synthesis(self, state_transitions: List[StateTransitionTriplet]) -> Dict[str, List[str]]:
+
+    def parallel_expert_synthesis(
+        self, state_transitions: List[StateTransitionTriplet]
+    ) -> Dict[str, List[str]]:
         """Parallelize expert synthesis across compute nodes with GNN coordination"""
-        
+
         # Partition synthesis tasks
         synthesis_jobs = self.partition_synthesis_tasks(state_transitions)
-        
+
         # Submit parallel jobs with GNN context
         job_ids = []
         for job_data in synthesis_jobs:
             gnn_context = self.gnn_model.get_synthesis_context()
             job_id = self.job_queue.submit_synthesis_job(job_data, gnn_context)
             job_ids.append(job_id)
-        
+
         # Collect results and update GNN
         synthesis_results = {}
         for job_id in job_ids:
             result = self.job_queue.wait_for_completion(job_id)
             synthesis_results[job_id] = result
-            
+
             # Update GNN factors with parallel results
             self.gnn_updater.update_from_parallel_result(result)
-        
+
         return synthesis_results
 ```
 
@@ -649,34 +658,36 @@ class GNNParallelProcessor:
 ```python
 class PoEWorldGNNIntegrationTests:
     """Comprehensive test suite for PoE-World GNN integration"""
-    
+
     def test_agent_to_gnn_conversion(self):
         """Test Agent class to GNN factor conversion"""
         agent = create_test_agent()
         gnn_model = translate_poe_agent_to_gnn(agent, test_config)
         assert validate_gnn_structure(gnn_model)
         assert verify_factor_mappings(agent, gnn_model)
-    
+
     def test_synthesizer_integration(self):
         """Test synthesizer system with GNN context"""
         synthesizers = create_test_synthesizers()
         gnn_integration = GNNSynthesizerIntegration(synthesizers, test_gnn_model)
-        
+
         state_transitions = generate_test_transitions()
-        results = gnn_integration.synthesize_with_gnn_context(state_transitions, test_context)
-        
+        results = gnn_integration.synthesize_with_gnn_context(
+            state_transitions, test_context
+        )
+
         assert len(results) > 0
         assert all(validate_expert_program(prog) for prog in results)
-    
+
     def test_mcts_active_inference(self):
         """Test MCTS with Active Inference integration"""
         mcts = GNNEnhancedMCTS(test_config, test_gnn_model)
         obj_list = create_test_obj_list()
-        
+
         action_sequence = mcts.search_with_active_inference(
             obj_list, target_state="goal", world_model=test_world_model
         )
-        
+
         assert len(action_sequence) > 0
         assert validate_action_sequence(action_sequence)
 ```

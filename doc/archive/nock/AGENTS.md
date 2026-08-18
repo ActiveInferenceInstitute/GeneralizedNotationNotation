@@ -121,21 +121,22 @@ See [src/AGENTS.md](../../../src/AGENTS.md) for complete pipeline documentation.
 def compile_gnn_to_nock(gnn_model: GNNModel) -> NockFormula:
     """
     Compile GNN model to Nock formula.
-    
+
     Parameters:
         gnn_model: Parsed GNN model structure
-    
+
     Returns:
         NockFormula representing the compiled model
     """
 
+
 def verify_nock_formula(formula: NockFormula) -> VerificationResult:
     """
     Verify Nock formula correctness.
-    
+
     Parameters:
         formula: Nock formula to verify
-    
+
     Returns:
         VerificationResult with proof or error
     """

@@ -516,45 +516,40 @@ from gnn.active_inference import ActiveInferenceModel
 state_space = QuadrayStateSpace(
     factors=[
         "s_f0",  # Primary tetrahedral factor
-        "s_f1",  # Secondary tetrahedral factor  
+        "s_f1",  # Secondary tetrahedral factor
     ],
     dimensions=[(4, "categorical"), (4, "categorical")],
     normalization="probability",
-    constraints=["sum_to_one", "non_negative"]
+    constraints=["sum_to_one", "non_negative"],
 )
 
 # Create geometric manifold
 manifold = TetrahedralManifold(
     metric_type="fisher_information",
     flow_type="natural_gradient",
-    symmetry_group="tetrahedral"
+    symmetry_group="tetrahedral",
 )
 
 # Initialize Active Inference model
 model = ActiveInferenceModel(
-    state_space=state_space,
-    manifold=manifold,
-    coordinate_system="quadray"
+    state_space=state_space, manifold=manifold, coordinate_system="quadray"
 )
 
 # Define likelihood with tetrahedral structure
 A_matrix = model.create_tetrahedral_likelihood(
-    obs_dim=3, 
-    state_factors=["s_f0", "s_f1"],
-    structure="close_packed"
+    obs_dim=3, state_factors=["s_f0", "s_f1"], structure="close_packed"
 )
 
 # Define transition dynamics preserving symmetry
 B_matrix = model.create_symmetric_transitions(
-    symmetry_type="tetrahedral",
-    action_dependent=True
+    symmetry_type="tetrahedral", action_dependent=True
 )
 
 # Run inference with geometric optimization
 beliefs, policies = model.infer(
     observations=observations,
     algorithm="geometric_variational",
-    manifold_optimizer="ricci_flow"
+    manifold_optimizer="ricci_flow",
 )
 ```
 

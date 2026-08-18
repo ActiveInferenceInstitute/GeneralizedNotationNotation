@@ -546,45 +546,45 @@ class ActiveInferenceMetaprogrammer:
     def __init__(self):
         self.model_templates = load_cognitive_templates()
         self.compilation_engine = VariationalCompiler()
-        
+
     def generate_arc_model(self, gnn_specification):
         # Parse GNN specification
         model_structure = self.parse_gnn(gnn_specification)
-        
+
         # Generate hierarchical levels
         levels = []
         for level_spec in model_structure.hierarchical_levels:
             level = self.generate_level(level_spec)
             levels.append(level)
-            
+
         # Compose integrated model
         integrated_model = self.compose_hierarchical_model(levels)
-        
+
         # Compile to executable Active Inference
         executable_model = self.compilation_engine.compile(integrated_model)
-        
+
         return executable_model
-        
+
     def generate_level(self, level_spec):
         """Generate individual hierarchical level"""
         # Extract state space dimensions
         state_dims = level_spec.state_dimensions
-        
+
         # Generate generative model components
         transition_model = self.generate_transition_model(state_dims)
         observation_model = self.generate_observation_model(state_dims)
         prior_beliefs = self.generate_prior_beliefs(state_dims)
-        
+
         # Create variational inference machinery
         inference_engine = self.generate_inference_engine(
             transition_model, observation_model, prior_beliefs
         )
-        
+
         return ActiveInferenceLevel(
             transition_model=transition_model,
             observation_model=observation_model,
             prior_beliefs=prior_beliefs,
-            inference_engine=inference_engine
+            inference_engine=inference_engine,
         )
 ```
 
@@ -597,29 +597,25 @@ The system can **automatically synthesize** transformation programs by treating 
 ```python
 def synthesize_transformation_program(input_output_pairs):
     """Generate program that transforms inputs to outputs"""
-    
+
     # Initialize Active Inference model
     model = ActiveInferenceModel()
-    
+
     # Learn generative model from examples
     for input_grid, output_grid in input_output_pairs:
         # Encode grids as observations
         input_obs = encode_grid(input_grid)
         output_obs = encode_grid(output_grid)
-        
+
         # Infer hidden transformation states
-        hidden_states = model.infer_hidden_states(
-            input_obs, output_obs
-        )
-        
+        hidden_states = model.infer_hidden_states(input_obs, output_obs)
+
         # Update generative model parameters
-        model.update_parameters(
-            input_obs, output_obs, hidden_states
-        )
-    
+        model.update_parameters(input_obs, output_obs, hidden_states)
+
     # Synthesize executable transformation program
     program = model.generate_transformation_program()
-    
+
     return program
 ```
 
@@ -687,74 +683,72 @@ class ARCActiveSolver:
         self.gnn_parser = GNNSpecificationParser()
         self.model_generator = ActiveInferenceMetaprogrammer()
         self.task_solver = AdaptiveTransformationSynthesizer()
-        
+
     def solve_arc_task(self, task_examples):
         """Complete pipeline from task to solution"""
-        
+
         # Stage 1: Analyze task characteristics
         task_features = self.analyze_task_features(task_examples)
-        
+
         # Stage 2: Generate GNN specification
         gnn_spec = self.generate_gnn_specification(task_features)
-        
+
         # Stage 3: Compile Active Inference model
-        active_inference_model = self.model_generator.generate_arc_model(
-            gnn_spec
-        )
-        
+        active_inference_model = self.model_generator.generate_arc_model(gnn_spec)
+
         # Stage 4: Synthesize transformation program
         transformation_program = self.task_solver.synthesize_program(
             active_inference_model, task_examples
         )
-        
+
         # Stage 5: Execute on test inputs
         solutions = []
         for test_input in task_examples.test_inputs:
             predicted_output = transformation_program.execute(test_input)
             solutions.append(predicted_output)
-        
+
         return solutions, transformation_program
-        
+
     def analyze_task_features(self, task_examples):
         """Extract core knowledge priors from task"""
         features = {
-            'objectness': self.detect_objects(task_examples),
-            'geometry': self.detect_geometric_patterns(task_examples),
-            'numbers': self.detect_counting_patterns(task_examples),
-            'goals': self.infer_transformation_goals(task_examples)
+            "objectness": self.detect_objects(task_examples),
+            "geometry": self.detect_geometric_patterns(task_examples),
+            "numbers": self.detect_counting_patterns(task_examples),
+            "goals": self.infer_transformation_goals(task_examples),
         }
         return features
-        
+
     def generate_gnn_specification(self, task_features):
         """Automatically generate GNN model specification"""
-        
+
         gnn_template = """
         ## Auto-Generated ARC Model for Task
         ### State Space Block
         """
-        
+
         # Add relevant state variables based on detected features
-        if task_features['objectness']:
+        if task_features["objectness"]:
             gnn_template += "objects[N,K]  # N objects, K features\n"
-        if task_features['geometry']:
+        if task_features["geometry"]:
             gnn_template += "spatial_relations[N,N]  # Geometric relationships\n"
-        if task_features['numbers']:
+        if task_features["numbers"]:
             gnn_template += "quantities[M]  # Numerical properties\n"
-        if task_features['goals']:
+        if task_features["goals"]:
             gnn_template += "transformation_goal[G]  # Goal representation\n"
-            
+
         gnn_template += """
         ### Connections
         visual_input > objects
         objects > spatial_relations
         spatial_relations > transformation_goal
         transformation_goal > predicted_output
-        
+
         ### Temporal Dynamics
         temporal_horizon = 3
         inference_algorithm = variational_message_passing
         """
-        
+
         return self.gnn_parser.parse(gnn_template)
 ```
 
@@ -774,29 +768,27 @@ class EfficientActiveLearning:
     def __init__(self):
         self.model_cache = ModelCache()
         self.uncertainty_estimator = UncertaintyQuantifier()
-        
+
     def optimize_sample_efficiency(self, task_examples):
         """Maximize learning from minimal examples"""
-        
+
         # Compute epistemic uncertainty for each example
         uncertainties = []
         for example in task_examples:
             uncertainty = self.uncertainty_estimator.compute_uncertainty(example)
             uncertainties.append(uncertainty)
-        
+
         # Prioritize high-uncertainty examples for learning
         sorted_examples = sorted(
-            zip(task_examples, uncertainties), 
-            key=lambda x: x[1], 
-            reverse=True
+            zip(task_examples, uncertainties), key=lambda x: x[1], reverse=True
         )
-        
+
         # Incremental model update with active learning
         model = self.initialize_base_model()
         for example, uncertainty in sorted_examples:
             if uncertainty > self.uncertainty_threshold:
                 model = self.update_model_incrementally(model, example)
-        
+
         return model
 ```
 
@@ -812,25 +804,25 @@ The system can **automatically generate** programs at different levels of abstra
 class HierarchicalProgramSynthesizer:
     def __init__(self):
         self.abstraction_levels = {
-            'pixel': PixelOperationSynthesizer(),
-            'object': ObjectTransformationSynthesizer(),
-            'scene': SceneReorganizationSynthesizer(),
-            'rule': RuleInferenceSynthesizer()
+            "pixel": PixelOperationSynthesizer(),
+            "object": ObjectTransformationSynthesizer(),
+            "scene": SceneReorganizationSynthesizer(),
+            "rule": RuleInferenceSynthesizer(),
         }
-        
+
     def synthesize_hierarchical_program(self, task_examples):
         """Generate program with multiple abstraction levels"""
-        
+
         hierarchical_program = HierarchicalProgram()
-        
+
         # Generate programs at each abstraction level
         for level_name, synthesizer in self.abstraction_levels.items():
             level_program = synthesizer.synthesize(task_examples)
             hierarchical_program.add_level(level_name, level_program)
-        
+
         # Compose levels using Active Inference message passing
         integrated_program = self.compose_levels(hierarchical_program)
-        
+
         return integrated_program
 ```
 
@@ -846,64 +838,60 @@ class EvolutionaryProgramOptimizer:
         self.population_size = 100
         self.mutation_rate = 0.1
         self.crossover_rate = 0.7
-        
+
     def evolve_programs(self, initial_programs, task_examples, generations=50):
         """Evolve program population using Active Inference fitness"""
-        
+
         population = list(initial_programs)
-        
+
         for generation in range(generations):
             # Evaluate fitness using expected free energy
             fitness_scores = []
             for program in population:
                 fitness = self.compute_fitness(program, task_examples)
                 fitness_scores.append(fitness)
-            
+
             # Selection based on fitness
             selected_programs = self.selection(population, fitness_scores)
-            
+
             # Crossover and mutation
             offspring = []
             for i in range(0, len(selected_programs), 2):
-                parent1, parent2 = selected_programs[i:i+2]
+                parent1, parent2 = selected_programs[i : i + 2]
                 child1, child2 = self.crossover(parent1, parent2)
-                offspring.extend([
-                    self.mutate(child1),
-                    self.mutate(child2)
-                ])
-            
+                offspring.extend([self.mutate(child1), self.mutate(child2)])
+
             population = selected_programs + offspring
-            
+
         # Return best program
         final_fitness = [
-            self.compute_fitness(prog, task_examples) 
-            for prog in population
+            self.compute_fitness(prog, task_examples) for prog in population
         ]
         best_program = population[np.argmax(final_fitness)]
-        
+
         return best_program
-        
+
     def compute_fitness(self, program, task_examples):
         """Fitness based on expected free energy minimization"""
         total_fitness = 0
-        
+
         for input_grid, target_output in task_examples:
             try:
                 predicted_output = program.execute(input_grid)
-                
+
                 # Compute accuracy component
                 accuracy = self.grid_similarity(predicted_output, target_output)
-                
+
                 # Compute complexity penalty
                 complexity = program.compute_complexity()
-                
+
                 # Expected free energy = accuracy - complexity
                 fitness = accuracy - self.complexity_weight * complexity
                 total_fitness += fitness
-                
+
             except Exception:
                 total_fitness -= 10  # Penalty for execution errors
-        
+
         return total_fitness / len(task_examples)
 ```
 
@@ -1071,34 +1059,32 @@ class CognitiveArchitectureEvolver:
         self.architecture_space = GNNArchitectureSpace()
         self.evolution_engine = EvolutionaryOptimizer()
         self.evaluation_suite = CognitiveTaskSuite()
-        
+
     def evolve_architecture(self, target_capabilities):
         """Automatically discover optimal cognitive architectures"""
-        
+
         # Initialize population of random architectures
         population = self.initialize_architecture_population()
-        
+
         # Evolutionary optimization loop
         for generation in range(self.max_generations):
             # Evaluate architectures on task suite
             fitness_scores = []
             for architecture in population:
-                fitness = self.evaluate_architecture(
-                    architecture, target_capabilities
-                )
+                fitness = self.evaluate_architecture(architecture, target_capabilities)
                 fitness_scores.append(fitness)
-            
+
             # Selection and reproduction
             population = self.evolution_engine.evolve_population(
                 population, fitness_scores
             )
-        
+
         # Return best architecture
         best_architecture = max(
-            population, 
-            key=lambda arch: self.evaluate_architecture(arch, target_capabilities)
+            population,
+            key=lambda arch: self.evaluate_architecture(arch, target_capabilities),
         )
-        
+
         return best_architecture
 ```
 

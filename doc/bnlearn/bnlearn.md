@@ -15,13 +15,14 @@ Structure learning is the process of generating a Directed Acyclic Graph (DAG) t
 ### Code Example:
 ```python
 import bnlearn as bn
-df = bn.import_example('sprinkler')
+
+df = bn.import_example("sprinkler")
 
 # Evaluate using Hill-Climb with BIC score
-model_hc_bic = bn.structure_learning.fit(df, methodtype='hc', scoretype='bic')
+model_hc_bic = bn.structure_learning.fit(df, methodtype="hc", scoretype="bic")
 
 # Evaluate using Chow-Liu starting from a root node
-model_cl = bn.structure_learning.fit(df, methodtype='cl', root_node='Wet_Grass')
+model_cl = bn.structure_learning.fit(df, methodtype="cl", root_node="Wet_Grass")
 ```
 
 ## 2. Parameter Learning
@@ -34,9 +35,10 @@ Once the structure (DAG) is defined, parameter learning calculates the Condition
 ### Code Example:
 ```python
 import bnlearn as bn
+
 df = bn.import_example()
-model_structure = bn.import_DAG('sprinkler', CPD=False) # Get empty graph
-model_update = bn.parameter_learning.fit(model_structure, df, methodtype='bayes')
+model_structure = bn.import_DAG("sprinkler", CPD=False)  # Get empty graph
+model_update = bn.parameter_learning.fit(model_structure, df, methodtype="bayes")
 ```
 
 ## 3. Inference
@@ -46,12 +48,11 @@ Inference calculates the marginal or conditional probabilities of specific varia
 ### Code Example:
 ```python
 import bnlearn as bn
-model = bn.import_DAG('sprinkler')
+
+model = bn.import_DAG("sprinkler")
 
 query = bn.inference.fit(
-    model, 
-    variables=['Rain'], 
-    evidence={'Wet_Grass': 1, 'Cloudy': 0}
+    model, variables=["Rain"], evidence={"Wet_Grass": 1, "Cloudy": 0}
 )
 print(query.df)
 ```
@@ -63,7 +64,8 @@ print(query.df)
 ### Code Example:
 ```python
 import bnlearn as bn
-df = bn.import_example('sprinkler')
+
+df = bn.import_example("sprinkler")
 model = bn.structure_learning.fit(df)
 
 # Standard Plot

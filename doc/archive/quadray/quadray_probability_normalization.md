@@ -407,12 +407,13 @@ import numpy as np
 from typing import Optional, Tuple, Union
 from abc import ABC, abstractmethod
 
+
 class QuadrayDistribution:
     """Represents a probability distribution in Quadray coordinates."""
-    
+
     def __init__(self, coords: np.ndarray, validate: bool = True):
         """Initialize Quadray distribution.
-        
+
         Args:
             coords: 4D array representing (a,b,c,d) coordinates
             validate: Whether to validate simplex constraints
@@ -420,14 +421,14 @@ class QuadrayDistribution:
         self.coords = np.asarray(coords, dtype=np.float64)
         if validate:
             self._validate_simplex()
-    
+
     def _validate_simplex(self) -> None:
         """Validate simplex constraints."""
         if not np.allclose(np.sum(self.coords), 1.0):
             raise ValueError("Coordinates must sum to 1")
         if np.any(self.coords < 0):
             raise ValueError("Coordinates must be non-negative")
-    
+
     def normalize(self, method: str = "direct") -> "QuadrayDistribution":
         """Normalize the distribution."""
         if method == "direct":
@@ -443,78 +444,80 @@ class QuadrayDistribution:
 ```python
 class QuadrayNormalizer(ABC):
     """Abstract base class for Quadray normalization algorithms."""
-    
+
     @abstractmethod
-    def normalize(self, 
-                  input_coords: np.ndarray,
-                  constraints: Optional[dict] = None) -> np.ndarray:
+    def normalize(
+        self, input_coords: np.ndarray, constraints: Optional[dict] = None
+    ) -> np.ndarray:
         """Normalize input coordinates to valid Quadray distribution."""
         pass
 
+
 class DirectNormalizer(QuadrayNormalizer):
     """Direct normalization using simplex projection."""
-    
-    def normalize(self, 
-                  input_coords: np.ndarray,
-                  constraints: Optional[dict] = None) -> np.ndarray:
+
+    def normalize(
+        self, input_coords: np.ndarray, constraints: Optional[dict] = None
+    ) -> np.ndarray:
         """Apply direct normalization."""
         # Ensure non-negativity
         coords_pos = np.maximum(input_coords, 0)
-        
+
         # Handle zero sum case
         total = np.sum(coords_pos)
         if total <= 0:
             return np.ones(4) / 4
-        
+
         # Normalize
         normalized = coords_pos / total
-        
+
         # Verify constraints
         assert np.allclose(np.sum(normalized), 1.0)
         assert np.all(normalized >= 0)
-        
+
         return normalized
+
 
 class RiemannianNormalizer(QuadrayNormalizer):
     """Riemannian optimization on the probability simplex."""
-    
+
     def __init__(self, max_iter: int = 100, tol: float = 1e-12):
         self.max_iter = max_iter
         self.tol = tol
-    
-    def normalize(self, 
-                  input_coords: np.ndarray,
-                  constraints: Optional[dict] = None) -> np.ndarray:
+
+    def normalize(
+        self, input_coords: np.ndarray, constraints: Optional[dict] = None
+    ) -> np.ndarray:
         """Apply Riemannian normalization."""
         # Initialize with direct normalization
         q = DirectNormalizer().normalize(input_coords)
-        
+
         for iteration in range(self.max_iter):
             # Compute natural gradient
             grad = self._compute_gradient(q, input_coords)
             nat_grad = self._natural_gradient(q, grad)
-            
+
             # Project to tangent space
             tangent_vec = nat_grad - np.mean(nat_grad)
-            
+
             # Line search and exponential map
             step_size = self._line_search(q, tangent_vec)
             q_new = self._exponential_map(q, step_size * tangent_vec)
-            
+
             # Check convergence
             if np.linalg.norm(q_new - q) < self.tol:
                 break
-                
+
             q = q_new
-        
+
         return q
-    
+
     def _natural_gradient(self, q: np.ndarray, grad: np.ndarray) -> np.ndarray:
         """Compute natural gradient using Fisher information metric."""
         # Fisher information metric: G_ii = 1/q_i, G_ij = 0 for i≠j
         nat_grad = grad * q
         return nat_grad
-    
+
     def _exponential_map(self, q: np.ndarray, v: np.ndarray) -> np.ndarray:
         """Exponential map on probability simplex."""
         # exp_q(v) = normalize(q * exp(v/q))
@@ -528,31 +531,31 @@ class RiemannianNormalizer(QuadrayNormalizer):
 ```python
 class GNNQuadrayProcessor:
     """Processor for GNN models with Quadray normalization."""
-    
+
     def __init__(self, normalization_config: dict):
         self.config = normalization_config
         self.normalizer = self._create_normalizer()
-    
+
     def _create_normalizer(self) -> QuadrayNormalizer:
         """Factory method for creating normalizers."""
         method = self.config.get("method", "direct")
-        
+
         if method == "direct":
             return DirectNormalizer()
         elif method == "riemannian":
             return RiemannianNormalizer(
                 max_iter=self.config.get("max_iterations", 100),
-                tol=self.config.get("tolerance", 1e-12)
+                tol=self.config.get("tolerance", 1e-12),
             )
         elif method == "constrained":
             return ConstrainedNormalizer(self.config)
         else:
             raise ValueError(f"Unknown normalization method: {method}")
-    
+
     def process_state_space(self, state_variables: dict) -> dict:
         """Process state space variables with Quadray normalization."""
         processed = {}
-        
+
         for var_name, var_data in state_variables.items():
             if var_data.get("coordinates") == "quadray":
                 # Apply Quadray normalization
@@ -561,12 +564,12 @@ class GNNQuadrayProcessor:
                     **var_data,
                     "values": normalized,
                     "normalized": True,
-                    "method": self.config["method"]
+                    "method": self.config["method"],
                 }
             else:
                 # Standard processing
                 processed[var_name] = var_data
-        
+
         return processed
 ```
 
@@ -577,39 +580,41 @@ class GNNQuadrayProcessor:
 ```python
 def test_normalization_precision():
     """Test numerical precision of different normalization methods."""
-    
+
     test_cases = [
         np.array([1.0, 1.0, 1.0, 1.0]),  # Uniform
-        np.array([10.0, 1.0, 0.1, 0.01]), # Extreme values
-        np.array([1e-15, 1e-15, 1e-15, 1.0]), # Near-zero
-        np.random.random(4) * 1000  # Random large values
+        np.array([10.0, 1.0, 0.1, 0.01]),  # Extreme values
+        np.array([1e-15, 1e-15, 1e-15, 1.0]),  # Near-zero
+        np.random.random(4) * 1000,  # Random large values
     ]
-    
+
     normalizers = {
         "direct": DirectNormalizer(),
         "riemannian": RiemannianNormalizer(),
-        "robust": RobustNormalizer()
+        "robust": RobustNormalizer(),
     }
-    
+
     results = {}
     for name, normalizer in normalizers.items():
         errors = []
         for test_input in test_cases:
             result = normalizer.normalize(test_input)
-            
+
             # Check simplex constraint
             sum_error = abs(np.sum(result) - 1.0)
             non_neg_violation = np.sum(np.maximum(-result, 0))
-            
-            errors.append({
-                "sum_error": sum_error,
-                "non_neg_violation": non_neg_violation,
-                "input_norm": np.linalg.norm(test_input),
-                "output_norm": np.linalg.norm(result)
-            })
-        
+
+            errors.append(
+                {
+                    "sum_error": sum_error,
+                    "non_neg_violation": non_neg_violation,
+                    "input_norm": np.linalg.norm(test_input),
+                    "output_norm": np.linalg.norm(result),
+                }
+            )
+
         results[name] = errors
-    
+
     return results
 ```
 
@@ -620,46 +625,47 @@ import time
 import numpy as np
 import matplotlib.pyplot as plt
 
+
 def benchmark_normalization_performance():
     """Benchmark performance of different normalization methods."""
-    
+
     batch_sizes = [1, 10, 100, 1000, 10000]
     methods = ["direct", "riemannian", "constrained"]
-    
+
     timing_results = {method: [] for method in methods}
-    
+
     for batch_size in batch_sizes:
         # Generate random test data
         test_data = np.random.random((batch_size, 4)) * 100
-        
+
         for method in methods:
             normalizer = create_normalizer(method)
-            
+
             # Warm-up
             for _ in range(10):
                 normalizer.normalize(test_data[0])
-            
+
             # Benchmark
             start_time = time.time()
             for i in range(batch_size):
                 normalizer.normalize(test_data[i])
             end_time = time.time()
-            
+
             avg_time = (end_time - start_time) / batch_size
             timing_results[method].append(avg_time)
-    
+
     # Plot results
     plt.figure(figsize=(10, 6))
     for method, times in timing_results.items():
-        plt.loglog(batch_sizes, times, marker='o', label=method)
-    
+        plt.loglog(batch_sizes, times, marker="o", label=method)
+
     plt.xlabel("Batch Size")
     plt.ylabel("Average Time per Normalization (seconds)")
     plt.title("Quadray Normalization Performance Comparison")
     plt.legend()
     plt.grid(True)
     plt.savefig("quadray_normalization_benchmark.png")
-    
+
     return timing_results
 ```
 

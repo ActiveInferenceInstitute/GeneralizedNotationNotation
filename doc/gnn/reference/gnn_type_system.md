@@ -77,7 +77,9 @@ which is defined in `src/type_checker/estimation/estimator.py`:
 from type_checker.resource_estimator import GNNResourceEstimator
 
 # Create type checker with optional pre-loaded type data
-estimator = GNNResourceEstimator(type_check_data="output/5_type_checker_output/type_check_results.json")
+estimator = GNNResourceEstimator(
+    type_check_data="output/5_type_checker_output/type_check_results.json"
+)
 
 # Estimate resources for a single GNN file
 resources = estimator.estimate_from_file("input/gnn_files/model.md")

@@ -46,20 +46,23 @@ from pydantic import BaseModel, Field
 from typing import List, Optional
 import dspy
 
+
 class WeatherReport(BaseModel):
     """Structured weather information."""
+
     temperature: float = Field(description="Temperature value")
     unit: str = Field(description="Temperature unit (celsius/fahrenheit)")
     conditions: List[str] = Field(description="Weather conditions")
     humidity: Optional[float] = Field(default=None, description="Humidity percentage")
 
+
 # Use in signature
-predictor = dspy.Predict('location, date -> report: WeatherReport')
+predictor = dspy.Predict("location, date -> report: WeatherReport")
 result = predictor(location="San Francisco", date="2024-01-15")
 
 # Access typed fields
 print(result.report.temperature)  # 65.0
-print(result.report.conditions)   # ['partly cloudy']
+print(result.report.conditions)  # ['partly cloudy']
 ```
 
 ### Complex Nested Schemas
@@ -69,33 +72,39 @@ from pydantic import BaseModel, Field
 from typing import List, Dict, Optional
 from enum import Enum
 
+
 class Priority(str, Enum):
     LOW = "low"
     MEDIUM = "medium"
     HIGH = "high"
     CRITICAL = "critical"
 
+
 class Subtask(BaseModel):
     """A subtask within a larger task."""
+
     name: str
     description: str
     estimated_hours: float
     dependencies: List[str] = Field(default_factory=list)
 
+
 class ProjectPlan(BaseModel):
     """Complete project plan structure."""
+
     title: str
     objective: str = Field(description="Main goal of the project")
     priority: Priority
     subtasks: List[Subtask]
     milestones: Dict[str, str] = Field(description="Milestone name to date mapping")
     risks: Optional[List[str]] = None
-    
+
     class Config:
         use_enum_values = True
 
+
 # Usage
-planner = dspy.ChainOfThought('project_description -> plan: ProjectPlan')
+planner = dspy.ChainOfThought("project_description -> plan: ProjectPlan")
 result = planner(project_description="Build a recommendation system")
 ```
 
@@ -109,13 +118,13 @@ DSPy signatures support inline type annotations:
 
 ```python
 # Primitive types
-predictor = dspy.Predict('text -> sentiment: bool')
-predictor = dspy.Predict('numbers: list[int] -> sum: int')
-predictor = dspy.Predict('data -> analysis: dict')
+predictor = dspy.Predict("text -> sentiment: bool")
+predictor = dspy.Predict("numbers: list[int] -> sum: int")
+predictor = dspy.Predict("data -> analysis: dict")
 
 # With descriptions
 predictor = dspy.Predict(
-    'article -> '
+    "article -> "
     'summary: str "A concise summary", '
     'topics: list[str] "Main topics covered", '
     'word_count: int "Approximate word count"'
@@ -129,11 +138,12 @@ For more control, use class-based signature definitions:
 ```python
 class SentimentSignature(dspy.Signature):
     """Analyze the sentiment of text."""
-    
+
     text: str = dspy.InputField(desc="The text to analyze")
     sentiment: str = dspy.OutputField(desc="Sentiment: positive, negative, or neutral")
     confidence: float = dspy.OutputField(desc="Confidence score from 0 to 1")
     key_phrases: List[str] = dspy.OutputField(desc="Phrases influencing the sentiment")
+
 
 predictor = dspy.ChainOfThought(SentimentSignature)
 result = predictor(text="I absolutely love this product!")
@@ -152,7 +162,7 @@ DSPy's JSONAdapter instructs the LM to return structured JSON:
 dspy.configure(adapter=dspy.JSONAdapter())
 
 # Now all outputs will be JSON formatted
-predictor = dspy.Predict('query -> data: dict')
+predictor = dspy.Predict("query -> data: dict")
 result = predictor(query="List the planets")
 # result.data is a Python dict, not a string
 ```
@@ -165,7 +175,7 @@ The default adapter for conversational interaction:
 dspy.configure(adapter=dspy.ChatAdapter())
 
 # Outputs are natural language
-predictor = dspy.Predict('topic -> explanation')
+predictor = dspy.Predict("topic -> explanation")
 result = predictor(topic="quantum computing")
 ```
 
@@ -176,10 +186,11 @@ class CustomAdapter(dspy.Adapter):
     def format_request(self, signature, inputs):
         # Custom request formatting
         pass
-    
+
     def parse_response(self, signature, response):
         # Custom response parsing
         pass
+
 
 dspy.configure(adapter=CustomAdapter())
 ```
@@ -194,37 +205,39 @@ dspy.configure(adapter=CustomAdapter())
 from pydantic import BaseModel, Field, validator
 from typing import List, Dict, Union, Optional
 
+
 class GNNObservation(BaseModel):
     """A single GNN observation."""
+
     name: str = Field(description="Observation variable name")
     value: Union[bool, int, float, str] = Field(description="Observed value")
     modality: str = Field(description="Observation modality (visual, auditory, etc.)")
-    
-    @validator('name')
+
+    @validator("name")
     def validate_name(cls, v):
-        if not v.startswith('o_'):
-            return f'o_{v}'
+        if not v.startswith("o_"):
+            return f"o_{v}"
         return v
+
 
 class GNNObservationSet(BaseModel):
     """Complete set of observations at a timestep."""
+
     timestep: int
     observations: List[GNNObservation]
     raw_input: Optional[str] = Field(description="Original input that was parsed")
+
 
 # Usage
 class ObservationParser(dspy.Module):
     def __init__(self):
         super().__init__()
         self.parse = dspy.ChainOfThought(
-            'natural_language_input, observation_schema -> observations: GNNObservationSet'
+            "natural_language_input, observation_schema -> observations: GNNObservationSet"
         )
-    
+
     def forward(self, text, schema):
-        return self.parse(
-            natural_language_input=text,
-            observation_schema=schema
-        )
+        return self.parse(natural_language_input=text, observation_schema=schema)
 ```
 
 ### GNN State Space Definition
@@ -232,26 +245,28 @@ class ObservationParser(dspy.Module):
 ```python
 class GNNStateVariable(BaseModel):
     """Definition of a GNN state variable."""
+
     name: str
     dimensions: List[int]
     dtype: str = Field(default="float", description="Data type: float, int, bool")
     description: str
-    
+
     def to_gnn_syntax(self) -> str:
         dims = ",".join(map(str, self.dimensions))
         return f"{self.name}[{dims},type={self.dtype}]"
 
+
 class GNNStateSpace(BaseModel):
     """Complete GNN state space definition."""
+
     variables: List[GNNStateVariable]
-    
+
     def to_gnn_syntax(self) -> str:
         return "\n".join(v.to_gnn_syntax() for v in self.variables)
 
+
 # Generator
-state_generator = dspy.ChainOfThought(
-    'model_description -> state_space: GNNStateSpace'
-)
+state_generator = dspy.ChainOfThought("model_description -> state_space: GNNStateSpace")
 result = state_generator(
     model_description="A navigation agent with position and orientation states"
 )
@@ -264,25 +279,27 @@ print(result.state_space.to_gnn_syntax())
 from pydantic import BaseModel, Field, validator
 from typing import List
 
+
 class GNNMatrix(BaseModel):
     """A GNN probability matrix."""
+
     name: str = Field(description="Matrix name (A, B, C, D, E)")
     rows: int
     cols: int
     values: List[List[float]]
     description: str
-    
-    @validator('values')
+
+    @validator("values")
     def validate_dimensions(cls, v, values):
-        if 'rows' in values and 'cols' in values:
-            if len(v) != values['rows']:
+        if "rows" in values and "cols" in values:
+            if len(v) != values["rows"]:
                 raise ValueError(f"Expected {values['rows']} rows, got {len(v)}")
             for row in v:
-                if len(row) != values['cols']:
+                if len(row) != values["cols"]:
                     raise ValueError(f"Expected {values['cols']} cols, got {len(row)}")
         return v
-    
-    @validator('values')
+
+    @validator("values")
     def validate_probabilities(cls, v):
         for row in v:
             row_sum = sum(row)
@@ -290,20 +307,21 @@ class GNNMatrix(BaseModel):
                 raise ValueError(f"Row must sum to 1.0, got {row_sum}")
         return v
 
+
 class GNNAMatrix(dspy.Module):
     """Generate A matrix (observation likelihood)."""
-    
+
     def __init__(self):
         super().__init__()
         self.generate = dspy.ChainOfThought(
-            'state_space, observation_space, description -> a_matrix: GNNMatrix'
+            "state_space, observation_space, description -> a_matrix: GNNMatrix"
         )
-    
+
     def forward(self, states, observations, description):
         return self.generate(
             state_space=str(states),
             observation_space=str(observations),
-            description=description
+            description=description,
         )
 ```
 
@@ -319,12 +337,13 @@ Pydantic automatically validates outputs:
 class StrictOutput(BaseModel):
     count: int = Field(ge=0, le=100)  # 0 <= count <= 100
     ratio: float = Field(ge=0, le=1)  # 0 <= ratio <= 1
-    category: str = Field(regex=r'^[A-Z]{2,4}$')  # 2-4 uppercase letters
+    category: str = Field(regex=r"^[A-Z]{2,4}$")  # 2-4 uppercase letters
 
     class Config:
         validate_assignment = True
 
-predictor = dspy.Predict('data -> result: StrictOutput')
+
+predictor = dspy.Predict("data -> result: StrictOutput")
 
 try:
     result = predictor(data="some input")
@@ -338,26 +357,24 @@ except pydantic.ValidationError as e:
 class ValidatedGenerator(dspy.Module):
     def __init__(self):
         super().__init__()
-        self.generate = dspy.ChainOfThought(
-            'request -> output: GNNMatrix'
-        )
-    
+        self.generate = dspy.ChainOfThought("request -> output: GNNMatrix")
+
     def forward(self, request):
         result = self.generate(request=request)
-        
+
         # Additional validation beyond Pydantic
         matrix = result.output
-        
+
         dspy.Assert(
-            matrix.name in ['A', 'B', 'C', 'D', 'E'],
-            f"Invalid matrix name: {matrix.name}. Must be A, B, C, D, or E."
+            matrix.name in ["A", "B", "C", "D", "E"],
+            f"Invalid matrix name: {matrix.name}. Must be A, B, C, D, or E.",
         )
-        
+
         dspy.Assert(
             all(all(0 <= v <= 1 for v in row) for row in matrix.values),
-            "All values must be probabilities between 0 and 1."
+            "All values must be probabilities between 0 and 1.",
         )
-        
+
         return result
 ```
 
@@ -370,7 +387,7 @@ class RobustTypedPredictor(dspy.Module):
         self.predictor = dspy.ChainOfThought(signature)
         self.output_type = output_type
         self.max_retries = max_retries
-    
+
     def forward(self, **kwargs):
         for attempt in range(self.max_retries):
             try:
@@ -382,7 +399,7 @@ class RobustTypedPredictor(dspy.Module):
                 if attempt == self.max_retries - 1:
                     raise
                 # Add error context for retry
-                kwargs['_previous_error'] = str(e)
+                kwargs["_previous_error"] = str(e)
 ```
 
 ---
@@ -396,20 +413,24 @@ Handle multiple possible output types:
 ```python
 from typing import Union, Literal
 
+
 class SuccessResult(BaseModel):
     status: Literal["success"] = "success"
     data: Dict
     message: str
+
 
 class ErrorResult(BaseModel):
     status: Literal["error"] = "error"
     error_code: str
     error_message: str
 
-class Result(BaseModel):
-    result: Union[SuccessResult, ErrorResult] = Field(discriminator='status')
 
-processor = dspy.ChainOfThought('input -> output: Result')
+class Result(BaseModel):
+    result: Union[SuccessResult, ErrorResult] = Field(discriminator="status")
+
+
+processor = dspy.ChainOfThought("input -> output: Result")
 ```
 
 ### Self-Describing Schemas
@@ -417,18 +438,22 @@ processor = dspy.ChainOfThought('input -> output: Result')
 ```python
 class DynamicSchema(BaseModel):
     """Schema that describes its own structure."""
+
     schema_name: str
     fields: List[Dict[str, str]]  # name, type, description
-    
+
     def to_pydantic_model(self):
         """Dynamically create a Pydantic model."""
         from pydantic import create_model
-        
+
         field_definitions = {}
         for field in self.fields:
-            field_type = eval(field['type'])  # Careful with eval!
-            field_definitions[field['name']] = (field_type, Field(description=field['description']))
-        
+            field_type = eval(field["type"])  # Careful with eval!
+            field_definitions[field["name"]] = (
+                field_type,
+                Field(description=field["description"]),
+            )
+
         return create_model(self.schema_name, **field_definitions)
 ```
 
@@ -468,6 +493,7 @@ class BasicOutput(BaseModel):
     answer: str
     confidence: float
 
+
 # Add complexity only when needed
 class DetailedOutput(BaseModel):
     answer: str
@@ -481,10 +507,8 @@ class DetailedOutput(BaseModel):
 ```python
 class WellDocumentedOutput(BaseModel):
     """Clear documentation helps the LM understand what to generate."""
-    
-    summary: str = Field(
-        description="A 2-3 sentence summary of the main points"
-    )
+
+    summary: str = Field(description="A 2-3 sentence summary of the main points")
     key_facts: List[str] = Field(
         description="List of 3-5 key facts, each as a single sentence"
     )
@@ -520,8 +544,8 @@ class EarlyValidationModule(dspy.Module):
 class SafeOutput(BaseModel):
     required_field: str
     optional_field: Optional[str] = None
-    
-    @validator('optional_field', pre=True)
+
+    @validator("optional_field", pre=True)
     def empty_string_to_none(cls, v):
         if v == "" or v == "null" or v == "None":
             return None

@@ -123,9 +123,7 @@ from security import process_security
 
 # Process security-related tasks
 success = process_security(
-    target_dir=Path("models/"),
-    output_dir=Path("security_output/"),
-    verbose=True
+    target_dir=Path("models/"), output_dir=Path("security_output/"), verbose=True
 )
 
 if success:
@@ -188,7 +186,7 @@ from security import validate_input_security
 input_data = {
     "user_input": "example data",
     "parameters": {"param1": "value1"},
-    "configuration": {"config1": "setting1"}
+    "configuration": {"config1": "setting1"},
 }
 
 input_validation = validate_input_security(input_data)
@@ -206,7 +204,7 @@ from security import monitor_security_events
 # Monitor security events
 security_events = [
     {"type": "authentication", "user": "user1", "timestamp": "2024-01-01"},
-    {"type": "access_denied", "user": "user2", "timestamp": "2024-01-01"}
+    {"type": "access_denied", "user": "user2", "timestamp": "2024-01-01"},
 ]
 
 monitoring_results = monitor_security_events(security_events)
@@ -413,12 +411,12 @@ output/18_security_output/
 ```python
 # Security configuration
 config = {
-    'vulnerability_scanning': True,  # Enable vulnerability scanning
-    'compliance_checking': True,     # Enable compliance checking
-    'access_control_validation': True, # Enable access control validation
-    'security_monitoring': True,     # Enable security monitoring
-    'audit_logging': True,          # Enable audit logging
-    'threat_detection': True         # Enable threat detection
+    "vulnerability_scanning": True,  # Enable vulnerability scanning
+    "compliance_checking": True,  # Enable compliance checking
+    "access_control_validation": True,  # Enable access control validation
+    "security_monitoring": True,  # Enable security monitoring
+    "audit_logging": True,  # Enable audit logging
+    "threat_detection": True,  # Enable threat detection
 }
 ```
 
@@ -426,11 +424,11 @@ config = {
 ```python
 # Compliance configuration
 compliance_config = {
-    'standards': ['OWASP Top 10', 'CWE', 'NIST'],
-    'regulations': ['GDPR', 'ISO 27001'],
-    'policies': ['password_policy', 'access_policy'],
-    'audit_requirements': True,
-    'certification_support': True
+    "standards": ["OWASP Top 10", "CWE", "NIST"],
+    "regulations": ["GDPR", "ISO 27001"],
+    "policies": ["password_policy", "access_policy"],
+    "audit_requirements": True,
+    "certification_support": True,
 }
 ```
 
@@ -493,10 +491,10 @@ except ComplianceError as e:
 # Test individual security functions
 def test_security_analysis():
     results = analyze_security_vulnerabilities(test_content)
-    assert 'critical' in results
-    assert 'high' in results
-    assert 'medium' in results
-    assert 'low' in results
+    assert "critical" in results
+    assert "high" in results
+    assert "medium" in results
+    assert "low" in results
 ```
 
 ### Integration Tests
@@ -516,8 +514,8 @@ def test_security_pipeline():
 def test_compliance_validation():
     compliance = validate_security_compliance(test_content, test_standards)
     for standard, result in compliance.items():
-        assert 'compliant' in result
-        assert 'score' in result
+        assert "compliant" in result
+        assert "score" in result
 ```
 
 ## Dependencies

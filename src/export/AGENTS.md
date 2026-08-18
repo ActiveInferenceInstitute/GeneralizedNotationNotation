@@ -60,7 +60,7 @@ from export import generate_exports
 success = generate_exports(
     target_dir=Path("input/gnn_files"),
     output_dir=Path("output/7_export_output"),
-    verbose=True
+    verbose=True,
 )
 ```
 
@@ -144,7 +144,7 @@ from export import generate_exports
 success = generate_exports(
     target_dir=Path("input/gnn_files"),
     output_dir=Path("output/7_export_output"),
-    verbose=True
+    verbose=True,
 )
 ```
 
@@ -156,7 +156,7 @@ from export import export_model
 results = export_model(
     model_data=parsed_data,
     output_dir=Path("output/7_export_output"),
-    formats=["json", "graphml", "gexf"]
+    formats=["json", "graphml", "gexf"],
 )
 ```
 

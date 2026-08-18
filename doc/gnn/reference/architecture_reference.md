@@ -86,8 +86,9 @@ from visualization import process_visualization  # ← Core implementation
 run_script = create_standardized_pipeline_script(
     "8_visualization.py",
     process_visualization,  # ← Delegates to module
-    "Matrix and network visualization processing"
+    "Matrix and network visualization processing",
 )
+
 
 def main() -> int:
     return run_script()  # ← Pure orchestration
@@ -102,13 +103,17 @@ Example: `src/visualization/__init__.py`
 try:
     from .visualizer import GNNVisualizer, generate_graph_visualization
     from .matrix_visualizer import MatrixVisualizer, process_matrix_visualization
-    from .processor import generate_matrix_visualizations, generate_network_visualizations
+    from .processor import (
+        generate_matrix_visualizations,
+        generate_network_visualizations,
+    )
 except Exception:
     # Alternative implementations for missing dependencies
     class GNNVisualizer:
-        def __init__(self, *args, **kwargs): 
+        def __init__(self, *args, **kwargs):
             self.available = False
-        def generate(self, *a, **k): 
+
+        def generate(self, *a, **k):
             return False
 ```
 
@@ -229,7 +234,7 @@ subpackages.
 ```python
 # Matrix extraction from parsed GNN
 A = extract_matrix(gnn_data, "A")  # Likelihood
-B = extract_matrix(gnn_data, "B")  # Transitions  
+B = extract_matrix(gnn_data, "B")  # Transitions
 C = extract_vector(gnn_data, "C")  # Preferences
 D = extract_vector(gnn_data, "D")  # Prior
 E = extract_vector(gnn_data, "E")  # Habit
@@ -274,10 +279,12 @@ diagram = Id(X)  # Identity on objects
 
 for conn in connections:
     if conn["type"] == "directed":
-        # f: A → B becomes morphism  
+        # f: A → B becomes morphism
         source_obj = Object(conn["source"])
         target_obj = Object(conn["target"])
-        morphism = Arrow(source_obj, target_obj, name=f"{conn['source']}_to_{conn['target']}")
+        morphism = Arrow(
+            source_obj, target_obj, name=f"{conn['source']}_to_{conn['target']}"
+        )
         diagram = diagram >> morphism
 ```
 
@@ -288,9 +295,9 @@ for conn in connections:
 ```python
 # src/main.py → src/pipeline/execution.py
 def execute_pipeline_step(script_name: str, args: PipelineArguments, logger):
-    cmd = build_step_command_args(         # src/utils/argument_utils.py:1657
-        script_name.replace('.py', ''),
-        args,                              # target_dir, output_dir, verbose, ...
+    cmd = build_step_command_args(  # src/utils/argument_utils.py:1657
+        script_name.replace(".py", ""),
+        args,  # target_dir, output_dir, verbose, ...
         python_executable,
         script_path,
     )
@@ -369,10 +376,7 @@ Each module includes `mcp.py` with tool registration:
 @server.tool()
 def visualize_gnn_model(content: str, output_path: str) -> dict:
     """Generate visualization for GNN model content."""
-    return process_visualization(
-        target_dir=Path(content),
-        output_dir=Path(output_path)
-    )
+    return process_visualization(target_dir=Path(content), output_dir=Path(output_path))
 ```
 
 This architecture enables modular development, safe-to-fail operation, and framework interoperability while maintaining clear separation between orchestration and implementation logic.

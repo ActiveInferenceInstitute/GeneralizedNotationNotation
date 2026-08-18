@@ -29,7 +29,7 @@ result = process_ml_integration(target_dir, output_dir, verbose=True)
 
 # Check available ML frameworks
 frameworks = check_ml_frameworks()
-# Returns: {'pytorch': {'available': True, 'version': '2.x'}, 
+# Returns: {'pytorch': {'available': True, 'version': '2.x'},
 #           'tensorflow': {'available': False},
 #           'jax': {'available': True, 'version': '0.4.x'},
 #           'sklearn': {'available': True, 'version': '1.x'}}

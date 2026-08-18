@@ -23,10 +23,13 @@ python src/main.py --only-steps 6 --verbose
 
 ```python
 from validation import (
-    SemanticValidator, process_semantic_validation,
-    PerformanceProfiler, profile_performance,
-    ConsistencyChecker, check_consistency,
-    process_validation
+    SemanticValidator,
+    process_semantic_validation,
+    PerformanceProfiler,
+    profile_performance,
+    ConsistencyChecker,
+    check_consistency,
+    process_validation,
 )
 
 # Run full validation (used by pipeline)

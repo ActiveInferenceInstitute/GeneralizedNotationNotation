@@ -68,7 +68,7 @@ success = process_gui(
     output_dir=Path("output/22_gui_output"),
     logger=logger,
     verbose=True,
-    headless=True
+    headless=True,
 )
 
 # Interactive mode
@@ -78,7 +78,7 @@ success = process_gui(
     logger=logger,
     interactive=True,
     gui_types="gui_1,oxdraw",
-    open_browser=True
+    open_browser=True,
 )
 ```
 
@@ -204,24 +204,24 @@ success = process_gui(
 ### Default Settings
 ```python
 DEFAULT_GUI_SETTINGS = {
-    'gui_1': {
-        'port': 7860,
-        'theme': 'default',
-        'auto_save': True,
-        'validation_enabled': True
+    "gui_1": {
+        "port": 7860,
+        "theme": "default",
+        "auto_save": True,
+        "validation_enabled": True,
     },
-    'gui_2': {
-        'port': 7861,
-        'heatmap_colormap': 'viridis',
-        'matrix_precision': 3,
-        'auto_update': True
+    "gui_2": {
+        "port": 7861,
+        "heatmap_colormap": "viridis",
+        "matrix_precision": 3,
+        "auto_update": True,
     },
-    'gui_3': {
-        'port': 7862,
-        'diagram_style': 'modern',
-        'ontology_integration': True,
-        'export_format': 'markdown'
-    }
+    "gui_3": {
+        "port": 7862,
+        "diagram_style": "modern",
+        "ontology_integration": True,
+        "export_format": "markdown",
+    },
 }
 ```
 
@@ -238,7 +238,7 @@ success = process_gui(
     output_dir=Path("output/22_gui_output"),
     logger=logger,
     gui_mode="all",
-    interactive_mode=True
+    interactive_mode=True,
 )
 ```
 
@@ -252,7 +252,7 @@ result = gui_1(
     logger=logger,
     headless=False,
     export_filename="constructed_model.md",
-    open_browser=True
+    open_browser=True,
 )
 ```
 

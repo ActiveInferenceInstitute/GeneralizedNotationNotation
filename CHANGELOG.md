@@ -20,6 +20,30 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
   and the two live Julia cross-framework tests run under the env flag. Full
   run: 3,039 passed in 504s under `-n auto`.
 
+### Fixed (2026-08-18 — test isolation: shared `.venv` corruption under parallel runs)
+
+- **`test_single_step_execution` no longer runs the mutating Step 1.** The test
+  executed `step_name="setup"` (`src/1_setup.py`), which runs a mutating,
+  non-frozen `uv sync` against the shared `.venv`. Under `-n auto` this pruned
+  the `dev` toolchain (`pytest`/`execnet`/`xdist`) mid-run, corrupting the
+  environment and cascading into worker crashes plus
+  `ModuleNotFoundError: No module named 'execnet'` when xdist tried to replace
+  the crashed worker. The test now executes the non-mutating `gnn` step
+  (Step 3), so the shared environment is never rewritten during a parallel run.
+- **`test_setup_environment_function` mocks `setup_uv_environment`.** The test
+  previously invoked the real setup path (a mutating `uv sync`, and — on a
+  transient venv-probe failure under `-n auto` — a destructive
+  `create_uv_environment(recreate=True)` that `rmtree`s `.venv`). It now pins
+  only the argument-forwarding contract, consistent with the other mocked
+  setup/dependency tests.
+- **Verification (reproducible).** Parallel suite excluding the two Ollama
+  daemon-bound files (the CI/`just test-full` configuration): **3,013 passed /
+  0 failed / 0 skipped** with the `.venv` intact after the run. The two Ollama
+  files (26 tests) pass when run serially; under a 96-core `-n auto` their two
+  full-prompt `process_llm` tests can crash a worker through local-daemon
+  contention, which is why CI/`just test-full` keep them out of the parallel
+  suite.
+
 ### Fixed (2026-08-18 — flake + warning hygiene)
 
 - **LSP `create_server` transient-race retry.**

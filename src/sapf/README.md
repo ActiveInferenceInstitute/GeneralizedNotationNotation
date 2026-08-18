@@ -50,8 +50,7 @@ from sapf import process_gnn_to_audio
 
 # Generate audio from GNN model
 result = process_gnn_to_audio(
-    gnn_content=gnn_model_content,
-    output_dir=Path("output/audio")
+    gnn_content=gnn_model_content, output_dir=Path("output/audio")
 )
 ```
 

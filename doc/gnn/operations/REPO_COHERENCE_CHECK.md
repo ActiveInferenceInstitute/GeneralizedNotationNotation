@@ -223,12 +223,14 @@ from visualization import process_visualization_main
 run_script = create_standardized_pipeline_script(
     "8_visualization.py",
     process_visualization_main,
-    "Matrix and network visualization processing"
+    "Matrix and network visualization processing",
 )
+
 
 def main() -> int:
     """Main entry point."""
     return run_script()
+
 
 if __name__ == "__main__":
     sys.exit(main())
@@ -258,7 +260,7 @@ from utils.pipeline_template import (
     setup_step_logging,
     log_step_start,
     log_step_success,
-    log_step_error
+    log_step_error,
 )
 from utils.argument_utils import ArgumentParser
 from pipeline.config import get_output_dir_for_script, get_pipeline_config
@@ -269,6 +271,7 @@ from pipeline.config import get_output_dir_for_script, get_pipeline_config
 ```python
 # ❌ WRONG: Direct logging setup without centralized utilities
 import logging
+
 logger = logging.getLogger(__name__)
 ```
 
@@ -313,11 +316,9 @@ logger = logging.getLogger(__name__)
 from typing import Dict, List, Optional, Any, Union
 from pathlib import Path
 
+
 def process_validation(
-    target_dir: Path,
-    output_dir: Path,
-    verbose: bool = False,
-    **kwargs: Any
+    target_dir: Path, output_dir: Path, verbose: bool = False, **kwargs: Any
 ) -> bool:
     """Process validation for GNN models."""
     ...
@@ -341,27 +342,24 @@ def process_validation(
 
 ```python
 def process_validation(
-    target_dir: Path,
-    output_dir: Path,
-    verbose: bool = False,
-    **kwargs: Any
+    target_dir: Path, output_dir: Path, verbose: bool = False, **kwargs: Any
 ) -> bool:
     """
     Process validation for GNN models.
-    
+
     Args:
         target_dir: Directory containing GNN files to validate
         output_dir: Output directory for validation results
         verbose: Enable verbose logging
         **kwargs: Additional validation options
-        
+
     Returns:
         True if validation succeeded, False otherwise
-        
+
     Raises:
         ValueError: If target_dir does not exist
         PermissionError: If output_dir is not writable
-        
+
     Example:
         >>> from pathlib import Path
         >>> result = process_validation(
@@ -406,6 +404,7 @@ def process_with_error_handling(target_dir: Path, output_dir: Path) -> bool:
     except Exception as e:
         log_step_error(logger, f"Unexpected error: {e}")
         import traceback
+
         logger.error(traceback.format_exc())
         return False
     finally:
@@ -438,18 +437,19 @@ def process_with_error_handling(target_dir: Path, output_dir: Path) -> bool:
 from pathlib import Path
 from utils.resource_manager import get_current_memory_usage
 
+
 def process_with_resource_management(target_dir: Path) -> bool:
     """Process with proper resource management."""
     initial_memory = get_current_memory_usage()
-    
+
     try:
         # Use context managers for file operations
         with open(target_dir / "data.json", "r") as f:
             data = json.load(f)
-        
+
         # Process data
         result = process_data(data)
-        
+
         return result
     finally:
         # Cleanup
@@ -524,17 +524,10 @@ src/[module_name]/
 from pathlib import Path
 from typing import Dict, Any, Optional
 
-from .processor import (
-    process_module,
-    process_module_standardized,
-    get_module_info
-)
+from .processor import process_module, process_module_standardized, get_module_info
 
-__all__ = [
-    "process_module",
-    "process_module_standardized",
-    "get_module_info"
-]
+__all__ = ["process_module", "process_module_standardized", "get_module_info"]
+
 
 def get_module_info() -> Dict[str, Any]:
     """Get module information."""
@@ -542,10 +535,7 @@ def get_module_info() -> Dict[str, Any]:
         "name": "[module_name]",
         "version": "1.0.0",
         "description": "[Module description]",
-        "capabilities": [
-            "Capability 1",
-            "Capability 2"
-        ]
+        "capabilities": ["Capability 1", "Capability 2"],
     }
 ```
 
@@ -575,28 +565,26 @@ MCP Tool Registration for [Module Name]
 from typing import Dict, Any, List
 from mcp import Server, Tool
 
+
 def register_tools(server: Server) -> None:
     """Register MCP tools for this module."""
-    
+
     @server.tool()
     def process_module_tool(target_dir: str, output_dir: str) -> Dict[str, Any]:
         """
         Process [module] with MCP tool.
-        
+
         Args:
             target_dir: Directory containing input files
             output_dir: Output directory for results
-            
+
         Returns:
             Processing results
         """
         from pathlib import Path
         from .processor import process_module
-        
-        result = process_module(
-            Path(target_dir),
-            Path(output_dir)
-        )
+
+        result = process_module(Path(target_dir), Path(output_dir))
         return result
 ```
 
@@ -758,9 +746,10 @@ graph TD
 
 ```python
 # ❌ WRONG: Using substitutions
-from unittest.patch import patch # Note: do not use
+from unittest.patch import patch  # Note: do not use
 
-@patch('module.process_function')
+
+@patch("module.process_function")
 def test_processing(patched_process):
     patched_process.return_value = True
     ...
@@ -773,11 +762,8 @@ def test_processing(patched_process):
 def test_processing():
     from pathlib import Path
     from module import process_function
-    
-    result = process_function(
-        Path("test_data/input"),
-        Path("test_data/output")
-    )
+
+    result = process_function(Path("test_data/input"), Path("test_data/output"))
     assert result is True
     assert (Path("test_data/output") / "result.json").exists()
 ```
@@ -813,21 +799,21 @@ def test_pipeline_integration():
     """Test full pipeline execution with real data."""
     from pathlib import Path
     import subprocess
-    
+
     # Run actual pipeline script
     result = subprocess.run(
         ["python", "src/main.py", "--target-dir", "test_data/gnn_files"],
         capture_output=True,
-        text=True
+        text=True,
     )
-    
+
     assert result.returncode == 0
-    
+
     # Validate actual outputs using standardized output directory names
     output_dir = Path("output")
     assert (output_dir / "3_gnn_output" / "parsed_models.json").exists()
     assert (output_dir / "7_export_output" / "exports").exists()
-    
+
     # Verify output directory naming follows convention
     assert output_dir.name == "output"
     assert (output_dir / "3_gnn_output").exists()
@@ -1344,19 +1330,19 @@ from utils.pipeline_template import (
     log_step_start,
     log_step_success,
     log_step_error,
-    create_standardized_pipeline_script
+    create_standardized_pipeline_script,
 )
 from module import process_module
 
 run_script = create_standardized_pipeline_script(
-    "N_module.py",
-    process_module,
-    "Module processing description"
+    "N_module.py", process_module, "Module processing description"
 )
+
 
 def main() -> int:
     """Main entry point."""
     return run_script()
+
 
 if __name__ == "__main__":
     sys.exit(main())
@@ -1375,26 +1361,24 @@ from pathlib import Path
 from typing import Dict, Any, Optional
 import logging
 
+
 def process_module(
-    target_dir: Path,
-    output_dir: Path,
-    verbose: bool = False,
-    **kwargs: Any
+    target_dir: Path, output_dir: Path, verbose: bool = False, **kwargs: Any
 ) -> bool:
     """
     Process [module] functionality.
-    
+
     Args:
         target_dir: Input directory
         output_dir: Output directory
         verbose: Enable verbose logging
         **kwargs: Additional options
-        
+
     Returns:
         True if processing succeeded
     """
     logger = logging.getLogger(__name__)
-    
+
     try:
         # Core processing logic here
         result = perform_processing(target_dir, output_dir, **kwargs)
@@ -1414,6 +1398,7 @@ def generate_visualization(data):
     # 100+ lines of visualization code
     import matplotlib.pyplot as plt
     import numpy as np
+
     # ... extensive implementation ...
     return result
 ```
@@ -1422,17 +1407,17 @@ def generate_visualization(data):
 
 ```python
 # ❌ WRONG: Missing type hints
-def process_validation(target_dir, output_dir, verbose=False):
-    ...
+def process_validation(target_dir, output_dir, verbose=False): ...
 ```
 
 #### Using Substitutions in Tests (Incorrect)
 
 ```python
 # ❌ WRONG: Using substitutions
-from unittest.patch import patch # Note: do not use
+from unittest.patch import patch  # Note: do not use
 
-@patch('module.process_function')
+
+@patch("module.process_function")
 def test_processing(patched_process):
     patched_process.return_value = True
     ...

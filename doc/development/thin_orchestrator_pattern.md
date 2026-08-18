@@ -67,19 +67,20 @@ from render import (
     generate_pymdp_code,
     generate_rxinfer_code,
     generate_activeinference_jl_code,
-    generate_discopy_code
+    generate_discopy_code,
 )
+
 
 def main():
     """Main rendering orchestration."""
     # Setup logging, argument parsing, output directories
     # ...
-    
+
     # Delegate core functionality to module
     pymdp_code = generate_pymdp_code(model_data)
     rxinfer_code = generate_rxinfer_code(model_data)
     # ...
-    
+
     # Handle results and reporting
     # ...
 ```
@@ -96,14 +97,14 @@ from .renderer import (
     generate_pymdp_code,
     generate_rxinfer_code,
     generate_activeinference_jl_code,
-    generate_discopy_code
+    generate_discopy_code,
 )
 
 __all__ = [
-    'generate_pymdp_code',
-    'generate_rxinfer_code',
-    'generate_activeinference_jl_code',
-    'generate_discopy_code'
+    "generate_pymdp_code",
+    "generate_rxinfer_code",
+    "generate_activeinference_jl_code",
+    "generate_discopy_code",
 ]
 ```
 
@@ -115,10 +116,12 @@ __all__ = [
 Renderer Module - Core rendering functionality.
 """
 
+
 def generate_pymdp_code(model_data: Dict) -> str:
     """Generate PyMDP simulation code."""
     # Actual implementation here
     # ...
+
 
 def generate_rxinfer_code(model_data: Dict) -> str:
     """Generate RxInfer.jl simulation code."""
@@ -159,21 +162,19 @@ Test render integration functionality.
 """
 
 import pytest
-from render import (
-    generate_pymdp_code,
-    generate_rxinfer_code
-)
+from render import generate_pymdp_code, generate_rxinfer_code
+
 
 class TestRenderIntegration:
     """Test render integration functionality."""
-    
+
     def test_generate_pymdp_code(self):
         """Test PyMDP code generation."""
         model_data = {"model_name": "test_model"}
         code = generate_pymdp_code(model_data)
         assert "import pymdp" in code
         assert "test_model" in code
-    
+
     def test_generate_rxinfer_code(self):
         """Test RxInfer.jl code generation."""
         model_data = {"model_name": "test_model"}

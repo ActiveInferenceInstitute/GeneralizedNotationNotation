@@ -4,7 +4,7 @@
 **Current Version**: 3.0.0
 **Next Target**: v4.0.0 (bounded autonomy and reviewed self-editing workflows)
 
-**Last reviewed**: 2026-08-18 — all RED_TEAM_REVIEW.md security residuals V-01–V-11 closed, `-n auto` fully green with **3,039 passed / 0 failed / 0 skipped** on a fully provisioned environment (D2 CLI, Julia RxInfer/StatsBase backends, a local Ollama daemon with `smollm2:135m-instruct-q4_K_S`, and `RANDOM_SIMULATION_ENABLED=1`), the three HANDOFF §4 test-infrastructure follow-ups resolved, and three clean-start execution regressions fixed: Julia frameworks now execute from their committed `--project` environments (no longer silently skipped against the global depot); the render manifest aggregates across per-folder pipeline invocations; and Step 12 execution is scoped to the current folder, so every rendered model is executed exactly once instead of only the last folder's model (or, post-aggregation, every folder's models ten times). `test_uv_sync_fast` also retries transient `uv sync --check` "outdated" races.
+**Last reviewed**: 2026-08-18 — all RED_TEAM_REVIEW.md security residuals V-01–V-11 closed; a shared-`.venv` corruption under `-n auto` was root-caused and fixed (`test_single_step_execution` no longer runs the mutating Step 1 `uv sync`, and `test_setup_environment_function` mocks `setup_uv_environment` instead of invoking a destructive recreate). The parallel suite (excluding the two Ollama daemon-bound files, the CI/`just test-full` configuration) is **3,013 passed / 0 failed / 0 skipped** with the `.venv` intact; the two Ollama files (26 tests) pass serially. The three HANDOFF §4 test-infrastructure follow-ups are resolved, and three clean-start execution regressions fixed: Julia frameworks now execute from their committed `--project` environments (no longer silently skipped against the global depot); the render manifest aggregates across per-folder pipeline invocations; and Step 12 execution is scoped to the current folder, so every rendered model is executed exactly once instead of only the last folder's model (or, post-aggregation, every folder's models ten times). `test_uv_sync_fast` also retries transient `uv sync --check` "outdated" races.
 `doc/ → doc/archive/` reorganization, `argument_utils` + RxInfer strategy
 modularization, and public-API test coverage. The full audit trail lives in
 `CHANGELOG.md` ([Unreleased]) and git history; RxInfer-specific state and
@@ -59,14 +59,24 @@ No unchecked security residuals remain at this time.
 
 ### Test-infrastructure follow-ups (from doc/HANDOFF.md §4 — resolved 2026-08-17)
 
-- **Parallel test execution.** `-n auto` is now fully green: **3,039 passed /
-  0 failed / 0 skipped** with D2 CLI, Julia RxInfer/StatsBase backends, Ollama,
-  and `RANDOM_SIMULATION_ENABLED=1` provisioned (the two Ollama files now run
-  instead of being ignored). The two residual failures are closed: the strict GridWorld cross-framework test now
-  skips cleanly when Julia backend packages are absent (cached availability
-  probe), and `get_installed_package_versions` retries transient subprocess /
+- **Parallel test execution.** `-n auto` is green: **3,013 passed / 0 failed /
+  0 skipped** for the CI-supported set (excluding the two Ollama daemon-bound
+  files `test_llm_ollama.py` and `test_llm_ollama_integration.py`, matching
+  CI and `just test-full`), with D2 CLI, Julia RxInfer/StatsBase backends, and
+  `RANDOM_SIMULATION_ENABLED=1` provisioned. The two Ollama files (26 tests)
+  pass when run serially; under a 96-core `-n auto` their two full-prompt
+  `process_llm` tests can crash a worker through local-daemon contention, so
+  they stay out of the parallel suite. The two residual failures are closed:
+  the strict GridWorld cross-framework test now skips cleanly when Julia
+  backend packages are absent (cached availability probe), and
+  `get_installed_package_versions` retries transient subprocess /
   incomplete-enumeration races while `test_uv_sync_fast` uses non-mutating
   `uv sync --check` so the shared `.venv` is never rewritten concurrently.
+  **Shared-`.venv` corruption fixed**: `test_single_step_execution` ran the
+  mutating Step 1 (`1_setup.py` → `uv sync` core-only) and
+  `test_setup_environment_function` invoked the real setup path; both could
+  prune/rebuild `.venv` mid-run and crash workers. They now run the
+  non-mutating `gnn` step and mock `setup_uv_environment` respectively.
 - **Type-annotation completion.** No real source function lacks annotations:
   `mypy` passes with `disallow_untyped_defs` + `disallow_incomplete_defs`
   across 812 files. The remaining untyped-looking signatures live inside

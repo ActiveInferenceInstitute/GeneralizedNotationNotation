@@ -123,14 +123,14 @@ from muscle_mem import Engine
 engine = Engine()
 
 # Example: A hypothetical GNN model processing step
-# @engine.tool() 
+# @engine.tool()
 # def run_gnn_type_check(gnn_file_path: str, is_strict_mode: bool):
 #     # ... logic to perform GNN type checking ...
 #     result = f"Type check for {gnn_file_path} (strict: {is_strict_mode}): PASSED"
 #     print(result)
 #     return result
- 
-# run_gnn_type_check("another_model.gnn", True) 
+
+# run_gnn_type_check("another_model.gnn", True)
 # Invocation and its result 'PASSED' would be stored by muscle-mem.
 ```
 
@@ -177,7 +177,7 @@ You attach `Check`s to each GNN `@engine.tool` to enforce cache validation, eith
 #     except IOError:
 #         current_hash = "ERROR_READING_FILE" # Handle error
 #     return GNNFileContext(
-#         file_path=gnn_file_path, 
+#         file_path=gnn_file_path,
 #         file_hash=current_hash,
 #         processing_params=tuple(sorted(kwargs.items())) # store other params
 #     )
@@ -217,7 +217,7 @@ Let's combine these ideas for a GNN tool. Imagine a function that renders a GNN 
 #     gnn_file_hash: str
 #     target_section: str # e.g., "Equations"
 #     # We could add a timestamp for time-based cache invalidation
-#     # captured_at: float 
+#     # captured_at: float
 
 # def capture_render_context(gnn_file_path: str, section_name: str = "Equations") -> GNNEquationRenderContext:
 #     file_hash = "INVALID_HASH"

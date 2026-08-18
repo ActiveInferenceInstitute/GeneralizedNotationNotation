@@ -26,6 +26,7 @@ Module Name — Brief description.
 
 Pipeline Integration: Invoked by step N (N_module.py).
 """
+
 from pathlib import Path
 from typing import Dict, Any
 
@@ -41,6 +42,7 @@ FEATURES: Dict[str, bool] = {
     "optional_feature": False,  # Requires optional dependency
 }
 
+
 def get_module_info() -> Dict[str, Any]:
     """Get module metadata."""
     return {
@@ -50,9 +52,13 @@ def get_module_info() -> Dict[str, Any]:
         "features": FEATURES,
     }
 
+
 __all__ = [
-    "process_main_function", "ProcessorClass",
-    "get_module_info", "FEATURES", "__version__",
+    "process_main_function",
+    "ProcessorClass",
+    "get_module_info",
+    "FEATURES",
+    "__version__",
 ]
 ```
 
@@ -61,11 +67,13 @@ __all__ = [
 ```python
 _optional_module = None
 
+
 def _get_optional():
     global _optional_module
     if _optional_module is None:
         try:
             import optional_package
+
             _optional_module = optional_package
         except ImportError:
             _optional_module = False
@@ -84,7 +92,7 @@ def process_module(
     *,
     recursive: bool = False,
     verbose: bool = False,
-    **kwargs
+    **kwargs,
 ) -> bool:
     """
     Process module functionality for GNN models.
@@ -121,18 +129,26 @@ def process_module(
 
 ```python
 """MCP integration for module_name."""
+
 import logging
 from typing import Dict, Any
+
 logger = logging.getLogger(__name__)
+
 
 def module_action_mcp(mcp_instance_ref=None, **kwargs) -> Dict[str, Any]:
     """MCP tool for module action."""
     try:
         from .processor import module_action
+
         required = ["input_path"]
         for arg in required:
             if arg not in kwargs:
-                return {"success": False, "error": f"Missing: {arg}", "error_type": "missing_argument"}
+                return {
+                    "success": False,
+                    "error": f"Missing: {arg}",
+                    "error_type": "missing_argument",
+                }
         result = module_action(**kwargs)
         return {"success": True, "result": result, "module": "module_name"}
     except ImportError as e:
@@ -140,6 +156,7 @@ def module_action_mcp(mcp_instance_ref=None, **kwargs) -> Dict[str, Any]:
     except Exception as e:
         logger.error(f"MCP tool error: {e}")
         return {"success": False, "error": str(e), "error_type": "execution_error"}
+
 
 def register_tools(mcp=None) -> None:
     """Register MCP tools with server."""
@@ -172,6 +189,7 @@ def register_tools(mcp=None) -> None:
 @dataclass
 class ProcessingResult:
     """Standardized result from module processing."""
+
     success: bool
     module: str
     operation: str

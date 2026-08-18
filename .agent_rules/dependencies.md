@@ -48,13 +48,19 @@ def check_python_dep(package: str) -> tuple[bool, str]:
     except ImportError:
         return False, f"Not installed. Run: uv pip install {package}"
 
+
 # Julia
 import shutil, subprocess
+
+
 def check_julia() -> tuple[bool, str]:
     if not shutil.which("julia"):
         return False, "Julia not found in PATH"
-    result = subprocess.run(["julia", "--version"], capture_output=True, text=True, timeout=5)
+    result = subprocess.run(
+        ["julia", "--version"], capture_output=True, text=True, timeout=5
+    )
     return result.returncode == 0, result.stdout.strip()
+
 
 # System command
 def check_command(cmd: str) -> tuple[bool, str]:
@@ -70,6 +76,7 @@ def check_command(cmd: str) -> tuple[bool, str]:
 # Pattern 1: Module-level flag
 try:
     import pymdp
+
     PYMDP_AVAILABLE = True
 except ImportError:
     PYMDP_AVAILABLE = False
@@ -97,7 +104,7 @@ The JAX renderer generates **pure JAX code** — Flax is NOT required:
 import jax
 import jax.numpy as jnp
 from jax import random, jit, vmap
-import optax     # optional
+import optax  # optional
 
 # NOT imported:
 # import flax   ← never required

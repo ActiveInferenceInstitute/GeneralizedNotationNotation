@@ -23,11 +23,17 @@ python src/main.py --only-steps 20 --verbose
 
 ```python
 from website import (
-    WebsiteGenerator, WebsiteRenderer,
-    generate_website, process_website,
-    generate_html_report, get_module_info,
-    embed_image, embed_markdown_file, embed_text_file,
-    get_supported_file_types, validate_website_config
+    WebsiteGenerator,
+    WebsiteRenderer,
+    generate_website,
+    process_website,
+    generate_html_report,
+    get_module_info,
+    embed_image,
+    embed_markdown_file,
+    embed_text_file,
+    get_supported_file_types,
+    validate_website_config,
 )
 
 # Process website step (used by pipeline)

@@ -65,6 +65,7 @@ executed. Acceptance: `scripts/run_v3_orchestration_acceptance.py --strict`. Ref
 
 ```python
 from pipeline import get_pipeline_config
+
 config = get_pipeline_config()
 print(f"Steps: {config['steps']}")
 ```
@@ -95,6 +96,7 @@ print(f"Steps: {config['steps']}")
 ```python
 from pipeline import get_output_dir_for_script
 from pathlib import Path
+
 output_dir = get_output_dir_for_script("3_gnn.py", Path("output"))
 ```
 
@@ -239,12 +241,12 @@ output_dir = get_output_dir_for_script("3_gnn.py", Path("output"))
 
 ```python
 DEFAULT_CONFIG = {
-    'performance_mode': 'low',
-    'timeout_per_step': 300,
-    'max_retries': 3,
-    'parallel_execution': False,
-    'resource_monitoring': True,
-    'health_check_interval': 30
+    "performance_mode": "low",
+    "timeout_per_step": 300,
+    "max_retries": 3,
+    "parallel_execution": False,
+    "resource_monitoring": True,
+    "health_check_interval": 30,
 }
 ```
 

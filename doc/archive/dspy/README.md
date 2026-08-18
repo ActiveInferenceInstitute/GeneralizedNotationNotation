@@ -20,11 +20,11 @@ This directory contains comprehensive documentation, resources, and implementati
 import dspy
 
 # Configure LM
-lm = dspy.LM('openai/gpt-4o-mini', api_key='YOUR_KEY')
+lm = dspy.LM("openai/gpt-4o-mini", api_key="YOUR_KEY")
 dspy.configure(lm=lm)
 
 # Create a simple module
-classifier = dspy.ChainOfThought('sentence -> sentiment: bool')
+classifier = dspy.ChainOfThought("sentence -> sentiment: bool")
 result = classifier(sentence="Active Inference is fascinating!")
 print(result.sentiment)  # True
 ```
@@ -61,6 +61,7 @@ Define input-output behavior without implementation details:
 
 ```python
 "question -> answer"
+
 "context, question -> reasoning, answer"
 "document -> summary: str, topics: list[str]"
 ```
@@ -164,21 +165,24 @@ doc/dspy/
 
 ```python
 # Classification
-classifier = dspy.Predict('text -> category: str')
+classifier = dspy.Predict("text -> category: str")
 
 # Question Answering with reasoning
-qa = dspy.ChainOfThought('context, question -> answer')
+qa = dspy.ChainOfThought("context, question -> answer")
 
 # Agent with tools
-agent = dspy.ReAct('question -> answer', tools=[search, calculate])
+agent = dspy.ReAct("question -> answer", tools=[search, calculate])
 
 # Structured output
 from pydantic import BaseModel
+
+
 class Output(BaseModel):
     summary: str
     keywords: list[str]
-    
-predictor = dspy.ChainOfThought('document -> result: Output')
+
+
+predictor = dspy.ChainOfThought("document -> result: Output")
 ```
 
 ### Configuration
@@ -187,13 +191,13 @@ predictor = dspy.ChainOfThought('document -> result: Output')
 import dspy
 
 # OpenAI
-lm = dspy.LM('openai/gpt-4o', api_key='...')
+lm = dspy.LM("openai/gpt-4o", api_key="...")
 
 # Anthropic
-lm = dspy.LM('anthropic/claude-3-opus', api_key='...')
+lm = dspy.LM("anthropic/claude-3-opus", api_key="...")
 
 # Ollama (local)
-lm = dspy.LM('ollama/llama3.2:3b')
+lm = dspy.LM("ollama/llama3.2:3b")
 
 # Configure globally
 dspy.configure(lm=lm)

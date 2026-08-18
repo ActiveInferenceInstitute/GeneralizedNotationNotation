@@ -50,22 +50,22 @@ Enhanced tool representation with additional metadata:
 ```python
 @dataclass
 class MCPTool:
-    name: str                    # Tool name
-    func: Callable              # Tool function
-    schema: Dict[str, Any]      # JSON schema for parameters
-    description: str            # Tool description
-    module: str = ""            # Source module
-    category: str = ""          # Tool category
-    version: str = "1.0.0"      # Tool version
+    name: str  # Tool name
+    func: Callable  # Tool function
+    schema: Dict[str, Any]  # JSON schema for parameters
+    description: str  # Tool description
+    module: str = ""  # Source module
+    category: str = ""  # Tool category
+    version: str = "1.0.0"  # Tool version
     tags: List[str] = field(default_factory=list)  # Tags for categorization
     examples: List[Dict[str, Any]] = field(default_factory=list)  # Usage examples
     experimental: bool = False  # Experimental flag
     timeout: Optional[float] = None  # Execution timeout
-    max_concurrent: int = 1     # Max concurrent executions
-    requires_auth: bool = False # Authentication requirement
+    max_concurrent: int = 1  # Max concurrent executions
+    requires_auth: bool = False  # Authentication requirement
     rate_limit: Optional[float] = None  # Rate limit (requests/second)
     cache_ttl: Optional[float] = None  # Cache TTL
-    input_validation: bool = True   # Enable input validation
+    input_validation: bool = True  # Enable input validation
     output_validation: bool = True  # Enable output validation
 ```
 
@@ -75,21 +75,21 @@ Enhanced resource representation:
 ```python
 @dataclass
 class MCPResource:
-    uri_template: str           # URI template
-    retriever: Callable         # Resource retriever function
-    description: str            # Resource description
-    module: str = ""            # Source module
-    category: str = ""          # Resource category
-    version: str = "1.0.0"      # Resource version
+    uri_template: str  # URI template
+    retriever: Callable  # Resource retriever function
+    description: str  # Resource description
+    module: str = ""  # Source module
+    category: str = ""  # Resource category
+    version: str = "1.0.0"  # Resource version
     mime_type: str = "application/json"  # MIME type
-    cacheable: bool = True      # Cacheable flag
+    cacheable: bool = True  # Cacheable flag
     tags: List[str] = field(default_factory=list)  # Tags
     timeout: Optional[float] = None  # Retrieval timeout
-    requires_auth: bool = False # Authentication requirement
+    requires_auth: bool = False  # Authentication requirement
     rate_limit: Optional[float] = None  # Rate limit
     cache_ttl: Optional[float] = None  # Cache TTL
-    compression: bool = False   # Compression flag
-    encryption: bool = False    # Encryption flag
+    compression: bool = False  # Compression flag
+    encryption: bool = False  # Encryption flag
 ```
 
 ### Error Classes
@@ -101,8 +101,15 @@ stack traces:
 ```python
 class MCPError(Exception):
     """Base class for MCP related errors."""
-    def __init__(self, message: str, code: int = -32000, data: Optional[Any] = None, 
-                 tool_name: Optional[str] = None, module_name: Optional[str] = None):
+
+    def __init__(
+        self,
+        message: str,
+        code: int = -32000,
+        data: Optional[Any] = None,
+        tool_name: Optional[str] = None,
+        module_name: Optional[str] = None,
+    ):
         super().__init__(message)
         self.code = code
         self.data = data or {}
@@ -110,27 +117,35 @@ class MCPError(Exception):
         self.module_name = module_name
         self.timestamp = time.time()
 
+
 class MCPToolNotFoundError(MCPError):
     """Raised when a requested tool is not found."""
-    
+
+
 class MCPResourceNotFoundError(MCPError):
     """Raised when a requested resource is not found."""
-    
+
+
 class MCPInvalidParamsError(MCPError):
     """Raised when tool parameters are invalid."""
-    
+
+
 class MCPToolExecutionError(MCPError):
     """Raised when tool execution fails."""
-    
+
+
 class MCPSDKNotFoundError(MCPError):
     """Raised when required SDK is not found."""
-    
+
+
 class MCPValidationError(MCPError):
     """Raised when validation fails."""
-    
+
+
 class MCPModuleLoadError(MCPError):
     """Raised when a module fails to load."""
-    
+
+
 class MCPPerformanceError(MCPError):
     """Raised when performance thresholds are exceeded."""
 ```
@@ -260,13 +275,14 @@ mcp_instance.discover_modules()
 def my_tool(param1: str, param2: int) -> Dict[str, Any]:
     return {"result": f"{param1}_{param2}", "success": True}
 
+
 schema = {
     "type": "object",
     "properties": {
         "param1": {"type": "string", "minLength": 1},
-        "param2": {"type": "integer", "minimum": 0}
+        "param2": {"type": "integer", "minimum": 0},
     },
-    "required": ["param1", "param2"]
+    "required": ["param1", "param2"],
 }
 
 mcp_instance.register_tool(
@@ -284,7 +300,7 @@ mcp_instance.register_tool(
     rate_limit=10.0,
     cache_ttl=300.0,
     input_validation=True,
-    output_validation=True
+    output_validation=True,
 )
 ```
 
@@ -292,6 +308,7 @@ mcp_instance.register_tool(
 ```python
 def my_resource_retriever(uri: str) -> Dict[str, Any]:
     return {"content": f"Resource content for {uri}", "uri": uri}
+
 
 mcp_instance.register_resource(
     uri_template="my://{resource_id}",
@@ -305,17 +322,14 @@ mcp_instance.register_resource(
     tags=["custom", "resource"],
     timeout=30.0,
     rate_limit=10.0,
-    cache_ttl=300.0
+    cache_ttl=300.0,
 )
 ```
 
 #### Tool Execution
 ```python
 # Execute a tool
-result = mcp_instance.execute_tool("my_tool", {
-    "param1": "hello",
-    "param2": 42
-})
+result = mcp_instance.execute_tool("my_tool", {"param1": "hello", "param2": 42})
 
 # Get tool performance statistics
 stats = mcp_instance.get_tool_performance_stats("my_tool")
@@ -356,30 +370,26 @@ schema = {
             "type": "string",
             "minLength": 3,
             "maxLength": 50,
-            "pattern": "^[a-zA-Z0-9_]+$"
+            "pattern": "^[a-zA-Z0-9_]+$",
         },
-        "age": {
-            "type": "integer",
-            "minimum": 0,
-            "maximum": 150
-        },
+        "age": {"type": "integer", "minimum": 0, "maximum": 150},
         "tags": {
             "type": "array",
             "minItems": 1,
             "maxItems": 10,
-            "items": {"type": "string"}
+            "items": {"type": "string"},
         },
         "settings": {
             "type": "object",
             "properties": {
                 "enabled": {"type": "boolean"},
-                "timeout": {"type": "number", "minimum": 0}
+                "timeout": {"type": "number", "minimum": 0},
             },
-            "required": ["enabled"]
-        }
+            "required": ["enabled"],
+        },
     },
     "required": ["name", "age"],
-    "additionalProperties": False
+    "additionalProperties": False,
 }
 ```
 
@@ -394,7 +404,7 @@ mcp_instance.register_tool(
     func=expensive_function,
     schema=schema,
     description="An expensive operation with caching",
-    cache_ttl=3600.0  # Cache for 1 hour
+    cache_ttl=3600.0,  # Cache for 1 hour
 )
 
 # Execute (will be cached)
@@ -418,7 +428,7 @@ mcp_instance.register_tool(
     func=my_function,
     schema=schema,
     description="A rate-limited tool",
-    rate_limit=5.0  # 5 requests per second
+    rate_limit=5.0,  # 5 requests per second
 )
 
 # Execute (will be rate limited if exceeded)
@@ -436,7 +446,7 @@ mcp_instance.register_tool(
     func=my_function,
     schema=schema,
     description="A tool with concurrent execution limits",
-    max_concurrent=3  # Only 3 concurrent executions allowed
+    max_concurrent=3,  # Only 3 concurrent executions allowed
 )
 ```
 
@@ -474,7 +484,7 @@ from mcp.server_http import MCPHTTPHandler
 from http.server import HTTPServer
 
 # Create HTTP server
-server = HTTPServer(('localhost', 8080), MCPHTTPHandler)
+server = HTTPServer(("localhost", 8080), MCPHTTPHandler)
 server.serve_forever()
 ```
 
@@ -637,22 +647,21 @@ Create a new MCP module by adding an `mcp.py` file to your module directory:
 ```python
 # src/my_module/mcp.py
 
+
 def register_tools(mcp_instance):
     """Register tools for this module."""
-    
+
     # Define tool function
     def my_tool(param: str) -> Dict[str, Any]:
         return {"result": f"Processed: {param}"}
-    
+
     # Define schema
     schema = {
         "type": "object",
-        "properties": {
-            "param": {"type": "string", "minLength": 1}
-        },
-        "required": ["param"]
+        "properties": {"param": {"type": "string", "minLength": 1}},
+        "required": ["param"],
     }
-    
+
     # Register tool
     mcp_instance.register_tool(
         name="my_tool",
@@ -666,13 +675,13 @@ def register_tools(mcp_instance):
         examples=[{"param": "example"}],
         timeout=30.0,
         rate_limit=10.0,
-        cache_ttl=300.0
+        cache_ttl=300.0,
     )
-    
+
     # Register resource
     def my_resource_retriever(uri: str) -> Dict[str, Any]:
         return {"content": f"Resource: {uri}", "uri": uri}
-    
+
     mcp_instance.register_resource(
         uri_template="my://{resource_id}",
         retriever=my_resource_retriever,
@@ -680,8 +689,9 @@ def register_tools(mcp_instance):
         module="my_module",
         category="custom",
         version="1.0.0",
-        cacheable=True
+        cacheable=True,
     )
+
 
 # Module metadata
 __version__ = "1.0.0"
@@ -774,6 +784,7 @@ Enable debug logging:
 
 ```python
 import logging
+
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger("mcp")
 ```
@@ -787,7 +798,7 @@ mcp_instance.register_tool(
     name="expensive_operation",
     func=expensive_function,
     schema=schema,
-    cache_ttl=3600.0  # Cache for 1 hour
+    cache_ttl=3600.0,  # Cache for 1 hour
 )
 ```
 
@@ -798,7 +809,7 @@ mcp_instance.register_tool(
     name="api_call",
     func=api_function,
     schema=schema,
-    rate_limit=10.0  # 10 requests per second
+    rate_limit=10.0,  # 10 requests per second
 )
 ```
 
@@ -809,7 +820,7 @@ mcp_instance.register_tool(
     name="resource_intensive",
     func=intensive_function,
     schema=schema,
-    max_concurrent=2  # Only 2 concurrent executions
+    max_concurrent=2,  # Only 2 concurrent executions
 )
 ```
 
@@ -822,7 +833,7 @@ mcp_instance.register_tool(
     name="sensitive_operation",
     func=sensitive_function,
     schema=schema,
-    requires_auth=True
+    requires_auth=True,
 )
 ```
 
@@ -834,7 +845,7 @@ mcp_instance.register_tool(
     func=safe_function,
     schema=schema,
     input_validation=True,
-    output_validation=True
+    output_validation=True,
 )
 ```
 
@@ -845,7 +856,7 @@ mcp_instance.register_tool(
     name="public_api",
     func=public_function,
     schema=schema,
-    rate_limit=5.0  # 5 requests per second
+    rate_limit=5.0,  # 5 requests per second
 )
 ```
 

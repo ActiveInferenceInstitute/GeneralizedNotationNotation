@@ -26,10 +26,14 @@ python src/12_execute.py --frameworks "lite" --verbose
 
 ```python
 from execute import (
-    GNNExecutor, execute_gnn_model, run_simulation,
-    execute_pymdp_simulation_from_gnn, execute_pymdp_simulation,
-    validate_execution_environment, process_execute,
-    execute_script_safely
+    GNNExecutor,
+    execute_gnn_model,
+    run_simulation,
+    execute_pymdp_simulation_from_gnn,
+    execute_pymdp_simulation,
+    validate_execution_environment,
+    process_execute,
+    execute_script_safely,
 )
 
 # Process execution step (used by pipeline)

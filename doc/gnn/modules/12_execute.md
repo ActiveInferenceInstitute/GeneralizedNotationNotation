@@ -130,7 +130,7 @@ success = process_execute(
     output_dir=Path("output/12_execute_output"),
     verbose=True,
     frameworks="pymdp,jax",
-    timeout=600
+    timeout=600,
 )
 ```
 
@@ -177,7 +177,10 @@ success = process_execute(
 
 **Usage**:
 ```python
-from execute.pymdp.package_detector import detect_pymdp_installation, is_correct_pymdp_package
+from execute.pymdp.package_detector import (
+    detect_pymdp_installation,
+    is_correct_pymdp_package,
+)
 
 detection = detect_pymdp_installation()
 if detection.get("wrong_package"):
@@ -243,7 +246,7 @@ from execute import process_execute
 success = process_execute(
     target_dir=Path("input/gnn_files"),
     output_dir=Path("output/12_execute_output"),
-    simulation_engine="auto"
+    simulation_engine="auto",
 )
 ```
 

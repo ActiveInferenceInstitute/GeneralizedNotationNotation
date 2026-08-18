@@ -607,13 +607,14 @@ from flask import Flask, request, jsonify
 from gnn_runtime import load_model, run_inference
 
 app = Flask(__name__)
-model = load_model('production_agent.gnn')
+model = load_model("production_agent.gnn")
 
-@app.route('/infer', methods=['POST'])
+
+@app.route("/infer", methods=["POST"])
 def infer():
-    observations = request.json['observations']
+    observations = request.json["observations"]
     action = run_inference(model, observations)
-    return jsonify({'action': action})
+    return jsonify({"action": action})
 ```
 
 ---
@@ -902,10 +903,12 @@ print(f"Peak memory usage: {peak / 1024 / 1024:.1f} MB")
 from multiprocessing import Pool
 from functools import lru_cache
 
+
 @lru_cache(maxsize=128)
 def cached_parse_gnn(file_path, file_mtime):
     """Cache parsing results based on file modification time."""
     return parse_gnn_file(file_path)
+
 
 def parallel_process_models(model_files, num_workers=4):
     """Process multiple GNN models in parallel."""
@@ -934,6 +937,7 @@ from jax import vmap
 batch_size = 1000
 observations = jnp.array([obs for obs in observation_batch])
 actions = vmap(agent.infer_action)(observations)  # Vectorized inference
+
 
 # Memory-efficient iteration
 def chunked_simulation(agents, total_steps, chunk_size=100):

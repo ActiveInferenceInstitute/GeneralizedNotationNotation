@@ -120,8 +120,8 @@ States are often discrete factors:
 ```python
 # Example: Grid world with object
 states = {
-    'location': [0, 1, 2, 3],  # 4 locations
-    'has_object': [True, False]  # 2 states
+    "location": [0, 1, 2, 3],  # 4 locations
+    "has_object": [True, False],  # 2 states
 }
 # Total: 4 × 2 = 8 states
 ```
@@ -195,22 +195,26 @@ Re-plan at each timestep with sliding window.
 
 ```python
 # A Matrix: Noisy position observation
-A = np.array([
-    [0.8, 0.1, 0.05, 0.05],  # Observe pos 0
-    [0.1, 0.8, 0.1, 0.0],    # Observe pos 1
-    [0.05, 0.1, 0.8, 0.05],  # Observe pos 2
-    [0.05, 0.0, 0.05, 0.9],  # Observe pos 3 (goal)
-])
+A = np.array(
+    [
+        [0.8, 0.1, 0.05, 0.05],  # Observe pos 0
+        [0.1, 0.8, 0.1, 0.0],  # Observe pos 1
+        [0.05, 0.1, 0.8, 0.05],  # Observe pos 2
+        [0.05, 0.0, 0.05, 0.9],  # Observe pos 3 (goal)
+    ]
+)
 
 # B Matrix: Deterministic transitions
 B = np.zeros((4, 4, 3))
 # Action 0: Left
-B[:, :, 0] = np.array([
-    [1, 1, 0, 0],
-    [0, 0, 1, 0],
-    [0, 0, 0, 1],
-    [0, 0, 0, 0],
-]).T
+B[:, :, 0] = np.array(
+    [
+        [1, 1, 0, 0],
+        [0, 0, 1, 0],
+        [0, 0, 0, 1],
+        [0, 0, 0, 0],
+    ]
+).T
 # ... (similar for Right, Stay)
 
 # C Vector: Prefer goal state

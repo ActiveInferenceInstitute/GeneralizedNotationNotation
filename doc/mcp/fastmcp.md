@@ -58,16 +58,18 @@ from fastmcp import FastMCP
 
 mcp = FastMCP("Demo Server 🚀")
 
+
 @mcp.tool()
 def add(a: int, b: int) -> int:
     """Add two numbers"""
     return a + b
 
+
 @mcp.tool()
 async def calculate_entropy(data: list[float]) -> float:
     """Computes Shannon entropy of numerical data."""
     # ... implementation ...
-    return sum(data) # Minimal runnable example
+    return sum(data)  # Minimal runnable example
 ```
 
 ### 2. Resources
@@ -77,16 +79,21 @@ Resources are data endpoints that an LLM can query to retrieve information.
 * Supports static and templated URIs for dynamic resource access [1, 2].
 
 ```python
-from fastmcp import FastMCP # Assuming mcp is an instance of FastMCP
+from fastmcp import FastMCP  # Assuming mcp is an instance of FastMCP
 # from db_setup import db, User # Project-specific database setup
 
 mcp = FastMCP("Resource Demo Server")
+
 
 @mcp.resource("users://{id}/profile")
 def get_user_profile(id: str) -> dict:
     """Retrieves a user's profile by their ID."""
     # return db.query(User).filter(User.id == id).first().__dict__ # Example
-    return {"id": id, "name": "Jane Doe", "email": "jane@example.com"} # Example response
+    return {
+        "id": id,
+        "name": "Jane Doe",
+        "email": "jane@example.com",
+    }  # Example response
 ```
 
 ### 3. Prompts
@@ -96,10 +103,11 @@ Prompts are reusable message templates that can guide LLM interactions.
 * Prompts can be dynamically generated using function parameters [1, 2].
 
 ```python
-from fastmcp import FastMCP # Assuming mcp is an instance of FastMCP
-import pandas as pd # Assuming pandas is used
+from fastmcp import FastMCP  # Assuming mcp is an instance of FastMCP
+import pandas as pd  # Assuming pandas is used
 
 mcp = FastMCP("Prompt Demo Server")
+
 
 @mcp.prompt()
 def generate_analysis_prompt(data: pd.DataFrame, focus_metric: str) -> str:
@@ -121,6 +129,7 @@ import asyncio
 
 mcp = FastMCP("Context Demo Server")
 
+
 @mcp.tool()
 async def process_data_with_context(uri: str, ctx: Context):
     """
@@ -134,17 +143,20 @@ async def process_data_with_context(uri: str, ctx: Context):
     # content_to_summarize = data_resource.content[:500] # Assuming text content
 
     # For demonstration, using a static resource string
-    content_to_summarize = "This is some sample data that needs to be summarized by the LLM."
-    
+    content_to_summarize = (
+        "This is some sample data that needs to be summarized by the LLM."
+    )
+
     await ctx.info(f"Content to summarize: {content_to_summarize}")
 
     # Ask client LLM to summarize the data
-    summary_response = await ctx.sample(f"Please summarize the following text: {content_to_summarize}")
-    
+    summary_response = await ctx.sample(
+        f"Please summarize the following text: {content_to_summarize}"
+    )
+
     await ctx.info(f"LLM summary: {summary_response.text}")
 
     return {"summary": summary_response.text, "original_uri": uri}
-
 ```
 
 ---
@@ -162,15 +174,17 @@ from fastmcp import FastMCP
 
 mcp_stdio = FastMCP("My Local Server STDIO")
 
+
 @mcp_stdio.tool()
 def greet_stdio(name: str) -> str:
     return f"Hello, {name}!"
+
 
 if __name__ == "__main__":
     # This condition is for making the example runnable.
     # In a real setup, you'd likely pick one way to run.
     print("Running STDIO server example. Call greet_stdio tool.")
-    mcp_stdio.run() # Defaults to transport="stdio"
+    mcp_stdio.run()  # Defaults to transport="stdio"
     # or explicitly: mcp_stdio.run(transport="stdio")
 ```
 
@@ -183,9 +197,11 @@ from fastmcp import FastMCP
 
 mcp_http = FastMCP("My HTTP Server")
 
+
 @mcp_http.tool()
 def greet_http(name: str) -> str:
     return f"Hello from HTTP server, {name}!"
+
 
 # Expose the ASGI app for Uvicorn or other ASGI servers
 app = mcp_http.build_asgi_app()
@@ -214,9 +230,11 @@ from fastmcp import FastMCP
 
 mcp_sse = FastMCP("My SSE Server")
 
+
 @mcp_sse.tool()
 def greet_sse(name: str) -> str:
     return f"Hello from SSE server, {name}!"
+
 
 if __name__ == "__main__":
     print("Running SSE server example on http://127.0.0.1:8000")
@@ -250,9 +268,12 @@ import asyncio
 # This would typically be in a separate my_server.py file
 # For this example, we define it here for self-contained execution.
 client_test_mcp = FastMCP("ClientTestServer")
+
+
 @client_test_mcp.tool()
 def add_for_client(a: int, b: int) -> int:
     return a + b
+
 
 async def interact_with_server():
     # Example 1: Connecting via stdio to a conceptual local script
@@ -260,7 +281,7 @@ async def interact_with_server():
     # Here, we'll simulate it by passing the mcp instance directly for an in-memory example later
     print("\n--- STDIO Client Example (Simulated In-Memory) ---")
     # This shows the pattern; for true stdio, use: Client("python my_server.py")
-    async with Client(client_test_mcp) as local_client: # Simulating with in-memory
+    async with Client(client_test_mcp) as local_client:  # Simulating with in-memory
         tools_response = await local_client.list_tools()
         print(f"Available tools: {[tool.name for tool in tools_response.tools]}")
         if "add_for_client" in [tool.name for tool in tools_response.tools]:
@@ -281,6 +302,7 @@ async def interact_with_server():
     #     print(f"Could not connect to HTTP server at http://localhost:8000/mcp: {e}")
     #     print("Ensure the HTTP FastMCP server is running.")
 
+
 if __name__ == "__main__":
     # To run the client example:
     # 1. Ensure the `client_test_mcp` server part can be accessed (it's in-memory here).
@@ -295,20 +317,26 @@ The client allows for efficient in-memory testing of your servers by connecting 
 ```python
 from fastmcp import FastMCP, Client
 import asyncio
-import pytest # For test structure
+import pytest  # For test structure
 
 # Define a simple server for testing
 test_mcp_server_instance = FastMCP("TestServerForClientInMemory")
+
+
 @test_mcp_server_instance.tool()
 def echo_tool(message: str) -> str:
     return f"Server echoes: {message}"
 
+
 @pytest.mark.asyncio
 async def test_in_memory_client_interaction():
     async with Client(test_mcp_server_instance) as client:  # In-memory transport
-        response = await client.call_tool("echo_tool", {"message": "Hello, in-memory test!"})
+        response = await client.call_tool(
+            "echo_tool", {"message": "Hello, in-memory test!"}
+        )
         assert response.text == "Server echoes: Hello, in-memory test!"
         print("In-memory test passed successfully via pytest.")
+
 
 # To run this test, you would typically use pytest:
 # $ pytest your_test_file.py
@@ -317,12 +345,13 @@ async def test_in_memory_client_interaction():
 async def main_run_test():
     await test_in_memory_client_interaction()
 
+
 if __name__ == "__main__":
     # This will run the test if the file is executed directly.
     # For proper testing, use pytest.
     # print("Running in-memory test directly (for demo):")
     # asyncio.run(main_run_test())
-    pass # Pytest will discover and run the test
+    pass  # Pytest will discover and run the test
 ```
 
 ---

@@ -34,10 +34,15 @@ python src/main.py --only-steps 10 --verbose
 
 ```python
 from ontology import (
-    process_ontology, parse_gnn_ontology_section, process_gnn_ontology,
-    load_defined_ontology_terms, validate_annotations,
-    generate_ontology_report_for_file, parse_annotation,
-    OntologyProcessor, OntologyValidator
+    process_ontology,
+    parse_gnn_ontology_section,
+    process_gnn_ontology,
+    load_defined_ontology_terms,
+    validate_annotations,
+    generate_ontology_report_for_file,
+    parse_annotation,
+    OntologyProcessor,
+    OntologyValidator,
 )
 
 # Process ontology section from GNN content

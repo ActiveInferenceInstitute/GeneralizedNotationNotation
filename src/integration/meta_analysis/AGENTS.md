@@ -78,9 +78,9 @@ Written next to `meta_analysis_report.md`:
 class SweepRecord:
     model_name: str
     framework: str
-    num_states: Optional[int]       # N dimension
-    num_timesteps: Optional[int]    # T dimension
-    execution_time: float           # seconds
+    num_states: Optional[int]  # N dimension
+    num_timesteps: Optional[int]  # T dimension
+    execution_time: float  # seconds
     success: bool
     timed_out: bool
     final_accuracy: Optional[float]

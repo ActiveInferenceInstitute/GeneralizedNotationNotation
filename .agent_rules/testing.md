@@ -8,6 +8,7 @@
 # ✅ CORRECT — always sys.path.insert then direct imports
 import sys
 from pathlib import Path
+
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from gnn import discover_gnn_files, parse_gnn_file
@@ -26,9 +27,12 @@ from src.gnn import discover_gnn_files
 ```python
 #!/usr/bin/env python3
 """Tests for module_name."""
+
 import pytest, sys
 from pathlib import Path
+
 sys.path.insert(0, str(Path(__file__).parent.parent))
+
 
 class TestModuleImports:
     @pytest.mark.unit
@@ -36,15 +40,19 @@ class TestModuleImports:
     def test_import_module(self):
         try:
             import module_name
+
             assert hasattr(module_name, "__version__")
             assert hasattr(module_name, "FEATURES")
         except ImportError:
             pytest.skip("Module not available")
 
+
 class TestModuleFunctionality:
     @pytest.fixture
     def temp_output(self, tmp_path):
-        out = tmp_path / "output"; out.mkdir(); return out
+        out = tmp_path / "output"
+        out.mkdir()
+        return out
 
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
@@ -52,6 +60,7 @@ class TestModuleFunctionality:
         try:
             from module_name import process_main_function
             import logging
+
             result = process_main_function(
                 target_dir=Path("input/gnn_files"),
                 output_dir=temp_output,
@@ -61,12 +70,14 @@ class TestModuleFunctionality:
         except ImportError:
             pytest.skip("Module not available")
 
+
 class TestModuleMCP:
     @pytest.mark.integration
     @pytest.mark.safe_to_fail
     def test_mcp_tools_registered(self):
         try:
             from module_name.mcp import register_tools
+
             assert callable(register_tools)
         except ImportError:
             pytest.skip("MCP not available")
@@ -102,6 +113,7 @@ def test_optional_functionality(self):
     """Test optional feature with graceful skip."""
     try:
         from module_name import optional_function
+
         result = optional_function()
         assert result is not None
     except ImportError:

@@ -70,6 +70,7 @@ All tests must use real implementations and representative data.
 def test_with_substitution(patched_fn):
     patched_fn.return_value = simulated_result
 
+
 # ✅ REQUIRED
 def test_with_real_data():
     result = real_function(real_input)

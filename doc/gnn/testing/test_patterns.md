@@ -47,10 +47,11 @@ def test_audio_backend():
     assert isinstance(result, dict)
     assert "available" in result  # may report "unavailable" — that is a valid answer
 
+
 # ❌ WRONG — substitute the dependency
 @patch("audio.backends.soundfile", None)
-def test_audio_backend_missing():
-    ...
+def test_audio_backend_missing(): ...
+
 
 # ❌ WRONG — the zero-skip contract fails on this token
 def test_audio_backend_optional():
@@ -124,7 +125,7 @@ the fixture file without disturbing the repository.
 class ResourceMonitor:
     def start_monitoring(self): ...  # spins up a thread tracking memory/CPU
     def stop_monitoring(self): ...
-    def get_stats(self) -> dict:     # returns {"peak_memory_mb": float, "avg_cpu": float}
+    def get_stats(self) -> dict:  # returns {"peak_memory_mb": float, "avg_cpu": float}
         ...
 ```
 
@@ -151,7 +152,7 @@ def test_export_format(export_format, tmp_path, sample_gnn_file):
 result = process_validation(gnn_dir, output_dir, logger)
 assert result is True, f"process_validation returned {result!r} — check {output_dir}"
 
-# ❌ Bad — silent failure 
+# ❌ Bad — silent failure
 assert process_validation(gnn_dir, output_dir, logger)
 ```
 

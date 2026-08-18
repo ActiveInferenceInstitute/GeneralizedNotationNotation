@@ -132,20 +132,17 @@ All module processing functions follow this pattern:
 
 ```python
 def process_module(
-    target_dir: Path,
-    output_dir: Path,
-    verbose: bool = False,
-    **kwargs
+    target_dir: Path, output_dir: Path, verbose: bool = False, **kwargs
 ) -> bool:
     """
     Main processing function for module.
-    
+
     Parameters:
         target_dir: Directory containing input files
         output_dir: Directory for output files
         verbose: Enable verbose logging
         **kwargs: Additional module-specific options
-    
+
     Returns:
         True if processing succeeded, False otherwise
     """

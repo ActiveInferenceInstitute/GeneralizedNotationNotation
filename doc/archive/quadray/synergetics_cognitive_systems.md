@@ -252,24 +252,22 @@ class QuadrayCognitiveAgent:
         self.state = QuadrayState([0.25, 0.25, 0.25, 0.25])
         self.memory = TetrahedralMemory()
         self.attention = QuadrayAttention()
-        
+
     def process(self, input_data):
         # Tetrahedral sensory processing
         sensory_state = self.encode_sensory(input_data)
-        
-        # Memory retrieval in Quadray space  
+
+        # Memory retrieval in Quadray space
         memory_activation = self.memory.retrieve(sensory_state)
-        
+
         # Attention allocation
-        attention_weights = self.attention.allocate(
-            sensory_state, memory_activation
-        )
-        
+        attention_weights = self.attention.allocate(sensory_state, memory_activation)
+
         # Integrated cognitive state
         new_state = self.integrate_tetrahedral(
             sensory_state, memory_activation, attention_weights
         )
-        
+
         return new_state
 ```
 

@@ -89,7 +89,7 @@ success = process_ontology(
     target_dir=Path("input/gnn_files"),
     output_dir=Path("output/10_ontology_output"),
     ontology_terms_file=Path("src/ontology/act_inf_ontology_terms.json"),
-    strict_validation=True
+    strict_validation=True,
 )
 ```
 
@@ -186,7 +186,7 @@ from ontology import process_ontology
 success = process_ontology(
     target_dir=Path("input/gnn_files"),
     output_dir=Path("output/10_ontology_output"),
-    ontology_terms_file=Path("src/ontology/act_inf_ontology_terms.json")
+    ontology_terms_file=Path("src/ontology/act_inf_ontology_terms.json"),
 )
 ```
 

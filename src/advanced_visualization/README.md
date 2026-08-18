@@ -117,9 +117,7 @@ from advanced_visualization.dashboard import DashboardGenerator
 
 generator = DashboardGenerator(strict_validation=True)
 dashboard_path = generator.generate_dashboard(
-    content=gnn_content,
-    model_name="my_model",
-    output_dir=Path("output/")
+    content=gnn_content, model_name="my_model", output_dir=Path("output/")
 )
 ```
 
@@ -197,7 +195,7 @@ generated_files = visualizer.generate_visualizations(
     model_name="my_model",
     output_dir=Path("output/"),
     viz_type="all",
-    interactive=True
+    interactive=True,
 )
 ```
 

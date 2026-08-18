@@ -17,6 +17,7 @@ Provide Language Server Protocol support for GNN files, enabling real-time valid
 def create_server() -> Optional[LanguageServer]:
     """Create a configured LSP server. Returns None if pygls unavailable."""
 
+
 def start_server() -> None:
     """Start the LSP server on stdio."""
 ```

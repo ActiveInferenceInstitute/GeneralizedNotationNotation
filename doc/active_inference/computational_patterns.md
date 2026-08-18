@@ -21,20 +21,20 @@ This document describes common computational patterns used in Active Inference i
 def belief_update(prior, likelihood, observation, num_iters=16):
     """Iterative belief update via VFE minimization."""
     Q = prior.copy()
-    
+
     for _ in range(num_iters):
         # Likelihood contribution
         ln_A = np.log(likelihood[observation, :] + 1e-10)
-        
-        # Prior contribution  
+
+        # Prior contribution
         ln_prior = np.log(prior + 1e-10)
-        
+
         # Combine (in log space)
         ln_Q = ln_A + ln_prior
-        
+
         # Normalize
         Q = softmax(ln_Q)
-    
+
     return Q
 ```
 
@@ -84,13 +84,13 @@ def forward(A, B, D, observations):
     """Compute filtered beliefs."""
     T = len(observations)
     Q = [None] * T
-    
+
     Q[0] = normalize(A[observations[0], :] * D)
-    
+
     for t in range(1, T):
-        Q_pred = B @ Q[t-1]
+        Q_pred = B @ Q[t - 1]
         Q[t] = normalize(A[observations[t], :] * Q_pred)
-    
+
     return Q
 ```
 
@@ -101,12 +101,12 @@ def backward(A, B, Q_fwd, observations):
     """Compute smoothed beliefs."""
     T = len(observations)
     Q = Q_fwd.copy()
-    
-    for t in range(T-2, -1, -1):
+
+    for t in range(T - 2, -1, -1):
         Q_pred = B @ Q_fwd[t]
-        backward_msg = B.T @ (Q[t+1] / (Q_pred + 1e-10))
+        backward_msg = B.T @ (Q[t + 1] / (Q_pred + 1e-10))
         Q[t] = normalize(Q_fwd[t] * backward_msg)
-    
+
     return Q
 ```
 
@@ -122,6 +122,7 @@ def update_concentration(a, Q_s, observation, learning_rate=1.0):
     a_new = a.copy()
     a_new[observation, :] += learning_rate * Q_s
     return a_new
+
 
 def concentration_to_probability(a):
     """Convert concentration to probability matrix."""

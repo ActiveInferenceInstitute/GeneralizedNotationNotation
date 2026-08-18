@@ -103,12 +103,14 @@ G = bn.plot(model)
 #### Highly Configurable Structure Learning Methods
 ```python
 # Structure Learning algorithms with diverse scoring methodologies
-model_hc_bic  = bn.structure_learning.fit(df, methodtype='hc', scoretype='bic')
-model_hc_k2   = bn.structure_learning.fit(df, methodtype='hc', scoretype='k2')
-model_hc_bdeu = bn.structure_learning.fit(df, methodtype='hc', scoretype='bdeu')
-model_ex_bic  = bn.structure_learning.fit(df, methodtype='ex', scoretype='bic')
-model_cl      = bn.structure_learning.fit(df, methodtype='cl', root_node='Wet_Grass')
-model_tan     = bn.structure_learning.fit(df, methodtype='tan', root_node='Wet_Grass', class_node='Rain')
+model_hc_bic = bn.structure_learning.fit(df, methodtype="hc", scoretype="bic")
+model_hc_k2 = bn.structure_learning.fit(df, methodtype="hc", scoretype="k2")
+model_hc_bdeu = bn.structure_learning.fit(df, methodtype="hc", scoretype="bdeu")
+model_ex_bic = bn.structure_learning.fit(df, methodtype="ex", scoretype="bic")
+model_cl = bn.structure_learning.fit(df, methodtype="cl", root_node="Wet_Grass")
+model_tan = bn.structure_learning.fit(
+    df, methodtype="tan", root_node="Wet_Grass", class_node="Rain"
+)
 ```
 
 ### 2. Functional Parameter Learning
@@ -121,7 +123,7 @@ import bnlearn as bn
 df = bn.import_example()
 
 # Instantiate an 'empty' DAG architecture
-model = bn.import_DAG('sprinkler', CPD=False)
+model = bn.import_DAG("sprinkler", CPD=False)
 
 # Confidently learn parameters using the data framework
 model_update = bn.parameter_learning.fit(model, df)
@@ -138,23 +140,17 @@ Conducting robust queries applying specific evidence parameters.
 import bnlearn as bn
 
 # Import established model
-model = bn.import_DAG('sprinkler')
+model = bn.import_DAG("sprinkler")
 
 # Query 1: Evaluate Rain probability given evidence
 query_1 = bn.inference.fit(
-    model, 
-    variables=['Rain'], 
-    evidence={'Cloudy': 1, 'Sprinkler': 0, 'Wet_Grass': 1}
+    model, variables=["Rain"], evidence={"Cloudy": 1, "Sprinkler": 0, "Wet_Grass": 1}
 )
 print("Query 1 Output:", query_1)
 print("Dataframe Record:\n", query_1.df)
 
 # Query 2: Evaluate Rain probability with reduced causal evidence
-query_2 = bn.inference.fit(
-    model, 
-    variables=['Rain'], 
-    evidence={'Cloudy': 1}
-)
+query_2 = bn.inference.fit(model, variables=["Rain"], evidence={"Cloudy": 1})
 print("\nQuery 2 Output:", query_2)
 print("Dataframe Record:\n", query_2.df)
 ```

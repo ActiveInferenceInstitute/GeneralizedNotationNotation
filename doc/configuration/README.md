@@ -539,8 +539,8 @@ cfg = config.load_config("config.yaml")
 
 # Modify based on runtime conditions
 if model_size > 10000:
-    cfg['validation']['strict_mode'] = False
-    cfg['visualization']['max_nodes'] = 50
+    cfg["validation"]["strict_mode"] = False
+    cfg["visualization"]["max_nodes"] = 50
 
 # Apply modified config
 config.apply_config(cfg)

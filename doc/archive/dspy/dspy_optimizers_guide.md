@@ -52,20 +52,16 @@ All optimizers require:
 ```python
 import dspy
 
+
 # Basic optimizer setup pattern
 def my_metric(example, prediction, trace=None):
     """Score the prediction quality."""
     return prediction.answer == example.expected_answer
 
-optimizer = dspy.MIPROv2(
-    metric=my_metric,
-    num_candidates=10
-)
 
-optimized_program = optimizer.compile(
-    student=my_program,
-    trainset=training_examples
-)
+optimizer = dspy.MIPROv2(metric=my_metric, num_candidates=10)
+
+optimized_program = optimizer.compile(student=my_program, trainset=training_examples)
 ```
 
 ---
@@ -111,22 +107,22 @@ from dspy.teleprompt import MIPROv2
 
 optimizer = MIPROv2(
     metric=my_metric,
-    num_candidates=10,          # Number of instruction candidates
-    init_temperature=1.0,       # Initial sampling temperature
-    prompt_model=None,          # LM for generating instructions (default: same as student)
-    task_model=None,            # LM for task execution (default: same as student)
-    num_threads=6,              # Parallel evaluation threads
-    max_bootstrapped_demos=4,   # Max demos per prompt
-    max_labeled_demos=16,       # Max labeled examples to use
-    verbose=True
+    num_candidates=10,  # Number of instruction candidates
+    init_temperature=1.0,  # Initial sampling temperature
+    prompt_model=None,  # LM for generating instructions (default: same as student)
+    task_model=None,  # LM for task execution (default: same as student)
+    num_threads=6,  # Parallel evaluation threads
+    max_bootstrapped_demos=4,  # Max demos per prompt
+    max_labeled_demos=16,  # Max labeled examples to use
+    verbose=True,
 )
 
 optimized = optimizer.compile(
     student=my_program,
     trainset=trainset,
-    num_trials=50,              # Number of Bayesian trials
-    minibatch_size=25,          # Evaluation batch size
-    minibatch_full_eval_steps=10  # Full eval frequency
+    num_trials=50,  # Number of Bayesian trials
+    minibatch_size=25,  # Evaluation batch size
+    minibatch_full_eval_steps=10,  # Full eval frequency
 )
 ```
 
@@ -157,16 +153,13 @@ from dspy.teleprompt import BootstrapFewShot
 
 optimizer = BootstrapFewShot(
     metric=my_metric,
-    max_bootstrapped_demos=4,   # Max synthetic demos
-    max_labeled_demos=4,        # Max labeled demos from trainset
-    max_rounds=1,               # Bootstrap iterations
-    max_errors=5                # Max errors before stopping
+    max_bootstrapped_demos=4,  # Max synthetic demos
+    max_labeled_demos=4,  # Max labeled demos from trainset
+    max_rounds=1,  # Bootstrap iterations
+    max_errors=5,  # Max errors before stopping
 )
 
-optimized = optimizer.compile(
-    student=my_program,
-    trainset=trainset
-)
+optimized = optimizer.compile(student=my_program, trainset=trainset)
 ```
 
 **Best For**:
@@ -188,13 +181,10 @@ optimizer = BootstrapFewShotWithRandomSearch(
     max_bootstrapped_demos=4,
     max_labeled_demos=4,
     num_candidate_programs=16,  # Number of random configurations
-    num_threads=6
+    num_threads=6,
 )
 
-optimized = optimizer.compile(
-    student=my_program,
-    trainset=trainset
-)
+optimized = optimizer.compile(student=my_program, trainset=trainset)
 ```
 
 ---
@@ -214,15 +204,15 @@ from dspy.teleprompt import BootstrapFinetune
 
 optimizer = BootstrapFinetune(
     metric=my_metric,
-    multitask=False,            # Whether to fine-tune on multiple tasks
-    target='gpt-3.5-turbo'      # Target model for fine-tuning
+    multitask=False,  # Whether to fine-tune on multiple tasks
+    target="gpt-3.5-turbo",  # Target model for fine-tuning
 )
 
 # Note: This requires API access to fine-tuning endpoints
 optimized = optimizer.compile(
     student=my_program,
     trainset=trainset,
-    teacher=teacher_program     # Optional: use a stronger model as teacher
+    teacher=teacher_program,  # Optional: use a stronger model as teacher
 )
 ```
 
@@ -247,15 +237,9 @@ prompt_optimizer = MIPROv2(metric=my_metric)
 finetune_optimizer = BootstrapFinetune(metric=my_metric)
 
 # Combine them
-optimizer = BetterTogether(
-    prompt_optimizer,
-    finetune_optimizer
-)
+optimizer = BetterTogether(prompt_optimizer, finetune_optimizer)
 
-optimized = optimizer.compile(
-    student=my_program,
-    trainset=trainset
-)
+optimized = optimizer.compile(student=my_program, trainset=trainset)
 ```
 
 ---
@@ -271,7 +255,7 @@ optimizer = LabeledFewShot(k=4)  # Use 4 labeled examples
 
 optimized = optimizer.compile(
     student=my_program,
-    trainset=trainset  # Must have labels
+    trainset=trainset,  # Must have labels
 )
 ```
 
@@ -290,15 +274,13 @@ from dspy.teleprompt import COPRO
 
 optimizer = COPRO(
     metric=my_metric,
-    breadth=10,     # Number of instructions to sample
-    depth=3,        # Refinement iterations
-    init_temperature=1.4
+    breadth=10,  # Number of instructions to sample
+    depth=3,  # Refinement iterations
+    init_temperature=1.4,
 )
 
 optimized = optimizer.compile(
-    student=my_program,
-    trainset=trainset,
-    eval_kwargs={'num_threads': 4}
+    student=my_program, trainset=trainset, eval_kwargs={"num_threads": 4}
 )
 ```
 
@@ -336,25 +318,25 @@ def my_metric(example, prediction, trace=None):
 def composite_metric(example, prediction, trace=None):
     """Multi-criteria metric with weighted components."""
     scores = {}
-    
+
     # Correctness (50%)
-    scores['correctness'] = 1.0 if prediction.answer == example.expected else 0.0
-    
+    scores["correctness"] = 1.0 if prediction.answer == example.expected else 0.0
+
     # Conciseness (20%) - prefer shorter answers
     max_len = 200
-    scores['conciseness'] = max(0, 1 - len(prediction.answer) / max_len)
-    
+    scores["conciseness"] = max(0, 1 - len(prediction.answer) / max_len)
+
     # Reasoning quality (30%) - check for reasoning steps
-    if hasattr(prediction, 'reasoning'):
-        scores['reasoning'] = min(1.0, len(prediction.reasoning.split('.')) / 5)
+    if hasattr(prediction, "reasoning"):
+        scores["reasoning"] = min(1.0, len(prediction.reasoning.split(".")) / 5)
     else:
-        scores['reasoning'] = 0.0
-    
+        scores["reasoning"] = 0.0
+
     # Weighted combination
     return (
-        0.5 * scores['correctness'] +
-        0.2 * scores['conciseness'] +
-        0.3 * scores['reasoning']
+        0.5 * scores["correctness"]
+        + 0.2 * scores["conciseness"]
+        + 0.3 * scores["reasoning"]
     )
 ```
 
@@ -364,15 +346,15 @@ def composite_metric(example, prediction, trace=None):
 def llm_judge_metric(example, prediction, trace=None):
     """Use an LLM to evaluate quality."""
     judge = dspy.ChainOfThought(
-        'question, expected_answer, actual_answer -> score: float, reasoning'
+        "question, expected_answer, actual_answer -> score: float, reasoning"
     )
-    
+
     result = judge(
         question=example.question,
         expected_answer=example.expected_answer,
-        actual_answer=prediction.answer
+        actual_answer=prediction.answer,
     )
-    
+
     return result.score
 ```
 
@@ -387,11 +369,12 @@ class GNNObservationParser(dspy.Module):
     def __init__(self):
         super().__init__()
         self.parse = dspy.ChainOfThought(
-            'user_input, gnn_schema -> symbolic_observation'
+            "user_input, gnn_schema -> symbolic_observation"
         )
-    
+
     def forward(self, user_input, gnn_schema):
         return self.parse(user_input=user_input, gnn_schema=gnn_schema)
+
 
 # Metric: Check if output is valid GNN syntax
 def gnn_syntax_metric(example, prediction, trace=None):
@@ -399,32 +382,30 @@ def gnn_syntax_metric(example, prediction, trace=None):
     try:
         # Try to parse as GNN
         is_valid = validate_gnn_syntax(prediction.symbolic_observation)
-        
+
         # Check semantic correctness
         matches_expected = (
             prediction.symbolic_observation == example.expected_observation
         )
-        
+
         return 0.5 * is_valid + 0.5 * matches_expected
     except Exception:
         return 0.0
+
 
 # Training data
 trainset = [
     dspy.Example(
         user_input="I see a wall ahead",
         gnn_schema="o[wall]: bool, o[distance]: float",
-        expected_observation="o[wall]=true, o[distance]=1.0"
-    ).with_inputs('user_input', 'gnn_schema')
+        expected_observation="o[wall]=true, o[distance]=1.0",
+    ).with_inputs("user_input", "gnn_schema")
     for _ in examples
 ]
 
 # Optimize
 optimizer = MIPROv2(metric=gnn_syntax_metric)
-optimized_parser = optimizer.compile(
-    student=GNNObservationParser(),
-    trainset=trainset
-)
+optimized_parser = optimizer.compile(student=GNNObservationParser(), trainset=trainset)
 ```
 
 ### Optimizing Policy Evaluation
@@ -432,29 +413,28 @@ optimized_parser = optimizer.compile(
 ```python
 class PolicyEvaluator(dspy.Module):
     """Evaluate policy semantic alignment with goals."""
-    
+
     def __init__(self):
         super().__init__()
         self.evaluate = dspy.ChainOfThought(
-            'policy_description, predicted_outcomes, user_goal -> alignment_score: float, reasoning'
+            "policy_description, predicted_outcomes, user_goal -> alignment_score: float, reasoning"
         )
-    
+
     def forward(self, policy, outcomes, goal):
         return self.evaluate(
-            policy_description=policy,
-            predicted_outcomes=outcomes,
-            user_goal=goal
+            policy_description=policy, predicted_outcomes=outcomes, user_goal=goal
         )
+
 
 def policy_metric(example, prediction, trace=None):
     """Measure how well the evaluator matches human judgments."""
     score_diff = abs(prediction.alignment_score - example.human_score)
     return 1.0 - min(1.0, score_diff)  # Penalize deviation
 
+
 optimizer = MIPROv2(metric=policy_metric, num_candidates=15)
 optimized_evaluator = optimizer.compile(
-    student=PolicyEvaluator(),
-    trainset=policy_trainset
+    student=PolicyEvaluator(), trainset=policy_trainset
 )
 ```
 
@@ -488,7 +468,9 @@ best_instructions = optimized_big.signature.instructions
 # Apply to smaller model
 with dspy.context(lm=llama_7b):
     small_program = my_program.reset_copy()
-    small_program.signature = small_program.signature.with_instructions(best_instructions)
+    small_program.signature = small_program.signature.with_instructions(
+        best_instructions
+    )
 ```
 
 ### Ensemble Optimization
@@ -516,35 +498,36 @@ ensemble_program = ensemble.compile(candidates)
 
 ```python
 def estimate_optimization_cost(
-    optimizer_type: str,
-    trainset_size: int,
-    num_trials: int = 50,
-    model: str = 'gpt-4o'
+    optimizer_type: str, trainset_size: int, num_trials: int = 50, model: str = "gpt-4o"
 ) -> dict:
     """Estimate optimization cost."""
-    
+
     # Approximate costs per 1K tokens (adjust as needed)
     costs = {
-        'gpt-4o': {'input': 0.0025, 'output': 0.01},
-        'gpt-3.5-turbo': {'input': 0.0005, 'output': 0.0015}
+        "gpt-4o": {"input": 0.0025, "output": 0.01},
+        "gpt-3.5-turbo": {"input": 0.0005, "output": 0.0015},
     }
-    
-    model_cost = costs.get(model, costs['gpt-4o'])
-    
-    if optimizer_type == 'MIPROv2':
+
+    model_cost = costs.get(model, costs["gpt-4o"])
+
+    if optimizer_type == "MIPROv2":
         # Rough estimation
         total_calls = trainset_size * 3 + num_trials * trainset_size * 0.5
         avg_tokens = 1000
-        estimated_cost = total_calls * avg_tokens * (model_cost['input'] + model_cost['output']) / 1000
-        
-    elif optimizer_type == 'BootstrapFewShot':
+        estimated_cost = (
+            total_calls
+            * avg_tokens
+            * (model_cost["input"] + model_cost["output"])
+            / 1000
+        )
+
+    elif optimizer_type == "BootstrapFewShot":
         total_calls = trainset_size * 2
-        estimated_cost = total_calls * 500 * (model_cost['input'] + model_cost['output']) / 1000
-    
-    return {
-        'estimated_cost_usd': estimated_cost,
-        'estimated_calls': total_calls
-    }
+        estimated_cost = (
+            total_calls * 500 * (model_cost["input"] + model_cost["output"]) / 1000
+        )
+
+    return {"estimated_cost_usd": estimated_cost, "estimated_calls": total_calls}
 ```
 
 ### Budget-Constrained Optimization
@@ -562,7 +545,7 @@ if baseline_score < 0.8:
     expensive_optimizer = MIPROv2(
         metric=my_metric,
         num_candidates=5,  # Reduced from default
-        num_trials=20      # Reduced budget
+        num_trials=20,  # Reduced budget
     )
     optimized = expensive_optimizer.compile(my_program, trainset)
 else:
@@ -595,19 +578,17 @@ mlflow.set_experiment("DSPy-Optimization")
 
 with mlflow.start_run():
     optimizer = MIPROv2(metric=my_metric, verbose=True)
-    
+
     # Log parameters
-    mlflow.log_params({
-        'optimizer': 'MIPROv2',
-        'num_candidates': 10,
-        'trainset_size': len(trainset)
-    })
-    
+    mlflow.log_params(
+        {"optimizer": "MIPROv2", "num_candidates": 10, "trainset_size": len(trainset)}
+    )
+
     optimized = optimizer.compile(my_program, trainset)
-    
+
     # Evaluate and log
     score = evaluate(optimized, devset)
-    mlflow.log_metric('dev_score', score)
+    mlflow.log_metric("dev_score", score)
 ```
 
 ---
@@ -632,9 +613,9 @@ Always evaluate on separate dev/test sets.
 
 ### 5. Save Optimized Programs
 ```python
-optimized.save('optimized_program.json')
+optimized.save("optimized_program.json")
 loaded = MyProgram()
-loaded.load('optimized_program.json')
+loaded.load("optimized_program.json")
 ```
 
 ---

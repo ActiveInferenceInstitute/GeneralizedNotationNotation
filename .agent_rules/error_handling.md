@@ -40,6 +40,7 @@ def safe_to_fail_step(target_dir: Path, output_dir: Path, logger) -> bool:
 
     return True  # ALWAYS True — never stop the pipeline
 
+
 def main() -> int:
     """Entry point — always returns 0 for safe-to-fail steps."""
     try:
@@ -70,8 +71,11 @@ def process_with_explicit_status(model: Dict[str, Any]) -> ExecutionResult:
                 logger.warning(f"{name} failed: {e}")
 
     logger.error("No requested framework executed")
-    return ExecutionResult(success=False, executed=False,
-                          message="No requested framework executed; see dependency diagnostics")
+    return ExecutionResult(
+        success=False,
+        executed=False,
+        message="No requested framework executed; see dependency diagnostics",
+    )
 ```
 
 ---
@@ -95,8 +99,10 @@ def process_with_explicit_status(model: Dict[str, Any]) -> ExecutionResult:
 import time
 from functools import wraps
 
+
 def with_retry(max_retries: int = 3, base_delay: float = 1.0):
     """Retry decorator with exponential backoff."""
+
     def decorator(func):
         @wraps(func)
         def wrapper(*args, **kwargs):
@@ -106,10 +112,14 @@ def with_retry(max_retries: int = 3, base_delay: float = 1.0):
                 except Exception as e:
                     if attempt == max_retries - 1:
                         raise
-                    delay = base_delay * (2 ** attempt)
-                    logger.warning(f"Attempt {attempt+1} failed: {e}. Retrying in {delay}s")
+                    delay = base_delay * (2**attempt)
+                    logger.warning(
+                        f"Attempt {attempt + 1} failed: {e}. Retrying in {delay}s"
+                    )
                     time.sleep(delay)
+
         return wrapper
+
     return decorator
 ```
 
@@ -124,8 +134,8 @@ logger.error(
     extra={
         "error_type": type(e).__name__,
         "file": str(file_path),
-        "suggestion": "Verify GNN file format (see gnn_standards.md)"
-    }
+        "suggestion": "Verify GNN file format (see gnn_standards.md)",
+    },
 )
 ```
 
@@ -135,11 +145,11 @@ logger.error(
 
 ```python
 STEP_TIMEOUTS = {
-    "fast": 30,          # parse, validate, export
-    "standard": 120,     # render, ontology, registry
-    "slow": 600,         # tests, execute
-    "llm": 360,          # LLM processing
-    "visualization": 180,# viz generation
+    "fast": 30,  # parse, validate, export
+    "standard": 120,  # render, ontology, registry
+    "slow": 600,  # tests, execute
+    "llm": 360,  # LLM processing
+    "visualization": 180,  # viz generation
 }
 
 # Environment override: STEP_TIMEOUT_RENDER=60 python src/11_render.py

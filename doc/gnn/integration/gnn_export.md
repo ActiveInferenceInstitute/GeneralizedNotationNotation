@@ -139,7 +139,7 @@ from export.format_exporters import (
     export_to_graphml,
     export_to_json_adjacency_list,
     export_to_plaintext_summary,
-    export_to_plaintext_dsl
+    export_to_plaintext_dsl,
 )
 
 gnn_model = _gnn_model_to_dict("input/gnn_files/model.md")

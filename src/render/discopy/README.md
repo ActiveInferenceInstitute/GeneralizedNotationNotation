@@ -74,10 +74,7 @@ graph TD
 ```python
 from render.discopy import generate_discopy_code
 
-code = generate_discopy_code(
-    model_data=parsed_gnn_model,
-    output_path="output.py"
-)
+code = generate_discopy_code(model_data=parsed_gnn_model, output_path="output.py")
 ```
 
 ## Output

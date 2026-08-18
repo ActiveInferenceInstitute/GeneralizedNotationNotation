@@ -99,21 +99,21 @@ from ontology.processor import load_defined_ontology_terms
 def gnn_to_mermaid(gnn_model: ParsedGNN, include_metadata: bool = True) -> str:
     """
     Convert parsed GNN model to Mermaid flowchart format.
-    
+
     Args:
         gnn_model: Parsed GNN model from gnn.parser
         include_metadata: Include oxdraw-compatible metadata in comments
-        
+
     Returns:
         Mermaid flowchart string with embedded GNN metadata
     """
     lines = []
-    
+
     # Header with model metadata
     lines.append(f"flowchart TD")
     lines.append(f"    %% GNN Model: {gnn_model.model_name}")
     lines.append(f"    %% GNN Version: {gnn_model.version}")
-    
+
     if include_metadata:
         # Embed full GNN specification as JSON in comment
         metadata = {
@@ -121,42 +121,42 @@ def gnn_to_mermaid(gnn_model: ParsedGNN, include_metadata: bool = True) -> str:
             "variables": _serialize_variables(gnn_model.variables),
             "connections": _serialize_connections(gnn_model.connections),
             "parameters": gnn_model.parameters,
-            "ontology_mappings": _serialize_ontology(gnn_model.ontology_mappings)
+            "ontology_mappings": _serialize_ontology(gnn_model.ontology_mappings),
         }
         lines.append(f"    %% GNN_METADATA: {json.dumps(metadata)}")
-    
+
     # Generate nodes from variables
     for var_name, var_data in gnn_model.variables.items():
         node_shape = _infer_node_shape(var_name, var_data)
         node_label = _generate_node_label(var_name, var_data)
         lines.append(f"    {var_name}{node_shape}")
-        
+
         # Add ontology annotation as comment
-        if var_data.get('ontology_mapping'):
+        if var_data.get("ontology_mapping"):
             lines.append(f"    %% {var_name}: {var_data['ontology_mapping']}")
-    
+
     # Generate edges from connections
     for conn in gnn_model.connections:
-        edge_style = _infer_edge_style(conn['symbol'])
+        edge_style = _infer_edge_style(conn["symbol"])
         edge_label = _generate_edge_label(conn)
         lines.append(f"    {conn['source']}{edge_style}{conn['target']}")
-        
+
         # Add connection type as comment
-        if conn.get('connection_type'):
+        if conn.get("connection_type"):
             lines.append(f"    %% Connection: {conn['connection_type']}")
-    
+
     # Styling section
     lines.append("")
     lines.append("    %% Node styling based on variable types")
     lines.extend(_generate_node_styles(gnn_model.variables))
-    
+
     return "\n".join(lines)
 
 
 def _infer_node_shape(var_name: str, var_data: Dict) -> str:
     """
     Infer Mermaid node shape from GNN variable characteristics.
-    
+
     Shape mapping:
     - Matrices (A, B): Rectangle [A]
     - Vectors (C, D, E): Rounded (C)
@@ -167,20 +167,20 @@ def _infer_node_shape(var_name: str, var_data: Dict) -> str:
     - Free Energy (F, G): Trapezoid [/F\]
     """
     # Check dimensionality
-    dims = var_data.get('dimensions', [])
-    ontology = var_data.get('ontology_mapping', '')
-    
+    dims = var_data.get("dimensions", [])
+    ontology = var_data.get("ontology_mapping", "")
+
     if len(dims) >= 2:  # Matrices
         return f"[{var_name}]"
-    elif 'State' in ontology:
+    elif "State" in ontology:
         return f"([{var_name}])"
-    elif 'Observation' in ontology:
+    elif "Observation" in ontology:
         return f"(({var_name}))"
-    elif 'Action' in ontology or var_name == 'u':
+    elif "Action" in ontology or var_name == "u":
         return f"{{{{{var_name}}}}}"
-    elif 'Policy' in ontology or var_name == 'π':
+    elif "Policy" in ontology or var_name == "π":
         return f"{{{var_name}}}"
-    elif 'FreeEnergy' in ontology:
+    elif "FreeEnergy" in ontology:
         return f"[/{var_name}\\]"
     else:  # Default vectors
         return f"({var_name})"
@@ -189,41 +189,41 @@ def _infer_node_shape(var_name: str, var_data: Dict) -> str:
 def _generate_node_label(var_name: str, var_data: Dict) -> str:
     """Generate descriptive node label with dimensions and type."""
     label = var_name
-    
-    if var_data.get('dimensions'):
-        dims_str = 'x'.join(map(str, var_data['dimensions']))
+
+    if var_data.get("dimensions"):
+        dims_str = "x".join(map(str, var_data["dimensions"]))
         label += f"<br/>{dims_str}"
-    
-    if var_data.get('data_type'):
+
+    if var_data.get("data_type"):
         label += f"<br/>{var_data['data_type']}"
-    
+
     return label
 
 
 def _infer_edge_style(symbol: str) -> str:
     """
     Convert GNN connection symbols to Mermaid edge styles.
-    
+
     Mapping:
     - > : Generative (thick arrow) ==>
     - - : Inference (dashed line) -.->
     - * : Modulation (dotted line) -..->
     - ~ : Weak coupling (thin line) -->
     """
-    if symbol == '>':
-        return ' ==> '
-    elif symbol == '-':
-        return ' -.-> '
-    elif symbol == '*':
-        return ' -..-> '
+    if symbol == ">":
+        return " ==> "
+    elif symbol == "-":
+        return " -.-> "
+    elif symbol == "*":
+        return " -..-> "
     else:
-        return ' --> '
+        return " --> "
 
 
 def _generate_edge_label(conn: Dict) -> str:
     """Generate edge label with connection semantics."""
     label = ""
-    if conn.get('description'):
+    if conn.get("description"):
         label = f"|{conn['description']}|"
     return label
 
@@ -233,10 +233,10 @@ def _serialize_variables(variables: Dict) -> Dict:
     serialized = {}
     for var_name, var_data in variables.items():
         serialized[var_name] = {
-            "dimensions": var_data.get('dimensions', []),
-            "data_type": var_data.get('data_type', 'float'),
-            "ontology_mapping": var_data.get('ontology_mapping', ''),
-            "description": var_data.get('description', '')
+            "dimensions": var_data.get("dimensions", []),
+            "data_type": var_data.get("data_type", "float"),
+            "ontology_mapping": var_data.get("ontology_mapping", ""),
+            "description": var_data.get("description", ""),
         }
     return serialized
 
@@ -245,10 +245,10 @@ def _serialize_connections(connections: List[Dict]) -> List[Dict]:
     """Serialize connections to JSON-compatible format."""
     return [
         {
-            "source": c.get('source', ''),
-            "target": c.get('target', ''),
-            "symbol": c.get('symbol', ''),
-            "connection_type": c.get('connection_type', '')
+            "source": c.get("source", ""),
+            "target": c.get("target", ""),
+            "symbol": c.get("symbol", ""),
+            "connection_type": c.get("connection_type", ""),
         }
         for c in connections
     ]
@@ -257,7 +257,7 @@ def _serialize_connections(connections: List[Dict]) -> List[Dict]:
 def _serialize_ontology(ontology_mappings: List[Dict]) -> Dict:
     """Serialize ontology mappings."""
     return {
-        mapping.get('variable', ''): mapping.get('ontology_term', '')
+        mapping.get("variable", ""): mapping.get("ontology_term", "")
         for mapping in ontology_mappings
     }
 
@@ -265,76 +265,86 @@ def _serialize_ontology(ontology_mappings: List[Dict]) -> Dict:
 def _generate_node_styles(variables: Dict) -> List[str]:
     """Generate Mermaid styling directives based on variable types."""
     styles = []
-    
+
     # Group variables by ontology type
     matrices = []
     vectors = []
     states = []
     observations = []
     actions = []
-    
+
     for var_name, var_data in variables.items():
-        ontology = var_data.get('ontology_mapping', '')
-        dims = var_data.get('dimensions', [])
-        
+        ontology = var_data.get("ontology_mapping", "")
+        dims = var_data.get("dimensions", [])
+
         if len(dims) >= 2:
             matrices.append(var_name)
-        elif 'State' in ontology:
+        elif "State" in ontology:
             states.append(var_name)
-        elif 'Observation' in ontology:
+        elif "Observation" in ontology:
             observations.append(var_name)
-        elif 'Action' in ontology or var_name == 'u':
+        elif "Action" in ontology or var_name == "u":
             actions.append(var_name)
         else:
             vectors.append(var_name)
-    
+
     # Apply class styles
     if matrices:
         for var in matrices:
-            styles.append(f"    classDef matrixStyle fill:#e1f5ff,stroke:#0288d1,stroke-width:2px")
+            styles.append(
+                f"    classDef matrixStyle fill:#e1f5ff,stroke:#0288d1,stroke-width:2px"
+            )
             styles.append(f"    class {var} matrixStyle")
-    
+
     if states:
         for var in states:
-            styles.append(f"    classDef stateStyle fill:#fff3e0,stroke:#f57c00,stroke-width:2px")
+            styles.append(
+                f"    classDef stateStyle fill:#fff3e0,stroke:#f57c00,stroke-width:2px"
+            )
             styles.append(f"    class {var} stateStyle")
-    
+
     if observations:
         for var in observations:
-            styles.append(f"    classDef obsStyle fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px")
+            styles.append(
+                f"    classDef obsStyle fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px"
+            )
             styles.append(f"    class {var} obsStyle")
-    
+
     if actions:
         for var in actions:
-            styles.append(f"    classDef actionStyle fill:#e8f5e9,stroke:#388e3c,stroke-width:2px")
+            styles.append(
+                f"    classDef actionStyle fill:#e8f5e9,stroke:#388e3c,stroke-width:2px"
+            )
             styles.append(f"    class {var} actionStyle")
-    
+
     return styles
 
 
-def convert_gnn_file_to_mermaid(gnn_file_path: Path, output_path: Optional[Path] = None) -> str:
+def convert_gnn_file_to_mermaid(
+    gnn_file_path: Path, output_path: Optional[Path] = None
+) -> str:
     """
     Convert a GNN file to Mermaid format for oxdraw.
-    
+
     Args:
         gnn_file_path: Path to GNN markdown file
         output_path: Optional path to save Mermaid output
-        
+
     Returns:
         Mermaid diagram string
     """
     from gnn.processor import parse_gnn_file
-    
+
     # Parse GNN file using existing pipeline module
     parsed_model = parse_gnn_file(gnn_file_path)
-    
+
     # Convert to Mermaid
     mermaid_content = gnn_to_mermaid(parsed_model)
-    
+
     # Save if output path provided
     if output_path:
         output_path.write_text(mermaid_content)
-    
+
     return mermaid_content
 ```
 
@@ -365,67 +375,67 @@ from ontology.processor import load_defined_ontology_terms, validate_annotations
 def mermaid_to_gnn(mermaid_content: str, validate_ontology: bool = True) -> ParsedGNN:
     """
     Parse Mermaid flowchart back to GNN model structure.
-    
+
     Args:
         mermaid_content: Mermaid flowchart string from oxdraw
         validate_ontology: Validate ontology term mappings
-        
+
     Returns:
         ParsedGNN model ready for pipeline processing
     """
     # Extract metadata from comments
     metadata = _extract_gnn_metadata(mermaid_content)
-    
+
     # Parse visual structure
     nodes = _extract_nodes(mermaid_content)
     edges = _extract_edges(mermaid_content)
-    
+
     # Merge metadata with visual edits
-    variables = _merge_variables(metadata.get('variables', {}), nodes)
-    connections = _merge_connections(metadata.get('connections', []), edges)
-    
+    variables = _merge_variables(metadata.get("variables", {}), nodes)
+    connections = _merge_connections(metadata.get("connections", []), edges)
+
     # Validate ontology mappings if requested
-    if validate_ontology and metadata.get('ontology_mappings'):
+    if validate_ontology and metadata.get("ontology_mappings"):
         ontology_terms = load_defined_ontology_terms()
         validation_result = validate_annotations(
-            list(metadata['ontology_mappings'].values()),
-            ontology_terms
+            list(metadata["ontology_mappings"].values()), ontology_terms
         )
-        if validation_result.get('invalid_annotations'):
-            raise ValueError(f"Invalid ontology terms: {validation_result['invalid_annotations']}")
-    
+        if validation_result.get("invalid_annotations"):
+            raise ValueError(
+                f"Invalid ontology terms: {validation_result['invalid_annotations']}"
+            )
+
     # Construct ParsedGNN
     return ParsedGNN(
-        model_name=metadata.get('model_name', 'Untitled Model'),
-        version=metadata.get('version', '1.0'),
+        model_name=metadata.get("model_name", "Untitled Model"),
+        version=metadata.get("version", "1.0"),
         variables=variables,
         connections=connections,
-        parameters=metadata.get('parameters', {}),
+        parameters=metadata.get("parameters", {}),
         ontology_mappings=_reconstruct_ontology_mappings(
-            variables,
-            metadata.get('ontology_mappings', {})
-        )
+            variables, metadata.get("ontology_mappings", {})
+        ),
     )
 
 
 def _extract_gnn_metadata(mermaid_content: str) -> Dict[str, Any]:
     """Extract embedded GNN metadata from Mermaid comments."""
-    metadata_pattern = r'%%\s*GNN_METADATA:\s*(\{.*?\})'
+    metadata_pattern = r"%%\s*GNN_METADATA:\s*(\{.*?\})"
     match = re.search(metadata_pattern, mermaid_content, re.DOTALL)
-    
+
     if match:
         try:
             return json.loads(match.group(1))
         except json.JSONDecodeError:
             pass
-    
+
     return {}
 
 
 def _extract_nodes(mermaid_content: str) -> Dict[str, Dict]:
     """
     Extract node definitions from Mermaid diagram.
-    
+
     Supports various shapes:
     - [A] : Rectangle
     - (C) : Rounded
@@ -436,36 +446,36 @@ def _extract_nodes(mermaid_content: str) -> Dict[str, Dict]:
     - [/F\] : Trapezoid
     """
     nodes = {}
-    
+
     # Pattern for various node shapes
     patterns = [
-        (r'(\w+)\[(.*?)\]', 'rectangle'),           # [A]
-        (r'(\w+)\((.*?)\)', 'rounded'),              # (C)
-        (r'(\w+)\(\[(.*?)\]\)', 'stadium'),          # ([s])
-        (r'(\w+)\(\((.*?)\)\)', 'circle'),           # ((o))
-        (r'(\w+)\{\{(.*?)\}\}', 'hexagon'),          # {{u}}
-        (r'(\w+)\{(.*?)\}', 'diamond'),              # {π}
-        (r'(\w+)\[\/(.*?)\\]', 'trapezoid')          # [/F\]
+        (r"(\w+)\[(.*?)\]", "rectangle"),  # [A]
+        (r"(\w+)\((.*?)\)", "rounded"),  # (C)
+        (r"(\w+)\(\[(.*?)\]\)", "stadium"),  # ([s])
+        (r"(\w+)\(\((.*?)\)\)", "circle"),  # ((o))
+        (r"(\w+)\{\{(.*?)\}\}", "hexagon"),  # {{u}}
+        (r"(\w+)\{(.*?)\}", "diamond"),  # {π}
+        (r"(\w+)\[\/(.*?)\\]", "trapezoid"),  # [/F\]
     ]
-    
+
     for pattern, shape in patterns:
         for match in re.finditer(pattern, mermaid_content):
             node_id = match.group(1)
             node_label = match.group(2)
-            
+
             nodes[node_id] = {
-                'shape': shape,
-                'label': node_label,
-                'inferred_type': _infer_variable_type_from_shape(shape, node_id)
+                "shape": shape,
+                "label": node_label,
+                "inferred_type": _infer_variable_type_from_shape(shape, node_id),
             }
-    
+
     return nodes
 
 
 def _extract_edges(mermaid_content: str) -> List[Dict]:
     """
     Extract edge definitions from Mermaid diagram.
-    
+
     Supports:
     - ==> : Thick arrow (generative)
     - -.-> : Dashed (inference)
@@ -473,105 +483,118 @@ def _extract_edges(mermaid_content: str) -> List[Dict]:
     - --> : Normal arrow (coupling)
     """
     edges = []
-    
+
     edge_patterns = [
-        (r'(\w+)\s*==>\s*(\w+)', '>'),   # Generative
-        (r'(\w+)\s*-\.->\s*(\w+)', '-'),  # Inference
-        (r'(\w+)\s*-\.\.->\s*(\w+)', '*'), # Modulation
-        (r'(\w+)\s*-->\s*(\w+)', '~')     # Coupling
+        (r"(\w+)\s*==>\s*(\w+)", ">"),  # Generative
+        (r"(\w+)\s*-\.->\s*(\w+)", "-"),  # Inference
+        (r"(\w+)\s*-\.\.->\s*(\w+)", "*"),  # Modulation
+        (r"(\w+)\s*-->\s*(\w+)", "~"),  # Coupling
     ]
-    
+
     for pattern, symbol in edge_patterns:
         for match in re.finditer(pattern, mermaid_content):
-            edges.append({
-                'source': match.group(1),
-                'target': match.group(2),
-                'symbol': symbol,
-                'line_position': match.start()
-            })
-    
+            edges.append(
+                {
+                    "source": match.group(1),
+                    "target": match.group(2),
+                    "symbol": symbol,
+                    "line_position": match.start(),
+                }
+            )
+
     return edges
 
 
 def _infer_variable_type_from_shape(shape: str, var_name: str) -> str:
     """Infer GNN variable type from Mermaid node shape."""
     shape_type_map = {
-        'rectangle': 'matrix',
-        'rounded': 'vector',
-        'stadium': 'state',
-        'circle': 'observation',
-        'hexagon': 'action',
-        'diamond': 'policy',
-        'trapezoid': 'free_energy'
+        "rectangle": "matrix",
+        "rounded": "vector",
+        "stadium": "state",
+        "circle": "observation",
+        "hexagon": "action",
+        "diamond": "policy",
+        "trapezoid": "free_energy",
     }
-    return shape_type_map.get(shape, 'unknown')
+    return shape_type_map.get(shape, "unknown")
 
 
 def _merge_variables(metadata_vars: Dict, visual_nodes: Dict) -> Dict:
     """
     Merge metadata variables with visually edited node positions.
-    
+
     Preserves metadata dimensions/types while respecting visual layout.
     """
     merged = {}
-    
+
     # Start with metadata
     for var_name, var_data in metadata_vars.items():
         merged[var_name] = var_data.copy()
-    
+
     # Update/add from visual structure
     for node_id, node_data in visual_nodes.items():
         if node_id not in merged:
             merged[node_id] = {
-                'dimensions': _infer_dimensions(node_data),
-                'data_type': 'float',
-                'description': node_data.get('label', '')
+                "dimensions": _infer_dimensions(node_data),
+                "data_type": "float",
+                "description": node_data.get("label", ""),
             }
         else:
             # Update description from visual label if changed
-            if node_data.get('label'):
-                merged[node_id]['description'] = node_data['label']
-    
+            if node_data.get("label"):
+                merged[node_id]["description"] = node_data["label"]
+
     return merged
 
 
-def _merge_connections(metadata_conns: List[Dict], visual_edges: List[Dict]) -> List[Dict]:
+def _merge_connections(
+    metadata_conns: List[Dict], visual_edges: List[Dict]
+) -> List[Dict]:
     """
     Merge metadata connections with visually edited edges.
-    
+
     Visual edits (adding/removing edges in oxdraw) take precedence.
     """
     # Use visual structure as source of truth for topology
     merged = []
-    
+
     for edge in visual_edges:
         # Find matching metadata connection
         metadata_conn = next(
-            (c for c in metadata_conns 
-             if c['source'] == edge['source'] and c['target'] == edge['target']),
-            None
+            (
+                c
+                for c in metadata_conns
+                if c["source"] == edge["source"] and c["target"] == edge["target"]
+            ),
+            None,
         )
-        
-        merged.append({
-            'source': edge['source'],
-            'target': edge['target'],
-            'symbol': edge['symbol'],
-            'connection_type': metadata_conn.get('connection_type', 'directed') if metadata_conn else 'directed',
-            'description': metadata_conn.get('description', '') if metadata_conn else ''
-        })
-    
+
+        merged.append(
+            {
+                "source": edge["source"],
+                "target": edge["target"],
+                "symbol": edge["symbol"],
+                "connection_type": metadata_conn.get("connection_type", "directed")
+                if metadata_conn
+                else "directed",
+                "description": metadata_conn.get("description", "")
+                if metadata_conn
+                else "",
+            }
+        )
+
     return merged
 
 
 def _infer_dimensions(node_data: Dict) -> List[int]:
     """Infer variable dimensions from node shape and label."""
     # Parse label for dimension hints (e.g., "A<br/>3x3")
-    label = node_data.get('label', '')
-    dim_match = re.search(r'(\d+)x(\d+)', label)
-    
+    label = node_data.get("label", "")
+    dim_match = re.search(r"(\d+)x(\d+)", label)
+
     if dim_match:
         return [int(dim_match.group(1)), int(dim_match.group(2))]
-    elif node_data['shape'] == 'rectangle':
+    elif node_data["shape"] == "rectangle":
         return [3, 3]  # Default matrix size
     else:
         return [3, 1]  # Default vector size
@@ -580,38 +603,38 @@ def _infer_dimensions(node_data: Dict) -> List[int]:
 def _reconstruct_ontology_mappings(variables: Dict, ontology_map: Dict) -> List[Dict]:
     """Reconstruct ontology mapping list from merged variables."""
     mappings = []
-    
+
     for var_name, var_data in variables.items():
-        ontology_term = var_data.get('ontology_mapping') or ontology_map.get(var_name)
+        ontology_term = var_data.get("ontology_mapping") or ontology_map.get(var_name)
         if ontology_term:
-            mappings.append({
-                'variable': var_name,
-                'ontology_term': ontology_term
-            })
-    
+            mappings.append({"variable": var_name, "ontology_term": ontology_term})
+
     return mappings
 
 
-def convert_mermaid_file_to_gnn(mermaid_file_path: Path, output_path: Optional[Path] = None) -> ParsedGNN:
+def convert_mermaid_file_to_gnn(
+    mermaid_file_path: Path, output_path: Optional[Path] = None
+) -> ParsedGNN:
     """
     Convert Mermaid file from oxdraw back to GNN format.
-    
+
     Args:
         mermaid_file_path: Path to Mermaid file (.mmd)
         output_path: Optional path to save GNN output (.md)
-        
+
     Returns:
         ParsedGNN model
     """
     mermaid_content = mermaid_file_path.read_text()
     parsed_model = mermaid_to_gnn(mermaid_content)
-    
+
     # Convert to GNN markdown if output path provided
     if output_path:
         from gnn.exporters import export_to_markdown
+
         gnn_content = export_to_markdown(parsed_model)
         output_path.write_text(gnn_content)
-    
+
     return parsed_model
 ```
 
@@ -740,34 +763,55 @@ print(f"Regenerated GNN file: {output_gnn}")
 import subprocess
 
 # Step 3: Parse and validate syntax
-subprocess.run([
-    "python3", "src/3_gnn.py",
-    "--target-dir", "output/oxdraw_interface",
-    "--output-dir", "output",
-    "--verbose"
-])
+subprocess.run(
+    [
+        "python3",
+        "src/3_gnn.py",
+        "--target-dir",
+        "output/oxdraw_interface",
+        "--output-dir",
+        "output",
+        "--verbose",
+    ]
+)
 
 # Step 5: Type checking
-subprocess.run([
-    "python3", "src/5_type_checker.py",
-    "--target-dir", "output/oxdraw_interface",
-    "--output-dir", "output"
-])
+subprocess.run(
+    [
+        "python3",
+        "src/5_type_checker.py",
+        "--target-dir",
+        "output/oxdraw_interface",
+        "--output-dir",
+        "output",
+    ]
+)
 
 # Step 6: Semantic validation
-subprocess.run([
-    "python3", "src/6_validation.py",
-    "--target-dir", "output/oxdraw_interface",
-    "--output-dir", "output"
-])
+subprocess.run(
+    [
+        "python3",
+        "src/6_validation.py",
+        "--target-dir",
+        "output/oxdraw_interface",
+        "--output-dir",
+        "output",
+    ]
+)
 
 # Step 10: Ontology validation
-subprocess.run([
-    "python3", "src/10_ontology.py",
-    "--target-dir", "output/oxdraw_interface",
-    "--output-dir", "output",
-    "--ontology-terms-file", "src/ontology/act_inf_ontology_terms.json"
-])
+subprocess.run(
+    [
+        "python3",
+        "src/10_ontology.py",
+        "--target-dir",
+        "output/oxdraw_interface",
+        "--output-dir",
+        "output",
+        "--ontology-terms-file",
+        "src/ontology/act_inf_ontology_terms.json",
+    ]
+)
 
 print("✅ Model validated through GNN pipeline")
 ```
@@ -795,7 +839,7 @@ from pathlib import Path
 from utils.pipeline_template import (
     create_standardized_pipeline_script,
     log_step_start,
-    log_step_success
+    log_step_success,
 )
 from pipeline.config import get_output_dir_for_script
 from oxdraw_integration.processor import process_oxdraw_gui
@@ -803,13 +847,13 @@ from oxdraw_integration.processor import process_oxdraw_gui
 
 def main():
     """Main entry point for oxdraw GUI integration step."""
-    
+
     run_script = create_standardized_pipeline_script(
         script_name="22_gui.py",
         processing_function=process_oxdraw_gui,
-        description="oxdraw visual interface for GNN model construction"
+        description="oxdraw visual interface for GNN model construction",
     )
-    
+
     return run_script()
 
 
@@ -831,11 +875,11 @@ from .mermaid_converter import gnn_to_mermaid, convert_gnn_file_to_mermaid
 from .mermaid_parser import mermaid_to_gnn, convert_mermaid_file_to_gnn
 
 __all__ = [
-    'process_oxdraw_gui',
-    'gnn_to_mermaid',
-    'convert_gnn_file_to_mermaid',
-    'mermaid_to_gnn',
-    'convert_mermaid_file_to_gnn'
+    "process_oxdraw_gui",
+    "gnn_to_mermaid",
+    "convert_gnn_file_to_mermaid",
+    "mermaid_to_gnn",
+    "convert_mermaid_file_to_gnn",
 ]
 
 __version__ = "1.0.0"
@@ -869,11 +913,11 @@ def process_oxdraw_gui(
     mode: str = "interactive",
     auto_convert: bool = True,
     validate_on_save: bool = True,
-    **kwargs
+    **kwargs,
 ) -> bool:
     """
     Process GNN files through oxdraw visual interface.
-    
+
     Args:
         target_dir: Directory containing GNN files
         output_dir: Output directory for oxdraw results
@@ -882,31 +926,27 @@ def process_oxdraw_gui(
         auto_convert: Automatically convert GNN files to Mermaid
         validate_on_save: Validate models when saving from oxdraw
         **kwargs: Additional options (port, host, etc.)
-        
+
     Returns:
         True if processing succeeded
     """
     logger.info("🎨 oxdraw GUI Integration")
     logger.info(f"Mode: {mode}")
-    
+
     output_dir.mkdir(parents=True, exist_ok=True)
-    
+
     # Check oxdraw availability
     if not _check_oxdraw_installed():
         logger.warning("oxdraw not installed. Install with: cargo install oxdraw")
         if mode == "interactive":
             return False
-    
+
     # Discover GNN files
     gnn_files = discover_gnn_files(target_dir, recursive=True)
     logger.info(f"Found {len(gnn_files)} GNN files")
-    
-    results = {
-        "mode": mode,
-        "files_processed": [],
-        "conversions": []
-    }
-    
+
+    results = {"mode": mode, "files_processed": [], "conversions": []}
+
     # Convert GNN files to Mermaid
     if auto_convert:
         logger.info("📝 Converting GNN files to Mermaid format...")
@@ -914,55 +954,61 @@ def process_oxdraw_gui(
             try:
                 mermaid_file = output_dir / f"{gnn_file.stem}.mmd"
                 convert_gnn_file_to_mermaid(gnn_file, mermaid_file)
-                
-                results["conversions"].append({
-                    "gnn_file": str(gnn_file),
-                    "mermaid_file": str(mermaid_file),
-                    "success": True
-                })
-                
+
+                results["conversions"].append(
+                    {
+                        "gnn_file": str(gnn_file),
+                        "mermaid_file": str(mermaid_file),
+                        "success": True,
+                    }
+                )
+
                 logger.info(f"✅ Converted: {gnn_file.name} → {mermaid_file.name}")
-                
+
             except Exception as e:
                 logger.error(f"❌ Conversion failed for {gnn_file.name}: {e}")
-                results["conversions"].append({
-                    "gnn_file": str(gnn_file),
-                    "error": str(e),
-                    "success": False
-                })
-    
+                results["conversions"].append(
+                    {"gnn_file": str(gnn_file), "error": str(e), "success": False}
+                )
+
     # Launch oxdraw in interactive mode
     if mode == "interactive" and results["conversions"]:
         logger.info("🚀 Launching oxdraw editor...")
-        
+
         # Launch editor for first converted file
         first_mermaid = Path(results["conversions"][0]["mermaid_file"])
-        
+
         port = kwargs.get("port", 5151)
         host = kwargs.get("host", "127.0.0.1")
-        
+
         try:
-            subprocess.run([
-                "oxdraw",
-                "--input", str(first_mermaid),
-                "--edit",
-                "--serve-host", host,
-                "--serve-port", str(port)
-            ], check=True)
-            
+            subprocess.run(
+                [
+                    "oxdraw",
+                    "--input",
+                    str(first_mermaid),
+                    "--edit",
+                    "--serve-host",
+                    host,
+                    "--serve-port",
+                    str(port),
+                ],
+                check=True,
+            )
+
             logger.info(f"✅ oxdraw editor launched at http://{host}:{port}")
-            
+
         except subprocess.CalledProcessError as e:
             logger.error(f"❌ Failed to launch oxdraw: {e}")
             return False
-    
+
     # Save processing results
     results_file = output_dir / "oxdraw_processing_results.json"
-    with open(results_file, 'w') as f:
+    with open(results_file, "w") as f:
         json.dump(results, f, indent=2)
-    
+
     logger.info(f"📊 Results saved to: {results_file}")
-    
+
     return len(results["conversions"]) > 0
 
 

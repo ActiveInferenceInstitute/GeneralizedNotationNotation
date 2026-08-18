@@ -68,22 +68,23 @@ See [src/AGENTS.md](../../../src/AGENTS.md) for complete pipeline documentation.
 def profile_pipeline_step(step_number: int, command: str) -> ProfileResult:
     """
     Profile a single pipeline step using TimEP.
-    
+
     Parameters:
         step_number: Pipeline step number (0-24)
         command: Command to profile
-    
+
     Returns:
         ProfileResult with timing and resource metrics
     """
 
+
 def generate_flamegraph(profile_results: List[ProfileResult]) -> Flamegraph:
     """
     Generate flamegraph from profile results.
-    
+
     Parameters:
         profile_results: List of profile results from pipeline steps
-    
+
     Returns:
         Flamegraph visualization data
     """

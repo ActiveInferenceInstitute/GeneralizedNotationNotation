@@ -69,23 +69,24 @@ See [src/AGENTS.md](../../src/AGENTS.md) for complete pipeline documentation.
 def generate_audio_from_gnn(gnn_model: GNNModel, audio_params: dict) -> AudioFile:
     """
     Generate audio representation from GNN model using Pedalboard.
-    
+
     Parameters:
         gnn_model: Parsed GNN model structure
         audio_params: Audio generation parameters
-    
+
     Returns:
         AudioFile with sonified model representation
     """
 
+
 def apply_audio_effects(audio: AudioFile, effects: List[Plugin]) -> AudioFile:
     """
     Apply Pedalboard audio effects to generated audio.
-    
+
     Parameters:
         audio: Input audio file
         effects: List of Pedalboard plugins to apply
-    
+
     Returns:
         Processed AudioFile with effects applied
     """

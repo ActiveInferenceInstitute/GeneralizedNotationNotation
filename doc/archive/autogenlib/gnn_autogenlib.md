@@ -218,23 +218,26 @@ Let's imagine a GNN user wants a quick way to list all unique state names from a
 ```python
 # File: src/examples/extract_gnn_states_example.py
 from autogenlib import init, set_caching
-from autogenlib.gnn_parsers import extract_unique_state_names # This will be auto-generated
+from autogenlib.gnn_parsers import (
+    extract_unique_state_names,
+)  # This will be auto-generated
 
 # Initialize AutoGenLib with some context and enable caching for consistency
 init(
-    library_description="A collection of utility functions for parsing and analyzing GNN files. " \
-                        "GNN files follow the structure outlined in 'doc/gnn/reference/gnn_file_structure_doc.md'.",
-    enable_caching=True
+    library_description="A collection of utility functions for parsing and analyzing GNN files. "
+    "GNN files follow the structure outlined in 'doc/gnn/reference/gnn_file_structure_doc.md'.",
+    enable_caching=True,
 )
+
 
 def get_states_from_gnn_file(gnn_file_path: str) -> list[str]:
     """
     Loads a GNN file and extracts unique state names from its StateSpaceBlock.
     """
     try:
-        with open(gnn_file_path, 'r') as f:
+        with open(gnn_file_path, "r") as f:
             gnn_content = f.read()
-        
+
         # The magic happens here: AutoGenLib generates extract_unique_state_names
         # The prompt to the LLM will include this calling code, the init description,
         # and potentially information about how StateSpaceBlock is structured if hinted.
@@ -247,6 +250,7 @@ def get_states_from_gnn_file(gnn_file_path: str) -> list[str]:
         print(f"An error occurred: {e}")
         # Here, AutoGenLib's exception handling might kick in if the error was in generated code
         return []
+
 
 if __name__ == "__main__":
     # Assume an example GNN file exists
@@ -264,10 +268,13 @@ if __name__ == "__main__":
         f.write(example_gnn)
 
     state_names = get_states_from_gnn_file(dummy_file_path)
-    print(f"Unique State Names: {state_names}") # Expected: ['North', 'South', 'East', 'West', 'On', 'Off']
-    
+    print(
+        f"Unique State Names: {state_names}"
+    )  # Expected: ['North', 'South', 'East', 'West', 'On', 'Off']
+
     # Clean up test file (optional)
     import os
+
     os.remove(dummy_file_path)
 ```
 

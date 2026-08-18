@@ -319,15 +319,13 @@ def register_tools(mcp_instance):
         func=my_tool_function,
         schema={
             "type": "object",
-            "properties": {
-                "param1": {"type": "string"}
-            },
-            "required": ["param1"]
+            "properties": {"param1": {"type": "string"}},
+            "required": ["param1"],
         },
         description="Description of my tool",
         module="my_module",
         category="My Category",
-        version="1.0.0"
+        version="1.0.0",
     )
 ```
 

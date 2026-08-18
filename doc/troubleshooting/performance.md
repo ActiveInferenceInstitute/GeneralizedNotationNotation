@@ -151,14 +151,17 @@ ModelTimeHorizon=20  # For strategic planning (max recommended)
 import functools
 from pathlib import Path
 
+
 @functools.lru_cache(maxsize=128)
 def parse_gnn_file_cached(file_path: str):
     """Cache parsed GNN files to avoid re-parsing."""
     return parse_gnn_file(file_path)
 
+
 # Use file modification time for cache invalidation
 def get_file_mtime(file_path):
     return Path(file_path).stat().st_mtime
+
 
 @functools.lru_cache(maxsize=128)
 def validate_gnn_with_cache(file_path: str, mtime: float):
@@ -174,14 +177,15 @@ def validate_gnn_with_cache(file_path: str, mtime: float):
 import multiprocessing
 from concurrent.futures import ProcessPoolExecutor
 
+
 def process_gnn_files_parallel(file_paths, num_workers=None):
     """Process multiple GNN files in parallel."""
     if num_workers is None:
         num_workers = multiprocessing.cpu_count()
-    
+
     with ProcessPoolExecutor(max_workers=num_workers) as executor:
         results = list(executor.map(process_single_gnn_file, file_paths))
-    
+
     return results
 ```
 
@@ -214,7 +218,8 @@ def incremental_validation(gnn_model, previous_validation_hash):
 ```python
 # Use JAX backend for better performance
 import pymdp
-pymdp.utils.set_backend('jax')
+
+pymdp.utils.set_backend("jax")
 
 # Pre-compile models
 agent = pymdp.Agent(
@@ -222,7 +227,7 @@ agent = pymdp.Agent(
     B=B_matrices,
     C=C_vectors,
     D=D_vectors,
-    compile=True  # Pre-compile for faster execution
+    compile=True,  # Pre-compile for faster execution
 )
 
 # Batch processing for multiple agents
@@ -260,10 +265,12 @@ import jax
 import jax.numpy as jnp
 from jax import jit, vmap
 
+
 # JIT compile the inference step
 @jit
 def inference_step(params, observations):
     return compute_posterior(params, observations)
+
 
 # Vectorize over batch dimension
 batch_inference = vmap(inference_step, in_axes=(None, 0))
@@ -281,14 +288,19 @@ observations = jax.device_put(observations, jax.devices("gpu")[0])
 from scipy.sparse import csr_matrix
 import numpy as np
 
+
 def create_sparse_matrix(dense_matrix, threshold=1e-10):
     """Convert dense matrix to sparse if beneficial."""
     sparse_matrix = csr_matrix(dense_matrix)
-    
+
     # Only use sparse if it saves significant memory
     dense_memory = dense_matrix.nbytes
-    sparse_memory = sparse_matrix.data.nbytes + sparse_matrix.indices.nbytes + sparse_matrix.indptr.nbytes
-    
+    sparse_memory = (
+        sparse_matrix.data.nbytes
+        + sparse_matrix.indices.nbytes
+        + sparse_matrix.indptr.nbytes
+    )
+
     if sparse_memory < 0.5 * dense_memory:
         return sparse_matrix
     return dense_matrix
@@ -300,21 +312,22 @@ def create_sparse_matrix(dense_matrix, threshold=1e-10):
 import psutil
 import tracemalloc
 
+
 def profile_memory_usage():
     """Profile memory usage during GNN processing."""
     tracemalloc.start()
     process = psutil.Process()
-    
+
     # Your GNN processing code here
     result = process_gnn_model(model)
-    
+
     current, peak = tracemalloc.get_traced_memory()
     tracemalloc.stop()
-    
+
     print(f"Current memory usage: {current / 1024 / 1024:.1f} MB")
     print(f"Peak memory usage: {peak / 1024 / 1024:.1f} MB")
     print(f"System memory usage: {process.memory_info().rss / 1024 / 1024:.1f} MB")
-    
+
     return result
 ```
 
@@ -327,19 +340,20 @@ import cProfile
 import pstats
 from pstats import SortKey
 
+
 def profile_gnn_processing(gnn_file_path):
     """Profile GNN processing to identify bottlenecks."""
     pr = cProfile.Profile()
     pr.enable()
-    
+
     # Your GNN processing code
     result = process_gnn_file(gnn_file_path)
-    
+
     pr.disable()
     stats = pstats.Stats(pr)
     stats.sort_stats(SortKey.TIME)
     stats.print_stats(20)  # Top 20 time-consuming functions
-    
+
     return result
 ```
 
@@ -362,36 +376,37 @@ import time
 import matplotlib.pyplot as plt
 import numpy as np
 
+
 def analyze_scaling(state_sizes):
     """Analyze how performance scales with model size."""
     times = []
-    
+
     for size in state_sizes:
         model = create_test_model(size)
-        
+
         start_time = time.time()
         process_gnn_model(model)
         end_time = time.time()
-        
+
         times.append(end_time - start_time)
-    
+
     # Plot scaling behavior
-    plt.loglog(state_sizes, times, 'bo-')
-    plt.xlabel('State Space Size')
-    plt.ylabel('Processing Time (s)')
-    plt.title('GNN Processing Time vs. Model Size')
+    plt.loglog(state_sizes, times, "bo-")
+    plt.xlabel("State Space Size")
+    plt.ylabel("Processing Time (s)")
+    plt.title("GNN Processing Time vs. Model Size")
     plt.grid(True)
     plt.show()
-    
+
     # Fit scaling exponent
     log_sizes = np.log(state_sizes)
     log_times = np.log(times)
     exponent = np.polyfit(log_sizes, log_times, 1)[0]
-    
+
     print(f"Scaling exponent: {exponent:.2f}")
     if exponent > 2:
         print("⚠️ Poor scaling detected - consider optimization")
-    
+
     return times
 ```
 
@@ -449,11 +464,12 @@ def monitor_performance(func):
         start_time = time.time()
         result = func(*args, **kwargs)
         duration = time.time() - start_time
-        
+
         if duration > PERFORMANCE_THRESHOLD:
             log_warning(f"Slow operation: {func.__name__} took {duration:.2f}s")
-        
+
         return result
+
     return wrapper
 ```
 

@@ -20,8 +20,14 @@ REPLACEMENTS: list[tuple[str, str]] = [
     ("gnn/gnn_standards.md", "gnn/reference/gnn_standards.md"),
     ("gnn/gnn_troubleshooting.md", "gnn/operations/gnn_troubleshooting.md"),
     ("gnn/gnn_ontology.md", "gnn/advanced/gnn_ontology.md"),
-    ("gnn/framework_integration_guide.md", "gnn/integration/framework_integration_guide.md"),
-    ("gnn/gnn_llm_neurosymbolic_active_inference.md", "gnn/advanced/gnn_llm_neurosymbolic_active_inference.md"),
+    (
+        "gnn/framework_integration_guide.md",
+        "gnn/integration/framework_integration_guide.md",
+    ),
+    (
+        "gnn/gnn_llm_neurosymbolic_active_inference.md",
+        "gnn/advanced/gnn_llm_neurosymbolic_active_inference.md",
+    ),
     ("gnn/advanced_modeling_patterns.md", "gnn/advanced/advanced_modeling_patterns.md"),
     ("gnn/gnn_multiagent.md", "gnn/advanced/gnn_multiagent.md"),
     ("gnn/ontology_system.md", "gnn/advanced/ontology_system.md"),
@@ -40,6 +46,7 @@ REPLACEMENTS: list[tuple[str, str]] = [
     ("gnn/quickstart_tutorial.md", "gnn/tutorials/quickstart_tutorial.md"),
 ]
 
+
 def should_skip(path: Path) -> bool:
     if path.name in SKIP_NAMES:
         return True
@@ -48,7 +55,12 @@ def should_skip(path: Path) -> bool:
     except ValueError:
         return True
     # Test harness temp only — not tracked fixtures
-    if len(rel.parts) >= 3 and rel.parts[0] == "src" and rel.parts[1] == "tests" and "output" in rel.parts:
+    if (
+        len(rel.parts) >= 3
+        and rel.parts[0] == "src"
+        and rel.parts[1] == "tests"
+        and "output" in rel.parts
+    ):
         return True
     if "node_modules" in path.parts or ".venv" in path.parts:
         return True

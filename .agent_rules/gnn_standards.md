@@ -117,11 +117,11 @@ files = discover_gnn_files(Path("input/gnn_files"), recursive=True)
 model = parse_gnn_file(files[0])
 
 # Key fields in parsed model:
-model["name"]                    # Model name
-model["state_space"]             # Variable definitions
-model["connections"]             # Graph edges
-model["initialparameterization"] # A/B/C/D matrices
-model["annotations"]             # Human-readable notes
+model["name"]  # Model name
+model["state_space"]  # Variable definitions
+model["connections"]  # Graph edges
+model["initialparameterization"]  # A/B/C/D matrices
+model["annotations"]  # Human-readable notes
 ```
 
 ---

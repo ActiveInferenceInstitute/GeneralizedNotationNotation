@@ -63,10 +63,12 @@ All pipeline steps follow the thin orchestrator pattern. Each step is documented
 
 ```python
 # src/gnn/schema_validator.py:58-63 (actual regex patterns)
-SECTION_PATTERN = re.compile(r'^## (.+)$')
-VARIABLE_PATTERN = re.compile(r'^([\w_π][\w\d_π]*)(\[([^\]]+)\])?(?:,type=([a-zA-Z]+))?(?:\s*#\s*(.*))?$')  
-CONNECTION_PATTERN = re.compile(r'^(.+?)\s*(>|->|-|\|)\s*(.+?)(?:\s*#\s*(.*))?$')
-PARAMETER_PATTERN = re.compile(r'^([\w_π][\w\d_π]*)(\s*[:=]\s*)(.+?)(?:\s*#\s*(.*))?$')
+SECTION_PATTERN = re.compile(r"^## (.+)$")
+VARIABLE_PATTERN = re.compile(
+    r"^([\w_π][\w\d_π]*)(\[([^\]]+)\])?(?:,type=([a-zA-Z]+))?(?:\s*#\s*(.*))?$"
+)
+CONNECTION_PATTERN = re.compile(r"^(.+?)\s*(>|->|-|\|)\s*(.+?)(?:\s*#\s*(.*))?$")
+PARAMETER_PATTERN = re.compile(r"^([\w_π][\w\d_π]*)(\s*[:=]\s*)(.+?)(?:\s*#\s*(.*))?$")
 ```
 
 **Input:** `input/gnn_files/actinf_pomdp_agent.md`
@@ -174,11 +176,13 @@ import numpy as np
 
 # Matrices extracted from GNN specification
 A = np.array([[0.9, 0.05, 0.05], [0.05, 0.9, 0.05], [0.05, 0.05, 0.9]])
-B = np.array([
-    [[1.0,0.0,0.0], [0.0,1.0,0.0], [0.0,0.0,1.0]],  # Action 0
-    [[0.0,1.0,0.0], [1.0,0.0,0.0], [0.0,0.0,1.0]],  # Action 1  
-    [[0.0,0.0,1.0], [0.0,1.0,0.0], [1.0,0.0,0.0]]   # Action 2
-])
+B = np.array(
+    [
+        [[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]],  # Action 0
+        [[0.0, 1.0, 0.0], [1.0, 0.0, 0.0], [0.0, 0.0, 1.0]],  # Action 1
+        [[0.0, 0.0, 1.0], [0.0, 1.0, 0.0], [1.0, 0.0, 0.0]],  # Action 2
+    ]
+)
 C = np.log([0.1, 0.1, 1.0])  # Log-preferences
 D = np.array([0.33333, 0.33333, 0.33333])  # Prior
 E = np.array([0.33333, 0.33333, 0.33333])  # Habit
@@ -318,12 +322,12 @@ not a function that exists under that name:
 def validate_round_trip(original_gnn, exported_formats):
     # 1. Parse original GNN
     parsed_original = parse_gnn(original_gnn)
-    
-    # 2. Export to each format  
+
+    # 2. Export to each format
     for format_name, format_data in exported_formats.items():
         # 3. Re-import from format
         reimported = import_format(format_data, format_name)
-        
+
         # 4. Validate semantic equivalence
         assert semantic_equivalent(parsed_original, reimported)
         assert matrix_dimensions_match(parsed_original, reimported)
@@ -336,7 +340,7 @@ def validate_round_trip(original_gnn, exported_formats):
 
 ```python
 # Validate generated PyMDP code compiles and runs
-exec(compile(open('actinf_pomdp_agent_pymdp.py').read(), 'generated', 'exec'))
+exec(compile(open("actinf_pomdp_agent_pymdp.py").read(), "generated", "exec"))
 assert agent.A.shape == (3, 3)
 assert agent.B.shape == (3, 3, 3)
 ```

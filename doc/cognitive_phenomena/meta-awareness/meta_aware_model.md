@@ -166,10 +166,10 @@ display_results_summary(results)
 ```python
 # Custom model parameters
 model = SandvedSmithModel(
-    T=200,                    # Simulation length
-    three_level=True,         # Use three-level model
-    random_seed=42,          # Reproducibility
-    precision_params={...}    # Custom precision parameters
+    T=200,  # Simulation length
+    three_level=True,  # Use three-level model
+    random_seed=42,  # Reproducibility
+    precision_params={...},  # Custom precision parameters
 )
 
 results = model.run_simulation()

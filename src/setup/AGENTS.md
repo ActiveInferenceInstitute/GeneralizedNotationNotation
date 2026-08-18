@@ -159,24 +159,24 @@ Step 22 (GUI) additionally needs `uv sync --extra gui` to pull Gradio.
 ### Environment Settings
 ```python
 UV_CONFIG = {
-    'python_version': '3.11',
-    'environment_name': 'gnn-pipeline',
-    'dependency_source': 'pyproject.toml',  # Primary source
-    'lock_file': 'uv.lock',  # Dependency lock file
-    'use_native_uv': True,  # Use native UV commands
-    'dev_dependencies': True,
-    'test_dependencies': True
+    "python_version": "3.11",
+    "environment_name": "gnn-pipeline",
+    "dependency_source": "pyproject.toml",  # Primary source
+    "lock_file": "uv.lock",  # Dependency lock file
+    "use_native_uv": True,  # Use native UV commands
+    "dev_dependencies": True,
+    "test_dependencies": True,
 }
 ```
 
 ### System Requirements
 ```python
 SYSTEM_REQUIREMENTS = {
-    'python_version_min': '3.9',
-    'memory_min_gb': 4,
-    'disk_space_min_gb': 2,
-    'cpu_cores_min': 2,
-    'uv_required': True
+    "python_version_min": "3.9",
+    "memory_min_gb": 4,
+    "disk_space_min_gb": 2,
+    "cpu_cores_min": 2,
+    "uv_required": True,
 }
 ```
 
@@ -324,6 +324,7 @@ uv run --extra dev python -m pytest src/tests/test_setup*.py --cov=src/setup --c
 def check_environment_tool():
     """Check system environment for GNN pipeline"""
     # Implementation
+
 
 @mcp_tool("setup.add_dependency")
 def add_dependency_tool(package: str, dev: bool = False):

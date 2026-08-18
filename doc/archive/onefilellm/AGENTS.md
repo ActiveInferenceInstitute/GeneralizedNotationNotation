@@ -64,26 +64,29 @@ See [src/AGENTS.md](../../../src/AGENTS.md) for complete pipeline documentation.
 ### Data Aggregation Functions
 
 ```python
-def aggregate_gnn_documentation(gnn_files: List[Path], sources: List[str]) -> XMLDocument:
+def aggregate_gnn_documentation(
+    gnn_files: List[Path], sources: List[str]
+) -> XMLDocument:
     """
     Aggregate GNN model documentation using OneFileLLM.
-    
+
     Parameters:
         gnn_files: List of GNN file paths
         sources: Additional source URLs or paths
-    
+
     Returns:
         XMLDocument with aggregated documentation
     """
 
+
 def optimize_token_usage(xml_doc: XMLDocument, max_tokens: int) -> XMLDocument:
     """
     Optimize XML document for token usage.
-    
+
     Parameters:
         xml_doc: Input XML document
         max_tokens: Maximum token limit
-    
+
     Returns:
         Optimized XMLDocument
     """

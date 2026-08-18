@@ -81,9 +81,7 @@ from ml_integration import process_ml_integration
 
 # Process ML integration
 success = process_ml_integration(
-    target_dir=Path("models/"),
-    output_dir=Path("ml_output/"),
-    verbose=True
+    target_dir=Path("models/"), output_dir=Path("ml_output/"), verbose=True
 )
 
 if success:
@@ -102,11 +100,7 @@ training_results = train_gnn_model(
     gnn_content=gnn_content,
     framework="tensorflow",
     task_type="classification",
-    hyperparameters={
-        "learning_rate": 0.001,
-        "batch_size": 32,
-        "epochs": 100
-    }
+    hyperparameters={"learning_rate": 0.001, "batch_size": 32, "epochs": 100},
 )
 
 print(f"Training accuracy: {training_results['accuracy']}")
@@ -122,7 +116,7 @@ from ml_integration import evaluate_ml_model
 evaluation_results = evaluate_ml_model(
     model_path=Path("trained_model/"),
     test_data=test_data,
-    metrics=["accuracy", "precision", "recall", "f1"]
+    metrics=["accuracy", "precision", "recall", "f1"],
 )
 
 for metric, value in evaluation_results.items():
@@ -139,7 +133,7 @@ optimization_results = optimize_hyperparameters(
     gnn_content=gnn_content,
     framework="pytorch",
     optimization_method="bayesian",
-    n_trials=50
+    n_trials=50,
 )
 
 print(f"Best hyperparameters: {optimization_results['best_params']}")
@@ -192,8 +186,8 @@ ml_framework = initialize_framework(framework)
 ```python
 # Train model with selected framework
 training_results = train_model(ml_framework, training_data, hyperparameters)
-model = training_results['model']
-metrics = training_results['metrics']
+model = training_results["model"]
+metrics = training_results["metrics"]
 ```
 
 ### 4. Model Evaluation
@@ -305,12 +299,12 @@ output/14_ml_integration_output/
 ```python
 # ML integration configuration
 config = {
-    'default_framework': 'auto',    # Default ML framework
-    'training_mode': 'supervised',  # Training mode
-    'optimization_enabled': True,   # Enable hyperparameter optimization
-    'evaluation_metrics': ['accuracy', 'precision', 'recall'],
-    'cross_validation_folds': 5,    # Number of CV folds
-    'random_seed': 42              # Random seed for reproducibility
+    "default_framework": "auto",  # Default ML framework
+    "training_mode": "supervised",  # Training mode
+    "optimization_enabled": True,  # Enable hyperparameter optimization
+    "evaluation_metrics": ["accuracy", "precision", "recall"],
+    "cross_validation_folds": 5,  # Number of CV folds
+    "random_seed": 42,  # Random seed for reproducibility
 }
 ```
 
@@ -318,20 +312,9 @@ config = {
 ```python
 # Framework-specific configuration
 framework_config = {
-    'tensorflow': {
-        'version': '2.x',
-        'gpu_enabled': True,
-        'mixed_precision': True
-    },
-    'pytorch': {
-        'version': '1.x',
-        'cuda_enabled': True,
-        'deterministic': True
-    },
-    'scikit-learn': {
-        'n_jobs': -1,
-        'random_state': 42
-    }
+    "tensorflow": {"version": "2.x", "gpu_enabled": True, "mixed_precision": True},
+    "pytorch": {"version": "1.x", "cuda_enabled": True, "deterministic": True},
+    "scikit-learn": {"n_jobs": -1, "random_state": 42},
 }
 ```
 
@@ -394,9 +377,9 @@ except ResourceError as e:
 # Test individual ML functions
 def test_model_training():
     results = train_gnn_model(test_content, "tensorflow")
-    assert 'accuracy' in results
-    assert 'model' in results
-    assert results['accuracy'] > 0.5
+    assert "accuracy" in results
+    assert "model" in results
+    assert results["accuracy"] > 0.5
 ```
 
 ### Integration Tests
@@ -417,8 +400,8 @@ def test_training_performance():
     start_time = time.time()
     results = train_gnn_model(test_content, "pytorch")
     end_time = time.time()
-    
-    assert results['success']
+
+    assert results["success"]
     assert (end_time - start_time) < 300  # Should complete within 5 minutes
 ```
 

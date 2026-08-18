@@ -68,22 +68,23 @@ See [src/AGENTS.md](../../src/AGENTS.md) for complete pipeline documentation.
 def calibrate_gnn_from_spm(gnn_model: GNNModel, spm_results: SPMResults) -> GNNModel:
     """
     Calibrate GNN model using SPM neuroimaging results.
-    
+
     Parameters:
         gnn_model: Parsed GNN model structure
         spm_results: SPM statistical analysis results
-    
+
     Returns:
         Calibrated GNNModel with SPM-informed parameters
     """
 
+
 def extract_connectivity_matrix(spm_results: SPMResults) -> ConnectivityMatrix:
     """
     Extract connectivity matrix from SPM DCM results.
-    
+
     Parameters:
         spm_results: SPM analysis results
-    
+
     Returns:
         ConnectivityMatrix for GNN transition model
     """

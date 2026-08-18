@@ -61,60 +61,64 @@ CI uses a narrower marker (`-m "not pipeline and not mcp"`); see [.github/workfl
 import pytest
 from src.gnn import GNNModel, GNNSyntaxError
 
+
 class TestGNNParser:
     def test_parse_valid_model(self):
         """Test parsing of a valid GNN model"""
         gnn_content = """
         # Test Model
-        
+
         ## GNNVersionAndFlags
         GNN v1.0
-        
+
         ## ModelName
         TestModel
-        
+
         ## StateSpaceBlock
         s_f0[2,1,type=categorical]
         o_m0[2,1,type=categorical]
-        
+
         ## Connections
         s_f0 > o_m0
         """
-        
+
         model = GNNModel.from_string(gnn_content)
         assert model.model_name == "TestModel"
         assert len(model.state_space) == 2
         assert len(model.connections) == 1
-    
+
     def test_parse_invalid_syntax(self):
         """Test that invalid syntax raises appropriate error"""
         invalid_content = """
         ## StateSpaceBlock
         invalid_variable_name[2,1]
         """
-        
+
         with pytest.raises(GNNSyntaxError) as exc_info:
             GNNModel.from_string(invalid_content)
-        
+
         assert "invalid variable name" in str(exc_info.value).lower()
-    
+
     def test_missing_required_sections(self):
         """Test error handling for missing required sections"""
         incomplete_content = """
         ## ModelName
         TestModel
         """
-        
+
         with pytest.raises(GNNSyntaxError) as exc_info:
             GNNModel.from_string(incomplete_content)
-        
+
         assert "missing required section" in str(exc_info.value).lower()
 
-    @pytest.mark.parametrize("variable_def,expected_dims", [
-        ("s_f0[2,1,type=categorical]", [2, 1]),
-        ("o_m0[3,2,1,type=continuous]", [3, 2, 1]),
-        ("u_c0[5,type=binary]", [5]),
-    ])
+    @pytest.mark.parametrize(
+        "variable_def,expected_dims",
+        [
+            ("s_f0[2,1,type=categorical]", [2, 1]),
+            ("o_m0[3,2,1,type=continuous]", [3, 2, 1]),
+            ("u_c0[5,type=binary]", [5]),
+        ],
+    )
     def test_variable_dimension_parsing(self, variable_def, expected_dims):
         """Test parsing of different variable dimension formats"""
         content = f"""
@@ -131,35 +135,36 @@ import pytest
 from src.type_checker import TypeChecker, ValidationResult
 from src.gnn import GNNModel
 
+
 class TestTypeChecker:
     def setup_method(self):
         self.checker = TypeChecker(strict_mode=True)
-    
+
     def test_dimension_compatibility(self):
         """Test matrix dimension compatibility checking"""
         model = GNNModel.from_string("""
         ## StateSpaceBlock
         s_f0[2,1,type=categorical]
         o_m0[3,1,type=categorical]
-        
+
         ## InitialParameterization
         A_m0 = [[0.8, 0.2], [0.3, 0.7], [0.1, 0.9]]
         """)
-        
+
         result = self.checker.check_model(model)
         assert result.is_valid
-    
+
     def test_dimension_mismatch_error(self):
         """Test detection of dimension mismatches"""
         model = GNNModel.from_string("""
         ## StateSpaceBlock
         s_f0[2,1,type=categorical]
         o_m0[3,1,type=categorical]
-        
+
         ## InitialParameterization
         A_m0 = [[0.8, 0.2, 0.1], [0.3, 0.7, 0.4]]  # Wrong dimensions
         """)
-        
+
         result = self.checker.check_model(model)
         assert not result.is_valid
         assert any("dimension" in error.message.lower() for error in result.errors)
@@ -176,67 +181,67 @@ import os
 from pathlib import Path
 from src.main import run_pipeline
 
+
 class TestPipelineIntegration:
     def setup_method(self):
         self.temp_dir = tempfile.mkdtemp()
         self.output_dir = os.path.join(self.temp_dir, "output")
-        
+
     def teardown_method(self):
         import shutil
+
         shutil.rmtree(self.temp_dir)
-    
+
     def test_full_pipeline_basic_model(self):
         """Test complete pipeline run with basic model"""
         # Create test model
         model_path = os.path.join(self.temp_dir, "test_model.md")
         with open(model_path, "w") as f:
             f.write(self.get_basic_model_content())
-        
+
         # Run pipeline steps 1-6 (core functionality)
         result = run_pipeline(
             target_dir=self.temp_dir,
             output_dir=self.output_dir,
-            steps=[1, 2, 3, 4, 5, 6]
+            steps=[1, 2, 3, 4, 5, 6],
         )
-        
+
         assert result.success
         assert os.path.exists(os.path.join(self.output_dir, "gnn_exports"))
         assert os.path.exists(os.path.join(self.output_dir, "visualization"))
-    
+
     def test_pipeline_error_handling(self):
         """Test pipeline error handling with invalid model"""
         # Create invalid model
         model_path = os.path.join(self.temp_dir, "invalid_model.md")
         with open(model_path, "w") as f:
             f.write("## Invalid\nThis is not a valid GNN model")
-        
+
         result = run_pipeline(
-            target_dir=self.temp_dir,
-            output_dir=self.output_dir,
-            steps=[1, 4]
+            target_dir=self.temp_dir, output_dir=self.output_dir, steps=[1, 4]
         )
-        
+
         assert not result.success
         assert "syntax error" in result.error_message.lower()
-    
+
     @staticmethod
     def get_basic_model_content():
         return """
         # Test Model
-        
+
         ## GNNVersionAndFlags
         GNN v1.0
-        
+
         ## ModelName
         BasicTestModel
-        
+
         ## StateSpaceBlock
         s_f0[2,1,type=categorical]
         o_m0[2,1,type=categorical]
-        
+
         ## Connections
         s_f0 > o_m0
-        
+
         ## InitialParameterization
         A_m0 = [[0.8, 0.2], [0.3, 0.7]]
         D_f0 = [0.5, 0.5]
@@ -251,52 +256,53 @@ from src.render.pymdp import PyMDPRenderer
 from src.render.rxinfer import RxInferRenderer
 from src.gnn import GNNModel
 
+
 class TestBackendRendering:
     def setup_method(self):
         self.test_model = GNNModel.from_string("""
         ## ModelName
         RenderingTestModel
-        
+
         ## StateSpaceBlock
         s_f0[3,1,type=categorical]
         o_m0[2,1,type=categorical]
         u_c0[2,1,type=categorical]
-        
+
         ## Connections
         s_f0 > o_m0
         u_c0 > s_f0
         """)
-    
+
     def test_pymdp_rendering(self):
         """Test PyMDP code generation"""
         renderer = PyMDPRenderer()
         code = renderer.render_model(self.test_model)
-        
+
         # Check that essential PyMDP components are present
         assert "import pymdp" in code
         assert "Agent" in code
         assert "A = " in code  # Likelihood matrix
         assert "B = " in code  # Transition matrix
-    
+
     def test_rxinfer_rendering(self):
         """Test RxInfer.jl code generation"""
         renderer = RxInferRenderer()
         code = renderer.render_model(self.test_model)
-        
+
         # Check that essential RxInfer components are present
         assert "using RxInfer" in code
         assert "@model" in code
         assert "s_f0" in code
         assert "o_m0" in code
-    
+
     def test_rendering_consistency(self):
         """Test that different backends produce consistent results"""
         pymdp_renderer = PyMDPRenderer()
         rxinfer_renderer = RxInferRenderer()
-        
+
         pymdp_code = pymdp_renderer.render_model(self.test_model)
         rxinfer_code = rxinfer_renderer.render_model(self.test_model)
-        
+
         # Both should handle the same variables
         for var in ["s_f0", "o_m0", "u_c0"]:
             assert var in pymdp_code
@@ -315,69 +321,69 @@ import os
 from src.gnn import GNNModel
 from src.type_checker import TypeChecker
 
+
 class TestPerformance:
     @pytest.mark.slow
     def test_large_model_parsing(self):
         """Test parsing performance with large models"""
         # Generate large model
         large_model_content = self.generate_large_model(
-            num_states=100, 
-            num_observations=50
+            num_states=100, num_observations=50
         )
-        
+
         start_time = time.time()
         model = GNNModel.from_string(large_model_content)
         parse_time = time.time() - start_time
-        
+
         # Should parse large model in reasonable time
         assert parse_time < 10.0  # seconds
         assert len(model.state_space) == 150  # 100 states + 50 observations
-    
+
     @pytest.mark.slow
     def test_memory_usage_large_model(self):
         """Test memory usage with large models"""
         process = psutil.Process(os.getpid())
         initial_memory = process.memory_info().rss / 1024 / 1024  # MB
-        
+
         # Create and process large model
         large_model = self.generate_large_model(200, 100)
         model = GNNModel.from_string(large_model)
         checker = TypeChecker()
         result = checker.check_model(model)
-        
+
         final_memory = process.memory_info().rss / 1024 / 1024  # MB
         memory_increase = final_memory - initial_memory
-        
+
         # Memory increase should be reasonable (< 500MB for this test)
         assert memory_increase < 500
-    
+
     @staticmethod
     def generate_large_model(num_states, num_observations):
         """Generate a large GNN model for testing"""
         content = """
         ## GNNVersionAndFlags
         GNN v1.0
-        
+
         ## ModelName
         LargeTestModel
-        
+
         ## StateSpaceBlock
         """
-        
+
         # Add state variables
         for i in range(num_states):
             content += f"s_f{i}[3,1,type=categorical]\n"
-        
+
         # Add observation variables
         for i in range(num_observations):
             content += f"o_m{i}[2,1,type=categorical]\n"
-        
+
         content += "\n## Connections\n"
-        
+
         # Add connections (each state to first observation)
         for i in range(num_states):
             content += f"s_f{i} > o_m0\n"
-        
+
         return content
 ```
 
@@ -389,26 +395,24 @@ class TestPerformance:
 import pytest
 from src.gnn import GNNModel, GNNSyntaxError
 
+
 class TestSyntaxValidation:
-    @pytest.mark.parametrize("invalid_content,expected_error", [
-        (
-            "## StateSpaceBlock\ninvalid-name[2]",
-            "invalid variable name"
-        ),
-        (
-            "## StateSpaceBlock\ns_f0[type=invalid]",
-            "invalid type"
-        ),
-        (
-            "## Connections\ns_f0 -> o_m0",  # Invalid arrow
-            "invalid connection syntax"
-        ),
-    ])
+    @pytest.mark.parametrize(
+        "invalid_content,expected_error",
+        [
+            ("## StateSpaceBlock\ninvalid-name[2]", "invalid variable name"),
+            ("## StateSpaceBlock\ns_f0[type=invalid]", "invalid type"),
+            (
+                "## Connections\ns_f0 -> o_m0",  # Invalid arrow
+                "invalid connection syntax",
+            ),
+        ],
+    )
     def test_syntax_errors(self, invalid_content, expected_error):
         """Test detection of various syntax errors"""
         with pytest.raises(GNNSyntaxError) as exc_info:
             GNNModel.from_string(invalid_content)
-        
+
         assert expected_error.lower() in str(exc_info.value).lower()
 ```
 
@@ -422,13 +426,16 @@ import tempfile
 import os
 from pathlib import Path
 
+
 @pytest.fixture
 def temp_directory():
     """Provide a temporary directory for test files"""
     temp_dir = tempfile.mkdtemp()
     yield temp_dir
     import shutil
+
     shutil.rmtree(temp_dir)
+
 
 @pytest.fixture
 def sample_gnn_model():
@@ -436,33 +443,36 @@ def sample_gnn_model():
     return """
     ## GNNVersionAndFlags
     GNN v1.0
-    
+
     ## ModelName
     TestModel
-    
+
     ## StateSpaceBlock
     s_f0[2,1,type=categorical]
     o_m0[2,1,type=categorical]
-    
+
     ## Connections
     s_f0 > o_m0
-    
+
     ## InitialParameterization
     A_m0 = [[0.8, 0.2], [0.3, 0.7]]
     D_f0 = [0.5, 0.5]
     """
 
+
 @pytest.fixture
 def controlled_llm_service():
     """Deterministic LLM service for testing"""
+
     class ControlledLLMService:
         def analyze_model(self, model):
             return {"analysis": "test analysis"}
-        
+
         def suggest_improvements(self, model):
             return ["test suggestion"]
-    
+
     return MockLLMService()
+
 
 # Test markers
 def pytest_configure(config):

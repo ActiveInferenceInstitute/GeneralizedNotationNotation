@@ -304,8 +304,7 @@ from analysis import perform_statistical_analysis
 
 # Analyze a GNN model file
 results = perform_statistical_analysis(
-    file_path=Path("models/my_model.md"),
-    verbose=True
+    file_path=Path("models/my_model.md"), verbose=True
 )
 
 print(f"Model complexity: {results['complexity_metrics']['cyclomatic']}")
@@ -320,7 +319,7 @@ from analysis import (
     extract_variables_for_analysis,
     extract_connections_for_analysis,
     calculate_variable_statistics,
-    calculate_connection_statistics
+    calculate_connection_statistics,
 )
 
 # Extract and analyze components
@@ -342,8 +341,7 @@ from analysis import run_performance_benchmarks
 
 # Run performance benchmarks
 benchmarks = run_performance_benchmarks(
-    file_path=Path("models/large_model.md"),
-    verbose=True
+    file_path=Path("models/large_model.md"), verbose=True
 )
 
 print(f"Processing time: {benchmarks['processing_time']:.3f}s")
@@ -357,7 +355,7 @@ print(f"CPU utilization: {benchmarks['cpu_utilization']:.1f}%")
 from analysis import (
     calculate_cyclomatic_complexity,
     calculate_cognitive_complexity,
-    calculate_structural_complexity
+    calculate_structural_complexity,
 )
 
 # Calculate complexity metrics
@@ -373,10 +371,7 @@ print(f"Structural complexity: {structural:.2f}")
 ### Quality Assessment
 
 ```python
-from analysis import (
-    calculate_maintainability_index,
-    calculate_technical_debt
-)
+from analysis import calculate_maintainability_index, calculate_technical_debt
 
 # Assess model quality
 maintainability = calculate_maintainability_index(content, variables, connections)
@@ -430,9 +425,9 @@ section_stats = calculate_section_statistics(sections)
 ```python
 # Assess model complexity
 complexity_metrics = {
-    'cyclomatic': calculate_cyclomatic_complexity(variables, connections),
-    'cognitive': calculate_cognitive_complexity(variables, connections),
-    'structural': calculate_structural_complexity(variables, connections)
+    "cyclomatic": calculate_cyclomatic_complexity(variables, connections),
+    "cognitive": calculate_cognitive_complexity(variables, connections),
+    "structural": calculate_structural_complexity(variables, connections),
 }
 ```
 
@@ -446,8 +441,8 @@ performance = run_performance_benchmarks(file_path)
 ```python
 # Assess model quality
 quality_metrics = {
-    'maintainability': calculate_maintainability_index(content, variables, connections),
-    'technical_debt': calculate_technical_debt(content, variables, connections)
+    "maintainability": calculate_maintainability_index(content, variables, connections),
+    "technical_debt": calculate_technical_debt(content, variables, connections),
 }
 ```
 
@@ -516,14 +511,14 @@ output/16_analysis_output/
 ```python
 # Configuration options
 config = {
-    'verbose': True,               # Enable detailed logging
-    'include_performance': True,   # Include performance analysis
-    'include_complexity': True,    # Include complexity analysis
-    'include_quality': True,       # Include quality assessment
-    'generate_animations': True,   # Emit current-schema GridWorld GIFs
-    'benchmark_iterations': 5,     # Number of benchmark iterations
-    'memory_profiling': True,      # Enable memory profiling
-    'cpu_profiling': True          # Enable CPU profiling
+    "verbose": True,  # Enable detailed logging
+    "include_performance": True,  # Include performance analysis
+    "include_complexity": True,  # Include complexity analysis
+    "include_quality": True,  # Include quality assessment
+    "generate_animations": True,  # Emit current-schema GridWorld GIFs
+    "benchmark_iterations": 5,  # Number of benchmark iterations
+    "memory_profiling": True,  # Enable memory profiling
+    "cpu_profiling": True,  # Enable CPU profiling
 }
 ```
 
@@ -531,8 +526,8 @@ config = {
 ```python
 # Define custom analysis metrics
 custom_metrics = {
-    'custom_complexity': lambda v, c: custom_complexity_calculation(v, c),
-    'custom_quality': lambda content, v, c: custom_quality_assessment(content, v, c)
+    "custom_complexity": lambda v, c: custom_complexity_calculation(v, c),
+    "custom_quality": lambda content, v, c: custom_quality_assessment(content, v, c),
 }
 ```
 
@@ -577,8 +572,8 @@ if not validate_gnn_content(content):
 def test_variable_statistics():
     variables = extract_variables_for_analysis(test_content)
     stats = calculate_variable_statistics(variables)
-    assert 'type_distribution' in stats
-    assert 'count' in stats
+    assert "type_distribution" in stats
+    assert "count" in stats
 ```
 
 ### Integration Tests
@@ -586,9 +581,9 @@ def test_variable_statistics():
 # Test complete analysis pipeline
 def test_analysis_pipeline():
     results = perform_statistical_analysis(test_file)
-    assert 'statistics' in results
-    assert 'complexity_metrics' in results
-    assert 'performance_benchmarks' in results
+    assert "statistics" in results
+    assert "complexity_metrics" in results
+    assert "performance_benchmarks" in results
 ```
 
 ## Dependencies

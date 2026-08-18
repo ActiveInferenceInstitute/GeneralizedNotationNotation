@@ -106,9 +106,7 @@ from integration import process_integration
 
 # Process system integration
 success = process_integration(
-    target_dir=Path("models/"),
-    output_dir=Path("output/"),
-    verbose=True
+    target_dir=Path("models/"), output_dir=Path("output/"), verbose=True
 )
 
 if success:
@@ -276,9 +274,7 @@ performance_monitors = setup_performance_monitoring(resource_allocation)
 ```python
 # Execute system integration
 integration_results = execute_system_integration(
-    active_modules,
-    data_flows,
-    resource_allocation
+    active_modules, data_flows, resource_allocation
 )
 ```
 
@@ -290,20 +286,18 @@ integration_results = execute_system_integration(
 def process_integration(target_dir, output_dir, verbose=False, **kwargs):
     # Coordinate pipeline modules
     coordination_results = coordinate_pipeline_modules()
-    
+
     # Manage data flow
     flow_results = manage_data_flow()
-    
+
     # Integrate system functionality
     integration_results = integrate_system_functionality()
-    
+
     # Generate integration report
     report = generate_integration_report(
-        coordination_results,
-        flow_results,
-        integration_results
+        coordination_results, flow_results, integration_results
     )
-    
+
     return True
 ```
 
@@ -351,12 +345,12 @@ output/17_integration_output/
 ```python
 # Integration configuration
 config = {
-    'parallel_processing': True,    # Enable parallel processing
-    'resource_sharing': True,       # Enable resource sharing
-    'error_recovery': True,         # Enable error recovery
-    'performance_monitoring': True, # Enable performance monitoring
-    'cache_coordination': True,     # Enable cache coordination
-    'load_balancing': True         # Enable load balancing
+    "parallel_processing": True,  # Enable parallel processing
+    "resource_sharing": True,  # Enable resource sharing
+    "error_recovery": True,  # Enable error recovery
+    "performance_monitoring": True,  # Enable performance monitoring
+    "cache_coordination": True,  # Enable cache coordination
+    "load_balancing": True,  # Enable load balancing
 }
 ```
 
@@ -364,21 +358,13 @@ config = {
 ```python
 # Module-specific integration settings
 module_config = {
-    'gnn': {
-        'priority': 'high',
-        'memory_limit': '1GB',
-        'cpu_allocation': 0.3
+    "gnn": {"priority": "high", "memory_limit": "1GB", "cpu_allocation": 0.3},
+    "visualization": {
+        "priority": "medium",
+        "memory_limit": "500MB",
+        "cpu_allocation": 0.2,
     },
-    'visualization': {
-        'priority': 'medium',
-        'memory_limit': '500MB',
-        'cpu_allocation': 0.2
-    },
-    'analysis': {
-        'priority': 'medium',
-        'memory_limit': '750MB',
-        'cpu_allocation': 0.25
-    }
+    "analysis": {"priority": "medium", "memory_limit": "750MB", "cpu_allocation": 0.25},
 }
 ```
 
@@ -441,9 +427,9 @@ except DataFlowError as e:
 # Test individual integration functions
 def test_module_coordination():
     results = coordinate_pipeline_modules()
-    assert 'modules' in results
-    assert 'status' in results
-    assert results['status'] == 'success'
+    assert "modules" in results
+    assert "status" in results
+    assert results["status"] == "success"
 ```
 
 ### Integration Tests

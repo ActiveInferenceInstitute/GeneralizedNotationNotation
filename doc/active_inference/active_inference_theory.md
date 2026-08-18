@@ -215,12 +215,12 @@ Active Inference is commonly implemented as a discrete POMDP.
 ```python
 # GNN specification structure
 model = {
-    'A': [[...], [...]],     # Likelihood: P(o|s)
-    'B': [[[...]], [[...]]],  # Transitions: P(s'|s,a) per action
-    'C': [...],              # Preferences: ln P(o)
-    'D': [...],              # Prior: P(s_0)
-    'E': [...],              # Habits: P(π)
-    'T': 10,                 # Time horizon
+    "A": [[...], [...]],  # Likelihood: P(o|s)
+    "B": [[[...]], [[...]]],  # Transitions: P(s'|s,a) per action
+    "C": [...],  # Preferences: ln P(o)
+    "D": [...],  # Prior: P(s_0)
+    "E": [...],  # Habits: P(π)
+    "T": 10,  # Time horizon
 }
 ```
 

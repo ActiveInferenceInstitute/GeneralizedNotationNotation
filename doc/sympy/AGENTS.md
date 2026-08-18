@@ -69,21 +69,22 @@ See [src/AGENTS.md](../../src/AGENTS.md) for complete pipeline documentation.
 def validate_gnn_equations(gnn_equations: List[str]) -> Dict[str, ValidationResult]:
     """
     Validate mathematical expressions from GNN Equations section.
-    
+
     Parameters:
         gnn_equations: List of equation strings from GNN file
-    
+
     Returns:
         Dictionary mapping equations to validation results
     """
 
+
 def simplify_expression(expression: str) -> str:
     """
     Simplify mathematical expression using SymPy.
-    
+
     Parameters:
         expression: Mathematical expression string
-    
+
     Returns:
         Simplified expression string
     """

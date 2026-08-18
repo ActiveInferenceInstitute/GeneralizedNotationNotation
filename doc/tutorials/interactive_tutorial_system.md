@@ -240,20 +240,20 @@ Based on your assessment:
         "focus": "conceptual_understanding",
         "pace": "slow",
         "examples": "simple",
-        "support": "high"
+        "support": "high",
     },
     "developer_path": {
-        "focus": "practical_implementation", 
+        "focus": "practical_implementation",
         "pace": "fast",
         "examples": "realistic",
-        "support": "medium"
+        "support": "medium",
     },
     "researcher_path": {
         "focus": "theoretical_depth",
         "pace": "self_directed",
         "examples": "complex",
-        "support": "minimal"
-    }
+        "support": "minimal",
+    },
 }
 ```
 

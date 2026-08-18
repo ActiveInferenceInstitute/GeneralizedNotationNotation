@@ -250,7 +250,7 @@ success = process_llm(
     target_dir=Path("input/gnn_files"),
     output_dir=Path("output/13_llm_output"),
     logger=logger,
-    analysis_type="comprehensive"
+    analysis_type="comprehensive",
 )
 ```
 
@@ -261,7 +261,7 @@ success = process_llm(
     output_dir=Path("output/13_llm_output"),
     logger=logger,
     provider="ollama",  # Force Ollama
-    llm_tasks="all"
+    llm_tasks="all",
 )
 ```
 
@@ -598,8 +598,8 @@ export DEFAULT_PROVIDER=ollama          # Prefer Ollama when keys allow
 from llm.llm_processor import get_default_provider_configs
 
 configs = get_default_provider_configs()
-configs['ollama']['default_model'] = 'my-custom-model'
-configs['ollama']['default_max_tokens'] = 1024
+configs["ollama"]["default_model"] = "my-custom-model"
+configs["ollama"]["default_max_tokens"] = 1024
 ```
 
 ---

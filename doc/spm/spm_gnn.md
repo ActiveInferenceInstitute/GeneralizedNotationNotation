@@ -88,10 +88,10 @@ flowchart TD
 ```python
 # Extract key SPM results for GNN model specification
 spm_results = {
-    'activation_maps': extract_activation_peaks(spm_output),
-    'connectivity_matrix': extract_dcm_connectivity(spm_output),
-    'temporal_dynamics': extract_hrf_parameters(spm_output),
-    'group_statistics': extract_group_effects(spm_output)
+    "activation_maps": extract_activation_peaks(spm_output),
+    "connectivity_matrix": extract_dcm_connectivity(spm_output),
+    "temporal_dynamics": extract_hrf_parameters(spm_output),
+    "group_statistics": extract_group_effects(spm_output),
 }
 ```
 
@@ -130,9 +130,7 @@ D = SPMGroupPrior[N]                  # From group statistics
 ```python
 # Simulate GNN model to generate predicted activations
 gnn_predictions = simulate_active_inference_model(
-    gnn_specification,
-    experimental_design,
-    time_horizon=spm_analysis_length
+    gnn_specification, experimental_design, time_horizon=spm_analysis_length
 )
 ```
 
@@ -142,7 +140,7 @@ gnn_predictions = simulate_active_inference_model(
 spm_analysis_of_gnn = apply_spm_analysis(
     predicted_activations=gnn_predictions,
     design_matrix=experimental_design,
-    statistical_threshold=0.05
+    statistical_threshold=0.05,
 )
 ```
 
@@ -150,8 +148,7 @@ spm_analysis_of_gnn = apply_spm_analysis(
 ```python
 # Compare SPM analysis of real data vs. GNN predictions
 validation_metrics = compare_spm_results(
-    real_spm_results=actual_spm_analysis,
-    predicted_spm_results=spm_analysis_of_gnn
+    real_spm_results=actual_spm_analysis, predicted_spm_results=spm_analysis_of_gnn
 )
 ```
 
@@ -275,45 +272,44 @@ TemporalConstraint = HRFTemporalConstraint(s_t)
 ```python
 class SPMGNNBridge:
     """Bridge between SPM analysis results and GNN model specification."""
-    
+
     def __init__(self):
         self.spm_parser = SPMAnalysisParser()
         self.gnn_generator = GNNModelGenerator()
         self.validation_engine = CrossValidationEngine()
-    
+
     def spm_to_gnn(self, spm_results: Dict, experimental_design: Dict) -> str:
         """Convert SPM analysis results to GNN specification."""
-        
+
         # Extract SPM components
         activation_maps = self.spm_parser.extract_activations(spm_results)
         connectivity_matrix = self.spm_parser.extract_connectivity(spm_results)
         temporal_params = self.spm_parser.extract_temporal(spm_results)
-        
+
         # Generate GNN specification
         gnn_spec = self.gnn_generator.create_from_spm(
             activation_maps=activation_maps,
             connectivity_matrix=connectivity_matrix,
             temporal_params=temporal_params,
-            experimental_design=experimental_design
+            experimental_design=experimental_design,
         )
-        
+
         return gnn_spec
-    
+
     def validate_gnn_against_spm(self, gnn_spec: str, spm_results: Dict) -> Dict:
         """Validate GNN model predictions against SPM results."""
-        
+
         # Simulate GNN model
         gnn_predictions = self.simulate_gnn_model(gnn_spec)
-        
+
         # Apply SPM analysis to predictions
         predicted_spm = self.apply_spm_analysis(gnn_predictions)
-        
+
         # Compare with actual SPM results
         validation_metrics = self.validation_engine.compare_results(
-            actual_spm=spm_results,
-            predicted_spm=predicted_spm
+            actual_spm=spm_results, predicted_spm=predicted_spm
         )
-        
+
         return validation_metrics
 ```
 
@@ -322,36 +318,33 @@ class SPMGNNBridge:
 ```python
 class GNNSPMValidator:
     """Validate GNN models using SPM statistical frameworks."""
-    
+
     def __init__(self):
         self.spm_interface = SPMInterface()
         self.gnn_simulator = GNNSimulator()
         self.statistical_analyzer = StatisticalAnalyzer()
-    
+
     def validate_model(self, gnn_model: str, experimental_data: Dict) -> Dict:
         """Comprehensive validation of GNN model using SPM methods."""
-        
+
         # Step 1: Simulate GNN model
-        gnn_simulation = self.gnn_simulator.simulate(
-            gnn_model, experimental_data
-        )
-        
+        gnn_simulation = self.gnn_simulator.simulate(gnn_model, experimental_data)
+
         # Step 2: Apply SPM analysis to simulation
         spm_analysis = self.spm_interface.analyze_simulation(
-            simulation_data=gnn_simulation,
-            design_matrix=experimental_data['design']
+            simulation_data=gnn_simulation, design_matrix=experimental_data["design"]
         )
-        
+
         # Step 3: Compare with real data analysis
         comparison = self.statistical_analyzer.compare_analyses(
-            real_analysis=experimental_data['spm_results'],
-            simulated_analysis=spm_analysis
+            real_analysis=experimental_data["spm_results"],
+            simulated_analysis=spm_analysis,
         )
-        
+
         return {
-            'gnn_simulation': gnn_simulation,
-            'spm_analysis': spm_analysis,
-            'validation_metrics': comparison
+            "gnn_simulation": gnn_simulation,
+            "spm_analysis": spm_analysis,
+            "validation_metrics": comparison,
         }
 ```
 
@@ -457,27 +450,27 @@ PopulationConstraint = SPMGroupConstraint(s_t)
 # Standard data conversion pipeline
 def convert_spm_to_gnn_format(spm_file: str) -> Dict:
     """Convert SPM analysis results to GNN-compatible format."""
-    
+
     # Load SPM results
     spm_data = load_spm_results(spm_file)
-    
+
     # Extract key components
     activation_data = extract_activation_data(spm_data)
     connectivity_data = extract_connectivity_data(spm_data)
     temporal_data = extract_temporal_data(spm_data)
-    
+
     # Convert to GNN format
     gnn_data = {
-        'activation_maps': activation_data,
-        'connectivity_matrices': connectivity_data,
-        'temporal_parameters': temporal_data,
-        'metadata': {
-            'source': 'SPM',
-            'version': spm_data['version'],
-            'analysis_date': spm_data['date']
-        }
+        "activation_maps": activation_data,
+        "connectivity_matrices": connectivity_data,
+        "temporal_parameters": temporal_data,
+        "metadata": {
+            "source": "SPM",
+            "version": spm_data["version"],
+            "analysis_date": spm_data["date"],
+        },
     }
-    
+
     return gnn_data
 ```
 
@@ -499,30 +492,26 @@ def convert_spm_to_gnn_format(spm_file: str) -> Dict:
 ```python
 def integrated_validation_protocol(spm_results: Dict, gnn_model: str) -> Dict:
     """Comprehensive validation protocol combining SPM and GNN approaches."""
-    
+
     # SPM-style validation of GNN predictions
     gnn_predictions = simulate_gnn_model(gnn_model)
     spm_analysis_of_gnn = apply_spm_analysis(gnn_predictions)
-    
+
     # Statistical comparison
     statistical_comparison = compare_statistical_results(
         spm_results, spm_analysis_of_gnn
     )
-    
+
     # Effect size comparison
-    effect_size_comparison = compare_effect_sizes(
-        spm_results, spm_analysis_of_gnn
-    )
-    
+    effect_size_comparison = compare_effect_sizes(spm_results, spm_analysis_of_gnn)
+
     # Reproducibility assessment
-    reproducibility_assessment = assess_reproducibility(
-        spm_results, gnn_model
-    )
-    
+    reproducibility_assessment = assess_reproducibility(spm_results, gnn_model)
+
     return {
-        'statistical_comparison': statistical_comparison,
-        'effect_size_comparison': effect_size_comparison,
-        'reproducibility_assessment': reproducibility_assessment
+        "statistical_comparison": statistical_comparison,
+        "effect_size_comparison": effect_size_comparison,
+        "reproducibility_assessment": reproducibility_assessment,
     }
 ```
 

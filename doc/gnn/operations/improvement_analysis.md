@@ -45,6 +45,7 @@ Multiple modules use different approaches for handling optional dependencies:
 ```python
 try:
     import matplotlib.pyplot as plt
+
     MATPLOTLIB_AVAILABLE = True
 except (ImportError, RecursionError):
     plt = None
@@ -54,7 +55,9 @@ except (ImportError, RecursionError):
 **Pattern B: Complex availability checking** (`src/utils/dependency_manager.py:134-173`)
 
 ```python
-def check_python_dependency(self, dep: DependencyInfo) -> Tuple[bool, str, Optional[str]]:
+def check_python_dependency(
+    self, dep: DependencyInfo
+) -> Tuple[bool, str, Optional[str]]:
     # Complex logic with special cases for packages with different import names
     import_name = dep.name
     if dep.name == "pyyaml":
@@ -67,6 +70,7 @@ def check_python_dependency(self, dep: DependencyInfo) -> Tuple[bool, str, Optio
 ```python
 try:
     from .pymdp.pymdp_runner import run_pymdp_scripts
+
     PYMDP_AVAILABLE = True
 except ImportError as e:
     PYMDP_AVAILABLE = False
@@ -117,7 +121,7 @@ def log_step_error(logger_or_step_name, message: str = None, **metadata):
 
 ```python
 # Inline alternative functions when utils not available
-def log_step_error(logger, msg): 
+def log_step_error(logger, msg):
     _logging.getLogger(__name__).error(f"❌ {msg}")
 ```
 
@@ -187,9 +191,10 @@ ontology   | ⚠️ Partial | 0 | 0 | Missing register_tools
 ```python
 try:
     import sys
+
     if sys.version_info >= (3, 13):
         # Special handling for Python 3.13+ pathlib recursion
-        os.environ.pop('NETWORKX_AUTOMATIC_BACKENDS', None)
+        os.environ.pop("NETWORKX_AUTOMATIC_BACKENDS", None)
     import networkx as nx
 except (ImportError, RecursionError, AttributeError, ValueError) as e:
     nx = None

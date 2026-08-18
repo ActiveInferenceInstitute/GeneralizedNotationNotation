@@ -32,10 +32,10 @@ GNN dynamically calculates explicit dimensional mappings:
 ```python
 # Functional architecture utilized by GNN to manage stateless execution
 params = {
-    'A_matrix': jnp.array(A_matrix),
-    'B_matrix': jnp.array(B_matrix),
-    'C_vector': jnp.array(C_vector),
-    'D_vector': jnp.array(D_vector)
+    "A_matrix": jnp.array(A_matrix),
+    "B_matrix": jnp.array(B_matrix),
+    "C_vector": jnp.array(C_vector),
+    "D_vector": jnp.array(D_vector),
 }
 ```
 
@@ -49,7 +49,7 @@ JAX employs a pseudo-random number generation (PRNG) paradigm requiring explicit
    ```python
    # Stochastic draw from Prior distribution
    key, subkey = jax.random.split(key)
-   true_state_idx = jax.random.categorical(subkey, jnp.log(params['D_vector'] + 1e-8))
+   true_state_idx = jax.random.categorical(subkey, jnp.log(params["D_vector"] + 1e-8))
    ```
 
 2. **Step-wise Environment Generation**:
@@ -58,11 +58,11 @@ JAX employs a pseudo-random number generation (PRNG) paradigm requiring explicit
    ```python
    # Stochastic draw from A matrix conditioned on current True State
    key, subkey = jax.random.split(key)
-   obs_probs = params['A_matrix'][:, true_state_idx]
+   obs_probs = params["A_matrix"][:, true_state_idx]
    obs_idx = jax.random.categorical(subkey, jnp.log(obs_probs + 1e-8))
-   
+
    # Translate integer emission to binary one-hot representation for inner agent equations
-   obs_one_hot = jnp.zeros(params['A_matrix'].shape[0])
+   obs_one_hot = jnp.zeros(params["A_matrix"].shape[0])
    obs_one_hot = obs_one_hot.at[obs_idx].set(1.0)
    ```
 
@@ -74,8 +74,8 @@ JAX employs a pseudo-random number generation (PRNG) paradigm requiring explicit
    result = simulate_step(params, belief, obs_one_hot)
 
    # Explicit data serialization
-   actions.append(result['action'])
-   efes.append(result['all_efe_values'])
+   actions.append(result["action"])
+   efes.append(result["all_efe_values"])
    ```
 
 4. **Environment Transition**:
@@ -84,7 +84,7 @@ JAX employs a pseudo-random number generation (PRNG) paradigm requiring explicit
    ```python
    # Stochastic decay of the actual true_state index evaluated against JAX matrix
    key, subkey = jax.random.split(key)
-   next_state_probs = params['B_matrix'][:, true_state_idx, action_idx]
+   next_state_probs = params["B_matrix"][:, true_state_idx, action_idx]
    true_state_idx = jax.random.categorical(subkey, jnp.log(next_state_probs + 1e-8))
    ```
 

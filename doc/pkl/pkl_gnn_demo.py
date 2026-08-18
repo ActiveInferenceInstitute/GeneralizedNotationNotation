@@ -30,7 +30,7 @@ from typing import Any, Dict, Optional
 
 class PklGNNDemo:
     """Demonstrates Pkl integration with GNN for Active Inference models."""
-    
+
     def __init__(self, use_examples_dir=False):
         if use_examples_dir:
             self.temp_dir = Path("doc/pkl/examples")
@@ -39,18 +39,18 @@ class PklGNNDemo:
             self.temp_dir = Path(tempfile.mkdtemp(prefix="pkl_gnn_demo_"))
         self.pkl_executable = self._find_pkl_executable()
         print(f"🔧 Demo workspace: {self.temp_dir}")
-        
+
     def _find_pkl_executable(self) -> Optional[str]:
         """Find Pkl executable in system PATH."""
-        for pkl_name in ['pkl', 'jpkl', './pkl']:
-            if subprocess.run(['which', pkl_name], capture_output=True).returncode == 0:
+        for pkl_name in ["pkl", "jpkl", "./pkl"]:
+            if subprocess.run(["which", pkl_name], capture_output=True).returncode == 0:
                 return pkl_name
         print("⚠️  Pkl executable not found. Install from: https://pkl-lang.org/")
         return None
-    
+
     def create_base_active_inference_template(self) -> Path:
         """Create base Active Inference model template in Pkl."""
-        template_content = '''
+        template_content = """
 /// Base Active Inference Model Template
 /// Provides foundational structure for all Active Inference models
 module BaseActiveInferenceModel
@@ -193,12 +193,12 @@ function validateActiveInferenceStructure() {
 output {
   renderer = new YamlRenderer {}
 }
-'''
-        
+"""
+
         template_path = self.temp_dir / "BaseActiveInferenceModel.pkl"
         template_path.write_text(template_content.strip())
         return template_path
-    
+
     def create_visual_foraging_model(self) -> Path:
         """Create a specific Visual Foraging model extending the base template."""
         model_content = '''
@@ -339,14 +339,14 @@ simulationConfig = new {
   policyDepth = 3
 }
 '''
-        
+
         model_path = self.temp_dir / "VisualForagingModel.pkl"
         model_path.write_text(model_content.strip())
         return model_path
-    
+
     def create_pipeline_configuration(self) -> Path:
         """Create GNN pipeline configuration demonstrating advanced Pkl features."""
-        pipeline_content = '''
+        pipeline_content = """
 /// GNN Pipeline Configuration
 /// Demonstrates dynamic configuration and late binding
 module GNNPipelineConfig
@@ -512,15 +512,15 @@ output {
     }
   }
 }
-'''
-        
+"""
+
         pipeline_path = self.temp_dir / "GNNPipelineConfig.pkl"
         pipeline_path.write_text(pipeline_content.strip())
         return pipeline_path
-    
+
     def create_multi_format_export_config(self) -> Path:
         """Create configuration for multi-format exports."""
-        export_content = '''
+        export_content = """
 /// Multi-Format Export Configuration
 /// Demonstrates Pkl's powerful output rendering capabilities
 module MultiFormatExportConfig
@@ -601,128 +601,143 @@ output {
     }
   }
 }
-'''
-        
+"""
+
         export_path = self.temp_dir / "MultiFormatExportConfig.pkl"
         export_path.write_text(export_content.strip())
         return export_path
-    
-    def evaluate_pkl_file(self, pkl_file: Path, output_format: str = "yaml") -> Optional[str]:
+
+    def evaluate_pkl_file(
+        self, pkl_file: Path, output_format: str = "yaml"
+    ) -> Optional[str]:
         """Evaluate a Pkl file and return the output."""
         if not self.pkl_executable:
             return None
-            
+
         try:
-            result = subprocess.run([
-                self.pkl_executable, "eval", 
-                "-f", output_format,
-                str(pkl_file)
-            ], capture_output=True, text=True, cwd=self.temp_dir)
-            
+            result = subprocess.run(
+                [self.pkl_executable, "eval", "-f", output_format, str(pkl_file)],
+                capture_output=True,
+                text=True,
+                cwd=self.temp_dir,
+            )
+
             if result.returncode == 0:
                 return result.stdout
             else:
                 print(f"❌ Error evaluating {pkl_file.name}: {result.stderr}")
                 return None
-                
+
         except subprocess.SubprocessError as e:
             print(f"❌ Subprocess error: {e}")
             return None
-    
+
     def run_demonstration(self):
         """Run the complete Pkl-GNN demonstration."""
         print("🚀 Starting Pkl-GNN Integration Demonstration")
         print("=" * 60)
-        
+
         # 1. Create base template
         print("\n📋 1. Creating Base Active Inference Template")
         base_template = self.create_base_active_inference_template()
         print(f"✅ Created: {base_template.name}")
-        
+
         # 2. Create specific model
         print("\n🧠 2. Creating Visual Foraging Model")
         foraging_model = self.create_visual_foraging_model()
         print(f"✅ Created: {foraging_model.name}")
-        
+
         # 3. Create pipeline configuration
         print("\n⚙️  3. Creating Pipeline Configuration")
         pipeline_config = self.create_pipeline_configuration()
         print(f"✅ Created: {pipeline_config.name}")
-        
+
         # 4. Create export configuration
         print("\n📤 4. Creating Multi-Format Export Configuration")
         export_config = self.create_multi_format_export_config()
         print(f"✅ Created: {export_config.name}")
-        
+
         # 5. Demonstrate evaluations if Pkl is available
         if self.pkl_executable:
             print(f"\n🔍 5. Evaluating Pkl Files (using {self.pkl_executable})")
-            
+
             # Evaluate foraging model
             print("\n📊 Visual Foraging Model Output (YAML):")
             yaml_output = self.evaluate_pkl_file(foraging_model, "yaml")
             if yaml_output:
                 print("```yaml")
-                print(yaml_output[:1000] + "..." if len(yaml_output) > 1000 else yaml_output)
+                print(
+                    yaml_output[:1000] + "..."
+                    if len(yaml_output) > 1000
+                    else yaml_output
+                )
                 print("```")
-            
+
             # Evaluate foraging model as JSON
             print("\n📊 Visual Foraging Model Output (JSON):")
             json_output = self.evaluate_pkl_file(foraging_model, "json")
             if json_output:
                 print("```json")
-                print(json_output[:1000] + "..." if len(json_output) > 1000 else json_output)
+                print(
+                    json_output[:1000] + "..."
+                    if len(json_output) > 1000
+                    else json_output
+                )
                 print("```")
-            
+
             # Evaluate pipeline configuration
             print("\n📊 Pipeline Configuration Output:")
             pipeline_output = self.evaluate_pkl_file(pipeline_config, "yaml")
             if pipeline_output:
                 print("```yaml")
-                print(pipeline_output[:800] + "..." if len(pipeline_output) > 800 else pipeline_output)
+                print(
+                    pipeline_output[:800] + "..."
+                    if len(pipeline_output) > 800
+                    else pipeline_output
+                )
                 print("```")
         else:
             print("\n⚠️  Pkl executable not found - showing file structure only")
-            
+
         # 6. Show benefits summary
         self.show_benefits_summary()
-        
+
         # 7. Show file structure
         self.show_file_structure()
-        
+
         print(f"\n🧹 Demo files available at: {self.temp_dir}")
         print("📚 To install Pkl: https://pkl-lang.org/main/current/pkl-cli/index.html")
-    
+
     def show_benefits_summary(self):
         """Display summary of Pkl benefits for GNN."""
         print("\n🌟 Key Benefits of Pkl for GNN:")
         print("=" * 50)
-        
+
         benefits = [
             "✅ Type Safety: Catch Active Inference model errors at configuration time",
             "🔄 Template Inheritance: Reusable patterns for common AI models",
-            "📊 Multi-Format Output: Single source generating JSON, YAML, XML, GraphML", 
+            "📊 Multi-Format Output: Single source generating JSON, YAML, XML, GraphML",
             "🛡️  Validation: Mathematical constraints for stochasticity and dimensions",
             "📖 Documentation: Embedded docs and IDE support",
             "⚡ Performance: Compiled configurations with caching",
             "🔧 Late Binding: Dynamic configuration based on runtime conditions",
             "🏗️  Modularity: Importable, composable configuration modules",
             "🔒 Security: Sandboxed execution environment",
-            "🎯 Scientific Reproducibility: Immutable, deterministic configurations"
+            "🎯 Scientific Reproducibility: Immutable, deterministic configurations",
         ]
-        
+
         for benefit in benefits:
             print(f"  {benefit}")
-    
+
     def show_file_structure(self):
         """Display the generated file structure."""
         print("\n📁 Generated File Structure:")
         print("=" * 40)
-        
+
         for pkl_file in sorted(self.temp_dir.glob("*.pkl")):
             file_size = pkl_file.stat().st_size
             print(f"  📄 {pkl_file.name} ({file_size:,} bytes)")
-            
+
         print(f"\n📂 Total files: {len(list(self.temp_dir.glob('*.pkl')))}")
 
 
@@ -733,7 +748,7 @@ def main():
         use_examples = Path("doc/pkl/examples").exists() or Path("doc/pkl").exists()
         demo = PklGNNDemo(use_examples_dir=use_examples)
         demo.run_demonstration()
-        
+
         print("\n" + "=" * 60)
         print("🎉 Pkl-GNN Demonstration Complete!")
         print("\nNext Steps:")
@@ -742,14 +757,15 @@ def main():
         print("3. Try evaluating them with: pkl eval -f yaml <file.pkl>")
         print("4. Consider integrating Pkl into the GNN pipeline")
         print("\n📖 See doc/pkl/pkl_gnn.md for detailed analysis")
-        
+
     except KeyboardInterrupt:
         print("\n\n⏹️  Demo interrupted by user")
     except Exception as e:
         print(f"\n❌ Demo failed: {e}")
         import traceback
+
         traceback.print_exc()
 
 
 if __name__ == "__main__":
-    main() 
+    main()

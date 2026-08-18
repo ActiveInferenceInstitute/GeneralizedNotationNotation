@@ -109,12 +109,12 @@ def assess_executive_control(behavioral_data):
     Assess executive control through computational modeling
     """
     parameters = {
-        'working_memory_capacity': estimate_wm_capacity(behavioral_data),
-        'inhibitory_control': estimate_inhibition(behavioral_data),
-        'cognitive_flexibility': estimate_flexibility(behavioral_data),
-        'planning_ability': estimate_planning(behavioral_data)
+        "working_memory_capacity": estimate_wm_capacity(behavioral_data),
+        "inhibitory_control": estimate_inhibition(behavioral_data),
+        "cognitive_flexibility": estimate_flexibility(behavioral_data),
+        "planning_ability": estimate_planning(behavioral_data),
     }
-    
+
     executive_profile = integrate_executive_functions(parameters)
     return executive_profile
 ```

@@ -36,8 +36,7 @@ def render_gnn_to_jax(
     gnn_spec: Dict[str, Any],
     output_path: Path,
     options: Optional[Dict[str, Any]] = None,
-) -> Tuple[bool, str, List[str]]:
-    ...
+) -> Tuple[bool, str, List[str]]: ...
 ```
 
 The POMDP and combined variants differ only in which generator they call.

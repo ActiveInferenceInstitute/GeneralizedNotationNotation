@@ -395,10 +395,12 @@ from utils import ensure_directory_exists, safe_file_operation, get_file_info
 # Ensure directory exists
 success = ensure_directory_exists(Path("output/my_step/"))
 
+
 # Safe file operation
 def write_file(content, path):
-    with open(path, 'w') as f:
+    with open(path, "w") as f:
         f.write(content)
+
 
 result = safe_file_operation(write_file, "Hello World", Path("test.txt"))
 
@@ -420,11 +422,7 @@ else:
     print("Path is invalid")
 
 # Validate configuration
-config = {
-    "verbose": True,
-    "output_dir": "output/",
-    "log_level": "INFO"
-}
+config = {"verbose": True, "output_dir": "output/", "log_level": "INFO"}
 
 required_keys = ["verbose", "output_dir"]
 if validate_config(config, required_keys):
@@ -460,18 +458,21 @@ from pipeline import get_output_dir_for_script, get_pipeline_config
 # Setup logging
 logger = setup_step_logging(__name__)
 
+
 # Main processing function
-def process_my_module(target_dir: Path, output_dir: Path, verbose: bool = False, **kwargs) -> bool:
+def process_my_module(
+    target_dir: Path, output_dir: Path, verbose: bool = False, **kwargs
+) -> bool:
     """Main function for processing my module tasks."""
     try:
         log_step_start("my_module", target_dir, output_dir, verbose)
-        
+
         # Core processing logic here
         results = perform_my_module_processing(target_dir, output_dir, verbose)
-        
+
         log_step_success("my_module", results)
         return True
-        
+
     except Exception as e:
         log_step_error("my_module", e)
         return False
@@ -483,6 +484,7 @@ def process_my_module(target_dir: Path, output_dir: Path, verbose: bool = False,
 def parse_step_arguments(step_name):
     """Parse arguments for a specific pipeline step."""
     from utils.argument_utils import ArgumentParser
+
     return ArgumentParser.parse_step_arguments(step_name)
 ```
 
@@ -492,11 +494,11 @@ def parse_step_arguments(step_name):
 ```python
 # Logging configuration
 logging_config = {
-    'log_level': 'INFO',           # Log level
-    'log_format': 'structured',     # Log format
-    'correlation_ids': True,        # Enable correlation IDs
-    'performance_tracking': True,    # Enable performance tracking
-    'error_reporting': True         # Enable error reporting
+    "log_level": "INFO",  # Log level
+    "log_format": "structured",  # Log format
+    "correlation_ids": True,  # Enable correlation IDs
+    "performance_tracking": True,  # Enable performance tracking
+    "error_reporting": True,  # Enable error reporting
 }
 ```
 
@@ -504,10 +506,10 @@ logging_config = {
 ```python
 # Argument parsing configuration
 parser_config = {
-    'fallback_enabled': True,       # Enable recovery parsing
-    'validation_enabled': True,      # Enable argument validation
-    'help_generation': True,         # Enable help text generation
-    'error_handling': True           # Enable error handling
+    "fallback_enabled": True,  # Enable recovery parsing
+    "validation_enabled": True,  # Enable argument validation
+    "help_generation": True,  # Enable help text generation
+    "error_handling": True,  # Enable error handling
 }
 ```
 
@@ -515,11 +517,11 @@ parser_config = {
 ```python
 # Pipeline configuration
 pipeline_config = {
-    'output_base_dir': 'output/',    # Base output directory
-    'log_base_dir': 'logs/',         # Base log directory
-    'temp_dir': 'temp/',             # Temporary directory
-    'backup_enabled': True,          # Enable backups
-    'cleanup_enabled': True          # Enable cleanup
+    "output_base_dir": "output/",  # Base output directory
+    "log_base_dir": "logs/",  # Base log directory
+    "temp_dir": "temp/",  # Temporary directory
+    "backup_enabled": True,  # Enable backups
+    "cleanup_enabled": True,  # Enable cleanup
 }
 ```
 
@@ -684,6 +686,7 @@ Solution: Check path format and implement proper validation
 ```python
 # Enable debug mode for detailed utility information
 import logging
+
 logging.getLogger().setLevel(logging.DEBUG)
 ```
 

@@ -93,7 +93,7 @@ success = process_advanced_viz(
     logger=logger,
     viz_type="all",
     interactive=True,
-    export_formats=["html", "json"]
+    export_formats=["html", "json"],
 )
 ```
 
@@ -232,7 +232,7 @@ success = process_advanced_viz(
     target_dir=Path("input/gnn_files"),
     output_dir=Path("output/9_advanced_viz_output"),
     logger=logger,
-    viz_type="all"
+    viz_type="all",
 )
 ```
 
@@ -245,7 +245,7 @@ success = process_advanced_viz(
     logger=logger,
     viz_type="dashboard",
     interactive=True,
-    export_formats=["html", "json"]
+    export_formats=["html", "json"],
 )
 ```
 
@@ -257,7 +257,7 @@ success = process_advanced_viz(
     target_dir=Path("input/gnn_files"),
     output_dir=Path("output/9_advanced_viz_output"),
     logger=logger,
-    viz_type="d2"  # or "diagrams" or "pipeline"
+    viz_type="d2",  # or "diagrams" or "pipeline"
 )
 
 # Programmatic D2 usage
@@ -267,9 +267,7 @@ visualizer = D2Visualizer(logger=logger)
 if visualizer.d2_available:
     # Generate all diagrams for a model
     results = visualizer.generate_all_diagrams_for_model(
-        model_data,
-        output_dir,
-        formats=["svg", "png"]
+        model_data, output_dir, formats=["svg", "png"]
     )
 ```
 

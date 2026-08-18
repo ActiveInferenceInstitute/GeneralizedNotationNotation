@@ -13,7 +13,7 @@ repo = Repository("/home/trim/Documents/GitHub/GeneralizedNotationNotation")
 print(repo.get_file_tree())
 # Output: [{"path": "src/main.py", "is_dir": False, ...}, ...]
 
-print(repo.extract_symbols('src/main.py'))
+print(repo.extract_symbols("src/main.py"))
 # Output: [{"name": "main", "type": "function", "file": "src/main.py", ...}, ...]
 
 repo.write_index("repo_index.local.json")

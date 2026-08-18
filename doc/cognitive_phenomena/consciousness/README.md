@@ -310,11 +310,13 @@ from typing import Dict, List, Optional, Tuple
 from dataclasses import dataclass
 from enum import Enum
 
+
 class ConsciousnessLevel(Enum):
     UNCONSCIOUS = 0
     PRECONSCIOUS = 1
     CONSCIOUS = 2
     REFLECTIVE = 3
+
 
 class AttentionType(Enum):
     VISUAL = 0
@@ -323,9 +325,11 @@ class AttentionType(Enum):
     MOTOR = 3
     INTERNAL = 4
 
+
 @dataclass
 class ConsciousnessState:
     """Comprehensive consciousness state representation"""
+
     global_workspace: np.ndarray
     local_processors: Dict[str, np.ndarray]
     attention_focus: AttentionType
@@ -335,125 +339,143 @@ class ConsciousnessState:
     metacognitive_state: np.ndarray
     phenomenal_qualities: np.ndarray
 
+
 class GlobalWorkspaceModel:
     """
     Active Inference implementation of consciousness through global workspace theory
     """
-    
+
     def __init__(self, config: Dict):
         self.config = config
         self.initialize_parameters()
-        
+
     def initialize_parameters(self):
         """Initialize consciousness-specific parameters"""
         # Global workspace parameters
-        self.broadcast_threshold = self.config.get('broadcast_threshold', 0.7)
-        self.workspace_capacity = self.config.get('workspace_capacity', 3)
-        self.integration_time = self.config.get('integration_time', 0.3)
-        
+        self.broadcast_threshold = self.config.get("broadcast_threshold", 0.7)
+        self.workspace_capacity = self.config.get("workspace_capacity", 3)
+        self.integration_time = self.config.get("integration_time", 0.3)
+
         # Attention parameters
-        self.attention_precision = self.config.get('attention_precision', 2.0)
-        self.attention_capacity = self.config.get('attention_capacity', 4)
-        
+        self.attention_precision = self.config.get("attention_precision", 2.0)
+        self.attention_capacity = self.config.get("attention_capacity", 4)
+
         # Consciousness parameters
-        self.conscious_access_threshold = self.config.get('conscious_access_threshold', 0.8)
-        self.conscious_duration = self.config.get('conscious_duration', 0.5)
-        
+        self.conscious_access_threshold = self.config.get(
+            "conscious_access_threshold", 0.8
+        )
+        self.conscious_duration = self.config.get("conscious_duration", 0.5)
+
         # Local processors
         self.visual_processor = self.initialize_visual_processor()
         self.auditory_processor = self.initialize_auditory_processor()
         self.semantic_processor = self.initialize_semantic_processor()
-        
-    def update_consciousness(self, sensory_input: Dict[str, np.ndarray],
-                           current_state: ConsciousnessState) -> ConsciousnessState:
+
+    def update_consciousness(
+        self, sensory_input: Dict[str, np.ndarray], current_state: ConsciousnessState
+    ) -> ConsciousnessState:
         """Update consciousness through global workspace dynamics"""
-        
+
         # Update local processors
         local_states = self.update_local_processors(sensory_input, current_state)
-        
+
         # Determine broadcasting candidates
         broadcast_candidates = self.identify_broadcast_candidates(local_states)
-        
+
         # Global workspace competition and integration
-        workspace_contents = self.update_global_workspace(broadcast_candidates, 
-                                                          current_state)
-        
+        workspace_contents = self.update_global_workspace(
+            broadcast_candidates, current_state
+        )
+
         # Determine conscious access
         consciousness_level = self.determine_consciousness_level(workspace_contents)
-        
+
         # Update attention based on workspace contents
         new_attention = self.update_attention(workspace_contents, current_state)
-        
+
         # Update self-model and metacognition
         self_model = self.update_self_model(workspace_contents, current_state)
-        metacognitive_state = self.update_metacognition(workspace_contents, 
-                                                        current_state)
-        
+        metacognitive_state = self.update_metacognition(
+            workspace_contents, current_state
+        )
+
         # Compute phenomenal qualities
-        phenomenal_qualities = self.compute_phenomenal_qualities(workspace_contents,
-                                                               new_attention)
-        
+        phenomenal_qualities = self.compute_phenomenal_qualities(
+            workspace_contents, new_attention
+        )
+
         return ConsciousnessState(
             global_workspace=workspace_contents,
             local_processors=local_states,
-            attention_focus=new_attention['focus'],
-            attention_strength=new_attention['strength'],
+            attention_focus=new_attention["focus"],
+            attention_strength=new_attention["strength"],
             consciousness_level=consciousness_level,
             self_model=self_model,
             metacognitive_state=metacognitive_state,
-            phenomenal_qualities=phenomenal_qualities
+            phenomenal_qualities=phenomenal_qualities,
         )
-    
-    def identify_broadcast_candidates(self, local_states: Dict[str, np.ndarray]) -> List[Tuple[str, np.ndarray]]:
+
+    def identify_broadcast_candidates(
+        self, local_states: Dict[str, np.ndarray]
+    ) -> List[Tuple[str, np.ndarray]]:
         """Identify which local processors should broadcast to global workspace"""
         candidates = []
-        
+
         for processor_name, state in local_states.items():
             # Check if state exceeds broadcast threshold
             activation_strength = np.max(state)
             if activation_strength > self.broadcast_threshold:
                 candidates.append((processor_name, state))
-        
+
         # Sort by activation strength
         candidates.sort(key=lambda x: np.max(x[1]), reverse=True)
-        
+
         return candidates
-    
-    def update_global_workspace(self, candidates: List[Tuple[str, np.ndarray]],
-                               current_state: ConsciousnessState) -> np.ndarray:
+
+    def update_global_workspace(
+        self,
+        candidates: List[Tuple[str, np.ndarray]],
+        current_state: ConsciousnessState,
+    ) -> np.ndarray:
         """Update global workspace through competition and integration"""
-        
+
         # Initialize workspace
         workspace = np.zeros(20)  # Assuming 20-dimensional workspace
-        
+
         # Competition among candidates
         if len(candidates) > self.workspace_capacity:
             # Select top candidates based on strength and coherence
-            selected_candidates = self.select_workspace_contents(candidates, current_state)
+            selected_candidates = self.select_workspace_contents(
+                candidates, current_state
+            )
         else:
             selected_candidates = candidates
-        
+
         # Integrate selected contents
         for i, (processor, state) in enumerate(selected_candidates):
             if i < self.workspace_capacity:
                 # Map processor state to workspace representation
                 workspace_representation = self.map_to_workspace(processor, state)
                 workspace += workspace_representation
-        
+
         # Apply temporal dynamics
-        workspace = self.apply_workspace_dynamics(workspace, current_state.global_workspace)
-        
+        workspace = self.apply_workspace_dynamics(
+            workspace, current_state.global_workspace
+        )
+
         return workspace
-    
-    def determine_consciousness_level(self, workspace_contents: np.ndarray) -> ConsciousnessLevel:
+
+    def determine_consciousness_level(
+        self, workspace_contents: np.ndarray
+    ) -> ConsciousnessLevel:
         """Determine level of consciousness based on workspace state"""
-        
+
         workspace_activation = np.linalg.norm(workspace_contents)
         workspace_coherence = self.compute_workspace_coherence(workspace_contents)
-        
+
         # Combined measure of consciousness
         consciousness_strength = workspace_activation * workspace_coherence
-        
+
         if consciousness_strength > self.conscious_access_threshold:
             if workspace_coherence > 0.8:
                 return ConsciousnessLevel.REFLECTIVE
@@ -463,23 +485,30 @@ class GlobalWorkspaceModel:
             return ConsciousnessLevel.PRECONSCIOUS
         else:
             return ConsciousnessLevel.UNCONSCIOUS
-    
-    def compute_phenomenal_qualities(self, workspace_contents: np.ndarray,
-                                   attention_state: Dict) -> np.ndarray:
+
+    def compute_phenomenal_qualities(
+        self, workspace_contents: np.ndarray, attention_state: Dict
+    ) -> np.ndarray:
         """Compute phenomenal qualities (qualia) from workspace and attention"""
-        
+
         # Qualia emerge from precision-weighted prediction errors
-        attention_weight = attention_state['strength']
+        attention_weight = attention_state["strength"]
         workspace_strength = np.linalg.norm(workspace_contents)
-        
+
         # Different modalities contribute to different qualia
         visual_qualia = self.compute_visual_qualia(workspace_contents, attention_weight)
-        auditory_qualia = self.compute_auditory_qualia(workspace_contents, attention_weight)
-        emotional_qualia = self.compute_emotional_qualia(workspace_contents, attention_weight)
-        
+        auditory_qualia = self.compute_auditory_qualia(
+            workspace_contents, attention_weight
+        )
+        emotional_qualia = self.compute_emotional_qualia(
+            workspace_contents, attention_weight
+        )
+
         # Combine all qualitative dimensions
-        phenomenal_qualities = np.concatenate([visual_qualia, auditory_qualia, emotional_qualia])
-        
+        phenomenal_qualities = np.concatenate(
+            [visual_qualia, auditory_qualia, emotional_qualia]
+        )
+
         return phenomenal_qualities
 ```
 

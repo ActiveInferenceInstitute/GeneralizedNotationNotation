@@ -16,6 +16,7 @@ GNN file parsing utilities tailored for the visualization pipeline.
 
 ```python
 from visualization.parse import GNNParser, parse_gnn_content
+
 parser = GNNParser()
 model = parser.parse(gnn_file_path)
 ```

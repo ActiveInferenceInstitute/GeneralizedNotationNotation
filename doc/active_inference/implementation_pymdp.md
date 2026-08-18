@@ -129,7 +129,7 @@ PyMDP supports factorized state spaces:
 
 ```python
 num_states = [4, 2]  # Factor 1: 4 states, Factor 2: 2 states
-num_obs = [3, 2]     # Modality 1: 3 obs, Modality 2: 2 obs
+num_obs = [3, 2]  # Modality 1: 3 obs, Modality 2: 2 obs
 
 A = utils.obj_array(len(num_obs))
 A[0] = np.zeros((num_obs[0], *num_states))
@@ -142,7 +142,10 @@ Enable parameter learning:
 
 ```python
 agent = Agent(
-    A=A, B=B, C=C, D=D,
+    A=A,
+    B=B,
+    C=C,
+    D=D,
     pA=pA,  # Dirichlet priors for A learning
     pB=pB,  # Dirichlet priors for B learning
     pD=pD,  # Dirichlet priors for D learning
@@ -160,10 +163,13 @@ Configure policy selection:
 
 ```python
 agent = Agent(
-    A=A, B=B, C=C, D=D,
+    A=A,
+    B=B,
+    C=C,
+    D=D,
     policies=policies,  # Custom policy set
-    gamma=16.0,         # Policy precision
-    use_utility=True,   # Include pragmatic value
+    gamma=16.0,  # Policy precision
+    use_utility=True,  # Include pragmatic value
     use_states_info_gain=True,  # Include epistemic value
 )
 ```

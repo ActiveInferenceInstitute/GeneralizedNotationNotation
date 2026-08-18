@@ -197,7 +197,8 @@ julia_call = [
     "julia",
     "--project=/tmp/julia_test_env",  # Isolated project environment
     "--startup-file=no",
-    "-e", "using RxInfer, JSON, Distributions, StatsBase; print('OK')"
+    "-e",
+    "using RxInfer, JSON, Distributions, StatsBase; print('OK')",
 ]
 ```
 
@@ -298,7 +299,8 @@ cmd = [
     "julia",
     "--project=/tmp/julia_isolated_env",
     "--startup-file=no",
-    "-e", "using RxInfer, JSON, Distributions, StatsBase; println('OK')"
+    "-e",
+    "using RxInfer, JSON, Distributions, StatsBase; println('OK')",
 ]
 ```
 

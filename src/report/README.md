@@ -136,9 +136,7 @@ from report import process_report
 
 # Generate comprehensive report
 success = process_report(
-    target_dir=Path("pipeline_results/"),
-    output_dir=Path("reports/"),
-    verbose=True
+    target_dir=Path("pipeline_results/"), output_dir=Path("reports/"), verbose=True
 )
 
 if success:
@@ -264,11 +262,9 @@ json_report = format_json_report(report_content)
 ### 5. Report Distribution
 ```python
 # Save and distribute reports
-save_reports(output_dir, {
-    'markdown': markdown_report,
-    'html': html_report,
-    'json': json_report
-})
+save_reports(
+    output_dir, {"markdown": markdown_report, "html": html_report, "json": json_report}
+)
 ```
 
 ## Integration with Pipeline
@@ -340,12 +336,12 @@ output/23_report_output/
 ```python
 # Report configuration
 config = {
-    'report_formats': ['markdown', 'html', 'json'],  # Output formats
-    'include_charts': True,                          # Include charts and graphs
-    'include_metrics': True,                          # Include performance metrics
-    'include_recommendations': True,                  # Include recommendations
-    'executive_summary': True,                        # Generate executive summary
-    'detailed_analysis': True                         # Generate detailed analysis
+    "report_formats": ["markdown", "html", "json"],  # Output formats
+    "include_charts": True,  # Include charts and graphs
+    "include_metrics": True,  # Include performance metrics
+    "include_recommendations": True,  # Include recommendations
+    "executive_summary": True,  # Generate executive summary
+    "detailed_analysis": True,  # Generate detailed analysis
 }
 ```
 
@@ -353,20 +349,20 @@ config = {
 ```python
 # Formatting configuration
 formatting_config = {
-    'markdown': {
-        'include_toc': True,                          # Include table of contents
-        'include_charts': True,                       # Include charts
-        'style': 'github'                             # Markdown style
+    "markdown": {
+        "include_toc": True,  # Include table of contents
+        "include_charts": True,  # Include charts
+        "style": "github",  # Markdown style
     },
-    'html': {
-        'theme': 'default',                           # HTML theme
-        'responsive': True,                           # Responsive design
-        'interactive': True                           # Interactive elements
+    "html": {
+        "theme": "default",  # HTML theme
+        "responsive": True,  # Responsive design
+        "interactive": True,  # Interactive elements
     },
-    'json': {
-        'pretty_print': True,                         # Pretty print JSON
-        'include_metadata': True                      # Include metadata
-    }
+    "json": {
+        "pretty_print": True,  # Pretty print JSON
+        "include_metadata": True,  # Include metadata
+    },
 }
 ```
 
@@ -429,9 +425,9 @@ except FormattingError as e:
 # Test individual report functions
 def test_report_generation():
     results = process_report(test_dir, output_dir)
-    assert results['success']
-    assert 'executive_summary' in results['reports']
-    assert 'detailed_analysis' in results['reports']
+    assert results["success"]
+    assert "executive_summary" in results["reports"]
+    assert "detailed_analysis" in results["reports"]
 ```
 
 ### Integration Tests
@@ -449,10 +445,10 @@ def test_report_pipeline():
 ```python
 # Test different report formats
 def test_report_formats():
-    formats = ['markdown', 'html', 'json']
+    formats = ["markdown", "html", "json"]
     for format in formats:
         result = generate_report_in_format(test_content, format)
-        assert result['success']
+        assert result["success"]
 ```
 
 ## Dependencies

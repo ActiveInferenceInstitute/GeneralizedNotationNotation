@@ -23,10 +23,13 @@ python src/main.py --only-steps 0 --verbose
 
 ```python
 from template import (
-    process_template_standardized, process_single_file,
-    validate_file, generate_correlation_id,
-    safe_template_execution, demonstrate_utility_patterns,
-    get_version_info
+    process_template_standardized,
+    process_single_file,
+    validate_file,
+    generate_correlation_id,
+    safe_template_execution,
+    demonstrate_utility_patterns,
+    get_version_info,
 )
 
 # Process template step (used by pipeline)
@@ -56,7 +59,10 @@ corr_id = generate_correlation_id()
 ```python
 # N_module.py — Thin orchestrator (<150 lines)
 from utils.pipeline_template import create_standardized_pipeline_script
-run_script = create_standardized_pipeline_script("N_module.py", process_func, "Description")
+
+run_script = create_standardized_pipeline_script(
+    "N_module.py", process_func, "Description"
+)
 ```
 
 - Orchestrators handle ONLY: arg parsing, logging, output dirs, delegation

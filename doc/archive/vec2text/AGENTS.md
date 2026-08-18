@@ -67,22 +67,23 @@ See [src/AGENTS.md](../../../src/AGENTS.md) for complete pipeline documentation.
 def invert_embedding(embedding: np.ndarray, model: Vec2TextModel) -> str:
     """
     Reconstruct text from embedding using Vec2Text.
-    
+
     Parameters:
         embedding: Dense vector embedding
         model: Vec2Text model for inversion
-    
+
     Returns:
         Reconstructed text string
     """
 
+
 def analyze_privacy_implications(embeddings: List[np.ndarray]) -> PrivacyAnalysis:
     """
     Analyze privacy implications of embedding-based models.
-    
+
     Parameters:
         embeddings: List of embeddings to analyze
-    
+
     Returns:
         PrivacyAnalysis with information-theoretic insights
     """

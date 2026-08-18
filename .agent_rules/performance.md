@@ -28,6 +28,7 @@
 import psutil
 from contextlib import contextmanager
 
+
 @contextmanager
 def memory_tracked(operation: str, logger):
     """Track memory usage of an operation."""
@@ -38,9 +39,12 @@ def memory_tracked(operation: str, logger):
     finally:
         end_mb = proc.memory_info().rss / 1024 / 1024
         delta = end_mb - start_mb
-        logger.debug(f"Memory [{operation}]: {start_mb:.1f}→{end_mb:.1f}MB (Δ{delta:+.1f}MB)")
+        logger.debug(
+            f"Memory [{operation}]: {start_mb:.1f}→{end_mb:.1f}MB (Δ{delta:+.1f}MB)"
+        )
         if delta > 100:
             logger.warning(f"High memory usage in {operation}: +{delta:.1f}MB")
+
 
 # Usage
 with memory_tracked("parse_models", logger):
@@ -55,10 +59,12 @@ with memory_tracked("parse_models", logger):
 from functools import lru_cache
 import hashlib
 
+
 @lru_cache(maxsize=128)
 def parse_gnn_cached(content_hash: str, file_path: str) -> Dict[str, Any]:
     """Parse GNN with LRU cache keyed on content hash."""
     return _do_parse(Path(file_path))
+
 
 def get_cached_parse(path: Path) -> Dict[str, Any]:
     content = path.read_text()
@@ -73,11 +79,13 @@ def get_cached_parse(path: Path) -> Dict[str, Any]:
 ```python
 from concurrent.futures import ThreadPoolExecutor, ProcessPoolExecutor
 
+
 def parallel_process(items, processor, max_workers=4, use_threads=True):
     """Process items in parallel."""
     Executor = ThreadPoolExecutor if use_threads else ProcessPoolExecutor
     with Executor(max_workers=max_workers) as ex:
         return list(ex.map(processor, items))
+
 
 # I/O bound (file reading) → threads
 results = parallel_process(files, parse_file, max_workers=8, use_threads=True)
@@ -94,13 +102,16 @@ results = parallel_process(models, compute_matrices, max_workers=4, use_threads=
 import signal
 from functools import wraps
 
+
 def timeout(seconds: int):
     """Decorator enforcing execution timeout (Unix only)."""
+
     def decorator(func):
         @wraps(func)
         def wrapper(*args, **kwargs):
             def handler(signum, frame):
                 raise TimeoutError(f"{func.__name__} timed out after {seconds}s")
+
             old = signal.signal(signal.SIGALRM, handler)
             signal.alarm(seconds)
             try:
@@ -108,12 +119,14 @@ def timeout(seconds: int):
             finally:
                 signal.alarm(0)
                 signal.signal(signal.SIGALRM, old)
+
         return wrapper
+
     return decorator
 
+
 @timeout(60)
-def execute_simulation(script_path: Path) -> bool:
-    ...
+def execute_simulation(script_path: Path) -> bool: ...
 ```
 
 ---
@@ -135,6 +148,7 @@ def execute_simulation(script_path: Path) -> bool:
 
 ```python
 import gc
+
 
 def cleanup_large_objects(*objects) -> None:
     """Explicit cleanup after memory-intensive operations."""

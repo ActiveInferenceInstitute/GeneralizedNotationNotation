@@ -10,9 +10,12 @@ MCP Integration for module_name.
 
 Exposes module functionality via Model Context Protocol.
 """
+
 import logging
 from typing import Dict, Any, Optional
+
 logger = logging.getLogger(__name__)
+
 
 def function_name_mcp(mcp_instance_ref=None, **kwargs) -> Dict[str, Any]:
     """
@@ -37,6 +40,7 @@ def function_name_mcp(mcp_instance_ref=None, **kwargs) -> Dict[str, Any]:
                 }
 
         from .processor import function_name
+
         result = function_name(**kwargs)
 
         return {
@@ -54,6 +58,7 @@ def function_name_mcp(mcp_instance_ref=None, **kwargs) -> Dict[str, Any]:
         logger.error(f"MCP tool error: {e}")
         return {"success": False, "error": str(e), "error_type": "execution_error"}
 
+
 def register_tools(mcp=None) -> None:
     """Register all MCP tools with the central server."""
     if mcp is None:
@@ -66,7 +71,11 @@ def register_tools(mcp=None) -> None:
             "type": "object",
             "properties": {
                 "param1": {"type": "string", "description": "Description"},
-                "param2": {"type": "boolean", "description": "Description", "default": False},
+                "param2": {
+                    "type": "boolean",
+                    "description": "Description",
+                    "default": False,
+                },
             },
             "required": ["param1"],
         },
@@ -83,14 +92,20 @@ def register_tools(mcp=None) -> None:
 
 ```python
 # Success
-{"success": True, "result": {...}, "operation": "...", "module": "...", "execution_time_ms": 123}
+{
+    "success": True,
+    "result": {...},
+    "operation": "...",
+    "module": "...",
+    "execution_time_ms": 123,
+}
 
 # Failure
 {
     "success": False,
     "error": "Human-readable message",
     "error_type": "missing_argument|validation_error|execution_error|import_error|timeout_error",
-    "details": {"argument": "param1", "expected": "string"}
+    "details": {"argument": "param1", "expected": "string"},
 }
 ```
 

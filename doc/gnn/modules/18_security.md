@@ -95,7 +95,7 @@ success = process_security(
     logger=logger,
     verbose=True,
     security_level="strict",
-    compliance_standards=["OWASP Top 10", "CWE"]
+    compliance_standards=["OWASP Top 10", "CWE"],
 )
 ```
 
@@ -145,38 +145,38 @@ success = process_security(
 ### Security Levels
 ```python
 SECURITY_LEVELS = {
-    'basic': {
-        'validate_file_integrity': True,
-        'check_basic_permissions': True,
-        'log_access': True
+    "basic": {
+        "validate_file_integrity": True,
+        "check_basic_permissions": True,
+        "log_access": True,
     },
-    'standard': {
-        'validate_file_integrity': True,
-        'check_basic_permissions': True,
-        'log_access': True,
-        'scan_for_malicious_content': True,
-        'validate_model_structure': True
+    "standard": {
+        "validate_file_integrity": True,
+        "check_basic_permissions": True,
+        "log_access": True,
+        "scan_for_malicious_content": True,
+        "validate_model_structure": True,
     },
-    'strict': {
-        'validate_file_integrity': True,
-        'check_basic_permissions': True,
-        'log_access': True,
-        'scan_for_malicious_content': True,
-        'validate_model_structure': True,
-        'encrypt_sensitive_data': True,
-        'require_authorization': True
-    }
+    "strict": {
+        "validate_file_integrity": True,
+        "check_basic_permissions": True,
+        "log_access": True,
+        "scan_for_malicious_content": True,
+        "validate_model_structure": True,
+        "encrypt_sensitive_data": True,
+        "require_authorization": True,
+    },
 }
 ```
 
 ### Security Policies
 ```python
 SECURITY_POLICIES = {
-    'allowed_file_types': ['.md', '.json', '.yaml'],
-    'max_file_size_mb': 100,
-    'require_encryption': False,
-    'audit_all_operations': True,
-    'block_suspicious_content': True
+    "allowed_file_types": [".md", ".json", ".yaml"],
+    "max_file_size_mb": 100,
+    "require_encryption": False,
+    "audit_all_operations": True,
+    "block_suspicious_content": True,
 }
 ```
 
@@ -191,7 +191,7 @@ from security.processor import process_security
 success = process_security(
     target_dir="input/gnn_files",
     output_dir="output/18_security_output",
-    security_level="standard"
+    security_level="standard",
 )
 ```
 
@@ -200,8 +200,7 @@ success = process_security(
 from security.processor import perform_security_check
 
 security_result = perform_security_check(
-    file_path="models/sensitive_model.md",
-    verbose=True
+    file_path="models/sensitive_model.md", verbose=True
 )
 
 print(f"Security score: {security_result['security_score']}")

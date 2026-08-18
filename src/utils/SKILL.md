@@ -39,29 +39,45 @@ python -c "from utils import generate_pipeline_health_report; print(generate_pip
 ```python
 from utils import (
     # Logging
-    PipelineLogger, setup_step_logging, setup_main_logging,
-    log_step_start, log_step_success, log_step_error, log_step_warning,
-    StructuredLogger, get_pipeline_logger,
-
+    PipelineLogger,
+    setup_step_logging,
+    setup_main_logging,
+    log_step_start,
+    log_step_success,
+    log_step_error,
+    log_step_warning,
+    StructuredLogger,
+    get_pipeline_logger,
     # Error handling
-    ErrorRecoveryManager, PipelineErrorHandler, generate_correlation_id,
-    format_error_message, get_recovery_manager,
-
+    ErrorRecoveryManager,
+    PipelineErrorHandler,
+    generate_correlation_id,
+    format_error_message,
+    get_recovery_manager,
     # Configuration
-    config_loader, get_config_value, set_config_value, validate_config,
-    load_config, save_config,
-
+    config_loader,
+    get_config_value,
+    set_config_value,
+    validate_config,
+    load_config,
+    save_config,
     # Dependencies
-    DependencyValidator, validate_pipeline_dependencies,
-    check_optional_dependencies, get_dependency_status,
-
+    DependencyValidator,
+    validate_pipeline_dependencies,
+    check_optional_dependencies,
+    get_dependency_status,
     # Performance
-    PerformanceTracker, performance_tracker, get_performance_summary,
-
+    PerformanceTracker,
+    performance_tracker,
+    get_performance_summary,
     # Pipeline utilities
-    parse_arguments, validate_and_convert_paths,
-    get_output_dir_for_script, validate_output_directory,
-    BaseProcessor, ProcessingResult, create_processor
+    parse_arguments,
+    validate_and_convert_paths,
+    get_output_dir_for_script,
+    validate_output_directory,
+    BaseProcessor,
+    ProcessingResult,
+    create_processor,
 )
 
 # Setup logging for a pipeline step
@@ -71,6 +87,7 @@ log_step_success(logger, "Processing completed")
 
 # Configuration management
 from pipeline.config import get_pipeline_config
+
 config = get_pipeline_config()
 validate_config(config)
 

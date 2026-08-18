@@ -38,11 +38,13 @@ In matrix form, this becomes the A, B, C, D, E system.
 **Example**: A 3-state, 3-observation model
 
 ```python
-A = np.array([
-    [0.9, 0.1, 0.0],  # P(o=0|s=0,1,2)
-    [0.1, 0.8, 0.2],  # P(o=1|s=0,1,2)
-    [0.0, 0.1, 0.8],  # P(o=2|s=0,1,2)
-])
+A = np.array(
+    [
+        [0.9, 0.1, 0.0],  # P(o=0|s=0,1,2)
+        [0.1, 0.8, 0.2],  # P(o=1|s=0,1,2)
+        [0.0, 0.1, 0.8],  # P(o=2|s=0,1,2)
+    ]
+)
 # Column 0: state 0 → 90% observe o=0, 10% observe o=1
 # Column 1: state 1 → 10% o=0, 80% o=1, 10% o=2
 # Column 2: state 2 → 20% o=1, 80% o=2
@@ -71,18 +73,22 @@ A[3,3] = likelihood_matrix
 B = np.zeros((3, 3, 2))
 
 # Action 0: Stay in place (identity-ish)
-B[:, :, 0] = np.array([
-    [0.9, 0.1, 0.0],
-    [0.1, 0.8, 0.1],
-    [0.0, 0.1, 0.9],
-])
+B[:, :, 0] = np.array(
+    [
+        [0.9, 0.1, 0.0],
+        [0.1, 0.8, 0.1],
+        [0.0, 0.1, 0.9],
+    ]
+)
 
 # Action 1: Move right
-B[:, :, 1] = np.array([
-    [0.2, 0.0, 0.0],
-    [0.8, 0.2, 0.0],
-    [0.0, 0.8, 1.0],
-])
+B[:, :, 1] = np.array(
+    [
+        [0.2, 0.0, 0.0],
+        [0.8, 0.2, 0.0],
+        [0.0, 0.8, 1.0],
+    ]
+)
 ```
 
 **GNN Syntax**:
@@ -114,11 +120,13 @@ C = np.array([-2.0, 0.0, 2.0])
 
 **Time-varying preferences**:
 ```python
-C = np.array([
-    [-2.0, -2.0, 0.0, 2.0],  # o=0 preferences over time
-    [0.0, 0.0, 0.0, 0.0],    # o=1 preferences over time
-    [2.0, 2.0, 2.0, 2.0],    # o=2 preferences over time
-])
+C = np.array(
+    [
+        [-2.0, -2.0, 0.0, 2.0],  # o=0 preferences over time
+        [0.0, 0.0, 0.0, 0.0],  # o=1 preferences over time
+        [2.0, 2.0, 2.0, 2.0],  # o=2 preferences over time
+    ]
+)
 # Goal becomes more important at later timesteps
 ```
 
@@ -291,13 +299,15 @@ Classic Active Inference benchmark:
 # Actions: [stay, go_left, go_right]
 
 # A Matrix: What do I observe in each state?
-A = np.array([
-    [1.0, 0.0, 0.0, 0.0, 0.0],  # null observation
-    [0.0, 0.9, 0.1, 0.0, 0.0],  # reward_left
-    [0.0, 0.1, 0.9, 0.0, 0.0],  # reward_right
-    [0.0, 0.0, 0.0, 0.9, 0.1],  # cue_left
-    [0.0, 0.0, 0.0, 0.1, 0.9],  # cue_right
-])
+A = np.array(
+    [
+        [1.0, 0.0, 0.0, 0.0, 0.0],  # null observation
+        [0.0, 0.9, 0.1, 0.0, 0.0],  # reward_left
+        [0.0, 0.1, 0.9, 0.0, 0.0],  # reward_right
+        [0.0, 0.0, 0.0, 0.9, 0.1],  # cue_left
+        [0.0, 0.0, 0.0, 0.1, 0.9],  # cue_right
+    ]
+)
 
 # B Matrix: How do actions change state?
 # B[:,:,0] = stay, B[:,:,1] = go_left, B[:,:,2] = go_right

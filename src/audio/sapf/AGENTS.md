@@ -59,14 +59,12 @@ spectral_config = {
     "hop_size": 512,
     "effects": [
         {"type": "spectral_filter", "frequency_range": [100, 1000]},
-        {"type": "harmonic_enhancement", "harmonics": [2, 3, 4]}
-    ]
+        {"type": "harmonic_enhancement", "harmonics": [2, 3, 4]},
+    ],
 }
 
 processed_audio = process_sapf_audio(
-    audio_data=audio_data,
-    spectral_config=spectral_config,
-    sample_rate=44100
+    audio_data=audio_data, spectral_config=spectral_config, sample_rate=44100
 )
 ```
 
@@ -149,31 +147,31 @@ processed_audio = process_sapf_audio(
 ### Spectral Processing Configuration
 ```python
 SPECTRAL_CONFIG = {
-    'window_size': 2048,        # FFT window size
-    'hop_size': 512,           # Hop size for STFT
-    'window_type': 'hann',     # Window function
-    'fft_size': 4096,          # FFT size (zero-padded)
-    'sample_rate': 44100,      # Sample rate in Hz
-    'quality': 'high'          # Processing quality
+    "window_size": 2048,  # FFT window size
+    "hop_size": 512,  # Hop size for STFT
+    "window_type": "hann",  # Window function
+    "fft_size": 4096,  # FFT size (zero-padded)
+    "sample_rate": 44100,  # Sample rate in Hz
+    "quality": "high",  # Processing quality
 }
 ```
 
 ### Sonification Configuration
 ```python
 SONIFICATION_CONFIG = {
-    'mapping': {
-        'variables': 'frequency_components',     # Variables → frequencies
-        'connections': 'phase_relationships',    # Connections → phases
-        'weights': 'magnitude_envelope',         # Weights → magnitudes
-        'structure': 'harmonic_structure'        # Structure → harmonics
+    "mapping": {
+        "variables": "frequency_components",  # Variables → frequencies
+        "connections": "phase_relationships",  # Connections → phases
+        "weights": "magnitude_envelope",  # Weights → magnitudes
+        "structure": "harmonic_structure",  # Structure → harmonics
     },
-    'spectral_effects': [
-        {'type': 'harmonic_synthesis', 'harmonics': [1, 2, 3]},
-        {'type': 'spectral_filter', 'frequency_range': [50, 5000]},
-        {'type': 'phase_modulation', 'modulation_depth': 0.3}
+    "spectral_effects": [
+        {"type": "harmonic_synthesis", "harmonics": [1, 2, 3]},
+        {"type": "spectral_filter", "frequency_range": [50, 5000]},
+        {"type": "phase_modulation", "modulation_depth": 0.3},
     ],
-    'duration': 10.0,          # Duration in seconds
-    'sample_rate': 44100       # Sample rate in Hz
+    "duration": 10.0,  # Duration in seconds
+    "sample_rate": 44100,  # Sample rate in Hz
 }
 ```
 
@@ -196,8 +194,8 @@ spectral_config = {
     "effects": [
         {"type": "spectral_filter", "frequency_range": [200, 2000]},
         {"type": "harmonic_enhancement", "harmonics": [2, 3]},
-        {"type": "phase_shift", "shift_amount": 0.5}
-    ]
+        {"type": "phase_shift", "shift_amount": 0.5},
+    ],
 }
 
 # Process audio
@@ -216,11 +214,7 @@ print(f"Phase shape: {spectral_data['phase'].shape}")
 print(f"Spectral centroid: {spectral_data['centroid']}")
 
 # Synthesize back to audio
-reconstructed_audio = synthesize_spectrum(
-    spectral_data,
-    window_size=2048,
-    hop_size=512
-)
+reconstructed_audio = synthesize_spectrum(spectral_data, window_size=2048, hop_size=512)
 ```
 
 ### Model Sonification
@@ -231,11 +225,9 @@ from audio.sapf import sonify_gnn_model_spectral
 model_data = {
     "variables": {
         "A": {"value": [0.1, 0.2, 0.3], "type": "matrix"},
-        "B": {"value": [0.4, 0.5, 0.6], "type": "vector"}
+        "B": {"value": [0.4, 0.5, 0.6], "type": "vector"},
     },
-    "connections": [
-        {"from": "A", "to": "B", "weight": 0.7}
-    ]
+    "connections": [{"from": "A", "to": "B", "weight": 0.7}],
 }
 
 # Configure sonification
@@ -243,12 +235,12 @@ sonification_config = {
     "mapping": {
         "variables": "frequency_components",
         "connections": "phase_relationships",
-        "weights": "magnitude_envelope"
+        "weights": "magnitude_envelope",
     },
     "spectral_effects": [
         {"type": "harmonic_synthesis", "harmonics": [1, 2, 3]},
-        {"type": "spectral_filter", "frequency_range": [50, 5000]}
-    ]
+        {"type": "spectral_filter", "frequency_range": [50, 5000]},
+    ],
 }
 
 # Generate sonification
@@ -265,11 +257,12 @@ processor_config = {
     "hop_size": 256,
     "effects": [
         {"type": "spectral_filter", "frequency_range": [200, 2000]},
-        {"type": "harmonic_enhancement", "harmonics": [2, 3]}
-    ]
+        {"type": "harmonic_enhancement", "harmonics": [2, 3]},
+    ],
 }
 
 spectral_processor = create_spectral_processor(processor_config)
+
 
 # Process audio chunks in real-time
 def process_realtime_audio(audio_chunk):

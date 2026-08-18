@@ -51,14 +51,14 @@ graph TD
 # Example log collection
 def collect_security_logs():
     """Collect security-relevant logs."""
-    
+
     logs = {
-        'authentication': collect_auth_logs(),
-        'access': collect_access_logs(),
-        'errors': collect_error_logs(),
-        'security': collect_security_logs()
+        "authentication": collect_auth_logs(),
+        "access": collect_access_logs(),
+        "errors": collect_error_logs(),
+        "security": collect_security_logs(),
     }
-    
+
     return normalize_logs(logs)
 ```
 
@@ -108,21 +108,21 @@ def collect_security_logs():
 ```python
 # Example detection rules
 detection_rules = {
-    'brute_force': {
-        'condition': 'failed_logins > 5 in 5 minutes',
-        'severity': 'High',
-        'action': 'block_ip'
+    "brute_force": {
+        "condition": "failed_logins > 5 in 5 minutes",
+        "severity": "High",
+        "action": "block_ip",
     },
-    'privilege_escalation': {
-        'condition': 'unusual_permission_change',
-        'severity': 'Critical',
-        'action': 'alert_and_investigate'
+    "privilege_escalation": {
+        "condition": "unusual_permission_change",
+        "severity": "Critical",
+        "action": "alert_and_investigate",
     },
-    'data_exfiltration': {
-        'condition': 'large_data_transfer',
-        'severity': 'High',
-        'action': 'alert_and_block'
-    }
+    "data_exfiltration": {
+        "condition": "large_data_transfer",
+        "severity": "High",
+        "action": "alert_and_block",
+    },
 }
 ```
 

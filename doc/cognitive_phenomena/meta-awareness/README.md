@@ -60,14 +60,14 @@ results3 = model3.run_simulation()
 ```python
 from sandved_smith_2021 import (
     run_figure_7_simulation,
-    run_figure_10_simulation, 
-    run_figure_11_simulation
+    run_figure_10_simulation,
+    run_figure_11_simulation,
 )
 
 # Generate all paper figures
-results_fig7 = run_figure_7_simulation()   # Fixed attentional schedule
-results_fig10 = run_figure_10_simulation() # Attentional cycles
-results_fig11 = run_figure_11_simulation() # Meta-awareness model
+results_fig7 = run_figure_7_simulation()  # Fixed attentional schedule
+results_fig10 = run_figure_10_simulation()  # Attentional cycles
+results_fig11 = run_figure_11_simulation()  # Meta-awareness model
 ```
 
 ### Generate Visualizations

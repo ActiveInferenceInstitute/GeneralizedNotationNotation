@@ -23,12 +23,17 @@ python src/main.py --only-steps 24 --verbose
 
 ```python
 from intelligent_analysis import (
-    process_intelligent_analysis, IntelligentAnalyzer,
-    analyze_pipeline_summary, analyze_individual_steps,
-    generate_executive_report, identify_bottlenecks,
-    generate_recommendations, calculate_pipeline_health_score,
-    classify_failure_severity, detect_performance_patterns,
-    generate_optimization_suggestions
+    process_intelligent_analysis,
+    IntelligentAnalyzer,
+    analyze_pipeline_summary,
+    analyze_individual_steps,
+    generate_executive_report,
+    identify_bottlenecks,
+    generate_recommendations,
+    calculate_pipeline_health_score,
+    classify_failure_severity,
+    detect_performance_patterns,
+    generate_optimization_suggestions,
 )
 
 # Process intelligent analysis step (used by pipeline)

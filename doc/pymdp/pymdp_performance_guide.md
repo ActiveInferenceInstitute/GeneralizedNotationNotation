@@ -94,10 +94,11 @@ import jax
 import jax.numpy as jnp
 from pymdp.agent import Agent
 
+
 @jax.jit
 def step_fn(carry, inputs):
     prior, key = carry
-    obs, = inputs
+    (obs,) = inputs
     qs, _ = agent.infer_states([obs], empirical_prior=prior, return_info=True)
     q_pi, _ = agent.infer_policies(qs)
     key, sub = jax.random.split(key)
@@ -105,7 +106,10 @@ def step_fn(carry, inputs):
     new_prior = agent.update_empirical_prior(action, qs)
     return (new_prior, key), (qs, q_pi, action)
 
-(_, _), (qs_hist, q_pi_hist, act_hist) = jax.lax.scan(step_fn, (agent.D, key), (obs_seq,))
+
+(_, _), (qs_hist, q_pi_hist, act_hist) = jax.lax.scan(
+    step_fn, (agent.D, key), (obs_seq,)
+)
 ```
 
 This removes the Python overhead at each step and fuses the whole rollout

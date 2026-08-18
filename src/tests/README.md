@@ -245,12 +245,16 @@ MODULAR_TEST_CATEGORIES = {
     "gnn": {
         "name": "GNN Module Tests",
         "description": "GNN processing and validation tests",
-        "files": ["test_gnn_overall.py", "test_gnn_parsing.py", "test_gnn_validation.py", 
-                  "test_gnn_processing.py"],
+        "files": [
+            "test_gnn_overall.py",
+            "test_gnn_parsing.py",
+            "test_gnn_validation.py",
+            "test_gnn_processing.py",
+        ],
         "markers": [],
         "timeout_seconds": 120,
         "max_failures": 8,
-        "parallel": True
+        "parallel": True,
     },
     # ... additional categories for all modules
 }
@@ -481,13 +485,16 @@ Use pytest markers to categorize tests:
 def test_quick_functionality():
     pass
 
+
 @pytest.mark.slow  # Slow tests (> 10 seconds)
 def test_complex_scenario():
     pass
 
+
 @pytest.mark.integration  # Integration tests
 def test_module_integration():
     pass
+
 
 @pytest.mark.safe_to_fail  # Tests that can fail without breaking pipeline
 def test_optional_feature():
@@ -502,14 +509,11 @@ To add a new test category to `MODULAR_TEST_CATEGORIES` in `runner.py`:
 MODULAR_TEST_CATEGORIES["new_module"] = {
     "name": "New Module Tests",
     "description": "Tests for the new module functionality",
-    "files": [
-        "test_new_module_overall.py",
-        "test_new_module_integration.py"
-    ],
+    "files": ["test_new_module_overall.py", "test_new_module_integration.py"],
     "markers": ["new_module"],  # Optional pytest markers to filter
-    "timeout_seconds": 120,      # Maximum execution time
-    "max_failures": 8,           # Stop after N failures
-    "parallel": True              # Allow parallel execution
+    "timeout_seconds": 120,  # Maximum execution time
+    "max_failures": 8,  # Stop after N failures
+    "parallel": True,  # Allow parallel execution
 }
 ```
 
@@ -525,6 +529,7 @@ import pytest
 from pathlib import Path
 from utils.test_utils import create_sample_gnn_content, assert_file_exists
 
+
 @pytest.mark.fast
 def test_new_module_basic():
     """Test basic functionality."""
@@ -532,11 +537,13 @@ def test_new_module_basic():
     result = process_module(data)
     assert result is not None
 
+
 @pytest.mark.slow
 def test_new_module_complex():
     """Test complex scenarios."""
     # Test implementation
     pass
+
 
 @pytest.mark.integration
 def test_new_module_integration():

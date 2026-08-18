@@ -294,7 +294,7 @@ mcp_instance.register_tool(name, function)
 mcp_instance.list_available_tools()
 mcp_instance.execute_tool(name, parameters)
 
-# Schema inspection  
+# Schema inspection
 mcp_instance.get_tool_info(name)
 ```
 
@@ -318,14 +318,18 @@ from pathlib import Path
 
 from src.mcp import initialize, mcp_instance
 
+
 def analyze_user_model(file_path: str) -> str:
     initialize(halt_on_missing_sdk=False, force_proceed_flag=True)
     content = Path(file_path).read_text()
-    parse_result = mcp_instance.execute_tool("parse_gnn_content", {
-        "content": content,
-        "format_hint": "markdown",
-        "enhanced_validation": True,
-    })
+    parse_result = mcp_instance.execute_tool(
+        "parse_gnn_content",
+        {
+            "content": content,
+            "format_hint": "markdown",
+            "enhanced_validation": True,
+        },
+    )
     return parse_result.get("summary", str(parse_result))
 ```
 

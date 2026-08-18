@@ -165,9 +165,7 @@ from ontology import process_ontology
 
 # Process ontology-related tasks
 success = process_ontology(
-    target_dir=Path("models/"),
-    output_dir=Path("ontology_output/"),
-    verbose=True
+    target_dir=Path("models/"), output_dir=Path("ontology_output/"), verbose=True
 )
 
 if success:
@@ -221,8 +219,7 @@ from ontology import analyze_ontology_compliance
 
 # Analyze ontology compliance
 compliance_results = analyze_ontology_compliance(
-    gnn_content,
-    analysis_type="comprehensive"
+    gnn_content, analysis_type="comprehensive"
 )
 
 print(f"Compliance score: {compliance_results['compliance_score']:.2f}")
@@ -414,12 +411,12 @@ output/10_ontology_output/
 ```python
 # Ontology configuration
 config = {
-    'ontology_file': 'act_inf_ontology_terms.json',  # Ontology file
-    'validation_enabled': True,                       # Enable validation
-    'enhancement_enabled': True,                      # Enable enhancement
-    'compliance_threshold': 0.8,                      # Compliance threshold
-    'semantic_analysis': True,                        # Enable semantic analysis
-    'best_practices': True                            # Enable best practices
+    "ontology_file": "act_inf_ontology_terms.json",  # Ontology file
+    "validation_enabled": True,  # Enable validation
+    "enhancement_enabled": True,  # Enable enhancement
+    "compliance_threshold": 0.8,  # Compliance threshold
+    "semantic_analysis": True,  # Enable semantic analysis
+    "best_practices": True,  # Enable best practices
 }
 ```
 
@@ -427,11 +424,11 @@ config = {
 ```python
 # Validation configuration
 validation_config = {
-    'strict_validation': False,       # Strict validation mode
-    'suggest_corrections': True,      # Suggest corrections
-    'check_relationships': True,       # Check term relationships
-    'validate_context': True,          # Validate term context
-    'compliance_threshold': 0.8       # Compliance threshold
+    "strict_validation": False,  # Strict validation mode
+    "suggest_corrections": True,  # Suggest corrections
+    "check_relationships": True,  # Check term relationships
+    "validate_context": True,  # Validate term context
+    "compliance_threshold": 0.8,  # Compliance threshold
 }
 ```
 
@@ -494,9 +491,9 @@ except EnhancementError as e:
 # Test individual ontology functions
 def test_ontology_validation():
     results = validate_ontology_terms(test_content)
-    assert 'valid_terms' in results
-    assert 'invalid_terms' in results
-    assert 'suggestions' in results
+    assert "valid_terms" in results
+    assert "invalid_terms" in results
+    assert "suggestions" in results
 ```
 
 ### Integration Tests
@@ -515,8 +512,8 @@ def test_ontology_pipeline():
 # Test ontology compliance
 def test_ontology_compliance():
     compliance = analyze_ontology_compliance(test_content)
-    assert compliance['compliance_score'] >= 0.8
-    assert compliance['coverage'] >= 0.7
+    assert compliance["compliance_score"] >= 0.8
+    assert compliance["coverage"] >= 0.7
 ```
 
 ## Dependencies

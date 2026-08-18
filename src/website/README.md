@@ -184,7 +184,7 @@ from website import process_website
 success = process_website(
     target_dir=Path("pipeline_artifacts/"),
     output_dir=Path("website_output/"),
-    verbose=True
+    verbose=True,
 )
 
 if success:
@@ -199,9 +199,7 @@ else:
 from website import generate_website_structure
 
 # Generate basic website structure
-success = generate_website_structure(
-    output_dir=Path("website/")
-)
+success = generate_website_structure(output_dir=Path("website/"))
 
 if success:
     print("Website structure created successfully")
@@ -217,7 +215,7 @@ from website import embed_visualizations
 # Embed pipeline visualizations
 success = embed_visualizations(
     visualization_dir=Path("output/8_visualization_output/"),
-    website_dir=Path("website/")
+    website_dir=Path("website/"),
 )
 
 if success:
@@ -233,8 +231,7 @@ from website import embed_reports
 
 # Embed pipeline reports
 success = embed_reports(
-    report_dir=Path("output/23_report_output/"),
-    website_dir=Path("website/")
+    report_dir=Path("output/23_report_output/"), website_dir=Path("website/")
 )
 
 if success:
@@ -250,8 +247,7 @@ from website import embed_analysis_results
 
 # Embed analysis results
 success = embed_analysis_results(
-    analysis_dir=Path("output/16_analysis_output/"),
-    website_dir=Path("website/")
+    analysis_dir=Path("output/16_analysis_output/"), website_dir=Path("website/")
 )
 
 if success:
@@ -271,10 +267,7 @@ theme_config = {
     "secondary_color": "#3498db",
     "font_family": "Roboto, sans-serif",
     "layout": "modern",
-    "branding": {
-        "logo": "logo.png",
-        "title": "GNN Pipeline Results"
-    }
+    "branding": {"logo": "logo.png", "title": "GNN Pipeline Results"},
 }
 
 success = customize_website_theme(theme_config)
@@ -291,9 +284,7 @@ else:
 from website import add_interactive_features
 
 # Add interactive features
-success = add_interactive_features(
-    website_dir=Path("website/")
-)
+success = add_interactive_features(website_dir=Path("website/"))
 
 if success:
     print("Interactive features added successfully")
@@ -387,13 +378,13 @@ website/
 ```python
 # Website configuration
 website_config = {
-    'title': 'GNN Pipeline Results',
-    'description': 'Active Inference pipeline results and analysis',
-    'theme': 'modern',
-    'responsive': True,
-    'interactive': True,
-    'search_enabled': True,
-    'export_enabled': True
+    "title": "GNN Pipeline Results",
+    "description": "Active Inference pipeline results and analysis",
+    "theme": "modern",
+    "responsive": True,
+    "interactive": True,
+    "search_enabled": True,
+    "export_enabled": True,
 }
 ```
 
@@ -401,17 +392,17 @@ website_config = {
 ```python
 # Theme configuration
 theme_config = {
-    'primary_color': '#2c3e50',
-    'secondary_color': '#3498db',
-    'accent_color': '#e74c3c',
-    'font_family': 'Roboto, sans-serif',
-    'font_size': '16px',
-    'layout': 'modern',
-    'branding': {
-        'logo': 'logo.png',
-        'title': 'GNN Pipeline',
-        'subtitle': 'Active Inference Research'
-    }
+    "primary_color": "#2c3e50",
+    "secondary_color": "#3498db",
+    "accent_color": "#e74c3c",
+    "font_family": "Roboto, sans-serif",
+    "font_size": "16px",
+    "layout": "modern",
+    "branding": {
+        "logo": "logo.png",
+        "title": "GNN Pipeline",
+        "subtitle": "Active Inference Research",
+    },
 }
 ```
 
@@ -419,25 +410,20 @@ theme_config = {
 ```python
 # Embedding configuration
 embedding_config = {
-    'visualizations': {
-        'interactive': True,
-        'responsive': True,
-        'export_formats': ['png', 'svg', 'pdf'],
-        'max_width': '100%',
-        'height': 'auto'
+    "visualizations": {
+        "interactive": True,
+        "responsive": True,
+        "export_formats": ["png", "svg", "pdf"],
+        "max_width": "100%",
+        "height": "auto",
     },
-    'reports': {
-        'include_pdfs': True,
-        'markdown_rendering': True,
-        'search_enabled': True,
-        'navigation': True
+    "reports": {
+        "include_pdfs": True,
+        "markdown_rendering": True,
+        "search_enabled": True,
+        "navigation": True,
     },
-    'analysis': {
-        'tables': True,
-        'charts': True,
-        'export': True,
-        'filtering': True
-    }
+    "analysis": {"tables": True, "charts": True, "export": True, "filtering": True},
 }
 ```
 
@@ -520,9 +506,9 @@ def test_website_pipeline():
 # Test website validation
 def test_website_validation():
     validation = validate_website_structure(website_dir)
-    assert 'valid' in validation
-    assert 'missing_files' in validation
-    assert 'broken_links' in validation
+    assert "valid" in validation
+    assert "missing_files" in validation
+    assert "broken_links" in validation
 ```
 
 ## Dependencies

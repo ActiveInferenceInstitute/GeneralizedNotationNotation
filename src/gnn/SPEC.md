@@ -63,16 +63,16 @@ Do not assume the two lists stay identical: lightweight discovery favors typical
 
 ```python
 from gnn import (
-    discover_gnn_files,      # File discovery
-    parse_gnn_file,          # Single-file parsing
+    discover_gnn_files,  # File discovery
+    parse_gnn_file,  # Single-file parsing
     validate_gnn_structure,  # Structure validation
-    validate_gnn,            # Full validation (file or content)
-    process_gnn_directory,   # Directory processing
-    generate_gnn_report,     # Report generation
-    GNNParsingSystem,        # Parser registry
-    ValidationLevel,         # Validation levels (BASIC, STANDARD, STRICT)
-    ParsedGNN,               # Parsed GNN representation
-    GNNFormat,               # Format enumeration
+    validate_gnn,  # Full validation (file or content)
+    process_gnn_directory,  # Directory processing
+    generate_gnn_report,  # Report generation
+    GNNParsingSystem,  # Parser registry
+    ValidationLevel,  # Validation levels (BASIC, STANDARD, STRICT)
+    ParsedGNN,  # Parsed GNN representation
+    GNNFormat,  # Format enumeration
 )
 ```
 

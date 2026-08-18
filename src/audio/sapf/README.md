@@ -120,13 +120,12 @@ spectral_config = {
     "effects": [
         {"type": "spectral_filter", "frequency_range": [100, 1000]},
         {"type": "phase_shift", "shift_amount": 0.5},
-        {"type": "harmonic_enhancement", "harmonics": [2, 3, 4]}
-    ]
+        {"type": "harmonic_enhancement", "harmonics": [2, 3, 4]},
+    ],
 }
 
 processed_audio = process_sapf_audio(
-    audio_data=audio_data,
-    spectral_config=spectral_config
+    audio_data=audio_data, spectral_config=spectral_config
 )
 
 save_audio(processed_audio, "output.wav")
@@ -139,10 +138,7 @@ from audio.sapf import analyze_spectrum
 
 # Analyze audio spectrum
 audio_data = load_audio("input.wav")
-spectral_data = analyze_spectrum(
-    audio_data=audio_data,
-    window_size=2048
-)
+spectral_data = analyze_spectrum(audio_data=audio_data, window_size=2048)
 
 print(f"Magnitude shape: {spectral_data['magnitude'].shape}")
 print(f"Phase shape: {spectral_data['phase'].shape}")
@@ -156,9 +152,7 @@ from audio.sapf import synthesize_spectrum
 
 # Synthesize audio from spectral data
 synthesized_audio = synthesize_spectrum(
-    spectral_data=spectral_data,
-    window_size=2048,
-    hop_size=512
+    spectral_data=spectral_data, window_size=2048, hop_size=512
 )
 
 save_audio(synthesized_audio, "synthesized.wav")
@@ -173,24 +167,22 @@ from audio.sapf import sonify_gnn_model_spectral
 model_data = {
     "variables": {
         "A": {"value": [0.1, 0.2, 0.3], "type": "matrix"},
-        "B": {"value": [0.4, 0.5, 0.6], "type": "vector"}
+        "B": {"value": [0.4, 0.5, 0.6], "type": "vector"},
     },
-    "connections": [
-        {"from": "A", "to": "B", "weight": 0.7}
-    ]
+    "connections": [{"from": "A", "to": "B", "weight": 0.7}],
 }
 
 sonification_config = {
     "mapping": {
         "variables": "frequency_components",
         "connections": "phase_relationships",
-        "weights": "magnitude_envelope"
+        "weights": "magnitude_envelope",
     },
     "spectral_effects": [
         {"type": "harmonic_synthesis", "harmonics": [1, 2, 3]},
         {"type": "spectral_filter", "frequency_range": [50, 5000]},
-        {"type": "phase_modulation", "modulation_depth": 0.3}
-    ]
+        {"type": "phase_modulation", "modulation_depth": 0.3},
+    ],
 }
 
 audio_output = sonify_gnn_model_spectral(model_data, sonification_config)
@@ -208,11 +200,12 @@ processor_config = {
     "hop_size": 256,
     "effects": [
         {"type": "spectral_filter", "frequency_range": [200, 2000]},
-        {"type": "harmonic_enhancement", "harmonics": [2, 3]}
-    ]
+        {"type": "harmonic_enhancement", "harmonics": [2, 3]},
+    ],
 }
 
 spectral_processor = create_spectral_processor(processor_config)
+
 
 # Process audio in real-time
 def process_realtime_spectral(audio_chunk):
@@ -229,23 +222,15 @@ effects_config = [
     {
         "type": "spectral_filter",
         "frequency_range": [100, 1000],
-        "filter_type": "bandpass"
+        "filter_type": "bandpass",
     },
-    {
-        "type": "phase_shift",
-        "shift_amount": 0.5,
-        "frequency_dependent": True
-    },
+    {"type": "phase_shift", "shift_amount": 0.5, "frequency_dependent": True},
     {
         "type": "harmonic_enhancement",
         "harmonics": [2, 3, 4],
-        "enhancement_strength": 0.7
+        "enhancement_strength": 0.7,
     },
-    {
-        "type": "spectral_compression",
-        "threshold": -20,
-        "ratio": 4
-    }
+    {"type": "spectral_compression", "threshold": -20, "ratio": 4},
 ]
 
 processed_audio = apply_spectral_effects(audio_data, effects_config)
@@ -289,12 +274,12 @@ processed_audio = apply_spectral_effects(audio_data, effects_config)
 ```python
 # Spectral processing configuration
 spectral_config = {
-    'window_size': 2048,
-    'hop_size': 512,
-    'window_type': 'hann',
-    'fft_size': 4096,
-    'sample_rate': 44100,
-    'quality': 'high'
+    "window_size": 2048,
+    "hop_size": 512,
+    "window_type": "hann",
+    "fft_size": 4096,
+    "sample_rate": 44100,
+    "quality": "high",
 }
 ```
 
@@ -302,19 +287,19 @@ spectral_config = {
 ```python
 # Sonification configuration
 sonification_config = {
-    'mapping': {
-        'variables': 'frequency_components',
-        'connections': 'phase_relationships',
-        'weights': 'magnitude_envelope',
-        'structure': 'harmonic_structure'
+    "mapping": {
+        "variables": "frequency_components",
+        "connections": "phase_relationships",
+        "weights": "magnitude_envelope",
+        "structure": "harmonic_structure",
     },
-    'spectral_effects': [
-        {'type': 'harmonic_synthesis', 'harmonics': [1, 2, 3]},
-        {'type': 'spectral_filter', 'frequency_range': [50, 5000]},
-        {'type': 'phase_modulation', 'modulation_depth': 0.3}
+    "spectral_effects": [
+        {"type": "harmonic_synthesis", "harmonics": [1, 2, 3]},
+        {"type": "spectral_filter", "frequency_range": [50, 5000]},
+        {"type": "phase_modulation", "modulation_depth": 0.3},
     ],
-    'duration': 10.0,
-    'sample_rate': 44100
+    "duration": 10.0,
+    "sample_rate": 44100,
 }
 ```
 
@@ -322,19 +307,13 @@ sonification_config = {
 ```python
 # Effects configuration
 effects_config = {
-    'spectral_filter': {
-        'frequency_range': [100, 1000],
-        'filter_type': 'bandpass',
-        'filter_order': 4
+    "spectral_filter": {
+        "frequency_range": [100, 1000],
+        "filter_type": "bandpass",
+        "filter_order": 4,
     },
-    'phase_shift': {
-        'shift_amount': 0.5,
-        'frequency_dependent': True
-    },
-    'harmonic_enhancement': {
-        'harmonics': [2, 3, 4],
-        'enhancement_strength': 0.7
-    }
+    "phase_shift": {"shift_amount": 0.5, "frequency_dependent": True},
+    "harmonic_enhancement": {"harmonics": [2, 3, 4], "enhancement_strength": 0.7},
 }
 ```
 
@@ -421,9 +400,9 @@ def test_spectral_validation():
     audio_data = generate_test_audio()
     spectral_data = analyze_spectrum(audio_data)
     validation = validate_spectral_quality(spectral_data)
-    assert 'valid' in validation
-    assert 'spectral_centroid' in validation
-    assert 'harmonic_structure' in validation
+    assert "valid" in validation
+    assert "spectral_centroid" in validation
+    assert "harmonic_structure" in validation
 ```
 
 ## Dependencies

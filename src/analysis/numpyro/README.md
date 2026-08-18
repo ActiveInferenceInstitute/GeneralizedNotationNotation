@@ -7,7 +7,9 @@ Framework-specific analysis module for NumPyro simulation outputs.
 ```python
 from analysis.numpyro.analyzer import analyze_numpyro_results
 
-analyze_numpyro_results(results_dir="output/12_execute_output", output_dir="output/16_analysis_output")
+analyze_numpyro_results(
+    results_dir="output/12_execute_output", output_dir="output/16_analysis_output"
+)
 ```
 
 ## Outputs

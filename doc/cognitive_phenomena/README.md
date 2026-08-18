@@ -411,27 +411,35 @@ def validate_cognitive_model(model_results, behavioral_data):
     Validate cognitive model against behavioral benchmarks
     """
     validations = {
-        'accuracy': validate_accuracy(model_results.accuracy, behavioral_data.accuracy),
-        'reaction_time': validate_rt_distribution(model_results.rt, behavioral_data.rt),
-        'learning_curve': validate_learning(model_results.learning, behavioral_data.learning),
-        'individual_differences': validate_variability(model_results.subjects, behavioral_data.subjects)
+        "accuracy": validate_accuracy(model_results.accuracy, behavioral_data.accuracy),
+        "reaction_time": validate_rt_distribution(model_results.rt, behavioral_data.rt),
+        "learning_curve": validate_learning(
+            model_results.learning, behavioral_data.learning
+        ),
+        "individual_differences": validate_variability(
+            model_results.subjects, behavioral_data.subjects
+        ),
     }
-    
+
     return all(validations.values())
+
 
 def validate_accuracy(model_acc, human_acc, tolerance=0.05):
     """Check if model accuracy matches human performance within tolerance"""
     return abs(model_acc - human_acc) < tolerance
 
+
 def validate_rt_distribution(model_rt, human_rt):
     """Check if reaction time distributions match"""
     from scipy import stats
+
     statistic, p_value = stats.ks_2samp(model_rt, human_rt)
     return p_value > 0.05  # Non-significant difference
 
+
 def validate_learning(model_learning, human_learning):
     """Check if learning curves match"""
-    correlation = np.corrcoef(model_learning, human_learning)[0,1]
+    correlation = np.corrcoef(model_learning, human_learning)[0, 1]
     return correlation > 0.8  # Strong correlation
 ```
 
@@ -445,21 +453,24 @@ def validate_neural_correspondence(model_states, neural_data):
     Validate model states against neural recordings
     """
     validations = {
-        'representational_similarity': validate_rsa(model_states, neural_data),
-        'temporal_dynamics': validate_temporal_correlation(model_states, neural_data),
-        'information_content': validate_information_similarity(model_states, neural_data)
+        "representational_similarity": validate_rsa(model_states, neural_data),
+        "temporal_dynamics": validate_temporal_correlation(model_states, neural_data),
+        "information_content": validate_information_similarity(
+            model_states, neural_data
+        ),
     }
-    
+
     return validations
+
 
 def validate_rsa(model_repr, neural_repr):
     """Representational Similarity Analysis"""
     from scipy.spatial.distance import pdist, squareform
     from scipy.stats import spearmanr
-    
-    model_rdm = squareform(pdist(model_repr, 'correlation'))
-    neural_rdm = squareform(pdist(neural_repr, 'correlation'))
-    
+
+    model_rdm = squareform(pdist(model_repr, "correlation"))
+    neural_rdm = squareform(pdist(neural_repr, "correlation"))
+
     correlation, p_value = spearmanr(model_rdm.flatten(), neural_rdm.flatten())
     return correlation > 0.3 and p_value < 0.05
 ```

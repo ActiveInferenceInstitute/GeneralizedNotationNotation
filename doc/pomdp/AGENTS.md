@@ -68,22 +68,25 @@ See [src/AGENTS.md](../../src/AGENTS.md) for complete pipeline documentation.
 def formalize_gnn_as_pomdp(gnn_model: GNNModel) -> POMDP:
     """
     Formalize GNN model as POMDP structure.
-    
+
     Parameters:
         gnn_model: Parsed GNN model structure
-    
+
     Returns:
         POMDP with 7-tuple definition (S, A, T, R, Ω, O, γ)
     """
 
-def compute_belief_state(pomdp: POMDP, history: List[Tuple[Action, Observation]]) -> BeliefState:
+
+def compute_belief_state(
+    pomdp: POMDP, history: List[Tuple[Action, Observation]]
+) -> BeliefState:
     """
     Compute belief state from action-observation history.
-    
+
     Parameters:
         pomdp: POMDP structure
         history: Sequence of (action, observation) pairs
-    
+
     Returns:
         BeliefState probability distribution over states
     """

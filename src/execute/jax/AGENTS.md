@@ -56,7 +56,7 @@ success = run_jax_scripts(
     recursive_search=True,
     device="gpu",
     verbose=True,
-    timeout=600
+    timeout=600,
 )
 ```
 
@@ -125,60 +125,56 @@ success = run_jax_scripts(
 ### JAX Execution Configuration
 ```python
 JAX_EXEC_CONFIG = {
-    'device_selection': 'auto',              # Device selection strategy
-    'memory_limit': 'auto',                  # Memory limit per script
-    'timeout_seconds': 300,                  # Execution timeout
-    'enable_profiling': True,                # Enable performance profiling
-    'checkpoint_gradients': True,            # Enable gradient checkpointing
-    'mixed_precision': True,                 # Enable mixed precision
-    'parallel_execution': False,             # Enable parallel script execution
-    'cleanup_temp_files': True               # Clean temporary files
+    "device_selection": "auto",  # Device selection strategy
+    "memory_limit": "auto",  # Memory limit per script
+    "timeout_seconds": 300,  # Execution timeout
+    "enable_profiling": True,  # Enable performance profiling
+    "checkpoint_gradients": True,  # Enable gradient checkpointing
+    "mixed_precision": True,  # Enable mixed precision
+    "parallel_execution": False,  # Enable parallel script execution
+    "cleanup_temp_files": True,  # Clean temporary files
 }
 ```
 
 ### Device Configuration
 ```python
 DEVICE_CONFIG = {
-    'cpu': {
-        'platform_name': 'cpu',
-        'thread_count': None,                 # Auto-detect
-        'memory_limit': '8GB'
+    "cpu": {
+        "platform_name": "cpu",
+        "thread_count": None,  # Auto-detect
+        "memory_limit": "8GB",
     },
-    'gpu': {
-        'platform_name': 'gpu',
-        'device_id': 0,                       # Primary GPU
-        'memory_limit': 'auto',               # Use available memory
-        'enable_peer_access': False
+    "gpu": {
+        "platform_name": "gpu",
+        "device_id": 0,  # Primary GPU
+        "memory_limit": "auto",  # Use available memory
+        "enable_peer_access": False,
     },
-    'tpu': {
-        'platform_name': 'tpu',
-        'memory_limit': '32GB',
-        'core_count': 8
-    }
+    "tpu": {"platform_name": "tpu", "memory_limit": "32GB", "core_count": 8},
 }
 ```
 
 ### Performance Monitoring Configuration
 ```python
 MONITORING_CONFIG = {
-    'metrics': {
-        'execution_time': True,
-        'memory_usage': True,
-        'cpu_utilization': True,
-        'gpu_utilization': True,
-        'jit_compile_time': True
+    "metrics": {
+        "execution_time": True,
+        "memory_usage": True,
+        "cpu_utilization": True,
+        "gpu_utilization": True,
+        "jit_compile_time": True,
     },
-    'logging': {
-        'level': 'INFO',
-        'file_output': True,
-        'console_output': True,
-        'performance_summary': True
+    "logging": {
+        "level": "INFO",
+        "file_output": True,
+        "console_output": True,
+        "performance_summary": True,
     },
-    'benchmarking': {
-        'warmup_runs': 1,
-        'measurement_runs': 3,
-        'statistical_analysis': True
-    }
+    "benchmarking": {
+        "warmup_runs": 1,
+        "measurement_runs": 3,
+        "statistical_analysis": True,
+    },
 }
 ```
 
@@ -195,7 +191,7 @@ success = run_jax_scripts(
     pipeline_output_dir="output/11_render_output",
     recursive_search=True,
     device="auto",  # Auto-select best available device
-    verbose=True
+    verbose=True,
 )
 
 if success:
@@ -211,10 +207,7 @@ from execute.jax import execute_jax_script
 # Execute specific JAX script with detailed monitoring
 script_path = "output/11_render_output/jax/pomdp_solver.py"
 results = execute_jax_script(
-    script_path=script_path,
-    device="gpu",
-    enable_profiling=True,
-    timeout_seconds=600
+    script_path=script_path, device="gpu", enable_profiling=True, timeout_seconds=600
 )
 
 print(f"Execution time: {results['execution_time']:.2f}s")
@@ -229,7 +222,7 @@ from execute.jax import get_jax_device_info, is_jax_available
 # Get available device information
 device_info = get_jax_device_info()
 print("Available devices:")
-for device in device_info['available_devices']:
+for device in device_info["available_devices"]:
     print(f"  - {device['name']}: {device['memory_gb']:.1f}GB")
 
 # Check specific device availability
@@ -249,7 +242,7 @@ results = execute_jax_script(
     script_path="jax_simulation.py",
     device="gpu",
     enable_profiling=True,
-    benchmark_runs=5
+    benchmark_runs=5,
 )
 
 print("Performance Results:")
@@ -269,7 +262,7 @@ print(f"Found {len(scripts)} JAX scripts")
 # Execute scripts in parallel (if supported)
 for script_path in scripts:
     results = execute_jax_script(script_path, device="auto", verbose=False)
-    status = "✓" if results['success'] else "✗"
+    status = "✓" if results["success"] else "✗"
     print(f"{status} {script_path}: {results['execution_time']:.2f}s")
 ```
 
@@ -348,42 +341,42 @@ output/12_execute_output/
 ### Results Data Structure
 ```python
 execution_results = {
-    'metadata': {
-        'framework': 'jax',
-        'device_used': 'gpu',
-        'jax_version': '0.4.20',
-        'execution_timestamp': '2025-10-28T10:30:00Z',
-        'scripts_executed': 3,
-        'scripts_successful': 3
+    "metadata": {
+        "framework": "jax",
+        "device_used": "gpu",
+        "jax_version": "0.4.20",
+        "execution_timestamp": "2025-10-28T10:30:00Z",
+        "scripts_executed": 3,
+        "scripts_successful": 3,
     },
-    'device_info': {
-        'name': 'NVIDIA RTX 3080',
-        'memory_gb': 10.0,
-        'compute_capability': '8.6',
-        'driver_version': '525.60.13'
+    "device_info": {
+        "name": "NVIDIA RTX 3080",
+        "memory_gb": 10.0,
+        "compute_capability": "8.6",
+        "driver_version": "525.60.13",
     },
-    'performance_summary': {
-        'total_execution_time': 45.67,
-        'average_memory_usage': 2.3,
-        'peak_memory_usage': 4.1,
-        'device_utilization': 0.87
+    "performance_summary": {
+        "total_execution_time": 45.67,
+        "average_memory_usage": 2.3,
+        "peak_memory_usage": 4.1,
+        "device_utilization": 0.87,
     },
-    'script_results': [
+    "script_results": [
         {
-            'script_name': 'pomdp_solver.py',
-            'success': True,
-            'execution_time': 12.34,
-            'memory_peak': 2.1,
-            'jit_compile_time': 2.56,
-            'results': {...}  # Script-specific results
+            "script_name": "pomdp_solver.py",
+            "success": True,
+            "execution_time": 12.34,
+            "memory_peak": 2.1,
+            "jit_compile_time": 2.56,
+            "results": {...},  # Script-specific results
         }
     ],
-    'benchmarking': {
-        'runs_completed': 5,
-        'mean_execution_time': 11.98,
-        'std_execution_time': 0.45,
-        'performance_stability': 0.96
-    }
+    "benchmarking": {
+        "runs_completed": 5,
+        "mean_execution_time": 11.98,
+        "std_execution_time": 0.45,
+        "performance_stability": 0.96,
+    },
 }
 ```
 
@@ -501,9 +494,13 @@ uv run --extra dev python -m pytest src/tests/test_execute_jax*.py --cov=src/exe
 ### Tool Endpoints
 ```python
 @mcp_tool("execute.run_jax_scripts")
-def run_jax_scripts_tool(pipeline_output_dir: str, device: str = "auto") -> Dict[str, Any]:
+def run_jax_scripts_tool(
+    pipeline_output_dir: str, device: str = "auto"
+) -> Dict[str, Any]:
     """Execute JAX simulation scripts with performance monitoring"""
-    return run_jax_scripts(pipeline_output_dir, device=device, return_detailed_results=True)
+    return run_jax_scripts(
+        pipeline_output_dir, device=device, return_detailed_results=True
+    )
 ```
 
 ---
@@ -569,11 +566,7 @@ def run_jax_scripts_tool(pipeline_output_dir: str, device: str = "auto") -> Dict
 ```python
 # Enable debug output for JAX execution
 results = execute_jax_script(
-    script_path,
-    device="gpu",
-    debug=True,
-    verbose=True,
-    enable_jax_debug=True
+    script_path, device="gpu", debug=True, verbose=True, enable_jax_debug=True
 )
 ```
 

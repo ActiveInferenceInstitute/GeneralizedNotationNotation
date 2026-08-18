@@ -48,7 +48,8 @@ To eliminate the warning message, you can suppress matplotlib warnings:
 ```python
 # Add to advanced_visualization/d2_visualizer.py
 import warnings
-warnings.filterwarnings('ignore', category=UserWarning, module='matplotlib')
+
+warnings.filterwarnings("ignore", category=UserWarning, module="matplotlib")
 ```
 
 ---
@@ -193,8 +194,8 @@ Increase timeouts for complex prompts by editing `src/llm/processor.py`:
 
 ```python
 PROMPT_TIMEOUTS = {
-    'practical_applications': 120,  # Increase from 60
-    'technical_description': 120,   # Increase from 60
+    "practical_applications": 120,  # Increase from 60
+    "technical_description": 120,  # Increase from 60
     # ... other prompts
 }
 ```

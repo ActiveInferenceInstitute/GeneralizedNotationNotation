@@ -68,7 +68,7 @@ success = process_template_standardized(
     output_dir=Path("output/0_template_output/"),
     logger=logger,
     recursive=True,
-    verbose=True
+    verbose=True,
 )
 ```
 
@@ -122,6 +122,7 @@ success = process_template_standardized(
 **Example**:
 ```python
 from template import generate_correlation_id
+
 correlation_id = generate_correlation_id()
 # Returns: "550e8400-e29b-41d4-a716-446655440000"
 ```
@@ -157,10 +158,10 @@ correlation_id = generate_correlation_id()
 ### Template Settings
 ```python
 TEMPLATE_CONFIG = {
-    'enable_demonstration': True,
-    'generate_examples': True,
-    'validate_patterns': True,
-    'include_documentation': True
+    "enable_demonstration": True,
+    "generate_examples": True,
+    "validate_patterns": True,
+    "include_documentation": True,
 }
 ```
 
@@ -173,9 +174,7 @@ TEMPLATE_CONFIG = {
 from template.processor import process_template_standardized
 
 success = process_template_standardized(
-    target_dir="input/",
-    output_dir="output/0_template_output",
-    logger=logger
+    target_dir="input/", output_dir="output/0_template_output", logger=logger
 )
 ```
 

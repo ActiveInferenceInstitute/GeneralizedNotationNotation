@@ -101,21 +101,21 @@
 ### Audio Generation Settings
 ```python
 SAPF_CONFIG = {
-    'sample_rate': 44100,
-    'bit_depth': 16,
-    'channels': 2,
-    'duration': 30.0,
-    'output_format': 'wav'
+    "sample_rate": 44100,
+    "bit_depth": 16,
+    "channels": 2,
+    "duration": 30.0,
+    "output_format": "wav",
 }
 ```
 
 ### Sonification Parameters
 ```python
 SONIFICATION_CONFIG = {
-    'mapping_strategy': 'frequency',
-    'frequency_range': (100, 2000),
-    'amplitude_mapping': 'linear',
-    'temporal_resolution': 0.1
+    "mapping_strategy": "frequency",
+    "frequency_range": (100, 2000),
+    "amplitude_mapping": "linear",
+    "temporal_resolution": 0.1,
 }
 ```
 
@@ -127,30 +127,21 @@ SONIFICATION_CONFIG = {
 ```python
 from sapf import process_gnn_to_audio
 
-result = process_gnn_to_audio(
-    gnn_content=model_content,
-    output_dir="output/audio"
-)
+result = process_gnn_to_audio(gnn_content=model_content, output_dir="output/audio")
 ```
 
 ### SAPF Conversion
 ```python
 from sapf import convert_gnn_to_sapf
 
-conversion = convert_gnn_to_sapf(
-    gnn_content=model_content,
-    output_dir="output/sapf"
-)
+conversion = convert_gnn_to_sapf(gnn_content=model_content, output_dir="output/sapf")
 ```
 
 ### Audio Generation from SAPF
 ```python
 from sapf import generate_audio_from_sapf
 
-audio = generate_audio_from_sapf(
-    sapf_config=sapf_data,
-    output_dir="output/audio"
-)
+audio = generate_audio_from_sapf(sapf_config=sapf_data, output_dir="output/audio")
 ```
 
 ---

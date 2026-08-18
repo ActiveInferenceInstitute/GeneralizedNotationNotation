@@ -184,23 +184,25 @@ for error in result.errors:
 # Validate A matrices
 import numpy as np
 
+
 def validate_A_matrix(A, num_obs, num_states):
     """Validate A matrix dimensions and stochasticity"""
     expected_shape = (num_obs, num_states)
     if A.shape != expected_shape:
         print(f"❌ Shape mismatch: expected {expected_shape}, got {A.shape}")
         return False
-    
+
     if not np.allclose(A.sum(axis=0), 1.0):
         print(f"❌ Columns don't sum to 1: {A.sum(axis=0)}")
         return False
-    
+
     if np.any(A < 0) or np.any(A > 1):
         print(f"❌ Values outside [0,1]: min={A.min()}, max={A.max()}")
         return False
-    
+
     print("✅ A matrix is valid")
     return True
+
 
 # Example usage
 A_m0 = np.array([[0.9, 0.1], [0.1, 0.9]])
@@ -214,14 +216,15 @@ validate_A_matrix(A_m0, num_obs=2, num_states=2)
 def validate_connections(model):
     """Validate that all connections reference defined variables"""
     defined_vars = set(model.state_space.keys())
-    
+
     for connection in model.connections:
         if connection.source not in defined_vars:
             print(f"❌ Undefined source: {connection.source}")
         if connection.target not in defined_vars:
             print(f"❌ Undefined target: {connection.target}")
-    
+
     print(f"✅ All connections reference defined variables")
+
 
 validate_connections(model)
 ```
@@ -316,6 +319,7 @@ except Exception as e:
 
 # 2. Test GNN to PyMDP conversion
 from src.render.pymdp import PyMDPRenderer
+
 renderer = PyMDPRenderer()
 
 try:
@@ -356,13 +360,14 @@ except Exception as e:
 try:
     import discopy
     from discopy import grammar, rigid
+
     print(f"✅ DisCoPy {discopy.__version__} imported successfully")
-    
+
     # Test basic diagram creation
-    x, y, z = rigid.Ty('x'), rigid.Ty('y'), rigid.Ty('z')
-    diagram = rigid.Box('f', x, y) >> rigid.Box('g', y, z)
+    x, y, z = rigid.Ty("x"), rigid.Ty("y"), rigid.Ty("z")
+    diagram = rigid.Box("f", x, y) >> rigid.Box("g", y, z)
     print("✅ Basic DisCoPy diagram creation working")
-    
+
 except ImportError as e:
     print(f"❌ DisCoPy import failed: {e}")
 except Exception as e:
@@ -372,6 +377,7 @@ except Exception as e:
 try:
     import jax
     from discopy.tensor import Tensor
+
     print("✅ JAX backend available")
 except Exception as e:
     print(f"❌ JAX backend failed: {e}")
@@ -409,23 +415,25 @@ import time
 import psutil
 import numpy as np
 
+
 def profile_matrix_operations(dimensions):
     """Profile matrix operations with different sizes"""
     sizes = [10, 100, 500, 1000]
-    
+
     for size in sizes:
         # Create test matrices
         A = np.random.rand(size, size)
         B = np.random.rand(size, size)
-        
+
         # Time matrix multiplication
         start_time = time.time()
         C = np.dot(A, B)
         end_time = time.time()
-        
+
         memory_mb = psutil.Process().memory_info().rss / 1024 / 1024
-        
+
         print(f"Size {size}x{size}: {end_time - start_time:.3f}s, {memory_mb:.1f}MB")
+
 
 profile_matrix_operations([10, 100, 500, 1000])
 ```
@@ -436,27 +444,28 @@ profile_matrix_operations([10, 100, 500, 1000])
 # Memory optimization strategies
 def optimize_memory_usage():
     """Apply memory optimization techniques"""
-    
+
     # 1. Use appropriate data types
     import numpy as np
-    
+
     # Instead of float64 (default), use float32 for matrices
     A_optimized = np.array([[0.9, 0.1], [0.1, 0.9]], dtype=np.float32)
-    
+
     # 2. Clear intermediate variables
     del A_optimized
-    
+
     # 3. Use generators instead of lists for large datasets
     def data_generator(n):
         for i in range(n):
             yield np.random.rand(10, 10)
-    
+
     # 4. Process in chunks
     def process_large_model(model, chunk_size=100):
         for i in range(0, len(model.connections), chunk_size):
-            chunk = model.connections[i:i+chunk_size]
+            chunk = model.connections[i : i + chunk_size]
             # Process chunk
             pass
+
 
 # Monitor memory usage during optimization
 import tracemalloc
@@ -480,15 +489,17 @@ tracemalloc.stop()
 import pdb
 import ipdb  # Enhanced debugger
 
+
 # Insert breakpoint in code
 def debug_model_parsing(filepath):
     from src.gnn import GNNModel
-    
+
     # Break here to inspect
     pdb.set_trace()  # or ipdb.set_trace()
-    
+
     model = GNNModel.from_file(filepath)
     return model
+
 
 # Use in problematic scenarios
 model = debug_model_parsing("problematic_file.md")
@@ -502,17 +513,17 @@ class GNNDebugger:
     def __init__(self, model):
         self.model = model
         self.debug_info = {}
-    
+
     def inspect_variables(self):
         """Comprehensive variable inspection"""
         for name, var in self.model.state_space.items():
             self.debug_info[name] = {
-                'dimensions': var.dimensions,
-                'type': var.var_type,
-                'total_size': np.prod(var.dimensions)
+                "dimensions": var.dimensions,
+                "type": var.var_type,
+                "total_size": np.prod(var.dimensions),
             }
         return self.debug_info
-    
+
     def validate_connections(self):
         """Detailed connection validation"""
         issues = []
@@ -522,18 +533,19 @@ class GNNDebugger:
             if conn.target not in self.model.state_space:
                 issues.append(f"Undefined target: {conn.target}")
         return issues
-    
+
     def estimate_complexity(self):
         """Estimate computational complexity"""
         total_states = 1
         for var in self.model.state_space.values():
             total_states *= np.prod(var.dimensions)
-        
+
         return {
-            'total_state_space': total_states,
-            'memory_estimate_mb': total_states * 8 / 1024 / 1024,
-            'complexity_class': 'exponential' if total_states > 1e6 else 'manageable'
+            "total_state_space": total_states,
+            "memory_estimate_mb": total_states * 8 / 1024 / 1024,
+            "complexity_class": "exponential" if total_states > 1e6 else "manageable",
         }
+
 
 # Usage
 debugger = GNNDebugger(model)

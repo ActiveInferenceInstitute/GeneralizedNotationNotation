@@ -128,16 +128,16 @@ def estimate_effort_parameters(behavioral_data):
     """
     # Fit model to choice sequences and reaction times
     posterior_beliefs = variational_laplace(behavioral_data)
-    
+
     # Extract effort-related parameters
-    cognitive_demand = posterior_beliefs['e']
-    motivation = posterior_beliefs['c']
+    cognitive_demand = posterior_beliefs["e"]
+    motivation = posterior_beliefs["c"]
     effort_capacity = motivation - cognitive_demand
-    
+
     return {
-        'demand': cognitive_demand,
-        'motivation': motivation, 
-        'capacity': effort_capacity
+        "demand": cognitive_demand,
+        "motivation": motivation,
+        "capacity": effort_capacity,
     }
 ```
 

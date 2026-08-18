@@ -333,6 +333,7 @@ from typing import Dict, List, Optional, Tuple
 from dataclasses import dataclass
 from enum import Enum
 
+
 class EmotionType(Enum):
     JOY = 0
     SADNESS = 1
@@ -343,6 +344,7 @@ class EmotionType(Enum):
     INTEREST = 6
     SHAME = 7
 
+
 class RegulationStrategy(Enum):
     REAPPRAISAL = 0
     SUPPRESSION = 1
@@ -351,9 +353,11 @@ class RegulationStrategy(Enum):
     PROBLEM_SOLVING = 4
     SOCIAL_SUPPORT = 5
 
+
 @dataclass
 class EmotionalState:
     """Comprehensive emotional state representation"""
+
     physiological_arousal: np.ndarray
     interoceptive_signals: np.ndarray
     current_emotions: np.ndarray
@@ -362,65 +366,74 @@ class EmotionalState:
     mood_state: float
     appraisal_pattern: np.ndarray
 
+
 class InteroceptiveEmotionModel:
     """
     Active Inference implementation of emotion through interoceptive processing
     """
-    
+
     def __init__(self, config: Dict):
         self.config = config
         self.initialize_parameters()
-        
+
     def initialize_parameters(self):
         """Initialize emotion-specific parameters"""
         # Interoceptive precision
-        self.interoceptive_precision = self.config.get('interoceptive_precision', 1.2)
-        self.physiological_precision = self.config.get('physiological_precision', 2.0)
-        
+        self.interoceptive_precision = self.config.get("interoceptive_precision", 1.2)
+        self.physiological_precision = self.config.get("physiological_precision", 2.0)
+
         # Homeostatic set points
-        self.homeostatic_targets = np.array([
-            70,    # Heart rate
-            120,   # Blood pressure
-            0.5,   # Galvanic skin response
-            37,    # Temperature
-            10,    # Cortisol (normalized)
-            0.3,   # Breathing rate (normalized)
-            0.4,   # Muscle tension (normalized)
-            0.6    # Autonomic balance (normalized)
-        ])
-        
+        self.homeostatic_targets = np.array(
+            [
+                70,  # Heart rate
+                120,  # Blood pressure
+                0.5,  # Galvanic skin response
+                37,  # Temperature
+                10,  # Cortisol (normalized)
+                0.3,  # Breathing rate (normalized)
+                0.4,  # Muscle tension (normalized)
+                0.6,  # Autonomic balance (normalized)
+            ]
+        )
+
         # Emotion parameters
-        self.emotion_threshold = self.config.get('emotion_threshold', 0.5)
-        self.regulation_strength = self.config.get('regulation_strength', 0.7)
-        
-    def update_emotional_state(self, interoceptive_input: np.ndarray,
-                              environmental_context: np.ndarray,
-                              current_state: EmotionalState) -> EmotionalState:
+        self.emotion_threshold = self.config.get("emotion_threshold", 0.5)
+        self.regulation_strength = self.config.get("regulation_strength", 0.7)
+
+    def update_emotional_state(
+        self,
+        interoceptive_input: np.ndarray,
+        environmental_context: np.ndarray,
+        current_state: EmotionalState,
+    ) -> EmotionalState:
         """Update emotional state through interoceptive inference"""
-        
+
         # Interoceptive prediction and error
         predicted_interoception = self.predict_interoceptive_signals(current_state)
-        interoceptive_pe = self.compute_interoceptive_pe(interoceptive_input, 
-                                                        predicted_interoception)
-        
+        interoceptive_pe = self.compute_interoceptive_pe(
+            interoceptive_input, predicted_interoception
+        )
+
         # Physiological regulation (allostasis)
-        physiological_state = self.update_physiological_state(current_state, 
-                                                             interoceptive_pe)
-        
+        physiological_state = self.update_physiological_state(
+            current_state, interoceptive_pe
+        )
+
         # Appraisal processes
-        appraisal = self.appraise_situation(environmental_context, 
-                                          physiological_state,
-                                          current_state)
-        
+        appraisal = self.appraise_situation(
+            environmental_context, physiological_state, current_state
+        )
+
         # Emotion generation
-        emotions = self.generate_emotions(interoceptive_pe, appraisal, 
-                                        physiological_state)
-        
+        emotions = self.generate_emotions(
+            interoceptive_pe, appraisal, physiological_state
+        )
+
         # Emotion regulation
-        regulated_emotions = self.apply_emotion_regulation(emotions, 
-                                                          current_state.regulation_strategy,
-                                                          current_state)
-        
+        regulated_emotions = self.apply_emotion_regulation(
+            emotions, current_state.regulation_strategy, current_state
+        )
+
         return EmotionalState(
             physiological_arousal=physiological_state,
             interoceptive_signals=interoceptive_input,
@@ -428,68 +441,85 @@ class InteroceptiveEmotionModel:
             emotion_intensities=self.compute_emotion_intensities(regulated_emotions),
             regulation_strategy=self.select_regulation_strategy(appraisal, emotions),
             mood_state=self.update_mood(current_state.mood_state, emotions),
-            appraisal_pattern=appraisal
+            appraisal_pattern=appraisal,
         )
-    
-    def compute_interoceptive_pe(self, observed: np.ndarray, 
-                                predicted: np.ndarray) -> np.ndarray:
+
+    def compute_interoceptive_pe(
+        self, observed: np.ndarray, predicted: np.ndarray
+    ) -> np.ndarray:
         """Compute interoceptive prediction error"""
         return self.interoceptive_precision * (observed - predicted)
-    
-    def generate_emotions(self, interoceptive_pe: np.ndarray,
-                         appraisal: np.ndarray,
-                         physiological_state: np.ndarray) -> np.ndarray:
+
+    def generate_emotions(
+        self,
+        interoceptive_pe: np.ndarray,
+        appraisal: np.ndarray,
+        physiological_state: np.ndarray,
+    ) -> np.ndarray:
         """Generate emotions from interoceptive PE and appraisals"""
-        
+
         # Combine interoceptive signals with cognitive appraisals
-        arousal_component = np.linalg.norm(physiological_state - self.homeostatic_targets)
+        arousal_component = np.linalg.norm(
+            physiological_state - self.homeostatic_targets
+        )
         valence_component = self.compute_valence(appraisal)
-        
+
         # Map to basic emotions
         emotion_activations = np.zeros(8)  # 8 basic emotions
-        
+
         # Joy: positive valence, moderate arousal
-        emotion_activations[EmotionType.JOY.value] = max(0, valence_component * (1 - abs(arousal_component - 0.5)))
-        
+        emotion_activations[EmotionType.JOY.value] = max(
+            0, valence_component * (1 - abs(arousal_component - 0.5))
+        )
+
         # Fear: negative valence, high arousal, threat appraisal
-        emotion_activations[EmotionType.FEAR.value] = max(0, -valence_component * arousal_component * appraisal[0])
-        
+        emotion_activations[EmotionType.FEAR.value] = max(
+            0, -valence_component * arousal_component * appraisal[0]
+        )
+
         # Sadness: negative valence, low arousal, loss appraisal
-        emotion_activations[EmotionType.SADNESS.value] = max(0, -valence_component * (1 - arousal_component) * appraisal[2])
-        
+        emotion_activations[EmotionType.SADNESS.value] = max(
+            0, -valence_component * (1 - arousal_component) * appraisal[2]
+        )
+
         # Anger: negative valence, high arousal, obstacle appraisal
-        emotion_activations[EmotionType.ANGER.value] = max(0, -valence_component * arousal_component * appraisal[1])
-        
+        emotion_activations[EmotionType.ANGER.value] = max(
+            0, -valence_component * arousal_component * appraisal[1]
+        )
+
         # Apply threshold
         emotion_activations[emotion_activations < self.emotion_threshold] = 0
-        
+
         return emotion_activations
-    
-    def apply_emotion_regulation(self, emotions: np.ndarray,
-                               strategy: RegulationStrategy,
-                               current_state: EmotionalState) -> np.ndarray:
+
+    def apply_emotion_regulation(
+        self,
+        emotions: np.ndarray,
+        strategy: RegulationStrategy,
+        current_state: EmotionalState,
+    ) -> np.ndarray:
         """Apply emotion regulation strategy"""
-        
+
         if strategy == RegulationStrategy.REAPPRAISAL:
             # Reappraisal reduces negative emotions through cognitive change
             regulation_effect = 0.8 * self.regulation_strength
-            emotions[emotions < 0] *= (1 - regulation_effect)
-            
+            emotions[emotions < 0] *= 1 - regulation_effect
+
         elif strategy == RegulationStrategy.SUPPRESSION:
             # Suppression reduces expression but not feeling
             regulation_effect = 0.4 * self.regulation_strength
-            emotions *= (1 - regulation_effect)
-            
+            emotions *= 1 - regulation_effect
+
         elif strategy == RegulationStrategy.DISTRACTION:
             # Distraction reduces attention to emotional stimuli
             regulation_effect = 0.6 * self.regulation_strength
-            emotions *= (1 - regulation_effect)
-            
+            emotions *= 1 - regulation_effect
+
         elif strategy == RegulationStrategy.ACCEPTANCE:
             # Acceptance doesn't change emotion but reduces struggle
             # Implementation would involve changing relationship to emotion
             pass
-        
+
         return emotions
 ```
 

@@ -252,7 +252,7 @@ success = generate_audio(
     output_file="output/model_audio.wav",
     model_name="my_model",
     duration=30.0,
-    backend="auto"
+    backend="auto",
 )
 
 if success:
@@ -272,6 +272,7 @@ sapf_code = processor.convert_to_sapf(gnn_sections, "my_model")
 
 # Generate audio from SAPF
 from audio.sapf import generate_audio_from_sapf
+
 success = generate_audio_from_sapf(sapf_code, "output/sapf_audio.wav", 30.0)
 ```
 
@@ -282,9 +283,7 @@ from audio import generate_audio_from_gnn, analyze_audio_characteristics
 
 # Generate audio with analysis
 results = generate_audio_from_gnn(
-    file_path=Path("models/my_model.md"),
-    output_dir=Path("output/"),
-    verbose=True
+    file_path=Path("models/my_model.md"), output_dir=Path("output/"), verbose=True
 )
 
 # Analyze audio characteristics
@@ -303,7 +302,7 @@ from audio import create_sonification
 sonification = create_sonification(
     file_path=Path("models/complex_model.md"),
     output_dir=Path("output/sonification/"),
-    verbose=True
+    verbose=True,
 )
 
 print(f"Sonification created: {sonification['audio_file']}")
@@ -455,11 +454,11 @@ output/15_audio_output/
 ```python
 # Quality configuration
 quality_config = {
-    'sample_rate': 44100,          # Hz
-    'bit_depth': 16,               # bits
-    'channels': 2,                 # stereo
-    'compression': 'lossless',     # compression type
-    'normalization': True          # normalize audio
+    "sample_rate": 44100,  # Hz
+    "bit_depth": 16,  # bits
+    "channels": 2,  # stereo
+    "compression": "lossless",  # compression type
+    "normalization": True,  # normalize audio
 }
 ```
 
@@ -479,10 +478,10 @@ quality_config = {
 ```python
 # Performance configuration
 performance_config = {
-    'use_gpu': True,               # Use GPU acceleration
-    'parallel_processing': True,    # Enable parallel processing
-    'cache_results': True,          # Cache processed results
-    'optimize_memory': True         # Optimize memory usage
+    "use_gpu": True,  # Use GPU acceleration
+    "parallel_processing": True,  # Enable parallel processing
+    "cache_results": True,  # Cache processed results
+    "optimize_memory": True,  # Optimize memory usage
 }
 ```
 
@@ -533,8 +532,8 @@ def test_audio_generation():
 # Test complete audio pipeline
 def test_audio_pipeline():
     results = generate_audio_from_gnn(test_file, test_dir)
-    assert 'audio_file' in results
-    assert 'analysis' in results
+    assert "audio_file" in results
+    assert "analysis" in results
 ```
 
 ### Quality Tests
@@ -542,8 +541,8 @@ def test_audio_pipeline():
 # Test audio quality
 def test_audio_quality():
     analysis = analyze_audio_characteristics(audio_result)
-    assert analysis['sample_rate'] == 44100
-    assert analysis['dynamic_range'] > 0
+    assert analysis["sample_rate"] == 44100
+    assert analysis["dynamic_range"] > 0
 ```
 
 ## Dependencies

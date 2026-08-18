@@ -8,8 +8,7 @@ Discovers and executes NumPyro-generated POMDP scripts via subprocess.
 from execute.numpyro import run_numpyro_scripts
 
 results = run_numpyro_scripts(
-    render_dir="output/11_render_output",
-    output_dir="output/12_execute_output"
+    render_dir="output/11_render_output", output_dir="output/12_execute_output"
 )
 ```
 

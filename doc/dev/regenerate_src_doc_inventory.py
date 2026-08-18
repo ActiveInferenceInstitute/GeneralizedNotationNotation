@@ -58,7 +58,9 @@ def main() -> None:
         ]
     )
     OUT.write_text("\n".join(lines) + "\n", encoding="utf-8")
-    print(f"Wrote {OUT} ({len(missing_agents)} missing AGENTS, {len(missing_readme)} missing README)")
+    print(
+        f"Wrote {OUT} ({len(missing_agents)} missing AGENTS, {len(missing_readme)} missing README)"
+    )
 
 
 if __name__ == "__main__":

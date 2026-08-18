@@ -405,20 +405,22 @@ import requests
 import sys
 import subprocess
 
+
 def check_gnn_health():
     """Basic health check for GNN deployment"""
-    
+
     # Check if main process responds
     try:
         result = subprocess.run(
             ["python", "src/main.py", "--validate-config"],
-            capture_output=True, timeout=30
+            capture_output=True,
+            timeout=30,
         )
         if result.returncode != 0:
             return False, "Config validation failed"
     except subprocess.TimeoutExpired:
         return False, "Health check timeout"
-    
+
     # Check MCP server if enabled
     try:
         response = requests.get("http://localhost:8000/health", timeout=5)
@@ -426,8 +428,9 @@ def check_gnn_health():
             return False, "MCP server unhealthy"
     except requests.RequestException:
         pass  # MCP might be disabled
-    
+
     return True, "Healthy"
+
 
 if __name__ == "__main__":
     healthy, message = check_gnn_health()
@@ -442,20 +445,23 @@ from prometheus_client import Counter, Histogram, Gauge, start_http_server
 import time
 
 # Define metrics
-PIPELINE_RUNS = Counter('gnn_pipeline_runs_total', 'Total pipeline runs')
-PIPELINE_DURATION = Histogram('gnn_pipeline_duration_seconds', 'Pipeline duration')
-ACTIVE_JOBS = Gauge('gnn_active_jobs', 'Currently active jobs')
-MODEL_PROCESSING_TIME = Histogram('gnn_model_processing_seconds', 'Model processing time')
+PIPELINE_RUNS = Counter("gnn_pipeline_runs_total", "Total pipeline runs")
+PIPELINE_DURATION = Histogram("gnn_pipeline_duration_seconds", "Pipeline duration")
+ACTIVE_JOBS = Gauge("gnn_active_jobs", "Currently active jobs")
+MODEL_PROCESSING_TIME = Histogram(
+    "gnn_model_processing_seconds", "Model processing time"
+)
+
 
 class GNNMetrics:
     def __init__(self):
         # Start metrics server
         start_http_server(9090)
-    
+
     def record_pipeline_run(self, duration, success=True):
         PIPELINE_RUNS.inc()
         PIPELINE_DURATION.observe(duration)
-    
+
     def set_active_jobs(self, count):
         ACTIVE_JOBS.set(count)
 ```

@@ -101,9 +101,7 @@ from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
 
 server_params = StdioServerParameters(
-    command="python",
-    args=["src/21_mcp.py"],
-    env={"PYTHONPATH": "src"}
+    command="python", args=["src/21_mcp.py"], env={"PYTHONPATH": "src"}
 )
 
 async with stdio_client(server_params) as (read, write):

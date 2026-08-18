@@ -94,7 +94,7 @@ success = process_gnn_multi_format(
     output_dir=Path("output"),
     logger=logger,
     recursive=True,
-    verbose=True
+    verbose=True,
 )
 ```
 
@@ -373,7 +373,7 @@ from pathlib import Path
 success = process_gnn_multi_format(
     target_dir=Path("input/gnn_files"),
     output_dir=Path("output/3_gnn_output"),
-    logger=logger
+    logger=logger,
 )
 ```
 
@@ -386,7 +386,7 @@ success = process_gnn_multi_format(
     logger=logger,
     recursive=True,
     enable_round_trip=True,
-    enable_cross_format=True
+    enable_cross_format=True,
 )
 ```
 
@@ -399,7 +399,7 @@ from gnn.multi_format_processor import process_gnn_multi_format
 run_script = create_standardized_pipeline_script(
     "3_gnn.py",
     process_gnn_multi_format,
-    "GNN discovery, parsing, and multi-format serialization"
+    "GNN discovery, parsing, and multi-format serialization",
 )
 ```
 

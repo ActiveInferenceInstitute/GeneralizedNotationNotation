@@ -115,24 +115,25 @@ See [src/AGENTS.md](../../../src/AGENTS.md) for complete pipeline documentation.
 def check_cache(gnn_file_hash: str, parameters: dict) -> Optional[CacheResult]:
     """
     Check if cached result exists for given GNN file and parameters.
-    
+
     Parameters:
         gnn_file_hash: SHA256 hash of GNN file
         parameters: Processing parameters dictionary
-    
+
     Returns:
         CacheResult if cache hit, None otherwise
     """
 
+
 def store_cache(gnn_file_hash: str, parameters: dict, result: Any) -> bool:
     """
     Store processing result in cache.
-    
+
     Parameters:
         gnn_file_hash: SHA256 hash of GNN file
         parameters: Processing parameters dictionary
         result: Processing result to cache
-    
+
     Returns:
         True if successfully stored, False otherwise
     """

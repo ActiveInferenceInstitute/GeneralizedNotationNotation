@@ -32,18 +32,18 @@ The DisCoPy implementation consists of three interconnected layers:
 DisCoPy extracts dimensions through GNN's model parameters and variable definitions:
 
 ```python
-model_params = gnn_spec.get('model_parameters', {})
-num_states = model_params.get('num_hidden_states', 3)
-num_observations = model_params.get('num_obs', 3)
-num_actions = model_params.get('num_actions', 3)
+model_params = gnn_spec.get("model_parameters", {})
+num_states = model_params.get("num_hidden_states", 3)
+num_observations = model_params.get("num_obs", 3)
+num_actions = model_params.get("num_actions", 3)
 
 # Override from variable definitions if available
-for var in gnn_spec.get('variables', []):
-    if var.get('name') == 'A' and 'dimensions' in var:
-        num_observations = var['dimensions'][0]
-        num_states = var['dimensions'][1]
-    elif var.get('name') == 'B' and 'dimensions' in var:
-        num_actions = var['dimensions'][2]
+for var in gnn_spec.get("variables", []):
+    if var.get("name") == "A" and "dimensions" in var:
+        num_observations = var["dimensions"][0]
+        num_states = var["dimensions"][1]
+    elif var.get("name") == "B" and "dimensions" in var:
+        num_actions = var["dimensions"][2]
 ```
 
 ### No Matrix Values
@@ -57,10 +57,10 @@ Unlike the numerical frameworks, DisCoPy does not inject actual matrix values. I
 DisCoPy defines four fundamental types representing the Active Inference model's abstract spaces:
 
 ```python
-S = Ty('S')  # Hidden states
-O = Ty('O')  # Observations
-A = Ty('A')  # Actions
-P = Ty('P')  # Probabilities
+S = Ty("S")  # Hidden states
+O = Ty("O")  # Observations
+A = Ty("A")  # Actions
+P = Ty("P")  # Probabilities
 ```
 
 These types form the objects of the monoidal category in which the Active Inference model is expressed.
@@ -96,7 +96,7 @@ The core Active Inference loop is expressed as a sequential composition of morph
 
 ```python
 perception_action_loop = (
-    state_inf    # O → S ⊗ P
+    state_inf  # O → S ⊗ P
     >> policy_inf  # S ⊗ P → A ⊗ P
     >> action_sel  # A ⊗ P → A
 )
@@ -122,11 +122,11 @@ The `analyze_circuit_structure()` function performs type-theoretic validation:
 
 ```python
 analysis_results = {
-    'num_components': len(components),      # 8 components total
-    'loop_domain': str(loop.dom),            # 'O'
-    'loop_codomain': str(loop.cod),          # 'A'
-    'model_domain': str(model.dom),          # 'O'
-    'model_codomain': str(model.cod)         # 'A'
+    "num_components": len(components),  # 8 components total
+    "loop_domain": str(loop.dom),  # 'O'
+    "loop_codomain": str(loop.cod),  # 'A'
+    "model_domain": str(model.dom),  # 'O'
+    "model_codomain": str(model.cod),  # 'A'
 }
 ```
 

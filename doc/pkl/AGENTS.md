@@ -68,21 +68,22 @@ See [src/AGENTS.md](../../src/AGENTS.md) for complete pipeline documentation.
 def generate_pkl_config(gnn_model: GNNModel) -> PklConfig:
     """
     Generate Pkl configuration from GNN model.
-    
+
     Parameters:
         gnn_model: Parsed GNN model structure
-    
+
     Returns:
         PklConfig with type-safe model definition
     """
 
+
 def validate_pkl_config(config: PklConfig) -> ValidationResult:
     """
     Validate Pkl configuration using built-in type system.
-    
+
     Parameters:
         config: Pkl configuration to validate
-    
+
     Returns:
         ValidationResult with type checking results
     """

@@ -92,36 +92,16 @@ A = np.eye(4)
 B = np.zeros((4, 4, 4))  # [states, states, actions]
 
 # Action 0: Up (0→2, 1→3, 2→2, 3→3)
-B[:, :, 0] = np.array([
-    [0, 0, 1, 0],
-    [0, 0, 0, 1],
-    [0, 0, 1, 0],
-    [0, 0, 0, 1]
-]).T
+B[:, :, 0] = np.array([[0, 0, 1, 0], [0, 0, 0, 1], [0, 0, 1, 0], [0, 0, 0, 1]]).T
 
 # Action 1: Down (0→0, 1→1, 2→0, 3→1)
-B[:, :, 1] = np.array([
-    [1, 0, 0, 0],
-    [0, 1, 0, 0],
-    [1, 0, 0, 0],
-    [0, 1, 0, 0]
-]).T
+B[:, :, 1] = np.array([[1, 0, 0, 0], [0, 1, 0, 0], [1, 0, 0, 0], [0, 1, 0, 0]]).T
 
 # Action 2: Left (0→0, 1→0, 2→2, 3→2)
-B[:, :, 2] = np.array([
-    [1, 1, 0, 0],
-    [0, 0, 0, 0],
-    [0, 0, 1, 1],
-    [0, 0, 0, 0]
-]).T
+B[:, :, 2] = np.array([[1, 1, 0, 0], [0, 0, 0, 0], [0, 0, 1, 1], [0, 0, 0, 0]]).T
 
 # Action 3: Right (0→1, 1→1, 2→3, 3→3)
-B[:, :, 3] = np.array([
-    [0, 0, 0, 0],
-    [1, 1, 0, 0],
-    [0, 0, 0, 0],
-    [0, 0, 1, 1]
-]).T
+B[:, :, 3] = np.array([[0, 0, 0, 0], [1, 1, 0, 0], [0, 0, 0, 0], [0, 0, 1, 1]]).T
 
 # C Vector: Prefer state 3
 C = np.array([0, 0, 0, 3])
@@ -162,6 +142,7 @@ Agent must explore to find hidden goal location.
 ```python
 # Uncertain A matrix - agent doesn't know goal location
 A_uncertain = np.ones((4, 4)) * 0.25  # Uniform
+
 
 # After observing goal, becomes certain
 def update_A_on_goal(A, goal_obs):

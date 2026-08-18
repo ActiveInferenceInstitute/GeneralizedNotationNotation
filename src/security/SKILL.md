@@ -23,9 +23,12 @@ python src/main.py --only-steps 18 --verbose
 
 ```python
 from security import (
-    process_security, perform_security_check,
-    check_vulnerabilities, generate_security_recommendations,
-    calculate_security_score, generate_security_summary
+    process_security,
+    perform_security_check,
+    check_vulnerabilities,
+    generate_security_recommendations,
+    calculate_security_score,
+    generate_security_summary,
 )
 
 # Process security step (used by pipeline)

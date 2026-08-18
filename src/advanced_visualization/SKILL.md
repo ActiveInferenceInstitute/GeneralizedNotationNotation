@@ -24,10 +24,14 @@ python src/main.py --only-steps 9 --verbose
 ```python
 from advanced_visualization import (
     AdvancedVisualizer,
-    create_visualization_from_data, create_network_visualization,
-    create_timeline_visualization, create_heatmap_visualization,
-    DashboardGenerator, generate_dashboard,
-    VisualizationDataExtractor, extract_visualization_data,
+    create_visualization_from_data,
+    create_network_visualization,
+    create_timeline_visualization,
+    create_heatmap_visualization,
+    DashboardGenerator,
+    generate_dashboard,
+    VisualizationDataExtractor,
+    extract_visualization_data,
     process_advanced_viz,
 )
 
@@ -46,6 +50,7 @@ viz_data = extract_visualization_data(parsed_model)
 
 # D2 diagram generation (if available)
 from advanced_visualization import D2Visualizer, D2_AVAILABLE
+
 if D2_AVAILABLE:
     d2 = D2Visualizer()
 ```

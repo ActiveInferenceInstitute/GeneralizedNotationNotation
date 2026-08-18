@@ -112,7 +112,7 @@ ontology_terms = load_defined_ontology_terms()
 # Validate annotations against the ontology
 result = validate_annotations(
     annotations=["A=LikelihoodMatrix", "s=HiddenState", "x=InvalidTerm"],
-    ontology_terms=ontology_terms
+    ontology_terms=ontology_terms,
 )
 # result includes:
 # - valid_annotations: [str, ...]      (annotations that matched a term)

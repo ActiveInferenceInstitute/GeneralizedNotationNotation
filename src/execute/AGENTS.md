@@ -109,7 +109,10 @@ success = process_execute(
 **Example**:
 ```python
 from execute import execute_script_safely
-result = execute_script_safely("output/11_render_output/.../model_pymdp.py", timeout=120)
+
+result = execute_script_safely(
+    "output/11_render_output/.../model_pymdp.py", timeout=120
+)
 if not result["success"]:
     print(f"{result['error_type']}: {result.get('error') or result['stderr']}")
 ```
@@ -138,7 +141,10 @@ Framework availability is assessed at execution time by the processor rather tha
 
 **Usage**:
 ```python
-from execute.pymdp.package_detector import detect_pymdp_installation, is_correct_pymdp_package
+from execute.pymdp.package_detector import (
+    detect_pymdp_installation,
+    is_correct_pymdp_package,
+)
 
 detection = detect_pymdp_installation()
 if detection.get("wrong_package"):
@@ -209,7 +215,7 @@ from execute import process_execute
 success = process_execute(
     target_dir=Path("input/gnn_files"),
     output_dir=Path("output/12_execute_output"),
-    simulation_engine="auto"
+    simulation_engine="auto",
 )
 ```
 

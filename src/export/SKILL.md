@@ -33,10 +33,17 @@ python src/main.py --only-steps 7 --verbose
 
 ```python
 from export import (
-    export_model, generate_exports, export_single_gnn_file,
-    Exporter, MultiFormatExporter, get_supported_formats,
-    export_to_json, export_to_xml, export_to_graphml, export_to_gexf,
-    process_export
+    export_model,
+    generate_exports,
+    export_single_gnn_file,
+    Exporter,
+    MultiFormatExporter,
+    get_supported_formats,
+    export_to_json,
+    export_to_xml,
+    export_to_graphml,
+    export_to_gexf,
+    process_export,
 )
 
 # Export single file to all formats

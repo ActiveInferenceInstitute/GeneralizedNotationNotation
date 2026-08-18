@@ -183,10 +183,13 @@ python src/main.py --verbose \
 ### Interactive Debugging
 ```python
 # Python debugging for complex errors
-import pdb; pdb.set_trace()
+import pdb
+
+pdb.set_trace()
 
 # Inspect model state
 from src.gnn import GNNModel
+
 model = GNNModel.from_file("problematic_model.md")
 print(f"Variables: {model.state_space}")
 print(f"Connections: {model.connections}")

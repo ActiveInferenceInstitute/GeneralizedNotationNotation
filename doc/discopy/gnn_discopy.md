@@ -38,11 +38,12 @@ The foundational data structure in DisCoPy is the `Diagram` class. A diagram in 
         could translate to:
 
    ```python
-        from discopy.monoidal import Diagram, Ty, Box
-        A_type, B_type, C_type = Ty('A[2]'), Ty('B[3]'), Ty('C[2]')
-        f_AB = Box('A_to_B', A_type, B_type)
-        f_BC = Box('B_to_C', B_type, C_type)
-        gnn_diagram = f_AB >> f_BC
+   from discopy.monoidal import Diagram, Ty, Box
+
+   A_type, B_type, C_type = Ty("A[2]"), Ty("B[3]"), Ty("C[2]")
+   f_AB = Box("A_to_B", A_type, B_type)
+   f_BC = Box("B_to_C", B_type, C_type)
+   gnn_diagram = f_AB >> f_BC
         ```
 
 *   **GNN `InitialParameterization` and DisCoPy Functors:**

@@ -61,7 +61,7 @@ success = process_validation(
     output_dir=Path("output/6_validation_output"),
     verbose=True,
     strict=True,
-    profile=True
+    profile=True,
 )
 ```
 
@@ -107,10 +107,10 @@ success = process_validation(
 ### Validation Settings
 ```python
 VALIDATION_CONFIG = {
-    'strict_validation': False,
-    'profile_performance': True,
-    'check_consistency': True,
-    'validate_semantics': True
+    "strict_validation": False,
+    "profile_performance": True,
+    "check_consistency": True,
+    "validate_semantics": True,
 }
 ```
 
@@ -123,8 +123,7 @@ VALIDATION_CONFIG = {
 from validation import process_validation
 
 success = process_validation(
-    target_dir="input/gnn_files",
-    output_dir="output/6_validation_output"
+    target_dir="input/gnn_files", output_dir="output/6_validation_output"
 )
 ```
 
@@ -136,11 +135,11 @@ with open("model.gnn", "r") as f:
     content = f.read()
 
 validation = validate_model_structure(content)
-if validation['valid']:
+if validation["valid"]:
     print("Model structure is valid")
 else:
     print("Validation issues:")
-    for issue in validation['issues']:
+    for issue in validation["issues"]:
         print(f"  - {issue}")
 ```
 

@@ -109,25 +109,26 @@ def process_step_standardized(
     logger,
     recursive: bool = False,
     verbose: bool = False,
-    **kwargs
+    **kwargs,
 ) -> bool:
     """Standardized processing function."""
     correlation_id = generate_correlation_id()
-    
+
     with safe_execution_context(logger, correlation_id) as context:
         # Implementation using context utilities...
         return True
 
+
 def main():
     args = ArgumentParser.parse_step_arguments("step_name")
     logger = setup_step_logging("step", args)
-    
+
     success = process_step_standardized(
         target_dir=Path(args.target_dir),
         output_dir=get_output_dir_for_script("step_name", Path(args.output_dir)),
         logger=logger,
-        recursive=getattr(args, 'recursive', False),
-        verbose=getattr(args, 'verbose', False)
+        recursive=getattr(args, "recursive", False),
+        verbose=getattr(args, "verbose", False),
     )
     return 0 if success else 1
 ```

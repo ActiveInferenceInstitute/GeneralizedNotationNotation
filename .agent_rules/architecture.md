@@ -57,8 +57,10 @@ Step N: Module Name (Thin Orchestrator)
 
 Pipeline Flow: main.py → N_module.py (this) → module/ (implementation)
 """
+
 import sys
 from pathlib import Path
+
 sys.path.insert(0, str(Path(__file__).parent))
 
 from utils.pipeline_template import create_standardized_pipeline_script
@@ -70,11 +72,13 @@ run_script = create_standardized_pipeline_script(
     "Description of what this step does",
     additional_arguments={
         "extra_arg": {"type": str, "help": "Extra argument", "default": "default"}
-    }
+    },
 )
+
 
 def main() -> int:
     return run_script()
+
 
 if __name__ == "__main__":
     sys.exit(main())

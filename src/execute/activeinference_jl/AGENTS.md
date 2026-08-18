@@ -58,7 +58,7 @@ success = run_activeinference_analysis(
     analysis_type="comprehensive",
     recursive_search=True,
     verbose=True,
-    timeout=600
+    timeout=600,
 )
 ```
 
@@ -127,46 +127,40 @@ success = run_activeinference_analysis(
 ### Analysis Configuration
 ```python
 ANALYSIS_CONFIG = {
-    'analysis_type': 'comprehensive',        # Analysis depth
-    'recursive_search': True,                # Search subdirectories
-    'verbose': True,                         # Verbose output
-    'output_format': 'both',                 # Output format (json, markdown, both)
-    'performance_monitoring': True,          # Monitor performance
-    'error_handling': 'robust',              # Error handling strategy
-    'parallel_execution': False              # Parallel analysis
+    "analysis_type": "comprehensive",  # Analysis depth
+    "recursive_search": True,  # Search subdirectories
+    "verbose": True,  # Verbose output
+    "output_format": "both",  # Output format (json, markdown, both)
+    "performance_monitoring": True,  # Monitor performance
+    "error_handling": "robust",  # Error handling strategy
+    "parallel_execution": False,  # Parallel analysis
 }
 ```
 
 ### Execution Configuration
 ```python
 EXECUTION_CONFIG = {
-    'julia_executable': 'julia',             # Julia executable path
-    'working_directory': './activeinference_work',  # Working directory
-    'timeout_seconds': 300,                  # Execution timeout
-    'memory_limit': '4GB',                   # Memory limit
-    'cpu_cores': 4,                          # CPU cores to use
-    'environment_variables': {               # Environment variables
-        'JULIA_NUM_THREADS': '4',
-        'JULIA_PROJECT': '@.'
-    }
+    "julia_executable": "julia",  # Julia executable path
+    "working_directory": "./activeinference_work",  # Working directory
+    "timeout_seconds": 300,  # Execution timeout
+    "memory_limit": "4GB",  # Memory limit
+    "cpu_cores": 4,  # CPU cores to use
+    "environment_variables": {  # Environment variables
+        "JULIA_NUM_THREADS": "4",
+        "JULIA_PROJECT": "@.",
+    },
 }
 ```
 
 ### Analysis Types Configuration
 ```python
 ANALYSIS_TYPES = {
-    'basic': {
-        'components': ['simulation', 'basic_metrics'],
-        'depth': 'minimal'
+    "basic": {"components": ["simulation", "basic_metrics"], "depth": "minimal"},
+    "comprehensive": {
+        "components": ["simulation", "planning", "learning", "analysis"],
+        "depth": "full",
     },
-    'comprehensive': {
-        'components': ['simulation', 'planning', 'learning', 'analysis'],
-        'depth': 'full'
-    },
-    'all': {
-        'components': ['all_available'],
-        'depth': 'complete'
-    }
+    "all": {"components": ["all_available"], "depth": "complete"},
 }
 ```
 
@@ -183,7 +177,7 @@ success = run_activeinference_analysis(
     pipeline_output_dir="output/11_render_output",
     analysis_type="comprehensive",
     recursive_search=True,
-    verbose=True
+    verbose=True,
 )
 
 if success:
@@ -198,14 +192,14 @@ from execute.activeinference_jl import execute_activeinference_jl_script
 
 # Execute specific ActiveInference.jl script
 config = {
-    'timeout_seconds': 600,
-    'memory_limit': '8GB',
-    'analysis_type': 'comprehensive'
+    "timeout_seconds": 600,
+    "memory_limit": "8GB",
+    "analysis_type": "comprehensive",
 }
 
 results = execute_activeinference_jl_script(
     script_path="output/11_render_output/model_activeinference_simulation.jl",
-    config=config
+    config=config,
 )
 
 print(f"Execution time: {results['execution_time']:.2f}s")
@@ -225,10 +219,10 @@ print(f"ActiveInference.jl available: {validation['activeinference_available']}"
 print(f"Required packages: {validation['packages_available']}")
 print(f"Environment ready: {validation['environment_ready']}")
 
-if not validation['environment_ready']:
+if not validation["environment_ready"]:
     print("Missing components:")
     for component, status in validation.items():
-        if not status and component != 'environment_ready':
+        if not status and component != "environment_ready":
             print(f"  - {component}")
 ```
 
@@ -238,15 +232,15 @@ from execute.activeinference_jl import analyze_activeinference_results
 
 # Analyze simulation results
 analysis_config = {
-    'metrics': ['free_energy', 'planning_accuracy', 'learning_curves'],
-    'visualization': True,
-    'statistical_tests': True,
-    'output_format': 'markdown'
+    "metrics": ["free_energy", "planning_accuracy", "learning_curves"],
+    "visualization": True,
+    "statistical_tests": True,
+    "output_format": "markdown",
 }
 
 analysis_results = analyze_activeinference_results(
     results_dir="output/12_execute_output/activeinference_results",
-    analysis_config=analysis_config
+    analysis_config=analysis_config,
 )
 
 print(f"Analysis completed for {len(analysis_results['trials'])} trials")
@@ -307,46 +301,34 @@ output/12_execute_output/
 ### Analysis Results Structure
 ```python
 analysis_results = {
-    'metadata': {
-        'model_name': 'actinf_pomdp_agent',
-        'framework': 'activeinference_jl',
-        'analysis_type': 'comprehensive',
-        'execution_time': 245.67,
-        'julia_version': '1.8.5',
-        'timestamp': '2025-10-28T10:30:00Z'
+    "metadata": {
+        "model_name": "actinf_pomdp_agent",
+        "framework": "activeinference_jl",
+        "analysis_type": "comprehensive",
+        "execution_time": 245.67,
+        "julia_version": "1.8.5",
+        "timestamp": "2025-10-28T10:30:00Z",
     },
-    'simulation': {
-        'trials_completed': 50,
-        'avg_execution_time': 4.2,
-        'success_rate': 0.98
+    "simulation": {
+        "trials_completed": 50,
+        "avg_execution_time": 4.2,
+        "success_rate": 0.98,
     },
-    'analysis': {
-        'free_energy': {
-            'mean': -1250.34,
-            'std': 45.67,
-            'trajectory': [...]
-        },
-        'planning_accuracy': {
-            'mean': 0.87,
-            'std': 0.05,
-            'by_trial': [...]
-        },
-        'belief_accuracy': {
-            'mean': 0.92,
-            'std': 0.03,
-            'evolution': [...]
-        }
+    "analysis": {
+        "free_energy": {"mean": -1250.34, "std": 45.67, "trajectory": [...]},
+        "planning_accuracy": {"mean": 0.87, "std": 0.05, "by_trial": [...]},
+        "belief_accuracy": {"mean": 0.92, "std": 0.03, "evolution": [...]},
     },
-    'visualizations': [
-        'free_energy_trajectory.png',
-        'belief_evolution.png',
-        'action_selection_patterns.png'
+    "visualizations": [
+        "free_energy_trajectory.png",
+        "belief_evolution.png",
+        "action_selection_patterns.png",
     ],
-    'performance': {
-        'memory_peak': '3.2GB',
-        'cpu_time': 198.45,
-        'analysis_completion_rate': 0.96
-    }
+    "performance": {
+        "memory_peak": "3.2GB",
+        "cpu_time": 198.45,
+        "analysis_completion_rate": 0.96,
+    },
 }
 ```
 
@@ -392,7 +374,9 @@ analysis_results = {
 ### Error Examples
 ```python
 try:
-    results = run_activeinference_analysis(pipeline_output_dir, analysis_type="comprehensive")
+    results = run_activeinference_analysis(
+        pipeline_output_dir, analysis_type="comprehensive"
+    )
 except ActiveInferenceExecutionError as e:
     logger.error(f"ActiveInference.jl analysis failed: {e}")
     # Attempt recovery with basic analysis
@@ -463,7 +447,9 @@ uv run --extra dev python -m pytest src/tests/test_execute_activeinference*.py -
 ### Tool Endpoints
 ```python
 @mcp_tool("execute.run_activeinference_analysis")
-def run_activeinference_analysis_tool(pipeline_output_dir: str, analysis_type: str) -> Dict[str, Any]:
+def run_activeinference_analysis_tool(
+    pipeline_output_dir: str, analysis_type: str
+) -> Dict[str, Any]:
     """Run comprehensive ActiveInference.jl analysis on pipeline outputs"""
     return run_activeinference_analysis(pipeline_output_dir, analysis_type)
 ```
@@ -533,10 +519,7 @@ def run_activeinference_analysis_tool(pipeline_output_dir: str, analysis_type: s
 ```python
 # Enable debug output for ActiveInference.jl execution
 results = run_activeinference_analysis(
-    pipeline_output_dir,
-    analysis_type="comprehensive",
-    debug=True,
-    verbose=True
+    pipeline_output_dir, analysis_type="comprehensive", debug=True, verbose=True
 )
 ```
 

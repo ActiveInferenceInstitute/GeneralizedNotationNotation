@@ -365,9 +365,7 @@ from export import generate_exports
 
 # Export GNN models to multiple formats
 success = generate_exports(
-    target_dir=Path("models/"),
-    output_dir=Path("exports/"),
-    verbose=True
+    target_dir=Path("models/"), output_dir=Path("exports/"), verbose=True
 )
 
 if success:
@@ -383,8 +381,7 @@ from export import export_single_gnn_file
 
 # Export single GNN file
 results = export_single_gnn_file(
-    gnn_file=Path("models/my_model.md"),
-    exports_dir=Path("exports/")
+    gnn_file=Path("models/my_model.md"), exports_dir=Path("exports/")
 )
 
 print(f"Exported to {len(results['exported_files'])} formats")
@@ -416,12 +413,10 @@ from export import export_model
 
 # Export with custom format selection
 model_data = parse_gnn_content(gnn_content)
-formats = ['json', 'xml', 'graphml']
+formats = ["json", "xml", "graphml"]
 
 results = export_model(
-    model_data=model_data,
-    output_dir=Path("exports/"),
-    formats=formats
+    model_data=model_data, output_dir=Path("exports/"), formats=formats
 )
 
 print(f"Exported formats: {list(results['exported_files'].keys())}")
@@ -437,11 +432,7 @@ from pathlib import Path
 target_dir = Path("models/")
 output_dir = Path("exports/")
 
-success = generate_exports(
-    target_dir=target_dir,
-    output_dir=output_dir,
-    verbose=True
-)
+success = generate_exports(target_dir=target_dir, output_dir=output_dir, verbose=True)
 
 if success:
     print("Batch export completed")
@@ -472,7 +463,7 @@ if not validate_model_data(model_data):
 ```python
 # Select export formats
 formats = get_supported_formats()
-selected_formats = ['json', 'xml', 'graphml']
+selected_formats = ["json", "xml", "graphml"]
 ```
 
 ### 4. Export Generation
@@ -490,9 +481,9 @@ for format_name in selected_formats:
 ```python
 # Collect export results
 export_results = {
-    'exported_files': exported_files,
-    'failed_formats': failed_formats,
-    'metadata': export_metadata
+    "exported_files": exported_files,
+    "failed_formats": failed_formats,
+    "metadata": export_metadata,
 }
 ```
 
@@ -507,7 +498,7 @@ from export import generate_exports
 success = generate_exports(
     target_dir=Path("input/gnn_files"),
     output_dir=Path("output/7_export_output"),
-    verbose=True
+    verbose=True,
 )
 ```
 

@@ -35,20 +35,24 @@ num_states = [3, 2]
 num_obs = [3]
 num_controls = [3, 1]  # factor 1 is passive
 
-A = [jnp.ones((1, 3, 3, 2)) / 3.0]   # (batch, num_obs[0], Ns0, Ns1)
+A = [jnp.ones((1, 3, 3, 2)) / 3.0]  # (batch, num_obs[0], Ns0, Ns1)
 B = [
-    jnp.ones((1, 3, 3, 3)) / 3.0,    # controllable factor 0
-    jnp.eye(2)[None, :, :, None],    # passive factor 1, 1 action
+    jnp.ones((1, 3, 3, 3)) / 3.0,  # controllable factor 0
+    jnp.eye(2)[None, :, :, None],  # passive factor 1, 1 action
 ]
 C = [jnp.zeros((1, 3))]
-D = [jnp.array([[1/3, 1/3, 1/3]]), jnp.array([[0.5, 0.5]])]
+D = [jnp.array([[1 / 3, 1 / 3, 1 / 3]]), jnp.array([[0.5, 0.5]])]
 
-pA = [jnp.full_like(A[0], 1.0)]      # symmetric Dirichlet concentration
+pA = [jnp.full_like(A[0], 1.0)]  # symmetric Dirichlet concentration
 pB = [jnp.full_like(B[0], 1.0), jnp.full_like(B[1], 1.0)]
 
 agent = Agent(
-    A=A, B=B, C=C, D=D,
-    pA=pA, pB=pB,
+    A=A,
+    B=B,
+    C=C,
+    D=D,
+    pA=pA,
+    pB=pB,
     num_controls=num_controls,
     control_fac_idx=[0],  # factor 1 has num_controls == 1 and must NOT be listed
     policy_len=1,
@@ -68,12 +72,12 @@ observation arrays per step.
 
 ```python
 A = [
-    jnp.ones((1, 4, 3)) / 4.0,   # modality 0: 4 outcomes × 3 states
-    jnp.ones((1, 2, 3)) / 2.0,   # modality 1: 2 outcomes × 3 states
+    jnp.ones((1, 4, 3)) / 4.0,  # modality 0: 4 outcomes × 3 states
+    jnp.ones((1, 2, 3)) / 2.0,  # modality 1: 2 outcomes × 3 states
 ]
 C = [jnp.zeros((1, 4)), jnp.array([[0.0, 1.0]])]
 B = [jnp.ones((1, 3, 3, 2)) / 3.0]
-D = [jnp.array([[1/3, 1/3, 1/3]])]
+D = [jnp.array([[1 / 3, 1 / 3, 1 / 3]])]
 
 agent = Agent(A=A, B=B, C=C, D=D, num_controls=[2], control_fac_idx=[0], batch_size=1)
 
@@ -95,7 +99,9 @@ B = [jnp.broadcast_to(B_single[None, ...], (batch, *B_single.shape))]
 C = [jnp.broadcast_to(C_single[None, ...], (batch, *C_single.shape))]
 D = [jnp.broadcast_to(D_single[None, ...], (batch, *D_single.shape))]
 
-agent = Agent(A=A, B=B, C=C, D=D, num_controls=[2], control_fac_idx=[0], batch_size=batch)
+agent = Agent(
+    A=A, B=B, C=C, D=D, num_controls=[2], control_fac_idx=[0], batch_size=batch
+)
 
 # Observation arrays now have size `batch`.
 obs = [jnp.array([0, 1, 2, 0], dtype=jnp.int32)]
@@ -116,7 +122,7 @@ pymdp 1.0.0 treats `C[m]` as the log-prior over observations in modality `m`.
 Positive values = preferred outcomes; negative values = aversive outcomes.
 
 ```python
-C = [jnp.array([[-1.0, 0.0, 2.0]])]   # shape (batch, num_obs[0])
+C = [jnp.array([[-1.0, 0.0, 2.0]])]  # shape (batch, num_obs[0])
 ```
 
 Re-normalise expected-free-energy precision with `gamma` if you change the

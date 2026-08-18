@@ -256,7 +256,7 @@ config = get_pipeline_config()
 success = execute_pipeline(
     target_dir=Path("input/"),
     output_dir=Path("output/"),
-    steps=["setup", "gnn", "validation", "export", "visualization"]
+    steps=["setup", "gnn", "validation", "export", "visualization"],
 )
 
 if success:
@@ -275,7 +275,7 @@ success = execute_step(
     step_name="validation",
     target_dir=Path("input/"),
     output_dir=Path("output/"),
-    verbose=True
+    verbose=True,
 )
 
 if success:
@@ -289,15 +289,17 @@ else:
 ```python
 from pipeline import register_step
 
+
 # Register a custom step
 def my_custom_step(target_dir, output_dir, verbose=False):
     # Custom step implementation
     return True
 
+
 success = register_step(
     step_name="my_custom_step",
     step_function=my_custom_step,
-    dependencies=["setup", "gnn"]
+    dependencies=["setup", "gnn"],
 )
 
 if success:
@@ -335,7 +337,10 @@ print(f"Visualization step depends on: {dependencies}")
 
 # Check if step can be executed
 from pipeline import can_execute_step
-can_execute = can_execute_step("visualization", completed_steps=["setup", "gnn", "validation"])
+
+can_execute = can_execute_step(
+    "visualization", completed_steps=["setup", "gnn", "validation"]
+)
 print(f"Can execute visualization: {can_execute}")
 ```
 
@@ -411,17 +416,31 @@ def execute_pipeline_flow():
 ```python
 # Pipeline configuration
 pipeline_config = {
-    'steps': [
-        'setup', 'gnn', 'validation', 'export', 'visualization',
-        'advanced_viz', 'ontology', 'render', 'execute', 'llm',
-        'ml_integration', 'audio', 'analysis', 'integration',
-        'security', 'research', 'website', 'report'
+    "steps": [
+        "setup",
+        "gnn",
+        "validation",
+        "export",
+        "visualization",
+        "advanced_viz",
+        "ontology",
+        "render",
+        "execute",
+        "llm",
+        "ml_integration",
+        "audio",
+        "analysis",
+        "integration",
+        "security",
+        "research",
+        "website",
+        "report",
     ],
-    'output_base_dir': 'output/',
-    'log_level': 'INFO',
-    'parallel_execution': False,
-    'error_handling': 'stop_on_error',
-    'performance_tracking': True
+    "output_base_dir": "output/",
+    "log_level": "INFO",
+    "parallel_execution": False,
+    "error_handling": "stop_on_error",
+    "performance_tracking": True,
 }
 ```
 
@@ -429,18 +448,18 @@ pipeline_config = {
 ```python
 # Step configuration
 step_config = {
-    'validation': {
-        'input_dir': 'input/',
-        'output_dir': 'output/validation/',
-        'verbose': True,
-        'strict_mode': False,
-        'timeout': 300
+    "validation": {
+        "input_dir": "input/",
+        "output_dir": "output/validation/",
+        "verbose": True,
+        "strict_mode": False,
+        "timeout": 300,
     },
-    'export': {
-        'formats': ['json', 'xml', 'graphml'],
-        'output_dir': 'output/export/',
-        'include_metadata': True
-    }
+    "export": {
+        "formats": ["json", "xml", "graphml"],
+        "output_dir": "output/export/",
+        "include_metadata": True,
+    },
 }
 ```
 
@@ -448,11 +467,11 @@ step_config = {
 ```python
 # Execution configuration
 execution_config = {
-    'max_parallel_steps': 4,
-    'step_timeout': 600,
-    'memory_limit': '4GB',
-    'retry_failed_steps': True,
-    'cleanup_on_failure': True
+    "max_parallel_steps": 4,
+    "step_timeout": 600,
+    "memory_limit": "4GB",
+    "retry_failed_steps": True,
+    "cleanup_on_failure": True,
 }
 ```
 
@@ -515,8 +534,8 @@ except ConfigError as e:
 # Test individual pipeline functions
 def test_pipeline_config():
     config = get_pipeline_config()
-    assert 'steps' in config
-    assert 'output_base_dir' in config
+    assert "steps" in config
+    assert "output_base_dir" in config
 ```
 
 ### Integration Tests
@@ -610,7 +629,8 @@ Solution: Optimize resource usage and increase limits
 ```python
 # Enable debug mode for detailed pipeline information
 import logging
-logging.getLogger('pipeline').setLevel(logging.DEBUG)
+
+logging.getLogger("pipeline").setLevel(logging.DEBUG)
 ```
 
 ## Future Enhancements

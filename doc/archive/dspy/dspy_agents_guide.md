@@ -51,10 +51,10 @@ Tools are Python functions with docstrings that describe their behavior:
 ```python
 def search_documents(query: str) -> list[str]:
     """Search the document database for relevant passages.
-    
+
     Args:
         query: The search query string
-        
+
     Returns:
         List of relevant document passages
     """
@@ -62,21 +62,25 @@ def search_documents(query: str) -> list[str]:
     results = vector_db.search(query, k=5)
     return [r.text for r in results]
 
+
 def calculate(expression: str) -> float:
     """Evaluate a mathematical expression safely.
-    
+
     Args:
         expression: Mathematical expression to evaluate
-        
+
     Returns:
         The computed result
     """
     import ast
-    return eval(compile(ast.parse(expression, mode='eval'), '', 'eval'))
+
+    return eval(compile(ast.parse(expression, mode="eval"), "", "eval"))
+
 
 def get_current_date() -> str:
     """Get the current date in YYYY-MM-DD format."""
     from datetime import date
+
     return date.today().isoformat()
 ```
 
@@ -86,14 +90,14 @@ def get_current_date() -> str:
 import dspy
 
 # Configure LM
-lm = dspy.LM('openai/gpt-4o', temperature=0.7)
+lm = dspy.LM("openai/gpt-4o", temperature=0.7)
 dspy.configure(lm=lm)
 
 # Create ReAct agent
 agent = dspy.ReAct(
-    signature='question -> answer',
+    signature="question -> answer",
     tools=[search_documents, calculate, get_current_date],
-    max_iters=5
+    max_iters=5,
 )
 
 # Run the agent
@@ -110,37 +114,36 @@ print(response.answer)
 ```python
 class ResearchAgent(dspy.Module):
     """Agent that maintains conversation memory and uses multiple tools."""
-    
+
     def __init__(self, tools, max_iters=10):
         super().__init__()
         self.tools = tools
         self.max_iters = max_iters
-        
+
         # ReAct for tool use
         self.react = dspy.ReAct(
-            signature='context, question -> answer',
-            tools=tools,
-            max_iters=max_iters
+            signature="context, question -> answer", tools=tools, max_iters=max_iters
         )
-        
+
         # Summarization for memory compression
-        self.summarize = dspy.ChainOfThought('conversation_history -> summary')
-        
+        self.summarize = dspy.ChainOfThought("conversation_history -> summary")
+
         self.memory = []
-    
+
     def forward(self, question):
         # Build context from memory
-        context = self.summarize(conversation_history=str(self.memory[-5:])).summary if self.memory else ""
-        
+        context = (
+            self.summarize(conversation_history=str(self.memory[-5:])).summary
+            if self.memory
+            else ""
+        )
+
         # Run agent
         response = self.react(context=context, question=question)
-        
+
         # Update memory
-        self.memory.append({
-            'question': question,
-            'answer': response.answer
-        })
-        
+        self.memory.append({"question": question, "answer": response.answer})
+
         return response
 ```
 
@@ -151,43 +154,42 @@ For complex tasks, agents can orchestrate other agents:
 ```python
 class OrchestratorAgent(dspy.Module):
     """High-level agent that delegates to specialized sub-agents."""
-    
+
     def __init__(self):
         super().__init__()
-        
+
         # Planning agent
         self.planner = dspy.ChainOfThought(
-            'task_description -> step_by_step_plan: list[str], required_capabilities: list[str]'
+            "task_description -> step_by_step_plan: list[str], required_capabilities: list[str]"
         )
-        
+
         # Specialized agents
         self.research_agent = dspy.ReAct(
-            signature='research_question -> findings',
-            tools=[search_web, search_papers]
+            signature="research_question -> findings", tools=[search_web, search_papers]
         )
-        
+
         self.analysis_agent = dspy.ReAct(
-            signature='data, analysis_request -> analysis_result',
-            tools=[calculate, plot_data, statistical_test]
+            signature="data, analysis_request -> analysis_result",
+            tools=[calculate, plot_data, statistical_test],
         )
-        
+
         self.synthesis_agent = dspy.ChainOfThought(
-            'all_findings: list[str] -> final_report'
+            "all_findings: list[str] -> final_report"
         )
-    
+
     def forward(self, task):
         # Create plan
         plan = self.planner(task_description=task)
-        
+
         findings = []
         for step in plan.step_by_step_plan:
-            if 'research' in step.lower():
+            if "research" in step.lower():
                 result = self.research_agent(research_question=step)
                 findings.append(result.findings)
-            elif 'analyz' in step.lower():
+            elif "analyz" in step.lower():
                 result = self.analysis_agent(data=findings[-1], analysis_request=step)
                 findings.append(result.analysis_result)
-        
+
         # Synthesize results
         return self.synthesis_agent(all_findings=findings)
 ```
@@ -203,60 +205,64 @@ An agent that assists with GNN-based Active Inference policy selection:
 ```python
 class GNNPolicyAgent(dspy.Module):
     """Agent for GNN-based policy evaluation and selection."""
-    
+
     def __init__(self, gnn_tools):
         super().__init__()
-        
+
         # Core agent for policy reasoning
         self.policy_evaluator = dspy.ReAct(
-            signature='current_belief, candidate_policies, goal -> recommended_policy, reasoning',
+            signature="current_belief, candidate_policies, goal -> recommended_policy, reasoning",
             tools=gnn_tools,
-            max_iters=5
+            max_iters=5,
         )
-    
+
     def forward(self, belief_state, policies, goal):
         return self.policy_evaluator(
             current_belief=str(belief_state),
             candidate_policies=str(policies),
-            goal=goal
+            goal=goal,
         )
+
 
 # Define GNN-specific tools
 def evaluate_expected_free_energy(policy_id: str, gnn_model: str) -> dict:
     """Calculate the Expected Free Energy for a policy in the GNN model.
-    
+
     Args:
         policy_id: Identifier of the policy to evaluate
         gnn_model: The GNN model specification
-        
+
     Returns:
         Dict with pragmatic_value, epistemic_value, and total_efe
     """
     # Integration with GNN execution engine
     pass
 
+
 def predict_future_state(policy_id: str, steps: int) -> str:
     """Predict future states under a given policy.
-    
+
     Args:
         policy_id: The policy to simulate
         steps: Number of timesteps to predict
-        
+
     Returns:
         Predicted state trajectory
     """
     pass
 
+
 def check_gnn_syntax(gnn_snippet: str) -> dict:
     """Validate GNN syntax.
-    
+
     Args:
         gnn_snippet: GNN code to validate
-        
+
     Returns:
         Dict with is_valid and error_messages
     """
     pass
+
 
 # Create the agent
 gnn_agent = GNNPolicyAgent(
@@ -269,66 +275,65 @@ gnn_agent = GNNPolicyAgent(
 ```python
 class GNNAuthoringAssistant(dspy.Module):
     """Interactive agent for GNN model creation."""
-    
+
     def __init__(self):
         super().__init__()
-        
+
         self.clarify = dspy.ChainOfThought(
-            'user_description, current_model -> clarifying_questions: list[str]'
+            "user_description, current_model -> clarifying_questions: list[str]"
         )
-        
+
         self.generate = dspy.ReAct(
-            signature='model_requirements, constraints -> gnn_model_code',
+            signature="model_requirements, constraints -> gnn_model_code",
             tools=[
                 self.validate_gnn_syntax,
                 self.suggest_state_space,
                 self.suggest_observation_model,
-                self.lookup_gnn_examples
-            ]
+                self.lookup_gnn_examples,
+            ],
         )
-        
+
         self.refine = dspy.ChainOfThought(
-            'current_model, validation_errors, user_feedback -> refined_model'
+            "current_model, validation_errors, user_feedback -> refined_model"
         )
-    
+
     @staticmethod
     def validate_gnn_syntax(gnn_code: str) -> dict:
         """Validate GNN syntax and return errors if any."""
         # Integration with GNN type checker
         pass
-    
+
     @staticmethod
     def suggest_state_space(description: str) -> str:
         """Suggest a state space structure based on description."""
         pass
-    
-    @staticmethod  
+
+    @staticmethod
     def suggest_observation_model(states: str, observations: str) -> str:
         """Suggest an A-matrix structure for state-observation mapping."""
         pass
-    
+
     @staticmethod
     def lookup_gnn_examples(model_type: str) -> list[str]:
         """Look up similar GNN model examples."""
         pass
-    
+
     def forward(self, user_request, context=""):
         # First, ask clarifying questions if needed
         questions = self.clarify(
-            user_description=user_request,
-            current_model=context
+            user_description=user_request, current_model=context
         ).clarifying_questions
-        
+
         if questions:
-            return {'needs_clarification': True, 'questions': questions}
-        
+            return {"needs_clarification": True, "questions": questions}
+
         # Generate model
         model = self.generate(
             model_requirements=user_request,
-            constraints="Must follow GNN syntax specification"
+            constraints="Must follow GNN syntax specification",
         )
-        
-        return {'gnn_model': model.gnn_model_code}
+
+        return {"gnn_model": model.gnn_model_code}
 ```
 
 ---
@@ -341,23 +346,21 @@ The LM uses docstrings to understand tool capabilities:
 
 ```python
 def search_knowledge_base(
-    query: str,
-    category: str = "all",
-    max_results: int = 5
+    query: str, category: str = "all", max_results: int = 5
 ) -> list[dict]:
     """Search the knowledge base for relevant information.
-    
+
     Use this tool when you need to find specific facts, definitions,
     or background information about a topic.
-    
+
     Args:
         query: Natural language search query
         category: Filter by category ('all', 'science', 'history', 'technology')
         max_results: Maximum number of results to return (1-20)
-        
+
     Returns:
         List of dicts with 'title', 'content', and 'relevance_score' keys
-        
+
     Example:
         search_knowledge_base("quantum computing principles", category="science")
     """
@@ -372,9 +375,13 @@ Return structured data that helps the agent reason:
 def check_system_status() -> dict:
     """Check the status of all system components."""
     return {
-        'database': {'status': 'healthy', 'latency_ms': 45},
-        'cache': {'status': 'healthy', 'hit_rate': 0.87},
-        'api': {'status': 'degraded', 'error_rate': 0.02, 'message': 'High latency detected'}
+        "database": {"status": "healthy", "latency_ms": 45},
+        "cache": {"status": "healthy", "hit_rate": 0.87},
+        "api": {
+            "status": "degraded",
+            "error_rate": 0.02,
+            "message": "High latency detected",
+        },
     }
 ```
 
@@ -388,11 +395,11 @@ def query_external_api(endpoint: str, params: dict) -> dict:
     try:
         response = requests.get(endpoint, params=params, timeout=10)
         response.raise_for_status()
-        return {'success': True, 'data': response.json()}
+        return {"success": True, "data": response.json()}
     except requests.Timeout:
-        return {'success': False, 'error': 'Request timed out after 10 seconds'}
+        return {"success": False, "error": "Request timed out after 10 seconds"}
     except requests.HTTPError as e:
-        return {'success': False, 'error': f'HTTP error: {e.response.status_code}'}
+        return {"success": False, "error": f"HTTP error: {e.response.status_code}"}
 ```
 
 ---
@@ -414,12 +421,11 @@ mlflow.dspy.autolog()
 # Now all agent runs are automatically logged
 with mlflow.start_run():
     agent = dspy.ReAct(
-        signature='question -> answer',
-        tools=[search_documents, calculate]
+        signature="question -> answer", tools=[search_documents, calculate]
     )
-    
+
     response = agent(question="What is the capital of France?")
-    
+
     # Log custom metrics
     mlflow.log_metric("response_length", len(response.answer))
 ```
@@ -445,28 +451,21 @@ def agent_accuracy(example, prediction, trace=None):
     """Check if agent found correct information."""
     return example.expected_answer.lower() in prediction.answer.lower()
 
+
 # Prepare training data
 trainset = [
     dspy.Example(
-        question="What is the population of Tokyo?",
-        expected_answer="13.96 million"
-    ).with_inputs('question')
+        question="What is the population of Tokyo?", expected_answer="13.96 million"
+    ).with_inputs("question")
     for _ in range(10)
 ]
 
 # Optimize the agent
 from dspy.teleprompt import MIPROv2
 
-optimizer = MIPROv2(
-    metric=agent_accuracy,
-    num_candidates=10,
-    init_temperature=1.0
-)
+optimizer = MIPROv2(metric=agent_accuracy, num_candidates=10, init_temperature=1.0)
 
-optimized_agent = optimizer.compile(
-    agent,
-    trainset=trainset
-)
+optimized_agent = optimizer.compile(agent, trainset=trainset)
 ```
 
 **See also**: [DSPy Optimizers Guide](dspy_optimizers_guide.md)

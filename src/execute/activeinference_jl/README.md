@@ -61,7 +61,7 @@ success = run_activeinference_analysis(
     pipeline_output_dir="output/",
     recursive_search=True,
     verbose=True,
-    analysis_type="comprehensive"
+    analysis_type="comprehensive",
 )
 ```
 

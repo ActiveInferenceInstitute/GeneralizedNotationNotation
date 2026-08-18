@@ -8,8 +8,7 @@ Discovers and executes PyTorch-generated POMDP scripts via subprocess.
 from execute.pytorch import run_pytorch_scripts
 
 results = run_pytorch_scripts(
-    render_dir="output/11_render_output",
-    output_dir="output/12_execute_output"
+    render_dir="output/11_render_output", output_dir="output/12_execute_output"
 )
 ```
 

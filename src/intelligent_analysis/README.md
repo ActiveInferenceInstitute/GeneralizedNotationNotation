@@ -48,9 +48,7 @@ python src/24_intelligent_analysis.py --bottleneck-threshold 30.0
 from intelligent_analysis import process_intelligent_analysis
 
 result = process_intelligent_analysis(
-    target_dir=Path("input/gnn_files"),
-    output_dir=Path("output"),
-    verbose=True
+    target_dir=Path("input/gnn_files"), output_dir=Path("output"), verbose=True
 )
 ```
 

@@ -49,10 +49,7 @@ from src.execute.jax.jax_runner import run_jax_scripts, is_jax_available
 if is_jax_available():
     # Run JAX scripts
     success = run_jax_scripts(
-        pipeline_output_dir="output/",
-        recursive_search=True,
-        verbose=True,
-        device="gpu"
+        pipeline_output_dir="output/", recursive_search=True, verbose=True, device="gpu"
     )
     print(f"Execution successful: {success}")
 else:
@@ -77,6 +74,7 @@ The executor automatically detects available hardware:
 
 ```python
 import jax
+
 devices = jax.devices()
 print(f"Available devices: {[str(d) for d in devices]}")
 ```
@@ -109,6 +107,7 @@ The executor provides performance metrics:
 
 ```python
 import logging
+
 logging.basicConfig(level=logging.INFO)
 
 # Performance metrics are automatically logged
@@ -125,12 +124,11 @@ The JAX executor is integrated into the main pipeline:
 # In 12_execute.py
 from execute.jax import run_jax_scripts
 
+
 def execute_jax_step(pipeline_output_dir, verbose=False):
     """Execute JAX scripts as part of pipeline step 12."""
     return run_jax_scripts(
-        pipeline_output_dir=pipeline_output_dir,
-        recursive_search=True,
-        verbose=verbose
+        pipeline_output_dir=pipeline_output_dir, recursive_search=True, verbose=verbose
     )
 ```
 
@@ -167,13 +165,14 @@ output/
    ```python
    # Enable gradient checkpointing in generated code
    import jax
+
    jax.checkpoint = True
    ```
 
 4. **Numerical Stability**
    ```python
    # Enable debug mode
-   jax.config.update('jax_debug_nans', True)
+   jax.config.update("jax_debug_nans", True)
    ```
 
 ### Error Recovery
@@ -227,6 +226,7 @@ tail -f output/execution_results/jax/execution_log.txt
 ```python
 # Performance metrics are saved as JSON
 import json
+
 with open("output/execution_results/jax/performance_metrics.json") as f:
     metrics = json.load(f)
     print(f"Average execution time: {metrics['avg_execution_time']}s")
@@ -241,8 +241,9 @@ logging.getLogger("src.execute.jax").setLevel(logging.DEBUG)
 
 # Enable JAX debug features
 import jax
-jax.config.update('jax_debug_nans', True)
-jax.config.update('jax_debug_infs', True)
+
+jax.config.update("jax_debug_nans", True)
+jax.config.update("jax_debug_infs", True)
 ```
 
 ## Examples
@@ -257,7 +258,7 @@ success = run_jax_scripts(
     pipeline_output_dir="output/",
     recursive_search=True,
     verbose=True,
-    device="gpu"  # Use GPU if available
+    device="gpu",  # Use GPU if available
 )
 
 if success:

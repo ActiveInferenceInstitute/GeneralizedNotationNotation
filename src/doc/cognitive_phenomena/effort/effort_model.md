@@ -136,23 +136,23 @@ import numpy as np
 from pymdp.agent import Agent
 
 # Define observation model (likelihood matrix A)
-A = np.array([
-    [0.8, 0.15, 0.04, 0.01],  # Low load
-    [0.1, 0.7, 0.15, 0.05],   # Medium load
-    [0.02, 0.08, 0.6, 0.3]    # High load
-])
+A = np.array(
+    [
+        [0.8, 0.15, 0.04, 0.01],  # Low load
+        [0.1, 0.7, 0.15, 0.05],  # Medium load
+        [0.02, 0.08, 0.6, 0.3],  # High load
+    ]
+)
 
 # Define transition model (B matrix)
-B = np.array([
-    # Action 0: Maintain
-    [[0.85, 0.12, 0.03],
-     [0.15, 0.7, 0.15],
-     [0.05, 0.2, 0.75]],
-    # Action 1: Increase effort
-    [[0.3, 0.5, 0.2],
-     [0.1, 0.6, 0.3],
-     [0.05, 0.15, 0.8]]
-])
+B = np.array(
+    [
+        # Action 0: Maintain
+        [[0.85, 0.12, 0.03], [0.15, 0.7, 0.15], [0.05, 0.2, 0.75]],
+        # Action 1: Increase effort
+        [[0.3, 0.5, 0.2], [0.1, 0.6, 0.3], [0.05, 0.15, 0.8]],
+    ]
+)
 
 # Define preferences (C vector)
 C = np.array([1.0, 0.3, -0.5, -1.0])
@@ -162,11 +162,11 @@ D = np.array([0.7, 0.25, 0.05])
 
 # Create agent
 agent = Agent(
-    A=A, 
-    B=B, 
-    C=C, 
+    A=A,
+    B=B,
+    C=C,
     D=D,
-    policy_selection='ard'  # Active inference with precision
+    policy_selection="ard",  # Active inference with precision
 )
 ```
 

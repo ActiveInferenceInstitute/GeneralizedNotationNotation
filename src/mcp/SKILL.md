@@ -23,18 +23,29 @@ python src/main.py --only-steps 21 --verbose
 
 ```python
 from mcp import (
-    MCP, MCPRegistry, MCPServer, JSONRPCServer, MCPTool, MCPResource,
-    create_mcp_server, start_mcp_server,
-    register_tools, register_module_tools,
-    get_available_tools, list_available_tools,
-    list_available_resources, process_mcp,
-    get_mcp_instance, handle_mcp_request,
+    MCP,
+    MCPRegistry,
+    MCPServer,
+    JSONRPCServer,
+    MCPTool,
+    MCPResource,
+    create_mcp_server,
+    start_mcp_server,
+    register_tools,
+    register_module_tools,
+    get_available_tools,
+    list_available_tools,
+    list_available_resources,
+    process_mcp,
+    get_mcp_instance,
+    handle_mcp_request,
     initialize,
 )
 
 # Process MCP step (used by pipeline)
 process_mcp(
-    target_dir, output_dir,
+    target_dir,
+    output_dir,
     verbose=True,
     performance_mode="high",
     strict_validation=True,
@@ -42,16 +53,16 @@ process_mcp(
 )
 
 # Create and start a JSON-RPC server bound to the global MCP registry
-server = create_mcp_server()      # returns JSONRPCServer
+server = create_mcp_server()  # returns JSONRPCServer
 start_mcp_server()
 
 # Discover and register all pipeline modules' tools on the global MCP
-register_tools()                             # populates mcp_instance
-register_module_tools("gnn")                 # named module only
+register_tools()  # populates mcp_instance
+register_module_tools("gnn")  # named module only
 
 # Query available tools and resources
-tools     = get_available_tools()            # same as list_available_tools()
-tools_md  = list_available_tools()
+tools = get_available_tools()  # same as list_available_tools()
+tools_md = list_available_tools()
 resources = list_available_resources()
 ```
 

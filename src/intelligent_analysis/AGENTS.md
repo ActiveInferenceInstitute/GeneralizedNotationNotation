@@ -90,7 +90,7 @@ result = process_intelligent_analysis(
     output_dir=Path("output"),
     verbose=True,
     skip_llm=False,
-    bottleneck_threshold=60.0
+    bottleneck_threshold=60.0,
 )
 ```
 
@@ -142,18 +142,18 @@ Detailed analysis result for a single pipeline step.
 ```python
 @dataclass
 class StepAnalysis:
-    step_number: int           # Pipeline step number (0-24)
-    script_name: str           # Script filename (e.g., "3_gnn.py")
-    description: str           # Human-readable step description
-    status: str                # "SUCCESS", "FAILED", "WARNING", etc.
-    duration_seconds: float    # Execution time in seconds
-    memory_mb: float           # Peak memory usage in MB
-    exit_code: int             # Process exit code
-    flags: List[str] = []     # List of flag description strings
-    flag_type: str = "none"    # "none", "yellow", or "red"
-    summary: str = ""          # One-line summary of step result
-    stdout_snippet: str = ""   # Meaningful excerpt from stdout
-    stderr_snippet: str = ""   # Meaningful excerpt from stderr
+    step_number: int  # Pipeline step number (0-24)
+    script_name: str  # Script filename (e.g., "3_gnn.py")
+    description: str  # Human-readable step description
+    status: str  # "SUCCESS", "FAILED", "WARNING", etc.
+    duration_seconds: float  # Execution time in seconds
+    memory_mb: float  # Peak memory usage in MB
+    exit_code: int  # Process exit code
+    flags: List[str] = []  # List of flag description strings
+    flag_type: str = "none"  # "none", "yellow", or "red"
+    summary: str = ""  # One-line summary of step result
+    stdout_snippet: str = ""  # Meaningful excerpt from stdout
+    stderr_snippet: str = ""  # Meaningful excerpt from stderr
 ```
 
 #### `AnalysisContext`
@@ -163,8 +163,8 @@ Context container for pipeline analysis, wrapping the raw summary data.
 ```python
 @dataclass
 class AnalysisContext:
-    summary_data: Dict[str, Any]    # Raw pipeline execution summary
-    timestamp: str                   # ISO timestamp (auto-generated)
+    summary_data: Dict[str, Any]  # Raw pipeline execution summary
+    timestamp: str  # ISO timestamp (auto-generated)
     pipeline_name: str = "GNN Pipeline"
     analysis_type: str = "comprehensive"
 ```
@@ -215,9 +215,7 @@ from intelligent_analysis import process_intelligent_analysis
 
 logger = logging.getLogger("pipeline")
 success = process_intelligent_analysis(
-    target_dir=Path("input/gnn_files"),
-    output_dir=Path("output"),
-    logger=logger
+    target_dir=Path("input/gnn_files"), output_dir=Path("output"), logger=logger
 )
 if not success:
     logger.error("Intelligent analysis failed")
@@ -538,7 +536,7 @@ from intelligent_analysis.processor import (
     identify_bottlenecks,
     extract_failure_context,
     generate_recommendations,
-    StepAnalysis
+    StepAnalysis,
 )
 from intelligent_analysis.analyzer import (
     IntelligentAnalyzer,
@@ -546,8 +544,9 @@ from intelligent_analysis.analyzer import (
     calculate_pipeline_health_score,
     classify_failure_severity,
     detect_performance_patterns,
-    generate_optimization_suggestions
+    generate_optimization_suggestions,
 )
+
 
 @pytest.fixture
 def sample_summary_data():
@@ -559,7 +558,7 @@ def sample_summary_data():
             "peak_memory_mb": 256.0,
             "successful_steps": 5,
             "failed_steps": 0,
-            "warnings": 0
+            "warnings": 0,
         },
         "steps": [
             {
@@ -571,7 +570,7 @@ def sample_summary_data():
                 "peak_memory_mb": 50.0,
                 "exit_code": 0,
                 "stdout": "Parsed 1 model",
-                "stderr": ""
+                "stderr": "",
             },
             {
                 "step_number": 12,
@@ -582,10 +581,11 @@ def sample_summary_data():
                 "peak_memory_mb": 200.0,
                 "exit_code": 1,
                 "stdout": "",
-                "stderr": "ModuleNotFoundError: No module named 'pymdp'"
-            }
-        ]
+                "stderr": "ModuleNotFoundError: No module named 'pymdp'",
+            },
+        ],
     }
+
 
 @pytest.fixture
 def failed_summary_data():
@@ -597,7 +597,7 @@ def failed_summary_data():
             "peak_memory_mb": 1500.0,
             "successful_steps": 2,
             "failed_steps": 3,
-            "warnings": 2
+            "warnings": 2,
         },
         "steps": [
             {
@@ -608,10 +608,10 @@ def failed_summary_data():
                 "duration_seconds": 60.0 * (i + 1),
                 "peak_memory_mb": 100.0 * (i + 1),
                 "exit_code": 1 if i in [10, 11, 12] else 0,
-                "stderr": "MemoryError" if i == 10 else ""
+                "stderr": "MemoryError" if i == 10 else "",
             }
             for i in range(5)
-        ]
+        ],
     }
 ```
 
@@ -627,6 +627,7 @@ def test_analyze_pipeline_summary_success(sample_summary_data):
     assert len(result["failures"]) == 1  # One failed step
     assert result["failures"][0]["step"] == "12_execute.py"
 
+
 def test_analyze_individual_steps_flags(sample_summary_data):
     """Test that flags are correctly assigned to steps."""
     step_analyses, flags_by_type = analyze_individual_steps(sample_summary_data)
@@ -636,31 +637,38 @@ def test_analyze_individual_steps_flags(sample_summary_data):
     assert len(failed) == 1
     assert failed[0].script_name == "12_execute.py"
 
+
 def test_identify_bottlenecks_threshold(sample_summary_data):
     """Test bottleneck detection with custom threshold."""
     bottlenecks = identify_bottlenecks(sample_summary_data, threshold_seconds=10.0)
     assert len(bottlenecks) >= 1
     assert bottlenecks[0]["step"] == "12_execute.py"
 
+
 def test_health_score_perfect():
     """Test health score for a perfect pipeline run."""
     perfect = {
-        "steps": [{"status": "SUCCESS", "duration_seconds": 1.0, "peak_memory_mb": 10.0}],
+        "steps": [
+            {"status": "SUCCESS", "duration_seconds": 1.0, "peak_memory_mb": 10.0}
+        ],
         "total_duration_seconds": 1.0,
-        "performance_summary": {"peak_memory_mb": 10.0}
+        "performance_summary": {"peak_memory_mb": 10.0},
     }
     score = calculate_pipeline_health_score(perfect)
     assert score > 90.0
+
 
 def test_classify_failure_severity_critical():
     """Test that memory errors are classified as critical."""
     step = {"stderr": "MemoryError: cannot allocate", "exit_code": 137}
     assert classify_failure_severity(step) == "critical"
 
+
 def test_classify_failure_severity_major():
     """Test that import errors are classified as major."""
     step = {"stderr": "ImportError: No module named 'foo'", "exit_code": 1}
     assert classify_failure_severity(step) == "major"
+
 
 def test_detect_cascading_failure_pattern():
     """Test detection of consecutive failures."""
@@ -670,7 +678,7 @@ def test_detect_cascading_failure_pattern():
             {"status": "FAILED", "duration_seconds": 1.0, "peak_memory_mb": 10.0},
             {"status": "FAILED", "duration_seconds": 1.0, "peak_memory_mb": 10.0},
         ],
-        "performance_summary": {}
+        "performance_summary": {},
     }
     patterns = detect_performance_patterns(data)
     assert any(p["type"] == "cascading_failure" for p in patterns)
@@ -682,21 +690,22 @@ def test_detect_cascading_failure_pattern():
 def test_process_without_provider_config(sample_summary_data, tmp_path):
     """Test that provider unavailability still yields rule-based analysis."""
     import logging
+
     logger = logging.getLogger("test")
 
     # Write summary to tmp_path
     summary_dir = tmp_path / "00_pipeline_summary"
     summary_dir.mkdir()
     import json
+
     (summary_dir / "pipeline_execution_summary.json").write_text(
         json.dumps(sample_summary_data)
     )
 
     from intelligent_analysis.processor import process_intelligent_analysis
+
     result = process_intelligent_analysis(
-        target_dir=tmp_path,
-        output_dir=tmp_path,
-        logger=logger
+        target_dir=tmp_path, output_dir=tmp_path, logger=logger
     )
     assert result is True
 ```

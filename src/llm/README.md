@@ -263,9 +263,7 @@ from llm import analyze_gnn_model_with_llm
 
 # Analyze GNN model with LLM
 analysis = analyze_gnn_model_with_llm(
-    gnn_content=gnn_content,
-    model_name="my_model",
-    analysis_type="comprehensive"
+    gnn_content=gnn_content, model_name="my_model", analysis_type="comprehensive"
 )
 
 print(f"Model complexity: {analysis['complexity']}")
@@ -280,8 +278,7 @@ from llm import interpret_model_behavior
 
 # Interpret model behavior
 interpretation = interpret_model_behavior(
-    gnn_content=gnn_content,
-    model_name="my_model"
+    gnn_content=gnn_content, model_name="my_model"
 )
 
 print(f"Behavioral patterns: {interpretation['patterns']}")
@@ -296,8 +293,7 @@ from llm import generate_model_documentation
 
 # Generate comprehensive documentation
 documentation = generate_model_documentation(
-    gnn_content=gnn_content,
-    model_name="my_model"
+    gnn_content=gnn_content, model_name="my_model"
 )
 
 print("Generated documentation:")
@@ -478,12 +474,12 @@ output/13_llm_output/
 ```python
 # LLM configuration
 config = {
-    'default_provider': 'auto',     # Default LLM provider
-    'analysis_depth': 'comprehensive', # Analysis depth level
-    'include_research': True,       # Include current research
-    'optimization_focus': True,     # Focus on optimization
-    'documentation_style': 'technical', # Documentation style
-    'cost_optimization': True       # Enable cost optimization
+    "default_provider": "auto",  # Default LLM provider
+    "analysis_depth": "comprehensive",  # Analysis depth level
+    "include_research": True,  # Include current research
+    "optimization_focus": True,  # Focus on optimization
+    "documentation_style": "technical",  # Documentation style
+    "cost_optimization": True,  # Enable cost optimization
 }
 ```
 
@@ -491,19 +487,9 @@ config = {
 ```python
 # Provider-specific configuration
 provider_config = {
-    'openai': {
-        'model': 'gpt-4',
-        'temperature': 0.1,
-        'max_tokens': 4000
-    },
-    'perplexity': {
-        'include_research': True,
-        'current_best_practices': True
-    },
-    'openrouter': {
-        'cost_optimization': True,
-        'provider_selection': 'auto'
-    }
+    "openai": {"model": "gpt-4", "temperature": 0.1, "max_tokens": 4000},
+    "perplexity": {"include_research": True, "current_best_practices": True},
+    "openrouter": {"cost_optimization": True, "provider_selection": "auto"},
 }
 ```
 
@@ -567,9 +553,9 @@ except RateLimitError as e:
 # Test individual LLM functions
 def test_llm_analysis():
     analysis = analyze_gnn_model_with_llm(test_content, "test_model")
-    assert 'complexity' in analysis
-    assert 'performance_score' in analysis
-    assert 'optimizations' in analysis
+    assert "complexity" in analysis
+    assert "performance_score" in analysis
+    assert "optimizations" in analysis
 ```
 
 ### Integration Tests
@@ -587,10 +573,10 @@ def test_llm_pipeline():
 ```python
 # Test different providers
 def test_provider_selection():
-    providers = ['openai', 'perplexity', 'openrouter']
+    providers = ["openai", "perplexity", "openrouter"]
     for provider in providers:
         result = test_provider(provider, test_content)
-        assert result['success']
+        assert result["success"]
 ```
 
 ## Dependencies

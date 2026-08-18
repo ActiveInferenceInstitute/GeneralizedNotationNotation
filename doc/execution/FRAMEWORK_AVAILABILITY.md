@@ -242,7 +242,7 @@ from execute import get_execution_health_status
 
 status = get_execution_health_status()
 for framework, details in status.items():
-    if details['available']:
+    if details["available"]:
         print(f"✅ {framework}: {details.get('version', 'unknown')}")
     else:
         print(f"❌ {framework}: {details.get('reason', 'unknown')}")

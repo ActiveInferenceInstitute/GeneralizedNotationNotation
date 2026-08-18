@@ -53,14 +53,14 @@ import numpy as np
 effects_chain = [
     {"type": "reverb", "room_size": 0.8, "wet_level": 0.3},
     {"type": "delay", "delay_seconds": 0.5, "feedback": 0.3},
-    {"type": "chorus", "rate_hz": 1.5, "depth": 0.5}
+    {"type": "chorus", "rate_hz": 1.5, "depth": 0.5},
 ]
 
 processed_audio = process_pedalboard_audio(
     audio_data=audio_data,
     effects_chain=effects_chain,
     sample_rate=44100,
-    buffer_size=1024
+    buffer_size=1024,
 )
 ```
 
@@ -135,52 +135,52 @@ processed_audio = process_pedalboard_audio(
 ### Audio Processing Configuration
 ```python
 AUDIO_CONFIG = {
-    'sample_rate': 44100,      # Sample rate in Hz
-    'bit_depth': 24,           # Bit depth
-    'channels': 2,             # Number of channels
-    'buffer_size': 1024,       # Processing buffer size
-    'real_time': True,         # Enable real-time processing
-    'quality': 'high'          # Processing quality
+    "sample_rate": 44100,  # Sample rate in Hz
+    "bit_depth": 24,  # Bit depth
+    "channels": 2,  # Number of channels
+    "buffer_size": 1024,  # Processing buffer size
+    "real_time": True,  # Enable real-time processing
+    "quality": "high",  # Processing quality
 }
 ```
 
 ### Effects Configuration
 ```python
 EFFECTS_CONFIG = {
-    'reverb': {
-        'room_size': 0.8,       # Room size (0-1)
-        'damping': 0.5,         # High frequency damping
-        'wet_level': 0.3,       # Wet signal level
-        'dry_level': 0.7        # Dry signal level
+    "reverb": {
+        "room_size": 0.8,  # Room size (0-1)
+        "damping": 0.5,  # High frequency damping
+        "wet_level": 0.3,  # Wet signal level
+        "dry_level": 0.7,  # Dry signal level
     },
-    'delay': {
-        'delay_seconds': 0.5,   # Delay time in seconds
-        'feedback': 0.3,        # Feedback amount
-        'mix': 0.5              # Wet/dry mix
+    "delay": {
+        "delay_seconds": 0.5,  # Delay time in seconds
+        "feedback": 0.3,  # Feedback amount
+        "mix": 0.5,  # Wet/dry mix
     },
-    'chorus': {
-        'rate_hz': 1.5,         # Modulation rate
-        'depth': 0.5,           # Modulation depth
-        'mix': 0.3              # Effect mix
-    }
+    "chorus": {
+        "rate_hz": 1.5,  # Modulation rate
+        "depth": 0.5,  # Modulation depth
+        "mix": 0.3,  # Effect mix
+    },
 }
 ```
 
 ### Sonification Configuration
 ```python
 SONIFICATION_CONFIG = {
-    'mapping': {
-        'variables': 'frequency',      # Variables → audio frequencies
-        'connections': 'amplitude',    # Connections → amplitude modulation
-        'weights': 'modulation',       # Weights → parameter modulation
-        'structure': 'spatial'         # Structure → spatial effects
+    "mapping": {
+        "variables": "frequency",  # Variables → audio frequencies
+        "connections": "amplitude",  # Connections → amplitude modulation
+        "weights": "modulation",  # Weights → parameter modulation
+        "structure": "spatial",  # Structure → spatial effects
     },
-    'effects': [
-        {'type': 'reverb', 'room_size': 0.6},
-        {'type': 'delay', 'delay_seconds': 0.3}
+    "effects": [
+        {"type": "reverb", "room_size": 0.6},
+        {"type": "delay", "delay_seconds": 0.3},
     ],
-    'duration': 10.0,          # Duration in seconds
-    'sample_rate': 44100       # Sample rate in Hz
+    "duration": 10.0,  # Duration in seconds
+    "sample_rate": 44100,  # Sample rate in Hz
 }
 ```
 
@@ -199,14 +199,9 @@ effects_chain = [
         "room_size": 0.8,
         "damping": 0.5,
         "wet_level": 0.3,
-        "dry_level": 0.7
+        "dry_level": 0.7,
     },
-    {
-        "type": "delay",
-        "delay_seconds": 0.5,
-        "feedback": 0.3,
-        "mix": 0.5
-    }
+    {"type": "delay", "delay_seconds": 0.5, "feedback": 0.3, "mix": 0.5},
 ]
 
 # Process audio
@@ -221,7 +216,7 @@ from audio.pedalboard import create_effects_chain, apply_effects_chain
 effects_config = [
     {"type": "compression", "threshold_db": -20, "ratio": 4},
     {"type": "eq", "low_shelf_frequency": 100, "low_shelf_gain_db": 3},
-    {"type": "limiter", "threshold_db": -1}
+    {"type": "limiter", "threshold_db": -1},
 ]
 
 effects_chain = create_effects_chain(effects_config)
@@ -238,11 +233,9 @@ from audio.pedalboard import sonify_gnn_model
 model_data = {
     "variables": {
         "A": {"value": [0.1, 0.2, 0.3], "type": "matrix"},
-        "B": {"value": [0.4, 0.5, 0.6], "type": "vector"}
+        "B": {"value": [0.4, 0.5, 0.6], "type": "vector"},
     },
-    "connections": [
-        {"from": "A", "to": "B", "weight": 0.7}
-    ]
+    "connections": [{"from": "A", "to": "B", "weight": 0.7}],
 }
 
 # Configure sonification
@@ -250,12 +243,12 @@ sonification_config = {
     "mapping": {
         "variables": "frequency",
         "connections": "amplitude",
-        "weights": "modulation"
+        "weights": "modulation",
     },
     "effects": [
         {"type": "reverb", "room_size": 0.6},
-        {"type": "delay", "delay_seconds": 0.3}
-    ]
+        {"type": "delay", "delay_seconds": 0.3},
+    ],
 }
 
 # Generate sonification
@@ -269,10 +262,11 @@ from audio.pedalboard import create_effects_chain, apply_effects_chain
 # Create effects chain for real-time use
 effects_config = [
     {"type": "compression", "threshold_db": -20, "ratio": 4},
-    {"type": "chorus", "rate_hz": 1.0, "depth": 0.3}
+    {"type": "chorus", "rate_hz": 1.0, "depth": 0.3},
 ]
 
 effects_chain = create_effects_chain(effects_config)
+
 
 # Process audio chunks in real-time
 def process_realtime_chunk(audio_chunk):
@@ -288,15 +282,15 @@ automation_config = {
     "effects": [
         {
             "type": "reverb",
-            "room_size": {"automation": "sine", "frequency": 0.1, "amplitude": 0.3}
+            "room_size": {"automation": "sine", "frequency": 0.1, "amplitude": 0.3},
         },
         {
             "type": "delay",
-            "delay_seconds": {"automation": "random", "range": [0.1, 0.5]}
-        }
+            "delay_seconds": {"automation": "random", "range": [0.1, 0.5]},
+        },
     ],
     "duration": 10.0,
-    "sample_rate": 44100
+    "sample_rate": 44100,
 }
 
 automated_chain = create_automated_effects_chain(automation_config)
@@ -469,7 +463,9 @@ uv run --extra dev python -m pytest src/tests/test_audio_pedalboard*.py --cov=sr
 ### Tool Endpoints
 ```python
 @mcp_tool("pedalboard.process_audio")
-def process_audio_tool(audio_file_path: str, effects_config: List[Dict]) -> Dict[str, Any]:
+def process_audio_tool(
+    audio_file_path: str, effects_config: List[Dict]
+) -> Dict[str, Any]:
     """Process an audio file with Pedalboard effects"""
     # Implementation
 ```

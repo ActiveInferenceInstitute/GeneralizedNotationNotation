@@ -56,10 +56,10 @@ upstream context only.
   ```python
   prior = agent.D
   for t in range(T):
-      qs, info  = agent.infer_states(obs, empirical_prior=prior, return_info=True)
+      qs, info = agent.infer_states(obs, empirical_prior=prior, return_info=True)
       q_pi, neg_efe = agent.infer_policies(qs)
-      action    = agent.sample_action(q_pi, rng_key=jr.split(key, agent.batch_size+1)[1:])
-      prior     = agent.update_empirical_prior(action, qs)
+      action = agent.sample_action(q_pi, rng_key=jr.split(key, agent.batch_size + 1)[1:])
+      prior = agent.update_empirical_prior(action, qs)
   ```
 - A pure HMM (1-action / passive) must **omit** `control_fac_idx`; the 1.0.0
   Agent asserts that every indexed control factor has `num_controls[f] > 1`.

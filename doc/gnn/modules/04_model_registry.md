@@ -83,9 +83,11 @@ from model_registry import process_model_registry
 
 results = process_model_registry(
     target_dir=Path("input/gnn_files"),
-    output_dir=Path("output/4_model_registry_output")
+    output_dir=Path("output/4_model_registry_output"),
 )
-print(f"Registered {results['successful_registrations']} of {results['processed_files']} files")
+print(
+    f"Registered {results['successful_registrations']} of {results['processed_files']} files"
+)
 ```
 
 ### Public Classes
@@ -162,7 +164,7 @@ from model_registry import process_model_registry
 
 results = process_model_registry(
     target_dir=Path("input/gnn_files"),
-    output_dir=Path("output/4_model_registry_output")
+    output_dir=Path("output/4_model_registry_output"),
 )
 print(f"Registered {results['total_models']} models")
 ```

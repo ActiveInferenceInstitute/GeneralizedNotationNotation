@@ -24,9 +24,12 @@ python src/main.py --only-steps 8 --verbose
 ```python
 from pathlib import Path
 from visualization import (
-    GNNVisualizer, MatrixVisualizer,
-    generate_graph_visualization, generate_matrix_visualization,
-    generate_visualizations, process_visualization,
+    GNNVisualizer,
+    MatrixVisualizer,
+    generate_graph_visualization,
+    generate_matrix_visualization,
+    generate_visualizations,
+    process_visualization,
 )
 
 # Use the GNNVisualizer class
@@ -39,7 +42,9 @@ generate_graph_visualization(graph_data, output_dir="output/")
 generate_matrix_visualization(matrix_data, output_dir="output/")
 
 # Run full visualization step (used by pipeline)
-process_visualization(Path("input/gnn_files"), Path("output/8_visualization_output"), verbose=True)
+process_visualization(
+    Path("input/gnn_files"), Path("output/8_visualization_output"), verbose=True
+)
 ```
 
 ## Key Exports
