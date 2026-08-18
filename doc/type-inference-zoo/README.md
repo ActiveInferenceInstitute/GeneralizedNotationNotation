@@ -26,7 +26,7 @@ This directory contains documentation and resources for integrating the **Type I
 ### Related Directories
 - **[Type Checker](../../src/type_checker/AGENTS.md)**: GNN type checking implementation
 - **[Advanced Patterns](../gnn/advanced/advanced_modeling_patterns.md)**: Advanced modeling techniques
-- **[Formal Methods](../axiom/axiom_gnn.md)**: Formal verification approaches
+- **[Formal Methods](../archive/axiom/axiom_gnn.md)**: Formal verification approaches
 
 ### Pipeline Integration
 - **[Pipeline Documentation](../gnn/operations/gnn_tools.md)**: Complete pipeline guide
@@ -100,7 +100,7 @@ See [src/AGENTS.md](../../src/AGENTS.md) for complete pipeline documentation.
 - **[Type Checker](../../src/type_checker/AGENTS.md)**: GNN type checking implementation
 
 ### Research Applications
-- **[Formal Methods](../axiom/axiom_gnn.md)**: Related formal verification approaches
+- **[Formal Methods](../archive/axiom/axiom_gnn.md)**: Related formal verification approaches
 - **[Advanced Patterns](../gnn/advanced/advanced_modeling_patterns.md)**: Advanced modeling techniques
 - **[Research Tools](../research/README.md)**: Research workflow tools
 
@@ -122,7 +122,7 @@ All documentation in this module adheres to professional standards:
 
 - **[Type Inference Zoo Cross-Reference](../CROSS_REFERENCE_INDEX.md#type-inference-zoo)**: Cross-reference index entry
 - **[Type Checker](../../src/type_checker/AGENTS.md)**: GNN type checking implementation
-- **[Formal Methods](../axiom/axiom_gnn.md)**: Related formal verification approaches
+- **[Formal Methods](../archive/axiom/axiom_gnn.md)**: Related formal verification approaches
 - **[Main Index](../README.md)**: Return to main documentation
 
 ---

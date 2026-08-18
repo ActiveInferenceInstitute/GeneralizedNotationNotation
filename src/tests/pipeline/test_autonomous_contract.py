@@ -23,7 +23,8 @@ def test_autonomous_loop_writes_proposals_without_source_mutation(
     model.write_text("## ModelName\nDemo\n", encoding="utf-8")
     output = tmp_path / "output"
     report = run_autonomous_proposal_loop(
-        target, output,
+        target,
+        output,
         image="ghcr.io/gnn/runner@sha256:" + ("a" * 64),
     )
     assert report["source_mutation_performed"] is False

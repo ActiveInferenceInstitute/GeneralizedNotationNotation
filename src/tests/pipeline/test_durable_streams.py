@@ -74,7 +74,7 @@ class TestStreamManifestNegativeControls:
         # Tamper with the bytes AFTER the manifest was created.
         data_file.write_bytes(b"tampered bytes!")
         problems = validate_stream_manifest(manifest, tmp_path)
-        assert problems, 'tampered stream should produce validation problems'
+        assert problems, "tampered stream should produce validation problems"
         assert any("checksum mismatch" in p for p in problems)
 
     def test_missing_file_detected(self, tmp_path: Path) -> Any:

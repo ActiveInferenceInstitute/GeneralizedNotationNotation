@@ -538,7 +538,7 @@ result = process_pedalboard_audio(audio_data, effects_chain, debug=True, verbose
 
 ## Version History
 
-### Current Version: 1.6.0
+### Current Version: 3.0.0
 
 **Features**:
 - Complete Pedalboard effects integration

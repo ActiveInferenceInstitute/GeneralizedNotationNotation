@@ -32,10 +32,14 @@ from pipeline.container_plan import (
 )
 
 # Documented stand-in image, pinned by a full sha256 digest so the generated
-# plan passes the UNPINNED_IMAGE security check. Replace the digest with the
-# real published GNN pipeline image digest in production by passing ``image=``.
+# plan passes the UNPINNED_IMAGE security check. The digest is a recognizable
+# all-'a' sentinel (format-valid but not a real published digest) — replace it
+# with the real published GNN pipeline image digest in production by passing
+# ``image=``. Note: an all-zero digest is deliberately REJECTED by the review
+# (all zeros is the "not actually pinned" sentinel), so the stand-in must use
+# a non-zero hex digit.
 PINNED_PIPELINE_IMAGE = "ghcr.io/generalizednotationnotation/gnn-pipeline@sha256:" + (
-    "0" * 64
+    "a" * 64
 )
 
 

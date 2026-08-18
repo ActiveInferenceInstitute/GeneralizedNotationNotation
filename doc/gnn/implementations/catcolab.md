@@ -164,7 +164,7 @@ CatColab/DisCoPy provides structural output only and is **excluded** from numeri
 
 ## Deep Dive
 
-Full categorical bridge documentation: **[doc/catcolab/catcolab_gnn.md](../../../doc/catcolab/catcolab_gnn.md)**
+Full categorical bridge documentation: **[doc/archive/catcolab/catcolab_gnn.md](../../../doc/archive/catcolab/catcolab_gnn.md)**
 
 ## Improvement Opportunities
 

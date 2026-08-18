@@ -189,7 +189,7 @@ class TestDependencyValidationImprovements:
         has_pymdp = any(("pymdp" in name.lower() for name in dep_names))
         assert has_pymdp, f"Expected pymdp dependency, got: {dep_names}"
         pymdp_dep = next((dep for dep in pymdp_deps if "pymdp" in dep.name.lower()))
-        assert pymdp_dep.is_optional, 'pymdp dependency should be marked optional'
+        assert pymdp_dep.is_optional, "pymdp dependency should be marked optional"
 
     @pytest.mark.unit
     @pytest.mark.timeout(30)

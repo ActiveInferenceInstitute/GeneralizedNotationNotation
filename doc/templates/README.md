@@ -79,7 +79,7 @@ This directory contains template files for different types of GNN models, provid
 - Cross-level interactions with comprehensive modeling patterns
 
 **Cross-References**:
-- *Applications*: [Cerebrum Integration](../cerebrum/gnn_cerebrum.md) | [Language Model](../archive/gnn_active_inference_language_model.md)
+- *Applications*: [Cerebrum Integration](../archive/cerebrum/gnn_cerebrum.md) | [Language Model](../archive/gnn_active_inference_language_model.md)
 - *Advanced Patterns*: [Hierarchical Modeling](../gnn/advanced/advanced_modeling_patterns.md#hierarchical-architectures)
 - *Framework Integration*: [RxInfer Hierarchical](../rxinfer/gnn_rxinfer.md#hierarchical-models) | [DisCoPy Composition](../discopy/gnn_discopy.md)
 
@@ -285,7 +285,7 @@ Each template includes metadata for automatic categorization:
 
 ### Advanced Path
 1. **[Multi-agent Template](multiagent_template.md)** → **[Multi-agent Theory](../gnn/advanced/gnn_multiagent.md)**
-2. **[Hierarchical Template](hierarchical_template.md)** → **[Cognitive Architectures](../cerebrum/gnn_cerebrum.md)**
+2. **[Hierarchical Template](hierarchical_template.md)** → **[Cognitive Architectures](../archive/cerebrum/gnn_cerebrum.md)**
 3. **[Research Applications](../gnn/advanced/gnn_llm_neurosymbolic_active_inference.md)**
 
 ## Related Documentation

@@ -10,7 +10,7 @@
 
 **Status**: ✅ Production Ready
 
-**Version**: 1.6.0
+**Version**: 3.0.0
 
 **Last Updated**: 2026-05-12
 
@@ -443,7 +443,7 @@ python src/8_visualization.py --verbose --target-dir input/gnn_files
 
 ## Version History
 
-### Current Version: 1.6.0
+### Current Version: 3.0.0
 
 **Features**:
 - Graph visualization generation
@@ -480,7 +480,7 @@ python src/8_visualization.py --verbose --target-dir input/gnn_files
 **Last Updated**: 2026-05-12
 **Maintainer**: GNN Pipeline Team
 **Status**: ✅ Production Ready
-**Version**: 1.6.0
+**Version**: 3.0.0
 **Architecture Compliance**: ✅ 100% Thin Orchestrator Pattern
 
 ---

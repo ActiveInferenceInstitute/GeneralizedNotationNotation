@@ -753,7 +753,17 @@ def get_test_filesystem_structure() -> Dict[str, Dict[str, List[str]]]:
             "test_coverage": ["coverage1.json", "coverage2.json"],
         },
         "src": {
-            "utils": ["__init__.py", "logging_utils.py", "argument_utils.py"],
+            "utils": [
+                "__init__.py",
+                "logging_utils.py",
+                "argument_utils.py",
+                "arg_definitions.py",
+                "pipeline_arguments.py",
+                "step_config.py",
+                "arg_parsing.py",
+                "path_conversion.py",
+                "safe_eval.py",
+            ],
             "tests": ["__init__.py", "conftest.py", "runner.py"],
             "gnn": ["__init__.py", "processor.py", "validator.py"],
         },

@@ -27,7 +27,7 @@ This directory contains documentation, resources, and implementation guides for 
 ### Related Directories
 - **[Visualization](../visualization/README.md)**: Graph and matrix visualization
 - **[Advanced Visualization](../advanced_visualization/README.md)**: Advanced visualization tools
-- **[Glowstick](../glowstick/glowstick_gnn.md)**: Interactive visualization framework
+- **[Glowstick](../archive/glowstick/glowstick_gnn.md)**: Interactive visualization framework
 - **[GUI Oxdraw](../gui_oxdraw/gnn_oxdraw.md)**: Visual model construction
 
 ### Pipeline Integration
@@ -101,7 +101,7 @@ See [src/AGENTS.md](../../src/AGENTS.md) for complete pipeline documentation.
 
 ### Visualization Resources
 - **[Advanced Visualization](../advanced_visualization/README.md)**: Advanced visualization tools
-- **[Glowstick](../glowstick/glowstick_gnn.md)**: Interactive visualization framework
+- **[Glowstick](../archive/glowstick/glowstick_gnn.md)**: Interactive visualization framework
 - **[GUI Oxdraw](../gui_oxdraw/gnn_oxdraw.md)**: Visual model construction
 
 ### Pipeline Architecture

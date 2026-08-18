@@ -380,6 +380,8 @@ def parse_gnn_matrix_string(matrix_str: str) -> np.ndarray:
     Returns:
         Numpy array representation of the matrix
     """
+    from utils.safe_eval import MATRIX_MAX_LEN, safe_literal_eval
+
     try:
         # Remove comments and extra whitespace
         cleaned = matrix_str.strip()
@@ -410,7 +412,7 @@ def parse_gnn_matrix_string(matrix_str: str) -> np.ndarray:
             return np.array(rows)
         else:
             # Recovery parsing
-            return np.array(ast.literal_eval(matrix_str))
+            return np.array(safe_literal_eval(matrix_str, max_len=MATRIX_MAX_LEN))
 
     except Exception as e:
         logging.warning(f"Failed to parse GNN matrix string: {e}")

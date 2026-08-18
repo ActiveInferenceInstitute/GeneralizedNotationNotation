@@ -52,6 +52,13 @@ def run_fast_pipeline_tests(
     except ImportError:
         has_timeout = False
 
+    try:
+        import xdist  # noqa: F401 - presence check for parallel execution
+
+        has_xdist = True
+    except ImportError:
+        has_xdist = False
+
     cmd: list[Any] = [
         sys.executable,
         "-m",
@@ -61,6 +68,11 @@ def run_fast_pipeline_tests(
         "--durations=10",
         "-ra",
     ]
+
+    if has_xdist:
+        # Parallel execution keeps the "fast" subset under the overall timeout
+        # on shared/CI machines (serial ``-m "not slow"`` exceeded 600s).
+        cmd.extend(["-n", "auto"])
 
     if has_timeout:
         timeout_value = os.getenv("FAST_TESTS_TIMEOUT", "600")

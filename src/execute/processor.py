@@ -73,24 +73,57 @@ def check_julia_dependencies(
         )  # nosec B607 B603
 
         requested = set(frameworks or ["rxinfer", "activeinference_jl"])
-        packages = ["JSON", "Distributions", "StatsBase"]
-        if "rxinfer" in requested:
-            packages.append("RxInfer")
-        if "activeinference_jl" in requested:
-            packages.append("ActiveInference")
-        using_clause = ", ".join(packages)
-        check_script = f"using {using_clause}"
-        result = subprocess.run(  # nosec B607 B603
-            ["julia", "-e", check_script], capture_output=True, text=True, timeout=30
-        )
 
-        if result.returncode != 0:
-            if verbose:
-                log.warning(f"Julia package check failed: {result.stderr}")
-            return False
+        # Each Julia-backed framework ships its own committed project
+        # environment (Project.toml + Manifest.toml), so the package check must
+        # run against that environment's ``--project``. A bare ``julia -e
+        # "using ..."`` resolves against the global depot and always fails on a
+        # clean machine, which previously skipped every Julia script.
+        execute_dir = Path(__file__).resolve().parent
+        framework_projects = {
+            "rxinfer": (
+                execute_dir / "rxinfer",
+                ["JSON", "Distributions", "StatsBase", "RxInfer"],
+            ),
+            "activeinference_jl": (
+                execute_dir / "activeinference_jl",
+                ["JSON", "Distributions", "StatsBase", "ActiveInference"],
+            ),
+        }
+
+        for framework in sorted(requested):
+            entry = framework_projects.get(framework)
+            if entry is None:
+                log.warning(f"Unknown Julia framework '{framework}'; skipping check")
+                continue
+            project_dir, packages = entry
+            using_clause = ", ".join(packages)
+            check_script = f"using {using_clause}"
+            result = subprocess.run(  # nosec B607 B603
+                [
+                    "julia",
+                    f"--project={project_dir}",
+                    "-e",
+                    check_script,
+                ],
+                capture_output=True,
+                text=True,
+                timeout=120,
+            )
+
+            if result.returncode != 0:
+                if verbose:
+                    log.warning(
+                        f"Julia package check failed for {framework}: {result.stderr}"
+                    )
+                return False
 
         return True
-    except (subprocess.CalledProcessError, FileNotFoundError):
+    except (
+        subprocess.CalledProcessError,
+        FileNotFoundError,
+        subprocess.TimeoutExpired,
+    ):
         return False
 
 
@@ -519,8 +552,16 @@ def _load_render_summary_contract(
     render_output_dir: Path,
     requested_frameworks: List[str],
     logger: logging.Logger,
+    target_dir: Optional[Path] = None,
 ) -> Tuple[Optional[set[Path]], List[Dict[str, str]]]:
-    """Load the latest Step 11 render contract for script filtering and failures."""
+    """Load the latest Step 11 render contract for script filtering and failures.
+
+    ``target_dir`` (when provided) scopes the contract to the current pipeline
+    invocation. The pipeline runs Step 12 once per top-level input folder, so a
+    folder-scoped invocation must only discover scripts rendered from that
+    folder's source files; a global invocation (``target_dir`` is the base
+    input dir) naturally matches every source file.
+    """
     summary_file = render_output_dir / "render_processing_summary.json"
     if not summary_file.exists():
         return None, []
@@ -531,6 +572,14 @@ def _load_render_summary_contract(
         logger.warning("Could not read render summary %s: %s", summary_file, exc)
         return None, []
 
+    def _in_scope(source_file: str) -> bool:
+        if target_dir is None:
+            return True
+        try:
+            return Path(source_file).resolve().is_relative_to(target_dir.resolve())
+        except (OSError, ValueError):
+            return True
+
     requested = set(requested_frameworks)
     allowed_scripts: set[Path] = set()
     render_failures: List[Dict[str, str]] = []
@@ -539,6 +588,8 @@ def _load_render_summary_contract(
         return None, []
 
     for source_file, file_result in file_results.items():
+        if not _in_scope(source_file):
+            continue
         framework_results = (
             file_result.get("framework_results", {})
             if isinstance(file_result, dict)
@@ -712,10 +763,21 @@ def process_execute(
             execution_results["skipped_reason"] = "no_render_output"
             execution_results["message"] = "No rendered implementations found"
         else:
+            # Scope the render contract to the current invocation. The
+            # pipeline runs Step 12 once per input folder, so a folder-scoped
+            # ``target_dir`` must not re-execute every other folder's scripts.
+            # When ``target_dir`` is itself the render-output dir (direct
+            # invocation), don't scope.
+            scope_target: Optional[Path] = (
+                target_dir
+                if render_output_dir is not None and render_output_dir != target_dir
+                else None
+            )
             allowed_render_scripts, render_failures = _load_render_summary_contract(
                 render_output_dir,
                 requested_frameworks,
                 logger,
+                target_dir=scope_target,
             )
             execution_results["render_failures"] = render_failures
 
@@ -730,7 +792,11 @@ def process_execute(
                 executable_scripts = []
             else:
                 executable_scripts = find_executable_scripts(
-                    render_output_dir, verbose, logger, requested_frameworks
+                    render_output_dir,
+                    verbose,
+                    logger,
+                    requested_frameworks,
+                    allowed_scripts=allowed_render_scripts,
                 )
 
             if allowed_render_scripts is not None:
@@ -975,15 +1041,28 @@ def process_execute(
 
 
 def find_executable_scripts(
-    render_output_dir: Path, verbose: bool, logger: Any, requested_frameworks: List[str]
+    render_output_dir: Path,
+    verbose: bool,
+    logger: Any,
+    requested_frameworks: List[str],
+    allowed_scripts: Optional[set[Path]] = None,
 ) -> List[Dict[str, Any]]:
-    """
-    Find executable scripts in the render output directory.
+    """Find executable scripts in the render output directory.
 
-    Searches for Python (.py) and Julia (.jl) scripts in the render output
-    directory structure. Scripts are filtered by the requested frameworks
-    and excluded if they match common non-executable patterns (test files,
-    __init__.py, etc.).
+    **Discovery strategy (V-10)**:
+
+    1. Manifest-first: when ``allowed_scripts`` is provided (from a
+       ``render_processing_summary.json`` manifest), only those scripts the
+       render step actually produced are considered. No blanket file-tree
+       walk — stale or un-rendered scripts are ignored.
+
+    2. rglob fallback: when the manifest is missing or corrupt,
+       ``allowed_scripts`` is ``None`` and the function performs the
+       traditional recursive file walk. A warning is emitted since this may
+       pick up stale intermediate files.
+
+    Scripts are filtered by the requested frameworks and excluded if they
+    match common non-executable patterns (test files, __init__.py, etc.).
 
     Args:
         render_output_dir: Directory containing rendered scripts from Step 11.
@@ -992,6 +1071,8 @@ def find_executable_scripts(
         requested_frameworks: List of framework names to include (e.g.,
             ["pymdp", "jax", "discopy"]). Scripts from other frameworks
             will be skipped.
+        allowed_scripts: Optional set of resolved Paths from the Step 11
+            manifest. When not None, these paths replace the rglob step.
 
     Returns:
         List of dictionaries, each containing:
@@ -1023,51 +1104,98 @@ def find_executable_scripts(
         "bnlearn": "bnlearn",
     }
 
-    for pattern, config in script_types.items():
-        scripts = list(render_output_dir.rglob(pattern))
+    # Normalise the base directory for consistent framework detection and
+    # relative-path computation across both discovery modes.
+    base_dir = render_output_dir.resolve()
 
-        for script_path in scripts:
-            # Skip support modules in test folders without excluding rendered
-            # model scripts whose model name naturally starts with "test_".
-            script_name = script_path.name.lower()
-            path_parts = {part.lower() for part in script_path.parts}
-            if (
-                script_name == "__init__.py"
-                or script_name.startswith("__")
-                or script_path.stem.lower().endswith("_test")
-                or "tests" in path_parts
-            ):
-                continue
-
-            # Determine framework from directory path
-            framework = determine_script_framework(
-                script_path, render_output_dir, framework_dirs
+    # --- Phase 1: Discover candidate script paths ---
+    if allowed_scripts is not None:
+        # Manifest-based discovery (V-10): only rendered scripts qualify.
+        if verbose:
+            logger.info(
+                f"Discovering scripts from render manifest "
+                f"({len(allowed_scripts)} rendered scripts listed)"
             )
-
-            # Filter by requested frameworks
-            if framework not in requested_frameworks:
-                if verbose:
-                    logger.debug(
-                        f"Skipping {framework} script: {script_path.name} (not in requested frameworks)"
-                    )
-                continue
-
-            # Check if script is executable or can be made executable
-            script_info: dict[str, Any] = {
-                "path": script_path,
-                "name": script_path.name,
-                "framework": framework,
-                "executor": config["executor"],
-                "relative_path": script_path.relative_to(render_output_dir),
-                "size_bytes": script_path.stat().st_size if script_path.exists() else 0,
-            }
-
-            executable_scripts.append(script_info)
-
-            if verbose:
-                logger.info(
-                    f"Found {config['framework']} script: {script_info['relative_path']}"
+        manifest_paths: list[Path] = []
+        for p in allowed_scripts:
+            candidate = Path(p).resolve()
+            if not candidate.exists():
+                # Old rglob only ever surfaced files that exist; a manifest
+                # entry whose file is missing is reported downstream as a
+                # missing rendered script rather than executed.
+                logger.warning(
+                    f"Render manifest references missing script: {candidate}"
                 )
+                continue
+            manifest_paths.append(candidate)
+        candidates = sorted(manifest_paths)
+    else:
+        # rglob fallback: crawl the directory tree when no manifest is present.
+        logger.warning(
+            "No render manifest provided — falling back to recursive rglob "
+            "discovery. This may include stale or un-rendered scripts."
+        )
+        candidates = []
+        for pattern, config in script_types.items():
+            # rglob on an absolute path yields absolute paths.
+            candidates.extend(base_dir.rglob(pattern))
+
+    # --- Phase 2: Build script-info dicts ---
+    for script_path in candidates:
+        # Skip support modules in test folders without excluding rendered
+        # model scripts whose model name naturally starts with "test_".
+        script_name = script_path.name.lower()
+        path_parts = {part.lower() for part in script_path.parts}
+        if (
+            script_name == "__init__.py"
+            or script_name.startswith("__")
+            or script_path.stem.lower().endswith("_test")
+            or "tests" in path_parts
+        ):
+            continue
+
+        # Determine framework from directory path
+        framework = determine_script_framework(script_path, base_dir, framework_dirs)
+
+        # Filter by requested frameworks
+        if framework not in requested_frameworks:
+            if verbose:
+                logger.debug(
+                    f"Skipping {framework} script: {script_path.name} "
+                    f"(not in requested frameworks)"
+                )
+            continue
+
+        # Resolve executor from the file suffix
+        suffix = script_path.suffix.lower()
+        if suffix == ".py":
+            executor = sys.executable
+        elif suffix == ".jl":
+            executor = "julia"
+        else:
+            continue  # not a recognised script type
+
+        # Compute relative path (best-effort — may not be under base_dir
+        # when the manifest is a direct pass-through from the render step).
+        try:
+            rel = script_path.relative_to(base_dir)
+        except ValueError:
+            rel = script_path
+
+        # Check if script is executable or can be made executable
+        script_info: dict[str, Any] = {
+            "path": script_path,
+            "name": script_path.name,
+            "framework": framework,
+            "executor": executor,
+            "relative_path": rel,
+            "size_bytes": script_path.stat().st_size if script_path.exists() else 0,
+        }
+
+        executable_scripts.append(script_info)
+
+        if verbose:
+            logger.info(f"Found {framework} script: {rel}")
 
     return executable_scripts
 
@@ -1176,6 +1304,52 @@ def _framework_for_data_helpers(framework: str) -> ExecutionFrameworkName:
     return cast(ExecutionFrameworkName, framework)
 
 
+#: Environment escape hatch: set to "1" to bypass the pre-execution security
+#: gate (trusted-local research use only; see SECURITY.md).
+_GNN_ALLOW_UNSAFE_EXEC = "GNN_ALLOW_UNSAFE_EXEC"
+
+
+def _gnn_allow_unsafe_exec() -> bool:
+    """Whether the operator has explicitly opted out of the pre-exec gate."""
+    return os.environ.get(_GNN_ALLOW_UNSAFE_EXEC, "").strip().lower() in (
+        "1",
+        "true",
+        "yes",
+    )
+
+
+def _sandbox_mode() -> str:
+    """Effective sandbox mode from ``GNN_SANDBOX`` (default ``off``)."""
+    from .sandbox import SANDBOX_MODES
+
+    mode = os.environ.get("GNN_SANDBOX", "off").strip().lower()
+    return mode if mode in SANDBOX_MODES else "off"
+
+
+def _sandbox_command_prefix(mode: str) -> tuple[list[str], Optional[str]]:
+    """Return ``(prefix, blocked_reason)`` for the requested sandbox mode.
+
+    ``blocked_reason`` is non-None only when ``require`` cannot find a backend.
+    """
+    if mode == "off":
+        return [], None
+    from .sandbox import detect_sandbox
+
+    spec = detect_sandbox()
+    if spec is None:
+        if mode == "require":
+            return [], (
+                "GNN_SANDBOX=require but no sandbox backend "
+                "(firejail/bwrap/nsjail) is installed"
+            )
+        logger.warning(
+            "GNN_SANDBOX=%s but no sandbox backend found; running unsandboxed",
+            mode,
+        )
+        return [], None
+    return list(spec.prefix), None
+
+
 def execute_single_script(
     script_info: Dict[str, Any],
     results_dir: Path,
@@ -1213,6 +1387,31 @@ def execute_single_script(
 
     # Prepare execution result
     exec_result = _new_execution_result(context)
+
+    # Pre-execution security gate (RED_TEAM_REVIEW V-01/V-06): scan rendered
+    # code BEFORE running it. Step 18 stays forensic; this closes the gap.
+    if not _gnn_allow_unsafe_exec():
+        try:
+            from security.processor import scan_script_for_execution
+
+            verdict = scan_script_for_execution(script_path)
+            if not verdict.get("ok", True):
+                blocked = verdict.get("blocked", [])
+                detail = "; ".join(
+                    f"{b.get('vulnerability_type', 'unknown')}@{b.get('line', '?')}"
+                    for b in blocked[:5]
+                )
+                exec_result["error"] = (
+                    f"Pre-execution security gate blocked {script_info['name']}: "
+                    f"{detail}"
+                )
+                exec_result["error_type"] = "SecurityGateBlocked"
+                exec_result["security_findings"] = blocked
+                logger.error(exec_result["error"])
+                return exec_result
+        except ImportError:
+            logger.debug("security.processor unavailable; pre-exec gate skipped")
+
     if framework == "rxinfer":
         exec_result["execution_metadata"] = (
             _load_rxinfer_execution_metadata_from_script(script_path)
@@ -1318,11 +1517,20 @@ def execute_single_script(
         try:
             env = _build_execution_environment(context, results_dir)
 
+            sandbox_mode = _sandbox_mode()
+            sandbox_prefix, sandbox_blocked = _sandbox_command_prefix(sandbox_mode)
+            if sandbox_blocked is not None:
+                exec_result["error"] = sandbox_blocked
+                exec_result["error_type"] = "SandboxUnavailable"
+                logger.error(sandbox_blocked)
+                return exec_result
+            base_command = sandbox_prefix + [executor, script_name]
+
             for rep in range(K):
                 rep_start = datetime.now()
                 try:
                     run_result = subprocess.run(  # nosec B603
-                        [executor, script_name],
+                        base_command,
                         capture_output=True,
                         text=True,
                         timeout=timeout,

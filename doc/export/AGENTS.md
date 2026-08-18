@@ -42,7 +42,7 @@ See [src/AGENTS.md](../../src/AGENTS.md) for complete pipeline documentation.
 
 - [Export Module](../../src/export/AGENTS.md)
 - [Framework Integration](../gnn/integration/framework_integration_guide.md)
-- [CatColab Export](../catcolab/catcolab_gnn.md)
+- [CatColab Export](../archive/catcolab/catcolab_gnn.md)
 
 ---
 

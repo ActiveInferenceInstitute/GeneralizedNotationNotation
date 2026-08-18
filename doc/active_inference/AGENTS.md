@@ -134,7 +134,7 @@ Central documentation hub for all theoretical, computational, and implementation
 
 | Resource | Path | Description |
 |----------|------|-------------|
-| DSPy | [`doc/dspy/`](../dspy/) | DSPy integration |
+| DSPy | [`doc/archive/dspy/`](../archive/dspy/) | DSPy integration |
 | LLM | [`doc/llm/`](../llm/) | LLM documentation |
 
 ---

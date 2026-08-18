@@ -6,7 +6,7 @@
 **Pipeline Step**: Infrastructure module (not a numbered step)
 **Category**: Infrastructure / API
 **Status**: ✅ Production Ready
-**Version**: 1.6.0
+**Version**: 3.0.0
 **Last Updated**: 2026-04-16
 
 The `api` module provides a FastAPI-based REST interface for the GNN processing pipeline.
@@ -51,11 +51,19 @@ uvicorn api.server:app --reload
 
 ## Design Decisions
 
-- **No authentication**: Research tool for local use only. Document explicitly.
+- **Optional API-key authentication** (`api/auth.py`): unauthenticated for
+  loopback research use by default; set `GNN_API_KEY` to require a matching
+  `X-API-Key` header on every route outside the public health/docs surface
+  (constant-time `hmac.compare_digest`). Non-loopback binds are refused unless
+  auth is enabled or `GNN_ALLOW_INSECURE_BIND=1` (RED_TEAM V-04).
 - **In-memory jobs**: No database required. Jobs lost on restart.
 - **AsyncIO execution**: Non-blocking pipeline runs via asyncio subprocess.
 - **Background tasks**: FastAPI BackgroundTasks for fire-and-forget job execution.
 - **CORS**: Allows localhost origins for browser-based access.
+- **Symlink-safe path validation**: `path_utils.resolve_repo_path` rejects any
+  symlink component before resolving (RED_TEAM V-05).
+- **Sanitized error responses**: job failure tails redact the repository root
+  and absolute paths before returning to callers (RED_TEAM V-09).
 
 ## Integration with Pipeline
 

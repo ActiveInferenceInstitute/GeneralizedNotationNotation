@@ -27,4 +27,4 @@ discopy_translator_module/
 
 See [execute/AGENTS.md](../AGENTS.md) for the overall execution architecture.
 
-**Version**: 1.6.0
+**Version**: 3.0.0

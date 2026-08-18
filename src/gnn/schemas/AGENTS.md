@@ -31,4 +31,4 @@ Schemas are loaded by the validation pipeline (Steps 5–6) and referenced durin
 
 See [gnn/AGENTS.md](../AGENTS.md) for the overall GNN processing architecture.
 
-**Version**: 1.6.0
+**Version**: 3.0.0

@@ -33,5 +33,5 @@ Use `src/analysis/pymdp/__init__.py` as source of truth:
 - PyMDP execution contracts that produce the input schema:
   `src/tests/execute/test_pymdp_contracts.py`
 
-**Version:** 1.6.0
+**Version:** 3.0.0
 **Last Updated:** 2026-05-14

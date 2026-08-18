@@ -658,10 +658,10 @@ class GNNParser:
 
     def _parse_array(self, value_str: str) -> List[Any]:
         """Parse array notation [1,2,3] or [[1,2],[3,4]]."""
-        import ast
+        from utils.safe_eval import safe_literal_eval
 
         try:
-            return cast("list[Any]", ast.literal_eval(value_str))
+            return cast("list[Any]", safe_literal_eval(value_str))
         except (ValueError, SyntaxError):
             # Recovery parsing
             inner = value_str[1:-1].strip()

@@ -10,7 +10,7 @@
 
 **Status**: ✅ Production Ready
 
-**Version**: 1.6.0
+**Version**: 3.0.0
 
 **Last Updated**: 2026-04-16
 
@@ -636,7 +636,7 @@ configs['ollama']['default_max_tokens'] = 1024
 
 ## Version History
 
-### Current Version: 1.6.0
+### Current Version: 3.0.0
 
 **Features**:
 - Multi-provider LLM support (OpenAI, Anthropic, Ollama)
@@ -672,7 +672,7 @@ configs['ollama']['default_max_tokens'] = 1024
 **Last Updated**: 2026-04-16
 **Maintainer**: GNN Pipeline Team
 **Status**: ✅ Production Ready
-**Version**: 1.6.0
+**Version**: 3.0.0
 **Architecture Compliance**: ✅ 100% Thin Orchestrator Pattern
 
 

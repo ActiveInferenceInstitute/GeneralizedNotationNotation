@@ -79,16 +79,34 @@ def is_loopback_client(client_host: str | None) -> bool:
         return False
 
 
+def _has_forwarded_identity(headers: Any) -> bool:
+    """True when the request carries proxy-rewritten identity headers.
+
+    When insecure-local mode is enabled, the server authorizes loopback clients
+    by socket address. A forwarded-identity header (``X-Forwarded-For``,
+    ``X-Real-IP``, ``Forwarded``) indicates a proxy is rewriting the client
+    identity, which an attacker could use to spoof loopback. Reject it rather
+    than trust it (RED_TEAM V-07).
+    """
+    for name in ("x-forwarded-for", "x-real-ip", "forwarded"):
+        if headers.get(name):
+            return True
+    return False
+
+
 def is_authorized(headers: Any, *, client_host: str | None = None) -> bool:
     """Validate HTTP headers against ``GNN_MCP_TOKEN``.
 
     HTTP transport requires bearer authentication by default. Developers may
     opt into unauthenticated loopback-only experimentation with
-    ``GNN_MCP_ALLOW_INSECURE_LOCAL=1``.
+    ``GNN_MCP_ALLOW_INSECURE_LOCAL=1``; in that mode requests carrying
+    forwarded-identity headers are rejected so a proxy cannot spoof loopback.
     """
     token = get_required_bearer_token()
     if token is None:
-        return allow_insecure_local_http() and is_loopback_client(client_host)
+        if not (allow_insecure_local_http() and is_loopback_client(client_host)):
+            return False
+        return not _has_forwarded_identity(headers)
     auth_header = headers.get("Authorization", "")
     return bool(auth_header == f"Bearer {token}")
 

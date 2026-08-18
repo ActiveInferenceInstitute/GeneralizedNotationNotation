@@ -28,4 +28,4 @@ pytorch/
 
 See [analysis/AGENTS.md](../AGENTS.md) for the overall analysis architecture.
 
-**Version**: 1.6.0
+**Version**: 3.0.0

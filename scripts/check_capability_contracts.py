@@ -480,7 +480,9 @@ def run_audit() -> List[str]:
             failures.append(
                 f"Autonomous proposal loop missing non-mutation marker: {required}"
             )
-    if "--autonomous" not in _read("src/utils/argument_utils.py"):
+    # The argparse surface (incl. ``--autonomous``) now lives in the focused
+    # arg_parsing module; ``argument_utils.py`` re-exports it for callers.
+    if "--autonomous" not in _read("src/utils/arg_parsing.py"):
         failures.append("Pipeline argument parser missing --autonomous")
 
     return failures

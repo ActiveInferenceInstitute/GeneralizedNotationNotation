@@ -93,8 +93,10 @@ class ParameterParsingMixin:
 
                     return matrix
 
-            # Try to evaluate as Python literal
-            return ast.literal_eval(value_str)
+            # Try to evaluate as Python literal (bounded against DoS).
+            from utils.safe_eval import safe_literal_eval
+
+            return safe_literal_eval(value_str)
 
         except (ValueError, SyntaxError):
             # Handle other formats

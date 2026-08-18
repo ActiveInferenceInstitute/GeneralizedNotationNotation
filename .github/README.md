@@ -130,7 +130,7 @@ Code generation and execution are organized under [src/render/](../src/render/) 
 | PyTorch | [pytorch.md](../doc/gnn/implementations/pytorch.md) |
 | DisCoPy | [discopy.md](../doc/gnn/implementations/discopy.md), [doc/discopy/gnn_discopy.md](../doc/discopy/gnn_discopy.md) |
 | Stan | [stan.md](../doc/gnn/implementations/stan.md) |
-| CatColab | [catcolab.md](../doc/gnn/implementations/catcolab.md), [doc/catcolab/catcolab_gnn.md](../doc/catcolab/catcolab_gnn.md) |
+| CatColab | [catcolab.md](../doc/gnn/implementations/catcolab.md), [doc/archive/catcolab/catcolab_gnn.md](../doc/archive/catcolab/catcolab_gnn.md) |
 
 Visualization and export docs: [integration/gnn_visualization.md](../doc/gnn/integration/gnn_visualization.md), [integration/gnn_export.md](../doc/gnn/integration/gnn_export.md). Optional Julia installs for Julia backends are called out in [CLAUDE.md](../CLAUDE.md) and [SETUP_GUIDE.md](../SETUP_GUIDE.md).
 

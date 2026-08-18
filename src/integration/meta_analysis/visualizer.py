@@ -171,128 +171,182 @@ class SweepVisualizer:
             {r.framework for r in sweep_records if r.execution_time > 0 and r.success}
         )
 
+        # Each plot is best-effort: a single plot (e.g. a log-scale axis with
+        # only non-positive runtime data) must not abort the whole meta-analysis.
+        def _try_plot(name: str, fn: Any) -> None:
+            try:
+                path = fn()
+                if path:
+                    generated.append(str(path))
+            except Exception as exc:  # noqa: BLE001 - best-effort plotting
+                self.logger.warning(
+                    "Meta-analysis plot '%s' failed (non-fatal): %s", name, exc
+                )
+
         # 0. Export plaintext CSV of all data
-        path = self._export_csv(sweep_records)
-        if path:
-            generated.append(str(path))
+        _try_plot("sweep_data_csv", lambda: self._export_csv(sweep_records))
 
         # 1. Runtime heatmaps per framework (using global grid)
         for fw in runtime_frameworks:
-            path = self._plot_runtime_heatmap(
-                sweep_records, fw, all_n_values, all_t_values
+            _try_plot(
+                "runtime_heatmap",
+                lambda fw=fw: self._plot_runtime_heatmap(
+                    sweep_records, fw, all_n_values, all_t_values
+                ),
             )
-            if path:
-                generated.append(str(path))
 
         # 2. Runtime scaling curves
-        path = self._plot_runtime_scaling(sweep_records, runtime_frameworks)
-        if path:
-            generated.append(str(path))
+        _try_plot(
+            "runtime_scaling",
+            lambda: self._plot_runtime_scaling(sweep_records, runtime_frameworks),
+        )
 
         # 3. Cross-framework bar chart
-        path = self._plot_framework_comparison(sweep_records, runtime_frameworks)
-        if path:
-            generated.append(str(path))
+        _try_plot(
+            "framework_comparison",
+            lambda: self._plot_framework_comparison(sweep_records, runtime_frameworks),
+        )
 
         # 4. Time-per-step comparison
-        path = self._plot_time_per_step(sweep_records, runtime_frameworks)
-        if path:
-            generated.append(str(path))
+        _try_plot(
+            "time_per_step",
+            lambda: self._plot_time_per_step(sweep_records, runtime_frameworks),
+        )
 
         # 5. Accuracy comparison
-        path = self._plot_accuracy_comparison(sweep_records, runtime_frameworks)
-        if path:
-            generated.append(str(path))
+        _try_plot(
+            "accuracy_comparison",
+            lambda: self._plot_accuracy_comparison(sweep_records, runtime_frameworks),
+        )
 
         # 6. Belief entropy comparison
-        path = self._plot_entropy_comparison(sweep_records, runtime_frameworks)
-        if path:
-            generated.append(str(path))
+        _try_plot(
+            "entropy_comparison",
+            lambda: self._plot_entropy_comparison(sweep_records, runtime_frameworks),
+        )
 
         # 7. Accuracy Heatmap
         for fw in runtime_frameworks:
-            path = self._plot_accuracy_heatmap(
-                sweep_records, fw, all_n_values, all_t_values
+            _try_plot(
+                "accuracy_heatmap",
+                lambda fw=fw: self._plot_accuracy_heatmap(
+                    sweep_records, fw, all_n_values, all_t_values
+                ),
             )
-            if path:
-                generated.append(str(path))
 
         # 8. Entropy Heatmap
         for fw in runtime_frameworks:
-            path = self._plot_entropy_heatmap(
-                sweep_records, fw, all_n_values, all_t_values
+            _try_plot(
+                "entropy_heatmap",
+                lambda fw=fw: self._plot_entropy_heatmap(
+                    sweep_records, fw, all_n_values, all_t_values
+                ),
             )
-            if path:
-                generated.append(str(path))
 
         # 9. 3D Runtime Surface
         for fw in runtime_frameworks:
-            path = self._plot_3d_runtime_surface(
-                sweep_records, fw, all_n_values, all_t_values
+            _try_plot(
+                "3d_runtime_surface",
+                lambda fw=fw: self._plot_3d_runtime_surface(
+                    sweep_records, fw, all_n_values, all_t_values
+                ),
             )
-            if path:
-                generated.append(str(path))
 
         # 10. Compute Efficiency
-        path = self._plot_compute_efficiency(sweep_records, runtime_frameworks)
-        if path:
-            generated.append(str(path))
+        _try_plot(
+            "compute_efficiency",
+            lambda: self._plot_compute_efficiency(sweep_records, runtime_frameworks),
+        )
 
         # 11. Resource Scaling (LOC)
-        path = self._plot_resource_scaling(sweep_records, runtime_frameworks)
-        if path:
-            generated.append(str(path))
+        _try_plot(
+            "resource_scaling",
+            lambda: self._plot_resource_scaling(sweep_records, runtime_frameworks),
+        )
 
         # 12. Accuracy-Entropy Correlation
-        path = self._plot_accuracy_entropy_correlation(
-            sweep_records, runtime_frameworks
+        _try_plot(
+            "accuracy_entropy_correlation",
+            lambda: self._plot_accuracy_entropy_correlation(
+                sweep_records, runtime_frameworks
+            ),
         )
-        if path:
-            generated.append(str(path))
 
         # 13. Inference Throughput vs State Space
-        path = self._plot_throughput_vs_n(sweep_records, runtime_frameworks)
-        if path:
-            generated.append(str(path))
+        _try_plot(
+            "throughput_vs_n",
+            lambda: self._plot_throughput_vs_n(sweep_records, runtime_frameworks),
+        )
 
         # 14. Runtime Distribution (violin/box plot per N)
-        path = self._plot_runtime_distribution(sweep_records, runtime_frameworks)
-        if path:
-            generated.append(str(path))
+        _try_plot(
+            "runtime_distribution",
+            lambda: self._plot_runtime_distribution(sweep_records, runtime_frameworks),
+        )
 
         # 15. Scaling Exponent Summary Bar Chart
-        path = self._plot_scaling_exponent_summary(sweep_records, runtime_frameworks)
-        if path:
-            generated.append(str(path))
+        _try_plot(
+            "scaling_exponent_summary",
+            lambda: self._plot_scaling_exponent_summary(
+                sweep_records, runtime_frameworks
+            ),
+        )
 
         # 16. Code Efficiency (LOC per N² vs N)
-        path = self._plot_code_efficiency(sweep_records, runtime_frameworks)
-        if path:
-            generated.append(str(path))
+        _try_plot(
+            "code_efficiency",
+            lambda: self._plot_code_efficiency(sweep_records, runtime_frameworks),
+        )
 
         # 17. Comprehensive Dashboard (multi-panel summary)
-        path = self._plot_comprehensive_dashboard(
-            sweep_records, runtime_frameworks, all_n_values, all_t_values
+        _try_plot(
+            "comprehensive_dashboard",
+            lambda: self._plot_comprehensive_dashboard(
+                sweep_records, runtime_frameworks, all_n_values, all_t_values
+            ),
         )
-        if path:
-            generated.append(str(path))
 
         # 18. Accuracy vs Timesteps (convergence)
-        path = self._plot_accuracy_vs_timesteps(sweep_records, runtime_frameworks)
-        if path:
-            generated.append(str(path))
+        _try_plot(
+            "accuracy_vs_timesteps",
+            lambda: self._plot_accuracy_vs_timesteps(sweep_records, runtime_frameworks),
+        )
 
         # 19. Step 3 serialization footprint (when format_statistics.json provided)
-        path = self._plot_gnn_serialization_footprint()
-        if path:
-            generated.append(str(path))
+        _try_plot(
+            "gnn_serialization_footprint",
+            lambda: self._plot_gnn_serialization_footprint(),
+        )
 
         # 20. Benchmark uncertainty bars (when σ > 0)
-        path = self._plot_runtime_uncertainty(sweep_records, runtime_frameworks)
-        if path:
-            generated.append(str(path))
+        _try_plot(
+            "runtime_uncertainty",
+            lambda: self._plot_runtime_uncertainty(sweep_records, runtime_frameworks),
+        )
 
         return generated
+
+    @staticmethod
+    def _safe_log_scale(
+        ax: Any, *, x: bool = False, y: bool = False, base: int = 10
+    ) -> None:
+        """Apply log scale only when the axis data contains positive values.
+
+        A log-scaled axis whose data has no positive values (an empty panel or
+        zero/negative runtimes) raises at render time with "Data has no
+        positive values". Falling back to linear keeps the plot useful.
+        """
+        try:
+            if x:
+                xmin, xmax = ax.get_xlim()
+                if xmin > 0 and xmax > 0:
+                    ax.set_xscale("log", base=base)
+            if y:
+                ymin, ymax = ax.get_ylim()
+                if ymin > 0 and ymax > 0:
+                    ax.set_yscale("log", base=base)
+        except (ValueError, TypeError, AttributeError):
+            pass
 
     # ─── Plaintext data export ─────────────────────────────────────────────
 
@@ -433,7 +487,7 @@ class SweepVisualizer:
         # Use log normalization if the dynamic range exceeds 10x
         vmin = np.nanmin(grid)
         vmax = np.nanmax(grid)
-        if vmax / max(vmin, 0.001) > 10:
+        if vmax > 0 and vmax / max(vmin, 0.001) > 10:
             norm = mcolors.LogNorm(vmin=max(vmin, 0.01), vmax=vmax)
         else:
             norm = None
@@ -722,8 +776,7 @@ class SweepVisualizer:
                 fontsize=_STYLE["title_size"],
                 fontweight="bold",
             )
-            ax.set_xscale("log")
-            ax.set_yscale("log")
+            self._safe_log_scale(ax, x=True, y=True)
             ax.tick_params(colors=_STYLE["text_color"], labelsize=_STYLE["tick_size"])
             ax.grid(
                 True,
@@ -897,7 +950,7 @@ class SweepVisualizer:
             fontsize=_STYLE["title_size"],
             fontweight="bold",
         )
-        ax.set_yscale("log")
+        self._safe_log_scale(ax, y=True)
         ax.tick_params(colors=_STYLE["text_color"], labelsize=_STYLE["tick_size"])
         ax.grid(axis="y", alpha=0.4, color=_STYLE["grid_color"], linestyle="--")
 
@@ -1039,7 +1092,7 @@ class SweepVisualizer:
             pad=15,
         )
         ax.tick_params(colors=_STYLE["text_color"], labelsize=_STYLE["tick_size"] - 2)
-        ax.set_yscale("log")
+        self._safe_log_scale(ax, y=True)
         ax.grid(axis="y", alpha=0.4, color=_STYLE["grid_color"], linestyle="--")
 
         _add_watermark(ax)
@@ -1696,8 +1749,7 @@ class SweepVisualizer:
                 markeredgecolor="white",
             )
 
-        ax.set_xscale("log")
-        ax.set_yscale("log")
+        self._safe_log_scale(ax, x=True, y=True)
         ax.set_xlabel(
             "State Space Size (N)",
             color=_STYLE["text_color"],
@@ -1753,7 +1805,9 @@ class SweepVisualizer:
                 continue
 
             # Group by N (T doesn't affect LOC usually)
-            n_values = sorted({r.num_states for r in fw_records})
+            n_values = sorted(
+                {r.num_states for r in fw_records if r.num_states is not None}
+            )
             loc_values: list[Any] = []
             for n in n_values:
                 subset = [r for r in fw_records if r.num_states == n]
@@ -1793,8 +1847,7 @@ class SweepVisualizer:
             except Exception as e:
                 self.logger.debug("Skipped LOC fit for %s: %s", fw, e)
 
-        ax.set_xscale("log")
-        ax.set_yscale("log")
+        self._safe_log_scale(ax, x=True, y=True)
         ax.set_xlabel(
             "State Space Size (N)",
             color=_STYLE["text_color"],
@@ -1960,7 +2013,7 @@ class SweepVisualizer:
             fw_recs = [r for r in valid if r.framework == fw]
             if not fw_recs:
                 continue
-            ns = sorted({r.num_states for r in fw_recs})
+            ns = sorted({r.num_states for r in fw_recs if r.num_states is not None})
             throughputs: list[Any] = []
             for n in ns:
                 subset = [r for r in fw_recs if r.num_states == n]
@@ -1989,8 +2042,7 @@ class SweepVisualizer:
                     color=_STYLE["text_color"],
                     fontweight="bold",
                 )
-        ax.set_xscale("log", base=2)
-        ax.set_yscale("log")
+        self._safe_log_scale(ax, x=True, y=True, base=2)
         ax.set_xlabel(
             "State Space Size (N)",
             color=_STYLE["text_color"],
@@ -2032,7 +2084,9 @@ class SweepVisualizer:
             w.writerow(["Framework", "N", "Avg_Throughput_timesteps_per_s"])
             for fw in frameworks:
                 fw_recs = [r for r in valid if r.framework == fw]
-                for n in sorted({r.num_states for r in fw_recs}):
+                for n in sorted(
+                    {r.num_states for r in fw_recs if r.num_states is not None}
+                ):
                     subset = [r for r in fw_recs if r.num_states == n]
                     w.writerow(
                         [
@@ -2058,7 +2112,7 @@ class SweepVisualizer:
         fig, ax = plt.subplots(figsize=(14, 8))
         fig.patch.set_facecolor(_STYLE["bg_color"])
         ax.set_facecolor(_STYLE["axis_bg"])
-        ns = sorted({r.num_states for r in valid})
+        ns = sorted({r.num_states for r in valid if r.num_states is not None})
         data_by_n: list[Any] = []
         labels: list[Any] = []
         for n in ns:
@@ -2111,7 +2165,7 @@ class SweepVisualizer:
             fontweight="bold",
         )
         ax.tick_params(colors=_STYLE["text_color"], labelsize=_STYLE["tick_size"])
-        ax.set_yscale("log")
+        self._safe_log_scale(ax, y=True)
         ax.grid(axis="y", alpha=0.4, color=_STYLE["grid_color"], linestyle="--")
         medians = [np.median(d) for d in data_by_n]
         stats = f"Median range: {_fmt_time(min(medians))}–{_fmt_time(max(medians))}"
@@ -2154,7 +2208,7 @@ class SweepVisualizer:
         if len(valid) < 6:
             return None
         t_values = sorted({r.num_timesteps for r in valid})
-        n_values = sorted({r.num_states for r in valid})
+        n_values = sorted({r.num_states for r in valid if r.num_states is not None})
         exponents: list[Any] = []  # (label, exponent, r_squared)
         for fw in frameworks:
             fw_recs = [r for r in valid if r.framework == fw]
@@ -2302,7 +2356,7 @@ class SweepVisualizer:
             fw_recs = [r for r in valid if r.framework == fw]
             if not fw_recs:
                 continue
-            ns = sorted({r.num_states for r in fw_recs})
+            ns = sorted({r.num_states for r in fw_recs if r.num_states is not None})
             efficiencies: list[Any] = []
             for n in ns:
                 subset = [r for r in fw_recs if r.num_states == n]
@@ -2319,7 +2373,7 @@ class SweepVisualizer:
                 alpha=0.8,
                 markeredgecolor="white",
             )
-        ax.set_xscale("log", base=2)
+        self._safe_log_scale(ax, x=True, base=2)
         ax.set_xlabel(
             "State Space Size (N)",
             color=_STYLE["text_color"],
@@ -2399,8 +2453,7 @@ class SweepVisualizer:
                 markersize=8,
                 markeredgecolor="white",
             )
-        ax.set_xscale("log", base=2)
-        ax.set_yscale("log")
+        self._safe_log_scale(ax, x=True, y=True, base=2)
         ax.set_title(
             "Median Runtime vs N",
             fontsize=_STYLE["label_size"],
@@ -2420,7 +2473,7 @@ class SweepVisualizer:
                 for r in valid
                 if r.framework == fw and r.num_states and r.num_timesteps
             ]
-            ns = sorted({r.num_states for r in fw_recs})
+            ns = sorted({r.num_states for r in fw_recs if r.num_states is not None})
             tps = [
                 np.mean(
                     [
@@ -2441,8 +2494,7 @@ class SweepVisualizer:
                 markersize=8,
                 markeredgecolor="white",
             )
-        ax.set_xscale("log", base=2)
-        ax.set_yscale("log")
+        self._safe_log_scale(ax, x=True, y=True, base=2)
         ax.set_title(
             "Throughput vs N",
             fontsize=_STYLE["label_size"],
@@ -2459,7 +2511,7 @@ class SweepVisualizer:
         acc_recs = [r for r in valid if r.final_accuracy is not None and r.num_states]
         for fw in frameworks:
             fw_a = [r for r in acc_recs if r.framework == fw]
-            ns = sorted({r.num_states for r in fw_a})
+            ns = sorted({r.num_states for r in fw_a if r.num_states is not None})
             accs = [
                 np.mean([r.final_accuracy for r in fw_a if r.num_states == n])
                 for n in ns
@@ -2474,7 +2526,7 @@ class SweepVisualizer:
                 markersize=8,
                 markeredgecolor="white",
             )
-        ax.set_xscale("log", base=2)
+        self._safe_log_scale(ax, x=True, base=2)
         ax.set_ylim(0.55, 1.02)
         ax.set_title(
             "Accuracy vs N",
@@ -2492,7 +2544,7 @@ class SweepVisualizer:
         loc_recs = [r for r in records if r.lines_of_code and r.num_states]
         for fw in frameworks:
             fw_l = [r for r in loc_recs if r.framework == fw]
-            ns = sorted({r.num_states for r in fw_l})
+            ns = sorted({r.num_states for r in fw_l if r.num_states is not None})
             locs = [
                 np.mean([r.lines_of_code for r in fw_l if r.num_states == n])
                 for n in ns
@@ -2507,8 +2559,7 @@ class SweepVisualizer:
                 markersize=8,
                 markeredgecolor="white",
             )
-        ax.set_xscale("log", base=2)
-        ax.set_yscale("log")
+        self._safe_log_scale(ax, x=True, y=True, base=2)
         ax.set_title(
             "Generated LOC vs N",
             fontsize=_STYLE["label_size"],
@@ -2527,7 +2578,7 @@ class SweepVisualizer:
         ]
         for fw in frameworks:
             fw_e = [r for r in ent_recs if r.framework == fw]
-            ns = sorted({r.num_states for r in fw_e})
+            ns = sorted({r.num_states for r in fw_e if r.num_states is not None})
             ents = [
                 np.mean([r.mean_belief_entropy for r in fw_e if r.num_states == n])
                 for n in ns
@@ -2542,7 +2593,7 @@ class SweepVisualizer:
                 markersize=8,
                 markeredgecolor="white",
             )
-        ax.set_xscale("log", base=2)
+        self._safe_log_scale(ax, x=True, base=2)
         ax.set_title(
             "Belief Entropy vs N",
             fontsize=_STYLE["label_size"],
@@ -2627,7 +2678,7 @@ class SweepVisualizer:
         ax.set_facecolor(_STYLE["axis_bg"])
         for fw in frameworks:
             fw_recs = [r for r in valid if r.framework == fw]
-            ns = sorted({r.num_states for r in fw_recs})
+            ns = sorted({r.num_states for r in fw_recs if r.num_states is not None})
             cmap = plt.get_cmap("viridis")(np.linspace(0.1, 0.9, len(ns)))
             for idx, n in enumerate(ns):
                 subset = sorted(
@@ -2649,7 +2700,7 @@ class SweepVisualizer:
                     markeredgecolor="white",
                     label=f"N={n}",
                 )
-        ax.set_xscale("log")
+        self._safe_log_scale(ax, x=True)
         ax.set_xlabel(
             "Timesteps (T)",
             color=_STYLE["text_color"],

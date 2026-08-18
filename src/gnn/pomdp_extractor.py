@@ -728,13 +728,21 @@ class POMDPExtractor:
         # Handle structured data (tuples/nested lists)
         if "(" in value_str or "[" in value_str:
             try:
+                from utils.safe_eval import MATRIX_MAX_LEN, safe_literal_eval
+
                 # Convert ( ) to [ ] for literal_eval if needed, or just let it handle tuples
                 # Better to convert to a standard format
                 clean_str = value_str.replace("(", "[").replace(")", "]")
                 # Handle cases like ( (1,2), (3,4) ) -> [ [1,2], [3,4] ]
                 # Remove extra commas if any (e.g., from trailing commas in GNN)
                 clean_str = re.sub(r",\s*\]", "]", clean_str)
-                return cast("list[Any] | float | int", ast.literal_eval(clean_str))
+                # Matrix/tensor literals are shallow but legitimately large
+                # (scaling-study B tensors reach ~2.6M chars), so use the
+                # matrix length bound rather than the scalar default.
+                return cast(
+                    "list[Any] | float | int",
+                    safe_literal_eval(clean_str, max_len=MATRIX_MAX_LEN),
+                )
             except (ValueError, SyntaxError) as e:
                 self.logger.warning(
                     f"ast.literal_eval failed for {value_str}: {e}. Falling back to manual parsing."

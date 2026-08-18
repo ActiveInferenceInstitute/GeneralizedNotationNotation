@@ -1,11 +1,12 @@
 # TO-DO - GNN Pipeline Roadmap
 
-**Last Updated**: 2026-08-07
+**Last Updated**: 2026-08-17 (clean-start execution correctness; `-n auto` fully green)
 **Current Version**: 3.0.0
 **Next Target**: v4.0.0 (bounded autonomy and reviewed self-editing workflows)
 
-**Last reviewed**: 2026-08-13 — documentation contracts, terminology, and
-type-check discovery. The full audit trail lives in
+**Last reviewed**: 2026-08-17 — all RED_TEAM_REVIEW.md security residuals V-01–V-11 closed, `-n auto` fully green (3,006 passed / 0 failed / 4 skipped), the three HANDOFF §4 test-infrastructure follow-ups resolved, and three clean-start execution regressions fixed: Julia frameworks now execute from their committed `--project` environments (no longer silently skipped against the global depot); the render manifest aggregates across per-folder pipeline invocations; and Step 12 execution is scoped to the current folder, so every rendered model is executed exactly once instead of only the last folder's model (or, post-aggregation, every folder's models ten times). `test_uv_sync_fast` also retries transient `uv sync --check` "outdated" races.
+`doc/ → doc/archive/` reorganization, `argument_utils` + RxInfer strategy
+modularization, and public-API test coverage. The full audit trail lives in
 `CHANGELOG.md` ([Unreleased]) and git history; RxInfer-specific state and
 open items live in [RXINFER_IMPROVEMENT_ROADMAP.md](RXINFER_IMPROVEMENT_ROADMAP.md).
 
@@ -45,6 +46,35 @@ This roadmap is forward-only. Shipped-version history belongs in
   native hierarchical rendering (decision recorded: joint composition until
   exemplars declare composed coupling), dashboard real-browser verification
   pass, optional T=100 precompile workloads if batches become routine.
+
+### Security follow-ups (residual from the 2026-08-14 red-team wave)
+
+The 2026-08-14 remediation wave and its wave-2 follow-up (2026-08-14) closed
+all RED_TEAM_REVIEW.md items: V-03 `safe_literal_eval` migration is complete
+across all nine remaining files, V-01 Julia pre-execution gating is blocking
+(`Base.Meta.parseall`), V-10 manifest-based script discovery is implemented,
+and V-11 FastAPI rate limiting is live (`api.rate_limit`, `GNN_RATE_LIMIT`).
+No unchecked security residuals remain at this time.
+
+### Test-infrastructure follow-ups (from doc/HANDOFF.md §4 — resolved 2026-08-17)
+
+- **Parallel test execution.** `-n auto` is now fully green: 3,006 passed /
+  0 failed / 4 skipped (excl. the two allowlisted Ollama files). The two
+  residual failures are closed: the strict GridWorld cross-framework test now
+  skips cleanly when Julia backend packages are absent (cached availability
+  probe), and `get_installed_package_versions` retries transient subprocess /
+  incomplete-enumeration races while `test_uv_sync_fast` uses non-mutating
+  `uv sync --check` so the shared `.venv` is never rewritten concurrently.
+- **Type-annotation completion.** No real source function lacks annotations:
+  `mypy` passes with `disallow_untyped_defs` + `disallow_incomplete_defs`
+  across 812 files. The remaining untyped-looking signatures live inside
+  string-embedded generated-code templates (`src/render/*/templates/*`,
+  DisCoPy/JAX renderers), which are output text, not callable source.
+- **Standalone test files.** Decision recorded: pin as documentation-embedded
+  examples, not pytest tests. Six files remain under `doc/` (activeinference_jl,
+  cognitive_phenomena, pymdp); they are `unittest`/standalone scripts with
+  doc-local imports and are already outside `testpaths` (`src/tests`, `tests`).
+  `src/llm/test_llm_system.py` was removed in commit `40068ba4`.
 
 ## v4.0.0 - Bounded Autonomy & Reviewed Self-Editing
 

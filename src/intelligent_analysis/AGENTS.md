@@ -10,7 +10,7 @@
 
 **Status**: Production Ready
 
-**Version**: 1.6.0
+**Version**: 3.0.0
 
 **Last Updated**: 2026-04-16
 
@@ -885,7 +885,7 @@ The `_run_llm_analysis()` function is async because it uses the shared `llm.llm_
 
 ## Version History
 
-### Current Version: 1.6.0
+### Current Version: 3.0.0
 
 **Features**:
 
@@ -924,7 +924,7 @@ The `_run_llm_analysis()` function is async because it uses the shared `llm.llm_
 **Last Updated**: 2026-04-16
 **Maintainer**: GNN Pipeline Team
 **Status**: Production Ready
-**Version**: 1.6.0
+**Version**: 3.0.0
 **Architecture Compliance**: 100% Thin Orchestrator Pattern
 
 ---

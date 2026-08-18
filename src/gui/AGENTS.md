@@ -10,7 +10,7 @@
 
 **Status**: ✅ Production Ready
 
-**Version**: 1.6.0
+**Version**: 3.0.0
 
 **Last Updated**: 2026-04-16
 
@@ -521,7 +521,7 @@ def construct_model_tool(components: List[Dict]) -> Dict[str, Any]:
 
 ## Version History
 
-### Current Version: 1.6.0
+### Current Version: 3.0.0
 
 **Features**:
 - Multiple GUI implementations (GUI 1, GUI 2, GUI 3, oxdraw)
@@ -554,7 +554,7 @@ def construct_model_tool(components: List[Dict]) -> Dict[str, Any]:
 **Last Updated**: 2026-04-16
 **Maintainer**: GNN Pipeline Team
 **Status**: ✅ Production Ready
-**Version**: 1.6.0
+**Version**: 3.0.0
 **Architecture Compliance**: ✅ 100% Thin Orchestrator Pattern
 
 

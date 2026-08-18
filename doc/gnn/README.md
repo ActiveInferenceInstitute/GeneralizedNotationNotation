@@ -87,7 +87,7 @@ the per-kind rendering strategies are documented in
 - [RxInfer Integration](../rxinfer/gnn_rxinfer.md) - Julia Bayesian inference
 - [ActiveInference.jl Integration](../activeinference_jl/activeinference-jl.md) - Julia Active Inference
 - [DisCoPy Integration](../discopy/gnn_discopy.md) - Category theory and string diagrams
-- [CatColab Integration](../catcolab/catcolab_gnn.md) - Categorical compositional modeling
+- [CatColab Integration](../archive/catcolab/catcolab_gnn.md) - Categorical compositional modeling
 
 ## 🧠 Advanced Topics
 

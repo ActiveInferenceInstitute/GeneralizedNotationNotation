@@ -581,7 +581,7 @@ results = execute_jax_script(
 
 ## Version History
 
-### Current Version: 1.6.0
+### Current Version: 3.0.0
 
 **Features**:
 - Complete JAX execution pipeline with hardware acceleration

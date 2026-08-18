@@ -58,6 +58,7 @@ def _strip_comments_from_multiline_str(m_str: str) -> str:
 
 def _parse_matrix_string(matrix_str: str) -> Any:
     """Safely parses a string representation of a matrix after stripping comments."""
+    from utils.safe_eval import MATRIX_MAX_LEN, safe_literal_eval
 
     processed_str = _strip_comments_from_multiline_str(matrix_str)
     # After stripping comments, processed_str might be empty or just whitespace
@@ -89,7 +90,7 @@ def _parse_matrix_string(matrix_str: str) -> Any:
             processed_str = "[" + inner_content + "]"
 
     try:
-        parsed_value = ast.literal_eval(processed_str)
+        parsed_value = safe_literal_eval(processed_str, max_len=MATRIX_MAX_LEN)
 
         def convert_structure(item: Any) -> Any:
             """Convert structure."""
@@ -157,6 +158,8 @@ def _parse_state_line(line: str) -> Optional[Dict[str, Any]]:
 
 def _parse_transition_line(line: str) -> Optional[Dict[str, Any]]:
     """Parse transition line."""
+    from utils.safe_eval import MATRIX_MAX_LEN, safe_literal_eval
+
     pattern = r"^\s*(.*?)\s*([-><]+|-)\s*(.*?)\s*(?::\s*(.*))?$"
     match = re.match(pattern, line.split("#")[0].strip())
     if not match:
@@ -180,7 +183,9 @@ def _parse_transition_line(line: str) -> Optional[Dict[str, Any]]:
             r'(\w+)\s*=\s*(".*?"|\'.*?\'|\S+)', attrs_str
         ):
             try:
-                attributes[key_attr] = ast.literal_eval(value_attr)
+                attributes[key_attr] = safe_literal_eval(
+                    value_attr, max_len=MATRIX_MAX_LEN
+                )
             except Exception:
                 attributes[key_attr] = value_attr
     return {

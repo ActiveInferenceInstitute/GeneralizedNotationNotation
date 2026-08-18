@@ -17,4 +17,4 @@ Provides theoretical background and references for GNN model designers working w
 
 See [doc/AGENTS.md](../AGENTS.md) for the overall documentation architecture.
 
-**Version**: 1.6.0
+**Version**: 3.0.0

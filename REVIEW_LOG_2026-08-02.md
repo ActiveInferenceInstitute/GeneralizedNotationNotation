@@ -115,7 +115,7 @@ comprehensively in a follow-up:
 ### Workstream 1 — dead citations & transient links (COMPLETED)
 
 - **P0 hygiene**: removed all `ppl-ai-file-upload.s3.amazonaws.com` paste
-  links (doc/nock/jock/jock.md ×2, doc/nock/nockchain/nockchain.md ×2);
+  links (doc/archive/nock/jock/jock.md ×2, doc/archive/nock/nockchain/nockchain.md ×2);
   repointed the Jock-source footnotes at the live `zorp-corp/jock-lang` repo
   (merged duplicate footnote in jock.md).
 - **P1 malformed IDs**: removed orphaned footnotes `21.3.00848`

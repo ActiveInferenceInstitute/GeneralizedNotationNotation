@@ -10,7 +10,7 @@
 
 **Status**: ✅ Production Ready
 
-**Version**: 1.6.0
+**Version**: 3.0.0
 
 **Last Updated**: 2026-05-05
 
@@ -169,6 +169,14 @@ elif not detection.get("correct_package"):
 - `execution_workers` (int): Number of rendered scripts to execute concurrently. This parallelizes model/script runs, not timesteps within a single simulation.
 - `distributed` (bool): Route scripts through the distributed dispatcher instead of the local process pool
 - `backend` (str): Dispatcher backend, default `ray`
+
+#### Security Configuration
+- `GNN_ALLOW_UNSAFE_EXEC` (str): set to `"1"` to bypass the pre-execution
+  security gate (RED_TEAM V-01/V-06). Default: gate active.
+- `GNN_SANDBOX` (str): rendered-script sandbox mode — `"off"` (default, no
+  wrapping), `"prefer"` (wrap when firejail/bwrap/nsjail is found, otherwise
+  run unsandboxed with a warning), or `"require"` (refuse to run when no
+  backend is found). See `execute.sandbox` (RED_TEAM V-10).
 
 #### Framework-Specific Configuration
 - `julia_path` (str): Path to Julia executable (default: auto-detect)
@@ -397,7 +405,7 @@ def run_simulation_tool(script_path: str, framework: str) -> Dict[str, Any]:
 
 ## Version History
 
-### Current Version: 1.6.0
+### Current Version: 3.0.0
 
 **Features**:
 - Multi-framework execution support
@@ -434,7 +442,7 @@ def run_simulation_tool(script_path: str, framework: str) -> Dict[str, Any]:
 **Last Updated**: 2026-05-05
 **Maintainer**: GNN Pipeline Team
 **Status**: ✅ Production Ready
-**Version**: 1.6.0
+**Version**: 3.0.0
 **Architecture Compliance**: ✅ 100% Thin Orchestrator Pattern
 
 

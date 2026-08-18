@@ -262,7 +262,13 @@ function install_package_with_retry(package_name::String, config::SetupConfig)
                     continue
                 end
             end
-            
+
+            # Patch DistributionsAD ReverseDiff ext as soon as it is on disk,
+            # BEFORE validation triggers precompilation of the affected
+            # packages (ActionModels / ActiveInference). The patch is
+            # idempotent and no-ops when DistributionsAD isn't downloaded yet.
+            patch_distributionsad_reversediff()
+
             # Validate installation
             if validate_package_installation(package_name, config)
                 @info "✅ Successfully installed and validated $package_name"

@@ -88,5 +88,5 @@ level. PyMDP results are redirected into the per-framework directory via
 
 ---
 
-**Version:** 1.6.0
+**Version:** 3.0.0
 **Last Updated:** 2026-01-23

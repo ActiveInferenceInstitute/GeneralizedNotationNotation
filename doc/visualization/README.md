@@ -25,7 +25,7 @@ This directory contains comprehensive documentation for visualization capabiliti
 - **[Visualization Module](../../src/visualization/README.md)**: Graph and matrix visualization implementation
 - **[Advanced Visualization](../advanced_visualization/README.md)**: Interactive dashboards and 3D visualization
 - **[GNN Visualization Guide](../gnn/integration/gnn_visualization.md)**: Comprehensive GNN visualization guide
-- **[Glowstick Integration](../glowstick/glowstick_gnn.md)**: Type-safe visualization tools
+- **[Glowstick Integration](../archive/glowstick/glowstick_gnn.md)**: Type-safe visualization tools
 
 ### Pipeline Integration
 - **[Pipeline Documentation](../gnn/operations/gnn_tools.md)**: Complete pipeline guide
@@ -102,7 +102,7 @@ See [src/AGENTS.md](../../src/AGENTS.md) for complete pipeline documentation.
 
 ### Visualization Resources
 - **[Advanced Visualization](../advanced_visualization/README.md)**: Interactive dashboards and 3D visualization
-- **[Glowstick Integration](../glowstick/glowstick_gnn.md)**: Type-safe visualization tools
+- **[Glowstick Integration](../archive/glowstick/glowstick_gnn.md)**: Type-safe visualization tools
 - **[Framework Integration](../gnn/integration/framework_integration_guide.md)**: Framework-specific visualization
 
 ### Pipeline Architecture

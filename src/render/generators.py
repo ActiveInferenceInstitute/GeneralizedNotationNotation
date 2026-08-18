@@ -178,9 +178,9 @@ def _matrix_to_julia(matrix_data: Any) -> str:
         matrix_data = matrix_data.strip()
         if matrix_data.startswith("[") or matrix_data.startswith("("):
             try:
-                import ast
+                from utils.safe_eval import MATRIX_MAX_LEN, safe_literal_eval
 
-                matrix_data = ast.literal_eval(matrix_data)
+                matrix_data = safe_literal_eval(matrix_data, max_len=MATRIX_MAX_LEN)
             except (ValueError, SyntaxError):
                 return cast("str", matrix_data)
 

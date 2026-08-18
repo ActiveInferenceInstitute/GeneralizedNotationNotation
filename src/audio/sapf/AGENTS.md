@@ -482,7 +482,7 @@ result = process_sapf_audio(audio_data, spectral_config, debug=True, verbose=Tru
 
 ## Version History
 
-### Current Version: 1.6.0
+### Current Version: 3.0.0
 
 **Features**:
 - Complete spectral analysis and synthesis pipeline

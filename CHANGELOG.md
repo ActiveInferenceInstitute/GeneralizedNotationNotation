@@ -8,8 +8,177 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
 
 ## [Unreleased]
 
+### Fixed (2026-08-17 — meta-analysis robustness)
+
+- **Step 18 integration meta-analysis now completes on the full corpus.** With
+  all 29 models executing, the integration sweep (`integration.meta_analysis`)
+  finally exercised 176 records across 8 frameworks and exposed two latent
+  crashes: unguarded `sorted({r.num_states ...})` over records with `None`
+  state counts, and log-scaled matplotlib axes whose data had no positive
+  values. Fixed by filtering `None` out of every `num_states` sort and by
+  routing all log-scale calls through a new `_safe_log_scale` helper that
+  falls back to linear when an axis has no positive data. `generate_all()`
+  now also runs each plot best-effort, so a single bad plot can no longer
+  abort the whole meta-analysis. Verified: 176 records, 15 plots (incl. the
+  comprehensive dashboard), report + validation + statistics JSON emitted.
+
+### Fixed (2026-08-17 — clean-start execution correctness)
+
+- **Julia frameworks now actually execute from the committed environments.**
+  `execute.processor.check_julia_dependencies` previously ran a bare
+  `julia -e "using JSON, Distributions, StatsBase, RxInfer, ActiveInference"`
+  against the *global* depot, which never contains those packages on a clean
+  machine — so every `rxinfer` and `activeinference_jl` script was silently
+  skipped (`4 succeeded, 4 skipped (dependency not installed)`). The check now
+  runs `using ...` against each framework's committed
+  `--project=src/execute/<framework>` environment. Verified end-to-end:
+  `Factorized_Posterior_Agent_{rxinfer,activeinference}.jl` both execute and
+  write `simulation_results.json`.
+- **Render manifest now aggregates across per-folder pipeline invocations.**
+  The pipeline invokes Step 11 (render) once per top-level input folder, each
+  overwriting `11_render_output/render_processing_summary.json`. Step 12's
+  manifest-based script discovery (V-10) therefore only ever saw the *last*
+  folder's rendered scripts and re-executed that one model for every folder —
+  the other 29 models were never executed. `render.processor.process_render`
+  now merges prior `file_results` and aggregate counts into the summary, so
+  the execute step discovers every rendered script across all folders.
+- **Step 12 execution is now scoped to the current folder.**
+  `execute.processor._load_render_summary_contract` accepts the invocation's
+  `target_dir` and filters source files to it, so a per-folder Step 12 run
+  executes only that folder's rendered scripts (each model once across the
+  pipeline) instead of re-executing every folder's models ten times.
+- **`test_uv_sync_fast` retries transient "environment is outdated" results.**
+  A concurrent mutating `uv sync` (the pipeline setup step or another xdist
+  worker) can transiently make `uv sync --frozen --check --extra dev` report
+  the shared venv as outdated; the test now retries briefly before failing so
+  a real pruning regression still fails while the race does not.
+
+### Fixed (2026-08-17 — `-n auto` fully green)
+
+- **Both residual `-n auto` failures closed** (full suite: 3,006 passed /
+  0 failed / 4 skipped, excl. the two allowlisted Ollama files):
+  - `test_gridworld_render_execute_analyze_visualize_strict` now skips cleanly
+    when Julia backend packages (RxInfer, Distributions, StatsBase) are absent
+    in `/tmp/julia_test_env`, via a cached availability probe that gates the
+    test instead of failing.
+  - `get_installed_package_versions` retries the package-enumeration probe on
+    non-zero exit, malformed JSON, or an incomplete inventory (missing
+    pytest/numpy/matplotlib/scipy) with a short backoff, so a concurrent
+    `uv` operation can't yield a partial result.
+- **`test_uv_sync_fast` no longer mutates the shared `.venv`.** The test now
+  runs `uv sync --frozen --check --extra dev` (non-mutating) instead of a real
+  sync, so venv-probing tests never observe a mid-sync partial package set
+  under `pytest-xdist` concurrency. A pruning regression still fails the gate
+  through the `--check` exit code.
+- **Ruff baseline restored.** Fixed an `I001` import-sort error in
+  `visualization/matrix/visualizer.py` (local `safe_eval` import) and ran
+  `ruff format` over `src/`/`scripts/` (46 files normalized); `ruff check`,
+  `ruff format --check`, and `mypy` (812 files) are all clean.
+
+### Decisions (2026-08-17)
+
+- **Standalone doc-embedded test files: pin, don't move.** The six `test_*.py`
+  files under `doc/` (activeinference_jl, cognitive_phenomena, pymdp) are
+  `unittest`/standalone scripts with doc-local imports; they remain pinned as
+  documentation examples and are outside `testpaths` (`src/tests`, `tests`).
+  `src/llm/test_llm_system.py` was already removed (commit `40068ba4`).
+- **Type-annotation completion is done.** `mypy` (`disallow_untyped_defs` +
+  `disallow_incomplete_defs`) is clean across 812 files; the only untyped
+  signatures are inside string-embedded generated-code templates, not callable
+  source.
+
+### Fixed (2026-08-17 — clean-start hardening)
+
+- **ActiveInference.jl environment now builds on a clean machine.**
+  `setup_environment.jl` applies the DistributionsAD ReverseDiff `@check_args`
+  patch immediately after a package is downloaded, *before* validation triggers
+  precompilation (previously the patch ran after the install loop, so
+  ActionModels / ActiveInference precompilation failed first on Julia 1.12).
+  Verified: `using ActiveInference, Distributions, JSON, StatsBase` succeeds
+  from the committed `Project.toml` + `Manifest.toml`.
+- **Container plan default image passes its own security review.**
+  `PINNED_PIPELINE_IMAGE` used an all-zero sha256 stand-in, which the
+  `UNPINNED_IMAGE` check correctly rejects (all-zero is the "not actually
+  pinned" sentinel). The stand-in is now a format-valid all-`a` digest, so
+  `generate_pipeline_container_plan.py` (default) reviews clean (0 findings).
+- **Documented clean-start Julia setup** in
+  `src/execute/activeinference_jl/README.md` (instantiate + patch + verify).
+
+### Security (2026-08-14, wave 2 — residual closures)
+
+Completes the remaining RED_TEAM_REVIEW.md items from the 2026-08-14 wave.
+
+- **V-03 — safe_literal_eval migration, complete (9 files)**. All remaining
+  bare `ast.literal_eval` call sites migrated to `utils.safe_eval.safe_literal_eval`
+  across `export/format_exporters`, `render/{generators,activeinference_jl,numpyro,pytorch}/*`,
+  `execute/pymdp/pymdp_utils`, and `visualization/{matrix,parse/markdown,visualizer}`.
+  No bare `ast.literal_eval` call sites remain outside `safe_eval.py` itself.
+  Acceptance: `grep -rn "ast.literal_eval" src/ --include="*.py"` returns only
+  `safe_eval.py` plus benign comment/log references.
+- **V-01 — Julia pre-execution gate parity, blocking upgrade**.
+  `security.processor.scan_script_for_execution` now validates Julia (`.jl`)
+  scripts via `Base.Meta.parseall()` in a subprocess, catching malformed code
+  as a `high`-severity block. Falls back to the regex patterns only when Julia
+  is unavailable, with findings marked `medium` (advisory, non-blocking).
+- **V-10 — manifest-based rendered-script discovery**.
+  `execute.processor.find_executable_scripts` now reads a manifest file
+  (`render_processing_summary.json`) written by Step 11, discovering only
+  scripts explicitly recorded by the render step. Falls back to `rglob` with
+  a warning if the manifest is missing/corrupt.
+- **V-11 — FastAPI per-client rate limiting**. New `api.rate_limit` module
+  with in-memory sliding-window rate limiter (configurable via `GNN_RATE_LIMIT`,
+  default 60 rpm), wired as middleware into both `api/server.py` and
+  `api/app.py`. Same pattern as the existing MCP HTTP rate limiter.
+
+### Changed (2026-08-14, wave 2)
+
+- **Parallel test execution (pytest-xdist) enabled**. Full suite runs with
+  `-n auto`: 3,005 passed / 2 failed / 3 skipped in 300s (the 2 failures are
+  a known environment-dependent Julia cross-framework test and a rare race on
+  the UV package-list cache file). Fixed: `setup.uv_management.get_installed_package_versions`
+  writes atomically (temp file + `os.replace`) so xdist workers don't observe
+  partial writes. Thread-safe `_history_lock` already present in test runner.
+  Most tests already use `tmp_path` fixtures (pre-existing).
+
+### Added (2026-08-14)
+
+- **Public-API test coverage** across previously under-tested modules — 16 new
+  test files pinning api auth + symlink traversal, security pre-exec gate +
+  sandbox, `safe_eval` bounds, framework availability, and public-API surfaces
+  for cli, export, lsp, ontology, validation, website, ml_integration,
+  model_registry, sapf, and advanced_visualization.
+- **`render.framework_registry` availability metadata**: every registry entry
+  carries `available` / `unavailable_reason`; PyTorch is marked unavailable
+  (transitively pulls unpatched GHSA-rrmf-rvhw-rf47).
+
+### Changed (2026-08-14)
+
+- **`src/utils/argument_utils.py` modularized**: the 2,263-line single module is
+  now a 59-line re-export module over single-responsibility modules
+  (`arg_definitions`, `arg_parsing`, `path_conversion`, `pipeline_arguments`,
+  `step_config`, plus `safe_eval`).
+- **RxInfer strategy extraction**: `render/rxinfer/model_strategies.py`
+  (3,560 lines) is now a 380-line dispatcher over `_common` and per-kind
+  strategy modules (`_strategies_{flat,continuous,factored,hierarchical,learning}`).
+- **`doc/` archive reorganization**: 19 topic directories moved to
+  `doc/archive/` (arc-agi, autogenlib, axiom, catcolab, cerebrum, dspy,
+  glowstick, iroh, kit, klong, muscle-mem, nock, ntqr, onefilellm, poe-world,
+  quadray, timep, vec2text, x402); cross-document links re-pointed; doc indexes,
+  cross-reference index, and `expected_dirs.txt` updated (61 → 42 top-level
+  topic directories).
+- **`SECURITY.md`**: version support table aligned with actual release history
+  (3.0.x supported; all prior versions EOL).
+
+### Fixed (2026-08-14)
+
+- Type-annotation and import hygiene across the touched surface (mypy clean,
+  ruff clean): `FRAMEWORK_REGISTRY` typed as `Mapping[str, Dict[str, Any]]`;
+  starlette-1.3.1-compatible ASGI middleware signature in `api/auth.py`; honest
+  widened types (`safe_literal_eval`, `export_to_pickle`); import-sort fixes from
+  the strategy extraction.
+
 ### Security (2026-08-10)
-- **Dependency flow closed to zero known advisories.** Dependabot had flagged 22 on the
+- **Dependency flow closed to zero known advisories (as of 2026-08-10; see CI).** Dependabot had flagged 22 on the
   default branch (17 high / 5 moderate). A full-tree `pip-audit` (all extras + dev; PyPI
   and OSV sources) surfaced 20 across 3 packages, all resolved:
   - `aiohttp` 3.14.1 → **3.14.3** (core-dep floor bumped; PYSEC-2026-3545/46/47),

@@ -480,9 +480,7 @@ def _write_preliminary_pipeline_summary(
         prelim_summary["overall_status"] = "SUCCESS"
         prelim_summary["preliminary"] = True
 
-        prelim_path = (
-            output_dir / "00_pipeline_summary" / "preliminary_summary.json"
-        )
+        prelim_path = output_dir / "00_pipeline_summary" / "preliminary_summary.json"
         prelim_path.parent.mkdir(parents=True, exist_ok=True)
         with open(prelim_path, "w") as f:
             json.dump(prelim_summary, f, indent=4, default=str)

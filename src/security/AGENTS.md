@@ -10,7 +10,7 @@
 
 **Status**: ✅ Production Ready
 
-**Version**: 1.6.0
+**Version**: 3.0.0
 
 **Last Updated**: 2026-04-16
 
@@ -101,6 +101,14 @@ success = process_security(
 
 #### `calculate_security_score(vulnerabilities: List[Dict]) -> float`
 **Description**: Calculate overall security score (0.0–1.0) based on vulnerability severity weights.
+
+#### `scan_script_for_execution(script_path: Path, *, block_on: str = "high") -> Dict[str, Any]`
+**Description**: Pre-execution security gate for rendered scripts (RED_TEAM V-01/V-06).
+Applies the Python AST scanner to a rendered `.py` script *before* Step 12 runs
+it, returning `{ok, blocked, findings, scanned}`. Findings at/above `block_on`
+severity set `ok=False`; `.jl` scripts get an advisory textual sweep only. Wired
+into `execute.processor.execute_single_script` (escape hatch:
+`GNN_ALLOW_UNSAFE_EXEC=1`).
 
 ---
 
@@ -367,7 +375,7 @@ def validate_model_security_tool(file_path, security_level="standard"):
 
 ## Version History
 
-### Current Version: 1.6.0
+### Current Version: 3.0.0
 
 **Features**:
 - Security validation
@@ -401,7 +409,7 @@ def validate_model_security_tool(file_path, security_level="standard"):
 **Last Updated**: 2026-04-16
 **Maintainer**: GNN Pipeline Team
 **Status**: ✅ Production Ready
-**Version**: 1.6.0
+**Version**: 3.0.0
 **Architecture Compliance**: ✅ 100% Thin Orchestrator Pattern
 
 ---

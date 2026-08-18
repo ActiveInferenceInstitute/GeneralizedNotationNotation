@@ -93,7 +93,12 @@ def test_rendered_script_emits_results_log_and_png(tmp_path: Path) -> None:
     # Use the committed Julia project environment under src/execute/rxinfer/
     rxinfer_project = REPO_ROOT / "src" / "execute" / "rxinfer"
     completed = subprocess.run(
-        [str(JULIA), "--startup-file=no", f"--project={rxinfer_project}", str(output_path)],
+        [
+            str(JULIA),
+            "--startup-file=no",
+            f"--project={rxinfer_project}",
+            str(output_path),
+        ],
         cwd=str(tmp_path),
         capture_output=True,
         text=True,

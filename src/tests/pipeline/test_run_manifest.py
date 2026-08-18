@@ -124,7 +124,7 @@ def test_negative_missing_artifact_is_detected(tmp_path: Path) -> None:
     (run_dir / "1_setup_output" / "environment_setup_summary.json").unlink()
 
     problems = verify_run_manifests(manifest_dir, run_dir)
-    assert problems, 'deleting an artifact should produce manifest problems'
+    assert problems, "deleting an artifact should produce manifest problems"
     assert any("does not exist" in p for p in problems), problems
 
 

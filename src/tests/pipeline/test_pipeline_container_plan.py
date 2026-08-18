@@ -39,7 +39,9 @@ class TestPlanIsClean:
         )
 
         assert REAL_CONFIG.exists(), f"missing real config: {REAL_CONFIG}"
-        plan = plan_for_pipeline(REAL_CONFIG, image="ghcr.io/gnn/runner@sha256:" + "a" * 64)
+        plan = plan_for_pipeline(
+            REAL_CONFIG, image="ghcr.io/gnn/runner@sha256:" + "a" * 64
+        )
         findings = review_pipeline_plan(plan)
         assert findings == [], f"expected clean plan, got: {findings}"
 

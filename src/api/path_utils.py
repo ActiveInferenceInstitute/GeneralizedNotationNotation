@@ -29,6 +29,26 @@ def resolve_repo_path(
 
     repo_root = get_repo_root()
     candidate = raw if raw.is_absolute() else repo_root / raw
+
+    # Reject symlink components BEFORE resolving. ``Path.resolve()`` follows
+    # symlinks, so a symlink planted inside the repo can otherwise redirect a
+    # read/write outside the boundary while the resolved path still compares
+    # cleanly. Walking the raw components closes that hole (RED_TEAM V-05).
+    try:
+        candidate_relative = candidate.relative_to(repo_root)
+    except ValueError as exc:
+        raise PathValidationError(
+            f"{purpose} must be within the repository root: {path_value}"
+        ) from exc
+
+    node = repo_root
+    for part in candidate_relative.parts:
+        node = node / part
+        if node.is_symlink():
+            raise PathValidationError(
+                f"{purpose} must not traverse symlinks: {path_value}"
+            )
+
     resolved = candidate.resolve(strict=False)
 
     try:

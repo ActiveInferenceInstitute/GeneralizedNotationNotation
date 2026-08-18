@@ -371,7 +371,7 @@ uv run --extra dev python -m pytest src/tests/test_mcp*.py \
 
 ## Version History
 
-### Current Version: 1.6.0
+### Current Version: 3.0.0
 
 **Features**:
 - Tool registration and discovery

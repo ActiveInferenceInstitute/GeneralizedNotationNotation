@@ -7,10 +7,12 @@ package management, and environment validation.
 
 import json
 import logging
+import os
 import platform
 import shutil
 import subprocess  # nosec B404
 import sys
+import tempfile
 import time
 from pathlib import Path
 from typing import Any, Dict, List, Optional, cast
@@ -25,6 +27,42 @@ from .constants import (
 )
 
 logger = logging.getLogger(__name__)
+
+# Packages that must be present in a complete dev-environment enumeration.
+# Their absence means the probe observed a transient mid-``uv sync`` state
+# (the shared venv can be re-synced concurrently under pytest-xdist) rather
+# than a genuinely incomplete install — the caller retries instead of
+# accepting a partial inventory.
+_REQUIRED_ENUMERATION_PACKAGES: tuple[str, ...] = (
+    "pytest",
+    "numpy",
+    "matplotlib",
+    "scipy",
+)
+
+
+def _atomic_json_write(path: Path, data: Dict[str, str]) -> None:
+    """Write ``data`` to ``path`` atomically (temp file + ``os.replace``).
+
+    Concurrent callers — e.g. pytest-xdist workers or parallel pipeline
+    steps — can race on a plain ``open(path, "w")`` and observe a partially
+    written file. The temp-file-plus-rename pattern guarantees the target
+    only ever contains a complete, valid JSON document.
+    """
+    fd, tmp_name = tempfile.mkstemp(
+        prefix=f".{path.name}.", suffix=".tmp", dir=str(path.parent)
+    )
+    try:
+        with os.fdopen(fd, "w") as f:
+            json.dump(data, f, indent=2, sort_keys=True)
+        os.replace(tmp_name, path)
+    except BaseException:
+        try:
+            os.unlink(tmp_name)
+        except OSError:
+            pass
+        raise
+
 
 try:
     from utils.jax_stack_validation import run_jax_stack_probe_subprocess
@@ -420,28 +458,52 @@ def get_installed_package_versions(verbose: bool = False) -> dict:
             "        out[name] = d.version\n"
             "json.dump(out, sys.stdout)\n"
         )
-        result = subprocess.run(  # nosec B603
-            [str(VENV_PYTHON), "-c", probe],
-            cwd=PROJECT_ROOT,
-            capture_output=True,
-            text=True,
-            check=False,
-            timeout=60,
-        )
-        if result.returncode != 0:
-            logger.warning(
-                f"⚠️ Failed to enumerate packages (exit code: {result.returncode})"
+        package_dict: Optional[Dict[str, str]] = None
+        last_returncode = 0
+        last_stdout = ""
+        last_stderr = ""
+        for attempt in range(3):
+            result = subprocess.run(  # nosec B603
+                [str(VENV_PYTHON), "-c", probe],
+                cwd=PROJECT_ROOT,
+                capture_output=True,
+                text=True,
+                check=False,
+                timeout=60,
             )
-            if verbose:
-                logger.warning(f"stderr: {result.stderr.strip()}")
-            return {}
+            last_returncode = result.returncode
+            last_stdout = result.stdout
+            last_stderr = result.stderr
+            if result.returncode == 0:
+                try:
+                    candidate = json.loads(result.stdout)
+                except json.JSONDecodeError:
+                    candidate = None
+                if isinstance(candidate, dict) and all(
+                    pkg in candidate for pkg in _REQUIRED_ENUMERATION_PACKAGES
+                ):
+                    package_dict = cast(Dict[str, str], candidate)
+                    break
+                package_dict = None
+            # Under pytest-xdist concurrency the probe subprocess itself can
+            # race with other uv/venv activity (a fresh interpreter spawn can
+            # transiently fail, or a concurrent ``uv sync`` can momentarily
+            # prune packages from the shared venv). Retry with a short backoff
+            # before giving up.
+            if attempt < 2:
+                time.sleep(0.5 * (attempt + 1))
 
-        try:
-            package_dict: Dict[str, str] = json.loads(result.stdout)
-        except json.JSONDecodeError:
-            logger.warning("⚠️ Failed to parse package inventory JSON")
-            if verbose:
-                logger.warning(f"stdout: {result.stdout[:500]}")
+        if package_dict is None:
+            if last_returncode != 0:
+                logger.warning(
+                    f"⚠️ Failed to enumerate packages (exit code: {last_returncode})"
+                )
+                if verbose:
+                    logger.warning(f"stderr: {last_stderr.strip()}")
+            else:
+                logger.warning("⚠️ Failed to parse package inventory JSON")
+                if verbose:
+                    logger.warning(f"stdout: {last_stdout[:500]}")
             return {}
 
         logger.info(f"📦 Found {len(package_dict)} installed packages")
@@ -465,8 +527,9 @@ def get_installed_package_versions(verbose: bool = False) -> dict:
                     logger.info(f"  - {pkg}: {package_dict[pkg]}")
 
         package_list_file = VENV_PATH / "installed_packages_uv.json"
-        with open(package_list_file, "w") as f:
-            json.dump(package_dict, f, indent=2, sort_keys=True)
+        # Atomic write: concurrent callers (e.g. pytest-xdist workers) must
+        # never observe a partially written inventory file.
+        _atomic_json_write(package_list_file, package_dict)
         logger.info(f"📄 Full package list saved to: {package_list_file}")
         return package_dict
 

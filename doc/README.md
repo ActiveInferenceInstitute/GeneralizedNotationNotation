@@ -87,10 +87,10 @@ Welcome to the documentation for Generalized Notation Notation (GNN), a standard
   - *See Also*: [Multi-agent Template](templates/multiagent_template.md), [Advanced Patterns](gnn/advanced/advanced_modeling_patterns.md)
   - *Framework Integration*: [RxInfer Examples](rxinfer/gnn_rxinfer.md#multi-agent-examples)
 - **[LLM Integration](gnn/advanced/gnn_llm_neurosymbolic_active_inference.md)** - AI-assisted modeling
-  - *See Also*: [DSPy Integration](dspy/gnn_dspy.md), [AutoGenLib](autogenlib/gnn_autogenlib.md)
+  - *See Also*: [DSPy Integration](archive/dspy/gnn_dspy.md), [AutoGenLib](archive/autogenlib/gnn_autogenlib.md)
   - *Related Tools*: [MCP Protocol](mcp/README.md), [pipeline steps 0–24](gnn/operations/gnn_tools.md#complete-pipeline-stages-25-steps) (LLM is step 13)
-- **[PoE-World Integration](poe-world/poe-world.md)** - Compositional world modeling research
-  - *See Also*: [PoE-World GNN Integration](poe-world/poe-world_gnn.md), [Program Synthesis](dspy/gnn_dspy.md)
+- **[PoE-World Integration](archive/poe-world/poe-world.md)** - Compositional world modeling research
+  - *See Also*: [PoE-World GNN Integration](archive/poe-world/poe-world_gnn.md), [Program Synthesis](archive/dspy/gnn_dspy.md)
   - *Research Applications*: [Hierarchical Template](templates/hierarchical_template.md), [Advanced Patterns](gnn/advanced/advanced_modeling_patterns.md)
 
 ## 🔧 Framework Integrations
@@ -102,10 +102,10 @@ Welcome to the documentation for Generalized Notation Notation (GNN), a standard
 | **PyMDP** | [gnn_pymdp.md](pymdp/gnn_pymdp.md) | Python Active Inference framework | ✅ All templates | [POMDP](templates/pomdp_template.md), [Multi-agent](templates/multiagent_template.md) |
 | **RxInfer** | [gnn_rxinfer.md](rxinfer/gnn_rxinfer.md) | Julia Bayesian inference | ✅ All templates | [Hierarchical](templates/hierarchical_template.md), [Multi-agent](rxinfer/multiagent_trajectory_planning/) |
 | **DisCoPy** | [gnn_discopy.md](discopy/gnn_discopy.md) | Category theory and quantum computing | ✅ Advanced templates | [Category Theory Models](discopy/gnn_discopy.md) |
-| **DSPy** | [gnn_dspy.md](dspy/gnn_dspy.md) | AI prompt programming | 🔄 LLM integration | [LLM Pipeline](gnn/advanced/gnn_llm_neurosymbolic_active_inference.md) |
-| **AutoGenLib** | [gnn_autogenlib.md](autogenlib/gnn_autogenlib.md) | Dynamic code generation | 🔄 Code generation | [Tool Development](gnn/reference/gnn_dsl_manual.md) |
+| **DSPy** | [gnn_dspy.md](archive/dspy/gnn_dspy.md) | AI prompt programming | 🔄 LLM integration | [LLM Pipeline](gnn/advanced/gnn_llm_neurosymbolic_active_inference.md) |
+| **AutoGenLib** | [gnn_autogenlib.md](archive/autogenlib/gnn_autogenlib.md) | Dynamic code generation | 🔄 Code generation | [Tool Development](gnn/reference/gnn_dsl_manual.md) |
 | **MCP** | [gnn_mcp.md](mcp/gnn_mcp_model_context_protocol.md) | Model Context Protocol | ✅ API integration | [MCP Guide](mcp/README.md), [FastMCP](mcp/fastmcp.md) |
-| **PoE-World** | [poe-world_gnn.md](poe-world/poe-world_gnn.md) | Compositional world modeling | 🔄 Research integration | [PoE-World Overview](poe-world/poe-world.md), [Program Synthesis](dspy/gnn_dspy.md) |
+| **PoE-World** | [poe-world_gnn.md](archive/poe-world/poe-world_gnn.md) | Compositional world modeling | 🔄 Research integration | [PoE-World Overview](archive/poe-world/poe-world.md), [Program Synthesis](archive/dspy/gnn_dspy.md) |
 
 > **🔗 Cross-References**: [API Documentation](api/README.md) | [Pipeline Integration](gnn/operations/gnn_tools.md) | [Performance Comparison](troubleshooting/performance.md)
 
@@ -118,42 +118,42 @@ Welcome to the documentation for Generalized Notation Notation (GNN), a standard
 
 #### Formal Methods and Verification
 
-- **[Axiom](axiom/axiom_gnn.md)** - Formal verification and theorem proving
+- **[Axiom](archive/axiom/axiom_gnn.md)** - Formal verification and theorem proving
 - **[Petri Nets](petri_nets/README.md)** - Workflow modeling and process analysis
-- **[Nock](nock/nock-gnn.md)** - Formal specification language integration
+- **[Nock](archive/nock/nock-gnn.md)** - Formal specification language integration
 
 #### Distributed Systems
 
-- **[Iroh](iroh/iroh.md)** - Peer-to-peer networking for decentralized agents
-- **[X402](x402/gnn_x402.md)** - Distributed inference protocol
+- **[Iroh](archive/iroh/iroh.md)** - Peer-to-peer networking for decentralized agents
+- **[X402](archive/x402/gnn_x402.md)** - Distributed inference protocol
 
 #### Specialized Tools
 
 - **[GUI-Oxdraw](gui_oxdraw/gnn_oxdraw.md)** - Visual model construction interface
-- **[OneFileLLM](onefilellm/onefilellm_gnn.md)** - Single-file LLM wrapper for analysis
-- **[Vec2Text](vec2text/vec2text_gnn.md)** - Vector-to-text model interpretation
+- **[OneFileLLM](archive/onefilellm/onefilellm_gnn.md)** - Single-file LLM wrapper for analysis
+- **[Vec2Text](archive/vec2text/vec2text_gnn.md)** - Vector-to-text model interpretation
 
 #### Research and Benchmarking
 
-- **[ARC-AGI](arc-agi/arc-agi-gnn.md)** - Abstract reasoning benchmark integration
+- **[ARC-AGI](archive/arc-agi/arc-agi-gnn.md)** - Abstract reasoning benchmark integration
 - **[D2](d2/gnn_d2.md)** - Scriptable diagram generation
-- **[Glowstick](glowstick/glowstick_gnn.md)** - Interactive visualization framework
-- **[Klong](klong/klong.md)** - Array programming language integration
+- **[Glowstick](archive/glowstick/glowstick_gnn.md)** - Interactive visualization framework
+- **[Klong](archive/klong/klong.md)** - Array programming language integration
 
 #### Temporal and Analytical
 
-- **[TimEP](timep/timep_gnn.md)** - Performance profiling and temporal analysis
+- **[TimEP](archive/timep/timep_gnn.md)** - Performance profiling and temporal analysis
 - **[POMDP](pomdp/pomdp_overall.md)** - POMDP analytical framework
 - **[SPM](spm/spm_gnn.md)** - Statistical Parametric Mapping for neuroscience
 
 #### Configuration and Performance
 
 - **[Pkl](pkl/pkl_gnn.md)** - Configuration-as-code language integration
-- **[Muscle-Mem](muscle-mem/gnn-muscle-mem.md)** - Behavior caching for performance optimization
+- **[Muscle-Mem](archive/muscle-mem/gnn-muscle-mem.md)** - Behavior caching for performance optimization
 - **[SymPy](sympy/gnn_sympy.md)** - Symbolic mathematics and MCP integration
-- **[Kit](kit/gnn_kit.md)** - Code intelligence and developer tools
+- **[Kit](archive/kit/gnn_kit.md)** - Code intelligence and developer tools
 - **[ActiveInference.jl](activeinference_jl/activeinference-jl.md)** - High-performance Julia framework
-- **[Quadray](quadray/quadray_gnn.md)** - Geometric coordinate system for spatial modeling
+- **[Quadray](archive/quadray/quadray_gnn.md)** - Geometric coordinate system for spatial modeling
 
 ## 📖 Example Gallery
 
@@ -205,16 +205,16 @@ Welcome to the documentation for Generalized Notation Notation (GNN), a standard
 - **[Resource Metrics](gnn/operations/resource_metrics.md)** - Computational resource estimation
   - *Cross-refs*: [Performance Guide](troubleshooting/performance.md), [Type Checker](gnn/operations/gnn_tools.md#validation-tools)
   - *Related*: [type checker (steps 3 & 5)](gnn/operations/gnn_tools.md#gnn-parser-and-type-checker-steps-3-5)
-- **[GNN Kit](kit/gnn_kit.md)** - Comprehensive toolkit documentation
+- **[GNN Kit](archive/kit/gnn_kit.md)** - Comprehensive toolkit documentation
   - *Cross-refs*: [Tools Guide](gnn/operations/gnn_tools.md), [API Documentation](api/README.md)
-- **[Cerebrum Integration](cerebrum/gnn_cerebrum.md)** - Advanced cognitive architectures
+- **[Cerebrum Integration](archive/cerebrum/gnn_cerebrum.md)** - Advanced cognitive architectures
   - *Cross-refs*: [Cognitive Phenomena](cognitive_phenomena/README.md), [Hierarchical Template](templates/hierarchical_template.md)
 - **[Audio Sonification](sapf/sapf_gnn.md)** - Auditory representation of model dynamics
   - *Cross-refs*: [SAPF](sapf/README.md), [Pedalboard](pedalboard/pedalboard_gnn.md)
-- **[Formal Verification](axiom/axiom_gnn.md)** - Provably correct model specification
-  - *Cross-refs*: [Petri Nets](petri_nets/README.md), [Nock](nock/nock-gnn.md)
+- **[Formal Verification](archive/axiom/axiom_gnn.md)** - Provably correct model specification
+  - *Cross-refs*: [Petri Nets](petri_nets/README.md), [Nock](archive/nock/nock-gnn.md)
 - **[Visual Model Construction](gui_oxdraw/gnn_oxdraw.md)** - Interactive GUI for model building
-  - *Cross-refs*: [Oxdraw](gui_oxdraw/README.md), [Glowstick](glowstick/glowstick_gnn.md)
+  - *Cross-refs*: [Oxdraw](gui_oxdraw/README.md), [Glowstick](archive/glowstick/glowstick_gnn.md)
 
 ## 🔍 Quick Reference
 
@@ -250,7 +250,7 @@ Welcome to the documentation for Generalized Notation Notation (GNN), a standard
   - *Examples*: [Multi-agent Systems](gnn/advanced/gnn_multiagent.md), [RxInfer Multi-agent](rxinfer/multiagent_trajectory_planning/)
 - **[Hierarchical Template](templates/hierarchical_template.md)** - Hierarchical architectures template
   - *Use Cases*: Cognitive architectures, multi-scale modeling, complex systems
-  - *Related*: [Advanced Patterns](gnn/advanced/advanced_modeling_patterns.md), [Cerebrum](cerebrum/gnn_cerebrum.md)
+  - *Related*: [Advanced Patterns](gnn/advanced/advanced_modeling_patterns.md), [Cerebrum](archive/cerebrum/gnn_cerebrum.md)
 
 ### Pipeline Documentation
 >
@@ -404,13 +404,13 @@ learning_paths:
   beginner: [about_gnn.md, quickstart_tutorial.md, gnn_examples_doc.md, gnn_syntax.md]
   practitioner: [gnn_syntax.md, gnn_file_structure_doc.md, gnn_implementation.md, templates/README.md]
   developer: [api/README.md, gnn/reference/architecture_reference.md, development/README.md]
-  researcher: [gnn/gnn_paper.md, advanced_modeling_patterns.md, cognitive_phenomena/README.md, poe-world/poe-world.md]
+  researcher: [gnn/gnn_paper.md, advanced_modeling_patterns.md, cognitive_phenomena/README.md, archive/poe-world/poe-world.md]
 cross_references:
   setup: [SETUP.md, configuration/README.md, deployment/README.md]
-  frameworks: [pymdp/gnn_pymdp.md, rxinfer/gnn_rxinfer.md, discopy/gnn_discopy.md, poe-world/poe-world_gnn.md]
+  frameworks: [pymdp/gnn_pymdp.md, rxinfer/gnn_rxinfer.md, discopy/gnn_discopy.md, archive/poe-world/poe-world_gnn.md]
   templates: [templates/README.md, templates/basic_gnn_template.md, templates/pomdp_template.md, templates/multiagent_template.md, templates/hierarchical_template.md]
   support: [troubleshooting/README.md, troubleshooting/common_errors.md, troubleshooting/faq.md]
-  research_integration: [poe-world/poe-world.md, gnn/advanced/gnn_llm_neurosymbolic_active_inference.md, dspy/gnn_dspy.md]
+  research_integration: [archive/poe-world/poe-world.md, gnn/advanced/gnn_llm_neurosymbolic_active_inference.md, archive/dspy/gnn_dspy.md]
 coverage_metrics:
   pipeline_steps: 25
   doc_markdown_files: 600+

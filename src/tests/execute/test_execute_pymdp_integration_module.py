@@ -93,7 +93,7 @@ class TestGNNPyMDPIntegration:
             assert parsed_data.data is not None
         else:
             # Recovery for dict returns
-            assert parsed_data, 'parsed data should not be empty'
+            assert parsed_data, "parsed data should not be empty"
 
     def test_pymdp_renderer_exists(self, gnn_file: Any) -> Any:
         """Test PyMDP renderer can be instantiated and has render_file method."""

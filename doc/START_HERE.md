@@ -55,7 +55,7 @@ Deep-dive implementations for how GNN translates to executable code in specific 
 - **[DisCoPy (`doc/discopy/`)](discopy/)**: Category theory and string diagrams.
 - **[PyTorch (`src/render/pytorch/`)](../src/render/pytorch/README.md)**: Deep learning render templates.
 - **[NumPyro (`src/render/numpyro/`)](../src/render/numpyro/README.md)**: Probabilistic programming render templates.
-- **[CatColab (`doc/catcolab/`)](catcolab/)**: Categorical compositional intelligence.
+- **[CatColab (`doc/archive/catcolab/`)](archive/catcolab/)**: Categorical compositional intelligence.
 
 ### 4. Advanced tooling and UI
 

@@ -28,6 +28,7 @@ except ImportError as e:
     ) from e
 
 from api import processor as job_mgr
+from api.auth import api_key_middleware, require_secure_bind
 from api.models import (
     HealthResponse,
     JobResponse,
@@ -39,6 +40,7 @@ from api.models import (
     ToolsResponse,
 )
 from api.path_utils import PathValidationError, resolve_repo_path
+from api.rate_limit import rate_limit_middleware
 
 # Application metadata
 app = FastAPI(
@@ -61,6 +63,14 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Optional API-key auth: active only when GNN_API_KEY is set (see api/auth.py).
+app.middleware("http")(api_key_middleware)
+
+# Per-client rate limiting: active unless GNN_RATE_LIMIT=0 (see api/rate_limit.py).
+# Registered after auth so it runs outermost, protecting the API even when
+# authentication is disabled (e.g. localhost research use).
+app.middleware("http")(rate_limit_middleware)
 
 
 @app.get("/api/v1/health", response_model=HealthResponse, tags=["Meta"])
@@ -227,6 +237,12 @@ async def invoke_tool(
 
 def run_server(host: str = "127.0.0.1", port: int = 8000, reload: bool = False) -> Any:
     """Start the API server."""
+    if not require_secure_bind(host):
+        raise RuntimeError(
+            f"Refusing to bind API server to non-loopback address {host!r} "
+            "without authentication. Set GNN_API_KEY to enable API-key auth, "
+            "or GNN_ALLOW_INSECURE_BIND=1 to explicitly accept the risk."
+        )
     if host not in ("127.0.0.1", "localhost"):
         logger.warning(
             "Binding to non-loopback address %s with no authentication — "

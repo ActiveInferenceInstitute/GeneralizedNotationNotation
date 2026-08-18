@@ -5,7 +5,7 @@
 ## Overview
 
 - **[Learning paths](learning_paths.md)** — structured curricula
-- **Top-level `doc/` folders**: [expected_dirs.txt](expected_dirs.txt) lists **61** topic directories (see [INDEX.md](INDEX.md) tree)
+- **Top-level `doc/` folders**: [expected_dirs.txt](expected_dirs.txt) lists **42** topic directories (see [INDEX.md](INDEX.md) tree)
 
 This index maps relationships between frameworks, theory pages, and tooling. For numbered pipeline steps, use [../CLAUDE.md](../CLAUDE.md) (steps 0–24) as the source of truth; older narrative in this file may predate current step ordering.
 
@@ -47,9 +47,9 @@ This index maps relationships between frameworks, theory pages, and tooling. For
 
 1. **[Academic Paper](gnn/gnn_paper.md)** → **[Advanced Patterns](gnn/advanced/advanced_modeling_patterns.md)**
 2. **[Multi-agent Systems](gnn/advanced/gnn_multiagent.md)** → **[Cognitive Phenomena](cognitive_phenomena/README.md)**
-3. **[Cerebrum Integration](cerebrum/gnn_cerebrum.md)** → **[Hierarchical Template](templates/hierarchical_template.md)**
-4. **[LLM Integration](gnn/advanced/gnn_llm_neurosymbolic_active_inference.md)** → **[DSPy Integration](dspy/gnn_dspy.md)**
-5. **[PoE-World Research](poe-world/poe-world.md)** → **[PoE-World GNN Integration](poe-world/poe-world_gnn.md)**
+3. **[Cerebrum Integration](archive/cerebrum/gnn_cerebrum.md)** → **[Hierarchical Template](templates/hierarchical_template.md)**
+4. **[LLM Integration](gnn/advanced/gnn_llm_neurosymbolic_active_inference.md)** → **[DSPy Integration](archive/dspy/gnn_dspy.md)**
+5. **[PoE-World Research](archive/poe-world/poe-world.md)** → **[PoE-World GNN Integration](archive/poe-world/poe-world_gnn.md)**
 6. **[Advanced learning path](learning_paths.md#advanced-path-research-and-custom-extensions)** — research extensions
 
 ## Framework Integration Network
@@ -88,9 +88,9 @@ This index maps relationships between frameworks, theory pages, and tooling. For
 >
 > **🤖 AI-Enhanced Processing** | **🧠 Intelligent Assistance**
 
-- **DSPy**: [DSPy Integration](dspy/gnn_dspy.md) → [LLM Neurosymbolic](gnn/advanced/gnn_llm_neurosymbolic_active_inference.md)
-- **AutoGenLib**: [AutoGenLib Guide](autogenlib/gnn_autogenlib.md) → [Conversion tools](gnn/operations/gnn_tools.md#conversion-tools)
-- **PoE-World**: [PoE-World Overview](poe-world/poe-world.md) → [PoE-World GNN Integration](poe-world/poe-world_gnn.md)
+- **DSPy**: [DSPy Integration](archive/dspy/gnn_dspy.md) → [LLM Neurosymbolic](gnn/advanced/gnn_llm_neurosymbolic_active_inference.md)
+- **AutoGenLib**: [AutoGenLib Guide](archive/autogenlib/gnn_autogenlib.md) → [Conversion tools](gnn/operations/gnn_tools.md#conversion-tools)
+- **PoE-World**: [PoE-World Overview](archive/poe-world/poe-world.md) → [PoE-World GNN Integration](archive/poe-world/poe-world_gnn.md)
 - **Pipeline**: **Step 13** — LLM analysis ([CLAUDE.md](../CLAUDE.md); script `13_llm.py`)
 
 ### Specialized Frameworks
@@ -98,28 +98,28 @@ This index maps relationships between frameworks, theory pages, and tooling. For
 > **🔧 Domain-Specific Tools** | **🎯 Specialized Applications**
 
 - **MCP**: [MCP Integration](mcp/README.md) → [FastMCP Guide](mcp/fastmcp.md)
-- **Cerebrum**: [Cerebrum Guide](cerebrum/gnn_cerebrum.md) → [Cerebrum v1.4](cerebrum/cerebrum_v1-4.md)
-- **X402**: [X402 Integration](x402/gnn_x402.md)
-- **Glowstick**: [Glowstick Guide](glowstick/glowstick_gnn.md) → [Glowstick Overview](glowstick/glowstick.md)
-- **Muscle-Mem**: [Muscle Memory Integration](muscle-mem/gnn-muscle-mem.md)
+- **Cerebrum**: [Cerebrum Guide](archive/cerebrum/gnn_cerebrum.md) → [Cerebrum v1.4](archive/cerebrum/cerebrum_v1-4.md)
+- **X402**: [X402 Integration](archive/x402/gnn_x402.md)
+- **Glowstick**: [Glowstick Guide](archive/glowstick/glowstick_gnn.md) → [Glowstick Overview](archive/glowstick/glowstick.md)
+- **Muscle-Mem**: [Muscle Memory Integration](archive/muscle-mem/gnn-muscle-mem.md)
 - **SAPF**: [SAPF Guide](sapf/sapf.md) → [GNN SAPF Integration](sapf/sapf_gnn.md)
-- **Quadray**: [Quadray Guide](quadray/quadray.md) → [GNN Quadray](quadray/quadray_gnn.md)
-- **Axiom**: [Axiom Framework](axiom/axiom_gnn.md) → [Formal Verification](axiom/axiom.md)
-- **ARC-AGI**: [ARC-AGI Integration](arc-agi/arc-agi-gnn.md) → [ARC Benchmark](arc-agi/README.md)
+- **Quadray**: [Quadray Guide](archive/quadray/quadray.md) → [GNN Quadray](archive/quadray/quadray_gnn.md)
+- **Axiom**: [Axiom Framework](archive/axiom/axiom_gnn.md) → [Formal Verification](archive/axiom/axiom.md)
+- **ARC-AGI**: [ARC-AGI Integration](archive/arc-agi/arc-agi-gnn.md) → [ARC Benchmark](archive/arc-agi/README.md)
 - **D2**: [D2 Diagramming](d2/gnn_d2.md) → [D2 Integration](d2/d2.md)
 - **Petri Nets**: [Petri Net Modeling](petri_nets/pnml.pnml) → [Workflow Analysis](petri_nets/README.md)
-- **OneFileLLM**: [Single-File LLM](onefilellm/onefilellm_gnn.md) → [Integration Guide](onefilellm/README.md)
-- **Vec2Text**: [Vector-to-Text](vec2text/vec2text_gnn.md) → [Implementation](vec2text/README.md)
-- **Iroh**: [Iroh P2P](iroh/iroh.md) → [Distributed Models](iroh/README.md)
-- **Nock**: [Nock Formal Spec](nock/nock-gnn.md) → [Formal Methods](nock/cognitive-security-framework.md)
+- **OneFileLLM**: [Single-File LLM](archive/onefilellm/onefilellm_gnn.md) → [Integration Guide](archive/onefilellm/README.md)
+- **Vec2Text**: [Vector-to-Text](archive/vec2text/vec2text_gnn.md) → [Implementation](archive/vec2text/README.md)
+- **Iroh**: [Iroh P2P](archive/iroh/iroh.md) → [Distributed Models](archive/iroh/README.md)
+- **Nock**: [Nock Formal Spec](archive/nock/nock-gnn.md) → [Formal Methods](archive/nock/cognitive-security-framework.md)
 - **Pedalboard**: [Audio Effects](pedalboard/pedalboard_gnn.md) → [Sonification](pedalboard/README.md)
 - **Pkl**: [Configuration Language](pkl/pkl_gnn.md) → [Configuration Management](pkl/README.md)
 - **POMDP**: [Theoretical Framework](pomdp/pomdp_overall.md) → [POMDP Analysis](pomdp/README.md)
 - **SPM**: [Statistical Mapping](spm/spm_gnn.md) → [Neuroimaging Analysis](spm/README.md)
 - **SymPy**: [Symbolic Math](sympy/gnn_sympy.md) → [MCP Integration](sympy/README.md)
-- **TimEP**: [Performance Profiling](timep/timep_gnn.md) → [Profiling Tools](timep/README.md)
-- **Kit**: [Code Intelligence](kit/gnn_kit.md) → [Developer Tools](kit/README.md)
-- **Klong**: [Array Language](klong/klong.md) → [Array Programming](klong/README.md)
+- **TimEP**: [Performance Profiling](archive/timep/timep_gnn.md) → [Profiling Tools](archive/timep/README.md)
+- **Kit**: [Code Intelligence](archive/kit/gnn_kit.md) → [Developer Tools](archive/kit/README.md)
+- **Klong**: [Array Language](archive/klong/klong.md) → [Array Programming](archive/klong/README.md)
 - **ActiveInference.jl**: [Julia Framework](activeinference_jl/activeinference-jl.md) → [High-Performance](activeinference_jl/README.md)
 
 ## Topic-Based Index
@@ -152,9 +152,9 @@ This index maps relationships between frameworks, theory pages, and tooling. For
 #### Advanced Patterns
 
 - **Multi-agent**: [Multi-agent Template](templates/multiagent_template.md), [Multi-agent Theory](gnn/advanced/gnn_multiagent.md)
-- **Hierarchical**: [Hierarchical Template](templates/hierarchical_template.md), [Cerebrum](cerebrum/gnn_cerebrum.md)
+- **Hierarchical**: [Hierarchical Template](templates/hierarchical_template.md), [Cerebrum](archive/cerebrum/gnn_cerebrum.md)
 - **Creative AI**: [Poetic Muse](archive/gnn_poetic_muse_model.md)
-- **Compositional**: [PoE-World Integration](poe-world/poe-world_gnn.md), [Advanced Patterns](gnn/advanced/advanced_modeling_patterns.md)
+- **Compositional**: [PoE-World Integration](archive/poe-world/poe-world_gnn.md), [Advanced Patterns](gnn/advanced/advanced_modeling_patterns.md)
 
 ### Cognitive Phenomena
 >
@@ -206,8 +206,8 @@ This index maps relationships between frameworks, theory pages, and tooling. For
 >
 > **🌍 World Model Research** | **🔬 Cutting-Edge Integration**
 
-- **PoE-World**: [Research Overview](poe-world/poe-world.md) → [GNN Integration](poe-world/poe-world_gnn.md)
-- **Program Synthesis**: [DSPy Integration](dspy/gnn_dspy.md) → [AutoGenLib](autogenlib/gnn_autogenlib.md)
+- **PoE-World**: [Research Overview](archive/poe-world/poe-world.md) → [GNN Integration](archive/poe-world/poe-world_gnn.md)
+- **Program Synthesis**: [DSPy Integration](archive/dspy/gnn_dspy.md) → [AutoGenLib](archive/autogenlib/gnn_autogenlib.md)
 - **Hierarchical Modeling**: [Advanced Patterns](gnn/advanced/advanced_modeling_patterns.md) → [Hierarchical Template](templates/hierarchical_template.md)
 - **Multi-Agent**: [Multi-agent Systems](gnn/advanced/gnn_multiagent.md) → [RxInfer Multi-agent](rxinfer/multiagent_trajectory_planning/)
 
@@ -215,9 +215,9 @@ This index maps relationships between frameworks, theory pages, and tooling. For
 >
 > **🧠 Symbolic-Neural Integration** | **🤖 Hybrid Intelligence**
 
-- **LLM Integration**: [LLM Neurosymbolic](gnn/advanced/gnn_llm_neurosymbolic_active_inference.md) → [DSPy](dspy/gnn_dspy.md)
+- **LLM Integration**: [LLM Neurosymbolic](gnn/advanced/gnn_llm_neurosymbolic_active_inference.md) → [DSPy](archive/dspy/gnn_dspy.md)
 - **Symbolic Reasoning**: [DisCoPy Integration](discopy/gnn_discopy.md) → [Advanced modeling patterns](gnn/advanced/advanced_modeling_patterns.md)
-- **Program Synthesis**: [PoE-World Integration](poe-world/poe-world_gnn.md) → [AutoGenLib](autogenlib/gnn_autogenlib.md)
+- **Program Synthesis**: [PoE-World Integration](archive/poe-world/poe-world_gnn.md) → [AutoGenLib](archive/autogenlib/gnn_autogenlib.md)
 
 ### Mathematical Foundations
 >
@@ -226,11 +226,11 @@ This index maps relationships between frameworks, theory pages, and tooling. For
 - **Category Theory**: [DisCoPy Guide](discopy/gnn_discopy.md) → [Advanced Patterns](gnn/advanced/advanced_modeling_patterns.md)
 - **Symbolic Math**: [SymPy Integration](sympy/gnn_sympy.md) → [MCP Integration](sympy/README.md)
 - **Formal Methods**: [Academic Paper](gnn/gnn_paper.md) → [Ontology System](gnn/advanced/ontology_system.md)
-- **Formal Verification**: [Axiom Framework](axiom/axiom_gnn.md) → [Theorem Proving](axiom/axiom.md)
+- **Formal Verification**: [Axiom Framework](archive/axiom/axiom_gnn.md) → [Theorem Proving](archive/axiom/axiom.md)
 - **Petri Nets**: [Workflow Modeling](petri_nets/pnml.pnml) → [Process Analysis](petri_nets/README.md)
-- **NTQR**: [Quantum Reasoning](ntqr/gnn_ntqr.md) → [Hybrid Approaches](ntqr/README.md)
+- **NTQR**: [Quantum Reasoning](archive/ntqr/gnn_ntqr.md) → [Hybrid Approaches](archive/ntqr/README.md)
 - **POMDP**: [Theoretical Framework](pomdp/pomdp_overall.md) → [POMDP Analysis](pomdp/README.md)
-- **Quadray**: [Geometric Coordinates](quadray/quadray_gnn.md) → [Spatial Modeling](quadray/README.md)
+- **Quadray**: [Geometric Coordinates](archive/quadray/quadray_gnn.md) → [Spatial Modeling](archive/quadray/README.md)
 - **Type Inference Zoo**: [Type Systems](type-inference-zoo/type-inference-zoo.md) → [Type Inference](type-inference-zoo/README.md)
 
 ### Audio and Sonification
@@ -244,15 +244,15 @@ This index maps relationships between frameworks, theory pages, and tooling. For
 >
 > **⏰ Time Series Analysis** | **🔄 Continuous Dynamics**
 
-- **TimEP**: [Temporal Modeling](timep/timep_gnn.md) → [Time Series](timep/README.md)
+- **TimEP**: [Temporal Modeling](archive/timep/timep_gnn.md) → [Time Series](archive/timep/README.md)
 - **POMDP**: [Analytical Framework](pomdp/pomdp_overall.md) → [Belief State Analysis](pomdp/README.md)
 
 ### Distributed Systems and Networking
 >
 > **🌐 Decentralized Processing** | **🔗 Network Integration**
 
-- **Iroh**: [P2P Networking](iroh/iroh.md) → [Distributed Models](iroh/README.md)
-- **X402**: [Protocol Integration](x402/gnn_x402.md) → [Distributed Inference](x402/README.md)
+- **Iroh**: [P2P Networking](archive/iroh/iroh.md) → [Distributed Models](archive/iroh/README.md)
+- **X402**: [Protocol Integration](archive/x402/gnn_x402.md) → [Distributed Inference](archive/x402/README.md)
 
 ### Neuroscience Integration
 >
@@ -294,7 +294,7 @@ navigation_graph:
     beginner: [README.md, about_gnn.md, quickstart_tutorial.md, gnn_examples_doc.md, gnn_syntax.md, basic_gnn_template.md, learning_paths.md]
     practitioner: [gnn_syntax.md, gnn_implementation.md, templates/README.md, pomdp_template.md, gnn_tools.md]
     developer: [api/README.md, gnn/reference/architecture_reference.md, development/README.md, testing/README.md, mcp/README.md]
-    researcher: [gnn/gnn_paper.md, advanced_modeling_patterns.md, cognitive_phenomena/README.md, poe-world/poe-world.md, learning_paths.md]
+    researcher: [gnn/gnn_paper.md, advanced_modeling_patterns.md, cognitive_phenomena/README.md, archive/poe-world/poe-world.md, learning_paths.md]
   
   framework_integrations:
     pymdp: 
@@ -310,34 +310,34 @@ navigation_graph:
       templates: [templates/hierarchical_template.md]
       examples: [archive/gnn_simple_discopy_test.md]
     llm_integrations:
-      dspy: dspy/gnn_dspy.md
-      autogenlib: autogenlib/gnn_autogenlib.md
-      onefilellm: onefilellm/onefilellm_gnn.md
-      poe_world: poe-world/poe-world_gnn.md
+      dspy: archive/dspy/gnn_dspy.md
+      autogenlib: archive/autogenlib/gnn_autogenlib.md
+      onefilellm: archive/onefilellm/onefilellm_gnn.md
+      poe_world: archive/poe-world/poe-world_gnn.md
     audio_processing:
       sapf: sapf/sapf_gnn.md
       pedalboard: pedalboard/pedalboard_gnn.md
     formal_methods:
-      axiom: axiom/axiom_gnn.md
+      axiom: archive/axiom/axiom_gnn.md
       petri_nets: petri_nets/pnml.pnml
-      nock: nock/nock-gnn.md
+      nock: archive/nock/nock-gnn.md
     distributed_systems:
-      iroh: iroh/iroh.md
-      x402: x402/gnn_x402.md
+      iroh: archive/iroh/iroh.md
+      x402: archive/x402/gnn_x402.md
     specialized_tools:
       gui_oxdraw: gui_oxdraw/gnn_oxdraw.md
-      vec2text: vec2text/vec2text_gnn.md
-      klong: klong/klong.md
-      arc_agi: arc-agi/arc-agi-gnn.md
+      vec2text: archive/vec2text/vec2text_gnn.md
+      klong: archive/klong/klong.md
+      arc_agi: archive/arc-agi/arc-agi-gnn.md
   
   research_integration:
     compositional_modeling:
-      primary: poe-world/poe-world.md
-      integration: poe-world/poe-world_gnn.md
+      primary: archive/poe-world/poe-world.md
+      integration: archive/poe-world/poe-world_gnn.md
       related: [gnn/advanced/advanced_modeling_patterns.md, templates/hierarchical_template.md]
     neurosymbolic_ai:
       primary: gnn/advanced/gnn_llm_neurosymbolic_active_inference.md
-      integrations: [dspy/gnn_dspy.md, autogenlib/gnn_autogenlib.md]
+      integrations: [archive/dspy/gnn_dspy.md, archive/autogenlib/gnn_autogenlib.md]
     cognitive_modeling:
       primary: cognitive_phenomena/README.md
       models: [cognitive_phenomena/attention/attention_model.md, cognitive_phenomena/consciousness/global_workspace_model.md, cognitive_phenomena/meta-awareness/meta_aware_model.md]
@@ -349,9 +349,9 @@ navigation_graph:
     technical_implementation: [gnn/reference/gnn_syntax.md, gnn/operations/gnn_tools.md, gnn/operations/gnn_tools.md]
     data_persistence: [pkl/pkl_gnn.md, pkl/examples/]
     audio_sonification: [sapf/sapf_gnn.md, pedalboard/pedalboard_gnn.md]
-    formal_methods: [axiom/axiom_gnn.md, petri_nets/pnml.pnml, nock/nock-gnn.md]
-    distributed_systems: [iroh/iroh.md, x402/gnn_x402.md]
-    interactive_tools: [gui_oxdraw/gnn_oxdraw.md, glowstick/glowstick_gnn.md]
+    formal_methods: [archive/axiom/axiom_gnn.md, petri_nets/pnml.pnml, archive/nock/nock-gnn.md]
+    distributed_systems: [archive/iroh/iroh.md, archive/x402/gnn_x402.md]
+    interactive_tools: [gui_oxdraw/gnn_oxdraw.md, archive/glowstick/glowstick_gnn.md]
     
   support_network:
     troubleshooting: [troubleshooting/README.md, troubleshooting/common_errors.md, troubleshooting/faq.md]
@@ -368,8 +368,8 @@ navigation_graph:
   cross_reference_density:
     high_density: [README.md, gnn/reference/gnn_syntax.md, templates/README.md, gnn/operations/gnn_tools.md, learning_paths.md]
     medium_density: [gnn/advanced/advanced_modeling_patterns.md, cognitive_phenomena/README.md, CROSS_REFERENCE_INDEX.md]
-    specialized: [poe-world/poe-world_gnn.md, cerebrum/gnn_cerebrum.md, axiom/axiom_gnn.md]
-    emerging: [onefilellm/onefilellm_gnn.md, vec2text/vec2text_gnn.md, arc-agi/arc-agi-gnn.md]
+    specialized: [archive/poe-world/poe-world_gnn.md, archive/cerebrum/gnn_cerebrum.md, archive/axiom/axiom_gnn.md]
+    emerging: [archive/onefilellm/onefilellm_gnn.md, archive/vec2text/vec2text_gnn.md, archive/arc-agi/arc-agi-gnn.md]
 ```
 
 ## Topic README anchor registry
@@ -390,7 +390,7 @@ See [API Documentation](api/README.md) and the doc hub [API Reference & Integrat
 
 ### Arc-agi
 
-See [ARC-AGI Integration](arc-agi/arc-agi-gnn.md) under [Specialized Frameworks](#specialized-frameworks).
+See [ARC-AGI Integration](archive/arc-agi/arc-agi-gnn.md) under [Specialized Frameworks](#specialized-frameworks).
 
 ### Archive
 
@@ -398,15 +398,15 @@ Historical examples: [archive/README.md](archive/README.md).
 
 ### Autogenlib
 
-See [AutoGenLib](autogenlib/gnn_autogenlib.md) under [LLM Integrations](#llm-integrations).
+See [AutoGenLib](archive/autogenlib/gnn_autogenlib.md) under [LLM Integrations](#llm-integrations).
 
 ### Axiom
 
-See [Axiom](axiom/axiom_gnn.md) under [Specialized Frameworks](#specialized-frameworks) and [Mathematical Foundations](#mathematical-foundations).
+See [Axiom](archive/axiom/axiom_gnn.md) under [Specialized Frameworks](#specialized-frameworks) and [Mathematical Foundations](#mathematical-foundations).
 
 ### Cerebrum
 
-See [Cerebrum](cerebrum/gnn_cerebrum.md) in [Modeling Patterns](#modeling-patterns).
+See [Cerebrum](archive/cerebrum/gnn_cerebrum.md) in [Modeling Patterns](#modeling-patterns).
 
 ### D2
 
@@ -414,15 +414,15 @@ See [D2](d2/gnn_d2.md) under [Specialized Frameworks](#specialized-frameworks).
 
 ### Data processing
 
-See [OneFileLLM](onefilellm/onefilellm_gnn.md) and [Neurosymbolic AI](#neurosymbolic-ai).
+See [OneFileLLM](archive/onefilellm/onefilellm_gnn.md) and [Neurosymbolic AI](#neurosymbolic-ai).
 
 ### Dspy
 
-See [DSPy](dspy/gnn_dspy.md) under [LLM Integrations](#llm-integrations).
+See [DSPy](archive/dspy/gnn_dspy.md) under [LLM Integrations](#llm-integrations).
 
 ### Embedding systems
 
-See [Vec2Text](vec2text/vec2text_gnn.md) and [Neurosymbolic AI](#neurosymbolic-ai).
+See [Vec2Text](archive/vec2text/vec2text_gnn.md) and [Neurosymbolic AI](#neurosymbolic-ai).
 
 ### Export
 
@@ -434,7 +434,7 @@ See [Mathematical Foundations](#mathematical-foundations) and formal tooling und
 
 ### Glowstick
 
-See [Glowstick](glowstick/glowstick_gnn.md) under [Specialized Frameworks](#specialized-frameworks).
+See [Glowstick](archive/glowstick/glowstick_gnn.md) under [Specialized Frameworks](#specialized-frameworks).
 
 ### gui_oxdraw
 
@@ -442,19 +442,19 @@ See [GUI Oxdraw](gui_oxdraw/gnn_oxdraw.md) under [Specialized Frameworks](#speci
 
 ### Iroh
 
-See [Iroh](iroh/iroh.md) under [Distributed Systems and Networking](#distributed-systems-and-networking).
+See [Iroh](archive/iroh/iroh.md) under [Distributed Systems and Networking](#distributed-systems-and-networking).
 
 ### Kit
 
-See [Kit](kit/gnn_kit.md) under [Specialized Frameworks](#specialized-frameworks).
+See [Kit](archive/kit/gnn_kit.md) under [Specialized Frameworks](#specialized-frameworks).
 
 ### Klong
 
-See [Klong](klong/klong.md) under [Specialized Frameworks](#specialized-frameworks).
+See [Klong](archive/klong/klong.md) under [Specialized Frameworks](#specialized-frameworks).
 
 ### muscle-mem
 
-See [Muscle-Mem](muscle-mem/gnn-muscle-mem.md) under [Specialized Frameworks](#specialized-frameworks).
+See [Muscle-Mem](archive/muscle-mem/gnn-muscle-mem.md) under [Specialized Frameworks](#specialized-frameworks).
 
 ### Neuroscience
 
@@ -462,11 +462,11 @@ See [Neuroscience Integration](#neuroscience-integration) and [SPM](spm/spm_gnn.
 
 ### Nock
 
-See [Nock](nock/nock-gnn.md) under [Mathematical Foundations](#mathematical-foundations).
+See [Nock](archive/nock/nock-gnn.md) under [Mathematical Foundations](#mathematical-foundations).
 
 ### Onefilellm
 
-See [OneFileLLM](onefilellm/onefilellm_gnn.md) under [LLM Integrations](#llm-integrations).
+See [OneFileLLM](archive/onefilellm/onefilellm_gnn.md) under [LLM Integrations](#llm-integrations).
 
 ### Other
 
@@ -478,7 +478,7 @@ See [Pedalboard](pedalboard/pedalboard_gnn.md) under [Audio and Sonification](#a
 
 ### Performance optimization
 
-See [Performance Guide](performance/README.md), [TimEP](timep/timep_gnn.md), and [Muscle-Mem](muscle-mem/gnn-muscle-mem.md).
+See [Performance Guide](performance/README.md), [TimEP](archive/timep/timep_gnn.md), and [Muscle-Mem](archive/muscle-mem/gnn-muscle-mem.md).
 
 ### Pkl
 
@@ -486,7 +486,7 @@ See [Pkl](pkl/pkl_gnn.md) under [Data Persistence and Serialization](#data-persi
 
 ### Poe-world
 
-See [PoE-World](poe-world/poe-world.md) under [Compositional World Modeling](#compositional-world-modeling).
+See [PoE-World](archive/poe-world/poe-world.md) under [Compositional World Modeling](#compositional-world-modeling).
 
 ### Pomdp
 
@@ -494,11 +494,11 @@ See [POMDP](pomdp/pomdp_overall.md) under [Mathematical Foundations](#mathematic
 
 ### Privacy and interpretability
 
-See [Vec2Text](vec2text/vec2text_gnn.md) and privacy-related notes in [Neurosymbolic AI](#neurosymbolic-ai).
+See [Vec2Text](archive/vec2text/vec2text_gnn.md) and privacy-related notes in [Neurosymbolic AI](#neurosymbolic-ai).
 
 ### Quadray
 
-See [Quadray](quadray/quadray_gnn.md) under [Mathematical Foundations](#mathematical-foundations).
+See [Quadray](archive/quadray/quadray_gnn.md) under [Mathematical Foundations](#mathematical-foundations).
 
 ### Release management
 
@@ -514,7 +514,7 @@ See [SAPF](sapf/sapf_gnn.md) under [Audio and Sonification](#audio-and-sonificat
 
 ### Spatial modeling
 
-See [Quadray](quadray/quadray_gnn.md) and spatial patterns in [Modeling Patterns](#modeling-patterns).
+See [Quadray](archive/quadray/quadray_gnn.md) and spatial patterns in [Modeling Patterns](#modeling-patterns).
 
 ### Spm
 
@@ -526,7 +526,7 @@ See [SymPy](sympy/gnn_sympy.md) under [Mathematical Foundations](#mathematical-f
 
 ### Timep
 
-See [TimEP](timep/timep_gnn.md) under [Temporal and Dynamical Systems](#temporal-and-dynamical-systems).
+See [TimEP](archive/timep/timep_gnn.md) under [Temporal and Dynamical Systems](#temporal-and-dynamical-systems).
 
 ### Type inference zoo
 
@@ -534,7 +534,7 @@ See [type-inference-zoo/README.md](type-inference-zoo/README.md) under [Mathemat
 
 ### Vec2text
 
-See [Vec2Text](vec2text/vec2text_gnn.md) under [LLM Integrations](#llm-integrations).
+See [Vec2Text](archive/vec2text/vec2text_gnn.md) under [LLM Integrations](#llm-integrations).
 
 ### Visualization
 
@@ -542,7 +542,7 @@ See [visualization/README.md](visualization/README.md) under [Technical Implemen
 
 ### X402
 
-See [X402](x402/gnn_x402.md) under [Distributed Systems and Networking](#distributed-systems-and-networking).
+See [X402](archive/x402/gnn_x402.md) under [Distributed Systems and Networking](#distributed-systems-and-networking).
 
 ## Quality Metrics
 
@@ -569,7 +569,7 @@ See [X402](x402/gnn_x402.md) under [Distributed Systems and Networking](#distrib
 >
 > **✅ Comprehensive Integration** | **📊 Complete Coverage**
 
-- **Coverage**: [expected_dirs.txt](expected_dirs.txt) lists 61 top-level `doc/` folders; pairing of README/AGENTS is enforced by [docs_audit.py](development/docs_audit.py) for maintained trees
+- **Coverage**: [expected_dirs.txt](expected_dirs.txt) lists 42 top-level `doc/` folders; pairing of README/AGENTS is enforced by [docs_audit.py](development/docs_audit.py) for maintained trees
 - **Sections**: Audio processing, formal methods, distributed systems, infrastructure
 - **Audio**: Sonification frameworks (SAPF, Pedalboard) and audio representation
 - **Formal Methods**: Verification frameworks (Axiom, Petri Nets, Nock) and formal specification

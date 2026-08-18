@@ -175,7 +175,7 @@ def export_to_gexf(parsed_content: Dict[str, Any], output_file: Path) -> bool:
         return False
 
 
-def export_to_pickle(parsed_content: Dict[str, Any], output_file: Path) -> bool:
+def export_to_pickle(parsed_content: Any, output_file: Path) -> bool:
     """Export parsed content to pickle format."""
     try:
         with open(output_file, "wb") as f:

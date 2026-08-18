@@ -17,9 +17,14 @@ We are committed to ensuring the security of the GeneralizedNotationNotation (GN
 
 | Version | Supported | Security Coverage |
 | ------- | ------------------ | ----------------- |
-| 1.6.x   | ✅ Full support | Complete security framework |
-| 1.1.x   | ✅ LTS support | Backported security fixes |
-| 1.0.x   | ⚠️ Maintenance support | Critical fixes only |
+| 3.0.x   | ✅ Full support | Complete security framework |
+| 2.0.x   | ❌ EOL | No security support |
+| 1.9.x   | ❌ EOL | No security support |
+| 1.8.x   | ❌ EOL | No security support |
+| 1.6.x   | ❌ EOL | No security support |
+| 1.3.x   | ❌ EOL | No security support |
+| 1.1.x   | ❌ EOL | No security support |
+| 1.0.x   | ❌ EOL | No security support |
 | < 1.0.0 | ❌ Unsupported | No security support |
 
 > **🔄 Version Updates**: This table is updated with each release. See [Changelog](#) for version history.
@@ -56,6 +61,7 @@ We are committed to ensuring the security of the GeneralizedNotationNotation (GN
 
 | Date | Assessment | Scope | Outcome |
 |------|------------|-------|---------|
+| 2026-08-14 | Red-team review ([`RED_TEAM_REVIEW.md`](RED_TEAM_REVIEW.md)) | Rendered-code execution ordering, pickle/literal-eval input parsing, FastAPI/MCP auth + path traversal, error disclosure, sandboxing | Closed V-01/V-03/V-04/V-05/V-06/V-07/V-09/V-10: pre-execution AST gate before Step 12, bounded `safe_literal_eval`, optional `GNN_API_KEY` auth + secure-bind refusal, symlink rejection, MCP forwarded-identity rejection, stderr path redaction, and an opt-in `GNN_SANDBOX` wrapper. Residual lower-severity items are scoped in [`TO-DO.md`](TO-DO.md) (§Security follow-ups). |
 | 2026-06-24 | Codex Security standard scan | MCP execution, MCP LLM file access, generated bnlearn code, generated artifact paths | Closed four reportable findings with repository-local MCP path validation, Step 11 render-summary execution gating, generated-code literal escaping, safe output filename stems, and regression tests. See [Codex Security Remediation - 2026-06-24](doc/security/codex_security_remediation_2026-06-24.md). |
 
 ## Dependency automation and local audits
@@ -204,6 +210,17 @@ Once a security vulnerability is reported, we commit to:
 - Network segmentation for GNN processing
 - Input validation for all user-provided GNN files
 - Output sanitization for generated code
+
+**Built-in security controls (env-var opt-in, 2026-08-14):**
+
+- `GNN_API_KEY` — require a matching `X-API-Key` header on the FastAPI API;
+  non-loopback binds are refused unless set or `GNN_ALLOW_INSECURE_BIND=1`.
+- `GNN_SANDBOX` — `off` / `prefer` / `require` wrapping of rendered-script
+  execution under firejail / bubblewrap / nsjail (degrades loudly, never silently).
+- `GNN_ALLOW_UNSAFE_EXEC=1` — explicit escape hatch to bypass the
+  pre-execution AST gate (trusted-local research only).
+- `GNN_MCP_TOKEN` / `GNN_MCP_RATE_LIMIT_PER_MINUTE` — bearer auth and
+  per-client rate limiting for the MCP HTTP server.
 
 ### Framework-Specific Security
 

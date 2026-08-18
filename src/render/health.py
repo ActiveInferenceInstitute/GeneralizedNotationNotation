@@ -5,6 +5,12 @@ Renderer Health Check — Reports importability of renderer generator modules.
 Provides:
   - check_renderers(): returns Dict[str, RendererStatus]
   - RendererStatus: availability, version, import path
+
+Behaviour with the framework registry:
+  Frameworks that carry ``available=False`` in the registry (e.g. ``bnlearn``
+  and ``pytorch`` due to an unpatched GHSA) are reported as unavailable
+  *without* attempting an import.  This avoids confusing ``ImportError`` stack
+  traces from modules that are intentionally absent.
 """
 
 import importlib
@@ -12,7 +18,10 @@ import logging
 from dataclasses import dataclass
 from typing import Any, Dict, Optional
 
-from .framework_registry import get_supported_frameworks
+from .framework_registry import (
+    get_framework_availability,
+    get_supported_frameworks,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -52,12 +61,34 @@ def check_renderers() -> Dict[str, RendererStatus]:
     """
     Check importability of all renderer generator modules.
 
+    Frameworks that are explicitly marked ``available=False`` in the canonical
+    registry (see :data:`~render.framework_registry.FRAMEWORK_REGISTRY`) are
+    reported as unavailable immediately, without attempting a Python import.
+    This ensures the health check never produces a spurious ``ImportError`` for
+    intentionally gated frameworks.
+
     Returns:
         Dict mapping renderer name → RendererStatus.
     """
     results: dict[Any, Any] = {}
 
     for name, module_path in _RENDERERS.items():
+        # ── Registry-level gate ──────────────────────────────────────────
+        available_in_registry, registry_reason = get_framework_availability(name)
+        if not available_in_registry:
+            results[name] = RendererStatus(
+                name=name,
+                available=False,
+                error=(
+                    f"Intentionally unavailable: {registry_reason}"
+                    if registry_reason
+                    else "Marked unavailable in framework registry"
+                ),
+                module_path=module_path,
+            )
+            continue
+
+        # ── Import-level check ───────────────────────────────────────────
         try:
             mod = importlib.import_module(module_path)
             version = getattr(mod, "__version__", None)

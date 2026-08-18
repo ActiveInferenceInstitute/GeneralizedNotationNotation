@@ -26,11 +26,13 @@ def _is_complete_parameter(value_str: str) -> bool:
 
 def _parse_parameter_value(value_str: str) -> Any:
     """Parse parameter value."""
+    from utils.safe_eval import safe_literal_eval
+
     try:
         cleaned = value_str.strip()
         cleaned = cleaned.replace("{", "[").replace("}", "]")
         cleaned = cleaned.replace("(", "[").replace(")", "]")
-        return ast.literal_eval(cleaned)
+        return safe_literal_eval(cleaned)
     except Exception:
         return None
 

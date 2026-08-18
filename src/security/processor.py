@@ -9,11 +9,25 @@ import logging
 import re
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, cast
+from typing import Any, Dict, List, Optional, Tuple, cast
 
 from utils.pipeline_template import log_step_error, log_step_start, log_step_success
 
 logger = logging.getLogger(__name__)
+
+#: Timeout for the ``julia -e Meta.parseall`` syntax probe used by the
+#: pre-execution gate. Julia startup can take a second or two; 30s is ample
+#: headroom without stalling the gate on a hung interpreter.
+_JULIA_PARSE_TIMEOUT_S = 30.0
+
+#: Advisory Julia pattern sweep. These patterns flag *suspicious* constructs
+#: (medium severity — informational at the default ``block_on="high"`` gate).
+#: They are advisory even when Julia is available: the blocking signal for
+#: Julia is ``Meta.parseall`` failing (malformed code → high).
+_JULIA_SUSPICIOUS_PATTERNS: list[tuple[str, str]] = [
+    (r"\brun\s*\(\s*`", "Julia backtick command execution"),
+    (r"\bCmd\s*\(\s*\[", "Julia Cmd construction"),
+]
 
 
 def process_security(
@@ -536,3 +550,197 @@ def generate_security_summary(results: Dict[str, Any]) -> str:
         summary += "- No recommendations generated\n"
 
     return summary
+
+
+def _julia_meta_parseall(content: str) -> Optional[tuple[bool, str]]:
+    """Validate Julia source with ``Meta.parseall`` via a ``julia`` subprocess.
+
+    Parsing does **not** execute the script — ``Meta.parseall`` only builds the
+    AST, so the probe itself is safe to run on untrusted rendered code.
+
+    Returns:
+        ``(True, "")`` when the source parses cleanly.
+        ``(False, message)`` when parsing failed (malformed script).
+        ``None`` when Julia is not available on PATH (caller should fall back
+        to the advisory regex sweep).
+    """
+    import shutil
+    import subprocess
+
+    if shutil.which("julia") is None:
+        return None
+
+    probe = (
+        "function _gnn_parsecheck(s)\n"
+        "    ex = Base.Meta.parseall(s)\n"
+        "    function _has_incomplete(e)\n"
+        "        if e isa Expr\n"
+        "            if e.head === :incomplete\n"
+        "                return true\n"
+        "            end\n"
+        "            for a in e.args\n"
+        "                _has_incomplete(a) && return true\n"
+        "            end\n"
+        "        end\n"
+        "        return false\n"
+        "    end\n"
+        "    if _has_incomplete(ex)\n"
+        "        # Extract the first error message embedded in the AST\n"
+        "        msg = sprint(print, ex)\n"
+        '        println("GNN_PARSE_FAIL: ", msg[1:min(end,200)])\n'
+        "        exit(1)\n"
+        "    end\n"
+        '    println("GNN_PARSE_OK")\n'
+        "end\n"
+        "s = read(stdin, String)\n"
+        "try\n"
+        "    _gnn_parsecheck(s)\n"
+        "catch e\n"
+        '    println("GNN_PARSE_FAIL: ", sprint(showerror, e))\n'
+        "    exit(1)\n"
+        "end\n"
+    )
+    try:
+        proc = subprocess.run(
+            ["julia", "--startup-file=no", "-e", probe],
+            input=content,
+            capture_output=True,
+            text=True,
+            timeout=_JULIA_PARSE_TIMEOUT_S,
+        )
+    except (OSError, subprocess.TimeoutExpired) as exc:
+        # Julia installed but unusable (hang/misconfig) — degrade to advisory.
+        logger.debug("Julia parse probe unavailable: %s", exc)
+        return None
+
+    stdout = (proc.stdout or "").strip()
+    if proc.returncode == 0 and "GNN_PARSE_OK" in stdout:
+        return True, ""
+    message = (stdout or (proc.stderr or "")).strip()
+    # Keep the message bounded for findings context.
+    return False, message[-400:]
+
+
+def _julia_regex_sweep(script_path: Path, content: str) -> list[dict[str, Any]]:
+    """Advisory Julia textual sweep (backtick ``run`` / ``Cmd`` construction).
+
+    These findings are classified ``medium`` — informational at the default
+    ``block_on="high"`` gate, but they still block when the operator lowers the
+    threshold. The blocking signal for Julia is ``Meta.parseall`` failing.
+    """
+    findings: list[dict[str, Any]] = []
+    for pattern, description in _JULIA_SUSPICIOUS_PATTERNS:
+        for match in re.finditer(pattern, content):
+            findings.append(
+                {
+                    "file_path": str(script_path),
+                    "file_name": script_path.name,
+                    "vulnerability_type": description,
+                    "detection_method": "regex",
+                    "pattern": pattern,
+                    "line": content[: match.start()].count("\n") + 1,
+                    "context": match.group(0)[:80],
+                    "severity": "medium",
+                }
+            )
+    return findings
+
+
+def scan_script_for_execution(
+    script_path: Path,
+    *,
+    block_on: str = "high",
+) -> Dict[str, Any]:
+    """Pre-execution gate: scan a rendered script before Step 12 runs it.
+
+    The pipeline renders GNN text specifications into executable Python/Julia
+    scripts. Step 18 (``process_security``) runs *after* Step 12, so by itself
+    it is forensic, not preventive. This function closes that gap by applying
+    the AST scanner to a rendered ``.py`` script *before* execution, returning
+    a structured verdict the executor can act on.
+
+    Args:
+        script_path: Path to the rendered script (``.py`` or ``.jl``).
+        block_on: Severity threshold that blocks execution. Findings at or
+            above this severity set ``ok=False``. Defaults to ``"high"``.
+
+    Returns:
+        Dict with keys:
+            - ``ok`` (bool): True if execution may proceed.
+            - ``blocked`` (list): findings that triggered the block.
+            - ``findings`` (list): all findings (blocked + informational).
+            - ``scanned`` (bool): whether AST/parse analysis was performed.
+
+    Julia (``.jl``) scripts are validated with ``Meta.parseall`` via a Julia
+    subprocess when Julia is on PATH; malformed code is a high-severity block.
+    When Julia is unavailable the scan degrades to an advisory textual sweep
+    (``scanned=False``, findings are medium/informational only).
+    """
+    _SEVERITY_RANK = {"info": 0, "low": 1, "medium": 2, "high": 3}
+    threshold = _SEVERITY_RANK.get(block_on, 3)
+
+    script_path = Path(script_path)
+    try:
+        content = script_path.read_text(encoding="utf-8", errors="replace")
+    except OSError as exc:
+        return {
+            "ok": False,
+            "blocked": [
+                {
+                    "file_path": str(script_path),
+                    "file_name": script_path.name,
+                    "vulnerability_type": "Unreadable script",
+                    "detection_method": "file_read",
+                    "severity": "high",
+                    "context": str(exc),
+                }
+            ],
+            "findings": [],
+            "scanned": False,
+        }
+
+    findings: list[Any] = []
+    if script_path.suffix.lower() == ".py":
+        findings = _check_python_ast(script_path, content)
+        scanned = True
+    else:
+        # Julia scripts: validate with Meta.parseall (blocking) when Julia is
+        # available; fall back to an advisory textual sweep when it is not.
+        parse_result = _julia_meta_parseall(content)
+        if parse_result is None:
+            # Julia unavailable (or probe failed) — advisory sweep only, the
+            # same posture as the previous textual-only scan.
+            scanned = False
+            findings = _julia_regex_sweep(script_path, content)
+        else:
+            parsed_ok, parse_message = parse_result
+            scanned = True
+            if not parsed_ok:
+                # Malformed Julia is a hard block: the script cannot run as-is
+                # and a syntax error is the strongest signal of tampering.
+                findings.append(
+                    {
+                        "file_path": str(script_path),
+                        "file_name": script_path.name,
+                        "vulnerability_type": "Malformed Julia code (Meta.parseall failed)",
+                        "detection_method": "julia_meta_parseall",
+                        "line": 1,
+                        "context": parse_message,
+                        "severity": "high",
+                    }
+                )
+            # Suspicious patterns remain medium (advisory at the default
+            # block_on="high" gate) even when the code parses cleanly.
+            findings.extend(_julia_regex_sweep(script_path, content))
+
+    blocked = [
+        f
+        for f in findings
+        if _SEVERITY_RANK.get(str(f.get("severity", "medium")), 2) >= threshold
+    ]
+    return {
+        "ok": not blocked,
+        "blocked": blocked,
+        "findings": findings,
+        "scanned": scanned,
+    }

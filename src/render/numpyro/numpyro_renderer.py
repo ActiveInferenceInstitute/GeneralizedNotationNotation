@@ -96,9 +96,9 @@ def _extract_matrices(
             return np.array(raw, dtype=float)
         if isinstance(raw, str):
             try:
-                import ast
+                from utils.safe_eval import MATRIX_MAX_LEN, safe_literal_eval
 
-                parsed = ast.literal_eval(raw)
+                parsed = safe_literal_eval(raw, max_len=MATRIX_MAX_LEN)
                 return np.array(parsed, dtype=float)
             except Exception:
                 return default

@@ -201,6 +201,27 @@ def normalize_matrices(pomdp_space: Any, logger: logging.Logger) -> Any:
     return pomdp_space
 
 
+def _load_prior_render_summary(summary_file: Path) -> Dict[str, Any]:
+    """Load a previously written render summary, or an empty dict.
+
+    The pipeline invokes ``process_render`` once per top-level input folder,
+    each writing the same ``render_processing_summary.json``. This helper lets
+    a later invocation carry forward the earlier folders' ``file_results`` and
+    aggregate counts so Step 12's manifest-based script discovery (V-10) sees
+    every rendered script, not just the last folder's.
+    """
+    if not summary_file.exists():
+        return {}
+    try:
+        data = json.loads(summary_file.read_text(encoding="utf-8"))
+        return data if isinstance(data, dict) else {}
+    except (OSError, json.JSONDecodeError):
+        logger.warning(
+            "Could not read prior render summary %s; starting fresh", summary_file
+        )
+        return {}
+
+
 def process_render(
     target_dir: Path,
     output_dir: Path,
@@ -431,21 +452,46 @@ def process_render(
                     logger.error(error_msg)
                     results[str(gnn_file)] = {"success": False, "error": error_msg}
 
-        # Create overall processing summary
+        # Create overall processing summary.
+        #
+        # The pipeline invokes this render step once per top-level input
+        # folder, each writing the same summary file. Aggregate the prior
+        # folders' results so ``file_results`` covers every rendered script
+        # and Step 12's manifest-based discovery (V-10) does not execute only
+        # the last folder.
+        summary_file = output_dir / "render_processing_summary.json"
+        prior = _load_prior_render_summary(summary_file)
+        merged_results = dict(prior.get("file_results") or {})
+        merged_results.update(results)
+
+        merged_total_files = int(prior.get("total_files", 0)) + len(gnn_files)
+        merged_successful_files = int(prior.get("successful_files", 0)) + success_count
+        merged_framework_attempts = (
+            int(prior.get("total_framework_attempts", 0)) + total_framework_attempts
+        )
+        merged_framework_successes = (
+            int(prior.get("successful_framework_renderings", 0))
+            + total_framework_successes
+        )
+        merged_failed_renderings = (
+            list(prior.get("failed_framework_renderings") or [])
+            + failed_framework_renderings
+        )
+
         summary: dict[str, Any] = {
             "timestamp": datetime.now().isoformat(),
             "processing_type": "POMDP-aware rendering"
             if pomdp_available
             else "Basic rendering",
-            "total_files": len(gnn_files),
-            "successful_files": success_count,
-            "failed_files": len(gnn_files) - success_count,
-            "total_framework_attempts": total_framework_attempts,
-            "successful_framework_renderings": total_framework_successes,
+            "total_files": merged_total_files,
+            "successful_files": merged_successful_files,
+            "failed_files": merged_total_files - merged_successful_files,
+            "total_framework_attempts": merged_framework_attempts,
+            "successful_framework_renderings": merged_framework_successes,
             "framework_success_rate": (
-                total_framework_successes / total_framework_attempts * 100
+                merged_framework_successes / merged_framework_attempts * 100
             )
-            if total_framework_attempts > 0
+            if merged_framework_attempts > 0
             else 0,
             "configuration": {
                 "frameworks": frameworks or "all",
@@ -454,11 +500,10 @@ def process_render(
                 "verbose": verbose,
                 "pomdp_processing_available": pomdp_available,
             },
-            "failed_framework_renderings": failed_framework_renderings,
-            "file_results": results,
+            "failed_framework_renderings": merged_failed_renderings,
+            "file_results": merged_results,
         }
 
-        summary_file = output_dir / "render_processing_summary.json"
         with open(summary_file, "w") as f:
             json.dump(summary, f, indent=2)
 

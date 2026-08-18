@@ -4,9 +4,9 @@ from __future__ import annotations
 
 from copy import deepcopy
 from types import MappingProxyType
-from typing import Any, Dict
+from typing import Any, Dict, Mapping, Optional, Tuple
 
-FRAMEWORK_REGISTRY = MappingProxyType(
+FRAMEWORK_REGISTRY: Mapping[str, Dict[str, Any]] = MappingProxyType(
     {
         "pymdp": {
             "name": "PyMDP",
@@ -26,6 +26,8 @@ FRAMEWORK_REGISTRY = MappingProxyType(
             "optional_matrices": ["E"],
             "supports_multi_modality": True,
             "supports_multi_factor": True,
+            "available": True,
+            "unavailable_reason": None,
         },
         "rxinfer": {
             "name": "RxInfer.jl",
@@ -44,6 +46,8 @@ FRAMEWORK_REGISTRY = MappingProxyType(
             "optional_matrices": ["E"],
             "supports_multi_modality": False,
             "supports_multi_factor": False,
+            "available": True,
+            "unavailable_reason": None,
         },
         "activeinference_jl": {
             "name": "ActiveInference.jl",
@@ -62,6 +66,8 @@ FRAMEWORK_REGISTRY = MappingProxyType(
             "optional_matrices": ["E"],
             "supports_multi_modality": True,
             "supports_multi_factor": True,
+            "available": True,
+            "unavailable_reason": None,
         },
         "jax": {
             "name": "JAX",
@@ -80,6 +86,8 @@ FRAMEWORK_REGISTRY = MappingProxyType(
             "optional_matrices": ["E"],
             "supports_multi_modality": True,
             "supports_multi_factor": True,
+            "available": True,
+            "unavailable_reason": None,
         },
         "discopy": {
             "name": "DisCoPy",
@@ -98,6 +106,8 @@ FRAMEWORK_REGISTRY = MappingProxyType(
             "optional_matrices": ["A", "B", "C", "D", "E"],
             "supports_multi_modality": True,
             "supports_multi_factor": True,
+            "available": True,
+            "unavailable_reason": None,
         },
         "pytorch": {
             "name": "PyTorch",
@@ -112,6 +122,12 @@ FRAMEWORK_REGISTRY = MappingProxyType(
             "optional_matrices": ["E"],
             "supports_multi_modality": True,
             "supports_multi_factor": True,
+            "available": False,
+            "unavailable_reason": (
+                "Intentionally excluded from pyproject.toml: PyTorch (torch) "
+                "transitively pulls GHSA-rrmf-rvhw-rf47 (unpatched vulnerability). "
+                "Run 'uv add torch' at your own risk to enable."
+            ),
         },
         "numpyro": {
             "name": "NumPyro",
@@ -126,6 +142,8 @@ FRAMEWORK_REGISTRY = MappingProxyType(
             "optional_matrices": ["E"],
             "supports_multi_modality": True,
             "supports_multi_factor": True,
+            "available": True,
+            "unavailable_reason": None,
         },
         "stan": {
             "name": "Stan",
@@ -140,6 +158,8 @@ FRAMEWORK_REGISTRY = MappingProxyType(
             "optional_matrices": ["A", "B", "C", "D", "E"],
             "supports_multi_modality": True,
             "supports_multi_factor": True,
+            "available": True,
+            "unavailable_reason": None,
         },
         "bnlearn": {
             "name": "bnlearn",
@@ -159,9 +179,20 @@ FRAMEWORK_REGISTRY = MappingProxyType(
             "optional_matrices": ["A", "B", "C", "D", "E"],
             "supports_multi_modality": True,
             "supports_multi_factor": True,
+            "available": False,
+            "unavailable_reason": (
+                "Intentionally excluded from pyproject.toml: bnlearn depends on "
+                "pgmpy which transitively pulls PyTorch (torch), exposing "
+                "GHSA-rrmf-rvhw-rf47 (unpatched vulnerability). "
+                "Run 'uv add bnlearn pgmpy' at your own risk to enable."
+            ),
         },
     }
 )
+
+# Sentinel used as the unavailable_reason when a framework has no reason set
+# but is also not explicitly marked unavailable — indicates a misconfiguration.
+_UNSET = object()
 
 
 def get_supported_frameworks() -> list[str]:
@@ -205,3 +236,42 @@ def get_pomdp_framework_configs() -> Dict[str, Dict[str, Any]]:
         for name, spec in FRAMEWORK_REGISTRY.items()
         if spec.get("pomdp_compatible", False)
     }
+
+
+def get_framework_availability(framework: str) -> Tuple[bool, Optional[str]]:
+    """Return (available, reason) for a framework from the canonical registry.
+
+    Args:
+        framework: Name of the framework (e.g. ``"bnlearn"``).
+
+    Returns:
+        Tuple of ``(available, reason)`` where *reason* is ``None`` when the
+        framework is available, or a human-readable string explaining why it
+        is intentionally unavailable.
+    """
+    spec = FRAMEWORK_REGISTRY.get(framework)
+    if spec is None:
+        return True, None  # unknown frameworks are assumed available
+    available = spec.get("available", True)
+    reason = spec.get("unavailable_reason")
+    return bool(available), reason
+
+
+def validate_framework_requested(framework: str) -> None:
+    """Validate that a requested framework is available for rendering.
+
+    Raises ``ValueError`` with a clear, actionable message when the framework
+    is intentionally unavailable.  Does nothing when the framework is available
+    or unknown (unknown frameworks are treated as available to avoid
+    over-blocking external tools).
+
+    Args:
+        framework: Name of the framework to validate.
+
+    Raises:
+        ValueError: If the framework is intentionally marked unavailable in
+            the canonical registry.
+    """
+    available, reason = get_framework_availability(framework)
+    if not available and reason is not None:
+        raise ValueError(f"Framework '{framework}' is not available: {reason}")

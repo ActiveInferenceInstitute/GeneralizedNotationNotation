@@ -35,5 +35,5 @@ var_type = viz_var_type({"var_type": "hidden_state"})  # -> "hidden_state"
 
 See [visualization/AGENTS.md](../AGENTS.md) for the overall visualization architecture.
 
-**Version**: 1.6.0
+**Version**: 3.0.0
 **Last Updated**: 2026-05-12

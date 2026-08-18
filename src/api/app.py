@@ -36,8 +36,9 @@ _src_dir = str(Path(__file__).parent.parent)
 if _src_dir not in sys.path:
     sys.path.insert(0, _src_dir)
 
+from api.auth import api_key_middleware, require_secure_bind
 from api.path_utils import PathValidationError, resolve_repo_path  # noqa: E402,I001
-
+from api.rate_limit import rate_limit_middleware
 
 # ── In-memory run store ──────────────────────────────────────────────────────────
 
@@ -105,6 +106,14 @@ if FASTAPI_AVAILABLE:
             allow_methods=["*"],
             allow_headers=["*"],
         )
+
+        # Optional API-key auth: active only when GNN_API_KEY is set.
+        _app.middleware("http")(api_key_middleware)
+
+        # Per-client rate limiting: active unless GNN_RATE_LIMIT=0.
+        # Registered after auth so it runs outermost, protecting the API even
+        # when authentication is disabled (e.g. localhost research use).
+        _app.middleware("http")(rate_limit_middleware)
 
         # ── Endpoints ────────────────────────────────────────────────────────
 
@@ -416,6 +425,13 @@ def start_server(host: str = "127.0.0.1", port: int = 8000) -> Any:
     if not FASTAPI_AVAILABLE:
         logger.error("Cannot start server: pip install fastapi uvicorn")
         return
+
+    if not require_secure_bind(host):
+        raise RuntimeError(
+            f"Refusing to bind API server to non-loopback address {host!r} "
+            "without authentication. Set GNN_API_KEY to enable API-key auth, "
+            "or GNN_ALLOW_INSECURE_BIND=1 to explicitly accept the risk."
+        )
 
     import uvicorn
 

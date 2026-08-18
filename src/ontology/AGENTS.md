@@ -10,7 +10,7 @@
 
 **Status**: ✅ Production Ready
 
-**Version**: 1.6.0
+**Version**: 3.0.0
 
 **Last Updated**: 2026-04-16
 
@@ -345,7 +345,7 @@ def extract_ontology_terms_tool(gnn_content: str) -> List[str]:
 
 ## Version History
 
-### Current Version: 1.6.0
+### Current Version: 3.0.0
 
 **Features**:
 - Ontology term extraction
@@ -380,7 +380,7 @@ def extract_ontology_terms_tool(gnn_content: str) -> List[str]:
 **Last Updated**: 2026-04-16
 **Maintainer**: GNN Pipeline Team
 **Status**: ✅ Production Ready
-**Version**: 1.6.0
+**Version**: 3.0.0
 **Architecture Compliance**: ✅ 100% Thin Orchestrator Pattern
 
 

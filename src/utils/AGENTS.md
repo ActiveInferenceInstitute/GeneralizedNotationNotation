@@ -10,7 +10,7 @@
 
 **Status**: ✅ Production Ready
 
-**Version**: 1.6.0
+**Version**: 3.0.0
 
 **Last Updated**: 2026-04-16
 
@@ -124,6 +124,14 @@ logger = setup_step_logging("3_gnn", verbose=True)
 **Returns**: `str` - Correlation ID for this context
 
 ### Argument Parsing Functions
+
+> **Modularization note (2026-08-14)**: the former 2,263-line
+> `argument_utils.py` is now a thin re-export module over single-responsibility
+> modules — `arg_definitions` (shared `STEP_ARGUMENTS`/constants),
+> `arg_parsing` (the `ArgumentParser`), `path_conversion` (`validate_and_convert_paths`),
+> `pipeline_arguments` (command building), and `step_config` (`StepConfiguration`).
+> `safe_eval.safe_literal_eval` provides bounded, DoS-resistant literal evaluation
+> for untrusted GNN parameter strings (RED_TEAM V-03).
 
 #### `ArgumentParser.parse_step_arguments(step_name: str) -> argparse.Namespace`
 **Description**: Parse arguments for a specific pipeline step with recovery support
@@ -511,7 +519,7 @@ def get_system_info_tool():
 
 ## Version History
 
-### Current Version: 1.6.0
+### Current Version: 3.0.0
 
 **Features**:
 - Centralized logging system
@@ -544,7 +552,7 @@ def get_system_info_tool():
 **Last Updated**: 2026-04-16
 **Maintainer**: GNN Pipeline Team
 **Status**: ✅ Production Ready
-**Version**: 1.6.0
+**Version**: 3.0.0
 **Architecture Compliance**: ✅ 100% Thin Orchestrator Pattern
 
 ---

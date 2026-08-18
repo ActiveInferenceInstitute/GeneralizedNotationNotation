@@ -526,31 +526,53 @@ class TestUVCacheAndPerformance:
         # Just verify the command works
 
     def test_uv_sync_fast(self) -> Any:
-        """Test that ``uv sync --frozen --extra dev`` is fast and non-pruning."""
+        """Test that ``uv sync --frozen --extra dev`` is fast and non-pruning.
+
+        Uses ``--check`` (non-mutating) so this default-suite test never
+        rewrites the shared ``.venv`` while other tests read it. A pruning
+        regression (e.g. dropping pytest/LSP/API/websocket deps) still fails
+        the gate: ``--check`` exits non-zero whenever the environment is out
+        of sync with the requested extras.
+
+        A concurrent mutating ``uv sync`` (the pipeline setup step or another
+        xdist worker) can transiently report the environment as "outdated".
+        That race resolves on its own, so retry briefly before failing; a real
+        pruning regression stays outdated across retries and still fails.
+        """
         import time
 
         # Do not use ``--all-extras`` here: it pulls large optional groups (e.g. gui) and
         # can fail on low-disk systems during wheel extraction. Keep ``--extra dev`` so
         # this default-suite test does not prune pytest, LSP, API, or websocket deps.
         start = time.time()
-        result = subprocess.run(  # nosec B607 B603
-            [UV_BIN, "sync", "--frozen", "--extra", "dev"],
-            capture_output=True,
-            text=True,
-            cwd=str(PROJECT_ROOT),
-            timeout=120,
-        )
+        returncode = 1
+        err = ""
+        for attempt in range(3):
+            result = subprocess.run(  # nosec B607 B603
+                [UV_BIN, "sync", "--frozen", "--check", "--extra", "dev"],
+                capture_output=True,
+                text=True,
+                cwd=str(PROJECT_ROOT),
+                timeout=120,
+            )
+            returncode = result.returncode
+            err = (result.stderr or "") + (result.stdout or "")
+            if returncode == 0:
+                break
+            if attempt < 2 and "outdated" in err.lower():
+                time.sleep(0.5 * (attempt + 1))
+                continue
+            break
         elapsed = time.time() - start
-        err = (result.stderr or "") + (result.stdout or "")
 
-        if result.returncode != 0 and (
+        if returncode != 0 and (
             "No space" in err
             or "No space left on device" in err
             or "os error 28" in err
         ):
             pytest.fail("Insufficient disk for uv cache / venv (errno 28)")
 
-        assert result.returncode == 0, f"uv sync failed: {result.stderr}"
+        assert returncode == 0, f"uv sync failed: {err}"
         # Cached sync is usually a few seconds; allow slow CI and cold cache.
         assert elapsed < 120, f"uv sync took too long: {elapsed}s"
 

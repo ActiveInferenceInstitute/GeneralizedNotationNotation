@@ -87,3 +87,50 @@ def test_process_render_recursive_false_skips_nested_files(tmp_path: Path) -> No
     summary_path = output_dir / "render_processing_summary.json"
     assert not summary_path.exists()
     assert not list(output_dir.rglob("*.jl"))
+
+
+def test_process_render_aggregates_summary_across_invocations(tmp_path: Path) -> None:
+    """Sequential per-folder invocations must accumulate file_results.
+
+    The pipeline invokes ``process_render`` once per top-level input folder,
+    each writing the same ``render_processing_summary.json``. Without
+    aggregation only the last folder's ``file_results`` survive, and Step 12's
+    manifest-based discovery executes just that folder.
+    """
+    output_dir = tmp_path / "render_out"
+
+    first = process_render(
+        target_dir=EXEMPLAR_DIR / "basics",
+        output_dir=output_dir,
+        frameworks=["rxinfer"],
+        verbose=False,
+    )
+    assert first is not False
+
+    summary = json.loads(
+        (output_dir / "render_processing_summary.json").read_text(encoding="utf-8")
+    )
+    first_total = summary["total_files"]
+    first_keys = set(summary["file_results"])
+    assert first_total == len(first_keys) == 2
+
+    second = process_render(
+        target_dir=EXEMPLAR_DIR / "discrete",
+        output_dir=output_dir,
+        frameworks=["rxinfer"],
+        verbose=False,
+    )
+    assert second is not False
+
+    summary = json.loads(
+        (output_dir / "render_processing_summary.json").read_text(encoding="utf-8")
+    )
+    merged_keys = set(summary["file_results"])
+
+    # The second invocation carried forward the first folder's results and
+    # added its own: nothing was dropped, and the aggregate count matches.
+    assert first_keys <= merged_keys
+    assert len(merged_keys) > first_total
+    assert summary["total_files"] == len(merged_keys)
+    assert any("basics/" in key for key in merged_keys)
+    assert any("discrete/" in key for key in merged_keys)

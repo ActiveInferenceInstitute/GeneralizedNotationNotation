@@ -201,6 +201,58 @@ println("{\\\"status\\\": \\\"success\\\", \\\"framework\\\": \\\"rxinfer\\\"}")
             )
 
     @pytest.mark.unit
+    def test_load_render_summary_contract_scopes_to_target_dir(
+        self, tmp_path: Path
+    ) -> None:
+        """The render contract is scoped to the current folder invocation.
+
+        The pipeline invokes Step 12 once per top-level input folder, so a
+        folder-scoped ``target_dir`` must only surface scripts rendered from
+        that folder's source files — otherwise every folder re-executes every
+        other folder's models.
+        """
+        render_dir = tmp_path / "11_render_output"
+        render_dir.mkdir(parents=True)
+
+        def _entry(name: str) -> Dict[str, Any]:
+            return {
+                "overall_success": True,
+                "framework_results": {
+                    "pymdp": {
+                        "success": True,
+                        "output_files": [str(render_dir / name / "pymdp" / "run.py")],
+                    }
+                },
+            }
+
+        summary = {
+            "file_results": {
+                "input/gnn_files/basics/dynamic_perception.md": _entry(
+                    "dynamic_perception"
+                ),
+                "input/gnn_files/discrete/markov_chain.md": _entry("markov_chain"),
+            }
+        }
+        (render_dir / "render_processing_summary.json").write_text(
+            json.dumps(summary), encoding="utf-8"
+        )
+
+        logger = logging.getLogger("test")
+
+        scoped, _ = execute_processor._load_render_summary_contract(
+            render_dir, ["pymdp"], logger, target_dir=Path("input/gnn_files/basics")
+        )
+        assert scoped is not None
+        scoped_paths = {p.name for p in scoped}
+        assert scoped_paths == {"run.py"}
+
+        global_, _ = execute_processor._load_render_summary_contract(
+            render_dir, ["pymdp"], logger, target_dir=Path("input/gnn_files")
+        )
+        assert global_ is not None
+        assert len(global_) == 2
+
+    @pytest.mark.unit
     def test_collect_execution_outputs(self, safe_filesystem: Any) -> None:
         """Test collection of execution outputs."""
         logger = logging.getLogger("test")

@@ -9,6 +9,7 @@ No database dependency — jobs are stored in memory (lost on restart).
 
 import asyncio
 import logging
+import re
 import sys
 import uuid
 from datetime import datetime
@@ -190,11 +191,11 @@ async def execute_job_async(job_id: str) -> None:
             logger.info(f"Job {job_id} completed successfully")
         else:
             job["status"] = "failed"
-            # Capture tail of stderr for error message
+            # Capture a sanitized tail of stderr for the error message. Raw
+            # stderr leaks internal paths, library versions, and stack traces;
+            # redact the repository root and other absolute paths first.
             stderr_text = stderr.decode("utf-8", errors="replace") if stderr else ""
-            job["error_message"] = (
-                stderr_text[-500:] if len(stderr_text) > 500 else stderr_text
-            )
+            job["error_message"] = _sanitize_stderr(stderr_text, repo_root)
             logger.error(f"Job {job_id} failed with exit code {proc.returncode}")
 
     except Exception as e:
@@ -204,6 +205,20 @@ async def execute_job_async(job_id: str) -> None:
         logger.error(f"Job {job_id} raised exception: {e}")
     finally:
         job["process"] = None
+
+
+def _sanitize_stderr(stderr_text: str, repo_root: Path) -> str:
+    """Redact internal paths from a stderr tail before exposing it to clients.
+
+    Keeps the diagnostic value of the tail (the last 500 chars) while removing
+    the repository root and other absolute filesystem paths that would disclose
+    host layout to an API caller.
+    """
+    tail = stderr_text[-500:] if len(stderr_text) > 500 else stderr_text
+    tail = tail.replace(str(repo_root), "<repo>")
+    # Common absolute path prefixes (home/usr/tmp/var/etc.) become <path>.
+    tail = re.sub(r"(?:/[A-Za-z0-9_.-]+){2,}(?:/[^\s\"']*)?", "<path>", tail)
+    return tail
 
 
 # Pipeline step registry for /tools endpoint

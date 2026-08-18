@@ -10,18 +10,11 @@ This module provides comprehensive execution and analysis capabilities for Activ
 
 ### Julia Analysis Suite
 - `activeinference_runner.jl` - Main ActiveInference.jl runner script
-- `analysis_suite.jl` - Analysis suite
-- `statistical_analysis.jl` - Statistical analysis tools
-- `uncertainty_quantification.jl` - Uncertainty quantification methods
-- `meta_cognitive_analysis.jl` - Meta-cognitive analysis tools
 - `adaptive_precision_attention.jl` - Adaptive precision and attention mechanisms
 - `counterfactual_reasoning.jl` - Counterfactual reasoning analysis
-- `multi_scale_temporal_analysis.jl` - Multi-scale temporal analysis
-- `advanced_pomdp_analysis.jl` - Advanced POMDP analysis
-- `visualization_suite.jl` - Visualization utilities
-- `integration_suite.jl` - Integration testing suite
 - `export_enhancement.jl` - Export capabilities
-- `visualization_utils.jl` - Visualization utility functions
+- `integration_suite.jl` - Integration testing suite
+- `setup_environment.jl` - Committed-environment instantiation + compat patch
 
 ## ActiveInference.jl Execution Pipeline
 
@@ -77,6 +70,35 @@ success = run_activeinference_analysis(
 - Julia programming language
 - ActiveInference.jl package
 - Required Julia packages (see individual scripts for dependencies)
+
+## Clean-start environment setup
+
+The module pins a committed Julia environment (`Project.toml` + `Manifest.toml`
+checked into this directory). On a fresh checkout the environment is not yet
+instantiated (packages are not downloaded into the Julia depot). Two ways to
+bring it up:
+
+```bash
+# 1) One-shot setup (instantiates the committed env, applies the
+#    DistributionsAD/Julia-1.12 compat patch, and validates core packages):
+julia --project=src/execute/activeinference_jl --startup-file=no \
+    src/execute/activeinference_jl/setup_environment.jl
+
+# 2) Or let the pipeline auto-setup do it: step 12 runs the same setup when
+#    ``get_environment_status`` reports the environment needs setup.
+```
+
+Verify:
+
+```bash
+julia --project=src/execute/activeinference_jl --startup-file=no \
+    -e 'using ActiveInference, Distributions, JSON, StatsBase; println("OK")'
+```
+
+**Julia 1.12 note.** `DistributionsAD` 0.6.58 (archived) uses an old
+`@check_args` form that `Distributions >= 0.25.127` rejects. `setup_environment.jl`
+patches the installed ReverseDiff ext file (chmod + rewrite) **before**
+validation triggers precompilation, so the environment builds on a clean machine.
 
 ## Analysis Types
 

@@ -558,7 +558,7 @@ results = execute_rxinfer_simulation(script_path, config, debug=True, verbose=Tr
 
 ## Version History
 
-### Current Version: 1.6.0
+### Current Version: 3.0.0
 
 **Features**:
 - Complete RxInfer.jl simulation execution pipeline

@@ -131,7 +131,7 @@ The human-oriented **documentation hub** is [README.md](README.md). Repository r
 - [LLM Integration](llm/README.md) - Language model integration
 - [MCP Protocol](mcp/README.md) - Model Context Protocol
 - [Audio Processing](audio/README.md) - Audio/SAPF integration
-- [DSPy](dspy/README.md) - DSPy integration guide
+- [DSPy](archive/dspy/README.md) - DSPy integration guide
 
 ### Development
 
@@ -164,13 +164,13 @@ The human-oriented **documentation hub** is [README.md](README.md). Repository r
 
 ### External Libraries
 
-- [Axiom](axiom/README.md) - Axiom integration
-- [CatColab](catcolab/README.md) - Category theory
-- [Cerebrum](cerebrum/README.md) - Neural modeling
+- [Axiom](archive/axiom/README.md) - Axiom integration
+- [CatColab](archive/catcolab/README.md) - Category theory
+- [Cerebrum](archive/cerebrum/README.md) - Neural modeling
 - [Petri Nets](petri_nets/README.md) - Petri net formalism
 - [SymPy](sympy/README.md) - Symbolic computation
-- [NTQR](ntqr/README.md) - Quantum-inspired reasoning
-- [Quadray](quadray/README.md) - Coordinate systems
+- [NTQR](archive/ntqr/README.md) - Quantum-inspired reasoning
+- [Quadray](archive/quadray/README.md) - Coordinate systems
 
 ### Research Notes
 
@@ -205,14 +205,9 @@ doc/
 ├── activeinference_jl/  # ActiveInference.jl framework
 ├── advanced_visualization/
 ├── api/                 # API documentation
-├── arc-agi/             # ARC-AGI integration
 ├── archive/             # Archived docs
 ├── audio/               # Audio processing
-├── autogenlib/          # AutoGenLib integration
-├── axiom/               # Axiom integration
 ├── bnlearn/             # bnlearn / Bayesian networks
-├── catcolab/            # Category theory
-├── cerebrum/            # Neural modeling
 ├── cognitive_phenomena/ # Cognitive science models
 ├── configuration/       # Config docs
 ├── d2/                  # D2 diagrams
@@ -221,31 +216,20 @@ doc/
 ├── dev/                 # src/ doc inventory tooling
 ├── development/         # Dev guides, docs_audit
 ├── discopy/             # DisCoPy integration
-├── dspy/                # DSPy integration
 ├── execution/           # Execution docs
 ├── export/              # Export formats
-├── glowstick/           # Glowstick tool
 ├── gnn/                 # Core GNN docs
 ├── gui_oxdraw/          # GUI/OxDraw
-├── iroh/                # Iroh integration
-├── kit/                 # GNN Kit
-├── klong/               # Klong language
 ├── llm/                 # LLM integration
 ├── mcp/                 # MCP protocol
-├── muscle-mem/          # Muscle memory
-├── nock/                # Nock/Nockchain
-├── ntqr/                # NTQR framework
-├── onefilellm/          # OneFileLLM
 ├── other/               # Miscellaneous
 ├── pedalboard/          # Audio effects
 ├── performance/         # Performance docs
 ├── petri_nets/          # Petri nets
 ├── pipeline/            # Pipeline documentation
 ├── pkl/                 # PKL format
-├── poe-world/           # PoE World
 ├── pomdp/               # POMDP theory
 ├── pymdp/               # PyMDP framework
-├── quadray/             # Coordinate systems
 ├── releases/            # Release notes
 ├── research/            # Research docs
 ├── rxinfer/             # RxInfer.jl
@@ -255,13 +239,10 @@ doc/
 ├── sympy/               # SymPy integration
 ├── templates/           # Templates
 ├── testing/             # Test docs
-├── timep/               # Time processing
 ├── troubleshooting/     # Troubleshooting
 ├── tutorials/           # Tutorials
 ├── type-inference-zoo/  # Type inference
-├── vec2text/            # Vector-to-text
 ├── visualization/       # Visualization
-└── x402/                # X402 protocol
 ```
 
 Also maintained: [expected_dirs.txt](expected_dirs.txt) (machine-oriented list of the same top-level names).
