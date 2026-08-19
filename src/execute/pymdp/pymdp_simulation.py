@@ -27,6 +27,8 @@ which reads ``simulation_results.json`` via ``src/analysis/pymdp``.
 from __future__ import annotations
 
 import logging
+import shutil
+import sys
 import time
 import warnings
 from pathlib import Path
@@ -549,10 +551,25 @@ class PyMDPSimulation:
             for step in self.simulation_trace
         ]
 
+        # Hardware / accelerator metadata
+        accelerator_type = "cpu"
+        try:
+            if shutil.which("nvidia-smi") is not None:
+                accelerator_type = "cuda"
+            elif sys.platform == "darwin":
+                accelerator_type = "mps"
+        except Exception:
+            accelerator_type = "cpu"
+
         results_out: Dict[str, Any] = {
             "schema_version": "pymdp_simulation_v1",
             "framework": "PyMDP",
             "model_name": self.model_name,
+            "execution_metadata": {
+                "accelerator_type": accelerator_type,
+                "vectorization": "jax" if "jax" in sys.modules else "numpy",
+                "duration_seconds": float(duration),
+            },
             "observations": observations,
             "actions": actions,
             "beliefs": beliefs,

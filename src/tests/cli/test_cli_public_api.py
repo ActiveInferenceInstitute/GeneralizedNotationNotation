@@ -76,6 +76,40 @@ class TestCmdHandlers:
         result = _cmd_report(args)
         assert result == 1
 
+    def test_cmd_report_json_missing_dir(self, capsys: Any) -> None:
+        from cli import _cmd_report
+
+        args = SimpleNamespace(output_dir=Path("/nonexistent_output"), json=True)
+        result = _cmd_report(args)
+        assert result == 1
+        captured = capsys.readouterr()
+        envelope = json.loads(captured.out)
+        assert envelope["status"] == "error"
+        assert "not found" in envelope["error"]
+
+    def test_cmd_graph_json_missing_file(self, capsys: Any) -> None:
+        from cli import _cmd_graph
+
+        args = SimpleNamespace(file=Path("/nonexistent.md"), format="mermaid", json=True)
+        result = _cmd_graph(args)
+        assert result == 1
+        captured = capsys.readouterr()
+        envelope = json.loads(captured.out)
+        assert envelope["status"] == "error"
+        assert "not found" in envelope["error"]
+
+    def test_cmd_health_json(self, capsys: Any) -> None:
+        from cli import _cmd_health
+
+        args = SimpleNamespace(strict=False, json=True)
+        result = _cmd_health(args)
+        assert isinstance(result, int)
+        captured = capsys.readouterr()
+        envelope = json.loads(captured.out)
+        assert envelope["status"] in ("success", "warning", "error")
+        assert "renderers" in envelope["data"]
+        assert "environment" in envelope["data"]
+
     def test_cmd_preflight_default(self) -> None:
         from cli import _cmd_preflight
 
@@ -118,6 +152,22 @@ class TestCmdHandlers:
         )
         result = _cmd_graph(args)
         assert result == 1
+
+    def test_cmd_models_json(self, capsys: Any) -> None:
+        from cli import _cmd_models
+
+        args = SimpleNamespace(
+            target_dir=Path("input/gnn_files/basics"),
+            query_ontology=None,
+            json=True,
+        )
+        result = _cmd_models(args)
+        assert result == 0
+        captured = capsys.readouterr()
+        envelope = json.loads(captured.out)
+        assert envelope["status"] == "success"
+        assert "matching_models" in envelope["data"]
+        assert len(envelope["data"]["matching_models"]) >= 1
 
     def test_cmd_pull_missing_template(self, tmp_path: Path) -> None:
         from cli import _cmd_pull

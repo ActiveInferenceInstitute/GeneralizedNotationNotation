@@ -1038,12 +1038,34 @@ def main(
                 else:
                     import os
                     max_cpu = os.cpu_count() or 4
-                    dynamic_workers = max(1, min(len(tier_steps), max_cpu, 8))
+                    # Calculate estimated tier memory requirement to prevent overcommit
+                    tier_memory_est = sum(
+                        (
+                            500
+                            if "14_ml_integration" in s[0]
+                            else 300
+                            if "9_advanced_viz" in s[0]
+                            else 200
+                            if "8_visualization" in s[0]
+                            else 150
+                            if "2_tests" in s[0]
+                            else 100
+                            if "13_llm" in s[0]
+                            else 50
+                        )
+                        for s in tier_steps
+                    )
+                    # Dynamically throttle worker concurrency if aggregate memory footprint is high
+                    worker_cap = max_cpu
+                    if tier_memory_est > 800:
+                        worker_cap = min(worker_cap, 4)
+                    dynamic_workers = max(1, min(len(tier_steps), worker_cap, 8))
                     logger.info(
-                        "⚡ Running Tier %d in parallel (%d steps, %d workers): %s",
+                        "⚡ Running Tier %d in parallel (%d steps, %d workers, ~%dMB est memory): %s",
                         tier_idx,
                         len(tier_steps),
                         dynamic_workers,
+                        tier_memory_est,
                         [s[0] for s in tier_steps],
                     )
                     with ThreadPoolExecutor(max_workers=dynamic_workers) as pool:

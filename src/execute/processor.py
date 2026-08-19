@@ -10,6 +10,7 @@ import hashlib
 import json
 import logging
 import os
+import shutil
 import subprocess  # nosec B404
 import sys
 import tomllib
@@ -1640,6 +1641,16 @@ def execute_single_script(
         )
         exec_result["simulation_data"] = simulation_data
 
+        # Hardware / accelerator metadata
+        accelerator_type = "cpu"
+        try:
+            if shutil.which("nvidia-smi") is not None:
+                accelerator_type = "cuda"
+            elif sys.platform == "darwin":
+                accelerator_type = "mps"
+        except Exception:
+            accelerator_type = "cpu"
+
         # Save structured execution results in JSON format
         structured_result: dict[str, Any] = {
             "framework": framework,
@@ -1656,6 +1667,7 @@ def execute_single_script(
             ),
             "execution_metadata": {
                 "executor": executor,
+                "accelerator_type": accelerator_type,
                 "stdout_length": len(result.stdout),
                 "stderr_length": len(result.stderr),
                 "output_directory": str(impl_specific_dir.parent),

@@ -259,6 +259,18 @@ class TestPyMDPSimulation(unittest.TestCase):
         )
         self.assertEqual(simulation.action_names, config_with_names["actions"])
 
+    def test_simulation_execution_metadata_accelerator_record(self) -> None:
+        """Test that execution_metadata records accelerator_type and vectorization."""
+        from execute.pymdp.pymdp_simulation import create_demo_pymdp_simulation
+
+        simulation = create_demo_pymdp_simulation()
+        results = simulation.run_simulation(num_timesteps=1)
+        self.assertIn("execution_metadata", results)
+        meta = results["execution_metadata"]
+        self.assertIn("accelerator_type", meta)
+        self.assertIn("duration_seconds", meta)
+        self.assertIn("vectorization", meta)
+
     def tearDown(self) -> None:
         """Clean up test environment."""
         cleanup_test_temp_dir(self.test_dir)

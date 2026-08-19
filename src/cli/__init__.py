@@ -200,6 +200,47 @@ def main(argv: Optional[List[str]] = None) -> int:
         "--json", action="store_true", help="Output standard JSON envelope"
     )
 
+    # ── gnn models ────────────────────────────────────────────────────────────
+    models_p = subparsers.add_parser("models", help="Query and inspect model registry")
+    models_sub = models_p.add_subparsers(
+        dest="models_command", help="Model registry commands"
+    )
+    models_list_p = models_sub.add_parser("list", help="List registered models")
+    models_list_p.add_argument(
+        "--target-dir",
+        "-t",
+        type=Path,
+        default=Path("input/gnn_files"),
+        help="Target directory containing GNN models",
+    )
+    models_list_p.add_argument(
+        "--query-ontology",
+        "-q",
+        type=str,
+        default=None,
+        help="Filter registered models by ontology concept substring",
+    )
+    models_list_p.add_argument(
+        "--json", action="store_true", help="Output standard JSON envelope"
+    )
+    models_p.add_argument(
+        "--target-dir",
+        "-t",
+        type=Path,
+        default=Path("input/gnn_files"),
+        help="Target directory containing GNN models",
+    )
+    models_p.add_argument(
+        "--query-ontology",
+        "-q",
+        type=str,
+        default=None,
+        help="Filter registered models by ontology concept substring",
+    )
+    models_p.add_argument(
+        "--json", action="store_true", help="Output standard JSON envelope"
+    )
+
     # ── gnn pull ────────────────────────────────────────────────────────────
     pull_p = subparsers.add_parser("pull", help="Copy a maintained GNN template")
     pull_p.add_argument("name", help="Template name")
@@ -270,6 +311,7 @@ def main(argv: Optional[List[str]] = None) -> int:
         "health": _cmd_health,
         "serve": _cmd_serve,
         "templates": _cmd_templates,
+        "models": _cmd_models,
         "pull": _cmd_pull,
         "lsp": _cmd_lsp,
         "watch": _cmd_watch,
@@ -764,6 +806,44 @@ def _cmd_templates(args: Any) -> Any:
             return 1
         return 0
     return 1
+
+
+def _cmd_models(args: Any) -> Any:
+    """Query and inspect model registry."""
+    is_json = getattr(args, "json", False)
+    target_dir = getattr(args, "target_dir", Path("input/gnn_files"))
+    query_ontology = getattr(args, "query_ontology", None)
+
+    from model_registry import process_model_registry
+
+    temp_out = Path("/tmp/gnn_cli_models_registry")
+    temp_out.mkdir(parents=True, exist_ok=True)
+    res = process_model_registry(
+        target_dir=target_dir,
+        output_dir=temp_out,
+        query_ontology=query_ontology,
+    )
+    matching = res.get("matching_models", [])
+
+    if is_json:
+        print(
+            json.dumps(
+                _envelope(
+                    "success",
+                    data={
+                        "total_models": res.get("total_models", 0),
+                        "query_ontology": query_ontology,
+                        "matching_models": matching,
+                    },
+                ),
+                indent=2,
+            )
+        )
+    else:
+        print(f"📦 Found {len(matching)} matching model(s):")
+        for m in matching:
+            print(f"  - {m}")
+    return 0
 
 
 def _cmd_pull(args: Any) -> Any:

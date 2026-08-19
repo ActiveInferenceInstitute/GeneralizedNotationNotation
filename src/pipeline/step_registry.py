@@ -241,15 +241,19 @@ _STEPS_BY_SCRIPT: Dict[str, StepInfo] = {s.script_name: s for s in STEPS}
 
 
 def step_for_stem(stem: str) -> Optional[StepInfo]:
-    """Look up a step by its script stem (e.g. ``\"11_render\"``)."""
-    return _STEPS_BY_STEM.get(stem)
+    """Look up a step by its script stem (e.g. ``\"11_render\"``), supporting consolidated aliases."""
+    resolved = canonical_step_stem(stem)
+    return _STEPS_BY_STEM.get(resolved)
 
 
 def step_for_name(name: str) -> Optional[StepInfo]:
-    """Look up a step by script name (e.g. ``\"11_render.py\"``) or stem."""
+    """Look up a step by script name (e.g. ``\"11_render.py\"``) or stem, supporting consolidated aliases."""
     if name.endswith(".py"):
-        return _STEPS_BY_SCRIPT.get(name)
-    return _STEPS_BY_STEM.get(name)
+        stem = name[:-3]
+        resolved_stem = canonical_step_stem(stem)
+        resolved_name = f"{resolved_stem}.py"
+        return _STEPS_BY_SCRIPT.get(resolved_name, _STEPS_BY_SCRIPT.get(name))
+    return step_for_stem(name)
 
 
 def output_dir_for_stem(stem: str) -> Optional[str]:

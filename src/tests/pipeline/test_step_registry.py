@@ -141,11 +141,24 @@ class TestStepRegistryLookups:
 
     def test_consolidated_step_aliases(self) -> None:
         """Test step alias resolution for renumbering migration."""
-        from pipeline.step_registry import canonical_step_stem
+        from pipeline.step_registry import (
+            canonical_step_stem,
+            step_for_name,
+            step_for_stem,
+        )
 
         assert canonical_step_stem("13_audio") == "15_audio"
         assert canonical_step_stem("14_analysis") == "16_analysis"
         assert canonical_step_stem("11_render") == "11_render"
+
+        # Check step_for_stem and step_for_name resolution with aliases
+        s_audio = step_for_stem("13_audio")
+        assert s_audio is not None
+        assert s_audio.script_stem == "15_audio"
+
+        s_audio_py = step_for_name("13_audio.py")
+        assert s_audio_py is not None
+        assert s_audio_py.script_name == "15_audio.py"
 
 
 class TestDerivedExportAliases:
