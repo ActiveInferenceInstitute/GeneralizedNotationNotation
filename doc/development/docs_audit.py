@@ -44,10 +44,10 @@ SKIP_PARTS = frozenset(
     }
 )
 
-# doc/ subtrees excluded from maintained-folder checks (generated or archival)
+# doc/ subtrees excluded from maintained-folder checks (generated or exploratory)
 DOC_MAINTAINED_SKIP_PARTS = frozenset(
     {
-        "archive",
+        "other",
         "__pycache__",
         ".git",
         "node_modules",
@@ -63,7 +63,7 @@ PAIRING_SKIP_PARTS = frozenset(
         "__pycache__",
         ".git",
         "output",
-        "archive",
+        "other",
         "build",
         "dist",
         ".claude",

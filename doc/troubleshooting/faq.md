@@ -32,7 +32,7 @@ Basic understanding helps, but GNN can be learned incrementally:
 
 - **Beginners**: Start with [simple examples](../gnn/tutorials/gnn_examples_doc.md) and [basic concepts](../gnn/about_gnn.md)
 - **Intermediate**: Learn [Active Inference fundamentals](https://www.fil.ion.ucl.ac.uk/~karl/The%20free-energy%20principle%20A%20unified%20brain%20theory.pdf)
-- **Advanced**: Explore [research applications](../gnn/gnn_paper.md) and [complex models](../archive/)
+- **Advanced**: Explore [research applications](../gnn/gnn_paper.md) and [complex models](../other/)
 
 ## 🛠️ Getting Started
 
@@ -247,7 +247,7 @@ See [Performance Guide](performance.md) for optimization strategies.
 **Support channels:**
 
 1. **Documentation**: Start with [troubleshooting guides](common_errors.md)
-2. **Examples**: Check similar models in [`doc/archive/`](../archive/)
+2. **Examples**: Check similar models in [`doc/other/`](../other/)
 3. **GitHub Issues**: Report bugs and ask questions
 4. **GitHub Discussions**: Community Q&A and brainstorming
 5. **Active Inference Institute**: Connect with the broader community
@@ -956,7 +956,7 @@ def chunked_simulation(agents, total_steps, chunk_size=100):
 
 - **Search this FAQ**: Use Ctrl+F to find specific topics
 - **Documentation index**: [Main documentation](../README.md)
-- **Examples gallery**: [Model examples](../archive/)
+- **Examples gallery**: [Model examples](../other/)
 - **Syntax reference**: [GNN syntax guide](../gnn/reference/gnn_syntax.md)
 
 ### Community Support

@@ -2,7 +2,7 @@
 
 > **📋 Document Metadata**  
 > **Type**: Integration Reference | **Audience**: Developers | **Complexity**: Intermediate  
-> **Cross-References**: [GNN Documentation](../gnn/README.md) | [Generative Models](generative_models.md) | [DSPy Integration](../archive/dspy/dspy_gnn_integration_patterns.md)
+> **Cross-References**: [GNN Documentation](../gnn/README.md) | [Generative Models](generative_models.md) | [DSPy Integration](../other/dspy/dspy_gnn_integration_patterns.md)
 
 ## Overview
 
@@ -30,7 +30,7 @@ This document describes how GNN (Generalized Notation Notation) integrates with 
 | Document | Path | Description |
 |----------|------|-------------|
 | **LLM + Active Inference** | [`doc/gnn/advanced/gnn_llm_neurosymbolic_active_inference.md`](../gnn/advanced/gnn_llm_neurosymbolic_active_inference.md) | Comprehensive guide |
-| **DSPy Integration** | [`doc/archive/dspy/dspy_gnn_integration_patterns.md`](../archive/dspy/dspy_gnn_integration_patterns.md) | DSPy patterns |
+| **DSPy Integration** | [`doc/other/dspy/dspy_gnn_integration_patterns.md`](../other/dspy/dspy_gnn_integration_patterns.md) | DSPy patterns |
 
 ---
 

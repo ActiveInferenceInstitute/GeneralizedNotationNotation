@@ -2,7 +2,7 @@
 
 > **📋 Document Metadata**  
 > **Type**: Research Archive | **Audience**: Researchers, Developers | **Complexity**: Intermediate-Advanced  
-> **Cross-References**: [AGENTS.md](AGENTS.md) | [Archive](../archive/README.md) | [Main Documentation](../README.md)
+> **Cross-References**: [AGENTS.md](AGENTS.md) | [Archive](../other/README.md) | [Main Documentation](../README.md)
 
 ## Overview
 
@@ -25,7 +25,7 @@ This directory contains miscellaneous documentation, research materials, experim
 - **[learning_paths.md](../learning_paths.md)**: Learning pathways
 
 ### Related Directories
-- **[Archive](../archive/README.md)**: Historical documentation and examples
+- **[Archive](../other/README.md)**: Historical documentation and examples
 - **[Research Tools](../research/README.md)**: Research workflow tools
 - **[Cognitive Phenomena](../cognitive_phenomena/README.md)**: Cognitive modeling applications
 
@@ -88,7 +88,7 @@ This directory maintains research transparency by:
 
 ### Research Resources
 - **[Research Tools](../research/README.md)**: Research workflow tools
-- **[Archive](../archive/README.md)**: Historical documentation
+- **[Archive](../other/README.md)**: Historical documentation
 - **[Cognitive Phenomena](../cognitive_phenomena/README.md)**: Cognitive modeling applications
 
 ### Pipeline Architecture
@@ -108,7 +108,7 @@ All documentation in this module adheres to professional standards:
 ## See Also
 
 - **[Miscellaneous Cross-Reference](../CROSS_REFERENCE_INDEX.md#other)**: Cross-reference index entry
-- **[Archive](../archive/README.md)**: Historical documentation
+- **[Archive](../other/README.md)**: Historical documentation
 - **[Research Tools](../research/README.md)**: Research workflow tools
 - **[Main Index](../README.md)**: Return to main documentation
 

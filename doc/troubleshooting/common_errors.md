@@ -329,7 +329,7 @@ if not result.is_valid:
 
 If you're still stuck:
 
-1. **Check the examples** in `doc/archive/` for similar patterns
+1. **Check the examples** in `doc/other/` for similar patterns
 2. **Search GitHub Issues** for related problems
 3. **Post in GitHub Discussions** with:
    - Your GNN file (or minimal reproducing example)

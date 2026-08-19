@@ -151,7 +151,7 @@ This documentation connects to the GNN source code:
 | **[PyMDP Documentation](../pymdp/README.md)** | PyMDP integration guide |
 | **[RxInfer Documentation](../rxinfer/README.md)** | RxInfer.jl documentation |
 | **[POMDP Documentation](../pomdp/README.md)** | POMDP theoretical foundations |
-| **[DSPy Documentation](../archive/dspy/README.md)** | LLM programming for Active Inference |
+| **[DSPy Documentation](../other/dspy/README.md)** | LLM programming for Active Inference |
 
 ### Pipeline Integration
 

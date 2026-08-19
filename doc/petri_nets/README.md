@@ -2,7 +2,7 @@
 
 > **📋 Document Metadata**  
 > **Type**: Reference Guide | **Audience**: Researchers, Developers | **Complexity**: Advanced  
-> **Cross-References**: [AGENTS.md](AGENTS.md) | [Formal Methods](../archive/axiom/axiom_gnn.md) | [GNN Advanced Patterns](../gnn/advanced/advanced_modeling_patterns.md) | [Main Documentation](../README.md)
+> **Cross-References**: [AGENTS.md](AGENTS.md) | [Formal Methods](../other/axiom/axiom_gnn.md) | [GNN Advanced Patterns](../gnn/advanced/advanced_modeling_patterns.md) | [Main Documentation](../README.md)
 
 ## Overview
 
@@ -33,8 +33,8 @@ Petri net modeling enables:
 - **[learning_paths.md](../learning_paths.md)**: Learning pathways
 
 ### Related Directories
-- **[Formal Methods](../archive/axiom/axiom_gnn.md)**: Axiom formal verification framework
-- **[Nock Integration](../archive/nock/nock-gnn.md)**: Nock formal specification language
+- **[Formal Methods](../other/axiom/axiom_gnn.md)**: Axiom formal verification framework
+- **[Nock Integration](../other/nock/nock-gnn.md)**: Nock formal specification language
 - **[Advanced Patterns](../gnn/advanced/advanced_modeling_patterns.md)**: Advanced GNN modeling techniques
 - **[Multi-agent Systems](../gnn/advanced/gnn_multiagent.md)**: Multi-agent coordination patterns
 
@@ -163,8 +163,8 @@ Petri nets enable modeling of:
 - **[GNN Examples](../gnn/tutorials/gnn_examples_doc.md)**: Example models
 
 ### Formal Methods
-- **[Axiom Framework](../archive/axiom/axiom_gnn.md)**: Formal verification and theorem proving
-- **[Nock Integration](../archive/nock/nock-gnn.md)**: Formal specification language
+- **[Axiom Framework](../other/axiom/axiom_gnn.md)**: Formal verification and theorem proving
+- **[Nock Integration](../other/nock/nock-gnn.md)**: Formal specification language
 - **[Advanced Patterns](../gnn/advanced/advanced_modeling_patterns.md)**: Advanced modeling techniques
 
 ### Pipeline Architecture
@@ -190,7 +190,7 @@ All documentation in this module adheres to professional standards:
 
 - **[Petri Net Modeling](../CROSS_REFERENCE_INDEX.md#formal-methods-and-verification)**: Cross-reference index entry
 - **[Workflow Analysis](../gnn/reference/architecture_reference.md)**: Process analysis documentation
-- **[Formal Methods](../archive/axiom/axiom_gnn.md)**: Related formal verification approaches
+- **[Formal Methods](../other/axiom/axiom_gnn.md)**: Related formal verification approaches
 - **[Main Index](../README.md)**: Return to main documentation
 
 ---

@@ -2,7 +2,7 @@
 
 > **📋 Document Metadata**  
 > **Type**: Research Documentation | **Audience**: Researchers, Developers | **Complexity**: Advanced  
-> **Cross-References**: [Research Module](../../src/research/README.md) | [PoE-World Integration](../archive/poe-world/poe-world_gnn.md) | [Advanced Patterns](../gnn/advanced/advanced_modeling_patterns.md) | [Main Documentation](../README.md)
+> **Cross-References**: [Research Module](../../src/research/README.md) | [PoE-World Integration](../other/poe-world/poe-world_gnn.md) | [Advanced Patterns](../gnn/advanced/advanced_modeling_patterns.md) | [Main Documentation](../README.md)
 
 ## Overview
 
@@ -23,7 +23,7 @@ This directory contains comprehensive documentation for research tools and exper
 
 ### Related Directories
 - **[Research Module](../../src/research/README.md)**: Research tools and experimental features implementation
-- **[PoE-World Integration](../archive/poe-world/poe-world_gnn.md)**: Compositional world modeling
+- **[PoE-World Integration](../other/poe-world/poe-world_gnn.md)**: Compositional world modeling
 - **[Advanced Patterns](../gnn/advanced/advanced_modeling_patterns.md)**: Advanced GNN modeling techniques
 - **[LLM Integration](../gnn/advanced/gnn_llm_neurosymbolic_active_inference.md)**: LLM-enhanced analysis
 
@@ -94,7 +94,7 @@ See [src/AGENTS.md](../../src/AGENTS.md) for complete pipeline documentation.
 - **[Research Module](../../src/research/README.md)**: Research tools implementation
 
 ### Research Resources
-- **[PoE-World Integration](../archive/poe-world/poe-world_gnn.md)**: Compositional world modeling
+- **[PoE-World Integration](../other/poe-world/poe-world_gnn.md)**: Compositional world modeling
 - **[LLM Integration](../gnn/advanced/gnn_llm_neurosymbolic_active_inference.md)**: LLM-enhanced analysis
 - **[Cognitive Phenomena](../cognitive_phenomena/README.md)**: Cognitive phenomena research
 
@@ -115,7 +115,7 @@ All documentation in this module adheres to professional standards:
 ## See Also
 
 - **[Research Cross-Reference](../CROSS_REFERENCE_INDEX.md#research)**: Cross-reference index entry
-- **[PoE-World Integration](../archive/poe-world/poe-world_gnn.md)**: Compositional world modeling
+- **[PoE-World Integration](../other/poe-world/poe-world_gnn.md)**: Compositional world modeling
 - **[Advanced Patterns](../gnn/advanced/advanced_modeling_patterns.md)**: Advanced modeling techniques
 - **[Main Index](../README.md)**: Return to main documentation
 

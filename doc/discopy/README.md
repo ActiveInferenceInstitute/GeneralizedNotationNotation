@@ -27,7 +27,7 @@ This directory contains documentation, resources, and implementation guides for 
 - **[Advanced Patterns](../gnn/advanced/advanced_modeling_patterns.md)**: Advanced GNN modeling techniques
 - **[Category Theory](../gnn/advanced/advanced_modeling_patterns.md#category-theory)**: Category theory applications
 - **[Hierarchical Template](../templates/hierarchical_template.md)**: Hierarchical model templates
-- **[Formal Methods](../archive/axiom/axiom_gnn.md)**: Formal verification approaches
+- **[Formal Methods](../other/axiom/axiom_gnn.md)**: Formal verification approaches
 
 ### Pipeline Integration
 - **[Pipeline Documentation](../gnn/operations/gnn_tools.md)**: Complete pipeline guide
@@ -104,7 +104,7 @@ See [src/AGENTS.md](../../src/AGENTS.md) for complete pipeline documentation.
 
 ### Mathematical Foundations
 - **[Category Theory](../gnn/advanced/advanced_modeling_patterns.md#category-theory)**: Category theory applications
-- **[Formal Methods](../archive/axiom/axiom_gnn.md)**: Related formal verification approaches
+- **[Formal Methods](../other/axiom/axiom_gnn.md)**: Related formal verification approaches
 - **[Hierarchical Template](../templates/hierarchical_template.md)**: Hierarchical model templates
 
 ### Pipeline Architecture

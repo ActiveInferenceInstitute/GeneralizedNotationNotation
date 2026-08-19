@@ -350,7 +350,7 @@ By providing a rigorous yet flexible notation, GNN fosters reproducible, accessi
 - **[JAX Integration](implementations/jax.md)**: High-performance vector-space compilation
 - **[ActiveInference.jl](implementations/activeinference_jl.md)**: Discrete-state Julia POMDP simulation
 - **[Stan Integration](implementations/stan.md)**: Statistical modeling and probabilistic programming
-- **[CatColab Integration](../archive/catcolab/catcolab_gnn.md)**: Categorical compositional modeling
+- **[CatColab Integration](../other/catcolab/catcolab_gnn.md)**: Categorical compositional modeling
 
 ### Pipeline and Tools
 

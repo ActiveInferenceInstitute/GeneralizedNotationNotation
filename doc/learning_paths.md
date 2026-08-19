@@ -77,7 +77,7 @@ Same content as [Intermediate Path: Building and Integrating Models](#intermedia
    - Use MCP tools ([MCP Docs](mcp/gnn_mcp_model_context_protocol.md)).
    - Explore LLM enhancements ([LLM Integration](llm/README.md)).
    - Visualization tools: [GUI Oxdraw](gui_oxdraw/gnn_oxdraw.md) for visual model construction.
-   - Analysis tools: [OneFileLLM](archive/onefilellm/onefilellm_gnn.md), [Vec2Text](archive/vec2text/vec2text_gnn.md).
+   - Analysis tools: [OneFileLLM](other/onefilellm/onefilellm_gnn.md), [Vec2Text](other/vec2text/vec2text_gnn.md).
 
 4. **Testing and Troubleshooting**:
    - Run tests ([Testing Docs](testing/README.md)).
@@ -103,10 +103,10 @@ Same content as [Intermediate Path: Building and Integrating Models](#intermedia
 
 2. **Custom Development**:
    - Extend pipeline ([Development Docs](development/README.md)).
-   - Integrate with external tools (e.g., [SymPy](sympy/gnn_sympy.md), [DSPy](archive/dspy/gnn_dspy.md)).
-   - Formal methods: [Axiom](archive/axiom/axiom_gnn.md), [Petri Nets](petri_nets/README.md), [Nock](archive/nock/nock-gnn.md).
+   - Integrate with external tools (e.g., [SymPy](sympy/gnn_sympy.md), [DSPy](other/dspy/gnn_dspy.md)).
+   - Formal methods: [Axiom](other/axiom/axiom_gnn.md), [Petri Nets](petri_nets/README.md), [Nock](other/nock/nock-gnn.md).
    - Audio processing: [SAPF](sapf/sapf_gnn.md), [Pedalboard](pedalboard/pedalboard_gnn.md).
-   - Visualization: [D2 Diagramming](d2/gnn_d2.md), [Glowstick](archive/glowstick/glowstick_gnn.md), [GUI Oxdraw](gui_oxdraw/gnn_oxdraw.md).
+   - Visualization: [D2 Diagramming](d2/gnn_d2.md), [Glowstick](other/glowstick/glowstick_gnn.md), [GUI Oxdraw](gui_oxdraw/gnn_oxdraw.md).
 
 3. **Performance and Optimization**:
    - Metrics: [Resource Metrics](gnn/operations/resource_metrics.md).

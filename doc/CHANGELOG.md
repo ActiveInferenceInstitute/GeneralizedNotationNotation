@@ -23,9 +23,9 @@ This document tracks notable changes, additions, and improvements to the GNN doc
 
 - **doc/CHANGELOG.md** — Changelog for documentation updates
 - **doc/QUICK_REFERENCE.md** — Short command and pattern reference
-- **doc/archive/arc-agi/** — ARC-AGI model documentation
-- **doc/archive/cerebrum/** — Cerebrum integration notes
-- **doc/archive/muscle-mem/** — Muscle memory model documentation
+- **doc/other/arc-agi/** — ARC-AGI model documentation
+- **doc/other/cerebrum/** — Cerebrum integration notes
+- **doc/other/muscle-mem/** — Muscle memory model documentation
 
 #### Expanded documentation
 

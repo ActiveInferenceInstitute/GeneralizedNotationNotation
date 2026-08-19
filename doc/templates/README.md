@@ -47,7 +47,7 @@ This directory contains template files for different types of GNN models, provid
 - Temporal dynamics with detailed examples
 
 **Cross-References**:
-- *Example Applications*: [Butterfly Agent](../archive/gnn_example_butterfly_pheromone_agent.md) | [Trading Agent](../archive/gnn_airplane_trading_pomdp.md)
+- *Example Applications*: [Butterfly Agent](../other/gnn_example_butterfly_pheromone_agent.md) | [Trading Agent](../other/gnn_airplane_trading_pomdp.md)
 - *Framework Integration*: [PyMDP POMDP](../pymdp/gnn_pymdp.md#pomdp-examples) | [RxInfer POMDP](../rxinfer/gnn_rxinfer.md#pomdp-models)
 - *Advanced Patterns*: [Decision Theory](../gnn/advanced/advanced_modeling_patterns.md#decision-theory)
 
@@ -79,7 +79,7 @@ This directory contains template files for different types of GNN models, provid
 - Cross-level interactions with comprehensive modeling patterns
 
 **Cross-References**:
-- *Applications*: [Cerebrum Integration](../archive/cerebrum/gnn_cerebrum.md) | [Language Model](../archive/gnn_active_inference_language_model.md)
+- *Applications*: [Cerebrum Integration](../other/cerebrum/gnn_cerebrum.md) | [Language Model](../other/gnn_active_inference_language_model.md)
 - *Advanced Patterns*: [Hierarchical Modeling](../gnn/advanced/advanced_modeling_patterns.md#hierarchical-architectures)
 - *Framework Integration*: [RxInfer Hierarchical](../rxinfer/gnn_rxinfer.md#hierarchical-models) | [DisCoPy Composition](../discopy/gnn_discopy.md)
 
@@ -274,18 +274,18 @@ Each template includes metadata for automatic categorization:
 > **📚 Structured Progression**: Template-Based Learning
 
 ### Beginner Path
-1. **[Basic Template](basic_gnn_template.md)** → **[Static Perception Example](../archive/gnn_example_dynamic_perception.md)**
+1. **[Basic Template](basic_gnn_template.md)** → **[Static Perception Example](../other/gnn_example_dynamic_perception.md)**
 2. **[Syntax Reference](../gnn/reference/gnn_syntax.md)** → **[Type Checker](../gnn/operations/gnn_tools.md#validation-tools)**
 3. **[PyMDP Integration](../pymdp/gnn_pymdp.md#basic-examples)**
 
 ### Intermediate Path
-1. **[POMDP Template](pomdp_template.md)** → **[Butterfly Agent](../archive/gnn_example_butterfly_pheromone_agent.md)**
+1. **[POMDP Template](pomdp_template.md)** → **[Butterfly Agent](../other/gnn_example_butterfly_pheromone_agent.md)**
 2. **[Implementation Guide](../gnn/integration/gnn_implementation.md)** → **[Advanced Patterns](../gnn/advanced/advanced_modeling_patterns.md)**
 3. **Framework Choice**: [PyMDP POMDP](../pymdp/gnn_pymdp.md#pomdp-examples) or [RxInfer Navigation](../rxinfer/multiagent_trajectory_planning/)
 
 ### Advanced Path
 1. **[Multi-agent Template](multiagent_template.md)** → **[Multi-agent Theory](../gnn/advanced/gnn_multiagent.md)**
-2. **[Hierarchical Template](hierarchical_template.md)** → **[Cognitive Architectures](../archive/cerebrum/gnn_cerebrum.md)**
+2. **[Hierarchical Template](hierarchical_template.md)** → **[Cognitive Architectures](../other/cerebrum/gnn_cerebrum.md)**
 3. **[Research Applications](../gnn/advanced/gnn_llm_neurosymbolic_active_inference.md)**
 
 ## Related Documentation

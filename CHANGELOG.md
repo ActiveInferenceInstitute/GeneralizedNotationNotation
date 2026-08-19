@@ -230,7 +230,7 @@ Completes the remaining RED_TEAM_REVIEW.md items from the 2026-08-14 wave.
   (3,560 lines) is now a 380-line dispatcher over `_common` and per-kind
   strategy modules (`_strategies_{flat,continuous,factored,hierarchical,learning}`).
 - **`doc/` archive reorganization**: 19 topic directories moved to
-  `doc/archive/` (arc-agi, autogenlib, axiom, catcolab, cerebrum, dspy,
+  `doc/other/` (arc-agi, autogenlib, axiom, catcolab, cerebrum, dspy,
   glowstick, iroh, kit, klong, muscle-mem, nock, ntqr, onefilellm, poe-world,
   quadray, timep, vec2text, x402); cross-document links re-pointed; doc indexes,
   cross-reference index, and `expected_dirs.txt` updated (61 → 42 top-level

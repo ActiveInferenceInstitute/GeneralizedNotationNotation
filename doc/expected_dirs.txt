@@ -2,7 +2,6 @@ active_inference
 activeinference_jl
 advanced_visualization
 api
-archive
 audio
 bnlearn
 cognitive_phenomena

@@ -1107,9 +1107,9 @@ Explore practical GNN implementations and use cases:
 | Example | Description | Location |
 |---------|-------------|----------|
 | **🎯 PyMDP POMDP Agent** | Complete POMDP implementation | [`src/gnn/gnn_examples/actinf_pomdp_agent.md`](src/gnn/gnn_examples/actinf_pomdp_agent.md) |
-| **🔬 RxInfer Hidden Markov Model** | Probabilistic sequence modeling | [`doc/archive/rxinfer_hidden_markov_model.md`](doc/archive/rxinfer_hidden_markov_model.md) |
+| **🔬 RxInfer Hidden Markov Model** | Probabilistic sequence modeling | [`doc/other/rxinfer_hidden_markov_model.md`](doc/other/rxinfer_hidden_markov_model.md) |
 | **🧠 ActiveInference.jl Examples** | Julia-based Active Inference models | [`doc/activeinference_jl/actinf_jl_src/`](doc/activeinference_jl/actinf_jl_src/) |
-| **🤝 Multi-Agent System** | Collaborative agent modeling | [`doc/archive/rxinfer_multiagent_gnn.md`](doc/archive/rxinfer_multiagent_gnn.md) |
+| **🤝 Multi-Agent System** | Collaborative agent modeling | [`doc/other/rxinfer_multiagent_gnn.md`](doc/other/rxinfer_multiagent_gnn.md) |
 
 ### 🧠 Cognitive Phenomena Examples
 

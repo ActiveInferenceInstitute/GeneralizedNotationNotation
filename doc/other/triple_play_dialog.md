@@ -106,7 +106,7 @@ The deepest, dustiest back office of the "National Generative Model League" (NGM
 
 **Specs:** Three modalities? Like, fastball, curveball, changeup? That's a pitcher's triple play. My guy, `OldManEntropy`, he had a fourth one – the "Unexpected Free Energy Ball." Batsmen just… gave up. Walked back to the dugout questioning their `Priors`.
 
-**Abner:** No, Specs. The first modality is the **Text-Based Model**. That's the GNN file itself! Like `doc/archive/gnn_example_butterfly_pheromone_agent.md`. It's human-readable, machine-parsable. It's the blueprint.
+**Abner:** No, Specs. The first modality is the **Text-Based Model**. That's the GNN file itself! Like `doc/other/gnn_example_butterfly_pheromone_agent.md`. It's human-readable, machine-parsable. It's the blueprint.
 
 **Specs:** So, the playbook? The `gnn_syntax.md` that tells you how to signal for a bunt or a hit-and-run in the `Connections` block?
 

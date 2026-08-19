@@ -131,7 +131,7 @@ The human-oriented **documentation hub** is [README.md](README.md). Repository r
 - [LLM Integration](llm/README.md) - Language model integration
 - [MCP Protocol](mcp/README.md) - Model Context Protocol
 - [Audio Processing](audio/README.md) - Audio/SAPF integration
-- [DSPy](archive/dspy/README.md) - DSPy integration guide
+- [DSPy](other/dspy/README.md) - DSPy integration guide
 
 ### Development
 
@@ -164,13 +164,13 @@ The human-oriented **documentation hub** is [README.md](README.md). Repository r
 
 ### External Libraries
 
-- [Axiom](archive/axiom/README.md) - Axiom integration
-- [CatColab](archive/catcolab/README.md) - Category theory
-- [Cerebrum](archive/cerebrum/README.md) - Neural modeling
+- [Axiom](other/axiom/README.md) - Axiom integration
+- [CatColab](other/catcolab/README.md) - Category theory
+- [Cerebrum](other/cerebrum/README.md) - Neural modeling
 - [Petri Nets](petri_nets/README.md) - Petri net formalism
 - [SymPy](sympy/README.md) - Symbolic computation
-- [NTQR](archive/ntqr/README.md) - Quantum-inspired reasoning
-- [Quadray](archive/quadray/README.md) - Coordinate systems
+- [NTQR](other/ntqr/README.md) - Quantum-inspired reasoning
+- [Quadray](other/quadray/README.md) - Coordinate systems
 
 ### Research Notes
 
@@ -189,10 +189,9 @@ The human-oriented **documentation hub** is [README.md](README.md). Repository r
 
 ---
 
-## Archive
+## Other & Exploratory Research
 
-- [Archive](archive/) - Archived documentation
-- [Other](other/) - Miscellaneous documents
+- [Other](other/) - Exploratory research and evergreen experimental documents
 - [Releases](releases/README.md) - Release notes
 
 ---
@@ -205,7 +204,6 @@ doc/
 ├── activeinference_jl/  # ActiveInference.jl framework
 ├── advanced_visualization/
 ├── api/                 # API documentation
-├── archive/             # Archived docs
 ├── audio/               # Audio processing
 ├── bnlearn/             # bnlearn / Bayesian networks
 ├── cognitive_phenomena/ # Cognitive science models
@@ -222,7 +220,7 @@ doc/
 ├── gui_oxdraw/          # GUI/OxDraw
 ├── llm/                 # LLM integration
 ├── mcp/                 # MCP protocol
-├── other/               # Miscellaneous
+├── other/               # Evergreen exploratory research & prototypes
 ├── pedalboard/          # Audio effects
 ├── performance/         # Performance docs
 ├── petri_nets/          # Petri nets
