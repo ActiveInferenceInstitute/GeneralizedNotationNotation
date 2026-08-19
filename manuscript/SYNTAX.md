@@ -26,7 +26,7 @@ Use Pandoc citation syntax only, for example `[@real_key]`. Every key must exist
 Generated figures should live under `../output/figures/` and be referenced with labels such as:
 
 ```markdown
-![Caption text.](output/figures/example.png){#fig:example width=80%}
+![Caption text.](../output/figures/gnn_pipeline_dag.png){#fig:pipeline width=80%}
 ```
 
 ## Claims

@@ -48,7 +48,7 @@ This file is the **GitHub-oriented entry point**: GNN concepts, deep links into 
 
 **Typical outputs**
 
-- Per-step folders under [output/](../output/) (see root README directory overview). Policy: tracked in git per [AGENTS.md](AGENTS.md) / project conventions.
+- Per-step folders under [output/](../output/) (see root README directory overview). Policy: tracked in git per [AGENTS.md](../AGENTS.md) / project conventions.
 
 ```mermaid
 flowchart LR
