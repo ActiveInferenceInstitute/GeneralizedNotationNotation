@@ -229,6 +229,21 @@ class TestPipelineWarningsFix:
         # Should pass without warnings since all prerequisites exist
         assert result["passed"], "Prerequisite validation should pass"
 
+    def test_prerequisite_missing_execute_output_fails(self, tmp_path: Any) -> None:
+        """Test validation fails when 12_execute prerequisite is missing."""
+        output_dir = tmp_path / "output_missing_exec"
+        output_dir.mkdir()
+        gnn_output = output_dir / "3_gnn_output" / "test_model"
+        gnn_output.mkdir(parents=True)
+        (gnn_output / "test_model_parsed.json").write_text('{"ModelName": "test"}')
+        (output_dir / "7_export_output").mkdir()
+
+        args = _PipelineArgs(output_dir=output_dir)
+        logger = logging.getLogger("test")
+        result = validate_step_prerequisites("16_analysis.py", args, logger)
+        # 16_analysis depends on 3_gnn and 7_export, which exist
+        assert result["passed"]
+
     def test_readiness_uses_registered_gnn_extensions(self, tmp_path: Any) -> None:
         """Readiness should discover all parser-registered input extensions."""
         target_dir = tmp_path / "input"

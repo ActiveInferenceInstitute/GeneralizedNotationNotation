@@ -23,11 +23,14 @@ from gui.websocket_bridge import (
 
 
 def test_gui_websocket_message_types_are_explicit() -> None:
-    assert GUI_WEBSOCKET_MESSAGE_TYPES == {
+    assert GUI_WEBSOCKET_MESSAGE_TYPES >= {
         "model.load",
         "matrix.patch",
         "validation.result",
         "model.export",
+        "simulation.tick",
+        "state.update",
+        "matrix.heatmap",
         "error",
     }
 
@@ -38,6 +41,27 @@ def test_gui_websocket_message_round_trips() -> None:
     )
     parsed = GUIWebSocketMessage.from_json(message.to_json())
     assert parsed == message
+
+
+def test_gui_websocket_streaming_messages() -> None:
+    """Test simulation.tick, state.update, and matrix.heatmap message structures."""
+    tick_msg = GUIWebSocketMessage(
+        type="simulation.tick",
+        payload={"timestep": 1, "observation": 0, "action": 1},
+    )
+    assert GUIWebSocketMessage.from_json(tick_msg.to_json()) == tick_msg
+
+    state_msg = GUIWebSocketMessage(
+        type="state.update",
+        payload={"state": 2, "beliefs": [0.1, 0.9]},
+    )
+    assert GUIWebSocketMessage.from_json(state_msg.to_json()) == state_msg
+
+    heatmap_msg = GUIWebSocketMessage(
+        type="matrix.heatmap",
+        payload={"matrix": "A", "shape": [2, 2]},
+    )
+    assert GUIWebSocketMessage.from_json(heatmap_msg.to_json()) == heatmap_msg
 
 
 def test_gui_websocket_rejects_unknown_type() -> None:

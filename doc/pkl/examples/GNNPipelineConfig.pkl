@@ -1,106 +1,114 @@
 /// GNN Pipeline Configuration
 /// Demonstrates dynamic configuration and late binding
+module GNNPipelineConfig
 
-// Pipeline steps configuration schema
-stepConfigSchema = new {
-  enabled = true
-  timeoutSeconds = 30
-  retries = 3
-  priority = "medium"
+import "pkl:platform"
+
+/// Pipeline steps configuration
+class StepConfig {
+  enabled: Boolean = true
+  timeout: Duration = 30.s
+  retries: Int(isBetween(0, 5)) = 3
+  priority: "low" | "medium" | "high" = "medium"
 }
 
-// Export target schema
-exportTargetSchema = new {
-  format = "json"
-  pretty = true
-  validate = true
-  outputPath = ""
+/// Export target configuration
+class ExportTarget {
+  format: "json" | "yaml" | "xml" | "graphml" | "csv"
+  pretty: Boolean = true
+  validate: Boolean = true
+  outputPath: String?
 }
 
-// Main pipeline configuration
-inputFormats = List("pkl", "markdown", "json")
+/// Rendering engine configuration
+class RenderingEngine {
+  target: "pymdp" | "rxinfer" | "jax" | "custom"
+  optimizationLevel: Int(isBetween(0, 3)) = 2
+  includeComments: Boolean = true
+  typeHints: Boolean = true
+}
 
-// Pipeline steps configuration
-steps = new {
-  gnn_parse = new {
+/// LLM integration configuration
+class LLMConfig {
+  provider: "openai" | "anthropic" | "local"
+  model: String
+  temperature: Float(isBetween(0.0, 2.0)) = 0.1
+  maxTokens: Int(isBetween(100, 10000)) = 4000
+  enhancementTasks: List<String>
+}
+
+/// Main pipeline configuration
+inputFormats: List<String> = ["pkl", "markdown", "json"]
+
+/// Pipeline steps with late binding
+steps: Mapping<String, StepConfig> = new {
+  ["gnn_parse"] = new StepConfig {
     enabled = true
-    timeoutSeconds = 30
-    retries = 3
+    timeout = 30.s
+  }
+  ["validation"] = new StepConfig {
+    enabled = true
+    timeout = 60.s
     priority = "high"
   }
-  validation = new {
+  ["export"] = new StepConfig {
     enabled = true
-    timeoutSeconds = 60
-    retries = 2
-    priority = "high"
+    timeout = 45.s
   }
-  export = new {
-    enabled = true
-    timeoutSeconds = 45
-    retries = 1
-    priority = "medium"
+  ["render"] = new StepConfig {
+    enabled = exportTargets.any { it.format != "json" }  // Late binding
+    timeout = (renderingEngines.length * 30).s  // Dynamic timeout
   }
-  render = new {
-    enabled = true
-    timeoutSeconds = 90
-    retries = 2
-    priority = "medium"
-  }
-  visualization = new {
-    enabled = true
-    timeoutSeconds = 120
-    retries = 1
-    priority = "low"
+  ["visualization"] = new StepConfig {
+    enabled = platform.current.os.name != "windows"  // Platform-specific
+    timeout = 120.s
   }
 }
 
-// Export targets configuration
-exportTargets = new {
-  json = new {
+/// Export targets with validation
+exportTargets: List<ExportTarget> = new {
+  new ExportTarget {
     format = "json"
     pretty = true
     outputPath = "output/model.json"
   }
-  yaml = new {
+  new ExportTarget {
     format = "yaml"
     pretty = true
     outputPath = "output/model.yaml"
   }
-  xml = new {
+  new ExportTarget {
     format = "xml"
     validate = true
     outputPath = "output/model.xml"
   }
-  graphml = new {
+  new ExportTarget {
     format = "graphml"
     outputPath = "output/model.graphml"
   }
 }
 
-// Rendering engines configuration
-renderingEngines = new {
-  pymdp = new {
+/// Rendering engines configuration
+renderingEngines: List<RenderingEngine> = new {
+  new RenderingEngine {
     target = "pymdp"
     optimizationLevel = 2
     includeComments = true
-    typeHints = true
   }
-  rxinfer = new {
+  new RenderingEngine {
     target = "rxinfer"
     optimizationLevel = 3
-    includeComments = false
     typeHints = true
   }
-  jax = new {
+  new RenderingEngine {
     target = "jax"
     optimizationLevel = 3
     includeComments = false
-    typeHints = true
   }
 }
 
-// LLM enhancement configuration
-llmConfig = new {
+/// LLM enhancement configuration
+llmConfig: LLMConfig? = new {
   provider = "openai"
   model = "gpt-4"
   temperature = 0.1
@@ -112,42 +120,46 @@ llmConfig = new {
   )
 }
 
-// Resource constraints
-resourceConstraints = new {
-  maxMemoryMB = 1024
-  maxExecutionTimeMin = 30
-  parallelWorkers = 4
-  tempDiskSpaceMB = 2048
+/// Resource constraints with dynamic calculation
+resourceConstraints: Mapping<String, Any> = new {
+  ["maxMemoryMB"] = exportTargets.length * 256  // Scale with exports
+  ["maxExecutionTimeMin"] = steps.values.map { it.timeout.value }.sum() / 60
+  ["parallelWorkers"] = platform.current.availableProcessors
+  ["tempDiskSpaceMB"] = renderingEngines.length * 512
 }
 
-// Validation rules
-validationRules = new {
-  strictTypeChecking = true
-  allowExperimentalFeatures = false
-  requireDocumentation = true
-  enforceNamingConventions = true
-  validateMathematicalConstraints = true
+/// Validation rules
+validationRules: Mapping<String, Any> = new {
+  ["strictTypeChecking"] = true
+  ["allowExperimentalFeatures"] = false
+  ["requireDocumentation"] = llmConfig != null
+  ["enforceNamingConventions"] = true
+  ["validateMathematicalConstraints"] = true
 }
 
-// Security configuration
-securityConfig = new {
-  sandboxExecution = true
-  allowNetworkAccess = false
-  allowFileWrite = true
-  maxFileSize = "10MB"
-  allowedFileTypes = List("pkl", "json", "yaml", "md")
+/// Security configuration
+securityConfig: Mapping<String, Any> = new {
+  ["sandboxExecution"] = true
+  ["allowNetworkAccess"] = false
+  ["allowFileWrite"] = true
+  ["maxFileSize"] = "10MB"
+  ["allowedFileTypes"] = List("pkl", "json", "yaml", "md")
 }
 
-// Performance optimization settings
-performanceConfig = new {
-  enableCaching = true
-  cacheDirectory = ".pkl-cache"
-  parallelProcessing = true
-  lazyEvaluation = true
-  memoryOptimization = true
+/// Performance optimization settings
+performanceConfig: Mapping<String, Any> = new {
+  ["enableCaching"] = true
+  ["cacheDirectory"] = ".pkl-cache"
+  ["parallelProcessing"] = true
+  ["lazyEvaluation"] = true
+  ["memoryOptimization"] = true
 }
 
-// Output configuration
+/// Output configuration
 output {
-  renderer = new YamlRenderer {}
+  renderer = new YamlRenderer {
+    converters {
+      [Duration] = (it) -> "\(it.value)\(it.unit)"
+    }
+  }
 }

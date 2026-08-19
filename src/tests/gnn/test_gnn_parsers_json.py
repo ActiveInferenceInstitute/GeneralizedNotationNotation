@@ -146,15 +146,34 @@ class TestParseConnections:
                 "model_name": "M",
                 "connections": [
                     {
-                        "source_variables": ["s"],
-                        "target_variables": ["o"],
-                        "connection_type": "weird_type",
+                        "source": "a",
+                        "target": "b",
+                        "connection_type": "some_unknown_type",
                     }
                 ],
             }
         )
         result = parser.parse_string(content)
         assert result.model.connections[0].connection_type == ConnectionType.DIRECTED
+
+
+class TestPKLNativeParserIntegration:
+    """Test PKL native parsing hook integration."""
+
+    def test_pkl_parser_eval_hook(self) -> None:
+        from gnn.parsers.schema_parser import PKLParser
+
+        pkl_parser = PKLParser()
+        content = """
+        class MyModel {
+          model_name = "PklActiveInference"
+          state_dim = 4
+        }
+        """
+        result = pkl_parser.parse_string(content)
+        assert result.success is True
+        assert result.model.model_name in ("MyModel", "PklActiveInference")
+        assert result.metadata.get("format") == "pkl"
 
 
 # ── get_supported_extensions ───────────────────────────────────────────────

@@ -456,6 +456,19 @@ def process_model_registry(
         if registry.register_model(gnn_file):
             successful_registrations += 1
 
+    # Filter models by ontology term if requested
+    query_ontology = kwargs.get("query_ontology")
+    matching_models = list(registry.models.keys())
+    if query_ontology and isinstance(query_ontology, str):
+        query_term = query_ontology.lower()
+        filtered: dict[str, Any] = {}
+        for mid, mdata in registry.models.items():
+            content_str = str(mdata).lower()
+            if query_term in content_str:
+                filtered[mid] = mdata
+        registry.models = filtered
+        matching_models = list(filtered.keys())
+
     # Save registry
     registry.save()
 
@@ -466,6 +479,7 @@ def process_model_registry(
         "successful_registrations": successful_registrations,
         "registry_path": str(registry_path),
         "total_models": len(registry.models),
+        "matching_models": matching_models,
     }
 
     return results

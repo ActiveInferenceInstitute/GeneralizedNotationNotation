@@ -11,6 +11,7 @@ License: MIT
 
 import logging
 import re
+import shutil
 from typing import Any, cast
 
 try:
@@ -708,6 +709,7 @@ class PKLParser(BaseGNNParser):
                         result.model.parameters.append(parameter)
 
             result.model.annotation = "Parsed from Apple PKL configuration"
+            result.metadata["format"] = "pkl"
 
         except Exception as e:
             result.add_error(f"PKL parsing error: {e}")
@@ -784,10 +786,21 @@ class PKLParser(BaseGNNParser):
             model = GNNInternalRepresentation(model_name="PKLGNNModel")
             errors: list[Any] = []
             warnings: list[Any] = []
+            metadata: dict[str, Any] = {
+                "format": "pkl",
+                "source_file": str(file_path) if file_path else None,
+            }
 
             # Parse model metadata
             model_name = self._extract_pkl_model_name(content)
             model.model_name = model_name or "PKLGNNModel"
+
+            # Attempt native pkl compiler evaluation if pkl binary is available
+            native_eval = self._eval_pkl_native(content, file_path)
+            if native_eval and isinstance(native_eval, dict):
+                metadata["pkl_native_eval"] = True
+                if "model_name" in native_eval:
+                    model.model_name = str(native_eval["model_name"])
 
             # Parse model annotation from comments
             model.annotation = self._extract_pkl_annotation(content)
@@ -832,10 +845,7 @@ class PKLParser(BaseGNNParser):
                 success=success,
                 errors=errors,
                 warnings=warnings,
-                metadata={
-                    "format": "pkl",
-                    "source_file": str(file_path) if file_path else None,
-                },
+                metadata=metadata,
             )
 
         except Exception as e:
@@ -846,6 +856,38 @@ class PKLParser(BaseGNNParser):
                 warnings=[],
                 metadata={"format": "pkl"},
             )
+
+    def _eval_pkl_native(
+        self, content: str, file_path: Optional[Path] = None
+    ) -> Optional[Dict[str, Any]]:
+        """Evaluate PKL content natively using `pkl eval -f json` if CLI is installed."""
+        pkl_bin = shutil.which("pkl")
+        if not pkl_bin:
+            return None
+        try:
+            import json
+            import subprocess
+            import tempfile
+
+            if file_path and file_path.exists():
+                cmd = [pkl_bin, "eval", "-f", "json", str(file_path)]
+                res = subprocess.run(cmd, capture_output=True, text=True, timeout=10)
+                if res.returncode == 0 and res.stdout.strip():
+                    return cast("Dict[str, Any]", json.loads(res.stdout))
+            else:
+                with tempfile.NamedTemporaryFile("w", suffix=".pkl", delete=False) as tf:
+                    tf.write(content)
+                    tf_path = tf.name
+                try:
+                    cmd = [pkl_bin, "eval", "-f", "json", tf_path]
+                    res = subprocess.run(cmd, capture_output=True, text=True, timeout=10)
+                    if res.returncode == 0 and res.stdout.strip():
+                        return cast("Dict[str, Any]", json.loads(res.stdout))
+                finally:
+                    Path(tf_path).unlink(missing_ok=True)
+        except Exception as e:
+            logger.debug(f"Pkl native eval exception: {e}")
+        return None
 
     def _extract_pkl_model_name(self, content: str) -> Optional[str]:
         """Extract model name from PKL content."""

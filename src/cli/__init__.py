@@ -44,6 +44,21 @@ from typing import List, Optional
 logger = logging.getLogger(__name__)
 
 
+def _envelope(
+    status: str,
+    data: Any = None,
+    error: Optional[str] = None,
+    meta: Optional[dict[str, Any]] = None,
+) -> dict[str, Any]:
+    """Format output matching standard CLI envelope schema."""
+    return {
+        "status": status,
+        "data": data if data is not None else {},
+        "error": error,
+        "meta": meta or {"version": __version__},
+    }
+
+
 def main(argv: Optional[List[str]] = None) -> int:
     """CLI entrypoint."""
     parser = argparse.ArgumentParser(
@@ -81,12 +96,18 @@ def main(argv: Optional[List[str]] = None) -> int:
     validate_p = subparsers.add_parser("validate", help="Validate a GNN file")
     validate_p.add_argument("file", type=Path, help="GNN file to validate")
     validate_p.add_argument("--strict", action="store_true", help="Fail on warnings")
+    validate_p.add_argument(
+        "--json", action="store_true", help="Output standard JSON envelope"
+    )
 
     # ── gnn parse ────────────────────────────────────────────────────────────
     parse_p = subparsers.add_parser("parse", help="Parse a GNN file and output JSON")
     parse_p.add_argument("file", type=Path, help="GNN file to parse")
     parse_p.add_argument(
         "--format", choices=["json", "yaml", "summary"], default="json"
+    )
+    parse_p.add_argument(
+        "--json", action="store_true", help="Output standard JSON envelope"
     )
 
     # ── gnn render ───────────────────────────────────────────────────────────
@@ -118,6 +139,9 @@ def main(argv: Optional[List[str]] = None) -> int:
     report_p.add_argument(
         "--output-dir", "-o", default="output", help="Pipeline output directory"
     )
+    report_p.add_argument(
+        "--json", action="store_true", help="Output standard JSON envelope"
+    )
 
     # ── gnn reproduce ────────────────────────────────────────────────────────
     reproduce_p = subparsers.add_parser(
@@ -138,6 +162,9 @@ def main(argv: Optional[List[str]] = None) -> int:
     preflight_p.add_argument(
         "--config", type=Path, default=None, help="Config file path"
     )
+    preflight_p.add_argument(
+        "--json", action="store_true", help="Output standard JSON envelope"
+    )
 
     # ── gnn health ───────────────────────────────────────────────────────────
     health_p = subparsers.add_parser("health", help="Show renderer & dependency status")
@@ -145,6 +172,9 @@ def main(argv: Optional[List[str]] = None) -> int:
         "--strict",
         action="store_true",
         help="Exit nonzero when environment preflight reports errors",
+    )
+    health_p.add_argument(
+        "--json", action="store_true", help="Output standard JSON envelope"
     )
 
     # ── gnn serve ────────────────────────────────────────────────────────────
@@ -157,9 +187,18 @@ def main(argv: Optional[List[str]] = None) -> int:
     templates_sub = templates_p.add_subparsers(
         dest="templates_command", help="Template commands"
     )
-    templates_sub.add_parser("list", help="List available templates")
+    templates_list_p = templates_sub.add_parser("list", help="List available templates")
+    templates_list_p.add_argument(
+        "--json", action="store_true", help="Output standard JSON envelope"
+    )
     templates_show_p = templates_sub.add_parser("show", help="Show one template")
     templates_show_p.add_argument("name", help="Template name")
+    templates_show_p.add_argument(
+        "--json", action="store_true", help="Output standard JSON envelope"
+    )
+    templates_p.add_argument(
+        "--json", action="store_true", help="Output standard JSON envelope"
+    )
 
     # ── gnn pull ────────────────────────────────────────────────────────────
     pull_p = subparsers.add_parser("pull", help="Copy a maintained GNN template")
@@ -177,6 +216,9 @@ def main(argv: Optional[List[str]] = None) -> int:
         action="store_true",
         help="Replace destination on checksum mismatch",
     )
+    pull_p.add_argument(
+        "--json", action="store_true", help="Output standard JSON envelope"
+    )
 
     # ── gnn watch ────────────────────────────────────────────────────────────
     watch_p = subparsers.add_parser(
@@ -193,6 +235,9 @@ def main(argv: Optional[List[str]] = None) -> int:
     graph_p.add_argument("file", type=Path, help="GNN file to render")
     graph_p.add_argument(
         "--format", choices=["mermaid", "text"], default="mermaid", help="Output format"
+    )
+    graph_p.add_argument(
+        "--json", action="store_true", help="Output standard JSON envelope"
     )
 
     # ── gnn lsp ──────────────────────────────────────────────────────────────
@@ -270,8 +315,11 @@ def _cmd_run(args: Any) -> Any:
 
 def _cmd_validate(args: Any) -> Any:
     """Validate a GNN file."""
+    is_json = getattr(args, "json", False)
     if not args.file.exists():
         logger.error(f"File not found: {args.file}")
+        if is_json:
+            print(json.dumps(_envelope("error", error=f"File not found: {args.file}"), indent=2))
         return 1
 
     content = args.file.read_text(encoding="utf-8")
@@ -307,24 +355,62 @@ def _cmd_validate(args: Any) -> Any:
 
     # Output
     if errors:
-        for e in errors:
-            print(f"  {e}")
+        if is_json:
+            print(
+                json.dumps(
+                    _envelope(
+                        "warning" if not args.strict else "error",
+                        data={
+                            "valid": False,
+                            "errors": [str(e) for e in errors],
+                            "variables_count": len(variables),
+                            "connections_count": len(connections),
+                        },
+                        error=f"{len(errors)} error(s) found",
+                    ),
+                    indent=2,
+                )
+            )
+        else:
+            for e in errors:
+                print(f"  {e}")
+            if args.strict:
+                print(f"\n❌ {len(errors)} error(s) found")
+            else:
+                print(f"\n⚠️ {len(errors)} warning(s) — pass --strict to fail")
         if args.strict:
-            print(f"\n❌ {len(errors)} error(s) found")
             return 1
-        print(f"\n⚠️ {len(errors)} warning(s) — pass --strict to fail")
         return 0
     else:
-        print(
-            f"✅ {file_name}: valid ({len(variables)} variables, {len(connections)} connections)"
-        )
+        if is_json:
+            print(
+                json.dumps(
+                    _envelope(
+                        "success",
+                        data={
+                            "valid": True,
+                            "file": file_name,
+                            "variables_count": len(variables),
+                            "connections_count": len(connections),
+                        },
+                    ),
+                    indent=2,
+                )
+            )
+        else:
+            print(
+                f"✅ {file_name}: valid ({len(variables)} variables, {len(connections)} connections)"
+            )
         return 0
 
 
 def _cmd_parse(args: Any) -> Any:
     """Parse a GNN file and output JSON."""
+    is_json = getattr(args, "json", False)
     if not args.file.exists():
         logger.error(f"File not found: {args.file}")
+        if is_json:
+            print(json.dumps(_envelope("error", error=f"File not found: {args.file}"), indent=2))
         return 1
 
     content = args.file.read_text(encoding="utf-8")
@@ -370,7 +456,9 @@ def _cmd_parse(args: Any) -> Any:
         ],
     }
 
-    if args.format == "summary":
+    if is_json:
+        print(json.dumps(_envelope("success", data=result), indent=2))
+    elif args.format == "summary":
         print(f"File: {args.file.name}")
         print(f"Variables: {len(variables)}")
         print(f"Connections: {len(connections)}")
@@ -490,9 +578,12 @@ def _find_render_artifact(render_dir: Path, framework: str) -> Path | None:
 
 def _cmd_report(args: Any) -> Any:
     """Generate pipeline report from existing outputs."""
+    is_json = getattr(args, "json", False)
     output_dir = Path(args.output_dir)
     if not output_dir.exists():
         logger.error(f"Output directory not found: {output_dir}")
+        if is_json:
+            print(json.dumps(_envelope("error", error=f"Output directory not found: {output_dir}"), indent=2))
         return 1
 
     from report.pipeline_report import generate_pipeline_report
@@ -504,7 +595,10 @@ def _cmd_report(args: Any) -> Any:
     ) as tmp_f:
         tmp_f.write(report)
     os.replace(tmp_f.name, str(report_path))
-    print(f"📄 Report written to: {report_path}")
+    if is_json:
+        print(json.dumps(_envelope("success", data={"report_path": str(report_path), "report_chars": len(report)}), indent=2))
+    else:
+        print(f"📄 Report written to: {report_path}")
     return 0
 
 
@@ -561,35 +655,72 @@ def _cmd_reproduce(args: Any) -> Any:
 
 def _cmd_preflight(args: Any) -> Any:
     """Run environment & config checks."""
+    is_json = getattr(args, "json", False)
     from pipeline.preflight import run_preflight
 
     report = run_preflight(config_path=args.config)
-    print(report.to_markdown())
+    if is_json:
+        data = {
+            "checks_passed": report.checks_passed,
+            "checks_failed": report.checks_failed,
+            "is_ok": report.is_ok,
+            "issues": [
+                {
+                    "category": getattr(i, "category", "general"),
+                    "severity": getattr(i, "severity", "warning"),
+                    "message": getattr(i, "message", str(i)),
+                }
+                for i in report.issues
+            ],
+        }
+        print(json.dumps(_envelope("success" if report.is_ok else "warning", data=data), indent=2))
+    else:
+        print(report.to_markdown())
     return 0 if report.is_ok else 1
 
 
 def _cmd_health(args: Any) -> Any:
     """Show renderer & dependency status."""
+    is_json = getattr(args, "json", False)
     from pipeline.preflight import check_environment
     from render.health import check_renderers
 
     renderers = check_renderers()
     env = check_environment()
 
-    print("🔧 Renderer generator modules:")
-    for name, status in sorted(renderers.items()):
-        emoji = "🟢" if status.available else "🔴"
-        print(f"  {emoji} {name}")
+    if is_json:
+        data = {
+            "renderers": {name: status.to_dict() for name, status in renderers.items()},
+            "environment": {
+                "checks_passed": env.checks_passed,
+                "checks_failed": env.checks_failed,
+                "is_ok": env.is_ok,
+                "issues": [
+                    {
+                        "category": getattr(i, "category", "general"),
+                        "severity": getattr(i, "severity", "warning"),
+                        "message": getattr(i, "message", str(i)),
+                    }
+                    for i in env.issues
+                ],
+            },
+        }
+        print(json.dumps(_envelope("success" if env.is_ok else "warning", data=data), indent=2))
+    else:
+        print("🔧 Renderer generator modules:")
+        for name, status in sorted(renderers.items()):
+            emoji = "🟢" if status.available else "🔴"
+            print(f"  {emoji} {name}")
 
-    available = sum(1 for r in renderers.values() if r.available)
-    print(f"\n  {available}/{len(renderers)} generator modules importable")
-    print(f"\n🏗️ Environment: {env.checks_passed} passed, {env.checks_failed} failed")
-    for issue in env.issues:
-        sev = "⚠️" if issue.severity != "error" else "❌"
-        print(f"  {sev} {issue.message}")
+        available = sum(1 for r in renderers.values() if r.available)
+        print(f"\n  {available}/{len(renderers)} generator modules importable")
+        print(f"\n🏗️ Environment: {env.checks_passed} passed, {env.checks_failed} failed")
+        for issue in env.issues:
+            sev = "⚠️" if issue.severity != "error" else "❌"
+            print(f"  {sev} {issue.message}")
 
-    if env.checks_failed and not args.strict:
-        print("\nDefault health is informational; pass --strict to fail on errors.")
+        if env.checks_failed and not args.strict:
+            print("\nDefault health is informational; pass --strict to fail on errors.")
 
     return 1 if args.strict and not env.is_ok else 0
 
@@ -610,14 +741,26 @@ def _cmd_templates(args: Any) -> Any:
     """Inspect the maintained template library."""
     from .templates import list_templates, show_template
 
+    is_json = getattr(args, "json", False)
+
     if getattr(args, "templates_command", None) in {None, "list"}:
-        print(json.dumps({"templates": list_templates()}, indent=2))
+        templates = list_templates()
+        if is_json:
+            print(json.dumps(_envelope("success", data={"templates": templates}), indent=2))
+        else:
+            print(json.dumps({"templates": templates}, indent=2))
         return 0
     if args.templates_command == "show":
         try:
-            print(json.dumps({"template": show_template(args.name)}, indent=2))
+            tmpl = show_template(args.name)
+            if is_json:
+                print(json.dumps(_envelope("success", data={"template": tmpl}), indent=2))
+            else:
+                print(json.dumps({"template": tmpl}, indent=2))
         except KeyError as exc:
             logger.error(str(exc))
+            if is_json:
+                print(json.dumps(_envelope("error", error=str(exc)), indent=2))
             return 1
         return 0
     return 1
@@ -627,6 +770,7 @@ def _cmd_pull(args: Any) -> Any:
     """Copy a maintained template into an input directory."""
     from .templates import pull_template
 
+    is_json = getattr(args, "json", False)
     try:
         result = pull_template(
             args.name,
@@ -636,8 +780,14 @@ def _cmd_pull(args: Any) -> Any:
         )
     except (KeyError, FileExistsError, FileNotFoundError, OSError) as exc:
         logger.error(str(exc))
+        if is_json:
+            print(json.dumps(_envelope("error", error=str(exc)), indent=2))
         return 1
-    print(json.dumps(result, indent=2))
+
+    if is_json:
+        print(json.dumps(_envelope("success", data=result), indent=2))
+    else:
+        print(json.dumps(result, indent=2))
     return 0
 
 
@@ -668,17 +818,25 @@ def _cmd_watch(args: Any) -> Any:
 
 def _cmd_graph(args: Any) -> Any:
     """Generate dependency graph from multi-model files."""
+    is_json = getattr(args, "json", False)
     if not args.file.exists():
         logger.error(f"File not found: {args.file}")
+        if is_json:
+            print(json.dumps(_envelope("error", error=f"File not found: {args.file}"), indent=2))
         return 1
 
     try:
         from gnn.dep_graph import render_graph_from_file
 
         output = render_graph_from_file(str(args.file), output_format=args.format)
-        print(output)
+        if is_json:
+            print(json.dumps(_envelope("success", data={"file": str(args.file), "graph": output, "format": args.format}), indent=2))
+        else:
+            print(output)
     except ImportError as e:
         logger.error(f"Could not import graph generator: {e}")
+        if is_json:
+            print(json.dumps(_envelope("error", error=f"Could not import graph generator: {e}"), indent=2))
         return 1
     return 0
 

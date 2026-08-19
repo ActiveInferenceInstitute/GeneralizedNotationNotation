@@ -19,7 +19,7 @@ Usage:
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Dict, List, Optional
+from typing import Any, Dict, List, Optional
 
 
 @dataclass(frozen=True)
@@ -30,6 +30,7 @@ class StepInfo:
     description: str  # e.g. "Code rendering"
     module_function: str  # e.g. "process_render"
     tags: frozenset[str] = frozenset(("core",))
+    stage: str = "core"  # logical stage: discovery, export_viz, simulation, intelligence, presentation
     default_recursive: bool = False
     additional_args_key: str = ""  # key into STEP_ADDITIONAL_ARGUMENTS if any
 
@@ -53,12 +54,14 @@ STEPS: List[StepInfo] = [
         "Template initialization",
         "process_template_standardized",
         frozenset({"core"}),
+        stage="discovery_schema",
     ),
     StepInfo(
         "1_setup",
         "Environment setup",
         "setup_orchestrator",
         frozenset({"core"}),
+        stage="discovery_schema",
         additional_args_key="1_setup",
     ),
     StepInfo(
@@ -66,48 +69,86 @@ STEPS: List[StepInfo] = [
         "Test suite execution",
         "_test_runner_wrapper",
         frozenset({"core", "tests"}),
+        stage="discovery_schema",
     ),
     StepInfo(
-        "3_gnn", "GNN file processing", "process_gnn_multi_format", frozenset({"core"})
+        "3_gnn",
+        "GNN file processing",
+        "process_gnn_multi_format",
+        frozenset({"core"}),
+        stage="discovery_schema",
     ),
     StepInfo(
         "4_model_registry",
         "Model registry",
         "process_model_registry",
         frozenset({"core"}),
+        stage="discovery_schema",
     ),
     StepInfo(
         "5_type_checker",
         "Type checking",
         "_type_check_dispatch",
         frozenset({"core"}),
+        stage="discovery_schema",
         additional_args_key="5_type_checker",
     ),
-    StepInfo("6_validation", "Validation", "process_validation", frozenset({"core"})),
-    StepInfo("7_export", "Multi-format export", "process_export", frozenset({"core"})),
     StepInfo(
-        "8_visualization", "Visualization", "process_visualization", frozenset({"core"})
+        "6_validation",
+        "Validation",
+        "process_validation",
+        frozenset({"core"}),
+        stage="discovery_schema",
+    ),
+    StepInfo(
+        "7_export",
+        "Multi-format export",
+        "process_export",
+        frozenset({"core"}),
+        stage="export_static_viz",
+    ),
+    StepInfo(
+        "8_visualization",
+        "Visualization",
+        "process_visualization",
+        frozenset({"core"}),
+        stage="export_static_viz",
     ),
     StepInfo(
         "9_advanced_viz",
         "Advanced visualization",
         "process_advanced_viz",
         frozenset({"core"}),
+        stage="export_static_viz",
     ),
     StepInfo(
         "10_ontology",
         "Ontology processing",
         "process_ontology",
         frozenset({"core"}),
+        stage="export_static_viz",
         additional_args_key="10_ontology",
     ),
-    StepInfo("11_render", "Code rendering", "process_render", frozenset({"core"})),
-    StepInfo("12_execute", "Execution", "process_execute", frozenset({"core"})),
+    StepInfo(
+        "11_render",
+        "Code rendering",
+        "process_render",
+        frozenset({"core"}),
+        stage="simulation_execution",
+    ),
+    StepInfo(
+        "12_execute",
+        "Execution",
+        "process_execute",
+        frozenset({"core"}),
+        stage="simulation_execution",
+    ),
     StepInfo(
         "13_llm",
         "LLM processing",
         "process_llm",
         frozenset({"llm"}),
+        stage="intelligence_analysis",
         additional_args_key="13_llm",
     ),
     StepInfo(
@@ -115,19 +156,49 @@ STEPS: List[StepInfo] = [
         "ML integration",
         "process_ml_integration",
         frozenset({"core"}),
+        stage="intelligence_analysis",
     ),
-    StepInfo("15_audio", "Audio processing", "process_audio", frozenset({"core"})),
-    StepInfo("16_analysis", "Analysis", "process_analysis", frozenset({"core"})),
     StepInfo(
-        "17_integration", "Integration", "process_integration", frozenset({"core"})
+        "15_audio",
+        "Audio processing",
+        "process_audio",
+        frozenset({"core"}),
+        stage="simulation_execution",
     ),
-    StepInfo("18_security", "Security", "process_security", frozenset({"core"})),
-    StepInfo("19_research", "Research", "process_research", frozenset({"core"})),
+    StepInfo(
+        "16_analysis",
+        "Analysis",
+        "process_analysis",
+        frozenset({"core"}),
+        stage="simulation_execution",
+    ),
+    StepInfo(
+        "17_integration",
+        "Integration",
+        "process_integration",
+        frozenset({"core"}),
+        stage="intelligence_analysis",
+    ),
+    StepInfo(
+        "18_security",
+        "Security",
+        "process_security",
+        frozenset({"core"}),
+        stage="intelligence_analysis",
+    ),
+    StepInfo(
+        "19_research",
+        "Research",
+        "process_research",
+        frozenset({"core"}),
+        stage="intelligence_analysis",
+    ),
     StepInfo(
         "20_website",
         "Website generation",
         "process_website",
         frozenset({"core"}),
+        stage="presentation_reporting",
         additional_args_key="20_website",
     ),
     StepInfo(
@@ -135,6 +206,7 @@ STEPS: List[StepInfo] = [
         "Model Context Protocol processing",
         "process_mcp",
         frozenset({"core"}),
+        stage="presentation_reporting",
         additional_args_key="21_mcp",
     ),
     StepInfo(
@@ -142,12 +214,14 @@ STEPS: List[StepInfo] = [
         "GUI (Interactive GNN Constructor)",
         "process_gui",
         frozenset({"core"}),
+        stage="presentation_reporting",
     ),
     StepInfo(
         "23_report",
         "Report generation",
         "process_report",
         frozenset({"core"}),
+        stage="presentation_reporting",
         additional_args_key="23_report",
     ),
     StepInfo(
@@ -155,6 +229,7 @@ STEPS: List[StepInfo] = [
         "Intelligent pipeline analysis",
         "process_intelligent_analysis",
         frozenset({"core"}),
+        stage="presentation_reporting",
     ),
 ]
 
@@ -216,6 +291,64 @@ def get_core_steps() -> List[StepInfo]:
 def get_llm_steps() -> List[StepInfo]:
     """Return only LLM-tagged steps."""
     return [s for s in STEPS if "llm" in s.tags]
+
+
+# ---------------------------------------------------------------------------
+# Logical pipeline stages
+# ---------------------------------------------------------------------------
+STAGE_DEFINITIONS: Dict[str, Dict[str, Any]] = {
+    "discovery_schema": {
+        "name": "Discovery & Schema",
+        "description": "Initialization, environment, tests, discovery, typing, and validation",
+        "steps": [0, 1, 2, 3, 4, 5, 6],
+    },
+    "export_static_viz": {
+        "name": "Export & Static Visualization",
+        "description": "Multi-format export, structural visualization, dashboards, and ontology",
+        "steps": [7, 8, 9, 10],
+    },
+    "simulation_execution": {
+        "name": "Simulation & Execution",
+        "description": "Code rendering, execution rollouts, audio sonification, and post-simulation analysis",
+        "steps": [11, 12, 15, 16],
+    },
+    "intelligence_analysis": {
+        "name": "Intelligence & Analysis",
+        "description": "LLM cognitive analysis, ML integration, system integration, security, and hypotheses",
+        "steps": [13, 14, 17, 18, 19],
+    },
+    "presentation_reporting": {
+        "name": "Presentation & Reporting",
+        "description": "Static website generation, MCP tool server, GUI constructors, and executive summaries",
+        "steps": [20, 21, 22, 23, 24],
+    },
+}
+
+
+def get_stage_steps(stage: str) -> List[StepInfo]:
+    """Return steps belonging to a given logical stage."""
+    return [s for s in STEPS if s.stage == stage]
+
+
+def get_pipeline_stages() -> Dict[str, Dict[str, Any]]:
+    """Return the canonical pipeline stage definitions."""
+    return dict(STAGE_DEFINITIONS)
+
+
+# ---------------------------------------------------------------------------
+# Aliases for consolidated step referencing & renumbering transition
+# ---------------------------------------------------------------------------
+CONSOLIDATED_STEP_ALIASES: Dict[str, str] = {
+    "13_audio": "15_audio",
+    "14_analysis": "16_analysis",
+    "15_llm": "13_llm",
+    "16_ml_integration": "14_ml_integration",
+}
+
+
+def canonical_step_stem(step_alias: str) -> str:
+    """Resolve a possibly renumbered/aliased step stem to its canonical script stem."""
+    return CONSOLIDATED_STEP_ALIASES.get(step_alias, step_alias)
 
 
 def discover_steps() -> Dict[int, StepInfo]:

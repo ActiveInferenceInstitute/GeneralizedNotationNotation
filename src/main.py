@@ -997,18 +997,115 @@ def main(
             logger,
         )
 
-        for step_index, (script_name, description) in enumerate(steps_to_execute):
-            _execute_pipeline_iteration(
-                step_index,
-                script_name,
-                description,
-                steps_to_execute,
-                args,
-                pipeline_summary,
-                visual_logger,
-                progress_tracker,
-                logger,
+        if getattr(args, "parallel", False):
+            from concurrent.futures import ThreadPoolExecutor
+
+            from pipeline.dag import resolve_execution_order
+            from utils.pipeline_step_dependencies import PIPELINE_STEP_DEPENDENCIES
+
+            deps_dict = {
+                step_num: list(deps)
+                for step_num, deps in PIPELINE_STEP_DEPENDENCIES.items()
+            }
+            exec_indices = {
+                int(s[0].split("_")[0]): s for s in steps_to_execute if "_" in s[0]
+            }
+            tiers = resolve_execution_order(
+                deps_dict,
+                total_steps=25,
+                skip_steps=set(range(25)) - set(exec_indices.keys()),
             )
+
+            current_step_counter = 0
+            for tier_idx, tier in enumerate(tiers):
+                tier_steps = [exec_indices[n] for n in tier if n in exec_indices]
+                if not tier_steps:
+                    continue
+                if len(tier_steps) == 1:
+                    script_name, description = tier_steps[0]
+                    _execute_pipeline_iteration(
+                        current_step_counter,
+                        script_name,
+                        description,
+                        steps_to_execute,
+                        args,
+                        pipeline_summary,
+                        visual_logger,
+                        progress_tracker,
+                        logger,
+                    )
+                    current_step_counter += 1
+                else:
+                    import os
+                    max_cpu = os.cpu_count() or 4
+                    dynamic_workers = max(1, min(len(tier_steps), max_cpu, 8))
+                    logger.info(
+                        "⚡ Running Tier %d in parallel (%d steps, %d workers): %s",
+                        tier_idx,
+                        len(tier_steps),
+                        dynamic_workers,
+                        [s[0] for s in tier_steps],
+                    )
+                    with ThreadPoolExecutor(max_workers=dynamic_workers) as pool:
+                        futures = []
+                        for s_idx_offset, (script_name, description) in enumerate(tier_steps):
+                            f = pool.submit(
+                                execute_pipeline_step,
+                                script_name,
+                                args,
+                                logger,
+                            )
+                            futures.append((current_step_counter + s_idx_offset, script_name, description, f))
+                        current_step_counter += len(tier_steps)
+
+                        for step_num, script_name, description, future in futures:
+                            step_start_datetime = datetime.now()
+                            step_result = future.result()
+                            step_end_datetime = datetime.now()
+                            step_duration = 0.0
+
+                            _annotate_step_result(
+                                step_result,
+                                step_num + 1,
+                                script_name,
+                                description,
+                                step_start_datetime,
+                                step_end_datetime,
+                                step_duration,
+                            )
+                            has_warning = _step_has_actionable_warning(step_result)
+                            if step_result["status"] == "SUCCESS" and has_warning:
+                                step_result["status"] = "SUCCESS_WITH_WARNINGS"
+
+                            pipeline_summary["steps"].append(step_result)
+                            _update_performance_summary(
+                                pipeline_summary,
+                                step_result,
+                                script_name,
+                                has_warning,
+                                len(steps_to_execute),
+                            )
+                            _log_pipeline_step_completion(
+                                step_num + 1,
+                                description,
+                                step_result,
+                                step_duration,
+                                progress_tracker,
+                                logger,
+                            )
+        else:
+            for step_index, (script_name, description) in enumerate(steps_to_execute):
+                _execute_pipeline_iteration(
+                    step_index,
+                    script_name,
+                    description,
+                    steps_to_execute,
+                    args,
+                    pipeline_summary,
+                    visual_logger,
+                    progress_tracker,
+                    logger,
+                )
 
         _finalize_pipeline_summary(pipeline_summary)
         _write_pipeline_summary_outputs(

@@ -121,6 +121,32 @@ class TestStepRegistryLookups:
         assert "llm" in get_step_tags("13_llm")
         assert get_step_tags("nonexistent") == frozenset()
 
+    def test_get_stage_steps(self) -> None:
+        """get_stage_steps returns steps grouped by logical stage."""
+        from pipeline.step_registry import get_stage_steps
+
+        discovery = get_stage_steps("discovery_schema")
+        assert len(discovery) == 7
+        assert discovery[0].script_stem == "0_template"
+        assert discovery[-1].script_stem == "6_validation"
+
+        sim = get_stage_steps("simulation_execution")
+        assert len(sim) == 4
+        assert {s.script_stem for s in sim} == {
+            "11_render",
+            "12_execute",
+            "15_audio",
+            "16_analysis",
+        }
+
+    def test_consolidated_step_aliases(self) -> None:
+        """Test step alias resolution for renumbering migration."""
+        from pipeline.step_registry import canonical_step_stem
+
+        assert canonical_step_stem("13_audio") == "15_audio"
+        assert canonical_step_stem("14_analysis") == "16_analysis"
+        assert canonical_step_stem("11_render") == "11_render"
+
 
 class TestDerivedExportAliases:
     """Derived-export aliases match STEPS."""

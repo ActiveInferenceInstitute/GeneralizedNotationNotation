@@ -125,6 +125,13 @@ def analyze_free_energy(
             analysis["convergence_variance"] = float(np.var(last_portion))
             analysis["converged"] = analysis["convergence_variance"] < 0.1
 
+        # Normalized convergence metric: relative entropy / scale-invariant decay
+        if len(fe_array) > 1:
+            f0 = abs(fe_array[0]) + 1e-8
+            rel_decay = (fe_array[-1] - fe_array[0]) / f0
+            analysis["relative_decay"] = float(rel_decay)
+            analysis["normalized_converged"] = bool(abs(rel_decay) < 1.0 or analysis.get("converged", False))
+
         return analysis
 
     except Exception as e:

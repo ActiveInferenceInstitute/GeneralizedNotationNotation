@@ -34,9 +34,14 @@ def precision_weighted_likelihood(*args, **kwargs):
     return None
 
 
-def bayesian_model_average(values, weights):
+def bayesian_model_average(values, weights, A_matrix=None):
     w = _np.asarray(weights, dtype=float)
     v = _np.asarray(values, dtype=float)
+    if A_matrix is not None:
+        A = _np.asarray(A_matrix, dtype=float)
+        mapped = _np.dot(A.T, w)
+        mapped = mapped / (_np.sum(mapped) if _np.sum(mapped) != 0 else 1)
+        return float((v * mapped).sum())
     w = w / (w.sum() if w.sum() != 0 else 1)
     return float((v * w).sum())
 

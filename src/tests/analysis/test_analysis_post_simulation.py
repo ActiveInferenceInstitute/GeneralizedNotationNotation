@@ -399,6 +399,9 @@ class TestAnalyzeFreeEnergy:
         values: list[Any] = [10.0, 5.0, 2.5, 1.2, 1.1, 1.05, 1.02, 1.01, 1.005, 1.001]
         result = analyze_free_energy(values, "pymdp", "test")
         assert "converged" in result
+        assert "relative_decay" in result
+        assert "normalized_converged" in result
+        assert result["normalized_converged"] is True
 
 
 class TestAnalyzePolicyConvergence:

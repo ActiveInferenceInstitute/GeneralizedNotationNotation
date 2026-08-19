@@ -258,16 +258,16 @@ def check_environment() -> PreflightReport:
             )
 
     # Tools
-    for tool in ["ollama", "ruff"]:
+    for tool in ["ollama", "ruff", "pkl", "d2"]:
         if shutil.which(tool):
             report.add_pass(f"Tool: {tool}")
         else:
-            sev = "info" if tool == "ollama" else "warning"
+            sev = "info" if tool in ("ollama", "pkl", "d2") else "warning"
             report.add_issue(
                 "environment",
                 sev,
                 f"Tool not found: {tool}",
-                fix=f"See https://github.com/{tool}",
+                fix=f"See documentation for {tool}",
             )
 
     # Directories

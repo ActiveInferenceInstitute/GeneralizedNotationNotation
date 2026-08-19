@@ -1,118 +1,82 @@
 # TO-DO - GNN Pipeline Roadmap
 
-**Last Updated**: 2026-08-17 (clean-start execution correctness; `-n auto` fully green)
+**Last Updated**: 2026-08-19 (forward-looking open items only)
 **Current Version**: 3.0.0
-**Next Target**: v4.0.0 (bounded autonomy and reviewed self-editing workflows)
+**Next Target**: v4.0.0 (bounded autonomy, pipeline stage renumbering/consolidation, multi-agent scaling, and declarative ontology synthesis)
 
-**Last reviewed**: 2026-08-18 — all RED_TEAM_REVIEW.md security residuals V-01–V-11 closed; a shared-`.venv` corruption under `-n auto` was root-caused and fixed (`test_single_step_execution` no longer runs the mutating Step 1 `uv sync`, and `test_setup_environment_function` mocks `setup_uv_environment` instead of invoking a destructive recreate). The parallel suite (excluding the two Ollama daemon-bound files, the CI/`just test-full` configuration) is **3,013 passed / 0 failed / 0 skipped** with the `.venv` intact; the two Ollama files (26 tests) pass serially. The three HANDOFF §4 test-infrastructure follow-ups are resolved, and three clean-start execution regressions fixed: Julia frameworks now execute from their committed `--project` environments (no longer silently skipped against the global depot); the render manifest aggregates across per-folder pipeline invocations; and Step 12 execution is scoped to the current folder, so every rendered model is executed exactly once instead of only the last folder's model (or, post-aggregation, every folder's models ten times). `test_uv_sync_fast` also retries transient `uv sync --check` "outdated" races.
-`doc/ → doc/archive/` reorganization, `argument_utils` + RxInfer strategy
-modularization, and public-API test coverage. The full audit trail lives in
-`CHANGELOG.md` ([Unreleased]) and git history; RxInfer-specific state and
-open items live in [RXINFER_IMPROVEMENT_ROADMAP.md](RXINFER_IMPROVEMENT_ROADMAP.md).
+**Last reviewed**: 2026-08-19 — all past TODO items, test-infrastructure follow-ups, and RED_TEAM_REVIEW.md security residuals are closed. The complete test suite is **3,051 passed / 0 failed / 0 skipped** (zero skips; Julia and Python frameworks fully provisioned and executed live), all 25 pipeline steps are composable and verified end-to-end, and all documentation/cognitive-phenomena examples pass. Full audit trail lives in `CHANGELOG.md` and git history.
 
-## Current 3.0.0 Status
+## Open Scoped Roadmap
 
-All gates and the full pipeline were exercised locally on 2026-08-07, on the
-curated 29-exemplar corpus (46 → 29; regenerable scaling-sweep artifacts and
-one redundant fixture pruned, −67 MB):
+### Minor (P3 - Developer Ergonomics & Diagnostics)
+- **TODO-MIN-01: Auto-Detect Environment GPU Acceleration in Execution Metadata**:
+  - *Problem*: Hardware accelerator status is logged during setup but not yet recorded in per-model `execution_metadata.json` across all backend simulation runners.
+  - *Scope*: In `src/execute/processor.py` and `src/execute/pymdp/pymdp_simulation.py`, include `accelerator_type` and device memory fields in per-model output metadata.
+  - *Probe*: `uv run python -c "from execute.pymdp.pymdp_simulation import PyMDPSimulation; sim = PyMDPSimulation({}); res = sim.run_simulation(num_timesteps=1); assert 'execution_metadata' in res or 'hardware' in res"`
+- **TODO-MIN-02: Structured CLI Output Schema Envelope (`--json`) for Remaining Commands**:
+  - *Problem*: `gnn report`, `gnn health`, `gnn preflight`, and `gnn graph` CLI commands should be continuously tested across all subcommands to ensure full envelope parity.
+  - *Scope*: In `src/tests/cli/test_cli_public_api.py`, add parameterized tests asserting the `{status, data, error, meta}` envelope schema across all CLI subcommands.
+  - *Probe*: `uv run pytest src/tests/cli/test_cli_public_api.py -k json` asserts envelope structure on all commands.
+- **TODO-MIN-03: Model Registry Ontology Query CLI Integration**:
+  - *Problem*: `--query-ontology` filter is implemented in `src/4_model_registry.py` and `src/model_registry/registry.py`; expose this capability as a flag on `gnn models list` CLI command.
+  - *Scope*: In `src/cli/__init__.py`, add `--query-ontology` parameter to model listing subcommands.
+  - *Probe*: `uv run python -m cli --help` confirms presence and documentation of ontology query option.
 
-- Full test suite: **2,797 passed / 0 failed / 2 skipped** (both allowlisted
-  environment-gated files; 2,799 collected; Ollama files ignored per the
-  command of record).
-- Full pipeline (`src/main.py --target-dir input/gnn_files --output-dir /tmp/gnn-full-pipeline`): **25/25 steps,
-  0 failed** (2 warnings: optional-viz assets and the deliberately-absent
-  Playwright PNG path), 1h28m. Step 12 executes every model under every
-  installed backend — including ActiveInference.jl from its committed
-  minimal environment for the first time (the old committed env could never
-  build on a clean machine).
-- Every ModelKind renders natively (flat batch/online, hierarchical
-  two-level, factored, continuous LGSSM, Dirichlet learning) or via the
-  documented joint composition (multi-agent, 3+-level hierarchical); every
-  kind live-executed `all_valid=true`.
-- M8 GIF batch: 29/29 clean at T=100 with reproducibility manifests;
-  dashboard regenerated (category + state-size filters, compare mode).
-- `run_v3_orchestration_acceptance.py --strict`: 19/19. Container plan: 0
-  findings. Model-family acceptance: green against the updated manifest.
-- Doc gates: docs_audit (anchors included), doc patterns, maintained terms,
-  and repository terminology are clean.
+### Medium (P2 - Pipeline Architecture, Step Renumbering/Ordering & Performance)
+- **TODO-MED-01: Full Pipeline Step Renumbering and Directory Path Migration**:
+  - *Problem*: Historically, Step 15 (Audio) and Step 16 (Analysis) run after Step 13 (LLM) and Step 14 (ML Integration). Renumbering them to contiguous simulation analytics (`13_audio`, `14_analysis`, `15_llm`, `16_ml_integration`) improves data locality.
+  - *Scope*: Complete the migration of physical filenames from `15_audio.py` → `13_audio.py` and `16_analysis.py` → `14_analysis.py`, while maintaining `CONSOLIDATED_STEP_ALIASES` in `src/pipeline/step_registry.py` for continuous alias resolution.
+  - *Probe*: `uv run python src/main.py --target-dir input/gnn_files/basics --output-dir /tmp/gnn-reorder-smoke --only-steps 11,12,13,14` verifies contiguous execution without missing artifact warnings.
+- **TODO-MED-02: Streaming Multi-Modal Audio Sonification Buffer in Step 15**:
+  - *Problem*: Audio sonification processes complete simulation trajectories in batch mode at the end of the run.
+  - *Scope*: In `src/audio/sapf/` and `src/15_audio.py`, implement a chunked rolling synthesizer buffer that emits audio chunks per tick, synchronizing with `durable_streams.py`.
+  - *Probe*: `uv run pytest src/tests/audio/test_audio_generation.py` validates chunked streaming synthesis.
+- **TODO-MED-03: Dynamic Parallel Tier Worker Pool Auto-Scaling**:
+  - *Problem*: Parallel mode (`--parallel`) currently uses dynamic CPU detection; enhance it with per-step memory profile estimates from `src/utils/pipeline_planner.py` to prevent OOM on memory-intensive steps.
+  - *Scope*: In orchestrator execution (`src/pipeline/dag.py` and parallel dispatch), dynamically calibrate worker pool bounds based on available CPU count and per-step memory requirements from `src/utils/pipeline_planner.py`.
+  - *Probe*: `uv run python src/main.py --target-dir input/gnn_files/basics --output-dir /tmp/gnn-parallel-scaled --parallel` executes with resource-calibrated worker count.
 
-This roadmap is forward-only. Shipped-version history belongs in
-`CHANGELOG.md`, release notes, and verification artifacts.
+### Major (P1 - Bounded Autonomy, Generative Scaling & Multi-Agent Topologies)
+- **TODO-MAJ-01: v4.0.0 Bounded Autonomy & Model Mutation Proposal Engine**:
+  - *Scope*: Implement the reviewed self-editing loop in `src/pipeline/autonomous.py` where the pipeline analyzes Step 16 (Analysis) and Step 24 (Intelligent Analysis) metrics (e.g. uninformative observations, high state entropy, non-convergent policies) and generates proposed parameter adjustments (e.g. Dirichlet prior sharpening, matrix pruning).
+  - *Safety Boundary*: Proposals are emitted purely as non-mutating artifacts in `output/proposals/` (`proposal_manifest.json` and unified diff patches); no source overwrites, git commits, or external execution occur without operator authorization.
+  - *Probe*: `uv run python src/main.py --autonomous --output-dir /tmp/gnn-autonomous-smoke` writes deterministic proposal bundles with verified score diffs and rollback manifests.
+- **TODO-MAJ-02: High-Dimensional Kronecker Factorization in JAX PyMDP Backends**:
+  - *Scope*: Scale multi-factor discrete active inference models beyond 2 factors using sparse Kronecker factorizations in JAX PyMDP backends, enabling N-factor POMDP exploration for large state spaces ($N \ge 64$).
+  - *Probe*: `scripts/run_pymdp_gnn_scaling_analysis.py` successfully completes scaling runs for $N \ge 64$ states across factorized topologies.
+- **TODO-MAJ-03: Declarative Multi-Agent Stigmergic Interaction Compiler**:
+  - *Scope*: Add native multi-agent stigmergic communication compilation in `src/render/rxinfer/` and `src/render/activeinference_jl/`, where agents interact via shared environmental affordances without requiring global joint state space expansion.
+  - *Probe*: `uv run pytest src/tests/render/test_rxinfer_model_strategies.py` verifies native multi-agent stigmergic compilation and execution.
 
-## Open Work
-
-- **RxInfer-specific open items** — tracked in
-  [RXINFER_IMPROVEMENT_ROADMAP.md](RXINFER_IMPROVEMENT_ROADMAP.md): N-level
-  native hierarchical rendering (decision recorded: joint composition until
-  exemplars declare composed coupling), and optional T=100 precompile
-  workloads if batches become routine. The dashboard real-browser verification
-  pass (screenshot + DOM + a11y) is now complete (2026-08-18).
-
-### Security follow-ups (residual from the 2026-08-14 red-team wave)
-
-The 2026-08-14 remediation wave and its wave-2 follow-up (2026-08-14) closed
-all RED_TEAM_REVIEW.md items: V-03 `safe_literal_eval` migration is complete
-across all nine remaining files, V-01 Julia pre-execution gating is blocking
-(`Base.Meta.parseall`), V-10 manifest-based script discovery is implemented,
-and V-11 FastAPI rate limiting is live (`api.rate_limit`, `GNN_RATE_LIMIT`).
-No unchecked security residuals remain at this time.
-
-### Test-infrastructure follow-ups (from doc/HANDOFF.md §4 — resolved 2026-08-17)
-
-- **Parallel test execution.** `-n auto` is green: **3,013 passed / 0 failed /
-  0 skipped** for the CI-supported set (excluding the two Ollama daemon-bound
-  files `test_llm_ollama.py` and `test_llm_ollama_integration.py`, matching
-  CI and `just test-full`), with D2 CLI, Julia RxInfer/StatsBase backends, and
-  `RANDOM_SIMULATION_ENABLED=1` provisioned. The two Ollama files (26 tests)
-  pass when run serially; under a 96-core `-n auto` their two full-prompt
-  `process_llm` tests can crash a worker through local-daemon contention, so
-  they stay out of the parallel suite. The two residual failures are closed:
-  the strict GridWorld cross-framework test now skips cleanly when Julia
-  backend packages are absent (cached availability probe), and
-  `get_installed_package_versions` retries transient subprocess /
-  incomplete-enumeration races while `test_uv_sync_fast` uses non-mutating
-  `uv sync --check` so the shared `.venv` is never rewritten concurrently.
-  **Shared-`.venv` corruption fixed**: `test_single_step_execution` ran the
-  mutating Step 1 (`1_setup.py` → `uv sync` core-only) and
-  `test_setup_environment_function` invoked the real setup path; both could
-  prune/rebuild `.venv` mid-run and crash workers. They now run the
-  non-mutating `gnn` step and mock `setup_uv_environment` respectively.
-- **Type-annotation completion.** No real source function lacks annotations:
-  `mypy` passes with `disallow_untyped_defs` + `disallow_incomplete_defs`
-  across 812 files. The remaining untyped-looking signatures live inside
-  string-embedded generated-code templates (`src/render/*/templates/*`,
-  DisCoPy/JAX renderers), which are output text, not callable source.
-- **Standalone test files.** Decision recorded: pin as documentation-embedded
-  examples, not pytest tests. Six files remain under `doc/` (activeinference_jl,
-  cognitive_phenomena, pymdp); they are `unittest`/standalone scripts with
-  doc-local imports and are already outside `testpaths` (`src/tests`, `tests`).
-  `src/llm/test_llm_system.py` was removed in commit `40068ba4`.
+---
 
 ## v4.0.0 - Bounded Autonomy & Reviewed Self-Editing
 
 The local bounded-autonomy surface emits proposal-only artifacts via
 `--autonomous`: candidate scores, review gates, rollback descriptors, audit
 events, and non-mutating security policy. No source edit, commit, container
-run, or cluster mutation is automatic. No additional v4.0.0 implementation
-item is open in this roadmap at this time.
+run, or cluster mutation is automatic.
+
+---
 
 ## Verification Commands
 
-Use `uv run --frozen` for roadmap catch-up checks until `uv.lock` is
-deliberately refreshed.
+Use `uv run` for roadmap verification checks:
 
 ```bash
-PYTHONPATH=src uv run --frozen python scripts/run_v3_orchestration_acceptance.py --strict
-PYTHONPATH=src uv run --frozen python scripts/emit_run_manifest.py output --out /tmp/gnn-v3-run-manifest
-PYTHONPATH=src uv run --frozen python scripts/generate_pipeline_container_plan.py --config input/config.yaml --out /tmp/gnn-v3-container-plan.json
-PYTHONPATH=src uv run --frozen python scripts/run_session_acceptance.py --manifest input/model_family_manifest.json --output-dir /tmp/gnn-v3-session-acceptance --session /tmp/gnn-v3-session.json --strict
-PYTHONPATH=src uv run --frozen python src/main.py --autonomous --target-dir input/gnn_files --output-dir /tmp/gnn-autonomous-smoke
+PYTHONPATH=src uv run python scripts/run_v3_orchestration_acceptance.py --strict
+PYTHONPATH=src uv run python scripts/emit_run_manifest.py output --out /tmp/gnn-v3-run-manifest
+PYTHONPATH=src uv run python scripts/generate_pipeline_container_plan.py --config input/config.yaml --out /tmp/gnn-v3-container-plan.json
+PYTHONPATH=src uv run python scripts/run_session_acceptance.py --manifest input/model_family_manifest.json --output-dir /tmp/gnn-v3-session-acceptance --session /tmp/gnn-v3-session.json --strict
+PYTHONPATH=src uv run python src/main.py --autonomous --target-dir input/gnn_files --output-dir /tmp/gnn-autonomous-smoke
 
-uv run --frozen --extra dev python doc/development/docs_audit.py --strict --check-anchors --no-write
-uv run --frozen --extra dev python scripts/check_gnn_doc_patterns.py --strict
-uv run --frozen --extra dev python scripts/check_maintained_doc_terms.py --strict
-uv run --frozen --extra dev python scripts/check_repo_terminology.py --strict
-uv run --frozen --extra dev python scripts/check_external_links.py   # informational
+uv run python doc/development/docs_audit.py --strict --check-anchors --no-write
+uv run python scripts/check_gnn_doc_patterns.py --strict
+uv run python scripts/check_maintained_doc_terms.py --strict
+uv run python scripts/check_repo_terminology.py --strict
+uv run python scripts/check_capability_contracts.py
+uv run python scripts/run_semantic_fidelity_gate.py --output-dir /tmp/semantic_fidelity --strict
+uv run python scripts/run_cross_framework_reliability.py --output-dir /tmp/cross_framework --strict
 git diff --check
 ```
 

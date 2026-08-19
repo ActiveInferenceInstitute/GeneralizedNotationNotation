@@ -11,15 +11,15 @@ Features location and context state factors with visual observations.
 
 /// Hidden state factors
 hiddenStates = new {
-  s_f0 = new {
+  ["s_f0"] = new StateVariable {
     name = "s_f0"
-    dimensions = List(4)
+    dimensions = [4]
     variableType = "categorical"
     description = "Spatial location factor (2x2 grid)"
   }
-  s_f1 = new {
+  ["s_f1"] = new StateVariable {
     name = "s_f1" 
-    dimensions = List(2)
+    dimensions = [2]
     variableType = "categorical"
     description = "Context factor (reward/no-reward)"
   }
@@ -27,9 +27,9 @@ hiddenStates = new {
 
 /// Observation modalities
 observations = new {
-  o_m0 = new {
+  ["o_m0"] = new StateVariable {
     name = "o_m0"
-    dimensions = List(4)
+    dimensions = [4]
     variableType = "categorical" 
     description = "Visual observations of environment"
   }
@@ -37,101 +37,94 @@ observations = new {
 
 /// Action factors
 actions = new {
-  u_c0 = new {
+  ["u_c0"] = new StateVariable {
     name = "u_c0"
-    dimensions = List(4)
+    dimensions = [4]
     variableType = "categorical"
     description = "Movement actions (up, down, left, right)"
   }
 }
 
 /// Likelihood matrix A[m0]: P(o_m0|s_f0)
-A = new {
+A = new LikelihoodMatrix {
   name = "A_m0"
-  dimensions = List(4, 4)
-  values = List(
-    List(0.9, 0.05, 0.05, 0.0),  // Location 0: mostly observe state 0
-    List(0.05, 0.9, 0.05, 0.0),  // Location 1: mostly observe state 1
-    List(0.05, 0.05, 0.9, 0.0),  // Location 2: mostly observe state 2
-    List(0.0, 0.0, 0.0, 1.0)     // Location 3: always observe state 3 (reward)
-  )
-  matrixType = "likelihood"
+  dimensions = [4, 4]
+  values = [
+    [0.9, 0.05, 0.05, 0.0],  // Location 0: mostly observe state 0
+    [0.05, 0.9, 0.05, 0.0],  // Location 1: mostly observe state 1
+    [0.05, 0.05, 0.9, 0.0],  // Location 2: mostly observe state 2
+    [0.0, 0.0, 0.0, 1.0]     // Location 3: always observe state 3 (reward)
+  ]
   modality = "m0"
   factor = "f0"
 }
 
 /// Transition matrix B[f0]: P(s_f0'|s_f0,u_c0)
-B = new {
+B = new TransitionMatrix {
   name = "B_f0"
-  dimensions = List(4, 4, 4)
-  values = List(
+  dimensions = [4, 4, 4]
+  values = [
     // From state 0
-    List(
-      List(1.0, 0.0, 0.0, 0.0),  // Stay (action 0)
-      List(0.0, 1.0, 0.0, 0.0),  // Right (action 1)
-      List(0.0, 0.0, 1.0, 0.0),  // Down (action 2)
-      List(0.0, 0.0, 0.0, 1.0)   // Diagonal (action 3)
-    ),
+    [
+      [1.0, 0.0, 0.0, 0.0],  // Stay (action 0)
+      [0.0, 1.0, 0.0, 0.0],  // Right (action 1)
+      [0.0, 0.0, 1.0, 0.0],  // Down (action 2)
+      [0.0, 0.0, 0.0, 1.0]   // Diagonal (action 3)
+    ],
     // From state 1
-    List(
-      List(1.0, 0.0, 0.0, 0.0),  // Left (action 0)
-      List(0.0, 1.0, 0.0, 0.0),  // Stay (action 1)
-      List(0.0, 0.0, 0.0, 1.0),  // Down (action 2)
-      List(0.0, 0.0, 1.0, 0.0)   // Diagonal (action 3)
-    ),
+    [
+      [1.0, 0.0, 0.0, 0.0],  // Left (action 0)
+      [0.0, 1.0, 0.0, 0.0],  // Stay (action 1)
+      [0.0, 0.0, 0.0, 1.0],  // Down (action 2)
+      [0.0, 0.0, 1.0, 0.0]   // Diagonal (action 3)
+    ],
     // From state 2
-    List(
-      List(1.0, 0.0, 0.0, 0.0),  // Up (action 0)
-      List(0.0, 0.0, 0.0, 1.0),  // Right (action 1)
-      List(0.0, 0.0, 1.0, 0.0),  // Stay (action 2)
-      List(0.0, 1.0, 0.0, 0.0)   // Diagonal (action 3)
-    ),
+    [
+      [1.0, 0.0, 0.0, 0.0],  // Up (action 0)
+      [0.0, 0.0, 0.0, 1.0],  // Right (action 1)
+      [0.0, 0.0, 1.0, 0.0],  // Stay (action 2)
+      [0.0, 1.0, 0.0, 0.0]   // Diagonal (action 3)
+    ],
     // From state 3 (absorbing reward state)
-    List(
-      List(0.0, 0.0, 1.0, 0.0),  // Up (action 0)
-      List(0.0, 1.0, 0.0, 0.0),  // Left (action 1)
-      List(1.0, 0.0, 0.0, 0.0),  // Diagonal (action 2)
-      List(0.0, 0.0, 0.0, 1.0)   // Stay (action 3)
-    )
-  )
-  matrixType = "transition"
+    [
+      [0.0, 0.0, 1.0, 0.0],  // Up (action 0)
+      [0.0, 1.0, 0.0, 0.0],  // Left (action 1)
+      [1.0, 0.0, 0.0, 0.0],  // Diagonal (action 2)
+      [0.0, 0.0, 0.0, 1.0]   // Stay (action 3)
+    ]
+  ]
   factor = "f0"
 }
 
 /// Preferences C[m0]: log preferences over observations
-C = new {
+C = new PreferenceVector {
   name = "C_m0"
-  dimensions = List(4)
-  values = List(0.0, 0.0, 0.0, 2.0)  // Strong preference for reward observation
-  matrixType = "preferences"
+  dimensions = [4]
+  values = [0.0, 0.0, 0.0, 2.0]  // Strong preference for reward observation
   modality = "m0"
 }
 
 /// Initial state priors D[f0]
-D = new {
+D = new PriorVector {
   name = "D_f0"
-  dimensions = List(4)
-  values = List(0.25, 0.25, 0.25, 0.25)  // Uniform prior over locations
-  matrixType = "priors"
+  dimensions = [4]
+  values = [0.25, 0.25, 0.25, 0.25]  // Uniform prior over locations
   factor = "f0"
 }
 
 /// Time configuration for episodic foraging
-timeSettings = new {
+timeSettings = new TimeConfiguration {
   modelType = "Dynamic"
   timeDiscretization = "DiscreteTime"
   timeHorizon = 15
 }
 
 /// Enhanced ontology mapping
-actInfOntology = new {
-  hasStateSpace = "true"
-  hasObservationModel = "true"
-  hasPriors = "true"
-  hasActions = "true"
-  hasPreferences = "true"
-  behaviorType = "foraging"
-  environmentType = "spatial_grid"
+actInfOntology = (super.actInfOntology) {
+  ["hasActions"] = "true"
+  ["hasPreferences"] = "true"
+  ["behaviorType"] = "foraging"
+  ["environmentType"] = "spatial_grid"
 }
 
 /// Simulation parameters

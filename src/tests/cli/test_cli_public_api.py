@@ -5,6 +5,7 @@ _cmd_render (with missing file), _cmd_report, _cmd_preflight, _cmd_serve,
 _cmd_lsp, _cmd_watch, _cmd_graph, _cmd_templates, _cmd_pull, _find_render_artifact.
 """
 
+import json
 import sys
 from pathlib import Path
 from types import SimpleNamespace
@@ -78,9 +79,20 @@ class TestCmdHandlers:
     def test_cmd_preflight_default(self) -> None:
         from cli import _cmd_preflight
 
-        args = SimpleNamespace(config=None, verbose=False)
+        args = SimpleNamespace(config=None, verbose=False, json=False)
         result = _cmd_preflight(args)
         assert isinstance(result, int)
+
+    def test_cmd_preflight_json(self, capsys: Any) -> None:
+        from cli import _cmd_preflight
+
+        args = SimpleNamespace(config=None, verbose=False, json=True)
+        result = _cmd_preflight(args)
+        assert isinstance(result, int)
+        captured = capsys.readouterr()
+        envelope = json.loads(captured.out)
+        assert envelope["status"] in ("success", "warning")
+        assert "checks_passed" in envelope["data"]
 
     def test_cmd_serve_default(self) -> None:
         # _cmd_serve starts a blocking uvicorn server (never returns), so we

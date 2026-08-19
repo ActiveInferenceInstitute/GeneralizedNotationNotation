@@ -1,124 +1,142 @@
 /// Base Active Inference Model Template
 /// Provides foundational structure for all Active Inference models
+module BaseActiveInferenceModel
 
-// Model metadata
-modelName = "BaseActiveInferenceModel"
-modelVersion = "1.0.0"
-modelAnnotation = "Foundation template for Active Inference models"
+import "pkl:math"
 
-// GNN version and processing flags
-gnnVersion = "2.0"
-processingFlags = new {
-  enableValidation = true
-  strictMode = false
+/// Model metadata and identification
+modelName: String(!isEmpty)
+modelVersion: String = "1.0.0"
+modelAnnotation: String = ""
+
+/// GNN version and processing flags
+gnnVersion: String = "2.0"
+processingFlags: Mapping<String, Any> = new {}
+
+/// Active Inference Ontology mapping
+actInfOntology: Mapping<String, String> = new {
+  ["hasStateSpace"] = "true"
+  ["hasObservationModel"] = "true"
+  ["hasPriors"] = "true"
 }
 
-// Active Inference Ontology mapping
-actInfOntology = new {
-  hasStateSpace = "true"
-  hasObservationModel = "true"
-  hasPriors = "true"
-}
-
-// State variable structure
-stateVariableSchema = new {
-  namePattern = "(s_f|o_m|u_c)[0-9]+"
-  maxDimensions = 4
-  maxSize = 1000
-  allowedTypes = List("categorical", "continuous", "binary")
-}
-
-// Hidden states (internal model states)
-hiddenStates = new {
-  s_f0 = new {
-    name = "s_f0"
-    dimensions = List(4, 1)
-    variableType = "categorical" 
-    description = "Location factor"
+/// State space definition with GNN naming conventions
+class StateVariable {
+  /// Variable name following GNN conventions (s_f0, o_m0, u_c0)
+  name: String(!isEmpty && matches(Regex("(s_f|o_m|u_c)\d+")))
+  
+  /// Dimensionality constraints
+  dimensions: List<Int>(length.isBetween(1, 4) && every { it > 0 })
+  
+  /// Variable type
+  variableType: "categorical" | "continuous" | "binary"
+  
+  /// Optional description
+  description: String = ""
+  
+  /// Validation function
+  function validate() {
+    dimensions.every { it <= 1000 } // Practical size limit
   }
 }
 
-// Observations (observable outcomes)
-observations = new {
-  o_m0 = new {
-    name = "o_m0"
-    dimensions = List(4, 1)
-    variableType = "categorical"
-    description = "Visual observations"
-  }
+/// Hidden states (internal model states)
+hiddenStates: Mapping<String, StateVariable> = new {}
+
+/// Observations (observable outcomes) 
+observations: Mapping<String, StateVariable> = new {}
+
+/// Actions/Control variables
+actions: Mapping<String, StateVariable> = new {}
+
+/// Likelihood matrix A: P(o|s)
+class LikelihoodMatrix {
+  name: String = "A"
+  dimensions: List<Int>(length == 2)
+  
+  /// Matrix values with stochasticity constraints
+  values: List<List<Float>>(
+    length == dimensions[0] &&
+    every { row -> 
+      row.length == dimensions[1] && 
+      row.every { it >= 0.0 && it <= 1.0 } &&
+      math.abs(row.sum() - 1.0) < 1e-10 // Normalization check
+    }
+  )
+  
+  modality: String = "m0"
+  factor: String = "f0"
 }
 
-// Actions/Control variables
-actions = new {
-  u_c0 = new {
-    name = "u_c0"
-    dimensions = List(4, 1)
-    variableType = "categorical"
-    description = "Movement actions"
-  }
+/// Transition matrix B: P(s'|s,u)
+class TransitionMatrix {
+  name: String = "B"
+  dimensions: List<Int>(length == 3) // [states, states, actions]
+  
+  /// 3D tensor with stochasticity constraints
+  values: List<List<List<Float>>>(
+    length == dimensions[0] &&
+    every { slice ->
+      slice.length == dimensions[1] &&
+      slice.every { row ->
+        row.length == dimensions[2] &&
+        row.every { it >= 0.0 && it <= 1.0 } &&
+        math.abs(row.sum() - 1.0) < 1e-10
+      }
+    }
+  )
+  
+  factor: String = "f0"
 }
 
-// Likelihood matrix A: P(o|s)
-A = new {
-  name = "A"
-  dimensions = List(4, 4)
-  matrixType = "likelihood"
-  modality = "m0"
-  factor = "f0"
-  description = "Observation model mapping states to observations"
+/// Preference vector C: log preferences
+class PreferenceVector {
+  name: String = "C"
+  dimensions: List<Int>(length == 1)
+  values: List<Float>(length == dimensions[0])
+  modality: String = "m0"
 }
 
-// Transition matrix B: P(s'|s,u) 
-B = new {
-  name = "B"
-  dimensions = List(4, 4, 4)
-  matrixType = "transition"
-  factor = "f0"
-  description = "Transition dynamics"
+/// Prior vector D: initial state priors
+class PriorVector {
+  name: String = "D"
+  dimensions: List<Int>(length == 1)
+  
+  /// Probability distribution constraints
+  values: List<Float>(
+    length == dimensions[0] &&
+    every { it >= 0.0 && it <= 1.0 } &&
+    math.abs(sum() - 1.0) < 1e-10
+  )
+  
+  factor: String = "f0"
 }
 
-// Preference vector C: log preferences
-C = new {
-  name = "C"
-  dimensions = List(4)
-  matrixType = "preferences"
-  modality = "m0"
-  description = "Goal preferences"
+/// Time configuration
+class TimeConfiguration {
+  modelType: "Dynamic" | "Static" = "Dynamic"
+  timeDiscretization: "DiscreteTime" | "ContinuousTime" = "DiscreteTime"
+  timeHorizon: Int(isBetween(1, 1000)) = 10
 }
 
-// Prior vector D: initial state priors
-D = new {
-  name = "D"
-  dimensions = List(4)
-  matrixType = "priors"
-  factor = "f0"
-  description = "Initial state distribution"
+/// Required Active Inference matrices
+A: LikelihoodMatrix?
+B: TransitionMatrix?
+C: PreferenceVector?
+D: PriorVector?
+
+timeSettings: TimeConfiguration = new {}
+
+/// Model validation
+function validateActiveInferenceStructure() {
+  hiddenStates.keys.every { it.startsWith("s_f") } &&
+  observations.keys.every { it.startsWith("o_m") } &&
+  actions.keys.every { it.startsWith("u_c") } &&
+  (A != null || throw("Likelihood matrix A is required")) &&
+  (B != null || throw("Transition matrix B is required"))
 }
 
-// Time configuration
-timeSettings = new {
-  modelType = "Dynamic"
-  timeDiscretization = "DiscreteTime"
-  timeHorizon = 10
-}
-
-// Model structure validation
-validationRules = new {
-  requiredMatrices = List("A", "B")
-  optionalMatrices = List("C", "D")
-  namingConvention = "GNN_v2"
-  enforceStochasticity = true
-}
-
-// Default simulation configuration
-simulationConfig = new {
-  trials = 10
-  learningRate = 0.01
-  precision = 1.0
-  policyDepth = 1
-}
-
-// Export configuration
+/// Export configuration
 output {
   renderer = new YamlRenderer {}
 }

@@ -328,17 +328,11 @@ def test_missing_gnn_file_raises(tmp_path: Path) -> None:
 
 
 # --- live end-to-end run ------------------------------------------------------
-# Requires Julia on PATH and is further gated on RANDOM_SIMULATION_ENABLED
-# (truthy) so a normal unit run stays fast. Julia's first-run precompile
-# exceeds the 300s pytest.ini global timeout, hence the explicit override.
+# Requires Julia on PATH and executes live cross-framework comparison.
+# Julia's first-run precompile may take additional time, hence the explicit timeout.
 
 
 @pytest.mark.skipif(JULIA is None, reason="julia is not on PATH")
-@pytest.mark.skipif(
-    (os.environ.get("RANDOM_SIMULATION_ENABLED") or "").strip().lower()
-    not in {"1", "true", "yes", "on"},
-    reason="RANDOM_SIMULATION_ENABLED not set; live cross-framework run is optional",
-)
 @pytest.mark.timeout(900)
 def test_live_cross_framework_comparison(tmp_path: Path) -> None:
     """The full pipeline renders, runs, and compares the simple_mdp exemplar."""

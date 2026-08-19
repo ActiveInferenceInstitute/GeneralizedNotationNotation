@@ -5,7 +5,7 @@ Audio generator module for GNN Processing Pipeline.
 This module provides audio generation functionality.
 """
 
-from typing import Any, Dict, List, cast
+from typing import Any, Dict, List, Optional, cast
 
 # Optional numpy import with recovery
 try:
@@ -101,11 +101,15 @@ def generate_ambient_representation(
     return audio
 
 
-def generate_sonification_audio(dynamics: List[Dict[str, Any]]) -> np.ndarray:
-    """Generate sonification audio from model dynamics."""
+def generate_sonification_audio(
+    dynamics: List[Dict[str, Any]],
+    chunk_size: Optional[int] = None,
+) -> np.ndarray:
+    """Generate sonification audio from model dynamics, supporting chunked streaming buffering."""
     sample_rate = 44100
     duration = 8.0  # 8 seconds
-    t = np.linspace(0, duration, int(sample_rate * duration), False)
+    total_samples = int(sample_rate * duration)
+    t = np.linspace(0, duration, total_samples, False)
 
     audio = np.zeros_like(t)
 
@@ -125,6 +129,13 @@ def generate_sonification_audio(dynamics: List[Dict[str, Any]]) -> np.ndarray:
         tone *= envelope
 
         audio += tone
+
+    if chunk_size is not None and chunk_size > 0:
+        # Buffer into aligned chunk segments (streaming compatibility)
+        num_chunks = int(np.ceil(len(audio) / chunk_size))
+        pad_len = num_chunks * chunk_size - len(audio)
+        if pad_len > 0:
+            audio = np.pad(audio, (0, pad_len))
 
     return audio
 

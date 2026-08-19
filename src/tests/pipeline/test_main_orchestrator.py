@@ -678,6 +678,25 @@ class TestEndToEndIntegration:
         for field in required_perf_fields:
             assert field in perf, f"Performance summary missing field: {field}"
 
+    def test_parallel_pipeline_execution_flag(self, tmp_path: Path) -> None:
+        """Test that --parallel flag executes pipeline successfully."""
+        from main import main
+        from utils.pipeline_arguments import PipelineArguments
+
+        out_dir = tmp_path / "parallel_out"
+        args = PipelineArguments(
+            target_dir=Path("input/gnn_files/basics"),
+            output_dir=out_dir,
+            only_steps="3,7,8",
+            parallel=True,
+            verbose=False,
+        )
+        exit_code = main(args)
+        assert exit_code == 0
+        assert (out_dir / "3_gnn_output").exists()
+        assert (out_dir / "7_export_output").exists()
+        assert (out_dir / "8_visualization_output").exists()
+
     def test_enhanced_pipeline_summary_structure(self) -> None:
         """Test that pipeline summary has enhanced structure with correct step numbering."""
         # Test the pipeline summary structure improvements

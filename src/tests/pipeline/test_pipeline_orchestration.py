@@ -252,3 +252,23 @@ class TestDAG:
 
         tiers = resolve_execution_order({}, total_steps=4, raise_on_circular=True)
         assert len(tiers) == 1
+
+    @pytest.mark.fast
+    def test_pipeline_stages_and_grouping(self) -> None:
+        """Test canonical stage definitions and step grouping."""
+        from pipeline.step_registry import get_pipeline_stages, get_stage_steps
+
+        stages = get_pipeline_stages()
+        assert "discovery_schema" in stages
+        assert "simulation_execution" in stages
+        assert "intelligence_analysis" in stages
+        assert "presentation_reporting" in stages
+
+        sim_steps = get_stage_steps("simulation_execution")
+        assert len(sim_steps) == 4
+        assert [s.script_stem for s in sim_steps] == [
+            "11_render",
+            "12_execute",
+            "15_audio",
+            "16_analysis",
+        ]

@@ -496,3 +496,20 @@ def test_mathematical_utilities():
 
 if __name__ == "__main__":
     test_mathematical_utilities()
+
+# Module-level exports for backward compatibility
+dirichlet_entropy = BayesianUtils.dirichlet_entropy
+dirichlet_expectation = BayesianUtils.dirichlet_expectation
+entropy = ActiveInferenceUtils.entropy
+expected_free_energy = ActiveInferenceUtils.expected_free_energy
+kl_divergence = ActiveInferenceUtils.kl_divergence
+log_categorical = BayesianUtils.log_categorical
+log_multivariate_normal = BayesianUtils.log_multivariate_normal
+log_sum_exp = NumericalUtils.log_sum_exp
+normalize_log_probabilities = NumericalUtils.normalize_log_probabilities
+softmax_policy = ActiveInferenceUtils.softmax_policy
+stick_breaking_weights = BayesianUtils.stick_breaking_weights
+ensure_positive_definite = NumericalUtils.ensure_positive_definite
+fit_linear_dynamics = LinearDynamics.fit_linear_dynamics
+compute_variational_lower_bound = VariationalInference.compute_variational_lower_bound
+

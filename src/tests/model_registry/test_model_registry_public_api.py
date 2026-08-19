@@ -94,3 +94,17 @@ class TestProcessModelRegistry:
         )
         assert isinstance(result, dict)
         assert result["processed_files"] >= 1
+
+    def test_process_with_query_ontology(self, sample_gnn_file: Any) -> None:
+        from model_registry import process_model_registry
+
+        target_dir = sample_gnn_file.parent
+        output_dir = target_dir / "registry_ontology"
+        result = process_model_registry(
+            target_dir=target_dir,
+            output_dir=output_dir,
+            query_ontology="nonexistent_concept_xyz",
+        )
+        assert isinstance(result, dict)
+        assert "matching_models" in result
+        assert len(result["matching_models"]) == 0

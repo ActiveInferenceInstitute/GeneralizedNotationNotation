@@ -276,3 +276,26 @@ def test_array_manifest_validation_has_teeth(tmp_path: Path) -> None:
     problems = validate_stream_manifest(bad, tmp_path)
     assert any("sha256 hex" in p for p in problems)
     assert any("valid numpy dtype" in p for p in problems)
+
+
+def test_durable_stream_ingestion_in_pymdp() -> None:
+    """Test streaming observation ingestion seam in PyMDPSimulation."""
+    from execute.pymdp.pymdp_simulation import PyMDPSimulation
+    from pipeline.durable_streams import StreamManifest
+
+    obs_array = np.array([0, 1, 0, 1, 0], dtype=np.int32)
+    manifest = StreamManifest.from_array("test_obs_stream", obs_array)
+    assert manifest.checksum
+
+    sim = PyMDPSimulation({
+        "ModelName": "StreamingTestAgent",
+        "initialparameterization": {
+            "A": [[0.9, 0.1], [0.1, 0.9]],
+            "B": [[[1.0, 0.0], [0.0, 1.0]], [[0.0, 1.0], [1.0, 0.0]]],
+            "C": [1.0, 0.0],
+            "D": [0.5, 0.5],
+        }
+    })
+    res = sim.run_simulation(num_timesteps=5, observation_stream=obs_array)
+    assert res.get("success") is True
+    assert res["observations"] == [0, 1, 0, 1, 0]

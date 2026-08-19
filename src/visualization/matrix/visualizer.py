@@ -318,8 +318,10 @@ class MatrixVisualizer:
             True if successful, False otherwise
         """
         try:
-            # Reshape 1D vector to 2D for imshow if necessary
-            if matrix.ndim == 1:
+            # Reshape 0D scalar to 2D 1x1, or 1D vector to 2D row
+            if matrix.ndim == 0:
+                matrix = matrix.reshape(1, 1)
+            elif matrix.ndim == 1:
                 matrix = matrix.reshape(1, -1)
 
             plt.figure(figsize=(10, 8))

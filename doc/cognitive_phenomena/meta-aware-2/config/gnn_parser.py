@@ -12,17 +12,21 @@ Part of the meta-aware-2 "golden spike" GNN-specified executable implementation.
 import os
 
 try:
-    import toml
-except ImportError:  # Fallback for environments without toml
-    # Provide a minimal loader using JSON if file is JSON-compatible
-    class _TomlFallback:
-        @staticmethod
-        def load(f):
-            import json
+    import tomllib
+except ImportError:
+    try:
+        import tomli as tomllib  # type: ignore
+    except ImportError:
+        try:
+            import toml as tomllib  # type: ignore
+        except ImportError:
+            class _TomlFallback:
+                @staticmethod
+                def load(f):
+                    import json
+                    return json.load(f)
 
-            return json.load(f)
-
-    toml = _TomlFallback()  # type: ignore
+            tomllib = _TomlFallback()  # type: ignore
 import logging
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -125,8 +129,8 @@ class GNNConfigParser:
     def load_config(self) -> Dict[str, Any]:
         """Load raw configuration from TOML file."""
         try:
-            with open(self.config_path, "r") as f:
-                self.raw_config = toml.load(f)
+            with open(self.config_path, "rb") as f:
+                self.raw_config = tomllib.load(f)
             logger.info(f"Loaded configuration from {self.config_path}")
             return self.raw_config
         except Exception as e:

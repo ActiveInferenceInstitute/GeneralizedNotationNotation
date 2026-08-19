@@ -1,97 +1,80 @@
 /// Multi-Format Export Configuration
 /// Demonstrates Pkl's powerful output rendering capabilities
+module MultiFormatExportConfig
 
-// Base export metadata
-baseMetadata = new {
-  includeMetadata = true
-  timestamp = "2024-01-15T10:30:00Z"
-  generatedBy = "GNN-Pkl Pipeline v2.0"
+/// Base export configuration
+abstract class BaseExportConfig {
+  includeMetadata: Boolean = true
+  timestamp: String = "2024-01-15T10:30:00Z"
+  generatedBy: String = "GNN-Pkl Pipeline v2.0"
 }
 
-// JSON export configuration
-jsonConfig = new {
-  prettyPrint = true
-  indentation = 2
-  sortKeys = true
-  escapeNonAscii = false
-  includeMetadata = true
+/// JSON export configuration
+class JsonExportConfig extends BaseExportConfig {
+  prettyPrint: Boolean = true
+  indentation: Int(isBetween(2, 8)) = 2
+  sortKeys: Boolean = true
+  escapeNonAscii: Boolean = false
 }
 
-// YAML export configuration  
-yamlConfig = new {
-  flowStyle = false
-  defaultStyle = "plain"
-  indentation = 2
-  blockSequenceIndent = 2
-  includeMetadata = true
+/// YAML export configuration  
+class YamlExportConfig extends BaseExportConfig {
+  flowStyle: Boolean = false
+  defaultStyle: String = "plain"
+  indentation: Int(isBetween(2, 8)) = 2
+  blockSequenceIndent: Int = 2
 }
 
-// XML export configuration
-xmlConfig = new {
-  prettyPrint = true
-  encoding = "UTF-8"
-  standalone = true
-  includeXmlDeclaration = true
-  includeMetadata = true
+/// XML export configuration
+class XmlExportConfig extends BaseExportConfig {
+  prettyPrint: Boolean = true
+  encoding: String = "UTF-8"
+  standalone: Boolean = true
+  includeXmlDeclaration: Boolean = true
 }
 
-// GraphML export configuration
-graphmlConfig = new {
-  includeNodeAttributes = true
-  includeEdgeWeights = true
-  layoutHints = true
-  compressionLevel = 6
-  includeMetadata = true
+/// GraphML export configuration
+class GraphmlExportConfig extends BaseExportConfig {
+  includeNodeAttributes: Boolean = true
+  includeEdgeWeights: Boolean = true
+  layoutHints: Boolean = true
+  compressionLevel: Int(isBetween(0, 9)) = 6
 }
 
-// Export targets configuration
-exports = new {
-  json = jsonConfig
-  yaml = yamlConfig
-  xml = xmlConfig
-  graphml = graphmlConfig
-}
-
-// Sample model data for export demonstration
-sampleModel = new {
-  modelName = "MultiFormatExample"
-  modelVersion = "1.0.0"
-  
-  hiddenStates = new {
-    s_f0 = new {
-      dimensions = List(4, 1)
-      type = "categorical"
-    }
+/// Export targets
+exports: Mapping<String, BaseExportConfig> = new {
+  ["json"] = new JsonExportConfig {
+    prettyPrint = true
+    indentation = 2
   }
-  
-  observations = new {
-    o_m0 = new {
-      dimensions = List(4, 1)
-      type = "categorical"
-    }
+  ["yaml"] = new YamlExportConfig {
+    flowStyle = false
+    indentation = 2
   }
-  
-  matrices = new {
-    A = new {
-      dimensions = List(4, 4)
-      type = "likelihood"
-    }
-    B = new {
-      dimensions = List(4, 4, 4)
-      type = "transition"
-    }
+  ["xml"] = new XmlExportConfig {
+    prettyPrint = true
+    encoding = "UTF-8"
+  }
+  ["graphml"] = new GraphmlExportConfig {
+    includeNodeAttributes = true
+    layoutHints = true
   }
 }
 
-// Export capabilities
-exportCapabilities = new {
-  supportedFormats = List("json", "yaml", "xml", "graphml")
-  maxFileSize = "50MB"
-  batchExport = true
-  validateOutput = true
-}
-
-// Output configuration with YAML renderer
+/// Format-specific renderers
 output {
-  renderer = new YamlRenderer {}
+  renderers {
+    ["json"] = new JsonRenderer {
+      indent = exports["json"].indentation
+      omitNullProperties = true
+    }
+    ["yaml"] = new YamlRenderer {
+      indent = exports["yaml"].indentation
+      outputStyle = "block"
+    }
+    ["xml"] = new XmlRenderer {
+      indent = exports["xml"].indentation
+      encoding = exports["xml"].encoding
+    }
+  }
 }

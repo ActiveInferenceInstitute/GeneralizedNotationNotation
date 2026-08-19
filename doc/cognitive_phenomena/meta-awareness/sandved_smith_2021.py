@@ -80,6 +80,7 @@ class SandvedSmithModel:
 
         self.T = T
         self.three_level = three_level
+        self.random_seed = random_seed
 
         # Initialize all state and parameter arrays
         self._setup_parameters()
@@ -201,6 +202,9 @@ class SandvedSmithModel:
         Returns:
             Dictionary containing all simulation results
         """
+        if self.random_seed is not None:
+            np.random.seed(self.random_seed)
+        self._initialize_states()
         print(f"Running {'3-level' if self.three_level else '2-level'} simulation...")
         print(f"Time steps: {self.T}")
 
@@ -332,11 +336,13 @@ class SandvedSmithModel:
         precision_ratio = (self.beta_A2m - MaC) / self.beta_A2m * beta_A2 / beta_A2_bar
         log_precision_evidence = -1.0 * np.log(precision_ratio)
         direct_observation = 0.1 * np.log(
-            self.A3[int(self.x3[t]), :]
+            np.clip(self.A3[int(self.x3[t]), :], 1e-16, 1.0)
         )  # Weaker direct observation
 
         self.X3_bar[:, t] = softmax(
-            np.log(self.X3[:, t]) + direct_observation + log_precision_evidence
+            np.log(np.clip(self.X3[:, t], 1e-16, 1.0))
+            + direct_observation
+            + log_precision_evidence
         )
 
     def _policy_selection(self, t: int):
@@ -385,12 +391,11 @@ class SandvedSmithModel:
             # Figure 7: Fixed attentional state schedule
             self.x2[t + 1] = 0 if (t + 1) < self.T // 2 else 1
         else:
-            # Normal simulation: stochastic transitions
+            # Normal simulation: transition according to policy
             if self.u2[t] == 0:  # Stay policy
-                # Deterministic next state selection
-                self.x2[t + 1] = int(np.argmax(self.B2a[:, int(self.x2[t])]))
+                self.x2[t + 1] = discrete_choice(self.B2a[:, int(self.x2[t])])
             else:  # Switch policy
-                self.x2[t + 1] = int(np.argmax(self.B2b[:, int(self.x2[t])]))
+                self.x2[t + 1] = discrete_choice(self.B2b[:, int(self.x2[t])])
 
         # Update meta-awareness states (if three-level)
         if self.three_level:
@@ -399,7 +404,7 @@ class SandvedSmithModel:
                 self.x3[t + 1] = 0 if (t + 1) < self.T // 2 else 1
             else:
                 # Normal simulation: stochastic transitions
-                self.x3[t + 1] = int(np.argmax(self.B3[:, int(self.x3[t])]))
+                self.x3[t + 1] = discrete_choice(self.B3[:, int(self.x3[t])])
 
     def _compute_final_free_energies(self):
         """Compute final variational free energies for policy posteriors."""

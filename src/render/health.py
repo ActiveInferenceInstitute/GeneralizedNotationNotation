@@ -35,6 +35,7 @@ class RendererStatus:
     version: Optional[str] = None
     module_path: Optional[str] = None
     error: Optional[str] = None
+    remediation: Optional[str] = None
 
     def to_dict(self) -> dict:
         """Provide to dict behavior."""
@@ -44,6 +45,7 @@ class RendererStatus:
             "version": self.version,
             "module_path": self.module_path,
             "error": self.error,
+            "remediation": self.remediation,
         }
 
 
@@ -54,6 +56,19 @@ _RENDERER_MODULE_OVERRIDES: dict[str, str] = {
 _RENDERERS: dict[str, Any] = {
     name: _RENDERER_MODULE_OVERRIDES.get(name, f"render.{name}")
     for name in get_supported_frameworks()
+}
+
+_FRAMEWORK_REMEDIATIONS: dict[str, str] = {
+    "julia": "Install Julia from https://julialang.org/downloads/ or run: sudo apt install julia",
+    "rxinfer": "Install Julia and instantiate: julia --project=src/render/rxinfer -e 'using Pkg; Pkg.instantiate()'",
+    "activeinference_jl": "Install Julia and instantiate: julia --project=src/render/activeinference_jl -e 'using Pkg; Pkg.instantiate()'",
+    "pytorch": "Add torch: uv add torch",
+    "bnlearn": "Add bnlearn (or R bnlearn bridge): uv add bnlearn",
+    "numpyro": "Add numpyro: uv add numpyro",
+    "stan": "Add cmdstanpy: uv add cmdstanpy",
+    "discopy": "Add discopy: uv add discopy",
+    "jax": "Add jax: uv add jax jaxlib",
+    "pymdp": "Add pymdp: uv add pymdp",
 }
 
 
@@ -73,6 +88,7 @@ def check_renderers() -> Dict[str, RendererStatus]:
     results: dict[Any, Any] = {}
 
     for name, module_path in _RENDERERS.items():
+        remediation = _FRAMEWORK_REMEDIATIONS.get(name)
         # ── Registry-level gate ──────────────────────────────────────────
         available_in_registry, registry_reason = get_framework_availability(name)
         if not available_in_registry:
@@ -85,6 +101,7 @@ def check_renderers() -> Dict[str, RendererStatus]:
                     else "Marked unavailable in framework registry"
                 ),
                 module_path=module_path,
+                remediation=remediation,
             )
             continue
 
@@ -97,6 +114,7 @@ def check_renderers() -> Dict[str, RendererStatus]:
                 available=True,
                 version=version,
                 module_path=module_path,
+                remediation=None,
             )
         except ImportError as e:
             results[name] = RendererStatus(
@@ -104,6 +122,7 @@ def check_renderers() -> Dict[str, RendererStatus]:
                 available=False,
                 error=str(e),
                 module_path=module_path,
+                remediation=remediation,
             )
         except Exception as e:
             results[name] = RendererStatus(
@@ -111,6 +130,7 @@ def check_renderers() -> Dict[str, RendererStatus]:
                 available=False,
                 error=f"Load error: {e}",
                 module_path=module_path,
+                remediation=remediation,
             )
 
     available = sum(1 for r in results.values() if r.available)

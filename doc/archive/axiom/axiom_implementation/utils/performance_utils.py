@@ -629,3 +629,9 @@ def test_performance_utilities():
 
 if __name__ == "__main__":
     test_performance_utilities()
+
+# Module-level exports
+get_memory_stats = PerformanceTracker.get_memory_stats
+track_operation = PerformanceTracker.track_operation
+record_metric = PerformanceTracker.record_metric
+

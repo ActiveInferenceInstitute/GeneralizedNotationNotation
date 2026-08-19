@@ -9,7 +9,16 @@ from dataclasses import dataclass, field
 from typing import Any, Dict, Iterable, List
 
 GUI_WEBSOCKET_MESSAGE_TYPES = frozenset(
-    {"model.load", "matrix.patch", "validation.result", "model.export", "error"}
+    {
+        "model.load",
+        "matrix.patch",
+        "validation.result",
+        "model.export",
+        "simulation.tick",
+        "state.update",
+        "matrix.heatmap",
+        "error",
+    }
 )
 
 

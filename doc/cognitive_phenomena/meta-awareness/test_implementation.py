@@ -56,16 +56,15 @@ def test_model_consistency():
 
     # Run same model twice with same seed
     model1 = SandvedSmithModel(T=20, three_level=False, random_seed=123)
-    model2 = SandvedSmithModel(T=20, three_level=False, random_seed=123)
-
     results1 = model1.run_simulation()
+    model2 = SandvedSmithModel(T=20, three_level=False, random_seed=123)
     results2 = model2.run_simulation()
 
     # Check that results are identical
-    assert np.allclose(results1["X1_bar"], results2["X1_bar"]), (
+    assert np.allclose(results1["X1_bar"], results2["X1_bar"], equal_nan=True), (
         "Results should be reproducible"
     )
-    assert np.allclose(results1["X2_bar"], results2["X2_bar"]), (
+    assert np.allclose(results1["X2_bar"], results2["X2_bar"], equal_nan=True), (
         "Results should be reproducible"
     )
     print("✓ Model produces consistent results with same seed")

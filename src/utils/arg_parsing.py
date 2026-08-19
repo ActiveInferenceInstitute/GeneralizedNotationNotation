@@ -82,6 +82,12 @@ class ArgumentParser:
                 default=None,
                 help_text="Comma-separated list of steps to run exclusively",
             ),
+            "parallel": ArgumentDefinition(
+                flag="--parallel",
+                action="store_true",
+                default=False,
+                help_text="Execute independent steps within topological tiers in parallel",
+            ),
             "autonomous": ArgumentDefinition(
                 flag="--autonomous",
                 action="store_true",
@@ -115,6 +121,12 @@ class ArgumentParser:
                 arg_type=Path,
                 default=None,
                 help_text="Path to model registry file",
+            ),
+            "query_ontology": ArgumentDefinition(
+                flag="--query-ontology",
+                arg_type=str,
+                default=None,
+                help_text="Filter registered models by ontology concept substring",
             ),
             "estimate_resources": ArgumentDefinition(
                 flag="--estimate-resources",
@@ -451,6 +463,7 @@ class ArgumentParser:
                 "recursive",
                 "verbose",
                 "registry_path",
+                "query_ontology",
             ],
             "5_type_checker.py": [
                 "target_dir",

@@ -763,11 +763,28 @@ def check_environment_health(verbose: bool = False) -> Dict[str, Any]:
         "pyproject_exists": False,
         "core_packages": {},
         "optional_packages": {},
+        "tools": {},
         "issues": [],
         "suggestions": [],
     }
 
     logger.info("🏥 Running GNN environment health check...")
+
+    for tool in ["pkl", "d2", "julia", "ruff", "ollama"]:
+        health["tools"][tool] = shutil.which(tool) is not None
+        if health["tools"][tool] and verbose:
+            logger.info(f"✅ Tool '{tool}' is available")
+
+    # Detect hardware acceleration / compute device support
+    accelerator_type = "cpu"
+    try:
+        if shutil.which("nvidia-smi") is not None:
+            accelerator_type = "cuda"
+        elif sys.platform == "darwin":
+            accelerator_type = "mps"
+    except Exception:
+        accelerator_type = "cpu"
+    health["accelerator_type"] = accelerator_type
 
     try:
         uv_bin = shutil.which("uv") or str(Path.home() / ".local" / "bin" / "uv")

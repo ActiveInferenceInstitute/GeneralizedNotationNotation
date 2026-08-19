@@ -33,6 +33,7 @@ class PipelineArguments:
     # Step control
     skip_steps: Optional[str] = None
     only_steps: Optional[str] = None
+    parallel: bool = False
     autonomous: bool = False
 
     # Type checking options
@@ -41,6 +42,7 @@ class PipelineArguments:
     profile: bool = False
     simulate_error: bool = False
     registry_path: Any = None
+    query_ontology: Optional[str] = None
 
     # File references
     ontology_terms_file: Any = None

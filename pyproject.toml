@@ -399,6 +399,7 @@ skips = ["B101", "B601"]
 [tool.ruff]
 target-version = "py311"
 line-length = 88
+extend-exclude = ["output", "cache", "temp", "tmp"]
 
 # Lint rules: omit ``W`` (mass whitespace noise) and ``UP`` (pyupgrade churn on a large
 # tree). CI runs ``ruff check src/``; keep the set aligned with what the repo can sustain.

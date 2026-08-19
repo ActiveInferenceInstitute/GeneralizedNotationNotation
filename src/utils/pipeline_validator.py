@@ -119,6 +119,19 @@ def validate_step_prerequisites(
                         result["errors"].append(warning_msg)
                         result["passed"] = False
 
+            elif req_step == "12_execute.py":
+                # Check for execution output files
+                execute_output_dir = expected_output_dir
+                if execute_output_dir.exists():
+                    sim_files = list(execute_output_dir.rglob("*simulation_results.json")) + list(
+                        execute_output_dir.rglob("*execution_summary.json")
+                    )
+                    if not sim_files:
+                        warning_msg = f"No execution results found in {execute_output_dir.name}"
+                        result["warnings"].append(warning_msg)
+                        result["errors"].append(warning_msg)
+                        result["passed"] = False
+
     return result
 
 

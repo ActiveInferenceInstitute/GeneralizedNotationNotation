@@ -331,6 +331,8 @@ class TestEnvironmentHealth:
             "pyproject_exists",
             "core_packages",
             "optional_packages",
+            "tools",
+            "accelerator_type",
             "issues",
             "suggestions",
         ]

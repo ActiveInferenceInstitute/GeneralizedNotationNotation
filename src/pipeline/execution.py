@@ -106,6 +106,7 @@ class StepExecutionResult:
     output: Optional[str] = None
     error: Optional[str] = None
     warnings: Optional[List[str]] = None
+    remediation: Optional[str] = None
 
     def __post_init__(self) -> Any:
         """Normalize fields after dataclass initialization."""

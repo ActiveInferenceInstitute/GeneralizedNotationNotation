@@ -137,6 +137,13 @@ class TestGenerateSonificationAudio:
         result = generate_sonification_audio([{"x": 1.0}])
         assert result.shape[0] == int(44100 * 8.0)
 
+    def test_sonification_chunked_streaming_buffer(self) -> Any:
+        from audio.generator import generate_sonification_audio
+
+        chunk_size = 1024
+        result = generate_sonification_audio([{"x": 1.0}], chunk_size=chunk_size)
+        assert len(result) % chunk_size == 0
+
 
 class TestGenerateOscillatorAudio:
     @pytest.mark.parametrize(

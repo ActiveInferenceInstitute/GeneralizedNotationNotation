@@ -77,16 +77,10 @@ def test_generated_source_contains_viz_and_log_blocks(tmp_path: Path) -> None:
 
 
 # --- (b) execution produces simulation_results.json + log + at least one PNG --
-# Runs only when Julia is on PATH. It is further gated on RANDOM_SIMULATION_ENABLED
-# (truthy) so a normal unit run stays fast; set that env var to exercise it.
+# Runs when Julia is on PATH.
 
 
 @pytest.mark.skipif(JULIA is None, reason="julia is not on PATH")
-@pytest.mark.skipif(
-    (os.environ.get("RANDOM_SIMULATION_ENABLED") or "").strip().lower()
-    not in {"1", "true", "yes", "on"},
-    reason="RANDOM_SIMULATION_ENABLED not set; execution test is optional",
-)
 def test_rendered_script_emits_results_log_and_png(tmp_path: Path) -> None:
     output_path = _render_simple_mdp(tmp_path)
 

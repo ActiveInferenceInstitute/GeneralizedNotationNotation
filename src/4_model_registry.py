@@ -46,7 +46,8 @@ run_script = create_standardized_pipeline_script(
     process_model_registry,
     "Model registry processing for GNN models",
     additional_arguments={
-        "registry_path": {"type": str, "help": "Path to model registry file"}
+        "registry_path": {"type": str, "help": "Path to model registry file"},
+        "query_ontology": {"type": str, "help": "Filter registered models by ontology concept substring"},
     },
 )
 

@@ -30,7 +30,7 @@ import logging
 import time
 import warnings
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Dict, Iterable, List, Optional, Tuple, Union
 
 import numpy as np
 
@@ -404,9 +404,11 @@ class PyMDPSimulation:
     # Rollout
     # ------------------------------------------------------------------
     def _sample_observation(
-        self, current_state: int, np_rng: np.random.Generator
+        self, current_state: int, np_rng: np.random.Generator, stream_obs: Optional[int] = None
     ) -> int:
-        """Handle sample observation for internal callers."""
+        """Sample observation or consume from incoming observation stream seam."""
+        if stream_obs is not None:
+            return int(stream_obs)
         probs = _normalise_prob_vector(self.A_np[:, current_state])
         return int(np_rng.choice(self.num_observations, p=probs))
 
@@ -417,12 +419,13 @@ class PyMDPSimulation:
         empirical_prior: Any,
         np_rng: np.random.Generator,
         jax_key: Any,
+        stream_obs: Optional[int] = None,
     ) -> Tuple[int, Any, Any, Dict[str, Any]]:
         """Run simulation step."""
         import jax.numpy as jnp
         import jax.random as jr
 
-        obs_idx = self._sample_observation(current_state, np_rng)
+        obs_idx = self._sample_observation(current_state, np_rng, stream_obs=stream_obs)
         obs_jax: list[Any] = [jnp.array([obs_idx], dtype=jnp.int32)]
 
         qs, info = self.agent.infer_states(
@@ -465,9 +468,10 @@ class PyMDPSimulation:
         self,
         output_dir: Optional[Path] = None,
         num_timesteps: Optional[int] = None,
+        observation_stream: Optional[Iterable[int]] = None,
         **_: Any,
     ) -> Dict[str, Any]:
-        """Run simulation."""
+        """Run simulation with optional streaming observation ingestion."""
         if num_timesteps is not None:
             try:
                 self.num_timesteps = int(num_timesteps)
@@ -492,11 +496,14 @@ class PyMDPSimulation:
         self.simulation_trace = []
         empirical_prior = self.agent.D
 
+        stream_iter = iter(observation_stream) if observation_stream is not None else None
+
         try:
             for t in range(self.num_timesteps):
+                stream_obs = next(stream_iter, None) if stream_iter is not None else None
                 current_state, empirical_prior, jax_key, step_data = (
                     self._run_simulation_step(
-                        t, current_state, empirical_prior, np_rng, jax_key
+                        t, current_state, empirical_prior, np_rng, jax_key, stream_obs=stream_obs
                     )
                 )
                 self.simulation_trace.append(step_data)

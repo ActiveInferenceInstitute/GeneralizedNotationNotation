@@ -35,9 +35,9 @@ class PythonSerializer(BaseGNNSerializer):
         lines.append(f'    """GNN Model: {model.model_name}"""')
         lines.append("")
         lines.append("    def __init__(self):")
-        lines.append(f'        self.model_name = "{model.model_name}"')
-        lines.append(f'        self.version = "{model.version}"')
-        lines.append(f'        self.annotation = "{model.annotation}"')
+        lines.append(f"        self.model_name = {json.dumps(model.model_name)}")
+        lines.append(f"        self.version = {json.dumps(model.version)}")
+        lines.append(f"        self.annotation = {json.dumps(model.annotation)}")
         lines.append("")
 
         # Variables

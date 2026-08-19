@@ -187,6 +187,26 @@ def test_templates_show_cli_outputs_one_template(
     assert payload["template"]["name"] == "pomdp-gridworld-3x3"
 
 
+def test_cli_json_envelope_support(
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    """Test --json envelope returns {status, data, error, meta} structure."""
+    assert main(["templates", "list", "--json"]) == 0
+    captured = capsys.readouterr()
+    envelope = json.loads(captured.out)
+    assert envelope["status"] == "success"
+    assert "templates" in envelope["data"]
+    assert envelope["error"] is None
+    assert "version" in envelope["meta"]
+
+    pkg_template = Path(__file__).resolve().parents[3] / "src" / "cli" / "template_assets" / "actinf_pomdp_2state.md"
+    assert main(["validate", str(pkg_template), "--json"]) == 0
+    captured = capsys.readouterr()
+    val_env = json.loads(captured.out)
+    assert val_env["status"] == "success"
+    assert val_env["data"]["valid"] is True
+
+
 def test_pull_cli_unknown_template_fails() -> None:
     assert main(["pull", "missing-template", "--dry-run"]) == 1
 

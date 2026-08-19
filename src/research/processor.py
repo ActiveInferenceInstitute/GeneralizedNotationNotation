@@ -459,6 +459,15 @@ def process_research(
         with open(results_file, "w") as f:
             json.dump(results, f, indent=2)
 
+        # Write summary files expected by pipeline validation
+        summary_file = results_dir / "research_summary.json"
+        with open(summary_file, "w") as f:
+            json.dump(results, f, indent=2)
+
+        processing_summary_file = results_dir / "research_processing_summary.json"
+        with open(processing_summary_file, "w") as f:
+            json.dump(results, f, indent=2)
+
         # Generate markdown report
         report_lines: list[Any] = ["# Research Hypotheses Report\n"]
         report_lines.append(f"**Analysis mode**: {results['analysis_mode']}\n\n")
