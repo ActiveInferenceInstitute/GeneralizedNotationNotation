@@ -109,24 +109,6 @@ python src/main.py --only-steps "3,7" --verbose
 2. Run the GNN importer:
 
 ```bash
-# Note: The catcolab importer is currently a planned feature design
-# python src/gnn/catcolab_importer.py \
-#     --input path/to/catcolab_export.json \
-#     --output input/gnn_files/imported_model.md \
-#     --logic stock-and-flow
-```
-
-1. Validate and run the pipeline normally.
-
-## DisCoPy as Bridge Technology
-
-`src/render/discopy/` provides the categorical bridge between GNN and CatColab:
-
-- GNN connection graphs → DisCoPy string diagrams
-- DisCoPy morphisms → CatColab Regulatory Network morphisms
-- Both share the **monoidal category** mathematical foundation
-
-```bash
 # Render GNN model to DisCoPy string diagram (for CatColab import)
 python src/11_render.py --target-dir input/gnn_files/ --frameworks discopy
 ```

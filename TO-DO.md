@@ -1,38 +1,38 @@
 # TO-DO - GNN Pipeline Roadmap
 
-**Last Updated**: 2026-08-19 (forward-looking open items only)
+**Last Updated**: 2026-08-19 (deep architectural scoping for v4.0.0 milestones)
 **Current Version**: 3.0.0
-**Next Target**: v4.0.0 (bounded autonomy, pipeline stage renumbering/consolidation, multi-agent scaling, and declarative ontology synthesis)
+**Next Target**: v4.0.0 (bounded autonomy, pipeline stage consolidation, multi-agent stigmergic topologies, and high-dimensional active inference)
 
 **Last reviewed**: 2026-08-19 — all past TODO items, test-infrastructure follow-ups, and RED_TEAM_REVIEW.md security residuals are closed. The complete test suite is **3,051 passed / 0 failed / 0 skipped** (zero skips; Julia and Python frameworks fully provisioned and executed live), all 25 pipeline steps are composable and verified end-to-end, and all documentation/cognitive-phenomena examples pass. Full audit trail lives in `CHANGELOG.md` and git history.
 
 ## Open Scoped Roadmap
 
-### Minor (P3 - Developer Ergonomics & Diagnostics)
-- **TODO-MIN-01: Auto-Detect Environment GPU Acceleration in Execution Metadata**:
-  - *Problem*: Hardware accelerator status is logged during setup but not yet recorded in per-model `execution_metadata.json` across all backend simulation runners.
-  - *Scope*: In `src/execute/processor.py` and `src/execute/pymdp/pymdp_simulation.py`, include `accelerator_type` and device memory fields in per-model output metadata.
+### Minor (P3 - Developer Ergonomics, Telemetry & Diagnostic Precision)
+- **TODO-MIN-01: Auto-Detect Environment GPU Acceleration in Simulation Execution Metadata**:
+  - *Problem*: Hardware accelerator status (`cuda`, `mps`, `cpu`) is captured during setup health checks, but is not yet recorded in per-model `execution_metadata.json` across all backend simulation runners (PyMDP, JAX, RxInfer.jl, ActiveInference.jl).
+  - *Scope*: In `src/execute/processor.py` and `src/execute/pymdp/pymdp_simulation.py`, include `accelerator_type`, device memory allocation, and vectorization backends in per-model simulation output metadata.
   - *Probe*: `uv run python -c "from execute.pymdp.pymdp_simulation import PyMDPSimulation; sim = PyMDPSimulation({}); res = sim.run_simulation(num_timesteps=1); assert 'execution_metadata' in res or 'hardware' in res"`
-- **TODO-MIN-02: Structured CLI Output Schema Envelope (`--json`) for Remaining Commands**:
-  - *Problem*: `gnn report`, `gnn health`, `gnn preflight`, and `gnn graph` CLI commands should be continuously tested across all subcommands to ensure full envelope parity.
-  - *Scope*: In `src/tests/cli/test_cli_public_api.py`, add parameterized tests asserting the `{status, data, error, meta}` envelope schema across all CLI subcommands.
-  - *Probe*: `uv run pytest src/tests/cli/test_cli_public_api.py -k json` asserts envelope structure on all commands.
+- **TODO-MIN-02: Structured CLI Output Schema Envelope (`--json`) Verification & Parity**:
+  - *Problem*: `gnn report`, `gnn health`, `gnn preflight`, and `gnn graph` CLI commands have been wired with `--json`, and need continuous regression coverage across all subcommands to guarantee schema stability for MCP clients and automated tooling.
+  - *Scope*: In `src/tests/cli/test_cli_public_api.py`, maintain comprehensive parameterized assertions ensuring every subcommand produces `{status, data, error, meta}` envelope output when `--json` is supplied.
+  - *Probe*: `uv run pytest src/tests/cli/test_cli_public_api.py -k json` asserts valid envelope output on all commands.
 - **TODO-MIN-03: Model Registry Ontology Query CLI Integration**:
-  - *Problem*: `--query-ontology` filter is implemented in `src/4_model_registry.py` and `src/model_registry/registry.py`; expose this capability as a flag on `gnn models list` CLI command.
-  - *Scope*: In `src/cli/__init__.py`, add `--query-ontology` parameter to model listing subcommands.
+  - *Problem*: The `--query-ontology` filter is implemented in `src/4_model_registry.py` and `src/model_registry/registry.py`; expose this capability as a flag on the top-level `gnn` CLI command interface.
+  - *Scope*: In `src/cli/__init__.py`, add `--query-ontology` parameter to model inspection subcommands.
   - *Probe*: `uv run python -m cli --help` confirms presence and documentation of ontology query option.
 
-### Medium (P2 - Pipeline Architecture, Step Renumbering/Ordering & Performance)
+### Medium (P2 - Pipeline Architecture, Step Reordering & Performance Optimization)
 - **TODO-MED-01: Full Pipeline Step Renumbering and Directory Path Migration**:
-  - *Problem*: Historically, Step 15 (Audio) and Step 16 (Analysis) run after Step 13 (LLM) and Step 14 (ML Integration). Renumbering them to contiguous simulation analytics (`13_audio`, `14_analysis`, `15_llm`, `16_ml_integration`) improves data locality.
+  - *Problem*: Historically, Step 15 (Audio) and Step 16 (Analysis) execute after Step 13 (LLM) and Step 14 (ML Integration). Renumbering them to contiguous simulation analytics (`13_audio`, `14_analysis`, `15_llm`, `16_ml_integration`) optimizes pipeline data locality and stage cohesion.
   - *Scope*: Complete the migration of physical filenames from `15_audio.py` → `13_audio.py` and `16_analysis.py` → `14_analysis.py`, while maintaining `CONSOLIDATED_STEP_ALIASES` in `src/pipeline/step_registry.py` for continuous alias resolution.
   - *Probe*: `uv run python src/main.py --target-dir input/gnn_files/basics --output-dir /tmp/gnn-reorder-smoke --only-steps 11,12,13,14` verifies contiguous execution without missing artifact warnings.
 - **TODO-MED-02: Streaming Multi-Modal Audio Sonification Buffer in Step 15**:
-  - *Problem*: Audio sonification processes complete simulation trajectories in batch mode at the end of the run.
+  - *Problem*: Audio sonification processes complete simulation trajectories in batch mode at the end of the run rather than streaming audio buffers incrementally.
   - *Scope*: In `src/audio/sapf/` and `src/15_audio.py`, implement a chunked rolling synthesizer buffer that emits audio chunks per tick, synchronizing with `durable_streams.py`.
   - *Probe*: `uv run pytest src/tests/audio/test_audio_generation.py` validates chunked streaming synthesis.
 - **TODO-MED-03: Dynamic Parallel Tier Worker Pool Auto-Scaling**:
-  - *Problem*: Parallel mode (`--parallel`) currently uses dynamic CPU detection; enhance it with per-step memory profile estimates from `src/utils/pipeline_planner.py` to prevent OOM on memory-intensive steps.
+  - *Problem*: Parallel mode (`--parallel`) currently uses dynamic CPU detection; enhance it with per-step memory profile estimates from `src/utils/pipeline_planner.py` to prevent memory overcommit on dense scaling models.
   - *Scope*: In orchestrator execution (`src/pipeline/dag.py` and parallel dispatch), dynamically calibrate worker pool bounds based on available CPU count and per-step memory requirements from `src/utils/pipeline_planner.py`.
   - *Probe*: `uv run python src/main.py --target-dir input/gnn_files/basics --output-dir /tmp/gnn-parallel-scaled --parallel` executes with resource-calibrated worker count.
 

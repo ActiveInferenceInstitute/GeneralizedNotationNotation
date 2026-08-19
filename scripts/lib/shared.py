@@ -23,6 +23,7 @@ DEFAULT_SKIP_PARTS: FrozenSet[str] = frozenset(
         ".pytest_cache",
         ".ruff_cache",
         "__pycache__",
+        "other",
         "archive",
         "build",
         "dist",

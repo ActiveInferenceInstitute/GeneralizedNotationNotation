@@ -58,12 +58,12 @@ Static
 Put `my_first_model.md` in a folder (for example `path/to/my_models/`) and pass that folder to `--target-dir`.
 
 ```bash
-python src/main.py --target-dir path/to/my_models --only-steps 1,4
+python src/main.py --target-dir path/to/my_models --only-steps 3,5,6
 ```
 
 ## Step 3: Visualize Model
 ```bash
-python src/main.py --target-dir path/to/my_models --only-steps 8
+python src/main.py --target-dir path/to/my_models --only-steps 3,8
 ```
 
 Check `output/8_visualization_output/` for generated diagrams.

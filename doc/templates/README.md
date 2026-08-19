@@ -95,18 +95,19 @@ cp doc/templates/basic_gnn_template.md my_model.md
 
 **Cross-References**: [File Structure Guide](../gnn/reference/gnn_file_structure_doc.md) | [Syntax Reference](../gnn/reference/gnn_syntax.md)
 
-### Method 2: Pipeline Generation
+### Method 2: Template Library CLI
 ```bash
-# Generate from template with pipeline
-python src/main.py --template basic --output my_new_model.md
+# List and pull packaged templates via the gnn CLI
+gnn templates list
+gnn pull actinf-pomdp-2state --output-dir input/gnn_files/
 ```
 
 **Cross-References**: [Pipeline Guide](../gnn/operations/gnn_tools.md) | [Configuration](../configuration/README.md)
 
-### Method 3: Interactive Creation
+### Method 3: Direct Template Initializer
 ```bash
-# Use interactive template wizard
-python src/utils/template_wizard.py
+# Run Step 0 template initialization
+python src/0_template.py --target-dir input/gnn_files --output-dir output/0_template_output
 ```
 
 **Cross-References**: [API Documentation](../api/README.md) | [Tool Development](../gnn/reference/gnn_dsl_manual.md)

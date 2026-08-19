@@ -87,7 +87,7 @@ Implementation specifics
 ```markdown
 > **📋 Document Metadata**  
 > **Type**: [Guide|Reference|Tutorial|API|Examples] | **Audience**: [Beginners|Practitioners|Developers|Researchers] | **Complexity**: [Beginner|Intermediate|Advanced]  
-> **Cross-References**: [Overview](../README.md) | [Testing](../testing/README.md) | [API](../api/README.md)
+> **Cross-References**: [Overview](README.md) | [Testing](testing/README.md) | [API](api/README.md)
 ```
 
 ### **Headings and Structure**
@@ -161,9 +161,9 @@ python main.py --only-steps 1_gnn
 
 **Internal Links**:
 ```markdown
-[Document Title](../README.md)
-[Specific Section](../README.md)
-[Cross-Reference](../testing/README.md)
+[Document Title](README.md)
+[Specific Section](README.md)
+[Cross-Reference](testing/README.md)
 ```
 
 **External Links**:
@@ -191,9 +191,9 @@ See [FR23] for foundational theory and [SM24] for implementation details.
 ```markdown
 | Component | Purpose | Status | Documentation |
 |-----------|---------|--------|---------------|
-| Type Checker | Validation | ✅ Complete | [Link](../gnn/modules/05_type_checker.md) |
-| Visualizer | Diagrams | 🔄 In Progress | [Link](../gnn/modules/08_visualization.md) |
-| Renderer | Code Gen | ✅ Complete | [Link](../gnn/modules/11_render.md) |
+| Type Checker | Validation | ✅ Complete | [Link](gnn/modules/05_type_checker.md) |
+| Visualizer | Diagrams | 🔄 In Progress | [Link](gnn/modules/08_visualization.md) |
+| Renderer | Code Gen | ✅ Complete | [Link](gnn/modules/11_render.md) |
 ```
 
 **Callout Boxes**:

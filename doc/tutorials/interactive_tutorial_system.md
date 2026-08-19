@@ -5,9 +5,9 @@
 > **Cross-References**: [Learning Paths](../learning_paths.md) | [Quickstart](../quickstart.md) | [Tutorials](README.md)
 >
 > [!NOTE]
-> This document describes a **proposed** interactive learning platform. The code components described below are currently in design/development phase.
+> This document describes a **proposed** interactive learning platform architecture. The tutorial commands below represent future interactive tools under exploration. For the current active tutorial suite, see [Tutorials Guide](README.md) and [Quickstart Guide](../quickstart.md).
 
-## 🎮 Interactive Learning Platform
+## 🎮 Interactive Learning Platform (Proposed Architecture)
 
 The GNN Interactive Tutorial System provides hands-on, guided learning experiences that adapt to your skill level and learning style.
 

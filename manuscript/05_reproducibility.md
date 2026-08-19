@@ -42,10 +42,11 @@ This manuscript is itself a reproducible artifact. Every quantitative value in t
 python scripts/z_generate_manuscript_variables.py
 ```
 
-That command recomputes the {{...}} tokens, persists them to `output/data/manuscript_variables.json` for audit, and hydrates the manuscript sources into `output/manuscript/`. The hydrated sources are then rendered to PDF through the sibling research-template checkout, whose rendering pipeline converts the markdown sections, figures, and references into the final document:
+That command recomputes the {{...}} tokens, persists them to `output/data/manuscript_variables.json` for audit, and hydrates the manuscript sources into `output/manuscript/`. The hydrated sources are then rendered to PDF through the template research pipeline (invoked from the parent monorepo / template framework), whose rendering stage converts the markdown sections, figures, and references into the final document:
 
 ```bash
-python scripts/03_render_pdf.py --project GeneralizedNotationNotation
+python -m scripts.manuscript_build_figures
+python -m scripts.z_generate_manuscript_variables
 ```
 
 Because the variables file is regenerated immediately before rendering, the numbers in the rendered PDF cannot drift from the repository: a code change that alters, for example, the test inventory ({{GNN_TEST_FILE_COUNT}} test files, {{GNN_TEST_FUNCTION_COUNT}} test functions) propagates into the prose on the next regeneration without any manual editing.

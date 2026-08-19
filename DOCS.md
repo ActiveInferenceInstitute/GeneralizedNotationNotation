@@ -212,7 +212,8 @@ flowchart LR
 - `doc/PIPELINE_SCRIPTS.md` — step details and flow
 - `ARCHITECTURE.md` — implementation-oriented architecture
 - `src/STEP_INDEX.md` — machine-readable step index (0–24)
-- `doc/api/api_index.json` — machine-generated API index
+- `src/mcp/audit_report.json` — machine-generated MCP tool inventory
+- `src/cli/template_index.json` — packaged template index
 
 ## Machine-Readable Step Index
 

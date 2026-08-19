@@ -173,21 +173,18 @@ def initialize_jax_devices():
 - Track error patterns
 - Update error documentation
 
-## Automated Recovery Tools
+## Automated Recovery and Diagnostic Tools
 
-### 1. Pipeline Validator
+### 1. Preflight and Environment Checker
 ```bash
-python src/validate_pipeline.py --fix-issues
+# Check environment health & dependencies
+python -m cli health --strict
+python src/1_setup.py --verbose
 ```
 
-### 2. Environment Checker
+### 2. Preflight Health Checker
 ```bash
-python src/1_setup.py --validate-only
-```
-
-### 3. Resource Monitor
-```bash
-python src/utils/monitor_resources.py
+python -m cli preflight
 ```
 
 ## Contributing to Error Recovery

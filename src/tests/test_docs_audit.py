@@ -100,7 +100,7 @@ def test_maintained_doc_terms_flags_stale_phrase(tmp_path: Path) -> None:
 def test_maintained_doc_terms_skips_generated_and_archive_paths(tmp_path: Path) -> None:
     mod = _load_doc_terms()
     generated = tmp_path / "src" / "output"
-    archived = tmp_path / "doc" / "archive"
+    archived = tmp_path / "doc" / "other"
     generated.mkdir(parents=True)
     archived.mkdir(parents=True)
     (generated / "README.md").write_text("FallbackAgent\n", encoding="utf-8")

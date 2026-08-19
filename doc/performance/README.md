@@ -79,18 +79,13 @@ kernprof -l -v src/main.py --target-dir examples/
 snakeviz profile_output.prof
 ```
 
-### **Real-Time Monitoring Dashboard**
+### **Pipeline Performance Dashboard & Inspection**
 
 ```bash
-# Start performance monitoring server
-python src/monitoring/performance_server.py --port 8080
-
-# Access dashboard at: http://localhost:8080/dashboard
-# Features:
-# - Real-time pipeline execution tracking
-# - Resource usage graphs (CPU, memory, disk)
-# - Model complexity analysis
-# - Comparative performance benchmarks
+# View the generated pipeline performance dashboard
+open output/00_pipeline_summary/performance_dashboard.html
+# or start the local API server
+python -m cli serve --port 8000
 ```
 
 ## ⚡ Pipeline Optimization
@@ -386,21 +381,15 @@ JAX + Vectorization:  1.2s (GPU, vectorized) - 97% improvement
 
 ### **1. Distributed Processing**
 
-Scale to cluster environments:
+Scale across execution workers and frameworks:
 
 ```bash
-# Distributed GNN processing with Dask
-python src/distributed/cluster_main.py \
-    --scheduler-address cluster.example.com:8786 \
-    --target-dir /shared/models/ \
-    --workers 32 \
-    --memory-per-worker 8GB
-
-# Kubernetes deployment
-kubectl apply -f deployments/gnn-cluster.yaml
-# - Auto-scaling based on workload
-# - Persistent storage for models and results
-# - Load balancing across worker nodes
+# Distributed GNN execution via Step 12
+python src/12_execute.py \
+    --target-dir input/gnn_files/ \
+    --output-dir output/12_execute_output \
+    --distributed \
+    --execution-workers 4
 ```
 
 ### **2. Cloud Optimization**
@@ -454,8 +443,8 @@ python src/main.py examples/mobile_model.md \
 
 #### **1. Profile and Identify Bottlenecks**
 ```bash
-# Comprehensive profiling
-python src/profiling/comprehensive_profiler.py examples/model.md
+# Profile pipeline execution with performance metrics
+python src/main.py --target-dir input/gnn_files/ --profile --output-dir output/
 
 # Identify top bottlenecks:
 # - Step 6 (Visualization): 67% of total time
@@ -466,11 +455,7 @@ python src/profiling/comprehensive_profiler.py examples/model.md
 #### **2. Apply Targeted Optimizations**
 ```bash
 # Optimize specific bottlenecks
-python src/main.py examples/model.md \
-    --skip-visualization \          # Skip expensive visualization
-    --sparse-matrices \             # Use sparse representations
-    --io-optimization \             # Optimize file operations
-    --cache-matrices                # Cache computed matrices
+python src/main.py --target-dir input/gnn_files/ --skip-steps 8 --output-dir output/
 ```
 
 #### **3. Validate Performance Improvements**

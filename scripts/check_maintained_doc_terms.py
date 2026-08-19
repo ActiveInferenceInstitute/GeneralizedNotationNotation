@@ -33,6 +33,7 @@ SKIP_PARTS = {
     "__pycache__",
     "node_modules",
     "output",
+    "other",
     "archive",
 }
 

@@ -69,6 +69,7 @@ SKIP_PARTS = {
     ".ruff_cache",
     ".venv",
     "__pycache__",
+    "other",
     "archive",
     "build",
     "dist",

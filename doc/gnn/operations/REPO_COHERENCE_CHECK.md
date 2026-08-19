@@ -1198,10 +1198,10 @@ def process_validation(
 
 ```bash
 # Run pipeline validation
-python src/pipeline_validation.py --src-dir src --output-dir output
+python -m pipeline.pipeline_validation
 
-# Save detailed report
-python src/pipeline_validation.py --save-report validation_report.json
+# Run preflight checks
+python -m cli preflight
 ```
 
 #### Using Test Suite
@@ -1264,9 +1264,9 @@ Provide:
 
 ## 13. Integration with Existing Validation Tools
 
-### 13.1 Pipeline Validation Script
+### 13.1 Pipeline Validation Module
 
-**Location**: `src/pipeline_validation.py`
+**Location**: `src/pipeline/pipeline_validation.py`
 
 **Capabilities**:
 
@@ -1281,7 +1281,7 @@ Provide:
 **Usage**:
 
 ```bash
-python src/pipeline_validation.py [--fix-issues]
+python -m pipeline.pipeline_validation
 ```
 
 ### 13.2 Validation Module
