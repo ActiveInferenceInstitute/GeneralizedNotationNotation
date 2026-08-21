@@ -129,7 +129,10 @@ def process_audio(
         # Optionally emit a durable_streams StreamManifest sidecar for audio
         try:
             from pipeline.durable_streams import StreamManifest, write_stream_manifest
-            audio_array = np.array(results.get("audio_files_generated", []), dtype=object)
+
+            audio_array = np.array(
+                results.get("audio_files_generated", []), dtype=object
+            )
             if len(audio_array) > 0:
                 audio_manifest = StreamManifest.from_array(
                     stream_id=f"audio_stream_{datetime.now().strftime('%Y%m%d_%H%M%S')}",
@@ -138,9 +141,13 @@ def process_audio(
                     chunk_size=int(kwargs.get("audio_chunk_size", 32)),
                     created_by="15_audio",
                 )
-                write_stream_manifest(audio_manifest, results_dir / "audio_stream_manifest.json")
+                write_stream_manifest(
+                    audio_manifest, results_dir / "audio_stream_manifest.json"
+                )
         except Exception as manifest_err:
-            logger.debug("Optional durable stream manifest generation skipped: %s", manifest_err)
+            logger.debug(
+                "Optional durable stream manifest generation skipped: %s", manifest_err
+            )
 
         # Generate summary report
         summary = generate_audio_summary(results)

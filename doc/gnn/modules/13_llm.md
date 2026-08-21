@@ -485,7 +485,7 @@ cat output/13_llm_output/llm_results/llm_results.json | grep "selected_model"
 4. **Process files individually**:
    ```bash
    # Process one file at a time
-   python src/13_llm.py --target-dir input/gnn_files --gnn-file specific_model.md
+   uv run python src/13_llm.py --target-dir input/gnn_files --verbose
    ```
 
 **Performance**: Measure with your hardware; smaller instruct models are usually faster on CPU.

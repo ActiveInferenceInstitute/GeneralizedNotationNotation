@@ -2,8 +2,8 @@
 
 **Version**: v3.0.0 Engine (Bundle v2.0.0)  
 **Last Updated**: 2026-04-15  
-**Status**: ✅ Production Ready  
-**Modules**: 38+ · **Pipeline steps**: 25 · **Renderers**: 9 backends (see [../implementations/README.md](../implementations/README.md)) · **Tests**: see [../../../README.md](../../../README.md)  
+**Status**: Maintained
+**Scope**: Ontology annotations and processing. See [framework implementations](../implementations/README.md) for current backend coverage.
 
 This document describes the ontology system used in conjunction with GNN files, focusing on the Active Inference Ontology.
 

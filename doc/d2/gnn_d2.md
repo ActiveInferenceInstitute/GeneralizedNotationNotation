@@ -416,7 +416,7 @@ The GNN pipeline can automatically generate D2 diagrams as part of its visualiza
 
 ```bash
 # Generate D2 diagrams for GNN models
-python src/8_visualization.py --target-dir input/gnn_files --include-d2
+uv run python src/8_visualization.py --target-dir input/gnn_files --verbose
 
 # Output includes .d2 files alongside traditional visualizations
 output/8_visualization_output/

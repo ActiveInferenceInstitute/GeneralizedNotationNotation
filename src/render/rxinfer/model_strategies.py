@@ -14,9 +14,13 @@ Each strategy exposes:
 - ``get_validation_fields() -> list`` — extra validation fields.
 
 ``FlatStrategy`` is the canonical flat-POMDP generator.
-``MultiAgentStrategy`` deliberately renders the extractor's composed joint
-POMDP through the flat generator while stamping its true kind (per-agent
-recovery happens downstream from the ``state_factors`` echo).
+``MultiAgentStrategy`` renders natively when the spec declares >= 2 complete
+agent groups: one genuine ``pomdp_model`` inference per agent (no joint
+state-space expansion) coupled through a shared ``env_signal`` affordance
+trace (deposit + decay, roadmap MAJ-03). Specs without the per-agent matrix
+structure keep the documented joint composition through the flat generator
+while stamping their true kind (per-agent recovery happens downstream from
+the ``state_factors`` echo).
 ``HierarchicalStrategy`` renders two-level models natively (slow context
 coupled into the fast-state prior) and 3+-level models as the joint
 composition. ``FactoredStrategy`` (roadmap D3), ``ContinuousStrategy``
@@ -157,12 +161,40 @@ class _JointCompositionStrategy(FlatStrategy):
 class MultiAgentStrategy(_JointCompositionStrategy):
     """Multiple coordinated agents.
 
-    Rendered as the composed joint POMDP; per-agent beliefs are recovered
-    downstream by marginalizing the joint posterior over the other agents'
-    factors (roadmap D4), using the ``state_factors`` echo in the results.
+    When the spec declares two or more complete agent groups
+    (``A_agentN``/``B_agentN``/``C_agentN``/``D_agentN``) the strategy
+    renders natively through the stigmergic generator
+    (``_strategies_multiagent``): one genuine ``pomdp_model`` inference per
+    agent (no joint state-space expansion) coupled through a shared
+    ``env_signal`` affordance trace (deposit + decay). Specs without the
+    per-agent matrix structure keep the pre-strategy behavior — the
+    extractor's composed joint POMDP through the flat generator — with
+    per-agent beliefs recovered downstream from the ``state_factors`` echo
+    (roadmap D4). Either way the true kind is stamped.
     """
 
     kind = ModelKind.MULTI_AGENT
+
+    def generate_model_code(self, gnn_spec: Dict[str, Any], model_name: str) -> str:
+        """Generate native stigmergic code when >= 2 agent groups are declared.
+
+        Delegates to ``_strategies_multiagent`` — see that module for the
+        full docstring. Falls back to the composed-joint flat generator
+        (documented interim behavior) for specs without per-agent matrices.
+        """
+        from render.multi_agent_common import has_native_multi_agent_structure
+
+        if has_native_multi_agent_structure(gnn_spec):
+            from render.rxinfer._strategies_multiagent import _generate_stigmergic_code
+
+            return _generate_stigmergic_code(gnn_spec, model_name, self.kind.value)
+        return super().generate_model_code(gnn_spec, model_name)
+
+    def get_validation_fields(self) -> List[str]:
+        return super().get_validation_fields() + [
+            "env_signal_trace_valid",
+            "per_agent_all_valid",
+        ]
 
 
 class HierarchicalStrategy(FlatStrategy):

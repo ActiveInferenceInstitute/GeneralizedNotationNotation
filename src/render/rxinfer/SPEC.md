@@ -41,7 +41,8 @@ normally. Step 12 `main()` returns non-zero only if `validation.all_valid` is fa
 ```
 rxinfer/
 ├── rxinfer_renderer.py     # Core renderer — ModelKind dispatch, genuine @model + infer()
-├── model_strategies.py     # Per-kind generators: flat (batch/online), hierarchical, factored, continuous LGSSM, Dirichlet learning, multi-agent joint
+├── model_strategies.py     # Per-kind generators: flat (batch/online), hierarchical, factored, continuous LGSSM, Dirichlet learning
+├── _strategies_multiagent.py  # Native stigmergic multi-agent generator (per-agent pomdp_model + shared env_signal trace)
 ├── toml_generator.py       # Retired emitter plus topology parsing helpers
 └── ...
 ```

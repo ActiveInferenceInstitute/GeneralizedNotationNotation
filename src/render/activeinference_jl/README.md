@@ -21,6 +21,20 @@ The renderer consumes `canonical_pomdp_v1` data:
 
 Generated scripts import ActiveInference.jl and write `simulation_results.json` with schema `activeinference_jl_simulation_v1`.
 
+## Native multi-agent (stigmergic) rendering
+
+When a spec declares two or more complete agent groups (`A_agentN` /
+`B_agentN` / `C_agentN` / `D_agentN` in `structured_pomdp.matrices`), the
+renderer switches to the native multi-agent path (roadmap MAJ-03): one
+per-agent simulation (per-agent state spaces — no joint state-space
+expansion) coupled through the shared environment affordance. Each agent
+deposits signal at its MAP position each timestep; the shared
+`env_signal` trace decays by `signal_decay` per timestep. Results are
+written with schema `activeinference_jl_stigmergic_swarm_v1`, `model_kind:
+multi_agent`, per-agent beliefs/actions/EFE, and the `env_signal_trace`.
+Detection helpers live in `render.multi_agent_common`; flat specs keep the
+canonical single-agent path unchanged.
+
 ## Outputs
 
 ```text

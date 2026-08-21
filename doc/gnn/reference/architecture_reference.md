@@ -2,12 +2,12 @@
 
 **Version**: v3.0.0 Engine (Bundle v2.0.0)  
 **Last Updated**: 2026-04-15  
-**Status**: ✅ Production Ready  
-**Modules**: 38+ · **Pipeline steps**: 25 · **Renderers**: 9 backends (see [../implementations/README.md](../implementations/README.md)) · **Tests**: see [../../../README.md](../../../README.md)  
+**Status**: Maintained
+**Scope**: Pipeline architecture and extension patterns. See [framework implementations](../implementations/README.md) for current backend coverage.
 
 **GNN Architecture Team**  
 **Version**: 2.0.0  
-**Status**: Production Ready  
+**Status**: Maintained
 **Last Updated**: 2026-04-15  
 
 Implementation details of the thin orchestrator pattern and cross-module integration.

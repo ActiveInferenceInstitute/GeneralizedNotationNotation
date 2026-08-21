@@ -3,7 +3,7 @@
 **Version**: v3.0.0 Engine (Bundle v2.0.0)  
 **Last Reviewed**: 2026-06-12
 **Status**: Historical analysis; use `TO-DO.md` and current verifier output for live release status
-**Modules**: 38+ · **Pipeline steps**: 25 · **Renderers**: 9 backends (see [../implementations/README.md](../implementations/README.md)) · **Tests**: see [../../../README.md](../../../README.md)  
+**Scope**: Improvement analysis for the GNN pipeline. See [framework implementations](../implementations/README.md) for current backend coverage.
 
 Historical analysis of identified areas for improvement, streamlining, and ensuring robust functionality within and across modules. This page is not a current pass-rate, runtime, or release-readiness certificate.
 

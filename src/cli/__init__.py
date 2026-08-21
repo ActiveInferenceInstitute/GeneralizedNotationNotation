@@ -361,7 +361,11 @@ def _cmd_validate(args: Any) -> Any:
     if not args.file.exists():
         logger.error(f"File not found: {args.file}")
         if is_json:
-            print(json.dumps(_envelope("error", error=f"File not found: {args.file}"), indent=2))
+            print(
+                json.dumps(
+                    _envelope("error", error=f"File not found: {args.file}"), indent=2
+                )
+            )
         return 1
 
     content = args.file.read_text(encoding="utf-8")
@@ -452,7 +456,11 @@ def _cmd_parse(args: Any) -> Any:
     if not args.file.exists():
         logger.error(f"File not found: {args.file}")
         if is_json:
-            print(json.dumps(_envelope("error", error=f"File not found: {args.file}"), indent=2))
+            print(
+                json.dumps(
+                    _envelope("error", error=f"File not found: {args.file}"), indent=2
+                )
+            )
         return 1
 
     content = args.file.read_text(encoding="utf-8")
@@ -625,7 +633,14 @@ def _cmd_report(args: Any) -> Any:
     if not output_dir.exists():
         logger.error(f"Output directory not found: {output_dir}")
         if is_json:
-            print(json.dumps(_envelope("error", error=f"Output directory not found: {output_dir}"), indent=2))
+            print(
+                json.dumps(
+                    _envelope(
+                        "error", error=f"Output directory not found: {output_dir}"
+                    ),
+                    indent=2,
+                )
+            )
         return 1
 
     from report.pipeline_report import generate_pipeline_report
@@ -638,7 +653,15 @@ def _cmd_report(args: Any) -> Any:
         tmp_f.write(report)
     os.replace(tmp_f.name, str(report_path))
     if is_json:
-        print(json.dumps(_envelope("success", data={"report_path": str(report_path), "report_chars": len(report)}), indent=2))
+        print(
+            json.dumps(
+                _envelope(
+                    "success",
+                    data={"report_path": str(report_path), "report_chars": len(report)},
+                ),
+                indent=2,
+            )
+        )
     else:
         print(f"📄 Report written to: {report_path}")
     return 0
@@ -715,7 +738,11 @@ def _cmd_preflight(args: Any) -> Any:
                 for i in report.issues
             ],
         }
-        print(json.dumps(_envelope("success" if report.is_ok else "warning", data=data), indent=2))
+        print(
+            json.dumps(
+                _envelope("success" if report.is_ok else "warning", data=data), indent=2
+            )
+        )
     else:
         print(report.to_markdown())
     return 0 if report.is_ok else 1
@@ -747,7 +774,11 @@ def _cmd_health(args: Any) -> Any:
                 ],
             },
         }
-        print(json.dumps(_envelope("success" if env.is_ok else "warning", data=data), indent=2))
+        print(
+            json.dumps(
+                _envelope("success" if env.is_ok else "warning", data=data), indent=2
+            )
+        )
     else:
         print("🔧 Renderer generator modules:")
         for name, status in sorted(renderers.items()):
@@ -756,7 +787,9 @@ def _cmd_health(args: Any) -> Any:
 
         available = sum(1 for r in renderers.values() if r.available)
         print(f"\n  {available}/{len(renderers)} generator modules importable")
-        print(f"\n🏗️ Environment: {env.checks_passed} passed, {env.checks_failed} failed")
+        print(
+            f"\n🏗️ Environment: {env.checks_passed} passed, {env.checks_failed} failed"
+        )
         for issue in env.issues:
             sev = "⚠️" if issue.severity != "error" else "❌"
             print(f"  {sev} {issue.message}")
@@ -788,7 +821,11 @@ def _cmd_templates(args: Any) -> Any:
     if getattr(args, "templates_command", None) in {None, "list"}:
         templates = list_templates()
         if is_json:
-            print(json.dumps(_envelope("success", data={"templates": templates}), indent=2))
+            print(
+                json.dumps(
+                    _envelope("success", data={"templates": templates}), indent=2
+                )
+            )
         else:
             print(json.dumps({"templates": templates}, indent=2))
         return 0
@@ -796,7 +833,9 @@ def _cmd_templates(args: Any) -> Any:
         try:
             tmpl = show_template(args.name)
             if is_json:
-                print(json.dumps(_envelope("success", data={"template": tmpl}), indent=2))
+                print(
+                    json.dumps(_envelope("success", data={"template": tmpl}), indent=2)
+                )
             else:
                 print(json.dumps({"template": tmpl}, indent=2))
         except KeyError as exc:
@@ -902,7 +941,11 @@ def _cmd_graph(args: Any) -> Any:
     if not args.file.exists():
         logger.error(f"File not found: {args.file}")
         if is_json:
-            print(json.dumps(_envelope("error", error=f"File not found: {args.file}"), indent=2))
+            print(
+                json.dumps(
+                    _envelope("error", error=f"File not found: {args.file}"), indent=2
+                )
+            )
         return 1
 
     try:
@@ -910,13 +953,30 @@ def _cmd_graph(args: Any) -> Any:
 
         output = render_graph_from_file(str(args.file), output_format=args.format)
         if is_json:
-            print(json.dumps(_envelope("success", data={"file": str(args.file), "graph": output, "format": args.format}), indent=2))
+            print(
+                json.dumps(
+                    _envelope(
+                        "success",
+                        data={
+                            "file": str(args.file),
+                            "graph": output,
+                            "format": args.format,
+                        },
+                    ),
+                    indent=2,
+                )
+            )
         else:
             print(output)
     except ImportError as e:
         logger.error(f"Could not import graph generator: {e}")
         if is_json:
-            print(json.dumps(_envelope("error", error=f"Could not import graph generator: {e}"), indent=2))
+            print(
+                json.dumps(
+                    _envelope("error", error=f"Could not import graph generator: {e}"),
+                    indent=2,
+                )
+            )
         return 1
     return 0
 

@@ -15,8 +15,8 @@ GNN framework integration is handled by **Steps 11 and 12** of the processing pi
 **Quick Start:**
 
 ```bash
-# Generate and execute code for all frameworks
-python src/main.py --only-steps "11,12" --target-dir input/gnn_files --verbose
+# Generate and execute the default framework set
+uv run python src/main.py --only-steps "11,12" --target-dir input/gnn_files --output-dir output --verbose
 
 # Execute specific frameworks only
 python src/12_execute.py --frameworks "pymdp,jax" --verbose
@@ -37,7 +37,7 @@ cross-framework comparison step.
 
 ## Supported Frameworks
 
-Step 11 renders to 9 backends (see `src/render/AGENTS.md`):
+Step 11 renders to 9 registered targets (see `src/render/AGENTS.md`). Step 12 executes 8 of them; Stan is render-only, while PyTorch and bnlearn are registry-gated unless enabled manually:
 
 | Framework | Per-framework guide |
 |-----------|----------------------|
@@ -52,8 +52,9 @@ Step 11 renders to 9 backends (see `src/render/AGENTS.md`):
 | bnlearn | `src/render/AGENTS.md` (no standalone guide yet) |
 
 Use `--frameworks` (plural) on `src/11_render.py` / `src/12_execute.py` to restrict to a
-subset, e.g. `--frameworks pymdp,jax`, or `--frameworks lite` for the `pymdp,jax,discopy,bnlearn`
-quick subset. There is no per-framework singular `--framework` flag.
+subset, e.g. `--frameworks pymdp,jax`, or `--frameworks lite` for the executor's
+Python-oriented quick subset. The unified `gnn render` command uses singular
+`--framework`; do not confuse the two CLI surfaces.
 
 ## Render → Execute → Analyze Pipeline per Framework
 
@@ -225,5 +226,6 @@ one animated GIF per model accompanied by a `.manifest.json` reproducibility sid
 ---
 
 **Integration Guide Version**: 3.0.0
-**Framework Coverage**: PyMDP, RxInfer.jl, ActiveInference.jl, JAX, DisCoPy, PyTorch, NumPyro, Stan, bnlearn
+**Render targets**: PyMDP, RxInfer.jl, ActiveInference.jl, JAX, DisCoPy, PyTorch, NumPyro, Stan, bnlearn
+**Step 12 executors**: PyMDP, JAX, DisCoPy, RxInfer.jl, ActiveInference.jl, PyTorch, NumPyro, bnlearn
 **Status**: Maintained

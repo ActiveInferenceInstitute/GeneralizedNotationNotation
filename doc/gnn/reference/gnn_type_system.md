@@ -2,8 +2,8 @@
 
 **Version**: v3.0.0 Engine (Bundle v2.0.0)  
 **Last Updated**: 2026-04-15  
-**Status**: ✅ Production Ready  
-**Modules**: 38+ · **Pipeline steps**: 25 · **Renderers**: 9 backends (see [../implementations/README.md](../implementations/README.md)) · **Tests**: see [../../../README.md](../../../README.md)  
+**Status**: Maintained
+**Scope**: GNN type declarations and validation. See [framework implementations](../implementations/README.md) for current backend coverage.
 
 This document provides comprehensive guidance on type checking and the type system for Generalized Notation Notation (GNN) models, including type inference, validation, and resource estimation.
 
@@ -202,6 +202,6 @@ Type checking integrates throughout the pipeline:
 
 ---
 
-**Status**: ✅ Production Ready  
+**Status**: Maintained
 **Last Updated**: 2026-04-15  
 **Version**: v3.0.0 Engine (Bundle v2.0.0)

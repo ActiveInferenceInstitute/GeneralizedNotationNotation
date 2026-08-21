@@ -14,6 +14,10 @@ DEFAULT_SKIP_ALLOWLIST = {
     "src/tests/analysis/test_rxinfer_cross_framework.py",
     "src/tests/pipeline/test_pomdp_gridworld_cross_framework.py",
     "src/tests/render/test_rxinfer_viz_log_contract.py",
+    # Julia-live-backend gate: parse/execution tests skip when Julia or the
+    # committed RxInfer environment is unavailable (same contract as the
+    # GridWorld cross-framework and cross-framework-analysis files above).
+    "src/tests/render/test_stigmergic_multi_agent.py",
 }
 
 

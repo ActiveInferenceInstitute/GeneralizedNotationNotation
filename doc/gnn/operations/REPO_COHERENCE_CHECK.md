@@ -2,8 +2,8 @@
 
 **Version**: v3.0.0 Engine (Bundle v2.0.0)  
 **Last Updated**: 2026-04-15  
-**Status**: ✅ Production Ready  
-**Modules**: 38+ · **Pipeline steps**: 25 · **Renderers**: 9 backends (see [../implementations/README.md](../implementations/README.md)) · **Tests**: see [../../../README.md](../../../README.md)  
+**Status**: Maintained
+**Scope**: Repository coherence checks for the GNN pipeline. See [framework implementations](../implementations/README.md) for current backend coverage.
 
 ## Pipeline Architecture References
 
@@ -1446,7 +1446,7 @@ This mega-prompt provides a comprehensive framework for validating repo-wide coh
 
 ---
 
-**Status**: Production Ready
+**Status**: Maintained
 **Version**: v3.0.0 Engine (Bundle v2.0.0)
 **Coverage**: all 25 pipeline steps plus the live module and `AGENTS.md`
 inventories; derive changing counts from `src/AGENTS.md` and `rg --files`

@@ -28,7 +28,7 @@ Generated scripts import RxInfer.jl and write `simulation_results.json` with sch
 | FACTORED | `FactoredStrategy` | `factored_pomdp_model` — native mean-field two-factor model with multi-parent likelihood (`DiscreteTransition(s1, A_m0, s2)`), per-factor posteriors |
 | CONTINUOUS | `ContinuousStrategy` | `continuous_pomdp_model` — linear-Gaussian state space (F/H/Q/R + Gaussian prior from InitialParameterization); beliefs are posterior means, sign-agnostic VFE validation |
 | LEARNING | `LearningStrategy` | `learning_pomdp_model` — likelihood matrix A learned as a latent `DirichletCollection` from `dirichlet_A` pseudo-counts; reports learned-A mean and prior/posterior distance to the true A |
-| MULTI_AGENT | `MultiAgentStrategy` | joint composition with true kind stamped; per-agent marginals recovered downstream from the `state_factors` echo |
+| MULTI_AGENT | `MultiAgentStrategy` | native stigmergic compilation when >= 2 complete agent groups are declared: one genuine `pomdp_model` inference per agent (no joint expansion) coupled through a shared `env_signal` trace (deposit + decay); specs without per-agent matrices keep the documented joint composition with the true kind stamped |
 
 The TOML emission entry point in `toml_generator.py` is retired and emits a
 `DeprecationWarning`; topology parsing helpers remain in use by contract tests.

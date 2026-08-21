@@ -8,6 +8,75 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
 
 ## [Unreleased]
 
+### Added (2026-08-20 — native stigmergic multi-agent compilation, roadmap MAJ-03 milestone 1)
+
+- **Native per-agent multi-agent rendering in RxInfer.jl and ActiveInference.jl.**
+  GNN specs declaring >= 2 complete agent groups (`A_agentN`/`B_agentN`/
+  `C_agentN`/`D_agentN` in `structured_pomdp.matrices`) now render through a
+  native stigmergic path instead of the composed joint state space: one
+  genuine `pomdp_model` inference per agent (per-agent state spaces — no
+  joint expansion) coupled through the shared environment affordance
+  (`env_signal` + `signal_decay`). Each agent deposits signal at its MAP
+  position each timestep; the shared trace decays per timestep; results
+  carry per-agent beliefs/actions/EFE, `env_signal_trace`, and
+  `model_kind: multi_agent`. Both shipped exemplars
+  (`multiagent/stigmergic_swarm.md`, `multiagent/multi_agent_coordination.md`)
+  execute live under Julia (RxInfer 5.5 and ActiveInference.jl).
+  - New shared detection layer `src/render/multi_agent_common.py`
+    (`detect_agent_groups`, `detect_env_coupling`, `canonicalise_b` — the
+    last mirrors `POMDPRenderProcessor._canonicalise_factored_B` so
+    per-agent B semantics match the composed-joint path).
+  - New RxInfer generator `src/render/rxinfer/_strategies_multiagent.py`;
+    `MultiAgentStrategy` routes to it when >= 2 agent groups are declared
+    and keeps the documented joint composition otherwise.
+  - ActiveInference.jl renderer gains `_multi_agent_model_info` +
+    `_generate_stigmergic_activeinference_script`; flat specs keep the
+    canonical single-agent path unchanged.
+  - Regression-pinned by `src/tests/render/test_stigmergic_multi_agent.py`
+    (19 tests: detection, script structure, Julia parse, live execution).
+  - Docs: `doc/gnn/advanced/gnn_multiagent.md` updated (native path +
+    joint fallback + residual), module README/SPEC updated.
+
+### Added (2026-08-20 — sparse Kronecker-factorized execution, roadmap MAJ-02 milestone 1)
+
+- **`src/execute/jax/kronecker_factorized.py`** — sparse Kronecker-factorized
+  discrete active inference in JAX for factor-separable POMDPs (transition
+  ``B = ⊗ B_f``, likelihood ``A = ⊗ A_f``, ``ln C = Σ_f ln C_f``). The joint
+  state space is never materialised: ``kron_matvec`` (factorised input),
+  ``kron_matvec_flat`` (arbitrary flat input via tensor contraction) and
+  ``kron_materialize`` (dense, validation-only) implement the Kronecker
+  products, and ``run_factorized_active_inference`` runs exact mean-field
+  active inference per factor (belief update, EFE, product policy). Models
+  with joint state spaces of 64-256 states (six binary factors through eight
+  binary factors) execute in time proportional to the sum of factor sizes.
+- **Exactness pinned by tests.** `src/tests/execute/test_kronecker_factorized.py`
+  (20 tests) verifies the Kronecker identities against the dense product,
+  the exact per-factor EFE decomposition (dense EFE at a factorised
+  posterior equals the sum of per-factor EFE), N >= 64 execution with
+  `joint_materialized: False`, determinism, and validation fields.
+- **Scaling-script `--factorized` sweep** (`scripts/run_pymdp_gnn_scaling_analysis.py`):
+  `--factorized --factors 4,4,4` runs the Kronecker path directly, writes
+  factorised GNN specs (`scripts/pymdp_spec_generator.py`
+  `generate_factorized_gnn_file` — verified parseable by the real
+  extractor), and emits `pymdp_kronecker_scaling_manifest.json` with joint
+  size / wall time / validation per run.
+
+### Added (2026-08-19 — documentation contract audit + maintained-docs pass)
+
+- **New `scripts/check_doc_contracts.py`** verifies high-value documentation
+  invariants the link/scaffold audits cannot: the quickstart contains every
+  enforced GNN section, maintained command examples use current pipeline
+  flag spellings (stale `--config-file`/`--skip`/`--dry-run`/`--debug`
+  patterns flagged), the configuration guide names the automatic
+  `input/config.yaml` path, docs distinguish nine render targets from eight
+  Step-12 executors, and the README avoids volatile count claims. Wired into
+  `just quality`, `just doc-contracts`, and CI; regression-pinned by
+  `src/tests/test_doc_contracts.py`.
+- **Maintained-docs sweep**: stale inline counts/claims replaced with
+  runnable-command guidance across `README.md`, `doc/` hubs and
+  `doc/gnn/`; `paths-ignore` for `**/*.md`/`doc/**` removed from CI so doc
+  changes now trigger the audit jobs.
+
 ### Added (2026-08-18 — full zero-warn / zero-skip verification pass)
 
 - **Full-suite evidence refreshed to 3,039 passed / 0 failed / 0 skipped** on a

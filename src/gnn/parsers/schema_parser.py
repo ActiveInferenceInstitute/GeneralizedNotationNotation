@@ -875,12 +875,16 @@ class PKLParser(BaseGNNParser):
                 if res.returncode == 0 and res.stdout.strip():
                     return cast("Dict[str, Any]", json.loads(res.stdout))
             else:
-                with tempfile.NamedTemporaryFile("w", suffix=".pkl", delete=False) as tf:
+                with tempfile.NamedTemporaryFile(
+                    "w", suffix=".pkl", delete=False
+                ) as tf:
                     tf.write(content)
                     tf_path = tf.name
                 try:
                     cmd = [pkl_bin, "eval", "-f", "json", tf_path]
-                    res = subprocess.run(cmd, capture_output=True, text=True, timeout=10)
+                    res = subprocess.run(
+                        cmd, capture_output=True, text=True, timeout=10
+                    )
                     if res.returncode == 0 and res.stdout.strip():
                         return cast("Dict[str, Any]", json.loads(res.stdout))
                 finally:

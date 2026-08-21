@@ -245,7 +245,7 @@ This comprehensive ecosystem demonstrates Apple's commitment to creating not jus
 [36] https://www.reddit.com/r/apple/comments/1ai346h/apple_released_a_new_opensource_programming/
 [37] https://discourse.ros.org/t/pkl-pickle-new-configuration-language-developed-by-apple/36026
 [38] https://rock-the-prototype.com/en/programming-languages-frameworks/pkl-apple-programming-language-for-control-in-configuration-management/
-[39] https://configu.com/blog/apple-pkl-code-example-concepts-how-to-get-started/
+[39] https://pkl-lang.org/main/current/language-tutorial/01_basic_config.html
 [40] https://pkl-lang.org/main/current/language-tutorial/01_basic_config.html
 [41] https://moonrepo.dev/
 [42] https://getstream.io/blog/configuration-as-code/

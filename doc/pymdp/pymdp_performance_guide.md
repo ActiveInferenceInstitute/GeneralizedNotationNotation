@@ -142,6 +142,29 @@ Dense B tensors in PyMDP models grow as **O(n³)** in both memory and disk space
 
 The orchestrator enforces strict **Resource Gates** to prevent disk exhaustion. Configuration is managed via `scripts/pymdp_scaling_config.yaml`.
 
+### Sparse Kronecker-Factorized Sweep (MAJ-02)
+
+For **factor-separable** models (transition/likelihood/preferences are
+Kronecker products of per-factor matrices), the dense grid is not the right
+regime: the joint state space grows exponentially with the factor count. The
+orchestrator's `--factorized` mode runs the sparse JAX mean-field path in
+`src/execute/jax/kronecker_factorized.py` instead of the dense pipeline —
+the joint state space is **never materialised** (`joint_materialized: False`
+in every result), so joint sizes of 64-256 states (e.g. six to eight binary
+factors) execute in time proportional to the *sum* of factor sizes.
+
+```bash
+uv run python scripts/run_pymdp_gnn_scaling_analysis.py --factorized --factors 4,4,4
+uv run python scripts/run_pymdp_gnn_scaling_analysis.py --factorized --factors 2,2,2,2,2,2,2,2
+```
+
+`--factors` accepts comma-separated per-factor state sizes; `--factor-timesteps`
+sets the T sweep. The factorised GNN specs (per-factor `A_fN`/`B_fN`/`C_fN`/
+`D_fN` matrices, parseable by the standard extractor) are written under
+`input/gnn_files/pymdp_kronecker_study/` and a
+`pymdp_kronecker_scaling_manifest.json` records the joint size, wall time and
+validation for every run.
+
 ### Safety Guardrails
 - `max_n`: Skips state counts that would exceed reasonable storage limits.
 - `max_file_size_mb`: Caps individual specification size.

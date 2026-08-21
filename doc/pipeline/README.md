@@ -1,35 +1,76 @@
 # Pipeline Documentation
 
-This folder is the canonical home for pipeline-specific documentation.
+This is the canonical home for pipeline-specific guidance. The numbered scripts are
+thin orchestrators; the authoritative order and metadata live in
+`src/pipeline/step_registry.py`.
 
-## Running all execution frameworks
+## Run a focused pipeline
 
-Step 12 (Execute) runs rendered scripts for PyMDP, RxInfer.jl, ActiveInference.jl, JAX, DisCoPy, PyTorch, and NumPyro. JAX, NumPyro, PyTorch, and DisCoPy install with normal `uv sync` (core dependencies). If the environment is incomplete, those scripts are **skipped** (not failed). Julia backends need Julia. Then run the pipeline or `python src/12_execute.py --frameworks all --verbose`.
+```bash
+uv run python src/main.py \
+  --target-dir input/gnn_files \
+  --output-dir output \
+  --only-steps "3,5,11,12" \
+  --verbose
+```
 
-## Start here
+Use `--skip-steps "13,15"` or `--skip-llm` when a local runtime is not available.
+The main pipeline loads `input/config.yaml` automatically. See the
+[configuration guide](../configuration/README.md) for the supported YAML sections.
 
-- **Step-by-step script guide**: `../PIPELINE_SCRIPTS.md`
-- **Documentation versioning** (language vs doc bundle vs package): [`../SPEC.md`](../SPEC.md)
-- **Source specification**: `../../src/SPEC.md`
-- **Step index (0–24)**: `../../src/STEP_INDEX.md`
-- **Stage hardening review**: [`pipeline_stage_hardening_review.md`](pipeline_stage_hardening_review.md)
-- **Validation evidence guide**: [`validation_evidence_guide.md`](validation_evidence_guide.md)
-- **Orchestrator implementation**: `../../src/main.py`
+## Step boundaries
 
-## Notes
+- Steps 0–10 discover, parse, validate, export, visualize, and annotate models.
+- Step 11 has 9 render targets: PyMDP, RxInfer.jl, ActiveInference.jl, JAX,
+  DisCoPy, PyTorch, NumPyro, Stan, and bnlearn.
+- Step 12 has 8 executor families: PyMDP, JAX, DisCoPy, RxInfer.jl,
+  ActiveInference.jl, PyTorch, NumPyro, and bnlearn. Stan is render-only in this
+  pipeline and must be run through an external CmdStan workflow if needed.
+- Steps 13–24 provide LLM, ML, audio, analysis, integration, security, research,
+  website, MCP, GUI, reporting, and intelligent-analysis surfaces.
 
-- The pipeline consists of **25 steps (0–24)** implemented as thin orchestrators in `src/`.
-- Per-folder routing is controlled by `input/config.yaml` (`testing_matrix`).
-- The maintained GridWorld proof path confirms configurable parse, type-check,
-  visualization, render, execute, logging, analysis, PNG/GIF generation,
-  dashboards, and manifests across PyMDP, RxInfer.jl, and ActiveInference.jl.
+A missing optional runtime is represented as skipped/unavailable in the execution
+summary. It is not equivalent to a successful execution.
 
-## Documentation coverage exclusions
+## Framework selection
 
-When auditing “every folder under `src/` has `AGENTS.md`/`README.md`/`SPEC.md`”, treat the following as **not numbered pipeline modules**:
+```bash
+# Render only selected targets.
+uv run python src/11_render.py \
+  --target-dir input/gnn_files \
+  --output-dir output \
+  --frameworks "pymdp,jax" \
+  --strict-framework-success
 
-- `__pycache__/` (bytecode caches)
-- `src/output/` (optional fixture subtree; not step code)
-- `src/tests/output/` (generated test artifacts; ignored by git — see `.gitignore`)
+# Execute only the selected framework scripts from a known render directory.
+uv run python src/12_execute.py \
+  --target-dir input/gnn_files \
+  --output-dir output \
+  --render-output-dir output/11_render_output \
+  --frameworks "pymdp,jax" \
+  --timeout 600
+```
 
-Repository-root `output/` is ignored except for `output/.gitkeep`. Do not require full module scaffolding inside `output/` or `src/output/`.
+`all` and `lite` are presets. The exact lists are implemented in
+`src/execute/processor.py::parse_frameworks_parameter`; do not infer executor
+coverage from the renderer registry.
+
+## Validation and acceptance checks
+
+```bash
+# Documentation contracts and link/anchor audit.
+uv run --extra dev python doc/development/docs_audit.py --strict --check-anchors --no-write
+uv run --extra dev python scripts/check_doc_contracts.py --strict
+
+# Pipeline orchestration acceptance.
+PYTHONPATH=src uv run --extra dev python scripts/run_v3_orchestration_acceptance.py --strict
+```
+
+## Related references
+
+- [Pipeline scripts](../PIPELINE_SCRIPTS.md)
+- [Source step index](../../src/STEP_INDEX.md)
+- [Source pipeline README](../../src/README.md)
+- [Framework integration guide](../gnn/integration/framework_integration_guide.md)
+- [Setup](../SETUP.md)
+- [Troubleshooting](../troubleshooting/README.md)

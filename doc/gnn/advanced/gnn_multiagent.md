@@ -3,7 +3,7 @@
 **Version**: v3.0.0 Engine (Bundle v2.0.0)  
 **Last Updated**: 2026-04-15  
 **Status**: Implemented mechanism documented below; block syntax in §2-8 is a design proposal (not yet parsed)  
-**Modules**: 38+ · **Pipeline steps**: 25 · **Renderers**: 9 backends (see [../implementations/README.md](../implementations/README.md)) · **Tests**: see [../../../README.md](../../../README.md)  
+**Scope**: Multi-agent GNN modeling. See [framework implementations](../implementations/README.md) for current backend coverage.
 
 ## Pipeline Processing for Multi-Agent Systems
 
@@ -57,23 +57,38 @@ how a model renders. Both shipped multi-agent exemplars —
 `input/gnn_files/multiagent/stigmergic_swarm.md` — are detected through their per-agent
 matrix keys.
 
-**There is no native multi-agent `@model`.** The RxInfer `MultiAgentStrategy` renders the
-system as a **joint composition** over the combined state space, stamping the true
-detected kind into `runtime_metadata.model_kind`. It does not emit one probabilistic
-model per agent with message passing between them.
+**Native stigmergic rendering (roadmap MAJ-03, 2026-08-20).** When a spec declares two or
+more complete agent groups (`A_agentN` / `B_agentN` / `C_agentN` / `D_agentN`) the RxInfer
+`MultiAgentStrategy` renders a **native per-agent script**: one genuine `pomdp_model`
+inference per agent (per-agent state spaces — no joint expansion) coupled through a
+shared environment affordance (`env_signal` + `signal_decay`), with each agent depositing
+signal at its MAP position each timestep and the shared trace decaying per timestep. The
+results JSON carries per-agent beliefs/actions/EFE, the `env_signal_trace`, and
+`model_kind: multi_agent`. Both shipped exemplars — the three-agent
+`stigmergic_swarm.md` and the two-agent `multi_agent_coordination.md` — render through
+this native path; the ActiveInference.jl renderer implements the equivalent per-agent
+simulation with the same shared-environment coupling. Detection helpers live in
+`src/render/multi_agent_common.py`; the generators in
+`src/render/rxinfer/_strategies_multiagent.py` and
+`src/render/activeinference_jl/activeinference_renderer.py`.
+
+**Fallback: joint composition.** Specs that are classified `MULTI_AGENT` by an explicit
+agent count but lack the per-agent matrix structure render as the **joint composition**
+over the combined state space, stamping the true detected kind into
+`runtime_metadata.model_kind`.
 
 **Per-agent marginals are recovered downstream.** Because the generated script echoes the
-spec's `state_factors` into `model_parameters`, Step 16 can un-flatten the joint posterior
+spec's `state_factors` into `model_parameters`, Step 16 can un-flatten a joint posterior
 without re-parsing the GNN file. `compute_per_factor_beliefs()`
 (`src/analysis/rxinfer/analyzer.py`) does exactly that, turning joint beliefs into
-per-factor — equivalently, per-agent — marginals for analysis and visualization. This
-recovery step, not a native multi-agent model, is how you get per-agent belief
-trajectories today.
+per-factor — equivalently, per-agent — marginals for analysis and visualization.
 
-The practical consequence: agents in a rendered RxInfer model are coupled through the
-joint state space rather than through explicit message-passing channels. The
-`AgentsBlock` and `CommunicationBlock` constructs described below are **proposed syntax**
-— they are not yet parsed by `src/gnn/` and appear in no shipped exemplar.
+**Residual (next milestone).** Conditioning *action selection* on the environment —
+inferring `env_signal` as a latent from observations — requires env-conditioned
+likelihoods the swarm exemplar does not declare; the current compilation couples agents
+deterministically through the affordance trace instead of through latent message passing.
+The `AgentsBlock` and `CommunicationBlock` constructs described below remain **proposed
+syntax** — they are not yet parsed by `src/gnn/` and appear in no shipped exemplar.
 
 ---
 

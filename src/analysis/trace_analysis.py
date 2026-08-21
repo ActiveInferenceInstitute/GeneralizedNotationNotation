@@ -130,7 +130,9 @@ def analyze_free_energy(
             f0 = abs(fe_array[0]) + 1e-8
             rel_decay = (fe_array[-1] - fe_array[0]) / f0
             analysis["relative_decay"] = float(rel_decay)
-            analysis["normalized_converged"] = bool(abs(rel_decay) < 1.0 or analysis.get("converged", False))
+            analysis["normalized_converged"] = bool(
+                abs(rel_decay) < 1.0 or analysis.get("converged", False)
+            )
 
         return analysis
 

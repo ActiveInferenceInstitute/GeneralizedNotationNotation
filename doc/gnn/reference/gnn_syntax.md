@@ -1,7 +1,7 @@
 # GNN Syntax Reference
 
-**Version**: v3.0.0 Engine (Bundle v2.0.0)  
-**Last Updated**: 2026-04-10  
+**GNN language version**: v1.1
+**Last Updated**: 2026-08-19
 **Status**: Maintained  
 
 Quick reference for GNN syntax with working examples.

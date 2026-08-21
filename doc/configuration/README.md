@@ -1,629 +1,201 @@
 # GNN Configuration Guide
 
-> **📋 Document Metadata**  
-> **Type**: Configuration Guide | **Audience**: Developers & System Administrators | **Complexity**: Intermediate  
-> **Cross-References**: [Pipeline Architecture](../gnn/operations/gnn_tools.md) | [Deployment Guide](../deployment/README.md) | [doc/SPEC.md](../SPEC.md) (versioning policy)
+This guide describes the configuration surfaces that are implemented by the current
+GNN package. The repository has two related configuration paths:
 
-## Overview
+- `input/config.yaml` is the pipeline's project configuration file. `src/main.py`
+  loads it automatically when it exists.
+- Command-line arguments are parsed by `src/utils/arg_parsing.py`. Explicit CLI
+  values take precedence over setup and test defaults read from `input/config.yaml`.
 
-This guide covers all configuration options for the GeneralizedNotationNotation (GNN) pipeline, from basic settings to advanced customization.
+There is no supported project-root `config.yaml`, user-level `~/.gnn/config.yaml`,
+profile loader, or generic `--config` override for the main pipeline.
 
-## Configuration Hierarchy
+## Quick start
 
-GNN uses a layered configuration system with the following precedence (highest to lowest):
+```bash
+# Use the checked-in configuration and run a focused path.
+uv run python src/main.py \
+  --target-dir input/gnn_files \
+  --output-dir output \
+  --only-steps "3,5,11,12" \
+  --verbose
 
-1. **Command Line Arguments** - Override all other settings
-2. **Environment Variables** - System-level configuration  
-3. **Project Config File** - `config.yaml` in project root
-4. **User Config File** - `~/.gnn/config.yaml`
-5. **Default Settings** - Built into the code
+# Skip selected steps.
+uv run python src/main.py --skip-steps "2,13" --verbose
 
-## Main Configuration File
+# Skip the LLM step without editing the YAML file.
+uv run python src/main.py --skip-llm --verbose
+```
 
-### Location
+For a single-file validation envelope, use the unified CLI:
 
-Primary configuration file: `config.yaml` (create in project root)
+```bash
+uv run gnn validate input/gnn_files/discrete/actinf_pomdp_agent.md --strict --json
+```
 
-### Complete Configuration Template
+## `input/config.yaml`
+
+The checked-in file is the only automatically discovered pipeline YAML file. Keep
+paths relative to the repository root unless a module explicitly documents another
+base directory.
+
+### Pipeline and setup defaults
 
 ```yaml
-# config.yaml - Complete GNN Configuration
-# Copy and modify this template for your needs
-
-# Global Pipeline Settings
 pipeline:
-  # Which steps to run (0-24, or "all")
-steps: "all"  # or a subset, e.g., [1, 4, 5, 6]
-  
-  # Steps to skip
-  skip_steps: []  # e.g., [11, 12, 13] to skip LLM and DisCoPy steps
-  
-  # Execution mode
-  parallel: true        # Run compatible steps in parallel
-  sequential: false     # Force sequential execution
-  fail_fast: true      # Stop on first error
-  
-  # Directories
-  target_dir: "input/gnn_files/"     # Input GNN files
-  output_dir: "output/"             # All output files
-  temp_dir: "temp/"                # Temporary files
-  
-  # Resource management
-  max_memory_gb: 8.0    # Maximum memory usage
-  max_processes: 4      # Parallel process limit
-  cleanup: true         # Clean temp files after completion
-  
-  # Logging
-  log_level: "INFO"     # DEBUG, INFO, WARNING, ERROR
-  log_file: "output/logs/pipeline.log"
-  verbose: false
+  enabled: true
+  steps: []             # empty means use the configured/default step plan
+  skip_steps: []        # numeric step IDs, for example [13]
+  fast_only: true       # Step 2 default
+  # comprehensive: false # enable the full Step 2 suite when needed
 
-# Step 1: GNN File Discovery and Parsing
-gnn:
-  # File discovery
-  file_patterns: ["*.md", "*.gnn"]
-  recursive_search: true
-  exclude_patterns: [".*", "_*", "temp*"]
-  
-  # Parsing options
-  strict_syntax: true
-  allow_incomplete: false  # Allow missing optional sections
-  validate_on_load: true
-  
-  # Encoding
-  file_encoding: "utf-8"
-  normalize_whitespace: true
-
-# Step 2: Environment Setup
 setup:
-  # Virtual environment
-  create_venv: true
-  venv_dir: ".venv"
-  python_version: ">=3.11,<3.14"
-  
-  # Dependencies
-  install_deps: true
-  upgrade_deps: false
-  dependency_source: "pyproject.toml"
-  extra_packages: []
-  
-  # External tools
-  check_julia: true      # For RxInfer backend
-  check_graphviz: true   # For visualization
-  
-  # System checks
-  min_memory_gb: 2.0
-  min_disk_gb: 1.0
+  dev: true             # applies uv sync --extra dev when Step 1 runs
+  recreate_venv: false  # maps to --recreate-uv-env
+  # install_all_extras: false
 
-# Step 3: Testing Configuration
-testing:
-  # Test discovery
-  test_dir: "src/tests/"
-  test_patterns: ["test_*.py", "*_test.py"]
-  
-  # Test execution
-  parallel_tests: true
-  coverage: true
-  coverage_threshold: 80.0
-  
-  # Test data
-  use_example_data: true
-  generate_test_cases: false
-
-# Step 4: Type Checking and Validation
-validation:
-  # Syntax checking
-  strict_mode: true
-  check_dimensions: true
-  check_stochasticity: true
-  check_matrix_compatibility: true
-  
-  # Semantic validation
-  validate_active_inference: true
-  check_causal_consistency: true
-  warn_unused_variables: true
-  
-  # Resource estimation
-  estimate_memory: true
-  estimate_compute: true
-  warn_large_models: true
-  max_model_size: 1000000  # Max total parameters
-
-# Step 5: Export Configuration
-export:
-  # Output formats
-  formats: ["json", "xml", "graphml", "dot", "yaml"]
-  
-  # JSON export
-  json:
-    pretty_print: true
-    indent: 2
-    ensure_ascii: false
-  
-  # XML export  
-  xml:
-    pretty_print: true
-    encoding: "utf-8"
-    include_schema: true
-  
-  # GraphML export
-  graphml:
-    include_attributes: true
-    node_labels: true
-    edge_labels: true
-  
-  # General export options
-  overwrite_existing: true
-  create_subdirs: true
-
-# Step 6: Visualization Configuration
-visualization:
-  # Graph layout
-  layout: "spring"  # spring, hierarchical, circular, random
-  
-  # Output formats
-  formats: ["png", "svg", "pdf"]
-  dpi: 300
-  
-  # Graph appearance
-  node_size: 1000
-  node_color: "lightblue"
-  edge_width: 2.0
-  font_size: 12
-  
-  # Graph filtering
-  max_nodes: 100
-  max_edges: 200
-  hide_isolated_nodes: false
-  
-  # Advanced options
-  use_graphviz: true
-  hierarchical_layout: false
-  save_source_dot: true
-
-# Step 22: Model Context Protocol (MCP)
-mcp:
-  # Server configuration
-  enabled: true
-  host: "localhost"
-  port: 8000
-  protocol: "http"  # http, stdio
-  
-  # Tools to register
-  tools: ["gnn_parse", "gnn_validate", "gnn_export", "gnn_visualize"]
-  
-  # Security
-  require_auth: false
-  api_key: null
-  allowed_origins: ["*"]
-  
-  # Rate limiting
-  rate_limit: 100  # requests per minute
-  max_request_size: "10MB"
-
-# Step 10: Ontology Processing
-ontology:
-  # Active Inference Ontology integration
-  enabled: true
-  ontology_url: "https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/tree/main/doc/gnn/advanced/ontology_system.md"
-  local_ontology_path: "ontologies/"
-  
-  # Validation
-  validate_terms: true
-  suggest_terms: true
-  strict_matching: false
-  
-  # Annotation
-  auto_annotate: true
-  confidence_threshold: 0.8
-
-# Step 11: Code Rendering
-rendering:
-  # Target backends
-  backends: ["pymdp", "rxinfer"]  # Available: pymdp, rxinfer, jax, custom
-  
-  # PyMDP backend
-  pymdp:
-    version: "latest"
-    template_dir: "src/render/pymdp/templates/"
-    include_visualization: true
-    optimization_level: 1
-  
-  # RxInfer backend
-  rxinfer:
-    julia_version: "1.9+"
-    template_dir: "src/render/rxinfer/templates/"
-    package_env: "default"
-    compile_static: false
-  
-  # JAX backend
-  jax:
-    use_jit: true
-    use_gpu: false  # auto-detect
-    precision: "float32"
-  
-  # General rendering
-  output_structure: "backend_separated"  # backend_separated, mixed
-  include_docs: true
-  include_tests: true
-
-# Step 12: Simulation Execution
-execution:
-  # Execution modes
-  dry_run: false
-  timeout_seconds: 300
-  capture_output: true
-  
-  # Resource limits
-  max_memory_per_sim: "2GB"
-  max_cpu_cores: 2
-  
-  # Output handling
-  save_results: true
-  compress_output: false
-  
-  # Error handling
-  continue_on_error: false
-  retry_failed: 1
-
-# Step 13: LLM Integration
 llm:
-  # LLM providers and models
-  default_provider: "openai"
-  
-  # OpenAI configuration
-  openai:
-    model: "gpt-4"
-    api_key: "${OPENAI_API_KEY}"  # Environment variable
-    temperature: 0.1
-    max_tokens: 2000
-    timeout: 30
-  
-  # Anthropic configuration
-  anthropic:
-    model: "claude-3-sonnet-20240229"
-    api_key: "${ANTHROPIC_API_KEY}"
-    temperature: 0.1
-    max_tokens: 2000
-  
-  # Local models (via Ollama/similar)
-  local:
-    enabled: false
-    endpoint: "http://localhost:11434"
-    model: "llama2"
-  
-  # Analysis options
-  analysis_types: ["validation", "explanation", "optimization"]
-  include_suggestions: true
-  critique_models: true
-  
-  # Safety and filtering
-  content_filter: true
-  max_retries: 3
-  fallback_to_local: false
+  model: "smollm2:135m-instruct-q4_K_S"
+  timeout_seconds: 600
+  max_files: 8
+  prompt_timeout: 45
+```
 
-## Rendering Option: DisCoPy Categorical Diagrams (within Step 11)
-discopy:
-  # Category theory settings
-  category_type: "pregroup"  # pregroup, monoidal, hypergraph
-  
-  # Diagram generation
-  layout: "tree"  # tree, circuit, spiral
-  save_diagrams: true
-  formats: ["svg", "png", "tikz"]
-  
-  # Mathematical rigor
-  check_composition: true
-  validate_functors: true
-  
-  # Optimization
-  simplify_diagrams: true
-  remove_identities: true
+The same file also contains `testing_matrix`, `io`, `logging`, `validation`,
+`performance`, and `security` sections. Those sections are consumed by the modules
+that own them; they are not a universal schema for every pipeline step. When adding a
+new key, update the consuming module and its documentation together.
 
-## Execution Option: JAX Evaluation (within Step 12)
-jax_eval:
-  # JAX configuration
-  platform: "auto"  # auto, cpu, gpu, tpu
-  jit_compile: true
-  
-  # Numerical settings
-  precision: "float32"  # float16, float32, float64
-  backend: "xla"
-  
-  # Performance
-  parallel_evaluation: true
-  batch_size: 32
-  
-  # Memory management
-  preallocate_memory: true
-  memory_fraction: 0.8
+### Testing matrix
 
-# Step 20: Website Generation
-site:
-  # Static site configuration
+`testing_matrix` controls folder routing and global steps. The canonical step names
+and order remain in `src/pipeline/step_registry.py`.
+
+```yaml
+testing_matrix:
   enabled: true
-  theme: "default"  # default, academic, minimal
-  
-  # Content generation
-  include_models: true
-  include_visualizations: true
-  include_analysis: true
-  
-  # Output
-  output_dir: "output/site/"
-  base_url: "/"
-  
-  # Features
-  search_enabled: true
-  comments_enabled: false
-  analytics_enabled: false
-
-# Environment-specific overrides
-development:
-  pipeline:
-    log_level: "DEBUG"
-    verbose: true
-  validation:
-    strict_mode: false
-  testing:
-    coverage_threshold: 70.0
-
-production:
-  pipeline:
-    log_level: "WARNING"
-    fail_fast: true
-  validation:
-    strict_mode: true
-  export:
-    overwrite_existing: false
-
-# External integrations
-integrations:
-  # GitHub integration
-  github:
-    enabled: false
-    token: "${GITHUB_TOKEN}"
-    repo: "user/repo"
-    create_issues: false
-  
-  # Weights & Biases
-  wandb:
-    enabled: false
-    project: "gnn-models"
-    api_key: "${WANDB_API_KEY}"
-  
-  # Custom webhooks
-  webhooks:
-    enabled: false
-    urls: []
-    events: ["pipeline_complete", "error"]
+  global_steps:
+    0_template: true
+    1_setup: true
+    2_tests: true
+  default_steps: [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24]
+  folders: {}
 ```
 
-## Environment Variables
+Step numbers are integers from 0 through 24. Step 13 (LLM) is normally controlled
+by `pipeline.skip_steps` or the `--skip-llm` flag.
 
-### Required Variables
+## Supported main-pipeline options
+
+Run `uv run python src/main.py --help` for the complete list. The most common
+options are:
+
+| Option | Purpose |
+|---|---|
+| `--target-dir PATH` | Directory containing GNN input files |
+| `--output-dir PATH` | Base output directory |
+| `--only-steps LIST` | Run only comma-separated step numbers |
+| `--skip-steps LIST` | Skip comma-separated step numbers |
+| `--skip-llm` | Add Step 13 to the skipped steps |
+| `--frameworks VALUE` | `all`, `lite`, or a comma-separated framework list |
+| `--strict` | Enable strict validation where supported |
+| `--estimate-resources` | Enable resource estimation for applicable steps |
+| `--dev` | Install development dependencies during Step 1 |
+| `--install-all-extras` | Install all optional dependency groups during Step 1 |
+| `--install-optional --optional-groups GROUPS` | Install selected optional groups during Step 1 |
+| `--recreate-uv-env` | Recreate the UV-managed environment during Step 1 |
+| `--verbose` | Enable verbose output |
+| `--log-format human\|json` | Select pipeline log format |
+| `--no-animations` | Disable Step 16 GridWorld GIF artifacts |
+
+Lists passed to `--only-steps` and `--skip-steps` are comma-separated strings, for
+example `"3,5,11,12"`.
+
+## Step-specific examples
 
 ```bash
-# LLM Integration (choose one or more)
-export OPENAI_API_KEY="your-openai-key"
-export ANTHROPIC_API_KEY="your-anthropic-key"
+# Setup and optional dependencies.
+uv run python src/1_setup.py --dev --verbose
+uv run python src/1_setup.py --install-optional --optional-groups "audio,gui"
+uv run python src/1_setup.py --install-all-extras
+uv run python src/1_setup.py --recreate-uv-env --dev
 
-# Optional integrations
-export GITHUB_TOKEN="your-github-token"
-export WANDB_API_KEY="your-wandb-key"
+# Type checking.
+uv run python src/5_type_checker.py \
+  --target-dir input/gnn_files \
+  --strict --estimate-resources --verbose
+
+# Render selected backends.
+uv run python src/11_render.py \
+  --target-dir input/gnn_files \
+  --output-dir output \
+  --frameworks "pymdp,jax" \
+  --strict-framework-success
+
+# Execute rendered scripts. Use --render-output-dir to avoid stale artifacts.
+uv run python src/12_execute.py \
+  --target-dir input/gnn_files \
+  --output-dir output \
+  --render-output-dir output/11_render_output \
+  --frameworks "pymdp,jax" \
+  --timeout 600
 ```
 
-### System Configuration
+The Step 12 executor does not provide a dry-run flag. To inspect availability before
+execution, use:
 
 ```bash
-# Java/Julia paths (if not in PATH)
-export JAVA_HOME="/usr/lib/jvm/java-11"
-export JULIA_PATH="/opt/julia/bin/julia"
-
-# Custom Python path
-export PYTHONPATH="${PYTHONPATH}:/path/to/gnn/src"
-
-# Resource limits
-export GNN_MAX_MEMORY="8GB"
-export GNN_MAX_PROCESSES="4"
+uv run gnn health
 ```
 
-## Command Line Configuration
+## Environment variables
 
-### Override Any Config Setting
+Environment variables are used by specific modules rather than by a generic config
+interpolation layer. Common examples include:
+
+- `OPENAI_API_KEY` for cloud LLM access.
+- `OLLAMA_MODEL` and `OLLAMA_TEST_MODEL` for local Ollama model selection.
+- `GNN_JAX_PLATFORM` to select the JAX device for PyMDP subprocesses.
+- `GNN_ALLOW_UNSAFE_EXEC` and `GNN_SANDBOX` for the Step 12 execution safety gate.
+
+Do not put credentials in `input/config.yaml` or commit them. See the security
+and LLM documentation for provider-specific behavior.
+
+## Configuration validation
+
+There is no `main.py --validate-config`, `--show-config`, `--profile`, or generic
+dry-run command. Validate the YAML syntax and the values used by the runtime by
+loading the project configuration through the package:
 
 ```bash
-# Override pipeline settings
-python src/main.py --config pipeline.parallel=false --config validation.strict_mode=true
+uv run python - <<'PY'
+from pathlib import Path
+import sys
 
-# Override nested settings
-python src/main.py --config llm.openai.model=gpt-3.5-turbo
+sys.path.insert(0, "src")
+from utils.config_loader import load_config
 
-# Multiple overrides
-python src/main.py \
-  --config pipeline.steps=[1,2,4] \
-  --config export.formats=['json'] \
-  --config visualization.layout=hierarchical
+config = load_config(Path("input/config.yaml"))
+print("Configuration loaded:", config.to_pipeline_arguments())
+PY
 ```
 
-### Common Command Patterns
+For a non-mutating environment check, use:
 
 ```bash
-# Development mode (more verbose, less strict)
-python src/main.py --profile development
-
-# Production mode (strict, minimal output)
-python src/main.py --profile production
-
-# Custom target and output
-python src/main.py --target-dir my_models/ --output-dir results/
-
-# Skip expensive steps  
-python src/main.py --skip 11,12,13
-
-# Run only specific steps
-python src/main.py --only-steps 1,4,6
-
-# Debug mode
-python src/main.py --debug --verbose
+uv run gnn preflight
+uv run gnn health
 ```
 
-## Profile-Based Configuration
+When documentation or code changes the configuration contract, update this page,
+`input/config.yaml`, and the relevant tests in the same change.
 
-### Creating Profiles
+## Related references
 
-Create profile-specific config files:
-
-```yaml
-# config.development.yaml
-pipeline:
-  log_level: "DEBUG"
-  verbose: true
-validation:
-  strict_mode: false
-testing:
-  coverage_threshold: 60.0
-```
-
-```yaml
-# config.production.yaml  
-pipeline:
-  log_level: "ERROR"
-  fail_fast: true
-validation:
-  strict_mode: true
-export:
-  overwrite_existing: false
-```
-
-### Using Profiles
-
-```bash
-python src/main.py --profile development
-python src/main.py --profile production
-```
-
-## Step-Specific Configuration
-
-### Individual Step Configuration Files
-
-```yaml
-# config.step4.yaml - Type checker specific
-validation:
-  strict_mode: true
-  custom_rules: "rules/active_inference.yaml"
-  
-# config.step6.yaml - Visualization specific  
-visualization:
-  custom_themes: "themes/"
-  export_interactive: true
-```
-
-### Loading Step Configuration
-
-```bash
-python src/5_type_checker.py --config config.step5.yaml
-python src/8_visualization.py --config config.step8.yaml
-```
-
-## Advanced Configuration Patterns
-
-### Dynamic Configuration
-
-```python
-# Python code can modify config at runtime
-import src.utils.config as config
-
-# Load base config
-cfg = config.load_config("config.yaml")
-
-# Modify based on runtime conditions
-if model_size > 10000:
-    cfg["validation"]["strict_mode"] = False
-    cfg["visualization"]["max_nodes"] = 50
-
-# Apply modified config
-config.apply_config(cfg)
-```
-
-### Conditional Configuration
-
-```yaml
-# Conditional based on environment
-pipeline:
-  steps: "all"
-  parallel: true
-  # Override for CI environment
-  ${CI:pipeline.parallel}: false
-  ${CI:pipeline.log_level}: "DEBUG"
-```
-
-### Template Variables
-
-```yaml
-# Using template variables
-directories:
-  output: "${PROJECT_ROOT}/output"
-  temp: "${TEMP_DIR}/gnn"
-  
-model_settings:
-  max_size: ${MAX_MODEL_SIZE:1000000}
-```
-
-## Validation and Testing
-
-### Validate Configuration
-
-```bash
-# Check config syntax and completeness
-python src/main.py --validate-config
-
-# Test configuration with dry run
-python src/main.py --dry-run --config config.yaml
-
-# Show effective configuration (after all overrides)
-python src/main.py --show-config
-```
-
-### Configuration Schema
-
-The configuration follows a JSON Schema for validation:
-
-```bash
-# Validate against schema
-python -m src.utils.validate_config config.yaml
-```
-
-## Best Practices
-
-### 1. Environment Separation
-
-- Use different config files for dev/test/prod
-- Keep sensitive data in environment variables
-- Use profiles for common configuration sets
-
-### 2. Version Control
-
-- Track config files in version control
-- Use `.env.example` for environment variables
-- Document configuration changes
-
-### 3. Security
-
-- Never commit API keys to version control
-- Use environment variables for secrets
-- Restrict file permissions on config files
-
-### 4. Performance
-
-- Adjust resource limits based on your hardware
-- Use parallel processing when available
-- Skip unnecessary steps for faster iteration
-
-### 5. Debugging
-
-- Enable debug logging for troubleshooting
-- Use dry-run mode to test configurations
-- Validate configuration before running pipeline
-
-This comprehensive configuration system allows fine-tuned control over every aspect of the GNN pipeline while maintaining sensible defaults for common use cases.
+- [Setup guide](../SETUP.md)
+- [Pipeline guide](../pipeline/README.md)
+- [GNN syntax reference](../gnn/reference/gnn_syntax.md)
+- [Unified CLI](../../src/cli/README.md)
+- [Configuration loader](../../src/utils/config_loader.py)
+- [Main parser](../../src/utils/arg_parsing.py)

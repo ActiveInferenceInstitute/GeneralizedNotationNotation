@@ -1,6 +1,6 @@
 # GeneralizedNotationNotation (GNN)
 
-**Last Updated**: 2026-08-02
+**Last Updated**: 2026-08-19
 
 <div align="center">
 
@@ -9,7 +9,7 @@
 [![Active Inference](https://img.shields.io/badge/Active%20Inference-Research-brightgreen.svg)](https://activeinference.org/)
 [![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.7803328-blue.svg)](https://doi.org/10.5281/zenodo.7803328)
 [![Pipeline Steps](https://img.shields.io/badge/Pipeline%20Steps-25-blue.svg)](#%EF%B8%8F-processing-pipeline)
-[![Documentation](https://img.shields.io/badge/Documentation-Comprehensive-success.svg)](#-documentation)
+[![Documentation](https://img.shields.io/badge/Documentation-Maintained-success.svg)](#-documentation)
 
 **A standardized text-based language for Active Inference generative models**
 
@@ -54,7 +54,7 @@
 
 **uv 0.12.0 Compatibility (verified 2026-07-30)**: `uv lock --check` passes (310 packages, 0.86ms resolve). `uv sync --frozen` succeeds. The project lock file is compatible with uv 0.12.0. Ruff lint is clean (`ruff check src/` passes). MyPy is clean (`mypy src/` passes, 758 files, as of 2026-08-02). The Dockerfile constraint `uv>=0.7.8` is the minimum bootstrap floor.
 
-**Test Suite Evidence (verified 2026-08-07)**: command of record is `uv run --extra dev python -m pytest src/tests/ -q --tb=no -rsx --ignore=src/tests/llm/test_llm_ollama.py --ignore=src/tests/llm/test_llm_ollama_integration.py`; latest local evidence (as of 2026-08-07; see CI): 2,797 passed, 0 failed, 2 skipped (both allowlisted environment-gated files; 2,799 collected) on the curated 29-exemplar corpus. Julia RxInfer execution uses the committed `Project.toml` under `src/execute/rxinfer/`, and ActiveInference.jl uses the committed minimal environment under `src/execute/activeinference_jl/` (`julia --startup-file=no --project=<env> <script>`). With a local Ollama daemon and `smollm2:135m-instruct-q4_K_S` pulled, the two ignored files are re-enabled.
+**Test Suite**: The command of record is `uv run --extra dev python -m pytest src/tests/ -q --tb=no --ignore=src/tests/llm/test_llm_ollama.py --ignore=src/tests/llm/test_llm_ollama_integration.py`. Run it in the current environment for pass/skip totals; Julia RxInfer execution uses the committed `Project.toml` under `src/execute/rxinfer/`, and ActiveInference.jl uses the committed environment under `src/execute/activeinference_jl/` (`julia --startup-file=no --project=<env> <script>`). Ollama tests are opt-in when a local daemon and configured test model are available.
 **Published Output Evidence (verified 2026-06-18)**: root `output/` is a POMDP GridWorld full-pipeline publication generated from `input/gnn_files/pomdp_gridworld` with `--frameworks all` and validated by `uv run --extra dev python scripts/check_pomdp_gridworld_outputs.py output`.
 **Features (v2.0.0)**: semantic fidelity ledgers across all maintained model families, strict JSON parse/serialize/parse preservation for variables, edges, dimensions, parameter shapes, equations, time, and ontology mappings; cross-framework reliability ledgers with explicit compatible/unsupported backend statuses; GridWorld comparison across PyMDP, RxInfer, and ActiveInference.jl; model-family acceptance and interpretability ledgers; maintained template CLI (`gnn templates list`, `gnn templates show`, `gnn pull`); authenticated local MCP HTTP orchestration; structured PyMDP 1.0 POMDP execution; static/headless GUI publication; PyMDP Scaling Study; and MCP Full Module Exposure.
 **New in v3.0.0 ("Long-Running Orchestration")**: three safe-by-design `src/pipeline/` contracts — durable observation streams, resumable run sessions, and auditable container plans — plus additive live wiring, a strict acceptance gate (`scripts/run_v3_orchestration_acceptance.py`), and 3 new MCP tools. No live infrastructure mutation; every module generates, validates, replays, or plans data only. See [doc/pipeline/v3_orchestration.md](./doc/pipeline/v3_orchestration.md).
@@ -104,7 +104,7 @@ GeneralizedNotationNotation/
 │   ├── 0_template.py → 24_intelligent_analysis.py  # Numbered pipeline scripts
 │   ├── gnn/, render/, execute/, llm/, ...  # Agent modules
 │   └── tests/                # Comprehensive test suite
-├── 📁 doc/                    # 610 Markdown files under doc/ (plus assets; see doc/README.md)
+├── 📁 doc/                    # Maintained Markdown documentation and assets (see doc/README.md)
 │   ├── gnn/                  # GNN language specification
 │   ├── pymdp/, rxinfer/      # Framework integration guides
 │   └── cognitive_phenomena/  # Example cognitive models
@@ -756,7 +756,7 @@ python src/main.py --help
 
 ## 🛠️ Tools and Utilities
 
-The GNN ecosystem includes several sophisticated tools to aid in model development, validation, and understanding. These tools are primarily invoked through the `src/main.py` pipeline script. The project also provides a **CLI** (`gnn` command), **LSP** (Language Server Protocol) for editor support, and a **REST API** (FastAPI Pipeline-as-a-Service); **140 MCP tools** are registered (as of 2026-08-07; CI guards the live count at ≥130) for model context integration. See [AGENTS.md](./AGENTS.md) and [doc/gnn/](doc/gnn/) for details.
+The GNN ecosystem includes tools for model development, validation, rendering, and analysis. They are primarily invoked through the `src/main.py` pipeline script. The project also provides a **CLI** (`gnn`), **LSP** support, a local **REST API**, and MCP tools for model-context integration. Use the live registry and [AGENTS.md](./AGENTS.md) for current module and tool details; this page intentionally avoids embedding volatile counts.
 
 ### ✅ Type Checker and Resource Estimator
 
@@ -900,7 +900,7 @@ If you use [uv](https://github.com/astral-sh/uv) (`uv sync` / `uv run`), prefer 
 
 ### 🎯 **Choose Your Journey**
 
-- **⚡ Quick Demo (5 min)**: See GNN in action → [5-Minute Demo](doc/quickstart.md#5-minute-demo)
+- **⚡ Quick Start**: Validate and run a maintained model → [Quick Start Guide](doc/quickstart.md#gnn-quick-start-guide)
 - **🔬 I'm a Researcher**: Theory-first approach → [Research Path](doc/learning_paths.md#research-focused-path)  
 - **💻 I'm a Developer**: Code-first approach → [Developer Path](doc/learning_paths.md#developer-focused-path)
 - **🎓 I'm Learning**: Structured curriculum → [Academic Path](doc/learning_paths.md#academic-learning-path)

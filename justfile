@@ -65,12 +65,16 @@ security:
 doc-terms:
     uv run python scripts/check_maintained_doc_terms.py --strict
 
+# Run documentation contract audit
+doc-contracts:
+    uv run python scripts/check_doc_contracts.py --strict
+
 # Run GNN documentation pattern audit
 doc-patterns:
     uv run python scripts/check_gnn_doc_patterns.py --strict
 
 # Run fast quality gates without the full pytest suite
-quality: format-check lint terminology doc-terms audit doc-patterns typecheck security
+quality: format-check lint terminology doc-terms audit doc-contracts doc-patterns typecheck security
 
 # Run focused PyMDP/POMDP behavior checks
 test-pymdp-focused:

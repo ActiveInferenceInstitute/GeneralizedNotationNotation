@@ -90,7 +90,9 @@ class TestCmdHandlers:
     def test_cmd_graph_json_missing_file(self, capsys: Any) -> None:
         from cli import _cmd_graph
 
-        args = SimpleNamespace(file=Path("/nonexistent.md"), format="mermaid", json=True)
+        args = SimpleNamespace(
+            file=Path("/nonexistent.md"), format="mermaid", json=True
+        )
         result = _cmd_graph(args)
         assert result == 1
         captured = capsys.readouterr()

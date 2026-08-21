@@ -8,7 +8,7 @@ These version strings refer to **different things**:
 |------|--------|---------|
 | **GNN language / syntax** | [doc/gnn/reference/gnn_syntax.md](gnn/reference/gnn_syntax.md) | Language rules (e.g. v1.1). |
 | **GNN documentation bundle** | Front matter on major [doc/gnn/](gnn/) pages | Human-oriented hub revision (e.g. v2.0.0). |
-| **Python package** | [pyproject.toml](../pyproject.toml) `version` | Installable distribution (e.g. **1.3.0**). |
+| **Python package** | [pyproject.toml](../pyproject.toml) `version` | Installable distribution (currently **3.0.0**). |
 
 Leaf `SPEC.md` files under experimental or research subtrees may omit bundle version; they should still link **up** to a parent SPEC or state scope.
 
@@ -17,7 +17,7 @@ Leaf `SPEC.md` files under experimental or research subtrees may omit bundle ver
 ## Design requirements
 
 - **`doc/`** is the static documentation tree; it does not execute pipeline steps. Runtime behavior lives under `src/`.
-- **Top-level folder list**: [expected_dirs.txt](expected_dirs.txt) is the canonical list of `doc/<name>/` directories for tooling; update it when adding or renaming a top-level doc subtree.
+- **Top-level folder list**: [expected_dirs.txt](expected_dirs.txt) is the canonical list of `doc/<name>/` directories for tooling; update it when adding or renaming a top-level doc subtree. Do not copy a directory count into prose; derive it from this file when needed.
 - **Mechanical completeness** is enforced by [development/docs_audit.py](development/docs_audit.py) (`uv run --extra dev python doc/development/docs_audit.py --strict` from repo root). With `--strict` and failures, the tool prints every issue to stderr by default; use `-q` for summary only. Optional: `--check-anchors` validates `#fragments` against heading slugs (heuristic).
 - **GNN authority** for syntax and pipeline narrative: [doc/gnn/README.md](gnn/README.md), [doc/gnn/SPEC.md](gnn/SPEC.md), [CLAUDE.md](../CLAUDE.md), [src/AGENTS.md](../src/AGENTS.md).
 

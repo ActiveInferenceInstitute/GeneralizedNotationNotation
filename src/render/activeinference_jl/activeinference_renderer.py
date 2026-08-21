@@ -14,6 +14,12 @@ from typing import Any, Dict, List, Optional, Tuple
 
 logger = logging.getLogger(__name__)
 
+from render.multi_agent_common import (
+    canonicalise_b,
+    detect_agent_groups,
+    detect_env_coupling,
+    has_native_multi_agent_structure,
+)
 from render.pomdp_contract import build_canonical_pomdp_spec
 
 
@@ -91,11 +97,22 @@ def render_gnn_to_activeinference_jl(
             f"Rendering GNN specification to ActiveInference.jl script for model: {gnn_spec.get('name', 'unknown')}"
         )
 
-        # Extract model information from GNN spec
-        model_info = extract_model_info(gnn_spec)
+        if has_native_multi_agent_structure(gnn_spec):
+            # Native stigmergic multi-agent path: per-agent generative models
+            # coupled through a shared environment affordance, without joint
+            # state-space expansion (roadmap MAJ-03).
+            model_info = _multi_agent_model_info(gnn_spec)
+            julia_script = _generate_stigmergic_activeinference_script(model_info)
+            logger.info(
+                "Rendered native multi-agent (stigmergic) ActiveInference.jl script "
+                f"for model: {gnn_spec.get('name', 'unknown')}"
+            )
+        else:
+            # Extract model information from GNN spec
+            model_info = extract_model_info(gnn_spec)
 
-        # Generate Julia script content
-        julia_script = generate_activeinference_script(model_info)
+            # Generate Julia script content
+            julia_script = generate_activeinference_script(model_info)
 
         # Ensure output directory exists
         output_path.parent.mkdir(parents=True, exist_ok=True)
@@ -1098,6 +1115,411 @@ println("Model: $MODEL_NAME")
 
 
 # Main rendering function that can be called from other modules
+def _multi_agent_model_info(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
+    """Build per-agent model info for native multi-agent rendering.
+
+    Recovers per-agent canonical matrices (``A_agentN``/``B_agentN``/
+    ``C_agentN``/``D_agentN``) from ``structured_pomdp.matrices`` plus the
+    shared environmental affordance (``env_signal`` + ``signal_decay``) and
+    common runtime parameters from ``model_parameters``. No joint state
+    space is composed (roadmap MAJ-03).
+    """
+    agents = detect_agent_groups(gnn_spec)
+    env = detect_env_coupling(gnn_spec)
+
+    def index_of(name: str) -> int:
+        digits = "".join(ch for ch in name if ch.isdigit())
+        return int(digits) if digits else 0
+
+    ordered_names = sorted(agents, key=index_of)
+    model_params = gnn_spec.get("model_parameters") or {}
+    return {
+        "name": gnn_spec.get("name", "gnn_model"),
+        "agents": ordered_names,
+        "agent_matrices": [agents[name] for name in ordered_names],
+        "env": env,
+        "n_timesteps": int(model_params.get("num_timesteps", 20)),
+        "random_seed": int(
+            model_params.get("random_seed", model_params.get("seed", 42))
+        ),
+        "action_precision": float(
+            model_params.get("action_precision", model_params.get("gamma", 4.0))
+        ),
+        "num_actions": int(model_params.get("num_actions", 3)),
+        "state_factors": model_params.get("state_factors", []),
+        "spec_json": json.dumps(gnn_spec, sort_keys=True),
+    }
+
+
+def _generate_stigmergic_activeinference_script(model_info: Dict[str, Any]) -> str:
+    """Generate a native stigmergic multi-agent ActiveInference.jl script.
+
+    One hand-rolled Active Inference simulation per agent (per-agent state
+    spaces — no joint expansion) coupled through a shared ``env_signal``
+    trace: each agent deposits signal at its MAP position each timestep and
+    the shared trace decays by ``signal_decay``. Agents never communicate
+    directly; coordination emerges from the shared environment.
+
+    Results are written to ``simulation_results.json`` with per-agent
+    beliefs/actions/EFE, the ``env_signal_trace``, and
+    ``model_kind: multi_agent`` metadata.
+    """
+    model_name = str(model_info["name"])
+    agents = list(model_info["agents"])
+    matrices = list(model_info["agent_matrices"])
+    env = model_info.get("env")
+    num_actions = int(model_info.get("num_actions", 3))
+    n_timesteps = int(model_info["n_timesteps"])
+    random_seed = int(model_info["random_seed"])
+    action_precision = float(model_info["action_precision"])
+    spec_json = str(model_info["spec_json"])
+    spec_json_b64 = base64.b64encode(spec_json.encode("utf-8")).decode("ascii")
+    model_name_literal = json.dumps(model_name)
+
+    agent_names_literal = json.dumps(agents)
+    agent_as = json.dumps([m["A"] for m in matrices])
+    # B is canonicalised to (next_state, previous_state, action) exactly as
+    # the composed-joint path does, so per-agent semantics match.
+    agent_bs = json.dumps([canonicalise_b(m["B"], num_actions) for m in matrices])
+    agent_cs = json.dumps([m["C"] for m in matrices])
+    agent_ds = json.dumps([m["D"] for m in matrices])
+
+    if env is not None:
+        env_initial_literal = json.dumps(env["initial"])
+        env_decay_literal = repr(env["decay"])
+        env_variable_literal = json.dumps(env["variable"])
+    else:
+        env_initial_literal = "[]"
+        env_decay_literal = "1.0"
+        env_variable_literal = json.dumps("env_signal")
+
+    return f'''#!/usr/bin/env julia
+# ActiveInference.jl stigmergic multi-agent simulation
+# Generated from GNN Model: {model_name}
+#
+# Native per-agent compilation (roadmap MAJ-03): one Active Inference agent
+# per declared agent group (no joint state-space expansion), coupled through
+# the shared environment: each agent deposits signal at its MAP position each
+# timestep, the shared trace decays by signal_decay, and the resulting
+# env_signal_trace is written alongside per-agent beliefs/actions/EFE.
+
+using Pkg
+using ActiveInference
+using Distributions
+using LinearAlgebra
+using Random
+using StatsBase
+using JSON
+using Base64
+using Dates
+
+const SCHEMA_VERSION = "activeinference_jl_stigmergic_swarm_v1"
+const MODEL_NAME = {model_name_literal}
+const MODEL_KIND = "multi_agent"
+const NUM_AGENTS = {len(agents)}
+const AGENTS = {agent_names_literal}
+const TIME_STEPS = {n_timesteps}
+const RANDOM_SEED = {random_seed}
+const ACTION_PRECISION = {action_precision}
+const GNN_SPEC_JSON_B64 = "{spec_json_b64}"
+const GNN_SPEC = JSON.parse(String(base64decode(GNN_SPEC_JSON_B64)))
+
+# Per-agent canonical matrices (agents x obs/state/action dims as declared).
+const AGENT_AS = {agent_as}
+const AGENT_BS = {agent_bs}
+const AGENT_CS = {agent_cs}
+const AGENT_DS = {agent_ds}
+
+# Shared environmental affordance (stigmergic signal).
+const ENV_VARIABLE = {env_variable_literal}
+const ENV_INITIAL = {env_initial_literal}
+const ENV_DECAY = {env_decay_literal}
+
+function package_version(name::String)
+for (_, dep) in Pkg.dependencies()
+    if dep.name == name
+        return string(dep.version)
+    end
+end
+return "unknown"
+end
+
+function to_float_matrix(raw)
+rows = collect(raw)
+matrix = zeros(Float64, length(rows), length(collect(rows[1])))
+for row in eachindex(rows)
+    values = collect(rows[row])
+    for column in eachindex(values)
+        matrix[row, column] = Float64(values[column])
+    end
+end
+return matrix
+end
+
+function to_float_tensor(raw)
+blocks = collect(raw)
+rows = length(blocks)
+columns = length(collect(blocks[1]))
+actions = length(collect(collect(blocks[1])[1]))
+tensor = zeros(Float64, rows, columns, actions)
+for next_state in 1:rows
+    block = collect(blocks[next_state])
+    for previous_state in 1:columns
+        values = collect(block[previous_state])
+        for action in 1:actions
+            tensor[next_state, previous_state, action] = Float64(values[action])
+        end
+    end
+end
+return tensor
+end
+
+function normalize_vector(values)
+vector = Float64.(collect(values))
+total = sum(vector)
+if !isfinite(total) || total <= 0
+    error("probability vector has invalid mass")
+end
+return vector ./ total
+end
+
+function normalize_columns!(matrix)
+for column in 1:size(matrix, 2)
+    total = sum(matrix[:, column])
+    if !isfinite(total) || total <= 0
+        error("matrix column has invalid probability mass")
+    end
+    matrix[:, column] ./= total
+end
+return matrix
+end
+
+function normalize_tensor!(tensor)
+for action in 1:size(tensor, 3)
+    for previous_state in 1:size(tensor, 2)
+        total = sum(tensor[:, previous_state, action])
+        if !isfinite(total) || total <= 0
+            error("transition column has invalid probability mass")
+        end
+        tensor[:, previous_state, action] ./= total
+    end
+end
+return tensor
+end
+
+function softmax(values)
+shifted = values .- maximum(values)
+weights = exp.(shifted)
+return weights ./ sum(weights)
+end
+
+function categorical_index(probabilities)
+safe_probs = max.(probabilities, 1e-16)
+safe_probs ./= sum(safe_probs)
+return rand(Categorical(safe_probs))
+end
+
+function compute_efe(belief, action, A, B, C_pref)
+predicted_state = B[:, :, action] * belief
+predicted_state = max.(predicted_state, 1e-16)
+predicted_state ./= sum(predicted_state)
+predicted_obs = A * predicted_state
+predicted_obs = max.(predicted_obs, 1e-16)
+predicted_obs ./= sum(predicted_obs)
+
+ambiguity = 0.0
+for state in eachindex(predicted_state)
+    likelihood = max.(A[:, state], 1e-16)
+    ambiguity -= predicted_state[state] * sum(likelihood .* log.(likelihood))
+end
+
+preferred = max.(C_pref, 1e-16)
+risk = sum(predicted_obs .* (log.(predicted_obs) .- log.(preferred)))
+return ambiguity + risk
+end
+
+function select_action(belief, A, B, C_pref)
+efe_values = [compute_efe(belief, action, A, B, C_pref) for action in 1:size(B, 3)]
+policy = softmax(-ACTION_PRECISION .* efe_values)
+action = categorical_index(policy)
+return action, efe_values, policy
+end
+
+# --- Per-agent simulation (parameterised — no joint state space) ---
+
+function simulate_agent(agent_name, raw_A, raw_B, raw_C, raw_D)
+A = normalize_columns!(to_float_matrix(raw_A))
+B = normalize_tensor!(to_float_tensor(raw_B))
+C = Float64.(collect(raw_C))
+D = normalize_vector(raw_D)
+n_states = size(A, 2)
+n_obs = size(A, 1)
+n_actions = size(B, 3)
+if size(A) != (n_obs, n_states)
+    error("agent $(agent_name) A shape $(size(A)) does not match ($(n_obs), $(n_states))")
+end
+if size(B) != (n_states, n_states, n_actions)
+    error("agent $(agent_name) B shape $(size(B)) does not match ($(n_states), $(n_states), $(n_actions))")
+end
+
+C_pref = softmax(C)
+current_state = categorical_index(D)
+current_belief = copy(D)
+
+observations = Int[]
+true_states = Int[]
+actions = Int[]
+beliefs = Vector{{Vector{{Float64}}}}()
+efe_per_action = Vector{{Vector{{Float64}}}}()
+selected_efe = Float64[]
+policy_posterior = Vector{{Vector{{Float64}}}}()
+
+for step in 1:TIME_STEPS
+    observation = categorical_index(A[:, current_state])
+    likelihood = A[observation, :]
+    updated = current_belief .* likelihood
+    if sum(updated) <= 0
+        error("agent $(agent_name) belief update produced zero mass at step $(step)")
+    end
+    current_belief = updated ./ sum(updated)
+
+    action, efe_values, policy = select_action(current_belief, A, B, C_pref)
+    next_probs = B[:, current_state, action]
+    current_state = categorical_index(next_probs)
+    predicted = B[:, :, action] * current_belief
+    current_belief = predicted ./ sum(predicted)
+
+    push!(observations, observation - 1)
+    push!(true_states, current_state - 1)
+    push!(actions, action - 1)
+    push!(beliefs, copy(current_belief))
+    push!(efe_per_action, copy(efe_values))
+    push!(selected_efe, efe_values[action])
+    push!(policy_posterior, copy(policy))
+end
+
+validation = Dict(
+    "all_beliefs_valid" => all(b -> all(v -> 0.0 <= v <= 1.0, b), beliefs),
+    "beliefs_sum_to_one" => all(b -> isapprox(sum(b), 1.0; atol=1e-6), beliefs),
+    "actions_in_range" => all(a -> 0 <= a < n_actions, actions)
+)
+validation["all_valid"] = validation["all_beliefs_valid"] &&
+    validation["beliefs_sum_to_one"] &&
+    validation["actions_in_range"]
+
+return Dict(
+    "observations" => observations,
+    "true_states" => true_states,
+    "actions" => actions,
+    "beliefs" => beliefs,
+    "efe_per_action" => efe_per_action,
+    "selected_efe" => selected_efe,
+    "policy_posterior" => policy_posterior,
+    "n_states" => n_states,
+    "n_observations" => n_obs,
+    "n_actions" => n_actions,
+    "validation" => validation
+)
+end
+
+# --- Shared environment trace (stigmergic coupling) ---
+
+function compute_env_trace(positions_by_agent, n_cells)
+env = Float64.(ENV_INITIAL)
+if isempty(env)
+    env = zeros(Float64, n_cells)
+end
+trace = [copy(env)]
+for t in 1:TIME_STEPS
+    for i in 1:NUM_AGENTS
+        pos = positions_by_agent[i][t]
+        if 1 <= pos <= n_cells
+            env[pos] += 1.0  # deposit at the agent's current cell
+        end
+    end
+    env = ENV_DECAY .* env
+    push!(trace, copy(env))
+end
+return trace
+end
+
+function main()
+Random.seed!(RANDOM_SEED)
+per_agent = Dict{{String,Any}}()
+agent_position_traces = Vector{{Vector{{Int}}}}()
+all_valid = true
+
+for i in 1:NUM_AGENTS
+    agent_name = AGENTS[i]
+    result = simulate_agent(agent_name, AGENT_AS[i], AGENT_BS[i], AGENT_CS[i], AGENT_DS[i])
+    per_agent[agent_name] = result
+    all_valid = all_valid && result["validation"]["all_valid"]
+    positions = [argmax(belief) for belief in result["beliefs"]]
+    push!(agent_position_traces, positions)
+end
+
+n_cells = length(AGENT_DS[1])
+env_trace = compute_env_trace(agent_position_traces, n_cells)
+state_factors = get(get(GNN_SPEC, "model_parameters", Dict()), "state_factors", [])
+
+results = Dict(
+    "schema_version" => SCHEMA_VERSION,
+    "success" => true,
+    "framework" => "ActiveInference.jl",
+    "model_name" => MODEL_NAME,
+    "model_kind" => MODEL_KIND,
+    "num_timesteps" => TIME_STEPS,
+    "num_agents" => NUM_AGENTS,
+    "agents" => AGENTS,
+    "env_coupling" => Dict(
+        "variable" => ENV_VARIABLE,
+        "initial" => ENV_INITIAL,
+        "decay" => ENV_DECAY
+    ),
+    "env_signal_trace" => env_trace,
+    "beliefs_by_agent" => Dict(agent => per_agent[agent]["beliefs"] for agent in AGENTS),
+    "actions_by_agent" => Dict(agent => per_agent[agent]["actions"] for agent in AGENTS),
+    "observations_by_agent" => Dict(agent => per_agent[agent]["observations"] for agent in AGENTS),
+    "true_states_by_agent" => Dict(agent => per_agent[agent]["true_states"] for agent in AGENTS),
+    "efe_per_action_by_agent" => Dict(agent => per_agent[agent]["efe_per_action"] for agent in AGENTS),
+    "selected_efe_by_agent" => Dict(agent => per_agent[agent]["selected_efe"] for agent in AGENTS),
+    "policy_posterior_by_agent" => Dict(agent => per_agent[agent]["policy_posterior"] for agent in AGENTS),
+    "state_factors" => state_factors,
+    "model_parameters" => Dict(
+        "num_agents" => NUM_AGENTS,
+        "time_steps" => TIME_STEPS,
+        "per_agent_state_sizes" => [per_agent[agent]["n_states"] for agent in AGENTS],
+        "per_agent_observation_sizes" => [per_agent[agent]["n_observations"] for agent in AGENTS],
+        "per_agent_action_sizes" => [per_agent[agent]["n_actions"] for agent in AGENTS],
+        "joint_state_space_size" => prod([per_agent[agent]["n_states"] for agent in AGENTS])
+    ),
+    "matrix_provenance" => get(GNN_SPEC, "matrix_provenance", Dict()),
+    "runtime_metadata" => Dict(
+        "random_seed" => RANDOM_SEED,
+        "schema_version" => SCHEMA_VERSION,
+        "generated_at" => string(now()),
+        "activeinference_jl_version" => package_version("ActiveInference"),
+        "julia_version" => string(VERSION)
+    ),
+    "validation" => Dict(
+        "all_valid" => all_valid,
+        "per_agent" => Dict(agent => per_agent[agent]["validation"] for agent in AGENTS)
+    )
+)
+
+open("simulation_results.json", "w") do file
+    JSON.print(file, results, 2)
+end
+println("ActiveInference.jl stigmergic simulation wrote simulation_results.json")
+return all_valid ? 0 : 1
+end
+
+if abspath(PROGRAM_FILE) == @__FILE__
+    exit(main())
+end
+'''
+
+
 def render_gnn_to_activeinference_combined(
     gnn_spec: Dict[str, Any], output_dir: Path, options: Optional[Dict[str, Any]] = None
 ) -> Tuple[bool, str, List[str]]:

@@ -1037,6 +1037,7 @@ def main(
                     current_step_counter += 1
                 else:
                     import os
+
                     max_cpu = os.cpu_count() or 4
                     # Calculate estimated tier memory requirement to prevent overcommit
                     tier_memory_est = sum(
@@ -1070,14 +1071,23 @@ def main(
                     )
                     with ThreadPoolExecutor(max_workers=dynamic_workers) as pool:
                         futures = []
-                        for s_idx_offset, (script_name, description) in enumerate(tier_steps):
+                        for s_idx_offset, (script_name, description) in enumerate(
+                            tier_steps
+                        ):
                             f = pool.submit(
                                 execute_pipeline_step,
                                 script_name,
                                 args,
                                 logger,
                             )
-                            futures.append((current_step_counter + s_idx_offset, script_name, description, f))
+                            futures.append(
+                                (
+                                    current_step_counter + s_idx_offset,
+                                    script_name,
+                                    description,
+                                    f,
+                                )
+                            )
                         current_step_counter += len(tier_steps)
 
                         for step_num, script_name, description, future in futures:

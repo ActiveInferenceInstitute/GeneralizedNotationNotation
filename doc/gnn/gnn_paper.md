@@ -2,8 +2,8 @@
 
 **Version**: v3.0.0 Engine (Bundle v2.0.0)
 **Last Updated**: 2026-04-23
-**Status**: ✅ Production Ready
-**Modules**: 38+ · **Pipeline steps**: 25 · **Renderers**: 9 backends (see [implementations/README.md](implementations/README.md)) · **Tests**: see [README.md](../../README.md)
+**Status**: Maintained
+**Scope**: GNN language, pipeline, and renderer architecture. See [implementations/README.md](implementations/README.md) and the repository test commands for current inventory and evidence.
 
 Published on April 5, 2023 at: <https://zenodo.org/records/7803328>
 

@@ -3,15 +3,9 @@ name: CI
 on:
   push:
     branches: [main]
-    paths-ignore:
-      - "**/*.md"
-      - "doc/**"
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review]
     branches: [main]
-    paths-ignore:
-      - "**/*.md"
-      - "doc/**"
   workflow_dispatch:
 
 concurrency:
@@ -77,6 +71,10 @@ jobs:
       - name: Documentation audit
         if: matrix.python-version == '3.12'
         run: uv run --extra dev python doc/development/docs_audit.py --strict --check-anchors --no-write
+
+      - name: Documentation contract audit
+        if: matrix.python-version == '3.12'
+        run: uv run --extra dev python scripts/check_doc_contracts.py --strict
 
       - name: GNN documentation pattern audit
         if: matrix.python-version == '3.12'

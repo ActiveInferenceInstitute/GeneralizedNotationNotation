@@ -1,765 +1,219 @@
 # GNN Project Setup Guide
 
-> **📋 Document Metadata**
-> **Type**: Setup Guide | **Audience**: All Users | **Complexity**: Beginner
-> **Cross-References**: [Quickstart Guide](quickstart.md) | **Project overview** [../README.md](../README.md) | **Documentation hub (this tree)** [README.md](README.md) | [Troubleshooting](troubleshooting/README.md)
+This guide assumes commands are run from the repository root. The supported package
+manager is `uv`; use `uv run` for Python commands so the project environment is used.
 
-This document provides comprehensive instructions for setting up the GNN (Generalized Notation Notation) Processing Pipeline environment, including installation steps, environment variables, and detailed information about dependencies.
-
-**Convention**: Unless noted otherwise, shell commands assume the **repository root** as the current directory and use **`uv run python`** to invoke `src/main.py` and numbered step scripts (see [CLAUDE.md](../CLAUDE.md)). Do not `cd src` to run the pipeline; entrypoints live under `src/` but are run as `uv run python src/...` from the root.
-
-> **🎯 Quick Start**: For immediate setup from the **repository root** (recommended: [uv](https://github.com/astral-sh/uv)):
->
-> ```bash
-> uv sync --extra dev
-> uv run python src/1_setup.py --target-dir input/gnn_files --output-dir output --dev --verbose
-> ```
->
-> Equivalent: `uv run python src/main.py --only-steps 1 --dev` (see [CLAUDE.md](../CLAUDE.md)).
-
-> **📖 Complete Guide**: For comprehensive documentation on GNN itself, please refer to the [GNN Documentation](gnn/about_gnn.md) in the `doc/gnn/` directory.
-
-## 🎯 Setup Overview
-
-The GNN project provides multiple installation paths depending on your needs:
-
-- **🚀 Quick Setup** (5 minutes): Basic functionality for trying GNN
-- **🔧 Standard Setup** (15 minutes): Full pipeline with core dependencies
-- **⚡ Complete Setup** (30+ minutes): All features including optional heavy packages
-- **🛠️ Development Setup** (45+ minutes): Full development environment with all tools
-
-Choose based on your use case:
-
-- **Researchers**: Quick or Standard setup
-- **Developers**: Standard or Complete setup
-- **Production**: Complete setup with optimization
-
-## Quick Start
+## Fast path
 
 ```bash
-# Clone the repository
-git clone https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation.git
-cd GeneralizedNotationNotation
-
 uv sync --extra dev
-uv run python src/main.py --only-steps 1 --dev
+uv run python src/1_setup.py --target-dir input/gnn_files --output-dir output --dev --verbose
 ```
 
-## System Requirements
-
-- **Python**: 3.11 – 3.13 (see [pyproject.toml](../pyproject.toml) for exact range)
-- **Operating System**: Linux (primary support)
-- **Disk Space**: At least 2GB free for dependencies
-- **System Packages**:
-  - `build-essential`
-  - `python3-dev`
-  - `graphviz` (for visualization)
-
-You can install the required system packages on Ubuntu/Debian with:
+Then validate a model or run a focused pipeline path:
 
 ```bash
-sudo apt update
-sudo apt install build-essential python3-dev graphviz
+uv run gnn validate input/gnn_files/discrete/actinf_pomdp_agent.md --strict
+uv run python src/main.py \
+  --target-dir input/gnn_files \
+  --output-dir output \
+  --only-steps "3,5,11,12" \
+  --verbose
 ```
 
-## Detailed Installation
+The checked-in `input/config.yaml` is loaded automatically by `src/main.py`; see the
+[configuration guide](configuration/README.md) for its supported sections.
 
-### 1. Clone the Repository
+## Requirements
+
+- Python `>=3.11,<3.14` (declared in `pyproject.toml`).
+- `uv` with support for the lockfile format in this repository.
+- Linux is the primary tested platform. macOS is supported for Python-only paths;
+  Julia, GUI, audio, and system Graphviz paths have additional local requirements.
+- At least 2 GB free disk space for a normal environment; rendering and generated
+  artifacts can require considerably more.
+
+Optional system tools:
+
+- Julia for RxInfer.jl and ActiveInference.jl.
+- Graphviz for graph layouts that invoke the Graphviz executable.
+- A local Ollama installation for the default Step 13 local-LLM path.
+
+## Installation
+
+### 1. Clone and enter the repository
 
 ```bash
 git clone https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation.git
 cd GeneralizedNotationNotation
 ```
 
-### 2. Set Up the Environment
-
-The setup can be done in two ways:
-
-#### Option A: Using main.py (Recommended)
-
-This method runs only the setup step through the main pipeline:
+### 2. Install the project environment
 
 ```bash
-uv run python src/main.py --only-steps 1
+# Runtime/core dependencies.
+uv sync
+
+# Runtime plus development, test, lint, and documentation tooling.
+uv sync --extra dev
+
+# Every declared optional group. This is the heaviest install.
+uv sync --all-extras
 ```
 
-#### Option B: Running the Setup Step Directly
+Do not create a second `src/.venv`; the project environment belongs at the repository
+root and is managed by `uv`.
+
+### 3. Run the setup step when needed
+
+Step 1 wraps environment checks and optional-group installation:
 
 ```bash
-uv run python src/1_setup.py --target-dir input/gnn_files --output-dir output
+uv run python src/1_setup.py --dev --verbose
+uv run python src/1_setup.py --install-all-extras
+uv run python src/1_setup.py \
+  --install-optional \
+  --optional-groups "audio,gui,graphs"
 ```
 
-### 3. Advanced Setup Options
-
-#### Development Dependencies
-
-To also install development dependencies (testing, code quality, documentation tools):
+To recreate the UV environment through the supported flag:
 
 ```bash
-uv run python src/main.py --only-steps 1 --dev
+uv run python src/1_setup.py --recreate-uv-env --dev
 ```
 
-#### Recreating the Virtual Environment
+The equivalent main-pipeline flag is `--recreate-uv-env`. The old
+`--recreate-venv`, `--install_optional`, and `--optional_groups` spellings are not
+supported.
 
-If you need to recreate the virtual environment from scratch:
+## Dependency groups
 
-```bash
-uv run python src/main.py --only-steps 1 --recreate-venv
-```
+The declared groups are visible in `pyproject.toml`:
 
-#### Verbose Setup
+| Group | Intended surface |
+|---|---|
+| `dev` | Tests, coverage, linting, typing, docs, and development tools |
+| `api` | FastAPI and Uvicorn |
+| `audio` | Librosa, SoundFile, and Pedalboard |
+| `gui` | Gradio and Streamlit |
+| `graphs` | Python Graphviz bindings |
+| `ml-ai` | SciPy, scikit-learn, and Transformers |
+| `research` | Jupyter, SymPy, Numba, and research utilities |
+| `scaling` | Dask, Distributed, and Ray |
+| `all` | The optional groups above combined as a manually maintained extra |
 
-For detailed logging during setup:
+Install a group directly with `uv sync --extra GROUP`; use `--all-extras` for all
+optional groups.
 
-```bash
-uv run python src/main.py --only-steps 1 --verbose
-```
+## Framework Selection Strategies
 
-## Environment Variables
+Use the `--frameworks` option on Step 11 and Step 12 to select `all`, `lite`, or a
+comma-separated list. The same selection is available through `src/main.py`.
 
-The GNN project uses the following environment variables:
+## Framework boundaries
 
-| Variable | Purpose | Required | Example |
-|----------|---------|----------|---------|
-| `OPENAI_API_KEY` | API key for OpenAI services (for LLM step) | For `13_llm.py` / LLM providers | `sk-abcd1234...` |
-| `GNN_CACHE_DIR` | Directory for caching intermediate results | No | `/path/to/cache` |
-| `PYTHONPATH` | Ensures Python can find project modules | Auto-set by scripts | `src:src/.venv/lib/python3.11/site-packages` |
+Step 11 has **9 render targets**. Step 12 executes **8 framework families**; Stan is a
+render-only target because it has no Step 12 executor. PyTorch and bnlearn are
+supported render/execute paths but are intentionally unavailable in the default lock
+because of their transitive PyTorch security risk. The runtime reports skipped or
+unavailable frameworks rather than pretending that every target is installed.
 
-You can set these variables in a `.env` file in the project root, or set them directly in your shell:
+| Target | Language | Default environment status | Surface |
+|---|---|---|---|
+| PyMDP | Python | Core | Render + execute |
+| JAX | Python | Core | Render + execute |
+| NumPyro | Python | Core | Render + execute |
+| DisCoPy | Python | Core | Render + execute |
+| RxInfer.jl | Julia | Committed project environment | Render + execute |
+| ActiveInference.jl | Julia | Committed project environment | Render + execute |
+| PyTorch | Python | Intentionally not locked | Render + execute when installed manually |
+| bnlearn | Python | Intentionally not locked | Render + execute when its dependency chain is installed |
+| Stan | Stan | Renderer available | Render only; use CmdStan separately |
 
-```bash
-export OPENAI_API_KEY="your-key-here"
-export GNN_CACHE_DIR="/path/to/cache"
-```
+### Python targets
 
-## Dependencies Explained
-
-### Core Dependencies
-
-- **numpy, scipy**: Scientific computing and numerical operations
-- **matplotlib, networkx, graphviz**: Visualization tools
-- **pandas**: Data manipulation and analysis
-- **pytest**: Testing framework
-
-### Active Inference Ecosystem
-
-- **inferactively-pymdp**: Python implementation of active inference for Markov Decision Processes
-
-### High-Performance Computing
-
-- **jax, jaxlib**: High-performance numerical computing with hardware acceleration support
-  - JAX accelerates tensor operations and enables automatic differentiation
-  - Required for the DisCoPy matrix backend
-
-### Visualization and Diagramming
-
-- **discopy[matrix]**: Category theory toolkit with diagram creation
-  - The `[matrix]` extra installs JAX support for tensor operations
-- **altair**: Declarative statistical visualization library
-
-### Optional Dependencies
-
-Optional dependency groups are declared in `pyproject.toml` and resolved through
-`uv sync --extra <group>` or `uv sync --all-extras`:
-
-- **Development** (`dev`): pytest, pytest-cov, repository pytest helpers,
-  ruff, mypy, black, isort, flake8, pylint, sphinx, ipython, ipdb, and profiling
-  tools such as py-spy
-- **Interfaces and backends**: `api`, `audio`, `gui`, `graphs`, `ml-ai`,
-  `research`, and `scaling` install the corresponding optional pipeline support
-- **All extras** (`all`): installs the optional runtime groups intended for
-  broad local experimentation
-
-## Framework Dependencies
-
-The GNN pipeline supports multiple Active Inference simulation frameworks. Each framework has different installation requirements and provides unique capabilities.
-
-### Framework Overview
-
-| Framework | Status | Install Method | Primary Use Case | GPU Support |
-|-----------|--------|----------------|------------------|-------------|
-| **PyMDP** | ✅ Core | `uv sync` | Python Active Inference (pymdp 1.0.0) | No |
-| **JAX** | ✅ Core | `uv sync` | GPU-accelerated inference | Yes |
-| **NumPyro** | ✅ Core | `uv sync` | Probabilistic programming | Yes |
-| **DisCoPy** | ✅ Core | `uv sync` | Categorical diagrams | No |
-| **ActiveInference.jl** | ⚠️ Optional | Julia | Complete Active Inference | No |
-| **RxInfer.jl** | ⚠️ Optional | Julia | Genuine @model + infer() Bayesian inference | No |
-| **PyTorch** | ⚠️ Optional | manual `torch` | Deep learning backend | Yes |
-
-PyMDP, JAX, NumPyro, and DisCoPy are **core** Python dependencies installed by
-a normal `uv sync` (see `pyproject.toml`). The Julia frameworks require a local
-Julia install (tested on Julia 1.12; see `doc/HANDOFF.md`). PyTorch is
-supported by the renderer/executor but intentionally not locked while
-GHSA-rrmf-rvhw-rf47 has no patched torch release.
-
-### Quick Install (Recommended)
-
-For most users, install the "lite" framework preset:
+The normal sync installs the core Python targets:
 
 ```bash
-# Install lite preset (PyMDP + JAX)
-uv run python src/1_setup.py --install_optional --optional_groups "pymdp,jax"
-```
-
-For complete framework support:
-
-```bash
-# Install all optional frameworks
-uv run python src/1_setup.py --install_optional --optional_groups "all"
-```
-
-### Individual Framework Installation
-
-#### DisCoPy (✅ Included)
-
-DisCoPy is included by default and requires no additional installation.
-
-**Capabilities**:
-
-- Categorical diagram generation
-- String diagram composition
-- Functor visualization
-
-**Verification**:
-
-```bash
-uv run python -c "import discopy; print('DisCoPy OK')"
-```
-
-#### ActiveInference.jl (✅ Auto-Install)
-
-ActiveInference.jl is automatically installed when first needed via Julia's package manager.
-
-**Requirements**:
-
-- Julia 1.6+ installed on system
-- Internet connection for first run
-
-**Capabilities**:
-
-- Full Active Inference agent implementation
-- Hierarchical temporal models
-- Comprehensive belief updating
-
-**Installation**:
-
-```bash
-# Julia installs automatically on first execution
-# Or install manually:
-julia -e 'using Pkg; Pkg.add("ActiveInference")'
-```
-
-**Verification**:
-
-```bash
-julia -e 'using ActiveInference; println("ActiveInference.jl OK")'
-```
-
-#### PyMDP (⚠️ Optional - Recommended)
-
-PyMDP provides Python-based Active Inference for POMDPs.
-
-**Installation**:
-
-```bash
-# Correct package name is inferactively-pymdp
-uv pip install inferactively-pymdp
-
-# Or using the setup module
-uv run python src/1_setup.py --install_optional --optional_groups pymdp
-
-# Or from source for latest features
-uv pip install git+https://github.com/infer-actively/pymdp.git
-```
-
-**Important**: The correct package name is `inferactively-pymdp`, not `pymdp`. The `pymdp` package on PyPI contains MDP/MDPSolver but not the Active Inference Agent class.
-
-**Capabilities**:
-
-- POMDP agent implementation
-- Variational message passing
-- Policy inference and learning
-
-**Common Issues**:
-
-- **Wrong package installed**: If you have `pymdp` installed, uninstall it and install `inferactively-pymdp`
-- **Import errors**: Verify correct package: `python -c "from pymdp import Agent; print('PyMDP OK')"`
-- **Package detection**: The execute module automatically detects wrong package variants
-
-**Verification**:
-
-```bash
+uv run python -c "import jax, numpyro, discopy; print('JAX, NumPyro, and DisCoPy OK')"
 uv run python -c "from pymdp import Agent; print('PyMDP OK')"
 ```
 
-#### JAX (⚠️ Optional - Recommended)
+For PyTorch or bnlearn, consult the registry explanation in
+`src/render/framework_registry.py` and make the security decision explicitly before
+installing them. Do not document them as core dependencies.
 
-JAX enables high-performance numerical computing with GPU acceleration.
+### Julia targets
 
-**Installation**:
-
-```bash
-# CPU-only version (most users)
-uv pip install jax[cpu] flax optax
-
-# GPU version (CUDA 12.x)
-uv pip install jax[cuda12_pip] flax optax
-
-# GPU version (CUDA 11.x)
-uv pip install jax[cuda11_pip] flax optax
-```
-
-**Capabilities**:
-
-- GPU-accelerated tensor operations
-- Just-in-time (JIT) compilation
-- Automatic differentiation
-- Vectorized computations
-
-**System Requirements**:
-
-- CPU version: Any modern CPU
-- GPU version: NVIDIA GPU with CUDA support
-
-**Verification**:
+RxInfer.jl uses the committed environment:
 
 ```bash
-uv run python -c "import jax; import flax.linen; print('JAX + Flax OK')"
-uv run python -c "import jax; print(f'JAX devices: {jax.devices()}')"
+julia --startup-file=no --project=src/execute/rxinfer \
+  -e 'using Pkg; Pkg.instantiate()'
+julia --startup-file=no --project=src/execute/rxinfer \
+  -e 'using RxInfer; println(pkgversion(RxInfer))'
 ```
 
-#### RxInfer.jl (⚠️ Optional)
-
-RxInfer.jl provides genuine `@model` + `infer()` variational message-passing Bayesian inference.
-
-**Requirements**:
-
-- Julia 1.10+ installed
-- Committed `Project.toml` + `Manifest.toml` under `src/execute/rxinfer/`
-
-**Installation** (uses committed environment — no runtime `Pkg.add` needed):
+ActiveInference.jl uses its committed environment:
 
 ```bash
-# Instantiate the committed Julia environment (one-time)
-julia --startup-file=no --project=src/execute/rxinfer -e 'using Pkg; Pkg.instantiate()'
-
-# Or use the setup script
-julia --startup-file=no --project=src/execute/rxinfer src/execute/rxinfer/setup_environment.jl
+julia --startup-file=no --project=src/execute/activeinference_jl \
+  -e 'using Pkg; Pkg.instantiate()'
+julia --startup-file=no --project=src/execute/activeinference_jl \
+  -e 'using ActiveInference; println("ActiveInference.jl OK")'
 ```
 
-**Capabilities**:
+Always pass the matching `--project` when checking or running generated Julia code.
+Do not use a bare global `Pkg.add` command as the normal setup path.
 
-- Real `@model` definitions with `Categorical` / `DiscreteTransition` nodes
-- Real `infer()` calls returning posteriors over hidden states and real VFE traces
-- Reproducible: committed `Project.toml` pins RxInfer 5.5.0 and all dependencies
-- Runner passes `--project=src/execute/rxinfer` for reproducible, network-independent execution
-
-**Verification**:
+## Common setup commands
 
 ```bash
-julia --startup-file=no --project=src/execute/rxinfer -e 'using RxInfer; println("RxInfer.jl ", pkgversion(RxInfer))'
+# Check renderer and dependency status.
+uv run gnn health
+uv run gnn preflight
+
+# Inspect all CLI surfaces.
+uv run python src/main.py --help
+uv run gnn --help
+
+# Run tests.
+uv run --extra dev python -m pytest src/tests/ -q \
+  --ignore=src/tests/llm/test_llm_ollama.py \
+  --ignore=src/tests/llm/test_llm_ollama_integration.py
 ```
 
-### Framework Selection Strategies
-
-#### Lite Preset (Recommended for Most Users)
-
-```bash
-# Install PyMDP + JAX only
-uv run python src/1_setup.py --install_optional --optional_groups "pymdp,jax"
-```
-
-**Included**:
-
-- DisCoPy (built-in)
-- ActiveInference.jl (auto-install)
-- PyMDP (manual install)
-- JAX (manual install)
-
-**Best for**: Python developers, GPU users, fast prototyping
-
-#### Full Preset (Complete Functionality)
-
-```bash
-# Install all frameworks
-uv run python src/1_setup.py --install_optional --optional_groups "all"
-```
-
-**Included**: All 7 frameworks
-
-**Best for**: Research, comprehensive benchmarking, production use
-
-#### Minimal Preset (Quick Start)
-
-```bash
-# Use built-in frameworks only (no optional install)
-uv run python src/1_setup.py
-```
-
-**Included**:
-
-- DisCoPy (built-in)
-- ActiveInference.jl (auto-install on first use)
-
-**Best for**: Quick testing, minimal dependencies
-
-### Framework Execution
-
-#### Running Specific Frameworks
-
-```bash
-# Execute specific frameworks only
-uv run python src/12_execute.py --frameworks "pymdp,jax"
-
-# Execute lite preset
-uv run python src/12_execute.py --frameworks "lite"
-
-# Execute all available frameworks
-uv run python src/12_execute.py --frameworks "all"
-```
-
-#### Framework Availability Check
-
-```bash
-# Check which frameworks are available
-uv run python src/12_execute.py --frameworks "all" --dry-run
-```
-
-### Troubleshooting Framework Issues
-
-#### PyMDP Issues
-
-**Symptom**: `ModuleNotFoundError: No module named 'pymdp.agent'`
-
-**Solution**:
-
-```bash
-uv pip install inferactively-pymdp  # Install correct package
-uv run python -c "from pymdp import Agent; print('✅ PyMDP OK')"  # Verify using modern API
-```
-
-#### JAX Issues
-
-**Symptom**: `No module named 'flax'` or JAX import errors
-
-**Solution**:
-
-```bash
-# Reinstall with all components using UV
-uv pip uninstall jax jaxlib flax -y
-uv pip install jax[cpu] flax optax
-
-# Verify
-uv run python -c "import jax; print(jax.devices())"
-```
-
-#### RxInfer.jl Issues
-
-**Symptom**: `Half-edge has been found` errors
-
-**Solution**: This is a known issue with older generated code templates. Regenerate code with:
-
-```bash
-# Regenerate RxInfer code with latest templates
-uv run python src/11_render.py --target-dir input/gnn_files --force-regenerate
-```
-
-**Symptom**: Julia packages not found or `UndefVarError: Pkg not defined`
-
-**Solution**: Use the committed `Project.toml` — do not run bare `julia`:
-
-```bash
-# Instantiate the committed environment (one-time)
-julia --startup-file=no --project=src/execute/rxinfer -e 'using Pkg; Pkg.instantiate()'
-
-# Always run scripts with --project
-julia --startup-file=no --project=src/execute/rxinfer <script.jl>
-```
-
-#### Julia Framework Issues
-
-**Symptom**: Julia packages not found
-
-**Solution**: For RxInfer.jl, use the committed environment under `src/execute/rxinfer/`:
-
-```bash
-# Instantiate committed RxInfer environment
-julia --startup-file=no --project=src/execute/rxinfer -e 'using Pkg; Pkg.instantiate()'
-
-# For ActiveInference.jl (separate environment):
-julia -e 'using Pkg; Pkg.add("ActiveInference")'
-```
-
-### Framework Performance Comparison
-
-| Framework | Execution Speed | Memory Usage | Setup Complexity | GPU Support |
-|-----------|----------------|--------------|------------------|-------------|
-| DisCoPy | Fast | Low | Easy | No |
-| ActiveInference.jl | Medium | Medium | Medium | No |
-| PyMDP | Medium | Low | Easy | No |
-| JAX | Very Fast | Medium | Easy | Yes |
-| RxInfer.jl | Fast | Low | Medium | No |
-
-### Best Practices
-
-1. **Start with Lite Preset**: Install PyMDP + JAX for most use cases
-2. **Test Incrementally**: Install one framework at a time if issues occur
-3. **Use Virtual Environments**: Isolate framework dependencies
-4. **Check Versions**: Ensure compatible versions of Python/Julia
-5. **Monitor Resources**: Some frameworks require significant memory
-
-### Framework Documentation
-
-- **DisCoPy**: [https://discopy.org/](https://discopy.org/)
-- **ActiveInference.jl**: [https://github.com/ComputationalPsychiatry/ActiveInference.jl](https://github.com/ComputationalPsychiatry/ActiveInference.jl)
-- **PyMDP**: [https://github.com/infer-actively/pymdp](https://github.com/infer-actively/pymdp)
-- **JAX**: [https://jax.readthedocs.io/](https://jax.readthedocs.io/)
-- **RxInfer.jl**: [https://docs.rxinfer.com/stable/](https://docs.rxinfer.com/stable/)
-
-## 🛠️ Troubleshooting Dependency Conflicts
-
-While the `main.py --only-steps 1` approach typically handles dependencies, certain environments (especially on Apple Silicon or specialized Linux distros) can experience conflicts.
-
-### **JAX vs. PyMDP Version Mismatch**
-
-Some versions of PyMDP depend on specific NumPy ranges that can conflict with the latest JAX requirements.
-
-- **Symptom**: `ImportError: numpy.core.multiarray failed to import`
-- **Solution**:
-
-    ```bash
-    uv pip install --upgrade "numpy>=1.24,<1.27" "jax[cpu]" "inferactively-pymdp"
-    ```
-
-### **Julia Environment Issues**
-
-- **Symptom**: `julia: command not found` but Julia is definitely installed.
-- **Solution**: Ensure your PATH includes the Julia bin directory. On macOS:
-
-    ```bash
-    export PATH="$PATH:/Applications/Julia-1.10.app/Contents/Resources/julia/bin"
-    ```
-
-### **Category Theory Backend Conflicts**
-
-- **Symptom**: `TypeError: 'module' object is not callable` when using DisCoPy with JAX.
-- **Solution**: Ensure you install DisCoPy with the matrix extra:
-
-    ```bash
-    uv pip install "discopy[matrix]"
-    ```
-
-## Common Issues and Troubleshooting
-
-### JAX Installation Issues
-
-JAX can sometimes have compatibility issues. If you encounter problems:
-
-1. Ensure you have the latest uv: `uv self update`
-2. Install JAX and JAXlib explicitly first: `uv pip install --upgrade jax jaxlib`
-3. Then proceed with the rest of the setup
-
-### DisCoPy Matrix Backend Problems
-
-If you see errors related to DisCoPy's matrix functionality:
-
-1. Uninstall DisCoPy: `uv pip uninstall -y discopy`
-2. Reinstall with matrix support: `uv pip install "discopy[matrix]>=1.0.0"`
-
-### PyMDP Import Errors
-
-If you encounter issues importing PyMDP:
-
-1. Check that PyMDP is installed: `uv pip list | grep pymdp`
-2. Try reinstalling: `uv pip install --force-reinstall inferactively-pymdp`
-
-## Dependency Version Compatibility
-
-The GNN project has been tested with the following key dependency versions:
-
-| Dependency | Tested Versions | Notes |
-|------------|----------------|-------|
-| Python | 3.11, 3.12, 3.13 | 3.11 recommended |
-| NumPy | 1.24.x - 1.26.x | Required by JAX |
-| JAX | 0.4.20+ | Required for DisCoPy matrix backend |
-| DisCoPy | 1.0.0+ | With matrix extras |
-| inferactively-pymdp | 0.2.0+ | Required for PyMDP steps |
-
-## Verifying Your Installation
-
-After setup, verify your installation with:
-
-```bash
-uv run python src/2_tests.py
-```
-
-This will run the test suite to ensure everything is working correctly.
-
-## Updating Dependencies
-
-To update dependencies in an existing installation:
-
-```bash
-uv run python src/main.py --only-steps 1 --recreate-venv
-```
-
-## Using a Custom Python Executable
-
-If you need to use a specific Python executable:
-
-```bash
-/path/to/your/python src/main.py --only-steps 1
-```
-
-## Docker Setup (Experimental)
-
-For containerized setup, a Dockerfile is available:
-
-```bash
-docker build -t gnn-project .
-docker run -it gnn-project
-```
-
-## Security Considerations
-
-### **Environment Security**
-
-- Store API keys securely (use environment variables or secret management)
-- Validate GNN file inputs in production environments
-- Review [Security Guide](security/README.md) for comprehensive security practices
-
-### **LLM Integration Security**
-
-- **API Key Protection**: Never commit API keys to version control
-- **Prompt Injection Prevention**: GNN includes built-in prompt sanitization
-- **Output Validation**: All LLM outputs are validated before execution
-
-## Performance Optimization
-
-### **System Requirements for Optimal Performance**
-
-```yaml
-recommended_specs:
-  memory: ">= 8GB RAM"
-  storage: ">= 5GB SSD space"
-  cpu: "Multi-core processor (4+ cores recommended)"
-  python: "3.11, 3.12, or 3.13 (optimal performance)"
-```
-
-### **Large Model Processing**
-
-For processing large GNN models (>50MB):
-
-```bash
-# Increase memory limits and enable caching
-export GNN_CACHE_DIR="/path/to/fast/storage"
-export GNN_MAX_MEMORY="4GB"
-uv run python src/main.py --memory-efficient
-```
-
-## Integration with Development Tools
-
-### **VS Code Integration**
-
-For the best development experience:
-
-```bash
-# Install recommended VS Code extensions
-code --install-extension ms-python.python
-code --install-extension davidanson.vscode-markdownlint
-code --install-extension ms-toolsai.jupyter
-```
-
-### **Jupyter Notebook Support**
-
-GNN includes Jupyter notebook integration:
-
-```bash
-# Install Jupyter support
-uv pip install jupyter ipykernel
-uv run python -m ipykernel install --user --name gnn
-
-# Launch Jupyter with GNN kernel
-jupyter notebook
-```
-
-## Continuous Integration Setup
-
-### **GitHub Actions**
-
-For automated testing and validation:
-
-```yaml
-# .github/workflows/gnn-test.yml (illustrative — align with repo CI)
-name: GNN Pipeline Test
-on: [push, pull_request]
-jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v3
-    - uses: astral-sh/setup-uv@v4
-    - name: Setup GNN
-      run: |
-        uv sync --extra dev
-        uv run python src/main.py --only-steps 1 --dev
-    - name: Run Tests
-      run: |
-        uv run python src/2_tests.py
-```
-
-## Version Management
-
-### **Multiple GNN Versions**
-
-To work with multiple GNN versions:
-
-```bash
-# Prefer uv-managed project venv at repo root (see Quick Start).
-# Optional: manual venv without uv:
-python3 -m venv gnn-v1.3.0
-source gnn-v1.3.0/bin/activate
-python src/main.py --only-steps 1
-
-python3 -m venv gnn-dev
-source gnn-dev/bin/activate
-python src/main.py --only-steps 1 --dev
-```
-
-### **Upgrade Process**
-
-When upgrading GNN versions:
-
-1. **Backup**: Save current models and configurations
-2. **Test**: Validate with existing models using new version
-3. **Migrate**: Follow version-specific upgrade guides in [Releases](releases/README.md)
-4. **Verify**: Run comprehensive tests on upgraded installation
-
-## Need Help?
-
-### **Common Setup Issues**
-
-- **Python Version**: Ensure Python 3.11+ is installed and active
-- **Virtual Environment**: Always use virtual environments for isolation
-- **Dependencies**: Check [Common Errors](troubleshooting/common_errors.md) for dependency issues
-- **Permissions**: Ensure write access to project directory
-
-### **Getting Support**
-
-If you encounter issues during setup:
-
-1. **Check Documentation**: [Troubleshooting Guide](troubleshooting/README.md)
-2. **Review Logs**: Check `output/logs/` directory for detailed error information
-3. **Search Issues**: Look through [GitHub Issues](https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/issues)
-4. **Create Issue**: Open a new issue with setup error details and system information
-
-### **Community Resources**
-
-- **[GitHub Discussions](https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/discussions)**: Community Q&A
-- **[Active Inference Institute](https://activeinference.org)**: Research community and resources
-- **[Documentation](README.md)**: Comprehensive project documentation
-
----
-
-**Setup Guide Version**: 2.0  
-**Compatible GNN Versions**: v1.3.0+  
+There is no main-pipeline `--dry-run`, `--debug`, `--memory-efficient`,
+`--force-regenerate`, or `--config-file` option. Use `--verbose`, targeted step
+selection, explicit output directories, and the health/preflight commands instead.
+
+## Environment variables
+
+Set provider and runtime variables in the shell or a local ignored `.env` file. Never
+commit secrets.
+
+- `OPENAI_API_KEY`: cloud LLM access.
+- `OLLAMA_MODEL`, `OLLAMA_TEST_MODEL`: local model selection.
+- `GNN_JAX_PLATFORM`: JAX device selection for PyMDP subprocesses.
+- `GNN_SANDBOX`: Step 12 sandbox mode (`off`, `prefer`, or `require`).
+- `GNN_ALLOW_UNSAFE_EXEC=1`: explicitly bypasses the Step 12 safety gate; use only
+  for a deliberate, reviewed local test.
+
+## Troubleshooting setup
+
+- If imports fail after changing extras, run `uv sync --extra dev` again and inspect
+  `uv run gnn health`.
+- If Julia packages are not found, instantiate the matching committed environment
+  with `--project` as shown above.
+- If the type checker finds no models, pass a directory containing `.md` files via
+  `--target-dir`; a single file path is not a directory discovery target.
+- If a framework is unavailable, read the execution summary's skipped status before
+  treating it as a pipeline failure.
+
+## Related documentation
+
+- [Configuration guide](configuration/README.md)
+- [Quickstart](quickstart.md)
+- [Framework availability](execution/FRAMEWORK_AVAILABILITY.md)
+- [Troubleshooting](troubleshooting/README.md)
+- [Dependency inventory](dependencies/OPTIONAL_DEPENDENCIES.md)

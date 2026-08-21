@@ -406,7 +406,10 @@ class PyMDPSimulation:
     # Rollout
     # ------------------------------------------------------------------
     def _sample_observation(
-        self, current_state: int, np_rng: np.random.Generator, stream_obs: Optional[int] = None
+        self,
+        current_state: int,
+        np_rng: np.random.Generator,
+        stream_obs: Optional[int] = None,
     ) -> int:
         """Sample observation or consume from incoming observation stream seam."""
         if stream_obs is not None:
@@ -498,14 +501,23 @@ class PyMDPSimulation:
         self.simulation_trace = []
         empirical_prior = self.agent.D
 
-        stream_iter = iter(observation_stream) if observation_stream is not None else None
+        stream_iter = (
+            iter(observation_stream) if observation_stream is not None else None
+        )
 
         try:
             for t in range(self.num_timesteps):
-                stream_obs = next(stream_iter, None) if stream_iter is not None else None
+                stream_obs = (
+                    next(stream_iter, None) if stream_iter is not None else None
+                )
                 current_state, empirical_prior, jax_key, step_data = (
                     self._run_simulation_step(
-                        t, current_state, empirical_prior, np_rng, jax_key, stream_obs=stream_obs
+                        t,
+                        current_state,
+                        empirical_prior,
+                        np_rng,
+                        jax_key,
+                        stream_obs=stream_obs,
                     )
                 )
                 self.simulation_trace.append(step_data)

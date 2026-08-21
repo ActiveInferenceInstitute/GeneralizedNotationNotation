@@ -182,7 +182,14 @@ class TestStrategyDispatchAndCodegen:
     """Strategies stamp their own kind and generate runnable-shaped code."""
 
     def test_joint_composition_strategies_inherit_flat_codegen(self) -> None:
-        """Multi-agent still renders the joint composition; factored no longer does."""
+        """Multi-agent keeps the joint composition as its fallback path.
+
+        MultiAgentStrategy renders natively (per-agent + shared env trace)
+        when the spec declares >= 2 complete agent groups, and falls back to
+        the documented joint composition otherwise — both through the flat
+        codegen lineage. FactoredStrategy went native (D3): it must NOT reuse
+        the flat codegen.
+        """
         assert isinstance(get_model_strategy(ModelKind.FACTORED), FactoredStrategy)
         assert isinstance(get_model_strategy(ModelKind.MULTI_AGENT), MultiAgentStrategy)
         assert isinstance(MultiAgentStrategy(), FlatStrategy)

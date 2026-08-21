@@ -1,286 +1,209 @@
 # Troubleshooting Guide
 
-**Related:** [AGENTS.md](AGENTS.md) · [doc/INDEX.md](../INDEX.md) · [doc/SPEC.md](../SPEC.md) (versioning policy) · [doc/gnn/operations/gnn_troubleshooting.md](../gnn/operations/gnn_troubleshooting.md)
+This guide is for the current GNN pipeline. Commands are run from the repository root
+and use `uv run` so they target the project environment.
 
-## Overview
-This guide helps resolve common issues encountered when working with GeneralizedNotationNotation (GNN).
+## First response
 
-## Common Error Categories
+```bash
+# Inspect the actual command surface and environment.
+uv run python src/main.py --help
+uv run gnn --help
+uv run gnn preflight
+uv run gnn health
 
-### 1. GNN Syntax Errors
+# Re-run a small, observable path.
+uv run python src/main.py \
+  --target-dir input/gnn_files \
+  --output-dir output \
+  --only-steps "3,5" \
+  --verbose
+```
 
-#### Missing Required Sections
-**Error**: `Missing required section: StateSpaceBlock`
-**Cause**: GNN file doesn't contain mandatory sections
-**Solution**:
+Capture the relevant step summary under `output/<step>_output/` and the pipeline
+summary under `output/00_pipeline_summary/` when reporting an issue.
+
+## GNN validation errors
+
+A strict GNN file must contain these sections:
+
 ```markdown
-# Your GNN file must include:
+## GNNSection
+ActInfPOMDP
+
+## GNNVersionAndFlags
+GNN v1
+
+## ModelName
+Example
+
 ## StateSpaceBlock
-s_f0[2,1,type=categorical]
-o_m0[3,1,type=categorical]
+s_f0[2,1,type=float]
+o_m0[2,1,type=float]
 
 ## Connections
-s_f0 > o_m0
+s_f0>o_m0
 ```
 
-#### Invalid Variable Naming
-**Error**: `Invalid variable name: 'state_1'`
-**Cause**: Variable names don't follow GNN conventions
-**Solution**: Use GNN naming: `s_f0`, `o_m0`, `u_c0`, `π_c0`
+Validate a file directly:
 
-#### Dimension Mismatch
-**Error**: `Matrix A dimensions [3,2] don't match state space [2,3]`
-**Cause**: Matrix dimensions incompatible with variable definitions
-**Solution**: Ensure matrix dims match: `A_m0[obs_dims, state_dims]`
-
-### 2. Pipeline Execution Errors
-
-#### Step 1 setup failure
-**Error**: `Setup step failed - pipeline halted`
-**Cause**: Virtual environment or dependency issues
-**Solutions**:
 ```bash
-# Clean reinstall (Step 1 = setup)
-rm -rf .venv
-uv sync
-uv run python src/main.py --only-steps 1 --dev
-
-# Manual dependency check
-uv pip list | grep -E "(numpy|scipy|matplotlib)"
-
-# Python version (project requires 3.11+)
-python --version
+uv run gnn validate path/to/model.md --strict --json
 ```
 
-#### Permission Errors
-**Error**: `Permission denied: output/`
-**Cause**: Insufficient write permissions
-**Solutions**:
+For directory discovery and resource checks:
+
 ```bash
-# Fix permissions
-chmod -R 755 output/
-
-# Use different output directory
-python src/main.py --output-dir /tmp/gnn_output
+uv run python src/5_type_checker.py \
+  --target-dir path/to/model-directory \
+  --strict --estimate-resources --verbose
 ```
 
-#### Memory Issues
-**Error**: `MemoryError: Unable to allocate array`
-**Cause**: Large model exceeds available RAM
-**Solutions**:
-- Use `--conservative-memory` flag
-- Reduce model complexity
-- Process models individually: `--target-dir single_model/`
+The type-checker `--target-dir` is a directory input. A single `.md` path is not a
+replacement for that directory argument. The parser discovers Markdown files; use
+`.md` files rather than assuming `.gnn` discovery.
 
-### 3. Rendering/Simulation Errors
+## Setup and dependency failures
 
-#### PyMDP Import Errors
-**Error**: `ModuleNotFoundError: No module named 'pymdp'`
-**Solutions**:
 ```bash
-# Install PyMDP using UV (recommended)
-uv pip install inferactively-pymdp
-
-# Or install via optional group
-uv sync
+uv sync --extra dev
+uv run gnn preflight
+uv run gnn health
+uv run python src/1_setup.py --dev --verbose
 ```
 
-#### RxInfer.jl Setup Issues
-**Error**: `Julia not found or RxInfer.jl not installed`
-**Solutions**:
+To install selected optional groups:
+
 ```bash
-# Install Julia
-wget https://julialang-s3.julialang.org/bin/linux/x64/1.9/julia-1.9.0-linux-x86_64.tar.gz
-# Follow Julia installation guide
-
-# Install RxInfer.jl
-julia -e 'using Pkg; Pkg.add("RxInfer")'
+uv run python src/1_setup.py \
+  --install-optional \
+  --optional-groups "audio,gui,graphs"
 ```
 
-#### JAX Compilation Errors
-**Error**: `XLA compilation failed`
-**Solutions**:
-- Update JAX: `uv pip install --upgrade jax jaxlib` (or refresh the core environment with `uv sync`)
-- Use CPU-only mode: `export JAX_PLATFORM_NAME=cpu`
-- Simplify model complexity
+To rebuild the UV-managed environment, use the supported flag:
 
-### 4. Visualization Errors
-
-#### Graphviz Missing
-**Error**: `Graphviz not found`
-**Solutions**:
 ```bash
-# Ubuntu/Debian
-sudo apt-get install graphviz graphviz-dev
-
-# macOS
-brew install graphviz
-
-# Windows
-# Download from https://graphviz.org/download/
+uv run python src/1_setup.py --recreate-uv-env --dev
 ```
 
-#### Large Graph Rendering
-**Error**: `Graph too large to render`
-**Solutions**:
-- Use `--max-nodes 50` to limit graph size
-- Enable hierarchical layout: `--layout hierarchical`
-- Generate SVG instead of PDF: `--format svg`
+The current flags are hyphenated. `--install_optional`, `--optional_groups`, and
+`--recreate-venv` are obsolete spellings.
 
-### 5. LLM Integration Issues
+## Render and execute failures
 
-#### API Key Errors
-**Error**: `Invalid API key for OpenAI/Anthropic`
-**Solutions**:
+Render a deliberately small target set first:
+
 ```bash
-# Set environment variables
-export OPENAI_API_KEY="your-key-here"
-export ANTHROPIC_API_KEY="your-key-here"
-
-# Or use config file
-echo "OPENAI_API_KEY=your-key" > .env
+uv run python src/11_render.py \
+  --target-dir input/gnn_files \
+  --output-dir output \
+  --frameworks "pymdp" \
+  --strict-framework-success \
+  --verbose
 ```
 
-#### Token Limit Exceeded
-**Error**: `Context length exceeded`
-**Solutions**:
-- Use smaller model: `--llm-model gpt-3.5-turbo`
-- Process models in chunks: `--chunk-size 1000`
-- Simplify model before LLM analysis
+Then execute only that isolated render output:
 
-## Diagnostic Commands
-
-### System Health Check
 ```bash
-# Run comprehensive diagnostics
-python src/main.py --diagnostics
-
-# Check specific components
-python src/5_type_checker.py --validate-only
-python src/1_setup.py --check-deps
+uv run python src/12_execute.py \
+  --target-dir input/gnn_files \
+  --output-dir output \
+  --render-output-dir output/11_render_output \
+  --frameworks "pymdp" \
+  --timeout 600 \
+  --verbose
 ```
 
-### Debug Mode
+Step 12 has no dry-run mode. Use `uv run gnn health` to inspect dependency status.
+There is also no `--force-regenerate` render flag; rerun Step 11 into an explicit
+output directory when regeneration is required.
+
+### PyMDP
+
+The supported Python package is `inferactively-pymdp`:
+
 ```bash
-# Enable detailed logging
-python src/main.py --debug --target-dir examples/
-
-# Verbose output for specific steps
-python src/main.py --only-steps 4 --verbose
+uv run python -c "from pymdp import Agent; print('PyMDP OK')"
 ```
 
-### Environment Information
+If this import fails, repair the environment with `uv sync` or follow the setup guide.
+
+### JAX, NumPyro, DisCoPy
+
+These are core Python dependencies in the normal project sync:
+
 ```bash
-# System info
-python -c "import sys; print(f'Python: {sys.version}')"
-pip list | head -20
-
-# GNN-specific info
-python -c "import src.gnn as gnn; print(gnn.__version__)"
+uv run python -c "import jax, numpyro, discopy; print('core backends OK')"
 ```
 
-## Performance Optimization
+### RxInfer.jl and ActiveInference.jl
 
-### Speed Issues
-**Problem**: Pipeline runs slowly
-**Solutions**:
-- Use `--parallel` for multi-core processing
-- Skip expensive steps: `--skip 6,11,13`
-- Use conservative mode: `--conservative`
+Use the committed Julia project for the framework being checked:
 
-### Memory Optimization
-**Problem**: High memory usage
-**Solutions**:
-- Process models sequentially: `--sequential`
-- Reduce visualization quality: `--viz-quality low`
-- Clean up intermediate files: `--cleanup`
-
-## File-Specific Issues
-
-### Invalid GNN File Structure
-**Problem**: File doesn't parse correctly
-**Debugging Steps**:
-1. Check file encoding (must be UTF-8)
-2. Verify all required sections present
-3. Validate syntax with type checker
-4. Compare against working examples
-
-### Export Format Issues
-**Problem**: Export fails or produces invalid output
-**Solutions**:
-- Check export format support: `python src/7_export.py --list-formats`
-- Use alternative format: `--export-format json`
-- Validate output: `--validate-export`
-
-## Getting Additional Help
-
-### Log Files
-Key log locations:
-- Main pipeline: `output/logs/pipeline.log`
-- Step-specific: `output/logs/step_XX.log`
-- Error details: `output/logs/errors.log`
-
-### Debug Information
-Include this info when reporting issues:
 ```bash
-# Generate debug package
-python src/main.py --debug-package
-
-# This creates: output/debug_package_TIMESTAMP.zip
-# Contains: logs, system info, example files, config
+julia --startup-file=no --project=src/execute/rxinfer \
+  -e 'using Pkg; Pkg.instantiate()'
+julia --startup-file=no --project=src/execute/activeinference_jl \
+  -e 'using Pkg; Pkg.instantiate()'
 ```
 
-### Community Support
-- Check existing GitHub issues
-- Search documentation
-- Join Active Inference Institute community
-- Provide minimal reproducible example
+### PyTorch and bnlearn
 
-## Prevention Best Practices
+These targets are intentionally not locked by default because their dependency chain
+currently carries a known unpatched PyTorch security concern. They are not evidence of
+a broken normal installation. Review `src/render/framework_registry.py` before enabling
+them manually.
 
-### Model Development
-- Start with simple examples
-- Validate syntax early and often
-- Use version control for model files
-- Test across different backends
+## Pipeline control and performance
 
-### Pipeline Usage
-- Run setup step first
-- Check dependencies regularly
-- Use appropriate hardware for large models
-- Monitor resource usage
+Use only the supported step controls:
 
-### Maintenance
-- Update dependencies monthly
-- Clean output directories regularly
-- Backup important model files
-- Document custom configurations
-
-## Quick Reference
-
-### Most Common Fixes
 ```bash
-# Reset everything
-rm -rf output/ src/.venv/
-python src/main.py --only-steps 2
+# Run a focused path.
+uv run python src/main.py --only-steps "3,5,8" --verbose
 
-# Fix permissions
-find . -name "*.py" -exec chmod +x {} \;
+# Skip expensive or environment-dependent steps.
+uv run python src/main.py --skip-steps "2,13,15" --verbose
 
-# Clean install using UV
-uv sync --refresh
+# Skip just LLM processing.
+uv run python src/main.py --skip-llm --verbose
 
-# Minimal test
-python src/main.py --target-dir input/gnn_files/ --only-steps 1,4
+# Reduce generated animation artifacts in Step 16.
+uv run python src/main.py --only-steps "16" --no-animations --verbose
 ```
 
-### Emergency Recovery
-If pipeline is completely broken:
+There is no main-pipeline `--debug`, `--diagnostics`, `--conservative`,
+`--conservative-memory`, or `--memory-efficient` option. Replace those imagined
+modes with a focused `--only-steps` run, `--verbose`, `--estimate-resources`, and an
+explicit `--target-dir`.
+
+## Reading failures
+
+1. Inspect `output/00_pipeline_summary/pipeline_execution_summary.json`.
+2. Inspect the step-specific JSON or Markdown summary under `output/<step>_output/`.
+3. Check whether a framework is `SKIPPED` because a dependency is unavailable; a skip
+   is different from a failed execution.
+4. Reproduce with one model directory, one framework, and an isolated output directory.
+5. Include the exact command, Python/uv/Julia versions, framework selection, and the
+   relevant summary/log files in an issue.
+
+Useful commands:
+
 ```bash
-# Nuclear option - complete reset
-git checkout HEAD -- .
-rm -rf output/ src/.venv/ __pycache__/
-python src/1_setup.py --clean-install
+cat output/00_pipeline_summary/pipeline_execution_summary.json | python -m json.tool
+find output -maxdepth 3 -type f -name '*.log' -o -name '*.json' | sort | head -80
 ```
 
-This troubleshooting guide covers the most common issues. For persistent problems, please file a GitHub issue with debug information.
+## Documentation and code-quality checks
+
+When a failure may be documentation drift, run the same checks used by CI:
+
+```bash
+uv run --extra dev python doc/development/docs_audit.py --strict --check-anchors --no-write
+uv run --extra dev python scripts/check_doc_contracts.py --strict
+uv run --extra dev python scripts/check_gnn_doc_patterns.py --strict
+```
+
+See [Setup](../SETUP.md), [Configuration](../configuration/README.md), and the
+[framework availability guide](../execution/FRAMEWORK_AVAILABILITY.md) for the
+corresponding authoritative references.

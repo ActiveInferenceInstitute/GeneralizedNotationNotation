@@ -79,6 +79,9 @@ cd my_first_gnn_model
 Create a file called `grid_agent.md`:
 
 ```gnn
+## GNNSection
+ActInfPOMDP
+
 ## GNNVersionAndFlags
 GNN v1
 
@@ -247,7 +250,7 @@ Convert your GNN model to executable Python code:
 
 ```bash
 # Generate PyMDP code (Steps 3, 11, 12)
-uv run python src/main.py --only-steps "3,11,12" --target-dir my_first_gnn_model/ --output-dir output/my_first_model/ --verbose
+uv run python src/main.py --only-steps "3,11,12" --target-dir my_first_gnn_model/ --output-dir output/my_first_model/ --frameworks pymdp --verbose
 
 # Every step writes under the --output-dir you passed, so with
 # --output-dir output/my_first_model/ this run creates:

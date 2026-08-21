@@ -95,7 +95,12 @@ class StepConfiguration:
             "4_model_registry": {
                 "critical": False,
                 "required_args": ["target_dir", "output_dir"],
-                "optional_args": ["recursive", "verbose", "registry_path", "query_ontology"],
+                "optional_args": [
+                    "recursive",
+                    "verbose",
+                    "registry_path",
+                    "query_ontology",
+                ],
                 "defaults": {
                     "recursive": True,
                     "verbose": False,

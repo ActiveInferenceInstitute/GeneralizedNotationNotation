@@ -289,56 +289,34 @@ Citations:
 [10] <https://github.com/discopy/discopy/blob/main/CONTRIBUTING.md>
 [11] <https://github.com/rknaebel/discopy-data> (Likely related to [6])
 
-## Using the GNN-to-DisCoPy Pipeline Step (15_audio.py)
+## Using the GNN-to-DisCoPy renderer
 
-The GNN processing pipeline includes a dedicated step, `15_audio.py`, for automatically translating GNN model specifications into DisCoPy diagrams and visualizing them. This step leverages the `src.discopy_translator_module.translator` module.
-
-### Purpose
-
-The `15_audio.py` script aims to:
-
-1. Discover GNN files (typically `.md` or `.gnn.md` files containing GNN specifications) in a specified input directory.
-2. For each GNN file, parse its content to identify `StateSpaceBlock` and `Connections` sections.
-3. Translate these GNN structures into corresponding DisCoPy elements:
-    * State space variables become `discopy.Ty` objects.
-    * Connections between variables become `discopy.Box` objects, composed into a `discopy.Diagram`.
-4. Generate a PNG image visualizing the resulting DisCoPy diagram.
-5. Save these visualizations into a structured output directory.
-
-### Running the Step
-
-This step is typically invoked as part of the main GNN pipeline orchestrated by `src/main.py`.
+DisCoPy is a **Step 11 render target**, not a dedicated Step 15 audio step. Step 15 is
+owned by the audio module. Select DisCoPy through the shared renderer interface:
 
 ```bash
-python src/main.py --only-steps 12_discopy
+uv run python src/11_render.py \
+  --target-dir input/gnn_files \
+  --output-dir output \
+  --frameworks discopy \
+  --strict-framework-success \
+  --verbose
 ```
 
-Key command-line arguments relevant to this step when running via `src/main.py`:
+The generated DisCoPy Python artifacts are placed under
+`output/11_render_output/<model>/discopy/`. If execution is desired, run Step 12
+with the same render directory:
 
-* `--output-dir <PATH>`: The main output directory for the entire pipeline. The DisCoPy diagrams will be saved under `<PATH>/discopy_gnn/`.
-* `--target-dir <PATH>` (or `--discopy-gnn-input-dir <PATH>`): Specifies the directory containing the input GNN files for the DisCoPy step. If `--discopy-gnn-input-dir` is provided, it takes precedence for this step; otherwise, the general `--target-dir` is used.
-* `--recursive` / `--no-recursive`: Controls whether to search for GNN files recursively in the input directory.
-* `--verbose` / `--no-verbose`: Enables detailed logging for the step.
+```bash
+uv run python src/12_execute.py \
+  --target-dir input/gnn_files \
+  --output-dir output \
+  --render-output-dir output/11_render_output \
+  --frameworks discopy \
+  --verbose
+```
 
-### Inputs
-
-* **GNN Files**: Standard GNN markdown files (`.md` or `.gnn.md`) located in the directory specified by `--gnn-input-dir` (or `--target-dir`). These files should contain at least:
-  * A `## StateSpaceBlock` section defining variables (e.g., `MyVar`, `AnotherVar[dim]`).
-  * A `## Connections` section defining relationships (e.g., `MyVar > AnotherVar`).
-
-### Outputs
-
-For each processed GNN file (e.g., `example_model.md`), the script generates:
-
-* A PNG image of the DisCoPy diagram: `output/discopy_gnn/example_model_diagram.png`.
-  * If the GNN file was in a subdirectory of the input path (e.g., `my_models/example_model.md`), the output structure is preserved: `output/discopy_gnn/my_models/example_model_diagram.png`.
-
-The diagrams visualize the types (`Ty`) as wires and the connections (`Box`) as boxes, illustrating the categorical structure inferred from the GNN specification.
-
-### Current Limitations and Future Work
-
-* **Parsing**: The GNN parser in `src.discopy_translator_module.translator` is basic and expects GNN sections and syntax to be well-formed.
-* **Connection Complexity**: The current translator primarily handles sequential connections (`A > B`). More complex graph structures (parallel compositions, feedback loops, multi-input/multi-output boxes from a single GNN connection line) are handled with simplifications or might not be fully represented.
-* **Functorial Semantics**: This step focuses on structural translation. Assigning concrete computational semantics (via DisCoPy functors) to these diagrams is a subsequent step, potentially for a different pipeline stage or manual exploration.
-
-Future development could involve enhancing the GNN parser, supporting more sophisticated diagram construction from complex GNN connection patterns, and integrating automated functor application for simulation or analysis.
+The renderer consumes parsed GNN model dictionaries and currently focuses on
+categorical diagram generation. It does not expose a `--discopy-gnn-input-dir`,
+`--include-d2`, or `12_discopy` pipeline step. For shared framework selection and
+output behavior, see the [framework integration guide](../gnn/integration/framework_integration_guide.md).

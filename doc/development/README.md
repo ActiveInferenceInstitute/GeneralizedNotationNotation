@@ -465,7 +465,7 @@ uv run --extra dev python -m pytest src/tests/performance/ --benchmark-only
 python src/main.py --verbose --only-steps 1,4
 
 # MCP tool debugging
-python src/mcp/cli.py --debug list-tools
+uv run gnn --help  # inspect the current MCP/CLI entry points
 
 # Test debugging
 pytest -vvv --pdb src/tests/unit/test_specific.py

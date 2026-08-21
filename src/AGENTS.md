@@ -287,10 +287,10 @@ python src/12_execute.py --frameworks "all" --verbose
 
 ```bash
 # Install optional groups
-python src/1_setup.py --install_optional --optional_groups "pymdp,jax,viz,gui,audio,llm"
+python src/1_setup.py --install-optional --optional-groups "gui,audio,ml-ai"
 
 # Install specific groups
-python src/1_setup.py --install_optional --optional_groups "viz,pymdp"
+python src/1_setup.py --install-optional --optional-groups "graphs,ml-ai"
 ```
 
 ---

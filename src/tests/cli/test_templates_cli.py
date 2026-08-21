@@ -199,7 +199,13 @@ def test_cli_json_envelope_support(
     assert envelope["error"] is None
     assert "version" in envelope["meta"]
 
-    pkg_template = Path(__file__).resolve().parents[3] / "src" / "cli" / "template_assets" / "actinf_pomdp_2state.md"
+    pkg_template = (
+        Path(__file__).resolve().parents[3]
+        / "src"
+        / "cli"
+        / "template_assets"
+        / "actinf_pomdp_2state.md"
+    )
     assert main(["validate", str(pkg_template), "--json"]) == 0
     captured = capsys.readouterr()
     val_env = json.loads(captured.out)

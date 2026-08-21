@@ -287,15 +287,17 @@ def test_durable_stream_ingestion_in_pymdp() -> None:
     manifest = StreamManifest.from_array("test_obs_stream", obs_array)
     assert manifest.checksum
 
-    sim = PyMDPSimulation({
-        "ModelName": "StreamingTestAgent",
-        "initialparameterization": {
-            "A": [[0.9, 0.1], [0.1, 0.9]],
-            "B": [[[1.0, 0.0], [0.0, 1.0]], [[0.0, 1.0], [1.0, 0.0]]],
-            "C": [1.0, 0.0],
-            "D": [0.5, 0.5],
+    sim = PyMDPSimulation(
+        {
+            "ModelName": "StreamingTestAgent",
+            "initialparameterization": {
+                "A": [[0.9, 0.1], [0.1, 0.9]],
+                "B": [[[1.0, 0.0], [0.0, 1.0]], [[0.0, 1.0], [1.0, 0.0]]],
+                "C": [1.0, 0.0],
+                "D": [0.5, 0.5],
+            },
         }
-    })
+    )
     res = sim.run_simulation(num_timesteps=5, observation_stream=obs_array)
     assert res.get("success") is True
     assert res["observations"] == [0, 1, 0, 1, 0]

@@ -1,283 +1,95 @@
 # Framework Availability Guide
 
-This document explains how to check framework availability before execution and how the pipeline handles missing frameworks.
+GNN has two related framework inventories:
 
-## Quick Check
+- **Render registry** (`src/render/framework_registry.py`): 9 targets, including Stan.
+- **Step 12 executor** (`src/execute/processor.py`): 8 executable framework families;
+  Stan is not an executor target.
 
-```bash
-# Check which frameworks are available
-python -c "
-import sys
-sys.path.insert(0, 'src')
-from execute import get_execution_health_status
-status = get_execution_health_status()
-for fw, info in status.items():
-    print(f'{fw}: {\"✅ Available\" if info[\"available\"] else \"❌ Not available\"} - {info.get(\"reason\", \"\")}')
-"
-```
+PyTorch and bnlearn are supported paths but are intentionally unavailable in the
+default lock because their dependency chain currently carries a known unpatched
+PyTorch security concern. Julia targets require their committed project environments.
 
-## Framework Availability at Runtime
+## Check availability
 
-### PyMDP
-
-- **Python module**: `pymdp`
-- **Status file**: `output/12_execute_output/framework_status.json`
-- **Check command**: `python -c "import pymdp; print(pymdp.__version__)"`
-- **Install**: `uv sync` (or `uv pip install inferactively-pymdp`)
-
-### JAX + Flax
-
-- **Python modules**: `jax`, `flax`
-- **Check command**: `python -c "import jax; import flax; print(f'JAX: {jax.__version__}, Flax: {flax.__version__}')"`
-- **Install**: `uv sync` (or `uv pip install jax flax`)
-
-### RxInfer.jl
-
-- **Julia package**: `RxInfer`
-- **Check command**: `julia -e "using RxInfer; println(\"RxInfer available\")"`
-- **Install**: RxInfer 5.5.0 and all Julia deps are pinned by the committed environment at `src/execute/rxinfer/` (`Project.toml` + `Manifest.toml`); `setup_environment.jl` runs `Pkg.activate()` + `Pkg.instantiate()` — no runtime `Pkg.add`. Execution: `julia --startup-file=no --project=src/execute/rxinfer <script>`.
-
-### ActiveInference.jl
-
-- **Julia package**: `ActiveInference`
-- **Check command**: `julia -e "using ActiveInference; println(\"ActiveInference available\")"`
-- **Install**: `julia -e 'import Pkg; Pkg.add("ActiveInference")'`
-
-### DisCoPy
-
-- **Python module**: `discopy`
-- **Check command**: `python -c "import discopy; print(discopy.__version__)"`
-- **Install**: Usually pre-installed as core dependency
-
-## Framework Status During Execution
-
-### Before Execution (Step 12 Start)
-
-The execute module automatically detects available frameworks and logs them:
-
-```
-2025-11-19 11:07:11 [execute] INFO - Checking framework availability...
-2025-11-19 11:07:11 [execute] INFO - ✅ DisCoPy available
-2025-11-19 11:07:11 [execute] INFO - ✅ ActiveInference.jl available
-2025-11-19 11:07:11 [execute] INFO - ❌ PyMDP not available (install with: uv sync)
-2025-11-19 11:07:11 [execute] INFO - ❌ Flax not available (JAX requires Flax - install with: uv sync)
-2025-11-19 11:07:11 [execute] INFO - ❌ RxInfer not available (optional - install Julia, then `julia --project=src/execute/rxinfer -e 'using Pkg; Pkg.instantiate()'`)
-```
-
-### During Execution
-
-For each framework:
-
-**Available**:
-
-```
-2025-11-19 11:07:13 [execute] INFO - ✅ Successfully executed model_name_discopy.py
-```
-
-**Missing**:
-
-```
-2025-11-19 11:07:13 [execute] WARNING - ❌ model_name_pymdp.py failed
-2025-11-19 11:07:13 [execute] WARNING - Error: PyMDP not available - install with: uv sync
-```
-
-### After Execution
-
-The execution report shows framework statistics:
-
-```json
-{
-  "frameworks": {
-    "total": 7,
-    "available": 2,
-    "executed": 2,
-    "succeeded": 2,
-    "failed": 5
-  },
-  "framework_details": {
-    "pymdp": {
-      "status": "not_available",
-      "reason": "Module pymdp not found",
-      "install_command": "uv pip install inferactively-pymdp"
-    },
-    "jax": {
-      "status": "not_available",
-      "reason": "Module flax not found (required by JAX)",
-      "install_command": "uv pip install flax"
-    },
-    "discopy": {
-      "status": "success",
-      "scripts_executed": 1,
-      "scripts_failed": 0
-    }
-  }
-}
-```
-
-## Framework Dependencies
-
-### Full Dependency Tree
-
-```
-PyMDP (Python)
-├── pymdp package
-├── numpy
-└── scipy
-
-JAX (Python)
-├── jax package
-├── flax package (for neural networks)
-├── jaxlib
-└── numpy
-
-DisCoPy (Python)
-├── discopy package
-└── numpy
-
-RxInfer.jl (Julia)
-├── Julia runtime
-└── RxInfer.jl package  (pinned RxInfer 5.5.0 via committed Project.toml + Manifest.toml in src/execute/rxinfer/)
-
-ActiveInference.jl (Julia)
-├── Julia runtime
-└── ActiveInference.jl package
-```
-
-## Determining What You Need
-
-### Minimum for Basic Pipeline
+Use the unified CLI before a run:
 
 ```bash
-# Just core dependencies
-uv sync
-# Result: Only DisCoPy works, but pipeline completes successfully
+uv run gnn health
+uv run gnn preflight
 ```
 
-### Minimum for Most Use Cases
+For a direct Python status report:
 
 ```bash
-uv sync
-uv pip install inferactively-pymdp flax
-# Result: PyMDP, JAX, DisCoPy work (3/7 frameworks)
-```
-
-### For Complete Coverage
-
-```bash
-uv sync
-# RxInfer.jl: activate + instantiate the committed env (no Pkg.add)
-julia --project=src/execute/rxinfer -e 'using Pkg; Pkg.instantiate()'
-# ActiveInference.jl: see its own setup
-julia -e 'import Pkg; Pkg.add("ActiveInference")'
-# Result: All 7 frameworks work
-```
-
-## Troubleshooting
-
-### Framework Not Detected But Installed
-
-**Problem**: Framework shows as "not available" but you installed it
-
-**Solutions**:
-
-1. Check installation: `uv pip list | grep pymdp`
-2. Verify Python path: `which python`
-3. Try direct import: `python -c "import pymdp"`
-4. Reinstall: `uv pip install --force-reinstall inferactively-pymdp`
-
-### Julia Packages Not Found
-
-**Problem**: Julia shows available but packages not found
-
-**Solutions**:
-
-1. Check Julia version: `julia --version`
-2. Verify packages: `julia -e "import Pkg; Pkg.status()"`
-3. Re-instantiate the committed RxInfer env (no runtime `Pkg.add`): `julia --startup-file=no --project=src/execute/rxinfer -e 'using Pkg; Pkg.instantiate()'`
-4. Update: `julia --startup-file=no --project=src/execute/rxinfer -e 'import Pkg; Pkg.update()'`
-
-### Mixed Python/Julia Errors
-
-**Problem**: Some frameworks work, others don't
-
-**Solutions**:
-
-1. Verify environments separately:
-
-   ```bash
-   python -c "import pymdp; print('✅ PyMDP')" || echo "❌ PyMDP"
-   julia -e "using RxInfer; println(\"✅ RxInfer\")" || echo "❌ RxInfer"
-   ```
-
-2. Check PATH: `echo $PATH` (should include both python and julia)
-3. Use full paths if needed:
-
-   ```bash
-   /usr/bin/python3 -c "import pymdp"
-   /usr/local/bin/julia -e "using RxInfer"
-   ```
-
-## Viewing Framework Status
-
-### In Real-time During Execution
-
-```bash
-python src/12_execute.py --verbose --target-dir input/gnn_files --output-dir output
-```
-
-### After Execution
-
-```bash
-# View summary
-cat output/12_execute_output/execution_results.json | jq .framework_details
-
-# View detailed status
-cat output/12_execute_output/framework_status.json | jq .
-```
-
-### Via Python API
-
-```python
+PYTHONPATH=src uv run python - <<'PY'
 from execute import get_execution_health_status
 
-status = get_execution_health_status()
-for framework, details in status.items():
-    if details["available"]:
-        print(f"✅ {framework}: {details.get('version', 'unknown')}")
-    else:
-        print(f"❌ {framework}: {details.get('reason', 'unknown')}")
-        print(f"   Install: {details.get('install_command', 'unknown')}")
+for name, info in get_execution_health_status().items():
+    state = "available" if info.get("available") else "unavailable"
+    print(f"{name}: {state} — {info.get('reason', '')}")
+PY
 ```
 
-## Performance Impact of Missing Frameworks
+## Runtime checks
 
-The pipeline gracefully handles missing frameworks:
-
-- **Pipeline completion**: Not affected (still SUCCESS or SUCCESS_WITH_WARNINGS)
-- **Execution time**: Slightly faster (skips unavailable frameworks)
-- **Memory usage**: No change
-- **Test results**: 90%+ pass rate maintained
-
-## Framework Selection During Execution
-
-You can control which frameworks to use:
+### Core Python targets
 
 ```bash
-# Use only specific frameworks
-python src/12_execute.py --frameworks "discopy,activeinference_jl" ...
-
-# Use preset combinations
-python src/12_execute.py --frameworks "lite" ...  # Fast: pymdp, jax, discopy
-python src/12_execute.py --frameworks "all" ...   # All 7 frameworks
+uv run python -c "from pymdp import Agent; print('PyMDP available')"
+uv run python -c "import jax, numpyro, discopy; print('JAX, NumPyro, and DisCoPy available')"
 ```
 
-## Next Steps
+### Julia targets
 
-1. **Check your environment**: `python -c "from execute import get_execution_health_status; print(get_execution_health_status())"`
-2. **Install needed frameworks**: See [OPTIONAL_DEPENDENCIES.md](../dependencies/OPTIONAL_DEPENDENCIES.md)
-3. **Run execution**: `python src/12_execute.py --verbose`
-4. **Check results**: `cat output/12_execute_output/execution_results.json | jq`
+```bash
+julia --startup-file=no --project=src/execute/rxinfer \
+  -e 'using RxInfer; println("RxInfer.jl available")'
+julia --startup-file=no --project=src/execute/activeinference_jl \
+  -e 'using ActiveInference; println("ActiveInference.jl available")'
+```
 
----
+The matching `--project` is required. The executor uses the same project-specific
+environments when launching rendered scripts.
 
-**Compatible with**: Pipeline v2.1.0+
+## Selection examples
+
+```bash
+# Python-only quick preset.
+uv run python src/12_execute.py \
+  --target-dir input/gnn_files \
+  --output-dir output \
+  --frameworks lite \
+  --verbose
+
+# Explicit requested frameworks. Missing requested frameworks are reported clearly.
+uv run python src/12_execute.py \
+  --target-dir input/gnn_files \
+  --output-dir output \
+  --render-output-dir output/11_render_output \
+  --frameworks "pymdp,jax" \
+  --verbose
+```
+
+The executor has no `--dry-run` flag. Use `gnn health` and `gnn preflight` for
+non-execution checks.
+
+## Interpret the result
+
+Inspect `output/12_execute_output/` and the pipeline summary. Distinguish:
+
+- **Succeeded**: a rendered script ran and returned a successful result.
+- **Skipped/unavailable**: a dependency or runtime was not present.
+- **Failed**: an available/requested script ran and returned an error.
+
+Do not report a fixed `N/M` success count in documentation. Counts depend on the
+input corpus, selected frameworks, and local runtimes; use the generated execution
+summary for a specific run.
+
+## Related references
+
+- [Setup](../SETUP.md)
+- [Pipeline](../pipeline/README.md)
+- [Render registry](../../src/render/framework_registry.py)
+- [Execute module](../../src/execute/AGENTS.md)
+- [Troubleshooting](../troubleshooting/README.md)

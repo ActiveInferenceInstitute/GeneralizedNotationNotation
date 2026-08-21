@@ -1,52 +1,50 @@
 # TO-DO - GNN Pipeline Roadmap
 
-**Last Updated**: 2026-08-19 (deep architectural scoping for v4.0.0 milestones)
+**Last Updated**: 2026-08-20 (v4.0.0 milestone close-out; roadmap refreshed)
 **Current Version**: 3.0.0
 **Next Target**: v4.0.0 (bounded autonomy, pipeline stage consolidation, multi-agent stigmergic topologies, and high-dimensional active inference)
 
-**Last reviewed**: 2026-08-19 — all past TODO items, test-infrastructure follow-ups, and RED_TEAM_REVIEW.md security residuals are closed. The complete test suite is **3,056 passed / 0 failed / 0 skipped** (zero skips; Julia and Python frameworks fully provisioned and executed live), all 25 pipeline steps are composable and verified end-to-end, and all documentation/cognitive-phenomena examples pass. Full audit trail lives in `CHANGELOG.md` and git history.
+**Last reviewed**: 2026-08-20 — all MIN/MED roadmap items, MAJ-01, MAJ-02
+milestone 1, and MAJ-03 milestone 1 verified closed via their probe commands.
+The complete test suite is **3,071 passed / 0 failed / 0 skipped** (parallel,
+Ollama files excluded per CI), mypy clean (817 files), ruff clean, and all
+documentation audits pass. Full audit trail lives in `CHANGELOG.md` and git
+history.
 
 ## Open Scoped Roadmap
 
-### Minor (P3 - Developer Ergonomics & Diagnostics)
-- **TODO-MIN-01: Auto-Detect Environment GPU Acceleration in Execution Metadata**:
-  - *Problem*: Verify hardware acceleration logging and metadata records across newly added framework runtimes.
-  - *Scope*: In `src/execute/processor.py` and `src/execute/pymdp/pymdp_simulation.py`, include `accelerator_type` and device memory fields in per-model output metadata.
-  - *Probe*: `uv run pytest src/tests/execute/test_execute_pymdp_simulation.py -k accelerator` verifies metadata emission.
-- **TODO-MIN-02: Structured CLI Output Schema Envelope (`--json`) Verification & Parity**:
-  - *Problem*: Maintain comprehensive CLI JSON schema envelope tests.
-  - *Scope*: In `src/tests/cli/test_cli_public_api.py`, add parameterized tests asserting the `{status, data, error, meta}` envelope schema across all CLI subcommands.
-  - *Probe*: `uv run pytest src/tests/cli/test_cli_public_api.py -k json` asserts envelope structure on all commands.
-- **TODO-MIN-03: Model Registry Ontology Query CLI Integration**:
-  - *Problem*: Add fuzzy-match ontology concept filtering on model registry CLI commands.
-  - *Scope*: In `src/cli/__init__.py`, enhance `--query-ontology` parameter to model listing subcommands.
-  - *Probe*: `uv run pytest src/tests/cli/test_cli_public_api.py -k models_json` confirms model registry filtering.
-
-### Medium (P2 - Pipeline Architecture, Step Renumbering & Performance)
-- **TODO-MED-01: Step Renumbering Migration with Backwards-Compatible Aliasing**:
-  - *Problem*: Support contiguous simulation analytics aliases (`13_audio` ↔ `15_audio`, `14_analysis` ↔ `16_analysis`).
-  - *Scope*: Maintain `CONSOLIDATED_STEP_ALIASES` in `src/pipeline/step_registry.py` for continuous alias resolution.
-  - *Probe*: `uv run pytest src/tests/pipeline/test_step_registry.py -k aliases` asserts alias mapping.
-- **TODO-MED-02: Streaming Multi-Modal Audio Sonification Buffer in Step 15**:
-  - *Problem*: Stream audio synthesis buffers incrementally with durable observation stream synchronization.
-  - *Scope*: Ensure `generate_sonification_audio(..., chunk_size=...)` buffers output chunks aligned with `durable_streams.py`.
-  - *Probe*: `uv run pytest src/tests/audio/test_audio_generation.py -k streaming_buffer` validates chunked synthesis.
-- **TODO-MED-03: Dynamic Parallel Tier Worker Pool Auto-Scaling**:
-  - *Problem*: Throttle parallel tier worker concurrency if aggregate memory footprint is high to prevent memory overcommit.
-  - *Scope*: Dynamically compute estimated tier memory and scale worker count in orchestrator parallel tier runner.
-  - *Probe*: `uv run pytest src/tests/pipeline/test_main_orchestrator.py -k parallel` validates parallel execution.
-
-### Major (P1 - Bounded Autonomy, Generative Scaling & Multi-Agent Topologies)
-- **TODO-MAJ-01: v4.0.0 Bounded Autonomy & Model Mutation Proposal Engine**:
-  - *Scope*: Implement the reviewed self-editing loop in `src/pipeline/autonomous.py` where the pipeline analyzes Step 16 (Analysis) and Step 24 (Intelligent Analysis) metrics (e.g. uninformative observations, high state entropy, non-convergent policies) and generates proposed parameter adjustments (e.g. Dirichlet prior sharpening, matrix pruning).
-  - *Safety Boundary*: Proposals are emitted purely as non-mutating artifacts in `output/proposals/` (`proposal_manifest.json` and unified diff patches); no source overwrites, git commits, or external execution occur without operator authorization.
-  - *Probe*: `uv run python src/main.py --autonomous --output-dir /tmp/gnn-autonomous-smoke` writes deterministic proposal bundles with verified score diffs and rollback manifests.
-- **TODO-MAJ-02: High-Dimensional Kronecker Factorization in JAX PyMDP Backends**:
-  - *Scope*: Scale multi-factor discrete active inference models beyond 2 factors using sparse Kronecker factorizations in JAX PyMDP backends, enabling N-factor POMDP exploration for large state spaces ($N \ge 64$).
-  - *Probe*: `scripts/run_pymdp_gnn_scaling_analysis.py` successfully completes scaling runs for $N \ge 64$ states across factorized topologies.
-- **TODO-MAJ-03: Declarative Multi-Agent Stigmergic Interaction Compiler**:
-  - *Scope*: Add native multi-agent stigmergic communication compilation in `src/render/rxinfer/` and `src/render/activeinference_jl/`, where agents interact via shared environmental affordances without requiring global joint state space expansion.
-  - *Probe*: `uv run pytest src/tests/render/test_rxinfer_model_strategies.py` verifies native multi-agent stigmergic compilation and execution.
+### Major (P1 - Generative Scaling & Multi-Agent Topologies)
+- **TODO-MAJ-02 (residual): Pipeline Integration of Kronecker Execution**:
+  - *Status*: Milestone 1 landed 2026-08-20 —
+    `src/execute/jax/kronecker_factorized.py` implements sparse
+    Kronecker-factorized mean-field active inference in JAX (`kron_matvec` /
+    `kron_matvec_flat` / `kron_materialize`, `FactorizedPOMDP`,
+    `run_factorized_active_inference`, binary/generic factor builders); the
+    Kronecker identities and the exact per-factor EFE decomposition are
+    pinned by `src/tests/execute/test_kronecker_factorized.py`; the scaling
+    script gains a `--factorized` sweep (probe:
+    `scripts/run_pymdp_gnn_scaling_analysis.py --factorized --factors 4,4,4`)
+    that completes runs for joint state spaces of 64-256 states with
+    `joint_materialized: False`, plus a factorized GNN spec generator
+    (`generate_factorized_gnn_file`).
+  - *Open*: route the factorised execution through the numbered pipeline
+    (Step 12 jax executor + Step 16 analysis consumption of the
+    `jax_kronecker_factorized_v1` schema) instead of the direct sweep.
+- **TODO-MAJ-03 (residual): Env-Conditioned Action Selection for Stigmergic Swarms**:
+- **TODO-MAJ-03 (residual): Env-Conditioned Action Selection for Stigmergic Swarms**:
+  - *Status*: Milestone 1 landed 2026-08-20 — specs with >= 2 complete agent
+    groups (`A_agentN`/`B_agentN`/`C_agentN`/`D_agentN`) render natively in
+    both `src/render/rxinfer/` (`_strategies_multiagent.py`) and
+    `src/render/activeinference_jl/`: one genuine model/inference per agent
+    (no joint state-space expansion) coupled through the shared `env_signal`
+    trace (deposit at MAP position, decay per timestep), stamped
+    `model_kind: multi_agent`, with `env_signal_trace` in the results. Live
+    Julia execution is pinned by `src/tests/render/test_stigmergic_multi_agent.py`.
+  - *Open*: infer `env_signal` as a latent from observations and condition
+    per-agent *action selection* on it (requires env-conditioned likelihoods
+    the swarm exemplar does not currently declare; the shared affordance
+    detection lives in `src/render/multi_agent_common.py`).
+  - *Probe*: `uv run pytest src/tests/render/test_stigmergic_multi_agent.py -q`
 
 ---
 

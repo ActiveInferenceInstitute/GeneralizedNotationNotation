@@ -123,11 +123,13 @@ def validate_step_prerequisites(
                 # Check for execution output files
                 execute_output_dir = expected_output_dir
                 if execute_output_dir.exists():
-                    sim_files = list(execute_output_dir.rglob("*simulation_results.json")) + list(
-                        execute_output_dir.rglob("*execution_summary.json")
-                    )
+                    sim_files = list(
+                        execute_output_dir.rglob("*simulation_results.json")
+                    ) + list(execute_output_dir.rglob("*execution_summary.json"))
                     if not sim_files:
-                        warning_msg = f"No execution results found in {execute_output_dir.name}"
+                        warning_msg = (
+                            f"No execution results found in {execute_output_dir.name}"
+                        )
                         result["warnings"].append(warning_msg)
                         result["errors"].append(warning_msg)
                         result["passed"] = False

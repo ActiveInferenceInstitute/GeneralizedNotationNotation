@@ -418,7 +418,7 @@ def run_simulation_tool(script_path: str, framework: str) -> Dict[str, Any]:
 **Solution**:
 - Uninstall wrong package: `uv pip uninstall pymdp`
 - Install correct package: `uv pip install inferactively-pymdp`
-- Or use setup module: `python src/1_setup.py --install_optional --optional_groups pymdp`
+- Or use setup module: `python src/1_setup.py --install-optional --optional-groups pymdp`
 - The execute module automatically detects wrong package variants and provides clear error messages
 
 #### Issue 3: Execution timeout
