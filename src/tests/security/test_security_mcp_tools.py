@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-No-mock tests for the security module MCP tool handlers.
+Exercises the security module MCP tool handlers.
 
 Exercises the real handler functions in ``security/mcp.py`` directly: file
 scanning, report reading, check taxonomy, and registered-tool invocation.
@@ -13,7 +13,7 @@ Test Coverage:
 - scan_gnn_file_mcp() file-not-found error path
 - list_security_checks_mcp() taxonomy shape
 - get_security_report_mcp() with a saved report and missing-directory error
-- register_tools() registers the expected tool names on a stub MCP
+- register_tools() registers the expected tool names on a minimal MCP
 """
 
 import json

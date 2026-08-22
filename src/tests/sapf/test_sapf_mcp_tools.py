@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-No-mock tests for the SAPF module MCP tool handlers.
+Exercises the SAPF module MCP tool handlers.
 
 Exercises the handler functions in ``src/sapf/mcp.py`` that expose audio
 metadata, artifact inventory, and backend probing. The heavy audio-rendering

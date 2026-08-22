@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-No-mock tests for the CLI LSP helper handlers in ``src/cli/lsp.py``.
+Covers the CLI LSP helper handlers in ``src/cli/lsp.py``.
 
 Exercises the pure request/response handlers and the JSON-RPC framing helpers
 (write_message to stdout, read_message from stdin). These are lightweight and

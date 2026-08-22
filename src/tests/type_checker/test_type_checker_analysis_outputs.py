@@ -1,4 +1,4 @@
-"""Real (no-mock) tests for the type checker analysis and output utility layers.
+"""Real component tests for the type checker analysis and output utility layers.
 
 These modules are pure, deterministic helpers: ``analysis_utils`` computes
 variable/connection/complexity statistics and ``output_utils`` renders
@@ -202,7 +202,7 @@ def _sample_result() -> dict[str, Any]:
         "is_valid": True,
         "file_path": "models/probe.gnn",
         "errors": [],
-        "warnings": ["deprecated flag"],
+        "warnings": ["obsolete flag"],
         "model_type": "POMDP",
         "variable_count": 1,
         "connection_count": 1,

@@ -1,7 +1,7 @@
 """Tests for advanced_visualization/statistical_viz.py.
 
 Covers _generate_statistical_plots and _generate_matrix_correlations using
-real matplotlib + numpy data (no mocks). Runs against the Agg backend.
+real matplotlib + numpy data against the Agg backend.
 """
 
 import logging

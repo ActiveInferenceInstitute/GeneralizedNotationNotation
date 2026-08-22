@@ -1,7 +1,7 @@
 """Tests for website/dashboard.py's self-contained HTML dashboard builder.
 
 Covers render_dashboard and its internal helper functions using real
-temporary filesystem content (no mocks).
+temporary filesystem content from the live website surface.
 """
 
 import json

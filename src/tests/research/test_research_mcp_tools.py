@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-No-mock tests for the research module MCP tool handlers.
+Exercises the research module MCP tool handlers.
 
 Exercises the handler functions in ``src/research/mcp.py`` directly against
 real temporary directories and real GNN content. The research processor is a

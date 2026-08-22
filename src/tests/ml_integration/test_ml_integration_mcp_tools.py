@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-No-mock tests for the ML Integration module MCP tool handlers.
+Exercises the ML Integration module MCP tool handlers.
 
 Exercises the handler functions in ``src/ml_integration/mcp.py`` directly.
 Framework probe handlers use metadata-only lookups (importlib.find_spec), so

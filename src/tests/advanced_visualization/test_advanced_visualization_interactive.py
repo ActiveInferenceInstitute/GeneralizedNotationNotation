@@ -1,7 +1,7 @@
 """Tests for advanced_visualization/interactive_viz.py.
 
 Covers _generate_interactive_plotly_dashboard using real Plotly + numpy data
-(no mocks). Plotly and numpy are available in the dev environment.
+exercised against live Plotly and numpy in the dev environment.
 """
 
 import logging

@@ -1,4 +1,4 @@
-"""Real, no-mock tests for the typed pipeline schemas (``pipeline.schemas``)."""
+"""Real component tests for the typed pipeline schemas (``pipeline.schemas``)."""
 
 from __future__ import annotations
 

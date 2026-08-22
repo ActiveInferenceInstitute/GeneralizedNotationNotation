@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-No-mock tests for the integration module MCP tool handlers.
+Exercises the integration module MCP tool handlers.
 
 Exercises the handler functions in ``src/integration/mcp.py``: supported
 integration inventory, dependency probing (metadata-only find_spec), and

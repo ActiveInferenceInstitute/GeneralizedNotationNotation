@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-No-mock tests for the audio module MCP tool handlers.
+Exercises the audio module MCP tool handlers.
 
 Exercises the metadata and probing handler functions in ``src/audio/mcp.py``:
 backend availability, generation options, module info, and content validation.

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-No-mock tests for the API module MCP job-management handlers.
+Exercises the API module MCP job-management handlers.
 
 Exercises the handler functions in ``src/api/mcp.py`` that wrap the in-memory
 job manager. These are dependency-light (no HTTP server, no asyncio loop) and

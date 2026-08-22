@@ -1,7 +1,7 @@
 """Tests for advanced_visualization/html_generator.py.
 
 Covers the HTMLVisualizationGenerator success and error paths using real
-structured model data (no mocks).
+structured model data from the real generator surface.
 """
 
 import sys
