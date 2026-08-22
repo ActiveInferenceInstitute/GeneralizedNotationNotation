@@ -74,6 +74,23 @@ def collect_observation_streams(target_dir: Path) -> List[Dict[str, Any]]:
 def build_container_plan(
     target_dir: Path, *, image: str = PINNED_PIPELINE_IMAGE
 ) -> Dict[str, Any]:
+    """Build the auditable container plan for the autonomous review run.
+
+    Generates a hardened container plan executing ``src/main.py --autonomous``
+    over ``target_dir``, runs the static security review over it, and attaches
+    the review findings (plus computed digest) to the serialized payload so
+    callers receive a self-contained, audited deployment plan.
+
+    Args:
+        target_dir: Directory of GNN source files the autonomous container
+            will review.
+        image: Container image reference (defaults to the pipeline's pinned
+            image constant).
+
+    Returns:
+        The serialized container plan as a dict, augmented with ``findings``
+        and ``digest`` keys from the security review.
+    """
     plan = generate_container_plan(
         "gnn-autonomous-proposal-review",
         [
