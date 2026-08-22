@@ -19,10 +19,16 @@ from .jax_runner import (
     is_jax_available,
     run_jax_scripts,
 )
+from .kronecker_executor import (
+    execute_kronecker_factorized,
+    run_kronecker_factorized_execution,
+)
 
 __all__: list[Any] = [
     "run_jax_scripts",
     "execute_jax_script",
     "find_jax_scripts",
     "is_jax_available",
+    "run_kronecker_factorized_execution",
+    "execute_kronecker_factorized",
 ]
