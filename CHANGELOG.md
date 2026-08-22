@@ -8,6 +8,38 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
 
 ## [Unreleased]
 
+### Added (2026-08-21 — Kronecker pipeline integration, roadmap MAJ-02 residual)
+
+- **Factorized specs flow through the numbered pipeline.**
+  `scripts/pymdp_spec_generator.py::generate_factorized_gnn_file` specs
+  (per-factor `A_fN`/`B_fN`/`C_fN`/`D_fN` matrices, independent per-factor
+  action spaces) now survive Step 11 composition instead of crashing:
+  `POMDPRenderProcessor` detects Kronecker-factorized specs (>= 2 `B_f*`
+  groups, no shared `control_factors`), builds the joint model as the exact
+  Kronecker product of the canonicalized per-factor matrices (joint action
+  space = product of per-factor action counts, mixed-radix action decode),
+  and declares the canonical B order so the square joint tensor is not
+  re-transposed. Shared-control factored and multi-agent specs compose
+  exactly as before (verified: swarm stays 729 states / 4 actions).
+- **Native factorized JAX rendering.** `render_gnn_to_jax` routes
+  factorized specs to the new `render_gnn_to_jax_factorized` generator: a
+  standalone script embedding the per-factor matrices that drives
+  `execute.jax.kronecker_factorized.run_factorized_active_inference` (the
+  joint state space is reported but never materialised) and writes
+  `simulation_results.json` with schema `jax_kronecker_factorized_v1` under
+  `GNN_OUTPUT_DIR`, so Step 12 collects it like any other framework.
+- **Step 16 analysis consumes the factorized schema.**
+  `extract_jax_data` now dispatches on schema: top-level, nested
+  `simulation_data`, or implementation-directory payloads with
+  `jax_kronecker_factorized_v1` are mapped into per-factor analysis fields
+  (beliefs/states/observations/actions per factor, per-step total EFE as the
+  sum over factors, factorised policy, validation, and model parameters with
+  `joint_state_space_size` / `joint_materialized: False`); pymdp-compatible
+  JAX payloads keep the historical path.
+- Pinned by `src/tests/render/test_jax_factorized_pipeline.py` (16 tests:
+  detection, exact Kronecker composition, render routing, live script
+  execution, and all analysis dispatch paths).
+
 ### Added (2026-08-20 — native stigmergic multi-agent compilation, roadmap MAJ-03 milestone 1)
 
 - **Native per-agent multi-agent rendering in RxInfer.jl and ActiveInference.jl.**

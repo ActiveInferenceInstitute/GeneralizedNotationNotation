@@ -64,6 +64,7 @@ from .post_simulation import (
     extract_activeinference_jl_data,
     extract_discopy_data,
     extract_jax_data,
+    extract_jax_kronecker_data,
     extract_pymdp_data,
     extract_rxinfer_data,
     generate_action_analysis,
@@ -134,6 +135,7 @@ __all__: list[Any] = [
     "extract_rxinfer_data",
     "extract_activeinference_jl_data",
     "extract_jax_data",
+    "extract_jax_kronecker_data",
     "extract_discopy_data",
     "analyze_execution_results",
     # Active Inference-specific statistical methods

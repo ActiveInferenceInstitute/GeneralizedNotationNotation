@@ -49,6 +49,13 @@ graph TD
 Additional dependencies depend on the generator:
 
 - **`render_gnn_to_jax` (general model)**: emits a script that uses **only** `jax`, `jax.numpy`, and `numpy`.
+- **`render_gnn_to_jax` on factorized specs (MAJ-02)**: specs with per-factor
+  `A_fN`/`B_fN`/`C_fN`/`D_fN` matrices route to the new
+  **`render_gnn_to_jax_factorized`** generator, which emits a standalone
+  sparse script that runs `execute.jax.kronecker_factorized`
+  (mean-field per-factor inference; the joint state space is reported but
+  never materialised) and writes `jax_kronecker_factorized_v1`
+  `simulation_results.json` under `GNN_OUTPUT_DIR`.
 - **`render_gnn_to_jax_pomdp` (POMDP solver)**: emits a script that uses `jax` and attempts to import **Optax**; when Optax is absent, the generated script records that it is continuing without Optax-specific optimization helpers.
 - **`render_gnn_to_jax_combined` (combined model)**: emits a script that uses **Flax** and **Optax**.
 

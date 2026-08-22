@@ -441,8 +441,96 @@ def extract_activeinference_jl_data(execution_result: Dict[str, Any]) -> Dict[st
     return extracted
 
 
-# JAX uses the same result schema as PyMDP.
-extract_jax_data = extract_pymdp_data
+KRONECKER_FACTORIZED_SCHEMA = "jax_kronecker_factorized_v1"
+
+
+def extract_jax_kronecker_data(execution_result: Dict[str, Any]) -> Dict[str, Any]:
+    """Extract ``jax_kronecker_factorized_v1`` results into analysis fields.
+
+    The factorized schema (roadmap MAJ-02) stores per-factor traces
+    (``beliefs_by_factor`` etc.) keyed by factor name, per-factor EFE, a
+    factorised policy, and model parameters that report the (never
+    materialised) joint state space size.
+    """
+    simulation_data = execution_result.get("simulation_data", {})
+    payload = (
+        execution_result
+        if execution_result.get("schema_version") == KRONECKER_FACTORIZED_SCHEMA
+        else None
+    )
+    if payload is None and isinstance(simulation_data, dict):
+        if simulation_data.get("schema_version") == KRONECKER_FACTORIZED_SCHEMA:
+            payload = simulation_data
+    if payload is None:
+        payload = _load_current_schema_from_impl_dir(
+            execution_result.get("implementation_directory"),
+            KRONECKER_FACTORIZED_SCHEMA,
+        )
+    if payload is None:
+        return {"extraction_error": f"No {KRONECKER_FACTORIZED_SCHEMA} payload found"}
+
+    beliefs_by_factor = payload.get("beliefs_by_factor", {}) or {}
+    states_by_factor = payload.get("true_states_by_factor", {}) or {}
+    observations_by_factor = payload.get("observations_by_factor", {}) or {}
+    actions_by_factor = payload.get("actions_by_factor", {}) or {}
+    efe_by_factor = payload.get("efe_per_factor", {}) or {}
+    policy_by_factor = payload.get("policy_by_factor", {}) or {}
+    factors = list(payload.get("factors", [])) or list(beliefs_by_factor.keys())
+
+    # Per-step total expected free energy = sum over factors of per-factor EFE.
+    total_efe: list[float] = []
+    if efe_by_factor and factors:
+        factor_efes = [list(efe_by_factor.get(factor, [])) for factor in factors]
+        if factor_efes and all(factor_efes):
+            total_efe = [sum(step) for step in zip(*factor_efes)]
+
+    model_parameters = payload.get("model_parameters", {}) or {}
+    return {
+        "schema_version": payload.get("schema_version"),
+        "model_kind": payload.get("model_kind"),
+        "beliefs": [beliefs_by_factor.get(factor, []) for factor in factors],
+        "beliefs_by_factor": beliefs_by_factor,
+        "states": [states_by_factor.get(factor, []) for factor in factors],
+        "true_states_by_factor": states_by_factor,
+        "observations": [observations_by_factor.get(factor, []) for factor in factors],
+        "observations_by_factor": observations_by_factor,
+        "actions": [actions_by_factor.get(factor, []) for factor in factors],
+        "actions_by_factor": actions_by_factor,
+        "free_energy": total_efe,
+        "efe_per_factor": efe_by_factor,
+        "policy": [policy_by_factor.get(factor, []) for factor in factors],
+        "policy_by_factor": policy_by_factor,
+        "num_timesteps": payload.get("num_timesteps"),
+        "num_factors": payload.get("num_factors"),
+        "factors": factors,
+        "model_parameters": model_parameters,
+        "validation": payload.get("validation", {}),
+    }
+
+
+def extract_jax_data(execution_result: Dict[str, Any]) -> Dict[str, Any]:
+    """Extract JAX results, dispatching on the result schema.
+
+    Kronecker-factorized runs (``jax_kronecker_factorized_v1``) use the
+    per-factor extractor; everything else follows the pymdp-compatible
+    schema (JAX's historical result shape).
+    """
+    if execution_result.get("schema_version") == KRONECKER_FACTORIZED_SCHEMA:
+        return extract_jax_kronecker_data(execution_result)
+    simulation_data = execution_result.get("simulation_data")
+    if (
+        isinstance(simulation_data, dict)
+        and simulation_data.get("schema_version") == KRONECKER_FACTORIZED_SCHEMA
+    ):
+        return extract_jax_kronecker_data(execution_result)
+    if execution_result.get("implementation_directory"):
+        payload = _load_current_schema_from_impl_dir(
+            execution_result.get("implementation_directory"),
+            KRONECKER_FACTORIZED_SCHEMA,
+        )
+        if payload is not None:
+            return extract_jax_kronecker_data(execution_result)
+    return extract_pymdp_data(execution_result)
 
 
 def extract_discopy_data(execution_result: Dict[str, Any]) -> Dict[str, Any]:

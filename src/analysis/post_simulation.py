@@ -28,6 +28,7 @@ __all__: list[Any] = [
     "extract_rxinfer_data",
     "extract_activeinference_jl_data",
     "extract_jax_data",
+    "extract_jax_kronecker_data",
     "extract_discopy_data",
     # math_utils
     "compute_shannon_entropy",
@@ -66,6 +67,7 @@ from .framework_extractors import (
     extract_activeinference_jl_data,
     extract_discopy_data,
     extract_jax_data,
+    extract_jax_kronecker_data,
     extract_pymdp_data,
     extract_rxinfer_data,
 )

@@ -18,8 +18,26 @@ This specification defines:
 - `render_gnn_to_jax(gnn_spec: Dict[str, Any], output_path: Path, options: Optional[Dict[str, Any]] = None) -> Tuple[bool, str, List[str]]`
 - `render_gnn_to_jax_pomdp(gnn_spec: Dict[str, Any], output_path: Path, options: Optional[Dict[str, Any]] = None) -> Tuple[bool, str, List[str]]`
 - `render_gnn_to_jax_combined(gnn_spec: Dict[str, Any], output_path: Path, options: Optional[Dict[str, Any]] = None) -> Tuple[bool, str, List[str]]`
+- `render_gnn_to_jax_factorized(gnn_spec: Dict[str, Any], output_path: Path, options: Optional[Dict[str, Any]] = None) -> Tuple[bool, str, List[str]]`
 
 No other functions are part of the supported surface unless re-exported there.
+
+### Kronecker-factorized specs (MAJ-02)
+
+Specs declaring per-factor matrices (`A_fN`/`B_fN`/`C_fN`/`D_fN` in
+`structured_pomdp.matrices`, >= 2 factors) are detected by
+`jax_renderer._is_factorized_spec` and routed to
+`render_gnn_to_jax_factorized` even when `render_gnn_to_jax` is called
+directly. The emitted script embeds the canonicalized per-factor matrices
+(action-major B transposed to `(next, previous, action)` and
+column-normalized, mirroring `POMDPRenderProcessor._canonicalise_factored_B`)
+and drives `execute.jax.kronecker_factorized.run_factorized_active_inference`
+— the joint state space (`prod(factor_sizes)`) is reported in the results but
+never allocated. The script resolves the repository root via
+`GNN_PROJECT_ROOT` (or upward walk), writes
+`simulation_results.json` with schema `jax_kronecker_factorized_v1` under
+`GNN_OUTPUT_DIR`, and is executed by Step 12 like any other rendered script.
+`options` may carry `seed` and `action_precision` (defaults 42 / 4.0).
 
 ## Inputs
 

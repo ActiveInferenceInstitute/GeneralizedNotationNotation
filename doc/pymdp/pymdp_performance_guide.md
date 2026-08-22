@@ -165,6 +165,17 @@ sets the T sweep. The factorised GNN specs (per-factor `A_fN`/`B_fN`/`C_fN`/
 `pymdp_kronecker_scaling_manifest.json` records the joint size, wall time and
 validation for every run.
 
+The same factorised specs also flow through the numbered pipeline: Step 11
+(`render.pomdp_processor`) composes them into an exact joint Kronecker model
+(per-factor action spaces, product action space) for the other frameworks,
+and `render_gnn_to_jax` routes them to the native factorized generator — a
+standalone script that runs the sparse path and writes
+`jax_kronecker_factorized_v1` `simulation_results.json` under
+`GNN_OUTPUT_DIR`, which Step 12 collects and Step 16 (`extract_jax_data`)
+analyses per-factor (per-step total EFE, factorised policy, validation,
+`joint_materialized: False`). See
+`src/tests/render/test_jax_factorized_pipeline.py` for the pinned contract.
+
 ### Safety Guardrails
 - `max_n`: Skips state counts that would exceed reasonable storage limits.
 - `max_file_size_mb`: Caps individual specification size.

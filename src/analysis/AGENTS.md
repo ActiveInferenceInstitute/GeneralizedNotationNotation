@@ -34,6 +34,14 @@
 - Distribution analysis and correlation studies
 - **PyMDP Visualization** - belief evolution, state sequences, performance metrics plots
 - **Cross-framework comparison** - uses whatever execution (Step 12) produced. `_extract_simulation_metrics` (in `analyzer.py`) prefers `simulation_data/simulation_results.json` (and other canonical JSON) before `execution_logs/*_results.json`, so backends that write full traces to `simulation_data/` (e.g. RxInfer) are not masked by sparse structured logs. DisCoPy: inline `simulation_data.analysis` / `parameters` from structured logs populate `circuit_info`; if still missing, `simulation_data/circuit_info.json` is merged when present. bnlearn structured logs populate `model_parameters` when vector traces are absent. If every run for a framework was skipped (`skipped: true` in the execution summary), logs INFO instead of WARNING for bnlearn. Otherwise missing data is reported as "[framework] No simulation data found". Python backends are in core `uv sync`; Julia coverage needs Julia + packages installed, then re-run Step 12.
+- **Kronecker-factorized JAX (MAJ-02)** - `extract_jax_data` dispatches on
+  schema: `jax_kronecker_factorized_v1` payloads (top-level, nested
+  `simulation_data`, or implementation-directory files) are extracted by
+  `extract_jax_kronecker_data` into per-factor fields — beliefs/states/
+  observations/actions per factor, per-step total EFE (sum over factors),
+  factorised policy, validation, and model parameters with
+  `joint_state_space_size` / `joint_materialized: False`. pymdp-compatible
+  JAX payloads keep the historical path.
 - **GridWorld animations** - current PyMDP, RxInfer.jl, and ActiveInference.jl
   schemas emit belief GIFs, 3x3 state trajectory GIFs, a cross-framework
   trajectory GIF, and `cross_framework/gridworld_analysis_manifest.json`.

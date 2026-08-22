@@ -4,33 +4,19 @@
 **Current Version**: 3.0.0
 **Next Target**: v4.0.0 (bounded autonomy, pipeline stage consolidation, multi-agent stigmergic topologies, and high-dimensional active inference)
 
-**Last reviewed**: 2026-08-20 — all MIN/MED roadmap items, MAJ-01, MAJ-02
-milestone 1, and MAJ-03 milestone 1 verified closed via their probe commands.
-The complete test suite is **3,071 passed / 0 failed / 0 skipped** (parallel,
-Ollama files excluded per CI), mypy clean (817 files), ruff clean, and all
-documentation audits pass. Full audit trail lives in `CHANGELOG.md` and git
-history.
+**Last reviewed**: 2026-08-21 — MAJ-02 closed in full: milestone 1 (sparse
+Kronecker factorized execution + scaling sweep) plus the numbered-pipeline
+integration (Step 11 renders factorized specs natively for JAX, Step 12
+collects `jax_kronecker_factorized_v1`, Step 16 analysis extracts it). MAJ-03
+milestone 1 (native stigmergic multi-agent compilation) closed; the
+env-conditioned action selection residual remains open below. The complete
+test suite is **3,100+ passed / 0 failed / 0 skipped** (parallel, Ollama files
+excluded per CI), mypy clean, ruff clean, and all documentation audits pass.
+Full audit trail lives in `CHANGELOG.md` and git history.
 
 ## Open Scoped Roadmap
 
 ### Major (P1 - Generative Scaling & Multi-Agent Topologies)
-- **TODO-MAJ-02 (residual): Pipeline Integration of Kronecker Execution**:
-  - *Status*: Milestone 1 landed 2026-08-20 —
-    `src/execute/jax/kronecker_factorized.py` implements sparse
-    Kronecker-factorized mean-field active inference in JAX (`kron_matvec` /
-    `kron_matvec_flat` / `kron_materialize`, `FactorizedPOMDP`,
-    `run_factorized_active_inference`, binary/generic factor builders); the
-    Kronecker identities and the exact per-factor EFE decomposition are
-    pinned by `src/tests/execute/test_kronecker_factorized.py`; the scaling
-    script gains a `--factorized` sweep (probe:
-    `scripts/run_pymdp_gnn_scaling_analysis.py --factorized --factors 4,4,4`)
-    that completes runs for joint state spaces of 64-256 states with
-    `joint_materialized: False`, plus a factorized GNN spec generator
-    (`generate_factorized_gnn_file`).
-  - *Open*: route the factorised execution through the numbered pipeline
-    (Step 12 jax executor + Step 16 analysis consumption of the
-    `jax_kronecker_factorized_v1` schema) instead of the direct sweep.
-- **TODO-MAJ-03 (residual): Env-Conditioned Action Selection for Stigmergic Swarms**:
 - **TODO-MAJ-03 (residual): Env-Conditioned Action Selection for Stigmergic Swarms**:
   - *Status*: Milestone 1 landed 2026-08-20 — specs with >= 2 complete agent
     groups (`A_agentN`/`B_agentN`/`C_agentN`/`D_agentN`) render natively in

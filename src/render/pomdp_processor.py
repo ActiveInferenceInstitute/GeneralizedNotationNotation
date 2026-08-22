@@ -25,6 +25,53 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
+def _is_kronecker_factorized_spec(pomdp_space: "POMDPStateSpace") -> bool:
+    """Detect specs with independent per-factor action spaces (MAJ-02).
+
+    The Kronecker-factorized generator (``scripts/pymdp_spec_generator.py::
+    generate_factorized_gnn_file``) declares one action variable ``u_fN`` per
+    factor and does **not** surface shared control factors, whereas
+    shared-control factored specs (gridworld) and multi-agent specs populate
+    ``control_factors``. For the former, the joint action space is the
+    *product* of the per-factor action counts and the joint model is the
+    Kronecker composition; for the latter, one joint action index is shared
+    across all factors.
+    """
+    matrices = getattr(pomdp_space, "matrices", None) or {}
+    b_factor_keys = [key for key in matrices if re.match(r"^B_f\d+$", str(key))]
+    if len(b_factor_keys) < 2:
+        return False
+    if getattr(pomdp_space, "control_factors", None):
+        return False
+    return True
+
+
+def _factor_action_counts(matrices: Dict[str, Any], b_keys: List[str]) -> List[int]:
+    """Per-factor action counts from action-major ``B_fN`` tensors."""
+    counts: List[int] = []
+    for key in b_keys:
+        raw = np.asarray(matrices[key], dtype=np.float64)
+        if raw.ndim == 2:
+            counts.append(1)
+        elif raw.ndim == 3 and raw.shape[1] == raw.shape[2]:
+            counts.append(max(1, int(raw.shape[0])))
+        elif raw.ndim == 3 and raw.shape[0] == raw.shape[1]:
+            counts.append(max(1, int(raw.shape[2])))
+        else:
+            counts.append(max(1, int(raw.shape[-1])))
+    return counts
+
+
+def _mixed_radix_digit(action: int, radices: List[int], index: int) -> int:
+    """Decode a flat joint action into one factor's action index (LSB-first)."""
+    for factor_index, radix in enumerate(radices):
+        digit = action % radix
+        if factor_index == index:
+            return digit
+        action //= radix
+    return 0
+
+
 def _safe_output_stem(value: Any, fallback: str = "pomdp_model") -> str:
     stem = re.sub(r"[^A-Za-z0-9_.-]+", "_", str(value)).strip("._")
     if not stem:
@@ -468,18 +515,30 @@ class POMDPRenderProcessor:
         if "E" in matrices:
             initial["E"] = matrices["E"]
         provenance.update(joint_provenance)
+        joint_num_actions = int(
+            joint.get("num_actions") or pomdp_space.num_actions or 1
+        )
         canonical_model_parameters = {
             **(getattr(pomdp_space, "model_parameters", None) or {}),
             "num_hidden_states": len(initial["D"]),
             "num_obs": len(initial["A"]),
-            "num_actions": pomdp_space.num_actions,
+            "num_actions": joint_num_actions,
         }
+        # A square Kronecker joint (``num_states == num_actions``) is
+        # indistinguishable from an action-first tensor by shape alone;
+        # ``build_canonical_pomdp_spec`` would re-transpose the already-
+        # canonical joint B. Declare the canonical order explicitly so the
+        # composed Kronecker product survives verbatim (MAJ-02).
+        if joint.get("kronecker_factorized"):
+            canonical_model_parameters["b_tensor_order"] = (
+                "next_state_previous_state_action"
+            )
         gnn_spec = {
             "initialparameterization": initial,
             "model_parameters": canonical_model_parameters,
             "num_states": len(initial["D"]),
             "num_observations": len(initial["A"]),
-            "num_actions": pomdp_space.num_actions,
+            "num_actions": joint_num_actions,
             "matrix_provenance": provenance,
         }
         canonical = build_canonical_pomdp_spec(gnn_spec)
@@ -516,12 +575,23 @@ class POMDPRenderProcessor:
         obs_tuples = list(itertools.product(*[range(size) for size in obs_sizes]))
         num_states = len(state_tuples)
         num_obs = len(obs_tuples)
-        num_actions = max(1, int(getattr(pomdp_space, "num_actions", 1)))
 
         a_keys = sorted(key for key in matrices if key.startswith("A_"))
         b_keys = sorted(key for key in matrices if key.startswith("B_"))
         c_keys = sorted(key for key in matrices if key.startswith("C_"))
         d_keys = sorted(key for key in matrices if key.startswith("D_"))
+
+        # MAJ-02: Kronecker-factorized specs carry independent per-factor
+        # action spaces; the joint action space is their product. Shared-
+        # control factored specs (gridworld) and multi-agent specs keep the
+        # extractor's flat ``num_actions`` (one joint action index applied to
+        # every factor).
+        kronecker_factorized = _is_kronecker_factorized_spec(pomdp_space)
+        factor_action_counts = _factor_action_counts(matrices, b_keys)
+        if kronecker_factorized and factor_action_counts:
+            num_actions = max(1, int(np.prod(factor_action_counts)))
+        else:
+            num_actions = max(1, int(getattr(pomdp_space, "num_actions", 1)))
 
         if not a_keys:
             raise ValueError("Factored POMDP is missing A_* likelihood matrices")
@@ -551,14 +621,19 @@ class POMDPRenderProcessor:
         A_joint = _normalise_columns(A_joint)
 
         B_joint = np.ones((num_states, num_states, num_actions), dtype=np.float64)
-        for key in b_keys:
+        for key, factor_actions in zip(b_keys, factor_action_counts):
             factor_index = self._match_descriptor_index(key, state_factors)
             factor_size = state_sizes[factor_index]
             tensor = self._canonicalise_factored_B(
-                matrices[key], factor_size, num_actions
+                matrices[key], factor_size, factor_actions
             )
             for action in range(num_actions):
-                source_action = action if tensor.shape[2] > 1 else 0
+                if kronecker_factorized:
+                    source_action = _mixed_radix_digit(
+                        action, factor_action_counts, factor_index
+                    )
+                else:
+                    source_action = action if tensor.shape[2] > 1 else 0
                 for prev_flat, prev_tuple in enumerate(state_tuples):
                     for next_flat, next_tuple in enumerate(state_tuples):
                         B_joint[next_flat, prev_flat, action] *= float(
@@ -607,6 +682,8 @@ class POMDPRenderProcessor:
                 "source_keys": b_keys,
                 "shape": list(B_joint.shape),
                 "derived": True,
+                "factor_action_counts": factor_action_counts,
+                "kronecker_factorized": kronecker_factorized,
             },
             "C": {
                 "source": "factored_joint_composition",
@@ -628,6 +705,8 @@ class POMDPRenderProcessor:
                 "B": B_joint.tolist(),
                 "C": C_joint.tolist(),
                 "D": D_joint.tolist(),
+                "num_actions": num_actions,
+                "kronecker_factorized": kronecker_factorized,
             },
             provenance,
         )
