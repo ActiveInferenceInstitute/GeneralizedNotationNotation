@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+from pathlib import Path
 from types import SimpleNamespace
 from typing import Any
 
@@ -38,7 +39,12 @@ def test_fast_pipeline_tests_pass_isolated_output_env(
 
     expected = str(tmp_path / "isolated_pipeline_outputs")
     assert captured["env"]["GNN_PIPELINE_TEST_OUTPUT_DIR"] == expected
-    assert captured["cwd"].name == "GeneralizedNotationNotation"
+    # The fast-test subprocess must run from the project root (the directory
+    # containing ``src/`` and ``pyproject.toml``). Assert against the real root
+    # rather than a hard-coded checkout basename so the contract holds for any
+    # linked worktree or renamed clone.
+    project_root = Path(__file__).resolve().parents[2]
+    assert Path(captured["cwd"]).resolve() == project_root
 
 
 def test_modular_runner_uses_isolated_pipeline_output_dir(tmp_path: Any) -> None:
