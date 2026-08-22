@@ -330,3 +330,81 @@ class TestScalingSweep:
         assert manifest["runs"][0]["joint_materialized"] is False
         assert manifest["runs"][0]["validation_all_valid"] is True
         assert (factor_out / "kronecker_N64_T5.md").exists()
+
+
+class TestKroneckerPipelineExecutor:
+    """The Step-12-routable Kronecker executor (MAJ-02 residual).
+
+    ``execute/ax.kronecker_executor`` turns a factorised model into a
+    ``simulation_results.json`` carrying the ``jax_kronecker_factorized_v1``
+    schema in the standard ``simulation_data/`` location, and exposes it from
+    ``execute.jax`` (the public jax submodule surface) so the numbered
+    pipeline can route factorised Kronecker execution through Step 12.
+    """
+
+    import json as _json
+
+    def test_executor_writes_schema_artifact(self, tmp_path: Path) -> None:
+        from execute.jax.kronecker_executor import execute_kronecker_factorized
+
+        envelope = execute_kronecker_factorized(
+            {"factor_sizes": [4, 4, 4], "t": 5, "seed": 7}, tmp_path
+        )
+        assert envelope["success"] is True
+        assert envelope["schema_version"] == "jax_kronecker_factorized_v1"
+
+        results_file = tmp_path / "simulation_data" / "simulation_results.json"
+        assert results_file.exists(), "schema artifact was not written"
+        results = self._json.loads(results_file.read_text(encoding="utf-8"))
+        assert results["schema_version"] == "jax_kronecker_factorized_v1"
+        assert results["model_parameters"]["joint_state_space_size"] >= 64
+        assert results["model_parameters"]["joint_materialized"] is False
+        assert results["validation"]["all_valid"] is True
+
+        summary_file = tmp_path / "kronecker_execution_summary.json"
+        assert summary_file.exists()
+        summary = self._json.loads(summary_file.read_text(encoding="utf-8"))
+        assert summary["schema_version"] == "jax_kronecker_factorized_v1"
+        assert summary["joint_materialized"] is False
+        assert summary["all_valid"] is True
+
+    def test_executor_dispatches_binary_vs_generic_builders(self, tmp_path: Path) -> None:
+        from execute.jax.kronecker_executor import (
+            _build_factor_model,
+            execute_kronecker_factorized,
+        )
+
+        # Homogeneous binary factors use the binary builder; mixed sizes use generic.
+        binary = _build_factor_model([2, 2, 2, 2, 2, 2], t=3, seed=1)
+        generic = _build_factor_model([3, 2, 4], t=3, seed=1)
+        assert binary.joint_state_space_size == 64
+        assert generic.joint_state_space_size == 24
+
+        mixed = execute_kronecker_factorized(
+            {"factor_sizes": [3, 2, 4], "t": 3, "seed": 5}, tmp_path
+        )
+        assert mixed["success"] is True
+        results = self._json.loads(
+            (tmp_path / "simulation_data" / "simulation_results.json").read_text(
+                encoding="utf-8"
+            )
+        )
+        assert results["model_parameters"]["joint_state_space_size"] == 24
+
+    def test_executor_exported_from_jax_surface(self) -> None:
+        from execute.jax import __all__ as jax_all
+        from execute.jax.kronecker_executor import (
+            execute_kronecker_factorized as exported_execute,
+        )
+
+        assert "execute_kronecker_factorized" in jax_all
+        assert "run_kronecker_factorized_execution" in jax_all
+        assert callable(exported_execute)
+
+    def test_config_validation(self) -> None:
+        from execute.jax.kronecker_executor import execute_kronecker_factorized
+
+        with pytest.raises(ValueError, match="dict"):
+            execute_kronecker_factorized(["not-a-dict"], "/tmp/unused")  # type: ignore[arg-type]
+        with pytest.raises(ValueError, match="factor_sizes"):
+            execute_kronecker_factorized({}, "/tmp/unused")
