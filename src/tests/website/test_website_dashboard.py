@@ -38,23 +38,23 @@ class TestLoadJson:
 
 
 class TestStatusColor:
-    def _fn(self):
+    def _fn(self) -> Any:
         from website.dashboard import _status_color
 
         return _status_color
 
-    def test_success_and_passed_green(self):
+    def test_success_and_passed_green(self) -> None:
         assert self._fn()("success") == "#22c55e"
         assert self._fn()("passed") == "#22c55e"
 
-    def test_warning_matches_warn(self):
+    def test_warning_matches_warn(self) -> None:
         assert self._fn()("warning") == "#f59e0b"
 
-    def test_failed_and_error_red(self):
+    def test_failed_and_error_red(self) -> None:
         assert self._fn()("failed") == "#ef4444"
         assert self._fn()("error") == "#ef4444"
 
-    def test_unknown_gray(self):
+    def test_unknown_gray(self) -> None:
         assert self._fn()("running") == "#6b7280"
         assert self._fn()("") == "#6b7280"
 
@@ -151,7 +151,7 @@ class TestRenderDashboard:
         for success_val, badge_frag in [(True, "SUCCESS"), (False, "FAILED"), (None, "UNKNOWN")]:
             results = tmp_path / f"r_{success_val}"
             results.mkdir()
-            summary = {"success": success_val, "steps": [], "total_duration": 42}
+            summary: dict[str, object] = {"success": success_val, "steps": [], "total_duration": 42}
             (results / "pipeline_execution_summary.json").write_text(json.dumps(summary))
             out = tmp_path / f"out_{success_val}.html"
             assert render_dashboard(results, out) is True

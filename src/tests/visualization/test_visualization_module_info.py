@@ -49,7 +49,7 @@ class TestNetworkStatistics:
 
     def test_with_connections_counts_degrees(self) -> None:
         fn = self._fn()
-        variables = {"s1": {}, "s2": {}, "o1": {}}
+        variables: dict[str, dict[str, Any]] = {"s1": {}, "s2": {}, "o1": {}}
         connections = [
             {"source": "s1", "target": "o1"},
             {"source": "s2", "target": "o1"},
@@ -64,7 +64,7 @@ class TestNetworkStatistics:
 
     def test_isolated_nodes(self) -> None:
         fn = self._fn()
-        variables = {"lonely": {}}
+        variables: dict[str, dict[str, Any]] = {"lonely": {}}
         stats = fn(variables, [])
         assert stats["total_connections"] == 0
         assert stats["average_degree"] == 0

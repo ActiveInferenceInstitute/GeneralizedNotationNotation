@@ -35,7 +35,7 @@ class TestSecurityMCPTools:
         """Create a vulnerability-free GNN-style file."""
         target = tmp_path / "input"
         target.mkdir(exist_ok=True)
-        f = target / "clean_model.md"
+        f: Path = target / "clean_model.md"
         f.write_text(
             "# Clean Model\n\n"
             "## ModelName\nCleanModel\n\n"
@@ -51,7 +51,7 @@ class TestSecurityMCPTools:
         """Create a file with script-injection antipatterns."""
         target = tmp_path / "input"
         target.mkdir(exist_ok=True)
-        f = target / "vulnerable_model.md"
+        f: Path = target / "vulnerable_model.md"
         f.write_text(
             "# Vulnerable Model\n\n"
             "## Notes\n"
@@ -159,10 +159,12 @@ class TestSecurityMCPTools:
         registered: list[str] = []
 
         class StubMCP:
-            def register_tool(self, name, handler, schema, desc, **kw):  # noqa: ANN001
+            def register_tool(
+                self, name: str, handler: Any, schema: Any, desc: str, **kw: Any
+            ) -> None:
                 registered.append(name)
 
-        security_mcp.register_tools(StubMCP())  # type: ignore[arg-type]
+        security_mcp.register_tools(StubMCP())
         expected = {
             "process_security",
             "scan_gnn_file",

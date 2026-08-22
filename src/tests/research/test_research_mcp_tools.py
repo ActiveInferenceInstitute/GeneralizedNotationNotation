@@ -32,7 +32,7 @@ class TestResearchMCPTools:
 
     def _gnn_dir(self, tmp_path: Any) -> Path:
         """Create a simple GNN file with a basic state space."""
-        target = tmp_path / "input"
+        target: Path = tmp_path / "input"
         target.mkdir(exist_ok=True)
         (target / "simple_model.md").write_text(
             "# Simple Model\n\n"
@@ -122,10 +122,12 @@ class TestResearchMCPTools:
         registered: list[str] = []
 
         class StubMCP:
-            def register_tool(self, name, handler, schema, description, **kw):  # noqa: ANN001
+            def register_tool(
+                self, name: str, handler: Any, schema: Any, description: str, **kw: Any
+            ) -> None:
                 registered.append(name)
 
-        research_mcp.register_tools(StubMCP())  # type: ignore[arg-type]
+        research_mcp.register_tools(StubMCP())
         expected = {
             "process_research",
             "list_research_topics",

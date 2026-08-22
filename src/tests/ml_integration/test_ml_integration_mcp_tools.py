@@ -68,10 +68,12 @@ class TestMLIntegrationMCPTools:
         registered: list[str] = []
 
         class StubMCP:
-            def register_tool(self, name, handler, schema, description, **kw):  # noqa: ANN001
+            def register_tool(
+                self, name: str, handler: Any, schema: Any, description: str, **kw: Any
+            ) -> None:
                 registered.append(name)
 
-        ml_mcp.register_tools(StubMCP())  # type: ignore[arg-type]
+        ml_mcp.register_tools(StubMCP())
         expected = {
             "process_ml_integration",
             "check_ml_frameworks",

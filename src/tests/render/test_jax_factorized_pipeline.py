@@ -44,6 +44,12 @@ SWARM_FILE = GNN_FILES / "multiagent" / "stigmergic_swarm.md"
 FLAT_FILE = GNN_FILES / "basics" / "static_perception.md"
 
 
+def _require_pomdp(state: Any) -> Any:
+    """Narrow the Optional parse result to a state space for type-checking."""
+    assert state is not None, "extraction must yield a POMDP state space"
+    return state
+
+
 def _load_module(name: str, relative_path: Path) -> Any:
     """Load a scripts/ module (the tests/execute suite's established pattern)."""
     scripts_dir = str(relative_path.parent)
@@ -68,7 +74,7 @@ def _factorized_spec(factor_sizes: list[int], t: int = 10) -> dict[str, Any]:
         PROJECT_ROOT / "scripts" / "pymdp_spec_generator.py",
     )
     content = generator.generate_factorized_gnn_file(factor_sizes, t)
-    pomdp = extract_pomdp_from_content(content, strict_validation=True)
+    pomdp = _require_pomdp(extract_pomdp_from_content(content, strict_validation=True))
     return pomdp_to_gnn_spec(pomdp)
 
 
@@ -102,21 +108,23 @@ class TestKroneckerDetection:
     """Spec-level detection of Kronecker-factorized (independent-action) models."""
 
     def test_factorized_spec_detected(self) -> None:
-        pomdp = extract_pomdp_from_content(
-            _load_module(
-                "pymdp_spec_generator",
-                PROJECT_ROOT / "scripts" / "pymdp_spec_generator.py",
-            ).generate_factorized_gnn_file([3, 4], 10),
-            strict_validation=True,
+        pomdp = _require_pomdp(
+            extract_pomdp_from_content(
+                _load_module(
+                    "pymdp_spec_generator",
+                    PROJECT_ROOT / "scripts" / "pymdp_spec_generator.py",
+                ).generate_factorized_gnn_file([3, 4], 10),
+                strict_validation=True,
+            )
         )
         assert _is_kronecker_factorized_spec(pomdp) is True
 
     def test_multi_agent_spec_not_detected(self) -> None:
-        pomdp = extract_pomdp_from_file(SWARM_FILE, strict_validation=True)
+        pomdp = _require_pomdp(extract_pomdp_from_file(SWARM_FILE, strict_validation=True))
         assert _is_kronecker_factorized_spec(pomdp) is False
 
     def test_flat_spec_not_detected(self) -> None:
-        pomdp = extract_pomdp_from_file(FLAT_FILE, strict_validation=True)
+        pomdp = _require_pomdp(extract_pomdp_from_file(FLAT_FILE, strict_validation=True))
         assert _is_kronecker_factorized_spec(pomdp) is False
 
 
@@ -137,12 +145,14 @@ class TestProcessorComposition:
 
     def test_joint_A_is_kronecker_product(self) -> None:
         spec = _factorized_spec([3, 4], 10)
-        pomdp = extract_pomdp_from_content(
-            _load_module(
-                "pymdp_spec_generator",
-                PROJECT_ROOT / "scripts" / "pymdp_spec_generator.py",
-            ).generate_factorized_gnn_file([3, 4], 10),
-            strict_validation=True,
+        pomdp = _require_pomdp(
+            extract_pomdp_from_content(
+                _load_module(
+                    "pymdp_spec_generator",
+                    PROJECT_ROOT / "scripts" / "pymdp_spec_generator.py",
+                ).generate_factorized_gnn_file([3, 4], 10),
+                strict_validation=True,
+            )
         )
         a0 = np.asarray(pomdp.matrices["A_f0"])
         a1 = np.asarray(pomdp.matrices["A_f1"])
@@ -151,12 +161,14 @@ class TestProcessorComposition:
 
     def test_joint_B_is_exact_composition(self) -> None:
         spec = _factorized_spec([3, 4], 10)
-        pomdp = extract_pomdp_from_content(
-            _load_module(
-                "pymdp_spec_generator",
-                PROJECT_ROOT / "scripts" / "pymdp_spec_generator.py",
-            ).generate_factorized_gnn_file([3, 4], 10),
-            strict_validation=True,
+        pomdp = _require_pomdp(
+            extract_pomdp_from_content(
+                _load_module(
+                    "pymdp_spec_generator",
+                    PROJECT_ROOT / "scripts" / "pymdp_spec_generator.py",
+                ).generate_factorized_gnn_file([3, 4], 10),
+                strict_validation=True,
+            )
         )
         matrices = pomdp.matrices
         b0 = _canonical_b(matrices["B_f0"], 3)
@@ -182,7 +194,7 @@ class TestProcessorComposition:
             assert np.allclose(b[:, :, action].sum(axis=0), 1.0)
 
     def test_swarm_composition_unchanged(self) -> None:
-        pomdp = extract_pomdp_from_file(SWARM_FILE, strict_validation=True)
+        pomdp = _require_pomdp(extract_pomdp_from_file(SWARM_FILE, strict_validation=True))
         spec = pomdp_to_gnn_spec(pomdp)
         assert spec["model_parameters"]["num_hidden_states"] == 729
         assert spec["model_parameters"]["num_actions"] == 4
@@ -207,7 +219,7 @@ class TestRenderRouting:
         assert "FactorizedPOMDP" in script
 
     def test_flat_spec_keeps_general_generator(self, tmp_path: Path) -> None:
-        pomdp = extract_pomdp_from_file(FLAT_FILE, strict_validation=True)
+        pomdp = _require_pomdp(extract_pomdp_from_file(FLAT_FILE, strict_validation=True))
         spec = pomdp_to_gnn_spec(pomdp)
         output = tmp_path / "flat_model_jax.py"
         success, message, _ = render_gnn_to_jax(spec, output)
@@ -275,8 +287,10 @@ class TestAnalysisExtraction:
             cwd="/tmp",
         )
         assert result.returncode == 0, result.stderr
-        return json.loads(
-            (out_dir / "simulation_results.json").read_text(encoding="utf-8")
+        return dict(
+            json.loads(
+                (out_dir / "simulation_results.json").read_text(encoding="utf-8")
+            )
         )
 
     def test_top_level_payload(self, payload: dict[str, Any]) -> None:

@@ -128,6 +128,6 @@ def test_configure_logging_with_rotation_file(tmp_path: Path) -> None:
 
 def test_step_logger_propagates_step_context() -> None:
     adapter = logging_config.step_logger("3_gnn", step_num=3)
-    assert adapter.extra["step"] == "3_gnn"
-    assert adapter.extra["step_num"] == 3
+    assert adapter.extra["step"] == "3_gnn"  # type: ignore[index]
+    assert adapter.extra["step_num"] == 3  # type: ignore[index]
     assert adapter.logger.name == "gnn.step.3_gnn"
