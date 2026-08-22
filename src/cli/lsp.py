@@ -33,7 +33,7 @@ def read_message() -> Any:
 def write_message(msg: Any) -> Any:
     """Write a JSON-RPC message to stdout."""
     body = json.dumps(msg)
-    sys.stdout.write(f"Content-Length: {len(body)}\\r\\n\\r\\n{body}")
+    sys.stdout.write(f"Content-Length: {len(body)}\r\n\r\n{body}")
     sys.stdout.flush()
 
 
