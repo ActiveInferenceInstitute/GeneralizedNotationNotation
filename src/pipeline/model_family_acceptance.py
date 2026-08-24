@@ -54,8 +54,15 @@ DEFAULT_ACCEPTANCE_PROFILE = {
     "allow_unsupported_steps": [],
     "unsupported_step_reasons": {},
 }
+# A full model-family acceptance renders and executes each maintained framework
+# (PyMDP, RxInfer.jl, ActiveInference.jl — the latter two under Julia), then runs
+# Step 16 analysis and Step 23 reporting. A too-tight default (historically 180s)
+# spuriously fails the real cross-framework gate (run_cross_framework_reliability
+# --strict) once the pipeline reaches its heavier execute/analyse stages, so the
+# default is sized generously for a single-family run while remaining bounded.
+# Override with GNN_MODEL_FAMILY_TIMEOUT_SECONDS for very heavy families.
 DEFAULT_FAMILY_TIMEOUT_SECONDS = int(
-    os.environ.get("GNN_MODEL_FAMILY_TIMEOUT_SECONDS", "180")
+    os.environ.get("GNN_MODEL_FAMILY_TIMEOUT_SECONDS", "600")
 )
 
 

@@ -10,7 +10,10 @@ import subprocess
 from pathlib import Path
 from typing import Sequence
 
+import pytest
+
 from pipeline.model_family_acceptance import (
+    DEFAULT_FAMILY_TIMEOUT_SECONDS,
     load_model_family_manifest,
     run_model_family_acceptance,
 )
@@ -31,6 +34,37 @@ def test_model_family_manifest_covers_required_families() -> None:
         "gridworld",
         "scaling-study",
     }.issubset(names)
+
+
+def test_family_acceptance_default_timeout_covers_cross_framework_run() -> None:
+    """The default per-family timeout must accommodate a full render+execute+
+    cross-framework acceptance (PyMDP, RxInfer.jl, ActiveInference.jl under
+    Julia, plus Step 16 analysis / Step 23 reporting), not the stale 180s that
+    caused the real cross-framework gate to spuriously time out mid-run.
+    """
+    # A single family must not be killed at the old tight bound; 0-duration is
+    # never acceptable for an acceptance that renders and executes >1 framework.
+    assert DEFAULT_FAMILY_TIMEOUT_SECONDS >= 600
+    # The modern cross-framework acceptance exercises render + execute + analyse,
+    # which the historical 180s default could not contain.
+    assert DEFAULT_FAMILY_TIMEOUT_SECONDS > 180
+
+
+def test_family_acceptance_default_timeout_is_env_overridable(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    import importlib
+
+    import pipeline.model_family_acceptance as mfa
+
+    # module reads the env var at import time, so re-read after patch.
+    monkeypatch.setenv("GNN_MODEL_FAMILY_TIMEOUT_SECONDS", "1200")
+    importlib.reload(mfa)
+    try:
+        assert mfa.DEFAULT_FAMILY_TIMEOUT_SECONDS == 1200
+    finally:
+        monkeypatch.delenv("GNN_MODEL_FAMILY_TIMEOUT_SECONDS", raising=False)
+        importlib.reload(mfa)
 
 
 def test_model_family_acceptance_writes_ledger_with_step_statuses(
