@@ -5,7 +5,8 @@ This module provides comprehensive validation capabilities for GNN models,
 including semantic validation, performance profiling, and consistency checking.
 """
 
-from typing import Any, cast
+from pathlib import Path
+from typing import Any
 
 __version__ = "1.6.0"
 FEATURES: dict[str, Any] = {
@@ -16,14 +17,16 @@ FEATURES: dict[str, Any] = {
     "mcp_integration": True,
 }
 
-from pathlib import Path
-from typing import Any, Dict, List, Optional
-
 from .consistency_checker import ConsistencyChecker, check_consistency
 from .performance_profiler import PerformanceProfiler, profile_performance
 
 # Import core validation functionality
 from .semantic_validator import SemanticValidator, process_semantic_validation
+
+
+def _validation_stage_failed(result: dict[str, Any]) -> bool:
+    """Return whether a best-effort stage reported an operational failure."""
+    return result.get("status") == "error" or result.get("recovery") is True
 
 
 def process_validation(
@@ -92,10 +95,16 @@ def process_validation(
 
         # Load existing validation results if present (accumulate across subdirectory passes)
         validation_results_file = output_dir / "validation_results.json"
+        validation_results: dict[str, Any] | None = None
         if validation_results_file.exists():
             try:
                 with open(validation_results_file, "r") as f:
-                    validation_results = json.load(f)
+                    loaded_results = json.load(f)
+                if not isinstance(loaded_results, dict):
+                    raise ValueError(
+                        "existing validation results must be a JSON object"
+                    )
+                validation_results = loaded_results
                 # Ensure all expected keys exist for safe accumulation
                 validation_results.setdefault("files_validated", [])
                 validation_results.setdefault("summary", {})
@@ -118,14 +127,10 @@ def process_validation(
                 logger.info(
                     f"Accumulating validation results from {len(validation_results['files_validated'])} previously validated files"
                 )
-            except (json.JSONDecodeError, OSError) as e:
+            except (json.JSONDecodeError, OSError, ValueError) as e:
                 logger.warning(
                     f"Could not load existing validation results, starting fresh: {e}"
                 )
-                validation_results = cast(Any, None)
-
-        if not validation_results_file.exists():
-            validation_results = None
 
         if validation_results is None:
             validation_results = {
@@ -155,6 +160,7 @@ def process_validation(
             logger.info(f"Validating: {file_name}")
 
             # Load the actual parsed GNN specification
+            model_load_error: str | None = None
             parsed_model_file = file_result.get("parsed_model_file")
             if parsed_model_file and Path(parsed_model_file).exists():
                 try:
@@ -165,22 +171,31 @@ def process_validation(
                     )
                     model_data = actual_gnn_spec
                 except Exception as e:
-                    logger.error(
+                    model_load_error = (
                         f"Failed to load parsed GNN spec from {parsed_model_file}: {e}"
                     )
+                    logger.error(model_load_error)
                     model_data = file_result
             else:
-                logger.warning(
-                    f"Parsed model file not found for {file_name}, using summary data"
+                model_load_error = (
+                    f"Parsed model file not found for {file_name}; using summary data"
                 )
+                logger.warning(model_load_error)
                 model_data = file_result
 
             file_validation_result: dict[str, Any] = {
                 "file_name": file_name,
                 "file_path": file_result["file_path"],
                 "validations": {},
-                "success": True,
+                "success": model_load_error is None,
+                "errors": [model_load_error] if model_load_error else [],
             }
+            if model_load_error:
+                file_validation_result["input_recovery"] = {
+                    "status": "error",
+                    "error": model_load_error,
+                    "recovery": True,
+                }
 
             # Perform semantic validation
             try:
@@ -189,9 +204,25 @@ def process_validation(
                 validation_results["summary"]["validation_scores"]["semantic"].append(
                     semantic_result.get("semantic_score", 0.0)
                 )
-                logger.info(f"Semantic validation completed for {file_name}")
+                if _validation_stage_failed(semantic_result):
+                    error = str(
+                        semantic_result.get(
+                            "error", "semantic validation entered recovery mode"
+                        )
+                    )
+                    file_validation_result["errors"].append(error)
+                    file_validation_result["success"] = False
+                    logger.error(f"Semantic validation failed for {file_name}: {error}")
+                else:
+                    logger.info(f"Semantic validation completed for {file_name}")
             except Exception as e:
                 logger.error(f"Semantic validation failed for {file_name}: {e}")
+                file_validation_result["validations"]["semantic"] = {
+                    "status": "error",
+                    "error": str(e),
+                    "recovery": True,
+                }
+                file_validation_result["errors"].append(str(e))
                 file_validation_result["success"] = False
 
             # Perform performance profiling
@@ -203,9 +234,27 @@ def process_validation(
                 validation_results["summary"]["validation_scores"][
                     "performance"
                 ].append(performance_result.get("performance_score", 0.0))
-                logger.info(f"Performance profiling completed for {file_name}")
+                if _validation_stage_failed(performance_result):
+                    error = str(
+                        performance_result.get(
+                            "error", "performance profiling entered recovery mode"
+                        )
+                    )
+                    file_validation_result["errors"].append(error)
+                    file_validation_result["success"] = False
+                    logger.error(
+                        f"Performance profiling failed for {file_name}: {error}"
+                    )
+                else:
+                    logger.info(f"Performance profiling completed for {file_name}")
             except Exception as e:
                 logger.error(f"Performance profiling failed for {file_name}: {e}")
+                file_validation_result["validations"]["performance"] = {
+                    "status": "error",
+                    "error": str(e),
+                    "recovery": True,
+                }
+                file_validation_result["errors"].append(str(e))
                 file_validation_result["success"] = False
 
             # Perform consistency checking
@@ -217,9 +266,27 @@ def process_validation(
                 validation_results["summary"]["validation_scores"][
                     "consistency"
                 ].append(consistency_result.get("consistency_score", 0.0))
-                logger.info(f"Consistency checking completed for {file_name}")
+                if _validation_stage_failed(consistency_result):
+                    error = str(
+                        consistency_result.get(
+                            "error", "consistency checking entered recovery mode"
+                        )
+                    )
+                    file_validation_result["errors"].append(error)
+                    file_validation_result["success"] = False
+                    logger.error(
+                        f"Consistency checking failed for {file_name}: {error}"
+                    )
+                else:
+                    logger.info(f"Consistency checking completed for {file_name}")
             except Exception as e:
                 logger.error(f"Consistency checking failed for {file_name}: {e}")
+                file_validation_result["validations"]["consistency"] = {
+                    "status": "error",
+                    "error": str(e),
+                    "recovery": True,
+                }
+                file_validation_result["errors"].append(str(e))
                 file_validation_result["success"] = False
 
             validation_results["files_validated"].append(file_validation_result)
@@ -276,8 +343,7 @@ def process_validation(
             ]
             logger.info(f"  Average consistency score: {avg_consistency:.2f}")
 
-        success = validation_results["summary"]["successful_validations"] > 0
-        return cast("bool", success)
+        return bool(validation_results["summary"]["successful_validations"] > 0)
 
     except Exception as e:
         logger.error(f"Validation processing failed: {e}")

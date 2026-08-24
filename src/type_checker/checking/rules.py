@@ -10,6 +10,8 @@ from __future__ import annotations
 import re
 from typing import Any, Dict
 
+from .dimensions import parse_state_variables
+
 # Canonical valid GNN types (Active Inference domain)
 VALID_TYPES: list[str] = [
     "int",
@@ -39,16 +41,9 @@ VALID_TYPES: list[str] = [
 # Regex patterns for type validation
 TYPE_PATTERNS: Dict[str, str] = {
     "numeric": r"^[0-9]+(\.[0-9]+)?$",
-    "identifier": r"^[a-zA-Z_][a-zA-Z0-9_]*$",
+    "identifier": r"^[^\W\d][\w']*(?:\+\d+)?$",
     "array": r"^\[.*\]$",
 }
-
-# Regex patterns for extracting type annotations from GNN content
-EXTRACTION_PATTERNS: list[str] = [
-    r"([^#\w])(\w+)\s*:\s*([a-zA-Z0-9_]+)",  # name: type (excluding comments)
-    r"(\w+)\s*\[(?:[^\]]*?)type=([a-zA-Z0-9_]+)(?:[^\]]*?)\]",  # name[...type=float...]
-    r"(\w+)\s*\[([0-9\s,]+)\]",  # name[dimensions] (pure numbers as shapes)
-]
 
 
 def get_validation_rules() -> Dict[str, Any]:
@@ -107,8 +102,13 @@ def check_type_consistency(types: list[Dict[str, Any]]) -> Dict[str, Any]:
         "message": "",
     }
 
-    var_names = [t["name"] for t in types]
-    duplicates = [name for name in set(var_names) if var_names.count(name) > 1]
+    seen: set[str] = set()
+    duplicates: list[str] = []
+    for type_info in types:
+        name = str(type_info["name"])
+        if name in seen and name not in duplicates:
+            duplicates.append(name)
+        seen.add(name)
 
     if duplicates:
         consistency["consistent"] = False
@@ -120,8 +120,9 @@ def check_type_consistency(types: list[Dict[str, Any]]) -> Dict[str, Any]:
 def extract_types_from_content(content: str) -> list[Dict[str, Any]]:
     """Extract type annotations from raw GNN file content.
 
-    Applies all ``EXTRACTION_PATTERNS`` against *content* and returns
-    a list of ``{name, type, line}`` dicts.
+    Parses only canonical declarations in ``StateSpaceBlock`` and returns a
+    list of ``{name, type, line}`` dictionaries. Prose, parameter values, and
+    comments outside that section are deliberately excluded.
 
     Args:
         content: Full GNN file content as string.
@@ -129,25 +130,12 @@ def extract_types_from_content(content: str) -> list[Dict[str, Any]]:
     Returns:
         List of extracted type entries.
     """
-    found_types: list[Dict[str, Any]] = []
-    for pattern in EXTRACTION_PATTERNS:
-        matches = re.finditer(pattern, content)
-        for match in matches:
-            if len(match.groups()) >= 3 and pattern.startswith(r"([^#"):
-                var_name = match.group(2)
-                var_type = match.group(3)
-            elif len(match.groups()) >= 2:
-                var_name = match.group(1)
-                var_type = match.group(2)
-            else:
-                continue
-
-            found_types.append(
-                {
-                    "name": var_name,
-                    "type": var_type,
-                    "line": content[: match.start()].count("\n") + 1,
-                }
-            )
-
-    return found_types
+    variables, _ = parse_state_variables(content)
+    return [
+        {
+            "name": variable.name,
+            "type": variable.dtype,
+            "line": variable.line,
+        }
+        for variable in variables
+    ]

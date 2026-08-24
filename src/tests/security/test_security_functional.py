@@ -17,6 +17,7 @@ Test Coverage:
 - Edge cases: clean files, heavily-flagged files, empty files
 """
 
+import hashlib
 import json
 import sys
 from pathlib import Path
@@ -296,3 +297,70 @@ class TestSecurityFunctional:
             data = json.load(f)
         assert data["policy"]["decision"] == "deny_invalid_policy"
         assert data["policy"]["requested_block_on"] == "critical"
+
+    @pytest.mark.unit
+    def test_security_levels_apply_distinct_scan_and_enforcement_policies(
+        self, vuln_gnn_dir: Any, tmp_path: Path
+    ) -> None:
+        receipts: dict[str, dict[str, Any]] = {}
+        outcomes: dict[str, bool] = {}
+
+        for level in ("basic", "standard", "strict"):
+            output = tmp_path / level
+            outcomes[level] = process_security(
+                vuln_gnn_dir, output, security_level=level
+            )
+            receipts[level] = json.loads(
+                (output / "security_results.json").read_text(encoding="utf-8")
+            )
+
+        assert outcomes == {"basic": True, "standard": True, "strict": False}
+        assert receipts["basic"]["policy"]["scan_vulnerabilities"] is False
+        assert receipts["basic"]["vulnerabilities"] == []
+        assert receipts["standard"]["policy"]["scan_vulnerabilities"] is True
+        assert receipts["standard"]["vulnerabilities"]
+        assert receipts["standard"]["policy"]["decision"] == "allow"
+        assert receipts["strict"]["policy"]["block_on"] == "high"
+        assert receipts["strict"]["policy"]["decision"] == "deny"
+
+    @pytest.mark.unit
+    def test_strict_policy_cannot_disable_scanning(
+        self, clean_gnn_dir: Any, output_dir: Any
+    ) -> None:
+        assert (
+            process_security(
+                clean_gnn_dir,
+                output_dir,
+                security_level="strict",
+                check_vulnerabilities=False,
+            )
+            is False
+        )
+        receipt = json.loads(
+            (output_dir / "security_results.json").read_text(encoding="utf-8")
+        )
+        assert receipt["policy"]["decision"] == "deny_invalid_policy"
+
+    @pytest.mark.unit
+    def test_file_inspection_hashes_exact_bytes_and_redacts_secrets(
+        self, tmp_path: Path
+    ) -> None:
+        inspected = tmp_path / "inspect.md"
+        raw = b"# Model\r\npassword = 'do-not-publish'\r\nsubprocess.call(['echo'])\r\n"
+        inspected.write_bytes(raw)
+
+        first = perform_security_check(inspected)
+        second = perform_security_check(inspected)
+        first_findings = check_vulnerabilities(inspected)
+        second_findings = check_vulnerabilities(inspected)
+
+        assert first["file_hash"] == hashlib.sha256(raw).hexdigest()
+        assert first["file_size"] == len(raw)
+        assert first["sensitive_patterns"] == second["sensitive_patterns"]
+        assert first_findings == second_findings
+        assert "do-not-publish" not in json.dumps(first)
+        assert "do-not-publish" not in json.dumps(first_findings)
+        assert any(
+            finding["vulnerability_type"].startswith("Subprocess call")
+            for finding in first_findings
+        )

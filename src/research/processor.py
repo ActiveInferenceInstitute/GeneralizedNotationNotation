@@ -28,6 +28,32 @@ FEATURES: dict[str, Any] = {
 }
 
 
+def _section_name(line: str) -> str | None:
+    """Return a normalized level-two Markdown section name, if present."""
+    match = re.match(r"^##(?!#)\s*(.*?)\s*$", line.strip())
+    return match.group(1).casefold() if match else None
+
+
+def _first_section_value(content: str, section_name: str) -> str | None:
+    """Return the first non-comment value in a named GNN section."""
+    in_section = False
+    for line in content.splitlines():
+        heading = _section_name(line)
+        if heading is not None:
+            in_section = heading == section_name.casefold()
+            continue
+        stripped = line.strip()
+        if in_section and stripped and not stripped.startswith("#"):
+            return stripped
+    return None
+
+
+def _has_section(content: str, section_name: str) -> bool:
+    """Return whether content contains the exact named level-two section."""
+    expected = section_name.casefold()
+    return any(_section_name(line) == expected for line in content.splitlines())
+
+
 def detect_model_family(content: str) -> str:
     """
     Detect the Active Inference model family from GNN content.
@@ -36,20 +62,21 @@ def detect_model_family(content: str) -> str:
     """
     content_lower = content.lower()
 
-    # Check GNNSection header first
-    section_match = re.search(r"## GNNSection\s*\n\s*(\S+)", content)
-    if section_match:
-        section = section_match.group(1).lower()
-        if "pomdp" in section:
-            return "pomdp"
-        elif "hmm" in section:
-            return "hmm"
-        elif "hierarchical" in section:
+    # Check GNNSection first. More specific families must precede POMDP:
+    # ``ActInfPOMDP_Hierarchical`` is hierarchical, not a plain POMDP.
+    section_value = _first_section_value(content, "gnnsection")
+    if section_value:
+        section = re.sub(r"[^a-z0-9]+", "", section_value.casefold())
+        if "hierarchical" in section:
             return "hierarchical"
+        elif "hiddenmarkov" in section or section == "hmm":
+            return "hmm"
         elif "continuous" in section:
             return "continuous"
         elif "factor" in section:
             return "factor_graph"
+        elif "pomdp" in section:
+            return "pomdp"
 
     # Detect from state space variables
     has_A = bool(re.search(r"^\s*A\s*\[", content, re.MULTILINE))
@@ -93,14 +120,16 @@ def extract_state_space_dims(content: str) -> Dict[str, List[int]]:
     in_state_space = False
     for line in content.splitlines():
         stripped = line.strip()
-        if stripped.startswith("## StateSpaceBlock"):
+        heading = _section_name(stripped)
+        if heading == "statespaceblock":
             in_state_space = True
             continue
-        elif stripped.startswith("##") and in_state_space:
+        elif heading is not None and in_state_space:
             in_state_space = False
             continue
 
         if in_state_space and not stripped.startswith("#"):
+            stripped = re.sub(r"^[-*+]\s+", "", stripped)
             match = re.match(pattern, stripped)
             if match:
                 var_name = match.group(1)
@@ -111,7 +140,16 @@ def extract_state_space_dims(content: str) -> Dict[str, List[int]]:
                     if part.startswith("type="):
                         continue
                     try:
-                        var_dims.append(int(part))
+                        dimension = int(part)
+                        if dimension <= 0:
+                            logger.debug(
+                                "Skipping non-positive dimension for %s: %s",
+                                var_name,
+                                part,
+                            )
+                            var_dims = []
+                            break
+                        var_dims.append(dimension)
                     except ValueError:
                         logger.debug("Skipping non-integer dimension part: %s", part)
                 if var_dims:
@@ -128,10 +166,11 @@ def count_connections(content: str) -> Dict[str, int]:
 
     for line in content.splitlines():
         stripped = line.strip()
-        if stripped.startswith("## Connections"):
+        heading = _section_name(stripped)
+        if heading == "connections":
             in_connections = True
             continue
-        elif stripped.startswith("##") and in_connections:
+        elif heading is not None and in_connections:
             in_connections = False
             continue
 
@@ -230,8 +269,10 @@ def generate_rule_based_hypotheses(
             )
 
         # Check for planning horizon
-        horizon_match = re.search(r"ModelTimeHorizon\s*=\s*(\w+)", content)
-        if horizon_match and horizon_match.group(1) == "Unbounded":
+        horizon_match = re.search(
+            r"ModelTimeHorizon\s*=\s*(\w+)", content, re.IGNORECASE
+        )
+        if horizon_match and horizon_match.group(1).casefold() == "unbounded":
             hypotheses.append(
                 {
                     "type": "planning_horizon",
@@ -284,7 +325,7 @@ def generate_rule_based_hypotheses(
         )
 
     # Rule 4: Missing ontology annotation
-    has_ontology = "## ActInfOntologyAnnotation" in content
+    has_ontology = _has_section(content, "ActInfOntologyAnnotation")
     if not has_ontology:
         hypotheses.append(
             {
@@ -297,7 +338,7 @@ def generate_rule_based_hypotheses(
         )
 
     # Rule 5: Missing initial parameterization
-    has_params = "## InitialParameterization" in content
+    has_params = _has_section(content, "InitialParameterization")
     if not has_params and dims:
         hypotheses.append(
             {
@@ -435,21 +476,37 @@ def process_research(
                 {"file": str(target_dir), "error": "target directory not found"}
             )
 
-        recursive = bool(kwargs.get("recursive", False))
-        discovery = target_dir.rglob("*.md") if recursive else target_dir.glob("*.md")
-        gnn_files = sorted(discovery) if target_dir.is_dir() else []
+        recursive = kwargs.get("recursive", False)
+        if not isinstance(recursive, bool):
+            results["success"] = False
+            results["errors"].append(
+                {
+                    "file": str(target_dir),
+                    "error": "recursive must be a boolean",
+                    "error_type": "invalid_configuration",
+                }
+            )
+        discovery = (
+            target_dir.rglob("*.md") if recursive is True else target_dir.glob("*.md")
+        )
+        gnn_files = (
+            sorted(discovery)
+            if target_dir.is_dir() and isinstance(recursive, bool)
+            else []
+        )
         results["processed_files"] = len(gnn_files)
 
         for gnn_file in gnn_files:
             try:
                 content = gnn_file.read_text(encoding="utf-8")
+                relative_file = gnn_file.relative_to(target_dir).as_posix()
 
                 # Detect model family
                 model_family = detect_model_family(content)
-                results["model_families_detected"][gnn_file.name] = model_family
+                results["model_families_detected"][relative_file] = model_family
 
                 if verbose:
-                    logger.info(f"{gnn_file.name}: detected as '{model_family}' model")
+                    logger.info(f"{relative_file}: detected as '{model_family}' model")
 
                 # Extract structured dimensions (not naive integer extraction)
                 dims = extract_state_space_dims(content)
@@ -497,7 +554,7 @@ def process_research(
                 if hypotheses:
                     results["hypotheses_generated"].append(
                         {
-                            "file": gnn_file.name,
+                            "file": relative_file,
                             "model_family": model_family,
                             "dimension_count": len(dims),
                             "analysis_evidence": {
@@ -510,7 +567,7 @@ def process_research(
 
             except Exception as e:
                 logger.warning(f"Could not generate hypotheses for {gnn_file}: {e}")
-                results["errors"].append({"file": str(gnn_file.name), "error": str(e)})
+                results["errors"].append({"file": str(gnn_file), "error": str(e)})
 
         if results["errors"]:
             results["success"] = False

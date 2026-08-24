@@ -145,13 +145,22 @@ def render_graph_from_file(
     Returns:
         Rendered graph string.
     """
-    from pathlib import Path
+    from pathlib import Path as _Path
 
-    content = Path(file_path).read_text(encoding="utf-8")
+    path = _Path(file_path)
+    if not path.is_file():
+        logger.warning(f"GNN file not found or not a regular file: {file_path}")
+        content = ""
+    else:
+        try:
+            content = path.read_text(encoding="utf-8")
+        except OSError as e:
+            logger.warning(f"Could not read GNN file {file_path}: {e}")
+            content = ""
 
     import sys
 
-    src_dir = str(Path(__file__).parent.parent)
+    src_dir = str(_Path(__file__).parent.parent)
     if src_dir not in sys.path:
         sys.path.insert(0, src_dir)
 

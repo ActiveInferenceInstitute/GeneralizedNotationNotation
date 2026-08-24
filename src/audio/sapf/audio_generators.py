@@ -6,6 +6,7 @@ including synthetic oscillators, envelopes, and audio file output.
 """
 
 import logging
+import math
 import re
 import struct
 import wave
@@ -18,6 +19,44 @@ import numpy as np
 # Use NumPy FFT implementations to avoid optional SciPy dependency at import-time
 
 logger = logging.getLogger(__name__)
+
+
+def _finite_float(value: Any, name: str) -> float:
+    try:
+        parsed = float(value)
+    except (TypeError, ValueError) as exc:
+        raise ValueError(f"{name} must be numeric") from exc
+    if not math.isfinite(parsed):
+        raise ValueError(f"{name} must be finite")
+    return parsed
+
+
+def _positive_sample_rate(value: Any) -> int:
+    if isinstance(value, bool):
+        raise ValueError("sample_rate must be a positive integer")
+    try:
+        parsed = int(value)
+    except (OverflowError, TypeError, ValueError) as exc:
+        raise ValueError("sample_rate must be a positive integer") from exc
+    if parsed <= 0 or parsed != value:
+        raise ValueError("sample_rate must be a positive integer")
+    return parsed
+
+
+def _audio_array(audio: Any, name: str = "audio") -> np.ndarray:
+    """Return finite mono or frames-by-channels floating-point samples."""
+    raw = np.asarray(audio)
+    if np.iscomplexobj(raw):
+        raise ValueError(f"{name} samples must be real numbers")
+    try:
+        samples = np.asarray(audio, dtype=np.float64)
+    except (TypeError, ValueError) as exc:
+        raise ValueError(f"{name} samples must be numeric") from exc
+    if samples.ndim not in (1, 2):
+        raise ValueError(f"{name} must be mono or frames-by-channels audio")
+    if samples.ndim == 2 and samples.shape[1] < 1:
+        raise ValueError(f"{name} must contain at least one channel")
+    return np.asarray(np.nan_to_num(samples, nan=0.0, posinf=1.0, neginf=-1.0))
 
 
 def _build_adsr_envelope(
@@ -91,7 +130,7 @@ class SyntheticAudioGenerator:
 
     def __init__(self, sample_rate: int = 44100) -> None:
         """Initialize the instance."""
-        self.sample_rate = sample_rate
+        self.sample_rate = _positive_sample_rate(sample_rate)
         self.base_frequency = 261.63  # C4
 
     def generate_from_sapf(
@@ -340,13 +379,19 @@ class SyntheticAudioGenerator:
         Returns:
             List of 16-bit audio samples
         """
-        samples = int(self.sample_rate * duration)
+        duration_value = _finite_float(duration, "duration")
+        if duration_value < 0:
+            raise ValueError("duration must be non-negative")
+        samples = int(self.sample_rate * duration_value)
         audio_data = np.zeros(samples, dtype=np.float32)
 
         # Generate oscillators
         for osc in params["oscillators"]:
             osc_audio = self._generate_oscillator(
-                osc["frequency"], osc["amplitude"], osc["type"], samples
+                _finite_float(osc["frequency"], "oscillator frequency"),
+                _finite_float(osc["amplitude"], "oscillator amplitude"),
+                osc["type"],
+                samples,
             )
             audio_data += osc_audio
 
@@ -369,6 +414,7 @@ class SyntheticAudioGenerator:
             audio_data *= envelope
 
         # Normalize and convert to 16-bit integers
+        audio_data = np.nan_to_num(audio_data, nan=0.0, posinf=1.0, neginf=-1.0)
         audio_data = np.clip(audio_data, -1.0, 1.0)
         audio_data_int = (audio_data * 32767).astype(np.int16)
 
@@ -427,13 +473,14 @@ class SyntheticAudioGenerator:
     def _write_wav_file(self, audio_data: List[int], output_file: Path) -> bool:
         """Write audio data to WAV file."""
         try:
+            output_file.parent.mkdir(parents=True, exist_ok=True)
             with wave.open(str(output_file), "wb") as wav_file:
                 wav_file.setnchannels(1)  # Mono
                 wav_file.setsampwidth(2)  # 16-bit
                 wav_file.setframerate(self.sample_rate)
 
                 # Convert to bytes
-                audio_bytes = struct.pack(f"{len(audio_data)}h", *audio_data)
+                audio_bytes = struct.pack(f"<{len(audio_data)}h", *audio_data)
                 wav_file.writeframes(audio_bytes)
 
             logger.debug(f"Audio file written: {output_file}")
@@ -457,6 +504,9 @@ class SyntheticAudioGenerator:
         try:
             # Convert audio data to normalized numpy array
             audio_array = np.array(audio_data, dtype=np.float32) / 32767.0
+            if audio_array.size == 0:
+                logger.debug("Skipping visualization for empty audio: %s", output_file)
+                return
             time_axis = np.arange(len(audio_array)) / self.sample_rate
 
             # Create figure with subplots
@@ -612,17 +662,29 @@ def generate_oscillator_audio(
     Returns:
         Audio samples as numpy array
     """
-    samples = int(sample_rate * duration)
-    t = np.arange(samples) / sample_rate
+    validated_sample_rate = _positive_sample_rate(sample_rate)
+    duration_value = _finite_float(duration, "duration")
+    frequency_value = _finite_float(frequency, "frequency")
+    amplitude_value = _finite_float(amplitude, "amplitude")
+    if duration_value < 0:
+        raise ValueError("duration must be non-negative")
+    samples = int(validated_sample_rate * duration_value)
+    t = np.arange(samples) / validated_sample_rate
 
     if osc_type == "sine":
-        return amplitude * np.sin(2 * np.pi * frequency * t)
+        return np.asarray(amplitude_value * np.sin(2 * np.pi * frequency_value * t))
     elif osc_type == "saw":
-        return amplitude * 2 * (t * frequency - np.floor(t * frequency + 0.5))
+        return np.asarray(
+            amplitude_value
+            * 2
+            * (t * frequency_value - np.floor(t * frequency_value + 0.5))
+        )
     elif osc_type == "square":
-        return amplitude * np.sign(np.sin(2 * np.pi * frequency * t))
+        return np.asarray(
+            amplitude_value * np.sign(np.sin(2 * np.pi * frequency_value * t))
+        )
     else:
-        return amplitude * np.sin(2 * np.pi * frequency * t)
+        return np.asarray(amplitude_value * np.sin(2 * np.pi * frequency_value * t))
 
 
 def apply_envelope(
@@ -647,12 +709,18 @@ def apply_envelope(
     Returns:
         Audio with envelope applied
     """
+    samples = _audio_array(audio)
     envelope = _build_adsr_envelope(
-        len(audio), attack, decay, sustain, release, sample_rate
+        len(samples),
+        attack,
+        decay,
+        sustain,
+        release,
+        _positive_sample_rate(sample_rate),
     )
-    if audio.ndim > 1:
+    if samples.ndim > 1:
         envelope = envelope[:, np.newaxis]
-    return np.asarray(audio * envelope)
+    return np.asarray(samples * envelope)
 
 
 def mix_audio_channels(
@@ -669,26 +737,46 @@ def mix_audio_channels(
         Mixed audio
     """
     if not audio_list:
-        return np.array([])
+        return np.array([], dtype=float)
 
     if weights is None:
         weights = [1.0 / len(audio_list)] * len(audio_list)
+    if len(weights) != len(audio_list):
+        raise ValueError("weights must match the number of audio arrays")
+    numeric_weights = [_finite_float(weight, "mix weight") for weight in weights]
 
-    # Ensure all arrays are the same length
-    max_length = max(len(audio) for audio in audio_list)
-    padded_audio: list[Any] = []
+    arrays = [
+        _audio_array(audio, f"audio_list[{index}]")
+        for index, audio in enumerate(audio_list)
+    ]
+    max_length = max(len(audio) for audio in arrays)
+    max_channels = max(1 if audio.ndim == 1 else audio.shape[1] for audio in arrays)
+    multichannel = any(audio.ndim == 2 for audio in arrays)
+    padded_audio: List[np.ndarray] = []
 
-    for audio in audio_list:
-        if len(audio) < max_length:
-            padded = np.zeros(max_length)
-            padded[: len(audio)] = audio
-            padded_audio.append(padded)
+    for audio in arrays:
+        if max_channels > 1:
+            if audio.ndim == 1:
+                audio = np.repeat(audio[:, np.newaxis], max_channels, axis=1)
+            elif audio.shape[1] == 1:
+                audio = np.repeat(audio, max_channels, axis=1)
+            elif audio.shape[1] != max_channels:
+                raise ValueError(
+                    "multichannel audio arrays must have compatible channels"
+                )
+            padded_multichannel = np.zeros((max_length, max_channels), dtype=float)
+            padded_multichannel[: len(audio), :] = audio
+            padded_audio.append(padded_multichannel)
         else:
-            padded_audio.append(audio[:max_length])
+            mono = audio[:, 0] if audio.ndim == 2 else audio
+            padded_mono = np.zeros(max_length, dtype=float)
+            padded_mono[: len(mono)] = mono
+            padded_audio.append(padded_mono)
 
-    # Mix with weights
-    mixed = np.zeros(max_length)
-    for audio, weight in zip(padded_audio, weights):
+    mixed = np.zeros_like(padded_audio[0], dtype=float)
+    for audio, weight in zip(padded_audio, numeric_weights):
         mixed += audio * weight
 
-    return mixed
+    if multichannel and mixed.ndim == 1:
+        return mixed[:, np.newaxis]
+    return np.asarray(mixed)

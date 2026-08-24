@@ -252,7 +252,117 @@ class TestResearchFunctional:
         data = json.loads(first_bytes)
         evidence = data["hypotheses_generated"][0]["analysis_evidence"]
         assert evidence["dimensions"]["π"] == [4]
+        assert data["hypotheses_generated"][0]["file"] == "nested/greek.md"
         assert data["claim_scope"] == "prospective_unvalidated_hypotheses"
+
+    @pytest.mark.unit
+    def test_recursive_same_named_models_keep_distinct_evidence_and_claim_markers(
+        self, tmp_path: Path
+    ) -> None:
+        target = tmp_path / "input"
+        for branch, family in (("a", "HiddenMarkovModel"), ("b", "ActInfPOMDP")):
+            nested = target / branch
+            nested.mkdir(parents=True)
+            (nested / "model.md").write_text(
+                "## GNNSection\n"
+                f"{family}\n"
+                "## StateSpaceBlock\n"
+                "A[2,2]\nB[2,2]\nC[2]\nD[2]\npi[2]\n",
+                encoding="utf-8",
+            )
+        first = tmp_path / "first"
+        second = tmp_path / "second"
+
+        assert process_research(target, first, recursive=True)
+        assert process_research(target, second, recursive=True)
+        first_bytes = (first / "research_results.json").read_bytes()
+        assert first_bytes == (second / "research_results.json").read_bytes()
+        receipt = json.loads(first_bytes)
+
+        assert set(receipt["model_families_detected"]) == {
+            "a/model.md",
+            "b/model.md",
+        }
+        assert {entry["file"] for entry in receipt["hypotheses_generated"]} == {
+            "a/model.md",
+            "b/model.md",
+        }
+        for entry in receipt["hypotheses_generated"]:
+            for hypothesis in entry["hypotheses"]:
+                assert hypothesis["source"] == "rule_based_static_analysis"
+                assert hypothesis["claim_scope"] == "prospective_unvalidated_hypothesis"
+
+    @pytest.mark.unit
+    def test_invalid_recursive_option_fails_with_structured_receipt(
+        self, gnn_dir_simple: Any, tmp_path: Path
+    ) -> None:
+        output = tmp_path / "invalid_recursive"
+
+        assert process_research(gnn_dir_simple, output, recursive="yes") is False
+        receipt = json.loads(
+            (output / "research_results.json").read_text(encoding="utf-8")
+        )
+        assert receipt["processed_files"] == 0
+        assert receipt["errors"][0]["error_type"] == "invalid_configuration"
+
+
+@pytest.mark.unit
+def test_committed_hierarchy_exemplar_uses_hierarchical_reasoning_path() -> None:
+    from research.processor import (
+        count_connections,
+        detect_model_family,
+        extract_state_space_dims,
+        generate_rule_based_hypotheses,
+    )
+
+    repo_root = Path(__file__).parents[3]
+    content = (
+        repo_root / "input/gnn_files/hierarchical/temporal_hierarchy.md"
+    ).read_text(encoding="utf-8")
+    family = detect_model_family(content)
+    dims = extract_state_space_dims(content)
+    connections = count_connections(content)
+    hypotheses = generate_rule_based_hypotheses(content, family, dims, connections)
+
+    assert family == "hierarchical"
+    assert dims["A_level0"] == [3, 4]
+    assert connections["total"] > 0
+    assert "message_passing" in {hypothesis["type"] for hypothesis in hypotheses}
+
+
+@pytest.mark.unit
+def test_section_parsing_is_case_insensitive_and_rejects_nonpositive_dims() -> None:
+    from research.processor import (
+        count_connections,
+        detect_model_family,
+        extract_state_space_dims,
+        generate_rule_based_hypotheses,
+    )
+
+    content = (
+        "## gnnsection\nActInfPOMDP\n"
+        "## statespaceblock\n"
+        "A[2,2]\nB[2,2,2]\nC[2]\nD[2]\npi[2]\ninvalid[2,0]\n"
+        "## connections\ns > o\n"
+        "## actinfontologyannotation\ns=HiddenState\n"
+        "## initialparameterization\nA={(1,0),(0,1)}\n"
+    )
+    dims = extract_state_space_dims(content)
+    connections = count_connections(content)
+    family = detect_model_family(content)
+    hypothesis_types = {
+        hypothesis["type"]
+        for hypothesis in generate_rule_based_hypotheses(
+            content, family, dims, connections
+        )
+    }
+
+    assert family == "pomdp"
+    assert dims["A"] == [2, 2]
+    assert "invalid" not in dims
+    assert connections == {"directed": 1, "undirected": 0, "total": 1}
+    assert "ontology_annotation" not in hypothesis_types
+    assert "parameterization" not in hypothesis_types
 
 
 @pytest.mark.unit

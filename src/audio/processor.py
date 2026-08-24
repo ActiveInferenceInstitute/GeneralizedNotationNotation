@@ -109,6 +109,7 @@ def process_audio(
                     results["audio_analysis"].append(analysis)
 
                 except Exception as e:
+                    results["success"] = False
                     error_info: dict[str, Any] = {
                         "file": str(gnn_file),
                         "error": str(e),
@@ -437,91 +438,157 @@ def generate_audio_from_gnn(
 
 
 def extract_variables_for_audio(content: str) -> List[Dict[str, Any]]:
-    """Extract variables from GNN content for audio generation."""
-    variables: list[Any] = []
+    """Extract unique declarations from the canonical StateSpaceBlock."""
+    section_match = re.search(
+        r"(?ms)^##[ \t]+StateSpaceBlock[ \t]*\r?\n(.*?)(?=^##[ \t]+|\Z)",
+        str(content or ""),
+    )
+    search_text = section_match.group(1) if section_match else str(content or "")
+    declaration_re = re.compile(r"^\s*([^\W\d]\w*)\s*\[([^\]]+)\]", re.UNICODE)
+    variables: List[Dict[str, Any]] = []
+    seen: set[str] = set()
+    for raw_line in search_text.splitlines():
+        line = raw_line.strip()
+        if not line or line.startswith("#"):
+            continue
+        match = declaration_re.match(line)
+        if match is None or match.group(1) in seen:
+            continue
+        dimensions = match.group(2)
+        type_match = re.search(r"(?:^|,)\s*type\s*=\s*([^,\]]+)", dimensions)
+        name = match.group(1)
+        seen.add(name)
+        variables.append(
+            {
+                "name": name,
+                "type": type_match.group(1).strip() if type_match else "unknown",
+                "dimensions": dimensions,
+                "definition": match.group(0),
+            }
+        )
 
-    # Look for variable definitions
-    var_patterns: list[Any] = [
-        r"(\w+)\s*:\s*(\w+)",  # name: type
-        r"(\w+)\s*=\s*([^;\n]+)",  # name = value
-        r"(\w+)\s*\[([^\]]+)\]",  # name[dimensions]
-    ]
-
-    for pattern in var_patterns:
-        matches = re.finditer(pattern, content)
-        for match in matches:
-            variables.append(
-                {
-                    "name": match.group(1),
-                    "type": match.group(2) if len(match.groups()) > 1 else "unknown",
-                    "definition": match.group(0),
-                }
-            )
-
+    # Preserve support for the earlier ``name: type`` shorthand when no
+    # StateSpaceBlock-style declaration is present.
+    if not variables:
+        for match in re.finditer(r"(?m)^\s*([^\W\d]\w*)\s*:\s*(\w+)\s*$", search_text):
+            name = match.group(1)
+            if name not in seen:
+                seen.add(name)
+                variables.append(
+                    {
+                        "name": name,
+                        "type": match.group(2),
+                        "definition": match.group(0).strip(),
+                    }
+                )
     return variables
 
 
 def extract_connections_for_audio(content: str) -> List[Dict[str, Any]]:
-    """Extract connections from GNN content for audio generation."""
-    connections: list[Any] = []
-
-    # Look for connection patterns
-    conn_patterns: list[Any] = [
-        r"(\w+)\s*->\s*(\w+)",  # source -> target
-        r"(\w+)\s*→\s*(\w+)",  # source → target
-        r"(\w+)\s*connects\s*(\w+)",  # source connects target
-    ]
-
-    for pattern in conn_patterns:
-        matches = re.finditer(pattern, content)
-        for match in matches:
-            connections.append(
-                {
-                    "source": match.group(1),
-                    "target": match.group(2),
-                    "definition": match.group(0),
-                }
-            )
-
+    """Extract canonical and earlier connection operators without duplicates."""
+    section_match = re.search(
+        r"(?ms)^##[ \t]+Connections[ \t]*\r?\n(.*?)(?=^##[ \t]+|\Z)",
+        str(content or ""),
+    )
+    search_text = section_match.group(1) if section_match else str(content or "")
+    connection_re = re.compile(
+        r"^\s*([^\W\d]\w*)\s*(->|→|>|-|\*|~)\s*([^\W\d]\w*)\s*$",
+        re.UNICODE,
+    )
+    legacy_re = re.compile(
+        r"^\s*([^\W\d]\w*)\s+connects\s+([^\W\d]\w*)\s*$",
+        re.IGNORECASE | re.UNICODE,
+    )
+    connections: List[Dict[str, Any]] = []
+    seen: set[tuple[str, str, str]] = set()
+    for raw_line in search_text.splitlines():
+        line = raw_line.split("#", 1)[0].strip()
+        if not line:
+            continue
+        match = connection_re.match(line)
+        if match:
+            source, operator, target = match.groups()
+        else:
+            legacy_match = legacy_re.match(line)
+            if legacy_match is None:
+                continue
+            source, target = legacy_match.groups()
+            operator = "connects"
+        key = (source, operator, target)
+        if key in seen:
+            continue
+        seen.add(key)
+        connections.append(
+            {
+                "source": source,
+                "target": target,
+                "operator": operator,
+                "directed": operator in {"->", "→", ">"},
+                "definition": line,
+            }
+        )
     return connections
+
+
+def _clean_audio_array(audio: Any) -> np.ndarray:
+    """Validate mono/stereo sample layout and replace non-finite samples."""
+    raw = np.asarray(audio)
+    if np.iscomplexobj(raw):
+        raise ValueError("audio samples must be real numbers")
+    try:
+        samples = np.asarray(audio, dtype=np.float64)
+    except (TypeError, ValueError) as exc:
+        raise ValueError("audio samples must be numeric") from exc
+    if samples.ndim not in (1, 2):
+        raise ValueError("audio must be a mono or frames-by-channels array")
+    if samples.ndim == 2 and samples.shape[1] < 1:
+        raise ValueError("audio must contain at least one channel")
+    return np.asarray(np.nan_to_num(samples, nan=0.0, posinf=1.0, neginf=-1.0))
+
+
+def _validate_sample_rate(sample_rate: Any) -> int:
+    if isinstance(sample_rate, bool):
+        raise ValueError("sample_rate must be a positive integer")
+    try:
+        parsed = int(sample_rate)
+    except (OverflowError, TypeError, ValueError) as exc:
+        raise ValueError("sample_rate must be a positive integer") from exc
+    if parsed <= 0 or parsed != sample_rate:
+        raise ValueError("sample_rate must be a positive integer")
+    return parsed
 
 
 def save_audio_file(
     audio: np.ndarray, file_path: Path, sample_rate: int = 44100
 ) -> None:
     """Save audio data to file."""
-    clean_audio = np.nan_to_num(np.asarray(audio), nan=0.0, posinf=1.0, neginf=-1.0)
+    clean_audio = _clean_audio_array(audio)
+    validated_sample_rate = _validate_sample_rate(sample_rate)
+    file_path.parent.mkdir(parents=True, exist_ok=True)
     try:
         import soundfile as sf
 
-        sf.write(str(file_path), clean_audio, sample_rate)
-    except (ImportError, OSError, RuntimeError, ValueError):
+        sf.write(str(file_path), clean_audio, validated_sample_rate)
+    except (ImportError, OSError, RuntimeError, TypeError, ValueError):
         if file_path.suffix.lower() != ".wav":
             raise
         # A WAV target has a dependency-free, format-correct recovery path.
-        write_basic_wav(clean_audio, file_path, sample_rate)
+        write_basic_wav(clean_audio, file_path, validated_sample_rate)
 
 
 def write_basic_wav(audio: np.ndarray, file_path: Path, sample_rate: int) -> Any:
     """Write basic WAV file without external dependencies."""
     import wave
 
-    if sample_rate <= 0:
-        raise ValueError("sample_rate must be positive")
-
-    samples = np.asarray(audio)
-    if samples.ndim not in (1, 2):
-        raise ValueError("audio must be a mono or frames-by-channels array")
+    validated_sample_rate = _validate_sample_rate(sample_rate)
+    samples = _clean_audio_array(audio)
     channels = 1 if samples.ndim == 1 else samples.shape[1]
-    if channels < 1:
-        raise ValueError("audio must contain at least one channel")
-
-    clean = np.nan_to_num(samples, nan=0.0, posinf=1.0, neginf=-1.0)
-    pcm = (np.clip(clean, -1.0, 1.0) * 32767).astype("<i2")
+    file_path.parent.mkdir(parents=True, exist_ok=True)
+    pcm = (np.clip(samples, -1.0, 1.0) * 32767).astype("<i2")
     with wave.open(str(file_path), "wb") as wav_file:
         wav_file.setnchannels(channels)
         wav_file.setsampwidth(2)
-        wav_file.setframerate(sample_rate)
+        wav_file.setframerate(validated_sample_rate)
         wav_file.writeframes(pcm.tobytes(order="C"))
 
 
@@ -602,7 +669,7 @@ def analyze_audio_characteristics(
             analysis["audio_characteristics"][audio_type] = {
                 "duration": len(audio_data) / sample_rate,
                 "sample_rate": sample_rate,
-                "channels": len(audio_data.shape),
+                "channels": 1 if audio_data.ndim == 1 else audio_data.shape[1],
                 "max_amplitude": np.max(np.abs(audio_data)),
                 "rms_amplitude": np.sqrt(np.mean(audio_data**2)),
             }

@@ -112,8 +112,10 @@ def generate_analysis_from_logs(
 
         # Generate plots
         try:
-            _generate_plots(beliefs, actions, observations, efe, model_output_dir)
-            analysis["plots_generated"] = True
+            plots_ok = _generate_plots(
+                beliefs, actions, observations, efe, model_output_dir
+            )
+            analysis["plots_generated"] = bool(plots_ok)
         except Exception as e:
             logger.warning(f"Plot generation failed for {model_name}: {e}")
             analysis["plots_generated"] = False
@@ -134,8 +136,12 @@ def _generate_plots(
     observations: list,
     efe: np.ndarray,
     output_dir: Path,
-) -> None:
-    """Generate analysis plots using matplotlib."""
+) -> bool:
+    """Generate analysis plots using matplotlib.
+
+    Returns True if at least one plot artifact was written, False otherwise
+    (e.g. matplotlib unavailable or no plottable data).
+    """
     try:
         import matplotlib
 
@@ -143,7 +149,9 @@ def _generate_plots(
         import matplotlib.pyplot as plt
     except ImportError:
         logger.warning("matplotlib not available — skipping plots")
-        return
+        return False
+
+    saved = False
 
     # Belief trajectory
     if beliefs.ndim == 2 and beliefs.shape[0] > 0:
@@ -158,6 +166,7 @@ def _generate_plots(
         fig.tight_layout()
         fig.savefig(output_dir / "belief_trajectory.png", dpi=150)
         plt.close(fig)
+        saved = True
 
     # Action distribution
     if actions:
@@ -171,6 +180,7 @@ def _generate_plots(
         fig.tight_layout()
         fig.savefig(output_dir / "action_distribution.png", dpi=150)
         plt.close(fig)
+        saved = True
 
     # EFE history
     if efe.ndim == 2 and efe.shape[0] > 0:
@@ -185,5 +195,8 @@ def _generate_plots(
         fig.tight_layout()
         fig.savefig(output_dir / "efe_history.png", dpi=150)
         plt.close(fig)
+        saved = True
 
-    logger.info(f"✅ NumPyro analysis plots saved to: {output_dir}")
+    if saved:
+        logger.info(f"✅ NumPyro analysis plots saved to: {output_dir}")
+    return saved

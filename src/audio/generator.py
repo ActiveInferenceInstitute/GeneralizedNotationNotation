@@ -5,6 +5,7 @@ Audio generator module for GNN Processing Pipeline.
 This module provides audio generation functionality.
 """
 
+import math
 from typing import Any, Dict, List, Optional, cast
 
 # Optional numpy import with recovery
@@ -15,6 +16,39 @@ try:
 except ImportError:
     np = cast(Any, None)
     NUMPY_AVAILABLE = False
+
+
+def _finite_number(value: Any, default: float) -> float:
+    try:
+        parsed = float(value)
+    except (TypeError, ValueError):
+        return default
+    return parsed if math.isfinite(parsed) else default
+
+
+def _positive_sample_rate(value: Any, default: int = 44100) -> int:
+    if isinstance(value, bool):
+        return default
+    try:
+        parsed = int(value)
+    except (OverflowError, TypeError, ValueError):
+        return default
+    return parsed if parsed > 0 and parsed == value else default
+
+
+def _audio_array(audio: Any) -> np.ndarray:
+    raw = np.asarray(audio)
+    if np.iscomplexobj(raw):
+        raise ValueError("audio samples must be real")
+    try:
+        samples = np.asarray(audio, dtype=np.float64)
+    except (TypeError, ValueError) as exc:
+        raise ValueError("audio samples must be numeric") from exc
+    if samples.ndim not in (1, 2):
+        raise ValueError("audio must be mono or frames-by-channels")
+    if samples.ndim == 2 and samples.shape[1] < 1:
+        raise ValueError("audio must contain at least one channel")
+    return np.asarray(np.nan_to_num(samples, nan=0.0, posinf=1.0, neginf=-1.0))
 
 
 def generate_tonal_representation(
@@ -209,38 +243,45 @@ def mix_audio_channels(channels: List[np.ndarray], mix_mode: str = "add") -> np.
     Returns:
         Mixed audio array
     """
-    try:
-        if not channels:
-            return np.array([])
+    if not channels:
+        return np.array([], dtype=float)
 
-        # Ensure all channels have the same length
-        max_length = max(len(channel) for channel in channels)
-        padded_channels: list[Any] = []
-
-        for channel in channels:
-            if len(channel) < max_length:
-                # Pad with zeros
-                padded = np.zeros(max_length)
-                padded[: len(channel)] = channel
-                padded_channels.append(padded)
-            else:
-                padded_channels.append(channel)
-
-        # Mix channels based on mode
-        if mix_mode == "add":
-            mixed = np.sum(padded_channels, axis=0)
-        elif mix_mode == "average":
-            mixed = np.mean(padded_channels, axis=0)
-        elif mix_mode == "max":
-            mixed = np.maximum.reduce(padded_channels)
+    arrays = [_audio_array(channel) for channel in channels]
+    max_length = max(len(channel) for channel in arrays)
+    max_channels = max(
+        1 if channel.ndim == 1 else channel.shape[1] for channel in arrays
+    )
+    multichannel = any(channel.ndim == 2 for channel in arrays)
+    padded_channels: List[np.ndarray] = []
+    for channel in arrays:
+        if max_channels > 1:
+            if channel.ndim == 1:
+                channel = np.repeat(channel[:, np.newaxis], max_channels, axis=1)
+            elif channel.shape[1] == 1:
+                channel = np.repeat(channel, max_channels, axis=1)
+            elif channel.shape[1] != max_channels:
+                raise ValueError("audio arrays must have compatible channel counts")
+            padded_multichannel = np.zeros((max_length, max_channels), dtype=float)
+            padded_multichannel[: len(channel), :] = channel
+            padded_channels.append(padded_multichannel)
         else:
-            mixed = np.sum(padded_channels, axis=0)  # Default to add
+            mono = channel[:, 0] if channel.ndim == 2 else channel
+            padded_mono = np.zeros(max_length, dtype=float)
+            padded_mono[: len(mono)] = mono
+            padded_channels.append(padded_mono)
 
-        return cast(np.ndarray, mixed)
-
-    except Exception:
-        # Return first channel or empty array on error
-        return channels[0] if channels else np.array([])
+    if mix_mode == "add":
+        mixed = np.sum(padded_channels, axis=0)
+    elif mix_mode == "average":
+        mixed = np.mean(padded_channels, axis=0)
+    elif mix_mode == "max":
+        mixed = np.maximum.reduce(padded_channels)
+    else:
+        mixed = np.sum(padded_channels, axis=0)
+    result = np.asarray(mixed)
+    if multichannel and result.ndim == 1:
+        result = result[:, np.newaxis]
+    return result
 
 
 class SyntheticAudioGenerator:
@@ -254,72 +295,39 @@ class SyntheticAudioGenerator:
 
     def generate_synthetic_audio(self, config: Dict[str, Any]) -> np.ndarray:
         """Generate synthetic audio based on configuration."""
-        try:
-            # Extract parameters
-            frequency = config.get("frequency", 440.0)
-            duration = config.get("duration", 1.0)
-            sample_rate = config.get("sample_rate", 44100)
-            oscillator_type = config.get("oscillator_type", "sine")
+        frequency = _finite_number(config.get("frequency", 440.0), 0.0)
+        duration = max(0.0, _finite_number(config.get("duration", 1.0), 0.0))
+        sample_rate = _positive_sample_rate(config.get("sample_rate", 44100))
+        oscillator_type = str(config.get("oscillator_type", "sine"))
 
-            # Generate time array
-            t = np.linspace(0, duration, int(sample_rate * duration), False)
-
-            # Generate waveform based on oscillator type
-            if oscillator_type == "sine":
-                audio = np.sin(2 * np.pi * frequency * t)
-            elif oscillator_type == "square":
-                audio = np.sign(np.sin(2 * np.pi * frequency * t))
-            elif oscillator_type == "sawtooth":
-                audio = 2 * (t * frequency - np.floor(t * frequency + 0.5))
-            elif oscillator_type == "triangle":
-                audio = (
-                    2 * np.abs(2 * (t * frequency - np.floor(t * frequency + 0.5))) - 1
-                )
-            elif oscillator_type == "noise":
-                audio = np.random.uniform(-1, 1, len(t))
-            else:
-                audio = np.sin(2 * np.pi * frequency * t)  # Default to sine
-
-            return cast(np.ndarray, audio)
-
-        except Exception:
-            return cast(
-                np.ndarray,
-                np.zeros(
-                    int(config.get("sample_rate", 44100) * config.get("duration", 1.0))
-                ),
-            )
+        t = np.linspace(0, duration, int(sample_rate * duration), False)
+        if oscillator_type == "sine":
+            audio = np.sin(2 * np.pi * frequency * t)
+        elif oscillator_type == "square":
+            audio = np.sign(np.sin(2 * np.pi * frequency * t))
+        elif oscillator_type == "sawtooth":
+            audio = 2 * (t * frequency - np.floor(t * frequency + 0.5))
+        elif oscillator_type == "triangle":
+            audio = 2 * np.abs(2 * (t * frequency - np.floor(t * frequency + 0.5))) - 1
+        elif oscillator_type == "noise":
+            audio = np.random.uniform(-1, 1, len(t))
+        else:
+            audio = np.sin(2 * np.pi * frequency * t)
+        return np.asarray(np.nan_to_num(audio))
 
     def apply_envelope(
         self, audio: np.ndarray, envelope_type: str = "ADSR"
     ) -> np.ndarray:
         """Apply envelope to audio."""
-        try:
-            if envelope_type == "ADSR":
-                # Simple ADSR envelope
-                attack_samples = int(len(audio) * 0.1)
-                decay_samples = int(len(audio) * 0.1)
-                release_samples = int(len(audio) * 0.2)
-                sustain_samples = (
-                    len(audio) - attack_samples - decay_samples - release_samples
-                )
-
-                # Create envelope
-                envelope = np.ones(len(audio))
-                envelope[:attack_samples] = np.linspace(0, 1, attack_samples)
-                envelope[attack_samples : attack_samples + decay_samples] = np.linspace(
-                    1, 0.7, decay_samples
-                )
-                envelope[
-                    attack_samples + decay_samples : attack_samples
-                    + decay_samples
-                    + sustain_samples
-                ] = 0.7
-                envelope[-release_samples:] = np.linspace(0.7, 0, release_samples)
-
-                return audio * envelope
-            else:
-                return audio
-
-        except Exception:
-            return audio
+        samples = _audio_array(audio)
+        if envelope_type != "ADSR" or len(samples) == 0:
+            return samples
+        positions = np.linspace(0.0, 1.0, len(samples))
+        envelope = np.interp(
+            positions,
+            [0.0, 0.1, 0.2, 0.8, 1.0],
+            [0.0, 1.0, 0.7, 0.7, 0.0],
+        )
+        if samples.ndim == 2:
+            envelope = envelope[:, np.newaxis]
+        return np.asarray(samples * envelope)

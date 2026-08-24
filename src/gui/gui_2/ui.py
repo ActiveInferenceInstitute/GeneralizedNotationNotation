@@ -7,7 +7,9 @@ and real-time GNN markdown generation.
 
 from __future__ import annotations
 
+import copy
 import logging
+import math
 import os
 from pathlib import Path
 from typing import Any, List, cast
@@ -25,8 +27,282 @@ except ImportError:
 
 from .matrix_editor import (
     create_matrix_from_gnn,
+    get_pomdp_template,
     update_gnn_from_matrix,
+    validate_visual_matrix_dimensions,
 )
+
+_MAX_EDITOR_DIMENSION = 64
+
+
+def _table_rows(value: Any) -> List[List[Any]]:
+    """Normalize Gradio, pandas, NumPy, and ordinary table values."""
+    raw_rows = getattr(value, "values", value)
+    if hasattr(raw_rows, "tolist"):
+        raw_rows = raw_rows.tolist()
+    if raw_rows is None:
+        return []
+    if not isinstance(raw_rows, (list, tuple)):
+        return []
+    rows: List[List[Any]] = []
+    for row in raw_rows:
+        if isinstance(row, (list, tuple)):
+            rows.append(list(row))
+        else:
+            rows.append([row])
+    return rows
+
+
+def _finite_table(value: Any, name: str) -> List[List[float]]:
+    """Return a rectangular finite numeric table or a precise validation error."""
+    rows = _table_rows(value)
+    if not rows or not rows[0]:
+        raise ValueError(f"{name} cannot be empty")
+    columns = len(rows[0])
+    if any(len(row) != columns for row in rows):
+        raise ValueError(f"{name} must be rectangular")
+    converted: List[List[float]] = []
+    for row in rows:
+        converted_row: List[float] = []
+        for raw_value in row:
+            try:
+                number = float(raw_value)
+            except (TypeError, ValueError) as exc:
+                raise ValueError(
+                    f"{name} contains a non-numeric value: {raw_value!r}"
+                ) from exc
+            if not math.isfinite(number):
+                raise ValueError(f"{name} contains a non-finite value")
+            converted_row.append(number)
+        converted.append(converted_row)
+    return converted
+
+
+def _initial_matrix_state(markdown_text: str) -> dict[str, Any]:
+    """Build editable state from a real GNN model, with a valid empty fallback."""
+    visual_data = create_matrix_from_gnn(markdown_text)
+    matrices = visual_data.get("visual_matrices", {})
+    if not any(
+        isinstance(matrix, dict) and matrix.get("declared")
+        for matrix in matrices.values()
+    ) or validate_visual_matrix_dimensions(visual_data):
+        visual_data = create_matrix_from_gnn(get_pomdp_template())
+        matrices = visual_data["visual_matrices"]
+
+    state: dict[str, Any] = copy.deepcopy(matrices)
+    b_matrix = state.get("B")
+    if not isinstance(b_matrix, dict):
+        b_matrix = create_matrix_from_gnn(get_pomdp_template())["visual_matrices"]["B"]
+    if b_matrix.get("type") == "matrix":
+        b_matrix = {
+            **b_matrix,
+            "type": "tensor",
+            "source_type": "matrix",
+            "depth": 1,
+            "current_slice": 0,
+            "values": [copy.deepcopy(b_matrix.get("values", []))],
+        }
+    else:
+        b_matrix["source_type"] = "tensor"
+        b_matrix["current_slice"] = 0
+    state["B"] = b_matrix
+    state["_state_spaces"] = copy.deepcopy(visual_data.get("state_spaces", {}))
+    return state
+
+
+def _coerce_editor_state(current_state: Any) -> dict[str, Any]:
+    """Return an isolated valid editor state even for stale callback payloads."""
+    if not isinstance(current_state, dict):
+        return _initial_matrix_state(get_pomdp_template())
+
+    expected_dimensions = {
+        "A": ("rows", "cols"),
+        "B": ("depth", "rows", "cols"),
+        "C": ("size",),
+        "D": ("size",),
+    }
+    for name, dimensions in expected_dimensions.items():
+        matrix = current_state.get(name)
+        if not isinstance(matrix, dict) or not isinstance(matrix.get("values"), list):
+            return _initial_matrix_state(get_pomdp_template())
+        for dimension in dimensions:
+            try:
+                size = int(matrix[dimension])
+            except (KeyError, OverflowError, TypeError, ValueError):
+                return _initial_matrix_state(get_pomdp_template())
+            if size < 1:
+                return _initial_matrix_state(get_pomdp_template())
+    return copy.deepcopy(current_state)
+
+
+def _bounded_index(value: Any, upper_bound: int) -> int:
+    try:
+        parsed = int(float(value))
+    except (OverflowError, TypeError, ValueError):
+        parsed = 0
+    return max(0, min(max(0, upper_bound), parsed))
+
+
+def _positive_int(value: Any, default: int = 1) -> int:
+    try:
+        parsed = int(float(value))
+    except (OverflowError, TypeError, ValueError):
+        return default
+    return parsed if parsed > 0 else default
+
+
+def _coerce_delta(value: Any) -> int:
+    """Coerce callback deltas without allowing oversized UI mutations."""
+    try:
+        parsed = int(float(value))
+    except (OverflowError, TypeError, ValueError):
+        return 0
+    return max(-_MAX_EDITOR_DIMENSION, min(_MAX_EDITOR_DIMENSION, parsed))
+
+
+def _editor_visual_data(state: dict[str, Any]) -> dict[str, Any]:
+    """Convert the slice-oriented UI state back to matrix-editor model data."""
+    matrices = {
+        name: copy.deepcopy(state[name])
+        for name in ("A", "B", "C", "D")
+        if isinstance(state.get(name), dict)
+    }
+    b_matrix = matrices.get("B")
+    if (
+        b_matrix
+        and b_matrix.get("source_type") == "matrix"
+        and b_matrix.get("depth") == 1
+    ):
+        b_matrix["type"] = "matrix"
+        b_matrix["values"] = copy.deepcopy(b_matrix.get("values", [[]])[0])
+        b_matrix.pop("depth", None)
+        b_matrix.pop("current_slice", None)
+    if b_matrix:
+        b_matrix.pop("source_type", None)
+    return {
+        "visual_matrices": matrices,
+        "state_spaces": copy.deepcopy(state.get("_state_spaces", {})),
+    }
+
+
+def _state_from_tables(
+    current_state: Any,
+    a_data: Any,
+    b_data: Any,
+    c_data: Any,
+    d_data: Any,
+    b_slice: Any = 0,
+) -> dict[str, Any]:
+    """Synchronize all editable tables into state without losing B slices."""
+    state = _coerce_editor_state(current_state)
+    a_values = _finite_table(a_data, "A matrix")
+    b_values = _finite_table(b_data, "B matrix")
+    c_rows = _finite_table(c_data, "C vector")
+    d_rows = _finite_table(d_data, "D vector")
+    if any(len(row) != 1 for row in c_rows):
+        raise ValueError("C vector must have exactly one column")
+    if any(len(row) != 1 for row in d_rows):
+        raise ValueError("D vector must have exactly one column")
+
+    state["A"].update(rows=len(a_values), cols=len(a_values[0]), values=a_values)
+    state["C"].update(size=len(c_rows), values=[row[0] for row in c_rows])
+    state["D"].update(size=len(d_rows), values=[row[0] for row in d_rows])
+
+    b_info = state["B"]
+    depth = _positive_int(b_info.get("depth", 1))
+    slice_index = _bounded_index(b_slice, depth - 1)
+    slices = b_info.get("values")
+    if not isinstance(slices, list) or len(slices) != depth:
+        slices = [copy.deepcopy(b_values) for _ in range(depth)]
+    else:
+        slices = copy.deepcopy(slices)
+        slices[slice_index] = b_values
+    b_info.update(
+        rows=len(b_values),
+        cols=len(b_values[0]),
+        current_slice=slice_index,
+        values=slices,
+    )
+    return state
+
+
+def _generate_editor_gnn(
+    current_state: Any,
+    a_data: Any,
+    b_data: Any,
+    c_data: Any,
+    d_data: Any,
+    b_slice: Any,
+    template: str,
+) -> tuple[dict[str, Any], str]:
+    """Total model-generation core used by manual and auto-update callbacks."""
+    state = _state_from_tables(current_state, a_data, b_data, c_data, d_data, b_slice)
+    visual_data = _editor_visual_data(state)
+    errors = validate_visual_matrix_dimensions(visual_data)
+    if errors:
+        raise ValueError("; ".join(errors))
+    return state, update_gnn_from_matrix(visual_data, template)
+
+
+def _validate_editor_tables(
+    current_state: Any,
+    a_data: Any,
+    b_data: Any,
+    c_data: Any,
+    d_data: Any,
+    b_slice: Any = 0,
+) -> str:
+    """Return a user-facing result for every possible callback payload."""
+    try:
+        state = _state_from_tables(
+            current_state, a_data, b_data, c_data, d_data, b_slice
+        )
+        errors = validate_visual_matrix_dimensions(_editor_visual_data(state))
+    except (IndexError, KeyError, TypeError, ValueError) as exc:
+        errors = [str(exc)]
+    if errors:
+        return "❌ **Validation Errors:**\n" + "\n".join(
+            f"- {error}" for error in errors
+        )
+    return "✅ **Validation Passed:** All matrix dimensions and values are consistent"
+
+
+def _select_b_slice(
+    current_state: Any, current_values: Any, requested_slice: Any
+) -> tuple[dict[str, Any], List[List[float]]]:
+    """Persist the visible B slice and return the requested slice safely."""
+    state = _coerce_editor_state(current_state)
+    b_info = state["B"]
+    depth = _positive_int(b_info.get("depth", 1))
+    old_index = _bounded_index(b_info.get("current_slice", 0), depth - 1)
+    try:
+        visible_values = _finite_table(current_values, "B matrix")
+        slices = copy.deepcopy(b_info.get("values", []))
+        if len(slices) == depth:
+            slices[old_index] = visible_values
+            b_info["values"] = slices
+    except (TypeError, ValueError):
+        pass
+    new_index = _bounded_index(requested_slice, depth - 1)
+    b_info["current_slice"] = new_index
+    slices = b_info.get("values", [])
+    if not isinstance(slices, list):
+        slices = []
+    fallback = [
+        [0.0 for _ in range(_positive_int(b_info.get("cols")))]
+        for _ in range(_positive_int(b_info.get("rows")))
+    ]
+    normalized_slices = [
+        copy.deepcopy(slice_data)
+        if isinstance(slice_data, list)
+        else copy.deepcopy(fallback)
+        for slice_data in slices[:depth]
+    ]
+    while len(normalized_slices) < depth:
+        normalized_slices.append(copy.deepcopy(fallback))
+    b_info["values"] = normalized_slices
+    slices = normalized_slices
+    return state, copy.deepcopy(slices[new_index])
 
 
 def build_visual_gui(
@@ -36,8 +312,19 @@ def build_visual_gui(
     if gr is None:
         raise RuntimeError("Gradio not available")
 
-    # Initialize visual data from markdown
-    create_matrix_from_gnn(markdown_text)
+    # Initialize from the supplied model. Direct calls with blank or unusual
+    # content still receive a valid, editable POMDP rather than a crashing UI.
+    supplied_data = create_matrix_from_gnn(markdown_text)
+    if not any(
+        matrix.get("declared")
+        for matrix in supplied_data.get("visual_matrices", {}).values()
+    ):
+        markdown_text = get_pomdp_template()
+    initial_state = _initial_matrix_state(markdown_text)
+    a_initial = initial_state["A"]
+    b_initial = initial_state["B"]
+    c_initial = initial_state["C"]
+    d_initial = initial_state["D"]
 
     with gr.Blocks(title="GNN Visual Matrix Editor", theme=gr.themes.Soft()) as demo:
         gr.Markdown("# 🎯 GNN Visual Matrix Editor")
@@ -46,27 +333,7 @@ def build_visual_gui(
         )
 
         # State variables for matrix dimensions (using Gradio state)
-        matrix_state = gr.State(
-            {
-                "A": {
-                    "rows": 3,
-                    "cols": 3,
-                    "values": [[0.9, 0.05, 0.05], [0.05, 0.9, 0.05], [0.05, 0.05, 0.9]],
-                },
-                "B": {
-                    "depth": 3,
-                    "rows": 3,
-                    "cols": 3,
-                    "current_slice": 0,
-                    "values": [
-                        [[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]]
-                        for _ in range(3)
-                    ],
-                },
-                "C": {"size": 3, "values": [0.1, 0.1, 1.0]},
-                "D": {"size": 3, "values": [0.33, 0.33, 0.33]},
-            }
-        )
+        matrix_state = gr.State(initial_state)
 
         with gr.Row():
             with gr.Column(scale=3):
@@ -80,7 +347,8 @@ def build_visual_gui(
                     with gr.Row():
                         with gr.Column(scale=1):
                             a_size_display = gr.Markdown(
-                                "**Matrix A**: `3×3` (Observations × States)"
+                                f"**Matrix A**: `{a_initial['rows']}×{a_initial['cols']}` "
+                                "(Observations × States)"
                             )
 
                             # Dimension controls
@@ -88,7 +356,8 @@ def build_visual_gui(
                                 gr.Markdown("**Rows (Obs):**")
                                 a_rows_minus = gr.Button("➖", size="sm")
                                 a_rows_display = gr.Markdown(
-                                    "**3**", elem_classes=["dimension-display"]
+                                    f"**{a_initial['rows']}**",
+                                    elem_classes=["dimension-display"],
                                 )
                                 a_rows_plus = gr.Button("➕", size="sm")
 
@@ -96,7 +365,8 @@ def build_visual_gui(
                                 gr.Markdown("**Cols (States):**")
                                 a_cols_minus = gr.Button("➖", size="sm")
                                 a_cols_display = gr.Markdown(
-                                    "**3**", elem_classes=["dimension-display"]
+                                    f"**{a_initial['cols']}**",
+                                    elem_classes=["dimension-display"],
                                 )
                                 a_cols_plus = gr.Button("➕", size="sm")
 
@@ -107,12 +377,14 @@ def build_visual_gui(
 
                     # Matrix values editor
                     a_values = gr.Dataframe(
-                        headers=["State_0", "State_1", "State_2"],
-                        value=[[0.9, 0.05, 0.05], [0.05, 0.9, 0.05], [0.05, 0.05, 0.9]],
+                        headers=[
+                            f"State_{index}" for index in range(a_initial["cols"])
+                        ],
+                        value=a_initial["values"],
                         interactive=True,
                         label="A Matrix Values - Edit cells directly",
-                        row_count=3,
-                        col_count=3,
+                        row_count=a_initial["rows"],
+                        col_count=a_initial["cols"],
                     )
 
                 with gr.Tab("🟠 Matrix B (Transitions)"):
@@ -123,7 +395,8 @@ def build_visual_gui(
                     with gr.Row():
                         with gr.Column(scale=1):
                             b_size_display = gr.Markdown(
-                                "**Matrix B**: `3×3×3` (States × States × Actions)"
+                                f"**Matrix B**: `{b_initial['rows']}×{b_initial['cols']}×"
+                                f"{b_initial['depth']}` (States × States × Actions)"
                             )
 
                             # Dimension controls
@@ -131,7 +404,8 @@ def build_visual_gui(
                                 gr.Markdown("**States:**")
                                 b_states_minus = gr.Button("➖", size="sm")
                                 b_states_display = gr.Markdown(
-                                    "**3**", elem_classes=["dimension-display"]
+                                    f"**{b_initial['rows']}**",
+                                    elem_classes=["dimension-display"],
                                 )
                                 b_states_plus = gr.Button("➕", size="sm")
 
@@ -139,7 +413,8 @@ def build_visual_gui(
                                 gr.Markdown("**Actions (Depth):**")
                                 b_actions_minus = gr.Button("➖", size="sm")
                                 b_actions_display = gr.Markdown(
-                                    "**3**", elem_classes=["dimension-display"]
+                                    f"**{b_initial['depth']}**",
+                                    elem_classes=["dimension-display"],
                                 )
                                 b_actions_plus = gr.Button("➕", size="sm")
 
@@ -147,7 +422,7 @@ def build_visual_gui(
                     with gr.Row():
                         b_slice_selector = gr.Slider(
                             0,
-                            2,
+                            max(0, b_initial["depth"] - 1),
                             value=0,
                             step=1,
                             label="Action Slice - Select which action transition matrix to view",
@@ -160,12 +435,14 @@ def build_visual_gui(
 
                     # Matrix values editor
                     b_values = gr.Dataframe(
-                        headers=["State_0", "State_1", "State_2"],
-                        value=[[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]],
+                        headers=[
+                            f"State_{index}" for index in range(b_initial["cols"])
+                        ],
+                        value=b_initial["values"][0],
                         interactive=True,
                         label="B Matrix Values - Current Action Slice",
-                        row_count=3,
-                        col_count=3,
+                        row_count=b_initial["rows"],
+                        col_count=b_initial["cols"],
                     )
 
                 with gr.Tab("🔴 Vectors C & D"):
@@ -176,21 +453,23 @@ def build_visual_gui(
                             # Size display and controls for C
                             with gr.Row():
                                 c_size_display = gr.Markdown(
-                                    "**Vector C**: `3` (Observation Preferences)"
+                                    f"**Vector C**: `{c_initial['size']}` "
+                                    "(Observation Preferences)"
                                 )
                                 c_size_minus = gr.Button("➖", size="sm")
                                 c_size_display_num = gr.Markdown(
-                                    "**3**", elem_classes=["dimension-display"]
+                                    f"**{c_initial['size']}**",
+                                    elem_classes=["dimension-display"],
                                 )
                                 c_size_plus = gr.Button("➕", size="sm")
 
                             c_plot = gr.Plot(label="C Vector Visualization")
                             c_values = gr.Dataframe(
                                 headers=["Preference"],
-                                value=[[0.1], [0.1], [1.0]],
+                                value=[[value] for value in c_initial["values"]],
                                 interactive=True,
                                 label="C Values",
-                                row_count=3,
+                                row_count=c_initial["size"],
                                 col_count=1,
                             )
 
@@ -200,21 +479,22 @@ def build_visual_gui(
                             # Size display and controls for D
                             with gr.Row():
                                 d_size_display = gr.Markdown(
-                                    "**Vector D**: `3` (State Prior)"
+                                    f"**Vector D**: `{d_initial['size']}` (State Prior)"
                                 )
                                 d_size_minus = gr.Button("➖", size="sm")
                                 d_size_display_num = gr.Markdown(
-                                    "**3**", elem_classes=["dimension-display"]
+                                    f"**{d_initial['size']}**",
+                                    elem_classes=["dimension-display"],
                                 )
                                 d_size_plus = gr.Button("➕", size="sm")
 
                             d_plot = gr.Plot(label="D Vector Visualization")
                             d_values = gr.Dataframe(
                                 headers=["Prior"],
-                                value=[[0.33], [0.33], [0.33]],
+                                value=[[value] for value in d_initial["values"]],
                                 interactive=True,
                                 label="D Values",
-                                row_count=3,
+                                row_count=d_initial["size"],
                                 col_count=1,
                             )
 
@@ -227,7 +507,6 @@ def build_visual_gui(
                     reset_btn = gr.Button(
                         "🔄 Reset to POMDP Template", variant="secondary"
                     )
-                    gr.Button("🎲 Randomize Values", variant="secondary")
 
             with gr.Column(scale=1):
                 gr.Markdown("### 📝 **GNN Markdown Output**")
@@ -553,180 +832,99 @@ def build_visual_gui(
                 return f"**{name}**: Error calculating stats - {e}"
 
         def generate_gnn_from_matrices(
-            a_data: Any, b_data: Any, c_data: Any, d_data: Any, b_slice: Any
-        ) -> Any:
-            """Generate GNN markdown from matrix data"""
-            try:
-                # Convert Gradio DataFrames to Python lists
-                def convert_df_to_list(data: Any) -> Any:
-                    """Convert df to list."""
-                    if hasattr(data, "values"):
-                        return data.values.tolist()
-                    elif isinstance(data, list):
-                        return data
-                    else:
-                        return []
-
-                a_list = convert_df_to_list(a_data)
-                b_list = convert_df_to_list(b_data)
-                c_list = convert_df_to_list(c_data)
-                d_list = convert_df_to_list(d_data)
-
-                # Extract vector values properly
-                c_values: list[Any] = []
-                for item in c_list:
-                    if isinstance(item, list) and len(item) > 0:
-                        try:
-                            c_values.append(float(item[0]))
-                        except (ValueError, TypeError):
-                            c_values.append(0.0)
-                    else:
-                        c_values.append(0.0)
-
-                d_values: list[Any] = []
-                for item in d_list:
-                    if isinstance(item, list) and len(item) > 0:
-                        try:
-                            d_values.append(float(item[0]))
-                        except (ValueError, TypeError):
-                            d_values.append(0.0)
-                    else:
-                        d_values.append(0.0)
-
-                # Convert dataframe data to visual format
-                visual_matrices: dict[str, Any] = {
-                    "A": {
-                        "type": "matrix",
-                        "rows": len(a_list),
-                        "cols": len(a_list[0]) if a_list and len(a_list) > 0 else 0,
-                        "values": a_list,
-                        "description": "Likelihood matrix",
-                    },
-                    "C": {
-                        "type": "vector",
-                        "size": len(c_values),
-                        "values": c_values,
-                        "description": "Preference vector",
-                    },
-                    "D": {
-                        "type": "vector",
-                        "size": len(d_values),
-                        "values": d_values,
-                        "description": "Prior vector",
-                    },
-                    "B": {
-                        "type": "tensor",
-                        "depth": 3,  # Simplified for now
-                        "rows": len(b_list),
-                        "cols": len(b_list[0]) if b_list and len(b_list) > 0 else 0,
-                        "values": [
-                            b_list,
-                            b_list,
-                            b_list,
-                        ],  # Simplified - all slices same
-                        "description": "Transition matrices",
-                    },
-                }
-
-                visual_data: dict[str, Any] = {"visual_matrices": visual_matrices}
-                updated_gnn = update_gnn_from_matrix(visual_data, markdown_text)
-                return updated_gnn
-            except (ValueError, TypeError, KeyError) as e:
-                logger.error(f"Failed to generate GNN: {e}")
-                return markdown_text
+            current_state: Any,
+            a_data: Any,
+            b_data: Any,
+            c_data: Any,
+            d_data: Any,
+            b_slice: Any,
+        ) -> tuple[dict[str, Any], str]:
+            """Generate GNN markdown while preserving every transition slice."""
+            return _generate_editor_gnn(
+                current_state,
+                a_data,
+                b_data,
+                c_data,
+                d_data,
+                b_slice,
+                markdown_text,
+            )
 
         def save_gnn(gnn_text: Any) -> Any:
             """Save GNN markdown to file"""
             try:
                 import tempfile
 
+                if not isinstance(gnn_text, str):
+                    raise TypeError("generated GNN content must be text")
+                export_path.parent.mkdir(parents=True, exist_ok=True)
                 with tempfile.NamedTemporaryFile(
-                    mode="w", suffix=".tmp", dir=export_path.parent, delete=False
+                    mode="w",
+                    encoding="utf-8",
+                    suffix=".tmp",
+                    dir=export_path.parent,
+                    delete=False,
                 ) as tmp_f:
                     tmp_f.write(gnn_text)
                 os.replace(tmp_f.name, str(export_path))
                 return f"✅ Saved to {export_path.name}"
-            except OSError as e:
+            except (OSError, TypeError, ValueError) as e:
                 return f"❌ Save failed: {e}"
 
-        def validate_gnn(a_data: Any, b_data: Any, c_data: Any, d_data: Any) -> Any:
+        def validate_gnn(
+            current_state: Any,
+            a_data: Any,
+            b_data: Any,
+            c_data: Any,
+            d_data: Any,
+            b_slice: Any,
+        ) -> Any:
             """Validate matrix dimensions and consistency"""
-            try:
-                errors: list[Any] = []
-
-                # Convert DataFrames to lists
-                def convert_df_to_list(data: Any) -> Any:
-                    """Convert df to list."""
-                    if hasattr(data, "values"):
-                        return data.values.tolist()
-                    elif isinstance(data, list):
-                        return data
-                    else:
-                        return []
-
-                a_list = convert_df_to_list(a_data)
-                b_list = convert_df_to_list(b_data)
-                c_list = convert_df_to_list(c_data)
-                d_list = convert_df_to_list(d_data)
-
-                # Basic dimension checks
-                if not a_list or (isinstance(a_list[0], list) and not a_list[0]):
-                    errors.append("A matrix cannot be empty")
-                if not b_list or (isinstance(b_list[0], list) and not b_list[0]):
-                    errors.append("B matrix cannot be empty")
-                if not c_list:
-                    errors.append("C vector cannot be empty")
-                if not d_list:
-                    errors.append("D vector cannot be empty")
-
-                # Consistency checks
-                if a_list and d_list:
-                    a_cols = (
-                        len(a_list[0]) if a_list and isinstance(a_list[0], list) else 0
-                    )
-                    d_size = len(d_list)
-                    if a_cols != d_size:
-                        errors.append(
-                            f"A matrix columns ({a_cols}) must match D vector size ({d_size})"
-                        )
-
-                if a_list and c_list:
-                    a_rows = len(a_list)
-                    c_size = len(c_list)
-                    if a_rows != c_size:
-                        errors.append(
-                            f"A matrix rows ({a_rows}) must match C vector size ({c_size})"
-                        )
-
-                if errors:
-                    return "❌ **Validation Errors:**\n" + "\n".join(
-                        f"- {e}" for e in errors
-                    )
-                else:
-                    return (
-                        "✅ **Validation Passed:** All matrix dimensions are consistent"
-                    )
-
-            except (ValueError, TypeError, KeyError) as e:
-                return f"❌ Validation failed: {e}"
+            return _validate_editor_tables(
+                current_state, a_data, b_data, c_data, d_data, b_slice
+            )
 
         # === ENHANCED INTERACTIVE EVENT HANDLERS ===
 
         # Matrix A dimension control handlers
         def update_a_dimensions(
-            current_state: Any, delta_rows: Any = 0, delta_cols: Any = 0
+            current_state: Any,
+            visible_values: Any = None,
+            delta_rows: Any = 0,
+            delta_cols: Any = 0,
         ) -> Any:
             """Update Matrix A dimensions and resize data"""
-            state = current_state.copy()
+            state = _coerce_editor_state(current_state)
             a_info = state["A"]
 
-            new_rows = max(1, min(10, a_info["rows"] + delta_rows))
-            new_cols = max(1, min(10, a_info["cols"] + delta_cols))
+            new_rows = max(
+                1,
+                min(
+                    _MAX_EDITOR_DIMENSION,
+                    _positive_int(a_info.get("rows", 1)) + _coerce_delta(delta_rows),
+                ),
+            )
+            new_cols = max(
+                1,
+                min(
+                    _MAX_EDITOR_DIMENSION,
+                    _positive_int(a_info.get("cols", 1)) + _coerce_delta(delta_cols),
+                ),
+            )
 
             if new_rows != a_info["rows"] or new_cols != a_info["cols"]:
                 # Resize matrix
-                new_values = resize_matrix(a_info["values"], new_rows, new_cols, 0.1)
-                state["A"] = {"rows": new_rows, "cols": new_cols, "values": new_values}
+                try:
+                    current_values = _finite_table(
+                        visible_values
+                        if visible_values is not None
+                        else a_info.get("values"),
+                        "A matrix",
+                    )
+                except (TypeError, ValueError):
+                    current_values = []
+                new_values = resize_matrix(current_values, new_rows, new_cols, 0.1)
+                a_info.update(rows=new_rows, cols=new_cols, values=new_values)
 
                 # Create new headers
                 headers = [f"State_{i}" for i in range(new_cols)]
@@ -749,36 +947,69 @@ def build_visual_gui(
 
         # Matrix B dimension control handlers
         def update_b_dimensions(
-            current_state: Any, delta_states: Any = 0, delta_actions: Any = 0
+            current_state: Any,
+            visible_values: Any = None,
+            visible_slice: Any = None,
+            delta_states: Any = 0,
+            delta_actions: Any = 0,
         ) -> Any:
             """Update Matrix B dimensions and resize data"""
-            state = current_state.copy()
+            state = _coerce_editor_state(current_state)
+            if visible_values is not None:
+                state, _ = _select_b_slice(state, visible_values, visible_slice)
             b_info = state["B"]
 
-            new_states = max(1, min(10, b_info["rows"] + delta_states))
-            new_actions = max(1, min(10, b_info["depth"] + delta_actions))
+            new_states = max(
+                1,
+                min(
+                    _MAX_EDITOR_DIMENSION,
+                    _positive_int(b_info.get("rows", 1)) + _coerce_delta(delta_states),
+                ),
+            )
+            new_actions = max(
+                1,
+                min(
+                    _MAX_EDITOR_DIMENSION,
+                    _positive_int(b_info.get("depth", 1))
+                    + _coerce_delta(delta_actions),
+                ),
+            )
 
             if new_states != b_info["rows"] or new_actions != b_info["depth"]:
-                # Resize tensor (simplified - just current slice for now)
-                current_slice = b_info.get("current_slice", 0)
-                current_slice = min(current_slice, new_actions - 1)
-
-                new_slice_values = resize_matrix(
-                    b_info["values"][min(current_slice, len(b_info["values"]) - 1)]
-                    if b_info["values"]
-                    else [],
-                    new_states,
-                    new_states,
-                    0.0,
+                current_slice = _bounded_index(
+                    b_info.get("current_slice", 0), new_actions - 1
                 )
-
-                state["B"] = {
-                    "depth": new_actions,
-                    "rows": new_states,
-                    "cols": new_states,
-                    "current_slice": current_slice,
-                    "values": [new_slice_values for _ in range(new_actions)],
-                }
+                old_slices = b_info.get("values", [])
+                resized_slices: List[List[List[float]]] = []
+                if isinstance(old_slices, list):
+                    for old_slice in old_slices[:new_actions]:
+                        try:
+                            clean_slice = _finite_table(old_slice, "B matrix")
+                        except (TypeError, ValueError):
+                            clean_slice = []
+                        resized_slices.append(
+                            resize_matrix(clean_slice, new_states, new_states, 0.0)
+                        )
+                while len(resized_slices) < new_actions:
+                    resized_slices.append(
+                        [
+                            [
+                                1.0 if row == column else 0.0
+                                for column in range(new_states)
+                            ]
+                            for row in range(new_states)
+                        ]
+                    )
+                b_info.update(
+                    depth=new_actions,
+                    rows=new_states,
+                    cols=new_states,
+                    current_slice=current_slice,
+                    values=resized_slices,
+                )
+                if new_actions > 1:
+                    b_info["source_type"] = "tensor"
+                new_slice_values = resized_slices[current_slice]
 
                 headers = [f"State_{i}" for i in range(new_states)]
 
@@ -807,20 +1038,35 @@ def build_visual_gui(
             )
 
         # Vector size control handlers
-        def update_c_size(current_state: Any, delta_size: Any = 0) -> Any:
+        def update_c_size(
+            current_state: Any, visible_values: Any = None, delta_size: Any = 0
+        ) -> Any:
             """Update C vector size"""
-            state = current_state.copy()
+            state = _coerce_editor_state(current_state)
             c_info = state["C"]
-            new_size = max(1, min(10, c_info["size"] + delta_size))
+            new_size = max(
+                1,
+                min(
+                    _MAX_EDITOR_DIMENSION,
+                    _positive_int(c_info.get("size", 1)) + _coerce_delta(delta_size),
+                ),
+            )
 
             if new_size != c_info["size"]:
+                raw_values = c_info.get("values", [])
+                if visible_values is not None:
+                    try:
+                        visible_rows = _finite_table(visible_values, "C vector")
+                        if all(len(row) == 1 for row in visible_rows):
+                            raw_values = [row[0] for row in visible_rows]
+                    except (TypeError, ValueError):
+                        pass
+                if not isinstance(raw_values, list):
+                    raw_values = []
                 new_values = resize_vector(
-                    [[v] for v in c_info["values"]], new_size, 0.1
+                    [[value] for value in raw_values], new_size, 0.1
                 )
-                state["C"] = {
-                    "size": new_size,
-                    "values": [row[0] for row in new_values],
-                }
+                c_info.update(size=new_size, values=[row[0] for row in new_values])
 
                 return (
                     state,
@@ -837,20 +1083,35 @@ def build_visual_gui(
 
             return (state, gr.update(), gr.update(), gr.update())
 
-        def update_d_size(current_state: Any, delta_size: Any = 0) -> Any:
+        def update_d_size(
+            current_state: Any, visible_values: Any = None, delta_size: Any = 0
+        ) -> Any:
             """Update D vector size"""
-            state = current_state.copy()
+            state = _coerce_editor_state(current_state)
             d_info = state["D"]
-            new_size = max(1, min(10, d_info["size"] + delta_size))
+            new_size = max(
+                1,
+                min(
+                    _MAX_EDITOR_DIMENSION,
+                    _positive_int(d_info.get("size", 1)) + _coerce_delta(delta_size),
+                ),
+            )
 
             if new_size != d_info["size"]:
+                raw_values = d_info.get("values", [])
+                if visible_values is not None:
+                    try:
+                        visible_rows = _finite_table(visible_values, "D vector")
+                        if all(len(row) == 1 for row in visible_rows):
+                            raw_values = [row[0] for row in visible_rows]
+                    except (TypeError, ValueError):
+                        pass
+                if not isinstance(raw_values, list):
+                    raw_values = []
                 new_values = resize_vector(
-                    [[v] for v in d_info["values"]], new_size, 0.33
+                    [[value] for value in raw_values], new_size, 0.33
                 )
-                state["D"] = {
-                    "size": new_size,
-                    "values": [row[0] for row in new_values],
-                }
+                d_info.update(size=new_size, values=[row[0] for row in new_values])
 
                 return (
                     state,
@@ -869,7 +1130,12 @@ def build_visual_gui(
 
         # Comprehensive update function
         def update_all_with_state(
-            current_state: Any, a_data: Any, b_data: Any, c_data: Any, d_data: Any
+            current_state: Any,
+            a_data: Any,
+            b_data: Any,
+            c_data: Any,
+            d_data: Any,
+            b_slice: Any,
         ) -> Any:
             """Update all visualizations and generate statistics"""
             try:
@@ -895,13 +1161,29 @@ def build_visual_gui(
                 stats_text += calculate_matrix_stats(d_data, "Vector D") + "\n"
 
                 # Generate GNN
-                gnn_text = generate_gnn_from_matrices(a_data, b_data, c_data, d_data, 0)
+                updated_state, gnn_text = generate_gnn_from_matrices(
+                    current_state,
+                    a_data,
+                    b_data,
+                    c_data,
+                    d_data,
+                    b_slice,
+                )
 
-                return a_plot, b_plot, c_plot, d_plot, stats_text, gnn_text
+                return (
+                    updated_state,
+                    a_plot,
+                    b_plot,
+                    c_plot,
+                    d_plot,
+                    stats_text,
+                    gnn_text,
+                )
 
             except (ValueError, TypeError, KeyError, IndexError) as e:
                 logger.error(f"Error in update_all_with_state: {e}")
                 return (
+                    gr.update(),
                     gr.update(),
                     gr.update(),
                     gr.update(),
@@ -912,25 +1194,7 @@ def build_visual_gui(
 
         def reset_to_pomdp() -> Any:
             """Reset all matrices to POMDP template values"""
-            default_state: dict[str, Any] = {
-                "A": {
-                    "rows": 3,
-                    "cols": 3,
-                    "values": [[0.9, 0.05, 0.05], [0.05, 0.9, 0.05], [0.05, 0.05, 0.9]],
-                },
-                "B": {
-                    "depth": 3,
-                    "rows": 3,
-                    "cols": 3,
-                    "current_slice": 0,
-                    "values": [
-                        [[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]]
-                        for _ in range(3)
-                    ],
-                },
-                "C": {"size": 3, "values": [0.1, 0.1, 1.0]},
-                "D": {"size": 3, "values": [0.33, 0.33, 0.33]},
-            }
+            default_state = _initial_matrix_state(get_pomdp_template())
 
             return (
                 default_state,
@@ -941,6 +1205,7 @@ def build_visual_gui(
                 "**Matrix B**: `3×3×3` (States × States × Actions)",
                 "**3**",
                 "**3**",
+                gr.Slider(maximum=2, value=0),
                 gr.Dataframe(value=default_state["B"]["values"][0], interactive=True),
                 "**Vector C**: `3` (Observation Preferences)",
                 "**3**",
@@ -958,8 +1223,8 @@ def build_visual_gui(
 
         # Matrix A dimension controls
         a_rows_plus.click(
-            lambda s: update_a_dimensions(s, delta_rows=1),
-            inputs=[matrix_state],
+            lambda s, values: update_a_dimensions(s, values, delta_rows=1),
+            inputs=[matrix_state, a_values],
             outputs=[
                 matrix_state,
                 a_size_display,
@@ -970,8 +1235,8 @@ def build_visual_gui(
         )
 
         a_rows_minus.click(
-            lambda s: update_a_dimensions(s, delta_rows=-1),
-            inputs=[matrix_state],
+            lambda s, values: update_a_dimensions(s, values, delta_rows=-1),
+            inputs=[matrix_state, a_values],
             outputs=[
                 matrix_state,
                 a_size_display,
@@ -982,8 +1247,8 @@ def build_visual_gui(
         )
 
         a_cols_plus.click(
-            lambda s: update_a_dimensions(s, delta_cols=1),
-            inputs=[matrix_state],
+            lambda s, values: update_a_dimensions(s, values, delta_cols=1),
+            inputs=[matrix_state, a_values],
             outputs=[
                 matrix_state,
                 a_size_display,
@@ -994,8 +1259,8 @@ def build_visual_gui(
         )
 
         a_cols_minus.click(
-            lambda s: update_a_dimensions(s, delta_cols=-1),
-            inputs=[matrix_state],
+            lambda s, values: update_a_dimensions(s, values, delta_cols=-1),
+            inputs=[matrix_state, a_values],
             outputs=[
                 matrix_state,
                 a_size_display,
@@ -1007,8 +1272,10 @@ def build_visual_gui(
 
         # Matrix B dimension controls
         b_states_plus.click(
-            lambda s: update_b_dimensions(s, delta_states=1),
-            inputs=[matrix_state],
+            lambda s, values, selected: update_b_dimensions(
+                s, values, selected, delta_states=1
+            ),
+            inputs=[matrix_state, b_values, b_slice_selector],
             outputs=[
                 matrix_state,
                 b_size_display,
@@ -1020,8 +1287,10 @@ def build_visual_gui(
         )
 
         b_states_minus.click(
-            lambda s: update_b_dimensions(s, delta_states=-1),
-            inputs=[matrix_state],
+            lambda s, values, selected: update_b_dimensions(
+                s, values, selected, delta_states=-1
+            ),
+            inputs=[matrix_state, b_values, b_slice_selector],
             outputs=[
                 matrix_state,
                 b_size_display,
@@ -1033,8 +1302,10 @@ def build_visual_gui(
         )
 
         b_actions_plus.click(
-            lambda s: update_b_dimensions(s, delta_actions=1),
-            inputs=[matrix_state],
+            lambda s, values, selected: update_b_dimensions(
+                s, values, selected, delta_actions=1
+            ),
+            inputs=[matrix_state, b_values, b_slice_selector],
             outputs=[
                 matrix_state,
                 b_size_display,
@@ -1046,8 +1317,10 @@ def build_visual_gui(
         )
 
         b_actions_minus.click(
-            lambda s: update_b_dimensions(s, delta_actions=-1),
-            inputs=[matrix_state],
+            lambda s, values, selected: update_b_dimensions(
+                s, values, selected, delta_actions=-1
+            ),
+            inputs=[matrix_state, b_values, b_slice_selector],
             outputs=[
                 matrix_state,
                 b_size_display,
@@ -1058,28 +1331,50 @@ def build_visual_gui(
             ],
         )
 
+        def switch_b_slice(
+            state: Any, visible_values: Any, requested_slice: Any
+        ) -> Any:
+            """Switch slices while retaining edits made to the previous slice."""
+            updated_state, selected_values = _select_b_slice(
+                state, visible_values, requested_slice
+            )
+            columns = len(selected_values[0]) if selected_values else 1
+            return updated_state, gr.Dataframe(
+                value=selected_values,
+                headers=[f"State_{index}" for index in range(columns)],
+                interactive=True,
+                row_count=max(1, len(selected_values)),
+                col_count=max(1, columns),
+            )
+
+        b_slice_selector.change(
+            switch_b_slice,
+            inputs=[matrix_state, b_values, b_slice_selector],
+            outputs=[matrix_state, b_values],
+        )
+
         # Vector size controls
         c_size_plus.click(
-            lambda s: update_c_size(s, delta_size=1),
-            inputs=[matrix_state],
+            lambda s, values: update_c_size(s, values, delta_size=1),
+            inputs=[matrix_state, c_values],
             outputs=[matrix_state, c_size_display, c_size_display_num, c_values],
         )
 
         c_size_minus.click(
-            lambda s: update_c_size(s, delta_size=-1),
-            inputs=[matrix_state],
+            lambda s, values: update_c_size(s, values, delta_size=-1),
+            inputs=[matrix_state, c_values],
             outputs=[matrix_state, c_size_display, c_size_display_num, c_values],
         )
 
         d_size_plus.click(
-            lambda s: update_d_size(s, delta_size=1),
-            inputs=[matrix_state],
+            lambda s, values: update_d_size(s, values, delta_size=1),
+            inputs=[matrix_state, d_values],
             outputs=[matrix_state, d_size_display, d_size_display_num, d_values],
         )
 
         d_size_minus.click(
-            lambda s: update_d_size(s, delta_size=-1),
-            inputs=[matrix_state],
+            lambda s, values: update_d_size(s, values, delta_size=-1),
+            inputs=[matrix_state, d_values],
             outputs=[matrix_state, d_size_display, d_size_display_num, d_values],
         )
 
@@ -1091,11 +1386,15 @@ def build_visual_gui(
             b_data: Any,
             c_data: Any,
             d_data: Any,
+            b_slice: Any,
         ) -> Any:
             """Auto-update visualizations if enabled"""
             if auto_enabled:
-                return update_all_with_state(state, a_data, b_data, c_data, d_data)
+                return update_all_with_state(
+                    state, a_data, b_data, c_data, d_data, b_slice
+                )
             return (
+                gr.update(),
                 gr.update(),
                 gr.update(),
                 gr.update(),
@@ -1115,8 +1414,10 @@ def build_visual_gui(
                     b_values,
                     c_values,
                     d_values,
+                    b_slice_selector,
                 ],
                 outputs=[
+                    matrix_state,
                     matrix_a_plot,
                     matrix_b_plot,
                     c_plot,
@@ -1129,8 +1430,16 @@ def build_visual_gui(
         # Manual update button
         manual_update_btn.click(
             update_all_with_state,
-            inputs=[matrix_state, a_values, b_values, c_values, d_values],
+            inputs=[
+                matrix_state,
+                a_values,
+                b_values,
+                c_values,
+                d_values,
+                b_slice_selector,
+            ],
             outputs=[
+                matrix_state,
                 matrix_a_plot,
                 matrix_b_plot,
                 c_plot,
@@ -1152,6 +1461,7 @@ def build_visual_gui(
                 b_size_display,
                 b_states_display,
                 b_actions_display,
+                b_slice_selector,
                 b_values,
                 c_size_display,
                 c_size_display_num,
@@ -1166,15 +1476,30 @@ def build_visual_gui(
         save_btn.click(save_gnn, inputs=[gnn_output], outputs=[save_status])
         validate_btn.click(
             validate_gnn,
-            inputs=[a_values, b_values, c_values, d_values],
+            inputs=[
+                matrix_state,
+                a_values,
+                b_values,
+                c_values,
+                d_values,
+                b_slice_selector,
+            ],
             outputs=[validation_output],
         )
 
         # Initialize on load
         demo.load(
             update_all_with_state,
-            inputs=[matrix_state, a_values, b_values, c_values, d_values],
+            inputs=[
+                matrix_state,
+                a_values,
+                b_values,
+                c_values,
+                d_values,
+                b_slice_selector,
+            ],
             outputs=[
+                matrix_state,
                 matrix_a_plot,
                 matrix_b_plot,
                 c_plot,

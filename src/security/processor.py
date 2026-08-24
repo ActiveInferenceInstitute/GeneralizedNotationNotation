@@ -29,6 +29,17 @@ _JULIA_SUSPICIOUS_PATTERNS: list[tuple[str, str]] = [
     (r"\bCmd\s*\(\s*\[", "Julia Cmd construction"),
 ]
 
+_SEVERITY_RANK = {"info": 0, "low": 1, "medium": 2, "high": 3}
+
+# Security levels select analysis depth; an explicit ``block_on`` can make any
+# scanning level enforcement-capable. Strict mode cannot disable vulnerability
+# scanning because doing so would silently weaken the requested policy.
+_SECURITY_LEVELS: dict[str, dict[str, Any]] = {
+    "basic": {"scan_vulnerabilities": False, "default_block_on": None},
+    "standard": {"scan_vulnerabilities": True, "default_block_on": None},
+    "strict": {"scan_vulnerabilities": True, "default_block_on": "high"},
+}
+
 
 def process_security(
     target_dir: Path, output_dir: Path, verbose: bool = False, **kwargs: Any
@@ -53,8 +64,31 @@ def process_security(
         if requested_block_on is not None
         else None
     )
-    valid_levels = {"basic", "standard", "strict"}
-    valid_thresholds = {"low", "medium", "high"}
+    requested_scan = kwargs.get("check_vulnerabilities")
+    valid_thresholds = set(_SEVERITY_RANK) - {"info"}
+    level_policy = _SECURITY_LEVELS.get(security_level)
+    scan_vulnerabilities = (
+        bool(
+            (level_policy and level_policy["scan_vulnerabilities"])
+            or requested_block_on is not None
+        )
+        if requested_scan is None
+        else requested_scan is True
+    )
+    receipt_requested_scan = (
+        requested_scan
+        if requested_scan is None or isinstance(requested_scan, bool)
+        else str(requested_scan)
+    )
+    effective_block_on = (
+        requested_threshold
+        if requested_threshold in valid_thresholds
+        else (
+            str(level_policy["default_block_on"])
+            if level_policy and level_policy["default_block_on"] is not None
+            else None
+        )
+    )
 
     try:
         log_step_start(step_logger, "Processing security")
@@ -74,28 +108,39 @@ def process_security(
                 "security_level": security_level,
                 "enforced": security_level == "strict"
                 or requested_block_on is not None,
+                "scan_vulnerabilities": scan_vulnerabilities,
+                "requested_scan_vulnerabilities": receipt_requested_scan,
                 "requested_block_on": requested_threshold,
-                "block_on": requested_threshold
-                if requested_threshold in valid_thresholds
-                else (
-                    "high"
-                    if security_level == "strict" and requested_threshold is None
-                    else None
-                ),
+                "block_on": effective_block_on,
                 "decision": "allow",
                 "blocked_findings": 0,
             },
         }
 
-        if security_level not in valid_levels or (
-            requested_threshold is not None
-            and requested_threshold not in valid_thresholds
+        invalid_scan_policy = requested_scan is not None and not isinstance(
+            requested_scan, bool
+        )
+        strict_scan_disabled = security_level == "strict" and not scan_vulnerabilities
+        enforced_scan_disabled = (
+            requested_block_on is not None and not scan_vulnerabilities
+        )
+        if (
+            level_policy is None
+            or (
+                requested_threshold is not None
+                and requested_threshold not in valid_thresholds
+            )
+            or invalid_scan_policy
+            or strict_scan_disabled
+            or enforced_scan_disabled
         ):
             results["success"] = False
             results["policy"]["decision"] = "deny_invalid_policy"
             results["errors"].append(
                 "Invalid security policy: security_level must be basic, standard, "
-                "or strict and block_on must be low, medium, or high"
+                "or strict; block_on must be low, medium, or high; and "
+                "check_vulnerabilities must be a boolean and remain enabled for "
+                "strict or explicitly enforced policies"
             )
 
         # Find GNN files
@@ -118,8 +163,9 @@ def process_security(
                     results["security_checks"].append(security_check)
 
                     # Check for vulnerabilities
-                    vulnerabilities = check_vulnerabilities(gnn_file, verbose)
-                    results["vulnerabilities"].extend(vulnerabilities)
+                    if scan_vulnerabilities:
+                        vulnerabilities = check_vulnerabilities(gnn_file, verbose)
+                        results["vulnerabilities"].extend(vulnerabilities)
 
                     # Generate security recommendations
                     recommendations = generate_security_recommendations(
@@ -140,12 +186,14 @@ def process_security(
 
         threshold_name = results["policy"]["block_on"]
         if threshold_name is not None:
-            severity_rank = {"low": 1, "medium": 2, "high": 3}
-            threshold = severity_rank[str(threshold_name).lower()]
+            threshold = _SEVERITY_RANK[str(threshold_name).lower()]
             blocked = [
                 finding
                 for finding in results["vulnerabilities"]
-                if severity_rank.get(str(finding.get("severity", "low")), 1)
+                if _SEVERITY_RANK.get(
+                    str(finding.get("severity", "high")).lower(),
+                    _SEVERITY_RANK["high"],
+                )
                 >= threshold
             ]
             results["policy"]["blocked_findings"] = len(blocked)
@@ -155,13 +203,13 @@ def process_security(
 
         # Save detailed results
         results_file = results_dir / "security_results.json"
-        with open(results_file, "w") as f:
+        with open(results_file, "w", encoding="utf-8") as f:
             json.dump(results, f, indent=2)
 
         # Generate security summary
         summary = generate_security_summary(results)
         summary_file = results_dir / "security_summary.md"
-        with open(summary_file, "w") as f:
+        with open(summary_file, "w", encoding="utf-8") as f:
             f.write(summary)
 
         if results["success"]:
@@ -179,11 +227,12 @@ def process_security(
 def perform_security_check(file_path: Path, verbose: bool = False) -> Dict[str, Any]:
     """Perform security checks on a GNN file."""
     try:
-        with open(file_path, "r") as f:
-            content = f.read()
+        raw_content = file_path.read_bytes()
+        content = raw_content.decode("utf-8", errors="replace")
 
-        # Calculate file hash
-        file_hash = hashlib.sha256(content.encode()).hexdigest()
+        # Hash the exact bytes inspected. Text-mode hashing normalized CRLF on
+        # some platforms, so it was not a reliable file-integrity receipt.
+        file_hash = hashlib.sha256(raw_content).hexdigest()
 
         # Check for sensitive patterns
         sensitive_patterns: list[Any] = [
@@ -202,7 +251,7 @@ def perform_security_check(file_path: Path, verbose: bool = False) -> Dict[str, 
                     {
                         "pattern": pattern,
                         "line": content[: match.start()].count("\n") + 1,
-                        "context": match.group(0),
+                        "context": f"{match.group(0)} [REDACTED]",
                     }
                 )
 
@@ -213,7 +262,7 @@ def perform_security_check(file_path: Path, verbose: bool = False) -> Dict[str, 
             "file_path": str(file_path),
             "file_name": file_path.name,
             "file_hash": file_hash,
-            "file_size": file_path.stat().st_size,
+            "file_size": len(raw_content),
             "sensitive_patterns": found_patterns,
             "file_permissions": file_permissions,
             "security_score": calculate_security_score(found_patterns),
@@ -242,19 +291,22 @@ def check_vulnerabilities(
 
         # -- Technique 1: Regex patterns (for GNN markdown and all files) --
         vuln_patterns: list[Any] = [
-            (r"eval\s*\(", "Code injection vulnerability"),
-            (r"exec\s*\(", "Code execution vulnerability"),
-            (r"import\s+os\s*", "OS command injection risk"),
-            (r"subprocess\s*\.", "Subprocess execution risk"),
+            (r"\beval\s*\(", "Code injection vulnerability"),
+            (r"\bexec\s*\(", "Code execution vulnerability"),
+            (r"\bimport\s+os\b", "OS command injection risk"),
             (
-                r"subprocess\.call\s*\(",
+                r"\bsubprocess\s*\.\s*call\s*\(",
                 "Subprocess call -- potential command injection",
             ),
             (
-                r"subprocess\.Popen\s*\(",
+                r"\bsubprocess\s*\.\s*Popen\s*\(",
                 "Subprocess Popen -- potential command injection",
             ),
-            (r"file\s*\(", "Previous file() call"),
+            (
+                r"\bsubprocess\s*\.\s*(?:run|check_call|check_output)\s*\(",
+                "Subprocess execution risk",
+            ),
+            (r"\bfile\s*\(", "Previous file() call"),
         ]
 
         for pattern, description in vuln_patterns:
@@ -342,7 +394,15 @@ def check_vulnerabilities(
             }
         )
 
-    return vulnerabilities
+    return sorted(
+        vulnerabilities,
+        key=lambda finding: (
+            int(finding.get("line", 0)),
+            str(finding.get("vulnerability_type", "")),
+            str(finding.get("detection_method", "")),
+            str(finding.get("pattern", "")),
+        ),
+    )
 
 
 def _check_python_ast(file_path: Path, content: str) -> List[Dict[str, Any]]:
@@ -381,7 +441,9 @@ def _check_python_ast(file_path: Path, content: str) -> List[Dict[str, Any]]:
                 "detection_method": "ast_parse",
                 "line": e.lineno or 0,
                 "context": str(e),
-                "severity": "info",
+                # The pre-execution gate cannot prove an unparseable script is
+                # safe, so this is a fail-closed finding rather than advisory.
+                "severity": "high",
             }
         ]
 
@@ -400,6 +462,10 @@ def _check_python_ast(file_path: Path, content: str) -> List[Dict[str, Any]]:
         ("subprocess", "call"): ("Subprocess execution", "medium"),
         ("subprocess", "Popen"): ("Subprocess execution", "medium"),
         ("subprocess", "run"): ("Subprocess execution -- verify shell=False", "low"),
+        ("subprocess", "check_call"): ("Subprocess execution", "medium"),
+        ("subprocess", "check_output"): ("Subprocess execution", "medium"),
+        ("subprocess", "getoutput"): ("Subprocess shell execution", "high"),
+        ("subprocess", "getstatusoutput"): ("Subprocess shell execution", "high"),
         ("pickle", "loads"): ("Arbitrary code execution via pickle.loads()", "high"),
         ("pickle", "load"): ("Arbitrary code execution via pickle.load()", "high"),
         ("marshal", "loads"): ("Arbitrary code execution via marshal.loads()", "high"),
@@ -414,6 +480,22 @@ def _check_python_ast(file_path: Path, content: str) -> List[Dict[str, Any]]:
         elif isinstance(node, ast.ImportFrom) and node.module:
             for name in node.names:
                 call_aliases[name.asname or name.name] = (node.module, name.name)
+        elif isinstance(node, (ast.Assign, ast.AnnAssign)):
+            value = node.value
+            if not isinstance(value, ast.Attribute) or not isinstance(
+                value.value, ast.Name
+            ):
+                continue
+            module_name = module_aliases.get(value.value.id, value.value.id)
+            target_names: list[str] = []
+            if isinstance(node, ast.Assign):
+                target_names = [
+                    target.id for target in node.targets if isinstance(target, ast.Name)
+                ]
+            elif isinstance(node.target, ast.Name):
+                target_names = [node.target.id]
+            for target_name in target_names:
+                call_aliases[target_name] = (module_name, value.attr)
 
     for node in ast.walk(tree):
         if not isinstance(node, ast.Call):
@@ -485,17 +567,30 @@ def _check_python_ast(file_path: Path, content: str) -> List[Dict[str, Any]]:
                         }
                     )
 
-    return vulns
+    return sorted(
+        vulns,
+        key=lambda finding: (
+            int(finding.get("line", 0)),
+            str(finding.get("vulnerability_type", "")),
+            str(finding.get("detection_method", "")),
+        ),
+    )
 
 
 def _uses_shell_true(node: Any) -> bool:
-    """Return whether an AST call explicitly enables a command shell."""
+    """Return whether a call's ``shell`` argument may enable a command shell.
+
+    Only a literal ``shell=False`` is statically safe. Truthy literals and
+    dynamic expressions are conservatively treated as enabled so the security
+    gate cannot be bypassed with ``shell=flag`` or ``shell=1``.
+    """
     import ast
 
     return any(
         keyword.arg == "shell"
-        and isinstance(keyword.value, ast.Constant)
-        and keyword.value.value is True
+        and not (
+            isinstance(keyword.value, ast.Constant) and keyword.value.value is False
+        )
         for keyword in node.keywords
     )
 
@@ -779,8 +874,8 @@ def scan_script_for_execution(
     (``scanned=False``, findings are medium/informational only).
     """
     script_path = Path(script_path)
-    _SEVERITY_RANK = {"info": 0, "low": 1, "medium": 2, "high": 3}
-    if block_on not in _SEVERITY_RANK:
+    normalized_block_on = block_on.strip().lower() if isinstance(block_on, str) else ""
+    if normalized_block_on not in _SEVERITY_RANK:
         finding = {
             "file_path": str(script_path),
             "file_name": script_path.name,
@@ -794,26 +889,29 @@ def scan_script_for_execution(
             "blocked": [finding],
             "findings": [finding],
             "scanned": False,
+            "block_on": normalized_block_on,
+            "decision": "deny_invalid_policy",
         }
-    threshold = _SEVERITY_RANK[block_on]
+    threshold = _SEVERITY_RANK[normalized_block_on]
 
     try:
         content = script_path.read_text(encoding="utf-8", errors="replace")
     except OSError as exc:
+        finding = {
+            "file_path": str(script_path),
+            "file_name": script_path.name,
+            "vulnerability_type": "Unreadable script",
+            "detection_method": "file_read",
+            "severity": "high",
+            "context": str(exc),
+        }
         return {
             "ok": False,
-            "blocked": [
-                {
-                    "file_path": str(script_path),
-                    "file_name": script_path.name,
-                    "vulnerability_type": "Unreadable script",
-                    "detection_method": "file_read",
-                    "severity": "high",
-                    "context": str(exc),
-                }
-            ],
-            "findings": [],
+            "blocked": [finding],
+            "findings": [finding],
             "scanned": False,
+            "block_on": normalized_block_on,
+            "decision": "deny_unreadable",
         }
 
     findings: list[Any] = []
@@ -866,11 +964,16 @@ def scan_script_for_execution(
     blocked = [
         f
         for f in findings
-        if _SEVERITY_RANK.get(str(f.get("severity", "medium")), 2) >= threshold
+        if _SEVERITY_RANK.get(
+            str(f.get("severity", "high")).lower(), _SEVERITY_RANK["high"]
+        )
+        >= threshold
     ]
     return {
         "ok": not blocked,
         "blocked": blocked,
         "findings": findings,
         "scanned": scanned,
+        "block_on": normalized_block_on,
+        "decision": "deny" if blocked else "allow",
     }

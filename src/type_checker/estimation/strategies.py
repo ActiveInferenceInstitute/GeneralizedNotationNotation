@@ -9,7 +9,7 @@ memory, inference, storage, FLOPS, and complexity estimates for GNN models.
 import logging
 import math
 import re
-from typing import Any, Dict, List, Mapping, Sequence, TypedDict, Union
+from typing import Any, Dict, List, Mapping, Sequence, TypedDict
 
 logger = logging.getLogger(__name__)
 
@@ -18,7 +18,7 @@ class VariableSpec(TypedDict, total=False):
     """Shape of a single variable entry in the variables mapping."""
 
     type: str  # e.g. "float", "int", "categorical"
-    dimensions: List[Union[int, str]]  # e.g. [3, 3], [1], or symbolic ["N", 3]
+    dimensions: Sequence[int | str]  # e.g. [3, 3], [1], or symbolic ["N", 3]
 
 
 VariableMap = Dict[str, VariableSpec]
@@ -533,7 +533,7 @@ def _parse_single_dim(d: Any) -> int:
     return 1
 
 
-def _parse_dimensions(dims: Sequence[Union[int, str]]) -> List[int]:
+def _parse_dimensions(dims: Sequence[int | str]) -> List[int]:
     """Parse a list of dimension values to ints."""
     return [_parse_single_dim(d) for d in dims]
 

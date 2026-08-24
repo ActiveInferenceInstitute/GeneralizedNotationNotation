@@ -419,7 +419,7 @@ def _bounded_int(value: Any, default: int, minimum: int, maximum: int) -> int:
     """Coerce a parsed parameter into a bounded integer slider value."""
     try:
         parsed = int(float(str(value)))
-    except (TypeError, ValueError):
+    except (OverflowError, TypeError, ValueError):
         return default
     return max(minimum, min(maximum, parsed))
 
@@ -437,6 +437,7 @@ def _parse_gnn_for_design(gnn_content: str) -> Dict[str, Any]:
         "ontology": {},
         "connections_text": "",
         "parameters": {},
+        "parse_errors": [],
     }
 
     lines = gnn_content.split("\n")
@@ -452,16 +453,23 @@ def _parse_gnn_for_design(gnn_content: str) -> Dict[str, Any]:
         if current_section == "StateSpaceBlock":
             if "[" in line and "]" in line and not line.startswith("#"):
                 var_name = line.split("[")[0].strip()
-                dimensions = _normalize_dimensions(
-                    line.split("[")[1].split("]")[0].strip()
-                )
+                try:
+                    dimensions = _normalize_dimensions(
+                        line.split("[")[1].split("]")[0].strip()
+                    )
+                except ValueError as exc:
+                    design_data["parse_errors"].append(str(exc))
+                    continue
                 desc = line.split("#")[1].strip() if "#" in line else ""
                 design_data["state_spaces"].append([var_name, dimensions, desc])
 
         elif current_section == "ActInfOntologyAnnotation":
             if "=" in line and not line.startswith("#"):
                 var, concept = line.split("=", 1)
-                design_data["ontology"][var.strip()] = concept.strip()
+                variable = var.strip()
+                term = concept.split("#", 1)[0].strip()
+                if variable and term:
+                    design_data["ontology"][variable] = term
 
         elif current_section == "Connections":
             if line and not line.startswith("#"):
@@ -472,7 +480,10 @@ def _parse_gnn_for_design(gnn_content: str) -> Dict[str, Any]:
         elif current_section == "ModelParameters":
             if ":" in line and not line.startswith("#"):
                 parameter, value = line.split(":", 1)
-                design_data["parameters"][parameter.strip()] = value.strip()
+                parameter = parameter.strip()
+                value = value.split("#", 1)[0].strip()
+                if parameter and value:
+                    design_data["parameters"][parameter] = value
 
     return design_data
 

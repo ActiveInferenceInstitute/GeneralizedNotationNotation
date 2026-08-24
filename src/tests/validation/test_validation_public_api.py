@@ -126,7 +126,7 @@ class TestConsistencyCheckerEdgeCases:
     def test_check_consistency_with_none(self) -> None:
         from validation import check_consistency
 
-        result = check_consistency(None)  # type: ignore[arg-type]
+        result = check_consistency(None)
         assert isinstance(result, dict)
 
     def test_consistency_checker_default_init(self) -> None:

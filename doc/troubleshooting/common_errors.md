@@ -290,13 +290,13 @@ python src/5_type_checker.py --target-dir your_model_directory
 ### Step 4: Use Validation Tools
 
 ```python
-# Python validation script
-from src.gnn_type_checker import validate_gnn_file
+# Python validation script using the real exported validator
+from src.gnn import validate_gnn_file
 
-result = validate_gnn_file("your_model.gnn")
-if not result.is_valid:
-    for error in result.errors:
-        print(f"Error at line {error.line_number}: {error.message}")
+result = validate_gnn_file("your_model.md")
+if not result["is_valid"]:
+    for error in result["errors"]:
+        print(error)
 ```
 
 ## 📋 Preventive Best Practices

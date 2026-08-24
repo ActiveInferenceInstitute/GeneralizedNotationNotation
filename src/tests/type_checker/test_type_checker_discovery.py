@@ -64,3 +64,16 @@ def test_type_checker_ignores_binary_pickle_specs(tmp_path: Path) -> None:
     (tmp_path / "probe.pickle").write_text(MINIMAL_SPEC, encoding="utf-8")
     checker = GNNTypeChecker()
     assert checker._discover_gnn_files(tmp_path) == []
+
+
+def test_type_checker_ignores_repository_documentation(tmp_path: Path) -> None:
+    """Common Markdown documentation names are not treated as model specs."""
+    (tmp_path / "README.md").write_text(MINIMAL_SPEC, encoding="utf-8")
+    (tmp_path / "AGENTS.md").write_text(MINIMAL_SPEC, encoding="utf-8")
+    (tmp_path / "probe.gnn").write_text(MINIMAL_SPEC, encoding="utf-8")
+
+    checker = GNNTypeChecker()
+
+    assert [path.name for path in checker._discover_gnn_files(tmp_path)] == [
+        "probe.gnn"
+    ]

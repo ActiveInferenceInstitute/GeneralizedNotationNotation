@@ -4,11 +4,17 @@ Incremental Parse Cache — Hash-based section re-parsing avoidance.
 
 Hashes each `## Section` independently and only re-parses changed sections.
 Stores cached parse results in a caller-supplied directory.
+
+The cache is safe for concurrent access: a module-level lock serializes
+writers, read-modify-write increments on the hit/miss counters, and
+invalidation so no partial JSON or lost counter update can result from
+interleaving (parse_cache.thread-safety).
 """
 
 import hashlib
 import json
 import logging
+import threading
 from pathlib import Path
 from typing import Any, Dict, Optional, cast
 
@@ -27,7 +33,8 @@ class ParseCache:
         """Initialize the instance."""
         self.cache_dir = cache_dir or Path(".parse_cache")
         self.cache_dir.mkdir(parents=True, exist_ok=True)
-        self._stats = {"hits": 0, "misses": 0}
+        self._stats: dict[str, int] = {"hits": 0, "misses": 0}
+        self._lock = threading.Lock()
 
     def get_section(
         self, file_path: str, section_name: str, section_content: str
@@ -46,18 +53,19 @@ class ParseCache:
         key = self._cache_key(file_path, section_name, section_content)
         cache_file = self.cache_dir / f"{key}.json"
 
-        if cache_file.exists():
-            try:
-                with open(cache_file) as f:
-                    data = json.load(f)
-                self._stats["hits"] += 1
-                logger.debug(f"Cache hit: {section_name} ({key[:8]})")
-                return cast("dict[str, Any] | None", data)
-            except (json.JSONDecodeError, OSError) as e:
-                logger.debug("Corrupted cache entry, treating as miss: %s", e)
+        with self._lock:
+            if cache_file.exists():
+                try:
+                    with open(cache_file) as f:
+                        data = json.load(f)
+                    self._stats["hits"] += 1
+                    logger.debug(f"Cache hit: {section_name} ({key[:8]})")
+                    return cast("dict[str, Any] | None", data)
+                except (json.JSONDecodeError, OSError) as e:
+                    logger.debug("Corrupted cache entry, treating as miss: %s", e)
 
-        self._stats["misses"] += 1
-        return None
+            self._stats["misses"] += 1
+            return None
 
     def set_section(
         self,
@@ -78,12 +86,13 @@ class ParseCache:
         key = self._cache_key(file_path, section_name, section_content)
         cache_file = self.cache_dir / f"{key}.json"
 
-        try:
-            with open(cache_file, "w") as f:
-                json.dump(result, f)
-            logger.debug(f"Cache write: {section_name} ({key[:8]})")
-        except OSError as e:
-            logger.warning(f"Cache write failed: {e}")
+        with self._lock:
+            try:
+                with open(cache_file, "w") as f:
+                    json.dump(result, f)
+                logger.debug(f"Cache write: {section_name} ({key[:8]})")
+            except OSError as e:
+                logger.warning(f"Cache write failed: {e}")
 
     def invalidate(self, file_path: Optional[str] = None) -> int:
         """
@@ -97,15 +106,16 @@ class ParseCache:
             Number of entries invalidated.
         """
         count = 0
-        if file_path:
-            prefix = hashlib.sha256(file_path.encode()).hexdigest()[:8]
-            for f in self.cache_dir.glob(f"{prefix}_*.json"):
-                f.unlink()
-                count += 1
-        else:
-            for f in self.cache_dir.glob("*.json"):
-                f.unlink()
-                count += 1
+        with self._lock:
+            if file_path:
+                prefix = hashlib.sha256(file_path.encode()).hexdigest()[:8]
+                for f in self.cache_dir.glob(f"{prefix}_*.json"):
+                    f.unlink()
+                    count += 1
+            else:
+                for f in self.cache_dir.glob("*.json"):
+                    f.unlink()
+                    count += 1
 
         if count:
             logger.info(f"🗑️ Cache invalidated: {count} entries")
@@ -113,14 +123,15 @@ class ParseCache:
 
     @property
     def stats(self) -> Dict[str, Any]:
-        """Cache hit/miss statistics."""
-        total = self._stats["hits"] + self._stats["misses"]
-        ratio = self._stats["hits"] / total if total > 0 else 0
-        return {
-            "hits": self._stats["hits"],
-            "misses": self._stats["misses"],
-            "hit_ratio": round(ratio, 3),
-        }
+        """Cache hit/miss statistics (computed atomically)."""
+        with self._lock:
+            total = self._stats["hits"] + self._stats["misses"]
+            ratio = self._stats["hits"] / total if total > 0 else 0
+            return {
+                "hits": self._stats["hits"],
+                "misses": self._stats["misses"],
+                "hit_ratio": round(ratio, 3),
+            }
 
     def _cache_key(
         self, file_path: str, section_name: str, section_content: str

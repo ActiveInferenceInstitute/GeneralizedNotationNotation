@@ -185,14 +185,15 @@ python src/main.py --verbose \
 # Python debugging for complex errors
 import pdb
 
-pdb.set_trace()
+# Inspect model state with the real public API
+from src.gnn import parse_gnn_file, validate_gnn_file
 
-# Inspect model state
-from src.gnn import GNNModel
-
-model = GNNModel.from_file("problematic_model.md")
-print(f"Variables: {model.state_space}")
-print(f"Connections: {model.connections}")
+parsed = parse_gnn_file("problematic_model.md")
+result = validate_gnn_file("problematic_model.md")
+print(f"Variables: {parsed.get('variables', [])}")
+if not result["is_valid"]:
+    for error in result["errors"]:
+        print(f"ERROR: {error}")
 ```
 
 ### Performance Profiling

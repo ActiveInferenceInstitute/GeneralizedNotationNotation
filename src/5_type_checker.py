@@ -45,7 +45,7 @@ from utils.pipeline_template import create_standardized_pipeline_script
 
 def _type_check_dispatch(
     target_dir: Path, output_dir: Path, logger: logging.Logger, **kwargs: Any
-) -> bool:
+) -> bool | int:
     """Dispatch to GNNTypeChecker."""
     return GNNTypeChecker().validate_gnn_files(target_dir, output_dir, **kwargs)
 

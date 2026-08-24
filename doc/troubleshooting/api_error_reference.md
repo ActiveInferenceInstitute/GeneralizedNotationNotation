@@ -418,140 +418,71 @@ class ComputationWarning(GNNPerformanceWarning):
 ### Basic Error Handling
 
 ```python
-from src.gnn import GNNModel
-from src.gnn.exceptions import GNNException, GNNSyntaxError, GNNValidationError
+from src.gnn import parse_gnn_file, validate_gnn_file
+from src.gnn.types import GNSSyntaxError
 
 
-def load_and_validate_model(file_path: str) -> GNNModel:
-    """Load and validate GNN model with comprehensive error handling"""
-
+def load_and_validate_model(file_path: str) -> dict:
+    """Load and validate a GNN file with explicit error handling."""
     try:
-        # Load model
-        model = GNNModel.from_file(file_path)
+        # Validate the file through the real exported validator.
+        result = validate_gnn_file(file_path)
+        if not result["is_valid"]:
+            raise GNSSyntaxError("\n".join(result["errors"]))
 
-        # Validate model
-        from src.gnn_type_checker import TypeChecker
+        # Return the parsed file on success.
+        return parse_gnn_file(file_path)
 
-        checker = TypeChecker(strict_mode=True)
-        result = checker.check_model(model)
-
-        if result.errors:
-            raise GNNValidationError(
-                message=f"Model validation failed: {len(result.errors)} errors",
-                file_path=file_path,
-                context={"errors": result.errors},
-            )
-
-        return model
-
-    except GNNSyntaxError as e:
-        print(f"Syntax error in {file_path}: {e}")
-        print(f"Error code: {e.error_code}")
-        if e.line_number:
-            print(f"Line {e.line_number}: Check syntax near this location")
-        raise
-
-    except GNNValidationError as e:
-        print(f"Validation error in {file_path}: {e}")
-        print(f"Context: {e.context}")
-        raise
-
-    except GNNException as e:
-        print(f"General GNN error: {e}")
-        print(f"Error details: {e.to_dict()}")
+    except GNSSyntaxError as e:
+        print(f"Syntax error in {file_path}: {e.format_message()}")
         raise
 
     except Exception as e:
-        # Wrap unexpected errors
-        raise GNNRuntimeError(
-            message=f"Unexpected error loading model: {str(e)}",
-            error_code="RUN-999",
-            file_path=file_path,
-            context={"original_error": str(e)},
-        )
+        # Wrap unexpected errors with file context.
+        raise RuntimeError(f"Unexpected error loading model {file_path}: {e}")
 ```
 
 ### Pipeline Error Handling
 
 ```python
-from src.pipeline import PipelineExecutor
-from src.gnn.exceptions import PipelineExecutionError
+from pathlib import Path
+
+from gnn.types import GNSSyntaxError
+from pipeline import run_pipeline
 
 
-class RobustPipelineExecutor(PipelineExecutor):
-    """Pipeline executor with enhanced error handling and recovery"""
+def run_with_retry(
+    target_dir: Path,
+    output_dir: Path,
+    *,
+    steps: list[str] | None = None,
+    retry_attempts: int = 3,
+    verbose: bool = False,
+) -> tuple[bool, list[dict]]:
+    """Run the pipeline with explicit error reporting and a bounded retry."""
+    execution_log: list[dict] = []
 
-    def __init__(self, retry_attempts: int = 3, continue_on_warnings: bool = True):
-        super().__init__()
-        self.retry_attempts = retry_attempts
-        self.continue_on_warnings = continue_on_warnings
-        self.execution_log = []
+    for attempt in range(retry_attempts):
+        result = run_pipeline(
+            target_dir=target_dir,
+            output_dir=output_dir,
+            steps=steps or "all",
+            verbose=verbose,
+        )
+        execution_log.append(
+            {
+                "attempt": attempt + 1,
+                "success": result.get("success"),
+                "errors": result.get("errors", []),
+                "warnings": result.get("warnings", []),
+            }
+        )
+        if result.get("success"):
+            return True, execution_log
+        if attempt == retry_attempts - 1:
+            return False, execution_log
 
-    def execute_step(self, step_number: int, **kwargs) -> bool:
-        """Execute pipeline step with retry logic and error recovery"""
-
-        for attempt in range(self.retry_attempts):
-            try:
-                result = super().execute_step(step_number, **kwargs)
-
-                # Log successful execution
-                self.execution_log.append(
-                    {
-                        "step": step_number,
-                        "attempt": attempt + 1,
-                        "status": "success",
-                        "timestamp": datetime.utcnow(),
-                    }
-                )
-
-                return result
-
-            except PipelineExecutionError as e:
-                # Log failed attempt
-                self.execution_log.append(
-                    {
-                        "step": step_number,
-                        "attempt": attempt + 1,
-                        "status": "failed",
-                        "error": e.to_dict(),
-                        "timestamp": datetime.utcnow(),
-                    }
-                )
-
-                if attempt < self.retry_attempts - 1:
-                    print(
-                        f"Step {step_number} failed (attempt {attempt + 1}), retrying..."
-                    )
-                    self._apply_recovery_strategy(step_number, e)
-                else:
-                    print(
-                        f"Step {step_number} failed after {self.retry_attempts} attempts"
-                    )
-                    raise
-
-            except GNNPerformanceWarning as w:
-                if self.continue_on_warnings:
-                    print(f"Performance warning in step {step_number}: {w}")
-                    return True
-                else:
-                    raise
-
-    def _apply_recovery_strategy(self, step_number: int, error: PipelineExecutionError):
-        """Apply recovery strategies based on error type"""
-
-        if error.error_code == "RUN-102":  # Memory exhaustion
-            print("Applying memory recovery: clearing caches...")
-            import gc
-
-            gc.collect()
-
-        elif error.error_code == "RUN-103":  # Dependency error
-            print("Applying dependency recovery: checking installations...")
-            self._validate_dependencies()
-
-        elif error.error_code == "RUN-104":  # Permission error
-            print("Applying permission recovery: checking file permissions...")
-            self._fix_permissions()
+    return False, execution_log
 ```
 
 ### Context Manager for Error Handling
@@ -560,51 +491,32 @@ class RobustPipelineExecutor(PipelineExecutor):
 from contextlib import contextmanager
 import logging
 
+from gnn import validate_gnn_file
+from gnn.types import GNSSyntaxError
+
 
 @contextmanager
-def gnn_error_context(operation_name: str, file_path: str = None):
-    """Context manager for standardized GNN error handling"""
-
-    logger = logging.getLogger("gnn.errors")
+def load_context(operation_name: str):
+    """Context manager for standardized GNN error handling."""
+    logger = logging.getLogger("gnn")
 
     try:
         logger.info(f"Starting operation: {operation_name}")
         yield
         logger.info(f"Completed operation: {operation_name}")
-
-    except GNNSyntaxError as e:
-        logger.error(f"Syntax error in {operation_name}: {e}")
-        logger.error(f"File: {e.file_path or file_path}")
-        logger.error(f"Line: {e.line_number}")
+    except GNSSyntaxError as e:
+        logger.error(f"Syntax error in {operation_name}: {e.format_message()}")
         raise
-
-    except GNNValidationError as e:
-        logger.error(f"Validation error in {operation_name}: {e}")
-        logger.error(f"Context: {e.context}")
-        raise
-
-    except GNNRuntimeError as e:
-        logger.error(f"Runtime error in {operation_name}: {e}")
-        logger.error(f"Error context: {e.context}")
-        raise
-
     except Exception as e:
-        logger.exception(f"Unexpected error in {operation_name}")
-        raise GNNRuntimeError(
-            message=f"Unexpected error in {operation_name}: {str(e)}",
-            error_code="RUN-999",
-            file_path=file_path,
-            context={"operation": operation_name, "original_error": str(e)},
-        )
+        logger.exception(f"Unexpected error in {operation_name}: {e}")
+        raise
 
 
 # Usage
-with gnn_error_context("model_loading", "my_model.md"):
-    model = GNNModel.from_file("my_model.md")
-
-with gnn_error_context("type_checking"):
-    checker = TypeChecker()
-    result = checker.check_model(model)
+with load_context("validation"):
+    result = validate_gnn_file("my_model.md")
+    if not result["is_valid"]:
+        raise GNSSyntaxError("\n".join(result["errors"]))
 ```
 
 ## Error Recovery Strategies

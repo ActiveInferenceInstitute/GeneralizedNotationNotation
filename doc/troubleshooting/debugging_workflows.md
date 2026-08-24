@@ -161,21 +161,19 @@ sed -i '1s/^\xEF\xBB\xBF//' your_file.md
 ### **Step 1: Dimension Consistency Check**
 
 ```python
-# Interactive dimension debugging
-from src.gnn import GNNModel
-from src.gnn_type_checker import TypeChecker
+# Interactive dimension debugging using the real public API
+from src.gnn import parse_gnn_file, validate_gnn_file
 
-model = GNNModel.from_file("your_file.md")
-checker = TypeChecker(strict_mode=True)
+parsed = parse_gnn_file("your_file.md")
+print("Defined variables:")
+for var in parsed.get("variables", []):
+    print(f"  {var}")
 
-# Check variable dimensions
-for var_name, var_obj in model.state_space.items():
-    print(f"{var_name}: {var_obj.dimensions} ({var_obj.var_type})")
-
-# Check matrix dimensions
-result = checker.check_model(model)
-for error in result.errors:
-    print(f"ERROR: {error}")
+# The validator reports structure and dimension errors for the file.
+result = validate_gnn_file("your_file.md")
+if not result["is_valid"]:
+    for error in result["errors"]:
+        print(f"ERROR: {error}")
 ```
 
 ### **Step 2: Matrix Validation**
@@ -211,23 +209,15 @@ validate_A_matrix(A_m0, num_obs=2, num_states=2)
 
 ### **Step 3: Connection Consistency**
 
-```python
-# Check connection consistency
-def validate_connections(model):
-    """Validate that all connections reference defined variables"""
-    defined_vars = set(model.state_space.keys())
+The `gnn validate` CLI checks that every edge references a declared variable, together
+with state-space and dimension checks, so it is the authoritative per-file surface:
 
-    for connection in model.connections:
-        if connection.source not in defined_vars:
-            print(f"❌ Undefined source: {connection.source}")
-        if connection.target not in defined_vars:
-            print(f"❌ Undefined target: {connection.target}")
-
-    print(f"✅ All connections reference defined variables")
-
-
-validate_connections(model)
+```bash
+uv run gnn validate your_file.md --strict
 ```
+
+For a machine-readable pass, add `--json`. The command reports section, state-space,
+connection, and dimension problems for the file.
 
 ---
 
@@ -492,17 +482,16 @@ import ipdb  # Enhanced debugger
 
 # Insert breakpoint in code
 def debug_model_parsing(filepath):
-    from src.gnn import GNNModel
+    from src.gnn import parse_gnn_file
 
     # Break here to inspect
     pdb.set_trace()  # or ipdb.set_trace()
 
-    model = GNNModel.from_file(filepath)
-    return model
+    return parse_gnn_file(filepath)
 
 
 # Use in problematic scenarios
-model = debug_model_parsing("problematic_file.md")
+parsed = debug_model_parsing("problematic_file.md")
 ```
 
 ### **Custom Debugging Tools**
@@ -591,17 +580,11 @@ else
 fi
 
 # 4. Resource estimation
-echo "📊 Resource estimation..."
-python -c "
-from src.gnn import GNNModel
-from src.gnn_type_checker import TypeChecker
-
-model = GNNModel.from_file('$MODEL_FILE')
-checker = TypeChecker()
-estimate = checker.estimate_resources(model)
-print(f'Memory estimate: {estimate.memory_mb:.1f} MB')
-print(f'Complexity: {estimate.compute_complexity}')
-"
+echo "📊 Resource estimation... (type-checker on the model's directory)"
+uv run python src/5_type_checker.py \
+  --target-dir "$(dirname "$MODEL_FILE")" \
+  --estimate-resources \
+  --verbose
 
 echo "🏁 Automated debugging complete"
 ```
@@ -650,7 +633,7 @@ python src/main.py --only-steps 1,2,3 --target-dir ./models
 python src/1_setup.py --verbose
 
 # Interactive debugging
-python -c "from src.gnn import GNNModel; import pdb; pdb.set_trace(); model = GNNModel.from_file('file.md')"
+python -c "from src.gnn import parse_gnn_file; import pdb; pdb.set_trace(); print(parse_gnn_file('file.md'))"
 ```
 
 ---

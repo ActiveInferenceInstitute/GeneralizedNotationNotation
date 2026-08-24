@@ -218,6 +218,9 @@ A[3,3,type=float]   # Likelihood matrix
 B[3,3,3,type=float] # Transition matrix
 C[3,type=float]     # Preference vector
 D[3,type=float]     # Prior vector
+s[3,1,type=float]   # Current hidden-state distribution
+o[3,1,type=int]     # Current observation
+u[1,type=int]       # Selected action
 
 ## Connections
 D>s
@@ -260,7 +263,7 @@ def _analyze_gnn_design(gnn_content: str) -> Dict[str, Any]:
             continue
 
         if current_section == "StateSpaceBlock":
-            if "[" in line and "]" in line:
+            if "[" in line and "]" in line and not line.startswith("#"):
                 # Extract state space definitions
                 var_name = line.split("[")[0]
                 dimensions = line.split("[")[1].split("]")[0]
@@ -269,17 +272,19 @@ def _analyze_gnn_design(gnn_content: str) -> Dict[str, Any]:
                 )
 
         elif current_section == "ActInfOntologyAnnotation":
-            if "=" in line:
+            if "=" in line and not line.startswith("#"):
                 var, concept = line.split("=", 1)
-                analysis["ontology_terms"][var.strip()] = concept.strip()
+                analysis["ontology_terms"][var.strip()] = concept.split("#", 1)[
+                    0
+                ].strip()
 
         elif current_section == "Connections":
             if line and not line.startswith("#"):
                 analysis["connections"].append(line)
 
         elif current_section == "ModelParameters":
-            if ":" in line:
+            if ":" in line and not line.startswith("#"):
                 param, value = line.split(":", 1)
-                analysis["parameters"][param.strip()] = value.strip()
+                analysis["parameters"][param.strip()] = value.split("#", 1)[0].strip()
 
     return analysis

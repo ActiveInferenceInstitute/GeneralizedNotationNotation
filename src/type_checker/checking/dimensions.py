@@ -9,9 +9,183 @@ from __future__ import annotations
 
 import logging
 import re
+from dataclasses import dataclass
+from math import prod
 from typing import Any, Dict
 
 _logger = logging.getLogger(__name__)
+
+
+@dataclass(frozen=True)
+class ParsedVariable:
+    """State-space declaration needed by type and resource analysis."""
+
+    name: str
+    dimensions: tuple[str, ...]
+    dtype: str
+    line: int
+
+
+_VARIABLE_DECLARATION = re.compile(
+    r"^(?P<name>[^\s\[\],()><|]+)\s*\[(?P<body>[^\]]+)\]\s*(?:#.*)?$"
+)
+
+
+def _normalize_identifier(name: str) -> str:
+    return "π" if name.strip().lower() == "pi" else name.strip()
+
+
+def _append_once(items: list[str], message: str) -> None:
+    """Append a diagnostic once while preserving discovery order."""
+    if message not in items:
+        items.append(message)
+
+
+def _state_space_lines(content: str) -> tuple[bool, list[tuple[int, str]]]:
+    """Return whether the section exists and its meaningful numbered lines."""
+    found_section = False
+    in_section = False
+    lines: list[tuple[int, str]] = []
+    for line_number, raw_line in enumerate(content.splitlines(), start=1):
+        stripped = raw_line.strip()
+        if stripped.startswith("## "):
+            in_section = stripped[3:].strip() == "StateSpaceBlock"
+            found_section = found_section or in_section
+            continue
+        if in_section and stripped and not stripped.startswith("#"):
+            lines.append((line_number, stripped))
+    return found_section, lines
+
+
+def parse_state_variables(content: str) -> tuple[list[ParsedVariable], list[str]]:
+    """Parse canonical state declarations, retaining symbolic dimensions."""
+    found_section, lines = _state_space_lines(content)
+    variables: list[ParsedVariable] = []
+    diagnostics: list[str] = []
+    seen: set[str] = set()
+
+    for line_number, line in lines:
+        match = _VARIABLE_DECLARATION.fullmatch(line)
+        if match is None:
+            diagnostics.append(
+                f"Unparseable StateSpaceBlock declaration at line {line_number}: '{line}'"
+            )
+            continue
+
+        name = _normalize_identifier(match.group("name"))
+        dimensions: list[str] = []
+        dtype = "float"
+        for part in match.group("body").split(","):
+            token = part.strip()
+            if not token:
+                continue
+            if "=" in token:
+                key, value = (item.strip() for item in token.split("=", 1))
+                if key == "type":
+                    dtype = value
+                continue
+            dimensions.append(_normalize_identifier(token))
+
+        if name in seen:
+            diagnostics.append(
+                f"[GNN-E004] Duplicate variable declaration: '{name}' at line {line_number}"
+            )
+        seen.add(name)
+        variables.append(
+            ParsedVariable(
+                name=name,
+                dimensions=tuple(dimensions),
+                dtype=dtype,
+                line=line_number,
+            )
+        )
+
+    if not found_section:
+        diagnostics.append("Missing StateSpaceBlock section")
+    elif not variables:
+        diagnostics.append("StateSpaceBlock contains no valid variable declarations")
+    return variables, diagnostics
+
+
+def _resolve_dimensions(
+    variable: ParsedVariable,
+    variables: dict[str, ParsedVariable],
+    cache: dict[str, list[int]],
+    diagnostics: list[str],
+    resolving: tuple[str, ...] = (),
+) -> list[int]:
+    """Resolve numeric and variable-backed symbolic dimensions safely."""
+    if variable.name in cache:
+        return cache[variable.name]
+    if variable.name in resolving:
+        cycle = " -> ".join((*resolving, variable.name))
+        _append_once(diagnostics, f"Cyclic symbolic dimension reference: {cycle}")
+        return [1]
+
+    if not variable.dimensions:
+        _append_once(
+            diagnostics,
+            f"Variable '{variable.name}' has no dimensions; using a scalar fallback",
+        )
+        cache[variable.name] = [1]
+        return cache[variable.name]
+
+    resolved: list[int] = []
+    next_resolving = (*resolving, variable.name)
+    for raw_dimension in variable.dimensions:
+        token = str(raw_dimension).strip()
+        try:
+            dimension = int(token)
+        except ValueError:
+            referenced = variables.get(token)
+            if referenced is None:
+                _append_once(
+                    diagnostics,
+                    f"Variable '{variable.name}' has unresolved dimension '{token}'; "
+                    "using 1 for estimation",
+                )
+                resolved.append(1)
+                continue
+            referenced_dimensions = _resolve_dimensions(
+                referenced,
+                variables,
+                cache,
+                diagnostics,
+                next_resolving,
+            )
+            resolved.append(prod(referenced_dimensions))
+            continue
+
+        if dimension <= 0:
+            _append_once(
+                diagnostics,
+                f"Variable '{variable.name}' has non-positive dimension {dimension}; "
+                "using 1 for estimation",
+            )
+            resolved.append(1)
+        else:
+            resolved.append(dimension)
+
+    cache[variable.name] = resolved
+    return resolved
+
+
+def extract_gnn_dimensions_with_diagnostics(
+    content: str,
+) -> tuple[dict[str, list[int]], list[str]]:
+    """Extract resolved dimensions and explicit diagnostics from GNN content."""
+    parsed_variables, diagnostics = parse_state_variables(content)
+
+    variables: dict[str, ParsedVariable] = {}
+    for variable in parsed_variables:
+        variables.setdefault(variable.name, variable)
+
+    cache: dict[str, list[int]] = {}
+    dimensions = {
+        name: _resolve_dimensions(variable, variables, cache, diagnostics)
+        for name, variable in variables.items()
+    }
+    return dimensions, diagnostics
 
 
 def extract_gnn_dimensions(content: str) -> Dict[str, Any]:
@@ -25,44 +199,10 @@ def extract_gnn_dimensions(content: str) -> Dict[str, Any]:
     Returns:
         Dict mapping variable names to their dimension lists.
     """
-    variables: Dict[str, Any] = {}
-
-    # Match: varname[dim1,dim2,...,type=xxx] or varname[dim1,dim2,...]
-    pattern = r"^([A-Za-z_][A-Za-z0-9_\']*)\s*\[([^\]]+)\]"
-
-    in_state_space = False
-    for line in content.splitlines():
-        stripped = line.strip()
-        if stripped.startswith("## StateSpaceBlock"):
-            in_state_space = True
-            continue
-        elif stripped.startswith("##") and in_state_space:
-            in_state_space = False
-            continue
-
-        if in_state_space:
-            match = re.match(pattern, stripped)
-            if match:
-                var_name = match.group(1)
-                dim_str = match.group(2)
-                # Parse dimensions (skip type=xxx entries)
-                dims: list[int] = []
-                for part in dim_str.split(","):
-                    part = part.strip()
-                    if part.startswith("type=") or part.startswith("π") or not part:
-                        continue
-                    try:
-                        dims.append(int(part))
-                    except ValueError:
-                        _logger.log(
-                            5,
-                            "Skipping non-integer dimension token: %s",
-                            part,
-                        )
-                if dims:
-                    variables[var_name] = dims
-
-    return variables
+    dimensions, diagnostics = extract_gnn_dimensions_with_diagnostics(content)
+    for diagnostic in diagnostics:
+        _logger.log(5, diagnostic)
+    return dimensions
 
 
 def validate_dimension_compatibility(variables: Dict[str, Any]) -> Dict[str, Any]:

@@ -34,14 +34,16 @@ def validate_ontology_terms(terms: Optional[Union[List[str], str]] = None) -> bo
     """Validate ontology terms against the Active Inference ontology."""
     if terms is None:
         return True
-    terms_list = [terms] if isinstance(terms, str) else list(terms)
-    if not terms_list:
-        return True
     try:
+        terms_list = [terms] if isinstance(terms, str) else list(terms)
+        if not terms_list:
+            return True
+        if not all(isinstance(term, str) and term.strip() for term in terms_list):
+            return False
         result = validate_annotations(terms_list)
-        return len(result.get("invalid_annotations", [])) == 0
+        return "error" not in result and not result.get("invalid_annotations", [])
     except (TypeError, ValueError, KeyError):
-        return True
+        return False
 
 
 # Feature flags expected by tests
@@ -85,9 +87,7 @@ class OntologyProcessor:
     # Additional methods expected by some tests
     def validate_terms(self, terms: Optional[List[str]] = None) -> bool:
         """Validate terms."""
-        terms = terms or []
-        defined = load_defined_ontology_terms()
-        return all(t in defined for t in terms)
+        return validate_ontology_terms(terms or [])
 
 
 class OntologyValidator:

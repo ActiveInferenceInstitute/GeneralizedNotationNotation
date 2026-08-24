@@ -51,6 +51,8 @@ class TestPreExecGate:
         verdict = scan_script_for_execution(missing)
         assert verdict["ok"] is False
         assert verdict["scanned"] is False
+        assert verdict["findings"] == verdict["blocked"]
+        assert verdict["decision"] == "deny_unreadable"
 
     def test_block_on_threshold(self, tmp_path: Path) -> None:
         # `subprocess.run` is classified "low" severity by the AST scanner, so
@@ -78,6 +80,42 @@ class TestPreExecGate:
         script.write_text("from os import system as invoke\ninvoke('echo unsafe')\n")
 
         assert scan_script_for_execution(script)["ok"] is False
+
+    @pytest.mark.parametrize(
+        "source",
+        [
+            "import subprocess\nsubprocess.check_call(['echo', 'unsafe'], shell=flag)\n",
+            "import subprocess as sp\ninvoke = sp.check_output\ninvoke('echo unsafe', shell=1)\n",
+        ],
+    )
+    def test_blocks_subprocess_aliases_with_potential_shell_execution(
+        self, tmp_path: Path, source: str
+    ) -> None:
+        script = tmp_path / "subprocess_alias.py"
+        script.write_text(source)
+
+        verdict = scan_script_for_execution(script)
+
+        assert verdict["ok"] is False
+        assert verdict["decision"] == "deny"
+        assert any(
+            finding["vulnerability_type"] == "Subprocess execution with shell=True"
+            for finding in verdict["blocked"]
+        )
+
+    def test_unparseable_python_fails_closed_with_consistent_receipt(
+        self, tmp_path: Path
+    ) -> None:
+        script = tmp_path / "malformed.py"
+        script.write_text("if True print('not valid')\n")
+
+        verdict = scan_script_for_execution(script)
+
+        assert verdict["ok"] is False
+        assert verdict["scanned"] is True
+        assert verdict["decision"] == "deny"
+        assert verdict["findings"] == verdict["blocked"]
+        assert verdict["blocked"][0]["detection_method"] == "ast_parse"
 
     def test_rejects_invalid_threshold_and_unknown_script_type(
         self, tmp_path: Path

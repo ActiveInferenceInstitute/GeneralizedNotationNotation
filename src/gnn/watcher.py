@@ -123,9 +123,15 @@ class GNNWatcher:
 
         try:
             content = path.read_text(encoding="utf-8")
-            self.on_change(path, content)
         except OSError as e:
             logger.warning(f"Could not read {path}: {e}")
+            return
+
+        # A misbehaving callback must not terminate the watcher loop.
+        try:
+            self.on_change(path, content)
+        except Exception as e:  # pragma: no cover - defensive guard
+            logger.warning(f"Watcher callback failed for {path}: {e}")
 
     @staticmethod
     def _default_callback(path: Path, content: str) -> Any:

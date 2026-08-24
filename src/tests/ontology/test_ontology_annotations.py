@@ -104,3 +104,23 @@ def test_parse_gnn_ontology_section_returns_empty_for_bare_content() -> Any:
     result = parse_gnn_ontology_section("s=HiddenState\no=Observation\n")
     # Result is dict (possibly empty), not None — callers can safely .get().
     assert isinstance(result, dict)
+
+
+def test_parse_ontology_section_handles_case_bullets_and_comments() -> None:
+    from ontology import parse_gnn_ontology_section
+
+    content = (
+        "## actinfontologyannotation\n"
+        "# ignored=CommentedOutTerm\n"
+        "- s=HiddenState\n"
+        "* o=Observation # sensory value\n"
+        "## ModelParameters\n"
+        "outside=Action\n"
+    )
+
+    parsed = parse_gnn_ontology_section(content)
+
+    assert parsed["annotations"] == [
+        "s=HiddenState",
+        "o=Observation # sensory value",
+    ]

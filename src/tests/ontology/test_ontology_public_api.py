@@ -5,6 +5,7 @@ validate_annotations, validate_ontology_terms (extended), get_mcp_interface,
 FEATURES, __version__.
 """
 
+import json
 import sys
 from pathlib import Path
 from typing import Any
@@ -97,6 +98,121 @@ class TestProcessOntology:
         )
         assert process_ontology(target, tmp_path / "lenient") is True
 
+    def test_custom_ontology_file_is_authoritative_for_strict_validation(
+        self, tmp_path: Path
+    ) -> None:
+        from ontology import process_ontology
+
+        target = tmp_path / "input"
+        target.mkdir()
+        (target / "custom.md").write_text(
+            "## ActInfOntologyAnnotation\nx=NovelLatentState\n",
+            encoding="utf-8",
+        )
+        terms_file = tmp_path / "terms.json"
+        terms_file.write_text(
+            json.dumps({"custom": ["NovelLatentState"]}), encoding="utf-8"
+        )
+        output = tmp_path / "output"
+
+        assert process_ontology(
+            target,
+            output,
+            strict_validation=True,
+            ontology_terms_file=terms_file,
+        )
+        receipt = json.loads(
+            (output / "ontology_results.json").read_text(encoding="utf-8")
+        )
+        report = json.loads(Path(receipt["reports"][0]).read_text(encoding="utf-8"))
+        assert report["validation_result"]["valid_annotations"] == [
+            "x=NovelLatentState"
+        ]
+        assert report["validation_result"]["coverage_score"] == 1.0
+
+    def test_missing_custom_ontology_fails_closed_with_receipt(
+        self, tmp_path: Path
+    ) -> None:
+        from ontology import process_ontology
+
+        target = tmp_path / "input"
+        target.mkdir()
+        (target / "model.md").write_text(
+            "## ActInfOntologyAnnotation\ns=HiddenState\n", encoding="utf-8"
+        )
+        output = tmp_path / "output"
+
+        assert (
+            process_ontology(
+                target,
+                output,
+                strict_validation=True,
+                ontology_terms_file=tmp_path / "missing.json",
+            )
+            is False
+        )
+        receipt = json.loads(
+            (output / "ontology_results.json").read_text(encoding="utf-8")
+        )
+        assert receipt["success"] is False
+        assert receipt["errors"][0]["error_type"] == "ontology_terms_load_error"
+
+    def test_recursive_duplicate_stems_emit_distinct_reports(
+        self, tmp_path: Path
+    ) -> None:
+        from ontology import process_ontology
+
+        target = tmp_path / "input"
+        for branch, term in (("a", "HiddenState"), ("b", "Observation")):
+            nested = target / branch
+            nested.mkdir(parents=True)
+            (nested / "model.md").write_text(
+                f"## ActInfOntologyAnnotation\nx={term}\n", encoding="utf-8"
+            )
+        output = tmp_path / "output"
+
+        assert process_ontology(target, output, strict_validation=True)
+        receipt = json.loads(
+            (output / "ontology_results.json").read_text(encoding="utf-8")
+        )
+
+        relative_reports = [
+            Path(report).relative_to(output).as_posix() for report in receipt["reports"]
+        ]
+        assert relative_reports == [
+            "a/model_ontology_report.json",
+            "b/model_ontology_report.json",
+        ]
+        assert all(Path(report).is_file() for report in receipt["reports"])
+
+    def test_strict_processing_is_deterministic_on_committed_model(
+        self, tmp_path: Path
+    ) -> None:
+        from ontology import process_ontology
+
+        repo_root = Path(__file__).parents[3]
+        target = repo_root / "input/gnn_files/pomdp_gridworld"
+        first = tmp_path / "first"
+        second = tmp_path / "second"
+
+        assert process_ontology(target, first, strict_validation=True, recursive=False)
+        assert process_ontology(target, second, strict_validation=True, recursive=False)
+
+        first_receipt = json.loads(
+            (first / "ontology_results.json").read_text(encoding="utf-8")
+        )
+        second_receipt = json.loads(
+            (second / "ontology_results.json").read_text(encoding="utf-8")
+        )
+        first_reports = first_receipt.pop("reports")
+        second_reports = second_receipt.pop("reports")
+        assert first_receipt == second_receipt
+        assert len(first_reports) == len(second_reports) > 0
+        for first_report, second_report in zip(
+            first_reports, second_reports, strict=True
+        ):
+            assert Path(first_report).read_bytes() == Path(second_report).read_bytes()
+
 
 class TestProcessGnnOntology:
     """Test process_gnn_ontology function."""
@@ -168,6 +284,22 @@ class TestValidateAnnotationsExtended:
         assert result["invalid_details"][0]["reason"] == (
             "mapping annotations require a key and a value"
         )
+
+    def test_validate_annotations_rejects_conflicting_key_mapping(self) -> None:
+        from ontology import validate_annotations
+
+        result = validate_annotations(["s=HiddenState", "s=Observation"])
+
+        assert result["valid_annotations"] == ["s=HiddenState"]
+        assert result["invalid_annotations"] == ["s=Observation"]
+        assert result["invalid_details"][0]["reason"] == (
+            "annotation key maps to multiple ontology terms"
+        )
+
+    def test_validate_ontology_terms_fails_closed_on_invalid_input(self) -> None:
+        from ontology import validate_ontology_terms
+
+        assert validate_ontology_terms(42) is False  # type: ignore[arg-type]
 
     def test_validate_ontology_terms_with_list(self) -> None:
         from ontology import validate_ontology_terms

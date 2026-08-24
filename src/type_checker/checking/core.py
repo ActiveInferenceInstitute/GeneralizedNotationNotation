@@ -7,21 +7,26 @@ of GNN files, validating syntax, dimensions, and type consistency.
 
 import json
 import logging
-import re
+import math
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, cast
+from typing import Any, Dict, TypedDict
 
-from utils.pipeline_template import log_step_error, log_step_start, log_step_success
+from utils.pipeline_template import (
+    log_step_error,
+    log_step_start,
+    log_step_success,
+    log_step_warning,
+)
 
 # We need to import the estimator lazily or through the standard pipeline
 # to avoid circular dependencies if we refactor heavily, but for now we'll
 # import it directly from the estimation package.
-from ..estimation.strategies import (
-    calculate_complexity,
-    estimate_memory,
+from ..estimation.strategies import VariableMap, calculate_complexity
+from .dimensions import (
+    extract_gnn_dimensions_with_diagnostics,
+    validate_dimension_compatibility,
 )
-from .dimensions import extract_gnn_dimensions, validate_dimension_compatibility
 from .rules import (
     check_type_consistency,
     extract_types_from_content,
@@ -32,80 +37,153 @@ from .rules import (
 _module_logger = logging.getLogger(__name__)
 
 
-def estimate_file_resources(content: str) -> Dict[str, Any]:
+class ResourceEstimate(TypedDict):
+    """Stable resource-estimation result emitted by the type checker."""
+
+    complexity_tier: str
+    estimated_memory_bytes: int
+    total_parameters: int
+    variables: int
+    connections: int
+    flops_estimate: float
+    complexity_score: float
+    diagnostics: list[str]
+
+
+def _extract_markdown_section(content: str, section_name: str) -> str:
+    """Return one canonical Markdown GNN section without adjacent prose."""
+    lines: list[str] = []
+    in_section = False
+    for raw_line in content.splitlines():
+        stripped = raw_line.strip()
+        if stripped.startswith("## "):
+            in_section = stripped[3:].strip() == section_name
+            continue
+        if in_section:
+            lines.append(raw_line)
+    return "\n".join(lines).strip()
+
+
+def _connection_group(value: str) -> list[str]:
+    group = value.strip()
+    if group.startswith("(") and group.endswith(")"):
+        group = group[1:-1]
+    return [
+        "π" if name.strip().lower() == "pi" else name.strip()
+        for name in group.split(",")
+        if name.strip()
+    ]
+
+
+def _parse_resource_connections(
+    content: str, known_variables: set[str]
+) -> tuple[list[dict[str, Any]], list[str]]:
+    """Parse GNN connection groups without matching prose outside the section."""
+    edges: list[dict[str, Any]] = []
+    diagnostics: list[str] = []
+    for line_number, raw_line in enumerate(
+        _extract_markdown_section(content, "Connections").splitlines(), start=1
+    ):
+        line = raw_line.split("#", 1)[0].strip()
+        if not line:
+            continue
+        operator = next(
+            (
+                candidate
+                for candidate in ("<->", "->", ">", "|", "-")
+                if candidate in line
+            ),
+            None,
+        )
+        if operator is None:
+            diagnostics.append(
+                f"Unparseable connection at section line {line_number}: '{line}'"
+            )
+            continue
+        source_text, target_text = line.split(operator, 1)
+        target_text = target_text.split(":", 1)[0]
+        sources = _connection_group(source_text)
+        targets = _connection_group(target_text)
+        if not sources or not targets:
+            diagnostics.append(
+                f"Connection at section line {line_number} has an empty endpoint: '{line}'"
+            )
+            continue
+
+        edge_type = "undirected" if operator in {"-", "<->"} else "directed"
+        for source in sources:
+            for target in targets:
+                edges.append({"source": source, "target": target, "type": edge_type})
+                if source not in known_variables:
+                    diagnostics.append(
+                        f"Connection at section line {line_number} references undeclared variable '{source}'"
+                    )
+                if target not in known_variables:
+                    diagnostics.append(
+                        f"Connection at section line {line_number} references undeclared variable '{target}'"
+                    )
+    return edges, diagnostics
+
+
+def estimate_file_resources(content: str) -> ResourceEstimate:
     """Estimate computational resources needed for a GNN file using core framework logic.
 
     This function bridges the type checker to the estimation subsystem
     for generation of Baseball Cards during the standard validation pass.
     """
-    import math
-
     from ..estimation.estimator import GNNResourceEstimator
 
-    try:
-        # Extract structured dimensions
-        variables_with_dims = extract_gnn_dimensions(content)
+    variables_with_dims, diagnostics = extract_gnn_dimensions_with_diagnostics(content)
+    variable_types = {
+        str(type_info["name"]): str(type_info["type"])
+        for type_info in extract_types_from_content(content)
+    }
 
-        # Formulate variables map compatible with rigorous estimators
-        vars_map: dict[Any, Any] = {}
-        for k, v in variables_with_dims.items():
-            vars_map[k] = {"dimensions": v, "type": "float"}
+    variables: VariableMap = {
+        name: {
+            "dimensions": dimensions,
+            "type": variable_types.get(name, "float"),
+        }
+        for name, dimensions in variables_with_dims.items()
+    }
 
-        # Connections math
-        directed = re.findall(r"(\w+)\s*>\s*(\w+)", content)
-        undirected = re.findall(r"(\w+)\s*-\s*(\w+)", content)
-        edges = [{"source": u, "target": v, "type": "directed"} for u, v in directed]
-        edges.extend(
-            [{"source": u, "target": v, "type": "undirected"} for u, v in undirected]
+    edges, connection_diagnostics = _parse_resource_connections(content, set(variables))
+    diagnostics.extend(connection_diagnostics)
+    equations = _extract_markdown_section(content, "Equations")
+
+    total_parameters = 0
+    memory_bytes = 0
+    for name, dimensions in variables_with_dims.items():
+        parameter_count = math.prod(dimensions)
+        total_parameters += parameter_count
+        variable_type = variable_types.get(name, "float")
+        bytes_per_element = GNNResourceEstimator.MEMORY_FACTORS.get(
+            variable_type,
+            GNNResourceEstimator.MEMORY_FACTORS["float"],
         )
+        memory_bytes += parameter_count * bytes_per_element
 
-        equations = "\n".join(
-            [f"{u}={v}" for u, v in re.findall(r"(\w+)\s*=\s*(.+)", content)]
-        )
-
-        memory_bytes = (
-            estimate_memory(vars_map, GNNResourceEstimator.MEMORY_FACTORS) * 1024
-        )  # convert kb to bytes loosely
-        complexity_metrics = calculate_complexity(vars_map, edges, equations)
-
-        total_parameters = sum(
-            [
-                math.prod(v) if isinstance(v, list) else 1
-                for v in variables_with_dims.values()
-            ]
-        )
-        if total_parameters == 0:
-            total_parameters = len(re.findall(r"(\w+)\s*[:=]", content)) * 9
-
+    complexity_metrics = calculate_complexity(variables, edges, equations)
+    score = complexity_metrics["overall_complexity"]
+    if score > 8.0:
+        complexity_tier = "large"
+    elif score > 5.0:
+        complexity_tier = "medium"
+    elif score > 2.0:
+        complexity_tier = "small"
+    else:
         complexity_tier = "minimal"
-        score = complexity_metrics.get("overall_complexity", 0)
-        if score > 2.0:
-            complexity_tier = "small"
-        if score > 5.0:
-            complexity_tier = "medium"
-        if score > 8.0:
-            complexity_tier = "large"
 
-        return {
-            "complexity_tier": complexity_tier,
-            "estimated_memory_bytes": int(memory_bytes),
-            "total_parameters": total_parameters,
-            "variables": len(variables_with_dims),
-            "connections": len(edges),
-            "flops_estimate": score * 500.0,  # Rough FLOPS parameter correlation
-            "complexity_score": score,
-        }
-    except Exception as e:
-        return {
-            "complexity_tier": "unknown",
-            "estimated_memory_bytes": 0,
-            "total_parameters": 0,
-            "variables": 0,
-            "connections": 0,
-            "flops_estimate": 0,
-            "complexity_score": 0,
-            "error": str(e),
-        }
+    return {
+        "complexity_tier": complexity_tier,
+        "estimated_memory_bytes": memory_bytes,
+        "total_parameters": total_parameters,
+        "variables": len(variables),
+        "connections": len(edges),
+        "flops_estimate": score * 500.0,
+        "complexity_score": score,
+        "diagnostics": diagnostics,
+    }
 
 
 class GNNTypeChecker:
@@ -141,7 +219,10 @@ class GNNTypeChecker:
         ]
         summary_data: Dict[str, Any] = {
             "processed_files": len(results),
-            "success": all(item.get("is_valid", False) for item in results.values()),
+            "success": all(
+                item.get("valid", item.get("is_valid", False))
+                for item in results.values()
+            ),
             "errors": [
                 error for item in results.values() for error in item.get("errors", [])
             ],
@@ -168,17 +249,19 @@ class GNNTypeChecker:
         Binary pickle specs are excluded — they are not type-checked. Sorted
         for deterministic, reproducible discovery.
         """
+        from gnn.discovery import is_model_source_path
         from gnn.parsers.common import get_supported_gnn_extensions
 
         return sorted(
             path
             for ext in get_supported_gnn_extensions(include_binary_pickle=False)
             for path in target_dir.rglob(f"*{ext}")
+            if is_model_source_path(path)
         )
 
     def validate_gnn_files(
         self, target_dir: Path, output_dir: Path, verbose: bool = False, **kwargs: Any
-    ) -> bool:
+    ) -> bool | int:
         """
         Validate GNN files for type consistency.
 
@@ -189,7 +272,11 @@ class GNNTypeChecker:
             **kwargs: Additional arguments
 
         Returns:
-            True if validation successful, False otherwise
+            ``True`` (coerces to pipeline exit 0) when every file validates;
+            ``2`` (coerces to pipeline exit ``SUCCESS_WITH_WARNINGS``) when the
+            run completed but one or more files had type/consistency problems
+            (recoverable); ``False`` (coerces to exit 1) when a hard failure
+            occurred (exception / nothing to process).
         """
         logger = logging.getLogger("type_checker")
 
@@ -207,6 +294,7 @@ class GNNTypeChecker:
                 "validation_results": [],
                 "type_analysis": [],
             }
+            hard_failure = False  # any exception / nothing-to-process (vs recoverable invalid files)
 
             # Find GNN files across every registered spec extension (the
             # parser stack supports more than markdown — discovering only
@@ -216,6 +304,7 @@ class GNNTypeChecker:
             if not gnn_files:
                 logger.warning("No GNN files found for type checking")
                 results["success"] = False
+                hard_failure = True
                 results["errors"].append("No GNN files found")
             else:
                 results["processed_files"] = len(gnn_files)
@@ -228,12 +317,16 @@ class GNNTypeChecker:
                             gnn_file, verbose
                         )
                         results["validation_results"].append(validation_result)
+                        if not validation_result.get("valid", False):
+                            results["success"] = False
 
                         # Analyze types
                         type_analysis = self._analyze_types(gnn_file, verbose)
                         results["type_analysis"].append(type_analysis)
 
                     except Exception as e:
+                        results["success"] = False
+                        hard_failure = True
                         error_info: dict[str, Any] = {
                             "file": str(gnn_file),
                             "error": str(e),
@@ -262,10 +355,14 @@ class GNNTypeChecker:
 
             if results["success"]:
                 log_step_success(logger, "Type checking completed successfully")
-            else:
+                return True
+            if hard_failure:
                 log_step_error(logger, "Type checking failed")
-
-            return cast("bool", results["success"])
+                return False
+            log_step_warning(
+                logger, "Type checking completed with warnings (some files invalid)"
+            )
+            return 2
 
         except Exception as e:
             log_step_error(logger, "Type checking failed", error=str(e))
@@ -276,7 +373,7 @@ class GNNTypeChecker:
     ) -> Dict[str, Any]:
         """Validate a single GNN file for type consistency."""
         try:
-            with open(file_path, "r") as f:
+            with open(file_path, "r", encoding="utf-8") as f:
                 content = f.read()
 
             validation_result: dict[str, Any] = {
@@ -297,9 +394,10 @@ class GNNTypeChecker:
                 type_validation = validate_type(type_info)
                 if not type_validation["valid"]:
                     validation_result["type_issues"].append(type_validation)
-                    validation_result["warnings"].append(
+                    validation_result["errors"].append(
                         f"Type issue: {type_validation['message']}"
                     )
+                    validation_result["valid"] = False
 
             # Check for consistency
             consistency_check = check_type_consistency(found_types)
@@ -308,7 +406,12 @@ class GNNTypeChecker:
                 validation_result["valid"] = False
 
             # Validate dimension compatibility
-            gnn_dims = extract_gnn_dimensions(content)
+            gnn_dims, dimension_diagnostics = extract_gnn_dimensions_with_diagnostics(
+                content
+            )
+            if dimension_diagnostics:
+                validation_result["errors"].extend(dimension_diagnostics)
+                validation_result["valid"] = False
             if gnn_dims:
                 dim_check = validate_dimension_compatibility(gnn_dims)
                 validation_result["dimension_compatibility"] = dim_check
@@ -339,7 +442,7 @@ class GNNTypeChecker:
     def _analyze_types(self, file_path: Path, verbose: bool = False) -> Dict[str, Any]:
         """Analyze types in a GNN file."""
         try:
-            with open(file_path, "r") as f:
+            with open(file_path, "r", encoding="utf-8") as f:
                 content = f.read()
 
             # Extract type information

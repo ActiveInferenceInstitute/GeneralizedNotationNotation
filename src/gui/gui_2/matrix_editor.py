@@ -1,18 +1,28 @@
-"""
-Matrix Editor for GUI 2: Visual matrix editing and GNN template management
-"""
+"""Model parsing and serialization helpers for GUI 2's matrix editor."""
 
 from __future__ import annotations
 
+import copy
+import math
 import re
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Sequence
+
+_MATRIX_DEFAULTS: Dict[str, Dict[str, Any]] = {
+    "A": {"shape": [3, 3], "description": "Likelihood matrix"},
+    "B": {"shape": [3, 3, 3], "description": "Transition matrices"},
+    "C": {"shape": [3], "description": "Preference vector"},
+    "D": {"shape": [3], "description": "Prior vector"},
+}
+_NUMBER_RE = re.compile(
+    r"(?<![\w.])[-+]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][-+]?\d+)?(?![\w.])"
+)
+_STATE_DECLARATION_RE = re.compile(
+    r"^\s*([^\W\d]\w*)\s*\[([^\]]+)\](?:\s*#\s*(.*))?$", re.UNICODE
+)
 
 
 def get_pomdp_template() -> str:
-    """
-    Get the POMDP template based on actinf_pomdp_agent.md
-    This serves as the starting template for GUI 2 visual editing.
-    """
+    """Return the structurally valid POMDP starter used by GUI 2."""
     return """# GNN Visual Model Editor
 # GNN Version: 1.0
 # This model is being constructed using the Visual Matrix Editor (GUI 2)
@@ -36,7 +46,7 @@ This model is constructed using the visual matrix editor:
 # Likelihood matrix: A[observation_outcomes, hidden_states]
 A[3,3,type=float]   # Observation likelihood matrix
 
-# Transition matrix: B[states_next, states_previous, actions]  
+# Transition matrix: B[states_next, states_previous, actions]
 B[3,3,3,type=float]   # State transition matrices
 
 # Preference vector: C[observation_outcomes]
@@ -88,272 +98,465 @@ Visual Active Inference POMDP Agent - GUI 2 Visual Editor
 """
 
 
+def _section_content(gnn_text: str, section_name: str) -> str:
+    pattern = (
+        rf"(?ms)^##[ \t]+{re.escape(section_name)}[ \t]*\r?\n(.*?)(?=^##[ \t]+|\Z)"
+    )
+    match = re.search(pattern, gnn_text)
+    return match.group(1) if match else ""
+
+
+def _numeric_dimensions(raw_dimensions: str) -> List[int]:
+    dimensions: List[int] = []
+    for raw_part in raw_dimensions.split(","):
+        part = raw_part.strip()
+        if not part or "=" in part:
+            continue
+        if part.isdigit():
+            dimensions.append(int(part))
+    return dimensions
+
+
+def _parse_state_spaces(gnn_text: str) -> Dict[str, Dict[str, Any]]:
+    state_spaces: Dict[str, Dict[str, Any]] = {}
+    for raw_line in _section_content(gnn_text, "StateSpaceBlock").splitlines():
+        line = raw_line.strip()
+        if not line or line.startswith("#"):
+            continue
+        match = _STATE_DECLARATION_RE.match(line)
+        if match is None:
+            continue
+        raw_dimensions = match.group(2)
+        type_match = re.search(r"(?:^|,)\s*type\s*=\s*([^,\]]+)", raw_dimensions)
+        state_spaces[match.group(1)] = {
+            "shape": _numeric_dimensions(raw_dimensions),
+            "type": type_match.group(1).strip() if type_match else None,
+            "description": (match.group(3) or "").strip(),
+        }
+    return state_spaces
+
+
+def _braced_assignment_span(text: str, name: str) -> tuple[int, int] | None:
+    match = re.search(rf"(?m)^[ \t]*{re.escape(name)}[ \t]*=[ \t]*\{{", text)
+    if match is None:
+        return None
+    opening = match.end() - 1
+    depth = 0
+    for index in range(opening, len(text)):
+        if text[index] == "{":
+            depth += 1
+        elif text[index] == "}":
+            depth -= 1
+            if depth == 0:
+                return match.start(), index + 1
+    return None
+
+
+def _reshape_flat(values: Sequence[float], shape: Sequence[int]) -> Any:
+    if not shape:
+        return list(values)
+    if len(shape) == 1:
+        return list(values[: shape[0]])
+    stride = math.prod(shape[1:])
+    return [
+        _reshape_flat(values[index * stride : (index + 1) * stride], shape[1:])
+        for index in range(shape[0])
+    ]
+
+
+def _parse_parameter_values(
+    parameter_block: str, name: str, shape: Sequence[int]
+) -> Any | None:
+    span = _braced_assignment_span(parameter_block, name)
+    if span is None or not shape or any(dimension < 0 for dimension in shape):
+        return None
+    assignment = parameter_block[span[0] : span[1]]
+    opening = assignment.find("{")
+    numeric_values = [
+        float(value) for value in _NUMBER_RE.findall(assignment[opening + 1 : -1])
+    ]
+    if len(numeric_values) != math.prod(shape):
+        return None
+    if name == "B" and len(shape) == 3:
+        rows, columns, depth = shape
+        return _reshape_flat(numeric_values, [depth, rows, columns])
+    return _reshape_flat(numeric_values, shape)
+
+
 def parse_matrix_from_gnn(gnn_text: str) -> Dict[str, Any]:
-    """
-    Parse matrix information from GNN markdown for visual editing.
+    """Parse editable matrices, state spaces, connections, and metadata."""
+    text = str(gnn_text or "")
+    state_spaces = _parse_state_spaces(text)
+    parameter_block = _section_content(text, "InitialParameterization")
+    matrices: Dict[str, Dict[str, Any]] = {}
 
-    Args:
-        gnn_text: GNN markdown content
+    for name, defaults in _MATRIX_DEFAULTS.items():
+        declaration = state_spaces.get(name)
+        declared = declaration is not None and bool(declaration.get("shape"))
+        shape = (
+            list(declaration["shape"])
+            if declaration is not None and declared
+            else list(defaults["shape"])
+        )
+        description = (
+            declaration.get("description") if declaration else None
+        ) or defaults["description"]
+        matrices[name] = {
+            "shape": shape,
+            "values": _parse_parameter_values(parameter_block, name, shape)
+            if declared
+            else None,
+            "description": description,
+            "declared": declared,
+        }
 
-    Returns:
-        Dictionary containing parsed matrix information
-    """
-    matrices: dict[str, Any] = {
-        "A": {"shape": [3, 3], "values": None, "description": "Likelihood matrix"},
-        "B": {"shape": [3, 3, 3], "values": None, "description": "Transition matrices"},
-        "C": {"shape": [3], "values": None, "description": "Preference vector"},
-        "D": {"shape": [3], "values": None, "description": "Prior vector"},
-    }
-
-    # Parse state space block
-    state_space_pattern = r"## StateSpaceBlock\s*\n(.*?)(?=##|$)"
-    match = re.search(state_space_pattern, gnn_text, re.DOTALL)
-
-    if match:
-        state_block = match.group(1)
-
-        # Parse matrix dimensions
-        for line in state_block.split("\n"):
-            if "[" in line and "]" in line:
-                # Extract matrix name and dimensions
-                parts = line.split("[")
-                if len(parts) >= 2:
-                    name = parts[0].strip()
-                    if name in matrices:
-                        # Extract dimensions
-                        dim_part = parts[1].split("]")[0]
-                        dims: list[Any] = []
-                        for d in dim_part.split(","):
-                            d = d.strip()
-                            if d.isdigit():
-                                dims.append(int(d))
-                        if dims:
-                            matrices[name]["shape"] = dims
-
-    # Parse initial parameterization
-    param_pattern = r"## InitialParameterization\s*\n(.*?)(?=##|$)"
-    match = re.search(param_pattern, gnn_text, re.DOTALL)
-
-    if match:
-        param_block = match.group(1)
-
-        # Parse matrix values (simplified parsing)
-        for matrix_name in matrices.keys():
-            pattern = rf"{matrix_name}=\{{([^}}]+)\}}"
-            matrix_match = re.search(pattern, param_block, re.DOTALL)
-            if matrix_match:
-                values_str = matrix_match.group(1)
-                # This is a simplified parser - in a real implementation,
-                # you'd want more robust parsing
-                matrices[matrix_name]["values"] = values_str.strip()
+    # Undeclared optional vectors get useful display sizes without becoming
+    # part of a later export (``declared`` remains false).
+    if matrices["A"]["declared"] and len(matrices["A"]["shape"]) == 2:
+        observations, states = matrices["A"]["shape"]
+        if not matrices["C"]["declared"]:
+            matrices["C"]["shape"] = [observations]
+        if not matrices["D"]["declared"]:
+            matrices["D"]["shape"] = [states]
 
     return {
         "matrices": matrices,
-        "connections": _parse_connections(gnn_text),
-        "metadata": _parse_metadata(gnn_text),
+        "state_spaces": state_spaces,
+        "connections": _parse_connections(text),
+        "metadata": _parse_metadata(text),
     }
 
 
-def create_matrix_from_gnn(gnn_text: str) -> Dict[str, Any]:
-    """
-    Create visual matrix representation from GNN markdown.
-    This prepares data for the visual drag-and-drop interface.
-    """
-    parsed = parse_matrix_from_gnn(gnn_text)
+def _zeros(shape: Sequence[int]) -> Any:
+    if len(shape) == 1:
+        return [0.0 for _ in range(shape[0])]
+    return [_zeros(shape[1:]) for _ in range(shape[0])]
 
-    # Convert to visual representation format
-    visual_matrices: dict[Any, Any] = {}
+
+def create_matrix_from_gnn(gnn_text: str) -> Dict[str, Any]:
+    """Create the GUI's visual representation without discarding real values."""
+    parsed = parse_matrix_from_gnn(gnn_text)
+    visual_matrices: Dict[str, Dict[str, Any]] = {}
 
     for name, info in parsed["matrices"].items():
         shape = info["shape"]
-        description = info["description"]
-
-        # Create visual matrix structure
-        if len(shape) == 1:  # Vector
+        values = copy.deepcopy(info["values"])
+        common = {
+            "description": info["description"],
+            "editable": True,
+            "declared": info["declared"],
+        }
+        if len(shape) == 1:
             visual_matrices[name] = {
+                **common,
                 "type": "vector",
                 "size": shape[0],
-                "values": [0.0] * shape[0],
-                "description": description,
-                "editable": True,
+                "values": values if values is not None else _zeros(shape),
             }
-        elif len(shape) == 2:  # Matrix
-            rows, cols = shape
+        elif len(shape) == 2:
+            rows, columns = shape
             visual_matrices[name] = {
+                **common,
                 "type": "matrix",
                 "rows": rows,
-                "cols": cols,
-                "values": [[0.0 for _ in range(cols)] for _ in range(rows)],
-                "description": description,
-                "editable": True,
+                "cols": columns,
+                "values": values if values is not None else _zeros(shape),
             }
-        elif len(shape) == 3:  # 3D Tensor
-            depth, rows, cols = shape
+        elif len(shape) == 3:
+            rows, columns, depth = shape
+            tensor_shape = [depth, rows, columns]
             visual_matrices[name] = {
+                **common,
                 "type": "tensor",
                 "depth": depth,
                 "rows": rows,
-                "cols": cols,
-                "values": [
-                    [[0.0 for _ in range(cols)] for _ in range(rows)]
-                    for _ in range(depth)
-                ],
-                "description": description,
-                "editable": True,
+                "cols": columns,
+                "values": values if values is not None else _zeros(tensor_shape),
                 "current_slice": 0,
             }
 
     return {
         "visual_matrices": visual_matrices,
+        "state_spaces": parsed["state_spaces"],
         "connections": parsed["connections"],
         "metadata": parsed["metadata"],
     }
 
 
+def _finite_float(value: Any) -> float:
+    try:
+        number = float(value)
+    except (TypeError, ValueError) as exc:
+        raise ValueError(f"Matrix values must be numeric, got {value!r}") from exc
+    if not math.isfinite(number):
+        raise ValueError(f"Matrix values must be finite, got {value!r}")
+    return number
+
+
+def _format_parameter(name: str, matrix: Dict[str, Any]) -> str:
+    matrix_type = matrix.get("type")
+    if matrix_type == "vector":
+        values = [_finite_float(value) for value in matrix.get("values", [])]
+        return f"{name}={{(" + ", ".join(f"{value:.6g}" for value in values) + ")}}"
+    if matrix_type == "matrix":
+        rows = [
+            "(" + ", ".join(f"{_finite_float(value):.6g}" for value in row) + ")"
+            for row in matrix.get("values", [])
+        ]
+        return f"{name}={{\n  " + ",\n  ".join(rows) + "\n}"
+    if matrix_type == "tensor":
+        slices: List[str] = []
+        for slice_data in matrix.get("values", []):
+            rows = [
+                "(" + ", ".join(f"{_finite_float(value):.6g}" for value in row) + ")"
+                for row in slice_data
+            ]
+            slices.append("( " + ", ".join(rows) + " )")
+        return f"{name}={{\n  " + ",\n  ".join(slices) + "\n}"
+    raise ValueError(f"Unsupported matrix type for {name}: {matrix_type!r}")
+
+
+def _declaration_dimensions(matrix: Dict[str, Any]) -> str:
+    matrix_type = matrix.get("type")
+    if matrix_type == "vector":
+        return str(matrix["size"])
+    if matrix_type == "matrix":
+        return f"{matrix['rows']},{matrix['cols']}"
+    if matrix_type == "tensor":
+        return f"{matrix['rows']},{matrix['cols']},{matrix['depth']}"
+    raise ValueError(f"Unsupported matrix type: {matrix_type!r}")
+
+
+def _replace_declaration(section: str, name: str, dimensions: str) -> str:
+    pattern = re.compile(rf"(?m)^(\s*{re.escape(name)}\s*)\[[^\]]+\]")
+    return pattern.sub(rf"\g<1>[{dimensions},type=float]", section, count=1)
+
+
+def _replace_assignment(block: str, name: str, assignment: str) -> tuple[str, bool]:
+    span = _braced_assignment_span(block, name)
+    if span is None:
+        return block, False
+    return block[: span[0]] + assignment + block[span[1] :], True
+
+
 def update_gnn_from_matrix(visual_data: Dict[str, Any], template: str) -> str:
-    """
-    Update GNN markdown from visual matrix edits.
+    """Update editable declarations and assignments while preserving the model."""
+    errors = validate_visual_matrix_dimensions(visual_data)
+    if errors:
+        raise ValueError("; ".join(errors))
 
-    Args:
-        visual_data: Dictionary containing visual matrix data
-        template: Base GNN template to update
+    matrices = visual_data.get("visual_matrices", {})
+    active = {
+        name: matrix
+        for name, matrix in matrices.items()
+        if isinstance(matrix, dict) and matrix.get("declared", True)
+    }
+    if not active:
+        return template
 
-    Returns:
-        Updated GNN markdown text
-    """
-    updated_gnn = template
-
-    # Update state space dimensions
-    state_space_updates: list[Any] = []
-    for name, matrix in visual_data.get("visual_matrices", {}).items():
-        if matrix["type"] == "vector":
-            state_space_updates.append(
-                f"{name}[{matrix['size']},type=float]   # {matrix['description']}"
+    updated = template
+    state_match = re.search(
+        r"(?ms)(^##[ \t]+StateSpaceBlock[ \t]*\r?\n)(.*?)(?=^##[ \t]+|\Z)",
+        updated,
+    )
+    if state_match:
+        state_block = state_match.group(2)
+        for name, matrix in active.items():
+            state_block = _replace_declaration(
+                state_block, name, _declaration_dimensions(matrix)
             )
-        elif matrix["type"] == "matrix":
-            state_space_updates.append(
-                f"{name}[{matrix['rows']},{matrix['cols']},type=float]   # {matrix['description']}"
-            )
-        elif matrix["type"] == "tensor":
-            state_space_updates.append(
-                f"{name}[{matrix['depth']},{matrix['rows']},{matrix['cols']},type=float]   # {matrix['description']}"
-            )
-
-    # Update InitialParameterization with actual values
-    param_updates: list[Any] = []
-    for name, matrix in visual_data.get("visual_matrices", {}).items():
-        if matrix["type"] == "vector":
-            values_str = "(" + ", ".join(f"{v:.3f}" for v in matrix["values"]) + ")"
-            param_updates.append(f"{name}={{{values_str}}}")
-        elif matrix["type"] == "matrix":
-            rows_str: list[Any] = []
-            for row in matrix["values"]:
-                row_str = "(" + ", ".join(f"{v:.3f}" for v in row) + ")"
-                rows_str.append(row_str)
-            values_str = "(\n  " + ",\n  ".join(rows_str) + "\n)"
-            param_updates.append(f"{name}={{{values_str}}}")
-        elif matrix["type"] == "tensor":
-            slices_str: list[Any] = []
-            for slice_data in matrix["values"]:
-                rows_str = []
-                for row in slice_data:
-                    row_str = "(" + ", ".join(f"{v:.3f}" for v in row) + ")"
-                    rows_str.append(row_str)
-                slice_str = "( " + ", ".join(rows_str) + " )"
-                slices_str.append(slice_str)
-            values_str = "(\n  " + ",\n  ".join(slices_str) + "\n)"
-            param_updates.append(f"{name}={{{values_str}}}")
-
-    # Replace parameterization section
-    if param_updates:
-        param_text = (
-            "## InitialParameterization\n# Updated via Visual Matrix Editor\n"
-            + "\n".join(param_updates)
+        updated = (
+            updated[: state_match.start(2)]
+            + state_block
+            + updated[state_match.end(2) :]
         )
 
-        # Replace existing parameterization section
-        param_pattern = r"## InitialParameterization.*?(?=##|\Z)"
-        updated_gnn = re.sub(
-            param_pattern, param_text + "\n\n", updated_gnn, flags=re.DOTALL
+    parameter_match = re.search(
+        r"(?ms)(^##[ \t]+InitialParameterization[ \t]*\r?\n)(.*?)(?=^##[ \t]+|\Z)",
+        updated,
+    )
+    assignments = {
+        name: _format_parameter(name, matrix) for name, matrix in active.items()
+    }
+    if parameter_match:
+        parameter_block = parameter_match.group(2)
+        missing: List[str] = []
+        for name, assignment in assignments.items():
+            parameter_block, replaced = _replace_assignment(
+                parameter_block, name, assignment
+            )
+            if not replaced:
+                missing.append(assignment)
+        if missing:
+            parameter_block = (
+                parameter_block.rstrip() + "\n\n" + "\n\n".join(missing) + "\n"
+            )
+        updated = (
+            updated[: parameter_match.start(2)]
+            + parameter_block
+            + updated[parameter_match.end(2) :]
+        )
+    else:
+        parameter_section = (
+            "\n\n## InitialParameterization\n"
+            + "\n\n".join(assignments.values())
+            + "\n"
+        )
+        footer_match = re.search(r"(?m)^##[ \t]+Footer\b", updated)
+        insertion = footer_match.start() if footer_match else len(updated)
+        updated = (
+            updated[:insertion].rstrip()
+            + parameter_section
+            + "\n"
+            + updated[insertion:]
         )
 
-    return updated_gnn
+    return updated
 
 
 def _parse_connections(gnn_text: str) -> List[str]:
-    """Parse connection information from GNN text"""
-    connections: list[Any] = []
-
-    conn_pattern = r"## Connections\s*\n(.*?)(?=##|$)"
-    match = re.search(conn_pattern, gnn_text, re.DOTALL)
-
-    if match:
-        conn_block = match.group(1)
-        for line in conn_block.split("\n"):
-            line = line.strip()
-            if line and not line.startswith("#"):
-                connections.append(line)
-
+    """Parse connection lines without interpreting their operators."""
+    connections: List[str] = []
+    for raw_line in _section_content(str(gnn_text or ""), "Connections").splitlines():
+        line = raw_line.strip()
+        if line and not line.startswith("#"):
+            connections.append(line)
     return connections
 
 
 def _parse_metadata(gnn_text: str) -> Dict[str, str]:
-    """Parse metadata from GNN text"""
-    metadata: dict[Any, Any] = {}
-
-    # Extract model name
-    name_pattern = r"## ModelName\s*\n(.*?)(?=##|$)"
-    match = re.search(name_pattern, gnn_text, re.DOTALL)
-    if match:
-        metadata["model_name"] = match.group(1).strip()
-
-    # Extract annotation
-    annot_pattern = r"## ModelAnnotation\s*\n(.*?)(?=##|$)"
-    match = re.search(annot_pattern, gnn_text, re.DOTALL)
-    if match:
-        metadata["annotation"] = match.group(1).strip()
-
+    """Parse model name and annotation sections."""
+    metadata: Dict[str, str] = {}
+    model_name = _section_content(str(gnn_text or ""), "ModelName").strip()
+    annotation = _section_content(str(gnn_text or ""), "ModelAnnotation").strip()
+    if model_name:
+        metadata["model_name"] = model_name
+    if annotation:
+        metadata["annotation"] = annotation
     return metadata
 
 
+def _value_shape_errors(name: str, matrix: Dict[str, Any]) -> List[str]:
+    matrix_type = matrix.get("type")
+    values = matrix.get("values")
+    if matrix_type == "vector":
+        size = matrix.get("size")
+        if not isinstance(size, int) or size < 1:
+            return [f"{name} vector size must be a positive integer"]
+        if not isinstance(values, list) or len(values) != size:
+            return [f"{name} vector values must contain {size} entries"]
+        candidates = values
+    elif matrix_type == "matrix":
+        rows, columns = matrix.get("rows"), matrix.get("cols")
+        if (
+            not isinstance(rows, int)
+            or rows < 1
+            or not isinstance(columns, int)
+            or columns < 1
+        ):
+            return [f"{name} matrix dimensions must be positive integers"]
+        if (
+            not isinstance(values, list)
+            or len(values) != rows
+            or any(not isinstance(row, list) or len(row) != columns for row in values)
+        ):
+            return [f"{name} matrix values must have shape {rows}x{columns}"]
+        candidates = [value for row in values for value in row]
+    elif matrix_type == "tensor":
+        depth = matrix.get("depth")
+        rows = matrix.get("rows")
+        columns = matrix.get("cols")
+        if any(
+            not isinstance(value, int) or value < 1 for value in (depth, rows, columns)
+        ):
+            return [f"{name} tensor dimensions must be positive integers"]
+        if (
+            not isinstance(values, list)
+            or len(values) != depth
+            or any(
+                not isinstance(slice_data, list)
+                or len(slice_data) != rows
+                or any(
+                    not isinstance(row, list) or len(row) != columns
+                    for row in slice_data
+                )
+                for slice_data in values
+            )
+        ):
+            return [
+                f"{name} tensor values must have {depth} slices of shape {rows}x{columns}"
+            ]
+        candidates = [
+            value for slice_data in values for row in slice_data for value in row
+        ]
+    else:
+        return [f"{name} has unsupported matrix type {matrix_type!r}"]
+
+    try:
+        for value in candidates:
+            _finite_float(value)
+    except ValueError as exc:
+        return [f"{name}: {exc}"]
+    return []
+
+
 def validate_visual_matrix_dimensions(visual_data: Dict[str, Any]) -> List[str]:
-    """
-    Validate visual matrix dimensions for consistency.
-
-    Returns:
-        List of validation error messages (empty if valid)
-    """
-    errors: list[Any] = []
+    """Validate shapes, finite values, and POMDP cross-matrix dimensions."""
     matrices = visual_data.get("visual_matrices", {})
+    if not isinstance(matrices, dict):
+        return ["visual_matrices must be a mapping"]
 
-    # Check A matrix dimensions: A should be [n_obs, n_states]
-    if "A" in matrices and "s" in matrices:
-        A = matrices["A"]
-        s = matrices["s"]
-        if A.get("type") == "matrix" and "rows" in A and "cols" in A:
-            n_states = (
-                s.get("rows", 0) if s.get("type") == "vector" else s.get("rows", 0)
+    active = {
+        name: matrix
+        for name, matrix in matrices.items()
+        if isinstance(matrix, dict) and matrix.get("declared", True)
+    }
+    errors: List[str] = []
+    for name, matrix in active.items():
+        errors.extend(_value_shape_errors(name, matrix))
+
+    a_matrix = active.get("A")
+    c_vector = active.get("C")
+    d_vector = active.get("D")
+    b_matrix = active.get("B")
+    if a_matrix and a_matrix.get("type") == "matrix":
+        if (
+            c_vector
+            and c_vector.get("type") == "vector"
+            and a_matrix.get("rows") != c_vector.get("size")
+        ):
+            errors.append(
+                f"A matrix rows ({a_matrix.get('rows')}) must match C vector size ({c_vector.get('size')})"
             )
-            if n_states and A["cols"] != n_states:
+        if (
+            d_vector
+            and d_vector.get("type") == "vector"
+            and a_matrix.get("cols") != d_vector.get("size")
+        ):
+            errors.append(
+                f"A matrix columns ({a_matrix.get('cols')}) must match D vector size ({d_vector.get('size')})"
+            )
+    if b_matrix and d_vector and d_vector.get("type") == "vector":
+        state_size = d_vector.get("size")
+        if b_matrix.get("type") in {"matrix", "tensor"}:
+            if b_matrix.get("rows") != state_size:
                 errors.append(
-                    f"A matrix cols ({A['cols']}) must match s rows ({n_states})"
+                    f"B matrix rows ({b_matrix.get('rows')}) must match D vector size ({state_size})"
+                )
+            if b_matrix.get("cols") != state_size:
+                errors.append(
+                    f"B matrix columns ({b_matrix.get('cols')}) must match D vector size ({state_size})"
                 )
 
-    # Check B matrix dimensions: B should be [n_states, n_states, n_actions]
-    if "B" in matrices and "s" in matrices:
-        B = matrices["B"]
-        s = matrices["s"]
-        if B.get("type") == "tensor" and "rows" in B and "cols" in B:
-            n_states = (
-                s.get("rows", 0) if s.get("type") == "vector" else s.get("rows", 0)
-            )
-            if n_states and B["rows"] != n_states:
+    state_spaces = visual_data.get("state_spaces", {})
+    if isinstance(state_spaces, dict):
+        for variable, matrix_name in (("s", "D"), ("o", "C")):
+            declaration = state_spaces.get(variable)
+            linked_matrix = active.get(matrix_name)
+            shape = declaration.get("shape") if isinstance(declaration, dict) else None
+            if shape and linked_matrix and linked_matrix.get("size") != shape[0]:
                 errors.append(
-                    f"B matrix rows ({B['rows']}) must match s rows ({n_states})"
-                )
-            if n_states and B["cols"] != n_states:
-                errors.append(
-                    f"B matrix cols ({B['cols']}) must match s rows ({n_states})"
+                    f"{matrix_name} vector size ({linked_matrix.get('size')}) must match {variable} size ({shape[0]})"
                 )
 
     return errors

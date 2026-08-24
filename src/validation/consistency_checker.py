@@ -1,244 +1,570 @@
-"""
-Consistency Checker
+"""Consistency and cross-reference checks for GNN models."""
 
-This module provides consistency checking for GNN models, including
-naming conventions, style consistency, and structural integrity.
-"""
+from __future__ import annotations
 
 import re
+from collections.abc import Mapping, Sequence
+from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Dict, Union
+from typing import Any, Literal, TypeAlias
+
+ModelData: TypeAlias = Mapping[str, Any]
+ModelInput: TypeAlias = str | Path | ModelData | None
+
+
+@dataclass(frozen=True)
+class _ConnectionReference:
+    """Normalized connection used by all supported input formats."""
+
+    index: int
+    source: str | None
+    target: str | None
+    directed: bool = True
+
+
+@dataclass
+class _ModelStructure:
+    """Normalized subset required for consistency checks."""
+
+    kind: Literal["raw", "markdown", "structured", "empty"]
+    block_names: list[str] = field(default_factory=list)
+    connections: list[_ConnectionReference] = field(default_factory=list)
+    diagnostics: list[str] = field(default_factory=list)
+    state_blocks: list[str] = field(default_factory=list)
+    connection_blocks: list[str] = field(default_factory=list)
+
+
+def _append_once(items: list[str], message: str) -> None:
+    if message not in items:
+        items.append(message)
+
+
+def _extract_field(block: str, field_name: str) -> str | None:
+    """Extract one raw block field from inline or multiline syntax."""
+    match = re.search(
+        rf"\b{re.escape(field_name)}\s*:\s*(.+?)"
+        r"(?=\s+[A-Za-z][A-Za-z0-9_]*\s*:|\n|$)",
+        block,
+    )
+    return match.group(1).strip() if match else None
+
+
+def _section_lines(content: str, section_name: str) -> list[tuple[int, str]]:
+    """Return numbered, non-comment lines from one Markdown GNN section."""
+    lines: list[tuple[int, str]] = []
+    in_section = False
+    for line_number, raw_line in enumerate(content.splitlines(), start=1):
+        stripped = raw_line.strip()
+        if stripped.startswith("## "):
+            in_section = stripped[3:].strip() == section_name
+            continue
+        if in_section and stripped and not stripped.startswith("#"):
+            lines.append((line_number, stripped))
+    return lines
+
+
+def _connection_group(value: str) -> list[str]:
+    group = value.strip()
+    if group.startswith("(") and group.endswith(")"):
+        group = group[1:-1]
+    return [
+        "π" if item.strip().lower() == "pi" else item.strip()
+        for item in group.split(",")
+        if item.strip()
+    ]
+
+
+def _parse_markdown_structure(content: str) -> _ModelStructure:
+    declaration_pattern = re.compile(
+        r"^(?P<name>[^\s\[\],()><|]+)\s*\[[^\]]+\](?:\s*#.*)?$"
+    )
+    block_names: list[str] = []
+    diagnostics: list[str] = []
+    for line_number, line in _section_lines(content, "StateSpaceBlock"):
+        match = declaration_pattern.fullmatch(line)
+        if match is None:
+            _append_once(
+                diagnostics,
+                f"Unparseable StateSpaceBlock declaration at line {line_number}: '{line}'",
+            )
+        else:
+            raw_name = match.group("name")
+            name = "π" if raw_name.lower() == "pi" else raw_name
+            if name in block_names:
+                diagnostics.append(
+                    f"Duplicate variable declaration at line {line_number}: '{name}'"
+                )
+            block_names.append(name)
+
+    normalized_connections: list[_ConnectionReference] = []
+    for line_number, raw_line in _section_lines(content, "Connections"):
+        line = raw_line.split("#", 1)[0].strip()
+        operator = next(
+            (
+                candidate
+                for candidate in ("<->", "->", ">", "|", "-")
+                if candidate in line
+            ),
+            None,
+        )
+        if operator is None:
+            diagnostics.append(
+                f"Unparseable connection at line {line_number}: '{line}'"
+            )
+            continue
+        source_text, target_text = line.split(operator, 1)
+        target_text = target_text.split(":", 1)[0]
+        sources = _connection_group(source_text)
+        targets = _connection_group(target_text)
+        if not sources or not targets:
+            diagnostics.append(
+                f"Connection at line {line_number} has an empty endpoint: '{line}'"
+            )
+            continue
+        directed = operator not in {"-", "<->"}
+        for source in sources:
+            for target in targets:
+                connection_index = len(normalized_connections)
+                normalized_connections.append(
+                    _ConnectionReference(
+                        index=connection_index,
+                        source=source,
+                        target=target,
+                        directed=directed,
+                    )
+                )
+
+    return _ModelStructure(
+        kind="markdown",
+        block_names=block_names,
+        connections=normalized_connections,
+        diagnostics=diagnostics,
+    )
+
+
+def _parse_raw_structure(content: str) -> _ModelStructure:
+    state_blocks = re.findall(r"StateSpaceBlock\s*\{([^}]*)\}", content)
+    connection_blocks = re.findall(r"Connection\s*\{([^}]*)\}", content)
+    block_names = [
+        name
+        for block in state_blocks
+        if (name := _extract_field(block, "Name")) is not None
+    ]
+    connections = [
+        _ConnectionReference(
+            index=index,
+            source=_extract_field(block, "From"),
+            target=_extract_field(block, "To"),
+        )
+        for index, block in enumerate(connection_blocks)
+    ]
+    return _ModelStructure(
+        kind="raw",
+        block_names=block_names,
+        connections=connections,
+        state_blocks=state_blocks,
+        connection_blocks=connection_blocks,
+    )
+
+
+def _parse_content_structure(content: str) -> _ModelStructure:
+    if re.search(r"(?m)^##\s+StateSpaceBlock\s*$", content):
+        return _parse_markdown_structure(content)
+    if re.search(r"\b(?:StateSpaceBlock|Connection)\s*\{", content):
+        return _parse_raw_structure(content)
+    return _ModelStructure(kind="empty")
+
+
+def _endpoint_names(value: Any) -> list[str]:
+    """Normalize a structured connection endpoint without treating text as a list."""
+    if isinstance(value, str):
+        return [value.strip()] if value.strip() else []
+    if isinstance(value, Sequence) and not isinstance(value, (str, bytes, bytearray)):
+        return [
+            item.strip() for item in value if isinstance(item, str) and item.strip()
+        ]
+    return []
+
+
+def _raw_sections_content(model_data: ModelData) -> str | None:
+    raw_sections = model_data.get("raw_sections")
+    if not isinstance(raw_sections, Mapping) or not raw_sections:
+        section_names = (
+            "ModelName",
+            "StateSpaceBlock",
+            "InitialParameterization",
+            "Connections",
+        )
+        raw_sections = {
+            name: model_data[name] for name in section_names if name in model_data
+        }
+    if not raw_sections:
+        return None
+
+    parts: list[str] = []
+    for section_name, section_content in raw_sections.items():
+        if isinstance(section_name, str) and isinstance(section_content, str):
+            parts.append(f"## {section_name}\n\n{section_content}")
+    return "\n\n".join(parts) if parts else None
+
+
+def _parse_structured_model(model_data: ModelData) -> _ModelStructure:
+    has_structured_keys = "variables" in model_data or "connections" in model_data
+    if not has_structured_keys:
+        raw_content = _raw_sections_content(model_data)
+        if raw_content is not None:
+            structure = _parse_content_structure(raw_content)
+            structure.kind = "structured"
+            return structure
+
+    structure = _ModelStructure(kind="structured")
+    variables = model_data.get("variables", [])
+    if not isinstance(variables, Sequence) or isinstance(
+        variables, (str, bytes, bytearray)
+    ):
+        structure.diagnostics.append("'variables' must be a sequence of mappings")
+        variables = []
+
+    for index, variable in enumerate(variables):
+        if not isinstance(variable, Mapping):
+            structure.diagnostics.append(f"Variable {index} must be a mapping")
+            continue
+        name = variable.get("name")
+        if not isinstance(name, str) or not name.strip():
+            structure.diagnostics.append(
+                f"Variable {index} must define a non-empty string name"
+            )
+            continue
+        structure.block_names.append(name.strip())
+
+    connections = model_data.get("connections", [])
+    if not isinstance(connections, Sequence) or isinstance(
+        connections, (str, bytes, bytearray)
+    ):
+        structure.diagnostics.append("'connections' must be a sequence of mappings")
+        connections = []
+
+    normalized_index = 0
+    for index, connection in enumerate(connections):
+        if not isinstance(connection, Mapping):
+            structure.diagnostics.append(f"Connection {index} must be a mapping")
+            continue
+        sources = _endpoint_names(
+            connection.get("source_variables", connection.get("source"))
+        )
+        targets = _endpoint_names(
+            connection.get("target_variables", connection.get("target"))
+        )
+        if not sources:
+            structure.diagnostics.append(
+                f"Connection {index} must define at least one source variable"
+            )
+        if not targets:
+            structure.diagnostics.append(
+                f"Connection {index} must define at least one target variable"
+            )
+        directed = str(connection.get("connection_type", "directed")).lower() not in {
+            "undirected",
+            "-",
+        }
+        for source in sources:
+            for target in targets:
+                structure.connections.append(
+                    _ConnectionReference(
+                        index=normalized_index,
+                        source=source,
+                        target=target,
+                        directed=directed,
+                    )
+                )
+                normalized_index += 1
+
+    return structure
+
+
+def _ordered_duplicates(values: Sequence[str]) -> list[str]:
+    seen: set[str] = set()
+    duplicates: list[str] = []
+    for value in values:
+        if value in seen and value not in duplicates:
+            duplicates.append(value)
+        seen.add(value)
+    return duplicates
+
+
+def _cycle_nodes(
+    block_names: Sequence[str], connections: Sequence[_ConnectionReference]
+) -> list[str]:
+    """Return exactly the nodes in directed cycles using Tarjan components."""
+    graph: dict[str, list[str]] = {}
+    order: list[str] = []
+    known = set(block_names)
+    for name in block_names:
+        if name not in order:
+            order.append(name)
+        graph.setdefault(name, [])
+    for connection in connections:
+        if (
+            connection.directed
+            and connection.source in known
+            and connection.target in known
+        ):
+            source = connection.source
+            target = connection.target
+            if source is not None and target is not None:
+                graph.setdefault(source, []).append(target)
+
+    next_index = 0
+    indices: dict[str, int] = {}
+    lowlinks: dict[str, int] = {}
+    stack: list[str] = []
+    on_stack: set[str] = set()
+    cyclic: set[str] = set()
+
+    def strong_connect(node: str) -> None:
+        nonlocal next_index
+        indices[node] = next_index
+        lowlinks[node] = next_index
+        next_index += 1
+        stack.append(node)
+        on_stack.add(node)
+
+        for neighbor in graph.get(node, []):
+            if neighbor not in indices:
+                strong_connect(neighbor)
+                lowlinks[node] = min(lowlinks[node], lowlinks[neighbor])
+            elif neighbor in on_stack:
+                lowlinks[node] = min(lowlinks[node], indices[neighbor])
+
+        if lowlinks[node] != indices[node]:
+            return
+        component: list[str] = []
+        while stack:
+            member = stack.pop()
+            on_stack.remove(member)
+            component.append(member)
+            if member == node:
+                break
+        if len(component) > 1 or node in graph.get(node, []):
+            cyclic.update(component)
+
+    for node in order:
+        if node not in indices:
+            strong_connect(node)
+    return [node for node in order if node in cyclic]
 
 
 class ConsistencyChecker:
-    """Checker for consistency aspects of GNN models."""
+    """Checker for naming, style, structure, and reference consistency."""
 
-    def check(self, content: str) -> Dict[str, Any]:
-        """
-        Check the consistency of a GNN model.
+    def check(self, content: str) -> dict[str, Any]:
+        """Check raw or canonical Markdown GNN content."""
+        if not isinstance(content, str):
+            raise TypeError("content must be a string")
+        return self._check_structure(content, _parse_content_structure(content))
 
-        Args:
-            content: GNN model content
+    def check_model_data(self, model_data: ModelData) -> dict[str, Any]:
+        """Check the canonical dictionary emitted by the GNN parser."""
+        return self._check_structure("", _parse_structured_model(model_data))
 
-        Returns:
-            Consistency check result with warnings
-        """
-        # Run all consistency checks
-        naming_result = self._check_naming_conventions(content)
-        style_result = self._check_style_consistency(content)
-        structure_result = self._check_structural_integrity(content)
-        reference_result = self._check_reference_consistency(content)
+    def _check_structure(
+        self, content: str, structure: _ModelStructure
+    ) -> dict[str, Any]:
+        naming_result = self._check_naming_conventions(structure)
+        style_result = self._check_style_consistency(content, structure)
+        structure_result = self._check_structural_integrity(content, structure)
+        reference_result = self._check_reference_consistency(structure)
 
-        # Combine warnings
-        warnings: list[Any] = []
-        warnings.extend(naming_result.get("warnings", []))
-        warnings.extend(style_result.get("warnings", []))
-        warnings.extend(structure_result.get("warnings", []))
-        warnings.extend(reference_result.get("warnings", []))
+        warnings: list[str] = []
+        for result in (
+            naming_result,
+            style_result,
+            structure_result,
+            reference_result,
+        ):
+            warnings.extend(str(warning) for warning in result.get("warnings", []))
 
-        # Determine overall consistency
-        is_consistent = (
-            naming_result.get("is_consistent", True)
-            and style_result.get("is_consistent", True)
-            and structure_result.get("is_consistent", True)
-            and reference_result.get("is_consistent", True)
-        )
-
+        checks = {
+            "naming_conventions": naming_result,
+            "style_consistency": style_result,
+            "structural_integrity": structure_result,
+            "reference_consistency": reference_result,
+        }
         return {
-            "is_consistent": is_consistent,
+            "is_consistent": all(
+                bool(result.get("is_consistent", False)) for result in checks.values()
+            ),
             "warnings": warnings,
-            "checks": {
-                "naming_conventions": naming_result,
-                "style_consistency": style_result,
-                "structural_integrity": structure_result,
-                "reference_consistency": reference_result,
-            },
+            "checks": checks,
         }
 
-    def _check_naming_conventions(self, content: str) -> Dict[str, Any]:
-        """Check naming conventions."""
-        warnings: list[Any] = []
-
-        # Extract named elements
-        state_blocks = re.findall(r"StateSpaceBlock\s*\{([^}]*)\}", content)
-        block_names: list[Any] = []
-
-        for block in state_blocks:
-            name_match = re.search(r"Name:\s*([^\n]+)", block)
-            if name_match:
-                block_names.append(name_match.group(1).strip())
-
-        # Check for naming consistency
-        camel_case = sum(
-            1 for name in block_names if name and name[0].isupper() and "_" not in name
-        )
-        snake_case = sum(1 for name in block_names if "_" in name)
-        pascal_case = sum(
-            1
-            for name in block_names
-            if name and name[0].isupper() and not any(c.islower() for c in name)
-        )
-
-        # Determine dominant naming convention
-        naming_styles: dict[str, Any] = {
-            "camelCase": camel_case,
-            "snake_case": snake_case,
-            "PascalCase": pascal_case,
-        }
-        dominant_style = (
-            max(naming_styles.items(), key=lambda x: x[1])[0] if naming_styles else None
-        )
-
-        # Check for consistency
-        mixed_styles = sum(count > 0 for count in naming_styles.values()) > 1
-        if mixed_styles:
-            warnings.append(
-                f"Inconsistent naming conventions: mix of {', '.join(style for style, count in naming_styles.items() if count > 0)}"
-            )
-
-        # Check for duplicate names
-        duplicate_names = {name for name in block_names if block_names.count(name) > 1}
+    def _check_naming_conventions(self, structure: _ModelStructure) -> dict[str, Any]:
+        block_names = structure.block_names
+        duplicate_names = _ordered_duplicates(block_names)
+        warnings: list[str] = []
         if duplicate_names:
             warnings.append(
                 f"Duplicate block names found: {', '.join(duplicate_names)}"
             )
 
-        # Check for descriptive names
+        if structure.kind != "raw":
+            return {
+                "is_consistent": not warnings,
+                "warnings": warnings,
+                "dominant_style": None,
+                "mixed_styles": False,
+                "duplicate_names": duplicate_names,
+                "non_descriptive_names": [],
+            }
+
+        camel_case = sum(
+            1 for name in block_names if name and name[0].islower() and "_" not in name
+        )
+        snake_case = sum(1 for name in block_names if "_" in name)
+        pascal_case = sum(
+            1 for name in block_names if name and name[0].isupper() and "_" not in name
+        )
+        naming_styles = {
+            "camelCase": camel_case,
+            "snake_case": snake_case,
+            "PascalCase": pascal_case,
+        }
+        populated_styles = [
+            style for style, count in naming_styles.items() if count > 0
+        ]
+        mixed_styles = len(populated_styles) > 1
+        if mixed_styles:
+            warnings.append(
+                f"Inconsistent naming conventions: mix of {', '.join(populated_styles)}"
+            )
+
         non_descriptive_names = [name for name in block_names if len(name) < 3]
         if non_descriptive_names:
             warnings.append(
                 f"Non-descriptive block names found: {', '.join(non_descriptive_names)}"
             )
-
+        dominant_style = (
+            max(naming_styles, key=lambda style: naming_styles[style])
+            if block_names
+            else None
+        )
         return {
-            "is_consistent": len(warnings) == 0,
+            "is_consistent": not warnings,
             "warnings": warnings,
             "dominant_style": dominant_style,
             "mixed_styles": mixed_styles,
-            "duplicate_names": list(duplicate_names),
+            "duplicate_names": duplicate_names,
             "non_descriptive_names": non_descriptive_names,
         }
 
-    def _check_style_consistency(self, content: str) -> Dict[str, Any]:
-        """Check style consistency."""
-        warnings: list[Any] = []
+    def _check_style_consistency(
+        self, content: str, structure: _ModelStructure
+    ) -> dict[str, Any]:
+        if structure.kind != "raw":
+            return {
+                "is_consistent": True,
+                "warnings": [],
+                "indentation_patterns": 0,
+                "block_format_styles": [],
+                "field_order_consistency": True,
+            }
 
-        # Check for consistent indentation
-        lines = content.split("\n")
-        indentation_patterns: dict[Any, Any] = {}
-
-        for line in lines:
-            if line.strip() and line.startswith(" "):
-                indent = len(line) - len(line.lstrip(" "))
-                if indent not in indentation_patterns:
-                    indentation_patterns[indent] = 0
-                indentation_patterns[indent] += 1
-
-        # Determine if there are inconsistent indentation patterns
+        indentation_patterns = {
+            len(line) - len(line.lstrip(" "))
+            for line in content.splitlines()
+            if line.strip() and line.startswith(" ")
+        }
+        warnings: list[str] = []
         if len(indentation_patterns) > 2:
             warnings.append(
                 f"Inconsistent indentation patterns: {len(indentation_patterns)} different patterns detected"
             )
 
-        # Check for consistent block formatting
-        state_block_formats: set[Any] = set()
-        state_blocks = re.findall(r"StateSpaceBlock\s*\{([^}]*)\}", content)
-
-        for block in state_blocks:
-            # Check if fields are consistently formatted
-            fields = re.findall(r"([A-Za-z]+):\s*([^\n]+)", block)
+        block_formats: set[str] = set()
+        field_orders: list[tuple[str, ...]] = []
+        for block in structure.state_blocks:
+            fields = re.findall(r"([A-Za-z]+):", block)
             if fields:
-                format_style = (
-                    "inline"
-                    if len(fields) == 1 and len(block.strip().split("\n")) == 1
-                    else "multiline"
+                block_formats.add(
+                    "inline" if "\n" not in block.strip() else "multiline"
                 )
-                state_block_formats.add(format_style)
-
-        if len(state_block_formats) > 1:
+                field_orders.append(tuple(fields))
+        if len(block_formats) > 1:
             warnings.append(
                 "Inconsistent block formatting: mix of inline and multiline formats"
             )
-
-        # Check for consistent field ordering
-        field_orders: list[Any] = []
-        for block in state_blocks:
-            fields = re.findall(r"([A-Za-z]+):", block)
-            if fields:
-                field_orders.append(tuple(fields))
-
         unique_orders = set(field_orders)
         if len(unique_orders) > 1:
             warnings.append("Inconsistent field ordering across blocks")
-
         return {
-            "is_consistent": len(warnings) == 0,
+            "is_consistent": not warnings,
             "warnings": warnings,
             "indentation_patterns": len(indentation_patterns),
-            "block_format_styles": list(state_block_formats),
-            "field_order_consistency": len(unique_orders) == 1,
+            "block_format_styles": sorted(block_formats),
+            "field_order_consistency": len(unique_orders) <= 1,
         }
 
-    def _check_structural_integrity(self, content: str) -> Dict[str, Any]:
-        """Check structural integrity."""
-        warnings: list[Any] = []
+    def _check_structural_integrity(
+        self, content: str, structure: _ModelStructure
+    ) -> dict[str, Any]:
+        if structure.kind != "raw":
+            structural_warnings = list(structure.diagnostics)
+            if not structure.block_names:
+                _append_once(
+                    structural_warnings, "No valid StateSpaceBlock declarations found"
+                )
+            return {
+                "is_consistent": not structural_warnings,
+                "warnings": structural_warnings,
+                "balanced_braces": True,
+                "empty_blocks": 0,
+                "empty_connections": 0,
+                "missing_state_fields": [],
+                "missing_connection_fields": [],
+            }
 
-        # Check for balanced braces
+        warnings: list[str] = []
         open_braces = content.count("{")
         close_braces = content.count("}")
         if open_braces != close_braces:
             warnings.append(
                 f"Unbalanced braces: {open_braces} opening vs {close_braces} closing"
             )
-
-        # Check for proper block structure
-        state_blocks = re.findall(r"StateSpaceBlock\s*\{([^}]*)\}", content)
-        connections = re.findall(r"Connection\s*\{([^}]*)\}", content)
-
-        # Check for empty blocks
-        empty_blocks = sum(1 for block in state_blocks if not block.strip())
-        if empty_blocks > 0:
+        empty_blocks = sum(1 for block in structure.state_blocks if not block.strip())
+        empty_connections = sum(
+            1 for connection in structure.connection_blocks if not connection.strip()
+        )
+        if empty_blocks:
             warnings.append(f"Empty StateSpaceBlock definitions found: {empty_blocks}")
-
-        empty_connections = sum(1 for conn in connections if not conn.strip())
-        if empty_connections > 0:
+        if empty_connections:
             warnings.append(f"Empty Connection definitions found: {empty_connections}")
 
-        # Check for consistent field presence
-        required_state_fields: list[Any] = ["Name", "Dimensions"]
-        required_connection_fields: list[Any] = ["From", "To"]
-
-        missing_state_fields: list[Any] = []
-        for i, block in enumerate(state_blocks):
-            for field in required_state_fields:
-                if not re.search(f"{field}:", block):
-                    missing_state_fields.append((i, field))
-
+        missing_state_fields = [
+            (index, field_name)
+            for index, block in enumerate(structure.state_blocks)
+            for field_name in ("Name", "Dimensions")
+            if _extract_field(block, field_name) is None
+        ]
+        missing_connection_fields = [
+            (index, field_name)
+            for index, block in enumerate(structure.connection_blocks)
+            for field_name in ("From", "To")
+            if _extract_field(block, field_name) is None
+        ]
         if missing_state_fields:
-            field_warnings = [
-                f"Block {i} missing {field}" for i, field in missing_state_fields
-            ]
-            warnings.append(
-                f"Missing required fields in StateSpaceBlocks: {', '.join(field_warnings)}"
+            details = ", ".join(
+                f"Block {index} missing {field_name}"
+                for index, field_name in missing_state_fields
             )
-
-        missing_connection_fields: list[Any] = []
-        for i, conn in enumerate(connections):
-            for field in required_connection_fields:
-                if not re.search(f"{field}:", conn):
-                    missing_connection_fields.append((i, field))
-
+            warnings.append(f"Missing required fields in StateSpaceBlocks: {details}")
         if missing_connection_fields:
-            field_warnings = [
-                f"Connection {i} missing {field}"
-                for i, field in missing_connection_fields
-            ]
-            warnings.append(
-                f"Missing required fields in Connections: {', '.join(field_warnings)}"
+            details = ", ".join(
+                f"Connection {index} missing {field_name}"
+                for index, field_name in missing_connection_fields
             )
-
+            warnings.append(f"Missing required fields in Connections: {details}")
         return {
-            "is_consistent": len(warnings) == 0,
+            "is_consistent": not warnings,
             "warnings": warnings,
             "balanced_braces": open_braces == close_braces,
             "empty_blocks": empty_blocks,
@@ -247,258 +573,115 @@ class ConsistencyChecker:
             "missing_connection_fields": missing_connection_fields,
         }
 
-    def _check_reference_consistency(self, content: str) -> Dict[str, Any]:
-        """Check reference consistency."""
-        warnings: list[Any] = []
-
-        # Extract state blocks and connections
-        state_blocks = re.findall(r"StateSpaceBlock\s*\{([^}]*)\}", content)
-        connections = re.findall(r"Connection\s*\{([^}]*)\}", content)
-
-        # Extract block names
-        block_names: list[Any] = []
-        for block in state_blocks:
-            name_match = re.search(r"Name:\s*([^\n]+)", block)
-            if name_match:
-                block_names.append(name_match.group(1).strip())
-
-        # Check for references to non-existent blocks
-        invalid_references: list[Any] = []
-        for i, conn in enumerate(connections):
-            from_match = re.search(r"From:\s*([^\n]+)", conn)
-            to_match = re.search(r"To:\s*([^\n]+)", conn)
-
-            if from_match and from_match.group(1).strip() not in block_names:
-                invalid_references.append((i, "From", from_match.group(1).strip()))
-
-            if to_match and to_match.group(1).strip() not in block_names:
-                invalid_references.append((i, "To", to_match.group(1).strip()))
+    def _check_reference_consistency(
+        self, structure: _ModelStructure
+    ) -> dict[str, Any]:
+        warnings: list[str] = []
+        known_blocks = set(structure.block_names)
+        invalid_references: list[tuple[int, str, str]] = []
+        connected_blocks: set[str] = set()
+        for connection in structure.connections:
+            if connection.source is not None:
+                connected_blocks.add(connection.source)
+                if connection.source not in known_blocks:
+                    invalid_references.append(
+                        (connection.index, "From", connection.source)
+                    )
+            if connection.target is not None:
+                connected_blocks.add(connection.target)
+                if connection.target not in known_blocks:
+                    invalid_references.append(
+                        (connection.index, "To", connection.target)
+                    )
 
         if invalid_references:
-            ref_warnings = [
-                f"Connection {i} references non-existent {field} block: '{ref}'"
-                for i, field, ref in invalid_references
-            ]
-            warnings.append(f"Invalid block references: {', '.join(ref_warnings)}")
+            details = ", ".join(
+                f"Connection {index} references non-existent {field_name} block: '{reference}'"
+                for index, field_name, reference in invalid_references
+            )
+            warnings.append(f"Invalid block references: {details}")
 
-        # Check for isolated blocks (no incoming or outgoing connections)
-        connected_blocks: set[Any] = set()
-        for conn in connections:
-            from_match = re.search(r"From:\s*([^\n]+)", conn)
-            to_match = re.search(r"To:\s*([^\n]+)", conn)
-
-            if from_match:
-                connected_blocks.add(from_match.group(1).strip())
-            if to_match:
-                connected_blocks.add(to_match.group(1).strip())
-
-        isolated_blocks = [name for name in block_names if name not in connected_blocks]
+        isolated_blocks = [
+            name
+            for name in dict.fromkeys(structure.block_names)
+            if name not in connected_blocks
+        ]
         if isolated_blocks:
             warnings.append(
                 f"Isolated blocks with no connections: {', '.join(isolated_blocks)}"
             )
 
-        # Check for circular references
-        graph: dict[Any, Any] = {}
-        for conn in connections:
-            from_match = re.search(r"From:\s*([^\n]+)", conn)
-            to_match = re.search(r"To:\s*([^\n]+)", conn)
-
-            if from_match and to_match:
-                from_block = from_match.group(1).strip()
-                to_block = to_match.group(1).strip()
-
-                if from_block not in graph:
-                    graph[from_block] = []
-                graph[from_block].append(to_block)
-
-        # Check for cycles
-        visited: set[Any] = set()
-        path: set[Any] = set()
-
-        def has_cycle(node: Any) -> Any:
-            """Return whether cycle."""
-            if node in path:
-                return True
-            if node in visited:
-                return False
-
-            visited.add(node)
-            path.add(node)
-
-            for neighbor in graph.get(node, []):
-                if has_cycle(neighbor):
-                    return True
-
-            path.remove(node)
-            return False
-
-        cycles: list[Any] = []
-        for node in graph:
-            if has_cycle(node):
-                cycles.append(node)
-
-        if cycles:
+        circular_references = _cycle_nodes(structure.block_names, structure.connections)
+        if circular_references:
             warnings.append(
-                f"Circular dependencies detected in blocks: {', '.join(cycles)}"
+                "Circular dependencies detected in blocks: "
+                f"{', '.join(circular_references)}"
             )
-
         return {
-            "is_consistent": len(warnings) == 0,
+            "is_consistent": not warnings,
             "warnings": warnings,
             "invalid_references": invalid_references,
             "isolated_blocks": isolated_blocks,
-            "circular_references": cycles,
+            "circular_references": circular_references,
         }
 
 
-def check_consistency(model_data: Union[str, Path, Dict[str, Any]]) -> Dict[str, Any]:
-    """
-    Check consistency for a GNN model.
+def _model_file_path(model_data: ModelData) -> str:
+    value = model_data.get("file_path", "unknown")
+    return str(value) if isinstance(value, (str, Path)) else "unknown"
 
-    Args:
-        model_data: Path to GNN file, Path object, or model data dictionary
 
-    Returns:
-        Dictionary with consistency check results
-    """
-
+def check_consistency(model_data: ModelInput) -> dict[str, Any]:
+    """Check consistency for a GNN path or canonical parsed model mapping."""
     try:
-        # Handle different input types
-        if isinstance(model_data, dict):
-            # If it's already a dictionary, extract content from it
-            content = _extract_content_from_dict(model_data)
-            file_path = model_data.get("file_path", "unknown")
-        else:
-            # Convert string path to Path object
-            model_data = Path(model_data)
-            file_path = str(model_data)
-
-            # Read model content
-            with open(model_data, "r", encoding="utf-8") as f:
-                content = f.read()
-
-        # Perform consistency checking
         checker = ConsistencyChecker()
-        consistency_result = checker.check(content)
-
-        # Calculate consistency score
-        consistency_score = _calculate_consistency_score(consistency_result)
+        if isinstance(model_data, Mapping):
+            file_path = _model_file_path(model_data)
+            consistency_result = checker.check_model_data(model_data)
+        elif isinstance(model_data, (str, Path)):
+            path = Path(model_data)
+            file_path = str(path)
+            consistency_result = checker.check(path.read_text(encoding="utf-8"))
+        else:
+            raise TypeError(
+                f"model_data must be a path or mapping, got {type(model_data).__name__}"
+            )
 
         return {
             "file_path": file_path,
             "file_name": Path(file_path).name if file_path != "unknown" else "unknown",
             "consistent": consistency_result["is_consistent"],
             "warnings": consistency_result["warnings"],
-            "consistency_score": consistency_score,
+            "checks": consistency_result["checks"],
+            "consistency_score": _calculate_consistency_score(consistency_result),
             "recovery": False,
         }
-
-    except Exception as e:
+    except Exception as error:
+        file_path = (
+            str(model_data) if isinstance(model_data, (str, Path)) else "unknown"
+        )
         return {
             "status": "error",
-            "file_path": str(model_data)
-            if not isinstance(model_data, dict)
-            else "unknown",
-            "error": str(e),
+            "file_path": file_path,
+            "file_name": Path(file_path).name if file_path != "unknown" else "unknown",
+            "error": str(error),
             "consistent": False,
-            "warnings": [str(e)],
+            "warnings": [str(error)],
+            "checks": {},
             "consistency_score": 0.0,
             "recovery": True,
         }
 
 
-def _extract_content_from_dict(model_data: Dict[str, Any]) -> str:
-    """Extract content from model data dictionary."""
-    # Try to get raw sections first
-    raw_sections = model_data.get("raw_sections", {})
-    if raw_sections:
-        # Reconstruct the original content from raw sections
-        content_parts: list[Any] = []
-
-        # Add model name
-        if "ModelName" in raw_sections:
-            content_parts.append(f"ModelName: {raw_sections['ModelName']}")
-
-        # Add state space block
-        if "StateSpaceBlock" in raw_sections:
-            content_parts.append(f"StateSpaceBlock: {raw_sections['StateSpaceBlock']}")
-
-        # Add initial parameterization
-        if "InitialParameterization" in raw_sections:
-            content_parts.append(
-                f"InitialParameterization: {raw_sections['InitialParameterization']}"
-            )
-
-        # Add connections
-        if "Connections" in raw_sections:
-            content_parts.append(f"Connections: {raw_sections['Connections']}")
-
-        return "\n\n".join(content_parts)
-
-    # Recovery: try to get variables and connections
-    variables = model_data.get("variables", [])
-    connections = model_data.get("connections", [])
-
-    if variables or connections:
-        content_parts = []
-
-        # Add variables
-        if variables:
-            var_lines: list[Any] = []
-            for var in variables:
-                name = var.get("name", "Unknown")
-                var_type = var.get("var_type", "unknown")
-                dimensions = var.get("dimensions", [])
-                dim_str = (
-                    "[" + ", ".join(map(str, dimensions)) + "]" if dimensions else ""
-                )
-                var_lines.append(f"{name}{dim_str} # {var_type}")
-            content_parts.append("StateSpaceBlock:\n" + "\n".join(var_lines))
-
-        # Add connections
-        if connections:
-            conn_lines: list[Any] = []
-            for conn in connections:
-                source = (
-                    conn.get("source_variables", ["?"])[0]
-                    if conn.get("source_variables")
-                    else "?"
-                )
-                target = (
-                    conn.get("target_variables", ["?"])[0]
-                    if conn.get("target_variables")
-                    else "?"
-                )
-                conn_lines.append(f"{source} > {target}")
-            content_parts.append("Connections:\n" + "\n".join(conn_lines))
-
-        return "\n\n".join(content_parts)
-
-    # Final recovery: return empty string
-    return ""
-
-
-def _calculate_consistency_score(consistency_result: Dict[str, Any]) -> float:
-    """Calculate a consistency score from consistency results."""
-    # Base score starts at 1.0
-    score = 1.0
-
-    # Deduct points for warnings
-    warnings = consistency_result.get("warnings", [])
-    score -= len(warnings) * 0.1
-
-    # Deduct points for invalid references
-    invalid_references = consistency_result.get("invalid_references", [])
-    score -= len(invalid_references) * 0.2
-
-    # Deduct points for isolated blocks
-    isolated_blocks = consistency_result.get("isolated_blocks", [])
-    score -= len(isolated_blocks) * 0.1
-
-    # Deduct points for circular references
-    circular_references = consistency_result.get("circular_references", [])
-    score -= len(circular_references) * 0.3
-
-    # Ensure score is between 0 and 1
+def _calculate_consistency_score(consistency_result: Mapping[str, Any]) -> float:
+    """Calculate a bounded score from aggregate and structured findings."""
+    score = 1.0 - len(consistency_result.get("warnings", [])) * 0.1
+    checks = consistency_result.get("checks", {})
+    reference_result = (
+        checks.get("reference_consistency", {}) if isinstance(checks, Mapping) else {}
+    )
+    if isinstance(reference_result, Mapping):
+        score -= len(reference_result.get("invalid_references", [])) * 0.2
+        score -= len(reference_result.get("isolated_blocks", [])) * 0.1
+        score -= len(reference_result.get("circular_references", [])) * 0.3
     return max(0.0, min(1.0, score))
