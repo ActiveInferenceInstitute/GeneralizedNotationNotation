@@ -8,7 +8,7 @@
 
 This directory contains documentation, resources, and implementation guides for integrating **Pedalboard** (Spotify's Audio Processing Library) with GNN (Generalized Notation Notation). Pedalboard provides high-performance DSP capabilities, VST3/AU plugin ecosystem, and Python-native API for sophisticated audio representations and real-time sonification of Active Inference models.
 
-**Status**: ✅ Production Ready  
+**Status**: 🛠️ Scaffold / Planned  
 **Version**: 1.0
 
 ## Quick Navigation
@@ -34,7 +34,7 @@ This directory contains documentation, resources, and implementation guides for 
 
 ## Contents
 
-**Files**: 3 | **Subdirectories**: 0
+**Files**: 5 (AGENTS.md, README.md, SPEC.md, pedalboard_gnn.md, pedalboard.md) | **Subdirectories**: 0
 
 ### Core Files
 
@@ -129,6 +129,6 @@ All documentation in this module adheres to professional standards:
 
 ---
 
-**Status**: ✅ Production Ready  
+**Status**: 🛠️ Scaffold / Planned  
 **Compliance**: Professional documentation standards  
 **Maintenance**: Regular updates with new Pedalboard features and integration capabilities

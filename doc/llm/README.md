@@ -219,12 +219,12 @@ for provider, details in info.items():
 The LLM processor integrates seamlessly with the GNN pipeline:
 
 ```python
-# From pipeline step 11 (11_llm.py)
-from src.llm import get_processor
+# From pipeline step 13 (13_llm.py)
+from src.llm import get_global_processor
 
 
 async def analyze_discovered_models(gnn_files):
-    processor = get_processor()
+    processor = get_global_processor()
 
     if not processor:
         processor = await initialize_global_processor()
@@ -261,10 +261,13 @@ PERPLEXITY_API_KEY=pplx-...
 
 # Provider Preferences
 DEFAULT_PROVIDER=openai|openrouter|perplexity
+# Reserved — ENABLE_FALLBACK and ENABLE_STREAMING are not currently consumed by src/:
 ENABLE_FALLBACK=true|false
 ENABLE_STREAMING=true|false
 
-# Default Parameters
+# Default Parameters — module-level defaults in src/llm, not read from env:
+# DEFAULT_TEMPERATURE is reserved (not currently consumed by src/);
+# DEFAULT_MAX_TOKENS is a module constant default, not an env var.
 DEFAULT_TEMPERATURE=0.3
 DEFAULT_MAX_TOKENS=2000
 

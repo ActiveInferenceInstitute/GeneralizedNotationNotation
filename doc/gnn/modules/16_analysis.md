@@ -114,13 +114,13 @@ Multi-factor models additionally get per-factor belief-trajectory small-multiple
 
 ### Public Functions
 
-#### `process_analysis(target_dir: Path, output_dir: Path, logger: Optional[logging.Logger] = None, **kwargs) -> bool`
+#### `process_analysis(target_dir: Path, output_dir: Path, verbose: bool = False, **kwargs) -> bool`
 **Description**: Main analysis processing function called by orchestrator (16_analysis.py). Performs comprehensive statistical analysis, complexity metrics, and performance benchmarking.
 
 **Parameters**:
 - `target_dir` (Path): Directory containing GNN files to analyze
 - `output_dir` (Path): Output directory for analysis results
-- `logger` (Optional[logging.Logger]): Logger instance for progress reporting (default: None)
+- `verbose` (bool, optional): Enable verbose output (default: False)
 - `analysis_type` (str, optional): Type of analysis ("comprehensive", "statistical", "performance", "complexity") (default: "comprehensive")
 - `include_performance` (bool, optional): Include performance benchmarking (default: True)
 - `include_complexity` (bool, optional): Include complexity metrics (default: True)
@@ -140,7 +140,7 @@ logger = logging.getLogger(__name__)
 success = process_analysis(
     target_dir=Path("input/gnn_files"),
     output_dir=Path("output/16_analysis_output"),
-    logger=logger,
+    verbose=True,
     analysis_type="comprehensive",
     include_performance=True,
     benchmark_iterations=10,
@@ -168,11 +168,11 @@ python src/16_analysis.py --target-dir input/gnn_files --output-dir output --no-
 - `verbose` (bool, optional): Enable verbose output (default: False)
 
 **Returns**: `Dict[str, Any]` - Statistical analysis results with:
-- `variable_count` (int): Total number of variables
-- `connection_count` (int): Total number of connections
-- `type_distribution` (Dict[str, int]): Distribution of variable types
-- `dimension_statistics` (Dict[str, Any]): Dimension statistics
-- `density_metrics` (Dict[str, float]): Connection density metrics
+- `variable_statistics` (Dict[str, Any]): Statistics on variables
+- `connection_statistics` (Dict[str, Any]): Statistics on connections
+- `section_statistics` (Dict[str, Any]): Statistics on model sections
+- `distributions` (Dict[str, Any]): Variable distributions
+- `correlations` (Dict[str, Any]): Variable correlations
 
 #### `calculate_complexity_metrics(model_data: Dict[str, Any], variables: List[Dict[str, Any]] = None, connections: List[Dict[str, Any]] = None) -> Dict[str, Any]`
 **Description**: Calculate various complexity metrics for GNN models.
@@ -213,14 +213,16 @@ python src/16_analysis.py --target-dir input/gnn_files --output-dir output --no-
 ## Configuration
 
 ### Environment Variables
-- `ANALYSIS_PERFORMANCE_MODE` - Performance analysis mode ("fast", "comprehensive")
-- `ANALYSIS_TIMEOUT` - Maximum analysis time per model (default: 300 seconds)
+- `ANALYSIS_PERFORMANCE_MODE` - Performance analysis mode ("fast", "comprehensive") *(reserved/illustrative — not consumed by the current implementation)*
+- `ANALYSIS_TIMEOUT` - Maximum analysis time per model (default: 300 seconds) *(reserved/illustrative — not consumed by the current implementation)*
 
 ### Configuration Files
-- `analysis_config.yaml` - Custom analysis parameters and thresholds
+- `analysis_config.yaml` - Custom analysis parameters and thresholds *(reserved/illustrative — not tracked by the current implementation)*
 
 ### Default Settings
+`DEFAULT_COMPLEXITY_THRESHOLDS` is not a defined constant in the implementation; complexity thresholds are computed inline within `calculate_complexity_metrics`. The block below is illustrative only:
 ```python
+# Illustrative — thresholds are computed inline, not read from this constant
 DEFAULT_COMPLEXITY_THRESHOLDS = {
     "cyclomatic_complexity": {"low": 10, "medium": 20, "high": 50},
     "cognitive_complexity": {"low": 5, "medium": 15, "high": 35},
@@ -239,7 +241,7 @@ from analysis.processor import process_analysis
 success = process_analysis(
     target_dir=Path("input/gnn_files"),
     output_dir=Path("output/16_analysis_output"),
-    logger=logger,
+    verbose=True,
     analysis_type="comprehensive",
 )
 ```
@@ -248,9 +250,9 @@ success = process_analysis(
 ```python
 from analysis.analyzer import perform_statistical_analysis
 
-stats = perform_statistical_analysis(variables, connections)
+stats = perform_statistical_analysis(Path("input/gnn_files/some_model.gnn"), verbose=True)
 print(f"Variable count: {stats['variable_statistics']['count']}")
-print(f"Connection density: {stats['connection_statistics']['density']}")
+print(f"Connection count: {stats['connection_statistics']['count']}")
 ```
 
 ### Complexity Assessment
@@ -267,19 +269,19 @@ print(f"Maintainability index: {metrics['maintainability_index']}")
 ## Output Specification
 
 ### Output Products
-- `{model}_statistical_analysis.json` - Comprehensive statistical analysis
-- `{model}_complexity_metrics.json` - Complexity assessment results
-- `{model}_performance_benchmarks.json` - Performance profiling data
-- `{model}_analysis_summary.md` - Human-readable analysis report
+- `analysis_results.json` - Comprehensive statistical analysis
+- `{model}_post_simulation_analysis.json` - Post-simulation analysis results
+- `analysis_summary.md` - Human-readable analysis summary report
+- `cross_model_comparison_report.md` - Cross-model comparison report
 - `analysis_processing_summary.json` - Pipeline step summary
 
 ### Output Directory Structure
 ```
 output/16_analysis_output/
-├── model_name_statistical_analysis.json
-├── model_name_complexity_metrics.json
-├── model_name_performance_benchmarks.json
-├── model_name_analysis_summary.md
+├── analysis_results.json
+├── model_name_post_simulation_analysis.json
+├── analysis_summary.md
+├── cross_model_comparison_report.md
 ├── analysis_processing_summary.json
 ├── pymdp_visualizations/              # All PyMDP visualizations
 │   └── {model_name}/

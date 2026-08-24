@@ -117,7 +117,7 @@ src/
 ├── utils/                   # Shared utilities
 │   ├── argument_utils.py    # CLI/pipeline argument model
 │   └── pipeline_template.py # Thin orchestrator wrapper
-└── tests/                   # 171 pytest files, mirrored by module
+└── tests/                   # ~323 pytest source files, mirrored by module
 ```
 
 ### Design Patterns
@@ -165,7 +165,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     # Setup logging for standalone
-    from utils.logging_utils import setup_standalone_logging
+    from utils.logging.logging_utils import setup_standalone_logging
 
     setup_standalone_logging(
         level=logging.DEBUG if args.verbose else logging.INFO, logger_name=__name__
@@ -284,27 +284,22 @@ def parse_gnn_file(file_path: Path) -> Dict[str, Any]:
 
 #### Test Organization
 ```
-tests/
-├── unit/                    # Unit tests
-│   ├── test_gnn_parser.py  # Test individual modules
-│   ├── test_exporters.py   
-│   └── test_visualization.py
-├── integration/             # Integration tests  
-│   ├── test_pipeline_steps.py # Test step interactions
-│   ├── test_export_formats.py # Test full export workflows
-│   └── test_mcp_integration.py # Test MCP functionality
-├── fixtures/                # Test data
-│   ├── valid_gnn_files/    # Valid test models
-│   ├── invalid_gnn_files/  # Invalid models for error testing
-│   └── expected_outputs/   # Expected results for validation
-└── conftest.py             # Pytest configuration
+src/tests/
+├── <module>/               # One directory per src/ module (e.g. gnn/, render/, pipeline/)
+│   ├── gnn/              # GNN parsing and validation tests
+│   ├── render/           # Render step tests
+│   └── pipeline/         # Pipeline orchestration tests
+├── integration/          # Cross-module integration tests
+├── helpers/              # Shared test fixtures and helper utilities
+├── test_data/            # Shared test data
+└── conftest.py           # Pytest configuration
 ```
 
 #### Test Writing Patterns
 ```python
 import pytest
 from pathlib import Path
-from src.gnn.parser import parse_gnn_file
+from src.gnn.processor import parse_gnn_file
 
 
 class TestGNNParser:
@@ -359,14 +354,14 @@ class TestGNNParser:
 python src/main.py --only-steps 3
 
 # Run specific test categories
-uv run --extra dev python -m pytest src/tests/unit/ -v
+uv run --extra dev python -m pytest src/tests/gnn/ -v
 uv run --extra dev python -m pytest src/tests/integration/ -v
 
 # Run with coverage
 pytest --cov=src --cov-report=html:output/coverage
 
-# Run performance tests
-uv run --extra dev python -m pytest src/tests/performance/ --benchmark-only
+# Run pipeline orchestration tests
+uv run --extra dev python -m pytest src/tests/pipeline/ -v
 ```
 
 ### Adding New Features
@@ -375,7 +370,7 @@ uv run --extra dev python -m pytest src/tests/performance/ --benchmark-only
 
 1. **Create the script**: `src/N_description.py`
 2. **Add configuration**: Update `src/config.py`
-3. **Add tests**: Create tests in `tests/unit/` and `tests/integration/`
+3. **Add tests**: Create tests in `src/tests/<module>/` and `src/tests/integration/`
 4. **Add documentation**: Update pipeline documentation
 5. **Add MCP tools**: Create `module/mcp.py` if exposing APIs
 
@@ -468,7 +463,7 @@ python src/main.py --verbose --only-steps 1,4
 uv run gnn --help  # inspect the current MCP/CLI entry points
 
 # Test debugging
-pytest -vvv --pdb src/tests/unit/test_specific.py
+pytest -vvv --pdb src/tests/gnn/test_gnn_overall.py
 
 # Type checking
 uv run --extra dev mypy src --show-error-codes

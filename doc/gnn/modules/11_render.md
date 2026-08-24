@@ -293,7 +293,7 @@ Configuration is primarily controlled by the Step 11 orchestrator (`src/11_rende
 
 ### Basic Framework Rendering
 ```python
-from render.renderer import render_gnn_spec
+from render import render_gnn_spec
 
 # Render GNN to PyMDP
 success, message, files = render_gnn_spec(
@@ -306,7 +306,7 @@ success, message, files = render_gnn_spec(
 
 ### Multi-Framework Rendering
 ```python
-from render.renderer import render_gnn_spec
+from render import render_gnn_spec
 
 for framework in ["pymdp", "rxinfer", "activeinference_jl"]:
     success, message, files = render_gnn_spec(

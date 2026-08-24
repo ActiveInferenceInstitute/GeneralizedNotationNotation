@@ -156,7 +156,7 @@ with open(gnn_results_file, "r") as f:
 **Direct Function Calls** (various modules)
 
 ```python
-from visualization import process_visualization_main
+from visualization import process_visualization
 # Direct function invocation without standardized interface
 ```
 

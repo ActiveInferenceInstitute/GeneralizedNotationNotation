@@ -62,7 +62,7 @@ llm:
   prompt_timeout: 45
 ```
 
-The same file also contains `testing_matrix`, `io`, `logging`, `validation`,
+The same file also contains `uv`, `testing_matrix`, `io`, `logging`, `validation`,
 `performance`, and `security` sections. Those sections are consumed by the modules
 that own them; they are not a universal schema for every pipeline step. When adding a
 new key, update the consuming module and its documentation together.

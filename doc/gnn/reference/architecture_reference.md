@@ -122,7 +122,7 @@ except Exception:
 ### Step 3 → Step 5: Parsed Data Transfer
 
 ```
-Input:  input/gnn_files/actinf_pomdp_agent.md
+Input:  input/gnn_files/discrete/actinf_pomdp_agent.md
 Output: output/3_gnn_output/gnn_processing_results.json
 
 Cross-reference in src/5_type_checker.py:

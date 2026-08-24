@@ -17,7 +17,7 @@ This subsystem is part of the broader GNN (Generalized Notation Notation) docume
 
 ## Contents
 
-**Files**:        2 | **Subdirectories**:        1
+**Files**:        10 | **Subdirectories**:        1
 
 ## Quick Navigation
 

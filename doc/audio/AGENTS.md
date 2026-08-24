@@ -11,7 +11,7 @@ This directory contains documentation for audio generation features in the GNN p
 
 ## Purpose
 
-Audio synthesis and sonification of Active Inference models (SAPF - Sonified Active Inference Parameter Framework).
+Audio synthesis and sonification of Active Inference models (SAPF - Synthetic Audio Processing Framework).
 
 ## Contents
 

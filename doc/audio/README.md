@@ -33,7 +33,7 @@ This directory contains comprehensive documentation for audio processing, sonifi
 
 ## Contents
 
-**Files**: 1 | **Subdirectories**: 0
+**Files**: 3 (README.md, AGENTS.md, SPEC.md) | **Subdirectories**: 0
 
 ### Core Documentation
 

@@ -150,15 +150,15 @@ Full pipeline runs use `python src/main.py` (see [Pipeline docs](../gnn/operatio
 ### Framework Integration
 
 ```python
-from gnn.render import PyMDPRenderer, RxInferRenderer
+from render import PyMDPRenderer
+from render import render_gnn_to_pymdp, render_gnn_to_rxinfer
 
 # Generate PyMDP code
 pymdp_renderer = PyMDPRenderer()
 pymdp_code = pymdp_renderer.render(model)
 
 # Generate RxInfer code
-rxinfer_renderer = RxInferRenderer()
-rxinfer_code = rxinfer_renderer.render(model)
+rxinfer_code = render_gnn_to_rxinfer(model, output_path)
 ```
 
 ## Related Resources

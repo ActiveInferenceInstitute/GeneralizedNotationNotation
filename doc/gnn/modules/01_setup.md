@@ -222,14 +222,14 @@ SYSTEM_REQUIREMENTS = {
 
 ### Basic Environment Setup
 ```python
-from setup.setup import setup_uv_environment
+from setup import setup_uv_environment
 
 success = setup_uv_environment(verbose=True, dev=True, extras=["audio", "gui", "ml-ai"])
 ```
 
 ### Add New Dependency
 ```python
-from setup.setup import add_uv_dependency
+from setup import add_uv_dependency
 
 # Add production dependency
 success = add_uv_dependency("requests>=2.28.0", dev=False, verbose=True)
@@ -240,14 +240,14 @@ success = add_uv_dependency("pytest>=7.0.0", dev=True, verbose=True)
 
 ### Remove Dependency
 ```python
-from setup.setup import remove_uv_dependency
+from setup import remove_uv_dependency
 
 success = remove_uv_dependency("old-package", verbose=True)
 ```
 
 ### Update Dependencies
 ```python
-from setup.setup import update_uv_dependencies
+from setup import update_uv_dependencies
 
 # Sync with lock file
 success = update_uv_dependencies(verbose=True, upgrade=False)
@@ -258,7 +258,7 @@ success = update_uv_dependencies(verbose=True, upgrade=True)
 
 ### Lock Dependencies
 ```python
-from setup.setup import lock_uv_dependencies
+from setup import lock_uv_dependencies
 
 # Update uv.lock file
 success = lock_uv_dependencies(verbose=True)
@@ -266,7 +266,7 @@ success = lock_uv_dependencies(verbose=True)
 
 ### System Requirements Check
 ```python
-from setup.setup import check_system_requirements
+from setup import check_system_requirements
 
 requirements_met = check_system_requirements(verbose=True)
 if requirements_met:

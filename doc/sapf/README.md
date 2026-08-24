@@ -35,7 +35,7 @@ This directory contains documentation, resources, and implementation guides for 
 
 ## Contents
 
-**Files**: 3 | **Subdirectories**: 0
+**Files**: 5 | **Subdirectories**: 0
 
 ### Core Files
 

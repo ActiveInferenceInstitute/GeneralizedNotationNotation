@@ -277,10 +277,9 @@ if visualizer.d2_available:
 
 ### Output Products
 
-- `{model}_3d_visualization.html` - 3D interactive plot
+- `{model}_3d_visualization.png` - 3D plot (interactive form is `{model}_dashboard.html`)
 - `{model}_dashboard.html` - Interactive dashboard
 - `{model}_statistical_analysis.png` - Statistical plots
-- `{model}_visualization_data.json` - Underlying data
 - `d2_diagrams/{model}/` - **D2 diagram files (.d2, .svg, .png)**
 - `d2_diagrams/pipeline/` - **Pipeline architecture D2 diagrams**
 - `advanced_viz_summary.json` - Processing summary
@@ -289,10 +288,9 @@ if visualizer.d2_available:
 
 ```
 output/9_advanced_viz_output/
-├── model_name_3d_visualization.html
+├── model_name_3d_visualization.png
 ├── model_name_dashboard.html
 ├── model_name_statistical_analysis.png
-├── model_name_visualization_data.json
 ├── d2_diagrams/
 │   ├── model_name/
 │   │   ├── model_name_structure.d2
@@ -467,17 +465,19 @@ output/9_advanced_viz_output/
 
 ### Tools Registered
 
-- `advanced_visualization.generate_3d` - Generate 3D visualizations
-- `advanced_visualization.create_dashboard` - Create interactive dashboards
-- `advanced_visualization.generate_d2` - Generate D2 diagrams
-- `advanced_visualization.analyze_statistics` - Generate statistical plots
+- `process_advanced_visualization` - Process advanced visualizations
+- `check_visualization_capabilities` - Check visualization capabilities
+- `list_d2_visualization_types` - List D2 visualization types
+- `get_advanced_visualization_module_info` - Get module info
 
 ### Tool Endpoints
 
 ```python
-@mcp_tool("advanced_visualization.generate_3d")
-def generate_3d_visualization_tool(model_data: Dict[str, Any]) -> Dict[str, Any]:
-    """Generate 3D network visualization"""
+@mcp_tool("process_advanced_visualization")
+def process_advanced_visualization_mcp(
+    target_directory: str, output_directory: str, viz_type: str = "all"
+) -> Dict[str, Any]:
+    """Process advanced visualizations"""
     # Implementation
 ```
 

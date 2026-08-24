@@ -33,6 +33,7 @@ This document outlines comprehensive security considerations, threat models, and
 ### **📝 GNN Model Validation**
 
 ```python
+# (illustrative) `gnn.security` is not an importable module; shown as an aspirational example.
 from gnn.security import SecureGNNParser, SecurityConfig
 
 
@@ -196,6 +197,7 @@ safe_content = sanitizer.sanitize_gnn_content(untrusted_content)
 ### **👤 User Authentication**
 
 ```python
+# (illustrative) `gnn.auth` is not an importable module; shown as an aspirational example.
 from gnn.auth import AuthenticationManager, Role, Permission
 
 
@@ -644,6 +646,7 @@ EXPOSE 8080
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
     CMD python -c "import requests; requests.get('http://localhost:8080/health')"
 
+# (illustrative) The `--secure-mode` flag does not exist on src/main.py.
 # Run application
 CMD ["python", "src/main.py", "--secure-mode"]
 ```

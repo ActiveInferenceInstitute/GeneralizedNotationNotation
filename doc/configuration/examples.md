@@ -2,6 +2,12 @@
 
 This document provides comprehensive examples of GNN configuration for different use cases, deployment scenarios, and advanced workflows.
 
+> **⚠️ Illustrative examples only** — The YAML blocks below are illustrative/aspirational.
+> They are NOT automatically discovered or loadable by the pipeline. The only
+> auto-loaded configuration file is `input/config.yaml`; its schema is described in
+> [doc/configuration/README.md](README.md). Refer to that file for the actual,
+> supported configuration surface.
+
 ## Table of Contents
 
 1. [Basic Configuration Examples](#basic-configuration)

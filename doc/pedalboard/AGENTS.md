@@ -25,7 +25,7 @@ Pedalboard integration enables:
 
 ## Contents
 
-**Files**:        3 | **Subdirectories**:        1
+**Files**:        5 | **Subdirectories**:        0
 
 ## Quick Navigation
 
@@ -62,6 +62,8 @@ This documentation is integrated with the 25-step GNN processing pipeline:
 See [src/AGENTS.md](../../src/AGENTS.md) for complete pipeline documentation.
 
 ## Function Signatures and API
+
+> ⚠️ **Planned / Not Yet Implemented**: `src/audio/pedalboard/` is currently a scaffold only (no `.py` source). The signatures below are planned and do not describe shipped functions.
 
 ### Audio Processing Functions
 
@@ -127,6 +129,6 @@ All documentation in this module adheres to professional standards:
 
 ---
 
-**Status**: ✅ Production Ready  
+**Status**: 🛠️ Scaffold / Planned  
 **Compliance**: Professional documentation standards  
 **Maintenance**: Regular updates with new Pedalboard features and integration capabilities

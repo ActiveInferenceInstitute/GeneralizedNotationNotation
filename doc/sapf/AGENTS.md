@@ -23,7 +23,7 @@ SAPF integration enables:
 
 ## Contents
 
-**Files**:        3 | **Subdirectories**:        1
+**Files**:        5 | **Subdirectories**:        0
 
 ## Quick Navigation
 

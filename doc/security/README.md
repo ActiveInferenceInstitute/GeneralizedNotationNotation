@@ -31,7 +31,7 @@ validation_requirements:
 **Code Example**:
 
 ```python
-# src/gnn/security/validator.py
+# (illustrative) src/gnn/security/validator.py — path does not exist; see the real security processor in src/security/processor.py
 def validate_gnn_file_security(file_path: str) -> SecurityValidationResult:
     """Comprehensive security validation for GNN files."""
 
@@ -85,7 +85,7 @@ authorization:
 **Mitigation Strategies**:
 
 ```python
-# src/llm/security/prompt_sanitizer.py
+# (illustrative) src/llm/security/prompt_sanitizer.py — src/llm has no security/ subdirectory
 class PromptSanitizer:
     def sanitize_user_input(self, user_prompt: str) -> str:
         """Sanitize user input to prevent prompt injection."""
@@ -125,7 +125,7 @@ class PromptSanitizer:
 **Secure MCP Implementation**:
 
 ```python
-# src/mcp/security/secure_server.py
+# (illustrative) src/mcp/security/secure_server.py — path does not exist
 class SecureMCPServer:
     def __init__(self):
         self.auth_manager = MCPAuthManager()
@@ -183,6 +183,7 @@ RUN uv tool run pip-audit  # Security vulnerability scanning
 USER gnn
 EXPOSE 8000
 
+# (illustrative) gunicorn target `src.main:app` does not exist in this repo.
 # Run with security options
 CMD ["python", "-m", "gunicorn", \
      "--bind", "0.0.0.0:8000", \
@@ -234,7 +235,7 @@ jobs:
 **Security Test Suite**:
 
 ```python
-# tests/security/test_security.py
+# src/tests/security/test_security_functional.py
 class TestGNNSecurity:
     def test_input_validation_blocks_malicious_content(self):
         """Test that malicious GNN content is blocked."""
@@ -265,7 +266,7 @@ class TestGNNSecurity:
 **Security Events**:
 
 ```python
-# src/security/audit.py
+# (illustrative) src/security/audit.py — path does not exist
 class SecurityAuditLogger:
     def log_authentication_event(
         self, user_id: str, success: bool, ip_address: str, user_agent: str

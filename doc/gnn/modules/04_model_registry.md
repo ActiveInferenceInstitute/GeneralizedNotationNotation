@@ -221,7 +221,7 @@ output/4_model_registry_output/
 {
   "model_id": "actinf_pomdp_agent",
   "model_name": "Active Inference POMDP Agent",
-  "file_path": "input/gnn_files/actinf_pomdp_agent.md",
+  "file_path": "input/gnn_files/discrete/actinf_pomdp_agent.md",
   "file_size_bytes": 1759,
   "registered_at": "2025-09-29T12:00:00",
   "version": "1.0.0",

@@ -191,7 +191,7 @@ print(f"Results: {results}")
 
 ### **Batch Processing**
 ```python
-from src.execute.pymdp import batch_execute_pymdp
+from src.execute.pymdp.execute_pymdp import batch_execute_pymdp
 
 # Multiple GNN specifications
 gnn_specs = [parse_gnn_file(f) for f in gnn_files]

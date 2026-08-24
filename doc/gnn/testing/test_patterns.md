@@ -41,9 +41,9 @@ data in version control rather than a decorator scattered through the suite.
 ```python
 # ✅ CORRECT — exercise the real surface and assert on real state
 def test_audio_backend():
-    from audio import backends
+    from audio import check_audio_backends
 
-    result = backends.check_backends()
+    result = check_audio_backends()
     assert isinstance(result, dict)
     assert "available" in result  # may report "unavailable" — that is a valid answer
 

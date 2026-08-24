@@ -75,7 +75,7 @@ oxdraw serves as a visual interface for the Generalized Notation Notation (GNN) 
 
 ## Implementation: GNN to Mermaid Conversion
 
-### Module: `src/gnn/mermaid_converter.py`
+### Module: `src/gui/oxdraw/mermaid_converter.py`
 
 This module translates parsed GNN models to Mermaid flowchart syntax compatible with oxdraw.
 
@@ -92,16 +92,16 @@ from typing import Dict, Any, List, Optional
 import json
 import re
 
-from gnn.parser import parse_gnn_file, ParsedGNN
+from gnn.processor import parse_gnn_file
 from ontology.processor import load_defined_ontology_terms
 
 
-def gnn_to_mermaid(gnn_model: ParsedGNN, include_metadata: bool = True) -> str:
+def gnn_to_mermaid(gnn_model: Dict[str, Any], include_metadata: bool = True) -> str:
     """
-    Convert parsed GNN model to Mermaid flowchart format.
+    Convert a parsed GNN model dict to Mermaid flowchart format.
 
     Args:
-        gnn_model: Parsed GNN model from gnn.parser
+        gnn_model: Parsed GNN model dict
         include_metadata: Include oxdraw-compatible metadata in comments
 
     Returns:
@@ -111,22 +111,22 @@ def gnn_to_mermaid(gnn_model: ParsedGNN, include_metadata: bool = True) -> str:
 
     # Header with model metadata
     lines.append(f"flowchart TD")
-    lines.append(f"    %% GNN Model: {gnn_model.model_name}")
-    lines.append(f"    %% GNN Version: {gnn_model.version}")
+    lines.append(f"    %% GNN Model: {gnn_model['model_name']}")
+    lines.append(f"    %% GNN Version: {gnn_model['version']}")
 
     if include_metadata:
         # Embed full GNN specification as JSON in comment
         metadata = {
-            "model_name": gnn_model.model_name,
-            "variables": _serialize_variables(gnn_model.variables),
-            "connections": _serialize_connections(gnn_model.connections),
-            "parameters": gnn_model.parameters,
-            "ontology_mappings": _serialize_ontology(gnn_model.ontology_mappings),
+            "model_name": gnn_model["model_name"],
+            "variables": _serialize_variables(gnn_model["variables"]),
+            "connections": _serialize_connections(gnn_model["connections"]),
+            "parameters": gnn_model.get("parameters", {}),
+            "ontology_mappings": _serialize_ontology(gnn_model["ontology_mappings"]),
         }
         lines.append(f"    %% GNN_METADATA: {json.dumps(metadata)}")
 
     # Generate nodes from variables
-    for var_name, var_data in gnn_model.variables.items():
+    for var_name, var_data in gnn_model["variables"].items():
         node_shape = _infer_node_shape(var_name, var_data)
         node_label = _generate_node_label(var_name, var_data)
         lines.append(f"    {var_name}{node_shape}")
@@ -136,7 +136,7 @@ def gnn_to_mermaid(gnn_model: ParsedGNN, include_metadata: bool = True) -> str:
             lines.append(f"    %% {var_name}: {var_data['ontology_mapping']}")
 
     # Generate edges from connections
-    for conn in gnn_model.connections:
+    for conn in gnn_model["connections"]:
         edge_style = _infer_edge_style(conn["symbol"])
         edge_label = _generate_edge_label(conn)
         lines.append(f"    {conn['source']}{edge_style}{conn['target']}")
@@ -148,7 +148,7 @@ def gnn_to_mermaid(gnn_model: ParsedGNN, include_metadata: bool = True) -> str:
     # Styling section
     lines.append("")
     lines.append("    %% Node styling based on variable types")
-    lines.extend(_generate_node_styles(gnn_model.variables))
+    lines.extend(_generate_node_styles(gnn_model["variables"]))
 
     return "\n".join(lines)
 
@@ -352,7 +352,7 @@ def convert_gnn_file_to_mermaid(
 
 ## Implementation: Mermaid to GNN Conversion
 
-### Module: `src/gnn/mermaid_parser.py`
+### Module: `src/gui/oxdraw/mermaid_parser.py`
 
 This module parses Mermaid diagrams edited in oxdraw back to GNN format.
 
@@ -368,11 +368,11 @@ from typing import Dict, Any, List, Optional, Tuple
 import json
 import re
 
-from gnn.parser import ParsedGNN
+from gnn.processor import parse_gnn_file
 from ontology.processor import load_defined_ontology_terms, validate_annotations
 
 
-def mermaid_to_gnn(mermaid_content: str, validate_ontology: bool = True) -> ParsedGNN:
+def mermaid_to_gnn(mermaid_content: str, validate_ontology: bool = True) -> Dict[str, Any]:
     """
     Parse Mermaid flowchart back to GNN model structure.
 
@@ -381,7 +381,7 @@ def mermaid_to_gnn(mermaid_content: str, validate_ontology: bool = True) -> Pars
         validate_ontology: Validate ontology term mappings
 
     Returns:
-        ParsedGNN model ready for pipeline processing
+        GNN model dict ready for pipeline processing
     """
     # Extract metadata from comments
     metadata = _extract_gnn_metadata(mermaid_content)
@@ -405,17 +405,17 @@ def mermaid_to_gnn(mermaid_content: str, validate_ontology: bool = True) -> Pars
                 f"Invalid ontology terms: {validation_result['invalid_annotations']}"
             )
 
-    # Construct ParsedGNN
-    return ParsedGNN(
-        model_name=metadata.get("model_name", "Untitled Model"),
-        version=metadata.get("version", "1.0"),
-        variables=variables,
-        connections=connections,
-        parameters=metadata.get("parameters", {}),
-        ontology_mappings=_reconstruct_ontology_mappings(
+    # Construct the GNN model dict
+    return {
+        "model_name": metadata.get("model_name", "Untitled Model"),
+        "version": metadata.get("version", "1.0"),
+        "variables": variables,
+        "connections": connections,
+        "parameters": metadata.get("parameters", {}),
+        "ontology_mappings": _reconstruct_ontology_mappings(
             variables, metadata.get("ontology_mappings", {})
         ),
-    )
+    }
 
 
 def _extract_gnn_metadata(mermaid_content: str) -> Dict[str, Any]:
@@ -614,7 +614,7 @@ def _reconstruct_ontology_mappings(variables: Dict, ontology_map: Dict) -> List[
 
 def convert_mermaid_file_to_gnn(
     mermaid_file_path: Path, output_path: Optional[Path] = None
-) -> ParsedGNN:
+) -> Dict[str, Any]:
     """
     Convert Mermaid file from oxdraw back to GNN format.
 
@@ -623,7 +623,7 @@ def convert_mermaid_file_to_gnn(
         output_path: Optional path to save GNN output (.md)
 
     Returns:
-        ParsedGNN model
+        GNN model dict
     """
     mermaid_content = mermaid_file_path.read_text()
     parsed_model = mermaid_to_gnn(mermaid_content)
@@ -820,7 +820,7 @@ print("✅ Model validated through GNN pipeline")
 
 ## Advanced Integration: Pipeline Step 22 (oxdraw GUI)
 
-### Module: `src/oxdraw_integration/`
+### Module: `src/gui/oxdraw/`
 
 Create a dedicated pipeline step for oxdraw integration.
 
@@ -842,7 +842,7 @@ from utils.pipeline_template import (
     log_step_success,
 )
 from pipeline.config import get_output_dir_for_script
-from oxdraw_integration.processor import process_oxdraw_gui
+from gui.oxdraw.processor import process_oxdraw
 
 
 def main():
@@ -850,7 +850,7 @@ def main():
 
     run_script = create_standardized_pipeline_script(
         script_name="22_gui.py",
-        processing_function=process_oxdraw_gui,
+        processing_function=process_oxdraw,
         description="oxdraw visual interface for GNN model construction",
     )
 
@@ -861,7 +861,7 @@ if __name__ == "__main__":
     exit(main())
 ```
 
-#### File: `src/oxdraw_integration/__init__.py`
+#### File: `src/gui/oxdraw/__init__.py`
 
 ```python
 """
@@ -870,12 +870,12 @@ oxdraw Integration Module for GNN Pipeline
 Provides visual diagram-as-code interface for Active Inference model construction.
 """
 
-from .processor import process_oxdraw_gui
+from .processor import process_oxdraw
 from .mermaid_converter import gnn_to_mermaid, convert_gnn_file_to_mermaid
 from .mermaid_parser import mermaid_to_gnn, convert_mermaid_file_to_gnn
 
 __all__ = [
-    "process_oxdraw_gui",
+    "process_oxdraw",
     "gnn_to_mermaid",
     "convert_gnn_file_to_mermaid",
     "mermaid_to_gnn",
@@ -885,7 +885,7 @@ __all__ = [
 __version__ = "1.0.0"
 ```
 
-#### File: `src/oxdraw_integration/processor.py`
+#### File: `src/gui/oxdraw/processor.py`
 
 ```python
 """
@@ -906,7 +906,7 @@ from .mermaid_converter import convert_gnn_file_to_mermaid
 from .mermaid_parser import convert_mermaid_file_to_gnn
 
 
-def process_oxdraw_gui(
+def process_oxdraw(
     target_dir: Path,
     output_dir: Path,
     logger: logging.Logger,

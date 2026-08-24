@@ -124,7 +124,7 @@ For each script `N_[module_name].py`, verify:
 
 - Verify: Visualization generation delegation
 - Verify: Graph and matrix visualization
-- Verify: Delegates to `process_visualization_main()` from `visualization` module
+- Verify: Delegates to `process_visualization()` from `visualization` module
 
 **Step 9**: `src/9_advanced_viz.py` → `src/advanced_visualization/`
 
@@ -218,11 +218,11 @@ def generate_matrix_heatmap(data):
 ```python
 # ✅ CORRECT: Thin orchestrator delegating to module
 from utils.pipeline_template import create_standardized_pipeline_script
-from visualization import process_visualization_main
+from visualization import process_visualization
 
 run_script = create_standardized_pipeline_script(
     "8_visualization.py",
-    process_visualization_main,
+    process_visualization,
     "Matrix and network visualization processing",
 )
 
