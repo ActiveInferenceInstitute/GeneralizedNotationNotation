@@ -29,7 +29,9 @@
 - State-space variable editor with dimension and type controls
 - Ontology term mapping via editable data tables
 - Connection topology editor with visual HTML elements
+- Working add/remove-variable, add-mapping, connection-validation, and auto-layout controls
 - One-click GNN export with immediate file output
+- List- and DataFrame-backed table export with safe escaped previews
 - Headless fallback when Gradio is unavailable
 
 ---

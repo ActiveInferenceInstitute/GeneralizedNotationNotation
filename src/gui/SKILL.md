@@ -85,6 +85,11 @@ This module registers tools with the GNN MCP server (see `mcp.py`):
 
 - `get_gui_module_info`
 - `list_available_guis`
+- `oxdraw.check_installation`
+- `oxdraw.convert_from_mermaid`
+- `oxdraw.convert_to_mermaid`
+- `oxdraw.get_info`
+- `oxdraw.launch_editor`
 - `process_gui`
 
 ## References

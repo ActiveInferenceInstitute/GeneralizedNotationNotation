@@ -57,6 +57,37 @@ class TestCmdHandlers:
         result = _cmd_parse(args)
         assert result == 1  # Error exit code
 
+    def test_cmd_validate_warning_uses_exit_code_two(
+        self, tmp_path: Path, capsys: Any
+    ) -> None:
+        """Non-strict validation findings are warnings, not successes."""
+        from cli import _cmd_validate
+
+        malformed = tmp_path / "malformed.md"
+        malformed.write_text("# incomplete GNN\n", encoding="utf-8")
+        result = _cmd_validate(SimpleNamespace(file=malformed, strict=False, json=True))
+        assert result == 2
+        envelope = json.loads(capsys.readouterr().out)
+        assert envelope["status"] == "warning"
+
+    def test_cmd_parse_reports_parser_warnings_with_exit_code_two(
+        self, tmp_path: Path, capsys: Any
+    ) -> None:
+        """Partial parse diagnostics are preserved in JSON output and status."""
+        from cli import _cmd_parse
+
+        malformed = tmp_path / "malformed.md"
+        malformed.write_text(
+            "## StateSpaceBlock\nA[not-a-dimension,type=float]\n"
+            "## Connections\nA>missing\n",
+            encoding="utf-8",
+        )
+        result = _cmd_parse(SimpleNamespace(file=malformed, format="json", json=True))
+        assert result == 2
+        envelope = json.loads(capsys.readouterr().out)
+        assert envelope["status"] == "warning"
+        assert envelope["data"]["warnings"]
+
     def test_cmd_render_missing_file(self) -> None:
         from cli import _cmd_render
 
@@ -127,7 +158,7 @@ class TestCmdHandlers:
         assert isinstance(result, int)
         captured = capsys.readouterr()
         envelope = json.loads(captured.out)
-        assert envelope["status"] in ("success", "warning")
+        assert envelope["status"] in ("success", "warning", "error")
         assert "checks_passed" in envelope["data"]
 
     def test_cmd_serve_default(self) -> None:

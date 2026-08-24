@@ -46,6 +46,15 @@ def process_security(
         True if processing successful, False otherwise
     """
     step_logger = logging.getLogger("security")
+    security_level = str(kwargs.get("security_level", "standard")).strip().lower()
+    requested_block_on = kwargs.get("block_on")
+    requested_threshold = (
+        str(requested_block_on).strip().lower()
+        if requested_block_on is not None
+        else None
+    )
+    valid_levels = {"basic", "standard", "strict"}
+    valid_thresholds = {"low", "medium", "high"}
 
     try:
         log_step_start(step_logger, "Processing security")
@@ -61,13 +70,42 @@ def process_security(
             "security_checks": [],
             "vulnerabilities": [],
             "recommendations": [],
+            "policy": {
+                "security_level": security_level,
+                "enforced": security_level == "strict"
+                or requested_block_on is not None,
+                "requested_block_on": requested_threshold,
+                "block_on": requested_threshold
+                if requested_threshold in valid_thresholds
+                else (
+                    "high"
+                    if security_level == "strict" and requested_threshold is None
+                    else None
+                ),
+                "decision": "allow",
+                "blocked_findings": 0,
+            },
         }
 
+        if security_level not in valid_levels or (
+            requested_threshold is not None
+            and requested_threshold not in valid_thresholds
+        ):
+            results["success"] = False
+            results["policy"]["decision"] = "deny_invalid_policy"
+            results["errors"].append(
+                "Invalid security policy: security_level must be basic, standard, "
+                "or strict and block_on must be low, medium, or high"
+            )
+
         # Find GNN files
-        gnn_files = list(target_dir.glob("*.md"))
-        if not gnn_files:
+        gnn_files = sorted(target_dir.glob("*.md"))
+        if results["errors"]:
+            gnn_files = []
+        elif not gnn_files:
             step_logger.warning("No GNN files found for security processing")
             results["success"] = False
+            results["policy"]["decision"] = "deny_no_input"
             results["errors"].append("No GNN files found")
         else:
             results["processed_files"] = len(gnn_files)
@@ -96,7 +134,24 @@ def process_security(
                         "error_type": type(e).__name__,
                     }
                     results["errors"].append(error_info)
+                    results["success"] = False
+                    results["policy"]["decision"] = "deny_processing_error"
                     step_logger.error(f"Error processing {gnn_file}: {e}")
+
+        threshold_name = results["policy"]["block_on"]
+        if threshold_name is not None:
+            severity_rank = {"low": 1, "medium": 2, "high": 3}
+            threshold = severity_rank[str(threshold_name).lower()]
+            blocked = [
+                finding
+                for finding in results["vulnerabilities"]
+                if severity_rank.get(str(finding.get("severity", "low")), 1)
+                >= threshold
+            ]
+            results["policy"]["blocked_findings"] = len(blocked)
+            if blocked:
+                results["success"] = False
+                results["policy"]["decision"] = "deny"
 
         # Save detailed results
         results_file = results_dir / "security_results.json"
@@ -350,6 +405,16 @@ def _check_python_ast(file_path: Path, content: str) -> List[Dict[str, Any]]:
         ("marshal", "loads"): ("Arbitrary code execution via marshal.loads()", "high"),
     }
 
+    module_aliases: dict[str, str] = {}
+    call_aliases: dict[str, tuple[str, str]] = {}
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Import):
+            for name in node.names:
+                module_aliases[name.asname or name.name.split(".", 1)[0]] = name.name
+        elif isinstance(node, ast.ImportFrom) and node.module:
+            for name in node.names:
+                call_aliases[name.asname or name.name] = (node.module, name.name)
+
     for node in ast.walk(tree):
         if not isinstance(node, ast.Call):
             continue
@@ -373,15 +438,40 @@ def _check_python_ast(file_path: Path, content: str) -> List[Dict[str, Any]]:
                         "severity": severity,
                     }
                 )
+            elif (
+                func_name in call_aliases
+                and call_aliases[func_name] in DANGEROUS_METHODS
+            ):
+                obj_name, method_name = call_aliases[func_name]
+                desc, severity = DANGEROUS_METHODS[(obj_name, method_name)]
+                if _uses_shell_true(node) and obj_name == "subprocess":
+                    desc = "Subprocess execution with shell=True"
+                    severity = "high"
+                vulns.append(
+                    {
+                        "file_path": str(file_path),
+                        "file_name": file_path.name,
+                        "vulnerability_type": desc,
+                        "detection_method": "ast_analysis",
+                        "pattern": f"{obj_name}.{method_name}()",
+                        "line": line,
+                        "context": f"{func_name}() at line {line}",
+                        "severity": severity,
+                    }
+                )
 
         # Attribute calls: os.system(), pickle.loads(), etc.
         elif isinstance(node.func, ast.Attribute):
             method_name = node.func.attr
             if isinstance(node.func.value, ast.Name):
-                obj_name = node.func.value.id
+                local_name = node.func.value.id
+                obj_name = module_aliases.get(local_name, local_name)
                 key = (obj_name, method_name)
                 if key in DANGEROUS_METHODS:
                     desc, severity = DANGEROUS_METHODS[key]
+                    if _uses_shell_true(node) and obj_name == "subprocess":
+                        desc = "Subprocess execution with shell=True"
+                        severity = "high"
                     vulns.append(
                         {
                             "file_path": str(file_path),
@@ -396,6 +486,18 @@ def _check_python_ast(file_path: Path, content: str) -> List[Dict[str, Any]]:
                     )
 
     return vulns
+
+
+def _uses_shell_true(node: Any) -> bool:
+    """Return whether an AST call explicitly enables a command shell."""
+    import ast
+
+    return any(
+        keyword.arg == "shell"
+        and isinstance(keyword.value, ast.Constant)
+        and keyword.value.value is True
+        for keyword in node.keywords
+    )
 
 
 def generate_security_recommendations(
@@ -676,10 +778,25 @@ def scan_script_for_execution(
     When Julia is unavailable the scan degrades to an advisory textual sweep
     (``scanned=False``, findings are medium/informational only).
     """
-    _SEVERITY_RANK = {"info": 0, "low": 1, "medium": 2, "high": 3}
-    threshold = _SEVERITY_RANK.get(block_on, 3)
-
     script_path = Path(script_path)
+    _SEVERITY_RANK = {"info": 0, "low": 1, "medium": 2, "high": 3}
+    if block_on not in _SEVERITY_RANK:
+        finding = {
+            "file_path": str(script_path),
+            "file_name": script_path.name,
+            "vulnerability_type": "Invalid security threshold",
+            "detection_method": "policy_validation",
+            "severity": "high",
+            "context": f"Unsupported block_on value: {block_on}",
+        }
+        return {
+            "ok": False,
+            "blocked": [finding],
+            "findings": [finding],
+            "scanned": False,
+        }
+    threshold = _SEVERITY_RANK[block_on]
+
     try:
         content = script_path.read_text(encoding="utf-8", errors="replace")
     except OSError as exc:
@@ -703,7 +820,7 @@ def scan_script_for_execution(
     if script_path.suffix.lower() == ".py":
         findings = _check_python_ast(script_path, content)
         scanned = True
-    else:
+    elif script_path.suffix.lower() == ".jl":
         # Julia scripts: validate with Meta.parseall (blocking) when Julia is
         # available; fall back to an advisory textual sweep when it is not.
         parse_result = _julia_meta_parseall(content)
@@ -732,6 +849,19 @@ def scan_script_for_execution(
             # Suspicious patterns remain medium (advisory at the default
             # block_on="high" gate) even when the code parses cleanly.
             findings.extend(_julia_regex_sweep(script_path, content))
+    else:
+        scanned = False
+        findings = [
+            {
+                "file_path": str(script_path),
+                "file_name": script_path.name,
+                "vulnerability_type": "Unsupported executable script type",
+                "detection_method": "file_type_policy",
+                "line": 0,
+                "context": script_path.suffix or "no suffix",
+                "severity": "high",
+            }
+        ]
 
     blocked = [
         f

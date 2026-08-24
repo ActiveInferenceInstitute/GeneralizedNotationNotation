@@ -52,6 +52,13 @@ class TestAPIMCPTools:
         assert "total" in result
 
     @pytest.mark.unit
+    def test_list_jobs_rejects_invalid_limit(self) -> None:
+        """Invalid limits fail explicitly instead of slicing the registry oddly."""
+        result = api_mcp.gnn_list_jobs_mcp(limit=0)
+        assert result["status"] == "error"
+        assert "between 1 and 100" in result["message"]
+
+    @pytest.mark.unit
     def test_get_job_status_unknown_job(self) -> None:
         """An unknown job id returns an error with a helpful message."""
         result = api_mcp.gnn_get_job_status_mcp("no-such-job")
@@ -66,22 +73,59 @@ class TestAPIMCPTools:
         assert "message" in result
 
     @pytest.mark.unit
-    def test_submit_job_target_not_found(self, tmp_path: Any) -> None:
+    def test_submit_job_target_not_found(self) -> None:
         """A missing target directory is rejected with an error before job creation."""
-        missing = tmp_path / "no_such_input"
+        missing = Path("input") / "no_such_mcp_input"
         result = api_mcp.gnn_submit_job_mcp(str(missing))
         assert result["status"] == "error"
         assert "not found" in result["message"].lower()
 
     @pytest.mark.unit
     def test_register_mcp_tools_manifest(self) -> None:
-        """The static manifest should include the standard GNN job tools."""
+        """The serialized manifest should match the live API tool surface."""
         manifest = api_mcp.register_mcp_tools()
         assert manifest["module"] == "api"
         names = {t["name"] for t in manifest["tools"]}
-        assert "gnn_submit_job" in names
-        assert "gnn_job_status" in names
-        assert "gnn_list_tools" in names
+        assert names == {
+            "gnn_submit_job",
+            "gnn_get_job_status",
+            "gnn_cancel_job",
+            "gnn_list_jobs",
+            "gnn_get_pipeline_tools",
+        }
+        submit = next(t for t in manifest["tools"] if t["name"] == "gnn_submit_job")
+        assert submit["inputSchema"]["required"] == ["target_dir"]
+
+    @pytest.mark.unit
+    def test_manifest_and_live_registry_are_identical_and_executable(
+        self, tmp_path: Path
+    ) -> None:
+        """Every advertised API MCP tool registers and returns an explicit result."""
+        from mcp.mcp import MCP
+
+        instance = MCP(enable_caching=False, enable_rate_limiting=False)
+        try:
+            api_mcp.register_tools(instance)
+            manifest = api_mcp.register_mcp_tools()
+            manifest_by_name = {tool["name"]: tool for tool in manifest["tools"]}
+            assert set(instance.tools) == set(manifest_by_name)
+            for name, tool in instance.tools.items():
+                assert tool.schema == manifest_by_name[name]["inputSchema"]
+
+            missing_target = tmp_path / "missing"
+            calls: dict[str, dict[str, Any]] = {
+                "gnn_submit_job": {"target_dir": str(missing_target)},
+                "gnn_get_job_status": {"job_id": "missing"},
+                "gnn_cancel_job": {"job_id": "missing"},
+                "gnn_list_jobs": {"limit": 1},
+                "gnn_get_pipeline_tools": {},
+            }
+            for name, params in calls.items():
+                result = instance.execute_tool(name, params)
+                assert isinstance(result, dict)
+                assert result["status"] in {"success", "error"}
+        finally:
+            instance.shutdown()
 
     @pytest.mark.unit
     def test_save_mcp_manifest_writes_json(self, tmp_path: Any) -> None:

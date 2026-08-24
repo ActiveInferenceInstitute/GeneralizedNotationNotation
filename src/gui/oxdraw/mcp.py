@@ -4,14 +4,17 @@ MCP Tools for oxdraw Integration
 Registers Model Context Protocol tools for visual GNN model editing.
 """
 
+import logging
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 
 from .mermaid_converter import convert_gnn_file_to_mermaid
 from .mermaid_parser import convert_mermaid_file_to_gnn
 
 # Import core functions
 from .processor import check_oxdraw_installed, get_module_info, launch_oxdraw_editor
+
+logger = logging.getLogger(__name__)
 
 
 def register_mcp_tools() -> Any:
@@ -143,10 +146,24 @@ def register_tools(mcp_instance: Any) -> None:
             tool["handler"],
             tool.get("input_schema", {}),
             tool.get("description", ""),
+            module=__package__,
+            category="gui",
         )
+    logger.info("oxdraw MCP tools registered (5 tools).")
 
 
-def tool_convert_to_mermaid(args: Dict[str, Any]) -> Dict[str, Any]:
+def _merge_args(
+    args: Optional[Dict[str, Any]], kwargs: Dict[str, Any]
+) -> Dict[str, Any]:
+    """Support older dict calls and MCP keyword-argument execution."""
+    merged = dict(args or {})
+    merged.update(kwargs)
+    return merged
+
+
+def tool_convert_to_mermaid(
+    args: Optional[Dict[str, Any]] = None, **kwargs: Any
+) -> Dict[str, Any]:
     """
     MCP tool handler: Convert GNN to Mermaid.
 
@@ -157,6 +174,7 @@ def tool_convert_to_mermaid(args: Dict[str, Any]) -> Dict[str, Any]:
         Tool result dictionary
     """
     try:
+        args = _merge_args(args, kwargs)
         gnn_file_path = Path(args["gnn_file_path"])
         output_arg = args.get("output_path")
         output_path = Path(output_arg) if isinstance(output_arg, (str, Path)) else None
@@ -181,7 +199,9 @@ def tool_convert_to_mermaid(args: Dict[str, Any]) -> Dict[str, Any]:
         return {"success": False, "error": str(e)}
 
 
-def tool_convert_from_mermaid(args: Dict[str, Any]) -> Dict[str, Any]:
+def tool_convert_from_mermaid(
+    args: Optional[Dict[str, Any]] = None, **kwargs: Any
+) -> Dict[str, Any]:
     """
     MCP tool handler: Convert Mermaid to GNN.
 
@@ -192,6 +212,7 @@ def tool_convert_from_mermaid(args: Dict[str, Any]) -> Dict[str, Any]:
         Tool result dictionary
     """
     try:
+        args = _merge_args(args, kwargs)
         mermaid_file_path = Path(args["mermaid_file_path"])
         output_arg = args.get("output_path")
         output_path = Path(output_arg) if isinstance(output_arg, (str, Path)) else None
@@ -220,7 +241,9 @@ def tool_convert_from_mermaid(args: Dict[str, Any]) -> Dict[str, Any]:
         return {"success": False, "error": str(e)}
 
 
-def tool_launch_editor(args: Dict[str, Any]) -> Dict[str, Any]:
+def tool_launch_editor(
+    args: Optional[Dict[str, Any]] = None, **kwargs: Any
+) -> Dict[str, Any]:
     """
     MCP tool handler: Launch oxdraw editor.
 
@@ -231,6 +254,7 @@ def tool_launch_editor(args: Dict[str, Any]) -> Dict[str, Any]:
         Tool result dictionary
     """
     try:
+        args = _merge_args(args, kwargs)
         mermaid_file_path = Path(args["mermaid_file_path"])
         port = args.get("port", 5151)
         host = args.get("host", "127.0.0.1")
@@ -264,7 +288,9 @@ def tool_launch_editor(args: Dict[str, Any]) -> Dict[str, Any]:
         return {"success": False, "error": str(e)}
 
 
-def tool_check_installation(args: Dict[str, Any]) -> Dict[str, Any]:
+def tool_check_installation(
+    args: Optional[Dict[str, Any]] = None, **kwargs: Any
+) -> Dict[str, Any]:
     """
     MCP tool handler: Check oxdraw installation.
 
@@ -274,6 +300,7 @@ def tool_check_installation(args: Dict[str, Any]) -> Dict[str, Any]:
     Returns:
         Tool result dictionary
     """
+    _merge_args(args, kwargs)
     installed = check_oxdraw_installed()
 
     return {
@@ -283,7 +310,9 @@ def tool_check_installation(args: Dict[str, Any]) -> Dict[str, Any]:
     }
 
 
-def tool_get_info(args: Dict[str, Any]) -> Dict[str, Any]:
+def tool_get_info(
+    args: Optional[Dict[str, Any]] = None, **kwargs: Any
+) -> Dict[str, Any]:
     """
     MCP tool handler: Get module info.
 
@@ -293,6 +322,7 @@ def tool_get_info(args: Dict[str, Any]) -> Dict[str, Any]:
     Returns:
         Tool result dictionary
     """
+    _merge_args(args, kwargs)
     info = get_module_info()
 
     return {"success": True, **info}

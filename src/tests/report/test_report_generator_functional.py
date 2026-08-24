@@ -101,9 +101,7 @@ class TestGenerateCustomReport:
     def test_custom_html_report(self, pipeline_output: Path) -> None:
         """A custom HTML report should be generated for a pipeline dir."""
         out = pipeline_output / "custom_out"
-        ok = generate_custom_report(
-            pipeline_output, out, _logger, format_type="html"
-        )
+        ok = generate_custom_report(pipeline_output, out, _logger, format_type="html")
         assert ok is True
         assert (out / "comprehensive_analysis_report.html").exists()
 
@@ -124,9 +122,7 @@ class TestGenerateCustomReport:
     def test_custom_report_unsupported_format(self, pipeline_output: Path) -> None:
         """An unsupported format should return False without raising."""
         out = pipeline_output / "custom_out3"
-        ok = generate_custom_report(
-            pipeline_output, out, _logger, format_type="xml"
-        )
+        ok = generate_custom_report(pipeline_output, out, _logger, format_type="xml")
         assert ok is False
 
 
@@ -183,3 +179,48 @@ class TestGenerateComprehensiveReport:
         assert ok is True
         assert (out / "comprehensive_analysis_report.html").exists()
         assert (out / "report_summary.json").exists()
+
+
+@pytest.mark.unit
+def test_collection_uses_execution_receipt_not_artifact_presence(
+    tmp_path: Path,
+) -> None:
+    from report.analyzer import collect_pipeline_data
+
+    step_dir = tmp_path / "0_template_output"
+    step_dir.mkdir()
+    (step_dir / "artifact.json").write_text("{}", encoding="utf-8")
+    report_dir = tmp_path / "23_report_output"
+    report_dir.mkdir()
+    summary_dir = tmp_path / "00_pipeline_summary"
+    summary_dir.mkdir()
+    (summary_dir / "pipeline_execution_summary.json").write_text(
+        json.dumps(
+            {
+                "end_time": "2026-01-02T03:04:05",
+                "overall_status": "FAILED",
+                "total_duration_seconds": 2.5,
+                "steps": [
+                    {
+                        "script_name": "0_template.py",
+                        "status": "FAILED",
+                    }
+                ],
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    first = collect_pipeline_data(tmp_path, _logger)
+    second = collect_pipeline_data(tmp_path, _logger)
+
+    assert first == second
+    assert first["report_generation_time"] == "2026-01-02T03:04:05"
+    assert first["report_timestamp_source"] == "pipeline_execution_summary"
+    assert first["summary"]["status_source"] == "pipeline_execution_summary"
+    assert first["summary"]["success_rate"] == 0.0
+    assert first["health_score_basis"] == "pipeline_execution_summary"
+    assert first["steps"]["0_template_output"]["execution_status"] == "FAILED"
+    assert first["steps"]["0_template_output"]["status"] == "failed"
+    assert "estimated_file_count" not in first["steps"]["23_report_output"]
+    assert "24_intelligent_analysis_output" in first["steps"]

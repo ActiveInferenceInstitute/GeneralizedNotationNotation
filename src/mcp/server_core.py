@@ -124,6 +124,10 @@ class MCPServer:
             method = request["method"]
             params = request.get("params", {})
             request_id = request.get("id")
+            if params is None:
+                params = {}
+            if not isinstance(params, dict):
+                raise MCPInvalidParamsError("JSON-RPC params must be an object")
 
             if method in self.request_handlers:
                 result = self.request_handlers[method](params)
@@ -142,7 +146,10 @@ class MCPServer:
 
         except MCPError as e:
             return self._create_error_response(
-                e.code, type(e).__name__, str(e), request.get("id")
+                e.code,
+                str(e),
+                e.data,
+                request.get("id"),
             )
         except Exception as e:
             logger.error(f"Unexpected error handling request: {e}")

@@ -143,7 +143,6 @@ def process_report(
         True if processing succeeded, False otherwise
     """
     import json
-    from datetime import datetime
     from pathlib import Path
 
     if logger is None:
@@ -261,6 +260,7 @@ def process_report(
             html_validation_status = "no_html_reports"
 
         # ── v1.5.0a: Generate PIPELINE_REPORT.md ──
+        pipeline_data: dict[str, Any] = {}
         try:
             from .pipeline_report import generate_pipeline_report
 
@@ -290,7 +290,10 @@ def process_report(
 
         # Create processing summary
         summary: dict[str, Any] = {
-            "timestamp": datetime.now().isoformat(),
+            "timestamp": pipeline_data.get("report_generation_time", "unavailable"),
+            "timestamp_source": pipeline_data.get(
+                "report_timestamp_source", "unavailable"
+            ),
             "target_dir": str(target_dir),
             "output_dir": str(output_dir),
             "pipeline_output_dir": str(pipeline_output_dir),

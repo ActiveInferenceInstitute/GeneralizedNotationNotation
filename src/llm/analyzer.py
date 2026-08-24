@@ -22,6 +22,7 @@ async def _analyze_gnn_file_with_llm(
     file_path: Path,
     verbose: bool = False,
     ollama_model: Optional[str] = None,
+    attempt_llm: bool = True,
 ) -> Dict[str, Any]:
     """
     Analyze a GNN file using LLM-enhanced techniques.
@@ -30,6 +31,8 @@ async def _analyze_gnn_file_with_llm(
         file_path: Path to the GNN file
         verbose: Enable verbose output
         ollama_model: When set (e.g. pipeline-selected tag), pass to summarization on Ollama.
+        attempt_llm: Whether a live provider call should be attempted. Set false
+            when upstream provider initialization has already failed.
 
     Returns:
         Dictionary containing analysis results
@@ -64,41 +67,62 @@ async def _analyze_gnn_file_with_llm(
             "complexity_metrics": complexity_metrics,
             "patterns": patterns,
             "analysis_timestamp": datetime.now().isoformat(),
+            "analysis": "Deterministic structural analysis complete",
+            "analysis_method": "structural",
+            "llm_summary_status": "not_attempted",
         }
 
         # Attempt LLM-based summary using multi-provider system (with Ollama recovery)
-        try:
-            # Use async-aware API when available
-            ops = LLMOperations()
-            # ops.summarize_gnn may return a coroutine if async available; await if so
-            summary_candidate = ops.summarize_gnn(
-                content, max_length=500, ollama_model=ollama_model
+        if not attempt_llm:
+            result["llm_summary_status"] = "unavailable"
+            result["llm_summary_error"] = (
+                "Live LLM analysis was skipped because no provider initialized"
             )
-            if hasattr(summary_candidate, "__await__"):
-                summary_text = await summary_candidate
-            else:
-                summary_text = summary_candidate
-            result["llm_summary"] = summary_text
-        except Exception as e:
-            # Recovery: if a provider class is patched (tests), try using it directly
+        else:
             try:
-                provider = OpenAIProvider()  # tests may monkeypatch this symbol
-                candidate = provider.analyze(content, "summary")
-                if hasattr(candidate, "__await__"):
-                    summary_text = await candidate
-                else:
-                    summary_text = candidate
-                result["llm_summary"] = summary_text
-            except Exception:
-                # Do not fail the analysis pipeline if LLM is unavailable
-                logger.warning(
-                    f"LLM summary generation failed for {file_path.name}: {e}"
+                # Use async-aware API when available
+                ops = LLMOperations()
+                summary_candidate = ops.summarize_gnn(
+                    content, max_length=500, ollama_model=ollama_model
                 )
-                result["llm_summary_error"] = str(e)
+                if hasattr(summary_candidate, "__await__"):
+                    summary_text = await summary_candidate
+                else:
+                    summary_text = summary_candidate
+                if not isinstance(summary_text, str) or not summary_text.strip():
+                    raise RuntimeError("LLM provider returned an empty summary")
+                if summary_text.lstrip().lower().startswith("error:"):
+                    raise RuntimeError(summary_text)
+                result["llm_summary"] = summary_text
+                result["llm_summary_status"] = "available"
+                result["analysis_method"] = "structural_with_llm_summary"
+                result["analysis"] = "Structural and LLM-assisted analysis complete"
+            except Exception as e:
+                # Recovery: tests and earlier integrations may patch this provider.
+                try:
+                    provider = OpenAIProvider()
+                    candidate = provider.analyze(content, "summary")
+                    if hasattr(candidate, "__await__"):
+                        summary_text = await candidate
+                    else:
+                        summary_text = candidate
+                    if not isinstance(summary_text, str) or not summary_text.strip():
+                        raise RuntimeError(
+                            "fallback provider returned an empty summary"
+                        )
+                    result["llm_summary"] = summary_text
+                    result["llm_summary_status"] = "available"
+                    result["analysis_method"] = "structural_with_llm_summary"
+                    result["analysis"] = "Structural and LLM-assisted analysis complete"
+                except Exception:
+                    # Do not fail structural analysis if every provider is unavailable.
+                    logger.warning(
+                        f"LLM summary generation failed for {file_path.name}: {e}"
+                    )
+                    result["llm_summary_error"] = str(e)
+                    result["llm_summary_status"] = "unavailable"
 
         result.setdefault("status", "SUCCESS")
-        # Include simple analysis string for tests that check key presence
-        result.setdefault("analysis", "LLM-assisted analysis complete")
         # Provide minimal documentation block expected by tests
         result.setdefault(
             "documentation", {"file_path": str(file_path), "model_overview": ""}
@@ -113,6 +137,7 @@ def analyze_gnn_file_with_llm(
     file_path: Path,
     verbose: bool = False,
     ollama_model: Optional[str] = None,
+    attempt_llm: bool = True,
 ) -> Union[Dict[str, Any], Coroutine[Any, Any, Dict[str, Any]]]:
     """
     Compatibility wrapper for the async analyzer.
@@ -120,7 +145,9 @@ def analyze_gnn_file_with_llm(
     - If called from an active event loop, returns a coroutine which can be awaited.
     - If called synchronously, runs the async analyzer to completion and returns its result.
     """
-    coro = _analyze_gnn_file_with_llm(file_path, verbose, ollama_model)
+    coro = _analyze_gnn_file_with_llm(
+        file_path, verbose, ollama_model, attempt_llm=attempt_llm
+    )
     try:
         # If an event loop is running, return the coroutine for the caller to await
         asyncio.get_running_loop()

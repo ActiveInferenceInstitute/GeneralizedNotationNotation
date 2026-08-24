@@ -12,7 +12,6 @@ import json
 import logging
 import os
 from dataclasses import dataclass, field
-from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Literal, Optional, Tuple
 
@@ -21,6 +20,30 @@ from utils.pipeline_template import log_step_error, log_step_start, log_step_suc
 
 # Constrained type for step flag severity.
 FlagType = Literal["none", "yellow", "red", "green"]
+
+
+def _evidence_timestamp(summary_data: Dict[str, Any]) -> str:
+    """Select a stable timestamp from the analyzed execution receipt."""
+    for key in ("end_time", "start_time", "timestamp"):
+        value = summary_data.get(key)
+        if isinstance(value, str) and value:
+            return value
+    return "unavailable"
+
+
+def _is_complete_llm_report(content: str) -> bool:
+    """Require the complete requested report topology before labeling LLM output."""
+    required_headings = (
+        "### Executive Summary",
+        "### Red Flags (Critical Issues)",
+        "### Yellow Flags (Warnings)",
+        "### Root Cause Analysis",
+        "### Optimization Opportunities",
+        "### Action Items",
+    )
+    return bool(content.strip()) and all(
+        heading in content for heading in required_headings
+    )
 
 
 @dataclass
@@ -66,7 +89,8 @@ def analyze_pipeline_summary(summary_data: Dict[str, Any]) -> Dict[str, Any]:
 
     # Extract failures
     for step in steps:
-        if step.get("status") == "FAILED":
+        status = str(step.get("status", "UNKNOWN")).upper()
+        if status == "FAILED":
             analysis["failures"].append(
                 {
                     "step": step.get("script_name"),
@@ -77,7 +101,7 @@ def analyze_pipeline_summary(summary_data: Dict[str, Any]) -> Dict[str, Any]:
                     "exit_code": step.get("exit_code", -1),
                 }
             )
-        elif "WARNING" in step.get("status", ""):
+        elif "WARNING" in status:
             analysis["warnings"].append(
                 {
                     "step": step.get("script_name"),
@@ -98,7 +122,10 @@ def analyze_pipeline_summary(summary_data: Dict[str, Any]) -> Dict[str, Any]:
     # Calculate health score (0-100)
     total_steps = analysis["step_count"]
     if total_steps > 0:
-        success_ratio = (total_steps - len(analysis["failures"])) / total_steps
+        successful_steps = sum(
+            str(step.get("status", "")).upper().startswith("SUCCESS") for step in steps
+        )
+        success_ratio = successful_steps / total_steps
         warning_penalty = min(len(analysis["warnings"]) * 0.05, 0.2)
         analysis["health_score"] = max(
             0, min(100, (success_ratio - warning_penalty) * 100)
@@ -473,7 +500,7 @@ async def _run_llm_analysis(
     flags_by_type: Dict[str, List],
     logger: logging.Logger,
     analysis_model: Optional[str] = None,
-) -> str:
+) -> Tuple[str, str]:
     """
     Run LLM-powered analysis on pipeline context.
 
@@ -485,7 +512,7 @@ async def _run_llm_analysis(
         analysis_model: Optional model tag (CLI ``--analysis-model``); else ``OLLAMA_MODEL``, else ``llm.defaults.DEFAULT_OLLAMA_MODEL``.
 
     Returns:
-        LLM-generated analysis report as markdown string
+        Analysis markdown and its source (``llm`` or ``rule_based``).
     """
     try:
         from llm.llm_processor import initialize_global_processor
@@ -494,10 +521,16 @@ async def _run_llm_analysis(
         processor = await initialize_global_processor()
     except Exception as e:
         logger.warning(f"Failed to initialize LLM processor: {e}")
-        return _generate_rule_based_summary(context, step_analyses, flags_by_type)
+        return (
+            _generate_rule_based_summary(context, step_analyses, flags_by_type),
+            "rule_based",
+        )
 
     if not processor:
-        return _generate_rule_based_summary(context, step_analyses, flags_by_type)
+        return (
+            _generate_rule_based_summary(context, step_analyses, flags_by_type),
+            "rule_based",
+        )
 
     # Construct comprehensive prompt
     status_emoji = (
@@ -586,17 +619,28 @@ Please provide analysis in EXACTLY this format:
         )
         content = response.content.strip()
 
-        # Fallback if the small model hallucinated a python script (e.g. smollm2 135m)
-        if "```python" in content.lower() or "def " in content:
+        # Reject code and incomplete prose rather than publishing it as a
+        # complete AI analysis.
+        if (
+            "```python" in content.lower()
+            or "def " in content
+            or not _is_complete_llm_report(content)
+        ):
             logger.warning(
-                "LLM hallucinated python code instead of prose. Using robust rule-based summary."
+                "LLM output did not satisfy the report contract; using rule-based summary."
             )
-            return _generate_rule_based_summary(context, step_analyses, flags_by_type)
+            return (
+                _generate_rule_based_summary(context, step_analyses, flags_by_type),
+                "rule_based",
+            )
 
-        return content
+        return content, "llm"
     except Exception as e:
         logger.error(f"Error calling LLM: {e}")
-        return _generate_rule_based_summary(context, step_analyses, flags_by_type)
+        return (
+            _generate_rule_based_summary(context, step_analyses, flags_by_type),
+            "rule_based",
+        )
 
 
 def _generate_rule_based_summary(
@@ -653,6 +697,31 @@ def _generate_rule_based_summary(
         parts.append("None - No warnings detected.\n")
     parts.append("\n")
 
+    # Root Cause Analysis
+    parts.append("### Root Cause Analysis\n")
+    failures = context.get("failures", [])
+    if failures:
+        for failure in failures[:5]:
+            step = failure.get("step", "unknown step")
+            error = str(failure.get("error", "No error captured")).strip()
+            parts.append(f"- **{step}**: {error[:300]}\n")
+    else:
+        parts.append("No failed steps were recorded in the execution receipt.\n")
+    parts.append("\n")
+
+    # Optimization Opportunities
+    parts.append("### Optimization Opportunities\n")
+    slow_steps = [step for step in step_analyses if step.duration_seconds > 60.0]
+    if slow_steps:
+        for step in slow_steps[:5]:
+            parts.append(
+                f"- Profile **{step.script_name}**, recorded at "
+                f"{step.duration_seconds:.2f}s, before selecting an optimization.\n"
+            )
+    else:
+        parts.append("No step exceeded the 60-second review threshold.\n")
+    parts.append("\n")
+
     # Action Items
     parts.append("### Action Items\n")
     if red_flags:
@@ -682,30 +751,42 @@ def generate_recovery_plan(context: Dict[str, Any]) -> List[str]:
 
     failures = context.get("failures", [])
     for failure in failures:
-        script = failure.get("script_name", "")
-        error_msg = str(failure.get("error", "")).lower()
+        script = (
+            failure.get("script_name")
+            or failure.get("step")
+            or failure.get("step_name")
+            or "unknown step"
+        )
+        error_msg = str(
+            failure.get("error") or failure.get("error_output") or ""
+        ).lower()
         # Heuristics based on observed failure modes
         if "timeout" in error_msg:
             plan.append(
-                f"Execute `{script}` with an extended timeout: `uv run python src/{script} --timeout 600`"
+                f"Review the recorded timeout for `{script}` and its documented "
+                "timeout configuration before retrying."
             )
         elif "memory" in error_msg or "allocation" in error_msg:
             plan.append(
-                f"Execute `{script}` with strict memory bounds and GC enabled: `uv run python src/{script} --gc-frequent`"
+                f"Profile the recorded allocation failure in `{script}` and reduce "
+                "the verified workload or memory use before retrying."
             )
         elif "llm" in script.lower() or "connection" in error_msg:
             plan.append(
-                f"Fallback override: Ensure provider is running. Try: `uv run python src/{script} --verbose`"
+                f"Verify the configured provider for `{script}` is reachable, then "
+                "retry using only documented arguments."
             )
         else:
             plan.append(
-                f"Retry `{script}` in isolated verbose mode: `uv run python src/{script} --verbose`"
+                f"Inspect the captured output for `{script}` and validate its "
+                "prerequisites before retrying."
             )
 
     if health < 70 and len(failures) > 2:
         plan.insert(
             0,
-            "CRITICAL: Multiple cascading failures detected. Recommend executing `uv run python src/main.py --target-dir input/gnn_files --verbose` to trace.",
+            "CRITICAL: Multiple failures were recorded. Start with the first "
+            "failure because later failures may be consequential.",
         )
 
     return plan
@@ -720,6 +801,7 @@ def generate_executive_report(
     flags_by_type: Dict[str, List],
     llm_analysis: Optional[str] = None,
     summary_data: Optional[Dict[str, Any]] = None,
+    analysis_source: str = "rule_based",
 ) -> str:
     """
     Generate a comprehensive executive report with per-step analysis.
@@ -748,7 +830,9 @@ def generate_executive_report(
     green_count = len(flags_by_type.get("green", []))
 
     report_parts.append("# Pipeline Intelligent Analysis Report\n")
-    report_parts.append(f"**Generated**: {datetime.now().isoformat()}\n")
+    report_parts.append(
+        f"**Evidence As Of**: {_evidence_timestamp(summary_data or {})}\n"
+    )
     report_parts.append(f"**Status**: {status_emoji} {status}\n")
     report_parts.append(f"**Health Score**: {analysis['health_score']:.1f}/100\n")
     report_parts.append("")
@@ -768,11 +852,7 @@ def generate_executive_report(
     report_parts.append("")
 
     # AI-Powered Analysis (if available)
-    if (
-        llm_analysis
-        and "Unavailable" not in llm_analysis
-        and "Error" not in llm_analysis
-    ):
+    if llm_analysis and analysis_source == "llm":
         report_parts.append("## AI-Powered Analysis\n")
         report_parts.append(llm_analysis)
         report_parts.append("")
@@ -875,11 +955,11 @@ def generate_executive_report(
 
     # Autonomous Execution Recovery Section
     if summary_data:
-        recovery_plan = generate_recovery_plan(summary_data)
+        recovery_plan = generate_recovery_plan(analysis)
         if recovery_plan:
             report_parts.append("## 🛡️ Execution Recovery Plan\n")
             report_parts.append(
-                "The following heuristic terminal commands are recommended to forcibly recover failed components:\n"
+                "The following evidence-based recovery checks are recommended:\n"
             )
             for plan_item in recovery_plan:
                 report_parts.append(f"- {plan_item}")
@@ -968,13 +1048,12 @@ def process_intelligent_analysis(
 
         partial_report = (
             "# Pipeline Intelligent Analysis Report\n\n"
-            f"**Generated**: {datetime.now().isoformat()}\n\n"
+            "**Evidence As Of**: unavailable\n\n"
             "## Note\n\n"
             "The pipeline execution summary was not available at analysis time. "
             "This typically occurs because this step runs before the pipeline "
-            "writes its final summary. Re-run this step standalone after pipeline "
-            "completion for a full analysis:\n\n"
-            "```bash\npython src/24_intelligent_analysis.py\n```\n"
+            "writes its final summary. Run this analysis again after a completed "
+            "pipeline execution summary is available.\n"
         )
         report_path = analysis_output_dir / "intelligent_analysis_report.md"
         with open(report_path, "w") as f:
@@ -991,6 +1070,12 @@ def process_intelligent_analysis(
     except Exception as e:
         log_step_error(logger, f"Failed to load pipeline summary: {e}")
         return False
+    evidence_timestamp = _evidence_timestamp(summary_data)
+    evidence_timestamp_source = (
+        "pipeline_execution_summary"
+        if evidence_timestamp != "unavailable"
+        else "unavailable"
+    )
 
     # 2. Perform Analysis
     logger.info("Analyzing pipeline execution data...")
@@ -1026,6 +1111,7 @@ def process_intelligent_analysis(
 
     # 7. Run LLM Analysis
     llm_analysis = None
+    analysis_source = "rule_based"
     if kwargs.get("skip_llm"):
         logger.info("LLM analysis skipped by configuration; using rule-based summary")
         llm_analysis = _generate_rule_based_summary(
@@ -1033,7 +1119,7 @@ def process_intelligent_analysis(
         )
     else:
         try:
-            llm_analysis = asyncio.run(
+            llm_analysis, analysis_source = asyncio.run(
                 _run_llm_analysis(
                     analysis,
                     step_analyses,
@@ -1042,7 +1128,7 @@ def process_intelligent_analysis(
                     analysis_model=kwargs.get("analysis_model"),
                 )
             )
-            logger.info("LLM analysis completed")
+            logger.info("Analysis summary completed using %s evidence", analysis_source)
         except Exception as e:
             logger.warning(f"LLM analysis skipped: {e}")
             llm_analysis = _generate_rule_based_summary(
@@ -1059,6 +1145,7 @@ def process_intelligent_analysis(
         flags_by_type,
         llm_analysis,
         summary_data,
+        analysis_source=analysis_source,
     )
 
     # 9. Save Outputs
@@ -1101,7 +1188,8 @@ def process_intelligent_analysis(
         with open(analysis_data_path, "w") as f:
             json.dump(
                 {
-                    "timestamp": datetime.now().isoformat(),
+                    "timestamp": evidence_timestamp,
+                    "timestamp_source": evidence_timestamp_source,
                     "analysis": analysis,
                     "step_analyses": step_analyses_dict,
                     "flags_summary": {
@@ -1113,8 +1201,8 @@ def process_intelligent_analysis(
                     "failures": failures,
                     "recommendations": recommendations,
                     "recovery_plan": recovery_plan,
-                    "llm_analysis_available": llm_analysis is not None
-                    and "Unavailable" not in llm_analysis,
+                    "analysis_source": analysis_source,
+                    "llm_analysis_available": analysis_source == "llm",
                 },
                 f,
                 indent=2,
@@ -1129,7 +1217,9 @@ def process_intelligent_analysis(
         with open(summary_output_path, "w") as f:
             json.dump(
                 {
-                    "timestamp": datetime.now().isoformat(),
+                    "timestamp": evidence_timestamp,
+                    "timestamp_source": evidence_timestamp_source,
+                    "analysis_source": analysis_source,
                     "overall_status": analysis["overall_status"],
                     "health_score": analysis["health_score"],
                     "failure_count": len(failures),

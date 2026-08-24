@@ -1155,10 +1155,10 @@ def _generate_stigmergic_activeinference_script(model_info: Dict[str, Any]) -> s
     """Generate a native stigmergic multi-agent ActiveInference.jl script.
 
     One hand-rolled Active Inference simulation per agent (per-agent state
-    spaces — no joint expansion) coupled through a shared ``env_signal``
-    trace: each agent deposits signal at its MAP position each timestep and
-    the shared trace decays by ``signal_decay``. Agents never communicate
-    directly; coordination emerges from the shared environment.
+    spaces — no joint expansion), followed by a post-hoc shared
+    ``env_signal`` trace: each agent deposits signal at its MAP position each
+    timestep and the shared trace decays by ``signal_decay``. The trace does
+    not yet condition inference or action selection.
 
     Results are written to ``simulation_results.json`` with per-agent
     beliefs/actions/EFE, the ``env_signal_trace``, and
@@ -1198,10 +1198,10 @@ def _generate_stigmergic_activeinference_script(model_info: Dict[str, Any]) -> s
 # Generated from GNN Model: {model_name}
 #
 # Native per-agent compilation (roadmap MAJ-03): one Active Inference agent
-# per declared agent group (no joint state-space expansion), coupled through
-# the shared environment: each agent deposits signal at its MAP position each
-# timestep, the shared trace decays by signal_decay, and the resulting
-# env_signal_trace is written alongside per-agent beliefs/actions/EFE.
+# per declared agent group (no joint state-space expansion). After all
+# independent runs, env_signal is reconstructed from MAP positions with
+# deposit + decay and written alongside per-agent beliefs/actions/EFE. It is
+# not inferred as a latent and does not condition action selection.
 
 using Pkg
 using ActiveInference
@@ -1474,7 +1474,10 @@ results = Dict(
     "env_coupling" => Dict(
         "variable" => ENV_VARIABLE,
         "initial" => ENV_INITIAL,
-        "decay" => ENV_DECAY
+        "decay" => ENV_DECAY,
+        "mode" => "post_hoc_deposit_decay_trace",
+        "latent_inference" => false,
+        "action_selection_conditioned" => false
     ),
     "env_signal_trace" => env_trace,
     "beliefs_by_agent" => Dict(agent => per_agent[agent]["beliefs"] for agent in AGENTS),

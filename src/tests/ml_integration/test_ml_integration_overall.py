@@ -58,6 +58,9 @@ StateSpaceBlock {
 
         model_info = data["models_trained"][0]
         assert model_info["source"] == "ml_model.md"
+        assert model_info["type"] == "structural_analysis"
+        assert model_info["validation_status"] == "not_applicable"
+        assert "accuracy" not in model_info
 
     def test_process_ml_integration_no_files(self, safe_filesystem: Any) -> Any:
         """Test with empty input."""

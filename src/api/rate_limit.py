@@ -22,8 +22,9 @@ from collections.abc import Awaitable, Callable
 from typing import Dict, List
 
 from fastapi import Request
-from fastapi.responses import JSONResponse
 from starlette.responses import Response
+
+from api.responses import error_response
 
 logger = logging.getLogger(__name__)
 
@@ -96,10 +97,12 @@ async def rate_limit_middleware(
     API-key auth is disabled, preventing DoS on the local research surface.
     """
     if is_rate_limited(get_client_id(request)):
-        return JSONResponse(
-            status_code=429,
-            content={"detail": "Rate limit exceeded. Try again later."},
+        return error_response(
+            429,
+            "rate_limited",
+            "Rate limit exceeded. Try again later.",
             headers={"Retry-After": str(int(RATE_LIMIT_WINDOW_SECONDS))},
+            path=request.url.path,
         )
     return await call_next(request)
 

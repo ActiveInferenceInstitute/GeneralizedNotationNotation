@@ -8,6 +8,7 @@ free energy analysis, policy convergence, state distributions, and cross-framewo
 comparison.
 """
 
+import json
 import sys
 from pathlib import Path
 from typing import Any
@@ -304,6 +305,66 @@ class TestExtractJaxData:
         """Should handle empty execution result without error."""
         data = extract_jax_data({})
         assert isinstance(data, dict)
+
+    def _kronecker_payload(self) -> dict[str, Any]:
+        """A minimal jax_kronecker_factorized_v1 payload with two factors."""
+        return {
+            "schema_version": "jax_kronecker_factorized_v1",
+            "model_kind": "kronecker",
+            "factors": ["loc", "scale"],
+            "beliefs_by_factor": {
+                "loc": [[0.6, 0.4], [0.7, 0.3]],
+                "scale": [[0.5, 0.5], [0.2, 0.8]],
+            },
+            "true_states_by_factor": {"loc": [0, 1], "scale": [1, 0]},
+            "observations_by_factor": {"loc": [0, 1], "scale": [1, 1]},
+            "actions_by_factor": {"loc": [0, 0], "scale": [1, 1]},
+            "efe_per_factor": {"loc": [1.0, 2.0], "scale": [0.5, 0.5]},
+            "policy_by_factor": {"loc": [0.5, 0.5], "scale": [1.0, 0.0]},
+            "num_timesteps": 2,
+            "num_factors": 2,
+            "model_parameters": {
+                "joint_state_space_size": 4,
+                "joint_materialized": False,
+            },
+        }
+
+    def test_routes_kronecker_top_level_payload(self) -> None:
+        """Top-level schema_version dispatches to the per-factor extractor."""
+        data = extract_jax_data(self._kronecker_payload())
+        assert data["schema_version"] == "jax_kronecker_factorized_v1"
+        # Per-step total EFE is the sum across factors: [1.5, 2.5].
+        assert data["free_energy"] == [1.5, 2.5]
+        assert data["factors"] == ["loc", "scale"]
+        assert data["beliefs_by_factor"]["loc"] == [[0.6, 0.4], [0.7, 0.3]]
+        assert data["model_parameters"]["joint_state_space_size"] == 4
+        assert "extraction_error" not in data
+
+    def test_routes_kronecker_nested_simulation_data(self) -> None:
+        """Nested simulation_data.payload dispatches to the per-factor extractor."""
+        data = extract_jax_data(
+            {"simulation_data": self._kronecker_payload()}
+        )
+        assert data["schema_version"] == "jax_kronecker_factorized_v1"
+        assert data["free_energy"] == [1.5, 2.5]
+
+    def test_routes_kronecker_from_impl_dir(self, tmp_path: Any) -> None:
+        """jax_kronecker_factorized_v1 JSON in the impl dir is discovered."""
+        impl = tmp_path / "jax_kronecker"
+        impl.mkdir()
+        sim_data = impl / "simulation_data"
+        sim_data.mkdir()
+        (sim_data / "simulation_results.json").write_text(
+            json.dumps(self._kronecker_payload()), encoding="utf-8"
+        )
+        data = extract_jax_data({"implementation_directory": str(impl)})
+        assert data["schema_version"] == "jax_kronecker_factorized_v1"
+        assert data["free_energy"] == [1.5, 2.5]
+
+    def test_non_kronecker_falls_back_to_pymdp_path(self) -> None:
+        """A non-kronecker JAX result keeps the historical pymdp-compatible path."""
+        data = extract_jax_data({})
+        assert "extraction_error" in data
 
 
 class TestExtractDiscopyData:

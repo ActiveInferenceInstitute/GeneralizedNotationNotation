@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import logging
 import sys
 from pathlib import Path
 from typing import Any, cast
@@ -191,11 +192,13 @@ def test_process_llm_limits_files_from_config(
         (scaling / name).write_text("## GNNSection\nX\n## ModelName\nS\n")
 
     analyzed: list[str] = []
+    llm_attempts: list[bool] = []
 
     async def controlled_analyze(
         path: Path, *args: Any, **kwargs: Any
     ) -> dict[str, Any]:
         analyzed.append(path.name)
+        llm_attempts.append(kwargs["attempt_llm"])
         return {"file": path.name}
 
     class UnavailableProcessor:
@@ -231,6 +234,7 @@ def test_process_llm_limits_files_from_config(
         assert process_llm(target, out, verbose=False)
 
     assert analyzed == ["a_model.md", "b_model.md"]
+    assert llm_attempts == [False, False]
 
     import json
 
@@ -249,3 +253,65 @@ def test_llm_budget_prefers_cli_timeout() -> None:
         _resolve_llm_budget_seconds({"llm_timeout": 1200}, {"timeout_seconds": 600})
         == 1200
     )
+
+
+@pytest.mark.unit
+def test_ollama_disabled_is_side_effect_free(monkeypatch: pytest.MonkeyPatch) -> None:
+    from llm.processor import _start_ollama_if_needed
+
+    monkeypatch.setenv("OLLAMA_DISABLED", "1")
+    monkeypatch.setattr(
+        "llm.processor.shutil.which",
+        lambda *_args: (_ for _ in ()).throw(AssertionError("PATH probe attempted")),
+    )
+
+    assert _start_ollama_if_needed(logging.getLogger("test")) == (False, [])
+
+
+@pytest.mark.unit
+def test_unavailable_ollama_does_not_start_daemon_without_opt_in(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    from llm.processor import _start_ollama_if_needed
+
+    class FailedList:
+        returncode = 1
+        stdout = ""
+        stderr = "not running"
+
+    monkeypatch.delenv("OLLAMA_DISABLED", raising=False)
+    monkeypatch.delenv("OLLAMA_AUTO_START", raising=False)
+    monkeypatch.setattr("llm.processor.shutil.which", lambda *_args: "/bin/ollama")
+    monkeypatch.setattr(
+        "llm.processor.subprocess.run", lambda *_args, **_kwargs: FailedList()
+    )
+    monkeypatch.setattr(
+        "llm.processor.subprocess.Popen",
+        lambda *_args, **_kwargs: (_ for _ in ()).throw(
+            AssertionError("daemon startup attempted")
+        ),
+    )
+
+    assert _start_ollama_if_needed(logging.getLogger("test")) == (False, [])
+
+
+@pytest.mark.unit
+@pytest.mark.asyncio
+async def test_structural_analysis_skips_provider_when_unavailable(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    from llm.analyzer import _analyze_gnn_file_with_llm
+
+    source = tmp_path / "model.md"
+    source.write_text("## StateSpaceBlock\ns[2]\n", encoding="utf-8")
+    monkeypatch.setattr(
+        "llm.analyzer.LLMOperations",
+        lambda: (_ for _ in ()).throw(AssertionError("provider retry attempted")),
+    )
+
+    result = await _analyze_gnn_file_with_llm(source, attempt_llm=False)
+
+    assert result["status"] == "SUCCESS"
+    assert result["analysis_method"] == "structural"
+    assert result["llm_summary_status"] == "unavailable"
+    assert "llm_summary" not in result

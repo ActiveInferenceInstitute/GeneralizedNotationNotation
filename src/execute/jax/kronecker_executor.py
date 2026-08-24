@@ -179,9 +179,7 @@ def execute_kronecker_factorized(
         raise ValueError("execute_kronecker_factorized expects a config dict")
 
     sizes = (
-        list(factor_sizes)
-        if factor_sizes is not None
-        else config.get("factor_sizes")
+        list(factor_sizes) if factor_sizes is not None else config.get("factor_sizes")
     )
     if not sizes:
         raise ValueError("factor_sizes is required (config or argument)")
@@ -195,7 +193,9 @@ def execute_kronecker_factorized(
     resolution_seed: int = int(seed_val if seed_val is not None else 42)
     a_signal_val: Any = kwargs.get("a_signal", config.get("a_signal", 0.85))
     b_signal_val: Any = kwargs.get("b_signal", config.get("b_signal", 0.8))
-    precision_val: Any = kwargs.get("action_precision", config.get("action_precision", 4.0))
+    precision_val: Any = kwargs.get(
+        "action_precision", config.get("action_precision", 4.0)
+    )
     a_signal = float(a_signal_val if a_signal_val is not None else 0.85)
     b_signal = float(b_signal_val if b_signal_val is not None else 0.8)
     action_precision = float(precision_val if precision_val is not None else 4.0)
@@ -208,6 +208,4 @@ def execute_kronecker_factorized(
         action_precision=action_precision,
     )
     model_name = str(config.get("model_name") or "factorized_kronecker")
-    return run_kronecker_factorized_execution(
-        model, output_dir, model_name=model_name
-    )
+    return run_kronecker_factorized_execution(model, output_dir, model_name=model_name)

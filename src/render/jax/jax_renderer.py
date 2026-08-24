@@ -200,7 +200,7 @@ def _generate_jax_factorized_code(
     groups = _factor_matrix_groups(gnn_spec)
     if not groups:
         raise ValueError("No complete per-factor A/B/C/D groups found")
-    model_name = str(gnn_spec.get("ModelName") or gnn_spec.get("name") or "GNNModel")
+    model_name = _jax_model_name(gnn_spec, "GNNModel")
     safe_model_name = re.sub(r"[^A-Za-z0-9_.-]+", "_", model_name).strip("._")
 
     a_lists: List[Any] = []
@@ -1014,6 +1014,71 @@ def _extract_gnn_matrices(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
     return matrices
 
 
+def _validated_jax_matrices(gnn_spec: Dict[str, Any]) -> Dict[str, np.ndarray]:
+    """Extract a coherent dense POMDP matrix set or fail closed.
+
+    Generated code must reflect the supplied model. Historically incomplete
+    inputs fell through to unrelated 2-state defaults and, on any exception,
+    a recovery script that did no inference. Validate the contract before
+    interpolation so a successful render always contains the requested model.
+    """
+    extracted = _extract_gnn_matrices(gnn_spec)
+    missing = [name for name in ("A", "B", "C", "D") if name not in extracted]
+    if missing:
+        raise ValueError(
+            "JAX rendering requires canonical A/B/C/D parameters; missing "
+            + ", ".join(missing)
+        )
+
+    matrices = {
+        name: np.asarray(extracted[name], dtype=np.float64)
+        for name in ("A", "B", "C", "D")
+    }
+    matrices["C"] = matrices["C"].reshape(-1)
+    matrices["D"] = matrices["D"].reshape(-1)
+    a_matrix = matrices["A"]
+    b_matrix = matrices["B"]
+    c_vector = matrices["C"]
+    d_vector = matrices["D"]
+
+    if a_matrix.ndim != 2:
+        raise ValueError(f"A must be 2-D [observation, state], got {a_matrix.shape}")
+    if b_matrix.ndim != 3:
+        raise ValueError(
+            f"B must be 3-D [next_state, previous_state, action], got {b_matrix.shape}"
+        )
+    num_observations, num_states = a_matrix.shape
+    if b_matrix.shape[:2] != (num_states, num_states):
+        raise ValueError(
+            "B state axes must match A state count: "
+            f"A={a_matrix.shape}, B={b_matrix.shape}"
+        )
+    if c_vector.shape != (num_observations,):
+        raise ValueError(
+            f"C length must match A observations: A={a_matrix.shape}, C={c_vector.shape}"
+        )
+    if d_vector.shape != (num_states,):
+        raise ValueError(
+            f"D length must match A states: A={a_matrix.shape}, D={d_vector.shape}"
+        )
+    if b_matrix.shape[2] <= 0:
+        raise ValueError("B must declare at least one action")
+    if any(not np.all(np.isfinite(value)) for value in matrices.values()):
+        raise ValueError("JAX matrices must contain only finite values")
+    return matrices
+
+
+def _jax_model_name(gnn_spec: Dict[str, Any], fallback: str) -> str:
+    """Return a safe Python-facing model label from canonical or earlier keys."""
+    value = (
+        gnn_spec.get("model_name")
+        or gnn_spec.get("ModelName")
+        or gnn_spec.get("name")
+        or fallback
+    )
+    return str(value).replace(" ", "_")
+
+
 def _create_improved_default_matrix(
     param_name: str, default_matrix: np.ndarray, param_value: str
 ) -> np.ndarray:
@@ -1223,25 +1288,18 @@ def _generate_jax_model_code(
     """
 
     try:
-        model_name = gnn_spec.get("ModelName", "GNNModel").replace(" ", "_")
-        matrices = _extract_gnn_matrices(gnn_spec)
+        model_name = _jax_model_name(gnn_spec, "GNNModel")
+        matrices = _validated_jax_matrices(gnn_spec)
 
         # Pre-compute dimensions to avoid f-string issues
-        A_matrix = matrices.get("A", np.array([[1.0]]))
-        B_matrix = matrices.get("B", np.array([[[1.0]]]))
-        C_vector = matrices.get("C", np.array([0.0, 1.0]))
-        D_vector = matrices.get("D", np.array([0.5, 0.5]))
+        A_matrix = matrices["A"]
+        B_matrix = matrices["B"]
+        C_vector = matrices["C"]
+        D_vector = matrices["D"]
 
-        # Safely get dimensions
-        try:
-            num_states = A_matrix.shape[1] if len(A_matrix.shape) >= 2 else 1
-            num_observations = A_matrix.shape[0] if len(A_matrix.shape) >= 1 else 1
-            num_actions = B_matrix.shape[2] if len(B_matrix.shape) >= 3 else 1
-        except Exception as e:
-            logger.warning(f"Error accessing matrix dimensions: {e}")
-            num_states = 1
-            num_observations = 1
-            num_actions = 1
+        num_states = A_matrix.shape[1]
+        num_observations = A_matrix.shape[0]
+        num_actions = B_matrix.shape[2]
 
         # Extract num_timesteps from model_parameters.
         model_params = gnn_spec.get("model_parameters", {})
@@ -1274,7 +1332,10 @@ import jax.numpy as jnp
 from jax import jit, vmap
 from functools import partial
 from typing import Dict, Any, Tuple
+import logging
 import numpy as np
+
+logger = logging.getLogger(__name__)
 
 
 # Model configuration
@@ -1688,25 +1749,7 @@ if __name__ == "__main__":
         return code
 
     except Exception as e:
-        logger.error(f"Error in _generate_jax_model_code: {e}")
-        import traceback
-
-        logger.error(f"Traceback: {traceback.format_exc()}")
-        # Return a minimal working code as recovery
-        return '''"""
-JAX Model - Recovery Implementation
-"""
-
-import jax
-import jax.numpy as jnp
-
-def create_model():
-    """Create a basic model."""
-    return None
-
-if __name__ == "__main__":
-    print("JAX model created (recovery implementation)")
-'''
+        raise ValueError(f"JAX model generation failed: {e}") from e
 
 
 def _generate_jax_pomdp_code(
@@ -1715,46 +1758,21 @@ def _generate_jax_pomdp_code(
     """Generate JAX POMDP solver code from GNN specification."""
 
     try:
-        model_name = gnn_spec.get("ModelName", "POMDPModel").replace(" ", "_")
-        matrices = _extract_gnn_matrices(gnn_spec)
+        model_name = _jax_model_name(gnn_spec, "POMDPModel")
+        matrices = _validated_jax_matrices(gnn_spec)
+        A_matrix = matrices["A"]
+        B_matrix = matrices["B"]
+        C_vector = matrices["C"]
+        D_vector = matrices["D"]
 
-        # Get dimensions with error handling
-        try:
-            A_matrix = matrices.get("A", np.array([[1.0]]))
-            B_matrix = matrices.get("B", np.array([[[1.0]]]))
-            C_vector = matrices.get("C", np.array([0.0, 1.0]))
-            D_vector = matrices.get("D", np.array([0.5, 0.5]))
+        logger.info(f"A matrix shape: {A_matrix.shape}")
+        logger.info(f"B matrix shape: {B_matrix.shape}")
+        logger.info(f"C vector shape: {C_vector.shape}")
+        logger.info(f"D vector shape: {D_vector.shape}")
 
-            logger.info(f"A matrix shape: {A_matrix.shape}")
-            logger.info(f"B matrix shape: {B_matrix.shape}")
-            logger.info(f"C vector shape: {C_vector.shape}")
-            logger.info(f"D vector shape: {D_vector.shape}")
-
-            # Safely get dimensions
-            if len(A_matrix.shape) >= 2:
-                num_states = A_matrix.shape[1]
-                num_observations = A_matrix.shape[0]
-            else:
-                num_states = 2
-                num_observations = 2
-                logger.warning("A matrix has insufficient dimensions, using defaults")
-
-            if len(B_matrix.shape) >= 3:
-                num_actions = B_matrix.shape[2]
-            else:
-                num_actions = 2
-                logger.warning("B matrix has insufficient dimensions, using defaults")
-
-        except Exception as e:
-            logger.error(f"Error accessing matrix dimensions: {e}")
-            # Use safe defaults
-            num_states = 2
-            num_observations = 2
-            num_actions = 2
-            A_matrix = np.array([[0.8, 0.2], [0.2, 0.8]])
-            B_matrix = np.array([[[0.9, 0.1], [0.1, 0.9]], [[0.1, 0.9], [0.9, 0.1]]])
-            C_vector = np.array([0.0, 1.0])
-            D_vector = np.array([0.5, 0.5])
+        num_states = A_matrix.shape[1]
+        num_observations = A_matrix.shape[0]
+        num_actions = B_matrix.shape[2]
 
         logger.info(
             f"Final dimensions: states={num_states}, observations={num_observations}, actions={num_actions}"
@@ -1769,81 +1787,14 @@ Based on the GNN specification with belief updates, value iteration, and alpha v
 @Web: https://pfjax.readthedocs.io
 @Web: https://arxiv.org/abs/1304.1118
 @Web: https://www.cs.cmu.edu/~ggordon/jpineau-ggordon-thrun.ijcai03.pdf
-@Web: https://optax.readthedocs.io
 """
 
-import sys
-import subprocess
-
-# Ensure JAX is installed before importing
-try:
-    import jax
-    print("✅ JAX is available")
-except ImportError:
-    print("📦 JAX not found - installing...")
-    try:
-        # Try UV first (as per project rules)
-        result = subprocess.run(
-            [sys.executable, "-m", "uv", "pip", "install", "jax", "jaxlib"],
-            capture_output=True,
-            text=True,
-            timeout=300
-        )
-        if result.returncode != 0:
-            # Recovery to pip if UV fails
-            print("⚠️  UV install failed, trying pip...")
-            result = subprocess.run(
-                [sys.executable, "-m", "pip", "install", "jax", "jaxlib"],
-                capture_output=True,
-                text=True,
-                timeout=300
-            )
-        if result.returncode == 0:
-            print("✅ JAX installed successfully")
-            import jax
-        else:
-            print(f"❌ Failed to install JAX: {{result.stderr}}")
-            sys.exit(1)
-    except subprocess.TimeoutExpired:
-        print("❌ JAX installation timed out")
-        sys.exit(1)
-    except Exception as e:
-        print(f"❌ Error installing JAX: {{e}}")
-        sys.exit(1)
-
+import jax
 import jax.numpy as jnp
 from functools import partial
 from jax import jit, vmap, pmap
 from typing import Dict, Any, Optional, Tuple, List
 import numpy as np
-
-# Try to import optax, install if missing
-try:
-    import optax
-except ImportError:
-    print("📦 Optax not found - installing...")
-    try:
-        result = subprocess.run(
-            [sys.executable, "-m", "uv", "pip", "install", "optax"],
-            capture_output=True,
-            text=True,
-            timeout=120
-        )
-        if result.returncode != 0:
-            result = subprocess.run(
-                [sys.executable, "-m", "pip", "install", "optax"],
-                capture_output=True,
-                text=True,
-                timeout=120
-            )
-        if result.returncode == 0:
-            import optax
-        else:
-            print("⚠️  Optax installation failed, continuing without it")
-            optax = None
-    except Exception as e:
-        print(f"⚠️  Error installing optax: {{e}}, continuing without it")
-        optax = None
 
 class POMDPModels:
     """Container for POMDP model parameters."""
@@ -1887,9 +1838,7 @@ class JAXPOMDPSolver:
             Updated belief state
         """
         # Prediction step
-        predicted_belief = jnp.sum(
-            self.models.B[:, action, :] * belief[:, None], axis=0
-        )
+        predicted_belief = jnp.dot(self.models.B[:, :, action], belief)
         
         # Update step
         updated_belief = predicted_belief * self.models.A[observation, :]
@@ -1918,12 +1867,11 @@ class JAXPOMDPSolver:
         Returns:
             New alpha vector for this action
         """
-        base_alpha = self.models.C  # Immediate reward
+        # Convert observation preferences to state-conditioned immediate value.
+        base_alpha = jnp.dot(self.models.A.T, self.models.C)
         
         # Pre-calculate observation probabilities
-        next_belief_pred = jnp.sum(
-            self.models.B[:, action, :] * belief[:, None], axis=0
-        )
+        next_belief_pred = jnp.dot(self.models.B[:, :, action], belief)
         obs_probs = jnp.dot(self.models.A, next_belief_pred)
         
         def compute_obs_contribution(obs_idx):
@@ -1944,9 +1892,7 @@ class JAXPOMDPSolver:
     
     def compute_observation_probability(self, belief: jnp.ndarray, action: int) -> jnp.ndarray:
         """Compute probability of observations given belief and action."""
-        next_belief = jnp.sum(
-            self.models.B[:, action, :] * belief[:, None], axis=0
-        )
+        next_belief = jnp.dot(self.models.B[:, :, action], belief)
         return jnp.dot(self.models.A, next_belief)
 
 def create_pomdp_solver() -> JAXPOMDPSolver:
@@ -2012,25 +1958,7 @@ if __name__ == "__main__":
         return code
 
     except Exception as e:
-        logger.error(f"Error in _generate_jax_pomdp_code: {e}")
-        import traceback
-
-        logger.error(f"Traceback: {traceback.format_exc()}")
-        # Return a minimal working code as recovery
-        return '''"""
-JAX POMDP Solver - Recovery Implementation
-"""
-
-import jax
-import jax.numpy as jnp
-
-def create_pomdp_solver():
-    """Create a basic POMDP solver."""
-    return None
-
-if __name__ == "__main__":
-    print("JAX POMDP solver created (recovery implementation)")
-'''
+        raise ValueError(f"JAX POMDP generation failed: {e}") from e
 
 
 def _generate_jax_combined_code(
@@ -2038,7 +1966,7 @@ def _generate_jax_combined_code(
 ) -> str:
     """Generate JAX code for hierarchical/multi-agent/continuous models."""
 
-    model_name = gnn_spec.get("ModelName", "CombinedModel").replace(" ", "_")
+    model_name = _jax_model_name(gnn_spec, "CombinedModel")
 
     code = f'''"""
 JAX Combined Model Generated from GNN Specification: {model_name}

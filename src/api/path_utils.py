@@ -23,9 +23,9 @@ def resolve_repo_path(
     create: bool = False,
 ) -> Path:
     """Resolve a caller-provided path and enforce repository-local boundaries."""
-    raw = Path(path_value).expanduser()
-    if not str(raw):
+    if isinstance(path_value, str) and not path_value.strip():
         raise PathValidationError(f"{purpose} path must not be empty")
+    raw = Path(path_value).expanduser()
 
     repo_root = get_repo_root()
     candidate = raw if raw.is_absolute() else repo_root / raw

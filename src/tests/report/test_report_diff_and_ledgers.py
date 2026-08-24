@@ -101,7 +101,9 @@ class TestCompareRuns:
         cur = tmp_path / "current.json"
         prev = tmp_path / "previous.json"
         _write_summary(
-            cur, "2026-01-02", [_step("Step 3", "SUCCESS", 1.0), _step("Step 4", "SUCCESS", 2.0)]
+            cur,
+            "2026-01-02",
+            [_step("Step 3", "SUCCESS", 1.0), _step("Step 4", "SUCCESS", 2.0)],
         )
         _write_summary(prev, "2026-01-01", [_step("Step 3", "SUCCESS", 1.0)])
         report = compare_runs(cur, prev)
@@ -158,6 +160,10 @@ class TestArchiveRun:
         assert archived is not None
         assert archived.exists()
         assert archived.parent.name == ".history"
+        assert archived.name.startswith("20260101_")
+
+        repeated = archive_run(summary)
+        assert repeated == archived
 
     @pytest.mark.unit
     def test_archive_run_missing_source_returns_none(self, tmp_path: Path) -> None:

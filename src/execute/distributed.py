@@ -90,8 +90,8 @@ class Dispatcher:
                 elif self.backend == "dask" and self.client:
                     self.client.close()
                 self._initialized = False
-            except ImportError as e:
-                logger.debug("ray/dask not installed during shutdown: %s", e)
+            except Exception as e:  # noqa: BLE001
+                logger.warning("Distributed backend shutdown failed: %s", e)
 
     def run_scripts_parallel(
         self, script_infos: List[Dict[str, Any]], execute_fn: Callable, **kwargs: Any
@@ -122,9 +122,14 @@ class Dispatcher:
             return cast("list[dict[str, Any]]", ray.get(futures))
 
         elif self.backend == "dask":
-            # Use retries parameter if manually providing the tuple logic
             futures = [
-                self.client.submit(execute_fn, info, **kwargs) for info in script_infos
+                self.client.submit(
+                    execute_fn,
+                    info,
+                    retries=self.max_retries,
+                    **kwargs,
+                )
+                for info in script_infos
             ]
             return cast("list[dict[str, Any]]", self.client.gather(futures))
 
@@ -156,5 +161,8 @@ class Dispatcher:
             return cast("list[Any]", ray.get(futures))
 
         elif self.backend == "dask":
-            futures = [self.client.submit(model_fn, **p) for p in param_grid]
+            futures = [
+                self.client.submit(model_fn, retries=self.max_retries, **p)
+                for p in param_grid
+            ]
             return cast("list[Any]", self.client.gather(futures))

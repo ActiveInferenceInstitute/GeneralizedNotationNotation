@@ -53,6 +53,95 @@ def _safe_output_stem(value: Any, fallback: str = "model") -> str:
     return stem[:120]
 
 
+def _node_to_mapping(node: Any) -> Dict[str, Any]:
+    """Convert one typed GNN node to the mapping renderers consume."""
+    if isinstance(node, dict):
+        return dict(node)
+    to_dict = getattr(node, "to_dict", None)
+    if callable(to_dict):
+        value = to_dict()
+        if isinstance(value, dict):
+            return value
+    return {
+        key: getattr(node, key)
+        for key in ("name", "value", "id", "dimensions", "type", "description")
+        if hasattr(node, key)
+    }
+
+
+def _internal_representation_to_mapping(gnn_spec: Any) -> Dict[str, Any]:
+    """Adapt ``GNNInternalRepresentation`` without leaking typed nodes.
+
+    Framework renderers use a serialisable mapping contract. Passing the
+    representation's ``Variable``/``Parameter`` instances through directly
+    previously caused JAX to call ``.get`` on those objects and silently emit
+    a degraded fallback. Keep the public object input accepted, but lower it to
+    the same concrete matrix contract as dictionary callers.
+    """
+    parameter_nodes = [_node_to_mapping(item) for item in gnn_spec.parameters]
+    parameter_values = {
+        str(item["name"]): item.get("value")
+        for item in parameter_nodes
+        if item.get("name")
+    }
+    model_parameters = {
+        key: value
+        for key, value in parameter_values.items()
+        if key.startswith("num_")
+        or key
+        in {
+            "seed",
+            "random_seed",
+            "action_precision",
+            "inference_iterations",
+        }
+    }
+    return {
+        "name": gnn_spec.model_name or "model",
+        "model_name": gnn_spec.model_name or "model",
+        "variables": [_node_to_mapping(item) for item in gnn_spec.variables],
+        "connections": [_node_to_mapping(item) for item in gnn_spec.connections],
+        "parameters": parameter_nodes,
+        "model_parameters": model_parameters,
+        "initialparameterization": parameter_values,
+    }
+
+
+def _rehydrate_file_backed_parse_summary(
+    gnn_spec: Dict[str, Any],
+) -> Dict[str, Any]:
+    """Turn the lightweight public parser summary back into a renderable spec.
+
+    ``gnn.parse_gnn_file`` intentionally returns discovery metadata, including
+    ``file_path`` and string variable names. The standalone renderer CLI used
+    that summary as if it contained matrices; JAX then reported success after
+    emitting a degraded fallback. When this exact summary shape is supplied, parse
+    its source through the maintained POMDP extractor and use the canonical
+    renderer mapping. Other dictionary contracts pass through unchanged.
+    """
+    if not (
+        gnn_spec.get("success") is True
+        and isinstance(gnn_spec.get("file_path"), str)
+        and isinstance(gnn_spec.get("sections"), list)
+    ):
+        return gnn_spec
+
+    source_path = Path(gnn_spec["file_path"])
+    if not source_path.is_file():
+        raise ValueError(f"Parsed GNN source file does not exist: {source_path}")
+
+    from gnn.pomdp_extractor import extract_pomdp_from_file
+
+    from .pomdp_processor import pomdp_to_gnn_spec
+
+    pomdp_space = extract_pomdp_from_file(source_path, strict_validation=True)
+    if pomdp_space is None:
+        raise ValueError(
+            f"Parsed GNN source is not a renderable POMDP specification: {source_path}"
+        )
+    return pomdp_to_gnn_spec(pomdp_space)
+
+
 def _render_succeeded(
     *,
     success_count: int,
@@ -757,18 +846,18 @@ def render_gnn_spec(
 
         target_lower = target.lower()
         if isinstance(gnn_spec, dict):
-            model_name = str(gnn_spec.get("model_name", "model"))
-            gnn_spec_mapping = gnn_spec
+            gnn_spec_mapping = _rehydrate_file_backed_parse_summary(gnn_spec)
+            model_name = str(
+                gnn_spec_mapping.get("model_name")
+                or gnn_spec_mapping.get("name")
+                or "model"
+            )
         else:
-            model_name = gnn_spec.model_name or "model"
-            gnn_spec_mapping = {
-                "model_name": gnn_spec.model_name,
-                "variables": gnn_spec.variables,
-                "connections": gnn_spec.connections,
-                "parameters": gnn_spec.parameters,
-            }
+            gnn_spec_mapping = _internal_representation_to_mapping(gnn_spec)
+            model_name = str(gnn_spec_mapping["model_name"])
         files: list[Any] = []
-        output_stem = _safe_output_stem(model_name)
+        requested_stem = (options or {}).get("output_filename", model_name)
+        output_stem = _safe_output_stem(requested_stem)
 
         if target_lower in {
             "pymdp",
@@ -879,12 +968,21 @@ def render_gnn_spec(
 
         elif target_lower in ("jax", "jax_pomdp"):
             try:
-                from .jax.jax_renderer import render_gnn_to_jax
+                from .jax.jax_renderer import (
+                    render_gnn_to_jax,
+                    render_gnn_to_jax_pomdp,
+                )
+                from .pomdp_contract import build_canonical_pomdp_spec
 
                 output_file = output_dir / f"{output_stem}_jax.py"
-                success, msg, art = render_gnn_to_jax(gnn_spec_mapping, output_file)
-                if success:
-                    return True, msg, art
+                canonical_spec = build_canonical_pomdp_spec(gnn_spec_mapping)
+                render_fn = (
+                    render_gnn_to_jax_pomdp
+                    if target_lower == "jax_pomdp"
+                    else render_gnn_to_jax
+                )
+                success, msg, art = render_fn(canonical_spec, output_file, options)
+                return (True, msg, art) if success else (False, msg, [])
             except ImportError:
                 return False, "JAX renderer not available", []
 

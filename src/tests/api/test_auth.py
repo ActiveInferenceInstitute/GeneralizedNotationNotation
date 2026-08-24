@@ -57,3 +57,20 @@ class TestApiAuth:
         monkeypatch.delenv("GNN_API_KEY", raising=False)
         monkeypatch.setenv("GNN_ALLOW_INSECURE_BIND", "1")
         assert require_secure_bind("0.0.0.0") is True
+
+    def test_auth_rejection_uses_canonical_error_envelope(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """Middleware-generated 401 responses must match endpoint errors."""
+        from fastapi.testclient import TestClient
+
+        from api.server import app
+
+        monkeypatch.setenv("GNN_API_KEY", "secret-token")
+        monkeypatch.setenv("GNN_RATE_LIMIT", "0")
+        response = TestClient(app).get("/api/v1/jobs")
+        assert response.status_code == 401
+        payload = response.json()
+        assert set(payload) == {"status", "data", "error", "meta"}
+        assert payload["status"] == "error"
+        assert payload["error"]["code"] == "unauthorized"

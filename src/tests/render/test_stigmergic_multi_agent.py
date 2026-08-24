@@ -7,10 +7,11 @@ exemplar:
   (``A_agentN``/``B_agentN``/``C_agentN``/``D_agentN``) and the shared
   environmental affordance (``env_signal`` + ``signal_decay``).
 - The RxInfer.jl strategy emits one genuine ``pomdp_model`` inference per
-  agent (no joint state-space expansion) coupled through a shared
+  agent (no joint state-space expansion), then reconstructs a shared
   ``env_signal`` trace (deposit at MAP position, decay per timestep).
 - The ActiveInference.jl renderer emits the equivalent per-agent simulation
-  with the same shared-environment coupling and metadata stamping.
+  with the same post-hoc trace and explicit metadata stating that latent
+  inference/action conditioning remain unimplemented.
 
 Pure-Python structure tests run unconditionally; Julia parse and execution
 tests are gated exactly like the other live-backend gates in this suite.
@@ -170,6 +171,9 @@ class TestRxInferStigmergicScript:
         assert '"variable": "env_signal"' in text or "env_signal" in text
         assert "const ENV_DECAY = 0.9" in text
         assert "const ENV_INITIAL = [0.0" in text
+        assert '"mode" => "post_hoc_deposit_decay_trace"' in text
+        assert '"latent_inference" => false' in text
+        assert '"action_selection_conditioned" => false' in text
 
     def test_coordination_renders_native_without_env(self, tmp_path: Path) -> None:
         script = _render_rxinfer(COORDINATION_FILE, tmp_path)
@@ -201,6 +205,9 @@ class TestActiveInferenceJlStigmergicScript:
         assert "env_signal_trace" in text
         assert "const ENV_DECAY = 0.9" in text
         assert "const NUM_STATES = 729" not in text
+        assert '"mode" => "post_hoc_deposit_decay_trace"' in text
+        assert '"latent_inference" => false' in text
+        assert '"action_selection_conditioned" => false' in text
 
     def test_coordination_renders_native_without_env(self, tmp_path: Path) -> None:
         script = _render_activeinference_jl(COORDINATION_FILE, tmp_path)
@@ -301,6 +308,14 @@ class TestJuliaExecution:
         )
         assert len(results["env_signal_trace"]) == results["num_timesteps"] + 1
         assert len(results["env_signal_trace"][0]) == 9
+        assert results["env_coupling"] == {
+            "variable": "env_signal",
+            "initial": [0.0] * 9,
+            "decay": 0.9,
+            "mode": "post_hoc_deposit_decay_trace",
+            "latent_inference": False,
+            "action_selection_conditioned": False,
+        }
         for agent in results["agents"]:
             assert len(results["actions_by_agent"][agent]) == results["num_timesteps"]
             assert len(results["beliefs_by_agent"][agent]) == results["num_timesteps"]

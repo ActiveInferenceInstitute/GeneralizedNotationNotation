@@ -11,8 +11,9 @@ managing processing jobs.
 import json
 import logging
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any, Dict, List
 
+from .path_utils import PathValidationError, resolve_repo_path
 from .processor import PIPELINE_STEPS, cancel_job, create_job, get_job, list_jobs
 
 logger = logging.getLogger(__name__)
@@ -25,31 +26,18 @@ __dependencies__: list[Any] = []
 
 def gnn_submit_job_mcp(
     target_dir: str,
-    steps: (list) | None = None,
-    skip_steps: (list) | None = None,
+    steps: List[int] | None = None,
+    skip_steps: List[int] | None = None,
     verbose: bool = False,
     strict: bool = False,
 ) -> Dict[str, Any]:
     """Submit a GNN pipeline processing job via MCP."""
     try:
-        # Enforce path boundary: target_dir must exist and stay within repo root
-        target_path = Path(target_dir)
-        if not target_path.exists():
-            repo_root = Path(__file__).parent.parent.parent
-            target_path = repo_root / target_dir
-        if not target_path.exists():
-            return {
-                "status": "error",
-                "message": f"Target directory not found: {target_dir}",
-            }
-        repo_root = Path(__file__).parent.parent.parent.resolve()
-        try:
-            target_path.resolve().relative_to(repo_root)
-        except ValueError:
-            return {
-                "status": "error",
-                "message": f"Target directory must be within the repository root: {target_dir}",
-            }
+        target_path = resolve_repo_path(
+            target_dir,
+            purpose="Target directory",
+            must_exist=True,
+        )
 
         job_id = create_job(
             target_dir=str(target_path),
@@ -70,8 +58,11 @@ def gnn_submit_job_mcp(
             "job_id": job_id,
             "message": "Job created. Note: async execution requires the API server to be running.",
         }
+    except (PathValidationError, ValueError) as e:
+        logger.warning("Rejected MCP job submission: %s", e)
+        return {"status": "error", "message": str(e)}
     except Exception as e:
-        logger.error(f"Failed to submit job via MCP: {e}")
+        logger.error("Failed to submit job via MCP: %s", e, exc_info=True)
         return {"status": "error", "message": str(e)}
 
 
@@ -128,13 +119,11 @@ def gnn_get_pipeline_tools_mcp() -> Dict[str, Any]:
         return {"status": "error", "message": str(e)}
 
 
-def register_tools(mcp_instance: Any) -> None:
-    """Register API domain tools with the MCP server."""
-
-    mcp_instance.register_tool(
-        "gnn_submit_job",
-        gnn_submit_job_mcp,
-        {
+_MCP_TOOL_DEFINITIONS: tuple[Dict[str, Any], ...] = (
+    {
+        "name": "gnn_submit_job",
+        "handler": gnn_submit_job_mcp,
+        "input_schema": {
             "type": "object",
             "properties": {
                 "target_dir": {
@@ -156,15 +145,12 @@ def register_tools(mcp_instance: Any) -> None:
             },
             "required": ["target_dir"],
         },
-        "Submit a GNN pipeline processing job.",
-        module=__package__,
-        category="api",
-    )
-
-    mcp_instance.register_tool(
-        "gnn_get_job_status",
-        gnn_get_job_status_mcp,
-        {
+        "description": "Submit a GNN pipeline processing job.",
+    },
+    {
+        "name": "gnn_get_job_status",
+        "handler": gnn_get_job_status_mcp,
+        "input_schema": {
             "type": "object",
             "properties": {
                 "job_id": {
@@ -174,15 +160,12 @@ def register_tools(mcp_instance: Any) -> None:
             },
             "required": ["job_id"],
         },
-        "Retrieve the status of a GNN pipeline job.",
-        module=__package__,
-        category="api",
-    )
-
-    mcp_instance.register_tool(
-        "gnn_cancel_job",
-        gnn_cancel_job_mcp,
-        {
+        "description": "Retrieve the status of a GNN pipeline job.",
+    },
+    {
+        "name": "gnn_cancel_job",
+        "handler": gnn_cancel_job_mcp,
+        "input_schema": {
             "type": "object",
             "properties": {
                 "job_id": {
@@ -192,85 +175,56 @@ def register_tools(mcp_instance: Any) -> None:
             },
             "required": ["job_id"],
         },
-        "Cancel a GNN pipeline job.",
-        module=__package__,
-        category="api",
-    )
-
-    mcp_instance.register_tool(
-        "gnn_list_jobs",
-        gnn_list_jobs_mcp,
-        {
+        "description": "Cancel a GNN pipeline job.",
+    },
+    {
+        "name": "gnn_list_jobs",
+        "handler": gnn_list_jobs_mcp,
+        "input_schema": {
             "type": "object",
             "properties": {
                 "limit": {
                     "type": "integer",
+                    "minimum": 1,
+                    "maximum": 100,
                     "default": 50,
                     "description": "Maximum number of jobs to return",
                 }
             },
         },
-        "List recent GNN pipeline jobs.",
-        module=__package__,
-        category="api",
-    )
-
-    mcp_instance.register_tool(
-        "gnn_get_pipeline_tools",
-        gnn_get_pipeline_tools_mcp,
-        {"type": "object", "properties": {}},
-        "List available pipeline steps.",
-        module=__package__,
-        category="api",
-    )
-
-    logger.info("api module MCP tools registered.")
-
-
-# We don't delete save_mcp_manifest and register_mcp_tools completely in case
-# other scripts rely on them.
-
-MCP_TOOLS: list[Any] = [
-    {
-        "name": "gnn_submit_job",
-        "description": "Submit a GNN pipeline processing job. Accepts a target directory and optional step selection. Returns a job ID for status polling.",
-        "inputSchema": {
-            "type": "object",
-            "properties": {
-                "target_dir": {
-                    "type": "string",
-                    "description": "Directory containing GNN files",
-                    "default": "input/gnn_files",
-                },
-                "steps": {
-                    "type": "array",
-                    "items": {"type": "integer"},
-                    "description": "Steps to run (omit for all steps)",
-                },
-                "verbose": {"type": "boolean", "default": False},
-            },
-            "required": [],
-        },
+        "description": "List recent GNN pipeline jobs.",
     },
     {
-        "name": "gnn_job_status",
-        "description": "Check the status of a submitted GNN pipeline job.",
-        "inputSchema": {
-            "type": "object",
-            "properties": {
-                "job_id": {
-                    "type": "string",
-                    "description": "Job ID from gnn_submit_job",
-                }
-            },
-            "required": ["job_id"],
-        },
+        "name": "gnn_get_pipeline_tools",
+        "handler": gnn_get_pipeline_tools_mcp,
+        "input_schema": {"type": "object", "properties": {}},
+        "description": "List available pipeline steps.",
     },
+)
+
+
+def register_tools(mcp_instance: Any) -> None:
+    """Register the same API tools advertised by the serialized manifest."""
+    for tool in _MCP_TOOL_DEFINITIONS:
+        mcp_instance.register_tool(
+            tool["name"],
+            tool["handler"],
+            tool["input_schema"],
+            tool["description"],
+            module=__package__,
+            category="api",
+        )
+
+    logger.info("api module MCP tools registered (%d tools).", len(MCP_TOOLS))
+
+
+MCP_TOOLS: list[Dict[str, Any]] = [
     {
-        "name": "gnn_list_tools",
-        "description": "List all available GNN pipeline steps and their descriptions.",
-        "inputSchema": {"type": "object", "properties": {}},
-    },
+        "name": tool["name"],
+        "description": tool["description"],
+        "inputSchema": tool["input_schema"],
+    }
+    for tool in _MCP_TOOL_DEFINITIONS
 ]
 
 

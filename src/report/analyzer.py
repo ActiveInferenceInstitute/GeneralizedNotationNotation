@@ -13,6 +13,22 @@ from pathlib import Path
 from typing import Any, Dict, List
 
 
+def _summary_timestamp(summary: Dict[str, Any]) -> str:
+    """Use a timestamp from the evidence bundle, never the wall clock."""
+    for key in ("end_time", "start_time", "timestamp"):
+        value = summary.get(key)
+        if isinstance(value, str) and value:
+            return value
+    return "unavailable"
+
+
+def _step_output_name(script_name: str) -> str:
+    """Map a canonical numbered script name to its output directory."""
+    aliases = {"9_advanced_visualization": "9_advanced_viz_output"}
+    stem = Path(script_name).stem
+    return aliases.get(stem, f"{stem}_output")
+
+
 def collect_pipeline_data(
     pipeline_output_dir: Path, logger: logging.Logger
 ) -> Dict[str, Any]:
@@ -27,7 +43,8 @@ def collect_pipeline_data(
         Dictionary containing collected pipeline data
     """
     pipeline_data: dict[str, Any] = {
-        "report_generation_time": datetime.datetime.now().isoformat(),
+        "report_generation_time": "unavailable",
+        "report_timestamp_source": "unavailable",
         "pipeline_output_directory": str(pipeline_output_dir),
         "steps": {},
         "summary": {
@@ -37,6 +54,7 @@ def collect_pipeline_data(
             "processing_time": 0.0,
             "total_size_mb": 0.0,
             "success_rate": 0.0,
+            "status_source": "artifacts_only",
         },
         "performance_metrics": {},
         "error_analysis": {},
@@ -61,8 +79,17 @@ def collect_pipeline_data(
 
             # Extract performance metrics from summary
             summary = pipeline_data["pipeline_summary"]
+            pipeline_data["report_generation_time"] = _summary_timestamp(summary)
+            pipeline_data["report_timestamp_source"] = (
+                "pipeline_execution_summary"
+                if pipeline_data["report_generation_time"] != "unavailable"
+                else "unavailable"
+            )
+            pipeline_data["overall_status"] = summary.get("overall_status", "UNKNOWN")
             if "performance_metrics" in summary:
                 pipeline_data["performance_metrics"] = summary["performance_metrics"]
+            elif "performance_summary" in summary:
+                pipeline_data["performance_metrics"] = summary["performance_summary"]
 
             # Extract error analysis from summary
             if "errors" in summary:
@@ -99,6 +126,7 @@ def collect_pipeline_data(
         "21_mcp_output",
         "22_gui_output",
         "23_report_output",
+        "24_intelligent_analysis_output",
     ]
 
     for step_dir in step_directories:
@@ -137,15 +165,74 @@ def collect_pipeline_data(
         report_step["note"] = (
             "Report step output (self-referencing — files generated during this step)"
         )
-        report_step["estimated_file_count"] = 6  # html + md + json + summaries
         report_step["status"] = "generating"
         logger.debug("Annotated 23_report_output as self-referencing step")
 
-    # Calculate success rate
-    total_steps = len(step_directories)
-    successful_steps = len(
-        [step for step in pipeline_data["steps"].values() if step.get("exists", False)]
-    )
+    # Prefer execution receipts over the presence of output directories. A
+    # failed step can leave a populated directory, so artifact presence alone
+    # cannot establish successful execution.
+    canonical_steps = pipeline_data.get("pipeline_summary", {}).get("steps", [])
+    canonical_statuses: list[str] = []
+    if isinstance(canonical_steps, list) and canonical_steps:
+        for canonical_step in canonical_steps:
+            if not isinstance(canonical_step, dict):
+                continue
+            status = str(canonical_step.get("status", "UNKNOWN")).upper()
+            canonical_statuses.append(status)
+            step_name = _step_output_name(str(canonical_step.get("script_name", "")))
+            if step_name in pipeline_data["steps"]:
+                step_record = pipeline_data["steps"][step_name]
+                step_record["artifact_status"] = step_record.get("status")
+                step_record["status"] = status.lower()
+                step_record["execution_status"] = status
+                step_record["status_source"] = "pipeline_execution_summary"
+
+    total_steps = len(canonical_statuses) or len(step_directories)
+    if canonical_statuses:
+        successful_steps = sum(
+            status.startswith("SUCCESS") for status in canonical_statuses
+        )
+        failed_steps = sum(status == "FAILED" for status in canonical_statuses)
+        warning_steps = sum("WARNING" in status for status in canonical_statuses)
+        unknown_steps = sum(
+            not status.startswith("SUCCESS")
+            and status != "FAILED"
+            and "WARNING" not in status
+            for status in canonical_statuses
+        )
+        pipeline_data["summary"].update(
+            {
+                "status_source": "pipeline_execution_summary",
+                "successful_steps": successful_steps,
+                "failed_steps": failed_steps,
+                "warning_steps": warning_steps,
+                "unknown_steps": unknown_steps,
+                "processing_time": pipeline_data["pipeline_summary"].get(
+                    "total_duration_seconds", 0.0
+                ),
+                "total_errors": failed_steps,
+                "total_warnings": warning_steps,
+            }
+        )
+        pipeline_data["health_score_basis"] = "pipeline_execution_summary"
+    else:
+        successful_steps = len(
+            [
+                step
+                for step in pipeline_data["steps"].values()
+                if step.get("exists", False)
+            ]
+        )
+        pipeline_data["summary"].update(
+            {
+                "successful_steps": successful_steps,
+                "failed_steps": 0,
+                "warning_steps": 0,
+                "unknown_steps": total_steps - successful_steps,
+            }
+        )
+        pipeline_data["health_score_basis"] = "artifact_coverage_only"
+
     pipeline_data["summary"]["success_rate"] = (
         (successful_steps / total_steps) * 100 if total_steps > 0 else 0
     )
@@ -197,7 +284,7 @@ def analyze_step_directory(
 
     try:
         # Count files and calculate sizes
-        for file_path in step_path.rglob("*"):
+        for file_path in sorted(step_path.rglob("*")):
             if file_path.is_file():
                 step_data["file_count"] += 1
                 file_size_mb = file_path.stat().st_size / (1024 * 1024)
@@ -234,7 +321,7 @@ def analyze_step_directory(
         # Convert timestamp to ISO format
         if step_data["last_modified"]:
             step_data["last_modified"] = datetime.datetime.fromtimestamp(
-                step_data["last_modified"]
+                step_data["last_modified"], tz=datetime.timezone.utc
             ).isoformat()
 
         # Round size to 2 decimal places
@@ -269,7 +356,7 @@ def analyze_step_specific_data(
 
     try:
         # Look for performance metrics files
-        perf_files = list(step_path.glob("*performance*.json")) + list(
+        perf_files = sorted(step_path.glob("*performance*.json")) + sorted(
             step_path.glob("*metrics*.json")
         )
         for perf_file in perf_files:
@@ -281,7 +368,9 @@ def analyze_step_specific_data(
                 logger.debug(f"Failed to read performance file {perf_file}: {e}")
 
         # Look for error logs
-        log_files = list(step_path.glob("*.log")) + list(step_path.glob("*error*.json"))
+        log_files = sorted(step_path.glob("*.log")) + sorted(
+            step_path.glob("*error*.json")
+        )
         error_logs: list[Any] = []
         for log_file in log_files:
             try:
@@ -407,6 +496,7 @@ def analyze_step_dependencies(
             "21_mcp_output",
             "22_gui_output",
             "23_report_output",
+            "24_intelligent_analysis_output",
         ],
         "dependency_chain": {},
         "missing_prerequisites": [],
@@ -442,6 +532,7 @@ def analyze_step_dependencies(
                 "10_ontology_output",
                 "15_audio_output",
             ],
+            "24_intelligent_analysis_output": ["23_report_output"],
         }
 
         # Check for missing prerequisites
@@ -544,26 +635,35 @@ def is_key_file(file_path: Path, step_name: str) -> bool:
             "*.html",
             "advanced_viz_summary.json",
         ],
-        "10_ontology_output": ["ontology_analysis.json", "ontology_summary.md"],
+        "10_ontology_output": ["ontology_results.json"],
         "11_render_output": ["*.py", "*.jl", "render_processing_summary.json"],
         "12_execute_output": [
             "summaries/execution_summary.json",
             "summaries/execution_report.md",
             "*.png",
         ],
-        "13_llm_output": ["llm_analysis.json", "*.md"],
-        "14_ml_integration_output": ["ml_integration_summary.json"],
+        "13_llm_output": ["llm_results.json", "llm_summary.md"],
+        "14_ml_integration_output": ["ml_integration_results.json"],
         "15_audio_output": ["*.wav", "*.mp3", "audio_processing_summary.json"],
         "16_analysis_output": ["analysis_results.json", "analysis_summary.md"],
         "17_integration_output": ["integration_processing_summary.json"],
-        "18_security_output": ["security_processing_summary.json"],
-        "19_research_output": ["research_processing_summary.json"],
+        "18_security_output": ["security_results.json", "security_summary.md"],
+        "19_research_output": [
+            "research_results.json",
+            "research_processing_summary.json",
+            "research_report.md",
+        ],
         "20_website_output": ["*.html", "*.css", "*.js"],
         "21_mcp_output": ["mcp_processing_summary.json", "registered_tools.json"],
         "22_gui_output": ["gui_processing_summary.json", "navigation.html"],
         "23_report_output": [
             "comprehensive_analysis_report.html",
             "report_summary.json",
+        ],
+        "24_intelligent_analysis_output": [
+            "intelligent_analysis_report.md",
+            "analysis_data.json",
+            "intelligent_analysis_summary.json",
         ],
     }
 
@@ -620,7 +720,7 @@ def collect_visualizations(
 
             # Scan for visualization files
             for pattern in patterns:
-                for viz_file in step_path.rglob(pattern):
+                for viz_file in sorted(step_path.rglob(pattern)):
                     if viz_file.is_file():
                         try:
                             file_size = viz_file.stat().st_size
@@ -688,23 +788,29 @@ def get_pipeline_health_score(pipeline_data: Dict[str, Any]) -> float:
         Health score between 0 and 100
     """
     try:
+        summary = pipeline_data.get("summary", {})
+        if summary.get("status_source") != "pipeline_execution_summary":
+            return round(float(summary.get("success_rate", 0)), 1)
+
         score = 0.0
         total_weight = 0.0
 
         # Step completion rate (40% weight)
         steps = pipeline_data.get("steps", {})
-        successful_steps = len(
-            [step for step in steps.values() if step.get("exists", False)]
-        )
-        total_steps = len(steps)
-        step_completion_rate = (
-            (successful_steps / total_steps) * 100 if total_steps > 0 else 0
-        )
+        if summary.get("status_source") == "pipeline_execution_summary":
+            step_completion_rate = float(summary.get("success_rate", 0))
+        else:
+            successful_steps = len(
+                [step for step in steps.values() if step.get("exists", False)]
+            )
+            total_steps = len(steps)
+            step_completion_rate = (
+                (successful_steps / total_steps) * 100 if total_steps > 0 else 0
+            )
         score += step_completion_rate * 0.4
         total_weight += 0.4
 
         # File processing success (30% weight)
-        summary = pipeline_data.get("summary", {})
         success_rate = summary.get("success_rate", 0)
         score += success_rate * 0.3
         total_weight += 0.3

@@ -174,6 +174,12 @@ class TestComprehensiveReport:
         data = json.loads(report_file.read_text())
         assert "total_files" in data
         assert data["total_files"] == 1
+        assert data["timestamp"] == "unavailable"
+        assert data["timestamp_source"] == "not_provided"
+
+        first_bytes = report_file.read_bytes()
+        generate_comprehensive_report(sample_gnn_dir, output_dir, format="json")
+        assert report_file.read_bytes() == first_bytes
 
     @pytest.mark.unit
     def test_html_format(self, sample_gnn_dir: Any, output_dir: Any) -> None:
@@ -208,6 +214,37 @@ class TestComprehensiveReport:
         result = generate_comprehensive_report(empty_gnn_dir, output_dir, format="json")
         assert result["success"] is True
         assert result["files_analyzed"] == 0
+
+    @pytest.mark.unit
+    def test_unsupported_format_fails_closed(
+        self, sample_gnn_dir: Any, output_dir: Any
+    ) -> None:
+        result = generate_comprehensive_report(
+            sample_gnn_dir, output_dir, format="not-a-format"
+        )
+
+        assert result["success"] is False
+        assert "Unsupported report format" in result["error"]
+
+    @pytest.mark.unit
+    def test_file_analysis_error_is_not_counted_as_success(
+        self,
+        sample_gnn_dir: Any,
+        output_dir: Any,
+        monkeypatch: pytest.MonkeyPatch,
+    ) -> None:
+        monkeypatch.setattr(
+            "report.processor.analyze_gnn_file", lambda _path: {"error": "unreadable"}
+        )
+
+        result = generate_comprehensive_report(
+            sample_gnn_dir, output_dir, format="json"
+        )
+
+        assert result["success"] is False
+        assert result["files_scanned"] == 1
+        assert result["files_analyzed"] == 0
+        assert result["error_count"] == 1
 
 
 class TestHtmlReport:

@@ -143,6 +143,25 @@ Static
         assert enveloped[-1] <= 0.1  # Should end near 0
 
     @pytest.mark.unit
+    def test_apply_envelope_scales_phases_for_short_clip(self) -> None:
+        from audio.sapf.audio_generators import apply_envelope
+
+        audio = np.ones(5, dtype=np.float32)
+        enveloped = apply_envelope(audio, 1.0, 1.0, 0.7, 1.0, sample_rate=10)
+
+        assert enveloped.shape == audio.shape
+        assert np.isfinite(enveloped).all()
+        assert enveloped[0] == 0.0
+        assert enveloped[-1] == 0.0
+
+    @pytest.mark.unit
+    def test_apply_envelope_rejects_nonfinite_parameters(self) -> None:
+        from audio.sapf.audio_generators import apply_envelope
+
+        with pytest.raises(ValueError, match="finite"):
+            apply_envelope(np.ones(10), np.inf, 0.1, 0.7, 0.1, sample_rate=10)
+
+    @pytest.mark.unit
     def test_mix_audio_channels_function(self) -> Any:
         """Test standalone mix_audio_channels function."""
         try:

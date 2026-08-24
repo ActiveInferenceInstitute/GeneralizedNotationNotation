@@ -19,6 +19,7 @@ requiring direct CLI access.
 src/api/
   __init__.py    -- Module metadata, availability checks
   models.py      -- Pydantic request/response models (API contract)
+  responses.py   -- Canonical envelopes and exception handlers
   processor.py   -- In-memory job manager, async execution
   server.py      -- FastAPI app with routes and middleware
   mcp.py         -- MCP tool registration manifest
@@ -64,6 +65,10 @@ uvicorn api.server:app --reload
   symlink component before resolving (RED_TEAM V-05).
 - **Sanitized error responses**: job failure tails redact the repository root
   and absolute paths before returning to callers (RED_TEAM V-09).
+- **Canonical JSON envelope**: successful and failed JSON responses use exactly
+  `{status, data, error, meta}`. Validation, HTTP, authentication, rate-limit,
+  and unexpected exceptions pass through the same contract. The Markdown
+  report download remains `text/markdown`; SSE event payloads use the envelope.
 
 ## Integration with Pipeline
 
@@ -79,7 +84,7 @@ from api.processor import create_job, execute_job_async
 When working with this module:
 1. The `processor.py` contains job lifecycle logic -- extend it for persistence needs
 2. The `models.py` is the API contract -- update schemas and tests together
-3. Add new endpoints in `server.py` following the existing pattern
+3. Add new endpoints in `server.py` or `app.py` following the canonical envelope pattern
 4. MCP tools in `mcp.py` should mirror significant REST endpoints
 
 

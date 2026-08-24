@@ -20,6 +20,70 @@ import numpy as np
 logger = logging.getLogger(__name__)
 
 
+def _build_adsr_envelope(
+    samples: int,
+    attack: float,
+    decay: float,
+    sustain: float,
+    release: float,
+    sample_rate: int,
+) -> np.ndarray:
+    """Build a bounded ADSR envelope for clips of any length."""
+    if samples < 0:
+        raise ValueError("samples must be non-negative")
+    if sample_rate <= 0:
+        raise ValueError("sample_rate must be positive")
+    if samples == 0:
+        return np.zeros(0, dtype=float)
+
+    parameters = np.asarray((attack, decay, sustain, release), dtype=float)
+    if not np.isfinite(parameters).all():
+        raise ValueError("ADSR parameters must be finite")
+
+    durations = [max(0.0, float(value)) for value in (attack, decay, release)]
+    requested = [int(value * sample_rate) for value in durations]
+    phase_samples = requested.copy()
+    requested_total = sum(requested)
+    if requested_total > samples:
+        exact = [count * samples / requested_total for count in requested]
+        phase_samples = [int(count) for count in exact]
+        remaining = samples - sum(phase_samples)
+        order = sorted(
+            range(3),
+            key=lambda index: exact[index] - phase_samples[index],
+            reverse=True,
+        )
+        for index in order[:remaining]:
+            phase_samples[index] += 1
+
+    attack_samples, decay_samples, release_samples = phase_samples
+    sustain_level = float(np.clip(sustain, 0.0, 1.0))
+    sustain_samples = samples - sum(phase_samples)
+    envelope = np.empty(samples, dtype=float)
+    cursor = 0
+
+    if attack_samples:
+        envelope[cursor : cursor + attack_samples] = np.linspace(
+            0.0, 1.0, attack_samples
+        )
+        cursor += attack_samples
+    if decay_samples:
+        envelope[cursor : cursor + decay_samples] = np.linspace(
+            1.0, sustain_level, decay_samples
+        )
+        cursor += decay_samples
+    if sustain_samples:
+        envelope[cursor : cursor + sustain_samples] = sustain_level
+        cursor += sustain_samples
+    if release_samples:
+        if release_samples == 1:
+            envelope[cursor] = 0.0
+        else:
+            envelope[cursor:] = np.linspace(sustain_level, 0.0, release_samples)
+
+    return envelope
+
+
 class SyntheticAudioGenerator:
     """
     Generates synthetic audio based on SAPF code analysis.
@@ -351,35 +415,14 @@ class SyntheticAudioGenerator:
         self, env_params: Dict[str, float], samples: int
     ) -> np.ndarray:
         """Generate ADSR envelope."""
-        attack = env_params["attack"]
-        decay = env_params["decay"]
-        sustain = env_params["sustain"]
-        release = env_params["release"]
-
-        envelope = np.zeros(samples)
-        sample_rate = self.sample_rate
-
-        # Attack phase
-        attack_samples = int(attack * sample_rate)
-        if attack_samples > 0:
-            envelope[:attack_samples] = np.linspace(0, 1, attack_samples)
-
-        # Decay phase
-        decay_samples = int(decay * sample_rate)
-        decay_end = attack_samples + decay_samples
-        if decay_samples > 0 and decay_end < samples:
-            envelope[attack_samples:decay_end] = np.linspace(1, sustain, decay_samples)
-
-        # Sustain phase
-        release_samples = int(release * sample_rate)
-        sustain_end = max(samples - release_samples, decay_end)
-        envelope[decay_end:sustain_end] = sustain
-
-        # Release phase
-        if release_samples > 0 and sustain_end < samples:
-            envelope[sustain_end:] = np.linspace(sustain, 0, samples - sustain_end)
-
-        return envelope
+        return _build_adsr_envelope(
+            samples,
+            env_params["attack"],
+            env_params["decay"],
+            env_params["sustain"],
+            env_params["release"],
+            self.sample_rate,
+        )
 
     def _write_wav_file(self, audio_data: List[int], output_file: Path) -> bool:
         """Write audio data to WAV file."""
@@ -604,30 +647,12 @@ def apply_envelope(
     Returns:
         Audio with envelope applied
     """
-    samples = len(audio)
-    envelope = np.zeros(samples)
-
-    # Attack phase
-    attack_samples = int(attack * sample_rate)
-    if attack_samples > 0:
-        envelope[:attack_samples] = np.linspace(0, 1, attack_samples)
-
-    # Decay phase
-    decay_samples = int(decay * sample_rate)
-    decay_end = attack_samples + decay_samples
-    if decay_samples > 0 and decay_end < samples:
-        envelope[attack_samples:decay_end] = np.linspace(1, sustain, decay_samples)
-
-    # Sustain phase
-    release_samples = int(release * sample_rate)
-    sustain_end = max(samples - release_samples, decay_end)
-    envelope[decay_end:sustain_end] = sustain
-
-    # Release phase
-    if release_samples > 0 and sustain_end < samples:
-        envelope[sustain_end:] = np.linspace(sustain, 0, samples - sustain_end)
-
-    return audio * envelope
+    envelope = _build_adsr_envelope(
+        len(audio), attack, decay, sustain, release, sample_rate
+    )
+    if audio.ndim > 1:
+        envelope = envelope[:, np.newaxis]
+    return np.asarray(audio * envelope)
 
 
 def mix_audio_channels(

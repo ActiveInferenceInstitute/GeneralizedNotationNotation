@@ -3,7 +3,7 @@
 GNN Pipeline FastAPI Server.
 
 Provides REST endpoints for pipeline job management and tool invocation.
-No authentication — designed for local research use.
+Optional API-key authentication is available through ``GNN_API_KEY``.
 
 Run with:
     python -m api.server
@@ -13,13 +13,13 @@ Run with:
 
 import logging
 from datetime import datetime
-from typing import Any, Dict
+from typing import Annotated, Any
 
 logger = logging.getLogger(__name__)
 
 try:
     import uvicorn
-    from fastapi import BackgroundTasks, FastAPI, HTTPException
+    from fastapi import BackgroundTasks, FastAPI, HTTPException, Query
     from fastapi.middleware.cors import CORSMiddleware
 except ImportError as e:
     raise ImportError(
@@ -41,14 +41,14 @@ from api.models import (
 )
 from api.path_utils import PathValidationError, resolve_repo_path
 from api.rate_limit import rate_limit_middleware
+from api.responses import APIEnvelope, install_exception_handlers, success_envelope
 
 # Application metadata
 app = FastAPI(
     title="GNN Pipeline API",
     description=(
         "REST interface for the Generalized Notation Notation (GNN) processing pipeline. "
-        "Submit jobs, poll status, and invoke individual pipeline steps. "
-        "No authentication required — research tool for local use."
+        "Submit jobs, poll status, and invoke individual pipeline steps."
     ),
     version="1.0.0",
     docs_url="/docs",
@@ -71,26 +71,28 @@ app.middleware("http")(api_key_middleware)
 # Registered after auth so it runs outermost, protecting the API even when
 # authentication is disabled (e.g. localhost research use).
 app.middleware("http")(rate_limit_middleware)
+install_exception_handlers(app)
 
 
-@app.get("/api/v1/health", response_model=HealthResponse, tags=["Meta"])
-async def health_check() -> HealthResponse:
+@app.get("/api/v1/health", response_model=APIEnvelope, tags=["Meta"])
+async def health_check() -> APIEnvelope:
     """Check API health and get basic system info."""
     jobs = job_mgr.list_jobs()
     active = sum(1 for j in jobs if j.get("status") in ("pending", "running"))
-    return HealthResponse(
+    health = HealthResponse(
         status="healthy",
         version="1.0.0",
         pipeline_steps=len(job_mgr.PIPELINE_STEPS),
         active_jobs=active,
         timestamp=datetime.now(),
     )
+    return success_envelope(health.model_dump(mode="json"), endpoint="health")
 
 
-@app.post("/api/v1/process", response_model=JobResponse, tags=["Jobs"])
+@app.post("/api/v1/process", response_model=APIEnvelope, tags=["Jobs"])
 async def submit_process_job(
     request: ProcessRequest, background_tasks: BackgroundTasks
-) -> JobResponse:
+) -> APIEnvelope:
     """
     Submit a GNN pipeline processing job.
 
@@ -111,14 +113,17 @@ async def submit_process_job(
     except PathValidationError as err:
         raise HTTPException(status_code=400, detail=str(err)) from err
 
-    job_id = job_mgr.create_job(
-        target_dir=str(target_path),
-        output_dir=str(output_path),
-        steps=request.steps,
-        skip_steps=request.skip_steps,
-        verbose=request.verbose,
-        strict=request.strict,
-    )
+    try:
+        job_id = job_mgr.create_job(
+            target_dir=str(target_path),
+            output_dir=str(output_path),
+            steps=request.steps,
+            skip_steps=request.skip_steps,
+            verbose=request.verbose,
+            strict=request.strict,
+        )
+    except ValueError as err:
+        raise HTTPException(status_code=400, detail=str(err)) from err
 
     # Launch async execution in background
     background_tasks.add_task(job_mgr.execute_job_async, job_id)
@@ -126,17 +131,20 @@ async def submit_process_job(
     job = job_mgr.get_job(job_id)
     if job is None:
         raise HTTPException(status_code=500, detail=f"Job {job_id} was not registered")
-    return JobResponse(
+    response = JobResponse(
         job_id=job_id,
         status=JobStatus.PENDING,
         created_at=datetime.fromisoformat(job["created_at"]),
         steps_requested=request.steps,
         message=f"Job {job_id} queued. Poll GET /api/v1/jobs/{job_id} for status.",
     )
+    return success_envelope(
+        response.model_dump(mode="json"), endpoint="process", job_id=job_id
+    )
 
 
-@app.get("/api/v1/jobs/{job_id}", response_model=JobStatusResponse, tags=["Jobs"])
-async def get_job_status(job_id: str) -> JobStatusResponse:
+@app.get("/api/v1/jobs/{job_id}", response_model=APIEnvelope, tags=["Jobs"])
+async def get_job_status(job_id: str) -> APIEnvelope:
     """Poll the status of a submitted pipeline job."""
     job = job_mgr.get_job(job_id)
     if job is None:
@@ -146,7 +154,7 @@ async def get_job_status(job_id: str) -> JobStatusResponse:
         """Handle dt for internal callers."""
         return datetime.fromisoformat(s) if s else None
 
-    return JobStatusResponse(
+    response = JobStatusResponse(
         job_id=job["job_id"],
         status=JobStatus(job["status"]),
         created_at=_dt(job["created_at"]),
@@ -159,10 +167,13 @@ async def get_job_status(job_id: str) -> JobStatusResponse:
         error_message=job.get("error_message"),
         output_dir=job.get("output_dir"),
     )
+    return success_envelope(
+        response.model_dump(mode="json"), endpoint="job_status", job_id=job_id
+    )
 
 
-@app.delete("/api/v1/jobs/{job_id}", tags=["Jobs"])
-async def cancel_job(job_id: str) -> Dict[str, Any]:
+@app.delete("/api/v1/jobs/{job_id}", response_model=APIEnvelope, tags=["Jobs"])
+async def cancel_job(job_id: str) -> APIEnvelope:
     """Cancel a pending or running job."""
     success = job_mgr.cancel_job(job_id)
     if not success:
@@ -173,27 +184,36 @@ async def cancel_job(job_id: str) -> Dict[str, Any]:
             status_code=409,
             detail=f"Job {job_id} is already in terminal state: {job['status']}",
         )
-    return {"message": f"Job {job_id} cancelled"}
+    return success_envelope(
+        {"message": f"Job {job_id} cancelled"},
+        endpoint="cancel_job",
+        job_id=job_id,
+    )
 
 
-@app.get("/api/v1/jobs", tags=["Jobs"])
-async def list_jobs(limit: int = 20) -> Dict[str, Any]:
+@app.get("/api/v1/jobs", response_model=APIEnvelope, tags=["Jobs"])
+async def list_jobs(
+    limit: Annotated[int, Query(ge=1, le=100)] = 20,
+) -> APIEnvelope:
     """List recent pipeline jobs."""
     jobs = job_mgr.list_jobs(limit=limit)
-    return {"jobs": jobs, "total": len(jobs)}
+    return success_envelope(
+        {"jobs": jobs, "total": len(jobs)}, endpoint="list_jobs", limit=limit
+    )
 
 
-@app.get("/api/v1/tools", response_model=ToolsResponse, tags=["Tools"])
-async def list_tools() -> ToolsResponse:
+@app.get("/api/v1/tools", response_model=APIEnvelope, tags=["Tools"])
+async def list_tools() -> APIEnvelope:
     """List all available pipeline steps/tools."""
     tools = [ToolInfo(**t) for t in job_mgr.get_pipeline_tools()]
-    return ToolsResponse(tools=tools, total=len(tools))
+    response = ToolsResponse(tools=tools, total=len(tools))
+    return success_envelope(response.model_dump(mode="json"), endpoint="list_tools")
 
 
-@app.post("/api/v1/tools/{step}", response_model=JobResponse, tags=["Tools"])
+@app.post("/api/v1/tools/{step}", response_model=APIEnvelope, tags=["Tools"])
 async def invoke_tool(
     step: int, request: ToolRequest, background_tasks: BackgroundTasks
-) -> JobResponse:
+) -> APIEnvelope:
     """
     Invoke a single pipeline step as a job.
 
@@ -216,22 +236,31 @@ async def invoke_tool(
     except PathValidationError as err:
         raise HTTPException(status_code=400, detail=str(err)) from err
 
-    job_id = job_mgr.create_job(
-        target_dir=str(target_path),
-        output_dir=str(output_path),
-        steps=[step],
-        verbose=request.verbose,
-    )
+    try:
+        job_id = job_mgr.create_job(
+            target_dir=str(target_path),
+            output_dir=str(output_path),
+            steps=[step],
+            verbose=request.verbose,
+        )
+    except ValueError as err:
+        raise HTTPException(status_code=400, detail=str(err)) from err
 
     background_tasks.add_task(job_mgr.execute_job_async, job_id)
 
+    job = job_mgr.get_job(job_id)
+    if job is None:
+        raise HTTPException(status_code=500, detail=f"Job {job_id} was not registered")
     step_name = job_mgr.PIPELINE_STEPS[step][0]
-    return JobResponse(
+    response = JobResponse(
         job_id=job_id,
         status=JobStatus.PENDING,
-        created_at=datetime.now(),
+        created_at=datetime.fromisoformat(job["created_at"]),
         steps_requested=[step],
         message=f"Step {step} ({step_name}) queued as job {job_id}",
+    )
+    return success_envelope(
+        response.model_dump(mode="json"), endpoint="invoke_tool", job_id=job_id
     )
 
 

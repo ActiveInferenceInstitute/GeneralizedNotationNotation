@@ -1,7 +1,7 @@
 # GUI Module (Interactive GNN Constructors)
 
 ## Overview
-The GUI module provides **three distinct interactive interfaces** for constructing and editing GNN models:
+The GUI module provides **four interactive interfaces** for constructing and editing GNN models: GUI 1, GUI 2, GUI 3, and oxdraw.
 
 ### GUI 1: Form-based Interactive GNN Constructor
 - Interactive two-pane editor for GNN models
@@ -32,16 +32,16 @@ The GUI module provides **three distinct interactive interfaces** for constructi
 
 ## Usage
 ```bash
-# Run all available GUIs (default)
-python src/22_gui.py --target-dir input/gnn_files --output-dir output --verbose
+# Run the default GUI set in headless pipeline mode
+python src/22_gui.py --target-dir input/gnn_files --output-dir output --headless --verbose
 
 # Run specific GUI
-python src/22_gui.py --gui-mode gui_1 --target-dir input/gnn_files --output-dir output --verbose
-python src/22_gui.py --gui-mode gui_2 --target-dir input/gnn_files --output-dir output --verbose
-python src/22_gui.py --gui-mode gui_3 --target-dir input/gnn_files --output-dir output --verbose
+python src/22_gui.py --gui-types gui_1 --target-dir input/gnn_files --output-dir output --interactive --verbose
+python src/22_gui.py --gui-types gui_2 --target-dir input/gnn_files --output-dir output --interactive --verbose
+python src/22_gui.py --gui-types gui_3 --target-dir input/gnn_files --output-dir output --interactive --verbose
 
 # Run multiple specific GUIs
-python src/22_gui.py --gui-mode "gui_1,gui_2,gui_3" --target-dir input/gnn_files --output-dir output --verbose
+python src/22_gui.py --gui-types "gui_1,gui_2,gui_3,oxdraw" --target-dir input/gnn_files --output-dir output --headless --verbose
 ```
 
 - With dependencies available, local web UIs launch (in-browser). Otherwise, headless artifacts are generated.

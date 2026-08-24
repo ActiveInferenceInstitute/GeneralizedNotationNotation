@@ -270,18 +270,13 @@ uv run --extra dev python -m pytest src/tests/test_website*.py \
 ## MCP Integration
 
 ### Tools Registered
-- `website.generate` - Generate website from artifacts
-- `website.create_report` - Create HTML reports
-- `website.embed_assets` - Embed assets in HTML
-- `website.validate_content` - Validate website content
+- `process_website` - Generate a website from a target directory
+- `build_website_from_pipeline_output` - Discover numbered pipeline artifacts and build the site
+- `get_website_status` - Inspect completeness of an existing generated site
+- `list_generated_website_pages` - List generated HTML pages and metadata
+- `get_website_module_info` - Return website features and the live MCP inventory
 
-### Tool Endpoints
-```python
-@mcp_tool("website.generate")
-def generate_website_tool(artifacts_dir, output_dir):
-    """Generate website from pipeline artifacts"""
-    # Implementation
-```
+The module-info inventory and `register_tools()` use these same five names.
 
 ### MCP File Location
 - `src/website/mcp.py` - MCP tool registrations

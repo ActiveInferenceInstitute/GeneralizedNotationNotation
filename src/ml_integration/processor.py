@@ -19,6 +19,7 @@ Features extracted from GNN structure:
 import json
 import logging
 import re
+from collections import Counter
 from pathlib import Path
 from typing import Any, Dict, List
 
@@ -152,7 +153,9 @@ def _extract_dimensions(content: str) -> Dict[str, List[int]]:
     """Extract variable dimensions from StateSpaceBlock."""
     dims: dict[Any, Any] = {}
     in_state_space = False
-    pattern = r"^([A-Za-z_][A-Za-z0-9_\']*)\s*\[([^\]]+)\]"
+    # ``[^\W\d]`` is a Unicode letter/underscore, so canonical GNN names
+    # such as π are retained alongside ASCII identifiers.
+    pattern = r"^([^\W\d]\w*\'?)\s*\[([^\]]+)\]"
 
     for line in content.splitlines():
         stripped = line.strip()
@@ -279,7 +282,8 @@ def process_ml_integration(
             has_sklearn = False
             ml_results["framework_status"]["sklearn"] = "missing"
 
-        gnn_files = list(target_dir.glob("*.md"))
+        discovery = target_dir.rglob("*.md") if recursive else target_dir.glob("*.md")
+        gnn_files = sorted(discovery)
         if not gnn_files:
             logger.warning(f"No GNN files found in {target_dir}")
             ml_results["status"] = "no_files"
@@ -312,7 +316,7 @@ def process_ml_integration(
                         "source": feats["file_name"],
                         "type": "structural_analysis",
                         "framework": "internal_stats",
-                        "accuracy": 1.0,
+                        "validation_status": "not_applicable",
                         "note": "sklearn not available",
                         "model_family": feats.get("model_family"),
                         "num_states": feats.get("num_states", 0),
@@ -328,7 +332,7 @@ def process_ml_integration(
                         "source": feats["file_name"],
                         "type": "structural_analysis",
                         "framework": "internal_stats",
-                        "accuracy": 1.0,
+                        "validation_status": "not_applicable",
                         "note": f"Need >=2 GNN files for ML classification (have {len(all_features)})",
                         "model_family": feats.get("model_family"),
                         "num_states": feats.get("num_states", 0),
@@ -350,6 +354,14 @@ def process_ml_integration(
     except Exception as e:
         logger.error(f"ML integration failed: {e}")
         return False
+
+
+def _cross_validation_folds(labels: List[int]) -> int:
+    """Return a valid stratified fold count, or zero when CV is unsupported."""
+    class_counts = Counter(labels)
+    if len(class_counts) < 2 or min(class_counts.values()) < 2:
+        return 0
+    return min(5, len(labels), min(class_counts.values()))
 
 
 def _train_models(
@@ -432,16 +444,22 @@ def _train_models(
         label_names = list(le.classes_)
         task = "family_classification"
 
+    if len(np.unique(y)) < 2:
+        ml_results["classification_task"] = task
+        ml_results["classification_status"] = "insufficient_label_variation"
+        ml_results["label_names"] = label_names
+        ml_results["training_note"] = (
+            "No classifier was trained because every sample has the same label"
+        )
+        _save_feature_analysis(all_features, ml_results, output_dir)
+        return
+
     ml_results["classification_task"] = task
+    ml_results["classification_status"] = "trained"
     ml_results["label_names"] = label_names
 
-    # Cross-validation: cap folds by both sample count and smallest class count
-    # to avoid sklearn warnings about underpopulated classes
-    from collections import Counter
-
-    class_counts = Counter(y)
-    min_class_count = min(class_counts.values()) if class_counts else 1
-    n_folds = min(5, len(X), min_class_count)
+    # Cross-validation requires at least two members of every represented class.
+    n_folds = _cross_validation_folds([int(label) for label in y.tolist()])
 
     for model_name, clf in [
         ("decision_tree", DecisionTreeClassifier(max_depth=4, random_state=42)),
@@ -455,10 +473,11 @@ def _train_models(
                 cv_scores = cross_val_score(clf, X, y, cv=n_folds, scoring="accuracy")
                 cv_mean = float(cv_scores.mean())
                 cv_std = float(cv_scores.std())
+                validation_status = "cross_validated"
             else:
-                clf.fit(X, y)
-                cv_mean = float(clf.score(X, y))
-                cv_std = 0.0
+                cv_mean = None
+                cv_std = None
+                validation_status = "insufficient_class_support"
 
             # Fit on all data
             clf.fit(X, y)
@@ -474,6 +493,7 @@ def _train_models(
                 "framework": "sklearn",
                 "task": task,
                 "train_accuracy": train_accuracy,
+                "validation_status": validation_status,
                 "cv_mean_accuracy": cv_mean,
                 "cv_std": cv_std,
                 "n_folds": n_folds,
@@ -500,20 +520,33 @@ def _train_models(
             ml_results["models_trained"].append(model_info)
 
             if verbose:
-                logger.info(
-                    f"  {model_name}: CV accuracy={cv_mean:.3f}+/-{cv_std:.3f}, "
-                    f"top feature={sorted_feats[0][0]}"
-                )
+                if cv_mean is not None and cv_std is not None:
+                    logger.info(
+                        f"  {model_name}: CV accuracy={cv_mean:.3f}+/-{cv_std:.3f}, "
+                        f"top feature={sorted_feats[0][0]}"
+                    )
+                else:
+                    logger.info(
+                        f"  {model_name}: train accuracy={train_accuracy:.3f}; "
+                        "cross-validation unavailable due to class support"
+                    )
 
         except Exception as e:
             logger.error(f"Failed to train {model_name}: {e}")
 
     # Store feature importance from best model
     if ml_results["models_trained"]:
-        best = max(
-            ml_results["models_trained"], key=lambda m: m.get("cv_mean_accuracy", 0)
+        validated_models = [
+            model
+            for model in ml_results["models_trained"]
+            if isinstance(model.get("cv_mean_accuracy"), (int, float))
+        ]
+        selected = (
+            max(validated_models, key=lambda model: model["cv_mean_accuracy"])
+            if validated_models
+            else ml_results["models_trained"][0]
         )
-        ml_results["feature_importance"] = best.get("feature_importance", {})
+        ml_results["feature_importance"] = selected.get("feature_importance", {})
 
 
 def _save_feature_analysis(

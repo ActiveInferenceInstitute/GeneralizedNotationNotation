@@ -6,6 +6,7 @@ This module provides report processing capabilities.
 """
 
 import logging
+from html import escape as html_escape
 from pathlib import Path
 from typing import Any, Dict, cast
 
@@ -41,7 +42,7 @@ def process_report(
         results: dict[str, Any] = {"processed_files": 0, "success": True, "errors": []}
 
         # Find GNN files
-        gnn_files = list(target_dir.glob("*.md"))
+        gnn_files = sorted(target_dir.glob("*.md"))
         if gnn_files:
             results["processed_files"] = len(gnn_files)
 
@@ -49,8 +50,8 @@ def process_report(
         import json
 
         results_file = results_dir / "report_results.json"
-        with open(results_file, "w") as f:
-            json.dump(results, f, indent=2)
+        with open(results_file, "w", encoding="utf-8") as f:
+            json.dump(results, f, indent=2, sort_keys=True)
 
         if results["success"]:
             log_step_success(logger, "report processing completed successfully")
@@ -84,18 +85,28 @@ def generate_comprehensive_report(
     try:
         log_step_start(logger, "Generating comprehensive report")
 
+        supported_formats = {"html", "json", "markdown"}
+        if format not in supported_formats:
+            message = (
+                f"Unsupported report format {format!r}; expected one of "
+                f"{sorted(supported_formats)}"
+            )
+            log_step_error(logger, message)
+            return {"success": False, "error": message, "format": format}
+
         # Create report directory
         report_dir = output_dir
         report_dir.mkdir(parents=True, exist_ok=True)
 
         # Analyze GNN files
-        gnn_files = list(target_dir.glob("*.md"))
+        gnn_files = sorted(target_dir.glob("*.md"))
 
         report_data: dict[str, Any] = {
-            "timestamp": str(Path(__file__).stat().st_mtime),
+            "timestamp": "unavailable",
+            "timestamp_source": "not_provided",
             "total_files": len(gnn_files),
             "files_analyzed": [],
-            "summary": {"success": True, "errors": []},
+            "summary": {"success": True, "successful_files": 0, "errors": []},
         }
 
         # Process each file
@@ -105,35 +116,54 @@ def generate_comprehensive_report(
                 report_data["files_analyzed"].append(
                     {"file": str(gnn_file), "info": file_info}
                 )
+                if "error" in file_info:
+                    report_data["summary"]["errors"].append(
+                        {"file": str(gnn_file), "error": file_info["error"]}
+                    )
+                else:
+                    report_data["summary"]["successful_files"] += 1
             except Exception as e:
                 error_info: dict[str, Any] = {"file": str(gnn_file), "error": str(e)}
                 report_data["summary"]["errors"].append(error_info)
+
+        report_data["summary"]["success"] = not report_data["summary"]["errors"]
 
         # Generate report in specified format
         if format == "json":
             report_file = report_dir / "comprehensive_report.json"
             import json
 
-            with open(report_file, "w") as f:
-                json.dump(report_data, f, indent=2)
+            with open(report_file, "w", encoding="utf-8") as f:
+                json.dump(report_data, f, indent=2, sort_keys=True)
         elif format == "html":
             report_file = report_dir / "comprehensive_report.html"
             html_content = generate_html_report(report_data)
-            with open(report_file, "w") as f:
+            with open(report_file, "w", encoding="utf-8") as f:
                 f.write(html_content)
         elif format == "markdown":
             report_file = report_dir / "comprehensive_report.md"
             markdown_content = generate_markdown_report(report_data)
-            with open(report_file, "w") as f:
+            with open(report_file, "w", encoding="utf-8") as f:
                 f.write(markdown_content)
 
-        log_step_success(logger, f"Comprehensive report generated in {format} format")
+        if report_data["summary"]["success"]:
+            log_step_success(
+                logger, f"Comprehensive report generated in {format} format"
+            )
+        else:
+            log_step_error(
+                logger,
+                "Comprehensive report generated with "
+                f"{len(report_data['summary']['errors'])} analysis error(s)",
+            )
 
         return {
-            "success": True,
+            "success": report_data["summary"]["success"],
             "report_file": str(report_file),
             "format": format,
-            "files_analyzed": len(report_data["files_analyzed"]),
+            "files_scanned": report_data["total_files"],
+            "files_analyzed": report_data["summary"]["successful_files"],
+            "error_count": len(report_data["summary"]["errors"]),
         }
 
     except Exception as e:
@@ -152,7 +182,7 @@ def analyze_gnn_file(file_path: Path) -> Dict[str, Any]:
         Dictionary with file analysis
     """
     try:
-        with open(file_path, "r") as f:
+        with open(file_path, "r", encoding="utf-8") as f:
             content = f.read()
 
         # Basic analysis
@@ -191,6 +221,19 @@ def generate_html_report(report_data: Dict[str, Any]) -> str:
     Returns:
         HTML content string
     """
+    summary = report_data.get("summary", {})
+    successful_files = summary.get(
+        "successful_files",
+        sum(
+            "error" not in item.get("info", {})
+            for item in report_data.get("files_analyzed", [])
+        ),
+    )
+    evidence_as_of = html_escape(str(report_data.get("timestamp", "unavailable")))
+    total_files = html_escape(str(report_data.get("total_files", 0)))
+    successful_files_text = html_escape(str(successful_files))
+    error_count = html_escape(str(len(summary.get("errors", []))))
+
     html = f"""
     <!DOCTYPE html>
     <html lang="en">
@@ -255,8 +298,8 @@ def generate_html_report(report_data: Dict[str, Any]) -> str:
     </head>
     <body>
         <div class="manuscript-header">
-            <h1>GNN Pipeline Complete Output Report</h1>
-            <p style="font-style: italic; color: var(--text-muted);">Generated on: {report_data.get("timestamp", "Unknown")}</p>
+            <h1>GNN Structural Input Report</h1>
+            <p style="font-style: italic; color: var(--text-muted);">Evidence as of: {evidence_as_of}</p>
         </div>
         
         <div class="mermaid-container">
@@ -271,14 +314,14 @@ def generate_html_report(report_data: Dict[str, Any]) -> str:
                 E --> G[Final Analysis]
                 F --> G
             </div>
-            <p style="font-size: 0.8em; color: var(--text-muted);">Figure 1. GNN pipeline flow diagram demonstrating data integration topologies.</p>
+            <p style="font-size: 0.8em; color: var(--text-muted);">Figure 1. Reference pipeline topology; this diagram is not execution evidence.</p>
         </div>
 
         <h2>I. Executive Summary</h2>
         <div class="metadata-block">
-            <p><strong>Total Scanned Entities:</strong> {report_data.get("total_files", 0)}</p>
-            <p><strong>Entities Successfully Evaluated:</strong> {len(report_data.get("files_analyzed", []))}</p>
-            <p><strong>Evaluation Errors:</strong> {len(report_data.get("summary", {}).get("errors", []))}</p>
+            <p><strong>Total Scanned Entities:</strong> {total_files}</p>
+            <p><strong>Entities Successfully Evaluated:</strong> {successful_files_text}</p>
+            <p><strong>Evaluation Errors:</strong> {error_count}</p>
         </div>
         
         <h2>II. Processed Models Validation</h2>
@@ -287,11 +330,12 @@ def generate_html_report(report_data: Dict[str, Any]) -> str:
 
     for file_info in report_data.get("files_analyzed", []):
         info = file_info.get("info", {})
-        size = info.get("file_size", 0)
-        lines = info.get("lines", 0)
+        name = html_escape(Path(file_info["file"]).name)
+        size = html_escape(str(info.get("file_size", 0)))
+        lines = html_escape(str(info.get("lines", 0)))
         html += f"""
             <div class="file-card">
-                <strong>{Path(file_info["file"]).name}</strong>
+                <strong>{name}</strong>
                 <p>Size: {size} bytes | Lines: {lines}</p>
                 <p>State Space Matrix: <code>{"Yes" if info.get("has_state_space") else "No"}</code></p>
             </div>
@@ -316,10 +360,19 @@ def generate_markdown_report(report_data: Dict[str, Any]) -> str:
     Returns:
         Markdown content string
     """
+    summary = report_data.get("summary", {})
+    successful_files = summary.get(
+        "successful_files",
+        sum(
+            "error" not in item.get("info", {})
+            for item in report_data.get("files_analyzed", [])
+        ),
+    )
     markdown = f"""# GNN Comprehensive Analysis Report
 
-> **Generated on:** {report_data.get("timestamp", "Unknown")}
+> **Evidence as of:** {report_data.get("timestamp", "unavailable")}
 > **Purpose:** Top-level structural audit of GNN notation topologies.
+> **Evidence note:** The topology below is a reference diagram, not execution proof.
 
 ## System Topology Flow
 
@@ -338,8 +391,8 @@ graph LR
 ## I. Executive Summary
 
 - **Total Scanned Entities**: {report_data.get("total_files", 0)}
-- **Entities Successfully Evaluated**: {len(report_data.get("files_analyzed", []))}
-- **Evaluation Errors**: {len(report_data.get("summary", {}).get("errors", []))}
+- **Entities Successfully Evaluated**: {successful_files}
+- **Evaluation Errors**: {len(summary.get("errors", []))}
 
 ## II. Processed Models Validation
 
@@ -349,7 +402,7 @@ graph LR
 
     for file_info in report_data.get("files_analyzed", []):
         info = file_info.get("info", {})
-        name = Path(file_info["file"]).name
+        name = Path(file_info["file"]).name.replace("|", "\\|").replace("\n", " ")
         size = info.get("file_size", 0)
         lines = info.get("lines", 0)
         has_state = "✅ Yes" if info.get("has_state_space") else "❌ No"

@@ -221,16 +221,13 @@ uv run --extra dev python -m pytest src/tests/test_integration*.py \
 ## MCP Integration
 
 ### Tools Registered
-- `integration_status` - Check integration system status
-- `integration_coordinate` - Coordinate pipeline step execution
+- `process_integration` - Run third-party integration processing
+- `list_supported_integrations` - List integration targets and availability
+- `get_integration_status` - Inspect artifacts from a previous integration run
+- `check_integration_dependencies` - Report optional integration dependencies
 
-### Tool Endpoints
-```python
-@mcp_tool("integration_status")
-def get_integration_status():
-    """Get current integration system status"""
-    # Implementation
-```
+Each name above is registered by `register_tools()` with a named callable,
+JSON input schema, module/category metadata, and explicit success/error results.
 
 ### MCP File Location
 - `src/integration/mcp.py` - MCP tool registrations

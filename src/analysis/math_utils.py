@@ -24,12 +24,19 @@ def compute_shannon_entropy(distribution: np.ndarray) -> float:
         distribution: Probability distribution (must sum to 1)
 
     Returns:
-        Shannon entropy in nats
+        Shannon entropy in nats. Returns 0.0 for an empty or fully
+        degenerate (non-finite-only) input so callers never see a NaN.
     """
-    # Ensure valid probability distribution
     p = np.asarray(distribution, dtype=np.float64)
+    if p.size == 0:
+        return 0.0
+    # Neutralise NaN/inf so a corrupted input cannot poison the result.
+    p = np.where(np.isfinite(p), p, 0.0)
     p = np.clip(p, 1e-10, 1.0)
-    p = p / np.sum(p)  # Normalize
+    total = float(np.sum(p))
+    if not np.isfinite(total) or total <= 0.0:
+        return 0.0
+    p = p / total  # Normalize
     return float(-np.sum(p * np.log(p + 1e-10)))
 
 
@@ -42,18 +49,25 @@ def compute_kl_divergence(p: np.ndarray, q: np.ndarray) -> float:
         q: Second probability distribution (Q)
 
     Returns:
-        KL divergence in nats
+        KL divergence in nats. Returns 0.0 for empty or degenerate inputs.
     """
-    p = np.asarray(p, dtype=np.float64)
-    q = np.asarray(q, dtype=np.float64)
-
-    # Ensure valid probability distributions
-    p = np.clip(p, 1e-10, 1.0)
-    q = np.clip(q, 1e-10, 1.0)
-    p = p / np.sum(p)
-    q = q / np.sum(q)
-
-    return float(np.sum(p * np.log((p + 1e-10) / (q + 1e-10))))
+    p_dist = np.asarray(p, dtype=np.float64)
+    q_dist = np.asarray(q, dtype=np.float64)
+    if p_dist.size == 0 or q_dist.size == 0:
+        return 0.0
+    p_dist = np.where(np.isfinite(p_dist), p_dist, 0.0)
+    q_dist = np.where(np.isfinite(q_dist), q_dist, 0.0)
+    p_dist = np.clip(p_dist, 1e-10, 1.0)
+    q_dist = np.clip(q_dist, 1e-10, 1.0)
+    p_total = float(np.sum(p_dist))
+    q_total = float(np.sum(q_dist))
+    if not np.isfinite(p_total) or not np.isfinite(q_total):
+        return 0.0
+    if p_total <= 0.0 or q_total <= 0.0:
+        return 0.0
+    p_dist = p_dist / p_total
+    q_dist = q_dist / q_total
+    return float(np.sum(p_dist * np.log((p_dist + 1e-10) / (q_dist + 1e-10))))
 
 
 def compute_variational_free_energy(
@@ -79,6 +93,8 @@ def compute_variational_free_energy(
         Variational free energy value
     """
     q_s = np.asarray(beliefs, dtype=np.float64)
+    if q_s.size == 0:
+        return 0.0
     q_s = np.clip(q_s, 1e-10, 1.0)
     q_s = q_s / np.sum(q_s)
 
@@ -143,12 +159,19 @@ def compute_expected_free_energy(
         Expected free energy value
     """
     q_s = np.asarray(beliefs, dtype=np.float64)
+    if q_s.size == 0:
+        return 0.0
     q_s = np.clip(q_s, 1e-10, 1.0)
     q_s = q_s / np.sum(q_s)
 
     A = np.asarray(A_matrix, dtype=np.float64)
     B = np.asarray(B_matrix, dtype=np.float64)
     C = np.asarray(C_vector, dtype=np.float64)
+
+    # Degenerate/empty matrices carry no information; report zero EFE so
+    # callers never hit a dimension mismatch or a NaN.
+    if A.size == 0 or B.size == 0 or C.size == 0:
+        return 0.0
 
     # Predict next state distribution under policy
     if B.ndim == 3 and policy < B.shape[2]:
@@ -280,8 +303,13 @@ def analyze_active_inference_metrics(
             np.array(list(action_counts.values()))
         )
 
-    # Belief certainty (1 - entropy normalized)
-    max_entropy = np.log(beliefs_array.shape[1]) if beliefs_array.shape[1] > 1 else 1.0
+    # Belief certainty (1 - entropy normalized). Guard the shape so a flat
+    # (single-vector) belief list cannot raise on ``shape[1]``.
+    if beliefs_array.ndim >= 2:
+        n_states = beliefs_array.shape[1]
+        max_entropy = np.log(n_states) if n_states > 1 else 1.0
+    else:
+        max_entropy = 1.0
     certainty_trajectory = [1.0 - (e / max_entropy) for e in entropy_trajectory]
     analysis["metrics"]["certainty"] = {
         "trajectory": certainty_trajectory,

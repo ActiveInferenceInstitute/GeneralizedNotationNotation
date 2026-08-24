@@ -415,17 +415,14 @@ uv run --extra dev python -m pytest src/tests/test_gui*.py \
 ## MCP Integration
 
 ### Tools Registered
-- `gui_construct` - Launch GNN model constructor
-- `gui_edit` - Edit existing GNN models visually
-- `gui_validate` - Validate models through GUI interface
-
-### Tool Endpoints
-```python
-@mcp_tool("gui_construct")
-def construct_model_gui(model_type="pymdp", interactive=True):
-    """Launch GUI for constructing new GNN model"""
-    # Implementation
-```
+- `process_gui` - Generate or launch the selected GUI surfaces
+- `list_available_guis` - List GUI implementations and capabilities
+- `get_gui_module_info` - Return GUI module metadata and inventory
+- `oxdraw.convert_to_mermaid` - Convert a GNN model to Mermaid
+- `oxdraw.convert_from_mermaid` - Convert Mermaid to GNN
+- `oxdraw.launch_editor` - Launch the oxdraw editor
+- `oxdraw.check_installation` - Check the oxdraw runtime
+- `oxdraw.get_info` - Return oxdraw metadata
 
 ---
 
@@ -477,18 +474,10 @@ def construct_model_gui(model_type="pymdp", interactive=True):
 
 ## MCP Integration
 
-### Tools Registered
-- `gui.construct_model` - Construct GNN model using GUI
-- `gui.edit_component` - Edit model component
-- `gui.visualize_model` - Visualize model structure
-
-### Tool Endpoints
-```python
-@mcp_tool("gui.construct_model")
-def construct_model_tool(components: List[Dict]) -> Dict[str, Any]:
-    """Construct GNN model from components"""
-    # Implementation
-```
+The canonical eight-tool inventory is listed in the MCP Integration section
+above. Parent GUI registration wraps the five oxdraw handlers so both the
+parent discovery path and direct `gui.oxdraw.mcp.register_tools()` path accept
+normal MCP keyword arguments.
 
 ### MCP File Location
 - `src/gui/mcp.py` - MCP tool registrations

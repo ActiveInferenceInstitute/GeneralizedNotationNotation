@@ -10,7 +10,6 @@ optimization suggestions.
 import logging
 import re
 from dataclasses import dataclass, field
-from datetime import datetime
 from typing import Any, Dict, List, Optional, cast
 
 
@@ -19,7 +18,7 @@ class AnalysisContext:
     """Context object for pipeline analysis."""
 
     summary_data: Dict[str, Any]
-    timestamp: str = field(default_factory=lambda: datetime.now().isoformat())
+    timestamp: str = "unavailable"
     pipeline_name: str = "GNN Pipeline"
     analysis_type: str = "comprehensive"
     overall_status: str = field(init=False)
@@ -33,6 +32,12 @@ class AnalysisContext:
         self.total_duration = self.summary_data.get("total_duration_seconds", 0.0)
         self.steps = self.summary_data.get("steps", [])
         self.performance_summary = self.summary_data.get("performance_summary", {})
+        if self.timestamp == "unavailable":
+            for key in ("end_time", "start_time", "timestamp"):
+                value = self.summary_data.get(key)
+                if isinstance(value, str) and value:
+                    self.timestamp = value
+                    break
 
     def get_failed_steps(self) -> List[Dict[str, Any]]:
         """Get list of failed steps."""
@@ -87,7 +92,7 @@ class IntelligentAnalyzer:
             raise ValueError("No analysis context set")
 
         results: dict[str, Any] = {
-            "timestamp": datetime.now().isoformat(),
+            "timestamp": self.context.timestamp,
             "pipeline_name": self.context.pipeline_name,
             "overall_status": self.context.overall_status,
             "health_score": self.calculate_health_score(),
@@ -258,8 +263,10 @@ def calculate_pipeline_health_score(summary_data: Dict[str, Any]) -> float:
     total_steps = len(steps)
 
     # Success rate component (40%)
-    failed = len([s for s in steps if s.get("status") == "FAILED"])
-    success_rate = (total_steps - failed) / total_steps
+    successful = len(
+        [s for s in steps if str(s.get("status", "")).upper().startswith("SUCCESS")]
+    )
+    success_rate = successful / total_steps
     success_score = success_rate * 40
 
     # Warning rate component (20%)
@@ -278,6 +285,15 @@ def calculate_pipeline_health_score(summary_data: Dict[str, Any]) -> float:
     memory_score = memory_efficiency * 20
 
     total_score = success_score + warning_score + duration_score + memory_score
+    known_statuses = len(
+        [
+            step
+            for step in steps
+            if str(step.get("status", "")).upper().startswith("SUCCESS")
+            or str(step.get("status", "")).upper() == "FAILED"
+        ]
+    )
+    total_score *= known_statuses / total_steps
     return cast("float", min(100.0, max(0.0, total_score)))
 
 
@@ -434,19 +450,18 @@ def generate_optimization_suggestions(
     perf = summary_data.get("performance_summary", {})
 
     # Suggestion 1: Parallelization opportunities
-    independent_steps: list[Any] = []
-    for _, step in enumerate(steps):
-        if not step.get("dependency_warnings"):
-            independent_steps.append(step.get("script_name"))
+    independent_steps = [
+        step.get("script_name") for step in steps if step.get("parallelizable") is True
+    ]
 
     if len(independent_steps) >= 3:
         suggestions.append(
             {
                 "type": "parallelization",
                 "impact": "high",
-                "description": f"{len(independent_steps)} steps may be parallelizable",
+                "description": f"{len(independent_steps)} steps are explicitly marked parallelizable",
                 "steps": independent_steps[:5],
-                "estimated_savings": "20-40% duration reduction",
+                "evidence": "pipeline execution receipt parallelizable=true",
             }
         )
 
@@ -457,9 +472,9 @@ def generate_optimization_suggestions(
             {
                 "type": "caching",
                 "impact": "medium",
-                "description": f"{len(slow_steps)} slow steps could benefit from caching",
+                "description": f"Measure cache benefit for {len(slow_steps)} steps exceeding 30 seconds",
                 "steps": [s.get("script_name") for s in slow_steps[:3]],
-                "estimated_savings": "30-50% on repeated runs",
+                "evidence": "observed duration_seconds > 30",
             }
         )
 
@@ -472,7 +487,7 @@ def generate_optimization_suggestions(
                 "impact": "medium",
                 "description": f"Peak memory {peak_memory:.0f}MB exceeds 1GB",
                 "recommendation": "Consider streaming processing or chunked data loading",
-                "target": "Reduce peak to under 1GB",
+                "evidence": "recorded performance_summary.peak_memory_mb",
             }
         )
 
@@ -488,7 +503,7 @@ def generate_optimization_suggestions(
                 "impact": "high",
                 "description": "Significant time spent on failed steps",
                 "recommendation": "Add fail-fast checks or pre-validation",
-                "potential_savings": f"{failed_step_durations:.0f}s on failure cases",
+                "observed_failed_step_time_seconds": round(failed_step_durations, 3),
             }
         )
 

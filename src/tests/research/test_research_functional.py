@@ -128,8 +128,7 @@ class TestResearchFunctional:
         out.mkdir()
 
         result = process_research(nonexistent, out, verbose=False)
-        assert isinstance(result, bool)
-        # glob on nonexistent path should raise or return empty; processor handles gracefully
+        assert result is False
 
     @pytest.mark.unit
     def test_output_artifacts_created(
@@ -232,3 +231,63 @@ class TestResearchFunctional:
         result = process_research(target, out, verbose=False)
         assert isinstance(result, bool)
         assert result is True
+
+    @pytest.mark.unit
+    def test_recursive_unicode_analysis_is_deterministic(self, tmp_path: Any) -> None:
+        target = tmp_path / "input" / "nested"
+        target.mkdir(parents=True)
+        (target / "greek.md").write_text(
+            "## StateSpaceBlock\nπ[4,type=categorical]\nA[2,3]\n",
+            encoding="utf-8",
+        )
+        first = tmp_path / "first"
+        second = tmp_path / "second"
+
+        assert process_research(tmp_path / "input", first, recursive=True)
+        assert process_research(tmp_path / "input", second, recursive=True)
+
+        first_bytes = (first / "research_results.json").read_bytes()
+        second_bytes = (second / "research_results.json").read_bytes()
+        assert first_bytes == second_bytes
+        data = json.loads(first_bytes)
+        evidence = data["hypotheses_generated"][0]["analysis_evidence"]
+        assert evidence["dimensions"]["π"] == [4]
+        assert data["claim_scope"] == "prospective_unvalidated_hypotheses"
+
+
+@pytest.mark.unit
+def test_llm_hypothesis_validation_rejects_unstructured_claims() -> None:
+    from research.processor import _validate_llm_hypotheses
+
+    value = [
+        {"type": "Bad Type", "description": "x", "rationale": "y", "priority": "high"},
+        {
+            "type": "test_precision",
+            "description": "Test precision sensitivity",
+            "rationale": "The model exposes a precision parameter.",
+            "priority": "medium",
+            "unsupported": "discard me",
+        },
+    ]
+
+    assert _validate_llm_hypotheses(value) == [
+        {
+            "type": "test_precision",
+            "description": "Test precision sensitivity",
+            "rationale": "The model exposes a precision parameter.",
+            "priority": "medium",
+            "source": "llm_generated",
+            "claim_scope": "prospective_unvalidated_hypothesis",
+        }
+    ]
+
+
+@pytest.mark.unit
+def test_model_family_fallback_requires_complete_pomdp_structure() -> None:
+    from research.processor import detect_model_family
+
+    complete = "\n".join([" A[2,2]", "B[2,2,2]", "C[2]", "D[2]", "π[2]"])
+    incomplete = "\n".join(["A[2,2]", "B[2,2,2]", "π[2]"])
+
+    assert detect_model_family(complete) == "pomdp"
+    assert detect_model_family(incomplete) == "unknown"

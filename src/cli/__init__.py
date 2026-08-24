@@ -43,6 +43,34 @@ from typing import List, Optional
 
 logger = logging.getLogger(__name__)
 
+EXIT_SUCCESS = 0
+EXIT_ERROR = 1
+EXIT_WARNING = 2
+
+
+def _pipeline_step(value: str) -> int:
+    """Parse one pipeline step number for argparse."""
+    try:
+        step = int(value)
+    except ValueError as exc:
+        raise argparse.ArgumentTypeError(
+            "step must be an integer from 0 to 24"
+        ) from exc
+    if not 0 <= step <= 24:
+        raise argparse.ArgumentTypeError("step must be between 0 and 24")
+    return step
+
+
+def _tcp_port(value: str) -> int:
+    """Parse a valid TCP port for argparse."""
+    try:
+        port = int(value)
+    except ValueError as exc:
+        raise argparse.ArgumentTypeError("port must be an integer") from exc
+    if not 1 <= port <= 65535:
+        raise argparse.ArgumentTypeError("port must be between 1 and 65535")
+    return port
+
 
 def _envelope(
     status: str,
@@ -76,14 +104,16 @@ def main(argv: Optional[List[str]] = None) -> int:
         "--target-dir", "-t", default="input/gnn_files", help="Input directory"
     )
     run_p.add_argument("--output-dir", "-o", default="output", help="Output directory")
-    run_p.add_argument("--skip-steps", nargs="*", type=int, help="Step numbers to skip")
+    run_p.add_argument(
+        "--skip-steps", nargs="*", type=_pipeline_step, help="Step numbers to skip"
+    )
+    run_p.add_argument(
+        "--only-steps", nargs="*", type=_pipeline_step, help="Only run these steps"
+    )
     run_p.add_argument(
         "--skip-llm",
         action="store_true",
         help="Skip LLM step (alias for --skip-steps 13)",
-    )
-    run_p.add_argument(
-        "--linear", action="store_true", help="Force linear execution (no DAG)"
     )
     run_p.add_argument(
         "--log-format",
@@ -180,7 +210,7 @@ def main(argv: Optional[List[str]] = None) -> int:
     # ── gnn serve ────────────────────────────────────────────────────────────
     serve_p = subparsers.add_parser("serve", help="Start Pipeline-as-a-Service API")
     serve_p.add_argument("--host", default="127.0.0.1", help="Bind host")
-    serve_p.add_argument("--port", type=int, default=8000, help="Bind port")
+    serve_p.add_argument("--port", type=_tcp_port, default=8000, help="Bind port")
 
     # ── gnn templates ───────────────────────────────────────────────────────
     templates_p = subparsers.add_parser("templates", help="Inspect template library")
@@ -284,6 +314,21 @@ def main(argv: Optional[List[str]] = None) -> int:
     # ── gnn lsp ──────────────────────────────────────────────────────────────
     subparsers.add_parser("lsp", help="Launch GNN Language Server")
 
+    # Accept global verbosity after the selected command too, matching the
+    # ordering used by the public CLI examples.
+    for command_parser in [
+        *subparsers.choices.values(),
+        *templates_sub.choices.values(),
+        *models_sub.choices.values(),
+    ]:
+        command_parser.add_argument(
+            "--verbose",
+            "-v",
+            action="store_true",
+            default=argparse.SUPPRESS,
+            help="Enable verbose output",
+        )
+
     args = parser.parse_args(argv)
 
     # Setup logging
@@ -297,7 +342,7 @@ def main(argv: Optional[List[str]] = None) -> int:
 
     if not args.command:
         parser.print_help()
-        return 0
+        return EXIT_WARNING
 
     # Dispatch
     handlers: dict[str, Any] = {
@@ -319,7 +364,19 @@ def main(argv: Optional[List[str]] = None) -> int:
     }
     handler = handlers.get(args.command)
     if handler:
-        return cast("int", handler(args))
+        try:
+            return cast("int", handler(args))
+        except KeyboardInterrupt:
+            logger.error("%s command interrupted", args.command)
+            return EXIT_ERROR
+        except Exception as exc:
+            logger.error(
+                "%s command failed: %s",
+                args.command,
+                exc,
+                exc_info=bool(args.verbose),
+            )
+            return EXIT_ERROR
     else:
         parser.print_help()
         return 1
@@ -330,6 +387,7 @@ def main(argv: Optional[List[str]] = None) -> int:
 
 def _cmd_run(args: Any) -> Any:
     """Execute full pipeline."""
+    original_argv = sys.argv
     try:
         from main import main as pipeline_main
 
@@ -344,26 +402,49 @@ def _cmd_run(args: Any) -> Any:
             extra_args.append("--verbose")
         if args.log_format == "json":
             extra_args.extend(["--log-format", "json"])
+        skipped_steps = set(args.skip_steps or ())
         if args.skip_llm:
-            extra_args.extend(["--skip-steps", "13"])
-        elif args.skip_steps:
-            extra_args.extend(["--skip-steps"] + [str(s) for s in args.skip_steps])
+            skipped_steps.add(13)
+        only_steps = set(getattr(args, "only_steps", None) or ())
+        overlap = skipped_steps & only_steps
+        if overlap:
+            logger.error(
+                "Steps cannot be both selected and skipped: %s", sorted(overlap)
+            )
+            return EXIT_ERROR
+        if only_steps:
+            extra_args.extend(
+                ["--only-steps", ",".join(str(step) for step in sorted(only_steps))]
+            )
+        if skipped_steps:
+            extra_args.extend(
+                ["--skip-steps", ",".join(str(step) for step in sorted(skipped_steps))]
+            )
         sys.argv.extend(extra_args)
         return pipeline_main()
     except ImportError as e:
         logger.error(f"Could not import pipeline: {e}")
-        return 1
+        return EXIT_ERROR
+    except Exception as e:
+        logger.error("Pipeline execution failed: %s", e, exc_info=True)
+        return EXIT_ERROR
+    finally:
+        sys.argv = original_argv
 
 
 def _cmd_validate(args: Any) -> Any:
     """Validate a GNN file."""
     is_json = getattr(args, "json", False)
-    if not args.file.exists():
-        logger.error(f"File not found: {args.file}")
+    if not args.file.is_file():
+        logger.error(f"GNN file not found or not a regular file: {args.file}")
         if is_json:
             print(
                 json.dumps(
-                    _envelope("error", error=f"File not found: {args.file}"), indent=2
+                    _envelope(
+                        "error",
+                        error=f"GNN file not found or not a regular file: {args.file}",
+                    ),
+                    indent=2,
                 )
             )
         return 1
@@ -425,8 +506,8 @@ def _cmd_validate(args: Any) -> Any:
             else:
                 print(f"\n⚠️ {len(errors)} warning(s) — pass --strict to fail")
         if args.strict:
-            return 1
-        return 0
+            return EXIT_ERROR
+        return EXIT_WARNING
     else:
         if is_json:
             print(
@@ -447,18 +528,22 @@ def _cmd_validate(args: Any) -> Any:
             print(
                 f"✅ {file_name}: valid ({len(variables)} variables, {len(connections)} connections)"
             )
-        return 0
+        return EXIT_SUCCESS
 
 
 def _cmd_parse(args: Any) -> Any:
     """Parse a GNN file and output JSON."""
     is_json = getattr(args, "json", False)
-    if not args.file.exists():
-        logger.error(f"File not found: {args.file}")
+    if not args.file.is_file():
+        logger.error(f"GNN file not found or not a regular file: {args.file}")
         if is_json:
             print(
                 json.dumps(
-                    _envelope("error", error=f"File not found: {args.file}"), indent=2
+                    _envelope(
+                        "error",
+                        error=f"GNN file not found or not a regular file: {args.file}",
+                    ),
+                    indent=2,
                 )
             )
         return 1
@@ -467,11 +552,12 @@ def _cmd_parse(args: Any) -> Any:
 
     from gnn.schema import parse_connections, parse_state_space
 
-    variables, _ = parse_state_space(content, file_path=str(args.file))
+    variables, variable_errors = parse_state_space(content, file_path=str(args.file))
     var_names = {v.name for v in variables}
-    connections, _ = parse_connections(
+    connections, connection_errors = parse_connections(
         content, known_variables=var_names, file_path=str(args.file)
     )
+    parse_errors = [*variable_errors, *connection_errors]
 
     # Try frontmatter
     metadata: dict[Any, Any] = {}
@@ -504,10 +590,22 @@ def _cmd_parse(args: Any) -> Any:
             }
             for c in connections
         ],
+        "warnings": [str(error) for error in parse_errors],
     }
 
     if is_json:
-        print(json.dumps(_envelope("success", data=result), indent=2))
+        print(
+            json.dumps(
+                _envelope(
+                    "warning" if parse_errors else "success",
+                    data=result,
+                    error=f"{len(parse_errors)} parse warning(s)"
+                    if parse_errors
+                    else None,
+                ),
+                indent=2,
+            )
+        )
     elif args.format == "summary":
         print(f"File: {args.file.name}")
         print(f"Variables: {len(variables)}")
@@ -516,13 +614,15 @@ def _cmd_parse(args: Any) -> Any:
             print(f"Metadata: {', '.join(metadata.keys())}")
     else:
         print(json.dumps(result, indent=2))
-    return 0
+    if parse_errors and not is_json:
+        logger.warning("Parsed %s with %d warning(s)", args.file, len(parse_errors))
+    return EXIT_WARNING if parse_errors else EXIT_SUCCESS
 
 
 def _cmd_render(args: Any) -> Any:
     """Render a GNN file to framework code."""
-    if not args.file.exists():
-        logger.error(f"File not found: {args.file}")
+    if not args.file.is_file():
+        logger.error(f"GNN file not found or not a regular file: {args.file}")
         return 1
 
     from render import process_render
@@ -724,6 +824,8 @@ def _cmd_preflight(args: Any) -> Any:
     from pipeline.preflight import run_preflight
 
     report = run_preflight(config_path=args.config)
+    has_errors = any(issue.severity == "error" for issue in report.issues)
+    has_warnings = any(issue.severity == "warning" for issue in report.issues)
     if is_json:
         data = {
             "checks_passed": report.checks_passed,
@@ -740,12 +842,25 @@ def _cmd_preflight(args: Any) -> Any:
         }
         print(
             json.dumps(
-                _envelope("success" if report.is_ok else "warning", data=data), indent=2
+                _envelope(
+                    "error" if has_errors else "warning" if has_warnings else "success",
+                    data=data,
+                    error="Preflight checks reported errors"
+                    if has_errors
+                    else "Preflight checks reported warnings"
+                    if has_warnings
+                    else None,
+                ),
+                indent=2,
             )
         )
     else:
         print(report.to_markdown())
-    return 0 if report.is_ok else 1
+    if has_errors:
+        return EXIT_ERROR
+    if has_warnings:
+        return EXIT_WARNING
+    return EXIT_SUCCESS
 
 
 def _cmd_health(args: Any) -> Any:
@@ -756,6 +871,9 @@ def _cmd_health(args: Any) -> Any:
 
     renderers = check_renderers()
     env = check_environment()
+    has_errors = any(issue.severity == "error" for issue in env.issues)
+    has_warnings = any(issue.severity == "warning" for issue in env.issues)
+    has_degraded_state = has_errors or has_warnings
 
     if is_json:
         data = {
@@ -776,7 +894,20 @@ def _cmd_health(args: Any) -> Any:
         }
         print(
             json.dumps(
-                _envelope("success" if env.is_ok else "warning", data=data), indent=2
+                _envelope(
+                    "error"
+                    if args.strict and has_errors
+                    else "warning"
+                    if has_degraded_state
+                    else "success",
+                    data=data,
+                    error="Environment health checks reported errors"
+                    if has_errors
+                    else "Environment health checks reported warnings"
+                    if has_warnings
+                    else None,
+                ),
+                indent=2,
             )
         )
     else:
@@ -797,7 +928,11 @@ def _cmd_health(args: Any) -> Any:
         if env.checks_failed and not args.strict:
             print("\nDefault health is informational; pass --strict to fail on errors.")
 
-    return 1 if args.strict and not env.is_ok else 0
+    if args.strict and has_errors:
+        return EXIT_ERROR
+    if has_degraded_state:
+        return EXIT_WARNING
+    return EXIT_SUCCESS
 
 
 def _cmd_serve(args: Any) -> Any:
@@ -807,9 +942,12 @@ def _cmd_serve(args: Any) -> Any:
 
         start_server(host=args.host, port=args.port)
     except ImportError:
-        print("❌ FastAPI not installed. Run: pip install fastapi uvicorn")
-        return 1
-    return 0
+        print("❌ FastAPI not installed. Run: uv sync --extra api")
+        return EXIT_ERROR
+    except (OSError, RuntimeError) as exc:
+        logger.error("Could not start API server: %s", exc)
+        return EXIT_ERROR
+    return EXIT_SUCCESS
 
 
 def _cmd_templates(args: Any) -> Any:
@@ -938,12 +1076,16 @@ def _cmd_watch(args: Any) -> Any:
 def _cmd_graph(args: Any) -> Any:
     """Generate dependency graph from multi-model files."""
     is_json = getattr(args, "json", False)
-    if not args.file.exists():
-        logger.error(f"File not found: {args.file}")
+    if not args.file.is_file():
+        logger.error(f"GNN file not found or not a regular file: {args.file}")
         if is_json:
             print(
                 json.dumps(
-                    _envelope("error", error=f"File not found: {args.file}"), indent=2
+                    _envelope(
+                        "error",
+                        error=f"GNN file not found or not a regular file: {args.file}",
+                    ),
+                    indent=2,
                 )
             )
         return 1

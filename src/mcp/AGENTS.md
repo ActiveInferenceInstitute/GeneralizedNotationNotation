@@ -112,6 +112,13 @@ dictionaries when discovering all modules.
 #### `MCP` - Main Protocol Class
 **Description**: Core Model Context Protocol implementation
 
+Tool execution validates object parameters against the registered JSON schema
+before calling the handler. Type, required-field, authentication, and unknown
+tool failures are surfaced as explicit MCP/JSON-RPC errors; structured domain
+results that contain an `error` field remain normal tool results for clients to
+inspect. Request, success, failure, concurrency, and timing metrics are updated
+on the live execution path.
+
 **Key Methods**:
 - `initialize()` - Initialize MCP server
 - `register_tools()` - Register available tools

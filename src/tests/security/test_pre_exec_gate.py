@@ -60,6 +60,37 @@ class TestPreExecGate:
         assert scan_script_for_execution(script, block_on="high")["ok"] is True
         assert scan_script_for_execution(script, block_on="low")["ok"] is False
 
+    def test_blocks_shell_true_through_import_alias(self, tmp_path: Path) -> None:
+        script = tmp_path / "shell.py"
+        script.write_text(
+            "import subprocess as sp\nsp.run('echo unsafe', shell=True)\n"
+        )
+
+        verdict = scan_script_for_execution(script)
+
+        assert verdict["ok"] is False
+        assert verdict["blocked"][0]["vulnerability_type"] == (
+            "Subprocess execution with shell=True"
+        )
+
+    def test_blocks_direct_import_alias(self, tmp_path: Path) -> None:
+        script = tmp_path / "direct.py"
+        script.write_text("from os import system as invoke\ninvoke('echo unsafe')\n")
+
+        assert scan_script_for_execution(script)["ok"] is False
+
+    def test_rejects_invalid_threshold_and_unknown_script_type(
+        self, tmp_path: Path
+    ) -> None:
+        script = tmp_path / "model.sh"
+        script.write_text("echo hello\n")
+
+        assert scan_script_for_execution(script, block_on="critical")["ok"] is False
+        verdict = scan_script_for_execution(script)
+        assert verdict["ok"] is False
+        assert verdict["scanned"] is False
+        assert verdict["blocked"][0]["detection_method"] == "file_type_policy"
+
     def test_julia_script_blocked_when_malformed(self, tmp_path: Path) -> None:
         # Unbalanced parenthesis reliably triggers an :incomplete node in
         # Julia's Meta.parseall on Julia 1.12+.

@@ -5,7 +5,7 @@ description: GNN command-line interface dispatch and health checks. Use when inv
 
 # Core Skill: `cli_dispatch`
 
-**Function**: Unified command-line interface dispatching 12 subcommands to their respective GNN pipeline module APIs.
+**Function**: Unified command-line interface dispatching 15 subcommands to their respective GNN pipeline module APIs.
 
 ## Example Flow
 

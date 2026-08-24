@@ -21,8 +21,9 @@ from collections.abc import Awaitable, Callable
 from typing import Optional
 
 from fastapi import Request
-from fastapi.responses import JSONResponse
 from starlette.responses import Response
+
+from api.responses import error_response
 
 ENV_API_KEY = "GNN_API_KEY"
 ENV_ALLOW_INSECURE_BIND = "GNN_ALLOW_INSECURE_BIND"
@@ -80,9 +81,11 @@ async def api_key_middleware(
         return await call_next(request)
     provided = request.headers.get("x-api-key")
     if not key_matches(provided):
-        return JSONResponse(
-            status_code=401,
-            content={"detail": "Missing or invalid X-API-Key"},
+        return error_response(
+            401,
+            "unauthorized",
+            "Missing or invalid X-API-Key",
+            path=request.url.path,
         )
     return await call_next(request)
 

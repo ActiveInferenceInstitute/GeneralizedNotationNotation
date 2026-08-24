@@ -68,3 +68,45 @@ def test_ml_integration_module_info_has_version() -> Any:
     assert "version" in info
     # Version must be a string (e.g., "1.6.0") or dict.
     assert isinstance(info["version"], (str, dict))
+
+
+def test_extract_dimensions_accepts_canonical_greek_identifiers() -> None:
+    from ml_integration.processor import _extract_dimensions
+
+    content = "## StateSpaceBlock\nπ[4,type=categorical]\nA[2,3]\n"
+
+    assert _extract_dimensions(content) == {"π": [4], "A": [2, 3]}
+
+
+def test_recursive_processing_discovers_nested_models(tmp_path: Path) -> None:
+    import json
+
+    from ml_integration.processor import process_ml_integration
+
+    nested = tmp_path / "input" / "nested"
+    nested.mkdir(parents=True)
+    (nested / "model.md").write_text(
+        "## StateSpaceBlock\nπ[4,type=categorical]\n", encoding="utf-8"
+    )
+    output = tmp_path / "output"
+
+    assert process_ml_integration(tmp_path / "input", output, recursive=True)
+    results = json.loads((output / "ml_integration_results.json").read_text())
+    assert [item["file_name"] for item in results["extracted_features"]] == ["model.md"]
+
+
+@pytest.mark.parametrize(
+    ("labels", "expected"),
+    [
+        ([], 0),
+        ([0, 1], 0),
+        ([0, 0, 1, 1], 2),
+        ([0, 0, 0, 1, 1, 1], 3),
+    ],
+)
+def test_cross_validation_folds_requires_class_support(
+    labels: list[int], expected: int
+) -> None:
+    from ml_integration.processor import _cross_validation_folds
+
+    assert _cross_validation_folds(labels) == expected

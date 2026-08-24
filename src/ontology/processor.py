@@ -32,6 +32,7 @@ def process_ontology(
         True if processing successful, False otherwise
     """
     logger = logging.getLogger("ontology")
+    strict_validation = bool(kwargs.get("strict_validation", False))
 
     try:
         log_step_start(logger, "Processing ontology")
@@ -40,7 +41,7 @@ def process_ontology(
         results_dir.mkdir(parents=True, exist_ok=True)
 
         # Process each .md file and generate a per-file ontology report
-        gnn_files = list(Path(target_dir).glob("**/*.md"))
+        gnn_files = sorted(Path(target_dir).glob("**/*.md"))
         results: dict[str, Any] = {
             "processed_files": len(gnn_files),
             "reports": [],
@@ -59,6 +60,18 @@ def process_ontology(
                 )
             else:
                 results["reports"].append(file_report["report_file"])
+                invalid = file_report["report"]["validation_result"].get(
+                    "invalid_annotations", []
+                )
+                if strict_validation and invalid:
+                    results["success"] = False
+                    results["errors"].append(
+                        {
+                            "file": str(gnn_file),
+                            "error": "strict ontology validation failed",
+                            "invalid_annotations": invalid,
+                        }
+                    )
         # Save aggregate results
         results_file = results_dir / "ontology_results.json"
         with open(results_file, "w") as f:
@@ -331,10 +344,25 @@ def validate_annotations(
             "matched_terms": {},  # key -> {term_name, description, uri}
             "suggestions": [],
             "coverage_score": 0.0,
+            "invalid_details": [],
         }
 
         for annotation in annotations:
             key, value, comment = parse_annotation(annotation)
+
+            # Mapping annotations are only meaningful when both sides are
+            # present.  Previously ``=HiddenState`` was accepted because only
+            # the ontology value was checked, losing the variable being
+            # annotated.
+            if "=" in annotation and (not key or not value):
+                validation_result["invalid_annotations"].append(annotation)
+                validation_result["invalid_details"].append(
+                    {
+                        "annotation": annotation,
+                        "reason": "mapping annotations require a key and a value",
+                    }
+                )
+                continue
 
             # Check if value matches any ontology term
             value_lower = value.lower() if value else ""
@@ -353,6 +381,12 @@ def validate_annotations(
                 }
             else:
                 validation_result["invalid_annotations"].append(annotation)
+                validation_result["invalid_details"].append(
+                    {
+                        "annotation": annotation,
+                        "reason": "ontology term is not defined",
+                    }
+                )
 
                 # Find similar terms for suggestions
                 for term_name_lower, term_info in term_lookup.items():
@@ -391,6 +425,10 @@ def validate_annotations(
             "matched_terms": {},
             "suggestions": [],
             "coverage_score": 0.0,
+            "invalid_details": [
+                {"annotation": annotation, "reason": "validation failed"}
+                for annotation in annotations
+            ],
         }
 
 

@@ -10,7 +10,7 @@ from enum import Enum
 from typing import Any, ClassVar, Dict, List, Optional
 
 try:
-    from pydantic import BaseModel, ConfigDict, Field
+    from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 except ImportError as e:
     raise ImportError(
         "pydantic is required for the GNN API module. Install with: uv sync --extra api"
@@ -32,10 +32,12 @@ class ProcessRequest(BaseModel):
 
     target_dir: str = Field(
         default="input/gnn_files",
+        min_length=1,
         description="Directory containing GNN files to process",
     )
     output_dir: str = Field(
         default="output",
+        min_length=1,
         description="Directory where pipeline outputs should be written",
     )
     steps: Optional[List[int]] = Field(
@@ -49,6 +51,7 @@ class ProcessRequest(BaseModel):
     strict: bool = Field(default=False, description="Treat warnings as errors")
 
     model_config: ClassVar[ConfigDict] = ConfigDict(
+        extra="forbid",
         json_schema_extra={
             "example": {
                 "target_dir": "input/gnn_files",
@@ -56,24 +59,61 @@ class ProcessRequest(BaseModel):
                 "steps": [3, 5, 6, 8],
                 "verbose": True,
             }
-        }
+        },
     )
+
+    @field_validator("steps", "skip_steps")
+    @classmethod
+    def validate_step_numbers(cls, values: Optional[List[int]]) -> Optional[List[int]]:
+        """Require unique pipeline step numbers in the supported 0-24 range."""
+        if values is None:
+            return None
+        invalid = sorted({step for step in values if step < 0 or step > 24})
+        if invalid:
+            raise ValueError(f"Pipeline steps must be between 0 and 24: {invalid}")
+        if len(values) != len(set(values)):
+            raise ValueError("Pipeline step lists must not contain duplicates")
+        return values
+
+    @model_validator(mode="after")
+    def validate_step_selection(self) -> "ProcessRequest":
+        """Reject contradictory include and skip selections."""
+        overlap = set(self.steps or ()) & set(self.skip_steps or ())
+        if overlap:
+            raise ValueError(
+                f"Pipeline steps cannot be both requested and skipped: {sorted(overlap)}"
+            )
+        return self
 
 
 class ToolRequest(BaseModel):
     """Request to invoke a single pipeline step/tool."""
 
     target_dir: str = Field(
-        default="input/gnn_files", description="Directory containing GNN files"
+        default="input/gnn_files",
+        min_length=1,
+        description="Directory containing GNN files",
     )
     output_dir: str = Field(
         default="output",
+        min_length=1,
         description="Directory where pipeline outputs should be written",
     )
     verbose: bool = Field(default=False)
     kwargs: Dict[str, Any] = Field(
-        default_factory=dict, description="Step-specific parameters"
+        default_factory=dict,
+        description="Reserved for future step-specific parameters; currently must be empty",
     )
+
+    model_config: ClassVar[ConfigDict] = ConfigDict(extra="forbid")
+
+    @field_validator("kwargs")
+    @classmethod
+    def reject_unsupported_kwargs(cls, value: Dict[str, Any]) -> Dict[str, Any]:
+        """Reject parameters the subprocess dispatcher cannot honor."""
+        if value:
+            raise ValueError("Step-specific kwargs are not supported by this endpoint")
+        return value
 
 
 class JobResponse(BaseModel):

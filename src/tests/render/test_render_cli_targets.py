@@ -209,3 +209,48 @@ def test_render_gnn_spec_sanitizes_generated_output_filename(tmp_path: Path) -> 
     artifact_path.relative_to(tmp_path.resolve())
     assert artifact_path.name == "escape_bnlearn.py"
     assert not (tmp_path.parent / "escape_bnlearn.py").exists()
+
+
+@pytest.mark.parametrize(
+    ("target", "required_marker"),
+    [
+        ("jax", "def run_simulation"),
+        ("jax_pomdp", "class JAXPOMDPSolver"),
+    ],
+)
+def test_file_backed_parser_summary_renders_real_jax_code(
+    target: str,
+    required_marker: str,
+    tmp_path: Path,
+) -> None:
+    """The public parser summary must be rehydrated, never stubbed."""
+    success, message, artifacts = render_gnn_spec(
+        _parse_sample(),
+        target,
+        tmp_path,
+        {"output_filename": f"custom-{target}"},
+    )
+
+    assert success, message
+    assert len(artifacts) == 1
+    artifact = Path(artifacts[0])
+    assert artifact.name == f"custom-{target}_jax.py"
+    code = artifact.read_text(encoding="utf-8")
+    assert required_marker in code
+    assert "Recovery Implementation" not in code
+    assert "Active_Inference_POMDP_Agent" in code
+
+
+def test_jax_and_jax_pomdp_dispatch_to_distinct_generators(tmp_path: Path) -> None:
+    general_dir = tmp_path / "general"
+    pomdp_dir = tmp_path / "pomdp"
+    general = render_gnn_spec(_parse_sample(), "jax", general_dir)
+    pomdp = render_gnn_spec(_parse_sample(), "jax_pomdp", pomdp_dir)
+
+    assert general[0], general[1]
+    assert pomdp[0], pomdp[1]
+    general_code = Path(general[2][0]).read_text(encoding="utf-8")
+    pomdp_code = Path(pomdp[2][0]).read_text(encoding="utf-8")
+    assert "def run_simulation" in general_code
+    assert "class JAXPOMDPSolver" not in general_code
+    assert "class JAXPOMDPSolver" in pomdp_code

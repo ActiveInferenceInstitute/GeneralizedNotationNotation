@@ -74,12 +74,21 @@ class TestWebsiteFunctionality:
     """Tests for website functionality."""
 
     @pytest.mark.unit
-    def test_website_generation(self, comprehensive_test_data: Any) -> Any:
+    def test_website_generation(
+        self, comprehensive_test_data: Any, tmp_path: Path
+    ) -> Any:
         """Test website generation functionality."""
         from website import WebsiteGenerator
 
         generator = WebsiteGenerator()
-        website_data = comprehensive_test_data.get("website_data", {})
+        website_data = dict(comprehensive_test_data.get("website_data", {}))
+        website_data.update(
+            {
+                "input_dir": str(tmp_path),
+                "output_dir": str(tmp_path / "website"),
+                "pipeline_output_root": str(tmp_path),
+            }
+        )
         result = generator.generate_website(website_data)
         assert result is not None
 
@@ -117,7 +126,14 @@ class TestWebsiteIntegration:
         gnn_file = list(sample_gnn_files.values())[0]
         with open(gnn_file, "r") as f:
             gnn_content = f.read()
-        result = generator.generate_website({"content": gnn_content})
+        result = generator.generate_website(
+            {
+                "content": gnn_content,
+                "input_dir": str(isolated_temp_dir),
+                "output_dir": str(Path(isolated_temp_dir) / "website"),
+                "pipeline_output_root": str(isolated_temp_dir),
+            }
+        )
         assert result is not None
 
     @pytest.mark.integration
@@ -147,7 +163,7 @@ def test_website_module_completeness() -> Any:
 
 
 @pytest.mark.slow
-def test_website_module_performance() -> Any:
+def test_website_module_performance(tmp_path: Path) -> Any:
     """Test website module performance characteristics."""
     import time
 
@@ -155,7 +171,14 @@ def test_website_module_performance() -> Any:
 
     generator = WebsiteGenerator()
     start_time = time.time()
-    generator.generate_website({"test": "data"})
+    generator.generate_website(
+        {
+            "test": "data",
+            "input_dir": str(tmp_path),
+            "output_dir": str(tmp_path / "website"),
+            "pipeline_output_root": str(tmp_path),
+        }
+    )
     processing_time = time.time() - start_time
     assert processing_time < 10.0
 
@@ -171,6 +194,14 @@ class TestWebsiteMCP:
 
         result = get_website_module_info_mcp()
         assert isinstance(result, dict)
+        assert result["success"] is True
+        assert result["mcp_tools"] == [
+            "process_website",
+            "build_website_from_pipeline_output",
+            "get_website_status",
+            "list_generated_website_pages",
+            "get_website_module_info",
+        ]
 
     def test_get_website_status_mcp_nonexistent(self, tmp_path: Any) -> Any:
         from website.mcp import get_website_status_mcp

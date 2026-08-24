@@ -154,6 +154,73 @@ class TestMCPToolExecution:
         with pytest.raises(MCPInvalidParamsError):
             mcp_instance.execute_tool("strict_add", {"a": 1})
 
+    @pytest.mark.unit
+    def test_strict_validation_rejects_wrong_types(self, mcp_instance: Any) -> None:
+        """Strict mode must invoke the full schema validator before handlers."""
+
+        def typed_add(a: int, b: int) -> dict[str, int]:
+            return {"result": a + b}
+
+        mcp_instance._strict_validation = True
+        mcp_instance.register_tool(
+            name="typed_add",
+            func=typed_add,
+            schema={
+                "type": "object",
+                "properties": {
+                    "a": {"type": "integer"},
+                    "b": {"type": "integer"},
+                },
+                "required": ["a", "b"],
+            },
+            description="Strictly typed add",
+        )
+        with pytest.raises(MCPInvalidParamsError, match="must be an integer"):
+            mcp_instance.execute_tool("typed_add", {"a": "1", "b": 2})
+        with pytest.raises(MCPInvalidParamsError, match="must be an integer"):
+            mcp_instance.execute_tool("typed_add", {"a": True, "b": 2})
+
+    @pytest.mark.unit
+    def test_explicit_tool_error_result_is_returned(self, mcp_instance: Any) -> None:
+        """A handler's structured failure remains visible to MCP clients."""
+
+        def unavailable() -> dict[str, Any]:
+            return {"success": False, "error": "backend unavailable"}
+
+        mcp_instance.register_tool(
+            name="unavailable",
+            func=unavailable,
+            schema={},
+            description="Report an unavailable backend",
+        )
+        result = mcp_instance.execute_tool("unavailable", {})
+        assert result == {"success": False, "error": "backend unavailable"}
+
+    @pytest.mark.unit
+    def test_execution_updates_health_metrics(
+        self, mcp_instance: Any, sample_tool_func: Any
+    ) -> None:
+        """Tool health counters and timing reflect actual execution."""
+        mcp_instance.register_tool(
+            name="metric_add",
+            func=sample_tool_func,
+            schema={
+                "type": "object",
+                "properties": {"a": {"type": "integer"}, "b": {"type": "integer"}},
+            },
+            description="Add numbers",
+        )
+        mcp_instance.execute_tool("metric_add", {"a": 1, "b": 2})
+        status = mcp_instance.get_server_status()
+        metrics = status["performance_metrics"]
+        assert metrics["total_requests"] == 1
+        assert metrics["successful_requests"] == 1
+        assert metrics["failed_requests"] == 0
+        assert (
+            mcp_instance.get_tool_performance_stats("metric_add")["execution_count"]
+            == 1
+        )
+
 
 class TestMCPResourceRegistration:
     """Test resource registration and retrieval."""
@@ -289,6 +356,23 @@ class TestMCPServerLifecycle:
             }
         )
         assert "error" in response
+
+    @pytest.mark.unit
+    def test_handle_non_object_params_reports_invalid_params(
+        self, mcp_instance: Any
+    ) -> None:
+        """JSON-RPC list params fail with explicit -32602 diagnostics."""
+        response = MCPServer(mcp_instance).handle_request(
+            {
+                "jsonrpc": "2.0",
+                "method": "tools/list",
+                "params": [],
+                "id": 5,
+            }
+        )
+        assert response["error"]["code"] == -32602
+        assert response["error"]["message"] == "JSON-RPC params must be an object"
+        assert "details" in response["error"]["data"]
 
 
 class TestMCPCapabilities:

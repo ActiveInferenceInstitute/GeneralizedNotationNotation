@@ -9,14 +9,14 @@ path: it recovers the per-agent generative models (``A_agentN``,
 ``B_agentN``, ``C_agentN``, ``D_agentN`` from ``structured_pomdp.matrices``)
 and the shared environmental affordance (``env_signal`` initialisation plus
 ``signal_decay``) directly from the parsed GNN spec, so renderers can emit
-per-agent scripts with an explicit environment coupling instead of expanding
-the joint state space.
+per-agent scripts and an auditable environment trace without expanding the
+joint state space.
 
 The exemplar this targets is ``input/gnn_files/multiagent/stigmergic_swarm.md``:
 three homogeneous agents navigating a shared 3x3 grid whose cells carry a
-stigmergic signal. Agents never communicate directly; coordination emerges
-from the shared ``env_signal`` trace (deposition at occupied cells, decay per
-timestep).
+stigmergic signal. The current backends reconstruct ``env_signal`` after
+independent per-agent inference (deposition at occupied cells, decay per
+timestep); they do not yet infer it as a latent or condition actions on it.
 """
 
 from __future__ import annotations

@@ -206,7 +206,150 @@ def test_process_execute_records_local_worker_pool_failure(
             encoding="utf-8"
         )
     )
+    assert summary["success"] is False
+    assert summary["status"] == "failed"
+    assert summary["exit_code"] == 1
+    assert summary["outcome_reason"] == "requested_framework_execution_incomplete"
     assert summary["failed_executions"] == 2
     assert {detail["error_type"] for detail in summary["execution_details"]} == {
         "LocalWorkerPoolError"
     }
+
+
+def test_required_render_summary_fails_closed_and_is_recorded(tmp_path: Path) -> None:
+    from execute.processor import process_execute
+
+    render_out = tmp_path / "render" / "11_render_output"
+    script_dir = render_out / "model" / "pymdp"
+    script_dir.mkdir(parents=True)
+    (script_dir / "model_pymdp.py").write_text("print('ok')\n", encoding="utf-8")
+    output_dir = tmp_path / "execute_output"
+
+    result = process_execute(
+        target_dir=tmp_path / "input",
+        output_dir=output_dir,
+        frameworks="pymdp",
+        render_output_dir=render_out,
+        require_render_summary=True,
+    )
+
+    assert result is False
+    summary = json.loads(
+        (output_dir / "summaries" / "execution_summary.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    assert summary["success"] is False
+    assert summary["status"] == "failed"
+    assert summary["outcome_reason"] == "required_render_summary_missing"
+    assert summary["total_scripts_found"] == 0
+
+
+def test_distributed_dispatch_failure_becomes_per_script_result(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    from execute import distributed, processor
+
+    render_out = tmp_path / "render" / "11_render_output"
+    script_dir = render_out / "model" / "pymdp"
+    script_dir.mkdir(parents=True)
+    (script_dir / "model_pymdp.py").write_text("print('ok')\n", encoding="utf-8")
+
+    class BrokenDispatcher:
+        shutdown_called = False
+
+        def __init__(self, **kwargs: object) -> None:
+            assert kwargs["max_retries"] == 4
+
+        def run_scripts_parallel(self, *args: object, **kwargs: object) -> list[dict]:
+            raise RuntimeError("cluster vanished")
+
+        def shutdown(self) -> None:
+            BrokenDispatcher.shutdown_called = True
+
+    monkeypatch.setattr(distributed, "Dispatcher", BrokenDispatcher)
+    output_dir = tmp_path / "execute_output"
+    result = processor.process_execute(
+        target_dir=tmp_path / "input",
+        output_dir=output_dir,
+        frameworks="pymdp",
+        render_output_dir=render_out,
+        distributed=True,
+        backend="ray",
+        distributed_max_retries=4,
+    )
+
+    assert result is False
+    assert BrokenDispatcher.shutdown_called is True
+    summary = json.loads(
+        (output_dir / "summaries" / "execution_summary.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    assert summary["dispatch_max_retries"] == 4
+    assert summary["failed_executions"] == 1
+    assert summary["execution_details"][0]["error_type"] == "DistributedDispatchError"
+
+
+@pytest.mark.parametrize("framework", ["rxinfer", "activeinference_jl"])
+def test_julia_execution_command_pins_committed_project(framework: str) -> None:
+    from execute.processor import (
+        ScriptExecutionContext,
+        _build_script_execution_command,
+    )
+
+    context = ScriptExecutionContext(
+        script_path=Path("/tmp/model") / framework / "model.jl",
+        script_name="model.jl",
+        framework=framework,
+        model_name="model",
+        executor="julia",
+    )
+    command = _build_script_execution_command(context, ["sandbox"])
+
+    expected_project = Path(__file__).resolve().parents[2] / "execute" / framework
+    assert command == [
+        "sandbox",
+        "julia",
+        "--startup-file=no",
+        f"--project={expected_project}",
+        "model.jl",
+    ]
+
+
+def test_rxinfer_manifest_pins_5_5_0() -> None:
+    manifest = (
+        Path(__file__).resolve().parents[2] / "execute" / "rxinfer" / "Manifest.toml"
+    ).read_text(encoding="utf-8")
+    assert "[[deps.RxInfer]]" in manifest
+    rxinfer_section = manifest.split("[[deps.RxInfer]]", maxsplit=1)[1].split(
+        "[[deps.", maxsplit=1
+    )[0]
+    assert 'version = "5.5.0"' in rxinfer_section
+
+
+def test_dask_dispatch_applies_configured_retries() -> None:
+    from execute.distributed import Dispatcher
+
+    submitted: list[dict[str, object]] = []
+
+    class FakeClient:
+        def submit(self, fn: object, info: object, **kwargs: object) -> object:
+            submitted.append(kwargs)
+            return {"info": info}
+
+        def gather(self, futures: list[object]) -> list[dict[str, object]]:
+            return [{"success": True} for _ in futures]
+
+    dispatcher = Dispatcher(backend="dask", max_retries=5)
+    dispatcher._initialized = True
+    dispatcher.client = FakeClient()
+    results = dispatcher.run_scripts_parallel(
+        [{"name": "one"}, {"name": "two"}],
+        lambda info, **kwargs: {"success": True},
+        timeout=1,
+    )
+
+    assert len(results) == 2
+    assert [item["retries"] for item in submitted] == [5, 5]
+    assert [item["timeout"] for item in submitted] == [1, 1]

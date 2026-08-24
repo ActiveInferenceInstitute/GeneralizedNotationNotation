@@ -844,10 +844,16 @@ class MCP:
         with self._lock:
             self._request_count += 1
             self._last_activity = time.time()
+            self._performance_metrics.total_requests += 1
 
             # Check if tool exists
             if tool_name not in self.tools:
                 available_tools = list(self.tools.keys())
+                self._error_count += 1
+                self._performance_metrics.failed_requests += 1
+                self._performance_metrics.error_counts[tool_name] = (
+                    self._performance_metrics.error_counts.get(tool_name, 0) + 1
+                )
                 raise MCPToolNotFoundError(tool_name, available_tools)
 
             tool = self.tools[tool_name]
@@ -855,52 +861,98 @@ class MCP:
             # Enforce auth gate: tools that require authentication are unavailable
             # in this local-only server (no auth mechanism is configured).
             if tool.requires_auth:
-                raise MCPToolNotFoundError(
-                    tool_name, [t for t, v in self.tools.items() if not v.requires_auth]
-                )
-
-            # Simplified validation
-            if tool.input_validation:
-                if "required" in tool.schema:
-                    for req in tool.schema["required"]:
-                        if req not in params:
-                            raise MCPInvalidParamsError(
-                                f"Missing required param: {req}"
-                            )
-
-            # Synchronous execution
-            start_time = time.time()
-            try:
-                with self._track_performance(f"tool_execution_{tool_name}"):
-                    result = tool.func(**params)
-                if tool.output_validation:
-                    self._validate_output(result)
-                logger.debug(f"Tool {tool_name} executed successfully")
-                return cast("dict[str, Any]", result)
-            except Exception as e:
-                execution_time = time.time() - start_time
+                self._error_count += 1
                 self._performance_metrics.failed_requests += 1
                 self._performance_metrics.error_counts[tool_name] = (
                     self._performance_metrics.error_counts.get(tool_name, 0) + 1
                 )
-
-                # Log detailed error information
-                logger.error(
-                    f"Tool {tool_name} execution failed after {execution_time:.3f}s: {e}"
+                raise MCPToolNotFoundError(
+                    tool_name, [t for t, v in self.tools.items() if not v.requires_auth]
                 )
-                logger.debug(f"Tool {tool_name} parameters: {params}")
 
-                raise MCPToolExecutionError(tool_name, e, execution_time) from e
+        if not isinstance(params, dict):
+            with self._lock:
+                self._error_count += 1
+                self._performance_metrics.failed_requests += 1
+                self._performance_metrics.error_counts[tool_name] = (
+                    self._performance_metrics.error_counts.get(tool_name, 0) + 1
+                )
+            raise MCPInvalidParamsError(
+                "Tool parameters must be an object",
+                tool_name=tool_name,
+                schema=tool.schema,
+            )
 
-            finally:
-                # Clean up execution tracking
-                with self._execution_lock:
-                    self._active_executions[tool_name] = max(
-                        0, self._active_executions[tool_name] - 1
+        if tool.input_validation:
+            try:
+                self._validate_params(tool.schema, params)
+            except MCPValidationError as exc:
+                with self._lock:
+                    self._error_count += 1
+                    self._performance_metrics.failed_requests += 1
+                    self._performance_metrics.error_counts[tool_name] = (
+                        self._performance_metrics.error_counts.get(tool_name, 0) + 1
                     )
-                    self._performance_metrics.concurrent_requests = max(
-                        0, self._performance_metrics.concurrent_requests - 1
-                    )
+                raise MCPInvalidParamsError(
+                    str(exc),
+                    details=cast("Dict[str, Any]", exc.data),
+                    tool_name=tool_name,
+                    schema=tool.schema,
+                ) from exc
+
+        with self._execution_lock:
+            self._active_executions[tool_name] += 1
+            self._performance_metrics.concurrent_requests += 1
+            self._performance_metrics.max_concurrent_requests = max(
+                self._performance_metrics.max_concurrent_requests,
+                self._performance_metrics.concurrent_requests,
+            )
+
+        # Synchronous execution
+        start_time = time.time()
+        try:
+            with self._track_performance(f"tool_execution_{tool_name}"):
+                result = tool.func(**params)
+            if tool.output_validation:
+                self._validate_output(result)
+            execution_time = time.time() - start_time
+            with self._lock:
+                self._performance_metrics.successful_requests += 1
+                self._performance_metrics.tool_usage_stats[tool_name] = (
+                    self._performance_metrics.tool_usage_stats.get(tool_name, 0) + 1
+                )
+                self._performance_metrics.update_execution_time(execution_time)
+                self._tool_execution_times[tool_name].append(execution_time)
+            logger.debug(f"Tool {tool_name} executed successfully")
+            return cast("dict[str, Any]", result)
+        except Exception as e:
+            execution_time = time.time() - start_time
+            with self._lock:
+                self._error_count += 1
+                self._performance_metrics.failed_requests += 1
+                self._performance_metrics.error_counts[tool_name] = (
+                    self._performance_metrics.error_counts.get(tool_name, 0) + 1
+                )
+                self._performance_metrics.update_execution_time(execution_time)
+                self._tool_execution_times[tool_name].append(execution_time)
+
+            # Log detailed error information
+            logger.error(
+                f"Tool {tool_name} execution failed after {execution_time:.3f}s: {e}"
+            )
+            logger.debug(f"Tool {tool_name} parameters: {params}")
+
+            raise MCPToolExecutionError(tool_name, e, execution_time) from e
+
+        finally:
+            # Clean up execution tracking
+            with self._execution_lock:
+                self._active_executions[tool_name] = max(
+                    0, self._active_executions[tool_name] - 1
+                )
+                self._performance_metrics.concurrent_requests = max(
+                    0, self._performance_metrics.concurrent_requests - 1
+                )
 
     def get_resource(self, uri: str) -> Dict[str, Any]:
         """
@@ -1242,7 +1294,7 @@ class MCP:
                 )
 
         elif field_type == "integer":
-            if not isinstance(field_value, int):
+            if isinstance(field_value, bool) or not isinstance(field_value, int):
                 raise MCPValidationError(
                     f"Parameter '{field_name}' must be an integer",
                     field=field_name,
@@ -1265,7 +1317,9 @@ class MCP:
                 )
 
         elif field_type == "number":
-            if not isinstance(field_value, (int, float)):
+            if isinstance(field_value, bool) or not isinstance(
+                field_value, (int, float)
+            ):
                 raise MCPValidationError(
                     f"Parameter '{field_name}' must be a number",
                     field=field_name,
@@ -1418,10 +1472,6 @@ class MCP:
         """Validate tool output (basic validation)."""
         if result is None:
             raise MCPValidationError("Tool output cannot be None")
-
-        # Add more validation as needed
-        if isinstance(result, dict) and "error" in result:
-            raise MCPValidationError(f"Tool returned error: {result['error']}")
 
     def get_enhanced_server_status(self) -> Dict[str, Any]:
         """

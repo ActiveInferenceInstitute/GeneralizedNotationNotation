@@ -490,39 +490,39 @@ def save_audio_file(
     audio: np.ndarray, file_path: Path, sample_rate: int = 44100
 ) -> None:
     """Save audio data to file."""
+    clean_audio = np.nan_to_num(np.asarray(audio), nan=0.0, posinf=1.0, neginf=-1.0)
     try:
         import soundfile as sf
 
-        sf.write(str(file_path), audio, sample_rate)
-    except ImportError:
-        # Recovery to basic WAV writing
-        write_basic_wav(audio, file_path, sample_rate)
+        sf.write(str(file_path), clean_audio, sample_rate)
+    except (ImportError, OSError, RuntimeError, ValueError):
+        if file_path.suffix.lower() != ".wav":
+            raise
+        # A WAV target has a dependency-free, format-correct recovery path.
+        write_basic_wav(clean_audio, file_path, sample_rate)
 
 
 def write_basic_wav(audio: np.ndarray, file_path: Path, sample_rate: int) -> Any:
     """Write basic WAV file without external dependencies."""
-    import struct
+    import wave
 
-    # Normalize audio
-    audio = np.clip(audio, -1, 1)
-    audio = (audio * 32767).astype(np.int16)
+    if sample_rate <= 0:
+        raise ValueError("sample_rate must be positive")
 
-    with open(file_path, "wb") as f:
-        # WAV header
-        f.write(b"RIFF")
-        f.write(struct.pack("<I", 36 + len(audio) * 2))
-        f.write(b"WAVE")
-        f.write(b"fmt ")
-        f.write(struct.pack("<I", 16))
-        f.write(struct.pack("<H", 1))  # PCM
-        f.write(struct.pack("<H", 1))  # Mono
-        f.write(struct.pack("<I", sample_rate))
-        f.write(struct.pack("<I", sample_rate * 2))
-        f.write(struct.pack("<H", 2))
-        f.write(struct.pack("<H", 16))
-        f.write(b"data")
-        f.write(struct.pack("<I", len(audio) * 2))
-        f.write(audio.tobytes())
+    samples = np.asarray(audio)
+    if samples.ndim not in (1, 2):
+        raise ValueError("audio must be a mono or frames-by-channels array")
+    channels = 1 if samples.ndim == 1 else samples.shape[1]
+    if channels < 1:
+        raise ValueError("audio must contain at least one channel")
+
+    clean = np.nan_to_num(samples, nan=0.0, posinf=1.0, neginf=-1.0)
+    pcm = (np.clip(clean, -1.0, 1.0) * 32767).astype("<i2")
+    with wave.open(str(file_path), "wb") as wav_file:
+        wav_file.setnchannels(channels)
+        wav_file.setsampwidth(2)
+        wav_file.setframerate(sample_rate)
+        wav_file.writeframes(pcm.tobytes(order="C"))
 
 
 def create_sonification(

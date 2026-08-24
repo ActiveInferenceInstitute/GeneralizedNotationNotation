@@ -164,3 +164,25 @@ class TestAudioExportIntegration:
 
         # Verify file was created
         assert output_file.exists()
+
+    @pytest.mark.integration
+    def test_basic_wav_preserves_stereo_shape_and_sanitizes_nonfinite(
+        self, tmp_path: Any
+    ) -> None:
+        import wave
+
+        import numpy as np
+
+        from audio import write_basic_wav
+
+        audio_data = np.array(
+            [[0.0, np.nan], [np.inf, -np.inf], [0.25, -0.25]], dtype=float
+        )
+        output_file = tmp_path / "stereo.wav"
+
+        write_basic_wav(audio_data, output_file, 8000)
+
+        with wave.open(str(output_file), "rb") as wav_file:
+            assert wav_file.getnchannels() == 2
+            assert wav_file.getnframes() == 3
+            assert len(wav_file.readframes(3)) == 12

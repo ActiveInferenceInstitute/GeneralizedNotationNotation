@@ -28,15 +28,51 @@ class ParameterParsingMixin:
     namespace consolidation; no duck-typing contract is required from the host.
     """
 
+    @staticmethod
+    def _split_inline_comment(line: str) -> tuple[str, Optional[str]]:
+        """Split a line at its first ``#`` comment delimiter outside any
+        bracket or quote region.
+
+        The rest of the parser treats ``#`` (not ``###``) as the inline-comment
+        delimiter, so parameter values must agree. Scanning brackets and quotes
+        keeps ``#`` inside a ``{...}`` matrix row, a ``[...]`` list, a
+        ``(...)`` tuple, or a quoted string intact while still stripping a
+        trailing ``# comment`` after balanced constructs.
+
+        Returns:
+            (code_without_comment, comment_or_None)
+        """
+        depth = 0
+        quote: Optional[str] = None
+        i = 0
+        n = len(line)
+        while i < n:
+            ch = line[i]
+            if quote is not None:
+                if ch == quote:
+                    quote = None
+                elif ch == "\\":
+                    i += 2
+                    continue
+                i += 1
+                continue
+            if ch in ("'", '"'):
+                quote = ch
+            elif ch in "([{":
+                depth += 1
+            elif ch in ")]}":
+                depth = max(0, depth - 1)
+            elif ch == "#" and depth == 0:
+                return line[:i].strip(), line[i + 1 :].strip()
+            i += 1
+        return line.strip(), None
+
     def _parse_parameter_assignment(self, line: str) -> Optional[Parameter]:
         """Parse a single parameter assignment line."""
         try:
-            # Extract comment
-            comment = None
-            if "###" in line:
-                line, comment = line.split("###", 1)
-                comment = comment.strip()
-                line = line.strip()
+            # Extract a leading inline comment (''#'' is the parser-wide
+            # comment delimiter; ''###'' was a nonstandard former marker).
+            line, comment = self._split_inline_comment(line)
 
             # Split by first '='
             if "=" not in line:

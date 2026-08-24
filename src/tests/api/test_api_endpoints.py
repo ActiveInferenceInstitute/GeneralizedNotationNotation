@@ -8,6 +8,23 @@ import pytest
 from api.app import FASTAPI_AVAILABLE, create_app
 
 
+def _assert_envelope(payload: Any, status: str = "success") -> dict[str, Any]:
+    """Assert and return the canonical API response envelope."""
+    assert set(payload) == {"status", "data", "error", "meta"}
+    assert isinstance(payload, dict)
+    assert payload["status"] == status
+    assert isinstance(payload["data"], dict)
+    assert isinstance(payload["meta"], dict)
+    assert "timestamp" in payload["meta"]
+    if status == "success":
+        assert payload["error"] is None
+    else:
+        assert isinstance(payload["error"], dict)
+        assert payload["error"]["code"]
+        assert payload["error"]["message"]
+    return payload
+
+
 def test_api_health_endpoint() -> Any:
     """Test the health check endpoint."""
     from fastapi.testclient import TestClient
@@ -18,10 +35,10 @@ def test_api_health_endpoint() -> Any:
 
     response = client.get("/api/v1/health")
     assert response.status_code == 200
-    data = response.json()
-    assert data["status"] == "healthy"
-    assert "renderers" in data
-    assert "version" in data
+    envelope = _assert_envelope(response.json())
+    assert envelope["data"]["status"] == "healthy"
+    assert "renderers" in envelope["data"]
+    assert "version" in envelope["data"]
 
 
 def test_api_list_runs_empty() -> Any:
@@ -36,7 +53,9 @@ def test_api_list_runs_empty() -> Any:
 
     response = client.get("/api/v1/runs")
     assert response.status_code == 200
-    assert isinstance(response.json(), dict)
+    envelope = _assert_envelope(response.json())
+    assert isinstance(envelope["data"]["runs"], dict)
+    assert envelope["data"]["total"] >= 0
 
 
 def test_api_submit_run_invalid_payload() -> Any:
@@ -49,6 +68,9 @@ def test_api_submit_run_invalid_payload() -> Any:
     response = client.post("/api/v1/run", json={"skip_steps": ["not_an_int"]})
     # FastAPI returns 422 Unprocessable Entity for schema validation errors
     assert response.status_code == 422
+    envelope = _assert_envelope(response.json(), status="error")
+    assert envelope["error"]["code"] == "validation_error"
+    assert envelope["error"]["details"]
 
 
 def test_api_submit_run_success() -> Any:
@@ -82,9 +104,9 @@ def test_api_submit_run_success() -> Any:
         )
 
         assert response.status_code == 200
-        data = response.json()
-        assert data["run_hash"] == "test_hash_123"
-        assert data["status"] == "queued"
+        envelope = _assert_envelope(response.json())
+        assert envelope["data"]["run_hash"] == "test_hash_123"
+        assert envelope["data"]["status"] == "queued"
     finally:
         if orig_hasher:
             pipeline.hasher.compute_run_hash = orig_hasher
@@ -105,7 +127,41 @@ def test_api_submit_run_rejects_output_outside_repo() -> None:
     )
 
     assert response.status_code == 400
-    assert "Output directory" in response.json()["detail"]
+    envelope = _assert_envelope(response.json(), status="error")
+    assert "Output directory" in envelope["error"]["message"]
+
+
+@pytest.mark.parametrize(
+    "payload",
+    [
+        {"skip_steps": [-1]},
+        {"skip_steps": [25]},
+        {"skip_steps": [3, 3]},
+        {"config": {"ignored": True}},
+        {"unknown_field": "ignored"},
+    ],
+)
+def test_api_submit_run_rejects_unsupported_or_invalid_fields(
+    payload: dict[str, Any],
+) -> None:
+    """Invalid step selections and silently ignored fields fail explicitly."""
+    from fastapi.testclient import TestClient
+
+    client = TestClient(create_app())
+    response = client.post("/api/v1/run", json=payload)
+    assert response.status_code == 422
+    envelope = _assert_envelope(response.json(), status="error")
+    assert envelope["error"]["code"] == "validation_error"
+
+
+def test_api_unknown_route_uses_error_envelope() -> None:
+    """Framework-generated 404 responses preserve the API contract."""
+    from fastapi.testclient import TestClient
+
+    response = TestClient(create_app()).get("/api/v1/does-not-exist")
+    assert response.status_code == 404
+    envelope = _assert_envelope(response.json(), status="error")
+    assert envelope["error"]["code"] == "not_found"
 
 
 def test_api_submit_run_stores_normalized_output_dir(monkeypatch: Any) -> None:
@@ -184,6 +240,82 @@ async def test_job_processor_uses_requested_output_dir(monkeypatch: Any) -> None
         )
     finally:
         job_mgr._JOBS.pop(job_id, None)
+
+
+@pytest.mark.asyncio
+async def test_run_api_executes_real_main_subprocess_and_preserves_warning_exit(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    """The run API must invoke src/main.py instead of simulating successful steps."""
+    import json
+
+    import api.app as api_app
+
+    output_dir = tmp_path / "output"
+    summary_dir = output_dir / "00_pipeline_summary"
+    summary_dir.mkdir(parents=True)
+    (summary_dir / "pipeline_execution_summary.json").write_text(
+        json.dumps(
+            {
+                "steps": [
+                    {
+                        "script_name": "3_gnn.py",
+                        "status": "SUCCESS_WITH_WARNINGS",
+                        "duration_seconds": 0.25,
+                    }
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    captured_command: list[str] = []
+
+    class FakeProcess:
+        pid = 1234
+        returncode = 2
+
+        async def communicate(self) -> tuple[bytes, bytes]:
+            return b"", b""
+
+    async def fake_create_subprocess_exec(*command: str, **kwargs: Any) -> FakeProcess:
+        captured_command.extend(command)
+        return FakeProcess()
+
+    monkeypatch.setattr(
+        api_app.asyncio,
+        "create_subprocess_exec",
+        fake_create_subprocess_exec,
+    )
+
+    run_hash = "real_subprocess_contract"
+    api_app._runs[run_hash] = {
+        "status": "queued",
+        "started_at": None,
+        "steps_completed": 0,
+        "total_steps": 23,
+        "errors": [],
+        "events": [],
+    }
+    request = api_app.RunRequest(
+        target_dir=str(tmp_path),
+        output_dir=str(output_dir),
+        skip_steps=[4],
+        skip_llm=True,
+    )
+    try:
+        await api_app._execute_pipeline(run_hash, request)
+        entry = api_app._runs[run_hash]
+        assert captured_command[1].endswith("src/main.py")
+        assert captured_command[captured_command.index("--skip-steps") + 1] == "4,13"
+        assert entry["status"] == "completed"
+        assert entry["exit_code"] == 2
+        assert entry["process_id"] == 1234
+        assert entry["steps_completed"] == 1
+        assert entry["total_steps"] == 1
+        assert any(event["type"] == "pipeline_warning" for event in entry["events"])
+    finally:
+        api_app._runs.pop(run_hash, None)
 
 
 def test_api_availability_flag() -> Any:

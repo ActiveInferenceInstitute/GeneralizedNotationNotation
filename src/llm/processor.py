@@ -83,6 +83,11 @@ from utils.logging.logging_utils import (
 from .defaults import DEFAULT_OLLAMA_MODEL
 
 
+def _env_flag(name: str) -> bool:
+    """Return whether an opt-in environment flag is explicitly enabled."""
+    return os.getenv(name, "").strip().lower() in {"1", "true", "yes", "on"}
+
+
 def _start_ollama_if_needed(logger: Any) -> tuple[bool, list[str]]:
     """
     Check if Ollama is available and running with enhanced detection.
@@ -91,6 +96,10 @@ def _start_ollama_if_needed(logger: Any) -> tuple[bool, list[str]]:
         Tuple of (is_available, list_of_models)
     """
     try:
+        if _env_flag("OLLAMA_DISABLED"):
+            logger.info("Ollama disabled by OLLAMA_DISABLED; using recovery analysis")
+            return False, []
+
         # Check if ollama command exists
         ollama_path = shutil.which("ollama")
         if not ollama_path:
@@ -140,7 +149,17 @@ def _start_ollama_if_needed(logger: Any) -> tuple[bool, list[str]]:
         except Exception as e:
             logger.debug(f"Ollama list check failed: {e}")
 
-        # Try to start Ollama if it's not running
+        # Starting a daemon is an external side effect.  Only do it when the
+        # operator has explicitly opted in; ordinary and CI runs recover
+        # immediately when an installed daemon is not already available.
+        if not _env_flag("OLLAMA_AUTO_START"):
+            logger.info(
+                "Ollama is installed but unavailable; set OLLAMA_AUTO_START=1 "
+                "to allow automatic daemon startup"
+            )
+            return False, []
+
+        # Try to start Ollama if it's not running and startup was authorized.
         logger.info("🔄 Attempting to start Ollama...")
         try:
             # Try to start Ollama in background using subprocess.Popen for non-blocking
@@ -184,20 +203,25 @@ def _start_ollama_if_needed(logger: Any) -> tuple[bool, list[str]]:
                         logger.info(f"📦 Available Ollama models: {', '.join(models)}")
                     else:
                         logger.warning("⚠️ Ollama started but no models are installed")
-                        # Try to install the default model
-                        logger.info("📥 Installing default model...")
-                        install_result = subprocess.run(  # nosec B607 B603
-                            ["ollama", "pull", DEFAULT_OLLAMA_MODEL],
-                            capture_output=True,
-                            text=True,
-                            timeout=60,
-                        )
-                        if install_result.returncode == 0:
-                            logger.info("✅ Default model installed successfully")
-                            models = [DEFAULT_OLLAMA_MODEL]
+                        if _env_flag("OLLAMA_AUTO_PULL"):
+                            logger.info("📥 Installing default model...")
+                            install_result = subprocess.run(  # nosec B607 B603
+                                ["ollama", "pull", DEFAULT_OLLAMA_MODEL],
+                                capture_output=True,
+                                text=True,
+                                timeout=60,
+                            )
+                            if install_result.returncode == 0:
+                                logger.info("✅ Default model installed successfully")
+                                models = [DEFAULT_OLLAMA_MODEL]
+                            else:
+                                logger.warning(
+                                    f"⚠️ Failed to install default model: {install_result.stderr}"
+                                )
                         else:
-                            logger.warning(
-                                f"⚠️ Failed to install default model: {install_result.stderr}"
+                            logger.info(
+                                "Automatic model pull disabled; set "
+                                "OLLAMA_AUTO_PULL=1 to allow downloads"
                             )
 
                     return True, models
@@ -545,7 +569,10 @@ async def _process_llm_async(
                         else None
                     )
                     analysis_candidate = analyze_gnn_file_with_llm(
-                        gnn_file, verbose, ollama_model=resolved_ollama_for_summary
+                        gnn_file,
+                        verbose,
+                        ollama_model=resolved_ollama_for_summary,
+                        attempt_llm=processor_initialized,
                     )
                     file_analysis = (
                         await analysis_candidate
@@ -630,7 +657,11 @@ async def _process_llm_async(
                         logger.info(f"🤖 Using model '{ollama_model}' for LLM prompts")
 
                         # Ensure model is available — use pre-pull guard to skip if cached
-                        if ollama_available and ollama_model not in ollama_models:
+                        if (
+                            ollama_available
+                            and ollama_model not in ollama_models
+                            and _env_flag("OLLAMA_AUTO_PULL")
+                        ):
                             if _model_is_cached(ollama_model, logger):
                                 logger.info(
                                     f"⏭️ Skipping pull — '{ollama_model}' already cached"

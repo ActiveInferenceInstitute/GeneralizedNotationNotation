@@ -199,6 +199,28 @@ class TestModuleInfo:
         assert isinstance(result, bool)
         # Test should work regardless of whether oxdraw is installed
 
+    def test_direct_mcp_registration_executes_keyword_schemas(
+        self, temp_dir: Path
+    ) -> None:
+        """The nested oxdraw registry must work outside the parent GUI adapter."""
+        from gui.oxdraw.mcp import register_tools
+        from mcp.mcp import MCP
+
+        instance = MCP(enable_caching=False, enable_rate_limiting=False)
+        try:
+            register_tools(instance)
+            assert len(instance.tools) == 5
+            assert all(tool.module == "gui.oxdraw" for tool in instance.tools.values())
+            assert instance.execute_tool("oxdraw.get_info", {})["success"] is True
+            result = instance.execute_tool(
+                "oxdraw.convert_to_mermaid",
+                {"gnn_file_path": str(temp_dir / "missing.md")},
+            )
+            assert result["success"] is False
+            assert "not found" in result["error"].lower()
+        finally:
+            instance.shutdown()
+
 
 class TestGNNToMermaidConversion:
     """Test GNN to Mermaid conversion functionality."""

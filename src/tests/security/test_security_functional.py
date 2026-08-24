@@ -272,3 +272,27 @@ class TestSecurityFunctional:
             data = json.load(f)
         assert len(data["vulnerabilities"]) > 0, "Should report vulnerabilities"
         assert data["processed_files"] == 1
+
+    @pytest.mark.unit
+    def test_strict_policy_blocks_high_severity_findings(
+        self, vuln_gnn_dir: Any, output_dir: Any
+    ) -> None:
+        result = process_security(vuln_gnn_dir, output_dir, security_level="strict")
+
+        assert result is False
+        with open(output_dir / "security_results.json") as f:
+            data = json.load(f)
+        assert data["policy"]["decision"] == "deny"
+        assert data["policy"]["blocked_findings"] > 0
+
+    @pytest.mark.unit
+    def test_invalid_policy_fails_closed_with_a_receipt(
+        self, clean_gnn_dir: Any, output_dir: Any
+    ) -> None:
+        result = process_security(clean_gnn_dir, output_dir, block_on="critical")
+
+        assert result is False
+        with open(output_dir / "security_results.json") as f:
+            data = json.load(f)
+        assert data["policy"]["decision"] == "deny_invalid_policy"
+        assert data["policy"]["requested_block_on"] == "critical"

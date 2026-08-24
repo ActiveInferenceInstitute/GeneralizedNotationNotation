@@ -24,6 +24,31 @@ from api.path_utils import resolve_repo_path
 _JOBS: Dict[str, dict] = {}
 
 
+def _validate_step_numbers(
+    values: Optional[List[int]], *, field_name: str
+) -> Optional[List[int]]:
+    """Validate an optional list of unique pipeline steps."""
+    if values is None:
+        return None
+    invalid = sorted(
+        [
+            step
+            for step in values
+            if isinstance(step, bool)
+            or not isinstance(step, int)
+            or not 0 <= step <= 24
+        ],
+        key=str,
+    )
+    if invalid:
+        raise ValueError(
+            f"{field_name} must contain integers between 0 and 24: {invalid}"
+        )
+    if len(values) != len(set(values)):
+        raise ValueError(f"{field_name} must not contain duplicate steps")
+    return list(values)
+
+
 def create_job(
     target_dir: str,
     output_dir: Optional[str] = None,
@@ -46,6 +71,12 @@ def create_job(
     Returns:
         Unique job ID string
     """
+    steps = _validate_step_numbers(steps, field_name="steps")
+    skip_steps = _validate_step_numbers(skip_steps, field_name="skip_steps")
+    overlap = set(steps or ()) & set(skip_steps or ())
+    if overlap:
+        raise ValueError(f"steps and skip_steps must not overlap: {sorted(overlap)}")
+
     target_path = resolve_repo_path(
         target_dir,
         purpose="Target directory",
@@ -127,6 +158,8 @@ def cancel_job(job_id: str) -> bool:
 
 def list_jobs(limit: int = 50) -> List[dict]:
     """List recent jobs (most recent first)."""
+    if isinstance(limit, bool) or not isinstance(limit, int) or not 1 <= limit <= 100:
+        raise ValueError("limit must be an integer between 1 and 100")
     jobs = [get_job(jid) for jid in list(_JOBS.keys())[-limit:]]
     return [j for j in jobs if j is not None]
 

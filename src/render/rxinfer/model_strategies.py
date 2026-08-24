@@ -165,8 +165,9 @@ class MultiAgentStrategy(_JointCompositionStrategy):
     (``A_agentN``/``B_agentN``/``C_agentN``/``D_agentN``) the strategy
     renders natively through the stigmergic generator
     (``_strategies_multiagent``): one genuine ``pomdp_model`` inference per
-    agent (no joint state-space expansion) coupled through a shared
-    ``env_signal`` affordance trace (deposit + decay). Specs without the
+    agent (no joint state-space expansion), followed by a post-hoc shared
+    ``env_signal`` affordance trace (deposit + decay). The trace does not
+    condition inference or actions. Specs without the
     per-agent matrix structure keep the pre-strategy behavior — the
     extractor's composed joint POMDP through the flat generator — with
     per-agent beliefs recovered downstream from the ``state_factors`` echo

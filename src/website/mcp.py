@@ -214,9 +214,9 @@ def get_website_module_info_mcp() -> Dict[str, Any]:
             ],
             "mcp_tools": [
                 "process_website",
-                "build_from_pipeline_output",
+                "build_website_from_pipeline_output",
                 "get_website_status",
-                "list_generated_pages",
+                "list_generated_website_pages",
                 "get_website_module_info",
             ],
         }
@@ -332,4 +332,4 @@ def register_tools(mcp_instance: Any) -> None:
         category="website",
     )
 
-    logger.info("website module MCP tools registered (6 tools).")
+    logger.info("website module MCP tools registered (5 tools).")

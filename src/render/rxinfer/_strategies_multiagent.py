@@ -12,7 +12,7 @@ more complete agent groups (``A_agentN`` / ``B_agentN`` / ``C_agentN`` /
 ``D_agentN``) plus a shared environmental affordance (``env_signal`` +
 ``signal_decay``), the generated Julia script runs one genuine RxInfer
 ``pomdp_model`` inference per agent (native, per-agent state spaces — no
-joint expansion) and couples the agents through the shared environment:
+joint expansion) and reconstructs the shared environment trace:
 
 - each agent deposits signal at its MAP position each timestep
   (stigmergy: indirect coordination through the environment);
@@ -20,15 +20,11 @@ joint expansion) and couples the agents through the shared environment:
 - the resulting ``env_signal_trace`` is written to the results JSON
   alongside per-agent beliefs/actions/EFE and ``model_kind: multi_agent``.
 
-Agents never communicate directly; coordination emerges from the shared
-environment — exactly the stigmergic swarm semantics declared by
-``input/gnn_files/multiagent/stigmergic_swarm.md``.
-
 Residual (documented in the module SPEC/roadmap): conditioning *action
 selection* on the environment (inferring ``env_signal`` as a latent from
 observations) requires env-conditioned likelihoods the swarm exemplar does
-not declare; the current compilation couples agents deterministically through
-the affordance trace instead.
+not declare; the current trace is post hoc and does not affect inference or
+action selection.
 """
 
 from __future__ import annotations
@@ -78,7 +74,7 @@ def _generate_stigmergic_code(
 
     Returns:
         The Julia script text. Per-agent ``pomdp_model`` inference plus a
-        shared ``env_signal`` trace; no joint state-space expansion.
+        post-hoc shared ``env_signal`` trace; no joint state-space expansion.
     """
     agents = detect_agent_groups(gnn_spec)
     env = detect_env_coupling(gnn_spec)
@@ -125,12 +121,10 @@ def _generate_stigmergic_code(
 # Generated: {_now()}
 #
 # This script runs one genuine RxInfer.jl pomdp_model inference per agent
-# (native per-agent state spaces; NO joint state-space expansion) and couples
-# the agents through the shared environment: each agent deposits signal at
-# its MAP position each timestep, the shared trace decays by signal_decay per
-# timestep, and the resulting env_signal_trace is written alongside per-agent
-# beliefs/actions/EFE. Agents never communicate directly — coordination
-# emerges from the shared environment (stigmergy).
+# (native per-agent state spaces; NO joint state-space expansion). After all
+# independent agent runs, it reconstructs env_signal from MAP positions using
+# deposit + decay and writes that trace alongside per-agent beliefs/actions/EFE.
+# env_signal is not inferred as a latent and does not condition actions.
 
 using Pkg
 using RxInfer
@@ -435,7 +429,10 @@ function main()
         "env_coupling" => Dict(
             "variable" => ENV_VARIABLE,
             "initial" => ENV_INITIAL,
-            "decay" => ENV_DECAY
+            "decay" => ENV_DECAY,
+            "mode" => "post_hoc_deposit_decay_trace",
+            "latent_inference" => false,
+            "action_selection_conditioned" => false
         ),
         "env_signal_trace" => env_trace,
         "beliefs_by_agent" => Dict(agent => per_agent[agent]["beliefs"] for agent in AGENTS),

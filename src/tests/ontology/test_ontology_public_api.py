@@ -79,6 +79,24 @@ class TestProcessOntology:
         )
         assert isinstance(result, bool)
 
+    def test_strict_validation_fails_on_unknown_annotation(
+        self, tmp_path: Path
+    ) -> None:
+        from ontology import process_ontology
+
+        target = tmp_path / "input"
+        target.mkdir()
+        (target / "invalid.md").write_text(
+            "## ActInfOntologyAnnotation\ns=DefinitelyNotAnOntologyTerm\n",
+            encoding="utf-8",
+        )
+
+        assert (
+            process_ontology(target, tmp_path / "strict", strict_validation=True)
+            is False
+        )
+        assert process_ontology(target, tmp_path / "lenient") is True
+
 
 class TestProcessGnnOntology:
     """Test process_gnn_ontology function."""
@@ -139,6 +157,17 @@ class TestValidateAnnotationsExtended:
         terms: dict[str, Any] = {"HiddenState": {}, "Observation": {}}
         result = validate_annotations(["s=HiddenState"], terms)
         assert isinstance(result, dict)
+
+    def test_validate_annotations_rejects_incomplete_mapping(self) -> None:
+        from ontology import validate_annotations
+
+        result = validate_annotations(["=HiddenState"])
+
+        assert result["valid_annotations"] == []
+        assert result["invalid_annotations"] == ["=HiddenState"]
+        assert result["invalid_details"][0]["reason"] == (
+            "mapping annotations require a key and a value"
+        )
 
     def test_validate_ontology_terms_with_list(self) -> None:
         from ontology import validate_ontology_terms

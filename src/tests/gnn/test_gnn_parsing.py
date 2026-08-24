@@ -12,6 +12,7 @@ Tests the GNN parsing functionality including:
 - Malformed content handling
 """
 
+import json
 import sys
 from pathlib import Path
 from typing import Any
@@ -518,6 +519,96 @@ class TestParserInstantiation:
 
         parser = CoqGNNParser()
         assert parser is not None
+
+
+class TestParameterParsing:
+    """Regression tests for parameter value parsing and comment handling.
+
+    Pins the two parser-invariant fixes:
+    - an inline ``#`` comment on a braced matrix must not push the value into
+      the Python-set literal path (sets are unordered and not JSON-serializable)
+    - an inline ``#`` comment on a non-matrix token must be stripped from the
+      value instead of leaking into it
+    """
+
+    @pytest.mark.unit
+    @pytest.mark.fast
+    def test_matrix_with_trailing_comment_stays_a_matrix(self) -> None:
+        """A braced matrix with a trailing inline comment parses to a row list,
+        never a Python set (which would break JSON export)."""
+        value = "A = { (1.0, 0.0, 0.0), (0.0, 1.0, 0.0), (0.0, 0.0, 1.0) }  # I wrote this"
+        parser = MarkdownGNNParser()
+        param = parser._parse_parameter_assignment(value)
+        assert param is not None
+        assert isinstance(param.value, list)
+        assert param.value == [[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]]
+        assert param.description == "I wrote this"
+
+    @pytest.mark.unit
+    @pytest.mark.fast
+    def test_inline_comment_stripped_from_token_value(self) -> None:
+        """A ``#`` comment after a bare token is removed from the parsed value."""
+        parser = MarkdownGNNParser()
+        param = parser._parse_parameter_assignment("alpha = scaling  # rise correction")
+        assert param is not None
+        assert param.value == "scaling"
+        assert param.description == "rise correction"
+
+    @pytest.mark.unit
+    @pytest.mark.fast
+    def test_hash_inside_quoted_string_is_preserved(self) -> None:
+        """A ``#`` inside a quoted string is data, not a comment delimiter."""
+        parser = MarkdownGNNParser()
+        param = parser._parse_parameter_assignment('notes = "wave # 3"  # recording label')
+        assert param is not None
+        assert param.value == "wave # 3"
+        assert param.description == "recording label"
+
+    @pytest.mark.unit
+    @pytest.mark.fast
+    def test_hash_inside_matrix_row_is_preserved(self) -> None:
+        """A ``#`` inside a ``{...}`` matrix block is a value-side comment yet the
+        whole matrix still parses to rows, not a set."""
+        parser = MarkdownGNNParser()
+        value = "P = { (1.0, 0.0),  # first row\n          (0.0, 1.0) }  # done"
+        param = parser._parse_parameter_assignment(value)
+        assert param is not None
+        assert isinstance(param.value, list)
+        assert param.value == [[1.0, 0.0], [0.0, 1.0]]
+        assert param.description == "done"
+
+    @pytest.mark.unit
+    @pytest.mark.fast
+    def test_json_round_trip_of_matrix_parameter(self) -> None:
+        """A model whose parameters are matrices and inline-commented tokens must
+        serialize through the JSON serializer without raising."""
+        from gnn.parsers.json_serializer import JSONSerializer
+
+        content = """## GNNSection
+actinf
+
+## ModelName
+RT Model
+
+## StateSpaceBlock
+s[2]
+o[3]
+
+## Connections
+s>o
+
+## InitialParameterization
+A = { (0.9, 0.1, 0.0), (0.0, 1.0, 0.0) }  # transition
+rate = 0.1  # learning rate
+"""
+        parser = MarkdownGNNParser()
+        result = parser.parse_string(content)
+        assert result.success
+        out = JSONSerializer().serialize(result.model)
+        data = json.loads(out)
+        params = {p["name"]: p["value"] for p in data["parameters"]}
+        assert isinstance(params["A"], list)
+        assert params["rate"] == 0.1
 
 
 if __name__ == "__main__":

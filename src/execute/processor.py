@@ -51,6 +51,40 @@ class ScriptExecutionContext:
     executor: str
 
 
+def _julia_project_for_framework(framework: str) -> Optional[Path]:
+    """Return the committed Julia environment for a supported framework."""
+    execute_dir = Path(__file__).resolve().parent
+    projects = {
+        "rxinfer": execute_dir / "rxinfer",
+        "activeinference_jl": execute_dir / "activeinference_jl",
+    }
+    return projects.get(framework)
+
+
+def _build_script_execution_command(
+    context: ScriptExecutionContext, sandbox_prefix: List[str]
+) -> List[str]:
+    """Build an explicit, reproducible command for a rendered script."""
+    command = list(sandbox_prefix)
+    if context.executor == "julia":
+        project_dir = _julia_project_for_framework(context.framework)
+        if project_dir is None:
+            raise ValueError(
+                f"No committed Julia project is registered for {context.framework}"
+            )
+        command.extend(
+            [
+                context.executor,
+                "--startup-file=no",
+                f"--project={project_dir}",
+                context.script_path.name,
+            ]
+        )
+        return command
+    command.extend([context.executor, context.script_path.name])
+    return command
+
+
 def check_julia_dependencies(
     verbose: bool,
     log: Optional[logging.Logger] = None,
@@ -80,14 +114,13 @@ def check_julia_dependencies(
         # run against that environment's ``--project``. A bare ``julia -e
         # "using ..."`` resolves against the global depot and always fails on a
         # clean machine, which previously skipped every Julia script.
-        execute_dir = Path(__file__).resolve().parent
         framework_projects = {
             "rxinfer": (
-                execute_dir / "rxinfer",
+                _julia_project_for_framework("rxinfer"),
                 ["JSON", "Distributions", "StatsBase", "RxInfer"],
             ),
             "activeinference_jl": (
-                execute_dir / "activeinference_jl",
+                _julia_project_for_framework("activeinference_jl"),
                 ["JSON", "Distributions", "StatsBase", "ActiveInference"],
             ),
         }
@@ -98,11 +131,14 @@ def check_julia_dependencies(
                 log.warning(f"Unknown Julia framework '{framework}'; skipping check")
                 continue
             project_dir, packages = entry
+            if project_dir is None:
+                return False
             using_clause = ", ".join(packages)
             check_script = f"using {using_clause}"
             result = subprocess.run(  # nosec B607 B603
                 [
                     "julia",
+                    "--startup-file=no",
                     f"--project={project_dir}",
                     "-e",
                     check_script,
@@ -317,6 +353,8 @@ def _make_skipped_result(
         "executor": executor,
         "success": False,
         "skipped": True,
+        "status": "skipped",
+        "attempts_started": 0,
         "return_code": None,
         "stdout": "",
         "stderr": "",
@@ -339,6 +377,15 @@ def _coerce_execution_workers(value: Any) -> int:
     except (TypeError, ValueError):
         workers = 1
     return max(1, workers)
+
+
+def _coerce_dispatch_retries(value: Any) -> int:
+    """Normalize the distributed task retry limit."""
+    try:
+        retries = int(value)
+    except (TypeError, ValueError):
+        retries = 3
+    return max(0, retries)
 
 
 def _execute_script_worker(
@@ -378,6 +425,8 @@ def _make_local_worker_pool_failure_result(
         "executor": script_info["executor"],
         "success": False,
         "skipped": False,
+        "status": "failed",
+        "attempts_started": 0,
         "return_code": None,
         "stdout": "",
         "stderr": "",
@@ -386,6 +435,39 @@ def _make_local_worker_pool_failure_result(
         "error": error,
         "error_type": "LocalWorkerPoolError",
         "worker_pool_error_type": type(exc).__name__,
+    }
+
+
+def _make_distributed_dispatch_failure_result(
+    script_info: Dict[str, Any],
+    exc: BaseException,
+    backend: str,
+    max_retries: int,
+) -> Dict[str, Any]:
+    """Return one explicit failure when distributed dispatch cannot complete."""
+    script_path = Path(script_info["path"])
+    path_parts = script_path.parts
+    model_name = path_parts[-3] if len(path_parts) >= 3 else "unknown_model"
+    framework = path_parts[-2] if len(path_parts) >= 3 else script_info["framework"]
+    return {
+        "script_path": str(script_path),
+        "script_name": script_info["name"],
+        "framework": framework,
+        "model_name": model_name,
+        "executor": script_info["executor"],
+        "success": False,
+        "skipped": False,
+        "status": "failed",
+        "attempts_started": 0,
+        "return_code": None,
+        "stdout": "",
+        "stderr": "",
+        "execution_time": 0,
+        "timestamp": datetime.now().isoformat(),
+        "error": f"Distributed {backend} dispatch failed before completion: {exc}",
+        "error_type": "DistributedDispatchError",
+        "dispatch_error_type": type(exc).__name__,
+        "dispatch_max_retries": max_retries,
     }
 
 
@@ -645,6 +727,8 @@ def _slim_execution_detail(detail: Dict[str, Any]) -> Dict[str, Any]:
         "executor",
         "success",
         "skipped",
+        "status",
+        "attempts_started",
         "return_code",
         "error",
         "error_type",
@@ -743,7 +827,10 @@ def process_execute(
             "backend": None,
             "execution_benchmark_repeats": execution_benchmark_repeats,
             "execution_summary_detail": execution_summary_detail,
-            "success": True,
+            "dispatch_max_retries": 0,
+            "success": False,
+            "status": "pending",
+            "exit_code": None,
         }
 
         # Look for rendered implementations from render output
@@ -760,9 +847,12 @@ def process_execute(
             log_step_warning(
                 logger, f"Render output directory not found: {render_output_dir}"
             )
-            execution_results["success"] = True  # Not a hard error
             execution_results["skipped_reason"] = "no_render_output"
             execution_results["message"] = "No rendered implementations found"
+            if require_render_summary:
+                execution_results["missing_render_summary"] = (
+                    "render output directory unavailable"
+                )
         else:
             # Scope the render contract to the current invocation. The
             # pipeline runs Step 12 once per input folder, so a folder-scoped
@@ -831,7 +921,6 @@ def process_execute(
             if not executable_scripts:
                 log_step_warning(logger, "No executable scripts found in render output")
                 execution_results["message"] = "No executable scripts found"
-                execution_results["success"] = True
                 execution_results["skipped_reason"] = "no_executable_scripts"
             else:
                 logger.info(
@@ -851,13 +940,23 @@ def process_execute(
                 execution_results["backend"] = (
                     kwargs.get("backend", "ray") if is_distributed else None
                 )
+                dispatch_max_retries = _coerce_dispatch_retries(
+                    kwargs.get("distributed_max_retries", 3)
+                )
+                execution_results["dispatch_max_retries"] = (
+                    dispatch_max_retries if is_distributed else 0
+                )
                 details: list[Any] = []
 
                 if is_distributed:
                     from .distributed import Dispatcher
 
                     backend = kwargs.get("backend", "ray")
-                    dispatcher = Dispatcher(backend=backend, num_cpus=execution_workers)
+                    dispatcher = Dispatcher(
+                        backend=backend,
+                        num_cpus=execution_workers,
+                        max_retries=dispatch_max_retries,
+                    )
 
                     def ray_script_runner(info: Any, **kws: Any) -> Any:
                         """Execute a rendered simulation script using Ray for distributed processing."""
@@ -876,14 +975,39 @@ def process_execute(
                             ),
                         )
 
-                    details = dispatcher.run_scripts_parallel(
-                        executable_scripts,
-                        ray_script_runner,
-                        results_dir=results_dir,
-                        verbose=verbose,
-                        timeout=timeout,
-                        execution_benchmark_repeats=execution_benchmark_repeats,
-                    )
+                    try:
+                        details = dispatcher.run_scripts_parallel(
+                            executable_scripts,
+                            ray_script_runner,
+                            results_dir=results_dir,
+                            verbose=verbose,
+                            timeout=timeout,
+                            execution_benchmark_repeats=execution_benchmark_repeats,
+                        )
+                        if len(details) != len(executable_scripts):
+                            raise RuntimeError(
+                                "distributed dispatcher returned "
+                                f"{len(details)} results for "
+                                f"{len(executable_scripts)} scripts"
+                            )
+                    except Exception as exc:  # noqa: BLE001
+                        logger.error(
+                            "Distributed %s dispatch failed for %d scripts: %s",
+                            backend,
+                            len(executable_scripts),
+                            exc,
+                        )
+                        details = [
+                            _make_distributed_dispatch_failure_result(
+                                script_info,
+                                exc,
+                                str(backend),
+                                dispatch_max_retries,
+                            )
+                            for script_info in executable_scripts
+                        ]
+                    finally:
+                        dispatcher.shutdown()
                 else:
                     details = _run_scripts_with_local_workers(
                         executable_scripts,
@@ -905,45 +1029,103 @@ def process_execute(
                         execution_results["framework_status"][framework] = {
                             "status": "unknown",
                             "executions": 0,
+                            "successful": 0,
+                            "failed": 0,
+                            "skipped": 0,
                         }
 
-                    execution_results["framework_status"][framework]["executions"] += 1
+                    framework_summary = execution_results["framework_status"][framework]
+                    framework_summary["executions"] += 1
 
                     if exec_result.get("skipped"):
                         execution_results["skipped_executions"] = (
                             execution_results.get("skipped_executions", 0) + 1
                         )
-                        execution_results["framework_status"][framework]["status"] = (
-                            "skipped"
-                        )
+                        framework_summary["skipped"] += 1
                         if "error" in exec_result:
-                            execution_results["framework_status"][framework][
-                                "error"
-                            ] = exec_result["error"]
+                            framework_summary["error"] = exec_result["error"]
                     elif exec_result["success"]:
                         execution_results["successful_executions"] += 1
-                        execution_results["framework_status"][framework]["status"] = (
-                            "success"
-                        )
+                        framework_summary["successful"] += 1
                     else:
                         execution_results["failed_executions"] += 1
-                        execution_results["framework_status"][framework]["status"] = (
-                            "failed"
-                        )
+                        framework_summary["failed"] += 1
                         if "error" in exec_result:
-                            execution_results["framework_status"][framework][
-                                "error"
-                            ] = exec_result["error"]
+                            framework_summary["error"] = exec_result["error"]
 
-        # Populate summary counters before saving.
+                for framework_summary in execution_results["framework_status"].values():
+                    if framework_summary["failed"]:
+                        framework_summary["status"] = "failed"
+                    elif (
+                        framework_summary["successful"] and framework_summary["skipped"]
+                    ):
+                        framework_summary["status"] = "success_with_skips"
+                    elif framework_summary["successful"]:
+                        framework_summary["status"] = "success"
+                    else:
+                        framework_summary["status"] = "skipped"
+
+        # Classify the outcome before serialising it. The previous flow wrote
+        # ``success: true`` and only afterwards returned False for failures,
+        # leaving the durable summary in direct conflict with the API result.
         total_found = execution_results["total_scripts_found"]
         successful = execution_results["successful_executions"]
+        failed = execution_results["failed_executions"]
         skipped = execution_results.get("skipped_executions", 0)
         attempted = total_found - skipped
+        render_failures = execution_results.get("render_failures", [])
+        missing_render_scripts = execution_results.get("missing_render_scripts", [])
+        missing_render_summary = execution_results.get("missing_render_summary")
+
+        outcome: bool | int
+        if missing_render_summary:
+            outcome = False
+            status = "failed"
+            reason = "required_render_summary_missing"
+        elif strict_requested_frameworks and render_failures:
+            outcome = False
+            status = "failed"
+            reason = "requested_framework_render_failure"
+        elif missing_render_scripts:
+            outcome = False
+            status = "failed"
+            reason = "rendered_script_missing"
+        elif total_found == 0:
+            outcome = False if strict_requested_frameworks else 2
+            status = "failed" if strict_requested_frameworks else "skipped"
+            reason = "no_executable_scripts"
+        elif strict_requested_frameworks and (failed > 0 or skipped > 0):
+            outcome = False
+            status = "failed"
+            reason = "requested_framework_execution_incomplete"
+        elif failed > 0:
+            outcome = False
+            status = "failed"
+            reason = "script_execution_failure"
+        elif skipped > 0:
+            outcome = True
+            status = "success_with_skips"
+            reason = "optional_dependencies_unavailable"
+        elif render_failures:
+            outcome = True
+            status = "success_with_render_failures"
+            reason = "best_effort_render_subset_executed"
+        else:
+            outcome = True
+            status = "success"
+            reason = "all_scripts_succeeded"
+
         execution_results["total_scripts"] = total_found
+        execution_results["attempted_scripts"] = attempted
         execution_results["success_rate"] = (
-            round(successful / attempted * 100, 2) if attempted > 0 else 100.0
+            round(successful / attempted * 100, 2) if attempted > 0 else 0.0
         )
+        execution_results["success"] = outcome is True
+        execution_results["status"] = status
+        execution_results["exit_code"] = (
+            0 if outcome is True else outcome if outcome == 2 else 1
+        )
+        execution_results["outcome_reason"] = reason
 
         # Save detailed results to summaries subfolder (slim aggregate + optional full detail file)
         summaries_dir = results_dir / "summaries"
@@ -973,15 +1155,7 @@ def process_execute(
         # Restore full details in-memory for any downstream callers of this function
         execution_results["execution_details"] = full_details_snapshot
 
-        # Determine overall success: only count real failures (not skipped) toward critical threshold
-        total_scripts = execution_results["total_scripts_found"]
-        failed_scripts = execution_results["failed_executions"]
-        skipped_scripts = execution_results.get("skipped_executions", 0)
-        attempted_scripts = total_scripts - skipped_scripts
-        render_failures = execution_results.get("render_failures", [])
-        missing_render_scripts = execution_results.get("missing_render_scripts", [])
-
-        if strict_requested_frameworks and render_failures:
+        if reason == "requested_framework_render_failure":
             failure_preview = "; ".join(
                 f"{item['file']}:{item['framework']}" for item in render_failures[:5]
             )
@@ -989,52 +1163,40 @@ def process_execute(
                 logger,
                 f"Execute blocked by requested-framework render failures: {failure_preview}",
             )
-            return False
-        if strict_requested_frameworks and missing_render_scripts:
+        elif reason == "required_render_summary_missing":
+            log_step_error(logger, "Execute requires a valid render summary contract")
+        elif reason == "rendered_script_missing":
             log_step_error(
                 logger,
-                "Execute blocked because requested rendered scripts were not discoverable",
+                "Execute blocked because rendered scripts in the summary were not discoverable",
             )
-            return False
-        if total_scripts == 0:
+        elif reason == "no_executable_scripts":
             log_step_warning(logger, "No executable scripts found to run")
-            if strict_requested_frameworks:
-                return False
-            # Exit-code 2: step completed without doing work. Distinguishes
-            # "nothing to do" from "did work successfully".
-            return 2
-        elif strict_requested_frameworks and (
-            failed_scripts > 0 or skipped_scripts > 0
-        ):
+        elif reason == "requested_framework_execution_incomplete":
             log_step_error(
                 logger,
                 f"Execute failed for requested frameworks: {successful} succeeded, "
-                f"{failed_scripts} failed, {skipped_scripts} skipped",
+                f"{failed} failed, {skipped} skipped",
             )
-            return False
-        elif failed_scripts == 0:
-            if skipped_scripts:
-                log_step_success(
-                    logger,
-                    f"Execute completed: {execution_results['successful_executions']} succeeded, {skipped_scripts} skipped (dependency not installed)",
-                )
-            else:
-                log_step_success(logger, "Execute processing completed successfully")
-        elif attempted_scripts > 0 and failed_scripts < attempted_scripts * 0.5:
-            log_step_warning(
-                logger,
-                f"Execute completed with {failed_scripts}/{attempted_scripts} failures (partial success)"
-                + (f", {skipped_scripts} skipped" if skipped_scripts else ""),
-            )
-        elif attempted_scripts > 0:
+        elif reason == "script_execution_failure":
             log_step_error(
                 logger,
-                f"Execute completed with {failed_scripts}/{attempted_scripts} failures (critical)"
-                + (f", {skipped_scripts} skipped" if skipped_scripts else ""),
+                f"Execute failed: {successful} succeeded, {failed} failed, {skipped} skipped",
             )
-            return False
+        elif status == "success_with_skips":
+            log_step_success(
+                logger,
+                f"Execute completed: {successful} succeeded, {skipped} skipped",
+            )
+        elif status == "success_with_render_failures":
+            log_step_warning(
+                logger,
+                f"Execute completed {successful} scripts from the best-effort render subset",
+            )
+        else:
+            log_step_success(logger, "Execute processing completed successfully")
 
-        return cast("bool | int", failed_scripts == 0)
+        return outcome
 
     except Exception as e:
         log_step_error(logger, f"Execute processing failed: {e}")
@@ -1249,6 +1411,9 @@ def _new_execution_result(context: ScriptExecutionContext) -> Dict[str, Any]:
         "model_name": context.model_name,
         "executor": context.executor,
         "success": False,
+        "skipped": False,
+        "status": "failed",
+        "attempts_started": 0,
         "return_code": None,
         "stdout": "",
         "stderr": "",
@@ -1267,12 +1432,9 @@ def _build_execution_environment(
     # environment so `using GnnRxInferModels` / `using ActiveInference`
     # resolve without an ambient env (e.g. a /tmp test env that may not
     # exist). An explicitly set JULIA_PROJECT still wins.
-    julia_projects = {
-        "rxinfer": Path(__file__).resolve().parent / "rxinfer",
-        "activeinference_jl": Path(__file__).resolve().parent / "activeinference_jl",
-    }
-    if context.framework in julia_projects:
-        env.setdefault("JULIA_PROJECT", str(julia_projects[context.framework]))
+    julia_project = _julia_project_for_framework(context.framework)
+    if julia_project is not None:
+        env.setdefault("JULIA_PROJECT", str(julia_project))
     if context.framework == "pymdp":
         env["PYTHONPATH"] = (
             str(context.script_path.parent) + os.pathsep + env.get("PYTHONPATH", "")
@@ -1491,8 +1653,10 @@ def execute_single_script(
             exec_result["error"] = (
                 f"Executor '{executor}' is not available or not working: {e}"
             )
+            exec_result["error_type"] = "ExecutorUnavailable"
+            exec_result["return_code"] = -1
             logger.warning(
-                f"Executor '{executor}' is not available - skipping {script_info['name']}"
+                f"Executor unavailable for {script_info['name']}: {executor}"
             )
             return exec_result
 
@@ -1506,7 +1670,6 @@ def execute_single_script(
                 self.stderr = stderr
 
         # Execute the script with improved error handling
-        script_name = script_path.name
         result: subprocess.CompletedProcess[str] | ErrorResult | None = None
 
         K = max(1, int(execution_benchmark_repeats))
@@ -1525,9 +1688,10 @@ def execute_single_script(
                 exec_result["error_type"] = "SandboxUnavailable"
                 logger.error(sandbox_blocked)
                 return exec_result
-            base_command = sandbox_prefix + [executor, script_name]
+            base_command = _build_script_execution_command(context, sandbox_prefix)
 
             for rep in range(K):
+                exec_result["attempts_started"] = rep + 1
                 rep_start = datetime.now()
                 try:
                     run_result = subprocess.run(  # nosec B603
@@ -1545,6 +1709,7 @@ def execute_single_script(
                     exec_result["error"] = (
                         f"Script execution timed out after {timeout} seconds"
                     )
+                    exec_result["error_type"] = "TimeoutExpired"
                     exec_result["return_code"] = -1
                     exec_result["stdout"] = ""
                     exec_result["stderr"] = "Timeout"
@@ -1600,6 +1765,7 @@ def execute_single_script(
                 agg = _aggregate_benchmark_samples(durations_success)
                 exec_result.update(agg)
                 exec_result["success"] = True
+                exec_result["status"] = "success"
                 exec_result["return_code"] = result.returncode
                 exec_result["stdout"] = result.stdout
                 exec_result["stderr"] = result.stderr
@@ -1615,6 +1781,7 @@ def execute_single_script(
         except Exception as e:
             exec_result["execution_time"] = exec_result.get("execution_time", 0)
             exec_result["error"] = f"Script execution failed: {e}"
+            exec_result["error_type"] = type(e).__name__
             exec_result["return_code"] = -2
             exec_result["stdout"] = ""
             exec_result["stderr"] = str(e)

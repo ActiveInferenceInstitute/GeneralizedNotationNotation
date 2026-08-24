@@ -5,14 +5,15 @@ Diff-Aware Pipeline Reporting — Compare runs to detect regressions.
 Provides:
   - DiffReport: dataclass with timing deltas, new failures, status changes
   - compare_runs(): loads two pipeline summaries and computes diffs
-  - archive_run(): copies current summary to .history/ with timestamp
+  - archive_run(): copies a summary to a deterministic evidence-keyed archive
 """
 
+import hashlib
 import json
 import logging
+import re
 import shutil
 from dataclasses import dataclass, field
-from datetime import datetime
 from pathlib import Path
 from typing import Any, List, Optional
 
@@ -196,8 +197,24 @@ def archive_run(
     history_dir = history_dir or summary_path.parent / ".history"
     history_dir.mkdir(parents=True, exist_ok=True)
 
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    archive_path = history_dir / f"{timestamp}.json"
+    try:
+        summary_bytes = summary_path.read_bytes()
+    except OSError as exc:
+        logger.warning(f"Could not read run summary: {exc}")
+        return None
+    try:
+        summary = json.loads(summary_bytes)
+    except (json.JSONDecodeError, UnicodeDecodeError):
+        summary = {}
+    evidence_timestamp = (
+        summary.get("end_time")
+        or summary.get("start_time")
+        or summary.get("timestamp")
+        or "undated"
+    )
+    timestamp_token = re.sub(r"[^0-9A-Za-z]+", "", str(evidence_timestamp))[:20]
+    content_token = hashlib.sha256(summary_bytes).hexdigest()[:12]
+    archive_path = history_dir / f"{timestamp_token or 'undated'}_{content_token}.json"
 
     try:
         shutil.copy2(summary_path, archive_path)

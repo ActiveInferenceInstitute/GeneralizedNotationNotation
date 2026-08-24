@@ -9,7 +9,7 @@
 **Version**: 3.0.0
 **Last Updated**: 2026-04-16
 
-The CLI module provides the `gnn` command-line tool — a unified interface to the entire GNN pipeline. It acts as a thin dispatcher, routing 12 subcommands to their respective module APIs.
+The CLI module provides the `gnn` command-line tool — a unified interface to the entire GNN pipeline. It acts as a thin dispatcher, routing 15 subcommands to their respective module APIs. Public exits are `0` for success, `1` for errors, and `2` for completed commands with warnings or degraded readiness.
 
 ## Architecture
 
@@ -34,7 +34,7 @@ The CLI module provides the `gnn` command-line tool — a unified interface to t
 
 ```
 cli/
-├── __init__.py    # Main dispatcher (414 lines, 12 subcommands)
+├── __init__.py    # Main dispatcher and 15 subcommands
 ├── AGENTS.md      # This file
 ├── README.md      # Usage guide
 └── SPEC.md        # Module specification

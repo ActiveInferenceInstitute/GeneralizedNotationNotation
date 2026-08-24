@@ -8,7 +8,6 @@ It orchestrates the collection, analysis, and formatting of pipeline data into c
 
 import json
 import logging
-from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
@@ -67,7 +66,11 @@ def generate_comprehensive_report(
 
         # Add generation metadata
         pipeline_data["report_metadata"] = {
-            "generation_time": datetime.now().isoformat(),
+            "generation_time": "unavailable",
+            "evidence_as_of": pipeline_data["report_generation_time"],
+            "timestamp_source": pipeline_data.get(
+                "report_timestamp_source", "unavailable"
+            ),
             "formats_generated": report_formats,
             "options": {
                 "include_performance": include_performance,
@@ -245,7 +248,10 @@ def generate_summary_report(
     try:
         summary: dict[str, Any] = {
             "report_generation_summary": {
-                "generation_time": datetime.now().isoformat(),
+                "generation_time": "unavailable",
+                "evidence_as_of": pipeline_data.get(
+                    "report_generation_time", "unavailable"
+                ),
                 "pipeline_directory": str(
                     pipeline_data.get("pipeline_output_directory", "")
                 ),
@@ -254,12 +260,8 @@ def generate_summary_report(
                 "generated_files": generated_files,
                 "pipeline_summary": {
                     "total_steps": len(pipeline_data.get("steps", {})),
-                    "successful_steps": len(
-                        [
-                            s
-                            for s in pipeline_data.get("steps", {}).values()
-                            if s.get("exists", False)
-                        ]
+                    "successful_steps": pipeline_data.get("summary", {}).get(
+                        "successful_steps", 0
                     ),
                     "total_files": pipeline_data.get("summary", {}).get(
                         "total_files_processed", 0

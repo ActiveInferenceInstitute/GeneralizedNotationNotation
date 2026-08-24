@@ -22,16 +22,20 @@ Unified command-line interface for the GNN pipeline. Provides subcommands for ru
 | `gnn serve` | Start Pipeline-as-a-Service API (FastAPI) |
 | `gnn templates list` | List maintained local GNN templates with checksums |
 | `gnn templates show <name>` | Show one maintained template record |
+| `gnn models list` | Query the local model registry |
 | `gnn pull <name>` | Copy a maintained template into an input directory |
 | `gnn lsp` | Launch GNN Language Server (stdio) |
 | `gnn watch <dir>` | Monitor directory and live-reparse on file change |
 | `gnn graph <file>` | Generate dependency graph from multi-model files |
 
+Exit codes follow one contract: `0` is success, `1` is error, and `2` is a
+completed command with warnings, validation findings, or degraded readiness.
+
 ## Usage
 
 ```bash
 # Full pipeline
-gnn run --target-dir input/gnn_files --verbose
+gnn run --target-dir input/gnn_files --only-steps 3 5 11 12 --verbose
 
 # Validate a model
 gnn validate input/gnn_files/discrete/actinf_pomdp_agent.md --strict
@@ -64,6 +68,7 @@ The CLI module is a thin dispatcher — each subcommand delegates to the corresp
 - `health` → `render.health.check_renderers()` + `pipeline.preflight.check_environment()`
 - `serve` → `api.app.start_server()`
 - `templates` / `pull` → `cli.templates` maintained template index, checksum, and copy helpers
+- `models` → `model_registry.registry.ModelRegistry`
 - `lsp` → `lsp.start_server()`
 - `watch` → `gnn.watcher.GNNWatcher()`
 - `graph` → `gnn.dep_graph.render_graph_from_file()`

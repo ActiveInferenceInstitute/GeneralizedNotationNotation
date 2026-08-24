@@ -208,6 +208,22 @@ class TestProcessorFunctions:
         assert analysis["health_score"] < 50
 
     @pytest.mark.unit
+    def test_unknown_step_status_is_not_counted_as_success(self) -> None:
+        from intelligent_analysis.processor import analyze_pipeline_summary
+
+        analysis = analyze_pipeline_summary(
+            {"overall_status": "UNKNOWN", "steps": [{"status": "UNKNOWN"}]}
+        )
+
+        assert analysis["health_score"] == 0.0
+
+    @pytest.mark.unit
+    def test_llm_report_requires_all_contract_headings(self) -> None:
+        from intelligent_analysis.processor import _is_complete_llm_report
+
+        assert _is_complete_llm_report("### Executive Summary\nPartial") is False
+
+    @pytest.mark.unit
     def test_identify_bottlenecks(self) -> Any:
         """Test bottleneck identification."""
         from intelligent_analysis.processor import identify_bottlenecks
@@ -512,6 +528,16 @@ class TestIntegration:
             / "24_intelligent_analysis_output"
             / "intelligent_analysis_report.md"
         ).exists()
+        analysis_dir = output_dir / "24_intelligent_analysis_output"
+        report = (analysis_dir / "intelligent_analysis_report.md").read_text()
+        data = json.loads((analysis_dir / "analysis_data.json").read_text())
+        assert "## AI-Powered Analysis" not in report
+        assert "## Analysis Summary" in report
+        assert "### Root Cause Analysis" in report
+        assert "### Optimization Opportunities" in report
+        assert data["analysis_source"] == "rule_based"
+        assert data["llm_analysis_available"] is False
+        assert data["timestamp"] == SAMPLE_PIPELINE_SUMMARY["end_time"]
 
     @pytest.mark.integration
     def test_check_analysis_tools(self) -> Any:

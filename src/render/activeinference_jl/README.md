@@ -27,11 +27,15 @@ When a spec declares two or more complete agent groups (`A_agentN` /
 `B_agentN` / `C_agentN` / `D_agentN` in `structured_pomdp.matrices`), the
 renderer switches to the native multi-agent path (roadmap MAJ-03): one
 per-agent simulation (per-agent state spaces — no joint state-space
-expansion) coupled through the shared environment affordance. Each agent
-deposits signal at its MAP position each timestep; the shared
-`env_signal` trace decays by `signal_decay` per timestep. Results are
+expansion), followed by a post-hoc environment trace. Each agent deposits
+signal at its MAP position each timestep; the shared `env_signal` trace
+decays by `signal_decay` per timestep. The current exemplar does not declare
+an env-conditioned likelihood, so `env_signal` is not inferred as a latent
+and does not condition action selection. Results are
 written with schema `activeinference_jl_stigmergic_swarm_v1`, `model_kind:
-multi_agent`, per-agent beliefs/actions/EFE, and the `env_signal_trace`.
+multi_agent`, per-agent beliefs/actions/EFE, the `env_signal_trace`, and
+explicit `latent_inference: false` / `action_selection_conditioned: false`
+metadata.
 Detection helpers live in `render.multi_agent_common`; flat specs keep the
 canonical single-agent path unchanged.
 

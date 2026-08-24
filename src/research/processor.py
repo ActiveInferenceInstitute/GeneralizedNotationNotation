@@ -52,12 +52,11 @@ def detect_model_family(content: str) -> str:
             return "factor_graph"
 
     # Detect from state space variables
-    has_A = bool(re.search(r"^A\s*\[", content, re.MULTILINE))
-    has_B = bool(re.search(r"^B\s*\[", content, re.MULTILINE))
-    bool(re.search(r"^C\s*\[", content, re.MULTILINE))
-    bool(re.search(r"^D\s*\[", content, re.MULTILINE))
-    has_pi = bool(re.search(r"^π\s*\[|^pi\s*\[", content, re.MULTILINE))
-    has_G = bool(re.search(r"^G\s*\[", content, re.MULTILINE))
+    has_A = bool(re.search(r"^\s*A\s*\[", content, re.MULTILINE))
+    has_B = bool(re.search(r"^\s*B\s*\[", content, re.MULTILINE))
+    has_C = bool(re.search(r"^\s*C\s*\[", content, re.MULTILINE))
+    has_D = bool(re.search(r"^\s*D\s*\[", content, re.MULTILINE))
+    has_pi = bool(re.search(r"^\s*(?:π|pi)\s*\[", content, re.MULTILINE))
 
     # Hierarchical: multiple levels of A/B or explicit nesting
     level_count = len(re.findall(r"level\d|layer\d|hierarchical", content_lower))
@@ -65,7 +64,7 @@ def detect_model_family(content: str) -> str:
         return "hierarchical"
 
     # Full POMDP: has A, B, C, D and policy
-    if has_A and has_B and has_pi and has_G:
+    if has_A and has_B and has_C and has_D and has_pi:
         return "pomdp"
 
     # HMM: A and B but no policy/action selection
@@ -89,7 +88,7 @@ def extract_state_space_dims(content: str) -> Dict[str, List[int]]:
     Only extracts integer dimensions (not symbolic like pi).
     """
     dims: dict[Any, Any] = {}
-    pattern = r"^([A-Za-z_][A-Za-z0-9_\']*)\s*\[([^\]]+)\]"
+    pattern = r"^([^\W\d]\w*\'?)\s*\[([^\]]+)\]"
 
     in_state_space = False
     for line in content.splitlines():
@@ -313,12 +312,50 @@ def generate_rule_based_hypotheses(
     return hypotheses
 
 
+def _validate_llm_hypotheses(value: Any) -> List[Dict[str, Any]]:
+    """Validate and normalize prospective LLM hypotheses before publication."""
+    if not isinstance(value, list):
+        return []
+
+    validated: list[dict[str, Any]] = []
+    for candidate in value[:3]:
+        if not isinstance(candidate, dict):
+            continue
+        hypothesis_type = candidate.get("type")
+        description = candidate.get("description")
+        rationale = candidate.get("rationale")
+        priority = candidate.get("priority")
+        if not isinstance(hypothesis_type, str) or not hypothesis_type.strip():
+            continue
+        if not isinstance(description, str) or not description.strip():
+            continue
+        if not isinstance(rationale, str) or not rationale.strip():
+            continue
+        if not isinstance(priority, str) or not priority.strip():
+            continue
+        if not re.fullmatch(r"[a-z][a-z0-9_]*", hypothesis_type):
+            continue
+        if priority not in {"high", "medium", "low"}:
+            continue
+        if len(description.split()) > 20 or len(rationale.split()) > 50:
+            continue
+        validated.append(
+            {
+                "type": hypothesis_type,
+                "description": description.strip(),
+                "rationale": rationale.strip(),
+                "priority": priority,
+                "source": "llm_generated",
+                "claim_scope": "prospective_unvalidated_hypothesis",
+            }
+        )
+    return validated
+
+
 async def _generate_llm_hypotheses(
     content: str, model_family: str, dims: Dict[str, List[int]], logger: logging.Logger
 ) -> Optional[List[Dict[str, Any]]]:
-    """
-    Generate hypotheses using LLM when available. Returns None on any failure.
-    """
+    """Generate schema-validated hypotheses when an LLM is available."""
     try:
         from llm.llm_processor import initialize_global_processor
         from llm.providers.base_provider import LLMMessage
@@ -357,7 +394,8 @@ JSON only, no prose:"""
         # Parse JSON response
         json_match = re.search(r"\[.*\]", response.content, re.DOTALL)
         if json_match:
-            return cast("list[dict[str, Any]] | None", json.loads(json_match.group(0)))
+            hypotheses = _validate_llm_hypotheses(json.loads(json_match.group(0)))
+            return hypotheses or None
         return None
     except Exception as e:
         logger.debug(f"LLM hypothesis generation failed: {e}")
@@ -388,14 +426,23 @@ def process_research(
             "model_families_detected": {},
             "errors": [],
             "analysis_mode": "rule_based",
+            "claim_scope": "prospective_unvalidated_hypotheses",
         }
 
-        gnn_files = list(target_dir.glob("*.md"))
+        if not target_dir.is_dir():
+            results["success"] = False
+            results["errors"].append(
+                {"file": str(target_dir), "error": "target directory not found"}
+            )
+
+        recursive = bool(kwargs.get("recursive", False))
+        discovery = target_dir.rglob("*.md") if recursive else target_dir.glob("*.md")
+        gnn_files = sorted(discovery) if target_dir.is_dir() else []
         results["processed_files"] = len(gnn_files)
 
         for gnn_file in gnn_files:
             try:
-                content = gnn_file.read_text()
+                content = gnn_file.read_text(encoding="utf-8")
 
                 # Detect model family
                 model_family = detect_model_family(content)
@@ -409,9 +456,16 @@ def process_research(
                 connections = count_connections(content)
 
                 # Rule-based hypotheses (always available)
-                hypotheses = generate_rule_based_hypotheses(
-                    content, model_family, dims, connections
-                )
+                hypotheses = [
+                    {
+                        **hypothesis,
+                        "source": "rule_based_static_analysis",
+                        "claim_scope": "prospective_unvalidated_hypothesis",
+                    }
+                    for hypothesis in generate_rule_based_hypotheses(
+                        content, model_family, dims, connections
+                    )
+                ]
 
                 # Attempt LLM-powered hypotheses (opportunistic)
                 llm_hypotheses = None
@@ -446,6 +500,10 @@ def process_research(
                             "file": gnn_file.name,
                             "model_family": model_family,
                             "dimension_count": len(dims),
+                            "analysis_evidence": {
+                                "dimensions": dims,
+                                "connections": connections,
+                            },
                             "hypotheses": hypotheses,
                         }
                     )
@@ -454,23 +512,30 @@ def process_research(
                 logger.warning(f"Could not generate hypotheses for {gnn_file}: {e}")
                 results["errors"].append({"file": str(gnn_file.name), "error": str(e)})
 
+        if results["errors"]:
+            results["success"] = False
+
         # Save results
         results_file = results_dir / "research_results.json"
         with open(results_file, "w") as f:
-            json.dump(results, f, indent=2)
+            json.dump(results, f, indent=2, ensure_ascii=False)
 
         # Write summary files expected by pipeline validation
         summary_file = results_dir / "research_summary.json"
         with open(summary_file, "w") as f:
-            json.dump(results, f, indent=2)
+            json.dump(results, f, indent=2, ensure_ascii=False)
 
         processing_summary_file = results_dir / "research_processing_summary.json"
         with open(processing_summary_file, "w") as f:
-            json.dump(results, f, indent=2)
+            json.dump(results, f, indent=2, ensure_ascii=False)
 
         # Generate markdown report
         report_lines: list[Any] = ["# Research Hypotheses Report\n"]
         report_lines.append(f"**Analysis mode**: {results['analysis_mode']}\n\n")
+        report_lines.append(
+            "All items below are prospective, unvalidated hypotheses generated "
+            "from static model structure; they are not experimental findings.\n\n"
+        )
 
         for entry in results["hypotheses_generated"]:
             report_lines.append(f"## {entry['file']} ({entry['model_family']} model)\n")
@@ -490,6 +555,7 @@ def process_research(
                     for h in hyps:
                         report_lines.append(f"- **{h['type']}**: {h['description']}\n")
                         report_lines.append(f"  - *Rationale*: {h['rationale']}\n")
+                        report_lines.append(f"  - *Source*: {h['source']}\n")
             report_lines.append("\n")
 
         import os as _os
@@ -502,7 +568,10 @@ def process_research(
             _tmp.write("".join(report_lines))
         _os.replace(_tmp.name, str(_report_path))
 
-        log_step_success(logger, "Research processing completed successfully")
+        if results["success"]:
+            log_step_success(logger, "Research processing completed successfully")
+        else:
+            log_step_error(logger, "Research processing completed with errors")
         return cast("bool", results["success"])
 
     except Exception as e:

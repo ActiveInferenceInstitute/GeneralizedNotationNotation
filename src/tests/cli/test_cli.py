@@ -130,7 +130,7 @@ def test_health_default_informational_when_environment_has_errors(
         ),
     )
 
-    assert cli._cmd_health(SimpleNamespace(strict=False)) == 0
+    assert cli._cmd_health(SimpleNamespace(strict=False)) == 2
     captured = capsys.readouterr()
     assert "generator modules importable" in captured.out
     assert "pass --strict to fail on errors" in captured.out
@@ -159,6 +159,96 @@ def test_health_strict_fails_when_environment_has_errors(
     )
 
     assert cli._cmd_health(SimpleNamespace(strict=True)) == 1
+
+
+def test_run_combines_and_serializes_skip_steps(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """CLI forwarding uses the pipeline's single comma-separated step value."""
+    import main as pipeline_module
+
+    captured_argv: list[str] = []
+    original_argv = list(sys.argv)
+
+    def fake_pipeline_main() -> int:
+        captured_argv.extend(sys.argv)
+        return 0
+
+    monkeypatch.setattr(pipeline_module, "main", fake_pipeline_main)
+    result = cli._cmd_run(
+        SimpleNamespace(
+            target_dir="input/gnn_files",
+            output_dir="output",
+            verbose=False,
+            log_format="human",
+            skip_llm=True,
+            skip_steps=[2, 1],
+        )
+    )
+
+    assert result == 0
+    assert captured_argv[captured_argv.index("--skip-steps") + 1] == "1,2,13"
+    assert sys.argv == original_argv
+
+
+def test_run_serializes_only_steps_for_pipeline_parser(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    import main as pipeline_module
+
+    captured_argv: list[str] = []
+
+    def fake_pipeline_main() -> int:
+        captured_argv.extend(sys.argv)
+        return 0
+
+    monkeypatch.setattr(pipeline_module, "main", fake_pipeline_main)
+    assert main(["run", "--only-steps", "3", "11"]) == 0
+    assert captured_argv[captured_argv.index("--only-steps") + 1] == "3,11"
+
+
+def test_run_rejects_overlapping_only_and_skip_steps() -> None:
+    assert main(["run", "--only-steps", "3", "--skip-steps", "3"]) == 1
+
+
+def test_verbose_is_accepted_after_subcommand(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    seen: list[bool] = []
+
+    def fake_health(args: Any) -> int:
+        seen.append(args.verbose)
+        return 0
+
+    monkeypatch.setattr(cli, "_cmd_health", fake_health)
+    assert main(["health", "--verbose"]) == 0
+    assert seen == [True]
+
+
+def test_unexpected_handler_error_returns_error_exit(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    def broken_health(args: Any) -> int:
+        raise RuntimeError("boom")
+
+    monkeypatch.setattr(cli, "_cmd_health", broken_health)
+    assert main(["health"]) == 1
+
+
+@pytest.mark.parametrize(
+    "argv",
+    [
+        ["run", "--skip-steps", "25"],
+        ["run", "--only-steps", "25"],
+        ["serve", "--port", "0"],
+        ["serve", "--port", "65536"],
+    ],
+)
+def test_cli_rejects_out_of_range_numeric_arguments(argv: list[str]) -> None:
+    """Invalid steps and ports are parsing errors with argparse exit code 2."""
+    with pytest.raises(SystemExit) as exit_info:
+        main(argv)
+    assert exit_info.value.code == 2
 
 
 def test_cli_subcommand_routing(tmp_path: Any) -> Any:
