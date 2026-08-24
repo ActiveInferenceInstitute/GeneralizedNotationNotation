@@ -14,9 +14,13 @@ joint state space.
 
 The exemplar this targets is ``input/gnn_files/multiagent/stigmergic_swarm.md``:
 three homogeneous agents navigating a shared 3x3 grid whose cells carry a
-stigmergic signal. The current backends reconstruct ``env_signal`` after
-independent per-agent inference (deposition at occupied cells, decay per
-timestep); they do not yet infer it as a latent or condition actions on it.
+stigmergic signal. The backends reconstruct ``env_signal`` after independent
+per-agent inference (deposition at occupied cells, decay per timestep). When
+the spec additionally declares an env-conditioned observation likelihood
+(``env_obs_likelihood``) and latent signal prior (``env_signal_prior``), each
+agent also infers the local signal level as a latent from its observations and
+conditions its action selection on that latent (signal-seeking). See
+:func:`detect_env_conditioned` / :func:`has_env_conditioned_action_selection`.
 """
 
 from __future__ import annotations
@@ -30,8 +34,10 @@ __all__ = [
     "AGENT_MATRIX_RE",
     "detect_agent_groups",
     "detect_env_coupling",
+    "detect_env_conditioned",
     "multi_agent_structure",
     "has_native_multi_agent_structure",
+    "has_env_conditioned_action_selection",
     "canonicalise_b",
 ]
 
@@ -135,6 +141,55 @@ def detect_env_coupling(
         "initial": initial_vector,
         "decay": float(decay_values[0]),
     }
+
+
+def _as_float_matrix(value: Any) -> List[List[float]]:
+    """Flatten a nested GNN matrix literal into row lists of ``float``s."""
+    return [[float(x) for x in row] for row in value]
+
+
+def detect_env_conditioned(
+    gnn_spec: Dict[str, Any],
+) -> Optional[Dict[str, Any]]:
+    """Return the env-conditioned observation likelihood when declared.
+
+    Reads the MAJ-03 declarations from ``initialparameterization``:
+    ``env_obs_likelihood`` (P(observation category | local signal level), with
+    columns over signal levels none/low/high), ``env_signal_prior`` (prior over
+    those signal levels), and an optional ``signal_seek`` scalar gain. Returns
+    ``{"obs_likelihood": [...], "signal_prior": [...], "seek": float}`` or
+    ``None`` when the likelihood or prior is absent (non-conditioned model).
+    """
+    initial = gnn_spec.get("initialparameterization") or {}
+    obs_likelihood = initial.get("env_obs_likelihood")
+    signal_prior = initial.get("env_signal_prior")
+    if obs_likelihood is None or signal_prior is None:
+        return None
+    try:
+        likelihood_matrix = _as_float_matrix(obs_likelihood)
+        prior_vector = _as_flat_list(signal_prior)
+    except (TypeError, ValueError):
+        return None
+    if not likelihood_matrix or not prior_vector:
+        return None
+    seek = initial.get("signal_seek")
+    seek_value = float(seek[0]) if seek else 1.0
+    return {
+        "obs_likelihood": likelihood_matrix,
+        "signal_prior": prior_vector,
+        "seek": seek_value,
+    }
+
+
+def has_env_conditioned_action_selection(gnn_spec: Dict[str, Any]) -> bool:
+    """Return True when the spec declares env-conditioned action selection.
+
+    Requires both the env-coupling (``env_signal``/``signal_decay``) and the
+    env-conditioned observation likelihood / latent signal prior.
+    """
+    return detect_env_coupling(gnn_spec) is not None and detect_env_conditioned(
+        gnn_spec
+    ) is not None
 
 
 def multi_agent_structure(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:

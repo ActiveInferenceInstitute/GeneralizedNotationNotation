@@ -8,6 +8,30 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
 
 ## [Unreleased]
 
+### Added (2026-08-24 — env-conditioned action selection for stigmergic swarms, roadmap MAJ-03 closure)
+
+- **Latent environmental-signal inference per agent.** The shared swarm exemplar
+  (`input/gnn_files/multiagent/stigmergic_swarm.md`) now declares an
+  env-conditioned observation likelihood (`env_obs_likelihood`) and latent
+  signal prior (`env_signal_prior`) in addition to `env_signal`/`signal_decay`.
+  Each agent maintains a belief over the local signal level (none/low/high),
+  updates it via Bayes from its observations, and conditions its action
+  selection on that inferred latent (signal-seeking / tropotaxis).
+- **Detection:** `render.multi_agent_common` adds `detect_env_conditioned` and
+  `has_env_conditioned_action_selection`, returning the declared likelihood's
+  rows/prior/seek gain (or `None` for non-conditioned specs, preserving the
+  prior post-hoc behaviour for e.g. the coordination exemplar).
+- **Both Julia backends condition action selection.** `src/render/rxinfer/
+  _strategies_multiagent.py` and `src/render/activeinference_jl/
+  activeinference_renderer.py` emit `update_signal_belief` (Bayes) and
+  `signal_seeking_preference` (C-preference modulation) when the spec declares
+  the conditioning; results expose `env_signal_belief_by_agent` and set
+  `mode=env_conditioned_signal_selection`, `latent_inference=true`,
+  `action_selection_conditioned=true`. Non-conditioned specs keep the historical
+  `post_hoc_deposit_decay_trace` with `latent_inference=false`.
+- Pinned by `src/tests/render/test_stigmergic_multi_agent.py` (structure,
+  Julia parse, and live Julia execution in both backends).
+
 ### Added (2026-08-21 — Kronecker pipeline integration, roadmap MAJ-02 residual)
 
 - **Factorized specs flow through the numbered pipeline.**

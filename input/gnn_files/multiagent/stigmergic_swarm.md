@@ -72,6 +72,14 @@ G3[pi3,type=float]         # Agent 3 EFE
 env_signal[9,1,type=float]     # Signal intensity at each grid cell (0.0 to 1.0)
 signal_decay[1,type=float]     # Signal decay rate per timestep
 
+# Env-conditioned observation likelihood + latent signal prior (MAJ-03)
+# Each agent infers the local environmental signal level as a latent from
+# its observations (empty / signal_low / signal_high / goal) via this likelihood,
+# and conditions its action selection (signal-seeking) on the inferred signal.
+env_obs_likelihood[4,3,type=float]  # P(obs category | local signal level: none/low/high)
+env_signal_prior[3,type=float]      # prior over local signal level (none/low/high)
+signal_seek[1,type=float]           # signal-seeking gain applied to action selection
+
 # Time
 
 t[1,type=int]                  # Discrete time step
@@ -192,6 +200,25 @@ env_signal={(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)}
 # Signal decay: 10% per timestep
 
 signal_decay={(0.9)}
+
+# Env-conditioned observation likelihood (MAJ-03):
+# rows = observation categories (empty, signal_low, signal_high, goal);
+# columns = local signal level (none, low, high). Each column is normalized so
+# P(obs | signal level) is a valid likelihood, and the agent uses it to infer
+# the latent signal level from each observation.
+env_obs_likelihood={
+  (0.70, 0.10, 0.05),
+  (0.15, 0.70, 0.15),
+  (0.10, 0.15, 0.75),
+  (0.05, 0.05, 0.05)
+}
+
+# Prior over local signal level (none, low, high): mostly signal-free initially.
+env_signal_prior={(0.70, 0.20, 0.10)}
+
+# Signal-seeking gain: scales how strongly the inferred latent signal biases
+# action selection toward signal-rich observations (trophotaxis / stigmergy).
+signal_seek={(2.0)}
 
 ## Equations
 

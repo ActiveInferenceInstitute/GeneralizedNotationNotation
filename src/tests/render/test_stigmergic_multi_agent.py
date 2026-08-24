@@ -7,11 +7,14 @@ exemplar:
   (``A_agentN``/``B_agentN``/``C_agentN``/``D_agentN``) and the shared
   environmental affordance (``env_signal`` + ``signal_decay``).
 - The RxInfer.jl strategy emits one genuine ``pomdp_model`` inference per
-  agent (no joint state-space expansion), then reconstructs a shared
-  ``env_signal`` trace (deposit at MAP position, decay per timestep).
+  agent (no joint state-space expansion), reconstructs a shared ``env_signal``
+  trace (deposit at MAP position, decay per timestep), and — when the spec
+  declares an env-conditioned observation likelihood (MAJ-03) — infers the
+  local signal level as a latent from observations and conditions action
+  selection on it (signal-seeking).
 - The ActiveInference.jl renderer emits the equivalent per-agent simulation
-  with the same post-hoc trace and explicit metadata stating that latent
-  inference/action conditioning remain unimplemented.
+  with the same post-hoc trace and the same MAJ-03 env-conditioned latent
+  signal inference / action-conditioning when declared.
 
 Pure-Python structure tests run unconditionally; Julia parse and execution
 tests are gated exactly like the other live-backend gates in this suite.
@@ -34,7 +37,9 @@ from render.activeinference_jl.activeinference_renderer import (
 )
 from render.multi_agent_common import (
     detect_agent_groups,
+    detect_env_conditioned,
     detect_env_coupling,
+    has_env_conditioned_action_selection,
     has_native_multi_agent_structure,
 )
 from render.pomdp_contract import build_canonical_pomdp_spec
@@ -142,6 +147,23 @@ class TestMultiAgentDetection:
     def test_coordination_has_no_environment_coupling(self) -> None:
         assert detect_env_coupling(_canonical_spec(COORDINATION_FILE)) is None
 
+    def test_swarm_declares_env_conditioned_likelihood(self) -> None:
+        env_cond = detect_env_conditioned(_canonical_spec(SWARM_FILE))
+        assert env_cond is not None
+        assert len(env_cond["obs_likelihood"]) == 4   # empty/low/high/goal
+        assert len(env_cond["obs_likelihood"][0]) == 3  # none/low/high
+        assert len(env_cond["signal_prior"]) == 3
+        assert env_cond["seek"] == pytest.approx(2.0)
+
+    def test_swarm_conditions_action_selection_on_env(self) -> None:
+        assert has_env_conditioned_action_selection(_canonical_spec(SWARM_FILE))
+
+    def test_coordination_is_not_env_conditioned(self) -> None:
+        assert detect_env_conditioned(_canonical_spec(COORDINATION_FILE)) is None
+        assert not has_env_conditioned_action_selection(
+            _canonical_spec(COORDINATION_FILE)
+        )
+
     def test_native_structure_threshold(self) -> None:
         assert has_native_multi_agent_structure(_canonical_spec(SWARM_FILE))
         assert has_native_multi_agent_structure(_canonical_spec(COORDINATION_FILE))
@@ -171,9 +193,23 @@ class TestRxInferStigmergicScript:
         assert '"variable": "env_signal"' in text or "env_signal" in text
         assert "const ENV_DECAY = 0.9" in text
         assert "const ENV_INITIAL = [0.0" in text
+        # MAJ-03: env-conditioned latent signal inference + action conditioning.
+        assert "const ENV_ACTION_CONDITIONED = true" in text
+        assert "const ENV_OBS_LIKELIHOOD" in text
+        assert "const ENV_SIGNAL_PRIOR = [0.7" in text
+        assert "const SIGNAL_SEEK = 2.0" in text
+        assert "function update_signal_belief" in text
+        assert "function signal_seeking_preference" in text
+        assert '"mode" => "env_conditioned_signal_selection"' in text
+        assert '"latent_inference" => ENV_ACTION_CONDITIONED' in text
+        assert '"action_selection_conditioned" => ENV_ACTION_CONDITIONED' in text
+
+    def test_coordination_script_stays_unconditioned(self, tmp_path: Path) -> None:
+        text = _render_rxinfer(COORDINATION_FILE, tmp_path).read_text(encoding="utf-8")
+        assert "const ENV_ACTION_CONDITIONED = false" in text
         assert '"mode" => "post_hoc_deposit_decay_trace"' in text
-        assert '"latent_inference" => false' in text
-        assert '"action_selection_conditioned" => false' in text
+        assert '"latent_inference" => ENV_ACTION_CONDITIONED' in text
+        assert '"action_selection_conditioned" => ENV_ACTION_CONDITIONED' in text
 
     def test_coordination_renders_native_without_env(self, tmp_path: Path) -> None:
         script = _render_rxinfer(COORDINATION_FILE, tmp_path)
@@ -205,9 +241,15 @@ class TestActiveInferenceJlStigmergicScript:
         assert "env_signal_trace" in text
         assert "const ENV_DECAY = 0.9" in text
         assert "const NUM_STATES = 729" not in text
-        assert '"mode" => "post_hoc_deposit_decay_trace"' in text
-        assert '"latent_inference" => false' in text
-        assert '"action_selection_conditioned" => false' in text
+        # MAJ-03 env-conditioned latent signal inference + action conditioning.
+        assert "const ENV_ACTION_CONDITIONED = true" in text
+        assert "const ENV_OBS_LIKELIHOOD" in text
+        assert "const ENV_SIGNAL_PRIOR = [0.7" in text
+        assert "function update_signal_belief" in text
+        assert "function signal_seeking_preference" in text
+        assert '"mode" => "env_conditioned_signal_selection"' in text
+        assert '"latent_inference" => ENV_ACTION_CONDITIONED' in text
+        assert '"action_selection_conditioned" => ENV_ACTION_CONDITIONED' in text
 
     def test_coordination_renders_native_without_env(self, tmp_path: Path) -> None:
         script = _render_activeinference_jl(COORDINATION_FILE, tmp_path)
@@ -215,6 +257,8 @@ class TestActiveInferenceJlStigmergicScript:
         assert "const NUM_AGENTS = 2" in text
         assert "function simulate_agent" in text
         assert "env_signal_trace" in text
+        assert "const ENV_ACTION_CONDITIONED = false" in text
+        assert '"mode" => "post_hoc_deposit_decay_trace"' in text
 
     def test_flat_model_renders_through_flat_path(self, tmp_path: Path) -> None:
         script = _render_activeinference_jl(GRIDWORLD_FILE, tmp_path)
@@ -312,13 +356,19 @@ class TestJuliaExecution:
             "variable": "env_signal",
             "initial": [0.0] * 9,
             "decay": 0.9,
-            "mode": "post_hoc_deposit_decay_trace",
-            "latent_inference": False,
-            "action_selection_conditioned": False,
+            "mode": "env_conditioned_signal_selection",
+            "latent_inference": True,
+            "action_selection_conditioned": True,
+            "signal_prior": [0.7, 0.2, 0.1],
+            "signal_seek": 2.0,
         }
         for agent in results["agents"]:
             assert len(results["actions_by_agent"][agent]) == results["num_timesteps"]
             assert len(results["beliefs_by_agent"][agent]) == results["num_timesteps"]
+            # MAJ-03: each agent maintains a latent signal belief over time.
+            sig = results["env_signal_belief_by_agent"][agent]
+            assert len(sig) == results["num_timesteps"]
+            assert all(abs(sum(b) - 1.0) < 1e-6 for b in sig)  # normalized
         # The executed model never expands the joint state space.
         assert results["model_parameters"]["per_agent_state_sizes"] == [9, 9, 9]
         assert results["model_parameters"]["joint_state_space_size"] == 729

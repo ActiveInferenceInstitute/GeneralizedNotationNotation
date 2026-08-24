@@ -17,7 +17,9 @@ logger = logging.getLogger(__name__)
 from render.multi_agent_common import (
     canonicalise_b,
     detect_agent_groups,
+    detect_env_conditioned,
     detect_env_coupling,
+    has_env_conditioned_action_selection,
     has_native_multi_agent_structure,
 )
 from render.pomdp_contract import build_canonical_pomdp_spec
@@ -1126,6 +1128,7 @@ def _multi_agent_model_info(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
     """
     agents = detect_agent_groups(gnn_spec)
     env = detect_env_coupling(gnn_spec)
+    env_cond = detect_env_conditioned(gnn_spec)
 
     def index_of(name: str) -> int:
         digits = "".join(ch for ch in name if ch.isdigit())
@@ -1138,6 +1141,10 @@ def _multi_agent_model_info(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
         "agents": ordered_names,
         "agent_matrices": [agents[name] for name in ordered_names],
         "env": env,
+        "env_cond": env_cond,
+        "env_action_conditioned": (
+            env is not None and env_cond is not None
+        ),
         "n_timesteps": int(model_params.get("num_timesteps", 20)),
         "random_seed": int(
             model_params.get("random_seed", model_params.get("seed", 42))
@@ -1151,14 +1158,22 @@ def _multi_agent_model_info(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
     }
 
 
+def julia_matrix_literal(rows: List[List[float]]) -> str:
+    """Format a list-of-rows as a Julia matrix literal ``[r11 r12 ...; ...]``."""
+    parts = [" ".join(repr(float(x)) for x in row) for row in rows]
+    return "[" + "; ".join(parts) + "]"
+
+
 def _generate_stigmergic_activeinference_script(model_info: Dict[str, Any]) -> str:
     """Generate a native stigmergic multi-agent ActiveInference.jl script.
 
     One hand-rolled Active Inference simulation per agent (per-agent state
-    spaces — no joint expansion), followed by a post-hoc shared
-    ``env_signal`` trace: each agent deposits signal at its MAP position each
-    timestep and the shared trace decays by ``signal_decay``. The trace does
-    not yet condition inference or action selection.
+    spaces — no joint expansion), followed by a shared ``env_signal`` trace:
+    each agent deposits signal at its MAP position each timestep and the
+    shared trace decays by ``signal_decay``. When the spec declares an
+    env-conditioned observation likelihood, each agent also infers the local
+    signal level as a latent from its observations and conditions its action
+    selection on that latent (signal-seeking).
 
     Results are written to ``simulation_results.json`` with per-agent
     beliefs/actions/EFE, the ``env_signal_trace``, and
@@ -1168,6 +1183,13 @@ def _generate_stigmergic_activeinference_script(model_info: Dict[str, Any]) -> s
     agents = list(model_info["agents"])
     matrices = list(model_info["agent_matrices"])
     env = model_info.get("env")
+    env_cond = model_info.get("env_cond")
+    env_action_conditioned = bool(model_info.get("env_action_conditioned"))
+    env_coupling_mode = (
+        "env_conditioned_signal_selection"
+        if env_action_conditioned
+        else "post_hoc_deposit_decay_trace"
+    )
     num_actions = int(model_info.get("num_actions", 3))
     n_timesteps = int(model_info["n_timesteps"])
     random_seed = int(model_info["random_seed"])
@@ -1193,6 +1215,17 @@ def _generate_stigmergic_activeinference_script(model_info: Dict[str, Any]) -> s
         env_decay_literal = "1.0"
         env_variable_literal = json.dumps("env_signal")
 
+    if env_cond is not None:
+        # Emit the likelihood as a proper Julia matrix literal so that
+        # indexing [obs, :] yields a length-3 row vector over signal levels.
+        env_obs_ll_literal = julia_matrix_literal(env_cond["obs_likelihood"])
+        env_signal_prior_literal = json.dumps(env_cond["signal_prior"])
+        env_seek_literal = repr(env_cond["seek"])
+    else:
+        env_obs_ll_literal = "zeros(0, 0)"
+        env_signal_prior_literal = "[]"
+        env_seek_literal = "0.0"
+
     return f'''#!/usr/bin/env julia
 # ActiveInference.jl stigmergic multi-agent simulation
 # Generated from GNN Model: {model_name}
@@ -1200,8 +1233,10 @@ def _generate_stigmergic_activeinference_script(model_info: Dict[str, Any]) -> s
 # Native per-agent compilation (roadmap MAJ-03): one Active Inference agent
 # per declared agent group (no joint state-space expansion). After all
 # independent runs, env_signal is reconstructed from MAP positions with
-# deposit + decay and written alongside per-agent beliefs/actions/EFE. It is
-# not inferred as a latent and does not condition action selection.
+# deposit + decay and written alongside per-agent beliefs/actions/EFE. When
+# the spec declares an env-conditioned observation likelihood, each agent also
+# infers the local signal level as a latent and conditions action selection
+# on it (signal-seeking / tropotaxis).
 
 using Pkg
 using ActiveInference
@@ -1234,6 +1269,10 @@ const AGENT_DS = {agent_ds}
 const ENV_VARIABLE = {env_variable_literal}
 const ENV_INITIAL = {env_initial_literal}
 const ENV_DECAY = {env_decay_literal}
+const ENV_ACTION_CONDITIONED = {str(env_action_conditioned).lower()}
+const ENV_OBS_LIKELIHOOD = {env_obs_ll_literal}
+const ENV_SIGNAL_PRIOR = {env_signal_prior_literal}
+const SIGNAL_SEEK = {env_seek_literal}
 
 function package_version(name::String)
 for (_, dep) in Pkg.dependencies()
@@ -1338,11 +1377,34 @@ risk = sum(predicted_obs .* (log.(predicted_obs) .- log.(preferred)))
 return ambiguity + risk
 end
 
-function select_action(belief, A, B, C_pref)
-efe_values = [compute_efe(belief, action, A, B, C_pref) for action in 1:size(B, 3)]
+function select_action(belief, A, B, C_eff)
+efe_values = [compute_efe(belief, action, A, B, C_eff) for action in 1:size(B, 3)]
 policy = softmax(-ACTION_PRECISION .* efe_values)
 action = categorical_index(policy)
 return action, efe_values, policy
+end
+
+function update_signal_belief(signal_belief, observation)
+if isempty(ENV_OBS_LIKELIHOOD)
+    return signal_belief
+end
+obs_row = clamp(observation, 1, size(ENV_OBS_LIKELIHOOD, 1))
+likelihood = Float64.(ENV_OBS_LIKELIHOOD[obs_row, :])
+updated = signal_belief .* max.(likelihood, 1e-16)
+if sum(updated) <= 0
+    return signal_belief
+end
+return updated ./ sum(updated)
+end
+
+function signal_seeking_preference(C_pref, signal_belief)
+C_eff = copy(C_pref)
+signal_belief = max.(signal_belief, 0.0)
+if length(C_eff) >= 3 && length(signal_belief) >= 2
+    C_eff[2] += SIGNAL_SEEK * signal_belief[2]
+    C_eff[3] += SIGNAL_SEEK * signal_belief[3]
+end
+return C_eff
 end
 
 # --- Per-agent simulation (parameterised — no joint state space) ---
@@ -1365,6 +1427,8 @@ end
 C_pref = softmax(C)
 current_state = categorical_index(D)
 current_belief = copy(D)
+signal_belief = isempty(ENV_SIGNAL_PRIOR) ? fill(1.0 / 3.0, 3) : Float64.(ENV_SIGNAL_PRIOR)
+signal_beliefs = Vector{{Vector{{Float64}}}}()
 
 observations = Int[]
 true_states = Int[]
@@ -1383,7 +1447,12 @@ for step in 1:TIME_STEPS
     end
     current_belief = updated ./ sum(updated)
 
-    action, efe_values, policy = select_action(current_belief, A, B, C_pref)
+    # MAJ-03: infer latent signal from the observation, condition action selection.
+    signal_belief = update_signal_belief(signal_belief, observation)
+    push!(signal_beliefs, copy(signal_belief))
+    C_eff = signal_seeking_preference(C_pref, signal_belief)
+
+    action, efe_values, policy = select_action(current_belief, A, B, C_eff)
     next_probs = B[:, current_state, action]
     current_state = categorical_index(next_probs)
     predicted = B[:, :, action] * current_belief
@@ -1415,6 +1484,7 @@ return Dict(
     "efe_per_action" => efe_per_action,
     "selected_efe" => selected_efe,
     "policy_posterior" => policy_posterior,
+    "signal_beliefs" => signal_beliefs,
     "n_states" => n_states,
     "n_observations" => n_obs,
     "n_actions" => n_actions,
@@ -1475,11 +1545,16 @@ results = Dict(
         "variable" => ENV_VARIABLE,
         "initial" => ENV_INITIAL,
         "decay" => ENV_DECAY,
-        "mode" => "post_hoc_deposit_decay_trace",
-        "latent_inference" => false,
-        "action_selection_conditioned" => false
+        "mode" => "{env_coupling_mode}",
+        "latent_inference" => ENV_ACTION_CONDITIONED,
+        "action_selection_conditioned" => ENV_ACTION_CONDITIONED,
+        "signal_prior" => ENV_SIGNAL_PRIOR,
+        "signal_seek" => SIGNAL_SEEK
     ),
     "env_signal_trace" => env_trace,
+    "env_signal_prior" => ENV_SIGNAL_PRIOR,
+    "signal_seek" => SIGNAL_SEEK,
+    "env_signal_belief_by_agent" => Dict(agent => per_agent[agent]["signal_beliefs"] for agent in AGENTS),
     "beliefs_by_agent" => Dict(agent => per_agent[agent]["beliefs"] for agent in AGENTS),
     "actions_by_agent" => Dict(agent => per_agent[agent]["actions"] for agent in AGENTS),
     "observations_by_agent" => Dict(agent => per_agent[agent]["observations"] for agent in AGENTS),

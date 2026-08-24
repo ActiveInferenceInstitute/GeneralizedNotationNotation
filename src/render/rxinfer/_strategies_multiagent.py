@@ -37,7 +37,9 @@ from typing import Any, Dict, List
 from render.multi_agent_common import (
     canonicalise_b,
     detect_agent_groups,
+    detect_env_conditioned,
     detect_env_coupling,
+    has_env_conditioned_action_selection,
 )
 
 __all__ = ["_generate_stigmergic_code"]
@@ -60,6 +62,12 @@ def _ordered_agent_groups(
     return [agents[name] for name in sorted(agents, key=index_of)]
 
 
+def julia_matrix_literal(rows: List[List[float]]) -> str:
+    """Format a list-of-rows as a Julia matrix literal ``[r11 r12 ...; ...]``."""
+    parts = [" ".join(repr(float(x)) for x in row) for row in rows]
+    return "[" + "; ".join(parts) + "]"
+
+
 def _generate_stigmergic_code(
     gnn_spec: Dict[str, Any],
     model_display_name: str,
@@ -78,6 +86,13 @@ def _generate_stigmergic_code(
     """
     agents = detect_agent_groups(gnn_spec)
     env = detect_env_coupling(gnn_spec)
+    env_cond = detect_env_conditioned(gnn_spec)
+    env_action_conditioned = has_env_conditioned_action_selection(gnn_spec)
+    env_coupling_mode = (
+        "env_conditioned_signal_selection"
+        if env_action_conditioned
+        else "post_hoc_deposit_decay_trace"
+    )
     ordered = _ordered_agent_groups(agents)
     agent_names = list(agents.keys())
 
@@ -115,6 +130,19 @@ def _generate_stigmergic_code(
         env_decay_literal = "1.0"
         env_variable_literal = json.dumps("env_signal")
 
+    if env_cond is not None:
+        # Emit the likelihood as a proper Julia matrix literal so that
+        # indexing [obs, :] yields a length-3 row vector over signal levels.
+        env_obs_ll_literal = julia_matrix_literal(env_cond["obs_likelihood"])
+        env_signal_prior_literal = json.dumps(env_cond["signal_prior"])
+        env_seek_literal = repr(env_cond["seek"])
+    else:
+        # No env-conditioned likelihood: emit neutral defaults so the script
+        # is well-formed but does not condition actions on a latent signal.
+        env_obs_ll_literal = "zeros(0, 0)"
+        env_signal_prior_literal = "[]"
+        env_seek_literal = "0.0"
+
     return f'''#!/usr/bin/env julia
 # RxInfer.jl stigmergic multi-agent simulation — native per-agent compilation
 # Generated from GNN Model: {model_display_name}
@@ -124,7 +152,9 @@ def _generate_stigmergic_code(
 # (native per-agent state spaces; NO joint state-space expansion). After all
 # independent agent runs, it reconstructs env_signal from MAP positions using
 # deposit + decay and writes that trace alongside per-agent beliefs/actions/EFE.
-# env_signal is not inferred as a latent and does not condition actions.
+# When the spec declares an env-conditioned observation likelihood, each agent
+# also infers the local signal level as a latent from its observations and
+# conditions its action selection on that latent (signal-seeking / tropotaxis).
 
 using Pkg
 using RxInfer
@@ -160,6 +190,12 @@ const AGENT_DS = {agent_ds}
 const ENV_VARIABLE = {env_variable_literal}
 const ENV_INITIAL = {env_initial_literal}
 const ENV_DECAY = {env_decay_literal}
+const ENV_ACTION_CONDITIONED = {str(env_action_conditioned).lower()}
+
+# Env-conditioned observation likelihood + latent signal prior (MAJ-03).
+const ENV_OBS_LIKELIHOOD = {env_obs_ll_literal}
+const ENV_SIGNAL_PRIOR = {env_signal_prior_literal}
+const SIGNAL_SEEK = {env_seek_literal}
 
 function package_version(name::String)
 for (_, dep) in Pkg.dependencies()
@@ -203,17 +239,46 @@ risk = sum(predicted_obs .* (log.(predicted_obs) .- log.(preferred)))
 return ambiguity + risk
 end
 
-function select_action(belief, A, B, C_pref, E_prior)
-efe_values = [compute_efe(belief, action, A, B, C_pref) for action in 1:size(B, 3)]
+function select_action(belief, A, B, C_eff, E_prior)
+efe_values = [compute_efe(belief, action, A, B, C_eff) for action in 1:size(B, 3)]
 policy = softmax(log.(max.(E_prior, 1e-16)) .- ACTION_PRECISION .* efe_values)
 action = categorical_index(policy)
 return action, efe_values, policy
 end
 
-function compute_efe_and_policy(belief, A, B, C_pref, E_prior)
-efe_values = [compute_efe(belief, action, A, B, C_pref) for action in 1:size(B, 3)]
+function compute_efe_and_policy(belief, A, B, C_eff, E_prior)
+efe_values = [compute_efe(belief, action, A, B, C_eff) for action in 1:size(B, 3)]
 policy = softmax(log.(max.(E_prior, 1e-16)) .- ACTION_PRECISION .* efe_values)
 return efe_values, policy
+end
+
+function signal_seeking_preference(C_pref, signal_belief)
+# Env-conditioned action selection: boost preference for signal-rich
+# observations (signal_low=idx2, signal_high=idx3) proportionally to the
+# inferred latent signal level. C is over observations.
+C_eff = copy(C_pref)
+signal_belief = max.(signal_belief, 0.0)
+if length(C_eff) >= 3 && length(signal_belief) >= 2
+    C_eff[2] += SIGNAL_SEEK * signal_belief[2]  # signal_low
+    C_eff[3] += SIGNAL_SEEK * signal_belief[3]  # signal_high
+end
+return C_eff
+end
+
+function update_signal_belief(signal_belief, observation)
+# Bayes update of the latent signal-level belief from the observed category
+# (obs indexing 1-based into ENV_OBS_LIKELIHOOD rows). If no likelihood was
+# declared, keep the belief unchanged.
+if isempty(ENV_OBS_LIKELIHOOD)
+    return signal_belief
+end
+obs_row = clamp(observation, 1, size(ENV_OBS_LIKELIHOOD, 1))
+likelihood = Float64.(ENV_OBS_LIKELIHOOD[obs_row, :])
+updated = signal_belief .* max.(likelihood, 1e-16)
+if sum(updated) <= 0
+    return signal_belief
+end
+return updated ./ sum(updated)
 end
 
 # --- Per-agent simulation: forward data collection + genuine RxInfer batch
@@ -270,6 +335,14 @@ function simulate_agent(agent_name, raw_A, raw_B, raw_C, raw_D)
 
     C_pref = softmax(C)
 
+    # MAJ-03: latent env-signal belief. When the spec declares an env-conditioned
+    # observation likelihood, each agent maintains a belief over the local signal
+    # level (none/low/high) updated from its observations via Bayes, and uses it
+    # to modulate its action selection (signal-seeking). Otherwise a uniform
+    # belief is kept and no conditioning is applied.
+    signal_belief = isempty(ENV_SIGNAL_PRIOR) ? fill(1.0 / 3.0, 3) : Float64.(ENV_SIGNAL_PRIOR)
+    signal_beliefs = Vector{{Vector{{Float64}}}}()
+
     # Phase 1 — forward simulation for data collection (hand-rolled EFE).
     current_state = categorical_index(D)
     current_belief = copy(D)
@@ -291,7 +364,13 @@ function simulate_agent(agent_name, raw_A, raw_B, raw_C, raw_D)
         end
         current_belief = updated ./ sum(updated)
 
-        action, _efe_values, _policy = select_action(current_belief, A, B, C_pref, E)
+        # MAJ-03: update the latent signal belief from this observation, then
+        # condition action selection on the inferred signal (C_eff).
+        signal_belief = update_signal_belief(signal_belief, observation)
+        push!(signal_beliefs, copy(signal_belief))
+        C_eff = signal_seeking_preference(C_pref, signal_belief)
+
+        action, _efe_values, _policy = select_action(current_belief, A, B, C_eff, E)
         next_probs = B[:, current_state, action]
         current_state = categorical_index(next_probs)
         predicted = B[:, :, action] * current_belief
@@ -334,7 +413,10 @@ function simulate_agent(agent_name, raw_A, raw_B, raw_C, raw_D)
         belief ./= sum(belief)
         push!(beliefs, belief)
 
-        efe_vals, pol = compute_efe_and_policy(belief, A, B, C_pref, E)
+        # MAJ-03: condition the policy on the inferred latent signal level.
+        sig_bel = isempty(signal_beliefs) ? signal_belief : signal_beliefs[t]
+        C_eff = signal_seeking_preference(C_pref, sig_bel)
+        efe_vals, pol = compute_efe_and_policy(belief, A, B, C_eff, E)
         push!(efe_per_action, efe_vals)
         push!(selected_efe, efe_vals[action_seq_full[t]])
         push!(policy_posterior, pol)
@@ -360,6 +442,7 @@ function simulate_agent(agent_name, raw_A, raw_B, raw_C, raw_D)
         "efe_per_action" => efe_per_action,
         "selected_efe" => selected_efe,
         "policy_posterior" => policy_posterior,
+        "signal_beliefs" => signal_beliefs,
         "vfe_per_iteration" => vfe_per_iteration,
         "n_states" => n_states,
         "n_observations" => n_obs,
@@ -430,11 +513,16 @@ function main()
             "variable" => ENV_VARIABLE,
             "initial" => ENV_INITIAL,
             "decay" => ENV_DECAY,
-            "mode" => "post_hoc_deposit_decay_trace",
-            "latent_inference" => false,
-            "action_selection_conditioned" => false
+            "mode" => "{env_coupling_mode}",
+            "latent_inference" => ENV_ACTION_CONDITIONED,
+            "action_selection_conditioned" => ENV_ACTION_CONDITIONED,
+            "signal_prior" => ENV_SIGNAL_PRIOR,
+            "signal_seek" => SIGNAL_SEEK
         ),
         "env_signal_trace" => env_trace,
+        "env_signal_prior" => ENV_SIGNAL_PRIOR,
+        "signal_seek" => SIGNAL_SEEK,
+        "env_signal_belief_by_agent" => Dict(agent => per_agent[agent]["signal_beliefs"] for agent in AGENTS),
         "beliefs_by_agent" => Dict(agent => per_agent[agent]["beliefs"] for agent in AGENTS),
         "actions_by_agent" => Dict(agent => per_agent[agent]["actions"] for agent in AGENTS),
         "observations_by_agent" => Dict(agent => per_agent[agent]["observations"] for agent in AGENTS),

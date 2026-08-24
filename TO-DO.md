@@ -4,32 +4,40 @@
 **Current Version**: 3.0.0
 **Next Target**: v4.0.0 (bounded autonomy, pipeline stage consolidation, multi-agent stigmergic topologies, and high-dimensional active inference)
 
-**Last reviewed**: 2026-08-21 — MAJ-02 closed in full: milestone 1 (sparse
+**Last reviewed**: 2026-08-24 — MAJ-02 closed in full: milestone 1 (sparse
 Kronecker factorized execution + scaling sweep) plus the numbered-pipeline
-integration (Step 11 renders factorized specs natively for JAX, Step 12
-collects `jax_kronecker_factorized_v1`, Step 16 analysis extracts it). MAJ-03
-milestone 1 (native stigmergic multi-agent compilation) closed; the
-env-conditioned action selection residual remains open below. The complete
-test suite is **3,100+ passed / 0 failed / 0 skipped** (parallel, Ollama files
-excluded per CI), mypy clean, ruff clean, and all documentation audits pass.
-Full audit trail lives in `CHANGELOG.md` and git history.
+integration. MAJ-03 closed in full: native stigmergic multi-agent compilation
+(milestone 1) AND env-conditioned action selection from latent signal inference
+(residual) — each agent now infers the local signal level from its observations
+via an env-conditioned likelihood and conditions its action selection on it
+(signal-seeking), pinned by live Julia execution in both RxInfer.jl and
+ActiveInference.jl. The complete test suite is **3,100+ passed / 0 failed /
+0 skipped** (parallel, Ollama files excluded per CI), mypy clean, ruff clean,
+and all documentation audits pass. Full audit trail lives in `CHANGELOG.md`
+and git history.
 
 ## Open Scoped Roadmap
 
 ### Major (P1 - Generative Scaling & Multi-Agent Topologies)
-- **TODO-MAJ-03 (residual): Env-Conditioned Action Selection for Stigmergic Swarms**:
-  - *Status*: Milestone 1 landed 2026-08-20 — specs with >= 2 complete agent
-    groups (`A_agentN`/`B_agentN`/`C_agentN`/`D_agentN`) render natively in
-    both `src/render/rxinfer/` (`_strategies_multiagent.py`) and
+- **TODO-MAJ-03: Env-Conditioned Action Selection for Stigmergic Swarms — CLOSED (2026-08-24)**:
+  - *Milestone 1 (2026-08-20)*: specs with >= 2 complete agent groups
+    (`A_agentN`/`B_agentN`/`C_agentN`/`D_agentN`) render natively in both
+    `src/render/rxinfer/` (`_strategies_multiagent.py`) and
     `src/render/activeinference_jl/`: one genuine model/inference per agent
     (no joint state-space expansion) coupled through the shared `env_signal`
     trace (deposit at MAP position, decay per timestep), stamped
-    `model_kind: multi_agent`, with `env_signal_trace` in the results. Live
-    Julia execution is pinned by `src/tests/render/test_stigmergic_multi_agent.py`.
-  - *Open*: infer `env_signal` as a latent from observations and condition
-    per-agent *action selection* on it (requires env-conditioned likelihoods
-    the swarm exemplar does not currently declare; the shared affordance
-    detection lives in `src/render/multi_agent_common.py`).
+    `model_kind: multi_agent`, with `env_signal_trace` in the results.
+  - *Residual now closed (2026-08-24)*: the swarm exemplar now declares an
+    env-conditioned observation likelihood (`env_obs_likelihood`) and latent
+    signal prior (`env_signal_prior`); each agent maintains a belief over the
+    local signal level (none/low/high), updates it via Bayes from its
+    observations, and conditions its action selection on it (signal-seeking).
+    Detection lives in `src/render/multi_agent_common.py`
+    (`detect_env_conditioned`/`has_env_conditioned_action_selection`); results
+    expose `env_signal_belief_by_agent` and set
+    `mode=env_conditioned_signal_selection`, `latent_inference=true`,
+    `action_selection_conditioned=true`. Live Julia execution pins both
+    backends via `src/tests/render/test_stigmergic_multi_agent.py`.
   - *Probe*: `uv run pytest src/tests/render/test_stigmergic_multi_agent.py -q`
 
 ---
