@@ -144,20 +144,16 @@ success = process_analysis(
 ## Configuration
 
 ### Environment Variables
-- `ANALYSIS_PERFORMANCE_MODE` - Performance analysis mode ("fast", "comprehensive")
-- `ANALYSIS_TIMEOUT` - Maximum analysis time per model (default: 300 seconds)
 
-### Configuration Files
-- `analysis_config.yaml` - Custom analysis parameters and thresholds
+None dedicated to this module. Analysis behavior is configured through
+`process_analysis()` kwargs (e.g. `analysis_type`, `benchmark_iterations`,
+`generate_animations`) and `input/config.yaml` pipeline settings.
 
 ### Default Settings
-```python
-DEFAULT_COMPLEXITY_THRESHOLDS = {
-    "cyclomatic_complexity": {"low": 10, "medium": 20, "high": 50},
-    "cognitive_complexity": {"low": 5, "medium": 15, "high": 35},
-    "structural_complexity": {"low": 100, "medium": 500, "high": 1000},
-}
-```
+
+Complexity thresholds and benchmark parameters are defined in
+`analysis/analyzer.py`; see the `perform_statistical_analysis` and
+`calculate_complexity_metrics` functions above.
 
 ---
 
@@ -262,7 +258,7 @@ output/16_analysis_output/
 - `pipeline.config` - Configuration management
 
 ### Imported By
-- `tests.test_analysis_integration.py` - Integration tests
+- `src/tests/analysis/` - Module-level analysis tests
 - `report.generator` - Report generation uses analysis results
 
 ### Data Flow

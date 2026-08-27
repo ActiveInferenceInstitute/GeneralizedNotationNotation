@@ -174,11 +174,9 @@ success = embed_image(
 ## Output Specification
 
 ### Output Products
-- `index.html` - Main website page
+- `index.html` - Main website page (pipeline dashboard)
 - `*.html` - Individual report pages
-- `assets/` - Static assets and resources
-- `sitemap.xml` - Website sitemap
-- `website_summary.json` - Website generation summary
+- `assets/` and `static/` - Static assets and resources
 
 ### Output Directory Structure
 ```
@@ -191,7 +189,7 @@ output/20_website_output/
 │   ├── css/
 │   ├── js/
 │   └── images/
-└── website_summary.json
+└── static/
 ```
 
 ---

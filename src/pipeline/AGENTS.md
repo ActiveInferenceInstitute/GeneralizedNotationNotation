@@ -228,27 +228,21 @@ output_dir = get_output_dir_for_script("3_gnn.py", Path("output"))
 
 ### Environment Variables
 
-- `PIPELINE_PERFORMANCE_MODE` - Performance optimization level ("low", "medium", "high")
-- `PIPELINE_TIMEOUT` - Maximum execution time per step (seconds)
-- `PIPELINE_MAX_RETRIES` - Maximum retry attempts for failed steps
+None dedicated to this module. Pipeline-level behavior is configured through
+`input/config.yaml` (loaded by `src/main.py` via `utils/arg_parsing.py`) and
+CLI flags.
 
 ### Configuration Files
 
-- `pipeline_config.yaml` - Pipeline-specific configuration
-- `step_configs.json` - Step-specific configurations
+- `pipeline_config.yaml` - Optional project-local pipeline configuration
+  (default lookup path in `pipeline/config.py`)
+- `input/config.yaml` - The pipeline's primary configuration file
 
 ### Default Settings
 
-```python
-DEFAULT_CONFIG = {
-    "performance_mode": "low",
-    "timeout_per_step": 300,
-    "max_retries": 3,
-    "parallel_execution": False,
-    "resource_monitoring": True,
-    "health_check_interval": 30,
-}
-```
+Configuration defaults (`timeout: 3600`, `retries: 3`) are set in
+`pipeline/config.py` (`PipelineConfig`); step-level defaults live with each
+module.
 
 ---
 
@@ -296,10 +290,8 @@ print(f"Resolved order: {order}")
 
 ### Output Products
 
-- `pipeline_config.yaml` - Pipeline configuration file
-- `pipeline_execution_summary.json` - Execution summary
-- `pipeline_health_report.json` - Health monitoring report
-- `step_execution_reports/` - Individual step reports
+- `pipeline_execution_summary.json` - Execution summary (written by `main.py` under `00_pipeline_summary/`)
+- `pipeline_health_report_<timestamp>.json` - Health monitoring report (written by `utils.pipeline_monitor`)
 
 ### Output Directory Structure
 

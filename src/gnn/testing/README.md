@@ -9,7 +9,7 @@ This directory holds round-trip tests, integration tests, and benchmarks for the
 
 ## Round-trip suite status
 
-For the reference model (`input/gnn_files/actinf_pomdp_agent.md`) and the default `test_formats` list, the suite is configured to report **100%** pass rate.
+For the reference model (`input/gnn_files/discrete/actinf_pomdp_agent.md`, with `src/gnn/gnn_examples/` as fallback) and the default `test_formats` list, the suite is configured to report **100%** pass rate.
 
 **Outside the default round-trip list:** `ebnf` (shares BNF / `GrammarSerializer` machinery; not a separate row in `test_formats`), `pnml` (disabled in config; parse-focused). See `FORMAT_TEST_CONFIG` in `test_round_trip.py`.
 

@@ -6,7 +6,7 @@ This folder hosts the explicit, stateless developer workflow validation agents r
 
 ## Components
 
-### Audit & Compliance (6 scripts)
+### Audit & Compliance (8 scripts)
 
 | Script | Purpose | Strict CI Gate |
 |--------|---------|:--------------:|

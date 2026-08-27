@@ -275,20 +275,17 @@ success = run_comprehensive_tests(
 ## Output Specification
 
 ### Output Products
-- `test_results.json` - Test execution results
-- `coverage.xml` - Coverage analysis report
-- `test_report.html` - HTML test report
-- `performance_report.json` - Performance analysis
-- `test_summary.md` - Human-readable test summary
+- `test_execution_report.json` - Test execution results (written by `tests.runner`)
+- `coverage.json` - Coverage analysis (when coverage is enabled)
+- `pytest_stdout.txt` / `pytest_stderr.txt` - Raw runner output
 
 ### Output Directory Structure
 ```
 output/2_tests_output/
-├── test_results.json
-├── coverage.xml
-├── test_report.html
-├── performance_report.json
-├── test_summary.md
+├── test_execution_report.json
+├── coverage.json
+├── pytest_stdout.txt
+├── pytest_stderr.txt
 └── test_details/
     ├── unit_tests/
     ├── integration_tests/

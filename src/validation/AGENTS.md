@@ -158,20 +158,14 @@ print(f"Performance rating: {profile['performance_rating']}")
 
 ### Output Products
 - `validation_results.json` - Validation results
-- `performance_profile.json` - Performance profiling
-- `consistency_report.json` - Consistency checking
-- `validation_summary.md` - Human-readable summary
+- `validation_summary.json` - Validation summary
 
 ### Output Directory Structure
 ```
 output/6_validation_output/
 ├── validation_results.json
-├── performance_profile.json
-├── consistency_report.json
-├── validation_summary.md
+├── validation_summary.json
 └── detailed_analysis/
-    ├── structure_validation.json
-    └── semantic_validation.json
 ```
 
 ---

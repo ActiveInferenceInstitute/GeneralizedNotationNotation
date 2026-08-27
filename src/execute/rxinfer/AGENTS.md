@@ -314,21 +314,16 @@ else:
 ## Output Specification
 
 ### Output Products
-- `rxinfer_results.json` - Complete inference results
-- `belief_trajectories.csv` - Belief evolution data
-- `free_energy_plot.png` - Free energy minimization plot
-- `factor_graph.dot` - Graphviz factor graph representation
-- `performance_metrics.json` - Execution performance data
+- `simulation_results.json` - Complete inference results (schema `rxinfer_simulation_v1`, written by the Julia runner)
+- `simulation.log` / `simulation_log.json` - Best-effort runner logs (guarded; absence never fails a run)
 
 ### Output Directory Structure
 ```
 output/12_execute_output/
-├── rxinfer_results.json
-├── belief_trajectories.csv
-├── free_energy_plot.png
-├── factor_graph.dot
+├── simulation_results.json
+├── simulation.log
+├── simulation_log.json
 └── execution_logs/
-    └── inference_log.txt
 ```
 
 ### Result Data Structure

@@ -132,33 +132,15 @@ success = process_ml_integration(
 ## Configuration
 
 ### Environment Variables
-- `ML_FRAMEWORK` - Preferred ML framework ("torch", "tensorflow", "jax", "sklearn")
-- `ML_MODEL_TYPE` - Model type ("classification", "regression", "autoencoder")
-- `ML_TRAINING_EPOCHS` - Default training epochs (default: 100)
-- `ML_BATCH_SIZE` - Default batch size (default: 32)
 
-### Configuration Files
-- `ml_config.yaml` - ML framework settings and hyperparameters
+None dedicated to this module. ML behavior is configured through
+`process_ml_integration()` kwargs (e.g. `model_type`, `training_mode`,
+`framework`) and `input/config.yaml` pipeline settings.
 
 ### Default Settings
-```python
-DEFAULT_ML_SETTINGS = {
-    "framework": "auto",
-    "model_type": "auto",
-    "training": {
-        "epochs": 100,
-        "batch_size": 32,
-        "validation_split": 0.2,
-        "early_stopping": True,
-        "patience": 10,
-    },
-    "optimization": {
-        "learning_rate": 0.001,
-        "optimizer": "adam",
-        "loss_function": "auto",
-    },
-}
-```
+
+Training defaults (task selection, cross-validation folds) are set in
+`process_ml_integration()` in `ml_integration/processor.py`.
 
 ---
 
@@ -195,20 +177,14 @@ success = process_ml_integration(
 ## Output Specification
 
 ### Output Products
-- `{model}_ml_model.pkl` - Trained ML model
-- `{model}_training_history.json` - Training metrics and history
-- `{model}_model_evaluation.json` - Model performance evaluation
-- `{model}_dataset_preparation.json` - Dataset preprocessing information
-- `ml_integration_summary.json` - Processing summary
+- `gnn_{model}.pkl` - Serialized model features
+- `ml_integration_results.json` - Processing results and feature analysis
 
 ### Output Directory Structure
 ```
 output/14_ml_integration_output/
-├── model_name_ml_model.pkl
-├── model_name_training_history.json
-├── model_name_model_evaluation.json
-├── model_name_dataset_preparation.json
-└── ml_integration_summary.json
+├── gnn_{model}.pkl
+└── ml_integration_results.json
 ```
 
 ---
@@ -253,7 +229,7 @@ output/14_ml_integration_output/
 - `pipeline.config` - Configuration management
 
 ### Imported By
-- `tests.test_ml_integration_unit.py` - ML integration tests
+- `src/tests/ml_integration/` - ML integration tests
 - `main.py` - Pipeline orchestration
 
 ### Data Flow

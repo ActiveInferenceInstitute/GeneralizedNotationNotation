@@ -282,7 +282,7 @@ output/19_research_output/
 ├── research_insights.json         # Research insights
 ├── hypothesis_validation.json     # Hypothesis validation results
 ├── research_protocols.json        # Research protocols
-├── research_summary.md            # Research summary
+├── research_summary.json          # Research summary
 └── research_report.md             # Comprehensive research report
 ```
 

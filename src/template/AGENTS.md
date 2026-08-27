@@ -200,19 +200,13 @@ print(f"Generated ID: {correlation_id}")
 
 ### Output Products
 - `template_processing_summary.json` - Template processing results
-- `infrastructure_demonstration.json` - Pattern demonstration results
-- `template_validation_report.md` - Template validation report
-- `pipeline_patterns_documentation.md` - Architecture documentation
+- `{model}_report.json` - Per-file processing report (one per input GNN file)
 
 ### Output Directory Structure
 ```
 output/0_template_output/
 ├── template_processing_summary.json
-├── infrastructure_demonstration.json
-├── template_validation_report.md
-├── pipeline_patterns_documentation.md
 └── examples/
-    └── template_examples.json
 ```
 
 ---

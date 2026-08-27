@@ -239,8 +239,8 @@ Use `--distributed --backend ray` or `--distributed --backend dask` only when Ra
 ## Output Specification
 
 ### Output Products
-- `execution_results.json` - Execution results summary
-- `execution_report.md` - Human-readable report
+- `summaries/execution_summary.json` - Slim per-script aggregate (stdout/stderr bodies and `simulation_data` omitted; pass `execution_summary_detail=True` / `--execution-summary-detail` to also write `summaries/execution_summary_detail.json`)
+- `summaries/execution_report.md` - Human-readable report
 - `execution_logs/*.log` - Per-script execution logs
 - `simulation_data/*.json` - Simulation output data
 

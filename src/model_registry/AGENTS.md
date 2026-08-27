@@ -162,18 +162,15 @@ registry.save()
 
 ### Output Products
 
-- `model_registry.json` - Main registry database
-- `model_registry_summary.json` - Processing summary
-- `{model_id}/` - Per-model metadata directories
+- `model_registry.json` - Main registry database (written by `model_registry.registry.ModelRegistry.save`)
+- `model_registry_results.json` - Step processing summary
 
 ### Output Directory Structure
 
 ```
 output/4_model_registry_output/
 ├── model_registry.json
-├── model_registry_summary.json
-└── {model_id}/
-    └── {model_id}_metadata.json
+└── model_registry_results.json
 ```
 
 ---

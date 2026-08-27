@@ -213,21 +213,14 @@ for vuln in vulns:
 ## Output Specification
 
 ### Output Products
-- `security_validation_report.json` - Comprehensive security report
-- `access_control_log.json` - Access control audit log
-- `threat_detection_report.json` - Threat detection results
+- `security_results.json` - Processing results
 - `security_summary.md` - Human-readable security summary
 
 ### Output Directory Structure
 ```
 output/18_security_output/
-├── security_validation_report.json
-├── access_control_log.json
-├── threat_detection_report.json
-├── security_summary.md
-└── security_audit_trail/
-    ├── 2025-10-01_access_log.json
-    └── threat_indicators.json
+├── security_results.json
+└── security_summary.md
 ```
 
 ---

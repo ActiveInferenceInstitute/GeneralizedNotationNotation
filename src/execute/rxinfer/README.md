@@ -65,8 +65,8 @@ results = run_rxinfer_scripts(
 ## Output
 
 Execution produces:
-- `execution_results.json` - Execution summary
-- `rxinfer_results.json` - Detailed results
+- `summaries/execution_summary.json` - Execution summary (from Step 12)
+- `simulation_results.json` - Detailed per-run results (schema `rxinfer_simulation_v1`)
 - `execution_logs/` - Per-script logs
 - `simulation_data/` - Raw simulation outputs
 

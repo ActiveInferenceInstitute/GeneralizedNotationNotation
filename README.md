@@ -627,7 +627,7 @@ The GNN framework is built around a modular architecture, where each pipeline st
 | `setup` | 1 | Manages dependencies, virtual environments, and system checks. | `uv`, `pip`, System Utilities |
 | `tests` | 2 | Executes unit, integration, and end-to-end tests. | `pytest`, `coverage.py` |
 | `gnn` | 3 | Discovers, parses, and validates GNN markdown files. | Markdown Parser, Schema Validator |
-| `model_registry` | 4 | Manages a central registry of GNN models and their metadata. | Database (SQLite), Model Metadata |
+| `model_registry` | 4 | Manages a central registry of GNN models and their metadata. | JSON registry (`model_registry.json`), Model Metadata |
 | `type_checker` | 5 | Performs static analysis, type checking, and resource estimation. | Type Inference Engine, Resource Estimator |
 | `validation` | 6 | Validates GNN models against predefined rules and constraints. | Constraint Solver, Logic Validator |
 | `export` | 7 | Exports GNN models to various formats (JSON, XML, GraphML). | JSON/XML/GraphML Serializers |

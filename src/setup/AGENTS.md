@@ -214,8 +214,8 @@ if not check_system_requirements(verbose=True):
 ## Output Specification
 
 ### Output Products
-- `environment_setup_summary.json` - Setup completion summary, timings, and probe results
-- `installed_packages.json` - Installed package inventory
+- `environment_setup_summary.json` - Setup completion summary, timings, and probe results (written by `setup.uv_management`)
+- `installed_packages.json` - Installed package inventory (written under the step's `setup_artifacts/` subdirectory)
 - `uv.lock` - Dependency lock file (updated)
 
 ### Output Directory Structure

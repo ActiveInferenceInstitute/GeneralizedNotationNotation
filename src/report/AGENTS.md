@@ -203,35 +203,15 @@ success = process_report(
 
 ### Environment Variables
 
-- `REPORT_FORMAT` - Default report format ("html", "markdown", "json")
-- `REPORT_TEMPLATE` - Custom report template path
-- `REPORT_INCLUDE_VISUALS` - Include visualizations in reports (default: True)
-- `REPORT_COMPRESSION` - Enable report compression for large outputs
-
-### Configuration Files
-
-- `report_config.yaml` - Report generation settings and templates
+None dedicated to this module. Report behavior is configured through
+`process_report()` kwargs (e.g. `report_format`, `include_visualizations`,
+`output_formats`) and `input/config.yaml` pipeline settings.
 
 ### Default Settings
 
-```python
-DEFAULT_REPORT_SETTINGS = {
-    "format": "html",
-    "template": "default",
-    "include_visualizations": True,
-    "include_raw_data": False,
-    "compression": False,
-    "max_file_size": "100MB",
-    "sections": {
-        "executive_summary": True,
-        "detailed_analysis": True,
-        "performance_metrics": True,
-        "error_analysis": True,
-        "recommendations": True,
-        "appendices": False,
-    },
-}
-```
+Report defaults (formats, sections, visualization inclusion) are set in
+`report/processor.py` (`generate_comprehensive_report`) and
+`report/generator.py`.
 
 ---
 
@@ -351,7 +331,7 @@ output/23_report_output/
 
 ### Imported By
 
-- `tests.test_report_integration.py` - Report generation tests
+- `src/tests/report/test_report_integration.py` - Report generation tests
 - `main.py` - Pipeline orchestration
 
 ### Data Flow

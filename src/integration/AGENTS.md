@@ -100,23 +100,16 @@ Module coordination (dependency graph construction, cycle detection, cross-refer
 ## Configuration
 
 ### Environment Variables
-- `INTEGRATION_MODE` - Integration coordination mode ("coordinated", "standalone")
-- `INTEGRATION_TIMEOUT` - Maximum integration processing time (default: 60 seconds)
-- `INTEGRATION_VERBOSE` - Enable verbose integration logging
 
-### Configuration Files
-- `integration_config.yaml` - Integration-specific settings
+None dedicated to this module. Integration behavior is configured through
+`process_integration()` kwargs (e.g. `integration_mode`,
+`validate_dependencies`, `detect_cycles`) and `input/config.yaml` pipeline
+settings.
 
 ### Default Settings
-```python
-DEFAULT_INTEGRATION_SETTINGS = {
-    "coordination_enabled": True,
-    "fallback_mode": True,
-    "timeout": 60,
-    "retry_attempts": 3,
-    "parallel_processing": False,
-}
-```
+
+Processing defaults (mode, validation, cycle detection) are set in
+`process_integration()` in `integration/processor.py`.
 
 ---
 
@@ -139,16 +132,14 @@ success = process_integration(
 ## Output Specification
 
 ### Output Products
-- `integration_processing_summary.json` - Integration processing summary
-- `system_coordination_report.json` - Cross-module coordination status
-- `integration_status.json` - Current integration state
+- `integration_results.json` - Integration results with dependency graph and statistics
+- `integration_summary.md` - Human-readable integration summary
 
 ### Output Directory Structure
 ```
 output/17_integration_output/
-├── integration_processing_summary.json
-├── system_coordination_report.json
-└── integration_status.json
+├── integration_results.json
+└── integration_summary.md
 ```
 
 ---

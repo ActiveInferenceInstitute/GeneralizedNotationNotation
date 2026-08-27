@@ -643,7 +643,7 @@ def test_new_module_integration():
 If issues persist:
 
 1. Check test output files in `output/2_tests_output/`
-2. Review `pytest_comprehensive_output.txt` for detailed error messages
+2. Review `pytest_stdout.txt` / `pytest_stderr.txt` for detailed runner output
 3. Check `test_execution_report.json` for execution summary
 4. Verify environment variables are set correctly
 5. Ensure all dependencies are installed

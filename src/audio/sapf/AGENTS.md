@@ -33,94 +33,31 @@
 
 ### Public Functions
 
-#### `process_sapf_audio(audio_data: np.ndarray, spectral_config: Dict[str, Any], **kwargs) -> np.ndarray`
-**Description**: Main spectral audio processing function using SAPF framework.
+#### `process_gnn_to_audio(gnn_content: str, output_dir: str | Path, **kwargs) -> Dict[str, Any]`
+**Description**: Parse GNN content and write `{model}_sapf_audio.wav` into `output_dir`.
 
-**Parameters**:
-- `audio_data` (np.ndarray): Input audio data (1D or 2D array)
-- `spectral_config` (Dict[str, Any]): Spectral processing configuration with:
-  - `window_size` (int): FFT window size (default: 2048)
-  - `hop_size` (int): Hop size for overlap (default: 512)
-  - `effects` (List[Dict]): List of spectral effects to apply
-- `sample_rate` (int, optional): Audio sample rate (default: 44100)
-- `debug` (bool, optional): Enable debug logging (default: False)
-- `verbose` (bool, optional): Enable verbose output (default: False)
-- `**kwargs`: Additional processing options
+#### `convert_gnn_to_sapf(gnn_content: str, output_dir: str | Path, **kwargs) -> Dict[str, Any]`
+**Description**: Convert GNN sections (state space, connections, parameters) into SAPF code.
 
-**Returns**: `np.ndarray` - Processed audio data as numpy array
+#### `generate_audio_from_sapf(sapf_code: str, output_dir: str | Path, **kwargs) -> Dict[str, Any]`
+**Description**: Generate audio from SAPF code via `SyntheticAudioGenerator`.
 
-**Example**:
-```python
-from audio.sapf import process_sapf_audio
-import numpy as np
+#### `validate_sapf_code(sapf_code: str) -> Dict[str, Any]`
+**Description**: Validate SAPF code structure.
 
-spectral_config = {
-    "window_size": 2048,
-    "hop_size": 512,
-    "effects": [
-        {"type": "spectral_filter", "frequency_range": [100, 1000]},
-        {"type": "harmonic_enhancement", "harmonics": [2, 3, 4]},
-    ],
-}
+#### `generate_sapf_audio(sapf_code: str, output_dir: str | Path, **kwargs) -> Path`
+**Description**: Render SAPF code to a WAV file.
 
-processed_audio = process_sapf_audio(
-    audio_data=audio_data, spectral_config=spectral_config, sample_rate=44100
-)
-```
+#### `create_sapf_visualization(...)` / `generate_sapf_report(...)`
+**Description**: Write visualization data and processing reports as JSON.
 
-#### `analyze_spectrum(audio_data: np.ndarray, window_size: int = 2048, **kwargs) -> Dict[str, Any]`
-**Description**: Analyze audio data in the spectral domain using FFT.
+#### `SAPFGNNProcessor` (`sapf_gnn_processor.py`)
+**Description**: Class with `parse_gnn_sections`, plus internal state-space and
+connection parsers that feed the SAPF conversion pipeline.
 
-**Parameters**:
-- `audio_data` (np.ndarray): Input audio data
-- `window_size` (int): FFT window size (default: 2048)
-- `hop_size` (int, optional): Hop size for analysis (default: window_size // 4)
-- `window_type` (str, optional): Window function type ("hann", "hamming", "blackman") (default: "hann")
-- `**kwargs`: Additional analysis options
-
-**Returns**: `Dict[str, Any]` - Spectral data dictionary with:
-- `magnitude` (np.ndarray): Magnitude spectrum
-- `phase` (np.ndarray): Phase spectrum
-- `centroid` (float): Spectral centroid
-- `bandwidth` (float): Spectral bandwidth
-- `harmonics` (List[float]): Detected harmonic frequencies
-
-#### `synthesize_spectrum(spectral_data: Dict[str, Any], **kwargs) -> np.ndarray`
-**Description**: Synthesize audio from spectral data using inverse FFT.
-
-**Parameters**:
-- `spectral_data` (Dict[str, Any]): Spectral data dictionary with magnitude and phase
-- `window_size` (int, optional): FFT window size (default: 2048)
-- `hop_size` (int, optional): Hop size for synthesis (default: window_size // 4)
-- `sample_rate` (int, optional): Output sample rate (default: 44100)
-- `**kwargs`: Additional synthesis options
-
-**Returns**: `np.ndarray` - Synthesized audio data
-
-#### `sonify_gnn_model_spectral(model_data: Dict[str, Any], sonification_config: Dict[str, Any], **kwargs) -> np.ndarray`
-**Description**: Convert GNN model data to audio using spectral processing and mapping.
-
-**Parameters**:
-- `model_data` (Dict[str, Any]): GNN model data with variables, connections, parameters
-- `sonification_config` (Dict[str, Any]): Sonification configuration with:
-  - `mapping` (Dict): Variable-to-frequency mapping rules
-  - `spectral_effects` (List[Dict]): Spectral effects to apply
-  - `duration` (float): Audio duration in seconds
-- `sample_rate` (int, optional): Audio sample rate (default: 44100)
-- `**kwargs`: Additional sonification options
-
-**Returns**: `np.ndarray` - Audio representation of the model
-
-#### `create_spectral_mapping(model_structure: Dict[str, Any], **kwargs) -> Dict[str, Any]`
-**Description**: Create spectral mapping configuration for model sonification.
-
-**Parameters**:
-- `model_structure` (Dict[str, Any]): Model structure with variables, connections, weights
-- `frequency_range` (Tuple[float, float], optional): Frequency range in Hz (default: (50, 5000))
-- `mapping_type` (str, optional): Mapping type ("linear", "log", "harmonic") (default: "log")
-- `**kwargs`: Additional mapping options
-
-**Returns**: `Dict[str, Any]` - Spectral mapping configuration with variable-to-frequency mappings
+#### Audio generators (`audio_generators.py`)
+- `SyntheticAudioGenerator` — oscillator/LFO synthesis from SAPF code analysis
+- `generate_oscillator_audio`, `apply_envelope`, `mix_audio_channels`
 
 ---
 
@@ -179,94 +116,31 @@ SONIFICATION_CONFIG = {
 
 ## Usage Examples
 
-### Basic Spectral Processing
+### GNN to SAPF Audio
 ```python
-from audio.sapf import process_sapf_audio
-import numpy as np
+from audio.sapf import process_gnn_to_audio
 
-# Generate test audio
-audio_data = np.random.randn(44100)  # 1 second of noise
-
-# Configure spectral effects
-spectral_config = {
-    "window_size": 2048,
-    "hop_size": 512,
-    "effects": [
-        {"type": "spectral_filter", "frequency_range": [200, 2000]},
-        {"type": "harmonic_enhancement", "harmonics": [2, 3]},
-        {"type": "phase_shift", "shift_amount": 0.5},
-    ],
-}
-
-# Process audio
-processed_audio = process_sapf_audio(audio_data, spectral_config)
+result = process_gnn_to_audio(gnn_content, output_dir="output/audio_sapf")
 ```
 
-### Spectral Analysis and Synthesis
+### GNN to SAPF Code
 ```python
-from audio.sapf import analyze_spectrum, synthesize_spectrum
+from audio.sapf import convert_gnn_to_sapf, validate_sapf_code
 
-# Analyze audio spectrum
-spectral_data = analyze_spectrum(audio_data, window_size=2048)
-
-print(f"Magnitude shape: {spectral_data['magnitude'].shape}")
-print(f"Phase shape: {spectral_data['phase'].shape}")
-print(f"Spectral centroid: {spectral_data['centroid']}")
-
-# Synthesize back to audio
-reconstructed_audio = synthesize_spectrum(spectral_data, window_size=2048, hop_size=512)
+conversion = convert_gnn_to_sapf(gnn_content, output_dir="output/audio_sapf")
+validation = validate_sapf_code(conversion["sapf_code"])
 ```
 
-### Model Sonification
+### Audio from SAPF Code
 ```python
-from audio.sapf import sonify_gnn_model_spectral
+from audio.sapf import generate_audio_from_sapf
 
-# Example GNN model data
-model_data = {
-    "variables": {
-        "A": {"value": [0.1, 0.2, 0.3], "type": "matrix"},
-        "B": {"value": [0.4, 0.5, 0.6], "type": "vector"},
-    },
-    "connections": [{"from": "A", "to": "B", "weight": 0.7}],
-}
-
-# Configure sonification
-sonification_config = {
-    "mapping": {
-        "variables": "frequency_components",
-        "connections": "phase_relationships",
-        "weights": "magnitude_envelope",
-    },
-    "spectral_effects": [
-        {"type": "harmonic_synthesis", "harmonics": [1, 2, 3]},
-        {"type": "spectral_filter", "frequency_range": [50, 5000]},
-    ],
-}
-
-# Generate sonification
-audio_output = sonify_gnn_model_spectral(model_data, sonification_config)
+audio = generate_audio_from_sapf(sapf_code, output_dir="output/audio_sapf")
 ```
 
-### Real-time Spectral Processing
+### Oscillator Utilities
 ```python
-from audio.sapf import create_spectral_processor
-
-# Create real-time processor
-processor_config = {
-    "window_size": 1024,
-    "hop_size": 256,
-    "effects": [
-        {"type": "spectral_filter", "frequency_range": [200, 2000]},
-        {"type": "harmonic_enhancement", "harmonics": [2, 3]},
-    ],
-}
-
-spectral_processor = create_spectral_processor(processor_config)
-
-
-# Process audio chunks in real-time
-def process_realtime_audio(audio_chunk):
-    return spectral_processor.process(audio_chunk)
+from audio.sapf import SyntheticAudioGenerator, generate_oscillator_audio, apply_envelope, mix_audio_channels
 ```
 
 ---
@@ -274,18 +148,12 @@ def process_realtime_audio(audio_chunk):
 ## Output Specification
 
 ### Output Products
-- `processed_audio.wav` - Processed audio files
-- `spectral_analysis.json` - Spectral analysis results
-- `sonification_audio.wav` - Model sonification files
-- `spectral_data.pkl` - Pickled spectral data
+- `{model}_sapf_audio.wav` - SAPF-sonified audio per model
 
 ### Output Directory Structure
 ```
 output/audio_sapf/
-├── processed_audio.wav
-├── spectral_analysis.json
-├── sonification_audio.wav
-└── spectral_data.pkl
+└── {model}_sapf_audio.wav
 ```
 
 ---
@@ -325,11 +193,9 @@ output/audio_sapf/
 ### Error Examples
 ```python
 try:
-    processed_audio = process_sapf_audio(audio_data, spectral_config)
-except SpectralProcessingError as e:
-    logger.error(f"Spectral processing failed: {e}")
-    # Recovery to time-domain processing
-    processed_audio = process_time_domain(audio_data, config)
+    result = process_gnn_to_audio(gnn_content, output_dir="output/audio_sapf")
+except Exception as e:
+    logger.error(f"SAPF audio generation failed: {e}")
 ```
 
 ---
@@ -350,7 +216,7 @@ except SpectralProcessingError as e:
 
 ### Data Flow
 ```
-GNN Model → Spectral Mapping → FFT Analysis → Effects Processing → IFFT Synthesis → Audio Output
+GNN Model → SAPFGNNProcessor (sections) → SAPF code → SyntheticAudioGenerator → WAV Output
 ```
 
 ---
@@ -389,18 +255,12 @@ uv run --extra dev python -m pytest src/tests/test_audio_sapf*.py --cov=src/audi
 ## MCP Integration
 
 ### Tools Registered
-- `sapf.analyze_spectrum` - Analyze audio spectrum
-- `sapf.process_audio` - Process audio with spectral effects
-- `sapf.sonify_model` - Create spectral sonification of GNN models
-- `sapf.create_mapping` - Create spectral mapping configuration
+See `src/audio/sapf/module_info.py` (`register_tools`) for the live tool inventory;
+tools delegate to the conversion/generation functions above.
 
 ### Tool Endpoints
 ```python
-@mcp_tool("sapf.analyze_spectrum")
-def analyze_spectrum_tool(audio_file_path: str) -> Dict[str, Any]:
-    """Analyze the spectrum of an audio file"""
-    audio_data, sr = librosa.load(audio_file_path)
-    return analyze_spectrum(audio_data)
+from audio.sapf.module_info import register_tools
 ```
 
 ---
@@ -467,8 +327,8 @@ def analyze_spectrum_tool(audio_file_path: str) -> Dict[str, Any]:
 
 ### Debug Mode
 ```python
-# Enable debug output for spectral processing
-result = process_sapf_audio(audio_data, spectral_config, debug=True, verbose=True)
+# Enable verbose logging during GNN-to-audio conversion
+result = process_gnn_to_audio(gnn_content, output_dir="output/audio_sapf", verbose=True)
 ```
 
 ---

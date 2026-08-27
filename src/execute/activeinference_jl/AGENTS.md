@@ -277,24 +277,17 @@ print(f"Average free energy: {analysis_results['summary']['avg_free_energy']:.3f
 ## Output Specification
 
 ### Output Products
-- `activeinference_analysis_report.md` - Comprehensive analysis report
-- `activeinference_results.json` - Detailed analysis results
-- `activeinference_visualizations/` - Analysis visualizations
-- `activeinference_execution_logs.txt` - Execution logs
-- `activeinference_performance_metrics.json` - Performance metrics
+- `simulation_results.json` - Serialized Julia inference results (schema `activeinference_jl_simulation_v1`)
+- `activeinference_execution_report.json` - Python-side execution report (written by `activeinference_runner.py`)
+- Execution logs (stdout/stderr) and timing/resource data
 
 ### Output Directory Structure
 ```
 output/12_execute_output/
 ├── activeinference_results/
-│   ├── activeinference_analysis_report.md
-│   ├── activeinference_results.json
-│   ├── activeinference_visualizations/
-│   │   ├── free_energy_plot.png
-│   │   ├── belief_trajectories.png
-│   │   └── planning_performance.png
-│   ├── activeinference_execution_logs.txt
-│   └── activeinference_performance_metrics.json
+│   ├── simulation_results.json
+│   ├── activeinference_execution_report.json
+│   └── logs/
 └── julia_environment_check.json
 ```
 
@@ -484,7 +477,7 @@ def run_activeinference_analysis_tool(
 
 ### Adding New Analysis Features
 1. Update analysis logic in appropriate Julia files
-2. Add new analysis functions in `enhanced_analysis_suite.jl`
+2. Add new analysis functions in the maintained Julia analysis suites (`integration_suite.jl` here; `enhanced_analysis_suite.jl` under `doc/activeinference_jl/actinf_jl_src/`)
 3. Update Python wrapper functions in `activeinference_runner.py`
 4. Add comprehensive tests for new features
 

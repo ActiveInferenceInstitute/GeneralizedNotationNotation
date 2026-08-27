@@ -160,20 +160,18 @@ print(f"Model family: {family}")  # e.g., "POMDP"
 ## Output Specification
 
 ### Output Products
-- `research_analysis_report.md` - Comprehensive research report
-- `research_data_analysis.json` - Detailed analysis results
-- `research_visualizations/` - Research visualizations
-- `research_summary.json` - Research summary
+- `research_report.md` - Research report
+- `research_results.json` - Processing results
+- `research_summary.json` - Summary (same payload as results)
+- `research_processing_summary.json` - Step processing summary
 
 ### Output Directory Structure
 ```
 output/19_research_output/
-├── research_analysis_report.md
-├── research_data_analysis.json
-├── research_visualizations/
-│   ├── statistical_plots.png
-│   └── experimental_results.png
-└── research_summary.json
+├── research_report.md
+├── research_results.json
+├── research_summary.json
+└── research_processing_summary.json
 ```
 
 ---

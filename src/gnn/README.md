@@ -246,7 +246,7 @@ src/gnn/
 │   └── [additional schemas...]   # Additional schema files
 │
 ├── gnn_examples/                  # Reference Markdown models (e.g. actinf_pomdp_agent.md)
-└── (repo root) input/gnn_files/   # Pipeline input examples; tests often use input/gnn_files/actinf_pomdp_agent.md
+└── (repo root) input/gnn_files/   # Pipeline input examples; tests often use input/gnn_files/discrete/actinf_pomdp_agent.md
 ```
 
 ## Validation System

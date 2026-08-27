@@ -26,4 +26,4 @@ Use these files as:
 
 ## Integration
 
-These examples are the reference inputs for the round-trip testing system (`gnn/testing/test_round_trip.py`), which validates semantic preservation across all 23 supported formats.
+These examples are the reference inputs for the round-trip testing system (`gnn/testing/test_round_trip.py`), which validates semantic preservation across the **21** formats in its default list (see [`../testing/README.md`](../testing/README.md) for how that relates to all 23 `GNNFormat` values).

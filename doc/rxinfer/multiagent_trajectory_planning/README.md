@@ -102,10 +102,10 @@ The experiments generate several output files in the results directory:
    - `obstacle_distances.png`: Heatmap of distances to obstacles
    - `path_uncertainty.png`: Visualization of path uncertainty
 
-3. **Data Files**:
+3. **Data Files** (under `data/`):
    - `paths.csv`: Raw path data for each agent
    - `controls.csv`: Control signal data
-   - `path_vars.csv`: Path uncertainty data
+   - `uncertainties.csv`: Path uncertainty data
 
 4. **Documentation**:
    - `experiment_summary.txt`: Summary of experiment parameters and results

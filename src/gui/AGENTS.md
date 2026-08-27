@@ -194,36 +194,17 @@ success = process_gui(
 ## Configuration
 
 ### Environment Variables
-- `GUI_DEFAULT_PORT` - Default port for GUI servers (7860)
-- `GUI_HEADLESS_MODE` - Run GUIs in headless mode by default
-- `GUI_BROWSER_AUTO_OPEN` - Automatically open browser for interactive GUIs
 
-### Configuration Files
-- `gui_config.yaml` - GUI-specific settings and themes
+None dedicated to this module. GUI behavior is configured through
+`process_gui()` kwargs (e.g. `gui_types`, `interactive`, `headless`,
+`open_browser`) and `input/config.yaml` pipeline settings. Per-GUI ports are
+assigned in `gui/__init__.py` (GUI 1: 7860, GUI 2: 7861, GUI 3: 7862).
 
 ### Default Settings
-```python
-DEFAULT_GUI_SETTINGS = {
-    "gui_1": {
-        "port": 7860,
-        "theme": "default",
-        "auto_save": True,
-        "validation_enabled": True,
-    },
-    "gui_2": {
-        "port": 7861,
-        "heatmap_colormap": "viridis",
-        "matrix_precision": 3,
-        "auto_update": True,
-    },
-    "gui_3": {
-        "port": 7862,
-        "diagram_style": "modern",
-        "ontology_integration": True,
-        "export_format": "markdown",
-    },
-}
-```
+
+Processing defaults (GUI types, headless mode) are set in `process_gui()` in
+`gui/processor.py`; per-GUI options (`export_filename`, ports) are defined in
+each GUI's `__init__.py`.
 
 ---
 

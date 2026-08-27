@@ -134,14 +134,15 @@ audio_file = generate_audio_from_gnn(model, duration=60.0)
 ### Output Products
 - `*.wav` - Generated audio files
 - `*_sapf.py` - SAPF code files
-- `audio_processing_summary.json` - Processing summary
+- `audio_results.json` - Processing results
+- `audio_summary.md` - Processing summary
 
 ### Output Directory Structure
 ```
 output/15_audio_output/
-├── model_name_sonification.wav
-├── model_name_sapf.py
-└── audio_processing_summary.json
+├── {model}_sonification.wav
+├── audio_results.json
+└── audio_summary.md
 ```
 
 ---

@@ -410,9 +410,8 @@ def process_audio(target_dir, output_dir, verbose=False, **kwargs):
 output/15_audio_output/
 ├── model_audio.wav                # Generated audio file
 ├── audio_visualization.png        # Audio waveform visualization
-├── audio_analysis.json            # Audio characteristics analysis
 ├── sonification_audio.wav         # Sonification audio
-├── sapf_code.txt                 # Generated SAPF code
+├── audio_results.json            # Audio processing results
 └── audio_summary.md              # Audio generation summary
 ```
 

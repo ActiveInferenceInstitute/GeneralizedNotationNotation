@@ -315,20 +315,15 @@ for script_path in scripts:
 ## Output Specification
 
 ### Output Products
-- `jax_execution_results.json` - Complete execution results summary
-- `jax_performance_metrics.json` - Detailed performance metrics
-- `jax_execution_log.txt` - Execution log with timestamps
-- `jax_device_info.json` - Hardware and device information
-- `jax_benchmark_results.json` - Benchmarking results (if enabled)
+- `simulation_results.json` - Per-run JAX simulation output (schema `jax_kronecker_factorized_v1` or `jax_simulation_v1` depending on the rendered script)
+- `execution_log.json` - Per-script execution metadata (stdout/stderr paths, timing, device info)
 
 ### Output Directory Structure
 ```
 output/12_execute_output/
 ├── jax_results/
-│   ├── jax_execution_results.json
-│   ├── jax_performance_metrics.json
-│   ├── jax_execution_log.txt
-│   ├── jax_device_info.json
+│   ├── simulation_results.json
+│   ├── execution_log.json
 │   └── script_results/
 │       ├── pomdp_solver_result.json
 │       ├── general_model_result.json

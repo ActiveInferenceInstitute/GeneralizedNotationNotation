@@ -73,7 +73,7 @@ Main executor class plus a small `ExecutorFrameworkSpec` registry for framework-
 - `run_simulation(simulation_config)` — Run a simulation from config
 - `generate_execution_report(output_file)` — Generate execution summary
 - `_execute_pymdp_script()`, `_execute_rxinfer_config()`, `_execute_discopy_diagram()`, `_execute_jax_script()` — Framework-specific execution methods
-- `execute_rendered_simulators(...)` — Iterates the registry, writes `summaries/execution_summary.json`, and renders the markdown execution report
+- `execute_rendered_simulators(...)` — Iterates the registry, writes `summaries/execution_summary.json`, and renders the markdown execution report (`summaries/execution_report.md`)
 
 ### `processor.py` — Step 12 Entry Point
 

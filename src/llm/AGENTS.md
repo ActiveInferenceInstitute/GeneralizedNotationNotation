@@ -241,18 +241,14 @@ success = process_llm(
 ## Output Specification
 
 ### Output Products
-- `{model}_llm_analysis.md` - Full analysis report
-- `{model}_llm_summary.json` - Structured summary
-- `{model}_llm_explanations.md` - Concept explanations
-- `llm_processing_summary.json` - Processing summary
+- `llm_results.json` - Processing results
+- `llm_summary.md` - Human-readable processing summary
 
 ### Output Directory Structure
 ```
 output/13_llm_output/
-├── model_name_llm_analysis.md
-├── model_name_llm_summary.json
-├── model_name_llm_explanations.md
-└── llm_processing_summary.json
+├── llm_results.json
+└── llm_summary.md
 ```
 
 ---

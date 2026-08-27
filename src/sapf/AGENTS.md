@@ -151,16 +151,14 @@ audio = generate_audio_from_sapf(sapf_config=sapf_data, output_dir="output/audio
 ### Output Products
 - `*.wav` - Generated audio files
 - `*.sapf` - SAPF configuration files
-- `audio_analysis.json` - Audio analysis results
-- `sonification_report.md` - Sonification report
+- `audio_results.json` - Processing results (written by `src/audio/processor.py`)
+- `audio_summary.md` - Processing summary
 
 ### Output Directory Structure
 ```
 output/sapf/
-├── model_audio.wav
-├── model_sapf_config.json
-├── audio_analysis.json
-└── sonification_report.md
+├── {model}_sapf_audio.wav
+└── audio_results.json
 ```
 
 ---

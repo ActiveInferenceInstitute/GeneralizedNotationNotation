@@ -179,13 +179,16 @@ on the live execution path.
 ## Configuration
 
 ### Environment Variables
-- `MCP_SERVER_PORT` - MCP server port (default: 8080)
-- `MCP_TRANSPORT` - Transport protocol ("stdio", "http", "websocket")
-- `MCP_LOG_LEVEL` - MCP logging level ("DEBUG", "INFO", "WARNING", "ERROR")
-- `MCP_TIMEOUT` - MCP request timeout (default: 30 seconds)
+
+Security and hardening knobs (`GNN_MCP_TOKEN`, `GNN_MCP_ALLOW_INSECURE_LOCAL`,
+`GNN_MCP_ALLOW_UNSAFE_TOOLS`, `GNN_MCP_RATE_LIMIT_PER_MINUTE`,
+`GNN_MCP_SAFE_TOOLS`, `GNN_MCP_SAFE_RESOURCES`, `MCP_SDK_PATH`) are documented
+in `src/mcp/MCP_DOCUMENTATION.md`.
 
 ### Configuration Files
-- `mcp_config.yaml` - MCP server and tool configuration
+
+No dedicated `mcp_config.yaml` is read; configuration is passed via
+`process_mcp()` kwargs and the CLI flags listed below.
 
 ### Default Settings
 
@@ -244,18 +247,16 @@ for tool in tools:
 ## Output Specification
 
 ### Output Products
+- `mcp_results.json` - Detailed MCP processing report
 - `mcp_processing_summary.json` - MCP processing summary
-- `registered_tools.json` - All registered tools information
-- `mcp_server_status.json` - Server status and configuration
-- `tool_execution_log.json` - Tool execution history
+- `registered_tools.json` - All registered tools information (written when tools are available)
 
 ### Output Directory Structure
 ```
 output/21_mcp_output/
+├── mcp_results.json
 ├── mcp_processing_summary.json
-├── registered_tools.json
-├── mcp_server_status.json
-└── tool_execution_log.json
+└── registered_tools.json
 ```
 
 ---

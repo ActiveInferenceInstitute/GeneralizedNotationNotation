@@ -339,19 +339,14 @@ automated_chain = create_automated_effects_chain(automation_config)
 ## Output Specification
 
 ### Output Products
-- `processed_audio.wav` - Processed audio files
-- `effects_chain.json` - Effects chain configuration
-- `sonification_audio.wav` - Model sonification files
-- `automation_data.json` - Parameter automation data
+
+None yet — this module is a documentation-only scaffold (see `README.md`); its
+planned artifacts (`processed_audio.wav`, `effects_chain.json`,
+`automation_data.json`) are not produced by any code path.
 
 ### Output Directory Structure
-```
-output/audio_pedalboard/
-├── processed_audio.wav
-├── effects_chain.json
-├── sonification_audio.wav
-└── automation_data.json
-```
+
+None — the module contains no code (see `README.md`).
 
 ---
 
@@ -492,7 +487,7 @@ def process_audio_tool(
 ## Development Guidelines
 
 ### Adding New Effects
-1. Implement effect configuration in `effects.py`
+1. Create `effects.py` in this directory and implement effect configuration
 2. Add parameter validation and defaults
 3. Update documentation with examples
 4. Add comprehensive tests
