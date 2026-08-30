@@ -2,8 +2,8 @@
 
 The run hash is the pipeline's identity primitive: it decides which stored
 run a CLI lookup returns. These tests exercise the real hashing, indexing,
-and prefix-lookup path against real files in temporary directories (no mocks,
-no stubs).
+and prefix-lookup path against real files in temporary directories (zero
+test doubles).
 
 Forward-implementation-first note: the run hash is substantive input/revision
 identity (it decides *which* run you operate on), so it is covered as product
