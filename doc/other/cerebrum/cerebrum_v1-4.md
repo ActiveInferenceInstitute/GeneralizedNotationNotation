@@ -1,5 +1,7 @@
 
 # https://github.com/ActiveInferenceInstitute/CEREBRUM/blob/main/paper/output/assembled_paper.md 
+> **Note**: The original figure images (Figure_1.png–Figure_12.png) are not included in this repository copy; figure captions are preserved in full in the alt text below.
+
 
 # version 1.4
 

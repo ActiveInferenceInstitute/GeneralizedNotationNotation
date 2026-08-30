@@ -81,7 +81,7 @@ GNN addresses the challenge of communicating Active Inference models, which are 
 | File | Purpose | Start Here If... |
 |------|---------|------------------|
 | **[README.md](./README.md)** | Main entry point and overview | You're new to GNN |
-| **[AGENTS.md](./AGENTS.md)** | Master agent scaffolding - all 25 modules documented | You want to understand the pipeline architecture |
+| **[AGENTS.md](./AGENTS.md)** | Master agent scaffolding - all 25 pipeline steps and 32 module directories documented | You want to understand the pipeline architecture |
 | **[DOCS.md](./DOCS.md)** | Comprehensive documentation with all diagrams | You need the complete system overview |
 | **[ARCHITECTURE.md](./ARCHITECTURE.md)** | Implementation patterns and extension guides | You're developing or extending GNN |
 | **[doc/quickstart.md](./doc/quickstart.md)** | Step-by-step getting started guide | You want to run your first pipeline |
