@@ -12,9 +12,14 @@ default:
 # Testing
 # ─────────────────────────────────────────────
 
-# Run fast test suite (default)
+# Run tests with the same marker filter as CI, so local and CI
+# exercise the same surface; use test-stopfast or test-full for other scopes.
 test:
-    uv run pytest src/tests/ -q --tb=short -x
+    uv run pytest src/tests/ -q --tb=short -m "not pipeline and not mcp"
+
+# Run fast test suite, stop at first failure
+test-stopfast:
+    uv run pytest src/tests/ -q --tb=short -x -m "not pipeline and not mcp"
 
 # Run full test suite (with Ollama ignores)
 test-full:
@@ -57,9 +62,29 @@ format-check:
 typecheck:
     uv run mypy src --show-error-codes
 
-# Run bandit security scan
+# Run bandit security scan (same thresholds as CI)
 security:
-    uv run bandit -r src -c pyproject.toml -q
+    uv run bandit -r src -c pyproject.toml -q --severity-level medium --confidence-level medium
+
+# Run MCP + skills resolvability health gate
+skills-health:
+    uv run --extra dev python scripts/check_mcp_skills_health.py
+
+# Run capability contract audit
+capability:
+    uv run python scripts/check_capability_contracts.py
+
+# Run manuscript token audit
+tokens:
+    uv run python scripts/check_manuscript_tokens.py
+
+# Run POMDP gridworld outputs check
+gridworld:
+    uv run python scripts/check_pomdp_gridworld_outputs.py
+
+# Emit durable v3 run manifests for a completed run (e.g. just manifest output)
+manifest OUT:
+    uv run python scripts/emit_run_manifest.py {{ OUT }}
 
 # Run maintained-doc terminology audit
 doc-terms:
@@ -134,6 +159,7 @@ audit:
 terminology:
     uv run python scripts/check_repo_terminology.py --strict
 
+
 # Count test files and items
 test-count:
     @echo "Test files:"
@@ -185,24 +211,28 @@ bench-compare:
 
 # List all 25 pipeline steps from the canonical registry
 steps:
-    PYTHONPATH=src uv run python -c "
-from pipeline.step_registry import STEPS
-for s in STEPS:
-    tags = ','.join(sorted(s.tags))
-    print(f'{s.script_name:30s} {tags}')
-print()
-print(f'Total: {len(STEPS)} steps')
-print(f'Core:  {len([s for s in STEPS if \"core\" in s.tags])}')
-print(f'LLM:   {len([s for s in STEPS if \"llm\" in s.tags])}')
-"
+    #!/usr/bin/env bash
+    export PYTHONPATH=src
+    uv run python - <<'PYEOF'
+    from pipeline.step_registry import STEPS
+    for s in STEPS:
+        tags = ','.join(sorted(s.tags))
+        print(f'{s.script_name:30s} {tags}')
+    print()
+    print(f'Total: {len(STEPS)} steps')
+    print(f"Core:  {len([s for s in STEPS if 'core' in s.tags])}")
+    print(f"LLM:   {len([s for s in STEPS if 'llm' in s.tags])}")
+    PYEOF
 
 # Export step registry as JSON (useful for tooling)
 steps-json:
-    PYTHONPATH=src uv run python -c "
-import json
-from pipeline.step_registry import STEPS
-data = [{'script_name': s.script_name, 'description': s.description,
-         'module_function': s.module_function, 'tags': sorted(s.tags)}
-        for s in STEPS]
-print(json.dumps(data, indent=2))
-"
+    #!/usr/bin/env bash
+    export PYTHONPATH=src
+    uv run python - <<'PYEOF'
+    import json
+    from pipeline.step_registry import STEPS
+    data = [{'script_name': s.script_name, 'description': s.description,
+             'module_function': s.module_function, 'tags': sorted(s.tags)}
+            for s in STEPS]
+    print(json.dumps(data, indent=2))
+    PYEOF
