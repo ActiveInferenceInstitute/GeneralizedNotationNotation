@@ -51,6 +51,12 @@ This folder hosts the explicit, stateless developer workflow validation agents r
 | `pymdp_spec_generator.py` | Generate pymdp specification from config |
 | `z_generate_manuscript_variables.py` | Generate manuscript variable tokens from analysis outputs |
 
+### Maintenance (1 script)
+
+| Script | Purpose |
+|--------|---------|
+| `add_module_docstrings.py` | Insert composed PEP 257 module docstrings into undocumented files (`--dry-run` supported) |
+
 ## Shared Utilities — `lib/`
 
 The [`lib/`](lib/) subdirectory provides shared utility functions for multiple audit scripts:
