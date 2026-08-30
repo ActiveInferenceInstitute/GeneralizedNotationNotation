@@ -163,6 +163,16 @@ def collect() -> dict[str, list[str]]:
                 text = path.read_text(encoding="utf-8")
             except (UnicodeDecodeError, OSError):
                 continue
+            # Fenced code blocks hold configuration examples (e.g.
+            # OPENAI_BASE_URL=https://api.openai.com/v1), not navigable links —
+            # strip them before URL extraction to avoid false 404s.
+            if path.suffix == ".md":
+                text = re.sub(
+                    r"^(```|~~~).*?^\1.*$",
+                    "",
+                    text,
+                    flags=re.MULTILINE | re.DOTALL,
+                )
             for m in URL_RE.finditer(text):
                 url = _normalize_url(m.group(0))
                 if _should_skip_url(url):
