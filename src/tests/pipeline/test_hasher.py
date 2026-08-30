@@ -17,7 +17,12 @@ from pathlib import Path
 
 import pytest
 
-from pipeline.hasher import compute_run_hash, compute_run_hash_with_files, index_run, lookup_run
+from pipeline.hasher import (
+    compute_run_hash,
+    compute_run_hash_with_files,
+    index_run,
+    lookup_run,
+)
 
 
 @pytest.fixture()
