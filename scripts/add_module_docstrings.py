@@ -4,18 +4,21 @@
 Inserts a PEP 257 module docstring as the first statement (after shebang/encoding
 comment lines, before `from __future__` imports). Content is derived from the
 file's own top-level classes and functions so it stays accurate.
+
+Usage:
+    python scripts/add_module_docstrings.py [ROOT] [--dry-run]
+
+Pass ``--dry-run`` to report which files would change without writing them.
 """
 
 from __future__ import annotations
 
+import argparse
 import ast
 import pathlib
 import re
 import sys
 
-ROOT = pathlib.Path(sys.argv[1]) if len(sys.argv) > 1 else pathlib.Path("src")
-
-# Files to skip: already documented (checked by caller), or non-python.
 TARGETS = []
 
 
@@ -117,7 +120,11 @@ def describe_module(path: pathlib.Path, tree: ast.Module) -> str:
     return "\n\n".join(parts)
 
 
-def add_docstring(path: pathlib.Path) -> str | None:
+def add_docstring(path: pathlib.Path, write: bool = True) -> str | None:
+    """Compose a module docstring for ``path``; write it unless ``write=False``.
+
+    Returns the composed docstring when the file would change, else ``None``.
+    """
     text = path.read_text()
     try:
         tree = ast.parse(text)
@@ -148,24 +155,42 @@ def add_docstring(path: pathlib.Path) -> str | None:
     assert isinstance(first, ast.Expr) and isinstance(first.value, ast.Constant), (
         f"docstring not first statement in {path}"
     )
-    path.write_text(new_text)
+    if write:
+        path.write_text(new_text)
     return docstring
 
 
-def main() -> None:
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "root",
+        nargs="?",
+        default="src",
+        help="Directory tree to process (default: src)",
+    )
+    parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="Report which files would change without writing them",
+    )
+    args = parser.parse_args(argv)
+
+    root = pathlib.Path(args.root)
     py_files = sorted(
         p
-        for p in ROOT.rglob("*.py")
+        for p in root.rglob("*.py")
         if ".venv" not in str(p) and "__pycache__" not in str(p)
     )
     added = 0
     for p in py_files:
-        result = add_docstring(p)
+        result = add_docstring(p, write=not args.dry_run)
         if result is not None:
-            print(f"  + {p}")
+            print(f"  {'~' if args.dry_run else '+'} {p}")
             added += 1
-    print(f"\n{added} docstrings added.")
+    mode = "would receive" if args.dry_run else "added"
+    print(f"\n{added} docstrings {mode}.")
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())
