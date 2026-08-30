@@ -111,6 +111,14 @@ def iter_markdown_files() -> list[Path]:
 # [text](url) — capture path before # or )
 LINK_RE = re.compile(r"\[[^\]]*\]\(([^)#\s]+)(?:#[^)]*)?\)")
 
+# Image links whose alt text contains one nested bracket level, e.g.
+# ![Caption [DAT] tag](Figure_1.png). LINK_RE cannot match these because the
+# first closing ] ends the alt text early, so a dedicated pattern extracts the
+# path for link validation. Applies to both ! and plain link forms.
+NESTED_ALT_LINK_RE = re.compile(
+    r"!{0,1}\[(?:[^\]\[]|\[[^\]\[]*\])*\]\(([^)#\s]+)(?:#[^)]*)?\)"
+)
+
 # [text](url) — full href including fragment (for anchor checks)
 FULL_LINK_RE = re.compile(r"\[[^\]]*\]\(([^)]+)\)")
 
@@ -131,7 +139,16 @@ def _strip_code(md: str) -> str:
 
 
 def extract_links(md: str) -> list[str]:
-    return [m.group(1).strip() for m in LINK_RE.finditer(_strip_code(md))]
+    stripped = _strip_code(md)
+    links = [m.group(1).strip() for m in LINK_RE.finditer(stripped)]
+    # Second pass: catch links with nested-bracket alt text that LINK_RE skips.
+    seen = set(links)
+    for m in NESTED_ALT_LINK_RE.finditer(stripped):
+        link = m.group(1).strip()
+        if link not in seen:
+            links.append(link)
+            seen.add(link)
+    return links
 
 
 def _gfm_heading_slug(heading_line: str) -> str:
