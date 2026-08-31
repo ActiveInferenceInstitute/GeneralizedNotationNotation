@@ -48,3 +48,22 @@ def test_every_registered_step_has_positive_timeout():
         values = cfg.values() if isinstance(cfg, dict) else [cfg]
         for v in values:
             assert isinstance(v, int) and v > 0, f"{name}: bad timeout {v}"
+
+def test_scale_multiplier_applies(monkeypatch):
+    monkeypatch.delenv("GNN_STEP_TIMEOUT_3", raising=False)
+    monkeypatch.setenv("GNN_STEP_TIMEOUT_SCALE", "3")
+    assert get_step_timeout("3_gnn.py") == 900  # 300 * 3
+    assert get_step_timeout("99_unknown.py") == DEFAULT_TIMEOUT * 3
+
+
+def test_scale_multiplier_invalid_or_nonpositive_ignored(monkeypatch):
+    monkeypatch.delenv("GNN_STEP_TIMEOUT_3", raising=False)
+    for bad in ("not-a-number", "0", "-2"):
+        monkeypatch.setenv("GNN_STEP_TIMEOUT_SCALE", bad)
+        assert get_step_timeout("3_gnn.py") == 300  # unchanged
+
+
+def test_per_step_env_override_beats_scale(monkeypatch):
+    monkeypatch.setenv("GNN_STEP_TIMEOUT_3", "42")
+    monkeypatch.setenv("GNN_STEP_TIMEOUT_SCALE", "3")
+    assert get_step_timeout("3_gnn.py") == 42

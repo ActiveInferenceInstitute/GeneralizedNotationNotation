@@ -1,4 +1,11 @@
-"""Step timeout configuration for the GNN pipeline."""
+"""Step timeout configuration for the GNN pipeline.
+
+Environment overrides:
+  - GNN_STEP_TIMEOUT_{N}: absolute timeout for step N (wins over scale).
+  - GNN_STEP_TIMEOUT_SCALE: multiplier applied to every configured timeout
+    (for slow-storage checkouts where process startup dominates; invalid or
+    non-positive values are ignored).
+"""
 
 import logging
 import os
@@ -42,12 +49,36 @@ def get_step_timeout(script_name: str, comprehensive: bool = False) -> int:
 
     timeout_config = STEP_TIMEOUTS.get(script_name)
     if timeout_config is None:
-        return DEFAULT_TIMEOUT
+        return _scale_timeout(DEFAULT_TIMEOUT)
     if isinstance(timeout_config, dict):
-        return cast(
-            "int",
-            timeout_config.get(
-                "comprehensive" if comprehensive else "default", DEFAULT_TIMEOUT
-            ),
+        return _scale_timeout(
+            cast(
+                "int",
+                timeout_config.get(
+                    "comprehensive" if comprehensive else "default", DEFAULT_TIMEOUT
+                ),
+            )
         )
-    return cast("int", timeout_config)
+    return _scale_timeout(cast("int", timeout_config))
+
+
+def _scale_timeout(seconds: int) -> int:
+    """Apply the GNN_STEP_TIMEOUT_SCALE multiplier.
+
+    On slow storage (e.g. external USB drives where every ``uv run`` re-reads
+    the virtualenv), a single global multiplier is simpler than overriding each
+    step individually. ``GNN_STEP_TIMEOUT_SCALE=3`` triples every configured
+    timeout; invalid values are ignored so a typo cannot zero out a step.
+    """
+    raw = os.environ.get("GNN_STEP_TIMEOUT_SCALE")
+    if not raw:
+        return seconds
+    try:
+        scale = float(raw)
+    except ValueError as e:
+        logger.debug("Invalid GNN_STEP_TIMEOUT_SCALE %r: %s", raw, e)
+        return seconds
+    if scale <= 0:
+        logger.debug("Ignoring non-positive GNN_STEP_TIMEOUT_SCALE %r", raw)
+        return seconds
+    return max(1, int(seconds * scale))
