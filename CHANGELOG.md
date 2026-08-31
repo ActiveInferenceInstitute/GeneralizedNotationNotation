@@ -8,6 +8,64 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
 
 ## [Unreleased]
 
+### Added (2026-08-30 — release hardening, slow-storage support, meta-analysis correctness)
+
+- **`GNN_STEP_TIMEOUT_SCALE` pipeline multiplier** (`src/pipeline/step_timeouts.py`).
+  One environment variable scales every configured step timeout for
+  slow-storage checkouts (external drives where each `uv run` re-reads the
+  virtualenv). Per-step `GNN_STEP_TIMEOUT_{N}` overrides still win; invalid or
+  non-positive values are ignored so a typo cannot zero out a step. Covered by
+  three new real-behavior tests.
+- **Runtime coverage for pipeline identity and timeout contracts.** New
+  `src/tests/pipeline/test_hasher.py` (run-hash determinism and content
+  sensitivity, index/lookup roundtrip, prefix ambiguity) and
+  `src/tests/pipeline/test_step_timeouts.py` (resolution order: per-step env →
+  config → default; scale multiplier semantics). The run hash is input/revision
+  identity and is covered as product behavior.
+- **Script regression tests**: `scripts/add_module_docstrings.py` dry-run/write
+  contract exercised against temp directories only; `manuscript_build_figures.py`
+  generator registry locked against silent drift from the `manuscript_fig_*.py`
+  glob.
+
+### Fixed (2026-08-30 — audit-driven correctness pass)
+
+- **Meta-analysis crash in the resource-efficiency table**
+  (`src/integration/meta_analysis/reporter.py`). LOC records sourced from the
+  render summary do not always carry sweep parameters, so `num_states` can be
+  `None`; sorting the raw values raised `TypeError: '<' not supported between
+  instances of 'NoneType' and 'int'` and aborted the whole meta-analysis
+  (surfaced as a non-fatal Step 17 warning). None now buckets under 0.
+  Regression tests included.
+- **Broken justfile parsing.** Two recipes embedded multi-line Python in
+  `python -c "..."`, which `just` rejects at parse time — every `just` command
+  failed before this fix. Both recipes rewritten as heredoc scripts; `just
+  --list` and `just steps` verified working.
+- **Local/CI test-surface parity.** `just test` now applies the same
+  `-m "not pipeline and not mcp"` marker filter as CI (with `test-stopfast`
+  for the old `-x` behavior); `just security` matches CI's medium
+  severity/confidence thresholds.
+- **docs_audit link detection.** Links whose alt text contains one nested
+  bracket level (`![Caption [DAT] tag](Figure_1.png)`) were invisible to the
+  link extractor; a tolerant second-pass regex catches them. The CEREBRUM
+  document's absent figure references were converted to caption text so the
+  link audit stays green.
+- **Capability-contract evidence recount.** The combined CLI/MCP/capability
+  suite evidence string is now matched dynamically from the maintained docs
+  instead of hardcoding `32 passed`, so legitimate test additions no longer
+  invalidate completed-item evidence.
+- **External-link checker** skips fenced code blocks when extracting links.
+
+### Changed (2026-08-30 — tooling and docs hygiene)
+
+- `justfile`: added `skills-health`, `capability`, `tokens`, and `gridworld`
+  recipes exposing the on-demand audit gates locally; `mcp-audit.yml` checkout
+  action bumped to v6; `scripts/AGENTS.md` documents
+  `add_module_docstrings.py` (8 scripts, was listed as 6).
+- Documentation accuracy pass: stale recipe/backend counts, unfalsifiable
+  coverage claims, and over-climbing relative links fixed across README,
+  ARCHITECTURE, SKILL.md, style_guide, and CROSS_REFERENCE_INDEX; docs-audit
+  hardening noted above.
+
 ### Added (2026-08-24 — env-conditioned action selection for stigmergic swarms, roadmap MAJ-03 closure)
 
 - **Latent environmental-signal inference per agent.** The shared swarm exemplar
