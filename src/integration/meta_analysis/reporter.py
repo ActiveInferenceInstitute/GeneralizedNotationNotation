@@ -411,8 +411,10 @@ class SweepReporter:
         lines.append("### Code Complexity Scaling")
         lines.append("")
 
-        # Table of LOC vs N
-        n_values = sorted({r.num_states for r in loc_recs})
+        # Table of LOC vs N. LOC records come from the render summary, which
+        # does not always carry sweep parameters, so num_states may be None —
+        # bucket those under 0 instead of raising on mixed None/int sorting.
+        n_values = sorted({r.num_states or 0 for r in loc_recs})
         frameworks = sorted({r.framework for r in loc_recs})
 
         header = "| N | " + " | ".join(f"{fw} LOC" for fw in frameworks) + " |"
@@ -422,7 +424,11 @@ class SweepReporter:
         for n in n_values:
             row: list[Any] = [str(n)]
             for fw in frameworks:
-                match = [r for r in loc_recs if r.num_states == n and r.framework == fw]
+                match = [
+                    r
+                    for r in loc_recs
+                    if (r.num_states or 0) == n and r.framework == fw
+                ]
                 if match:
                     row.append(f"{match[0].lines_of_code:,}")
                 else:
