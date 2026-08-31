@@ -67,6 +67,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
   recipes exposing the on-demand audit gates locally; `mcp-audit.yml` checkout
   action bumped to v6; `scripts/AGENTS.md` documents
   `add_module_docstrings.py` (8 scripts, was listed as 6).
+- Internal test hygiene: import sorting and wording clarifications in `src/tests/pipeline/test_hasher.py`.
 - Documentation accuracy pass: stale recipe/backend counts, unfalsifiable
   coverage claims, and over-climbing relative links fixed across README,
   ARCHITECTURE, SKILL.md, style_guide, and CROSS_REFERENCE_INDEX; docs-audit
@@ -734,7 +735,8 @@ Completes the remaining RED_TEAM_REVIEW.md items from the 2026-08-14 wave.
 - pytest test suite with comprehensive coverage
 - MCP tool registration framework
 
-[Unreleased]: https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/compare/v2.0.0...HEAD
+[Unreleased]: https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/compare/v3.0.0...HEAD
+[3.1.0]: https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/compare/v3.0.0...v3.1.0
 [2.0.0]: https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/compare/v1.9.0...v2.0.0
 [1.9.0]: https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/compare/v1.8.0...v1.9.0
 [1.8.0]: https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/compare/v1.6.0...v1.8.0
