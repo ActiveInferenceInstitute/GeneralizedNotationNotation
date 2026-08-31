@@ -8,6 +8,12 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
 
 ## [Unreleased]
 
+## [3.1.0] — 2026-08-30
+
+> **Release Hardening & Slow-Storage Support.** Timeout scaling for external-drive
+> checkouts, meta-analysis correctness fix, runtime test coverage for pipeline
+> identity/timeout contracts, justfile repair, and an audit-driven docs accuracy pass.
+
 ### Added (2026-08-30 — release hardening, slow-storage support, meta-analysis correctness)
 
 - **`GNN_STEP_TIMEOUT_SCALE` pipeline multiplier** (`src/pipeline/step_timeouts.py`).

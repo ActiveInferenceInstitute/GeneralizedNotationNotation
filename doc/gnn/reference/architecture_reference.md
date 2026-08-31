@@ -1,6 +1,6 @@
 # GNN Architecture Reference
 
-**Version**: v3.0.0 Engine (Bundle v2.0.0)  
+**Version**: v3.1.0 Engine (Bundle v2.0.0)  
 **Last Updated**: 2026-04-15  
 **Status**: Maintained
 **Scope**: Pipeline architecture and extension patterns. See [framework implementations](../implementations/README.md) for current backend coverage.

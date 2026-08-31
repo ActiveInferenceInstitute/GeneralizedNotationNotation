@@ -10,7 +10,7 @@
 
 **Status**: ✅ Production Ready
 
-**Version**: 3.0.0
+**Version**: 3.1.0
 
 **Last Updated**: 2026-04-16
 
@@ -458,7 +458,7 @@ def generate_report(pipeline_data, format="html", template="default"):
 **Last Updated**: 2026-04-16
 **Maintainer**: GNN Pipeline Team
 **Status**: ✅ Production Ready
-**Version**: 3.0.0
+**Version**: 3.1.0
 **Architecture Compliance**: ✅ 100% Thin Orchestrator Pattern
 
 

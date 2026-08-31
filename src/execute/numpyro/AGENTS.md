@@ -28,4 +28,4 @@ numpyro/
 
 See [execute/AGENTS.md](../AGENTS.md) for the overall execution architecture.
 
-**Version**: 3.0.0
+**Version**: 3.1.0

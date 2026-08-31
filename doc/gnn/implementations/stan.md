@@ -2,7 +2,7 @@
 
 > **GNN Integration Layer**: Stan probabilistic programming language
 > **Framework Base**: Stan (statistical modeling language, MCMC / variational inference)
-> **Documentation Version**: v3.0.0 Engine (Bundle v2.0.0)
+> **Documentation Version**: v3.1.0 Engine (Bundle v2.0.0)
 > **Scope**: **Structural-only.** This backend emits syntactically valid Stan
 > from GNN structure (variables, connections, dimensions); it does NOT encode
 > full Active Inference semantics (no expected-free-energy policy selection,

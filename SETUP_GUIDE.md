@@ -299,7 +299,7 @@ constraints. Notable floors as of 2026-08-02:
 ---
 
 **Last Updated**: 2026-08-02
-**Pipeline Version**: 3.0.0
+**Pipeline Version**: 3.1.0
 **Status**: ✅ Production Ready (Linux & macOS)
 **Validation authority**: use the command of record and latest dated receipt in
 [`README.md`](README.md). Julia RxInfer execution uses the committed

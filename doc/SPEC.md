@@ -8,7 +8,7 @@ These version strings refer to **different things**:
 |------|--------|---------|
 | **GNN language / syntax** | [doc/gnn/reference/gnn_syntax.md](gnn/reference/gnn_syntax.md) | Language rules (e.g. v1.1). |
 | **GNN documentation bundle** | Front matter on major [doc/gnn/](gnn/) pages | Human-oriented hub revision (e.g. v2.0.0). |
-| **Python package** | [pyproject.toml](../pyproject.toml) `version` | Installable distribution (currently **3.0.0**). |
+| **Python package** | [pyproject.toml](../pyproject.toml) `version` | Installable distribution (currently **3.1.0**). |
 
 Leaf `SPEC.md` files under experimental or research subtrees may omit bundle version; they should still link **up** to a parent SPEC or state scope.
 

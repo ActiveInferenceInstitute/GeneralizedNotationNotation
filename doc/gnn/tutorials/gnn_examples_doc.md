@@ -1,6 +1,6 @@
 # GNN Examples and Model Progression
 
-**Version**: v3.0.0 Engine (Bundle v2.0.0)  
+**Version**: v3.1.0 Engine (Bundle v2.0.0)  
 **Last Updated**: 2026-04-15  
 **Status**: Maintained
 **Scope**: Maintained model examples. See [framework implementations](../implementations/README.md) and the repository test commands for current evidence.

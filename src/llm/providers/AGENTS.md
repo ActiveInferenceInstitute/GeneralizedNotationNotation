@@ -36,4 +36,4 @@ The provider factory in `__init__.py` selects providers based on:
 
 See [llm/AGENTS.md](../AGENTS.md) for the overall LLM architecture.
 
-**Version**: 3.0.0
+**Version**: 3.1.0

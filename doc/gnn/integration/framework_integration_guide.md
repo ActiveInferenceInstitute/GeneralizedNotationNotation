@@ -1,6 +1,6 @@
 # GNN Framework Integration Guide
 
-**Version**: 3.0.0 (matches repo root `pyproject.toml`)
+**Version**: 3.1.0 (matches repo root `pyproject.toml`)
 **Status**: Maintained
 
 ## Pipeline Integration
@@ -225,7 +225,7 @@ one animated GIF per model accompanied by a `.manifest.json` reproducibility sid
 
 ---
 
-**Integration Guide Version**: 3.0.0
+**Integration Guide Version**: 3.1.0
 **Render targets**: PyMDP, RxInfer.jl, ActiveInference.jl, JAX, DisCoPy, PyTorch, NumPyro, Stan, bnlearn
 **Step 12 executors**: PyMDP, JAX, DisCoPy, RxInfer.jl, ActiveInference.jl, PyTorch, NumPyro, bnlearn
 **Status**: Maintained
