@@ -6,6 +6,16 @@ The GNN (Generalized Notation Notation) Pipeline is a comprehensive 25-step syst
 
 ---
 
+## Cold Start
+
+New to this repo as an agent? In order:
+
+1. **What this is**: [SPEC.md](SPEC.md) + this file's Overview (25-step GNN pipeline, thin orchestrators).
+2. **Exemplar spec files**: [input/gnn_files/INDEX.md](input/gnn_files/INDEX.md) — every runnable example with a selection table.
+3. **Version map**: [doc/VERSION_MAP.md](doc/VERSION_MAP.md) — release history and version-sensitive surfaces.
+4. **How to verify**: verification commands live in [TO-DO.md](TO-DO.md); doc audits: `uv run python doc/development/docs_audit.py --strict --check-anchors --no-write`.
+---
+
 ## Module Registry
 
 ### Core Processing Modules (Steps 0-9)
