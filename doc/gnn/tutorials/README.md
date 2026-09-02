@@ -1,6 +1,6 @@
 # GNN Tutorials Documentation
 
-**Version**: v3.1.0 Engine (Bundle v2.0.0)  
+**Version**: v3.2.0 Engine (Bundle v2.0.0)  
 **Last Updated**: 2026-04-14  
 **Status**: Maintained
 **Scope**: Maintained tutorials. See [framework implementations](../implementations/README.md) and the repository test commands for current evidence.

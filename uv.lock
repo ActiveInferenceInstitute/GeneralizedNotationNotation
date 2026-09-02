@@ -1277,7 +1277,7 @@ wheels = [
 
 [[package]]
 name = "generalized-notation-notation"
-version = "3.1.0"
+version = "3.2.0"
 source = { editable = "." }
 dependencies = [
     { name = "aiohttp" },
@@ -1311,6 +1311,7 @@ dependencies = [
 [package.optional-dependencies]
 all = [
     { name = "bleach" },
+    { name = "cmdstanpy" },
     { name = "cython" },
     { name = "dask" },
     { name = "distributed" },
@@ -1420,6 +1421,7 @@ requires-dist = [
     { name = "bleach", marker = "extra == 'all'", specifier = ">=6.4.0" },
     { name = "bleach", marker = "extra == 'dev'", specifier = ">=6.4.0" },
     { name = "bleach", marker = "extra == 'research'", specifier = ">=6.4.0" },
+    { name = "cmdstanpy", marker = "extra == 'all'", specifier = ">=1.2" },
     { name = "cmdstanpy", marker = "extra == 'dev'", specifier = ">=1.2" },
     { name = "cmdstanpy", marker = "extra == 'stan'", specifier = ">=1.2" },
     { name = "cython", marker = "extra == 'all'", specifier = ">=3.0.0" },

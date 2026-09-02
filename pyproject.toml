@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "generalized-notation-notation"
-version = "3.1.0"
+version = "3.2.0"
 description = "A text-based language for standardizing Active Inference generative models"
 readme = "README.md"
 requires-python = ">=3.11,<3.14"
@@ -198,6 +198,9 @@ scaling = [
 # When adding a package to any named group, ALSO add it here.
 # Ideally this would use `{include-group = "name"}` syntax once supported.
 all = [
+    # Stan backend executor
+    "cmdstanpy>=1.2",
+
     # Machine Learning & AI
     "transformers>=4.25.0",
     "scipy>=1.7.0",

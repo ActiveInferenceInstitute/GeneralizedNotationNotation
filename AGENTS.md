@@ -552,6 +552,6 @@ uv run --extra dev python scripts/run_v3_orchestration_acceptance.py
 ---
 
 **Last Updated**: 2026-08-02
-**Pipeline Version**: 3.1.0 ("Long-Running Orchestration")
+**Pipeline Version**: 3.2.0 ("Exemplar Gold Standard")
 **Total Steps**: 25 (0-24)
 **Status**: Maintained

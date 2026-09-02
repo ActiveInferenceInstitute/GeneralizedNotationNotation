@@ -8,6 +8,23 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
 
 ## [Unreleased]
 
+## [3.2.0] — 2026-09-02
+
+> **Exemplar Gold Standard.** Every exemplar GNN file renders *and executes* on
+> every framework that can represent it and is explicitly flagged `unsupported`
+> (not faked, not failed) on the ones that cannot. Continuous-state exemplars
+> are genuinely continuous (linear-Gaussian) with native JAX / NumPyro /
+> PyTorch / Stan / RxInfer.jl backends; the Stan renderer is rewritten from a
+> non-compiling stub into runnable HMM and LGSSM programs with a cmdstanpy
+> executor; Step 12 summaries merge across input folders; the Julia pre-exec
+> gate no longer blocks scripts on a toolchain-less launcher.
+>
+> Verified end to end on macOS with Julia 1.12.7 (RxInfer 5.5.0,
+> ActiveInference.jl 0.1.2), CmdStan 2.39 and an ephemeral torch: 29 files,
+> 249 renders OK / 0 failed / 12 unsupported; 194 executions OK / 0 failed /
+> 55 dependency skips (torch, bnlearn); PyTorch 29/29 via
+> `uv run --with torch`; pytest 3120 passed.
+
 ### Changed (2026-09-01 — exemplar gold standard: continuous models are continuous, Stan is real)
 
 - **Continuous exemplars are now genuinely continuous.** The three files under
@@ -58,6 +75,12 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
   unless the parser itself reported a failure.
 - **`INDEX.md` excluded from model discovery** (`gnn/discovery.py`), fixing
   four tests that counted 30 exemplars instead of 29.
+- **CI hygiene.** `ruff format` drift across 45 files cleared; Bandit B108
+  (hard-coded `/tmp` in the CLI models command) replaced with
+  `tempfile.gettempdir()`; the two Julia-live test modules now skip when the
+  committed Julia project environments are not instantiated (CI ships `julia`
+  without RxInfer/ActiveInference.jl); the framework-availability test honours
+  toolchain probes; repository-terminology audit clean.
 - **ActiveInference.jl precompile on Julia 1.12.** `Distributions` pinned to
   `0.25.100 – 0.25.125` in `src/execute/activeinference_jl/Project.toml`
   (DistributionsAD 0.6.58's ReverseDiff extension breaks against the
@@ -790,7 +813,8 @@ Completes the remaining RED_TEAM_REVIEW.md items from the 2026-08-14 wave.
 - pytest test suite with comprehensive coverage
 - MCP tool registration framework
 
-[Unreleased]: https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/compare/v3.0.0...HEAD
+[Unreleased]: https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/compare/v3.2.0...HEAD
+[3.2.0]: https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/compare/v3.1.0...v3.2.0
 [3.1.0]: https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/compare/v3.0.0...v3.1.0
 [2.0.0]: https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/compare/v1.9.0...v2.0.0
 [1.9.0]: https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/compare/v1.8.0...v1.9.0
