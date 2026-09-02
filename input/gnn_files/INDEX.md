@@ -6,11 +6,15 @@ execute it through the 25-step pipeline. For syntax and file-structure rules see
 [normative syntax](../../../doc/gnn/gnn_syntax.md) and the tutorials in
 [doc/gnn/tutorials/](../../../doc/gnn/tutorials/).
 
-**Counts (measured 2026-08-31):** 32 runnable `.md` spec files across 9 task
-folders (plus non-spec `AGENTS.md`/`README.md` scaffolds in
-`pomdp_gridworld/` and `pymdp_scaling_study/`). `../README.md` records
-29/29 render+execute under RxInfer.jl for the core exemplar set (the 3 scaling
-study files are load variants of the same model family).
+**Counts (measured 2026-09-01):** 29 runnable `.md` spec files across 10 task
+folders (`INDEX.md`, `AGENTS.md` and `README.md` are non-spec scaffolds and are
+excluded by `gnn.discovery.is_model_source_path`). 26 are discrete-state
+POMDP/HMM models that render and execute on all nine frameworks; the 3 files
+under `continuous/` are continuous-state linear-Gaussian models that render and
+execute on JAX, NumPyro, PyTorch, Stan and RxInfer.jl and are reported as
+`unsupported` (not failed) on the categorical backends PyMDP,
+ActiveInference.jl, DisCoPy and bnlearn. Live counts come from
+`output/11_render_output/render_processing_summary.json`.
 
 ## Choosing an example
 
@@ -20,7 +24,8 @@ study files are load variants of the same model family).
 | Run a minimal discrete-state agent | `discrete/simple_mdp.md` → `discrete/tmaze_epistemic.md` |
 | See a canonical full Active Inference agent | `discrete/actinf_pomdp_agent.md` |
 | Compare render targets / scaling | `pymdp_scaling_study/pymdp_scaling_N4_T100.md` (then N8…N64) |
-| Continuous-time / predictive coding | `continuous/predictive_coding_agent.md` |
+| Continuous-state (linear-Gaussian) models — passive filtering | `continuous/predictive_coding_agent.md`, `continuous/stochastic_dynamics.md` |
+| Continuous-state closed-loop control on beliefs | `continuous/continuous_navigation.md` |
 | Multi-agent & stigmergy (v3+ features) | `multiagent/stigmergic_swarm.md` |
 | Hierarchical / deep temporal models | `hierarchical/hierarchical_pomdp.md` |
 | Parameter learning | `learning/dirichlet_likelihood_learning.md` |

@@ -27,6 +27,7 @@ FRAMEWORK_REGISTRY: Mapping[str, Dict[str, Any]] = MappingProxyType(
             "supports_multi_modality": True,
             "supports_multi_factor": True,
             "available": True,
+            "supports_continuous": False,
             "unavailable_reason": None,
         },
         "rxinfer": {
@@ -47,6 +48,7 @@ FRAMEWORK_REGISTRY: Mapping[str, Dict[str, Any]] = MappingProxyType(
             "supports_multi_modality": False,
             "supports_multi_factor": False,
             "available": True,
+            "supports_continuous": True,
             "unavailable_reason": None,
         },
         "activeinference_jl": {
@@ -67,6 +69,7 @@ FRAMEWORK_REGISTRY: Mapping[str, Dict[str, Any]] = MappingProxyType(
             "supports_multi_modality": True,
             "supports_multi_factor": True,
             "available": True,
+            "supports_continuous": False,
             "unavailable_reason": None,
         },
         "jax": {
@@ -87,6 +90,7 @@ FRAMEWORK_REGISTRY: Mapping[str, Dict[str, Any]] = MappingProxyType(
             "supports_multi_modality": True,
             "supports_multi_factor": True,
             "available": True,
+            "supports_continuous": True,
             "unavailable_reason": None,
         },
         "discopy": {
@@ -107,6 +111,11 @@ FRAMEWORK_REGISTRY: Mapping[str, Dict[str, Any]] = MappingProxyType(
             "supports_multi_modality": True,
             "supports_multi_factor": True,
             "available": True,
+            # The DisCoPy translator draws categorical POMDP string diagrams
+            # (A/B/C/D/E boxes over discrete state counts); it has no
+            # linear-Gaussian diagram semantics, so continuous models are
+            # reported unsupported rather than drawn as a fake discrete model.
+            "supports_continuous": False,
             "unavailable_reason": None,
         },
         "pytorch": {
@@ -123,6 +132,7 @@ FRAMEWORK_REGISTRY: Mapping[str, Dict[str, Any]] = MappingProxyType(
             "supports_multi_modality": True,
             "supports_multi_factor": True,
             "available": False,
+            "supports_continuous": True,
             "unavailable_reason": (
                 "Intentionally excluded from pyproject.toml: PyTorch (torch) "
                 "transitively pulls GHSA-rrmf-rvhw-rf47 (unpatched vulnerability). "
@@ -143,6 +153,7 @@ FRAMEWORK_REGISTRY: Mapping[str, Dict[str, Any]] = MappingProxyType(
             "supports_multi_modality": True,
             "supports_multi_factor": True,
             "available": True,
+            "supports_continuous": True,
             "unavailable_reason": None,
         },
         "stan": {
@@ -159,6 +170,7 @@ FRAMEWORK_REGISTRY: Mapping[str, Dict[str, Any]] = MappingProxyType(
             "supports_multi_modality": True,
             "supports_multi_factor": True,
             "available": True,
+            "supports_continuous": True,
             "unavailable_reason": None,
         },
         "bnlearn": {
@@ -180,6 +192,7 @@ FRAMEWORK_REGISTRY: Mapping[str, Dict[str, Any]] = MappingProxyType(
             "supports_multi_modality": True,
             "supports_multi_factor": True,
             "available": False,
+            "supports_continuous": False,
             "unavailable_reason": (
                 "Intentionally excluded from pyproject.toml: bnlearn depends on "
                 "pgmpy which transitively pulls PyTorch (torch), exposing "
@@ -232,6 +245,8 @@ def get_pomdp_framework_configs() -> Dict[str, Dict[str, Any]]:
             "optional_matrices": deepcopy(spec["optional_matrices"]),
             "supports_multi_modality": bool(spec["supports_multi_modality"]),
             "supports_multi_factor": bool(spec["supports_multi_factor"]),
+            "supports_continuous": bool(spec.get("supports_continuous", False)),
+            "name": spec["name"],
         }
         for name, spec in FRAMEWORK_REGISTRY.items()
         if spec.get("pomdp_compatible", False)

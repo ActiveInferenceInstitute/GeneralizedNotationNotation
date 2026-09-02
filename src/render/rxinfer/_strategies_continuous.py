@@ -58,11 +58,13 @@ def _generate_continuous_code(
 #   x[t]  = F * x[t-1] + u[t-1] + N(0, Q)     ({num_states}-dim latent state)
 #   y[t]  = H * x[t]           + N(0, R)      ({num_obs}-dim observation)
 #
-# Control input u is a sequence of ZERO vectors: the continuous formulations
-# in these exemplars declare no continuous control policy (their discrete
-# stand-ins carry the action set), so the continuous dynamics run passively.
-    # That is a declared property of the model, not a stand-in — no EFE,
-# policy posterior, or action trace is emitted, because none is defined here.
+# Control input u: when the GNN declares goal_mean + control_gain the
+# forward simulation closes the loop on beliefs, u[t] = gain * (goal - mu[t])
+# with mu[t] the online Kalman-filtered mean (same contract as the JAX /
+# NumPyro / PyTorch / Stan continuous scripts); otherwise u is all zeros and
+# the dynamics run passively. infer() then conditions on the known controls.
+# No EFE, policy posterior, or discrete action trace is emitted — none is
+# defined for a linear-Gaussian model.
 #
 # continuous_pomdp_model is fully conjugate, so infer() needs neither
 # constraints nor initialization and the free-energy trace is flat after one
@@ -148,6 +150,38 @@ end
 return F, H, Q, R, D_mean, D_cov
 end
 
+# Optional closed-loop control declared by the GNN file (goal_mean + control_gain).
+function load_control_parameters()
+initial = GNN_SPEC["initialparameterization"]
+if !(haskey(initial, "goal_mean") && haskey(initial, "control_gain"))
+    return nothing, 0.0
+end
+goal = Float64.(collect(initial["goal_mean"]))
+if length(goal) != NUM_STATES
+    error("goal_mean length $(length(goal)) does not match expected $NUM_STATES")
+end
+gain_raw = initial["control_gain"]
+while isa(gain_raw, AbstractVector) && length(gain_raw) == 1
+    gain_raw = gain_raw[1]
+end
+return goal, Float64(gain_raw)
+end
+
+# One Kalman predict/update step (Joseph-form covariance update).
+function kalman_step(mu, P, y, F, H, Q, R, u_prev, first)
+if first
+    mu_pred, P_pred = mu, P
+else
+    mu_pred = F * mu + u_prev
+    P_pred = F * P * F' + Q
+end
+S = H * P_pred * H' + R
+K = (P_pred * H') / S
+mu_new = mu_pred + K * (y - H * mu_pred)
+IKH = I - K * H
+return mu_new, IKH * P_pred * IKH' + K * R * K'
+end
+
 # Take the LAST variational iteration's per-timestep marginals and fail loud
 # if the chain length does not match the simulated horizon.
 function last_iteration_marginals(posteriors, label)
@@ -162,24 +196,41 @@ end
 function run_simulation()
 Random.seed!(RANDOM_SEED)
 F, H, Q, R, D_mean, D_cov = load_continuous_parameters()
+goal_mean, control_gain = load_control_parameters()
+closed_loop = goal_mean !== nothing
 
 # --- Phase 1: Forward simulation of the true continuous trajectory ---
 # Sampled from the generative model itself, so the posterior means can be
-# scored against a known ground truth (rmse_vs_true below).
+# scored against a known ground truth (rmse_vs_true below). When the GNN
+# declares a goal, the control applied at each transition is computed from
+# the online Kalman-filtered belief (closed loop on beliefs).
 u_seq = [zeros(Float64, NUM_STATES) for _ in 1:TIME_STEPS]
 process_noise = MvNormal(zeros(NUM_STATES), Q)
 observation_noise = MvNormal(zeros(NUM_OBSERVATIONS), R)
 
 true_states_continuous = Vector{{Vector{{Float64}}}}()
 observations_continuous = Vector{{Vector{{Float64}}}}()
+filtered_means = Vector{{Vector{{Float64}}}}()
 
 x = rand(MvNormal(D_mean, D_cov))
+y = H * x + rand(observation_noise)
 push!(true_states_continuous, copy(x))
-push!(observations_continuous, H * x + rand(observation_noise))
+push!(observations_continuous, y)
+mu_f, P_f = kalman_step(D_mean, D_cov, y, F, H, Q, R, zeros(NUM_STATES), true)
+push!(filtered_means, copy(mu_f))
+if closed_loop
+    u_seq[1] = control_gain .* (goal_mean .- mu_f)
+end
 for t in 2:TIME_STEPS
     x = F * x + u_seq[t-1] + rand(process_noise)
+    y = H * x + rand(observation_noise)
     push!(true_states_continuous, copy(x))
-    push!(observations_continuous, H * x + rand(observation_noise))
+    push!(observations_continuous, y)
+    mu_f, P_f = kalman_step(mu_f, P_f, y, F, H, Q, R, u_seq[t-1], false)
+    push!(filtered_means, copy(mu_f))
+    if closed_loop
+        u_seq[t] = control_gain .* (goal_mean .- mu_f)
+    end
 end
 
 # --- Phase 2: Real RxInfer inference (no fallback, no constraints) ---
@@ -276,6 +327,9 @@ return Dict(
     "posterior_cov" => posterior_cov,
     "true_states_continuous" => true_states_continuous,
     "observations_continuous" => observations_continuous,
+    "controls" => u_seq,
+    "kalman_filter_means" => filtered_means,
+    "control_mode" => closed_loop ? "closed_loop_proportional" : "passive",
     # Discrete-schema slots stay EMPTY: this model declares no discrete
     # observation indices, no action set, and therefore no expected free
     # energy or policy posterior. Emitting zeros here would be fabricated
@@ -318,7 +372,7 @@ return Dict(
         "uses_real_rxinfer" => uses_real_rxinfer,
         "model_kind" => MODEL_KIND,
         "parameterization" => "linear_gaussian_state_space",
-        "control_input" => "passive_zero_vector",
+        "control_input" => closed_loop ? "closed_loop_proportional_on_beliefs" : "passive_zero_vector",
         "rmse_vs_true" => rmse_vs_true
     ),
     "metrics" => Dict(

@@ -419,6 +419,7 @@ def process_render(
         total_framework_successes = 0
         total_framework_attempts = 0
         failed_framework_renderings: list[dict[str, str]] = []
+        unsupported_framework_renderings: list[dict[str, str]] = []
 
         if pomdp_available:
             # Use POMDP-aware processing
@@ -501,6 +502,15 @@ def process_render(
                     for framework_name, result in processing_result[
                         "framework_results"
                     ].items():
+                        if result.get("unsupported"):
+                            unsupported_framework_renderings.append(
+                                {
+                                    "file": str(gnn_file),
+                                    "framework": framework_name,
+                                    "message": str(result.get("message", "")),
+                                }
+                            )
+                            continue
                         total_framework_attempts += 1
                         if result["success"]:
                             total_framework_successes += 1
@@ -566,6 +576,10 @@ def process_render(
             list(prior.get("failed_framework_renderings") or [])
             + failed_framework_renderings
         )
+        merged_unsupported_renderings = (
+            list(prior.get("unsupported_framework_renderings") or [])
+            + unsupported_framework_renderings
+        )
 
         summary: dict[str, Any] = {
             "timestamp": datetime.now().isoformat(),
@@ -590,6 +604,7 @@ def process_render(
                 "pomdp_processing_available": pomdp_available,
             },
             "failed_framework_renderings": merged_failed_renderings,
+            "unsupported_framework_renderings": merged_unsupported_renderings,
             "file_results": merged_results,
         }
 

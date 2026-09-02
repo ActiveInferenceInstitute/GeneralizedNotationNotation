@@ -57,6 +57,9 @@ class POMDPStateSpace:
     passive_model: bool = False
     adapter_notes: Optional[List[str]] = None
     initial_parameterization: Optional[Dict[str, Any]] = None
+    # "discrete" (categorical POMDP/HMM) or "continuous" (linear-Gaussian
+    # state-space model declared via F/H/Q/R + prior_mean/prior_cov).
+    model_kind: str = "discrete"
 
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary representation."""
@@ -86,6 +89,7 @@ class POMDPStateSpace:
             "passive_model": self.passive_model,
             "adapter_notes": self.adapter_notes,
             "initial_parameterization": self.initial_parameterization,
+            "model_kind": self.model_kind,
         }
 
 
@@ -154,12 +158,26 @@ class POMDPExtractor:
                 sections.get("ModelParameters", "")
             )
 
-            # Extract dimensions (now with access to sections and initial_params for better inference)
-            num_states, num_observations, num_actions, num_timesteps = (
-                self._extract_dimensions(
-                    state_space_info, sections=sections, initial_params=initial_params
+            # Continuous-state (linear-Gaussian) models declare F/H/Q/R and a
+            # Gaussian prior instead of categorical A/B/C/D. Their dimensions
+            # come from the system matrices, never from a discrete stand-in.
+            is_continuous = self._is_continuous_model(gnn_section, initial_params)
+
+            if is_continuous:
+                num_states, num_observations, num_actions, num_timesteps = (
+                    self._extract_continuous_dimensions(
+                        state_space_info, initial_params, model_parameters
+                    )
                 )
-            )
+            else:
+                # Extract dimensions (now with access to sections and initial_params for better inference)
+                num_states, num_observations, num_actions, num_timesteps = (
+                    self._extract_dimensions(
+                        state_space_info,
+                        sections=sections,
+                        initial_params=initial_params,
+                    )
+                )
 
             # Parse connections
             connections = self._parse_connections(sections.get("Connections", ""))
@@ -169,7 +187,10 @@ class POMDPExtractor:
                 sections.get("ActInfOntologyAnnotation", "")
             )
 
-            matrices = self._collect_matrix_parameters(initial_params)
+            if is_continuous:
+                matrices = self._collect_continuous_parameters(initial_params)
+            else:
+                matrices = self._collect_matrix_parameters(initial_params)
             matrix_provenance = self._build_matrix_provenance(matrices)
             state_factors = self._describe_variables(
                 state_space_info.get("state_variables"), "state_factor"
@@ -180,21 +201,31 @@ class POMDPExtractor:
             control_factors = self._describe_variables(
                 state_space_info.get("action_variables"), "control_factor"
             )
-            passive_model = self._is_passive_model(
-                model_parameters=model_parameters,
-                initial_params=initial_params,
-                num_actions=num_actions,
-                connections=connections,
-            )
+            if is_continuous:
+                passive_model = not (
+                    "goal_mean" in initial_params and "control_gain" in initial_params
+                )
+            else:
+                passive_model = self._is_passive_model(
+                    model_parameters=model_parameters,
+                    initial_params=initial_params,
+                    num_actions=num_actions,
+                    connections=connections,
+                )
 
-            A_matrix = initial_params.get("A")
-            B_matrix = initial_params.get("B")
-            C_vector = initial_params.get("C")
-            D_vector = initial_params.get("D")
-            E_vector = initial_params.get("E")
+            A_matrix = None if is_continuous else initial_params.get("A")
+            B_matrix = None if is_continuous else initial_params.get("B")
+            C_vector = None if is_continuous else initial_params.get("C")
+            D_vector = None if is_continuous else initial_params.get("D")
+            E_vector = None if is_continuous else initial_params.get("E")
             adapter_notes: list[Any] = []
 
-            if C_vector is None and passive_model and num_observations > 0:
+            if (
+                not is_continuous
+                and C_vector is None
+                and passive_model
+                and num_observations > 0
+            ):
                 C_vector = [0.0] * num_observations
                 matrices["C"] = C_vector
                 matrix_provenance["C"] = {
@@ -233,10 +264,12 @@ class POMDPExtractor:
                 passive_model=passive_model,
                 adapter_notes=adapter_notes,
                 initial_parameterization=initial_params,
+                model_kind="continuous" if is_continuous else "discrete",
             )
 
-            # Validate if strict validation enabled
-            if self.strict_validation:
+            # Validate if strict validation enabled (discrete contract only —
+            # continuous models are shape-checked in _extract_continuous_dimensions)
+            if self.strict_validation and not is_continuous:
                 validation_result = self._validate_pomdp_structure(pomdp_space)
                 if not validation_result["valid"]:
                     self.logger.warning(
@@ -516,6 +549,74 @@ class POMDPExtractor:
             else:
                 params[key] = clean_value
         return params
+
+    CONTINUOUS_REQUIRED_KEYS = ("F", "H", "Q", "R", "prior_mean", "prior_cov")
+    CONTINUOUS_OPTIONAL_KEYS = ("goal_mean", "control_gain")
+
+    def _is_continuous_model(
+        self, gnn_section: Optional[str], initial_params: Dict[str, Any]
+    ) -> bool:
+        """Continuous when the section says so or the full LGSSM block is declared."""
+        if gnn_section and "continuous" in gnn_section.lower():
+            return True
+        return all(key in initial_params for key in ("F", "H", "Q", "R"))
+
+    def _extract_continuous_dimensions(
+        self,
+        state_space_info: Dict[str, Any],
+        initial_params: Dict[str, Any],
+        model_parameters: Dict[str, Any],
+    ) -> Tuple[int, int, int, Optional[int]]:
+        """Dimensions of a linear-Gaussian model: n from F, m from H."""
+        missing = [k for k in self.CONTINUOUS_REQUIRED_KEYS if k not in initial_params]
+        if missing:
+            raise ValueError(
+                f"continuous model is missing linear-Gaussian parameters {missing}"
+            )
+        f_shape = self._nested_shape(initial_params["F"])
+        h_shape = self._nested_shape(initial_params["H"])
+        if len(f_shape) != 2 or f_shape[0] != f_shape[1]:
+            raise ValueError(f"F must be a square matrix, got shape {f_shape}")
+        if len(h_shape) != 2 or h_shape[1] != f_shape[0]:
+            raise ValueError(
+                f"H must have shape [m, n] with n={f_shape[0]}, got {h_shape}"
+            )
+        num_states, num_observations = f_shape[0], h_shape[0]
+        for key, expected in (
+            ("Q", [num_states, num_states]),
+            ("R", [num_observations, num_observations]),
+            ("prior_cov", [num_states, num_states]),
+            ("prior_mean", [num_states]),
+        ):
+            shape = self._nested_shape(initial_params[key])
+            if shape != expected:
+                raise ValueError(f"{key} has shape {shape}, expected {expected}")
+        # One continuous control channel when a control variable is declared.
+        num_actions = 1 if state_space_info.get("action_variables") else 0
+        num_timesteps: Optional[int] = None
+        raw_t = model_parameters.get("num_timesteps")
+        if raw_t is not None:
+            try:
+                num_timesteps = int(raw_t)
+            except (TypeError, ValueError):
+                num_timesteps = None
+        return num_states, num_observations, num_actions, num_timesteps
+
+    def _collect_continuous_parameters(self, params: Dict[str, Any]) -> Dict[str, Any]:
+        """Return the linear-Gaussian parameter block (no discrete stand-in)."""
+        keys = self.CONTINUOUS_REQUIRED_KEYS + self.CONTINUOUS_OPTIONAL_KEYS
+        out: Dict[str, Any] = {}
+        for key in keys:
+            if key in params:
+                value = params[key]
+                if key == "control_gain":
+                    # scalar declared as {(v)} parses to [v]
+                    if isinstance(value, (list, tuple)):
+                        while isinstance(value, (list, tuple)) and len(value) == 1:
+                            value = value[0]
+                    value = float(value)
+                out[key] = value
+        return out
 
     def _collect_matrix_parameters(self, params: Dict[str, Any]) -> Dict[str, Any]:
         """Return all Active Inference matrices/vectors without collapsing factors."""

@@ -72,6 +72,18 @@ def _mixed_radix_digit(action: int, radices: List[int], index: int) -> int:
     return 0
 
 
+def _continuous_shape(value: Any) -> List[int]:
+    """Best-effort nested shape for continuous parameter values (scalars → [])."""
+    shape: List[int] = []
+    current = value
+    while isinstance(current, (list, tuple)):
+        shape.append(len(current))
+        if not current:
+            break
+        current = current[0]
+    return shape
+
+
 def _safe_output_stem(value: Any, fallback: str = "pomdp_model") -> str:
     stem = re.sub(r"[^A-Za-z0-9_.-]+", "_", str(value)).strip("._")
     if not stem:
@@ -212,6 +224,8 @@ class POMDPRenderProcessor:
             "frameworks_requested": frameworks,
             "frameworks_processed": [],
             "frameworks_failed": [],
+            "frameworks_unsupported": [],
+            "model_kind": getattr(pomdp_space, "model_kind", "discrete"),
         }
 
         self.logger.info(
@@ -230,6 +244,11 @@ class POMDPRenderProcessor:
                 if framework_result["success"]:
                     processing_summary["frameworks_processed"].append(framework)
                     self.logger.info(f"✅ {framework}: {framework_result['message']}")
+                elif framework_result.get("unsupported"):
+                    processing_summary["frameworks_unsupported"].append(framework)
+                    self.logger.info(
+                        f"⏭️ {framework}: unsupported — {framework_result['message']}"
+                    )
                 else:
                     processing_summary["frameworks_failed"].append(framework)
                     self.logger.error(f"❌ {framework}: {framework_result['message']}")
@@ -245,7 +264,11 @@ class POMDPRenderProcessor:
                 }
                 processing_summary["frameworks_failed"].append(framework)
 
-        total_frameworks = len(frameworks)
+        # Frameworks that cannot represent this model kind (e.g. a categorical
+        # backend given a continuous-state model) are reported as unsupported
+        # and excluded from the success denominator: neither rendered nor failed.
+        unsupported_count = len(processing_summary["frameworks_unsupported"])
+        total_frameworks = len(frameworks) - unsupported_count
         successful_frameworks = len(processing_summary["frameworks_processed"])
         success_rate = (
             successful_frameworks / total_frameworks if total_frameworks > 0 else 0
@@ -306,9 +329,16 @@ class POMDPRenderProcessor:
             pomdp_space, framework
         )
         if not validation_result["compatible"]:
+            unsupported = bool(validation_result.get("unsupported"))
             return {
                 "success": False,
-                "message": f"POMDP not compatible with {framework}: {validation_result['reason']}",
+                "unsupported": unsupported,
+                "status": "unsupported" if unsupported else "failed",
+                "message": (
+                    validation_result["reason"]
+                    if unsupported
+                    else f"POMDP not compatible with {framework}: {validation_result['reason']}"
+                ),
                 "output_files": [],
                 "warnings": validation_result.get("warnings", []),
             }
@@ -379,6 +409,31 @@ class POMDPRenderProcessor:
         """
         config = self.framework_configs[framework]
         warnings: list[Any] = []
+
+        if getattr(pomdp_space, "model_kind", "discrete") == "continuous":
+            if not config.get("supports_continuous", False):
+                return {
+                    "compatible": False,
+                    "unsupported": True,
+                    "reason": (
+                        f"continuous-state model: {config.get('name', framework)} "
+                        "supports discrete POMDPs only"
+                    ),
+                    "warnings": warnings,
+                }
+            matrices = getattr(pomdp_space, "matrices", None) or {}
+            missing = [
+                key
+                for key in ("F", "H", "Q", "R", "prior_mean", "prior_cov")
+                if key not in matrices
+            ]
+            if missing:
+                return {
+                    "compatible": False,
+                    "reason": f"Missing continuous parameters: {missing}",
+                    "warnings": warnings,
+                }
+            return {"compatible": True, "reason": None, "warnings": warnings}
 
         # Check required matrices are present, allowing factored matrices when
         # they can be composed into a canonical execution contract.
@@ -851,6 +906,11 @@ class POMDPRenderProcessor:
             )
             parsed_sim_params = {}
 
+        if getattr(pomdp_space, "model_kind", "discrete") == "continuous":
+            return self._continuous_pomdp_to_gnn_spec(
+                pomdp_space, timesteps=timesteps, simulation_params=parsed_sim_params
+            )
+
         initial_parameterization, matrix_provenance, canonical_model_parameters = (
             self._build_canonical_initialparameterization(pomdp_space)
         )
@@ -929,6 +989,85 @@ class POMDPRenderProcessor:
         if pomdp_space.ontology_mapping:
             gnn_spec["ontology_mapping"] = pomdp_space.ontology_mapping
 
+        return gnn_spec
+
+    def _continuous_pomdp_to_gnn_spec(
+        self,
+        pomdp_space: "POMDPStateSpace",
+        *,
+        timesteps: Optional[int],
+        simulation_params: Any,
+    ) -> Dict[str, Any]:
+        """Spec for a linear-Gaussian model: F/H/Q/R + prior passed verbatim.
+
+        No canonical A/B/C/D is built — deriving categorical matrices from a
+        continuous system would fabricate a stand-in.
+        """
+        matrices = dict(getattr(pomdp_space, "matrices", None) or {})
+        raw_initial = getattr(pomdp_space, "initial_parameterization", None) or {}
+        raw_model_parameters = dict(
+            getattr(pomdp_space, "model_parameters", None) or {}
+        )
+        model_parameters: dict[str, Any] = {
+            **raw_model_parameters,
+            "num_states": pomdp_space.num_states,
+            "num_observations": pomdp_space.num_observations,
+            "num_hidden_states": pomdp_space.num_states,
+            "num_obs": pomdp_space.num_observations,
+            "num_actions": pomdp_space.num_actions,
+            "passive_model": getattr(pomdp_space, "passive_model", True),
+            "simulation_params": simulation_params,
+            "dt": float(raw_model_parameters.get("dt", 1.0)),
+            "random_seed": int(
+                raw_model_parameters.get(
+                    "random_seed", raw_model_parameters.get("seed", 42)
+                )
+            ),
+        }
+        if timesteps:
+            model_parameters["num_timesteps"] = int(timesteps)
+        provenance = {
+            key: {
+                "source": "InitialParameterization",
+                "shape": _continuous_shape(value),
+                "derived": False,
+            }
+            for key, value in matrices.items()
+        }
+        preserved = {k: v for k, v in raw_initial.items() if k not in matrices}
+        gnn_spec: dict[str, Any] = {
+            "name": pomdp_space.model_name or "Continuous_Model",
+            "model_name": pomdp_space.model_name or "Continuous_Model",
+            "description": pomdp_space.model_annotation or "Continuous LGSSM model",
+            "gnn_section": getattr(pomdp_space, "gnn_section", None),
+            "model_kind": "continuous",
+            "model_parameters": model_parameters,
+            "initialparameterization": {**matrices, **preserved},
+            "initial_parameterization": {**matrices, **preserved},
+            "structured_pomdp": {
+                "matrices": matrices,
+                "matrix_provenance": provenance,
+                "state_factors": [],
+                "observation_modalities": [],
+                "control_factors": getattr(pomdp_space, "control_factors", None) or [],
+                "adapter_notes": getattr(pomdp_space, "adapter_notes", None) or [],
+            },
+            "matrix_provenance": provenance,
+            "canonical_pomdp_schema": "continuous_lgssm_v1",
+            "variables": [],
+            "connections": [],
+        }
+        for attr in ("state_variables", "observation_variables", "action_variables"):
+            values = getattr(pomdp_space, attr, None)
+            if values:
+                gnn_spec["variables"].extend(values)
+        if pomdp_space.connections:
+            gnn_spec["connections"] = [
+                {"source": c[0], "relation": c[1], "target": c[2]}
+                for c in pomdp_space.connections
+            ]
+        if pomdp_space.ontology_mapping:
+            gnn_spec["ontology_mapping"] = pomdp_space.ontology_mapping
         return gnn_spec
 
     def _call_framework_renderer(
@@ -1307,20 +1446,19 @@ class POMDPRenderProcessor:
     ) -> Dict[str, Any]:
         """Call Stan renderer."""
         try:
-            from .stan import render_stan
+            from .stan.stan_renderer import render_gnn_to_stan
 
             model_name = gnn_spec.get("name", "pomdp_model")
-            output_file = output_dir / f"{_safe_output_stem(model_name)}_stan.stan"
-            code = render_stan(
-                list(gnn_spec.get("variables", [])),
-                list(gnn_spec.get("connections", [])),
-                model_name=model_name,
+            # The Python driver is the executable artifact Step 12 discovers;
+            # the .stan program sits beside it with the same stem.
+            output_file = output_dir / f"{_safe_output_stem(model_name)}_stan.py"
+            success, message, artifacts = render_gnn_to_stan(
+                gnn_spec, output_file, kwargs or None
             )
-            output_file.write_text(code, encoding="utf-8")
             return {
-                "success": True,
-                "message": "Stan model generated",
-                "artifacts": [str(output_file)],
+                "success": success,
+                "message": message,
+                "artifacts": artifacts,
                 "warnings": [],
             }
         except ImportError:
@@ -1346,6 +1484,11 @@ class POMDPRenderProcessor:
         warnings: list[Any] = []
         initial_params = gnn_spec.get("initialparameterization", {})
         config = self.framework_configs[framework]
+
+        if gnn_spec.get("model_kind") == "continuous":
+            # Linear-Gaussian contract: compatibility (incl. the F/H/Q/R
+            # presence check) was already decided per framework upstream.
+            return {"valid": True, "critical": False, "warnings": warnings}
 
         # Check required matrices
         missing_required: list[Any] = []

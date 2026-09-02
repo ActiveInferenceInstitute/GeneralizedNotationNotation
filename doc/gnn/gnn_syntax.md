@@ -158,36 +158,49 @@ than one family at once.
 | Dirichlet priors | `dirichlet_A` … `dirichlet_E` | Pseudo-counts for a matrix treated as a latent variable rather than a fixed constant. |
 | Per-level / per-agent | `A_level1`, `B_level2`, …; `A_agent1`, `B_agent2`, … | Suffixed copies of the POMDP matrices, one set per hierarchy level or per agent. |
 
-#### Dual parameterization
+#### Continuous-state (linear-Gaussian) files
 
-A file may declare **both** the discrete matrices and the linear-Gaussian
-matrices. Each backend reads the family it can execute: the discrete
-matrices drive the categorical backends (PyMDP and friends), while the
-`F`/`H`/`Q`/`R` block drives native linear-Gaussian rendering. The three
-exemplars under `input/gnn_files/continuous/` are written this way. Keep the
-two descriptions of the same system consistent — nothing cross-validates them.
+A continuous-state model declares **only** the linear-Gaussian family — no
+discrete `A`/`B`/`C`/`D` stand-in. The three exemplars under
+`input/gnn_files/continuous/` are written this way:
 
-Dual-parameterized files provoke validator findings that are expected and
-non-fatal, because the linear-Gaussian keys are deliberately not mirrored
-into `StateSpaceBlock`. Running the matrix-dimension check over
-`continuous/continuous_navigation.md` reports:
+```gnn
+## GNNSection
+ActInfContinuous            # "Continuous" in the section → ModelKind.CONTINUOUS
 
-```text
-GNN-E002 | Matrix 'F': declared shape 1 but parameterization has shape 2x2
-GNN-W003 | Parameterization for undeclared variable 'H'
-GNN-W003 | Parameterization for undeclared variable 'Q'
-GNN-W003 | Parameterization for undeclared variable 'R'
-GNN-W003 | Parameterization for undeclared variable 'prior_mean'
-GNN-W003 | Parameterization for undeclared variable 'prior_cov'
+## StateSpaceBlock
+x[2,1,type=float]           # continuous latent state
+y[2,1,type=float]           # continuous observation
+u[2,1,type=float]           # control input added to the state (optional)
+F[2,2,type=float]  H[2,2,type=float]  Q[2,2,type=float]  R[2,2,type=float]
+prior_mean[2,type=float]  prior_cov[2,2,type=float]
+goal_mean[2,type=float]  control_gain[1,type=float]   # optional closed loop
+
+## InitialParameterization
+F={(1.0,0.0),(0.0,1.0)}  …  prior_mean={(0.0,0.0)}  control_gain={(0.3)}
+
+## ModelParameters
+num_timesteps: 15
+dt: 0.1
+random_seed: 42
 ```
 
-The `GNN-E002` comes from a name collision: `F` means two unrelated things by
-convention. In `StateSpaceBlock`, `F[1,type=float]` is the scalar Variational
-Free Energy readout; in `InitialParameterization`, `F={…}` is the
-linear-Gaussian state-transition matrix. Only the
-`InitialParameterization` occurrence participates in model-kind detection.
-Do not "fix" these findings by deleting the linear-Gaussian block — that
-would silently demote the model from CONTINUOUS to FLAT.
+Generative model: `x_1 ~ N(prior_mean, prior_cov)`, `x_t = F x_{t-1} + u_{t-1}
++ N(0, Q)`, `y_t = H x_t + N(0, R)`; when `goal_mean` and `control_gain` are
+present the controller closes the loop on beliefs, `u_t = control_gain ·
+(goal_mean − μ_t)`, otherwise the dynamics run passively. Every symbol used in
+`InitialParameterization` is declared in `StateSpaceBlock`, so the
+matrix-dimension check reports no findings. The scalar Variational Free Energy
+readout `F[1]` used by discrete files is not declared in continuous files —
+`F` is the state-transition matrix here.
+
+Framework support follows from the state space: JAX, NumPyro, PyTorch, Stan
+and RxInfer.jl render and execute continuous models natively (Kalman filter;
+NumPyro and Stan additionally run NUTS over the same model). PyMDP,
+ActiveInference.jl, DisCoPy and bnlearn are categorical and report the model as
+**unsupported** ("continuous-state model: … supports discrete POMDPs only") —
+a distinct status from a failure, excluded from render success rates and from
+Step 12 execution.
 
 #### Dirichlet pseudo-counts
 
