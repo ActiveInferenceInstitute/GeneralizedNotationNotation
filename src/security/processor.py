@@ -813,7 +813,18 @@ def _julia_meta_parseall(content: str) -> Optional[tuple[bool, str]]:
     stdout = (proc.stdout or "").strip()
     if proc.returncode == 0 and "GNN_PARSE_OK" in stdout:
         return True, ""
-    message = (stdout or (proc.stderr or "")).strip()
+    if "GNN_PARSE_FAIL" not in stdout:
+        # Julia is on PATH but the probe itself did not run (e.g. a juliaup
+        # launcher with no installed toolchain, a broken depot). That is an
+        # environment problem, not malformed rendered code — degrade to the
+        # advisory regex sweep instead of blocking every Julia script.
+        logger.debug(
+            "Julia parse probe did not run (rc=%s): %s",
+            proc.returncode,
+            ((proc.stderr or "") + stdout)[-300:],
+        )
+        return None
+    message = stdout.strip()
     # Keep the message bounded for findings context.
     return False, message[-400:]
 
