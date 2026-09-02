@@ -53,6 +53,25 @@ SIMPLE_MDP = PROJECT_ROOT / "input" / "gnn_files" / "discrete" / "simple_mdp.md"
 JULIA = shutil.which("julia")
 
 
+def _julia_projects_ready() -> bool:
+    """Julia on PATH is not enough: the committed project environments must be
+    instantiated (CI images ship julia without RxInfer/ActiveInference.jl)."""
+    if JULIA is None:
+        return False
+    import logging as _logging
+
+    from execute.processor import check_julia_dependencies
+
+    return bool(
+        check_julia_dependencies(
+            False, _logging.getLogger(__name__), ["rxinfer", "activeinference_jl"]
+        )
+    )
+
+
+JULIA_READY = _julia_projects_ready()
+
+
 def _results(beliefs: list[list[float]], *, all_valid: bool = True) -> dict:
     """Build a minimal results payload in the shape the frameworks emit."""
     return {
@@ -332,7 +351,10 @@ def test_missing_gnn_file_raises(tmp_path: Path) -> None:
 # Julia's first-run precompile may take additional time, hence the explicit timeout.
 
 
-@pytest.mark.skipif(JULIA is None, reason="julia is not on PATH")
+@pytest.mark.skipif(
+    not JULIA_READY,
+    reason="julia or the committed Julia project packages are unavailable",
+)
 @pytest.mark.timeout(900)
 def test_live_cross_framework_comparison(tmp_path: Path) -> None:
     """The full pipeline renders, runs, and compares the simple_mdp exemplar."""

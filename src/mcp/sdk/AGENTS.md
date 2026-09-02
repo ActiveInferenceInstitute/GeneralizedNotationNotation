@@ -23,4 +23,4 @@ sdk/
 
 See [mcp/AGENTS.md](../AGENTS.md) for the full MCP architecture.
 
-**Version**: 3.1.0
+**Version**: 3.2.0

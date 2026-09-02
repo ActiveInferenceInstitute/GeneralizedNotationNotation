@@ -368,7 +368,9 @@ class TestKroneckerPipelineExecutor:
         assert summary["joint_materialized"] is False
         assert summary["all_valid"] is True
 
-    def test_executor_dispatches_binary_vs_generic_builders(self, tmp_path: Path) -> None:
+    def test_executor_dispatches_binary_vs_generic_builders(
+        self, tmp_path: Path
+    ) -> None:
         from execute.jax.kronecker_executor import (
             _build_factor_model,
             execute_kronecker_factorized,

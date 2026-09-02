@@ -77,7 +77,9 @@ def test_preflight_report_to_markdown_reports_success() -> None:
 
 def test_preflight_report_to_markdown_lists_issues() -> None:
     report = preflight.PreflightReport()
-    report.add_issue("dependency", "error", "Package not found: foo", fix="pip install foo")
+    report.add_issue(
+        "dependency", "error", "Package not found: foo", fix="pip install foo"
+    )
     md = report.to_markdown()
     assert "🔴" in md
     assert "1 failed" in md

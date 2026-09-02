@@ -89,7 +89,9 @@ def test_gui2_passive_hmm_does_not_gain_undeclared_preference_vector() -> None:
     assert state["C"]["declared"] is False
 
     a_data, b_data, c_data, d_data, b_slice = _editor_tables(state)
-    _, exported = _generate_editor_gnn(state, a_data, b_data, c_data, d_data, b_slice, model)
+    _, exported = _generate_editor_gnn(
+        state, a_data, b_data, c_data, d_data, b_slice, model
+    )
 
     state_space = exported.split("## StateSpaceBlock", 1)[1].split("## Connections", 1)[
         0

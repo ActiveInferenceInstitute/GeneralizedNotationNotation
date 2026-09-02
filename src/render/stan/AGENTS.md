@@ -5,7 +5,7 @@
 | File | Role |
 |---|---|
 | `stan_renderer.py` | `render_gnn_to_stan(gnn_spec, output_path, options)` — writes `<stem>.stan` + `<stem>.py` driver; branches on `render.continuous_common.is_continuous_spec` |
-| `__init__.py` | exports `render_gnn_to_stan`, legacy `render_stan` |
+| `__init__.py` | exports `render_gnn_to_stan`; `render_stan` (declaration-only sketch) |
 
 ## Contract
 
@@ -33,6 +33,6 @@
 
 ## Tests
 
-`src/tests/render/test_render_stan.py` — legacy sketch tests plus discrete and
+`src/tests/render/test_render_stan.py` — structural-sketch tests plus discrete and
 continuous program generation; compile checks run only when CmdStan is
 installed.

@@ -30,6 +30,23 @@ SIMPLE_MDP = REPO_ROOT / "input" / "gnn_files" / "discrete" / "simple_mdp.md"
 JULIA = shutil.which("julia")
 
 
+def _julia_projects_ready() -> bool:
+    """Julia on PATH is not enough: the committed project environments must be
+    instantiated (CI images ship julia without RxInfer/ActiveInference.jl)."""
+    if JULIA is None:
+        return False
+    import logging as _logging
+
+    from execute.processor import check_julia_dependencies
+
+    return bool(
+        check_julia_dependencies(False, _logging.getLogger(__name__), ["rxinfer"])
+    )
+
+
+JULIA_READY = _julia_projects_ready()
+
+
 def _render_simple_mdp(tmp_path: Path) -> Path:
     """Render the small simple_mdp exemplar to a Julia script and return it."""
     assert SIMPLE_MDP.exists(), f"missing exemplar: {SIMPLE_MDP}"
@@ -80,7 +97,10 @@ def test_generated_source_contains_viz_and_log_blocks(tmp_path: Path) -> None:
 # Runs when Julia is on PATH.
 
 
-@pytest.mark.skipif(JULIA is None, reason="julia is not on PATH")
+@pytest.mark.skipif(
+    not JULIA_READY,
+    reason="julia or the committed Julia project packages are unavailable",
+)
 def test_rendered_script_emits_results_log_and_png(tmp_path: Path) -> None:
     output_path = _render_simple_mdp(tmp_path)
 

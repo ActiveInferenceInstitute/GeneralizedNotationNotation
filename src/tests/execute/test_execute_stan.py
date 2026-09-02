@@ -40,7 +40,9 @@ def test_find_stan_scripts_only_matches_drivers_in_stan_dirs(tmp_path: Path) -> 
     assert found == [Path(arts[0])]
 
 
-def test_render_summary_contract_treats_stan_program_as_companion(tmp_path: Path) -> None:
+def test_render_summary_contract_treats_stan_program_as_companion(
+    tmp_path: Path,
+) -> None:
     """The .stan program beside the driver is not a 'missing executable script'."""
     import json
     import logging

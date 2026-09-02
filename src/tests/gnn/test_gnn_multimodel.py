@@ -20,16 +20,7 @@ from gnn.multimodel import parse_multimodel, split_models  # noqa: E402
 
 def _single_model_content() -> str:
     """A single GNN model with declared variables and a connection."""
-    return (
-        "# Test Model\n"
-        "\n"
-        "## StateSpaceBlock\n"
-        "x[2]\n"
-        "y[1]\n"
-        "\n"
-        "## Connections\n"
-        "x>y\n"
-    )
+    return "# Test Model\n\n## StateSpaceBlock\nx[2]\ny[1]\n\n## Connections\nx>y\n"
 
 
 def _multi_model_content() -> str:

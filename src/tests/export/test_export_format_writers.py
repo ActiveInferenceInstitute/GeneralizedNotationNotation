@@ -134,7 +134,9 @@ def test_graph_exports_write_when_networkx_available(tmp_path: Path) -> None:
     assert "adjacency" in data
 
 
-def test_graph_exports_fail_closed_without_networkx(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+def test_graph_exports_fail_closed_without_networkx(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
     # Force the HAS_NETWORKX flag to False to pin the documented fail-closed path.
     import export.format_exporters as fe
 
@@ -147,7 +149,6 @@ def test_graph_exports_fail_closed_without_networkx(tmp_path: Path, monkeypatch:
     assert ok is False
     ok, message = export_to_json_adjacency_list(model, str(tmp_path / "x.json"))
     assert ok is False
-
 
 
 def test_export_gnn_files_writes_all_formats(tmp_path: Path) -> None:

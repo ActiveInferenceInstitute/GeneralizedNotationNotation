@@ -29,9 +29,7 @@ _VALID_GNN = (
 )
 
 _INVALID_GNN = (
-    "## GNNVersionAndFlags\nversion=1\n"
-    "## ModelName\ntest_model\n"
-    "## Connections\ns->o\n"
+    "## GNNVersionAndFlags\nversion=1\n## ModelName\ntest_model\n## Connections\ns->o\n"
 )
 
 
@@ -47,9 +45,7 @@ class TestDefaultCallback:
         assert "valid" in captured
 
     @pytest.mark.unit
-    def test_invalid_file_reports_issues(
-        self, tmp_path: Path, capsys: Any
-    ) -> None:
+    def test_invalid_file_reports_issues(self, tmp_path: Path, capsys: Any) -> None:
         path = tmp_path / "bad.gnn"
         path.write_text(_INVALID_GNN)
         GNNWatcher._default_callback(path, _INVALID_GNN)
@@ -66,7 +62,9 @@ class TestDebouncedFire:
         f = tmp_path / "a.md"
         f.write_text("# A")
         seen: List[Path] = []
-        w = GNNWatcher(tmp_path, on_change=lambda p, c: seen.append(p), debounce_ms=50000)
+        w = GNNWatcher(
+            tmp_path, on_change=lambda p, c: seen.append(p), debounce_ms=50000
+        )
         w._debounced_fire(f)
         w._debounced_fire(f)  # suppressed inside the debounce window
         assert len(seen) == 1

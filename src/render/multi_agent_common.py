@@ -187,9 +187,10 @@ def has_env_conditioned_action_selection(gnn_spec: Dict[str, Any]) -> bool:
     Requires both the env-coupling (``env_signal``/``signal_decay``) and the
     env-conditioned observation likelihood / latent signal prior.
     """
-    return detect_env_coupling(gnn_spec) is not None and detect_env_conditioned(
-        gnn_spec
-    ) is not None
+    return (
+        detect_env_coupling(gnn_spec) is not None
+        and detect_env_conditioned(gnn_spec) is not None
+    )
 
 
 def multi_agent_structure(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:

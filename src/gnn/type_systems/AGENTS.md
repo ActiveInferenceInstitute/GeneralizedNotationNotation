@@ -26,4 +26,4 @@ type_systems/
 
 See [gnn/AGENTS.md](../AGENTS.md) for the overall GNN processing architecture.
 
-**Version**: 3.1.0
+**Version**: 3.2.0

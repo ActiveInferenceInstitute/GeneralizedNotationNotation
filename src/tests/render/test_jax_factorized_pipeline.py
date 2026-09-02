@@ -120,11 +120,15 @@ class TestKroneckerDetection:
         assert _is_kronecker_factorized_spec(pomdp) is True
 
     def test_multi_agent_spec_not_detected(self) -> None:
-        pomdp = _require_pomdp(extract_pomdp_from_file(SWARM_FILE, strict_validation=True))
+        pomdp = _require_pomdp(
+            extract_pomdp_from_file(SWARM_FILE, strict_validation=True)
+        )
         assert _is_kronecker_factorized_spec(pomdp) is False
 
     def test_flat_spec_not_detected(self) -> None:
-        pomdp = _require_pomdp(extract_pomdp_from_file(FLAT_FILE, strict_validation=True))
+        pomdp = _require_pomdp(
+            extract_pomdp_from_file(FLAT_FILE, strict_validation=True)
+        )
         assert _is_kronecker_factorized_spec(pomdp) is False
 
 
@@ -194,7 +198,9 @@ class TestProcessorComposition:
             assert np.allclose(b[:, :, action].sum(axis=0), 1.0)
 
     def test_swarm_composition_unchanged(self) -> None:
-        pomdp = _require_pomdp(extract_pomdp_from_file(SWARM_FILE, strict_validation=True))
+        pomdp = _require_pomdp(
+            extract_pomdp_from_file(SWARM_FILE, strict_validation=True)
+        )
         spec = pomdp_to_gnn_spec(pomdp)
         assert spec["model_parameters"]["num_hidden_states"] == 729
         assert spec["model_parameters"]["num_actions"] == 4
@@ -219,7 +225,9 @@ class TestRenderRouting:
         assert "FactorizedPOMDP" in script
 
     def test_flat_spec_keeps_general_generator(self, tmp_path: Path) -> None:
-        pomdp = _require_pomdp(extract_pomdp_from_file(FLAT_FILE, strict_validation=True))
+        pomdp = _require_pomdp(
+            extract_pomdp_from_file(FLAT_FILE, strict_validation=True)
+        )
         spec = pomdp_to_gnn_spec(pomdp)
         output = tmp_path / "flat_model_jax.py"
         success, message, _ = render_gnn_to_jax(spec, output)

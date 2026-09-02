@@ -114,7 +114,7 @@ FRAMEWORK_REGISTRY: Mapping[str, Dict[str, Any]] = MappingProxyType(
             # The DisCoPy translator draws categorical POMDP string diagrams
             # (A/B/C/D/E boxes over discrete state counts); it has no
             # linear-Gaussian diagram semantics, so continuous models are
-            # reported unsupported rather than drawn as a fake discrete model.
+            # reported unsupported rather than drawn as a discrete stand-in.
             "supports_continuous": False,
             "unavailable_reason": None,
         },

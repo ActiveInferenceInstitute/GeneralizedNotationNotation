@@ -92,12 +92,13 @@ def test_configure_logging_sets_root_level_and_console_handler(
         assert len(root.handlers) >= 1
         # A JSON formatter is attached to the console handler.
         json_handlers = [
-            h for h in root.handlers if isinstance(h, logging.StreamHandler)
+            h
+            for h in root.handlers
+            if isinstance(h, logging.StreamHandler)
             and not isinstance(h, logging.handlers.RotatingFileHandler)
         ]
         assert any(
-            isinstance(h.formatter, logging_config.JSONFormatter)
-            for h in json_handlers
+            isinstance(h.formatter, logging_config.JSONFormatter) for h in json_handlers
         )
     finally:
         root.handlers = prior_handlers
@@ -114,7 +115,8 @@ def test_configure_logging_with_rotation_file(tmp_path: Path) -> None:
         assert log_file.exists()
         # RotatingFileHandler is configured with rotation semantics.
         rot = [
-            h for h in root.handlers
+            h
+            for h in root.handlers
             if isinstance(h, logging.handlers.RotatingFileHandler)
         ]
         assert len(rot) == 1

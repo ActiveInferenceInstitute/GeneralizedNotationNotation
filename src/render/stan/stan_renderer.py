@@ -586,7 +586,7 @@ if __name__ == "__main__":
 
 
 # ---------------------------------------------------------------------------
-# Legacy structural skeleton (kept for API compatibility; not executable)
+# Structural skeleton (declaration-only sketch of the variable graph; not executable)
 # ---------------------------------------------------------------------------
 
 

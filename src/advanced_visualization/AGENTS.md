@@ -10,7 +10,7 @@
 
 **Status**: Maintained
 
-**Version**: 3.1.0
+**Version**: 3.2.0
 
 **Last Updated**: 2026-04-16
 
@@ -538,7 +538,7 @@ python src/9_advanced_viz.py --target-dir input/ --verbose
 **Last Updated**: 2026-05-12
 **Maintainer**: GNN Pipeline Team
 **Status**: Maintained
-**Version**: 3.1.0
+**Version**: 3.2.0
 **Architecture Compliance**: Thin Orchestrator Pattern
 
 

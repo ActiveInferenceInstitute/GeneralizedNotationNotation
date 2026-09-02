@@ -17,7 +17,7 @@ security review + rollback). These generate/validate **data only** — no contai
 executed. Acceptance: `scripts/run_v3_orchestration_acceptance.py --strict`. Reference:
 [`doc/pipeline/v3_orchestration.md`](../../doc/pipeline/v3_orchestration.md).
 
-**Version**: 3.1.0
+**Version**: 3.2.0
 
 **Last Updated**: 2026-04-16
 
@@ -485,7 +485,7 @@ def get_pipeline_config_tool():
 **Last Updated**: 2026-04-16
 **Maintainer**: GNN Pipeline Team
 **Status**: ✅ Production Ready
-**Version**: 3.1.0
+**Version**: 3.2.0
 **Architecture Compliance**: ✅ 100% Thin Orchestrator Pattern
 
 

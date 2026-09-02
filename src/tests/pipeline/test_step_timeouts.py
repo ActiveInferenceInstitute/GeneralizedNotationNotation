@@ -49,6 +49,7 @@ def test_every_registered_step_has_positive_timeout():
         for v in values:
             assert isinstance(v, int) and v > 0, f"{name}: bad timeout {v}"
 
+
 def test_scale_multiplier_applies(monkeypatch):
     monkeypatch.delenv("GNN_STEP_TIMEOUT_3", raising=False)
     monkeypatch.setenv("GNN_STEP_TIMEOUT_SCALE", "3")

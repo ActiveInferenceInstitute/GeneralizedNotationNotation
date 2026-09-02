@@ -26,7 +26,12 @@ from type_checker.analysis_utils import (
 
 def test_analyze_variable_types_basic() -> None:
     variables = [
-        {"name": "a", "type": "categorical", "data_type": "float", "dimensions": [2, 1]},
+        {
+            "name": "a",
+            "type": "categorical",
+            "data_type": "float",
+            "dimensions": [2, 1],
+        },
         {"name": "b", "type": "categorical", "data_type": "float", "dimensions": [3]},
     ]
     result = analyze_variable_types(variables)
@@ -78,7 +83,9 @@ def test_analyze_connections_basic() -> None:
     result = analyze_connections(connections)
     assert result["total_connections"] == 2
     assert result["connection_type_distribution"] == {"directed": 1, "undirected": 1}
-    assert result["connectivity_metrics"]["avg_connections_per_variable"] == pytest.approx(1.0)
+    assert result["connectivity_metrics"][
+        "avg_connections_per_variable"
+    ] == pytest.approx(1.0)
     assert result["connectivity_metrics"]["max_connections_per_variable"] == 1
     assert result["connectivity_metrics"]["isolated_variables"] == 0
 
@@ -133,7 +140,9 @@ def _typed_analysis() -> dict[str, Any]:
 def test_complexity_small_model_low_parallelism() -> None:
     d = _typed_analysis()
     result = estimate_computational_complexity(d["ta"], d["ca"])
-    assert result["inference_complexity"]["operations_per_step"] == 20  # 20 elements * 1 conn
+    assert (
+        result["inference_complexity"]["operations_per_step"] == 20
+    )  # 20 elements * 1 conn
     assert result["inference_complexity"]["parallelization_potential"] == "low"
     assert result["resource_requirements"]["ram_gb_recommended"] == 1
     assert result["resource_requirements"]["cpu_cores_recommended"] == 1
@@ -163,7 +172,9 @@ def test_complexity_high_parallelism_and_ram() -> None:
     result = estimate_computational_complexity(ta, ca)
     assert result["inference_complexity"]["parallelization_potential"] == "high"
     assert result["resource_requirements"]["cpu_cores_recommended"] == 4
-    assert result["resource_requirements"]["ram_gb_recommended"] == 1  # 80KB memory → low RAM
+    assert (
+        result["resource_requirements"]["ram_gb_recommended"] == 1
+    )  # 80KB memory → low RAM
 
 
 # -----------------------------------------------------------------------------
@@ -285,9 +296,7 @@ def test_variables_table_csv() -> None:
 
 def test_section_presence_matrix_csv() -> None:
     res = _sample_result()
-    rows = ou.section_presence_matrix_csv(
-        {"model.gnn": res}, ["GNNSection", "Footer"]
-    )
+    rows = ou.section_presence_matrix_csv({"model.gnn": res}, ["GNNSection", "Footer"])
     assert rows[0] == ["File", "GNNSection", "Footer"]
     assert rows[1] == ["model.gnn", 1, 0]
 

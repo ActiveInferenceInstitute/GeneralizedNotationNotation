@@ -46,7 +46,9 @@ def test_run_hash_is_deterministic_and_content_sensitive(gnn_dir: Path):
     assert compute_run_hash(gnn_dir, config={"a": 1}) != h1
 
     # Changing the config changes the hash even with identical files
-    (gnn_dir / "model_a.md").write_text("# GNN\nStateSpaceBlock: s [3]", encoding="utf-8")
+    (gnn_dir / "model_a.md").write_text(
+        "# GNN\nStateSpaceBlock: s [3]", encoding="utf-8"
+    )
     assert compute_run_hash(gnn_dir, config={"a": 2}) != h1
 
 
@@ -63,14 +65,20 @@ def test_index_then_lookup_roundtrip_exact_and_prefix(tmp_path: Path):
     summary.write_text("{}", encoding="utf-8")
     history = tmp_path / ".history"
 
-    index_run("deadbeef1234", summary, history_dir=history,
-              config={"target": "input/gnn_files"})
+    index_run(
+        "deadbeef1234",
+        summary,
+        history_dir=history,
+        config={"target": "input/gnn_files"},
+    )
     index_path = history / "index.json"
     assert index_path.exists()
     stored = json.loads(index_path.read_text(encoding="utf-8"))
     assert "deadbeef1234" in stored
 
-    assert lookup_run("deadbeef1234", history)["config"] == {"target": "input/gnn_files"}
+    assert lookup_run("deadbeef1234", history)["config"] == {
+        "target": "input/gnn_files"
+    }
     # Prefix lookup returns the single match
     assert lookup_run("deadbeef", history)["config"] == {"target": "input/gnn_files"}
 

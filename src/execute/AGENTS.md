@@ -10,7 +10,7 @@
 
 **Status**: ✅ Production Ready
 
-**Version**: 3.1.0
+**Version**: 3.2.0
 
 **Last Updated**: 2026-05-05
 
@@ -448,7 +448,7 @@ def run_simulation_tool(script_path: str, framework: str) -> Dict[str, Any]:
 **Last Updated**: 2026-05-05
 **Maintainer**: GNN Pipeline Team
 **Status**: ✅ Production Ready
-**Version**: 3.1.0
+**Version**: 3.2.0
 **Architecture Compliance**: ✅ 100% Thin Orchestrator Pattern
 
 
