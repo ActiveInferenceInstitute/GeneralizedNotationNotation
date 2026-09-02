@@ -6,7 +6,10 @@ StatsBase = "2913bbd2-ae8a-5f71-8c99-4fb6c76f3a91"
 
 [compat]
 ActiveInference = "0.1"
-Distributions = "0.25"
+# Distributions >= 0.25.126 changed `@check_args`; DistributionsAD 0.6.58's
+# ReverseDiff extension (pulled in via ActionModels) fails to precompile
+# against it on Julia 1.12. Pin below that until DistributionsAD releases a fix.
+Distributions = "0.25.100 - 0.25.125"
 JSON = "1.7"
 StatsBase = "0.34"
 julia = "1.8"
