@@ -1022,6 +1022,7 @@ class POMDPRenderProcessor:
                 raw_model_parameters.get(
                     "random_seed", raw_model_parameters.get("seed", 42)
                 )
+                or 42
             ),
         }
         if timesteps:

@@ -12,7 +12,7 @@ import os
 import subprocess
 import sys
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any, Dict, cast
 
 import pytest
 
@@ -55,7 +55,9 @@ def _run(
         [python, str(script)], capture_output=True, text=True, env=env, timeout=600
     )
     assert proc.returncode == 0, proc.stdout[-2000:] + proc.stderr[-2000:]
-    return json.loads((out / "simulation_results.json").read_text())
+    return cast(
+        Dict[str, Any], json.loads((out / "simulation_results.json").read_text())
+    )
 
 
 def _assert_schema(res: Dict[str, Any], framework: str, with_control: bool) -> None:

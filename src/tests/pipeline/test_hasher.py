@@ -35,7 +35,7 @@ def gnn_dir(tmp_path: Path) -> Path:
     return d
 
 
-def test_run_hash_is_deterministic_and_content_sensitive(gnn_dir: Path):
+def test_run_hash_is_deterministic_and_content_sensitive(gnn_dir: Path) -> None:
     h1 = compute_run_hash(gnn_dir, config={"a": 1})
     h2 = compute_run_hash(gnn_dir, config={"a": 1})
     assert h1 == h2
@@ -52,7 +52,7 @@ def test_run_hash_is_deterministic_and_content_sensitive(gnn_dir: Path):
     assert compute_run_hash(gnn_dir, config={"a": 2}) != h1
 
 
-def test_file_hashes_uses_relative_paths_and_hex_digests(gnn_dir: Path):
+def test_file_hashes_uses_relative_paths_and_hex_digests(gnn_dir: Path) -> None:
     _, file_hashes = compute_run_hash_with_files(gnn_dir)
     assert set(file_hashes) == {"model_a.md", str(Path("nested") / "model_b.gnn")}
     for digest in file_hashes.values():
@@ -60,7 +60,7 @@ def test_file_hashes_uses_relative_paths_and_hex_digests(gnn_dir: Path):
         int(digest, 16)  # valid hex
 
 
-def test_index_then_lookup_roundtrip_exact_and_prefix(tmp_path: Path):
+def test_index_then_lookup_roundtrip_exact_and_prefix(tmp_path: Path) -> None:
     summary = tmp_path / "pipeline_execution_summary.json"
     summary.write_text("{}", encoding="utf-8")
     history = tmp_path / ".history"
@@ -76,14 +76,16 @@ def test_index_then_lookup_roundtrip_exact_and_prefix(tmp_path: Path):
     stored = json.loads(index_path.read_text(encoding="utf-8"))
     assert "deadbeef1234" in stored
 
-    assert lookup_run("deadbeef1234", history)["config"] == {
-        "target": "input/gnn_files"
-    }
+    exact = lookup_run("deadbeef1234", history)
+    assert exact is not None
+    assert exact["config"] == {"target": "input/gnn_files"}
     # Prefix lookup returns the single match
-    assert lookup_run("deadbeef", history)["config"] == {"target": "input/gnn_files"}
+    by_prefix = lookup_run("deadbeef", history)
+    assert by_prefix is not None
+    assert by_prefix["config"] == {"target": "input/gnn_files"}
 
 
-def test_lookup_prefix_ambiguity_returns_none_with_warning(tmp_path: Path):
+def test_lookup_prefix_ambiguity_returns_none_with_warning(tmp_path: Path) -> None:
     summary = tmp_path / "pipeline_execution_summary.json"
     summary.write_text("{}", encoding="utf-8")
     history = tmp_path / ".history"
@@ -94,5 +96,5 @@ def test_lookup_prefix_ambiguity_returns_none_with_warning(tmp_path: Path):
     assert lookup_run("aaaa1111ffff", history) is not None  # exact still resolves
 
 
-def test_lookup_missing_history_returns_none(tmp_path: Path):
+def test_lookup_missing_history_returns_none(tmp_path: Path) -> None:
     assert lookup_run("whatever", tmp_path / "no_such_history") is None

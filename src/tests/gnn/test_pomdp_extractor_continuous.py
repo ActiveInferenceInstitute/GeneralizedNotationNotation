@@ -24,8 +24,9 @@ def test_continuous_exemplar_extracts_lgssm(path: Path) -> None:
     assert pomdp is not None
     assert pomdp.model_kind == "continuous"
     assert pomdp.A_matrix is None and pomdp.B_matrix is None
+    assert pomdp.matrices is not None
     for key in ("F", "H", "Q", "R", "prior_mean", "prior_cov"):
-        assert key in (pomdp.matrices or {}), key
+        assert key in pomdp.matrices, key
     assert pomdp.num_states == len(pomdp.matrices["F"])
     assert pomdp.num_observations == len(pomdp.matrices["H"])
     spec = pomdp_to_gnn_spec(pomdp)
@@ -34,10 +35,11 @@ def test_continuous_exemplar_extracts_lgssm(path: Path) -> None:
 
 
 def test_navigation_is_closed_loop_others_passive() -> None:
-    kinds = {
-        p.stem: extract_pomdp_from_file(p, strict_validation=True).passive_model
-        for p in FILES
-    }
+    kinds: dict[str, bool] = {}
+    for p in FILES:
+        pomdp = extract_pomdp_from_file(p, strict_validation=True)
+        assert pomdp is not None
+        kinds[p.stem] = pomdp.passive_model
     assert kinds["continuous_navigation"] is False
     assert kinds["predictive_coding_agent"] is True
     assert kinds["stochastic_dynamics"] is True
@@ -45,6 +47,7 @@ def test_navigation_is_closed_loop_others_passive() -> None:
 
 def test_unsupported_frameworks_are_flagged_not_failed(tmp_path: Path) -> None:
     pomdp = extract_pomdp_from_file(FILES[0], strict_validation=True)
+    assert pomdp is not None
     proc = POMDPRenderProcessor(tmp_path)
     for fw in sorted(UNSUPPORTED):
         result = proc._process_single_framework(pomdp, fw)
@@ -59,7 +62,16 @@ def test_process_render_counts_unsupported_separately(tmp_path: Path) -> None:
     outcome = process_render(
         target_dir=CONTINUOUS_DIR,
         output_dir=tmp_path,
-        frameworks="jax,numpyro,pytorch,stan,rxinfer,discopy,pymdp,activeinference_jl",
+        frameworks=[
+            "jax",
+            "numpyro",
+            "pytorch",
+            "stan",
+            "rxinfer",
+            "discopy",
+            "pymdp",
+            "activeinference_jl",
+        ],
         verbose=False,
     )
     assert outcome is True

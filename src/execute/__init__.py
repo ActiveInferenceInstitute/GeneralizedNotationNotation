@@ -33,6 +33,7 @@ FrameworkName = Literal[
     "activeinference_jl",
     "pytorch",
     "numpyro",
+    "stan",
 ]
 
 # All execute submodules are in-tree — their import must succeed or tests

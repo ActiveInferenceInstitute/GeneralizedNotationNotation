@@ -12,12 +12,13 @@ import importlib.util
 import subprocess
 import sys
 from pathlib import Path
+from typing import Any
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 SCRIPT = REPO_ROOT / "scripts" / "add_module_docstrings.py"
 
 
-def _load():
+def _load() -> Any:
     spec = importlib.util.spec_from_file_location("add_module_docstrings", SCRIPT)
     assert spec and spec.loader
     module = importlib.util.module_from_spec(spec)
@@ -25,7 +26,7 @@ def _load():
     return module
 
 
-def _run(script_args):
+def _run(script_args: list[str]) -> subprocess.CompletedProcess[str]:
     return subprocess.run(
         [sys.executable, str(SCRIPT), *script_args],
         capture_output=True,
@@ -34,7 +35,7 @@ def _run(script_args):
     )
 
 
-def test_dry_run_reports_without_writing(tmp_path):
+def test_dry_run_reports_without_writing(tmp_path: Path) -> None:
     """--dry-run lists the candidate file but leaves its content untouched."""
     target = tmp_path / "undocumented.py"
     original = 'def hi():\n    """Say hi."""\n'
@@ -46,7 +47,7 @@ def test_dry_run_reports_without_writing(tmp_path):
     assert target.read_text() == original
 
 
-def test_write_mode_inserts_docstring_and_skips_documented(tmp_path):
+def test_write_mode_inserts_docstring_and_skips_documented(tmp_path: Path) -> None:
     """Write mode adds a leading docstring and skips already-documented files."""
     module = _load()
     target = tmp_path / "undocumented.py"
@@ -64,7 +65,7 @@ def test_write_mode_inserts_docstring_and_skips_documented(tmp_path):
     assert documented.read_text() == '"""Documented."""\n\nx = 1\n'
 
 
-def test_script_entrypoint_uses_argparse(tmp_path):
+def test_script_entrypoint_uses_argparse(tmp_path: Path) -> None:
     """The CLI accepts a root positional plus --dry-run (no bare sys.argv index)."""
     result = _run([str(tmp_path), "--dry-run"])
     assert result.returncode == 0, result.stderr
