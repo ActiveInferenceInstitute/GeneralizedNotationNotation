@@ -33,9 +33,17 @@ FRAMEWORK_IMPORT_CHECK: Dict[str, Tuple[str, str]] = {
     "jax": ("jax", "uv sync"),
     "numpyro": ("numpyro", "uv sync"),
     "pytorch": ("torch", "uv sync"),
+    "stan": ("cmdstanpy", "uv sync --extra stan"),
     "discopy": ("discopy", "uv sync"),
     "bnlearn": ("bnlearn", "uv sync"),
     "pymdp": ("pymdp", "uv sync"),
+}
+
+# Frameworks whose Python module alone is not enough: the probe must also
+# find the external toolchain, otherwise Step 12 would record a failed run
+# instead of the documented dependency skip.
+FRAMEWORK_PROBE_STATEMENT: Dict[str, str] = {
+    "stan": "import cmdstanpy; cmdstanpy.cmdstan_path()",
 }
 
 
@@ -67,13 +75,21 @@ def is_framework_available(
         return True
 
     module_name, _hint = FRAMEWORK_IMPORT_CHECK[framework]
+    probe = FRAMEWORK_PROBE_STATEMENT.get(framework, f"import {module_name}")
 
     if executor is None:
-        return importlib.util.find_spec(module_name) is not None
+        if importlib.util.find_spec(module_name) is None:
+            return False
+        if framework in FRAMEWORK_PROBE_STATEMENT:
+            try:
+                exec(probe, {})  # nosec B102 — fixed, non-user statement
+            except Exception:
+                return False
+        return True
 
     try:
         result = subprocess.run(  # nosec B603
-            [executor, "-c", f"import {module_name}"],
+            [executor, "-c", probe],
             capture_output=True,
             text=True,
             timeout=10,
