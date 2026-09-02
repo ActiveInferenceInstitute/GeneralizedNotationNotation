@@ -10,7 +10,7 @@
 
 **Status**: ✅ Production Ready
 
-**Version**: 3.1.0
+**Version**: 3.2.0
 
 **Last Updated**: 2026-04-16
 
@@ -333,7 +333,7 @@ def generate_audio_tool(gnn_content: str, duration: float = 30.0) -> Dict[str, A
 **Last Updated**: 2026-04-16
 **Maintainer**: GNN Pipeline Team
 **Status**: ✅ Production Ready
-**Version**: 3.1.0
+**Version**: 3.2.0
 **Architecture Compliance**: ✅ 100% Thin Orchestrator Pattern
 
 

@@ -10,7 +10,7 @@
 
 **Status**: ✅ Production Ready
 
-**Version**: 3.1.0
+**Version**: 3.2.0
 
 **Last Updated**: 2026-04-16
 
@@ -401,7 +401,7 @@ def validate_model_security_tool(file_path, security_level="standard"):
 **Last Updated**: 2026-04-16
 **Maintainer**: GNN Pipeline Team
 **Status**: ✅ Production Ready
-**Version**: 3.1.0
+**Version**: 3.2.0
 **Architecture Compliance**: ✅ 100% Thin Orchestrator Pattern
 
 ---

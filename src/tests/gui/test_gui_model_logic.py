@@ -33,19 +33,22 @@ def _editor_tables(state: dict[str, object]) -> tuple[object, ...]:
 def test_gui2_loads_real_values_and_noncubic_transition_depth() -> None:
     from gui.gui_2.matrix_editor import create_matrix_from_gnn
 
+    # A discrete exemplar whose B has fewer actions (2) than states (3):
+    # exercises the non-cubic transition depth. (The continuous/ exemplars
+    # are linear-Gaussian and declare no A/B/C/D.)
     model = (
-        REPOSITORY_ROOT / "input/gnn_files/continuous/stochastic_dynamics.md"
+        REPOSITORY_ROOT / "input/gnn_files/learning/dirichlet_likelihood_learning.md"
     ).read_text(encoding="utf-8")
     visual_data = create_matrix_from_gnn(model)
     matrices = visual_data["visual_matrices"]
 
-    assert matrices["A"]["values"][0] == [0.9, 0.1, 0.5]
+    assert matrices["A"]["values"][0] == [0.85, 0.05, 0.10]
     assert matrices["B"]["rows"] == 3
     assert matrices["B"]["cols"] == 3
     assert matrices["B"]["depth"] == 2
     assert len(matrices["B"]["values"]) == 2
-    assert matrices["C"]["values"] == [0.0, 0.0]
-    assert matrices["D"]["values"] == [0.8, 0.1, 0.1]
+    assert matrices["C"]["values"] == [0.0, 0.0, 1.0]
+    assert matrices["D"]["values"] == [1.0, 0.0, 0.0]
 
 
 def test_gui2_real_pomdp_round_trip_preserves_unedited_parameters() -> None:
@@ -86,7 +89,9 @@ def test_gui2_passive_hmm_does_not_gain_undeclared_preference_vector() -> None:
     assert state["C"]["declared"] is False
 
     a_data, b_data, c_data, d_data, b_slice = _editor_tables(state)
-    _, exported = _generate_editor_gnn(state, a_data, b_data, c_data, d_data, b_slice, model)
+    _, exported = _generate_editor_gnn(
+        state, a_data, b_data, c_data, d_data, b_slice, model
+    )
 
     state_space = exported.split("## StateSpaceBlock", 1)[1].split("## Connections", 1)[
         0

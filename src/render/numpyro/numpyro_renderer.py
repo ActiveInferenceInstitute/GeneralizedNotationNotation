@@ -40,6 +40,30 @@ def render_gnn_to_numpyro(
         model_name = gnn_spec.get("modelName", "numpyro_pomdp")
         logger.info(f"Rendering GNN spec to NumPyro: {model_name}")
 
+        from render.continuous_common import extract_continuous_spec, is_continuous_spec
+
+        if is_continuous_spec(gnn_spec):
+            # Continuous-state (linear-Gaussian) branch: Kalman filter + NUTS
+            # on the same generative model. No A/B/C/D exist on this path.
+            from render.continuous_script import generate_continuous_script
+
+            code = generate_continuous_script(
+                extract_continuous_spec(gnn_spec), "numpyro"
+            )
+            output_path = Path(output_path)
+            output_path.parent.mkdir(parents=True, exist_ok=True)
+            with tempfile.NamedTemporaryFile(
+                mode="w", encoding="utf-8", dir=output_path.parent, delete=False
+            ) as tmp_f:
+                tmp_f.write(code)
+            os.replace(tmp_f.name, str(output_path))
+            logger.info(f"✅ NumPyro continuous script written to: {output_path}")
+            return (
+                True,
+                f"NumPyro continuous LGSSM script generated: {output_path}",
+                [str(output_path)],
+            )
+
         A, B, C, D = _extract_matrices(gnn_spec)
 
         # Validate shapes

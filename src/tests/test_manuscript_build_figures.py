@@ -22,8 +22,10 @@ def _figures_constant() -> list[tuple[str, str]]:
         if isinstance(node, ast.Assign) and any(
             isinstance(t, ast.Name) and t.id == "_FIGURES" for t in node.targets
         ):
-            entries = []
+            entries: list[tuple[str, str]] = []
+            assert isinstance(node.value, (ast.List, ast.Tuple))
             for item in node.value.elts:
+                assert isinstance(item, ast.Tuple)
                 gen, png = item.elts
                 entries.append((ast.literal_eval(gen), ast.literal_eval(png)))
             return entries

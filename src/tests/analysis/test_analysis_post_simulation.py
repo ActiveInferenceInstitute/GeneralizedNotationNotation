@@ -342,9 +342,7 @@ class TestExtractJaxData:
 
     def test_routes_kronecker_nested_simulation_data(self) -> None:
         """Nested simulation_data.payload dispatches to the per-factor extractor."""
-        data = extract_jax_data(
-            {"simulation_data": self._kronecker_payload()}
-        )
+        data = extract_jax_data({"simulation_data": self._kronecker_payload()})
         assert data["schema_version"] == "jax_kronecker_factorized_v1"
         assert data["free_energy"] == [1.5, 2.5]
 

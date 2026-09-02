@@ -30,9 +30,7 @@ from utils.io_utils import (
 class TestBatchWriteFiles:
     """Edge cases for batch_write_files."""
 
-    def test_writes_nested_text_and_bytes(
-        self, isolated_temp_dir: Path
-    ) -> None:
+    def test_writes_nested_text_and_bytes(self, isolated_temp_dir: Path) -> None:
         files_data: List[Dict[str, Any]] = [
             {"path": "nested/deep/file.txt", "content": "hello"},
             {"path": "raw.bin", "content": b"\x00\x01\x02"},
@@ -51,9 +49,7 @@ class TestBatchWriteFiles:
         ) == "hello"
         assert (isolated_temp_dir / "raw.bin").read_bytes() == b"\x00\x01\x02"
 
-    def test_atomic_replace_overwrites_existing(
-        self, isolated_temp_dir: Path
-    ) -> None:
+    def test_atomic_replace_overwrites_existing(self, isolated_temp_dir: Path) -> None:
         """Repeated writes to the same path replace cleanly (no .tmp residue)."""
         existing = isolated_temp_dir / "out.txt"
         existing.write_text("old", encoding="utf-8")
@@ -64,9 +60,7 @@ class TestBatchWriteFiles:
         assert result["successful_writes"] == 1
         assert existing.read_text(encoding="utf-8") == "new"
         # No leftover temp files after atomic replace.
-        leftovers = [
-            p for p in isolated_temp_dir.rglob("*.tmp") if p.is_file()
-        ]
+        leftovers = [p for p in isolated_temp_dir.rglob("*.tmp") if p.is_file()]
         assert leftovers == []
 
     def test_failed_write_is_reported_and_others_succeed(
@@ -100,9 +94,7 @@ class TestBatchWriteFiles:
 class TestBatchRead:
     """Edge cases for batch_read_files."""
 
-    def test_missing_and_existing_mixed(
-        self, isolated_temp_dir: Path
-    ) -> None:
+    def test_missing_and_existing_mixed(self, isolated_temp_dir: Path) -> None:
         (isolated_temp_dir / "present.txt").write_text("data", encoding="utf-8")
         (isolated_temp_dir / "binary.bin").write_bytes(b"\xff\xfe\x00\x01")
 
@@ -119,9 +111,13 @@ class TestBatchRead:
         assert result["failed_reads"] == 1
         by_path = {r["path"]: r for r in result["results"]}
         assert by_path[str(isolated_temp_dir / "present.txt")]["content_type"] == "text"
-        assert by_path[str(isolated_temp_dir / "binary.bin")]["content_type"] == "binary"
+        assert (
+            by_path[str(isolated_temp_dir / "binary.bin")]["content_type"] == "binary"
+        )
         assert by_path[str(isolated_temp_dir / "missing.txt")]["success"] is False
-        assert by_path[str(isolated_temp_dir / "missing.txt")]["error"] == "File not found"
+        assert (
+            by_path[str(isolated_temp_dir / "missing.txt")]["error"] == "File not found"
+        )
 
     def test_empty_file_list(self) -> None:
         result = batch_read_files([])
@@ -140,9 +136,7 @@ class TestBatchRead:
         result = batch_read_files([path])
         assert result["successful_reads"] == 1
         assert result["results"][0]["content_type"] == "binary"
-        assert result["results"][0]["content_length"] == len(
-            path.read_bytes()
-        )
+        assert result["results"][0]["content_length"] == len(path.read_bytes())
 
 
 class TestGetFilePerformanceMetrics:

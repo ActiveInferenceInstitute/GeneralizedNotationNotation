@@ -10,7 +10,7 @@
 
 **Status**: ✅ Production Ready
 
-**Version**: 3.1.0
+**Version**: 3.2.0
 
 **Last Updated**: 2026-04-16
 
@@ -327,7 +327,7 @@ def analyze_research_data_tool(data, analysis_type="comprehensive"):
 **Last Updated**: 2026-04-16
 **Maintainer**: GNN Pipeline Team
 **Status**: ✅ Production Ready
-**Version**: 3.1.0
+**Version**: 3.2.0
 **Architecture Compliance**: ✅ 100% Thin Orchestrator Pattern
 
 ---

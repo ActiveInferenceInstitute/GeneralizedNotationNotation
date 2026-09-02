@@ -676,6 +676,21 @@ wheels = [
 ]
 
 [[package]]
+name = "cmdstanpy"
+version = "1.3.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "numpy" },
+    { name = "pandas" },
+    { name = "stanio" },
+    { name = "tqdm" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/40/0a/cc5cbec39155e5ab76b96cbb1acd23bd7f19a4e2203fdf9948a7cbec65b8/cmdstanpy-1.3.0.tar.gz", hash = "sha256:60b10d110993bd8345735994786b2b17782fdc5530a6adbc0cd8ec836d82c2b9", size = 122922, upload-time = "2025-10-20T19:25:08.128Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/ef/04/7bbe85aa6abf99236cc657ceb5a629f63a82a01910a095533111ea3860f3/cmdstanpy-1.3.0-py3-none-any.whl", hash = "sha256:67d83fbb823948c3ca8a84912359d6c0a5c616a62025526dba5f43a1d970bc52", size = 99147, upload-time = "2025-10-20T19:25:06.306Z" },
+]
+
+[[package]]
 name = "colorama"
 version = "0.4.6"
 source = { registry = "https://pypi.org/simple" }
@@ -1262,7 +1277,7 @@ wheels = [
 
 [[package]]
 name = "generalized-notation-notation"
-version = "3.1.0"
+version = "3.2.0"
 source = { editable = "." }
 dependencies = [
     { name = "aiohttp" },
@@ -1296,6 +1311,7 @@ dependencies = [
 [package.optional-dependencies]
 all = [
     { name = "bleach" },
+    { name = "cmdstanpy" },
     { name = "cython" },
     { name = "dask" },
     { name = "distributed" },
@@ -1331,6 +1347,7 @@ dev = [
     { name = "bandit-sarif-formatter" },
     { name = "black" },
     { name = "bleach" },
+    { name = "cmdstanpy" },
     { name = "fastapi" },
     { name = "flake8" },
     { name = "ipdb" },
@@ -1390,6 +1407,9 @@ scaling = [
     { name = "distributed" },
     { name = "ray" },
 ]
+stan = [
+    { name = "cmdstanpy" },
+]
 
 [package.metadata]
 requires-dist = [
@@ -1401,6 +1421,9 @@ requires-dist = [
     { name = "bleach", marker = "extra == 'all'", specifier = ">=6.4.0" },
     { name = "bleach", marker = "extra == 'dev'", specifier = ">=6.4.0" },
     { name = "bleach", marker = "extra == 'research'", specifier = ">=6.4.0" },
+    { name = "cmdstanpy", marker = "extra == 'all'", specifier = ">=1.2" },
+    { name = "cmdstanpy", marker = "extra == 'dev'", specifier = ">=1.2" },
+    { name = "cmdstanpy", marker = "extra == 'stan'", specifier = ">=1.2" },
     { name = "cython", marker = "extra == 'all'", specifier = ">=3.0.0" },
     { name = "cython", marker = "extra == 'research'", specifier = ">=3.0.0" },
     { name = "dask", marker = "extra == 'all'", specifier = ">=2023.0.0" },
@@ -1497,7 +1520,7 @@ requires-dist = [
     { name = "uvicorn", extras = ["standard"], marker = "extra == 'dev'", specifier = ">=0.23.0" },
     { name = "websockets", marker = "extra == 'dev'", specifier = ">=16.0" },
 ]
-provides-extras = ["dev", "api", "ml-ai", "audio", "gui", "graphs", "research", "scaling", "all"]
+provides-extras = ["dev", "api", "ml-ai", "audio", "gui", "graphs", "stan", "research", "scaling", "all"]
 
 [[package]]
 name = "gitdb"
@@ -5166,6 +5189,18 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/66/e3/ce8d38cb2d70e05ffeddc28bb09bad77cfef979eb0a299c9117f7ed4e6a9/standard_sunau-3.13.0.tar.gz", hash = "sha256:b319a1ac95a09a2378a8442f403c66f4fd4b36616d6df6ae82b8e536ee790908", size = 9368, upload-time = "2024-10-30T16:01:41.626Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/34/ae/e3707f6c1bc6f7aa0df600ba8075bfb8a19252140cd595335be60e25f9ee/standard_sunau-3.13.0-py3-none-any.whl", hash = "sha256:53af624a9529c41062f4c2fd33837f297f3baa196b0cfceffea6555654602622", size = 7364, upload-time = "2024-10-30T16:01:28.003Z" },
+]
+
+[[package]]
+name = "stanio"
+version = "0.5.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "numpy" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/2c/5b/6e376499c3f9d71e4154b031d059663598534dd038f421e8c643d61afec5/stanio-0.5.1.tar.gz", hash = "sha256:348d52f947dec431e118f4b601c4c5296929b86401d4d4dd5aa9373b0d4ae4ac", size = 11983, upload-time = "2024-07-08T19:35:48.029Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/56/87/37a80e4d5bd453c33262d8fb618b6840fd98d24ed08e046a4a9b10177fa3/stanio-0.5.1-py3-none-any.whl", hash = "sha256:99ad590daa5834681245c2b651716ec2e06223853661ada21430c621521c849f", size = 8065, upload-time = "2024-07-08T19:35:46.503Z" },
 ]
 
 [[package]]

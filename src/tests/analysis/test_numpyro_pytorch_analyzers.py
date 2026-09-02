@@ -113,9 +113,7 @@ def test_generate_analysis_end_to_end(framework: str, tmp_path: Path) -> None:
 @pytest.mark.parametrize("framework", FRAMEWORKS)
 def test_generate_analysis_missing_dir(framework: str, tmp_path: Path) -> None:
     mod = _read_analyzer(framework)
-    result = mod.generate_analysis_from_logs(
-        tmp_path / "nonexistent", tmp_path / "out"
-    )
+    result = mod.generate_analysis_from_logs(tmp_path / "nonexistent", tmp_path / "out")
     assert isinstance(result, list)
     assert result == []
 
@@ -135,9 +133,7 @@ def test_generate_analysis_malformed_json_skipped(
     mod = _read_analyzer(framework)
     sim_dir = tmp_path / "model_a" / framework / "simulation_data"
     sim_dir.mkdir(parents=True)
-    (sim_dir / "simulation_results.json").write_text(
-        "{ not json", encoding="utf-8"
-    )
+    (sim_dir / "simulation_results.json").write_text("{ not json", encoding="utf-8")
     result = mod.generate_analysis_from_logs(tmp_path, tmp_path / "out")
     assert result == []
 
@@ -155,9 +151,7 @@ def test_analyzer_ignores_other_framework_results(
 
 
 @pytest.mark.parametrize("framework", FRAMEWORKS)
-def test_generate_analysis_root_level_recovery(
-    framework: str, tmp_path: Path
-) -> None:
+def test_generate_analysis_root_level_recovery(framework: str, tmp_path: Path) -> None:
     """A root-level simulation_results.json is picked up as a fallback."""
     mod = _read_analyzer(framework)
     (tmp_path / "simulation_results.json").write_text(
@@ -170,9 +164,7 @@ def test_generate_analysis_root_level_recovery(
 
 
 @pytest.mark.parametrize("framework", FRAMEWORKS)
-def test_generate_analysis_default_output_dir(
-    framework: str, tmp_path: Path
-) -> None:
+def test_generate_analysis_default_output_dir(framework: str, tmp_path: Path) -> None:
     """output_dir defaults to results_dir when omitted."""
     mod = _read_analyzer(framework)
     _write_results(tmp_path, framework, _realistic_payload())

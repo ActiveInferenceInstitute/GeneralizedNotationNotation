@@ -148,11 +148,21 @@ class TestRenderDashboard:
     def test_badge_variants(self, tmp_path: Any) -> None:
         from website.dashboard import render_dashboard
 
-        for success_val, badge_frag in [(True, "SUCCESS"), (False, "FAILED"), (None, "UNKNOWN")]:
+        for success_val, badge_frag in [
+            (True, "SUCCESS"),
+            (False, "FAILED"),
+            (None, "UNKNOWN"),
+        ]:
             results = tmp_path / f"r_{success_val}"
             results.mkdir()
-            summary: dict[str, object] = {"success": success_val, "steps": [], "total_duration": 42}
-            (results / "pipeline_execution_summary.json").write_text(json.dumps(summary))
+            summary: dict[str, object] = {
+                "success": success_val,
+                "steps": [],
+                "total_duration": 42,
+            }
+            (results / "pipeline_execution_summary.json").write_text(
+                json.dumps(summary)
+            )
             out = tmp_path / f"out_{success_val}.html"
             assert render_dashboard(results, out) is True
             assert badge_frag in out.read_text()
@@ -163,7 +173,9 @@ class TestRenderDashboard:
         results = tmp_path / "results"
         results.mkdir()
         summary = tmp_path / "custom_summary.json"
-        summary.write_text(json.dumps({"steps": [{"name": "X", "status": "passed"}], "success": True}))
+        summary.write_text(
+            json.dumps({"steps": [{"name": "X", "status": "passed"}], "success": True})
+        )
         out = tmp_path / "dash.html"
         assert render_dashboard(results, out, summary_path=summary) is True
         assert "X" in out.read_text()

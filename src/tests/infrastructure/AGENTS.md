@@ -27,4 +27,4 @@ infrastructure/
 
 See [tests/AGENTS.md](../AGENTS.md) for the overall test architecture.
 
-**Version**: 3.1.0
+**Version**: 3.2.0

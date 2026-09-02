@@ -37,9 +37,7 @@ class TestParseCacheHitMiss:
     def test_changed_content_is_a_miss(self, tmp_path: Path) -> None:
         cache = ParseCache(cache_dir=tmp_path / "cache")
         cache.set_section("a.gnn", "State", "x[1]", {"n": 1})
-        assert (
-            cache.get_section("a.gnn", "State", "x[1],[x[2]") is None
-        )
+        assert cache.get_section("a.gnn", "State", "x[1],[x[2]") is None
         assert cache.stats["misses"] == 1
 
     @pytest.mark.unit
@@ -122,9 +120,7 @@ class TestParseCacheThreadSafety:
             except Exception as e:  # pragma: no cover - error reporting
                 errors.append(e)
 
-        threads_ = [
-            threading.Thread(target=worker, args=(i,)) for i in range(threads)
-        ]
+        threads_ = [threading.Thread(target=worker, args=(i,)) for i in range(threads)]
         for t in threads_:
             t.start()
         for t in threads_:
@@ -135,6 +131,5 @@ class TestParseCacheThreadSafety:
         assert cache.stats["misses"] == threads * keys_per_thread
         assert cache.stats["hits"] == threads * keys_per_thread
         assert (
-            cache.stats["hits"] + cache.stats["misses"]
-            == 2 * threads * keys_per_thread
+            cache.stats["hits"] + cache.stats["misses"] == 2 * threads * keys_per_thread
         )

@@ -265,6 +265,7 @@ def test_generated_jax_code_executes_with_unequal_dimensions(
     tmp_path: Path,
 ) -> None:
     import jax  # noqa: F401  # hard project dep; explicit import per zero-skip contract
+
     script = tmp_path / filename
     renderer = getattr(mod, renderer_name)
     success, message, artifacts = renderer(_jax_spec(), script)

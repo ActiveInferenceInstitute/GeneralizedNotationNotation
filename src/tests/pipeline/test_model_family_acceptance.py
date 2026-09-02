@@ -391,9 +391,40 @@ def test_model_family_acceptance_profiles_unsupported_steps_as_explicit_skips(
             stderr="",
         )
 
+    # The shipped manifest no longer profiles any family as unsupported at
+    # steps 11/12 (continuous models render and execute natively), so the
+    # profiled-skip mechanism is exercised with a synthetic family.
+    manifest = {
+        "schema": "gnn_model_family_manifest_v1",
+        "acceptance_profile_defaults": {
+            "required_steps": [3, 5, 6],
+            "evidence_steps": [11, 12],
+            "allow_unsupported_steps": [],
+        },
+        "families": [
+            {
+                "name": "continuous",
+                "description": "synthetic profiled-unsupported family",
+                "target_dir": "input/gnn_files/continuous",
+                "frameworks": "jax",
+                "representative_files": ["continuous_navigation.md"],
+                "acceptance_profile": {
+                    "evidence_steps": [],
+                    "allow_unsupported_steps": [11, 12],
+                    "unsupported_step_reasons": {
+                        "11": "Synthetic profile: renderer intentionally skipped.",
+                        "12": "No executable script is expected when Step 11 is skipped.",
+                    },
+                },
+            }
+        ],
+    }
+    manifest_path = tmp_path / "manifest.json"
+    manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
+
     ledger = run_model_family_acceptance(
-        Path("input/model_family_manifest.json"),
-        tmp_path,
+        manifest_path,
+        tmp_path / "ledger",
         family_names=["continuous"],
         runner=runner,
         strict=True,
@@ -409,10 +440,15 @@ def test_model_family_acceptance_profiles_unsupported_steps_as_explicit_skips(
     assert family["steps"]["12"] == "skipped"
     assert family["step_evidence"]["11"]["acceptance"] == "profiled_unsupported_skip"
     assert family["step_evidence"]["12"]["acceptance"] == "profiled_unsupported_skip"
-    assert (
-        "Continuous fixtures use non-POMDP" in family["step_evidence"]["11"]["reason"]
-    )
+    assert "Synthetic profile" in family["step_evidence"]["11"]["reason"]
     assert "No executable script is expected" in family["step_evidence"]["12"]["reason"]
+
+
+def test_shipped_manifest_profiles_no_unsupported_render_or_execute_steps() -> None:
+    manifest = json.loads(Path("input/model_family_manifest.json").read_text())
+    for family in manifest["families"]:
+        profile = family.get("acceptance_profile", {})
+        assert profile.get("allow_unsupported_steps", []) == [], family["name"]
 
 
 def test_model_family_acceptance_rejects_failed_profiled_unsupported_steps(

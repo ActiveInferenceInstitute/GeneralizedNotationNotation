@@ -1,7 +1,7 @@
 # TO-DO - GNN Pipeline Roadmap
 
 **Last Updated**: 2026-08-20 (v4.0.0 milestone close-out; roadmap refreshed)
-**Current Version**: 3.1.0
+**Current Version**: 3.2.0
 **Next Target**: v4.0.0 (bounded autonomy, pipeline stage consolidation, multi-agent stigmergic topologies, and high-dimensional active inference)
 
 **Last reviewed**: 2026-08-24 — MAJ-02 closed in full: milestone 1 (sparse

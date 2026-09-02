@@ -33,7 +33,11 @@ def test_render_stan_basic() -> Any:
     assert "parameters {" in code
     assert "vector[3] theta;" in code
     assert "model {" in code
-    assert "obs1 ~ normal(theta, 1.0);" in code
+    # The sketch records the edge as a comment; it deliberately does not
+    # fabricate a `~ normal(...)` likelihood (see render_gnn_to_stan for the
+    # runnable program).
+    assert "// theta → obs1" in code
+    assert "~ normal(" not in code
     assert "test_stan_model" in code
 
 

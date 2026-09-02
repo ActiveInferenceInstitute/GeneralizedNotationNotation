@@ -4,7 +4,7 @@
 paper:
   title: "GeneralizedNotationNotation: A Text Language for Active Inference Models"
   subtitle: "A text language and modular processing pipeline for Active Inference generative models"
-  version: "3.1.0"
+  version: "3.2.0"
   date: "2026-06-20"
 
 authors:

@@ -131,9 +131,7 @@ class TestRenderGraphFromFile:
 
     @pytest.mark.unit
     def test_missing_file_text_does_not_crash(self, tmp_path: Path) -> None:
-        out = render_graph_from_file(
-            str(tmp_path / "nope.gnn"), output_format="text"
-        )
+        out = render_graph_from_file(str(tmp_path / "nope.gnn"), output_format="text")
         assert isinstance(out, str)
 
     @pytest.mark.unit

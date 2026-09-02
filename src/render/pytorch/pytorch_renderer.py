@@ -37,6 +37,11 @@ def render_gnn_to_pytorch(
         model_name = gnn_spec.get("modelName", "pytorch_pomdp")
         logger.info(f"Rendering GNN spec to PyTorch: {model_name}")
 
+        # Continuous-state (LGSSM) branch: no A/B/C/D exist on this path, so
+        # it must never reach the discrete extractors below.
+        if _is_continuous_spec(gnn_spec):
+            return _render_continuous(gnn_spec, Path(output_path), options, model_name)
+
         # Extract matrices
         A, B, C, D = _extract_matrices(gnn_spec)
 
@@ -75,6 +80,41 @@ def render_gnn_to_pytorch(
     except Exception as e:
         logger.error(f"❌ PyTorch rendering failed: {e}")
         return False, f"PyTorch rendering failed: {e}", []
+
+
+def _is_continuous_spec(gnn_spec: Dict[str, Any]) -> bool:
+    """True for continuous-state (linear-Gaussian) specs."""
+    from render.continuous_common import is_continuous_spec
+
+    return is_continuous_spec(gnn_spec)
+
+
+def _render_continuous(
+    gnn_spec: Dict[str, Any],
+    output_path: Path,
+    options: Optional[Dict[str, Any]],
+    model_name: str,
+) -> Tuple[bool, str, List[str]]:
+    """Emit the standalone PyTorch Kalman-filter LGSSM script."""
+    import os as _os
+    import tempfile as _tempfile
+
+    from render.continuous_common import extract_continuous_spec
+    from render.continuous_script import generate_continuous_script
+
+    code = generate_continuous_script(extract_continuous_spec(gnn_spec), "pytorch")
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    with _tempfile.NamedTemporaryFile(
+        mode="w", encoding="utf-8", dir=output_path.parent, delete=False
+    ) as _tmp:
+        _tmp.write(code)
+    _os.replace(_tmp.name, str(output_path))
+    logger.info(f"✅ PyTorch continuous script written to: {output_path}")
+    return (
+        True,
+        f"PyTorch continuous LGSSM script generated: {output_path}",
+        [str(output_path)],
+    )
 
 
 def _extract_matrices(

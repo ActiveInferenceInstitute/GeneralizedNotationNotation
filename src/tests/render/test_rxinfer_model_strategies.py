@@ -57,11 +57,9 @@ EXPECTED_NON_FLAT = {
 
 
 def _exemplar_files() -> list:
-    files = [
-        f
-        for f in sorted(GNN_FILES.rglob("*.md"))
-        if f.name not in ("README.md", "AGENTS.md")
-    ]
+    from gnn.discovery import is_model_source_path
+
+    files = [f for f in sorted(GNN_FILES.rglob("*.md")) if is_model_source_path(f)]
     assert len(files) == EXEMPLAR_COUNT, (
         f"expected {EXEMPLAR_COUNT} exemplars, found {len(files)}"
     )
@@ -71,7 +69,12 @@ def _exemplar_files() -> list:
 def _canonical_spec(gnn_file: Path) -> dict:
     pomdp = extract_pomdp_from_file(gnn_file, strict_validation=True)
     assert pomdp is not None, f"extraction failed for {gnn_file}"
-    return build_canonical_pomdp_spec(pomdp_to_gnn_spec(pomdp))
+    spec = pomdp_to_gnn_spec(pomdp)
+    if spec.get("model_kind") == "continuous":
+        # Linear-Gaussian specs carry F/H/Q/R, never A/B/C/D; the renderer
+        # dispatches them without canonicalisation.
+        return spec
+    return build_canonical_pomdp_spec(spec)
 
 
 class TestExemplarKindTaxonomy:

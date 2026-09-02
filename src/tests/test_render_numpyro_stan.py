@@ -194,13 +194,17 @@ class TestStanRenderer:
         assert "s" in params_section, "Latent variable 's' not in parameters{}"
 
     def test_stan_generates_connection_statements(self) -> None:
-        """Directed connections produce ~ statements in model{}."""
+        """Directed connections are documented as edges in the sketch's model{}.
+
+        The structural sketch deliberately emits no ``~`` likelihoods — the
+        runnable inference program comes from ``render_gnn_to_stan``.
+        """
         from render.stan.stan_renderer import render_stan
 
         code = render_stan(_gnn_variables(), _gnn_connections(), model_name="conn_test")
 
         model_section = code.split("model {")[1].split("}")[0]
-        assert "~" in model_section, "No sampling statements in model{}"
+        assert "~ normal(" not in model_section, "sketch must not fabricate likelihoods"
         assert "s → o" in model_section or "s →" in model_section, (
             "Connection s→o not documented in model{}"
         )

@@ -10,12 +10,15 @@ locks that contract with real SweepRecord objects (no doubles).
 from __future__ import annotations
 
 import logging
+from pathlib import Path
 
 from integration.meta_analysis.collector import SweepRecord
 from integration.meta_analysis.reporter import SweepReporter
 
 
-def _record(num_states, lines_of_code=120, framework="pymdp") -> SweepRecord:
+def _record(
+    num_states: int | None, lines_of_code: int | None = 120, framework: str = "pymdp"
+) -> SweepRecord:
     return SweepRecord(
         model_name="pymdp_scaling_N3_T100",
         framework=framework,
@@ -27,7 +30,7 @@ def _record(num_states, lines_of_code=120, framework="pymdp") -> SweepRecord:
     )
 
 
-def test_resource_efficiency_survives_none_num_states(tmp_path):
+def test_resource_efficiency_survives_none_num_states(tmp_path: Path) -> None:
     records = [
         _record(None),  # LOC record without sweep parameters — the crash case
         _record(3),
@@ -39,7 +42,7 @@ def test_resource_efficiency_survives_none_num_states(tmp_path):
     assert "Code Complexity Scaling" in section
 
 
-def test_resource_efficiency_empty_when_no_loc(tmp_path):
+def test_resource_efficiency_empty_when_no_loc(tmp_path: Path) -> None:
     records = [_record(3, lines_of_code=None)]
     reporter = SweepReporter(records, [], tmp_path)
     assert reporter._resource_efficiency() == ""

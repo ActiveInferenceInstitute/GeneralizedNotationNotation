@@ -18,6 +18,7 @@ NON_MODEL_MARKDOWN_FILENAMES = {
     "agents.md",
     "changelog.md",
     "contributing.md",
+    "index.md",
     "license.md",
     "readme.md",
 }

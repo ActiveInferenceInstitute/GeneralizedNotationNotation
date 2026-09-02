@@ -22,33 +22,17 @@
     },
     {
       "name": "continuous",
-      "description": "Continuous-state and stochastic-dynamics fixtures.",
+      "description": "Continuous-state linear-Gaussian fixtures (F/H/Q/R + Gaussian prior; continuous_navigation closes the loop on beliefs). Native on jax, numpyro, pytorch, stan, rxinfer, discopy; reported unsupported (not failed) on pymdp, activeinference_jl, bnlearn.",
       "target_dir": "input/gnn_files/continuous",
-      "frameworks": "jax",
-      "representative_files": ["continuous_navigation.md", "stochastic_dynamics.md"],
-      "acceptance_profile": {
-        "evidence_steps": [],
-        "allow_unsupported_steps": [11, 12],
-        "unsupported_step_reasons": {
-          "11": "Continuous fixtures use non-POMDP matrices that current code renderers intentionally skip for v1.9.",
-          "12": "No executable script is expected when Step 11 is profiled as unsupported for continuous fixtures."
-        }
-      }
+      "frameworks": "jax,numpyro,stan,rxinfer",
+      "representative_files": ["continuous_navigation.md", "stochastic_dynamics.md"]
     },
     {
       "name": "hierarchical",
-      "description": "Hierarchical and temporal model fixtures.",
+      "description": "Hierarchical and temporal model fixtures (per-level matrices composed into a joint POMDP for categorical backends; RxInfer.jl renders two-level models natively).",
       "target_dir": "input/gnn_files/hierarchical",
-      "frameworks": "pymdp",
-      "representative_files": ["hierarchical_pomdp.md", "temporal_hierarchy.md"],
-      "acceptance_profile": {
-        "evidence_steps": [],
-        "allow_unsupported_steps": [11, 12],
-        "unsupported_step_reasons": {
-          "11": "Hierarchical fixtures require cross-level matrix semantics that current POMDP renderers intentionally skip for v1.9.",
-          "12": "No executable script is expected when Step 11 is profiled as unsupported for hierarchical fixtures."
-        }
-      }
+      "frameworks": "pymdp,rxinfer,jax",
+      "representative_files": ["hierarchical_pomdp.md", "temporal_hierarchy.md"]
     },
     {
       "name": "multiagent",

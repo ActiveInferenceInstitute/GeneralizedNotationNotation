@@ -1142,9 +1142,7 @@ def _multi_agent_model_info(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
         "agent_matrices": [agents[name] for name in ordered_names],
         "env": env,
         "env_cond": env_cond,
-        "env_action_conditioned": (
-            env is not None and env_cond is not None
-        ),
+        "env_action_conditioned": (env is not None and env_cond is not None),
         "n_timesteps": int(model_params.get("num_timesteps", 20)),
         "random_seed": int(
             model_params.get("random_seed", model_params.get("seed", 42))

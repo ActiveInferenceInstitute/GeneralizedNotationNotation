@@ -536,7 +536,9 @@ class TestParameterParsing:
     def test_matrix_with_trailing_comment_stays_a_matrix(self) -> None:
         """A braced matrix with a trailing inline comment parses to a row list,
         never a Python set (which would break JSON export)."""
-        value = "A = { (1.0, 0.0, 0.0), (0.0, 1.0, 0.0), (0.0, 0.0, 1.0) }  # I wrote this"
+        value = (
+            "A = { (1.0, 0.0, 0.0), (0.0, 1.0, 0.0), (0.0, 0.0, 1.0) }  # I wrote this"
+        )
         parser = MarkdownGNNParser()
         param = parser._parse_parameter_assignment(value)
         assert param is not None
@@ -559,7 +561,9 @@ class TestParameterParsing:
     def test_hash_inside_quoted_string_is_preserved(self) -> None:
         """A ``#`` inside a quoted string is data, not a comment delimiter."""
         parser = MarkdownGNNParser()
-        param = parser._parse_parameter_assignment('notes = "wave # 3"  # recording label')
+        param = parser._parse_parameter_assignment(
+            'notes = "wave # 3"  # recording label'
+        )
         assert param is not None
         assert param.value == "wave # 3"
         assert param.description == "recording label"

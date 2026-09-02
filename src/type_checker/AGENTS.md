@@ -5,7 +5,7 @@
 **Role**: Structural Analyst & Resource Forecaster
 **Domain**: GNN Pipeline Step 5 (`src/type_checker/`)
 **Status**: ✅ Production Ready
-**Version**: 3.1.0
+**Version**: 3.2.0
 
 ## Capabilities
 The Type Checker agent provides a rigorously unified structural mapping layer ensuring that no invalid matrix parameters propagate into mathematical execution layers. It functions flawlessly under the Active Inference ontology.

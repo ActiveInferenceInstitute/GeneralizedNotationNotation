@@ -81,9 +81,7 @@ class TestMatrixCorrelations:
                 {"name": "B", "value": [[0.8, 0.2], [0.3, 0.7]]},
             ]
         }
-        attempt = fn(
-            "Corr", model_data, tmp_path, {}, logging.getLogger("test_corr")
-        )
+        attempt = fn("Corr", model_data, tmp_path, {}, logging.getLogger("test_corr"))
         assert attempt.status == "success"
         assert len(attempt.output_files) >= 1
         assert Path(attempt.output_files[0]).exists()
@@ -93,8 +91,6 @@ class TestMatrixCorrelations:
         model_data: dict[str, Any] = {
             "parameters": [{"name": "A", "value": [[0.5, 0.5]]}]
         }
-        attempt = fn(
-            "Solo", model_data, tmp_path, {}, logging.getLogger("test_solo")
-        )
+        attempt = fn("Solo", model_data, tmp_path, {}, logging.getLogger("test_solo"))
         # Not enough matrices → skipped (warning-only), not a hard failure.
         assert attempt.status in ("skipped", "success")

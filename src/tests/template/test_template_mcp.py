@@ -63,9 +63,7 @@ def test_process_file_real_input(tmp_path: Path) -> None:
 
 
 def test_process_file_missing_input_returns_error(tmp_path: Path) -> None:
-    result = mcp.process_file(
-        str(tmp_path / "nope.md"), str(tmp_path / "out")
-    )
+    result = mcp.process_file(str(tmp_path / "nope.md"), str(tmp_path / "out"))
     assert result["status"] == "error"
     assert "nope.md" in result["input_file"]
 

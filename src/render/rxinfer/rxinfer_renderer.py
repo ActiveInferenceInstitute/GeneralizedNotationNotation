@@ -23,6 +23,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
 from render.pomdp_contract import (
+    ModelKind,
     build_canonical_pomdp_spec,
     detect_model_kind,
 )
@@ -135,6 +136,11 @@ class RxInferRenderer:
         Returns:
             Generated Julia code string
         """
+        if detect_model_kind(gnn_spec) == ModelKind.CONTINUOUS:
+            # Linear-Gaussian models carry F/H/Q/R + prior, never A/B/C/D;
+            # canonicalising would demand categorical matrices that do not
+            # exist. The continuous strategy validates its own contract.
+            return self._generate_canonical_rxinfer_code(gnn_spec, model_name)
         canonical_spec = build_canonical_pomdp_spec(gnn_spec)
         # Renderer options may set inference_mode ("batch" | "online"); a GNN
         # file's own ModelParameters declaration wins over the option so the

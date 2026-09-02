@@ -238,9 +238,7 @@ class TestCollectHelpers:
     ) -> None:
         sim_dir = tmp_path / "m" / "pymdp" / "simulation_data"
         sim_dir.mkdir(parents=True)
-        (sim_dir / "simulation_results.json").write_text(
-            "{ bad", encoding="utf-8"
-        )
+        (sim_dir / "simulation_results.json").write_text("{ bad", encoding="utf-8")
         data = _collect_simulation_data(tmp_path)
         assert data == {}
 

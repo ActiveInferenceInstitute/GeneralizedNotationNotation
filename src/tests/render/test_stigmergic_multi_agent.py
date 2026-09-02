@@ -150,7 +150,7 @@ class TestMultiAgentDetection:
     def test_swarm_declares_env_conditioned_likelihood(self) -> None:
         env_cond = detect_env_conditioned(_canonical_spec(SWARM_FILE))
         assert env_cond is not None
-        assert len(env_cond["obs_likelihood"]) == 4   # empty/low/high/goal
+        assert len(env_cond["obs_likelihood"]) == 4  # empty/low/high/goal
         assert len(env_cond["obs_likelihood"][0]) == 3  # none/low/high
         assert len(env_cond["signal_prior"]) == 3
         assert env_cond["seek"] == pytest.approx(2.0)

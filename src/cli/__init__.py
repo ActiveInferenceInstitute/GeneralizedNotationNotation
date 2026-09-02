@@ -993,7 +993,7 @@ def _cmd_models(args: Any) -> Any:
 
     from model_registry import process_model_registry
 
-    temp_out = Path("/tmp/gnn_cli_models_registry")
+    temp_out = Path(tempfile.gettempdir()) / "gnn_cli_models_registry"
     temp_out.mkdir(parents=True, exist_ok=True)
     res = process_model_registry(
         target_dir=target_dir,

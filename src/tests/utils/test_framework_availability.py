@@ -26,8 +26,16 @@ from utils.framework_availability import (  # noqa: E402
 
 @pytest.mark.parametrize("framework", list(FRAMEWORK_IMPORT_CHECK.keys()))
 def test_is_framework_available_matches_find_spec(framework: Any) -> Any:
+    from utils.framework_availability import FRAMEWORK_PROBE_STATEMENT
+
     module_name, _ = FRAMEWORK_IMPORT_CHECK[framework]
     expected = importlib.util.find_spec(module_name) is not None
+    if expected and framework in FRAMEWORK_PROBE_STATEMENT:
+        # Toolchain-gated frameworks (stan → CmdStan) must also pass their probe.
+        try:
+            exec(FRAMEWORK_PROBE_STATEMENT[framework], {})  # nosec B102
+        except Exception:
+            expected = False
     assert is_framework_available(framework) is expected
 
 

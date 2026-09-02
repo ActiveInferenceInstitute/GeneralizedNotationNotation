@@ -1,191 +1,89 @@
 # Stan Framework Implementation
 
 > **GNN Integration Layer**: Stan probabilistic programming language
-> **Framework Base**: Stan (statistical modeling language, MCMC / variational inference)
-> **Documentation Version**: v3.1.0 Engine (Bundle v2.0.0)
-> **Scope**: **Structural-only.** This backend emits syntactically valid Stan
-> from GNN structure (variables, connections, dimensions); it does NOT encode
-> full Active Inference semantics (no expected-free-energy policy selection,
-> no belief propagation). See "Limitations" below.
+> **Framework Base**: Stan (CmdStan ≥ 2.33 via `cmdstanpy`)
+> **Documentation Version**: v3.2.0 Engine (Bundle v2.0.0)
+> **Scope**: Runnable inference programs for both GNN model kinds — a
+> forward-algorithm HMM/POMDP with likelihood learning for discrete models and
+> an explicit Kalman marginal likelihood for continuous linear-Gaussian models —
+> each paired with a cmdstanpy driver that Step 12 executes.
 
 ## Overview
 
-The Stan renderer translates a parsed GNN specification into a single `.stan`
-program file. The generated program has the three canonical Stan blocks
-(`data`, `parameters`, `model`) populated from the GNN variables and
-connections, with matrix literals emitted directly from
-`InitialParameterization`. The output parses cleanly under `stan --check`
-and can be sampled with CmdStan or bridged through PyStan / RStan.
+The Stan renderer (`src/render/stan/stan_renderer.py`,
+`render_gnn_to_stan(gnn_spec, output_path, options)`) emits two artifacts per
+model with one stem: `<stem>_stan.stan` (the program) and `<stem>_stan.py`
+(the driver). The driver simulates a trajectory from the GNN's own generative
+model with `ModelParameters.random_seed`, writes `<stem>_stan_data.json`,
+compiles the program with CmdStan, runs inference and writes
+`simulation_results.json`. Step 12 discovers the driver like any other Python
+framework script (framework directory `stan/`, env var `STAN_OUTPUT_DIR`).
 
-Stan is intentionally a **second-class backend**: use it when you want to
-expose a GNN-derived graphical model to Stan's mature MCMC tooling rather
-than to run a full Active Inference loop. For the latter, use PyMDP,
-RxInfer.jl, ActiveInference.jl, or JAX.
+Stan does not run an online Active Inference loop (no expected-free-energy
+policy selection): the agent's actions are *data*. What Stan contributes is
+posterior inference over the generative model given a trajectory — learning
+the likelihood in the discrete case, the observation-noise scale in the
+continuous case — with proper diagnostics.
 
-## Architecture
+## Discrete POMDP / HMM program
 
-| Stage | Module | Description |
-|-------|--------|-------------|
-| Rendering (Step 11) | `src/render/stan/stan_renderer.py` | GNN → Stan program string, via `render_stan(variables, connections, model_name)` |
-| Type mapping | `_stan_type` | Maps GNN dtype + dimensions to Stan `data`/`parameters` type declarations |
-| Output | `model.stan` in per-model/per-framework dir | Written by `render/processor.py` |
+| Block | Contents |
+|-------|----------|
+| `data` | `T, S, O, U`; `o[T]`, `u[T-1]` (1-based); `B[U]` matrices `[s_next, s_prev]` (column-stochastic); `alpha_A[S]` Dirichlet pseudo-counts; `D` simplex |
+| `parameters` | `A_est[S]` — one simplex over outcomes per hidden state (P(o \| s)) |
+| `transformed parameters` | `filtered_state[T]`, `log_marginal`: vectorised scaled forward recursion `alpha_t ∝ A[o_t,:] .* (B[u_{t-1}] alpha_{t-1})` |
+| `model` | `A_est[s] ~ dirichlet(alpha_A[s])`; `target += log_marginal` |
 
-## GNN Parameter Ingestion
+The pseudo-counts are `1 + strength · A[:, s]` with
+`ModelParameters.stan_dirichlet_strength` (default 20). Inference is NUTS
+(1 chain, 300 warmup, 300 draws) when `S·O ≤ stan_nuts_param_budget`
+(default 1024) and L-BFGS MAP (`jacobian=True`) otherwise, so large joint
+compositions (the 729-state stigmergic swarm: 46 656 simplex parameters)
+finish in seconds. Results: `beliefs` (T×S filtered posterior means),
+`A_posterior_mean` (O×S), `A_declared`, `rhat_max_A_est` (NUTS) or
+`map_converged` (MAP), `log_marginal_mean`.
 
-The renderer reads from the parsed GNN dict:
+## Continuous linear-Gaussian program
 
-| GNN section | Stan destination |
-|-------------|------------------|
-| `StateSpaceBlock` | variable declarations, dimensioned into `data` or `parameters` by block classification |
-| `Connections` | emitted as `// GNN connection: A > B` comments above the model block |
-| `InitialParameterization` | inlined as matrix literals in `data` block (constants) or as Stan priors in `parameters` / `model` |
-| `ModelParameters.num_hidden_states` / `num_obs` / `num_actions` | declared as `int` data and used to size arrays |
-| `Time.Dynamic` | causes variables subscripted with `_t` to be indexed over `num_timesteps` |
+| Block | Contents |
+|-------|----------|
+| `data` | `T, n, m`; `F, H, Q, R, prior_mean, prior_cov`; `y[T]` observations; `u[T]` controls |
+| `parameters` | `obs_noise_scale > 0` (scales `R`) |
+| `transformed parameters` | `mu[T]`, `P[T]`, `log_lik`: Kalman predict/update with Joseph-form covariance; `multi_normal_lpdf` of the innovations |
+| `model` | `obs_noise_scale ~ lognormal(0, 0.5)`; `target += log_lik` |
 
-## Block Classification Rules
+The driver simulates the LGSSM with a numpy Kalman filter in the loop and, when
+the GNN declares `goal_mean`/`control_gain`, closes the loop on beliefs
+(`u_t = gain · (goal − μ_t)`), exactly as the JAX / NumPyro / PyTorch / RxInfer
+continuous scripts do. Results follow the continuous schema (`beliefs`,
+`posterior_cov`, `true_states_continuous`, `observations_continuous`,
+`controls`, `rmse_vs_true`, `obs_noise_scale_posterior_mean`).
 
-Stan's strict separation between `data`, `parameters`, and `model` blocks
-requires the renderer to classify each GNN variable:
-
-1. **`data` block**: observed variables (those referenced in `## ActInfOntologyAnnotation` as `Observation`) and dimensional constants from `ModelParameters`.
-2. **`parameters` block**: unobserved / latent variables (`HiddenState`, `Policy`, `Preference` ontology mappings), and any matrix declared without an initial value.
-3. **`model` block**: likelihood assertions derived from directed connections + matrix literals where initial parameters act as priors.
-
-Variables with ambiguous ontology (no `ActInfOntologyAnnotation` entry) default
-to `parameters` with a diffuse normal prior.
-
-## Matrix Literal Injection
-
-GNN matrix literals in `InitialParameterization` are converted to Stan's
-array syntax. A 2×2 row-major tuple:
-
-```gnn
-A={(0.9,0.1),(0.1,0.9)}
-```
-
-becomes:
-
-```stan
-matrix[2,2] A = [[0.9, 0.1], [0.1, 0.9]];
-```
-
-3D tuples (e.g. `B` for per-action transitions) become `array[] matrix[,]`:
-
-```gnn
-B={((1,0),(0,1)),((0,1),(1,0))}
-```
-
-→
-
-```stan
-array[2] matrix[2,2] B = {[[1,0],[0,1]], [[0,1],[1,0]]};
-```
-
-## Generated Code Example
-
-For the sample `input/gnn_files/basics/static_perception.md` (2 states, 2
-observations, A matrix), the renderer produces approximately:
-
-```stan
-// Generated from GNN: static_perception.md
-// GNN connection: D > s
-// GNN connection: s - A
-// GNN connection: A - o
-
-data {
-  int<lower=1> num_obs;       // declared in ModelParameters
-  int<lower=1> num_hidden_states;
-  array[1] int<lower=1,upper=num_obs> o;  // observation
-}
-
-parameters {
-  simplex[num_hidden_states] D;           // prior over states
-  simplex[num_obs] A[num_hidden_states];  // observation model
-}
-
-model {
-  // Priors
-  D ~ dirichlet(rep_vector(1.0, num_hidden_states));
-  for (s in 1:num_hidden_states)
-    A[s] ~ dirichlet(rep_vector(1.0, num_obs));
-  // Likelihood
-  int s_latent = categorical_rng(D);
-  o[1] ~ categorical(A[s_latent]);
-}
-```
-
-## Usage
-
-The Stan backend is selected via the standard render step:
+## Installation
 
 ```bash
-python src/11_render.py --target-dir input/gnn_files --output-dir output --frameworks stan
+uv sync --extra stan                                   # cmdstanpy
+uv run python -c "import cmdstanpy; cmdstanpy.install_cmdstan()"   # CmdStan toolchain (once)
+uv run python src/main.py --only-steps "3,11,12" --target-dir input/gnn_files/discrete
 ```
 
-Direct programmatic use:
+Without `cmdstanpy` *and* a CmdStan toolchain, Step 12 marks Stan scripts as
+`skipped` with the install hint (`utils.framework_availability` probes
+`cmdstanpy.cmdstan_path()`); a missing toolchain is never recorded as a failed
+execution.
 
-```python
-from render.stan.stan_renderer import render_stan
+## Structural sketch (`render_stan`)
 
-# variables/connections are parsed GNN dicts (see src/render/processor.py
-# for how they're built from a GNN spec before being passed to render_stan)
-stan_code = render_stan(variables, connections, model_name="my_model")
-with open("out/my_model.stan", "w") as f:
-    f.write(stan_code)
-```
+`render_stan(variables, connections, model_name)` remains available as a
+declaration-only sketch of a model's variable graph (`data`/`parameters`
+blocks plus commented edges). It is not an inference program and the pipeline
+does not execute it.
 
-## Compilation & Sampling
+## Verification
 
-The Stan backend only emits `.stan` source. To compile and sample:
-
-```bash
-# Install cmdstan
-pip install cmdstanpy
-# Compile
-python -c "from cmdstanpy import CmdStanModel; CmdStanModel(stan_file='out/my_model.stan')"
-# Sample
-python -c "from cmdstanpy import CmdStanModel; CmdStanModel(stan_file='out/my_model.stan').sample(data={'num_obs':2,'num_hidden_states':2,'o':[1]})"
-```
-
-Compilation is NOT part of the GNN pipeline — Step 12 (execute) intentionally
-skips `.stan` files because Stan compilation is slow and requires a C++
-toolchain. Integrate into your own CI when needed.
-
-## Limitations
-
-- **No Active Inference loop.** The renderer emits a graphical model; it does
-  not implement expected-free-energy policy selection, belief updating across
-  timesteps, or precision-weighted message passing. Use PyMDP / RxInfer.jl
-  / ActiveInference.jl for those.
-- **No automatic Julia-style factor graphs.** Stan's model block is a scalar
-  program; multi-factor models require manual restructuring.
-- **No pymc / numpyro-style random-variable reuse.** Stan's declarative
-  syntax makes some patterns verbose.
-- **Dimensional mismatch warnings are not auto-fixed.** If GNN declares
-  `A[3,2]` but `InitialParameterization` contains a 2×2 literal, the renderer
-  emits the literal as-is and Stan rejects at compile time. Run Step 5
-  (type-checker) first to catch this.
-
-## Implementation Notes
-
-- Tests: `src/tests/render/test_render_stan.py` and
-  `src/tests/test_render_numpyro_stan.py` (unit) +
-  `src/tests/render/test_render_cli_targets.py::test_every_cli_target_dispatches[stan]`
-  (integration).
-- Backend status: **Active but structural-only**. Maintained as a bridge to
-  Stan ecosystem tools; not a primary Active Inference target.
-- For backend-internal details, see
-  [src/render/stan/AGENTS.md](../../../src/render/stan/AGENTS.md) and
-  [src/render/stan/README.md](../../../src/render/stan/README.md).
-
-## Source References
-
-- Module: [src/render/stan/](../../../src/render/stan)
-- Renderer: [src/render/stan/stan_renderer.py](../../../src/render/stan/stan_renderer.py)
-- Comparison with other backends: [RxInfer.jl](rxinfer.md) (full AI),
-  [PyMDP](pymdp.md) (full AI), [JAX](jax.md) (full AI).
-
-## Navigation
-
-- [← GNN Implementations Index](README.md)
-- [← GNN Main Index](../README.md)
+All 29 exemplars render and execute under Stan on the reference machine
+(CmdStan 2.39): 26 discrete HMM programs (NUTS or MAP by budget) and 3
+continuous LGSSM programs, each with `validation.all_valid == true`. Tests:
+`src/tests/render/test_render_stan.py`, `src/tests/execute/test_execute_stan.py`,
+`src/tests/render/test_continuous_renderers.py` (compile/sample steps skip
+when CmdStan is absent).

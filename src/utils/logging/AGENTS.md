@@ -43,6 +43,6 @@ logging/
 - [Developer Guide](README.md)
 
 ---
-**Version**: 3.1.0
+**Version**: 3.2.0
 **Status**: Production Hardened  
 **Pipeline Integration**: Steps 0-24

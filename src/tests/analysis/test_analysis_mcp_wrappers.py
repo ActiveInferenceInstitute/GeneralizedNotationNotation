@@ -61,7 +61,7 @@ class TestComputeComplexityMetricsMcp:
     @pytest.mark.unit
     def test_high_complexity_rating(self) -> None:
         """Many connections relative to vars should push rating up."""
-        content = "\n".join(f"V{i}[2,2] -> V{i+1}[2,2]" for i in range(20))
+        content = "\n".join(f"V{i}[2,2] -> V{i + 1}[2,2]" for i in range(20))
         result = compute_complexity_metrics_mcp(content)
         assert result["success"] is True
         assert result["complexity_rating"] in ("low", "medium", "high")

@@ -29,6 +29,10 @@ from utils.logging.logging_utils import (
 
 logger = logging.getLogger(__name__)
 
+# File suffixes Step 12 can execute; companion artifacts (``.stan``, ``.toml``,
+# ``.json``) listed in a render summary are not scripts.
+_EXECUTABLE_SUFFIXES = frozenset({".py", ".jl"})
+
 ExecutionFrameworkName = Literal[
     "pymdp",
     "rxinfer",
@@ -37,6 +41,7 @@ ExecutionFrameworkName = Literal[
     "activeinference_jl",
     "pytorch",
     "numpyro",
+    "stan",
 ]
 
 
@@ -541,6 +546,7 @@ def parse_frameworks_parameter(frameworks: str, logger: Any) -> List[str]:
             "activeinference_jl",
             "pytorch",
             "numpyro",
+            "stan",
             "bnlearn",
         ]
 
@@ -557,6 +563,7 @@ def parse_frameworks_parameter(frameworks: str, logger: Any) -> List[str]:
         "activeinference_jl",
         "pytorch",
         "numpyro",
+        "stan",
         "bnlearn",
     ]
 
@@ -683,8 +690,18 @@ def _load_render_summary_contract(
         for framework, framework_result in framework_results.items():
             if framework not in requested or not isinstance(framework_result, dict):
                 continue
+            if framework_result.get("unsupported"):
+                # The renderer declared this framework cannot represent the
+                # model (categorical backend, continuous model): nothing to
+                # execute and nothing failed.
+                continue
             if framework_result.get("success"):
                 for output_file in framework_result.get("output_files") or []:
+                    # Only executable artifacts are execution candidates. Stan
+                    # renders a companion ``.stan`` program beside its Python
+                    # driver; data/config side files are never "missing scripts".
+                    if Path(output_file).suffix.lower() not in _EXECUTABLE_SUFFIXES:
+                        continue
                     allowed_scripts.add(Path(output_file).resolve())
             else:
                 render_failures.append(
@@ -756,6 +773,159 @@ def _slim_execution_detail(detail: Dict[str, Any]) -> Dict[str, Any]:
             detail["collected_outputs"]
         )
     return slim
+
+
+def _execution_detail_key(detail: Dict[str, Any]) -> str:
+    """Stable identity for one executed script across folder invocations."""
+    return str(
+        detail.get("script_path")
+        or detail.get("path")
+        or detail.get("script_name")
+        or detail.get("name")
+        or ""
+    )
+
+
+_STATUS_SEVERITY = {
+    "failed": 3,
+    "skipped": 2,
+    "success_with_render_failures": 1,
+    "success_with_skips": 1,
+    "success": 0,
+}
+
+
+def _merge_prior_execution_summary(
+    execution_results: Dict[str, Any], results_file: Path, logger: Any
+) -> None:
+    """Fold a previously written ``execution_summary.json`` into the current results.
+
+    Details are keyed by script path; a script re-executed in this invocation
+    replaces its earlier record. Aggregate counts, per-framework status and the
+    overall status are recomputed over the merged detail set so downstream
+    consumers (Step 16/23) never see only the last folder's slice.
+    """
+    if not results_file.exists():
+        return
+    try:
+        prior = json.loads(results_file.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        logger.warning(
+            "Could not read prior execution summary %s: %s", results_file, exc
+        )
+        return
+    if not isinstance(prior, dict):
+        return
+    prior_details = prior.get("execution_details") or []
+    if not isinstance(prior_details, list) or not prior_details:
+        return
+
+    current_details = list(execution_results.get("execution_details") or [])
+    current_keys = {
+        _execution_detail_key(d) for d in current_details if isinstance(d, dict)
+    }
+    carried = [
+        d
+        for d in prior_details
+        if isinstance(d, dict) and _execution_detail_key(d) not in current_keys
+    ]
+    if not carried:
+        return
+
+    # Preserve this invocation's own verdict before the aggregate overwrites
+    # ``status``/``success``: the function's return value describes the
+    # current folder, the durable summary describes every folder so far.
+    execution_results["current_invocation"] = {
+        "target_directory": execution_results.get("target_directory"),
+        "status": execution_results.get("status"),
+        "success": execution_results.get("success"),
+        "outcome_reason": execution_results.get("outcome_reason"),
+        "total_scripts_found": execution_results.get("total_scripts_found"),
+        "successful_executions": execution_results.get("successful_executions"),
+        "failed_executions": execution_results.get("failed_executions"),
+        "skipped_executions": execution_results.get("skipped_executions", 0),
+    }
+
+    merged = carried + current_details
+    execution_results["execution_details"] = merged
+    execution_results["merged_prior_folder_runs"] = (
+        int(prior.get("merged_prior_folder_runs", 0)) + 1
+    )
+
+    successful = failed = skipped = 0
+    framework_status: Dict[str, Dict[str, Any]] = {}
+    for d in merged:
+        fw = str(d.get("framework", "unknown"))
+        fs = framework_status.setdefault(
+            fw,
+            {
+                "status": "unknown",
+                "executions": 0,
+                "successful": 0,
+                "failed": 0,
+                "skipped": 0,
+            },
+        )
+        fs["executions"] += 1
+        if d.get("skipped"):
+            skipped += 1
+            fs["skipped"] += 1
+        elif d.get("success"):
+            successful += 1
+            fs["successful"] += 1
+        else:
+            failed += 1
+            fs["failed"] += 1
+        if d.get("error") and not d.get("success"):
+            fs["error"] = d["error"]
+    for fs in framework_status.values():
+        if fs["failed"]:
+            fs["status"] = "failed"
+        elif fs["successful"] and fs["skipped"]:
+            fs["status"] = "success_with_skips"
+        elif fs["successful"]:
+            fs["status"] = "success"
+        else:
+            fs["status"] = "skipped"
+
+    execution_results["framework_status"] = framework_status
+    execution_results["total_scripts_found"] = len(merged)
+    execution_results["total_scripts"] = len(merged)
+    execution_results["successful_executions"] = successful
+    execution_results["failed_executions"] = failed
+    execution_results["skipped_executions"] = skipped
+    attempted = len(merged) - skipped
+    execution_results["attempted_scripts"] = attempted
+    execution_results["success_rate"] = (
+        round(successful / attempted * 100, 2) if attempted > 0 else 0.0
+    )
+    for key in ("render_failures", "missing_render_scripts"):
+        prior_items = prior.get(key) or []
+        if isinstance(prior_items, list) and prior_items:
+            seen = {
+                json.dumps(i, sort_keys=True, default=str)
+                for i in execution_results.get(key, [])
+            }
+            for item in prior_items:
+                if json.dumps(item, sort_keys=True, default=str) not in seen:
+                    execution_results.setdefault(key, []).append(item)
+
+    prior_status = str(prior.get("status", "success"))
+    current_status = str(execution_results.get("status", "success"))
+    if _STATUS_SEVERITY.get(prior_status, 0) > _STATUS_SEVERITY.get(current_status, 0):
+        execution_results["status"] = prior_status
+        execution_results["outcome_reason"] = prior.get(
+            "outcome_reason", execution_results.get("outcome_reason")
+        )
+        execution_results["success"] = bool(prior.get("success", False))
+        execution_results["exit_code"] = prior.get(
+            "exit_code", execution_results.get("exit_code")
+        )
+    elif failed > 0 and execution_results.get("status") != "failed":
+        execution_results["status"] = "failed"
+        execution_results["success"] = False
+        execution_results["exit_code"] = 1
+        execution_results["outcome_reason"] = "script_execution_failure"
 
 
 def process_execute(
@@ -1132,6 +1302,12 @@ def process_execute(
         summaries_dir.mkdir(parents=True, exist_ok=True)
         results_file = summaries_dir / "execution_summary.json"
 
+        # The pipeline invokes this step once per top-level input folder, all
+        # writing the same summary file. Carry the earlier folders' script
+        # results forward so the durable summary covers every executed script
+        # (mirrors the Step 11 render-summary merge).
+        _merge_prior_execution_summary(execution_results, results_file, logger)
+
         full_details_snapshot = copy.deepcopy(execution_results["execution_details"])
         execution_results["execution_details"] = [
             _slim_execution_detail(d) for d in full_details_snapshot
@@ -1264,6 +1440,7 @@ def find_executable_scripts(
         "activeinference.jl": "activeinference_jl",
         "pytorch": "pytorch",
         "numpyro": "numpyro",
+        "stan": "stan",
         "bnlearn": "bnlearn",
     }
 
@@ -1454,6 +1631,7 @@ def _build_execution_environment(
         "jax": "GNN_OUTPUT_DIR",
         "numpyro": "NUMPYRO_OUTPUT_DIR",
         "pytorch": "PYTORCH_OUTPUT_DIR",
+        "stan": "STAN_OUTPUT_DIR",
     }
     if context.framework in output_env_vars:
         simulation_data_dir.mkdir(parents=True, exist_ok=True)

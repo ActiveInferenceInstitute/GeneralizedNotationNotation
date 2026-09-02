@@ -43,5 +43,5 @@ matrix/
 
 See [visualization/AGENTS.md](../AGENTS.md) for the overall visualization architecture.
 
-**Version**: 3.1.0
+**Version**: 3.2.0
 **Last Updated**: 2026-05-12

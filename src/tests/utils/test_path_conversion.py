@@ -83,14 +83,10 @@ class TestValidateAndConvertPaths:
         with pytest.raises(ValueError):
             validate_and_convert_paths(args, logging.getLogger("test"))
 
-    def test_non_path_missing_optional_arg_is_tolerated(
-        self, caplog: Any
-    ) -> None:
+    def test_non_path_missing_optional_arg_is_tolerated(self, caplog: Any) -> None:
         """Non-critical optional path args (e.g. ontology_terms_file=None)
         are skipped without raising; their absence is only a debug note."""
-        args = self._new_args(
-            ontology_terms_file=None, pipeline_summary_file=None
-        )
+        args = self._new_args(ontology_terms_file=None, pipeline_summary_file=None)
         with caplog.at_level(logging.WARNING, logger="utils.argument_utils"):
             validate_and_convert_paths(args, logging.getLogger("test"))
         # No critical path arg was None, so no exception.

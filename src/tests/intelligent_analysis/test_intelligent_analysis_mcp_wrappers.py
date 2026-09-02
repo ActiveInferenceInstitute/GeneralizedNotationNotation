@@ -60,7 +60,9 @@ class TestIntelligentAnalysisMcp:
         target.mkdir()
         out = tmp_path / "out2"
         result = process_intelligent_analysis_mcp(
-            str(target), str(out), analysis_types="failure_analysis,performance_analysis"
+            str(target),
+            str(out),
+            analysis_types="failure_analysis,performance_analysis",
         )
         assert "success" in result
 
@@ -69,9 +71,7 @@ class TestIntelligentAnalysisMcp:
         """A nonexistent target should still return a structured response."""
         out = tmp_path / "out3"
         out.mkdir()
-        result = process_intelligent_analysis_mcp(
-            str(tmp_path / "missing"), str(out)
-        )
+        result = process_intelligent_analysis_mcp(str(tmp_path / "missing"), str(out))
         assert "success" in result
 
 

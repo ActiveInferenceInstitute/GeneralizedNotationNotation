@@ -69,16 +69,15 @@ def test_kl_divergence_identical_is_zero() -> None:
 
 
 def test_kl_divergence_nan_input_finite_result() -> None:
-    value = mu.compute_kl_divergence(
-        np.array([np.nan, 0.5]), np.array([0.5, 0.5])
-    )
+    value = mu.compute_kl_divergence(np.array([np.nan, 0.5]), np.array([0.5, 0.5]))
     assert np.isfinite(value)
 
 
 def test_variational_free_energy_empty_beliefs_is_zero() -> None:
-    assert mu.compute_variational_free_energy(
-        np.array([]), np.array([]), np.ones((2, 2))
-    ) == 0.0
+    assert (
+        mu.compute_variational_free_energy(np.array([]), np.array([]), np.ones((2, 2)))
+        == 0.0
+    )
 
 
 def test_expected_free_energy_empty_beliefs_does_not_crash() -> None:
