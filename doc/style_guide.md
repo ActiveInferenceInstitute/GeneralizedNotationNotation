@@ -122,7 +122,7 @@ Detailed content...
 
 - Use backticks for file names: `config.yaml`
 - Use backticks for variable names: `s_f0`, `o_m1`
-- Use backticks for commands: `python main.py`
+- Use backticks for commands: `uv run python src/main.py`
 - Use backticks for GNN syntax elements: `s_f0[3,1,type=int]`
 
 **Code Blocks**:
@@ -145,8 +145,7 @@ gnn_config:
 
 ```bash
 # Command line examples with clear context
-cd src
-python main.py --only-steps 1_gnn
+uv run python src/main.py --only-steps "3,5,11,12"
 ```
 
 ```
@@ -567,8 +566,7 @@ Step-by-step breakdown of the model...
 #### Running the Example
 
 ```bash
-cd src
-python main.py example.md
+uv run python src/main.py --target-dir input/gnn_files --verbose
 ```
 
 #### Expected Output

@@ -8,11 +8,11 @@
 
 **Category**: Pipeline Infrastructure / Initialization
 
-**Status**: ✅ Production Ready
+**Status**: Production Ready
 
 **Version**: 3.2.0
 
-**Last Updated**: 2026-04-16
+**Last Updated**: 2026-09-02
 
 ---
 
@@ -72,13 +72,13 @@ success = process_template_standardized(
 )
 ```
 
-#### `process_single_file(input_file: Path, output_dir: Path, options: Dict[str, Any] = None) -> bool`
-**Description**: Process a single file using the template logic.
+#### `process_single_file(input_file: Path, output_dir: Path, options: Dict[str, Any]) -> bool`
+**Description**: Process a single file using the template logic. Writes `<stem>/<stem>_processed<ext>` and a `<stem>_report.json` into a per-file subdirectory of `output_dir`.
 
 **Parameters**:
 - `input_file` (Path): Path to input file to process
 - `output_dir` (Path): Directory to save output files
-- `options` (Dict[str, Any], optional): Processing options dictionary
+- `options` (Dict[str, Any]): Processing options dictionary (required positional argument)
 
 **Returns**: `bool` - True if file processing succeeded, False otherwise
 
@@ -89,21 +89,24 @@ success = process_template_standardized(
 - `input_file` (Path): Path to file to validate
 
 **Returns**: `Dict[str, Any]` - Validation result dictionary with:
-- `valid` (bool): Whether file is valid
-- `errors` (List[str]): List of validation errors
-- `warnings` (List[str]): List of validation warnings
+- `status` (str): "ok" when the file exists, is a regular file, and is readable; "error" otherwise
+- `error` (str): Error message (present when `status` is "error")
+- `file_path` (str): The validated path
 
-#### `safe_template_execution(func: Callable, *args, **kwargs) -> Any`
-**Description**: Execute a template function with comprehensive error handling and logging.
+#### `safe_template_execution(logger, correlation_id)`
+**Description**: Context manager for safe template execution with comprehensive error handling, correlation-aware logging, and resource tracking.
 
 **Parameters**:
-- `func` (Callable): Function to execute
-- `*args`: Positional arguments for function
-- `**kwargs`: Keyword arguments for function
+- `logger` (logging.Logger): Logger instance for the execution context
+- `correlation_id` (str): Correlation ID to tag log entries with
 
-**Returns**: `Any` - Function return value, or None if execution failed
+**Usage**:
+```python
+from template import safe_template_execution, generate_correlation_id
 
-**Raises**: Logs errors but does not raise exceptions
+with safe_template_execution(logger, generate_correlation_id()):
+    process_template_standardized(target_dir, output_dir, logger)
+```
 
 #### `get_version_info() -> Dict[str, str]`
 **Description**: Get module version and metadata information.
@@ -115,16 +118,16 @@ success = process_template_standardized(
 - `author` (str): Module author
 
 #### `generate_correlation_id() -> str`
-**Description**: Generate unique correlation ID for pipeline tracking and request correlation.
+**Description**: Generate a short correlation ID for pipeline tracking and request correlation.
 
-**Returns**: `str` - Unique correlation ID string (UUID format)
+**Returns**: `str` - Correlation ID string (first 8 hex chars of a UUID4)
 
 **Example**:
 ```python
 from template import generate_correlation_id
 
 correlation_id = generate_correlation_id()
-# Returns: "550e8400-e29b-41d4-a716-446655440000"
+# Returns: "550e8400" (first 8 hex chars of a UUID4)
 ```
 
 #### `demonstrate_utility_patterns(context: Dict[str, Any], logger: logging.Logger) -> Dict[str, Any]`
@@ -133,10 +136,11 @@ correlation_id = generate_correlation_id()
 **Parameters**:
 - `context` (Dict[str, Any]): Processing context dictionary
 - `logger` (logging.Logger): Logger instance for demonstration logging
-
 **Returns**: `Dict[str, Any]` - Demonstration results dictionary with:
+
+- `timestamp`, `correlation_id` (str): Execution timestamp and correlation ID
 - `patterns_demonstrated` (List[str]): List of demonstrated patterns
-- `results` (Dict[str, Any]): Results from each pattern demonstration
+- `infrastructure_status` (Dict[str, Any]): Status of each infrastructure subsystem
 - `performance_metrics` (Dict[str, float]): Performance metrics
 
 ---
@@ -151,19 +155,9 @@ correlation_id = generate_correlation_id()
 ### Internal Dependencies
 - `utils.pipeline_template` - Pipeline template utilities
 
----
-
 ## Configuration
 
-### Template Settings
-```python
-TEMPLATE_CONFIG = {
-    "enable_demonstration": True,
-    "generate_examples": True,
-    "validate_patterns": True,
-    "include_documentation": True,
-}
-```
+No module-level configuration file. The step is configured entirely through standard pipeline arguments (`--target-dir`, `--output-dir`, `--recursive`, `--verbose`).
 
 ---
 
@@ -200,29 +194,26 @@ print(f"Generated ID: {correlation_id}")
 
 ### Output Products
 - `template_processing_summary.json` - Template processing results
-- `{model}_report.json` - Per-file processing report (one per input GNN file)
+- Per input file, under `output_dir/<file_stem>/`:
+  - `<file_stem>_processed<ext>` - Processed copy of the input file
+  - `<file_stem>_report.json` - Per-file processing report
 
 ### Output Directory Structure
 ```
 output/0_template_output/
 ├── template_processing_summary.json
-└── examples/
+└── <file_stem>/
+    ├── <file_stem>_processed<ext>
+    └── <file_stem>_report.json
 ```
 
 ---
 
 ## Performance Characteristics
 
-### Latest Execution
-- **Duration**: ~1-3 seconds
-- **Memory**: ~10-20MB
-- **Status**: ✅ Production Ready
-
 ### Expected Performance
 - **Template Processing**: < 1 second
 - **Pattern Demonstration**: 1-2 seconds
-- **Documentation Generation**: < 1 second
-- **Validation**: < 1 second
 
 ---
 
@@ -286,22 +277,15 @@ uv run --extra dev python -m pytest src/tests/test_template*.py \
 ## MCP Integration
 
 ### Tools Registered
-- `template.process` - Process pipeline template
-- `template.demonstrate_patterns` - Demonstrate utility patterns
-- `template.generate_documentation` - Generate template documentation
-- `template.validate_infrastructure` - Validate infrastructure patterns
+- `template.process_file` - Process a single file (`mcp.py`)
+- `template.process_directory` - Process a directory (`mcp.py`)
+- `template.get_info` - Return template module metadata (`mcp.py`)
 
-### Tool Endpoints
-```python
-@mcp_tool("template.process")
-def process_template_tool(target_dir, output_dir):
-    """Process pipeline template"""
-    # Implementation
-```
+### Registration
+Tools are registered by `template.mcp.register_tools(registry)`; there is no `@mcp_tool` decorator in this module.
 
 ---
 
----
 ## Documentation
 - **[README](README.md)**: Module Overview
 - **[AGENTS](AGENTS.md)**: Agentic Workflows

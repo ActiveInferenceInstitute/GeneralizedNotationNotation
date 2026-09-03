@@ -2,26 +2,28 @@
 
 ## Overview
 
-Shared test utilities and recovery helpers used across the GNN test suite. Provides common fixtures, assertion helpers, and render recovery logic for test stability.
+Shared test utilities used across the GNN test suite: sample-model path helpers and a render-recovery helper for test isolation.
 
 ## Architecture
 
 ```
 helpers/
-├── __init__.py            # Helper exports and shared test fixtures (60 lines)
-└── render_recovery.py     # Render step recovery helpers for test isolation (57 lines)
+├── __init__.py            # Path helpers for test_data/ + sample-model loader; re-exports render_gnn_files
+└── render_recovery.py     # render_gnn_files(): recovery-friendly bulk render used by resilience tests
 ```
 
 ## Key Exports
 
-- **Test fixtures** — Common `pytest` fixtures for temporary directories, sample GNN files, and pipeline context.
-- **`render_recovery`** — Utilities to safely recover from render step failures during integration testing, preventing cascading test failures.
+- `get_test_data_dir()` — path to `src/tests/test_data/`
+- `get_sample_gnn_model()` — path to the on-disk `sample_gnn_model.md` fixture
+- `load_sample_gnn_spec()` — parse the sample model into a spec dict (falls back to a minimal dict when the file is missing)
+- `render_gnn_files()` — render every GNN file in a directory, capturing per-file results for recovery tests
 
 ## Usage
 
 ```python
-from tests.helpers import create_temp_gnn_file, get_test_output_dir
-from tests.helpers.render_recovery import safe_render_cleanup
+from tests.helpers import get_sample_gnn_model, load_sample_gnn_spec
+from tests.helpers.render_recovery import render_gnn_files
 ```
 
 ## Parent Module

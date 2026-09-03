@@ -4,14 +4,14 @@ Shared test utilities and fixtures used across the GNN test suite.
 
 ## Contents
 
-- `__init__.py` — Common fixtures: `create_temp_gnn_file()`, `get_test_output_dir()` (60 lines)
-- `render_recovery.py` — Render step recovery for test isolation (57 lines)
+- `__init__.py` — `get_test_data_dir()`, `get_sample_gnn_model()`, `load_sample_gnn_spec()`
+- `render_recovery.py` — `render_gnn_files()` for render-resilience tests
 
 ## Usage
 
 ```python
-from tests.helpers import create_temp_gnn_file
-from tests.helpers.render_recovery import safe_render_cleanup
+from tests.helpers import get_sample_gnn_model, load_sample_gnn_spec
+from tests.helpers.render_recovery import render_gnn_files
 ```
 
 ## See Also

@@ -34,12 +34,12 @@ from visualization import (
 
 # Use the GNNVisualizer class
 viz = GNNVisualizer(output_dir="output/")
-viz.generate_graph_visualization(graph_data)
-viz.generate_matrix_visualization(matrix_data)
+paths = viz.generate_graph_visualization(graph_data)   # list of generated files
+paths = viz.generate_matrix_visualization(matrix_data)
 
-# Standalone functions
-generate_graph_visualization(graph_data, output_dir="output/")
-generate_matrix_visualization(matrix_data, output_dir="output/")
+# Module-level helpers write a single file each; return True/False
+generate_graph_visualization(graph_data, "output/viz/model_graph.png")
+generate_matrix_visualization(matrix_data, "output/viz/model_matrix.png")
 
 # Run full visualization step (used by pipeline)
 process_visualization(
@@ -57,12 +57,7 @@ process_visualization(
 
 ## Safe-to-Fail Pattern
 
-Visualization uses a four-tier recovery system:
-
-1. Full visualizer with all dependencies
-2. Matrix-only visualizer
-3. Basic plots
-4. HTML recovery report
+Branch failures (network, matrix, combined) are isolated per subsection and logged; the run-level summary records processing errors while remaining artifacts are kept.
 
 ## Dependencies
 

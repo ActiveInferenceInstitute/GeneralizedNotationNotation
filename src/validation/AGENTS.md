@@ -8,11 +8,11 @@
 
 **Category**: Validation / Quality Assurance
 
-**Status**: ✅ Production Ready
+**Status**: Production Ready
 
 **Version**: 3.2.0
 
-**Last Updated**: 2026-04-16
+**Last Updated**: 2026-09-02
 
 ---
 
@@ -38,17 +38,14 @@
 
 ### Public Functions
 
-#### `process_validation(target_dir, output_dir, verbose=False, logger=None, **kwargs) -> bool`
+#### `process_validation(target_dir, output_dir, verbose=False, **kwargs) -> bool`
 **Description**: Main validation processing function called by orchestrator (6_validation.py)
 
 **Parameters**:
 - `target_dir` (Path): Directory containing GNN files to validate
 - `output_dir` (Path): Output directory for validation results
-- `verbose` (bool): Enable verbose logging (default: False)
-- `logger` (Logger, optional): Logger instance (default: None)
-- `strict` (bool): Enable strict validation mode (default: False)
-- `profile` (bool): Enable performance profiling (default: False)
-- `**kwargs`: Additional validation options
+- `verbose` (bool): Enable verbose logging (default: False); logging otherwise goes to the module logger
+- `**kwargs`: Additional validation options (accepted but not consumed; behavior is governed by validator defaults)
 
 **Returns**: `True` if validation succeeded
 
@@ -60,32 +57,29 @@ success = process_validation(
     target_dir=Path("input/gnn_files"),
     output_dir=Path("output/6_validation_output"),
     verbose=True,
-    strict=True,
-    profile=True,
 )
+
 ```
 
-#### `process_semantic_validation(model_data: Dict[str, Any]) -> Dict[str, Any]`
-**Description**: Perform semantic validation on model data
+#### `process_semantic_validation(model_data) -> Dict[str, Any]`
+**Description**: Perform semantic validation on model data. Returns `{file_path, file_name, valid, errors, warnings, semantic_score}` (`status: error` dict on failure).
 
 **Parameters**:
 - `model_data` (Dict[str, Any]): Parsed GNN model data
 
 **Returns**: Dictionary with semantic validation results
 
-#### `profile_performance(model_data: Dict[str, Any]) -> Dict[str, Any]`
-**Description**: Profile model performance characteristics
+#### `profile_performance(model_data) -> Dict[str, Any]`
+**Description**: Profile model performance characteristics. Returns `{file_path, file_name, metrics, warnings, performance_score}` (`status: error` dict on failure).
 
 **Parameters**:
-- `model_data` (Dict[str, Any]): Parsed GNN model data
+- `model_data` (str | Path | Dict[str, Any]): GNN content string, file path, or parsed model data
 
-**Returns**: Dictionary with performance metrics
-
-#### `check_consistency(model_data: Dict[str, Any]) -> Dict[str, Any]`
-**Description**: Check consistency of model data
+#### `check_consistency(model_data) -> Dict[str, Any]`
+**Description**: Check consistency of model data. Returns `{file_path, file_name, consistent, warnings, checks, consistency_score}` (`status: error` dict on failure).
 
 **Parameters**:
-- `model_data` (Dict[str, Any]): Parsed GNN model data
+- `model_data` (str | Path | Dict[str, Any]): GNN file path or parsed model data
 
 **Returns**: Dictionary with consistency results
 
@@ -104,15 +98,7 @@ success = process_validation(
 
 ## Configuration
 
-### Validation Settings
-```python
-VALIDATION_CONFIG = {
-    "strict_validation": False,
-    "profile_performance": True,
-    "check_consistency": True,
-    "validate_semantics": True,
-}
-```
+No module-level configuration file. Semantic validation depth is set via `SemanticValidator(validation_level=...)` (`basic`, `standard`, `strict`, `research`); the orchestrator runs all three validators with their defaults.
 
 ---
 
@@ -127,29 +113,21 @@ success = process_validation(
 )
 ```
 
-### Model Structure Validation
+### Semantic Validation
 ```python
-from validation import validate_model_structure
+from validation import process_semantic_validation
 
-with open("model.gnn", "r") as f:
-    content = f.read()
-
-validation = validate_model_structure(content)
-if validation["valid"]:
-    print("Model structure is valid")
-else:
-    print("Validation issues:")
-    for issue in validation["issues"]:
-        print(f"  - {issue}")
+result = process_semantic_validation("model.gnn")
+print(f"Valid: {result['valid']}, Score: {result['semantic_score']:.2f}")
 ```
 
 ### Performance Profiling
 ```python
-from validation import profile_model_performance
+from validation import profile_performance
 
-profile = profile_model_performance(content)
-print(f"Estimated complexity: {profile['complexity_score']}")
-print(f"Performance rating: {profile['performance_rating']}")
+result = profile_performance("model.gnn")
+print(f"Memory estimate: {result['metrics']['estimated_memory_mb']:.2f} MB")
+print(f"Score: {result['performance_score']:.2f}")
 ```
 
 ---
@@ -164,18 +142,12 @@ print(f"Performance rating: {profile['performance_rating']}")
 ```
 output/6_validation_output/
 ├── validation_results.json
-├── validation_summary.json
-└── detailed_analysis/
+└── validation_summary.json
 ```
 
 ---
 
 ## Performance Characteristics
-
-### Latest Execution
-- **Duration**: ~1-5 seconds per model
-- **Memory**: ~20-100MB
-- **Status**: ✅ Production Ready
 
 ### Expected Performance
 - **Basic Validation**: < 1 second
@@ -245,22 +217,14 @@ uv run --extra dev python -m pytest src/tests/test_validation*.py \
 ## MCP Integration
 
 ### Tools Registered
-- `validation.validate_structure` - Validate model structure
-- `validation.profile_performance` - Profile model performance
-- `validation.check_consistency` - Check cross-format consistency
-- `validation.analyze_quality` - Analyze model quality
-
-### Tool Endpoints
-```python
-@mcp_tool("validation.validate_structure")
-def validate_structure_tool(content):
-    """Validate model structure"""
-    # Implementation
-```
+Registered by `validation.mcp.register_tools(mcp_instance)` (4 tools):
+- `process_validation` - Run full validation pipeline on a directory
+- `validate_gnn_file` - Validate a single GNN file (basic/standard/strict level)
+- `get_validation_report` - Read saved validation reports from a previous run
+- `check_schema_compliance` - Check a GNN model string against canonical schema requirements
 
 ---
 
----
 ## Documentation
 - **[README](README.md)**: Module Overview
 - **[AGENTS](AGENTS.md)**: Agentic Workflows

@@ -19,8 +19,6 @@ python src/20_website.py --target-dir input/gnn_files --output-dir output --verb
 python src/main.py --only-steps 20 --verbose
 ```
 
-## API
-
 ```python
 from website import (
     WebsiteGenerator,
@@ -28,7 +26,6 @@ from website import (
     generate_website,
     process_website,
     generate_html_report,
-    get_module_info,
     embed_image,
     embed_markdown_file,
     embed_text_file,
@@ -39,16 +36,19 @@ from website import (
 # Process website step (used by pipeline)
 process_website(target_dir, output_dir, verbose=True)
 
-# Use the WebsiteGenerator class
+# Module-level convenience (generator.py): generate_website(logger, input_dir, output_dir, *, pipeline_output_root=None)
+result = generate_website(logger, target_dir, output_dir)
+
+# WebsiteGenerator builds the 7-page site from a website_data dict
 gen = WebsiteGenerator()
-generate_website(artifacts_dir, output_dir)
+gen.generate_website({"input_dir": str(target_dir), "output_dir": str(output_dir)})
 
-# Generate individual HTML report
-generate_html_report(data, output_path)
+# Generate an individual HTML report (content: str, output_file: Path) -> bool
+generate_html_report(content, output_path)
 
-# Embed content
-embed_image(image_path, html_output)
-embed_markdown_file(md_path, html_output)
+# Embed content (each returns bool)
+embed_image(image_path, output_file)
+embed_markdown_file(md_path, output_file)
 
 # Query supported file types
 types = get_supported_file_types()
@@ -58,7 +58,8 @@ types = get_supported_file_types()
 
 - `WebsiteGenerator` / `WebsiteRenderer` — website generation classes
 - `generate_website` / `process_website` — main generation functions
-- `generate_html_report` — HTML report generation
+- `generate_html_report` — HTML report generation; takes content text and an
+  output file path, returns True on success
 - `embed_image`, `embed_markdown_file`, `embed_text_file`, `embed_json_file`, `embed_html_file`
 - `validate_website_config` — configuration validation
 

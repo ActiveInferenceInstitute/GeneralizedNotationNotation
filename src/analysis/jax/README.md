@@ -69,8 +69,7 @@ Analysis Output (Step 16)
 - Execution logs
 
 **Output:** `output/16_analysis_output/jax/`
-- `analysis_summary.json`
-- Convergence plots
+- PNG visualization files (paths returned by `generate_analysis_from_logs`)
 - Performance reports
 
 ---

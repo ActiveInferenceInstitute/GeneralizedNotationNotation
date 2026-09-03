@@ -9,11 +9,15 @@ Its core design requirement is to facilitate real-implementation test coverage t
 Expected available types: No exported Python classes are native to this location. The integration footprint consists exclusively of YAML configuration files and associated documentation.
 
 Core configuration components include:
-1. **`dependabot.yml`**: Supply chain updates routing, responsible for maintaining dependency freshness for Piper/Python and GitHub Actions ecosystems with strict scheduled cadences.
+1. **`dependabot.yml`**: Supply chain updates routing, responsible for maintaining dependency freshness for pip and GitHub Actions ecosystems with strict scheduled cadences.
 2. **`workflows/ci.yml`**: Headless end-to-end multi-version execution matrix for running Pytest, Ruff linting, and Bandit security scanning.
-3. **`workflows/docs-audit.yml`**: Pre-commit structural validation of the GNN documentation system, enforcing Markdown integrity and logical inter-linking.
+3. **`workflows/docs-audit.yml`**: CI structural validation of the GNN documentation system, enforcing Markdown integrity and logical inter-linking.
 4. **`workflows/codeql.yml`**: Static analysis tracking delegating semantic code security audits to GitHub's native engine.
 5. **`workflows/supply-chain-audit.yml`**: Active OSV pipeline vulnerability tracking via `pip-audit`.
+6. **`workflows/actionlint.yml`**: Static validation of workflow YAML schemas on changes under `.github/workflows/`.
+7. **`workflows/dependency-review.yml`**: PR gate denying AGPL licenses and failing on high-severity vulnerability introductions.
+8. **`workflows/mcp-audit.yml`**: Fast MCP tool-count regression gate (≥ 140 registered tools) on push/PR to `main`.
+9. **`workflows/full-extras.yml`**: Weekly scheduled matrix validating optional dependency groups and running the full pytest suite under `--all-extras`.
 
 ## Technical Rules
 - **Syntax Validation**: Ensure 100% structural adherence to GitHub Actions schema formats; require successful execution of `actionlint` prior to merging structural changes.

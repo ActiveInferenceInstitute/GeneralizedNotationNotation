@@ -6,16 +6,18 @@ Model Context Protocol server and client implementation for GNN integration.
 ## Components
 
 ### Core
-- `mcp.py` - Main MCP server (2004 lines)
-- `exceptions.py` - 11 exception classes (182 lines)
+- `mcp.py` - Main MCP server (`MCP`, `MCPTool`, `MCPResource`, discovery, execution)
+- `exceptions.py` - MCP exception classes (see below)
 
 ### Clients
 - `sympy_mcp_client.py` - SymPy integration with stochasticity/stability analysis
 - `npx_inspector.py` - NPX package inspection
 
 ## Exception Classes
-- `MCPError`, `MCPToolNotFoundError`, `MCPResourceNotFoundError`
-- `MCPParameterValidationError`, `MCPExecutionError`
+`MCPError` (base), `MCPToolNotFoundError`, `MCPResourceNotFoundError`,
+`MCPInvalidParamsError`, `MCPToolExecutionError`, `MCPValidationError`,
+`MCPSDKNotFoundError`, `MCPModuleLoadError`, `MCPPerformanceError`,
+`MCPRateLimitError`, `MCPCacheError`, `MCPModuleDiscoveryError`.
 
 ## Key Exports
 ```python
@@ -24,7 +26,8 @@ from mcp.exceptions import MCPError, MCPToolNotFoundError
 ```
 
 ## Testing
-Tests in `tests/test_mcp_overall.py` (10 tests)
+Tests in `src/tests/mcp/` (`test_mcp_overall.py` and siblings).
+
 
 
 ---

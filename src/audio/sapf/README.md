@@ -1,6 +1,6 @@
 # SAPF Audio Module
 
-This submodule provides audio generation capabilities for GNN models using the SAPF (Spectral Audio Processing Framework), enabling spectral audio processing, frequency domain manipulation, and advanced model sonification for Active Inference research.
+This submodule provides audio generation capabilities for GNN models using SAPF (Sound As Pure Form): GNN structure is converted to SAPF code, which is then synthesized to WAV audio in Python for auditory inspection of Active Inference models.
 
 ## Module Structure
 
@@ -9,11 +9,12 @@ src/audio/sapf/
 ├── __init__.py                    # Module initialization and exports
 ├── README.md                      # This documentation
 ├── AGENTS.md                      # Agent scaffolding
-├── processor.py                   # Core spectral processing
-├── generator.py                   # Audio generation
-├── sapf_gnn_processor.py         # GNN to SAPF converter
-├── audio_generators.py           # Audio generation components
-└── utils.py                       # Utility functions
+├── processor.py                   # GNN -> SAPF code -> WAV wrapper (process_gnn_to_audio)
+├── generator.py                   # Directory-level generate_sapf_audio helper
+├── module_info.py                 # get_module_info / get_audio_generation_options / register_tools
+├── sapf_gnn_processor.py         # SAPFGNNProcessor: GNN sections -> SAPF code
+├── audio_generators.py           # SyntheticAudioGenerator and oscillator helpers
+└── utils.py                       # Small shared helpers
 ```
 
 ## SAPF Audio Generation Pipeline
@@ -48,27 +49,32 @@ graph TD
 
 ### GNN-to-Audio Conversion
 
-#### `process_gnn_to_audio(gnn_content: str, output_dir: str | Path, **kwargs) -> Dict[str, Any]`
-Parses GNN content and produces `{model}_sapf_audio.wav` in `output_dir`.
+#### `process_gnn_to_audio(gnn_content: str, model_name: str, output_dir: str, duration: float = 10.0, validate_only: bool = False) -> Dict[str, Any]`
+Converts GNN content to SAPF code and synthesizes `{model_name}_sapf_audio.wav` in `output_dir`.
+`model_name` is required. Returns `success`, `audio_file`, `model_name`, `sapf_code`, `duration`;
+with `validate_only=True` it returns `validation_result` instead of writing audio. Failures
+come back as `{"success": False, "error": ...}`.
 
 ### SAPF Code Generation
 
-#### `convert_gnn_to_sapf(gnn_content: str, output_dir: str | Path, **kwargs) -> Dict[str, Any]`
-Converts GNN sections (state space, connections, parameters) into SAPF code.
+#### `convert_gnn_to_sapf(gnn_content: str, model_name: str) -> str`
+Converts GNN sections (state space, connections, parameters, time) into SAPF code and returns it as a string.
 
-#### `generate_audio_from_sapf(sapf_code: str, output_dir: str | Path, **kwargs) -> Dict[str, Any]`
-Generates audio from SAPF code via `SyntheticAudioGenerator`.
+#### `generate_audio_from_sapf(sapf_code: str, output_file: Path, duration: float = 10.0) -> bool`
+Generates a WAV file from SAPF code via `SyntheticAudioGenerator`; returns `True` on success.
 
-#### `validate_sapf_code(sapf_code: str) -> Dict[str, Any]`
-Validates SAPF code structure.
+#### `validate_sapf_code(sapf_code: str) -> Tuple[bool, List[str]]`
+Checks for empty code, unbalanced brackets, a `play` command, and variable assignments; returns `(is_valid, issues)`.
 
 ### Audio Generation
 
-#### `generate_sapf_audio(sapf_code: str, output_dir: str | Path, **kwargs) -> Path`
-Renders SAPF code to a WAV file.
+#### `generate_sapf_audio(sapf_code: str, output_path: str, **kwargs) -> Dict[str, Any]`
+Dict-returning wrapper over `generate_audio_from_sapf` (`duration` via kwargs); returns `{"success": bool, "output_path": str}`.
 
-#### `create_sapf_visualization(...) -> Dict[str, Any]` / `generate_sapf_report(...) -> Dict[str, Any]`
-Write visualization data and processing reports as JSON.
+#### `create_sapf_visualization(sapf_code, output_path=None) -> Dict[str, Any]` / `generate_sapf_report(sapf_results, output_path=None) -> Dict[str, Any]`
+Return parsed component data / a results summary and write them as JSON when `output_path` is given.
+
+Each WAV is accompanied by `{model}_sapf_audio_waveform_analysis.png` (waveform, spectrum, spectrogram panels) unless `create_visualization=False` is passed to `SyntheticAudioGenerator.generate_from_sapf`.
 
 ### Audio Generators (`audio_generators.py`)
 
@@ -82,7 +88,7 @@ Write visualization data and processing reports as JSON.
 ```python
 from audio.sapf import process_gnn_to_audio
 
-result = process_gnn_to_audio(gnn_content, output_dir="output/audio_sapf")
+result = process_gnn_to_audio(gnn_content, "my_model", "output/15_audio_output", duration=10.0)
 ```
 
 ### GNN to SAPF Code
@@ -90,8 +96,8 @@ result = process_gnn_to_audio(gnn_content, output_dir="output/audio_sapf")
 ```python
 from audio.sapf import convert_gnn_to_sapf, validate_sapf_code
 
-conversion = convert_gnn_to_sapf(gnn_content, output_dir="output/audio_sapf")
-validation = validate_sapf_code(conversion["sapf_code"])
+sapf_code = convert_gnn_to_sapf(gnn_content, "my_model")
+is_valid, issues = validate_sapf_code(sapf_code)
 ```
 
 ### Audio from SAPF Code
@@ -99,7 +105,7 @@ validation = validate_sapf_code(conversion["sapf_code"])
 ```python
 from audio.sapf import generate_audio_from_sapf
 
-audio = generate_audio_from_sapf(sapf_code, output_dir="output/audio_sapf")
+ok = generate_audio_from_sapf(sapf_code, Path("output/15_audio_output/my_model_sapf_audio.wav"), duration=10.0)
 ```
 
 ### Model Sonification
@@ -108,28 +114,25 @@ audio = generate_audio_from_sapf(sapf_code, output_dir="output/audio_sapf")
 from audio.sapf import process_gnn_to_audio
 
 # Sonification goes through the same GNN-to-SAPF pipeline
-result = process_gnn_to_audio(gnn_content, output_dir="output/audio_sapf")
+result = process_gnn_to_audio(gnn_content, "my_model", "output/15_audio_output")
 ```
 
 ## Error Handling
 
 ```python
-# Conversion/generation failures raise ordinary exceptions
-try:
-    result = process_gnn_to_audio(gnn_content, output_dir="output/audio_sapf")
-except Exception as e:
-    logger.error(f"SAPF audio generation failed: {e}")
+# process_gnn_to_audio reports failures in its result dict rather than raising
+result = process_gnn_to_audio(gnn_content, "my_model", "output/15_audio_output")
+if not result["success"]:
+    logger.error(f"SAPF audio generation failed: {result.get('error')}")
 ```
 
 ## Dependencies
 
 ### Required Dependencies
 - **numpy**: Numerical computing
-- **soundfile**: Audio file I/O
+- **matplotlib**: Imported unconditionally by `audio_generators.py` for the analysis PNG
 
-### Optional Dependencies
-- **matplotlib**: Audio visualization
-- **pedalboard**: Audio effects (separate `audio/pedalboard/` scaffold)
+WAV files are written with the standard-library `wave` module; `soundfile` is not used here.
 
 ## Performance Metrics
 
@@ -140,53 +143,30 @@ exact figures depend on model size and synthesis length.
 
 ### Common Issues
 
-#### 1. Spectral Processing Failures
-```
-Error: Spectral processing failed - invalid window size
-Solution: Check window size and ensure it's a power of 2
-```
+#### 1. `TypeError` from `process_gnn_to_audio`
+`model_name` is a required positional argument: `process_gnn_to_audio(gnn_content, model_name, output_dir)`.
 
-#### 2. Analysis Issues
-```
-Error: Spectral analysis failed - insufficient data
-Solution: Check audio data length and provide sufficient samples
-```
+#### 2. Validation reports "No 'play' command found"
+The SAPF code was truncated or hand-edited; regenerate it with `convert_gnn_to_sapf`.
 
-#### 3. Sonification Issues
-```
-Error: Spectral sonification failed - invalid mapping
-Solution: Validate mapping configuration and provide recovery
-```
+#### 3. Silent or very short audio
+Few or no state variables were parsed; check the GNN file's `StateSpaceBlock` and `Connections` sections.
 
-#### 4. Performance Issues
-```
-Error: Spectral processing timeout - high CPU usage
-Solution: Optimize window size and reduce processing complexity
-```
-
-### Debug Mode
+### Validate Without Writing Audio
 ```python
-# Enable verbose logging during GNN-to-audio conversion
-results = process_gnn_to_audio(gnn_content, output_dir="output/audio_sapf", verbose=True)
+result = process_gnn_to_audio(gnn_content, "my_model", "output/15_audio_output", validate_only=True)
+print(result["validation_result"])
 ```
 
 ## Future Enhancements
 
 ### Planned Features
-- **AI-Powered Spectral Processing**: Machine learning-based spectral effects
-- **Advanced Sonification**: Advanced spectral mapping techniques
-- **Real-time Collaboration**: Multi-user real-time spectral processing
-- **Cloud Processing**: Cloud-based spectral processing
-
-### Performance Improvements
-- **Advanced Caching**: Advanced caching strategies
-- **Parallel Processing**: Enhanced parallel processing
-- **GPU Acceleration**: GPU-accelerated spectral processing
-- **Machine Learning**: ML-based performance optimization
+- **Pedalboard Effects**: Post-process the generated WAV files (see `audio/pedalboard/`)
+- **Richer SAPF Constructs**: Additional oscillator and routing forms from GNN matrices
 
 ## Summary
 
-The SAPF Audio module provides comprehensive spectral audio generation capabilities for GNN models using the SAPF framework, enabling spectral domain processing, frequency manipulation, and advanced model sonification. The module ensures reliable spectral processing, high-quality frequency domain manipulation, and optimal performance for Active Inference research and spectral-based model analysis.
+The SAPF Audio module converts GNN model structure to SAPF (Sound As Pure Form) code and synthesizes that code to WAV audio with an accompanying waveform/spectrum analysis image, giving Active Inference researchers an auditory view of model structure.
 
 ## License and Citation
 

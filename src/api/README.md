@@ -26,7 +26,7 @@ FastAPI-based REST interface for the GNN processing pipeline. Enables headless p
 gnn serve --host 0.0.0.0 --port 8000
 
 # Direct
-python -m uvicorn src.api.app:app --host 0.0.0.0 --port 8000
+python -m uvicorn api.app:app --host 0.0.0.0 --port 8000
 ```
 
 ### Example Requests
@@ -37,7 +37,6 @@ curl -X POST http://localhost:8000/api/v1/run \
   -H "Content-Type: application/json" \
   -d '{"target_dir": "input/gnn_files", "skip_steps": [13]}'
 
-# Validate a file
 # Stream pipeline progress
 curl -N http://localhost:8000/api/v1/runs/abc123/stream
 ```
@@ -60,12 +59,19 @@ curl -N http://localhost:8000/api/v1/runs/abc123/stream
 ```text
 api/
 ├── __init__.py    # Module metadata and feature flags
-├── app.py         # FastAPI application and endpoint definitions
-├── server.py      # Job and individual-step FastAPI surface
+├── app.py         # FastAPI "run" surface; `gnn serve` entry point (start_server)
+├── server.py      # FastAPI "job/tool" surface (process/jobs/tools)
+├── processor.py   # In-memory job manager
+├── models.py      # Pydantic request/response models
 ├── responses.py   # Shared response envelope and exception handlers
+├── auth.py        # Optional API-key authentication (GNN_API_KEY)
+├── path_utils.py  # Symlink-safe repo path resolution
+├── rate_limit.py  # Request rate limiting
+├── mcp.py         # MCP tool registration manifest
 ├── AGENTS.md      # Agent documentation
 ├── README.md      # This file
-└── SPEC.md        # Module specification
+├── SPEC.md        # Module specification
+└── SKILL.md       # Capability API
 ```
 
 ## References

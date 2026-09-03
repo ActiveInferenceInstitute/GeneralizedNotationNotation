@@ -13,8 +13,12 @@ This module provides comprehensive machine learning integration capabilities for
 ```
 src/ml_integration/
 ├── __init__.py                    # Module initialization and exports
-└── README.md                      # This documentation
-```
+├── AGENTS.md                      # Agent scaffolding documentation
+├── mcp.py                         # Model Context Protocol integration
+├── processor.py                   # Scikit-learn training and feature extraction
+├── README.md                      # This documentation
+├── SKILL.md                       # Capability API
+└── SPEC.md                        # Module specification
 
 
 
@@ -127,36 +131,6 @@ success = process_ml_integration(
 
 ---
 
-## Configuration
-
-### Environment Variables
-- `ML_FRAMEWORK` - Preferred ML framework ("torch", "tensorflow", "jax", "sklearn")
-- `ML_MODEL_TYPE` - Model type ("classification", "regression", "autoencoder")
-- `ML_TRAINING_EPOCHS` - Default training epochs (default: 100)
-- `ML_BATCH_SIZE` - Default batch size (default: 32)
-
-### Configuration Files
-- `ml_config.yaml` - ML framework settings and hyperparameters
-
-### Default Settings
-```python
-DEFAULT_ML_SETTINGS = {
-    "framework": "auto",
-    "model_type": "auto",
-    "training": {
-        "epochs": 100,
-        "batch_size": 32,
-        "validation_split": 0.2,
-        "early_stopping": True,
-        "patience": 10,
-    },
-    "optimization": {
-        "learning_rate": 0.001,
-        "optimizer": "adam",
-        "loss_function": "auto",
-    },
-}
-```
 
 ---
 
@@ -169,22 +143,7 @@ from ml_integration.processor import process_ml_integration
 success = process_ml_integration(
     target_dir=Path("input/gnn_files"),
     output_dir=Path("output/14_ml_integration_output"),
-    logger=logger,
-    model_type="auto",
-)
-```
-
-### Framework-Specific Training
-```python
-from ml_integration.processor import process_ml_integration
-
-success = process_ml_integration(
-    target_dir=Path("input/gnn_files"),
-    output_dir=Path("output/14_ml_integration_output"),
-    logger=logger,
-    model_type="supervised",
-    training_mode="train",
-    ml_framework="torch",
+    verbose=True,
 )
 ```
 
@@ -193,20 +152,17 @@ success = process_ml_integration(
 ## Output Specification
 
 ### Output Products
-- `{model}_ml_model.pkl` - Trained ML model
-- `{model}_training_history.json` - Training metrics and history
-- `{model}_model_evaluation.json` - Model performance evaluation
-- `{model}_dataset_preparation.json` - Dataset preprocessing information
-- `ml_integration_summary.json` - Processing summary
+
+- `gnn_decision_tree.pkl` - Trained DecisionTreeClassifier artifact
+- `gnn_random_forest.pkl` - Trained RandomForestClassifier artifact
+- `ml_integration_results.json` - Processing summary with per-model metrics and per-file structural analysis
 
 ### Output Directory Structure
 ```
 output/14_ml_integration_output/
-├── model_name_ml_model.pkl
-├── model_name_training_history.json
-├── model_name_model_evaluation.json
-├── model_name_dataset_preparation.json
-└── ml_integration_summary.json
+├── gnn_decision_tree.pkl
+├── gnn_random_forest.pkl
+└── ml_integration_results.json
 ```
 
 ---
@@ -251,7 +207,7 @@ output/14_ml_integration_output/
 - `pipeline.config` - Configuration management
 
 ### Imported By
-- `tests.test_ml_integration_unit.py` - ML integration tests
+- `src/tests/ml_integration/test_ml_integration_overall.py` - ML integration tests
 - `main.py` - Pipeline orchestration
 
 ### Data Flow
@@ -267,8 +223,7 @@ GNN Models → ML Framework Selection → Dataset Preparation → Model Training
 - `src/tests/ml_integration/test_ml_integration_overall.py` - Module-level tests
 
 ### Test Coverage
-- **Current**: 72%
-- **Target**: 85%+
+- Measure: `uv run --extra dev python -m pytest src/tests/ml_integration/ --cov=ml_integration --cov-report=term-missing` (do not treat fixed percentages in this doc as canonical).
 
 ### Key Test Scenarios
 1. Framework detection and selection
@@ -282,22 +237,16 @@ GNN Models → ML Framework Selection → Dataset Preparation → Model Training
 ## MCP Integration
 
 ### Tools Registered
-- `ml_train` - Train ML models from GNN specifications
-- `ml_evaluate` - Evaluate trained ML models
-- `ml_framework_detect` - Detect available ML frameworks
 
-### Tool Endpoints
-```python
-@mcp_tool("ml_train")
-def train_ml_model(gnn_file, framework="auto", model_type="auto"):
-    """Train ML model from GNN specification"""
-    # Implementation
-```
+Registered in `register_tools` (`src/ml_integration/mcp.py`):
+
+- `process_ml_integration` - Run Step 14 over a directory
+- `check_ml_frameworks` - Report which ML dependencies are importable
+- `list_ml_integration_targets` - List GNN files eligible for training
+- `get_ml_module_info` - Module metadata
 
 ---
 
-
----
 ## Documentation
 - **[README](../../../src/ml_integration/README.md)**: Module Overview
 - **[AGENTS](../../../src/ml_integration/AGENTS.md)**: Agentic Workflows

@@ -72,10 +72,10 @@ All 25 pipeline steps follow a consistent pattern:
   - `processor.py`: Core logic (preferred; see accepted alternatives below)
   - `mcp.py`: MCP tool registration (if applicable)
 
-**Accepted `processor.py` alternatives** (5 modules use these patterns):
+**Accepted `processor.py` alternatives** (4 modules deviate from the pattern; all 22 module dirs have a `processor.py` — several as thin facades):
 - `setup/`, `tests/`, `validation/`: Logic lives directly in `__init__.py` — functionally equivalent
 - `model_registry/`: Uses `registry.py` as primary logic file — clearly named
-- `website/`: Uses `renderer.py` + `generator.py`; `processor.py` is the public processing entry point and delegates to those helpers
+- `website/` and `type_checker/` keep facade `processor.py` entry points that delegate to their primary logic files (`renderer.py` + `generator.py`, `checking.core`), preserving the documented pattern.
 
 **Hard imports** (steps 20, 21, 24): The website, mcp, and intelligent_analysis step scripts use direct (non-try/except) imports because these modules are pipeline-required and must always be present. All three document this with an inline `# Hard import: X is a core module` comment. Other steps report dependency import problems through explicit warning/error statuses.
 

@@ -465,7 +465,7 @@ def run_audit() -> List[str]:
             )
 
     rxinfer_renderer_text = _read("src/render/rxinfer/rxinfer_renderer.py")
-    execute_text = _read("src/execute/processor.py")
+    execute_text = _read("src/execute/metadata.py")
     for required in ("script_sha256", "metadata_provenance"):
         if required not in rxinfer_renderer_text or required not in execute_text:
             failures.append(

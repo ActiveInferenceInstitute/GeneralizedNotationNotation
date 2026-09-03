@@ -11,6 +11,8 @@ The Generalized Notation Notation (GNN) pipeline translates theoretical model sp
 
 Within the GNN cross-framework comparison, DisCoPy serves as the categorical semantics reference — validating that the model's compositional structure (morphisms, types, and their compositions) is well-formed.
 
+Continuous (linear-Gaussian) models return render status `unsupported` — the categorical string diagram has no linear-Gaussian semantics, so they are not drawn as a discrete stand-in — and are excluded from render success rates and from Step 12 (`supports_continuous: False` in `src/render/framework_registry.py`).
+
 ## Architecture
 
 The DisCoPy implementation consists of three interconnected layers:

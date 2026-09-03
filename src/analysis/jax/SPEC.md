@@ -12,7 +12,7 @@
 - Belief trajectory plots (PNG)
 - Gradient analysis visualizations (PNG)
 - Performance benchmarks (JSON)
-- `analysis_summary.json`
+- Returns the list of generated visualization file paths; no `analysis_summary.json` is written
 
 ## Framework
 

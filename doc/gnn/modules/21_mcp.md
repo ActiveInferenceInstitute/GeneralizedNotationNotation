@@ -105,18 +105,8 @@ success = process_mcp(
 )
 ```
 
-#### `register_module_tools(module_name: str, tools: List[Dict[str, Any]]) -> bool`
-**Description**: Register tools from a specific module in the MCP system.
-
-**Parameters**:
-- `module_name` (str): Name of the module registering tools
-- `tools` (List[Dict[str, Any]]): List of tool definitions with:
-  - `name` (str): Tool name
-  - `func` (Callable): Tool function
-  - `schema` (Dict): JSON schema for parameters
-  - `description` (str): Tool description
-
-**Returns**: `bool` - True if registration succeeded, False otherwise
+#### `register_module_tools(module_name: str | None = None) -> Any`
+**Description**: Register tools for a specific module, or all modules if no name given (`src/mcp/processor.py`). Tools are discovered from each module's `mcp.py` `register_tools`, not passed in by the caller.
 
 #### `get_available_tools() -> List[Dict[str, Any]]`
 **Description**: Get list of all available MCP tools across all modules.
@@ -196,33 +186,12 @@ success = process_mcp(
 ## Configuration
 
 ### Environment Variables
-- `MCP_SERVER_PORT` - MCP server port (default: 8080)
-- `MCP_TRANSPORT` - Transport protocol ("stdio", "http")
-- `MCP_LOG_LEVEL` - MCP logging level ("DEBUG", "INFO", "WARNING", "ERROR")
-- `MCP_TIMEOUT` - MCP request timeout (default: 30 seconds)
 
-### Configuration Files
-- `mcp_config.yaml` - MCP server and tool configuration
-
-### Default Settings
-```python
-DEFAULT_MCP_SETTINGS = {
-    "server": {
-        "port": 8080,
-        "host": "localhost",
-        "transport": "stdio",
-        "timeout": 30,
-        "max_concurrent_requests": 10,
-    },
-    "tools": {
-        "auto_register": True,
-        "validate_schemas": True,
-        "cache_results": True,
-        "rate_limiting": True,
-    },
-    "logging": {"level": "INFO", "format": "json", "include_request_id": True},
-}
-```
+No dedicated `mcp_config.yaml` is read and there is no `DEFAULT_MCP_SETTINGS`
+constant. Runtime configuration is set via the `initialize(...)` factory
+(`src/mcp/mcp.py`) and the `GNN_MCP_*` environment variables — not via
+step-21 CLI flags (`src/21_mcp.py` exposes only `--target-dir`,
+`--output-dir`, `--verbose`).
 
 ---
 
@@ -244,26 +213,11 @@ success = process_mcp(
 ```python
 from mcp import register_module_tools
 
-tools = [
-    {
-        "name": "gnn_parse",
-        "description": "Parse GNN model files",
-        "handler": parse_gnn_file,
-        "input_schema": {...},
-    }
-]
-
-success = register_module_tools("gnn", tools)
+# Register tools for one module (or all modules when called with no argument)
+register_module_tools("gnn")
+register_module_tools()
 ```
 
-### Tool Discovery
-```python
-from mcp import get_available_tools
-
-tools = get_available_tools()
-for tool in tools:
-    print(f"Tool: {tool['name']} - {tool['description']}")
-```
 
 ---
 
@@ -342,11 +296,9 @@ Module Tools → MCP Registration → Tool Discovery → Execution Requests → 
 - `src/tests/mcp/test_mcp_tools.py` - Tool registration tests
 - `src/tests/mcp/test_mcp_functional.py` - Functional tests
 - `src/tests/mcp/test_mcp_audit.py` - Audit tests
-- `src/tests/mcp/test_mcp_tools.py` - Tool registration tests
 
 ### Test Coverage
-- **Current**: 82%
-- **Target**: 90%+
+- Measure: `uv run --extra dev python -m pytest src/tests/mcp/ --cov=mcp --cov-report=term-missing` (do not treat fixed percentages in this doc as canonical).
 
 ### Key Test Scenarios
 1. Tool registration and discovery across modules
@@ -367,7 +319,6 @@ Module Tools → MCP Registration → Tool Discovery → Execution Requests → 
 - `gui_*` - GUI interaction tools
 
 ### Tool Categories
-- **File Processing**: GNN parsing, validation, transformation
 - **Analysis**: Statistical analysis, complexity metrics
 - **Visualization**: Chart generation, interactive displays
 - **Code Generation**: Multi-framework code rendering

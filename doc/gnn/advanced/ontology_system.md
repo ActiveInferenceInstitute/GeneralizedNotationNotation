@@ -77,10 +77,10 @@ This validation helps ensure that GNN models use consistent and recognized termi
 
 ```bash
 # Validate ontology annotations (Step 10)
-python src/10_ontology.py --target-dir input/gnn_files --verbose
+uv run python src/10_ontology.py --target-dir input/gnn_files --verbose
 
 # Or as part of the full pipeline
-python src/main.py --only-steps "3,10" --target-dir input/gnn_files
+uv run python src/main.py --only-steps "3,10" --target-dir input/gnn_files
 ```
 
 ## 4. MCP Integration

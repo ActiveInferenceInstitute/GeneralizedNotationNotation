@@ -34,17 +34,17 @@ from security import (
 # Process security step (used by pipeline)
 process_security(target_dir, output_dir, verbose=True)
 
-# Perform security check
-result = perform_security_check(target_data)
+# Perform security check (sensitive-data + integrity, per file)
+result = perform_security_check(Path("models/model.md"))
 
-# Check vulnerabilities
-vulns = check_vulnerabilities(target_data)
+# Check vulnerabilities (pattern + AST scan, per file)
+vulns = check_vulnerabilities(Path("output/11_render_output/model_pymdp.py"))
 
 # Get security score
-score = calculate_security_score(security_results)
+score = calculate_security_score(vulns)
 
-# Generate recommendations
-recs = generate_security_recommendations(security_results)
+# Generate recommendations (per file)
+recs = generate_security_recommendations(Path("models/model.md"))
 ```
 
 ## Key Exports

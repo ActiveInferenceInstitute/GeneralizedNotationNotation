@@ -270,18 +270,18 @@ success = process_llm(
 ## Output Specification
 
 ### Output Products
-- `{model}_llm_analysis.md` - Full analysis report
-- `{model}_llm_summary.json` - Structured summary
-- `{model}_llm_explanations.md` - Concept explanations
-- `llm_processing_summary.json` - Processing summary
+- `llm_results.json` - Detailed results: per-file analyses, prompt outputs, cache stats, errors
+- `llm_summary.md` - Generated summary report
+- `prompts_{model_stem}/{prompt_key}.md` - Per-file prompt/response transcripts (one directory per analyzed model)
 
 ### Output Directory Structure
 ```
 output/13_llm_output/
-├── model_name_llm_analysis.md
-├── model_name_llm_summary.json
-├── model_name_llm_explanations.md
-└── llm_processing_summary.json
+├── llm_results.json
+├── llm_summary.md
+└── prompts_actinf_pomdp_agent/
+    ├── technical_description.md
+    └── ... (one file per prompt key)
 ```
 
 ---
@@ -319,8 +319,7 @@ if result.returncode == 0:
 - `src/tests/llm/test_llm_ollama_integration.py` - Ollama integration tests
 
 ### Test Coverage
-- **Current**: 76%
-- **Target**: 85%+
+- Measure: `uv run --extra dev python -m pytest src/tests/llm/ --cov=llm --cov-report=term-missing` (do not treat fixed percentages in this doc as canonical).
 
 ### Key Test Scenarios
 1. Ollama detection and availability check
@@ -436,7 +435,7 @@ OLLAMA_MODEL=tinyllama python src/13_llm.py --target-dir input/gnn_files
 **Check Which Model Was Used**:
 ```bash
 # View LLM results
-cat output/13_llm_output/llm_results/llm_results.json | grep "selected_model"
+cat output/13_llm_output/llm_results.json | grep "selected_model"
 ```
 
 #### 6. Recovery Mode Warnings
@@ -557,7 +556,7 @@ cat output/13_llm_output/llm_results/llm_results.json | grep "selected_model"
    python src/13_llm.py --verbose --target-dir input/gnn_files
    
    # Check timing in results
-   cat output/13_llm_output/llm_results/llm_results.json
+   cat output/13_llm_output/llm_results.json
    ```
 
 4. **Optimize for Speed**:
@@ -570,8 +569,8 @@ cat output/13_llm_output/llm_results/llm_results.json | grep "selected_model"
 5. **Check Results Quality**:
    ```bash
    # View generated analyses
-   cat output/13_llm_output/llm_results/prompts_*/technical_description.md
-   cat output/13_llm_output/llm_results/llm_summary.md
+   cat output/13_llm_output/prompts_*/technical_description.md
+   cat output/13_llm_output/llm_summary.md
    ```
 
 ### Advanced Configuration

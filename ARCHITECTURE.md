@@ -2,8 +2,8 @@
 
 This guide details the architecture of the Generalized Notation Notation (GNN) system. It complements `DOCS.md` and `doc/pipeline/README.md` with an implementation-oriented perspective for developers.
 
-**Last Updated**: 2026-06-12
-**Version**: 2.0.0
+**Last Updated**: 2026-09-02
+**Version**: 3.2.0
 **Status**: Maintained
 **Pipeline Steps**: 25 (0-24)
 
@@ -47,8 +47,8 @@ graph TB
   B --> F["Infrastructure Layer<br/>(utils/, pipeline/)"]
   F --> B
 
-  D --> G["External Integrations<br/>(PyMDP, RxInfer.jl, JAX, ActiveInference.jl, PyTorch, NumPyro)"]
-  D --> H["AI Services<br/>(OpenAI, Anthropic, Ollama)"]
+  D --> G["External Integrations<br/>(PyMDP, RxInfer.jl, ActiveInference.jl, JAX, DisCoPy, PyTorch, NumPyro, Stan, bnlearn)"]
+  D --> H["AI Services<br/>(Ollama, OpenAI, OpenRouter, Perplexity)"]
   D --> I["Scientific Frameworks<br/>(JAX, DisCoPy, NetworkX)"]
 
   %% styling intentionally omitted (theme-controlled)
@@ -154,6 +154,18 @@ The contracts are wired into the pipeline additively, leaving existing behavior 
 - `src/pipeline/pipeline_container_plan.py` — derives container plans from pipeline configuration.
 
 A strict acceptance gate, `scripts/run_v3_orchestration_acceptance.py`, exercises these contracts end-to-end, and three new MCP tools expose the orchestration surface to agent clients.
+
+## Exemplar Gold Standard (v3.2.0)
+
+Version 3.2.0 makes every exemplar under `input/gnn_files/` render *and* execute on every framework that can represent it, and flag the rest explicitly:
+
+- **Model kinds**: `src/render/pomdp_contract.py` (`detect_model_kind`) splits specs into discrete POMDP/HMM (categorical `A/B/C/D[/E]`) and continuous linear-Gaussian (`F/H/Q/R`, `prior_mean/prior_cov`, optional `goal_mean/control_gain`). Continuous blocks pass through the render processor verbatim.
+- **Framework capabilities**: `src/render/framework_registry.py` is the single declaration of the nine frameworks and carries `supports_continuous` per entry. Frameworks without continuous support (PyMDP, ActiveInference.jl, DisCoPy, bnlearn) return the `unsupported` render status for continuous models; it is counted separately in `render_processing_summary.json` and never reaches Step 12.
+- **Shared LGSSM generator**: `src/render/continuous_script.py` produces the online Kalman filter (Joseph-form update, closed-loop control) used by the JAX, NumPyro, PyTorch and Stan renderers; RxInfer.jl keeps its native continuous strategy.
+- **Stan execution**: `src/render/stan/stan_renderer.py` emits runnable HMM and LGSSM programs plus a cmdstanpy driver, and `src/execute/stan/` runs them (skipped, not failed, without `cmdstanpy`/CmdStan).
+- **Step 12 summary merge**: `src/execute/processor.py` merges the prior `execution_summary.json` so one durable summary covers every input folder, mirroring Step 11.
+
+See `CHANGELOG.md` §3.2.0 and the README section "Model Kinds and Framework Support".
 
 ## Current Implementation Status
 
@@ -310,7 +322,7 @@ The GNN system implements a sophisticated multi-agent architecture where each mo
 - **Audio Agent**: Multi-backend audio generation and sonification
 - **Analysis Agent**: Advanced statistical processing and performance analysis
 
-**Integration Agents** (Steps 17-23):
+**Integration Agents** (Steps 17-24):
 
 - **Integration Agent**: Cross-module coordination and data flow management
 - **Security Agent**: Input validation, access control, and threat detection
@@ -319,6 +331,7 @@ The GNN system implements a sophisticated multi-agent architecture where each mo
 - **MCP Agent**: Protocol compliance and tool registration
 - **GUI Agent**: Interactive interface generation and user experience
 - **Report Agent**: Comprehensive analysis reporting and visualization
+- **Intelligent Analysis Agent**: Cross-step meta-analysis over the pipeline's own outputs (Step 24)
 
 ### 🔧 **Agent Coordination Mechanisms**
 
@@ -349,8 +362,8 @@ Each agent implements comprehensive performance monitoring:
 
 ---
 
-**Architecture Version**: 2.0.0
-**Last Updated**: 2026-06-12
-**Status**: ✅ Production Ready
+**Architecture Version**: 3.2.0
+**Last Updated**: 2026-09-02
+**Status**: Maintained
 **Compliance**: Thin orchestrator pattern
 **Latest Validation**: See current test and pipeline runs

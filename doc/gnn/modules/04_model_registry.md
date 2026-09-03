@@ -302,8 +302,7 @@ output/4_model_registry_output/
 
 ### Test Coverage
 
-- **Current**: 80%
-- **Target**: 85%+
+- Measure: `uv run --extra dev python -m pytest src/tests/model_registry/ --cov=model_registry --cov-report=term-missing` (do not treat fixed percentages in this doc as canonical).
 
 ---
 

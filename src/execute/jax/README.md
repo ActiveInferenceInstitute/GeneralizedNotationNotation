@@ -1,55 +1,54 @@
 # JAX Executor for GNN Processing Pipeline
 
-This module provides comprehensive execution capabilities for JAX POMDP scripts generated from GNN specifications, including device selection, performance monitoring, and benchmarking.
+This module executes JAX scripts generated from GNN specifications by Step 11
+(Render) as part of Step 12 (Execute), and provides the factorised Kronecker
+executor for sparse factor-separable active inference.
 
 ## Features
 
-- **Script Discovery**: Automatically finds JAX scripts in pipeline output directories
-- **Device Selection**: CPU, GPU, and TPU support with automatic detection
-- **Performance Monitoring**: Built-in benchmarking and resource usage tracking
-- **Error Handling**: Comprehensive error reporting and recovery
-- **Hardware Validation**: Automatic JAX, Optax, and Flax availability checking
+- **Script Discovery**: Finds rendered JAX scripts under `output/11_render_output/<model>/jax/`
+- **Device Selection**: `device` argument → `JAX_PLATFORM_NAME` (`cpu`, `gpu`, `tpu`); Step 12 honours `GNN_JAX_PLATFORM`
+- **Output Routing**: `JAX_OUTPUT_DIR` / `GNN_OUTPUT_DIR` point the script at the Step 12 tree
+- **Availability Check**: `is_jax_available()` logs the JAX version and visible devices
+- **Kronecker Executor**: `execute_kronecker_factorized` / `run_kronecker_factorized_execution` (`jax_kronecker_factorized_v1`)
 
 ## Requirements
 
-### Core Dependencies
-- **JAX**: ≥0.4.20 with appropriate hardware support
-- **jaxlib**: Matching JAX version
-- **Optax**: ≥0.1.7 for optimization
-- **Flax**: ≥0.7.0 for neural networks
-- **NumPy**: ≥1.24.0
-- **SciPy**: ≥1.10.0
+Pinned in `pyproject.toml` and installed by a plain `uv sync`:
 
-### Hardware Requirements
-- **CPU**: Intel x86-64 (Skylake+) or AMD x86-64 (Zen2+)
-- **GPU**: NVIDIA with CUDA 12.0+ (compute capability 7.0+)
-- **TPU**: Google Cloud TPU v4/v5/v6
+- `jax[cpu]>=0.7.0,<0.11` and `jaxlib>=0.7.0,<0.11`
+- `flax>=0.7.0`, `optax>=0.1.0` (used by the combined JAX template)
+- `numpy`
+
+GPU/TPU builds of `jaxlib` are a user-side install; the pipeline only requires the CPU build.
 
 ## Usage
 
 ### Command Line Interface
 
 ```bash
-# Execute all JAX scripts in pipeline output
-python src/execute/jax/jax_runner.py --output-dir output/ --verbose
+# Execute all JAX scripts below a render directory
+python src/execute/jax/jax_runner.py --output-dir output/11_render_output --verbose
 
-# Execute with specific device
-python src/execute/jax/jax_runner.py --output-dir output/ --device gpu
+# Execute with a specific device
+python src/execute/jax/jax_runner.py --output-dir output/11_render_output --device cpu
 
-# Execute with recursive search
-python src/execute/jax/jax_runner.py --output-dir output/ --recursive --verbose
+# Recursive search
+python src/execute/jax/jax_runner.py --output-dir output/11_render_output --recursive --verbose
 ```
 
 ### Python API
 
 ```python
-from src.execute.jax.jax_runner import run_jax_scripts, is_jax_available
+from execute.jax import run_jax_scripts, is_jax_available
 
-# Check JAX availability
 if is_jax_available():
-    # Run JAX scripts
     success = run_jax_scripts(
-        pipeline_output_dir="output/", recursive_search=True, verbose=True, device="gpu"
+        rendered_simulators_dir="output/11_render_output",
+        execution_output_dir="output/12_execute_output",
+        recursive_search=True,
+        verbose=True,
+        device="cpu",
     )
     print(f"Execution successful: {success}")
 else:
@@ -59,243 +58,89 @@ else:
 ### Individual Script Execution
 
 ```python
-from src.execute.jax.jax_runner import execute_jax_script
 from pathlib import Path
+from execute.jax import execute_jax_script
 
-# Execute single JAX script
-success = execute_jax_script(script_path, verbose=True, device="cpu")
+success = execute_jax_script(
+    Path("output/11_render_output/actinf_pomdp_agent/jax/actinf_pomdp_agent_jax.py"),
+    verbose=True,
+    device="cpu",
+    output_dir=Path("output/12_execute_output/actinf_pomdp_agent/jax/simulation_data"),
+    timeout=300,
+)
 ```
+
+`execute_jax_script` and `run_jax_scripts` both return `bool`.
 
 ## Device Management
 
-### Automatic Device Detection
-
-The executor automatically detects available hardware:
+The runner does not pick hardware itself. Pass `device=` (or set `GNN_JAX_PLATFORM`
+for Step 12) and the value is exported as `JAX_PLATFORM_NAME` to the subprocess:
 
 ```python
 import jax
 
-devices = jax.devices()
-print(f"Available devices: {[str(d) for d in devices]}")
+print([str(d) for d in jax.devices()])  # what the subprocess will see
 ```
 
-### Device Selection
-
-```python
-# CPU execution
-env = {"JAX_PLATFORM_NAME": "cpu"}
-
-# GPU execution
-env = {"JAX_PLATFORM_NAME": "gpu"}
-
-# TPU execution
-env = {"JAX_PLATFORM_NAME": "tpu"}
-```
-
-## Performance Monitoring
-
-### Built-in Benchmarking
-
-The executor provides performance metrics:
-
-- **Execution time** per script
-- **Memory usage** tracking
-- **Device utilization** monitoring
-- **Error rates** and recovery
-
-### Performance Logging
-
-```python
-import logging
-
-logging.basicConfig(level=logging.INFO)
-
-# Performance metrics are automatically logged
-# Look for messages like:
-```
+There is no automatic GPU → CPU fallback; re-run with `device="cpu"` if a platform is missing.
 
 ## Integration with Pipeline
 
 ### Step 12 Integration
 
-The JAX executor is integrated into the main pipeline:
-
-```python
-# In 12_execute.py
-from execute.jax import run_jax_scripts
-
-
-def execute_jax_step(pipeline_output_dir, verbose=False):
-    """Execute JAX scripts as part of pipeline step 12."""
-    return run_jax_scripts(
-        pipeline_output_dir=pipeline_output_dir, recursive_search=True, verbose=verbose
-    )
-```
+`execute.processor` executes each rendered JAX script listed in the Step 11
+`render_processing_summary.json`, setting `GNN_OUTPUT_DIR` to
+`output/12_execute_output/<model>/jax/simulation_data/` and (when
+`GNN_JAX_PLATFORM` is set) `JAX_PLATFORM_NAME`.
 
 ### Output Directory Structure
 
 ```
-output/
-├── gnn_rendered_simulators/
-│   └── jax/
-└── execution_results/
-    └── jax/
-        ├── pomdp_solver_results.json
-        ├── performance_metrics.json
-        └── execution_log.txt
+output/12_execute_output/
+├── <model>/jax/
+│   └── simulation_data/
+│       └── simulation_results.json
+└── summaries/
+    ├── execution_summary.json
+    └── execution_report.md
 ```
+
+Kronecker-factorised runs additionally write `kronecker_execution_summary.json`
+next to their `simulation_data/`.
 
 ## Error Handling
 
-### Common Issues and Solutions
+1. **JAX Not Available** — `is_jax_available()` returns `False`; `run_jax_scripts` returns `False` and Step 12 reports the framework as skipped.
+2. **Syntax Error** — the script fails `compile()` before execution.
+3. **Non-zero Exit / Timeout** — `execute_jax_script` returns `False`; stderr is logged.
 
-1. **JAX Not Available**
-   ```python
-   # Check installation
-   is_jax_available()  # Returns False if JAX not installed
-   ```
+Individual script failures do not stop the rest of the batch.
 
-2. **Device Not Found**
-   ```python
-   # Use CPU recovery
-   execute_jax_script(script_path, device="cpu")
-   ```
-
-3. **Memory Issues**
-   ```python
-   # Enable gradient checkpointing in generated code
-   import jax
-
-   jax.checkpoint = True
-   ```
-
-4. **Numerical Stability**
-   ```python
-   # Enable debug mode
-   jax.config.update("jax_debug_nans", True)
-   ```
-
-### Error Recovery
-
-The executor implements graceful error recovery:
-
-- **Individual script failures** don't stop the entire pipeline
-- **Device fallbacks** (GPU → CPU) when hardware unavailable
-- **Retry logic** for transient failures
-- **Comprehensive logging** for debugging
-
-## Performance Optimization
-
-### JIT Compilation
-
-Generated JAX code uses JIT compilation for maximum performance:
+## Debugging
 
 ```python
-@partial(jit, static_argnums=(0,))
-def belief_update(self, belief, action, observation):
-    # JIT-compiled for performance
-    pass
-```
+import logging
+logging.getLogger("execute.jax").setLevel(logging.DEBUG)
 
-### Memory Management
-
-- **Gradient checkpointing** for large models
-- **Mixed precision** (bfloat16) for memory efficiency
-- **Automatic garbage collection** after script execution
-
-### Multi-Device Execution
-
-```python
-# Distributed execution across multiple devices
-@partial(pmap, static_broadcasted_argnums=(0,))
-def distributed_backup(self, belief_points, alpha_vectors):
-    return self.alpha_vector_backup(belief_points, alpha_vectors)
-```
-
-## Monitoring and Debugging
-
-### Execution Logs
-
-```bash
-# View execution logs
-tail -f output/execution_results/jax/execution_log.txt
-```
-
-### Performance Metrics
-
-```python
-# Performance metrics are saved as JSON
-import json
-
-with open("output/execution_results/jax/performance_metrics.json") as f:
-    metrics = json.load(f)
-    print(f"Average execution time: {metrics['avg_execution_time']}s")
-    print(f"Memory usage: {metrics['peak_memory_mb']}MB")
-```
-
-### Debug Mode
-
-```python
-# Enable verbose logging
-logging.getLogger("src.execute.jax").setLevel(logging.DEBUG)
-
-# Enable JAX debug features
+# Inside a rendered script, JAX's own debug flags apply:
 import jax
-
 jax.config.update("jax_debug_nans", True)
-jax.config.update("jax_debug_infs", True)
 ```
 
-## Examples
-
-### Complete Pipeline Execution
-
-```python
-from src.execute.jax.jax_runner import run_jax_scripts
-
-# Execute all JAX scripts in pipeline
-success = run_jax_scripts(
-    pipeline_output_dir="output/",
-    recursive_search=True,
-    verbose=True,
-    device="gpu",  # Use GPU if available
-)
-
-if success:
-    print("All JAX scripts executed successfully")
-else:
-    print("Some JAX scripts failed - check logs")
-```
-
-### Custom Execution
-
-```python
-from src.execute.jax.jax_runner import find_jax_scripts, execute_jax_script
-
-# Find specific scripts
-scripts = find_jax_scripts("output/11_render_output/jax/", recursive=False)
-
-# Execute with custom options
-for script in scripts:
-    if "pomdp" in script.name:
-        success = execute_jax_script(script, verbose=True, device="gpu")
-        print(f"{script.name}: {'Success' if success else 'Failed'}")
-```
+Read per-script durations and statuses from `output/12_execute_output/summaries/execution_summary.json`.
 
 ## Resources
 
-- [JAX Documentation](https://github.com/google/jax)
+- [JAX Documentation](https://jax.readthedocs.io/)
 - [JAX Performance Guide](https://jax.readthedocs.io/en/latest/notebooks/thinking_in_jax.html)
 - [Optax Documentation](https://optax.readthedocs.io)
 - [Flax Documentation](https://flax.readthedocs.io)
-- [POMDP Solvers](https://pfjax.readthedocs.io)
 
 ## Contributing
 
 When extending the JAX executor:
 
-1. Follow JAX best practices for performance
-2. Include comprehensive error handling
-3. Add performance monitoring capabilities
-4. Test with various hardware configurations
-5. Document new features in this README 
+1. Change generated code in `src/render/jax/`; this module only runs what the renderer emits
+2. Keep `jax_runner.py` signatures in sync with this README and `AGENTS.md`
+3. Add tests under `src/tests/execute/` (see `test_kronecker_factorized.py`)

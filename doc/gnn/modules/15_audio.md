@@ -255,8 +255,8 @@ output/15_audio_output/
 - `src/tests/audio/test_audio_sapf.py`
 
 ### Test Coverage
-- **Current**: 74%
-- **Target**: 80%+
+
+- Measure: `uv run --extra dev python -m pytest src/tests/audio/ --cov=audio --cov-report=term-missing` (do not treat fixed percentages in this doc as canonical).
 
 ### Key Test Scenarios
 1. Audio generation from GNN models
@@ -269,17 +269,15 @@ output/15_audio_output/
 ## MCP Integration
 
 ### Tools Registered
-- `audio.generate_audio` - Generate audio from GNN model
-- `audio.create_sonification` - Create model sonification
-- `audio.validate_backend` - Validate audio backend
 
-### Tool Endpoints
-```python
-@mcp_tool("audio.generate_audio")
-def generate_audio_tool(gnn_content: str, duration: float = 30.0) -> Dict[str, Any]:
-    """Generate audio from GNN content"""
-    # Implementation
-```
+Registered in `register_tools` (`src/audio/mcp.py`):
+
+- `process_audio` - Run Step 15 over a directory
+- `check_audio_backends` - Report available audio backends
+- `get_audio_generation_options` - Return generation options
+- `analyze_audio_characteristics` - Analyze audio content
+- `validate_audio_content` - Validate audio content
+- `get_audio_module_info` - Module metadata
 
 ### MCP File Location
 - `src/audio/mcp.py` - MCP tool registrations

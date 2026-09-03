@@ -5,19 +5,19 @@ Framework-specific analysis module for NumPyro simulation outputs.
 ## Usage
 
 ```python
-from analysis.numpyro.analyzer import analyze_numpyro_results
+from analysis.numpyro.analyzer import generate_analysis_from_logs
 
-analyze_numpyro_results(
+generate_analysis_from_logs(
     results_dir="output/12_execute_output", output_dir="output/16_analysis_output"
 )
 ```
 
 ## Outputs
 
-- Belief trajectory plots (PNG)
-- Action distribution histograms (PNG)
-- EFE component analysis (PNG)
-- Summary statistics (JSON)
+- Belief trajectory plot: `belief_trajectory.png`
+- Action distribution histogram: `action_distribution.png`
+- EFE history plot: `efe_history.png`
+- JSON summary: `numpyro_analysis.json`
 
 ## Dependencies
 

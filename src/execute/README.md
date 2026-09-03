@@ -13,7 +13,7 @@ This module is responsible for running GNN models that have been rendered into f
 | **DisCoPy** | Python | `discopy/` | `*_discopy.py` | ✅ Full support |
 | **PyTorch** | Python | `pytorch/` | `*_pytorch.py` | ✅ Full support |
 | **NumPyro** | Python | `numpyro/` | `*_numpyro.py` | ✅ Full support |
-
+| **Stan** | Python (cmdstanpy driver) | `stan/` | `*_stan.py` | ✅ Full support (requires `uv sync --extra stan` + CmdStan toolchain; skipped otherwise) |
 JAX, NumPyro, PyTorch, and DisCoPy are **core** dependencies (`uv sync`). If the environment is incomplete, their scripts report an explicit skipped status. Requested Julia frameworks require Julia plus their package set; in strict requested-framework runs, missing packages make Step 12 fail.
 
 ## Module Structure
@@ -31,8 +31,11 @@ src/execute/
 ├── rxinfer/                 # RxInfer.jl execution
 ├── activeinference_jl/      # ActiveInference.jl execution
 ├── jax/                     # JAX execution
+├── pytorch/                 # PyTorch execution
+├── numpyro/                 # NumPyro execution
 ├── discopy/                 # DisCoPy execution
 │   └── discopy_translator_module/
+├── stan/                    # Stan execution (cmdstanpy driver runner)
 └── mcp.py                   # MCP tool integration
 ```
 

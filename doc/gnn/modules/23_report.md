@@ -402,8 +402,7 @@ Pipeline Results → Report Aggregation → Data Analysis → Format Generation 
 
 ### Test Coverage
 
-- **Current**: 81%
-- **Target**: 90%+
+- Measure: `uv run --extra dev python -m pytest src/tests/report/ --cov=report --cov-report=term-missing` (do not treat fixed percentages in this doc as canonical).
 
 ### Key Test Scenarios
 
@@ -419,21 +418,13 @@ Pipeline Results → Report Aggregation → Data Analysis → Format Generation 
 
 ### Tools Registered
 
-- `report_generate` - Generate comprehensive reports
-- `report_format` - Convert reports between formats
-- `report_analyze` - Analyze existing reports
-
-### Tool Endpoints
-
-```python
-@mcp_tool("report_generate")
-def generate_report(pipeline_data, format="html", template="default"):
-    """Generate comprehensive report from pipeline data"""
-    # Implementation
-```
+- `generate_report` - Generate reports from pipeline data
+- `process_report` - Run Step 23 over a directory
+- `list_report_formats` - List supported report formats
+- `read_report` - Read a saved report
+- `get_report_module_info` - Module metadata
 
 ### MCP File Location
-
 - `src/report/mcp.py` - MCP tool registrations
 
 ---

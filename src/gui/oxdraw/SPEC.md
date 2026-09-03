@@ -1,31 +1,33 @@
-# OxDraw — Technical Specification
+# oxdraw — Technical Specification
 
 **Version**: 1.6.0
 
 ## Purpose
 
-Oxford-style drawing tool for Active Inference graphical models.
+Visual diagram-as-code interface: bidirectional GNN ↔ Mermaid conversion with optional
+interactive editing through the external `oxdraw` Rust CLI.
 
 ## Features
 
-- Forney-style factor graph rendering
-- Plate notation for repeated structures
-- Factor node customization
-- Export to SVG and PNG
+- GNN → Mermaid conversion with embedded metadata
+- Mermaid → GNN parsing with visual-edit preservation
+- Interactive editing via `oxdraw` CLI (recovery: headless conversion only)
+- MCP tool integration
 
 ## Architecture
 
 ```
 oxdraw/
-├── __init__.py      # Package exports (161 lines)
-├── renderer.py      # Core rendering engine
-├── elements.py      # Graph element definitions
-├── layout.py        # Graph layout algorithms
-├── export.py        # SVG/PNG export
-└── styles.py        # Visual styling configuration
+├── __init__.py            # Public API (oxdraw_gui, process_oxdraw, converters)
+├── processor.py           # process_oxdraw, check_oxdraw_installed, launch_oxdraw_editor
+├── mermaid_converter.py   # GNN → Mermaid (gnn_to_mermaid, convert_gnn_file_to_mermaid)
+├── mermaid_parser.py      # Mermaid → GNN (mermaid_to_gnn, convert_mermaid_file_to_gnn)
+├── utils.py               # Node-shape / edge-style inference, syntax validation
+└── mcp.py                 # MCP tool registration
 ```
 
-## Technology
-
-- Pure Python rendering
-- Optional `cairo` for high-quality output
+---
+## Documentation
+- **[README](README.md)**: Module Overview
+- **[AGENTS](AGENTS.md)**: Agentic Workflows
+- **[SKILL](SKILL.md)**: Capability API

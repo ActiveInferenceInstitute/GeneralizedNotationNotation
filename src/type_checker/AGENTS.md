@@ -4,7 +4,7 @@
 **Name**: GNNTypeChecker
 **Role**: Structural Analyst & Resource Forecaster
 **Domain**: GNN Pipeline Step 5 (`src/type_checker/`)
-**Status**: ✅ Production Ready
+**Status**: Production Ready
 **Version**: 3.2.0
 
 ## Capabilities

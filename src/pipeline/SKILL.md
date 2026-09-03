@@ -21,8 +21,6 @@ python src/main.py --only-steps "3,5,11,12" --verbose
 # Skip specific steps
 python src/main.py --skip-steps "15,16" --verbose
 
-# Dry run (show what would execute)
-python src/main.py --dry-run --verbose
 ```
 
 ## API
@@ -47,21 +45,29 @@ from pipeline import (
 )
 
 # Create and run pipeline
-config = create_pipeline_config(target_dir="input/", output_dir="output/")
-result = run_pipeline(config)
+config = create_pipeline_config()
+result = run_pipeline(
+    pipeline_data=config,
+    target_dir="input/gnn_files",
+    output_dir="output",
+    steps="all",
+)
 
-# Execute specific steps
-result = execute_pipeline_step(step_number=3, config=config)
-results = execute_pipeline_steps([3, 5, 11, 12], config=config)
+# Execute a single step (takes step name, step config dict, and pipeline data)
+step_result = execute_pipeline_step(
+    step_name="6_validation",
+    step_config=config.get("6_validation", {}),
+    pipeline_data=config,
+)
 
 # Get pipeline status
 status = get_pipeline_status()
 
 # Validate configuration
+from pipeline.execution import validate_pipeline_config
 is_valid = validate_pipeline_config(config)
 
 # Health checking
-checker = EnhancedHealthChecker()
 health = run_enhanced_health_check()
 ```
 

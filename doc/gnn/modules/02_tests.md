@@ -419,8 +419,8 @@ flowchart TD
 - Returns standardized exit codes
 
 **runner.py** (Core Implementation):
-- Contains all test execution logic
-- Provides `run_tests()`, `run_fast_pipeline_tests()`, `run_comprehensive_tests()`, etc.
+- Contains the core test execution logic and `run_tests()`
+- The mode functions `run_fast_pipeline_tests()`, `run_comprehensive_tests()` and `run_fast_reliable_tests()` live in `test_runner_modes.py`
 - Implements `ModularTestRunner` for category-based execution
 - Handles resource monitoring and error recovery
 
@@ -530,14 +530,13 @@ def test_new_module_complex():
 ## MCP Integration
 
 ### Tools Registered
-- `tests.run_suite` - Run test suite
-- `tests.run_fast` - Run fast tests
-- `tests.get_coverage` - Get coverage report
-- `tests.get_performance` - Get performance metrics
+- `run_all_tests` - Run the full test suite
+- `run_unit_tests` - Run unit tests
+- `run_integration_tests` - Run integration tests
 
 ### Tool Endpoints
 ```python
-@mcp_tool("tests.run_suite")
+@mcp_tool("run_all_tests")
 def run_test_suite_tool(output_dir):
     """Run comprehensive test suite"""
     # Implementation

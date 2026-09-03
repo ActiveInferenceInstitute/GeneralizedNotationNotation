@@ -34,15 +34,15 @@ result = process_research(target_dir, output_dir, verbose=True)
 
 ## Capabilities
 
-- **Experimental analysis**: Novel analysis methods in development
-- **Prototyping**: Rapid prototyping of new pipeline features
-- **Pattern exploration**: Discover patterns across model collections
-- **Benchmarking**: Performance benchmarks for pipeline operations
+- **Rule-based hypothesis generation**: Deterministic, evidence-backed hypotheses from static GNN analysis (no LLM required)
+- **Model-family detection**: POMDP, MDP, continuous, mixed classification
+- **Structural diagnostics**: Dimension and connection analysis
+- **Optional LLM enrichment**: Hypotheses enriched via the shared LLM infrastructure when a provider is available
 
 ## Output
 
-- Research outputs in `output/19_research_output/`
-- Experimental analysis results
+- `output/19_research_output/research_report.md` - hypotheses with evidence justification
+- `research_results.json`, `research_summary.json`, `research_processing_summary.json` - machine-readable summaries
 
 
 ## MCP Tools

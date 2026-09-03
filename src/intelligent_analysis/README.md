@@ -14,17 +14,19 @@ The intelligent_analysis module provides comprehensive AI-powered analysis of GN
 - **Per-Step Flag Detection**: Yellow (warning) and red (error) flags for each step
 - **LLM-Powered Insights**: AI-generated analysis when LLM infrastructure is available
 - **Rule-Based Recovery**: Works without LLM using heuristic analysis
-- **Executive Reports**: Markdown, JSON, and HTML formatted reports
+- **Executive Reports**: Markdown and JSON formatted reports
 
 ## Module Structure
 
 ```
 intelligent_analysis/
-├── __init__.py       # Public API exports
+├── __init__.py       # Public API exports, tool checks
 ├── AGENTS.md         # Agent scaffolding documentation
 ├── README.md         # This file
-├── processor.py      # Core processing logic
-└── analyzer.py       # IntelligentAnalyzer class and utilities
+├── processor.py      # Core processing logic and report generation
+├── analyzer.py       # IntelligentAnalyzer class and analysis utilities
+├── remediation.py    # ContractViolation fix suggestions (auxiliary)
+└── mcp.py            # MCP tool registrations
 ```
 
 ## Usage
@@ -45,10 +47,13 @@ python src/24_intelligent_analysis.py --bottleneck-threshold 30.0
 ### Programmatic
 
 ```python
+import logging
 from intelligent_analysis import process_intelligent_analysis
 
 result = process_intelligent_analysis(
-    target_dir=Path("input/gnn_files"), output_dir=Path("output"), verbose=True
+    target_dir=Path("input/gnn_files"),
+    output_dir=Path("output"),
+    logger=logging.getLogger("pipeline"),
 )
 ```
 
@@ -64,7 +69,7 @@ class StepAnalysis:
     step_number: int
     script_name: str
     description: str
-    status: str
+    status: StepStatus        # from pipeline.context
     duration_seconds: float
     memory_mb: float
     exit_code: int
@@ -82,53 +87,43 @@ class StepAnalysis:
 | `analyze_individual_steps()` | Per-step analysis with flag detection |
 | `generate_executive_report()` | Create formatted reports |
 | `identify_bottlenecks()` | Find performance issues |
-| `generate_recommendations()` | AI-generated improvement suggestions |
+| `generate_recommendations()` | Rule-based improvement suggestions |
 
 ### IntelligentAnalyzer Class
 
 The main analyzer class with LLM integration:
 
 ```python
-from intelligent_analysis import IntelligentAnalyzer
+from intelligent_analysis import IntelligentAnalyzer, AnalysisContext
 
-analyzer = IntelligentAnalyzer(llm_enabled=True)
-report = analyzer.analyze(pipeline_summary)
+context = AnalysisContext(summary_data=pipeline_summary)
+analyzer = IntelligentAnalyzer(context=context)
+results = analyzer.analyze()
 ```
 
 ## Output Structure
 
 ```
 output/24_intelligent_analysis_output/
-├── executive_report.md          # Human-readable report
-├── executive_report.json        # Machine-readable data
-├── executive_report.html        # HTML formatted report
-├── step_analysis/               # Per-step analysis files
-│   ├── step_00_template.json
-│   ├── step_01_setup.json
-│   └── ...
-├── recommendations.json         # Prioritized recommendations
-└── analysis_summary.json        # Overall summary
+├── intelligent_analysis_report.md      # Human-readable executive report
+├── analysis_data.json                  # Machine-readable analysis data
+└── intelligent_analysis_summary.json   # Compact summary with counts and paths
 ```
 
 ## Flag Detection
 
 ### Yellow Flags (Warnings)
-- Step duration > 2x average
-- Memory usage > 100MB
-- Non-zero warnings in output
-- Retry attempts detected
+- Step duration > 60 s (SLOW) or > 120 s (VERY_SLOW)
+- Duration > 3x the pipeline average
+- Memory usage > 500 MB (HIGH) or > 1000 MB (CRITICAL)
+- Retry attempts or dependency warnings detected
 
 ### Red Flags (Errors)
-- Step failure (non-zero exit code)
-- Timeout (duration > threshold)
-- Critical errors in stderr
-- Resource exhaustion
+- FAILED status or non-zero exit code
 
 ## Dependencies
 
-- **Required**: pathlib, json, logging, dataclasses
-- **Optional**: LLM processor (for AI-powered analysis)
-- **Optional**: numpy, pandas (for statistical analysis)
+- **Required**: pathlib, json, logging, asyncio, dataclasses
 
 ## Integration
 
@@ -141,8 +136,7 @@ This module produces:
 
 ---
 
-**Version**: 1.6.0
-**Last Updated**: 2026-04-16
+**Last Updated**: 2026-09-02
 **Status**: Production Ready
 
 

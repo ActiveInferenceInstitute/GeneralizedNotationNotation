@@ -22,28 +22,27 @@ python src/main.py --only-steps 4 --verbose
 ## API
 
 ```python
+from pathlib import Path
 from model_registry import ModelRegistry, process_model_registry
 
-# Use the registry class
-registry = ModelRegistry()
+# Use the registry class (registry_path is required)
+registry = ModelRegistry(Path("output/4_model_registry_output/model_registry.json"))
 
-# Process model registry step (used by pipeline)
-result = process_model_registry(target_dir, output_dir, verbose=True)
+# Process model registry step (used by the pipeline)
+result = process_model_registry(target_dir, output_dir)
 ```
 
 ## Key Exports
 
 - `ModelRegistry` — class managing model catalog, versioning, and metadata
 - `process_model_registry` — main processing function for pipeline integration
-
 ## Metadata Extraction
 
-The registry automatically extracts:
+The registry extracts from each GNN file via regex:
 
-- **Author** and **license** from file headers
-- **Version** information from model definitions
-- **Dimensions** and **types** from StateSpaceBlock
-- **Framework compatibility** from annotations
+- **Model name** (`ModelName:` or first heading) and **version** (`Version:`)
+- **Author**, **date**, and **license** from headers
+- **Tags** (`Tags:`) and **description**
 
 ## Output
 

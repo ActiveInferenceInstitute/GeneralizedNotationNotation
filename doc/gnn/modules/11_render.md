@@ -7,7 +7,7 @@
 
 ## Module Description
 
-This module provides **POMDP-aware code generation** for GNN models. It translates parsed GNN/POMDP specifications into executable simulation code for multiple frameworks including PyMDP, RxInfer.jl, ActiveInference.jl, JAX, DisCoPy, bnlearn, and (when available) PyTorch, NumPyro, and Stan.
+This module provides **POMDP-aware code generation** for GNN models. It translates parsed GNN/POMDP specifications into executable simulation code for nine frameworks: PyMDP, RxInfer.jl, ActiveInference.jl, JAX, DisCoPy, NumPyro and Stan are always rendered; PyTorch and bnlearn are also rendered but their runtimes are gated on manual installs (`available: False` in `src/render/framework_registry.py`). Continuous (linear-Gaussian) models render on JAX, NumPyro, PyTorch, Stan and RxInfer.jl; PyMDP, ActiveInference.jl, DisCoPy and bnlearn report render status `unsupported` for them.
 
 
 - **POMDP state space extraction**: extracts Active Inference matrices (A, B, C, D, E) and dimensions from GNN specs.
@@ -95,7 +95,7 @@ The canonical renderer (`rxinfer_renderer.py`) then dispatches to a per-kind str
 
 **Conventions baked into generated scripts.** `B` is ordered `(next_state, previous_state, action)` — the scripts embed `const B_TENSOR_ORDER = "next_state_previous_state_action"`. In the results payload, `true_states[t]` is the state that *emitted* observation `t`, so it is timing-aligned with `beliefs[t]`.
 
-Continuous exemplars carry a **dual parameterization**: discrete `A`/`B`/`C`/`D` (consumed by PyMDP and friends) plus authored `F`/`H`/`Q`/`R`/prior blocks for the native RxInfer LGSSM. Because the discrete parameterization does not describe the continuous latent, continuous results echo `state_factors` and `observation_modalities` as empty.
+Continuous exemplars (`input/gnn_files/continuous/`) are **pure linear-Gaussian models** — `F`/`H`/`Q`/`R`, `prior_mean`/`prior_cov`, optional closed-loop `goal_mean`/`control_gain` — with no discrete stand-in. `detect_model_kind` routes them as `CONTINUOUS`: RxInfer.jl (native LGSSM strategy), JAX, NumPyro, PyTorch (shared Kalman-filter generator in `render/continuous_script.py`) and Stan (Kalman marginal-likelihood program) render and execute them; PyMDP, ActiveInference.jl, DisCoPy and bnlearn return the render status `unsupported` (counted separately from failures, never executed). Continuous results echo `state_factors` and `observation_modalities` as empty because a linear-Gaussian model has no categorical factors.
 
 #### ActiveInference.jl (Julia)
 - **Purpose**: Active Inference framework implementation
@@ -121,11 +121,11 @@ Continuous exemplars carry a **dual parameterization**: discrete `A`/`B`/`C`/`D`
 
 #### NumPyro (Python)
 - **Purpose**: Probabilistic programming backend
-- **Output**: Python scripts under `numpyro/` when the renderer is available
+- **Output**: Python scripts under `numpyro/` (always rendered; NumPyro is a core dependency)
 
 #### Stan (Stan)
 - **Purpose**: Probabilistic programming backend
-- **Output**: Stan models under `stan/` when the renderer is available
+- **Output**: `stan/<model_name>_stan.stan` plus the cmdstanpy driver `stan/<model_name>_stan.py` (always rendered; HMM forward-algorithm program for discrete models, Kalman marginal-likelihood program for continuous models)
 
 #### bnlearn (Python)
 - **Purpose**: Bayesian network structure and parameter learning, exact inference, causal discovery
@@ -335,8 +335,9 @@ options = {
   - `activeinference_jl/<model_name>_activeinference.jl`
   - `jax/<model_name>_jax.py`
   - `discopy/<model_name>_discopy.py`
-  - `bnlearn/<model_name>_bnlearn.py`
-  - optional backends (when available): `pytorch/`, `numpyro/`, `stan/`
+  - `numpyro/<model_name>_numpyro.py`
+  - `stan/<model_name>_stan.stan` + `stan/<model_name>_stan.py` (cmdstanpy driver)
+  - `pytorch/<model_name>_pytorch.py` and `bnlearn/<model_name>_bnlearn.py` (rendered; runtimes gated on manual installs)
 - `render_processing_summary.json` - Processing summary
 
 ### Output Directory Structure
@@ -408,8 +409,7 @@ GNN Parsing → Model Validation → Framework Selection → Code Generation →
 - `src/tests/render/test_render_performance.py` - Performance tests
 
 ### Test Coverage
-- **Current**: 78%
-- **Target**: 85%+
+- Measure: `uv run --extra dev python -m pytest src/tests/render/ --cov=render --cov-report=term-missing` (do not treat fixed percentages in this doc as canonical).
 
 ### Key Test Scenarios
 1. Multi-framework code generation
@@ -423,12 +423,10 @@ GNN Parsing → Model Validation → Framework Selection → Code Generation →
 ## MCP Integration
 
 ### Tools Registered
-- `render.generate_pymdp` - Generate PyMDP code
-- `render.generate_rxinfer` - Generate RxInfer.jl code
-- `render.generate_activeinference` - Generate ActiveInference.jl code
-- `render.generate_discopy` - Generate DisCoPy code
-- `render.generate_jax` - Generate JAX code
-- `render.validate_framework` - Validate framework compatibility
+- `process_render` - Run Step 11 over a directory of GNN files
+- `list_render_frameworks` - List registered render targets and availability
+- `render_gnn_to_format` - Render one GNN file to one framework
+- `get_render_module_info` - Module metadata
 
 ### Tool Endpoints
 ```python

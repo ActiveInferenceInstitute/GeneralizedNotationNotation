@@ -1208,7 +1208,7 @@ python -m cli preflight
 
 ```bash
 # Run all tests
-python src/2_tests.py --comprehensive
+uv run python src/2_tests.py --comprehensive
 ```
 
 ```bash

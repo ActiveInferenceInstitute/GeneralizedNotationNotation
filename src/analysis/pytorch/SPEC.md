@@ -4,13 +4,13 @@
 
 ## Input Format
 
-- `simulation_results.json` from PyTorch execution step
-- Fields: `belief_history`, `action_history`, `efe_values`, `metadata`
+- `simulation_results.json` from PyTorch execution step (searched recursively under `pytorch/` paths or `pytorch_simulation_results.json`)
+- Fields: `beliefs`, `actions`, `observations`, `efe_history`, `validation`, `model_name`
 
 ## Output Format
 
-- PNG plots: `belief_trajectory.png`, `action_distribution.png`, `efe_analysis.png`
-- JSON summary: `analysis_summary.json`
+- PNG plots: `belief_trajectory.png`, `action_distribution.png`, `efe_history.png`
+- JSON summary: `{model}/pytorch_analysis.json` (framework, metrics, plots_generated)
 
 ## Processing Requirements
 

@@ -16,7 +16,7 @@ backend can / cannot express.
 | `numpyro.md` | NumPyro (Python) | Full probabilistic |
 | `pytorch.md` | PyTorch (Python) | ML integration |
 | `discopy.md` | DisCoPy (Python) | Categorical diagrams |
-| `stan.md` | Stan | Structural only (no AI loop) |
+| `stan.md` | Stan | HMM forward-algorithm + LGSSM Kalman programs (cmdstanpy driver; no online AI loop) |
 | `catcolab.md` | CatColab | Categorical tooling |
 
 ## Versioning
@@ -31,5 +31,6 @@ Architecture, GNN Parameter Ingestion, Generated Code Example, Limitations,
 Usage, Source References, Navigation.
 
 ## Status
-Maintained. `stan.md` marked structural-only (no Active Inference loop);
-all others support the full pipeline.
+Maintained. `stan.md` documents runnable inference programs (Stan infers over a
+simulated trajectory rather than running an online Active Inference loop); all
+backends execute through the full pipeline.

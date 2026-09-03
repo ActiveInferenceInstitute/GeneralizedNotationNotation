@@ -1,21 +1,17 @@
 # Integration Module Specification
 
-## Overview
-Integration processing for GNN pipeline steps.
+System-level consistency validation for GNN pipeline steps: dependency-graph construction (NetworkX), cycle/isolated-component detection, `$ref:` cross-reference validation, and meta-analysis of parameter-sweep execution outputs.
 
 ## Components
 
 ### Core
-- `processor.py` - Integration processor
-
-## Features
-- Cross-step data integration
-- Output consolidation
-- Pipeline state management
+- `processor.py` - `process_integration()`: graph build, consistency checks, report writing
+- `meta_analysis/` - Parameter sweep runtime and simulation analysis (collector, statistics, validator, visualizer, reporter)
+- `mcp.py` - MCP tool registrations (4 tools)
 
 ## Key Exports
 ```python
-from integration import process_integration
+from integration import process_integration, run_meta_analysis, SweepDataCollector, SweepRecord
 ```
 
 

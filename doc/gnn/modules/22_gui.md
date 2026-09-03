@@ -423,8 +423,7 @@ GNN Files → GUI Construction → Visual Editing → Model Validation → GNN E
 - `src/tests/gui/test_oxdraw_integration.py` - oxdraw integration tests
 
 ### Test Coverage
-- **Current**: 68%
-- **Target**: 85%+
+- Measure: `uv run --extra dev python -m pytest src/tests/gui/ --cov=gui --cov-report=term-missing` (do not treat fixed percentages in this doc as canonical).
 
 ### Key Test Scenarios
 1. GUI startup and shutdown in headless mode
@@ -438,17 +437,13 @@ GNN Files → GUI Construction → Visual Editing → Model Validation → GNN E
 ## MCP Integration
 
 ### Tools Registered
-- `gui_construct` - Launch GNN model constructor
-- `gui_edit` - Edit existing GNN models visually
-- `gui_validate` - Validate models through GUI interface
 
-### Tool Endpoints
-```python
-@mcp_tool("gui_construct")
-def construct_model_gui(model_type="pymdp", interactive=True):
-    """Launch GUI for constructing new GNN model"""
-    # Implementation
-```
+Registered in `register_tools` (`src/gui/mcp.py`):
+
+- `process_gui` - Run Step 22 (headless by default)
+- `list_available_guis` - List GUI implementations and ports
+- `get_gui_module_info` - Module metadata
+- oxdraw tools registered dynamically from `src/gui/oxdraw/` tool definitions
 
 ---
 
@@ -498,42 +493,22 @@ def construct_model_gui(model_type="pymdp", interactive=True):
 
 ---
 
-## MCP Integration
-
-### Tools Registered
-- `gui.construct_model` - Construct GNN model using GUI
-- `gui.edit_component` - Edit model component
-- `gui.visualize_model` - Visualize model structure
-
-### Tool Endpoints
-```python
-@mcp_tool("gui.construct_model")
-def construct_model_tool(components: List[Dict]) -> Dict[str, Any]:
-    """Construct GNN model from components"""
-    # Implementation
-```
-
-### MCP File Location
-- `src/gui/mcp.py` - MCP tool registrations
-
----
-
 ## Troubleshooting
 
 ### Common Issues
 
 #### Issue 1: GUI fails to launch
-**Symptom**: GUI server doesn't start or browser doesn't open  
-**Cause**: Port already in use or dependencies missing  
-**Solution**: 
+**Symptom**: GUI server doesn't start or browser doesn't open
+**Cause**: Port already in use or dependencies missing
+**Solution**:
 - Check if port is already in use: `lsof -i :7860`
 - Use different port: `--port 7861`
-- Verify Gradio/Streamlit dependencies installed
+- Verify Gradio dependencies installed
 - Use `--headless` mode if GUI not needed
 
 #### Issue 2: Model export fails
-**Symptom**: GUI completes but model file not generated  
-**Cause**: Export function errors or file permissions  
+**Symptom**: GUI completes but model file not generated
+**Cause**: Export function errors or file permissions
 **Solution**:
 - Check output directory permissions
 - Verify export filename is valid
@@ -570,7 +545,6 @@ def construct_model_tool(components: List[Dict]) -> Dict[str, Any]:
 
 ### External Resources
 - [Gradio Documentation](https://gradio.app/)
-- [Streamlit Documentation](https://streamlit.io/)
 
 ---
 

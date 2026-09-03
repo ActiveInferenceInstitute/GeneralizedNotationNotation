@@ -22,12 +22,12 @@ The GUI module provides **four interactive interfaces** for constructing and edi
 - **Access:** http://localhost:7861
 
 ### GUI 3: State Space Design Studio
-- 🎨 **Visual state space designer** with interactive diagrams
-- 📚 **Ontology term editor** for Active Inference concepts  
-- 🔗 **Connection graph interface** with SVG visualization
-- ⚙️ **Parameter tuning controls** (states, observations, actions)
-- 💾 **Real-time GNN export and preview** functionality
-- 🎯 **Low-dependency HTML/CSS design** approach
+- Visual state space designer with interactive diagrams
+- Ontology term editor for Active Inference concepts
+- Connection graph interface with SVG visualization
+- Parameter tuning controls (states, observations, actions)
+- Real-time GNN export and preview functionality
+- Low-dependency HTML/CSS design approach
 - **Access:** http://localhost:7862
 
 ## Usage

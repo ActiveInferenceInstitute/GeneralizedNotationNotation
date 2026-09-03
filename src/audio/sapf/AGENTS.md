@@ -2,30 +2,28 @@
 
 ## Module Overview
 
-**Purpose**: Spectral Audio Processing Framework (SAPF) for advanced audio generation and spectral processing of GNN models
+**Purpose**: SAPF (Sound As Pure Form) code generation from GNN models and Python synthesis of that code to WAV audio
 
 **Parent Module**: Audio Module (Step 15: Audio processing)
 
-**Category**: Audio Framework / Spectral Processing
+**Category**: Audio Framework / Sonification
 
 ---
 
 ## Core Functionality
 
 ### Primary Responsibilities
-1. Spectral domain audio processing and analysis
-2. Advanced audio synthesis using frequency domain techniques
-3. GNN model sonification through spectral mapping
-4. Real-time spectral effects and processing
-5. Harmonic analysis and synthesis
+1. Parse GNN sections (state space, connections, parameters, time configuration)
+2. Convert parsed sections into SAPF code (oscillators, routing, matrix processing, temporal structure)
+3. Validate SAPF code for basic structural issues
+4. Synthesize SAPF code to a WAV file with `SyntheticAudioGenerator`
+5. Emit optional JSON visualization data and reports
 
 ### Key Capabilities
-- FFT-based spectral analysis and synthesis
-- Phase and magnitude manipulation
-- Harmonic enhancement and processing
-- Spectral filtering and envelope shaping
-- Real-time spectral effects processing
-- Advanced model sonification using spectral techniques
+- Deterministic GNN -> SAPF code generation keyed by model complexity and name
+- Oscillator / LFO / envelope synthesis in NumPy with a stdlib WAV writer
+- Waveform and spectrum analysis PNG alongside each WAV
+- Re-exported unchanged by the top-level `src/sapf/` package
 
 ---
 
@@ -33,84 +31,49 @@
 
 ### Public Functions
 
-#### `process_gnn_to_audio(gnn_content: str, output_dir: str | Path, **kwargs) -> Dict[str, Any]`
-**Description**: Parse GNN content and write `{model}_sapf_audio.wav` into `output_dir`.
+#### `process_gnn_to_audio(gnn_content: str, model_name: str, output_dir: str, duration: float = 10.0, validate_only: bool = False) -> Dict[str, Any]`
+**Description**: Convert GNN content to SAPF code and synthesize `{model_name}_sapf_audio.wav` into `output_dir`. `model_name` is a required positional argument. With `validate_only=True` the function returns the validation result and SAPF code without writing audio. Failures are returned as `{"success": False, "error": ...}` rather than raised.
 
-#### `convert_gnn_to_sapf(gnn_content: str, output_dir: str | Path, **kwargs) -> Dict[str, Any]`
-**Description**: Convert GNN sections (state space, connections, parameters) into SAPF code.
+**Returns**: `success`, `audio_file`, `model_name`, `sapf_code`, `duration`, `audio_result` (or `validation_result` when validating only)
 
-#### `generate_audio_from_sapf(sapf_code: str, output_dir: str | Path, **kwargs) -> Dict[str, Any]`
-**Description**: Generate audio from SAPF code via `SyntheticAudioGenerator`.
+#### `convert_gnn_to_sapf(gnn_content: str, model_name: str) -> str`
+**Description**: Parse GNN content and return the generated SAPF code as a string (`sapf_gnn_processor.py`).
 
-#### `validate_sapf_code(sapf_code: str) -> Dict[str, Any]`
-**Description**: Validate SAPF code structure.
+#### `validate_sapf_code(sapf_code: str) -> Tuple[bool, List[str]]`
+**Description**: Check for empty code, unbalanced brackets, a `play` command, and variable assignments. Returns `(is_valid, issues)`.
 
-#### `generate_sapf_audio(sapf_code: str, output_dir: str | Path, **kwargs) -> Path`
-**Description**: Render SAPF code to a WAV file.
+#### `generate_audio_from_sapf(sapf_code: str, output_file: Path, duration: float = 10.0) -> bool`
+**Description**: Synthesize SAPF code to `output_file` via `SyntheticAudioGenerator.generate_from_sapf`. Returns `True` on success.
 
-#### `create_sapf_visualization(...)` / `generate_sapf_report(...)`
-**Description**: Write visualization data and processing reports as JSON.
+#### `generate_sapf_audio(sapf_code: str, output_path: str, **kwargs) -> Dict[str, Any]`
+**Description**: Dict-returning wrapper over `generate_audio_from_sapf` (`processor.py`); honours `duration` in `kwargs`. Returns `{"success": bool, "output_path": str}` or an `error` entry.
+
+#### `create_sapf_visualization(sapf_code: str, output_path: Optional[str] = None) -> Dict[str, Any]`
+**Description**: Parse `oscillator` / `envelope` lines into `visualization_data`; writes JSON when `output_path` is given.
+
+#### `generate_sapf_report(sapf_results: Dict[str, Any], output_path: Optional[str] = None) -> Dict[str, Any]`
+**Description**: Summarize a results dict (`success`, `components_count`, `duration`); writes JSON when `output_path` is given.
 
 #### `SAPFGNNProcessor` (`sapf_gnn_processor.py`)
-**Description**: Class with `parse_gnn_sections`, plus internal state-space and
-connection parsers that feed the SAPF conversion pipeline.
+**Description**: Class with `parse_gnn_sections(gnn_content) -> Dict` and `convert_to_sapf(gnn_sections, model_name) -> str`, plus internal state-space, connection, parameter, and time-config parsers.
 
 #### Audio generators (`audio_generators.py`)
-- `SyntheticAudioGenerator` — oscillator/LFO synthesis from SAPF code analysis
+- `SyntheticAudioGenerator(sample_rate=44100)` — `generate_from_sapf(sapf_code, output_file, duration, create_visualization=True) -> bool`
 - `generate_oscillator_audio`, `apply_envelope`, `mix_audio_channels`
+
+#### Module info (`module_info.py`)
+- `get_module_info()`, `get_audio_generation_options()`, `register_tools()`
 
 ---
 
 ## Dependencies
 
 ### Required Dependencies
-- `numpy` - Numerical computing for audio processing
-- `scipy` - Scientific computing and FFT operations
-- `librosa` - Audio analysis and spectral processing
-
-### Optional Dependencies
-- `soundfile` - Audio file I/O (recovery: basic WAV support)
-- `matplotlib` - Spectral visualization (recovery: no visualization)
-- `pyaudio` - Real-time audio I/O (recovery: file-based processing)
+- `numpy` - Synthesis and array handling
+- `matplotlib` - Imported unconditionally by `audio_generators.py` for the analysis PNG
 
 ### Internal Dependencies
-- `audio.classes` - Base audio classes and utilities
-- `utils.pipeline_template` - Pipeline utilities
-
----
-
-## Configuration
-
-### Spectral Processing Configuration
-```python
-SPECTRAL_CONFIG = {
-    "window_size": 2048,  # FFT window size
-    "hop_size": 512,  # Hop size for STFT
-    "window_type": "hann",  # Window function
-    "fft_size": 4096,  # FFT size (zero-padded)
-    "sample_rate": 44100,  # Sample rate in Hz
-    "quality": "high",  # Processing quality
-}
-```
-
-### Sonification Configuration
-```python
-SONIFICATION_CONFIG = {
-    "mapping": {
-        "variables": "frequency_components",  # Variables → frequencies
-        "connections": "phase_relationships",  # Connections → phases
-        "weights": "magnitude_envelope",  # Weights → magnitudes
-        "structure": "harmonic_structure",  # Structure → harmonics
-    },
-    "spectral_effects": [
-        {"type": "harmonic_synthesis", "harmonics": [1, 2, 3]},
-        {"type": "spectral_filter", "frequency_range": [50, 5000]},
-        {"type": "phase_modulation", "modulation_depth": 0.3},
-    ],
-    "duration": 10.0,  # Duration in seconds
-    "sample_rate": 44100,  # Sample rate in Hz
-}
-```
+- `pipeline` / `utils` - Used by `generator.py` (`generate_sapf_audio(target_dir, output_dir, logger, ...)`) for directory-level runs
 
 ---
 
@@ -120,22 +83,24 @@ SONIFICATION_CONFIG = {
 ```python
 from audio.sapf import process_gnn_to_audio
 
-result = process_gnn_to_audio(gnn_content, output_dir="output/audio_sapf")
+result = process_gnn_to_audio(gnn_content, "my_model", "output/15_audio_output", duration=10.0)
+print(result["success"], result["audio_file"])
 ```
 
 ### GNN to SAPF Code
 ```python
 from audio.sapf import convert_gnn_to_sapf, validate_sapf_code
 
-conversion = convert_gnn_to_sapf(gnn_content, output_dir="output/audio_sapf")
-validation = validate_sapf_code(conversion["sapf_code"])
+sapf_code = convert_gnn_to_sapf(gnn_content, "my_model")
+is_valid, issues = validate_sapf_code(sapf_code)
 ```
 
 ### Audio from SAPF Code
 ```python
+from pathlib import Path
 from audio.sapf import generate_audio_from_sapf
 
-audio = generate_audio_from_sapf(sapf_code, output_dir="output/audio_sapf")
+ok = generate_audio_from_sapf(sapf_code, Path("output/15_audio_output/my_model_sapf_audio.wav"), duration=10.0)
 ```
 
 ### Oscillator Utilities
@@ -148,54 +113,29 @@ from audio.sapf import SyntheticAudioGenerator, generate_oscillator_audio, apply
 ## Output Specification
 
 ### Output Products
-- `{model}_sapf_audio.wav` - SAPF-sonified audio per model
+- `{model}_sapf_audio.wav` - SAPF-sonified audio per model (44.1 kHz, 16-bit mono)
+- `{model}_sapf_audio_waveform_analysis.png` - Waveform / spectrum / spectrogram panels (when `create_visualization` is enabled)
+- Optional JSON from `create_sapf_visualization` / `generate_sapf_report`
 
 ### Output Directory Structure
 ```
-output/audio_sapf/
-└── {model}_sapf_audio.wav
+output/15_audio_output/
+├── {model}_sapf_audio.wav
+└── {model}_sapf_audio_waveform_analysis.png
 ```
-
----
-
-## Performance Characteristics
-
-### Latest Execution
-- **Duration**: 50-500ms per audio file
-- **Memory**: 10-200MB depending on window size
-- **Status**: ✅ Production Ready
-
-### Performance Breakdown
-- **FFT Processing**: 1-10ms per window
-- **Spectral Analysis**: 5-50ms per analysis
-- **Spectral Synthesis**: 5-50ms per synthesis
-- **Sonification Generation**: 2-60 seconds for complex models
-
-### Optimization Notes
-- Larger window sizes improve frequency resolution but increase computation
-- Smaller hop sizes improve time resolution but increase overlap processing
-- Real-time processing requires optimized window/hop size combinations
 
 ---
 
 ## Error Handling
 
-### Spectral Processing Errors
-1. **Invalid Window Size**: Must be power of 2
-2. **Insufficient Audio Data**: Minimum samples required for analysis
-3. **FFT Computation Errors**: Numerical issues in spectral domain
+- `process_gnn_to_audio`, `generate_sapf_audio`, `create_sapf_visualization`, and `generate_sapf_report` catch exceptions and return `{"success": False, "error": str(e)}`
+- `generate_audio_from_sapf` and `SyntheticAudioGenerator.generate_from_sapf` return `False` on failure
+- `validate_sapf_code` never raises; issues are returned in the list
 
-### Recovery Strategies
-- **Window Size Adjustment**: Automatically adjust to nearest power of 2
-- **Recovery Processing**: Use time-domain processing as recovery
-- **Error Logging**: Comprehensive error reporting with suggestions
-
-### Error Examples
 ```python
-try:
-    result = process_gnn_to_audio(gnn_content, output_dir="output/audio_sapf")
-except Exception as e:
-    logger.error(f"SAPF audio generation failed: {e}")
+result = process_gnn_to_audio(gnn_content, "my_model", "output/15_audio_output")
+if not result["success"]:
+    logger.error(f"SAPF audio generation failed: {result.get('error')}")
 ```
 
 ---
@@ -206,17 +146,13 @@ except Exception as e:
 - **Parent Module**: `src/audio/` (Step 15)
 - **Main Script**: `15_audio.py`
 
-### Imports From
-- `audio.classes` - Base audio processing classes
-- `utils.pipeline_template` - Pipeline utilities
-
 ### Imported By
-- `audio.processor` - Main audio processing integration
-- `tests.test_audio_sapf*` - SAPF-specific tests
+- `sapf/__init__.py` (top-level package) - re-exports these functions verbatim
+- `src/tests/sapf/` and `src/tests/audio/test_audio_sapf.py`
 
 ### Data Flow
 ```
-GNN Model → SAPFGNNProcessor (sections) → SAPF code → SyntheticAudioGenerator → WAV Output
+GNN Model → SAPFGNNProcessor (sections) → SAPF code → SyntheticAudioGenerator → WAV + PNG
 ```
 
 ---
@@ -224,30 +160,15 @@ GNN Model → SAPFGNNProcessor (sections) → SAPF code → SyntheticAudioGenera
 ## Testing
 
 ### Test Files
-- `src/tests/audio/test_audio_sapf.py` - SAPF backend tests
-- `src/tests/audio/test_audio_integration.py` - Pipeline integration tests for audio outputs
-
-### Test Coverage
-Measure on demand:
-
-```bash
-uv run --extra dev python -m pytest src/tests/test_sapf*.py \
-    --cov=src/audio/sapf --cov-report=term-missing
-```
-### Key Test Scenarios
-1. Spectral analysis accuracy validation
-2. Round-trip synthesis quality testing
-3. Model sonification mapping verification
-4. Real-time processing performance testing
-5. Error handling and recovery testing
+- `src/tests/sapf/` - processor, edge-case, and MCP tool tests
+- `src/tests/audio/test_audio_sapf.py` - SAPF tests within the audio suite
 
 ### Test Commands
 ```bash
-# Run SAPF-specific tests
-uv run --extra dev python -m pytest src/tests/test_audio_sapf*.py -v
+uv run --extra dev python -m pytest src/tests/sapf/ src/tests/audio/test_audio_sapf.py -v
 
-# Run with coverage
-uv run --extra dev python -m pytest src/tests/test_audio_sapf*.py --cov=src/audio/sapf --cov-report=term-missing
+uv run --extra dev python -m pytest src/tests/sapf/ src/tests/audio/test_audio_sapf.py \
+    --cov=src/audio/sapf --cov-report=term-missing
 ```
 
 ---
@@ -256,7 +177,7 @@ uv run --extra dev python -m pytest src/tests/test_audio_sapf*.py --cov=src/audi
 
 ### Tools Registered
 See `src/audio/sapf/module_info.py` (`register_tools`) for the live tool inventory;
-tools delegate to the conversion/generation functions above.
+the top-level `src/sapf/mcp.py` registers the pipeline-facing tools.
 
 ### Tool Endpoints
 ```python
@@ -265,115 +186,53 @@ from audio.sapf.module_info import register_tools
 
 ---
 
-## Spectral Effects Reference
-
-### Filtering Effects
-- **Low-pass Filter**: High-frequency attenuation
-- **High-pass Filter**: Low-frequency attenuation
-- **Band-pass Filter**: Frequency band selection
-- **Notch Filter**: Specific frequency rejection
-
-### Phase Effects
-- **Phase Shift**: Phase angle modification
-- **Phase Modulation**: Dynamic phase changes
-- **Phase Synchronization**: Phase alignment across frequencies
-
-### Harmonic Effects
-- **Harmonic Enhancement**: Harmonic amplification
-- **Harmonic Suppression**: Harmonic reduction
-- **Harmonic Synthesis**: Harmonic generation from fundamentals
-
-### Envelope Effects
-- **Spectral Envelope Shaping**: Modify spectral envelope
-- **Magnitude Compression**: Dynamic range compression
-- **Spectral Gating**: Noise gating in frequency domain
-
----
-
 ## Development Guidelines
 
-### Adding New Spectral Effects
-1. Implement effect function in `src/audio/sapf/spectral.py`
-2. Add effect configuration validation
-3. Update documentation and examples
-4. Add comprehensive tests
-
-### Performance Optimization
-- Use appropriate window sizes for frequency/time resolution trade-offs
-- Implement efficient FFT algorithms
-- Cache spectral analysis results when possible
-- Use vectorized operations for batch processing
+### Extending SAPF Generation
+1. Add new section handling in `SAPFGNNProcessor` (`sapf_gnn_processor.py`)
+2. Teach `SyntheticAudioGenerator._analyze_sapf_code` to recognise any new SAPF constructs
+3. Update `validate_sapf_code` if new required elements are introduced
+4. Add tests under `src/tests/sapf/`
 
 ---
 
 ## Troubleshooting
 
-### Common Issues
+#### Issue 1: `TypeError` calling `process_gnn_to_audio`
+**Cause**: `model_name` omitted; it is a required positional argument
+**Solution**: `process_gnn_to_audio(gnn_content, model_name, output_dir)`
 
-#### Issue 1: "FFT window size must be power of 2"
-**Symptom**: Spectral processing fails with window size error
-**Cause**: Invalid window size specification
-**Solution**: Use power of 2 (512, 1024, 2048, 4096, etc.)
+#### Issue 2: `validate_sapf_code` reports "No 'play' command found"
+**Cause**: SAPF code was hand-edited or truncated
+**Solution**: Regenerate with `convert_gnn_to_sapf`
 
-#### Issue 2: "Insufficient audio data for spectral analysis"
-**Symptom**: Analysis fails with data length error
-**Cause**: Audio too short for specified window size
-**Solution**: Ensure audio length > window_size or reduce window_size
-
-#### Issue 3: "Spectral reconstruction quality poor"
-**Symptom**: Synthesized audio quality degraded
-**Cause**: Phase information lost or hop size too large
-**Solution**: Use smaller hop sizes or implement phase reconstruction
-
-### Debug Mode
-```python
-# Enable verbose logging during GNN-to-audio conversion
-result = process_gnn_to_audio(gnn_content, output_dir="output/audio_sapf", verbose=True)
-```
+#### Issue 3: Silent or very short audio
+**Cause**: Few or no state variables parsed from the GNN content
+**Solution**: Check that the GNN file has `StateSpaceBlock` and `Connections` sections
 
 ---
 
 ## Version History
 
-### Current Version: 3.0.0
+### Current Version: 3.2.0
 
 **Features**:
-- Complete spectral analysis and synthesis pipeline
-- Advanced spectral effects processing
-- GNN model sonification capabilities
-- Real-time spectral processing support
-- Comprehensive error handling and recovery
-
-**Known Limitations**:
-- Real-time processing limited by FFT computation
-- Memory usage scales with window size
-- Phase reconstruction may introduce artifacts
-
-### Roadmap
-- **Next Version**: GPU acceleration for spectral processing
-- **Future**: Machine learning-based spectral effects
-- **Advanced**: Neural network-based sonification
+- GNN -> SAPF code generation
+- NumPy synthesis with stdlib WAV output
+- Waveform / spectrum analysis PNG
+- JSON visualization data and reports
 
 ---
 
 ## References
 
 ### Related Documentation
-- [Audio Module](../../audio/AGENTS.md) - Parent audio module
+- [Audio Module](../AGENTS.md) - Parent audio module
 - [SAPF Specification](../../../doc/sapf/sapf.md) - SAPF framework details
 - [Pipeline Overview](../../../README.md) - Main pipeline documentation
 
-### External Resources
-- [FFT Algorithms](https://en.wikipedia.org/wiki/Fast_Fourier_transform)
-- [Spectral Processing](https://en.wikipedia.org/wiki/Spectral_music)
-- [Audio Signal Processing](https://en.wikipedia.org/wiki/Digital_signal_processing)
-
 ---
 
-**Last Updated**: 2026-04-16
+**Last Updated**: 2026-09-02
 **Maintainer**: Audio Processing Team
-**Status**: ✅ Production Ready
-
-
-
-
+**Status**: Production Ready

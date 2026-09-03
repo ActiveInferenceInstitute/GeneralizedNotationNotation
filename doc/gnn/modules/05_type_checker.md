@@ -2,7 +2,7 @@
 
 ## Architectural Mapping
 
-**Orchestrator**: `src/5_type_checker.py` (thin script, ~65 lines)
+**Orchestrator**: `src/5_type_checker.py` (thin script, 70 lines)
 **Implementation Layer**: `src/type_checker/`
 **Canonical Entry Point**: `type_checker.processor.GNNTypeChecker`
 
@@ -62,20 +62,23 @@ python src/5_type_checker.py --target-dir input/gnn_files \
 | Name | Kind | Purpose |
 |------|------|---------|
 | `GNNTypeChecker` | class | Orchestrator (`src/type_checker/checking/core.py`); `check_file(path)` validates a single file, `validate_gnn_files(target_dir, output_dir, ...)` validates a directory, `generate_report(...)` and `generate_json_data(...)` write the Markdown/JSON summaries. |
-| `estimate_file_resources(content: str) -> Dict[str, Any]` | function | Estimates computational resources (state/observation/action space size, parameters, FLOPs, memory, complexity class) for one GNN file's content; defined in `src/type_checker/checking/core.py`, bridging to `estimation/estimator.py`. |
+| `estimate_file_resources(content: str) -> ResourceEstimate` | function | Estimates computational resources (state/observation/action space size, parameters, FLOPs, memory, complexity class) for one GNN file's content; defined in `src/type_checker/checking/core.py`, bridging to `estimation/estimator.py`. |
 
 ## Validation Rules
 
-| Rule ID | Description | Default Severity |
-|---------|-------------|------------------|
-| `GNN-E001` | Unknown section header | error |
-| `GNN-E002` | StateSpaceBlock variable not declared | error |
-| `GNN-E003` | Connection references undefined variable | error |
-| `GNN-E004` | Matrix dimensions mismatch declared shape | error |
-| `GNN-W001` | Ontology annotation uses unknown term | warning |
-| `GNN-W002` | Missing optional section present in every other sample | warning |
-| `GNN-W003` | Non-stochastic matrix (columns don't sum to 1.0±ε) | warning |
-| `GNN-W004` | ModelParameters missing a canonical key (num_hidden_states etc.) | warning |
+The type checker itself emits one code, `GNN-E004` (matrix dimensions mismatch the
+declared shape). The remaining codes come from the schema validator in
+`src/gnn/schema.py`; their normative meanings are in
+[gnn_syntax.md § 8 Error Taxonomy](../gnn_syntax.md) and are summarised here:
+
+| Rule ID | Emitted by | Meaning | Default Severity |
+|---------|-----------|---------|------------------|
+| `GNN-E001` | `gnn/schema.py` | Missing required section | error |
+| `GNN-E002` | `gnn/schema.py` | Variable dimension mismatch (declaration vs parameterization) | error |
+| `GNN-E004` | `type_checker/` and `gnn/schema.py` | Matrix dimensions mismatch declared shape / duplicate variable declaration | error |
+| `GNN-E005` | `gnn/schema.py` | Unparseable connection syntax | error |
+| `GNN-W002` | `gnn/schema.py` | Connection references undeclared variable | warning |
+| `GNN-W003` | `gnn/schema.py` | Parameterization provided for undeclared variable | warning |
 
 In `--strict` mode, all warnings are promoted to errors and the step exits
 with code 1. Without `--strict`, the step exits 0 on success, 1 only on hard
@@ -107,8 +110,8 @@ Per run, Step 5 produces in `output/5_type_checker_output/`:
 - `type_check_summary.md` — human-readable Markdown summary with inline card images
 - `type_check_summary.json` — machine-readable summary for downstream steps
 - `visualizations/cards/<model_name>_card.png` — per-model trading card
-- `validation_errors.json` — structured error list for LSP / Step 24 remediation
-- `resource_estimates.json` — output of estimation_strategies for the corpus
+- `type_check_results.json` / `type_check_data.json` / `type_check_report.md` — structured per-file results and report
+- `resource_data.json` / `resource_report.md` — resource estimates for the corpus
 
 ## Testing
 
@@ -116,13 +119,11 @@ Test file: `src/tests/type_checker/test_type_checker_overall.py`
 
 Key coverage areas:
 
-- `test_type_checker_validates_sample_corpus` — runs against every file in
-  `input/gnn_files/` and asserts all pass without errors.
-- `test_type_checker_rejects_dimension_mismatch` — hand-crafted GNN with
-  `A[2,3]` declared but `{(0.5,0.5),(0.5,0.5)}` initialized (shape 2×2) must
-  emit GNN-E004.
-- `test_type_checker_flags_unknown_ontology_term` — `s=NotARealTerm`
-  produces GNN-W001.
+- `test_check_file_valid` — a valid GNN file passes `check_file`.
+- `test_check_file_with_errors` — a file with type errors is reported as invalid.
+- `test_check_directory` — directory-level checking over a corpus.
+- `test_check_nonexistent_file_returns_error` / `test_check_unreadable_file_returns_error`
+  — missing or unreadable inputs surface as errors, not crashes.
 - `test_type_checker_strict_mode_promotes_warnings` — same corpus with
   `--strict` exits non-zero when any warning is present.
 

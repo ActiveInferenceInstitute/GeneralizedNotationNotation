@@ -8,9 +8,9 @@
 
 **Category**: Protocol Integration / Tool Management
 
-**Status**: ✅ Production Ready
+**Status**: Production Ready
 
-**Version**: 1.7.0 (Extended from pipeline v1.6.0 — MCP subsystem has independent versioning)
+**Version**: 1.6.0 (MCP subsystem has independent versioning; see `__init__.py`)
 
 **Last Updated**: 2026-04-16
 
@@ -48,10 +48,10 @@
 - `output_dir` (Path): Output directory for MCP results
 - `verbose` (bool): Enable verbose logging (default: False)
 - `logger` (Optional[logging.Logger]): Logger instance for progress reporting (default: None)
-- `mcp_mode` (str, optional): MCP mode ("tool_discovery", "server", "client") (default: "tool_discovery")
-- `enable_tools` (bool, optional): Enable MCP tools functionality (default: True)
-- `transport` (str, optional): Transport protocol ("stdio", "http") (default: "stdio")
-- `**kwargs`: Additional MCP options
+- `mcp_mode` (str, optional): Accepted via `**kwargs`; not consumed by `process_mcp` (default: `"tool_discovery"`)
+- `enable_tools` (bool, optional): Accepted via `**kwargs`; not consumed (default: True)
+- `transport` (str, optional): Accepted via `**kwargs`; not consumed (default: `"stdio"`)
+- `**kwargs`: Forwarded to `initialize()` — recognized keys include `performance_mode`, `enable_caching`, `enable_rate_limiting`, `strict_validation`, `cache_ttl`, `modules_allowlist` (aka `mcp_modules_allowlist`), `per_module_timeout` (aka `mcp_per_module_timeout`), `overall_timeout` (aka `mcp_overall_timeout`). See the Default Settings table.
 
 **Returns**: `bool` - True if MCP processing succeeded, False otherwise
 
@@ -171,8 +171,7 @@ on the live execution path.
 - `fastapi` - REST API framework (recovery: basic HTTP)
 
 ### Internal Dependencies
-- `utils.pipeline_template` - Standardized pipeline processing
-- `pipeline.config` - Configuration management
+- `utils.pipeline_template` - Standardized pipeline processing (processor.py)
 
 ---
 
@@ -187,24 +186,28 @@ in `src/mcp/MCP_DOCUMENTATION.md`.
 
 ### Configuration Files
 
-No dedicated `mcp_config.yaml` is read; configuration is passed via
-`process_mcp()` kwargs and the CLI flags listed below.
+No dedicated `mcp_config.yaml` is read. Runtime configuration is set via the
+`initialize(...)` factory (see `mcp.mcp`) and the `GNN_MCP_*` env vars — **not**
+via step-21 CLI flags (`21_mcp.py` exposes only `--target-dir`, `--output-dir`,
+`--verbose`).
 
 ### Default Settings
 
 The live defaults are embedded in `mcp.mcp.MCP.__init__` and exposed via
-`initialize(...)`. Authoritative table:
+`initialize(...)`. Authoritative table (`initialize()` defaults; `MCP.__init__`
+sets `enable_caching`/`enable_rate_limiting` to `True` until a `performance_mode`
+override applies):
 
-| Knob | Default | CLI flag (step 21) |
-|------|---------|---------------------|
-| `performance_mode` | `"low"` | `--performance-mode {low,medium,high}` |
-| `strict_validation` | `False` (from mode) | `--mcp-strict-validation` |
-| `enable_caching` | `False` (from mode) | — |
-| `enable_rate_limiting` | `False` (from mode) | — |
-| `cache_ttl` | `300.0` s | `--mcp-cache-ttl <seconds>` |
-| `per_module_timeout` | `30.0` s | `--mcp-per-module-timeout <seconds>` |
-| `overall_timeout` | `120.0` s | `--mcp-overall-timeout <seconds>` |
-| `modules_allowlist` | `None` (all modules) | `--mcp-modules-allowlist a,b,c` |
+| Knob | Default | Set via |
+|------|---------|---------|
+| `performance_mode` | `"low"` | `initialize(performance_mode=...)` |
+| `strict_validation` | `False` (from mode) | `initialize(strict_validation=...)` / `MCP(strict_validation=...)` |
+| `enable_caching` | `False` (from mode) | `initialize(enable_caching=...)` / `MCP(enable_caching=...)` |
+| `enable_rate_limiting` | `False` (from mode) | `initialize(enable_rate_limiting=...)` |
+| `cache_ttl` | `300.0` s | `initialize(cache_ttl=...)` |
+| `per_module_timeout` | `30.0` s | `initialize(per_module_timeout=...)` |
+| `overall_timeout` | `120.0` s | `initialize(overall_timeout=...)` |
+| `modules_allowlist` | `None` (all modules) | `initialize(modules_allowlist=...)` |
 
 See `src/mcp/MCP_DOCUMENTATION.md` → *Configuration* for the complete surface
 and `src/mcp/SKILL.md` for the capabilities-API summary.
@@ -266,8 +269,7 @@ output/21_mcp_output/
 ### Latest Execution
 - **Duration**: ~1-3 seconds (tool registration)
 - **Memory**: ~10-20MB for tool registry
-- **Status**: ✅ Production Ready
-
+- **Status**: Production Ready
 ### Expected Performance
 - **Fast Path**: <1s for tool discovery
 - **Slow Path**: ~5s for comprehensive tool validation
@@ -297,11 +299,10 @@ output/21_mcp_output/
 - **Function**: `process_mcp()`
 
 ### Imports From
-- `utils.pipeline_template` - Standardized processing patterns
-- `pipeline.config` - Configuration management
+- `utils.pipeline_template` - Standardized processing patterns (processor.py)
 
 ### Imported By
-- `src/tests/mcp/test_mcp_overall.py` - MCP module tests
+- `src/tests/mcp/test_mcp_overall.py`, `test_mcp_tools.py`, `test_mcp_functional.py`, `test_mcp_audit.py`, `test_mcp_http_auth.py`, `test_mcp_performance.py`, `test_mcp_standalone_modules.py`, `test_mcp_configurability.py` - MCP tests
 - `main.py` - Pipeline orchestration
 
 ### Data Flow
@@ -314,16 +315,13 @@ Module Tools → MCP Registration → Tool Discovery → Execution Requests → 
 ## Testing
 
 ### Test Files
-- `src/tests/mcp/test_mcp_tools.py` - Tool registration tests
-- `src/tests/mcp/test_mcp_functional.py` - Functional tests
-- `src/tests/mcp/test_mcp_audit.py` - Audit tests
-- `src/tests/mcp/test_mcp_tools.py` - Tool registration tests
+- `src/tests/mcp/test_mcp_overall.py`, `test_mcp_tools.py`, `test_mcp_functional.py`, `test_mcp_audit.py`, `test_mcp_http_auth.py`, `test_mcp_performance.py`, `test_mcp_standalone_modules.py`, `test_mcp_configurability.py`
 
 ### Test Coverage
 Measure on demand:
 
 ```bash
-uv run --extra dev python -m pytest src/tests/test_mcp*.py \
+uv run --extra dev python -m pytest src/tests/mcp/ \
     --cov=src/mcp --cov-report=term-missing
 ```
 ### Key Test Scenarios
@@ -379,22 +377,7 @@ uv run --extra dev python -m pytest src/tests/test_mcp*.py \
 
 ## Version History
 
-### Current Version: 3.0.0
-
-**Features**:
-- Tool registration and discovery
-- Resource access and management
-- JSON-RPC protocol implementation
-- Server and client implementations
-- Enhanced error handling
-- Performance monitoring
-
-**Known Issues**:
-- None currently
-
-### Roadmap
-- **Next Version**: Enhanced transport protocols
-- **Future**: Real-time tool monitoring
+Module `__version__` is `1.6.0` (`__init__.py`). No formal changelog is maintained in this file.
 
 ---
 
@@ -413,8 +396,8 @@ uv run --extra dev python -m pytest src/tests/test_mcp*.py \
 
 **Last Updated**: 2026-04-16
 **Maintainer**: GNN Pipeline Team
-**Status**: ✅ Production Ready
-**Architecture Compliance**: ✅ 100% Thin Orchestrator Pattern
+**Status**: Production Ready
+**Architecture Compliance**: Thin Orchestrator Pattern (delegates to `mcp.processor.process_mcp` → `MCP.discover_modules`)
 
 
 ---

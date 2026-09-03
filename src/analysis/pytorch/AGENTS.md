@@ -9,15 +9,14 @@ Framework-specific analysis module for PyTorch simulation outputs. Reads `simula
 ```
 pytorch/
 ├── __init__.py      # Package exports
-└── analyzer.py      # PyTorch result analysis and visualization (186 lines)
+└── analyzer.py      # PyTorch result analysis and visualization (202 lines)
 ```
 
 ## Key Functions
 
-- **`analyze_pytorch_results(results_dir, output_dir)`** — Main entry point; reads PyTorch JSON results and produces matplotlib visualizations.
+- **`generate_analysis_from_logs(results_dir, output_dir=None, verbose=False)`** — Main entry point; reads PyTorch JSON results and produces matplotlib visualizations.
 - **Belief trajectory plotting** — Tracks posterior belief evolution over simulation timesteps.
 - **Action distribution analysis** — Visualizes policy distributions across actions.
-- **EFE decomposition** — Breaks down Expected Free Energy into epistemic and instrumental components.
 
 ## Dependencies
 

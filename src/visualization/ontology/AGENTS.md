@@ -8,15 +8,15 @@ Ontology-specific visualization for Active Inference terminology. Generates visu
 
 ```
 ontology/
-├── __init__.py       # Package exports (3 lines)
-└── visualizer.py     # Ontology visualization engine (240 lines)
+├── __init__.py       # Package exports
+└── visualizer.py     # OntologyVisualizer (annotation table visualization)
 ```
 
 ## Key Functions
 
-- **`visualize_ontology_mappings(model, ontology, output_dir)`** — Creates visual diagrams showing how model variables map to Active Inference concepts.
-- **Term highlighting** — Color-codes model elements by ontology category (beliefs, observations, actions, preferences).
-- **Coverage reporting** — Shows which ontology terms are present and which are missing from the model.
+- **`OntologyVisualizer.visualize_directory(input_dir, output_dir) -> List[str]`** — Visualizes ontology annotations from every GNN file in a directory; returns generated artifact paths.
+- **`OntologyVisualizer.visualize_ontology(parsed_data, output_dir) -> Optional[str]`** — Renders an annotated ontology-table PNG (`ontology_annotations.png`) from the model's `ActInfOntologyAnnotation` section; returns `None` when the section is absent.
+- **Coverage reporting** — The table shows which Active Inference terms are present and their annotations.
 
 ## Parent Module
 

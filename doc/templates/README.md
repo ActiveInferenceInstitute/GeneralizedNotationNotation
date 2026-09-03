@@ -107,7 +107,7 @@ gnn pull actinf-pomdp-2state --output-dir input/gnn_files/
 ### Method 3: Direct Template Initializer
 ```bash
 # Run Step 0 template initialization
-python src/0_template.py --target-dir input/gnn_files --output-dir output/0_template_output
+uv run python src/0_template.py --target-dir input/gnn_files --output-dir output/0_template_output
 ```
 
 **Cross-References**: [API Documentation](../api/README.md) | [Tool Development](../gnn/reference/gnn_dsl_manual.md)

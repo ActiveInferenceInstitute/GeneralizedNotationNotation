@@ -124,238 +124,99 @@ flowchart TD
 
 ## Core Components
 
-### Pipeline Configuration Management
+### Pipeline Configuration Management (`config.py`)
 
-#### `get_pipeline_config() -> Dict[str, Any]`
-Gets the complete pipeline configuration.
+#### `get_pipeline_config() -> dict`
+Returns the pipeline configuration as a plain dict (steps, timeout, parallel).
 
-**Configuration Features:**
-- Step configuration
-- Output directory management
-- Logging configuration
-- Error handling settings
-- Performance optimization
+#### `set_pipeline_config(config: PipelineConfig) -> None`
+Saves a new pipeline configuration.
 
-#### `load_step_config(step_name: str) -> Dict[str, Any]`
-Loads configuration for a specific pipeline step.
+#### `get_output_dir_for_script(script_name: str, base_output_dir: Path) -> Path`
+Returns the standardized per-step output directory (e.g. `output/3_gnn_output/`).
 
-**Step Configuration:**
-- Input/output paths
-- Processing parameters
-- Validation rules
-- Error handling
-- Performance settings
+### Pipeline Execution (`execution.py`)
 
-#### `validate_pipeline_config(config: Dict[str, Any]) -> bool`
-Validates pipeline configuration for correctness.
+#### `run_pipeline(target_dir, output_dir, steps=None, **kwargs) -> bool`
+Executes the pipeline for a target directory (see `run_pipeline` in `execution.py`).
 
-**Validation Features:**
-- Required fields checking
-- Path validation
-- Parameter validation
-- Dependency checking
-- Configuration consistency
+#### `execute_pipeline_step(step_name, target_dir, output_dir, **kwargs) -> StepExecutionResult`
+Executes one step, returning a result object with success, duration, output files, and errors.
 
-### Pipeline Orchestration
+#### `execute_pipeline_steps(step_names, target_dir, output_dir, **kwargs)`
+Executes an ordered list of steps.
 
-#### `execute_pipeline(target_dir: Path, output_dir: Path, steps: List[str] = None) -> bool`
-Executes the complete GNN processing pipeline.
+#### `get_pipeline_status() -> dict`
+Returns current pipeline execution status and statistics.
 
-**Execution Features:**
-- Step sequencing
-- Dependency management
-- Error handling
-- Progress tracking
-- Result aggregation
+#### `validate_pipeline_config(config: dict) -> bool`
+Validates a pipeline configuration dict.
 
-#### `execute_step(step_name: str, target_dir: Path, output_dir: Path, **kwargs) -> bool`
-Executes a single pipeline step.
+### Step Ordering (`dag.py`)
 
-**Step Execution:**
-- Step initialization
-- Processing execution
-- Error handling
-- Result validation
-- Output management
+#### `resolve_execution_order(step_names, ...) -> List[str]`
+Topological sort over the step dependency DAG.
 
-#### `get_step_dependencies(step_name: str) -> List[str]`
-Gets the dependencies for a specific step.
+#### `visualize_dag(step_names, output_path) -> bool`
+Writes a Mermaid or DOT rendering of the DAG.
 
-**Dependency Features:**
-- Direct dependencies
-- Indirect dependencies
-- Circular dependency detection
-- Dependency resolution
-- Execution order
+### Step Registry (`step_registry.py`)
 
-### Step Management
-
-#### `register_step(step_name: str, step_function: Callable, dependencies: List[str] = None) -> bool`
-Registers a new pipeline step.
-
-**Registration Features:**
-- Step validation
-- Dependency checking
-- Function signature validation
-- Configuration integration
-- Error handling
-
-#### `get_step_status(step_name: str) -> Dict[str, Any]`
-Gets the current status of a pipeline step.
-
-**Status Features:**
-- Execution status
-- Performance metrics
-- Error information
-- Output summary
-- Resource usage
-
-#### `reset_step(step_name: str) -> bool`
-Resets a pipeline step to initial state.
-
-**Reset Features:**
-- Output cleanup
-- State reset
-- Configuration reset
-- Error clearing
-- Performance reset
-
-### Pipeline Validation
-
-#### `validate_pipeline_structure() -> Dict[str, Any]`
-Validates the overall pipeline structure.
-
-**Structure Validation:**
-- Step completeness
-- Dependency consistency
-- Configuration validity
-- Path accessibility
-- Resource availability
-
-#### `validate_step_sequence(steps: List[str]) -> bool`
-Validates the execution sequence of pipeline steps.
-
-**Sequence Validation:**
-- Dependency order
-- Circular dependency detection
-- Step availability
-- Configuration consistency
-- Resource requirements
+The canonical `STEPS` list (25 `StepInfo` entries) with lookups `step_for_name`,
+`step_for_stem`, tag filters `get_core_steps()` / `get_llm_steps()`, and stage
+definitions in `STAGE_DEFINITIONS`. Step-level prerequisites are validated by
+`pipeline/pipeline_validator.py`; there are no `register_step` / `get_step_status`
+/ `reset_step` runtime registration APIs — steps are declared in `STEPS`.
 
 ## Usage Examples
 
-### Basic Pipeline Execution
+### Running Steps Through `main.py`
+
+In practice the pipeline runs through `src/main.py` (CLI flags `--only-steps`,
+`--skip-steps`, etc.); the `pipeline.execution` helpers below are programmatic
+wrappers around that entry point.
 
 ```python
-from pipeline import execute_pipeline, get_pipeline_config
+from pipeline.execution import run_pipeline, execute_pipeline_step, get_pipeline_status
 
-# Get pipeline configuration
-config = get_pipeline_config()
-
-# Execute complete pipeline
-success = execute_pipeline(
-    target_dir=Path("input/"),
-    output_dir=Path("output/"),
-    steps=["setup", "gnn", "validation", "export", "visualization"],
+# Execute the pipeline for a target directory (returns a compact summary dict)
+summary = run_pipeline(
+    target_dir="input/gnn_files",
+    output_dir="output",
+    steps="all",
 )
-
-if success:
-    print("Pipeline executed successfully")
-else:
-    print("Pipeline execution failed")
-```
-
-### Single Step Execution
-
-```python
-from pipeline import execute_step
 
 # Execute a single step
-success = execute_step(
-    step_name="validation",
-    target_dir=Path("input/"),
-    output_dir=Path("output/"),
-    verbose=True,
+result = execute_pipeline_step(
+    step_name="6_validation",
+    target_dir=Path("input/gnn_files"),
+    output_dir=Path("output"),
 )
 
-if success:
-    print("Step executed successfully")
-else:
-    print("Step execution failed")
+# Inspect pipeline status
+status = get_pipeline_status()
 ```
 
-### Step Registration
+### DAG-Based Ordering
 
 ```python
-from pipeline import register_step
+from pipeline.dag import resolve_execution_order
 
-
-# Register a custom step
-def my_custom_step(target_dir, output_dir, verbose=False):
-    # Custom step implementation
-    return True
-
-
-success = register_step(
-    step_name="my_custom_step",
-    step_function=my_custom_step,
-    dependencies=["setup", "gnn"],
-)
-
-if success:
-    print("Step registered successfully")
-else:
-    print("Step registration failed")
+order = resolve_execution_order(["render", "gnn", "execute"])
+print(f"Resolved order: {order}")
 ```
 
-### Configuration Management
+### Configuration
 
 ```python
-from pipeline import load_step_config, validate_pipeline_config
+from pipeline.config import get_pipeline_config, get_output_dir_for_script
+from pathlib import Path
 
-# Load step configuration
-step_config = load_step_config("validation")
-
-# Validate pipeline configuration
 config = get_pipeline_config()
-is_valid = validate_pipeline_config(config)
+print(f"Steps: {config['steps']}")
 
-if is_valid:
-    print("Configuration is valid")
-else:
-    print("Configuration is invalid")
-```
-
-### Step Dependencies
-
-```python
-from pipeline import get_step_dependencies
-
-# Get step dependencies
-dependencies = get_step_dependencies("visualization")
-print(f"Visualization step depends on: {dependencies}")
-
-# Check if step can be executed
-from pipeline import can_execute_step
-
-can_execute = can_execute_step(
-    "visualization", completed_steps=["setup", "gnn", "validation"]
-)
-print(f"Can execute visualization: {can_execute}")
-```
-
-### Pipeline Status
-
-```python
-from pipeline import get_step_status, get_pipeline_status
-
-# Get step status
-step_status = get_step_status("validation")
-print(f"Validation step status: {step_status}")
-
-# Get overall pipeline status
-pipeline_status = get_pipeline_status()
-print(f"Pipeline status: {pipeline_status}")
+output_dir = get_output_dir_for_script("3_gnn.py", Path("output"))
+print(f"GNN output directory: {output_dir}")
 ```
 
 ## Pipeline Structure
@@ -389,178 +250,44 @@ The pipeline consists of exactly 25 steps (steps 0-24), executed in order:
 24. **23_report.py** → `src/report/` - Comprehensive analysis report generation
 25. **24_intelligent_analysis.py** → `src/intelligent_analysis/` - AI-powered pipeline analysis and executive reports
 
-### Pipeline Execution Flow
+### Execution Flow (conceptual)
 
-```python
-# Pipeline execution flow
-def execute_pipeline_flow():
-    # 1. Initialize pipeline
-    pipeline_config = get_pipeline_config()
-    
-    # 2. Validate pipeline structure
-    if not validate_pipeline_structure():
-        raise PipelineError("Invalid pipeline structure")
-    
-    # 3. Execute steps in order
-    for step_name in get_pipeline_steps():
-        if not execute_step(step_name):
-            raise PipelineError(f"Step {step_name} failed")
-    
-    # 4. Generate final report
-    generate_pipeline_report()
-```
+1. Load configuration (`input/config.yaml` via `src/main.py`)
+2. Discover steps (`pipeline/step_registry.py`) and resolve dependencies (`pipeline/dag.py`)
+3. Execute routed steps per testing matrix, writing per-step outputs
+4. Write `00_pipeline_summary/pipeline_execution_summary.json`
 
 ## Configuration Options
 
-### Pipeline Configuration
-```python
-# Pipeline configuration
-pipeline_config = {
-    "steps": [
-        "setup",
-        "gnn",
-        "validation",
-        "export",
-        "visualization",
-        "advanced_viz",
-        "ontology",
-        "render",
-        "execute",
-        "llm",
-        "ml_integration",
-        "audio",
-        "analysis",
-        "integration",
-        "security",
-        "research",
-        "website",
-        "report",
-    ],
-    "output_base_dir": "output/",
-    "log_level": "INFO",
-    "parallel_execution": False,
-    "error_handling": "stop_on_error",
-    "performance_tracking": True,
-}
-```
-
-### Step Configuration
-```python
-# Step configuration
-step_config = {
-    "validation": {
-        "input_dir": "input/",
-        "output_dir": "output/validation/",
-        "verbose": True,
-        "strict_mode": False,
-        "timeout": 300,
-    },
-    "export": {
-        "formats": ["json", "xml", "graphml"],
-        "output_dir": "output/export/",
-        "include_metadata": True,
-    },
-}
-```
-
-### Execution Configuration
-```python
-# Execution configuration
-execution_config = {
-    "max_parallel_steps": 4,
-    "step_timeout": 600,
-    "memory_limit": "4GB",
-    "retry_failed_steps": True,
-    "cleanup_on_failure": True,
-}
-```
+Real configuration lives in `input/config.yaml` (testing matrix, `pipeline.skip_steps`,
+LLM settings) plus `PipelineConfig` defaults in `pipeline/config.py`
+(`timeout: 3600`, `retries: 3`, `parallel: True`). The illustrative dicts that
+previously appeared here are not literal schema — check `pipeline/config.py`
+and `utils/arg_parsing.py` for the accepted keys.
 
 ## Error Handling
 
-### Pipeline Failures
-```python
-# Handle pipeline failures gracefully
-try:
-    success = execute_pipeline(target_dir, output_dir)
-except PipelineError as e:
-    logger.error(f"Pipeline execution failed: {e}")
-    # Provide recovery or error reporting
-```
-
-### Step Failures
-```python
-# Handle step failures gracefully
-try:
-    success = execute_step(step_name, target_dir, output_dir)
-except StepError as e:
-    logger.error(f"Step {step_name} failed: {e}")
-    # Provide recovery or error reporting
-```
-
-### Configuration Failures
-```python
-# Handle configuration failures gracefully
-try:
-    config = get_pipeline_config()
-except ConfigError as e:
-    logger.error(f"Configuration loading failed: {e}")
-    # Provide recovery configuration or error reporting
-```
+Step failures are handled by `main.py` per the safe-to-fail contract: steps
+log, write artifacts, and return structured exit codes (0 / 1 / 2) rather than
+raising. `pipeline/execution.py` `run_pipeline` returns a compact summary dict;
+`execute_pipeline_step` returns a `StepExecutionResult` with success/duration/
+errors. There are no `PipelineError` / `StepError` / `ConfigError` exception
+classes in this module.
 
 ## Performance Optimization
 
-### Pipeline Optimization
-- **Parallel Execution**: Execute independent steps in parallel
-- **Caching**: Cache step results for reuse
-- **Incremental Processing**: Process only changed files
-- **Resource Management**: Optimize memory and CPU usage
-
-### Step Optimization
-- **Step Caching**: Cache step outputs
-- **Parallel Processing**: Process multiple files in parallel
-- **Incremental Updates**: Update only changed components
-- **Resource Optimization**: Optimize step resource usage
-
-### Configuration Optimization
-- **Configuration Caching**: Cache configuration for reuse
-- **Lazy Loading**: Load configuration only when needed
-- **Validation Optimization**: Optimize configuration validation
-- **Error Recovery**: Implement efficient error recovery
+- **Parallel Execution**: `execution_workers` controls script-level parallelism in Step 12; `PipelineConfig.parallel` covers orchestration
+- **Caching**: `gnn/parse_cache.py` caches parse results for reuse
+- **Incremental Processing**: matrix routing runs per-folder step lists from `input/config.yaml`
 
 ## Testing and Validation
 
-### Unit Tests
-```python
-# Test individual pipeline functions
-def test_pipeline_config():
-    config = get_pipeline_config()
-    assert "steps" in config
-    assert "output_base_dir" in config
+```bash
+uv run --extra dev python -m pytest src/tests/pipeline/ -q --tb=short
 ```
 
-### Integration Tests
-```python
-# Test complete pipeline execution
-def test_pipeline_execution():
-    success = execute_pipeline(test_dir, output_dir)
-    assert success
-    # Verify pipeline outputs
-    pipeline_files = list(output_dir.glob("**/*"))
-    assert len(pipeline_files) > 0
-```
-
-### Validation Tests
-```python
-# Test pipeline validation
-def test_pipeline_validation():
-    is_valid = validate_pipeline_structure()
-    assert is_valid
-    
-    # Test step sequence validation
-    steps = ["setup", "gnn", "validation"]
-    is_valid = validate_step_sequence(steps)
-    assert is_valid
-```
+Key suites: `test_pipeline_integration.py`, `test_pipeline_functionality.py`,
+`test_pipeline_performance.py`.
 
 ## Dependencies
 
@@ -572,84 +299,20 @@ def test_pipeline_validation():
 - **time**: Time utilities
 
 ### Optional Dependencies
-- **yaml**: YAML configuration
-- **toml**: TOML configuration
-- **pydantic**: Data validation
-- **rich**: Rich text formatting
+- **yaml**: YAML configuration parsing
 
-## Performance Metrics
+## Performance
 
-### Pipeline Performance
-- **Total Execution Time**: 5-30 minutes depending on complexity
-- **Step Execution Time**: 10-300 seconds per step
-- **Memory Usage**: 100MB-2GB depending on data size
-- **CPU Usage**: 20-80% depending on parallelization
-
-### Step Performance
-- **Setup Time**: < 30 seconds
-- **Processing Time**: 10-300 seconds per step
-- **Memory Usage**: 50MB-1GB per step
-- **I/O Performance**: Optimized for minimal disk impact
-
-### Configuration Performance
-- **Load Time**: < 100ms for configuration loading
-- **Validation Time**: < 50ms for configuration validation
-- **Memory Usage**: ~10MB for configuration management
-- **Cache Hit Rate**: 90-95% for repeated access
-
-## Troubleshooting
-
-### Common Issues
-
-#### 1. Pipeline Failures
-```
-Error: Pipeline execution failed - step dependency not met
-Solution: Check step dependencies and execution order
-```
-
-#### 2. Step Failures
-```
-Error: Step execution failed - invalid configuration
-Solution: Validate step configuration and parameters
-```
-
-#### 3. Configuration Issues
-```
-Error: Configuration loading failed - invalid format
-Solution: Check configuration file format and syntax
-```
-
-#### 4. Performance Issues
-```
-Error: Pipeline execution timeout - resource exhaustion
-Solution: Optimize resource usage and increase limits
-```
-
-### Debug Mode
-```python
-# Enable debug mode for detailed pipeline information
-import logging
-
-logging.getLogger("pipeline").setLevel(logging.DEBUG)
-```
-
-## Future Enhancements
-
-### Planned Features
-- **Dynamic Pipeline**: Runtime pipeline modification
-- **Distributed Execution**: Multi-node pipeline execution
-- **AI-Powered Optimization**: ML-based pipeline optimization
-- **Real-time Monitoring**: Live pipeline monitoring and control
-
-### Performance Improvements
-- **Advanced Caching**: Advanced caching strategies
-- **Parallel Processing**: Enhanced parallel processing
-- **Incremental Updates**: Improved incremental processing
-- **Machine Learning**: ML-based performance optimization
+Per-step timeouts live in `pipeline/step_timeouts.py` (overridable via
+`GNN_STEP_TIMEOUT_{N}` and `GNN_STEP_TIMEOUT_SCALE`). Run-to-run timing,
+memory, and pass/fail counts are recorded in each run's
+`00_pipeline_summary/pipeline_execution_summary.json` and per-step summaries —
+consult those for measurements instead of the static ranges some older docs printed.
 
 ## Summary
 
-The Pipeline module provides core pipeline orchestration, configuration management, and step coordination for the GNN processing pipeline. The module manages the 25-step pipeline execution, ensures proper step sequencing and dependency management, and provides comprehensive error handling and performance optimization. The pipeline architecture supports the full Active Inference modeling lifecycle from specification through simulation and GUI construction, with rigorous scientific validation and reproducibility standards.
+The Pipeline module provides orchestration, configuration, step coordination,
+and the canonical step registry for the 25-step GNN pipeline.
 
 ## License and Citation
 

@@ -39,16 +39,21 @@ from report import (
 # Process report step (used by pipeline)
 process_report(target_dir, output_dir, verbose=True)
 
-# Generate comprehensive report
-report = generate_comprehensive_report(pipeline_results)
+# Generate comprehensive report from pipeline outputs (generator variant)
+ok = generate_comprehensive_report(
+    pipeline_output_dir, report_output_dir, logger,
+    report_formats=["html", "markdown", "json"],
+)
 
-# Use the ReportGenerator class
-gen = ReportGenerator()
-report = gen.generate(results)
+# File-level GNN analysis (processor variant)
+report = generate_comprehensive_report(target_dir, output_dir, format="html")
 
-# Format-specific generation
-generate_html_report(data, output_path)
-generate_markdown_report(data, output_path)
+# Analyze a single GNN file
+info = analyze_gnn_file(Path("input/gnn_files/model.md"))
+
+# Render HTML/Markdown strings
+html = generate_html_report(report_data)
+md = generate_markdown_report(report_data)
 
 # Validate a report
 is_valid = validate_report(report_data)
@@ -68,8 +73,8 @@ formats = get_supported_formats()
 
 ## Output
 
-- Reports in `output/23_report_output/`
-- `pipeline_execution_summary.json` at pipeline root
+- `output/23_report_output/comprehensive_analysis_report.html|.md` - analysis reports
+- `report_summary.json`, `report_generation_summary.json`, `report_processing_summary.json` - machine-readable summaries
 
 
 ## MCP Tools

@@ -108,7 +108,17 @@ with `uv sync --extra <group>` or together with `uv sync --all-extras`):
 - **Use case**: Distributed execution of parameter sweeps (`execute/distributed.py`)
 - **Installation**: `uv sync --extra scaling`
 
-### 9. **all** - Everything
+### 9. **stan** - Stan Backend Executor
+
+- **Packages**: `cmdstanpy` (also included in `dev` and `all`)
+- **Use case**: Step 12 execution of the Stan programs rendered by Step 11
+  (HMM forward-algorithm models and continuous linear-Gaussian models)
+- **Installation**: `uv sync --extra stan`, then install the CmdStan toolchain
+  once: `uv run python -c "import cmdstanpy; cmdstanpy.install_cmdstan()"`
+  (needs a C++ compiler and `make`). Without a toolchain Step 12 reports Stan
+  scripts as `skipped`, never as failed.
+
+### 10. **all** - Everything
 
 - **Packages**: union of every group above
 - **Installation**: `uv sync --all-extras`
@@ -117,7 +127,13 @@ with `uv sync --extra <group>` or together with `uv sync --all-extras`):
 > `optax`, `numpyro`, and `discopy` are **core** dependencies installed by a
 > plain `uv sync` — no extra is required for the Step 12 Python backends.
 > Julia backends (RxInfer.jl, ActiveInference.jl) additionally require a local
-> Julia installation.
+> Julia installation (1.12 verified). Their project environments are committed
+> under `src/execute/rxinfer/` and `src/execute/activeinference_jl/`; run
+> `julia --project=<dir> -e 'using Pkg; Pkg.instantiate()'` once per project.
+> `activeinference_jl/Project.toml` pins `Distributions < 0.25.126` because
+> DistributionsAD 0.6.58 does not precompile against newer releases.
+> PyTorch is intentionally not locked (GHSA-rrmf-rvhw-rf47); verify PyTorch
+> renders with `uv run --with torch python <script>`.
 
 ## Installation Methods
 
@@ -127,7 +143,7 @@ with `uv sync --extra <group>` or together with `uv sync --all-extras`):
 
 ```bash
 # List available groups (shown in pyproject.toml [project.optional-dependencies])
-# Groups: dev, api, ml-ai, audio, gui, graphs, research, scaling, all
+# Groups: dev, api, ml-ai, audio, gui, graphs, research, scaling, stan, all
 
 # Install all optional packages
 uv sync --all-extras
@@ -215,25 +231,6 @@ python3 src/main.py --only-steps "3,11,12" --verbose
 python3 src/3_gnn.py --target-dir input/gnn_files --verbose
 ```
 
-## Performance Metrics
-
-### Installation Times (on modern hardware)
-
-- **Core dependencies**: 30-60 seconds
-- **JAX**: 30-45 seconds
-- **PyMDP**: 10-15 seconds
-- **Visualization**: 20-30 seconds
-- **Audio**: 40-60 seconds
-- **LLM**: 10-20 seconds
-- **ML (PyTorch)**: 2-4 minutes
-
-### Pipeline Execution
-
-- **Full 25-step pipeline**: ~5 minutes (with LLM step)
-- **GNN parsing**: ~130ms
-- **Code rendering**: ~150ms
-- **Execution (with PyMDP/JAX)**: ~16 seconds
-
 ## Troubleshooting
 
 ### Issue: "ModuleNotFoundError: No module named 'psutil'"
@@ -271,20 +268,20 @@ uv pip install inferactively-pymdp --python .venv/bin/python
 ## Package Versions (Current)
 
 Versions are pinned in `uv.lock`; `pyproject.toml` declares the floor
-constraints. Notable floors as of 2026-08-02:
+constraints. Notable floors as of 2026-09-02:
 
 ### Core Dependencies
 
 - Python: 3.11+ (`>=3.11,<3.14`)
 - `inferactively-pymdp>=1.0.0` (JAX-first rewrite)
-- `jax[cpu]>=0.7.0,<0.10`, `jaxlib`, `flax`, `optax`, `numpyro>=0.14`
+- `jax[cpu]>=0.7.0,<0.11`, `jaxlib>=0.7.0,<0.11` (upper bound keeps NumPyro 0.20.x import-compatible), `flax`, `optax`, `numpyro>=0.14`
 - numpy, matplotlib, networkx, pyyaml, pandas, plotly, seaborn, h5py
 
 ### Optional Dependencies
 
 - See `[project.optional-dependencies]` in `pyproject.toml` and `uv.lock`
   for the resolved versions of `dev`, `api`, `ml-ai`, `audio`, `gui`,
-  `graphs`, `research`, and `scaling` groups.
+  `graphs`, `research`, `scaling`, and `stan` groups.
 
 > Run `uv lock --check` and `uv sync --frozen` for the authoritative resolved
 > set.
@@ -296,11 +293,9 @@ constraints. Notable floors as of 2026-08-02:
 - **JAX Documentation**: <https://jax.readthedocs.io/>
 - **GNN Pipeline Documentation**: See `README.md` and `ARCHITECTURE.md`
 
----
-
-**Last Updated**: 2026-08-02
+**Last Updated**: 2026-09-02
 **Pipeline Version**: 3.2.0
-**Status**: ✅ Production Ready (Linux & macOS)
+**Status**: Maintained (Linux & macOS)
 **Validation authority**: use the command of record and latest dated receipt in
 [`README.md`](README.md). Julia RxInfer execution uses the committed
 `Project.toml` under `src/execute/rxinfer/`; local Ollama tests remain an

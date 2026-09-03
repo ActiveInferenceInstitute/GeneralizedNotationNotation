@@ -175,7 +175,7 @@ SOLUTION: Add third column or reduce state space to 2
 ### Error Context Collection
 ```bash
 # Collect comprehensive error context (use a directory containing the model)
-python src/main.py --verbose \
+uv run python src/main.py --verbose \
   --target-dir ./problematic_models \
   > debug_output.log 2>&1
 ```
@@ -199,11 +199,11 @@ if not result["is_valid"]:
 ### Performance Profiling
 ```bash
 # Profile memory usage
-python -m memory_profiler src/main.py --target-dir ./large_models
+uv run --extra dev python -m memory_profiler src/main.py --target-dir ./large_models
 
 # Profile CPU usage  
-python -m cProfile -o profile_output.prof src/main.py
-python -m pstats profile_output.prof
+uv run python -m cProfile -o profile_output.prof src/main.py
+uv run python -m pstats profile_output.prof
 ```
 
 ## Prevention Strategies
@@ -219,7 +219,7 @@ python -m pstats profile_output.prof
 ```bash
 # Pre-commit validation
 git add model.md
-python src/main.py --only-steps 4 --strict --target-dir ./models
+uv run python src/main.py --only-steps 5 --strict --target-dir ./models
 
 # Continuous integration
 uv run python src/2_tests.py --comprehensive
@@ -237,5 +237,5 @@ uv run python src/2_tests.py --comprehensive
 ---
 
 **Error Taxonomy Version**: 1.0  
-**Coverage**: 45 error types across 5 categories  
+**Coverage**: syntax, validation, runtime, integration, and performance error categories  
 **Status**: Production-Ready 

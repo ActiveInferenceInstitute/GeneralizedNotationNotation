@@ -182,10 +182,10 @@ The pipeline includes dedicated MCP analysis:
 
 ```bash
 # Run MCP integration check
-python src/main.py --only-steps 21 --target-dir input/gnn_files --verbose
+uv run python src/main.py --only-steps 21 --target-dir input/gnn_files --verbose
 
 # Generate MCP integration report
-python src/21_mcp.py --target-dir input/gnn_files --output-dir output --verbose
+uv run python src/21_mcp.py --target-dir input/gnn_files --output-dir output --verbose
 ```
 
 The MCP step generates comprehensive reports including:

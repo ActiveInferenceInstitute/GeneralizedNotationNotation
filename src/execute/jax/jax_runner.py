@@ -11,7 +11,6 @@ Discovers and runs JAX-generated scripts, manages device selection, logs hardwar
 
 import logging
 import os
-import subprocess  # nosec B404
 import sys
 from pathlib import Path
 from typing import Any, List, Optional, Union
@@ -143,6 +142,11 @@ def execute_jax_script(
         logger.error(f"❌ Syntax error in {script_path.name}: {e}")
         return False
 
+    # Delegate the subprocess envelope (run + timing + error normalization) to
+    # the canonical safe executor. Function-local import: executor.py imports
+    # this runner at module scope, so a module-level import would be circular.
+    from execute.executor import execute_script_safely
+
     env = os.environ.copy()
     if device:
         env["JAX_PLATFORM_NAME"] = device
@@ -154,80 +158,77 @@ def execute_jax_script(
         env["JAX_OUTPUT_DIR"] = str(output_dir)
         logger.debug(f"Set JAX_OUTPUT_DIR={output_dir}")
 
-    start_time = time_mod.time()
+    abs_script_path = script_path.resolve()
+    envelope = execute_script_safely(
+        abs_script_path,
+        timeout=timeout,
+        cwd=abs_script_path.parent,
+        env=env,
+    )
 
-    try:
-        # Execute with enhanced error capture
-        # Convert to absolute path to avoid path resolution issues
-        abs_script_path = script_path.resolve()
-        result = subprocess.run(  # nosec B603
-            [sys.executable, str(abs_script_path)],
-            capture_output=True,
-            text=True,
-            env=env,
-            cwd=abs_script_path.parent,
-            timeout=timeout,
-        )
-
-        elapsed = time_mod.time() - start_time
-        success = result.returncode == 0
-
-        if success:
-            logger.info(
-                f"✅ Script executed successfully: {script_path.name} ({elapsed:.1f}s)"
-            )
-            if verbose and result.stdout.strip():
-                logger.debug(f"Output from {script_path.name}:\n{result.stdout}")
-        else:
-            logger.error(f"❌ Script execution failed: {script_path.name}")
-            logger.error(f"Return code: {result.returncode}")
-            if result.stderr.strip():
-                logger.error(f"Error output:\n{result.stderr}")
-            if result.stdout.strip():
-                logger.debug(f"Standard output:\n{result.stdout}")
-
-        # Save execution logs (E-1/J-1)
-        log_dir = output_dir if output_dir else abs_script_path.parent
-        try:
-            log_dir.mkdir(parents=True, exist_ok=True)
-
-            # Save stdout and stderr
-            stdout_file = log_dir / "stdout.txt"
-            with open(stdout_file, "w") as f:
-                f.write(result.stdout or "")
-
-            stderr_file = log_dir / "stderr.txt"
-            with open(stderr_file, "w") as f:
-                f.write(result.stderr or "")
-
-            # Save execution log JSON
-            execution_log: dict[str, Any] = {
-                "script": str(abs_script_path),
-                "return_code": result.returncode,
-                "success": success,
-                "elapsed_seconds": round(elapsed, 2),
-                "device": device or "default",
-                "timeout": timeout,
-                "timestamp": time_mod.strftime("%Y-%m-%d %H:%M:%S"),
-            }
-
-            log_file = log_dir / "execution_log.json"
-            with open(log_file, "w") as f:
-                json_mod.dump(execution_log, f, indent=2)
-
-            logger.debug(f"Execution logs saved to: {log_dir}")
-        except Exception as log_err:
-            logger.warning(f"Could not save execution logs: {log_err}")
-
-        return success
-    except subprocess.TimeoutExpired:
+    if envelope["return_code"] == -1 and "error" in envelope:
+        # The script never ran (timeout / not-found / unexpected failure).
+        # The pre-delegation envelope logged and returned without writing
+        # per-script logs, so keep that behavior.
         logger.error(
-            f"❌ Script execution timed out after {timeout}s: {script_path.name}"
+            f"❌ Error executing script {script_path.name}: {envelope['error']}"
         )
         return False
-    except Exception as e:
-        logger.error(f"❌ Error executing script {script_path.name}: {e}")
-        return False
+
+    elapsed = envelope["duration_seconds"]
+    success: bool = bool(envelope["success"])
+    result_stdout = envelope["stdout"]
+    result_stderr = envelope["stderr"]
+    return_code = envelope["return_code"]
+
+    if success:
+        logger.info(
+            f"✅ Script executed successfully: {script_path.name} ({elapsed:.1f}s)"
+        )
+        if verbose and result_stdout.strip():
+            logger.debug(f"Output from {script_path.name}:\n{result_stdout}")
+    else:
+        logger.error(f"❌ Script execution failed: {script_path.name}")
+        logger.error(f"Return code: {return_code}")
+        if result_stderr.strip():
+            logger.error(f"Error output:\n{result_stderr}")
+        if result_stdout.strip():
+            logger.debug(f"Standard output:\n{result_stdout}")
+
+    # Save execution logs (E-1/J-1)
+    log_dir = output_dir if output_dir else abs_script_path.parent
+    try:
+        log_dir.mkdir(parents=True, exist_ok=True)
+
+        # Save stdout and stderr
+        stdout_file = log_dir / "stdout.txt"
+        with open(stdout_file, "w") as f:
+            f.write(result_stdout)
+
+        stderr_file = log_dir / "stderr.txt"
+        with open(stderr_file, "w") as f:
+            f.write(result_stderr)
+
+        # Save execution log JSON
+        execution_log: dict[str, Any] = {
+            "script": str(abs_script_path),
+            "return_code": return_code,
+            "success": success,
+            "elapsed_seconds": round(elapsed, 2),
+            "device": device or "default",
+            "timeout": timeout,
+            "timestamp": time_mod.strftime("%Y-%m-%d %H:%M:%S"),
+        }
+
+        log_file = log_dir / "execution_log.json"
+        with open(log_file, "w") as f:
+            json_mod.dump(execution_log, f, indent=2)
+
+        logger.debug(f"Execution logs saved to: {log_dir}")
+    except Exception as log_err:
+        logger.warning(f"Could not save execution logs: {log_err}")
+
+    return success
 
 
 def run_jax_scripts(

@@ -7,11 +7,11 @@
 - Julia subprocess execution via `julia --startup-file=no --project=src/execute/rxinfer <script>`
 - Pre-flight: Julia + committed RxInfer environment validation (`setup_environment.jl` → `Pkg.activate()` + `Pkg.instantiate()`, no runtime `Pkg.add`)
 - Genuine `@model` + `infer()` variational message-passing inference (`free_energy = true`)
-- Timeout: inherits from Step 12 timeout (1800s default)
+- Timeout: inherits from Step 12 timeout (3600s default)
 
 ## Input
 
-- `.jl` scripts from `output/11_render_output/rxinfer/` (genuine `@model pomdp_model` scripts; the former TOML path is no longer supported)
+- `.jl` scripts from `output/11_render_output/<model>/rxinfer/` (genuine `@model pomdp_model` scripts; the former TOML path is no longer supported)
 
 ## Output
 
@@ -22,4 +22,4 @@
 
 ## Dependencies
 
-- `julia >= 1.8`; RxInfer 5.5.0 and all deps pinned by the committed `Project.toml` + `Manifest.toml` in this directory
+- `julia >= 1.10` (`Project.toml` compat); RxInfer 5.5.0 and all deps pinned by the committed `Project.toml` + `Manifest.toml` in this directory

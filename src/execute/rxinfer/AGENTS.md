@@ -2,7 +2,7 @@
 
 ## Module Overview
 
-**Purpose**: Execution and simulation of RxInfer.jl (Julia) probabilistic models generated from GNN specifications
+**Purpose**: Execution of RxInfer.jl (Julia) probabilistic models generated from GNN specifications
 
 **Parent Module**: Execute Module (Step 12: Simulation execution)
 
@@ -13,397 +13,162 @@
 ## Core Functionality
 
 ### Primary Responsibilities
-1. Execute RxInfer.jl simulations from generated Julia code
-2. Run genuine ``@model`` + ``infer()`` variational message-passing inference on probabilistic models
-3. Manage Julia environment and RxInfer.jl execution
-4. Provide analysis and visualization of inference results
-5. Handle RxInfer.jl-specific execution parameters and configurations
+1. Discover rendered RxInfer.jl scripts under `output/11_render_output/<model>/rxinfer/`
+2. Run each script as a Julia subprocess under the committed project environment
+3. Parse and summarise the `simulation_results.json` each script writes
 
 ### Key Capabilities
 - Genuine ``@model`` + ``infer()`` variational message-passing inference execution (RxInfer.jl v5.5)
 - **Offline batch inference (Bayesian smoothing)** — the pipeline runs ``infer()``
   on a pre-collected observation sequence, NOT online active inference. If
   ``infer()`` fails, the script crashes (no fallback).
-- Julia environment management and package loading
-- Real-time inference monitoring and result streaming
-- Comprehensive result analysis and visualization
-- Error handling and recovery for Julia/RxInfer.jl execution
+- Reproducible Julia environment: `julia --startup-file=no --project=src/execute/rxinfer <script>`
+  against the committed `Project.toml` + `Manifest.toml`; `setup_environment.jl`
+  only runs `Pkg.instantiate()` (no runtime `Pkg.add`)
+- Result parsing helpers (`rxinfer_results.py`) for free energy, posteriors and convergence
 - Cross-platform compatibility (Linux/macOS/Windows)
 
 ---
 
 ## API Reference
 
+All public names are re-exported from `execute.rxinfer` (`__all__` in `__init__.py`)
+and defined in `rxinfer_runner.py`.
+
 ### Public Functions
 
-#### `execute_rxinfer_simulation(julia_script_path: Union[str, Path], config: Dict[str, Any] = None, **kwargs) -> Dict[str, Any]`
-**Description**: Execute RxInfer.jl simulation from generated Julia script.
+#### `is_julia_available(min_version: tuple = (1, 9, 0)) -> bool`
+**Description**: Return `True` when a `julia` executable is on `PATH` (shared helper from `execute.julia_setup`).
+
+#### `find_rxinfer_scripts(base_dir: Union[str, Path], recursive: bool = True) -> List[Path]`
+**Description**: Collect `*_rxinfer.jl` scripts (and any `*_config.toml` configs) under `base_dir`.
 
 **Parameters**:
-- `julia_script_path` (Union[str, Path]): Path to RxInfer.jl simulation script
-- `config` (Dict[str, Any], optional): Execution configuration parameters (default: {})
-- `iterations` (int, optional): Number of inference iterations (default: 100)
-- `convergence_threshold` (float, optional): Convergence threshold (default: 1e-6)
-- `timeout` (int, optional): Execution timeout in seconds (default: 600)
-- `julia_path` (str, optional): Path to Julia executable (default: auto-detect)
-- `**kwargs`: Additional execution options
+- `base_dir`: Directory to search (Step 12 passes `<render_dir>/rxinfer`)
+- `recursive`: Whether to walk subdirectories
 
-**Returns**: `Dict[str, Any]` - Simulation results dictionary with:
-- `success` (bool): Whether execution succeeded
-- `execution_time` (float): Total execution time in seconds
-- `results` (Dict): Inference results
-- `converged` (bool): Whether inference converged
-- `output_files` (List[Path]): Generated output files
+**Returns**: List of script paths (`.jl` scripts first, then `.toml` configs).
+
+#### `execute_rxinfer_script(script_path: Path, verbose: bool = False, output_dir: Optional[Path] = None, timeout: int = 300) -> bool`
+**Description**: Run one rendered script with
+`julia --startup-file=no --project=<this directory> <script>`. `.toml` inputs are
+handed to `rxinfer_runner.jl` instead.
+
+**Parameters**:
+- `script_path`: Path to the rendered `.jl` script
+- `verbose`: Log the script's stdout on success
+- `output_dir`: Reserved for signature consistency (currently unused)
+- `timeout`: Subprocess timeout in seconds
+
+**Returns**: `True` on exit code 0, `False` on non-zero exit, timeout, missing or empty file.
+
+#### `run_rxinfer_scripts(rendered_simulators_dir: Union[str, Path], execution_output_dir: Optional[Union[str, Path]] = None, recursive_search: bool = True, verbose: bool = False) -> bool`
+**Description**: Find every RxInfer.jl script below `<rendered_simulators_dir>/rxinfer` and execute
+them in sequence.
+
+**Returns**: `True` only if every script succeeded (or none were found).
 
 **Example**:
 ```python
-from execute.rxinfer import execute_rxinfer_simulation
 from pathlib import Path
-
-config = {
-    "iterations": 100,
-    "convergence_threshold": 1e-6,
-    "data_file": "observations.csv",
-    "constraints": "default",
-    "meta": True,
-    "visualization": True,
-}
-
-results = execute_rxinfer_simulation(
-    Path("output/11_render_output/simulation.jl"), config=config, timeout=600
+from execute.rxinfer import (
+    execute_rxinfer_script,
+    find_rxinfer_scripts,
+    is_julia_available,
+    run_rxinfer_scripts,
 )
-print(f"Inference completed in {results['execution_time']:.2f}s")
+
+if is_julia_available():
+    ok = run_rxinfer_scripts(
+        rendered_simulators_dir=Path("output/11_render_output"),
+        execution_output_dir=Path("output/12_execute_output"),
+        verbose=True,
+    )
+
+    for script in find_rxinfer_scripts(Path("output/11_render_output"), recursive=True):
+        execute_rxinfer_script(script, verbose=True, timeout=600)
 ```
 
-#### `run_rxinfer_inference(model_code: str, data: Dict[str, Any], config: Dict[str, Any] = None, **kwargs) -> Dict[str, Any]`
-**Description**: Run RxInfer.jl inference with model code and data.
-
-**Parameters**:
-- `model_code` (str): RxInfer.jl model code
-- `data` (Dict[str, Any]): Observation data dictionary
-- `config` (Dict[str, Any], optional): Inference configuration (default: {})
-- `iterations` (int, optional): Number of inference iterations (default: 100)
-- `algorithm` (str, optional): Inference algorithm ("VMP", "BP", "EP") (default: "VMP")
-- `**kwargs`: Additional inference options
-
-**Returns**: `Dict[str, Any]` - Inference results with beliefs, free energy, convergence status
-
-#### `validate_julia_environment() -> Dict[str, Any]`
-**Description**: Validate Julia environment and RxInfer.jl installation.
-
-**Returns**: `Dict[str, Any]` - Validation results with:
-- `julia_available` (bool): Whether Julia is installed
-- `julia_version` (Optional[str]): Julia version if available
-- `rxinfer_available` (bool): Whether RxInfer.jl is installed
-- `rxinfer_version` (Optional[str]): RxInfer.jl version if available
-
-#### `setup_rxinfer_execution(config: Dict[str, Any] = None, **kwargs) -> Dict[str, Any]`
-**Description**: Setup RxInfer.jl execution environment and install dependencies.
-
-**Parameters**:
-- `config` (Dict): Setup configuration
-
-**Returns**: Setup results and environment info
+### Result Helpers (`rxinfer_results.py`)
+- `parse_rxinfer_output(output_path: Path) -> Optional[Dict]` — load one `simulation_results.json`
+- `extract_convergence_metrics(parsed) -> Dict` — free-energy trajectory and convergence flags
+- `summarize_posteriors(parsed) -> Dict` — per-variable posterior summaries
+- `collect_rxinfer_results(output_dir: Path, model_name=None) -> List[Dict]` — gather every result file under a directory
+- `format_rxinfer_report(results) -> str` — Markdown report over collected results
 
 ---
 
 ## Dependencies
 
 ### Required Dependencies
-- `julia` - Julia programming language runtime
-- `RxInfer.jl` - RxInfer.jl Julia package
-- `ReactiveMP.jl` - Reactive message passing library
-- `GraphPPL.jl` - Probabilistic programming DSL
-
-### Optional Dependencies
-- `Plots.jl` - Visualization support (recovery: data export)
-- `DataFrames.jl` - Data manipulation (recovery: basic arrays)
-- `TOML.jl` - Configuration file support (recovery: JSON)
+- `julia` (`Project.toml` compat `julia = "1.10"`)
+- `RxInfer.jl` 5.5.0 plus `ReactiveMP.jl`, `GraphPPL.jl`, `JSON`, `Distributions`, `StatsBase` — all pinned by the committed `Project.toml` + `Manifest.toml` in this directory
 
 ### Internal Dependencies
-- `execute.executor` - Base execution functionality
-- `render.rxinfer` - RxInfer.jl code generation
-- `utils.pipeline_template` - Pipeline utilities
+- `execute.julia_setup` - Shared Julia availability check
+- `execute.processor` - Step 12 orchestration (calls into this module per rendered script)
+- `render.rxinfer` - Produces the scripts this module executes
 
 ---
 
 ## Configuration
 
-### RxInfer.jl Execution Configuration
-```python
-RXINFER_EXEC_CONFIG = {
-    "inference": {
-        "iterations": 100,  # Maximum inference iterations
-        "tolerance": 1e-6,  # Convergence tolerance
-        "scheduler": "Asynchronous",  # Inference scheduler
-        "autoupdates": True,  # Automatic model updates
-        "meta": True,  # Use meta-programming
-        "constraints": "default",  # Constraint specification
-    },
-    "data": {
-        "format": "csv",  # Data format
-        "batch_size": 100,  # Batch size for streaming
-        "validation_split": 0.2,  # Train/validation split
-        "normalization": True,  # Data normalization
-    },
-    "execution": {
-        "julia_threads": 4,  # Julia threads
-        "memory_limit": "4GB",  # Memory limit
-        "timeout": 300,  # Execution timeout (seconds)
-        "cleanup_temp": True,  # Clean temporary files
-    },
-    "output": {
-        "save_results": True,  # Save inference results
-        "export_format": "json",  # Export format
-        "visualization": True,  # Generate visualizations
-        "performance_metrics": True,  # Performance monitoring
-    },
-}
-```
-
-### Model Configuration
-```python
-MODEL_CONFIG = {
-    "structure": "factor_graph",  # Model structure type
-    "variables": "random",  # Variable types
-    "factors": "constraint_based",  # Factor specification
-    "priors": "informative",  # Prior distributions
-    "likelihoods": "gaussian",  # Likelihood functions
-}
-```
-
-### Performance Configuration
-```python
-PERFORMANCE_CONFIG = {
-    "optimization": {
-        "compilation": True,  # JIT compilation
-        "caching": True,  # Result caching
-        "parallelization": True,  # Parallel execution
-        "memory_pool": True,  # Memory pooling
-    },
-    "monitoring": {
-        "memory_usage": True,  # Memory monitoring
-        "cpu_usage": True,  # CPU monitoring
-        "inference_progress": True,  # Progress tracking
-        "error_logging": True,  # Error logging
-    },
-}
-```
-
----
-
-## Usage Examples
-
-### Basic RxInfer.jl Simulation Execution
-```python
-from execute.rxinfer import execute_rxinfer_simulation
-
-# Execute RxInfer.jl simulation
-execution_config = {
-    "iterations": 50,
-    "tolerance": 1e-6,
-    "data_file": "observations.csv",
-    "constraints": "default",
-    "meta": True,
-    "scheduler": "Asynchronous",
-    "visualization": True,
-}
-
-results = execute_rxinfer_simulation(
-    julia_script_path="output/11_render_output/model_rxinfer_simulation.jl",
-    config=execution_config,
-)
-
-print(f"Inference converged: {results['converged']}")
-print(f"Final free energy: {results['free_energy']:.4f}")
-print(f"Execution time: {results['execution_time']:.2f}s")
-```
-
-### Inference with Custom Data
-```python
-from execute.rxinfer import run_rxinfer_inference
-
-# Load model code
-with open("model.jl", "r") as f:
-    model_code = f.read()
-
-# Prepare data
-data = {"observations": observation_array, "controls": control_array, "time_steps": 100}
-
-# Configure inference
-inference_config = {
-    "iterations": 100,
-    "constraints": "custom",
-    "meta": True,
-    "scheduler": "Asynchronous",
-}
-
-inference_results = run_rxinfer_inference(model_code, data, inference_config)
-
-# Analyze results
-analyze_inference_results(inference_results)
-```
-
-### Environment Validation
-```python
-from execute.rxinfer import validate_julia_environment
-
-# Validate Julia and RxInfer.jl setup
-validation = validate_julia_environment()
-
-print("Julia Environment Validation:")
-print(f"Julia installed: {validation['julia_available']}")
-print(f"Version: {validation.get('julia_version', 'Unknown')}")
-print(f"RxInfer.jl available: {validation['rxinfer_available']}")
-print(f"ReactiveMP.jl available: {validation['reactivemp_available']}")
-
-if not validation["environment_ready"]:
-    print("Issues found:")
-    for issue in validation["issues"]:
-        print(f"  - {issue}")
-```
-
-### Setup and Execution
-```python
-from execute.rxinfer import setup_rxinfer_execution
-
-# Setup execution environment
-setup_config = {
-    "julia_threads": 4,
-    "memory_limit": "4GB",
-    "working_directory": "./rxinfer_work",
-    "cleanup_on_exit": True,
-}
-
-setup_results = setup_rxinfer_execution(setup_config)
-
-if setup_results["setup_successful"]:
-    print("RxInfer.jl environment ready")
-    # Proceed with execution
-    execute_simulation()
-else:
-    print("Setup failed:")
-    for error in setup_results["errors"]:
-        print(f"  - {error}")
-```
-
----
-
-## Reactive Inference Implementation
-
-### Message Passing Algorithms
-- **Belief Propagation**: Sum-product algorithm for exact inference
-- **Variational Message Passing**: Approximate inference with variational distributions
-- **Expectation Propagation**: Moment matching for exponential families
-- **Loopy Belief Propagation**: Iterative message passing on cyclic graphs
-
-### Reactive Execution Model
-- **Streaming Inference**: Real-time inference on data streams
-- **Online Learning**: Incremental model updates with new data
-- **Adaptive Scheduling**: Dynamic message scheduling based on convergence
-- **Constraint Propagation**: Declarative constraint satisfaction
-
-### Model Types Supported
-- **Static Models**: Fixed structure probabilistic models
-- **Dynamic Models**: Time-series and sequential models
-- **Hierarchical Models**: Multi-level probabilistic hierarchies
-- **Hybrid Models**: Combination of discrete and continuous variables
+This module carries no configuration dictionaries of its own. Timeouts and the
+framework selection come from Step 12 (`--frameworks`, `timeout` kwarg in
+`execute.processor`); the Julia environment is fixed by the committed
+`Project.toml` + `Manifest.toml`.
 
 ---
 
 ## Output Specification
 
 ### Output Products
-- `simulation_results.json` - Complete inference results (schema `rxinfer_simulation_v1`, written by the Julia runner)
+- `simulation_results.json` - Complete inference results (schema `rxinfer_simulation_v1`, written by the rendered Julia script)
 - `simulation.log` / `simulation_log.json` - Best-effort runner logs (guarded; absence never fails a run)
+- Step 12 folds every run into `output/12_execute_output/summaries/execution_summary.json` and `execution_report.md`
 
 ### Output Directory Structure
 ```
 output/12_execute_output/
-├── simulation_results.json
-├── simulation.log
-├── simulation_log.json
-└── execution_logs/
+├── <model>/rxinfer/
+│   ├── simulation_results.json
+│   ├── simulation.log
+│   └── simulation_log.json
+└── summaries/
+    ├── execution_summary.json
+    └── execution_report.md
 ```
 
 ### Result Data Structure
-```python
-inference_results = {
-    "metadata": {
-        "model_name": "actinf_pomdp_agent",
-        "framework": "rxinfer",
-        "julia_version": "1.8.5",
-        "rxinfer_version": "2.4.1",
-        "execution_time": 45.67,
-        "timestamp": "2025-10-28T10:30:00Z",
-    },
-    "inference": {
-        "converged": True,
-        "iterations_used": 87,
-        "final_free_energy": -1234.56,
-        "convergence_history": [...],
-    },
-    "posteriors": {
-        "variable_1": {"mean": [...], "variance": [...], "samples": [...]},
-        "variable_2": {...},
-    },
-    "performance": {
-        "memory_peak": "2.3GB",
-        "cpu_time": 42.15,
-        "messages_passed": 15420,
-        "constraints_satisfied": 98.7,
-    },
-}
-```
+The `rxinfer_simulation_v1` payload carries `schema_version`, `model_name`,
+`runtime_metadata` (seed, script SHA256, Julia/RxInfer versions), the observation
+and action sequences, per-timestep posterior beliefs, `variational_free_energy`
+and convergence flags (`inference_converged`, `vfe_present`). Read the schema
+from a generated file rather than from this document; the renderer strategies in
+`src/render/rxinfer/_strategies_*.py` are the source of truth.
 
 ---
 
 ## Performance Characteristics
 
-### Latest Execution
-- **Duration**: 5-120 seconds per inference (depends on model complexity)
-- **Memory**: 200-1000MB depending on model size
-- **Status**: ✅ Production Ready
-
-### Performance Breakdown
-- **Julia Startup**: 2-5s
-- **Model Compilation**: 3-10s
-- **Inference Execution**: 1-100s (main computation)
-- **Result Processing**: 1-5s
-- **Visualization**: 2-10s
-
-### Optimization Notes
-- RxInfer.jl is highly optimized for message passing
-- Julia's JIT compilation improves performance on repeated runs
-- Memory usage scales with graph size and variable dimensions
-- Parallel execution available for multi-core systems
+Do not treat timing numbers in documentation as current measurements. Julia
+start-up and package precompilation dominate the first run; subsequent runs in
+the same environment reuse the compiled cache. Read durations from
+`summaries/execution_summary.json` after a run.
 
 ---
 
 ## Error Handling
 
 ### RxInfer.jl Execution Errors
-1. **Julia Environment Issues**: Julia not found or RxInfer.jl not installed
-2. **Model Compilation Errors**: Invalid Julia/RxInfer.jl syntax
-3. **Inference Convergence Issues**: Poor model specification
-4. **Memory/Resource Limitations**: Insufficient system resources
+1. **Julia Environment Issues**: `julia` missing from `PATH` (`is_julia_available()` returns `False`; Step 12 reports the framework as skipped)
+2. **Environment Instantiation**: `setup_environment.jl` fails to `Pkg.instantiate()` the committed Manifest
+3. **Script Errors**: the rendered script raises inside `@model`/`infer()`; the process exits non-zero and `execute_rxinfer_script` returns `False`
+4. **Timeout**: the subprocess exceeds `timeout` seconds
 
 ### Recovery Strategies
-- **Environment Validation**: Comprehensive pre-execution checks
-- **Model Validation**: Syntax and semantic validation of generated code
-- **Parameter Tuning**: Automatic parameter adjustment for convergence
-- **Resource Management**: Memory and CPU usage optimization
-
-### Error Examples
-```python
-try:
-    results = execute_rxinfer_simulation(script_path, config)
-except RxInferExecutionError as e:
-    logger.error(f"RxInfer.jl execution failed: {e}")
-    # Attempt recovery with simplified model
-    simplified_config = simplify_rxinfer_config(config)
-    results = execute_rxinfer_simulation(script_path, simplified_config)
-```
+- Install Julia and re-run `julia --startup-file=no --project=src/execute/rxinfer src/execute/rxinfer/setup_environment.jl`
+- Inspect the stderr captured in the Step 12 log; there is no automatic retry or model simplification
 
 ---
 
@@ -414,16 +179,14 @@ except RxInferExecutionError as e:
 - **Main Script**: `12_execute.py`
 
 ### Imports From
-- `render.rxinfer` - RxInfer.jl code generation
-- `utils.pipeline_template` - Pipeline utilities
+- `execute.julia_setup` - Julia availability helper
 
 ### Imported By
 - `execute.processor` - Main execution integration
-- `tests.test_execute_rxinfer*` - RxInfer.jl execution tests
 
 ### Data Flow
 ```
-RxInfer.jl Code Generation → Julia Environment Setup → Model Compilation → Inference Execution → Result Analysis → Visualization
+render.rxinfer (.jl script) → julia --project=src/execute/rxinfer → simulation_results.json → Step 12 summaries → Step 16 analysis
 ```
 
 ---
@@ -432,71 +195,28 @@ RxInfer.jl Code Generation → Julia Environment Setup → Model Compilation →
 
 ### Test Files
 - `src/tests/execute/test_execute_overall.py` - Execute module tests (includes framework selection)
-
-### Test Coverage
-Measure on demand:
-
-```bash
-uv run --extra dev python -m pytest src/tests/test_rxinfer*.py \
-    --cov=src/execute/rxinfer --cov-report=term-missing
-```
-### Key Test Scenarios
-1. Julia environment validation and setup
-2. RxInfer.jl model compilation and execution
-3. Inference convergence and accuracy testing
-4. Result analysis and visualization
-5. Error handling and recovery testing
+- `src/tests/pipeline/test_pomdp_gridworld_cross_framework.py` - Cross-framework contract including RxInfer.jl
+- `src/tests/render/test_rxinfer_*.py` - Renderer-side contracts for the scripts this module executes
 
 ### Test Commands
 ```bash
-# Run RxInfer.jl execution tests
-uv run --extra dev python -m pytest src/tests/test_execute_rxinfer*.py -v
+uv run --extra dev python -m pytest src/tests/execute/test_execute_overall.py \
+    src/tests/pipeline/test_pomdp_gridworld_cross_framework.py -v
 
-# Run with coverage
-uv run --extra dev python -m pytest src/tests/test_execute_rxinfer*.py --cov=src/execute/rxinfer --cov-report=term-missing
+# With coverage
+uv run --extra dev python -m pytest src/tests/execute/test_execute_overall.py \
+    --cov=src/execute/rxinfer --cov-report=term-missing
 ```
 
 ---
 
 ## MCP Integration
 
-### Tools Registered
-- `execute.run_rxinfer_simulation` - Execute RxInfer.jl simulation
-- `execute.validate_julia_env` - Validate Julia environment
-- `execute.analyze_rxinfer_results` - Analyze inference results
-- `execute.visualize_rxinfer_beliefs` - Visualize belief trajectories
-
-### Tool Endpoints
-```python
-@mcp_tool("execute.run_rxinfer_simulation")
-def run_rxinfer_simulation_tool(
-    script_path: str, config: Dict[str, Any]
-) -> Dict[str, Any]:
-    """Execute RxInfer.jl simulation with given configuration"""
-    return execute_rxinfer_simulation(script_path, config)
-```
-
----
-
-## Reactive Programming Features
-
-### Streaming Inference
-- **Real-time Processing**: Continuous inference on data streams
-- **Online Learning**: Incremental parameter updates
-- **Adaptive Computation**: Dynamic graph restructuring
-- **Memory Efficiency**: Streaming algorithms for large datasets
-
-### Constraint Programming
-- **Declarative Constraints**: High-level constraint specification
-- **Automatic Satisfaction**: Constraint propagation algorithms
-- **Custom Constraints**: User-defined constraint functions
-- **Constraint Optimization**: Efficient constraint satisfaction
-
-### Monitoring and Debugging
-- **Inference Progress**: Real-time convergence monitoring
-- **Message Tracking**: Message-passing flow visualization
-- **Performance Profiling**: Computational bottleneck identification
-- **Error Diagnostics**: Detailed error reporting and suggestions
+This submodule registers no MCP tools of its own. The parent module
+(`src/execute/mcp.py`) exposes `process_execute`, `execute_gnn_model`,
+`execute_pymdp_simulation`, `check_execute_dependencies` and
+`get_execute_module_info`; RxInfer.jl scripts are reached through
+`process_execute` with the `rxinfer` framework selected.
 
 ---
 
@@ -504,15 +224,9 @@ def run_rxinfer_simulation_tool(
 
 ### Adding New RxInfer.jl Features
 1. Update execution logic in `rxinfer_runner.py`
-2. Add new Julia code templates and wrappers
-3. Update environment validation and setup
-4. Add comprehensive tests
-
-### Performance Optimization
-- Profile Julia code execution bottlenecks
-- Optimize message-passing schedules
-- Use efficient data structures for large graphs
-- Implement parallel inference strategies
+2. Change the generated Julia in `src/render/rxinfer/` (this module only runs what the renderer emits)
+3. Update `Project.toml`/`Manifest.toml` together and re-run `setup_environment.jl`
+4. Add or extend tests in `src/tests/execute/` and `src/tests/render/`
 
 ---
 
@@ -521,71 +235,50 @@ def run_rxinfer_simulation_tool(
 ### Common Issues
 
 #### Issue 1: "Julia not found in PATH"
-**Symptom**: Execution fails with Julia command not found
+**Symptom**: Step 12 reports the RxInfer.jl framework as skipped
 **Cause**: Julia not installed or not in system PATH
-**Solution**: Install Julia and ensure it's in PATH, or specify full path
+**Solution**: Install Julia and ensure `julia` resolves on PATH
 
 #### Issue 2: "RxInfer.jl package not available"
-**Symptom**: Import errors for RxInfer.jl packages
-**Cause**: RxInfer.jl or dependencies not installed in Julia
-**Solution**: Install required Julia packages using Pkg.add()
+**Symptom**: `using RxInfer` fails inside the script
+**Cause**: Committed environment not instantiated
+**Solution**: `julia --startup-file=no --project=src/execute/rxinfer -e 'using Pkg; Pkg.instantiate()'`
 
-#### Issue 3: "Inference not converging"
-**Symptom**: Inference fails to converge within iteration limit
-**Cause**: Poor model specification or inappropriate parameters
-**Solution**: Adjust inference parameters or improve model structure
-
-### Debug Mode
-```python
-# Enable debug output for RxInfer.jl execution
-results = execute_rxinfer_simulation(script_path, config, debug=True, verbose=True)
-```
+#### Issue 3: Script exits non-zero
+**Symptom**: `execute_rxinfer_script` returns `False`
+**Cause**: The rendered model raised during `infer()`; there is no fallback path
+**Solution**: Re-run with `verbose=True`, read the captured stderr, fix the GNN specification or renderer
 
 ---
 
 ## Version History
 
-### Current Version: 3.0.0
+### Current Version: 3.2.0
 
 **Features**:
-- Complete RxInfer.jl simulation execution pipeline
-- Reactive message-passing inference implementation
-- Julia environment management and validation
-- Comprehensive result analysis and visualization
-- Real-time inference monitoring
-- Extensive error handling and recovery
-- MCP tool integration
+- RxInfer.jl script discovery and subprocess execution under the committed project
+- Genuine `@model` + `infer()` variational message-passing inference
+- Result parsing helpers in `rxinfer_results.py`
 
 **Known Limitations**:
-- Requires Julia runtime environment
-- Large models may require significant memory
-- Some advanced RxInfer.jl features need manual configuration
-
-### Roadmap
-- **Next Version**: Enhanced streaming inference support
-- **Future**: GPU acceleration for inference
-- **Advanced**: Integration with RxInfer.jl's latest reactive features
+- Requires a local Julia runtime
+- Offline batch inference only (no online active inference)
 
 ---
 
 ## References
 
 ### Related Documentation
-- [Execute Module](../../execute/AGENTS.md) - Parent execute module
+- [Execute Module](../AGENTS.md) - Parent execute module
 - [RxInfer.jl Render](../../render/rxinfer/AGENTS.md) - RxInfer.jl code generation
 - [RxInfer.jl Documentation](https://docs.rxinfer.com/stable/) - Official RxInfer.jl docs
 
 ### External Resources
 - [Julia Language](https://julialang.org/)
-- [Reactive Programming](https://en.wikipedia.org/wiki/Reactive_programming)
 - [Message Passing](https://en.wikipedia.org/wiki/Belief_propagation)
 
 ---
 
-**Last Updated**: 2026-04-16
+**Last Updated**: 2026-09-02
 **Maintainer**: Execute Module Team
 **Status**: ✅ Production Ready
-
-
-
-

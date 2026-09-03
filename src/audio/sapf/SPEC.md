@@ -1,31 +1,31 @@
 # SAPF Audio Processing — Technical Specification
 
-**Version**: 1.6.0
+**Version**: 3.2.0
 
 ## Purpose
 
-Sonification of Active Inference model dynamics using the Sonification of Active Inference Processes Framework (SAPF).
+Sonification of GNN model structure by generating SAPF (Sound As Pure Form) code from the parsed model and synthesizing that code to audio in Python.
 
 ## Processing Pipeline
 
-1. Parse GNN model structure
-2. Map model variables to audio parameters
-3. Generate audio waveforms (sine, noise, AM/FM synthesis)
-4. Apply temporal dynamics from simulation results
-5. Mix and export WAV files
+1. Parse GNN model sections (`SAPFGNNProcessor.parse_gnn_sections`)
+2. Map state space, connections, parameters, and time configuration to SAPF oscillators, routing, and processing chains (`convert_to_sapf`)
+3. Optionally validate the SAPF code (`validate_sapf_code`)
+4. Synthesize audio from the SAPF code (`SyntheticAudioGenerator.generate_from_sapf`)
+5. Export a WAV file and a waveform/spectrum analysis PNG
 
 ## Input
 
-- Parsed GNN models from Step 3
-- Optional: simulation results from Step 12
+- GNN model content (Markdown) and a model name
 
 ## Output
 
-- WAV audio files (44.1kHz, 16-bit)
-- Sonification metadata (JSON)
-- Spectrogram visualizations (PNG)
+- `{model}_sapf_audio.wav` (44.1kHz, 16-bit mono, written with the stdlib `wave` module)
+- `{model}_sapf_audio_waveform_analysis.png` (waveform, detail, spectrum, and spectrogram panels) when `create_visualization` is left enabled
+- Optional JSON from `create_sapf_visualization` (parsed components) and `generate_sapf_report` (results summary) when an output path is supplied
+
+Step 12 execution telemetry is consumed by `audio/processor.py` streaming, not by this sub-package.
 
 ## Dependencies
 
-- `soundfile`, `numpy` (required)
-- `scipy` (for signal processing)
+- `numpy`, `matplotlib` (imported unconditionally by `audio_generators.py`)

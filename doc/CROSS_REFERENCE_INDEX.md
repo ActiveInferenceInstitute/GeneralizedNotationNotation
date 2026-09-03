@@ -44,7 +44,7 @@ for the current render/execute split.
 - **DisCoPy**: [guide](discopy/gnn_discopy.md)
 - **PyTorch**: [implementation guide](gnn/implementations/pytorch.md); manually enabled and not in the default lock
 - **NumPyro**: [implementation guide](gnn/implementations/numpyro.md)
-- **Stan**: [implementation guide](gnn/implementations/stan.md); render-only in Step 12
+- **Stan**: [implementation guide](gnn/implementations/stan.md); executable in Step 12 via the cmdstanpy driver
 - **bnlearn**: [renderer inventory](../src/render/AGENTS.md); manually enabled and not in the default lock
 
 ## Operations network

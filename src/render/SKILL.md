@@ -48,13 +48,8 @@ from render import (
 # Render for all frameworks (used by pipeline)
 process_render(target_dir, output_dir, verbose=True)
 
-# Render a single GNN spec
-result = render_gnn_spec(parsed_spec, framework="pymdp")
-
-# Canonical POMDP rendering
-success, message, files = render_gnn_spec(
-    parsed_model, "rxinfer", "output/11_render_output"
-)
+# Render a single GNN spec (positional target + output dir)
+result = render_gnn_spec(parsed_spec, "pymdp", "output/11_render_output/pymdp")
 
 # Query supported frameworks
 frameworks = get_supported_frameworks()  # ['pymdp', 'rxinfer', ..., 'stan', 'bnlearn']

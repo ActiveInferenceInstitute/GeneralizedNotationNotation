@@ -4,21 +4,24 @@
 
 ## Purpose
 
-Second-generation enhanced GNN constructor GUI with customtkinter.
+Second-generation GNN constructor GUI: a Gradio web app for visual matrix editing.
 
 ## Features
 
-- Modern themed widgets (customtkinter)
-- Visual model graph preview
-- Matrix heatmap inline preview
+- Interactive DataFrame matrix editing with +/- dimension controls
+- Matrix heatmaps and vector bar charts (Plotly when available)
 - Drag-and-drop model construction
 - Real-time validation feedback
+- POMDP template-based initialization
 
 ## Technology
 
-- `customtkinter` (enhanced tkinter)
-- `matplotlib` embedded plots
+- `gradio` (from the `gui` extra in `pyproject.toml`)
+- `plotly` (interactive plots; recovery: basic displays)
+- `numpy` (matrix handling)
 
 ## Architecture
 
-- `ui.py` (844 lines) — Main UI layout and event handling
+- `ui.py` — Main UI layout and event handling
+- `matrix_editor.py` — Matrix editing grid logic
+- `ui_simple.py`, `ui_minimal.py` — Reduced-dependency UI variants

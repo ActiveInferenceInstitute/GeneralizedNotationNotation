@@ -8,11 +8,10 @@
 
 **Category**: AI Enhancement / Analysis
 
-**Status**: ✅ Production Ready
+**Status**: Production Ready
 
-**Version**: 3.2.0
+**Last Updated**: 2026-09-02
 
-**Last Updated**: 2026-04-16
 
 ---
 
@@ -45,17 +44,13 @@
 - `target_dir` (Path): Directory containing GNN files to analyze
 - `output_dir` (Path): Output directory for LLM analyses
 - `verbose` (bool): Enable verbose logging (default: False)
-- `analysis_type` (str, optional): Type of analysis ("comprehensive", "summary", "explain", "optimize") (default: "comprehensive")
-- `provider` (str, optional): LLM provider ("auto", "openai", "anthropic", "ollama") (default: "auto")
-  - `"auto"`: Automatically select best available provider (checks API keys, then Ollama)
-  - `"openai"`: Use OpenAI API (requires OPENAI_API_KEY)
-  - `"anthropic"`: Use Anthropic API (requires ANTHROPIC_API_KEY)
-  - `"ollama"`: Use local Ollama (requires Ollama installation)
-- `llm_tasks` (str, optional): Specific tasks ("all", "summarize", "explain", "optimize") (default: "all")
-- `llm_timeout` (int, optional): Timeout for LLM API calls in seconds (default: 60)
-- `max_tokens` (int, optional): Maximum tokens in response (default: 2000)
-- `model` (str, optional): Specific model to use (provider-specific)
+- `llm_timeout` (int, optional): Timeout budget for the step in seconds (default: 600; also settable via `input/config.yaml` `llm.timeout_seconds`)
+- `max_files` (int, optional): Cap on the number of GNN files processed per run (also settable via `llm.max_files`)
+- `custom_prompts` (list, optional): Custom prompt payloads; each becomes a per-file output
+- `max_prompt_timeout` (int, optional): Per-prompt timeout in seconds (default: 45; also `llm.prompt_timeout`)
 - `**kwargs`: Additional LLM processing options
+
+Provider and model selection are driven by environment variables and `input/config.yaml` (see Configuration), not by `process_llm` kwargs.
 
 **Returns**: `bool` - True if processing succeeded, False otherwise
 
@@ -69,9 +64,6 @@ success = process_llm(
     target_dir=Path("input/gnn_files"),
     output_dir=Path("output/13_llm_output"),
     verbose=True,
-    analysis_type="comprehensive",
-    provider="auto",
-    llm_tasks="all",
 )
 ```
 
@@ -153,31 +145,13 @@ success = process_llm(
 
 ### Configuration Options
 
-#### LLM Provider Selection
-- `provider` (str): LLM provider to use (default: `"auto"`)
-  - `"auto"`: Automatically select best available provider
-  - `"openai"`: Use OpenAI API (requires OPENAI_API_KEY)
-  - `"anthropic"`: Use Anthropic API (requires ANTHROPIC_API_KEY)
-  - `"ollama"`: Use local Ollama (requires Ollama installation)
+Runtime knobs come from `process_llm` kwargs and `input/config.yaml` (`llm:` section); provider/model selection comes from environment variables.
 
-#### Analysis Type
-- `analysis_type` (str): Type of analysis to perform (default: `"comprehensive"`)
-  - `"comprehensive"`: Full model analysis
-  - `"summary"`: Brief summary only
-  - `"explain"`: Concept explanations
-  - `"optimize"`: Optimization suggestions
-
-#### LLM Tasks
-- `llm_tasks` (str): Specific tasks to perform (default: `"all"`)
-  - `"all"`: All available tasks
-  - `"summarize"`: Generate model summary
-  - `"explain"`: Explain Active Inference concepts
-  - `"optimize"`: Suggest optimizations
-
-#### Performance Settings
-- `llm_timeout` (int): Timeout for LLM API calls in seconds (default: `60`)
-- `max_tokens` (int): Maximum tokens in response (default: `2000`)
-- `temperature` (float): LLM temperature (default: `0.7`)
+#### `process_llm` kwargs
+- `llm_timeout` (int): Step timeout budget in seconds (default: `600`; `llm.timeout_seconds`)
+- `max_files` (int): Cap on GNN files processed per run (`llm.max_files`)
+- `custom_prompts` (list): Extra prompts run per file (in addition to the structured prompt set)
+- `max_prompt_timeout` (int): Per-prompt timeout in seconds (default: `45`; `llm.prompt_timeout`)
 
 #### Environment Variables (Ollama)
 - `OLLAMA_MODEL`: Model tag for requests (default `llm.defaults.DEFAULT_OLLAMA_MODEL`)
@@ -186,6 +160,8 @@ success = process_llm(
 - `OLLAMA_TIMEOUT`: Client/CLI subprocess timeout in seconds (default `60` in env wiring; provider default 30s unless configured)
 - `OLLAMA_HOST`: Optional base URL for the Python `ollama` client (empty = client default)
 - `OLLAMA_DISABLED`: Set to `1` or `true` to skip registering Ollama as a provider
+- `OLLAMA_AUTO_START`: Set to `1` to allow starting the Ollama daemon when installed but not running
+- `OLLAMA_AUTO_PULL`: Set to `1` to allow pulling the default model when no model is installed
 
 #### Environment Variables (cloud)
 - `OPENAI_API_KEY`, `OPENROUTER_API_KEY`, `PERPLEXITY_API_KEY`, `ANTHROPIC_API_KEY` (Anthropic appears in summaries/matrix when present)
@@ -199,10 +175,13 @@ success = process_llm(
 - `json` - Configuration and output
 - `pathlib` - File operations
 
-### Optional Dependencies
-- `openai` — OpenAI API
-- `anthropic` — Anthropic API (when used by callers)
+### Core Dependencies (installed by `uv sync`; no dedicated pip extra for this module)
+- `openai` — OpenAI/OpenRouter API access
 - `ollama` (PyPI) — Python client; if import fails or `chat` is missing, `OllamaProvider` uses the `ollama` CLI when on `PATH`
+
+Local inference additionally requires the Ollama runtime (CLI/daemon from https://ollama.com), which is not a pip package.
+
+There is no Anthropic provider module; `ANTHROPIC_API_KEY` only influences the provider matrix and error attribution.
 
 ### Internal Dependencies
 - `utils.pipeline_template` - Logging utilities
@@ -213,27 +192,23 @@ success = process_llm(
 
 ## Usage Examples
 
-### Basic Usage (Auto-detect Provider)
+### Basic Usage
 ```python
 from llm import process_llm
 
 success = process_llm(
     target_dir=Path("input/gnn_files"),
     output_dir=Path("output/13_llm_output"),
-    logger=logger,
-    analysis_type="comprehensive",
+    verbose=True,
 )
 ```
 
-### Specific Provider
-```python
-success = process_llm(
-    target_dir=Path("input/gnn_files"),
-    output_dir=Path("output/13_llm_output"),
-    logger=logger,
-    provider="ollama",  # Force Ollama
-    llm_tasks="all",
-)
+### Local-Only Run (force Ollama)
+```bash
+# Provider preference is environment-driven; unset cloud keys and point at Ollama
+unset OPENAI_API_KEY OPENROUTER_API_KEY PERPLEXITY_API_KEY
+export OLLAMA_MODEL=smollm2:135m-instruct-q4_K_S
+python src/13_llm.py --target-dir input/gnn_files --output-dir output --verbose
 ```
 
 ---
@@ -256,24 +231,8 @@ output/13_llm_output/
 ## Performance Characteristics
 
 ### Latest Execution
-- **Duration**: 3.73 seconds
-- **Memory**: 28.8 MB
-- **Status**: SUCCESS
-- **Provider Used**: Ollama (recovery)
-
----
-
-## Recent Improvements
-
-### Ollama Recovery Enhancement ✅
-**Added**: Automatic Ollama availability check
-```python
-# Check if Ollama is available
-result = subprocess.run(['ollama', 'list'], 
-                       capture_output=True, timeout=5)
-if result.returncode == 0:
-    # Use Ollama as recovery
-```
+See `output/13_llm_output/` and the pipeline summary for the current run's duration,
+memory, and provider status; this document does not track them.
 
 ---
 
@@ -372,7 +331,7 @@ ollama list
 **Symptom**: "Prompt execution timed out" or slow responses
 
 **Solution**:
-- ✅ **Automatic**: Module now uses adaptive timeouts based on prompt complexity
+- **Automatic**: Module uses adaptive timeouts based on prompt complexity
 - Environment variable override:
   ```bash
   export OLLAMA_TIMEOUT=120  # Increase timeout to 120 seconds
@@ -401,7 +360,7 @@ OLLAMA_MODEL=tinyllama python src/13_llm.py --target-dir input/gnn_files
 ```
 
 **Automatic Selection**:
-- ✅ `_select_best_ollama_model` picks from installed tags using the ordered preference list in `llm/processor.py` (starts with `smollm2`, `tinyllama`, `gemma3:4b`, `gemma2:2b`, …)
+`_select_best_ollama_model` picks from installed tags using the ordered preference list in `llm/processor.py` (starts with `smollm2`, `tinyllama`, `gemma3:4b`, `gemma2:2b`, …)
 
 **Check Which Model Was Used**:
 ```bash
@@ -420,11 +379,11 @@ cat output/13_llm_output/llm_results/llm_results.json | grep "selected_model"
 3. Re-run the LLM step
 
 **Recovery Capabilities**:
-- ✅ Basic pattern extraction
-- ✅ Variable and connection identification
-- ✅ Structure analysis
-- ❌ No natural language generation
-- ❌ No model interpretation
+- Basic pattern extraction
+- Variable and connection identification
+- Structure analysis
+- No natural language generation
+- No model interpretation
 
 #### 7. Slow LLM Processing
 **Symptom**: Step 13 takes several minutes (3m+ per model)
@@ -446,16 +405,16 @@ cat output/13_llm_output/llm_results/llm_results.json | grep "selected_model"
    export OLLAMA_MAX_TOKENS=256  # Shorter responses
    ```
 
-3. **Enable GPU acceleration** (if available):
+3. **GPU acceleration** (if available):
    ```bash
-   # Ollama uses GPU automatically if detected
-   ollama run llama2 --gpu
+   # Ollama uses the GPU automatically when detected
+   ollama run llama2
    ```
 
-4. **Process files individually**:
+4. **Limit files per run**:
    ```bash
-   # Process one file at a time
-   python src/13_llm.py --target-dir input/gnn_files --gnn-file specific_model.md
+   # Cap the number of files processed
+   python src/13_llm.py --target-dir input/gnn_files --max-files 5
    ```
 
 **Performance**: Measure with your hardware; smaller instruct models are usually faster on CPU.
@@ -481,25 +440,25 @@ cat output/13_llm_output/llm_results/llm_results.json | grep "selected_model"
 
 ### Ollama Integration Features
 
-#### ✅ Enhanced Detection (October 2025)
+#### Enhanced Detection (October 2025)
 - Automatic Ollama availability check
 - Model listing and validation
 - Service health monitoring (port 11434)
 - Helpful installation instructions when not found
 
-#### ✅ Intelligent Model Selection
+#### Intelligent Model Selection
 - Prioritizes small, fast models for quick execution
 - Automatic recovery chain
 - Environment variable override support
 - Logs selected model for transparency
 
-#### ✅ Progress Tracking
+#### Progress Tracking
 - File-by-file progress indicators
 - Prompt-by-prompt completion tracking
-- Detailed logging with emoji indicators 📝
-- Clear success/failure indicators ✅/❌
+- Detailed progress logging
+- Clear success/failure indicators in logs
 
-#### ✅ Error Recovery
+#### Error Recovery
 - Graceful recovery when Ollama unavailable
 - Per-prompt error handling
 - Timeout protection with retry logic
@@ -577,7 +536,7 @@ configs["ollama"]["default_max_tokens"] = 1024
 ## Error Handling
 
 ### Graceful Degradation
-- **No API Keys**: Automatically recovery to Ollama if available
+- **No API Keys**: Automatic recovery to Ollama if available
 - **Ollama Unavailable**: Skip LLM analysis, log informative message, continue pipeline
 - **LLM Timeout**: Retry with shorter timeout, then skip if still fails
 - **Invalid Response**: Parse what's possible, log warning
@@ -610,8 +569,7 @@ configs["ollama"]["default_max_tokens"] = 1024
 - **report/**: Provides LLM-generated summaries for reports
 
 ### External Integration
-- **OpenAI API**: Cloud-based LLM analysis
-- **Anthropic API**: Cloud-based LLM analysis
+- **OpenAI / OpenRouter / Perplexity APIs**: Cloud-based LLM analysis (OpenRouter and Perplexity via their own provider modules)
 - **Ollama**: Local LLM execution for privacy and offline use
 
 ### Data Flow
@@ -632,10 +590,10 @@ configs["ollama"]["default_max_tokens"] = 1024
 
 ## Version History
 
-### Current Version: 3.0.0
+### Current Version: 3.2.0
 
 **Features**:
-- Multi-provider LLM support (OpenAI, Anthropic, Ollama)
+- Multi-provider LLM support (Ollama, OpenAI, OpenRouter, Perplexity)
 - Automatic Ollama recovery
 - Context-aware prompt generation
 - Structured output parsing
@@ -665,11 +623,11 @@ configs["ollama"]["default_max_tokens"] = 1024
 
 ---
 
-**Last Updated**: 2026-04-16
+**Last Updated**: 2026-09-02
 **Maintainer**: GNN Pipeline Team
-**Status**: ✅ Production Ready
+**Status**: Production Ready
 **Version**: 3.2.0
-**Architecture Compliance**: ✅ 100% Thin Orchestrator Pattern
+**Architecture Compliance**: Thin Orchestrator Pattern
 
 
 ---

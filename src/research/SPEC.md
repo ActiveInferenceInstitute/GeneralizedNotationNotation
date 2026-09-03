@@ -1,17 +1,17 @@
 # Research Module Specification
 
-## Overview
-Research-oriented processing for GNN models.
+Deterministic rule-based static analysis of GNN models with experimental hypothesis generation. Step 19 of the GNN pipeline.
 
 ## Components
 
 ### Core
-- `processor.py` - Research processor
+- `processor.py` - `process_research()` step entry; `detect_model_family()`, `extract_state_space_dims()`, `count_connections()`, `generate_rule_based_hypotheses()` rule engine
+- `mcp.py` - MCP tool registrations (4 tools)
 
 ## Features
-- Research output generation
-- Citation extraction
-- Bibliography support
+- Rule-based hypothesis generation with evidence justification
+- Model-family detection and structural diagnostics
+- Optional LLM-powered hypothesis enrichment (degrades to rule-based without a provider)
 
 ## Key Exports
 ```python

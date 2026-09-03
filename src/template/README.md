@@ -63,6 +63,7 @@ src/
     ├── __init__.py                   # Module exports and initialization
     ├── README.md                     # This documentation
     ├── processor.py                  # Core template processing logic
+    ├── utils.py                      # Version metadata helpers
     └── mcp.py                        # Model Context Protocol integration
 ```
 

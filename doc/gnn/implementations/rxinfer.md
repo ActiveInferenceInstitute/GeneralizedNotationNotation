@@ -338,8 +338,10 @@ A few conventions worth knowing before consuming this payload:
 - **`runtime_metadata.b_tensor_order`** carries
   `"next_state_previous_state_action"` from the script's `B_TENSOR_ORDER` constant, so
   the transition-tensor axis order is self-describing rather than assumed.
-- **Continuous models echo `state_factors` and `observation_modalities` as empty**,
-  because the discrete dual parameterization does not describe the continuous latent.
+- **Continuous models echo `state_factors` and `observation_modalities` as empty**
+  and report `controls`, `kalman_filter_means` and `control_mode` instead: a
+  linear-Gaussian model has no categorical factors, and the closed-loop control
+  declared by `goal_mean`/`control_gain` is honoured in the forward simulation.
 - **`validation.all_valid` gates the exit code.** Step 12 returns non-zero when it is
   false, so invalid inference is surfaced rather than silently accepted.
 

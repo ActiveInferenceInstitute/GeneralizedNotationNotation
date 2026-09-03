@@ -14,8 +14,10 @@ Templates for GNN pipeline development.
 Copy templates and customize for new modules.
 
 ## Key Files
-- `processor_template.py` - Processor template
-- `test_template.py` - Test template
+- `processor.py` - Core template processing logic
+- `utils.py` - Version metadata helpers (`get_version_info`)
+- `mcp.py` - MCP tool registration (`template.process_file`, `template.process_directory`, `template.get_info`)
+- `../../pipeline/pipeline_step_template.py` - Canonical thin-orchestrator template
 
 
 ---

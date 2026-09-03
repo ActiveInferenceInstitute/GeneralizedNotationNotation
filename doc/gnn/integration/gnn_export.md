@@ -32,11 +32,11 @@ GNN export is integrated into the 25-step processing pipeline:
 
 ```bash
 # Generate exports
-python src/main.py --only-steps "3,7" --target-dir input/gnn_files --verbose
+uv run python src/main.py --only-steps "3,7" --target-dir input/gnn_files --verbose
 
 # Step 7 has no format-selection flag — it emits every supported format.
 # Select formats by calling the exporters directly (see the API examples below).
-python src/7_export.py --target-dir input/gnn_files --output-dir output --verbose
+uv run python src/7_export.py --target-dir input/gnn_files --output-dir output --verbose
 ```
 
 ## Supported Export Formats

@@ -14,8 +14,12 @@ Generates Julia code using the ActiveInference.jl package API.
 
 ## Output
 
-- Julia script files (`.jl`)
-- TOML configuration files
+- Julia script files (`.jl`) only — no TOML sidecars
+
+## Continuous models
+
+Discrete POMDPs only (`supports_continuous: false` in `framework_registry.py`):
+continuous linear-Gaussian specs report status `unsupported`.
 
 ## Template System
 

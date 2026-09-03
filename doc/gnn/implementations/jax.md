@@ -97,9 +97,22 @@ JAX functional operations mathematically parallel standard active inference metr
 
 *Important Tracking Detail*: As a native tensor execution engine, JAX computes expected free energy concurrently across the entire dimensional depth of the action space (`num_actions`). This results in explicit 1D arrays matching the length of available behaviors for every single timestep analyzed. JAX relies on `jax.nn.softmax` scaled by an inverse precision hyperparameter over the **negative** EFE array to evaluate categorical choices. `argmax` represents the final executed action index.
 
+## Continuous (linear-Gaussian) models
+
+When `is_continuous_spec` (`src/render/continuous_common.py`) recognises a
+continuous specification (`F`/`H`/`Q`/`R`, `prior_mean`/`prior_cov`, optional
+`u`, `goal_mean`, `control_gain`), `render_gnn_to_jax` delegates to the shared
+generator `src/render/continuous_script.py` instead of the POMDP template. The
+emitted script runs an online Kalman filter (Joseph-form covariance update) and,
+when `goal_mean`/`control_gain` are present, closes the control loop with
+`u_t = control_gain · (goal_mean − μ_t)`. Results follow the continuous schema:
+`beliefs` (posterior means), `posterior_cov`, `true_states_continuous`,
+`observations_continuous`, `controls`, and `rmse_vs_true`. The exemplars under
+`input/gnn_files/continuous/` exercise this path.
+
 ## Telemetry & Logging Output
 
-At runtime, the JAX execution context compiles all trajectory metrics internally inside its loop arrays (such as the `observations_log`), avoiding arbitrary dictionary references prior to serialization. It writes telemetry to an isolated directory `output/12_execute/actinf_pomdp_agent/jax/simulation_data/`.
+At runtime, the JAX execution context compiles all trajectory metrics internally inside its loop arrays (such as the `observations_log`), avoiding arbitrary dictionary references prior to serialization. It writes telemetry to the directory named by the `JAX_OUTPUT_DIR` environment variable (set by Step 12 to the per-model `<model>/jax/` execution folder); the renderer's built-in default is `output/jax_simulations/<model>/simulation_data`.
 
 **Logged Vectors**:
 
@@ -132,8 +145,9 @@ The compiled JAX simulation traces achieve deterministic equivalence against nat
 | Rendering | [jax_renderer.py](../../../src/render/jax/jax_renderer.py) | `render_gnn_to_jax()` | Entry point |
 | Simulation Code Gen | [jax_renderer.py](../../../src/render/jax/jax_renderer.py) | `run_simulation` (template) | — |
 | Results Serialization | [jax_renderer.py](../../../src/render/jax/jax_renderer.py) | `save_simulation_results` (template) | — |
-| Execution | [jax_runner.py](../../../src/execute/jax/jax_runner.py) | `execute_jax_script()` | L75-211 |
-| Device Selection | [jax_runner.py](../../../src/execute/jax/jax_runner.py) | `initialize_jax_devices()` | L20-33 |
+| Execution | [jax_runner.py](../../../src/execute/jax/jax_runner.py) | `execute_jax_script()` | — |
+| Device Selection | [jax_runner.py](../../../src/execute/jax/jax_runner.py) | `initialize_jax_devices()` | — |
+| Continuous Code Gen | [continuous_script.py](../../../src/render/continuous_script.py) | `generate_continuous_script()` | — |
 | Analysis | [analyzer.py](../../../src/analysis/jax/analyzer.py) | `generate_analysis_from_logs()` | — |
 | Raw Output Parsing | [analyzer.py](../../../src/analysis/jax/analyzer.py) | `parse_raw_output()` | — |
 | Cross-Framework | [visualizations.py](../../../src/analysis/visualizations.py) | `generate_efe_convergence_comparison()` | — |

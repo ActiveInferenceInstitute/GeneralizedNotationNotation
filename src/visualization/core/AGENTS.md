@@ -18,7 +18,7 @@ core/
 ### process.py
 
 - **`process_visualization(target_dir, output_dir, verbose=False, **kwargs) -> bool`** — Main orchestration entry point called by `8_visualization.py`. Discovers GNN files, loads parsed JSON models, dispatches to graph/matrix/combined visualizers, and writes `visualization_summary.json`.
-- **`process_single_gnn_file(gnn_file, results_dir, output_dir, verbose) -> Dict`** — Per-file processing: loads model, generates network graphs, matrix heatmaps, bipartite diagrams, combined analysis panels, and writes per-model manifest.
+- **`process_single_gnn_file(gnn_file, results_dir, verbose=False) -> List[str]`** — Per-file processing: loads model, generates network graphs, matrix heatmaps, bipartite diagrams, combined analysis panels, and writes the per-model manifest; returns generated artifact paths.
 
 ### parsed_model.py
 
@@ -31,4 +31,4 @@ core/
 See [visualization/AGENTS.md](../AGENTS.md) for the overall visualization architecture.
 
 **Version**: 3.2.0
-**Last Updated**: 2026-05-12
+**Last Updated**: 2026-09-02

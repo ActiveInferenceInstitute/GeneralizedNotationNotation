@@ -55,8 +55,8 @@ Error: Unexpected character '[' at line 15
    s_f0 -> A_m0 -> o_m0  # Chain notation not supported
    
    # ✅ Correct
-   (s_f0) -> (A_m0)      # Each connection separately
-   (A_m0) -> (o_m0)
+   s_f0>A_m0             # Each connection separately
+   A_m0>o_m0
    ```
 
 ### Problem: "Unrecognized section header"
@@ -165,21 +165,21 @@ Error: Variable 'G' referenced in connections but not defined in StateSpaceBlock
    
    ## Connections
    # Now this connection is valid
-   (C_m0, A_m0, B_f0) > G
+   (C_m0,A_m0,B_f0)>G
    ```
 
 2. **Check for typos in variable names:**
 
    ```gnn
    # ❌ Typo in connection
-   (s_f0) -> (A_m0)
-   (A_m0) -> (o_m0)
-   (s_f0) -> (B_f0)  # Should be s_f0, not s_f1
+   s_f0>A_m0
+   A_m0>o_m0
+   s_f0>B_f0  # Should be s_f0, not s_f1
    
    # ✅ Correct
-   (s_f0) -> (A_m0)
-   (A_m0) -> (o_m0)
-   (s_f0) -> (B_f0)
+   s_f0>A_m0
+   A_m0>o_m0
+   s_f0>B_f0
    ```
 
 ### Problem: "Circular dependency detected"
@@ -197,14 +197,14 @@ Review your model structure. Circular dependencies usually indicate:
 
 ```gnn
 # ❌ Circular
-(s_f0) -> (A_m0)
-(A_m0) -> (s_f0)  # Creates cycle
+s_f0>A_m0
+A_m0>s_f0  # Creates cycle
 
 # ✅ Correct - temporal distinction
-(s_f0) -> (A_m0)
-(A_m0) -> (o_m0)
-(s_f0) -> (B_f0)  
-(B_f0) -> s_f0_next  # Next time step
+s_f0>A_m0
+A_m0>o_m0
+s_f0>B_f0
+B_f0>s_f0_next  # Next time step
 ```
 
 ## 🎯 Rendering and Code Generation Errors
@@ -270,7 +270,7 @@ Error: Invalid LaTeX syntax in equations section
 
 ```bash
 # Run the GNN type checker
-python src/5_type_checker.py --target-dir your_model_directory
+uv run python src/5_type_checker.py --target-dir your_model_directory
 ```
 
 ### Step 2: Check Individual Sections
@@ -329,7 +329,7 @@ if not result["is_valid"]:
 
 If you're still stuck:
 
-1. **Check the examples** in `doc/other/` for similar patterns
+1. **Check the examples** in `input/gnn_files/` for similar patterns
 2. **Search GitHub Issues** for related problems
 3. **Post in GitHub Discussions** with:
    - Your GNN file (or minimal reproducing example)
@@ -358,9 +358,9 @@ A_m0[2,2,type=float]
 D_f0[2,type=float]
 
 ## Connections
-(D_f0) -> (s_f0)
-(s_f0) -> (A_m0)
-(A_m0) -> (o_m0)
+D_f0>s_f0
+s_f0>A_m0
+A_m0>o_m0
 
 ## InitialParameterization
 A_m0={((0.9,0.1),(0.1,0.9))}

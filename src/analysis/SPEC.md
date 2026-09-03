@@ -29,7 +29,7 @@ Post-simulation analysis and metrics for GNN model execution.
 
 ## Key Exports
 ```python
-from analysis import process_analysis, PostSimulationAnalyzer
+from analysis import process_analysis, analyze_execution_results
 ```
 
 

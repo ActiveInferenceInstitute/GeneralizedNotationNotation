@@ -273,68 +273,10 @@ output/6_validation_output/
 └── validation_summary.json        # Aggregated scores and counts
 ```
 
-## Validation Features
 
-### Consistency Checking
+## Configuration
 
-- **Variable Consistency**: Checking variable definitions and usage
-- **Connection Consistency**: Validating connection relationships
-- **Parameter Consistency**: Verifying parameter consistency
-- **Structure Consistency**: Ensuring structural consistency
-- **Cross-reference Consistency**: Validating cross-references
-
-### Semantic Validation
-
-- **Meaning Consistency**: Checking semantic meaning consistency
-- **Logic Consistency**: Validating logical consistency
-- **Context Validation**: Verifying context appropriateness
-- **Relationship Analysis**: Analyzing semantic relationships
-- **Interpretation Validation**: Validating model interpretations
-
-### Quality Assessment
-
-- **Completeness Assessment**: Evaluating model completeness
-- **Correctness Evaluation**: Assessing model correctness
-- **Consistency Scoring**: Scoring model consistency
-- **Clarity Assessment**: Evaluating model clarity
-- **Maintainability Evaluation**: Assessing maintainability
-
-### Error Detection
-
-- **Consistency Error Detection**: Detecting consistency errors
-- **Semantic Error Detection**: Detecting semantic errors
-- **Quality Issue Detection**: Detecting quality issues
-- **Structure Error Detection**: Detecting structure errors
-- **Cross-reference Error Detection**: Detecting cross-reference errors
-
-## Configuration Options
-
-### Validation Settings
-
-```python
-# Validation configuration
-config = {
-    "consistency_checking_enabled": True,  # Enable consistency checking
-    "semantic_validation_enabled": True,  # Enable semantic validation
-    "quality_assessment_enabled": True,  # Enable quality assessment
-    "error_detection_enabled": True,  # Enable error detection
-    "structure_validation_enabled": True,  # Enable structure validation
-    "auto_fix_enabled": False,  # Enable automatic error fixing
-}
-```
-
-### Quality Settings
-
-```python
-# Quality configuration
-quality_config = {
-    "completeness_threshold": 0.8,  # Completeness threshold
-    "correctness_threshold": 0.9,  # Correctness threshold
-    "consistency_threshold": 0.85,  # Consistency threshold
-    "clarity_threshold": 0.75,  # Clarity threshold
-    "maintainability_threshold": 0.8,  # Maintainability threshold
-}
-```
+There is no module-level configuration file. `SemanticValidator` takes `validation_level` (`basic`, `standard`, `strict`, `research`); the `process_validation()` orchestrator runs semantic validation, performance profiling, and consistency checking with their defaults.
 
 ## Error Handling
 
@@ -350,28 +292,6 @@ else:
 
 The `process_validation()` orchestrator catches all exceptions per-file, logs errors, and continues processing remaining files.
 
-## Performance Optimization
-
-### Validation Optimization
-
-- **Caching**: Cache validation results
-- **Parallel Processing**: Parallel validation processing
-- **Incremental Validation**: Incremental validation updates
-- **Optimized Algorithms**: Optimize validation algorithms
-
-### Consistency Optimization
-
-- **Consistency Caching**: Cache consistency results
-- **Parallel Consistency**: Parallel consistency checking
-- **Incremental Consistency**: Incremental consistency updates
-- **Optimized Consistency**: Optimize consistency algorithms
-
-### Quality Optimization
-
-- **Quality Caching**: Cache quality assessment results
-- **Parallel Quality**: Parallel quality assessment
-- **Incremental Quality**: Incremental quality updates
-- **Optimized Quality**: Optimize quality assessment algorithms
 
 ## Testing
 
@@ -394,31 +314,8 @@ Validation module tests are located in `src/tests/api/test_comprehensive_api.py`
 
 ### Optional Dependencies
 
-- **numpy**: Numerical computations
-- **pandas**: Data manipulation
-- **networkx**: Graph analysis
-- **sympy**: Symbolic mathematics
+None. The validators use only the standard library (`pathlib`, `json`, `logging`, `re`, `typing`).
 
-## Performance Metrics
-
-### Processing Times
-
-- **Small Models** (< 100 variables): < 5 seconds
-- **Medium Models** (100-1000 variables): 5-30 seconds
-- **Large Models** (> 1000 variables): 30-300 seconds
-
-### Memory Usage
-
-- **Base Memory**: ~20MB
-- **Per Model**: ~5-20MB depending on complexity
-- **Peak Memory**: 1.5-2x base usage during validation
-
-### Accuracy Metrics
-
-- **Consistency Detection**: 90-95% accuracy
-- **Semantic Validation**: 85-90% accuracy
-- **Quality Assessment**: 80-85% accuracy
-- **Error Detection**: 85-90% detection rate
 
 ## Troubleshooting
 
@@ -452,28 +349,12 @@ Error: Semantic validation failed - unclear meaning
 Solution: Clarify semantic meaning and context
 ```
 
-### Debug Mode
+### Debug Output
 
 ```python
-# Enable debug mode for detailed validation information
-results = process_validation(target_dir, output_dir, debug=True, verbose=True)
+# Verbose mode logs per-file details at DEBUG level
+results = process_validation(target_dir, output_dir, verbose=True)
 ```
-
-## Future Enhancements
-
-### Planned Features
-
-- **Advanced Semantic Validation**: AI-powered semantic validation
-- **Real-time Validation**: Real-time validation during development
-- **Advanced Error Correction**: Automated error correction suggestions
-- **Quality Optimization**: Advanced quality optimization algorithms
-
-### Performance Improvements
-
-- **Advanced Caching**: Advanced caching strategies
-- **Parallel Processing**: Parallel validation processing
-- **Incremental Updates**: Incremental validation updates
-- **Machine Learning**: ML-based validation optimization
 
 ## Summary
 

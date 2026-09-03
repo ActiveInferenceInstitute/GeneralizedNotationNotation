@@ -169,16 +169,17 @@ be added to :func:`mcp.mcp.initialize`.
 | `overall_timeout` | `float` (s) | `120.0` | Max wall-clock for parallel discovery |
 | `force_refresh` | `bool` | `False` | Re-run discovery even if modules are already loaded |
 
-### CLI flags (pipeline step 21)
+### Setting configuration at runtime
+
+`21_mcp.py` exposes only the standard orchestrator flags (`--target-dir`,
+`--output-dir`, `--verbose`); it does **not** define `--performance-mode`,
+`--mcp-strict-validation`, `--mcp-cache-ttl`, `--mcp-modules-allowlist`,
+`--mcp-per-module-timeout`, or `--mcp-overall-timeout`. Set those knobs by
+passing them as `process_mcp(**kwargs)` (they are forwarded to `initialize()`)
+or via the `GNN_MCP_*` environment variables:
 
 ```bash
-python src/21_mcp.py \
-    --performance-mode high \
-    --mcp-strict-validation \
-    --mcp-cache-ttl 120 \
-    --mcp-modules-allowlist gnn,execute,render \
-    --mcp-per-module-timeout 15 \
-    --mcp-overall-timeout 60
+python -c "from mcp import process_mcp; process_mcp('input/gnn_files', 'output', performance_mode='high', strict_validation=True, cache_ttl=120.0, modules_allowlist=['gnn','execute','render'])"
 ```
 
 ### Registered Tool Inventory

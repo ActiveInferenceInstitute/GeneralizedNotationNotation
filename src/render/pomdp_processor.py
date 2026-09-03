@@ -4,6 +4,9 @@ POMDP Processor for Render Module
 
 This module provides specialized processing capabilities for injecting POMDP state spaces
 into various rendering implementations (PyMDP, RxInfer, ActiveInference.jl, etc.).
+
+Numeric/matrix helpers live in ``pomdp_math``; generic code-metrics counting
+lives in ``utils.code_metrics``.
 """
 
 import itertools
@@ -16,60 +19,22 @@ from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union, cast
 
 import numpy as np
 
+from utils.code_metrics import count_code_metrics
+
 from .framework_registry import get_pomdp_framework_configs
 from .pomdp_contract import build_canonical_pomdp_spec
+from .pomdp_math import (
+    _factor_action_counts,
+    _is_kronecker_factorized_spec,
+    _mixed_radix_digit,
+    _normalise_columns,
+    _normalise_prob_vector,
+)
 
 if TYPE_CHECKING:
     from gnn.pomdp_extractor import POMDPStateSpace
 
 logger = logging.getLogger(__name__)
-
-
-def _is_kronecker_factorized_spec(pomdp_space: "POMDPStateSpace") -> bool:
-    """Detect specs with independent per-factor action spaces (MAJ-02).
-
-    The Kronecker-factorized generator (``scripts/pymdp_spec_generator.py::
-    generate_factorized_gnn_file``) declares one action variable ``u_fN`` per
-    factor and does **not** surface shared control factors, whereas
-    shared-control factored specs (gridworld) and multi-agent specs populate
-    ``control_factors``. For the former, the joint action space is the
-    *product* of the per-factor action counts and the joint model is the
-    Kronecker composition; for the latter, one joint action index is shared
-    across all factors.
-    """
-    matrices = getattr(pomdp_space, "matrices", None) or {}
-    b_factor_keys = [key for key in matrices if re.match(r"^B_f\d+$", str(key))]
-    if len(b_factor_keys) < 2:
-        return False
-    if getattr(pomdp_space, "control_factors", None):
-        return False
-    return True
-
-
-def _factor_action_counts(matrices: Dict[str, Any], b_keys: List[str]) -> List[int]:
-    """Per-factor action counts from action-major ``B_fN`` tensors."""
-    counts: List[int] = []
-    for key in b_keys:
-        raw = np.asarray(matrices[key], dtype=np.float64)
-        if raw.ndim == 2:
-            counts.append(1)
-        elif raw.ndim == 3 and raw.shape[1] == raw.shape[2]:
-            counts.append(max(1, int(raw.shape[0])))
-        elif raw.ndim == 3 and raw.shape[0] == raw.shape[1]:
-            counts.append(max(1, int(raw.shape[2])))
-        else:
-            counts.append(max(1, int(raw.shape[-1])))
-    return counts
-
-
-def _mixed_radix_digit(action: int, radices: List[int], index: int) -> int:
-    """Decode a flat joint action into one factor's action index (LSB-first)."""
-    for factor_index, radix in enumerate(radices):
-        digit = action % radix
-        if factor_index == index:
-            return digit
-        action //= radix
-    return 0
 
 
 def _continuous_shape(value: Any) -> List[int]:
@@ -89,75 +54,6 @@ def _safe_output_stem(value: Any, fallback: str = "pomdp_model") -> str:
     if not stem:
         return fallback
     return stem[:120]
-
-
-def _normalise_prob_vector(values: np.ndarray) -> np.ndarray:
-    """Normalize prob vector."""
-    vector = np.asarray(values, dtype=np.float64).flatten()
-    total = float(vector.sum())
-    if not np.isfinite(total) or total <= 0:
-        return np.ones(max(vector.shape[0], 1), dtype=np.float64) / max(
-            vector.shape[0], 1
-        )
-    return vector / total
-
-
-def _normalise_columns(matrix: np.ndarray) -> np.ndarray:
-    """Normalize columns."""
-    out = np.asarray(matrix, dtype=np.float64).copy()
-    if out.ndim != 2:
-        raise ValueError(f"expected 2D matrix, got shape {out.shape}")
-    column_sums = out.sum(axis=0, keepdims=True)
-    zero_columns = column_sums <= 0
-    column_sums = np.where(zero_columns, 1.0, column_sums)
-    out = out / column_sums
-    if zero_columns.any():
-        rows = out.shape[0]
-        for column in np.where(zero_columns.flatten())[0]:
-            out[:, column] = 1.0 / rows
-    return out
-
-
-def count_code_metrics(file_path: Path) -> Dict[str, int]:
-    """
-    Calculate code metrics for a generated file.
-
-    Args:
-        file_path: Path to the code file
-
-    Returns:
-        Dictionary with lines_of_code, functions, classes counts
-    """
-    try:
-        content = file_path.read_text(encoding="utf-8")
-        lines = content.split("\n")
-
-        # Count non-empty, non-comment lines
-        loc = sum(
-            1 for line in lines if line.strip() and not line.strip().startswith("#")
-        )
-
-        # Count functions (Python: def, Julia: function)
-        functions = sum(
-            1
-            for line in lines
-            if line.strip().startswith("def ")
-            or line.strip().startswith("function ")
-            or "@jit" in line
-        )  # JAX decorated functions
-
-        # Count classes (Python: class)
-        classes = sum(1 for line in lines if line.strip().startswith("class "))
-
-        return {
-            "lines_of_code": loc,
-            "total_lines": len(lines),
-            "functions": functions,
-            "classes": classes,
-        }
-    except Exception as e:
-        logger.warning(f"Could not count code metrics for {file_path}: {e}")
-        return {"lines_of_code": 0, "total_lines": 0, "functions": 0, "classes": 0}
 
 
 class POMDPRenderProcessor:

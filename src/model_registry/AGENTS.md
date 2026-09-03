@@ -8,7 +8,7 @@
 
 **Category**: Core Management
 
-**Status**: ✅ Production Ready
+**Status**: Production Ready
 
 **Version**: 3.2.0
 
@@ -111,23 +111,12 @@ registry.save()
 
 ### Configuration Options
 
-#### Registry Path
+`process_model_registry` accepts two keyword arguments (any others are ignored):
 
-- `registry_path` (Path): Custom path for registry file (default: `output_dir / "model_registry.json"`)
-- `registry_backup` (bool): Create backup before overwriting (default: `True`)
-- `registry_format` (str): Registry format (default: `"json"`)
+- `registry_path` (str/Path): Custom path for the registry file (default: `output_dir / "model_registry.json"`)
+- `query_ontology` (str): If set, keeps only models whose serialized entry contains the given term (case-insensitive substring match)
 
-#### Model Registration Options
-
-- `auto_version` (bool): Automatically increment version on re-registration (default: `True`)
-- `extract_metadata` (bool): Extract metadata from GNN files (default: `True`)
-- `validate_before_register` (bool): Validate GNN file before registration (default: `True`)
-
-#### Registry Management
-
-- `max_registry_size` (int): Maximum registry size in MB (default: `100`)
-- `cleanup_old_versions` (bool): Remove old versions when max size reached (default: `False`)
-- `registry_lock` (bool): Use file locking for concurrent access (default: `True`)
+The step CLI exposes these as `--registry-path` and `--query-ontology`.
 
 ---
 
@@ -157,32 +146,18 @@ registry.save()
 ```
 
 ---
-
 ## Output Specification
 
 ### Output Products
 
-- `model_registry.json` - Main registry database (written by `model_registry.registry.ModelRegistry.save`)
-- `model_registry_results.json` - Step processing summary
+- `model_registry.json` - Registry database (written by `ModelRegistry.save`): top-level `version`, `updated_at`, and `models` keyed by model ID
 
 ### Output Directory Structure
 
 ```
 output/4_model_registry_output/
-├── model_registry.json
-└── model_registry_results.json
+└── model_registry.json
 ```
-
----
-
-## Performance Characteristics
-
-### Latest Execution
-
-- **Duration**: 56ms
-- **Memory**: 28.7 MB
-- **Status**: SUCCESS
-- **Models Registered**: 1
 
 ---
 
@@ -190,45 +165,39 @@ output/4_model_registry_output/
 
 ### Model Entry Structure
 
+Each entry in `models` is serialized by `ModelEntry.to_dict`:
+
 ```json
 {
   "model_id": "actinf_pomdp_agent",
-  "model_name": "Active Inference POMDP Agent",
-  "file_path": "input/gnn_files/actinf_pomdp_agent.md",
-  "file_size_bytes": 1759,
-  "registered_at": "2025-09-29T12:00:00",
-  "version": "1.0.0",
-  "metadata": {
-    "variables": 13,
-    "connections": 11,
-    "formats_generated": 23
-  }
+  "name": "Active Inference POMDP Agent",
+  "description": "",
+  "created_at": "2025-09-29T12:00:00",
+  "updated_at": "2025-09-29T12:00:00",
+  "versions": {
+    "1.0.0": {
+      "version": "1.0.0",
+      "file_path": "input/gnn_files/actinf_pomdp_agent.md",
+      "created_at": "2025-09-29T12:00:00",
+      "metadata": {},
+      "hash": "<sha256 of file content>"
+    }
+  },
+  "tags": [],
+  "metadata": {},
+  "current_version": "1.0.0"
 }
 ```
 
----
+`metadata` at both levels holds whatever regex extraction finds in the GNN file (author, date, license).
 
 ## Error Handling
 
-### Graceful Degradation
+- **Unreadable or invalid GNN file**: `register_model` catches the exception, logs it, and returns `False`; `process_model_registry` continues with the remaining files
+- **Invalid registry JSON**: `load` logs the error and starts with an empty in-memory registry (existing file is overwritten on the next `save`)
+- **Unknown model ID**: `delete_model` returns `False`
 
-- **Registry File Locked**: Wait and retry, log warning
-- **Invalid GNN File**: Skip registration, log error, continue with other files
-- **Registry Corruption**: Attempt recovery from backup, log warning
-- **Disk Full**: Return error, cannot save registry
-
-### Error Categories
-
-1. **File I/O Errors**: Cannot read/write registry file (recovery: use in-memory registry)
-2. **Validation Errors**: Invalid GNN file structure (recovery: skip file, continue)
-3. **Version Conflicts**: Model already registered with different version (recovery: auto-increment)
-4. **Registry Corruption**: Invalid JSON structure (recovery: restore from backup)
-
-### Error Recovery
-
-- **Backup Restoration**: Automatically restore from backup if registry corrupted
-- **Partial Registration**: Register what's possible, report failures
-- **Resource Cleanup**: Proper cleanup of registry locks on errors
+There is no file locking, backup, or corruption-recovery mechanism.
 
 ---
 
@@ -278,10 +247,12 @@ output/4_model_registry_output/
 Measure on demand:
 
 ```bash
-uv run --extra dev python -m pytest src/tests/test_model_registry*.py \
+uv run --extra dev python -m pytest src/tests/model_registry/ \
     --cov=src/model_registry --cov-report=term-missing
 ```
+
 ---
+
 
 
 ---

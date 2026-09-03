@@ -8,7 +8,7 @@
 
 **Category**: Interactive Visualization / Model Construction
 
-**Status**: ✅ Production Ready
+**Status**: Production Ready
 
 **Version**: 3.2.0
 
@@ -173,10 +173,12 @@ success = process_gui(
 
 ---
 
-## Dependencies
-
 ### Required Dependencies
+Installed by the `gui` extra in `pyproject.toml` (`uv sync --extra gui`):
 - `gradio` - Web-based GUI framework
+- `streamlit` - Bundled with the extra for GUI frontends
+
+Also used when present:
 - `pandas` - Data manipulation for matrix editing
 - `numpy` - Numerical operations for visualizations
 
@@ -184,10 +186,6 @@ success = process_gui(
 - `plotly` - Interactive visualizations (recovery: matplotlib)
 - `matplotlib` - Static plotting (recovery: basic HTML)
 - `networkx` - Network graph visualization
-
-### Internal Dependencies
-- `utils.pipeline_template` - Standardized pipeline processing
-- `pipeline.config` - Configuration management
 
 ---
 
@@ -324,14 +322,9 @@ The `navigation.html` file provides comprehensive navigation to all pipeline out
 ## Performance Characteristics
 
 ### Latest Execution
-- **Duration**: ~1-2 seconds in headless mode, ~10-30 seconds for interactive GUI startup
-- **Memory**: <10MB for headless mode, ~150-250MB for interactive GUIs
-- **Status**: ✅ Ready (Fixed - headless mode default for pipeline)
-
-### Expected Performance
-- **Interactive Mode**: ~10-30s startup time per GUI
-- **Headless Mode**: ~2-5s for artifact generation
-- **Memory**: ~50-100MB for headless, ~150-250MB for interactive
+Headless artifact generation completes in seconds; interactive GUI startup and memory
+footprint depend on the GUI backend and host. Measure on your own hardware; this
+document does not track timings.
 
 ---
 
@@ -407,23 +400,11 @@ uv run --extra dev python -m pytest src/tests/test_gui*.py \
 
 ---
 
-## Recent Improvements (September 30, 2025)
+## Recent Improvements
 
-### GUI Timeout Fix
-- **Problem**: GUI module was timing out in pipeline execution (600s timeout)
-- **Root Cause**: GUIs were launching interactive servers with blocking threads even in pipeline mode
-- **Solution**: 
-  - Implemented proper headless mode that defaults to True when run from pipeline
-  - Headless mode generates artifacts only (no server launch, no blocking)
-  - Added `--interactive` flag to explicitly enable GUI servers when needed
-  - Separated GUI kwargs to avoid parameter conflicts with logger
-- **Result**: GUI step now completes in ~1.28s (vs 600s timeout), 99.8% improvement
-
-### Performance Improvements
-- Headless mode execution: < 2 seconds (down from 600s timeout)
-- Memory usage in headless mode: < 10MB (down from 150-250MB)
-- Pipeline integration: No blocking, no timeouts
-- Interactive mode still fully functional when explicitly requested
+### GUI Timeout Fix (September 2025)
+- GUIs no longer launch interactive servers in pipeline mode; headless artifact
+  generation is the default, with an explicit interactive opt-in for live servers.
 
 ---
 
@@ -491,7 +472,7 @@ normal MCP keyword arguments.
 
 ## Version History
 
-### Current Version: 3.0.0
+### Current Version: 3.2.0
 
 **Features**:
 - Multiple GUI implementations (GUI 1, GUI 2, GUI 3, oxdraw)
@@ -521,11 +502,11 @@ normal MCP keyword arguments.
 
 ---
 
-**Last Updated**: 2026-04-16
+**Last Updated**: 2026-09-02
 **Maintainer**: GNN Pipeline Team
-**Status**: ✅ Production Ready
+**Status**: Production Ready
 **Version**: 3.2.0
-**Architecture Compliance**: ✅ 100% Thin Orchestrator Pattern
+**Architecture Compliance**: Thin Orchestrator Pattern
 
 
 ---

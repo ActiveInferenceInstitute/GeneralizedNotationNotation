@@ -4,13 +4,13 @@ Ontology-aware visualization rendering. Maps Active Inference terms to visual el
 
 ## Exports
 
-- `OntologyVisualizer` — Class that renders ontology term graphs, annotation overlays,
-  and semantic relationship diagrams between Active Inference constructs
+- `OntologyVisualizer` — Class that renders an annotated matplotlib table of a
+  model's `ActInfOntologyAnnotation` section, plus batch visualization for whole directories
 
 ## Dependencies
 
 - `matplotlib` for rendering
-- `ontology` module for term definitions and validation
+- `src/ontology/` module for term definitions
 
 ## Usage
 
@@ -18,5 +18,6 @@ Ontology-aware visualization rendering. Maps Active Inference terms to visual el
 from visualization.ontology import OntologyVisualizer
 
 viz = OntologyVisualizer()
-viz.render(parsed_model, output_dir)
+viz.visualize_ontology(parsed_model, output_dir)   # single model; None if no annotations
+viz.visualize_directory(Path("input/gnn_files"), output_dir)  # batch
 ```

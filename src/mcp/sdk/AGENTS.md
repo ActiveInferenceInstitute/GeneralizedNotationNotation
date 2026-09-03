@@ -8,9 +8,9 @@ Provides a thin SDK facade that delegates to the parent `mcp` module implementat
 
 ```
 sdk/
-├── client.py     # Client-side MCP SDK facade (16 lines)
-├── mcp.py        # Core SDK re-exports from parent mcp module (39 lines)
-└── server.py     # Server-side MCP SDK facade (16 lines)
+├── client.py     # Client-side MCP SDK facade (re-exports)
+├── mcp.py        # Core SDK re-exports from parent mcp module
+└── server.py     # Server-side MCP SDK facade (re-exports)
 ```
 
 ## Purpose

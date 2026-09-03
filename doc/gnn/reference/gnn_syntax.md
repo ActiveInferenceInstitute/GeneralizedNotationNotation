@@ -78,14 +78,16 @@ Q(π) = softmax(-G(π))
 
 ### `## Time`
 
-Temporal regime. Exactly one of the three values below, followed by optional
-modifiers on subsequent non-comment lines.
+Temporal regime. Exactly one of the two values below, followed by optional
+modifiers on subsequent non-comment lines. (The markdown parser recognises
+only `Static` and `Dynamic`; continuous-state exemplars use `Dynamic` with a
+`Discrete` time index and are classified CONTINUOUS from their
+parameterization family, not from this section.)
 
 | Value | Meaning |
 |-------|---------|
 | `Static` | Perception-only / single-step inference, no dynamics. |
-| `Dynamic` | Time-indexed variables; B matrix required. |
-| `Continuous` | Continuous-time dynamics (SDE/ODE-based backends). |
+| `Dynamic` | Time-indexed variables; B matrix required for discrete models. |
 
 Optional modifiers (Dynamic only):
 - `DiscreteTime=t` — declare the time index variable
@@ -113,7 +115,7 @@ Canonical keys expected by renderers (not all are required for every model):
 |-----|------|---------|
 | `num_hidden_states` | int | all renderers |
 | `num_obs` | int | all renderers |
-| `num_actions` / `num_controls` / `n_actions` | int | all renderers |
+| `num_actions` / `num_controls` | int | all renderers |
 | `num_timesteps` | int | all renderers |
 | `num_modalities` | int | PyMDP, JAX |
 | `num_factors` | int | PyMDP, RxInfer; `> 1` also selects the FACTORED model kind |
@@ -160,8 +162,8 @@ Simple POMDP Agent v1.0 — deterministic transition, partial observability.
 
 Provenance / cryptographic digest. Free-form single line — current
 convention is a literal `pending` string or a hex digest. Reserved for
-future provenance tooling (Step 18 security). Presence is required but the
-value may be marked as `pending`.
+future provenance tooling (Step 18 security). Presence is expected but not
+enforced by the type checker; the value may be marked as `pending`.
 
 ```gnn
 ## Signature
@@ -241,18 +243,16 @@ A_level2={(0.8,0.2),(0.2,0.8)}
 B_agent1={((1,0),(0,1)),((0,1),(1,0))}
 ```
 
-The `continuous/` exemplars declare **both** the discrete matrices and the
-linear-Gaussian block: each backend reads the family it can execute, and
-nothing cross-validates the two against each other. Which family is present
-determines the model kind the renderer dispatches on — the normative rules
-and precedence order are in
+The `continuous/` exemplars are pure linear-Gaussian models: `x`, `y`,
+optional `u`, `F`/`H`/`Q`/`R`, `prior_mean`/`prior_cov`, optional
+`goal_mean`/`control_gain`, with no discrete A/B/C/D stand-in and every
+symbol declared in `StateSpaceBlock` (so the dimension check reports no
+`GNN-W003`/`GNN-E002` findings). Which family is present determines the model
+kind the renderer dispatches on — `detect_model_kind` routes these files as
+CONTINUOUS; the normative rules and precedence order are in
 [`gnn_syntax.md` § Parameterization families](../gnn_syntax.md#parameterization-families).
-
-Expect `GNN-W003` warnings for `H`, `Q`, `R`, `prior_mean`, and `prior_cov`,
-plus a `GNN-E002` on `F`, whenever a file is dual-parameterized: these keys
-are intentionally not mirrored into `StateSpaceBlock`, and `F` collides with
-the scalar Variational Free Energy declaration. Removing the linear-Gaussian
-block to silence them demotes the model from CONTINUOUS to FLAT.
+JAX, NumPyro, PyTorch, Stan and RxInfer.jl render and execute them; PyMDP,
+ActiveInference.jl, DisCoPy and bnlearn report render status `unsupported`.
 
 ## Mathematical Operations
 

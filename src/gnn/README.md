@@ -477,7 +477,7 @@ success = run_comprehensive_gnn_testing(
 ### Benchmarks
 
 - **File Processing**: 50+ files/second with full validation
-- **Round-Trip Testing**: 20 formats in ~0.07 seconds per model
+- **Round-Trip Testing**: 21 formats (see `testing/test_round_trip.py`); timing varies per model — treat any fixed duration as a spot measurement, not a constant
 - **Cross-Format Validation**: Sub-second consistency checks
 - **Memory Usage**: <100MB for complex multi-format models
 

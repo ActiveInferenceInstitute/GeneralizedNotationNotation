@@ -12,22 +12,23 @@ The `src/security/` module provides comprehensive security validation and genera
 
 ## Functional Requirements
 
-- **Generated Code Scanning**: Analyze rendered scripts (Step 11 output) for unsafe patterns, injection risks, and resource abuse
-- **Dependency Auditing**: Check imported packages against known vulnerability databases
-- **Permission Validation**: Verify file system access patterns and network connectivity in generated code
+- **Generated Code Scanning**: Analyze rendered scripts (Step 11 output) for unsafe patterns, injection risks, and dynamic execution constructs
+- **AST Analysis**: Python AST scanner for `shell=True`, dangerous calls, and dynamic execution
+- **Pre-Execution Gate**: `scan_script_for_execution()` blocks rendered scripts with high-severity findings before Step 12 runs them (`.jl` scripts: advisory sweep + `Meta.parseall` probe)
 - **Report Generation**: Produce structured security findings with severity levels and remediation guidance
 
 ## Components
 
 | Component | Type | Description |
 |-----------|------|-------------|
-| `SecurityProcessor` | Class | Main scanning engine with configurable rule sets |
 | `process_security()` | Function | Top-level entry point called by orchestrator |
+| `perform_security_check()` | Function | Per-file sensitive-data and integrity check |
+| `check_vulnerabilities()` | Function | Per-file pattern + AST vulnerability scan |
+| `scan_script_for_execution()` | Function | Pre-execution gate for rendered scripts |
 | `mcp.py` | MCP Tools | Security validation and audit tools |
 
 ## Standards
 
-- All findings classified by severity: Critical, High, Medium, Low, Info
+- Findings classified by severity: info, low, medium, high (`_SEVERITY_RANK`)
+- Blocking is level-dependent: `basic` never blocks, `standard` reports only, `strict` blocks on high; an explicit `block_on` makes any scanning level enforcement-capable
 - Reports generated in both JSON and Markdown formats
-- Zero false-positive policy for Critical-severity findings
-- Non-blocking — reports findings but does not halt pipeline

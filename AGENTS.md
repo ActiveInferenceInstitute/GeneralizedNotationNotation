@@ -238,18 +238,28 @@ graph TD
 - **Screen Reader Support**: Accessible output with emoji-free alternatives for assistive technologies
 - **Performance Monitoring**: Built-in timing and resource consumption tracking with visual displays
 
-### Current Validation (August 2026)
+### Current Validation (September 2026)
 
-- **uv 0.12.0 compatibility**: Verified. `uv lock --check` passes (310 packages, 0.86ms resolve). `uv sync --frozen` succeeds. `uv run --extra dev` executes all tests. The `uv` toolchain constraint `uv>=0.7.8` in Dockerfile is the minimum bootstrap floor; the project lock file is compatible with uv 0.12.0.
+- **uv 0.12.0 compatibility**: Verified. `uv lock --check` passes and `uv sync --frozen` succeeds. `uv run --extra dev` executes all tests. The `uv` toolchain constraint `uv>=0.7.8` in Dockerfile is the minimum bootstrap floor.
 - **Docs audit**: `uv run --extra dev python doc/development/docs_audit.py --strict --check-anchors --no-write` reports no broken links, anchor gaps, or AGENTS/README coverage gaps.
 - **GNN doc patterns**: `uv run --extra dev python scripts/check_gnn_doc_patterns.py --strict` reports no banned GNN documentation patterns.
 - **Repository terminology**: `uv run --extra dev python scripts/check_repo_terminology.py --strict` and `scripts/check_maintained_doc_terms.py --strict` report no violations.
-- **Mypy**: `uv run --extra dev mypy src --config-file pyproject.toml` passes (0 errors, 758 files).
-- **Tests**: command of record is `uv run --extra dev python -m pytest src/tests/ -q --tb=no -rsx --ignore=src/tests/llm/test_llm_ollama.py --ignore=src/tests/llm/test_llm_ollama_integration.py`; collected count is 3,571 tests (verified 2026-08-30 at 2ba0d504); pass evidence reflects the most recent full local run (2026-08-07: 2,797 passed, 0 failed, 2 skipped (allowlisted)) on the curated 29-exemplar corpus. Julia RxInfer execution uses the committed `Project.toml` under `src/execute/rxinfer/` (RxInfer 5.5.0 pinned); ActiveInference.jl uses the committed minimal env under `src/execute/activeinference_jl/`. With a local Ollama daemon and `smollm2:135m-instruct-q4_K_S` pulled, the two Ollama files are re-enabled.
+- **Mypy**: `uv run --extra dev mypy src --config-file pyproject.toml` passes (0 errors).
+- **Tests**: command of record is `uv run --extra dev python -m pytest src/tests/ -q --tb=no -rsx --ignore=src/tests/llm/test_llm_ollama.py --ignore=src/tests/llm/test_llm_ollama_integration.py`; the release receipt for the current version (collected/passed/skipped totals on the curated exemplar corpus) is recorded in `CHANGELOG.md` §3.2.0 (2026-09-02); re-run the command for live totals rather than trusting numbers in prose. Julia RxInfer execution uses the committed `Project.toml` under `src/execute/rxinfer/` (RxInfer 5.5.0 pinned); ActiveInference.jl uses the committed minimal env under `src/execute/activeinference_jl/`. With a local Ollama daemon and `smollm2:135m-instruct-q4_K_S` pulled, the two Ollama files are re-enabled.
 - **LLM Default Model**: `smollm2:135m-instruct-q4_K_S` via Ollama (`llm.defaults.DEFAULT_OLLAMA_MODEL`; override with `OLLAMA_MODEL` / `input/config.yaml`).
 - **Renderer inventory**: PyMDP, RxInfer, JAX, NumPyro, Stan, PyTorch, ActiveInference.jl, DisCoPy, and bnlearn have maintained render paths. The public root `output/` contract is the POMDP GridWorld full run with strict execution proof for PyMDP, RxInfer.jl, and ActiveInference.jl.
 - **Default dev suite**: FastAPI, websocket bridge, and LSP tests run under the `dev` extra; browser, public-network, live GUI, audio-DSP, and Ollama integrations remain explicit opt-in surfaces rather than hidden default-suite skips.
 - **Visual Accessibility**: All pipeline steps now include enhanced visual indicators and progress tracking.
+
+### v3.2.0 "Exemplar Gold Standard" (2026-09-02)
+
+- **Two model kinds**: `render.pomdp_contract.detect_model_kind` classifies each spec as discrete (categorical `A/B/C/D[/E]`) or continuous; the `input/gnn_files/continuous/` exemplars declare only the linear-Gaussian state-space block (`F/H/Q/R`, `prior_mean/prior_cov`, optional closed-loop `goal_mean/control_gain`) and are rendered verbatim, never canonicalised to A/B/C/D.
+- **`unsupported` render status**: frameworks whose `framework_registry.py` entry has `supports_continuous: False` (PyMDP, ActiveInference.jl, DisCoPy, bnlearn) return `status: unsupported` for continuous models; these are counted separately under `unsupported_framework_renderings` in `render_processing_summary.json`, excluded from success rates, and never executed by Step 12.
+- **Native continuous backends**: JAX, NumPyro (+NUTS), PyTorch and Stan share `render/continuous_script.py` (online Kalman filter, Joseph-form update, closed-loop control); RxInfer.jl uses its native LGSSM strategy.
+- **Stan is executable**: `render/stan/stan_renderer.py` emits an HMM (forward-algorithm marginalisation, Dirichlet priors centred on `A`) for discrete models and the Kalman marginal likelihood for continuous ones, as `<stem>_stan.stan` plus a `<stem>_stan.py` cmdstanpy driver; `src/execute/stan/` runs it and `utils.framework_availability` reports `skipped` when `cmdstanpy`/CmdStan is absent (`uv sync --extra stan`).
+- **Step 12 summary merge**: `execute/processor.py` (`_merge_prior_execution_summary`) folds the previous `execution_summary.json` into the current run so the durable summary covers every input folder, mirroring Step 11.
+- **Julia pre-exec gate**: a `julia` launcher without a working toolchain no longer blocks scripts; the probe degrades to the advisory regex sweep unless the parser itself reports a failure.
+- Live counts come from `output/11_render_output/render_processing_summary.json` and `output/12_execute_output/summaries/execution_summary.json`; see `CHANGELOG.md` §3.2.0 for the release receipt.
 
 ---
 
@@ -430,7 +440,7 @@ Each module provides specialized agent capabilities for different aspects of Act
 ### 🚀 **Execute Agent** - Simulation Runner
 
 - **ActiveInferenceAgent**: Primary full-fidelity execution engine
-- Multi-environment execution (PyMDP, RxInfer, JAX, PyTorch, NumPyro)
+- Multi-environment execution (PyMDP, RxInfer.jl, ActiveInference.jl, JAX, DisCoPy, PyTorch, NumPyro, Stan — bnlearn is render-only with no executor)
 - Resource monitoring and optimization
 - Explicit failure, skip, and retry reporting
 - Cross-platform compatibility
@@ -551,7 +561,7 @@ uv run --extra dev python scripts/run_v3_orchestration_acceptance.py
 
 ---
 
-**Last Updated**: 2026-08-02
+**Last Updated**: 2026-09-02
 **Pipeline Version**: 3.2.0 ("Exemplar Gold Standard")
 **Total Steps**: 25 (0-24)
 **Status**: Maintained

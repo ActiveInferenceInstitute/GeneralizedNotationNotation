@@ -2,34 +2,27 @@
 
 ## Module Overview
 
-**Purpose**: System integration and consistency validation using Graph Theory (NetworkX) and cross-module reference checking.
+**Purpose**: System-level consistency validation — builds a NetworkX dependency graph of GNN model components, detects cycles and isolated components, verifies cross-file references, and runs meta-analysis over parameter-sweep execution outputs.
 
 **Pipeline Step**: Step 17: Integration (17_integration.py)
 
 **Category**: System Integration / Coordination
 
-**Status**: ✅ Production Ready
+**Status**: Production Ready
 
 **Version**: 3.2.0
 
-**Last Updated**: 2026-04-16
+**Last Updated**: 2026-09-02
 
 ---
 
 ## Core Functionality
 
-### Primary Responsibilities
-1. Coordinate cross-module interactions and data flow
-2. Provide recovery implementations for missing dependencies
-3. Manage system-wide configuration and state
-4. Enable seamless integration between pipeline steps
-5. Handle inter-module communication and data exchange
-
-### Key Capabilities
-- **Dependency Graph Construction**: Uses `networkx` to build a directed graph of system components.
-- **Cycle Detection**: Identifies circular dependencies that could cause infinite loops or initialization errors.
-- **Cross-Reference Validation**: Ensures all referenced components are defined using explicit filename checks.
-- **System Stats**: Reports node/edge counts and graph density.
+1. Build a directed dependency graph from GNN `## StateSpaceBlock` variables and `## Connections` edges
+2. Detect short cycles (length <= 6, capped) and isolated components
+3. Verify `$ref: name` cross-references resolve to a known component
+4. Run the meta-analysis submodule over Step 12 execution outputs (when present)
+5. Write `integration_results.json` and `integration_summary.md`
 
 ---
 
@@ -37,19 +30,14 @@
 
 ### Public Functions
 
-#### `process_integration(target_dir: Path, output_dir: Path, verbose: bool = False, logger: Optional[logging.Logger] = None, **kwargs) -> bool`
-**Description**: Main integration processing function called by orchestrator (17_integration.py). Coordinates cross-module interactions and validates system consistency using graph theory.
+#### `process_integration(target_dir: Path, output_dir: Path, verbose: bool = False, **kwargs) -> bool`
+**Description**: Main integration processing function called by orchestrator (17_integration.py). Builds the system dependency graph, runs consistency checks, and performs meta-analysis of parameter sweeps.
 
 **Parameters**:
-- `target_dir` (Path): Directory containing pipeline outputs to integrate
+- `target_dir` (Path): Directory containing pipeline outputs to integrate (GNN `.md` files)
 - `output_dir` (Path): Output directory for integration results
 - `verbose` (bool): Enable verbose logging (default: False)
-- `logger` (Optional[logging.Logger]): Logger instance for progress reporting (default: None)
-- `integration_mode` (str, optional): Integration mode ("coordinated", "standalone", "recovery") (default: "coordinated")
-- `system_coordination` (bool, optional): Enable system-wide coordination (default: True)
-- `validate_dependencies` (bool, optional): Validate module dependencies (default: True)
-- `detect_cycles` (bool, optional): Detect circular dependencies (default: True)
-- `**kwargs`: Additional integration options
+- `**kwargs`: Accepted and ignored; reserved for pipeline-template compatibility
 
 **Returns**: `bool` - True if integration processing succeeded, False otherwise
 
@@ -57,39 +45,33 @@
 ```python
 from integration import process_integration
 from pathlib import Path
-import logging
 
-logger = logging.getLogger(__name__)
 success = process_integration(
     target_dir=Path("output"),
     output_dir=Path("output/17_integration_output"),
-    logger=logger,
     verbose=True,
-    integration_mode="coordinated",
-    validate_dependencies=True,
 )
 ```
 
+
 #### Module Coordination (via `process_integration`)
 
-Module coordination (dependency graph construction, cycle detection, cross-reference validation) is performed internally by `process_integration()`. The integration report JSON includes:
-- `modules` (List[str]): List of discovered modules
-- `dependency_graph` (Dict): Module dependency graph
-- `cycles_detected` (List[List[str]]): Circular dependency cycles
-- `statistics` (Dict[str, Any]): Graph statistics (nodes, edges, density)
+Graph construction, cycle detection, and cross-reference validation are performed internally by `process_integration()`. The `integration_results.json` report includes:
+- `processed_files` (int): Number of GNN files scanned
+- `system_graph_stats` (Dict): nodes, edges, cycles, isolated_nodes, components
+- `issues` (List[str]): Isolated components, undefined `$ref:` references, suspicious type names
+- `meta_analysis` (Dict): Sweep analysis results (only when execution outputs exist)
 
 ---
 
 ## Dependencies
 
 ### Required Dependencies
-- `pathlib` - Path manipulation and file system operations
-- `typing` - Type hints and annotations
-- `logging` - Logging and progress reporting
+- `pathlib`, `typing`, `logging` - Standard library
 
 ### Optional Dependencies
-- `psutil` - System resource monitoring (recovery: basic monitoring)
-- `requests` - HTTP communication (recovery: local only)
+- `networkx` - Graph construction and cycle/isolate analysis (dict-based fallback without it)
+- `matplotlib` - Meta-analysis visualizations
 
 ### Internal Dependencies
 - `utils.pipeline_template` - Standardized pipeline processing patterns
@@ -101,15 +83,10 @@ Module coordination (dependency graph construction, cycle detection, cross-refer
 
 ### Environment Variables
 
-None dedicated to this module. Integration behavior is configured through
-`process_integration()` kwargs (e.g. `integration_mode`,
-`validate_dependencies`, `detect_cycles`) and `input/config.yaml` pipeline
-settings.
-
-### Default Settings
-
-Processing defaults (mode, validation, cycle detection) are set in
-`process_integration()` in `integration/processor.py`.
+None dedicated to this module. Integration behavior is fixed by
+`process_integration()` in `integration/processor.py`; output location is set
+via the `--output-dir` CLI flag on `17_integration.py` and `input/config.yaml`
+pipeline settings.
 
 ---
 
@@ -122,8 +99,7 @@ from integration.processor import process_integration
 success = process_integration(
     target_dir=Path("input/gnn_files"),
     output_dir=Path("output/17_integration_output"),
-    logger=logger,
-    integration_mode="coordinated",
+    verbose=True,
 )
 ```
 
@@ -132,14 +108,17 @@ success = process_integration(
 ## Output Specification
 
 ### Output Products
-- `integration_results.json` - Integration results with dependency graph and statistics
-- `integration_summary.md` - Human-readable integration summary
+- `integration_results/integration_results.json` - Graph statistics, issues, and meta-analysis results
+- `integration_results/integration_summary.md` - Human-readable integration summary
+- `integration_results/meta_analysis/` - Sweep plots, validation, statistics, report (when execution outputs exist)
 
 ### Output Directory Structure
 ```
 output/17_integration_output/
-├── integration_results.json
-└── integration_summary.md
+└── integration_results/
+    ├── integration_results.json
+    ├── integration_summary.md
+    └── meta_analysis/
 ```
 
 ---
@@ -156,22 +135,21 @@ output/17_integration_output/
 ## Error Handling
 
 ### Graceful Degradation
-- **No external dependencies**: Local-only integration mode
-- **Module unavailable**: Skip integration for that module
-- **Network issues**: Recovery to local coordination only
+- Per-file parse failures are logged and skipped
+- Graph-analysis failures degrade to dict-based edge counting (no NetworkX)
+- Meta-analysis failures are warnings only and never fail the step
 
 ### Error Categories
-1. **Coordination Errors**: Unable to coordinate between modules
-2. **Dependency Errors**: Missing required integration dependencies
-3. **Configuration Errors**: Invalid integration settings
+1. **Parse Errors**: Malformed GNN file (skipped with warning)
+2. **Graph Errors**: Graph analysis failure (fallback statistics)
+3. **Reference Errors**: Undefined `$ref:` or suspicious type names (reported as issues)
 
 ---
 
 ## Integration Points
 
 ### Orchestrated By
-- **Script**: `17_integration.py` (Step 17)
-- **Function**: `process_integration()`
+- **Script**: `17_integration.py` (Step 17) - thin orchestrator delegating to `process_integration()`
 
 ### Imports From
 - `utils.pipeline_template` - Standardized processing patterns
@@ -179,11 +157,12 @@ output/17_integration_output/
 
 ### Imported By
 - `src/tests/integration/test_integration_overall.py` - Module-level integration tests
-- `main.py` - Pipeline orchestration
+- `src/main.py` - Runs `17_integration.py` as a pipeline step (subprocess)
 
 ### Data Flow
 ```
-Pipeline Steps → Integration Coordination → System State → Cross-Module Communication → Unified Output
+GNN Files (target_dir) → Graph Construction → Consistency Checks → integration_results.json + integration_summary.md
+Step 12 Execute Outputs → Meta-Analysis → meta_analysis/ artifacts
 ```
 
 ---
@@ -193,26 +172,29 @@ Pipeline Steps → Integration Coordination → System State → Cross-Module Co
 ### Test Files
 - `src/tests/integration/test_integration_functional.py` - Functional integration tests
 - `src/tests/integration/test_integration_processor.py` - Processor-level integration tests
+- `src/tests/integration/test_integration_mcp.py`, `test_integration_mcp_tools.py` - MCP tool tests
+- `src/tests/integration/test_meta_analysis_none_states.py` - Meta-analysis edge cases
 
 ### Test Coverage
 Measure on demand:
 
 ```bash
-uv run --extra dev python -m pytest src/tests/test_integration*.py \
+uv run --extra dev python -m pytest src/tests/integration/ \
     --cov=src/integration --cov-report=term-missing
 ```
+
 ### Key Test Scenarios
-1. Cross-module coordination with various step combinations
-2. Recovery mode operation when dependencies unavailable
-3. System state synchronization accuracy
-4. Error handling with partial module failures
+1. Graph construction and consistency checks across step combinations
+2. Behavior when NetworkX or execution outputs are unavailable
+3. Meta-analysis record extraction accuracy
+4. Error handling with malformed GNN files
 
 ---
 
 ## MCP Integration
 
 ### Tools Registered
-- `process_integration` - Run third-party integration processing
+- `process_integration` - Run GNN integration processing
 - `list_supported_integrations` - List integration targets and availability
 - `get_integration_status` - Inspect artifacts from a previous integration run
 - `check_integration_dependencies` - Report optional integration dependencies
@@ -229,36 +211,30 @@ JSON input schema, module/category metadata, and explicit success/error results.
 
 ### Common Issues
 
-#### Issue 1: Circular dependency detection fails
-**Symptom**: Cycle detection reports false positives or misses cycles  
-**Cause**: Dependency graph construction incomplete or incorrect  
-**Solution**: 
-- Verify all modules are properly discovered
-- Check module import statements are correct
-- Use `--verbose` flag for detailed dependency graph
-- Review dependency graph visualization
+#### Issue 1: Cross-file dependencies not detected
+**Symptom**: Expected cross-file dependencies are absent from the graph
+**Cause**: Cross-file reference edges via content matching were deliberately removed (models share vocabulary like `s_prime`/`beta`, causing false positives)
+**Solution**: Use explicit `$ref: name` syntax for real cross-file dependencies
 
 #### Issue 2: Cross-reference validation errors
-**Symptom**: Valid references reported as missing  
-**Cause**: File path resolution issues or incorrect reference format  
+**Symptom**: Valid references reported as missing
+**Cause**: `$ref:` name not declared in any scanned GNN file, or file path resolution issues
 **Solution**:
-- Verify file paths are relative to project root
-- Check reference format matches expected pattern
-- Ensure referenced files exist in expected locations
-- Review cross-reference validation logs
+- Ensure the referenced component is declared in a `## StateSpaceBlock` section
+- Check reference format matches the `$ref: name` pattern
+- Ensure referenced files are in `target_dir` or a discoverable `input/gnn_files/`
 
 ---
 
 ## Version History
 
-### Current Version: 3.0.0
+### Current Version: 1.6.0 (module `__init__.py`), pipeline release 3.2.0
 
 **Features**:
-- Cross-module coordination
-- Dependency graph construction
-- Cycle detection
-- Cross-reference validation
-- System-wide configuration
+- Dependency graph construction (NetworkX)
+- Cycle and isolated-component detection
+- `$ref:` cross-reference validation
+- Meta-analysis of parameter sweeps (`integration/meta_analysis/`)
 
 **Known Issues**:
 - None currently
@@ -273,7 +249,6 @@ JSON input schema, module/category metadata, and explicit success/error results.
 
 ### Related Documentation
 - [Pipeline Overview](../../README.md)
-- [Architecture Guide](../../ARCHITECTURE.md)
 - [Pipeline Configuration](../pipeline/AGENTS.md)
 
 ### External Resources
@@ -281,11 +256,11 @@ JSON input schema, module/category metadata, and explicit success/error results.
 
 ---
 
-**Last Updated**: 2026-04-16
+**Last Updated**: 2026-09-02
 **Maintainer**: GNN Pipeline Team
-**Status**: ✅ Production Ready
+**Status**: Production Ready
 **Version**: 3.2.0
-**Architecture Compliance**: ✅ 100% Thin Orchestrator Pattern
+**Architecture Compliance**: Thin Orchestrator Pattern
 
 
 ---

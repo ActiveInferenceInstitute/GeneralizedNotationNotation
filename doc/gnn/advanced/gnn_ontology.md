@@ -35,10 +35,10 @@ GNN ontology processing is integrated into the 25-step processing pipeline:
 
 ```bash
 # Process ontology validation
-python src/main.py --only-steps "3,10" --target-dir input/gnn_files --verbose
+uv run python src/main.py --only-steps "3,10" --target-dir input/gnn_files --verbose
 
 # Run ontology step directly
-python src/10_ontology.py --target-dir input/gnn_files --output-dir output --verbose
+uv run python src/10_ontology.py --target-dir input/gnn_files --output-dir output --verbose
 ```
 
 ## Active Inference Ontology

@@ -161,7 +161,7 @@ install_optional_package_group("gui", verbose=True)
 ### `uv` directly
 
 ```bash
-uv sync                     # Core (JAX, NumPyro, PyTorch, DisCoPy, pymdp, …)
+uv sync                     # Core (JAX, NumPyro, DisCoPy, pymdp, …; PyTorch is a manual install)
 uv sync --extra dev         # Add dev tools
 uv sync --extra gui
 uv sync --all-extras        # Everything
@@ -204,14 +204,14 @@ system requirement validation, and the JAX stack probe.
 
 `mcp.py` registers the following tools with the GNN MCP server:
 
-- `setup.check_environment`
-- `setup.create_environment`
-- `setup.install_dependencies`
-- `setup.validate_setup`
-- `setup.add_dependency`
-- `setup.remove_dependency`
-- `setup.update_dependencies`
-- `setup.lock_dependencies`
+- `ensure_directory_exists`
+- `find_project_gnn_files`
+- `get_standard_output_paths`
+- `check_uv_project_status`
+- `get_uv_environment_info`
+- `setup_uv_project_structure`
+- `install_uv_dependency`
+- `sync_uv_dependencies`
 
 ## References
 

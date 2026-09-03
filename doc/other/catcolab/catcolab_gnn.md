@@ -165,7 +165,7 @@ flowchart LR
 **Implementation via GNN Pipeline:**
 ```bash
 # Export GNN model to CatColab-compatible format
-python src/main.py --only-steps "3,7" --export-format catcolab --verbose
+uv run python src/main.py --only-steps "3,7" --export-format catcolab --verbose
 ```
 
 **Target CatColab Logic Selection:**

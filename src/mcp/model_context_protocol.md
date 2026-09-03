@@ -238,7 +238,7 @@ Key aspects of MCP implementation within GNN include:
 
 - **GNN Functionalities as MCP Tools**: Core GNN operations are wrapped as callable MCP tools, each with a defined schema for inputs and outputs.
 - **GNN Files as MCP Resources**: GNN specification files (`.gnn.md`) are the primary resources that these tools operate upon.
-- **Modular Tool Registration**: Tools are registered from various GNN sub-modules (e.g., `export`, `render`, `gnn_type_checker`) into a central MCP server instance.
+- **Modular Tool Registration**: Tools are registered from various GNN sub-modules (e.g., `export`, `render`, `type_checker`) into a central MCP server instance.
 - **Multiple Transport Options**: The GNN MCP server can be run using HTTP or standard I/O (stdio) for flexible integration.
 
 For a comprehensive overview of how MCP is specifically implemented and utilized within the GNN project, including details on the available tools, server architecture, and typical workflows, please refer to the GNN-specific MCP documentation: **[GNN MCP Integration README](./README.md)**.

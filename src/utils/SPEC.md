@@ -6,17 +6,17 @@ The `utils` module provides standardized infrastructure for the GNN pipeline, in
 
 ## Core Components
 
-### 1. step_logging.py
-Minimal, always-importable logging functions for pipeline steps.
+### 1. logging_utils.py / structured_logging.py
+Logging facade and structured pipeline logging with correlation tracking. The structured logger decorates lifecycle events with status markers in the log output.
 
-**Functions:**
-- `log_step_start(logger, msg)` - Log step start with 🚀 emoji
-- `log_step_success(logger, msg)` - Log success with ✅ emoji
-- `log_step_warning(logger, msg)` - Log warning with ⚠️ emoji
-- `log_step_error(logger, msg)` - Log error with ❌ emoji
+**Functions (facade):**
+- `log_step_start(logger, msg)` - Log step start (rocket marker in structured output)
+- `log_step_success(logger, msg)` - Log success (check marker)
+- `log_step_warning(logger, msg)` - Log warning
+- `log_step_error(logger, msg)` - Log error
 - `setup_step_logging(name, verbose)` - Create configured logger
 
-**Design:** Zero external dependencies, recovery-safe.
+**Design:** Standard library only for the facade; recovery-safe.
 
 ### 2. base_processor.py
 Abstract base class for standardized processing patterns.
@@ -28,20 +28,20 @@ Abstract base class for standardized processing patterns.
 **Factory:**
 - `create_processor(step_name, process_func)` - Wrap simple functions
 
-### 3. logging_utils.py (1071 lines)
-Full-featured logging with correlation tracking.
+### 3. arg_parsing.py / arg_definitions.py / step_config.py
+Argument parsing and validation: `ArgumentParser.parse_step_arguments`, `build_step_command_args`, `audit_step_contracts`, shared `STEP_ARGUMENTS` and `StepConfiguration`. `argument_utils.py` re-exports these.
 
-### 4. argument_utils.py (1225 lines)
-Argument parsing and validation utilities.
+### 4. config_loader.py
+Pipeline configuration management: `load_config`, `get_config_value`, `set_config_value`, `validate_config`.
 
-### 5. config_loader.py
-YAML configuration management.
+### 5. dependency_validator.py / performance_tracker.py
+Dependency validation (`validate_pipeline_dependencies`, `check_optional_dependencies`, `get_dependency_status`) and performance tracking (`PerformanceTracker.track_operation`, `track_operation_standalone`).
 
 ## Import Patterns
 
 ```python
-# Minimal (always works)
-from utils.step_logging import log_step_start, log_step_success
+# Logging facade (always works)
+from utils.logging_utils import log_step_start, log_step_success
 
 # Full utilities
 from utils import BaseProcessor, ProcessingResult, PipelineLogger
@@ -49,8 +49,9 @@ from utils import BaseProcessor, ProcessingResult, PipelineLogger
 
 ## Testing
 
-Tests in: `tests/test_new_utils.py` (11 passing tests)
+Tests in: `src/tests/utils/` (including `test_new_utils.py` and `test_utils_core.py`).
 
+Run: `uv run --extra dev python -m pytest src/tests/utils/ -v`
 
 ---
 ## Documentation

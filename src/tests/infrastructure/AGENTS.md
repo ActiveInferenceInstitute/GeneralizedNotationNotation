@@ -8,19 +8,19 @@ Core test infrastructure providing the test runner, configuration, resource moni
 
 ```
 infrastructure/
-├── __init__.py             # Infrastructure exports (62 lines)
-├── test_runner.py          # Custom test runner with progress tracking (296 lines)
-├── test_config.py          # Test configuration and environment detection (41 lines)
-├── report_generator.py     # Test report generation (HTML, JSON) (130 lines)
-├── resource_monitor.py     # Memory and CPU monitoring during tests (99 lines)
-└── utils.py                # Shared infrastructure utilities (365 lines)
+├── __init__.py             # Infrastructure exports
+├── test_runner.py          # Custom test runner with progress tracking
+├── test_config.py          # TestExecutionConfig / TestExecutionResult
+├── report_generator.py     # Markdown/fallback/timeout/error report generators
+├── resource_monitor.py     # Memory and CPU monitoring during tests
+└── utils.py                # Shared parsing/error-collection utilities
 ```
 
 ## Key Components
 
 - **`TestRunner`** — Custom pytest runner with progress bars, resource tracking, and structured output.
-- **`TestConfig`** — Detects environment capabilities (GPU, Ollama, network) and configures test markers.
-- **`ReportGenerator`** — Produces HTML and JSON test reports with timing and coverage data.
+- **`TestExecutionConfig`** (`test_config.py`) — Test execution configuration and result container.
+- **Report generation** (`report_generator.py`) — `generate_markdown_report()`, `generate_fallback_report()`, `generate_timeout_report()`, `generate_error_report()`, and `flatten_pipeline_test_summary()`.
 - **`ResourceMonitor`** — Tracks memory and CPU usage during test execution for performance regression detection.
 
 ## Parent Module

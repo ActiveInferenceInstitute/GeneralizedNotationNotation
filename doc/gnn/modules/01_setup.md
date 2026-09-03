@@ -14,9 +14,15 @@ This module provides comprehensive environment setup and dependency management c
 src/setup/
 ├── __init__.py                    # Module initialization and exports
 ├── README.md                      # This documentation
+├── constants.py                   # Shared constants
+├── dependency_setup.py            # JAX test install, Julia env, optional groups, setup_complete_environment
 ├── mcp.py                         # Model Context Protocol integration
-├── setup.py                       # Core setup functionality
-└── utils.py                       # Setup utilities
+├── package_names.py               # Package name mapping
+├── setup.py                       # perform_full_setup entry point
+├── utils.py                       # Setup utilities
+├── uv_management.py               # UV environment: setup_uv_environment, install_uv_dependencies, check_system_requirements
+├── uv_package_ops.py              # add/remove/update/lock UV dependencies
+└── validator.py                   # validate_system, environment and UV status
 ```
 
 
@@ -179,7 +185,7 @@ graph TD
 
 ### Required Dependencies
 - `uv` - Python package manager (required, native commands used)
-- `python` - Python interpreter (>=3.9)
+- `python` - Python interpreter (>=3.11, <3.14 per `pyproject.toml`)
 - `pyproject.toml` - Project dependencies configuration
 
 ### Optional Dependencies
@@ -208,7 +214,7 @@ UV_CONFIG = {
 ### System Requirements
 ```python
 SYSTEM_REQUIREMENTS = {
-    "python_version_min": "3.9",
+    "python_version_min": "3.11",
     "memory_min_gb": 4,
     "disk_space_min_gb": 2,
     "cpu_cores_min": 2,
@@ -363,8 +369,7 @@ System Check → UV Environment Creation → UV Sync (pyproject.toml → uv.lock
 - `src/tests/test_environment_overall.py` - Environment-related integration checks
 
 ### Test Coverage
-- **Current**: 90%
-- **Target**: 95%+
+- Measure: `uv run --extra dev python -m pytest src/tests/setup/ --cov=setup --cov-report=term-missing` (do not treat fixed percentages in this doc as canonical).
 
 ### Key Test Scenarios
 1. Environment creation and setup
@@ -378,18 +383,18 @@ System Check → UV Environment Creation → UV Sync (pyproject.toml → uv.lock
 ## MCP Integration
 
 ### Tools Registered
-- `setup.check_environment` - Check system environment
-- `setup.create_environment` - Create UV environment
-- `setup.install_dependencies` - Install dependencies via UV sync
-- `setup.validate_setup` - Validate setup completion
-- `setup.add_dependency` - Add dependency via UV add
-- `setup.remove_dependency` - Remove dependency via UV remove
-- `setup.update_dependencies` - Update dependencies via UV sync
-- `setup.lock_dependencies` - Update lock file via UV lock
+- `ensure_directory_exists` - Create a directory if missing
+- `find_project_gnn_files` - Locate GNN files in the project
+- `get_standard_output_paths` - Standard output paths for the pipeline
+- `check_uv_project_status` - Check UV project status
+- `get_uv_environment_info` - UV environment information
+- `setup_uv_project_structure` - Create the UV project structure
+- `install_uv_dependency` - Add a dependency via UV
+- `sync_uv_dependencies` - Sync dependencies via UV
 
 ### Tool Endpoints
 ```python
-@mcp_tool("setup.check_environment")
+@mcp_tool("check_uv_project_status")
 def check_environment_tool():
     """Check system environment for GNN pipeline"""
     # Implementation

@@ -8,7 +8,7 @@
 
 **Category**: Testing / Quality Assurance
 
-**Status**: ✅ Production Ready
+**Status**: Production Ready
 
 **Version**: 3.2.0
 
@@ -114,7 +114,7 @@ success = run_tests(
 - Generates comprehensive coverage reports if enabled
 - Uses category-based execution with resource monitoring
 
-#### `run_fast_reliable_tests(logger, output_dir, verbose=False) -> bool`
+#### `run_fast_reliable_tests(logger, output_dir, verbose=False, timeout=600) -> bool`
 **Description**: Run a reliable subset of fast tests with improved error handling. Focuses on essential tests that should always pass.
 
 **Parameters**:
@@ -126,12 +126,13 @@ success = run_tests(
 
 **Features**:
 - Runs only essential test files: `test_core_modules.py`, `test_fast_suite.py`, `test_main_orchestrator.py`
-- 90-second timeout for reliability
+- Default 600-second subprocess timeout, overridable via the `FAST_TESTS_TIMEOUT` environment variable
 - Improved error handling and reporting
 - Used as recovery when fast pipeline tests are not suitable
 
 #### `_extract_collection_errors(stdout, stderr) -> List[str]`
 **Description**: Extract and parse collection errors from pytest output. Detects import errors, syntax errors, and other collection failures.
+**Defined in**: [`infrastructure/utils.py`](infrastructure/utils.py) as `extract_collection_errors`; re-exported from `tests.infrastructure` and consumed by `tests.test_runner_modes`.
 
 **Parameters**:
 - `stdout` (str): Standard output from pytest
@@ -166,7 +167,7 @@ errors = _extract_collection_errors(pytest_stdout, pytest_stderr)
 - `pytest-html` - HTML test reports
 
 ### Internal Dependencies
-- `utils.pipeline_template` - Pipeline utilities
+- `utils.test_utils` - Shared test configuration and helpers (`utils.pipeline_template` backs the `2_tests.py` CLI wrapper)
 
 ---
 
@@ -174,24 +175,27 @@ errors = _extract_collection_errors(pytest_stdout, pytest_stderr)
 
 ### Test Settings
 ```python
-TEST_CONFIG = {
-    "fast_tests": True,
-    "standard_tests": True,
-    "slow_tests": False,
-    "performance_tests": False,
-    "coverage_analysis": True,
-    "parallel_execution": True,
-    "timeout": 300,
+TEST_CONFIG = {  # src/utils/test_utils.py (abridged)
+    "safe_mode": True,
+    "verbose": False,
+    "strict": False,
+    "timeout_seconds": 300,
+    "max_test_files": 10,
+    "temp_output_dir": PROJECT_ROOT / "output" / "2_tests_output" / "artifacts",
 }
 ```
 
 ### Test Categories
 ```python
-TEST_CATEGORIES = {
-    "unit": ["test_*unit*.py"],
-    "integration": ["test_*integration*.py"],
-    "performance": ["test_*performance*.py"],
-    "slow": ["test_*slow*.py"],
+TEST_CATEGORIES = {  # src/utils/test_utils.py - category -> description
+    "fast": "Quick validation tests for core functionality",
+    "standard": "Integration tests and moderate complexity",
+    "slow": "Complex scenarios and benchmarks",
+    "performance": "Resource usage and scalability tests",
+    "safe_to_fail": "Tests with graceful degradation",
+    "unit": "Individual component tests",
+    "integration": "Multi-component workflow tests",
+    "mcp": "Model Context Protocol integration tests",
 }
 ```
 
@@ -299,7 +303,7 @@ output/2_tests_output/
 ### Latest Execution
 - **Duration**: ~5-15 minutes for comprehensive suite
 - **Memory**: ~100-300MB during test execution
-- **Status**: ✅ Production Ready
+- **Status**: Production Ready
 
 ### Expected Performance
 - **Fast Tests**: 1-3 minutes
@@ -336,10 +340,10 @@ output/2_tests_output/
 - **Function**: `run_tests()`
 
 ### Imports From
-- `utils.pipeline_template` - Pipeline utilities
+- `utils.test_utils` - Shared test configuration and helpers
 
 ### Imported By
-- `main.py` - Pipeline orchestration
+- `2_tests.py` - Step 2 CLI wrapper (imports `run_tests` lazily)
 - `tests.test_*` - Individual test modules
 
 ### Architecture
@@ -416,7 +420,7 @@ Test Discovery → Environment Setup → Test Execution → Result Collection �
 
 ### Adding New Test Categories
 
-To add a new test category to `MODULAR_TEST_CATEGORIES` in `runner.py`:
+To add a new test category to `MODULAR_TEST_CATEGORIES` in `categories.py`:
 
 ```python
 MODULAR_TEST_CATEGORIES["new_module"] = {
@@ -463,10 +467,15 @@ def test_new_module_complex():
 ## Testing
 
 ### Test Files
-- **166** `test_*.py` modules under `src/tests/` as measured on 2026-05-14
-- **2,256** collected tests with standard Ollama integration ignores as measured by collect-only on 2026-05-14
-- **20+ test categories** for organized execution
-- **25+ test markers** for selective execution
+- Live file inventory: `rg --files src/tests -g 'test_*.py'`
+- Collected tests: 3,627 with the command-of-record (verified 2026-09-02):
+
+```bash
+uv run --extra dev python -m pytest src/tests/ -q --tb=no -rsx --ignore=src/tests/llm/test_llm_ollama.py --ignore=src/tests/llm/test_llm_ollama_integration.py
+```
+
+- 24 test categories defined in `categories.py`
+- Markers registered in `pytest.ini` and `pyproject.toml`
 
 ### Test Coverage Statistics
 - **Scale**: Treat `pytest --collect-only -q` as ground truth for item counts; marker filters (`-m not slow`, ignores) change what runs in the pipeline fast suite.
@@ -474,12 +483,11 @@ def test_new_module_complex():
 - **Integration Tests**: `@pytest.mark.integration`
 - **Unit Tests**: `@pytest.mark.unit`
 - **Performance Tests**: `@pytest.mark.performance`
-- **Safe-to-Fail Tests**: `@pytest.mark.safe_to_fail`
 
 ### Test Execution Modes
 1. **Fast Tests** (`--fast-only`): 1-3 minutes, essential validation
 2. **Comprehensive Tests** (`--comprehensive`): 5-15 minutes, all tests including slow/performance
-3. **Reliable Tests**: Essential tests only, 90-second timeout
+3. **Reliable Tests**: Essential tests only, 600-second default timeout
 
 ### Key Test Scenarios
 1. **Module Import Validation**: All modules can be imported and have expected structure
@@ -503,18 +511,11 @@ def test_new_module_complex():
 ## MCP Integration
 
 ### Tools Registered
-- `tests.run_suite` - Run test suite
-- `tests.run_fast` - Run fast tests
-- `tests.get_coverage` - Get coverage report
-- `tests.get_performance` - Get performance metrics
+- `run_all_tests` - Run comprehensive test suite for the pipeline
+- `run_unit_tests` - Run the unit test suite
+- `run_integration_tests` - Run the integration test suite
 
-### Tool Endpoints
-```python
-@mcp_tool("tests.run_suite")
-def run_test_suite_tool(output_dir):
-    """Run comprehensive test suite"""
-    # Implementation
-```
+All three are registered by `tests/mcp.py::register_tools` (plain names, no `tests.` prefix).
 
 ---
 

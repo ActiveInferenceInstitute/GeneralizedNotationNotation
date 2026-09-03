@@ -13,13 +13,13 @@ The oxdraw integration module enables researchers to:
 
 ## Features
 
-✅ **Bidirectional Conversion**: GNN ↔ Mermaid with full fidelity  
-✅ **Interactive Editing**: Launch oxdraw editor for visual model construction  
-✅ **Metadata Preservation**: Ontology terms and dimensions embedded in Mermaid comments  
-✅ **Headless Mode**: Batch conversion without GUI for automation  
-✅ **Node Shape Mapping**: Automatic shapes based on variable types  
-✅ **Edge Style Mapping**: Visual distinction of connection types  
-✅ **MCP Integration**: Model Context Protocol tools for external access  
+**Bidirectional Conversion**: GNN ↔ Mermaid with full fidelity
+**Interactive Editing**: Launch oxdraw editor for visual model construction
+**Metadata Preservation**: Ontology terms and dimensions embedded in Mermaid comments
+**Headless Mode**: Batch conversion without GUI for automation
+**Node Shape Mapping**: Automatic shapes based on variable types
+**Edge Style Mapping**: Visual distinction of connection types
+**MCP Integration**: Model Context Protocol tools for external access
 
 ## Installation
 
@@ -53,7 +53,7 @@ oxdraw --version
 
 ```python
 from pathlib import Path
-from oxdraw import convert_gnn_file_to_mermaid
+from gui.oxdraw.mermaid_converter import convert_gnn_file_to_mermaid
 
 # Convert GNN file to Mermaid
 convert_gnn_file_to_mermaid(
@@ -66,7 +66,7 @@ convert_gnn_file_to_mermaid(
 
 ```python
 from pathlib import Path
-from oxdraw import launch_oxdraw_editor
+from gui.oxdraw.processor import launch_oxdraw_editor
 
 # Launch editor for visual editing
 launch_oxdraw_editor(
@@ -80,7 +80,8 @@ launch_oxdraw_editor(
 
 ```python
 from pathlib import Path
-from oxdraw import convert_gnn_file_to_mermaid, convert_mermaid_file_to_gnn
+from gui.oxdraw.mermaid_converter import convert_gnn_file_to_mermaid
+from gui.oxdraw.mermaid_parser import convert_mermaid_file_to_gnn
 
 # Step 1: Convert GNN to Mermaid
 gnn_file = Path("input/model.md")
@@ -101,21 +102,9 @@ print(f"Connections: {len(gnn_model['connections'])}")
 ## Pipeline Integration
 
 ### Run as Pipeline Step (Step 22)
-
 ```bash
 # Headless mode (no GUI, fast)
-    --target-dir input/gnn_files \
-    --output-dir output \
-    --mode headless \
-    --verbose
-
-# Interactive mode (launches editor)
-    --target-dir input/gnn_files \
-    --output-dir output \
-    --mode interactive \
-    --launch-editor \
-    --port 5151 \
-    --verbose
+python src/22_gui.py --gui-types oxdraw --target-dir input/gnn_files --output-dir output --headless --verbose
 ```
 
 ### Integration with main.py
@@ -124,7 +113,7 @@ The oxdraw step can be added to the full pipeline:
 
 ```bash
 # Run full pipeline including oxdraw
-python3 src/main.py --only-steps "3,24" --verbose
+python3 src/main.py --only-steps "3,22" --verbose
 ```
 
 ## Node Shape Mapping
@@ -212,21 +201,8 @@ Launch interactive oxdraw editor.
 ### Run All Tests
 
 ```bash
-# Run oxdraw integration tests
-
-# Run converter tests
-
-# Run parser tests
-
 # Run all oxdraw tests
 uv run --extra dev python -m pytest src/tests/test_*oxdraw*.py src/tests/test_mermaid*.py -v
-```
-
-### Test Coverage
-
-```bash
-# Check test coverage
-pytest --cov=src/oxdraw --cov-report=term-missing
 ```
 
 ## Examples
@@ -242,39 +218,18 @@ See `doc/oxdraw/gnn_oxdraw.md` for comprehensive examples including:
 The module follows the GNN pipeline's **thin orchestrator pattern**:
 
 ```
-src/
-├── oxdraw/                      # Module implementation
-│   ├── __init__.py             # Public API
-│   ├── processor.py            # Main processing logic
-│   ├── mermaid_converter.py    # GNN → Mermaid
-│   ├── mermaid_parser.py       # Mermaid → GNN
-│   ├── utils.py                # Helper functions
-│   ├── mcp.py                  # MCP tool registration
-│   └── AGENTS.md               # Comprehensive documentation
-└── tests/
+src/gui/oxdraw/                 # Module implementation
+├── __init__.py                # Public API
+├── processor.py               # Main processing logic
+├── mermaid_converter.py       # GNN → Mermaid
+├── mermaid_parser.py          # Mermaid → GNN
+├── utils.py                   # Helper functions
+└── mcp.py                     # MCP tool registration
 ```
 
 ## Performance
 
-- **GNN → Mermaid**: 10-50ms per file
-- **Mermaid → GNN**: 20-100ms per file
-- **oxdraw Launch**: 1-2s startup time
-- **Memory Usage**: <10MB (excluding oxdraw process)
-- **Scalability**: Tested up to 100 variables, 200 connections
-
-## Troubleshooting
-
-### "oxdraw CLI not found"
-**Solution**: Install via `cargo install oxdraw` or use headless mode
-
-### "Metadata not preserved"
-**Solution**: Ensure `include_metadata=True` in conversion functions
-
-### "Invalid ontology terms"
-**Solution**: Check `src/ontology/act_inf_ontology_terms.json` or disable validation
-
-### "Mermaid syntax errors"
-**Diagnostic**: Use `validate_mermaid_syntax()` from `oxdraw.utils`
+Measure on your own hardware and model sizes; this document does not track timings.
 
 ## MCP Integration
 
@@ -310,6 +265,6 @@ MIT License - See main repository LICENSE file
 ---
 
 **Version**: 1.6.0  
-**Last Updated**: October 28, 2025  
-**Status**: ✅ Ready for Testing
+**Last Updated**: 2026-09-02
+**Status**: Ready for Testing
 

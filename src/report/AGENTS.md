@@ -2,38 +2,27 @@
 
 ## Module Overview
 
-**Purpose**: Comprehensive analysis report generation with multiple format support and automated documentation creation
+**Purpose**: Consolidates pipeline outputs (per-step artifacts, logs, metrics) into HTML, Markdown, and JSON analysis reports with health scoring.
 
 **Pipeline Step**: Step 23: Report generation (23_report.py)
 
 **Category**: Documentation / Analysis Reporting
 
-**Status**: ✅ Production Ready
+**Status**: Production Ready
 
 **Version**: 3.2.0
 
-**Last Updated**: 2026-04-16
+**Last Updated**: 2026-09-02
 
 ---
 
 ## Core Functionality
 
-### Primary Responsibilities
-
-1. Generate comprehensive analysis reports from pipeline results
-2. Create multi-format documentation (HTML, Markdown, JSON, PDF)
-3. Aggregate results from all pipeline steps into unified reports
-4. Provide automated report generation and formatting
-5. Enable customizable report templates and styling
-
-### Key Capabilities
-
-- Multi-format report generation (HTML, Markdown, JSON, PDF)
-- Pipeline results aggregation and analysis
-- Automated documentation creation
-- Customizable report templates and styling
-- Interactive HTML reports with visualizations
-- Cross-reference linking between pipeline steps
+1. Aggregate results from all pipeline step output directories
+2. Compute a pipeline health score (0-100)
+3. Generate the comprehensive report in HTML, Markdown, and JSON formats
+4. Write generation metadata summaries
+5. Support run-to-run diffing (`diff_report.py`) and ledger renderers (model family, semantic fidelity, cross-framework reliability)
 
 ---
 
@@ -43,18 +32,18 @@
 
 #### `process_report(target_dir: Path, output_dir: Path, verbose: bool = False, logger: Optional[logging.Logger] = None, **kwargs) -> bool`
 
-**Description**: Main report processing function called by orchestrator (23_report.py). Generates comprehensive analysis reports from pipeline results.
+**Description**: Main report processing function called by orchestrator (23_report.py). Determines the pipeline output directory (parent of `output_dir`) and delegates to `generate_comprehensive_report()`.
 
 **Parameters**:
 
 - `target_dir` (Path): Directory containing pipeline results (typically "output/")
-- `output_dir` (Path): Output directory for report results
+- `output_dir` (Path): Output directory for report results (typically "output/23_report_output")
 - `verbose` (bool): Enable verbose logging (default: False)
-- `logger` (Optional[logging.Logger]): Logger instance for progress reporting (default: None)
-- `report_format` (str, optional): Report format ("comprehensive", "summary", "technical") (default: "comprehensive")
-- `include_visualizations` (bool, optional): Include visualizations in report (default: True)
-- `output_formats` (List[str], optional): Output formats ["html", "markdown", "json"] (default: ["html", "markdown"])
-- `**kwargs`: Additional report-specific options
+- `logger` (Optional[logging.Logger]): Logger instance (default: None)
+- `report_formats` (List[str], via kwargs): Formats to generate, subset of `["html", "markdown", "json"]` (default: all three)
+- `include_performance` (bool, via kwargs): Include performance metrics section (default: True)
+- `include_errors` (bool, via kwargs): Include error analysis section (default: True)
+- `include_dependencies` (bool, via kwargs): Include dependency analysis section (default: True)
 
 **Returns**: `bool` - True if report generation succeeded, False otherwise
 
@@ -63,52 +52,25 @@
 ```python
 from report import process_report
 from pathlib import Path
-import logging
 
-logger = logging.getLogger(__name__)
 success = process_report(
     target_dir=Path("output"),
     output_dir=Path("output/23_report_output"),
-    logger=logger,
     verbose=True,
-    report_format="comprehensive",
-    include_visualizations=True,
-    output_formats=["html", "markdown", "json"],
 )
 ```
 
-#### `generate_comprehensive_report(target_dir: Path, output_dir: Path, **kwargs) -> Dict[str, Any]`
 
-**Description**: Generate comprehensive analysis report from pipeline results.
+#### `generate_comprehensive_report(...)`
 
-**Parameters**:
+Two variants exist:
 
-- `target_dir` (Path): Input directory with pipeline results
-- `output_dir` (Path): Output directory for reports
-- `format` (str, optional): Report format ("html", "markdown", "json") (default: "html")
-- `include_executive_summary` (bool, optional): Include executive summary (default: True)
-- `include_detailed_analysis` (bool, optional): Include detailed analysis (default: True)
-- `**kwargs`: Additional formatting options
+- `report.generator.generate_comprehensive_report(pipeline_output_dir, report_output_dir, logger, report_formats=None, include_performance=True, include_errors=True, include_dependencies=True) -> bool` — collects data from all step directories via `analyzer.collect_pipeline_data()`, computes the health score, and writes the report files.
+- `report.processor.generate_comprehensive_report(target_dir, output_dir, format="json", **kwargs) -> Dict[str, Any]` — file-level analysis of GNN `.md` files in `target_dir` (`analyze_gnn_file()` per file); returns report data with `success`, `total_files`, `files_analyzed`, `summary`.
 
-**Returns**: `Dict[str, Any]` - Report generation results with:
+#### `generate_html_report(report_data: Dict[str, Any]) -> str`
 
-- `success` (bool): Whether generation succeeded
-- `report_files` (List[Path]): Paths to generated report files
-- `summary` (Dict): Report summary statistics
-
-#### `generate_html_report(data: Dict[str, Any], output_path: Path, **kwargs) -> bool`
-
-**Description**: Generate interactive HTML report from analysis data.
-
-**Parameters**:
-
-- `data` (Dict[str, Any]): Analysis data to include in report
-- `output_path` (Path): Output path for HTML file
-- `include_charts` (bool, optional): Include interactive charts (default: True)
-- `theme` (str, optional): HTML theme ("default", "dark", "light") (default: "default")
-- `**kwargs`: Additional HTML formatting options
-
-**Returns**: `bool` - True if HTML report generation succeeded, False otherwise
+**Description**: Renders report data to an HTML string (`report/processor.py`). For file writing, use `report.generator.generate_html_report_file(pipeline_data, report_output_dir, logger) -> bool`. A markdown counterpart `generate_markdown_report()` exists in both modules.
 
 ---
 
@@ -119,11 +81,11 @@ success = process_report(
 **Purpose**: Complete pipeline analysis with all details
 **Features**:
 
-- Executive summary and key findings
+- Pipeline summary and key findings
 - Detailed step-by-step analysis
-- Performance metrics and benchmarks
-- Error analysis and recommendations
-- Cross-reference linking
+- Performance metrics
+- Error analysis
+- Health score (0-100)
 
 ### Summary Report
 
@@ -137,13 +99,7 @@ success = process_report(
 
 ### Technical Report
 
-**Purpose**: Detailed technical documentation
-**Features**:
-
-- Implementation details and architecture
-- Configuration and environment information
-- Troubleshooting and debugging information
-- API reference and usage examples
+`generate_custom_report()` in `generator.py` supports custom report generation; `diff_report.compare_runs()` produces run-to-run diffs.
 
 ### Supported Formats
 
@@ -181,21 +137,17 @@ success = process_report(
 
 ### Required Dependencies
 
-- `pathlib` - Path manipulation and file operations
-- `json` - JSON data handling and serialization
-- `typing` - Type annotations and validation
+- `pathlib`, `json`, `logging`, `typing` - Standard library
 
 ### Optional Dependencies
 
-- `jinja2` - HTML template rendering (recovery: basic HTML)
-- `markdown` - Markdown processing (recovery: text-based)
-- `weasyprint` - PDF generation (recovery: HTML only)
-- `plotly` - Interactive charts in HTML (recovery: static images)
+None. HTML/Markdown generation is pure Python string templating.
 
 ### Internal Dependencies
 
 - `utils.pipeline_template` - Standardized pipeline processing
 - `pipeline.config` - Configuration management
+- Submodules: `analyzer.py` (pipeline data collection), `formatters.py` (HTML/Markdown section rendering), `generator.py` (report file writers), `pipeline_report.py` (per-step status/timing/artifact sections), `diff_report.py` (run-to-run comparison), `model_family.py`, `semantic_fidelity.py`, `cross_framework_reliability.py` (ledger markdown renderers)
 
 ---
 
@@ -204,14 +156,16 @@ success = process_report(
 ### Environment Variables
 
 None dedicated to this module. Report behavior is configured through
-`process_report()` kwargs (e.g. `report_format`, `include_visualizations`,
-`output_formats`) and `input/config.yaml` pipeline settings.
+`process_report()` kwargs (e.g. `report_formats`, `include_performance`,
+`include_errors`, `include_dependencies`) and `input/config.yaml` pipeline
+settings.
 
 ### Default Settings
 
-Report defaults (formats, sections, visualization inclusion) are set in
-`report/processor.py` (`generate_comprehensive_report`) and
-`report/generator.py`.
+Default report formats (`["html", "markdown", "json"]`) and section inclusion
+flags are set in `report/generator.py` (`generate_comprehensive_report`) and
+`report/__init__.py` (`process_report`).
+
 
 ---
 
@@ -221,28 +175,28 @@ Report defaults (formats, sections, visualization inclusion) are set in
 
 ```python
 from report.processor import process_report
+from pathlib import Path
+import logging
 
 success = process_report(
-    target_dir=Path("input/gnn_files"),
+    target_dir=Path("output"),
     output_dir=Path("output/23_report_output"),
-    logger=logger,
-    report_format="comprehensive",
+    verbose=True,
 )
 ```
 
-### HTML Report Generation
+### Custom Format Selection
 
 ```python
-from report.generator import generate_html_report
-
-data = {"pipeline_results": {...}, "analysis_data": {...}, "performance_metrics": {...}}
-
-success = generate_html_report(
-    data, Path("output/23_report_output/comprehensive_report.html")
+success = process_report(
+    target_dir=Path("output"),
+    output_dir=Path("output/23_report_output"),
+    report_formats=["html", "json"],
+    include_dependencies=False,
 )
 ```
 
-### Custom Report Configuration
+### File-Level GNN Analysis
 
 ```python
 from report.processor import generate_comprehensive_report
@@ -251,8 +205,6 @@ report = generate_comprehensive_report(
     target_dir=Path("input/gnn_files"),
     output_dir=Path("output/23_report_output"),
     format="html",
-    include_visualizations=True,
-    template="custom",
 )
 ```
 
@@ -262,41 +214,22 @@ report = generate_comprehensive_report(
 
 ### Output Products
 
-- `comprehensive_report.html` - Interactive HTML report
-- `comprehensive_report.md` - Markdown documentation
-- `comprehensive_report.json` - Structured data export
-- `report_generation_summary.json` - Generation metadata
-- `report_assets/` - Images, charts, and supporting files
+- `comprehensive_analysis_report.html` - Full HTML analysis report
+- `comprehensive_analysis_report.md` - Markdown analysis report
+- `report_summary.json` - Structured JSON export of report data
+- `report_generation_summary.json` - Generation metadata (health score, formats, options)
+- `report_processing_summary.json` - Step processing summary
 
 ### Output Directory Structure
 
 ```text
 output/23_report_output/
-├── comprehensive_report.html
-├── comprehensive_report.md
-├── comprehensive_report.json
+├── comprehensive_analysis_report.html
+├── comprehensive_analysis_report.md
+├── report_summary.json
 ├── report_generation_summary.json
-└── report_assets/
-    ├── charts/
-    ├── images/
-    └── data/
+└── report_processing_summary.json
 ```
-
----
-
-## Performance Characteristics
-
-### Latest Execution
-
-- **Duration**: ~5-15 seconds (depending on data size)
-- **Memory**: ~50-100MB for comprehensive reports
-- **Status**: ✅ Production Ready
-
-### Expected Performance
-
-- **Fast Path**: ~2-5s for summary reports
-- **Slow Path**: ~10-30s for comprehensive reports with visuals
-- **Memory**: ~20-50MB for typical reports, ~100MB+ for large datasets
 
 ---
 
@@ -304,16 +237,15 @@ output/23_report_output/
 
 ### Graceful Degradation
 
-- **No template engine**: Recovery to basic HTML templates
-- **No visualization libraries**: Generate text-based reports
-- **Large datasets**: Sampling and summary generation
+- **Missing pipeline directory**: Falls back to using `output_dir` as the pipeline directory (with warning)
+- **Per-format generation failure**: Logged; remaining formats still attempted
+- **Per-file analysis failure**: Recorded in `summary.errors`; report continues
 
 ### Error Categories
 
-1. **Template Errors**: Invalid or missing report templates
-2. **Format Errors**: Unsupported output format requests
-3. **Data Errors**: Invalid or corrupted pipeline data
-4. **Resource Errors**: Memory or disk space exhaustion
+1. **Format Errors**: Unsupported output format requests (validated against `{html, json, markdown}`)
+2. **Data Errors**: Invalid or corrupted pipeline data (per-file errors collected, non-fatal)
+3. **Write Errors**: Report write failures (generation returns False if no files produced)
 
 ---
 
@@ -331,8 +263,8 @@ output/23_report_output/
 
 ### Imported By
 
-- `src/tests/report/test_report_integration.py` - Report generation tests
-- `main.py` - Pipeline orchestration
+- `src/tests/report/*` - Report tests
+- `src/main.py` - Runs `23_report.py` as a pipeline step; also imports `report.pipeline_report.generate_pipeline_report` directly
 
 ### Data Flow
 
@@ -349,22 +281,25 @@ Pipeline Results → Report Aggregation → Data Analysis → Format Generation 
 - `src/tests/report/test_report_integration.py` - Integration tests
 - `src/tests/report/test_report_generation.py` - Generation tests
 - `src/tests/report/test_report_formats.py` - Format tests
+- `src/tests/report/test_report_functional.py`, `test_report_generator_functional.py`, `test_report_overall.py` - Functional and module tests
+- `src/tests/report/test_report_diff_and_ledgers.py`, `test_model_family_report.py` - Diff/ledger renderer tests
+- `src/tests/report/test_report_mcp_wrappers.py` - MCP wrapper tests
 
 ### Test Coverage
 
 Measure on demand:
 
 ```bash
-uv run --extra dev python -m pytest src/tests/test_report*.py \
+uv run --extra dev python -m pytest src/tests/report/ \
     --cov=src/report --cov-report=term-missing
 ```
+
 ### Key Test Scenarios
 
 1. Report generation across all supported formats
-2. Template rendering and customization
-3. Large dataset handling and performance
-4. Error handling with malformed data
-5. Integration with pipeline results
+2. Health-score computation
+3. Error handling with malformed data
+4. Integration with pipeline results
 
 ---
 
@@ -372,18 +307,11 @@ uv run --extra dev python -m pytest src/tests/test_report*.py \
 
 ### Tools Registered
 
-- `report_generate` - Generate comprehensive reports
-- `report_format` - Convert reports between formats
-- `report_analyze` - Analyze existing reports
-
-### Tool Endpoints
-
-```python
-@mcp_tool("report_generate")
-def generate_report(pipeline_data, format="html", template="default"):
-    """Generate comprehensive report from pipeline data"""
-    # Implementation
-```
+- `generate_report` - Run the full report pipeline step
+- `process_report` - Process report generation for a directory
+- `list_report_formats` - Return all supported report output formats
+- `read_report` - Read and return the contents of a generated report file
+- `get_report_module_info` - Return module metadata (version, supported formats)
 
 ### MCP File Location
 
@@ -406,29 +334,27 @@ def generate_report(pipeline_data, format="html", template="default"):
 - Use `--verbose` flag for detailed generation logs
 - Review report template structure
 
-#### Issue 2: HTML validation errors
+#### Issue 2: Unexpected report content
 
-**Symptom**: HTML reports have validation errors  
-**Cause**: Template issues or missing content  
+**Symptom**: Report sections missing or incomplete
+**Cause**: Pipeline artifacts absent for a step, or section-inclusion kwargs disabled
 **Solution**:
 
-- Check HTML structure in generated files
-- Verify all referenced assets exist
-- Review HTML validation logs
-- Use markdown format if HTML issues persist
+- Verify the pipeline step output directories exist under the pipeline output dir
+- Check `report_generation_summary.json` for formats and options actually used
+- Re-run with `include_performance`/`include_errors`/`include_dependencies` left at defaults
 
 ---
 
 ## Version History
 
-### Current Version: 3.0.0
+### Current Version: 1.6.0 (module `__init__.py`), pipeline release 3.2.0
 
 **Features**:
 
-- Multi-format report generation
-- Pipeline results aggregation
-- Automated documentation
-- Customizable templates
+- Multi-format report generation (HTML, Markdown, JSON)
+- Pipeline results aggregation with health scoring
+- Run-to-run diff reports and ledger renderers
 
 **Known Issues**:
 
@@ -455,11 +381,11 @@ def generate_report(pipeline_data, format="html", template="default"):
 
 ---
 
-**Last Updated**: 2026-04-16
+**Last Updated**: 2026-09-02
 **Maintainer**: GNN Pipeline Team
-**Status**: ✅ Production Ready
+**Status**: Production Ready
 **Version**: 3.2.0
-**Architecture Compliance**: ✅ 100% Thin Orchestrator Pattern
+**Architecture Compliance**: Thin Orchestrator Pattern
 
 
 ---

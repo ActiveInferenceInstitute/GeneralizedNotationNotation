@@ -401,20 +401,13 @@ uv run --extra dev python -m pytest src/tests/test_pipeline_*.py --cov=src/pipel
 
 ### Tools Registered
 
-- `pipeline.get_config` - Get pipeline configuration
-- `pipeline.validate_steps` - Validate pipeline step sequence
-- `pipeline.get_health` - Get pipeline health status
-- `pipeline.plan_execution` - Generate execution plan
+Registered by `register_tools()` in `pipeline/mcp.py`:
 
-### Tool Endpoints
-
-```python
-@mcp_tool("pipeline.get_config")
-def get_pipeline_config_tool():
-    """Get current pipeline configuration"""
-    # Implementation
-```
-
+- `get_pipeline_steps` - Step metadata and dependencies
+- `get_pipeline_status` - Current execution status, recent logs, statistics
+- `validate_pipeline_dependencies` - Missing or circular dependency check
+- `get_pipeline_config_info` - Detailed configuration information
+- `get_v3_orchestration_capabilities`, `run_v3_container_security_review`, `run_v3_orchestration_self_check` - v3.0.0 safe-by-design orchestration tools (data only, no live mutation)
 ---
 
 ## Troubleshooting
@@ -447,7 +440,7 @@ def get_pipeline_config_tool():
 
 ## Version History
 
-### Current Version: 3.0.0
+### Current Version: 3.2.0
 
 **Features**:
 
@@ -455,7 +448,6 @@ def get_pipeline_config_tool():
 - Configuration management
 - Step discovery and dependency management
 - Health monitoring
-- Resource estimation
 
 **Known Issues**:
 
@@ -473,12 +465,13 @@ def get_pipeline_config_tool():
 ### Related Documentation
 
 - [Pipeline Overview](../../README.md)
-- [Architecture Guide](../../ARCHITECTURE.md)
 - [Utils Module](../utils/AGENTS.md)
 
 ### External Resources
 
-- [Pipeline Scripts Documentation](../../doc/PIPELINE_SCRIPTS.md)
+- [v3 Orchestration](../../doc/pipeline/v3_orchestration.md)
+- [Stage Hardening Review](../../doc/pipeline/pipeline_stage_hardening_review.md)
+
 
 ---
 

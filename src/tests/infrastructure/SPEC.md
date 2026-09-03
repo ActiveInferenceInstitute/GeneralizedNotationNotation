@@ -7,13 +7,13 @@
 - Custom pytest runner (`test_runner.py`)
 - Progress tracking with visual indicators
 - Resource monitoring (memory, CPU) via `resource_monitor.py`
-- HTML + JSON report generation via `report_generator.py`
+- Markdown/fallback/timeout/error report generation via `report_generator.py`
 
 ## Test Configuration
 
-- `test_config.py` detects: GPU availability, Ollama presence, network connectivity
-- Auto-applies pytest markers: `@pytest.mark.gpu`, `@pytest.mark.llm`, `@pytest.mark.network`
+- `test_config.py` provides the `TestExecutionConfig` dataclass (timeout, max failures, parallel, coverage, markers, memory/CPU limits) and the `TestExecutionResult` dataclass.
 
 ## Utility Functions
 
-- `utils.py` (365 lines) — Timer utilities, path helpers, assertion wrappers
+- `utils.py` — `check_test_dependencies()`, `build_pytest_command()`, `extract_collection_errors()`, `parse_test_statistics()`, `parse_coverage_statistics()`
+

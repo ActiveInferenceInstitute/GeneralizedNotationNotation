@@ -18,6 +18,8 @@ The module defines strict automation routines via YAML configuration:
 4. **`dependency-review.yml`**: A supply chain guardrail enforcing license compliance (denying AGPL) and halting high-severity CVE introductions on Pull Requests.
 5. **`docs-audit.yml`**: An orchestration layer executing the `docs_audit.py` strict enforcement of Markdown integrity.
 6. **`supply-chain-audit.yml`**: A weekly scheduled audit explicitly exporting headless `uv` lockfiles and executing `pip-audit` via OSV vulnerability tracking.
+7. **`mcp-audit.yml`**: A fast MCP tool-count regression gate (≥ 140 registered tools) on push/PR to `main`.
+8. **`full-extras.yml`**: A weekly scheduled matrix validating optional dependency groups (audio, GUI, research, scaling) and running the full pytest suite under `--all-extras`.
 
 ## Technical Rules
 - **Syntax**: 100% strict adherence to GitHub Actions YAML schemas.

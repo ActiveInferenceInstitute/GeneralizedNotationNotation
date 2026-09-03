@@ -11,7 +11,7 @@ statistics, correlation plots, and POMDP tensor analysis from the
 ```
 matrix/
 ├── __init__.py       # Package exports
-├── visualizer.py     # MatrixVisualizer class (1339 lines)
+├── visualizer.py     # MatrixVisualizer class
 ├── extract.py        # Matrix extraction from parsed models
 └── compat.py         # Shared helper exports
 ```
@@ -44,4 +44,4 @@ matrix/
 See [visualization/AGENTS.md](../AGENTS.md) for the overall visualization architecture.
 
 **Version**: 3.2.0
-**Last Updated**: 2026-05-12
+**Last Updated**: 2026-09-02

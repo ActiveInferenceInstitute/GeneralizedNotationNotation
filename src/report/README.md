@@ -1,549 +1,109 @@
 # Report Module
 
-This module provides comprehensive report generation capabilities for GNN pipeline results, including analysis summaries, performance metrics, and detailed documentation.
+This module (Pipeline Step 23) consolidates pipeline outputs — per-step artifacts, logs, and metrics — into comprehensive HTML, Markdown, and JSON analysis reports, with pipeline health scoring and generation metadata.
 
 ## Module Structure
 
 ```
 src/report/
-├── __init__.py                    # Module initialization and exports
-├── README.md                      # This documentation
-├── analyzer.py                    # Report analysis system
-├── formatters.py                  # Report formatting utilities
-├── generator.py                   # Report generation system
-└── mcp.py                        # Model Context Protocol integration
+├── __init__.py                    # Module initialization and exports (process_report)
+├── processor.py                   # Step entry, file-level analysis, HTML/Markdown rendering
+├── generator.py                   # Report file writers, summary/custom reports
+├── analyzer.py                    # Pipeline data collection (collect_pipeline_data)
+├── formatters.py                  # HTML/Markdown section rendering
+├── pipeline_report.py             # Per-step status/timing/artifact sections
+├── diff_report.py                 # Run-to-run diffing (compare_runs, archive_run)
+├── model_family.py                # Model-family ledger markdown renderer
+├── semantic_fidelity.py           # Semantic-fidelity ledger markdown renderer
+├── cross_framework_reliability.py # Cross-framework reliability ledger renderer
+├── mcp.py                         # MCP tool registrations
+└── README.md                      # This documentation
 ```
 
 ## Core Components
 
-### Report Generation Functions
+### `process_report(target_dir: Path, output_dir: Path, verbose: bool = False, logger=None, **kwargs) -> bool`
 
-#### `process_report(target_dir: Path, output_dir: Path, verbose: bool = False, **kwargs) -> bool`
-Main function for processing report generation tasks.
+Main entry point, called by `23_report.py` (Step 23). Determines the pipeline output directory (parent of `output_dir`) and delegates to `generator.generate_comprehensive_report()`.
 
-**Features:**
-- Comprehensive report generation
-- Performance analysis and metrics
-- Pipeline result aggregation
-- Documentation creation
-- Report formatting and styling
+- `report_formats` kwarg: subset of `["html", "markdown", "json"]` (default: all three)
+- `include_performance`, `include_errors`, `include_dependencies` kwargs: section toggles (default True)
 
-**Returns:**
-- `bool`: Success status of report operations
+### `generator.generate_comprehensive_report(pipeline_output_dir, report_output_dir, logger, report_formats=None, include_performance=True, include_errors=True, include_dependencies=True) -> bool`
 
-### Report Analysis System (`analyzer.py`)
+Collects data from all step directories via `analyzer.collect_pipeline_data()`, computes the pipeline health score, and writes the report files.
 
-#### `analyze_pipeline_results(results_dir: Path) -> Dict[str, Any]`
-Analyzes pipeline results for comprehensive reporting.
+### `processor.generate_comprehensive_report(target_dir, output_dir, format="json", **kwargs) -> Dict[str, Any]`
 
-**Analysis Features:**
-- Performance metrics calculation
-- Success rate analysis
-- Error pattern identification
-- Resource usage analysis
-- Quality assessment
+File-level analysis of GNN `.md` files (`analyze_gnn_file()` per file); returns report data with `success`, `total_files`, `files_analyzed`, `summary`.
 
-#### `generate_executive_summary(results: Dict[str, Any]) -> str`
-Generates executive summary of pipeline results.
+### Exports (`from report import ...`)
 
-**Summary Content:**
-- High-level overview
-- Key metrics and statistics
-- Success/failure analysis
-- Recommendations
-- Next steps
-
-#### `analyze_performance_metrics(results: Dict[str, Any]) -> Dict[str, Any]`
-Analyzes performance metrics from pipeline execution.
-
-**Metrics:**
-- Processing times
-- Memory usage
-- CPU utilization
-- I/O performance
-- Scalability metrics
-
-### Report Formatting (`formatters.py`)
-
-#### `format_markdown_report(content: Dict[str, Any]) -> str`
-Formats report content as Markdown.
-
-**Formatting Features:**
-- Structured sections
-- Tables and lists
-- Code blocks
-- Charts and graphs
-- Navigation
-
-#### `format_html_report(content: Dict[str, Any]) -> str`
-Formats report content as HTML.
-
-**HTML Features:**
-- Responsive design
-- Interactive elements
-- Styling and themes
-- Navigation menus
-- Export capabilities
-
-#### `format_json_report(content: Dict[str, Any]) -> Dict[str, Any]`
-Formats report content as JSON.
-
-**JSON Features:**
-- Structured data
-- Machine-readable format
-- API compatibility
-- Data export
-- Integration support
-
-### Report Generation System (`generator.py`)
-
-#### `generate_comprehensive_report(results_dir: Path, output_dir: Path) -> Dict[str, Any]`
-Generates comprehensive pipeline report.
-
-**Report Sections:**
-- Executive summary
-- Detailed analysis
-- Performance metrics
-- Error analysis
-- Recommendations
-
-#### `generate_performance_report(results: Dict[str, Any]) -> str`
-Generates performance-focused report.
-
-**Performance Content:**
-- Processing times
-- Resource usage
-- Bottleneck analysis
-- Optimization suggestions
-- Benchmarking data
-
-#### `generate_error_report(results: Dict[str, Any]) -> str`
-Generates error analysis report.
-
-**Error Content:**
-- Error patterns
-- Failure analysis
-- Recovery suggestions
-- Prevention strategies
-- Debugging information
+- `process_report`, `generate_report` (file-level report builder)
+- `generate_comprehensive_report` (generator version)
+- `analyze_gnn_file`, `generate_html_report`, `generate_markdown_report`
+- `ReportGenerator`, `ReportFormatter`, `analyze_pipeline_data`
+- `get_module_info`, `get_supported_formats`, `validate_report`
 
 ## Usage Examples
 
-### Basic Report Generation
+### Basic report generation
 
 ```python
 from report import process_report
+from pathlib import Path
 
-# Generate comprehensive report
 success = process_report(
-    target_dir=Path("pipeline_results/"), output_dir=Path("reports/"), verbose=True
+    target_dir=Path("output"),
+    output_dir=Path("output/23_report_output"),
+    verbose=True,
 )
-
-if success:
-    print("Report generation completed successfully")
-else:
-    print("Report generation failed")
 ```
 
-### Pipeline Results Analysis
+### Custom format selection
 
 ```python
-from report import analyze_pipeline_results
-
-# Analyze pipeline results
-analysis = analyze_pipeline_results(Path("pipeline_results/"))
-
-print(f"Total steps: {analysis['total_steps']}")
-print(f"Successful steps: {analysis['successful_steps']}")
-print(f"Success rate: {analysis['success_rate']:.2f}%")
-print(f"Average processing time: {analysis['avg_processing_time']:.2f}s")
-```
-
-### Executive Summary Generation
-
-```python
-from report import generate_executive_summary
-
-# Generate executive summary
-summary = generate_executive_summary(pipeline_results)
-
-print("Executive Summary:")
-print(summary)
-```
-
-### Performance Analysis
-
-```python
-from report import analyze_performance_metrics
-
-# Analyze performance metrics
-performance = analyze_performance_metrics(pipeline_results)
-
-print(f"Total processing time: {performance['total_time']:.2f}s")
-print(f"Memory usage: {performance['memory_usage']:.2f}MB")
-print(f"CPU utilization: {performance['cpu_utilization']:.2f}%")
-```
-
-### Custom Report Formatting
-
-```python
-from report.formatters import format_markdown_report, format_html_report
-
-# Format as Markdown
-markdown_report = format_markdown_report(report_content)
-
-# Format as HTML
-html_report = format_html_report(report_content)
-
-# Save reports
-with open("report.md", "w") as f:
-    f.write(markdown_report)
-
-with open("report.html", "w") as f:
-    f.write(html_report)
-```
-
-## Report Generation Pipeline
-
-```mermaid
-graph TD
-    Input[Pipeline Results] --> Collect[Data Collection]
-    Collect --> Steps[Step Results]
-    Collect --> Perf[Performance Data]
-    
-    Steps & Perf --> Analyze[Analysis Processing]
-    Analyze --> Metrics[Calculated Metrics]
-    Analyze --> Patterns[Error Patterns]
-    
-    Metrics & Patterns --> Gen[Report Generation]
-    Gen --> Exec[Executive Summary]
-    Gen --> Detailed[Detailed Analysis]
-    Gen --> PerfRep[Performance Report]
-    
-    Exec & Detailed & PerfRep --> Format{Formatting}
-    Format --> MD[Markdown]
-    Format --> HTML[HTML w/ Charts]
-    Format --> JSON[JSON Data]
-```
-
-### 1. Data Collection
-```python
-# Collect pipeline results
-pipeline_results = collect_pipeline_results(target_dir)
-step_results = collect_step_results(pipeline_results)
-performance_data = collect_performance_data(pipeline_results)
-```
-
-### 2. Analysis Processing
-```python
-# Analyze collected data
-analysis_results = analyze_pipeline_results(pipeline_results)
-performance_metrics = analyze_performance_metrics(performance_data)
-error_analysis = analyze_error_patterns(step_results)
-```
-
-### 3. Report Generation
-```python
-# Generate comprehensive report
-executive_summary = generate_executive_summary(analysis_results)
-detailed_analysis = generate_detailed_analysis(analysis_results)
-performance_report = generate_performance_report(performance_metrics)
-error_report = generate_error_report(error_analysis)
-```
-
-### 4. Report Formatting
-```python
-# Format reports for different outputs
-markdown_report = format_markdown_report(report_content)
-html_report = format_html_report(report_content)
-json_report = format_json_report(report_content)
-```
-
-### 5. Report Distribution
-```python
-# Save and distribute reports
-save_reports(
-    output_dir, {"markdown": markdown_report, "html": html_report, "json": json_report}
+success = process_report(
+    target_dir=Path("output"),
+    output_dir=Path("output/23_report_output"),
+    report_formats=["html", "json"],
+    include_dependencies=False,
 )
 ```
 
 ## Integration with Pipeline
 
 ### Pipeline Step 23: Report Generation
-```python
-# Called from 23_report.py
-def process_report(target_dir, output_dir, verbose=False, **kwargs):
-    # Analyze pipeline results
-    analysis_results = analyze_pipeline_results(target_dir, verbose)
-    
-    # Generate comprehensive reports
-    reports = generate_comprehensive_reports(analysis_results)
-    
-    # Create report documentation
-    report_docs = create_report_documentation(reports)
-    
-    return True
-```
+
+`23_report.py` is a thin orchestrator delegating to `process_report()`. `main.py` also imports `report.pipeline_report.generate_pipeline_report` directly for step-level report sections.
 
 ### Output Structure
+
 ```
 output/23_report_output/
-├── executive_summary.md            # Executive summary report
-├── detailed_analysis.md            # Detailed analysis report
-├── performance_report.md           # Performance analysis report
-├── error_analysis.md              # Error analysis report
-├── recommendations.md              # Recommendations report
-├── pipeline_summary.json          # Pipeline summary data
-├── performance_metrics.json       # Performance metrics data
-└── report_summary.md              # Report generation summary
-```
-
-## Report Types
-
-### Executive Summary
-- **Purpose**: High-level overview for stakeholders
-- **Content**: Key metrics, success rates, recommendations
-- **Audience**: Management, stakeholders, decision makers
-- **Format**: Concise, visual, actionable
-
-### Detailed Analysis
-- **Purpose**: Comprehensive technical analysis
-- **Content**: Step-by-step analysis, technical details
-- **Audience**: Technical teams, researchers, developers
-- **Format**: Detailed, technical, comprehensive
-
-### Performance Report
-- **Purpose**: Performance analysis and optimization
-- **Content**: Processing times, resource usage, bottlenecks
-- **Audience**: Performance engineers, system administrators
-- **Format**: Metrics-focused, optimization-oriented
-
-### Error Analysis
-- **Purpose**: Error pattern analysis and prevention
-- **Content**: Error patterns, failure analysis, recovery
-- **Audience**: Developers, QA teams, support teams
-- **Format**: Problem-focused, solution-oriented
-
-### Recommendations
-- **Purpose**: Actionable improvement suggestions
-- **Content**: Optimization suggestions, best practices
-- **Audience**: Development teams, project managers
-- **Format**: Actionable, prioritized, specific
-
-## Configuration Options
-
-### Report Settings
-```python
-# Report configuration
-config = {
-    "report_formats": ["markdown", "html", "json"],  # Output formats
-    "include_charts": True,  # Include charts and graphs
-    "include_metrics": True,  # Include performance metrics
-    "include_recommendations": True,  # Include recommendations
-    "executive_summary": True,  # Generate executive summary
-    "detailed_analysis": True,  # Generate detailed analysis
-}
-```
-
-### Formatting Settings
-```python
-# Formatting configuration
-formatting_config = {
-    "markdown": {
-        "include_toc": True,  # Include table of contents
-        "include_charts": True,  # Include charts
-        "style": "github",  # Markdown style
-    },
-    "html": {
-        "theme": "default",  # HTML theme
-        "responsive": True,  # Responsive design
-        "interactive": True,  # Interactive elements
-    },
-    "json": {
-        "pretty_print": True,  # Pretty print JSON
-        "include_metadata": True,  # Include metadata
-    },
-}
-```
-
-## Error Handling
-
-### Report Generation Failures
-```python
-# Handle report generation failures gracefully
-try:
-    results = process_report(target_dir, output_dir)
-except ReportGenerationError as e:
-    logger.error(f"Report generation failed: {e}")
-    # Provide recovery report or error reporting
-```
-
-### Analysis Failures
-```python
-# Handle analysis failures gracefully
-try:
-    analysis = analyze_pipeline_results(results_dir)
-except AnalysisError as e:
-    logger.warning(f"Analysis failed: {e}")
-    # Provide recovery analysis or error reporting
-```
-
-### Formatting Failures
-```python
-# Handle formatting failures gracefully
-try:
-    formatted_report = format_markdown_report(content)
-except FormattingError as e:
-    logger.error(f"Formatting failed: {e}")
-    # Provide recovery formatting or error reporting
-```
-
-## Performance Optimization
-
-### Report Generation Optimization
-- **Caching**: Cache analysis results
-- **Parallel Processing**: Parallel report generation
-- **Incremental Generation**: Incremental report updates
-- **Optimized Algorithms**: Optimize generation algorithms
-
-### Analysis Optimization
-- **Data Caching**: Cache analysis data
-- **Parallel Analysis**: Parallel data analysis
-- **Incremental Analysis**: Incremental analysis updates
-- **Optimized Algorithms**: Optimize analysis algorithms
-
-### Formatting Optimization
-- **Template Caching**: Cache formatting templates
-- **Parallel Formatting**: Parallel report formatting
-- **Incremental Formatting**: Incremental formatting updates
-- **Optimized Templates**: Optimize formatting templates
-
-## Testing and Validation
-
-### Unit Tests
-```python
-# Test individual report functions
-def test_report_generation():
-    results = process_report(test_dir, output_dir)
-    assert results["success"]
-    assert "executive_summary" in results["reports"]
-    assert "detailed_analysis" in results["reports"]
-```
-
-### Integration Tests
-```python
-# Test complete report pipeline
-def test_report_pipeline():
-    success = process_report(test_dir, output_dir)
-    assert success
-    # Verify report outputs
-    report_files = list(output_dir.glob("**/*"))
-    assert len(report_files) > 0
-```
-
-### Format Tests
-```python
-# Test different report formats
-def test_report_formats():
-    formats = ["markdown", "html", "json"]
-    for format in formats:
-        result = generate_report_in_format(test_content, format)
-        assert result["success"]
+├── comprehensive_analysis_report.html   # Full HTML analysis report
+├── comprehensive_analysis_report.md     # Markdown analysis report
+├── report_summary.json                  # Structured JSON export
+├── report_generation_summary.json       # Generation metadata (health score, formats, options)
+└── report_processing_summary.json       # Step processing summary
 ```
 
 ## Dependencies
 
-### Required Dependencies
-- **jinja2**: Template engine for report generation
-- **markdown**: Markdown processing
-- **pathlib**: Path handling
-- **json**: JSON data handling
+- **Required (stdlib)**: pathlib, json, logging, typing
+- **Optional**: none (HTML/Markdown generation is pure Python string templating)
 
-### Optional Dependencies
-- **matplotlib**: Chart and graph generation
-- **plotly**: Interactive charts
-- **pandas**: Data analysis and manipulation
-- **numpy**: Numerical computations
+## Testing
 
-## Performance Metrics
+Tests live in `src/tests/report/` (integration, generation, formats, functional, diff/ledgers, MCP wrappers).
 
-### Generation Times
-- **Small Reports** (< 1MB data): < 5 seconds
-- **Medium Reports** (1-10MB data): 5-30 seconds
-- **Large Reports** (> 10MB data): 30-300 seconds
-
-### Memory Usage
-- **Base Memory**: ~20MB
-- **Per Report**: ~5-20MB depending on complexity
-- **Peak Memory**: 2-3x base usage during generation
-
-### Report Quality
-- **Completeness**: 90-95% completeness
-- **Accuracy**: 95-99% accuracy
-- **Readability**: 85-90% readability score
-- **Actionability**: 80-85% actionability score
-
-## Troubleshooting
-
-### Common Issues
-
-#### 1. Report Generation Failures
+```bash
+uv run --extra dev python -m pytest src/tests/report/ --cov=src/report
 ```
-Error: Report generation failed - insufficient data
-Solution: Ensure pipeline results are available and complete
-```
-
-#### 2. Analysis Issues
-```
-Error: Analysis failed - corrupted data
-Solution: Validate data integrity or regenerate pipeline results
-```
-
-#### 3. Formatting Issues
-```
-Error: Formatting failed - template error
-Solution: Check template syntax or use default templates
-```
-
-#### 4. Performance Issues
-```
-Error: Report generation taking too long
-Solution: Optimize data processing or use incremental generation
-```
-
-### Debug Mode
-```python
-# Enable debug mode for detailed report information
-results = process_report(target_dir, output_dir, debug=True, verbose=True)
-```
-
-## Future Enhancements
-
-### Planned Features
-- **Interactive Reports**: Interactive HTML reports with JavaScript
-- **Real-time Reports**: Real-time report updates
-- **Custom Templates**: User-defined report templates
-- **Advanced Analytics**: Advanced analytics and insights
-
-### Performance Improvements
-- **Advanced Caching**: Advanced caching strategies
-- **Parallel Processing**: Parallel report processing
-- **Incremental Updates**: Incremental report updates
-- **Machine Learning**: ML-based report optimization
-
-## Summary
-
-The Report module provides comprehensive report generation capabilities for GNN pipeline results, including analysis summaries, performance metrics, and detailed documentation. The module supports various report formats, provides extensive customization options, and ensures high-quality reporting to support Active Inference research and development.
-
-## License and Citation
-
-This module is part of the GeneralizedNotationNotation project. See the main repository for license and citation information. 
 
 ## References
 
 - Project overview: ../../README.md
-- Comprehensive docs: ../../DOCS.md
-- Architecture guide: ../../ARCHITECTURE.md
 - Pipeline details: ../../doc/pipeline/README.md
 
 ---

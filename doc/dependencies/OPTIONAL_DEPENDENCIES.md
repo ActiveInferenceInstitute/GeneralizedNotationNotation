@@ -324,7 +324,7 @@ which dot    # GraphViz installed?
 
 ```bash
 # Run the setup step with verbose mode
-python src/1_setup.py --verbose
+uv run python src/1_setup.py --verbose
 
 # Or check within Python
 python -c "
@@ -346,7 +346,7 @@ except:
 
 ```bash
 # See which modules successfully loaded
-python src/21_mcp.py --verbose
+uv run python src/21_mcp.py --verbose
 
 # Grep output for successfully loaded modules
 grep -i "successfully loaded" output/21_mcp_output/*.log

@@ -8,10 +8,17 @@ This module provides comprehensive statistical analysis, performance profiling, 
 src/analysis/
 ├── __init__.py                    # Module initialization and exports
 ├── README.md                      # This documentation
-├── processor.py                   # Main analysis processor
+├── processor.py                   # Main analysis processor (Step 16 entry)
 ├── analyzer.py                    # Statistical analysis functions
 ├── post_simulation.py             # Post-simulation analysis
-└── mcp.py                         # Model Context Protocol integration
+├── trace_analysis.py              # Execution trace analysis helpers
+├── framework_extractors.py        # Per-framework result extraction
+├── math_utils.py                  # Math/statistics helpers
+├── visualizations.py / viz_base.py # Plotting helpers
+├── interpretability.py            # Interpretability summaries
+├── generate_cross_model_report.py # Cross-model report generation
+├── mcp.py                         # Model Context Protocol integration
+└── <framework>/analyzer.py        # pymdp, rxinfer, jax, discopy, activeinference_jl, numpyro, pytorch
 ```
 
 ### Analysis Processing Architecture
@@ -83,22 +90,18 @@ flowchart LR
     subgraph "Input Sources"
         Step3[Step 3: GNN]
         Step12[Step 12: Execute]
-        Step13[Step 13: LLM]
     end
     
     subgraph "Downstream Steps"
         Step20[Step 20: Website]
         Step23[Step 23: Report]
     end
-    
     Step16 --> Processor
     Processor --> Analyzer
     Processor --> PostSim
     
     Step3 -->|Model Data| Processor
     Step12 -->|Execution Results| Processor
-    Step13 -->|LLM Insights| Processor
-    
     Processor -->|Analysis Results| Step20
     Processor -->|Analysis Results| Step23
 ```
@@ -116,53 +119,28 @@ as its inverse only when the canonical key is absent.
 Return contract: `process_analysis` returns `True` when analysis artifacts are
 produced, `2` for warning-only recovery such as no input, and `False` for hard
 failures.
-
 ## Core Components
 
 ### Statistical Analysis Functions
 
 #### `perform_statistical_analysis(file_path: Path, verbose: bool = False) -> Dict[str, Any]`
-Performs comprehensive statistical analysis on GNN model files.
+Performs comprehensive statistical analysis on a GNN model file.
 
-**Features:**
-- Variable distribution analysis
-- Connection pattern analysis
-- Complexity metrics calculation
-- Performance benchmarking
-- Model comparison capabilities
+**Returns (keys):**
+- `variable_statistics`, `connection_statistics`, `section_statistics`
+- `distributions`, `correlations`
+- `file_path`, `file_name`, `file_size`, `line_count`, `analysis_timestamp`
 
-**Returns:**
-- Dictionary containing comprehensive analysis results
-- Statistical summaries and metrics
-- Performance benchmarks
-- Model comparison data
+Raises `RuntimeError` on failure.
 
-#### `extract_variables_for_analysis(content: str) -> List[Dict[str, Any]]`
-Extracts and analyzes variables from GNN content.
+#### `extract_variables(content: str) -> List[Dict[str, Any]]`
+Extracts variables from GNN content (regex-based: `name: type`, `name = value`, `name[dimensions]`).
 
-**Features:**
-- Variable type classification
-- Dimension analysis
-- Data type validation
-- Complexity assessment
+#### `extract_connections(content: str) -> List[Dict[str, Any]]`
+Extracts connections from GNN content.
 
-#### `extract_connections_for_analysis(content: str) -> List[Dict[str, Any]]`
-Extracts and analyzes connections from GNN content.
-
-**Features:**
-- Connection pattern analysis
-- Dependency mapping
-- Graph structure analysis
-- Connectivity metrics
-
-#### `extract_sections_for_analysis(content: str) -> List[Dict[str, Any]]`
-Extracts and analyzes GNN sections for comprehensive analysis.
-
-**Features:**
-- Section type classification
-- Content structure analysis
-- Semantic analysis
-- Validation metrics
+#### `extract_sections(content: str) -> List[Dict[str, Any]]`
+Extracts GNN sections for comprehensive analysis.
 
 ### Statistical Calculation Functions
 
@@ -254,11 +232,8 @@ Calculates maintainability index for the model.
 
 **Formula:**
 ```
-MI = 171 - 5.2 * ln(HV) - 0.23 * ln(CC) - 16.2 * ln(LOC)
-Where:
-- HV = Halstead Volume
-- CC = Cyclomatic Complexity
-- LOC = Lines of Code
+MI = 171 - 5.2 * ln(len(variables) + len(connections)) - 0.23 * ln(line_count)
+Clamped to [0, 100]
 ```
 
 #### `calculate_technical_debt(content: str, variables: List[Dict[str, Any]], connections: List[Dict[str, Any]]) -> float`
@@ -275,13 +250,6 @@ Calculates technical debt for the model.
 
 #### `perform_model_comparisons(statistical_analyses: List[Dict[str, Any]], verbose: bool = False) -> Dict[str, Any]`
 Performs comparative analysis across multiple models.
-
-**Comparisons:**
-- Performance benchmarking
-- Complexity comparison
-- Quality assessment
-- Feature analysis
-- Best practices evaluation
 
 ### Reporting Functions
 
@@ -307,31 +275,27 @@ results = perform_statistical_analysis(
     file_path=Path("models/my_model.md"), verbose=True
 )
 
-print(f"Model complexity: {results['complexity_metrics']['cyclomatic']}")
-print(f"Variable count: {results['statistics']['variable_count']}")
-print(f"Connection count: {results['statistics']['connection_count']}")
+print(f"Variable stats: {results['variable_statistics']}")
+print(f"Connection stats: {results['connection_statistics']}")
 ```
 
 ### Comprehensive Analysis
 
 ```python
 from analysis import (
-    extract_variables_for_analysis,
-    extract_connections_for_analysis,
+    extract_variables,
+    extract_connections,
     calculate_variable_statistics,
     calculate_connection_statistics,
 )
 
 # Extract and analyze components
-variables = extract_variables_for_analysis(gnn_content)
-connections = extract_connections_for_analysis(gnn_content)
+variables = extract_variables(gnn_content)
+connections = extract_connections(gnn_content)
 
 # Calculate statistics
 var_stats = calculate_variable_statistics(variables)
 conn_stats = calculate_connection_statistics(connections)
-
-print(f"Variable types: {var_stats['type_distribution']}")
-print(f"Connection density: {conn_stats['density']}")
 ```
 
 ### Performance Benchmarking
@@ -344,13 +308,10 @@ benchmarks = run_performance_benchmarks(
     file_path=Path("models/large_model.md"), verbose=True
 )
 
-print(f"Processing time: {benchmarks['processing_time']:.3f}s")
-print(f"Memory usage: {benchmarks['memory_usage']:.2f}MB")
-print(f"CPU utilization: {benchmarks['cpu_utilization']:.1f}%")
+print(f"Parse time: {benchmarks['parse_time']:.3f}s")
+print(f"Memory footprint: {benchmarks['memory_usage']} bytes")
+print(f"Complexity score: {benchmarks['complexity_score']}")
 ```
-
-### Complexity Analysis
-
 ```python
 from analysis import (
     calculate_cyclomatic_complexity,
@@ -408,9 +369,9 @@ graph TD
 ### 1. Data Extraction
 ```python
 # Extract model components
-variables = extract_variables_for_analysis(content)
-connections = extract_connections_for_analysis(content)
-sections = extract_sections_for_analysis(content)
+variables = extract_variables(content)
+connections = extract_connections(content)
+sections = extract_sections(content)
 ```
 
 ### 2. Statistical Analysis
@@ -449,30 +410,17 @@ quality_metrics = {
 ## Integration with Pipeline
 
 ### Pipeline Step 16: Analysis
-```python
-# Called from 16_analysis.py
-def process_analysis(target_dir, output_dir, verbose=False, **kwargs):
-    # Perform comprehensive analysis
-    results = perform_statistical_analysis(file_path, verbose)
-    
-    # Generate analysis report
-    summary = generate_analysis_summary(results)
-    
-    # Save results
-    save_analysis_results(results, output_dir)
-    
-    return True
-```
+
+The step calls `analysis.process_analysis(target_dir, output_dir, verbose, **kwargs)`; it handles extraction, statistics, benchmarks, post-simulation framework analysis, and report generation in one pass.
 
 ### Output Structure
 ```
 output/16_analysis_output/
-├── statistical_analysis.json       # Comprehensive analysis results
-├── performance_benchmarks.json     # Performance metrics
-├── complexity_metrics.json         # Complexity analysis
-├── quality_assessment.json         # Quality metrics
-├── model_comparison.json          # Comparative analysis
-└── analysis_summary.md            # Human-readable summary
+├── analysis_results.json          # Full step results
+├── analysis_summary.md            # Human-readable summary
+├── cross_model_comparison_report.md
+├── {model}_post_simulation_analysis.json
+└── comprehensive_visualizations/  # Plot and GIF artifacts
 ```
 
 ## Analysis Metrics
@@ -508,47 +456,14 @@ output/16_analysis_output/
 ## Configuration Options
 
 ### Analysis Settings
-```python
-# Configuration options
-config = {
-    "verbose": True,  # Enable detailed logging
-    "include_performance": True,  # Include performance analysis
-    "include_complexity": True,  # Include complexity analysis
-    "include_quality": True,  # Include quality assessment
-    "generate_animations": True,  # Emit current-schema GridWorld GIFs
-    "benchmark_iterations": 5,  # Number of benchmark iterations
-    "memory_profiling": True,  # Enable memory profiling
-    "cpu_profiling": True,  # Enable CPU profiling
-}
-```
 
-### Custom Metrics
-```python
-# Define custom analysis metrics
-custom_metrics = {
-    "custom_complexity": lambda v, c: custom_complexity_calculation(v, c),
-    "custom_quality": lambda content, v, c: custom_quality_assessment(content, v, c),
-}
-```
+`process_analysis` accepts `generate_animations` (canonical; default `True`) and the compatibility inverse `no_animations`; unused kwargs are ignored. CLI flags on Step 16: `--no-animations` and `--advanced-stats`. There are no memory/CPU profiling toggles or benchmark-iteration settings.
 
 ## Error Handling
 
-### Analysis Failures
-```python
-# Handle analysis failures gracefully
-try:
-    results = perform_statistical_analysis(file_path)
-except AnalysisError as e:
-    logger.error(f"Analysis failed: {e}")
-    # Provide recovery analysis or error reporting
-```
-
-### Data Validation
-```python
-# Validate input data before analysis
-if not validate_gnn_content(content):
-    raise ValueError("Invalid GNN content for analysis")
-```
+- `perform_statistical_analysis`, `calculate_complexity_metrics`, and `run_performance_benchmarks` raise `RuntimeError` on failure.
+- `process_analysis` collects per-file errors in `results["errors"]` and continues; missing execution data for post-simulation analysis logs a warning and is skipped.
+- There is no `AnalysisError` exception type and no separate `validate_gnn_content` entry point.
 
 ## Performance Considerations
 
@@ -589,69 +504,10 @@ def test_analysis_pipeline():
 ## Dependencies
 
 ### Required Dependencies
-- **numpy**: Numerical computations
-- **pandas**: Data manipulation and analysis
-- **networkx**: Graph analysis and metrics
-- **matplotlib**: Statistical plotting
-- **scipy**: Statistical functions
 
-### Optional Dependencies
-- **psutil**: System resource monitoring
-- **memory_profiler**: Memory usage profiling
-- **line_profiler**: Line-by-line profiling
+- **numpy**: Numerical computations (core dependency)
+- **matplotlib**: Statistical plotting (core dependency; falls back to text-based reports when unavailable)
 
-## Performance Metrics
-
-### Processing Times
-- **Small Models** (< 100 variables): < 0.1 seconds
-- **Medium Models** (100-1000 variables): 0.1-1.0 seconds
-- **Large Models** (> 1000 variables): 1.0-10.0 seconds
-
-### Memory Usage
-- **Base Memory**: ~20MB
-- **Per Model**: ~5-50MB depending on complexity
-- **Peak Memory**: 1.5-2x base usage during analysis
-
-## Troubleshooting
-
-### Common Issues
-
-#### 1. Memory Issues
-```
-Error: MemoryError during large model analysis
-Solution: Enable memory optimization or process in chunks
-```
-
-#### 2. Performance Issues
-```
-Error: Analysis taking too long for large models
-Solution: Enable parallel processing or use sampling
-```
-
-#### 3. Data Validation Issues
-```
-Error: Invalid GNN content for analysis
-Solution: Validate input data before analysis
-```
-
-### Debug Mode
-```python
-# Enable debug mode for detailed analysis
-results = perform_statistical_analysis(file_path, verbose=True, debug=True)
-```
-
-## Future Enhancements
-
-### Planned Features
-- **Machine Learning Analysis**: ML-based model assessment
-- **Predictive Analytics**: Performance prediction capabilities
-- **Real-time Analysis**: Live analysis during model development
-- **Advanced Visualizations**: Interactive analysis visualizations
-
-### Performance Improvements
-- **GPU Acceleration**: GPU-accelerated analysis for large models
-- **Distributed Processing**: Distributed analysis for very large models
-- **Streaming Analysis**: Real-time streaming analysis capabilities
 
 ## Summary
 

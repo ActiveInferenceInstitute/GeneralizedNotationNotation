@@ -117,7 +117,7 @@ src/
 ├── utils/                   # Shared utilities
 │   ├── argument_utils.py    # CLI/pipeline argument model
 │   └── pipeline_template.py # Thin orchestrator wrapper
-└── tests/                   # ~323 pytest source files, mirrored by module
+└── tests/                   # pytest source files, mirrored by module
 ```
 
 ### Design Patterns
@@ -350,15 +350,15 @@ class TestGNNParser:
 
 #### Running Tests
 ```bash
-# Run all tests
-python src/main.py --only-steps 3
+# Run all tests (pipeline test step)
+uv run python src/main.py --only-steps 2 --verbose
 
 # Run specific test categories
 uv run --extra dev python -m pytest src/tests/gnn/ -v
 uv run --extra dev python -m pytest src/tests/integration/ -v
 
 # Run with coverage
-pytest --cov=src --cov-report=html:output/coverage
+uv run pytest src/tests/ --cov=src --cov-report=term-missing
 
 # Run pipeline orchestration tests
 uv run --extra dev python -m pytest src/tests/pipeline/ -v
@@ -369,7 +369,7 @@ uv run --extra dev python -m pytest src/tests/pipeline/ -v
 #### Adding a New Pipeline Step
 
 1. **Create the script**: `src/N_description.py`
-2. **Add configuration**: Update `src/config.py`
+2. **Add configuration**: Update `src/pipeline/config.py`
 3. **Add tests**: Create tests in `src/tests/<module>/` and `src/tests/integration/`
 4. **Add documentation**: Update pipeline documentation
 5. **Add MCP tools**: Create `module/mcp.py` if exposing APIs
@@ -437,7 +437,7 @@ uv run --extra dev python -m pytest src/tests/pipeline/ -v
 1. **Import Errors**
    - Check virtual environment activation
    - Verify `src/` is in Python path
-   - Run setup step: `python src/main.py --only-steps 2`
+   - Run setup step: `uv run python src/main.py --only-steps 1 --dev --verbose`
 
 2. **Test Failures**
    - Check test data fixtures
@@ -445,7 +445,7 @@ uv run --extra dev python -m pytest src/tests/pipeline/ -v
    - Run individual test files for debugging
 
 3. **Pipeline Issues**
-   - Check step configuration in `src/config.py`
+   - Check step configuration in `src/pipeline/config.py`
    - Verify argument passing between steps
    - Check timeout settings for slow operations
 
@@ -457,7 +457,7 @@ uv run --extra dev python -m pytest src/tests/pipeline/ -v
 ### Debug Tools
 ```bash
 # Verbose pipeline execution
-python src/main.py --verbose --only-steps 1,4
+uv run python src/main.py --verbose --only-steps 1,4
 
 # MCP tool debugging
 uv run gnn --help  # inspect the current MCP/CLI entry points

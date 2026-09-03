@@ -2,379 +2,189 @@
 
 ## Module Overview
 
-**Purpose**: Execution and analysis of ActiveInference.jl simulations generated from GNN specifications
+**Purpose**: Execution of ActiveInference.jl simulations generated from GNN specifications
 
 **Parent Module**: Execute Module (Step 12: Simulation execution)
 
-**Category**: Framework Execution / Active Inference Analysis
+**Category**: Framework Execution / Active Inference Simulation
 
 ---
 
 ## Core Functionality
 
 ### Primary Responsibilities
-1. Execute ActiveInference.jl simulation scripts generated from GNN models
-2. Perform comprehensive analysis of Active Inference simulations
-3. Manage Julia environment and ActiveInference.jl package execution
-4. Generate detailed analysis reports and visualizations
-5. Handle multi-level Active Inference model execution and validation
+1. Discover rendered ActiveInference.jl scripts under `output/11_render_output/<model>/activeinference_jl/`
+2. Set up and validate the committed Julia project (`Project.toml` + `Manifest.toml` in this directory)
+3. Execute each script as a Julia subprocess and write a Python-side execution report
 
 ### Key Capabilities
-- Complete ActiveInference.jl simulation execution pipeline
-- Hierarchical Active Inference model analysis
-- Temporal dynamics and planning evaluation
-- Meta-cognitive analysis and uncertainty quantification
-- Adaptive precision and attention mechanism analysis
-- Counterfactual reasoning and multi-scale temporal analysis
-- Statistical analysis and performance metrics computation
+- Reproducible Julia environment: `setup_environment.jl` activates and instantiates the committed
+  project (Julia 1.12 works; `Distributions` is pinned to `"0.25.100 - 0.25.125"` so `DistributionsAD`
+  0.6.58 precompiles)
+- Environment status probe (`get_environment_status`) that drives automatic setup at Step 12
+- Per-script execution with captured stdout/stderr and a JSON execution report
+- Supporting Julia analysis suites shipped alongside the runner
+  (`adaptive_precision_attention.jl`, `counterfactual_reasoning.jl`,
+  `export_enhancement.jl`, `integration_suite.jl`)
 
 ---
 
 ## API Reference
 
+Public names re-exported from `execute.activeinference_jl` (`__all__` in `__init__.py`):
+`run_activeinference_analysis`, `find_activeinference_scripts`,
+`execute_activeinference_script`, `is_julia_available`. All are defined in
+`activeinference_runner.py`, which also provides the module-level helpers
+`setup_julia_environment` and `get_environment_status`.
+
 ### Public Functions
 
-#### `run_activeinference_analysis(pipeline_output_dir: Union[str, Path], analysis_type: str = "comprehensive", **kwargs) -> bool`
-**Description**: Main function to run ActiveInference.jl analysis on simulation outputs.
+#### `run_activeinference_analysis(rendered_simulators_dir: Union[str, Path], execution_output_dir: Optional[Union[str, Path]] = None, recursive_search: bool = True, verbose: bool = False, force_setup: bool = False) -> bool`
+**Description**: Find every script below `<rendered_simulators_dir>/activeinference_jl`, run
+`setup_julia_environment` once, execute each script and write
+`activeinference_execution_report.json` into the output directory.
 
 **Parameters**:
-- `pipeline_output_dir` (Union[str, Path]): Directory containing pipeline outputs
-- `analysis_type` (str, optional): Type of analysis ("basic", "comprehensive", "all") (default: "comprehensive")
-- `recursive_search` (bool, optional): Search subdirectories recursively (default: True)
-- `verbose` (bool, optional): Enable verbose logging (default: False)
-- `output_dir` (Union[str, Path], optional): Output directory for analysis results
-- `timeout` (int, optional): Execution timeout in seconds (default: 600)
-- `**kwargs`: Additional analysis options
+- `rendered_simulators_dir`: Directory containing rendered simulators (Step 11 output)
+- `execution_output_dir`: Where execution outputs go (defaults to `<rendered_simulators_dir>/execution_results/activeinference_jl`)
+- `recursive_search`: Whether to walk subdirectories
+- `verbose`: Enable verbose logging
+- `force_setup`: Re-run the Julia environment setup even if it reports ready
 
-**Returns**: `bool` - True if analysis completed successfully, False otherwise
+**Returns**: `True` if every script succeeded (or none were found), `False` otherwise.
 
 **Example**:
 ```python
-from execute.activeinference_jl import run_activeinference_analysis
 from pathlib import Path
+from execute.activeinference_jl import run_activeinference_analysis
 
 success = run_activeinference_analysis(
-    pipeline_output_dir=Path("output/11_render_output"),
-    analysis_type="comprehensive",
+    rendered_simulators_dir=Path("output/11_render_output"),
+    execution_output_dir=Path("output/12_execute_output"),
     recursive_search=True,
     verbose=True,
-    timeout=600,
 )
 ```
 
-#### `execute_activeinference_jl_script(script_path: Union[str, Path], config: Dict[str, Any] = None, **kwargs) -> Dict[str, Any]`
-**Description**: Execute a specific ActiveInference.jl script with given configuration.
+#### `execute_activeinference_script(script_path: Path, verbose: bool = False, output_dir: Optional[Path] = None, setup_environment: bool = True) -> bool`
+**Description**: Execute one rendered `.jl` script under the committed project. When
+`setup_environment` is `True`, `get_environment_status` is consulted first and
+`setup_julia_environment` runs if the environment needs it.
 
-**Parameters**:
-- `script_path` (Union[str, Path]): Path to ActiveInference.jl script
-- `config` (Dict[str, Any], optional): Execution configuration parameters (default: {})
-- `julia_path` (str, optional): Path to Julia executable (default: auto-detect)
-- `timeout` (int, optional): Execution timeout in seconds (default: 600)
-- `**kwargs`: Additional execution options
+**Returns**: `True` on exit code 0, `False` on failure or a missing script.
 
-**Returns**: `Dict[str, Any]` - Execution results dictionary with:
-- `success` (bool): Whether execution succeeded
-- `execution_time` (float): Execution time in seconds
-- `analysis_results` (Dict): Analysis results
-- `output_files` (List[Path]): Generated output files
+#### `find_activeinference_scripts(search_dir: Union[str, Path], recursive: bool = True, include_patterns: Optional[List[str]] = None) -> List[Path]`
+**Description**: Collect ActiveInference.jl scripts under `search_dir`.
 
-#### `analyze_activeinference_results(results_dir: Union[str, Path], analysis_config: Dict[str, Any] = None, **kwargs) -> Dict[str, Any]`
-**Description**: Perform comprehensive analysis on ActiveInference.jl simulation results.
+#### `is_julia_available(min_version: tuple = (1, 9, 0)) -> bool`
+**Description**: Return `True` when a `julia` executable is on `PATH` (shared helper from `execute.julia_setup`).
 
-**Parameters**:
-- `results_dir` (Union[str, Path]): Directory containing simulation results
-- `analysis_config` (Dict[str, Any], optional): Analysis configuration parameters (default: {})
-- `include_meta_cognitive` (bool, optional): Include meta-cognitive analysis (default: True)
-- `include_uncertainty` (bool, optional): Include uncertainty quantification (default: True)
-- `**kwargs`: Additional analysis options
+### Module Helpers
 
-**Returns**: `Dict[str, Any]` - Analysis results dictionary with metrics, visualizations, and reports
+#### `setup_julia_environment(project_dir: Path, force_setup: bool = False, verbose: bool = False) -> bool`
+Runs `setup_environment.jl` for the given project directory.
 
-#### `validate_julia_activeinference_environment() -> Dict[str, Any]`
-**Description**: Validate Julia and ActiveInference.jl environment setup.
-
-**Returns**: `Dict[str, Any]` - Validation results with:
-- `julia_available` (bool): Whether Julia is installed
-- `julia_version` (Optional[str]): Julia version if available
-- `activeinference_jl_available` (bool): Whether ActiveInference.jl is installed
-- `activeinference_jl_version` (Optional[str]): ActiveInference.jl version if available
-- `dependencies_met` (bool): Whether all dependencies are available
+#### `get_environment_status(project_dir: Path) -> Dict[str, Any]`
+Returns `julia_available`, `project_toml_exists`, `manifest_toml_exists`,
+`setup_script_exists`, `environment_report_exists`, `core_packages_status`
+(ActiveInference, Distributions, LinearAlgebra, Random, Statistics) and a
+`setup_recommendation` of `install_julia`, `create_project`, `run_setup` or `ready`.
 
 ---
 
 ## Dependencies
 
 ### Required Dependencies
-- `julia` - Julia programming language runtime
-- `ActiveInference.jl` - ActiveInference.jl package
-- `subprocess` - Python subprocess management
-- `pathlib` - Path manipulation utilities
-
-### Optional Dependencies
-- `numpy` - Numerical computations (recovery: basic arrays)
-- `pandas` - Data analysis (recovery: basic data structures)
-- `matplotlib` - Visualization (recovery: no plotting)
+- `julia` runtime (Julia 1.12 works with the committed pins)
+- `ActiveInference.jl`, `Distributions`, `JSON`, `StatsBase` — pinned by `Project.toml` + `Manifest.toml` in this directory
 
 ### Internal Dependencies
-- `execute.executor` - Base execution functionality
-- `render.activeinference_jl` - ActiveInference.jl code generation
-- `utils.pipeline_template` - Pipeline utilities
+- `execute.julia_setup` - Shared Julia availability check
+- `execute.processor` - Step 12 orchestration
+- `render.activeinference_jl` - Produces the scripts this module executes
 
 ---
 
 ## Configuration
 
-### Analysis Configuration
-```python
-ANALYSIS_CONFIG = {
-    "analysis_type": "comprehensive",  # Analysis depth
-    "recursive_search": True,  # Search subdirectories
-    "verbose": True,  # Verbose output
-    "output_format": "both",  # Output format (json, markdown, both)
-    "performance_monitoring": True,  # Monitor performance
-    "error_handling": "robust",  # Error handling strategy
-    "parallel_execution": False,  # Parallel analysis
-}
-```
-
-### Execution Configuration
-```python
-EXECUTION_CONFIG = {
-    "julia_executable": "julia",  # Julia executable path
-    "working_directory": "./activeinference_work",  # Working directory
-    "timeout_seconds": 300,  # Execution timeout
-    "memory_limit": "4GB",  # Memory limit
-    "cpu_cores": 4,  # CPU cores to use
-    "environment_variables": {  # Environment variables
-        "JULIA_NUM_THREADS": "4",
-        "JULIA_PROJECT": "@.",
-    },
-}
-```
-
-### Analysis Types Configuration
-```python
-ANALYSIS_TYPES = {
-    "basic": {"components": ["simulation", "basic_metrics"], "depth": "minimal"},
-    "comprehensive": {
-        "components": ["simulation", "planning", "learning", "analysis"],
-        "depth": "full",
-    },
-    "all": {"components": ["all_available"], "depth": "complete"},
-}
-```
+This module carries no configuration dictionaries of its own. Timeouts and the
+framework selection come from Step 12 (`--frameworks`, `timeout` kwarg in
+`execute.processor`); the Julia environment is fixed by the committed
+`Project.toml` + `Manifest.toml`.
 
 ---
 
 ## Usage Examples
 
-### Basic ActiveInference.jl Analysis
+### Execute one rendered script
 ```python
-from execute.activeinference_jl import run_activeinference_analysis
+from pathlib import Path
+from execute.activeinference_jl import execute_activeinference_script, find_activeinference_scripts
 
-# Run comprehensive analysis on pipeline outputs
-success = run_activeinference_analysis(
-    pipeline_output_dir="output/11_render_output",
-    analysis_type="comprehensive",
-    recursive_search=True,
-    verbose=True,
+for script in find_activeinference_scripts(Path("output/11_render_output"), recursive=True):
+    ok = execute_activeinference_script(script, verbose=True, setup_environment=True)
+```
+
+### Environment status
+```python
+from pathlib import Path
+from execute.activeinference_jl.activeinference_runner import (
+    get_environment_status,
+    setup_julia_environment,
 )
 
-if success:
-    print("ActiveInference.jl analysis completed successfully")
-else:
-    print("Analysis failed - check logs for details")
+project_dir = Path("src/execute/activeinference_jl")
+status = get_environment_status(project_dir)
+print(status["setup_recommendation"])
+if status["setup_recommendation"] == "run_setup":
+    setup_julia_environment(project_dir, verbose=True)
 ```
-
-### Execute Specific Script
-```python
-from execute.activeinference_jl import execute_activeinference_jl_script
-
-# Execute specific ActiveInference.jl script
-config = {
-    "timeout_seconds": 600,
-    "memory_limit": "8GB",
-    "analysis_type": "comprehensive",
-}
-
-results = execute_activeinference_jl_script(
-    script_path="output/11_render_output/model_activeinference_simulation.jl",
-    config=config,
-)
-
-print(f"Execution time: {results['execution_time']:.2f}s")
-print(f"Analysis completed: {results['analysis_successful']}")
-```
-
-### Environment Validation
-```python
-from execute.activeinference_jl import validate_julia_activeinference_environment
-
-# Validate Julia and ActiveInference.jl setup
-validation = validate_julia_activeinference_environment()
-
-print("Environment Validation:")
-print(f"Julia installed: {validation['julia_available']}")
-print(f"ActiveInference.jl available: {validation['activeinference_available']}")
-print(f"Required packages: {validation['packages_available']}")
-print(f"Environment ready: {validation['environment_ready']}")
-
-if not validation["environment_ready"]:
-    print("Missing components:")
-    for component, status in validation.items():
-        if not status and component != "environment_ready":
-            print(f"  - {component}")
-```
-
-### Results Analysis
-```python
-from execute.activeinference_jl import analyze_activeinference_results
-
-# Analyze simulation results
-analysis_config = {
-    "metrics": ["free_energy", "planning_accuracy", "learning_curves"],
-    "visualization": True,
-    "statistical_tests": True,
-    "output_format": "markdown",
-}
-
-analysis_results = analyze_activeinference_results(
-    results_dir="output/12_execute_output/activeinference_results",
-    analysis_config=analysis_config,
-)
-
-print(f"Analysis completed for {len(analysis_results['trials'])} trials")
-print(f"Average free energy: {analysis_results['summary']['avg_free_energy']:.3f}")
-```
-
----
-
-## Active Inference Analysis Components
-
-### Simulation Execution
-- **Model Loading**: Load and validate ActiveInference.jl models
-- **Simulation Running**: Execute simulations with proper parameters
-- **Result Capture**: Capture simulation outputs and trajectories
-- **Performance Monitoring**: Monitor execution time and resource usage
-
-### Comprehensive Analysis Suite
-- **Statistical Analysis**: Compute statistical metrics and distributions
-- **Uncertainty Quantification**: Analyze uncertainty in beliefs and actions
-- **Meta-cognitive Analysis**: Evaluate meta-cognitive performance
-- **Adaptive Precision Analysis**: Analyze precision adaptation mechanisms
-- **Counterfactual Reasoning**: Evaluate counterfactual reasoning capabilities
-- **Multi-scale Temporal Analysis**: Analyze temporal dynamics across scales
-- **Advanced POMDP Analysis**: Perform advanced partially observable MDP analysis
-
-### Visualization and Reporting
-- **Enhanced Visualization**: Create comprehensive result visualizations
-- **Integration Testing**: Test model integration and consistency
-- **Export Enhancement**: Enhanced data export and formatting
-- **Visualization Utilities**: General-purpose visualization tools
 
 ---
 
 ## Output Specification
 
 ### Output Products
-- `simulation_results.json` - Serialized Julia inference results (schema `activeinference_jl_simulation_v1`)
-- `activeinference_execution_report.json` - Python-side execution report (written by `activeinference_runner.py`)
-- Execution logs (stdout/stderr) and timing/resource data
+- `simulation_results.json` - Serialized Julia inference results (schema `activeinference_jl_simulation_v1`, or `activeinference_jl_stigmergic_swarm_v1` for the native multi-agent path)
+- `activeinference_execution_report.json` - Python-side execution report (written by `run_activeinference_analysis`)
+- Execution logs (stdout/stderr) captured by Step 12
 
 ### Output Directory Structure
 ```
 output/12_execute_output/
-├── activeinference_results/
-│   ├── simulation_results.json
-│   ├── activeinference_execution_report.json
-│   └── logs/
-└── julia_environment_check.json
+├── <model>/activeinference_jl/
+│   └── simulation_results.json
+├── activeinference_execution_report.json
+└── summaries/
+    ├── execution_summary.json
+    └── execution_report.md
 ```
 
-### Analysis Results Structure
-```python
-analysis_results = {
-    "metadata": {
-        "model_name": "actinf_pomdp_agent",
-        "framework": "activeinference_jl",
-        "analysis_type": "comprehensive",
-        "execution_time": 245.67,
-        "julia_version": "1.8.5",
-        "timestamp": "2025-10-28T10:30:00Z",
-    },
-    "simulation": {
-        "trials_completed": 50,
-        "avg_execution_time": 4.2,
-        "success_rate": 0.98,
-    },
-    "analysis": {
-        "free_energy": {"mean": -1250.34, "std": 45.67, "trajectory": [...]},
-        "planning_accuracy": {"mean": 0.87, "std": 0.05, "by_trial": [...]},
-        "belief_accuracy": {"mean": 0.92, "std": 0.03, "evolution": [...]},
-    },
-    "visualizations": [
-        "free_energy_trajectory.png",
-        "belief_evolution.png",
-        "action_selection_patterns.png",
-    ],
-    "performance": {
-        "memory_peak": "3.2GB",
-        "cpu_time": 198.45,
-        "analysis_completion_rate": 0.96,
-    },
-}
-```
+Read result fields from a generated `simulation_results.json`; the renderer in
+`src/render/activeinference_jl/activeinference_renderer.py` is the source of truth
+for the schema.
 
 ---
 
 ## Performance Characteristics
 
-### Latest Execution
-- **Duration**: 2-15 minutes per comprehensive analysis
-- **Memory**: 500MB-4GB depending on model complexity
-- **Status**: ✅ Production Ready
-
-### Performance Breakdown
-- **Julia Environment Setup**: < 5s
-- **Model Loading**: < 10s
-- **Simulation Execution**: 1-10 minutes (main computation)
-- **Analysis Processing**: 30s-2 minutes
-- **Visualization Generation**: 20s-1 minute
-
-### Optimization Notes
-- Julia's JIT compilation improves performance on repeated runs
-- Memory usage scales with model size and analysis depth
-- Parallel execution available for multiple trials
-- GPU acceleration available for certain computations
+Do not treat timing numbers in documentation as current measurements. The first
+run pays Julia precompilation for the committed environment; later runs reuse the
+compiled cache. Read durations from `summaries/execution_summary.json`.
 
 ---
 
 ## Error Handling
 
 ### Julia/ActiveInference.jl Errors
-1. **Julia Not Found**: Julia executable not in PATH
-2. **Package Not Installed**: ActiveInference.jl or dependencies missing
-3. **Model Loading Errors**: Invalid model files or syntax errors
-4. **Simulation Failures**: Runtime errors during simulation execution
-5. **Analysis Errors**: Errors during result analysis and processing
+1. **Julia Not Found**: `is_julia_available()` is `False`; Step 12 reports the framework as skipped
+2. **Environment Not Ready**: `get_environment_status` recommends `run_setup`; `setup_julia_environment` is invoked automatically
+3. **Script Failure**: the Julia process exits non-zero; `execute_activeinference_script` returns `False`
 
 ### Recovery Strategies
-- **Environment Validation**: Comprehensive pre-execution validation
-- **Graceful Degradation**: Continue with available analysis components
-- **Recovery Analysis**: Use basic analysis when advanced features fail
-- **Detailed Logging**: Comprehensive error reporting and diagnostics
-
-### Error Examples
-```python
-try:
-    results = run_activeinference_analysis(
-        pipeline_output_dir, analysis_type="comprehensive"
-    )
-except ActiveInferenceExecutionError as e:
-    logger.error(f"ActiveInference.jl analysis failed: {e}")
-    # Attempt recovery with basic analysis
-    results = run_activeinference_analysis(pipeline_output_dir, analysis_type="basic")
-```
+- Run `julia --project=src/execute/activeinference_jl --startup-file=no src/execute/activeinference_jl/setup_environment.jl`
+- Pass `force_setup=True` to `run_activeinference_analysis` to rebuild the environment
+- There is no automatic retry or reduced-analysis fallback; read the captured stderr
 
 ---
 
@@ -385,16 +195,14 @@ except ActiveInferenceExecutionError as e:
 - **Main Script**: `12_execute.py`
 
 ### Imports From
-- `render.activeinference_jl` - ActiveInference.jl code generation
-- `utils.pipeline_template` - Pipeline utilities
+- `execute.julia_setup` - Julia availability helper
 
 ### Imported By
 - `execute.processor` - Main execution integration
-- `tests.test_execute_activeinference*` - ActiveInference.jl-specific tests
 
 ### Data Flow
 ```
-ActiveInference.jl Code Generation → Julia Environment Setup → Model Compilation → Simulation Execution → Comprehensive Analysis → Visualization → Report Generation
+render.activeinference_jl (.jl script) → setup_environment.jl → julia --project=src/execute/activeinference_jl → simulation_results.json → Step 12 summaries → Step 16 analysis
 ```
 
 ---
@@ -403,89 +211,39 @@ ActiveInference.jl Code Generation → Julia Environment Setup → Model Compila
 
 ### Test Files
 - `src/tests/execute/test_execute_overall.py` - Execute module tests (includes framework selection)
-
-### Test Coverage
-Measure on demand:
-
-```bash
-uv run --extra dev python -m pytest src/tests/test_activeinference_jl*.py \
-    --cov=src/execute/activeinference_jl --cov-report=term-missing
-```
-### Key Test Scenarios
-1. Julia environment validation and setup
-2. ActiveInference.jl model loading and execution
-3. Analysis pipeline end-to-end testing
-4. Result analysis and visualization accuracy
-5. Error handling and recovery testing
+- `src/tests/pipeline/test_pomdp_gridworld_cross_framework.py` - Cross-framework contract including ActiveInference.jl
+- `src/tests/render/test_activeinference_matrix_formatting.py` - Renderer-side contract for the scripts this module executes
 
 ### Test Commands
 ```bash
-# Run ActiveInference.jl execution tests
-uv run --extra dev python -m pytest src/tests/test_execute_activeinference*.py -v
+uv run --extra dev python -m pytest src/tests/execute/test_execute_overall.py \
+    src/tests/pipeline/test_pomdp_gridworld_cross_framework.py -v
 
-# Run with coverage
-uv run --extra dev python -m pytest src/tests/test_execute_activeinference*.py --cov=src/execute/activeinference_jl --cov-report=term-missing
+# With coverage
+uv run --extra dev python -m pytest src/tests/execute/test_execute_overall.py \
+    --cov=src/execute/activeinference_jl --cov-report=term-missing
 ```
 
 ---
 
 ## MCP Integration
 
-### Tools Registered
-- `execute.run_activeinference_analysis` - Run ActiveInference.jl analysis
-- `execute.validate_julia_environment` - Validate Julia environment
-- `execute.analyze_activeinference_results` - Analyze simulation results
-- `execute.visualize_activeinference_data` - Visualize analysis results
-
-### Tool Endpoints
-```python
-@mcp_tool("execute.run_activeinference_analysis")
-def run_activeinference_analysis_tool(
-    pipeline_output_dir: str, analysis_type: str
-) -> Dict[str, Any]:
-    """Run comprehensive ActiveInference.jl analysis on pipeline outputs"""
-    return run_activeinference_analysis(pipeline_output_dir, analysis_type)
-```
-
----
-
-## Active Inference Analysis Features
-
-### Hierarchical Analysis
-- **Multi-level Planning**: Analyze planning across hierarchical levels
-- **Temporal Abstraction**: Evaluate temporal abstraction mechanisms
-- **Goal-directed Behavior**: Assess goal-directed action selection
-- **Adaptive Precision**: Analyze precision adaptation strategies
-
-### Advanced Analytical Methods
-- **Meta-cognitive Metrics**: Evaluate meta-cognitive performance
-- **Uncertainty Quantification**: Quantify uncertainty in all components
-- **Counterfactual Analysis**: Analyze counterfactual reasoning
-- **Multi-scale Dynamics**: Analyze dynamics across temporal scales
-- **Statistical Validation**: Comprehensive statistical testing
-
-### Visualization Capabilities
-- **Free Energy Landscapes**: Visualize free energy minimization
-- **Belief Trajectories**: Show belief evolution over time
-- **Planning Performance**: Visualize planning accuracy and efficiency
-- **Learning Curves**: Show parameter learning progression
-- **Comparative Analysis**: Compare different model configurations
+This submodule registers no MCP tools of its own. The parent module
+(`src/execute/mcp.py`) exposes `process_execute`, `execute_gnn_model`,
+`execute_pymdp_simulation`, `check_execute_dependencies` and
+`get_execute_module_info`; ActiveInference.jl scripts are reached through
+`process_execute` with the `activeinference_jl` framework selected.
 
 ---
 
 ## Development Guidelines
 
-### Adding New Analysis Features
-1. Update analysis logic in appropriate Julia files
-2. Add new analysis functions in the maintained Julia analysis suites (`integration_suite.jl` here; `enhanced_analysis_suite.jl` under `doc/activeinference_jl/actinf_jl_src/`)
+### Adding New Features
+1. Change the generated Julia in `src/render/activeinference_jl/` (this module only runs what the renderer emits)
+2. Extend the Julia analysis suites here (`integration_suite.jl` and siblings) when needed
 3. Update Python wrapper functions in `activeinference_runner.py`
-4. Add comprehensive tests for new features
-
-### Performance Optimization
-- Profile Julia code execution bottlenecks
-- Optimize data transfer between Python and Julia
-- Use efficient data structures for large result sets
-- Implement parallel analysis when possible
+4. Update `Project.toml`/`Manifest.toml` together and re-run `setup_environment.jl`
+5. Add or extend tests in `src/tests/execute/` and `src/tests/render/`
 
 ---
 
@@ -494,59 +252,41 @@ def run_activeinference_analysis_tool(
 ### Common Issues
 
 #### Issue 1: "Julia command not found"
-**Symptom**: Execution fails with Julia not found error
+**Symptom**: Step 12 reports the ActiveInference.jl framework as skipped
 **Cause**: Julia not installed or not in system PATH
-**Solution**: Install Julia and ensure it's accessible, or specify full path in config
+**Solution**: Install Julia and ensure `julia` resolves on PATH
 
 #### Issue 2: "ActiveInference.jl package not available"
-**Symptom**: Import errors for ActiveInference.jl components
-**Cause**: Package not installed in Julia environment
-**Solution**: Install ActiveInference.jl using Julia's package manager
+**Symptom**: `using ActiveInference` fails inside the script
+**Cause**: Committed environment not instantiated
+**Solution**: Run `setup_environment.jl` (see Recovery Strategies) or pass `force_setup=True`
 
-#### Issue 3: "Memory allocation failed"
-**Symptom**: Execution fails with memory errors during large simulations
-**Cause**: Insufficient memory for model size or analysis depth
-**Solution**: Reduce model complexity, decrease analysis scope, or increase memory limits
-
-### Debug Mode
-```python
-# Enable debug output for ActiveInference.jl execution
-results = run_activeinference_analysis(
-    pipeline_output_dir, analysis_type="comprehensive", debug=True, verbose=True
-)
-```
+#### Issue 3: Precompilation failure on Julia 1.12
+**Symptom**: `DistributionsAD` fails to precompile
+**Cause**: `Distributions >= 0.25.126` changed `@check_args`
+**Solution**: Keep the committed pin `Distributions = "0.25.100 - 0.25.125"`; `setup_environment.jl` also patches the ReverseDiff extension before precompilation
 
 ---
 
 ## Version History
 
-### Current Version: 3.0.0
+### Current Version: 3.2.0
 
 **Features**:
-- Complete ActiveInference.jl execution and analysis pipeline
-- Hierarchical Active Inference model support
-- Comprehensive analysis suite with multiple analysis types
-- Julia environment validation and management
-- Advanced visualization and reporting capabilities
-- Extensive error handling and recovery
-- MCP tool integration
+- ActiveInference.jl script discovery and subprocess execution under the committed project
+- Automatic environment setup driven by `get_environment_status`
+- Python-side execution report
 
 **Known Limitations**:
-- Requires Julia runtime environment with ActiveInference.jl
-- Large hierarchical models may require significant memory
-- Some advanced analysis features need manual configuration
-
-### Roadmap
-- **Next Version**: Enhanced parallel analysis support
-- **Future**: GPU acceleration for analysis computations
-- **Advanced**: Integration with latest Active Inference research methods
+- Requires a local Julia runtime
+- Continuous-state models are reported as `unsupported` at render time and never reach this module
 
 ---
 
 ## References
 
 ### Related Documentation
-- [Execute Module](../../execute/AGENTS.md) - Parent execute module
+- [Execute Module](../AGENTS.md) - Parent execute module
 - [ActiveInference.jl Render](../../render/activeinference_jl/AGENTS.md) - ActiveInference.jl code generation
 - [Active Inference](https://en.wikipedia.org/wiki/Active_inference) - Active Inference theory
 
@@ -557,10 +297,6 @@ results = run_activeinference_analysis(
 
 ---
 
-**Last Updated**: 2026-04-16
+**Last Updated**: 2026-09-02
 **Maintainer**: Execute Module Team
 **Status**: ✅ Production Ready
-
-
-
-

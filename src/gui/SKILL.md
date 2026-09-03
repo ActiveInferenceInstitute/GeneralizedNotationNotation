@@ -47,12 +47,11 @@ process_gui(target_dir, output_dir, verbose=True)
 
 # Get available GUIs
 guis = get_available_guis()
-
-# Launch specific GUI
-gui_1()  # Basic
-gui_2()  # Enhanced
-gui_3()  # Full-featured
-oxdraw_gui()  # Graph drawing canvas
+# Launch specific GUI (all require target_dir, output_dir, logger)
+gui_1(target_dir, output_dir, logger)
+gui_2(target_dir, output_dir, logger)
+gui_3(target_dir, output_dir, logger)
+oxdraw_gui(target_dir, output_dir, logger)  # Graph drawing canvas
 
 # Parse GNN markdown for GUI
 components = parse_components_from_markdown(md_content)

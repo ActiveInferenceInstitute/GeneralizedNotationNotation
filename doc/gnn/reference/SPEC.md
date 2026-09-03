@@ -22,7 +22,7 @@ specification disagree, the specification wins and the file here is the bug.
 ## Versioning
 - GNN language version: tracked in [`doc/gnn/gnn_syntax.md`](../gnn_syntax.md) (v1.1)
 - Document bundle version: inherits from [`doc/gnn/SPEC.md`](../SPEC.md)
-- Package version: v3.0.0 (matches `pyproject.toml`)
+- Package version: 3.2.0 (matches `pyproject.toml`)
 
 ## Status
 Maintained. Every file in this subtree is referenced from `doc/gnn/README.md`

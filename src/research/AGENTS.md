@@ -2,35 +2,27 @@
 
 ## Module Overview
 
-**Purpose**: Rule-based expert system for analyzing GNN models and generating research hypotheses.
+**Purpose**: Deterministic rule-based static analysis of GNN models with experimental hypothesis generation; LLM-powered hypotheses are added opportunistically when an LLM provider is available.
 
 **Pipeline Step**: Step 19: Research tools (19_research.py)
 
 **Category**: Research / Experimental Analysis
 
-**Status**: ✅ Production Ready
+**Status**: Production Ready
 
 **Version**: 3.2.0
 
-**Last Updated**: 2026-04-16
+**Last Updated**: 2026-09-02
 
 ---
 
 ## Core Functionality
 
-### Primary Responsibilities
-1. Advanced research analysis and experimentation
-2. Research methodology implementation and validation
-3. Experimental feature development and testing
-4. Research data collection and analysis
-5. Publication and documentation support
-6. Research collaboration tools
-
-### Key Capabilities
-- **Rule-Based Hypothesis Generation**: Uses static analysis heuristics to suggest model improvements.
-- **Complexity Analysis**: Detects high-dimensional matrices (>10 dims) to suggest reduction techniques.
-- **Structural Diagnostics**: Analyzes variable-to-connection ratios to identify sparse causal structures.
-- **Automated Reporting**: Generates markdown reports justifying every hypothesis with discovered evidence.
+1. Detect model family (POMDP, MDP, continuous, mixed, etc.) from GNN content
+2. Extract state-space dimensions and connection counts
+3. Generate evidence-backed hypotheses from rule-based structural diagnostics
+4. Opportunistically enrich hypotheses via LLM when a provider is available
+5. Write a markdown research report and JSON result summaries
 
 ---
 
@@ -38,17 +30,14 @@
 
 ### Public Functions
 
-#### `process_research(target_dir: Path, output_dir: Path, verbose: bool = False, logger: Optional[logging.Logger] = None, **kwargs) -> bool`
-**Description**: Main research processing function called by orchestrator (19_research.py). Performs rule-based hypothesis generation and research analysis.
+#### `process_research(target_dir: Path, output_dir: Path, verbose: bool = False, **kwargs) -> bool`
+**Description**: Main research processing function called by orchestrator (19_research.py). Runs rule-based analysis per GNN file and writes reports.
 
 **Parameters**:
-- `target_dir` (Path): Directory containing research data (GNN files)
+- `target_dir` (Path): Directory containing GNN files
 - `output_dir` (Path): Output directory for research results
 - `verbose` (bool): Enable verbose logging (default: False)
-- `logger` (Optional[logging.Logger]): Logger instance (default: None)
-- `analysis_type` (str, optional): Type of analysis ("comprehensive", "statistical", "experimental") (default: "comprehensive")
-- `generate_hypotheses` (bool, optional): Generate research hypotheses (default: True)
-- `**kwargs`: Additional research options
+- `**kwargs`: Accepted and ignored; reserved for pipeline-template compatibility
 
 **Returns**: `bool` - True if research processing succeeded, False otherwise
 
@@ -56,17 +45,14 @@
 ```python
 from research import process_research
 from pathlib import Path
-import logging
 
-logger = logging.getLogger(__name__)
 success = process_research(
     target_dir=Path("input/gnn_files"),
     output_dir=Path("output/19_research_output"),
-    logger=logger,
     verbose=True,
-    analysis_type="comprehensive",
 )
 ```
+
 
 #### `generate_rule_based_hypotheses(content: str, model_name: str, output_dir: Path, logger: logging.Logger) -> Tuple[List[Dict], str]`
 **Description**: Core rule-based hypothesis generation engine. Analyzes GNN model content, detects complexity patterns, structural diagnostics, and generates evidence-backed hypotheses.
@@ -93,32 +79,25 @@ success = process_research(
 ## Dependencies
 
 ### Required Dependencies
-- `numpy` - Numerical computations
-- `pandas` - Data analysis
-- `matplotlib` - Research visualization
+Standard library only (`json`, `logging`, `re`, `pathlib`) — imports are unconditional by design; no external analysis packages are used.
 
 ### Optional Dependencies
-- `scipy` - Advanced statistical analysis
-- `scikit-learn` - Machine learning research tools
-- `jupyter` - Interactive research notebooks
+- LLM provider (Ollama / OpenAI-compatible) - opportunistic LLM-powered hypothesis enrichment; skipped entirely without one
 
 ### Internal Dependencies
 - `utils.pipeline_template` - Pipeline utilities
+- `llm.llm_processor` - Optional LLM hypothesis generation
 
 ---
 
 ## Configuration
 
-### Research Settings
-```python
-RESEARCH_CONFIG = {
-    "analysis_types": ["statistical", "experimental", "comparative"],
-    "output_formats": ["markdown", "html", "pdf"],
-    "visualization_style": "publication",
-    "statistical_significance": 0.05,
-    "include_methodology": True,
-}
-```
+### Environment Variables
+
+None dedicated to this module. Hypothesis generation is fixed by
+`generate_rule_based_hypotheses()` rules in `research/processor.py`; LLM
+enrichment uses the shared Step 13+ LLM configuration (`OLLAMA_MODEL` env /
+`llm.defaults`).
 
 ---
 
@@ -129,30 +108,10 @@ RESEARCH_CONFIG = {
 from research.processor import process_research
 
 success = process_research(
-    target_dir="research_data/",
-    output_dir="output/19_research_output",
-    analysis_type="comprehensive",
-)
-```
-
-### Advanced Research Analysis
-```python
-from research.processor import generate_rule_based_hypotheses
-
-hypotheses, report = generate_rule_based_hypotheses(
-    content=gnn_content,
-    model_name="my_model",
+    target_dir=Path("input/gnn_files"),
     output_dir=Path("output/19_research_output"),
-    logger=logger,
+    verbose=True,
 )
-```
-
-### Model Family Detection
-```python
-from research.processor import detect_model_family
-
-family = detect_model_family(gnn_content)
-print(f"Model family: {family}")  # e.g., "POMDP"
 ```
 
 ---
@@ -179,34 +138,24 @@ output/19_research_output/
 ## Performance Characteristics
 
 ### Latest Execution
-- **Duration**: Variable (depends on research complexity)
-- **Memory**: ~50-200MB for complex analyses
-- **Status**: ✅ Production Ready
 
-### Expected Performance
-- **Statistical Analysis**: 1-5 minutes
-- **Experimental Analysis**: 5-30 minutes
-- **Report Generation**: < 1 minute
-- **Visualization**: 30 seconds - 2 minutes
+- Rule-based analysis completes in milliseconds per model (pure static analysis)
+- LLM enrichment adds one provider round-trip per model when enabled
 
 ---
 
 ## Error Handling
 
 ### Research Errors
-1. **Data Quality Issues**: Invalid or insufficient research data
-2. **Analysis Failures**: Statistical or computational errors
-3. **Visualization Errors**: Plot generation failures
-4. **Report Generation**: Documentation creation errors
+1. **Data Quality Issues**: GNN files with missing or malformed sections (fewer hypotheses generated)
+2. **Analysis Failures**: Per-file analysis failures logged and skipped
+3. **LLM Errors**: Enrichment failures logged; rule-based results still written
 
 ### Recovery Strategies
-- **Data Cleaning**: Automatic data quality improvement
-- **Analysis Recovery**: Alternative analysis methods
-- **Visualization Recovery**: Simplified visualizations
-- **Report Recovery**: Error-aware report generation
+- **Analysis Recovery**: Remaining files still analyzed when one fails
+- **LLM Recovery**: Rule-based hypotheses and report written regardless of LLM availability
 
 ---
-
 ## Integration Points
 
 ### Orchestrated By
@@ -217,12 +166,11 @@ output/19_research_output/
 - `utils.pipeline_template` - Pipeline utilities
 
 ### Imported By
-- Research-specific applications
-- `tests.test_research_*` - Research tests
+- `src/tests/research/*` - Research tests
 
 ### Data Flow
 ```
-Research Data → Analysis → Visualization → Report Generation → Publication
+GNN Files → Static Analysis (family, dims, connections) → Rule-Based Hypotheses → (optional) LLM Enrichment → research_report.md + JSON summaries
 ```
 
 ---
@@ -232,37 +180,31 @@ Research Data → Analysis → Visualization → Report Generation → Publicati
 ### Test Files
 - `src/tests/research/test_research_overall.py` - Module-level tests
 - `src/tests/research/test_research_functional.py` - Functional tests
+- `src/tests/research/test_research_mcp_tools.py` - MCP tool tests
 
 ### Test Coverage
 Measure on demand:
 
 ```bash
-uv run --extra dev python -m pytest src/tests/test_research*.py \
+uv run --extra dev python -m pytest src/tests/research/ \
     --cov=src/research --cov-report=term-missing
 ```
+
 ### Key Test Scenarios
-1. Research analysis with various data types
-2. Report generation and formatting
-3. Visualization creation
-4. Error handling and recovery
+1. Model-family detection across GNN variants
+2. Hypothesis generation from structural rules
+3. Degradation without an LLM provider
+4. Error handling with malformed models
 
 ---
 
 ## MCP Integration
 
 ### Tools Registered
-- `research.analyze_data` - Perform research analysis
-- `research.generate_report` - Generate research reports
-- `research.create_visualization` - Create research visualizations
-- `research.validate_methodology` - Validate research methodology
-
-### Tool Endpoints
-```python
-@mcp_tool("research.analyze_data")
-def analyze_research_data_tool(data, analysis_type="comprehensive"):
-    """Perform research analysis on data"""
-    # Implementation
-```
+- `process_research` - Run research processing on a directory
+- `list_research_topics` - List available research analysis topics
+- `read_research_results` - Read results from a previous research run
+- `get_research_module_info` - Return module metadata
 
 ### MCP File Location
 - `src/research/mcp.py` - MCP tool registrations
@@ -274,34 +216,29 @@ def analyze_research_data_tool(data, analysis_type="comprehensive"):
 ### Common Issues
 
 #### Issue 1: Hypothesis generation produces no results
-**Symptom**: Research analysis completes but no hypotheses generated  
-**Cause**: Model structure doesn't match rule patterns or analysis incomplete  
-**Solution**: 
-- Verify GNN model has complete structure
+**Symptom**: Research analysis completes but no hypotheses generated
+**Cause**: Model structure doesn't match rule patterns (e.g., missing dimension blocks or Connections section)
+**Solution**:
+- Verify GNN model has complete StateSpaceBlock/Connections sections
 - Check that model has variables and connections
 - Use `--verbose` flag for detailed analysis logs
-- Review rule-based analysis patterns
 
-#### Issue 2: Research report generation fails
-**Symptom**: Analysis succeeds but report generation errors  
-**Cause**: Report template issues or output format problems  
+#### Issue 2: LLM enrichment absent
+**Symptom**: Only rule-based hypotheses in the report
+**Cause**: No LLM provider available or Step 13+ LLM configuration unset
 **Solution**:
-- Check output directory permissions
-- Verify report format is supported
-- Review report template structure
-- Use default markdown format if issues persist
+- Start Ollama or configure a provider; this is optional by design
 
 ---
 
 ## Version History
 
-### Current Version: 3.0.0
+### Current Version: 1.6.0 (module `__init__.py`), pipeline release 3.2.0
 
 **Features**:
 - Rule-based hypothesis generation
-- Complexity analysis
-- Structural diagnostics
-- Automated reporting
+- Model-family detection and structural diagnostics
+- Automated evidence-backed reporting
 
 **Known Issues**:
 - None currently
@@ -324,11 +261,11 @@ def analyze_research_data_tool(data, analysis_type="comprehensive"):
 
 ---
 
-**Last Updated**: 2026-04-16
+**Last Updated**: 2026-09-02
 **Maintainer**: GNN Pipeline Team
-**Status**: ✅ Production Ready
+**Status**: Production Ready
 **Version**: 3.2.0
-**Architecture Compliance**: ✅ 100% Thin Orchestrator Pattern
+**Architecture Compliance**: Thin Orchestrator Pattern
 
 ---
 ## Documentation

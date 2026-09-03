@@ -2,35 +2,35 @@
 
 ## Module Overview
 
-**Purpose**: Generate audio representations and sonifications of GNN models using SAPF, Pedalboard, and other audio backends
+**Purpose**: Generate tonal, rhythmic, ambient, and sonification WAV renderings of GNN models with NumPy synthesis, plus SAPF (Sound As Pure Form) code generation and optional streaming chunk metadata from Step 12 telemetry
 
 **Pipeline Step**: Step 15: Audio processing (15_audio.py)
 
 **Category**: Audio Generation / Sonification
 
-**Status**: ✅ Production Ready
+**Status**: Production Ready
 
-**Version**: 3.2.0
+**Version**: 3.2.0 (package version; the module-level `__version__` in `__init__.py` is tracked independently)
 
-**Last Updated**: 2026-04-16
+**Last Updated**: 2026-09-02
 
 ---
 
 ## Core Functionality
 
 ### Primary Responsibilities
-1. Convert GNN specifications to audio representations
-2. Generate SAPF (Structured Audio Processing Format) code
-3. Apply audio effects with Pedalboard
-4. Create sonifications of model dynamics
-5. Support multiple audio backends
+1. Convert GNN specifications to audio representations (tonal, rhythmic, ambient)
+2. Generate SAPF (Sound As Pure Form) code via the `sapf/` sub-package
+3. Create sonifications of model dynamics
+4. Emit streaming chunk metadata when execution telemetry is available
+5. Probe optional audio libraries (`soundfile`, `librosa`, `pedalboard`)
 
 ### Key Capabilities
 - SAPF code generation from GNN models
-- Audio synthesis and processing
-- Model sonification (state transitions, observations)
-- Multi-backend support (SAPF, Pedalboard, Pure Data)
-- WAV file generation
+- NumPy audio synthesis (oscillators, envelopes, channel mixing)
+- Model sonification (state transitions, time configuration)
+- Backend probing (`check_audio_backends`)
+- WAV file generation with a stdlib fallback writer
 
 ---
 
@@ -38,27 +38,35 @@
 
 ### Public Functions
 
-#### `process_audio(target_dir, output_dir, verbose=False, logger=None, **kwargs) -> bool`
+#### `process_audio(target_dir, output_dir, verbose=False, **kwargs) -> bool`
 **Description**: Main audio processing function called by orchestrator (15_audio.py)
 
 **Parameters**:
 - `target_dir` (Path): Directory containing GNN files
 - `output_dir` (Path): Output directory for audio files
-- `audio_backend` (str): Audio backend ("auto", "sapf", "pedalboard")
-- `duration` (float): Audio duration in seconds
-- `**kwargs**: Additional options
+- `verbose` (bool): Enable verbose logging
+- `**kwargs`: Streaming options (see Configuration)
 
 **Returns**: `True` if audio generation succeeded
 
-#### `generate_audio_from_gnn(gnn_model, duration=30.0) -> Path`
-**Description**: Generate audio file from GNN model
+#### `generate_audio_from_gnn(file_path_or_content, output_dir=None, verbose=False) -> Dict[str, Any]`
+**Description**: Generate tonal, rhythmic, and ambient WAV files from a GNN file path or raw GNN content
 
-**Returns**: Path to generated WAV file
+**Returns**: Dictionary with `file_path`, `file_name`, `audio_files` (type → path), `variables_count`, `connections_count`, `generation_timestamp`. Raises `ValueError` when `output_dir` is `None` and `RuntimeError` on generation failure.
 
-#### `create_sonification(gnn_model, **kwargs) -> bytes`
-**Description**: Create sonification of model dynamics
+#### `create_sonification(file_path, output_dir, verbose=False) -> Dict[str, Any]`
+**Description**: Create a dynamics-driven sonification WAV of the model
 
-**Returns**: Audio data as bytes
+**Returns**: Dictionary with `file_path`, `sonification_file`, `dynamics_analyzed`, `sonification_type`, `generation_timestamp`
+
+#### `analyze_audio_characteristics(audio_result, verbose=False) -> Dict[str, Any]`
+**Description**: Read each generated WAV (requires `soundfile`) and compute duration, amplitude, and spectral metrics
+
+#### `check_audio_backends() -> Dict[str, Any]`
+**Description**: Report availability and version of `librosa`, `soundfile`, `pedalboard`, and `numpy`
+
+#### `generate_audio_summary(results) -> str`
+**Description**: Render the Markdown written to `audio_summary.md`
 
 ---
 
@@ -66,28 +74,15 @@
 
 ### Configuration Options
 
-#### Audio Backend Selection
-- `audio_backend` (str): Audio backend to use (default: `"auto"`)
-  - `"auto"`: Automatically select best available backend
-  - `"sapf"`: Use SAPF backend
-  - `"pedalboard"`: Use Pedalboard backend
-  - `"pure_data"`: Use Pure Data backend
+#### Streaming Options (`process_audio` kwargs consumed by `_process_audio_streaming`)
+- `telemetry` (dict): Inline execution trace
+- `telemetry_file` / `telemetry_files` (path or list of paths): Telemetry JSON files to load
+- `execution_output_dir` / `execution_results_dir` (path): Directory of Step 12 outputs; when omitted a sibling `12_execute_output/` next to `output_dir` is used if it exists
+- `audio_chunk_size` (int): Frames per streaming chunk (default: `32`)
 
-#### Audio Generation Parameters
-- `duration` (float): Audio duration in seconds (default: `30.0`)
-- `sample_rate` (int): Audio sample rate in Hz (default: `44100`)
-- `channels` (int): Number of audio channels (default: `1` for mono, `2` for stereo)
-
-#### Sonification Strategy
-- `sonification_strategy` (str): Strategy for model-to-sound mapping (default: `"default"`)
-  - `"default"`: Standard mapping (states→pitch, observations→timbre)
-  - `"harmonic"`: Emphasize harmonic relationships
-  - `"rhythmic"`: Emphasize temporal patterns
-  - `"textural"`: Emphasize timbral variations
-
-#### SAPF Configuration
-- `sapf_output_format` (str): SAPF output format (default: `"python"`)
-  - Options: `"python"`, `"json"`, `"yaml"`
+#### Fixed Generation Parameters
+- Sample rate is 44100 Hz for every generator; the stdlib fallback writes 16-bit mono PCM
+- Duration is derived from the model content (variable/connection counts and time configuration), not from a kwarg
 
 ---
 
@@ -95,12 +90,11 @@
 
 ### Required Dependencies
 - `numpy` - Audio sample generation
-- `soundfile` - WAV file I/O
 
-### Optional Dependencies
-- `librosa` - Audio analysis (recovery: basic generation)
-- `pedalboard` - Audio effects (recovery: skip effects)
-- `sapf` - SAPF backend (recovery: skip SAPF)
+### Optional Dependencies (`audio` extra)
+- `soundfile` - WAV file I/O and reading for `analyze_audio_characteristics` (recovery: stdlib WAV writer; analysis records per-type errors)
+- `librosa` - Reported by `check_audio_backends()`; not used by the generation path
+- `pedalboard` - Reported by `check_audio_backends()`; planned effects processing (see `pedalboard/`)
 
 ---
 
@@ -113,18 +107,20 @@ from audio import process_audio
 success = process_audio(
     target_dir=Path("input/gnn_files"),
     output_dir=Path("output/15_audio_output"),
-    audio_backend="auto",
-    duration=30.0,
+    verbose=True,
 )
 ```
 
 ### Generate Specific Audio
 ```python
 from audio import generate_audio_from_gnn
-from gnn import load_parsed_model
 
-model = load_parsed_model("actinf_pomdp_agent.md")
-audio_file = generate_audio_from_gnn(model, duration=60.0)
+# Accepts a file path or raw GNN content
+results = generate_audio_from_gnn(
+    Path("input/gnn_files/actinf_pomdp_agent.md"),
+    output_dir=Path("output/15_audio_output/actinf_pomdp_agent"),
+)
+print(results["audio_files"])  # {"tonal": ..., "rhythmic": ..., "ambient": ...}
 ```
 
 ---
@@ -132,17 +128,23 @@ audio_file = generate_audio_from_gnn(model, duration=60.0)
 ## Output Specification
 
 ### Output Products
-- `*.wav` - Generated audio files
-- `*_sapf.py` - SAPF code files
+- `{model}_tonal.wav`, `{model}_rhythmic.wav`, `{model}_ambient.wav` - Generated audio renderings
+- `{model}_sonification.wav` - Dynamics-driven sonification
 - `audio_results.json` - Processing results
 - `audio_summary.md` - Processing summary
+- `audio_stream_manifest.json`, `audio_stream_chunks.json` - Streaming metadata, written when `_process_audio_streaming` finds telemetry (inline kwargs, telemetry files, or `12_execute_output/execution_summary.json` and per-run telemetry JSON under the sibling Step 12 output directory)
 
 ### Output Directory Structure
 ```
 output/15_audio_output/
+├── {model}_tonal.wav
+├── {model}_rhythmic.wav
+├── {model}_ambient.wav
 ├── {model}_sonification.wav
 ├── audio_results.json
-└── audio_summary.md
+├── audio_summary.md
+├── audio_stream_manifest.json   # when telemetry is available
+└── audio_stream_chunks.json     # when telemetry is available
 ```
 
 ---
@@ -150,16 +152,8 @@ output/15_audio_output/
 ## Performance Characteristics
 
 ### Latest Execution
-- **Duration**: 114ms
-- **Memory**: 19.09 MB
-- **Status**: SUCCESS
-- **Files Processed**: 1
-- **Audio Generated**: 0 (module in development)
-
-### Audio Generation Times
-- **SAPF Generation**: ~50ms per model
-- **WAV Rendering**: ~1-5s for 30s audio
-- **Effects Processing**: +500ms-2s with Pedalboard
+See `output/15_audio_output/audio_results.json` and the pipeline summary for the
+current run's duration, memory, and file counts; this document does not track them.
 
 ---
 
@@ -177,21 +171,19 @@ output/15_audio_output/
 ## Error Handling
 
 ### Graceful Degradation
-- **No SAPF**: Skip SAPF generation, log warning, continue with other backends
-- **No Pedalboard**: Skip effects processing, use basic audio generation
-- **No soundfile**: Return error, cannot generate WAV files
-- **Invalid GNN model**: Return structured error, skip model
+- **No soundfile**: WAV files are still written by `write_basic_wav`; `analyze_audio_characteristics` records an `error` per audio type
+- **No telemetry**: Streaming artifacts are skipped; the main renderings are unaffected
+- **Invalid GNN model**: `generate_audio_from_gnn` raises `RuntimeError`; `process_audio` records the failure for that file and continues
 
 ### Error Categories
-1. **Backend Unavailable**: Framework not installed (recovery: skip backend)
-2. **Audio Generation Failure**: Cannot generate audio (return error)
-3. **File I/O Errors**: Cannot write WAV files (return error)
-4. **Model Parsing Errors**: Invalid GNN structure (skip model, log error)
+1. **Missing optional library**: Reported by `check_audio_backends()`; generation continues
+2. **Audio Generation Failure**: `RuntimeError` from `generate_audio_from_gnn` / `create_sonification`
+3. **File I/O Errors**: `OSError` from `save_audio_file` (non-WAV targets re-raise when `soundfile` is unavailable)
+4. **Model Parsing Errors**: Empty variable/connection lists produce short, quiet renderings rather than an exception
 
 ### Error Recovery
-- **Backend Recovery**: Automatically try next available backend
-- **Partial Generation**: Generate what's possible, report failures
-- **Resource Cleanup**: Proper cleanup of audio resources on errors
+- **Partial Generation**: Generate what's possible, report failures in `audio_results.json`
+- **Per-file isolation**: One failing GNN file does not abort the step
 
 ---
 
@@ -203,14 +195,13 @@ output/15_audio_output/
 - **Dependencies**: Requires GNN parsing results from `3_gnn.py` output
 
 ### Module Dependencies
-- **gnn/**: Reads parsed GNN model data for sonification
-- **sapf/**: Uses SAPF module for structured audio generation
-- **export/**: Uses export formats for audio metadata
+- **utils/**: Pipeline logging and step helpers
+- **audio/sapf/**: SAPF code generation and synthesis (also re-exported by the top-level `sapf` package)
+- **audio/streaming.py**: Converts Step 12 execution traces into chunk metadata
 
 ### External Integration
-- **SAPF Backend**: Integrates with SAPF audio processing framework
-- **Pedalboard**: Optional integration for audio effects
-- **Pure Data**: Optional integration for advanced audio processing
+- **soundfile**: Optional WAV I/O
+- **Pedalboard**: Planned effects processing; currently probe-only
 
 ### Data Flow
 ```
@@ -228,14 +219,13 @@ output/15_audio_output/
 ## Testing
 
 ### Test Files
-- `src/tests/audio/test_audio_integration.py`
-- `src/tests/audio/test_audio_sapf.py`
+- `src/tests/audio/` (generation, edge cases, integration, MCP tools, overall, SAPF, streaming)
 
 ### Test Coverage
 Measure on demand:
 
 ```bash
-uv run --extra dev python -m pytest src/tests/test_audio*.py \
+uv run --extra dev python -m pytest src/tests/audio/ \
     --cov=src/audio --cov-report=term-missing
 ```
 ### Key Test Scenarios
@@ -249,16 +239,22 @@ uv run --extra dev python -m pytest src/tests/test_audio*.py \
 ## MCP Integration
 
 ### Tools Registered
-- `audio.generate_audio` - Generate audio from GNN model
-- `audio.create_sonification` - Create model sonification
-- `audio.validate_backend` - Validate audio backend
+- `process_audio` - Run the Step 15 audio processing over a directory
+- `check_audio_backends` - Report optional library availability
+- `get_audio_generation_options` - List generation options
+- `analyze_audio_characteristics` - Analyze a generated audio file
+- `validate_audio_content` - Validate audio content
+- `get_audio_module_info` - Module metadata and features
 
 ### Tool Endpoints
 ```python
-@mcp_tool("audio.generate_audio")
-def generate_audio_tool(gnn_content: str, duration: float = 30.0) -> Dict[str, Any]:
-    """Generate audio from GNN content"""
-    # Implementation
+def register_tools(mcp_instance):
+    mcp_instance.register_tool(
+        "process_audio",
+        process_audio_mcp,
+        {"target_directory": {...}, "output_directory": {...}, "verbose": {...}},
+        "Process GNN files with audio generation and sonification",
+    )
 ```
 
 ### MCP File Location
@@ -274,9 +270,9 @@ def generate_audio_tool(gnn_content: str, duration: float = 30.0) -> Dict[str, A
 **Symptom**: Audio generation fails with backend errors  
 **Cause**: Required audio libraries not installed  
 **Solution**: 
-- Install audio dependencies: `uv pip install soundfile librosa pedalboard`
-- Check backend availability: `python -c "import soundfile; print('OK')"`
-- Use `--audio-backend auto` for automatic selection
+- Install audio dependencies: `uv sync --extra audio`
+- Check backend availability: `python -c "from audio import check_audio_backends; print(check_audio_backends())"`
+- Generation itself needs only `numpy`; missing optional libraries only reduce analysis
 
 #### Issue 2: WAV file generation fails
 **Symptom**: Audio processing completes but no WAV files created  
@@ -290,21 +286,21 @@ def generate_audio_tool(gnn_content: str, duration: float = 30.0) -> Dict[str, A
 **Symptom**: Generated audio files are silent  
 **Cause**: Model dynamics not extracted or sonification strategy mismatch  
 **Solution**:
-- Verify GNN model has state transitions or dynamics
-- Try different sonification strategies
-- Check audio sample rate and duration settings
+- Verify GNN model has a `Time` section and state transitions
+- Inspect `dynamics_analyzed` in the `create_sonification` result
+- Check the `audio_characteristics` block in `audio_results.json`
 
 ---
 
 ## Version History
 
-### Current Version: 3.0.0
+### Current Version: 3.2.0
 
 **Features**:
 - SAPF code generation
-- Audio synthesis and processing
+- NumPy audio synthesis
 - Model sonification
-- Multi-backend support
+- Streaming chunk metadata from Step 12 telemetry
 
 **Known Issues**:
 - None currently
@@ -330,11 +326,11 @@ def generate_audio_tool(gnn_content: str, duration: float = 30.0) -> Dict[str, A
 
 ---
 
-**Last Updated**: 2026-04-16
+**Last Updated**: 2026-09-02
 **Maintainer**: GNN Pipeline Team
-**Status**: ✅ Production Ready
+**Status**: Production Ready
 **Version**: 3.2.0
-**Architecture Compliance**: ✅ 100% Thin Orchestrator Pattern
+**Architecture Compliance**: Thin Orchestrator Pattern
 
 
 ---

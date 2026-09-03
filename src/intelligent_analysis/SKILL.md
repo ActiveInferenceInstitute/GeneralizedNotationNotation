@@ -37,27 +37,31 @@ from intelligent_analysis import (
 )
 
 # Process intelligent analysis step (used by pipeline)
-process_intelligent_analysis(target_dir, output_dir, verbose=True)
+process_intelligent_analysis(target_dir, output_dir, logger)
 
 # Use the IntelligentAnalyzer class
-analyzer = IntelligentAnalyzer()
+analyzer = IntelligentAnalyzer(context=AnalysisContext(summary_data=pipeline_data))
+results = analyzer.analyze()
 
 # Analyze pipeline summary
 summary = analyze_pipeline_summary(pipeline_data)
 
 # Generate executive report
-report = generate_executive_report(analysis_results)
+report = generate_executive_report(
+    analysis, bottlenecks, failures, recommendations,
+    step_analyses, flags_by_type,
+)
 
 # Health scoring
 score = calculate_pipeline_health_score(pipeline_data)
 
 # Identify bottlenecks and generate recommendations
-bottlenecks = identify_bottlenecks(step_data)
-recs = generate_recommendations(analysis_results)
+bottlenecks = identify_bottlenecks(step_data, threshold_seconds=60.0)
+recs = generate_recommendations(analysis, bottlenecks, flags_by_type)
 
 # Performance pattern detection
-patterns = detect_performance_patterns(metrics)
-suggestions = generate_optimization_suggestions(patterns)
+patterns = detect_performance_patterns(pipeline_data)
+suggestions = generate_optimization_suggestions(pipeline_data)
 ```
 
 ## Key Exports

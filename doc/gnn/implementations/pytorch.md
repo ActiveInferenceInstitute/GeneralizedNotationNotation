@@ -19,6 +19,19 @@ This enables a continuous learning trajectory: start with hand-specified GNN mat
 | Execution (Step 12) | `src/execute/pytorch/pytorch_runner.py` | Subprocess launch, log persistence |
 | Analysis (Step 16) | `src/analysis/pytorch/analyzer.py` | Loss curves, belief accuracy, action histograms |
 
+## Continuous (linear-Gaussian) models
+
+`pytorch_renderer.py` branches on `_is_continuous_spec`: continuous
+specifications (`F`/`H`/`Q`/`R`, `prior_mean`/`prior_cov`, optional `u`,
+`goal_mean`, `control_gain`) are rendered by `_render_continuous`, which calls the
+shared generator `src/render/continuous_script.py` with the `pytorch` target. The
+emitted script runs an online Kalman filter (closed-loop when `goal_mean` and
+`control_gain` are declared) and writes the continuous result schema (`beliefs` as
+posterior means, `posterior_cov`, `true_states_continuous`,
+`observations_continuous`, `controls`, `rmse_vs_true`). `torch` remains a manual
+install: the framework registry marks PyTorch `available: False` because the
+package is intentionally excluded from `pyproject.toml` (GHSA-rrmf-rvhw-rf47).
+
 ## Model Initialization
 
 GNN matrices are extracted and converted to PyTorch tensors:
@@ -88,10 +101,13 @@ for t in range(T):
 
 ## Installation
 
+`torch` is a manual install (intentionally excluded from `pyproject.toml` while
+GHSA-rrmf-rvhw-rf47 has no patched release):
+
 ```bash
-pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
+uv pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
 # GPU (CUDA 12.x):
-pip install torch torchvision --index-url https://download.pytorch.org/whl/cu121
+uv pip install torch torchvision --index-url https://download.pytorch.org/whl/cu121
 ```
 
 `torch` is an optional dependency — the pipeline gracefully skips PyTorch steps if not installed. Check with:

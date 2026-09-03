@@ -190,7 +190,7 @@ explicit `--target-dir`.
 Useful commands:
 
 ```bash
-cat output/00_pipeline_summary/pipeline_execution_summary.json | python -m json.tool
+cat output/00_pipeline_summary/pipeline_execution_summary.json | uv run python -m json.tool
 find output -maxdepth 3 -type f -name '*.log' -o -name '*.json' | sort | head -80
 ```
 

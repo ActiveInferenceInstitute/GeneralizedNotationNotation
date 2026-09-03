@@ -32,7 +32,7 @@ Basic understanding helps, but GNN can be learned incrementally:
 
 - **Beginners**: Start with [simple examples](../gnn/tutorials/gnn_examples_doc.md) and [basic concepts](../gnn/about_gnn.md)
 - **Intermediate**: Learn [Active Inference fundamentals](https://www.fil.ion.ucl.ac.uk/~karl/The%20free-energy%20principle%20A%20unified%20brain%20theory.pdf)
-- **Advanced**: Explore [research applications](../gnn/gnn_paper.md) and [complex models](../other/)
+- **Advanced**: Explore [research applications](../gnn/gnn_paper.md) and [complex models](../../input/gnn_files/)
 
 ## 🛠️ Getting Started
 
@@ -48,11 +48,11 @@ cd GeneralizedNotationNotation
 # Install dependencies using UV (recommended)
 uv sync
 
-# Or install with all optional dependencies
-uv sync --extra all
+# Or install dev extras
+uv sync --extra dev
 
 # Run the main pipeline on examples
-python src/main.py --target-dir input/gnn_files/ --output-dir output/
+uv run python src/main.py --target-dir input/gnn_files/ --output-dir output/
 ```
 
 ### What's the easiest way to create my first model?
@@ -131,7 +131,7 @@ For large state spaces:
 
 1. **Section headers**: Use exact names like `## StateSpaceBlock`
 2. **Variable naming**: Use underscores, not spaces: `s_f0` not `s f0`
-3. **Bracket types**: Use `[]` for dimensions, `{}` for values, `()` for connections
+3. **Bracket types**: Use `[]` for dimensions, `{}` for values, `>` or `-` for connections
 4. **Missing variables**: All variables in connections must be defined in StateSpaceBlock
 
 See [Common Errors Guide](common_errors.md) for detailed troubleshooting.
@@ -143,7 +143,7 @@ See [Common Errors Guide](common_errors.md) for detailed troubleshooting.
 1. **Probability constraints**: All rows/columns sum to 1
 2. **Dimension compatibility**: Matrix sizes match variable definitions
 3. **Type consistency**: Variables have compatible types
-4. **Run the type checker**: `python src/5_type_checker.py`
+4. **Run the type checker**: `uv run python src/5_type_checker.py --target-dir <model-dir>`
 
 ### Can I use custom mathematical functions?
 
@@ -247,7 +247,7 @@ See [Performance Guide](performance.md) for optimization strategies.
 **Support channels:**
 
 1. **Documentation**: Start with [troubleshooting guides](common_errors.md)
-2. **Examples**: Check similar models in [`doc/other/`](../other/)
+2. **Examples**: Check similar models in `input/gnn_files/`
 3. **GitHub Issues**: Report bugs and ask questions
 4. **GitHub Discussions**: Community Q&A and brainstorming
 5. **Active Inference Institute**: Connect with the broader community
@@ -455,7 +455,8 @@ t_index[1,type=int]        # Current time index
 
 ## Connections
 # Time-dependent transitions
-(B_f0, B_modulation, t_index) -> time_varying_transitions
+B_modulation>B_f0
+t_index>B_f0
 ```
 
 ### How do I implement learning in GNN models?
@@ -478,8 +479,8 @@ prediction_error[4,type=float]    # Error signal for learning
 
 ## Connections
 # Learning update rule
-(prediction_error, A_m0_learning_rate) -> parameter_update
-(parameter_update, A_m0) -> A_m0_next
+prediction_error>A_m0_learning_rate
+A_m0_learning_rate>A_m0
 ```
 
 ### How do I model hierarchical goals?
@@ -499,8 +500,10 @@ goal_weight_12[4,2,type=float] # How strategic goals influence tactical
 
 ## Connections
 # Top-down goal propagation
-(goal_level_2) -> (goal_weight_12) -> (goal_level_1)
-(goal_level_1) -> (goal_weight_01) -> (goal_level_0)
+goal_level_2>goal_weight_12
+goal_weight_12>goal_level_1
+goal_level_1>goal_weight_01
+goal_weight_01>goal_level_0
 ```
 
 ---
@@ -515,15 +518,12 @@ goal_weight_12[4,2,type=float] # How strategic goals influence tactical
 # Install Jupyter extensions
 uv pip install jupyter ipywidgets
 
-# GNN notebook setup
-import sys
-sys.path.append('../src')
-from gnn import parse_gnn_file, validate_model, render_to_pymdp
+# Run from the repository root
+from src.gnn import parse_gnn_file, validate_gnn_file
 
 # Load and process GNN model
-model = parse_gnn_file('my_model.gnn')
-validation_result = validate_model(model)
-pymdp_code = render_to_pymdp(model)
+model = parse_gnn_file('my_model.md')
+validation_result = validate_gnn_file('my_model.md')
 
 # Interactive widgets for parameter tuning
 from ipywidgets import interact, FloatSlider
@@ -700,11 +700,17 @@ learning_rate=0.05    # Higher = faster adaptation, less stability
 # Use factorized representation:
 s_f0_x[10,1,type=int]  # X coordinate
 s_f0_y[10,1,type=int]  # Y coordinate
+A_m0_x[10,10,type=float]  # X likelihood
+A_m0_y[10,10,type=float]  # Y likelihood
+o_m0_x[10,1,type=int]  # X observation
+o_m0_y[10,1,type=int]  # Y observation
 
 # Conditional independence assumption
 ## Connections
-(s_f0_x) -> (A_m0_x) -> (o_m0_x)  # X observations
-(s_f0_y) -> (A_m0_y) -> (o_m0_y)  # Y observations
+s_f0_x>A_m0_x  # X observations
+A_m0_x>o_m0_x
+s_f0_y>A_m0_y  # Y observations
+A_m0_y>o_m0_y
 ```
 
 ---
@@ -871,8 +877,8 @@ def profile_gnn_pipeline():
     pr.enable()
     
     # Your GNN workflow
-    model = parse_gnn_file('large_model.gnn')
-    result = render_to_pymdp(model)
+    model = parse_gnn_file('large_model.md')
+    result = validate_gnn_file('large_model.md')
     
     pr.disable()
     pr.print_stats(sort='time')
@@ -956,7 +962,7 @@ def chunked_simulation(agents, total_steps, chunk_size=100):
 
 - **Search this FAQ**: Use Ctrl+F to find specific topics
 - **Documentation index**: [Main documentation](../README.md)
-- **Examples gallery**: [Model examples](../other/)
+- **Examples gallery**: Model examples in `input/gnn_files/`
 - **Syntax reference**: [GNN syntax guide](../gnn/reference/gnn_syntax.md)
 
 ### Community Support
@@ -976,5 +982,4 @@ def chunked_simulation(agents, total_steps, chunk_size=100):
 ---
 
 **FAQ Version**: Compatible with GNN v1.x  
-**Total Questions**: 75+  
 **Covers**: Installation, Modeling, Frameworks, Advanced Topics, Troubleshooting, Contributing

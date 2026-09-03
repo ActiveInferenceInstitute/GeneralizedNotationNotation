@@ -6,13 +6,17 @@ Multi-framework rendering and code generation from GNN models.
 ## Components
 
 ### Framework Renderers
-- `jax/jax_renderer.py` - JAX code generation (1717 lines)
+- `jax/jax_renderer.py` - JAX code generation
 - `pymdp/pymdp_renderer.py` - PyMDP runner generation
-- `discopy/translator.py` - DisCoPy translation (1684 lines)
-- `rxinfer/toml_generator.py` - RxInfer TOML generation (1007 lines)
+- `discopy/translator.py` - DisCoPy translation
+- `rxinfer/rxinfer_renderer.py` - Canonical RxInfer.jl renderer (genuine `@model` + `infer()`); `toml_generator.py` is the retired TOML emitter (the `rxinfer_toml` target is no longer supported)
+- `stan/stan_renderer.py` - Stan program + cmdstanpy driver generation
+- `pytorch/pytorch_renderer.py`, `numpyro/numpyro_renderer.py` - generator-backed continuous backends
 
 ### Core
-- `generators.py` - Code generator utilities (1365 lines)
+- `generators.py` - Code generator utilities
+- `processor.py` - Step 11 entry point
+- `framework_registry.py` - Canonical framework inventory (`supports_continuous`, availability)
 
 ## Supported Frameworks
 - `pymdp`, `rxinfer`, `activeinference_jl`, `jax`, `discopy`, `pytorch`, `numpyro`, `stan`, and `bnlearn`.

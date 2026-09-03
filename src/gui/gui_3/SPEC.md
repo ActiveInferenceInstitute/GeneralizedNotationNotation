@@ -4,16 +4,16 @@
 
 ## Purpose
 
-Third-generation web-based GNN constructor interface.
+Third-generation GNN constructor interface: a Gradio-based State Space Design Studio.
 
 ## Features
 
-- Browser-based UI
-- Interactive graph editing
-- Collaborative editing support
-- Export to multiple GNN formats
+- Browser-based UI (Gradio `Blocks`)
+- State-space variable editing with dimension and type controls
+- Ontology term mapping and connection topology editing
+- Export to GNN markdown with live preview
 
 ## Technology
 
-- HTML5 + JavaScript frontend
-- Python backend server
+- `gradio` (optional; from the `gui` extra in `pyproject.toml`)
+- Headless fallback when Gradio is unavailable

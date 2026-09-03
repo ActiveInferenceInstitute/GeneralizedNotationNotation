@@ -2,38 +2,27 @@
 
 ## Module Overview
 
-**Purpose**: Security validation, access control, and threat detection for the GNN processing pipeline
+**Purpose**: Security scanning and validation for GNN pipeline files — injection-pattern and Python AST vulnerability detection, severity scoring, recommendations, and a pre-execution gate for rendered scripts.
 
 **Pipeline Step**: Step 18: Security validation (18_security.py)
 
-**Category**: Security / Access Control
+**Category**: Security / Vulnerability Scanning
 
-**Status**: ✅ Production Ready
+**Status**: Production Ready
 
 **Version**: 3.2.0
 
-**Last Updated**: 2026-04-16
+**Last Updated**: 2026-09-02
 
 ---
 
 ## Core Functionality
 
-### Primary Responsibilities
-1. Security validation of GNN models and pipeline components
-2. Access control and authorization management
-3. Threat detection and vulnerability assessment
-4. Secure data handling and encryption
-5. Security policy enforcement
-6. Audit logging and compliance reporting
-
-### Key Capabilities
-- Model security validation and risk assessment
-- Access control for sensitive operations
-- Threat detection and mitigation
-- Data encryption and secure storage
-- Security policy configuration
-- Audit trail maintenance
-- Compliance reporting
+1. Scan GNN files for injection patterns and suspicious constructs (pattern matching + Python AST analysis)
+2. Score files by vulnerability severity (0.0-1.0 security score)
+3. Generate actionable security recommendations per file
+4. Gate rendered scripts before Step 12 executes them (`scan_script_for_execution`)
+5. Write `security_results.json` and `security_summary.md`
 
 ---
 
@@ -41,51 +30,47 @@
 
 ### Public Functions
 
-#### `process_security(target_dir: Path, output_dir: Path, verbose: bool = False, logger: Optional[logging.Logger] = None, **kwargs) -> bool`
-**Description**: Main security processing function called by orchestrator (18_security.py). Validates security, assesses vulnerabilities, and checks compliance.
+#### `process_security(target_dir: Path, output_dir: Path, verbose: bool = False, **kwargs) -> bool`
+**Description**: Main security processing function called by orchestrator (18_security.py). Scans all GNN files in `target_dir` and writes reports.
 
 **Parameters**:
-- `target_dir` (Path): Directory containing files to validate
+- `target_dir` (Path): Directory containing GNN files to scan
 - `output_dir` (Path): Output directory for security reports
 - `verbose` (bool): Enable verbose logging (default: False)
-- `logger` (Optional[logging.Logger]): Logger instance (default: None)
-- `security_level` (str, optional): Security validation level ("basic", "standard", "strict") (default: "standard")
-- `check_vulnerabilities` (bool, optional): Enable vulnerability scanning (default: True)
-- `check_compliance` (bool, optional): Enable compliance checking (default: True)
-- `compliance_standards` (List[str], optional): Standards to check against (default: ["OWASP Top 10"])
+- `security_level` (str, via kwargs): `"basic"` (no scanning), `"standard"` (scan, report only), `"strict"` (scan + block on high severity) (default: `"standard"`)
+- `block_on` (str, via kwargs): Explicit blocking threshold (`low`/`medium`/`high`); makes any level enforcement-capable
+- `check_vulnerabilities` (bool, via kwargs): Force scanning on/off (strict mode cannot disable it)
 - `**kwargs`: Additional security options
 
-**Returns**: `bool` - True if security validation passed, False otherwise
+**Returns**: `bool` - True if security processing succeeded, False otherwise
 
 **Example**:
 ```python
 from security import process_security
 from pathlib import Path
-import logging
 
-logger = logging.getLogger(__name__)
 success = process_security(
     target_dir=Path("input/gnn_files"),
     output_dir=Path("output/18_security_output"),
-    logger=logger,
     verbose=True,
     security_level="strict",
-    compliance_standards=["OWASP Top 10", "CWE"],
 )
 ```
 
 #### `perform_security_check(file_path: Path, verbose: bool = False) -> Dict[str, Any]`
-**Description**: Perform comprehensive security check on a file (AST analysis for Python, pattern scanning for all files).
+**Description**: Sensitive-data and integrity check on a single file: scans for credential patterns (`password`, `secret`, `api_key`, `token`, `private_key`), hashes the exact bytes inspected (SHA-256), and scores the result.
 
 **Parameters**:
 - `file_path` (Path): Path to file to check
 - `verbose` (bool): Enable verbose logging
 
 **Returns**: `Dict[str, Any]` - Security check results with:
-- `file` (str): File path checked
-- `vulnerabilities` (List[Dict]): Detected vulnerabilities
+- `file_path` (str), `file_name` (str), `file_size` (int)
+- `file_hash` (str): SHA-256 of the raw bytes
+- `sensitive_patterns` (List[Dict]): Matched patterns with line number and redacted context
+- `file_permissions` (str)
 - `security_score` (float): Security score (0.0–1.0)
-- `recommendations` (List[Dict]): Security improvement recommendations
+- `check_timestamp` (str)
 
 #### `check_vulnerabilities(file_path: Path, verbose: bool = False) -> List[Dict[str, Any]]`
 **Description**: Scan a file for security vulnerabilities using pattern matching and Python AST analysis.
@@ -99,15 +84,13 @@ success = process_security(
 #### `generate_security_recommendations(file_path: Path, verbose: bool = False) -> List[Dict[str, Any]]`
 **Description**: Generate security improvement recommendations for a file.
 
-#### `calculate_security_score(vulnerabilities: List[Dict]) -> float`
-**Description**: Calculate overall security score (0.0–1.0) based on vulnerability severity weights.
-
 #### `scan_script_for_execution(script_path: Path, *, block_on: str = "high") -> Dict[str, Any]`
 **Description**: Pre-execution security gate for rendered scripts (RED_TEAM V-01/V-06).
 Applies the Python AST scanner to a rendered `.py` script *before* Step 12 runs
 it, returning `{ok, blocked, findings, scanned}`. Findings at/above `block_on`
-severity set `ok=False`; `.jl` scripts get an advisory textual sweep only. Wired
-into `execute.processor.execute_single_script` (escape hatch:
+severity set `ok=False`; `.jl` scripts get an advisory textual sweep plus a
+`Meta.parseall` syntax probe (parse failure = high severity). Wired into
+`execute.processor.execute_single_script` (escape hatch:
 `GNN_ALLOW_UNSAFE_EXEC=1`).
 
 ---
@@ -115,13 +98,10 @@ into `execute.processor.execute_single_script` (escape hatch:
 ## Dependencies
 
 ### Required Dependencies
-- `cryptography` - Encryption and hashing
-- `pathlib` - Path manipulation
-- `json` - Data serialization
+- `pathlib`, `json`, `hashlib`, `re` - Standard library
 
 ### Optional Dependencies
-- `PyYAML` - Configuration file parsing
-- `requests` - External security service integration
+- Julia interpreter - `Meta.parseall` syntax probe for `.jl` scripts in the pre-execution gate (advisory regex sweep without it)
 
 ### Internal Dependencies
 - `utils.pipeline_template` - Pipeline utilities
@@ -130,43 +110,17 @@ into `execute.processor.execute_single_script` (escape hatch:
 
 ## Configuration
 
-### Security Levels
+### Security Levels (actual `_SECURITY_LEVELS` in `processor.py`)
 ```python
-SECURITY_LEVELS = {
-    "basic": {
-        "validate_file_integrity": True,
-        "check_basic_permissions": True,
-        "log_access": True,
-    },
-    "standard": {
-        "validate_file_integrity": True,
-        "check_basic_permissions": True,
-        "log_access": True,
-        "scan_for_malicious_content": True,
-        "validate_model_structure": True,
-    },
-    "strict": {
-        "validate_file_integrity": True,
-        "check_basic_permissions": True,
-        "log_access": True,
-        "scan_for_malicious_content": True,
-        "validate_model_structure": True,
-        "encrypt_sensitive_data": True,
-        "require_authorization": True,
-    },
+_SECURITY_LEVELS = {
+    "basic": {"scan_vulnerabilities": False, "default_block_on": None},
+    "standard": {"scan_vulnerabilities": True, "default_block_on": None},
+    "strict": {"scan_vulnerabilities": True, "default_block_on": "high"},
 }
 ```
-
-### Security Policies
-```python
-SECURITY_POLICIES = {
-    "allowed_file_types": [".md", ".json", ".yaml"],
-    "max_file_size_mb": 100,
-    "require_encryption": False,
-    "audit_all_operations": True,
-    "block_suspicious_content": True,
-}
-```
+An explicit `block_on` kwarg makes any scanning level enforcement-capable.
+Strict mode cannot disable vulnerability scanning, since doing so would
+silently weaken the requested policy.
 
 ---
 
@@ -177,35 +131,10 @@ SECURITY_POLICIES = {
 from security.processor import process_security
 
 success = process_security(
-    target_dir="input/gnn_files",
-    output_dir="output/18_security_output",
+    target_dir=Path("input/gnn_files"),
+    output_dir=Path("output/18_security_output"),
     security_level="standard",
 )
-```
-
-### File Security Check
-```python
-from security.processor import perform_security_check
-
-security_result = perform_security_check(
-    file_path=Path("models/sensitive_model.md"), verbose=True
-)
-
-if security_result["security_score"] > 0.8:
-    print("Security check passed")
-else:
-    print("Security issues found:")
-    for vuln in security_result["vulnerabilities"]:
-        print(f"  - {vuln['description']}")
-```
-
-### Vulnerability Scanning
-```python
-from security.processor import check_vulnerabilities
-
-vulns = check_vulnerabilities(Path("output/11_render_output/model_pymdp.py"))
-for vuln in vulns:
-    print(f"  [{vuln['severity']}] {vuln['description']}")
 ```
 
 ---
@@ -225,18 +154,18 @@ output/18_security_output/
 
 ---
 
-## Performance Characteristics
+## Security Features
 
-### Latest Execution
-- **Duration**: ~1-3 seconds per model
-- **Memory**: ~20-50MB
-- **Status**: ✅ Production Ready
+### Threat Detection
+1. **Injection Pattern Scanning**: Regex patterns for OS command injection, suspicious imports, and script-injection constructs
+2. **Python AST Analysis**: Detects `shell=True`, dangerous calls, and dynamic execution
+3. **Julia Script Analysis**: Advisory regex sweep plus `Meta.parseall` syntax probe (30 s timeout)
+4. **Path Traversal Checks**: File-path based checks during scanning
 
-### Expected Performance
-- **Basic Validation**: < 1 second
-- **Standard Validation**: 1-2 seconds
-- **Strict Validation**: 2-5 seconds
-- **Threat Detection**: Variable based on content
+### Pre-Execution Gate
+`scan_script_for_execution()` is wired into Step 12's `execute_single_script()`:
+rendered scripts are scanned before execution and blocked on findings at or
+above the configured severity. Escape hatch: `GNN_ALLOW_UNSAFE_EXEC=1`.
 
 ---
 
@@ -264,18 +193,10 @@ output/18_security_output/
 
 ## Error Handling
 
-### Security Errors
-1. **Access Denied**: Insufficient permissions
-2. **Threat Detected**: Malicious content found
-3. **Validation Failed**: Security requirements not met
-4. **Encryption Error**: Cryptographic operation failure
-
-### Recovery Strategies
-- **Access Issues**: Request elevated permissions
-- **Threats**: Isolate and report suspicious content
-- **Validation**: Provide remediation guidance
-- **Encryption**: Use alternative encryption methods
-
+### Error Categories
+1. **Scan Errors**: Per-file scan failures are logged and skipped
+2. **Threat Findings**: High-severity findings block the pre-execution gate (configurable via `block_on`)
+3. **Report Errors**: Write failures cause a False return
 ---
 
 ## Integration Points
@@ -288,12 +209,14 @@ output/18_security_output/
 - `utils.pipeline_template` - Pipeline utilities
 
 ### Imported By
-- All pipeline steps requiring security validation
-- `tests.test_security_*` - Security tests
+- `src/execute/processor.py` - Imports `scan_script_for_execution` for the Step 12 pre-execution gate
+- `src/18_security.py` - Thin orchestrator (Step 18)
+- `src/tests/security/*` - Security tests
 
 ### Data Flow
 ```
-File Input → Security Validation → Threat Detection → Access Control → Security Report → Pipeline Continuation
+GNN Files → Pattern + AST Scanning → Severity Scoring → security_results.json + security_summary.md
+Rendered Scripts → scan_script_for_execution → Block or Allow → Step 12 Execution
 ```
 
 ---
@@ -303,38 +226,33 @@ File Input → Security Validation → Threat Detection → Access Control → S
 ### Test Files
 - `src/tests/security/test_security_overall.py` - Module-level tests
 - `src/tests/security/test_security_functional.py` - Functional tests
+- `src/tests/security/test_pre_exec_gate.py` - Pre-execution gate tests
+- `src/tests/security/test_security_mcp_tools.py` - MCP tool tests
+- `src/tests/security/test_sandbox.py`, `test_pygments_archetype_redos.py` - Auxiliary security tests
 
 ### Test Coverage
 Measure on demand:
 
 ```bash
-uv run --extra dev python -m pytest src/tests/test_security*.py \
+uv run --extra dev python -m pytest src/tests/security/ \
     --cov=src/security --cov-report=term-missing
 ```
+
 ### Key Test Scenarios
-1. Security validation with various threat types
-2. Access control enforcement
-3. Encryption and data protection
-4. Audit logging functionality
-5. Error handling and recovery
+1. Injection-pattern and AST vulnerability detection
+2. Pre-execution gate blocking behavior and escape hatch
+3. Security scoring and recommendations
+4. Error handling with unscannable files
 
 ---
 
 ## MCP Integration
 
 ### Tools Registered
-- `security.validate_model` - Perform security check on a model file
-- `security.scan_file` - Scan file for vulnerabilities
-- `security.get_report` - Get security report
-- `security.list_checks` - List available security checks
-
-### Tool Endpoints
-```python
-@mcp_tool("security.validate_model")
-def validate_model_security_tool(file_path, security_level="standard"):
-    """Validate security aspects of a GNN model"""
-    # Implementation
-```
+- `process_security` - Run security scanning and compliance checks on pipeline files
+- `scan_gnn_file` - Lightweight security scan of a single GNN file
+- `get_security_report` - Read saved reports from a previous security run
+- `list_security_checks` - List the security checks performed (CVE scan, injection detection, path traversal, etc.)
 
 ### MCP File Location
 - `src/security/mcp.py` - MCP tool registrations
@@ -346,35 +264,32 @@ def validate_model_security_tool(file_path, security_level="standard"):
 ### Common Issues
 
 #### Issue 1: Security validation reports false positives
-**Symptom**: Valid models reported as having vulnerabilities  
-**Cause**: Security rules too strict or outdated  
-**Solution**: 
-- Use `--security-level basic` for lenient validation
-- Review security rules and update if needed
-- Check compliance standards are appropriate
-- Use `--verbose` flag for detailed validation logs
-
-#### Issue 2: Access control checks fail
-**Symptom**: Valid operations blocked by access control  
-**Cause**: Permission configuration incorrect or overly restrictive  
+**Symptom**: Valid models reported as having vulnerabilities
+**Cause**: Pattern rules may flag benign constructs
 **Solution**:
-- Verify file permissions are correct
-- Check access control configuration
-- Review security policy settings
-- Ensure user has required permissions
+- Use `security_level="basic"` to disable scanning (report-only pipeline still runs)
+- Set an explicit `block_on` threshold to control what blocks
+- Use `--verbose` for detailed scan logs
+
+#### Issue 2: Rendered script blocked before execution
+**Symptom**: Step 12 refuses to run a rendered script
+**Cause**: `scan_script_for_execution` found findings at/above the blocking severity
+**Solution**:
+- Review the findings in the block report; fix the rendered script if genuinely unsafe
+- Lower the threshold via `block_on` if the finding is advisory
+- Last-resort escape hatch: set `GNN_ALLOW_UNSAFE_EXEC=1` (use only when the script is trusted)
 
 ---
 
 ## Version History
 
-### Current Version: 3.0.0
+### Current Version: 1.6.0 (module `__init__.py`), pipeline release 3.2.0
 
 **Features**:
-- Security validation
-- Access control
-- Threat detection
-- Vulnerability assessment
-- Compliance reporting
+- Injection-pattern and Python AST vulnerability scanning
+- Severity-based security scoring
+- Pre-execution gate for rendered scripts (Python + Julia)
+- Security recommendations
 
 **Known Issues**:
 - None currently
@@ -389,8 +304,7 @@ def validate_model_security_tool(file_path, security_level="standard"):
 
 ### Related Documentation
 - [Pipeline Overview](../../README.md)
-- [Architecture Guide](../../ARCHITECTURE.md)
-- [Security Guide](../../doc/security/)
+- [OWASP Top 10](https://owasp.org/www-project-top-ten/)
 
 ### External Resources
 - [OWASP Top 10](https://owasp.org/www-project-top-ten/)
@@ -398,11 +312,11 @@ def validate_model_security_tool(file_path, security_level="standard"):
 
 ---
 
-**Last Updated**: 2026-04-16
+**Last Updated**: 2026-09-02
 **Maintainer**: GNN Pipeline Team
-**Status**: ✅ Production Ready
+**Status**: Production Ready
 **Version**: 3.2.0
-**Architecture Compliance**: ✅ 100% Thin Orchestrator Pattern
+**Architecture Compliance**: Thin Orchestrator Pattern
 
 ---
 ## Documentation

@@ -8,7 +8,7 @@
 
 **Category**: Semantic Validation / Ontology Management
 
-**Status**: ✅ Production Ready
+**Status**: Production Ready
 
 **Version**: 3.2.0
 
@@ -38,29 +38,24 @@
 
 ### Public Functions
 
-#### `process_ontology(target_dir: Path, output_dir: Path, logger: Optional[logging.Logger] = None, **kwargs) -> bool`
+#### `process_ontology(target_dir: Path, output_dir: Path, verbose: bool = False, **kwargs) -> bool`
 **Description**: Main ontology processing function called by orchestrator (10_ontology.py). Processes GNN files for ontology validation and mapping.
 
 **Parameters**:
 - `target_dir` (Path): Directory containing GNN files to process
 - `output_dir` (Path): Output directory for ontology results
-- `logger` (Optional[logging.Logger]): Logger instance (default: None)
-- `ontology_terms_file` (Path, optional): Path to ontology terms JSON file (default: `src/ontology/act_inf_ontology_terms.json`)
-- `recursive` (bool, optional): Process directories recursively (default: True)
-- `strict_validation` (bool, optional): Require all terms to be in ontology (default: False)
-- `generate_mapping` (bool, optional): Generate ontology mapping (default: True)
-- `generate_enhancements` (bool, optional): Generate enhancement suggestions (default: True)
-- `**kwargs`: Additional processing options
+- `verbose` (bool): Enable verbose logging (default: False)
+- `strict_validation` (bool, optional): Require all terms to be in ontology (default: False; read from `**kwargs`)
+- `recursive` (bool, optional): Process directories recursively (default: True; read from `**kwargs`)
+- `ontology_terms_file` (Path, optional): Path to ontology terms JSON file (default: `src/ontology/act_inf_ontology_terms.json`; read from `**kwargs`)
+- `**kwargs`: Additional processing options (other keys are accepted but not consumed)
 
 **Returns**: `bool` - True if processing succeeded, False otherwise
 
-**Example**:
 ```python
 from ontology import process_ontology
 from pathlib import Path
-import logging
 
-logger = logging.getLogger(__name__)
 success = process_ontology(
     target_dir=Path("input/gnn_files"),
     output_dir=Path("output/10_ontology_output"),
@@ -68,7 +63,6 @@ success = process_ontology(
     strict_validation=True,
 )
 ```
-
 #### `parse_gnn_ontology_section(content: str) -> Dict[str, Any]`
 **Description**: Extract the ontology annotation section (e.g. `## ActInfOntologyAnnotation`) from GNN Markdown content.
 
@@ -124,19 +118,12 @@ success = process_ontology(
 
 ### Configuration Options
 
-#### Ontology File
+Consumed `**kwargs` on `process_ontology()`:
 - `ontology_terms_file` (Path): Path to ontology terms JSON file (default: `src/ontology/act_inf_ontology_terms.json`)
-- `ontology_format` (str): Ontology file format (default: `"json"`)
-
-#### Validation Options
 - `strict_validation` (bool): Require all terms to be in ontology (default: `False`)
-- `allow_unknown_terms` (bool): Allow unrecognized terms with warnings (default: `True`)
-- `validate_relationships` (bool): Validate ontological relationships (default: `True`)
-
-#### Processing Options
 - `recursive` (bool): Process directories recursively (default: `True`)
-- `extract_all_terms` (bool): Extract all terms, not just variables (default: `False`)
-- `generate_mappings` (bool): Generate term mappings (default: `True`)
+
+No other configuration keys are read; term suggestions come from Levenshtein-distance matching in `processor.py`.
 
 ---
 
@@ -210,11 +197,8 @@ output/10_ontology_output/
 
 ## Performance Characteristics
 
-### Latest Execution
-- **Duration**: 55ms
-- **Memory**: 28.6 MB
-- **Status**: SUCCESS
-- **Terms Validated**: 13
+### Expected Performance
+Lightweight JSON-based validation; runtime is dominated by file I/O.
 
 ---
 
@@ -279,9 +263,10 @@ output/10_ontology_output/
 Measure on demand:
 
 ```bash
-uv run --extra dev python -m pytest src/tests/test_ontology*.py \
+uv run --extra dev python -m pytest src/tests/ontology/ \
     --cov=src/ontology --cov-report=term-missing
 ```
+
 ### Key Test Scenarios
 1. Ontology term extraction
 2. Ontology compliance validation
@@ -293,18 +278,11 @@ uv run --extra dev python -m pytest src/tests/test_ontology*.py \
 ## MCP Integration
 
 ### Tools Registered
-- `ontology.extract_terms` - Extract ontology terms from GNN model
-- `ontology.validate_compliance` - Validate ontology compliance
-- `ontology.generate_mapping` - Generate ontology mapping
-- `ontology.analyze_semantics` - Analyze semantic relationships
-
-### Tool Endpoints
-```python
-@mcp_tool("ontology.extract_terms")
-def extract_ontology_terms_tool(gnn_content: str) -> List[str]:
-    """Extract ontology terms from GNN content"""
-    # Implementation
-```
+Registered by `src/ontology/mcp.py` `register_tools(mcp_instance)` (4 tools):
+- `process_ontology` - Run ontology processing on a directory
+- `validate_ontology_terms` - Validate a term or list of terms against the ontology
+- `extract_ontology_annotations` - Extract `ActInfOntologyAnnotation` entries from GNN content
+- `list_standard_ontology_terms` - List the standard ontology terms
 
 ### MCP File Location
 - `src/ontology/mcp.py` - MCP tool registrations
@@ -345,7 +323,7 @@ def extract_ontology_terms_tool(gnn_content: str) -> List[str]:
 
 ## Version History
 
-### Current Version: 3.0.0
+### Current Version: 3.2.0
 
 **Features**:
 - Ontology term extraction
@@ -377,11 +355,10 @@ def extract_ontology_terms_tool(gnn_content: str) -> List[str]:
 
 ---
 
-**Last Updated**: 2026-04-16
+**Last Updated**: 2026-09-02
 **Maintainer**: GNN Pipeline Team
-**Status**: ✅ Production Ready
+**Status**: Production Ready
 **Version**: 3.2.0
-**Architecture Compliance**: ✅ 100% Thin Orchestrator Pattern
 
 
 

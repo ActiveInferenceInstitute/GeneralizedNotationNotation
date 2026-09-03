@@ -1,7 +1,7 @@
 # GNN Source Specification
 
-**Version**: 1.6.0 (Specification) — Pipeline Package Version: `src/__init__.py::__version__ == "1.6.0"`  
-**Last Updated**: 2026-05-12  
+**Version**: 3.2.0 (Specification) — Release version: `pyproject.toml` `version = "3.2.0"`. The in-package strings `src/__init__.py::__version__` and `src/mcp/__init__.py::__version__` still read `1.6.0` and have not been bumped with the release; treat `pyproject.toml` as authoritative until they are.  
+**Last Updated**: 2026-09-02  
 **Status**: Maintained
 
 ---
@@ -141,8 +141,10 @@ The pipeline supports **staged, folder-based execution** via a testing matrix de
 
 ### Configuration
 
+The shipped `input/config.yaml` currently reads (abridged):
+
 ```yaml
-# input/config.yaml
+# input/config.yaml (shipped values)
 testing_matrix:
   enabled: true
 
@@ -150,16 +152,25 @@ testing_matrix:
   global_steps:
     0_template: true       # Pipeline template & initialization
     1_setup: true          # Environment setup & dependency install
-    2_tests: false         # Set to false to skip test execution
+    2_tests: true          # Test suite execution
 
-  # Default steps for unlisted folders
-  default_steps: [3, 5, 6, 10]
+  # Default steps for folders not listed under `folders`
+  default_steps: [
+    3, 4, 5, 6, 7, 8, 9, 10, 11, 12,
+    # 13 omitted: LLM runs once globally; disable via pipeline.skip_steps or --skip-llm
+    14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24,
+  ]
 
-  # Per-folder step routing
-  folders:
-    discrete: [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24]
-    basics: [3, 5, 6, 10]
-    continuous: [3, 5, 6]
+  # Per-folder overrides — empty, so every folder runs default_steps
+  folders: {}
+```
+
+A hypothetical per-folder override (not the shipped configuration) looks like:
+
+```yaml
+folders:
+  discrete: [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24]
+  basics: [3, 5, 6, 10]
 ```
 
 ### Behavior
@@ -167,6 +178,8 @@ testing_matrix:
 - **Global steps** (0, 1, 2): Run once before folder-specific steps. Each can be toggled to `true`/`false` independently. Disabled steps are `SKIPPED`.
 - **Processing steps** (3–24): When `enabled: true`, `main.py` iterates over subdirectories in `input/gnn_files/` and runs each step only on folders whose config includes that step number.
 - Folders not explicitly listed use `default_steps`.
+- A step that no folder lists (Step 13 in the shipped config) is not skipped: `main.py` falls back to a single invocation over the whole target directory.
+- Continuous linear-Gaussian models (`input/gnn_files/continuous/`) render and execute only on frameworks with `supports_continuous` in `render/framework_registry.py` (JAX, NumPyro, PyTorch, Stan, RxInfer.jl); the others report status `unsupported`, which Step 12 skips.
 - Results are aggregated across all folder executions per step.
 
 ### Orchestrator Implementation
@@ -184,22 +197,32 @@ The matrix logic lives in `execute_pipeline_step()` in `main.py`. It loads the m
 
 ### Core Dependencies
 
+Pins are owned by `pyproject.toml` `[project] dependencies`; the current floors there include:
+
 ```
-numpy>=1.24.0
-networkx>=3.0
+numpy>=1.21.0
+networkx>=2.6.0
 pyyaml>=6.0
-jsonschema>=4.0
 ```
+
+(`jsonschema` is not a declared dependency — it appears only as a mypy override.)
 
 ### Optional Dependencies
 
-| Group | Packages | Purpose |
-|-------|----------|---------|
-| `pymdp` | pymdp, jax | Active Inference simulation |
-| `viz` | matplotlib, plotly | Visualization |
-| `llm` | openai, anthropic, ollama | LLM integration |
-| `audio` | soundfile, pedalboard | Audio generation |
-| `gui` | tkinter, customtkinter | GUI interface |
+Extras are declared in `pyproject.toml` `[project.optional-dependencies]`. pymdp, JAX, NumPyro, DisCoPy, and the LLM clients (openai, ollama) are **core** dependencies installed by plain `uv sync`.
+
+| Group | Purpose |
+|-------|---------|
+| `dev` | Development tooling (pytest, ruff, mypy, docs, notebooks); also pulls in `cmdstanpy` |
+| `api` | FastAPI/uvicorn server |
+| `ml-ai` | Machine-learning extensions (transformers, scipy, scikit-learn) |
+| `audio` | Audio processing (librosa, soundfile, pedalboard, pydub) |
+| `gui` | GUI frameworks (gradio, streamlit) |
+| `graphs` | Graphviz bindings |
+| `stan` | `cmdstanpy` for the Stan backend (CmdStan toolchain installed separately); also folded into `dev` and `all` |
+| `research` | Research tools (jupyterlab, sympy, numba, cython) |
+| `scaling` | Scaling (dask, distributed, ray) |
+| `all` | Every functionally distinct optional group combined |
 
 ---
 
@@ -216,7 +239,8 @@ jsonschema>=4.0
 | JAX | Python | `render/jax/`, `execute/jax/` | GPU acceleration |
 | PyTorch | Python | `render/pytorch/`, `execute/pytorch/` | Deep learning inference |
 | NumPyro | Python | `render/numpyro/`, `execute/numpyro/` | Probabilistic programming |
-| Stan | Stan | `render/stan/` | Bayesian statistical modeling |
+| Stan | Stan | `render/stan/`, `execute/stan/` | HMM / LGSSM Stan programs plus a cmdstanpy driver (`<stem>_stan.py`) |
+| bnlearn | Python | `render/generators.py` (`generate_bnlearn_code`) | Bayesian-network structure/parameter learning — **render-only**; no Step 12 executor |
 
 ---
 
@@ -266,8 +290,8 @@ Performance and reliability targets should be validated by current benchmark/tes
 ## Versioning
 
 > **Dual Versioning Policy**: This repository uses two version numbers:
-> - **Pipeline version** (src/): Corresponds to `src/__init__.py::__version__` (currently v1.6.0)
-> - **MCP version** (mcp/): Independent MCP subsystem versioning (currently v1.7.0)
+> - **Pipeline version** (src/): Corresponds to `src/__init__.py::__version__` (currently the string `"1.6.0"`, behind the `3.2.0` release in `pyproject.toml`)
+> - **MCP version** (mcp/): Independent MCP subsystem versioning via `src/mcp/__init__.py::__version__` (currently `"1.6.0"`)
 >
 > MCP (Model Context Protocol) has its own version because it represents an extended protocol implementation that evolved beyond the main pipeline versioning.
 

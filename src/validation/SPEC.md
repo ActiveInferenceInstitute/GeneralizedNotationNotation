@@ -6,8 +6,11 @@ GNN model validation including semantic, structural, and mathematical validation
 ## Components
 
 ### Core
-- `processor.py` - Validation processor
+- `__init__.py` - `process_validation()` orchestrator and module exports
 - `semantic_validator.py` - Semantic validation with mapping support
+- `performance_profiler.py` - Complexity, memory, and parallelization estimation
+- `consistency_checker.py` - Naming, style, structure, and reference consistency
+- `mcp.py` - MCP tool registration
 
 ## Validation Levels
 - `basic` - Structure checks

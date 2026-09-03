@@ -30,7 +30,7 @@
 - POMDP-aware rendering via `POMDPRenderProcessor` (per-model/per-framework output folders)
 - Framework compatibility checks and matrix normalization before rendering
 - Structured summaries written to `render_processing_summary.json`
-- **Recursive exemplar discovery**: GNN spec files are discovered recursively with `rglob`, so nested exemplar folders under `input/gnn_files/**` (e.g. `discrete/`, `continuous/`, `basics/`, `hierarchical/`) are all rendered. All **29** exemplar GNN files render to and execute under RxInfer.jl (29/29 render + execute).
+- **Recursive exemplar discovery**: GNN spec files are discovered recursively with `rglob`, so nested exemplar folders under `input/gnn_files/**` (e.g. `discrete/`, `continuous/`, `basics/`, `hierarchical/`) are all rendered. Model-source files are filtered by `gnn.discovery.is_model_source_path`; the maintained corpus index is `input/gnn_files/INDEX.md`. Current per-framework render/execute outcomes live in the run's `render_processing_summary.json` and `execution_summary.json`, not in this file.
 
 ### Supported Frameworks
 
@@ -39,46 +39,55 @@
 - **Features**: Full PyMDP agent implementation
 - **Output**: Complete Python simulation scripts
 - **Optimization**: Matrix optimization, memory efficiency
+- **Continuous models**: `unsupported` (discrete POMDPs only)
 
 #### RxInfer.jl (Julia)
 - **Purpose**: Genuine `@model` + `infer()` variational message-passing inference
 - **Features**: Real `@model` with `Categorical` / `DiscreteTransition` nodes, `infer()` with `free_energy=true`, real VFE traces
 - **Output**: Julia scripts with embedded `@model` definitions (the former TOML target is not supported)
 - **Optimization**: Committed `Project.toml` (RxInfer 5.5.0), `--project=` for reproducible execution, EFE/policy via custom Active Inference logic
+- **Continuous models**: native (LGSSM programs)
 
 #### ActiveInference.jl (Julia)
 - **Purpose**: Active Inference framework implementation
 - **Features**: Complete Active Inference agent
 - **Output**: Julia simulation scripts
 - **Optimization**: Hierarchical processing, temporal dynamics
+- **Continuous models**: `unsupported` (discrete POMDPs only)
 
 #### DisCoPy (Python)
 - **Purpose**: Categorical diagrams for compositional models
 - **Features**: String diagram generation
 - **Output**: Python DisCoPy diagrams
 - **Optimization**: Categorical composition, type checking
+- **Continuous models**: `unsupported` (no linear-Gaussian diagram semantics)
 
 #### JAX (Python)
 - **Purpose**: High-performance numerical computing
 - **Features**: JIT compilation, automatic differentiation
 - **Output**: JAX-optimized simulation code
 - **Optimization**: GPU acceleration, vectorization
+- **Continuous models**: native (linear-Gaussian programs)
 
 #### PyTorch (Python)
 - **Purpose**: Neural integration backend
 - **Output**: Python scripts under `pytorch/` when the renderer is available
+- **Continuous models**: native (dependency intentionally unlocked; see `framework_registry.py`)
 
 #### NumPyro (Python)
 - **Purpose**: Probabilistic programming backend
 - **Output**: Python scripts under `numpyro/` when the renderer is available
+- **Continuous models**: native (linear-Gaussian programs)
 
 #### Stan (Stan)
 - **Purpose**: Probabilistic programming model backend
-- **Output**: Stan models under `stan/` when requested
+- **Output**: Stan models plus cmdstanpy drivers under `stan/` when requested
+- **Continuous models**: native (LGSSM programs)
 
 #### BNLearn (Python)
 - **Purpose**: Bayesian network / causal model backend
 - **Output**: Python scripts under `bnlearn/` when requested
+- **Continuous models**: `unsupported`; **render-only** — bnlearn has no Step 12 executor
 
 The canonical framework inventory lives in `framework_registry.py`; update that
 registry before changing public framework lists, MCP enums, or processor configs.
@@ -198,6 +207,10 @@ The shared contract is `canonical_pomdp_v1`; B is stored as `(next_state, previo
 
 **Location**: `src/render/processor.py`
 
+### `generate_jax_code` (JAX generator)
+
+**Module**: `src/render/generators.py`
+
 **Parameters**:
 - `model_data`: GNN model data
 - `output_path`: Optional output file path
@@ -264,7 +277,7 @@ Explicit `--frameworks` selections are strict by default. `--strict-framework-su
 
 ### Basic Framework Rendering
 ```python
-from render.renderer import render_gnn_spec
+from render import render_gnn_spec
 
 # Render GNN to PyMDP
 success, message, files = render_gnn_spec(
@@ -277,7 +290,7 @@ success, message, files = render_gnn_spec(
 
 ### Multi-Framework Rendering
 ```python
-from render.renderer import render_gnn_spec
+from render import render_gnn_spec
 
 for framework in ["pymdp", "rxinfer", "activeinference_jl"]:
     success, message, files = render_gnn_spec(

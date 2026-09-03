@@ -9,7 +9,7 @@ LLM (Large Language Model) integration for GNN processing.
 - `processor.py` - LLM processor
 
 ### Providers
-- OpenAI, Anthropic, local LLM support
+- Ollama (local), OpenAI, OpenRouter, Perplexity provider modules (no Anthropic module; its key only appears in the provider matrix)
 
 ## Features
 - GNN to natural language

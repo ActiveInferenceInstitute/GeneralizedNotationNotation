@@ -2,7 +2,7 @@
 
 ## Module Overview
 
-**Purpose**: Execute rendered simulation scripts across multiple frameworks (PyMDP, RxInfer.jl, ActiveInference.jl, JAX, DisCoPy, PyTorch, NumPyro).
+**Purpose**: Execute rendered simulation scripts across multiple frameworks (PyMDP, RxInfer.jl, ActiveInference.jl, JAX, DisCoPy, PyTorch, NumPyro, Stan). Per-folder `execution_summary.json` files are merged so the durable summary covers every input folder; frameworks a model's kind cannot use are reported `unsupported` by Step 11 and are never executed.
 
 **Pipeline Step**: Step 12: Execution (12_execute.py)
 
@@ -12,14 +12,14 @@
 
 **Version**: 3.2.0
 
-**Last Updated**: 2026-05-05
+**Last Updated**: 2026-09-02
 
 ---
 
 ## Core Functionality
 
 ### Primary Responsibilities
-1. Execute Python simulation scripts (PyMDP, JAX, DisCoPy)
+1. Execute Python simulation scripts (PyMDP, JAX, DisCoPy, PyTorch, NumPyro, and the cmdstanpy driver for Stan). bnlearn names parse but there is no bnlearn executor; rendered bnlearn scripts skip at the Python pre-flight check (the module is intentionally absent)
 2. Execute Julia simulation scripts (RxInfer.jl, ActiveInference.jl)
 3. Capture simulation results and logs
 4. Handle execution errors gracefully
@@ -27,7 +27,7 @@
 
 ### Key Capabilities
 - Multi-framework execution support
-- **Skip vs fail**: JAX, NumPyro, PyTorch, and DisCoPy are **core** dependencies; if the environment is incomplete, scripts are **skipped** (not run) and reported as "skipped" — they do not count as execution failures. Repair with `uv sync`. Julia backends still require a local Julia install.
+- **Skip vs fail**: JAX, NumPyro, and DisCoPy are **core** dependencies (repair with `uv sync`); if the environment is incomplete, scripts are **skipped** (not run) and reported as "skipped" — they do not count as execution failures. PyTorch is intentionally not locked as a default dependency while GHSA-rrmf-rvhw-rf47 has no patched torch release: install `torch` manually (`uv add torch`) or the PyTorch backend is reported skipped. Stan needs `uv sync --extra stan` plus a CmdStan toolchain. Julia backends still require a local Julia install.
 - Graceful degradation when frameworks unavailable
 - Automatic PyMDP package detection (distinguishes correct vs wrong package variants)
 - Path collection with deduplication (prevents nested directory issues)
@@ -54,7 +54,7 @@
 - `verbose` (bool): Enable verbose logging (default: False)
 - `frameworks` (str): Frameworks to execute ("all", "lite", or comma-separated list, default: "all")
   - `"all"`: Execute all configured frameworks
-  - `"lite"`: Execute PyMDP, JAX, DisCoPy, and BNLearn
+  - `"lite"`: Selects PyMDP, JAX, DisCoPy, and bnlearn (bnlearn scripts skip at pre-flight; see below)
   - Comma-separated: `"pymdp,jax"` for specific frameworks
 - `timeout` (int): Execution timeout per script in seconds (default: 3600)
 - `render_output_dir` (Optional[Path]): Explicit Step 11 output directory to search. This is the safest way to keep Step 12 scoped to an isolated pipeline run.
@@ -83,14 +83,12 @@ success = process_execute(
 )
 ```
 
-#### `execute_simulation_from_gnn(gnn_file: Path, framework: str, output_dir: Path, **kwargs) -> Dict[str, Any]`
-**Description**: Execute simulation for specific GNN file and framework.
+#### `execute_simulation_from_gnn(gnn_file: Path, output_dir: Path) -> Dict[str, Any]`
+**Description**: Execute simulation for a specific GNN file (defined in `execute/processor.py`, re-exported from `execute`).
 
 **Parameters**:
 - `gnn_file` (Path): Path to GNN file
-- `framework` (str): Framework to use ("pymdp", "rxinfer", "activeinference_jl", "jax", "discopy")
 - `output_dir` (Path): Output directory for execution results
-- `**kwargs`: Framework-specific execution options
 
 **Returns**: `Dict[str, Any]` - Execution results dictionary with:
 - `success` (bool): Whether execution succeeded
@@ -126,7 +124,7 @@ Framework availability is assessed at execution time by the processor rather tha
 
 - **`execute.pymdp.package_detector.detect_pymdp_installation()`** — Detect which PyMDP package variant is installed.
 - **`execute.pymdp.package_detector.validate_pymdp_for_execution()`** — Validate PyMDP is ready for execution.
-- **MCP tool**: `execute.get_health_status` — Exposes framework availability via MCP (see `execute/mcp.py`).
+- **MCP tool**: `check_execute_dependencies` — Exposes framework availability via MCP (see `execute/mcp.py`).
 
 #### PyMDP Package Detection Functions
 **Module**: `execute.pymdp.package_detector`
@@ -159,14 +157,8 @@ elif not detection.get("correct_package"):
 
 ### Configuration Options
 
-#### Simulation Engine Selection
-- `simulation_engine` (str): Engine to use for execution (default: `"auto"`)
-  - `"auto"`: Automatically select best available engine
-  - `"pymdp"`: Use PyMDP for Python simulations
-  - `"rxinfer"`: Use RxInfer.jl for Julia simulations
-  - `"activeinference_jl"`: Use ActiveInference.jl
-  - `"jax"`: Use JAX framework
-  - `"discopy"`: Use DisCoPy for categorical diagrams
+#### Framework Selection
+- `frameworks` (str): `"all"` (the eight executors: PyMDP, RxInfer.jl, ActiveInference.jl, JAX, DisCoPy, PyTorch, NumPyro, Stan — plus bnlearn, which is accepted by `parse_frameworks_parameter` but has no executor and always skips), `"lite"` (PyMDP, JAX, DisCoPy, bnlearn), or a comma-separated subset — parsed by `parse_frameworks_parameter` in `execute/processor.py`
 
 #### Execution Parameters
 - `timeout` (int): Execution timeout in seconds (default: `3600`)
@@ -183,11 +175,7 @@ elif not detection.get("correct_package"):
   wrapping), `"prefer"` (wrap when firejail/bwrap/nsjail is found, otherwise
   run unsandboxed with a warning), or `"require"` (refuse to run when no
   backend is found). See `execute.sandbox` (RED_TEAM V-10).
-
-#### Framework-Specific Configuration
-- `julia_path` (str): Path to Julia executable (default: auto-detect)
-- `python_env` (str): Python environment to use (default: current environment)
-- `jax_device` (str): JAX device to use (default: `"cpu"`, options: `"cpu"`, `"gpu"`)
+- `GNN_JAX_PLATFORM` (str): pins `JAX_PLATFORM_NAME` for JAX-backed child processes (see Key Capabilities).
 
 ---
 
@@ -213,9 +201,9 @@ elif not detection.get("correct_package"):
 from execute import process_execute
 
 success = process_execute(
-    target_dir=Path("input/gnn_files"),
+    target_dir=Path("output/11_render_output"),
     output_dir=Path("output/12_execute_output"),
-    simulation_engine="auto",
+    frameworks="all",
 )
 ```
 
@@ -241,22 +229,22 @@ Use `--distributed --backend ray` or `--distributed --backend dask` only when Ra
 ### Output Products
 - `summaries/execution_summary.json` - Slim per-script aggregate (stdout/stderr bodies and `simulation_data` omitted; pass `execution_summary_detail=True` / `--execution-summary-detail` to also write `summaries/execution_summary_detail.json`)
 - `summaries/execution_report.md` - Human-readable report
-- `execution_logs/*.log` - Per-script execution logs
-- `simulation_data/*.json` - Simulation output data
+- `<model>/<framework>/simulation_data/simulation_results.json` - Per-model, per-framework simulation output written by the rendered script
 
 ### Output Directory Structure
 ```
 output/12_execute_output/
-├── execution_results/
-│   ├── execution_results.json
+├── summaries/
+│   ├── execution_summary.json
 │   ├── execution_report.md
-│   └── execution_logs/
-│       ├── pymdp_simulation.log
-│       ├── rxinfer_simulation.log
-│       └── activeinference_simulation.log
-└── simulation_data/
-    └── results_*.json
+│   └── execution_summary_detail.json   # only with execution_summary_detail=True
+└── <model>/
+    └── <framework>/
+        └── simulation_data/
+            └── simulation_results.json
 ```
+
+Successive invocations merge into the existing `summaries/execution_summary.json` (`_merge_prior_execution_summary`), so the durable summary covers every input folder.
 
 ---
 
@@ -264,13 +252,6 @@ output/12_execute_output/
 
 ### Latest Execution
 Use the current `output/*/00_pipeline_summary/pipeline_execution_summary.json` and Step 12 summaries for exact timing, memory, and pass/fail counts. Do not treat stale benchmark numbers in documentation as current measurements.
-
-### Framework Execution Times
-- **PyMDP**: ~1-5 seconds
-- **RxInfer.jl**: ~10-20 seconds (JIT compilation)
-- **ActiveInference.jl**: ~10-15 seconds
-- **JAX**: ~2-8 seconds (with GPU)
-- **DisCoPy**: ~1-3 seconds
 
 ---
 
@@ -349,18 +330,13 @@ uv run --extra dev python -m pytest src/tests/test_execute*.py \
 ## MCP Integration
 
 ### Tools Registered
-- `execute.run_simulation` - Execute simulation script
-- `execute.validate_environment` - Validate execution environment
-- `execute.get_health_status` - Get framework health status
-- `execute.analyze_error` - Analyze execution errors
+- `process_execute` - Execute rendered simulation scripts in a directory
+- `execute_gnn_model` - Execute a rendered GNN model script
+- `execute_pymdp_simulation` - Run a PyMDP simulation from a GNN specification
+- `check_execute_dependencies` - Report framework availability
+- `get_execute_module_info` - Module metadata
 
-### Tool Endpoints
-```python
-@mcp_tool("execute.run_simulation")
-def run_simulation_tool(script_path: str, framework: str) -> Dict[str, Any]:
-    """Execute simulation script"""
-    # Implementation
-```
+All five are registered by `register_tools()` in `src/execute/mcp.py`.
 
 ### MCP File Location
 - `src/execute/mcp.py` - MCP tool registrations
@@ -411,7 +387,7 @@ def run_simulation_tool(script_path: str, framework: str) -> Dict[str, Any]:
 
 ## Version History
 
-### Current Version: 3.0.0
+### Current Version: 3.2.0
 
 **Features**:
 - Multi-framework execution support
@@ -445,7 +421,7 @@ def run_simulation_tool(script_path: str, framework: str) -> Dict[str, Any]:
 
 ---
 
-**Last Updated**: 2026-05-05
+**Last Updated**: 2026-09-02
 **Maintainer**: GNN Pipeline Team
 **Status**: ✅ Production Ready
 **Version**: 3.2.0

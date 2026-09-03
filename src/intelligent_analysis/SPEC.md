@@ -8,7 +8,7 @@ AI-powered pipeline analysis with LLM-backed insights, per-step flag detection, 
 
 ### Core
 
-- `processor.py` - Pipeline analysis processor (890 lines)
+- `processor.py` - Pipeline analysis processor
   - `process_intelligent_analysis()` — main entry point
   - `analyze_pipeline_summary()` — extract key metrics
   - `analyze_individual_steps()` — per-step yellow/red flag detection
@@ -18,7 +18,7 @@ AI-powered pipeline analysis with LLM-backed insights, per-step flag detection, 
   - `generate_executive_report()` — comprehensive markdown report
   - `_run_llm_analysis()` — LLM-powered insight generation
   - `_generate_rule_based_summary()` — recovery when LLM unavailable
-- `analyzer.py` - Analysis helper classes (476 lines)
+- `analyzer.py` - Analysis helper classes
   - `IntelligentAnalyzer` — stateful analysis class with health scoring
   - `AnalysisContext` — dataclass for pipeline context
   - `calculate_pipeline_health_score()` — weighted score (0-100)
@@ -26,6 +26,7 @@ AI-powered pipeline analysis with LLM-backed insights, per-step flag detection, 
   - `detect_performance_patterns()` — pattern recognition
   - `generate_optimization_suggestions()` — optimization recommendations
 - `mcp.py` - MCP tool integration
+- `remediation.py` - `suggest_fix()` / `RemediationPlan`: targeted fix suggestions for contract violations (auxiliary, not exported at package level)
 
 ### Data Classes
 
@@ -39,7 +40,6 @@ AI-powered pipeline analysis with LLM-backed insights, per-step flag detection, 
 - Per-step yellow/red flag detection
 - Health scoring (success rate, warning rate, duration/memory efficiency)
 - LLM-powered executive insights (with rule-based recovery)
-- Trend and comparative analysis
 
 ## Key Exports
 

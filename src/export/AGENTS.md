@@ -8,7 +8,7 @@
 
 **Category**: Data Export / Transformation
 
-**Status**: ✅ Production Ready
+**Status**: Production Ready
 
 **Version**: 3.2.0
 
@@ -40,17 +40,17 @@
 
 ### Public Functions
 
+#### `process_export(target_dir, output_dir, verbose=False, **kwargs) -> bool`
+
+**Description**: Pipeline entry point (called by `7_export.py`). Loads parsed GNN specs from Step 3 output (`gnn_processing_results.json`) and exports each file to the requested formats. Accepts a `formats` keyword (list of format names).
+
 #### `generate_exports(target_dir, output_dir, verbose=False) -> bool`
 
-**Description**: Main export processing function. Exports all GNN `.md` files in `target_dir` to multiple formats.
+**Description**: Standalone export over the `*.md` files directly in `target_dir`; writes to `output_dir/exports/`.
 
-**Parameters**:
+#### `export_model(model_data, output_dir, formats=None) -> Dict[str, Any]`
 
-- `target_dir` (Path): Directory containing GNN files
-- `output_dir` (Path): Output directory for exports
-- `verbose` (bool): Enable verbose logging (default: False)
-
-**Returns**: `True` if all exports succeeded
+**Description**: Export one already-parsed model dict to the selected formats; returns a per-format result dictionary.
 
 **Example**:
 
@@ -76,12 +76,12 @@ success = generate_exports(
 ### Graph Formats
 
 3. **GraphML**: Standard graph format (Cytoscape, yEd)
-2. **GEXF**: Gephi visualization format
+4. **GEXF**: Gephi visualization format
 
 ### Text Formats
 
 5. **Plaintext Summary**: Human-readable model overview
-2. **Plaintext DSL**: Round-trip GNN-like text
+6. **Plaintext DSL**: Round-trip GNN-like text
 
 ### Binary Formats
 
@@ -93,30 +93,14 @@ success = generate_exports(
 
 ### Configuration Options
 
-#### Export Format Selection
+`process_export` accepts a single keyword:
 
-- `export_formats` (List[str]): Formats to export (default: `["json", "xml", "graphml", "gexf", "pickle"]`)
-  - `"json"`: JSON export (human-readable)
-  - `"xml"`: XML export (schema-validated)
-  - `"graphml"`: GraphML format (Cytoscape, yEd)
-  - `"gexf"`: GEXF format (Gephi)
-  - `"pickle"`: Python pickle serialization
-  - `"txt"`: Plaintext summary
-  - `"dsl"`: Plaintext DSL
+- `formats` (List[str]): Formats to export (default: `["json", "xml", "graphml", "gexf", "pickle"]`)
+  - `"json"`, `"xml"`, `"graphml"`, `"gexf"`, `"pickle"` map to the corresponding exporter
+  - `export_model` also supports only these five; anything else is recorded as "Unsupported format". The plaintext formatters (`export_to_plaintext_summary`, `export_to_plaintext_dsl`) exist but are not wired into `export_model` or the pipeline default.
 
-#### Export Options
+There are no other configuration options.
 
-- `include_metadata` (bool): Include metadata in exports (default: `True`)
-- `validate_schema` (bool): Validate XML schema (default: `True`)
-- `pretty_print` (bool): Pretty-print JSON/XML (default: `True`)
-- `compress` (bool): Compress large exports (default: `False`)
-
-#### Graph Export Configuration
-
-- `graph_layout` (str): Graph layout algorithm (default: `"force"`)
-  - Options: `"force"`, `"hierarchical"`, `"circular"`
-- `include_weights` (bool): Include edge weights in graphs (default: `True`)
-- `node_attributes` (List[str]): Node attributes to include (default: all)
 
 ---
 
@@ -164,61 +148,21 @@ results = export_model(
 
 ## Output Specification
 
-### Output Products
-
-- `{model}_export.json` - JSON export
-- `{model}_export.xml` - XML export
-- `{model}_graph.graphml` - GraphML graph
-- `{model}_graph.gexf` - GEXF graph
-- `{model}_model.pkl` - Pickle serialization
-- `export_summary.json` - Export summary
-
-### Output Directory Structure
+`process_export` (pipeline path) writes under the step output dir:
 
 ```
 output/7_export_output/
-├── model_name_export.json
-├── model_name_export.xml
-├── model_name_graph.graphml
-├── model_name_graph.gexf
-├── model_name_model.pkl
+├── model_name/
+│   ├── model_name.json
+│   ├── model_name.xml
+│   ├── model_name.graphml
+│   ├── model_name.gexf
+│   └── model_name_pickle.pkl
+├── export_results.json
 └── export_summary.json
 ```
 
----
-
-## Performance Characteristics
-
-### Latest Execution
-
-- **Duration**: 61ms
-- **Memory**: 28.7 MB
-- **Status**: SUCCESS_WITH_WARNINGS
-- **Formats Generated**: 5
-
----
-
-## Error Handling
-
-### Graceful Degradation
-
-- **Format Unavailable**: Skip unavailable format, log warning, continue with others
-- **Schema Validation Failure**: Export without validation, log warning
-- **Large Model**: Use compression or split exports, provide warnings
-- **Invalid GNN Model**: Return structured error, skip model
-
-### Error Categories
-
-1. **Format Errors**: Format not supported or unavailable (recovery: skip format)
-2. **Validation Errors**: Schema validation fails (recovery: export without validation)
-3. **Serialization Errors**: Cannot serialize model (return error)
-4. **File I/O Errors**: Cannot write export files (return error)
-
-### Error Recovery
-
-- **Format Recovery**: Automatically skip unavailable formats
-- **Partial Export**: Export what's possible, report failures
-- **Resource Cleanup**: Proper cleanup of export resources on errors
+`generate_exports` (standalone) instead writes `{stem}.{json,xml,graphml,gexf,pkl}` plus `export_results.json` under `output_dir/exports/`.
 
 ---
 
@@ -269,26 +213,25 @@ output/7_export_output/
 Measure on demand:
 
 ```bash
-uv run --extra dev python -m pytest src/tests/test_export*.py \
+uv run --extra dev python -m pytest src/tests/export/ \
     --cov=src/export --cov-report=term-missing
 ```
+
 ### Key Test Scenarios
 
 1. Multi-format export generation
 2. Format validation and error handling
 3. Graph format conversion
-4. Export integrity verification
-
 ---
 
 ## MCP Integration
 
 ### Tools Registered
 
-- `generate_exports` — Generate multi-format exports for GNN files in a directory
-- `export_single_gnn_file` — Export a single GNN file to all supported formats
-- `export.list_functions` — List callable functions in the export module
-- `export.call_function` — Call any public function by name with keyword arguments
+- `process_export` — Run the export step over a directory of GNN files
+- `export_single_gnn_file` — Export a single GNN file to selected formats
+- `list_export_formats` — List supported export formats and descriptions
+- `validate_export_format` — Check whether a format name is supported
 
 ### MCP File Location
 
@@ -320,15 +263,15 @@ uv run --extra dev python -m pytest src/tests/test_export*.py \
 - Verify GNN model has valid connections section
 - Check that graph data is properly structured
 
-#### Issue 3: Large model export timeout
+#### Issue 3: Large model export
 
-**Symptom**: Export times out or runs out of memory  
-**Cause**: Model too large for single export operation  
+**Symptom**: Export is slow or memory-heavy  
+**Cause**: Model too large for a single export operation  
 **Solution**:
 
-- Use `compress=True` option to reduce file size
 - Export formats individually instead of all at once
 - Process models in smaller batches
+
 
 ### Performance Issues
 
@@ -346,7 +289,16 @@ python src/7_export.py --target-dir input/ --verbose
 
 - Export only needed formats (don't export all formats if not needed)
 - Use pickle format for fastest serialization
-- Disable schema validation for faster XML export
+
+```bash
+# Enable verbose logging
+python src/7_export.py --target-dir input/ --verbose
+```
+
+**Solutions**:
+
+- Export only needed formats (don't export all formats if not needed)
+- Use pickle format for fastest serialization
 
 ---
 
@@ -390,9 +342,9 @@ python src/7_export.py --target-dir input/ --verbose
 
 **Last Updated**: 2026-04-16
 **Maintainer**: GNN Pipeline Team
-**Status**: ✅ Production Ready
+**Status**: Production Ready
 **Version**: 3.2.0
-**Architecture Compliance**: ✅ 100% Thin Orchestrator Pattern
+**Architecture Compliance**: 100% Thin Orchestrator Pattern
 
 
 ---

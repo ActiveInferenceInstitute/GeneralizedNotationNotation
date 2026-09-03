@@ -1,6 +1,6 @@
 # GeneralizedNotationNotation (GNN)
 
-**Last Updated**: 2026-08-19
+**Last Updated**: 2026-09-02
 
 <div align="center">
 
@@ -48,16 +48,16 @@
 ### 📚 Initial Publication
 
 **Smékal, J., & Friedman, D. A. (2023)**. *Generalized Notation Notation for Active Inference Models*. Active Inference Journal.  
-**Last Updated**: 2026-06-20
-**Version**: 3.0.0
+**Version**: 3.2.0 ("Exemplar Gold Standard")
 **Status**: Beta package with maintained validation gates (Active Inference Institute)
 
-**uv 0.12.0 Compatibility (verified 2026-07-30)**: `uv lock --check` passes (310 packages, 0.86ms resolve). `uv sync --frozen` succeeds. The project lock file is compatible with uv 0.12.0. Ruff lint is clean (`ruff check src/` passes). MyPy is clean (`mypy src/` passes, 758 files, as of 2026-08-02). The Dockerfile constraint `uv>=0.7.8` is the minimum bootstrap floor.
+**Toolchain**: The committed `uv.lock` is the dependency source of truth (`uv lock --check` and `uv sync --frozen` must pass); the Dockerfile constraint `uv>=0.7.8` is the minimum bootstrap floor. Ruff lint and MyPy gates are maintained clean on `src/`.
 
 **Test Suite**: The command of record is `uv run --extra dev python -m pytest src/tests/ -q --tb=no --ignore=src/tests/llm/test_llm_ollama.py --ignore=src/tests/llm/test_llm_ollama_integration.py`. Run it in the current environment for pass/skip totals; Julia RxInfer execution uses the committed `Project.toml` under `src/execute/rxinfer/`, and ActiveInference.jl uses the committed environment under `src/execute/activeinference_jl/` (`julia --startup-file=no --project=<env> <script>`). Ollama tests are opt-in when a local daemon and configured test model are available.
 **Published Output Evidence (verified 2026-06-18)**: root `output/` is a POMDP GridWorld full-pipeline publication generated from `input/gnn_files/pomdp_gridworld` with `--frameworks all` and validated by `uv run --extra dev python scripts/check_pomdp_gridworld_outputs.py output`.
 **Features (v2.0.0)**: semantic fidelity ledgers across all maintained model families, strict JSON parse/serialize/parse preservation for variables, edges, dimensions, parameter shapes, equations, time, and ontology mappings; cross-framework reliability ledgers with explicit compatible/unsupported backend statuses; GridWorld comparison across PyMDP, RxInfer, and ActiveInference.jl; model-family acceptance and interpretability ledgers; maintained template CLI (`gnn templates list`, `gnn templates show`, `gnn pull`); authenticated local MCP HTTP orchestration; structured PyMDP 1.0 POMDP execution; static/headless GUI publication; PyMDP Scaling Study; and MCP Full Module Exposure.
 **New in v3.0.0 ("Long-Running Orchestration")**: three safe-by-design `src/pipeline/` contracts — durable observation streams, resumable run sessions, and auditable container plans — plus additive live wiring, a strict acceptance gate (`scripts/run_v3_orchestration_acceptance.py`), and 3 new MCP tools. No live infrastructure mutation; every module generates, validates, replays, or plans data only. See [doc/pipeline/v3_orchestration.md](./doc/pipeline/v3_orchestration.md).
+**New in v3.2.0 ("Exemplar Gold Standard")**: the `input/gnn_files/continuous/` exemplars are pure linear-Gaussian state-space models (`F/H/Q/R`, `prior_mean/prior_cov`, optional `goal_mean/control_gain`) with native JAX, NumPyro, PyTorch, Stan and RxInfer.jl backends; `unsupported` is a first-class render status for categorical backends (PyMDP, ActiveInference.jl, DisCoPy, bnlearn) on continuous models and is never handed to Step 12; the Stan renderer emits runnable HMM (forward algorithm) and LGSSM (Kalman marginal likelihood) programs plus a `<stem>_stan.py` cmdstanpy driver executed by `src/execute/stan/`; Step 12 merges `execution_summary.json` across input folders; the Julia pre-exec gate degrades to an advisory sweep instead of blocking scripts on a toolchain-less launcher. See [CHANGELOG.md](./CHANGELOG.md) §3.2.0 and [Model Kinds and Framework Support](#-model-kinds-and-framework-support-v320).
 📖 **DOI:** [10.5281/zenodo.7803328](https://doi.org/10.5281/zenodo.7803328)  
 📁 **Archive:** [zenodo.org/records/7803328](https://zenodo.org/records/7803328)
 
@@ -137,7 +137,7 @@ The GNN pipeline is composed of **25 specialized modules**, each acting as an ag
 | **8** | **[Viz](src/visualization/)** | Static visualization of matrices and network logic. | [🤖 Agent](src/visualization/AGENTS.md) • [📝 Code](src/8_visualization.py) |
 | **9** | **[Adv. Viz](src/advanced_visualization/)** | Interactive diagrams and complex visual analysis. | [🤖 Agent](src/advanced_visualization/AGENTS.md) • [📝 Code](src/9_advanced_viz.py) |
 | **10** | **[Ontology](src/ontology/)** | Semantic mapping to Active Inference definitions. | [🤖 Agent](src/ontology/AGENTS.md) • [📝 Code](src/10_ontology.py) |
-| **11** | **[Render](src/render/)** | Code generation for PyMDP, RxInfer, ActiveInference.jl, DisCoPy, JAX, Stan, PyTorch, NumPyro | [🤖 Agent](src/render/AGENTS.md) • [📝 Code](src/11_render.py) |
+| **11** | **[Render](src/render/)** | Code generation for PyMDP, RxInfer.jl, ActiveInference.jl, JAX, DisCoPy, PyTorch, NumPyro, Stan, bnlearn (`render/framework_registry.py`) | [🤖 Agent](src/render/AGENTS.md) • [📝 Code](src/11_render.py) |
 | **12** | **[Execute](src/execute/)** | Simulation runner and runtime management. | [🤖 Agent](src/execute/AGENTS.md) • [📝 Code](src/12_execute.py) |
 | **13** | **[LLM](src/llm/)** | Neurosymbolic analysis and text generation. | [🤖 Agent](src/llm/AGENTS.md) • [📝 Code](src/13_llm.py) |
 | **14** | **[ML](src/ml_integration/)** | Integration with external ML frameworks. | [🤖 Agent](src/ml_integration/AGENTS.md) • [📝 Code](src/14_ml_integration.py) |
@@ -190,7 +190,7 @@ graph LR
         
         B["📊 Graphical Models<br/>• Factor graphs<br/>• Network visualizations<br/>• Dependency diagrams<br/>• Interactive visualizations"]
         
-        C["⚙️ Executable Models<br/>• PyMDP simulations<br/>• RxInfer.jl implementations<br/>• JAX computations<br/>• PyTorch inference<br/>• NumPyro probabilistic<br/>• DisCoPy diagrams"]
+        C["⚙️ Executable Models<br/>• PyMDP simulations<br/>• RxInfer.jl implementations<br/>• ActiveInference.jl agents<br/>• JAX computations<br/>• DisCoPy diagrams<br/>• PyTorch inference<br/>• NumPyro probabilistic<br/>• Stan programs<br/>• bnlearn networks"]
     end
     
     A -->|Parse & Extract| B
@@ -398,6 +398,7 @@ graph TB
         Stan[Stan Generator]
         PyTorch[PyTorch Generator]
         NumPyro[NumPyro Generator]
+        Bnlearn[bnlearn Generator]
     end
     
     subgraph "Execution"
@@ -406,6 +407,8 @@ graph TB
         RxInferExec[RxInfer Runner]
         ActInfExec[ActiveInference Runner]
         JAXExec[JAX Runner]
+        DisCoPyExec[DisCoPy Runner]
+        StanExec[Stan Runner]
         PyTorchExec[PyTorch Runner]
         NumPyroExec[NumPyro Runner]
     end
@@ -427,11 +430,14 @@ graph TB
     Renderer --> Stan
     Renderer --> PyTorch
     Renderer --> NumPyro
+    Renderer --> Bnlearn
     
     PyMDP --> Executor
     RxInfer --> Executor
     ActInf --> Executor
     JAX --> Executor
+    DisCoPy --> Executor
+    Stan --> Executor
     PyTorch --> Executor
     NumPyro --> Executor
     
@@ -439,6 +445,8 @@ graph TB
     Executor --> RxInferExec
     Executor --> ActInfExec
     Executor --> JAXExec
+    Executor --> DisCoPyExec
+    Executor --> StanExec
     Executor --> PyTorchExec
     Executor --> NumPyroExec
     
@@ -446,11 +454,32 @@ graph TB
     RxInferExec --> Analyzer
     ActInfExec --> Analyzer
     JAXExec --> Analyzer
+    DisCoPyExec --> Analyzer
+    StanExec --> Analyzer
     PyTorchExec --> Analyzer
     NumPyroExec --> Analyzer
     
     Analyzer --> Results
 ```
+
+### 🧭 Model Kinds and Framework Support (v3.2.0)
+
+Every exemplar under `input/gnn_files/` renders **and executes** on every
+framework that can represent it, and is explicitly flagged on the ones that
+cannot. `render.pomdp_contract.detect_model_kind` classifies each file;
+`render/framework_registry.py` declares per-framework capabilities.
+
+| Model kind | Exemplar folders | Renders + executes on | Render status `unsupported` on |
+|---|---|---|---|
+| Discrete-state POMDP / HMM (categorical `A/B/C/D[/E]`; flat, factored, hierarchical, multi-agent, learning) | `basics/`, `discrete/`, `hierarchical/`, `learning/`, `multiagent/`, `pomdp_gridworld/`, `precision/`, `pymdp_scaling_study/`, `structured/` | PyMDP, RxInfer.jl, ActiveInference.jl, JAX, DisCoPy, PyTorch, NumPyro, Stan (bnlearn renders; execution needs the intentionally unlocked `bnlearn`) | — |
+| Continuous-state linear-Gaussian (`F/H/Q/R`, `prior_mean/prior_cov`, optional closed-loop `goal_mean/control_gain`) | `continuous/` | JAX, NumPyro (+NUTS), PyTorch, Stan (Kalman marginal likelihood), RxInfer.jl (native LGSSM) — all via a Kalman filter with closed-loop control when declared | PyMDP, ActiveInference.jl, DisCoPy, bnlearn (categorical backends) |
+
+`unsupported` is a first-class render status: it is excluded from success rates,
+listed under `unsupported_framework_renderings` in `render_processing_summary.json`,
+and Step 12 never executes those frameworks for that model. A Step 12 `skipped`
+means a *toolchain* is missing on the machine (Julia, `torch`, `cmdstanpy`/CmdStan),
+not that the model is unrepresentable. Live counts always come from the two summary
+files; the prose above does not carry numbers.
 
 ### 📁 Directory Structure
 
@@ -550,7 +579,7 @@ flowchart TD
         C --> D["📊 Multi-Format Export<br/>JSON, XML, GraphML, Pickle"]
         
         C --> E["🎨 Visualization<br/>Generate graphs & matrices"]
-        C --> F["🔄 Code Generation<br/>PyMDP, RxInfer, JAX, PyTorch, NumPyro, DisCoPy"]
+        C --> F["🔄 Code Generation<br/>PyMDP, RxInfer.jl, ActiveInference.jl, JAX, DisCoPy, PyTorch, NumPyro, Stan, bnlearn"]
         
         F --> G["▶️ Simulation Execution<br/>Run generated code"]
         E --> H["🧠 LLM Analysis<br/>AI-powered insights"]
@@ -635,17 +664,16 @@ The GNN framework is built around a modular architecture, where each pipeline st
 | `advanced_visualization` | 9 | Provides advanced, interactive and dashboard visualizations. | `plotly`, D3/HTML output, `matplotlib`, `networkx` |
 | `ontology` | 10 | Maps GNN concepts to Active Inference ontology terms. | Ontology Mapper, Knowledge Graph |
 | `render` | 11 | Renders GNN models into executable code for various backends. | Code Generators (PyMDP, RxInfer, JAX, ActInf.jl, PyTorch, NumPyro, Stan, DisCoPy, bnlearn) |
-| `execute` | 12 | Executes the rendered code using the specified backend. | PyMDP, RxInfer.jl, JAX, ActiveInference.jl, PyTorch, NumPyro |
-| `llm` | 13 | Integrates Large Language Models for analysis, generation, and insights. | OpenAI GPT, Anthropic Claude, Local LLMs |
+| `execute` | 12 | Executes the rendered code using the specified backend. | PyMDP, RxInfer.jl, ActiveInference.jl, JAX, DisCoPy, PyTorch, NumPyro, Stan (cmdstanpy) — bnlearn is render-only and has no executor |
+| `llm` | 13 | Integrates Large Language Models for analysis, generation, and insights. | Ollama (local default), OpenAI, OpenRouter, Perplexity |
 | `ml_integration` | 14 | Integrates with machine learning frameworks for advanced analysis. | `scikit-learn`, `tensorflow`, `pytorch` |
 | `audio` | 15 | Generates audio representations of GNN model dynamics. | `SAPF`, `Pedalboard`, Audio Synthesis Engines |
-| `analysis` | 16 | Performs statistical and qualitative analysis of execution results. | `pandas`, `scipy`, Statistical Models |
-| `integration` | 17 | Manages external system integrations and data exchange. | REST APIs, Message Queues |
+| `integration` | 17 | Performs system-level consistency checks, dependency-graph construction, and circular-dependency detection. | Internal pipeline consistency tooling |
 | `security` | 18 | Implements security checks, vulnerability scanning, and access control. | SAST Tools, Security Scanners |
 | `research` | 19 | Supports research-specific tasks like hypothesis testing and data collection. | Experimentation Frameworks |
-| `website` | 20 | Generates static websites or documentation portals from GNN outputs. | Static Site Generators (e.g., MkDocs) |
+| `website` | 20 | Generates the static HTML report site from pipeline outputs. | Custom HTML renderer |
 | `mcp` | 21 | Implements the Model Context Protocol for inter-model communication. | Protocol Handlers, Message Brokers |
-| `gui` | 22 | Provides interactive graphical user interfaces for model creation and editing. | `gradio`, `streamlit`, `dash` |
+| `gui` | 22 | Provides interactive graphical user interfaces for model creation and editing. | Gradio (GUI 1–3), oxdraw (diagram-as-code) |
 | `report` | 23 | Generates comprehensive reports summarizing the pipeline execution. | Report Generators (PDF, HTML) |
 | `intelligent_analysis` | 24 | AI-powered pipeline analysis and executive reports. | LLM analysis, remediation, pipeline summaries |
 
@@ -729,7 +757,7 @@ python src/main.py [options]
 | `--only-steps LIST` | Run only specific steps | None |
 | `--verbose` | Enable detailed logging | `False` |
 | `--strict` | Enable strict type checking | `False` |
-| `--estimate-resources` | Estimate computational resources | `True` |
+| `--estimate-resources` | Estimate computational resources | `False` |
 
 <details>
 <summary><strong>📋 View All Pipeline Options</strong></summary>
@@ -877,16 +905,14 @@ intended.
 #### 📁 GUI Output Structure
 
 ```text
-output/22_gui_output/
-├── gui_1_output/           # Form-based constructor outputs
-│   ├── constructed_model_gui_1.md
-│   └── gui_status.json
-├── gui_2_output/           # Visual matrix editor outputs  
-│   ├── visual_model_gui_2.md
-│   └── visual_matrices.json
-├── gui_3_output/           # Design studio outputs
-│   ├── designed_model_gui_3.md
-│   └── design_analysis.json
+output/22_gui_output/               # all GUI backends write to this one folder
+├── constructed_model_gui1.md       # GUI 1: form-based constructor export
+├── visual_model_gui2.md            # GUI 2: visual matrix editor export
+├── visual_matrices.json            # GUI 2: matrix payloads
+├── designed_model_gui_3.md         # GUI 3: design studio export
+├── design_analysis.json            # GUI 3: design analysis
+├── gui_status.json
+├── navigation.html
 └── gui_processing_summary.json
 ```
 
@@ -947,11 +973,8 @@ The pipeline includes enhanced visual logging for better accessibility:
 # Run with visual enhancements (recommended)
 python src/main.py --verbose
 
-# Run with compact visual mode for narrow terminals
-python src/main.py --verbose --compact
-
-# Run with timestamps for detailed logging
-python src/main.py --verbose --timestamps
+# Emit structured JSON log lines instead of the human-readable format
+python src/main.py --verbose --log-format json
 ```
 
 **Visual Features:**
@@ -984,9 +1007,9 @@ Check the generated outputs in the `output/` directory. The static site is under
 
 ```bash
 ls -la output/
-open output/20_website_output/website/index.html  # macOS
+open output/20_website_output/index.html  # macOS
 # or
-xdg-open output/20_website_output/website/index.html  # Linux
+xdg-open output/20_website_output/index.html  # Linux
 ```
 
 ### 🆘 Need Help?
@@ -1098,7 +1121,8 @@ Explore practical GNN implementations and use cases:
 
 ### 📂 Example Files Location
 
-- **📁 Primary Examples**: [`src/gnn/gnn_examples/`](./src/gnn/gnn_examples/)
+- **📁 Primary Examples**: [`input/gnn_files/`](./input/gnn_files/) — the maintained exemplar corpus (discrete and continuous model kinds across task folders); start from its [`INDEX.md`](./input/gnn_files/INDEX.md)
+- **📁 Single Packaged Example**: [`src/gnn/gnn_examples/`](./src/gnn/gnn_examples/) — one POMDP agent shipped with the `gnn` package
 - **📁 Cognitive Models**: [`doc/cognitive_phenomena/`](./doc/cognitive_phenomena/)
 - **📁 Templates**: [`doc/templates/`](./doc/templates/)
 
@@ -1107,6 +1131,7 @@ Explore practical GNN implementations and use cases:
 | Example | Description | Location |
 |---------|-------------|----------|
 | **🎯 PyMDP POMDP Agent** | Complete POMDP implementation | [`src/gnn/gnn_examples/actinf_pomdp_agent.md`](src/gnn/gnn_examples/actinf_pomdp_agent.md) |
+| **🧭 Continuous Navigation** | Continuous-state linear-Gaussian model with closed-loop control (`F/H/Q/R`, `goal_mean/control_gain`); runs on JAX, NumPyro, PyTorch, Stan and RxInfer.jl | [`input/gnn_files/continuous/continuous_navigation.md`](input/gnn_files/continuous/continuous_navigation.md) |
 | **🔬 RxInfer Hidden Markov Model** | Probabilistic sequence modeling | [`doc/other/rxinfer_hidden_markov_model.md`](doc/other/rxinfer_hidden_markov_model.md) |
 | **🧠 ActiveInference.jl Examples** | Julia-based Active Inference models | [`doc/activeinference_jl/actinf_jl_src/`](doc/activeinference_jl/actinf_jl_src/) |
 | **🤝 Multi-Agent System** | Collaborative agent modeling | [`doc/other/rxinfer_multiagent_gnn.md`](doc/other/rxinfer_multiagent_gnn.md) |
@@ -1124,11 +1149,14 @@ Explore practical GNN implementations and use cases:
 ### 🏃‍♂️ Running Examples
 
 ```bash
-# Process all packaged examples (--target-dir is always a directory)
-python src/main.py --target-dir src/gnn/gnn_examples
-
-# Default pipeline input directory (includes actinf_pomdp_agent.md)
+# Process the maintained exemplar corpus (--target-dir is always a directory)
 python src/main.py --target-dir input/gnn_files
+
+# Process one task folder, e.g. the continuous-state exemplars
+python src/main.py --target-dir input/gnn_files/continuous
+
+# Process the single packaged example shipped with the gnn package
+python src/main.py --target-dir src/gnn/gnn_examples
 
 # Process with full analysis
 python src/main.py --target-dir src/gnn/gnn_examples --estimate-resources --verbose
@@ -1172,10 +1200,10 @@ python src/main.py --only-steps "2,3" --dev
 
 ```bash
 # Custom output directory
-python src/main.py -o /path/to/custom/output
+python src/main.py --output-dir /path/to/custom/output
 
 # Timestamped outputs
-python src/main.py -o "output/run_$(date +%Y%m%d_%H%M%S)"
+python src/main.py --output-dir "output/run_$(date +%Y%m%d_%H%M%S)"
 ```
 
 </details>

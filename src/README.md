@@ -108,20 +108,22 @@ src/
 │   ├── __init__.py                 # Imports from processor.py
 │   └── processor.py                # Core ontology processing functions
 └── tests/
-    ├── test_render_integration.py  # Tests for render module
-    └── test_ontology_overall.py # Tests for ontology module
+    ├── render/test_render_integration.py    # Tests for render module
+    └── ontology/test_ontology_overall.py    # Tests for ontology module
 ```
 
 ### ✅ Correct Pattern Examples
 
-- `11_render.py` imports from `src/render/` and calls `generate_pymdp_code()`, `generate_rxinfer_code()`, etc.
-- `10_ontology.py` imports from `src/ontology/` and calls `process_ontology_file()`, `extract_ontology_terms()`, etc.
+- `11_render.py` imports from `src/render/` and calls `process_render()`; `10_ontology.py`
+  imports from `src/ontology/` and calls `process_ontology()`. The per-framework emitters
+  (`generate_pymdp_code()`, `generate_rxinfer_code()`, ...) live inside the module and are
+  dispatched by its processor, never called from the numbered script.
 - Scripts contain only orchestration logic, not domain-specific processing code
 
 ### ❌ Incorrect Pattern Examples
 
 - Defining `generate_pymdp_code()` directly in `11_render.py`
-- Defining `process_ontology_file()` directly in `10_ontology.py`
+- Defining `process_ontology()` directly in `10_ontology.py`
 - Any long method definitions (>20 lines) in numbered scripts
 
 ## Pipeline Safety and Reliability
@@ -148,10 +150,16 @@ return a structured exit code rather than propagating an exception.
   `with_safe_matplotlib()` context managers.
 - **Step 12 (Execute)**: circuit breaker with bounded exponential backoff, per-framework
   environment validation, timeout-aware resource monitoring.
-- **Step 13 (LLM)**: provider chain (Ollama → OpenAI → Anthropic → Perplexity) with
+- **Step 13 (LLM)**: provider chain (Ollama → OpenAI → OpenRouter → Perplexity, matching `src/llm/providers/`) with
   configurable timeouts; a missing provider is a warning, not a failure.
 - **Step 11 (Render)**: matrix normalization and POMDP-shape pre-checks before any
-  framework-specific emitter runs.
+  framework-specific emitter runs. Continuous linear-Gaussian models render only on the
+  frameworks whose `render/framework_registry.py` entry sets `supports_continuous`
+  (JAX, NumPyro, PyTorch, Stan, RxInfer.jl). For PyMDP, ActiveInference.jl, DisCoPy,
+  and bnlearn the renderer reports status `unsupported` — tallied under
+  `unsupported_framework_renderings` in `render_processing_summary.json`, separate from
+  failures — and **Step 12 (Execute)** skips those entries rather than counting them as
+  failed runs.
 - **Step 4 (Model Registry)**: metadata extraction (author, license, version) for every
   discovered model.
 
@@ -225,7 +233,7 @@ uv run python src/main.py --only-steps "3,5,6,11" --verbose
 
 ```bash
 ls output/
-cat output/pipeline_execution_summary.json
+cat output/00_pipeline_summary/pipeline_execution_summary.json
 ls output/8_visualization_output/
 ls output/9_advanced_viz_output/
 ls output/11_render_output/

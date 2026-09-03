@@ -14,6 +14,7 @@ This module provides comprehensive security validation and access control capabi
 src/security/
 ├── __init__.py                    # Module initialization and exports
 ├── README.md                      # This documentation
+├── processor.py                   # Scanners, process_security, pre-execution script gate
 └── mcp.py                         # Model Context Protocol integration
 ```
 
@@ -226,24 +227,25 @@ else:
 
 ---
 
+## Pre-execution script gate
+
+Step 18 runs after Step 12, so on its own it is forensic. `scan_script_for_execution(script_path, *, block_on="high")` in `src/security/processor.py` closes that gap: Step 12 (`src/execute/processor.py`) calls it on every rendered script before launching it and refuses to run the script when the verdict is `ok=False` (error type `SecurityGateBlocked`).
+
+- **Python scripts** are analysed with the AST scanner; findings at or above `block_on` block execution.
+- **Julia scripts** are validated with `Meta.parseall` through a `julia` subprocess (`_julia_meta_parseall`, 30 s timeout). Parsing builds the AST without executing the script. Only an explicit parse failure (`GNN_PARSE_FAIL`) blocks; when Julia is absent, times out, or the probe itself does not run (e.g. a launcher with no installed toolchain — the v3.2.0 fix), the gate degrades to the advisory regex sweep `_julia_regex_sweep` with `scanned=False`.
+- Setting `GNN_ALLOW_UNSAFE_EXEC` in the environment bypasses the gate (see `_gnn_allow_unsafe_exec` in `src/execute/processor.py`).
+
 ## Output Specification
 
 ### Output Products
-- `security_validation_report.json` - Comprehensive security report
-- `access_control_log.json` - Access control audit log
-- `threat_detection_report.json` - Threat detection results
+- `security_results.json` - Structured findings and per-file results
 - `security_summary.md` - Human-readable security summary
 
 ### Output Directory Structure
 ```
 output/18_security_output/
-├── security_validation_report.json
-├── access_control_log.json
-├── threat_detection_report.json
-├── security_summary.md
-└── security_audit_trail/
-    ├── 2025-10-01_access_log.json
-    └── threat_indicators.json
+├── security_results.json
+└── security_summary.md
 ```
 
 ---
@@ -328,8 +330,7 @@ File Input → Security Validation → Threat Detection → Access Control → S
 - `src/tests/security/test_security_functional.py` - Functional tests
 
 ### Test Coverage
-- **Current**: 87%
-- **Target**: 90%+
+- Measure: `uv run --extra dev python -m pytest src/tests/security/ --cov=security --cov-report=term-missing` (do not treat fixed percentages in this doc as canonical).
 
 ### Key Test Scenarios
 1. Security validation with various threat types
@@ -343,19 +344,10 @@ File Input → Security Validation → Threat Detection → Access Control → S
 ## MCP Integration
 
 ### Tools Registered
-- `security.validate_model` - Validate model security
-- `security.check_access` - Check access permissions
-- `security.detect_threats` - Detect security threats
-- `security.audit_access` - Audit access control
-- `security.encrypt_data` - Encrypt sensitive data
-
-### Tool Endpoints
-```python
-@mcp_tool("security.validate_model")
-def validate_model_security_tool(file_path, security_level="standard"):
-    """Validate security aspects of a GNN model"""
-    # Implementation
-```
+- `process_security` - Run the Step 18 scan over a directory
+- `scan_gnn_file` - Scan one GNN file
+- `get_security_report` - Read the latest security results
+- `list_security_checks` - List the checks the scanner applies
 
 ### MCP File Location
 - `src/security/mcp.py` - MCP tool registrations
@@ -370,7 +362,7 @@ def validate_model_security_tool(file_path, security_level="standard"):
 **Symptom**: Valid models reported as having vulnerabilities  
 **Cause**: Security rules too strict or outdated  
 **Solution**: 
-- Use `--security-level basic` for lenient validation
+- Use `process_security(..., security_level="basic")` for lenient validation (Python API kwarg; there is no `--security-level` CLI flag)
 - Review security rules and update if needed
 - Check compliance standards are appropriate
 - Use `--verbose` flag for detailed validation logs

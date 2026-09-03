@@ -153,7 +153,7 @@ Full categorical bridge documentation: **[doc/other/catcolab/catcolab_gnn.md](..
  | ID | Area | Description | Impact |
 |---|---|---|---|
  | C-1 | Export | CatColab JSON schema not yet formally validated | Medium |
- | C-2 | Import | CatColab→GNN importer provides partial logic types | Medium |
+ | C-2 | Import | No CatColab→GNN importer exists (planned) | Medium |
  | C-3 | Analysis | DisCoPy analyzer only outputs 2 structural diagrams | Low |
 
 ## See Also / Next Steps

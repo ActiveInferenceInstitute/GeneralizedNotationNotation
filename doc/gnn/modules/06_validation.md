@@ -152,30 +152,25 @@ success = process_validation(
 )
 ```
 
-### Model Structure Validation
+### Semantic Validation and Consistency
 ```python
-from validation import validate_model_structure
+from validation import process_semantic_validation, check_consistency
 
-with open("model.gnn", "r") as f:
-    content = f.read()
-
-validation = validate_model_structure(content)
-if validation["valid"]:
-    print("Model structure is valid")
-else:
-    print("Validation issues:")
-    for issue in validation["issues"]:
-        print(f"  - {issue}")
+semantic = process_semantic_validation("model.gnn")
+consistency = check_consistency("model.gnn")
 ```
 
 ### Performance Profiling
 ```python
-from validation import profile_model_performance
+from validation import profile_performance
 
-profile = profile_model_performance(content)
-print(f"Estimated complexity: {profile['complexity_score']}")
-print(f"Performance rating: {profile['performance_rating']}")
+profile = profile_performance("model.gnn")
 ```
+
+The exported surface is listed in `src/validation/__init__.py` (`__all__`):
+`process_validation`, `process_semantic_validation`, `profile_performance`,
+`check_consistency` plus the `SemanticValidator`, `PerformanceProfiler` and
+`ConsistencyChecker` classes.
 
 ---
 
@@ -259,8 +254,7 @@ Model Content → Structure Validation → Semantic Validation → Performance P
 - `src/tests/gnn/test_gnn_validation.py` - GNN validation-focused tests (shared)
 
 ### Test Coverage
-- **Current**: 82%
-- **Target**: 85%+
+- Measure: `uv run --extra dev python -m pytest src/tests/validation/ --cov=validation --cov-report=term-missing` (do not treat fixed percentages in this doc as canonical).
 
 ### Key Test Scenarios
 1. Model structure validation
@@ -273,10 +267,10 @@ Model Content → Structure Validation → Semantic Validation → Performance P
 ## MCP Integration
 
 ### Tools Registered
-- `validation.validate_structure` - Validate model structure
-- `validation.profile_performance` - Profile model performance
-- `validation.check_consistency` - Check cross-format consistency
-- `validation.analyze_quality` - Analyze model quality
+- `process_validation` - Run Step 6 over a directory
+- `validate_gnn_file` - Validate one GNN file
+- `get_validation_report` - Read the latest validation results
+- `check_schema_compliance` - Check a file against the GNN schema
 
 ### Tool Endpoints
 ```python

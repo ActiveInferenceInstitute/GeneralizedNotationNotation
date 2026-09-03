@@ -7,7 +7,7 @@ description: GNN audio generation and sonification. Use when creating audio repr
 
 ## Purpose
 
-Generates audio representations (sonification) of GNN models, mapping model structures, state transitions, and matrix values to sound parameters using SAPF, Pedalboard, and other audio backends.
+Generates audio representations of GNN models, mapping model structures, state transitions, and matrix values to sound parameters. Generation uses NumPy synthesis plus the SAPF sub-package; `librosa`/`soundfile`/`pedalboard` are optional backends reported by `check_audio_backends()`.
 
 ## Key Commands
 
@@ -45,14 +45,15 @@ process_audio(target_dir, output_dir, verbose=True)
 result = generate_audio_from_gnn(gnn_content, output_dir="output/")
 
 # Create sonification
-audio_data = create_sonification(model_data)
+sonification = create_sonification(file_path, output_dir)
 
 # Use AudioGenerator class
 gen = AudioGenerator()
 
-# Convert GNN to SAPF format and generate audio
-sapf_code = convert_gnn_to_sapf(gnn_content)
-generate_audio_from_sapf(sapf_code, output_path="model.wav")
+# Convert GNN to SAPF format and generate audio (sapf subpackage signatures)
+from audio.sapf import convert_gnn_to_sapf as sapf_convert, generate_audio_from_sapf as sapf_gen
+sapf_code = sapf_convert(gnn_content, "my_model")
+sapf_gen(sapf_code, Path("output/my_model_sapf_audio.wav"))
 
 # Check available backends
 backends = check_audio_backends()
@@ -74,7 +75,7 @@ backends = check_audio_backends()
 # Audio generation deps
 uv sync --extra audio
 
-# Includes: librosa, soundfile, pedalboard, pydub
+# Includes: librosa, soundfile, pedalboard
 ```
 
 ## Output
@@ -100,7 +101,7 @@ This module registers tools with the GNN MCP server (see `mcp.py`):
 - [AGENTS.md](AGENTS.md) — Module documentation
 - [README.md](README.md) — Usage guide
 - [SPEC.md](SPEC.md) — Module specification
-- [sapf/](../sapf/) — SAPF framework
+- [sapf/](sapf/) — SAPF framework
 
 
 ---

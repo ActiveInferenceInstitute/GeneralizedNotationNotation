@@ -72,11 +72,7 @@ Main function for processing system integration tasks.
 - `output_dir` (Path): Output directory for integration results
 - `verbose` (bool): Enable verbose logging (default: False)
 - `logger` (Optional[logging.Logger]): Logger instance for progress reporting (default: None)
-- `integration_mode` (str, optional): Integration mode ("coordinated", "standalone", "recovery") (default: "coordinated")
-- `system_coordination` (bool, optional): Enable system-wide coordination (default: True)
-- `validate_dependencies` (bool, optional): Validate module dependencies (default: True)
-- `detect_cycles` (bool, optional): Detect circular dependencies (default: True)
-- `**kwargs`: Additional integration options
+- `**kwargs`: Accepted but not read by the current `process_integration` implementation — no `integration_mode`, `system_coordination`, `validate_dependencies`, or `detect_cycles` key has any effect.
 
 **Returns**: `bool` - True if integration processing succeeded, False otherwise
 
@@ -120,26 +116,7 @@ success = process_integration(
 
 ## Configuration
 
-### Environment Variables
-- `INTEGRATION_MODE` - Integration coordination mode ("coordinated", "standalone")
-- `INTEGRATION_TIMEOUT` - Maximum integration processing time (default: 60 seconds)
-- `INTEGRATION_VERBOSE` - Enable verbose integration logging
-
-### Configuration Files
-- `integration_config.yaml` - Integration-specific settings
-
-### Default Settings
-```python
-DEFAULT_INTEGRATION_SETTINGS = {
-    "coordination_enabled": True,
-    "fallback_mode": True,
-    "timeout": 60,
-    "retry_attempts": 3,
-    "parallel_processing": False,
-}
-```
-
----
+No environment variables or config files are read by `src/integration/`; behavior is controlled by the `process_integration(...)` parameters documented above.
 
 ## Usage Examples
 
@@ -225,8 +202,7 @@ Pipeline Steps → Integration Coordination → System State → Cross-Module Co
 - `src/tests/integration/test_integration_processor.py` - Processor-level integration tests
 
 ### Test Coverage
-- **Current**: 83%
-- **Target**: 90%+
+- Measure: `uv run --extra dev python -m pytest src/tests/integration/ --cov=integration --cov-report=term-missing` (do not treat fixed percentages in this doc as canonical).
 
 ### Key Test Scenarios
 1. Cross-module coordination with various step combinations
@@ -239,16 +215,13 @@ Pipeline Steps → Integration Coordination → System State → Cross-Module Co
 ## MCP Integration
 
 ### Tools Registered
-- `integration_status` - Check integration system status
-- `integration_coordinate` - Coordinate pipeline step execution
 
-### Tool Endpoints
-```python
-@mcp_tool("integration_status")
-def get_integration_status():
-    """Get current integration system status"""
-    # Implementation
-```
+Registered in `register_tools` (`src/integration/mcp.py`):
+
+- `process_integration` - Run Step 17 over pipeline outputs
+- `list_supported_integrations` - List supported integration checks
+- `get_integration_status` - Read current integration status
+- `check_integration_dependencies` - Report integration dependencies
 
 ### MCP File Location
 - `src/integration/mcp.py` - MCP tool registrations

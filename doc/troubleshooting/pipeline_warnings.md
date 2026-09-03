@@ -9,7 +9,7 @@ than relying on a fixed framework count.
 ```bash
 uv run gnn preflight
 uv run gnn health
-cat output/00_pipeline_summary/pipeline_execution_summary.json | python -m json.tool
+cat output/00_pipeline_summary/pipeline_execution_summary.json | uv run python -m json.tool
 ```
 
 The exact output root may be a custom `--output-dir`; use that run directory when it

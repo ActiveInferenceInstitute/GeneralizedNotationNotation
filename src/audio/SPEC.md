@@ -1,25 +1,30 @@
 # Audio Module Specification
 
 ## Overview
-Audio processing and SAPF (Structured Audio Processing Format) generation.
+Audio generation for GNN models: NumPy synthesis of tonal, rhythmic, ambient, and
+sonification WAV renderings, SAPF (Sound As Pure Form) code generation, and optional
+streaming chunk metadata from Step 12 execution telemetry.
 
 ## Components
 
 ### SAPF
-- `sapf/` - SAPF generation and processing
+- `sapf/` - SAPF code generation and Python synthesis of that code
 
 ### Audio Generation
-- Audio synthesis from GNN models
-- WAV file generation
+- `generator.py` - Tonal / rhythmic / ambient / sonification synthesis
+- `processor.py` - `process_audio` entry point, WAV writing (soundfile or stdlib fallback), analysis
+- `streaming.py` - Execution telemetry -> streaming chunk metadata
+- `pedalboard/` - Documentation-only scaffold for planned effects processing
 
 ## Features
 - SAPF generation
-- Audio synthesis
-- Multiple backend support
+- NumPy audio synthesis
+- WAV file generation (the only output format)
+- Optional library probing via `check_audio_backends()`
 
 ## Key Exports
 ```python
-from audio import process_audio
+from audio import process_audio, generate_audio_from_gnn, create_sonification, check_audio_backends
 ```
 
 

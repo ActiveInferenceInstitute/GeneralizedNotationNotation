@@ -378,7 +378,7 @@ output/[step]_[module]_output/
 ### Test Coverage
 
 - **Current**: [percentage]%
-- **Target**: 90%+
+- **Target**: >80% on new code (enforced floor in `pyproject.toml`)
 
 ### Key Test Scenarios
 
@@ -474,7 +474,7 @@ def process_tool(args):
 
 - **Unit Tests**: All new functions must have corresponding unit tests
 - **Integration Tests**: Test module integration with pipeline and other modules
-- **Coverage Target**: Maintain >95% test coverage for new code
+- **Coverage Target**: Maintain >80% test coverage on new code (enforced floor in `pyproject.toml`)
 - **Edge Cases**: Test all error scenarios and boundary conditions
 - **Performance Tests**: Include timing and memory usage validation
 - **Real Data**: Use actual representative data
@@ -504,7 +504,7 @@ def process_tool(args):
 
 ```bash
 # Diagnostic command
-python src/[N]_[module].py --target-dir input/ --verbose --debug
+python src/[N]_[module].py --target-dir input/ --verbose
 
 # Check specific log files
 tail -f output/[N]_[module]_output/*.log
@@ -525,7 +525,7 @@ tail -f output/[N]_[module]_output/*.log
 
 ```bash
 # Enable performance profiling
-python src/[N]_[module].py --profile --verbose
+python src/[N]_[module].py --verbose
 
 # Check resource usage
 python src/main.py --only-steps [N] --verbose
@@ -544,7 +544,7 @@ python src/main.py --only-steps [N] --verbose
 
 ```bash
 # Monitor memory usage
-python src/[N]_[module].py --monitor-memory --verbose
+python src/[N]_[module].py --verbose
 ```
 
 **Solutions**:
@@ -571,7 +571,7 @@ python src/main.py --only-steps [N] --target-dir test_input/
 
 ```bash
 # Run with comprehensive debugging
-python src/[N]_[module].py --target-dir input/ --verbose --debug --profile
+python src/[N]_[module].py --target-dir input/ --verbose
 
 # Check all output files
 find output/[N]_[module]_output/ -name "*.json" -exec cat {} \;
@@ -584,7 +584,7 @@ cat output/[N]_[module]_output/[module]_processing_summary.json
 ### Getting Help
 
 1. **Check Documentation**: Review this AGENTS.md file for usage examples
-2. **Enable Debug Mode**: Use `--verbose --debug` flags for detailed logging
+2. **Enable Verbose Logging**: Use the `--verbose` flag for detailed logging
 3. **Examine Outputs**: Check `output/[N]_[module]_output/` for diagnostic files
 4. **Community Support**: Open GitHub issues with complete error logs and reproduction steps
 

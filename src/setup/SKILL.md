@@ -7,7 +7,7 @@ description: GNN environment setup and dependency management. Use when configuri
 
 ## Purpose
 
-Manages environment configuration, virtual environment creation, and dependency installation for the GNN pipeline. Supports both core and optional dependency groups via `uv` or `pip`.
+Manages environment configuration, virtual environment creation, and dependency installation for the GNN pipeline. All package operations go through `uv`; there is no pip path.
 
 ## Key Commands
 
@@ -32,7 +32,7 @@ These groups match `[project.optional-dependencies]` in `pyproject.toml`:
 | Group | Key Packages | Purpose |
 | ----- | ------------ | ------- |
 | Core `uv sync` | pymdp, jax, numpyro, discopy, LLM clients, visualization | Standard pipeline runtime |
-| `audio` | librosa, soundfile, pedalboard, pydub | Audio generation |
+| `audio` | librosa, soundfile, pedalboard | Audio generation |
 | `gui` | gradio, streamlit | GUI interface |
 | `ml-ai` | transformers, scipy, scikit-learn | Machine learning extensions |
 | Manual install | torch, bnlearn | Optional backends excluded from the lock while Torch has no patched advisory release |
@@ -45,7 +45,7 @@ These groups match `[project.optional-dependencies]` in `pyproject.toml`:
 ## Environment Requirements
 
 - **Python**: 3.11+ (recommended 3.12.x or 3.13.x)
-- **Package manager**: uv (recommended) or pip
+- **Package manager**: uv (required)
 - **Core deps**: numpy, networkx, pyyaml, jsonschema
 
 ## Troubleshooting

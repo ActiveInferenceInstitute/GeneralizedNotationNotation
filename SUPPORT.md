@@ -2,7 +2,7 @@
 
 > **📋 Document Metadata**  
 > **Type**: Support Guide | **Audience**: All Users | **Complexity**: Beginner-Friendly  
-> **Last Updated**: May 2026 | **Status**: Production-Ready  
+> **Last Updated**: 2026-09-02 | **Status**: Maintained  
 > **Cross-References**: [README](README.md) | [Troubleshooting](doc/troubleshooting/README.md) | [Contributing](CONTRIBUTING.md)
 
 If you need help with GeneralizedNotationNotation (GNN), have questions, or want to discuss the project, here are several ways to get support:
@@ -19,7 +19,7 @@ Before seeking direct support, please check the extensive documentation provided
   - [`doc/gnn/reference/gnn_file_structure_doc.md`](./doc/gnn/reference/gnn_file_structure_doc.md): Description of GNN file organization.
   - [`doc/gnn/tutorials/gnn_examples_doc.md`](./doc/gnn/tutorials/gnn_examples_doc.md): Examples and use cases.
   - And many other useful documents covering implementation, tools, and the GNN paper.
-- **Example GNN Files**: Explore the GNN files in `src/gnn/gnn_examples/` to understand practical applications.
+- **Example GNN Files**: Explore the exemplar corpus in `input/gnn_files/` (start from [`input/gnn_files/INDEX.md`](./input/gnn_files/INDEX.md), which maps task folders to model kinds); `src/gnn/gnn_examples/` holds the single example packaged with the `gnn` module.
 - **Pipeline Documentation**: Check [`src/README.md`](./src/README.md) for detailed pipeline information.
 
 ## Quick Troubleshooting
@@ -73,8 +73,8 @@ python src/main.py --only-steps 2 --dev
 **🎯 Quick Test**
 
 ```bash
-# Test with example files
-python src/main.py --target-dir src/gnn/gnn_examples --verbose
+# Test with the discrete exemplar folder (--target-dir is always a directory)
+python src/main.py --target-dir input/gnn_files/discrete --verbose
 ```
 
 ## GitHub Issues

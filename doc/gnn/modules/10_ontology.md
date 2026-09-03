@@ -300,8 +300,7 @@ output/10_ontology_output/
 - `src/tests/ontology/test_ontology_overall.py`
 
 ### Test Coverage
-- **Current**: 78%
-- **Target**: 85%+
+- Measure: `uv run --extra dev python -m pytest src/tests/ontology/ --cov=ontology --cov-report=term-missing` (do not treat fixed percentages in this doc as canonical).
 
 ### Key Test Scenarios
 1. Ontology term extraction
@@ -314,21 +313,13 @@ output/10_ontology_output/
 ## MCP Integration
 
 ### Tools Registered
-- `ontology.extract_terms` - Extract ontology terms from GNN model
-- `ontology.validate_compliance` - Validate ontology compliance
-- `ontology.generate_mapping` - Generate ontology mapping
-- `ontology.analyze_semantics` - Analyze semantic relationships
 
-### Tool Endpoints
-```python
-@mcp_tool("ontology.extract_terms")
-def extract_ontology_terms_tool(gnn_content: str) -> List[str]:
-    """Extract ontology terms from GNN content"""
-    # Implementation
-```
+Registered in `register_tools` (`src/ontology/mcp.py`):
 
-### MCP File Location
-- `src/ontology/mcp.py` - MCP tool registrations
+- `process_ontology` - Run Step 10 over a directory
+- `validate_ontology_terms` - Validate term names against the ontology
+- `extract_ontology_annotations` - Extract ontology annotations from GNN content
+- `list_standard_ontology_terms` - List the standard ontology term set
 
 ---
 

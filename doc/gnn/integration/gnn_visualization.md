@@ -37,12 +37,12 @@ GNN visualization is integrated into the 25-step processing pipeline:
 
 ```bash
 # Generate visualizations
-python src/main.py --only-steps "3,8,9" --target-dir input/gnn_files --verbose
+uv run python src/main.py --only-steps "3,8,9" --target-dir input/gnn_files --verbose
 
 # Step 8 has no type-selection flag — it generates the full set.
 # Step 9 does: use --viz-type to pick one advanced visualization.
-python src/8_visualization.py --target-dir input/gnn_files --output-dir output --verbose
-python src/9_advanced_viz.py --target-dir input/gnn_files --output-dir output --viz-type network
+uv run python src/8_visualization.py --target-dir input/gnn_files --output-dir output --verbose
+uv run python src/9_advanced_viz.py --target-dir input/gnn_files --output-dir output --viz-type network
 ```
 
 ## Graph Visualization

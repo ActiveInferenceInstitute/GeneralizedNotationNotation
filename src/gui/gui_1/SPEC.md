@@ -4,20 +4,21 @@
 
 ## Purpose
 
-First-generation GNN model constructor GUI using tkinter.
+Form-based GNN model constructor GUI served as a Gradio web application.
 
 ## Features
 
 - Model structure editor (states, observations, actions)
-- Matrix entry widgets
-- File I/O (load/save GNN files)
+- Component management with live state-space validation
+- Synchronized plaintext GNN markdown editing
+- Headless artifact generation when Gradio is unavailable
 
 ## Technology
 
-- `tkinter` (standard library)
+- `gradio` (from the `gui` extra in `pyproject.toml`)
 - Cross-platform (Windows, macOS, Linux)
 
 ## Input/Output
 
 - Input: Existing GNN files or blank canvas
-- Output: GNN model files in markdown format
+- Output: GNN model files in markdown format (`constructed_model_gui1.md` by default)

@@ -3,12 +3,14 @@
 GNN has two related framework inventories:
 
 - **Render registry** (`src/render/framework_registry.py`): 9 targets, including Stan.
-- **Step 12 executor** (`src/execute/processor.py`): 8 executable framework families;
-  Stan is not an executor target.
+- **Step 12 executor** (`src/execute/processor.py`): 8 executable framework families —
+  every render target except bnlearn. Stan executes via the cmdstanpy driver
+  (`src/execute/stan/`) and is reported `skipped` when cmdstanpy/CmdStan is absent.
 
-PyTorch and bnlearn are supported paths but are intentionally unavailable in the
-default lock because their dependency chain currently carries a known unpatched
-PyTorch security concern. Julia targets require their committed project environments.
+PyTorch is a supported render/execute path and bnlearn is a supported render path;
+both are intentionally unavailable in the default lock because their dependency chain
+currently carries a known unpatched PyTorch security concern. Julia targets require
+their committed project environments.
 
 ## Check availability
 

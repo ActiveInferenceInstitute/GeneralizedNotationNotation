@@ -14,7 +14,7 @@ GNN implements a comprehensive pipeline transforming textual model specification
 
 ```bash
 # Full pipeline execution
-python src/main.py --target-dir input/gnn_files --verbose
+uv run python src/main.py --target-dir input/gnn_files --verbose
 
 # Steps 0-24 orchestration:
 # 0_template → 1_setup → 2_tests → 3_gnn → 4_model_registry → 5_type_checker
@@ -159,7 +159,7 @@ timep --flame python src/11_render.py --target-dir input/gnn_files/simple_model.
 timep --flame -k bash -c "
     source ~/.bashrc
     cd /path/to/GeneralizedNotationNotation
-    python src/main.py --only-steps '11,12' --verbose
+    uv run python src/main.py --only-steps '11,12' --verbose
 "
 ```
 

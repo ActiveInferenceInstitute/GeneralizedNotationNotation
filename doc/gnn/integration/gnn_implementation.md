@@ -27,10 +27,10 @@ GNN models are implemented through the processing pipeline's code generation and
 
 ```bash
 # Generate and execute implementations
-python src/main.py --only-steps "3,11,12" --target-dir input/gnn_files --verbose
+uv run python src/main.py --only-steps "3,11,12" --target-dir input/gnn_files --verbose
 
 # Execute specific frameworks
-python src/12_execute.py --frameworks "pymdp,jax" --verbose
+uv run python src/12_execute.py --frameworks "pymdp,jax" --verbose
 ```
 
 For complete pipeline documentation, see **[src/AGENTS.md](../../../src/AGENTS.md)**.
@@ -106,7 +106,7 @@ produces no artifacts. Use `rxinfer`, which routes to the canonical renderer.
 | **DisCoPy** | Python | `.py` | Categorical Diagrams, String Diagrams, Compositional Models |
 | **PyTorch** | Python | `.py` | Tensor POMDP; `torch` must be installed manually (GHSA-rrmf-rvhw-rf47) |
 | **NumPyro** | Python | `.py` | NUTS/MCMC posterior inference |
-| **Stan** | Stan | `.stan` | Compiled by CmdStan; no Step 12 executor |
+| **Stan** | Stan | `.stan` + `_stan.py` driver | HMM forward-algorithm (Dirichlet A_est, NUTS/MAP) and Kalman marginal-likelihood programs; executed by Step 12 through cmdstanpy (`src/execute/stan/`) |
 | **bnlearn** | Python | `.py` | Bayesian network structure and inference |
 
 The registry backing this table is `FRAMEWORK_REGISTRY` in
@@ -157,7 +157,7 @@ flowchart TD
     FIND --> LOOP[For each script]
     LOOP --> CHECK[Check executor availability<br>python --version / julia --version]
     CHECK --> DEP[Framework dependency check<br>e.g. import pymdp]
-    DEP --> RUN[subprocess.run<br>timeout=300s, cwd=script_dir]
+    DEP --> RUN[subprocess.run<br>timeout=3600s default, cwd=script_dir]
     RUN -->|Success| EXTRACT[_extract_simulation_data<br>parse stdout/stderr]
     RUN -->|Failure| CLASSIFY[Classify error<br>DependencyError, SyntaxError, RuntimeError]
     EXTRACT --> COLLECT[collect_execution_outputs<br>visualizations, simulation_data, traces]
@@ -172,13 +172,14 @@ The `--frameworks` flag supports:
 
 | Value | Frameworks Included |
 |-------|---------------------|
-| `all` (default) | pymdp, jax, discopy, rxinfer, activeinference_jl, pytorch, numpyro, bnlearn |
+| `all` (default) | pymdp, jax, discopy, rxinfer, activeinference_jl, pytorch, numpyro, stan, bnlearn |
 | `lite` | pymdp, jax, discopy, bnlearn |
 | Custom | Comma-separated, e.g. `"pymdp,jax"` |
 
 The authoritative list is `parse_frameworks_parameter()` in `src/execute/processor.py`.
-Note that Step 11 renders nine backends — the eight above plus Stan, which has no
-executor because Stan programs are compiled and run by CmdStan rather than by Step 12.
+Stan scripts are the rendered `<stem>_stan.py` cmdstanpy drivers under `stan/`; they
+are skipped (not failed) when cmdstanpy or a CmdStan toolchain is absent
+(`uv sync --extra stan`).
 
 ### Script Discovery
 
@@ -189,7 +190,7 @@ executor because Stan programs are compiled and run by CmdStan rather than by St
 `execute_single_script()` runs each script:
 
 - **Working directory**: set to the script's parent directory
-- **Timeout**: 300 seconds (5 minutes) per script
+- **Timeout**: 3600 seconds per script by default (configurable via `--timeout`)
 - **Environment**: `PYTHONPATH` is extended for PyMDP scripts
 - **Julia**: preflight `using JSON, Distributions, StatsBase`, plus `RxInfer` when
   RxInfer is requested and `ActiveInference` when ActiveInference.jl is requested.

@@ -126,11 +126,12 @@ success = process_template_standardized(
 - `errors` (List[str]): List of validation errors
 - `warnings` (List[str]): List of validation warnings
 
-#### `safe_template_execution(func: Callable, *args, **kwargs) -> Any`
-**Description**: Execute a template function with comprehensive error handling and logging.
+#### `safe_template_execution(logger: Any, correlation_id: str) -> Any`
+**Description**: Context manager wrapping a template operation with error handling and correlated logging (`src/template/processor.py`).
 
 **Parameters**:
-- `func` (Callable): Function to execute
+- `logger` (Any): Logger used for the wrapped operation
+- `correlation_id` (str): Identifier attached to log lines for the operation
 - `*args`: Positional arguments for function
 - `**kwargs`: Keyword arguments for function
 
@@ -308,8 +309,7 @@ Template Input → Processing → Pattern Demonstration → Validation → Docum
 - `src/tests/pipeline/test_pipeline_scripts.py` - Orchestrator-level checks that include `0_template.py`
 
 ### Test Coverage
-- **Current**: 85%
-- **Target**: 90%+
+- Measure: `uv run --extra dev python -m pytest src/tests/template/ --cov=template --cov-report=term-missing` (do not treat fixed percentages in this doc as canonical).
 
 ### Key Test Scenarios
 1. Template processing and generation
@@ -322,10 +322,9 @@ Template Input → Processing → Pattern Demonstration → Validation → Docum
 ## MCP Integration
 
 ### Tools Registered
-- `template.process` - Process pipeline template
-- `template.demonstrate_patterns` - Demonstrate utility patterns
-- `template.generate_documentation` - Generate template documentation
-- `template.validate_infrastructure` - Validate infrastructure patterns
+- `template.process_file` - Process one file through the template step
+- `template.process_directory` - Process a directory (optionally recursive)
+- `template.get_info` - Module metadata
 
 ### Tool Endpoints
 ```python

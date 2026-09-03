@@ -19,9 +19,14 @@ This module is responsible for running GNN models that have been rendered into f
 | **DisCoPy** | Python | `discopy/` | `*_discopy.py` | ✅ Full support |
 | **PyTorch** | Python | `pytorch/` | `*_pytorch.py` | ✅ Full support |
 | **NumPyro** | Python | `numpyro/` | `*_numpyro.py` | ✅ Full support |
+| **Stan** | Python driver (cmdstanpy) | `stan/` | `*_stan.py` | ✅ (skipped when cmdstanpy/CmdStan absent) |
 | **bnlearn** | Python | `bnlearn/` | `*_bnlearn.py` | ✅ Full support |
 
-JAX, NumPyro, PyTorch, and DisCoPy are **core** dependencies (`uv sync`). If the environment is incomplete, their scripts are **skipped** (not failed). Julia frameworks require Julia installed.
+JAX, NumPyro and DisCoPy are **core** dependencies (`uv sync`); PyTorch and bnlearn are intentionally excluded from the default lock (GHSA-rrmf-rvhw-rf47) and must be installed manually; Stan needs `uv sync --extra stan` plus a CmdStan toolchain. If the environment is incomplete, the affected scripts are **skipped** (not failed). Julia frameworks require Julia installed.
+
+Two behaviours introduced in v3.2.0: `_merge_prior_execution_summary` (`src/execute/processor.py`) folds a previously written `execution_summary.json` into the current results so the durable summary covers every input folder rather than the last one processed; and script discovery only considers `.py`/`.jl` files, so companion artifacts such as `<stem>_stan.stan` and `<stem>_stan_data.json` are never treated as executables.
+
+Continuous (linear-Gaussian) models reach Step 12 only for the backends that render them (JAX, NumPyro, PyTorch, Stan, RxInfer.jl); the categorical backends report render status `unsupported` in Step 11 and emit nothing to execute.
 
 ## Agent Identity & Capabilities
 
@@ -29,7 +34,7 @@ JAX, NumPyro, PyTorch, and DisCoPy are **core** dependencies (`uv sync`). If the
 
 ## Module Overview
 
-**Purpose**: Execute rendered simulation scripts across multiple frameworks (PyMDP, RxInfer.jl, ActiveInference.jl, JAX, DisCoPy, PyTorch, NumPyro, bnlearn).
+**Purpose**: Execute rendered simulation scripts across multiple frameworks (PyMDP, RxInfer.jl, ActiveInference.jl, JAX, DisCoPy, PyTorch, NumPyro, Stan, bnlearn).
 
 **Pipeline Step**: Step 12: Execution (12_execute.py)
 
@@ -54,7 +59,7 @@ JAX, NumPyro, PyTorch, and DisCoPy are **core** dependencies (`uv sync`). If the
 
 ### Key Capabilities
 - Multi-framework execution support
-- **Skip vs fail**: JAX, NumPyro, PyTorch, and DisCoPy are **core** dependencies; if the environment is incomplete, scripts are **skipped** (not run) and reported as "skipped" — they do not count as execution failures. Repair with `uv sync`. Julia backends still require a local Julia install.
+- **Skip vs fail**: JAX, NumPyro and DisCoPy are **core** dependencies; PyTorch and bnlearn are manual installs (excluded from the default lock, GHSA-rrmf-rvhw-rf47); Stan needs `uv sync --extra stan` plus a CmdStan toolchain. If the environment is incomplete, scripts are **skipped** (not run) and reported as "skipped" — they do not count as execution failures. Repair with `uv sync` (plus the manual installs above). Julia backends still require a local Julia install.
 - **Committed Julia environments** with `JULIA_PROJECT` defaulting (see below)
 - Graceful degradation when frameworks unavailable
 - Automatic PyMDP package detection (distinguishes correct vs wrong package variants)
@@ -104,7 +109,7 @@ Rendered RxInfer scripts end with `return results["validation"]["all_valid"] ? 0
 - `verbose` (bool): Enable verbose logging (default: False)
 - `logger` (Optional[logging.Logger]): Logger instance (default: None)
 - `frameworks` (str): Frameworks to execute ("all", "lite", or comma-separated list, default: "all")
-  - `"all"`: PyMDP, JAX, DisCoPy, RxInfer.jl, ActiveInference.jl, PyTorch, NumPyro, bnlearn
+  - `"all"`: PyMDP, JAX, DisCoPy, RxInfer.jl, ActiveInference.jl, PyTorch, NumPyro, Stan, bnlearn
   - `"lite"`: the Python-only subset — PyMDP, JAX, DisCoPy, bnlearn (no Julia)
   - Comma-separated: `"pymdp,jax"` for specific frameworks; names outside the valid set are filtered out
 - `simulation_engine` (str): Engine to use ("auto", "pymdp", "rxinfer", etc., default: "auto")
@@ -134,14 +139,12 @@ success = process_execute(
 )
 ```
 
-#### `execute_simulation_from_gnn(gnn_file: Path, framework: str, output_dir: Path, **kwargs) -> Dict[str, Any]`
-**Description**: Execute simulation for specific GNN file and framework.
+#### `execute_simulation_from_gnn(gnn_file: Path, output_dir: Path) -> Dict[str, Any]`
+**Description**: Execute the simulation for one GNN file (`src/execute/processor.py`).
 
 **Parameters**:
 - `gnn_file` (Path): Path to GNN file
-- `framework` (str): Framework to use ("pymdp", "rxinfer", "activeinference_jl", "jax", "discopy")
 - `output_dir` (Path): Output directory for execution results
-- `**kwargs`: Framework-specific execution options
 
 **Returns**: `Dict[str, Any]` - Execution results dictionary with:
 - `success` (bool): Whether execution succeeded
@@ -151,8 +154,8 @@ success = process_execute(
 - `duration` (float): Execution duration in seconds
 - `output_files` (List[Path]): Generated output files
 
-#### `get_execution_health_status() -> Dict[str, Any]`
-**Description**: Get health status of execution environment and framework availability.
+#### Framework health
+There is no `get_execution_health_status` function in `src/execute/`. Framework availability is probed by `utils.framework_availability` and surfaced through the `gnn health` CLI; the fields below describe that report.
 
 **Returns**: `Dict[str, Any]` - Health status dictionary with:
 - `pymdp_available` (bool): PyMDP availability
@@ -266,30 +269,33 @@ python src/12_execute.py --target-dir output/11_render_output --output-dir outpu
 ## Output Specification
 
 ### Output Products
-- `execution_results.json` - Execution results summary
-- `execution_report.md` - Human-readable report
-- `execution_logs/*.log` - Per-script execution logs
-- `simulation_data/*.json` - Simulation output data
+- `summaries/execution_summary.json` - Execution summary, merged across per-folder invocations by `_merge_prior_execution_summary`
+- `summaries/execution_summary_detail.json` - Per-script detail
+- `summaries/execution_report.md` - Human-readable report
+- `<model>/<framework>/execution_logs/` - Per-script results JSON and log
+- `<model>/<framework>/simulation_data/simulation_results.json` - Simulation output data
 
 ### Output Directory Structure
 ```
 output/12_execute_output/
-├── execution_results/
-│   ├── execution_results.json
-│   ├── execution_report.md
-│   └── execution_logs/
-│       ├── pymdp_simulation.log
-│       ├── rxinfer_simulation.log
-│       └── activeinference_simulation.log
-└── simulation_data/
-    └── results_*.json
+├── summaries/
+│   ├── execution_summary.json
+│   ├── execution_summary_detail.json
+│   └── execution_report.md
+└── <model>/
+    └── <framework>/
+        ├── execution_logs/
+        │   ├── <script>_results.json
+        │   └── <script>_execution.log
+        └── simulation_data/
+            └── simulation_results.json
 ```
 
 ---
 
 ## Performance Characteristics
 
-Per-run duration, memory, and per-script outcomes are recorded in `execution_results.json` and the pipeline execution summary. Read those for current numbers rather than hard-coding a snapshot here.
+Per-run duration, memory, and per-script outcomes are recorded in `execution_summary.json` and the pipeline execution summary. Read those for current numbers rather than hard-coding a snapshot here.
 
 ### Framework Execution Times (indicative)
 - **PyMDP**: ~1-5 seconds
@@ -358,8 +364,7 @@ Per-run duration, memory, and per-script outcomes are recorded in `execution_res
 - `src/tests/execute/test_execute_pymdp_package.py`
 
 ### Test Coverage
-- **Current**: 79%
-- **Target**: 85%+
+- Measure: `uv run --extra dev python -m pytest src/tests/execute/ --cov=execute --cov-report=term-missing` (do not treat fixed percentages in this doc as canonical).
 
 ### Key Test Scenarios
 1. Multi-framework execution
@@ -372,14 +377,15 @@ Per-run duration, memory, and per-script outcomes are recorded in `execution_res
 ## MCP Integration
 
 ### Tools Registered
-- `execute.run_simulation` - Execute simulation script
-- `execute.validate_environment` - Validate execution environment
-- `execute.get_health_status` - Get framework health status
-- `execute.analyze_error` - Analyze execution errors
+- `process_execute` - Run Step 12 over a render output directory
+- `execute_gnn_model` - Execute one rendered GNN model
+- `execute_pymdp_simulation` - Execute one PyMDP simulation script
+- `check_execute_dependencies` - Report framework/runtime availability
+- `get_execute_module_info` - Module metadata
 
 ### Tool Endpoints
 ```python
-@mcp_tool("execute.run_simulation")
+@mcp_tool("execute_gnn_model")
 def run_simulation_tool(script_path: str, framework: str) -> Dict[str, Any]:
     """Execute simulation script"""
     # Implementation

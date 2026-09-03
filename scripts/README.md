@@ -5,19 +5,23 @@ The `scripts/` directory is the repository's hub for standalone maintenance, lin
 
 ## Key Files
 - `check_gnn_doc_patterns.py`: A strict RegEx-enforced documentation linter that audits `doc/` and `src/gnn/` against retired path aliases and import references.
-- `check_doc_contracts.py`: A strict contract check for enforced quickstart sections, current CLI spellings, `input/config.yaml`, and the render/executor framework split.
+- `check_repo_terminology.py`: A maintained-source terminology audit for stale API and generated-artifact terms. CI-wired with `--strict`.
+- `check_doc_contracts.py`: A strict contract check for enforced quickstart sections, current CLI spellings, `input/config.yaml`, and the 9-render-target / 8-executor framework split. CI-wired with `--strict`.
 - `check_maintained_doc_terms.py`: A maintained-document terminology audit that catches retired PyMDP surface references and stale policy phrases while skipping generated and archive Markdown.
 - `check_mcp_skills_health.py`: Executes every registered MCP tool (schema-minimal arguments, no crashes) and verifies every `src/<module>/SKILL.md` API import, Key Export, MCP-tool claim, and Key Command resolves against the live codebase. Informational gate.
-- `run_pymdp_gnn_scaling_analysis.py`: A thin orchestrator (v1.1.0) that programmatically generates configured GNN specs and triggers the main pipeline to conduct a PyMDP scaling study. It utilizes `pymdp_scaling_config.yaml` for central configuration.
+- `run_pymdp_gnn_scaling_analysis.py`: A thin orchestrator that programmatically generates configured GNN specs and triggers the main pipeline to conduct a PyMDP scaling study. It uses `pymdp_scaling_config.yaml` for central configuration.
 
 ## Execution
 Tools are designed to be executed via `uv run`:
 
 ```bash
 # Run documentation validation
-uv run --extra dev python scripts/check_doc_contracts.py --strict
-uv run --extra dev python scripts/check_gnn_doc_patterns.py --strict
+uv run --extra dev python scripts/check_repo_terminology.py --strict
 uv run --extra dev python scripts/check_maintained_doc_terms.py --strict
+uv run --extra dev python scripts/check_gnn_doc_patterns.py --strict
+
+# Run documentation contract audit
+uv run --extra dev python scripts/check_doc_contracts.py --strict
 
 # Verify MCP tool execution and SKILL.md resolvability
 uv run --extra dev python scripts/check_mcp_skills_health.py --strict
@@ -28,6 +32,8 @@ uv run python scripts/run_pymdp_gnn_scaling_analysis.py
 # Override config values via CLI
 uv run python scripts/run_pymdp_gnn_scaling_analysis.py --n-values 2,4,8,16 --t-values 10,100,500
 ```
+
+The doc-audit commands above (plus `format-check`, `lint`, `typecheck`, `security`, and `audit`) are also wrapped as `just` recipes — see `just --list`; `just quality` chains the full non-pytest gate set.
 
 ## PyMDP scaling preflight
 `run_pymdp_gnn_scaling_analysis.py` plans the sweep first, then applies a **preflight resource gate** (free volume space vs. policy, then estimated total spec bytes vs. free space with margin). This is critical because dense B tensors grow as **O(n³)** in file size.

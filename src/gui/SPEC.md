@@ -6,17 +6,19 @@ Graphical user interface for GNN pipeline.
 ## Components
 
 ### Core
-- `processor.py` - GUI processor
-- `app.py` - Main application
+- `processor.py` - GUI processor and navigation generation
+- `backend.py` - GUI backend availability probing
+- `websocket_bridge.py` - WebSocket message contract for interactive sessions
+- `mcp.py` - MCP tool registration
 
 ## Features
 - Interactive model editing
 - Visualization preview
-- Pipeline execution control
+- Headless artifact generation when no GUI backend is available
 
 ## Key Exports
 ```python
-from gui import launch_gui, process_gui
+from gui import process_gui, get_available_guis
 ```
 
 

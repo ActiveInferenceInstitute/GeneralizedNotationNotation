@@ -10,8 +10,8 @@
 
 - Belief trajectory plots (PNG)
 - Action distribution analysis (PNG)
-- EFE decomposition plots (PNG)
-- `analysis_summary.json`
+- Free energy plots (PNG)
+- Trace reconstruction and model-matrix heatmap PNGs; returns generated file paths (no `analysis_summary.json`)
 
 ## Framework
 

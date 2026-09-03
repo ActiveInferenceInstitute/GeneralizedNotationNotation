@@ -7,10 +7,10 @@ inputs; tests that need scratch space should use pytest's `tmp_path` fixture.
 
 | File | Purpose |
 |------|---------|
-| `sample_gnn_model.md` | Canonical Active Inference POMDP model (3 observations × 3 hidden states × 3 actions) exercised by parser, type-checker, exporter, renderer, and round-trip tests |
+| `sample_gnn_model.md` | Canonical Active Inference POMDP model (3 observations × 3 hidden states × 3 actions); read via `tests.helpers.get_sample_gnn_model()` / `load_sample_gnn_spec()` |
 
-The sample model is the same ActInf POMDP used by `doc/gnn/gnn_examples_doc.md` and
-the walkthroughs in `doc/gnn/reference/`, so it is a stable reference point for
+The sample model is the same ActInf POMDP used by `doc/gnn/tutorials/gnn_examples_doc.md`
+and the walkthroughs in `doc/gnn/tutorials/`, so it is a stable reference point for
 cross-module assertions.
 
 ## Adding Fixtures

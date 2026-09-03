@@ -25,10 +25,10 @@ uv run --extra dev python -m pytest src/tests/execute/ -v
 ### Run by marker
 
 ```bash
-pytest -m unit          # unit tests only
-pytest -m integration   # integration tests only
-pytest -m fast          # fast tests only
-pytest -m slow          # slow/performance tests only
+uv run --extra dev python -m pytest -m unit          # unit tests only
+uv run --extra dev python -m pytest -m integration   # integration tests only
+uv run --extra dev python -m pytest -m fast          # fast tests only
+uv run --extra dev python -m pytest -m slow          # slow/performance tests only
 ```
 
 ## Test Statistics
@@ -238,7 +238,7 @@ All test files follow the pattern:
 
 ## Test Runner Configuration
 
-The test runner (`runner.py`) is configured with comprehensive test categories:
+The test runner (`test_runner_modular.py`) executes the categories defined in `categories.py`:
 
 ```python
 MODULAR_TEST_CATEGORIES = {
@@ -374,23 +374,25 @@ python src/2_tests.py --comprehensive --verbose
 - `@pytest.mark.unit` - Unit tests
 - `@pytest.mark.integration` - Integration tests
 - `@pytest.mark.slow` - Slow tests
-- `@pytest.mark.safe_to_fail` - Tests that can safely fail
 - `@pytest.mark.fast` - Fast tests
+- `@pytest.mark.performance` - Performance tests (also auto-applied to `slow` tests by `conftest.py`)
+
+Registered in `pytest.ini`, `pyproject.toml`, and `conftest.py::PYTEST_MARKERS`; `--strict-markers` rejects unregistered markers (there is no `safe_to_fail` marker).
 
 ### Running Tests by Marker
 
 ```bash
 # Run only unit tests
-pytest -m unit
+uv run --extra dev python -m pytest -m unit
 
 # Run only integration tests
-pytest -m integration
+uv run --extra dev python -m pytest -m integration
 
 # Run fast tests only
-pytest -m fast
+uv run --extra dev python -m pytest -m fast
 
 # Exclude slow tests
-pytest -m "not slow"
+uv run --extra dev python -m pytest -m "not slow"
 ```
 
 ## Test Categories
@@ -496,14 +498,14 @@ def test_module_integration():
     pass
 
 
-@pytest.mark.safe_to_fail  # Tests that can fail without breaking pipeline
-def test_optional_feature():
+@pytest.mark.performance  # Performance/resource-usage tests (auto-tagged on slow tests)
+def test_performance_scenario():
     pass
 ```
 
 ### Adding New Test Categories
 
-To add a new test category to `MODULAR_TEST_CATEGORIES` in `runner.py`:
+To add a new test category to `MODULAR_TEST_CATEGORIES` in `categories.py`:
 
 ```python
 MODULAR_TEST_CATEGORIES["new_module"] = {
@@ -694,9 +696,7 @@ Run the command below for the current result. The root
 [`README.md`](../../README.md) is the authority for the latest dated receipt.
 
 ```bash
-uv run --extra dev python -m pytest src/tests/ -q --tb=no \
-  --ignore=src/tests/llm/test_llm_ollama.py \
-  --ignore=src/tests/llm/test_llm_ollama_integration.py
+uv run --extra dev python -m pytest src/tests/ -q --tb=no -rsx --ignore=src/tests/llm/test_llm_ollama.py --ignore=src/tests/llm/test_llm_ollama_integration.py
 ```
 
 ## Future Enhancements

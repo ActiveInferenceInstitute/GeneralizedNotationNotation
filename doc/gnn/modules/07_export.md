@@ -292,8 +292,7 @@ output/7_export_output/
 
 ### Test Coverage
 
-- **Current**: 86%
-- **Target**: 90%+
+- Measure: `uv run --extra dev python -m pytest src/tests/export/ --cov=export --cov-report=term-missing` (do not treat fixed percentages in this doc as canonical).
 
 ### Key Test Scenarios
 

@@ -5,7 +5,7 @@
 **Purpose**: FastAPI-based REST interface for programmatic pipeline invocation, job management, and tool discovery.
 **Pipeline Step**: Infrastructure module (not a numbered step)
 **Category**: Infrastructure / API
-**Status**: ✅ Production Ready
+**Status**: Production Ready
 **Version**: 3.2.0
 **Last Updated**: 2026-04-16
 
@@ -18,10 +18,14 @@ requiring direct CLI access.
 ```
 src/api/
   __init__.py    -- Module metadata, availability checks
+  app.py         -- FastAPI "run" surface (run/runs/report/stream/health); `gnn serve` entry point
+  server.py      -- FastAPI "job/tool" surface (process/jobs/tools/health)
   models.py      -- Pydantic request/response models (API contract)
   responses.py   -- Canonical envelopes and exception handlers
-  processor.py   -- In-memory job manager, async execution
-  server.py      -- FastAPI app with routes and middleware
+  processor.py   -- In-memory job manager (create_job/get_job/cancel_job/list_jobs/get_pipeline_tools)
+  auth.py        -- Optional API-key authentication (GNN_API_KEY)
+  path_utils.py  -- Symlink-safe repo path resolution
+  rate_limit.py  -- Request rate limiting
   mcp.py         -- MCP tool registration manifest
   AGENTS.md      -- This file
 ```
@@ -37,6 +41,12 @@ src/api/
 | GET | /api/v1/tools | List pipeline steps |
 | POST | /api/v1/tools/{step} | Invoke single step |
 | GET | /api/v1/health | Health check |
+
+The module exposes two independent FastAPI apps. The table above is the
+`api.server` job/tool surface; `api.app` (started by `gnn serve`) exposes
+`POST /api/v1/run`, `GET /api/v1/runs`, `GET /api/v1/runs/{hash}`,
+`GET /api/v1/runs/{hash}/report` (Markdown), `GET /api/v1/runs/{hash}/stream`
+(SSE), and `GET /api/v1/health`. Both share the canonical
 
 ## Installation
 
@@ -76,7 +86,7 @@ This module is NOT a numbered pipeline step. It is an optional service module
 that wraps the pipeline for API access. Import it independently:
 
 ```python
-from api.processor import create_job, execute_job_async
+from api.processor import create_job, get_job, cancel_job, list_jobs, get_pipeline_tools
 ```
 
 ## Agent Guidance
@@ -84,8 +94,7 @@ from api.processor import create_job, execute_job_async
 When working with this module:
 1. The `processor.py` contains job lifecycle logic -- extend it for persistence needs
 2. The `models.py` is the API contract -- update schemas and tests together
-3. Add new endpoints in `server.py` or `app.py` following the canonical envelope pattern
-4. MCP tools in `mcp.py` should mirror significant REST endpoints
+3. Add new endpoints in `server.py` (job/tool surface) or `app.py` (run/runs surface) following the canonical envelope pattern
 
 
 ---

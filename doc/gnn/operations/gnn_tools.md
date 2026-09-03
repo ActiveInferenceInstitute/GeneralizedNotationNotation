@@ -123,10 +123,10 @@ The pipeline generates executable code from GNN files via Step 11 (Render):
 
 ```bash
 # Generate code for all supported frameworks
-python src/11_render.py --target-dir input/gnn_files --output-dir output --verbose
+uv run python src/11_render.py --target-dir input/gnn_files --output-dir output --verbose
 
 # Generate for a specific framework
-python src/12_execute.py --frameworks "pymdp,jax" --verbose
+uv run python src/12_execute.py --frameworks "pymdp,jax" --verbose
 ```
 
 ### GNN Export Formats
@@ -138,7 +138,7 @@ live list). There is currently no LaTeX export target in `src/export/`.
 
 ```bash
 # Export GNN models to all supported formats
-python src/7_export.py --target-dir input/gnn_files --output-dir output --verbose
+uv run python src/7_export.py --target-dir input/gnn_files --output-dir output --verbose
 ```
 
 ## Validation Tools
@@ -149,8 +149,8 @@ The pipeline validates GNN files via Step 5 (Type Checker) and Step 6 (Validatio
 
 ```bash
 # Type checking and validation
-python src/5_type_checker.py --target-dir input/gnn_files --output-dir output --strict
-python src/6_validation.py --target-dir input/gnn_files --output-dir output --verbose
+uv run python src/5_type_checker.py --target-dir input/gnn_files --output-dir output --strict
+uv run python src/6_validation.py --target-dir input/gnn_files --output-dir output --verbose
 ```
 
 #### Common Validation Checks
@@ -208,7 +208,7 @@ GNN support is available for various IDEs:
 
 GNN tools integrate with several Active Inference frameworks:
 
-Step 11 renders to nine backends and Step 12 executes them. `uv run gnn health` reports which are importable in the current environment.
+Step 11 renders to nine backends and Step 12 executes the eight executable ones (bnlearn is render-only). `uv run gnn health` reports which are importable in the current environment.
 
 ```mermaid
 graph LR
@@ -244,8 +244,8 @@ PyMDP requires the `inferactively-pymdp` package — **not** the unrelated PyPI 
 
 ```bash
 # Render and execute via PyMDP backend
-python src/11_render.py --target-dir input/gnn_files --output-dir output --verbose
-python src/12_execute.py --frameworks "pymdp" --verbose
+uv run python src/11_render.py --target-dir input/gnn_files --output-dir output --verbose
+uv run python src/12_execute.py --frameworks "pymdp" --verbose
 ```
 
 See [PyMDP implementation guide](../implementations/pymdp.md) for details on the generated code structure.
@@ -376,7 +376,7 @@ The pipeline is designed to be flexible, allowing users to run the entire sequen
 To use the pipeline, navigate to the root directory of the GeneralizedNotationNotation project and execute:
 
 ```bash
-python src/main.py [options]
+uv run python src/main.py [options]
 ```
 
 ### Command-Line Options
@@ -517,10 +517,10 @@ For the complete tool inventory, see **[modules/21_mcp.md](../modules/21_mcp.md)
 
     ```bash
     # Parse and type-check GNN files
-    python src/main.py --only-steps "3,5" --target-dir input/gnn_files
+    uv run python src/main.py --only-steps "3,5" --target-dir input/gnn_files
     
     # With resource estimation
-    python src/main.py --only-steps "3,5" --estimate-resources --target-dir input/gnn_files
+    uv run python src/main.py --only-steps "3,5" --estimate-resources --target-dir input/gnn_files
     ```
 
 - **Outputs:** `output/3_gnn_output/` and `output/5_type_checker_output/`
@@ -533,7 +533,7 @@ For the complete tool inventory, see **[modules/21_mcp.md](../modules/21_mcp.md)
 
     ```bash
     # Generate visualizations
-    python src/main.py --only-steps "8,9" --target-dir input/gnn_files
+    uv run python src/main.py --only-steps "8,9" --target-dir input/gnn_files
     ```
 
 - **Outputs:** `output/8_visualization_output/` and `output/9_advanced_viz_output/`
@@ -546,10 +546,10 @@ For the complete tool inventory, see **[modules/21_mcp.md](../modules/21_mcp.md)
 
     ```bash
     # Generate and execute code
-    python src/main.py --only-steps "11,12" --target-dir input/gnn_files
+    uv run python src/main.py --only-steps "11,12" --target-dir input/gnn_files
     
     # Execute specific frameworks
-    python src/12_execute.py --frameworks "pymdp,jax" --verbose
+    uv run python src/12_execute.py --frameworks "pymdp,jax" --verbose
     ```
 
 - **Outputs:** `output/11_render_output/` and `output/12_execute_output/`
@@ -562,10 +562,10 @@ For the complete tool inventory, see **[modules/21_mcp.md](../modules/21_mcp.md)
 
     ```bash
     # Run full render → execute → analyze pipeline
-    python src/main.py --only-steps "3,11,12,16" --target-dir input/gnn_files --verbose
+    uv run python src/main.py --only-steps "3,11,12,16" --target-dir input/gnn_files --verbose
 
     # Run analysis on existing execution results
-    python src/main.py --only-steps "16" --verbose
+    uv run python src/main.py --only-steps "16" --verbose
     ```
 
 - **Outputs:** `output/16_analysis_output/` — includes `analysis_results.json`, `analysis_summary.md`, per-model post-simulation analysis, framework-specific visualizations, and cross-framework comparison dashboards
@@ -580,17 +580,17 @@ For the complete tool inventory, see **[modules/21_mcp.md](../modules/21_mcp.md)
 
 ```bash
 # Run full pipeline
-python src/main.py --target-dir input/gnn_files --verbose
+uv run python src/main.py --target-dir input/gnn_files --verbose
 
 # Run specific steps only
-python src/main.py --only-steps "3,5,7,8,11,12" --verbose
+uv run python src/main.py --only-steps "3,5,7,8,11,12" --verbose
 
 # Skip certain steps
-python src/main.py --skip-steps "15,16" --verbose
+uv run python src/main.py --skip-steps "15,16" --verbose
 
 # Run with specific framework execution
-python src/main.py --only-steps "11,12"
-python src/12_execute.py --frameworks "lite" --verbose  # Python-only: PyMDP, JAX, DisCoPy, bnlearn
+uv run python src/main.py --only-steps "11,12"
+uv run python src/12_execute.py --frameworks "lite" --verbose  # Python-only: PyMDP, JAX, DisCoPy, bnlearn
 ```
 
 For more detailed information on each module, see **[src/AGENTS.md](../../../src/AGENTS.md)**.

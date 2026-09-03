@@ -16,7 +16,7 @@ This directory contains documentation and references for the Implementations dom
 - **[RxInfer.jl](rxinfer.md)**: Reactive message passing and declarative probabilistic programming in Julia (`RxInfer.jl`). Reached 1.0 Correlation Baseline.
 - **[ActiveInference.jl](activeinference_jl.md)**: Dedicated discrete-state Active Inference simulation in Julia (`ActiveInference.jl`).
 - **[DisCoPy](discopy.md)**: Categorical string diagrams enabling advanced symmetry representations and compositional verification semantics for Multi-Agent Topologies (`discopy`).
-- **[Stan](stan.md)**: Stan model code generation from GNN variables and connections (structural heuristics; no full Active Inference semantics).
+- **[Stan](stan.md)**: Runnable HMM forward-algorithm programs (Dirichlet-prior A_est, NUTS or L-BFGS MAP) for discrete models and Kalman marginal-likelihood programs for continuous linear-Gaussian models, each with a cmdstanpy driver executed by Step 12 (`src/execute/stan/`).
 
 `bnlearn` (Bayesian network structure/parameter learning) is also a wired `src/render/` backend (see `generate_bnlearn_code` in `src/render/generators.py`) but does not yet have a dedicated guide in this directory.
 

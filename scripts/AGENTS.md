@@ -6,17 +6,18 @@ This folder hosts the explicit, stateless developer workflow validation agents r
 
 ## Components
 
-### Audit & Compliance (8 scripts)
+### Audit & Compliance (9 scripts)
 
 | Script | Purpose | Strict CI Gate |
 |--------|---------|:--------------:|
 | `check_repo_terminology.py` | Scans maintained source for banned terminology | ✅ `--strict` |
 | `check_maintained_doc_terms.py` | Scans maintained Markdown for stale framework terms | ✅ `--strict` |
 | `check_gnn_doc_patterns.py` | Scans `doc/` + `src/gnn/` for stale import paths, retired routing, and banned patterns | ✅ `--strict` |
+| `check_doc_contracts.py` | Contract check for enforced quickstart sections, current CLI flag spellings, `input/config.yaml` naming, and the 9-render-target / 8-executor split | ✅ `--strict` |
 | `check_external_links.py` | Scans maintained docs for dead external (http/https) URLs — informational, not CI-wired | ⚪ no (flaky external checks) |
 | `check_mcp_skills_health.py` | Executes every registered MCP tool and verifies every SKILL.md documents a resolvable surface | ⚪ no (informational) |
 | `check_capability_contracts.py` | Validates capability-contract claims against measured codebase state | ✅ exit 1 on mismatch |
-| `check_manuscript_tokens.py` | Validates manuscript token values against generated variables | ✅ `--strict` |
+| `check_manuscript_tokens.py` | Manuscript integrity gate: unknown `{{TOKEN}}`s, dangling `[@key]` citations, hard-coded counts | ✅ hard gate (`--strict` also fails count warnings) |
 | `check_pomdp_gridworld_outputs.py` | End-to-end GridWorld output validity check for the canonical POMDP test case | ✅ exit 1 on mismatch |
 
 ### Pipeline Orchestration (7 scripts)
@@ -49,7 +50,7 @@ This folder hosts the explicit, stateless developer workflow validation agents r
 |--------|---------|
 | `run_pymdp_gnn_scaling_analysis.py` | Parameter grid scaling study (NxT) with visual meta-analysis and scaling-law fitting |
 | `pymdp_spec_generator.py` | Generate pymdp specification from config |
-| `z_generate_manuscript_variables.py` | Generate manuscript variable tokens from analysis outputs |
+| `z_generate_manuscript_variables.py` | Compute the deterministic `{{TOKEN}}` map from the live repo and hydrate manuscript sections before render |
 
 ### Maintenance (1 script)
 

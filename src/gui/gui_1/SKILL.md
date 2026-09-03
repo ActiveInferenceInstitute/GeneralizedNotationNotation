@@ -7,13 +7,14 @@ description: Core Graphical User Interface module for GNN. Use when querying GUI
 
 ## Purpose
 
-The `gui_1` module provides the core web-based or local graphical user interface components for interacting with the GNN pipeline, rendering dashboards, and viewing pipeline execution statuses.
+The `gui_1` module provides the form-based Interactive GNN Constructor: a Gradio
+web interface for building and editing GNN models with live markdown synchronization
+and headless artifact generation when Gradio is unavailable.
 
 ## Key APIs
 
-- GUI Initialization
-- Status monitoring
-- Pipeline dashboard binding
+- `gui_1(target_dir, output_dir, logger, **kwargs)` — main entry point
+- `get_gui_1_info()` — capability metadata for the aggregator
 
 ## MCP Tools
 

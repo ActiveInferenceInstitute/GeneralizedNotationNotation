@@ -19,7 +19,7 @@ Every tutorial must:
 4. End with a "Next steps" section linking further learning paths
 
 ## Versioning
-Tutorials pin to bundle version v2.0.0 / engine v3.0.0. When the CLI
+Tutorials pin to bundle version v2.0.0 / engine v3.2.0. When the CLI
 changes, tutorials must be re-run and updated.
 
 ## Status

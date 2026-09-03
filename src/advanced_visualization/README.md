@@ -366,34 +366,18 @@ public API.
 
 ## Testing and Validation
 
-### Unit Tests
-```python
-# Test visualization generation
-def test_visualization_generation():
-    visualizer = AdvancedVisualizer()
-    result = visualizer.generate_visualizations(test_content, "test", test_dir)
-    assert len(result) > 0
-```
-
-### Integration Tests
-```python
-# Test pipeline integration
-def test_pipeline_integration():
-    success = process_advanced_visualization(test_dir, output_dir)
-    assert success
-```
+Tests live in `src/tests/advanced_visualization/` (`test_advanced_visualization_overall.py`, `test_advanced_visualization_shared.py`, `test_advanced_visualization_statistical.py`, `test_advanced_visualization_interactive.py`, `test_advanced_visualization_html_generator.py`, `test_advanced_visualization_public_api.py`).
 
 ## Dependencies
 
 ### Required Dependencies
 - **matplotlib**: Basic plotting capabilities
-- **networkx**: Network graph generation
 - **numpy**: Numerical computations
-- **pandas**: Data manipulation
 
 ### Optional Dependencies
 - **plotly**: Interactive visualizations
 - **seaborn**: Enhanced statistical panels
+- **networkx**: Network graph metrics (local import in the network visualization path)
 - **d2 CLI**: D2 diagram compilation; missing D2 records a skip instead of failing the whole step
 
 ## Performance Metrics

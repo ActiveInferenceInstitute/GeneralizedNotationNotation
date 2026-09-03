@@ -46,7 +46,7 @@ cat /etc/os-release  # Linux
 sw_vers  # macOS
 
 # 2. Error Context
-python src/main.py --verbose --target-dir ./problem_models > debug.log 2>&1
+uv run python src/main.py --verbose --target-dir ./problem_models > debug.log 2>&1
 
 # 3. System Resources
 free -h  # Memory
@@ -69,7 +69,7 @@ wc -l problem_file.md
 
 ```bash
 # Quick syntax check
-python src/main.py --only-steps 1,4 --strict --target-dir ./your_models
+uv run python src/main.py --only-steps 5 --strict --target-dir ./your_models
 
 # Manual structure check
 grep -n "^##" your_file.md | head -10
@@ -129,14 +129,14 @@ grep -n -E "[>-]{2,}|[^so_][>-]|[>-][^so_]" your_file.md
 ```markdown
 ## Connections
 ### Valid Examples
-s_f0 > o_m0                    # ✅ Directed connection
-s_f0 - s_f1                    # ✅ Undirected connection
-s_f0, u_c0 > s_f0             # ✅ Multiple inputs
+s_f0>o_m0                      # ✅ Directed connection
+s_f0-s_f1                      # ✅ Undirected connection
+(s_f0,u_c0)>B_f0               # ✅ Multiple inputs
 
 ### Invalid Examples  
-s_f0 >> o_m0                   # ❌ Double arrow
-s_f0 -> o_m0                   # ❌ Wrong arrow style
-s_f0 > undefined_var           # ❌ Undefined variable
+s_f0>>o_m0                     # ❌ Double arrow
+s_f0 -> o_m0                   # ❌ Spaces around the arrow
+s_f0>undefined_var             # ❌ Undefined variable
 ```
 
 ### **Step 4: Encoding and Character Issues**
@@ -257,7 +257,7 @@ python -c "import jax; print('Devices:', jax.devices())"
 
 ```bash
 # Monitor pipeline execution
-python src/main.py --verbose --target-dir ./your_models &
+uv run python src/main.py --verbose --target-dir ./your_models &
 PIPELINE_PID=$!
 
 # Monitor resources in another terminal
@@ -274,7 +274,7 @@ done
 # Test individual pipeline steps
 for step in {1..13}; do
     echo "Testing step $step..."
-    timeout 300 python src/main.py --only-steps $step --target-dir ./your_models
+    timeout 300 uv run python src/main.py --only-steps $step --target-dir ./your_models
     if [ $? -eq 0 ]; then
         echo "✅ Step $step passed"
     else
@@ -308,14 +308,19 @@ except Exception as e:
     print(f"❌ PyMDP basic test failed: {e}")
 
 # 2. Test GNN to PyMDP conversion
-from src.render.pymdp import PyMDPRenderer
+from pathlib import Path
+
+from src.render.pymdp.pymdp_renderer import PyMDPRenderer
 
 renderer = PyMDPRenderer()
 
 try:
-    code = renderer.render_model(model)
-    print("✅ GNN to PyMDP conversion working")
-    print(f"Generated code length: {len(code)} characters")
+    ok, generated = renderer.render_file(Path("your_model.md"), Path("output/rendered_pymdp.py"))
+    if ok:
+        print("✅ GNN to PyMDP conversion working")
+        print(f"Generated code length: {len(generated)} characters")
+    else:
+        print("❌ GNN to PyMDP conversion failed")
 except Exception as e:
     print(f"❌ GNN to PyMDP conversion failed: {e}")
 ```
@@ -331,15 +336,16 @@ julia --version
 julia -e "using Pkg; Pkg.status()"
 julia -e "using RxInfer; println(\"RxInfer loaded successfully\")"
 
-# 3. Test TOML generation
-python -c "
-from src.render.rxinfer import RxInferRenderer
+# 3. Test RxInfer rendering
+uv run python -c "
+from pathlib import Path
+from src.render.rxinfer.rxinfer_renderer import RxInferRenderer
 renderer = RxInferRenderer()
 try:
-    config = renderer.create_toml_config(model)
-    print('✅ TOML generation working')
+    ok, code = renderer.render_file(Path('your_model.md'), Path('output/rendered_rxinfer.jl'))
+    print('✅ RxInfer rendering working' if ok else '❌ RxInfer rendering failed')
 except Exception as e:
-    print(f'❌ TOML generation failed: {e}')
+    print(f'❌ RxInfer rendering failed: {e}')
 "
 ```
 
@@ -383,18 +389,18 @@ except Exception as e:
 
 ```bash
 # CPU profiling
-python -m cProfile -o profile.stats src/main.py --target-dir ./your_models
-python -c "
+uv run python -m cProfile -o profile.stats src/main.py --target-dir ./your_models
+uv run python -c "
 import pstats
 stats = pstats.Stats('profile.stats')
 stats.sort_stats('cumulative').print_stats(20)
 "
 
 # Memory profiling
-python -m memory_profiler src/main.py --target-dir ./your_models
+uv run --extra dev python -m memory_profiler src/main.py --target-dir ./your_models
 
 # Line-by-line profiling (if available)
-kernprof -l -v src/main.py --target-dir ./your_models
+uv run --extra dev kernprof -l -v src/main.py --target-dir ./your_models
 ```
 
 ### **Step 2: Bottleneck Identification**
@@ -567,12 +573,12 @@ fi
 
 # 2. Environment check
 echo "🐍 Environment check..."
-python --version
-python -c "import sys; print(f'Python path: {sys.executable}')"
+uv run python --version
+uv run python -c "import sys; print(f'Python path: {sys.executable}')"
 
 # 3. Syntax check
 echo "📝 Syntax check..."
-python src/main.py --only-steps 1,4 --strict --target-dir "$MODEL_FILE" > debug_syntax.log 2>&1
+uv run python src/main.py --only-steps 5 --strict --target-dir "$(dirname "$MODEL_FILE")" > debug_syntax.log 2>&1
 if [ $? -eq 0 ]; then
     echo "✅ Syntax check passed"
 else
@@ -618,22 +624,22 @@ echo "🏁 Automated debugging complete"
 
 ```bash
 # Quick syntax validation
-python src/main.py --only-steps 4 --strict --target-dir ./models
+uv run python src/main.py --only-steps 5 --strict --target-dir ./models
 
 # Verbose debugging  
-python src/main.py --verbose --target-dir ./models > debug.log 2>&1
+uv run python src/main.py --verbose --target-dir ./models > debug.log 2>&1
 
 # Resource monitoring
-python -m memory_profiler src/main.py --target-dir ./models
+uv run --extra dev python -m memory_profiler src/main.py --target-dir ./models
 
 # Step isolation
-python src/main.py --only-steps 1,2,3 --target-dir ./models
+uv run python src/main.py --only-steps 1,2,3 --target-dir ./models
 
 # Environment check
-python src/1_setup.py --verbose
+uv run python src/1_setup.py --verbose
 
 # Interactive debugging
-python -c "from src.gnn import parse_gnn_file; import pdb; pdb.set_trace(); print(parse_gnn_file('file.md'))"
+uv run python -c "from src.gnn import parse_gnn_file; import pdb; pdb.set_trace(); print(parse_gnn_file('file.md'))"
 ```
 
 ---

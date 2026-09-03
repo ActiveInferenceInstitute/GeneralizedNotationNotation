@@ -14,11 +14,12 @@ src/execute/rxinfer/
 ├── README.md                   # This documentation
 ├── AGENTS.md                   # Detailed agent scaffolding
 ├── rxinfer_runner.py          # Main execution runner (passes --project=<env>)
-├── rxinfer_runner.jl          # Julia runner script
+├── rxinfer_results.py         # Result parsing / reporting helpers
+├── rxinfer_runner.jl          # Julia runner for TOML configs
 ├── setup_environment.jl       # Pkg.activate() + Pkg.instantiate() (no runtime Pkg.add)
 ├── Project.toml               # Committed deps (RxInfer 5.5.0)
 ├── Manifest.toml              # Committed lockfile
-└── test_*.py                  # Unit tests
+└── src/GnnRxInferModels.jl    # Julia package holding the shared @model definitions
 ```
 
 ## Core Components
@@ -27,11 +28,17 @@ src/execute/rxinfer/
 
 **Purpose**: Execute RxInfer.jl simulation scripts
 
-**Key Functions**:
-- `run_rxinfer_scripts()` - Execute all RxInfer scripts
-- `execute_single_simulation()` - Run single script
-- `setup_julia_environment()` - Configure Julia
-- `capture_results()` - Collect execution output
+**Key Functions** (re-exported from `execute.rxinfer`):
+- `run_rxinfer_scripts(rendered_simulators_dir, execution_output_dir=None, recursive_search=True, verbose=False) -> bool` - Execute all RxInfer scripts under `<rendered_simulators_dir>/rxinfer`
+- `find_rxinfer_scripts(base_dir, recursive=True) -> List[Path]` - Discover `*_rxinfer.jl` scripts
+- `execute_rxinfer_script(script_path, verbose=False, output_dir=None, timeout=300) -> bool` - Run one script under the committed project
+- `is_julia_available() -> bool` - Julia on `PATH` check
+
+### Result Helpers (`rxinfer_results.py`)
+
+- `parse_rxinfer_output()`, `collect_rxinfer_results()` - Load `simulation_results.json` files
+- `extract_convergence_metrics()`, `summarize_posteriors()` - Free energy / posterior summaries
+- `format_rxinfer_report()` - Markdown report over collected results
 
 ### Julia Runner (`rxinfer_runner.jl`)
 
@@ -56,9 +63,9 @@ src/execute/rxinfer/
 ```python
 from execute.rxinfer import run_rxinfer_scripts
 
-results = run_rxinfer_scripts(
-    scripts_dir=Path("output/11_render_output"),
-    output_dir=Path("output/12_execute_output"),
+ok = run_rxinfer_scripts(
+    rendered_simulators_dir=Path("output/11_render_output"),
+    execution_output_dir=Path("output/12_execute_output"),
 )
 ```
 
@@ -102,7 +109,7 @@ Tests verify:
 
 ---
 
-**Last Updated**: October 28, 2025  
+**Last Updated**: 2026-09-02  
 **Status**: ✅ Production Ready
 
 

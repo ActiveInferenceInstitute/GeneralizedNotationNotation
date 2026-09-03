@@ -8,6 +8,41 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
 
 ## [Unreleased]
 
+### Changed
+
+- **Documentation accuracy sweep (root, `doc/`, `src/` module docs).** Every
+  claim probed against code: fabricated module APIs removed (model_registry,
+  analysis, gui, setup, advanced_visualization listed functions/kwargs/files
+  that never existed); stale executor claims corrected everywhere to the
+  verified contract — 9 render targets, 8 Step-12 executor families, bnlearn
+  render-only, Stan executable via cmdstanpy; `src/STEP_INDEX.md` verified 1:1
+  against `src/pipeline/step_registry.py`; all 4,246 relative links under
+  `doc/` mechanically checked (one repo-escaping link fixed); root README /
+  AGENTS / ARCHITECTURE / SECURITY de-duplicated and re-dated; `doc/pipeline/README.md`
+  and `scripts/check_doc_contracts.py` now state and enforce "bnlearn is
+  render-only" (the previous "Stan is render-only" contract was stale since
+  Stan gained its cmdstanpy executor in 3.2.0); the `CLAUDE.md`
+  `processor.py` alternatives note corrected to the real 4 deviating modules.
+
+### Refactored
+
+- **`src/execute/processor.py` split (2291 → 1351 lines).** Mechanical
+  extraction into sibling modules `types.py`, `julia_env.py`, `metadata.py`,
+  `detection.py`; `processor.py` remains the sole facade — every previously
+  importable name stays importable from the same path.
+- **Executor envelope de-duplication.** The five per-framework runners
+  (`jax`, `pytorch`, `numpyro`, `discopy`, `pymdp`) delegate their subprocess
+  envelope to the canonical `execute_script_safely` (`execute/executor.py`)
+  instead of carrying private copies; framework-specific env setup, log
+  writing, and result schemas are unchanged.
+- **`render/pomdp_processor.py` slimmed (1733 → 1628 lines).** Matrix
+  normalisation + Kronecker factored-spec helpers extracted to
+  `render/pomdp_math.py`; generic `count_code_metrics` moved to
+  `utils/code_metrics.py`; import paths preserved via re-exports.
+- `scripts/check_capability_contracts.py` follows the RxInfer sidecar loader
+  to its new home (`src/execute/metadata.py`); the provenance/hash guards the
+  contract pins are unchanged.
+
 ## [3.2.0] — 2026-09-02
 
 > **Exemplar Gold Standard.** Every exemplar GNN file renders *and executes* on

@@ -30,7 +30,7 @@ Advanced GNN models benefit from the full pipeline processing capabilities:
 
 ```bash
 # Process advanced models through full pipeline
-python src/main.py --target-dir input/gnn_files --verbose
+uv run python src/main.py --target-dir input/gnn_files --verbose
 ```
 
 For complete pipeline documentation, see **[src/AGENTS.md](../../../src/AGENTS.md)**.

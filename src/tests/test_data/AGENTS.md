@@ -10,7 +10,7 @@ Provide deterministic GNN fixtures that tests can consume without reaching into
 
 | File | Sections | Shape | Used By |
 |------|----------|-------|---------|
-| `sample_gnn_model.md` | `StateSpaceBlock`, `Connections`, `InitialParameterization`, `Equations`, `Time`, `ActInfOntologyAnnotation`, `ModelParameters` | A[3,3], B[3,3,3], C[3], D[3], E[3], s[3,1], o[3,1] | Parser, type-checker, export round-trip, render backends, visualization tests |
+| `sample_gnn_model.md` | `StateSpaceBlock`, `Connections`, `InitialParameterization`, `Equations`, `Time`, `ActInfOntologyAnnotation`, `ModelParameters` | A[3,3], B[3,3,3], C[3], D[3], E[3], s[3,1], o[3,1] | Read via `tests.helpers.get_sample_gnn_model()` / `load_sample_gnn_spec()`; `tests/conftest.py` generates equivalent content in temp dirs |
 
 ## Invariants
 
@@ -23,8 +23,8 @@ Provide deterministic GNN fixtures that tests can consume without reaching into
 
 ## Related Files
 
-- `src/tests/conftest.py` — fixtures that resolve paths relative to this directory
-- `doc/gnn/gnn_examples_doc.md` — the reference model documentation
+- `src/tests/conftest.py` — sample fixtures that generate equivalent content in temp dirs
+- `doc/gnn/tutorials/gnn_examples_doc.md` — the reference model documentation
 - `input/gnn_files/` — full-scale models (not fixtures)
 
 ## Documentation

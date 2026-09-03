@@ -278,8 +278,7 @@ Pipeline Artifacts → Content Extraction → Template Processing → Asset Embe
 - `src/tests/website/test_website_overall.py` - Module-level tests
 
 ### Test Coverage
-- **Current**: 79%
-- **Target**: 85%+
+- Measure: `uv run --extra dev python -m pytest src/tests/website/ --cov=website --cov-report=term-missing` (do not treat fixed percentages in this doc as canonical).
 
 ### Key Test Scenarios
 1. Website generation from pipeline artifacts
@@ -292,21 +291,18 @@ Pipeline Artifacts → Content Extraction → Template Processing → Asset Embe
 ## MCP Integration
 
 ### Tools Registered
-- `website.generate` - Generate website from artifacts
-- `website.create_report` - Create HTML reports
-- `website.embed_assets` - Embed assets in HTML
-- `website.validate_content` - Validate website content
 
-### Tool Endpoints
-```python
-@mcp_tool("website.generate")
-def generate_website_tool(artifacts_dir, output_dir):
-    """Generate website from pipeline artifacts"""
-    # Implementation
-```
+Registered in `register_tools` (`src/website/mcp.py`):
+
+- `process_website` - Run Step 20 over pipeline artifacts
+- `build_website_from_pipeline_output` - Build the site from a pipeline output tree
+- `get_website_status` - Read website generation status
+- `list_generated_website_pages` - List pages in a generated site
+- `get_website_module_info` - Module metadata
 
 ### MCP File Location
 - `src/website/mcp.py` - MCP tool registrations
+
 
 ---
 

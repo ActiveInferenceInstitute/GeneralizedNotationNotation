@@ -2,7 +2,7 @@
 
 > **📋 Document Metadata**  
 > **Type**: Security Policy | **Audience**: All Users | **Complexity**: Intermediate  
-> **Last Updated**: May 2026 | **Status**: Production-Ready  
+> **Last Updated**: 2026-09-02 | **Status**: Maintained  
 > **Cross-References**: [Comprehensive Security Guide](doc/security/README.md) | [Deployment Security](doc/deployment/README.md) | [MCP Security](doc/mcp/README.md)
 
 ## 🔒 Comprehensive Security Framework
@@ -17,17 +17,14 @@ We are committed to ensuring the security of the GeneralizedNotationNotation (GN
 
 | Version | Supported | Security Coverage |
 | ------- | ------------------ | ----------------- |
-| 3.0.x   | ✅ Full support | Complete security framework |
+| 3.2.x   | ✅ Full support | Complete security framework |
+| 3.1.x   | ✅ Full support | Complete security framework |
+| 3.0.x   | ✅ Security fixes | Complete security framework |
 | 2.0.x   | ❌ EOL | No security support |
-| 1.9.x   | ❌ EOL | No security support |
-| 1.8.x   | ❌ EOL | No security support |
-| 1.6.x   | ❌ EOL | No security support |
-| 1.3.x   | ❌ EOL | No security support |
-| 1.1.x   | ❌ EOL | No security support |
-| 1.0.x   | ❌ EOL | No security support |
+| 1.x     | ❌ EOL | No security support |
 | < 1.0.0 | ❌ Unsupported | No security support |
 
-> **🔄 Version Updates**: This table is updated with each release. See [Changelog](#) for version history.
+> **🔄 Version Updates**: This table is updated with each release. See [CHANGELOG.md](CHANGELOG.md) for version history.
 
 ## 📋 Recent CVE Remediation History
 
@@ -61,7 +58,7 @@ We are committed to ensuring the security of the GeneralizedNotationNotation (GN
 
 | Date | Assessment | Scope | Outcome |
 |------|------------|-------|---------|
-| 2026-08-14 | Red-team review (`RED_TEAM_REVIEW.md` historical ledger) | Rendered-code execution ordering, pickle/literal-eval input parsing, FastAPI/MCP auth + path traversal, error disclosure, sandboxing | Closed V-01/V-03/V-04/V-05/V-06/V-07/V-09/V-10: pre-execution AST gate before Step 12, bounded `safe_literal_eval`, optional `GNN_API_KEY` auth + secure-bind refusal, symlink rejection, MCP forwarded-identity rejection, stderr path redaction, and an opt-in `GNN_SANDBOX` wrapper. Residual lower-severity items are scoped in [`TO-DO.md`](TO-DO.md) (§Security follow-ups). |
+| 2026-08-14 | Red-team review (historical `RED_TEAM_REVIEW.md` ledger) | Rendered-code execution ordering, pickle/literal-eval input parsing, FastAPI/MCP auth + path traversal, error disclosure, sandboxing | Closed V-01/V-03/V-04/V-05/V-06/V-07/V-09/V-10: pre-execution AST gate before Step 12, bounded `safe_literal_eval`, optional `GNN_API_KEY` auth + secure-bind refusal, symlink rejection, MCP forwarded-identity rejection, stderr path redaction, and an opt-in `GNN_SANDBOX` wrapper. The remaining items from the same wave were closed afterwards — see `CHANGELOG.md` §"Security (2026-08-14, wave 2 — residual closures)". |
 | 2026-06-24 | Codex Security standard scan | MCP execution, MCP LLM file access, generated bnlearn code, generated artifact paths | Closed four reportable findings with repository-local MCP path validation, Step 11 render-summary execution gating, generated-code literal escaping, safe output filename stems, and regression tests. See [Codex Security Remediation - 2026-06-24](doc/security/codex_security_remediation_2026-06-24.md). |
 
 ## Dependency automation and local audits
@@ -282,7 +279,7 @@ Once a security vulnerability is reported, we commit to:
 ### Security Updates
 
 - **Security Announcements**: Subscribe to repository notifications
-- **Release Notes**: Check [Changelog](#) for security fixes
+- **Release Notes**: Check [CHANGELOG.md](CHANGELOG.md) for security fixes
 - **Community Forum**: Engage in security discussions
 - **Best Practices**: Share security configurations and patterns
 

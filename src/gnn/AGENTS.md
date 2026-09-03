@@ -204,30 +204,14 @@ success = process_gnn_multi_format(
 
 **Location**: `src/gnn/processor.py`
 
-#### `process_gnn(*args, **kwargs) -> Dict[str, Any]`
 
-**Description**: Public alias for `process_gnn_directory`.
+#### `validate_gnn_file(source: Any, *, is_content: bool = False) -> Dict[str, Any]`
 
-**Parameters**: Same as `process_gnn_directory`
+**Description**: Validate a GNN file path or content string. When `source` is an
+existing path and `is_content` is `False`, the file is read first; otherwise
+`source` is treated as raw content.
 
-**Returns**: Same as `process_gnn_directory`
-
-**Location**: `src/gnn/__init__.py`
-
-#### `validate_gnn_file(content: str) -> Dict[str, Any]`
-
-**Description**: Validate GNN file content string.
-
-**Parameters**:
-
-- `content` (str): GNN file content as string
-
-**Returns**: `Dict[str, Any]` - Dictionary with validation results:
-
-- `is_valid` (bool): Whether content is valid
-- `errors` (List[str]): List of validation errors
-
-**Location**: `src/gnn/__init__.py`
+**Returns**: `Dict[str, Any]` with `is_valid` (bool) and `errors` (List[str])
 
 #### `validate_gnn(file_path_or_content: str, validation_level: ValidationLevel = ValidationLevel.STANDARD, **kwargs) -> Tuple[bool, List[str]]`
 
@@ -321,19 +305,10 @@ success = process_gnn_multi_format(
 
 ## Configuration
 
-### Environment Variables
-
-- `GNN_MAX_FILE_SIZE` - Maximum GNN file size in bytes (default: 10MB)
-- `GNN_ENABLE_VALIDATION` - Enable strict validation (default: True)
-
-### Default Settings
-
-```python
-DEFAULT_MAX_FILE_SIZE = 10 * 1024 * 1024  # 10MB
-DEFAULT_SUPPORTED_FORMATS = 23
-DEFAULT_ENABLE_ROUND_TRIP = False
-DEFAULT_ENABLE_CROSS_FORMAT = False
-```
+Step 3 behavior is controlled by `process_gnn_multi_format` kwargs — notably
+`serialize_preset` (default `"full"`), plus `recursive` and `verbose`. There are
+no `GNN_*` environment variables or module-level `DEFAULT_*` size/format
+constants in this module; do not rely on the ones some older docs listed.
 
 ---
 
@@ -352,16 +327,15 @@ success = process_gnn_multi_format(
 )
 ```
 
-### Advanced Usage with Round-Trip Validation
+### With a Serialization Preset
 
 ```python
+# Restrict serialization to a subset of formats
 success = process_gnn_multi_format(
     target_dir=Path("input/gnn_files"),
     output_dir=Path("output/3_gnn_output"),
     logger=logger,
-    recursive=True,
-    enable_round_trip=True,
-    enable_cross_format=True,
+    serialize_preset="full",
 )
 ```
 
@@ -612,11 +586,9 @@ ls -la output/3_gnn_output/
 cat output/3_gnn_output/gnn_processing_summary.json | python -m json.tool
 ```
 
----
-
 ## Version History
 
-### Current Version: 3.0.0
+### Current Version: 3.2.0
 
 **Features**:
 

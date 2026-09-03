@@ -4,7 +4,7 @@
 
 This file is the **GitHub-oriented entry point**: GNN concepts, deep links into language and pipeline docs, repository layout, CI, and local validation. The narrative overview, badges, publication block, and long examples live in the root [README.md](../README.md).
 
-**Last updated**: 2026-08-02
+**Last updated**: 2026-09-02
 
 ---
 
@@ -24,7 +24,7 @@ This file is the **GitHub-oriented entry point**: GNN concepts, deep links into 
   - [Directory index](#directory-index)
   - [Dependabot](#dependabot)
   - [Workflows](#workflows)
-  - [Why CI and docs-audit split](#why-ci-and-docs-audit-split)
+  - [Why a separate docs-audit workflow](#why-a-separate-docs-audit-workflow)
   - [Automation on a typical PR](#automation-on-a-typical-pr)
 - [Local validation](#local-validation-parity-with-automation)
 - [Related tooling docs](#related-tooling-docs)
@@ -258,7 +258,10 @@ This directory holds **Dependabot** configuration and **GitHub Actions** workflo
 | [dependabot.yml](dependabot.yml) | Dependabot version updates (pip + GitHub Actions) |
 | [AGENTS.md](AGENTS.md) | Permissions, standards, maintenance checklist |
 | [README.md](README.md) | This hub |
-| [workflows/ci.yml](workflows/ci.yml) | Tests (Ruff on 3.12), Bandit SARIF on application code paths |
+| [SPEC.md](SPEC.md) | Folder specification |
+| [workflows/ci.yml](workflows/ci.yml) | Tests (Ruff/mypy/doc audits on 3.12), v3 orchestration acceptance, Bandit SARIF |
+| [workflows/mcp-audit.yml](workflows/mcp-audit.yml) | MCP tool count audit (push/PR to `main`) |
+| [workflows/full-extras.yml](workflows/full-extras.yml) | Weekly all-extras install + full test suite |
 | [workflows/docs-audit.yml](workflows/docs-audit.yml) | Strict Markdown / doc structure audit |
 | [workflows/actionlint.yml](workflows/actionlint.yml) | Workflow YAML lint |
 | [workflows/dependency-review.yml](workflows/dependency-review.yml) | PR dependency and license gate |
@@ -266,6 +269,7 @@ This directory holds **Dependabot** configuration and **GitHub Actions** workflo
 | [workflows/supply-chain-audit.yml](workflows/supply-chain-audit.yml) | Scheduled `pip-audit` on lockfile exports |
 | [workflows/README.md](workflows/README.md) | Workflow table and local actionlint |
 | [workflows/AGENTS.md](workflows/AGENTS.md) | Workflow agent guide |
+| [workflows/SPEC.md](workflows/SPEC.md) | Workflow folder specification |
 
 ### Dependabot
 
@@ -278,18 +282,20 @@ Configured in [dependabot.yml](dependabot.yml):
 
 | Workflow | Triggers | What it runs |
 |----------|----------|--------------|
-| [ci.yml](workflows/ci.yml) | `push` and `pull_request` to `main` (`opened`, `synchronize`, `reopened`, `ready_for_review`); **`paths-ignore`**: `**/*.md`, `doc/**`. `workflow_dispatch` | **test**: matrix 3.11 / 3.12 / 3.13; Python 3.12 also runs Ruff format/check over `src scripts`, terminology audits, docs audit, GNN doc patterns, mypy, collect-only, focused PyMDP/POMDP tests, and MCP ≥ 130. All matrix entries run pytest + JUnit/summary. **security**: Bandit SARIF → `upload-sarif` + artifact. |
+| [ci.yml](workflows/ci.yml) | `push` and `pull_request` to `main` (`opened`, `synchronize`, `reopened`, `ready_for_review`); no path filter — runs on doc-only changes too. `workflow_dispatch` | **test**: matrix 3.11 / 3.12 / 3.13; Python 3.12 also runs Ruff format/check over `src scripts`, terminology audits, docs audit, documentation contract audit (`check_doc_contracts.py`), GNN doc patterns, mypy, collect-only, focused PyMDP/POMDP tests, MCP ≥ 140, and the v3 orchestration acceptance gate. All matrix entries run pytest with coverage, JUnit/summary. **security**: Bandit SARIF → `upload-sarif` + artifact. |
+| [mcp-audit.yml](workflows/mcp-audit.yml) | `push` / `pull_request` to `main`. `workflow_dispatch` | MCP tool count ≥ 140 via `tests.mcp.test_mcp_audit.count_mcp_tools`. |
+| [full-extras.yml](workflows/full-extras.yml) | Weekly cron Sunday 06:00 UTC (`0 6 * * 0`). `workflow_dispatch` | `uv sync --frozen --all-extras`, optional-import validation (audio, GUI, research/scaling), full pytest suite under all extras (Python 3.12). |
 | [docs-audit.yml](workflows/docs-audit.yml) | `push` / `pull_request` to `main` when paths include `**/*.md`, `doc/**`, root `AGENTS.md`, `CLAUDE.md`, `README.md`, `SKILL.md`, or `doc/development/docs_audit.py`. `workflow_dispatch` | `uv sync --frozen --extra dev`, strict docs audit with anchors, repository/doc terminology audits, and GNN doc-pattern audit. |
-| [actionlint.yml](workflows/actionlint.yml) | `push` / `pull_request` when `.github/workflows/**` changes. `workflow_dispatch` | `rhysd/actionlint@v1.7.11` |
+| [actionlint.yml](workflows/actionlint.yml) | `push` / `pull_request` when `.github/workflows/**` changes. `workflow_dispatch` | `rhysd/actionlint@v1.7.12` |
 | [dependency-review.yml](workflows/dependency-review.yml) | `pull_request` to `main`. `workflow_dispatch` | `fail-on-severity: high`, AGPL deny list, PR comment summary on failure ([fork limitations](https://docs.github.com/en/code-security/supply-chain-security/understanding-your-software-supply-chain/about-dependency-review#dependency-review-for-forked-repositories)). |
 | [codeql.yml](workflows/codeql.yml) | `push` / `pull_request` (paths-ignore doc-only), weekly schedule, `workflow_dispatch` | `init` → `uv sync --frozen --extra dev` → `analyze` (Python). |
 | [supply-chain-audit.yml](workflows/supply-chain-audit.yml) | Weekly cron (`0 6 * * 1` UTC), `workflow_dispatch` | **pip-audit (core)** and **pip-audit (all extras, no dev)** via frozen `uv export`; OSV; job summaries. |
 
 **Fork PRs:** Dependency review may be limited for PRs from forks; see the link in the dependency-review row above.
 
-### Why CI and docs-audit split
+### Why a separate docs-audit workflow
 
-[ci.yml](workflows/ci.yml) ignores Markdown-only and `doc/**` path changes so documentation edits do not spin the full Python matrix. [docs-audit.yml](workflows/docs-audit.yml) runs when those paths (or the audit script) change, keeping relative links and AGENTS/README pairing checks enforced.
+[ci.yml](workflows/ci.yml) runs on every push/PR to `main` with no path filter, and its 3.12 job already includes the doc audits. [docs-audit.yml](workflows/docs-audit.yml) is path-filtered (`**/*.md`, `doc/**`, root `AGENTS.md`/`CLAUDE.md`/`README.md`/`SKILL.md`, `doc/development/docs_audit.py`) and runs the same audit set in a lean single job, so doc-only changes get a fast, focused signal.
 
 ### Automation on a typical PR
 
@@ -298,7 +304,8 @@ flowchart TB
   pr[PR_to_main]
   pr --> dep[dependency_review]
   pr --> cq[CodeQL]
-  pr --> ci[CI_tests_Ruff_Bandit_if_not_docs_only]
+  pr --> ci[CI_full_matrix_no_path_filter]
+  pr --> mc[mcp_audit_tool_count]
   pr --> da[docs_audit_if_md_doc_or_audit_script]
   pr --> al[actionlint_if_workflows_change]
 ```

@@ -19,9 +19,8 @@ python src/16_analysis.py --target-dir input/gnn_files --output-dir output --ver
 python src/main.py --only-steps 16 --verbose
 ```
 
-## API
-
 ```python
+from pathlib import Path
 from analysis import (
     process_analysis,
     perform_statistical_analysis,
@@ -43,20 +42,20 @@ from analysis import (
 # Process analysis step (used by pipeline)
 process_analysis(target_dir, output_dir, verbose=True)
 
-# Statistical analysis
-stats = perform_statistical_analysis(parsed_data)
+# Statistical analysis (takes a file path)
+stats = perform_statistical_analysis(Path("models/my_model.md"))
 
-# Complexity metrics
-metrics = calculate_complexity_metrics(model_data)
+# Complexity metrics (takes a file path)
+metrics = calculate_complexity_metrics(Path("models/my_model.md"))
 
 # Framework comparison
 report = generate_framework_comparison_report(results)
 
-# Active Inference metrics
+# Active Inference metrics (numpy arrays)
 entropy = compute_shannon_entropy(distribution)
 kl_div = compute_kl_divergence(p, q)
-vfe = compute_variational_free_energy(beliefs, observations)
-efe = compute_expected_free_energy(policy, beliefs)
+vfe = compute_variational_free_energy(observations, beliefs, A_matrix)
+efe = compute_expected_free_energy(beliefs, A_matrix, B_matrix)
 ```
 
 ## Key Exports
@@ -66,14 +65,11 @@ efe = compute_expected_free_energy(policy, beliefs)
 - `calculate_complexity_metrics`, `calculate_maintainability_index`, `calculate_technical_debt`
 - `analyze_framework_outputs`, `generate_framework_comparison_report`
 - `compute_shannon_entropy`, `compute_kl_divergence`, `compute_variational_free_energy`, `compute_expected_free_energy`
-- `analyze_simulation_traces`, `analyze_free_energy`, `analyze_policy_convergence`
-- `generate_analysis_summary` — summary report generation
-
 ## Output
 
-- Analysis reports in `output/16_analysis_output/`
+- Analysis reports in `output/16_analysis_output/` (`analysis_results.json`, `analysis_summary.md`, `cross_model_comparison_report.md`)
 - Statistical summaries and aggregations
-- Comparative visualizations
+- Comparative visualizations and GridWorld GIFs (disable with `--no-animations`)
 
 
 ## MCP Tools

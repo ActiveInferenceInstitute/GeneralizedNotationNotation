@@ -188,9 +188,11 @@ graph TD
 - **Tests command of record**: `uv run --extra dev python -m pytest src/tests/ -q
   --tb=no -rsx --ignore=src/tests/llm/test_llm_ollama.py
   --ignore=src/tests/llm/test_llm_ollama_integration.py`. Re-include the two Ollama files
-  when `ollama` is installed and reachable. Latest local evidence (2026-08-03):
-  2,797 passed, 0 failed, 2 allowlisted skips (command of record, 2026-08-07, 29-exemplar corpus); Julia backends run from committed environments
-  backends and Ollama enabled.
+  when `ollama` is installed and reachable. The dated pass/skip receipt for the latest
+  full run lives in the root [`README.md`](../README.md) (see also
+  `src/tests/TEST_SUITE_SUMMARY.md`); this file deliberately does not copy the counts.
+  That receipt is taken with the Julia backends run from their committed environments
+  and Ollama enabled.
 - **Default dev suite**: FastAPI, websocket bridge, and LSP tests run under the
   `dev` extra; browser, public-network, live GUI, audio-DSP, and Ollama
   integrations remain explicit opt-in surfaces rather than hidden default-suite skips.
@@ -221,7 +223,7 @@ The pipeline consists of exactly 25 steps (steps 0-24), executed in order:
 8. **8_visualization.py** → `src/visualization/` - Graph and matrix visualization generation
 9. **9_advanced_viz.py** → `src/advanced_visualization/` - Advanced visualization and interactive plots
 10. **10_ontology.py** → `src/ontology/` - Active Inference Ontology processing and validation
-11. **11_render.py** → `src/render/` - Code generation for PyMDP, RxInfer, ActiveInference.jl, JAX, Stan, PyTorch, NumPyro, DisCoPy simulation environments
+11. **11_render.py** → `src/render/` - Code generation for PyMDP, RxInfer.jl, ActiveInference.jl, JAX, DisCoPy, PyTorch, NumPyro, Stan, bnlearn simulation environments
 12. **12_execute.py** → `src/execute/` - Execute rendered simulation scripts with result capture
 13. **13_llm.py** → `src/llm/` - LLM-enhanced analysis, model interpretation, and AI assistance
 14. **14_ml_integration.py** → `src/ml_integration/` - Machine learning integration and model training
@@ -276,7 +278,7 @@ python src/3_gnn.py --target-dir input/gnn_files --output-dir output --verbose
 # Execute only specific frameworks
 python src/12_execute.py --frameworks "pymdp,jax" --verbose
 
-# Use lite preset (PyMDP, JAX, DisCoPy)
+# Use lite preset (PyMDP, JAX, DisCoPy, bnlearn)
 python src/12_execute.py --frameworks "lite" --verbose
 
 # All frameworks (default)
@@ -345,7 +347,7 @@ pytest --cov=src --cov-report=term-missing
 
 ---
 
-**Last Updated**: 2026-08-03
-**Pipeline Version**: 3.0.0
+**Last Updated**: 2026-09-02
+**Pipeline Version**: 3.2.0
 **Total Steps**: 25 (0-24)
 **Status**: Maintained

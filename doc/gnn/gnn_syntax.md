@@ -15,7 +15,7 @@ introduced by a level-2 header (`## SectionName`).
 | Section | Purpose |
 |---------|---------|
 | `## GNNSection` | Short identifier (no spaces; e.g. `ActInfPOMDP`) |
-| `## GNNVersionAndFlags` | `GNN v1` or `GNN v1.1` with optional flags |
+| `## GNNVersionAndFlags` | `GNN v1`, `GNN v1.0`, or `GNN v1.1` with optional flags |
 | `## ModelName` | Human-readable model title |
 | `## StateSpaceBlock` | Variable and matrix declarations |
 | `## Connections` | Edge list between state-space variables |
@@ -80,7 +80,7 @@ NAME[dim₁, dim₂, …, key=value, …]   # optional comment
 ### Dimension rules
 
 - Comma-separated positive integers: `A[3,3]`.
-- A trailing key-value pair `type=<type>` is **required**: `float`, `int`, `bool`.
+- A trailing key-value pair `type=<type>` is optional and defaults to `float`; allowed values: `float`, `int`, `bool`.
 - Dimensions may use named references: `A[num_obs, num_states]`.
 
 ### v1.1 Extensions — Default Values
@@ -94,7 +94,7 @@ I[3,3, type=float, default=eye]
 B[3,3,3, type=float, default=ones]
 ```
 
-Supported defaults: `uniform`, `zeros`, `ones`, `eye`, `random`.
+The parser stores `default=<value>` verbatim without validating the name; conventional initializers are `uniform`, `zeros`, `ones`, `eye`, `random`.
 
 ---
 
@@ -261,8 +261,8 @@ also have multiple factors, so the more specific kinds are tested first.
 ## 6  Multi-Model Files (v1.1)
 
 A single `.md` file may contain multiple models separated by a `---` (horizontal rule)
-on its own line. Each model block must contain its own `## GNNSection` and
-`## StateSpaceBlock`.
+on its own line. Each model block must contain its own `## StateSpaceBlock`
+(conventionally with its own `## GNNSection`).
 
 ---
 

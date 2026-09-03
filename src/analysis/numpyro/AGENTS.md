@@ -9,20 +9,19 @@ Framework-specific analysis module for NumPyro simulation outputs. Reads `simula
 ```
 numpyro/
 ├── __init__.py      # Package exports
-└── analyzer.py      # NumPyro result analysis and visualization (186 lines)
+└── analyzer.py      # NumPyro result analysis and visualization (202 lines)
 ```
 
 ## Key Functions
 
-- **`analyze_numpyro_results(results_dir, output_dir)`** — Main entry point; reads NumPyro JSON results and produces matplotlib visualizations.
+- **`generate_analysis_from_logs(results_dir, output_dir=None, verbose=False)`** — Main entry point; reads NumPyro JSON results and produces matplotlib visualizations.
 - **Belief trajectory plotting** — Tracks posterior belief evolution over simulation timesteps.
 - **Action distribution analysis** — Visualizes policy distributions across actions.
-- **EFE decomposition** — Breaks down Expected Free Energy into epistemic and instrumental components.
 
 ## Dependencies
 
 - `numpy`, `matplotlib` (required)
-- `num.pyro` (runtime, for result interpretation)
+- NumPyro (runtime, for producing the results analyzed here)
 
 ## Parent Module
 

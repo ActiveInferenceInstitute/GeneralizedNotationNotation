@@ -18,7 +18,7 @@ Before diving into specific errors, use these tools to diagnose issues:
 Run the pipeline with `--verbose` to see detailed logs:
 
 ```bash
-python src/main.py --verbose
+uv run python src/main.py --verbose
 ```
 
 ### 2. Step-Specific Checks
@@ -27,10 +27,10 @@ Run individual steps to isolate the problem:
 
 ```bash
 # Check parsing
-python src/3_gnn.py --target-dir input/gnn_files --verbose
+uv run python src/3_gnn.py --target-dir input/gnn_files --verbose
 
 # Check type validity
-python src/5_type_checker.py --target-dir input/gnn_files --verbose
+uv run python src/5_type_checker.py --target-dir input/gnn_files --verbose
 ```
 
 ### 3. Output Inspection
@@ -149,7 +149,7 @@ The current pipeline design is stateless between runs, but you can skip successf
 
 ```bash
 # Skip steps 0-3 if they passed
-python src/main.py --only-steps "4,5,6,7,8,9,10,11,12"
+uv run python src/main.py --only-steps "4,5,6,7,8,9,10,11,12"
 ```
 
 ---

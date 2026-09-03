@@ -7,7 +7,7 @@
 
 ## Overview
 
-NumPyro provides a **probabilistic programming** backend for GNN models. Unlike PyMDP (which uses fixed-point belief updates) or JAX (which uses manual message-passing), NumPyro treats the generative model as a probabilistic program and uses **MCMC or SVI** (Stochastic Variational Inference) for posterior inference.
+NumPyro provides a **probabilistic programming** backend for GNN models. Unlike PyMDP (which uses fixed-point belief updates) or JAX (which uses manual message-passing), NumPyro treats the generative model as a probabilistic program and uses **NUTS/MCMC** for posterior inference (SVI is planned; see NP-2 below).
 
 This unlocks uncertainty quantification beyond the classical Dirichlet-categorical parameterisation — GNN-specified matrices become priors over distributions, not point estimates.
 
@@ -18,6 +18,17 @@ This unlocks uncertainty quantification beyond the classical Dirichlet-categoric
 | Rendering (Step 11) | `src/render/numpyro/numpyro_renderer.py` | GNN JSON → NumPyro probabilistic program |
 | Execution (Step 12) | `src/execute/numpyro/numpyro_runner.py` | MCMC/SVI inference, log persistence |
 | Analysis (Step 16) | `src/analysis/numpyro/analyzer.py` | Posterior summaries, uncertainty bands |
+
+## Continuous (linear-Gaussian) models
+
+For continuous specifications (`F`/`H`/`Q`/`R`, `prior_mean`/`prior_cov`,
+optional `u`, `goal_mean`, `control_gain`) `numpyro_renderer.py` delegates to
+the shared generator `src/render/continuous_script.py`. The emitted script runs
+the online Kalman filter over the linear-Gaussian state-space model and then fits
+the same model with NUTS, reporting `mcmc_posterior_means` and `mcmc_r_hat_max`
+alongside the continuous result schema (`beliefs` as posterior means,
+`posterior_cov`, `true_states_continuous`, `observations_continuous`,
+`controls`, `rmse_vs_true`).
 
 ## Generative Model in NumPyro
 
@@ -109,11 +120,8 @@ posterior = mcmc.get_samples()
 
 ## Installation
 
-```bash
-pip install numpyro jax jaxlib
-# GPU (CUDA):
-pip install numpyro "jax[cuda12]" -f https://storage.googleapis.com/jax-releases/jax_cuda_releases.html
-```
+NumPyro and JAX are core dependencies — `uv sync` installs them; no extra step.
+GPU (CUDA) users can swap in the CUDA-enabled JAX wheel separately if needed.
 
 Check availability:
 

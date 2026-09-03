@@ -100,12 +100,12 @@ License: [License type, e.g., MIT, CC-BY]
 
 3. **Validate your model** using the GNN type checker:
    ```bash
-   python src/main.py --target-dir path/to/your/models --only-steps 4
+   uv run python src/main.py --target-dir path/to/your/models --only-steps 4
    ```
 
 4. **Test your model** by running the full pipeline:
    ```bash
-   python src/main.py --target-dir path/to/your/models
+   uv run python src/main.py --target-dir path/to/your/models
    ```
 
 ## Common Modifications

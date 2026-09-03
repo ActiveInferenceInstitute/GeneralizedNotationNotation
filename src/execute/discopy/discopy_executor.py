@@ -58,9 +58,9 @@ def execute_discopy_script(
     Returns:
         bool: True if execution was successful, False otherwise
     """
-    import subprocess  # nosec B404
-    import sys
     import time as time_mod
+
+    from execute.executor import execute_script_safely
 
     if not script_path.exists():
         logger.error(f"Script file not found: {script_path}")
@@ -83,65 +83,67 @@ def execute_discopy_script(
         output_dir.mkdir(parents=True, exist_ok=True)
         env["DISCOPY_OUTPUT_DIR"] = str(output_dir)
 
-    start_time = time_mod.time()
+    # Delegate the subprocess envelope (run + timing + error normalization) to
+    # the canonical safe executor. Function-local import: executor.py imports
+    # this runner at module scope, so a module-level import would be circular.
+    abs_script_path = script_path.resolve()
+    envelope = execute_script_safely(
+        abs_script_path,
+        timeout=timeout,
+        cwd=abs_script_path.parent,
+        env=env,
+    )
 
-    try:
-        abs_script_path = script_path.resolve()
-        result = subprocess.run(  # nosec B603
-            [sys.executable, str(abs_script_path)],
-            capture_output=True,
-            text=True,
-            env=env,
-            cwd=abs_script_path.parent,
-            timeout=timeout,
-        )
-
-        elapsed = time_mod.time() - start_time
-        success = result.returncode == 0
-
-        if success:
-            logger.info(
-                f"✅ Script executed successfully: {script_path.name} ({elapsed:.1f}s)"
-            )
-            if verbose and result.stdout.strip():
-                logger.debug(f"Output from {script_path.name}:\n{result.stdout}")
-        else:
-            logger.error(f"❌ Script execution failed: {script_path.name}")
-            logger.error(f"Return code: {result.returncode}")
-            if result.stderr.strip():
-                logger.error(f"Error output:\n{result.stderr}")
-
-        # Save execution logs
-        log_dir = output_dir if output_dir else abs_script_path.parent
-        try:
-            log_dir.mkdir(parents=True, exist_ok=True)
-
-            execution_log: dict[str, Any] = {
-                "script": str(abs_script_path),
-                "return_code": result.returncode,
-                "success": success,
-                "elapsed_seconds": round(elapsed, 2),
-                "timeout": timeout,
-                "timestamp": time_mod.strftime("%Y-%m-%d %H:%M:%S"),
-            }
-
-            log_file = log_dir / "execution_log.json"
-            with open(log_file, "w") as f:
-                json.dump(execution_log, f, indent=2)
-
-            logger.debug(f"Execution logs saved to: {log_dir}")
-        except Exception as log_err:
-            logger.warning(f"Could not save execution logs: {log_err}")
-
-        return success
-    except subprocess.TimeoutExpired:
+    if envelope["return_code"] == -1 and "error" in envelope:
+        # The script never ran (timeout / not-found / unexpected failure).
+        # The pre-delegation envelope logged and returned without writing
+        # per-script logs, so keep that behavior.
         logger.error(
-            f"❌ Script execution timed out after {timeout}s: {script_path.name}"
+            f"❌ Error executing script {script_path.name}: {envelope['error']}"
         )
         return False
-    except Exception as e:
-        logger.error(f"❌ Error executing script {script_path.name}: {e}")
-        return False
+
+    elapsed = envelope["duration_seconds"]
+    success: bool = bool(envelope["success"])
+    result_stdout = envelope["stdout"]
+    result_stderr = envelope["stderr"]
+    return_code = envelope["return_code"]
+
+    if success:
+        logger.info(
+            f"✅ Script executed successfully: {script_path.name} ({elapsed:.1f}s)"
+        )
+        if verbose and result_stdout.strip():
+            logger.debug(f"Output from {script_path.name}:\n{result_stdout}")
+    else:
+        logger.error(f"❌ Script execution failed: {script_path.name}")
+        logger.error(f"Return code: {return_code}")
+        if result_stderr.strip():
+            logger.error(f"Error output:\n{result_stderr}")
+
+    # Save execution logs
+    log_dir = output_dir if output_dir else abs_script_path.parent
+    try:
+        log_dir.mkdir(parents=True, exist_ok=True)
+
+        execution_log: dict[str, Any] = {
+            "script": str(abs_script_path),
+            "return_code": return_code,
+            "success": success,
+            "elapsed_seconds": round(elapsed, 2),
+            "timeout": timeout,
+            "timestamp": time_mod.strftime("%Y-%m-%d %H:%M:%S"),
+        }
+
+        log_file = log_dir / "execution_log.json"
+        with open(log_file, "w") as f:
+            json.dump(execution_log, f, indent=2)
+
+        logger.debug(f"Execution logs saved to: {log_dir}")
+    except Exception as log_err:
+        logger.warning(f"Could not save execution logs: {log_err}")
+
+    return success
 
 
 class DisCoPyExecutor:

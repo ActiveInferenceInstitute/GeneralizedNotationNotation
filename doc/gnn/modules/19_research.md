@@ -266,8 +266,7 @@ Research Data → Analysis → Visualization → Report Generation → Publicati
 - `src/tests/research/test_research_functional.py` - Functional tests
 
 ### Test Coverage
-- **Current**: 70%
-- **Target**: 80%+
+- Measure: `uv run --extra dev python -m pytest src/tests/research/ --cov=research --cov-report=term-missing` (do not treat fixed percentages in this doc as canonical).
 
 ### Key Test Scenarios
 1. Research analysis with various data types
@@ -280,21 +279,17 @@ Research Data → Analysis → Visualization → Report Generation → Publicati
 ## MCP Integration
 
 ### Tools Registered
-- `research.analyze_data` - Perform research analysis
-- `research.generate_report` - Generate research reports
-- `research.create_visualization` - Create research visualizations
-- `research.validate_methodology` - Validate research methodology
 
-### Tool Endpoints
-```python
-@mcp_tool("research.analyze_data")
-def analyze_research_data_tool(data, analysis_type="comprehensive"):
-    """Perform research analysis on data"""
-    # Implementation
-```
+Registered in `register_tools` (`src/research/mcp.py`):
+
+- `process_research` - Run Step 19 over a directory
+- `list_research_topics` - List research topics and domains
+- `read_research_results` - Read saved research results
+- `get_research_module_info` - Module metadata
 
 ### MCP File Location
 - `src/research/mcp.py` - MCP tool registrations
+
 
 ---
 

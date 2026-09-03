@@ -18,7 +18,7 @@ subcommands plus the project's `pyproject.toml` / `uv.lock`.
 | `dependency_setup.py` | 448 | JAX stack probe, optional group installers, Julia, project structure |
 | `utils.py` | 189 | `ensure_directory`, `find_gnn_files`, `get_output_paths`, `get_module_info`, `setup_environment`, `install_dependencies` |
 | `validator.py` | 84 | `validate_system`, `get_environment_info`, `get_uv_status` |
-| `mcp.py` | 354 | MCP tool registrations for `setup.*` tools |
+| `mcp.py` | 354 | MCP tool registrations (setup utilities) |
 
 Line counts are recomputed from the source (`wc -l src/setup/*.py`). Update when the
 implementation changes so this specification stays accurate.
@@ -81,7 +81,7 @@ from setup import (
 ## Interfaces
 
 - **Called by**: [`src/1_setup.py`](../1_setup.py) via `setup_orchestrator`.
-- **Imported by**: tests in `src/tests/test_setup_*`, `src/tests/test_uv_*`,
+- **Imported by**: tests in `src/tests/setup/`, `src/tests/test_uv_environment.py`,
   `src/tests/test_environment_overall.py`, and any other module that needs environment
   introspection (for example dependency-aware fallbacks).
 - **External tools**: `uv`, `python`, the interpreter under `.venv`.
@@ -90,10 +90,8 @@ from setup import (
 
 Step 1 writes to `output/1_setup_output/`:
 
-- `setup_summary.json`
-- `environment_info.json`
-- `dependency_status.json`
-- `setup_log.txt`
+- `environment_setup_summary.json` — setup result, timings, and probe outcomes
+- `installed_packages.json` — installed package inventory
 
 `uv.lock` at the repository root is updated by `uv` directly.
 

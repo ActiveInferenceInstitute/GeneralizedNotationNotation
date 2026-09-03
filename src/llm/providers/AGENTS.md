@@ -18,19 +18,20 @@ providers/
 
 ## Provider Interface
 
-All providers implement `BaseLLMProvider` with these core methods:
+All providers implement `BaseLLMProvider` with these core members:
 
-- **`generate(prompt, **kwargs) → str`** — Synchronous text generation.
-- **`generate_stream(prompt, **kwargs) → AsyncGenerator`** — Streaming text generation.
+- **`generate_response(messages, config) → LLMResponse`** — Text generation.
+- **`generate_stream(messages, config) → AsyncGenerator`** — Streaming text generation.
 - **`get_available_models() → List[str]`** — List models available from this provider.
 - **`health_check() → bool`** — Verify provider connectivity.
+- **`default_model` / `available_models`** — Properties declaring provider defaults.
 
 ## Provider Selection
 
 The provider factory in `__init__.py` selects providers based on:
 1. Explicit configuration in `input/config.yaml`
 2. Environment variables (`OLLAMA_MODEL`, `OPENAI_API_KEY`, etc.)
-3. Fallback chain: Ollama → OpenRouter → OpenAI → Perplexity
+3. Fallback chain: Ollama → OpenAI → OpenRouter → Perplexity
 
 ## Parent Module
 

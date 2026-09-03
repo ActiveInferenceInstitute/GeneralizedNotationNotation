@@ -52,7 +52,7 @@ Same content as [Intermediate Path: Building and Integrating Models](#intermedia
 
 **Next Steps**: Move to Intermediate Path once comfortable with basic models.
 
-### **🎓 Beginner Skill Checkpoints**
+### Beginner Skill Checkpoints
 
 - [ ] Can you explain the "triple play" approach?
 - [ ] Have you successfully generated visualization output for a basic model?
@@ -85,7 +85,7 @@ Same content as [Intermediate Path: Building and Integrating Models](#intermedia
 
 **Next Steps**: Proceed to Advanced Path for research-level applications.
 
-### **🛠️ Intermediate Skill Checkpoints**
+### Intermediate Skill Checkpoints
 
 - [ ] Have you modified a POMDP template for a custom domain?
 - [ ] Can you run the same GNN model across two different frameworks (e.g., PyMDP and RxInfer)?
@@ -116,7 +116,7 @@ Same content as [Intermediate Path: Building and Integrating Models](#intermedia
    - Read [GNN Paper](gnn/gnn_paper.md).
    - Contribute via [Releases](releases/README.md) and [Security Framework](security/security_framework.md).
 
-### **🔬 Advanced Skill Checkpoints**
+### Advanced Skill Checkpoints
 
 - [ ] Have you implemented a custom cognitive phenomenon model using GNN?
 - [ ] Can you explain the categorical foundations of your model using the DisCoPy output?

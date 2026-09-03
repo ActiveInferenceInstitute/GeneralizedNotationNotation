@@ -70,8 +70,7 @@ Analysis Output (Step 16)
 - Execution logs
 
 **Output:** `output/16_analysis_output/discopy/`
-- `analysis_summary.json`
-- Diagram visualizations
+- Diagram visualizations (PNG paths returned by `generate_analysis_from_logs`)
 - Structure reports
 
 ---

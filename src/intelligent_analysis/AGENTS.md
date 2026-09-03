@@ -12,7 +12,7 @@
 
 **Version**: 3.2.0
 
-**Last Updated**: 2026-04-16
+**Last Updated**: 2026-09-02
 
 ---
 
@@ -83,14 +83,15 @@ python src/24_intelligent_analysis.py --analysis-model "gpt-4"
 ### Programmatic
 
 ```python
+import logging
+from pathlib import Path
 from intelligent_analysis import process_intelligent_analysis
 
+logger = logging.getLogger("pipeline")
 result = process_intelligent_analysis(
     target_dir=Path("input/gnn_files"),
     output_dir=Path("output"),
-    verbose=True,
-    skip_llm=False,
-    bottleneck_threshold=60.0,
+    logger=logger,
 )
 ```
 
@@ -140,12 +141,11 @@ Intelligent Analysis
 Detailed analysis result for a single pipeline step.
 
 ```python
-@dataclass
 class StepAnalysis:
     step_number: int  # Pipeline step number (0-24)
     script_name: str  # Script filename (e.g., "3_gnn.py")
     description: str  # Human-readable step description
-    status: str  # "SUCCESS", "FAILED", "WARNING", etc.
+    status: StepStatus  # pipeline.context step status ("SUCCESS", "FAILED", "WARNING", etc.)
     duration_seconds: float  # Execution time in seconds
     memory_mb: float  # Peak memory usage in MB
     exit_code: int  # Process exit code
@@ -894,7 +894,7 @@ The `_run_llm_analysis()` function is async because it uses the shared `llm.llm_
 
 ## Version History
 
-### Current Version: 3.0.0
+### Current Version: 1.6.0 (module `__init__.py`), pipeline release 3.2.0
 
 **Features**:
 
@@ -930,11 +930,11 @@ The `_run_llm_analysis()` function is async because it uses the shared `llm.llm_
 
 ---
 
-**Last Updated**: 2026-04-16
+**Last Updated**: 2026-09-02
 **Maintainer**: GNN Pipeline Team
 **Status**: Production Ready
 **Version**: 3.2.0
-**Architecture Compliance**: 100% Thin Orchestrator Pattern
+**Architecture Compliance**: Thin Orchestrator Pattern
 
 ---
 

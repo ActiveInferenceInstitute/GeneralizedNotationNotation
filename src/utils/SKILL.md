@@ -27,12 +27,11 @@ python -c "from utils import generate_pipeline_health_report; print(generate_pip
 
 | Module | Key Exports | Purpose |
 | -------- | ------------ | --------- |
-| `pipeline_template` | `log_step_start`, `log_step_success`, `log_step_error`, `log_step_warning` | Visual step logging |
-| `logging` | `PipelineLogger`, `setup_step_logging`, `StructuredLogger` | Structured logging |
-| `error_handling` | `ErrorRecoveryManager`, `PipelineErrorHandler`, `generate_correlation_id` | Error handling & recovery |
-| `configuration` | `config_loader`, `get_config_value`, `set_config_value`, `validate_config` | Pipeline configuration |
-| `dependency` | `DependencyValidator`, `DependencyAuditor`, `validate_pipeline_dependencies` | Dependency management |
-| `performance` | `PerformanceTracker`, `track_operation_standalone` | Performance monitoring |
+| `logging_utils` / `structured_logging` | `setup_step_logging`, `PipelineLogger`, `log_step_*` | Structured logging |
+| `error_handling` / `error_recovery` | `ErrorRecoveryManager`, `PipelineErrorHandler`, `generate_correlation_id` | Error handling & recovery |
+| `config_loader` | `load_config`, `get_config_value`, `set_config_value`, `validate_config` | Pipeline configuration |
+| `dependency_validator` | `DependencyValidator`, `validate_pipeline_dependencies`, `get_dependency_status` | Dependency management |
+| `performance_tracker` | `PerformanceTracker`, `track_operation_standalone` | Performance monitoring |
 
 ## API
 
@@ -95,17 +94,17 @@ validate_config(config)
 validate_pipeline_dependencies()
 
 # Performance tracking
-with performance_tracker.track("operation_name"):
+with performance_tracker.track_operation("operation_name"):
     do_work()
 ```
 
 ## Visual Logging Features
 
-- 🎨 Color-coded status indicators (green=success, yellow=warning, red=error)
-- 📊 Progress bars and completion indicators
-- 🔢 Correlation ID tracking for debugging
-- 📋 Structured summary tables
-- ⏱️ Performance timing and memory tracking
+- Color-coded status indicators (green=success, yellow=warning, red=error)
+- Progress bars and completion indicators
+- Correlation ID tracking for debugging
+- Structured summary tables
+- Performance timing and memory tracking
 
 
 ## MCP Tools

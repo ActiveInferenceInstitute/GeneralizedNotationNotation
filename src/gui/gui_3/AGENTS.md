@@ -6,7 +6,7 @@
 **Pipeline Step**: Step 22: GUI Processing — gui_3 option (`22_gui.py`)
 **Parent Module**: `gui/` (Interactive GNN Constructors)
 **Category**: Interactive Visualization / Model Construction
-**Status**: ✅ Production Ready
+**Status**: Production Ready
 **Version**: 3.2.0
 **Last Updated**: 2026-04-16
 

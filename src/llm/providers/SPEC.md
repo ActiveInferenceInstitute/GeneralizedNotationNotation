@@ -26,9 +26,9 @@ class BaseLLMProvider(ABC):
 |----------|-------------|---------------|
 | Ollama | `OLLAMA_MODEL` | `smollm2:135m-instruct-q4_K_S` |
 | OpenAI | `OPENAI_API_KEY` | `gpt-4o-mini` |
-| OpenRouter | `OPENROUTER_API_KEY` | `meta-llama/llama-3-8b` |
-| Perplexity | `PERPLEXITY_API_KEY` | `llama-3.1-sonar-small` |
+| OpenRouter | `OPENROUTER_API_KEY` / `OPENROUTER_MODEL` | `openai/gpt-4o-mini` |
+| Perplexity | `PERPLEXITY_API_KEY` | `llama-3.1-sonar-large-128k-online` |
 
 ## Fallback Chain
 
-Ollama → OpenRouter → OpenAI → Perplexity
+Ollama → OpenAI → OpenRouter → Perplexity

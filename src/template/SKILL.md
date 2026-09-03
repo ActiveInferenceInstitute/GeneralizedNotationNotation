@@ -35,11 +35,11 @@ from template import (
 # Process template step (used by pipeline)
 result = process_template_standardized(target_dir, output_dir, logger)
 
-# Process a single file
-result = process_single_file(file_path, output_dir, logger)
+# Process a single file (options dict is required)
+result = process_single_file(file_path, output_dir, {"verbose": True})
 
-# Validate a file
-is_valid = validate_file(file_path)
+# Validate a file (returns a dict: status/error/file_path)
+validation = validate_file(file_path)
 
 # Generate correlation ID for tracing
 corr_id = generate_correlation_id()

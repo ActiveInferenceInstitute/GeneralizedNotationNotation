@@ -5,7 +5,8 @@ This intentionally checks a small set of high-value invariants:
 - the primary quickstart contains every enforced GNN section;
 - maintained command examples use current pipeline flag spellings;
 - the configuration guide names the automatic ``input/config.yaml`` path;
-- documentation distinguishes nine render targets from eight Step-12 executors;
+- documentation distinguishes nine render targets from eight Step-12 executors
+  and marks bnlearn (not Stan) as render-only;
 - the primary hub does not claim generated counts or production readiness.
 
 Run from the repository root::
@@ -101,8 +102,8 @@ def scan() -> list[str]:
         issues.append(
             "pipeline guide does not distinguish nine render targets and eight executors"
         )
-    if "Stan is render-only" not in pipeline:
-        issues.append("pipeline guide does not identify Stan as render-only")
+    if "bnlearn is render-only" not in pipeline:
+        issues.append("pipeline guide does not identify bnlearn as render-only")
 
     for path in sorted((ROOT / "doc").rglob("*.md")):
         if any(

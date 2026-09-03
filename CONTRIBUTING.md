@@ -99,8 +99,8 @@ src/module_name/
 
 ### Testing
 
-- Tests go in `src/tests/test_{module}_*.py`
-- Run module-specific tests: `uv run pytest src/tests/test_gnn_*.py -v`
+- Tests go in `src/tests/<module>/test_*.py` (one subdirectory per module, e.g. `src/tests/gnn/`, `src/tests/render/`)
+- Run module-specific tests: `uv run pytest src/tests/gnn/ -v`
 - Check coverage: `uv run pytest --cov=src --cov-report=term-missing`
 - Aim for >80% test coverage on new code
 

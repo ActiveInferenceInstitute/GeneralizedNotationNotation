@@ -1,12 +1,10 @@
 # GNN Quick Reference Guide
 
-> **Version**: 2.0 | **Last Updated**: April 2026
-
 A concise reference for common GNN operations, syntax patterns, and frequently used commands.
 
 ---
 
-## 🚀 Quick Start Commands
+## Quick Start Commands
 
 ### Running the Pipeline
 
@@ -20,14 +18,19 @@ uv run python src/main.py --only-steps "3,5,7,8,11,12" --verbose
 
 ---
 
-## 📝 GNN Syntax Quick Reference
+## GNN Syntax Quick Reference
 
 ### Basic Model Structure
 
 ```markdown
-# GNN Model Name
 ## GNNSection
-ModelName
+MyModel
+
+## GNNVersionAndFlags
+GNN v1
+
+## ModelName
+My Model Name
 
 ## StateSpaceBlock
 A[3,3,type=float]   # Matrix
@@ -44,7 +47,7 @@ A={(0.9,0.05,0.05), (0.05,0.9,0.05), (0.05,0.05,0.9)}
 
 ---
 
-## 📁 Directory Reference
+## Directory Reference
 
 | Directory | Purpose |
 |-----------|---------|
@@ -55,7 +58,7 @@ A={(0.9,0.05,0.05), (0.05,0.9,0.05), (0.05,0.05,0.9)}
 
 ---
 
-## 🧮 Active Inference Glossary
+## Active Inference Glossary
 
 | Term | Definition |
 |------|------------|

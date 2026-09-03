@@ -53,7 +53,7 @@ graph TB
     
     subgraph "Code Generation"
         PyMDPCode[Python Simulation Code]
-        RxInferCode[Julia + TOML Config]
+        RxInferCode[Julia Code]
         ActInfCode[Julia Simulation Code]
         JAXCode[JAX Optimized Code]
         DisCoPyCode[DisCoPy Diagram Code]
@@ -140,9 +140,9 @@ src/render/
 ├── __init__.py                    # Module initialization and exports
 ├── README.md                      # This documentation
 ├── mcp.py                         # Model Context Protocol integration
+├── framework_registry.py          # Canonical framework inventory + availability
 ├── render.py                      # Core rendering functionality
 ├── processor.py                   # Main render processor (Step 11 entry)
-├── generators.py                  # Code generation utilities
 ├── pomdp_contract.py              # Canonical POMDP matrix contract
 ├── pomdp_processor.py             # POMDP state space injection into renderers
 ├── pymdp_template.py              # PyMDP template definitions
@@ -168,6 +168,12 @@ src/render/
 │       ├── combined_template.py   # Combined JAX template
 │       ├── general_template.py    # General JAX template
 │       └── pomdp_template.py     # POMDP JAX template
+├── pytorch/                       # PyTorch code generation
+│   └── pytorch_renderer.py       # PyTorch renderer
+├── numpyro/                       # NumPyro code generation
+│   └── numpyro_renderer.py       # NumPyro renderer
+├── stan/                          # Stan code generation
+│   └── stan_renderer.py          # Stan renderer (program + cmdstanpy driver)
 └── discopy/                       # DisCoPy code generation
     ├── __init__.py               # DisCoPy module initialization
     ├── discopy_renderer.py       # DisCoPy renderer

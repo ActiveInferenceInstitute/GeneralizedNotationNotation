@@ -8,7 +8,7 @@
 
 **Category**: Statistical Analysis / Performance Evaluation
 
-**Status**: ✅ Production Ready
+**Status**: Production Ready
 
 **Version**: 3.2.0
 
@@ -52,42 +52,33 @@
 
 ### Public Functions
 
-#### `process_analysis(target_dir: Path, output_dir: Path, logger: Optional[logging.Logger] = None, **kwargs) -> bool | int`
-**Description**: Main analysis processing function called by orchestrator (16_analysis.py). Performs comprehensive statistical analysis, complexity metrics, and performance benchmarking.
+#### `process_analysis(target_dir: Path, output_dir: Path, verbose: bool = False, **kwargs) -> bool | int`
+**Description**: Main analysis processing function called by orchestrator (16_analysis.py). Performs statistical analysis, complexity metrics, performance benchmarks, post-simulation framework analysis, and visualizations.
 
 **Parameters**:
 - `target_dir` (Path): Directory containing GNN files to analyze
 - `output_dir` (Path): Output directory for analysis results
-- `logger` (Optional[logging.Logger]): Logger instance for progress reporting (default: None)
-- `analysis_type` (str, optional): Type of analysis ("comprehensive", "statistical", "performance", "complexity") (default: "comprehensive")
-- `include_performance` (bool, optional): Include performance benchmarking (default: True)
-- `include_complexity` (bool, optional): Include complexity metrics (default: True)
-- `include_quality` (bool, optional): Include quality assessment (default: True)
-- `benchmark_iterations` (int, optional): Number of benchmark iterations (default: 5)
+- `verbose` (bool): Enable verbose output (default: False)
 - `generate_animations` (bool, optional): Generate current-schema GridWorld GIF
   artifacts (default: True; CLI: `--no-animations` disables this). This is
   the canonical programmatic key. Compatibility callers may pass
   `no_animations`, but it is normalized as the inverse and conflicts with
   `generate_animations` are rejected.
-- `**kwargs`: Additional analysis options
+- `**kwargs`: Additional pipeline options (unused kwargs are ignored)
 
 **Returns**: `True` if analysis artifacts were produced, `2` when there is no
 input or other warning-only recovery, and `False` for hard failures.
+
 
 **Example**:
 ```python
 from analysis import process_analysis
 from pathlib import Path
-import logging
 
-logger = logging.getLogger(__name__)
 success = process_analysis(
     target_dir=Path("input/gnn_files"),
     output_dir=Path("output/16_analysis_output"),
-    logger=logger,
-    analysis_type="comprehensive",
-    include_performance=True,
-    benchmark_iterations=10,
+    verbose=True,
 )
 ```
 
@@ -99,19 +90,18 @@ success = process_analysis(
 - `verbose` (bool, optional): Enable verbose output (default: False)
 
 **Returns**: `Dict[str, Any]` - Statistical analysis results with:
-- `variable_count` (int): Total number of variables
-- `connection_count` (int): Total number of connections
-- `type_distribution` (Dict[str, int]): Distribution of variable types
-- `dimension_statistics` (Dict[str, Any]): Dimension statistics
-- `density_metrics` (Dict[str, float]): Connection density metrics
+- `variable_statistics` / `connection_statistics` / `section_statistics` (Dict[str, Any])
+- `distributions` and `correlations` (Dict[str, Any])
+- `file_path`, `file_name`, `file_size`, `line_count`, `analysis_timestamp`
 
-#### `calculate_complexity_metrics(model_data: Dict[str, Any], variables: List[Dict[str, Any]] = None, connections: List[Dict[str, Any]] = None) -> Dict[str, Any]`
-**Description**: Calculate various complexity metrics for GNN models.
+Raises `RuntimeError` if the file cannot be analyzed.
+
+#### `calculate_complexity_metrics(file_path: Path, verbose: bool = False) -> Dict[str, Any]`
+**Description**: Calculate various complexity metrics for a GNN file.
 
 **Parameters**:
-- `model_data` (Dict[str, Any]): Parsed GNN model data
-- `variables` (List[Dict[str, Any]], optional): Model variables (extracted if not provided)
-- `connections` (List[Dict[str, Any]], optional): Model connections (extracted if not provided)
+- `file_path` (Path): Path to the GNN file to analyze
+- `verbose` (bool, optional): Enable verbose output (default: False)
 
 **Returns**: `Dict[str, Any]` - Complexity metrics with:
 - `cyclomatic_complexity` (float): Cyclomatic complexity score
@@ -120,7 +110,7 @@ success = process_analysis(
 - `maintainability_index` (float): Maintainability index (0-100)
 - `technical_debt` (float): Technical debt score
 
-**Returns**: Dictionary with complexity metrics (cyclomatic, cognitive, structural)
+Raises `RuntimeError` if metrics cannot be computed.
 
 ---
 
@@ -162,12 +152,12 @@ Complexity thresholds and benchmark parameters are defined in
 ### Basic Usage
 ```python
 from analysis.processor import process_analysis
+from pathlib import Path
 
 success = process_analysis(
     target_dir=Path("input/gnn_files"),
     output_dir=Path("output/16_analysis_output"),
-    logger=logger,
-    analysis_type="comprehensive",
+    verbose=True,
 )
 ```
 
@@ -175,16 +165,15 @@ success = process_analysis(
 ```python
 from analysis.analyzer import perform_statistical_analysis
 
-stats = perform_statistical_analysis(variables, connections)
-print(f"Variable count: {stats['variable_statistics']['count']}")
-print(f"Connection density: {stats['connection_statistics']['density']}")
+stats = perform_statistical_analysis(Path("models/my_model.md"))
+print(f"Variable count: {len(stats['variable_statistics'])}")
 ```
 
 ### Complexity Assessment
 ```python
 from analysis.analyzer import calculate_complexity_metrics
 
-metrics = calculate_complexity_metrics(parsed_model)
+metrics = calculate_complexity_metrics(Path("models/my_model.md"))
 print(f"Cyclomatic complexity: {metrics['cyclomatic_complexity']}")
 print(f"Maintainability index: {metrics['maintainability_index']}")
 ```
@@ -194,68 +183,25 @@ print(f"Maintainability index: {metrics['maintainability_index']}")
 ## Output Specification
 
 ### Output Products
-- `{model}_statistical_analysis.json` - Comprehensive statistical analysis
-- `{model}_complexity_metrics.json` - Complexity assessment results
-- `{model}_performance_benchmarks.json` - Performance profiling data
-- `{model}_analysis_summary.md` - Human-readable analysis report
-- `analysis_processing_summary.json` - Pipeline step summary
 
-### Output Directory Structure
-```
-output/16_analysis_output/
-├── model_name_statistical_analysis.json
-├── model_name_complexity_metrics.json
-├── model_name_performance_benchmarks.json
-├── model_name_analysis_summary.md
-├── analysis_processing_summary.json
-├── pymdp_visualizations/              # NEW: All PyMDP visualizations
-│   └── {model_name}/
-│       ├── discrete_states.png
-│       ├── belief_evolution.png
-│       ├── performance_metrics.png
-│       └── action_sequence.png
-└── comprehensive_visualizations/
-```
+`process_analysis` writes to the step output directory:
 
----
-
-## Performance Characteristics
-
-### Latest Execution
-- **Duration**: ~2-5 seconds per model
-- **Memory**: ~50-100MB for large models
-- **Status**: ✅ Production Ready
-
-### Expected Performance
-- **Fast Path**: ~1-2s for basic statistical analysis
-- **Slow Path**: ~5-10s for comprehensive complexity analysis
-- **Memory**: ~20-50MB for typical models, ~100MB for large models
+- `analysis_results.json` - Full step results (statistical, complexity, benchmarks, comparisons)
+- `analysis_summary.md` - Human-readable analysis report
+- `cross_model_comparison_report.md` - Cross-framework comparison (when execution data exists)
+- `{model}_post_simulation_analysis.json` - Per-model post-simulation analysis (in the cross-framework analysis subdirectory)
+- Visualization directories (`comprehensive_visualizations/`, framework GIFs and PyMDP visualizations, `cross_framework/gridworld_analysis_manifest.json` when animations are enabled)
 
 ---
 
 ## Error Handling
 
-### Graceful Degradation
-- **No scipy**: Simplified statistical analysis using numpy
-- **No matplotlib**: Text-based statistical reports
-- **Large models**: Sampling-based analysis with warnings
-
-### Error Categories
-1. **Statistical Errors**: Invalid data types or missing values
-2. **Complexity Errors**: Model structure too complex for analysis
-3. **Performance Errors**: Timeout or resource exhaustion
-
----
+- **No input**: returns exit code `2` with a warning (not a failure)
+- **Missing execution summary**: logs a warning and skips post-simulation analysis
+- **Malformed data**: per-file exceptions are collected in `results["errors"]`; the step continues with other files
+- **Animation flag conflict**: `generate_animations` conflicting with `no_animations` aborts with `False`
 
 ## Integration Points
-
-### Orchestrated By
-- **Script**: `16_analysis.py` (Step 16)
-- **Function**: `process_analysis()`
-
-### Imports From
-- `utils.pipeline_template` - Standardized processing patterns
-- `pipeline.config` - Configuration management
 
 ### Imported By
 - `src/tests/analysis/` - Module-level analysis tests
@@ -279,9 +225,10 @@ GNN Files → Analysis → Statistical Reports → Model Comparisons → Optimiz
 Measure on demand:
 
 ```bash
-uv run --extra dev python -m pytest src/tests/test_analysis*.py \
+uv run --extra dev python -m pytest src/tests/analysis/ \
     --cov=src/analysis --cov-report=term-missing
 ```
+
 ### Key Test Scenarios
 1. Statistical analysis with various model sizes
 2. Complexity metric calculation accuracy
@@ -293,17 +240,13 @@ uv run --extra dev python -m pytest src/tests/test_analysis*.py \
 ## MCP Integration
 
 ### Tools Registered
-- `process_analysis` - Process analysis for GNN files in a directory
 
-### Tool Endpoints
-```python
-@mcp_tool("process_analysis")
-def process_analysis_mcp(
-    target_directory: str, output_directory: str, verbose: bool = False
-):
-    """Process Analysis for GNN files. Exposed via MCP."""
-    # Implementation
-```
+`analysis/mcp.py` `register_tools` registers four tools:
+
+- `process_analysis` - Run statistical and complexity analysis on GNN files in a directory
+- `get_analysis_results` - Read saved analysis JSON results from a previous run
+- `compute_complexity_metrics` - Compute complexity metrics for GNN content supplied as a string
+- `list_analysis_tools` - Report available analysis tools and capabilities
 
 ### MCP File Location
 - `src/analysis/mcp.py` - MCP tool registrations
@@ -315,11 +258,9 @@ def process_analysis_mcp(
 ### Common Issues
 
 #### Issue 1: Analysis fails on large models
-**Symptom**: Analysis times out or runs out of memory  
+**Symptom**: Analysis is slow or memory-heavy  
 **Cause**: Model too complex for comprehensive analysis  
 **Solution**: 
-- Use specific analysis types instead of "comprehensive"
-- Disable performance benchmarking for large models
 - Process models individually instead of batch
 - Increase system memory or use sampling
 
@@ -330,14 +271,6 @@ def process_analysis_mcp(
 - Verify GNN processing (step 3) completed successfully
 - Check that model has variables and connections
 - Use `--verbose` flag for detailed extraction logs
-
-#### Issue 3: Framework comparison fails
-**Symptom**: Cross-framework comparison reports errors  
-**Cause**: Execution results (step 12) not available or incomplete  
-**Solution**:
-- Ensure execution step (12) completed successfully
-- Verify framework outputs exist in execution results
-- Check execution results format matches expected structure
 
 ---
 
@@ -378,9 +311,9 @@ def process_analysis_mcp(
 
 **Last Updated**: 2026-04-16
 **Maintainer**: GNN Pipeline Team
-**Status**: ✅ Production Ready
+**Status**: Production Ready
 **Version**: 3.2.0
-**Architecture Compliance**: ✅ 100% Thin Orchestrator Pattern
+**Architecture Compliance**: 100% Thin Orchestrator Pattern
 
 
 ---

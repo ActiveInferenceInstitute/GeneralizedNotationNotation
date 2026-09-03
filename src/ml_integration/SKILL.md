@@ -52,10 +52,12 @@ frameworks = check_ml_frameworks()
 ## Dependencies
 
 ```bash
-# ML framework deps
+# ML training deps
 uv sync --extra ml-ai
 
-# Includes: torch, transformers, datasets
+# Includes: transformers, scipy, scikit-learn
+# Note: torch is intentionally NOT in any extra (GHSA-rrmf-rvhw-rf47 unpatched);
+# install PyTorch manually if you need that backend.
 ```
 
 ## Output

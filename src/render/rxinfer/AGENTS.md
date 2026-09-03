@@ -29,8 +29,10 @@ Validation includes ``inference_converged``, ``vfe_present``, and
 ``belief_entropy_ok`` (rejects degenerate beliefs for non-identity A matrices).
 
 Exemplar discovery is **recursive**: all GNN spec files under `input/gnn_files/**`
-(nested folders such as `discrete/`, `continuous/`, `basics/`) are discovered and rendered.
-All **29** exemplar GNN files render to and execute under RxInfer.jl (29/29 render + execute).
+(nested folders such as `discrete/`, `continuous/`, `basics`) are discovered and rendered.
+Model-source files are filtered by `gnn.discovery.is_model_source_path`; current per-model
+render/execute outcomes live in each run's `render_processing_summary.json` and
+`execution_summary.json`, not in this file.
 
 ## Ownership Boundary
 

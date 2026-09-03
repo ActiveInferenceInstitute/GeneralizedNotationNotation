@@ -8,11 +8,11 @@
 
 **Category**: Utility Functions / Infrastructure Support
 
-**Status**: ✅ Production Ready
+**Status**: Production Ready
 
 **Version**: 3.2.0
 
-**Last Updated**: 2026-04-16
+**Last Updated**: 2026-09-02
 
 ---
 
@@ -57,72 +57,28 @@ from utils import setup_step_logging
 logger = setup_step_logging("3_gnn", verbose=True)
 ```
 
-#### `setup_main_logging(log_dir: Optional[Path] = None, verbose: bool = False) -> logging.Logger`
+#### `setup_main_logging(verbose: bool = False) -> logging.Logger`
 **Description**: Set up logging for main pipeline orchestrator
 
 **Parameters**:
-- `log_dir` (Optional[Path]): Directory for log files (default: None)
 - `verbose` (bool): Enable verbose logging (default: False)
 
 **Returns**: `logging.Logger` - Configured main logger instance
 
-#### `log_step_start(logger_or_step_name: Union[logging.Logger, str], message: str = None, step_number: int = None, **metadata) -> None`
-**Description**: Log the start of a pipeline step with performance tracking
-
-**Parameters**:
-- `logger_or_step_name` (Union[logging.Logger, str]): Logger instance or step name
-- `message` (str, optional): Custom start message
-- `step_number` (int, optional): Step number for display
-- `**metadata`: Additional metadata to log
-
-**Returns**: `None`
-
-#### `log_step_success(logger_or_step_name: Union[logging.Logger, str], message: str = None, step_number: int = None, **metadata) -> None`
-**Description**: Log successful completion of a pipeline step with metrics
-
-**Parameters**:
-- `logger_or_step_name` (Union[logging.Logger, str]): Logger instance or step name
-- `message` (str, optional): Custom success message
-- `step_number` (int, optional): Step number for display
-- `**metadata`: Additional metadata (results, file counts, etc.)
-
-**Returns**: `None`
-
-#### `log_step_error(logger_or_step_name: Union[logging.Logger, str], message: str = None, step_number: int = None, **metadata) -> None`
-**Description**: Log an error during pipeline step execution with context
-
-**Parameters**:
-- `logger_or_step_name` (Union[logging.Logger, str]): Logger instance or step name
-- `message` (str, optional): Custom error message
-- `step_number` (int, optional): Step number for display
-- `**metadata`: Error context (exception, traceback, etc.)
-
-**Returns**: `None`
-
-#### `log_step_warning(logger_or_step_name: Union[logging.Logger, str], message: str = None, step_number: int = None, **metadata) -> None`
-**Description**: Log a warning during pipeline step execution
-
-**Parameters**:
-- `logger_or_step_name` (Union[logging.Logger, str]): Logger instance or step name
-- `message` (str, optional): Warning message
-- `step_number` (int, optional): Step number for display
-- `**metadata`: Warning context
-
-**Returns**: `None`
+#### `log_step_start(logger, message)` / `log_step_success(logger, message)` / `log_step_error(logger, message)` / `log_step_warning(logger, message)`
+**Description**: Step lifecycle logging helpers (`utils/logging_utils.py`). `log_step_start` returns a correlation-aware context; the others log structured lifecycle events. `utils/structured_logging.py` additionally exposes `log_step_start(logger, step_name, **context)` and friends with richer metadata when a step needs it.
 
 #### `get_performance_summary() -> Dict[str, Any]`
 **Description**: Get summary of performance metrics across all tracked operations
 
 **Returns**: `Dict[str, Any]` - Performance summary with timing, memory, and resource usage
 
-#### `setup_correlation_context(step_name: str, correlation_id: Optional[str] = None) -> str`
-**Description**: Set up correlation context for request tracking
+#### `setup_correlation_context(correlation_id: Optional[str] = None, step_name: Optional[str] = None)`
+**Description**: Set up correlation context for logging (delegates to `utils/structured_logging.py`)
 
 **Parameters**:
-- `step_name` (str): Name of the pipeline step
 - `correlation_id` (Optional[str]): Existing correlation ID or None to generate new
-
-**Returns**: `str` - Correlation ID for this context
+- `step_name` (Optional[str]): Name of the pipeline step
 
 ### Argument Parsing Functions
 
@@ -164,13 +120,12 @@ logger = setup_step_logging("3_gnn", verbose=True)
 
 **Contract**: `StepConfiguration` is the shared source for step defaults and critical-step metadata. Exit codes are canonical across numbered scripts and the main orchestrator: `0=success`, `1=error`, `2=success with warnings/skipped`.
 
-#### `validate_and_convert_paths(args: argparse.Namespace) -> argparse.Namespace`
+#### `validate_and_convert_paths(args, logger) -> argparse.Namespace`
 **Description**: Validate and convert string paths to Path objects
 
 **Parameters**:
-- `args` (argparse.Namespace): Arguments with path strings
-
-**Returns**: `argparse.Namespace` - Arguments with Path objects
+- `args`: Parsed pipeline arguments
+- `logger` (logging.Logger): Logger for validation messages
 
 ### Pipeline Utilities
 
@@ -184,14 +139,14 @@ logger = setup_step_logging("3_gnn", verbose=True)
 **Returns**: `Path` - Output directory path (e.g., "output/3_gnn_output/")
 
 #### `validate_output_directory(output_dir: Path, create: bool = True) -> bool`
-**Description**: Validate and optionally create output directory
+#### `validate_output_directory(output_dir: Path, step_name: str) -> bool`
+**Description**: Validate the output directory for a pipeline step
 
 **Parameters**:
 - `output_dir` (Path): Output directory path
-- `create` (bool): Create directory if it doesn't exist (default: True)
+- `step_name` (str): Name of the pipeline step
 
 **Returns**: `bool` - True if directory is valid/created, False otherwise
-
 ### Resource Management Functions
 
 #### `get_current_memory_usage() -> float`
@@ -201,100 +156,39 @@ logger = setup_step_logging("3_gnn", verbose=True)
 
 ### Error Recovery Functions
 
-#### `ErrorRecoveryManager.recover(step_name: str, error: Exception, context: Dict[str, Any]) -> Optional[Dict[str, Any]]`
-**Description**: Attempt to recover from a step failure
-
-**Parameters**:
-- `step_name` (str): Name of the failed step
-- `error` (Exception): The exception that occurred
-- `context` (Dict[str, Any]): Error context and state
-
-**Returns**: `Optional[Dict[str, Any]]` - Recovery result or None if recovery not possible
+#### `ErrorRecoveryManager(logger=None).handle_error(context: ErrorContext) -> bool`
+**Description**: Handle an error through the registered recovery strategies (`utils/error_recovery.py`). Errors are constructed as `ErrorContext` objects (operation, severity, message, error_code, details).
 
 #### `format_and_log_error(logger: logging.Logger, error: Exception, context: Dict[str, Any] = None) -> None`
 **Description**: Format and log an error with full context
 
-**Parameters**:
-- `logger` (logging.Logger): Logger instance
-- `error` (Exception): The exception to log
-- `context` (Dict[str, Any], optional): Additional error context
-
-**Returns**: `None`
-
 ### Configuration Functions
 
-#### `load_config(config_path: Path) -> Dict[str, Any]`
-**Description**: Load configuration from YAML or JSON file
+#### `load_config(config_path: Optional[Path] = None) -> GNNPipelineConfig`
+**Description**: Load pipeline configuration (defaults when no path given)
 
-**Parameters**:
-- `config_path` (Path): Path to configuration file
-
-**Returns**: `Dict[str, Any]` - Configuration dictionary
-
-#### `get_config_value(key: str, default: Any = None) -> Any`
-**Description**: Get a configuration value by key
-
-**Parameters**:
-- `key` (str): Configuration key (supports dot notation, e.g., "pipeline.steps")
-- `default` (Any): Default value if key not found
-
-**Returns**: `Any` - Configuration value or default
-
-#### `set_config_value(key: str, value: Any) -> None`
-**Description**: Set a configuration value
-
-**Parameters**:
-- `key` (str): Configuration key (supports dot notation)
-- `value` (Any): Value to set
-
-**Returns**: `None`
+#### `get_config_value(config: dict, key: str) -> Any` / `set_config_value(config: dict, key: str, value: Any) -> Any`
+**Description**: Get/set a configuration value by key (dot-notation supported) on the passed config dict
 
 ### Dependency Management Functions
 
-#### `validate_pipeline_dependencies() -> Dict[str, bool]`
-**Description**: Validate all pipeline dependencies are installed
+#### `validate_pipeline_dependencies(step_names: Optional[List[str]] = None, logger=None, python_path=None) -> bool`
+**Description**: Validate dependencies for specific pipeline steps
 
-**Returns**: `Dict[str, bool]` - Dependency status (package_name: is_installed)
+#### `check_optional_dependencies() -> dict`
+**Description**: Return a status summary of all optional dependencies (`{'optional_dependencies': {...}, 'missing_optional': [...]}`)
 
-#### `check_optional_dependencies(dependency_group: str) -> bool`
-**Description**: Check if optional dependency group is available
-
-**Parameters**:
-- `dependency_group` (str): Dependency group name (e.g., "pymdp", "jax")
-
-**Returns**: `bool` - True if dependencies are available
-
-#### `install_missing_dependencies(dependencies: List[str]) -> bool`
-**Description**: Install missing dependencies
-
-**Parameters**:
-- `dependencies` (List[str]): List of package names to install
-
-**Returns**: `bool` - True if installation succeeded
+#### `install_missing_dependencies() -> dict`
+**Description**: Attempt to install missing Python dependencies via pip; returns `{'installed': [...], 'failed': [...], 'skipped': [...]}`
 
 ### Performance Tracking Functions
 
-#### `PerformanceTracker.track_operation(name: str, func: Callable, *args, **kwargs) -> Any`
-**Description**: Track performance of an operation
+#### `PerformanceTracker.track_operation(operation: str, metadata: Optional[Dict[str, Any]] = None)`
+**Description**: Context manager tracking operation timing; usage: `with tracker.track_operation("name", {...}):`
 
-**Parameters**:
-- `name` (str): Operation name
-- `func` (Callable): Function to track
-- `*args`: Function arguments
-- `**kwargs`: Function keyword arguments
+#### `track_operation_standalone(operation: str, metadata: Optional[Dict[str, Any]] = None) -> Any`
+**Description**: Record a single standalone timing measurement
 
-**Returns**: `Any` - Function return value
-
-#### `track_operation_standalone(name: str, func: Callable, *args, **kwargs) -> Any`
-**Description**: Standalone function to track operation performance
-
-**Parameters**:
-- `name` (str): Operation name
-- `func` (Callable): Function to track
-- `*args`: Function arguments
-- `**kwargs`: Function keyword arguments
-
-**Returns**: `Any` - Function return value
 
 ---
 
@@ -317,24 +211,8 @@ logger = setup_step_logging("3_gnn", verbose=True)
 
 ## Configuration
 
-### Logging Configuration
-```python
-LOGGING_CONFIG = {
-    "console_level": "INFO",
-    "file_level": "DEBUG",
-    "correlation_tracking": True,
-    "structured_logging": True,
-}
-```
-
-### Performance Configuration
-```python
-PERFORMANCE_CONFIG = {
-    "memory_tracking": True,
-    "timing_tracking": True,
-    "resource_monitoring": True,
-}
-```
+### Logging and Performance
+No module-level config dicts. Verbosity is set through the `verbose` flag on `setup_step_logging` / `setup_main_logging`; performance tracking is invoked programmatically via `PerformanceTracker`.
 
 ---
 
@@ -383,31 +261,14 @@ print(f"Memory delta: {memory_after - memory_before} MB")
 ## Output Specification
 
 ### Output Products
-- Log files in configured log directory
-- Performance metrics and timing data
-- Error reports and recovery logs
-- Configuration validation reports
+- Console and (when configured) file logs emitted by the structured logging facade
+- In-memory performance metrics retrievable via `get_performance_summary()`
 
-### Output Directory Structure
-```
-output/
-├── logs/
-│   ├── pipeline.log
-│   ├── step_logs/
-│   └── error_logs/
-└── performance/
-    ├── timing_data.json
-    └── memory_usage.json
-```
+There is no fixed `output/logs/` or `output/performance/` directory tree owned by this module; log destinations follow the logging setup for each entry point.
 
 ---
 
 ## Performance Characteristics
-
-### Latest Execution
-- **Duration**: Variable (utility functions)
-- **Memory**: ~10-50MB overhead
-- **Status**: ✅ Production Ready
 
 ### Expected Performance
 - **Logging**: < 1ms per log entry
@@ -415,7 +276,6 @@ output/
 - **Memory Monitoring**: < 5ms per check
 - **Configuration**: < 10ms per operation
 
----
 
 ## Error Handling
 
@@ -462,7 +322,7 @@ Configuration → Logging Setup → Resource Monitoring → Error Handling → P
 Measure on demand:
 
 ```bash
-uv run --extra dev python -m pytest src/tests/test_utils*.py \
+uv run --extra dev python -m pytest src/tests/utils/ \
     --cov=src/utils --cov-report=term-missing
 ```
 ### Key Test Scenarios
@@ -476,19 +336,13 @@ uv run --extra dev python -m pytest src/tests/test_utils*.py \
 ## MCP Integration
 
 ### Tools Registered
-- `utils.get_system_info` - Get system information
-- `utils.get_environment_info` - Get environment information
-- `utils.get_logging_info` - Get logging configuration
-- `utils.validate_dependencies` - Validate dependencies
-- `utils.get_performance_metrics` - Get performance metrics
+Registered by `src/utils/mcp.py`:
+- `get_system_info` - Platform, Python, and memory information
+- `get_environment_info` - Environment and dependency overview
+- `get_logging_info` - Logging configuration
+- `validate_dependencies` - Dependency validation
 
-### Tool Endpoints
-```python
-@mcp_tool("utils.get_system_info")
-def get_system_info_tool():
-    """Get system information"""
-    # Implementation
-```
+There is no `utils.get_performance_metrics` tool.
 
 ---
 
@@ -518,7 +372,7 @@ def get_system_info_tool():
 
 ## Version History
 
-### Current Version: 3.0.0
+### Current Version: 3.2.0
 
 **Features**:
 - Centralized logging system
@@ -548,11 +402,10 @@ def get_system_info_tool():
 
 ---
 
-**Last Updated**: 2026-04-16
+**Last Updated**: 2026-09-02
 **Maintainer**: GNN Pipeline Team
-**Status**: ✅ Production Ready
+**Status**: Production Ready
 **Version**: 3.2.0
-**Architecture Compliance**: ✅ 100% Thin Orchestrator Pattern
 
 ---
 ## Documentation

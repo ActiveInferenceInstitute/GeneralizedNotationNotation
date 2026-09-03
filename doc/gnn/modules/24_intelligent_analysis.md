@@ -229,7 +229,7 @@ def process_intelligent_analysis(
 - `target_dir` (Path): Input directory (not directly used, passed by pipeline convention)
 - `output_dir` (Path): Output root directory. If the directory name is `24_intelligent_analysis_output`, outputs are written directly; otherwise a subdirectory is created.
 - `logger` (logging.Logger): Logger instance for progress and error reporting
-- `**kwargs`: Reserved for future options (skip_llm, bottleneck_threshold, etc.)
+- `**kwargs`: Options read by the processor: `skip_llm` (rule-based only), `bottleneck_threshold` (float seconds, default 60.0), `analysis_model` (LLM model tag; set via CLI `--analysis-model`)
 
 **Returns**: `bool` - `True` if analysis succeeded, `False` on critical failure (missing summary, JSON parse error, write failure)
 
@@ -711,34 +711,36 @@ def test_detect_cascading_failure_pattern():
     assert any(p["type"] == "cascading_failure" for p in patterns)
 ```
 
-### Mocking LLM Calls
+### Fault Injection at the LLM Boundary
 
 ```python
-from unittest.simulated import patch, AsyncMock
-
-
-@patch("intelligent_analysis.processor._run_llm_analysis")
-def test_process_with_llm_failure(controlled_llm, sample_summary_data, tmp_path):
+def test_process_with_llm_failure(
+    monkeypatch, sample_summary_data, tmp_path
+):
     """Test that LLM failure falls back to rule-based analysis."""
-    controlled_llm.side_effect = Exception("LLM unavailable")
-
-    # The processor should still succeed with rule-based recovery
     import logging
+
+    import intelligent_analysis.processor as ia_processor
+
+    def raise_llm_unavailable(*args, **kwargs):
+        raise Exception("LLM unavailable")
+
+    monkeypatch.setattr(
+        ia_processor, "_run_llm_analysis", raise_llm_unavailable
+    )
 
     logger = logging.getLogger("test")
 
     # Write summary to tmp_path
-    summary_dir = tmp_path / "00_pipeline_summary"
-    summary_dir.mkdir()
     import json
 
+    summary_dir = tmp_path / "00_pipeline_summary"
+    summary_dir.mkdir()
     (summary_dir / "pipeline_execution_summary.json").write_text(
         json.dumps(sample_summary_data)
     )
 
-    from intelligent_analysis.processor import process_intelligent_analysis
-
-    result = process_intelligent_analysis(
+    result = ia_processor.process_intelligent_analysis(
         target_dir=tmp_path, output_dir=tmp_path, logger=logger
     )
     assert result is True

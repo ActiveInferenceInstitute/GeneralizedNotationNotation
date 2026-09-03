@@ -19,7 +19,7 @@ GNN framework integration is handled by **Steps 11 and 12** of the processing pi
 uv run python src/main.py --only-steps "11,12" --target-dir input/gnn_files --output-dir output --verbose
 
 # Execute specific frameworks only
-python src/12_execute.py --frameworks "pymdp,jax" --verbose
+uv run python src/12_execute.py --frameworks "pymdp,jax" --verbose
 ```
 
 For complete pipeline documentation, see **[src/AGENTS.md](../../../src/AGENTS.md)**.
@@ -37,7 +37,7 @@ cross-framework comparison step.
 
 ## Supported Frameworks
 
-Step 11 renders to 9 registered targets (see `src/render/AGENTS.md`). Step 12 executes 8 of them; Stan is render-only, while PyTorch and bnlearn are registry-gated unless enabled manually:
+Step 11 renders to 9 registered targets (see `src/render/AGENTS.md`). Step 12 executes 8 — every render target except bnlearn, which is render-only (Stan via the cmdstanpy driver `<stem>_stan.py`, executor `src/execute/stan/`; skipped when cmdstanpy/CmdStan is absent). PyTorch and bnlearn are registry-gated unless installed manually. Continuous (linear-Gaussian) models execute on jax, numpyro, pytorch, stan and rxinfer only; the four categorical backends (pymdp, activeinference_jl, discopy, bnlearn) return render status `unsupported` for them, recorded in `render_processing_summary.json` under `unsupported_framework_renderings` and never handed to Step 12:
 
 | Framework | Per-framework guide |
 |-----------|----------------------|
@@ -166,8 +166,10 @@ axis order is self-describing.
 `variational_free_energy` trace from `rxinfer_simulation_v1`
 (`simulation_data/simulation_results.json`). Note that `true_states[t]` records the
 state that *emitted* observation `t`, so it is timing-aligned with `beliefs[t]`.
-Continuous models echo `state_factors` and `observation_modalities` as empty, because
-the discrete dual parameterization does not describe the continuous latent.
+Continuous models echo `state_factors` and `observation_modalities` as empty (a
+linear-Gaussian model has no categorical factors) and add `controls`,
+`kalman_filter_means` and `control_mode` (`closed_loop_proportional` when the GNN
+declares `goal_mean`/`control_gain`, else `passive`).
 
 ### JAX Pipeline Details
 
@@ -203,9 +205,12 @@ After individual framework execution, Step 16 (`src/analysis/analyzer.py`) and S
    time, convergence, accuracy).
 3. **`visualize_cross_framework_metrics()`** — native side-by-side metric visualizations.
 4. **`generate_unified_framework_dashboard()`** (`src/analysis/visualizations.py`) —
-   generates an interactive HTML/D3.js dashboard comparing beliefs, action
-   distributions, and observation trajectories in the browser, with category and
-   state-size filters plus a compare mode.
+   writes multi-panel PNG comparison plots across frameworks
+   (`unified_belief_comparison.png`, `unified_action_efe_comparison.png`,
+   `unified_entropy_comparison.png`). The filterable HTML compare dashboard
+   (category and state-size filters plus a side-by-side compare mode) is
+   `analysis.rxinfer.dashboard.generate_dashboard` (see
+   [16_analysis.md](../modules/16_analysis.md)).
 5. **`run_cross_framework_comparison()`**
    (`src/analysis/rxinfer/cross_framework.py`) — the RxInfer-anchored cross-framework
    comparison entry point, reachable as
@@ -227,5 +232,5 @@ one animated GIF per model accompanied by a `.manifest.json` reproducibility sid
 
 **Integration Guide Version**: 3.2.0
 **Render targets**: PyMDP, RxInfer.jl, ActiveInference.jl, JAX, DisCoPy, PyTorch, NumPyro, Stan, bnlearn
-**Step 12 executors**: PyMDP, JAX, DisCoPy, RxInfer.jl, ActiveInference.jl, PyTorch, NumPyro, bnlearn
+**Step 12 executors**: PyMDP, JAX, DisCoPy, RxInfer.jl, ActiveInference.jl, PyTorch, NumPyro, Stan, bnlearn
 **Status**: Maintained

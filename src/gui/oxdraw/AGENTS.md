@@ -58,11 +58,11 @@
 **Example**:
 
 ```python
-from oxdraw.processor import process_oxdraw
+from gui.oxdraw.processor import process_oxdraw
 
 success = process_oxdraw(
     target_dir=Path("input/gnn_files"),
-    output_dir=Path("output/24_oxdraw_output"),
+    output_dir=Path("output/22_gui_output/oxdraw"),
     logger=logger,
     mode="interactive",
     launch_editor=True,
@@ -84,7 +84,7 @@ success = process_oxdraw(
 
 ```python
 from gnn.processor import parse_gnn_file
-from oxdraw.mermaid_converter import gnn_to_mermaid
+from gui.oxdraw.mermaid_converter import gnn_to_mermaid
 
 gnn_model = parse_gnn_file("model.md")
 mermaid_diagram = gnn_to_mermaid(gnn_model)
@@ -104,7 +104,7 @@ mermaid_diagram = gnn_to_mermaid(gnn_model)
 **Example**:
 
 ```python
-from oxdraw.mermaid_parser import mermaid_to_gnn
+from gui.oxdraw.mermaid_parser import mermaid_to_gnn
 
 mermaid_content = Path("diagram.mmd").read_text()
 gnn_model = mermaid_to_gnn(mermaid_content, validate_ontology=True)
@@ -117,7 +117,7 @@ gnn_model = mermaid_to_gnn(mermaid_content, validate_ontology=True)
 **Example**:
 
 ```python
-from oxdraw import convert_gnn_file_to_mermaid
+from gui.oxdraw.mermaid_converter import convert_gnn_file_to_mermaid
 
 convert_gnn_file_to_mermaid(
     Path("input/actinf_pomdp_agent.md"), Path("output/actinf_pomdp_agent.mmd")
@@ -131,7 +131,7 @@ convert_gnn_file_to_mermaid(
 **Example**:
 
 ```python
-from oxdraw import convert_mermaid_file_to_gnn
+from gui.oxdraw.mermaid_parser import convert_mermaid_file_to_gnn
 
 gnn_model = convert_mermaid_file_to_gnn(
     Path("edited_diagram.mmd"), Path("output/edited_model.md")
@@ -220,7 +220,7 @@ DEFAULT_OXDRAW_SETTINGS = {
 
 ```python
 from pathlib import Path
-from oxdraw import process_oxdraw
+from gui.oxdraw import process_oxdraw
 import logging
 
 logger = logging.getLogger(__name__)
@@ -296,7 +296,7 @@ subprocess.run(
 ### Output Directory Structure
 
 ```
-output/24_oxdraw_output/
+output/22_gui_output/oxdraw/
 ├── actinf_pomdp_agent.mmd
 ├── actinf_pomdp_agent_from_mermaid.md
 ├── model2.mmd
@@ -312,29 +312,27 @@ output/24_oxdraw_output/
 
 ```python
 from pathlib import Path
-from oxdraw import (
-    convert_gnn_file_to_mermaid,
-    launch_oxdraw_editor,
-    convert_mermaid_file_to_gnn,
-)
+from gui.oxdraw.mermaid_converter import convert_gnn_file_to_mermaid
+from gui.oxdraw.processor import launch_oxdraw_editor
+from gui.oxdraw.mermaid_parser import convert_mermaid_file_to_gnn
 
 # Step 1: Convert GNN to Mermaid
 gnn_file = Path("input/actinf_pomdp_agent.md")
 mermaid_file = Path("output/actinf_pomdp_agent.mmd")
 
 convert_gnn_file_to_mermaid(gnn_file, mermaid_file)
-print(f"✅ Created Mermaid file: {mermaid_file}")
+print(f"Created Mermaid file: {mermaid_file}")
 
 # Step 2: Launch oxdraw editor (interactive)
 launch_oxdraw_editor(mermaid_file, port=5151)
-print("🎨 Edit your model at http://127.0.0.1:5151")
-print("💾 Save and close when done...")
+print("Edit your model at http://127.0.0.1:5151")
+print("Save and close when done...")
 
 # Step 3: Convert edited Mermaid back to GNN
 edited_gnn = Path("output/actinf_edited.md")
 gnn_model = convert_mermaid_file_to_gnn(mermaid_file, edited_gnn)
 
-print(f"✅ Created GNN file: {edited_gnn}")
+print(f"Created GNN file: {edited_gnn}")
 print(f"   Variables: {len(gnn_model['variables'])}")
 print(f"   Connections: {len(gnn_model['connections'])}")
 ```
@@ -449,18 +447,8 @@ def convert_to_mermaid_tool(gnn_file_path: str, output_path: str = None):
 
 ## Performance Characteristics
 
-### Expected Performance
-
-- **GNN → Mermaid**: 10-50ms per file
-- **Mermaid → GNN**: 20-100ms per file
-- **oxdraw Launch**: 1-2s startup time
-- **Memory**: <10MB (excluding oxdraw process)
-
-### Scalability
-
-- **Model Size**: Tested up to 100 variables, 200 connections
-- **oxdraw Limit**: ~500 nodes (practical visual limit)
-- **Batch Processing**: Linear scaling with file count
+Measure on your own hardware and model sizes; this document does not track timings.
+Conversion cost scales linearly with file count.
 
 ---
 
@@ -508,11 +496,11 @@ oxdraw --version
 **Diagnostic**:
 
 ```python
-from oxdraw.utils import validate_mermaid_syntax
+from gui.oxdraw.utils import validate_mermaid_syntax
 
 is_valid, errors = validate_mermaid_syntax(mermaid_content)
 for error in errors:
-    print(f"❌ {error}")
+    print(f"Error: {error}")
 ```
 
 ---
@@ -560,6 +548,6 @@ for error in errors:
 
 ---
 
-**Last Updated**: 2026-04-16  
-**Maintainer**: GNN Pipeline Team  
-**Status**: ✅ Ready for Testing
+**Last Updated**: 2026-09-02
+**Maintainer**: GNN Pipeline Team
+**Status**: Ready for Testing

@@ -2,7 +2,7 @@
 
 > **📋 Document Metadata**  
 > **Type**: Code of Conduct | **Audience**: All Community Members | **Complexity**: Essential  
-> **Last Updated**: July 2025 | **Status**: Production-Ready  
+> **Last Updated**: 2026-09-02 | **Status**: Maintained  
 > **Cross-References**: [Contributing Guide](CONTRIBUTING.md) | [Support Guide](SUPPORT.md)
 
 ## Our Pledge

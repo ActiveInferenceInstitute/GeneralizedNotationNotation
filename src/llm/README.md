@@ -2,7 +2,8 @@
 
 Multi-provider Large-Language-Model integration for GNN models: parse, interpret,
 summarise, and annotate Active Inference specifications through Ollama (local) and,
-when API keys are present, OpenAI / OpenRouter / Perplexity / Anthropic.
+when API keys are present, OpenAI / OpenRouter / Perplexity. (`ANTHROPIC_API_KEY`
+only appears in the provider matrix; there is no Anthropic provider module.)
 
 ## Module Structure
 
@@ -130,88 +131,34 @@ flowchart LR
 
 ## Core Components
 
-### LLM Analysis System (`analyzer.py`)
+### Heuristic Analysis (`analyzer.py`)
 
-#### `analyze_gnn_model_with_llm(gnn_content: str, model_name: str, analysis_type: str = "comprehensive") -> Dict[str, Any]`
-Performs comprehensive LLM analysis of GNN models.
+#### `analyze_gnn_file_with_llm(file_path: Path, verbose: bool = False, ollama_model: Optional[str] = None, attempt_llm: bool = True) -> Dict[str, Any] | Coroutine`
+Analyzes a GNN file with heuristic extractors (variables, connections, sections, patterns)
+and an optional LLM-generated summary. When an event loop is already running, a coroutine
+is returned instead of the result dict.
 
-**Analysis Types:**
-- **comprehensive**: Full model analysis and interpretation
-- **structural**: Model structure and architecture analysis
-- **semantic**: Semantic meaning and behavior analysis
-- **performance**: Performance characteristics analysis
-- **optimization**: Optimization suggestions and improvements
-
-**Returns:**
-- Dictionary containing comprehensive analysis results
-- Model interpretation and insights
-- Performance recommendations
-- Optimization suggestions
-
-#### `interpret_model_behavior(gnn_content: str, model_name: str) -> Dict[str, Any]`
-Interprets model behavior using LLM analysis.
-
-**Features:**
-- Behavioral pattern analysis
-- Dynamic behavior interpretation
-- Interaction pattern identification
-- Performance characteristic analysis
-
-#### `generate_model_documentation(gnn_content: str, model_name: str) -> str`
-Generates comprehensive model documentation using LLM.
-
-**Content:**
-- Model overview and purpose
-- Component descriptions
-- Usage instructions
-- Performance characteristics
-- Optimization recommendations
+#### `analyze_gnn_model(model_content: str | Dict) -> Dict[str, Any]`
+Synchronous heuristic analysis: variables, connections, sections, complexity metrics.
 
 ### LLM Operations (`llm_operations.py`)
 
-#### `process_llm_analysis(target_dir: Path, output_dir: Path, verbose: bool = False) -> bool`
-Main function for processing LLM analysis of GNN models.
-
-**Features:**
-- Multi-provider LLM analysis
-- Comprehensive model interpretation
-- Documentation generation
-- Performance optimization suggestions
-
-#### `extract_model_insights(gnn_content: str) -> List[Dict[str, Any]]`
-Extracts insights from GNN models using LLM analysis.
-
-**Insights:**
-- Model complexity analysis
-- Performance characteristics
-- Optimization opportunities
-- Best practices recommendations
-
-#### `generate_optimization_suggestions(gnn_content: str) -> List[Dict[str, Any]]`
-Generates optimization suggestions using LLM analysis.
-
-**Suggestions:**
-- Performance improvements
-- Structural optimizations
-- Parameter tuning recommendations
-- Best practices implementation
+#### `LLMOperations.summarize_gnn(gnn_content: str, max_length: int = 500, ollama_model: Optional[str] = None) -> str`
+Generates a natural-language summary via the multi-provider system; prefers the Ollama
+tag supplied by the pipeline when set.
 
 ### LLM Provider System (`providers/`)
 
-#### BaseProvider (`base_provider.py`)
-Base interface for LLM providers.
-
-**Key Methods:**
-- `analyze_model(content: str, analysis_type: str) -> Dict[str, Any]`
-- `generate_insights(content: str) -> List[Dict[str, Any]]`
-- `optimize_model(content: str) -> Dict[str, Any]`
-- `document_model(content: str) -> str`
+#### `BaseLLMProvider` (`base_provider.py`)
+Abstract base for providers: `generate_response(messages, config) -> LLMResponse`,
+`generate_stream(...)`, `initialize()`, `validate_config(config)`, plus the
+`default_model` / `available_models` properties and system-prompt helpers.
 
 #### OpenAIProvider (`openai_provider.py`)
 OpenAI GPT model integration.
 
 **Features:**
-- GPT-4 and GPT-3.5-turbo support
+- GPT-4o family and GPT-4/GPT-3.5 model support (default model: `gpt-4o-mini`)
 - Advanced model analysis
 - Comprehensive documentation generation
 - Performance optimization suggestions
@@ -236,98 +183,62 @@ Perplexity AI integration.
 
 ### LLM Processing System (`llm_processor.py`)
 
-#### `process_llm_request(content: str, request_type: str, provider: str = "auto") -> Dict[str, Any]`
-Processes LLM requests with automatic provider selection.
-
-**Request Types:**
-- **analysis**: Model analysis and interpretation
-- **optimization**: Performance optimization suggestions
-- **documentation**: Model documentation generation
-- **insights**: Model insights and recommendations
-
-#### `select_optimal_provider(request_type: str, content_length: int) -> str`
-Selects the optimal LLM provider based on request type and content.
-
-**Selection Criteria:**
-- Request type requirements
-- Content complexity
-- Cost considerations
-- Performance requirements
+#### `LLMProcessor` (`llm_processor.py`)
+Main processor coordinating multiple providers for GNN analysis. Key methods:
+`get_best_provider_for_task(analysis_type)`, `get_response(...)`, `analyze_gnn(...)`,
+`get_provider_info()`. A specialized `GNNLLMProcessor` wrapper adds GNN-focused
+analysis entry points (`analyze_gnn_model`, `generate_explanation`, `enhance_model`).
 
 ## Usage Examples
 
-### Basic LLM Analysis
+### Analyze a GNN Model (heuristic extractors + optional LLM summary)
 
 ```python
-from llm import analyze_gnn_model_with_llm
+from llm import analyze_gnn_model
 
-# Analyze GNN model with LLM
-analysis = analyze_gnn_model_with_llm(
-    gnn_content=gnn_content, model_name="my_model", analysis_type="comprehensive"
+# Heuristic structure analysis (variables, connections, sections, patterns)
+analysis = analyze_gnn_model(gnn_content)
+```
+
+### Analyze a File with Optional Ollama Summary
+
+```python
+import asyncio
+from llm import analyze_gnn_file_with_llm
+
+result = asyncio.run(
+    analyze_gnn_file_with_llm(
+        Path("input/gnn_files/actinf_pomdp_agent.md"),
+        ollama_model="smollm2:135m-instruct-q4_K_S",
+    )
 )
-
-print(f"Model complexity: {analysis['complexity']}")
-print(f"Performance score: {analysis['performance_score']}")
-print(f"Optimization suggestions: {len(analysis['optimizations'])}")
+print(result["llm_summary"])
 ```
 
-### Model Interpretation
+### Run the Pipeline Step
 
 ```python
-from llm import interpret_model_behavior
+from llm import process_llm
 
-# Interpret model behavior
-interpretation = interpret_model_behavior(
-    gnn_content=gnn_content, model_name="my_model"
+process_llm(
+    Path("input/gnn_files"),
+    Path("output/13_llm_output"),
+    verbose=True,
 )
-
-print(f"Behavioral patterns: {interpretation['patterns']}")
-print(f"Dynamic characteristics: {interpretation['dynamics']}")
-print(f"Interaction analysis: {interpretation['interactions']}")
 ```
 
-### Documentation Generation
+### Use a Specific Provider Directly
 
 ```python
-from llm import generate_model_documentation
+from llm.providers import get_openai_provider_class
+from llm.providers.base_provider import LLMMessage
 
-# Generate comprehensive documentation
-documentation = generate_model_documentation(
-    gnn_content=gnn_content, model_name="my_model"
+provider = get_openai_provider_class()()
+provider.initialize()
+response = provider.generate_response(
+    [LLMMessage(role="user", content=gnn_content)]
 )
-
-print("Generated documentation:")
-print(documentation)
-```
-
-### Provider-Specific Analysis
-
-```python
-from llm.providers import OpenAIProvider, PerplexityProvider
-
-# Use specific providers
-openai_provider = OpenAIProvider()
-perplexity_provider = PerplexityProvider()
-
-# OpenAI analysis
-openai_analysis = openai_provider.analyze_model(gnn_content, "comprehensive")
-
-# Perplexity analysis with current research
-perplexity_analysis = perplexity_provider.analyze_model(gnn_content, "research")
-```
-
-### Optimization Suggestions
-
-```python
-from llm import generate_optimization_suggestions
-
-# Generate optimization suggestions
-suggestions = generate_optimization_suggestions(gnn_content)
-
-for suggestion in suggestions:
-    print(f"Optimization: {suggestion['type']}")
-    print(f"Description: {suggestion['description']}")
-    print(f"Expected improvement: {suggestion['improvement']}")
+print(response.content, response.model_used)
 ```
 
 ## LLM Analysis Pipeline
@@ -356,40 +267,9 @@ graph TD
     Doc --> Report
 ```
 
-### 1. Content Preparation
-```python
-# Prepare GNN content for LLM analysis
-prepared_content = prepare_content_for_llm(gnn_content)
-analysis_context = create_analysis_context(model_name, analysis_type)
-```
-
-### 2. Provider Selection
-```python
-# Select optimal LLM provider
-provider = select_optimal_provider(request_type, len(prepared_content))
-llm_provider = initialize_provider(provider)
-```
-
-### 3. LLM Analysis
-```python
-# Perform LLM analysis
-analysis_result = llm_provider.analyze_model(prepared_content, analysis_type)
-insights = llm_provider.generate_insights(prepared_content)
-```
-
-### 4. Result Processing
-```python
-# Process and validate results
-processed_results = process_llm_results(analysis_result, insights)
-validated_results = validate_analysis_results(processed_results)
-```
-
-### 5. Documentation Generation
-```python
-# Generate comprehensive documentation
-documentation = generate_comprehensive_documentation(validated_results)
-optimization_report = generate_optimization_report(validated_results)
-```
+The pipeline is implemented inside `llm/processor.py`: content preparation (with ontology
+injection from `10_ontology_output/`), provider selection via `LLMProcessor`, per-prompt
+executions with cache lookups, and per-file markdown output.
 
 ## Integration with Pipeline
 
@@ -397,48 +277,34 @@ optimization_report = generate_optimization_report(validated_results)
 ```python
 # Called from 13_llm.py
 def process_llm(target_dir, output_dir, verbose=False, **kwargs):
-    # Perform LLM analysis of GNN models
-    analysis_results = analyze_gnn_models_with_llm(target_dir, verbose)
-    
-    # Generate insights and recommendations
-    insights = generate_model_insights(analysis_results)
-    
-    # Create comprehensive documentation
-    documentation = generate_llm_documentation(analysis_results, insights)
-    
+    # Discover GNN files, select providers, run structured + custom prompts
+    # per file, write results and cache entries
     return True
 ```
 
 ### Output Structure
 ```
 output/13_llm_output/
-├── model_analysis.json            # LLM analysis results
-├── model_insights.json            # Model insights and recommendations
-├── optimization_suggestions.json  # Optimization suggestions
-├── model_documentation.md         # Generated documentation
-├── performance_analysis.json      # Performance analysis
-├── behavioral_analysis.json       # Behavioral analysis
-└── llm_summary.md                # LLM processing summary
+├── llm_results.json               # Full processing results (per-file analyses, provider matrix, cache stats)
+├── llm_summary.md                 # Human-readable processing summary
+└── llm_results/<model>/prompts_*/ # Per-file prompt outputs as markdown
 ```
 
 ## LLM Providers
 
 ### OpenAI Provider
-- **Models**: GPT-4, GPT-3.5-turbo
+- **Models**: GPT-4o family, GPT-4, GPT-3.5-turbo (default `gpt-4o-mini`)
 - **Strengths**: Advanced reasoning, comprehensive analysis
-- **Use Cases**: Complex model analysis, detailed documentation
 - **Cost**: Higher cost for advanced models
 
 ### OpenRouter Provider
-- **Models**: Multiple providers (Anthropic, Google, etc.)
+- **Models**: Multiple providers (OpenAI, Anthropic, Google, Meta, etc.)
 - **Strengths**: Provider selection, cost optimization
-- **Use Cases**: Cost-effective analysis, provider comparison
 - **Cost**: Variable based on provider selection
 
 ### Perplexity Provider
-- **Models**: Real-time information access
+- **Models**: Sonar online models (default `llama-3.1-sonar-large-128k-online`)
 - **Strengths**: Current research integration, live data
-- **Use Cases**: Research-based analysis, current best practices
 - **Cost**: Moderate cost with research benefits
 
 ## Analysis Types
@@ -451,9 +317,8 @@ output/13_llm_output/
 - **Documentation**: Comprehensive model documentation
 
 ### Structural Analysis
-- **Component Analysis**: Analysis of individual model components
-- **Relationship Mapping**: Mapping of component relationships
-- **Dependency Analysis**: Analysis of component dependencies
+### OpenAI Provider
+- **Models**: GPT-4o family, GPT-4, GPT-3.5-turbo (default `gpt-4o-mini`)
 - **Complexity Assessment**: Assessment of model complexity
 
 ### Semantic Analysis
@@ -470,147 +335,49 @@ output/13_llm_output/
 
 ## Configuration Options
 
-### LLM Settings
+### LLM Settings (`input/config.yaml`, `llm:` section)
 ```python
-# LLM configuration
-config = {
-    "default_provider": "auto",  # Default LLM provider
-    "analysis_depth": "comprehensive",  # Analysis depth level
-    "include_research": True,  # Include current research
-    "optimization_focus": True,  # Focus on optimization
-    "documentation_style": "technical",  # Documentation style
-    "cost_optimization": True,  # Enable cost optimization
+# Keys read by llm/processor.py
+llm_config = {
+    "model": "smollm2:135m-instruct-q4_K_S",  # preferred Ollama tag
+    "timeout_seconds": 600,                    # step timeout budget
+    "max_files": None,                         # cap on files per run
+    "prompt_timeout": 45,                      # per-prompt timeout (seconds)
 }
 ```
 
-### Provider-Specific Settings
-```python
-# Provider-specific configuration
-provider_config = {
-    "openai": {"model": "gpt-4", "temperature": 0.1, "max_tokens": 4000},
-    "perplexity": {"include_research": True, "current_best_practices": True},
-    "openrouter": {"cost_optimization": True, "provider_selection": "auto"},
-}
+### Provider-Specific Settings (environment variables)
+```bash
+OLLAMA_MODEL=smollm2:135m-instruct-q4_K_S
+OLLAMA_MAX_TOKENS=256
+OLLAMA_TIMEOUT=60
+OPENAI_API_KEY=...            # enables the OpenAI provider
+OPENROUTER_API_KEY=...        # enables the OpenRouter provider
+PERPLEXITY_API_KEY=...        # enables the Perplexity provider
+DEFAULT_PROVIDER=ollama       # preferred provider order
 ```
 
-## Error Handling
+## Testing
 
-### LLM Analysis Failures
-```python
-# Handle LLM analysis failures gracefully
-try:
-    analysis = analyze_gnn_model_with_llm(content, model_name)
-except LLMAnalysisError as e:
-    logger.error(f"LLM analysis failed: {e}")
-    # Provide recovery analysis or error reporting
-```
+Tests live in `src/tests/llm/` (module-level, functional, Ollama, Ollama integration).
 
-### Provider Failures
-```python
-# Handle provider failures gracefully
-try:
-    provider = select_optimal_provider(request_type, content_length)
-    result = provider.analyze_model(content)
-except ProviderError as e:
-    logger.warning(f"Provider failed: {e}")
-    # Fall back to alternative provider
-```
-
-### Rate Limiting Issues
-```python
-# Handle rate limiting issues
-try:
-    result = process_llm_request(content, request_type)
-except RateLimitError as e:
-    logger.warning(f"Rate limit exceeded: {e}")
-    # Implement retry with backoff
-```
-
-## Performance Optimization
-
-### Caching Strategies
-- **Analysis Cache**: Cache LLM analysis results
-- **Provider Cache**: Cache provider responses
-- **Documentation Cache**: Cache generated documentation
-- **Insight Cache**: Cache model insights
-
-### Cost Optimization
-- **Provider Selection**: Select cost-effective providers
-- **Request Batching**: Batch multiple requests
-- **Response Caching**: Cache responses to avoid repeated requests
-- **Token Optimization**: Optimize token usage
-
-### Performance Monitoring
-- **Response Time**: Monitor LLM response times
-- **Cost Tracking**: Track API costs
-- **Quality Metrics**: Monitor analysis quality
-- **Provider Performance**: Track provider performance
-
-## Testing and Validation
-
-### Unit Tests
-```python
-# Test individual LLM functions
-def test_llm_analysis():
-    analysis = analyze_gnn_model_with_llm(test_content, "test_model")
-    assert "complexity" in analysis
-    assert "performance_score" in analysis
-    assert "optimizations" in analysis
-```
-
-### Integration Tests
-```python
-# Test complete LLM pipeline
-def test_llm_pipeline():
-    success = process_llm_analysis(test_dir, output_dir)
-    assert success
-    # Verify LLM outputs
-    llm_files = list(output_dir.glob("**/*"))
-    assert len(llm_files) > 0
-```
-
-### Provider Tests
-```python
-# Test different providers
-def test_provider_selection():
-    providers = ["openai", "perplexity", "openrouter"]
-    for provider in providers:
-        result = test_provider(provider, test_content)
-        assert result["success"]
+```bash
+uv run --extra dev python -m pytest src/tests/test_llm*.py -v
 ```
 
 ## Dependencies
 
-### Required Dependencies
-- **ollama**: Local LLM client (recommended for default runs)
-- **requests**: HTTP requests for API calls
-- **json**: JSON data handling
-- **pathlib**: Path handling
+### Core Dependencies (installed by `uv sync`; no dedicated pip extra)
+- **openai**: OpenAI/OpenRouter API access
+- **ollama** (PyPI): Local Ollama client; CLI recovery when the client is unusable
 
-### Optional Dependencies
-- **openai**: OpenAI API integration
-- **perplexity**: Perplexity AI integration
-- **openrouter**: OpenRouter integration
-- **tiktoken**: Token counting for OpenAI
-- **asyncio**: Asynchronous processing
+### Runtime Requirement
+- **Ollama runtime** (CLI/daemon from https://ollama.com) for local inference; not a pip package
 
 ## Performance Metrics
 
-### Processing Times
-- **Small Models** (< 100 variables): 5-30 seconds
-- **Medium Models** (100-1000 variables): 30-120 seconds
-- **Large Models** (> 1000 variables): 120-600 seconds
+Measure on your own hardware and model sizes; this document does not track timings or costs.
 
-### Memory Usage
-- **Base Memory**: ~50MB
-- **Per Analysis**: ~10-50MB depending on complexity
-- **Peak Memory**: 2-3x base usage during analysis
-
-### Cost Metrics
-- **OpenAI GPT-4**: ~$0.03-0.06 per 1K tokens
-- **OpenAI GPT-3.5**: ~$0.002 per 1K tokens
-- **Perplexity**: ~$0.01-0.02 per 1K tokens
-- **OpenRouter**: Variable based on provider
 
 ## Troubleshooting
 
@@ -640,12 +407,6 @@ Error: Poor analysis quality or irrelevant results
 Solution: Adjust prompts or use different provider with better context
 ```
 
-### Debug Mode
-```python
-# Enable debug mode for detailed LLM information
-analysis = analyze_gnn_model_with_llm(content, model_name, debug=True, verbose=True)
-```
-
 ## Configuration for Fast Local Runs (Ollama)
 
 Set these environment variables to use small, fast models locally:
@@ -667,20 +428,6 @@ OLLAMA_HOST=http://127.0.0.1:11434
 ```
 
 Common Ollama tags: `smollm2:135m-instruct-q4_K_S`, `gemma3:4b`, `tinyllama`, and larger `llama2` variants — see https://ollama.com/library
-
-## Future Enhancements
-
-### Planned Features
-- **Multi-Modal Analysis**: Support for image and audio analysis
-- **Real-time Analysis**: Live analysis during model development
-- **Collaborative Analysis**: Multi-LLM collaborative analysis
-- **Custom Training**: Custom LLM training for domain-specific analysis
-
-### Performance Improvements
-- **Async Processing**: Asynchronous LLM request processing
-- **Batch Processing**: Batch processing of multiple models
-- **Advanced Caching**: Advanced caching strategies for analysis results
-- **Cost Optimization**: Advanced cost optimization algorithms
 
 ## Summary
 

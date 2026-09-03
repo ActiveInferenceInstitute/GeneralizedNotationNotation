@@ -21,11 +21,11 @@ python src/main.py --only-steps 13 --verbose
 
 ## Provider Recovery Chain
 
-The LLM module supports multiple providers with automatic recovery:
+The LLM module supports multiple providers with automatic recovery (processor preference order):
 
-1. **Ollama** (local) — Preferred for privacy and speed
-2. **OpenAI** — GPT-4/3.5 API
-3. **Anthropic** / **OpenRouter** — Additional providers
+1. **Ollama** (local) — Preferred for privacy and speed; needs the Ollama runtime from https://ollama.com
+2. **OpenAI** — GPT-4o family / GPT-4 / GPT-3.5 (default `gpt-4o-mini`)
+3. **OpenRouter** / **Perplexity** — Additional providers (no Anthropic provider module)
 
 ## API
 
@@ -57,8 +57,8 @@ description = processor.generate_description(gnn_content)
 analyzer = LLMAnalyzer()
 insights = analyzer.analyze_content(gnn_content)
 
-# Analyze a file with LLM
-result = await analyze_gnn_file_with_llm(content)
+# Analyze a file with LLM (takes a file path)
+result = await analyze_gnn_file_with_llm(Path("input/gnn_files/model.md"))
 
 # Extract model components
 variables = extract_variables(content)

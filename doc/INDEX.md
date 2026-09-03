@@ -20,7 +20,7 @@ short audience map, use [START_HERE.md](START_HERE.md). For curricula, use
 
 ## Language
 
-- [Examples index (exemplar spec files)](../../input/gnn_files/INDEX.md)
+- [Examples index (exemplar spec files)](../input/gnn_files/INDEX.md)
 - [GNN documentation hub](gnn/README.md)
 - [GNN overview](gnn/gnn_overview.md)
 - [About GNN](gnn/about_gnn.md)

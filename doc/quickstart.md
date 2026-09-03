@@ -79,13 +79,14 @@ If an optional runtime is unavailable, inspect the execution summary rather than
 counting generated files:
 
 ```bash
-python -m json.tool \
+uv run python -m json.tool \
   output/quickstart/00_pipeline_summary/pipeline_execution_summary.json
 ```
 
-Step 11 has nine render targets. Step 12 has eight executor families; Stan is
-render-only in this pipeline, and PyTorch/bnlearn are registry-gated rather than
-installed by the default lock. See [framework availability](execution/FRAMEWORK_AVAILABILITY.md).
+Step 11 has nine render targets; Step 12 has eight executor families — every render
+target except bnlearn, which is render-only. PyTorch and bnlearn are not installed by
+the default lock; Stan needs `uv sync --extra stan` plus a CmdStan toolchain.
+See [framework availability](execution/FRAMEWORK_AVAILABILITY.md).
 
 ## 5. Inspect generated artifacts
 

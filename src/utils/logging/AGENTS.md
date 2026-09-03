@@ -26,7 +26,7 @@ logging/
 ## Key Capabilities
 
 - **`setup_step_logging`** — Comprehensive configuration with auto-detection of terminal capabilities.
-- **`log_step_*` Suite** — Semantic logging with visual icons (🚀, ✅, ⚠️, ❌) and progress tracking.
+- **`log_step_*` Suite** — Semantic logging with status markers and progress tracking.
 - **`timed_operation`** — Context manager for automatic $O(N)$ performance instrumentation.
 - **Structured JSON-L** — Concurrent machine-readable logging for downstream analysis.
 - **`logging.TRACE` (numeric 5)** — Registered for high-volume parser diagnostics; enable root/handlers at TRACE when debugging parse traces without flooding default `--verbose` output.

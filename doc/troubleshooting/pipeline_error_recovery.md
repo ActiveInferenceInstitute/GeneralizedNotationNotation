@@ -10,7 +10,7 @@ This guide provides comprehensive error recovery procedures for the GNN pipeline
 
 ## Critical Error Patterns
 
-### 1. NumPy Recursion Error (Step 9 - Render)
+### 1. NumPy Recursion Error (Step 11 - Render)
 
 #### Symptoms
 - Error message: `RecursionError: maximum recursion depth exceeded`
@@ -38,7 +38,7 @@ except RecursionError:
 - Monitor memory usage during type checking
 - Consider using lightweight type checking for large models
 
-### 2. Async/Await Issues (Step 11 - LLM)
+### 2. Async/Await Issues (Step 13 - LLM)
 
 #### Symptoms
 - Warning: `RuntimeWarning: coroutine 'OpenAIProvider.generate_response' was never awaited`
@@ -70,7 +70,7 @@ result = asyncio.run(analyze_gnn_file(file_path))
 #### Symptoms
 - Error: `cannot import name 'process_gnn_directory_lightweight'`
 - GNN processing fallback fails
-- Step 2 warnings
+- Step 3 warnings
 
 #### Resolution
 ```python
@@ -95,7 +95,7 @@ def process_gnn_directory_lightweight(directory: Path) -> Dict[str, Any]:
 - Add feature detection during setup
 - Document fallback mechanisms
 
-### 4. JAX/TPU Initialization (Step 10 - Execute)
+### 4. JAX/TPU Initialization (Step 12 - Execute)
 
 #### Symptoms
 - Error: `INTERNAL: Failed to open libtpu.so`
@@ -129,19 +129,19 @@ def initialize_jax_devices():
 
 ## Step-Specific Recovery Procedures
 
-### Step 9 (Render)
+### Step 11 (Render)
 1. Check Python recursion limit
 2. Verify NumPy installation
 3. Monitor memory usage
 4. Use incremental rendering for large models
 
-### Step 10 (Execute)
+### Step 12 (Execute)
 1. Verify framework availability
 2. Check hardware requirements
 3. Validate simulation configurations
 4. Monitor resource usage
 
-### Step 11 (LLM)
+### Step 13 (LLM)
 1. Verify API credentials
 2. Check network connectivity
 3. Monitor rate limits
@@ -178,13 +178,13 @@ def initialize_jax_devices():
 ### 1. Preflight and Environment Checker
 ```bash
 # Check environment health & dependencies
-python -m cli health --strict
-python src/1_setup.py --verbose
+uv run gnn health --strict
+uv run python src/1_setup.py --verbose
 ```
 
 ### 2. Preflight Health Checker
 ```bash
-python -m cli preflight
+uv run gnn preflight
 ```
 
 ## Contributing to Error Recovery

@@ -313,35 +313,11 @@ output/9_advanced_viz_output/
 
 ## Performance Characteristics
 
-### Latest Execution (After Comprehensive Fixes)
-
-- **Duration**: ~1-2s for complete visualization pipeline
-- **Status**: ✅ FULLY OPERATIONAL
-- **Fixes Applied**:
-  - ✅ Fixed model data loading from GNN processing results
-  - ✅ Implemented real 3D visualizations using matplotlib
-  - ✅ Implemented statistical analysis plots
-  - ✅ Fixed import paths and module structure
-  - ✅ Added comprehensive error handling and fallbacks
-
 ### Expected Performance
 
 - **Fast Path**: ~1-2s for basic visualizations (3D, statistical)
 - **Slow Path**: ~2-5s for comprehensive analysis with multiple formats
 - **Memory**: ~50-100MB for large models
-
-### Real-World Performance (Latest Test)
-
-- **3D Visualization**: Generated successfully in ~400ms
-- **Statistical Analysis**: Generated successfully in ~850ms
-- **State Transitions**: Generated successfully in ~200ms
-- **Belief Evolution**: Generated successfully in ~940ms
-- **Policy Visualization**: Generated successfully in ~750ms
-- **Matrix Correlations**: Generated successfully in ~860ms
-- **Timeline Visualization**: Generated successfully in ~790ms
-- **State Space Analysis**: Generated successfully in ~800ms
-- **Belief Flow Visualization**: Generated successfully in ~900ms
-- **Total Pipeline**: 8 successful visualizations in ~6.5s
 
 ---
 
@@ -443,21 +419,7 @@ output/9_advanced_viz_output/
 
 ### Test Coverage
 
-- **Current**: 95%+ ✅
-- **Test Categories**:
-  - ✅ Unit Tests: Module imports, instantiation, basic functionality
-  - ✅ Integration Tests: Data extraction, visualization generation
-  - ✅ Error Handling: Invalid content, missing dependencies
-  - ✅ Performance Tests: Execution time and resource usage
-  - ✅ Pipeline Integration: End-to-end workflow testing
-
-### Test Results (Latest Run)
-
-- **Total Tests**: 17
-- **Passed**: 16 ✅
-- **Skipped**: 1 (MCP integration - optional)
-- **Failed**: 0 ✅
-- **Coverage**: All major functionality tested and verified
+- Measure: `uv run --extra dev python -m pytest src/tests/advanced_visualization/ --cov=advanced_visualization --cov-report=term-missing` (do not treat fixed percentages or per-run test tallies in this doc as canonical).
 
 ---
 

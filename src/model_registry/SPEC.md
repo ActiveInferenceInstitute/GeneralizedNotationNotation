@@ -8,10 +8,10 @@ Centralized registry for GNN models with versioning, metadata management, and li
 
 The model registry uses a class-based design:
 
-- **`registry.py`** — Core implementation containing three classes:
+- **`registry.py`** — Core implementation:
   - `ModelVersion` — Represents a specific version with SHA-256 hash, file path, and metadata
   - `ModelEntry` — Represents a model with version history, tags, and searchable metadata
-  - `ModelRegistry` — Centralized registry with JSON persistence, search, and model lifecycle management
+  - `ModelRegistry` — Centralized registry with JSON persistence, search, and version management
   - `process_model_registry()` — Top-level function that discovers and registers all GNN files in a directory
 - **`mcp.py`** — Model Context Protocol tool registrations for registry operations
 - **`__init__.py`** — Re-exports `ModelRegistry` and `process_model_registry`
@@ -39,7 +39,7 @@ from model_registry import ModelRegistry, process_model_registry
 ## Testing
 
 ```bash
-uv run uv run --extra dev python -m pytest src/tests/model_registry/test_model_registry_overall.py src/tests/model_registry/test_model_registry_roundtrip.py -v
+uv run --extra dev python -m pytest src/tests/model_registry/ -v
 ```
 
 

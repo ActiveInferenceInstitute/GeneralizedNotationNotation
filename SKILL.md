@@ -98,7 +98,7 @@ s=HiddenState
 # Execute specific frameworks
 python src/12_execute.py --frameworks "pymdp,jax" --verbose
 
-# Lite preset (PyMDP, JAX, DisCoPy)
+# Lite preset (PyMDP, JAX, DisCoPy, bnlearn)
 python src/12_execute.py --frameworks "lite" --verbose
 
 # All frameworks (default)

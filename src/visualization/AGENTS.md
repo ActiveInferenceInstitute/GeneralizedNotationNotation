@@ -8,11 +8,11 @@
 
 **Category**: Visualization / Graph Analysis
 
-**Status**: ✅ Production Ready
+**Status**: Production Ready
 
 **Version**: 3.2.0
 
-**Last Updated**: 2026-05-12
+**Last Updated**: 2026-09-02
 
 ---
 
@@ -70,23 +70,23 @@ success = process_visualization(
 )
 ```
 
-#### `generate_graph_visualization(graph_data, output_dir=None) -> List[str]`
+#### `generate_graph_visualization(gnn_data, output_path) -> bool`
 **Description**: Module-level helper; delegates to [`GNNVisualizer`](visualizer.py).
 
 **Parameters**:
-- `graph_data`: Graph data dictionary
-- `output_dir`: Optional output directory
+- `gnn_data`: Parsed GNN data dictionary
+- `output_path`: Path where the visualization file is written
 
-**Returns**: List of generated visualization file paths
+**Returns**: `True` on success, `False` on failure
 
-#### `generate_matrix_visualization(matrix_data, output_dir=None) -> List[str]`
+#### `generate_matrix_visualization(gnn_data, output_path) -> bool`
 **Description**: Module-level helper; delegates to [`GNNVisualizer`](visualizer.py).
 
 **Parameters**:
-- `matrix_data`: Matrix data dictionary
-- `output_dir`: Optional output directory
+- `gnn_data`: Parsed GNN data dictionary
+- `output_path`: Path where the visualization file is written
 
-**Returns**: List of generated visualization file paths
+**Returns**: `True` on success, `False` on failure
 
 #### `GNNVisualizer.create_network_diagram(graph_data) -> Dict[str, Any]`
 **Description**: Instance method on [`GNNVisualizer`](visualizer.py), not a package-level function. Use `GNNVisualizer(...).create_network_diagram(graph_data)`.
@@ -117,27 +117,7 @@ success = process_visualization(
 
 ## Configuration
 
-### Visualization Settings
-```python
-VISUALIZATION_CONFIG = {
-    "output_format": "png",
-    "dpi": 300,
-    "figsize": (10, 8),
-    "colormap": "viridis",
-    "layout_algorithm": "spring",
-}
-```
-
-### Graph Settings
-```python
-GRAPH_CONFIG = {
-    "node_size": 100,
-    "edge_width": 1,
-    "node_color": "lightblue",
-    "edge_color": "gray",
-    "layout": "force_directed",
-}
-```
+No module-level config file. Figure defaults, color palette, and edge styles live in [`theme.py`](theme.py); headless environments get the matplotlib `Agg` backend automatically.
 
 ---
 
@@ -156,19 +136,16 @@ success = process_visualization(
 ```python
 from visualization import generate_graph_visualization
 
-files = generate_graph_visualization(graph_data)
-for file_path in files:
-    print(f"Generated: {file_path}")
+ok = generate_graph_visualization(graph_data, "output/viz/model_graph.png")
 ```
 
 ### Matrix Visualization
 ```python
 from visualization import generate_matrix_visualization
 
-files = generate_matrix_visualization(matrix_data)
-for file_path in files:
-    print(f"Generated: {file_path}")
+ok = generate_matrix_visualization(matrix_data, "output/viz/model_matrix.png")
 ```
+
 
 ---
 
@@ -200,11 +177,6 @@ output/8_visualization_output/
 
 ## Performance Characteristics
 
-### Latest Execution
-- **Duration**: ~2-5 seconds per model
-- **Memory**: ~50-150MB
-- **Status**: ✅ Production Ready
-
 ### Expected Performance
 - **Graph Generation**: 1-3 seconds
 - **Matrix Visualization**: 1-2 seconds
@@ -212,6 +184,7 @@ output/8_visualization_output/
 - **Combined Visualization**: 3-6 seconds
 
 ---
+
 
 ## Error Handling
 
@@ -295,7 +268,7 @@ Registration lives in [`mcp.py`](mcp.py) via `register_tools(mcp_instance)` (GNN
 **Symptom**: Warnings about matplotlib backend or "no DISPLAY" errors
 
 **Solution**:
-- ✅ **Automatic Fix**: The module now automatically detects headless environments and configures the `Agg` backend
+- **Automatic Fix**: The module automatically detects headless environments and configures the `Agg` backend
 - Environment variable: Set `MPLBACKEND=Agg` before running
 - Manual fix: Add to your script:
   ```python
@@ -309,16 +282,7 @@ Registration lives in [`mcp.py`](mcp.py) via `register_tools(mcp_instance)` (GNN
 #### 2. Missing Visualization Dependencies
 **Symptom**: ImportError for matplotlib, networkx, or numpy
 
-**Solution**:
-```bash
-# Using UV (recommended)
-uv pip install matplotlib>=3.5.0 networkx>=2.8.0 numpy>=1.21.0
-
-# Or install all dependencies via pyproject.toml
-uv sync
-```
-
-**Alternative**: Install visualization optional group:
+**Solution**: These are core dependencies pinned in `pyproject.toml` (`matplotlib>=3.5.0`, `networkx>=2.6.0`, `numpy>=1.21.0`), so `uv sync` installs them:
 ```bash
 uv sync
 ```
@@ -327,11 +291,8 @@ uv sync
 **Symptom**: Visualization fails or hangs with large models (>100 nodes)
 
 **Solution**:
-- ✅ **Automatic**: Module samples large models automatically
-- Manual override: Set sampling parameters in config
+- **Automatic**: Models with more than 100 variables are sampled automatically (`core/process.py` `_sampling_applied` metadata); there is no CLI flag to disable this
 - Alternative: Visualize model subsets
-
-**Prevention**: Use `--sample-large-models` flag when processing
 
 #### 4. Memory Issues During Visualization
 **Symptom**: Out of memory errors or system slowdown
@@ -374,14 +335,6 @@ python src/main.py --only-steps "3,8" --verbose
 - Use vector formats (SVG) instead of PNG
 - Adjust figure size in config
 
-**Configuration**:
-```python
-VISUALIZATION_CONFIG = {
-    "dpi": 600,  # Higher quality
-    "format": "svg",  # Vector format
-    "figsize": (12, 10),  # Larger canvas
-}
-```
 
 #### 7. Progress Tracking Not Visible
 **Symptom**: No progress updates during long-running visualizations
@@ -393,9 +346,8 @@ python src/8_visualization.py --verbose --target-dir input/gnn_files
 ```
 
 **Features**:
-- ✅ File-by-file progress indicators: `[1/5]`, `[2/5]`, etc.
-- ✅ Visualization type completion: Matrix ✅, Network ✅, Combined ✅
-- ✅ Detailed step logging with emoji indicators 📊
+- File-by-file progress indicators: `[1/5]`, `[2/5]`, etc.
+- Visualization type completion markers (Matrix, Network, Combined) in step logs
 
 ### Performance Optimization
 
@@ -405,11 +357,6 @@ python src/8_visualization.py --verbose --target-dir input/gnn_files
 3. **Parallel processing**: Process multiple files independently
 4. **Cache results**: Reuse visualizations when possible
 
-#### Resource Management
-- **Memory**: ~50-150MB per model (typical)
-- **CPU**: 1-2 cores per visualization process
-- **Disk**: ~1-5MB per visualization set
-- **Time**: 1-5 seconds per model (typical)
 
 ### Best Practices
 
@@ -427,11 +374,11 @@ python src/8_visualization.py --verbose --target-dir input/gnn_files
 3. **Check output directory structure**:
    ```
    output/8_visualization_output/
-   ├── model_name/
-   │   ├── matrix_analysis.png
-   │   ├── matrix_statistics.png
-   │   └── model_name_combined_analysis.png
-   └── visualization_results.json
+   ├── visualization_summary.json
+   └── model_name/
+       ├── model_name_network_graph.png
+       ├── model_name_viz_manifest.json
+       └── model_name_combined_analysis.png
    ```
 
 4. **Monitor for warnings**:
@@ -443,7 +390,7 @@ python src/8_visualization.py --verbose --target-dir input/gnn_files
 
 ## Version History
 
-### Current Version: 3.0.0
+### Current Version: 3.2.0
 
 **Features**:
 - Graph visualization generation
@@ -457,8 +404,7 @@ python src/8_visualization.py --verbose --target-dir input/gnn_files
 - None currently
 
 ### Roadmap
-- **Next Version**: Interactive visualizations (plotly/HTML where optional deps exist)
-- **Future**: Streaming or incremental updates for large models
+- Interactive visualizations (plotly/HTML where optional deps exist)
 
 ---
 
@@ -477,11 +423,10 @@ python src/8_visualization.py --verbose --target-dir input/gnn_files
 
 ---
 
-**Last Updated**: 2026-05-12
+**Last Updated**: 2026-09-02
 **Maintainer**: GNN Pipeline Team
-**Status**: ✅ Production Ready
+**Status**: Production Ready
 **Version**: 3.2.0
-**Architecture Compliance**: ✅ 100% Thin Orchestrator Pattern
 
 ---
 ## Documentation

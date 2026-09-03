@@ -3,13 +3,19 @@
 > **GNN Integration Layer**: Python  
 > **Framework Base**: `inferactively-pymdp>=1.0.0`  
 > **Simulation Architecture**: Structured POMDP execution  
-> **Documentation Version**: 2.1.0
+> **Documentation Version**: 2.0.0
 
 ## Overview
 
 The GNN pipeline renders discrete POMDP-style model specifications into
 PyMDP 1.0.0 runner scripts, executes those scripts through Step 12, and
 analyzes the resulting `pymdp_simulation_v1` JSON in Step 16.
+
+What this backend cannot express: continuous linear-Gaussian models
+(`input/gnn_files/continuous/`) are reported with render status `unsupported`
+for PyMDP (`supports_continuous: False` in `src/render/framework_registry.py`).
+Such renders are counted separately from failures under
+`unsupported_framework_renderings` and are not executed by Step 12.
 
 PyMDP integration is strict about matrix provenance and schema shape. Single
 factor models expose canonical `A`, `B`, `C`, `D`, and optional `E`; factored

@@ -8,7 +8,7 @@
 
 **Category**: Environment Management / Dependency Installation
 
-**Status**: ✅ Production Ready
+**Status**: Production Ready
 
 **Version**: 3.2.0
 
@@ -143,7 +143,7 @@ Step 22 (GUI) additionally needs `uv sync --extra gui` to pull Gradio.
 
 ### Required Dependencies
 - `uv` - Python package manager (required, native commands used)
-- `python` - Python interpreter (>=3.9)
+- `python` - Python interpreter (>=3.11)
 - `pyproject.toml` - Project dependencies configuration
 
 ### Optional Dependencies
@@ -157,28 +157,18 @@ Step 22 (GUI) additionally needs `uv sync --extra gui` to pull Gradio.
 ## Configuration
 
 ### Environment Settings
+
+Defined in `setup/constants.py`:
+
 ```python
-UV_CONFIG = {
-    "python_version": "3.11",
-    "environment_name": "gnn-pipeline",
-    "dependency_source": "pyproject.toml",  # Primary source
-    "lock_file": "uv.lock",  # Dependency lock file
-    "use_native_uv": True,  # Use native UV commands
-    "dev_dependencies": True,
-    "test_dependencies": True,
-}
+VENV_DIR = ".venv"                 # Managed virtual environment location
+MIN_PYTHON_VERSION = (3, 11)       # Enforced by check_system_requirements
+SETUP_DEFAULT_PIPELINE_EXTRAS: tuple[str, ...] = ()  # No extras needed by default
 ```
 
-### System Requirements
-```python
-SYSTEM_REQUIREMENTS = {
-    "python_version_min": "3.9",
-    "memory_min_gb": 4,
-    "disk_space_min_gb": 2,
-    "cpu_cores_min": 2,
-    "uv_required": True,
-}
-```
+### Optional Groups
+
+`OPTIONAL_GROUPS` (also in `constants.py`) names the installable extra groups: `dev`, `api`, `ml-ai`, `audio`, `gui`, `graphs`, `research`, `scaling`, and `all`.
 
 ---
 
@@ -229,36 +219,15 @@ output/1_setup_output/
 
 ## Performance Characteristics
 
-### Latest Execution
-- **Duration**: ~2-5 minutes for full setup
-- **Memory**: ~50-100MB during installation
-- **Status**: ✅ Production Ready
-
-### Expected Performance
-- **Environment Creation**: 30-60 seconds
-- **Dependency Installation**: 1-3 minutes (via `uv sync`)
-- **System Validation**: < 30 seconds
-- **Health Check**: < 10 seconds
-- **Dependency Lock**: < 10 seconds
+Full setup is dominated by `uv sync` download/install time; no performance figures are pinned here.
 
 ---
 
 ## Error Handling
 
-### Setup Errors
-1. **Environment Creation**: Virtual environment creation failures
-2. **Dependency Installation**: Package installation errors via `uv sync`
-3. **System Requirements**: Insufficient system resources or missing UV
-4. **Network Issues**: Package download failures
-5. **Permission Errors**: Insufficient file permissions
-6. **Lock File Conflicts**: Lock file corruption or conflicts
+Setup functions log failures and return `False` on: missing or outdated Python, missing `uv`, failed venv creation, and `uv sync`/`uv add`/`uv remove`/`uv lock` command errors (network, permission, lock issues).
 
-### Recovery Strategies
-- **Retry Logic**: Automatic retry for transient failures
-- **Lock File Regeneration**: Regenerate uv.lock if corrupted
-- **Graceful Degradation**: Continue with available packages
-- **Manual Instructions**: Provide manual installation guidance
-- **Environment Recreate**: Option to recreate environment from scratch
+`recreate=True` (or `recreate_venv` for the orchestrator) rebuilds `.venv` from scratch; `lock_uv_dependencies` regenerates `uv.lock`. There is no automatic retry logic.
 
 ---
 
@@ -294,7 +263,8 @@ System Check → UV Environment Creation → UV Sync (pyproject.toml → uv.lock
 Measure on demand — this file does not pin a number:
 
 ```bash
-uv run --extra dev python -m pytest src/tests/test_setup*.py --cov=src/setup --cov-report=term-missing
+uv run --extra dev python -m pytest src/tests/setup src/tests/test_uv_environment.py \
+    --cov=src/setup --cov-report=term-missing
 ```
 
 ### Key Test Scenarios
@@ -307,30 +277,18 @@ uv run --extra dev python -m pytest src/tests/test_setup*.py --cov=src/setup --c
 ---
 
 ## MCP Integration
-
 ### Tools Registered
-- `setup.check_environment` - Check system environment
-- `setup.create_environment` - Create UV environment
-- `setup.install_dependencies` - Install dependencies via UV sync
-- `setup.validate_setup` - Validate setup completion
-- `setup.add_dependency` - Add dependency via UV add
-- `setup.remove_dependency` - Remove dependency via UV remove
-- `setup.update_dependencies` - Update dependencies via UV sync
-- `setup.lock_dependencies` - Update lock file via UV lock
 
-### Tool Endpoints
-```python
-@mcp_tool("setup.check_environment")
-def check_environment_tool():
-    """Check system environment for GNN pipeline"""
-    # Implementation
+`setup/mcp.py` `register_tools` registers these tools (no `setup.` prefix):
 
-
-@mcp_tool("setup.add_dependency")
-def add_dependency_tool(package: str, dev: bool = False):
-    """Add a dependency using UV add"""
-    # Implementation
-```
+- `ensure_directory_exists` - Create a directory if missing
+- `find_project_gnn_files` - Find GNN `.md` files in a directory
+- `get_standard_output_paths` - Get/create standard step output subdirectories
+- `check_uv_project_status` - Check pyproject.toml, uv.lock, and venv status
+- `get_uv_environment_info` - Current UV environment paths and status
+- `setup_uv_project_structure` - Set up a new UV project structure
+- `install_uv_dependency` - Install a package with optional extras
+- `sync_uv_dependencies` - Sync dependencies from pyproject.toml
 
 ---
 

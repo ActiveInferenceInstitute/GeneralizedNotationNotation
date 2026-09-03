@@ -18,7 +18,7 @@ python src/12_execute.py --target-dir input/gnn_files --output-dir output --verb
 # Specific frameworks only
 python src/12_execute.py --frameworks "pymdp,jax" --verbose
 
-# Lite preset (PyMDP, JAX, DisCoPy)
+# Lite preset (PyMDP, JAX, DisCoPy, bnlearn; bnlearn scripts skip at pre-flight)
 python src/12_execute.py --frameworks "lite" --verbose
 ```
 
@@ -39,8 +39,8 @@ from execute import (
 # Process execution step (used by pipeline)
 process_execute(target_dir, output_dir, verbose=True)
 
-# Execute a GNN model directly
-result = execute_gnn_model(gnn_spec, framework="pymdp")
+# Execute a rendered model script directly
+result = execute_gnn_model("path/to/rendered_script.py", execution_type="pymdp")
 
 # Run a simulation configuration
 result = run_simulation(config)
@@ -75,8 +75,8 @@ The execute processor follows this pipeline:
 
 | Preset | Frameworks | Use Case |
 | ------ | ---------- | -------- |
-| `all` | PyMDP, RxInfer, ActiveInference.jl, JAX, DisCoPy | Full execution (default) |
-| `lite` | PyMDP, JAX, DisCoPy | Python-only, no Julia required |
+| `all` | PyMDP, RxInfer, ActiveInference.jl, JAX, DisCoPy, PyTorch, NumPyro, Stan | Full execution (default) |
+| `lite` | PyMDP, JAX, DisCoPy, bnlearn | Python-only, no Julia required |
 | `pymdp,jax` | PyMDP, JAX | Fast Python subset |
 
 ## Dependencies
@@ -85,9 +85,11 @@ The execute processor follows this pipeline:
 # Core execution (PyMDP)
 uv sync
 
-# For Julia frameworks
-# Requires Julia installed + packages
-julia -e 'using Pkg; Pkg.add(["RxInfer", "ActiveInference"])'
+# For Julia frameworks: instantiate the committed environments (no runtime Pkg.add)
+julia --startup-file=no --project=src/execute/rxinfer -e 'using Pkg; Pkg.instantiate()'
+
+# For Stan: cmdstanpy plus a CmdStan toolchain
+uv sync --extra stan
 
 # For DisCoPy
 uv sync --extra graphs

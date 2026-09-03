@@ -36,7 +36,7 @@ Multi-agent GNN models are processed through the standard pipeline with addition
 
 ```bash
 # Process multi-agent models
-python src/main.py --only-steps "3,11,12,16" --target-dir input/gnn_files
+uv run python src/main.py --only-steps "3,11,12,16" --target-dir input/gnn_files
 ```
 
 For complete pipeline documentation, see **[src/AGENTS.md](../../../src/AGENTS.md)**.

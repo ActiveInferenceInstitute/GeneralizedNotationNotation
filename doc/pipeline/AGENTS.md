@@ -11,7 +11,7 @@ Canonical documentation for running and configuring the GNN pipeline (steps 0–
 
 ## Purpose
 
-- Execution setup: Step 12 Python backends are core `uv sync` dependencies; Julia backends remain environment-dependent
+- Execution setup: JAX, NumPyro and DisCoPy are core `uv sync` dependencies; PyTorch and bnlearn are manual installs; Stan needs the `stan` extra and a CmdStan toolchain; Julia backends remain environment-dependent
 - Pointers to step scripts, orchestrator, and configuration
 
 This tree is part of the GNN documentation system; implementation lives in `src/`.

@@ -96,7 +96,8 @@ julia --project=src/execute/activeinference_jl --startup-file=no \
 ```
 
 **Julia 1.12 note.** `DistributionsAD` 0.6.58 (archived) uses an old
-`@check_args` form that `Distributions >= 0.25.127` rejects. `setup_environment.jl`
+`@check_args` form that `Distributions >= 0.25.126` rejects, so `Project.toml`
+pins `Distributions = "0.25.100 - 0.25.125"`. `setup_environment.jl`
 patches the installed ReverseDiff ext file (chmod + rewrite) **before**
 validation triggers precompilation, so the environment builds on a clean machine.
 

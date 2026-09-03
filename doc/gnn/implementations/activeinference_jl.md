@@ -11,6 +11,8 @@ The Generalized Notation Notation (GNN) pipeline translates theoretical model sp
 
 This document details the full data flow from GNN JSON specification through Julia agent struct construction, the unified POMDP generative environment loop, EFE extraction (via the `.G` property), and JSON telemetry serialization.
 
+This backend is discrete-only: continuous (linear-Gaussian) models are reported with render status `unsupported` (`supports_continuous: False` in `src/render/framework_registry.py`), counted separately from failures and never executed by Step 12.
+
 ## Architecture
 
 The ActiveInference.jl implementation consists of three interconnected layers:
@@ -302,7 +304,7 @@ dependencies, nothing more:
 | Declared dependency | Compat | Purpose |
 |---|---|---|
 | `ActiveInference` | 0.1 | Core discrete Active Inference agent |
-| `Distributions` | 0.25 | `Categorical` distribution sampling |
+| `Distributions` | `0.25.100 - 0.25.125` | `Categorical` distribution sampling. Pinned below 0.25.126, whose `@check_args` change breaks DistributionsAD's ReverseDiff extension (pulled in via ActionModels) on Julia 1.12. |
 | `JSON` | 1.7 | Telemetry serialization |
 | `StatsBase` | 0.34 | Summary statistics |
 
