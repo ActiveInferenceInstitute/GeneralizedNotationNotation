@@ -1,0 +1,3 @@
+# security-worker checkpoint log
+
+- 2026-09-04T19:10Z [audit] Scope read: processor.py (990 ln), mcp.py (250), 18_security.py (55), __init__, docs, 6 test files. Consumers mapped: 18_security.py (process_security), execute/processor.py:1006 (scan_script_for_execution), pipeline/step_registry.py:185, tests/security/*, tests/api (import only). Contract keys pinned by tests: verdict {ok,blocked,findings,scanned,block_on,decision}, receipt policy {security_level,enforced,scan_vulnerabilities,requested_scan_vulnerabilities,requested_block_on,block_on,decision,blocked_findings}. Next: refactor pass (pure policy resolver, dedup severity filter, top-level imports, SecurityScanError) + additive API (resolve_security_policy, scan_source, count_by_severity).
