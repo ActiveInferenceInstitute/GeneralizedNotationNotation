@@ -228,17 +228,20 @@ All test files follow the pattern:
 
 #### Comprehensive Tests
 
-- `test_comprehensive_api.py` - Comprehensive API testing
+- `api/test_comprehensive_api.py` - Comprehensive API testing
 - `test_core_modules.py` - Core module integration tests
 - `test_fast_suite.py` - Fast test suite
-- `test_main_orchestrator.py` - Main orchestrator tests
+- `pipeline/test_main_orchestrator.py` - Main orchestrator tests
 - `test_coverage_overall.py` - Coverage tests
 - `test_performance_overall.py` - Performance tests
 - `test_unit_overall.py` - Unit tests
 
 ## Test Runner Configuration
 
-The test runner (`test_runner_modular.py`) executes the categories defined in `categories.py`:
+The test runner (`test_runner_modular.py`) executes the categories defined in
+`categories.py`. Category `files` entries are paths relative to `src/tests/`
+(module subdirectories); entries matching nothing are skipped with a warning,
+and `missing_category_files()` reports any stale entry contract-wide:
 
 ```python
 MODULAR_TEST_CATEGORIES = {
@@ -246,17 +249,18 @@ MODULAR_TEST_CATEGORIES = {
         "name": "GNN Module Tests",
         "description": "GNN processing and validation tests",
         "files": [
-            "test_gnn_overall.py",
-            "test_gnn_parsing.py",
-            "test_gnn_validation.py",
-            "test_gnn_processing.py",
+            "gnn/test_gnn_overall.py",
+            "gnn/test_gnn_parsing.py",
+            "gnn/test_gnn_validation.py",
+            "gnn/test_gnn_processing.py",
         ],
         "markers": [],
         "timeout_seconds": 120,
         "max_failures": 8,
         "parallel": True,
     },
-    # ... additional categories for all modules
+    # ... 24 categories total; the table is pinned by
+    # tests/test_categories_contract.py (missing_category_files() == {})
 }
 ```
 

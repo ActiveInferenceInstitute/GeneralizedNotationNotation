@@ -72,3 +72,17 @@ dependency changes.
 - Expose category execution as a pure function to make `run_all_categories`
   testable without subprocesses.
 - Parameterize recovery-mode file list via env for CI tuning.
+
+## Post-push addendum (2026-09-04T18:20Z)
+
+- Pushed `12556df51` (`12a565b2f..12556df51 main -> main`); staged set verified
+  against the 30-path whitelist (`comm` exact match — no peer files committed).
+- `src/tests/README.md` (doc of record) had two stale spots the push missed:
+  flat `test_main_orchestrator.py` / `test_comprehensive_api.py` entries and a
+  pre-remap `MODULAR_TEST_CATEGORIES` excerpt with bare basenames. Fixed to
+  subdir-relative paths + `missing_category_files()` note; committed as a
+  follow-up.
+- `src/visualization/analysis/combined_analysis.py` circular-import failure in
+  `test_fast_suite.py::TestFastVisualization::test_visualization_module_import`
+  was peer-owned mid-edit churn; re-checked after the push and it now passes
+  (peer fixed it). No out-of-scope breakage remains.
