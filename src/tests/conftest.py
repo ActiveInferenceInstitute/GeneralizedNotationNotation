@@ -28,6 +28,11 @@ _pkg.__path__ = [str(Path(__file__).parent)]
 sys.modules.setdefault("tests", _pkg)
 sys.modules["tests.conftest"] = sys.modules[__name__]
 
+from tests.helpers.gnn_samples import (  # noqa: E402 - needs the alias above
+    SAMPLE_GNN_CONTENT,
+    write_sample_gnn_markdown,
+)
+from tests.helpers.mcp_stubs import MCPTools  # noqa: E402 - needs the alias above
 
 # -----------------------------------------------------------------------------
 # Marker configuration
@@ -208,63 +213,18 @@ def temp_output_dir() -> Generator[Path, None, None]:
 # GNN sample content fixtures
 # -----------------------------------------------------------------------------
 
-_SAMPLE_GNN_CONTENT = """
-# Test GNN Model
-
-## ModelName
-test_model
-
-## StateSpaceBlock
-s[3,1,type=int]
-o[3,1,type=int]
-
-## Connections
-s -> o
-
-## InitialParameterization
-A = [[0.7, 0.2, 0.1], [0.2, 0.7, 0.1], [0.1, 0.2, 0.7]]
-B = [[[0.9, 0.05, 0.05], [0.05, 0.9, 0.05], [0.05, 0.05, 0.9]], [[0.9, 0.05, 0.05], [0.05, 0.9, 0.05], [0.05, 0.05, 0.9]], [[0.9, 0.05, 0.05], [0.05, 0.9, 0.05], [0.05, 0.05, 0.9]]]
-C = [0.0, 0.0, 1.0]
-D = [0.34, 0.33, 0.33]
-"""
-
 
 @pytest.fixture
 def sample_gnn_files(safe_filesystem: Any) -> Dict[str, Path]:
     """Pair of on-disk GNN files sharing a minimal coherent POMDP schema."""
     files: dict[str, Any] = {
-        "simple": safe_filesystem.create_file("simple.gnn", _SAMPLE_GNN_CONTENT),
+        "simple": safe_filesystem.create_file("simple.gnn", SAMPLE_GNN_CONTENT),
         "second": safe_filesystem.create_file(
             "second.gnn",
-            _SAMPLE_GNN_CONTENT.replace("test_model", "second_model"),
+            SAMPLE_GNN_CONTENT.replace("test_model", "second_model"),
         ),
     }
     return files
-
-
-def _write_sample_gnn_markdown(target: Path) -> None:
-    """Write a minimal GNN markdown with ontology annotations to ``target``."""
-    content = (
-        "# Active Inference Model\n\n"
-        "## ActInfOntologyAnnotation\n"
-        "s = HiddenState\n"
-        "s_prime = NextHiddenState\n"
-        "o = Observation\n"
-        "π = PolicyVector\n"
-        "u = Action\n"
-        "t = Time\n"
-        "A = LikelihoodMatrix\n"
-        "B = TransitionMatrix\n"
-        "C = LogPreferenceVector\n"
-        "D = PriorOverHiddenStates\n"
-        "E = Habit\n"
-        "F = VariationalFreeEnergy\n"
-        "G = ExpectedFreeEnergy\n\n"
-        "## Connections\n"
-        "s -> o\n"
-    )
-    target.parent.mkdir(parents=True, exist_ok=True)
-    target.write_text(content)
 
 
 @pytest.fixture
@@ -272,7 +232,7 @@ def test_data_dir() -> Generator[Path, None, None]:
     """Directory containing a sample GNN file at samples/actinf_pomdp_agent.md."""
     base = Path(tempfile.mkdtemp())
     sample = base / "samples" / "actinf_pomdp_agent.md"
-    _write_sample_gnn_markdown(sample)
+    write_sample_gnn_markdown(sample)
     try:
         yield sample.parent
     finally:
@@ -286,7 +246,7 @@ def sample_gnn_file() -> Generator[Path, None, None]:
     """Path to a single on-disk sample GNN markdown file."""
     tmp = Path(tempfile.mkdtemp())
     path = tmp / "actinf_pomdp_agent.md"
-    _write_sample_gnn_markdown(path)
+    write_sample_gnn_markdown(path)
     try:
         yield path
     finally:
@@ -391,42 +351,6 @@ def test_render_module() -> _RealRenderModule:
     return _RealRenderModule()
 
 
-class _MCPTools:
-    """Lightweight in-memory MCP registry used by MCP wiring tests."""
-
-    def __init__(self) -> None:
-        self.tools: Dict[str, Any] = {}
-        self.resources: Dict[str, Any] = {}
-
-    def register_tool(self, name: str, *args: Any, **kwargs: Any) -> None:
-        function = kwargs.get("function")
-        schema = kwargs.get("schema")
-        description = kwargs.get("description", "")
-        if function is None and args:
-            function = args[0]
-            if len(args) >= 2 and schema is None:
-                schema = args[1]
-            if len(args) >= 3 and not description:
-                description = args[2]
-        self.tools[name] = {
-            "function": function,
-            "func": function,
-            "schema": schema or {},
-            "description": description,
-        }
-
-    def register_resource(
-        self, pattern: str, handler: Any, description: str = ""
-    ) -> None:
-        self.resources[pattern] = {"handler": handler, "description": description}
-
-    def execute_tool(self, name: str, **kwargs: Any) -> Any:
-        if name not in self.tools:
-            return {"error": "tool_not_found", "name": name}
-        func = self.tools[name].get("function") or self.tools[name].get("func")
-        return func(**kwargs)
-
-
 @pytest.fixture
-def test_mcp_tools() -> _MCPTools:
-    return _MCPTools()
+def test_mcp_tools() -> MCPTools:
+    return MCPTools()

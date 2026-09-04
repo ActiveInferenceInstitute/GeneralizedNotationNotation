@@ -3,11 +3,12 @@
 from __future__ import annotations
 
 import errno
-import importlib.util
 from pathlib import Path
 from typing import Any
 
 import pytest
+
+from tests.helpers import load_module_from_path
 
 _SCRIPT = (
     Path(__file__).resolve().parents[2]
@@ -19,25 +20,10 @@ _SCRIPT = (
 @pytest.fixture(scope="module")
 def scaling_mod() -> Any:
     # The script imports `from pymdp_spec_generator import ...` — a sibling
-    # module in the same `scripts/` directory.  When Python runs a script
-    # directly it adds the script's directory to ``sys.path[0]``, but
-    # ``importlib.util`` does *not*.  Temporarily inject ``scripts/`` so the
-    # bare import resolves.
-    import sys
-
-    scripts_dir = str(_SCRIPT.parent)
-    need_cleanup = scripts_dir not in sys.path
-    if need_cleanup:
-        sys.path.insert(0, scripts_dir)
-    try:
-        spec = importlib.util.spec_from_file_location("pymdp_scaling", _SCRIPT)
-        assert spec and spec.loader
-        mod = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(mod)
-        return mod
-    finally:
-        if need_cleanup and scripts_dir in sys.path:
-            sys.path.remove(scripts_dir)
+    # module in the same `scripts/` directory. Plain ``importlib`` does not
+    # add the script's directory to ``sys.path``; the helper injects it for
+    # the duration of the load.
+    return load_module_from_path("pymdp_scaling", _SCRIPT, sys_path=_SCRIPT.parent)
 
 
 def test_estimate_upper_bounds_generated_size(scaling_mod: Any) -> None:

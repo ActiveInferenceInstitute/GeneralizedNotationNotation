@@ -172,6 +172,10 @@ class _ModularTestRunner:
                 continue
 
             pattern_files = list(self.test_dir.glob(file_pattern))
+            if not pattern_files:
+                self.logger.warning(
+                    f"Category '{category}' file entry matched nothing: {file_pattern}"
+                )
             test_files.extend([str(f) for f in pattern_files])
 
         test_files = sorted(set(test_files))

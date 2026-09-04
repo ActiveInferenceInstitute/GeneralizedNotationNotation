@@ -1,13 +1,22 @@
 """
 Test Helpers Module
 
-Provides reusable helper functions and utilities for test execution.
+Provides reusable, typed helpers for test execution:
+
+- ``script_loader``  — load standalone scripts by path (importlib boilerplate)
+- ``gnn_samples``    — canonical sample GNN markdown content
+- ``mcp_stubs``      — in-memory MCP registry stub (``MCPTools``)
+- ``render_recovery``— recovery-friendly bulk render for resilience tests
+- path helpers + sample-model loader for ``test_data/``
 """
 
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Dict
 
+from .gnn_samples import SAMPLE_GNN_CONTENT, write_sample_gnn_markdown
+from .mcp_stubs import MCPTools
 from .render_recovery import render_gnn_files
+from .script_loader import load_module_from_path
 
 
 def get_test_data_dir() -> Path:
@@ -48,7 +57,11 @@ def load_sample_gnn_spec() -> Dict[str, Any]:
     return spec
 
 
-__all__: list[Any] = [
+__all__: list[str] = [
+    "SAMPLE_GNN_CONTENT",
+    "MCPTools",
+    "load_module_from_path",
+    "write_sample_gnn_markdown",
     "render_gnn_files",
     "get_test_data_dir",
     "get_sample_gnn_model",

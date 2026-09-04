@@ -1,7 +1,7 @@
 # GNN Pipeline Test Suite - Comprehensive Summary
 
-**Last Updated**: 2026-06-11
-**Status**: Production Ready  
+**Last Updated**: 2026-09-04
+**Status**: Production Ready
 **Test Infrastructure Version**: 2.0.1
 
 ---
@@ -26,13 +26,17 @@ The GNN Processing Pipeline test suite provides comprehensive coverage across al
 ```
 src/tests/
 ├── ../2_tests.py           # Thin orchestrator (CLI entry point)
-├── runner.py               # Core test execution logic
-├── conftest.py             # Pytest fixtures and configuration
+├── runner.py               # run_tests() mode routing + re-exports
+├── test_runner_modular.py  # _ModularTestRunner (category execution)
+├── test_runner_modes.py    # fast / comprehensive / reliable mode implementations
+├── categories.py           # MODULAR_TEST_CATEGORIES routing table (typed)
+├── infrastructure/         # canonical TestRunner, config, monitoring, reports, parsing
+├── helpers/                # script_loader, gnn_samples, mcp_stubs, render_recovery
+├── conftest.py             # Pytest fixtures and marker registration
 ├── __init__.py             # Module exports and utilities
-├── README.md               # Comprehensive documentation
-├── AGENTS.md               # Technical API documentation
-├── <module>/test_*.py      # 155 module/helper test files
-└── test_*.py               # 29 cross-cutting root test files
+├── tests/                  # Shared-plumbing regression tests
+├── <module>/test_*.py      # Per-module test directories
+└── test_*.py               # Cross-cutting root test files
 ```
 
 ### Execution Modes
@@ -105,19 +109,20 @@ Organized by module and functionality:
 - `ontology` - Active Inference ontology processing
 - And 10+ more categories...
 
-### Test Markers (25+)
+### Test Markers
 
-For selective execution:
+Registered in `pytest.ini` (plus conftest's extended registry — see
+`PYTEST_MARKERS` in `conftest.py`). For selective execution:
 - `@pytest.mark.fast` - Fast tests (< 1 second)
 - `@pytest.mark.slow` - Slow tests (minutes)
 - `@pytest.mark.unit` - Unit tests
 - `@pytest.mark.integration` - Integration tests
-- `@pytest.mark.e2e` - End-to-end tests
-- `@pytest.mark.performance` - Performance tests
-- `@pytest.mark.safe_to_fail` - Safe-to-fail tests (336 functions)
-- `@pytest.mark.requires_gpu` - GPU-required tests
-- `@pytest.mark.requires_network` - Network-required tests
-- And 15+ more markers...
+- `@pytest.mark.performance` - Auto-applied to slow tests for dashboarding
+- `@pytest.mark.pipeline` - Pipeline infrastructure tests
+- `@pytest.mark.uv` / `@pytest.mark.jax_stack` / `@pytest.mark.mcp` / `@pytest.mark.xfail` - Toolchain and MCP-audit gates (pytest.ini)
+
+The full registry (20 conftest markers + pytest.ini's) is the authority;
+unregistered markers fail collection under `--strict-markers`.
 
 ---
 

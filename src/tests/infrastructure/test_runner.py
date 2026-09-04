@@ -1,7 +1,12 @@
 """
 Test Runner for GNN Processing Pipeline.
 
-This module provides the TestRunner class with comprehensive monitoring and reporting.
+Canonical single-source ``TestRunner``: monitors resources, builds and runs
+pytest subprocesses, parses output, and writes execution reports.
+
+``tests.runner`` re-exports this class so legacy import paths
+(``from tests.runner import TestRunner``) keep resolving to the same
+implementation. Do not add a second copy of the class elsewhere.
 """
 
 import json
@@ -68,8 +73,10 @@ class TestRunner:
                 stderr=result.get("stderr", ""),
             )
 
-            # Store in history
-            self.execution_history.append(execution_result)
+            # Store in history (thread-safe; run_tests may be called from
+            # concurrent contexts).
+            with self._history_lock:
+                self.execution_history.append(execution_result)
 
             return execution_result
 
@@ -96,6 +103,7 @@ class TestRunner:
             "pytest",
             "--verbose",
             "--tb=short",
+            "--log-cli-level=WARNING",
             f"--maxfail={self.config.max_failures}",
             "--durations=10",
             "--disable-warnings",

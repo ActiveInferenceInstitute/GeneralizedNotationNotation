@@ -8,21 +8,18 @@ the test is fast and deterministic.
 
 from __future__ import annotations
 
-import importlib.util
 from pathlib import Path
 from typing import Any
 
 import pytest
 
+from tests.helpers import load_module_from_path
+
 SCRIPT = Path(__file__).resolve().parents[2] / "scripts" / "check_mcp_skills_health.py"
 
 
 def _load() -> Any:
-    spec = importlib.util.spec_from_file_location("check_mcp_skills_health", SCRIPT)
-    assert spec and spec.loader
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    return module
+    return load_module_from_path("check_mcp_skills_health", SCRIPT)
 
 
 @pytest.fixture(scope="module")

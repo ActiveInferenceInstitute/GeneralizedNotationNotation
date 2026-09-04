@@ -243,10 +243,10 @@ def run_fast_reliable_tests(
 
     logger.info(f"Running reliable fast test subset (timeout: {timeout}s)")
 
-    reliable_tests: list[Any] = [
+    reliable_tests: list[str] = [
         "test_core_modules.py",
         "test_fast_suite.py",
-        "test_main_orchestrator.py",
+        "pipeline/test_main_orchestrator.py",
     ]
 
     cmd: list[Any] = [

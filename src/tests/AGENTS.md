@@ -12,7 +12,7 @@
 
 **Version**: 3.2.0
 
-**Last Updated**: 2026-04-16
+**Last Updated**: 2026-09-04
 
 ---
 
@@ -81,6 +81,10 @@ success = run_tests(
 - `args`: Parsed arguments (e.g. from the pipeline CLI)
 - `logger` (logging.Logger): Logger instance
 
+#### `TestRunner`
+**Description**: Single-source pytest runner class: resource monitoring, subprocess execution, output parsing, and execution reports.
+**Defined in**: [`infrastructure/test_runner.py`](infrastructure/test_runner.py) — the canonical copy. [`runner.py`](runner.py) re-exports it so `from tests.runner import TestRunner` (used by `src/utils/test_utils.py`) keeps resolving to the same class. Do not define a second copy.
+
 #### `run_fast_pipeline_tests(logger, output_dir, verbose=False) -> bool`
 **Description**: Run fast test suite for quick pipeline validation
 
@@ -125,7 +129,7 @@ success = run_tests(
 **Returns**: `True` if tests passed, `False` otherwise
 
 **Features**:
-- Runs only essential test files: `test_core_modules.py`, `test_fast_suite.py`, `test_main_orchestrator.py`
+- Runs only essential test files: `test_core_modules.py`, `test_fast_suite.py`, and `pipeline/test_main_orchestrator.py`
 - Default 600-second subprocess timeout, overridable via the `FAST_TESTS_TIMEOUT` environment variable
 - Improved error handling and reporting
 - Used as recovery when fast pipeline tests are not suitable
@@ -395,11 +399,10 @@ flowchart TD
 - Delegates to `tests.run_tests()` from `tests/__init__.py`
 - Returns standardized exit codes
 
-**runner.py** (Core Implementation):
-- Contains all test execution logic
-- Provides `run_tests()`, `run_fast_pipeline_tests()`, `run_comprehensive_tests()`, etc.
-- Implements `ModularTestRunner` for category-based execution
-- Handles resource monitoring and error recovery
+**runner.py** (Routing + Re-exports):
+- Provides `run_tests()` — the mode-routing entry point (fast / comprehensive / reliable)
+- Re-exports the canonical `TestRunner` from `infrastructure/test_runner.py`
+- Re-exports the execution modes from `test_runner_modes.py` and `create_test_runner` from `test_runner_modular.py`
 
 **test_utils.py** (Shared Utilities):
 - Provides test fixtures and helper functions
@@ -426,13 +429,19 @@ To add a new test category to `MODULAR_TEST_CATEGORIES` in `categories.py`:
 MODULAR_TEST_CATEGORIES["new_module"] = {
     "name": "New Module Tests",
     "description": "Tests for the new module",
-    "files": ["test_template_overall.py", "test_new_module_integration.py"],
+    "files": ["template/test_template_overall.py", "new_module/test_new_module_integration.py"],  # paths relative to src/tests/
     "markers": ["new_module"],  # Optional pytest markers
     "timeout_seconds": 120,  # Category timeout
     "max_failures": 8,  # Max failures before stopping
     "parallel": True,  # Allow parallel execution
 }
 ```
+
+Category `files` entries are resolved relative to `src/tests/` by
+`_ModularTestRunner.discover_test_files()`; entries that match nothing are
+skipped silently. Run `missing_category_files()` (same module) to detect
+such drift — the contract test in `tests/tests/test_categories_contract.py`
+asserts it stays empty.
 
 ### Creating New Test Files
 
@@ -463,6 +472,24 @@ def test_new_module_complex():
 ```
 
 ---
+
+## Shared Test Helpers (helpers/)
+
+Reusable, typed helpers shared across module test directories. Import from
+the package (`from tests.helpers import ...`) so implementations can move:
+
+| Symbol | Module | Purpose |
+|---|---|---|
+| `load_module_from_path(name, path, sys_path=None)` | `script_loader.py` | Load a standalone script (e.g. `scripts/*.py`) as a module; optional sibling-directory `sys.path` injection. Used by the root doc/scripts contract tests. |
+| `SAMPLE_GNN_CONTENT`, `write_sample_gnn_markdown(target)` | `gnn_samples.py` | Canonical sample GNN markdown; single source behind the `sample_gnn_files` / `test_data_dir` / `sample_gnn_file` fixtures. |
+| `MCPTools` | `mcp_stubs.py` | In-memory MCP registry stub (`register_tool` / `register_resource` / `execute_tool`). The `test_mcp_tools` fixture returns an instance; module wiring tests should adopt it instead of redeclaring local stubs. |
+| `render_gnn_files(target_dir, output_dir)` | `render_recovery.py` | Recovery-friendly bulk render for resilience tests. |
+| `get_test_data_dir()`, `get_sample_gnn_model()`, `load_sample_gnn_spec()` | `__init__.py` | Path helpers for `test_data/` and the sample-model loader. |
+
+The plumbing's own regression tests live in `tests/tests/`
+(`test_categories_contract.py`, `test_testrunner_unified.py`,
+`test_helpers_contract.py`, `test_infrastructure_exports.py`,
+`test_step2_wrapper_contract.py`).
 
 ## Testing
 

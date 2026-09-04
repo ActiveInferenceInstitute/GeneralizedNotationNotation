@@ -8,22 +8,19 @@ already-documented files).
 
 from __future__ import annotations
 
-import importlib.util
 import subprocess
 import sys
 from pathlib import Path
 from typing import Any
+
+from tests.helpers import load_module_from_path
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 SCRIPT = REPO_ROOT / "scripts" / "add_module_docstrings.py"
 
 
 def _load() -> Any:
-    spec = importlib.util.spec_from_file_location("add_module_docstrings", SCRIPT)
-    assert spec and spec.loader
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    return module
+    return load_module_from_path("add_module_docstrings", SCRIPT)
 
 
 def _run(script_args: list[str]) -> subprocess.CompletedProcess[str]:

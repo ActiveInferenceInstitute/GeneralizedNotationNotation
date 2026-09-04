@@ -2,34 +2,27 @@
 
 from __future__ import annotations
 
-import importlib.util
-import sys
 from pathlib import Path
 from typing import Any
 
 import pytest
 
+from tests.helpers import load_module_from_path
+
 REPO_ROOT = Path(__file__).resolve().parents[2]
 
 
 def _load_docs_audit() -> Any:
-    path = REPO_ROOT / "doc" / "development" / "docs_audit.py"
-    spec = importlib.util.spec_from_file_location("docs_audit", path)
-    assert spec and spec.loader
-    mod = importlib.util.module_from_spec(spec)
-    sys.modules[spec.name] = mod
-    spec.loader.exec_module(mod)
-    return mod
+    return load_module_from_path(
+        "docs_audit", REPO_ROOT / "doc" / "development" / "docs_audit.py"
+    )
 
 
 def _load_doc_terms() -> Any:
-    path = REPO_ROOT / "scripts" / "check_maintained_doc_terms.py"
-    spec = importlib.util.spec_from_file_location("check_maintained_doc_terms", path)
-    assert spec and spec.loader
-    mod = importlib.util.module_from_spec(spec)
-    sys.modules[spec.name] = mod
-    spec.loader.exec_module(mod)
-    return mod
+    return load_module_from_path(
+        "check_maintained_doc_terms",
+        REPO_ROOT / "scripts" / "check_maintained_doc_terms.py",
+    )
 
 
 @pytest.fixture()

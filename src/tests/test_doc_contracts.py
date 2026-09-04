@@ -2,20 +2,18 @@
 
 from __future__ import annotations
 
-import importlib.util
 from pathlib import Path
 from typing import Any
+
+from tests.helpers import load_module_from_path
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 
 
 def _load_checker() -> Any:
-    path = REPO_ROOT / "scripts" / "check_doc_contracts.py"
-    spec = importlib.util.spec_from_file_location("check_doc_contracts", path)
-    assert spec and spec.loader
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    return module
+    return load_module_from_path(
+        "check_doc_contracts", REPO_ROOT / "scripts" / "check_doc_contracts.py"
+    )
 
 
 def test_repository_documentation_contracts_pass() -> None:

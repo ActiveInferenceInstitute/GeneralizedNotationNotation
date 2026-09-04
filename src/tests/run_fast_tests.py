@@ -34,9 +34,15 @@ def run_fast_tests() -> bool:
         "src/tests/test_fast_suite.py",
     ]
 
-    # Add timeout plugin if available
-    # Timeout configuration is handled by pytest.ini or defaults
-    pytest_cmd.extend(["--timeout=10"])
+    # Add per-test timeout only when pytest-timeout is importable; an
+    # unrecognized --timeout option would make pytest exit 4 in environments
+    # without the dev extra.
+    try:
+        import pytest_timeout  # noqa: F401 - presence check
+
+        pytest_cmd.extend(["--timeout=10"])
+    except ImportError:
+        pass
 
     try:
         # Run pytest with 60 second timeout
