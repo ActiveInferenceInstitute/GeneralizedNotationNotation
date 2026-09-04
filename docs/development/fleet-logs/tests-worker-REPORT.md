@@ -131,3 +131,11 @@ the documented shape; the contract test's fake returned a list so it passed
 coincidentally). Fixed to the real contract — dict-aware warning
 (`category: entries` details + entry count), `return missing` unchanged shape,
 test fakes/asserts the dict. tests/tests 28/28, ruff clean.
+
+Drift attribution: `fe54b4faa` committed `_warn_stale_category_files` with
+`return sorted(missing)` although the pre-commit worktree read showed
+`return missing` — an uncommitted modification landed in this shared checkout
+between the repair and staging (35-tab fleet shares one tree; no agent claimed
+the file; actor unattributable). `git diff fe54b4faa..d6e77879c` confirms the
+correction bundled ONLY the intended hunks. Lesson recorded: re-read a file
+immediately before `git add` when a shared tree is live.
