@@ -228,13 +228,18 @@ All test files follow the pattern:
 
 #### Comprehensive Tests
 
+Mirrors the `comprehensive` entry in `categories.py`:
+
 - `api/test_comprehensive_api.py` - Comprehensive API testing
-- `test_core_modules.py` - Core module integration tests
-- `test_fast_suite.py` - Fast test suite
 - `pipeline/test_main_orchestrator.py` - Main orchestrator tests
+- `test_core_modules.py` - Core module integration tests
+- `test_coverage_assessment.py` - Coverage assessment tests
 - `test_coverage_overall.py` - Coverage tests
+- `test_fast_suite.py` - Fast test suite
 - `test_performance_overall.py` - Performance tests
+- `test_runner_helper.py` - Runner helper CLI tests
 - `test_unit_overall.py` - Unit tests
+- `utils/test_new_utils.py` - Utils module tests
 
 ## Test Runner Configuration
 
@@ -251,8 +256,8 @@ MODULAR_TEST_CATEGORIES = {
         "files": [
             "gnn/test_gnn_overall.py",
             "gnn/test_gnn_parsing.py",
-            "gnn/test_gnn_validation.py",
             "gnn/test_gnn_processing.py",
+            "gnn/test_gnn_validation.py",
         ],
         "markers": [],
         "timeout_seconds": 120,
