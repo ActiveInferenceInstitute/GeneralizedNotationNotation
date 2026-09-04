@@ -104,7 +104,7 @@ produces no artifacts. Use `rxinfer`, which routes to the canonical renderer.
 | **ActiveInference.jl** | Julia | `.jl` | Free Energy Minimization, Active Inference, POMDP |
 | **JAX** | Python | `.py` | GPU Acceleration, Automatic Differentiation, JIT Compilation |
 | **DisCoPy** | Python | `.py` | Categorical Diagrams, String Diagrams, Compositional Models |
-| **PyTorch** | Python | `.py` | Tensor POMDP; `torch` must be installed manually (GHSA-rrmf-rvhw-rf47) |
+| **PyTorch** | Python | `.py` | Tensor POMDP; `torch` ships in the `torch` extra (`uv sync --extra torch`; GHSA-rrmf-rvhw-rf47 resolved in torch 2.13.0) |
 | **NumPyro** | Python | `.py` | NUTS/MCMC posterior inference |
 | **Stan** | Stan | `.stan` + `_stan.py` driver | HMM forward-algorithm (Dirichlet A_est, NUTS/MAP) and Kalman marginal-likelihood programs; executed by Step 12 through cmdstanpy (`src/execute/stan/`) |
 | **bnlearn** | Python | `.py` | Bayesian network structure and inference |

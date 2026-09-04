@@ -131,13 +131,13 @@ FRAMEWORK_REGISTRY: Mapping[str, Dict[str, Any]] = MappingProxyType(
             "optional_matrices": ["E"],
             "supports_multi_modality": True,
             "supports_multi_factor": True,
-            "available": False,
+            # Rendering is codegen-only (torch is imported by the emitted
+            # script, not by the renderer). torch>=2.13.0 — the ``torch``
+            # extra — resolves GHSA-rrmf-rvhw-rf47, lifting the previous
+            # exclusion; Step 12 keeps its own dynamic import gate.
+            "available": True,
             "supports_continuous": True,
-            "unavailable_reason": (
-                "Intentionally excluded from pyproject.toml: PyTorch (torch) "
-                "transitively pulls GHSA-rrmf-rvhw-rf47 (unpatched vulnerability). "
-                "Run 'uv add torch' at your own risk to enable."
-            ),
+            "unavailable_reason": None,
         },
         "numpyro": {
             "name": "NumPyro",
@@ -194,10 +194,11 @@ FRAMEWORK_REGISTRY: Mapping[str, Dict[str, Any]] = MappingProxyType(
             "available": False,
             "supports_continuous": False,
             "unavailable_reason": (
-                "Intentionally excluded from pyproject.toml: bnlearn depends on "
-                "pgmpy which transitively pulls PyTorch (torch), exposing "
-                "GHSA-rrmf-rvhw-rf47 (unpatched vulnerability). "
-                "Run 'uv add bnlearn pgmpy' at your own risk to enable."
+                "Manual, render-only backend: bnlearn depends on pgmpy, which "
+                "transitively pulls PyTorch (torch) — keep torch>=2.13.0, the "
+                "floor that resolves GHSA-rrmf-rvhw-rf47. bnlearn has no "
+                "Step-12 executor, so it stays out of the default lock. "
+                "Run 'uv add bnlearn pgmpy' to enable."
             ),
         },
     }

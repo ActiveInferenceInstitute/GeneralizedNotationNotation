@@ -293,8 +293,8 @@ brew install graphviz
 # Linux:
 sudo apt-get install graphviz
 
-# PyTorch backend (manual; see pyproject.toml note on GHSA-rrmf-rvhw-rf47)
-uv pip install torch
+# PyTorch backend (torch extra; torch>=2.13.0 resolves GHSA-rrmf-rvhw-rf47)
+uv sync --extra torch
 ```
 
 **Result**:

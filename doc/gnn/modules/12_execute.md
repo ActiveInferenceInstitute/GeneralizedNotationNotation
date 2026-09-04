@@ -22,7 +22,7 @@ This module is responsible for running GNN models that have been rendered into f
 | **Stan** | Python driver (cmdstanpy) | `stan/` | `*_stan.py` | ✅ (skipped when cmdstanpy/CmdStan absent) |
 | **bnlearn** | Python | `bnlearn/` | `*_bnlearn.py` | ✅ Full support |
 
-JAX, NumPyro and DisCoPy are **core** dependencies (`uv sync`); PyTorch and bnlearn are intentionally excluded from the default lock (GHSA-rrmf-rvhw-rf47) and must be installed manually; Stan needs `uv sync --extra stan` plus a CmdStan toolchain. If the environment is incomplete, the affected scripts are **skipped** (not failed). Julia frameworks require Julia installed.
+JAX, NumPyro and DisCoPy are **core** dependencies (`uv sync`); PyTorch needs the `torch` extra (`uv sync --extra torch`; torch>=2.13.0 resolves GHSA-rrmf-rvhw-rf47), bnlearn stays manual, and Stan needs `uv sync --extra stan` plus a CmdStan toolchain. If the environment is incomplete, the affected scripts are **skipped** (not failed). Julia frameworks require Julia installed.
 
 Two behaviours introduced in v3.2.0: `_merge_prior_execution_summary` (`src/execute/processor.py`) folds a previously written `execution_summary.json` into the current results so the durable summary covers every input folder rather than the last one processed; and script discovery only considers `.py`/`.jl` files, so companion artifacts such as `<stem>_stan.stan` and `<stem>_stan_data.json` are never treated as executables.
 
@@ -59,7 +59,7 @@ Continuous (linear-Gaussian) models reach Step 12 only for the backends that ren
 
 ### Key Capabilities
 - Multi-framework execution support
-- **Skip vs fail**: JAX, NumPyro and DisCoPy are **core** dependencies; PyTorch and bnlearn are manual installs (excluded from the default lock, GHSA-rrmf-rvhw-rf47); Stan needs `uv sync --extra stan` plus a CmdStan toolchain. If the environment is incomplete, scripts are **skipped** (not run) and reported as "skipped" — they do not count as execution failures. Repair with `uv sync` (plus the manual installs above). Julia backends still require a local Julia install.
+- **Skip vs fail**: JAX, NumPyro and DisCoPy are **core** dependencies; PyTorch comes from the `torch` extra (GHSA-rrmf-rvhw-rf47 resolved in torch 2.13.0) and bnlearn is a manual install; Stan needs `uv sync --extra stan` plus a CmdStan toolchain. If the environment is incomplete, scripts are **skipped** (not run) and reported as "skipped" — they do not count as execution failures. Repair with `uv sync` (plus the extra/manual installs above). Julia backends still require a local Julia install.
 - **Committed Julia environments** with `JULIA_PROJECT` defaulting (see below)
 - Graceful degradation when frameworks unavailable
 - Automatic PyMDP package detection (distinguishes correct vs wrong package variants)
@@ -88,7 +88,7 @@ Both Julia backends run against **committed** environments checked into the repo
 
 ### Skip semantics
 
-A backend whose dependency is absent produces a **skipped** result (`skipped: true`) carrying an explicit dependency reason, not a failure. Skips are counted separately from failures in the step summary and are excluded from the failure threshold that determines step success — so the completion line reads, per model, in the shape `N succeeded, M skipped (dependency not installed)`. On a fully-provisioned run the remaining skips are the intentionally-unlocked optional backends (PyTorch, which is not locked while GHSA-rrmf-rvhw-rf47 is unpatched).
+A backend whose dependency is absent produces a **skipped** result (`skipped: true`) carrying an explicit dependency reason, not a failure. Skips are counted separately from failures in the step summary and are excluded from the failure threshold that determines step success — so the completion line reads, per model, in the shape `N succeeded, M skipped (dependency not installed)`. On a fully-provisioned run the remaining skips are the intentionally-unlocked optional backends (bnlearn; PyTorch on a plain `uv sync`, since the package ships in the `torch` extra).
 
 ### Exit-code contract
 

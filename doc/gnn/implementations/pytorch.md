@@ -28,9 +28,10 @@ shared generator `src/render/continuous_script.py` with the `pytorch` target. Th
 emitted script runs an online Kalman filter (closed-loop when `goal_mean` and
 `control_gain` are declared) and writes the continuous result schema (`beliefs` as
 posterior means, `posterior_cov`, `true_states_continuous`,
-`observations_continuous`, `controls`, `rmse_vs_true`). `torch` remains a manual
-install: the framework registry marks PyTorch `available: False` because the
-package is intentionally excluded from `pyproject.toml` (GHSA-rrmf-rvhw-rf47).
+`observations_continuous`, `controls`, `rmse_vs_true`). `torch` ships in the
+`torch` extra (`uv sync --extra torch`): the framework registry marks PyTorch
+available and rendering is codegen-only — torch is imported by the emitted
+script, not by the renderer (torch>=2.13.0 fixes GHSA-rrmf-rvhw-rf47).
 
 ## Model Initialization
 
@@ -101,16 +102,16 @@ for t in range(T):
 
 ## Installation
 
-`torch` is a manual install (intentionally excluded from `pyproject.toml` while
-GHSA-rrmf-rvhw-rf47 has no patched release):
+`torch` ships in the `torch` extra (torch>=2.13.0 resolves GHSA-rrmf-rvhw-rf47,
+the advisory that previously excluded it from the lock):
 
 ```bash
-uv pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
-# GPU (CUDA 12.x):
-uv pip install torch torchvision --index-url https://download.pytorch.org/whl/cu121
+uv sync --extra torch
+# Manual/GPU (CUDA 12.x) alternative:
+uv pip install "torch>=2.13" --index-url https://download.pytorch.org/whl/cu121
 ```
 
-`torch` is an optional dependency — the pipeline gracefully skips PyTorch steps if not installed. Check with:
+`torch` remains optional — with a plain `uv sync` the pipeline gracefully skips PyTorch steps. Check with:
 
 ```bash
 PYTHONPATH=src python -c "from execute.pytorch import is_pytorch_available; print(is_pytorch_available())"

@@ -5,9 +5,10 @@ Asserts:
   1. Every framework in ``FRAMEWORK_REGISTRY`` carries either an importable
      backend *or* an explicit ``available=False`` with a human-readable
      ``unavailable_reason`` string.
-  2. Requesting an intentionally unavailable framework (``bnlearn``,
-     ``pytorch``) raises ``ValueError`` with the documented security-reason
-     message via ``validate_framework_requested()``.
+  2. Requesting the intentionally unavailable framework (``bnlearn``) raises
+     ``ValueError`` with a documented, actionable reason via
+     ``validate_framework_requested()``. PyTorch left this set once
+     torch>=2.13.0 resolved GHSA-rrmf-rvhw-rf47.
 """
 
 from __future__ import annotations
@@ -33,17 +34,20 @@ from render.framework_registry import (
 # ── Framework definitions used across tests ────────────────────────────────
 
 # Frameworks that MUST be marked unavailable in the registry because their
-# Python dependency is intentionally absent from pyproject.toml.
-INTENTIONALLY_UNAVAILABLE: set[str] = {"bnlearn", "pytorch"}
+# Python dependency is intentionally absent from the default lock.
+INTENTIONALLY_UNAVAILABLE: set[str] = {"bnlearn"}
 
 # Frameworks that ARE importable (Python) or unconditionally available
 # (Julia/Stan code generation).  These should never be marked unavailable.
+# PyTorch joined this set when torch>=2.13.0 resolved GHSA-rrmf-rvhw-rf47
+# (the package ships in the ``torch`` extra).
 EXPECTED_AVAILABLE: set[str] = {
     "pymdp",
     "rxinfer",
     "activeinference_jl",
     "jax",
     "discopy",
+    "pytorch",
     "numpyro",
     "stan",
 }
@@ -159,8 +163,6 @@ class TestValidationGate:
         assert framework.lower() in msg.lower(), (
             f"Error message should mention framework name: {msg}"
         )
-        # Must mention the security advisory
-        assert "GHSA" in msg, f"Error message should mention GHSA advisory: {msg}"
         # Must mention how to enable
         assert "uv add" in msg.lower() or "enable" in msg.lower(), (
             f"Error message should suggest how to enable: {msg}"
@@ -172,16 +174,13 @@ class TestValidationGate:
         msg = str(exc_info.value)
         assert "bnlearn" in msg
         assert "pgmpy" in msg
-        assert "GHSA" in msg
         assert "uv add" in msg
 
-    def test_validate_pytorch_message_exact(self) -> None:
-        with pytest.raises(ValueError) as exc_info:
-            validate_framework_requested("pytorch")
-        msg = str(exc_info.value)
-        assert "pytorch" in msg or "PyTorch" in msg
-        assert "GHSA" in msg
-        assert "uv add" in msg
+    def test_validate_pytorch_is_available(self) -> None:
+        """PyTorch is registry-available: torch>=2.13.0 resolves
+        GHSA-rrmf-rvhw-rf47, so requesting it must not raise."""
+        validate_framework_requested("pytorch")
+
 
 
 class TestRealEnvironmentCheck:
@@ -214,7 +213,7 @@ class TestRealEnvironmentCheck:
     def test_unavailable_frameworks_are_not_importable(self) -> None:
         """Frameworks marked 'unavailable' should NOT be importable in a
         clean environment — confirms the gate is meaningful."""
-        # bnlearn → bnlearn module; pytorch → torch module
+        # bnlearn → bnlearn module
         for fw in INTENTIONALLY_UNAVAILABLE:
             available, _ = get_framework_availability(fw)
             assert available is False

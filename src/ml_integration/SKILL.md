@@ -56,8 +56,8 @@ frameworks = check_ml_frameworks()
 uv sync --extra ml-ai
 
 # Includes: transformers, scipy, scikit-learn
-# Note: torch is intentionally NOT in any extra (GHSA-rrmf-rvhw-rf47 unpatched);
-# install PyTorch manually if you need that backend.
+# Note: torch ships in its own `torch` extra (uv sync --extra torch;
+# torch>=2.13.0 resolves GHSA-rrmf-rvhw-rf47).
 ```
 
 ## Output
