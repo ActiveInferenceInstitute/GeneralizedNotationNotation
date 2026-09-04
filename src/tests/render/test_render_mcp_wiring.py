@@ -10,7 +10,7 @@ from __future__ import annotations
 
 import sys
 from pathlib import Path
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict
 
 import pytest
 
@@ -18,35 +18,21 @@ sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 from render import get_supported_frameworks, render_gnn_spec
 from render import mcp as render_mcp
-
-
-class _CapturingMCP:
-    def __init__(self) -> None:
-        self.tools: List[Tuple[str, Any, Dict[str, Any], str]] = []
-
-    def register_tool(
-        self,
-        name: str,
-        func: Any,
-        schema: Dict[str, Any],
-        description: str,
-        **_kwargs: Any,
-    ) -> None:
-        self.tools.append((name, func, schema, description))
+from tests.helpers import MCPTools
 
 
 @pytest.fixture(scope="module")
 def registered_tools() -> Dict[str, Any]:
-    mcp = _CapturingMCP()
+    mcp = MCPTools()
     render_mcp.register_tools(mcp)
-    return {name: func for name, func, _schema, _desc in mcp.tools}
+    return {name: entry["function"] for name, entry in mcp.tools.items()}
 
 
 @pytest.fixture(scope="module")
 def registered_tool_schemas() -> Dict[str, Dict[str, Any]]:
-    mcp = _CapturingMCP()
+    mcp = MCPTools()
     render_mcp.register_tools(mcp)
-    return {name: schema for name, _func, schema, _desc in mcp.tools}
+    return {name: entry["schema"] for name, entry in mcp.tools.items()}
 
 
 SAMPLE_GNN = (
@@ -63,6 +49,7 @@ def test_register_tools_emits_expected_set(registered_tools: Dict[str, Any]) -> 
         "process_render",
         "list_render_frameworks",
         "render_gnn_to_format",
+        "render_spec_to_format",
         "get_render_module_info",
     }
 

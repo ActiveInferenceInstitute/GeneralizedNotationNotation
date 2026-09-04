@@ -23,6 +23,7 @@ import pytest
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 from ml_integration import mcp as ml_mcp
+from tests.helpers import MCPTools
 
 
 class TestMLIntegrationMCPTools:
@@ -65,19 +66,12 @@ class TestMLIntegrationMCPTools:
     @pytest.mark.unit
     def test_register_tools_binds_ml_tools(self) -> None:
         """register_tools should bind the four ML integration tool names."""
-        registered: list[str] = []
-
-        class StubMCP:
-            def register_tool(
-                self, name: str, handler: Any, schema: Any, description: str, **kw: Any
-            ) -> None:
-                registered.append(name)
-
-        ml_mcp.register_tools(StubMCP())
+        mcp = MCPTools()
+        ml_mcp.register_tools(mcp)
         expected = {
             "process_ml_integration",
             "check_ml_frameworks",
             "list_ml_integration_targets",
             "get_ml_module_info",
         }
-        assert expected.issubset(set(registered))
+        assert expected.issubset(mcp.tools.keys())

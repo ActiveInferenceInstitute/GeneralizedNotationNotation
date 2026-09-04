@@ -26,6 +26,7 @@ import pytest
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 from security import mcp as security_mcp
+from tests.helpers import MCPTools
 
 
 class TestSecurityMCPTools:
@@ -156,19 +157,12 @@ class TestSecurityMCPTools:
     @pytest.mark.unit
     def test_register_tools_binds_security_tools(self) -> Any:
         """register_tools should bind the four expected tool names."""
-        registered: list[str] = []
-
-        class StubMCP:
-            def register_tool(
-                self, name: str, handler: Any, schema: Any, desc: str, **kw: Any
-            ) -> None:
-                registered.append(name)
-
-        security_mcp.register_tools(StubMCP())
+        mcp = MCPTools()
+        security_mcp.register_tools(mcp)
         expected = {
             "process_security",
             "scan_gnn_file",
             "get_security_report",
             "list_security_checks",
         }
-        assert expected.issubset(set(registered))
+        assert expected.issubset(mcp.tools.keys())

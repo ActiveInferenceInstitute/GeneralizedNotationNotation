@@ -25,6 +25,7 @@ import pytest
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 from research import mcp as research_mcp
+from tests.helpers import MCPTools
 
 
 class TestResearchMCPTools:
@@ -119,19 +120,12 @@ class TestResearchMCPTools:
     @pytest.mark.unit
     def test_register_tools_binds_research_tools(self) -> Any:
         """register_tools should bind the four research tool names."""
-        registered: list[str] = []
-
-        class StubMCP:
-            def register_tool(
-                self, name: str, handler: Any, schema: Any, description: str, **kw: Any
-            ) -> None:
-                registered.append(name)
-
-        research_mcp.register_tools(StubMCP())
+        mcp = MCPTools()
+        research_mcp.register_tools(mcp)
         expected = {
             "process_research",
             "list_research_topics",
             "read_research_results",
             "get_research_module_info",
         }
-        assert expected.issubset(set(registered))
+        assert expected.issubset(mcp.tools.keys())

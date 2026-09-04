@@ -20,12 +20,6 @@ class TestPyMDPVisualizer:
     """Test suite for PyMDP visualizer functionality."""
 
     @pytest.fixture
-    def temp_output_dir(self) -> Any:
-        """Create a temporary directory for test outputs."""
-        with tempfile.TemporaryDirectory() as temp_dir:
-            yield Path(temp_dir)
-
-    @pytest.fixture
     def visualizer(self, temp_output_dir: Any) -> Any:
         """Create a PyMDPVisualizer instance for testing."""
         return PyMDPVisualizer(output_dir=temp_output_dir, show_plots=False)

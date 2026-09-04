@@ -15,44 +15,28 @@ import json
 import shutil
 import sys
 from pathlib import Path
-from typing import Any, Dict, Generator, List, Tuple
+from typing import Any, Dict, Generator
 
 import pytest
 
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 from execute import mcp as execute_mcp
-
-
-class _CapturingMCP:
-    """Minimal MCP instance that records the tools registered against it."""
-
-    def __init__(self) -> None:
-        self.tools: List[Tuple[str, Any, Dict[str, Any], str]] = []
-
-    def register_tool(
-        self,
-        name: str,
-        func: Any,
-        schema: Dict[str, Any],
-        description: str,
-        **_kwargs: Any,
-    ) -> None:
-        self.tools.append((name, func, schema, description))
+from tests.helpers import MCPTools
 
 
 @pytest.fixture(scope="module")
 def registered_tools() -> Dict[str, Any]:
-    mcp = _CapturingMCP()
+    mcp = MCPTools()
     execute_mcp.register_tools(mcp)
-    return {name: func for name, func, _schema, _desc in mcp.tools}
+    return {name: entry["function"] for name, entry in mcp.tools.items()}
 
 
 @pytest.fixture(scope="module")
 def registered_schemas() -> Dict[str, Dict[str, Any]]:
-    mcp = _CapturingMCP()
+    mcp = MCPTools()
     execute_mcp.register_tools(mcp)
-    return {name: schema for name, _func, schema, _desc in mcp.tools}
+    return {name: entry["schema"] for name, entry in mcp.tools.items()}
 
 
 SAMPLE_GNN = (

@@ -65,13 +65,6 @@ def test_data() -> Any:
 
 
 @pytest.fixture
-def temp_output_dir() -> Any:
-    """Create a temporary directory for test outputs."""
-    with tempfile.TemporaryDirectory() as temp_dir:
-        yield Path(temp_dir)
-
-
-@pytest.fixture
 def visualizer(temp_output_dir: Any) -> Any:
     """Create a PyMDPVisualizer for testing."""
     return PyMDPVisualizer(output_dir=temp_output_dir, show_plots=False)
