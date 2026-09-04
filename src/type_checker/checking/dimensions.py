@@ -7,6 +7,7 @@ and validate Active Inference POMDP dimensional constraints (A, B, C, D).
 
 from __future__ import annotations
 
+import ast
 import logging
 import re
 from dataclasses import dataclass
@@ -204,8 +205,302 @@ def extract_gnn_dimensions(content: str) -> Dict[str, Any]:
         _logger.log(5, diagnostic)
     return dimensions
 
+_ROW_PREV_CONVENTION = re.compile(
+    r"rows?\s+(?:are|index)\s+(?:the\s+)?previous", re.IGNORECASE
+)
+_COL_NEXT_CONVENTION = re.compile(
+    r"columns?\s+(?:are|index)\s+(?:the\s+)?next", re.IGNORECASE
+)
+_ROW_NEXT_CONVENTION = re.compile(
+    r"rows?\s+(?:are|index)\s+(?:the\s+)?next", re.IGNORECASE
+)
+_COL_PREV_CONVENTION = re.compile(
+    r"columns?\s+(?:are|index)\s+(?:the\s+)?previous", re.IGNORECASE
+)
+_COL_ACTION_CONVENTION = re.compile(
+    r"columns?\s+(?:are|index)\s+(?:the\s+)?actions?\b", re.IGNORECASE
+)
+_STOCHASTICITY_TOLERANCE = 1e-6
 
-def validate_dimension_compatibility(variables: Dict[str, Any]) -> Dict[str, Any]:
+
+def _declaration_orientation(comment: str) -> str | None:
+    """Classify a B declaration comment as canonical, old, or unspecified.
+
+    Canonical means the declared axis order starts with the next-state axis
+    (``B[next_state, previous_state, action]``); old means the previous-state
+    axis is declared first.
+    """
+    if not comment:
+        return None
+    lowered = comment.lower().replace("_", " ")
+    idx_next = lowered.find("next")
+    idx_prev = lowered.find("prev")
+    if idx_next == -1 or idx_prev == -1:
+        return None
+    return "canonical" if idx_next < idx_prev else "old"
+
+
+def _comment_orientation(comment: str) -> str | None:
+    """Classify an InitialParameterization B comment's claimed slice layout.
+
+    Old orientation: per-action slices claiming ``rows are previous states,
+    columns are next states``. Canonical claims: per-action slices with
+    ``rows are next states, columns are previous states``, or next-state-
+    outer slices (the GridWorld nesting) with ``rows are previous states,
+    columns are actions``.
+    """
+    has_row_prev = _ROW_PREV_CONVENTION.search(comment) is not None
+    has_row_next = _ROW_NEXT_CONVENTION.search(comment) is not None
+    has_col_next = _COL_NEXT_CONVENTION.search(comment) is not None
+    has_col_prev = _COL_PREV_CONVENTION.search(comment) is not None
+    has_col_action = _COL_ACTION_CONVENTION.search(comment) is not None
+    claims_old = has_row_prev and has_col_next
+    claims_canonical = (has_row_next and has_col_prev) or (
+        has_row_prev and has_col_action
+    )
+    if claims_old and not claims_canonical:
+        return "old"
+    if claims_canonical and not claims_old:
+        return "canonical"
+    return None
+
+
+
+
+def _numeric_matrix(rows: Any) -> list[list[float]] | None:
+    """Return a rectangular float matrix, or None when the literal is not one."""
+    if not isinstance(rows, list) or not rows:
+        return None
+    matrix: list[list[float]] = []
+    width: int | None = None
+    for row in rows:
+        if not isinstance(row, list):
+            return None
+        values: list[float] = []
+        for cell in row:
+            if isinstance(cell, bool) or not isinstance(cell, (int, float)):
+                return None
+            values.append(float(cell))
+        if width is None:
+            width = len(values)
+        elif len(values) != width:
+            return None
+        matrix.append(values)
+    return matrix
+
+
+def _all_close_one(sums: list[float]) -> bool:
+    """Return True when every sum is within tolerance of 1.0."""
+    return all(abs(total - 1.0) <= _STOCHASTICITY_TOLERANCE for total in sums)
+
+
+def _b_orientation_verdict(values: Any) -> str:
+    """Classify nested B values by stochasticity of their per-action slices.
+
+    Returns ``"doubly"`` (every slice row- and column-stochastic),
+    ``"column"`` (column-stochastic only — canonical orientation),
+    ``"row"`` (row-stochastic only — old orientation under canonical
+    reading), ``"cross"`` (sums over the outer axis equal one per cell,
+    the GridWorld next-state-outer nesting), ``"neither"``, or
+    ``"invalid"`` (not a numeric nested matrix).
+    """
+    if (
+        isinstance(values, list)
+        and values
+        and isinstance(values[0], list)
+        and values[0]
+        and isinstance(values[0][0], list)
+    ):
+        raw_slices: list[Any] = list(values)
+    elif isinstance(values, list) and values and isinstance(values[0], list):
+        raw_slices = [values]
+    else:
+        return "invalid"
+
+    matrices: list[list[list[float]]] = []
+    for raw_slice in raw_slices:
+        matrix = _numeric_matrix(raw_slice)
+        if matrix is None:
+            return "invalid"
+        matrices.append(matrix)
+
+    row_stochastic = True
+    column_stochastic = True
+    for matrix in matrices:
+        row_sums = [sum(row) for row in matrix]
+        col_sums = [
+            sum(matrix[i][j] for i in range(len(matrix)))
+            for j in range(len(matrix[0]))
+        ]
+        if not _all_close_one(row_sums):
+            row_stochastic = False
+        if not _all_close_one(col_sums):
+            column_stochastic = False
+    if row_stochastic and column_stochastic:
+        return "doubly"
+    if column_stochastic:
+        return "column"
+
+    cross_consistent = False
+    if len(matrices) > 1 and len({(len(m), len(m[0])) for m in matrices}) == 1:
+        cross = [
+            [sum(m[i][j] for m in matrices) for j in range(len(matrices[0][0]))]
+            for i in range(len(matrices[0]))
+        ]
+        cross_consistent = _all_close_one(
+            [total for row in cross for total in row]
+        )
+    if row_stochastic:
+        # Degenerate models (e.g. prev-state-independent transitions) can be
+        # row-stochastic per slice while still summing to 1 over the outer
+        # (next_state) axis — canonically explainable, so only flag the data
+        # when no canonical reading exists.
+        return "row" if not cross_consistent else "cross"
+    return "cross" if cross_consistent else "neither"
+
+
+def _collect_braced_block(lines: list[str], start_idx: int) -> str | None:
+    """Return the balanced ``{...}`` block beginning at ``lines[start_idx]``."""
+    joined: list[str] = []
+    depth = 0
+    opened = False
+    for line in lines[start_idx:]:
+        for char in line:
+            if char == "{":
+                depth += 1
+                opened = True
+            elif char == "}":
+                depth -= 1
+        joined.append(line)
+        if opened and depth <= 0:
+            return "\n".join(joined)
+    return None
+
+
+def _parse_braced_nested_literal(block: str) -> Any:
+    """Parse a ``B={ ... }`` block body into nested Python lists."""
+    brace_start = block.find("{")
+    if brace_start == -1:
+        return None
+    inner = block[brace_start + 1 : block.rindex("}")]
+    cleaned = inner.replace("(", "[").replace(")", "]")
+    cleaned = re.sub(r",\s*(\])", r"\1", cleaned)
+    try:
+        return ast.literal_eval("[" + cleaned + "]")
+    except (ValueError, SyntaxError):
+        return None
+
+
+def _validate_b_orientation(
+    dims: Dict[str, list[int]],
+    b_evidence: Dict[str, Any],
+    strict: bool,
+    issues: list[str],
+    warnings: list[str],
+) -> None:
+    """Flag positive B orientation contradictions per the canonical order.
+
+    Canonical order is ``B[next_state, previous_state, action]`` = pymdp
+    1.0.0 ``B[s',s,a]``: per-action slices are written rows = next states,
+    columns = previous states, column-stochastic over next_state.
+
+    Errors (strict) / warnings (non-strict) are raised only for:
+      * comment-vs-comment contradiction (declaration vs parameterization),
+      * row-stochastic-only slices under the canonical reading.
+    Doubly-stochastic (orientation-ambiguous) data passes.
+    """
+    values = b_evidence.get("values")
+    if "B" not in dims or values is None:
+        return
+    verdict = _b_orientation_verdict(values)
+
+    declaration_orientation = _declaration_orientation(
+        str(b_evidence.get("declaration_comment") or "")
+    )
+    parameterization_orientation = _comment_orientation(
+        str(b_evidence.get("parameterization_comment") or "")
+    )
+    target = issues if strict else warnings
+    if (
+        declaration_orientation is not None
+        and parameterization_orientation is not None
+        and declaration_orientation != parameterization_orientation
+    ):
+        target.append(
+            "[GNN-E002] Transition matrix B: contradictory axis-order comments. "
+            f"The StateSpaceBlock declaration claims a {declaration_orientation} "
+            f"per-slice layout while the InitialParameterization comment claims "
+            f"{parameterization_orientation}. Canonical order is "
+            "B[next_state, previous_state, action] = pymdp 1.0.0 B[s',s,a]; "
+            "per-action slices are written rows = next states, columns = "
+            "previous states, column-stochastic over next_state. Align the "
+            "comments to the canonical order."
+        )
+    if verdict == "row":
+        target.append(
+            "[GNN-E002] Transition matrix B: per-action slices are "
+            "row-stochastic only (rows sum to 1, columns do not). Under the "
+            "canonical reading B[next_state, previous_state, action] each "
+            "slice must be column-stochastic: rows are next states, columns "
+            "are previous states, and each column (one previous state) sums "
+            "to 1 over next states. Transpose each slice (rows <-> cols)."
+        )
+
+
+def extract_b_matrix_evidence(content: str) -> Dict[str, Any]:
+    """Extract B matrix values plus orientation comments from GNN content.
+
+    Returns a dict with ``values`` (nested numeric lists parsed from the
+    ``InitialParameterization`` ``B={...}`` block, or ``None`` when absent
+    or unparseable), ``declaration_comment`` (the comment attached to the
+    ``B[...]`` StateSpaceBlock line), and ``parameterization_comment``
+    (the comment block preceding ``B=``).
+    """
+    evidence: Dict[str, Any] = {
+        "values": None,
+        "declaration_comment": "",
+        "parameterization_comment": "",
+    }
+    lines = content.splitlines()
+    section = ""
+    pending: list[str] = []
+    for line_number, raw_line in enumerate(lines):
+        stripped = raw_line.strip()
+        if stripped.startswith("## "):
+            section = stripped[3:].strip()
+            pending = []
+            continue
+        if not stripped:
+            continue
+        if stripped.startswith("#"):
+            pending.append(stripped[1:].strip())
+            continue
+        if section == "StateSpaceBlock" and stripped.startswith("B["):
+            inline = stripped.split("#", 1)
+            if len(inline) == 2:
+                pending.append(inline[1].strip())
+            evidence["declaration_comment"] = " ".join(
+                part for part in pending if part
+            )
+        elif section == "InitialParameterization" and re.match(r"^B\s*=", stripped):
+            evidence["parameterization_comment"] = " ".join(
+                part for part in pending if part
+            )
+            if "{" in stripped:
+                block = _collect_braced_block(lines, line_number)
+                if block is not None:
+                    evidence["values"] = _parse_braced_nested_literal(block)
+        pending = []
+    return evidence
+
+
+def validate_dimension_compatibility(
+    variables: Dict[str, Any],
+    *,
+    b_evidence: Dict[str, Any] | None = None,
+    strict: bool = False,
+) -> Dict[str, Any]:
+
     """Validate that matrix/tensor dimensions are compatible in a GNN model.
 
     Checks Active Inference POMDP constraints:
@@ -218,6 +513,12 @@ def validate_dimension_compatibility(variables: Dict[str, Any]) -> Dict[str, Any
     Args:
         variables: Dict mapping variable names to their dimension specs,
                    e.g. ``{"A": [3,3], "B": [3,3,3], "s": [3,1]}``.
+        b_evidence: Optional output of :func:`extract_b_matrix_evidence`
+                    (B matrix values plus the two orientation comments).
+                    When provided, B orientation/contradiction checks run
+                    on the matrix values and comments.
+        strict: When True, orientation contradictions are errors (in
+                ``issues``); otherwise they are warnings.
 
     Returns:
         Dict with keys: ``compatible`` (bool), ``issues`` (list), ``warnings`` (list),
@@ -289,6 +590,11 @@ def validate_dimension_compatibility(variables: Dict[str, Any]) -> Dict[str, Any
                     f"Prior D[{d_dims[0]}] length != hidden state s[{s_dims[0]},...] count. "
                     f"D must have one entry per hidden state."
                 )
+
+    # Check B orientation/contradiction when matrix values + comments are
+    # supplied (b_evidence). Only positive contradictions are flagged.
+    if b_evidence is not None:
+        _validate_b_orientation(dims, b_evidence, strict, issues, warnings)
 
     # Warn about very large dimensions (tractability)
     for name, d in dims.items():

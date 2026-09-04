@@ -25,9 +25,9 @@ _correlation_context = threading.local()
 
 # Import performance tracking from dedicated module.
 try:
-    from utils.performance_tracker import performance_tracker
+    from utils.performance_tracking import performance_tracker
 except ImportError:
-    from ..performance_tracker import performance_tracker
+    from ..performance_tracking import performance_tracker
 
 
 class CorrelationFormatter(logging.Formatter):

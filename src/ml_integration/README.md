@@ -91,7 +91,7 @@ When training is not possible (insufficient label variation), a per-feature summ
 | TensorFlow | Detection only |
 | JAX | Detection only |
 
-PyTorch is intentionally not locked in any pyproject extra while GHSA-rrmf-rvhw-rf47 has no patched release; users who need it install it manually. scikit-learn and scipy come from the `ml-ai` extra (`uv sync --extra ml-ai`, which also installs transformers).
+PyTorch ships in the dedicated `torch` extra (`uv sync --extra torch`; torch>=2.13.0 resolves GHSA-rrmf-rvhw-rf47); users without the extra see PyTorch reported unavailable. scikit-learn and scipy come from the `ml-ai` extra (`uv sync --extra ml-ai`, which also installs transformers).
 
 ## Dependencies
 

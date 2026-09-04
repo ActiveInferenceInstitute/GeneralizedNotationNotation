@@ -18,8 +18,9 @@ DEFAULT_SKIP_ALLOWLIST = {
     # committed RxInfer environment is unavailable (same contract as the
     # GridWorld cross-framework and cross-framework-analysis files above).
     "src/tests/render/test_stigmergic_multi_agent.py",
-    # Toolchain gates for backends that are intentionally not in the default
-    # lockfile: torch (GHSA-rrmf-rvhw-rf47) and cmdstanpy/CmdStan (``uv sync
+    # Toolchain gates for backends outside the default lockfile: torch
+    # (``uv sync --extra torch``; torch>=2.13.0 resolves GHSA-rrmf-rvhw-rf47
+    # but stays out of the default lock) and cmdstanpy/CmdStan (``uv sync
     # --extra stan`` + a compiled CmdStan). Rendering is always asserted;
     # only the execution half skips when the toolchain is absent.
     "src/tests/render/test_continuous_renderers.py",

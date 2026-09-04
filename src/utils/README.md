@@ -48,7 +48,7 @@ src/utils/
 │
 ├── # Resource & Performance
 ├── resource_manager.py              # Resource monitoring (get_current_memory_usage)
-├── performance_tracker.py           # PerformanceTracker, track_operation_standalone
+├── performance_tracking.py           # PerformanceTracker, track_operation_standalone
 ├── timeout_manager.py               # Timeout management
 ├── visualization_optimizer.py       # Visualization optimization
 │

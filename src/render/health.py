@@ -7,10 +7,10 @@ Provides:
   - RendererStatus: availability, version, import path
 
 Behaviour with the framework registry:
-  Frameworks that carry ``available=False`` in the registry (e.g. ``bnlearn``
-  and ``pytorch`` due to an unpatched GHSA) are reported as unavailable
-  *without* attempting an import.  This avoids confusing ``ImportError`` stack
-  traces from modules that are intentionally absent.
+  Frameworks that carry ``available=False`` in the registry (e.g. ``bnlearn``,
+  which stays out of the default lock) are reported as unavailable *without*
+  attempting an import.  This avoids confusing ``ImportError`` stack traces
+  from modules that are intentionally absent.
 """
 
 import importlib

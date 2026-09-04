@@ -880,8 +880,8 @@ ways depending on what went wrong.
 
 **A missing optional dependency skips a backend.** Step 12 runs a pre-flight check before
 executing Python framework scripts (`src/execute/processor.py`). If the backend's package
-is absent — PyTorch being the common case, since it is intentionally unlocked while
-GHSA-rrmf-rvhw-rf47 has no patched release — that backend is recorded as *skipped* with a
+is absent — bnlearn being the standing case, with PyTorch absent on a plain
+`uv sync` (the package ships in the `torch` extra) — that backend is recorded as *skipped* with a
 dependency reason rather than failed. The run continues, downstream visualization and
 reporting receive partial results from the backends that did run, and the logs say
 exactly which were skipped and why.

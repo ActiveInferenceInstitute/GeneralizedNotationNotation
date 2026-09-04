@@ -35,7 +35,7 @@ Every log record carries a `correlation_id` and a `step_name`.
 - **CRITICAL**: System-wide failures.
 
 ## Performance Tracking
-Integrated with `utils.performance_tracker`.
+Integrated with `utils.performance_tracking`.
 - Automatically logs memory usage (RSS) and duration for tracked operations.
 - Appends `[⏱️ duration | 🧠 memory]` to visual logs when available.
 

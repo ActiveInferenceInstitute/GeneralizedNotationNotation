@@ -40,7 +40,7 @@ except ImportError:
     np = cast(Any, None)
 
 # Import performance tracker.
-from utils.performance_tracker import PerformanceTracker
+from utils.performance_tracking import PerformanceTracker
 
 # Public shared result type.
 from ._shared import (

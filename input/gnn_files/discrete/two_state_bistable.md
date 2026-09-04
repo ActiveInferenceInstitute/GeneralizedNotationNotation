@@ -34,7 +34,7 @@ This model describes a minimal 2-state bistable POMDP:
 
 A[2,2,type=float]     # Noisy observation of state
 
-# Transition matrix: B[states_next, states_previous, actions]
+# Transition matrix: B[next_state, previous_state, actions]
 
 B[2,2,2,type=float]   # Action-dependent transitions
 
@@ -92,7 +92,7 @@ A={
   (0.2, 0.8)
 }
 
-# B: 2 actions. Action 0 = push left, action 1 = push right
+# B: 2 actions. Action 0 = push left, action 1 = push right. The transition tensor B is stored as (next_state, previous_state, action); per-action slices are column-stochastic: rows are next states, columns are previous states, and each column sums to 1 over next states.
 
 B={
   ( (0.8, 0.3), (0.2, 0.7) ),

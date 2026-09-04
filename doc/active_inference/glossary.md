@@ -52,9 +52,10 @@ This glossary provides definitions for key terms in Active Inference and the Fre
 ## C
 
 ### C Matrix/Vector
-**Definition**: Log prior preferences over observations, driving goal-directed behavior.  
+**Definition**: Real-valued log-preference weights over observations, driving goal-directed behavior. Not a probability distribution: entries are unnormalized, any real values are valid, and only differences between entries are meaningful. Consumers that need a distribution over observations apply softmax(C).  
 **Dimensions**: [num_observations] or [num_observations, T]  
-**Also known as**: Preference vector, goal specification
+**Also known as**: Preference vector, goal specification  
+**Syntax contract**: [GNN Syntax Reference — C vector semantics](../gnn/reference/gnn_syntax.md#c-vector-semantics)
 
 ### Complexity
 **Definition**: The KL divergence between posterior and prior beliefs: D_KL(Q(s)||P(s)).  
@@ -144,10 +145,9 @@ This glossary provides definitions for key terms in Active Inference and the Fre
 **Matrix**: A
 
 ### Log Preferences
-**Definition**: The C vector expressing preferred observations in log-probability form.
+**Definition**: The C vector expressing preferred observations as real-valued log-preference weights — unnormalized, any real values, only differences meaningful; consumers apply softmax(C) where a distribution over observations is needed. See [C Matrix/Vector](#c-matrixvector) and the [C vector semantics](../gnn/reference/gnn_syntax.md#c-vector-semantics) syntax contract.
 
 ---
-
 ## M
 
 ### Markov Blanket

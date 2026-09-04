@@ -44,7 +44,7 @@ This model describes a discrete POMDP agent that learns its observation model:
 
 A[3,3,type=float]    # Ground-truth observation model P(o|s); latent in the agent
 
-# Transition matrix: B[states_next, states_previous, actions] — known
+# Transition matrix: B[next_state, previous_state, actions] — known
 
 B[3,3,2,type=float]  # State transitions given previous state and action
 
@@ -103,7 +103,9 @@ A={
 }
 
 # B: 2 actions. Action 0 = cycle (1->2->3->1), action 1 = stay
-# Layout: B[next_state][previous_state][action]
+# The transition tensor B is stored as (next_state, previous_state, action):
+# the outer axis is the next state; within each slice, rows are previous
+# states and columns are actions.
 
 B={
   ( (0.1, 0.9), (0.0, 0.05), (0.9, 0.05) ),

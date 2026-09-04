@@ -24,6 +24,7 @@ from utils.pipeline_template import (
 # import it directly from the estimation package.
 from ..estimation.strategies import VariableMap, calculate_complexity
 from .dimensions import (
+    extract_b_matrix_evidence,
     extract_gnn_dimensions_with_diagnostics,
     validate_dimension_compatibility,
 )
@@ -295,6 +296,8 @@ class GNNTypeChecker:
                 "type_analysis": [],
             }
             hard_failure = False  # any exception / nothing-to-process (vs recoverable invalid files)
+            b_orientation_failed = False  # any [GNN-E002] B orientation/contradiction error
+            strict = bool(kwargs.get("strict", False))
 
             # Find GNN files across every registered spec extension (the
             # parser stack supports more than markdown — discovering only
@@ -314,11 +317,16 @@ class GNNTypeChecker:
                     try:
                         # Validate single file
                         validation_result = self.validate_single_gnn_file(
-                            gnn_file, verbose
+                            gnn_file, verbose, strict=strict
                         )
                         results["validation_results"].append(validation_result)
                         if not validation_result.get("valid", False):
                             results["success"] = False
+                        if any(
+                            "[GNN-E002]" in str(error)
+                            for error in validation_result.get("errors", [])
+                        ):
+                            b_orientation_failed = True
 
                         # Analyze types
                         type_analysis = self._analyze_types(gnn_file, verbose)
@@ -359,6 +367,13 @@ class GNNTypeChecker:
             if hard_failure:
                 log_step_error(logger, "Type checking failed")
                 return False
+            if strict and b_orientation_failed:
+                log_step_error(
+                    logger,
+                    "Type checking failed (strict mode: B orientation "
+                    "contradictions [GNN-E002] are errors)",
+                )
+                return False
             log_step_warning(
                 logger, "Type checking completed with warnings (some files invalid)"
             )
@@ -369,9 +384,8 @@ class GNNTypeChecker:
             return False
 
     def validate_single_gnn_file(
-        self, file_path: Path, verbose: bool = False
+        self, file_path: Path, verbose: bool = False, strict: bool = False
     ) -> Dict[str, Any]:
-        """Validate a single GNN file for type consistency."""
         try:
             with open(file_path, "r", encoding="utf-8") as f:
                 content = f.read()
@@ -413,7 +427,10 @@ class GNNTypeChecker:
                 validation_result["errors"].extend(dimension_diagnostics)
                 validation_result["valid"] = False
             if gnn_dims:
-                dim_check = validate_dimension_compatibility(gnn_dims)
+                b_evidence = extract_b_matrix_evidence(content)
+                dim_check = validate_dimension_compatibility(
+                    gnn_dims, b_evidence=b_evidence, strict=strict
+                )
                 validation_result["dimension_compatibility"] = dim_check
                 if not dim_check["compatible"]:
                     for issue in dim_check["issues"]:

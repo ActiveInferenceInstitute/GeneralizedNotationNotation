@@ -8,6 +8,51 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
 
 ## [Unreleased]
 
+### Added
+
+- **Headless extraction.** New `gnn extract FILE` CLI subcommand and
+  `python -m gnn.extract` module entry point print the POMDP extractor's
+  `to_dict()` payload as JSON. The wheel now ships the top-level `gnn`
+  package alongside the `src.*` packages, so both import surfaces work from
+  an installed wheel.
+- **Structured extraction errors.** The POMDP extractor gains
+  `on_error="lenient" | "raise" | "collect"`; failed parameter blocks are
+  never silently dropped — they are recorded with machine-readable codes
+  (`GNN-E002` shape mismatch, `GNN-E006` parameter-parse failure) in
+  `matrix_provenance` and `adapter_notes` in every mode. Every `to_dict()`
+  payload is stamped with `gnn_version` and `extraction_schema_version`
+  (`1.0.0`); `gnn parse --json` and `gnn validate --json` gain structured
+  `errors` arrays alongside the existing `warnings` strings.
+- **Canonical B orientation.** The transition tensor is documented and
+  enforced as `(next_state, previous_state, action)` with column-stochastic
+  slices over the next axis; declaration-order nesting is the canonical
+  InitialParameterization form and self-described per-action nesting is
+  accepted: the extractor records declared/claimed/detected
+  orientation metadata in `matrix_provenance["B"]`, new
+  `canonicalize_pomdp()` returns a canonically ordered copy, the type checker
+  reports declaration-vs-parameterization contradictions and row-stochastic-only
+  data (error under strict validation, warning otherwise;
+  doubly-stochastic data is accepted), and the six offender exemplars have
+  their parameterization comments reconciled with their declarations.
+- **Factor counts and dimension provenance.** `to_dict()` gains
+  `num_state_factors` / `num_observation_modalities` / `num_control_factors`
+  (bookkeeping variables excluded), per-descriptor `"role"` tags
+  (`"factor"` / `"bookkeeping"`) on the existing lists, and
+  `dimension_provenance` exposing which priority level produced each
+  dimension; all existing payload keys are unchanged.
+- **Passive-model C control.** Zero-C insertion for passive models is
+  guarded by a new `insert_default_c=True` flag (`False` reads the file
+  faithfully and leaves `C_vector` unset); the default behavior is unchanged.
+- **C and B specification documentation.** The syntax reference gains
+  normative "Canonical matrix orientation (B)" and "C vector semantics"
+  sections, with the Active Inference glossary and module notes aligned to
+  the log-preference definition of `C` (real-valued, unnormalized, consumers
+  apply softmax where a distribution is needed).
+- **PyTorch extra.** New `torch` optional group (`torch>=2.13.0`, which
+  resolves GHSA-rrmf-rvhw-rf47 — the advisory that previously kept torch out
+  of the lock). `uv sync --extra torch` provisions the Step 11 render + Step
+  12 execute PyTorch backend; the `all` group includes it.
+
 ### Changed
 
 - **Documentation accuracy sweep (root, `doc/`, `src/` module docs).** Every
@@ -23,6 +68,14 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
   render-only" (the previous "Stan is render-only" contract was stale since
   Stan gained its cmdstanpy executor in 3.2.0); the `CLAUDE.md`
   `processor.py` alternatives note corrected to the real 4 deviating modules.
+- **PyTorch re-enabled in the canonical registry.** `framework_registry.py`
+  marks PyTorch `available: True` (rendering is codegen-only — torch is
+  imported by the emitted script, not the renderer — and Step 12 keeps its
+  dynamic import gate); the availability/zero-skip tests, `doc/`,
+  `CLAUDE.md`, `SETUP_GUIDE.md`, and module docs now describe the
+  patched-torch reality. bnlearn stays a manual render-only backend (heavy
+  transitive deps via pgmpy→torch, no Step-12 executor) with its registry
+  reason reworded to the policy rationale.
 
 ### Refactored
 

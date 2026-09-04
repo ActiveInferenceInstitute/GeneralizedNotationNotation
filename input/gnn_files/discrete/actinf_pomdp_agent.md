@@ -23,7 +23,7 @@ This model describes a classic Active Inference agent for a discrete POMDP:
 # Likelihood matrix: A[observation_outcomes, hidden_states]
 A[3,3,type=float]   # Likelihood mapping hidden states to observations
 
-# Transition matrix: B[states_next, states_previous, actions]
+# Transition matrix: B[next_state, previous_state, actions]
 B[3,3,3,type=float]   # State transitions given previous state and action
 
 # Preference vector: C[observation_outcomes]
@@ -72,7 +72,7 @@ A={
   (0.05, 0.05, 0.9)
 }
 
-# B: 3 states x 3 previous states x 3 actions. Each action deterministically moves to a state. For each slice, rows are previous states, columns are next states. Each slice is a transition matrix corresponding to a different action selection.
+# B: 3 states x 3 previous states x 3 actions. Each action deterministically moves to a state. The transition tensor B is stored as (next_state, previous_state, action); per-action slices are column-stochastic: rows are next states, columns are previous states, and each column sums to 1 over next states. Each slice is a transition matrix corresponding to a different action selection.
 B={
   ( (1.0,0.0,0.0), (0.0,1.0,0.0), (0.0,0.0,1.0) ),
   ( (0.0,1.0,0.0), (1.0,0.0,0.0), (0.0,0.0,1.0) ),

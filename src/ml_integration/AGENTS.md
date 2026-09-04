@@ -78,7 +78,7 @@ Extracts the structural feature dict for a single GNN file.
 | TensorFlow | Detection only |
 | JAX | Detection only |
 
-**PyTorch note**: PyTorch is intentionally not locked in any pyproject optional group while GHSA-rrmf-rvhw-rf47 has no patched release. Users who need the PyTorch backend install it manually.
+**PyTorch note**: PyTorch ships in the dedicated `torch` extra (`uv sync --extra torch`; torch>=2.13.0 resolves GHSA-rrmf-rvhw-rf47, which previously kept it out of every pyproject group). Users without the extra see PyTorch reported unavailable.
 
 ---
 

@@ -33,7 +33,7 @@ from .logging.logging_utils import (
 from .logging.logging_utils import (
     setup_step_logging as new_setup_step_logging,
 )
-from .performance_tracker import PerformanceTracker, performance_tracker
+from .performance_tracking import PerformanceTracker, performance_tracker
 
 
 class PipelineLogger:

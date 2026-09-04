@@ -48,6 +48,37 @@ integration points in this repository.
 
 - **Visualisation** belongs to Step 16 (`src/analysis/pymdp/`), not Step 12.
 
+## B Tensor Axis Order And Stochasticity (Canonical Contract)
+
+The GNN transition tensor is stored in the pymdp 1.0.0 native axis order:
+
+- **Axis order**: `B[next_state, previous_state, action]` — identical to
+  pymdp 1.0.0 `B[f][s, v, u]` (see `pymdp/control.py`, "Each element `B[f][s, v, u]`
+  stores the probability of hidden state level `s` at the current time, given
+  hidden state level `v` and action `u` at the previous time").
+- **Column-stochasticity**: each per-action slice `B[:, :, a]` is
+  column-stochastic — rows are next states, columns are previous states, and
+  each column (one previous state) sums to 1 over next states. pymdp's
+  `Agent` validates this with `utils.validate_normalization(B[f], axis=1)`.
+- **InitialParameterization writing convention**: write `B={...}` so the
+  semantic tensor reads `B[next_state][previous_state][action]`. Two
+  equivalent layouts are accepted by the pipeline:
+  - next-state-outer (the `pomdp_gridworld_3x3.md` convention): the outer
+    axis is the next state; each slice has rows = previous states and
+    columns = actions;
+  - per-action-outer: one slice per action, each slice written with
+    rows = next states and columns = previous states, column-stochastic.
+  The declaration comment must state the canonical order, e.g.
+  `# Transition matrix: B[next_state, previous_state, actions]`.
+- **Enforcement**: `execute.pymdp.simulation._canonicalise_B` resolves the
+  stored orientation from `matrix_provenance["B"]` (`source_order` /
+  `detected_order` / `claimed_slice_convention`) first, then an explicit
+  `b_tensor_order`, then shape + stochasticity detection — it never
+  double-transposes an already-canonical tensor. The type checker
+  (`type_checker.checking.dimensions.validate_dimension_compatibility`,
+  code `GNN-E002`) flags comment-vs-comment orientation contradictions and
+  row-stochastic-only slices as errors in strict mode.
+
 ## Locally regression-tested Agent API
 
 Run:

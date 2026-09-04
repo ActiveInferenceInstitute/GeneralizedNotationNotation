@@ -32,7 +32,7 @@ The simplest Active Inference model demonstrating pure perception:
 # Generative model parameters
 
 A[2,2,type=float]    # Recognition/likelihood matrix: P(observation | hidden state)
-B[2,2,2,type=float]  # Transition matrix: B[states_next, states_previous, actions]
+B[2,2,2,type=float]  # Transition matrix: B[next_state, previous_state, actions]
 C[2,type=float]      # Preference vector over observations
 D[2,1,type=float]    # Prior belief over hidden states
 
@@ -66,7 +66,7 @@ A={
   (0.2, 0.8)
 }
 
-# Minimal transitions: action 0 = stay, action 1 = flip state
+# Minimal transitions: action 0 = stay, action 1 = flip state. The transition tensor B is stored as (next_state, previous_state, action); per-action slices are column-stochastic: rows are next states, columns are previous states, and each column sums to 1 over next states.
 
 B={
   ( (0.95, 0.05), (0.05, 0.95) ),

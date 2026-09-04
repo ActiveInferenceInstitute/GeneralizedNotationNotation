@@ -34,7 +34,7 @@ This model describes a fully observable Markov Decision Process (MDP):
 
 A[4,4,type=float]    # Observation model: identity (fully observable)
 
-# Transition matrix: B[states_next, states_previous, actions]
+# Transition matrix: B[next_state, previous_state, actions]
 
 B[4,4,4,type=float]  # State transitions given state and action
 
@@ -89,7 +89,7 @@ A={
   (0.0, 0.0, 0.0, 1.0)
 }
 
-# B: 4 actions. Action 0=stay, 1=go-to-1, 2=go-to-2, 3=go-to-3
+# B: 4 actions. Action 0=stay, 1=go-to-1, 2=go-to-2, 3=go-to-3. The transition tensor B is stored as (next_state, previous_state, action); per-action slices are column-stochastic: rows are next states, columns are previous states, and each column sums to 1 over next states.
 
 B={
   ( (0.9, 0.1, 0.0, 0.0), (0.1, 0.9, 0.0, 0.0), (0.0, 0.0, 0.9, 0.1), (0.0, 0.0, 0.1, 0.9) ),

@@ -254,6 +254,101 @@ CONTINUOUS; the normative rules and precedence order are in
 JAX, NumPyro, PyTorch, Stan and RxInfer.jl render and execute them; PyMDP,
 ActiveInference.jl, DisCoPy and bnlearn report render status `unsupported`.
 
+## Canonical matrix orientation (B)
+
+The transition tensor `B` is stored with semantic axis order
+**(next_state, previous_state, action)**: `B[s', s, a]` is the probability of
+moving to next state `s'` from previous state `s` under action `a`. This is
+the native order of pymdp 1.0.0 (`B[f][s, v, u]`) and matches the
+`StateSpaceBlock` declaration comment.
+
+In `InitialParameterization`, `B` is written in **declaration order**: the
+outer axis is `next_state`, and each next-state slice is a
+`(previous_state, action)` matrix with **rows = previous states** and
+**columns = actions**:
+
+```gnn
+## StateSpaceBlock
+B[3,3,2,type=float]   # Transition tensor: next_state, previous_state, action
+
+## InitialParameterization
+# B: The transition tensor B is stored as (next_state, previous_state, action):
+# the outer axis is the next state; within each slice, rows are previous
+# states and columns are actions.
+B={
+  ( (0.9, 0.1),
+    (0.2, 0.0),
+    (0.0, 0.0) ),   # next_state 0
+  ( (0.1, 0.0),
+    (0.6, 0.2),
+    (0.0, 0.2) ),   # next_state 1
+  ( (0.0, 0.9),
+    (0.2, 0.8),
+    (1.0, 0.8) )    # next_state 2
+}
+```
+
+The tensor is **column-stochastic over the `next_state` axis**: for every
+`(previous_state, action)` pair, the entries along the outer axis sum to 1
+(in the example above, summing the three slices position-by-position yields
+all ones). `input/gnn_files/pomdp_gridworld/pomdp_gridworld_3x3.md` is the
+canonical exemplar of this convention.
+
+**Accepted alternative (must be self-described).** A file may instead write
+`B` as one slice per **action**, with rows = next states and columns =
+previous states — an axis permutation of the same semantic tensor, not a
+different one. Such a file MUST say so in its `InitialParameterization`
+comment (as `input/gnn_files/discrete/actinf_pomdp_agent.md` does); the
+extractor records the claimed convention in `matrix_provenance["B"]` and
+downstream consumers normalize it.
+
+Consistency between the declaration and the parameterization is enforced by
+the extractor and the type checker:
+
+- The extractor parses the **declared** axis order (the `StateSpaceBlock`
+  comment), the **claimed** convention (the `InitialParameterization`
+  comment), and the orientation **detected** from slice row/column sums, and
+  records all three in `matrix_provenance["B"]`. Matrix data is stored exactly
+  as written; `canonicalize_pomdp(spec)` returns a copy re-expressed in the
+  canonical order for consumers that need it.
+- A contradiction between the declaration and the parameterization comment —
+  or data that is only row-stochastic — is a validation **ERROR** under strict
+  validation and a warning otherwise. **Doubly-stochastic data is accepted**:
+  when both row and column sums equal 1 the data is valid under either
+  orientation, so no verdict is issued.
+
+> **🔗 Cross-Reference**: terminology for `B` and the other discrete POMDP
+> matrices lives in the [Active Inference glossary](../../../doc/active_inference/glossary.md).
+
+## C vector semantics
+
+`C` is a **real-valued preference vector over observations** on a
+log-preference scale:
+
+- **Not a probability distribution.** Entries are log-preference weights, not
+  normalized probabilities. Any real values are valid; only *differences*
+  between entries are meaningful.
+- **Unnormalized by design.** Consumers that need a distribution over
+  observations apply `softmax(C)` to it (the ActiveInference.jl, NumPyro and
+  PyMDP consumers do exactly this).
+- A `C` that happens to be non-negative and sum to 1 is accepted, with a
+  type-checker note — it is read under the same semantics as any other
+  preference vector.
+
+```gnn
+## StateSpaceBlock
+C[3,type=float]       # Log-preferences over observations
+
+## InitialParameterization
+# C: 3 observations. Log-preference weights: any real values,
+# only differences matter; consumers softmax where a distribution is needed.
+C={(0.0, -1.0, -2.0)}
+```
+
+> **🔗 Cross-Reference**: see
+> [C Matrix/Vector](../../../doc/active_inference/glossary.md#c-matrixvector)
+> in the Active Inference glossary.
+
 ## Mathematical Operations
 
 ```gnn

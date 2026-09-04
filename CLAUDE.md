@@ -199,9 +199,9 @@ uv sync --extra scaling              # Distributed execution (dask, distributed,
 uv sync --all-extras                 # Everything
 ```
 
-Note: JAX, NumPyro, PyTorch, and DisCoPy are **core** dependencies installed by
-a plain `uv sync`; PyTorch is intentionally *not* locked while
-GHSA-rrmf-rvhw-rf47 has no patched torch release (see `pyproject.toml`), so the
-PyTorch backend requires a manual `torch` install. There is no separate
+Note: JAX, NumPyro, and DisCoPy are **core** dependencies installed by a plain
+`uv sync`; PyTorch ships in the dedicated `torch` extra
+(`uv sync --extra torch`; torch>=2.13.0 resolves GHSA-rrmf-rvhw-rf47, which
+previously kept torch out of the default lock). There is no separate
 `llm`/`visualization`/`inference`/`execution-frameworks` extra — those packages
 are part of core or of the named groups above.

@@ -27,7 +27,7 @@
 
 ### Key Capabilities
 - Multi-framework execution support
-- **Skip vs fail**: JAX, NumPyro, and DisCoPy are **core** dependencies (repair with `uv sync`); if the environment is incomplete, scripts are **skipped** (not run) and reported as "skipped" — they do not count as execution failures. PyTorch is intentionally not locked as a default dependency while GHSA-rrmf-rvhw-rf47 has no patched torch release: install `torch` manually (`uv add torch`) or the PyTorch backend is reported skipped. Stan needs `uv sync --extra stan` plus a CmdStan toolchain. Julia backends still require a local Julia install.
+- **Skip vs fail**: JAX, NumPyro, and DisCoPy are **core** dependencies (repair with `uv sync`); if the environment is incomplete, scripts are **skipped** (not run) and reported as "skipped" — they do not count as execution failures. PyTorch ships in the `torch` extra (`uv sync --extra torch`; torch>=2.13.0 resolves GHSA-rrmf-rvhw-rf47) — without it the PyTorch backend is reported skipped. Stan needs `uv sync --extra stan` plus a CmdStan toolchain. Julia backends still require a local Julia install.
 - Graceful degradation when frameworks unavailable
 - Automatic PyMDP package detection (distinguishes correct vs wrong package variants)
 - Path collection with deduplication (prevents nested directory issues)

@@ -24,7 +24,7 @@ This document provides a comprehensive assessment of the enhanced `0_template.py
 - **Error Recovery System** (`utils.error_recovery`) - Intelligent error handling with auto-fix
 - **Resource Manager** (`utils.resource_manager`) - Memory and performance tracking
 - **Enhanced Logging** (`utils.logging_utils`) - Correlation-based structured logging
-- **Performance Tracker** (`utils.performance_tracker`) - Operation timing and metrics
+- **Performance Tracker** (`utils.performance_tracking`) - Operation timing and metrics
 - **Enhanced Argument Parser** (`utils.argument_utils`) - Standardized argument handling
 - **Pipeline Configuration** (`pipeline.config`) - Centralized configuration management
 

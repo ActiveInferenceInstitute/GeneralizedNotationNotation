@@ -786,6 +786,25 @@ python src/main.py --help
 
 The GNN ecosystem includes tools for model development, validation, rendering, and analysis. They are primarily invoked through the `src/main.py` pipeline script. The project also provides a **CLI** (`gnn`), **LSP** support, a local **REST API**, and MCP tools for model-context integration. Use the live registry and [AGENTS.md](./AGENTS.md) for current module and tool details; this page intentionally avoids embedding volatile counts.
 
+### ⚡ Headless extraction
+
+Extract a structured POMDP summary from a GNN file as JSON without running the
+full pipeline — useful in scripts, tests, and CI:
+
+```bash
+# Via the gnn CLI
+gnn extract input/gnn_files/discrete/actinf_pomdp_agent.md
+
+# Or as a module
+python -m gnn.extract input/gnn_files/discrete/actinf_pomdp_agent.md
+```
+
+Both print the POMDP extractor's payload as JSON, stamped with
+`extraction_schema_version` (currently `1.0.0`). The stability promise: within
+an `extraction_schema_version`, existing payload keys are not removed or
+renamed — new keys may appear, so consumers can parse the output without
+re-reading the source.
+
 ### ✅ Type Checker and Resource Estimator
 
 The **GNN Type Checker** (pipeline step 5) helps validate GNN files and estimates computational resources.
@@ -937,10 +956,10 @@ If you use [uv](https://github.com/astral-sh/uv) (`uv sync` / `uv run`), prefer 
 
 **1️⃣ Prerequisites**
 
-Ensure you have **Python 3.11+** installed:
+GNN requires **Python >= 3.11, < 3.15** (`requires-python = ">=3.11,<3.15"`); Python 3.14 is supported:
 
 ```bash
-python --version  # Should show 3.11 or higher
+python --version  # Must be >= 3.11 and < 3.15
 ```
 
 **2️⃣ Clone Repository**
@@ -1022,7 +1041,7 @@ xdg-open output/20_website_output/index.html  # Linux
 ```bash
 # Check Python version
 python --version
-# If < 3.11, install Python 3.11+ from python.org
+# Supported: Python >= 3.11, < 3.15 (3.14 included) — install from python.org if out of range
 ```
 
 **📦 Dependency Issues**

@@ -73,9 +73,7 @@ with `uv sync --extra <group>` or together with `uv sync --all-extras`):
 
 - **Packages**: `transformers`, `scipy`, `scikit-learn`
 - **Use case**: Deep learning and scientific computing beyond the core Step 12
-  backends (PyTorch is intentionally not locked as a dependency while
-  GHSA-rrmf-rvhw-rf47 has no patched release; install `torch` manually if you
-  need the PyTorch backend)
+  backends (PyTorch lives in its own `torch` extra — see group 10 — not here)
 - **Installation**: `uv sync --extra ml-ai`
 
 ### 4. **audio** - Audio Processing & Sonification
@@ -118,7 +116,16 @@ with `uv sync --extra <group>` or together with `uv sync --all-extras`):
   (needs a C++ compiler and `make`). Without a toolchain Step 12 reports Stan
   scripts as `skipped`, never as failed.
 
-### 10. **all** - Everything
+### 10. **torch** - PyTorch Backend
+
+- **Packages**: `torch` (>= 2.13.0, also included in `all`)
+- **Use case**: Step 11 rendering and Step 12 execution of the PyTorch
+  backend (discrete tensor POMDPs and native continuous linear-Gaussian
+  models). torch>=2.13.0 resolves GHSA-rrmf-rvhw-rf47 — the advisory that
+  previously kept torch out of the default lock.
+- **Installation**: `uv sync --extra torch`
+
+### 11. **all** - Everything
 
 - **Packages**: union of every group above
 - **Installation**: `uv sync --all-extras`
@@ -132,8 +139,9 @@ with `uv sync --extra <group>` or together with `uv sync --all-extras`):
 > `julia --project=<dir> -e 'using Pkg; Pkg.instantiate()'` once per project.
 > `activeinference_jl/Project.toml` pins `Distributions < 0.25.126` because
 > DistributionsAD 0.6.58 does not precompile against newer releases.
-> PyTorch is intentionally not locked (GHSA-rrmf-rvhw-rf47); verify PyTorch
-> renders with `uv run --with torch python <script>`.
+> PyTorch ships in the `torch` extra (`uv sync --extra torch`; torch>=2.13.0
+> resolves GHSA-rrmf-rvhw-rf47); rendering is codegen-only and Step 12 skips
+> the backend gracefully when the package is absent.
 
 ## Installation Methods
 

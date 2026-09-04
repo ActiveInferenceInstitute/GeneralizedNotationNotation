@@ -37,7 +37,7 @@ This model describes a 3-armed bandit as a degenerate POMDP:
 
 A[3,3,type=float]     # Reward likelihood given context state
 
-# Transition matrix: B[states_next, states_previous, actions]
+# Transition matrix: B[next_state, previous_state, actions]
 
 B[3,3,3,type=float]   # Context transitions (mostly identity — context is sticky)
 
@@ -93,7 +93,7 @@ A={
   (0.6, 0.1, 0.2)
 }
 
-# B: Context is sticky regardless of action (arms don't change the world)
+# B: Context is sticky regardless of action (arms don't change the world). The transition tensor B is stored as (next_state, previous_state, action); per-action slices are column-stochastic: rows are next states, columns are previous states, and each column sums to 1 over next states.
 
 B={
   ( (0.9, 0.05, 0.05), (0.05, 0.9, 0.05), (0.05, 0.05, 0.9) ),

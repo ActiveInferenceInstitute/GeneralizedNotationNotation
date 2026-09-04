@@ -180,14 +180,21 @@ def _extract_dimensions(
     if B_raw is not None:
         arr = np.asarray(B_raw)
         if arr.ndim == 3:
-            # assume (action, prev, next) or (next, prev, action)
-            if arr.shape[0] == num_states and arr.shape[1] == num_states:
+            # Canonical order is (next_state, previous_state, action) =
+            # pymdp 1.0.0 B[s',s,a] (see doc/pymdp/pymdp_1_0_0_alignment_matrix.md).
+            # Prefer matrix_provenance canonical_order when present: it marks
+            # a tensor already in canonical order, so the action axis is
+            # last. The shape match below remains the documented fallback
+            # for specs without provenance.
+            provenance_b = (gnn_spec.get("matrix_provenance") or {}).get("B") or {}
+            if provenance_b.get("canonical_order") or provenance_b.get("source_order"):
+                num_actions = int(arr.shape[-1])
+            elif arr.shape[0] == num_states and arr.shape[1] == num_states:
                 num_actions = int(arr.shape[2])
             else:
                 num_actions = int(arr.shape[0])
         elif arr.ndim == 2:
             num_actions = 1
-
     return int(num_obs), int(num_states), int(max(num_actions, 1))
 
 

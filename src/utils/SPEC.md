@@ -34,7 +34,7 @@ Argument parsing and validation: `ArgumentParser.parse_step_arguments`, `build_s
 ### 4. config_loader.py
 Pipeline configuration management: `load_config`, `get_config_value`, `set_config_value`, `validate_config`.
 
-### 5. dependency_validator.py / performance_tracker.py
+### 5. dependency_validator.py / performance_tracking.py
 Dependency validation (`validate_pipeline_dependencies`, `check_optional_dependencies`, `get_dependency_status`) and performance tracking (`PerformanceTracker.track_operation`, `track_operation_standalone`).
 
 ## Import Patterns

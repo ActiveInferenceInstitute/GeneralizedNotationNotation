@@ -166,7 +166,7 @@ See [src/AGENTS.md](../../src/AGENTS.md) for complete pipeline documentation.
 | Expected Free Energy | G, EFE | Future free energy for policies |
 | Likelihood Matrix | A | P(o\|s) - observations given states |
 | Transition Matrix | B | P(s'\|s,a) - state transitions |
-| Preference Vector | C | ln P(o) - preferred observations |
+| Preference Vector | C | log-preference weights over `o` — unnormalized, any real values; consumers apply softmax |
 | Initial State Prior | D | P(s₀) - initial belief |
 | Precision | γ, β | Inverse variance / confidence |
 
