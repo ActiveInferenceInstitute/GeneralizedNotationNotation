@@ -7,6 +7,7 @@ descriptions) plus step config lookup and argument validation.
 """
 
 import argparse
+import sys
 from pathlib import Path
 from types import MappingProxyType
 from typing import Any, Dict, List, Optional
@@ -378,9 +379,29 @@ class StepConfiguration:
         return cls.STEP_CONFIGS.get(step_name, {})
 
     @classmethod
-    def validate_step_args(cls, step_name: str, args: argparse.Namespace) -> List[str]:
-        """Validate arguments for a specific step."""
-        errors: list[Any] = []
+    def validate_step_args(
+        cls,
+        step_name: str,
+        args: argparse.Namespace,
+        project_root: Optional[Path] = None,
+    ) -> List[str]:
+        """Validate arguments for a specific step.
+
+        Args:
+            step_name: Step identifier (e.g. ``"16_analysis"``).
+            args: Parsed argument namespace to validate. Missing relative
+                input paths are repaired in place when a project-root-relative
+                location exists (historical behavior).
+            project_root: Explicit project root used to resolve relative
+                input paths that do not exist as given. When omitted, the
+                caller's frame is inspected for a file directly inside a
+                ``src/`` directory and its grandparent is used (legacy
+                behavior, kept for existing callers).
+
+        Returns:
+            Human-readable validation errors; empty when the arguments are valid.
+        """
+        errors: list[str] = []
         config = cls.get_step_config(step_name)
 
         if not config:
@@ -395,47 +416,54 @@ class StepConfiguration:
                 )
 
         # Validate path arguments exist if they should
-        path_args: list[Any] = ["target_dir", "output_dir", "ontology_terms_file"]
+        path_args: list[str] = ["target_dir", "output_dir", "ontology_terms_file"]
+        caller_file: Optional[Path] = None
+        if project_root is None and hasattr(sys, "_getframe"):
+            try:
+                caller_file = Path(sys._getframe(1).f_code.co_filename)
+            except (ValueError, AttributeError):
+                caller_file = None
         for arg_name in path_args:
             if hasattr(args, arg_name):
                 arg_value = getattr(args, arg_name)
                 if arg_value and isinstance(arg_value, Path):
                     # Only validate existence for input paths, not output paths
                     if arg_name in ["target_dir", "ontology_terms_file"]:
-                        # Try to resolve path relative to project root if not found
                         if not arg_value.exists():
-                            # Check if we're running from src directory and path is relative to project root
-                            import sys
-
-                            if hasattr(sys, "_getframe"):
-                                try:
-                                    current_file = Path(
-                                        sys._getframe(1).f_code.co_filename
-                                    )
-                                    if (
-                                        current_file.name.endswith(".py")
-                                        and current_file.parent.name == "src"
-                                    ):
-                                        project_root = current_file.parent.parent
-                                        project_path = project_root / arg_value.name
-                                        if project_path.exists():
-                                            # Update the argument with the correct path
-                                            setattr(args, arg_name, project_path)
-                                        else:
-                                            errors.append(
-                                                f"Path does not exist for {step_name}: {arg_value}"
-                                            )
-                                    else:
-                                        errors.append(
-                                            f"Path does not exist for {step_name}: {arg_value}"
-                                        )
-                                except (ValueError, AttributeError):
-                                    errors.append(
-                                        f"Path does not exist for {step_name}: {arg_value}"
-                                    )
+                            resolved = cls._resolve_missing_input_path(
+                                arg_value,
+                                project_root=project_root,
+                                caller_file=caller_file,
+                            )
+                            if resolved is not None:
+                                setattr(args, arg_name, resolved)
                             else:
                                 errors.append(
                                     f"Path does not exist for {step_name}: {arg_value}"
                                 )
 
         return errors
+
+    @staticmethod
+    def _resolve_missing_input_path(
+        arg_value: Path,
+        *,
+        project_root: Optional[Path],
+        caller_file: Optional[Path],
+    ) -> Optional[Path]:
+        """Resolve a nonexistent relative input path against a project root.
+
+        Returns the corrected path when it exists, else ``None``. With an
+        explicit *project_root* the candidate is ``project_root / name``;
+        legacy mode instead requires *caller_file* to live directly inside a
+        ``src/`` directory and tries its grandparent.
+        """
+        if project_root is not None:
+            candidate = project_root / arg_value.name
+            return candidate if candidate.exists() else None
+        if caller_file is None:
+            return None
+        if not (caller_file.name.endswith(".py") and caller_file.parent.name == "src"):
+            return None
+        project_path = caller_file.parent.parent / arg_value.name
+        return project_path if project_path.exists() else None

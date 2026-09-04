@@ -10,10 +10,11 @@ License: MIT
 """
 
 import hashlib
+import importlib
 import logging
 import time
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Type, Union
+from typing import Any, Dict, List, Optional, Type, Union, cast
 
 from .common import (
     BaseGNNParser,
@@ -213,6 +214,9 @@ class UnifiedGNNParser:
         """
         Detect format from file content analysis.
 
+        Reads the first 2000 characters of the file and applies the shared
+        :func:`detect_gnn_format_from_content` heuristic.
+
         Args:
             file_path: Path to analyze
 
@@ -220,96 +224,13 @@ class UnifiedGNNParser:
             Detected GNNFormat
         """
         try:
-            # Read a sample of the file content
-            content = file_path.read_text(encoding="utf-8", errors="ignore")[:2000]
-            content_lower = content.lower()
-
-            # Check for specific format indicators
-            if content.strip().startswith("<?xml"):
-                if "pnml" in content_lower or "petri" in content_lower:
-                    return GNNFormat.PNML
-                elif "xsd" in content_lower or "schema" in content_lower:
-                    return GNNFormat.XSD
-                else:
-                    return GNNFormat.XML
-
-            elif content.strip().startswith("{") or content.strip().startswith("["):
-                return GNNFormat.JSON
-
-            elif "##" in content and any(
-                section in content
-                for section in ["GNNSection", "ModelName", "StateSpaceBlock"]
-            ):
-                return GNNFormat.MARKDOWN
-
-            elif "package" in content and "import cats" in content:
-                return GNNFormat.SCALA
-
-            elif content.startswith("theory") or "imports Main" in content_lower:
-                return GNNFormat.ISABELLE
-
-            elif "Require Import" in content:
-                return GNNFormat.COQ
-
-            elif "import" in content and (
-                "mathlib" in content_lower or ".lean" in content_lower
-            ):
-                return GNNFormat.LEAN
-
-            elif content.startswith("module") and "where" in content:
-                return GNNFormat.HASKELL
-
-            elif "EXTENDS" in content or "VARIABLES" in content:
-                return GNNFormat.TLA_PLUS
-
-            elif "data" in content and ":" in content and "Set" in content:
-                return GNNFormat.AGDA
-
-            elif "def " in content and "jax" in content_lower:
-                return GNNFormat.PYTHON
-
-            elif "load(" in content and (
-                "maxima" in content_lower or ".mac" in content_lower
-            ):
-                return GNNFormat.MAXIMA
-
-            elif (
-                "::=" in content or "<rule>" in content_lower
-            ) and "grammar" in content_lower:
-                if "ebnf" in content_lower:
-                    return GNNFormat.EBNF
-                else:
-                    return GNNFormat.BNF
-
-            elif "syntax" in content_lower and (
-                "yaml" in content_lower or "---" in content
-            ):
-                return GNNFormat.YAML
-
-            elif (
-                "message" in content and "protobuf" in content_lower
-            ) or ".proto" in content_lower:
-                return GNNFormat.PROTOBUF
-
-            elif "sig" in content and "alloy" in content_lower:
-                return GNNFormat.ALLOY
-
-            elif "schema" in content_lower and (
-                "\\begin" in content or "\\end" in content
-            ):
-                return GNNFormat.Z_NOTATION
-
-            elif "ASN1" in content or "BEGIN" in content and "END" in content:
-                return GNNFormat.ASN1
-
-            # Default to markdown for GNN files
-            return GNNFormat.MARKDOWN
-
+            sample = file_path.read_text(encoding="utf-8", errors="ignore")[:2000]
         except Exception as e:
             logger.debug(
                 f"Format detection from content failed, defaulting to MARKDOWN: {e}"
             )
             return GNNFormat.MARKDOWN
+        return detect_gnn_format_from_content(sample)
 
     def _get_parser(self, format: GNNFormat) -> BaseGNNParser:
         """
@@ -350,6 +271,9 @@ class UnifiedGNNParser:
         """
         Get the parser class for a specific format.
 
+        Parser modules are imported lazily (one entry in ``_PARSER_CLASS_PATHS``
+        per format) to avoid circular imports and heavy import-time cost.
+
         Args:
             format: Format to get parser class for
 
@@ -359,129 +283,154 @@ class UnifiedGNNParser:
         Raises:
             ParseError: If no parser class is available
         """
-        # Import parsers dynamically to avoid circular imports
-        if format == GNNFormat.MARKDOWN:
-            from .markdown_parser import MarkdownGNNParser
-
-            return MarkdownGNNParser
-
-        elif format == GNNFormat.SCALA:
-            from .scala_parser import ScalaGNNParser
-
-            return ScalaGNNParser
-
-        elif format == GNNFormat.LEAN:
-            from .lean_parser import LeanGNNParser
-
-            return LeanGNNParser
-
-        elif format == GNNFormat.COQ:
-            from .coq_parser import CoqGNNParser
-
-            return CoqGNNParser
-
-        elif format == GNNFormat.PYTHON:
-            from .python_parser import PythonGNNParser
-
-            return PythonGNNParser
-
-        elif format == GNNFormat.BNF:
-            from .grammar_parser import BNFParser
-
-            return BNFParser
-
-        elif format == GNNFormat.EBNF:
-            from .grammar_parser import EBNFParser
-
-            return EBNFParser
-
-        elif format == GNNFormat.ISABELLE:
-            from .isabelle_parser import IsabelleParser
-
-            return IsabelleParser
-
-        elif format == GNNFormat.MAXIMA:
-            from .maxima_parser import MaximaParser
-
-            return MaximaParser
-
-        elif format == GNNFormat.XML:
-            from .xml_parser import XMLGNNParser
-
-            return XMLGNNParser
-
-        elif format == GNNFormat.PNML:
-            from .xml_parser import PNMLParser
-
-            return PNMLParser
-
-        elif format == GNNFormat.JSON:
-            from .json_parser import JSONGNNParser
-
-            return JSONGNNParser
-
-        elif format == GNNFormat.PROTOBUF:
-            from .protobuf_parser import ProtobufGNNParser
-
-            return ProtobufGNNParser
-
-        elif format == GNNFormat.YAML:
-            from .yaml_parser import YAMLGNNParser
-
-            return YAMLGNNParser
-
-        elif format == GNNFormat.XSD:
-            from .schema_parser import XSDParser
-
-            return XSDParser
-
-        elif format == GNNFormat.ASN1:
-            from .schema_parser import ASN1Parser
-
-            return ASN1Parser
-
-        elif format == GNNFormat.ALLOY:
-            from .schema_parser import AlloyParser
-
-            return AlloyParser
-
-        elif format == GNNFormat.Z_NOTATION:
-            from .schema_parser import ZNotationParser
-
-            return ZNotationParser
-
-        elif format == GNNFormat.TLA_PLUS:
-            from .temporal_parser import TLAParser
-
-            return TLAParser
-
-        elif format == GNNFormat.AGDA:
-            from .temporal_parser import AgdaParser
-
-            return AgdaParser
-
-        elif format == GNNFormat.HASKELL:
-            from .functional_parser import HaskellGNNParser
-
-            return HaskellGNNParser
-
-        elif format == GNNFormat.PICKLE:
-            from .binary_parser import PickleGNNParser
-
-            return PickleGNNParser
-
-        else:
+        entry = _PARSER_CLASS_PATHS.get(format)
+        if entry is None:
             raise ParseError(f"No parser available for format: {format.value}")
+        module_name, class_name = entry
+        module = importlib.import_module(module_name, __package__)
+        return cast("Type[BaseGNNParser]", getattr(module, class_name))
 
     def get_supported_formats(self) -> List[GNNFormat]:
         """Get list of all supported formats."""
         return list(GNNFormat)
 
-    def clear_parser_cache(self) -> Any:
+    def clear_parser_cache(self) -> None:
         """Clear the parser cache to free memory."""
         self.format_parsers.clear()
         logger.info("Parser cache cleared")
 
 
-# Re-export for convenience
-__all__: list[Any] = ["UnifiedGNNParser", "GNNFormat", "ParseResult"]
+def detect_gnn_format_from_content(content: str) -> GNNFormat:
+    """Infer the :class:`GNNFormat` of GNN content by structural markers.
+
+    Pure content-based format sniffing used when no filename/extension hint is
+    available. Unrecognized content defaults to ``GNNFormat.MARKDOWN``; the
+    function never raises (detection failures degrade to MARKDOWN).
+
+    Args:
+        content: GNN file content to analyze
+
+    Returns:
+        Best-effort detected GNNFormat (MARKDOWN fallback)
+    """
+    try:
+        content_lower = content.lower()
+
+        # Check for specific format indicators
+        if content.strip().startswith("<?xml"):
+            if "pnml" in content_lower or "petri" in content_lower:
+                return GNNFormat.PNML
+            elif "xsd" in content_lower or "schema" in content_lower:
+                return GNNFormat.XSD
+            else:
+                return GNNFormat.XML
+
+        elif content.strip().startswith("{") or content.strip().startswith("["):
+            return GNNFormat.JSON
+
+        elif "##" in content and any(
+            section in content
+            for section in ["GNNSection", "ModelName", "StateSpaceBlock"]
+        ):
+            return GNNFormat.MARKDOWN
+
+        elif "package" in content and "import cats" in content:
+            return GNNFormat.SCALA
+
+        elif content.startswith("theory") or "imports Main" in content_lower:
+            return GNNFormat.ISABELLE
+
+        elif "Require Import" in content:
+            return GNNFormat.COQ
+
+        elif "import" in content and (
+            "mathlib" in content_lower or ".lean" in content_lower
+        ):
+            return GNNFormat.LEAN
+
+        elif content.startswith("module") and "where" in content:
+            return GNNFormat.HASKELL
+
+        elif "EXTENDS" in content or "VARIABLES" in content:
+            return GNNFormat.TLA_PLUS
+
+        elif "data" in content and ":" in content and "Set" in content:
+            return GNNFormat.AGDA
+
+        elif "def " in content and "jax" in content_lower:
+            return GNNFormat.PYTHON
+
+        elif "load(" in content and (
+            "maxima" in content_lower or ".mac" in content_lower
+        ):
+            return GNNFormat.MAXIMA
+
+        elif (
+            "::=" in content or "<rule>" in content_lower
+        ) and "grammar" in content_lower:
+            if "ebnf" in content_lower:
+                return GNNFormat.EBNF
+            else:
+                return GNNFormat.BNF
+
+        elif "syntax" in content_lower and (
+            "yaml" in content_lower or "---" in content
+        ):
+            return GNNFormat.YAML
+
+        elif (
+            "message" in content and "protobuf" in content_lower
+        ) or ".proto" in content_lower:
+            return GNNFormat.PROTOBUF
+
+        elif "sig" in content and "alloy" in content_lower:
+            return GNNFormat.ALLOY
+
+        elif "schema" in content_lower and ("\\begin" in content or "\\end" in content):
+            return GNNFormat.Z_NOTATION
+
+        elif "ASN1" in content or "BEGIN" in content and "END" in content:
+            return GNNFormat.ASN1
+
+        # Default to markdown for GNN files
+        return GNNFormat.MARKDOWN
+    except Exception as e:
+        logger.debug(
+            f"Format detection from content failed, defaulting to MARKDOWN: {e}"
+        )
+        return GNNFormat.MARKDOWN
+
+
+_PARSER_CLASS_PATHS: Dict[GNNFormat, tuple[str, str]] = {
+    GNNFormat.MARKDOWN: (".markdown_parser", "MarkdownGNNParser"),
+    GNNFormat.SCALA: (".scala_parser", "ScalaGNNParser"),
+    GNNFormat.LEAN: (".lean_parser", "LeanGNNParser"),
+    GNNFormat.COQ: (".coq_parser", "CoqGNNParser"),
+    GNNFormat.PYTHON: (".python_parser", "PythonGNNParser"),
+    GNNFormat.BNF: (".grammar_parser", "BNFParser"),
+    GNNFormat.EBNF: (".grammar_parser", "EBNFParser"),
+    GNNFormat.ISABELLE: (".isabelle_parser", "IsabelleParser"),
+    GNNFormat.MAXIMA: (".maxima_parser", "MaximaParser"),
+    GNNFormat.XML: (".xml_parser", "XMLGNNParser"),
+    GNNFormat.PNML: (".xml_parser", "PNMLParser"),
+    GNNFormat.JSON: (".json_parser", "JSONGNNParser"),
+    GNNFormat.PROTOBUF: (".protobuf_parser", "ProtobufGNNParser"),
+    GNNFormat.YAML: (".yaml_parser", "YAMLGNNParser"),
+    GNNFormat.XSD: (".schema_parser", "XSDParser"),
+    GNNFormat.ASN1: (".schema_parser", "ASN1Parser"),
+    GNNFormat.ALLOY: (".schema_parser", "AlloyParser"),
+    GNNFormat.Z_NOTATION: (".schema_parser", "ZNotationParser"),
+    GNNFormat.TLA_PLUS: (".temporal_parser", "TLAParser"),
+    GNNFormat.AGDA: (".temporal_parser", "AgdaParser"),
+    GNNFormat.PKL: (".schema_parser", "PKLParser"),
+    GNNFormat.HASKELL: (".functional_parser", "HaskellGNNParser"),
+    GNNFormat.PICKLE: (".binary_parser", "PickleGNNParser"),
+}
+
+
+__all__: list[Any] = [
+    "UnifiedGNNParser",
+    "GNNFormat",
+    "ParseResult",
+    "detect_gnn_format_from_content",
+]

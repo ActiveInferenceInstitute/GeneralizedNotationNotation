@@ -607,6 +607,26 @@ def _framework_specs() -> tuple[ExecutorFrameworkSpec, ...]:
     )
 
 
+def list_frameworks() -> list[dict[str, Any]]:
+    """Introspect the executor framework registry.
+
+    Returns one record per registered backend with its key, the
+    ``*_executions`` result key, and whether the backend's runner is currently
+    importable. Useful for CLI/MCP diagnostics and tests that want to assert
+    the registry shape without importing the private ``_framework_specs``
+    helper.
+    """
+    return [
+        {
+            "framework": spec.framework_dir_key,
+            "result_key": spec.result_key,
+            "available": bool(spec.available),
+            "operation": spec.operation_name,
+        }
+        for spec in _framework_specs()
+    ]
+
+
 def _create_framework_dirs(
     execution_output_dir: Path, logger: logging.Logger
 ) -> dict[str, Path]:
@@ -621,24 +641,26 @@ def _create_framework_dirs(
 def _initialize_execution_results(
     target_dir: Path, framework_dirs: dict[str, Path]
 ) -> dict[str, Any]:
-    """Build the common execution summary envelope."""
-    return {
+    """Build the common execution summary envelope.
+
+    The per-framework ``*_executions`` lists are derived from the
+    :func:`_framework_specs` registry so adding a framework is a one-line
+    change (the registry is the single source of truth for both the result
+    keys and the dispatch wiring).
+    """
+    result: dict[str, Any] = {
         "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
         "target_directory": str(target_dir),
         "framework_execution_dirs": {k: str(v) for k, v in framework_dirs.items()},
-        "pymdp_executions": [],
-        "rxinfer_executions": [],
-        "discopy_executions": [],
-        "activeinference_executions": [],
-        "jax_executions": [],
-        "numpyro_executions": [],
-        "pytorch_executions": [],
         "total_successes": 0,
         "total_failures": 0,
         "dependency_issues": [],
         "syntax_errors": [],
         "execution_details": {},
     }
+    for spec in _framework_specs():
+        result[spec.result_key] = []
+    return result
 
 
 def _check_python_dependencies(

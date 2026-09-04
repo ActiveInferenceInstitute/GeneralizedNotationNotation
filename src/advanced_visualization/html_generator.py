@@ -9,6 +9,8 @@ import json
 from datetime import datetime
 from typing import Any, Dict, List
 
+from . import _theme
+
 
 class HTMLVisualizationGenerator:
     """
@@ -49,20 +51,15 @@ class HTMLVisualizationGenerator:
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Advanced GNN Visualization - {model_name}</title>
     <style>
-        * {{
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }}
-        
+{_theme.BASE_CSS}
         body {{
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: {_theme.FONT_STACK};
             line-height: 1.6;
             color: #333;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: {_theme.BODY_GRADIENT};
             min-height: 100vh;
         }}
-        
+
         .container {{
             max-width: 1400px;
             margin: 0 auto;
@@ -84,13 +81,8 @@ class HTMLVisualizationGenerator:
             margin-bottom: 10px;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
         }}
-        
-        .header h2 {{
-            color: #7f8c8d;
-            font-size: 1.3em;
-            font-weight: 300;
-        }}
-        
+
+{_theme.HEADER_H2_CSS}
         .model-info {{
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -215,11 +207,7 @@ class HTMLVisualizationGenerator:
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
         }}
         
-        .parameter-name {{
-            font-weight: bold;
-            margin-bottom: 5px;
-        }}
-        
+{_theme.PARAMETER_NAME_CSS}
         .parameter-value {{
             font-family: 'Courier New', monospace;
             background: rgba(255, 255, 255, 0.2);
@@ -279,11 +267,7 @@ class HTMLVisualizationGenerator:
             margin-bottom: 5px;
         }}
         
-        .stat-label {{
-            font-size: 0.9em;
-            opacity: 0.9;
-        }}
-        
+{_theme.STAT_LABEL_CSS}
         .footer {{
             text-align: center;
             margin-top: 40px;

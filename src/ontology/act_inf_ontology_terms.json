@@ -254,13 +254,5 @@
     "Habit": {
         "description": "A prior probability distribution over possible actions or policies, representing habitual behavior patterns (e.g., 'E' matrix).",
         "uri": "obo:TEMP_000064"
-    },
-    "VariationalFreeEnergy": {
-        "description": "A bound on Bayesian model evidence, minimized during perception and learning to approximate posterior beliefs.",
-        "uri": "obo:TEMP_000065"
-    },
-    "Time": {
-        "description": "Represents a point or interval in a temporal sequence, often a discrete time step in a model.",
-        "uri": "obo:TEMP_000066"
     }
-} 
+}

@@ -15,6 +15,7 @@ import logging
 from pathlib import Path
 from typing import Any, Dict, List
 
+from utils.io_utils import verify_directory_writable
 from utils.pipeline_step_dependencies import dependency_scripts_for_script
 
 logger = logging.getLogger(__name__)
@@ -300,16 +301,7 @@ def check_pipeline_readiness(
     # Check output directory is writable
     try:
         args.output_dir.mkdir(parents=True, exist_ok=True)
-        test_file = args.output_dir / ".pipeline_test"
-        import os as _os
-        import tempfile as _tempfile
-
-        with _tempfile.NamedTemporaryFile(
-            mode="w", dir=args.output_dir, delete=False
-        ) as _tmp:
-            _tmp.write("test")
-        _os.replace(_tmp.name, str(test_file))
-        test_file.unlink()
+        verify_directory_writable(args.output_dir, probe_name=".pipeline_test")
     except Exception as e:
         readiness_check["blocking_issues"].append(
             f"Output directory {args.output_dir} is not writable: {e}"

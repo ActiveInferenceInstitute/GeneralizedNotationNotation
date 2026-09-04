@@ -95,6 +95,32 @@ def load_model_family_manifest(manifest_path: Path) -> List[ModelFamily]:
     return [_parse_family(raw, defaults) for raw in families]
 
 
+def select_model_families(
+    families: Sequence[ModelFamily],
+    family_names: Iterable[str] | None,
+) -> List[ModelFamily]:
+    """Filter ``families`` by explicitly requested names (single shared rule).
+
+    Args:
+        families: The full manifest-ordered family list.
+        family_names: Requested family names; ``None``/empty selects all.
+            Surrounding whitespace on each name is ignored.
+
+    Returns:
+        Families in manifest order, restricted to the requested subset.
+
+    Raises:
+        KeyError: If any requested family name is absent from the manifest.
+    """
+    requested = {name.strip() for name in family_names or [] if name.strip()}
+    if not requested:
+        return list(families)
+    missing = sorted(requested - {family.name for family in families})
+    if missing:
+        raise KeyError(f"Unknown model families: {', '.join(missing)}")
+    return [family for family in families if family.name in requested]
+
+
 def run_model_family_acceptance(
     manifest_path: Path,
     output_dir: Path,
@@ -107,14 +133,8 @@ def run_model_family_acceptance(
 ) -> Dict[str, Any]:
     """Run representative model families and write acceptance ledgers."""
     output_dir.mkdir(parents=True, exist_ok=True)
-    requested = {name.strip() for name in family_names or [] if name.strip()}
     families = load_model_family_manifest(manifest_path)
-    selected = [
-        family for family in families if not requested or family.name in requested
-    ]
-    missing = sorted(requested - {family.name for family in families})
-    if missing:
-        raise KeyError(f"Unknown model families: {', '.join(missing)}")
+    selected = select_model_families(families, family_names)
 
     ledger: Dict[str, Any] = {
         "schema": "gnn_model_family_acceptance_ledger_v1",

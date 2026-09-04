@@ -50,11 +50,11 @@ def _generate_interactive_plotly_dashboard(
         parameters = model_data.get("parameters", [])
         connections = model_data.get("connections", [])
 
-        if _MatrixVisualizer is None:
+        mv = _MatrixVisualizer()
+        if mv is None:
             attempt.status = "skipped"
             attempt.error_message = "MatrixVisualizer not available"
             return attempt
-        mv = _MatrixVisualizer()
         matrices = mv.extract_matrix_data_from_parameters(parameters)
 
         fig = make_subplots(

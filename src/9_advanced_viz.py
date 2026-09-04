@@ -16,7 +16,7 @@ from typing import cast
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent))
 
-from advanced_visualization import process_advanced_viz
+from advanced_visualization import VIZ_TYPE_CHOICES, process_advanced_viz
 from utils.pipeline_template import create_standardized_pipeline_script
 
 run_script = create_standardized_pipeline_script(
@@ -26,18 +26,7 @@ run_script = create_standardized_pipeline_script(
     additional_arguments={
         "viz_type": {
             "type": str,
-            "choices": [
-                "all",
-                "3d",
-                "interactive",
-                "dashboard",
-                "d2",
-                "diagrams",
-                "pipeline",
-                "statistical",
-                "pomdp",
-                "network",
-            ],
+            "choices": list(VIZ_TYPE_CHOICES),
             "default": "all",
             "help": "Type of visualization to generate: all, 3d, interactive, dashboard, d2/diagrams (D2 diagrams), pipeline (pipeline D2 diagrams), statistical (statistical plots and correlations), pomdp (POMDP-specific visualizations), network (network analysis)",
         },

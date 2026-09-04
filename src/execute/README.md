@@ -77,6 +77,7 @@ Main executor class plus a small `ExecutorFrameworkSpec` registry for framework-
 - `generate_execution_report(output_file)` — Generate execution summary
 - `_execute_pymdp_script()`, `_execute_rxinfer_config()`, `_execute_discopy_diagram()`, `_execute_jax_script()` — Framework-specific execution methods
 - `execute_rendered_simulators(...)` — Iterates the registry, writes `summaries/execution_summary.json`, and renders the markdown execution report (`summaries/execution_report.md`)
+- `list_frameworks()` — Introspect the registry: one record per backend with `framework`, `result_key`, `available`, and `operation`
 
 ### `processor.py` — Step 12 Entry Point
 
@@ -87,7 +88,11 @@ Orchestrates multi-framework execution:
 3. Executes each script in the appropriate runtime environment, serially by default or with bounded script-level workers
 4. Aggregates results into `output/12_execute_output/summaries/`
 
-`--execution-workers N` parallelizes across rendered scripts, for example separate scaling-study `(N,T)` runs. It does not split the timesteps inside one rendered PyMDP/JAX script. `--distributed --backend ray|dask` uses the distributed dispatcher; otherwise worker counts above `1` use local processes.
+
+### `planning.py` — Dry-run Step 12 planning
+
+`plan_execute(target_dir, output_dir, frameworks="all", **config) -> ExecutionPlan` composes the same discovery / render-contract / dependency primitives as `process_execute` but runs **no scripts and no Julia package probing**. It returns a typed `ExecutionPlan` (defined in `types.py`) describing which rendered scripts would run, which would be skipped because their backend dependency is absent, and which the render-summary contract references but cannot discover on disk — for preflight checks, CI gates, and interactive debugging.
+
 
 ### `pymdp/simulation.py`
 

@@ -22,6 +22,24 @@ except ImportError:
 logger = logging.getLogger(__name__)
 
 
+def _pretty_xml(root: ET.Element) -> str:
+    """Pretty-print an ElementTree element to an XML string."""
+    return str(_xml_parseString(ET.tostring(root)).toprettyxml(indent="  "))  # nosec B318
+
+
+def _write_pretty_xml(root: ET.Element, output_file: Path) -> None:
+    """Serialize ``root`` to a pretty-printed XML file at ``output_file``."""
+    xml_str = _pretty_xml(root)
+    with open(output_file, "w", encoding="utf-8") as f:
+        f.write(xml_str)
+
+
+def _dump_pickle(data: Any, output_file: Path) -> None:
+    """Serialize ``data`` to a Python pickle file at ``output_file``."""
+    with open(output_file, "wb") as f:
+        pickle.dump(data, f)  # nosec B301
+
+
 def export_to_json(parsed_content: Dict[str, Any], output_file: Path) -> bool:
     """Export parsed content to JSON format."""
     try:
@@ -178,8 +196,7 @@ def export_to_gexf(parsed_content: Dict[str, Any], output_file: Path) -> bool:
 def export_to_pickle(parsed_content: Any, output_file: Path) -> bool:
     """Export parsed content to pickle format."""
     try:
-        with open(output_file, "wb") as f:
-            pickle.dump(parsed_content, f)  # nosec B301
+        _dump_pickle(parsed_content, output_file)
         return True
     except Exception as e:
         logger.warning("export_to_pickle failed: %s", e)
@@ -238,9 +255,7 @@ def export_to_xml_gnn(model_data: Dict[str, Any], output_file: Path) -> bool:
             conn_elem.set("target", conn.get("target", ""))
 
         # Write XML
-        xml_str = _xml_parseString(ET.tostring(root)).toprettyxml(indent="  ")  # nosec B318
-        with open(output_file, "w", encoding="utf-8") as f:
-            f.write(xml_str)
+        _write_pretty_xml(root, output_file)
 
         return True
     except Exception as e:
@@ -251,8 +266,7 @@ def export_to_xml_gnn(model_data: Dict[str, Any], output_file: Path) -> bool:
 def export_to_python_pickle(model_data: Dict[str, Any], output_file: Path) -> bool:
     """Export GNN model data to Python pickle format."""
     try:
-        with open(output_file, "wb") as f:
-            pickle.dump(model_data, f)  # nosec B301
+        _dump_pickle(model_data, output_file)
         return True
     except Exception as e:
         logger.warning("export_to_python_pickle failed: %s", e)

@@ -28,16 +28,10 @@ except ImportError:
         "prior_vector",
     )
 
-try:
-    import matplotlib
-
-    matplotlib.use("Agg")
-    import matplotlib.pyplot as plt
-
-    MATPLOTLIB_AVAILABLE = True
-except (ImportError, RecursionError):
-    plt = cast(Any, None)
-    MATPLOTLIB_AVAILABLE = False
+from ..compat.viz_compat import MATPLOTLIB_AVAILABLE, plt
+from ..compat.viz_compat import viz_var_type as _var_type
+from ..theme import VAR_TYPE_COLORS
+from ..theme import get_edge_style as _get_edge_style
 
 try:
     import os
@@ -64,13 +58,6 @@ except ImportError:
 from ..plotting.utils import safe_tight_layout
 
 logger = logging.getLogger(__name__)
-
-
-def _var_type(var_info: Dict[str, Any]) -> str:
-    """Extract variable type — delegates to :func:`visualization.compat.viz_compat.viz_var_type`."""
-    from ..compat.viz_compat import viz_var_type
-
-    return viz_var_type(var_info)
 
 
 def _connection_is_undirected(conn_info: Dict[str, Any]) -> bool:
@@ -100,8 +87,8 @@ def generate_network_visualizations(
         ontology_labels: Dict[str, str] = parsed_data.get("ontology_labels") or {}
 
         G_layout = nx.Graph()
-        directed_edges: List[Tuple[str, str, Dict[str, Any]]] = []
-        undirected_edges: List[Tuple[str, str, Dict[str, Any]]] = []
+        directed_edges: List[Tuple[str, str, str]] = []
+        undirected_edges: List[Tuple[str, str, str]] = []
 
         for var_info in variables:
             if isinstance(var_info, dict):
@@ -117,6 +104,14 @@ def generate_network_visualizations(
                     size=max(1, min(10, len(dimensions) * 2)),
                 )
 
+        # Name → type lookup built once (the per-edge rescan over all
+        # variables was O(variables × edges)).
+        var_types: Dict[str, str] = {
+            str(v["name"]): _var_type(v)
+            for v in variables
+            if isinstance(v, dict) and v.get("name")
+        }
+
         for conn_info in connections:
             if not isinstance(conn_info, dict):
                 continue
@@ -129,36 +124,22 @@ def generate_network_visualizations(
                 for target_var in target_vars:
                     if not source_var or not target_var or source_var == target_var:
                         continue
-                    source_type = None
-                    target_type = None
-                    for var in variables:
-                        if isinstance(var, dict) and var.get("name") == source_var:
-                            source_type = _var_type(var)
-                        if isinstance(var, dict) and var.get("name") == target_var:
-                            target_type = _var_type(var)
-
                     conn_type = _determine_connection_type(
-                        source_var, target_var, source_type, target_type
+                        source_var,
+                        target_var,
+                        var_types.get(source_var),
+                        var_types.get(target_var),
                     )
-                    edge_attrs: Dict[str, Any] = {
-                        "connection_type": conn_type,
-                        "source_location": normalized_conn.get("source_location"),
-                        "metadata": normalized_conn.get("metadata", {}),
-                        "source_type": source_type,
-                        "target_type": target_type,
-                        "weight": 1.0,
-                        "style": _get_edge_style(conn_type),
-                    }
                     G_layout.add_edge(source_var, target_var)
-                    pair = (source_var, target_var, edge_attrs)
+                    pair = (source_var, target_var, conn_type)
                     if undir:
                         undirected_edges.append(pair)
                     else:
                         directed_edges.append(pair)
 
         if len(G_layout.nodes()) == 0:
-            print(
-                f"Warning: No valid nodes found for network visualization of {model_name}"
+            logger.warning(
+                "No valid nodes found for network visualization of %s", model_name
             )
             return visualizations
 
@@ -172,29 +153,17 @@ def generate_network_visualizations(
             G_layout.nodes[node].get("type", "unknown") for node in G_layout.nodes()
         ]
 
-        type_colors: dict[str, Any] = {
-            "hidden_state": "#5B9BD5",
-            "observation": "#70C1B3",
-            "policy": "#E07A5F",
-            "action": "#F2C14E",
-            "prior_vector": "#A78BCA",
-            "likelihood_matrix": "#F4845F",
-            "transition_matrix": "#48BFE3",
-            "preference_vector": "#81B29A",
-            "unknown": "#B0B0B0",
-        }
-
-        node_colors = [type_colors.get(node_type, "gray") for node_type in node_types]
+        node_colors = [
+            VAR_TYPE_COLORS.get(node_type, "gray") for node_type in node_types
+        ]
 
         edge_groups_dir: Dict[str, List[Tuple[str, str]]] = {}
-        for u, v, data in directed_edges:
-            ct = data.get("connection_type", "generic_causal")
-            edge_groups_dir.setdefault(ct, []).append((u, v))
+        for u, v, conn_type in directed_edges:
+            edge_groups_dir.setdefault(conn_type, []).append((u, v))
 
         edge_groups_undir: Dict[str, List[Tuple[str, str]]] = {}
-        for u, v, data in undirected_edges:
-            ct = data.get("connection_type", "generic_causal")
-            edge_groups_undir.setdefault(ct, []).append((u, v))
+        for u, v, conn_type in undirected_edges:
+            edge_groups_undir.setdefault(conn_type, []).append((u, v))
 
         G_dir = nx.DiGraph()
         G_dir.add_nodes_from(G_layout.nodes(data=True))
@@ -252,7 +221,7 @@ def generate_network_visualizations(
 
         legend_elements = [
             plt.Rectangle((0, 0), 1, 1, fc=color, label=var_type)
-            for var_type, color in type_colors.items()
+            for var_type, color in VAR_TYPE_COLORS.items()
         ]
         plt.legend(
             handles=legend_elements, loc="upper right", bbox_to_anchor=(1.0, 1.0)
@@ -271,7 +240,7 @@ def generate_network_visualizations(
         plt.close()
         visualizations.append(str(network_path))
 
-        stats = _generate_network_statistics(variables, connections)
+        stats = _compute_graph_metrics(variables, connections)
         stats_path = output_dir / f"{model_name}_network_stats.json"
         with open(stats_path, "w") as f:
             json.dump(stats, f, indent=2)
@@ -306,7 +275,7 @@ def generate_network_visualizations(
                 if interactive_path:
                     visualizations.append(str(interactive_path))
             except Exception as e:
-                print(f"Failed to generate interactive network: {e}")
+                logger.warning("Failed to generate interactive network: %s", e)
 
     except Exception as e:
         logger.exception(
@@ -355,83 +324,10 @@ def _determine_connection_type(
     return "generic_causal"
 
 
-def _get_edge_style(connection_type: str) -> Dict[str, Any]:
-    """Return edge style."""
-    style_map: dict[str, Any] = {
-        "state_transition": {
-            "color": "#3B5998",
-            "width": 3,
-            "alpha": 0.8,
-            "style": "solid",
-        },
-        "observation_generation": {
-            "color": "#70C1B3",
-            "width": 2,
-            "alpha": 0.7,
-            "style": "dashed",
-        },
-        "state_action_influence": {
-            "color": "#F2C14E",
-            "width": 2,
-            "alpha": 0.7,
-            "style": "dotted",
-        },
-        "action_effect": {
-            "color": "#E07A5F",
-            "width": 3,
-            "alpha": 0.8,
-            "style": "solid",
-        },
-        "policy_selection": {
-            "color": "#A78BCA",
-            "width": 2,
-            "alpha": 0.7,
-            "style": "solid",
-        },
-        "prior_influence": {
-            "color": "#48BFE3",
-            "width": 2,
-            "alpha": 0.6,
-            "style": "dashed",
-        },
-        "likelihood_influence": {
-            "color": "#F4845F",
-            "width": 2,
-            "alpha": 0.6,
-            "style": "dotted",
-        },
-        "energy_flow": {
-            "color": "#D4A5A5",
-            "width": 1.5,
-            "alpha": 0.5,
-            "style": "dashed",
-        },
-        "preference_energy": {
-            "color": "#81B29A",
-            "width": 2,
-            "alpha": 0.7,
-            "style": "solid",
-        },
-        "habit_policy": {
-            "color": "#FFB6C1",
-            "width": 2,
-            "alpha": 0.7,
-            "style": "solid",
-        },
-        "generic_causal": {
-            "color": "#999999",
-            "width": 1,
-            "alpha": 0.5,
-            "style": "solid",
-        },
-    }
-    return cast(
-        "dict[str, Any]", style_map.get(connection_type, style_map["generic_causal"])
-    )
-
-
-def _generate_network_statistics(variables: list, connections: list) -> Dict[str, Any]:
-    """Generate network statistics."""
+def _compute_graph_metrics(
+    variables: List[Dict[str, Any]], connections: List[Dict[str, Any]]
+) -> Dict[str, Any]:
+    """Compute network metrics: counts, type tallies, orientation, topology."""
     stats: Dict[str, Any] = {
         "total_variables": len(variables),
         "total_connections": len(connections),
@@ -496,7 +392,7 @@ def _generate_network_statistics(variables: list, connections: list) -> Dict[str
                     "average_clustering": nx.average_clustering(simple_G),
                 }
         except Exception as e:
-            print(f"Error calculating network properties: {e}")
+            logger.warning("Error calculating network properties: %s", e)
 
     return stats
 
@@ -585,5 +481,5 @@ def _generate_interactive_network(G: Any, output_path: Path) -> bool:
         return True
 
     except Exception as e:
-        print(f"Error generating interactive network: {e}")
+        logger.warning("Error generating interactive network: %s", e)
         return False

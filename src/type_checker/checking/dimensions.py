@@ -205,6 +205,7 @@ def extract_gnn_dimensions(content: str) -> Dict[str, Any]:
         _logger.log(5, diagnostic)
     return dimensions
 
+
 _ROW_PREV_CONVENTION = re.compile(
     r"rows?\s+(?:are|index)\s+(?:the\s+)?previous", re.IGNORECASE
 )
@@ -263,8 +264,6 @@ def _comment_orientation(comment: str) -> str | None:
     if claims_canonical and not claims_old:
         return "canonical"
     return None
-
-
 
 
 def _numeric_matrix(rows: Any) -> list[list[float]] | None:
@@ -329,8 +328,7 @@ def _b_orientation_verdict(values: Any) -> str:
     for matrix in matrices:
         row_sums = [sum(row) for row in matrix]
         col_sums = [
-            sum(matrix[i][j] for i in range(len(matrix)))
-            for j in range(len(matrix[0]))
+            sum(matrix[i][j] for i in range(len(matrix))) for j in range(len(matrix[0]))
         ]
         if not _all_close_one(row_sums):
             row_stochastic = False
@@ -347,9 +345,7 @@ def _b_orientation_verdict(values: Any) -> str:
             [sum(m[i][j] for m in matrices) for j in range(len(matrices[0][0]))]
             for i in range(len(matrices[0]))
         ]
-        cross_consistent = _all_close_one(
-            [total for row in cross for total in row]
-        )
+        cross_consistent = _all_close_one([total for row in cross for total in row])
     if row_stochastic:
         # Degenerate models (e.g. prev-state-independent transitions) can be
         # row-stochastic per slice while still summing to 1 over the outer
@@ -479,9 +475,7 @@ def extract_b_matrix_evidence(content: str) -> Dict[str, Any]:
             inline = stripped.split("#", 1)
             if len(inline) == 2:
                 pending.append(inline[1].strip())
-            evidence["declaration_comment"] = " ".join(
-                part for part in pending if part
-            )
+            evidence["declaration_comment"] = " ".join(part for part in pending if part)
         elif section == "InitialParameterization" and re.match(r"^B\s*=", stripped):
             evidence["parameterization_comment"] = " ".join(
                 part for part in pending if part
@@ -500,7 +494,6 @@ def validate_dimension_compatibility(
     b_evidence: Dict[str, Any] | None = None,
     strict: bool = False,
 ) -> Dict[str, Any]:
-
     """Validate that matrix/tensor dimensions are compatible in a GNN model.
 
     Checks Active Inference POMDP constraints:

@@ -222,10 +222,10 @@ Status: Tutorial Example
 
 Save this as `grid_agent.md` in your `my_first_gnn_model` folder.
 
-> Use the `.md` extension. GNN models are Markdown, and Step 5's discovery
-> globs `*.md` only (`src/type_checker/checking/core.py`) — a `.gnn` file is
-> silently not found, and the step fails with "No GNN files found for type
-> checking".
+> Any registered GNN spec extension (`.md`, `.gnn`, and the other non-binary
+> extensions in the parser registry) works: Step 5's discovery
+> (`src/type_checker/checking/core.py`) walks every registered non-binary
+> extension, not just `*.md`.
 
 ## ✅ Step 4: Validate Your Model (2 minutes)
 

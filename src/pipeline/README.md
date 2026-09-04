@@ -137,28 +137,41 @@ Returns the standardized per-step output directory (e.g. `output/3_gnn_output/`)
 
 ### Pipeline Execution (`execution.py`)
 
-#### `run_pipeline(target_dir, output_dir, steps=None, **kwargs) -> bool`
-Executes the pipeline for a target directory (see `run_pipeline` in `execution.py`).
+#### `run_pipeline(pipeline_data=None, *, target_dir=None, output_dir=None, steps="all", verbose=False) -> dict`
+Executes the pipeline through `main.py` and returns a compact summary dict
+(`success`, `steps_executed`, `errors`, `exit_code`, `duration`, ...).
 
-#### `execute_pipeline_step(step_name, target_dir, output_dir, **kwargs) -> StepExecutionResult`
-Executes one step, returning a result object with success, duration, output files, and errors.
+#### `resolve_step_numbers(steps, pipeline_data=None) -> list[int]`
+Normalizes step identifiers (`"11"`, `"11_render"`, `"3,5"`, iterables, `"all"`)
+to sorted registered step numbers.
 
-#### `execute_pipeline_steps(step_names, target_dir, output_dir, **kwargs)`
+#### `execute_pipeline_step(step_name, step_config, pipeline_data) -> StepExecutionResult`
+Executes one step, returning a result object with `step_name`, `success`,
+`duration`, `output`, `error`, `warnings`.
+
+#### `execute_pipeline_steps(steps, pipeline_data)`
 Executes an ordered list of steps.
 
 #### `get_pipeline_status() -> dict`
-Returns current pipeline execution status and statistics.
+Static readiness probe (`status`, `timestamp`, `steps_available`,
+`steps_completed`); live progress lives in the per-run
+`pipeline_execution_summary.json`.
 
 #### `validate_pipeline_config(config: dict) -> bool`
 Validates a pipeline configuration dict.
 
 ### Step Ordering (`dag.py`)
 
-#### `resolve_execution_order(step_names, ...) -> List[str]`
-Topological sort over the step dependency DAG.
+#### `resolve_execution_order(step_dependencies, total_steps=None, skip_steps=None, raise_on_circular=False) -> List[List[int]]`
+Topological sort of **step numbers** into parallel tiers; circular
+dependencies raise `ValueError` when `raise_on_circular=True`, otherwise form
+a final tier.
 
-#### `visualize_dag(step_names, output_path) -> bool`
-Writes a Mermaid or DOT rendering of the DAG.
+#### `find_circular_dependencies(step_dependencies, nodes=None) -> Set[int]`
+Returns the step numbers bound up in dependency cycles.
+
+#### `visualize_dag(tiers, step_names=None) -> str`
+Renders DAG tiers as a human-readable multi-line string.
 
 ### Step Registry (`step_registry.py`)
 
@@ -189,8 +202,8 @@ summary = run_pipeline(
 # Execute a single step
 result = execute_pipeline_step(
     step_name="6_validation",
-    target_dir=Path("input/gnn_files"),
-    output_dir=Path("output"),
+    step_config={},
+    pipeline_data={"target_dir": "input/gnn_files", "output_dir": "output"},
 )
 
 # Inspect pipeline status
@@ -200,10 +213,15 @@ status = get_pipeline_status()
 ### DAG-Based Ordering
 
 ```python
-from pipeline.dag import resolve_execution_order
+from pipeline.dag import find_circular_dependencies, resolve_execution_order
+from utils.pipeline_step_dependencies import PIPELINE_STEP_DEPENDENCIES
 
-order = resolve_execution_order(["render", "gnn", "execute"])
-print(f"Resolved order: {order}")
+# Resolve tiers over the canonical dependency table
+tiers = resolve_execution_order(dict(PIPELINE_STEP_DEPENDENCIES))
+print(f"Resolved tiers: {tiers}")
+
+# Detect cycle-bound steps in an arbitrary graph
+assert find_circular_dependencies({0: [1], 1: []}) == set()
 ```
 
 ### Configuration

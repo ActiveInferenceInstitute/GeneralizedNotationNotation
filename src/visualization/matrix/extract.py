@@ -58,3 +58,31 @@ def extract_matrix_data_from_parameters(
         if matrix is not None:
             matrices[param_name] = matrix
     return matrices
+
+
+def collect_visualization_matrices(parsed_data: Dict[str, Any]) -> Dict[str, Any]:
+    """Collect numeric matrices for rendering from a parsed GNN model dict.
+
+    Resolution order mirrors ``process_single_gnn_file``: parameters →
+    variables (re-using :func:`extract_matrix_data_from_parameters`) →
+    raw ``matrices`` entries (converted via :func:`convert_to_matrix`). The
+    first non-empty stage wins; later stages are skipped once a matrix is
+    found, exactly as the inline loop did.
+
+    Returns an ordered ``{name: np.ndarray}`` mapping (possibly empty).
+    """
+    parameters = parsed_data.get("parameters") or []
+    matrices = extract_matrix_data_from_parameters(parameters)
+    if not matrices:
+        matrices = extract_matrix_data_from_parameters(
+            parsed_data.get("variables") or []
+        )
+    if not matrices:
+        for m_info in parsed_data.get("matrices") or []:
+            if not isinstance(m_info, dict) or "data" not in m_info:
+                continue
+            m_name = m_info.get("name", f"matrix_{len(matrices)}")
+            m_data = convert_to_matrix(m_info.get("data"), m_name)
+            if m_data is not None:
+                matrices[m_name] = m_data
+    return matrices

@@ -182,7 +182,6 @@ class TestValidationGate:
         validate_framework_requested("pytorch")
 
 
-
 class TestRealEnvironmentCheck:
     """Cross-reference registry status against the real interpreter import state.
 

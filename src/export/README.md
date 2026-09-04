@@ -14,6 +14,7 @@ src/export/
 ├── processor.py                   # Export orchestration and GNN parsing
 ├── formatters.py                  # Format-specific serializers
 ├── format_exporters.py            # Advanced GNN-aware exporters
+├── registry.py                    # Canonical format registry (single source of truth)
 ├── utils.py                       # Module introspection utilities
 └── mcp.py                         # Model Context Protocol integration
 ```
@@ -504,7 +505,7 @@ There are no `ExportError`/`FormatExportError` exception types.
 
 ## Testing
 
-Tests live in `src/tests/export/` (`test_export_overall.py`, `test_export_format_writers.py`, `test_export_public_api.py`, `test_export_roundtrip.py`).
+Tests live in `src/tests/export/` (`test_export_overall.py`, `test_export_format_writers.py`, `test_export_public_api.py`, `test_export_roundtrip.py`, `test_export_registry_and_validate.py`).
 
 ## Dependencies
 

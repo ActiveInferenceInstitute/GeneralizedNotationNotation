@@ -68,20 +68,8 @@ def get_visualization_options_mcp() -> Dict[str, Any]:
         options = get_visualization_options()
         return {"success": True, "options": options}
     except Exception as e:
-        return {
-            "success": True,
-            "options": {
-                "state_space_graph": {
-                    "description": "Network graph of GNN state space"
-                },
-                "connectivity_matrix": {"description": "Connection matrix heatmap"},
-                "parameter_distributions": {
-                    "description": "Histograms of model parameters"
-                },
-                "time_series": {"description": "Time-step evolution plots"},
-            },
-            "note": str(e) if e else "",
-        }
+        logger.error("get_visualization_options_mcp error: %s", e, exc_info=True)
+        return {"success": False, "error": str(e)}
 
 
 def list_visualization_artifacts_mcp(output_directory: str) -> Dict[str, Any]:

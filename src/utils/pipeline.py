@@ -9,6 +9,8 @@ import logging
 from pathlib import Path
 from typing import Any, List, Optional, Tuple
 
+from utils.io_utils import verify_directory_writable
+
 logger = logging.getLogger(__name__)
 
 
@@ -105,17 +107,8 @@ def validate_output_directory(output_dir: Path, step_name: str) -> bool:
         output_dir.mkdir(parents=True, exist_ok=True)
 
         # Check if directory is writable
-        test_file = output_dir / f"{step_name}_test.tmp"
         try:
-            import os as _os
-            import tempfile as _tempfile
-
-            with _tempfile.NamedTemporaryFile(
-                mode="w", dir=output_dir, delete=False
-            ) as _tmp:
-                _tmp.write("test")
-            _os.replace(_tmp.name, str(test_file))
-            test_file.unlink()
+            verify_directory_writable(output_dir, probe_name=f"{step_name}_test.tmp")
         except Exception as e:
             logger.error(f"Output directory {output_dir} is not writable: {e}")
             return False

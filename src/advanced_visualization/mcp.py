@@ -35,17 +35,25 @@ def process_advanced_visualization_mcp(
         Dictionary with operation status and results.
     """
     try:
+        # ``generate_d2=False`` restricts to non-D2 visualization; otherwise let
+        # the processor run all viz types (its default).
+        viz_type = "all" if generate_d2 else "network"
         success = process_advanced_viz(
             target_dir=Path(target_directory),
             output_dir=Path(output_directory),
-            verbose=verbose,
+            viz_type=viz_type,
         )
         return {
             "success": success,
             "target_directory": target_directory,
             "output_directory": output_directory,
             "d2_available": D2_AVAILABLE,
-            "message": f"Advanced visualization processing {'completed successfully' if success else 'failed'}",
+            "generate_d2": generate_d2,
+            "message": (
+                "Advanced visualization processing "
+                f"{'completed successfully' if success else 'failed'} "
+                f"(viz_type={viz_type})"
+            ),
         }
     except Exception as e:
         logger.error(
@@ -65,12 +73,15 @@ def check_visualization_capabilities_mcp() -> Dict[str, Any]:
     Returns:
         Dictionary with D2 availability, feature flags, and backend status.
     """
-    from . import FEATURES
+    from . import FEATURES, probe_capabilities
 
+    capabilities = probe_capabilities()
     return {
         "success": True,
         "d2_available": D2_AVAILABLE,
+        "d2_cli_available": capabilities.get("d2_cli", False),
         "features": FEATURES,
+        "capabilities": capabilities,
     }
 
 
@@ -117,17 +128,15 @@ def get_advanced_visualization_module_info_mcp() -> Dict[str, Any]:
         Dictionary with module metadata, D2 status, and tool inventory.
     """
     try:
-        import importlib
+        from . import get_module_info
 
-        mod = importlib.import_module(__package__)
-        version = getattr(mod, "__version__", "unknown")
-        features = getattr(mod, "FEATURES", {})
+        info = get_module_info()
         return {
             "success": True,
-            "module": __package__,
-            "version": version,
+            "module": info["name"],
+            "version": info["version"],
             "d2_available": D2_AVAILABLE,
-            "features": features,
+            "features": info["features"],
             "tools": [
                 "process_advanced_visualization",
                 "check_visualization_capabilities",

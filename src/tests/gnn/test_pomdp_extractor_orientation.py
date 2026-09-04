@@ -71,7 +71,9 @@ def _gnn_file(
     detected orientation. Comment text is fully test-owned, so exemplar
     phrasing changes never break this fixture.
     """
-    template = (REPO / "input" / "gnn_files" / "discrete" / "actinf_pomdp_agent.md").read_text()
+    template = (
+        REPO / "input" / "gnn_files" / "discrete" / "actinf_pomdp_agent.md"
+    ).read_text()
     content = template
     # Replace the declaration comment line (match the current '# Transition
     # matrix: B[...]' line by regex-free prefix split) and the whole
@@ -84,7 +86,9 @@ def _gnn_file(
         if stripped.startswith("# Transition matrix: B["):
             out.append(declared_comment + "\n")
             continue
-        if stripped.startswith("# B: 3 states") and stripped.endswith("action selection."):
+        if stripped.startswith("# B: 3 states") and stripped.endswith(
+            "action selection."
+        ):
             out.append(parameter_comment + "\n")
             in_b_param_comment = True
             continue
@@ -134,7 +138,9 @@ def test_row_stochastic_only_with_contradictory_comments_flags_contradiction(
     tmp_path: Path,
 ) -> None:
     """Positive evidence + disagreeing comments -> contradiction error record."""
-    path = _gnn_file(tmp_path, "b_row_stochastic_contradictory.md", ROW_STOCHASTIC_SLICES)
+    path = _gnn_file(
+        tmp_path, "b_row_stochastic_contradictory.md", ROW_STOCHASTIC_SLICES
+    )
     spec, errors = _extract_collect(path, strict=True)
     assert spec is not None
     prov_b = _b_provenance(spec)
@@ -156,7 +162,9 @@ def test_doubly_stochastic_is_ambiguous_never_contradiction(tmp_path: Path) -> N
 
 def test_extraction_never_transposes_stored_b(tmp_path: Path) -> None:
     """Stored B_matrix is as-written; orientation work happens in provenance."""
-    path = _gnn_file(tmp_path, "b_row_stochastic_contradictory.md", ROW_STOCHASTIC_SLICES)
+    path = _gnn_file(
+        tmp_path, "b_row_stochastic_contradictory.md", ROW_STOCHASTIC_SLICES
+    )
     spec, _errors = _extract_collect(path, strict=False)
     assert spec is not None
     assert spec.B_matrix is not None
@@ -179,7 +187,8 @@ def test_canonicalize_pomdp_transposes_detected_action_first_fixture(
     assert orig == before, "input spec.B_matrix must be untouched"
     # (next, prev, action) = transpose of the as-stored (action, prev, next)
     expected = [
-        [[orig[a][s][s_next] for a in range(3)] for s in range(3)] for s_next in range(3)
+        [[orig[a][s][s_next] for a in range(3)] for s in range(3)]
+        for s_next in range(3)
     ]
     assert canonical.B_matrix == expected
 

@@ -19,8 +19,8 @@ python -c "from utils import validate_pipeline_dependencies; validate_pipeline_d
 # Check optional dependency status
 python -c "from utils import get_dependency_status; print(get_dependency_status())"
 
-# Run pipeline health check
-python -c "from utils import generate_pipeline_health_report; print(generate_pipeline_health_report())"
+# Probe process memory (canonical MB-scale helper)
+python -c "from utils import get_current_memory_usage; print(get_current_memory_usage())"
 ```
 
 ## Key Modules
@@ -32,6 +32,7 @@ python -c "from utils import generate_pipeline_health_report; print(generate_pip
 | `config_loader` | `load_config`, `get_config_value`, `set_config_value`, `validate_config` | Pipeline configuration |
 | `dependency_validator` | `DependencyValidator`, `validate_pipeline_dependencies`, `get_dependency_status` | Dependency management |
 | `performance_tracker` | `PerformanceTracker`, `track_operation_standalone` | Performance monitoring |
+| `io_utils` / `mcp` | `verify_directory_writable`, `redact_environment`, `is_sensitive_env_key` | Shared write-probe & env redaction |
 
 ## API
 

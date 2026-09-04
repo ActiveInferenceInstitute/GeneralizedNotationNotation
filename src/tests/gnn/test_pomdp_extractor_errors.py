@@ -21,9 +21,7 @@ from gnn.pomdp_extractor import GNNExtractionError, extract_pomdp_from_file
 REPO = Path(__file__).resolve().parents[3]
 
 VALID_A = "A={\n  (0.9, 0.05, 0.05),\n  (0.05, 0.9, 0.05),\n  (0.05, 0.05, 0.9)\n}"
-MALFORMED_A = (
-    "A={\n  (0.9, 0.05, 0.05),\n  (0.05, 0.9, oops),\n  (0.05, 0.05, 0.9)\n}"
-)
+MALFORMED_A = "A={\n  (0.9, 0.05, 0.05),\n  (0.05, 0.9, oops),\n  (0.05, 0.05, 0.9)\n}"
 
 
 def _gnn_file(tmp_path: Path, a_block: str, name: str = "malformed_a.md") -> Path:
@@ -33,7 +31,9 @@ def _gnn_file(tmp_path: Path, a_block: str, name: str = "malformed_a.md") -> Pat
     canonical (rows=next, cols=previous) phrasing so a B-orientation
     contradiction cannot mask the A parse failure under test.
     """
-    template = (REPO / "input" / "gnn_files" / "discrete" / "actinf_pomdp_agent.md").read_text()
+    template = (
+        REPO / "input" / "gnn_files" / "discrete" / "actinf_pomdp_agent.md"
+    ).read_text()
     content = template.replace(
         "# B: 3 states x 3 previous states x 3 actions. Each action "
         "deterministically moves to a state. For each slice, rows are previous "

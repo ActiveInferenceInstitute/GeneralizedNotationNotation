@@ -26,10 +26,29 @@ from .processor import (
     generate_exports,
     parse_gnn_content,
     process_export,
+    validate_export_outputs,
+)
+from .registry import (
+    get_export_registry,
+)
+from .registry import (
+    get_export_registry as _get_export_registry,
+)
+from .registry import (
+    get_format_categories as _get_format_categories,
 )
 from .utils import get_module_info
-from .utils import get_supported_formats as _get_supported_formats_dict
 
+# ``HAS_NETWORKX`` reflects whether the optional ``networkx`` dependency
+# imported successfully. The real flag lives in ``format_exporters`` (set in
+# a try/except); we re-export it here so package consumers see the truth
+# instead of a hardcoded ``True``. When ``format_exporters`` itself fails
+# to import, networkx is by definition unavailable.
+try:
+    from .format_exporters import HAS_NETWORKX as _fe_has_networkx
+except ImportError:  # pragma: no cover - exercised when format_exporters broken
+    _fe_has_networkx = False
+HAS_NETWORKX: bool = bool(_fe_has_networkx)
 __version__ = "1.6.0"
 FEATURES: dict[str, Any] = {
     "json_export": True,
@@ -39,7 +58,7 @@ FEATURES: dict[str, Any] = {
     "pickle_export": True,
     "mcp_integration": True,
 }
-HAS_NETWORKX = True
+# (HAS_NETWORKX defined above from format_exporters)
 
 # --- Public API expected by tests ---
 
@@ -47,17 +66,11 @@ HAS_NETWORKX = True
 def get_supported_formats() -> list:
     """Return a flat list of supported format names.
 
-    Combines data, graph, and text formats into a single list and prefers
-    'pickle' over the abbreviated 'pkl' spelling.
+    Derived from the canonical :mod:`export.registry` table so the package
+    surface and the dispatch tables cannot drift. Order is the registry's
+    declaration order (json, xml, graphml, gexf, pickle, txt, dsl).
     """
-    info = _get_supported_formats_dict()
-    all_formats: set[Any] = set()
-    for key in ("data_formats", "graph_formats", "text_formats", "all_formats"):
-        for fmt in info.get(key, []):
-            all_formats.add("pickle" if fmt in {"pkl", "pickle"} else fmt)
-    ordered: list[Any] = ["json", "xml", "graphml", "gexf", "pickle", "txt", "dsl"]
-    extras = sorted(f for f in all_formats if f not in ordered)
-    return [f for f in ordered if f in all_formats] + extras
+    return list(_get_export_registry().keys())
 
 
 def get_supported_formats_dict() -> dict:
@@ -66,17 +79,17 @@ def get_supported_formats_dict() -> dict:
     Returns a dict with keys: data_formats, graph_formats, text_formats.
     Use this when you need the categorical grouping rather than a flat list.
     """
-    flat = get_supported_formats()
+    grouped = _get_format_categories()
     return {
-        "data_formats": [f for f in flat if f in {"json", "xml", "pickle"}],
-        "graph_formats": [f for f in flat if f in {"graphml", "gexf"}],
-        "text_formats": [f for f in flat if f in {"txt", "dsl"}],
+        "data_formats": grouped["data"],
+        "graph_formats": grouped["graph"],
+        "text_formats": grouped["text"],
     }
 
 
 def validate_export_format(format_name: str) -> bool:
     """Return True if the format is supported, False otherwise."""
-    return format_name in set(get_supported_formats())
+    return format_name in _get_export_registry()
 
 
 class Exporter:
@@ -153,4 +166,6 @@ __all__: list[Any] = [
     "FEATURES",
     "HAS_NETWORKX",
     "process_export",
+    "validate_export_outputs",
+    "get_export_registry",
 ]

@@ -606,27 +606,19 @@ def _cmd_parse(args: Any) -> Any:
     pomdp_note: Optional[str] = None
     pomdp_data: Optional[dict[str, Any]] = None
     if not variables:
-        pomdp_note = (
-            "File declares no StateSpaceBlock variables; 'pomdp' key omitted"
-        )
+        pomdp_note = "File declares no StateSpaceBlock variables; 'pomdp' key omitted"
     else:
         try:
             from gnn.pomdp_extractor import extract_pomdp_from_file
 
-            pomdp_result = extract_pomdp_from_file(
-                args.file, strict_validation=False
-            )
+            pomdp_result = extract_pomdp_from_file(args.file, strict_validation=False)
             # on_error="lenient" (default) returns Optional[POMDPStateSpace];
             # "collect" returns (spec, errors) — tolerate both shapes.
             pomdp_space = (
-                pomdp_result[0]
-                if isinstance(pomdp_result, tuple)
-                else pomdp_result
+                pomdp_result[0] if isinstance(pomdp_result, tuple) else pomdp_result
             )
             if pomdp_space is None:
-                pomdp_note = (
-                    "File does not parse as a POMDP; 'pomdp' key omitted"
-                )
+                pomdp_note = "File does not parse as a POMDP; 'pomdp' key omitted"
             else:
                 pomdp_data = pomdp_space.to_dict()
         except Exception as exc:
@@ -784,8 +776,7 @@ def _cmd_extract(args: Any) -> int:
                     error={
                         "code": "GNN-E000",
                         "message": (
-                            "no POMDP state-space content found in "
-                            f"{file_name}"
+                            f"no POMDP state-space content found in {file_name}"
                         ),
                         "line": None,
                         "section": None,

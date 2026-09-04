@@ -14,15 +14,7 @@ from typing import Any, List, Optional, Union
 
 logger = logging.getLogger(__name__)
 
-try:
-    from execute.julia_setup import is_julia_available
-except ImportError:
-
-    def is_julia_available(min_version: tuple[Any, ...] = (1, 9, 0)) -> bool:
-        """Recovery when julia_setup is unavailable: check PATH directly."""
-        import shutil
-
-        return shutil.which("julia") is not None
+from execute.julia_setup import is_julia_available
 
 
 def find_rxinfer_scripts(

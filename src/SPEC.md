@@ -181,6 +181,12 @@ folders:
 - A step that no folder lists (Step 13 in the shipped config) is not skipped: `main.py` falls back to a single invocation over the whole target directory.
 - Continuous linear-Gaussian models (`input/gnn_files/continuous/`) render and execute only on frameworks with `supports_continuous` in `render/framework_registry.py` (JAX, NumPyro, PyTorch, Stan, RxInfer.jl); the others report status `unsupported`, which Step 12 skips.
 - Results are aggregated across all folder executions per step.
+- **Invalid step selections fail fast**: non-numeric tokens in
+  `--only-steps` / `--skip-steps` (or `pipeline.only_steps` /
+  `pipeline.skip_steps`) raise `ValueError` at startup, and an
+  `only_steps` request that resolves to no executable step exits 1 with a
+  startup error. Out-of-range step numbers are logged and dropped
+  (`main.py::select_pipeline_steps`).
 
 ### Orchestrator Implementation
 

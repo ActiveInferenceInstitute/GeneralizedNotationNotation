@@ -266,6 +266,35 @@ python src/main.py --target-dir input/gnn_files --verbose
 python src/main.py --only-steps "3,5,7,8,11,12" --verbose
 ```
 
+### Programmatic step selection
+
+`main.py` exposes a pure, typed step-selection core for embedders and tests:
+
+```python
+from main import select_pipeline_steps, parse_step_list_strict, step_number_from_script_name
+from pipeline.step_registry import PIPELINE_STEPS_TUPLE
+
+selection = select_pipeline_steps(
+    list(PIPELINE_STEPS_TUPLE),
+    only_steps="3,5",        # CLI/config only_steps (dependencies auto-resolved)
+    cli_skip_steps="15",     # CLI --skip-steps
+    config_skip_steps=[],    # pipeline.skip_steps from input/config.yaml
+)
+selection.selected              # tuple[(script_name, description), ...]
+selection.skipped               # sorted skip step numbers
+selection.added_dependencies    # dependency-resolved additions
+selection.unknown_requested     # out-of-range requested numbers (never executed)
+```
+
+`select_pipeline_steps` is pure (no logging, no globals; the step list is
+injected) and frozen. `parse_step_list_strict` raises `ValueError` on
+non-numeric tokens instead of silently dropping them, and
+`_resolve_steps_to_execute` (the logging adapter used by `main()`) fails
+fast with `ValueError` when an `only_steps` request contains no executable
+step — invalid CLI selections exit 1 with a clear startup error instead of
+silently running zero steps. The lenient `parse_step_list` is unchanged and
+remains available for back-compat.
+
 ### Run Individual Step
 
 ```bash
@@ -347,7 +376,7 @@ pytest --cov=src --cov-report=term-missing
 
 ---
 
-**Last Updated**: 2026-09-02
+**Last Updated**: 2026-09-04
 **Pipeline Version**: 3.2.0
 **Total Steps**: 25 (0-24)
 **Status**: Maintained

@@ -62,7 +62,7 @@ import time
 import uuid
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Sequence
 
 _module_logger = logging.getLogger(__name__)
 
@@ -80,7 +80,8 @@ if Path.cwd() != PROJECT_ROOT:
 # Add src to path for imports
 sys.path.insert(0, str(SCRIPT_DIR))
 
-from dataclasses import fields
+from copy import copy
+from dataclasses import dataclass, fields
 
 from utils.argument_utils import ArgumentParser, PipelineArguments, StepConfiguration
 from utils.error_handling import (
@@ -169,6 +170,142 @@ SAFE_WARNING_PATTERN = re.compile(
     "|".join(f"({pattern})" for pattern in SAFE_WARNING_PATTERNS),
     re.IGNORECASE,
 )
+
+
+@dataclass(frozen=True)
+class StepSelection:
+    """Pure result of applying only/skip filters to the canonical step list.
+
+    Attributes:
+        selected: Ordered ``(script_name, description)`` pairs to execute.
+        skipped: Step numbers excluded by the CLI/config skip lists.
+        added_dependencies: Step numbers pulled in by dependency resolution
+            that were not explicitly requested.
+        requested_only: Raw requested step numbers from ``only_steps``.
+        unknown_requested: Requested step numbers outside the canonical
+            range (reported by callers, never executed).
+    """
+
+    selected: tuple[PipelineStep, ...]
+    skipped: tuple[int, ...]
+    added_dependencies: tuple[int, ...]
+    requested_only: tuple[int, ...]
+    unknown_requested: tuple[int, ...]
+
+
+def parse_step_list_strict(step_input: Any) -> list[int]:
+    """Parse step input like :func:`parse_step_list`, but reject invalid tokens.
+
+    Args:
+        step_input: Comma-separated string, list of step numbers, or None.
+
+    Returns:
+        Parsed step numbers.
+
+    Raises:
+        ValueError: If ``step_input`` contains tokens that are not step
+            numbers (empty tokens are ignored, as in :func:`parse_step_list`).
+    """
+    if step_input is None:
+        return []
+    if isinstance(step_input, str):
+        tokens = [token.strip() for token in step_input.split(",") if token.strip()]
+        invalid = [token for token in tokens if not token.isdigit()]
+        if invalid:
+            raise ValueError(
+                f"Invalid step number(s) {invalid!r} in step selection "
+                f"{step_input!r}; expected comma-separated integers"
+            )
+        return [int(token) for token in tokens]
+    if isinstance(step_input, (list, tuple)):
+        numbers: list[int] = []
+        invalid_items: list[Any] = []
+        for item in step_input:
+            if isinstance(item, bool):
+                invalid_items.append(item)
+            elif isinstance(item, int):
+                numbers.append(item)
+            elif isinstance(item, str) and item.strip().isdigit():
+                numbers.append(int(item.strip()))
+            else:
+                invalid_items.append(item)
+        if invalid_items:
+            raise ValueError(
+                f"Invalid step number(s) {invalid_items!r} in step selection"
+            )
+        return numbers
+    raise ValueError(f"Unsupported step selection input: {step_input!r}")
+
+
+def step_number_from_script_name(script_name: str) -> int:
+    """Return the numeric step encoded in an ``N_*.py`` script filename.
+
+    Args:
+        script_name: Script filename such as ``"11_render.py"``.
+
+    Returns:
+        The leading step number, or ``-1`` for non-numbered names.
+    """
+    match = re.match(r"^(\d+)_", script_name)
+    return int(match.group(1)) if match else -1
+
+
+def select_pipeline_steps(
+    pipeline_steps: Sequence[PipelineStep],
+    only_steps: Any = None,
+    cli_skip_steps: Any = None,
+    config_skip_steps: Any = None,
+) -> StepSelection:
+    """Pure only/skip step selection over an explicit step list.
+
+    Dependency resolution pulls in required prerequisite steps for requested
+    numbers. Out-of-range requested numbers are reported as
+    ``unknown_requested`` and never executed; invalid tokens raise
+    ``ValueError`` via :func:`parse_step_list_strict`.
+
+    Args:
+        pipeline_steps: Ordered ``(script_name, description)`` pairs; index
+            equals the canonical step number.
+        only_steps: CLI or config ``only_steps`` selection, or None.
+        cli_skip_steps: CLI ``--skip-steps`` value, or None.
+        config_skip_steps: Config ``pipeline.skip_steps`` value, or None.
+
+    Returns:
+        A frozen :class:`StepSelection`.
+    """
+    steps = list(pipeline_steps)
+    selected = steps
+    requested: list[int] = []
+    added: list[int] = []
+    unknown: list[int] = []
+
+    if only_steps:
+        requested = parse_step_list_strict(only_steps)
+        valid = [n for n in requested if 0 <= n < len(steps)]
+        unknown = [n for n in requested if n not in set(valid)]
+        resolved = resolve_step_dependencies(valid)
+        added = sorted(set(resolved) - set(valid))
+        selected = [steps[i] for i in resolved if 0 <= i < len(steps)]
+
+    skip_numbers = sorted(
+        set(parse_step_list_strict(cli_skip_steps or []))
+        | set(parse_step_list_strict(config_skip_steps or []))
+    )
+    if skip_numbers:
+        original_indices = {script: i for i, (script, _) in enumerate(steps)}
+        selected = [
+            step
+            for step in selected
+            if original_indices.get(step[0], -1) not in skip_numbers
+        ]
+
+    return StepSelection(
+        selected=tuple(selected),
+        skipped=tuple(skip_numbers),
+        added_dependencies=tuple(added),
+        requested_only=tuple(requested),
+        unknown_requested=tuple(unknown),
+    )
 
 
 def _build_main_args(
@@ -265,27 +402,40 @@ def _log_backend_versions(logger: logging.Logger) -> None:
     logger.info("Step 12 backends: %s", "; ".join(parts))
 
 
+def _read_input_config(config_path: Path) -> dict[str, Any]:
+    """Load and parse a pipeline YAML config file.
+
+    Args:
+        config_path: Path to the YAML config (typically ``input/config.yaml``).
+
+    Returns:
+        Parsed config mapping; ``{}`` when the file is absent.
+
+    Raises:
+        Exception: Propagates YAML/import errors to the caller, which owns
+            the failure-reporting policy (warning vs. debug).
+    """
+    if not config_path.exists():
+        return {}
+
+    import yaml
+
+    with open(config_path, "r") as f:
+        return yaml.safe_load(f) or {}
+
+
 def _load_pipeline_config(
     override_config: Optional[Dict[str, Any]],
     logger: logging.Logger,
 ) -> tuple[dict[Any, Any], dict[Any, Any]]:
     """Load `input/config.yaml` unless a test or caller supplies config directly."""
-    full_config: dict[Any, Any]
     if override_config is not None:
-        full_config = override_config
-        return full_config, full_config.get("pipeline", {})
+        return override_config, override_config.get("pipeline", {})
 
-    full_config = {}
+    full_config: dict[Any, Any] = {}
     config_pipeline_settings: dict[Any, Any] = {}
-    input_config_path = Path("input/config.yaml")
-    if not input_config_path.exists():
-        return full_config, config_pipeline_settings
-
     try:
-        import yaml
-
-        with open(input_config_path, "r") as f:
-            full_config = yaml.safe_load(f) or {}
+        full_config = _read_input_config(Path("input/config.yaml"))
         config_pipeline_settings = full_config.get("pipeline", {})
     except Exception as e:
         logger.warning(f"Could not load pipeline settings from input/config.yaml: {e}")
@@ -298,44 +448,46 @@ def _resolve_steps_to_execute(
     config_pipeline_settings: dict[Any, Any],
     logger: logging.Logger,
 ) -> list[PipelineStep]:
-    """Apply only/skip step filters and automatic dependency resolution."""
-    pipeline_steps = list(PIPELINE_STEPS)
-    steps_to_execute = pipeline_steps
+    """Apply only/skip step filters and automatic dependency resolution.
 
+    Invalid step tokens raise ``ValueError`` (fail fast instead of silently
+    running nothing); unknown out-of-range step numbers are logged and
+    dropped; a request that resolves to zero executable steps raises
+    ``ValueError`` so startup fails loudly.
+    """
     only_steps_val = args.only_steps or config_pipeline_settings.get("only_steps")
-    if only_steps_val:
-        requested_step_numbers = parse_step_list(only_steps_val)
-        resolved_step_numbers = resolve_step_dependencies(requested_step_numbers)
-        added_dependencies = sorted(
-            set(resolved_step_numbers) - set(requested_step_numbers)
-        )
+    selection = select_pipeline_steps(
+        list(PIPELINE_STEPS),
+        only_steps=only_steps_val,
+        cli_skip_steps=args.skip_steps,
+        config_skip_steps=config_pipeline_settings.get("skip_steps"),
+    )
 
-        if added_dependencies:
-            logger.info(f"Auto-including dependency steps: {added_dependencies}")
-
-        steps_to_execute = [
-            pipeline_steps[i]
-            for i in resolved_step_numbers
-            if 0 <= i < len(pipeline_steps)
-        ]
-        logger.info(f"Executing steps: {[step[0] for step in steps_to_execute]}")
-
-    cmd_skip = parse_step_list(args.skip_steps)
-    cfg_skip = parse_step_list(config_pipeline_settings.get("skip_steps"))
-    skip_numbers = sorted(set(cmd_skip + cfg_skip))
-
-    if skip_numbers:
-        original_indices = {script: i for i, (script, _) in enumerate(pipeline_steps)}
-        steps_to_execute = [
-            step
-            for step in steps_to_execute
-            if original_indices.get(step[0], -1) not in skip_numbers
-        ]
+    if selection.added_dependencies:
         logger.info(
-            f"Skipping steps: {[pipeline_steps[i][0] for i in skip_numbers if 0 <= i < len(pipeline_steps)]}"
+            f"Auto-including dependency steps: {list(selection.added_dependencies)}"
+        )
+    if selection.requested_only:
+        logger.info(f"Executing steps: {[step[0] for step in selection.selected]}")
+    if selection.unknown_requested:
+        logger.warning(
+            f"Ignoring unknown step number(s) in only_steps selection: "
+            f"{list(selection.unknown_requested)}"
+        )
+    if selection.skipped:
+        logger.info(
+            f"Skipping steps: {[PIPELINE_STEPS[i][0] for i in selection.skipped if 0 <= i < len(PIPELINE_STEPS)]}"
         )
 
-    return steps_to_execute
+    if selection.requested_only and not selection.selected:
+        raise ValueError(
+            "Step selection resolved to no executable steps "
+            f"(only_steps={only_steps_val!r}, "
+            f"unknown={list(selection.unknown_requested)}, "
+            f"skipped={list(selection.skipped)})"
+        )
+
+    return list(selection.selected)
 
 
 def _initialize_pipeline_summary(
@@ -670,6 +822,56 @@ def _log_pipeline_step_completion(
         )
 
 
+def _record_step_result(
+    step_result: dict[str, Any],
+    summary_step_number: int,
+    script_name: str,
+    description: str,
+    step_start_datetime: datetime,
+    step_end_datetime: datetime,
+    step_duration: float,
+    pipeline_summary: dict[str, Any],
+    total_steps: int,
+    progress_tracker: Optional[PipelineProgressTracker],
+    logger: logging.Logger,
+) -> None:
+    """Annotate, warning-upgrade, record, and log one finished pipeline step.
+
+    Shared tail of the serial and parallel execution paths so both record
+    identical summary entries.
+    """
+    _annotate_step_result(
+        step_result,
+        summary_step_number,
+        script_name,
+        description,
+        step_start_datetime,
+        step_end_datetime,
+        step_duration,
+    )
+
+    has_warning = _step_has_actionable_warning(step_result)
+    if step_result["status"] == "SUCCESS" and has_warning:
+        step_result["status"] = "SUCCESS_WITH_WARNINGS"
+
+    pipeline_summary["steps"].append(step_result)
+    _update_performance_summary(
+        pipeline_summary,
+        step_result,
+        script_name,
+        has_warning,
+        total_steps,
+    )
+    _log_pipeline_step_completion(
+        summary_step_number,
+        description,
+        step_result,
+        step_duration,
+        progress_tracker,
+        logger,
+    )
+
+
 def _execute_pipeline_iteration(
     step_index: int,
     script_name: str,
@@ -705,7 +907,7 @@ def _execute_pipeline_iteration(
     step_duration = time.time() - step_start_time
     step_end_datetime = datetime.now()
 
-    _annotate_step_result(
+    _record_step_result(
         step_result,
         actual_step_number,
         script_name,
@@ -713,25 +915,8 @@ def _execute_pipeline_iteration(
         step_start_datetime,
         step_end_datetime,
         step_duration,
-    )
-
-    has_warning = _step_has_actionable_warning(step_result)
-    if step_result["status"] == "SUCCESS" and has_warning:
-        step_result["status"] = "SUCCESS_WITH_WARNINGS"
-
-    pipeline_summary["steps"].append(step_result)
-    _update_performance_summary(
         pipeline_summary,
-        step_result,
-        script_name,
-        has_warning,
         len(steps_to_execute),
-    )
-    _log_pipeline_step_completion(
-        actual_step_number,
-        description,
-        step_result,
-        step_duration,
         progress_tracker,
         logger,
     )
@@ -960,20 +1145,36 @@ def _handle_pipeline_failure(
     return 1
 
 
+def _fail_pipeline_startup(error: Exception) -> int:
+    """Report a failure raised before the run context existed.
+
+    Args:
+        error: The startup exception (for example an invalid step selection).
+
+    Returns:
+        The pipeline failure exit code (1).
+    """
+    log_step_error(_module_logger, f"Pipeline failed during startup: {error}")
+    return 1
+
+
 def main(
     override_args: Optional[PipelineArguments] = None,
     override_config: Optional[Dict[str, Any]] = None,
 ) -> int:
     """Main pipeline orchestration function."""
-    (
-        args,
-        config_pipeline_settings,
-        steps_to_execute,
-        pipeline_summary,
-        visual_logger,
-        correlation_id,
-        logger,
-    ) = _prepare_pipeline_context(override_args, override_config)
+    try:
+        (
+            args,
+            config_pipeline_settings,
+            steps_to_execute,
+            pipeline_summary,
+            visual_logger,
+            correlation_id,
+            logger,
+        ) = _prepare_pipeline_context(override_args, override_config)
+    except Exception as e:
+        return _fail_pipeline_startup(e)
 
     if getattr(args, "autonomous", False):
         from pipeline.autonomous import run_autonomous_proposal_loop
@@ -1036,8 +1237,6 @@ def main(
                     )
                     current_step_counter += 1
                 else:
-                    import os
-
                     max_cpu = os.cpu_count() or 4
                     # Calculate estimated tier memory requirement to prevent overcommit
                     tier_memory_est = sum(
@@ -1094,34 +1293,17 @@ def main(
                             step_start_datetime = datetime.now()
                             step_result = future.result()
                             step_end_datetime = datetime.now()
-                            step_duration = 0.0
 
-                            _annotate_step_result(
+                            _record_step_result(
                                 step_result,
                                 step_num + 1,
                                 script_name,
                                 description,
                                 step_start_datetime,
                                 step_end_datetime,
-                                step_duration,
-                            )
-                            has_warning = _step_has_actionable_warning(step_result)
-                            if step_result["status"] == "SUCCESS" and has_warning:
-                                step_result["status"] = "SUCCESS_WITH_WARNINGS"
-
-                            pipeline_summary["steps"].append(step_result)
-                            _update_performance_summary(
+                                0.0,
                                 pipeline_summary,
-                                step_result,
-                                script_name,
-                                has_warning,
                                 len(steps_to_execute),
-                            )
-                            _log_pipeline_step_completion(
-                                step_num + 1,
-                                description,
-                                step_result,
-                                step_duration,
                                 progress_tracker,
                                 logger,
                             )
@@ -1154,8 +1336,6 @@ def execute_pipeline_step(
     script_name: str, args: PipelineArguments, logger: Any
 ) -> Dict[str, Any]:
     """Execute a single pipeline step with comprehensive monitoring."""
-    import os
-
     # Initialize performance tracking
     start_memory = get_current_memory_usage()
     peak_memory = start_memory
@@ -1177,17 +1357,12 @@ def execute_pipeline_step(
         # Load config.yaml once — used for both skip_steps (prereq validation) and testing_matrix
         config_skip_steps: list[Any] = []
         testing_matrix: dict[Any, Any] = {}
-        input_config_path = Path("input/config.yaml")
-        if input_config_path.exists():
-            try:
-                import yaml
-
-                with open(input_config_path, "r") as f:
-                    _full_cfg = yaml.safe_load(f) or {}
-                config_skip_steps = _full_cfg.get("pipeline", {}).get("skip_steps", [])
-                testing_matrix = _full_cfg.get("testing_matrix", {})
-            except (ImportError, OSError, ValueError, Exception) as e:
-                logger.debug(f"Could not parse input/config.yaml: {e}")
+        try:
+            _full_cfg = _read_input_config(Path("input/config.yaml"))
+            config_skip_steps = _full_cfg.get("pipeline", {}).get("skip_steps", [])
+            testing_matrix = _full_cfg.get("testing_matrix", {})
+        except Exception as e:
+            logger.debug(f"Could not parse input/config.yaml: {e}")
 
         # Validate step prerequisites
         prereq_result = validate_step_prerequisites(
@@ -1212,8 +1387,7 @@ def execute_pipeline_step(
         python_executable = str(venv_python) if venv_python.exists() else sys.executable
 
         # Extract step number
-        step_num_match = re.match(r"^(\d+)_", script_name)
-        step_num = int(step_num_match.group(1)) if step_num_match else -1
+        step_num = step_number_from_script_name(script_name)
 
         matrix_enabled = testing_matrix.get("enabled", False)
         target_folders: list[Any] = []
@@ -1276,9 +1450,7 @@ def execute_pipeline_step(
                     logger.info(f"  -> Executing for folder: {folder.name}")
 
                 # Creating a modified args copy to point to the specific subfolder
-                import copy
-
-                folder_args = copy.copy(args)
+                folder_args = copy(args)
                 folder_args.target_dir = folder
 
                 cmd = build_step_command_args(
@@ -1415,8 +1587,6 @@ def parse_step_list(step_input: Any) -> List[int]:
 
 def get_environment_info() -> Dict[str, Any]:
     """Get environment information."""
-    import os
-
     info: dict[str, Any] = {
         "python_version": sys.version,
         "platform": sys.platform,
@@ -1429,14 +1599,9 @@ def get_environment_info() -> Dict[str, Any]:
         import psutil
 
         info["memory_total_gb"] = f"{psutil.virtual_memory().total / 1024**3:.1f}"
-    except ImportError:
-        info["memory_total_gb"] = "unavailable (psutil not installed)"
-
-    try:
-        import psutil
-
         info["disk_free_gb"] = f"{psutil.disk_usage('/').free / 1024**3:.1f}"
     except ImportError:
+        info["memory_total_gb"] = "unavailable (psutil not installed)"
         info["disk_free_gb"] = "unavailable (psutil not installed)"
 
     return info

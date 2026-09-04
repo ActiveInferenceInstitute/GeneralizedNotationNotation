@@ -8,10 +8,11 @@ This module provides comprehensive visualization capabilities for GNN models, in
 src/visualization/
 ├── __init__.py                 # Public exports (MatrixVisualizer, process_visualization, …)
 ├── processor.py                # Facade: core + parse + plotting re-exports
-├── core/                       # process.py, parsed_model.py (JSON-first loader); [README](core/README.md)
+├── core/                       # process.py, parsed_model.py, sampling.py (JSON-first loader); [README](core/README.md)
 ├── parse/                      # markdown.py, gnn_file_parser.py (GNNParser); [README](parse/README.md)
 ├── plotting/                   # utils.py (Agg, save_plot_safely); [README](plotting/README.md)
-├── graph/                      # network_visualizations.py, bipartite.py; [README](graph/README.md)
+├── backends.py                 # Backend availability report (backend_status)
+├── graph/                      # network_visualizations.py, bipartite.py, stats.py; [README](graph/README.md)
 ├── matrix/                     # visualizer.py, extract.py, compat.py; [README](matrix/README.md)
 ├── analysis/                   # combined_analysis.py; [README](analysis/README.md)
 ├── ontology/                   # visualizer.py; [README](ontology/README.md)
@@ -124,6 +125,10 @@ flowchart LR
 | `generate_network_visualizations` | [`graph/network_visualizations.py`](graph/network_visualizations.py): graph PNG, stats JSON, optional Plotly HTML, ontology legend |
 | `generate_variable_parameter_bipartite` | [`graph/bipartite.py`](graph/bipartite.py) |
 | `generate_combined_analysis` / `generate_combined_visualizations` | [`analysis/combined_analysis.py`](analysis/combined_analysis.py) |
+| `backend_status` | [`backends.py`](backends.py): one-call availability report for matplotlib/numpy/seaborn/networkx/plotly |
+| `sample_parsed_data` | [`core/sampling.py`](core/sampling.py): pure downsampling for very large models |
+| `collect_visualization_matrices` | [`matrix/extract.py`](matrix/extract.py): pure matrix collection (parameters → variables → raw matrices) |
+| `compute_connection_statistics` | [`graph/stats.py`](graph/stats.py): pure degree-based statistics |
 | `GNNVisualizer` | [`visualizer.py`](visualizer.py): optional class API for ad hoc graph/matrix generation |
 
 Interactive HTML for the network is produced only when Plotly is installed; most outputs are PNG + JSON.

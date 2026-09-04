@@ -36,24 +36,28 @@ from typing import Any, Dict, Iterable, List, Optional, Tuple, Union
 
 import numpy as np
 
-warnings.filterwarnings("ignore")
-
 from .pymdp_utils import (
     convert_numpy_for_json,
     format_duration,
     safe_json_dump,
     safe_pickle_dump,
 )
-from .simulation import (
-    _build_pymdp_agent,
-    _canonicalise_A,
-    _canonicalise_B,
-    _canonicalise_C,
-    _canonicalise_D,
-    _canonicalise_E,
-    _normalise_prob_vector,
-    _require_pymdp_1,
-)
+
+# pymdp 1.0.0 emits a stream of deprecation warnings at import time. Silence
+# them only for this import (not process-wide) so user code keeps its own
+# warning filters intact.
+with warnings.catch_warnings():
+    warnings.simplefilter("ignore")
+    from .simulation import (
+        _build_pymdp_agent,
+        _canonicalise_A,
+        _canonicalise_B,
+        _canonicalise_C,
+        _canonicalise_D,
+        _canonicalise_E,
+        _normalise_prob_vector,
+        _require_pymdp_1,
+    )
 
 
 class PyMDPSimulation:

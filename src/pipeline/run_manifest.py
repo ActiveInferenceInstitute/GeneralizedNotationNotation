@@ -319,29 +319,13 @@ def emit_run_manifests(
 def _write_index(path: Path, text: str) -> None:
     """Atomically write the index JSON.
 
-    Reuses the same atomic strategy as ``durable_streams`` (tmp file +
-    ``os.replace``) via a tiny local helper to avoid importing a private name.
-
-    Args:
-        path: Destination index path.
-        text: Serialized index JSON.
+    Delegates to the shared :mod:`pipeline._io` atomic-write helper (the same
+    recipe used by stream manifests, traces, and session checkpoints) instead
+    of re-implementing mkstemp + ``os.replace`` here.
     """
-    import os
-    import tempfile
+    from pipeline._io import atomic_write_text
 
-    path = Path(path)
-    path.parent.mkdir(parents=True, exist_ok=True)
-    fd, tmp_name = tempfile.mkstemp(
-        dir=str(path.parent), prefix=path.name, suffix=".tmp"
-    )
-    try:
-        with os.fdopen(fd, "w", encoding="utf-8") as fh:
-            fh.write(text)
-        os.replace(tmp_name, str(path))
-    except BaseException:
-        if os.path.exists(tmp_name):
-            os.unlink(tmp_name)
-        raise
+    atomic_write_text(path, text)
 
 
 def verify_run_manifests(

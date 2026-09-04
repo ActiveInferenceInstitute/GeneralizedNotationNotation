@@ -34,6 +34,13 @@ def get_current_memory_usage() -> float:
         return 0.0
 
 
+# Canonical MB-scale process-memory probe. ``utils.test_utils.get_memory_usage``
+# and ``utils.visualization_optimizer.get_memory_usage`` delegate here instead
+# of carrying their own psutil copies; ``get_current_memory_usage`` is the
+# historical pipeline-wide entry point for the same function.
+get_memory_usage = get_current_memory_usage
+
+
 class ResourceTracker:
     """Tracks resource usage during operations."""
 
@@ -110,32 +117,41 @@ def track_peak_memory(func: Callable[..., T]) -> Callable[..., Tuple[T, float]]:
 @contextmanager
 def with_resource_limits(
     max_memory_mb: Optional[float] = None, max_time_seconds: Optional[float] = None
-) -> Any:
+) -> Iterator[None]:
     """Context manager to enforce resource limits.
 
     - Memory limit is enforced on delta usage within the context, not absolute RSS,
       to avoid false failures on systems with high baseline memory.
     - Time limit is enforced on wall-clock elapsed time within the context.
+    - Exceptions raised by the wrapped body always propagate: limit violations
+      are only reported when the body completed normally, so a body failure is
+      never masked by a ``RuntimeError`` from this guard.
     """
     start_time = time.time()
     process = psutil.Process()
     start_memory = process.memory_info().rss / 1024 / 1024  # MB
 
+    body_error: BaseException | None = None
     try:
         yield
-    finally:
-        end_memory = process.memory_info().rss / 1024 / 1024
-        memory_delta = max(0.0, end_memory - start_memory)
-        if max_memory_mb is not None and memory_delta > max_memory_mb:
+    except BaseException as exc:
+        body_error = exc
+
+    if body_error is not None:
+        raise body_error
+
+    end_memory = process.memory_info().rss / 1024 / 1024
+    memory_delta = max(0.0, end_memory - start_memory)
+    if max_memory_mb is not None and memory_delta > max_memory_mb:
+        raise RuntimeError(
+            f"Memory limit exceeded: +{memory_delta:.1f}MB > {max_memory_mb}MB"
+        )
+    if max_time_seconds is not None:
+        elapsed = time.time() - start_time
+        if elapsed > max_time_seconds:
             raise RuntimeError(
-                f"Memory limit exceeded: +{memory_delta:.1f}MB > {max_memory_mb}MB"
+                f"Time limit exceeded: {elapsed:.1f}s > {max_time_seconds}s"
             )
-        if max_time_seconds is not None:
-            elapsed = time.time() - start_time
-            if elapsed > max_time_seconds:
-                raise RuntimeError(
-                    f"Time limit exceeded: {elapsed:.1f}s > {max_time_seconds}s"
-                )
 
 
 def check_disk_space(

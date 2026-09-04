@@ -12,7 +12,8 @@ from __future__ import annotations
 import csv
 import json
 import logging
-from typing import Any, cast
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Tuple, Union, cast
 
 from ..compat.viz_compat import MATPLOTLIB_AVAILABLE, np, plt, sns
 from ..plotting.utils import safe_tight_layout
@@ -25,24 +26,16 @@ from .extract import (
 
 logger = logging.getLogger(__name__)
 
-try:
-    from matplotlib import cm
-except ImportError:
-    cm = cast(Any, None)
-
 NUMPY_AVAILABLE = np is not None
 SEABORN_AVAILABLE = sns is not None
 
-import ast
-from pathlib import Path
-from typing import Any, Dict, List, Optional, Union, cast
 
 # Maximum figure dimension (inches) to prevent RendererAgg pixel overflow.
 # At 300 DPI, 200 inches = 60,000 pixels — well within safe 32-bit limits.
 _MAX_FIGURE_DIMENSION = 200
 
 
-def _safe_figsize(width: float, height: float) -> tuple:
+def _safe_figsize(width: float, height: float) -> Tuple[float, float]:
     """Clamp figure dimensions to prevent matplotlib RendererAgg overflow.
 
     Large models can produce data-dependent figsize values that exceed

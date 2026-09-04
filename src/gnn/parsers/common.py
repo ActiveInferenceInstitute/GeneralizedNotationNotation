@@ -19,6 +19,7 @@ from pathlib import Path
 from typing import (
     TYPE_CHECKING,
     Any,
+    ClassVar,
     Dict,
     List,
     Optional,
@@ -679,6 +680,17 @@ class BaseGNNParser(ABC):
         self.current_line: int = 0
         self.current_column: int = 0
 
+    EMBEDDED_JSON_PATTERNS: ClassVar[list[str]] = []
+    """Regex patterns locating embedded ``MODEL_DATA`` JSON in comments.
+
+    Each concrete parser declares its own comment prefixes (e.g. ``//`` for
+    Scala, ``--`` for Lean). Empty by default: parsers without embedded data
+    inherit a no-op extractor.
+    """
+
+    EMBEDDED_LENIENT_MODEL_NAME: ClassVar[str] = "Unknown Model"
+    """Default model name applied by the lenient embedded-data applier."""
+
     @abstractmethod
     def parse_file(self, file_path: str) -> ParseResult:
         """Parse a GNN file."""
@@ -710,10 +722,152 @@ class BaseGNNParser(ABC):
             model_name=name, created_at=datetime.now(), modified_at=datetime.now()
         )
 
+    def _extract_embedded_json_data(self, content: str) -> Optional[Dict[str, Any]]:
+        """Extract embedded JSON model data using this parser's comment patterns.
 
-# ================================
-# UTILITY FUNCTIONS
-# ================================
+        Concrete parsers declare their ``MODEL_DATA`` comment patterns in the
+        :attr:`EMBEDDED_JSON_PATTERNS` class attribute; the first pattern whose
+        captured JSON parses wins.
+        """
+        return extract_embedded_json_data(content, self.EMBEDDED_JSON_PATTERNS)
+
+    def _parse_from_embedded_data(
+        self, embedded_data: Dict[str, Any], result: ParseResult
+    ) -> ParseResult:
+        """Parse a model from embedded JSON data (shared strict variant).
+
+        Replaces the per-parser copies of this routine (scala, lean, coq,
+        isabelle, python, haskell, TLA, agda), which were verbatim identical.
+        """
+        try:
+            # Create model from embedded data
+            model = GNNInternalRepresentation(
+                model_name=embedded_data.get("model_name", "Unknown Model"),
+                annotation=embedded_data.get("annotation", ""),
+            )
+
+            # Parse variables
+            for var_data in embedded_data.get("variables", []):
+                var = Variable(
+                    name=var_data["name"],
+                    var_type=VariableType(var_data["var_type"]),
+                    data_type=DataType(var_data["data_type"]),
+                    dimensions=var_data.get("dimensions", []),
+                )
+                model.variables.append(var)
+
+            # Parse connections
+            for conn_data in embedded_data.get("connections", []):
+                conn = Connection(
+                    source_variables=conn_data["source_variables"],
+                    target_variables=conn_data["target_variables"],
+                    connection_type=ConnectionType(conn_data["connection_type"]),
+                )
+                model.connections.append(conn)
+
+            # Parse parameters
+            for param_data in embedded_data.get("parameters", []):
+                param = Parameter(
+                    name=param_data["name"],
+                    value=param_data["value"],
+                    type_hint=param_data.get("param_type", "constant"),
+                )
+                model.parameters.append(param)
+
+            # Set time specification if present
+            if embedded_data.get("time_specification"):
+                time_data = embedded_data["time_specification"]
+                model.time_specification = TimeSpecification(
+                    time_type=time_data.get("time_type", "dynamic"),
+                    discretization=time_data.get("discretization"),
+                    horizon=time_data.get("horizon"),
+                    step_size=time_data.get("step_size"),
+                )
+
+            # Set ontology mappings if present
+            if embedded_data.get("ontology_mappings"):
+                for mapping_data in embedded_data["ontology_mappings"]:
+                    mapping = OntologyMapping(
+                        variable_name=mapping_data["variable_name"],
+                        ontology_term=mapping_data["ontology_term"],
+                        description=mapping_data.get("description"),
+                    )
+                    model.ontology_mappings.append(mapping)
+
+            result.model = model
+            result.success = True
+            return result
+
+        except Exception as e:
+            result.add_error(f"Failed to parse embedded data: {e}")
+            return result
+
+    def _parse_embedded_data_lenient(
+        self, embedded_data: Dict[str, Any], result: ParseResult
+    ) -> ParseResult:
+        """Apply embedded JSON data onto ``result.model`` in place.
+
+        Lenient counterpart of :meth:`_parse_from_embedded_data`: enum fields
+        use ``.get`` defaults instead of strict casts and the existing model
+        object is mutated rather than replaced. Used by parsers whose
+        round-trip fidelity relies on re-reading embedded ``MODEL_DATA``.
+        """
+        try:
+            result.model.model_name = embedded_data.get(
+                "model_name", self.EMBEDDED_LENIENT_MODEL_NAME
+            )
+            result.model.annotation = embedded_data.get("annotation", "")
+
+            # Restore variables
+            for var_data in embedded_data.get("variables", []):
+                var = Variable(
+                    name=var_data["name"],
+                    var_type=VariableType(var_data.get("var_type", "hidden_state")),
+                    data_type=DataType(var_data.get("data_type", "categorical")),
+                    dimensions=var_data.get("dimensions", []),
+                )
+                result.model.variables.append(var)
+
+            # Restore connections
+            for conn_data in embedded_data.get("connections", []):
+                conn = Connection(
+                    source_variables=conn_data.get("source_variables", []),
+                    target_variables=conn_data.get("target_variables", []),
+                    connection_type=ConnectionType(
+                        conn_data.get("connection_type", "directed")
+                    ),
+                )
+                result.model.connections.append(conn)
+
+            # Restore parameters
+            for param_data in embedded_data.get("parameters", []):
+                param = Parameter(name=param_data["name"], value=param_data["value"])
+                result.model.parameters.append(param)
+
+            # Restore time specification
+            if embedded_data.get("time_specification"):
+                time_data = embedded_data["time_specification"]
+                result.model.time_specification = TimeSpecification(
+                    time_type=time_data.get("time_type", "dynamic"),
+                    discretization=time_data.get("discretization"),
+                    horizon=time_data.get("horizon"),
+                    step_size=time_data.get("step_size"),
+                )
+
+            # Restore ontology mappings
+            for mapping_data in embedded_data.get("ontology_mappings", []):
+                mapping = OntologyMapping(
+                    variable_name=mapping_data.get("variable_name", ""),
+                    ontology_term=mapping_data.get("ontology_term", ""),
+                    description=mapping_data.get("description"),
+                )
+                result.model.ontology_mappings.append(mapping)
+
+            return result
+
+        except Exception as e:
+            result.add_error(f"Failed to parse embedded data: {e}")
+            return result
 
 
 def normalize_variable_name(name: str) -> str:

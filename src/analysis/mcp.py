@@ -161,23 +161,11 @@ def list_analysis_tools_mcp() -> Dict[str, Any]:
         tools_info = check_analysis_tools()
         return {"success": True, "tools": tools_info}
     except Exception as e:
+        logger.error("list_analysis_tools_mcp error: %s", e, exc_info=True)
         return {
             "success": False,
-            "tools": {
-                "statistical_analysis": {
-                    "available": True,
-                    "description": "Statistical measures on GNN model structure",
-                },
-                "complexity_metrics": {
-                    "available": True,
-                    "description": "Cyclomatic and cognitive complexity",
-                },
-                "network_analysis": {
-                    "available": True,
-                    "description": "Graph-theoretic analysis of connections",
-                },
-            },
             "error": str(e) if e else "Unknown error",
+            "tools": {},
         }
 
 

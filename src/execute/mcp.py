@@ -6,8 +6,7 @@ GNN execution, PyMDP simulation runner, dependency checker,
 and module introspection through MCP.
 """
 
-from __future__ import annotations
-
+import dataclasses
 import logging
 from pathlib import Path
 from typing import Any, Dict
@@ -219,20 +218,28 @@ def execute_pymdp_simulation_mcp(
 
 
 def check_execute_dependencies_mcp() -> Dict[str, Any]:
-    """
-    Check which execution backend dependencies are installed.
+    """Check which execution backend dependencies are installed.
 
-    Probes for: pymdp, numpy, scipy, jax, torch (via find_spec — no import).
-    Also checks for Python version compatibility.
+    Probes importability of the required Python packages (numpy, matplotlib,
+    networkx, pandas, pyyaml, scipy, scikit-learn) and the optional pymdp
+    backend, returning one plain-dict record per package so the MCP payload
+    is JSON-serializable.
 
     Returns:
-        Dictionary with dependency names, availability flags, and versions where detectable.
+        Dictionary with ``success`` and a ``dependencies`` list of plain dicts
+        (``component``, ``status``, ``message``, ``details``, ``suggestion``).
     """
     try:
         result = check_dependencies()
         if isinstance(result, dict):
             return {"success": True, **result}
-        return {"success": True, "dependencies": result}
+        # ``check_dependencies`` returns ``List[ValidationResult]`` (dataclasses);
+        # serialize each to a plain dict so the MCP response is JSON-serializable.
+        dependencies = [
+            dataclasses.asdict(item) if dataclasses.is_dataclass(item) else item
+            for item in result
+        ]
+        return {"success": True, "dependencies": dependencies}
     except Exception as e:
         logger.error(f"check_execute_dependencies_mcp error: {e}", exc_info=True)
         return {"success": False, "error": str(e)}

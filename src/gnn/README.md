@@ -485,9 +485,9 @@ Integration with the broader GNN pipeline:
 ### Pipeline Usage
 
 ```python
-from gnn.processors import run_comprehensive_gnn_testing
+from gnn.processors import process_gnn_folder
 
-success = run_comprehensive_gnn_testing(
+success = process_gnn_folder(
     target_dir=Path("models/"),
     output_dir=Path("results/"),
     logger=logger,
@@ -495,6 +495,19 @@ success = run_comprehensive_gnn_testing(
     enable_round_trip=False,
 )
 ```
+
+### Format Conversion
+
+```python
+from gnn.parsers import GNNParsingSystem
+
+system = GNNParsingSystem(strict_validation=False)
+output = system.convert_file("model.md", "model.json")
+# Format inferred from extensions; pass to_format=/from_format= to override.
+```
+
+Content-based format detection (no filename hint needed) is available via
+`gnn.parsers.unified_parser.detect_gnn_format_from_content`.
 
 ## Performance
 

@@ -12,7 +12,7 @@
 
 **Version**: 3.2.0
 
-**Last Updated**: 2026-04-16
+**Last Updated**: 2026-09-04
 
 ---
 
@@ -356,6 +356,12 @@ output/9_advanced_viz_output/
 
 - `src/tests/advanced_visualization/test_advanced_visualization_overall.py`
 - `src/tests/advanced_visualization/test_advanced_visualization_shared.py`
+- `src/tests/advanced_visualization/test_advanced_visualization_statistical.py`
+- `src/tests/advanced_visualization/test_advanced_visualization_interactive.py`
+- `src/tests/advanced_visualization/test_advanced_visualization_html_generator.py`
+- `src/tests/advanced_visualization/test_advanced_visualization_public_api.py`
+- `src/tests/advanced_visualization/test_advanced_visualization_composability.py` (refactor: `record_attempt`, `_conn_endpoints`, palette/layout constants)
+- `src/tests/advanced_visualization/test_advanced_visualization_public_api_refactor.py` (refactor: `VIZ_TYPE_CHOICES`, `probe_capabilities`, MCP `generate_d2` honoring, dashboard-timestamp regression)
 
 ### Test Coverage
 
@@ -365,6 +371,80 @@ Measure on demand:
 uv run --extra dev python -m pytest src/tests/advanced_visualization/ \
     --cov=src/advanced_visualization --cov-report=term-missing
 ```
+
+
+## Composability Helpers
+
+The refactor deduplicated cross-file logic into a small set of shared helpers
+in `_shared.py` and the package root:
+
+- `record_attempt(results, attempt, *, optional_message_filter=None)` — pure
+  aggregate bookkeeping for `AdvancedVisualizationAttempt` → `AdvancedVisualizationResults`
+  (success/failed/skipped counts, output_files/errors/warnings). The
+  `optional_message_filter` suppresses warning entries whose message mentions an
+  optional dependency marker (e.g. `"D2 CLI"`) so optional CLI absence is not
+  surfaced as a hard warning. Used by `process_advanced_viz` for all three
+  attempt-accounting sites (previously triplicated).
+- `_conn_endpoints(conn_info) -> (source_variables, target_variables)` — normalizes
+  legacy `{"source", "target"}` and new `{"source_variables", "target_variables"}`
+  connection formats in one call. Used by all three connection-expansion sites in
+  `network_viz.py` (previously triplicated).
+- `VAR_TYPE_COLORS` / `VAR_TYPE_UNKNOWN_COLOR` — the canonical var-type → hex
+  color palette used by the 3D visualization (previously inlined twice).
+- `FORCE_LAYOUT_SEED` / `LAYOUT_SEED` / `LAYOUT_SPAN` / `LAYOUT_ITERATIONS` / `LAYOUT_STEP`
+  — named constants for the force-directed 3D layout (seed=42, span=10, iterations=50,
+  step=0.01). The layout now uses `np.random.default_rng(42)` instead of mutating the
+  process-global RNG via `np.random.seed(42)`.
+- `VIZ_TYPE_CHOICES` (package root) — the canonical tuple of `viz_type` values
+  accepted by `process_advanced_viz`; the `9_advanced_viz.py` orchestrator imports
+  this instead of hand-maintaining a duplicate list. Scope note: this is true at
+  import/config level only — at runtime the enhanced parser
+  (`utils.ArgumentParser.ARGUMENT_DEFINITIONS["viz_type"]`) enforces its own copy of
+  the choices, and the orchestrator's `choices=list(VIZ_TYPE_CHOICES)` only feeds the
+  recovery/fallback parser. A test pins the two lists equal; unify in `utils` if the
+  duplication ever drifts.
+- `_MatrixVisualizer` — lazy factory from `_shared`; calling it returns a
+  `MatrixVisualizer` or `None` (ImportError swallowed), so all four guard sites
+  (network_viz ×2, statistical_viz, interactive_viz) check the RESULT
+  (`mv = _MatrixVisualizer(); if mv is None: skipped/failed`) rather than the
+  never-None proxy object. A missing `visualization.matrix_visualizer` surfaces as
+  the documented "MatrixVisualizer not available" skip, not a raw ImportError.
+- `probe_capabilities()` (package root) — a live runtime probe of the actual
+  environment (`d2` CLI on PATH, `plotly`/`seaborn`/`matplotlib`/`numpy`/`networkx`
+  importability), distinct from the static `FEATURES` map. Used by the
+  `check_visualization_capabilities` MCP tool so its docstring is honest.
+- `D2_COMPILE_TIMEOUT_S` / `D2_MISSING_MESSAGE` / `VALID_D2_FORMATS`
+  (`d2_visualizer.py`) — named constants for the D2 compile timeout, the
+  missing-CLI message, and the validated output-format set (`svg`/`png`/`pdf`).
+- `_theme.py` — shared CSS constants for the two HTML emitters
+  (`BASE_CSS`, `FONT_STACK`, `BODY_GRADIENT`, `HEADER_H2_CSS`,
+  `PARAMETER_NAME_CSS`, `STAT_LABEL_CSS`). Contains only rules that are
+  byte-identical (after whitespace normalization) across `dashboard.py` and
+  `html_generator.py`; every rule with cosmetic differences stays inline in
+  its emitter. Parity proven against the pre-refactor (git HEAD) output.
+- `AdvancedVisualizer(logger=None, extractor=None)` — constructor injection
+  for the data extractor; any object with
+  `extract_from_content(content) -> dict` is accepted (test stubs included).
+  When omitted, a real `VisualizationDataExtractor` is built lazily per run;
+  if unavailable, `generate_visualizations` degrades to the recovery path.
+  `VIS_PROCESSOR_AVAILABLE` remains a module symbol for back-compat.
+- `process_gnn_file_with_d2(..., parsed_json_dir=None)` — optional keyword
+  overriding the cwd-dependent `output/3_gnn_output` parsed-JSON lookup;
+  `None` preserves the historical behavior.
+- `_create_network_graph` resolves real node indices via a name→index map
+  over `blocks`; both extractor formats and legacy scalar connections
+  resolve, unresolvable pairs are silently skipped, positions stay seeded.
+
+## Dashboard Footer Timestamp (Fixed)
+
+`dashboard.py` previously shipped `{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}`
+as **literal text** in the footer because the closing HTML chunk was a plain
+`"""` string (no `f` prefix) and `datetime` was not imported. The broad
+`except Exception` in `generate_dashboard` swallowed the resulting `NameError`,
+so dashboard generation silently returned `None` 100% of the time. The fix
+imports `datetime` and prefixes the footer chunk with `f`. Regression test:
+`test_dashboard_timestamp_renders` in
+`test_advanced_visualization_public_api_refactor.py`.
 
 ### Test Categories
 
@@ -383,8 +463,6 @@ uv run --extra dev python -m pytest src/tests/advanced_visualization/ \
 - `list_d2_visualization_types` - List D2 diagram categories and D2 requirements
 - `get_advanced_visualization_module_info` - Return module metadata, feature flags, and tool inventory
 
-### Tool Endpoints
-
 ```python
 def process_advanced_visualization_mcp(
     target_directory: str,
@@ -392,7 +470,12 @@ def process_advanced_visualization_mcp(
     verbose: bool = False,
     generate_d2: bool = True,
 ) -> Dict[str, Any]:
-    """Process advanced visualization for GNN files."""
+    """Process advanced visualization for GNN files.
+
+    ``generate_d2=False`` routes to ``viz_type="network"`` (non-D2); ``True``
+    runs all viz types. ``verbose`` is accepted for schema stability but no
+    longer passed through to ``process_advanced_viz`` (which has no
+    ``verbose`` parameter — it was previously swallowed into ``**kwargs``).
 ```
 
 ### MCP File Location
@@ -458,7 +541,7 @@ python src/9_advanced_viz.py --target-dir input/ --verbose
 
 ## Version History
 
-### Current Version: 3.0.0
+### Current Version: 3.2.0
 
 **Features**:
 
@@ -497,7 +580,7 @@ python src/9_advanced_viz.py --target-dir input/ --verbose
 
 ---
 
-**Last Updated**: 2026-05-12
+**Last Updated**: 2026-09-04
 **Maintainer**: GNN Pipeline Team
 **Status**: Maintained
 **Version**: 3.2.0

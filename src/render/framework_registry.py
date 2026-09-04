@@ -204,10 +204,6 @@ FRAMEWORK_REGISTRY: Mapping[str, Dict[str, Any]] = MappingProxyType(
     }
 )
 
-# Sentinel used as the unavailable_reason when a framework has no reason set
-# but is also not explicitly marked unavailable — indicates a misconfiguration.
-_UNSET = object()
-
 
 def get_supported_frameworks() -> list[str]:
     """Return canonical supported framework names in render order."""
@@ -291,3 +287,14 @@ def validate_framework_requested(framework: str) -> None:
     available, reason = get_framework_availability(framework)
     if not available and reason is not None:
         raise ValueError(f"Framework '{framework}' is not available: {reason}")
+
+
+#: Frameworks served by the lightweight ``"lite"`` preset in
+#: ``processor.process_render`` (no Julia toolchain, no GPU stack). Kept in
+#: the canonical registry so downstream code has one source of truth.
+LITE_FRAMEWORKS: Tuple[str, ...] = ("pymdp", "jax", "discopy", "bnlearn")
+
+
+def get_lite_frameworks() -> list[str]:
+    """Return the canonical ``"lite"`` preset framework list."""
+    return list(LITE_FRAMEWORKS)

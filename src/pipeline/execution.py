@@ -15,7 +15,8 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, List, Optional
 
-from .config import STEP_METADATA
+from ._version import __version__ as _PACKAGE_VERSION
+from .config import DEFAULT_OUTPUT_DIR, DEFAULT_TARGET_DIR, STEP_METADATA
 
 _STEP_SCRIPT_BY_NUM = {int(key.split("_", 1)[0]): f"{key}.py" for key in STEP_METADATA}
 _STEP_NUM_BY_ALIAS: dict[str, int] = {}
@@ -27,6 +28,9 @@ for _num, _script in _STEP_SCRIPT_BY_NUM.items():
     _STEP_NUM_BY_ALIAS[_script] = _num
     _STEP_NUM_BY_ALIAS[_suffix] = _num
 _STEP_NUM_BY_ALIAS["advanced_visualization"] = 9
+
+# Step outcomes that count as success across the pipeline summary contract.
+_SUCCESS_STATUSES = frozenset({"SUCCESS", "SUCCESS_WITH_WARNINGS", "SKIPPED"})
 
 
 def _ensure_src_on_path() -> None:
@@ -44,8 +48,27 @@ def _main_module() -> Any:
     return main
 
 
+def resolve_step_numbers(
+    steps: Any,
+    pipeline_data: dict | None = None,
+) -> list[int]:
+    """Normalize user-provided step identifiers to registered step numbers.
+
+    Accepts: ``None``/""/"all"/"pipeline" (→ every registered step), a single
+    step number or name ("11", "11_render", "11_render.py"), comma-separated
+    lists ("3,5" — mirrors the ``--only-steps`` CLI form), or any iterable
+    mixing those forms. ``pipeline_data`` may carry a fallback ``steps`` /
+    ``only_steps`` entry when ``steps`` is ``None``. Unknown or empty tokens
+    are dropped; duplicates collapse; output is sorted and de-duplicated.
+
+    Raises no exceptions for unrecognized names — callers decide whether an
+    empty result is an error (see :func:`run_pipeline`).
+    """
+    return _coerce_steps(steps, pipeline_data)
+
+
 def _coerce_steps(steps: Any, pipeline_data: dict | None = None) -> list[int]:
-    """Normalize step inputs to registered numeric step identifiers."""
+    """Backward-compatible alias for :func:`resolve_step_numbers`."""
     if steps is None and pipeline_data:
         steps = pipeline_data.get("steps") or pipeline_data.get("only_steps")
 
@@ -56,15 +79,17 @@ def _coerce_steps(steps: Any, pipeline_data: dict | None = None) -> list[int]:
 
     out: list[int] = []
     for step in steps:
-        key = str(step).strip()
-        if not key:
-            continue
-        key = key[:-3] if key.endswith(".py") else key
-        num = _STEP_NUM_BY_ALIAS.get(key)
-        if num is None and key.isdigit():
-            num = int(key)
-        if num is not None and num in _STEP_SCRIPT_BY_NUM:
-            out.append(num)
+        tokens = str(step).split(",") if isinstance(step, str) else [str(step)]
+        for token in tokens:
+            key = token.strip()
+            if not key:
+                continue
+            key = key[:-3] if key.endswith(".py") else key
+            num = _STEP_NUM_BY_ALIAS.get(key)
+            if num is None and key.isdigit():
+                num = int(key)
+            if num is not None and num in _STEP_SCRIPT_BY_NUM:
+                out.append(num)
     return sorted(dict.fromkeys(out))
 
 
@@ -129,14 +154,14 @@ def run_pipeline(
         Path(target_dir)
         if target_dir is not None
         else _path_from_sources(
-            "target_dir", pipeline_data=pipeline_data, fallback="input/gnn_files"
+            "target_dir", pipeline_data=pipeline_data, fallback=DEFAULT_TARGET_DIR
         )
     )
     resolved_output = (
         Path(output_dir)
         if output_dir is not None
         else _path_from_sources(
-            "output_dir", pipeline_data=pipeline_data, fallback="output"
+            "output_dir", pipeline_data=pipeline_data, fallback=DEFAULT_OUTPUT_DIR
         )
     )
     step_numbers = _coerce_steps(steps, pipeline_data)
@@ -186,8 +211,7 @@ def run_pipeline(
                 results["steps_executed"].append(
                     {
                         "step_name": step.get("script_name"),
-                        "success": step.get("status")
-                        in {"SUCCESS", "SUCCESS_WITH_WARNINGS", "SKIPPED"},
+                        "success": step.get("status") in _SUCCESS_STATUSES,
                         "duration": step.get("duration_seconds", 0.0),
                         "output": step.get("stdout", ""),
                     }
@@ -216,7 +240,7 @@ def get_pipeline_status() -> dict:
     return {
         "status": "ready",
         "timestamp": datetime.now().isoformat(),
-        "steps_available": 25,
+        "steps_available": len(_STEP_SCRIPT_BY_NUM),
         "steps_completed": 0,
     }
 
@@ -224,7 +248,7 @@ def get_pipeline_status() -> dict:
 def validate_pipeline_config(config: dict) -> bool:
     """Validate pipeline configuration."""
     try:
-        required_keys: list[Any] = ["steps", "output_dir"]
+        required_keys: list[str] = ["steps", "output_dir"]
         return all(key in config for key in required_keys)
     except (TypeError, KeyError):
         return False
@@ -234,9 +258,9 @@ def get_pipeline_info() -> dict:
     """Get pipeline information."""
     return {
         "name": "GNN Pipeline",
-        "version": "1.0.0",
+        "version": _PACKAGE_VERSION,
         "description": "GeneralizedNotationNotation processing pipeline",
-        "steps": list(range(25)),  # 25 steps (0-24)
+        "steps": sorted(_STEP_SCRIPT_BY_NUM),
     }
 
 
@@ -244,8 +268,8 @@ def create_pipeline_config() -> dict:
     """Create a default pipeline configuration."""
     return {
         "project_name": "GeneralizedNotationNotation",
-        "version": "1.0.0",
-        "output_dir": "output",
+        "version": _PACKAGE_VERSION,
+        "output_dir": DEFAULT_OUTPUT_DIR,
         "steps": {},
     }
 
@@ -283,13 +307,13 @@ def execute_pipeline_step(
                 "target_dir",
                 pipeline_data=pipeline_data,
                 step_config=step_config,
-                fallback="input/gnn_files",
+                fallback=DEFAULT_TARGET_DIR,
             ),
             output_dir=_path_from_sources(
                 "output_dir",
                 pipeline_data=pipeline_data,
                 step_config=step_config,
-                fallback="output",
+                fallback=DEFAULT_OUTPUT_DIR,
             ),
             verbose=bool(
                 step_config.get("verbose") or pipeline_data.get("verbose", False)
@@ -298,7 +322,7 @@ def execute_pipeline_step(
         logger = logging.getLogger(f"pipeline.{Path(script_name).stem}")
         raw = main.execute_pipeline_step(script_name, args, logger)
         duration = (datetime.now() - start).total_seconds()
-        success = raw.get("status") in {"SUCCESS", "SUCCESS_WITH_WARNINGS", "SKIPPED"}
+        success = raw.get("status") in _SUCCESS_STATUSES
         return StepExecutionResult(
             step_name=script_name,
             success=success,
@@ -320,7 +344,7 @@ def execute_pipeline_steps(
     steps: List[str], pipeline_data: dict
 ) -> List[StepExecutionResult]:
     """Execute multiple pipeline steps."""
-    results: list[Any] = []
+    results: list[StepExecutionResult] = []
     for step_name in steps:
         step_config: dict[str, Any] = {}
         result = execute_pipeline_step(step_name, step_config, pipeline_data)

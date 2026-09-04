@@ -6,16 +6,12 @@ import logging
 from pathlib import Path
 from typing import Any, Dict, List, cast
 
-try:
-    import matplotlib
-
-    matplotlib.use("Agg")
-    import matplotlib.pyplot as plt
-
-    MATPLOTLIB_AVAILABLE = True
-except (ImportError, RecursionError):
-    plt = cast(Any, None)
-    MATPLOTLIB_AVAILABLE = False
+from ..plotting.utils import (
+    MATPLOTLIB_AVAILABLE,
+    plt,
+    safe_tight_layout,
+    save_plot_safely,
+)
 
 try:
     import networkx as nx
@@ -25,7 +21,6 @@ except (ImportError, RecursionError, AttributeError, ValueError):
     nx = cast(Any, None)
     NETWORKX_AVAILABLE = False
 
-from ..plotting.utils import safe_tight_layout, save_plot_safely
 
 logger = logging.getLogger(__name__)
 

@@ -28,6 +28,7 @@ from pipeline.model_family_acceptance import (
     Runner,
     load_model_family_manifest,
     run_model_family_acceptance,
+    select_model_families,
 )
 from pipeline.run_session import (
     RunSession,
@@ -58,15 +59,7 @@ def _selected_family_names(
         KeyError: If any requested family name is absent from the manifest.
     """
     families = load_model_family_manifest(manifest_path)
-    all_names = [family.name for family in families]
-    requested = [name.strip() for name in (family_names or []) if name.strip()]
-    if not requested:
-        return all_names
-    missing = [name for name in requested if name not in set(all_names)]
-    if missing:
-        raise KeyError(f"Unknown model families: {', '.join(sorted(missing))}")
-    requested_set = set(requested)
-    return [name for name in all_names if name in requested_set]
+    return [family.name for family in select_model_families(families, family_names)]
 
 
 def run_session_acceptance(

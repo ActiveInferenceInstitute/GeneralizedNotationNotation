@@ -59,6 +59,8 @@ def _dumps(payload: Any, *, compact: bool) -> str:
     if compact:
         return json.dumps(payload, separators=(",", ":"))
     return json.dumps(payload, indent=2)
+
+
 def _error_envelope(exc: BaseException) -> dict[str, Any]:
     """Build the failure envelope from a structured extractor error.
 
@@ -126,7 +128,9 @@ def extract_to_json(
             strict_validation=strict_validation,
             on_error=cast(OnErrorMode, on_error),
         )
-    except Exception as exc:  # structured errors (on_error="raise") and unexpected failures
+    except (
+        Exception
+    ) as exc:  # structured errors (on_error="raise") and unexpected failures
         return _dumps(_error_envelope(exc), compact=compact)
 
     # on_error="collect" returns (spec | None, list of structured errors).

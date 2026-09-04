@@ -19,6 +19,8 @@ from datetime import datetime
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Callable, Dict, List, Literal, Optional
 
+from pipeline.config import DEFAULT_OUTPUT_DIR, DEFAULT_TARGET_DIR
+
 if TYPE_CHECKING:
     from gnn.parsers.common import GNNInternalRepresentation
 
@@ -66,8 +68,8 @@ class PipelineContext:
         target_dir: Optional[Path] = None,
     ) -> None:
         """Initialize the instance."""
-        self.output_dir = Path(output_dir) if output_dir else Path("output")
-        self.target_dir = Path(target_dir) if target_dir else Path("input/gnn_files")
+        self.output_dir = Path(output_dir) if output_dir else Path(DEFAULT_OUTPUT_DIR)
+        self.target_dir = Path(target_dir) if target_dir else Path(DEFAULT_TARGET_DIR)
         self.start_time = datetime.now()
         self._store: Dict[str, Any] = {}
         self._steps: Dict[str, StepRecord] = {}

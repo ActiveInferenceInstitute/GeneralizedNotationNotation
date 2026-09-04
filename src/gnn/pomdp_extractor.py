@@ -413,8 +413,7 @@ class POMDPExtractor:
                     b_provenance.update(orientation)
                     if orientation.get("contradiction"):
                         message = (
-                            "B orientation contradiction: "
-                            f"{orientation.get('reason')}"
+                            f"B orientation contradiction: {orientation.get('reason')}"
                         )
                         if self.strict_validation and on_error in ("raise", "collect"):
                             self._record_error(
@@ -433,7 +432,9 @@ class POMDPExtractor:
                 if descriptor.get("role") == "factor"
             )
             num_control_factors = sum(
-                1 for descriptor in control_factors if descriptor.get("role") == "factor"
+                1
+                for descriptor in control_factors
+                if descriptor.get("role") == "factor"
             )
 
             dimension_provenance = self._build_dimension_provenance(
@@ -951,14 +952,7 @@ class POMDPExtractor:
 
     def _nested_shape(self, value: Any) -> List[int]:
         """Return a best-effort shape for nested Python matrix data."""
-        shape: list[Any] = []
-        current = value
-        while isinstance(current, (list, tuple)):
-            shape.append(len(current))
-            if not current:
-                break
-            current = current[0]
-        return shape
+        return _shape_of(value)
 
     def _describe_variables(
         self,
@@ -1026,7 +1020,6 @@ class POMDPExtractor:
             return True
         return False
 
-
     def _record_error(
         self,
         code: str,
@@ -1092,12 +1085,18 @@ class POMDPExtractor:
         """Expose which _extract_dimensions priority level fired per dimension."""
         sources = self._dimension_sources or {}
         provenance: Dict[str, Dict[str, Any]] = {
-            "num_states": {"value": num_states, "source": sources.get("num_states", "default")},
+            "num_states": {
+                "value": num_states,
+                "source": sources.get("num_states", "default"),
+            },
             "num_observations": {
                 "value": num_observations,
                 "source": sources.get("num_observations", "default"),
             },
-            "num_actions": {"value": num_actions, "source": sources.get("num_actions", "default")},
+            "num_actions": {
+                "value": num_actions,
+                "source": sources.get("num_actions", "default"),
+            },
         }
         provenance["num_timesteps"] = {
             "value": num_timesteps,
@@ -1130,9 +1129,7 @@ class POMDPExtractor:
             if "B[" not in line:
                 continue
             for match in re.finditer(r"B\[([^\]]+)\]", line):
-                axes = [
-                    part.strip().lower() for part in match.group(1).split(",")
-                ]
+                axes = [part.strip().lower() for part in match.group(1).split(",")]
                 order: List[str] = []
                 for axis in axes:
                     for alias, canonical in self._AXIS_ALIASES.items():
@@ -1144,9 +1141,7 @@ class POMDPExtractor:
                     return order
         return None
 
-    def _parse_claimed_slice_convention(
-        self, parameterization: str
-    ) -> Optional[str]:
+    def _parse_claimed_slice_convention(self, parameterization: str) -> Optional[str]:
         """Parse the claimed per-slice convention from the InitialParameterization B comment."""
         near_b = re.search(
             r"#\s*B:.*?(?=\n(?:[A-Za-zπ_]\w*\s*=)|$)",
@@ -1154,9 +1149,9 @@ class POMDPExtractor:
             re.DOTALL,
         )
         text = near_b.group(0).lower() if near_b else parameterization.lower()
-        if (
-            "rows are previous" in text or "rows as previous" in text
-        ) and ("columns are next" in text or "columns as next" in text):
+        if ("rows are previous" in text or "rows as previous" in text) and (
+            "columns are next" in text or "columns as next" in text
+        ):
             return "rows_previous_columns_next"
         if "rows are next" in text or "rows as next" in text:
             return "rows_next_columns_previous"
@@ -1346,7 +1341,6 @@ class POMDPExtractor:
                 except Exception as e:  # unexpected — still never dropped
                     self._record_parameter_failure(param_name, e, line_no)
 
-
         return params
 
     def _parse_assignment_value(self, value_str: str) -> Any:
@@ -1430,7 +1424,6 @@ class POMDPExtractor:
             for item in value:
                 found.extend(POMDPExtractor._find_string_tokens(item))
         return found
-
 
     def _parse_nested_structure_safe(self, value_str: str) -> List:
         """
@@ -1609,6 +1602,7 @@ def extract_pomdp_from_file(
     insert_default_c: bool = ...,
 ) -> Optional[POMDPStateSpace]: ...
 
+
 @overload
 def extract_pomdp_from_file(
     file_path: Union[str, Path],
@@ -1617,6 +1611,7 @@ def extract_pomdp_from_file(
     on_error: Literal["collect"],
     insert_default_c: bool = ...,
 ) -> Tuple[Optional[POMDPStateSpace], List[GNNExtractionError]]: ...
+
 
 def extract_pomdp_from_file(
     file_path: Union[str, Path],
@@ -1661,6 +1656,7 @@ def extract_pomdp_from_content(
     insert_default_c: bool = ...,
 ) -> Optional[POMDPStateSpace]: ...
 
+
 @overload
 def extract_pomdp_from_content(
     content: str,
@@ -1669,6 +1665,7 @@ def extract_pomdp_from_content(
     on_error: Literal["collect"],
     insert_default_c: bool = ...,
 ) -> Tuple[Optional[POMDPStateSpace], List[GNNExtractionError]]: ...
+
 
 def extract_pomdp_from_content(
     content: str,
@@ -1714,21 +1711,16 @@ def canonicalize_pomdp(spec: POMDPStateSpace) -> POMDPStateSpace:
     (next_state, previous_state, action); canonical or ambiguous storage is
     copied unchanged. All other fields are copied as-is.
     """
-    canonical = POMDPStateSpace(**{
-        field: getattr(spec, field)
-        for field in spec.__dataclass_fields__
-    })
+    canonical = POMDPStateSpace(
+        **{field: getattr(spec, field) for field in spec.__dataclass_fields__}
+    )
     b_matrix = spec.B_matrix
     provenance = spec.matrix_provenance or {}
     b_meta = provenance.get("B") or {}
-    stored_order = (
-        b_meta.get("detected_order")
-        or (
-            ["action", "previous_state", "next_state"]
-            if b_meta.get("claimed_slice_convention")
-            == "rows_previous_columns_next"
-            else None
-        )
+    stored_order = b_meta.get("detected_order") or (
+        ["action", "previous_state", "next_state"]
+        if b_meta.get("claimed_slice_convention") == "rows_previous_columns_next"
+        else None
     )
     if (
         isinstance(b_matrix, (list, tuple))

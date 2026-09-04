@@ -34,6 +34,8 @@ from execute import (
     validate_execution_environment,
     process_execute,
     execute_script_safely,
+    list_frameworks,
+    plan_execute,
 )
 
 # Process execution step (used by pipeline)
@@ -48,7 +50,13 @@ result = run_simulation(config)
 # Validate execution environment before running
 env_report = validate_execution_environment()
 
-# Use the GNNExecutor class
+# Dry-run: what would Step 12 execute? (no scripts run, no Julia probing)
+plan = plan_execute(target_dir, output_dir, frameworks="pymdp,jax")
+
+# Introspect the framework registry
+for fw in list_frameworks():
+    print(fw["framework"], fw["available"])
+
 engine = GNNExecutor()
 ```
 
@@ -57,9 +65,11 @@ engine = GNNExecutor()
 - `process_execute` — main pipeline processing function
 - `GNNExecutor` — execution engine class
 - `execute_gnn_model` / `run_simulation` — model execution functions
-- `execute_pymdp_simulation_from_gnn` / `execute_pymdp_simulation` — PyMDP-specific
-- `validate_execution_environment` — pre-execution validation
 - `execute_script_safely` — safe script execution with error handling
+- `plan_execute` — dry-run Step 12 planner (no execution; typed ExecutionPlan)
+- `list_frameworks` — executor framework registry introspection
+- `validate_execution_environment` — pre-execution validation
+
 
 ## Execution Flow
 

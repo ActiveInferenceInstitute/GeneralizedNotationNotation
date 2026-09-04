@@ -9,7 +9,7 @@ Date: 2025-01-11
 """
 
 import re
-from typing import Any, Dict, List, Optional, cast
+from typing import Any, ClassVar, Dict, List, Optional, cast
 
 from .common import (
     BaseGNNParser,
@@ -21,7 +21,6 @@ from .common import (
     ParseResult,
     Variable,
     VariableType,
-    extract_embedded_json_data,
 )
 
 
@@ -42,86 +41,10 @@ class MaximaParser(BaseGNNParser):
             r"solve\s*\(\s*(.+?)\s*,\s*(.+?)\s*\)", re.IGNORECASE
         )
 
-    def _extract_embedded_json_data(self, content: str) -> Optional[Dict[str, Any]]:
-        """Extract embedded JSON model data from Maxima comments."""
-        return extract_embedded_json_data(
-            content,
-            [
-                r"/\*\s*MODEL_DATA:\s*(\{.+?\})\s*\*/",  # /* MODEL_DATA: {...} */
-            ],
-        )
-
-    def _parse_from_embedded_data(
-        self, embedded_data: Dict[str, Any], result: ParseResult
-    ) -> ParseResult:
-        """Parse model from embedded JSON data for perfect round-trip fidelity."""
-        from .common import (
-            Connection,
-            ConnectionType,
-            DataType,
-            Parameter,
-            Variable,
-            VariableType,
-        )
-
-        try:
-            result.model.model_name = embedded_data.get("model_name", "MaximaGNNModel")
-            result.model.annotation = embedded_data.get("annotation", "")
-
-            # Restore variables
-            for var_data in embedded_data.get("variables", []):
-                var = Variable(
-                    name=var_data["name"],
-                    var_type=VariableType(var_data.get("var_type", "hidden_state")),
-                    data_type=DataType(var_data.get("data_type", "categorical")),
-                    dimensions=var_data.get("dimensions", []),
-                )
-                result.model.variables.append(var)
-
-            # Restore connections
-            for conn_data in embedded_data.get("connections", []):
-                conn = Connection(
-                    source_variables=conn_data.get("source_variables", []),
-                    target_variables=conn_data.get("target_variables", []),
-                    connection_type=ConnectionType(
-                        conn_data.get("connection_type", "directed")
-                    ),
-                )
-                result.model.connections.append(conn)
-
-            # Restore parameters
-            for param_data in embedded_data.get("parameters", []):
-                param = Parameter(name=param_data["name"], value=param_data["value"])
-                result.model.parameters.append(param)
-
-            # Restore time specification
-            if embedded_data.get("time_specification"):
-                from .common import TimeSpecification
-
-                time_data = embedded_data["time_specification"]
-                result.model.time_specification = TimeSpecification(
-                    time_type=time_data.get("time_type", "dynamic"),
-                    discretization=time_data.get("discretization"),
-                    horizon=time_data.get("horizon"),
-                    step_size=time_data.get("step_size"),
-                )
-
-            # Restore ontology mappings
-            for mapping_data in embedded_data.get("ontology_mappings", []):
-                from .common import OntologyMapping
-
-                mapping = OntologyMapping(
-                    variable_name=mapping_data.get("variable_name", ""),
-                    ontology_term=mapping_data.get("ontology_term", ""),
-                    description=mapping_data.get("description"),
-                )
-                result.model.ontology_mappings.append(mapping)
-
-            return result
-
-        except Exception as e:
-            result.add_error(f"Failed to parse embedded data: {e}")
-            return result
+    EMBEDDED_JSON_PATTERNS: ClassVar[list[str]] = [
+        r"/\*\s*MODEL_DATA:\s*(\{.+?\})\s*\*/",  # /* MODEL_DATA: {...} */
+    ]
+    EMBEDDED_LENIENT_MODEL_NAME: ClassVar[str] = "MaximaGNNModel"
 
     def get_supported_extensions(self) -> List[str]:
         """Get file extensions supported by this parser."""
@@ -145,7 +68,7 @@ class MaximaParser(BaseGNNParser):
         # First, try to extract embedded JSON data for perfect round-trip
         embedded_data = self._extract_embedded_json_data(content)
         if embedded_data:
-            return self._parse_from_embedded_data(embedded_data, result)
+            return self._parse_embedded_data_lenient(embedded_data, result)
 
         # Recovery to standard parsing
         try:

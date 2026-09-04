@@ -113,6 +113,41 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
 > 55 dependency skips (torch, bnlearn); PyTorch 29/29 via
 > `uv run --with torch`; pytest 3120 passed.
 
+### Fixed (2026-09-04 — type checker contract alignment)
+
+- **Step 5 honours the Phase 1.1 widened exit-code contract.**
+  `GNNTypeChecker.validate_gnn_files` no longer reports "no GNN files found"
+  as a hard failure (exit 1); it now returns `2`
+  (`SUCCESS_WITH_WARNINGS`), matching Steps 12/16 and the render step.
+  Artifacts (`type_check_results.json`, summaries) are still written so
+  downstream consumers find a summary. Pinned by
+  `test_validate_gnn_files_no_files_is_warning_exit_2`; the MCP tool's
+  message distinguishes the warning outcome.
+- **Step 5 CLI no longer crashes on every run.** `cli.py`'s per-file report
+  renderer indexed a nonexistent `is_valid` key (`KeyError` before any
+  report was written); details entries now carry it, directory discovery
+  walks every registered non-binary spec extension (not `*.md`), and
+  `--strict` threads through to the checker instead of being silently
+  dropped.
+- **Resource estimation reports render.** `estimation/report_html.py`
+  formatted dict-valued `flops_estimate`/`inference_time_estimate` metrics
+  with scalar format specs (`TypeError: unsupported format string passed to
+  dict.__format__`), so the HTML report crashed on any real input; a
+  `_metric_scalar` helper extracts the scalar.
+- **`## Time` classification is section-scoped.** The estimator classified
+  every spec as `Dynamic` when the letter `t` appeared anywhere in the
+  content; it now reads the canonical `## Time` section
+  (Static/Dynamic/Hierarchical). Edge/equation parsing is likewise
+  section-scoped via the shared `checking/sections.py` helpers, and
+  `.gnn`-only directories are estimated (registered extensions, not
+  `*.md`).
+- **Summary artifacts are well-formed.** The Markdown summary emitted
+  literal `\n` text instead of newlines in several lines, and
+  `type_check_summary.json` (documented for downstream steps) is now
+  actually written; `--estimate-resources` writes
+  `resource_estimates/{resource_data.json,resource_report.md}` instead of
+  being ignored.
+
 ### Changed (2026-09-01 — exemplar gold standard: continuous models are continuous, Stan is real)
 
 - **Continuous exemplars are now genuinely continuous.** The three files under

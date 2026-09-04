@@ -9,7 +9,7 @@ sibling, to keep the facade import graph acyclic.
 
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Literal
+from typing import Dict, List, Literal, Optional, TypedDict, Union
 
 # File suffixes Step 12 can execute; companion artifacts (``.stan``, ``.toml``,
 # ``.json``) listed in a render summary are not scripts.
@@ -36,3 +36,41 @@ class ScriptExecutionContext:
     framework: str
     model_name: str
     executor: str
+
+
+@dataclass(frozen=True)
+class ExecutionOutcome:
+    """Result of the pure Step 12 outcome classification.
+
+    ``outcome`` follows the historical Step 12 contract: ``True`` on success,
+    ``False`` on failure, and ``2`` when a non-strict requested-framework run
+    had nothing to execute. ``attempted`` is ``total_found - skipped``.
+    """
+
+    outcome: Union[bool, int]
+    status: str
+    reason: str
+    exit_code: int
+    attempted: int
+
+
+class ExecutionPlan(TypedDict):
+    """Dry-run plan returned by :func:`execute.planning.plan_execute`.
+
+    Keys are populated progressively; every key is optional so partial plans
+    (for example when the render output directory is missing) remain
+    representable without ``None``-sentinel gymnastics.
+    """
+
+    requested_frameworks: List[str]
+    target_directory: str
+    output_directory: str
+    render_output_dir: Optional[str]
+    render_contract_found: bool
+    status: str
+    total_scripts: int
+    would_execute: List[Dict[str, str]]
+    would_skip_dependency: List[Dict[str, str]]
+    unknown_framework_scripts: List[Dict[str, str]]
+    missing_render_scripts: List[str]
+    render_failures: List[Dict[str, str]]

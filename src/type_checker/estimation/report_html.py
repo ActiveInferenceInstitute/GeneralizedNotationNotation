@@ -2,17 +2,22 @@
 HTML report generation for the resource estimator.
 """
 
-import os
-from typing import Any
-
-from utils.matplotlib_setup import apply_env_backend_if_set
-
-apply_env_backend_if_set()
-
+import logging
 from pathlib import Path
 from typing import Any, Dict
 
-import matplotlib.pyplot as plt
+logger = logging.getLogger(__name__)
+
+MATPLOTLIB_AVAILABLE = False
+try:
+    from utils.matplotlib_setup import apply_env_backend_if_set
+
+    apply_env_backend_if_set()
+    import matplotlib.pyplot as plt
+
+    MATPLOTLIB_AVAILABLE = True
+except ImportError as exc:
+    logger.debug("Matplotlib unavailable for estimation HTML plots: %s", exc)
 
 
 def generate_html_report(
@@ -151,8 +156,8 @@ def generate_html_report(
                 <tr><td>Memory Footprint</td><td>{res["memory_estimate"]:.2f} KB</td><td>RAM needed for variables</td></tr>
                 <tr><td>Inference Cost</td><td>{res["inference_estimate"]:.2f} units</td><td>Relative computational cost</td></tr>
                 <tr><td>Storage Required</td><td>{res["storage_estimate"]:.2f} KB</td><td>Disk space for model file</td></tr>
-                <tr><td>FLOPS Estimate</td><td>{metrics.get("flops_estimate", 0):.2e}</td><td>Floating-point operations per inference</td></tr>
-                <tr><td>Est. Inference Time</td><td>{metrics.get("inference_time_estimate", 0) * 1000:.4f} ms</td><td>Approximate time on typical CPU</td></tr>
+                <tr><td>FLOPS Estimate</td><td>{_metric_scalar(metrics, "flops_estimate", "total_flops"):.2e}</td><td>Floating-point operations per inference</td></tr>
+                <tr><td>Est. Inference Time</td><td>{_metric_scalar(metrics, "inference_time_estimate", "cpu_time_seconds") * 1000:.4f} ms</td><td>Approximate time on typical CPU</td></tr>
             </table>
         </div>
         """
@@ -172,11 +177,13 @@ def _generate_visualizations_for_html(
     results: Dict[str, Any], output_dir: Path
 ) -> None:
     """Generate visualizations specifically for HTML embedding."""
-    if not results:
+    if not results or not MATPLOTLIB_AVAILABLE:
+        if not MATPLOTLIB_AVAILABLE:
+            logger.debug("Skipping estimation HTML plots: matplotlib unavailable")
         return
 
     # Extract data for plots
-    files = [os.path.basename(file_path) for file_path in results.keys()]
+    files = [Path(file_path).name for file_path in results.keys()]
     memory_values = [
         result["memory_estimate"]
         for result in results.values()
@@ -268,3 +275,22 @@ def _generate_visualizations_for_html(
         output_dir / "storage_requirements_html.png", dpi=120, bbox_inches="tight"
     )
     plt.close()
+
+
+def _metric_scalar(
+    metrics: Dict[str, Any], key: str, subkey: str, default: float = 0.0
+) -> float:
+    """Return a numeric metric, reaching into a dict when needed.
+
+    ``detailed_metrics`` stores ``flops_estimate`` and
+    ``inference_time_estimate`` as structured dicts (from
+    :func:`estimate_flops` / :func:`estimate_inference_time`); the HTML
+    template formats a scalar. This helper tolerates either shape so the
+    report renders regardless of how a caller populated the metrics.
+    """
+    value = metrics.get(key, default)
+    if isinstance(value, dict):
+        value = value.get(subkey, default)
+    if isinstance(value, (int, float)):
+        return float(value)
+    return default

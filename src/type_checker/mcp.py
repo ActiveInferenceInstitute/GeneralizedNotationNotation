@@ -37,11 +37,20 @@ def validate_gnn_files_mcp(
         Dictionary with operation status and validation results.
     """
     try:
-        checker = GNNTypeChecker()
+        checker = GNNTypeChecker(strict_mode=strict)
         success = checker.validate_gnn_files(
             target_dir=Path(target_directory),
             output_dir=Path(output_directory),
             verbose=verbose,
+            strict=strict,
+            estimate_resources=estimate_resources,
+        )
+        outcome = (
+            "completed successfully"
+            if success is True or success == 0
+            else "completed with warnings (nothing to process or some files invalid)"
+            if success == 2
+            else "failed"
         )
         return {
             "success": success,
@@ -49,7 +58,7 @@ def validate_gnn_files_mcp(
             "output_directory": output_directory,
             "strict_mode": strict,
             "resource_estimation": estimate_resources,
-            "message": f"GNN validation {'completed successfully' if success else 'failed'}",
+            "message": f"GNN validation {outcome}",
         }
     except Exception as e:
         logger.error(
@@ -74,9 +83,10 @@ def validate_single_gnn_file_mcp(
         Dictionary with validation results.
     """
     try:
-        checker = GNNTypeChecker()
+        checker = GNNTypeChecker(strict_mode=strict)
         result = checker.validate_single_gnn_file(
             file_path=Path(gnn_file_path),
+            strict=strict,
         )
         return {
             "success": result["valid"],

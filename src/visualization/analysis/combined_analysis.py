@@ -10,28 +10,32 @@ from typing import Any, Dict, List, cast
 
 import numpy as np
 
-try:
-    import matplotlib
-
-    matplotlib.use("Agg")
-    import matplotlib.pyplot as plt
-
-    MATPLOTLIB_AVAILABLE = True
-except (ImportError, RecursionError):
-    plt = cast(Any, None)
-    MATPLOTLIB_AVAILABLE = False
-
+from ..compat.viz_compat import MATPLOTLIB_AVAILABLE, plt
+from ..compat.viz_compat import viz_var_type as _viz_var_type
 from ..core.parsed_model import load_visualization_model
 from ..plotting.utils import safe_tight_layout, save_plot_safely
+from ..theme import GENERATIVE_MODEL_COLORS
+
+
+def _count_var_types(variables: List[Dict[str, Any]]) -> Dict[str, int]:
+    """Count variable types across parsed variable dicts (shared by the
+    combined-analysis pie and the standalone distribution panel)."""
+    counts: Dict[str, int] = {}
+    for var_type in (_viz_var_type(v) for v in variables if isinstance(v, dict)):
+        counts[var_type] = counts.get(var_type, 0) + 1
+    return counts
+
+
+def _recursive_element_count(obj: Any) -> int:
+    """Count scalar leaf elements in arbitrarily nested lists/tuples."""
+    if isinstance(obj, (int, float)):
+        return 1
+    if isinstance(obj, (list, tuple)):
+        return sum(_recursive_element_count(item) for item in obj)
+    return 1
+
 
 logger = logging.getLogger(__name__)
-
-
-def _viz_var_type(var_info: Dict[str, Any]) -> str:
-    """Extract variable type — delegates to :func:`visualization.compat.viz_compat.viz_var_type`."""
-    from ..compat.viz_compat import viz_var_type
-
-    return viz_var_type(var_info)
 
 
 def generate_combined_analysis(
@@ -48,11 +52,8 @@ def generate_combined_analysis(
 
         variables = parsed_data.get("variables", [])
         if variables:
-            var_types = [_viz_var_type(v) for v in variables if isinstance(v, dict)]
-            if var_types:
-                type_counts: Dict[str, int] = {}
-                for var_type in var_types:
-                    type_counts[var_type] = type_counts.get(var_type, 0) + 1
+            type_counts = _count_var_types(variables)
+            if type_counts:
                 ax1.pie(
                     type_counts.values(), labels=type_counts.keys(), autopct="%1.1f%%"
                 )
@@ -126,16 +127,7 @@ def generate_combined_analysis(
                             arr = np.array(value)
                             matrix_sizes.append(int(arr.size))
                         except Exception:
-
-                            def count_elements(obj: Any) -> int:
-                                """Provide count elements behavior."""
-                                if isinstance(obj, (int, float)):
-                                    return 1
-                                if isinstance(obj, (list, tuple)):
-                                    return sum(count_elements(item) for item in obj)
-                                return 1
-
-                            matrix_sizes.append(count_elements(value))
+                            matrix_sizes.append(_recursive_element_count(value))
 
         if matrix_sizes:
             ax3.hist(
@@ -206,7 +198,7 @@ def generate_combined_analysis(
         )
 
     except Exception as e:
-        print(f"Error generating combined analysis: {e}")
+        logger.warning("Error generating combined analysis: %s", e)
 
     return visualizations
 
@@ -309,11 +301,8 @@ def _generate_standalone_panels(
         variables = parsed_data.get("variables", [])
         if variables:
             fig, ax = plt.subplots(figsize=(10, 8))
-            var_types = [_viz_var_type(v) for v in variables if isinstance(v, dict)]
-            if var_types:
-                type_counts: Dict[str, int] = {}
-                for var_type in var_types:
-                    type_counts[var_type] = type_counts.get(var_type, 0) + 1
+            type_counts = _count_var_types(variables)
+            if type_counts:
                 pie_colors = [
                     tuple(color)
                     for color in plt.get_cmap("Set3")(
@@ -338,7 +327,7 @@ def _generate_standalone_panels(
                 visualizations.append(str(plot_file))
 
     except Exception as e:
-        print(f"Error generating standalone panels: {e}")
+        logger.warning("Error generating standalone panels: %s", e)
 
     return visualizations
 
@@ -373,22 +362,8 @@ def _generate_generative_model_diagram(
             "u": (5, 3),
         }
 
-        node_colors: dict[str, Any] = {
-            "D": "#98D8C8",
-            "s": "#7EC8E3",
-            "s'": "#7EC8E3",
-            "A": "#F7DC6F",
-            "o": "#82E0AA",
-            "B": "#F1948A",
-            "C": "#C39BD3",
-            "E": "#F5B7B1",
-            "\u03c0": "#FAD7A0",
-            "G": "#D2B4DE",
-            "u": "#ABEBC6",
-        }
-
         for node_name, (x, y) in positions.items():
-            color = node_colors.get(node_name, "lightgray")
+            color = GENERATIVE_MODEL_COLORS.get(node_name, "lightgray")
             circle = plt.Circle(
                 (x, y), 0.4, color=color, ec="black", linewidth=2, zorder=2
             )
@@ -626,6 +601,6 @@ def generate_combined_visualizations(
         visualizations.append(str(plot_file))
 
     except Exception as e:
-        print(f"Error generating combined visualizations: {e}")
+        logger.warning("Error generating combined visualizations: %s", e)
 
     return visualizations

@@ -11,7 +11,7 @@ import threading
 import time
 from contextlib import contextmanager
 from datetime import datetime
-from typing import Any, Dict, List, Optional, cast
+from typing import Any, Dict, Iterator, List, Optional, cast
 
 # Import psutil with error handling to prevent recursion
 PSUTIL_AVAILABLE = False
@@ -135,7 +135,7 @@ _monitoring_data: dict[Any, Any] = {}
 _monitoring_lock = threading.Lock()
 
 
-__all__: list[Any] = [
+__all__: list[str] = [
     "PerformanceTracker",
     "get_performance_tracker",
     "performance_tracker",
@@ -148,7 +148,9 @@ __all__: list[Any] = [
 
 
 @contextmanager
-def track_operation_standalone(operation: str, metadata: (dict) | None = None) -> Any:
+def track_operation_standalone(
+    operation: str, metadata: dict[str, Any] | None = None
+) -> Iterator[None]:
     """
     Context manager to track the duration of an operation using the global performance_tracker.
     Args:
@@ -165,7 +167,7 @@ def track_operation_standalone(operation: str, metadata: (dict) | None = None) -
         performance_tracker.record_timing(operation, duration, metadata)
 
 
-def get_performance_metrics() -> dict:
+def get_performance_metrics() -> dict[str, Any]:
     """
     Retrieve current performance metrics, including tracked operations and system info.
     Returns:
@@ -192,7 +194,7 @@ def start_performance_monitoring() -> Any:
         _monitoring_data["start"] = get_performance_metrics()
 
 
-def stop_performance_monitoring() -> dict:
+def stop_performance_monitoring() -> dict[str, Any]:
     """
     Stop performance monitoring and return monitoring data (delta from start).
     Returns:
@@ -219,7 +221,7 @@ def stop_performance_monitoring() -> dict:
         return {"start": start, "end": end, "delta": delta}
 
 
-def generate_performance_report() -> dict:
+def generate_performance_report() -> dict[str, Any]:
     """
     Generate a performance report (summary of tracked operations and system info).
     Returns:

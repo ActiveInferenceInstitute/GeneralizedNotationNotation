@@ -12,6 +12,25 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Dict, List, Optional, cast
 
+FORCE_LAYOUT_SEED = 42
+LAYOUT_SEED = FORCE_LAYOUT_SEED
+LAYOUT_SPAN = 10.0
+LAYOUT_ITERATIONS = 50
+LAYOUT_STEP = 0.01
+
+VAR_TYPE_COLORS: dict[str, str] = {
+    "likelihood_matrix": "#FF6B6B",
+    "transition_matrix": "#4ECDC4",
+    "preference_vector": "#45B7D1",
+    "prior_vector": "#96CEB4",
+    "hidden_state": "#FECA57",
+    "observation": "#FF9FF3",
+    "policy": "#A8E6CF",
+    "action": "#DCE9BE",
+}
+VAR_TYPE_UNKNOWN_COLOR = "#CCCCCC"
+
+
 try:
     import numpy as np
 
@@ -44,9 +63,14 @@ class _LazyMatrixVisualizer:
     """Defer MatrixVisualizer import until advanced visualization actually needs it."""
 
     def __call__(self) -> Any:
-        """Invoke the callable instance."""
-        from visualization.matrix_visualizer import MatrixVisualizer
-
+        """Return a MatrixVisualizer, or ``None`` when the optional dependency
+        ``visualization.matrix_visualizer`` is unavailable (callers treat a
+        ``None`` result as the documented "MatrixVisualizer not available" skip
+        instead of surfacing a raw ImportError)."""
+        try:
+            from visualization.matrix_visualizer import MatrixVisualizer
+        except ImportError:
+            return None
         return MatrixVisualizer()
 
 
@@ -81,6 +105,38 @@ class AdvancedVisualizationResults:
     errors: List[str] = field(default_factory=list)
 
 
+def record_attempt(
+    results: "AdvancedVisualizationResults",
+    attempt: AdvancedVisualizationAttempt,
+    *,
+    optional_message_filter: Optional[str] = None,
+) -> None:
+    """Record an :class:`AdvancedVisualizationAttempt` onto aggregate results.
+
+    Pure aggregate bookkeeping used by :func:`process_advanced_viz`. Counts the
+    attempt, extends ``output_files``/``errors``/``warnings`` by status, and
+    (for ``skipped``) optionally suppresses warning entries whose message
+    mentions the optional dependency marker (e.g. ``"D2 CLI"``) so optional
+    CLI absence is not surfaced as a hard warning.
+    """
+    results.attempts.append(attempt)
+    results.total_attempts += 1
+    if attempt.status == "success":
+        results.successful += 1
+        results.output_files.extend(attempt.output_files)
+    elif attempt.status == "failed":
+        results.failed += 1
+        if attempt.error_message:
+            results.errors.append(attempt.error_message)
+    else:  # skipped
+        results.skipped += 1
+        message = attempt.error_message
+        if message and (
+            optional_message_filter is None or optional_message_filter not in message
+        ):
+            results.warnings.append(message)
+
+
 def normalize_connection_format(conn_info: Dict[str, Any]) -> Dict[str, Any]:
     """Normalize connection format to handle both old and new formats."""
     if "source_variables" in conn_info and "target_variables" in conn_info:
@@ -93,6 +149,18 @@ def normalize_connection_format(conn_info: Dict[str, Any]) -> Dict[str, Any]:
         }
     else:
         return conn_info
+
+
+def _conn_endpoints(conn_info: Dict[str, Any]) -> tuple[list[Any], list[Any]]:
+    """Return ``(source_variables, target_variables)`` for a connection dict.
+
+    Normalizes legacy ``{"source": .., "target": ..}`` format first, so
+    callers never repeat the normalize-then-extract dance.
+    """
+    normalized = normalize_connection_format(conn_info)
+    sources = normalized.get("source_variables", [])
+    targets = normalized.get("target_variables", [])
+    return sources, targets
 
 
 def _calculate_semantic_positions(
@@ -115,18 +183,15 @@ def _calculate_semantic_positions(
         return np.array([])
 
     n_vars = len(variables)
-    positions = np.zeros((n_vars, 3))
 
-    np.random.seed(42)
-    positions = np.random.rand(n_vars, 3) * 10
+    rng = np.random.default_rng(LAYOUT_SEED)
+    positions = rng.random((n_vars, 3)) * LAYOUT_SPAN
 
     var_names = [var.get("name", f"var_{i}") for i, var in enumerate(variables)]
     connection_matrix = np.zeros((n_vars, n_vars))
 
     for conn_info in connections:
-        normalized_conn = normalize_connection_format(conn_info)
-        source_vars = normalized_conn.get("source_variables", [])
-        target_vars = normalized_conn.get("target_variables", [])
+        source_vars, target_vars = _conn_endpoints(conn_info)
 
         for source_var in source_vars:
             for target_var in target_vars:
@@ -143,7 +208,7 @@ def _calculate_semantic_positions(
                     if source_idx is not None and target_idx is not None:
                         connection_matrix[source_idx, target_idx] = 1
 
-    for _ in range(50):
+    for _ in range(LAYOUT_ITERATIONS):
         forces = np.zeros_like(positions)
 
         for i in range(n_vars):
@@ -160,11 +225,15 @@ def _calculate_semantic_positions(
                     diff = positions[j] - positions[i]
                     distance = np.linalg.norm(diff)
                     if distance > 0:
-                        forces[i] += diff * (distance / 10)
+                        forces[i] += diff * (distance / LAYOUT_SPAN)
 
-        positions += forces * 0.01
+        positions += forces * LAYOUT_STEP
 
-    positions = (positions - positions.min()) / (positions.max() - positions.min()) * 10
+    positions = (
+        (positions - positions.min())
+        / (positions.max() - positions.min())
+        * LAYOUT_SPAN
+    )
 
     return positions
 

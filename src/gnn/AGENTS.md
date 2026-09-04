@@ -12,7 +12,7 @@
 
 **Version**: 3.2.0
 
-**Last Updated**: 2026-04-16
+**Last Updated**: 2026-09-04
 
 ---
 
@@ -258,6 +258,45 @@ matplotlib) and the pipeline stack are only paid when a name is actually
 resolved. Every previously eager re-export (including `__version__` and
 `FEATURES`) is preserved; ImportErrors propagate unchanged (no silent
 fallback).
+
+### Format Detection and File Conversion
+
+#### `detect_gnn_format_from_content(content: str) -> GNNFormat`
+
+**Description**: Pure content-based format sniffing (public, `unified_parser.py`).
+Inspects structural markers (XML/PNML/XSD declarations, JSON braces, GNN markdown
+sections, per-language comment/keyword fingerprints). Never raises; unrecognized
+content falls back to `GNNFormat.MARKDOWN`. `UnifiedGNNParser._detect_format_from_content`
+delegates to it after reading the first 2000 characters of a file.
+
+#### `GNNParsingSystem.convert_file(input_path, output_path, from_format=None, to_format=None) -> Path`
+
+**Description**: One-call file conversion: parse the source (format from
+`from_format` or the input extension), serialize to the target (`to_format`
+or the output extension), write the output (creating parent directories).
+Returns the resolved output path. Raises `FileNotFoundError` (missing input),
+`ValueError` (unsupported target format / unknown output extension),
+`ParseError` (parse or serialization failure). Targets without a registered
+serializer (e.g. PNML) raise `ValueError`.
+
+### Shared Embedded-Model-Data Mechanism (`parsers/common.py`)
+
+`BaseGNNParser` centralizes the per-parser `MODEL_DATA` JSON round-trip machinery:
+
+- `EMBEDDED_JSON_PATTERNS: ClassVar[list[str]]` — comment regexes locating
+  embedded `MODEL_DATA` JSON; each concrete parser declares its own prefixes
+  (e.g. `//` for Scala, `--` for Lean/Haskell, `(* *)` for Coq/Isabelle).
+- `_extract_embedded_json_data(content)` — first pattern whose captured JSON
+  parses wins (delegates to `common.extract_embedded_json_data`).
+- `_parse_from_embedded_data(data, result)` — strict variant: builds a NEW
+  `GNNInternalRepresentation` with direct enum casts (scala, lean, coq,
+  isabelle, python, haskell, TLA, agda).
+- `EMBEDDED_LENIENT_MODEL_NAME: ClassVar[str]` + `_parse_embedded_data_lenient(data, result)`
+  — lenient variant: mutates `result.model` in place with `.get` defaults
+  (BNF, EBNF, Maxima).
+
+Parsers with semantically richer embedded handling keep their own implementations
+(XML/PNML `_build_model_from_embedded_data`, protobuf, binary).
 
 ### Helper Functions (Internal but Exported)
 

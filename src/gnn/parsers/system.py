@@ -307,6 +307,54 @@ class GNNParsingSystem:
         with open(file_path, "w", encoding="utf-8") as f:
             f.write(content)
 
+    def convert_file(
+        self,
+        input_path: Union[str, Path],
+        output_path: Union[str, Path],
+        from_format: Optional[GNNFormat] = None,
+        to_format: Optional[GNNFormat] = None,
+    ) -> Path:
+        """
+        Convert a GNN file from one format to another.
+
+        Parses ``input_path`` (format resolved from ``from_format`` or the file
+        extension) and serializes it to ``output_path`` (format resolved from
+        ``to_format`` or the output extension).
+
+        Args:
+            input_path: Path to the source GNN file
+            output_path: Path for the converted output file
+            from_format: Optional explicit source format
+            to_format: Optional explicit target format
+
+        Returns:
+            The resolved output path
+
+        Raises:
+            FileNotFoundError: If the input file does not exist
+            ValueError: If the source/target format is unsupported or the
+                output extension is unrecognized
+            ParseError: If parsing or serialization fails
+        """
+        input_path = Path(input_path)
+        output_path = Path(output_path)
+
+        result = self.parse_file(input_path, format_hint=from_format)
+        if not result.success:
+            raise ParseError(
+                f"Failed to parse {input_path}: {'; '.join(result.errors)}"
+            )
+
+        if to_format is None:
+            target_format = detect_gnn_format_from_path(output_path)
+        else:
+            target_format = to_format
+        if target_format not in self.serializers:
+            raise ValueError(f"Unsupported target format: {target_format}")
+
+        self.serialize_to_file(result.model, output_path, target_format)
+        return output_path
+
     def _detect_format(self, file_path: Path) -> GNNFormat:
         """
         Detect format from file extension.

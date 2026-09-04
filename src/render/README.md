@@ -141,12 +141,21 @@ src/render/
 ├── README.md                      # This documentation
 ├── mcp.py                         # Model Context Protocol integration
 ├── framework_registry.py          # Canonical framework inventory + availability
-├── render.py                      # Core rendering functionality
+├── render.py                      # Standalone CLI renderer entry point
+├── health.py                      # Renderer importability health check
 ├── processor.py                   # Main render processor (Step 11 entry)
 ├── pomdp_contract.py              # Canonical POMDP matrix contract
 ├── pomdp_processor.py             # POMDP state space injection into renderers
+├── pomdp_math.py                  # Factored-POMDP math helpers
+├── matrix_utils.py                # Shared matrix normalization/validation
+├── multi_agent_common.py          # Shared multi-agent detection helpers
+├── continuous_common.py           # Shared linear-Gaussian spec contract
+├── continuous_script.py           # Continuous (LGSSM) script generation
+├── naming.py                      # Shared output naming + atomic writes
+├── spec_matrices.py               # Shared discrete matrix extraction/literals
+├── generators.py                  # Standalone generators (bnlearn, discopy, legacy pymdp)
 ├── pymdp_template.py              # PyMDP template definitions
-├── visualization_suite.py         # Render visualization suite
+├── visualization_suite.py         # Data export + visualization suite
 ├── pymdp/                         # PyMDP code generation
 │   ├── __init__.py               # PyMDP module initialization
 │   ├── pymdp_renderer.py         # PyMDP renderer

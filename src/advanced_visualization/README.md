@@ -11,12 +11,24 @@ and `False` for hard failures. Output creation is gated by `viz_type` and
 
 ```
 src/advanced_visualization/
-├── __init__.py                    # Module initialization and exports
-├── README.md                      # This documentation
+├── __init__.py                    # Module exports, VIZ_TYPE_CHOICES, probe_capabilities()
+├── _shared.py                     # Shared helpers: record_attempt, _conn_endpoints, VAR_TYPE_COLORS, LAYOUT_* constants
+├── processor.py                   # Step 9 orchestration (process_advanced_viz)
+├── network_viz.py                 # 3D, interactive dashboard, POMDP, network metrics, D2 delegation
+├── statistical_viz.py             # Statistical plots, matrix correlations
+├── interactive_viz.py             # Interactive Plotly dashboard
+├── d2_visualizer.py               # D2 diagram generation (D2 CLI subprocess)
 ├── dashboard.py                   # Dashboard generation system
 ├── data_extractor.py              # Data extraction and processing
 ├── html_generator.py              # HTML visualization generation
-└── visualizer.py                  # Main visualization orchestrator
+├── visualizer.py                  # AdvancedVisualizer + create_* helpers
+├── mcp.py                         # MCP tool registrations
+├── _theme.py                      # Shared CSS constants (dashboard + html_generator)
+├── SPEC.md                        # Module specification
+├── D2_README.md                   # D2 diagram usage guide
+├── SKILL.md                       # Capability API (skill frontmatter)
+├── AGENTS.md                      # Agent scaffolding (of record)
+└── README.md                      # This documentation
 ```
 
 ### Advanced Visualization Architecture
@@ -189,7 +201,7 @@ Main orchestrator for advanced visualization capabilities.
 ```python
 from advanced_visualization.visualizer import AdvancedVisualizer
 
-visualizer = AdvancedVisualizer(strict_validation=True)
+visualizer = AdvancedVisualizer()  # optionally: AdvancedVisualizer(extractor=my_extractor)
 generated_files = visualizer.generate_visualizations(
     content=gnn_content,
     model_name="my_model",

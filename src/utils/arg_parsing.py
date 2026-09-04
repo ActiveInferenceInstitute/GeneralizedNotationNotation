@@ -12,7 +12,7 @@ import sys
 from dataclasses import fields
 from pathlib import Path
 from types import MappingProxyType
-from typing import Any, Dict, List, Optional, cast
+from typing import Any, Dict, List, Mapping, Optional, cast
 
 from .arg_definitions import ArgumentDefinition
 from .config_loader import GNNPipelineConfig, load_config
@@ -23,6 +23,75 @@ from .step_config import StepConfiguration
 # Preserve the original logger identity so log records and external
 # logging configuration keep targeting the "utils.argument_utils" logger.
 logger = logging.getLogger("utils.argument_utils")
+
+
+# Recovery defaults for step arguments when a parser did not populate them.
+# Values mirror the ``ARGUMENT_DEFINITIONS`` contract; ``*_dir``-suffixed
+# names get a path default and anything unknown falls back to ``None``.
+# Mutable values (tuples) are copied on access so namespaces never share one
+# list instance.
+_FALLBACK_DEFAULTS: Mapping[str, Any] = MappingProxyType(
+    {
+        "recursive": True,
+        "verbose": False,
+        "strict": False,
+        "estimate_resources": True,
+        "llm_timeout": 360,
+        "llm_tasks": "all",
+        "website_html_filename": "gnn_pipeline_summary_website.html",
+        "recreate_venv": False,
+        "dev": False,
+        "setup_core_only": False,
+        "install_all_extras": False,
+        "install_optional": False,
+        "headless": False,
+        "open_browser": False,
+        "skip_llm": False,
+        "simulate_error": False,
+        "profile": False,
+        "optional_groups": None,
+        "viz_type": "all",
+        "interactive": False,
+        "export_formats": ("html", "json"),
+        "gui_types": "gui_1,gui_2",
+        "analysis_model": None,
+        "bottleneck_threshold": 60.0,
+        "fast_only": True,
+        "comprehensive": False,
+        "duration": 30.0,
+        "timesteps": None,
+        "simulation_params": "{}",
+        "timeout": 300,
+        "serialize_preset": "full",
+        "execution_benchmark_repeats": 1,
+        "execution_summary_detail": False,
+        "execution_workers": 1,
+        "advanced_stats": False,
+        "generate_animations": True,
+    }
+)
+
+
+def fallback_default_for(arg_name: str) -> Any:
+    """Return the recovery default for *arg_name*.
+
+    Resolution order:
+    1. explicit ``_FALLBACK_DEFAULTS`` entry,
+    2. ``*_dir`` path default (``output``-containing names map to
+       ``Path("output")``, everything else to ``Path("input/gnn_files")``),
+    3. ``None``.
+
+    This single table replaced two ~70-line if/elif ladders that had drifted
+    apart (``create_default_namespace`` returned ``None`` for
+    ``advanced_stats``/``simulation_params`` where the registered contract
+    says ``False``/``"{}"``).
+    """
+    if arg_name in _FALLBACK_DEFAULTS:
+        value = _FALLBACK_DEFAULTS[arg_name]
+        return list(value) if isinstance(value, tuple) else value
+    if arg_name.endswith("_dir"):
+        return Path("output") if "output" in arg_name else Path("input/gnn_files")
+    return None
 
 
 class ArgumentParser:
@@ -694,90 +763,14 @@ class ArgumentParser:
         try:
             parsed_args = parser.parse_args(args)
 
-            # CRITICAL FIX: Ensure all expected attributes exist with proper defaults
-            # This addresses the 'recursive' attribute missing issue in step 13
+            # Ensure all expected attributes exist with proper defaults so
+            # step scripts never see missing attributes (e.g. 'recursive' in
+            # step 13). Defaults come from the shared _FALLBACK_DEFAULTS table.
             step_supported_args = cls.STEP_ARGUMENTS.get(step_name, [])
 
             for arg_name in step_supported_args:
                 if not hasattr(parsed_args, arg_name):
-                    # Set appropriate default values
-                    if arg_name == "recursive":
-                        setattr(parsed_args, arg_name, True)
-                    elif arg_name == "verbose":
-                        setattr(parsed_args, arg_name, False)
-                    elif arg_name == "strict":
-                        setattr(parsed_args, arg_name, False)
-                    elif arg_name == "estimate_resources":
-                        setattr(parsed_args, arg_name, True)
-                    elif arg_name.endswith("_dir"):
-                        setattr(
-                            parsed_args,
-                            arg_name,
-                            Path("output")
-                            if "output" in arg_name
-                            else Path("input/gnn_files"),
-                        )
-                    elif arg_name == "llm_timeout":
-                        setattr(parsed_args, arg_name, 360)
-                    elif arg_name == "llm_tasks":
-                        setattr(parsed_args, arg_name, "all")
-                    elif arg_name == "website_html_filename":
-                        setattr(
-                            parsed_args, arg_name, "gnn_pipeline_summary_website.html"
-                        )
-                    elif arg_name in [
-                        "recreate_venv",
-                        "dev",
-                        "setup_core_only",
-                        "install_all_extras",
-                        "install_optional",
-                        "headless",
-                        "open_browser",
-                        "skip_llm",
-                        "simulate_error",
-                        "profile",
-                    ]:
-                        setattr(parsed_args, arg_name, False)
-                    elif arg_name == "optional_groups":
-                        setattr(parsed_args, arg_name, None)
-                    elif arg_name == "viz_type":
-                        setattr(parsed_args, arg_name, "all")
-                    elif arg_name == "interactive":
-                        setattr(parsed_args, arg_name, False)
-                    elif arg_name == "export_formats":
-                        setattr(parsed_args, arg_name, ["html", "json"])
-                    elif arg_name == "gui_types":
-                        setattr(parsed_args, arg_name, "gui_1,gui_2")
-                    elif arg_name == "analysis_model":
-                        setattr(parsed_args, arg_name, None)
-                    elif arg_name == "bottleneck_threshold":
-                        setattr(parsed_args, arg_name, 60.0)
-                    elif arg_name == "fast_only":
-                        setattr(parsed_args, arg_name, True)
-                    elif arg_name == "comprehensive":
-                        setattr(parsed_args, arg_name, False)
-                    elif arg_name == "duration":
-                        setattr(parsed_args, arg_name, 30.0)
-                    elif arg_name == "timesteps":
-                        setattr(parsed_args, arg_name, None)
-                    elif arg_name == "simulation_params":
-                        setattr(parsed_args, arg_name, "{}")
-                    elif arg_name == "timeout":
-                        setattr(parsed_args, arg_name, 300)
-                    elif arg_name == "serialize_preset":
-                        setattr(parsed_args, arg_name, "full")
-                    elif arg_name == "execution_benchmark_repeats":
-                        setattr(parsed_args, arg_name, 1)
-                    elif arg_name == "execution_summary_detail":
-                        setattr(parsed_args, arg_name, False)
-                    elif arg_name == "execution_workers":
-                        setattr(parsed_args, arg_name, 1)
-                    elif arg_name == "advanced_stats":
-                        setattr(parsed_args, arg_name, False)
-                    elif arg_name == "generate_animations":
-                        setattr(parsed_args, arg_name, True)
-                    else:
-                        setattr(parsed_args, arg_name, None)
+                    setattr(parsed_args, arg_name, fallback_default_for(arg_name))
 
             return parsed_args
 
@@ -798,73 +791,7 @@ class ArgumentParser:
         step_supported_args = cls.STEP_ARGUMENTS.get(step_name, [])
 
         for arg_name in step_supported_args:
-            if arg_name == "recursive":
-                setattr(fallback_args, arg_name, True)
-            elif arg_name == "verbose":
-                setattr(fallback_args, arg_name, False)
-            elif arg_name == "strict":
-                setattr(fallback_args, arg_name, False)
-            elif arg_name == "estimate_resources":
-                setattr(fallback_args, arg_name, True)
-            elif arg_name.endswith("_dir"):
-                setattr(
-                    fallback_args,
-                    arg_name,
-                    Path("output") if "output" in arg_name else Path("input/gnn_files"),
-                )
-            elif arg_name == "llm_timeout":
-                setattr(fallback_args, arg_name, 360)
-            elif arg_name == "llm_tasks":
-                setattr(fallback_args, arg_name, "all")
-            elif arg_name == "execution_workers":
-                setattr(fallback_args, arg_name, 1)
-            elif arg_name == "website_html_filename":
-                setattr(fallback_args, arg_name, "gnn_pipeline_summary_website.html")
-            elif arg_name in [
-                "recreate_venv",
-                "dev",
-                "setup_core_only",
-                "install_all_extras",
-                "install_optional",
-                "headless",
-                "open_browser",
-                "skip_llm",
-                "simulate_error",
-                "profile",
-            ]:
-                setattr(fallback_args, arg_name, False)
-            elif arg_name == "optional_groups":
-                setattr(fallback_args, arg_name, None)
-            elif arg_name == "viz_type":
-                setattr(fallback_args, arg_name, "all")
-            elif arg_name == "interactive":
-                setattr(fallback_args, arg_name, False)
-            elif arg_name == "export_formats":
-                setattr(fallback_args, arg_name, ["html", "json"])
-            elif arg_name == "gui_types":
-                setattr(fallback_args, arg_name, "gui_1,gui_2")
-            elif arg_name == "analysis_model":
-                setattr(fallback_args, arg_name, None)
-            elif arg_name == "bottleneck_threshold":
-                setattr(fallback_args, arg_name, 60.0)
-            elif arg_name == "fast_only":
-                setattr(fallback_args, arg_name, True)
-            elif arg_name == "comprehensive":
-                setattr(fallback_args, arg_name, False)
-            elif arg_name == "duration":
-                setattr(fallback_args, arg_name, 30.0)
-            elif arg_name == "timeout":
-                setattr(fallback_args, arg_name, 300)
-            elif arg_name == "serialize_preset":
-                setattr(fallback_args, arg_name, "full")
-            elif arg_name == "execution_benchmark_repeats":
-                setattr(fallback_args, arg_name, 1)
-            elif arg_name == "execution_summary_detail":
-                setattr(fallback_args, arg_name, False)
-            elif arg_name == "generate_animations":
-                setattr(fallback_args, arg_name, True)
-            else:
-                setattr(fallback_args, arg_name, None)
+            setattr(fallback_args, arg_name, fallback_default_for(arg_name))
 
         return fallback_args
 
@@ -887,7 +814,6 @@ class StepAwareArgumentParser:
             description = config.get(
                 "description", f"GNN Processing Pipeline - {step_name}"
             )
-
         parser = argparse.ArgumentParser(
             description=description,
             formatter_class=argparse.RawDescriptionHelpFormatter,

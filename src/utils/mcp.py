@@ -23,6 +23,43 @@ from typing import Any, Dict
 
 import psutil
 
+# Substrings whose presence in an environment-variable name (lowercased)
+# marks the variable as sensitive for reporting purposes. Centralized so the
+# same policy applies anywhere utils reports environment contents.
+SENSITIVE_ENV_KEY_MARKERS: tuple[str, ...] = (
+    "password",
+    "passwd",
+    "secret",
+    "key",
+    "token",
+    "credential",
+    "auth",
+)
+
+
+def is_sensitive_env_key(key: str) -> bool:
+    """Return True when *key* looks like a secret-carrying environment name.
+
+    Case-insensitive substring match against
+    :data:`SENSITIVE_ENV_KEY_MARKERS`; ``AWS_SESSION_TOKEN``,
+    ``GOOGLE_API_KEY``, ``DATABASE_CREDENTIALS`` etc. are all caught.
+    """
+    lowered = key.lower()
+    return any(marker in lowered for marker in SENSITIVE_ENV_KEY_MARKERS)
+
+
+def redact_environment() -> dict[str, str]:
+    """Return a copy of ``os.environ`` with sensitive variables removed.
+
+    The returned mapping is safe to embed in reports or diagnostics;
+    variables whose name contains any sensitive marker are omitted entirely
+    (never value-masked) so report consumers cannot recover partial secrets.
+    """
+    return {
+        key: value for key, value in os.environ.items() if not is_sensitive_env_key(key)
+    }
+
+
 logger = logging.getLogger(__name__)
 
 
@@ -99,13 +136,11 @@ def get_environment_info(mcp_instance_ref: Any) -> Dict[str, Any]:
     """
     try:
         # Environment variables
-        env_vars: dict[Any, Any] = {}
+        env_vars: dict[str, str] = {}
         for key, value in os.environ.items():
-            if not any(
-                sensitive in key.lower()
-                for sensitive in ["password", "secret", "key", "token"]
-            ):
-                env_vars[key] = value
+            if is_sensitive_env_key(key):
+                continue
+            env_vars[key] = value
 
         # Python packages
         try:

@@ -57,7 +57,7 @@ def get_module_info() -> dict[str, object]:
     }
 
 
-__all__: list[Any] = [
+__all__: list[str] = [
     "get_module_info",
     "__version__",
     "FEATURES",

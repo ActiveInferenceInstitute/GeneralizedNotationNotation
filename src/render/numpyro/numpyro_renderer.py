@@ -11,12 +11,13 @@ within the standard Active Inference generative loop.
 """
 
 import logging
-import os
-import tempfile
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
 import numpy as np
+
+from render.naming import atomic_write_text
+from render.spec_matrices import extract_abcd_matrices, format_array_literal
 
 logger = logging.getLogger(__name__)
 
@@ -51,12 +52,7 @@ def render_gnn_to_numpyro(
                 extract_continuous_spec(gnn_spec), "numpyro"
             )
             output_path = Path(output_path)
-            output_path.parent.mkdir(parents=True, exist_ok=True)
-            with tempfile.NamedTemporaryFile(
-                mode="w", encoding="utf-8", dir=output_path.parent, delete=False
-            ) as tmp_f:
-                tmp_f.write(code)
-            os.replace(tmp_f.name, str(output_path))
+            atomic_write_text(output_path, code)
             logger.info(f"✅ NumPyro continuous script written to: {output_path}")
             return (
                 True,
@@ -87,12 +83,7 @@ def render_gnn_to_numpyro(
         code = _generate_numpyro_code(model_name, A, B, C, D, options)
 
         output_path = Path(output_path)
-        output_path.parent.mkdir(parents=True, exist_ok=True)
-        with tempfile.NamedTemporaryFile(
-            mode="w", encoding="utf-8", dir=output_path.parent, delete=False
-        ) as tmp_f:
-            tmp_f.write(code)
-        os.replace(tmp_f.name, str(output_path))
+        atomic_write_text(output_path, code)
 
         logger.info(f"✅ NumPyro script written to: {output_path}")
         return True, f"NumPyro script generated: {output_path}", [str(output_path)]
@@ -105,72 +96,16 @@ def render_gnn_to_numpyro(
 def _extract_matrices(
     gnn_spec: Dict[str, Any],
 ) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
-    """Extract A, B, C, D matrices from GNN spec."""
-    params = gnn_spec.get("stateSpace", {}).get("parameters", {})
-    if not params:
-        params = gnn_spec.get("initialparameterization", {})
-    if not params:
-        params = gnn_spec.get("parameters", {})
+    """Extract A, B, C, D matrices from GNN spec.
 
-    def _parse_matrix(raw: Any, default: Any) -> Any:
-        """Parse matrix."""
-        if raw is None:
-            return default
-        if isinstance(raw, (list, np.ndarray)):
-            return np.array(raw, dtype=float)
-        if isinstance(raw, str):
-            try:
-                from utils.safe_eval import MATRIX_MAX_LEN, safe_literal_eval
-
-                parsed = safe_literal_eval(raw, max_len=MATRIX_MAX_LEN)
-                return np.array(parsed, dtype=float)
-            except Exception:
-                return default
-        return default
-
-    num_states = gnn_spec.get("stateSpace", {}).get("size", None)
-    if num_states is None:
-        num_states = gnn_spec.get("model_parameters", {}).get("num_hidden_states", 2)
-    num_obs = gnn_spec.get("observationSpace", {}).get("size", None)
-    if num_obs is None:
-        num_obs = gnn_spec.get("model_parameters", {}).get("num_obs", num_states)
-
-    default_A = np.eye(num_obs, num_states)
-    default_B = np.eye(num_states)
-    default_C = np.zeros(num_obs)
-    default_C[0] = 1.0
-    default_D = np.ones(num_states) / num_states
-
-    A = _parse_matrix(params.get("A"), default_A)
-    B = _parse_matrix(params.get("B"), default_B)
-    C = _parse_matrix(params.get("C"), default_C)
-    D = _parse_matrix(params.get("D"), default_D)
-
-    from render.matrix_utils import normalize_columns
-
-    A = normalize_columns(A)
-    if B.ndim == 2:
-        B = normalize_columns(B)
-    D = D / D.sum() if D.sum() > 0 else D
-
-    return A, B, C, D
+    Delegates to the shared :func:`render.spec_matrices.extract_abcd_matrices`.
+    """
+    return extract_abcd_matrices(gnn_spec)
 
 
 def _format_jnp_array(arr: np.ndarray, indent: int = 4) -> str:
     """Format numpy array as jnp.array() literal."""
-    prefix = " " * indent
-    if arr.ndim == 1:
-        vals = ", ".join(f"{v:.6f}" for v in arr)
-        return f"jnp.array([{vals}])"
-    elif arr.ndim == 2:
-        rows: list[Any] = []
-        for row in arr:
-            vals = ", ".join(f"{v:.6f}" for v in row)
-            rows.append(f"{prefix}    [{vals}]")
-        inner = ",\n".join(rows)
-        return f"jnp.array([\n{inner}\n{prefix}])"
-    else:
-        return f"jnp.array({arr.tolist()})"
+    return format_array_literal(arr, prefix="jnp.array", indent=indent)
 
 
 def _generate_numpyro_code(

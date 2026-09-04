@@ -1,0 +1,3 @@
+# website-worker checkpoint log
+
+- 2026-09-04T19:10Z [audit] Scope read: generator.py/renderer.py/dashboard.py/mcp.py/__init__/processor + 20_website.py + all 4 docs + 3 test files. Consumer map done (orchestrator kwargs contract: logger+recursive+website_html_filename absorbed by **kwargs; mcp_tools list pinned to exactly 5 names — no new MCP tools; website_results.json existence pinned, contents free). Found: dead code generator.py:861, duplicated escape chains, inline imports in write loop, sys.path mutation in _collect_all_data, unescaped JSON/tool values in analysis/mcp pages, 5x embed_* duplication in renderer, get_module_info version drift (1.0.0 vs 1.6.0). Next: refactor generator.py.

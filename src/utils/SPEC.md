@@ -29,7 +29,7 @@ Abstract base class for standardized processing patterns.
 - `create_processor(step_name, process_func)` - Wrap simple functions
 
 ### 3. arg_parsing.py / arg_definitions.py / step_config.py
-Argument parsing and validation: `ArgumentParser.parse_step_arguments`, `build_step_command_args`, `audit_step_contracts`, shared `STEP_ARGUMENTS` and `StepConfiguration`. `argument_utils.py` re-exports these.
+Argument parsing and validation: `ArgumentParser.parse_step_arguments`, `build_step_command_args`, `audit_step_contracts`, shared `STEP_ARGUMENTS` and `StepConfiguration`. `argument_utils.py` re-exports these. Recovery defaults come from the shared `fallback_default_for` table (`_FALLBACK_DEFAULTS`); `StepConfiguration.validate_step_args` accepts an injectable `project_root`.
 
 ### 4. config_loader.py
 Pipeline configuration management: `load_config`, `get_config_value`, `set_config_value`, `validate_config`.
@@ -49,7 +49,7 @@ from utils import BaseProcessor, ProcessingResult, PipelineLogger
 
 ## Testing
 
-Tests in: `src/tests/utils/` (including `test_new_utils.py` and `test_utils_core.py`).
+Tests in: `src/tests/utils/` (including `test_new_utils.py`, `test_utils_core.py`, and `test_shared_helpers.py`).
 
 Run: `uv run --extra dev python -m pytest src/tests/utils/ -v`
 
