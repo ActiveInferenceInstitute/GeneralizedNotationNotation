@@ -121,7 +121,7 @@ Registered in `pytest.ini` (plus conftest's extended registry — see
 - `@pytest.mark.pipeline` - Pipeline infrastructure tests
 - `@pytest.mark.uv` / `@pytest.mark.jax_stack` / `@pytest.mark.mcp` / `@pytest.mark.xfail` - Toolchain and MCP-audit gates (pytest.ini)
 
-The full registry (20 conftest markers + pytest.ini's) is the authority;
+The full registry (10 conftest markers + pytest.ini's) is the authority;
 unregistered markers fail collection under `--strict-markers`.
 
 ---

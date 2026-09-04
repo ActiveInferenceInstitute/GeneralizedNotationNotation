@@ -44,21 +44,11 @@ PYTEST_MARKERS: Dict[str, str] = {
     "performance": "Performance and resource usage tests",
     "slow": "Tests that take significant time to complete",
     "fast": "Quick tests for rapid feedback",
-    "destructive": "Tests that may modify system state",
-    "external": "Tests requiring external dependencies",
     "core": "Core module tests",
     "pipeline": "Pipeline infrastructure tests",
     "recovery": "Pipeline recovery tests",
-    "utilities": "Utility function tests",
-    "environment": "Environment validation tests",
-    "render": "Rendering and code generation tests",
-    "export": "Export functionality tests",
-    "parsers": "Parser and format tests",
     "main_orchestrator": "Main orchestrator tests",
-    "type_checking": "Type checking tests",
     "mcp": "Model Context Protocol tests",
-    "sapf": "SAPF audio generation tests",
-    "visualization": "Visualization tests",
 }
 
 
