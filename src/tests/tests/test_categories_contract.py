@@ -2,11 +2,27 @@
 
 from __future__ import annotations
 
+import logging
 from pathlib import Path
+from types import SimpleNamespace
+from typing import TYPE_CHECKING
 
 import pytest
 
 import tests.categories as categories_mod
+from tests.categories import (
+    MODULAR_TEST_CATEGORIES,
+    TestCategory,
+    get_all_test_files,
+    get_category,
+    get_category_files,
+    get_category_names,
+    missing_category_files,
+)
+
+if TYPE_CHECKING:
+    from tests.test_runner_modular import _ModularTestRunner
+
 from tests.categories import (
     MODULAR_TEST_CATEGORIES,
     TestCategory,
@@ -76,3 +92,42 @@ def test_missing_category_files_with_isolated_categories(
 
     assert missing_category_files(tmp_path) == {"syn": ["absent.py"]}
     assert missing_category_files(str(tmp_path)) == {"syn": ["absent.py"]}
+
+
+def _make_runner() -> "_ModularTestRunner":
+    """Minimal _ModularTestRunner for warning-contract tests."""
+    from tests.test_runner_modular import _ModularTestRunner
+
+    return _ModularTestRunner(
+        SimpleNamespace(output_dir="unused"), logging.getLogger("contract-test")
+    )
+
+
+def test_discovery_warns_on_unmatched_entry(caplog: pytest.LogCaptureFixture) -> None:
+    """A category entry matching no file is logged, not silently skipped."""
+    runner = _make_runner()
+    with caplog.at_level(logging.WARNING, logger="contract-test"):
+        matched = runner.discover_test_files("syn", {"files": ["nope/absent_test.py"]})
+    assert matched == []
+    assert any(
+        "nope/absent_test.py" in rec.message and rec.levelno == logging.WARNING
+        for rec in caplog.records
+    )
+
+
+def test_startup_drift_warning_reports_missing_entries(
+    caplog: pytest.LogCaptureFixture, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """_warn_stale_category_files surfaces routing-table drift at startup."""
+    import tests.test_runner_modular as runner_mod
+
+    monkeypatch.setattr(
+        runner_mod, "missing_category_files", lambda *a, **k: ["zzz/absent.py"]
+    )
+    runner = _make_runner()
+    with caplog.at_level(logging.WARNING, logger="contract-test"):
+        missing = runner._warn_stale_category_files()
+    assert missing == ["zzz/absent.py"]
+    assert any(
+        "1 category file entries match no file" in rec.message for rec in caplog.records
+    )

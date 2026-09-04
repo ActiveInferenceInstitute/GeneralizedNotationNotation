@@ -22,7 +22,7 @@ import time
 from pathlib import Path
 from typing import Any, Dict, List
 
-from .categories import MODULAR_TEST_CATEGORIES
+from .categories import MODULAR_TEST_CATEGORIES, missing_category_files
 
 
 def _isolated_pipeline_output_dir(base_output_dir: Any) -> str:
@@ -643,11 +643,23 @@ class _ModularTestRunner:
                 "duration": time.time() - category_start_time,
             }
 
+    def _warn_stale_category_files(self) -> list[str]:
+        """Warn once per run about category entries that match no file."""
+        missing = missing_category_files(self.test_dir)
+        if missing:
+            self.logger.warning(
+                f"{len(missing)} category file entries match no file "
+                f"(stale routing table?): {sorted(missing)}"
+            )
+        return sorted(missing)
+
     def run_all_categories(self) -> Dict[str, Any]:
         """Run all test categories and generate comprehensive report."""
         self.logger.info(f"\n{'=' * 80}")
         self.logger.info("STARTING COMPREHENSIVE TEST SUITE EXECUTION")
         self.logger.info(f"{'=' * 80}")
+
+        self._warn_stale_category_files()
 
         total_categories = len(
             [
@@ -674,7 +686,7 @@ class _ModularTestRunner:
             self.categories_run += 1
 
             try:
-                result = self.run_test_category(category, config)
+                result = self.run_test_category(category, dict(config))
                 self.results[category] = result
 
                 self.total_tests_run += result.get("tests_run", 0)
