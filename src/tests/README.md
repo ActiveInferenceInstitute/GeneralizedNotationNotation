@@ -56,7 +56,7 @@ src/tests/
 ├── test_data/             # on-disk fixtures consumed by tests
 │
 ├── <module>/test_*.py     # per-module tests mirroring src/<module>/
-│   (34 maintained first-level subdirectories; 32 contain direct test files)
+│   (36 maintained first-level subdirectories; 34 contain direct test files)
 │
 └── test_*.py              # cross-cutting / meta-tests at root
     (coverage assessments, environment probes, runner self-tests,

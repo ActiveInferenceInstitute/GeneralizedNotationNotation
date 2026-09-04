@@ -1,0 +1,1 @@
+2026-09-04T18:22Z [MarkerPruner] pruned 10 zero-reference markers from src/tests/conftest.py PYTEST_MARKERS (destructive external utilities environment render export parsers type_checking sapf visualization); pytest.ini untouched; TEST_SUITE_SUMMARY.md count 20->10 | verification: fast-suite 48->50 passed, gnn+pipeline collect 873->873

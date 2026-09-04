@@ -7,7 +7,7 @@
 
 ## Module Description
 
-This directory contains the comprehensive test suite for the GNN Processing Pipeline. The test infrastructure has been completely refactored to follow a modular, organized structure that provides comprehensive coverage for all modules.
+This directory contains the comprehensive test suite for the GNN Processing Pipeline. The test infrastructure is modular: a single-source `TestRunner` lives in `infrastructure/test_runner.py` (re-exported by `tests.runner`), `runner.run_tests()` routes the fast/comprehensive/reliable execution modes, `categories.py` holds the typed category routing table, shared test helpers live in `helpers/`, and `tests/` holds the plumbing-contract tests that pin this architecture.
 
 
 
@@ -97,7 +97,7 @@ success = run_tests(
 ```
 
 #### `create_test_runner(args, logger) -> ModularTestRunner`
-**Description**: Factory that returns a `ModularTestRunner` for category-based test execution.
+**Description**: Factory that returns a `_ModularTestRunner` for category-based test execution.
 
 **Defined in**: [`test_runner_modular.py`](../../../src/tests/test_runner_modular.py). The package [`__init__.py`](../../../src/tests/__init__.py) imports it from there separately from `runner.run_tests` (which lives in [`runner.py`](../../../src/tests/runner.py)); a single combined import would fail because `create_test_runner` is not defined on `runner`.
 
@@ -121,36 +121,35 @@ success = run_tests(
 - Fast test execution (skips slow tests)
 - Comprehensive error reporting
 
-#### `run_comprehensive_tests(logger, output_dir, verbose=False, generate_coverage=False) -> bool`
+#### `run_comprehensive_tests(logger, output_dir, verbose=False) -> bool`
 **Description**: Run comprehensive test suite with all tests enabled. Includes slow tests, performance tests, and full coverage analysis.
 
 **Parameters**:
 - `logger` (logging.Logger): Logger instance for progress reporting
 - `output_dir` (Path): Output directory for test results
 - `verbose` (bool): Enable verbose output (default: False)
-- `generate_coverage` (bool): Generate coverage reports (default: False)
 
 **Returns**: `True` if tests passed, `False` otherwise
 
 **Features**:
-- Executes all test categories from `MODULAR_TEST_CATEGORIES`
+- Executes all test categories from `MODULAR_TEST_CATEGORIES` (defined in [`categories.py`](../../../src/tests/categories.py))
 - Includes slow and performance tests
-- Generates comprehensive coverage reports if enabled
 - Uses category-based execution with resource monitoring
 
-#### `run_fast_reliable_tests(logger, output_dir, verbose=False) -> bool`
+#### `run_fast_reliable_tests(logger, output_dir, verbose=False, timeout=600) -> bool`
 **Description**: Run a reliable subset of fast tests with improved error handling. Focuses on essential tests that should always pass.
 
 **Parameters**:
 - `logger` (logging.Logger): Logger instance for progress reporting
 - `output_dir` (Path): Output directory for test results
 - `verbose` (bool): Enable verbose output (default: False)
+- `timeout` (int): Subprocess timeout in seconds (default: 600; overridable via the `FAST_TESTS_TIMEOUT` environment variable)
 
 **Returns**: `True` if tests passed, `False` otherwise
 
 **Features**:
-- Runs only essential test files: `test_core_modules.py`, `test_fast_suite.py`, `test_main_orchestrator.py`
-- 90-second timeout for reliability
+- Runs only essential test files: `test_core_modules.py`, `test_fast_suite.py`, `pipeline/test_main_orchestrator.py`
+- Subprocess timeout (600 seconds by default, `FAST_TESTS_TIMEOUT` override)
 - Improved error handling and reporting
 - Used as recovery when fast pipeline tests are not suitable
 
@@ -162,6 +161,8 @@ success = run_tests(
 - `stderr` (str): Standard error from pytest
 
 **Returns**: List of unique error messages (strings)
+
+**Defined in**: [`infrastructure/utils.py`](../../../src/tests/infrastructure/utils.py) as `extract_collection_errors` (re-exported as `_extract_collection_errors`).
 
 **Error Types Detected**:
 - `ERROR collecting` - Test file collection failures
@@ -197,27 +198,27 @@ errors = _extract_collection_errors(pytest_stdout, pytest_stderr)
 ## Configuration
 
 ### Test Settings
+
+Shared constants live in [`src/utils/test_utils.py`](../../../src/utils/test_utils.py), re-exported by `tests` (`__init__.py`):
+
 ```python
-TEST_CONFIG = {
-    "fast_tests": True,
-    "standard_tests": True,
-    "slow_tests": False,
-    "performance_tests": False,
-    "coverage_analysis": True,
-    "parallel_execution": True,
-    "timeout": 300,
+TEST_CATEGORIES = {
+    "fast": "Quick validation tests for core functionality",
+    "standard": "Integration tests and moderate complexity",
+    "slow": "Complex scenarios and benchmarks",
+    "performance": "Resource usage and scalability tests",
+    "safe_to_fail": "Tests with graceful degradation",
+    "unit": "Individual component tests",
+    "integration": "Multi-component workflow tests",
+    "mcp": "Model Context Protocol integration tests",
 }
 ```
 
-### Test Categories
-```python
-TEST_CATEGORIES = {
-    "unit": ["test_*unit*.py"],
-    "integration": ["test_*integration*.py"],
-    "performance": ["test_*performance*.py"],
-    "slow": ["test_*slow*.py"],
-}
-```
+`TEST_STAGES` (per-stage timeout/max-failures/parallel/coverage) and `TEST_CONFIG` (safe mode, timeouts, output dirs) are defined alongside it.
+
+### Test Category Routing
+
+The execution routing table is `MODULAR_TEST_CATEGORIES` in [`categories.py`](../../../src/tests/categories.py): a typed `Dict[str, TestCategory]` (`TypedDict` with `name`, `description`, `files`, and optional `markers`, `timeout_seconds`, `max_failures`, `parallel`). File paths are relative to `src/tests/`; `get_all_test_files()` returns a sorted, deduplicated list across all categories, and `missing_category_files()` reports entries whose files no longer exist (drift detection used by the plumbing-contract tests).
 
 ---
 
@@ -290,7 +291,6 @@ success = run_comprehensive_tests(
     logger=logger,
     output_dir=Path("output/2_tests_output"),
     verbose=True,
-    generate_coverage=True,
 )
 ```
 
@@ -380,7 +380,7 @@ flowchart TD
     B -->|"comprehensive=True"| D["run_comprehensive_tests()"]
     B -->|"recovery"| E["run_fast_reliable_tests()"]
     
-    C --> F["ModularTestRunner"]
+    C --> F["_ModularTestRunner<br/>(test_runner_modular.py)"]
     D --> F
     E --> F
     
@@ -407,7 +407,8 @@ flowchart TD
 - **run_fast_pipeline_tests()**: Default mode - fast tests for quick pipeline validation
 - **run_comprehensive_tests()**: Comprehensive mode - all tests with full coverage
 - **run_fast_reliable_tests()**: Recovery mode - essential tests only
-- **ModularTestRunner**: Category-based test execution with resource monitoring
+- **_ModularTestRunner**: Category-based test execution with resource monitoring (defined in `test_runner_modular.py`, routed by the typed category table in `categories.py`)
+- **TestRunner** (`infrastructure/test_runner.py`): Single-source pytest subprocess runner with thread-safe execution history; builds commands with `--log-cli-level=WARNING` and generates execution reports. Re-exported by `tests.runner`
 - **pytest**: Test framework for actual test discovery and execution
 
 ### Module Relationships
@@ -419,16 +420,39 @@ flowchart TD
 - Returns standardized exit codes
 
 **runner.py** (Core Implementation):
-- Contains the core test execution logic and `run_tests()`
-- The mode functions `run_fast_pipeline_tests()`, `run_comprehensive_tests()` and `run_fast_reliable_tests()` live in `test_runner_modes.py`
-- Implements `ModularTestRunner` for category-based execution
-- Handles resource monitoring and error recovery
+- Contains `run_tests()`, which routes the fast/comprehensive/reliable modes and applies the zero-tests-collected auto-fallback
+- Re-exports the mode functions from `test_runner_modes.py` and `create_test_runner` from `test_runner_modular.py`
+- Re-exports the canonical `TestRunner` and `check_test_dependencies` from `infrastructure/`
+- No execution logic of its own beyond routing and dependency checks
 
-**test_utils.py** (Shared Utilities):
-- Provides test fixtures and helper functions
-- Defines test categories and markers
-- Provides test data creation utilities
-- Used by both test files and runner
+**test_runner_modes.py** (Execution Modes):
+- Implements `run_fast_pipeline_tests()`, `run_comprehensive_tests()`, and `run_fast_reliable_tests()`
+- Composes reports from `infrastructure/` report generators
+
+**test_runner_modular.py** (Category Execution):
+- Implements `_ModularTestRunner` for category-based execution with resource monitoring, per-category timeouts, and fallback recovery
+- Provides the `create_test_runner()` factory
+
+**categories.py** (Typed Routing Table):
+- Defines `MODULAR_TEST_CATEGORIES: Dict[str, TestCategory]` with subdir-relative file paths
+- Provides `get_category_names()`, `get_category()`, `get_category_files()`, deterministic `get_all_test_files()`, and `missing_category_files()` drift detection
+
+**infrastructure/** (Single-Source Runner + Reports):
+- `test_runner.py` defines the canonical `TestRunner` (thread-safe execution history, `--log-cli-level=WARNING`); do not duplicate the class elsewhere
+- `report_generator.py`, `resource_monitor.py`, `test_config.py`, and `utils.py` provide report generation, resource monitoring, result dataclasses, and pytest-output parsing
+
+**helpers/** (Shared Test Helpers, importable as `tests.helpers`):
+- `script_loader.load_module_from_path()` — importlib loader for standalone scripts with optional `sys_path` injection
+- `gnn_samples` — canonical sample GNN markdown (`SAMPLE_GNN_CONTENT`, `write_sample_gnn_markdown()`)
+- `mcp_stubs.MCPTools` — in-memory MCP registry stub for wiring tests
+- `render_recovery.render_gnn_files()` — recovery-friendly bulk render for resilience tests
+
+**tests/** (Plumbing-Contract Tests):
+- 26 tests across 5 files pinning runner modes, category routing, helpers, infrastructure exports, and the unified `TestRunner` — guard against accidental re-fragmentation of the runner architecture
+
+**src/utils/test_utils.py** (Shared Constants & Utilities):
+- Defines `TEST_CATEGORIES`, `TEST_STAGES`, `TEST_CONFIG`, and test data/report utilities
+- Re-exported by `tests/__init__.py`; used by both test files and the runner
 
 **conftest.py** (Pytest Fixtures):
 - Defines pytest fixtures for all tests
@@ -443,7 +467,7 @@ Test Discovery → Environment Setup → Test Execution → Result Collection �
 
 ### Adding New Test Categories
 
-To add a new test category to `MODULAR_TEST_CATEGORIES` in `runner.py`:
+To add a new test category to `MODULAR_TEST_CATEGORIES` in `categories.py` (file paths are relative to `src/tests/`):
 
 ```python
 MODULAR_TEST_CATEGORIES["new_module"] = {
@@ -491,8 +515,9 @@ def test_new_module_complex():
 
 ### Test Files
 - **120+** `test_*.py` modules under `src/tests/` (exact count drifts; use `find src/tests -maxdepth 1 -name 'test_*.py' | wc -l`)
+- **26** plumbing-contract tests under `src/tests/tests/` (runner modes, category routing, helpers, infrastructure exports, unified `TestRunner`)
 - **2,397** collected tests with standard Ollama integration ignores as measured by collect-only on 2026-06-12
-- **20+ test categories** for organized execution
+- **20+ test categories** for organized execution (typed table in `categories.py`)
 - **25+ test markers** for selective execution
 
 ### Test Coverage Statistics
@@ -506,7 +531,7 @@ def test_new_module_complex():
 ### Test Execution Modes
 1. **Fast Tests** (`--fast-only`): 1-3 minutes, essential validation
 2. **Comprehensive Tests** (`--comprehensive`): 5-15 minutes, all tests including slow/performance
-3. **Reliable Tests**: Essential tests only, 90-second timeout
+3. **Reliable Tests**: Essential tests only, 600-second subprocess timeout (`FAST_TESTS_TIMEOUT` env override)
 
 ### Key Test Scenarios
 1. **Module Import Validation**: All modules can be imported and have expected structure

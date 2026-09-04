@@ -86,3 +86,38 @@ dependency changes.
   `test_fast_suite.py::TestFastVisualization::test_visualization_module_import`
   was peer-owned mid-edit churn; re-checked after the push and it now passes
   (peer fixed it). No out-of-scope breakage remains.
+
+## Agent fan-out addendum (2026-09-04, post-71aa9e34f)
+
+User directive: spin up agents for all remaining improvements. 8 parallel task
+agents (herdr requested but HERDR_ENV unset -> omp-native task agents), each
+with per-dir ownership and the behavior-preservation contract.
+
+- **Adopted shared helpers** (verified: 64 passed on the 7 touched files):
+  - `render/test_render_mcp_wiring.py`, `execute/test_execute_mcp_wiring.py`:
+    local `_CapturingMCP` -> `tests.helpers.MCPTools` (call conventions verified
+    against src/{render,execute}/mcp.py; peer's render_spec_to_format addition preserved)
+  - `security/`, `research/`, `ml_integration/` test_security/research/ml_integration_mcp_tools.py:
+    local stub classes -> MCPTools
+  - `execute/test_execute_pymdp_visualizer.py`, `..._module.py`: two `temp_output_dir`
+    shadow fixtures removed (conftest's fixture is functionally equivalent for all consumers)
+- **MarkerPruner**: 10 zero-reference markers removed from conftest PYTEST_MARKERS
+  (destructive, external, utilities, environment, render, export, parsers,
+  type_checking, sapf, visualization); pytest.ini untouched (all 9 used);
+  registries consistent; independently re-verified (0 refs, fast suite green).
+- **DocsRefresher**: doc/gnn/modules/02_tests.md refreshed to the unified
+  architecture (doc trio 15->15 green, orchestrator citation + links valid).
+- **Disciplined negatives** (zero edits, every candidate failed the
+  behavior-preservation bar): McpVizAdvanced (4 dirs), SetupOntologyTail (9 dirs),
+  GuiPipelineFixtures (2 dirs). All "shadow" fixtures proved behavior-different;
+  all inline GNN blobs are deliberately-varied parser fixtures.
+- **Drift fixed at integration**: src/tests/README.md maintained-dir count
+  34/32 -> 36/34; `docs/test_capability_contracts.py` now green (2 passed).
+- **New plumbing**: `_ModularTestRunner` warns at startup when
+  `missing_category_files()` is non-empty (`_warn_stale_category_files`); 2 new
+  contract tests pin the discovery warning + startup warning (28 tests total in
+  src/tests/tests/).
+- Pre-existing reds left for owners (documented, not mine): untracked peer test
+  files in execute/export/render/type_checker/ontology/utils; 3 order-dependent
+  pipeline failures tied to src/5_type_checker.py peer WIP; render
+  test_framework_availability.py format drift (tracked, untouched).
