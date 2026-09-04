@@ -121,3 +121,13 @@ with per-dir ownership and the behavior-preservation contract.
   files in execute/export/render/type_checker/ontology/utils; 3 order-dependent
   pipeline failures tied to src/5_type_checker.py peer WIP; render
   test_framework_availability.py format drift (tracked, untouched).
+
+## Correction (2026-09-04T19:40Z)
+
+`fe54b4faa` misshaped the startup drift warning: `_warn_stale_category_files`
+treated `missing_category_files()`'s `Dict[str, List[str]]` as a list (warning
+listed category names under an "entries" claim; `return sorted(missing)` broke
+the documented shape; the contract test's fake returned a list so it passed
+coincidentally). Fixed to the real contract — dict-aware warning
+(`category: entries` details + entry count), `return missing` unchanged shape,
+test fakes/asserts the dict. tests/tests 28/28, ruff clean.

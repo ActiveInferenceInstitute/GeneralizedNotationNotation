@@ -122,12 +122,16 @@ def test_startup_drift_warning_reports_missing_entries(
     import tests.test_runner_modular as runner_mod
 
     monkeypatch.setattr(
-        runner_mod, "missing_category_files", lambda *a, **k: ["zzz/absent.py"]
+        runner_mod,
+        "missing_category_files",
+        lambda *a, **k: {"syn": ["zzz/absent.py"]},
     )
     runner = _make_runner()
     with caplog.at_level(logging.WARNING, logger="contract-test"):
         missing = runner._warn_stale_category_files()
-    assert missing == ["zzz/absent.py"]
+    assert missing == {"syn": ["zzz/absent.py"]}
     assert any(
-        "1 category file entries match no file" in rec.message for rec in caplog.records
+        "1 category file entries match no file across 1 categories" in rec.message
+        and "syn: ['zzz/absent.py']" in rec.message
+        for rec in caplog.records
     )

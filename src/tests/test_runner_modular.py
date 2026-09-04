@@ -643,15 +643,20 @@ class _ModularTestRunner:
                 "duration": time.time() - category_start_time,
             }
 
-    def _warn_stale_category_files(self) -> list[str]:
+    def _warn_stale_category_files(self) -> Dict[str, List[str]]:
         """Warn once per run about category entries that match no file."""
         missing = missing_category_files(self.test_dir)
         if missing:
-            self.logger.warning(
-                f"{len(missing)} category file entries match no file "
-                f"(stale routing table?): {sorted(missing)}"
+            details = ", ".join(
+                f"{category}: {entries}"
+                for category, entries in sorted(missing.items())
             )
-        return sorted(missing)
+            self.logger.warning(
+                f"{sum(len(entries) for entries in missing.values())} category "
+                f"file entries match no file across {len(missing)} categories "
+                f"(stale routing table?): {details}"
+            )
+        return missing
 
     def run_all_categories(self) -> Dict[str, Any]:
         """Run all test categories and generate comprehensive report."""
