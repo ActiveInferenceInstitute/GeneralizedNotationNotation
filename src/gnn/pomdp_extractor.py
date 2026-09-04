@@ -5,13 +5,79 @@ POMDP State Space Extractor for GNN Active Inference Models
 This module provides specialized parsing and extraction capabilities for POMDP
 (Partially Observable Markov Decision Process) state spaces from GNN specifications,
 with focus on Active Inference model structures.
+
+Dependency contract
+-------------------
+This module is stdlib-only at import time. The only non-stdlib-adjacent import
+(``utils.safe_eval`` for literal matrix evaluation) is performed lazily inside
+_parse_parameter_value; the heavy pipeline (numpy, jax, pymdp, renderers, ...)
+is NOT required. Headless consumers can use ``gnn.extract`` (CLI) or import
+``gnn.pomdp_extractor`` directly under a blocked-import environment.
+
+Stability promise: the mapping produced by :meth:`POMDPStateSpace.to_dict` is
+versioned via its ``extraction_schema_version`` key (currently "1.0.0"). The 26
+pre-existing keys keep identical semantics within schema version 1.x; new keys
+may be appended in minor versions.
 """
 
 import logging
 import re
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple, Union, cast
+from typing import Any, Dict, List, Literal, Optional, Tuple, Union, cast, overload
+
+CANONICAL_B_ORDER = ["next_state", "previous_state", "action"]
+"""Canonical B tensor semantic order: B[s', s, a] per pymdp 1.0.0
+(control.py: B[f][s, v, u]; per-action slices column-stochastic over next_state)."""
+
+ON_ERROR_MODES = ("lenient", "raise", "collect")
+OnErrorMode = Literal["lenient", "raise", "collect"]
+
+
+@dataclass
+class GNNExtractionError(Exception):
+    """Structured error emitted by the POMDP extractor.
+
+    Local, hermetic type: structurally compatible with
+    ``gnn.schema.GNNParseError`` (code/message/line + severity) so consumers can
+    normalize across both surfaces, but deliberately not imported from there —
+    probing ``from gnn.schema import GNNParseError`` shows schema.py itself is
+    import-light (ast/logging/re/dataclasses/typing only), yet routing through
+    the ``gnn`` package ``__init__`` drags pipeline weight, and this module must
+    stay importable headless. Line numbers are best-effort (relative to the
+    enclosing GNN section, offset toward file-absolute when the section header
+    is locatable).
+
+    Codes: GNN-E002 (shape/orientation contradiction), GNN-E006 (parameter
+    parse failure), GNN-E999 (unexpected extraction failure). Warning codes use
+    the GNN-W* namespace.
+    """
+
+    code: str
+    message: str
+    line: Optional[int] = None
+    section: Optional[str] = None
+
+    @property
+    def severity(self) -> str:
+        """'warning' for GNN-W* codes, 'error' otherwise."""
+        return "warning" if self.code.startswith("GNN-W") else "error"
+
+    def __str__(self) -> str:
+        location = f" (line {self.line})" if self.line is not None else ""
+        section = f" [{self.section}]" if self.section else ""
+        return f"{self.code}{section}{location}: {self.message}"
+
+
+def _gnn_distribution_version() -> str:
+    """Best-effort installed version of the generalized-notation-notation package."""
+    try:
+        from importlib.metadata import PackageNotFoundError, version
+
+        return version("generalized-notation-notation")
+    except Exception:  # noqa: BLE001 - any metadata failure degrades to "unknown"
+        return "unknown"
+
 
 logger = logging.getLogger(__name__)
 
@@ -61,6 +127,22 @@ class POMDPStateSpace:
     # state-space model declared via F/H/Q/R + prior_mean/prior_cov).
     model_kind: str = "discrete"
 
+    # Computed factor counts (bookkeeping excluded). A descriptor counts as a
+    # factor unless its name matches *_prime (next-state/next-observation
+    # aliases like s_prime/o_prime) or it is the policy symbol pi/π; the action
+    # variable u DOES count as the control factor. The state_factors /
+    # observation_modalities / control_factors lists keep ALL entries
+    # (including bookkeeping, each tagged role='factor'|'bookkeeping'); only
+    # these num_* counts exclude bookkeeping.
+    num_state_factors: Optional[int] = None
+    num_observation_modalities: Optional[int] = None
+    num_control_factors: Optional[int] = None
+
+    # Which _extract_dimensions priority level produced each core dimension:
+    # {name: {"value": ..., "source": "ModelParameters|inferred_from_B_shape|
+    # variable_dimensions|default"}}.
+    dimension_provenance: Optional[Dict[str, Dict[str, Any]]] = None
+
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary representation."""
         return {
@@ -90,6 +172,12 @@ class POMDPStateSpace:
             "adapter_notes": self.adapter_notes,
             "initial_parameterization": self.initial_parameterization,
             "model_kind": self.model_kind,
+            "gnn_version": _gnn_distribution_version(),
+            "extraction_schema_version": "1.0.0",
+            "num_state_factors": self.num_state_factors,
+            "num_observation_modalities": self.num_observation_modalities,
+            "num_control_factors": self.num_control_factors,
+            "dimension_provenance": self.dimension_provenance,
         }
 
 
@@ -115,6 +203,14 @@ class POMDPExtractor:
         self.strict_validation = strict_validation
         self.logger = logging.getLogger(__name__)
 
+        # Error-collection state (reset at the start of each extraction call,
+        # but initialized here so private helpers are safe in isolation).
+        self._on_error: str = "lenient"
+        self._errors: List[GNNExtractionError] = []
+        self._parse_failures: Dict[str, Dict[str, Any]] = {}
+        self._section_line_offset: int = 0
+        self._dimension_sources: Dict[str, str] = {}
+
         # Patterns for parsing GNN content
         self.SECTION_PATTERN = re.compile(r"^##\s+(.+)$", re.MULTILINE)
         self.VARIABLE_PATTERN = re.compile(
@@ -127,16 +223,65 @@ class POMDPExtractor:
             r"^([A-Za-z_π][A-Za-z0-9_π]*)\s*=\s*\{(.+)\}", re.MULTILINE | re.DOTALL
         )
 
-    def extract_from_gnn_content(self, content: str) -> Optional[POMDPStateSpace]:
+    @overload
+    def extract_from_gnn_content(
+        self,
+        content: str,
+        *,
+        on_error: Literal["lenient", "raise"] = ...,
+        insert_default_c: bool = ...,
+    ) -> Optional[POMDPStateSpace]: ...
+
+    @overload
+    def extract_from_gnn_content(
+        self,
+        content: str,
+        *,
+        on_error: Literal["collect"],
+        insert_default_c: bool = ...,
+    ) -> Tuple[Optional[POMDPStateSpace], List[GNNExtractionError]]: ...
+
+    def extract_from_gnn_content(
+        self,
+        content: str,
+        *,
+        on_error: str = "lenient",
+        insert_default_c: bool = True,
+    ) -> Union[
+        Optional[POMDPStateSpace],
+        Tuple[Optional[POMDPStateSpace], List[GNNExtractionError]],
+    ]:
         """
         Extract POMDP state space from GNN content.
 
         Args:
             content: Raw GNN file content
+            on_error: Failure policy.
+                - 'lenient' (default): log faults and keep going; parse-error
+                  provenance/adapter_notes records are still written.
+                - 'raise': raise GNNExtractionError at the first fault.
+                - 'collect': return (spec_or_None, list[GNNExtractionError]).
+                Invalid values raise ValueError.
+            insert_default_c: When True (default) a passive model without a C
+                vector keeps the zero-preference adapter behavior. When False
+                the faithful read is preserved: C_vector stays None and no
+                passive_model_adapter provenance/adapter_notes entry is made.
 
         Returns:
-            POMDPStateSpace object or None if extraction fails
+            POMDPStateSpace (lenient/raise modes) or a
+            (POMDPStateSpace | None, list[GNNExtractionError]) tuple
+            (collect mode).
         """
+        if on_error not in ON_ERROR_MODES:
+            raise ValueError(
+                f"on_error must be one of {ON_ERROR_MODES}, got {on_error!r}"
+            )
+        self._on_error = on_error
+        self._errors = []
+        self._parse_failures = {}
+        self._section_line_offset = self._section_line_offset_for(
+            content, "InitialParameterization"
+        )
         try:
             sections = self._parse_sections(content)
 
@@ -220,8 +365,24 @@ class POMDPExtractor:
             E_vector = None if is_continuous else initial_params.get("E")
             adapter_notes: list[Any] = []
 
+            # Failed parameter blocks are never silently dropped: record
+            # parse_error provenance + adapter_notes entries in every mode.
+            for failed_name, failure in self._parse_failures.items():
+                if failed_name in ("A", "B", "C", "D", "E") or failed_name.startswith(
+                    ("A_", "B_", "C_", "D_", "E_")
+                ):
+                    matrix_provenance[failed_name] = {
+                        "source": "parse_error",
+                        "code": failure["code"],
+                        "message": failure["message"],
+                    }
+                adapter_notes.append(
+                    f"parse_error:{failed_name} [{failure['code']}]: {failure['message']}"
+                )
+
             if (
-                not is_continuous
+                insert_default_c
+                and not is_continuous
                 and C_vector is None
                 and passive_model
                 and num_observations > 0
@@ -235,6 +396,49 @@ class POMDPExtractor:
                     "reason": "zero preferences for passive HMM/Markov model",
                 }
                 adapter_notes.append("passive_model_zero_preferences")
+
+            # B-orientation metadata (detection only — the stored B_matrix is
+            # never transposed here; render/execute depend on as-written nesting).
+            if not is_continuous and isinstance(B_matrix, (list, tuple)):
+                b_provenance = matrix_provenance.get("B")
+                if (
+                    b_provenance is not None
+                    and b_provenance.get("source") == "InitialParameterization"
+                ):
+                    orientation = self._analyze_b_orientation(
+                        sections.get("StateSpaceBlock", ""),
+                        sections.get("InitialParameterization", ""),
+                        B_matrix,
+                    )
+                    b_provenance.update(orientation)
+                    if orientation.get("contradiction"):
+                        message = (
+                            "B orientation contradiction: "
+                            f"{orientation.get('reason')}"
+                        )
+                        if self.strict_validation and on_error in ("raise", "collect"):
+                            self._record_error(
+                                "GNN-E002", message, section="StateSpaceBlock"
+                            )
+                        else:
+                            self.logger.warning("B orientation: %s", message)
+
+            # Computed factor counts (bookkeeping excluded; see dataclass).
+            num_state_factors = sum(
+                1 for descriptor in state_factors if descriptor.get("role") == "factor"
+            )
+            num_observation_modalities = sum(
+                1
+                for descriptor in observation_modalities
+                if descriptor.get("role") == "factor"
+            )
+            num_control_factors = sum(
+                1 for descriptor in control_factors if descriptor.get("role") == "factor"
+            )
+
+            dimension_provenance = self._build_dimension_provenance(
+                num_states, num_observations, num_actions, num_timesteps
+            )
 
             # Create POMDP state space
             pomdp_space = POMDPStateSpace(
@@ -265,6 +469,10 @@ class POMDPExtractor:
                 adapter_notes=adapter_notes,
                 initial_parameterization=initial_params,
                 model_kind="continuous" if is_continuous else "discrete",
+                num_state_factors=num_state_factors,
+                num_observation_modalities=num_observation_modalities,
+                num_control_factors=num_control_factors,
+                dimension_provenance=dimension_provenance,
             )
 
             # Validate if strict validation enabled (discrete contract only —
@@ -276,37 +484,109 @@ class POMDPExtractor:
                         f"POMDP validation warnings: {validation_result['warnings']}"
                     )
 
+            if on_error == "collect":
+                return (pomdp_space, self._errors)
             return pomdp_space
 
+        except GNNExtractionError:
+            raise
         except Exception as e:
+            error = GNNExtractionError(
+                code="GNN-E999",
+                message=f"unexpected extraction failure: {e}",
+            )
+            if on_error == "raise":
+                raise error from e
             self.logger.error(f"Failed to extract POMDP state space: {e}")
+            self._errors.append(error)
+            if on_error == "collect":
+                return (None, self._errors)
             return None
 
+    @overload
     def extract_from_file(
-        self, file_path: Union[str, Path]
-    ) -> Optional[POMDPStateSpace]:
+        self,
+        file_path: Union[str, Path],
+        *,
+        on_error: Literal["lenient", "raise"] = ...,
+        insert_default_c: bool = ...,
+    ) -> Optional[POMDPStateSpace]: ...
+
+    @overload
+    def extract_from_file(
+        self,
+        file_path: Union[str, Path],
+        *,
+        on_error: Literal["collect"],
+        insert_default_c: bool = ...,
+    ) -> Tuple[Optional[POMDPStateSpace], List[GNNExtractionError]]: ...
+
+    def extract_from_file(
+        self,
+        file_path: Union[str, Path],
+        *,
+        on_error: str = "lenient",
+        insert_default_c: bool = True,
+    ) -> Union[
+        Optional[POMDPStateSpace],
+        Tuple[Optional[POMDPStateSpace], List[GNNExtractionError]],
+    ]:
         """
         Extract POMDP state space from GNN file.
 
         Args:
             file_path: Path to GNN file
+            on_error: 'lenient' (default) | 'raise' | 'collect' — see
+                extract_from_gnn_content. Invalid values raise ValueError.
+            insert_default_c: Preserve (True, default) or suppress (False) the
+                passive-model zero-C adapter.
 
         Returns:
-            POMDPStateSpace object or None if extraction fails
+            POMDPStateSpace (lenient/raise modes) or a
+            (POMDPStateSpace | None, list[GNNExtractionError]) tuple
+            (collect mode).
         """
+        if on_error not in ON_ERROR_MODES:
+            raise ValueError(
+                f"on_error must be one of {ON_ERROR_MODES}, got {on_error!r}"
+            )
         try:
             file_path = Path(file_path)
             if not file_path.exists():
-                self.logger.error(f"File not found: {file_path}")
+                error = GNNExtractionError(
+                    code="GNN-E999",
+                    message=f"file not found: {file_path}",
+                )
+                if on_error == "raise":
+                    raise error
+                self.logger.error("File not found: %s", file_path)
+                self._errors.append(error)
+                if on_error == "collect":
+                    return (None, self._errors)
                 return None
 
             with open(file_path, "r", encoding="utf-8") as f:
                 content = f.read()
 
-            return self.extract_from_gnn_content(content)
+            return self.extract_from_gnn_content(
+                content,
+                on_error=cast(OnErrorMode, on_error),
+                insert_default_c=insert_default_c,
+            )
 
+        except GNNExtractionError:
+            raise
         except Exception as e:
-            self.logger.error(f"Failed to read file {file_path}: {e}")
+            error = GNNExtractionError(
+                code="GNN-E999",
+                message=f"failed to read file {file_path}: {e}",
+            )
+            if on_error == "raise":
+                raise error from e
+            self.logger.error("Failed to read file %s: %s", file_path, e)
+            self._errors.append(error)
+            if on_error == "collect":
+                return (None, self._errors)
             return None
 
     def _parse_sections(self, content: str) -> Dict[str, str]:
@@ -434,11 +714,24 @@ class POMDPExtractor:
         2. B matrix dimensions (inferred from shape)
         3. Action variables (u, π)
         4. Default (3)
+
+        Which level fired for each of num_states / num_observations /
+        num_actions / num_timesteps is recorded in
+        ``self._dimension_sources`` (values: "ModelParameters" |
+        "inferred_from_B_shape" | "variable_dimensions" | "default") for the
+        dimension_provenance field. The return signature is unchanged.
         """
         num_states = 3  # Default
         num_observations = 3  # Default
         num_actions = None  # Will be determined by priority
         num_timesteps = None  # Simulation timesteps (optional)
+        sources: Dict[str, str] = {
+            "num_states": "default",
+            "num_observations": "default",
+            "num_actions": "default",
+            "num_timesteps": "default",
+        }
+        self._dimension_sources = sources
 
         # Priority 1: Check ModelParameters section
         if sections:
@@ -452,6 +745,7 @@ class POMDPExtractor:
                 key_lower = key.lower()
                 if key_lower in ["num_actions", "num_controls", "n_actions"]:
                     num_actions = int_value
+                    sources["num_actions"] = "ModelParameters"
                 elif key_lower in [
                     "num_hidden_states",
                     "num_states",
@@ -459,6 +753,7 @@ class POMDPExtractor:
                     "num_locations",
                 ]:
                     num_states = int_value
+                    sources["num_states"] = "ModelParameters"
                 elif key_lower in [
                     "num_obs",
                     "num_observations",
@@ -466,8 +761,10 @@ class POMDPExtractor:
                     "num_location_obs",
                 ]:
                     num_observations = int_value
+                    sources["num_observations"] = "ModelParameters"
                 elif key_lower in ["num_timesteps", "n_timesteps", "timesteps"]:
                     num_timesteps = int_value
+                    sources["num_timesteps"] = "ModelParameters"
 
         # Priority 2: Infer from B matrix dimensions if still None
         if num_actions is None and initial_params:
@@ -486,6 +783,7 @@ class POMDPExtractor:
                             action_candidates.append(shape[-1])
             if action_candidates:
                 num_actions = max(action_candidates)
+                sources["num_actions"] = "inferred_from_B_shape"
                 self.logger.info(
                     "Inferred num_actions=%d from B matrix dimensions", num_actions
                 )
@@ -496,6 +794,7 @@ class POMDPExtractor:
                 if len(var["dimensions"]) > 0 and isinstance(var["dimensions"][0], int):
                     if num_states == 3:  # Only override default
                         num_states = var["dimensions"][0]
+                        sources["num_states"] = "variable_dimensions"
 
         # Try to extract from observation variables
         for var in state_space_info.get("observation_variables", []):
@@ -503,6 +802,7 @@ class POMDPExtractor:
                 if len(var["dimensions"]) > 0 and isinstance(var["dimensions"][0], int):
                     if num_observations == 3:  # Only override default
                         num_observations = var["dimensions"][0]
+                        sources["num_observations"] = "variable_dimensions"
 
         # Priority 4: Try to extract from action variables (if still None)
         if num_actions is None:
@@ -515,6 +815,7 @@ class POMDPExtractor:
                         dim = var["dimensions"][0]
                         if dim > 1:
                             num_actions = dim
+                            sources["num_actions"] = "variable_dimensions"
 
         # Final default
         if num_actions is None:
@@ -582,6 +883,12 @@ class POMDPExtractor:
                 f"H must have shape [m, n] with n={f_shape[0]}, got {h_shape}"
             )
         num_states, num_observations = f_shape[0], h_shape[0]
+        self._dimension_sources = {
+            "num_states": "variable_dimensions",
+            "num_observations": "variable_dimensions",
+            "num_actions": "default",
+            "num_timesteps": "default",
+        }
         for key, expected in (
             ("Q", [num_states, num_states]),
             ("R", [num_observations, num_observations]),
@@ -598,6 +905,7 @@ class POMDPExtractor:
         if raw_t is not None:
             try:
                 num_timesteps = int(raw_t)
+                self._dimension_sources["num_timesteps"] = "ModelParameters"
             except (TypeError, ValueError):
                 num_timesteps = None
         return num_states, num_observations, num_actions, num_timesteps
@@ -657,7 +965,14 @@ class POMDPExtractor:
         variables: Optional[List[Dict[str, Any]]],
         fallback_prefix: str,
     ) -> List[Dict[str, Any]]:
-        """Create factor/modality/control descriptors from parsed variables."""
+        """Create factor/modality/control descriptors from parsed variables.
+
+        Every descriptor carries 'role': 'factor' or 'bookkeeping'. Bookkeeping
+        entries are next-state/next-observation aliases matching *_prime and
+        the policy symbol π/pi; the action variable u is a real factor. Lists
+        keep ALL entries; the num_* counts on POMDPStateSpace exclude
+        bookkeeping.
+        """
         descriptors: list[Any] = []
         for index, variable in enumerate(variables or []):
             name = variable.get("name") or f"{fallback_prefix}_{index}"
@@ -676,6 +991,9 @@ class POMDPExtractor:
                 continue
             dimensions = variable.get("dimensions") or []
             size = next((dim for dim in dimensions if isinstance(dim, int)), None)
+            is_bookkeeping = name_lower.endswith("_prime") or (
+                fallback_prefix == "control_factor" and name_lower in {"π", "pi"}
+            )
             descriptors.append(
                 {
                     "name": name,
@@ -684,6 +1002,7 @@ class POMDPExtractor:
                     "type": variable.get("type"),
                     "comment": variable.get("comment"),
                     "index": index,
+                    "role": "bookkeeping" if is_bookkeeping else "factor",
                 }
             )
         return descriptors
@@ -707,6 +1026,234 @@ class POMDPExtractor:
             return True
         return False
 
+
+    def _record_error(
+        self,
+        code: str,
+        message: str,
+        line: Optional[int] = None,
+        section: Optional[str] = None,
+    ) -> GNNExtractionError:
+        """Record a structured fault; raise immediately in 'raise' mode."""
+        error = GNNExtractionError(
+            code=code, message=message, line=line, section=section
+        )
+        self._errors.append(error)
+        if self._on_error == "raise":
+            raise error
+        if error.severity == "error":
+            self.logger.error("structured error: %s", error)
+        else:
+            self.logger.warning("structured warning: %s", error)
+        return error
+
+    def _record_parameter_failure(
+        self,
+        param_name: str,
+        exc: BaseException,
+        line_no: Optional[int] = None,
+    ) -> None:
+        """Record a failed parameter parse (GNN-E006); never silently dropped."""
+        if isinstance(exc, (ValueError, SyntaxError)):
+            code = "GNN-E006"
+        else:
+            code = "GNN-E006"
+        line = (
+            self._section_line_offset + line_no
+            if self._section_line_offset and line_no
+            else line_no
+        )
+        self._parse_failures[param_name] = {
+            "code": code,
+            "message": f"{param_name}: {exc}",
+        }
+        self.logger.warning("Failed to parse parameter %s: %s", param_name, exc)
+        self._record_error(
+            code,
+            f"failed to parse parameter '{param_name}': {exc}",
+            line=line,
+            section="InitialParameterization",
+        )
+
+    def _section_line_offset_for(self, content: str, section: str) -> int:
+        """File-absolute 1-based line number of a section header (0 if absent)."""
+        for index, raw_line in enumerate(content.split("\n"), start=1):
+            if raw_line.strip().lower() == f"## {section.lower()}":
+                return index
+        return 0
+
+    def _build_dimension_provenance(
+        self,
+        num_states: int,
+        num_observations: int,
+        num_actions: int,
+        num_timesteps: Optional[int],
+    ) -> Dict[str, Dict[str, Any]]:
+        """Expose which _extract_dimensions priority level fired per dimension."""
+        sources = self._dimension_sources or {}
+        provenance: Dict[str, Dict[str, Any]] = {
+            "num_states": {"value": num_states, "source": sources.get("num_states", "default")},
+            "num_observations": {
+                "value": num_observations,
+                "source": sources.get("num_observations", "default"),
+            },
+            "num_actions": {"value": num_actions, "source": sources.get("num_actions", "default")},
+        }
+        provenance["num_timesteps"] = {
+            "value": num_timesteps,
+            "source": sources.get("num_timesteps", "default"),
+        }
+        return provenance
+
+    # --- B-orientation metadata (detection only; never re-orients data) ---
+
+    _AXIS_ALIASES = {
+        "next_state": "next_state",
+        "next": "next_state",
+        "s_next": "next_state",
+        "states_next": "next_state",
+        "s'": "next_state",
+        "previous_state": "previous_state",
+        "prev_state": "previous_state",
+        "previous": "previous_state",
+        "prev": "previous_state",
+        "s_prev": "previous_state",
+        "states_previous": "previous_state",
+        "action": "action",
+        "actions": "action",
+        "u": "action",
+    }
+
+    def _parse_declared_b_order(self, state_space_block: str) -> Optional[List[str]]:
+        """Parse the declared B axis order from the StateSpaceBlock comment."""
+        for line in state_space_block.split("\n"):
+            if "B[" not in line:
+                continue
+            for match in re.finditer(r"B\[([^\]]+)\]", line):
+                axes = [
+                    part.strip().lower() for part in match.group(1).split(",")
+                ]
+                order: List[str] = []
+                for axis in axes:
+                    for alias, canonical in self._AXIS_ALIASES.items():
+                        if axis == alias or axis.startswith(alias):
+                            if canonical not in order:
+                                order.append(canonical)
+                            break
+                if len(order) == 3:
+                    return order
+        return None
+
+    def _parse_claimed_slice_convention(
+        self, parameterization: str
+    ) -> Optional[str]:
+        """Parse the claimed per-slice convention from the InitialParameterization B comment."""
+        near_b = re.search(
+            r"#\s*B:.*?(?=\n(?:[A-Za-zπ_]\w*\s*=)|$)",
+            parameterization,
+            re.DOTALL,
+        )
+        text = near_b.group(0).lower() if near_b else parameterization.lower()
+        if (
+            "rows are previous" in text or "rows as previous" in text
+        ) and ("columns are next" in text or "columns as next" in text):
+            return "rows_previous_columns_next"
+        if "rows are next" in text or "rows as next" in text:
+            return "rows_next_columns_previous"
+        return None
+
+    def _detect_b_order(self, b_matrix: Any) -> Optional[List[str]]:
+        """Detect the stored tensor's axis order from stochasticity sums.
+
+        Evidence tests over the stored (as-written) tensor T[d0][d1][d2]:
+        - Doubly stochastic (dominant): every slice has row sums AND column
+          sums = 1 (permutation-style data). Ambiguous — never decisive, and
+          never a contradiction by itself.
+        - H2 (canonical): sum over the OUTER axis at each (i, j) position = 1
+          (law of total probability over next_state) -> stored is
+          (next_state, previous_state, action).
+        - H1 (action-outer): every slice is row-stochastic (row sums = 1) ->
+          stored is (action, previous_state, next_state).
+        Neither test decisive -> None.
+        """
+        shape = self._nested_shape(b_matrix)
+        if len(shape) != 3 or 0 in shape:
+            return None
+        try:
+            rows_stochastic = all(
+                abs(sum(float(v) for v in row) - 1.0) <= 1e-6
+                for slice_ in b_matrix
+                for row in slice_
+            )
+            cols_stochastic = all(
+                abs(sum(float(row[j]) for row in slice_) - 1.0) <= 1e-6
+                for slice_ in b_matrix
+                for j in range(len(slice_[0]))
+            )
+            doubly_stochastic = rows_stochastic and cols_stochastic
+            h2 = all(
+                abs(sum(float(s[i][j]) for s in b_matrix) - 1.0) <= 1e-6
+                for i in range(shape[1])
+                for j in range(shape[2])
+            )
+        except (TypeError, ValueError, IndexError):
+            return None
+
+        if doubly_stochastic:
+            return None  # ambiguous — never decisive, never a contradiction
+        if h2:
+            return list(CANONICAL_B_ORDER)  # (next, prev, action)
+        if rows_stochastic:
+            return ["action", "previous_state", "next_state"]
+        return None
+
+    def _analyze_b_orientation(
+        self,
+        state_space_block: str,
+        parameterization: str,
+        b_matrix: Any,
+    ) -> Dict[str, Any]:
+        """Produce B-orientation metadata for matrix_provenance['B']."""
+        declared = self._parse_declared_b_order(state_space_block)
+        claimed = self._parse_claimed_slice_convention(parameterization)
+        detected = self._detect_b_order(b_matrix)
+        contradiction = False
+        reason: Optional[str] = None
+
+        # Contradiction requires decisive data (doubly-stochastic/ambiguous
+        # data is NEVER a contradiction by itself): the detected orientation
+        # must disagree with the declared axis order (or, absent a declaration,
+        # with the claimed convention / canonical order).
+        if detected is not None:
+            reference = declared
+            reference_label = "declared"
+            if reference is None:
+                reference = (
+                    list(CANONICAL_B_ORDER)
+                    if claimed is None
+                    else (
+                        ["action", "previous_state", "next_state"]
+                        if claimed == "rows_previous_columns_next"
+                        else list(CANONICAL_B_ORDER)
+                    )
+                )
+                reference_label = "claimed" if claimed else "canonical"
+            if detected != reference:
+                contradiction = True
+                reason = (
+                    f"detected B orientation {detected} contradicts the "
+                    f"{reference_label} order {reference}"
+                )
+
+        return {
+            "declared_order": declared or list(CANONICAL_B_ORDER),
+            "claimed_slice_convention": claimed,
+            "detected_order": detected,
+            "canonical_order": list(CANONICAL_B_ORDER),
+            "contradiction": contradiction,
+            "reason": reason,
+        }
+
     def _parse_initial_parameterization(self, content: str) -> Dict[str, Any]:
         """Parse InitialParameterization section."""
         params: dict[Any, Any] = {}
@@ -717,8 +1264,8 @@ class POMDPExtractor:
         current_value = ""
         in_param_block = False
 
-        for line in lines:
-            line = line.strip()
+        for line_no, raw_line in enumerate(lines, start=1):
+            line = raw_line.strip()
 
             # Skip comments
             if line.startswith("#") or not line:
@@ -737,10 +1284,10 @@ class POMDPExtractor:
                 if ":" in raw_inner:
                     try:
                         params[param_name] = self._parse_assignment_value(raw_value)
-                    except Exception as e:
-                        self.logger.warning(
-                            f"Failed to parse parameter {param_name}: {e}"
-                        )
+                    except (ValueError, SyntaxError) as e:
+                        self._record_parameter_failure(param_name, e, line_no)
+                    except Exception as e:  # unexpected — still never dropped
+                        self._record_parameter_failure(param_name, e, line_no)
                     current_param = None
                     current_value = ""
                     continue
@@ -757,26 +1304,15 @@ class POMDPExtractor:
                     try:
                         parsed_value = self._parse_parameter_value(current_value)
                         params[current_param] = parsed_value
-                    except Exception as e:
-                        self.logger.warning(
-                            f"Failed to parse parameter {current_param}: {e}"
-                        )
+                    except (ValueError, SyntaxError) as e:
+                        self._record_parameter_failure(current_param, e, line_no)
+                    except Exception as e:  # unexpected — still never dropped
+                        self._record_parameter_failure(current_param, e, line_no)
                     current_param = None
                     current_value = ""
                 else:
                     # Multi-line parameter
                     in_param_block = True
-
-            elif "=" in line and not in_param_block:
-                param_name, raw_value = line.split("=", 1)
-                param_name = param_name.strip()
-                raw_value = raw_value.strip()
-                if not param_name:
-                    continue
-                try:
-                    params[param_name] = self._parse_assignment_value(raw_value)
-                except Exception as e:
-                    self.logger.warning(f"Failed to parse parameter {param_name}: {e}")
 
             elif in_param_block and current_param:
                 # Continue collecting parameter value
@@ -786,16 +1322,30 @@ class POMDPExtractor:
                     try:
                         parsed_value = self._parse_parameter_value(current_value)
                         params[current_param] = parsed_value
-                    except Exception as e:
-                        self.logger.warning(
-                            f"Failed to parse parameter {current_param}: {e}"
-                        )
+                    except (ValueError, SyntaxError) as e:
+                        self._record_parameter_failure(current_param, e, line_no)
+                    except Exception as e:  # unexpected — still never dropped
+                        self._record_parameter_failure(current_param, e, line_no)
                     in_param_block = False
                     current_param = None
                     current_value = ""
                 else:
                     # Add line to current value
                     current_value += " " + line
+
+            elif "=" in line and not in_param_block:
+                param_name, raw_value = line.split("=", 1)
+                param_name = param_name.strip()
+                raw_value = raw_value.strip()
+                if not param_name:
+                    continue
+                try:
+                    params[param_name] = self._parse_assignment_value(raw_value)
+                except (ValueError, SyntaxError) as e:
+                    self._record_parameter_failure(param_name, e, line_no)
+                except Exception as e:  # unexpected — still never dropped
+                    self._record_parameter_failure(param_name, e, line_no)
+
 
         return params
 
@@ -829,7 +1379,16 @@ class POMDPExtractor:
         # Handle structured data (tuples/nested lists)
         if "(" in value_str or "[" in value_str:
             try:
-                from utils.safe_eval import MATRIX_MAX_LEN, safe_literal_eval
+                try:
+                    from utils.safe_eval import MATRIX_MAX_LEN, safe_literal_eval
+                except ImportError as e:
+                    # Heavy pipeline not importable: eval-free path keeps
+                    # working; a broken/suspicious safe_eval is a structured
+                    # GNN-E006 fault, never a silent drop.
+                    raise ImportError(
+                        f"utils.safe_eval unavailable ({e}); cannot safely "
+                        "evaluate structured parameter literal"
+                    ) from e
 
                 # Convert ( ) to [ ] for literal_eval if needed, or just let it handle tuples
                 # Better to convert to a standard format
@@ -848,23 +1407,30 @@ class POMDPExtractor:
                 self.logger.warning(
                     f"ast.literal_eval failed for {value_str}: {e}. Falling back to manual parsing."
                 )
-                return self._parse_nested_structure_safe(value_str)
+                fallback = self._parse_nested_structure_safe(value_str)
+                junk = self._find_string_tokens(fallback)
+                if junk:
+                    # Non-numeric tokens inside a bracketed literal are a
+                    # genuine parse failure (e.g. '(0.05, 0.9, oops)'), not a
+                    # tolerated string value: raise so the parameter is
+                    # recorded as a structured parse_error, never silently
+                    # degraded.
+                    raise ValueError(
+                        f"non-numeric token(s) {junk} in matrix literal"
+                    ) from e
+                return fallback
 
-        # Recovery for simple comma-separated values without brackets
-        values: list[Any] = []
-        for item in value_str.split(","):
-            item = item.strip()
-            if not item:
-                continue
-            try:
-                if "." in item:
-                    values.append(float(item))
-                else:
-                    values.append(int(item))
-            except ValueError:
-                values.append(item)
+    @staticmethod
+    def _find_string_tokens(value: Any) -> List[str]:
+        """Collect string tokens that leaked into a parsed numeric structure."""
+        found: List[str] = []
+        if isinstance(value, str):
+            found.append(value)
+        elif isinstance(value, (list, tuple)):
+            for item in value:
+                found.extend(POMDPExtractor._find_string_tokens(item))
+        return found
 
-        return values[0] if len(values) == 1 else values
 
     def _parse_nested_structure_safe(self, value_str: str) -> List:
         """
@@ -1034,35 +1600,162 @@ class POMDPExtractor:
         return {"valid": len(warnings) == 0, "warnings": warnings}
 
 
+@overload
 def extract_pomdp_from_file(
-    file_path: Union[str, Path], strict_validation: bool = True
-) -> Optional[POMDPStateSpace]:
+    file_path: Union[str, Path],
+    strict_validation: bool = ...,
+    *,
+    on_error: Literal["lenient", "raise"] = ...,
+    insert_default_c: bool = ...,
+) -> Optional[POMDPStateSpace]: ...
+
+@overload
+def extract_pomdp_from_file(
+    file_path: Union[str, Path],
+    strict_validation: bool = ...,
+    *,
+    on_error: Literal["collect"],
+    insert_default_c: bool = ...,
+) -> Tuple[Optional[POMDPStateSpace], List[GNNExtractionError]]: ...
+
+def extract_pomdp_from_file(
+    file_path: Union[str, Path],
+    strict_validation: bool = True,
+    *,
+    on_error: str = "lenient",
+    insert_default_c: bool = True,
+) -> Union[
+    Optional[POMDPStateSpace],
+    Tuple[Optional[POMDPStateSpace], List[GNNExtractionError]],
+]:
     """
     Convenience function to extract POMDP state space from a GNN file.
 
     Args:
         file_path: Path to GNN file
         strict_validation: Enable strict validation
+        on_error: 'lenient' (default) | 'raise' | 'collect'. 'raise' raises
+            GNNExtractionError at the first fault; 'collect' returns
+            (spec_or_None, list[GNNExtractionError]); invalid -> ValueError.
+        insert_default_c: True (default) preserves the passive-model zero-C
+            adapter; False keeps C None with no adapter provenance.
 
     Returns:
-        POMDPStateSpace object or None if extraction fails
+        POMDPStateSpace (lenient/raise) or a (spec | None, errors) tuple
+        (collect mode).
     """
     extractor = POMDPExtractor(strict_validation=strict_validation)
-    return extractor.extract_from_file(file_path)
+    return extractor.extract_from_file(
+        file_path,
+        on_error=cast(OnErrorMode, on_error),
+        insert_default_c=insert_default_c,
+    )
 
+
+@overload
+def extract_pomdp_from_content(
+    content: str,
+    strict_validation: bool = ...,
+    *,
+    on_error: Literal["lenient", "raise"] = ...,
+    insert_default_c: bool = ...,
+) -> Optional[POMDPStateSpace]: ...
+
+@overload
+def extract_pomdp_from_content(
+    content: str,
+    strict_validation: bool = ...,
+    *,
+    on_error: Literal["collect"],
+    insert_default_c: bool = ...,
+) -> Tuple[Optional[POMDPStateSpace], List[GNNExtractionError]]: ...
 
 def extract_pomdp_from_content(
-    content: str, strict_validation: bool = True
-) -> Optional[POMDPStateSpace]:
+    content: str,
+    strict_validation: bool = True,
+    *,
+    on_error: str = "lenient",
+    insert_default_c: bool = True,
+) -> Union[
+    Optional[POMDPStateSpace],
+    Tuple[Optional[POMDPStateSpace], List[GNNExtractionError]],
+]:
     """
     Convenience function to extract POMDP state space from GNN content.
 
     Args:
         content: GNN file content
         strict_validation: Enable strict validation
+        on_error: 'lenient' (default) | 'raise' | 'collect'. 'raise' raises
+            GNNExtractionError at the first fault; 'collect' returns
+            (spec_or_None, list[GNNExtractionError]); invalid -> ValueError.
+        insert_default_c: True (default) preserves the passive-model zero-C
+            adapter; False keeps C None with no adapter provenance.
 
     Returns:
-        POMDPStateSpace object or None if extraction fails
+        POMDPStateSpace (lenient/raise) or a (spec | None, errors) tuple
+        (collect mode).
     """
     extractor = POMDPExtractor(strict_validation=strict_validation)
-    return extractor.extract_from_gnn_content(content)
+    return extractor.extract_from_gnn_content(
+        content,
+        on_error=cast(OnErrorMode, on_error),
+        insert_default_c=insert_default_c,
+    )
+
+
+def canonicalize_pomdp(spec: POMDPStateSpace) -> POMDPStateSpace:
+    """Return a NEW POMDPStateSpace with B in canonical (next, prev, action) order.
+
+    Pure, stdlib-only copy: the input spec (and its B_matrix) is never
+    mutated. Orientation is chosen from matrix_provenance['B']
+    (detected_order/claimed_slice_convention) when decisive; a 3-D B stored
+    as (action, previous_state, next_state) is transposed to
+    (next_state, previous_state, action); canonical or ambiguous storage is
+    copied unchanged. All other fields are copied as-is.
+    """
+    canonical = POMDPStateSpace(**{
+        field: getattr(spec, field)
+        for field in spec.__dataclass_fields__
+    })
+    b_matrix = spec.B_matrix
+    provenance = spec.matrix_provenance or {}
+    b_meta = provenance.get("B") or {}
+    stored_order = (
+        b_meta.get("detected_order")
+        or (
+            ["action", "previous_state", "next_state"]
+            if b_meta.get("claimed_slice_convention")
+            == "rows_previous_columns_next"
+            else None
+        )
+    )
+    if (
+        isinstance(b_matrix, (list, tuple))
+        and len(self_shape := _shape_of(b_matrix)) == 3
+        and stored_order
+        and stored_order != list(CANONICAL_B_ORDER)
+        and stored_order == ["action", "previous_state", "next_state"]
+    ):
+        # (action, prev, next) -> (next, prev, action):
+        # canonical[n][p][a] = stored[a][p][n]
+        canonical.B_matrix = [
+            [
+                [b_matrix[a][p][n] for a in range(self_shape[2])]
+                for p in range(self_shape[1])
+            ]
+            for n in range(self_shape[0])
+        ]
+    return canonical
+
+
+def _shape_of(value: Any) -> List[int]:
+    """Best-effort nested shape (module-level twin of _nested_shape)."""
+    shape: List[int] = []
+    current: Any = value
+    while isinstance(current, (list, tuple)):
+        shape.append(len(current))
+        if not current:
+            break
+        current = current[0]
+    return shape

@@ -13,6 +13,7 @@ Unified command-line interface for the GNN pipeline. Provides subcommands for ru
 | `gnn run` | Execute the full 25-step pipeline |
 | `gnn validate <file>` | Validate a GNN file (sections, state-space, connections, dimensions) |
 | `gnn parse <file>` | Parse a GNN file and output JSON/YAML/summary |
+| `gnn extract <file>` | Extract the POMDP state space as structured JSON (`--strict`/`--no-strict`, `--compact`) |
 | `gnn render <file>` | Render a GNN file to a specific framework (pymdp, rxinfer, jax, etc.) |
 | `gnn report` | Generate pipeline report from existing outputs |
 | `gnn reproduce <hash>` | Re-run from a previous run hash (content-addressable) |
@@ -43,6 +44,10 @@ gnn validate input/gnn_files/discrete/actinf_pomdp_agent.md --strict
 # Parse to JSON
 gnn parse input/gnn_files/discrete/actinf_pomdp_agent.md
 
+# Extract the POMDP state space as JSON (pretty by default)
+gnn extract input/gnn_files/discrete/actinf_pomdp_agent.md
+gnn extract input/gnn_files/discrete/actinf_pomdp_agent.md --no-strict --compact
+
 # Check environment
 gnn preflight
 gnn health
@@ -61,6 +66,7 @@ The CLI module is a thin dispatcher — each subcommand delegates to the corresp
 - `run` → `main.main()`
 - `validate` → `gnn.schema.validate_required_sections()` + `parse_state_space()` + `parse_connections()`
 - `parse` → `gnn.schema.parse_state_space()` + `gnn.frontmatter.parse_frontmatter()`
+- `extract` → `gnn.extract.extract_to_json()` (lazy import; emits a structured error envelope when the extractor is unavailable)
 - `render` → `render.processor` (planned full integration)
 - `report` → `report.pipeline_report.generate_pipeline_report()`
 - `reproduce` → `pipeline.hasher.lookup_run()` + `main.main(override_args=...)`

@@ -6,6 +6,7 @@ Provides:
   gnn run        — Execute the full pipeline
   gnn validate   — Validate a GNN file
   gnn parse      — Parse and output JSON
+  gnn extract    — Extract POMDP state space as JSON
   gnn render     — Render a GNN file to a specific framework
   gnn report     — Generate pipeline report
   gnn reproduce  — Re-run from a previous run hash
@@ -75,7 +76,7 @@ def _tcp_port(value: str) -> int:
 def _envelope(
     status: str,
     data: Any = None,
-    error: Optional[str] = None,
+    error: Any = None,
     meta: Optional[dict[str, Any]] = None,
 ) -> dict[str, Any]:
     """Format output matching standard CLI envelope schema."""
@@ -140,6 +141,28 @@ def main(argv: Optional[List[str]] = None) -> int:
         "--json", action="store_true", help="Output standard JSON envelope"
     )
 
+    # ── gnn extract ──────────────────────────────────────────────────────────
+    extract_p = subparsers.add_parser(
+        "extract", help="Extract POMDP state space from a GNN file as JSON"
+    )
+    extract_p.add_argument("file", type=Path, help="GNN file to extract")
+    extract_strict_group = extract_p.add_mutually_exclusive_group()
+    extract_strict_group.add_argument(
+        "--strict",
+        dest="strict",
+        action="store_true",
+        help="Fail on structural validation errors (default)",
+    )
+    extract_strict_group.add_argument(
+        "--no-strict",
+        dest="strict",
+        action="store_false",
+        help="Lenient structural validation",
+    )
+    extract_p.set_defaults(strict=True)
+    extract_p.add_argument(
+        "--compact", action="store_true", help="Emit compact (single-line) JSON"
+    )
     # ── gnn render ───────────────────────────────────────────────────────────
     render_p = subparsers.add_parser(
         "render", help="Render a GNN file to framework code"
@@ -349,6 +372,7 @@ def main(argv: Optional[List[str]] = None) -> int:
         "run": _cmd_run,
         "validate": _cmd_validate,
         "parse": _cmd_parse,
+        "extract": _cmd_extract,
         "render": _cmd_render,
         "report": _cmd_report,
         "reproduce": _cmd_reproduce,
@@ -489,7 +513,15 @@ def _cmd_validate(args: Any) -> Any:
                         "warning" if not args.strict else "error",
                         data={
                             "valid": False,
-                            "errors": [str(e) for e in errors],
+                            "errors": [
+                                {
+                                    "code": e.code,
+                                    "message": e.message,
+                                    "line": e.line,
+                                    "file": e.file,
+                                }
+                                for e in errors
+                            ],
                             "variables_count": len(variables),
                             "connections_count": len(connections),
                         },
@@ -568,6 +600,39 @@ def _cmd_parse(args: Any) -> Any:
     except ImportError as e:
         logger.debug("Frontmatter parsing not available: %s", e)
 
+    # POMDP extraction is best-effort: non-POMDP files or extraction
+    # failures omit the "pomdp" key and surface a warnings note instead —
+    # the CLI must never hard-crash for non-POMDP workflows.
+    pomdp_note: Optional[str] = None
+    pomdp_data: Optional[dict[str, Any]] = None
+    if not variables:
+        pomdp_note = (
+            "File declares no StateSpaceBlock variables; 'pomdp' key omitted"
+        )
+    else:
+        try:
+            from gnn.pomdp_extractor import extract_pomdp_from_file
+
+            pomdp_result = extract_pomdp_from_file(
+                args.file, strict_validation=False
+            )
+            # on_error="lenient" (default) returns Optional[POMDPStateSpace];
+            # "collect" returns (spec, errors) — tolerate both shapes.
+            pomdp_space = (
+                pomdp_result[0]
+                if isinstance(pomdp_result, tuple)
+                else pomdp_result
+            )
+            if pomdp_space is None:
+                pomdp_note = (
+                    "File does not parse as a POMDP; 'pomdp' key omitted"
+                )
+            else:
+                pomdp_data = pomdp_space.to_dict()
+        except Exception as exc:
+            logger.debug("POMDP extraction unavailable: %s", exc)
+            pomdp_note = f"POMDP extraction unavailable: {exc}"
+
     result: dict[str, Any] = {
         "file": str(args.file),
         "metadata": metadata,
@@ -591,7 +656,20 @@ def _cmd_parse(args: Any) -> Any:
             for c in connections
         ],
         "warnings": [str(error) for error in parse_errors],
+        "errors": [
+            {
+                "code": error.code,
+                "message": error.message,
+                "line": error.line,
+                "file": error.file,
+            }
+            for error in parse_errors
+        ],
     }
+    if pomdp_note is not None:
+        result["warnings"].append(pomdp_note)
+    if pomdp_data is not None:
+        result["pomdp"] = pomdp_data
 
     if is_json:
         print(
@@ -617,6 +695,108 @@ def _cmd_parse(args: Any) -> Any:
     if parse_errors and not is_json:
         logger.warning("Parsed %s with %d warning(s)", args.file, len(parse_errors))
     return EXIT_WARNING if parse_errors else EXIT_SUCCESS
+
+
+def _cmd_extract(args: Any) -> int:
+    """Extract the POMDP state space from a GNN file and print JSON."""
+    file_name = str(args.file)
+    if not args.file.is_file():
+        logger.error(f"GNN file not found or not a regular file: {file_name}")
+        print(
+            json.dumps(
+                _envelope(
+                    "error",
+                    error={
+                        "code": "GNN-CLI-001",
+                        "message": (
+                            f"GNN file not found or not a regular file: {file_name}"
+                        ),
+                        "line": None,
+                        "section": None,
+                    },
+                ),
+                indent=2,
+            )
+        )
+        return EXIT_ERROR
+
+    try:
+        from gnn.extract import extract_to_json
+    except ImportError as exc:
+        logger.error("POMDP extractor unavailable: %s", exc)
+        print(
+            json.dumps(
+                _envelope(
+                    "error",
+                    error={
+                        "code": "GNN-CLI-002",
+                        "message": f"extractor unavailable: {exc}",
+                        "line": None,
+                        "section": None,
+                    },
+                ),
+                indent=2,
+            )
+        )
+        return EXIT_ERROR
+
+    try:
+        payload = extract_to_json(
+            args.file, strict_validation=args.strict, compact=args.compact
+        )
+    except Exception as exc:  # contract is non-raising; guard anyway
+        logger.error("POMDP extraction failed: %s", exc)
+        print(
+            json.dumps(
+                _envelope(
+                    "error",
+                    error={
+                        "code": "GNN-CLI-003",
+                        "message": f"extraction failed: {exc}",
+                        "line": None,
+                        "section": None,
+                    },
+                ),
+                indent=2,
+            )
+        )
+        return EXIT_ERROR
+
+    try:
+        payload_obj: Any = json.loads(payload)
+    except (TypeError, ValueError):
+        payload_obj = None
+    if isinstance(payload_obj, dict) and payload_obj.get("status") == "error":
+        print(payload)
+        return EXIT_ERROR
+    if (
+        isinstance(payload_obj, dict)
+        and not payload_obj.get("state_variables")
+        and not payload_obj.get("matrices")
+        and payload_obj.get("model_name") is None
+    ):
+        # Lenient extraction fabricates a default skeleton for files with
+        # no GNN state-space content at all; surface that as an error.
+        print(
+            json.dumps(
+                _envelope(
+                    "error",
+                    error={
+                        "code": "GNN-E000",
+                        "message": (
+                            "no POMDP state-space content found in "
+                            f"{file_name}"
+                        ),
+                        "line": None,
+                        "section": None,
+                    },
+                ),
+                indent=2,
+            )
+        )
+        return EXIT_ERROR
+    print(payload)
+    return EXIT_SUCCESS
 
 
 def _cmd_render(args: Any) -> Any:

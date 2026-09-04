@@ -212,7 +212,8 @@ flowchart LR
 
 ```
 src/gnn/
-├── __init__.py                    # Module initialization with format ecosystem
+├── __init__.py                    # Lazy package init (PEP 562 re-exports; format ecosystem)
+├── extract.py                     # Headless extraction entry: python -m gnn.extract FILE [--strict|--no-strict] [--compact]
 ├── README.md                      # This documentation
 ├── SPEC.md                        # Canonical format counts and architecture
 ├── mcp.py                         # Model Context Protocol integration
@@ -248,6 +249,29 @@ src/gnn/
 ├── gnn_examples/                  # Reference Markdown models (e.g. actinf_pomdp_agent.md)
 └── (repo root) input/gnn_files/   # Pipeline input examples; tests often use input/gnn_files/discrete/actinf_pomdp_agent.md
 ```
+
+## Headless Extraction
+
+`gnn/extract.py` is a stdlib-only headless entry point for machine-readable
+extraction of a POMDP state space from a GNN file:
+
+```bash
+python -m gnn.extract input/gnn_files/discrete/actinf_pomdp_agent.md --strict
+```
+
+- Success prints the `POMDPStateSpace.to_dict()` payload as JSON (exit 0);
+  `--compact` emits compact JSON.
+- Failure prints `{"status": "error", "error": {"code", "message", "line", "section"}}`
+  (exit 1). Codes come from the extractor's structured errors (`GNN-E002`
+  shape/orientation, `GNN-E006` parameter-parse, `GNN-E000` bare no-result).
+- Library surface: `gnn.extract.extract_to_json(path, *, strict_validation=True,
+  on_error="lenient", compact=False) -> str` — never raises, always returns JSON.
+
+Both `gnn/__init__.py` and `utils/__init__.py` re-export their names lazily
+(PEP 562 `__getattr__`), so `import gnn` stays light: no submodule — and no
+heavy module-scope dependency (psutil, matplotlib) — executes until a name is
+resolved. The POMDP extractor (`gnn.pomdp_extractor`) is usable headless with
+heavy deps absent.
 
 ## Validation System
 

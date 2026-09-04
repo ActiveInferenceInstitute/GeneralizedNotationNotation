@@ -227,6 +227,38 @@ existing path and `is_content` is `False`, the file is read first; otherwise
 
 **Location**: `src/gnn/parser.py`
 
+### Headless Extraction (`extract.py`)
+
+#### `extract_to_json(path: Union[str, Path], *, strict_validation: bool = True, on_error: str = "lenient", compact: bool = False) -> str`
+
+**Description**: Machine-readable headless extraction entry point. Calls
+`gnn.pomdp_extractor.extract_pomdp_from_file` and returns a JSON string — it
+never raises. Success: the `POMDPStateSpace.to_dict()` payload (no `status`
+key). Failure: the envelope
+`{"status": "error", "error": {"code", "message", "line", "section"}}`
+(codes from the extractor's structured errors, e.g. `GNN-E002` shape /
+orientation contradictions, `GNN-E006` parameter-parse failures; `GNN-E000`
+for a bare no-result extraction). `compact=True` emits compact JSON
+(`separators=(",", ":")`, no indent) instead of `indent=2`.
+
+#### `main(argv: Optional[List[str]] = None) -> int`
+
+**Description**: CLI wrapper: `python -m gnn.extract FILE [--strict|--no-strict] [--compact]`.
+Prints the payload JSON (exit 0) or the error envelope (exit 1).
+
+**Location**: `src/gnn/extract.py` (stdlib-only at module scope; the extractor
+module is imported lazily inside the call path).
+
+### Lazy package `__init__`
+
+`gnn/__init__.py` re-exports its names lazily via PEP 562 module
+`__getattr__` backed by an explicit name → submodule map: `import gnn` executes
+no submodule at import time, so heavy module-scope dependencies (psutil,
+matplotlib) and the pipeline stack are only paid when a name is actually
+resolved. Every previously eager re-export (including `__version__` and
+`FEATURES`) is preserved; ImportErrors propagate unchanged (no silent
+fallback).
+
 ### Helper Functions (Internal but Exported)
 
 #### `_extract_sections_lightweight(content: str) -> List[str]`
