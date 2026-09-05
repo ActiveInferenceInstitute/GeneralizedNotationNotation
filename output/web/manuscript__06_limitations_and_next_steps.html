@@ -580,7 +580,7 @@ and the rendering backends. GNN registers 9 simulation backends, but
 coverage across the family-by-backend matrix is intentionally uneven,
 and the gaps are recorded as explicit <em>profiled-unsupported</em>
 statuses rather than silently omitted. The cross-framework acceptance
-check is anchored on the continuous family, where JAX, NumPyro, Stan,
+check is anchored on the continuous family, where JAX, NumPyro,
 RxInfer.jl are compared directly; the continuous and hierarchical
 families, by contrast, carry profiled-unsupported markers at the render
 and execute steps (Steps 11 and 12) for backends that cannot yet

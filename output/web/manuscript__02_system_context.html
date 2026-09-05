@@ -716,7 +716,7 @@ flow inspectable: any artifact can be traced back to the step that
 produced it and forward to every step that depends on it.</p>
 <figure id="fig:pipeline">
 <a class="figure-full-size-link" href="../figures/gnn_pipeline_dag.png" target="_blank" rel="noopener" aria-label="Open full-size figure, The GNN processing pipeline as a directed acyclic graph of numbered steps, from parsing"><img src="../figures/gnn_pipeline_dag.png" style="width:90.0%"
-alt="The GNN processing pipeline as a directed acyclic graph of numbered steps, from parsing and validation through visualization, execution, and analysis." /><span class="figure-full-size-label" aria-hidden="true">Open full-size figure</span></a>
+alt="Directed acyclic graph of the numbered GNN pipeline steps. Nodes are the step modules in src/, arranged left to right from parsing and type checking, through validation, visualization, rendering and execution, to analysis, reporting and integration. Edges run from a step to every later step that consumes its artifacts, so each output can be traced back to the step that produced it." /><span class="figure-full-size-label" aria-hidden="true">Open full-size figure</span></a>
 <figcaption>The GNN processing pipeline as a directed
 acyclic graph of numbered steps, from parsing and validation through
 visualization, execution, and analysis.</figcaption>
@@ -870,7 +870,7 @@ purposes, read from <code>src/STEP_INDEX.md</code>.</caption>
 </table></div>
 <p>This staged design keeps the architecture modular. The implementation
 is organized into 31 source packages, one cluster of responsibilities
-per concern, and is documented across 614 documentation files so that
+per concern, and is documented across 616 documentation files so that
 each step’s contract, inputs, and outputs are specified independently of
 the others. New backends or analyses attach to the graph by declaring
 their dependencies rather than by editing a monolith, and the
@@ -888,7 +888,7 @@ depicts these three faces and the shared specification at their
 center.</p>
 <figure id="fig:triple_play">
 <a class="figure-full-size-link" href="../figures/gnn_triple_play.png" target="_blank" rel="noopener" aria-label="Open full-size figure, The Triple Play: a single GNN specification rendered as readable text, as graphical…"><img src="../figures/gnn_triple_play.png" style="width:70.0%"
-alt="The Triple Play: a single GNN specification rendered as readable text, as graphical visualizations, and as an executable model." /><span class="figure-full-size-label" aria-hidden="true">Open full-size figure</span></a>
+alt="The Triple Play as one central GNN specification with three projections radiating from it: the readable text form, graphical visualizations of state-space and factor structure, and executable model code. All three point back to the single specification at the center." /><span class="figure-full-size-label" aria-hidden="true">Open full-size figure</span></a>
 <figcaption>The Triple Play: a single GNN
 specification rendered as readable text, as graphical visualizations,
 and as an executable model.</figcaption>

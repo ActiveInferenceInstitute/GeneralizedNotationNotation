@@ -10,14 +10,14 @@ GNN ships a curated corpus of model families that exercise the language across t
 |---|---|---|
 | `basics` | pymdp | Minimal perception fixtures used for parser and validator smoke coverage. |
 | `discrete` | pymdp | Discrete POMDP and HMM-style active inference fixtures. |
-| `continuous` | jax, numpyro, stan, rxinfer | Continuous-state linear-Gaussian fixtures (F/H/Q/R + Gaussian prior; continuous_navigation closes the loop on beliefs). Native on jax, numpyro, pytorch, stan, rxinfer, discopy; reported unsupported (not failed) on pymdp, activeinference_jl, bnlearn. |
+| `continuous` | jax, numpyro, stan, rxinfer | Continuous-state linear-Gaussian fixtures (F/H/Q/R + Gaussian prior; continuous_navigation closes the loop on beliefs). Native on RxInfer.jl, JAX, PyTorch, NumPyro, Stan; reported unsupported (not failed) on PyMDP, ActiveInference.jl, DisCoPy, bnlearn. |
 | `hierarchical` | pymdp, rxinfer, jax | Hierarchical and temporal model fixtures (per-level matrices composed into a joint POMDP for categorical backends; RxInfer.jl renders two-level models natively). |
 | `multiagent` | rxinfer | Multi-agent coordination and swarm fixtures. |
 | `precision` | pymdp | Precision weighting and curiosity-driven fixtures. |
 | `structured` | pymdp | Structured factor graph and posterior fixtures. |
 | `gridworld` | pymdp, rxinfer, activeinference_jl | Gridworld POMDP fixture used for cross-framework acceptance checks. |
 | `scaling-study` | pymdp | PyMDP scaling-study fixtures, sampled conservatively for acceptance. |
-: Model families declared in `input/model_family_manifest.json` and the frameworks each family targets. {#tbl:model_families}
+: Model families declared in `input/model_family_manifest.json` and the frameworks each family targets. Capability splits in the Description column are generated from `src/render/framework_registry.py`, not authored in the manifest. {#tbl:model_families}
 
 The family-by-framework structure is shown in @fig:family_matrix, which renders the coverage matrix directly from the family registry rather than from a hand-maintained table.
 
@@ -31,7 +31,7 @@ Two reproducible-by-command gates check that GNN's promise — one text model, m
 
 The semantic-fidelity gate, `scripts/run_semantic_fidelity_gate.py`, checks that a model parsed from GNN text and then re-emitted preserves its semantic content: the state-space structure, the factor and modality declarations, and the matrix shapes implied by a discrete Active Inference generative model survive the round trip [@dacosta2020]. It is meant to be run as a command and to report fidelity per model, not as a static claim baked into prose.
 
-The cross-framework reliability gate, `scripts/run_cross_framework_reliability.py`, takes a single GNN model and renders it across multiple simulation backends, then checks that the resulting executable models agree on the structure they were generated from. The reference comparison runs on the continuous family across JAX, NumPyro, Stan, RxInfer.jl — three independent Active Inference engines spanning the Python and Julia ecosystems [@heins2022]. Because the same source model drives all three renderings, disagreement between backends localizes a generator defect rather than a modeling choice.
+The cross-framework reliability gate, `scripts/run_cross_framework_reliability.py`, takes a single GNN model and renders it across multiple simulation backends, then checks that the resulting executable models agree on the structure they were generated from. The reference comparison runs on the continuous family across JAX, NumPyro, RxInfer.jl — three independent Active Inference engines spanning the Python and Julia ecosystems [@heins2022]. Because the same source model drives all three renderings, disagreement between backends localizes a generator defect rather than a modeling choice.
 
 Both gates are stated here as commands you can run, not as asserted pass counts. The manuscript deliberately does not quote a fixed number of passing checks: the authoritative, current result is whatever those scripts report when executed against the corpus, and binding a frozen count into prose would invite exactly the drift the auto-injection contract exists to prevent.
 
@@ -41,7 +41,7 @@ The repository's scale is itself evidence of the surface that the gates and pipe
 
 ![Repository-scale metrics — source packages, test files, and tool surface — measured from the live repository.](../output/figures/gnn_repo_metrics.png){#fig:repo_metrics width=80%}
 
-The test suite comprises 322 test files containing 3651 test functions, exercising a source base of 565 Python files across 31 packages (190691 lines of source). The Model Context Protocol surface — which exposes GNN's capabilities to external agents and tools — provides 141 tools across 32 modules. The pipeline itself runs as 25 steps (0–24), and the rendering of figures, models, and reports produced 105 figures in the current run.
+The test suite comprises 365 test files containing 4109 test functions, exercising a source base of 582 Python files across 31 packages (194567 lines of source). The Model Context Protocol surface — which exposes GNN's capabilities to external agents and tools — provides 141 tools across 32 modules. The pipeline itself runs as 25 steps (0–24), and the rendering of figures, models, and reports produced 105 figures in the current run.
 
 ## Claim Discipline
 

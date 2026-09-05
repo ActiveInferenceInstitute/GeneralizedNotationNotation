@@ -106,6 +106,13 @@
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{booktabs}
+% Contents listing: article.cls prefixes every \l@section entry with
+% \addvspace{1.0em}, which across ten sections costs about ten lines and pushed
+% the ~40-entry listing one line past page 2 — leaving a third sheet carrying a
+% single "10 References" line. Tighten that inter-section gap for the duration
+% of \tableofcontents only, inside a group, so body spacing is untouched and no
+% entry is dropped (reducing \tocdepth would have hidden 29 real subsections).
+  \providecommand{\addvspace}[1]{\vskip 2\p@}%
 
 % Slide layout defaults for warning-clean scientific decks.
 \usepackage{etoolbox}
@@ -218,7 +225,9 @@ declared frameworks are enumerated below.
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
 \caption{Model families declared in
 \protect\breaktt{input/model\_family\_manifest.json} and the frameworks
-each family targets.}\label{tbl:model_families}\tabularnewline
+each family targets. Capability splits in the Description column are
+generated from \protect\breaktt{src/render/framework\_registry.py}, not
+authored in the manifest.}\label{tbl:model_families}\tabularnewline
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 Family
@@ -245,9 +254,9 @@ and validator smoke coverage. \\
 inference fixtures. \\
 \texttt{continuous} & jax, numpyro, stan, rxinfer & Continuous-state
 linear-Gaussian fixtures (F/H/Q/R + Gaussian prior;
-continuous\_navigation closes the loop on beliefs). Native on jax,
-numpyro, pytorch, stan, rxinfer, discopy; reported unsupported (not
-failed) on pymdp, activeinference\_jl, bnlearn. \\
+continuous\_navigation closes the loop on beliefs). Native on
+RxInfer.jl, JAX, PyTorch, NumPyro, Stan; reported unsupported (not
+failed) on PyMDP, ActiveInference.jl, DisCoPy, bnlearn. \\
 \texttt{hierarchical} & pymdp, rxinfer, jax & Hierarchical and temporal
 model fixtures (per-level matrices composed into a joint POMDP for
 categorical backends; RxInfer.jl renders two-level models natively). \\
@@ -317,9 +326,9 @@ The cross-framework reliability gate,
 GNN model and renders it across multiple simulation backends, then
 checks that the resulting executable models agree on the structure they
 were generated from. The reference comparison runs on the continuous
-family across JAX, NumPyro, Stan, RxInfer.jl --- three independent
-Active Inference engines spanning the Python and Julia ecosystems (Heins
-et al. 2022). Because the same source model drives all three renderings,
+family across JAX, NumPyro, RxInfer.jl --- three independent Active
+Inference engines spanning the Python and Julia ecosystems (Heins et al.
+2022). Because the same source model drives all three renderings,
 disagreement between backends localizes a generator defect rather than a
 modeling choice.
 
@@ -355,8 +364,8 @@ repository.}\label{fig:repo_metrics}
 \end{frame}
 
 \begin{frame}[allowframebreaks]{Repository Scale}
-The test suite comprises 322 test files containing 3651 test functions,
-exercising a source base of 565 Python files across 31 packages (190691
+The test suite comprises 365 test files containing 4109 test functions,
+exercising a source base of 582 Python files across 31 packages (194567
 lines of source). The Model Context Protocol surface --- which exposes
 GNN's capabilities to external agents and tools --- provides 141 tools
 across 32 modules. The pipeline itself runs as 25 steps (0--24), and the

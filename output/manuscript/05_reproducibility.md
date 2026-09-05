@@ -49,7 +49,7 @@ python -m scripts.manuscript_build_figures
 python -m scripts.z_generate_manuscript_variables
 ```
 
-Because the variables file is regenerated immediately before rendering, the numbers in the rendered PDF cannot drift from the repository: a code change that alters, for example, the test inventory (322 test files, 3651 test functions) propagates into the prose on the next regeneration without any manual editing.
+Because the variables file is regenerated immediately before rendering, the numbers in the rendered PDF cannot drift from the repository: a code change that alters, for example, the test inventory (365 test files, 4109 test functions) propagates into the prose on the next regeneration without any manual editing.
 
 ## Reproducibility Contract
 

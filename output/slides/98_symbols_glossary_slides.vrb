@@ -4,7 +4,7 @@ The \breaktt{\#\#\ ActInfOntologyAnnotation} section binds each variable
 to a canonical term (\breaktt{A=LikelihoodMatrix},
 \breaktt{B=TransitionMatrix}, \breaktt{C=LogPreferenceVector},
 \breaktt{D=PriorOverHiddenStates}, \texttt{s=HiddenState},
-\texttt{o=Observation}, \texttt{π=PolicyVector}), which downstream
+\texttt{o=Observation}, \texttt{\texorpdfstring{\ensuremath{\pi}}{pi}=PolicyVector}), which downstream
 pipeline steps use for semantic analysis and validation. The same GNN
 specification feeds the project's rendering backends --- including the 9
 executable targets (PyMDP, RxInfer.jl, ActiveInference.jl, JAX, DisCoPy,

@@ -91,6 +91,13 @@
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{booktabs}
+% Contents listing: article.cls prefixes every \l@section entry with
+% \addvspace{1.0em}, which across ten sections costs about ten lines and pushed
+% the ~40-entry listing one line past page 2 — leaving a third sheet carrying a
+% single "10 References" line. Tighten that inter-section gap for the duration
+% of \tableofcontents only, inside a group, so body spacing is untouched and no
+% entry is dropped (reducing \tocdepth would have hidden 29 real subsections).
+  \providecommand{\addvspace}[1]{\vskip 2\p@}%
 
 % Slide layout defaults for warning-clean scientific decks.
 \usepackage{etoolbox}
@@ -183,8 +190,8 @@ reproducible output stays explicit.
 
 The \texttt{src/} tree is the executable core of
 GeneralizedNotationNotation: A Text Language for Active Inference
-Models. It is organized into 31 Python packages spanning 565 source
-files and roughly 190691 lines of code. Among these packages sit the 25
+Models. It is organized into 31 Python packages spanning 582 source
+files and roughly 194567 lines of code. Among these packages sit the 25
 step modules that implement the numbered pipeline (0--24), each module
 owning one stage of the progression from a parsed GNN text model through
 visualization, type checking, code export, and executable cognitive
@@ -221,7 +228,7 @@ actually computes.
 
 \begin{frame}[fragile,allowframebreaks]{Supplemental Source Surface}
 The \texttt{doc/} tree is the prose and reference surface, comprising
-614 files of specification, tutorial, and design documentation for the
+616 files of specification, tutorial, and design documentation for the
 GNN language and its Active Inference grounding (Smékal and Friedman
 2023). It is the place to verify that a manuscript statement about GNN
 syntax or semantics matches the documented language rather than a

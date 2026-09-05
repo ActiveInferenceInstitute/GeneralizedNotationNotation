@@ -1,7 +1,7 @@
 \frametitle{The Processing Pipeline}
 This staged design keeps the architecture modular. The implementation is
 organized into 31 source packages, one cluster of responsibilities per
-concern, and is documented across 614 documentation files so that each
+concern, and is documented across 616 documentation files so that each
 step's contract, inputs, and outputs are specified independently of the
 others. New backends or analyses attach to the graph by declaring their
 dependencies rather than by editing a monolith, and the deterministic

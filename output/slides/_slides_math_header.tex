@@ -2,6 +2,13 @@
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{booktabs}
+% Contents listing: article.cls prefixes every \l@section entry with
+% \addvspace{1.0em}, which across ten sections costs about ten lines and pushed
+% the ~40-entry listing one line past page 2 — leaving a third sheet carrying a
+% single "10 References" line. Tighten that inter-section gap for the duration
+% of \tableofcontents only, inside a group, so body spacing is untouched and no
+% entry is dropped (reducing \tocdepth would have hidden 29 real subsections).
+  \providecommand{\addvspace}[1]{\vskip 2\p@}%
 
 % Slide layout defaults for warning-clean scientific decks.
 \usepackage{etoolbox}

@@ -129,6 +129,13 @@
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{booktabs}
+% Contents listing: article.cls prefixes every \l@section entry with
+% \addvspace{1.0em}, which across ten sections costs about ten lines and pushed
+% the ~40-entry listing one line past page 2 — leaving a third sheet carrying a
+% single "10 References" line. Tighten that inter-section gap for the duration
+% of \tableofcontents only, inside a group, so body spacing is untouched and no
+% entry is dropped (reducing \tocdepth would have hidden 29 real subsections).
+  \providecommand{\addvspace}[1]{\vskip 2\p@}%
 
 % Slide layout defaults for warning-clean scientific decks.
 \usepackage{etoolbox}
@@ -262,7 +269,7 @@ regression:
 \end{frame}
 
 \begin{frame}[fragile,allowframebreaks]{Validation Gates}
-The semantic-fidelity gate verifies that a parse → serialize → parse
+The semantic-fidelity gate verifies that a parse \texorpdfstring{\ensuremath{\to}}{->} serialize \texorpdfstring{\ensuremath{\to}}{->} parse
 round trip preserves variables, edges, dimensions, parameter shapes,
 equations, time semantics, and ontology mappings across the 9 model
 families; the cross-framework gate profiles the 9 maintained backends
@@ -270,6 +277,9 @@ and records explicit compatible and unsupported statuses rather than
 silently degrading. Both write their ledgers to an output directory of
 your choosing:
 
+\end{frame}
+
+\begin{frame}[fragile,allowframebreaks]{Validation Gates}
 \begin{Shaded}
 \begin{Highlighting}[]
 \ExtensionTok{uv}\NormalTok{ run python scripts/run\_semantic\_fidelity\_gate.py }\DataTypeTok{\textbackslash{}}
@@ -330,8 +340,8 @@ final document:
 \begin{frame}[fragile,allowframebreaks]{Manuscript Reproducibility}
 Because the variables file is regenerated immediately before rendering,
 the numbers in the rendered PDF cannot drift from the repository: a code
-change that alters, for example, the test inventory (322 test files,
-3651 test functions) propagates into the prose on the next regeneration
+change that alters, for example, the test inventory (365 test files,
+4109 test functions) propagates into the prose on the next regeneration
 without any manual editing.
 \end{frame}
 

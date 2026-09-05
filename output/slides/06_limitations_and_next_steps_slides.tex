@@ -91,6 +91,13 @@
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{booktabs}
+% Contents listing: article.cls prefixes every \l@section entry with
+% \addvspace{1.0em}, which across ten sections costs about ten lines and pushed
+% the ~40-entry listing one line past page 2 — leaving a third sheet carrying a
+% single "10 References" line. Tighten that inter-section gap for the duration
+% of \tableofcontents only, inside a group, so body spacing is untouched and no
+% entry is dropped (reducing \tocdepth would have hidden 29 real subsections).
+  \providecommand{\addvspace}[1]{\vskip 2\p@}%
 
 % Slide layout defaults for warning-clean scientific decks.
 \usepackage{etoolbox}
@@ -198,7 +205,7 @@ the rendering backends. GNN registers 9 simulation backends, but
 coverage across the family-by-backend matrix is intentionally uneven,
 and the gaps are recorded as explicit \emph{profiled-unsupported}
 statuses rather than silently omitted. The cross-framework acceptance
-check is anchored on the continuous family, where JAX, NumPyro, Stan,
+check is anchored on the continuous family, where JAX, NumPyro,
 RxInfer.jl are compared directly; the continuous and hierarchical
 families, by contrast, carry profiled-unsupported markers at the render
 and execute steps (Steps 11 and 12) for backends that cannot yet

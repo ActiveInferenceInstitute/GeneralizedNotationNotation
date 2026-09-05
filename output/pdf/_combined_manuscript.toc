@@ -1,40 +1,40 @@
 \babel@toc {english}{}\relax
-\contentsline {section}{\numberline {1}Abstract}{3}{section.1}%
-\contentsline {section}{\numberline {2}Introduction}{4}{section.2}%
-\contentsline {subsection}{\numberline {2.1}Motivation}{4}{subsection.2.1}%
-\contentsline {subsection}{\numberline {2.2}The GNN Approach}{4}{subsection.2.2}%
-\contentsline {subsection}{\numberline {2.3}Contributions}{5}{subsection.2.3}%
-\contentsline {subsection}{\numberline {2.4}Reader Orientation}{5}{subsection.2.4}%
-\contentsline {section}{\numberline {3}System Context}{6}{section.3}%
-\contentsline {subsection}{\numberline {3.1}The GNN Language}{6}{subsection.3.1}%
-\contentsline {subsection}{\numberline {3.2}The Generative Model a Specification Denotes}{6}{subsection.3.2}%
-\contentsline {subsection}{\numberline {3.3}The Processing Pipeline}{7}{subsection.3.3}%
-\contentsline {subsection}{\numberline {3.4}The Triple Play}{10}{subsection.3.4}%
-\contentsline {section}{\numberline {4}Methods}{11}{section.4}%
-\contentsline {subsection}{\numberline {4.1}Parsing and Multi-Format Export}{11}{subsection.4.1}%
-\contentsline {subsection}{\numberline {4.2}Type Checking and Validation}{11}{subsection.4.2}%
-\contentsline {subsection}{\numberline {4.3}Rendering to Multiple Backends}{11}{subsection.4.3}%
-\contentsline {subsection}{\numberline {4.4}Execution}{13}{subsection.4.4}%
-\contentsline {subsection}{\numberline {4.5}Long-Running Orchestration Contracts}{13}{subsection.4.5}%
-\contentsline {subsection}{\numberline {4.6}Analysis, Visualization, and Reporting}{14}{subsection.4.6}%
-\contentsline {subsection}{\numberline {4.7}Reproducibility and Auto-Injection}{14}{subsection.4.7}%
-\contentsline {section}{\numberline {5}Artifacts and Evidence}{15}{section.5}%
-\contentsline {subsection}{\numberline {5.1}Model-Family Coverage}{15}{subsection.5.1}%
+\contentsline {section}{\numberline {1}Abstract}{2}{section.1}%
+\contentsline {section}{\numberline {2}Introduction}{3}{section.2}%
+\contentsline {subsection}{\numberline {2.1}Motivation}{3}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}The GNN Approach}{3}{subsection.2.2}%
+\contentsline {subsection}{\numberline {2.3}Contributions}{4}{subsection.2.3}%
+\contentsline {subsection}{\numberline {2.4}Reader Orientation}{4}{subsection.2.4}%
+\contentsline {section}{\numberline {3}System Context}{5}{section.3}%
+\contentsline {subsection}{\numberline {3.1}The GNN Language}{5}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}The Generative Model a Specification Denotes}{5}{subsection.3.2}%
+\contentsline {subsection}{\numberline {3.3}The Processing Pipeline}{6}{subsection.3.3}%
+\contentsline {subsection}{\numberline {3.4}The Triple Play}{9}{subsection.3.4}%
+\contentsline {section}{\numberline {4}Methods}{10}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Parsing and Multi-Format Export}{10}{subsection.4.1}%
+\contentsline {subsection}{\numberline {4.2}Type Checking and Validation}{10}{subsection.4.2}%
+\contentsline {subsection}{\numberline {4.3}Rendering to Multiple Backends}{10}{subsection.4.3}%
+\contentsline {subsection}{\numberline {4.4}Execution}{12}{subsection.4.4}%
+\contentsline {subsection}{\numberline {4.5}Long-Running Orchestration Contracts}{12}{subsection.4.5}%
+\contentsline {subsection}{\numberline {4.6}Analysis, Visualization, and Reporting}{13}{subsection.4.6}%
+\contentsline {subsection}{\numberline {4.7}Reproducibility and Auto-Injection}{13}{subsection.4.7}%
+\contentsline {section}{\numberline {5}Artifacts and Evidence}{14}{section.5}%
+\contentsline {subsection}{\numberline {5.1}Model-Family Coverage}{14}{subsection.5.1}%
 \contentsline {subsection}{\numberline {5.2}Semantic-Fidelity and Cross-Framework Reliability Gates}{16}{subsection.5.2}%
-\contentsline {subsection}{\numberline {5.3}Repository Scale}{17}{subsection.5.3}%
-\contentsline {subsection}{\numberline {5.4}Claim Discipline}{18}{subsection.5.4}%
-\contentsline {section}{\numberline {6}Reproducibility}{19}{section.6}%
-\contentsline {subsection}{\numberline {6.1}Pipeline Smoke Run}{19}{subsection.6.1}%
-\contentsline {subsection}{\numberline {6.2}Validation Gates}{19}{subsection.6.2}%
-\contentsline {subsection}{\numberline {6.3}Manuscript Reproducibility}{20}{subsection.6.3}%
-\contentsline {subsection}{\numberline {6.4}Reproducibility Contract}{20}{subsection.6.4}%
-\contentsline {section}{\numberline {7}Limitations and Next Steps}{21}{section.7}%
-\contentsline {subsection}{\numberline {7.1}Current Limitations}{21}{subsection.7.1}%
-\contentsline {subsection}{\numberline {7.2}Next Steps}{21}{subsection.7.2}%
-\contentsline {section}{\numberline {8}Supplemental Source Surface}{23}{section.8}%
-\contentsline {subsection}{\numberline {8.1}Expansion Checklist}{23}{subsection.8.1}%
-\contentsline {section}{\numberline {9}Symbols and Glossary}{24}{section.9}%
-\contentsline {subsection}{\numberline {9.1}Language Constructs}{24}{subsection.9.1}%
-\contentsline {subsection}{\numberline {9.2}Active Inference Symbols}{25}{subsection.9.2}%
-\contentsline {subsection}{\numberline {9.3}Ontology Bindings and Implementations}{26}{subsection.9.3}%
-\contentsline {section}{\numberline {10}References}{27}{section.10}%
+\contentsline {subsection}{\numberline {5.3}Repository Scale}{16}{subsection.5.3}%
+\contentsline {subsection}{\numberline {5.4}Claim Discipline}{16}{subsection.5.4}%
+\contentsline {section}{\numberline {6}Reproducibility}{18}{section.6}%
+\contentsline {subsection}{\numberline {6.1}Pipeline Smoke Run}{18}{subsection.6.1}%
+\contentsline {subsection}{\numberline {6.2}Validation Gates}{18}{subsection.6.2}%
+\contentsline {subsection}{\numberline {6.3}Manuscript Reproducibility}{19}{subsection.6.3}%
+\contentsline {subsection}{\numberline {6.4}Reproducibility Contract}{19}{subsection.6.4}%
+\contentsline {section}{\numberline {7}Limitations and Next Steps}{20}{section.7}%
+\contentsline {subsection}{\numberline {7.1}Current Limitations}{20}{subsection.7.1}%
+\contentsline {subsection}{\numberline {7.2}Next Steps}{20}{subsection.7.2}%
+\contentsline {section}{\numberline {8}Supplemental Source Surface}{22}{section.8}%
+\contentsline {subsection}{\numberline {8.1}Expansion Checklist}{22}{subsection.8.1}%
+\contentsline {section}{\numberline {9}Symbols and Glossary}{23}{section.9}%
+\contentsline {subsection}{\numberline {9.1}Language Constructs}{23}{subsection.9.1}%
+\contentsline {subsection}{\numberline {9.2}Active Inference Symbols}{24}{subsection.9.2}%
+\contentsline {subsection}{\numberline {9.3}Ontology Bindings and Implementations}{25}{subsection.9.3}%
+\contentsline {section}{\numberline {10}References}{26}{section.10}%

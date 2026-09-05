@@ -91,6 +91,13 @@
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{booktabs}
+% Contents listing: article.cls prefixes every \l@section entry with
+% \addvspace{1.0em}, which across ten sections costs about ten lines and pushed
+% the ~40-entry listing one line past page 2 — leaving a third sheet carrying a
+% single "10 References" line. Tighten that inter-section gap for the duration
+% of \tableofcontents only, inside a group, so body spacing is untouched and no
+% entry is dropped (reducing \tocdepth would have hidden 29 real subsections).
+  \providecommand{\addvspace}[1]{\vskip 2\p@}%
 
 % Slide layout defaults for warning-clean scientific decks.
 \usepackage{etoolbox}
@@ -309,7 +316,7 @@ over actions, entering the policy posterior (eq.~8). \\
 (\texttt{s\textquotesingle{}}) is the next hidden-state distribution. \\
 \texttt{o} & Current observation, an integer index over outcome
 modalities. \\
-\texttt{π} & Policy: a distribution over actions inferred from expected
+\texttt{\texorpdfstring{\ensuremath{\pi}}{pi}} & Policy: a distribution over actions inferred from expected
 free energy (eq.~8). \\
 \texttt{u} & The selected (sampled) action, sampled from the policy
 posterior. \\
@@ -332,7 +339,7 @@ The \breaktt{\#\#\ ActInfOntologyAnnotation} section binds each variable
 to a canonical term (\breaktt{A=LikelihoodMatrix},
 \breaktt{B=TransitionMatrix}, \breaktt{C=LogPreferenceVector},
 \breaktt{D=PriorOverHiddenStates}, \texttt{s=HiddenState},
-\texttt{o=Observation}, \texttt{π=PolicyVector}), which downstream
+\texttt{o=Observation}, \texttt{\texorpdfstring{\ensuremath{\pi}}{pi}=PolicyVector}), which downstream
 pipeline steps use for semantic analysis and validation. The same GNN
 specification feeds the project's rendering backends --- including the 9
 executable targets (PyMDP, RxInfer.jl, ActiveInference.jl, JAX, DisCoPy,
