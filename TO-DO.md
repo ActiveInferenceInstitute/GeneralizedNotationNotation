@@ -72,5 +72,4 @@ space and time semantics.
 | GNN-03 | Specify factor/modal dependency axes and multi-step policy enumeration. | Asymmetric, non-square fixtures preserve all axes and E cardinality; unsupported structures remain rejected until covered. |
 | GNN-04 | Pin paired repository revisions in cross-repository CI. | Independent locked environments complete both categorical and H3 round trips; receipts include source/artifact digests and both revisions. |
 | GNN-05 | Wire Step 7 to per-model explicit time/space options and original source provenance. | Requested GEO export fails visibly when metadata is absent; existing five-format defaults remain unchanged. |
-
 | GNN-06 | Integrate the `codex/geo-infer-interchange` topic branch with the concurrently advancing main branch. Its starting checkout includes the existing fleet baseline commits `3f2694d3a` and `64d49355a`. | Review that ancestry explicitly, retain concurrent security/parser work, and rerun export/extractor tests, strict docs and the paired GEO conformance check on the merged revision. |

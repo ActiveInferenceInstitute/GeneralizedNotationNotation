@@ -86,3 +86,12 @@ verifies exact matrix/order preservation and deterministic real inference.
 Continuous GNN, factorized models, irregular time and longer policies require
 separate contracts. See GNN-02 through GNN-05 in `TO-DO.md`; they are not accepted
 by version 1.
+
+## Verified companion implementation
+
+The paired GEO implementation is
+[`e028aa90`](https://github.com/ActiveInferenceInstitute/GEO-INFER/commit/e028aa9060e05f765762224499f5e2c714cf25a3).
+Its receipt records identical categorical/H3 artifacts and complete traces across
+GEO Python 3.11 and 3.12, with GNN running separately on Python 3.11. Main-branch
+integration and CI revision pairing remain the explicitly scoped GNN-04/GNN-06
+work; this reference identifies the tested topic implementation.
