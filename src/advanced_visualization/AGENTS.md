@@ -386,7 +386,7 @@ in `_shared.py` and the package root:
   surfaced as a hard warning. Used by `process_advanced_viz` for all three
   attempt-accounting sites (previously triplicated).
 - `_conn_endpoints(conn_info) -> (source_variables, target_variables)` — normalizes
-  legacy `{"source", "target"}` and new `{"source_variables", "target_variables"}`
+  scalar `{"source", "target"}` and new `{"source_variables", "target_variables"}`
   connection formats in one call. Used by all three connection-expansion sites in
   `network_viz.py` (previously triplicated).
 - `VAR_TYPE_COLORS` / `VAR_TYPE_UNKNOWN_COLOR` — the canonical var-type → hex
@@ -424,7 +424,7 @@ in `_shared.py` and the package root:
   its emitter. Parity proven against the pre-refactor (git HEAD) output.
 - `AdvancedVisualizer(logger=None, extractor=None)` — constructor injection
   for the data extractor; any object with
-  `extract_from_content(content) -> dict` is accepted (test stubs included).
+  `extract_from_content(content) -> dict` is accepted (test doubles included).
   When omitted, a real `VisualizationDataExtractor` is built lazily per run;
   if unavailable, `generate_visualizations` degrades to the recovery path.
   `VIS_PROCESSOR_AVAILABLE` remains a module symbol for back-compat.
@@ -432,7 +432,7 @@ in `_shared.py` and the package root:
   overriding the cwd-dependent `output/3_gnn_output` parsed-JSON lookup;
   `None` preserves the historical behavior.
 - `_create_network_graph` resolves real node indices via a name→index map
-  over `blocks`; both extractor formats and legacy scalar connections
+  over `blocks`; both extractor formats and scalar connections
   resolve, unresolvable pairs are silently skipped, positions stay seeded.
 
 ## Dashboard Footer Timestamp (Fixed)

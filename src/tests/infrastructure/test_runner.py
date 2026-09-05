@@ -4,7 +4,7 @@ Test Runner for GNN Processing Pipeline.
 Canonical single-source ``TestRunner``: monitors resources, builds and runs
 pytest subprocesses, parses output, and writes execution reports.
 
-``tests.runner`` re-exports this class so legacy import paths
+``tests.runner`` re-exports this class so existing import paths
 (``from tests.runner import TestRunner``) keep resolving to the same
 implementation. Do not add a second copy of the class elsewhere.
 """

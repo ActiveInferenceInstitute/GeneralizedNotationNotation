@@ -54,7 +54,7 @@ _NEW_RESULT_KEYS = set(_BASE_KEYS)
 
 def _script_info() -> dict:
     return {
-        "path": "/tmp/fake/model_a/pymdp/model_a_pymdp.py",
+        "path": "/tmp/sample/model_a/pymdp/model_a_pymdp.py",
         "name": "model_a_pymdp.py",
         "framework": "pymdp",
         "executor": "python3",
@@ -164,7 +164,7 @@ def test_make_distributed_dispatch_failure_result_key_set() -> None:
 
 def test_new_execution_result_key_set() -> None:
     ctx = ScriptExecutionContext(
-        script_path=Path("/tmp/fake/model_a/pymdp/model_a_pymdp.py"),
+        script_path=Path("/tmp/sample/model_a/pymdp/model_a_pymdp.py"),
         script_name="model_a_pymdp.py",
         framework="pymdp",
         model_name="model_a",

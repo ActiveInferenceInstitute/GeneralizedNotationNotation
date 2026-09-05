@@ -10,12 +10,13 @@ Covers:
 - ``mcp.py`` ``process_advanced_visualization_mcp`` honors ``generate_d2`` by
   routing to a non-D2 viz_type when false.
 - ``dashboard.py`` footer timestamp renders (regression test for the silent
-  ``{datetime.now()}`` placeholder bug).
+  ``{datetime.now()}`` unexpanded expression bug).
 """
 
 import sys
 from pathlib import Path
 from typing import Any
+from urllib.parse import urlsplit
 
 import pytest
 
@@ -113,9 +114,7 @@ class TestMcpGenerateD2Honored:
 
 
 class TestDashboardTimestampRenders:
-    def test_footer_contains_real_timestamp_not_placeholder(
-        self, tmp_path: Any
-    ) -> None:
+    def test_footer_contains_rendered_timestamp(self, tmp_path: Any) -> None:
         """Regression: dashboard.py shipped ``{datetime.now().strftime(...)}`` as
         literal text because the footer f-string block was a plain ``\"\"\"`` string
         with no ``f`` prefix and ``datetime`` was never imported. Fixed to render.
@@ -143,7 +142,7 @@ learning_rate = 0.01
         html = result.read_text()
         # A rendered timestamp looks like "Generated on 20YY-MM-DD HH:MM:SS"
         assert "Generated on 20" in html
-        # The dead placeholder must NOT appear
+        # The dead unexpanded expression must NOT appear
         assert "{datetime.now().strftime" not in html
         # JS/braces: f-string escapes render as single braces; no doubled
         # braces may ship anywhere in the generated document.
@@ -161,7 +160,7 @@ class TestD2ConstantsAndFormatValidation:
         )
 
         assert D2_COMPILE_TIMEOUT_S == 30
-        assert "d2lang.com" in D2_MISSING_MESSAGE
+        assert urlsplit(D2_MISSING_MESSAGE.rsplit(" ", 1)[-1]).hostname == "d2lang.com"
         assert VALID_D2_FORMATS == ("svg", "png", "pdf")
 
     def test_compile_returns_missing_message_when_no_cli(self, tmp_path: Any) -> None:

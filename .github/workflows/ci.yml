@@ -32,6 +32,7 @@ jobs:
     env:
       PYTHONPATH: src
       PYTHONHASHSEED: "0"
+      UV_PYTHON: ${{ matrix.python-version }}
     steps:
       - uses: actions/checkout@v7
 
@@ -161,6 +162,8 @@ jobs:
   security:
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    env:
+      UV_PYTHON: "3.12"
     permissions:
       contents: read
       security-events: write

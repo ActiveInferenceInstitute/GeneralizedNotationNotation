@@ -10,9 +10,10 @@ import json
 import logging
 import pickle  # nosec B403
 import sys
-import xml.etree.ElementTree as ET  # nosec B405
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple, cast
+
+from defusedxml import ElementTree as ET
 
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))

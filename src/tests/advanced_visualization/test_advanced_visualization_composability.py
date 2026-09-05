@@ -3,7 +3,7 @@
 Covers:
 - ``_shared.record_attempt`` aggregate bookkeeping (success/failed/skipped,
   optional-message filtering for D2-CLI absence).
-- ``_shared._conn_endpoints`` connection normalization (legacy + new formats).
+- ``_shared._conn_endpoints`` connection normalization (scalar + new formats).
 - ``_shared.VAR_TYPE_COLORS`` / ``VAR_TYPE_UNKNOWN_COLOR`` palette constants.
 - ``_shared`` layout constants (deterministic seed + span).
 """

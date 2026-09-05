@@ -563,3 +563,6 @@ failure behavior. Default pipeline formats remain unchanged.
 
 `options.py` loads bounded, duplicate-free physical metadata for the numbered
 Step 7 CLI; `geo_infer_factored.py` exports explicitly structured factored JSON.
+
+XML, GraphML and GEXF output checks reject entity declarations using
+`defusedxml`; rejected files appear in the validation result’s `invalid` list.

@@ -43,7 +43,7 @@ def _write_render_summary(
 
 
 def _make_script(render_dir: Path, model: str, framework: str) -> Path:
-    """Create a fake rendered .py script under <render>/<model>/<framework>/."""
+    """Create a sample rendered .py script under <render>/<model>/<framework>/."""
     d = render_dir / model / framework
     d.mkdir(parents=True, exist_ok=True)
     s = d / f"{model}_{framework}.py"

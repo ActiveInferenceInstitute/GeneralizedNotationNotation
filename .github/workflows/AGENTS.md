@@ -23,3 +23,7 @@ Defines behavior and guardrails for workflows in this directory. Human index of 
 - Use explicit `timeout-minutes`.
 - Apply least-privilege `permissions` globally and per job.
 - Use deterministic dependency operations (`uv sync --frozen`, `uv export --frozen`).
+
+CI sets `UV_PYTHON` to the test matrix version (and 3.12 for security and
+documentation jobs), overriding the local `.python-version` pin. XML export
+validation uses `defusedxml` and rejects entity declarations.

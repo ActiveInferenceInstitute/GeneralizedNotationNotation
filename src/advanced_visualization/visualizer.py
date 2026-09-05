@@ -39,7 +39,7 @@ class ExtractorLike(Protocol):
     """Structural type for the extractor injection seam.
 
     Any object exposing ``extract_from_content(content) -> dict`` qualifies:
-    the real ``VisualizationDataExtractor`` or lightweight test stubs.
+    the real ``VisualizationDataExtractor`` or lightweight test doubles.
     """
 
     def extract_from_content(self, content: str) -> Dict[str, Any]:
@@ -63,7 +63,7 @@ class AdvancedVisualizer:
 
         ``extractor`` accepts any object exposing
         ``extract_from_content(content) -> dict`` (a real
-        ``VisualizationDataExtractor`` or a test stub). When omitted, one is
+        ``VisualizationDataExtractor`` or a test double). When omitted, one is
         built lazily per run; if the import is unavailable the visualizer
         degrades to the recovery path (previous module-global behavior).
 
@@ -344,7 +344,7 @@ pre {{ background: white; padding: 15px; border-radius: 5px; white-space: pre-wr
                 # Plot connections: resolve real node indices via a
                 # name→index map over ``blocks``. Connection dicts carry
                 # ``source_variables``/``target_variables`` lists (extractor
-                # format); legacy ``source``/``target`` scalars are accepted
+                # format); ``source``/``target`` scalars are accepted
                 # as singletons. Unresolvable pairs are skipped silently.
                 name_to_idx = {
                     b.get("name"): i for i, b in enumerate(blocks) if b.get("name")

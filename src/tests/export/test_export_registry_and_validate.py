@@ -121,7 +121,7 @@ class TestValidateExportOutputs:
             "files_exported": [
                 {
                     "file_name": "demo.md",
-                    "file_path": "/fake/demo.md",
+                    "file_path": "/sample/demo.md",
                     "success": True,
                     "exports": {
                         "json": {
@@ -157,6 +157,24 @@ class TestValidateExportOutputs:
         assert result["checked"] == 3
         assert result["missing"] == []
         assert result["invalid"] == []
+
+    def test_xml_entity_declarations_are_rejected(self, _manifest_dir: Path) -> None:
+        from export.processor import validate_export_outputs
+
+        exported = _manifest_dir / "demo/demo_xml.xml"
+        exported.write_text(
+            '<!DOCTYPE gnn_model [<!ENTITY payload "expanded text">]>'
+            "<gnn_model>&payload;</gnn_model>"
+        )
+        result = validate_export_outputs(_manifest_dir)
+        assert result["success"] is False
+        assert result["invalid"] == [
+            {
+                "file": str(exported),
+                "format": "xml",
+                "error": "EntitiesForbidden(name='payload', system_id=None, public_id=None)",
+            }
+        ]
 
     def test_missing_manifest(self, tmp_path: Path) -> None:
         from export.processor import validate_export_outputs

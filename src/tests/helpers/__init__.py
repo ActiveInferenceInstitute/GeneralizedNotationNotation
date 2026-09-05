@@ -5,7 +5,7 @@ Provides reusable, typed helpers for test execution:
 
 - ``script_loader``  — load standalone scripts by path (importlib boilerplate)
 - ``gnn_samples``    — canonical sample GNN markdown content
-- ``mcp_stubs``      — in-memory MCP registry stub (``MCPTools``)
+- ``mcp_stubs``      — in-memory MCP registry test double (``MCPTools``)
 - ``render_recovery``— recovery-friendly bulk render for resilience tests
 - path helpers + sample-model loader for ``test_data/``
 """

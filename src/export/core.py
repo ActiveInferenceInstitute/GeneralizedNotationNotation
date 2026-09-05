@@ -34,7 +34,7 @@ def _writer_success(result: Any) -> bool:
     """Normalize a format_exporters writer result to a plain success flag.
 
     Writers in :mod:`export.format_exporters` return ``Tuple[bool, str]``;
-    the legacy ``formatters`` writers return a bare ``bool``. Treat anything
+    the existing ``formatters`` writers return a bare ``bool``. Treat anything
     truthy-but-not-a-tuple as success, and any tuple whose first element is
     truthy as success. This closes a silent-failure path where the tuple
     ``(False, "NetworkX not available…")`` was being logged as a successful

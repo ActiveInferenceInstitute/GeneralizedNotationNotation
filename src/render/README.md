@@ -153,7 +153,7 @@ src/render/
 ├── continuous_script.py           # Continuous (LGSSM) script generation
 ├── naming.py                      # Shared output naming + atomic writes
 ├── spec_matrices.py               # Shared discrete matrix extraction/literals
-├── generators.py                  # Standalone generators (bnlearn, discopy, legacy pymdp)
+├── generators.py                  # Standalone generators (bnlearn, discopy, existing pymdp)
 ├── pymdp_template.py              # PyMDP template definitions
 ├── visualization_suite.py         # Data export + visualization suite
 ├── pymdp/                         # PyMDP code generation

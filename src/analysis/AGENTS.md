@@ -248,7 +248,7 @@ uv run --extra dev python -m pytest src/tests/analysis/ \
 - `process_analysis` - Run statistical and complexity analysis on GNN files in a directory
 - `get_analysis_results` - Read saved analysis JSON results from a previous run
 - `compute_complexity_metrics` - Compute complexity metrics for GNN content supplied as a string
-- `list_analysis_tools` - Report available analysis tools and capabilities (honest availability probe — no fake fallback)
+- `list_analysis_tools` - Report available analysis tools and capabilities (reports measured availability)
 
 ### MCP File Location
 - `src/analysis/mcp.py` - MCP tool registrations
@@ -327,7 +327,7 @@ unchanged. Exports: `FlatPayloadSpec`, `compute_flat_payload_metrics` (pure),
 - Framework output analysis
 - `framework_common.py` — shared framework-name normalization, path inference, and current-schema simulation-results discovery (dedupes processor.py / visualizations.py copies; now includes bnlearn in the framework dir set so bnlearn results are discoverable by the analysis scope)
 - `flat_payload_analyzer.py` — shared analyzer engine for PyTorch/NumPyro flat-payload simulation results (frozen `FlatPayloadSpec` + pure `compute_flat_payload_metrics` + shared discovery/plots); each framework's `analyzer.py` is now a thin spec binding
-- `mcp.list_analysis_tools_mcp` honest-availability probe (fake `"available": True` fallback removed)
+- `mcp.list_analysis_tools_mcp` honest-availability probe (reports measured availability)
 - `visualizations.py` matplotlib routed through `viz_base.safe_savefig` (single save/close/error path; 13 duplicated boilerplate sites consolidated)
 
 **Known Issues**:

@@ -400,7 +400,7 @@ class StepConfiguration:
             project_root: Explicit project root used to resolve relative
                 input paths that do not exist as given. When omitted, the
                 caller's frame is inspected for a file directly inside a
-                ``src/`` directory and its grandparent is used (legacy
+                ``src/`` directory and its grandparent is used (existing
                 behavior, kept for existing callers).
 
         Returns:
@@ -460,7 +460,7 @@ class StepConfiguration:
 
         Returns the corrected path when it exists, else ``None``. With an
         explicit *project_root* the candidate is ``project_root / name``;
-        legacy mode instead requires *caller_file* to live directly inside a
+        caller-frame resolution instead requires *caller_file* to live directly inside a
         ``src/`` directory and tries its grandparent.
         """
         if project_root is not None:

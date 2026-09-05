@@ -154,7 +154,7 @@ def normalize_connection_format(conn_info: Dict[str, Any]) -> Dict[str, Any]:
 def _conn_endpoints(conn_info: Dict[str, Any]) -> tuple[list[Any], list[Any]]:
     """Return ``(source_variables, target_variables)`` for a connection dict.
 
-    Normalizes legacy ``{"source": .., "target": ..}`` format first, so
+    Normalizes scalar ``{"source": .., "target": ..}`` format first, so
     callers never repeat the normalize-then-extract dance.
     """
     normalized = normalize_connection_format(conn_info)

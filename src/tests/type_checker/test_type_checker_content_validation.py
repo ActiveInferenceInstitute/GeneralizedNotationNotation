@@ -397,7 +397,7 @@ def test_validate_content_reports_model_type_and_granular_complexity() -> None:
 
 def test_per_file_markdown_report_renders_model_type_and_complexity() -> None:
     """The CLI per-file report renders the enriched metadata instead of
-    placeholders ('Unknown' model type, zero-only complexity)."""
+    fixed defaults ('Unknown' model type, zero-only complexity)."""
     from type_checker.output_utils import per_file_markdown_report
 
     result = GNNTypeChecker().validate_content(_VALID_MINIMAL)

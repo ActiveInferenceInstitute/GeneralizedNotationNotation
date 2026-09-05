@@ -383,3 +383,6 @@ source containment, partial failure and unchanged default formats.
 
 `options.py` loads bounded, duplicate-free physical metadata for the numbered
 Step 7 CLI; `geo_infer_factored.py` exports explicitly structured factored JSON.
+
+Export validation parses XML, GraphML and GEXF with `defusedxml` and rejects
+entity declarations; the manifest records these files as invalid.
