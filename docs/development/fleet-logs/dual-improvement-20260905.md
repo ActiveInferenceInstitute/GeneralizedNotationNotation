@@ -185,3 +185,22 @@ ruff clean, doc audits clean, **full suite 4755 passed / 14 skipped /
 CI pairing (needs GEO runner access), bridge emitter promotion (v0.5),
 P3 certificate re-issuance (native Lean), fep_lean receipt-promised rows,
 H2.7 TODO arbitration, GPU/browser deferred-verification rows in GEO TODO.
+
+### Post-close integrity sweep (same session)
+
+Three false-clean corrections, all fixed and pushed: (1) the GEO-INFER
+secrets scan first ran against a transposed SHA and silently no-op'd —
+re-run against `f098b292..2935d016` is clean (one hit is a truncated
+illustrative JWT in EXAMPLES API docs, not a credential); largest pushed
+blobs are text (locks, references, geojson). (2) GEO's own
+`validate_documentation.py --strict` passes over the recounted counts
+(30 authoritative pages). (3) The GNN merge had written literal
+`@theirs` placeholder stubs into seven AGENTS/README docs (md files
+bypass ruff and conflict-marker greps; the shrink-check couldn't flag
+them post-push because origin/main was already the corrupted state).
+Proper resolutions restored: utils keeps local's verified signatures +
+upstream's Step 7 options-file note; analysis and render/README keep
+local's honest-probe and render-receipts sections; the test-double
+naming set adopts upstream for consistency with merged mcp_stubs.py.
+Pushed as `2bb61d429`; doc audits (unfiltered), pattern/terminology/
+maintained-term gates, and doc contracts all green; bridge status ok.
