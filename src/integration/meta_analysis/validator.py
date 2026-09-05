@@ -5,14 +5,14 @@ from __future__ import annotations
 import json
 import logging
 from pathlib import Path
-from typing import Any, Dict, List, Set, Tuple
+from typing import Any
 
 from .collector import SweepRecord
 
 logger = logging.getLogger(__name__)
 
 
-def validate_sweep_records(records: List[SweepRecord]) -> Dict[str, Any]:
+def validate_sweep_records(records: list[SweepRecord]) -> dict[str, Any]:
     """Return structured validation issues (non-fatal; for reporting only).
 
     Checks:
@@ -20,7 +20,7 @@ def validate_sweep_records(records: List[SweepRecord]) -> Dict[str, Any]:
     - Simulation JSON timestep length vs sweep label when files exist.
     - Benchmark repeat coherence when repeats > 1.
     """
-    issues: List[Dict[str, Any]] = []
+    issues: list[dict[str, Any]] = []
     schema_version = "1.0"
 
     if not records:
@@ -34,8 +34,8 @@ def validate_sweep_records(records: List[SweepRecord]) -> Dict[str, Any]:
     t_vals = sorted({r.num_timesteps for r in records if r.num_timesteps is not None})
 
     if n_vals and t_vals:
-        expected: Set[Tuple[int, int]] = {(n, t) for n in n_vals for t in t_vals}
-        actual: Set[Tuple[int, int]] = {
+        expected: set[tuple[int, int]] = {(n, t) for n in n_vals for t in t_vals}
+        actual: set[tuple[int, int]] = {
             (r.num_states, r.num_timesteps)
             for r in records
             if r.num_states is not None and r.num_timesteps is not None

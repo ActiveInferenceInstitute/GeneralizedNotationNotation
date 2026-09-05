@@ -9,7 +9,7 @@ from dataclasses import dataclass
 from importlib import resources
 from importlib.abc import Traversable
 from pathlib import Path, PurePosixPath
-from typing import Any, Dict, List
+from typing import Any, Dict, Iterable, List
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 PACKAGE_NAME = __package__ or "cli"
@@ -113,20 +113,22 @@ def _validate_template_record(record: TemplateRecord) -> None:
 TEMPLATE_INDEX: Dict[str, TemplateRecord] = _load_template_index()
 
 
-def _sha256(path: Path) -> str:
+def _sha256_chunks(chunks: Iterable[bytes]) -> str:
+    """Return the SHA256 hex digest of a byte-chunk iterable."""
     digest = hashlib.sha256()
-    with path.open("rb") as handle:
-        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
-            digest.update(chunk)
+    for chunk in chunks:
+        digest.update(chunk)
     return digest.hexdigest()
+
+
+def _sha256(path: Path) -> str:
+    with path.open("rb") as handle:
+        return _sha256_chunks(iter(lambda: handle.read(1024 * 1024), b""))
 
 
 def _sha256_resource(resource: Traversable) -> str:
-    digest = hashlib.sha256()
     with resource.open("rb") as handle:
-        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
-            digest.update(chunk)
-    return digest.hexdigest()
+        return _sha256_chunks(iter(lambda: handle.read(1024 * 1024), b""))
 
 
 def list_templates() -> List[Dict[str, str]]:

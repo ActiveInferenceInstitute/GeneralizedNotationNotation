@@ -11,7 +11,8 @@ How to run:
 
 Expected outputs:
   - Validation results in the specified output directory
-  - Semantic validation reports and scores
+  - Semantic validation reports and scores (``--strict`` raises the semantic
+    validation level to "strict")
   - Performance profiling and resource estimates
   - Consistency checking and quality metrics
   - Actionable error messages if dependencies or paths are missing

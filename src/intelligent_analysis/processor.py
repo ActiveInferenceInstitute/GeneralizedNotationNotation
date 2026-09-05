@@ -11,6 +11,7 @@ import asyncio
 import json
 import logging
 import os
+import time
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Dict, List, Literal, Optional, Tuple
@@ -18,17 +19,62 @@ from typing import Any, Dict, List, Literal, Optional, Tuple
 from pipeline.context import StepStatus  # single authoritative definition
 from utils.pipeline_template import log_step_error, log_step_start, log_step_success
 
+from .analyzer import pick_evidence_timestamp
+
 # Constrained type for step flag severity.
 FlagType = Literal["none", "yellow", "red", "green"]
 
+# Flag thresholds for per-step analysis. Module-level constants so tests and
+# callers can inspect them instead of hardcoding magic numbers.
+SLOW_THRESHOLD_SECONDS: float = 60.0
+VERY_SLOW_THRESHOLD_SECONDS: float = 120.0
+HIGH_MEMORY_THRESHOLD_MB: float = 500.0
+CRITICAL_MEMORY_THRESHOLD_MB: float = 1000.0
+AVG_MEMORY_MULTIPLIER: float = 3.0
+ABOVE_AVG_DURATION_MULTIPLIER: float = 3.0
 
-def _evidence_timestamp(summary_data: Dict[str, Any]) -> str:
-    """Select a stable timestamp from the analyzed execution receipt."""
-    for key in ("end_time", "start_time", "timestamp"):
-        value = summary_data.get(key)
-        if isinstance(value, str) and value:
-            return value
-    return "unavailable"
+
+def resolve_pipeline_summary_path(output_dir: Path) -> Path:
+    """Locate the pipeline execution summary for ``output_dir``.
+
+    Prefers ``output_dir/00_pipeline_summary/pipeline_execution_summary.json``
+    and falls back to the same path under ``output_dir.parent`` (the layout
+    used when step 24 writes into a per-step subdirectory).
+
+    Args:
+        output_dir: Pipeline output root directory
+
+    Returns:
+        Path to the summary JSON (which may not exist yet)
+    """
+    summary_path = (
+        output_dir / "00_pipeline_summary" / "pipeline_execution_summary.json"
+    )
+    if not summary_path.exists():
+        summary_path = (
+            output_dir.parent
+            / "00_pipeline_summary"
+            / "pipeline_execution_summary.json"
+        )
+    return summary_path
+
+
+def resolve_analysis_output_dir(output_dir: Path) -> Path:
+    """Resolve the directory that step-24 artifacts are written to.
+
+    When ``output_dir`` is already the step-24 output directory, artifacts go
+    directly into it; otherwise a ``24_intelligent_analysis_output``
+    subdirectory is used.
+
+    Args:
+        output_dir: Pipeline output root directory
+
+    Returns:
+        The resolved artifact directory (not created)
+    """
+    if output_dir.name == "24_intelligent_analysis_output":
+        return output_dir
+    return output_dir / "24_intelligent_analysis_output"
 
 
 def _is_complete_llm_report(content: str) -> bool:
@@ -62,6 +108,34 @@ class StepAnalysis:
     summary: str = ""
     stdout_snippet: str = ""
     stderr_snippet: str = ""
+
+    def to_dict(self, *, include_snippets: bool = False) -> Dict[str, Any]:
+        """Serialize to the JSON payload shape used by ``analysis_data.json``.
+
+        Args:
+            include_snippets: Also include ``stdout_snippet`` and
+                ``stderr_snippet`` (omitted from the default payload for
+                compactness)
+
+        Returns:
+            Dictionary representation of this step analysis
+        """
+        data: dict[str, Any] = {
+            "step_number": self.step_number,
+            "script_name": self.script_name,
+            "description": self.description,
+            "status": self.status,
+            "duration_seconds": self.duration_seconds,
+            "memory_mb": self.memory_mb,
+            "exit_code": self.exit_code,
+            "flags": list(self.flags),
+            "flag_type": self.flag_type,
+            "summary": self.summary,
+        }
+        if include_snippets:
+            data["stdout_snippet"] = self.stdout_snippet
+            data["stderr_snippet"] = self.stderr_snippet
+        return data
 
 
 def analyze_pipeline_summary(summary_data: Dict[str, Any]) -> Dict[str, Any]:
@@ -134,6 +208,125 @@ def analyze_pipeline_summary(summary_data: Dict[str, Any]) -> Dict[str, Any]:
     return analysis
 
 
+def _classify_step_flags(
+    step: Dict[str, Any],
+    avg_duration: float,
+    avg_memory: float,
+) -> Tuple[List[str], FlagType]:
+    """Classify one pipeline step into flags and a flag severity.
+
+    Pure function: no I/O, no module state. Thresholds are the module-level
+    ``*_THRESHOLD_*`` constants so callers and tests can inspect them.
+
+    Args:
+        step: One step record from the pipeline execution summary
+        avg_duration: Mean duration across all steps (0 when unknown)
+        avg_memory: Mean peak memory across all steps (0 when unknown)
+
+    Returns:
+        Tuple of (flag description strings, overall flag severity)
+    """
+    duration = step.get("duration_seconds", 0)
+    memory = step.get("peak_memory_mb", 0)
+    status = step.get("status", "UNKNOWN")
+    exit_code = step.get("exit_code", 0)
+
+    flags: list[str] = []
+    flag_type: FlagType = "none"
+
+    # Determine flags and severity
+    if status == "FAILED" or exit_code != 0:
+        flag_type = "red"
+        flags.append(f"FAILED with exit code {exit_code}")
+        if step.get("stderr"):
+            flags.append("Error output captured")
+
+    # Performance flags
+    if duration > VERY_SLOW_THRESHOLD_SECONDS:
+        flags.append(
+            f"Very slow: {duration:.1f}s (>{VERY_SLOW_THRESHOLD_SECONDS}s threshold)"
+        )
+        if flag_type != "red":
+            flag_type = "yellow"
+    elif duration > SLOW_THRESHOLD_SECONDS:
+        flags.append(f"Slow: {duration:.1f}s (>{SLOW_THRESHOLD_SECONDS}s threshold)")
+        if flag_type != "red":
+            flag_type = "yellow"
+    elif avg_duration > 0 and duration > avg_duration * ABOVE_AVG_DURATION_MULTIPLIER:
+        flags.append(
+            f"Significantly above average: {duration:.1f}s ({duration / avg_duration:.1f}x avg)"
+        )
+        if flag_type != "red":
+            flag_type = "yellow"
+
+    # Memory flags (relative to average, then absolute thresholds)
+    if avg_memory > 0 and memory > avg_memory * AVG_MEMORY_MULTIPLIER:
+        flags.append(
+            f"Memory above average: {memory:.0f}MB ({memory / avg_memory:.1f}x avg)"
+        )
+        if flag_type not in ("red", "yellow"):
+            flag_type = "yellow"
+
+    if memory > CRITICAL_MEMORY_THRESHOLD_MB:
+        flags.append(
+            f"Critical memory: {memory:.0f}MB (>{CRITICAL_MEMORY_THRESHOLD_MB}MB)"
+        )
+        if flag_type != "red":
+            flag_type = "yellow"
+    elif memory > HIGH_MEMORY_THRESHOLD_MB:
+        flags.append(f"High memory: {memory:.0f}MB (>{HIGH_MEMORY_THRESHOLD_MB}MB)")
+        if flag_type != "red":
+            flag_type = "yellow"
+
+    # Warning in status
+    if "WARNING" in status:
+        flags.append("Step completed with warnings")
+        if flag_type == "none":
+            flag_type = "yellow"
+
+    # Retry flags
+    retry_count = step.get("retry_count", 0)
+    if retry_count > 0:
+        flags.append(f"Required {retry_count} retries")
+        if flag_type == "none":
+            flag_type = "yellow"
+
+    # Dependency warnings
+    dep_warnings = step.get("dependency_warnings", [])
+    if dep_warnings:
+        flags.append(f"{len(dep_warnings)} dependency warning(s)")
+        if flag_type == "none":
+            flag_type = "yellow"
+
+    return flags, flag_type
+
+
+def _step_result_summary(status: str, duration: float, flag_count: int) -> str:
+    """Render the one-line summary for a step analysis."""
+    if status == "SUCCESS" and flag_count == 0:
+        return f"Completed successfully in {duration:.2f}s"
+    if status == "SUCCESS":
+        return f"Completed with {flag_count} flag(s) in {duration:.2f}s"
+    if status == "FAILED":
+        return f"FAILED after {duration:.2f}s"
+    return f"Status: {status} ({duration:.2f}s)"
+
+
+def _group_by_flag_type(
+    step_analyses: List[StepAnalysis],
+) -> Dict[str, List[StepAnalysis]]:
+    """Group step analyses into red/yellow/green buckets."""
+    grouped: dict[str, list[StepAnalysis]] = {"red": [], "yellow": [], "green": []}
+    for analysis in step_analyses:
+        if analysis.flag_type == "red":
+            grouped["red"].append(analysis)
+        elif analysis.flag_type == "yellow":
+            grouped["yellow"].append(analysis)
+        else:
+            grouped["green"].append(analysis)
+    return grouped
+
+
 def analyze_individual_steps(
     summary_data: Dict[str, Any],
 ) -> Tuple[List[StepAnalysis], Dict[str, List[StepAnalysis]]]:
@@ -147,9 +340,7 @@ def analyze_individual_steps(
         Tuple of (list of StepAnalysis objects, dict of flags by type)
     """
     steps = summary_data.get("steps", [])
-    step_analyses: list[Any] = []
 
-    # Calculate averages for comparison
     durations = [
         s.get("duration_seconds", 0) for s in steps if s.get("duration_seconds")
     ]
@@ -158,133 +349,32 @@ def analyze_individual_steps(
     memories = [s.get("peak_memory_mb", 0) for s in steps if s.get("peak_memory_mb")]
     avg_memory = sum(memories) / len(memories) if memories else 0
 
-    # Thresholds for flags
-    SLOW_THRESHOLD = 60.0  # seconds
-    VERY_SLOW_THRESHOLD = 120.0  # seconds
-    HIGH_MEMORY_THRESHOLD = 500.0  # MB
-    CRITICAL_MEMORY_THRESHOLD = 1000.0  # MB
-    AVG_MEMORY_MULTIPLIER = 3  # flag if memory > avg * this
-
-    flags_by_type: dict[str, Any] = {"red": [], "yellow": [], "green": []}
-
+    step_analyses: list[StepAnalysis] = []
     for step in steps:
         duration = step.get("duration_seconds", 0)
         memory = step.get("peak_memory_mb", 0)
         status = step.get("status", "UNKNOWN")
-        exit_code = step.get("exit_code", 0)
-
-        flags: list[Any] = []
-        flag_type: FlagType = "none"
-
-        # Determine flags and severity
-        if status == "FAILED" or exit_code != 0:
-            flag_type = "red"
-            flags.append(f"FAILED with exit code {exit_code}")
-            if step.get("stderr"):
-                flags.append("Error output captured")
-
-        # Performance flags
-        if duration > VERY_SLOW_THRESHOLD:
-            flags.append(
-                f"Very slow: {duration:.1f}s (>{VERY_SLOW_THRESHOLD}s threshold)"
-            )
-            if flag_type != "red":
-                flag_type = "yellow"
-        elif duration > SLOW_THRESHOLD:
-            flags.append(f"Slow: {duration:.1f}s (>{SLOW_THRESHOLD}s threshold)")
-            if flag_type != "red":
-                flag_type = "yellow"
-        elif avg_duration > 0 and duration > avg_duration * 3:
-            flags.append(
-                f"Significantly above average: {duration:.1f}s ({duration / avg_duration:.1f}x avg)"
-            )
-            if flag_type != "red":
-                flag_type = "yellow"
-
-        # Memory flags (absolute thresholds + relative to average)
-        if avg_memory > 0 and memory > avg_memory * AVG_MEMORY_MULTIPLIER:
-            flags.append(
-                f"Memory above average: {memory:.0f}MB ({memory / avg_memory:.1f}x avg)"
-            )
-            if flag_type not in ("red", "yellow"):
-                flag_type = "yellow"
-
-        # Memory absolute flags
-        if memory > CRITICAL_MEMORY_THRESHOLD:
-            flags.append(
-                f"Critical memory: {memory:.0f}MB (>{CRITICAL_MEMORY_THRESHOLD}MB)"
-            )
-            if flag_type != "red":
-                flag_type = "yellow"
-        elif memory > HIGH_MEMORY_THRESHOLD:
-            flags.append(f"High memory: {memory:.0f}MB (>{HIGH_MEMORY_THRESHOLD}MB)")
-            if flag_type != "red":
-                flag_type = "yellow"
-
-        # Warning in status
-        if "WARNING" in status:
-            flags.append("Step completed with warnings")
-            if flag_type == "none":
-                flag_type = "yellow"
-
-        # Retry flags
-        retry_count = step.get("retry_count", 0)
-        if retry_count > 0:
-            flags.append(f"Required {retry_count} retries")
-            if flag_type == "none":
-                flag_type = "yellow"
-
-        # Dependency warnings
-        dep_warnings = step.get("dependency_warnings", [])
-        if dep_warnings:
-            flags.append(f"{len(dep_warnings)} dependency warning(s)")
-            if flag_type == "none":
-                flag_type = "yellow"
-
-        # Generate summary
-        if status == "SUCCESS" and not flags:
-            summary = f"Completed successfully in {duration:.2f}s"
-        elif status == "SUCCESS" and flags:
-            summary = f"Completed with {len(flags)} flag(s) in {duration:.2f}s"
-        elif status == "FAILED":
-            summary = f"FAILED after {duration:.2f}s"
-        else:
-            summary = f"Status: {status} ({duration:.2f}s)"
-
-        # Extract output snippets
+        flags, flag_type = _classify_step_flags(step, avg_duration, avg_memory)
         stdout = step.get("stdout", "")
         stderr = step.get("stderr", "")
-
-        # Get meaningful snippets
-        stdout_snippet = _extract_meaningful_snippet(stdout)
-        stderr_snippet = _extract_meaningful_snippet(stderr) if stderr else ""
-
-        step_analysis = StepAnalysis(
-            step_number=step.get("step_number", 0),
-            script_name=step.get("script_name", "unknown"),
-            description=step.get("description", ""),
-            status=status,
-            duration_seconds=duration,
-            memory_mb=memory,
-            exit_code=exit_code,
-            flags=flags,
-            flag_type=flag_type,
-            summary=summary,
-            stdout_snippet=stdout_snippet,
-            stderr_snippet=stderr_snippet,
+        step_analyses.append(
+            StepAnalysis(
+                step_number=step.get("step_number", 0),
+                script_name=step.get("script_name", "unknown"),
+                description=step.get("description", ""),
+                status=status,
+                duration_seconds=duration,
+                memory_mb=memory,
+                exit_code=step.get("exit_code", 0),
+                flags=flags,
+                flag_type=flag_type,
+                summary=_step_result_summary(status, duration, len(flags)),
+                stdout_snippet=_extract_meaningful_snippet(stdout),
+                stderr_snippet=_extract_meaningful_snippet(stderr) if stderr else "",
+            )
         )
 
-        step_analyses.append(step_analysis)
-
-        # Categorize by flag type
-        if flag_type == "red":
-            flags_by_type["red"].append(step_analysis)
-        elif flag_type == "yellow":
-            flags_by_type["yellow"].append(step_analysis)
-        else:
-            flags_by_type["green"].append(step_analysis)
-
-    return step_analyses, flags_by_type
+    return step_analyses, _group_by_flag_type(step_analyses)
 
 
 def _extract_meaningful_snippet(
@@ -297,7 +387,7 @@ def _extract_meaningful_snippet(
     lines = output.strip().split("\n")
 
     # Look for important patterns
-    important_patterns: list[Any] = [
+    important_patterns: list[str] = [
         "ERROR",
         "WARN",
         "FAIL",
@@ -306,7 +396,7 @@ def _extract_meaningful_snippet(
         "Processed",
         "Completed",
     ]
-    important_lines: list[Any] = []
+    important_lines: list[str] = []
 
     for line in lines:
         if any(pattern in line.upper() for pattern in important_patterns):
@@ -334,7 +424,7 @@ def identify_bottlenecks(
     Returns:
         List of bottleneck descriptions
     """
-    bottlenecks: list[Any] = []
+    bottlenecks: list[dict[str, Any]] = []
     steps = summary_data.get("steps", [])
 
     # Calculate average duration
@@ -373,7 +463,7 @@ def extract_failure_context(summary_data: Dict[str, Any]) -> List[Dict[str, Any]
     Returns:
         List of failure contexts with diagnostic information
     """
-    failures: list[Any] = []
+    failures: list[dict[str, Any]] = []
     steps = summary_data.get("steps", [])
 
     for i, step in enumerate(steps):
@@ -413,7 +503,7 @@ def extract_failure_context(summary_data: Dict[str, Any]) -> List[Dict[str, Any]
 def generate_recommendations(
     analysis: Dict[str, Any],
     bottlenecks: List[Dict[str, Any]],
-    flags_by_type: Dict[str, List],
+    flags_by_type: Dict[str, List[StepAnalysis]],
 ) -> List[str]:
     """
     Generate actionable recommendations based on analysis.
@@ -426,7 +516,7 @@ def generate_recommendations(
     Returns:
         List of recommendation strings
     """
-    recommendations: list[Any] = []
+    recommendations: list[str] = []
 
     # Red flag recommendations (critical)
     red_flags = flags_by_type.get("red", [])
@@ -497,7 +587,7 @@ def generate_recommendations(
 async def _run_llm_analysis(
     context: Dict[str, Any],
     step_analyses: List[StepAnalysis],
-    flags_by_type: Dict[str, List],
+    flags_by_type: Dict[str, List[StepAnalysis]],
     logger: logging.Logger,
     analysis_model: Optional[str] = None,
 ) -> Tuple[str, str]:
@@ -544,7 +634,7 @@ async def _run_llm_analysis(
     peak_memory = context.get("performance_metrics", {}).get("peak_memory_mb", 0)
 
     # Build step summaries for LLM
-    step_summaries: list[Any] = []
+    step_summaries: list[str] = []
     for sa in step_analyses:
         flag_indicator = (
             "🔴"
@@ -613,7 +703,7 @@ Please provide analysis in EXACTLY this format:
         from llm.defaults import DEFAULT_OLLAMA_MODEL
 
         model_name = analysis_model or os.getenv("OLLAMA_MODEL") or DEFAULT_OLLAMA_MODEL
-        messages: list[Any] = [LLMMessage(role="user", content=prompt)]
+        messages: list[LLMMessage] = [LLMMessage(role="user", content=prompt)]
         response = await processor.get_response(
             messages=messages, model_name=model_name, max_tokens=2500
         )
@@ -646,14 +736,14 @@ Please provide analysis in EXACTLY this format:
 def _generate_rule_based_summary(
     context: Dict[str, Any],
     step_analyses: List[StepAnalysis],
-    flags_by_type: Dict[str, List],
+    flags_by_type: Dict[str, List[StepAnalysis]],
 ) -> str:
     """Generate a rule-based summary when LLM is unavailable."""
 
     red_flags = flags_by_type.get("red", [])
     yellow_flags = flags_by_type.get("yellow", [])
 
-    parts: list[Any] = []
+    parts: list[str] = []
 
     # Executive Summary
     parts.append("### Executive Summary\n")
@@ -741,9 +831,96 @@ def _generate_rule_based_summary(
     return "".join(parts)
 
 
+@dataclass
+class FullAnalysisResult:
+    """Complete rule-based analysis of one pipeline execution.
+
+    Groups every analysis artifact that ``process_intelligent_analysis``
+    computes so programmatic callers get the whole picture from one pure
+    call (no I/O, no LLM).
+    """
+
+    analysis: Dict[str, Any]
+    step_analyses: List[StepAnalysis]
+    flags_by_type: Dict[str, List[StepAnalysis]]
+    bottlenecks: List[Dict[str, Any]]
+    failures: List[Dict[str, Any]]
+    recommendations: List[str]
+    recovery_plan: List[str]
+    red_count: int = field(init=False)
+    yellow_count: int = field(init=False)
+    green_count: int = field(init=False)
+
+    def __post_init__(self) -> None:
+        """Derive flag counts from the grouped steps."""
+        self.red_count = len(self.flags_by_type.get("red", []))
+        self.yellow_count = len(self.flags_by_type.get("yellow", []))
+        self.green_count = len(self.flags_by_type.get("green", []))
+
+    def to_dict(self) -> Dict[str, Any]:
+        """Serialize to the ``analysis_data.json`` payload shape.
+
+        Returns:
+            Dictionary with flag counts and every analysis component; the
+            ``analysis`` and ``failures`` entries carry the report's
+            evidence timestamp under the same keys the file contract uses.
+        """
+        return {
+            "analysis": self.analysis,
+            "step_analyses": [sa.to_dict() for sa in self.step_analyses],
+            "flags_summary": {
+                "red_count": self.red_count,
+                "yellow_count": self.yellow_count,
+                "green_count": self.green_count,
+            },
+            "bottlenecks": self.bottlenecks,
+            "failures": self.failures,
+            "recommendations": self.recommendations,
+            "recovery_plan": self.recovery_plan,
+        }
+
+
+def compute_full_analysis(
+    summary_data: Dict[str, Any],
+    bottleneck_threshold: float = 60.0,
+) -> FullAnalysisResult:
+    """Run the complete rule-based analysis over one pipeline summary.
+
+    Pure function: no filesystem access, no logging, no LLM calls. This is
+    the deterministic core of ``process_intelligent_analysis`` steps 2-6;
+    callers who need the analysis without report-writing side effects
+    should prefer this entry point.
+
+    Args:
+        summary_data: Pipeline execution summary dictionary
+        bottleneck_threshold: Duration threshold in seconds for
+            bottleneck detection (matches the CLI ``--bottleneck-threshold``)
+
+    Returns:
+        A :class:`FullAnalysisResult` with every analysis component
+    """
+    analysis = analyze_pipeline_summary(summary_data)
+    step_analyses, flags_by_type = analyze_individual_steps(summary_data)
+    bottlenecks = identify_bottlenecks(
+        summary_data, threshold_seconds=bottleneck_threshold
+    )
+    failures = extract_failure_context(summary_data)
+    recommendations = generate_recommendations(analysis, bottlenecks, flags_by_type)
+    recovery_plan = generate_recovery_plan(analysis)
+    return FullAnalysisResult(
+        analysis=analysis,
+        step_analyses=step_analyses,
+        flags_by_type=flags_by_type,
+        bottlenecks=bottlenecks,
+        failures=failures,
+        recommendations=recommendations,
+        recovery_plan=recovery_plan,
+    )
+
+
 def generate_recovery_plan(context: Dict[str, Any]) -> List[str]:
     """Generate a heuristic-based programmatic recovery plan for failed pipeline components."""
-    plan: list[Any] = []
+    plan: list[str] = []
     health = context.get("health_score", 100)
 
     if health >= 100:
@@ -798,7 +975,7 @@ def generate_executive_report(
     failures: List[Dict[str, Any]],
     recommendations: List[str],
     step_analyses: List[StepAnalysis],
-    flags_by_type: Dict[str, List],
+    flags_by_type: Dict[str, List[StepAnalysis]],
     llm_analysis: Optional[str] = None,
     summary_data: Optional[Dict[str, Any]] = None,
     analysis_source: str = "rule_based",
@@ -819,7 +996,7 @@ def generate_executive_report(
     Returns:
         Markdown formatted executive report
     """
-    report_parts: list[Any] = []
+    report_parts: list[str] = []
 
     # Header
     status = analysis["overall_status"]
@@ -831,7 +1008,7 @@ def generate_executive_report(
 
     report_parts.append("# Pipeline Intelligent Analysis Report\n")
     report_parts.append(
-        f"**Evidence As Of**: {_evidence_timestamp(summary_data or {})}\n"
+        f"**Evidence As Of**: {pick_evidence_timestamp(summary_data or {})}\n"
     )
     report_parts.append(f"**Status**: {status_emoji} {status}\n")
     report_parts.append(f"**Health Score**: {analysis['health_score']:.1f}/100\n")
@@ -1015,23 +1192,11 @@ def process_intelligent_analysis(
     # finishes, the summary from the CURRENT run won't exist yet.
     # We look for the most recent PREVIOUS run's summary instead, or gracefully
     # handle its absence.
-    import time as _time
-
-    summary_path = (
-        output_dir / "00_pipeline_summary" / "pipeline_execution_summary.json"
-    )
-    if not summary_path.exists():
-        # Try parent directory
-        summary_path = (
-            output_dir.parent
-            / "00_pipeline_summary"
-            / "pipeline_execution_summary.json"
-        )
-
+    summary_path = resolve_pipeline_summary_path(output_dir)
     if not summary_path.exists():
         # Brief wait in case the file is being written concurrently
         logger.info("Pipeline summary not found yet, waiting briefly...")
-        _time.sleep(2)
+        time.sleep(2)
 
     if not summary_path.exists():
         # Generate a partial report noting the summary was unavailable.
@@ -1040,10 +1205,7 @@ def process_intelligent_analysis(
             "running as part of the pipeline (summary is written after all steps complete). "
             "Generating partial analysis from available outputs."
         )
-        if output_dir.name == "24_intelligent_analysis_output":
-            analysis_output_dir = output_dir
-        else:
-            analysis_output_dir = output_dir / "24_intelligent_analysis_output"
+        analysis_output_dir = resolve_analysis_output_dir(output_dir)
         analysis_output_dir.mkdir(parents=True, exist_ok=True)
 
         partial_report = (
@@ -1070,44 +1232,38 @@ def process_intelligent_analysis(
     except Exception as e:
         log_step_error(logger, f"Failed to load pipeline summary: {e}")
         return False
-    evidence_timestamp = _evidence_timestamp(summary_data)
+    evidence_timestamp = pick_evidence_timestamp(summary_data)
     evidence_timestamp_source = (
         "pipeline_execution_summary"
         if evidence_timestamp != "unavailable"
         else "unavailable"
     )
 
-    # 2. Perform Analysis
+    # 2-6. Full rule-based analysis (single deterministic core)
     logger.info("Analyzing pipeline execution data...")
-    analysis = analyze_pipeline_summary(summary_data)
+    full = compute_full_analysis(
+        summary_data,
+        bottleneck_threshold=float(kwargs.get("bottleneck_threshold", 60.0)),
+    )
+    analysis = full.analysis
 
     logger.info(
         f"Analysis complete: Status={analysis['overall_status']}, "
         f"Failures={len(analysis['failures'])}, Health={analysis['health_score']:.1f}"
     )
 
-    # 3. Analyze Individual Steps
     logger.info("Performing per-step analysis...")
-    step_analyses, flags_by_type = analyze_individual_steps(summary_data)
-
-    red_count = len(flags_by_type.get("red", []))
-    yellow_count = len(flags_by_type.get("yellow", []))
+    step_analyses = full.step_analyses
+    flags_by_type = full.flags_by_type
+    bottlenecks = full.bottlenecks
+    failures = full.failures
+    recommendations = full.recommendations
+    recovery_plan = full.recovery_plan
+    red_count = full.red_count
+    yellow_count = full.yellow_count
     logger.info(f"Step analysis: {red_count} red flags, {yellow_count} yellow flags")
-
-    # 4. Identify Bottlenecks
-    bottlenecks = identify_bottlenecks(
-        summary_data,
-        threshold_seconds=float(kwargs.get("bottleneck_threshold", 60.0)),
-    )
     if bottlenecks:
         logger.info(f"Identified {len(bottlenecks)} performance bottlenecks")
-
-    # 5. Extract Failure Context
-    failures = extract_failure_context(summary_data)
-
-    # 6. Generate Recommendations and Recovery Plan
-    recommendations = generate_recommendations(analysis, bottlenecks, flags_by_type)
-    recovery_plan = generate_recovery_plan(analysis)
 
     # 7. Run LLM Analysis
     llm_analysis = None
@@ -1149,10 +1305,7 @@ def process_intelligent_analysis(
     )
 
     # 9. Save Outputs
-    if output_dir.name == "24_intelligent_analysis_output":
-        analysis_output_dir = output_dir
-    else:
-        analysis_output_dir = output_dir / "24_intelligent_analysis_output"
+    analysis_output_dir = resolve_analysis_output_dir(output_dir)
     analysis_output_dir.mkdir(parents=True, exist_ok=True)
 
     # Save markdown report
@@ -1168,22 +1321,7 @@ def process_intelligent_analysis(
     # Save JSON analysis data
     analysis_data_path = analysis_output_dir / "analysis_data.json"
     try:
-        # Convert StepAnalysis objects to dicts
-        step_analyses_dict = [
-            {
-                "step_number": sa.step_number,
-                "script_name": sa.script_name,
-                "description": sa.description,
-                "status": sa.status,
-                "duration_seconds": sa.duration_seconds,
-                "memory_mb": sa.memory_mb,
-                "exit_code": sa.exit_code,
-                "flags": sa.flags,
-                "flag_type": sa.flag_type,
-                "summary": sa.summary,
-            }
-            for sa in step_analyses
-        ]
+        step_analyses_dict = [sa.to_dict() for sa in step_analyses]
 
         with open(analysis_data_path, "w") as f:
             json.dump(

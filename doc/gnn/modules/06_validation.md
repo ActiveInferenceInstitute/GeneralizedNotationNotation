@@ -2,7 +2,7 @@
 
 ## Architectural Mapping
 
-**Orchestrator**: `src/6_validation.py` (50 lines)
+**Orchestrator**: `src/6_validation.py` (51 lines)
 **Implementation Layer**: `src/validation/`
 
 ## Module Description

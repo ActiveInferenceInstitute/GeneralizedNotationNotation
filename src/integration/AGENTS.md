@@ -12,7 +12,7 @@
 
 **Version**: 3.2.0
 
-**Last Updated**: 2026-09-02
+**Last Updated**: 2026-09-04
 
 ---
 
@@ -23,6 +23,10 @@
 3. Verify `$ref: name` cross-references resolve to a known component
 4. Run the meta-analysis submodule over Step 12 execution outputs (when present)
 5. Write `integration_results.json` and `integration_summary.md`
+
+Composable internals (all pure, importable without the pipeline):
+- `integration/parsing.py` — section/token extraction primitives
+- `integration/graph.py` — graph construction, `analyze_system()`, `export_dependency_graph()`
 
 ---
 
@@ -52,6 +56,17 @@ success = process_integration(
     verbose=True,
 )
 ```
+
+#### `analyze_system(target_dir: Path, logger: logging.Logger | None = None, verbose: bool = False) -> SystemAnalysis`
+**Description**: One-call pure analysis: discovers GNN files under `target_dir`, builds the system graph, and verifies references. Writes no output artifacts.
+
+**Returns**: `SystemAnalysis` dataclass with `stats` (`SystemGraphStats`, has `.to_dict()`), `component_locations` (component → declaring file), `issues` (list of human-readable strings), and `graph` (raw NetworkX DiGraph or adjacency dict).
+
+#### `export_dependency_graph(analysis: SystemAnalysis, output_path: Path) -> Path | None`
+**Description**: Export the dependency graph as node-link JSON (NetworkX available) or adjacency mapping (fallback). Returns the written path, or `None` when the analysis carries no graph.
+
+#### `build_system_graph(gnn_files, logger=None, verbose=False) -> SystemAnalysis` / `verify_references(gnn_files, component_locations, logger=None) -> list[str]`
+**Description**: Lower-level pure units consumed by both `process_integration()` and `analyze_system()`; use directly for custom pipelines.
 
 
 #### Module Coordination (via `process_integration`)
@@ -228,13 +243,17 @@ JSON input schema, module/category metadata, and explicit success/error results.
 
 ## Version History
 
-### Current Version: 1.6.0 (module `__init__.py`), pipeline release 3.2.0
+### Current Version: 1.7.0 (module `__init__.py`), pipeline release 3.2.0
 
 **Features**:
 - Dependency graph construction (NetworkX)
 - Cycle and isolated-component detection
 - `$ref:` cross-reference validation
 - Meta-analysis of parameter sweeps (`integration/meta_analysis/`)
+- Pure composable internals: `parsing.py` extractors, `graph.py` analysis units
+- `analyze_system()` — one-call pure system analysis (no artifacts written)
+- `export_dependency_graph()` — node-link JSON export of the dependency graph
+- Modernized annotations (`X | None`, builtin generics) across `meta_analysis/`
 
 **Known Issues**:
 - None currently
@@ -256,7 +275,7 @@ JSON input schema, module/category metadata, and explicit success/error results.
 
 ---
 
-**Last Updated**: 2026-09-02
+**Last Updated**: 2026-09-04
 **Maintainer**: GNN Pipeline Team
 **Status**: Production Ready
 **Version**: 3.2.0

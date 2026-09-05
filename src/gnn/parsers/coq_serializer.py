@@ -59,6 +59,7 @@ class CoqSerializer(BaseGNNSerializer):
             ],
             "connections": [
                 {
+                    "annotation": getattr(conn, "annotation", None),
                     "source_variables": conn.source_variables
                     if hasattr(conn, "source_variables")
                     else [],

@@ -37,7 +37,7 @@ graph TB
     
     subgraph "LLM Providers"
         OpenAI[OpenAI Provider]
-        Anthropic[Anthropic Provider]
+        Perplexity[Perplexity Provider]
         Ollama[Ollama Provider]
         OpenRouter[OpenRouter Provider]
     end
@@ -59,12 +59,12 @@ graph TB
     Processor --> ProviderSelect
     
     ProviderSelect -->|API Key Available| OpenAI
-    ProviderSelect -->|API Key Available| Anthropic
+    ProviderSelect -->|Search Enhanced| Perplexity
     ProviderSelect -->|Local Recovery| Ollama
     ProviderSelect -->|Alternative| OpenRouter
     
     OpenAI --> Analyzer
-    Anthropic --> Analyzer
+    Perplexity --> Analyzer
     Ollama --> Analyzer
     OpenRouter --> Analyzer
     
@@ -84,14 +84,14 @@ flowchart TD
     Start[Start LLM Processing] --> CheckKeys{API Keys<br/>Available?}
     
     CheckKeys -->|OpenAI Key| UseOpenAI[Use OpenAI]
-    CheckKeys -->|Anthropic Key| UseAnthropic[Use Anthropic]
+    CheckKeys -->|OpenRouter Key| UseOpenRouter[Use OpenRouter]
     CheckKeys -->|No Keys| CheckOllama{Ollama<br/>Available?}
     
     CheckOllama -->|Yes| UseOllama[Use Ollama]
     CheckOllama -->|No| Recovery[Recovery Analysis]
     
     UseOpenAI --> Process[Process with LLM]
-    UseAnthropic --> Process
+    UseOpenRouter --> Process
     UseOllama --> Process
     Recovery --> Process
     

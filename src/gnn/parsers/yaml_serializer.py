@@ -37,6 +37,7 @@ class YAMLSerializer(BaseGNNSerializer):
             ],
             "connections": [
                 {
+                    "annotation": conn.annotation,
                     "source_variables": sorted(conn.source_variables),
                     "target_variables": sorted(conn.target_variables),
                     "connection_type": conn.connection_type.value,

@@ -1,5 +1,6 @@
 """Tests for the GNN CLI module."""
 
+import argparse
 import sys
 from io import StringIO
 from pathlib import Path
@@ -130,7 +131,7 @@ def test_health_default_informational_when_environment_has_errors(
         ),
     )
 
-    assert cli._cmd_health(SimpleNamespace(strict=False)) == 2
+    assert cli._cmd_health(argparse.Namespace(strict=False)) == 2
     captured = capsys.readouterr()
     assert "generator modules importable" in captured.out
     assert "pass --strict to fail on errors" in captured.out
@@ -158,7 +159,7 @@ def test_health_strict_fails_when_environment_has_errors(
         ),
     )
 
-    assert cli._cmd_health(SimpleNamespace(strict=True)) == 1
+    assert cli._cmd_health(argparse.Namespace(strict=True)) == 1
 
 
 def test_run_combines_and_serializes_skip_steps(
@@ -176,7 +177,7 @@ def test_run_combines_and_serializes_skip_steps(
 
     monkeypatch.setattr(pipeline_module, "main", fake_pipeline_main)
     result = cli._cmd_run(
-        SimpleNamespace(
+        argparse.Namespace(
             target_dir="input/gnn_files",
             output_dir="output",
             verbose=False,

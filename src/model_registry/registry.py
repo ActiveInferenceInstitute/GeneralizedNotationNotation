@@ -8,9 +8,12 @@ metadata management, and model lifecycle tracking.
 import datetime
 import hashlib
 import json
+import logging
 import re
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
+
+logger = logging.getLogger(__name__)
 
 
 class ModelVersion:
@@ -39,7 +42,8 @@ class ModelVersion:
             with open(self.file_path, "rb") as f:
                 content = f.read()
             return hashlib.sha256(content).hexdigest()
-        except Exception:
+        except (OSError, TypeError, ValueError) as exc:
+            logger.debug("Failed to hash model file %s: %s", self.file_path, exc)
             return ""
 
     def to_dict(self) -> Dict[str, Any]:

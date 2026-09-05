@@ -84,6 +84,7 @@ class BaseGNNSerializer(ABC):
             ],
             "connections": [
                 {
+                    "annotation": getattr(conn, "annotation", None),
                     "source_variables": conn.source_variables,
                     "target_variables": conn.target_variables,
                     "connection_type": conn.connection_type.value

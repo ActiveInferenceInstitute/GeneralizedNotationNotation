@@ -7,7 +7,9 @@ This module performs system-level consistency checks for the GNN pipeline: it bu
 ```
 src/integration/
 ├── __init__.py                    # Module initialization and exports
-├── processor.py                   # process_integration(): graph build + checks
+├── processor.py                   # process_integration(): thin composition of the units below
+├── parsing.py                     # Pure GNN text-extraction primitives
+├── graph.py                       # System graph build/analysis, analyze_system(), JSON export
 ├── meta_analysis/                 # Parameter sweep runtime/simulation analysis
 ├── mcp.py                         # MCP tool registrations
 └── README.md                      # This documentation
@@ -43,6 +45,8 @@ Submodules: `collector.py`, `statistics.py`, `validator.py`, `visualizer.py`, `r
 ### Exports (`from integration import ...`)
 
 - `process_integration`
+- `analyze_system`, `build_system_graph`, `verify_references`, `export_dependency_graph`
+- `SystemAnalysis`, `SystemGraphStats`
 - `run_meta_analysis`, `SweepDataCollector`, `SweepRecord`
 - `FEATURES`, `__version__`
 
@@ -60,6 +64,21 @@ success = process_integration(
     verbose=True,
 )
 ```
+
+### Pure analysis API (new in 1.7.0)
+
+```python
+from integration import analyze_system, export_dependency_graph
+
+analysis = analyze_system(Path("input/gnn_files"))  # no files written
+print(analysis.stats.to_dict())     # {"nodes": ..., "edges": ..., "cycles": ...}
+print(analysis.component_locations) # component -> declaring file
+print(analysis.issues)              # isolated nodes, undefined refs, ...
+
+export_dependency_graph(analysis, Path("output/graph.json"))  # node-link JSON
+```
+
+Lower-level units (`discover_gnn_files`, `build_system_graph`, `verify_references` in `integration.parsing` / `integration.graph`) are importable for custom pipelines.
 
 ### Meta-analysis API
 

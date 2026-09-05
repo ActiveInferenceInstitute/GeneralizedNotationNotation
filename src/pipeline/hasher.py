@@ -15,6 +15,88 @@ from pathlib import Path
 from typing import Any, Dict, Optional, Tuple, cast
 
 logger = logging.getLogger(__name__)
+RUN_HASH_SCHEMA = "gnn-run-v2"
+RUNTIME_CONFIG_PATH = Path(__file__).resolve().parents[2] / "input" / "config.yaml"
+
+
+def runtime_config_identity() -> Dict[str, Any]:
+    """Bind the live file read by child modules, which cannot all use overrides."""
+    if not RUNTIME_CONFIG_PATH.exists():
+        return {"present": False, "sha256": None}
+    with RUNTIME_CONFIG_PATH.open("rb") as handle:
+        return {
+            "present": True,
+            "sha256": hashlib.file_digest(handle, "sha256").hexdigest(),
+        }
+
+
+def effective_run_config(
+    arguments: Dict[str, Any],
+    pipeline_settings: Dict[str, Any],
+    selected_steps: list[str],
+    input_config: Optional[Dict[str, Any]] = None,
+) -> Dict[str, Any]:
+    """Canonical semantic configuration; output/logging/invocation data is excluded."""
+    incidental = {
+        "target_dir",
+        "output_dir",
+        "verbose",
+        "log_format",
+        "run_id",
+        "only_steps",
+        "skip_steps",
+        "pipeline_summary_file",
+    }
+    args = {key: value for key, value in arguments.items() if key not in incidental}
+    return {
+        "arguments": args,
+        "pipeline": pipeline_settings,
+        "selected_steps": list(selected_steps),
+        "runtime_config": runtime_config_identity(),
+        "input_config": input_config
+        if input_config is not None
+        else {"pipeline": pipeline_settings},
+    }
+
+
+def verify_indexed_run(entry: Dict[str, Any]) -> list[str]:
+    """Reject reproduction when indexed source or effective configuration has drifted."""
+    config = entry.get("config")
+    if not isinstance(config, dict):
+        return ["Run history configuration is malformed"]
+    identity = config.get("identity_config")
+    hashes = entry.get("file_hashes")
+    if (
+        config.get("run_hash_schema") != RUN_HASH_SCHEMA
+        or not isinstance(identity, dict)
+        or not isinstance(hashes, dict)
+    ):
+        return [
+            "Unbound run record lacks verifiable identity; create a new indexed run"
+        ]
+    args = config.get("args")
+    settings = config.get("pipeline")
+    if not isinstance(args, dict) or not isinstance(settings, dict):
+        return ["Run history arguments or pipeline settings are malformed"]
+    try:
+        effective = effective_run_config(
+            args, settings, identity["selected_steps"], identity["input_config"]
+        )
+        if effective != identity:
+            return [
+                "Saved effective configuration does not match reconstructed arguments"
+            ]
+        target = Path(args["target_dir"])
+        if not target.is_dir():
+            return ["Recorded input directory is missing"]
+        digest, current = compute_run_hash_with_files(target, config=effective)
+        if current != hashes:
+            return ["Input inventory/content differs from the indexed run"]
+        if digest != entry.get("run_hash"):
+            return ["Run hash differs from the indexed source/configuration identity"]
+    except (OSError, KeyError, TypeError, ValueError) as exc:
+        return [f"Cannot verify indexed run: {exc}"]
+    return []
 
 
 def _compute_run_hash_impl(
@@ -23,42 +105,30 @@ def _compute_run_hash_impl(
     hash_length: int = 12,
 ) -> Tuple[str, Dict[str, str]]:
     """Core implementation — returns (run_hash, file_hashes_dict)."""
-    hasher = hashlib.sha256()
+    from gnn.discovery import is_model_source_path
+    from gnn.parsers.common import get_supported_gnn_extensions
 
-    # Hash all input files (sorted for determinism)
     target_dir = Path(target_dir)
-    file_hashes_list: list[Any] = []
-    file_hashes_dict: dict[Any, Any] = {}
+    file_hashes: Dict[str, str] = {}
     if target_dir.exists():
-        md_files = list(target_dir.rglob("*.md"))
-        gnn_files = list(target_dir.rglob("*.gnn"))
-        for f in sorted(md_files + gnn_files):
-            try:
-                content = f.read_bytes()
-                fh = hashlib.sha256(content).hexdigest()
-                file_hashes_list.append(f"{f.name}:{fh}")
-                # Store relative path for better identification
-                rel_path = (
-                    str(f.relative_to(target_dir))
-                    if target_dir in f.parents
-                    else f.name
+        files = sorted(
+            {
+                path
+                for suffix in set(get_supported_gnn_extensions()) | {".gnn", ".txt"}
+                for path in target_dir.rglob(f"*{suffix}")
+                if is_model_source_path(path)
+            }
+        )
+        for path in files:
+            with path.open("rb") as handle:
+                file_hashes[path.relative_to(target_dir).as_posix()] = (
+                    hashlib.file_digest(handle, "sha256").hexdigest()
                 )
-                file_hashes_dict[rel_path] = fh
-            except OSError as e:
-                logger.debug(f"Could not read file {f} for hashing: {e}")
-
-    for fh in file_hashes_list:
-        hasher.update(fh.encode())
-
-    # Hash config
-    if config:
-        config_str = json.dumps(config, sort_keys=True)
-        hasher.update(config_str.encode())
-
-    run_hash = hasher.hexdigest()[:hash_length]
-    logger.debug(f"Run hash: {run_hash} ({len(file_hashes_list)} input files)")
-
-    return run_hash, file_hashes_dict
+    payload = {"schema": RUN_HASH_SCHEMA, "files": file_hashes, "config": config or {}}
+    encoded = json.dumps(payload, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    run_hash = hashlib.sha256(encoded).hexdigest()[:hash_length]
+    logger.debug("Run hash: %s (%s input files)", run_hash, len(file_hashes))
+    return run_hash, file_hashes
 
 
 def compute_run_hash(
@@ -110,15 +180,18 @@ def index_run(
         try:
             with open(index_path) as f:
                 index = json.load(f)
+            if not isinstance(index, dict):
+                raise ValueError("Run history must be an object")
         except (json.JSONDecodeError, OSError) as e:
             logger.debug(f"Could not load history index {index_path}: {e}")
 
     # Add/update entry
     entry: dict[str, Any] = {
+        "run_hash": run_hash,
         "summary_path": str(summary_path),
         "config": config or {},
     }
-    if file_hashes:
+    if file_hashes is not None:
         entry["file_hashes"] = file_hashes
 
     index[run_hash] = entry
@@ -155,6 +228,9 @@ def lookup_run(
         with open(index_path) as f:
             index = json.load(f)
     except (json.JSONDecodeError, OSError):
+        return None
+
+    if not isinstance(index, dict):
         return None
 
     # Exact match first

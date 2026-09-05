@@ -14,6 +14,7 @@ src/website/
 ├── renderer.py        # process_website + embed_* helpers + get_module_info
 ├── generator.py       # WebsiteGenerator / generate_website (7-page site)
 ├── dashboard.py       # render_dashboard — standalone interactive dashboard
+├── inspection.py      # inspect_website / list_website_pages (pure site queries)
 └── mcp.py             # MCP tool registration (5 tools)
 ```
 
@@ -103,12 +104,22 @@ All return `bool`:
 - `embed_html_file(html_path, output_file)`
 - `generate_html_report(content, output_file)`
 
-### Introspection / validation
+### Introspection / data collection
 
 - `get_module_info() -> dict` — module features and supported file types.
 - `get_supported_file_types() -> list[str]` — flat list of extensions.
 - `validate_website_config(config: dict | str) -> bool | dict` — light
   validation helper (accepts a dict or a simple string for tests).
+- `collect_website_data(pipeline_output_root, input_dir, assets_dir, *, output_dir=None, user_data=None, mcp_tools_provider=None) -> dict`
+  — pure aggregation of all page inputs; inject `mcp_tools_provider` for a
+  deterministic MCP inventory (default: best-effort live registry read).
+- `get_pipeline_steps() -> tuple[StepInfo, ...]` — the immutable 25-step
+  catalogue (`StepInfo(number, name, description)` + `script_name` display
+  property); `PIPELINE_STEPS` is the same tuple as a constant.
+- `inspect_website(directory) -> dict` / `list_website_pages(directory) -> dict`
+  — page inventory, sizes, and key-page completeness of a generated site
+  (`website.inspection.KEY_PAGES`). Shared implementation behind the
+  `get_website_status` / `list_generated_website_pages` MCP tools.
 
 ### `render_dashboard(results_dir, output_path, summary_path=None) -> ...`
 
@@ -118,7 +129,12 @@ site it is not fully offline-self-contained.
 
 ## Output
 
-`generate_website` writes seven HTML pages plus `website_results.json`:
+`generate_website` writes seven HTML pages plus `website_results.json`
+(keys: `success`, `pages_created`, `pages`, `errors`, `warnings`,
+`generated_at`). Pages are written independently and atomically: one bad
+page is recorded in `errors` while the rest of the site stays intact, and
+`success` is `True` only when no errors occurred. All pipeline-derived
+values are HTML-escaped:
 
 ```
 output/20_website_output/
@@ -169,9 +185,9 @@ Registered in `mcp.py` (`register_tools`):
 uv run --extra dev python -m pytest src/tests/website/ \
     --cov=src/website --cov-report=term-missing
 ```
-
 Test files: `test_website_overall.py`, `test_website_public_api.py`,
-`test_website_dashboard.py`.
+`test_website_dashboard.py`, `test_website_generator_units.py`,
+`test_website_inspection.py`.
 
 ## Troubleshooting
 

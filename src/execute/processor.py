@@ -47,7 +47,10 @@ from .julia_env import (
 )
 from .metadata import (
     _STATUS_SEVERITY,
+    _atomic_execution_json,
     _execution_detail_key,
+    _execution_input_identity,
+    _execution_script_identity,
     _load_render_summary_contract,
     _load_rxinfer_execution_metadata_from_script,
     _load_rxinfer_execution_metadata_sidecar,
@@ -479,22 +482,17 @@ def _write_execution_summaries(
     ]
     execution_results["execution_summary_format"] = "slim_v1"
 
-    with open(results_file, "w") as f:
-        json.dump(execution_results, f, indent=2, default=str)
-
-    if execution_summary_detail:
-        detail_path = summaries_dir / "execution_summary_detail.json"
-        detail_payload = dict(execution_results)
-        detail_payload["execution_details"] = full_details_snapshot
-        detail_payload["execution_summary_format"] = "detail_v1"
-        with open(detail_path, "w") as f:
-            json.dump(detail_payload, f, indent=2, default=str)
-
-    # Generate execution report (uses slim execution_details)
-    generate_execution_report(execution_results, results_dir, logger)
-
-    # Restore full details in-memory for any downstream callers of this function
-    execution_results["execution_details"] = full_details_snapshot
+    try:
+        if execution_summary_detail:
+            detail_path = summaries_dir / "execution_summary_detail.json"
+            detail_payload = dict(execution_results)
+            detail_payload["execution_details"] = full_details_snapshot
+            detail_payload["execution_summary_format"] = "detail_v1"
+            _atomic_execution_json(detail_path, detail_payload)
+        _atomic_execution_json(results_file, execution_results)
+        generate_execution_report(execution_results, results_dir, logger)
+    finally:
+        execution_results["execution_details"] = full_details_snapshot
 
 
 def process_execute(
@@ -558,6 +556,18 @@ def process_execute(
             execution_summary_detail,
         )
 
+        execution_results["run_id"] = kwargs.get("run_id")
+        execution_results["configuration"] = {
+            "frameworks": sorted(requested_frameworks),
+            "strict_requested_frameworks": strict_requested_frameworks,
+            "options": {
+                key: value
+                for key, value in kwargs.items()
+                if key not in {"run_id", "logger"}
+            },
+        }
+        execution_results["input_identity"] = _execution_input_identity(target_dir)
+
         # Look for rendered implementations from render output
         render_output_dir = _resolve_render_output_dir(
             target_dir, kwargs, output_dir=results_dir
@@ -594,6 +604,7 @@ def process_execute(
                 requested_frameworks,
                 logger,
                 target_dir=scope_target,
+                run_id=kwargs.get("run_id"),
             )
             execution_results["render_failures"] = render_failures
 
@@ -652,6 +663,10 @@ def process_execute(
                     f"Found {len(executable_scripts)} executable scripts to run"
                 )
 
+                script_identities = {
+                    _execution_detail_key(info): _execution_script_identity(info)
+                    for info in executable_scripts
+                }
                 # Extract args
                 timeout = kwargs.get("timeout", 3600)
                 is_distributed = kwargs.get("distributed", False)
@@ -744,6 +759,20 @@ def process_execute(
                         execution_benchmark_repeats,
                     )
 
+                inputs_changed = execution_results[
+                    "input_identity"
+                ] != _execution_input_identity(target_dir)
+                for detail in details:
+                    identity = script_identities.get(_execution_detail_key(detail))
+                    detail["script_identity"] = identity
+                    if inputs_changed or identity != _execution_script_identity(detail):
+                        detail.update(
+                            success=False,
+                            skipped=False,
+                            status="failed",
+                            error="Input or script changed during execution",
+                            error_type="receipt_identity_changed",
+                        )
                 # Update aggregated results
                 _update_framework_status(execution_results, details)
 

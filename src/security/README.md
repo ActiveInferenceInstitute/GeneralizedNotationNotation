@@ -1,6 +1,6 @@
 # Security Module
 
-This module (Pipeline Step 18) performs security scanning of GNN pipeline files: injection-pattern detection, Python AST analysis, severity-based scoring, recommendations, and a pre-execution gate for rendered scripts before Step 12 runs them.
+This module (Pipeline Step 18) performs security scanning of GNN pipeline files: injection-pattern detection, Python AST analysis, severity-based scoring, recommendations, policy resolution, and a pre-execution gate for rendered scripts before Step 12 runs them.
 
 ## Module Structure
 
@@ -27,25 +27,48 @@ Main entry point, called by `18_security.py` (Step 18).
 
 ### `perform_security_check(file_path: Path, verbose: bool = False) -> Dict[str, Any]`
 
-Sensitive-data and integrity check on a single file: credential-pattern scanning (`password`, `secret`, `api_key`, `token`, `private_key` — matches are context-redacted), SHA-256 hash of the exact bytes inspected, and a 0.0-1.0 security score.
+Sensitive-data and integrity check on a single file: credential-pattern scanning (`password`, `secret`, `api_key`, `token`, `private_key` — matches are context-redacted), SHA-256 hash of the exact bytes inspected, the real POSIX permission mode (octal), and a 0-100 security score. Raises `SecurityScanError` (a subclass of `Exception`) when the file cannot be read.
 
 ### `check_vulnerabilities(file_path: Path, verbose: bool = False) -> List[Dict[str, Any]]`
 
-Vulnerability scan using regex patterns and Python AST analysis (`shell=True`, dangerous calls, dynamic execution constructs).
+Vulnerability scan using regex pattern tables and Python AST analysis (`shell=True`, dangerous calls, dynamic execution constructs), plus world-writable mode checks (`.py` only). Findings sort deterministically; unreadable files produce a low-severity finding instead of an exception.
 
 ### `calculate_security_score(vulnerabilities) -> float`
 
-Severity-weighted security score (0.0-1.0).
+Severity-weighted security score (0-100; 100 = no findings).
+
+### `resolve_security_policy(...) -> ResolvedSecurityPolicy`
+
+**New in 1.7.0.** Pure, total policy resolution and validation (the single
+source of truth behind `process_security`): normalizes `security_level` /
+`block_on` / `check_vulnerabilities`, enforces the strict-and-enforced
+scan-must-stay-on rule, and returns a frozen dataclass with
+`to_receipt()` for the `security_results.json` policy block. Never raises;
+invalid requests set `is_valid=False` with a human-readable `error`.
+
+### `findings_at_or_above(findings, block_on)` / `count_by_severity(findings)`
+
+**New in 1.7.0.** Shared severity-threshold filter (fail-closed on unknown
+severities) and severity histogram used by both the Step 18 receipt and the
+pre-execution gate.
+
+### `scan_source(source, *, file_name="<memory>.py", block_on=None)`
+
+**New in 1.7.0.** Scan Python source *text* without a file — validate
+rendered/generated code before writing it to disk. Returns findings and, when
+`block_on` is given, the same verdict fields as `scan_script_for_execution`.
 
 ### `scan_script_for_execution(script_path: Path, *, block_on: str = "high") -> Dict[str, Any]`
 
-Pre-execution security gate (RED_TEAM V-01/V-06): applies the Python AST scanner to a rendered `.py` script *before* Step 12 executes it, returning `{ok, blocked, findings, scanned}`. Findings at/above `block_on` severity set `ok=False`. `.jl` scripts get an advisory regex sweep plus a `julia -e Meta.parseall` syntax probe (parse failure = high severity; 30 s timeout). Wired into `execute.processor.execute_single_script`; escape hatch: `GNN_ALLOW_UNSAFE_EXEC=1`.
+Pre-execution security gate (RED_TEAM V-01/V-06): applies the Python AST scanner to a rendered `.py` script *before* Step 12 executes it, returning `{ok, blocked, findings, scanned, block_on, decision}`. Findings at/above `block_on` severity set `ok=False` (unknown severities fail closed). `.jl` scripts get an advisory regex sweep plus a `julia -e Meta.parseall` syntax probe (parse failure = high severity; 30 s timeout). Wired into `execute.processor.execute_single_script`; escape hatch: `GNN_ALLOW_UNSAFE_EXEC=1`. Exported from the package root since 1.7.0.
 
 ### Exports (`from security import ...`)
 
 - `process_security`, `perform_security_check`, `check_vulnerabilities`
 - `generate_security_recommendations`, `calculate_security_score`, `generate_security_summary`
-- `FEATURES`, `__version__`
+- `resolve_security_policy`, `ResolvedSecurityPolicy`, `findings_at_or_above`, `count_by_severity` (new in 1.7.0)
+- `scan_source`, `scan_script_for_execution`, `SecurityScanError`
+- `FEATURES`, `__version__`, `get_module_info`
 
 ## Usage Examples
 
@@ -61,6 +84,16 @@ success = process_security(
     verbose=True,
     security_level="standard",
 )
+```
+
+### Validate generated code before writing it (1.7.0)
+
+```python
+from security import scan_source
+
+verdict = scan_source(rendered_python, file_name="rendered_model.py", block_on="high")
+if not verdict["ok"]:
+    raise RuntimeError(f"unsafe render: {verdict['blocked']}")
 ```
 
 ### File-level scan
@@ -102,7 +135,7 @@ output/18_security_output/
 
 ## Testing
 
-Tests live in `src/tests/security/`: `test_security_overall.py`, `test_security_functional.py`, `test_pre_exec_gate.py`, `test_security_mcp_tools.py`, `test_sandbox.py`, `test_pygments_archetype_redos.py`.
+Tests live in `src/tests/security/`: `test_security_overall.py`, `test_security_functional.py`, `test_pre_exec_gate.py`, `test_security_mcp_tools.py`, `test_security_policy_and_source.py` (policy resolver, `scan_source`, severity helpers, permission semantics — added 1.7.0), `test_sandbox.py`, `test_pygments_archetype_redos.py`.
 
 ```bash
 uv run --extra dev python -m pytest src/tests/security/ --cov=src/security

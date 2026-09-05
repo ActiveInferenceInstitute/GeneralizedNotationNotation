@@ -10,11 +10,50 @@ from enum import Enum
 from typing import Any, ClassVar, Dict, List, Optional
 
 try:
-    from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
+    from pydantic import (
+        BaseModel,
+        ConfigDict,
+        Field,
+        ValidationInfo,
+        field_validator,
+        model_validator,
+    )
 except ImportError as e:
     raise ImportError(
         "pydantic is required for the GNN API module. Install with: uv sync --extra api"
     ) from e
+
+
+def validate_step_numbers(
+    values: Optional[List[int]], *, field_name: str
+) -> Optional[List[int]]:
+    """Validate an optional list of unique pipeline step numbers (0-24).
+
+    Single source of truth shared by ``ProcessRequest``, ``RunRequest``, and
+    the job manager. Rejects non-integers (including ``bool``), out-of-range
+    numbers, and duplicate selections with an explicit ``ValueError``.
+    """
+    if values is None:
+        return None
+    if not isinstance(values, list):
+        raise ValueError(f"{field_name} must be a list of integers")
+    invalid = sorted(
+        [
+            step
+            for step in values
+            if isinstance(step, bool)
+            or not isinstance(step, int)
+            or not 0 <= step <= 24
+        ],
+        key=str,
+    )
+    if invalid:
+        raise ValueError(
+            f"{field_name} must contain integers between 0 and 24: {invalid}"
+        )
+    if len(values) != len(set(values)):
+        raise ValueError(f"{field_name} must not contain duplicate step numbers")
+    return list(values)
 
 
 class JobStatus(str, Enum):
@@ -62,18 +101,13 @@ class ProcessRequest(BaseModel):
         },
     )
 
-    @field_validator("steps", "skip_steps")
+    @field_validator("steps", "skip_steps", mode="before")
     @classmethod
-    def validate_step_numbers(cls, values: Optional[List[int]]) -> Optional[List[int]]:
+    def check_step_numbers(
+        cls, values: Optional[List[int]], info: ValidationInfo
+    ) -> Optional[List[int]]:
         """Require unique pipeline step numbers in the supported 0-24 range."""
-        if values is None:
-            return None
-        invalid = sorted({step for step in values if step < 0 or step > 24})
-        if invalid:
-            raise ValueError(f"Pipeline steps must be between 0 and 24: {invalid}")
-        if len(values) != len(set(values)):
-            raise ValueError("Pipeline step lists must not contain duplicates")
-        return values
+        return validate_step_numbers(values, field_name=str(info.field_name))
 
     @model_validator(mode="after")
     def validate_step_selection(self) -> "ProcessRequest":
@@ -168,3 +202,58 @@ class HealthResponse(BaseModel):
     pipeline_steps: int
     active_jobs: int
     timestamp: datetime = Field(default_factory=datetime.now)
+
+
+class RunRequest(BaseModel):
+    """Pipeline run request (``api.app`` run surface)."""
+
+    target_dir: str = Field(default="input/gnn_files", min_length=1)
+    output_dir: str = Field(default="output", min_length=1)
+    skip_steps: List[int] = Field(default_factory=list)
+    skip_llm: bool = False
+    strict: bool = Field(default=False, description="Treat warnings as errors")
+    config: Dict[str, Any] = Field(
+        default_factory=dict,
+        description="Reserved for future run configuration; currently must be empty",
+    )
+
+    model_config: ClassVar[ConfigDict] = ConfigDict(extra="forbid")
+
+    @field_validator("skip_steps", mode="before")
+    @classmethod
+    def validate_skip_steps(cls, values: List[int]) -> List[int]:
+        """Require unique pipeline step numbers in the supported range."""
+        checked = validate_step_numbers(values, field_name="skip_steps")
+        return checked if checked is not None else []
+
+    @field_validator("config")
+    @classmethod
+    def reject_unsupported_config(cls, value: Dict[str, Any]) -> Dict[str, Any]:
+        """Reject configuration that the background runner cannot honor."""
+        if value:
+            raise ValueError("Custom run config is not supported by this endpoint")
+        return value
+
+
+class RunStatus(BaseModel):
+    """Pipeline run status response (``api.app`` run surface)."""
+
+    run_hash: str
+    status: str  # queued, running, completed, failed
+    started_at: Optional[str] = None
+    completed_at: Optional[str] = None
+    duration_seconds: Optional[float] = None
+    current_step: Optional[str] = None
+    steps_completed: int = 0
+    total_steps: int = 25
+    errors: List[str] = Field(default_factory=list)
+
+
+class RunHealthResponse(BaseModel):
+    """Health response for the ``api.app`` run surface (renderer availability)."""
+
+    status: str = "healthy"
+    version: str = "2.0.0"
+    pipeline_steps: int = 25
+    renderers: Dict[str, bool] = Field(default_factory=dict)
+    uptime_seconds: float = 0.0

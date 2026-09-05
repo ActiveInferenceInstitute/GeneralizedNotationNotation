@@ -2,8 +2,8 @@
 
 ## Overview
 
-**Status**: active documentation program (draft) | **Version**: 0.1 | **Last
-Updated**: 2026-09-03
+**Status**: active documentation program (draft) | **Version**: 0.2 | **Last
+Updated**: 2026-09-04
 
 ## Purpose
 
@@ -14,6 +14,12 @@ how GNN's steps and methods are being formalized in Lean. This folder is the
 GNN-side mirror of the fep_lean design program at
 `../fep_lean/docs/design/gnn-bridge/` (cross-repo references are inline code
 paths, never markdown links).
+
+On the fep_lean side, W2 source custody and Q5–Q7 concrete artifact proofs
+have current schema-2 native receipts. H2.7 acceptance opens only read-only
+H3.G0 eligibility. Current evidence and exact boundaries live in
+`../fep_lean/specs/gnn-bridge-w2-source-custody/WAVE2-REPORT.md`.
+The mirrored bridge contract is version 0.4.
 
 ## Contents
 
@@ -85,4 +91,4 @@ the continuous family so kind detection stays mechanical. Details:
 ---
 
 **Status**: active | **Maintenance**: update together with the canonical
-bridge program on the fep_lean side | **Last Updated**: 2026-09-03
+bridge program on the fep_lean side | **Last Updated**: 2026-09-04

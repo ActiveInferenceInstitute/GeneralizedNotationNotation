@@ -9,8 +9,9 @@ No database dependency — jobs are stored in memory (lost on restart).
 
 import asyncio
 import logging
+import os
 import re
-import sys
+import time
 import uuid
 from datetime import datetime
 from pathlib import Path
@@ -18,7 +19,16 @@ from typing import Any, Dict, List, Optional
 
 logger = logging.getLogger(__name__)
 
+from api.models import validate_step_numbers as _shared_validate_step_numbers
 from api.path_utils import resolve_repo_path
+from api.pipeline_runner import (
+    build_pipeline_command,
+    normalize_summary_steps,
+    pipeline_exit_succeeded,
+    read_pipeline_summary,
+    summarize_step_progress,
+)
+from pipeline.step_registry import STEPS
 
 # In-memory job store (cleared on restart — research tool, not production service)
 _JOBS: Dict[str, dict] = {}
@@ -27,26 +37,12 @@ _JOBS: Dict[str, dict] = {}
 def _validate_step_numbers(
     values: Optional[List[int]], *, field_name: str
 ) -> Optional[List[int]]:
-    """Validate an optional list of unique pipeline steps."""
-    if values is None:
-        return None
-    invalid = sorted(
-        [
-            step
-            for step in values
-            if isinstance(step, bool)
-            or not isinstance(step, int)
-            or not 0 <= step <= 24
-        ],
-        key=str,
-    )
-    if invalid:
-        raise ValueError(
-            f"{field_name} must contain integers between 0 and 24: {invalid}"
-        )
-    if len(values) != len(set(values)):
-        raise ValueError(f"{field_name} must not contain duplicate steps")
-    return list(values)
+    """Validate an optional list of unique pipeline steps.
+
+    Delegates to the shared contract validator in ``api.models`` so the job
+    manager and the request models can never disagree on step semantics.
+    """
+    return _shared_validate_step_numbers(values, field_name=field_name)
 
 
 def create_job(
@@ -182,35 +178,30 @@ async def execute_job_async(job_id: str) -> None:
     job["started_at"] = datetime.now().isoformat()
     logger.info(f"Starting job {job_id}")
 
-    # Build command
+    # Build the real orchestrator command via the shared pure builder so the
+    # job surface and the run surface can never drift on argv shape.
     repo_root = Path(__file__).parent.parent.parent
-    main_script = repo_root / "src" / "main.py"
-
-    cmd: list[Any] = [sys.executable, str(main_script)]
-    cmd += ["--target-dir", str(job["target_dir"])]
-
     output_dir = Path(job.get("output_dir") or (repo_root / "output"))
-    cmd += ["--output-dir", str(output_dir)]
     job["output_dir"] = str(output_dir)
 
-    if job.get("steps"):
-        cmd += ["--only-steps", ",".join(str(s) for s in job["steps"])]
-
-    if job.get("skip_steps"):
-        cmd += ["--skip-steps", ",".join(str(s) for s in job["skip_steps"])]
-
-    if job.get("verbose"):
-        cmd.append("--verbose")
-
-    if job.get("strict"):
-        cmd.append("--strict")
+    cmd = build_pipeline_command(
+        str(job["target_dir"]),
+        str(output_dir),
+        only_steps=job.get("steps") or None,
+        skip_steps=job.get("skip_steps") or None,
+        verbose=bool(job.get("verbose")),
+        strict=bool(job.get("strict")),
+        repo_root=repo_root,
+    )
 
     try:
+        invocation_start_ns = time.time_ns()
         proc = await asyncio.create_subprocess_exec(
             *cmd,
             stdout=asyncio.subprocess.PIPE,
             stderr=asyncio.subprocess.PIPE,
             cwd=str(repo_root),
+            env={**os.environ, "GNN_RUN_ID": job_id},
         )
         job["process"] = proc
 
@@ -219,7 +210,23 @@ async def execute_job_async(job_id: str) -> None:
         job["exit_code"] = proc.returncode
         job["completed_at"] = datetime.now().isoformat()
 
-        if proc.returncode == 0:
+        # Populate per-step progress from the canonical summary the pipeline
+        # writes; the single subprocess gives us no live per-step view, so
+        # progress is observable only once the run has finished.
+        progress = summarize_step_progress(
+            normalize_summary_steps(
+                read_pipeline_summary(
+                    output_dir,
+                    not_before_ns=invocation_start_ns,
+                    expected_run_id=job_id,
+                )
+                or []
+            )
+        )
+        job["steps_completed"] = progress["steps_completed"]
+        job["steps_failed"] = progress["steps_failed"]
+
+        if pipeline_exit_succeeded(proc.returncode, strict=bool(job.get("strict"))):
             job["status"] = "completed"
             logger.info(f"Job {job_id} completed successfully")
         else:
@@ -254,34 +261,19 @@ def _sanitize_stderr(stderr_text: str, repo_root: Path) -> str:
     return tail
 
 
-# Pipeline step registry for /tools endpoint
-PIPELINE_STEPS: dict[Any, Any] = {
-    0: ("template", "Template initialization and output directory setup"),
-    1: ("setup", "Environment setup and dependency validation"),
-    2: ("tests", "Test suite execution"),
-    3: ("gnn", "GNN file parsing and validation"),
-    4: ("model_registry", "Model registry management"),
-    5: ("type_checker", "Type checking and dimension validation"),
-    6: ("validation", "Schema and semantic validation"),
-    7: ("export", "Multi-format export (JSON, YAML, XML)"),
-    8: ("visualization", "Graph visualization"),
-    9: ("advanced_viz", "Advanced visualization with Altair/Plotly"),
-    10: ("ontology", "Ontology annotation processing"),
-    11: ("render", "Code generation for all frameworks"),
-    12: ("execute", "Simulation execution"),
-    13: ("llm", "LLM-powered analysis"),
-    14: ("ml_integration", "Machine learning model integration"),
-    15: ("audio", "Audio/SAPF processing"),
-    16: ("analysis", "Statistical analysis"),
-    17: ("integration", "Cross-framework integration"),
-    18: ("security", "Security validation"),
-    19: ("research", "Research hypothesis generation"),
-    20: ("website", "Static website generation"),
-    21: ("mcp", "MCP tool registration"),
-    22: ("gui", "GUI interface"),
-    23: ("report", "Report generation"),
-    24: ("intelligent_analysis", "Intelligent pipeline analysis"),
-}
+# Pipeline step registry for the /tools endpoint — derived once from the
+# canonical ``pipeline.step_registry.STEPS`` so this module is never the
+# authority on which steps exist (single source of truth).
+def _derive_pipeline_steps() -> Dict[int, tuple[str, str]]:
+    """Map step number → (name, description) from the canonical registry."""
+    registry: Dict[int, tuple[str, str]] = {}
+    for step in STEPS:
+        num_text, _, name = step.script_stem.partition("_")
+        registry[int(num_text)] = (name, step.description)
+    return registry
+
+
+PIPELINE_STEPS: Dict[int, tuple[str, str]] = _derive_pipeline_steps()
 
 
 def get_pipeline_tools() -> List[dict]:

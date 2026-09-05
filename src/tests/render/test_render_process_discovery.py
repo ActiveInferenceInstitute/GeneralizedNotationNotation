@@ -104,6 +104,7 @@ def test_process_render_aggregates_summary_across_invocations(tmp_path: Path) ->
         output_dir=output_dir,
         frameworks=["rxinfer"],
         verbose=False,
+        run_id="folder-aggregation-test",
     )
     assert first is not False
 
@@ -119,6 +120,7 @@ def test_process_render_aggregates_summary_across_invocations(tmp_path: Path) ->
         output_dir=output_dir,
         frameworks=["rxinfer"],
         verbose=False,
+        run_id="folder-aggregation-test",
     )
     assert second is not False
 

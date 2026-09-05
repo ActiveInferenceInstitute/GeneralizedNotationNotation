@@ -10,7 +10,7 @@ Covers:
 - ``mcp.py`` ``process_advanced_visualization_mcp`` honors ``generate_d2`` by
   routing to a non-D2 viz_type when false.
 - ``dashboard.py`` footer timestamp renders (regression test for the silent
-  ``{datetime.now()}`` placeholder bug).
+  ``{datetime.now()}`` unrendered-literal bug).
 """
 
 import sys
@@ -113,7 +113,7 @@ class TestMcpGenerateD2Honored:
 
 
 class TestDashboardTimestampRenders:
-    def test_footer_contains_real_timestamp_not_placeholder(
+    def test_footer_contains_rendered_timestamp_not_static_token(
         self, tmp_path: Any
     ) -> None:
         """Regression: dashboard.py shipped ``{datetime.now().strftime(...)}`` as
@@ -143,7 +143,7 @@ learning_rate = 0.01
         html = result.read_text()
         # A rendered timestamp looks like "Generated on 20YY-MM-DD HH:MM:SS"
         assert "Generated on 20" in html
-        # The dead placeholder must NOT appear
+        # The unrendered literal token must NOT appear
         assert "{datetime.now().strftime" not in html
         # JS/braces: f-string escapes render as single braces; no doubled
         # braces may ship anywhere in the generated document.

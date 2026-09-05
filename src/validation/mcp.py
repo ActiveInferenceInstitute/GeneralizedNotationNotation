@@ -5,18 +5,20 @@ Exposes GNN validation tools: schema validation, semantic checks,
 validation report retrieval, and configuration validation through MCP.
 """
 
+import json
 import logging
 from pathlib import Path
-from typing import Any, Dict, List
-
-logger = logging.getLogger(__name__)
+from typing import Any
 
 from . import process_validation
+from .semantic_validator import validate_content
+
+logger = logging.getLogger(__name__)
 
 
 def process_validation_mcp(
     target_directory: str, output_directory: str, verbose: bool = False
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """
     Run full GNN validation on files in a directory.
 
@@ -50,16 +52,21 @@ def process_validation_mcp(
 
 def validate_gnn_file_mcp(
     gnn_file_path: str, validation_level: str = "standard"
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """
     Validate a single GNN file at a specified validation level.
+
+    Combines lightweight structural section checks with the module's full
+    semantic validator, so callers get both a structural verdict and the
+    rule-based semantic result in one response.
 
     Args:
         gnn_file_path:    Path to the GNN file to validate
         validation_level: Validation depth ('basic', 'standard', 'strict')
 
     Returns:
-        Dictionary with is_valid flag, errors, warnings, and suggestions.
+        Dictionary with is_valid flag, errors, warnings, structural counts,
+        and a ``semantic`` key carrying the full semantic validation result.
     """
     try:
         gnn_path = Path(gnn_file_path)
@@ -75,8 +82,8 @@ def validate_gnn_file_mcp(
         missing = [
             s for s in required_sections if not any(s in h for h in section_headers)
         ]
-        warnings: List[str] = []
-        errors: List[str] = []
+        warnings: list[str] = []
+        errors: list[str] = []
 
         if missing:
             if validation_level == "basic":
@@ -95,7 +102,12 @@ def validate_gnn_file_mcp(
         if validation_level in ("strict",) and not connections:
             warnings.append("No connections defined in GNN model")
 
-        is_valid = len(errors) == 0
+        semantic = validate_content(content, validation_level=validation_level)
+        errors.extend(error for error in semantic["errors"] if error not in errors)
+        warnings.extend(
+            warning for warning in semantic["warnings"] if warning not in warnings
+        )
+        is_valid = len(errors) == 0 and semantic["valid"]
         return {
             "success": True,
             "file": str(gnn_path),
@@ -106,13 +118,14 @@ def validate_gnn_file_mcp(
             "sections_found": [h.lstrip("# ").strip() for h in section_headers],
             "variables_count": len(variables),
             "connections_count": len(connections),
+            "semantic": semantic,
         }
     except Exception as e:
         logger.error(f"validate_gnn_file_mcp error: {e}", exc_info=True)
         return {"success": False, "error": str(e)}
 
 
-def get_validation_report_mcp(output_directory: str) -> Dict[str, Any]:
+def get_validation_report_mcp(output_directory: str) -> dict[str, Any]:
     """
     Read and return the saved validation report from a previous validation run.
 
@@ -123,8 +136,6 @@ def get_validation_report_mcp(output_directory: str) -> Dict[str, Any]:
         Dictionary with validation report contents.
     """
     try:
-        import json
-
         out_dir = Path(output_directory)
         if not out_dir.exists():
             return {
@@ -157,7 +168,7 @@ def get_validation_report_mcp(output_directory: str) -> Dict[str, Any]:
         return {"success": False, "error": str(e)}
 
 
-def check_schema_compliance_mcp(gnn_content: str) -> Dict[str, Any]:
+def check_schema_compliance_mcp(gnn_content: str) -> dict[str, Any]:
     """
     Check a GNN model string against the canonical GNN schema requirements.
 

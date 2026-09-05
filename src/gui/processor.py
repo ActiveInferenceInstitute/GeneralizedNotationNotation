@@ -3,14 +3,110 @@ GUI Processor - Core GUI processing logic for GNN Pipeline.
 
 This module contains the main processing functions for the GUI module,
 extracted from __init__.py to follow the thin orchestrator pattern.
+
+Composable pieces:
+- ``normalize_gui_types``: parse/validate the ``gui_types`` option.
+- ``summarize_gui_results``: aggregate per-GUI results into a typed summary.
+- ``collect_pipeline_outputs``: discover pipeline artifacts for navigation.
+- ``generate_html_navigation``: render the navigation page from discovery.
 """
 
-import json
+from __future__ import annotations
+
+import html
 import logging
-import os
-import tempfile
+from collections.abc import Mapping, Sequence
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any, TypedDict
+
+from .backend import write_json_atomically, write_text_atomically
+
+logger = logging.getLogger(__name__)
+
+
+class GUISummary(TypedDict):
+    """Aggregated outcome of a ``process_gui`` run."""
+
+    total: int
+    succeeded: int
+    failed: int
+    failed_guis: list[str]
+    overall_success: bool
+
+
+DEFAULT_GUI_TYPES: tuple[str, ...] = ("gui_1", "gui_2")
+
+# Files listed per pipeline step in navigation.html. ``file_count`` still
+# reports the full number of discovered files; only the listing is capped.
+MAX_FILES_PER_SECTION = 20
+
+# (display name, output directory, glob patterns) for every pipeline step.
+PIPELINE_OUTPUT_SECTIONS: tuple[tuple[str, str, tuple[str, ...]], ...] = (
+    ("Template", "0_template_output", ("*.json", "*.md")),
+    ("Setup", "1_setup_output", ("*.json",)),
+    ("Tests", "2_tests_output", ("*.txt", "*.json")),
+    ("GNN Processing", "3_gnn_output", ("*.json", "*.md", "*.pkl")),
+    ("Model Registry", "4_model_registry_output", ("*.json",)),
+    ("Type Checker", "5_type_checker_output", ("*.json", "*.md")),
+    ("Validation", "6_validation_output", ("*.json",)),
+    ("Export", "7_export_output", ("*.json", "*.xml", "*.pkl")),
+    ("Visualization", "8_visualization_output", ("*.png", "*.svg", "*.csv", "*.json")),
+    ("Advanced Visualization", "9_advanced_viz_output", ("*.png", "*.json")),
+    ("Ontology", "10_ontology_output", ("*.json",)),
+    ("Render", "11_render_output", ("*.py", "*.jl", "*.md", "*.json", "*.png")),
+    ("Execute", "12_execute_output", ("*.txt", "*.json", "*.md", "*.png")),
+    ("LLM", "13_llm_output", ("*.md", "*.json")),
+    ("ML Integration", "14_ml_integration_output", ("*.json",)),
+    ("Audio", "15_audio_output", ("*.json", "*.wav")),
+    ("Analysis", "16_analysis_output", ("*.json",)),
+    ("Integration", "17_integration_output", ("*.json",)),
+    ("Security", "18_security_output", ("*.json",)),
+    ("Research", "19_research_output", ("*.json",)),
+    ("Website", "20_website_output", ("*.html", "*.json")),
+    ("MCP", "21_mcp_output", ("*.json",)),
+    ("GUI", "22_gui_output", ("*.md", "*.json")),
+    ("Report", "23_report_output", ("*.html", "*.md", "*.json")),
+    (
+        "Intelligent Analysis",
+        "24_intelligent_analysis_output",
+        ("*.json", "*.md", "*.html"),
+    ),
+)
+
+
+def normalize_gui_types(value: str | Sequence[str] | None) -> list[str]:
+    """Normalize a ``gui_types`` option into a clean list of GUI identifiers.
+
+    Accepts a comma-separated string, a sequence of identifiers, or ``None``
+    (the pipeline default ``gui_1,gui_2``). Blank entries are dropped.
+    """
+    if value is None:
+        return list(DEFAULT_GUI_TYPES)
+    if isinstance(value, str):
+        value = value.split(",")
+    return [item.strip() for item in value if item.strip()]
+
+
+def summarize_gui_results(
+    results: Mapping[str, Mapping[str, Any]],
+) -> GUISummary:
+    """Aggregate per-GUI result mappings into a typed summary.
+
+    A GUI counts as failed when its ``success`` key is missing or falsy.
+    """
+    failed = sorted(
+        gui_type
+        for gui_type, result in results.items()
+        if not result.get("success", False)
+    )
+    total = len(results)
+    return {
+        "total": total,
+        "succeeded": total - len(failed),
+        "failed": len(failed),
+        "failed_guis": failed,
+        "overall_success": not failed,
+    }
 
 
 def process_gui(
@@ -27,6 +123,7 @@ def process_gui(
         output_dir: Output directory for results
         verbose: Whether to enable verbose logging
         **kwargs: Additional processing options
+            - logger: Optional caller-provided logger (honored when passed)
             - gui_types: List of GUI types to run (default: gui_1, gui_2)
             - headless: Run in headless mode (default: True for pipeline)
             - interactive: Launch interactive GUI servers (overrides headless)
@@ -40,7 +137,11 @@ def process_gui(
     from .gui_3 import gui_3
     from .oxdraw import oxdraw_gui
 
-    logger = logging.getLogger(__name__)
+    caller_logger = kwargs.get("logger")
+    if isinstance(caller_logger, logging.Logger):
+        logger = caller_logger
+    else:
+        logger = logging.getLogger(__name__)
     if verbose:
         logger.setLevel(logging.DEBUG)
 
@@ -57,9 +158,7 @@ def process_gui(
             )
 
     # Determine which GUIs to run
-    gui_types = kwargs.get("gui_types", "gui_1,gui_2")
-    if isinstance(gui_types, str):
-        gui_types = [g.strip() for g in gui_types.split(",")]
+    gui_types = normalize_gui_types(kwargs.get("gui_types"))
 
     # Prepare kwargs for GUI functions
     gui_kwargs = {
@@ -68,7 +167,7 @@ def process_gui(
         if k not in ["logger", "target_dir", "output_dir", "verbose"]
     }
 
-    results: dict[Any, Any] = {}
+    results: dict[str, dict[str, Any]] = {}
     overall_success = True
 
     try:
@@ -149,33 +248,26 @@ def process_gui(
 
 def _save_processing_summary(
     output_dir: Path,
-    kwargs: Dict[str, Any],
-    gui_types: List[str],
-    results: Dict[str, Any],
+    kwargs: Mapping[str, Any],
+    gui_types: list[str],
+    results: Mapping[str, Mapping[str, Any]],
     overall_success: bool,
     logger: logging.Logger,
 ) -> None:
     """Save GUI processing summary to JSON file."""
     try:
-        output_path = Path(output_dir)
-        summary_file = output_path / "gui_processing_summary.json"
-        with tempfile.NamedTemporaryFile(
-            mode="w", encoding="utf-8", dir=output_path, delete=False
-        ) as tmp_f:
-            tmp_f.write(
-                json.dumps(
-                    {
-                        "mode": "interactive"
-                        if not kwargs.get("headless", True)
-                        else "headless",
-                        "gui_types": gui_types,
-                        "results": results,
-                        "overall_success": overall_success,
-                    },
-                    indent=2,
-                )
-            )
-        os.replace(tmp_f.name, str(summary_file))
+        summary_file = Path(output_dir) / "gui_processing_summary.json"
+        write_json_atomically(
+            summary_file,
+            {
+                "mode": "interactive"
+                if not kwargs.get("headless", True)
+                else "headless",
+                "gui_types": gui_types,
+                "results": dict(results),
+                "overall_success": overall_success,
+            },
+        )
         logger.info(f"📊 GUI processing summary saved to: {summary_file}")
     except Exception as e:
         logger.warning(f"Failed to save GUI processing summary: {e}")
@@ -212,83 +304,8 @@ def generate_html_navigation(
         # Ensure output directory exists
         output_dir.mkdir(parents=True, exist_ok=True)
 
-        # Define pipeline steps and their output directories
-        pipeline_steps: list[Any] = [
-            ("Template", "0_template_output", ["*.json", "*.md"]),
-            ("Setup", "1_setup_output", ["*.json"]),
-            ("Tests", "2_tests_output", ["*.txt", "*.json"]),
-            ("GNN Processing", "3_gnn_output", ["*.json", "*.md", "*.pkl"]),
-            ("Model Registry", "4_model_registry_output", ["*.json"]),
-            ("Type Checker", "5_type_checker_output", ["*.json", "*.md"]),
-            ("Validation", "6_validation_output", ["*.json"]),
-            ("Export", "7_export_output", ["*.json", "*.xml", "*.pkl"]),
-            (
-                "Visualization",
-                "8_visualization_output",
-                ["*.png", "*.svg", "*.csv", "*.json"],
-            ),
-            ("Advanced Visualization", "9_advanced_viz_output", ["*.png", "*.json"]),
-            ("Ontology", "10_ontology_output", ["*.json"]),
-            ("Render", "11_render_output", ["*.py", "*.jl", "*.md", "*.json", "*.png"]),
-            ("Execute", "12_execute_output", ["*.txt", "*.json", "*.md", "*.png"]),
-            ("LLM", "13_llm_output", ["*.md", "*.json"]),
-            ("ML Integration", "14_ml_integration_output", ["*.json"]),
-            ("Audio", "15_audio_output", ["*.json", "*.wav"]),
-            ("Analysis", "16_analysis_output", ["*.json"]),
-            ("Integration", "17_integration_output", ["*.json"]),
-            ("Security", "18_security_output", ["*.json"]),
-            ("Research", "19_research_output", ["*.json"]),
-            ("Website", "20_website_output", ["*.html", "*.json"]),
-            ("MCP", "21_mcp_output", ["*.json"]),
-            ("GUI", "22_gui_output", ["*.md", "*.json"]),
-            ("Report", "23_report_output", ["*.html", "*.md", "*.json"]),
-            (
-                "Intelligent Analysis",
-                "24_intelligent_analysis_output",
-                ["*.json", "*.md", "*.html"],
-            ),
-        ]
-
         # Collect output information
-        output_sections: list[Any] = []
-        total_files = 0
-
-        for step_name, step_dir, patterns in pipeline_steps:
-            step_path = pipeline_output_dir / step_dir
-            if not step_path.exists():
-                continue
-
-            step_files: list[Any] = []
-            for pattern in patterns:
-                for file_path in step_path.rglob(pattern):
-                    if file_path.is_file():
-                        try:
-                            rel_path = str(file_path.relative_to(pipeline_output_dir))
-                            file_size = file_path.stat().st_size
-                            file_size_mb = file_size / (1024 * 1024)
-
-                            step_files.append(
-                                {
-                                    "name": file_path.name,
-                                    "path": rel_path,
-                                    "size_mb": round(file_size_mb, 3),
-                                    "type": file_path.suffix.lower(),
-                                }
-                            )
-                            total_files += 1
-                        except OSError as e:
-                            logger.debug(f"Could not read file {file_path}: {e}")
-
-            if step_files:
-                step_files.sort(key=lambda x: (x["type"], x["name"]))
-                output_sections.append(
-                    {
-                        "step_name": step_name,
-                        "step_dir": step_dir,
-                        "file_count": len(step_files),
-                        "files": step_files[:20],
-                    }
-                )
+        output_sections, total_files = collect_pipeline_outputs(pipeline_output_dir)
 
         # Generate HTML content
         html_content = _build_navigation_html(
@@ -297,11 +314,7 @@ def generate_html_navigation(
 
         # Write HTML file
         nav_file = output_dir / "navigation.html"
-        with tempfile.NamedTemporaryFile(
-            mode="w", encoding="utf-8", dir=nav_file.parent, delete=False
-        ) as tmp_f:
-            tmp_f.write(html_content)
-        os.replace(tmp_f.name, str(nav_file))
+        write_text_atomically(nav_file, html_content)
 
         logger.info(f"✅ HTML navigation page generated: {nav_file}")
         return True
@@ -314,10 +327,64 @@ def generate_html_navigation(
         return False
 
 
+def collect_pipeline_outputs(
+    pipeline_output_dir: Path, max_files_per_section: int = MAX_FILES_PER_SECTION
+) -> tuple[list[dict[str, Any]], int]:
+    """Discover pipeline artifacts grouped by step output directory.
+
+    Returns ``(sections, total_files)`` where each section is
+    ``{step_name, step_dir, file_count, files}``. ``file_count`` reports every
+    discovered file while ``files`` is capped at ``max_files_per_section``.
+    Step directories that do not exist are skipped.
+    """
+    sections: list[dict[str, Any]] = []
+    total_files = 0
+
+    for step_name, step_dir, patterns in PIPELINE_OUTPUT_SECTIONS:
+        step_path = pipeline_output_dir / step_dir
+        if not step_path.exists():
+            continue
+
+        step_files: list[dict[str, Any]] = []
+        for pattern in patterns:
+            for file_path in step_path.rglob(pattern):
+                if file_path.is_file():
+                    try:
+                        rel_path = str(file_path.relative_to(pipeline_output_dir))
+                        file_size = file_path.stat().st_size
+                        file_size_mb = file_size / (1024 * 1024)
+
+                        step_files.append(
+                            {
+                                "name": file_path.name,
+                                "path": rel_path,
+                                "size_mb": round(file_size_mb, 3),
+                                "type": file_path.suffix.lower(),
+                            }
+                        )
+                        total_files += 1
+                    except OSError as e:
+                        logger.debug(f"Could not read file {file_path}: {e}")
+
+        if step_files:
+            step_files.sort(key=lambda x: (x["type"], x["name"]))
+            sections.append(
+                {
+                    "step_name": step_name,
+                    "step_dir": step_dir,
+                    "file_count": len(step_files),
+                    "files": step_files[:max_files_per_section],
+                }
+            )
+
+    return sections, total_files
+
+
 def _build_navigation_html(
-    output_sections: List[Dict[str, Any]], total_files: int, pipeline_output_dir: Path
+    output_sections: list[dict[str, Any]], total_files: int, pipeline_output_dir: Path
 ) -> str:
     """Build the HTML content for the navigation page."""
+    pipeline_dir_name = html.escape(pipeline_output_dir.name)
     html_content = f"""<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -362,29 +429,29 @@ def _build_navigation_html(
             box-shadow: 0 8px 20px rgba(118, 75, 162, 0.2);
         }}
         .summary-grid {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-top: 20px; }}
-        .summary-card {{ 
-            background: rgba(255, 255, 255, 0.15); 
-            border: 1px solid rgba(255,255,255,0.2); 
-            border-radius: 12px; padding: 20px; text-align: center; 
+        .summary-card {{
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 12px; padding: 20px; text-align: center;
             transition: transform 0.3s ease;
         }}
         .summary-card:hover {{ transform: translateY(-5px); background: rgba(255, 255, 255, 0.25); }}
         .summary-card .value {{ font-size: 2.2em; font-weight: 800; color: #fff; margin: 10px 0; text-shadow: 0 2px 4px rgba(0,0,0,0.1); }}
-        .step-section {{ 
-            background: rgba(255, 255, 255, 0.6); 
-            border: 1px solid rgba(255, 255, 255, 0.5); 
-            border-radius: 16px; padding: 25px; margin: 25px 0; 
+        .step-section {{
+            background: rgba(255, 255, 255, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 16px; padding: 25px; margin: 25px 0;
             box-shadow: 0 4px 6px rgba(0,0,0,0.02);
             transition: all 0.3s ease;
         }}
         .step-section:hover {{ background: rgba(255, 255, 255, 0.8); box-shadow: 0 8px 15px rgba(0,0,0,0.05); }}
         .step-header {{ font-weight: 700; color: #2d3748; margin-bottom: 15px; font-size: 1.3em; }}
         .file-list {{ display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px; margin-top: 20px; }}
-        .file-item {{ 
-            background: rgba(255, 255, 255, 0.9); 
-            border: 1px solid rgba(226, 232, 240, 0.8); 
-            border-radius: 10px; padding: 15px; 
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); 
+        .file-item {{
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            border-radius: 10px; padding: 15px;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }}
         .file-item:hover {{ transform: translateY(-3px); box-shadow: 0 6px 12px rgba(0,0,0,0.08); border-color: #cbd5e0; }}
         .file-item a {{ color: #3182ce; text-decoration: none; font-weight: 600; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }}
@@ -414,7 +481,7 @@ def _build_navigation_html(
                 </div>
                 <div class="summary-card">
                     <div>Output Directory</div>
-                    <div class="value" style="font-size: 0.8em;">{pipeline_output_dir.name}</div>
+                    <div class="value" style="font-size: 0.8em;">{pipeline_dir_name}</div>
                 </div>
             </div>
         </div>
@@ -424,16 +491,20 @@ def _build_navigation_html(
 
     # Add each step section
     for section in output_sections:
+        step_name = html.escape(str(section["step_name"]))
+        step_dir = html.escape(str(section["step_dir"]))
         html_content += f"""
         <div class="step-section">
-            <div class="step-header">📂 {section["step_name"]} ({section["step_dir"]})</div>
+            <div class="step-header">📂 {step_name} ({step_dir})</div>
             <p><strong>Files:</strong> {section["file_count"]}</p>
             <div class="file-list">
 """
         for file_info in section["files"]:
+            file_name = html.escape(str(file_info["name"]))
+            file_path = html.escape(str(file_info["path"]))
             html_content += f"""
                 <div class="file-item">
-                    <a href="../{file_info["path"]}" target="_blank">{file_info["name"]}</a>
+                    <a href="../{file_path}" target="_blank">{file_name}</a>
                     <div class="file-meta">{file_info["type"]} • {file_info["size_mb"]} MB</div>
                 </div>
 """

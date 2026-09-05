@@ -42,7 +42,7 @@
 
 #### `process_export(target_dir, output_dir, verbose=False, **kwargs) -> bool`
 
-**Description**: Pipeline entry point (called by `7_export.py`). Loads parsed GNN specs from Step 3 output (`gnn_processing_results.json`) and exports each file to the requested formats. Accepts a `formats` keyword (list of format names).
+**Description**: Pipeline entry point (called by `7_export.py`). Loads parsed GNN specs from Step 3 output (`gnn_processing_results.json`) and exports each file to the requested formats. Accepts a `formats` keyword (list of format names) and an optional opt-in `geo_infer` options mapping (see Configuration).
 
 #### `validate_export_outputs(output_dir, expected_formats=None) -> Dict[str, Any]`
 
@@ -101,6 +101,16 @@ success = generate_exports(
 
 - `formats` (List[str]): Formats to export (default: `["json", "xml", "graphml", "gexf", "pickle"]`)
 - `logger` (logging.Logger): Override the default module logger (injected by the pipeline template)
+- `geo_infer` (Dict[str, Any]): Optional opt-in mapping enabling the strict
+  GEO-INFER export when `"geo_infer"` is requested in `formats`. Keys:
+  `step_seconds` (float, mandatory, must be finite and positive),
+  `state_ids_path` (path to a JSON array labeling states in matrix order,
+  optional; required for `space_kind="h3"`), and `space_kind`
+  (`"categorical"` (default) or `"h3"`). If `geo_infer` is requested without
+  a `step_seconds` key, `process_export` raises a distinct `ValueError`
+  naming `geo_infer` and the missing key before any output is written.
+  When `geo_infer` is not requested, the five default formats are produced
+  exactly as before.
 
 The default format set and the writer dispatch tables are derived from the canonical **format registry** (`export.registry`). The registry is the single source of truth for format names, extensions, writer callables, and categories. Do not add format-dispatch `if/elif` chains — extend the registry instead.
 
@@ -112,7 +122,8 @@ The default format set and the writer dispatch tables are derived from the canon
 ### Required Dependencies
 
 - `json` - JSON export
-- `xml.etree.ElementTree` - XML export
+- `xml.etree.ElementTree` - XML serialization (writers)
+- `defusedxml` - XML, GraphML, and GEXF validation reads without DTD/entity expansion
 - `pickle` - Pickle serialization
 
 ### Optional Dependencies
@@ -203,7 +214,6 @@ output/7_export_output/
   └→ output/7_export_output/ (Standalone exports)
 ```
 
----
 
 ## Testing
 
@@ -214,6 +224,8 @@ output/7_export_output/
 - `src/tests/export/test_export_public_api.py`
 - `src/tests/export/test_export_roundtrip.py`
 - `src/tests/export/test_export_registry_and_validate.py`
+- `src/tests/export/test_geo_infer_contract.py`
+- `src/tests/export/test_export_geo_pipeline.py`
 
 ### Test Coverage
 
@@ -360,3 +372,14 @@ python src/7_export.py --target-dir input/ --verbose
 - **[AGENTS](AGENTS.md)**: Agentic Workflows
 - **[SPEC](SPEC.md)**: Architectural Specification
 - **[SKILL](SKILL.md)**: Capability API
+
+## GNN / GEO-INFER boundary
+
+`geo_infer.py` owns the opt-in `geo_infer` registry writer. Its normative
+[contract](geo_infer_contract.md) accepts only explicit single-factor A–E models
+and requires physical step seconds. Keep the default five Step 7 formats stable.
+Do not import GEO-INFER into this package, infer geographic state meaning, repair
+matrix probabilities, or silently coerce a continuous model into categorical form.
+Run export tests and the POMDP extractor orientation tests when changing this
+boundary; run GEO's separate-environment conformance command when both repos are
+available. General canonicalization must preserve non-square axes and be idempotent.

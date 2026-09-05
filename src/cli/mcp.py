@@ -11,24 +11,14 @@ logger = logging.getLogger(__name__)
 
 
 def cli_health_check(params: (Dict[str, Any]) | None = None) -> Dict[str, Any]:
-    """Return CLI module health and available subcommands."""
-    subcommands: list[Any] = [
-        "run",
-        "validate",
-        "parse",
-        "render",
-        "report",
-        "reproduce",
-        "preflight",
-        "health",
-        "serve",
-        "templates",
-        "models",
-        "pull",
-        "watch",
-        "graph",
-        "lsp",
-    ]
+    """Return CLI module health and available subcommands.
+
+    The subcommand list is derived from the dispatcher's
+    ``COMMAND_HANDLERS`` table in ``cli.__init__`` — one source of truth.
+    """
+    from cli import SUBCOMMANDS
+
+    subcommands: list[str] = list(SUBCOMMANDS)
     return {
         "success": True,
         "module": "cli",

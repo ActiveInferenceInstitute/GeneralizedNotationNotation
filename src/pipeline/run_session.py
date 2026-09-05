@@ -16,7 +16,7 @@ manifest. No wall-clock values participate in the run hash.
 import hashlib
 from enum import Enum
 from pathlib import Path
-from typing import List, Optional, Sequence, Union
+from typing import Any, Dict, List, Optional, Sequence, Union
 
 from pydantic import BaseModel, Field
 
@@ -39,6 +39,8 @@ class WorkUnit(BaseModel):
     status: UnitStatus = UnitStatus.PENDING
     artifact_refs: List[str] = Field(default_factory=list)
     error: str = ""
+    input_identity: Dict[str, Any] = Field(default_factory=dict)
+    artifact_hashes: Dict[str, str] = Field(default_factory=dict)
 
 
 class RunSession(BaseModel):
@@ -176,18 +178,18 @@ def load_session(path: Union[str, Path]) -> RunSession:
 
 
 def remaining_units(session: RunSession) -> List[str]:
-    """Return unit ids that still need work (PENDING or FAILED).
+    """Return unit ids that still need work (PENDING, RUNNING, or FAILED).
 
     Args:
         session: The session to inspect.
 
     Returns:
-        Ordered list of unit ids whose status is PENDING or FAILED.
+        Ordered list of unit ids whose status is PENDING, RUNNING, or FAILED.
     """
     return [
         wu.unit_id
         for wu in session.units
-        if wu.status in (UnitStatus.PENDING, UnitStatus.FAILED)
+        if wu.status in (UnitStatus.PENDING, UnitStatus.RUNNING, UnitStatus.FAILED)
     ]
 
 
@@ -195,7 +197,7 @@ def resume_plan(session: RunSession) -> List[str]:
     """Return the resume targets for a session.
 
     Documents resume intent: a resumed run should process exactly the units
-    returned here (those not yet DONE/SKIPPED, i.e. PENDING or FAILED).
+    returned here (those not yet DONE/SKIPPED, i.e. PENDING, RUNNING, or FAILED).
 
     Args:
         session: The session to inspect.
@@ -271,12 +273,21 @@ def cancel_safe_cleanup(session: RunSession, workdir: Union[str, Path]) -> List[
     if not base.exists():
         return removed
 
+    protected = {
+        resolved
+        for unit in session.units
+        if unit.status == UnitStatus.DONE
+        for ref in unit.artifact_refs
+        if (resolved := _safe_resolve_under(base, ref)) is not None
+    }
     for wu in session.units:
         if wu.status == UnitStatus.DONE:
             continue
         for ref in wu.artifact_refs:
             resolved = _safe_resolve_under(base, ref)
-            if resolved is None:
+            if resolved is None or any(
+                resolved == keep or resolved.is_relative_to(keep) for keep in protected
+            ):
                 continue
             if resolved.is_file():
                 resolved.unlink()

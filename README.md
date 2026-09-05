@@ -56,7 +56,7 @@
 **Test Suite**: The command of record is `uv run --extra dev python -m pytest src/tests/ -q --tb=no --ignore=src/tests/llm/test_llm_ollama.py --ignore=src/tests/llm/test_llm_ollama_integration.py`. Run it in the current environment for pass/skip totals; Julia RxInfer execution uses the committed `Project.toml` under `src/execute/rxinfer/`, and ActiveInference.jl uses the committed environment under `src/execute/activeinference_jl/` (`julia --startup-file=no --project=<env> <script>`). Ollama tests are opt-in when a local daemon and configured test model are available.
 **Published Output Evidence (verified 2026-06-18)**: root `output/` is a POMDP GridWorld full-pipeline publication generated from `input/gnn_files/pomdp_gridworld` with `--frameworks all` and validated by `uv run --extra dev python scripts/check_pomdp_gridworld_outputs.py output`.
 **Features (v2.0.0)**: semantic fidelity ledgers across all maintained model families, strict JSON parse/serialize/parse preservation for variables, edges, dimensions, parameter shapes, equations, time, and ontology mappings; cross-framework reliability ledgers with explicit compatible/unsupported backend statuses; GridWorld comparison across PyMDP, RxInfer, and ActiveInference.jl; model-family acceptance and interpretability ledgers; maintained template CLI (`gnn templates list`, `gnn templates show`, `gnn pull`); authenticated local MCP HTTP orchestration; structured PyMDP 1.0 POMDP execution; static/headless GUI publication; PyMDP Scaling Study; and MCP Full Module Exposure.
-**New in v3.0.0 ("Long-Running Orchestration")**: three safe-by-design `src/pipeline/` contracts — durable observation streams, resumable run sessions, and auditable container plans — plus additive live wiring, a strict acceptance gate (`scripts/run_v3_orchestration_acceptance.py`), and 3 new MCP tools. No live infrastructure mutation; every module generates, validates, replays, or plans data only. See [doc/pipeline/v3_orchestration.md](./doc/pipeline/v3_orchestration.md).
+**New in v3.0.0 ("Long-Running Orchestration")**: three safe-by-design `src/pipeline/` contracts — durable observation streams, resumable run sessions, and auditable container plans — plus additive live wiring, a strict acceptance gate (`scripts/run_v3_orchestration_acceptance.py`), and 3 new MCP tools. No live infrastructure mutation; every module generates, validates, replays, or plans data only. See [doc/pipeline/v3_orchestration.md](./doc/pipeline/v3_orchestration.md); run identity, reproduction, and manifest-verification rules: [doc/development/durable-runs.md](./doc/development/durable-runs.md).
 **New in v3.2.0 ("Exemplar Gold Standard")**: the `input/gnn_files/continuous/` exemplars are pure linear-Gaussian state-space models (`F/H/Q/R`, `prior_mean/prior_cov`, optional `goal_mean/control_gain`) with native JAX, NumPyro, PyTorch, Stan and RxInfer.jl backends; `unsupported` is a first-class render status for categorical backends (PyMDP, ActiveInference.jl, DisCoPy, bnlearn) on continuous models and is never handed to Step 12; the Stan renderer emits runnable HMM (forward algorithm) and LGSSM (Kalman marginal likelihood) programs plus a `<stem>_stan.py` cmdstanpy driver executed by `src/execute/stan/`; Step 12 merges `execution_summary.json` across input folders; the Julia pre-exec gate degrades to an advisory sweep instead of blocking scripts on a toolchain-less launcher. See [CHANGELOG.md](./CHANGELOG.md) §3.2.0 and [Model Kinds and Framework Support](#-model-kinds-and-framework-support-v320).
 📖 **DOI:** [10.5281/zenodo.7803328](https://doi.org/10.5281/zenodo.7803328)  
 📁 **Archive:** [zenodo.org/records/7803328](https://zenodo.org/records/7803328)
@@ -190,7 +190,7 @@ graph LR
         
         B["📊 Graphical Models<br/>• Factor graphs<br/>• Network visualizations<br/>• Dependency diagrams<br/>• Interactive visualizations"]
         
-        C["⚙️ Executable Models<br/>• PyMDP simulations<br/>• RxInfer.jl implementations<br/>• ActiveInference.jl agents<br/>• JAX computations<br/>• DisCoPy diagrams<br/>• PyTorch inference<br/>• NumPyro probabilistic<br/>• Stan programs<br/>• bnlearn networks"]
+        C["⚙️ Executable Models<br/>• PyMDP simulations<br/>• RxInfer.jl implementations<br/>• ActiveInference.jl agents<br/>• JAX computations<br/>• DisCoPy diagrams<br/>• PyTorch inference<br/>• NumPyro probabilistic<br/>• Stan programs<br/>• bnlearn networks (render-only)"]
     end
     
     A -->|Parse & Extract| B
@@ -217,7 +217,7 @@ GNN v3.0.0 adds **safe-by-design** orchestration so extended model-family accept
 - **Resumable run sessions** (`pipeline.run_session`): immutable-style run manifests with atomic checkpoints, status reports, resume plans, and path-escape-safe cancellation cleanup, so an interrupted run never corrupts its prior checkpoint.
 - **Auditable container plans** (`pipeline.container_plan`): declarative, deterministically hashed container/run plans that describe what *would* execute — no container is ever started.
 
-These ship with additive live wiring (`session_acceptance.py`, `run_manifest.py`, `pipeline_container_plan.py`), a strict end-to-end acceptance gate (`scripts/run_v3_orchestration_acceptance.py`), and 3 new MCP tools. Full API reference: [doc/pipeline/v3_orchestration.md](./doc/pipeline/v3_orchestration.md).
+These ship with additive live wiring (`session_acceptance.py`, `run_manifest.py`, `pipeline_container_plan.py`), a strict end-to-end acceptance gate (`scripts/run_v3_orchestration_acceptance.py`), and 3 new MCP tools. Full API reference: [doc/pipeline/v3_orchestration.md](./doc/pipeline/v3_orchestration.md). Run identity (`gnn-run-v2`), reproduction preflight validation, run-manifest verification (index schema 3.1), and session-reuse rules are specified in [doc/development/durable-runs.md](./doc/development/durable-runs.md).
 
 ### 📋 Structured File Format
 
@@ -471,7 +471,7 @@ cannot. `render.pomdp_contract.detect_model_kind` classifies each file;
 
 | Model kind | Exemplar folders | Renders + executes on | Render status `unsupported` on |
 |---|---|---|---|
-| Discrete-state POMDP / HMM (categorical `A/B/C/D[/E]`; flat, factored, hierarchical, multi-agent, learning) | `basics/`, `discrete/`, `hierarchical/`, `learning/`, `multiagent/`, `pomdp_gridworld/`, `precision/`, `pymdp_scaling_study/`, `structured/` | PyMDP, RxInfer.jl, ActiveInference.jl, JAX, DisCoPy, PyTorch, NumPyro, Stan (bnlearn renders; execution needs the intentionally unlocked `bnlearn`) | — |
+| Discrete-state POMDP / HMM (categorical `A/B/C/D[/E]`; flat, factored, hierarchical, multi-agent, learning) | `basics/`, `discrete/`, `hierarchical/`, `learning/`, `multiagent/`, `pomdp_gridworld/`, `precision/`, `pymdp_scaling_study/`, `structured/` | PyMDP, RxInfer.jl, ActiveInference.jl, JAX, DisCoPy, PyTorch, NumPyro, Stan (bnlearn is render-only; no Step 12 executor) | — |
 | Continuous-state linear-Gaussian (`F/H/Q/R`, `prior_mean/prior_cov`, optional closed-loop `goal_mean/control_gain`) | `continuous/` | JAX, NumPyro (+NUTS), PyTorch, Stan (Kalman marginal likelihood), RxInfer.jl (native LGSSM) — all via a Kalman filter with closed-loop control when declared | PyMDP, ActiveInference.jl, DisCoPy, bnlearn (categorical backends) |
 
 `unsupported` is a first-class render status: it is excluded from success rates,
@@ -1123,6 +1123,7 @@ Comprehensive documentation is organized in the `doc/` directory.
 | **📡 MCP** | [Model Context Protocol](./doc/mcp/) |
 | **🧮 SymPy** | [Mathematical Processing](./doc/sympy/) |
 | **🔄 DisCoPy** | [Categorical Diagrams](./doc/discopy/) |
+| **🔬 fep_lean (Lean 4)** | [fep_lean collaboration program](./doc/other/fep_lean/README.md) — bridge contract mirror; canonical bridge docs live in the sibling checkout at `../fep_lean/docs/design/gnn-bridge/` |
 
 ### 🧩 Application Examples
 

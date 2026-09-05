@@ -65,7 +65,7 @@ variables = extract_variables(content)
 connections = extract_connections(content)
 
 # Check available providers
-providers = get_available_providers()  # e.g., ['ollama', 'openai']
+providers = get_available_providers()  # env-driven: ollama unless OLLAMA_DISABLED, cloud providers only with their API keys
 ```
 
 ## Key Exports

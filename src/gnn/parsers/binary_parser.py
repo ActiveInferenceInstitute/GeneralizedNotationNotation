@@ -13,6 +13,9 @@ import base64
 import io
 import logging
 import pickle  # nosec B403
+
+# Opcode inspection does not reconstruct or execute objects.
+import pickletools  # nosec B403
 from typing import Any, Dict, List, cast
 
 logger = logging.getLogger(__name__)
@@ -104,12 +107,20 @@ class _RestrictedUnpickler(pickle.Unpickler):  # nosec B301 - allowlist-gated
 
 
 def safe_pickle_load(file_obj: Any) -> Any:
-    """pickle.load gated by the GNN restricted unpickler."""
-    return _RestrictedUnpickler(file_obj).load()
+    """Read one byte snapshot and reconstruct one restricted GNN record."""
+    return safe_pickle_loads(file_obj.read())
 
 
 def safe_pickle_loads(data: bytes) -> Any:
-    """pickle.loads gated by the GNN restricted unpickler."""
+    """Reconstruct one record; reject cached extension globals and trailing data."""
+    stop_position: int | None = None
+    for opcode, _, position in pickletools.genops(data):
+        # A cached EXT global bypasses Unpickler.find_class entirely.
+        if opcode.name in {"EXT1", "EXT2", "EXT4"}:
+            raise pickle.UnpicklingError("Pickle extension globals are not permitted")
+        stop_position = position
+    if stop_position is None or stop_position + 1 != len(data):
+        raise pickle.UnpicklingError("Trailing data after GNN record pickle")
     return _RestrictedUnpickler(io.BytesIO(data)).load()
 
 
@@ -251,6 +262,7 @@ class PickleGNNParser(BaseGNNParser):
         # Reconstruct connections
         for conn_data in data.get("connections", []):
             conn = Connection(
+                annotation=conn_data.get("annotation"),
                 source_variables=conn_data.get("source_variables", []),
                 target_variables=conn_data.get("target_variables", []),
                 connection_type=ConnectionType(

@@ -157,7 +157,8 @@ def _mean_belief_confidence(result: Dict[str, Any]) -> Optional[float]:
         if arr.ndim == 2:
             return float(np.mean(np.max(arr, axis=1)))
         return None
-    except Exception:
+    except (TypeError, ValueError) as exc:
+        logger.debug("mean_belief_confidence metric failed: %s", exc)
         return None
 
 
@@ -187,7 +188,8 @@ def _mean_efe(result: Dict[str, Any]) -> Optional[float]:
                     selected.append(efe_arr[t, a_idx])
             return float(np.mean(selected)) if selected else float(np.mean(efe_arr))
         return None
-    except Exception:
+    except (TypeError, ValueError, IndexError, KeyError, ZeroDivisionError) as exc:
+        logger.debug("mean_efe metric failed: %s", exc)
         return None
 
 
@@ -206,7 +208,8 @@ def _mean_belief_entropy(result: Dict[str, Any]) -> Optional[float]:
         arr = arr / row_sums
         entropies = -np.sum(arr * np.log(arr), axis=1)
         return float(np.mean(entropies))
-    except Exception:
+    except (TypeError, ValueError, FloatingPointError) as exc:
+        logger.debug("mean_belief_entropy metric failed: %s", exc)
         return None
 
 
@@ -218,7 +221,8 @@ def _action_diversity(result: Dict[str, Any]) -> Optional[float]:
     try:
         unique = len({int(a) for a in actions})
         return round(unique / len(actions), 3)
-    except Exception:
+    except (TypeError, ValueError, ZeroDivisionError) as exc:
+        logger.debug("action_diversity metric failed: %s", exc)
         return None
 
 

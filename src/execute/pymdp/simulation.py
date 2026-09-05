@@ -32,6 +32,19 @@ import numpy as np
 
 logger = logging.getLogger(__name__)
 
+EFE_CONVENTION_PYMDP = (
+    "pymdp 1.0.0 neg_efe sign convention: policy posterior q(pi) ∝"
+    " E(pi) exp(-gamma * EFE); the emitted expected_free_energy is"
+    " neg_efe = -EFE, where EFE (pymdp/control.py"
+    " compute_neg_efe_policy) = expected utility"
+    " (linear payoff sum sum_o q(o) C[o] over predicted observations"
+    " — NOT a KL against C) + states info gain (expected information"
+    " gain about hidden states). A pymdp 'expected_free_energy' value"
+    " is therefore not comparable to the risk+ambiguity EFE of the jax"
+    " renderer or the Lean expectedFreeEnergy_eq_risk_add_ambiguity"
+    " without sign and convention mapping (bridge finding O1)."
+)
+
 
 # ---------------------------------------------------------------------------
 # GNN matrix normalisation helpers (pure numpy; framework-agnostic)
@@ -592,6 +605,7 @@ def run_pymdp_simulation(
         "actions_by_control_factor": {"joint_action": actions},
         "beliefs_by_factor": {"joint_state": beliefs},
         "expected_free_energy": efe_history,
+        "expected_free_energy_convention": EFE_CONVENTION_PYMDP,
         "variational_free_energy": vfe_history,
         "policy_posterior": policy_posterior_history,
         "simulation_trace": {

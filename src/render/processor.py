@@ -9,10 +9,14 @@ This module provides comprehensive rendering capabilities that:
 4. Provide structured documentation and results
 """
 
+import hashlib
 import json
 import logging
+import os
 import re
 import sys
+import tempfile
+import uuid
 from datetime import datetime
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple, Union, cast
@@ -142,6 +146,27 @@ def _rehydrate_file_backed_parse_summary(
             f"Parsed GNN source is not a renderable POMDP specification: {source_path}"
         )
     return pomdp_to_gnn_spec(pomdp_space)
+
+
+def _normalize_initial_vectors(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
+    """Flatten singleton-row/column C/D/E vectors before dimension inference.
+
+    The structured Markdown parser preserves braces around a tuple as a
+    one-row vector. Canonical inference must count its entries, not that row.
+    Genuine multidimensional arrays remain intact for normal validation.
+    """
+    initial = gnn_spec.get("initialparameterization") or gnn_spec.get(
+        "initial_parameterization"
+    )
+    if not isinstance(initial, dict):
+        return gnn_spec
+    normalized = dict(initial)
+    for name in ("C", "D", "E"):
+        if name in normalized:
+            vector = np.asarray(normalized[name])
+            if vector.ndim == 2 and 1 in vector.shape:
+                normalized[name] = vector.reshape(-1).tolist()
+    return {**gnn_spec, "initialparameterization": normalized}
 
 
 def _render_succeeded(
@@ -313,6 +338,148 @@ def _load_prior_render_summary(summary_file: Path) -> Dict[str, Any]:
         return {}
 
 
+def _render_file_identity(path: Path) -> Dict[str, str]:
+    """Identify a source or artifact by canonical path and its current bytes."""
+    return {
+        "path": str(path.resolve()),
+        "sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
+    }
+
+
+def _atomic_render_json(path: Path, payload: Dict[str, Any]) -> None:
+    """Publish a complete JSON document with a same-directory atomic replace."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temporary: Optional[str] = None
+    try:
+        with tempfile.NamedTemporaryFile(
+            mode="w", encoding="utf-8", dir=path.parent, delete=False
+        ) as handle:
+            temporary = handle.name
+            json.dump(payload, handle, indent=2, default=str)
+            handle.flush()
+            os.fsync(handle.fileno())
+        os.replace(temporary, path)
+    finally:
+        if temporary and os.path.exists(temporary):
+            os.unlink(temporary)
+
+
+def _write_render_receipt(
+    output_dir: Path,
+    target_dir: Path,
+    results: Dict[str, Any],
+    configuration: Dict[str, Any],
+    run_id: str,
+    processing_type: str,
+) -> Dict[str, Any]:
+    """Replace this scope, carry only verified same-run records, and recount."""
+    summary_file = output_dir / "render_processing_summary.json"
+    prior = _load_prior_render_summary(summary_file)
+    if prior:
+        digest = hashlib.sha256(
+            json.dumps(prior, sort_keys=True, default=str).encode()
+        ).hexdigest()
+        history = output_dir / "history" / f"render-{digest}.json"
+        if not history.exists():
+            _atomic_render_json(history, prior)
+    identity = {
+        "run_id": run_id,
+        "config_sha256": hashlib.sha256(
+            json.dumps(configuration, sort_keys=True, default=str).encode()
+        ).hexdigest(),
+    }
+    merged: Dict[str, Any] = {}
+    prior_results = prior.get("file_results", {})
+    if prior.get("receipt_identity") == identity and isinstance(prior_results, dict):
+        for source, record in prior_results.items():
+            path = Path(source).resolve()
+            if path.is_relative_to(target_dir.resolve()) or not isinstance(
+                record, dict
+            ):
+                continue
+            try:
+                artifacts_valid = all(
+                    isinstance(fr, dict)
+                    and all(
+                        artifact == _render_file_identity(Path(artifact["path"]))
+                        for artifact in fr.get("artifact_identities", [])
+                    )
+                    for fr in record.get("framework_results", {}).values()
+                )
+                if artifacts_valid and record.get(
+                    "source_identity"
+                ) == _render_file_identity(path):
+                    merged[str(path)] = record
+            except (OSError, TypeError, KeyError, AttributeError):
+                continue
+    for source, record in results.items():
+        path = Path(source).resolve()
+        try:
+            source_identity = _render_file_identity(path)
+            if record.get("source_identity", source_identity) != source_identity:
+                record = {
+                    "overall_success": False,
+                    "framework_results": {},
+                    "error": "Source changed while rendering",
+                }
+            record["source_identity"] = source_identity
+            for framework_result in record.get("framework_results", {}).values():
+                if isinstance(framework_result, dict):
+                    framework_result["artifact_identities"] = [
+                        _render_file_identity(Path(artifact))
+                        for artifact in framework_result.get("output_files", [])
+                        if Path(artifact).is_file()
+                    ]
+        except OSError as exc:
+            record = {
+                "overall_success": False,
+                "framework_results": {},
+                "error": str(exc),
+            }
+        merged[str(path)] = record
+    successful = attempts = rendered = 0
+    failed: List[Dict[str, str]] = []
+    unsupported: List[Dict[str, str]] = []
+    for source, record in merged.items():
+        successful += bool(record.get("overall_success", record.get("success", False)))
+        framework_results = record.get("framework_results", {})
+        if not isinstance(framework_results, dict):
+            continue
+        for framework, result in framework_results.items():
+            if not isinstance(result, dict):
+                continue
+            diagnostic = {
+                "file": source,
+                "framework": framework,
+                "message": str(result.get("message", "")),
+            }
+            if result.get("unsupported"):
+                unsupported.append(diagnostic)
+            else:
+                attempts += 1
+                rendered += bool(result.get("success"))
+                if not result.get("success"):
+                    failed.append(diagnostic)
+    summary = {
+        "timestamp": datetime.now().isoformat(),
+        "processing_type": processing_type,
+        "receipt_identity": identity,
+        "target_directory": str(target_dir.resolve()),
+        "configuration": configuration,
+        "file_results": merged,
+        "total_files": len(merged),
+        "successful_files": successful,
+        "failed_files": len(merged) - successful,
+        "total_framework_attempts": attempts,
+        "successful_framework_renderings": rendered,
+        "framework_success_rate": rendered / attempts * 100 if attempts else 0,
+        "failed_framework_renderings": failed,
+        "unsupported_framework_renderings": unsupported,
+    }
+    _atomic_render_json(summary_file, summary)
+    return summary
+
+
 def parse_frameworks_selection(
     frameworks: Union[str, List[str], None],
 ) -> Tuple[Optional[List[str]], bool]:
@@ -405,11 +572,36 @@ def process_render(
                 gnn_files.extend(target_dir.glob(pattern))
         gnn_files = [path for path in gnn_files if is_model_source_path(path)]
 
+        configuration = {
+            "frameworks": sorted(frameworks) if frameworks else "all",
+            "strict_validation": strict_validation,
+            "strict_framework_success": strict_framework_success,
+            "verbose": verbose,
+            "pomdp_processing_available": pomdp_available,
+            "options": {
+                key: value
+                for key, value in kwargs.items()
+                if key not in {"run_id", "logger"}
+            },
+        }
+        run_id = str(
+            kwargs.get("run_id") or os.environ.get("GNN_RUN_ID") or uuid.uuid4().hex
+        )
         if not gnn_files:
             logger.warning(f"No GNN files found in {target_dir}")
-            # Exit-code 2: no input. Distinguishes "nothing to render" from
-            # "rendered successfully".
+            if (output_dir / "render_processing_summary.json").exists():
+                _write_render_receipt(
+                    output_dir,
+                    target_dir,
+                    {},
+                    configuration,
+                    run_id,
+                    "POMDP-aware rendering" if pomdp_available else "Basic rendering",
+                )
             return 2
+        source_identities = {
+            str(path): _render_file_identity(path) for path in gnn_files
+        }
 
         logger.info(f"Found {len(gnn_files)} GNN files to process")
 
@@ -558,65 +750,17 @@ def process_render(
                     logger.error(error_msg)
                     results[str(gnn_file)] = {"success": False, "error": error_msg}
 
-        # Create overall processing summary.
-        #
-        # The pipeline invokes this render step once per top-level input
-        # folder, each writing the same summary file. Aggregate the prior
-        # folders' results so ``file_results`` covers every rendered script
-        # and Step 12's manifest-based discovery (V-10) does not execute only
-        # the last folder.
+        for source, record in results.items():
+            record["source_identity"] = source_identities[source]
         summary_file = output_dir / "render_processing_summary.json"
-        prior = _load_prior_render_summary(summary_file)
-        merged_results = dict(prior.get("file_results") or {})
-        merged_results.update(results)
-
-        merged_total_files = int(prior.get("total_files", 0)) + len(gnn_files)
-        merged_successful_files = int(prior.get("successful_files", 0)) + success_count
-        merged_framework_attempts = (
-            int(prior.get("total_framework_attempts", 0)) + total_framework_attempts
+        summary = _write_render_receipt(
+            output_dir,
+            target_dir,
+            results,
+            configuration,
+            run_id,
+            "POMDP-aware rendering" if pomdp_available else "Basic rendering",
         )
-        merged_framework_successes = (
-            int(prior.get("successful_framework_renderings", 0))
-            + total_framework_successes
-        )
-        merged_failed_renderings = (
-            list(prior.get("failed_framework_renderings") or [])
-            + failed_framework_renderings
-        )
-        merged_unsupported_renderings = (
-            list(prior.get("unsupported_framework_renderings") or [])
-            + unsupported_framework_renderings
-        )
-
-        summary: dict[str, Any] = {
-            "timestamp": datetime.now().isoformat(),
-            "processing_type": "POMDP-aware rendering"
-            if pomdp_available
-            else "Basic rendering",
-            "total_files": merged_total_files,
-            "successful_files": merged_successful_files,
-            "failed_files": merged_total_files - merged_successful_files,
-            "total_framework_attempts": merged_framework_attempts,
-            "successful_framework_renderings": merged_framework_successes,
-            "framework_success_rate": (
-                merged_framework_successes / merged_framework_attempts * 100
-            )
-            if merged_framework_attempts > 0
-            else 0,
-            "configuration": {
-                "frameworks": frameworks or "all",
-                "strict_validation": strict_validation,
-                "strict_framework_success": strict_framework_success,
-                "verbose": verbose,
-                "pomdp_processing_available": pomdp_available,
-            },
-            "failed_framework_renderings": merged_failed_renderings,
-            "unsupported_framework_renderings": merged_unsupported_renderings,
-            "file_results": merged_results,
-        }
-
-        with open(summary_file, "w") as f:
-            json.dump(summary, f, indent=2)
 
         # Create overview documentation
         _create_overview_documentation(output_dir, summary)
@@ -838,6 +982,40 @@ Each framework subdirectory contains:
         logger.warning(f"Failed to create overview documentation: {e}")
 
 
+def _render_continuous_target(
+    spec: Dict[str, Any],
+    target: str,
+    output_dir: Path,
+    stem: str,
+    options: Optional[Dict[str, Any]],
+) -> Tuple[bool, str, List[str]]:
+    """Route validated continuous models without imposing discrete matrices."""
+    from importlib import import_module
+
+    targets = {
+        "jax": ("jax.jax_renderer", "render_gnn_to_jax", "_jax.py"),
+        "numpyro": ("numpyro.numpyro_renderer", "render_gnn_to_numpyro", "_numpyro.py"),
+        "pytorch": ("pytorch.pytorch_renderer", "render_gnn_to_pytorch", "_pytorch.py"),
+        "rxinfer": ("rxinfer.rxinfer_renderer", "render_gnn_to_rxinfer", "_rxinfer.jl"),
+        "stan": ("stan.stan_renderer", "render_gnn_to_stan", "_stan.py"),
+    }
+    if target not in targets:
+        return False, f"Continuous models are unsupported for target: {target}", []
+    module_name, function_name, suffix = targets[target]
+    renderer = getattr(import_module(f"render.{module_name}"), function_name)
+    output_file = output_dir / f"{stem}{suffix}"
+    success, message, artifacts = renderer(spec, output_file, options)
+    if not success:
+        return False, str(message), []
+    if target == "rxinfer":
+        # RxInfer's third return field contains warnings, unlike other backends.
+        artifacts = [str(output_file)]
+        metadata = output_file.with_suffix(".metadata.json")
+        if metadata.is_file():
+            artifacts.append(str(metadata))
+    return True, str(message), list(artifacts)
+
+
 def render_gnn_spec(
     gnn_spec: "Union[GNNInternalRepresentation, Dict[str, Any]]",
     target: str,
@@ -881,6 +1059,13 @@ def render_gnn_spec(
         requested_stem = (options or {}).get("output_filename", model_name)
         output_stem = _safe_output_stem(requested_stem)
 
+        from .continuous_common import is_continuous_spec
+
+        if is_continuous_spec(gnn_spec_mapping):
+            return _render_continuous_target(
+                gnn_spec_mapping, target_lower, output_dir, output_stem, options
+            )
+
         if target_lower in {
             "pymdp",
             "rxinfer",
@@ -890,7 +1075,9 @@ def render_gnn_spec(
         }:
             from .pomdp_contract import build_canonical_pomdp_spec
 
-            canonical_spec = build_canonical_pomdp_spec(gnn_spec_mapping)
+            canonical_spec = build_canonical_pomdp_spec(
+                _normalize_initial_vectors(gnn_spec_mapping)
+            )
             if target_lower == "pymdp":
                 from .pymdp.pymdp_renderer import render_gnn_to_pymdp
 
@@ -997,7 +1184,9 @@ def render_gnn_spec(
                 from .pomdp_contract import build_canonical_pomdp_spec
 
                 output_file = output_dir / f"{output_stem}_jax.py"
-                canonical_spec = build_canonical_pomdp_spec(gnn_spec_mapping)
+                canonical_spec = build_canonical_pomdp_spec(
+                    _normalize_initial_vectors(gnn_spec_mapping)
+                )
                 render_fn = (
                     render_gnn_to_jax_pomdp
                     if target_lower == "jax_pomdp"

@@ -8,6 +8,8 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Literal, TypeAlias
 
+from .structure import DirectedEdge, clamp01, cycle_nodes, display_file_name
+
 ModelData: TypeAlias = Mapping[str, Any]
 ModelInput: TypeAlias = str | Path | ModelData | None
 
@@ -296,62 +298,17 @@ def _cycle_nodes(
     block_names: Sequence[str], connections: Sequence[_ConnectionReference]
 ) -> list[str]:
     """Return exactly the nodes in directed cycles using Tarjan components."""
-    graph: dict[str, list[str]] = {}
-    order: list[str] = []
     known = set(block_names)
-    for name in block_names:
-        if name not in order:
-            order.append(name)
-        graph.setdefault(name, [])
-    for connection in connections:
-        if (
-            connection.directed
-            and connection.source in known
-            and connection.target in known
-        ):
-            source = connection.source
-            target = connection.target
-            if source is not None and target is not None:
-                graph.setdefault(source, []).append(target)
-
-    next_index = 0
-    indices: dict[str, int] = {}
-    lowlinks: dict[str, int] = {}
-    stack: list[str] = []
-    on_stack: set[str] = set()
-    cyclic: set[str] = set()
-
-    def strong_connect(node: str) -> None:
-        nonlocal next_index
-        indices[node] = next_index
-        lowlinks[node] = next_index
-        next_index += 1
-        stack.append(node)
-        on_stack.add(node)
-
-        for neighbor in graph.get(node, []):
-            if neighbor not in indices:
-                strong_connect(neighbor)
-                lowlinks[node] = min(lowlinks[node], lowlinks[neighbor])
-            elif neighbor in on_stack:
-                lowlinks[node] = min(lowlinks[node], indices[neighbor])
-
-        if lowlinks[node] != indices[node]:
-            return
-        component: list[str] = []
-        while stack:
-            member = stack.pop()
-            on_stack.remove(member)
-            component.append(member)
-            if member == node:
-                break
-        if len(component) > 1 or node in graph.get(node, []):
-            cyclic.update(component)
-
-    for node in order:
-        if node not in indices:
-            strong_connect(node)
-    return [node for node in order if node in cyclic]
+    edges = [
+        DirectedEdge(source=connection.source, target=connection.target)
+        for connection in connections
+        if connection.directed
+        and connection.source is not None
+        and connection.target is not None
+        and connection.source in known
+        and connection.target in known
+    ]
+    return cycle_nodes(block_names, edges)
 
 
 class ConsistencyChecker:
@@ -649,7 +606,7 @@ def check_consistency(model_data: ModelInput) -> dict[str, Any]:
 
         return {
             "file_path": file_path,
-            "file_name": Path(file_path).name if file_path != "unknown" else "unknown",
+            "file_name": display_file_name(file_path),
             "consistent": consistency_result["is_consistent"],
             "warnings": consistency_result["warnings"],
             "checks": consistency_result["checks"],
@@ -663,7 +620,7 @@ def check_consistency(model_data: ModelInput) -> dict[str, Any]:
         return {
             "status": "error",
             "file_path": file_path,
-            "file_name": Path(file_path).name if file_path != "unknown" else "unknown",
+            "file_name": display_file_name(file_path),
             "error": str(error),
             "consistent": False,
             "warnings": [str(error)],
@@ -684,4 +641,4 @@ def _calculate_consistency_score(consistency_result: Mapping[str, Any]) -> float
         score -= len(reference_result.get("invalid_references", [])) * 0.2
         score -= len(reference_result.get("isolated_blocks", [])) * 0.1
         score -= len(reference_result.get("circular_references", [])) * 0.3
-    return max(0.0, min(1.0, score))
+    return clamp01(score)

@@ -6,13 +6,15 @@ This module provides comprehensive validation capabilities for GNN models, inclu
 
 ```
 src/validation/
-├── __init__.py                    # Module initialization, exports, and process_validation orchestrator
+├── __init__.py                    # Module exports and thin process_validation facade
 ├── README.md                      # This documentation
 ├── AGENTS.md                      # Agent scaffolding documentation
 ├── SPEC.md                        # Module specification
 ├── consistency_checker.py         # Consistency checking (naming, style, structure, references)
 ├── semantic_validator.py          # Semantic validation (structure, state space, connections, math)
 ├── performance_profiler.py        # Performance profiling (complexity, memory, parallelization)
+├── structure.py                   # Shared helpers (content extraction, cycle detection, score clamping)
+├── workflow.py                    # Step-6 directory workflow (stage runner, receipts, accumulation)
 └── mcp.py                         # Model Context Protocol integration
 ```
 
@@ -117,15 +119,22 @@ flowchart LR
 
 Main pipeline orchestrator (called by `6_validation.py`). Reads GNN results JSON from step 3, then runs all three validators on each parsed file.
 
+**kwargs:** `validation_level` (semantic depth: `basic`/`standard`/`strict`/`research`; default `standard`), `strict` (shorthand for `validation_level="strict"`, wired to the orchestrator's `--strict` flag). `logger`, `recursive`, and `profile` are accepted for the pipeline-template contract and do not alter behavior.
+
 **Workflow:**
 
 1. Loads `gnn_processing_results.json` from step 3 output directory
 2. For each parsed file, runs `process_semantic_validation()`, `profile_performance()`, and `check_consistency()`
 3. Calculates average scores and writes `validation_results.json` and `validation_summary.json`
 
-**Returns:** `bool` — `True` if at least one file validated successfully
+**Returns:** `bool` — `True` only when the current manifest contains at least one file and every current file succeeds. Semantic `valid: false`, parser failure, missing parsed artifacts, and operational recovery all fail the current pass. Historical successes cannot change this verdict.
 
-**Location:** `__init__.py`
+**Receipt scope:** optional `run_id` identifies deliberate accumulation across multiple manifests. Without it, the manifest's `run_id`, then its `timestamp`, identifies the run. Manifests with neither field are unbound records scoped to the output
+directory; callers reusing that directory across independent runs must supply `run_id`. Changing the run or `validation_level` starts a fresh scope. Repeating a source path replaces its previous entry, and summaries are recalculated from distinct entries rather than incremented. Each entry includes `receipt_key` and `input_identity` derived from the source path, source/parsed bytes, parser outcome, and run/configuration.
+
+`validation_results.json` retains aggregate `summary` and adds `current_summary` for the current pass. `validation_summary.json` remains the aggregate summary for compatible consumers. Both files are replaced atomically individually; they are not a multi-file transaction.
+
+**Location:** thin binding in `__init__.py`; implementation in `workflow.py` (`validate_directory` with injected `StageServices`).
 
 ### SemanticValidator (`semantic_validator.py`)
 
@@ -140,12 +149,20 @@ Rule-based validator with 7 validation rules across 4 levels (basic, standard, s
 - `_validate_connection_integrity` (level 2) — source/target refs
 - `_validate_mathematical_consistency` (level 2) — matrix dims, probability sums
 - `_validate_active_inference_principles` (level 3) — FEP terms
-- `_validate_causal_relationships` (level 3) — cycle detection
+- `_validate_causal_relationships` (level 3) — cycle detection with exact membership (Tarjan SCC)
 - `_validate_advanced_mathematical_properties` (level 4) — KL divergence
 
 #### `process_semantic_validation(model_data, **kwargs) -> Dict[str, Any]`
 
 Entry point — accepts file path, Path, or dict. Returns `{valid, errors, warnings, semantic_score}`.
+
+#### `validate_content(content, validation_level: str = "standard") -> Dict[str, Any]`
+
+Validate raw GNN content text without file I/O — the in-memory companion to
+`process_semantic_validation`. Returns the same receipt shape with
+`file_path`/`file_name` set to `"unknown"`. File, raw-section, and structured-model inputs share this semantic receipt. Reconstruction preserves all connection endpoints and annotations. Canonical Markdown checks reject undeclared connection endpoints (standard and above) and non-positive numeric dimensions; symbolic dimensions remain supported and comments are ignored.
+
+CLI JSON and the validation MCP file tool expose this receipt under `semantic`. CLI keeps its existing exit policy: findings return 2, or 1 with `--strict`. MCP keeps transport success separate from model validity (`success: true`, `is_valid: false` for a completed validation of an invalid model).
 
 ### PerformanceProfiler (`performance_profiler.py`)
 
@@ -162,7 +179,7 @@ Estimates computational complexity, memory usage, and parallelization potential 
 
 #### `profile_performance(model_path) -> Dict[str, Any]`
 
-Entry point — accepts file path, Path, or dict. Returns `{metrics, warnings, performance_score}`.
+Entry point — accepts file path, Path, or dict. Returns `{metrics, warnings, performance_score}` with `recovery: False` on success and a uniform error receipt (`{status: "error", ..., performance_score: 0.0, recovery: True}`) on failure.
 
 ### ConsistencyChecker (`consistency_checker.py`)
 
@@ -295,7 +312,7 @@ The `process_validation()` orchestrator catches all exceptions per-file, logs er
 
 ## Testing
 
-Validation module tests are located in `src/tests/api/test_comprehensive_api.py` and cover:
+Validation module tests are located in `src/tests/validation/` (`test_validation_overall.py`, `test_consistency_contract.py`, `test_validation_public_api.py`, `test_workflow_contracts.py`) and cover:
 
 - `process_semantic_validation()` with file path and dict inputs
 - `profile_performance()` with file path and dict inputs

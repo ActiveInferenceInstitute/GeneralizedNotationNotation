@@ -55,6 +55,17 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
 
 ### Changed
 
+- **Durable run identity and reproduction.** Run identity uses the
+  `gnn-run-v2` hash schema (canonical relative source paths and contents,
+  effective arguments, resolved steps, input configuration and live child
+  runtime configuration); `gnn reproduce` verifies the complete saved input
+  inventory, configuration and resolved step selection before dispatch and
+  rejects unverifiable legacy history; run manifests verify against index
+  schema 3.1 (older indexes require re-emission); sessions reuse DONE units
+  only when source, family framework/profile, acceptance policy and output
+  artifact bytes still match, interrupted RUNNING units resume, and container
+  plan review normalizes root identities and sensitive mounts. Rules and
+  boundaries: [doc/development/durable-runs.md](doc/development/durable-runs.md).
 - **Documentation accuracy sweep (root, `doc/`, `src/` module docs).** Every
   claim probed against code: fabricated module APIs removed (model_registry,
   analysis, gui, setup, advanced_visualization listed functions/kwargs/files

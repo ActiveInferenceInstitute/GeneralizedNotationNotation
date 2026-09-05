@@ -6,20 +6,23 @@ Low-dependency visual design interface for Active Inference models
 
 from __future__ import annotations
 
-import json
 import logging
-import os
-import tempfile
+import time
 from pathlib import Path
-from typing import Any, Dict, cast
+from typing import Any
 
-try:
-    import gradio as gr
+from ..backend import (
+    detect_gradio_backend,
+    write_json_atomically,
+    write_text_atomically,
+)
+from ..runner import launch_gradio_in_thread
 
-    _GUI_BACKEND = "gradio"
-except ImportError:
-    gr = cast(Any, None)
-    _GUI_BACKEND = cast(Any, None)
+# Shared backend detection (same recovery semantics as GUI 1 / GUI 2).
+_GUI_STATUS = detect_gradio_backend()
+_GUI_BACKEND = _GUI_STATUS.name
+
+_GUI3_PORT = 7862
 
 
 def run_gui(
@@ -75,41 +78,31 @@ def run_gui(
             design_analysis = _analyze_gnn_design(starter_md)
 
             # Write starter model to file
-            with tempfile.NamedTemporaryFile(
-                mode="w", encoding="utf-8", dir=starter_path.parent, delete=False
-            ) as tmp_f:
-                tmp_f.write(starter_md)
-            os.replace(tmp_f.name, str(starter_path))
+            write_text_atomically(starter_path, starter_md)
 
             # Save design analysis
             analysis_file = output_root / "design_analysis.json"
-            with tempfile.NamedTemporaryFile(
-                mode="w", encoding="utf-8", dir=analysis_file.parent, delete=False
-            ) as tmp_f:
-                tmp_f.write(
-                    json.dumps(
-                        {
-                            "gui_type": "design_studio",
-                            "backend": _GUI_BACKEND or "none",
-                            "status": "headless_mode"
-                            if _GUI_BACKEND
-                            else "static_headless_mode",
-                            "analysis": design_analysis,
-                            "export_path": str(starter_path),
-                            "headless_mode": True,
-                            "recommendations": [
-                                "Run with --interactive to launch GUI server on port 7862"
-                            ]
-                            if _GUI_BACKEND
-                            else [
-                                "Install with: uv sync --extra gui",
-                                "Run with --interactive for full GUI experience",
-                            ],
-                        },
-                        indent=2,
-                    )
-                )
-            os.replace(tmp_f.name, str(analysis_file))
+            write_json_atomically(
+                analysis_file,
+                {
+                    "gui_type": "design_studio",
+                    "backend": _GUI_BACKEND or "none",
+                    "status": "headless_mode"
+                    if _GUI_BACKEND
+                    else "static_headless_mode",
+                    "analysis": design_analysis,
+                    "export_path": str(starter_path),
+                    "headless_mode": True,
+                    "recommendations": [
+                        "Run with --interactive to launch GUI server on port 7862"
+                    ]
+                    if _GUI_BACKEND
+                    else [
+                        "Install with: uv sync --extra gui",
+                        "Run with --interactive for full GUI experience",
+                    ],
+                },
+            )
 
             logger.info(f"🎨 Design analysis saved to: {analysis_file}")
             return True
@@ -125,58 +118,34 @@ def run_gui(
 
         # Launch GUI
         logger.info(
-            f"🌐 Launching GUI 3 on http://localhost:7862 (open_browser={open_browser})"
+            f"🌐 Launching GUI 3 on http://localhost:{_GUI3_PORT} (open_browser={open_browser})"
         )
-
-        import threading
-        import time
-
-        def launch_gui() -> Any:
-            """Provide launch gui behavior."""
-            logger.info("🎨 Design Studio starting...")
-            demo.launch(
-                share=False,
-                prevent_thread_lock=False,  # Let the thread properly block on the server
-                server_name="0.0.0.0",  # nosec B104
-                server_port=7862,
-                inbrowser=open_browser,
-                show_error=True,
-                quiet=False,  # Show server startup messages
-            )
-
-        gui_thread = threading.Thread(target=launch_gui, daemon=False)
-        gui_thread.start()
+        launch_gradio_in_thread(demo, port=_GUI3_PORT, open_browser=open_browser)
         time.sleep(3)
-        logger.info("🎨 Design Studio is running on http://localhost:7862")
+        logger.info(f"🎨 Design Studio is running on http://localhost:{_GUI3_PORT}")
         logger.info(
             "🔍 Features: Visual state space design, ontology editing, connection graphs, low-dependency approach"
         )
 
         # Save launch status
         status_file = output_root / "design_studio_status.json"
-        with tempfile.NamedTemporaryFile(
-            mode="w", encoding="utf-8", dir=status_file.parent, delete=False
-        ) as tmp_f:
-            tmp_f.write(
-                json.dumps(
-                    {
-                        "gui_type": "design_studio",
-                        "backend": "gradio",
-                        "launched": True,
-                        "export_file": str(starter_path),
-                        "port": 7862,
-                        "url": "http://localhost:7862",
-                        "features": [
-                            "State space visual designer",
-                            "Ontology term editor",
-                            "Connection graph interface",
-                            "Parameter tuning controls",
-                        ],
-                    },
-                    indent=2,
-                )
-            )
-        os.replace(tmp_f.name, str(status_file))
+        write_json_atomically(
+            status_file,
+            {
+                "gui_type": "design_studio",
+                "backend": "gradio",
+                "launched": True,
+                "export_file": str(starter_path),
+                "port": _GUI3_PORT,
+                "url": f"http://localhost:{_GUI3_PORT}",
+                "features": [
+                    "State space visual designer",
+                    "Ontology term editor",
+                    "Connection graph interface",
+                    "Parameter tuning controls",
+                ],
+            },
+        )
 
         return True
 
@@ -242,7 +211,7 @@ num_actions: 3
 """
 
 
-def _analyze_gnn_design(gnn_content: str) -> Dict[str, Any]:
+def _analyze_gnn_design(gnn_content: str) -> dict[str, Any]:
     """Analyze GNN content for design studio insights"""
 
     analysis: dict[str, Any] = {

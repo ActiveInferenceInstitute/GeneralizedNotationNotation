@@ -180,6 +180,31 @@ class LLMOperations:
             logger.error(f"Multi-provider LLM call failed: {e}")
             return f"Error: LLM call failed - {str(e)}"
 
+    async def _async_analyze(
+        self,
+        gnn_content: str,
+        analysis_type: AnalysisType,
+        provider_type: Optional[ProviderType] = None,
+        config: Optional[LLMConfig] = None,
+        additional_context: Optional[Dict[str, Any]] = None,
+    ) -> str:
+        """Run one GNN analysis on the multi-provider system and return its text.
+
+        Single funnel for every structured operation: ensures the processor is
+        initialized, routes through :meth:`LLMProcessor.analyze_gnn`, and
+        returns the response content.
+        """
+        if not await self._ensure_initialized():
+            raise Exception("Processor not initialized")
+        response = await self._require_processor().analyze_gnn(
+            gnn_content=gnn_content,
+            analysis_type=analysis_type,
+            provider_type=provider_type,
+            config=config,
+            additional_context=additional_context,
+        )
+        return response.content
+
     def summarize_gnn(
         self,
         gnn_content: str,
@@ -214,24 +239,15 @@ class LLMOperations:
         max_length: int = 500,
         ollama_model: Optional[str] = None,
     ) -> str:
-        """Async version using new analysis system."""
-        if not await self._ensure_initialized():
-            raise Exception("Processor not initialized")
-
+        """Async GNN summarization (Ollama-pinned when a tag is given)."""
         if ollama_model:
-            response = await self._require_processor().analyze_gnn(
-                gnn_content=gnn_content,
-                analysis_type=AnalysisType.SUMMARY,
+            return await self._async_analyze(
+                gnn_content,
+                AnalysisType.SUMMARY,
                 provider_type=ProviderType.OLLAMA,
                 config=LLMConfig(model=ollama_model),
             )
-        else:
-            response = await self._require_processor().analyze_gnn(
-                gnn_content=gnn_content,
-                analysis_type=AnalysisType.SUMMARY,
-            )
-
-        return response.content
+        return await self._async_analyze(gnn_content, AnalysisType.SUMMARY)
 
     def analyze_gnn_structure(self, gnn_content: str) -> str:
         """
@@ -252,15 +268,8 @@ class LLMOperations:
             return f"Error: Structure analysis failed - {str(e)}"
 
     async def _async_analyze_structure(self, gnn_content: str) -> str:
-        """Async version using new analysis system."""
-        if not await self._ensure_initialized():
-            raise Exception("Processor not initialized")
-
-        response = await self._require_processor().analyze_gnn(
-            gnn_content=gnn_content, analysis_type=AnalysisType.STRUCTURE
-        )
-
-        return response.content
+        """Async structure analysis."""
+        return await self._async_analyze(gnn_content, AnalysisType.STRUCTURE)
 
     def generate_questions(self, gnn_content: str, num_questions: int = 5) -> List[str]:
         """
@@ -287,17 +296,13 @@ class LLMOperations:
     async def _async_generate_questions(
         self, gnn_content: str, num_questions: int = 5
     ) -> List[str]:
-        """Async version using new analysis system."""
-        if not await self._ensure_initialized():
-            raise Exception("Processor not initialized")
-
-        response = await self._require_processor().analyze_gnn(
-            gnn_content=gnn_content,
-            analysis_type=AnalysisType.QUESTIONS,
+        """Async question generation."""
+        response_text = await self._async_analyze(
+            gnn_content,
+            AnalysisType.QUESTIONS,
             additional_context={"num_questions": num_questions},
         )
-
-        return self._extract_questions_from_response(response.content, num_questions)
+        return self._extract_questions_from_response(response_text, num_questions)
 
     def _extract_questions_from_response(
         self, response: str, num_questions: int
@@ -336,15 +341,8 @@ class LLMOperations:
             return f"Error: Enhancement failed - {str(e)}"
 
     async def _async_enhance_gnn(self, gnn_content: str) -> str:
-        """Async version using new analysis system."""
-        if not await self._ensure_initialized():
-            raise Exception("Processor not initialized")
-
-        response = await self._require_processor().analyze_gnn(
-            gnn_content=gnn_content, analysis_type=AnalysisType.ENHANCEMENT
-        )
-
-        return response.content
+        """Async enhancement suggestions."""
+        return await self._async_analyze(gnn_content, AnalysisType.ENHANCEMENT)
 
     def validate_gnn(self, gnn_content: str) -> str:
         """
@@ -363,15 +361,8 @@ class LLMOperations:
             return f"Error: Validation failed - {str(e)}"
 
     async def _async_validate_gnn(self, gnn_content: str) -> str:
-        """Async version using new analysis system."""
-        if not await self._ensure_initialized():
-            raise Exception("Processor not initialized")
-
-        response = await self._require_processor().analyze_gnn(
-            gnn_content=gnn_content, analysis_type=AnalysisType.VALIDATION
-        )
-
-        return response.content
+        """Async GNN validation."""
+        return await self._async_analyze(gnn_content, AnalysisType.VALIDATION)
 
     def get_available_providers(self) -> List[str]:
         """Get list of available LLM providers."""
@@ -436,9 +427,11 @@ def load_api_key() -> Optional[str]:
 
 
 # Additional convenience functions for new capabilities
-def summarize_gnn(gnn_content: str, max_length: int = 500) -> str:
+def summarize_gnn(
+    gnn_content: str, max_length: int = 500, ollama_model: Optional[str] = None
+) -> str:
     """Convenience function for GNN summarization."""
-    return _get_llm_ops().summarize_gnn(gnn_content, max_length)
+    return _get_llm_ops().summarize_gnn(gnn_content, max_length, ollama_model)
 
 
 def analyze_gnn_structure(gnn_content: str) -> str:

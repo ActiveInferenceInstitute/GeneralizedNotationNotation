@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import logging
-from typing import Any, Dict, List, Tuple
+from typing import Any
 
 from .collector import SweepRecord
 
@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 SCHEMA_VERSION = "1.0"
 
 
-def compute_meta_statistics(records: List[SweepRecord]) -> Dict[str, Any]:
+def compute_meta_statistics(records: list[SweepRecord]) -> dict[str, Any]:
     """Compute per-framework stats, best-framework per (N,T), and log-log slopes."""
     try:
         import numpy as np
@@ -20,14 +20,14 @@ def compute_meta_statistics(records: List[SweepRecord]) -> Dict[str, Any]:
         logger.warning("numpy not available — returning minimal meta_statistics")
         return {"schema_version": SCHEMA_VERSION, "error": "numpy_missing"}
 
-    result: Dict[str, Any] = {
+    result: dict[str, Any] = {
         "schema_version": SCHEMA_VERSION,
         "per_framework": {},
         "per_cell_best_framework": [],
         "loglog_runtime_vs_n_by_T": {},
     }
 
-    fw_groups: Dict[str, List[SweepRecord]] = {}
+    fw_groups: dict[str, list[SweepRecord]] = {}
     for r in records:
         fw_groups.setdefault(r.framework, []).append(r)
 
@@ -49,7 +49,7 @@ def compute_meta_statistics(records: List[SweepRecord]) -> Dict[str, Any]:
         }
 
     # Best framework per (N, T) by median runtime (single record each typical)
-    cells: Dict[Tuple[int, int], List[SweepRecord]] = {}
+    cells: dict[tuple[int, int], list[SweepRecord]] = {}
     for r in records:
         if r.num_states is None or r.num_timesteps is None:
             continue

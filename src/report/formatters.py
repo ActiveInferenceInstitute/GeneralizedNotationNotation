@@ -12,6 +12,36 @@ from typing import Any, Dict
 from .analyzer import get_pipeline_health_score
 
 
+def _report_labels(pipeline_data: Dict[str, Any]) -> dict[str, str]:
+    """Shared label set for the HTML and Markdown renderers.
+
+    Receipt-backed runs (``status_source == "pipeline_execution_summary"``)
+    report execution labels; artifact-coverage runs report coverage labels.
+    """
+    summary = pipeline_data.get("summary", {})
+    receipt_backed = summary.get("status_source") == "pipeline_execution_summary"
+    return {
+        "rate_label": (
+            "Execution Success Rate" if receipt_backed else "Artifact Coverage"
+        ),
+        "health_label": (
+            "Pipeline Health Score" if receipt_backed else "Artifact Coverage Score"
+        ),
+        "timestamp_label": (
+            "Evidence As Of"
+            if pipeline_data.get("report_timestamp_source")
+            == "pipeline_execution_summary"
+            else "Report Timestamp"
+        ),
+        "rate_description": (
+            "of recorded pipeline steps completed successfully"
+            if receipt_backed
+            else "of expected step output directories are present; "
+            "execution status unavailable"
+        ),
+    }
+
+
 def generate_html_report(pipeline_data: Dict[str, Any], logger: logging.Logger) -> str:
     """
     Generate an HTML report from pipeline data.
@@ -26,22 +56,7 @@ def generate_html_report(pipeline_data: Dict[str, Any], logger: logging.Logger) 
     # Calculate health score
     health_score = get_pipeline_health_score(pipeline_data)
     health_color = get_health_color(health_score)
-    summary = pipeline_data.get("summary", {})
-    receipt_backed = summary.get("status_source") == "pipeline_execution_summary"
-    rate_label = "Execution Success Rate" if receipt_backed else "Artifact Coverage"
-    health_label = (
-        "Pipeline Health Score" if receipt_backed else "Artifact Coverage Score"
-    )
-    timestamp_label = (
-        "Evidence As Of"
-        if pipeline_data.get("report_timestamp_source") == "pipeline_execution_summary"
-        else "Report Timestamp"
-    )
-    rate_description = (
-        "of recorded pipeline steps completed successfully"
-        if receipt_backed
-        else "of expected step output directories are present; execution status unavailable"
-    )
+    labels = _report_labels(pipeline_data)
 
     html_content = f"""
 <!DOCTYPE html>
@@ -287,8 +302,8 @@ def generate_html_report(pipeline_data: Dict[str, Any], logger: logging.Logger) 
     <div class="container">
         <div class="header">
             <h1>🎯 GNN Pipeline Comprehensive Analysis Report</h1>
-            <div class="health-score">{health_label}: {health_score}/100</div>
-            <p class="timestamp">{timestamp_label}: {pipeline_data.get("report_generation_time", "Unknown")}</p>
+            <div class="health-score">{labels["health_label"]}: {health_score}/100</div>
+            <p class="timestamp">{labels["timestamp_label"]}: {pipeline_data.get("report_generation_time", "Unknown")}</p>
         </div>
         
         <div class="summary-grid">
@@ -312,11 +327,11 @@ def generate_html_report(pipeline_data: Dict[str, Any], logger: logging.Logger) 
         
         <h2>📊 Pipeline Overview</h2>
         <div class="performance-section">
-            <h3>{rate_label}</h3>
+            <h3>{labels["rate_label"]}</h3>
             <div class="progress-bar">
                 <div class="progress-fill" style="width: {pipeline_data.get("summary", {}).get("success_rate", 0)}%"></div>
             </div>
-            <p><strong>{pipeline_data.get("summary", {}).get("success_rate", 0):.1f}%</strong> {rate_description}</p>
+            <p><strong>{pipeline_data.get("summary", {}).get("success_rate", 0):.1f}%</strong> {labels["rate_description"]}</p>
         </div>
 """
 
@@ -606,35 +621,20 @@ def generate_markdown_report(
     """
     # Calculate health score
     health_score = get_pipeline_health_score(pipeline_data)
-    summary = pipeline_data.get("summary", {})
-    rate_label = (
-        "Execution Success Rate"
-        if summary.get("status_source") == "pipeline_execution_summary"
-        else "Artifact Coverage"
-    )
-    health_label = (
-        "Pipeline Health Score"
-        if summary.get("status_source") == "pipeline_execution_summary"
-        else "Artifact Coverage Score"
-    )
-    timestamp_label = (
-        "Evidence As Of"
-        if pipeline_data.get("report_timestamp_source") == "pipeline_execution_summary"
-        else "Report Timestamp"
-    )
+    labels = _report_labels(pipeline_data)
 
     markdown_content = f"""# 🎯 GNN Pipeline Comprehensive Analysis Report
 
-**{timestamp_label}:** {pipeline_data.get("report_generation_time", "Unknown")}
+**{labels["timestamp_label"]}:** {pipeline_data.get("report_generation_time", "Unknown")}
 **Pipeline Output Directory:** {pipeline_data.get("pipeline_output_directory", "Unknown")}
-**{health_label}:** {health_score}/100
+**{labels["health_label"]}:** {health_score}/100
 
 ## 📊 Pipeline Overview
 
 - **Total Steps Analyzed:** {len(pipeline_data.get("steps", {}))}
 - **Total Files Processed:** {pipeline_data.get("summary", {}).get("total_files_processed", 0)}
 - **Total Size:** {pipeline_data.get("summary", {}).get("total_size_mb", 0)} MB
-- **{rate_label}:** {pipeline_data.get("summary", {}).get("success_rate", 0):.1f}%
+- **{labels["rate_label"]}:** {pipeline_data.get("summary", {}).get("success_rate", 0):.1f}%
 
 ## ⚡ Performance Metrics
 

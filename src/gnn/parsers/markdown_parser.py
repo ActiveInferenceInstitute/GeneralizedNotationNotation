@@ -342,6 +342,19 @@ class MarkdownGNNParser(ParameterParsingMixin, BaseGNNParser):
             source_part = line[:op_pos].strip()
             target_part = line[op_pos + len(found_op) :].strip()
 
+            # v1.1 connection annotation: an ':annotation' suffix on the
+            # target side (doc/gnn/gnn_syntax.md section 3, "Annotated
+            # directed edge" `A>B:label`). Annotations are labels for
+            # rendering/documentation; parsers must accept and preserve
+            # them but not treat them as part of the target variable name.
+            # Only the FIRST annotation suffix is stripped; the target
+            # variable group itself never contains ':' in v1 syntax.
+            annotation: Optional[str] = None
+            if ":" in target_part:
+                target_part, annotation = target_part.split(":", 1)
+                annotation = annotation.strip() or None
+                target_part = target_part.strip()
+
             # Parse variable groups
             source_vars = self._parse_variable_group(source_part)
             target_vars = self._parse_variable_group(target_part)
@@ -353,6 +366,7 @@ class MarkdownGNNParser(ParameterParsingMixin, BaseGNNParser):
                 source_variables=source_vars,
                 target_variables=target_vars,
                 connection_type=conn_type,
+                annotation=annotation,
                 description=comment,
             )
 

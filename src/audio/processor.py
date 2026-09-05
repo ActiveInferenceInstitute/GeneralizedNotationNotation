@@ -23,18 +23,12 @@ except ImportError:
     np = cast(Any, None)
     NUMPY_AVAILABLE = False
 
-try:
-    from utils.logging.logging_utils import (
-        log_step_error,
-        log_step_start,
-        log_step_success,
-    )
-except ImportError:
-    from utils.logging.logging_utils import (
-        log_step_error,
-        log_step_start,
-        log_step_success,
-    )
+from utils.logging.logging_utils import (
+    log_step_error,
+    log_step_start,
+    log_step_success,
+)
+
 from .generator import (
     generate_ambient_representation,
     generate_rhythmic_representation,
@@ -46,6 +40,7 @@ from .streaming import (
     frames_from_execution_trace,
     write_stream_summary,
 )
+from .validation import coerce_audio_array, require_sample_rate
 
 
 def process_audio(

@@ -526,6 +526,7 @@ class XMLGNNParser(BaseGNNParser):
         # Restore connections
         for conn_data in embedded_data.get("connections", []):
             conn = Connection(
+                annotation=conn_data.get("annotation"),
                 source_variables=conn_data.get("source_variables", []),
                 target_variables=conn_data.get("target_variables", []),
                 connection_type=ConnectionType(

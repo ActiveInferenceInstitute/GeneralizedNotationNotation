@@ -14,11 +14,12 @@ from typing import Any, Callable, Dict, Optional
 
 logger = logging.getLogger("mcp")
 
-# Import exceptions
+# Import exceptions and shared envelope helpers
 from .exceptions import (
     MCPError,
     MCPInvalidParamsError,
 )
+from .jsonrpc import jsonrpc_error, jsonrpc_result, validate_request
 
 # Import core MCP class and helpers
 from .mcp import MCP, get_mcp_instance, initialize
@@ -95,7 +96,24 @@ class MCPServer:
         logger.info("MCP server stopped")
         return True
 
-    def handle_request(self, request: Dict[str, Any]) -> Dict[str, Any]:
+    def handle_request(self, request: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+        """Dispatch valid requests; notifications execute without a response."""
+        error = validate_request(request)
+        if error is not None:
+            if error["error"]["code"] == -32600:
+                return error
+            invalid = MCPInvalidParamsError("JSON-RPC params must be an object")
+            return (
+                self._create_error_response(
+                    invalid.code, str(invalid), invalid.data, request.get("id")
+                )
+                if "id" in request
+                else None
+            )
+        response = self._dispatch_request(request)
+        return response if "id" in request else None
+
+    def _dispatch_request(self, request: Dict[str, Any]) -> Dict[str, Any]:
         """
         Handle an incoming JSON-RPC request.
 
@@ -178,7 +196,7 @@ class MCPServer:
         tool_name = params.get("name")
         tool_params = params.get("arguments", {})
 
-        if not tool_name:
+        if not isinstance(tool_name, str) or not tool_name:
             raise MCPInvalidParamsError("Tool name is required")
 
         result = self.mcp.execute_tool(tool_name, tool_params)
@@ -192,7 +210,7 @@ class MCPServer:
         """Handle resources/read request."""
         uri = params.get("uri")
 
-        if not uri:
+        if not isinstance(uri, str) or not uri:
             raise MCPInvalidParamsError("Resource URI is required")
 
         result = self.mcp.get_resource(uri)
@@ -217,25 +235,14 @@ class MCPServer:
         return {}
 
     def _create_success_response(self, result: Any, request_id: Any) -> Dict[str, Any]:
-        """Create a successful JSON-RPC response."""
-        response: dict[str, Any] = {"jsonrpc": "2.0", "result": result}
-        if request_id is not None:
-            response["id"] = request_id
-        return response
+        """Create a successful JSON-RPC response (shared envelope helper)."""
+        return jsonrpc_result(request_id, result)
 
     def _create_error_response(
         self, code: int, message: str, data: Any = None, request_id: Any = None
     ) -> Dict[str, Any]:
-        """Create an error JSON-RPC response."""
-        response: dict[str, Any] = {
-            "jsonrpc": "2.0",
-            "error": {"code": code, "message": message},
-        }
-        if data is not None:
-            response["error"]["data"] = data
-        if request_id is not None:
-            response["id"] = request_id
-        return response
+        """Create an error JSON-RPC response (shared envelope helper)."""
+        return jsonrpc_error(request_id, code, message, data)
 
 
 def create_mcp_server(mcp_instance: Optional[MCP] = None) -> MCPServer:

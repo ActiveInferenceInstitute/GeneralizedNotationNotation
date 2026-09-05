@@ -77,6 +77,7 @@ class RxInferSimulationV1(TypedDict, total=False):
     actions: List[int]
     beliefs: List[List[float]]
     expected_free_energy: List[float]
+    expected_free_energy_convention: str
     efe_per_action: List[List[float]]
     variational_free_energy: List[float]  # per-iteration VFE trace
     vfe_per_iteration: List[float]  # alias for variational_free_energy

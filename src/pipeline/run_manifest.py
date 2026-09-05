@@ -91,6 +91,10 @@ def _discover_artifacts(run_output_dir: Path) -> List[Path]:
             continue
         for json_path in child.rglob("*.json"):
             if json_path.is_file():
+                if not json_path.resolve().is_relative_to(run_output_dir.resolve()):
+                    raise ValueError(
+                        f"Artifact escapes run output directory: {json_path}"
+                    )
                 artifacts.append(json_path)
     artifacts.sort(key=lambda p: p.relative_to(run_output_dir).as_posix())
     return artifacts
@@ -105,10 +109,12 @@ def _step_records(summary: Dict[str, Any]) -> List[Dict[str, Any]]:
     Returns:
         The list of step record dicts (possibly empty).
     """
+    if not isinstance(summary, dict):
+        raise ValueError("Execution summary must be an object")
     steps = summary.get("steps", [])
-    if not isinstance(steps, list):
-        return []
-    return [s for s in steps if isinstance(s, dict)]
+    if not isinstance(steps, list) or any(not isinstance(step, dict) for step in steps):
+        raise ValueError("Execution summary steps must be a list of objects")
+    return steps
 
 
 def _step_label(record: Dict[str, Any], fallback_index: int) -> str:
@@ -203,6 +209,35 @@ def _build_trace_from_dirs(trace_id: str, run_output_dir: Path) -> ExecutionTrac
     return trace
 
 
+def _run_provenance(run_dir: Path) -> Dict[str, Any]:
+    """Bind complete summary metadata, or explicitly declare directory-only evidence."""
+    summary_path = run_dir / _SUMMARY_REL
+    if not summary_path.exists():
+        return {"mode": "directories"}
+    summary = json.loads(summary_path.read_text(encoding="utf-8"))
+    _step_records(summary)
+    canonical = json.dumps(summary, sort_keys=True, ensure_ascii=False).encode("utf-8")
+    return {
+        "mode": "summary",
+        "summary_sha256": hashlib.sha256(canonical).hexdigest(),
+        "run_id": summary.get("run_id"),
+        "run_hash": summary.get("run_hash"),
+        "overall_status": summary.get("overall_status"),
+    }
+
+
+def _contained_file(base: Path, relative: Any) -> Path:
+    """Resolve an artifact reference without admitting absolute paths or escapes."""
+    if not isinstance(relative, str) or not relative or Path(relative).is_absolute():
+        raise ValueError(f"Invalid relative artifact reference: {relative!r}")
+    path = base / relative
+    if ".." in Path(relative).parts or not path.resolve().is_relative_to(
+        base.resolve()
+    ):
+        raise ValueError(f"Artifact reference escapes its base: {relative!r}")
+    return path
+
+
 def emit_run_manifests(
     run_output_dir: Union[str, Path],
     *,
@@ -248,6 +283,13 @@ def emit_run_manifests(
         if manifest_out is not None
         else run_dir / DEFAULT_MANIFEST_SUBDIR
     )
+    if manifest_dir.resolve().is_relative_to(run_dir.resolve()):
+        relative = manifest_dir.resolve().relative_to(run_dir.resolve())
+        if relative.parts and _STEP_DIR_RE.match(relative.parts[0]):
+            raise ValueError(
+                "Manifest output cannot be inside a step artifact directory"
+            )
+    provenance = _run_provenance(run_dir)
     manifest_dir.mkdir(parents=True, exist_ok=True)
 
     # 1. Build a StreamManifest per produced JSON artifact (deterministic order).
@@ -298,7 +340,8 @@ def emit_run_manifests(
     # 3. Write an index JSON listing every emitted artifact.
     index = {
         "run_output_dir": str(run_dir),
-        "schema_version": "3.0",
+        "schema_version": "3.1",
+        "provenance": provenance,
         "trace_file": trace_filename,
         "trace_event_count": len(trace.events),
         "trace_integrity_ok": trace_integrity_ok,
@@ -351,54 +394,86 @@ def verify_run_manifests(
     mdir = Path(manifest_dir)
     run_dir = Path(run_output_dir)
     problems: List[str] = []
+    try:
+        index = json.loads((mdir / "index.json").read_text(encoding="utf-8"))
+        if not isinstance(index, dict) or not isinstance(index.get("manifests"), list):
+            return ["index.json must contain a manifests list"]
+        if index.get("schema_version") != "3.1":
+            problems.append(
+                "Index lacks supported complete inventory/provenance schema 3.1"
+            )
+        if index.get("provenance") != _run_provenance(run_dir):
+            problems.append("Run provenance differs from the indexed summary")
+        actual_sources = {
+            path.relative_to(run_dir).as_posix()
+            for path in _discover_artifacts(run_dir)
+        }
+    except (OSError, ValueError, TypeError) as exc:
+        return [f"Cannot read run manifest inventory/provenance: {exc}"]
 
-    index_path = mdir / "index.json"
-    if not index_path.is_file():
-        problems.append(f"index.json missing in {mdir}")
-        return problems
+    sources: set[str] = set()
+    files: set[str] = set()
+    entries = index["manifests"]
+    if type(index.get("stream_count")) is not int or index["stream_count"] != len(
+        entries
+    ):
+        problems.append("stream_count does not match manifest inventory")
+    for entry in entries:
+        try:
+            if not isinstance(entry, dict):
+                raise ValueError("Manifest index entry must be an object")
+            source = entry.get("source")
+            if not isinstance(source, str):
+                raise ValueError("Manifest source must be a relative path string")
+            source_path = _contained_file(run_dir, source)
+            filename = entry.get("manifest_file")
+            if not isinstance(filename, str):
+                raise ValueError("Manifest file must be a relative path string")
+            manifest_path = _contained_file(mdir, filename)
+            if source in sources or filename in files:
+                raise ValueError("Duplicate source or manifest file in index")
+            sources.add(source)
+            files.add(filename)
+            manifest = read_stream_manifest(manifest_path)
+            expected_id = _stable_stream_id(source_path.relative_to(run_dir))
+            if (
+                entry.get("stream_id") != expected_id
+                or manifest.stream_id != expected_id
+                or manifest.source != source
+            ):
+                raise ValueError("Manifest source/stream identity differs from index")
+            if manifest.kind.value != "FILE":
+                raise ValueError("Run artifacts require file-backed manifests")
+            for problem in validate_stream_manifest(manifest, run_dir):
+                problems.append(f"{manifest.stream_id}: {problem}")
+        except (OSError, ValueError, TypeError, KeyError) as exc:
+            problems.append(f"Invalid manifest entry: {exc}")
+    if sources != actual_sources:
+        problems.append(
+            f"Artifact inventory differs: missing={sorted(actual_sources - sources)}, "
+            f"unexpected={sorted(sources - actual_sources)}"
+        )
 
-    index = json.loads(index_path.read_text(encoding="utf-8"))
-
-    for entry in index.get("manifests", []):
-        manifest_file = entry.get("manifest_file")
-        if not manifest_file:
-            problems.append(f"index entry missing manifest_file: {entry!r}")
-            continue
-        manifest_path = mdir / manifest_file
-        if not manifest_path.is_file():
-            problems.append(f"manifest file missing: {manifest_path}")
-            continue
-        manifest = read_stream_manifest(manifest_path)
-        for problem in validate_stream_manifest(manifest, run_dir):
-            problems.append(f"{manifest.stream_id}: {problem}")
-
-    trace_file = index.get("trace_file", "execution_trace.json")
-    trace_path = mdir / trace_file
-    if not trace_path.is_file():
-        problems.append(f"trace file missing: {trace_path}")
-    else:
+    try:
+        trace_path = _contained_file(mdir, index.get("trace_file"))
         trace = read_trace(trace_path)
-        for problem in trace_integrity(trace):
-            problems.append(f"trace: {problem}")
-        # Re-bind the trace's meaning to ground truth: rebuild it from the live
-        # summary (or step dirs) exactly as emit did and compare replay digests.
+        problems.extend(f"trace: {problem}" for problem in trace_integrity(trace))
+        if index.get("trace_event_count") != len(trace.events):
+            problems.append("trace_event_count does not match stored trace")
         trace_id = f"run::{run_dir.name}"
         summary_path = run_dir / _SUMMARY_REL
-        if summary_path.is_file():
-            try:
-                summary = json.loads(summary_path.read_text(encoding="utf-8"))
-                expected = _build_trace_from_summary(trace_id, summary)
-            except (json.JSONDecodeError, ValueError):
-                problems.append(
-                    "trace: execution summary is unreadable; cannot re-bind trace"
-                )
-                expected = None
-        else:
-            expected = _build_trace_from_dirs(trace_id, run_dir)
-        if expected is not None and replay_trace(expected) != replay_trace(trace):
+        expected = (
+            _build_trace_from_summary(
+                trace_id, json.loads(summary_path.read_text(encoding="utf-8"))
+            )
+            if summary_path.is_file()
+            else _build_trace_from_dirs(trace_id, run_dir)
+        )
+        if replay_trace(expected) != replay_trace(trace):
             problems.append(
                 "trace: replay digest does not match the trace re-derived from the "
                 "live run summary (summary tampered or stored trace relabeled)"
             )
-
+    except (OSError, ValueError, TypeError, KeyError) as exc:
+        problems.append(f"Cannot verify trace: {exc}")
     return problems

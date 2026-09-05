@@ -22,15 +22,20 @@ python src/main.py --only-steps 17 --verbose
 ## API
 
 ```python
-from integration import process_integration
+from integration import process_integration, analyze_system
 
 # Process integration step (used by pipeline)
 result = process_integration(target_dir, output_dir, verbose=True)
+
+# Pure analysis (new in 1.7.0): no artifacts written
+analysis = analyze_system(target_dir)
 ```
 
 ## Key Exports
 
 - `process_integration` — main pipeline processing function
+- `analyze_system` — one-call pure system analysis (returns `SystemAnalysis`)
+- `export_dependency_graph` — write the dependency graph as node-link JSON
 
 ## Integration Points
 

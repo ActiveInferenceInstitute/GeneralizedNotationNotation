@@ -270,15 +270,23 @@ async def test_run_api_executes_real_main_subprocess_and_preserves_warning_exit(
     )
 
     captured_command: list[str] = []
+    invocation_id = ""
 
     class FakeProcess:
         pid = 1234
         returncode = 2
 
         async def communicate(self) -> tuple[bytes, bytes]:
+            # Model publication by this subprocess, after the invocation starts.
+            summary = summary_dir / "pipeline_execution_summary.json"
+            payload = json.loads(summary.read_text())
+            payload["run_id"] = invocation_id
+            summary.write_text(json.dumps(payload))
             return b"", b""
 
     async def fake_create_subprocess_exec(*command: str, **kwargs: Any) -> FakeProcess:
+        nonlocal invocation_id
+        invocation_id = kwargs["env"]["GNN_RUN_ID"]
         captured_command.extend(command)
         return FakeProcess()
 

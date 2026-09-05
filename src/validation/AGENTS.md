@@ -10,9 +10,9 @@
 
 **Status**: Production Ready
 
-**Version**: 3.2.0
+**Version**: 3.2.0 (module `__version__` 1.7.0)
 
-**Last Updated**: 2026-09-02
+**Last Updated**: 2026-09-04
 
 ---
 
@@ -44,10 +44,14 @@
 **Parameters**:
 - `target_dir` (Path): Directory containing GNN files to validate
 - `output_dir` (Path): Output directory for validation results
-- `verbose` (bool): Enable verbose logging (default: False); logging otherwise goes to the module logger
-- `**kwargs`: Additional validation options (accepted but not consumed; behavior is governed by validator defaults)
+- `verbose` (bool): Enable verbose logging (default: False)
+- `**kwargs`: Additional validation options:
+  - `validation_level` (str): Semantic validation depth (`basic`, `standard`, `strict`, `research`; default `standard`)
+  - `strict` (bool): Shorthand raising `validation_level` to `strict` (wired to the orchestrator's `--strict` flag)
+  - `run_id` (str): Stable identity for intentional cross-manifest accumulation (otherwise manifest run ID or timestamp)
+  - `logger`, `recursive`, `profile` are accepted for the standardized pipeline-script contract and do not alter behavior
 
-**Returns**: `True` if validation succeeded
+**Returns**: `True` only for a nonempty current pass with every file successful; historical successes cannot mask current failure.
 
 **Example**:
 ```python
@@ -82,6 +86,16 @@ success = process_validation(
 - `model_data` (str | Path | Dict[str, Any]): GNN file path or parsed model data
 
 **Returns**: Dictionary with consistency results
+
+#### `validate_content(content, validation_level="standard") -> Dict[str, Any]`
+**Description**: Validate raw GNN content text without file I/O (companion to `process_semantic_validation` for in-memory content). Same receipt shape with `file_path`/`file_name` = `"unknown"`.
+
+#### `validate_directory(target_dir, output_dir, services, ...) -> bool`
+**Description**: The workflow behind `process_validation` (in `workflow.py`). Takes injected `StageServices` (semantic/performance/consistency callables), so alternative pipelines can compose custom stage functions. Stage functions are bound from the package namespace by `process_validation`, keeping the test monkeypatch seam intact.
+
+#### `profile_performance` error contract
+On failure it returns the same best-effort shape as the other stages: `{status: "error", file_path, file_name, error, metrics, warnings, performance_score: 0.0, recovery: True}`; success results carry `recovery: False`.
+
 
 ---
 
@@ -197,6 +211,10 @@ Model Content → Structure Validation → Semantic Validation → Performance P
 
 ### Test Files
 - `src/tests/validation/test_validation_overall.py` - Module-level validation tests
+- `src/tests/validation/test_consistency_contract.py` - Consistency and stage-receipt regression tests
+- `src/tests/validation/test_validation_public_api.py` - Public API surface tests
+- `src/tests/validation/test_reliability_validation.py` - Current verdict, replay, run/config identity, and parse-failure regressions
+- `src/tests/validation/test_workflow_contracts.py` - Step-6 workflow contract tests (kwargs, accumulation, DI, error contracts, cycle detection)
 - `src/tests/gnn/test_gnn_validation.py` - GNN validation-focused tests (shared)
 
 ### Test Coverage
@@ -219,7 +237,7 @@ uv run --extra dev python -m pytest src/tests/test_validation*.py \
 ### Tools Registered
 Registered by `validation.mcp.register_tools(mcp_instance)` (4 tools):
 - `process_validation` - Run full validation pipeline on a directory
-- `validate_gnn_file` - Validate a single GNN file (basic/standard/strict level)
+- `validate_gnn_file` - Validate a single GNN file (structural checks plus the full semantic result under a `semantic` key)
 - `get_validation_report` - Read saved validation reports from a previous run
 - `check_schema_compliance` - Check a GNN model string against canonical schema requirements
 

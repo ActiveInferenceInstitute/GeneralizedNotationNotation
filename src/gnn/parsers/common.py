@@ -309,6 +309,7 @@ class Connection(ASTNode):
     target_variables: List[str] = field(default_factory=list)
     connection_type: ConnectionType = ConnectionType.DIRECTED
     weight: Optional[float] = None
+    annotation: Optional[str] = None
     description: Optional[str] = None
 
     def __post_init__(self) -> Any:
@@ -759,6 +760,7 @@ class BaseGNNParser(ABC):
             # Parse connections
             for conn_data in embedded_data.get("connections", []):
                 conn = Connection(
+                    annotation=conn_data.get("annotation"),
                     source_variables=conn_data["source_variables"],
                     target_variables=conn_data["target_variables"],
                     connection_type=ConnectionType(conn_data["connection_type"]),
@@ -831,6 +833,7 @@ class BaseGNNParser(ABC):
             # Restore connections
             for conn_data in embedded_data.get("connections", []):
                 conn = Connection(
+                    annotation=conn_data.get("annotation"),
                     source_variables=conn_data.get("source_variables", []),
                     target_variables=conn_data.get("target_variables", []),
                     connection_type=ConnectionType(

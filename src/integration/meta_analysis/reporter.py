@@ -16,7 +16,7 @@ from __future__ import annotations
 
 import logging
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from .collector import SweepRecord
 
@@ -26,16 +26,16 @@ class SweepReporter:
 
     def __init__(
         self,
-        records: List[SweepRecord],
-        plot_paths: List[str],
+        records: list[SweepRecord],
+        plot_paths: list[str],
         output_dir: Path,
-        logger: Optional[logging.Logger] = None,
+        logger: logging.Logger | None = None,
         *,
-        validation_payload: Optional[Dict[str, Any]] = None,
-        statistics_payload: Optional[Dict[str, Any]] = None,
+        validation_payload: dict[str, Any] | None = None,
+        statistics_payload: dict[str, Any] | None = None,
         validation_json_name: str = "sweep_validation.json",
         statistics_json_name: str = "meta_statistics.json",
-        gnn_format_statistics: Optional[Dict[str, Any]] = None,
+        gnn_format_statistics: dict[str, Any] | None = None,
     ) -> None:
         """Initialize the instance."""
         self.records = records

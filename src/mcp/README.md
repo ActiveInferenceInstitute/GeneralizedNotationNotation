@@ -418,3 +418,20 @@ When contributing to the MCP implementation:
 - **[AGENTS](AGENTS.md)**: Agentic Workflows
 - **[SPEC](SPEC.md)**: Architectural Specification
 - **[SKILL](SKILL.md)**: Capability API
+
+
+### Transport reliability
+
+HTTP, stdio, and core responses use `jsonrpc.py` envelope builders. Invalid
+request structures produce `-32600`; non-object parameters produce `-32602`;
+parse errors produce `-32700`. Missing request IDs identify notifications:
+handlers execute valid notifications without JSON-RPC replies (HTTP returns
+204 with no body). An explicit `id: null` still receives a response with a null
+ID. HTTP authentication, rate limits, and tool/resource allowlists remain in
+force for notifications as well as ordinary requests.
+
+CI runs functional MCP registration/execution, transport regressions, and
+capability contracts explicitly on Python 3.12 pull requests; the broader test
+job's MCP marker exclusion does not exclude this gate. Registry availability
+and absent optional dependencies are reported explicitly; tool counts alone do
+not establish functional health.

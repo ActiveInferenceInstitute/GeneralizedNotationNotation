@@ -5,7 +5,7 @@ Deterministic rule-based static analysis of GNN models with experimental hypothe
 ## Components
 
 ### Core
-- `processor.py` - `process_research()` step entry; `detect_model_family()`, `extract_state_space_dims()`, `count_connections()`, `generate_rule_based_hypotheses()` rule engine
+- `processor.py` - `process_research()` step entry; `detect_model_family()`, `extract_state_space_dims()`, `count_connections()`, `generate_rule_based_hypotheses()` rule engine; pure analysis API (`analyze_gnn()` / `ModelAnalysis`, `summarize_hypotheses()`, `render_research_report()`, `write_research_outputs()`, `discover_gnn_files()`, `merge_llm_hypotheses()`, `MODEL_FAMILIES`)
 - `mcp.py` - MCP tool registrations (4 tools)
 
 ## Features

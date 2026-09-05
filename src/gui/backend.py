@@ -36,11 +36,16 @@ def detect_gradio_backend() -> GUIBackendStatus:
         return GUIBackendStatus(name=None, module=cast(Any, None), reason=str(exc))
 
 
-def write_json_atomically(path: Path, payload: dict[str, Any]) -> None:
-    """Write a JSON artifact via a temporary file in the destination directory."""
+def write_text_atomically(path: Path, content: str) -> None:
+    """Write text via a temporary file in the destination directory."""
     path.parent.mkdir(parents=True, exist_ok=True)
     with tempfile.NamedTemporaryFile(
         mode="w", encoding="utf-8", dir=path.parent, delete=False
     ) as tmp_f:
-        tmp_f.write(json.dumps(payload, indent=2))
+        tmp_f.write(content)
     os.replace(tmp_f.name, str(path))
+
+
+def write_json_atomically(path: Path, payload: dict[str, Any]) -> None:
+    """Write a JSON artifact via a temporary file in the destination directory."""
+    write_text_atomically(path, json.dumps(payload, indent=2))

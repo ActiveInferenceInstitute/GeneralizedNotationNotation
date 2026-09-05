@@ -7,6 +7,7 @@ This module provides a unified interface for working with multiple LLM providers
 selection, recovery mechanisms, and provides high-level methods for GNN analysis.
 """
 
+import asyncio
 import logging
 import os
 from enum import Enum
@@ -41,6 +42,11 @@ class AnalysisType(Enum):
     VALIDATION = "validation"
     COMPARISON = "comparison"
     SEARCH_ENHANCED = "search_enhanced"
+
+
+def _error_result(exc: BaseException) -> Dict[str, Any]:
+    """Standard failure payload shared by every never-raises GNN wrapper."""
+    return {"success": False, "error": str(exc), "error_type": type(exc).__name__}
 
 
 def load_api_keys_from_env() -> Dict[str, str]:
@@ -309,6 +315,17 @@ class LLMProcessor:
         """
         return self.providers.get(provider_type)
 
+    def get_default_provider(self) -> Optional[BaseLLMProvider]:
+        """Return the provider that would serve a request with no explicit type.
+
+        Mirrors the selection :meth:`get_response` performs when called without
+        ``provider_type`` (first healthy provider in registration order), so
+        callers can peek at routing without making a request.
+        """
+        if not self.providers:
+            return None
+        return self._select_provider(None)
+
     def get_best_provider_for_task(
         self, analysis_type: AnalysisType
     ) -> Optional[BaseLLMProvider]:
@@ -462,9 +479,12 @@ class LLMProcessor:
             return await provider.generate_response(messages, config)
         except Exception as e:
             logger.error(f"Analysis failed with {provider.provider_type.value}: {e}")
+            self._circuit_breakers[provider.provider_type] = (
+                self._circuit_breakers.get(provider.provider_type, 0) + 1
+            )
             # Try recovery provider
             return await self._try_fallback_analysis(
-                gnn_content, analysis_type, provider_type, config
+                gnn_content, analysis_type, provider.provider_type, config
             )
 
     async def _try_fallback_analysis(
@@ -484,8 +504,14 @@ class LLMProcessor:
                 messages = provider.format_gnn_analysis_prompt(
                     gnn_content, analysis_type.value
                 )
-                return await provider.generate_response(messages, config)
+                response = await provider.generate_response(messages, config)
+                # Reset circuit breaker on success, matching get_response.
+                self._circuit_breakers[provider.provider_type] = 0
+                return response
             except Exception as e:
+                self._circuit_breakers[provider.provider_type] = (
+                    self._circuit_breakers.get(provider.provider_type, 0) + 1
+                )
                 logger.warning(
                     f"Recovery failed with {provider.provider_type.value}: {e}"
                 )
@@ -822,7 +848,7 @@ class GNNLLMProcessor:
             }
 
         except Exception as e:
-            return {"success": False, "error": str(e), "error_type": type(e).__name__}
+            return _error_result(e)
 
     async def generate_model_explanation(self, gnn_content: str) -> Dict[str, Any]:
         """
@@ -897,7 +923,7 @@ class GNNLLMProcessor:
             }
 
         except Exception as e:
-            return {"success": False, "error": str(e), "error_type": type(e).__name__}
+            return _error_result(e)
 
     async def close(self) -> None:
         """Close the GNN LLM processor."""
@@ -964,19 +990,15 @@ def analyze_gnn_model(
     Returns:
         Dictionary with analysis results
     """
-    import asyncio
-
     try:
         analysis_name = (
             analysis_type.value
             if isinstance(analysis_type, AnalysisType)
             else analysis_type
         )
-        result = asyncio.run(analyze_gnn_with_llm(gnn_content, analysis_name))
-        return result
-
+        return asyncio.run(analyze_gnn_with_llm(gnn_content, analysis_name))
     except Exception as e:
-        return {"success": False, "error": str(e), "error_type": type(e).__name__}
+        return _error_result(e)
 
 
 def generate_explanation(gnn_content: str) -> Dict[str, Any]:
@@ -989,13 +1011,7 @@ def generate_explanation(gnn_content: str) -> Dict[str, Any]:
     Returns:
         Dictionary with explanation results
     """
-    import asyncio
-
-    try:
-        result = asyncio.run(explain_gnn_model(gnn_content))
-        return result
-    except Exception as e:
-        return {"success": False, "error": str(e), "error_type": type(e).__name__}
+    return analyze_gnn_model(gnn_content, "summary")
 
 
 def enhance_model(gnn_content: str) -> Dict[str, Any]:
@@ -1008,18 +1024,4 @@ def enhance_model(gnn_content: str) -> Dict[str, Any]:
     Returns:
         Dictionary with enhancement suggestions
     """
-    import asyncio
-
-    try:
-        processor = GNNLLMProcessor()
-
-        async def _run() -> Dict[str, Any]:
-            """Run operation."""
-            await processor.initialize()
-            result = await processor.suggest_enhancements(gnn_content)
-            await processor.close()
-            return result
-
-        return asyncio.run(_run())
-    except Exception as e:
-        return {"success": False, "error": str(e), "error_type": type(e).__name__}
+    return analyze_gnn_model(gnn_content, "enhancement")

@@ -152,11 +152,14 @@ def execute_jax_script(
         env["JAX_PLATFORM_NAME"] = device
         logger.info(f"Using JAX device: {device}")
 
-    # Set JAX_OUTPUT_DIR environment variable (matching PYMDP_OUTPUT_DIR pattern)
+    # Generated scripts from earlier pipeline versions and the current version
+    # receive the same absolute path.
     if output_dir:
         output_dir.mkdir(parents=True, exist_ok=True)
-        env["JAX_OUTPUT_DIR"] = str(output_dir)
-        logger.debug(f"Set JAX_OUTPUT_DIR={output_dir}")
+        destination = str(output_dir.resolve())
+        env["JAX_OUTPUT_DIR"] = destination
+        env["GNN_OUTPUT_DIR"] = destination
+        logger.debug("Set JAX_OUTPUT_DIR and GNN_OUTPUT_DIR=%s", destination)
 
     abs_script_path = script_path.resolve()
     envelope = execute_script_safely(

@@ -102,7 +102,8 @@ def _parse_gnn_connections(
     if isinstance(spec, str):
         try:
             spec = json.loads(spec)
-        except Exception:
+        except Exception as exc:
+            logger.warning("Failed to parse gnn_spec JSON: %s", exc)
             spec = {}
 
     connections_raw = spec.get("connections", [])
@@ -114,7 +115,8 @@ def _parse_gnn_connections(
         try:
             spec = json.loads(base64.b64decode(spec_b64).decode("utf-8"))
             connections_raw = spec.get("connections", [])
-        except Exception:
+        except Exception as exc:
+            logger.warning("Failed to decode/parse base64 gnn_spec: %s", exc)
             return {}, []
 
     # Parse connections like "D>s", "s-A", "s>s_prime"

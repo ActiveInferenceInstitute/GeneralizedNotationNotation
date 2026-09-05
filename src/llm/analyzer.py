@@ -248,6 +248,21 @@ def extract_connections(content: str) -> List[Dict[str, Any]]:
     return connections
 
 
+def variable_type_counts(variables: List[Dict[str, Any]]) -> Dict[str, int]:
+    """Count variables by declared type parsed from their definition.
+
+    Shared by :func:`perform_semantic_analysis` and
+    :mod:`llm.generator` so both report identical type distributions.
+    Definitions without a ``name: type`` shape count as ``"unknown"``.
+    """
+    counts: dict[str, int] = {}
+    for var in variables:
+        definition = var.get("definition", "")
+        var_type = definition.split(":")[-1].strip() if ":" in definition else "unknown"
+        counts[var_type] = counts.get(var_type, 0) + 1
+    return counts
+
+
 def perform_semantic_analysis(
     content: str, variables: List[Dict], connections: List[Dict]
 ) -> Dict[str, Any]:
@@ -259,17 +274,7 @@ def perform_semantic_analysis(
         "semantic_patterns": [],
     }
 
-    # Analyze variable types
-    var_types: dict[Any, Any] = {}
-    for var in variables:
-        var_type = (
-            var.get("definition", "").split(":")[-1].strip()
-            if ":" in var.get("definition", "")
-            else "unknown"
-        )
-        var_types[var_type] = var_types.get(var_type, 0) + 1
-
-    analysis["variable_types"] = var_types
+    analysis["variable_types"] = variable_type_counts(variables)
 
     # Analyze connection patterns
     connection_types: dict[Any, Any] = {}

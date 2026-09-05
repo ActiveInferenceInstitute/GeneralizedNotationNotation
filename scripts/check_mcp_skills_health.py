@@ -273,9 +273,7 @@ def _resolvability_findings(skill: Path, rel: Path) -> tuple[list[str], int]:
     export_symbols = [
         symbol
         for line in _section(text, "Key Exports").splitlines()
-        for symbol in re.findall(
-            r"`([A-Za-z_]\w*)`", line.split("\u2014")[0]
-        )
+        for symbol in re.findall(r"`([A-Za-z_]\w*)`", line.split("\u2014")[0])
     ]
     for symbol in export_symbols:
         checks += 1

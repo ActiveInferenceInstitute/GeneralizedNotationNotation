@@ -6,6 +6,8 @@ LLM generator module for insights, suggestions, and documentation.
 from datetime import datetime
 from typing import Any, Dict
 
+from .analyzer import variable_type_counts
+
 
 def generate_model_insights(file_analysis: Dict[str, Any]) -> Dict[str, Any]:
     """Generate insights about the GNN model."""
@@ -77,14 +79,7 @@ def generate_code_suggestions(file_analysis: Dict[str, Any]) -> Dict[str, Any]:
     # Check variable patterns
     variables = file_analysis.get("variables", [])
     connections = file_analysis.get("connections", [])
-    var_types: dict[Any, Any] = {}
-    for var in variables:
-        var_type = (
-            var.get("definition", "").split(":")[-1].strip()
-            if ":" in var.get("definition", "")
-            else "unknown"
-        )
-        var_types[var_type] = var_types.get(var_type, 0) + 1
+    var_types = variable_type_counts(variables)
 
     # Suggest type improvements
     if "unknown" in var_types and var_types["unknown"] > len(variables) * 0.5:

@@ -12,6 +12,7 @@ from typing import Any, Dict
 logger = logging.getLogger(__name__)
 
 from .generator import generate_website as _generate_website
+from .inspection import inspect_website, list_website_pages
 from .renderer import process_website
 
 
@@ -109,41 +110,7 @@ def get_website_status_mcp(website_directory: str) -> Dict[str, Any]:
     Returns:
         Dictionary with page inventory, sizes, and completeness flags.
     """
-    try:
-        wdir = Path(website_directory)
-        if not wdir.exists():
-            return {
-                "success": False,
-                "error": f"Directory not found: {website_directory}",
-            }
-
-        pages = sorted(wdir.glob("*.html"))
-        assets = list((wdir / "assets").glob("*")) if (wdir / "assets").exists() else []
-        key_pages: list[Any] = [
-            "index.html",
-            "pipeline.html",
-            "gnn_files.html",
-            "analysis.html",
-            "visualization.html",
-            "reports.html",
-            "mcp.html",
-        ]
-        completeness = {p: (wdir / p).exists() for p in key_pages}
-        total_size = sum(f.stat().st_size for f in pages if f.exists())
-
-        return {
-            "success": True,
-            "directory": str(wdir),
-            "pages": [p.name for p in pages],
-            "pages_count": len(pages),
-            "assets_count": len(assets),
-            "total_size_bytes": total_size,
-            "completeness": completeness,
-            "all_key_pages_present": all(completeness.values()),
-        }
-    except Exception as e:
-        logger.error(f"get_website_status_mcp error: {e}", exc_info=True)
-        return {"success": False, "error": str(e)}
+    return inspect_website(website_directory)
 
 
 def list_generated_pages_mcp(website_directory: str) -> Dict[str, Any]:
@@ -156,36 +123,7 @@ def list_generated_pages_mcp(website_directory: str) -> Dict[str, Any]:
     Returns:
         Dictionary with page list, sizes, and last-modified timestamps.
     """
-    try:
-        wdir = Path(website_directory)
-        if not wdir.exists():
-            return {
-                "success": False,
-                "error": f"Directory not found: {website_directory}",
-            }
-
-        from datetime import datetime as _dt
-
-        pages: list[Any] = []
-        for html_file in sorted(wdir.glob("*.html")):
-            stat = html_file.stat()
-            pages.append(
-                {
-                    "name": html_file.name,
-                    "size_bytes": stat.st_size,
-                    "modified": _dt.fromtimestamp(stat.st_mtime).isoformat(),
-                }
-            )
-
-        return {
-            "success": True,
-            "directory": str(wdir),
-            "pages": pages,
-            "total_pages": len(pages),
-        }
-    except Exception as e:
-        logger.error(f"list_generated_pages_mcp error: {e}", exc_info=True)
-        return {"success": False, "error": str(e)}
+    return list_website_pages(website_directory)
 
 
 def get_website_module_info_mcp() -> Dict[str, Any]:

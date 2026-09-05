@@ -13,7 +13,6 @@ from pathlib import Path
 from typing import Any, Dict, Optional
 
 logger = logging.getLogger(__name__)
-
 from api.path_utils import PathValidationError, resolve_repo_path
 
 from . import (
@@ -21,8 +20,10 @@ from . import (
     generate_documentation,
     process_llm,
 )
+from .defaults import DEFAULT_OLLAMA_MODEL
 
 _GNN_MODEL_SUFFIXES = {".md", ".json", ".yaml", ".yml"}
+_ANALYSIS_TYPES = ("comprehensive", "summary", "complexity", "connections")
 
 
 def _resolve_gnn_model_path(path_value: str, *, purpose: str) -> Path:
@@ -135,20 +136,44 @@ def analyze_gnn_with_llm_mcp(
     Args:
         gnn_file_path: Path to the GNN `.md` model file.
         analysis_type: One of "comprehensive", "summary", "complexity", "connections".
-        provider: Optional LLM provider override (e.g. "openai", "anthropic", "ollama").
+        provider: Optional provider override; "ollama" pins the default
+            local tag for the summary call, any other value uses the
+            standard multi-provider routing.
 
     Returns:
         Dictionary with success flag, analysis type, and LLM output.
     """
     try:
+        if analysis_type not in _ANALYSIS_TYPES:
+            return {
+                "success": False,
+                "error": (
+                    f"Unknown analysis_type '{analysis_type}'; expected one of "
+                    f"{', '.join(_ANALYSIS_TYPES)}"
+                ),
+            }
         gnn_path = _resolve_gnn_model_path(
             gnn_file_path,
             purpose="GNN model file",
         )
-        result = analyze_gnn_file_with_llm(gnn_path)
+        # Honor the provider override where the analyzer supports it: "ollama"
+        # pins the pipeline's default local tag for the summary call; other
+        # names use the standard multi-provider routing.
+        ollama_model = DEFAULT_OLLAMA_MODEL if provider == "ollama" else None
+        result = analyze_gnn_file_with_llm(gnn_path, ollama_model=ollama_model)
         if isinstance(result, dict):
-            return {"success": True, **result}
-        return {"success": True, "analysis": str(result)}
+            return {
+                "success": True,
+                "analysis_type": analysis_type,
+                "provider": provider,
+                **result,
+            }
+        return {
+            "success": True,
+            "analysis_type": analysis_type,
+            "provider": provider,
+            "analysis": str(result),
+        }
     except Exception as e:
         logger.error(f"analyze_gnn_with_llm_mcp error: {e}", exc_info=True)
         return {"success": False, "error": str(e)}
@@ -222,9 +247,11 @@ def generate_llm_documentation_mcp(
             file_analysis["complexity_metrics"] = calculate_complexity_metrics(
                 file_analysis["variables"], file_analysis["connections"]
             )
-        except Exception:
-            logger.debug(
-                "LLM analyzer not available for documentation generation; using lightweight analysis"
+        except Exception as exc:
+            logger.warning(
+                "LLM analyzer not available for documentation generation; "
+                "using lightweight analysis: %s",
+                exc,
             )
 
         result = generate_documentation(file_analysis)
@@ -276,6 +303,16 @@ def get_llm_providers_mcp() -> Dict[str, Any]:
         providers["anthropic"] = {
             "available": importlib.util.find_spec("anthropic") is not None,
             "configured": bool(os.getenv("ANTHROPIC_API_KEY")),
+        }
+        # OpenRouter and Perplexity ride the openai client library, so their
+        # "available" flag tracks that dependency rather than a distinct lib.
+        providers["openrouter"] = {
+            "available": importlib.util.find_spec("openai") is not None,
+            "configured": bool(os.getenv("OPENROUTER_API_KEY")),
+        }
+        providers["perplexity"] = {
+            "available": importlib.util.find_spec("openai") is not None,
+            "configured": bool(os.getenv("PERPLEXITY_API_KEY")),
         }
         # Ollama (local)
         providers["ollama"] = {
@@ -370,101 +407,101 @@ def initialize_llm_module(mcp_instance: Any) -> None:
 def register_tools(mcp_instance: Any) -> None:
     """Register LLM domain tools with the MCP server."""
 
-    mcp_instance.register_tool(
-        "process_llm",
-        process_llm_mcp,
-        {
-            "type": "object",
-            "properties": {
-                "target_directory": {
-                    "type": "string",
-                    "description": "Directory with GNN files",
+    # Single source of truth for tool registration: (name, handler, schema,
+    # description). All llm tools share module + category wiring.
+    tool_specs: tuple[tuple[str, Any, dict[str, Any], str], ...] = (
+        (
+            "process_llm",
+            process_llm_mcp,
+            {
+                "type": "object",
+                "properties": {
+                    "target_directory": {
+                        "type": "string",
+                        "description": "Directory with GNN files",
+                    },
+                    "output_directory": {
+                        "type": "string",
+                        "description": "LLM output directory",
+                    },
+                    "verbose": {"type": "boolean", "default": False},
                 },
-                "output_directory": {
-                    "type": "string",
-                    "description": "LLM output directory",
-                },
-                "verbose": {"type": "boolean", "default": False},
+                "required": ["target_directory", "output_directory"],
             },
-            "required": ["target_directory", "output_directory"],
-        },
-        "Run LLM analysis pipeline for all GNN files in a directory.",
-        module=__package__,
-        category="llm",
-    )
-
-    mcp_instance.register_tool(
-        "analyze_gnn_with_llm",
-        analyze_gnn_with_llm_mcp,
-        {
-            "type": "object",
-            "properties": {
-                "gnn_file_path": {
-                    "type": "string",
-                    "description": "Path to the GNN model file",
+            "Run LLM analysis pipeline for all GNN files in a directory.",
+        ),
+        (
+            "analyze_gnn_with_llm",
+            analyze_gnn_with_llm_mcp,
+            {
+                "type": "object",
+                "properties": {
+                    "gnn_file_path": {
+                        "type": "string",
+                        "description": "Path to the GNN model file",
+                    },
+                    "analysis_type": {
+                        "type": "string",
+                        "enum": list(_ANALYSIS_TYPES),
+                        "default": "comprehensive",
+                    },
+                    "provider": {
+                        "type": "string",
+                        "description": "LLM provider override (openai, anthropic, ollama, google)",
+                        "nullable": True,
+                    },
                 },
-                "analysis_type": {
-                    "type": "string",
-                    "enum": ["comprehensive", "summary", "complexity", "connections"],
-                    "default": "comprehensive",
-                },
-                "provider": {
-                    "type": "string",
-                    "description": "LLM provider override (openai, anthropic, ollama, google)",
-                    "nullable": True,
-                },
+                "required": ["gnn_file_path"],
             },
-            "required": ["gnn_file_path"],
-        },
-        "Run LLM-based analysis on a single GNN model file: summary, complexity, connections.",
-        module=__package__,
-        category="llm",
-    )
-
-    mcp_instance.register_tool(
-        "generate_llm_documentation",
-        generate_llm_documentation_mcp,
-        {
-            "type": "object",
-            "properties": {
-                "gnn_file_path": {
-                    "type": "string",
-                    "description": "Path to the GNN model file",
+            "Run LLM-based analysis on a single GNN model file: summary, complexity, connections.",
+        ),
+        (
+            "generate_llm_documentation",
+            generate_llm_documentation_mcp,
+            {
+                "type": "object",
+                "properties": {
+                    "gnn_file_path": {
+                        "type": "string",
+                        "description": "Path to the GNN model file",
+                    },
+                    "output_path": {
+                        "type": "string",
+                        "description": "Optional path to write documentation",
+                        "nullable": True,
+                    },
+                    "format": {
+                        "type": "string",
+                        "enum": ["markdown", "text"],
+                        "default": "markdown",
+                    },
                 },
-                "output_path": {
-                    "type": "string",
-                    "description": "Optional path to write documentation",
-                    "nullable": True,
-                },
-                "format": {
-                    "type": "string",
-                    "enum": ["markdown", "text"],
-                    "default": "markdown",
-                },
+                "required": ["gnn_file_path"],
             },
-            "required": ["gnn_file_path"],
-        },
-        "Generate human-readable Markdown documentation for a GNN model using an LLM.",
-        module=__package__,
-        category="llm",
+            "Generate human-readable Markdown documentation for a GNN model using an LLM.",
+        ),
+        (
+            "get_llm_providers",
+            get_llm_providers_mcp,
+            {},
+            "Return available LLM providers and their API key / configuration status.",
+        ),
+        (
+            "get_llm_module_info",
+            get_llm_module_info_mcp,
+            {},
+            "Return version, analysis types, output formats, and tool list of the GNN LLM module.",
+        ),
     )
 
-    mcp_instance.register_tool(
-        "get_llm_providers",
-        get_llm_providers_mcp,
-        {},
-        "Return available LLM providers and their API key / configuration status.",
-        module=__package__,
-        category="llm",
-    )
-
-    mcp_instance.register_tool(
-        "get_llm_module_info",
-        get_llm_module_info_mcp,
-        {},
-        "Return version, analysis types, output formats, and tool list of the GNN LLM module.",
-        module=__package__,
-        category="llm",
-    )
+    for name, handler, schema, description in tool_specs:
+        mcp_instance.register_tool(
+            name,
+            handler,
+            schema,
+            description,
+            module=__package__,
+            category="llm",
+        )
 
     logger.info("llm module MCP tools registered (5 real domain tools).")

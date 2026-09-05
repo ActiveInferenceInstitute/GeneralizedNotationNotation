@@ -161,3 +161,25 @@ result = executor.execute_gnn_model("path/to/script.py", execution_type="pymdp")
 - **[AGENTS](AGENTS.md)**: Agentic Workflows
 - **[SPEC](SPEC.md)**: Architectural Specification
 - **[SKILL](SKILL.md)**: Capability API
+
+
+### Current execution receipts
+
+Step 12 verifies source and artifact SHA-256 digests when consuming identified
+Step 11 receipts. A mismatched run ID or changed source/script cannot authorize
+execution. Receipts without identities are accepted only when no explicit run ID is
+required; they provide no freshness proof.
+
+Execution inputs and scripts are fingerprinted before dispatch and checked again
+before publication. `summaries/execution_summary.json` is replaced atomically;
+previous receipts are retained separately under `summaries/history/`.
+`invocation_receipts` contains current scope records for the same run and
+configuration. Retrying a scope replaces its verdict and script set; counters,
+framework statuses, and aggregate status are recomputed. `current_invocation`
+retains the current call's verdict separately from the aggregate.
+
+Use the same `run_id` keyword or `GNN_RUN_ID` for folder invocations in one run.
+Absent that identity, standalone calls start a fresh receipt rather than adopt
+previous-run results. bnlearn has no Step 12 executor; installing it does not
+add one. Optional dependency absence is reported as skipped, and explicitly
+requested unavailable frameworks follow the strict execution policy.

@@ -56,7 +56,8 @@ class MarkdownSerializer(BaseGNNSerializer):
 
                 for src in conn.source_variables:
                     for tgt in conn.target_variables:
-                        sections.append(f"{src}{op}{tgt}")
+                        suffix = f":{conn.annotation}" if conn.annotation else ""
+                        sections.append(f"{src}{op}{tgt}{suffix}")
             sections.append("")
 
         # InitialParameterization

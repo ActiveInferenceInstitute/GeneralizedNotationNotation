@@ -19,6 +19,9 @@ except ImportError:  # PyYAML is a project dependency; keep processor import-saf
     yaml = cast(Any, None)
 
 _logger = logging.getLogger(__name__)
+# Step-13 logging convention: all pipeline-facing messages ride the "llm"
+# channel (matching the per-run getLogger("llm") in process_llm).
+logger = logging.getLogger("llm")
 
 from pipeline.config import get_pipeline_config
 
@@ -344,6 +347,129 @@ from .llm_processor import LLMProcessor, ProviderType
 from .prompts import PromptType, get_prompt
 from .providers.base_provider import LLMConfig, LLMMessage
 
+_AUTH_ERROR_MARKERS = ("401", "403", "invalid_api_key", "incorrect api key")
+
+
+def _classify_auth_error(error_str: str) -> str | None:
+    """Return the provider name when an LLM error is an auth failure, else None.
+
+    Attribution scans the lowercased error for a known provider name and
+    falls back to ``"unknown"`` when the message carries an auth marker but
+    no recognizable provider.
+    """
+    lowered = error_str.lower()
+    if not any(marker in lowered for marker in _AUTH_ERROR_MARKERS):
+        return None
+    for prov_name in ("openai", "anthropic", "openrouter", "perplexity", "ollama"):
+        if prov_name in lowered:
+            return prov_name
+    return "unknown"
+
+
+def _prompt_fallback_text(label: str, custom: bool) -> str:
+    """Recovery text recorded for a prompt that could not be executed."""
+    qualifier = f"custom prompt {label}" if custom else label
+    return (
+        f"LLM analysis for {qualifier} was not available. "
+        "Please ensure that Ollama is running and the required model is installed."
+    )
+
+
+async def _execute_prompt(
+    processor: LLMProcessor,
+    cache: LLMCache,
+    *,
+    cache_content: str,
+    model_name: str,
+    messages: list[LLMMessage],
+    prompt_text: str,
+    label: str,
+    custom: bool,
+    max_tokens: int,
+    max_prompt_timeout: float,
+    failed_auth_providers: set[str],
+    auth_errors: list[dict[str, Any]],
+) -> str:
+    """Run one LLM prompt with cache lookup, timeout, and auth fail-fast.
+
+    Shared funnel for the structured ``PromptType`` sequence and free-form
+    custom prompts. Returns the text to record for ``label``; never raises.
+
+    Args:
+        processor: Initialized multi-provider processor (required non-None).
+        cache: Response cache keyed on content + model + prompt text.
+        cache_content: Raw GNN content used in the cache key.
+        model_name: Model tag passed to the provider and cache key.
+        messages: Chat messages for this prompt.
+        prompt_text: Prompt text used in the cache key.
+        label: Identity used in logs and recovery text.
+        custom: Whether this is a free-form custom prompt (affects wording).
+        max_tokens: Response token cap.
+        max_prompt_timeout: Per-prompt wall-clock budget in seconds.
+        failed_auth_providers: Providers that already failed auth (mutated).
+        auth_errors: Auth-failure records for the run summary (mutated).
+    """
+    cached = cache.get(cache_content, model_name, prompt_text)
+    if cached is not None:
+        logger.info(f"  ⚡ Cache HIT for {label}")
+        return cached
+
+    # Fail fast when the provider that would serve this request already
+    # failed authentication (mirrors get_response's default routing). The
+    # peek is duck-typed so in-memory provider doubles without routing introspection skip it.
+    get_default = getattr(processor, "get_default_provider", None)
+    provider = get_default() if callable(get_default) else None
+    if provider is not None and provider.provider_type.value in failed_auth_providers:
+        logger.warning(
+            f"  ⏭️ Skipping {label} — provider "
+            f"'{provider.provider_type.value}' previously failed auth"
+        )
+        return _prompt_fallback_text(label, custom)
+
+    try:
+        resp = await asyncio.wait_for(
+            processor.get_response(
+                messages=messages,
+                model_name=model_name,
+                max_tokens=max_tokens,
+                temperature=0.2,
+                config=LLMConfig(timeout=60),
+            ),
+            timeout=max_prompt_timeout,
+        )
+        content = resp.content if hasattr(resp, "content") else str(resp)
+        if not content or content.strip() == "":
+            kind = "custom prompt" if custom else "prompt"
+            content = (
+                f"No response generated for {kind} {label}. This may indicate "
+                "that the LLM provider is not available or not responding."
+            )
+        cache.put(cache_content, model_name, prompt_text, content)
+        logger.debug("  ✅ Prompt completed successfully")
+        return content
+    except asyncio.TimeoutError:
+        error_msg = f"Prompt execution timed out after {max_prompt_timeout} seconds"
+        logger.error(f"  ❌ {error_msg}")
+        return error_msg
+    except Exception as e:
+        error_str = str(e)
+        auth_provider = _classify_auth_error(error_str)
+        if auth_provider is not None:
+            if auth_provider not in failed_auth_providers:
+                failed_auth_providers.add(auth_provider)
+                auth_errors.append(
+                    {"provider": auth_provider, "error": error_str[:200]}
+                )
+                logger.error(
+                    f"  🔑 Auth failure for {auth_provider} — skipping future "
+                    "calls to this provider"
+                )
+            logger.error(f"  ❌ Auth error ({auth_provider}): {error_str[:100]}")
+        else:
+            kind = "Custom prompt" if custom else "Prompt"
+            logger.error(f"  ❌ {kind} execution failed: {e}")
+        return _prompt_fallback_text(label, custom)
+
 
 def _optional_positive_int(value: Any) -> int | None:
     """Normalize optional positive integer config values."""
@@ -655,6 +781,12 @@ async def _process_llm_async(
                             selected_model if selected_model else DEFAULT_OLLAMA_MODEL
                         )
                         logger.info(f"🤖 Using model '{ollama_model}' for LLM prompts")
+                        # Per-prompt timeout: config-driven, recovery to kwargs.
+                        # Loop-invariant, shared by structured and custom prompts.
+                        max_prompt_timeout = kwargs.get(
+                            "max_prompt_timeout",
+                            llm_config.get("prompt_timeout", 45),
+                        )
 
                         # Ensure model is available — use pre-pull guard to skip if cached
                         if (
@@ -716,94 +848,20 @@ async def _process_llm_async(
                                 f"  📝 Running prompt {idx}/{len(prompt_sequence)}: {ptype.value}"
                             )
 
-                            # Per-prompt timeout: config-driven, recovery to kwargs
-                            max_prompt_timeout = kwargs.get(
-                                "max_prompt_timeout",
-                                llm_config.get("prompt_timeout", 45),
+                            prompt_outputs[ptype.value] = await _execute_prompt(
+                                processor,
+                                cache,
+                                cache_content=gnn_content,
+                                model_name=ollama_model,
+                                messages=messages,
+                                prompt_text=prompt_cfg["user_prompt"],
+                                label=ptype.value,
+                                custom=False,
+                                max_tokens=min(512, prompt_cfg.get("max_tokens", 512)),
+                                max_prompt_timeout=max_prompt_timeout,
+                                failed_auth_providers=failed_auth_providers,
+                                auth_errors=results["auth_errors"],
                             )
-
-                            # Execute prompt — check cache first
-                            prompt_text = prompt_cfg["user_prompt"]
-                            cached = cache.get(gnn_content, ollama_model, prompt_text)
-                            if cached is not None:
-                                logger.info(f"  ⚡ Cache HIT for {ptype.value}")
-                                prompt_outputs[ptype.value] = cached
-                            else:
-                                try:
-                                    # Use wait_for for timeout control
-                                    resp = await asyncio.wait_for(
-                                        processor.get_response(
-                                            messages=messages,
-                                            model_name=ollama_model,
-                                            max_tokens=min(
-                                                512, prompt_cfg.get("max_tokens", 512)
-                                            ),
-                                            temperature=0.2,
-                                            config=LLMConfig(timeout=60),
-                                        ),
-                                        timeout=max_prompt_timeout,
-                                    )
-                                    content = (
-                                        resp.content
-                                        if hasattr(resp, "content")
-                                        else str(resp)
-                                    )
-
-                                    # Ensure we have some content, even if it's an error message
-                                    if not content or content.strip() == "":
-                                        content = f"No response generated for prompt {ptype.value}. This may indicate that the LLM provider is not available or not responding."
-                                    prompt_outputs[ptype.value] = content
-                                    cache.put(
-                                        gnn_content, ollama_model, prompt_text, content
-                                    )
-                                    logger.debug("  ✅ Prompt completed successfully")
-                                except asyncio.TimeoutError:
-                                    error_msg = f"Prompt execution timed out after {max_prompt_timeout} seconds"
-                                    logger.error(f"  ❌ {error_msg}")
-                                    prompt_outputs[ptype.value] = error_msg
-                                except Exception as e:
-                                    error_str = str(e)
-                                    # Fail-fast on auth errors (401/403) to avoid burning time
-                                    if any(
-                                        code in error_str
-                                        for code in [
-                                            "401",
-                                            "403",
-                                            "invalid_api_key",
-                                            "Incorrect API key",
-                                        ]
-                                    ):
-                                        auth_err: dict[str, Any] = {
-                                            "provider": "unknown",
-                                            "error": error_str[:200],
-                                        }
-                                        # Detect which provider failed
-                                        for prov_name in [
-                                            "openai",
-                                            "anthropic",
-                                            "openrouter",
-                                        ]:
-                                            if prov_name in error_str.lower():
-                                                auth_err["provider"] = prov_name
-                                                break
-                                        if (
-                                            auth_err["provider"]
-                                            not in failed_auth_providers
-                                        ):
-                                            results["auth_errors"].append(auth_err)
-                                            failed_auth_providers.add(
-                                                auth_err["provider"]
-                                            )
-                                            logger.error(
-                                                f"  🔑 Auth failure for {auth_err['provider']} — skipping future calls to this provider"
-                                            )
-                                        error_msg = f"Auth error ({auth_err['provider']}): {error_str[:100]}"
-                                    else:
-                                        error_msg = f"Prompt execution failed: {e}"
-                                    logger.error(f"  ❌ {error_msg}")
-                                    # Provide a meaningful recovery response
-                                    fallback_content = f"LLM analysis for {ptype.value} was not available. Please ensure that Ollama is running and the required model is installed."
-                                    prompt_outputs[ptype.value] = fallback_content
 
                             # Write to file
                             out_path = per_file_dir / f"{ptype.value}.md"
@@ -836,88 +894,20 @@ async def _process_llm_async(
                                 ),
                             ]
 
-                            # Cache check for custom prompts
-                            cached = cache.get(gnn_content, ollama_model, user_prompt)
-                            if cached is not None:
-                                logger.info(f"  ⚡ Cache HIT for custom prompt {key}")
-                                prompt_outputs[key] = cached
-                            else:
-                                try:
-                                    # Use configurable timeout
-                                    resp = await asyncio.wait_for(
-                                        processor.get_response(
-                                            messages=messages,
-                                            model_name=ollama_model,
-                                            max_tokens=512,
-                                            temperature=0.2,
-                                            config=LLMConfig(timeout=60),
-                                        ),
-                                        timeout=max_prompt_timeout,
-                                    )
-                                    content = (
-                                        resp.content
-                                        if hasattr(resp, "content")
-                                        else str(resp)
-                                    )
-
-                                    # Ensure we have some content, even if it's an error message
-                                    if not content or content.strip() == "":
-                                        content = f"No response generated for custom prompt {key}. This may indicate that the LLM provider is not available or not responding."
-                                    prompt_outputs[key] = content
-                                    cache.put(
-                                        gnn_content, ollama_model, user_prompt, content
-                                    )
-                                    logger.debug(
-                                        "  ✅ Custom prompt completed successfully"
-                                    )
-                                except asyncio.TimeoutError:
-                                    error_msg = f"Prompt execution timed out after {max_prompt_timeout} seconds"
-                                    logger.error(f"  ❌ {error_msg}")
-                                    prompt_outputs[key] = error_msg
-                                except Exception as e:
-                                    error_str = str(e)
-                                    # Fail-fast on auth errors (401/403)
-                                    if any(
-                                        code in error_str
-                                        for code in [
-                                            "401",
-                                            "403",
-                                            "invalid_api_key",
-                                            "Incorrect API key",
-                                        ]
-                                    ):
-                                        auth_err = {
-                                            "provider": "unknown",
-                                            "error": error_str[:200],
-                                        }
-                                        for prov_name in [
-                                            "openai",
-                                            "anthropic",
-                                            "openrouter",
-                                        ]:
-                                            if prov_name in error_str.lower():
-                                                auth_err["provider"] = prov_name
-                                                break
-                                        if (
-                                            auth_err["provider"]
-                                            not in failed_auth_providers
-                                        ):
-                                            results["auth_errors"].append(auth_err)
-                                            failed_auth_providers.add(
-                                                auth_err["provider"]
-                                            )
-                                            logger.error(
-                                                f"  🔑 Auth failure for {auth_err['provider']} — skipping future calls to this provider"
-                                            )
-                                        error_msg = f"Auth error ({auth_err['provider']}): {error_str[:100]}"
-                                    else:
-                                        error_msg = (
-                                            f"Custom prompt execution failed: {e}"
-                                        )
-                                    logger.error(f"  ❌ {error_msg}")
-                                    # Provide a meaningful recovery response
-                                    fallback_content = f"LLM analysis for custom prompt {key} was not available. Please ensure that Ollama is running and the required model is installed."
-                                    prompt_outputs[key] = fallback_content
+                            prompt_outputs[key] = await _execute_prompt(
+                                processor,
+                                cache,
+                                cache_content=gnn_content,
+                                model_name=ollama_model,
+                                messages=messages,
+                                prompt_text=user_prompt,
+                                label=key,
+                                custom=True,
+                                max_tokens=512,
+                                max_prompt_timeout=max_prompt_timeout,
+                                failed_auth_providers=failed_auth_providers,
+                                auth_errors=results["auth_errors"],
+                            )
 
                             out_path = per_file_dir / f"{key}.md"
                             with open(out_path, "w") as outf:

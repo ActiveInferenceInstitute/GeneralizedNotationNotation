@@ -18,7 +18,7 @@ Usage:
     python scripts/run_v3_orchestration_acceptance.py [--strict] [--inject-defect]
 
 ``--inject-defect`` breaks one positive assertion to demonstrate the non-zero exit
-path (used to evidence fail-closed behavior in the TODO acceptance).
+path (used to evidence fail-closed behavior in the v3 long-running orchestration acceptance gate).
 """
 
 from __future__ import annotations

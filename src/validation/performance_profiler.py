@@ -9,7 +9,13 @@ identification of potential performance bottlenecks.
 import logging
 import re
 from pathlib import Path
-from typing import Any, Dict, List, Union
+from typing import Any
+
+from .structure import (
+    clamp01,
+    display_file_name,
+    extract_content_from_dict,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -17,7 +23,7 @@ logger = logging.getLogger(__name__)
 class PerformanceProfiler:
     """Profiler for performance aspects of GNN models."""
 
-    def profile(self, content: str) -> Dict[str, Any]:
+    def profile(self, content: str) -> dict[str, Any]:
         """
         Profile the performance characteristics of a GNN model.
 
@@ -45,8 +51,8 @@ class PerformanceProfiler:
         return {"metrics": metrics, "warnings": warnings}
 
     def _extract_block_dimensions(
-        self, state_blocks: List[str]
-    ) -> Dict[str, List[int]]:
+        self, state_blocks: list[str]
+    ) -> dict[str, list[int]]:
         """Extract dimensions from state blocks."""
         block_dims: dict[Any, Any] = {}
 
@@ -66,7 +72,7 @@ class PerformanceProfiler:
 
         return block_dims
 
-    def _extract_block_types(self, state_blocks: List[str]) -> Dict[str, str]:
+    def _extract_block_types(self, state_blocks: list[str]) -> dict[str, str]:
         """Extract block types from state blocks."""
         block_types: dict[Any, Any] = {}
 
@@ -81,7 +87,7 @@ class PerformanceProfiler:
 
         return block_types
 
-    def _extract_connection_types(self, connections: List[str]) -> List[str]:
+    def _extract_connection_types(self, connections: list[str]) -> list[str]:
         """Extract connection types from connections."""
         connection_types: list[Any] = []
 
@@ -96,10 +102,10 @@ class PerformanceProfiler:
 
     def _calculate_metrics(
         self,
-        block_dims: Dict[str, List[int]],
-        block_types: Dict[str, str],
-        connection_types: List[str],
-    ) -> Dict[str, Any]:
+        block_dims: dict[str, list[int]],
+        block_types: dict[str, str],
+        connection_types: list[str],
+    ) -> dict[str, Any]:
         """Calculate performance metrics."""
         metrics: dict[Any, Any] = {}
 
@@ -137,10 +143,10 @@ class PerformanceProfiler:
 
     def _estimate_computational_complexity(
         self,
-        block_dims: Dict[str, List[int]],
-        block_types: Dict[str, str],
-        connection_types: List[str],
-    ) -> Dict[str, Any]:
+        block_dims: dict[str, list[int]],
+        block_types: dict[str, str],
+        connection_types: list[str],
+    ) -> dict[str, Any]:
         """Estimate computational complexity of the model."""
         # Initialize complexity metrics
         complexity: dict[str, Any] = {
@@ -200,10 +206,10 @@ class PerformanceProfiler:
 
     def _estimate_parallelization_potential(
         self,
-        block_dims: Dict[str, List[int]],
-        block_types: Dict[str, str],
-        connection_types: List[str],
-    ) -> Dict[str, Any]:
+        block_dims: dict[str, list[int]],
+        block_types: dict[str, str],
+        connection_types: list[str],
+    ) -> dict[str, Any]:
         """Estimate parallelization potential of the model."""
         # Initialize parallelization metrics
         parallelization: dict[str, Any] = {
@@ -249,7 +255,7 @@ class PerformanceProfiler:
 
         return parallelization
 
-    def _generate_warnings(self, metrics: Dict[str, Any]) -> List[str]:
+    def _generate_warnings(self, metrics: dict[str, Any]) -> list[str]:
         """Generate warnings based on performance metrics."""
         warnings: list[Any] = []
 
@@ -297,7 +303,9 @@ class PerformanceProfiler:
         return warnings
 
 
-def profile_performance(model_path: Union[str, Path, Dict[str, Any]]) -> Dict[str, Any]:
+def profile_performance(
+    model_path: str | Path | dict[str, Any],
+) -> dict[str, Any]:
     """
     Profile the performance characteristics of a GNN model.
 
@@ -311,7 +319,7 @@ def profile_performance(model_path: Union[str, Path, Dict[str, Any]]) -> Dict[st
         # Handle different input types
         if isinstance(model_path, dict):
             # If it's already a dictionary, extract content from it
-            content = _extract_content_from_dict(model_path)
+            content = extract_content_from_dict(model_path)
             model_path_str = model_path.get("file_path", "unknown")
         else:
             # Convert string path to Path object
@@ -328,12 +336,11 @@ def profile_performance(model_path: Union[str, Path, Dict[str, Any]]) -> Dict[st
 
         return {
             "file_path": model_path_str,
-            "file_name": Path(model_path_str).name
-            if model_path_str != "unknown"
-            else "unknown",
+            "file_name": display_file_name(str(model_path_str)),
             "metrics": profile_result.get("metrics", {}),
             "warnings": profile_result.get("warnings", []),
             "performance_score": _calculate_performance_score(profile_result),
+            "recovery": False,
         }
 
     except Exception as e:
@@ -342,82 +349,18 @@ def profile_performance(model_path: Union[str, Path, Dict[str, Any]]) -> Dict[st
             "file_path": str(model_path)
             if not isinstance(model_path, dict)
             else "unknown",
+            "file_name": "unknown"
+            if isinstance(model_path, dict)
+            else Path(str(model_path)).name,
             "error": str(e),
+            "metrics": {},
+            "warnings": [str(e)],
+            "performance_score": 0.0,
+            "recovery": True,
         }
 
 
-def _extract_content_from_dict(model_data: Dict[str, Any]) -> str:
-    """Extract content from model data dictionary."""
-    # Try to get raw sections first
-    raw_sections = model_data.get("raw_sections", {})
-    if raw_sections:
-        # Reconstruct the original content from raw sections
-        content_parts: list[Any] = []
-
-        # Add model name
-        if "ModelName" in raw_sections:
-            content_parts.append(f"ModelName: {raw_sections['ModelName']}")
-
-        # Add state space block
-        if "StateSpaceBlock" in raw_sections:
-            content_parts.append(f"StateSpaceBlock: {raw_sections['StateSpaceBlock']}")
-
-        # Add initial parameterization
-        if "InitialParameterization" in raw_sections:
-            content_parts.append(
-                f"InitialParameterization: {raw_sections['InitialParameterization']}"
-            )
-
-        # Add connections
-        if "Connections" in raw_sections:
-            content_parts.append(f"Connections: {raw_sections['Connections']}")
-
-        return "\n\n".join(content_parts)
-
-    # Recovery: try to get variables and connections
-    variables = model_data.get("variables", [])
-    connections = model_data.get("connections", [])
-
-    if variables or connections:
-        content_parts = []
-
-        # Add variables
-        if variables:
-            var_lines: list[Any] = []
-            for var in variables:
-                name = var.get("name", "Unknown")
-                var_type = var.get("var_type", "unknown")
-                dimensions = var.get("dimensions", [])
-                dim_str = (
-                    "[" + ", ".join(map(str, dimensions)) + "]" if dimensions else ""
-                )
-                var_lines.append(f"{name}{dim_str} # {var_type}")
-            content_parts.append("StateSpaceBlock:\n" + "\n".join(var_lines))
-
-        # Add connections
-        if connections:
-            conn_lines: list[Any] = []
-            for conn in connections:
-                source = (
-                    conn.get("source_variables", ["?"])[0]
-                    if conn.get("source_variables")
-                    else "?"
-                )
-                target = (
-                    conn.get("target_variables", ["?"])[0]
-                    if conn.get("target_variables")
-                    else "?"
-                )
-                conn_lines.append(f"{source} > {target}")
-            content_parts.append("Connections:\n" + "\n".join(conn_lines))
-
-        return "\n\n".join(content_parts)
-
-    # Final recovery: return empty string
-    return ""
-
-
-def _calculate_performance_score(profile_result: Dict[str, Any]) -> float:
+def _calculate_performance_score(profile_result: dict[str, Any]) -> float:
     """Calculate a performance score from profile results."""
     metrics = profile_result.get("metrics", {})
     warnings = profile_result.get("warnings", [])
@@ -450,4 +393,4 @@ def _calculate_performance_score(profile_result: Dict[str, Any]) -> float:
         score -= 0.2
 
     # Ensure score is between 0 and 1
-    return max(0.0, min(1.0, score))
+    return clamp01(score)

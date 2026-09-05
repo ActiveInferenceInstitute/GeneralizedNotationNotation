@@ -2,14 +2,33 @@
 
 > **GNN Integration Layer**: Julia
 > **Framework Base**: `ActiveInference.jl` (Discrete Active Inference Package)
-> **Simulation Architecture**: Online True POMDP Generative Model
+> **Simulation Architecture**: Canonical JSON input and local Julia inference loop
 > **Documentation Version**: 2.0.0
 
-## Overview
+## Current canonical renderer
 
-The Generalized Notation Notation (GNN) pipeline translates theoretical model specifications into executable Julia code natively utilizing the `ActiveInference.jl` package. ActiveInference.jl is a dedicated Julia implementation of discrete-state Active Inference, providing structured agent initialization (`init_aif`), built-in variational inference (`infer_states!`), policy evaluation (`infer_policies!`), and action sampling (`sample_action!`). Within the GNN cross-framework comparison, ActiveInference.jl serves as the canonical Julia Active Inference reference, directly mirroring the `pymdp` Python API design.
+The public `render_gnn_spec(..., "activeinference_jl", ...)` route constructs a
+canonical POMDP specification and embeds it as `GNN_SPEC_JSON_B64`. The emitted
+script imports `ActiveInference` but currently runs its own state-update and
+action-selection functions. It does not call `init_aif`, `infer_states!`, or
+`infer_policies!` on this route.
 
-This document details the full data flow from GNN JSON specification through Julia agent struct construction, the unified POMDP generative environment loop, EFE extraction (via the `.G` property), and JSON telemetry serialization.
+At load time it normalizes A/B/D/E and transforms C with softmax. Its
+`select_action` receives belief, A, B and transformed C; E is retained but is
+not an argument to that action-selection function. Embedded input fidelity
+therefore does not establish fidelity of consumed preferences, policy habits,
+package-agent execution, or EFE equivalence. The exact frozen Boolean artifact
+contract is tracked in the sibling fep_lean Q6 slice.
+
+The canonical parameter path is JSON decoding, not `_matrix_to_julia`. The
+sections below describe the retained package-agent template and are
+historical reference; they do not describe the current canonical output.
+
+## Historical package-agent template
+
+The retained GNN template translated model specifications into Julia code using the `ActiveInference.jl` package. ActiveInference.jl is a dedicated Julia implementation of discrete-state Active Inference, providing structured agent initialization (`init_aif`), built-in variational inference (`infer_states!`), policy evaluation (`infer_policies!`), and action sampling (`sample_action!`). Within the GNN cross-framework comparison, ActiveInference.jl serves as the canonical Julia Active Inference reference, directly mirroring the `pymdp` Python API design.
+
+The historical reference below describes the template's data flow from GNN JSON specification through Julia agent struct construction, the unified POMDP generative environment loop, EFE extraction (via the `.G` property), and JSON telemetry serialization.
 
 This backend is discrete-only: continuous (linear-Gaussian) models are reported with render status `unsupported` (`supports_continuous: False` in `src/render/framework_registry.py`), counted separately from failures and never executed by Step 12.
 

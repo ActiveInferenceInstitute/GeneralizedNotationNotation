@@ -280,6 +280,7 @@ class ProtobufGNNParser(BaseGNNParser):
             for conn_data in model_content["connections"]:
                 if isinstance(conn_data, dict):
                     connection = Connection(
+                        annotation=conn_data.get("annotation"),
                         source_variables=conn_data.get("source_variables", []),
                         target_variables=conn_data.get("target_variables", []),
                         connection_type=ConnectionType(
@@ -436,6 +437,7 @@ class ProtobufGNNParser(BaseGNNParser):
             # Restore connections
             for conn_data in data.get("connections", []):
                 connection = Connection(
+                    annotation=conn_data.get("annotation"),
                     source_variables=conn_data.get("source_variables", []),
                     target_variables=conn_data.get("target_variables", []),
                     connection_type=ConnectionType(

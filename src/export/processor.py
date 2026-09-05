@@ -8,9 +8,7 @@ This module provides the main export processing functionality.
 import datetime
 import json
 import logging
-import pickle  # nosec B403
 import sys
-import xml.etree.ElementTree as ET  # nosec B405
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple, cast
 
@@ -37,7 +35,7 @@ from .formatters import (
     export_to_xml,
     export_to_xml_gnn,
 )
-from .registry import DEFAULT_PIPELINE_FORMATS, resolve_format_writer
+from .registry import DEFAULT_PIPELINE_FORMATS, get_format_spec, resolve_format_writer
 
 # Canonical default format set for the pipeline path (``process_export``) and
 # ``export_model``. ``export_gnn_model`` supports a different (text-leaning)
@@ -70,6 +68,48 @@ _GNN_MODEL_WRITERS: Dict[str, Tuple[Any, str]] = {
 _PIPELINE_WRITERS: Dict[str, Any] = {
     name: resolve_format_writer(name) for name in DEFAULT_PIPELINE_FORMATS
 }
+
+
+def _pipeline_formats_generated(geo_options: Any) -> Dict[str, int]:
+    """Return the per-format counters, including ``geo_infer`` when opted in."""
+    counters = dict.fromkeys(_PIPELINE_WRITERS, 0)
+    if isinstance(geo_options, dict):
+        counters["geo_infer"] = 0
+    return counters
+
+
+def _geo_writer_input(
+    model_data: Dict[str, Any], file_result: Dict[str, Any], geo_options: Any
+) -> Dict[str, Any]:
+    """Build the writer input for the opt-in geo_infer format.
+
+    Resolves ``state_ids_path`` into the ``state_ids`` list the strict
+    writer expects and attaches ``raw_content`` (read from the source file
+    when the parsed spec does not carry it).
+    """
+    if not isinstance(geo_options, dict):
+        raise ValueError(
+            "geo_infer export requires explicit geo_infer options with a "
+            "mandatory, positive 'step_seconds' key"
+        )
+    options: Dict[str, Any] = dict(geo_options)
+    state_ids_path = options.pop("state_ids_path", None)
+    if state_ids_path is not None:
+        with open(state_ids_path, "r", encoding="utf-8") as f:
+            state_ids = json.load(f)
+        if not isinstance(state_ids, list):
+            raise ValueError("geo_infer state_ids_path must point to a JSON array")
+        options["state_ids"] = state_ids
+    raw_content = model_data.get("raw_content")
+    if raw_content is None:
+        source = file_result.get("file_path")
+        if not source:
+            raise ValueError(
+                "geo_infer export requires raw_content but no source file_path "
+                "is available for this model"
+            )
+        raw_content = Path(source).read_text(encoding="utf-8")
+    return {**model_data, "raw_content": raw_content, "geo_infer": options}
 
 
 def generate_exports(target_dir: Path, output_dir: Path, verbose: bool = False) -> bool:
@@ -326,7 +366,10 @@ def export_model(
         output_dir.mkdir(parents=True, exist_ok=True)
         for format_type in formats:
             try:
-                filename = _MODEL_FORMAT_FILES.get(format_type)
+                spec = get_format_spec(format_type)
+                filename = _MODEL_FORMAT_FILES.get(format_type) or (
+                    "model" + spec["extension"] if spec else None
+                )
                 writer = resolve_format_writer(format_type)
                 if filename is None or writer is None:
                     results["errors"].append(f"Unsupported format: {format_type}")
@@ -340,7 +383,13 @@ def export_model(
                         success = writer(model_data, output_file)
                         if not success:
                             raise RuntimeError("formatter returned False")
-                    except Exception:
+                    except Exception as exc:
+                        logging.getLogger(__name__).warning(
+                            "JSON export recovery writer used for format '%s' "
+                            "after formatter failure: %s",
+                            format_type,
+                            exc,
+                        )
                         with open(output_file, "w", encoding="utf-8") as f:
                             json.dump(model_data, f, indent=2, ensure_ascii=False)
                         success = True
@@ -470,7 +519,10 @@ def process_export(
         verbose: Whether to enable verbose logging
         **kwargs: Additional processing options including 'formats' and
             'logger' (a ``logging.Logger`` injected by the pipeline
-            template; when omitted the module logger is used)
+            template; when omitted the module logger is used). An optional
+            ``geo_infer`` mapping (``step_seconds`` required; optional
+            ``state_ids_path`` and ``space_kind``) opts the request into the
+            strict GEO-INFER export when ``"geo_infer"`` is in ``formats``.
 
     Returns:
         True if export succeeded, False otherwise
@@ -488,6 +540,17 @@ def process_export(
 
     # Ensure output directory exists
     output_dir.mkdir(parents=True, exist_ok=True)
+    # Opt-in GEO-INFER export: validate options up front so a missing
+    # ``step_seconds`` fails visibly, before any output is written.
+    requested_formats = kwargs.get("formats", list(_DEFAULT_FORMATS))
+    geo_options = kwargs.get("geo_infer")
+    if "geo_infer" in requested_formats and (
+        not isinstance(geo_options, dict) or "step_seconds" not in geo_options
+    ):
+        raise ValueError(
+            "geo_infer export requires explicit geo_infer options with a "
+            "mandatory, positive 'step_seconds' key; no output was written"
+        )
 
     try:
         # Load parsed GNN data from previous step (step 3)
@@ -530,12 +593,11 @@ def process_export(
                 "total_files": 0,
                 "successful_exports": 0,
                 "failed_exports": 0,
-                "formats_generated": dict.fromkeys(_PIPELINE_WRITERS, 0),
+                "formats_generated": _pipeline_formats_generated(
+                    kwargs.get("geo_infer")
+                ),
             },
         }
-
-        # Get requested formats
-        requested_formats = kwargs.get("formats", list(_DEFAULT_FORMATS))
 
         # Process each file
         for file_result in gnn_results["processed_files"]:
@@ -580,16 +642,28 @@ def process_export(
             # Generate exports for each format
             for format_name in requested_formats:
                 writer = _PIPELINE_WRITERS.get(format_name)
+                if writer is None and format_name == "geo_infer":
+                    writer = resolve_format_writer("geo_infer")
                 if writer is None:
                     logger.warning(f"Unsupported format: {format_name}")
                     continue
                 try:
                     extension = "pkl" if format_name == "pickle" else format_name
+                    if format_name == "geo_infer":
+                        geo_spec = get_format_spec("geo_infer")
+                        extension = (
+                            geo_spec["extension"] if geo_spec else ".json"
+                        ).lstrip(".")
                     export_file = (
                         file_output_dir
                         / f"{file_name.replace('.md', '')}_{format_name}.{extension}"
                     )
-                    success = writer(model_data, export_file)
+                    writer_data = (
+                        _geo_writer_input(model_data, file_result, geo_options)
+                        if format_name == "geo_infer"
+                        else model_data
+                    )
+                    success = writer(writer_data, export_file)
 
                     if success:
                         file_export_result["exports"][format_name] = {
@@ -657,18 +731,24 @@ def process_export(
 def _check_content(path: Path) -> Tuple[bool, str]:
     """Lightweight sanity check for an exported file by extension.
 
-    JSON must parse; XML/GraphML/GEXF must parse as XML; pickle must
-    load; everything else must be non-empty UTF-8 text.
+    JSON must parse; XML/GraphML/GEXF must parse without DTDs or entities;
+    pickle must load through the restricted GNN record loader; everything else must be non-empty UTF-8 text.
     """
     suffix = path.suffix.lower()
     try:
         if suffix == ".json":
             json.loads(path.read_text(encoding="utf-8"))
         elif suffix in (".xml", ".graphml", ".gexf"):
-            ET.parse(path)
-        elif suffix == ".pkl":
-            with open(path, "rb") as f:
-                pickle.load(f)  # nosec B301
+            from defusedxml import ElementTree
+
+            ElementTree.parse(
+                path, forbid_dtd=True, forbid_entities=True, forbid_external=True
+            )
+        elif suffix in (".pkl", ".pickle"):
+            from gnn.parsers.binary_parser import safe_pickle_load
+
+            with path.open("rb") as stream:
+                safe_pickle_load(stream)
         else:
             if not path.read_text(encoding="utf-8").strip():
                 return False, "empty text file"
@@ -686,7 +766,7 @@ def validate_export_outputs(
     Reads ``<output_dir>/export_results.json`` and checks every export
     the manifest records as successful: the file must exist, be non-empty,
     and parse cleanly for its format (JSON loads; XML/GraphML/GEXF parse
-    as XML; pickle loads). When *expected_formats* is provided, models
+    without DTDs or entities; pickle loads through the restricted GNN loader). When *expected_formats* is provided, models
     whose successful exports do not cover every expected format are
     reported as ``incomplete``.
 

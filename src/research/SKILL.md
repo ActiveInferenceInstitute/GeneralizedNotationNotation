@@ -38,6 +38,7 @@ result = process_research(target_dir, output_dir, verbose=True)
 - **Model-family detection**: POMDP, MDP, continuous, mixed classification
 - **Structural diagnostics**: Dimension and connection analysis
 - **Optional LLM enrichment**: Hypotheses enriched via the shared LLM infrastructure when a provider is available
+- **Composable pure analysis API**: `analyze_gnn()` → frozen `ModelAnalysis` (family, dims, connections), `summarize_hypotheses()`, `render_research_report()` — all pure functions usable without the pipeline
 
 ## Output
 

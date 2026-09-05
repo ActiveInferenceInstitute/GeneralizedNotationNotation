@@ -371,10 +371,14 @@ def extract_pymdp_data_from_files(
                         data["actions"] = results["actions"]
                     if "observations" in results:
                         data["observations"] = results["observations"]
+                    if "expected_free_energy" in results:
+                        data["expected_free_energy"] = results["expected_free_energy"]
+                    if "expected_free_energy_convention" in results:
+                        data["expected_free_energy_convention"] = results[
+                            "expected_free_energy_convention"
+                        ]
                     if "num_timesteps" in results:
                         data["num_timesteps"] = results["num_timesteps"]
-
-                    logger.info(f"Extracted PyMDP data from {results_file.name}")
                 except Exception as e:
                     logger.warning(f"Failed to parse {results_file}: {e}")
 
@@ -411,6 +415,8 @@ def extract_pymdp_like_data_from_files(
                         "actions",
                         "observations",
                         "free_energy",
+                        "expected_free_energy",
+                        "expected_free_energy_convention",
                         "num_timesteps",
                         "model_parameters",
                     ):
@@ -445,6 +451,7 @@ def extract_rxinfer_data_from_files(
                     "observations",
                     "actions",
                     "expected_free_energy",
+                    "expected_free_energy_convention",
                     "policy_posterior",
                     "validation",
                     "model_parameters",
@@ -580,6 +587,7 @@ def extract_activeinference_jl_data_from_files(
                             "observations",
                             "actions",
                             "expected_free_energy",
+                            "expected_free_energy_convention",
                             "policy_posterior",
                             "validation",
                             "model_parameters",

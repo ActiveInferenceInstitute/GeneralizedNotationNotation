@@ -8,7 +8,15 @@ structure validation, type checking, and consistency verification.
 import logging
 import re
 from pathlib import Path
-from typing import Any, Dict, List, Union, cast
+from typing import Any
+
+from .structure import (
+    DirectedEdge,
+    clamp01,
+    cycle_nodes,
+    display_file_name,
+    extract_content_from_dict,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -26,7 +34,7 @@ class SemanticValidator:
         self.validation_level = validation_level
         self.validation_rules = self._get_validation_rules()
 
-    def validate(self, content: str) -> Dict[str, Any]:
+    def validate(self, content: str) -> dict[str, Any]:
         """
         Validate the semantic aspects of a GNN model.
 
@@ -38,6 +46,43 @@ class SemanticValidator:
         """
         errors: list[Any] = []
         warnings: list[Any] = []
+
+        # Canonical markdown and parsed-model receipts share the same reference
+        # checks. Documents using the earlier block-section syntax continue
+        # through the existing rule set.
+        if re.search(r"^\s*## ", content, re.MULTILINE):
+            from gnn.parsers.markdown_parser import MarkdownGNNParser
+
+            parsed = MarkdownGNNParser().parse_string(content)
+            errors.extend(parsed.errors)
+            model = parsed.model
+            names = {variable.name for variable in model.variables}
+            # Inspect raw dimension tokens before the parser's intentional
+            # symbolic-dimension normalization can turn negative integers into 1.
+            state_space = model.raw_sections.get("StateSpaceBlock", "")
+            for raw_line in state_space.splitlines():
+                declaration = raw_line.split("#", 1)[0].strip()
+                match = re.match(r"([^\[\]]+)\[([^\]]*)\]", declaration)
+                if match is None:
+                    continue
+                name, dimensions = match.groups()
+                for dimension in dimensions.split(","):
+                    token = dimension.strip()
+                    if re.fullmatch(r"[+-]?\d+", token) and int(token) <= 0:
+                        errors.append(
+                            f"Variable '{name.strip()}' has non-positive dimensions"
+                        )
+                        break
+            if self._get_level_value() >= 2:
+                for connection in model.connections:
+                    for name in (
+                        *connection.source_variables,
+                        *connection.target_variables,
+                    ):
+                        if name not in names:
+                            errors.append(
+                                f"Connection references undeclared variable '{name}'"
+                            )
 
         # Apply validation rules based on level
         for rule in self.validation_rules:
@@ -55,12 +100,11 @@ class SemanticValidator:
 
     def _get_level_value(self) -> int:
         """Convert validation level string to numeric value."""
-        levels: dict[str, Any] = {"basic": 1, "standard": 2, "strict": 3, "research": 4}
-        return cast(
-            "int", levels.get(self.validation_level.lower(), 2)
-        )  # Default to standard
+        levels: dict[str, int] = {"basic": 1, "standard": 2, "strict": 3, "research": 4}
+        # Default to standard
+        return levels.get(self.validation_level.lower(), 2)
 
-    def _get_validation_rules(self) -> List[Dict[str, Any]]:
+    def _get_validation_rules(self) -> list[dict[str, Any]]:
         """Get validation rules based on validation level."""
         return [
             {
@@ -100,13 +144,13 @@ class SemanticValidator:
             },
         ]
 
-    def _validate_basic_structure(self, content: str) -> Dict[str, Any]:
+    def _validate_basic_structure(self, content: str) -> dict[str, Any]:
         """Validate basic structure of the GNN model."""
         errors: list[Any] = []
         warnings: list[Any] = []
 
         # Check for required elements
-        if not re.search(r"ModelName:", content):
+        if not re.search(r"(?:ModelName:|^\s*## ModelName\s*$)", content, re.MULTILINE):
             warnings.append("Missing ModelName definition")
 
         if not re.search(r"StateSpaceBlock", content):
@@ -125,7 +169,7 @@ class SemanticValidator:
 
         return {"errors": errors, "warnings": warnings}
 
-    def _validate_state_space_definitions(self, content: str) -> Dict[str, Any]:
+    def _validate_state_space_definitions(self, content: str) -> dict[str, Any]:
         """Validate state space definitions."""
         errors: list[Any] = []
         warnings: list[Any] = []
@@ -158,7 +202,7 @@ class SemanticValidator:
 
         return {"errors": errors, "warnings": warnings}
 
-    def _validate_connection_integrity(self, content: str) -> Dict[str, Any]:
+    def _validate_connection_integrity(self, content: str) -> dict[str, Any]:
         """Validate connection integrity."""
         errors: list[Any] = []
         warnings: list[Any] = []
@@ -216,7 +260,7 @@ class SemanticValidator:
 
         return {"errors": errors, "warnings": warnings}
 
-    def _validate_mathematical_consistency(self, content: str) -> Dict[str, Any]:
+    def _validate_mathematical_consistency(self, content: str) -> dict[str, Any]:
         """Validate mathematical consistency."""
         errors: list[Any] = []
         warnings: list[Any] = []
@@ -331,7 +375,7 @@ class SemanticValidator:
 
         return {"errors": errors, "warnings": warnings}
 
-    def _validate_active_inference_principles(self, content: str) -> Dict[str, Any]:
+    def _validate_active_inference_principles(self, content: str) -> dict[str, Any]:
         """Validate compliance with Active Inference principles."""
         errors: list[Any] = []
         warnings: list[Any] = []
@@ -369,7 +413,7 @@ class SemanticValidator:
 
         return {"errors": errors, "warnings": warnings}
 
-    def _validate_causal_relationships(self, content: str) -> Dict[str, Any]:
+    def _validate_causal_relationships(self, content: str) -> dict[str, Any]:
         """Validate causal relationships in the model."""
         errors: list[Any] = []
         warnings: list[Any] = []
@@ -377,8 +421,10 @@ class SemanticValidator:
         # Extract connections
         connections = re.findall(r"Connection\s*\{([^}]*)\}", content)
 
-        # Check for circular dependencies
-        graph: dict[Any, Any] = {}
+        # Check for circular dependencies with exact cycle membership
+        endpoints: list[str] = []
+        seen_endpoints: set[str] = set()
+        edges: list[DirectedEdge] = []
         for conn in connections:
             from_match = re.search(r"From:\s*([^\n]+)", conn)
             to_match = re.search(r"To:\s*([^\n]+)", conn)
@@ -386,37 +432,13 @@ class SemanticValidator:
             if from_match and to_match:
                 from_block = from_match.group(1).strip()
                 to_block = to_match.group(1).strip()
+                for endpoint in (from_block, to_block):
+                    if endpoint not in seen_endpoints:
+                        seen_endpoints.add(endpoint)
+                        endpoints.append(endpoint)
+                edges.append(DirectedEdge(source=from_block, target=to_block))
 
-                if from_block not in graph:
-                    graph[from_block] = []
-                graph[from_block].append(to_block)
-
-        # Check for cycles
-        visited: set[Any] = set()
-        path: set[Any] = set()
-
-        def has_cycle(node: Any) -> Any:
-            """Return whether cycle."""
-            if node in path:
-                return True
-            if node in visited:
-                return False
-
-            visited.add(node)
-            path.add(node)
-
-            for neighbor in graph.get(node, []):
-                if has_cycle(neighbor):
-                    return True
-
-            path.remove(node)
-            return False
-
-        cycles: list[Any] = []
-        for node in graph:
-            if has_cycle(node):
-                cycles.append(node)
-
+        cycles = cycle_nodes(endpoints, edges)
         if cycles:
             warnings.append(
                 f"Potential circular dependencies detected in blocks: {', '.join(cycles)}"
@@ -426,7 +448,7 @@ class SemanticValidator:
 
     def _validate_advanced_mathematical_properties(
         self, content: str
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Validate advanced mathematical properties."""
         errors: list[Any] = []
         warnings: list[Any] = []
@@ -453,8 +475,8 @@ class SemanticValidator:
 
 
 def process_semantic_validation(
-    model_data: Union[str, Path, Dict[str, Any]], **kwargs: Any
-) -> Dict[str, Any]:
+    model_data: str | Path | dict[str, Any], **kwargs: Any
+) -> dict[str, Any]:
     """
     Process semantic validation for a GNN model.
 
@@ -466,46 +488,68 @@ def process_semantic_validation(
         Dictionary with validation results
     """
 
-    validation_level = kwargs.get("validation_level", "standard")
-    validator = SemanticValidator(validation_level)
-
+    file_path = "unknown"
     try:
-        # Handle different input types
         if isinstance(model_data, dict):
-            # If it's already a dictionary, extract content from it
-            content = _extract_content_from_dict(model_data)
-            file_path = model_data.get("file_path", "unknown")
+            content = extract_content_from_dict(model_data)
+            file_path = str(model_data.get("file_path", "unknown"))
+            if not model_data.get("raw_sections"):
+                content = re.sub(
+                    r"^(StateSpaceBlock|Connections):",
+                    r"## \1",
+                    content,
+                    flags=re.MULTILINE,
+                )
         else:
-            # Convert string path to Path object
-            model_data = Path(model_data)
             file_path = str(model_data)
-
-            # Read model content
-            with open(model_data, "r", encoding="utf-8") as f:
-                content = f.read()
-
-        # Perform validation
-        validation_result = validator.validate(content)
-
-        # Calculate semantic score
-        semantic_score = _calculate_semantic_score(validation_result)
-
+            content = Path(model_data).read_text(encoding="utf-8")
+        result = validate_content(
+            content, validation_level=kwargs.get("validation_level", "standard")
+        )
+        result.update(file_path=file_path, file_name=display_file_name(file_path))
+        return result
+    except Exception as exc:
         return {
+            "status": "error",
             "file_path": file_path,
-            "file_name": Path(file_path).name if file_path != "unknown" else "unknown",
+            "file_name": display_file_name(file_path),
+            "error": str(exc),
+            "valid": False,
+            "errors": [str(exc)],
+            "warnings": [],
+            "semantic_score": 0.0,
+            "recovery": True,
+        }
+
+
+def validate_content(
+    content: str, validation_level: str = "standard"
+) -> dict[str, Any]:
+    """
+    Validate raw GNN content text without any file I/O.
+
+    Companion to ``process_semantic_validation`` for callers that already
+    hold the model text in memory (MCP tools, editors, pipelines). Returns
+    the same receipt shape with ``file_path``/``file_name`` set to
+    "unknown" and never raises.
+    """
+    try:
+        validator = SemanticValidator(validation_level)
+        validation_result = validator.validate(content)
+        return {
+            "file_path": "unknown",
+            "file_name": "unknown",
             "valid": validation_result["is_valid"],
             "errors": validation_result["errors"],
             "warnings": validation_result["warnings"],
-            "semantic_score": semantic_score,
+            "semantic_score": _calculate_semantic_score(validation_result),
             "recovery": False,
         }
-
     except Exception as e:
         return {
             "status": "error",
-            "file_path": str(model_data)
-            if not isinstance(model_data, dict)
-            else "unknown",
+            "file_path": "unknown",
+            "file_name": "unknown",
             "error": str(e),
             "valid": False,
             "errors": [str(e)],
@@ -515,78 +559,7 @@ def process_semantic_validation(
         }
 
 
-def _extract_content_from_dict(model_data: Dict[str, Any]) -> str:
-    """Extract content from model data dictionary."""
-    # Try to get raw sections first
-    raw_sections = model_data.get("raw_sections", {})
-    if raw_sections:
-        # Reconstruct the original content from raw sections
-        content_parts: list[Any] = []
-
-        # Add model name
-        if "ModelName" in raw_sections:
-            content_parts.append(f"ModelName: {raw_sections['ModelName']}")
-
-        # Add state space block
-        if "StateSpaceBlock" in raw_sections:
-            content_parts.append(f"StateSpaceBlock: {raw_sections['StateSpaceBlock']}")
-
-        # Add initial parameterization
-        if "InitialParameterization" in raw_sections:
-            content_parts.append(
-                f"InitialParameterization: {raw_sections['InitialParameterization']}"
-            )
-
-        # Add connections
-        if "Connections" in raw_sections:
-            content_parts.append(f"Connections: {raw_sections['Connections']}")
-
-        return "\n\n".join(content_parts)
-
-    # Recovery: try to get variables and connections
-    variables = model_data.get("variables", [])
-    connections = model_data.get("connections", [])
-
-    if variables or connections:
-        content_parts = []
-
-        # Add variables
-        if variables:
-            var_lines: list[Any] = []
-            for var in variables:
-                name = var.get("name", "Unknown")
-                var_type = var.get("var_type", "unknown")
-                dimensions = var.get("dimensions", [])
-                dim_str = (
-                    "[" + ", ".join(map(str, dimensions)) + "]" if dimensions else ""
-                )
-                var_lines.append(f"{name}{dim_str} # {var_type}")
-            content_parts.append("StateSpaceBlock:\n" + "\n".join(var_lines))
-
-        # Add connections
-        if connections:
-            conn_lines: list[Any] = []
-            for conn in connections:
-                source = (
-                    conn.get("source_variables", ["?"])[0]
-                    if conn.get("source_variables")
-                    else "?"
-                )
-                target = (
-                    conn.get("target_variables", ["?"])[0]
-                    if conn.get("target_variables")
-                    else "?"
-                )
-                conn_lines.append(f"{source} > {target}")
-            content_parts.append("Connections:\n" + "\n".join(conn_lines))
-
-        return "\n\n".join(content_parts)
-
-    # Final recovery: return empty string
-    return ""
-
-
-def _calculate_semantic_score(validation_result: Dict[str, Any]) -> float:
+def _calculate_semantic_score(validation_result: dict[str, Any]) -> float:
     """Calculate a semantic score from validation results."""
     # Base score starts at 1.0
     score = 1.0
@@ -600,4 +573,4 @@ def _calculate_semantic_score(validation_result: Dict[str, Any]) -> float:
     score -= len(warnings) * 0.05
 
     # Ensure score is between 0 and 1
-    return max(0.0, min(1.0, score))
+    return clamp01(score)

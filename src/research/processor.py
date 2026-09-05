@@ -7,14 +7,25 @@ and optional LLM-powered semantic analysis when an LLM provider is configured.
 
 The FEATURES['fallback_mode'] flag indicates the module operates without
 LLM dependencies — this is expected behavior, not a limitation.
+
+Composability notes:
+- All static analysis (`detect_model_family`, `extract_state_space_dims`,
+  `count_connections`, `analyze_gnn`) is pure: content in, data out.
+- Report rendering (`render_research_report`) and results summarization
+  (`summarize_hypotheses`) are pure as well; only `write_research_outputs`
+  and `process_research` touch the filesystem.
 """
 
+import asyncio
 import json
 import logging
 import os
 import re
+import tempfile
+from collections.abc import Iterable, Iterator, Mapping
+from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, List, Optional, cast
+from typing import Any
 
 from utils.pipeline_template import log_step_error, log_step_start, log_step_success
 
@@ -27,11 +38,43 @@ FEATURES: dict[str, Any] = {
     "llm_hypothesis_generation": False,  # Set True if LLM provider configured
 }
 
+#: Every value ``detect_model_family`` may return, for consumer dispatch.
+MODEL_FAMILIES: tuple[str, ...] = (
+    "pomdp",
+    "hmm",
+    "hierarchical",
+    "continuous",
+    "factor_graph",
+    "unknown",
+)
+
 
 def _section_name(line: str) -> str | None:
     """Return a normalized level-two Markdown section name, if present."""
     match = re.match(r"^##(?!#)\s*(.*?)\s*$", line.strip())
     return match.group(1).casefold() if match else None
+
+
+def _iter_section_lines(content: str, section: str) -> Iterator[str]:
+    """Yield stripped, non-comment body lines of the named level-two section.
+
+    The section body starts at the ``## <section>`` heading (case-insensitive)
+    and ends at the next level-two heading. Repeated occurrences of the same
+    heading re-enter the body, matching the original per-consumer scanners.
+    """
+    expected = section.casefold()
+    in_section = False
+    for line in content.splitlines():
+        stripped = line.strip()
+        heading = _section_name(stripped)
+        if heading == expected:
+            in_section = True
+            continue
+        if heading is not None:
+            in_section = False
+            continue
+        if in_section and stripped and not stripped.startswith("#"):
+            yield stripped
 
 
 def _first_section_value(content: str, section_name: str) -> str | None:
@@ -58,7 +101,8 @@ def detect_model_family(content: str) -> str:
     """
     Detect the Active Inference model family from GNN content.
 
-    Returns one of: 'pomdp', 'hmm', 'hierarchical', 'continuous', 'factor_graph', 'unknown'
+    Returns one of :data:`MODEL_FAMILIES`:
+    'pomdp', 'hmm', 'hierarchical', 'continuous', 'factor_graph', 'unknown'
     """
     content_lower = content.lower()
 
@@ -109,74 +153,52 @@ def detect_model_family(content: str) -> str:
     return "unknown"
 
 
-def extract_state_space_dims(content: str) -> Dict[str, List[int]]:
+def extract_state_space_dims(content: str) -> dict[str, list[int]]:
     """
     Extract variable dimensions from GNN StateSpaceBlock.
     Only extracts integer dimensions (not symbolic like pi).
     """
-    dims: dict[Any, Any] = {}
+    dims: dict[str, list[int]] = {}
     pattern = r"^([^\W\d]\w*\'?)\s*\[([^\]]+)\]"
 
-    in_state_space = False
-    for line in content.splitlines():
-        stripped = line.strip()
-        heading = _section_name(stripped)
-        if heading == "statespaceblock":
-            in_state_space = True
-            continue
-        elif heading is not None and in_state_space:
-            in_state_space = False
-            continue
-
-        if in_state_space and not stripped.startswith("#"):
-            stripped = re.sub(r"^[-*+]\s+", "", stripped)
-            match = re.match(pattern, stripped)
-            if match:
-                var_name = match.group(1)
-                dim_str = match.group(2)
-                var_dims: list[Any] = []
-                for part in dim_str.split(","):
-                    part = part.strip()
-                    if part.startswith("type="):
-                        continue
-                    try:
-                        dimension = int(part)
-                        if dimension <= 0:
-                            logger.debug(
-                                "Skipping non-positive dimension for %s: %s",
-                                var_name,
-                                part,
-                            )
-                            var_dims = []
-                            break
-                        var_dims.append(dimension)
-                    except ValueError:
-                        logger.debug("Skipping non-integer dimension part: %s", part)
-                if var_dims:
-                    dims[var_name] = var_dims
+    for stripped in _iter_section_lines(content, "StateSpaceBlock"):
+        stripped = re.sub(r"^[-*+]\s+", "", stripped)
+        match = re.match(pattern, stripped)
+        if match:
+            var_name = match.group(1)
+            dim_str = match.group(2)
+            var_dims: list[int] = []
+            for part in dim_str.split(","):
+                part = part.strip()
+                if part.startswith("type="):
+                    continue
+                try:
+                    dimension = int(part)
+                    if dimension <= 0:
+                        logger.debug(
+                            "Skipping non-positive dimension for %s: %s",
+                            var_name,
+                            part,
+                        )
+                        var_dims = []
+                        break
+                    var_dims.append(dimension)
+                except ValueError:
+                    logger.debug("Skipping non-integer dimension part: %s", part)
+            if var_dims:
+                dims[var_name] = var_dims
 
     return dims
 
 
-def count_connections(content: str) -> Dict[str, int]:
+def count_connections(content: str) -> dict[str, int]:
     """Count directed and undirected connections in the Connections section."""
-    in_connections = False
     directed = 0
     undirected = 0
 
-    for line in content.splitlines():
-        stripped = line.strip()
-        heading = _section_name(stripped)
-        if heading == "connections":
-            in_connections = True
-            continue
-        elif heading is not None and in_connections:
-            in_connections = False
-            continue
-
-        if in_connections and not stripped.startswith("#") and stripped:
-            directed += len(re.findall(r">", stripped))
-            undirected += len(re.findall(r"(?<![>])-(?![>])", stripped))
+    for stripped in _iter_section_lines(content, "Connections"):
+        directed += len(re.findall(r">", stripped))
+        undirected += len(re.findall(r"(?<![>])-(?![>])", stripped))
 
     return {
         "directed": directed,
@@ -185,22 +207,40 @@ def count_connections(content: str) -> Dict[str, int]:
     }
 
 
+@dataclass(frozen=True)
+class ModelAnalysis:
+    """Pure static analysis of a single GNN model specification."""
+
+    model_family: str
+    dimensions: dict[str, list[int]]
+    connections: dict[str, int]
+
+
+def analyze_gnn(content: str) -> ModelAnalysis:
+    """Run all pure static analyses over GNN content in one call."""
+    return ModelAnalysis(
+        model_family=detect_model_family(content),
+        dimensions=extract_state_space_dims(content),
+        connections=count_connections(content),
+    )
+
+
 def generate_rule_based_hypotheses(
     content: str,
     model_family: str,
-    dims: Dict[str, List[int]],
-    connections: Dict[str, int],
-) -> List[Dict[str, Any]]:
+    dims: Mapping[str, list[int]],
+    connections: Mapping[str, int],
+) -> list[dict[str, Any]]:
     """
     Generate research hypotheses via rule-based static analysis.
 
     Rules are domain-specific to Active Inference / generative model research.
     """
-    hypotheses: list[Any] = []
+    hypotheses: list[dict[str, Any]] = []
 
     # Rule 1: High-Dimensionality -- only flag actual matrix variables, not arbitrary integers
     max_dim = 0
-    large_vars: list[Any] = []
+    large_vars: list[tuple[str, list[int], int]] = []
     for name, var_dims in dims.items():
         total = 1
         for d in var_dims:
@@ -353,7 +393,35 @@ def generate_rule_based_hypotheses(
     return hypotheses
 
 
-def _validate_llm_hypotheses(value: Any) -> List[Dict[str, Any]]:
+def summarize_hypotheses(
+    hypotheses: Iterable[Mapping[str, Any]],
+) -> dict[str, Any]:
+    """Summarize hypotheses by priority and type for quick triage.
+
+    Pure: accepts any iterable of hypothesis mappings (rule-based, LLM, or
+    merged) and returns deterministic counts. Hypotheses with a priority
+    outside {high, medium, low} or with a missing type are counted in
+    ``total`` but omitted from the respective sub-counts.
+    """
+    by_priority: dict[str, int] = {"high": 0, "medium": 0, "low": 0}
+    by_type: dict[str, int] = {}
+    total = 0
+    for hypothesis in hypotheses:
+        total += 1
+        priority = hypothesis.get("priority")
+        if isinstance(priority, str) and priority in by_priority:
+            by_priority[priority] += 1
+        hypothesis_type = hypothesis.get("type")
+        if isinstance(hypothesis_type, str):
+            by_type[hypothesis_type] = by_type.get(hypothesis_type, 0) + 1
+    return {
+        "total": total,
+        "by_priority": by_priority,
+        "by_type": dict(sorted(by_type.items())),
+    }
+
+
+def _validate_llm_hypotheses(value: Any) -> list[dict[str, Any]]:
     """Validate and normalize prospective LLM hypotheses before publication."""
     if not isinstance(value, list):
         return []
@@ -394,8 +462,10 @@ def _validate_llm_hypotheses(value: Any) -> List[Dict[str, Any]]:
 
 
 async def _generate_llm_hypotheses(
-    content: str, model_family: str, dims: Dict[str, List[int]], logger: logging.Logger
-) -> Optional[List[Dict[str, Any]]]:
+    model_family: str,
+    dims: Mapping[str, list[int]],
+    logger: logging.Logger,
+) -> list[dict[str, Any]] | None:
     """Generate schema-validated hypotheses when an LLM is available."""
     try:
         from llm.llm_processor import initialize_global_processor
@@ -443,6 +513,91 @@ JSON only, no prose:"""
         return None
 
 
+def merge_llm_hypotheses(
+    llm_hypotheses: list[dict[str, Any]],
+    rule_hypotheses: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
+    """Merge LLM and rule-based hypotheses, preferring the LLM ones.
+
+    LLM hypotheses come first (more specific); rule-based hypotheses whose
+    ``type`` is already covered by an LLM hypothesis are dropped.
+    """
+    covered = {h.get("type") for h in llm_hypotheses}
+    return llm_hypotheses + [h for h in rule_hypotheses if h.get("type") not in covered]
+
+
+def discover_gnn_files(target_dir: Path, recursive: bool) -> list[Path]:
+    """Return the sorted GNN markdown files under ``target_dir``.
+
+    Non-recursive discovery scans only the top level; recursive discovery
+    walks the whole tree. A missing directory yields an empty list.
+    """
+    if not target_dir.is_dir():
+        return []
+    pattern = target_dir.rglob("*.md") if recursive else target_dir.glob("*.md")
+    return sorted(pattern)
+
+
+def render_research_report(results: Mapping[str, Any]) -> str:
+    """Render the markdown research report from a results payload.
+
+    Pure: no filesystem access. ``write_research_outputs`` writes exactly
+    this rendering to ``research_report.md``.
+    """
+    lines: list[str] = ["# Research Hypotheses Report\n"]
+    lines.append(f"**Analysis mode**: {results['analysis_mode']}\n\n")
+    lines.append(
+        "All items below are prospective, unvalidated hypotheses generated "
+        "from static model structure; they are not experimental findings.\n\n"
+    )
+
+    for entry in results["hypotheses_generated"]:
+        lines.append(f"## {entry['file']} ({entry['model_family']} model)\n")
+
+        # Group by priority
+        high = [h for h in entry["hypotheses"] if h.get("priority") == "high"]
+        medium = [h for h in entry["hypotheses"] if h.get("priority") == "medium"]
+        low = [h for h in entry["hypotheses"] if h.get("priority") == "low"]
+
+        for priority_label, hyps in [
+            ("High Priority", high),
+            ("Medium Priority", medium),
+            ("Low Priority", low),
+        ]:
+            if hyps:
+                lines.append(f"### {priority_label}\n")
+                for h in hyps:
+                    lines.append(f"- **{h['type']}**: {h['description']}\n")
+                    lines.append(f"  - *Rationale*: {h['rationale']}\n")
+                    lines.append(f"  - *Source*: {h['source']}\n")
+        lines.append("\n")
+
+    return "".join(lines)
+
+
+def write_research_outputs(results_dir: Path, results: dict[str, Any]) -> None:
+    """Write the JSON summaries and the markdown report for a research run.
+
+    The three JSON artifacts share one payload; the report is written
+    atomically (temp file + ``os.replace``) so partial reports are never
+    observed by downstream steps.
+    """
+    payload = json.dumps(results, indent=2, ensure_ascii=False)
+    for name in (
+        "research_results.json",
+        "research_summary.json",
+        "research_processing_summary.json",
+    ):
+        (results_dir / name).write_text(payload, encoding="utf-8")
+
+    report_path = results_dir / "research_report.md"
+    with tempfile.NamedTemporaryFile(
+        mode="w", encoding="utf-8", dir=results_dir, delete=False
+    ) as tmp:
+        tmp.write(render_research_report(results))
+    os.replace(tmp.name, str(report_path))
+
+
 def process_research(
     target_dir: Path, output_dir: Path, verbose: bool = False, **kwargs: Any
 ) -> bool:
@@ -486,14 +641,10 @@ def process_research(
                     "error_type": "invalid_configuration",
                 }
             )
-        discovery = (
-            target_dir.rglob("*.md") if recursive is True else target_dir.glob("*.md")
-        )
-        gnn_files = (
-            sorted(discovery)
-            if target_dir.is_dir() and isinstance(recursive, bool)
-            else []
-        )
+
+        gnn_files: list[Path] = []
+        if isinstance(recursive, bool):
+            gnn_files = discover_gnn_files(target_dir, recursive)
         results["processed_files"] = len(gnn_files)
 
         for gnn_file in gnn_files:
@@ -501,16 +652,16 @@ def process_research(
                 content = gnn_file.read_text(encoding="utf-8")
                 relative_file = gnn_file.relative_to(target_dir).as_posix()
 
-                # Detect model family
-                model_family = detect_model_family(content)
-                results["model_families_detected"][relative_file] = model_family
+                # Detect model family and structural evidence in one pass
+                analysis = analyze_gnn(content)
+                results["model_families_detected"][relative_file] = (
+                    analysis.model_family
+                )
 
                 if verbose:
-                    logger.info(f"{relative_file}: detected as '{model_family}' model")
-
-                # Extract structured dimensions (not naive integer extraction)
-                dims = extract_state_space_dims(content)
-                connections = count_connections(content)
+                    logger.info(
+                        f"{relative_file}: detected as '{analysis.model_family}' model"
+                    )
 
                 # Rule-based hypotheses (always available)
                 hypotheses = [
@@ -520,32 +671,28 @@ def process_research(
                         "claim_scope": "prospective_unvalidated_hypothesis",
                     }
                     for hypothesis in generate_rule_based_hypotheses(
-                        content, model_family, dims, connections
+                        content,
+                        analysis.model_family,
+                        analysis.dimensions,
+                        analysis.connections,
                     )
                 ]
 
                 # Attempt LLM-powered hypotheses (opportunistic)
-                llm_hypotheses = None
                 if FEATURES.get("llm_hypothesis_generation"):
                     try:
-                        import asyncio
-
                         llm_hypotheses = asyncio.run(
                             _generate_llm_hypotheses(
-                                content, model_family, dims, logger
+                                analysis.model_family,
+                                analysis.dimensions,
+                                logger,
                             )
                         )
                         if llm_hypotheses:
                             results["analysis_mode"] = "llm_enhanced"
-                            # Merge: LLM hypotheses first (more specific), then rules
-                            hypotheses = llm_hypotheses + [
-                                h
-                                for h in hypotheses
-                                if not any(
-                                    lh.get("type") == h.get("type")
-                                    for lh in llm_hypotheses
-                                )
-                            ]
+                            hypotheses = merge_llm_hypotheses(
+                                llm_hypotheses, hypotheses
+                            )
                     except Exception as e:
                         logger.debug(
                             f"LLM hypotheses unavailable for {gnn_file.name}: {e}"
@@ -555,11 +702,11 @@ def process_research(
                     results["hypotheses_generated"].append(
                         {
                             "file": relative_file,
-                            "model_family": model_family,
-                            "dimension_count": len(dims),
+                            "model_family": analysis.model_family,
+                            "dimension_count": len(analysis.dimensions),
                             "analysis_evidence": {
-                                "dimensions": dims,
-                                "connections": connections,
+                                "dimensions": analysis.dimensions,
+                                "connections": analysis.connections,
                             },
                             "hypotheses": hypotheses,
                         }
@@ -573,63 +720,13 @@ def process_research(
             results["success"] = False
 
         # Save results
-        results_file = results_dir / "research_results.json"
-        with open(results_file, "w") as f:
-            json.dump(results, f, indent=2, ensure_ascii=False)
-
-        # Write summary files expected by pipeline validation
-        summary_file = results_dir / "research_summary.json"
-        with open(summary_file, "w") as f:
-            json.dump(results, f, indent=2, ensure_ascii=False)
-
-        processing_summary_file = results_dir / "research_processing_summary.json"
-        with open(processing_summary_file, "w") as f:
-            json.dump(results, f, indent=2, ensure_ascii=False)
-
-        # Generate markdown report
-        report_lines: list[Any] = ["# Research Hypotheses Report\n"]
-        report_lines.append(f"**Analysis mode**: {results['analysis_mode']}\n\n")
-        report_lines.append(
-            "All items below are prospective, unvalidated hypotheses generated "
-            "from static model structure; they are not experimental findings.\n\n"
-        )
-
-        for entry in results["hypotheses_generated"]:
-            report_lines.append(f"## {entry['file']} ({entry['model_family']} model)\n")
-
-            # Group by priority
-            high = [h for h in entry["hypotheses"] if h.get("priority") == "high"]
-            medium = [h for h in entry["hypotheses"] if h.get("priority") == "medium"]
-            low = [h for h in entry["hypotheses"] if h.get("priority") == "low"]
-
-            for priority_label, hyps in [
-                ("High Priority", high),
-                ("Medium Priority", medium),
-                ("Low Priority", low),
-            ]:
-                if hyps:
-                    report_lines.append(f"### {priority_label}\n")
-                    for h in hyps:
-                        report_lines.append(f"- **{h['type']}**: {h['description']}\n")
-                        report_lines.append(f"  - *Rationale*: {h['rationale']}\n")
-                        report_lines.append(f"  - *Source*: {h['source']}\n")
-            report_lines.append("\n")
-
-        import os as _os
-        import tempfile as _tempfile
-
-        _report_path = results_dir / "research_report.md"
-        with _tempfile.NamedTemporaryFile(
-            mode="w", encoding="utf-8", dir=results_dir, delete=False
-        ) as _tmp:
-            _tmp.write("".join(report_lines))
-        _os.replace(_tmp.name, str(_report_path))
+        write_research_outputs(results_dir, results)
 
         if results["success"]:
             log_step_success(logger, "Research processing completed successfully")
         else:
             log_step_error(logger, "Research processing completed with errors")
-        return cast("bool", results["success"])
+        return bool(results["success"])
 
     except Exception as e:
         log_step_error(logger, "Research processing failed", error=str(e))

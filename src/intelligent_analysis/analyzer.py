@@ -13,6 +13,25 @@ from dataclasses import dataclass, field
 from typing import Any, Dict, List, Optional, cast
 
 
+def pick_evidence_timestamp(summary_data: Dict[str, Any]) -> str:
+    """Select a stable timestamp from a pipeline execution receipt.
+
+    Prefers ``end_time``, then ``start_time``, then ``timestamp``; returns
+    ``"unavailable"`` when none of them is a non-empty string.
+
+    Args:
+        summary_data: Pipeline execution summary dictionary
+
+    Returns:
+        Timestamp string or the literal ``"unavailable"``
+    """
+    for key in ("end_time", "start_time", "timestamp"):
+        value = summary_data.get(key)
+        if isinstance(value, str) and value:
+            return value
+    return "unavailable"
+
+
 @dataclass
 class AnalysisContext:
     """Context object for pipeline analysis."""
@@ -33,11 +52,7 @@ class AnalysisContext:
         self.steps = self.summary_data.get("steps", [])
         self.performance_summary = self.summary_data.get("performance_summary", {})
         if self.timestamp == "unavailable":
-            for key in ("end_time", "start_time", "timestamp"):
-                value = self.summary_data.get(key)
-                if isinstance(value, str) and value:
-                    self.timestamp = value
-                    break
+            self.timestamp = pick_evidence_timestamp(self.summary_data)
 
     def get_failed_steps(self) -> List[Dict[str, Any]]:
         """Get list of failed steps."""
@@ -56,8 +71,10 @@ class IntelligentAnalyzer:
     """
     Main analyzer class for intelligent pipeline analysis.
 
-    Provides methods for comprehensive pipeline analysis including
-    health scoring, pattern detection, and optimization recommendations.
+    Pure rule-based analysis: composes health scoring, failure analysis,
+    performance stats, pattern detection, and optimization suggestions over
+    an :class:`AnalysisContext`. LLM-powered narratives live in
+    ``processor._run_llm_analysis``; this class never calls an LLM.
     """
 
     def __init__(
@@ -311,7 +328,7 @@ def classify_failure_severity(step: Dict[str, Any]) -> str:
     exit_code = step.get("exit_code", 0)
 
     # Critical indicators
-    critical_patterns: list[Any] = [
+    critical_patterns: list[str] = [
         "memory error",
         "out of memory",
         "segmentation fault",
@@ -331,7 +348,7 @@ def classify_failure_severity(step: Dict[str, Any]) -> str:
         return "critical"
 
     # Major indicators
-    major_patterns: list[Any] = [
+    major_patterns: list[str] = [
         "exception",
         "error:",
         "failed to",
@@ -358,7 +375,7 @@ def detect_performance_patterns(summary_data: Dict[str, Any]) -> List[Dict[str, 
     Returns:
         List of detected patterns with descriptions
     """
-    patterns: list[Any] = []
+    patterns: list[dict[str, Any]] = []
     steps = summary_data.get("steps", [])
 
     if not steps:
@@ -445,7 +462,7 @@ def generate_optimization_suggestions(
     Returns:
         List of optimization suggestions
     """
-    suggestions: list[Any] = []
+    suggestions: list[dict[str, Any]] = []
     steps = summary_data.get("steps", [])
     perf = summary_data.get("performance_summary", {})
 
@@ -512,10 +529,10 @@ def generate_optimization_suggestions(
 
 def _extract_error_patterns(error_text: str) -> List[str]:
     """Extract common error patterns from error text."""
-    patterns: list[Any] = []
+    patterns: list[str] = []
 
     # Common error patterns
-    pattern_regexes: list[Any] = [
+    pattern_regexes: list[tuple[str, str]] = [
         (r"ModuleNotFoundError.*?'(\w+)'", "missing_module"),
         (r"ImportError.*?(\w+)", "import_error"),
         (r"FileNotFoundError.*?'(.+?)'", "file_not_found"),

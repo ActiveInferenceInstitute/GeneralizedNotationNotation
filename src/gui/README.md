@@ -85,6 +85,13 @@ from gui import (
     get_gui_3_info,
     # Navigation generation
     generate_html_navigation,
+    # Composability helpers
+    normalize_gui_types,
+    summarize_gui_results,
+    collect_pipeline_outputs,
+    MAX_FILES_PER_SECTION,
+    PIPELINE_OUTPUT_SECTIONS,
+    DEFAULT_GUI_TYPES,
     # GUI 1 utilities
     add_component_to_markdown,
     update_component_states,
@@ -115,11 +122,22 @@ process_gui(
   gui_types: List[str] = ['gui_1', 'gui_2'],  # Which GUIs to run
   headless: bool = False,
   open_browser: bool = True,
+  logger: Optional[Logger] = None,  # honored when passed
   **kwargs
 ) -> bool
 ```
 - Orchestrates execution of multiple GUI implementations
 - Returns True if all requested GUIs succeed
+
+### Shared Building Blocks
+- `gui/runner.py`: `resolve_output_root`, `load_first_markdown`, and
+  `launch_gradio_in_thread` — plumbing shared by all three GUI processors.
+- `gui/backend.py`: `detect_gradio_backend` plus atomic artifact writers
+  (`write_text_atomically`, `write_json_atomically`); every JSON/markdown
+  artifact in this module is written temp-file-then-replace.
+- `process_gui(..., logger=...)`: pass a logger to capture GUI logs in your
+  own handler; omitted means the `gui.processor` module logger.
+- `navigation.html` file names and paths are HTML-escaped at render time.
 
 ## Architecture
 

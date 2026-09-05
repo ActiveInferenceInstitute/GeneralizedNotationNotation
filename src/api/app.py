@@ -16,8 +16,10 @@ Requires: pip install fastapi uvicorn
 import asyncio
 import json
 import logging
+import os
 import sys
 import time
+import uuid
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional
@@ -37,7 +39,14 @@ if _src_dir not in sys.path:
     sys.path.insert(0, _src_dir)
 
 from api.auth import api_key_middleware, require_secure_bind
+from api.models import RunHealthResponse, RunRequest, RunStatus  # noqa: E402,I001
 from api.path_utils import PathValidationError, resolve_repo_path  # noqa: E402,I001
+from api.pipeline_runner import (  # noqa: E402,I001
+    build_pipeline_command,
+    normalize_summary_steps,
+    pipeline_exit_succeeded,
+    read_pipeline_summary,
+)
 from api.rate_limit import rate_limit_middleware
 from api.responses import APIEnvelope, install_exception_handlers, success_envelope
 
@@ -46,74 +55,19 @@ from api.responses import APIEnvelope, install_exception_handlers, success_envel
 _runs: Dict[str, Dict[str, Any]] = {}
 
 
-# ── Pydantic request/response models ────────────────────────────────────────────
-
 if FASTAPI_AVAILABLE:
-
-    class RunRequest(BaseModel):
-        """Pipeline run request."""
-
-        target_dir: str = Field(default="input/gnn_files", min_length=1)
-        output_dir: str = Field(default="output", min_length=1)
-        skip_steps: List[int] = Field(default_factory=list)
-        skip_llm: bool = False
-        config: Dict[str, Any] = Field(
-            default_factory=dict,
-            description="Reserved for future run configuration; currently must be empty",
-        )
-
-        model_config = ConfigDict(extra="forbid")
-
-        @field_validator("skip_steps")
-        @classmethod
-        def validate_skip_steps(cls, values: List[int]) -> List[int]:
-            """Require unique pipeline step numbers in the supported range."""
-            invalid = sorted({step for step in values if step < 0 or step > 24})
-            if invalid:
-                raise ValueError(f"Pipeline steps must be between 0 and 24: {invalid}")
-            if len(values) != len(set(values)):
-                raise ValueError("skip_steps must not contain duplicates")
-            return values
-
-        @field_validator("config")
-        @classmethod
-        def reject_unsupported_config(cls, value: Dict[str, Any]) -> Dict[str, Any]:
-            """Reject configuration that the background runner cannot honor."""
-            if value:
-                raise ValueError("Custom run config is not supported by this endpoint")
-            return value
-
-    class RunStatus(BaseModel):
-        """Pipeline run status response."""
-
-        run_hash: str
-        status: str  # queued, running, completed, failed
-        started_at: Optional[str] = None
-        completed_at: Optional[str] = None
-        duration_seconds: Optional[float] = None
-        current_step: Optional[str] = None
-        steps_completed: int = 0
-        total_steps: int = 25
-        errors: List[str] = Field(default_factory=list)
-
-    class HealthResponse(BaseModel):
-        """API health check response."""
-
-        status: str = "healthy"
-        version: str = "2.0.0"
-        pipeline_steps: int = 25
-        renderers: Dict[str, bool] = Field(default_factory=dict)
-        uptime_seconds: float = 0.0
-
     # ── App factory ──────────────────────────────────────────────────────────
 
-    def create_app() -> "FastAPI":
+    def create_app(
+        runs_store: Optional[Dict[str, Dict[str, Any]]] = None,
+    ) -> "FastAPI":
         """Create and configure the FastAPI application instance.
 
         Called at module scope below for ASGI deployment.  Tests can call this
         directly to get fresh, isolated app instances.
         """
         _start_time = time.time()
+        runs = runs_store if runs_store is not None else _runs
 
         _app = FastAPI(
             title="GNN Pipeline API",
@@ -146,12 +100,11 @@ if FASTAPI_AVAILABLE:
         @_app.get("/api/v1/health", response_model=APIEnvelope)
         async def health() -> APIEnvelope:
             """Health check with renderer availability."""
-            renderers = _check_renderers()
-            response = HealthResponse(
+            response = RunHealthResponse(
                 status="healthy",
                 version="2.0.0",
                 pipeline_steps=25,
-                renderers=renderers,
+                renderers=_renderer_availability(),
                 uptime_seconds=round(time.time() - _start_time, 1),
             )
             return success_envelope(response.model_dump(mode="json"), endpoint="health")
@@ -182,7 +135,13 @@ if FASTAPI_AVAILABLE:
 
             run_hash = compute_run_hash(
                 target_path,
-                config={"skip_steps": request.skip_steps, "skip_llm": request.skip_llm},
+                config={
+                    "skip_steps": sorted(
+                        set(request.skip_steps) | ({13} if request.skip_llm else set())
+                    ),
+                    "strict": request.strict,
+                    "output_dir": str(output_path),
+                },
             )
             normalized_request = request.model_copy(
                 update={
@@ -191,12 +150,12 @@ if FASTAPI_AVAILABLE:
                 }
             )
 
-            if run_hash in _runs and _runs[run_hash]["status"] == "running":
+            if run_hash in runs and runs[run_hash]["status"] in {"queued", "running"}:
                 response = RunStatus(
                     run_hash=run_hash,
-                    status="running",
-                    started_at=_runs[run_hash].get("started_at"),
-                    current_step=_runs[run_hash].get("current_step"),
+                    status=runs[run_hash]["status"],
+                    started_at=runs[run_hash].get("started_at"),
+                    current_step=runs[run_hash].get("current_step"),
                 )
                 return success_envelope(
                     response.model_dump(mode="json"),
@@ -215,8 +174,10 @@ if FASTAPI_AVAILABLE:
                 "errors": [],
                 "events": [],
             }
-            _runs[run_hash] = run_entry
-            background_tasks.add_task(_execute_pipeline, run_hash, normalized_request)
+            runs[run_hash] = run_entry
+            background_tasks.add_task(
+                _execute_pipeline, run_hash, normalized_request, runs
+            )
             response = RunStatus(
                 run_hash=run_hash, status="queued", started_at=run_entry["started_at"]
             )
@@ -230,7 +191,7 @@ if FASTAPI_AVAILABLE:
         @_app.get("/api/v1/runs/{run_hash}", response_model=APIEnvelope)
         async def get_run(run_hash: str) -> APIEnvelope:
             """Get status of a pipeline run."""
-            entry = _find_run(run_hash)
+            entry = runs[_find_run_key(run_hash, runs)]
             response = RunStatus(
                 run_hash=run_hash,
                 status=entry["status"],
@@ -251,7 +212,7 @@ if FASTAPI_AVAILABLE:
         @_app.get("/api/v1/runs/{run_hash}/report")
         async def get_report(run_hash: str) -> "PlainTextResponse":
             """Download PIPELINE_REPORT.md for a completed run."""
-            entry = _find_run(run_hash)
+            entry = runs[_find_run_key(run_hash, runs)]
             output_dir = Path(entry.get("request", {}).get("output_dir", "output"))
             report_path = output_dir / "PIPELINE_REPORT.md"
             if not report_path.exists():
@@ -260,10 +221,30 @@ if FASTAPI_AVAILABLE:
                 report_path.read_text(encoding="utf-8"), media_type="text/markdown"
             )
 
+        @_app.delete("/api/v1/runs/{run_hash}", response_model=APIEnvelope)
+        async def delete_run(run_hash: str) -> APIEnvelope:
+            """Remove a run record from the in-memory store (housekeeping).
+
+            Additive endpoint for clearing completed/failed runs from the
+            in-memory store without restarting the server. Unknown hashes
+            return 404; ambiguous prefixes return 409.
+            """
+            key = _find_run_key(run_hash, runs)
+            if runs[key]["status"] in {"queued", "running"}:
+                raise HTTPException(
+                    status_code=409, detail="Active runs cannot be deleted"
+                )
+            removed = runs.pop(key, None)
+            return success_envelope(
+                {"deleted": key, "existed": removed is not None},
+                endpoint="delete_run",
+                run_hash=key,
+            )
+
         @_app.get("/api/v1/runs/{run_hash}/stream")
         async def stream_events(run_hash: str) -> "StreamingResponse":
             """Server-Sent Events stream for real-time pipeline progress."""
-            entry = _find_run(run_hash)
+            entry = runs[_find_run_key(run_hash, runs)]
 
             async def event_generator() -> Any:
                 """Provide event generator behavior."""
@@ -294,15 +275,15 @@ if FASTAPI_AVAILABLE:
         @_app.get("/api/v1/runs", response_model=APIEnvelope)
         async def list_runs() -> APIEnvelope:
             """List all known runs."""
-            runs = {
+            summary = {
                 hash_: {
                     "status": entry["status"],
                     "started_at": entry.get("started_at"),
                 }
-                for hash_, entry in _runs.items()
+                for hash_, entry in runs.items()
             }
             return success_envelope(
-                {"runs": runs, "total": len(runs)}, endpoint="list_runs"
+                {"runs": summary, "total": len(summary)}, endpoint="list_runs"
             )
 
         return _app
@@ -381,9 +362,19 @@ if FASTAPI_AVAILABLE:
 
     # ── Background pipeline execution ────────────────────────────────────────
 
-    async def _execute_pipeline(run_hash: str, request: RunRequest) -> Any:
-        """Execute the real pipeline orchestrator in a worker thread."""
-        entry = _runs[run_hash]
+    async def _execute_pipeline(
+        run_hash: str,
+        request: RunRequest,
+        runs_store: Optional[Dict[str, Dict[str, Any]]] = None,
+    ) -> Any:
+        """Execute the real pipeline orchestrator in a worker thread.
+
+        ``runs_store`` defaults to the module-level ``_runs`` store; the
+        ``create_app`` factory passes its own injected store so background
+        runs land in the same dict the endpoints read.
+        """
+        runs = runs_store if runs_store is not None else _runs
+        entry = runs[run_hash]
         entry["status"] = "running"
         start = time.time()
         tracker = RunTracker(entry, run_hash)
@@ -394,26 +385,22 @@ if FASTAPI_AVAILABLE:
             if request.skip_llm:
                 skipped_steps.add(13)
             repo_root = Path(__file__).resolve().parents[2]
-            command = [
-                sys.executable,
-                str(repo_root / "src" / "main.py"),
-                "--target-dir",
+            command = build_pipeline_command(
                 request.target_dir,
-                "--output-dir",
                 request.output_dir,
-            ]
-            if skipped_steps:
-                command.extend(
-                    [
-                        "--skip-steps",
-                        ",".join(str(step) for step in sorted(skipped_steps)),
-                    ]
-                )
+                skip_steps=sorted(skipped_steps),
+                strict=request.strict,
+                repo_root=repo_root,
+            )
+            invocation_id = uuid.uuid4().hex
+            entry["run_id"] = invocation_id
+            invocation_start_ns = time.time_ns()
             process = await asyncio.create_subprocess_exec(
                 *command,
                 stdout=asyncio.subprocess.PIPE,
                 stderr=asyncio.subprocess.PIPE,
                 cwd=str(repo_root),
+                env={**os.environ, "GNN_RUN_ID": invocation_id},
             )
             entry["process_id"] = getattr(process, "pid", None)
             _stdout, stderr = await process.communicate()
@@ -421,10 +408,16 @@ if FASTAPI_AVAILABLE:
                 raise RuntimeError("Pipeline process ended without an exit code")
             exit_code = int(process.returncode)
             entry["exit_code"] = exit_code
-            _load_pipeline_summary_events(entry, tracker, Path(request.output_dir))
+            _load_pipeline_summary_events(
+                entry,
+                tracker,
+                Path(request.output_dir),
+                not_before_ns=invocation_start_ns,
+                expected_run_id=invocation_id,
+            )
             entry["current_step"] = None
 
-            if exit_code in (0, 2):
+            if pipeline_exit_succeeded(exit_code, strict=request.strict):
                 tracker.mark_completed(start)
                 if exit_code == 2:
                     entry["events"].append(
@@ -452,55 +445,42 @@ if FASTAPI_AVAILABLE:
             logger.exception("Pipeline run %s failed: %s", run_hash, e)
 
     def _load_pipeline_summary_events(
-        entry: Dict[str, Any], tracker: RunTracker, output_dir: Path
+        entry: Dict[str, Any],
+        tracker: RunTracker,
+        output_dir: Path,
+        *,
+        not_before_ns: Optional[int] = None,
+        expected_run_id: Optional[str] = None,
     ) -> None:
         """Load completed step events from the canonical pipeline summary."""
-        summary_path = (
-            output_dir / "00_pipeline_summary" / "pipeline_execution_summary.json"
+        steps = read_pipeline_summary(
+            output_dir, not_before_ns=not_before_ns, expected_run_id=expected_run_id
         )
-        if not summary_path.is_file():
-            logger.warning("Pipeline summary not found after API run: %s", summary_path)
+        if steps is None:
             return
-        try:
-            summary = json.loads(summary_path.read_text(encoding="utf-8"))
-        except (OSError, json.JSONDecodeError) as exc:
-            logger.warning("Could not read pipeline summary %s: %s", summary_path, exc)
-            return
-
-        steps = summary.get("steps", [])
-        if not isinstance(steps, list):
-            logger.warning("Pipeline summary has non-list steps: %s", summary_path)
-            return
-        for index, step in enumerate(steps):
-            if not isinstance(step, dict):
-                continue
-            script_name = str(step.get("script_name") or step.get("name") or "step")
-            raw_step_num = step.get("step_num")
-            if raw_step_num is None:
-                prefix = script_name.split("_", 1)[0]
-                raw_step_num = prefix if prefix.isdigit() else index
-            try:
-                step_num = int(raw_step_num)
-            except (TypeError, ValueError):
-                step_num = index
-            status = str(step.get("status", "UNKNOWN"))
-            try:
-                duration = float(step.get("duration_seconds", 0.0) or 0.0)
-            except (TypeError, ValueError):
-                duration = 0.0
-            tracker.on_step_start(script_name, step_num)
-            tracker.on_step_complete(script_name, step_num, status, duration)
+        for outcome in normalize_summary_steps(steps):
+            tracker.on_step_start(outcome.script_name, outcome.step_num)
+            tracker.on_step_complete(
+                outcome.script_name,
+                outcome.step_num,
+                outcome.status,
+                outcome.duration_seconds,
+            )
         entry["total_steps"] = len(steps)
 
     # ── Helpers ──────────────────────────────────────────────────────────────
 
-    def _find_run(run_hash: str) -> dict:
-        """Find a run by hash or prefix."""
-        if run_hash in _runs:
-            return _runs[run_hash]
-        matches = {k: v for k, v in _runs.items() if k.startswith(run_hash)}
+    def _find_run_key(run_hash: str, runs: Dict[str, Dict[str, Any]]) -> str:
+        """Return the store key for a run hash or an unambiguous prefix.
+
+        Raises ``HTTPException`` (404 not found / 409 ambiguous prefix) so the
+        endpoints can resolve and look up in one step.
+        """
+        if run_hash in runs:
+            return run_hash
+        matches = [key for key in runs if key.startswith(run_hash)]
         if len(matches) == 1:
-            return next(iter(matches.values()))
+            return matches[0]
         if len(matches) > 1:
             raise HTTPException(
                 status_code=409,
@@ -508,26 +488,24 @@ if FASTAPI_AVAILABLE:
             )
         raise HTTPException(status_code=404, detail=f"Run not found: {run_hash}")
 
-    def _check_renderers() -> Dict[str, bool]:
-        """Check which renderers are available."""
-        renderers: dict[Any, Any] = {}
-        for name in [
-            "pymdp",
-            "rxinfer",
-            "jax",
-            "numpyro",
-            "stan",
-            "pytorch",
-            "activeinference_jl",
-            "discopy",
-        ]:
-            try:
-                __import__(f"render.{name}", fromlist=["_"])
-                renderers[name] = True
-            except Exception as exc:
-                logger.debug("Renderer %s is unavailable: %s", name, exc)
-                renderers[name] = False
-        return renderers
+    def _renderer_availability() -> Dict[str, bool]:
+        """Report renderer availability from the canonical ``render.health`` registry.
+
+        Falls back to an empty map (the endpoint stays healthy) when the
+        canonical registry cannot be imported, so a missing optional
+        dependency never turns the health probe into a hard failure.
+        """
+        try:
+            from render.health import check_renderers
+        except Exception as exc:
+            logger.debug("Canonical renderer health check unavailable: %s", exc)
+            return {}
+        try:
+            statuses = check_renderers()
+        except Exception as exc:
+            logger.debug("Renderer health check failed: %s", exc)
+            return {}
+        return {name: status.available for name, status in statuses.items()}
 
     # Module-scope instance for ASGI deployment (e.g. uvicorn src.api.app:app).
     # Tests should call create_app() directly to get a fresh isolated instance.
@@ -536,7 +514,9 @@ if FASTAPI_AVAILABLE:
 else:
     app = None
 
-    def create_app() -> "FastAPI":
+    def create_app(
+        runs_store: Optional[Dict[str, Dict[str, Any]]] = None,
+    ) -> "FastAPI":
         """Report that the API server requires FastAPI."""
         raise RuntimeError("FastAPI is required to create the API application")
 

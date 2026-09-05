@@ -12,7 +12,7 @@
 
 **Version**: 3.2.0
 
-**Last Updated**: 2026-04-16
+**Last Updated**: 2026-09-04
 
 ---
 
@@ -136,6 +136,39 @@ success = process_gui(
 - Generates organized HTML navigation with file metadata
 - Provides links to all pipeline artifacts
 - Includes summary statistics and integration with comprehensive reports
+
+### Composability Helpers (module-level, pure)
+
+#### `normalize_gui_types(value: str | Sequence[str] | None) -> list[str]`
+Parse/validate the `gui_types` option: comma-separated strings are split and
+stripped, blank entries dropped, `None` yields the pipeline default
+`["gui_1", "gui_2"]`. Exported from `gui`.
+
+#### `summarize_gui_results(results: Mapping[str, Mapping[str, Any]]) -> GUISummary`
+Aggregate per-GUI result mappings into a typed `GUISummary` TypedDict
+(`total`, `succeeded`, `failed`, `failed_guis`, `overall_success`). A GUI
+counts as failed when its `success` key is missing or falsy. Exported from `gui`.
+
+#### `collect_pipeline_outputs(pipeline_output_dir: Path, max_files_per_section: int = MAX_FILES_PER_SECTION) -> tuple[list[dict], int]`
+Discover pipeline artifacts grouped by step output directory (the 25-step
+table is the `PIPELINE_OUTPUT_SECTIONS` constant). Returns `(sections,
+total_files)`; `file_count` counts every discovered file while `files` is
+capped at `MAX_FILES_PER_SECTION` (20). Missing step directories are skipped.
+
+#### Shared internals
+- `gui/runner.py` — `resolve_output_root()` (pipeline-standard output-root
+  normalization with fallback), `load_first_markdown()` (prefer-pattern
+  markdown discovery), `launch_gradio_in_thread()` (background Gradio launch);
+  used by the gui_1/gui_2/gui_3 processors instead of duplicated logic.
+- `gui/backend.py` — `write_text_atomically()` joins `write_json_atomically()`
+  as the atomic artifact writers (temp file + `os.replace`).
+- `process_gui(**kwargs)` now honors a caller-provided `logger=` kwarg
+  (documented in the API table above); without it the module logger is used.
+- `navigation.html` escapes file names/paths with `html.escape`, so artifacts
+  with HTML-special characters render correctly.
+- `gui_3/processor.py` uses the same `detect_gradio_backend()` recovery
+  semantics as gui_1/gui_2 (a broken gradio install degrades to headless
+  artifacts instead of raising).
 
 ---
 
@@ -502,8 +535,7 @@ normal MCP keyword arguments.
 
 ---
 
-**Last Updated**: 2026-09-02
-**Maintainer**: GNN Pipeline Team
+**Last Updated**: 2026-09-04
 **Status**: Production Ready
 **Version**: 3.2.0
 **Architecture Compliance**: Thin Orchestrator Pattern

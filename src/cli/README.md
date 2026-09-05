@@ -64,7 +64,7 @@ gnn pull pomdp-gridworld-3x3 --output-dir /tmp/gnn-pull --dry-run
 The CLI module is a thin dispatcher — each subcommand delegates to the corresponding module's public API:
 
 - `run` → `main.main()`
-- `validate` → `gnn.schema.validate_required_sections()` + `parse_state_space()` + `parse_connections()`
+- `validate` → `gnn.schema` section/state-space/connection/dimension checks plus `validation.validate_content()` shared semantic evidence. JSON includes `data.semantic`. Findings retain exit code 2, or 1 with `--strict`.
 - `parse` → `gnn.schema.parse_state_space()` + `gnn.frontmatter.parse_frontmatter()`
 - `extract` → `gnn.extract.extract_to_json()` (lazy import; emits a structured error envelope when the extractor is unavailable)
 - `render` → `render.processor` (planned full integration)

@@ -17,10 +17,15 @@ from __future__ import annotations
 
 import json
 import logging
+import os
 import shutil
+import sys
+import tempfile
+from dataclasses import dataclass
 from datetime import datetime
+from html import escape
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Callable, Dict, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -459,7 +464,7 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; backgrou
 def _page(title: str, active: str, body: str, *, nav_extra: str = "") -> str:
     """Wrap body in the shared page shell with sidebar and nav."""
     ts = datetime.now().strftime("%Y-%m-%d %H:%M")
-    nav_items: list[Any] = [
+    nav_items: list[tuple[str, str, str, str]] = [
         ("🏠", "Dashboard", "index.html", "index"),
         ("⚡", "Pipeline", "pipeline.html", "pipeline"),
         ("📂", "GNN Files", "gnn_files.html", "gnn_files"),
@@ -507,54 +512,329 @@ def _page(title: str, active: str, body: str, *, nav_extra: str = "") -> str:
 #  Pipeline step catalogue
 # ─────────────────────────────────────────────────────────────────────────────
 
-_PIPELINE_STEPS: list[Any] = [
-    (0, "Template", "Pipeline template and initialization"),
-    (1, "Setup", "Environment setup and dependency install"),
-    (2, "Tests", "Test suite execution (pytest)"),
-    (
+
+@dataclass(frozen=True)
+class StepInfo:
+    """One pipeline step in the static 25-step site catalogue."""
+
+    number: int
+    name: str
+    description: str
+
+    @property
+    def script_name(self) -> str:
+        """Conventional display name of the numbered orchestrator script."""
+        return f"{self.number}_{self.name.lower().replace(' ', '_')}.py"
+
+
+PIPELINE_STEPS: tuple[StepInfo, ...] = (
+    StepInfo(0, "Template", "Pipeline template and initialization"),
+    StepInfo(1, "Setup", "Environment setup and dependency install"),
+    StepInfo(2, "Tests", "Test suite execution (pytest)"),
+    StepInfo(
         3,
         "GNN Processing",
         "GNN file discovery, parsing, and multi-format serialization",
     ),
-    (4, "Model Registry", "Model versioning and registry management"),
-    (5, "Type Checking", "GNN type validation and resource estimation"),
-    (6, "Validation", "Consistency and semantic quality checking"),
-    (7, "Export", "Multi-format export (JSON, XML, GraphML, GEXF, Pickle)"),
-    (8, "Visualization", "Graph and matrix visualization generation"),
-    (9, "Advanced Viz", "Interactive and advanced visualization (Plotly, D3)"),
-    (10, "Ontology", "Active Inference ontology processing and validation"),
-    (11, "Rendering", "Code generation for simulation frameworks"),
-    (12, "Execution", "Execute rendered simulation scripts"),
-    (13, "LLM", "LLM-enhanced analysis and model interpretation"),
-    (14, "ML Integration", "Machine learning integration and model training"),
-    (15, "Audio", "Audio sonification generation (SAPF)"),
-    (16, "Analysis", "Statistical analysis and cross-simulation aggregation"),
-    (17, "Integration", "System integration and cross-module coordination"),
-    (18, "Security", "Security validation and generated code scanning"),
-    (19, "Research", "Research tools and literature references"),
-    (20, "Website", "Static HTML website generation from pipeline artifacts"),
-    (21, "MCP Processing", "Model Context Protocol processing and tool registration"),
-    (22, "GUI", "Interactive GNN constructor GUI"),
-    (23, "Report", "Comprehensive analysis report generation"),
-    (24, "Intelligent Analysis", "AI-powered pipeline analysis and executive reports"),
-]
+    StepInfo(4, "Model Registry", "Model versioning and registry management"),
+    StepInfo(5, "Type Checking", "GNN type validation and resource estimation"),
+    StepInfo(6, "Validation", "Consistency and semantic quality checking"),
+    StepInfo(7, "Export", "Multi-format export (JSON, XML, GraphML, GEXF, Pickle)"),
+    StepInfo(8, "Visualization", "Graph and matrix visualization generation"),
+    StepInfo(9, "Advanced Viz", "Interactive and advanced visualization (Plotly, D3)"),
+    StepInfo(10, "Ontology", "Active Inference ontology processing and validation"),
+    StepInfo(11, "Rendering", "Code generation for simulation frameworks"),
+    StepInfo(12, "Execution", "Execute rendered simulation scripts"),
+    StepInfo(13, "LLM", "LLM-enhanced analysis and model interpretation"),
+    StepInfo(14, "ML Integration", "Machine learning integration and model training"),
+    StepInfo(15, "Audio", "Audio sonification generation (SAPF)"),
+    StepInfo(16, "Analysis", "Statistical analysis and cross-simulation aggregation"),
+    StepInfo(17, "Integration", "System integration and cross-module coordination"),
+    StepInfo(18, "Security", "Security validation and generated code scanning"),
+    StepInfo(19, "Research", "Research tools and literature references"),
+    StepInfo(20, "Website", "Static HTML website generation from pipeline artifacts"),
+    StepInfo(
+        21, "MCP Processing", "Model Context Protocol processing and tool registration"
+    ),
+    StepInfo(22, "GUI", "Interactive GNN constructor GUI"),
+    StepInfo(23, "Report", "Comprehensive analysis report generation"),
+    StepInfo(
+        24, "Intelligent Analysis", "AI-powered pipeline analysis and executive reports"
+    ),
+)
+
+
+def get_pipeline_steps() -> tuple[StepInfo, ...]:
+    """Return the immutable 25-step catalogue rendered across the site."""
+    return PIPELINE_STEPS
+
+
+# Shared status-badge styling: single source of truth for the index and
+# pipeline pages (previously duplicated inline in each page builder).
+_BADGE_CLASS: dict[str, str] = {
+    "ok": "badge-ok",
+    "error": "badge-error",
+    "skip": "badge-skip",
+}
+_STEP_BADGE_LABEL: dict[str, str] = {
+    "ok": "✓ Complete",
+    "error": "✗ Error",
+    "skip": "⊘ Skipped",
+}
+_PIPELINE_BADGE_LABEL: dict[str, str] = {
+    "ok": "Complete",
+    "error": "Error",
+    "skip": "Skipped",
+}
+
+
+def _esc(value: Any) -> str:
+    """HTML-escape any value for safe interpolation into page markup."""
+    return escape(str(value))
+
+
+def _write_atomic(dest: Path, content: str) -> None:
+    """Write ``content`` to ``dest`` via a temp file and atomic rename."""
+    tmp = tempfile.NamedTemporaryFile(
+        mode="w", encoding="utf-8", dir=dest.parent, delete=False
+    )
+    try:
+        with tmp:
+            tmp.write(content)
+        os.replace(tmp.name, dest)
+    except BaseException:
+        try:
+            os.unlink(tmp.name)
+        except OSError:
+            pass
+        raise
+
+
+def _load_live_mcp_tools() -> list[dict[str, str]]:
+    """Best-effort live MCP tool inventory; ``[]`` when unavailable."""
+    try:
+        src_dir = Path(__file__).resolve().parent.parent
+        if str(src_dir) not in sys.path:
+            sys.path.insert(0, str(src_dir))
+        from mcp.mcp import mcp_instance
+
+        return [
+            {
+                "name": name,
+                "module": getattr(tool, "module", ""),
+                "category": getattr(tool, "category", ""),
+                "desc": getattr(tool, "description", ""),
+            }
+            for name, tool in mcp_instance.tools.items()
+        ]
+    except Exception as e:  # MCP registry is optional for the website
+        logger.debug(f"MCP tools not loaded for website (optional): {e}")
+        return []
+
+
+def _collect_gnn_files(p_root: Path, input_dir: Path) -> tuple[list[Path], bool]:
+    """Discover GNN source markdown files, preferring ``<root>/input/gnn_files``."""
+    for search_dir in (p_root.parent / "input" / "gnn_files", input_dir):
+        if search_dir.exists():
+            return sorted(search_dir.glob("*.md")), True
+    return [], False
+
+
+def _collect_step_statuses(p_root: Path) -> dict[int, str]:
+    """Map each step number to ``ok``/``pending`` from numbered output dirs."""
+    if not p_root.exists():
+        return {step.number: "pending" for step in PIPELINE_STEPS}
+    dir_names = [d.name for d in p_root.iterdir() if d.is_dir()]
+    statuses: dict[int, str] = {}
+    for step in PIPELINE_STEPS:
+        found = any(
+            name.startswith(f"{step.number:02d}_") or name.startswith(f"{step.number}_")
+            for name in dir_names
+        )
+        statuses[step.number] = "ok" if found else "pending"
+    return statuses
+
+
+def _collect_analysis_results(p_root: Path) -> list[Any]:
+    """Load Step 16 analysis JSON files (best effort, deduplicated by name)."""
+    results: list[Any] = []
+    seen: set[str] = set()
+    for candidate in (
+        p_root / "16_analysis_output" / "analysis_results",
+        p_root / "16_analysis_output",
+    ):
+        if not candidate.exists():
+            continue
+        for jf in candidate.glob("*.json"):
+            if jf.name in seen:
+                continue
+            seen.add(jf.name)
+            try:
+                results.append(json.loads(jf.read_text()))
+            except Exception as e:
+                logger.debug(f"Skipped malformed analysis file {jf.name}: {e}")
+    return results
+
+
+def _load_execution_summary(p_root: Path) -> dict[str, Any]:
+    """Load the Step 12 execution summary (first existing candidate wins)."""
+    for candidate in (
+        p_root / "12_execute_output" / "summaries" / "execution_summary.json",
+        p_root / "12_execute_output" / "execution_summary.json",
+    ):
+        if candidate.exists():
+            try:
+                loaded: dict[str, Any] = json.loads(candidate.read_text())
+                return loaded
+            except Exception as e:
+                logger.debug(f"Skipped malformed execution summary file: {e}")
+                break
+    return {}
+
+
+def _collect_visualizations(
+    viz_dirs: list[Path], assets_dir: Path
+) -> list[dict[str, Any]]:
+    """Copy PNG/HTML visualization artifacts into ``assets_dir`` and describe them."""
+    visualizations: list[dict[str, Any]] = []
+    for viz_dir in viz_dirs:
+        if not viz_dir.exists():
+            continue
+        for pattern, artifact_type in (("*.png", "image"), ("*.html", "html")):
+            for artifact in viz_dir.rglob(pattern):
+                dest = assets_dir / artifact.name
+                try:
+                    shutil.copy2(artifact, dest)
+                except Exception:
+                    dest = artifact
+                visualizations.append(
+                    {
+                        "title": artifact.stem,
+                        "path": dest.name,
+                        "type": artifact_type,
+                        "abs": dest,
+                    }
+                )
+    return visualizations
+
+
+def _collect_reports(p_root: Path) -> list[dict[str, Any]]:
+    """Collect capped JSON artifacts from every numbered output directory."""
+    reports: list[dict[str, Any]] = []
+    if not p_root.exists():
+        return reports
+    for entry in sorted(p_root.iterdir()):
+        if not (entry.is_dir() and entry.name[0].isdigit()):
+            continue
+        for jf in list(entry.rglob("*.json"))[:5]:  # cap per dir
+            try:
+                content = jf.read_text(encoding="utf-8", errors="replace")
+                reports.append(
+                    {
+                        "name": jf.name,
+                        "dir": entry.name,
+                        "content": content[:2000],
+                        "size": jf.stat().st_size,
+                    }
+                )
+            except Exception as e:
+                logger.debug(f"Skipped unreadable report file {jf.name}: {e}")
+    return reports
+
+
+def collect_website_data(
+    pipeline_output_root: Path,
+    input_dir: Path,
+    assets_dir: Path,
+    *,
+    output_dir: Path | None = None,
+    user_data: dict[str, Any] | None = None,
+    mcp_tools_provider: Callable[[], list[dict[str, str]]] | None = None,
+) -> dict[str, Any]:
+    """Aggregate every artifact the website pages render.
+
+    Pure with respect to the repository state except for copying
+    visualization assets into ``assets_dir``. The MCP inventory comes from
+    ``mcp_tools_provider`` (default: best-effort live registry read), so
+    callers can inject a deterministic provider in tests.
+    """
+    p_root = Path(pipeline_output_root)
+    data: dict[str, Any] = {
+        "p_root": p_root,
+        "output_dir": Path(output_dir) if output_dir is not None else None,
+        "gnn_files": [],
+        "analysis": [],
+        "complexity": [],
+        "visualizations": [],
+        "reports": [],
+        "mcp_tools": [],
+        "step_statuses": {},
+        "exec_summary": {},
+        "processed_files": 0,
+    }
+    if user_data:
+        data.update(
+            {
+                k: v
+                for k, v in user_data.items()
+                if k not in ("output_dir", "input_dir", "pipeline_output_root")
+            }
+        )
+
+    discovered, found_source = _collect_gnn_files(p_root, input_dir)
+    data["gnn_files"].extend(discovered)
+    if found_source:
+        data["processed_files"] = len(data["gnn_files"])
+    data["step_statuses"] = _collect_step_statuses(p_root)
+    data["analysis"].extend(_collect_analysis_results(p_root))
+    data["exec_summary"] = _load_execution_summary(p_root)
+    data["visualizations"].extend(
+        _collect_visualizations(
+            [
+                p_root / "08_visualization_output" / "visualization_results",
+                p_root / "8_visualization_output" / "visualization_results",
+                p_root / "09_advanced_viz_output",
+                p_root / "9_advanced_viz_output",
+            ],
+            assets_dir,
+        )
+    )
+    data["reports"].extend(_collect_reports(p_root))
+    provider = mcp_tools_provider or _load_live_mcp_tools
+    data["mcp_tools"].extend(provider())
+    return data
 
 
 class WebsiteGenerator:
     """Generates a premium multi-page static HTML website from pipeline artifacts."""
 
-    def __init__(self) -> None:
-        """Initialize the instance."""
+    def __init__(
+        self,
+        *,
+        mcp_tools_provider: Callable[[], list[dict[str, str]]] | None = None,
+    ) -> None:
+        """Initialize the instance.
+
+        ``mcp_tools_provider`` supplies the MCP tool inventory shown on the
+        MCP page; defaults to a best-effort read of the live registry.
+        """
         self.template_dir = Path(__file__).parent / "templates"
         self.static_dir = Path(__file__).parent / "static"
+        self._mcp_tools_provider = mcp_tools_provider
 
     # ── Public API ──────────────────────────────────────────────────────────
 
     def generate_website(self, website_data: dict) -> dict:
-        """Generate the complete static website."""
+        """Generate the complete static website.
+
+        Each page is rendered and written independently: a failure on one
+        page records an error and leaves the remaining pages intact, and the
+        overall ``success`` flag is ``True`` only when no errors occurred.
+        """
         result: dict[str, Any] = {
             "success": True,
             "pages_created": 0,
+            "pages": [],
             "errors": [],
             "warnings": [],
         }
@@ -569,33 +849,29 @@ class WebsiteGenerator:
             assets_dir = output_dir / "assets"
             assets_dir.mkdir(exist_ok=True)
 
-            # Aggregate data from pipeline outputs
             data = self._collect_all_data(
                 p_root, input_dir, output_dir, assets_dir, website_data
             )
 
-            pages: dict[str, Any] = {
-                "index.html": self._page_index(data),
-                "pipeline.html": self._page_pipeline(data),
-                "gnn_files.html": self._page_gnn_files(data),
-                "analysis.html": self._page_analysis(data),
-                "visualization.html": self._page_visualization(data),
-                "reports.html": self._page_reports(data),
-                "mcp.html": self._page_mcp(data),
+            builders: dict[str, Callable[[dict], str]] = {
+                "index.html": self._page_index,
+                "pipeline.html": self._page_pipeline,
+                "gnn_files.html": self._page_gnn_files,
+                "analysis.html": self._page_analysis,
+                "visualization.html": self._page_visualization,
+                "reports.html": self._page_reports,
+                "mcp.html": self._page_mcp,
             }
-
-            for filename, html in pages.items():
+            for filename, build_page in builders.items():
                 try:
-                    import os as _os
-                    import tempfile as _tempfile
-
-                    _dest = output_dir / filename
-                    with _tempfile.NamedTemporaryFile(
-                        mode="w", encoding="utf-8", dir=output_dir, delete=False
-                    ) as _tmp:
-                        _tmp.write(html)
-                    _os.replace(_tmp.name, str(_dest))
+                    page_html = build_page(data)
+                except Exception as e:
+                    result["errors"].append(f"Failed to render {filename}: {e}")
+                    continue
+                try:
+                    _write_atomic(output_dir / filename, page_html)
                     result["pages_created"] += 1
+                    result["pages"].append(filename)
                 except Exception as e:
                     result["errors"].append(f"Failed to write {filename}: {e}")
 
@@ -606,9 +882,9 @@ class WebsiteGenerator:
                 )
 
         except Exception as e:
-            result["success"] = False
             result["errors"].append(str(e))
 
+        result["success"] = not result["errors"]
         return result
 
     def create_pages(self, output_dir: Path, data: dict) -> dict:
@@ -625,165 +901,22 @@ class WebsiteGenerator:
         assets_dir: Path,
         user_data: dict,
     ) -> dict:
-        """Collect all data."""
-        data: dict = {
-            "p_root": p_root,
-            "output_dir": output_dir,
-            "gnn_files": [],
-            "analysis": [],
-            "complexity": [],
-            "visualizations": [],
-            "reports": [],
-            "mcp_tools": [],
-            "step_statuses": {},
-            "exec_summary": {},
-            "processed_files": 0,
-        }
-
-        # Merge any caller-supplied data
-        data.update(
-            {
-                k: v
-                for k, v in user_data.items()
-                if k not in ("output_dir", "input_dir", "pipeline_output_root")
-            }
+        """Collect all data (delegates to the pure ``collect_website_data``)."""
+        return collect_website_data(
+            p_root,
+            input_dir,
+            assets_dir,
+            output_dir=output_dir,
+            user_data=user_data,
+            mcp_tools_provider=self._mcp_tools_provider,
         )
-
-        # GNN source files
-        for search_dir in [p_root.parent / "input" / "gnn_files", input_dir]:
-            if search_dir.exists():
-                for f in sorted(search_dir.glob("*.md")):
-                    data["gnn_files"].append(f)
-                data["processed_files"] = len(data["gnn_files"])
-                break
-
-        # Pipeline step statuses from numbered output dirs
-        self._collect_step_statuses(p_root, data)
-
-        # Analysis JSON files
-        seen: set[Any] = set()
-        for candidate in [
-            p_root / "16_analysis_output" / "analysis_results",
-            p_root / "16_analysis_output",
-        ]:
-            if candidate.exists():
-                for jf in candidate.glob("*.json"):
-                    if jf.name not in seen:
-                        seen.add(jf.name)
-                        try:
-                            d = json.loads(jf.read_text())
-                            data["analysis"].append(d)
-                        except Exception as e:
-                            logger.debug(
-                                f"Skipped malformed analysis file {jf.name}: {e}"
-                            )
-
-        # Execution summary
-        for ec in [
-            p_root / "12_execute_output" / "summaries" / "execution_summary.json",
-            p_root / "12_execute_output" / "execution_summary.json",
-        ]:
-            if ec.exists():
-                try:
-                    data["exec_summary"] = json.loads(ec.read_text())
-                except Exception as e:
-                    logger.debug(f"Skipped malformed execution summary file: {e}")
-                break
-
-        # Visualizations — copy assets
-        viz_dirs: list[Any] = [
-            p_root / "08_visualization_output" / "visualization_results",
-            p_root / "8_visualization_output" / "visualization_results",
-            p_root / "09_advanced_viz_output",
-            p_root / "9_advanced_viz_output",
-        ]
-        for vd in viz_dirs:
-            if not vd.exists():
-                continue
-            for img in vd.rglob("*.png"):
-                dest = assets_dir / img.name
-                try:
-                    shutil.copy2(img, dest)
-                except Exception:
-                    dest = img
-                data["visualizations"].append(
-                    {"title": img.stem, "path": dest.name, "type": "image", "abs": dest}
-                )
-            for html_f in vd.rglob("*.html"):
-                dest = assets_dir / html_f.name
-                try:
-                    shutil.copy2(html_f, dest)
-                except Exception:
-                    dest = html_f
-                data["visualizations"].append(
-                    {
-                        "title": html_f.stem,
-                        "path": dest.name,
-                        "type": "html",
-                        "abs": dest,
-                    }
-                )
-
-        # Reports — collect all JSON/txt artifacts from numbered output dirs
-        for d in sorted(p_root.iterdir()) if p_root.exists() else []:
-            if not (d.is_dir() and d.name[0].isdigit()):
-                continue
-            for jf in list(d.rglob("*.json"))[:5]:  # cap per dir
-                try:
-                    content = jf.read_text(encoding="utf-8", errors="replace")
-                    data["reports"].append(
-                        {
-                            "name": jf.name,
-                            "dir": d.name,
-                            "content": content[:2000],
-                            "size": jf.stat().st_size,
-                        }
-                    )
-                except Exception as e:
-                    logger.debug(f"Skipped unreadable report file {jf.name}: {e}")
-
-        # MCP tools — try to load live
-        try:
-            import sys
-
-            sys.path.insert(0, str(Path(__file__).parent.parent))
-            from mcp.mcp import mcp_instance
-
-            if mcp_instance.tools:
-                for name, tool in mcp_instance.tools.items():
-                    data["mcp_tools"].append(
-                        {
-                            "name": name,
-                            "module": getattr(tool, "module", ""),
-                            "category": getattr(tool, "category", ""),
-                            "desc": getattr(tool, "description", ""),
-                        }
-                    )
-        except Exception as e:
-            logger.debug(f"MCP tools not loaded for website (optional): {e}")
-
-        return data
-
-    def _collect_step_statuses(self, p_root: Path, data: dict) -> None:
-        """Scan output directories to determine each step's status."""
-        if not p_root.exists():
-            return
-        step_dirs = {d.name: d for d in p_root.iterdir() if d.is_dir()}
-        for step_num, _, _ in _PIPELINE_STEPS:
-            for prefix in [f"{step_num:02d}_", f"{step_num}_"]:
-                matching = [d for n, d in step_dirs.items() if n.startswith(prefix)]
-                if matching:
-                    data["step_statuses"][step_num] = "ok"
-                    break
-            else:
-                data["step_statuses"][step_num] = "pending"
 
     # ── Page generators ─────────────────────────────────────────────────────
 
     def _page_index(self, data: dict) -> str:
-        """Handle page index for internal callers."""
+        """Render the dashboard landing page."""
         n_ok = sum(1 for s in data["step_statuses"].values() if s == "ok")
-        n_steps = len(_PIPELINE_STEPS)
+        n_steps = len(PIPELINE_STEPS)
         n_files = data["processed_files"]
         n_tools = len(data["mcp_tools"])
 
@@ -813,23 +946,15 @@ class WebsiteGenerator:
 
         # Step grid
         cards = ""
-        for step_num, step_name, step_desc in _PIPELINE_STEPS:
-            status = data["step_statuses"].get(step_num, "pending")
-            badge_cls = {
-                "ok": "badge-ok",
-                "error": "badge-error",
-                "skip": "badge-skip",
-            }.get(status, "badge-pending")
-            badge_label = {
-                "ok": "✓ Complete",
-                "error": "✗ Error",
-                "skip": "⊘ Skipped",
-            }.get(status, "○ Pending")
+        for step in PIPELINE_STEPS:
+            status = data["step_statuses"].get(step.number, "pending")
+            badge_cls = _BADGE_CLASS.get(status, "badge-pending")
+            badge_label = _STEP_BADGE_LABEL.get(status, "○ Pending")
             cards += f"""
 <div class="step-card">
-  <div class="step-num">STEP {step_num:02d}</div>
-  <div class="step-name">{step_name}</div>
-  <div class="step-desc">{step_desc}</div>
+  <div class="step-num">STEP {step.number:02d}</div>
+  <div class="step-name">{_esc(step.name)}</div>
+  <div class="step-desc">{_esc(step.description)}</div>
   <span class="step-badge {badge_cls}">{badge_label}</span>
 </div>"""
 
@@ -846,25 +971,18 @@ class WebsiteGenerator:
         return _page("Dashboard", "index", body)
 
     def _page_pipeline(self, data: dict) -> str:
-        """Handle page pipeline for internal callers."""
+        """Render the full 25-step pipeline status table."""
         rows = ""
-        for step_num, step_name, step_desc in _PIPELINE_STEPS:
-            status = data["step_statuses"].get(step_num, "pending")
-            badge_cls = {
-                "ok": "badge-ok",
-                "error": "badge-error",
-                "skip": "badge-skip",
-            }.get(status, "badge-pending")
-            badge_label = {"ok": "Complete", "error": "Error", "skip": "Skipped"}.get(
-                status, "Pending"
-            )
-            f"{step_num}_{step_name.lower().replace(' ', '_')}.py"
+        for step in PIPELINE_STEPS:
+            status = data["step_statuses"].get(step.number, "pending")
+            badge_cls = _BADGE_CLASS.get(status, "badge-pending")
+            badge_label = _PIPELINE_BADGE_LABEL.get(status, "Pending")
             rows += f"""<tr>
-  <td><code>{step_num:02d}</code></td>
-  <td>{step_name}</td>
-  <td>{step_desc}</td>
+  <td><code>{step.number:02d}</code></td>
+  <td>{_esc(step.name)}</td>
+  <td>{_esc(step.description)}</td>
   <td><span class="step-badge {badge_cls}">{badge_label}</span></td>
-  <td><code style="font-size:11px;color:var(--text-3)">{step_num}_{step_name.lower().replace(" ", "_")}.py</code></td>
+  <td><code style="font-size:11px;color:var(--text-3)">{_esc(step.script_name)}</code></td>
 </tr>"""
         body = f"""
 <div class="page-header">
@@ -880,7 +998,7 @@ class WebsiteGenerator:
         return _page("Pipeline", "pipeline", body)
 
     def _page_gnn_files(self, data: dict) -> str:
-        """Handle page gnn files for internal callers."""
+        """Render the GNN source file browser."""
         if not data["gnn_files"]:
             content = '<div class="card"><p>No GNN source files found.</p></div>'
         else:
@@ -888,17 +1006,13 @@ class WebsiteGenerator:
             for gf in data["gnn_files"]:
                 try:
                     src = gf.read_text(encoding="utf-8", errors="replace")[:3000]
-                    escaped = (
-                        src.replace("&", "&amp;")
-                        .replace("<", "&lt;")
-                        .replace(">", "&gt;")
-                    )
+                    size = gf.stat().st_size
                 except Exception:
-                    escaped = "(could not read)"
+                    src, size = "(could not read)", 0
                 content += f"""
 <details>
-  <summary>{gf.name} <span class="pill badge-pending" style="margin-left:8px">{gf.stat().st_size} bytes</span></summary>
-  <div class="details-body"><pre>{escaped}</pre></div>
+  <summary>{_esc(gf.name)} <span class="pill badge-pending" style="margin-left:8px">{size} bytes</span></summary>
+  <div class="details-body"><pre>{_esc(src)}</pre></div>
 </details>"""
         body = f"""
 <div class="page-header">
@@ -909,7 +1023,7 @@ class WebsiteGenerator:
         return _page("GNN Files", "gnn_files", body)
 
     def _page_analysis(self, data: dict) -> str:
-        """Handle page analysis for internal callers."""
+        """Render the analysis metrics page."""
         if not data["analysis"]:
             inner = '<div class="card"><p>No analysis results found. Run step 16 (Analysis) to generate results.</p></div>'
         else:
@@ -920,10 +1034,12 @@ class WebsiteGenerator:
                 for k, v in item.items():
                     if k in ("file_name", "name"):
                         continue
-                    stats_html += f"<tr><td><code>{k}</code></td><td>{v}</td></tr>"
+                    stats_html += (
+                        f"<tr><td><code>{_esc(k)}</code></td><td>{_esc(v)}</td></tr>"
+                    )
                 inner += f"""
 <div class="card">
-  <h3>{name}</h3>
+  <h3>{_esc(name)}</h3>
   <div class="table-wrap" style="margin-top:8px">
     <table><tbody>{stats_html}</tbody></table>
   </div>
@@ -937,29 +1053,32 @@ class WebsiteGenerator:
         return _page("Analysis", "analysis", body)
 
     def _page_visualization(self, data: dict) -> str:
-        """Handle page visualization for internal callers."""
+        """Render the visualization gallery."""
         if not data["visualizations"]:
             inner = '<div class="card"><p>No visualizations found. Run steps 8–9 to generate visualizations.</p></div>'
         else:
             cards = ""
             for v in data["visualizations"]:
+                title = _esc(v["title"])
+                path = _esc(v["path"])
+                kind = _esc(str(v.get("type", "image")).title())
                 if v["type"] == "image":
                     cards += f"""
 <div class="viz-card">
-  <img src="assets/{v["path"]}" alt="{v["title"]}" loading="lazy">
+  <img src="assets/{path}" alt="{title}" loading="lazy">
   <div class="viz-info">
-    <div class="viz-title">{v["title"]}</div>
-    <div class="viz-desc">{v.get("type", "image").title()} artifact</div>
+    <div class="viz-title">{title}</div>
+    <div class="viz-desc">{kind} artifact</div>
   </div>
 </div>"""
                 else:
                     cards += f"""
 <div class="viz-card">
   <div style="padding:16px;background:var(--bg-surface);text-align:center">
-    <a href="assets/{v["path"]}" target="_blank" style="color:var(--accent-2);font-size:13px">🔗 Open interactive: {v["title"]}</a>
+    <a href="assets/{path}" target="_blank" style="color:var(--accent-2);font-size:13px">🔗 Open interactive: {title}</a>
   </div>
   <div class="viz-info">
-    <div class="viz-title">{v["title"]}</div>
+    <div class="viz-title">{title}</div>
     <div class="viz-desc">Interactive HTML visualization</div>
   </div>
 </div>"""
@@ -973,7 +1092,7 @@ class WebsiteGenerator:
         return _page("Visualizations", "visualization", body)
 
     def _page_reports(self, data: dict) -> str:
-        """Handle page reports for internal callers."""
+        """Render the report artifact viewer."""
         if not data["reports"]:
             inner = '<div class="card"><p>No report artifacts found in pipeline output directories.</p></div>'
         else:
@@ -984,15 +1103,13 @@ class WebsiteGenerator:
                     pretty = json.dumps(parsed, indent=2)[:1500]
                 except Exception:
                     pretty = rep["content"][:1500]
-                escaped = (
-                    pretty.replace("&", "&amp;")
-                    .replace("<", "&lt;")
-                    .replace(">", "&gt;")
-                )
+                name = _esc(rep["name"])
+                origin = _esc(rep["dir"])
+                size = _esc(rep["size"])
                 inner += f"""
 <details>
-  <summary>{rep["name"]} <span style="color:var(--text-3);font-size:11px;margin-left:8px">{rep["dir"]} · {rep["size"]} bytes</span></summary>
-  <div class="details-body"><pre>{escaped}</pre></div>
+  <summary>{name} <span style="color:var(--text-3);font-size:11px;margin-left:8px">{origin} · {size} bytes</span></summary>
+  <div class="details-body"><pre>{_esc(pretty)}</pre></div>
 </details>"""
         body = f"""
 <div class="page-header">
@@ -1003,13 +1120,13 @@ class WebsiteGenerator:
         return _page("Reports", "reports", body)
 
     def _page_mcp(self, data: dict) -> str:
-        """Handle page mcp for internal callers."""
+        """Render the MCP tools registry."""
         tools = data["mcp_tools"]
         if not tools:
             by_mod_html = '<div class="card"><p>No MCP tools registered. Run step 21 (MCP Processing) to register tools.</p></div>'
         else:
             # Group by module
-            by_mod: Dict[str, List[dict]] = {}
+            by_mod: dict[str, list[dict[str, Any]]] = {}
             for t in sorted(tools, key=lambda x: (x.get("module", ""), x["name"])):
                 mod = t.get("module") or "core"
                 by_mod.setdefault(mod, []).append(t)
@@ -1020,15 +1137,19 @@ class WebsiteGenerator:
                 for t in mod_tools:
                     desc = t.get("desc") or ""
                     cat = t.get("category") or ""
+                    cat_html = f" · {_esc(cat)}" if cat else ""
+                    desc_html = (
+                        f'<div class="tool-desc">{_esc(desc)}</div>' if desc else ""
+                    )
                     cards_html += f"""
 <div class="tool-card">
-  <div class="tool-name">{t["name"]}</div>
-  <div class="tool-mod">{mod}{f" · {cat}" if cat else ""}</div>
-  {f'<div class="tool-desc">{desc}</div>' if desc else ""}
+  <div class="tool-name">{_esc(t["name"])}</div>
+  <div class="tool-mod">{_esc(mod)}{cat_html}</div>
+  {desc_html}
 </div>"""
                 by_mod_html += f"""
 <div class="section">
-  <div class="section-title">{mod} <span class="pill badge-pending" style="margin-left:6px">{len(mod_tools)}</span></div>
+  <div class="section-title">{_esc(mod)} <span class="pill badge-pending" style="margin-left:6px">{len(mod_tools)}</span></div>
   {cards_html}
 </div>"""
 

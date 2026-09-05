@@ -490,6 +490,7 @@ class YAMLGNNParser(BaseGNNParser):
                     target_variables=target_variables,
                     connection_type=connection_type,
                     weight=weight,
+                    annotation=conn_data.get("annotation"),
                     description=description,
                 )
 

@@ -80,6 +80,29 @@ jobs:
         if: matrix.python-version == '3.12'
         run: uv run --extra dev python scripts/check_gnn_doc_patterns.py --strict
 
+      - name: Capability contracts
+        if: matrix.python-version == '3.12'
+        run: uv run --extra dev python scripts/check_capability_contracts.py --strict
+
+      - name: Functional MCP and capability PR gate
+        if: matrix.python-version == '3.12'
+        run: |
+          uv run --extra dev python -m pytest \
+            src/tests/mcp/test_mcp_functional.py \
+            src/tests/mcp/test_mcp_http_auth.py \
+            src/tests/mcp/test_transport_reliability.py \
+            src/tests/render/test_framework_availability.py \
+            src/tests/docs/test_capability_contracts.py \
+            -q --tb=short -rs --junitxml=junit/mcp-capabilities.xml
+
+      - name: MCP and capability test evidence
+        if: always() && matrix.python-version == '3.12'
+        uses: actions/upload-artifact@v7
+        with:
+          name: mcp-capabilities
+          path: junit/mcp-capabilities.xml
+          if-no-files-found: warn
+
       - name: Mypy type check
         if: matrix.python-version == '3.12'
         run: uv run --extra dev mypy src --show-error-codes

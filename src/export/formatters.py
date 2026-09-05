@@ -12,12 +12,7 @@ import xml.etree.ElementTree as ET  # nosec B405
 from pathlib import Path
 from typing import Any, Dict
 
-try:
-    from defusedxml.minidom import parseString as _xml_parseString
-except ImportError:
-    from xml.dom.minidom import (
-        parseString as _xml_parseString,  # nosec B408
-    )
+from defusedxml.minidom import parseString as _xml_parseString
 
 logger = logging.getLogger(__name__)
 

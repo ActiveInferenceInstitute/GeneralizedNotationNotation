@@ -10,7 +10,7 @@
 
 **Status**: Production Ready
 
-**Last Updated**: 2026-09-02
+**Last Updated**: 2026-09-04
 
 
 ---
@@ -93,23 +93,21 @@ success = process_llm(
 
 **Returns**: `List[Dict[str, Any]]` - List of connection dictionaries with source, target, type
 
-#### `generate_model_insights(gnn_content: str, analysis_results: Dict[str, Any] = None) -> Dict[str, Any]`
-**Description**: Generate insights from GNN model analysis.
+#### `generate_model_insights(file_analysis: Dict[str, Any]) -> Dict[str, Any]`
+**Description**: Generate insights about the GNN model.
 
 **Parameters**:
-- `gnn_content` (str): GNN content string
-- `analysis_results` (Dict[str, Any], optional): Previous analysis results
+- `file_analysis` (Dict[str, Any]): File analysis dict with `variables`, `connections`, `patterns`, and `complexity_metrics`
 
 **Returns**: `Dict[str, Any]` - Insights dictionary with complexity, patterns, recommendations
 
-#### `generate_documentation(gnn_content: str, model_name: str = None) -> str`
-**Description**: Generate comprehensive documentation for GNN model using LLM.
+#### `generate_documentation(file_analysis: Dict[str, Any]) -> Dict[str, Any]`
+**Description**: Generate documentation for the GNN model.
 
 **Parameters**:
-- `gnn_content` (str): GNN content string
-- `model_name` (str, optional): Name of the model
+- `file_analysis` (Dict[str, Any]): File analysis dict with `file_name`, `variables`, `connections`, and `complexity_metrics`
 
-**Returns**: `str` - Generated documentation as markdown string
+**Returns**: `Dict[str, Any]` - Documentation dictionary with `model_overview`, `variable_documentation`, `connection_documentation`, and `usage_examples`
 
 ---
 
@@ -243,6 +241,17 @@ memory, and provider status; this document does not track them.
 - `src/tests/llm/test_llm_functional.py` - Functional tests
 - `src/tests/llm/test_llm_ollama.py` - Ollama-specific tests
 - `src/tests/llm/test_llm_ollama_integration.py` - Ollama integration tests
+- `src/tests/llm/test_llm_analyzer_extractors.py` - Extractor/pattern pure-logic tests
+- `src/tests/llm/test_llm_prompts_registry.py` - Prompt registry completeness (all PromptType)
+- `src/tests/llm/test_llm_cache.py` - Cache key/roundtrip/corruption/clear tests
+- `src/tests/llm/test_llm_generator.py` - Generator heuristic outputs
+- `src/tests/llm/test_llm_processor_helpers.py` - Step-13 helpers + shared prompt funnel
+- `src/tests/llm/test_llm_sync_wrappers.py` - Sync wrapper error contracts (offline)
+- `src/tests/llm/test_llm_mcp_tools.py` - MCP tool happy paths + parameter honoring
+- `src/tests/llm/test_llm_cache_configurable.py` - Cache dir override behavior
+- `src/tests/llm/test_llm_provider_contract.py` - Provider structural contract
+- `src/tests/llm/test_llm_pipeline_model_wiring.py` - Model/cache/budget wiring
+- `src/tests/llm/test_llm_mcp_security.py` - MCP path-sandbox security
 
 ### Test Coverage
 Measure on demand:
@@ -588,6 +597,64 @@ configs["ollama"]["default_max_tokens"] = 1024
 
 ---
 
+## 2026-09-04 Composability Refactor (API deltas)
+
+All changes are additive or behavior-preserving unless noted. Consumer grep
+(`src/13_llm.py`, `intelligent_analysis/`, `research/`, tests) verified before
+any signature change.
+
+### New public surface
+
+| Symbol | Location | Purpose |
+|---|---|---|
+| `LLMProcessor.get_default_provider() -> Optional[BaseLLMProvider]` | `llm/llm_processor.py` | Peek the provider that `get_response`/`analyze_gnn` would route to without making a request (mirrors default routing incl. circuit breakers). |
+| `variable_type_counts(variables) -> Dict[str, int]` | `llm/analyzer.py` | Shared variable-type census used by `perform_semantic_analysis` and `generator.generate_code_suggestions`. |
+| `_classify_auth_error(error_str) -> str \| None` | `llm/processor.py` | Pure auth-failure classifier with provider attribution (openai/openrouter/perplexity/ollama/unknown). |
+| `_prompt_fallback_text(label, custom) -> str` | `llm/processor.py` | Single source for recovery text recorded per failed prompt. |
+| `_execute_prompt(...)` | `llm/processor.py` | Async funnel shared by the structured `PromptType` loop and custom prompts: cache lookup, timeout, auth fail-fast, response caching. |
+| `_error_result(exc) -> Dict[str, Any]` | `llm/llm_processor.py` | Shared never-raises failure payload for the synchronous GNN wrappers. |
+
+### Behavior changes
+
+1. **Auth fail-fast is now enforced.** After an auth error (401/403/invalid
+   key) is attributed to a provider, later prompts routed to that provider
+   short-circuit to the recovery text instead of burning retries — matching
+   what the logs previously claimed. Auth errors are reported once per
+   provider in `results["auth_errors"]`; non-auth failures still yield the
+   fallback text and never abort the run.
+2. **Circuit-breaker parity.** `LLMProcessor.analyze_gnn` now trips the same
+   per-provider circuit breaker as `get_response`, and `_try_fallback_analysis`
+   resets breakers on success (previously only `get_response` did).
+3. **MCP `analyze_gnn_with_llm_mcp` honors its documented params.**
+   Unknown `analysis_type` values now fail with `success: False` (previously
+   silently ignored); `provider="ollama"` pins `DEFAULT_OLLAMA_MODEL` for the
+   per-file summary call, any other value uses standard multi-provider
+   routing. Both parameters are echoed in the result payload.
+4. **`get_available_providers()` is environment-driven** (was import-probe
+   based, which always listed openai/openrouter and never perplexity). Ollama
+   counts unless `OLLAMA_DISABLED` is truthy; each cloud provider requires its
+   API key. Delegates to `load_api_keys_from_env()`.
+5. **All `PromptType` members are answerable.** Added missing prompt configs
+   for `COMPARE_MODELS` and `VALIDATE_SYNTAX` (previously `get_prompt` raised
+   `ValueError` for them despite `get_all_prompt_types()` advertising them).
+6. **Module-level `llm_operations.summarize_gnn` accepts `ollama_model`**,
+   aligning the convenience wrapper with `LLMOperations.summarize_gnn`.
+7. **`generate_explanation` / `enhance_model` delegate** to
+   `analyze_gnn_model(content, "summary"/"enhancement")` — identical flow,
+   one implementation.
+8. **MCP registration is table-driven** (single `tool_specs` tuple + loop),
+   and `get_llm_providers_mcp` now reports openrouter/perplexity alongside
+   the previous four.
+
+### Removed (dead weight)
+
+- `llm/llm_system_demo.py` and `llm/demo_llm_features.py`: zero references
+  repo-wide; the former asserted against in-memory provider doubles (fabricated "tests"),
+  the latter called live LLM providers when run. Demo usage lives in
+  AGENTS.md/README examples instead.
+
+---
+
 ## Version History
 
 ### Current Version: 3.2.0
@@ -623,7 +690,7 @@ configs["ollama"]["default_max_tokens"] = 1024
 
 ---
 
-**Last Updated**: 2026-09-02
+**Last Updated**: 2026-09-04
 **Maintainer**: GNN Pipeline Team
 **Status**: Production Ready
 **Version**: 3.2.0

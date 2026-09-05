@@ -27,6 +27,7 @@ FRAMEWORK_REGISTRY: Mapping[str, Dict[str, Any]] = MappingProxyType(
             "supports_multi_modality": True,
             "supports_multi_factor": True,
             "available": True,
+            "supports_execution": True,
             "supports_continuous": False,
             "unavailable_reason": None,
         },
@@ -48,6 +49,7 @@ FRAMEWORK_REGISTRY: Mapping[str, Dict[str, Any]] = MappingProxyType(
             "supports_multi_modality": False,
             "supports_multi_factor": False,
             "available": True,
+            "supports_execution": True,
             "supports_continuous": True,
             "unavailable_reason": None,
         },
@@ -69,6 +71,7 @@ FRAMEWORK_REGISTRY: Mapping[str, Dict[str, Any]] = MappingProxyType(
             "supports_multi_modality": True,
             "supports_multi_factor": True,
             "available": True,
+            "supports_execution": True,
             "supports_continuous": False,
             "unavailable_reason": None,
         },
@@ -90,6 +93,7 @@ FRAMEWORK_REGISTRY: Mapping[str, Dict[str, Any]] = MappingProxyType(
             "supports_multi_modality": True,
             "supports_multi_factor": True,
             "available": True,
+            "supports_execution": True,
             "supports_continuous": True,
             "unavailable_reason": None,
         },
@@ -115,6 +119,7 @@ FRAMEWORK_REGISTRY: Mapping[str, Dict[str, Any]] = MappingProxyType(
             # (A/B/C/D/E boxes over discrete state counts); it has no
             # linear-Gaussian diagram semantics, so continuous models are
             # reported unsupported rather than drawn as a discrete stand-in.
+            "supports_execution": True,
             "supports_continuous": False,
             "unavailable_reason": None,
         },
@@ -136,6 +141,7 @@ FRAMEWORK_REGISTRY: Mapping[str, Dict[str, Any]] = MappingProxyType(
             # extra — resolves GHSA-rrmf-rvhw-rf47, lifting the previous
             # exclusion; Step 12 keeps its own dynamic import gate.
             "available": True,
+            "supports_execution": True,
             "supports_continuous": True,
             "unavailable_reason": None,
         },
@@ -153,6 +159,7 @@ FRAMEWORK_REGISTRY: Mapping[str, Dict[str, Any]] = MappingProxyType(
             "supports_multi_modality": True,
             "supports_multi_factor": True,
             "available": True,
+            "supports_execution": True,
             "supports_continuous": True,
             "unavailable_reason": None,
         },
@@ -170,6 +177,7 @@ FRAMEWORK_REGISTRY: Mapping[str, Dict[str, Any]] = MappingProxyType(
             "supports_multi_modality": True,
             "supports_multi_factor": True,
             "available": True,
+            "supports_execution": True,
             "supports_continuous": True,
             "unavailable_reason": None,
         },
@@ -192,6 +200,7 @@ FRAMEWORK_REGISTRY: Mapping[str, Dict[str, Any]] = MappingProxyType(
             "supports_multi_modality": True,
             "supports_multi_factor": True,
             "available": False,
+            "supports_execution": False,
             "supports_continuous": False,
             "unavailable_reason": (
                 "Manual, render-only backend: bnlearn depends on pgmpy, which "
@@ -221,6 +230,7 @@ def get_available_renderers() -> Dict[str, Dict[str, Any]]:
         "function",
         "output_format",
         "pomdp_compatible",
+        "supports_execution",
     }
     return {
         name: {
@@ -242,6 +252,7 @@ def get_pomdp_framework_configs() -> Dict[str, Dict[str, Any]]:
             "optional_matrices": deepcopy(spec["optional_matrices"]),
             "supports_multi_modality": bool(spec["supports_multi_modality"]),
             "supports_multi_factor": bool(spec["supports_multi_factor"]),
+            "supports_execution": True,
             "supports_continuous": bool(spec.get("supports_continuous", False)),
             "name": spec["name"],
         }

@@ -339,6 +339,62 @@ Provide constructive recommendations:
         "expected_output": "markdown",
         "max_tokens": 1600,
     },
+    PromptType.COMPARE_MODELS: {
+        "title": "Model Comparison and Differential Analysis",
+        "system_message": GNN_SYSTEM_MESSAGE,
+        "user_prompt": """Compare this GNN specification against the reference model described in the analysis context:
+
+{gnn_content}
+
+Structure the comparison as:
+
+1. **Structural Differences**:
+   - Variables present in one model but not the other
+   - Connection topology differences
+   - Factorization and grouping differences
+
+2. **Parameter Differences**:
+   - Matrix shape and dimensionality differences
+   - Parameter semantics that diverge
+
+3. **Behavioral Differences**:
+   - Expected policy and inference behavior differences
+   - Settings where one model is preferable
+
+4. **Recommendation**:
+   - Which model fits which use case, with justification""",
+        "expected_output": "markdown",
+        "max_tokens": 1600,
+    },
+    PromptType.VALIDATE_SYNTAX: {
+        "title": "GNN Syntax Validation",
+        "system_message": GNN_SYSTEM_MESSAGE,
+        "user_prompt": """Validate the syntax and structure of this GNN specification:
+
+{gnn_content}
+
+Check and report:
+
+1. **Section Completeness**:
+   - Required sections present (Model Name, State Space Block, Connections, etc.)
+   - Missing or duplicated sections
+
+2. **Variable Declarations**:
+   - Name/type/dimension triplets well-formed
+   - Dimensional consistency across variables
+
+3. **Connections**:
+   - Operators used correctly (>, -, <)
+   - Referenced variables actually declared
+
+4. **Issues Found**:
+   - Numbered list of concrete syntax problems with line references where possible
+   - Severity: error vs. warning
+
+5. **Verdict**: PASS, PASS_WITH_WARNINGS, or FAIL, with one-line justification.""",
+        "expected_output": "markdown",
+        "max_tokens": 1400,
+    },
 }
 
 

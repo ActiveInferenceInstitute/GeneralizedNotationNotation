@@ -22,6 +22,8 @@ import urllib.parse
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from typing import Any, Dict, List, Optional
 
+from .jsonrpc import jsonrpc_error, jsonrpc_result, validate_request
+
 # Configure logging
 logger = logging.getLogger(__name__)
 DEFAULT_SAFE_HTTP_TOOL_NAMES = frozenset(
@@ -216,6 +218,7 @@ class MCPHTTPHandler(BaseHTTPRequestHandler):
 
     def do_POST(self) -> Any:
         """Handle POST requests (JSON-RPC 2.0)."""
+        self._notification = False
         urllib.parse.urlparse(self.path)
         content_length = int(self.headers.get("Content-Length", 0))
         client_host = self.client_address[0] if self.client_address else None
@@ -235,21 +238,24 @@ class MCPHTTPHandler(BaseHTTPRequestHandler):
             request_body = self.rfile.read(content_length)
             request = json.loads(request_body)
             logger.debug(f"HTTP IN: {request}")
-        except json.JSONDecodeError:
-            self._send_error(400, "Invalid JSON request")
+        except (json.JSONDecodeError, UnicodeDecodeError):
+            self._send_jsonrpc_error(None, -32700, "Parse error")
             return
-        # Process JSON-RPC message
-        if "jsonrpc" in request and request["jsonrpc"] == "2.0":
-            self._handle_jsonrpc(request)
-        else:
-            self._send_error(
-                400, "Invalid request format (missing or invalid jsonrpc field)"
-            )
+        self._handle_jsonrpc(request)
 
     def _handle_jsonrpc(self, request: Dict[str, Any]) -> Any:
         """
         Process a JSON-RPC message, supporting both standard MCP methods and direct tool invocation.
         """
+        error = validate_request(request)
+        self._notification = (
+            isinstance(request, dict)
+            and "id" not in request
+            and (error is None or error["error"]["code"] == -32602)
+        )
+        if error is not None:
+            self._send_json_response(200, error)
+            return
         request_id = request.get("id")
         method = request.get("method")
         params = request.get("params", {})
@@ -265,7 +271,8 @@ class MCPHTTPHandler(BaseHTTPRequestHandler):
                 self._send_jsonrpc_result(request_id, result)
             elif method == "mcp.tool.execute":
                 if not (
-                    isinstance(params, dict) and "name" in params and "params" in params
+                    isinstance(params.get("name"), str)
+                    and isinstance(params.get("params"), dict)
                 ):
                     self._send_jsonrpc_error(
                         request_id, -32602, "Invalid params for tool execution"
@@ -283,7 +290,7 @@ class MCPHTTPHandler(BaseHTTPRequestHandler):
                 result = mcp_instance.execute_tool(tool_name, tool_params)
                 self._send_jsonrpc_result(request_id, result)
             elif method == "mcp.resource.get":
-                if not (isinstance(params, dict) and "uri" in params):
+                if not isinstance(params.get("uri"), str):
                     self._send_jsonrpc_error(
                         request_id, -32602, "Invalid params for resource retrieval"
                     )
@@ -329,11 +336,7 @@ class MCPHTTPHandler(BaseHTTPRequestHandler):
 
     def _send_jsonrpc_result(self, request_id: Optional[str], result: Any) -> Any:
         """Send a successful JSON-RPC response."""
-        response: dict[str, Any] = {
-            "jsonrpc": "2.0",
-            "id": request_id,
-            "result": result,
-        }
+        response = jsonrpc_result(request_id, result)
         logger.debug(f"HTTP OUT: {response}")
         self._send_json_response(200, response)
 
@@ -341,19 +344,17 @@ class MCPHTTPHandler(BaseHTTPRequestHandler):
         self, request_id: Optional[str], code: int, message: str, data: Any = None
     ) -> Any:
         """Send a JSON-RPC error response, including optional data."""
-        error_obj: dict[str, Any] = {"code": code, "message": message}
-        if data is not None:
-            error_obj["data"] = data
-        response: dict[str, Any] = {
-            "jsonrpc": "2.0",
-            "id": request_id,
-            "error": error_obj,
-        }
+        response = jsonrpc_error(request_id, code, message, data)
         logger.debug(f"HTTP OUT (error): {response}")
         self._send_json_response(200, response)
 
     def _send_json_response(self, status_code: int, data: Any) -> Any:
         """Send a JSON response."""
+        if getattr(self, "_notification", False):
+            self.send_response(204)
+            self.send_header("Content-Length", "0")
+            self.end_headers()
+            return
         self.send_response(status_code)
         self.send_header("Content-Type", "application/json")
         self.end_headers()

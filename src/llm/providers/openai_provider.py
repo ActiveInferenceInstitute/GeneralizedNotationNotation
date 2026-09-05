@@ -336,13 +336,21 @@ class OpenAIProvider(BaseLLMProvider):
             """Extract operation."""
             return result.content if hasattr(result, "content") else str(result)
 
+        # Inspect the loop before creating a coroutine: asyncio.run rejects an
+        # active loop without awaiting its argument. Provider RuntimeError must
+        # also propagate without repeating a potentially billable request.
         try:
-            result = asyncio.run(_run())
-            return _extract(result)
+            asyncio.get_running_loop()
         except RuntimeError:
-            # Already inside a running event loop – delegate to a worker thread
+            active_loop = False
+        else:
+            active_loop = True
+
+        try:
+            if not active_loop:
+                return _extract(asyncio.run(_run()))
+
             def _thread_run() -> LLMResponse:
-                """Handle thread run for internal callers."""
                 return asyncio.run(_run())
 
             with concurrent.futures.ThreadPoolExecutor(max_workers=1) as pool:

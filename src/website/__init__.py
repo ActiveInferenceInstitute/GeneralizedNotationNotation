@@ -6,7 +6,16 @@ This module provides static HTML website generation from pipeline artifacts.
 
 from typing import Any
 
-from .generator import WebsiteGenerator, generate_website
+from .dashboard import render_dashboard
+from .generator import (
+    PIPELINE_STEPS,
+    StepInfo,
+    WebsiteGenerator,
+    collect_website_data,
+    generate_website,
+    get_pipeline_steps,
+)
+from .inspection import inspect_website, list_website_pages
 from .renderer import (
     WebsiteRenderer,
     embed_html_file,
@@ -21,7 +30,7 @@ from .renderer import (
     validate_website_config,
 )
 
-__version__ = "1.6.0"
+__version__ = "1.7.0"
 
 # Feature flags/constants expected by tests
 FEATURES: dict[str, Any] = {
@@ -56,5 +65,12 @@ __all__: list[Any] = [
     "get_module_info",
     "get_supported_file_types",
     "validate_website_config",
+    "render_dashboard",
+    "collect_website_data",
+    "get_pipeline_steps",
+    "PIPELINE_STEPS",
+    "StepInfo",
+    "inspect_website",
+    "list_website_pages",
     "__version__",
 ]

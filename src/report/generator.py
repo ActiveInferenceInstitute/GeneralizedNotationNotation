@@ -9,10 +9,20 @@ It orchestrates the collection, analysis, and formatting of pipeline data into c
 import json
 import logging
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Callable, Dict, List, Optional
 
 from .analyzer import collect_pipeline_data, get_pipeline_health_score
 from .formatters import generate_html_report, generate_markdown_report
+
+DEFAULT_REPORT_FORMATS: list[str] = ["html", "markdown", "json"]
+"""Formats :func:`generate_comprehensive_report` emits when none are given."""
+
+REPORT_FILENAMES: dict[str, str] = {
+    "html": "comprehensive_analysis_report.html",
+    "markdown": "comprehensive_analysis_report.md",
+    "json": "report_summary.json",
+}
+"""Output filename per report format (single source of truth for consumers)."""
 
 
 def generate_comprehensive_report(
@@ -53,8 +63,7 @@ def generate_comprehensive_report(
         report_output_dir.mkdir(parents=True, exist_ok=True)
 
         # Set default report formats if not specified
-        if report_formats is None:
-            report_formats = ["html", "markdown", "json"]
+        report_formats = list(DEFAULT_REPORT_FORMATS)
 
         # Collect data from all pipeline steps
         logger.info("Collecting pipeline data for analysis")
@@ -82,32 +91,21 @@ def generate_comprehensive_report(
         # Generate reports in requested formats
         generated_files: list[Any] = []
 
+        writer_map: dict[
+            str, Callable[[Dict[str, Any], Path, logging.Logger], bool]
+        ] = {
+            "html": generate_html_report_file,
+            "markdown": generate_markdown_report_file,
+            "json": generate_json_report_file,
+        }
         for format_type in report_formats:
             try:
-                if format_type == "html":
-                    success = generate_html_report_file(
-                        pipeline_data, report_output_dir, logger
-                    )
-                    if success:
-                        generated_files.append("comprehensive_analysis_report.html")
-
-                elif format_type == "markdown":
-                    success = generate_markdown_report_file(
-                        pipeline_data, report_output_dir, logger
-                    )
-                    if success:
-                        generated_files.append("comprehensive_analysis_report.md")
-
-                elif format_type == "json":
-                    success = generate_json_report_file(
-                        pipeline_data, report_output_dir, logger
-                    )
-                    if success:
-                        generated_files.append("report_summary.json")
-
-                else:
+                writer = writer_map.get(format_type)
+                if writer is None:
                     logger.warning(f"Unsupported report format: {format_type}")
-
+                    continue
+                if writer(pipeline_data, report_output_dir, logger):
+                    generated_files.append(REPORT_FILENAMES[format_type])
             except Exception as e:
                 logger.error(f"Failed to generate {format_type} report: {e}")
 

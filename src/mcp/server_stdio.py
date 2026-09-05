@@ -26,11 +26,14 @@ from typing import Any, Dict, Optional
 # Configure logging
 logger = logging.getLogger(__name__)
 
-# Import MCP
 try:
     from . import MCPError, initialize, mcp_instance
-except ImportError:
+except ImportError:  # pragma: no cover - direct-script fallback
     from mcp import MCPError, initialize, mcp_instance
+
+from .jsonrpc import jsonrpc_error, jsonrpc_result, validate_request
+
+_NOTIFICATION = object()
 
 
 class StdioServer:
@@ -57,9 +60,8 @@ class StdioServer:
         self.response_queue: queue.Queue[dict[str, Any]] = queue.Queue(
             maxsize=max_queue_size
         )
-        self.next_id = 1
-        self.pending_requests: dict[str, Any] = {}
         self.request_timeout = request_timeout
+        self._start_time = time.time()
 
         # Connection monitoring
         self._connection_errors = 0
@@ -252,33 +254,6 @@ class StdioServer:
     def _process_message(self, message: Dict[str, Any]) -> Any:
         """Process an incoming JSON-RPC message with enhanced validation."""
         try:
-            if not isinstance(message, dict):
-                logger.error(
-                    f"Invalid message format: expected dict, got {type(message)}"
-                )
-                return
-
-            # Validate JSON-RPC structure
-            if "jsonrpc" not in message:
-                logger.error("Missing 'jsonrpc' field in message")
-                self._send_error(None, -32600, "Invalid Request: missing jsonrpc field")
-                return
-
-            if message["jsonrpc"] != "2.0":
-                logger.error(f"Unsupported JSON-RPC version: {message['jsonrpc']}")
-                self._send_error(
-                    None,
-                    -32600,
-                    f"Invalid Request: unsupported jsonrpc version '{message['jsonrpc']}'",
-                )
-                return
-
-            if "method" not in message:
-                logger.error("Missing 'method' field in message")
-                self._send_error(None, -32600, "Invalid Request: missing method field")
-                return
-
-            # Check for JSON-RPC message
             self._process_jsonrpc(message)
 
         except Exception as e:
@@ -295,7 +270,12 @@ class StdioServer:
         """
         Process a JSON-RPC message, supporting both standard MCP methods and direct tool invocation.
         """
-        request_id = message.get("id")
+        error = validate_request(message)
+        if error is not None:
+            if error["error"]["code"] != -32602 or "id" in message:
+                self.response_queue.put(error)
+            return
+        request_id = message.get("id", _NOTIFICATION)
         method = message.get("method")
         params = message.get("params", {})
 
@@ -310,7 +290,8 @@ class StdioServer:
                 self._send_result(request_id, result)
             elif method == "mcp.tool.execute":
                 if not (
-                    isinstance(params, dict) and "name" in params and "params" in params
+                    isinstance(params.get("name"), str)
+                    and isinstance(params.get("params"), dict)
                 ):
                     self._send_error(
                         request_id, -32602, "Invalid params for tool execution"
@@ -321,7 +302,7 @@ class StdioServer:
                 result = mcp_instance.execute_tool(tool_name, tool_params)
                 self._send_result(request_id, result)
             elif method == "mcp.resource.get":
-                if not (isinstance(params, dict) and "uri" in params):
+                if not (isinstance(params.get("uri"), str)):
                     self._send_error(
                         request_id, -32602, "Invalid params for resource retrieval"
                     )
@@ -351,26 +332,15 @@ class StdioServer:
 
     def _send_result(self, request_id: Any, result: Any) -> Any:
         """Send a successful JSON-RPC result response."""
-        response: dict[str, Any] = {
-            "jsonrpc": "2.0",
-            "id": request_id,
-            "result": result,
-        }
-        self.response_queue.put(response)
+        if request_id is not _NOTIFICATION:
+            self.response_queue.put(jsonrpc_result(request_id, result))
 
     def _send_error(
-        self, request_id: Optional[str], code: int, message: str, data: Any = None
+        self, request_id: Any, code: int, message: str, data: Any = None
     ) -> Any:
         """Send a JSON-RPC error response, including optional data."""
-        error_obj: dict[str, Any] = {"code": code, "message": message}
-        if data is not None:
-            error_obj["data"] = data
-        response: dict[str, Any] = {
-            "jsonrpc": "2.0",
-            "id": request_id,
-            "error": error_obj,
-        }
-        self.response_queue.put(response)
+        if request_id is not _NOTIFICATION:
+            self.response_queue.put(jsonrpc_error(request_id, code, message, data))
 
 
 def start_stdio_server() -> Any:

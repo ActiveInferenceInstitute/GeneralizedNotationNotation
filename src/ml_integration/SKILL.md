@@ -22,7 +22,7 @@ python src/main.py --only-steps 14 --verbose
 ## API
 
 ```python
-from ml_integration import process_ml_integration, check_ml_frameworks
+from ml_integration import process_ml_integration, check_ml_frameworks, feature_vector, predict_with_model
 
 # Process ML integration step (used by pipeline)
 result = process_ml_integration(target_dir, output_dir, verbose=True)
@@ -33,12 +33,23 @@ frameworks = check_ml_frameworks()
 #           'tensorflow': {'available': False},
 #           'jax': {'available': True, 'version': '0.4.x'},
 #           'sklearn': {'available': True, 'version': '1.x'}}
+# Build the canonical feature vector and predict from a saved .pkl artifact
+vec = feature_vector(features)
+label = predict_with_model(Path("output/14_ml_integration_output/gnn_decision_tree.pkl"), features, label_names=labels)
 ```
 
 ## Key Exports
 
 - `process_ml_integration` — main pipeline processing function
 - `check_ml_frameworks` — checks availability of PyTorch, TensorFlow, JAX, scikit-learn
+- `extract_gnn_features` — structural feature extraction for one GNN file
+- `feature_vector` — canonical numeric vector in `NUMERIC_FEATURE_NAMES` order
+- `complexity_label` — small/medium/large via `COMPLEXITY_THRESHOLDS` (100, 1000)
+- `summarize_features` — min/max/mean over `SUMMARY_STATISTIC_KEYS`
+- `load_classifier`, `predict_with_model`, `predict_batch` — inference from saved `.pkl` artifacts (scikit-learn required only at call time; `label_names` comes from `ml_integration_results.json`)
+- `InferenceError` — raised for missing/invalid artifacts or prediction failures
+- `get_module_info` — version, feature flags, tool inventory
+- Constants: `NUMERIC_FEATURE_NAMES`, `COMPLEXITY_THRESHOLDS`, `COMPLEXITY_LABELS`, `SUMMARY_STATISTIC_KEYS`
 
 ## Supported ML Frameworks
 

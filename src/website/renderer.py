@@ -5,7 +5,10 @@ Website renderer module for GNN pipeline.
 
 from __future__ import annotations
 
+import json
 import logging
+from datetime import datetime
+from html import escape
 from pathlib import Path
 from typing import Any, Dict, List, cast
 
@@ -91,6 +94,63 @@ class WebsiteRenderer:
         }
 
 
+def _write_results_manifest(website_dir: Path, result: dict[str, Any]) -> None:
+    """Persist ``website_results.json`` summarizing a generation run."""
+    try:
+        manifest = {
+            "success": bool(result.get("success", False)),
+            "pages_created": int(result.get("pages_created", 0)),
+            "pages": list(result.get("pages", [])),
+            "errors": list(result.get("errors", [])),
+            "warnings": list(result.get("warnings", [])),
+            "generated_at": datetime.now().isoformat(timespec="seconds"),
+        }
+        (website_dir / "website_results.json").write_text(
+            json.dumps(manifest, indent=2), encoding="utf-8"
+        )
+    except Exception as e:
+        logger.debug(f"Could not write results file (optional): {e}")
+
+
+def _write_embed_page(
+    title: str, body_html: str, output_file: Path, extra_style: str = ""
+) -> bool:
+    """Write a standalone HTML page wrapping ``body_html`` (best effort).
+
+    Shared skeleton for the ``embed_*`` helpers; returns ``False`` instead
+    of raising when the destination cannot be written.
+    """
+    try:
+        style = (
+            "body { font-family: Arial, sans-serif; margin: 40px; line-height: 1.6; } "
+            "pre { background-color: #f5f5f5; padding: 15px; border-radius: 5px; "
+            "overflow-x: auto; } code { background-color: #f5f5f5; padding: 2px 4px; "
+            "border-radius: 3px; } h1, h2, h3 { color: #333; }"
+        )
+        if extra_style:
+            style = f"{style} {extra_style}"
+        page = f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{title}</title>
+    <style>
+        {style}
+    </style>
+</head>
+<body>
+    {body_html}
+</body>
+</html>"""
+        output_file.parent.mkdir(parents=True, exist_ok=True)
+        output_file.write_text(page, encoding="utf-8")
+        return True
+    except Exception as e:
+        logger.debug(f"Operation failed: {e}")
+        return False
+
+
 def process_website(
     target_dir: Path,
     output_dir: Path,
@@ -126,21 +186,8 @@ def process_website(
         result = generate_website(
             logger, target_dir, website_dir, pipeline_output_root=pipeline_output_root
         )
-        # Persist a minimal results file for tests
-        try:
-            results_file = website_dir / "website_results.json"
-            with open(results_file, "w") as f:
-                import json as _json
-
-                _json.dump(
-                    {
-                        "success": bool(result.get("success", False)),
-                        "pages_created": int(result.get("pages_created", 0)),
-                    },
-                    f,
-                )
-        except Exception as e:
-            logger.debug(f"Could not write results file (optional): {e}")
+        # Persist the results manifest (contract: always attempted)
+        _write_results_manifest(website_dir, result)
 
         if result["success"]:
             logger.info(
@@ -165,8 +212,7 @@ def generate_html_report(content: str, output_file: Path) -> bool:
         html_content = renderer.render_html(content)
 
         output_file.parent.mkdir(parents=True, exist_ok=True)
-        with open(output_file, "w") as f:
-            f.write(html_content)
+        output_file.write_text(html_content, encoding="utf-8")
 
         return True
 
@@ -176,33 +222,20 @@ def generate_html_report(content: str, output_file: Path) -> bool:
 
 
 def embed_image(image_path: Path, output_file: Path) -> bool:
-    """Embed an image into an HTML file."""
+    """Embed an image into an HTML file (path reference, not base64)."""
     try:
         if not image_path.exists():
             return False
 
-        # Create HTML with embedded image
-        html_content = f"""<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Embedded Image</title>
-    <style>
-        body {{ font-family: Arial, sans-serif; margin: 40px; text-align: center; }}
-        img {{ max-width: 100%; height: auto; border: 1px solid #ddd; border-radius: 5px; }}
-    </style>
-</head>
-<body>
-    <h1>Embedded Image</h1>
-    <img src="{image_path}" alt="Embedded image">
-</body>
-</html>"""
-
-        with open(output_file, "w") as f:
-            f.write(html_content)
-
-        return True
+        src = escape(str(image_path), quote=True)
+        body = f'<h1>Embedded Image</h1>\n    <img src="{src}" alt="Embedded image">'
+        return _write_embed_page(
+            "Embedded Image",
+            body,
+            output_file,
+            "img { max-width: 100%; height: auto; border: 1px solid #ddd; "
+            "border-radius: 5px; }",
+        )
 
     except Exception as e:
         logger.debug(f"Operation failed: {e}")
@@ -210,41 +243,20 @@ def embed_image(image_path: Path, output_file: Path) -> bool:
 
 
 def embed_markdown_file(md_path: Path, output_file: Path) -> bool:
-    """Embed a markdown file into an HTML file."""
+    """Embed a markdown file into an HTML file (rendered inside a <pre>)."""
     try:
         if not md_path.exists():
             return False
 
-        # Read markdown content
-        with open(md_path, "r") as f:
-            md_content = f.read()
-
-        # Convert markdown to HTML (simplified)
-        html_content = f"""<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Markdown Content</title>
-    <style>
-        body {{ font-family: Arial, sans-serif; margin: 40px; line-height: 1.6; }}
-        pre {{ background-color: #f5f5f5; padding: 15px; border-radius: 5px; overflow-x: auto; }}
-        code {{ background-color: #f5f5f5; padding: 2px 4px; border-radius: 3px; }}
-        h1, h2, h3 {{ color: #333; }}
-    </style>
-</head>
-<body>
-    <h1>Markdown Content</h1>
-    <div class="markdown-content">
-        <pre>{md_content}</pre>
-    </div>
-</body>
-</html>"""
-
-        with open(output_file, "w") as f:
-            f.write(html_content)
-
-        return True
+        # Read markdown content; escape it so markup renders verbatim
+        md_content = md_path.read_text(encoding="utf-8")
+        body = (
+            "<h1>Markdown Content</h1>\n"
+            '    <div class="markdown-content">\n'
+            f"        <pre>{escape(md_content)}</pre>\n"
+            "    </div>"
+        )
+        return _write_embed_page("Markdown Content", body, output_file)
 
     except Exception as e:
         logger.debug(f"Operation failed: {e}")
@@ -252,37 +264,15 @@ def embed_markdown_file(md_path: Path, output_file: Path) -> bool:
 
 
 def embed_text_file(text_path: Path, output_file: Path) -> bool:
-    """Embed a text file into an HTML file."""
+    """Embed a text file into an HTML file (rendered inside a <pre>)."""
     try:
         if not text_path.exists():
             return False
 
-        # Read text content
-        with open(text_path, "r") as f:
-            text_content = f.read()
-
-        # Convert text to HTML
-        html_content = f"""<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Text Content</title>
-    <style>
-        body {{ font-family: Arial, sans-serif; margin: 40px; line-height: 1.6; }}
-        pre {{ background-color: #f5f5f5; padding: 15px; border-radius: 5px; overflow-x: auto; }}
-    </style>
-</head>
-<body>
-    <h1>Text Content</h1>
-    <pre>{text_content}</pre>
-</body>
-</html>"""
-
-        with open(output_file, "w") as f:
-            f.write(html_content)
-
-        return True
+        # Read text content; escape it so it renders verbatim
+        text_content = text_path.read_text(encoding="utf-8")
+        body = f"<h1>Text Content</h1>\n    <pre>{escape(text_content)}</pre>"
+        return _write_embed_page("Text Content", body, output_file)
 
     except Exception as e:
         logger.debug(f"Operation failed: {e}")
@@ -290,40 +280,21 @@ def embed_text_file(text_path: Path, output_file: Path) -> bool:
 
 
 def embed_json_file(json_path: Path, output_file: Path) -> bool:
-    """Embed a JSON file into an HTML file."""
+    """Embed a JSON file into an HTML file (rendered inside a <pre>)."""
     try:
         if not json_path.exists():
             return False
 
-        # Read JSON content
-        with open(json_path, "r") as f:
-            json_content = f.read()
-
-        # Convert JSON to HTML
-        html_content = f"""<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JSON Content</title>
-    <style>
-        body {{ font-family: Arial, sans-serif; margin: 40px; line-height: 1.6; }}
-        pre {{ background-color: #f5f5f5; padding: 15px; border-radius: 5px; overflow-x: auto; }}
-        .json-key {{ color: #0066cc; }}
-        .json-string {{ color: #008800; }}
-        .json-number {{ color: #cc6600; }}
-    </style>
-</head>
-<body>
-    <h1>JSON Content</h1>
-    <pre>{json_content}</pre>
-</body>
-</html>"""
-
-        with open(output_file, "w") as f:
-            f.write(html_content)
-
-        return True
+        # Read JSON content; escape it so it renders verbatim
+        json_content = json_path.read_text(encoding="utf-8")
+        body = f"<h1>JSON Content</h1>\n    <pre>{escape(json_content)}</pre>"
+        return _write_embed_page(
+            "JSON Content",
+            body,
+            output_file,
+            ".json-key { color: #0066cc; } .json-string { color: #008800; } "
+            ".json-number { color: #cc6600; }",
+        )
 
     except Exception as e:
         logger.debug(f"Operation failed: {e}")
@@ -331,39 +302,26 @@ def embed_json_file(json_path: Path, output_file: Path) -> bool:
 
 
 def embed_html_file(html_path: Path, output_file: Path) -> bool:
-    """Embed an HTML file into another HTML file."""
+    """Embed an HTML file's content into a wrapper HTML page."""
     try:
         if not html_path.exists():
             return False
 
-        # Read HTML content
-        with open(html_path, "r") as f:
-            html_content = f.read()
-
-        # Create wrapper HTML
-        wrapper_html = f"""<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Embedded HTML</title>
-    <style>
-        body {{ font-family: Arial, sans-serif; margin: 40px; }}
-        .embedded-content {{ border: 1px solid #ddd; padding: 20px; border-radius: 5px; }}
-    </style>
-</head>
-<body>
-    <h1>Embedded HTML Content</h1>
-    <div class="embedded-content">
-        {html_content}
-    </div>
-</body>
-</html>"""
-
-        with open(output_file, "w") as f:
-            f.write(wrapper_html)
-
-        return True
+        # Embedded HTML is kept verbatim by design (it is already markup)
+        embedded_content = html_path.read_text(encoding="utf-8")
+        body = (
+            "<h1>Embedded HTML Content</h1>\n"
+            '    <div class="embedded-content">\n'
+            f"        {embedded_content}\n"
+            "    </div>"
+        )
+        return _write_embed_page(
+            "Embedded HTML",
+            body,
+            output_file,
+            ".embedded-content { border: 1px solid #ddd; padding: 20px; "
+            "border-radius: 5px; }",
+        )
 
     except Exception as e:
         logger.debug(f"Operation failed: {e}")
@@ -372,9 +330,11 @@ def embed_html_file(html_path: Path, output_file: Path) -> bool:
 
 def get_module_info() -> Dict[str, Any]:
     """Get information about the website module."""
+    from . import __version__
+
     return {
         "name": "Website Module",
-        "version": "1.0.0",
+        "version": __version__,
         "description": "Static HTML website generation from pipeline artifacts",
         "features": [
             "HTML report generation",

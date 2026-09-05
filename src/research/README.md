@@ -25,9 +25,36 @@ Main entry point, called by `19_research.py` (Step 19). Additional kwargs are ac
 
 **Returns:** `bool` — True if processing succeeded.
 
-### `generate_rule_based_hypotheses(content, model_name, output_dir, logger) -> Tuple[List[Dict], str]`
+### `generate_rule_based_hypotheses(content, model_family, dims, connections) -> list[dict]`
 
-Core rule engine: complexity analysis (high-dimensional matrix detection), structural diagnostics (variable-to-connection ratios), and hypothesis generation with a markdown report justifying every hypothesis.
+Core rule engine: pure function from GNN content plus precomputed structural
+evidence (model family, state-space dimensions, connection counts) to a list
+of hypothesis dicts (`type`, `description`, `rationale`, `priority`).
+Rules cover dimensionality, graph density, family-specific gaps, missing
+`ActInfOntologyAnnotation`, and missing `InitialParameterization`.
+
+### `analyze_gnn(content: str) -> ModelAnalysis`
+
+One-call pure static analysis returning a frozen `ModelAnalysis`
+dataclass bundling `model_family`, `dimensions`, and `connections`.
+
+### `summarize_hypotheses(hypotheses) -> dict`
+
+Pure triage helper: counts hypotheses by `priority` (`high`/`medium`/`low`)
+and by `type`, with a `total`. Accepts any iterable of hypothesis mappings.
+
+### `render_research_report(results) -> str` / `write_research_outputs(results_dir, results)`
+
+`render_research_report` is the pure markdown renderer for the report;
+`write_research_outputs` writes the three JSON summaries plus exactly that
+rendering to `research_report.md` (atomically via temp file + `os.replace`).
+
+### `discover_gnn_files(target_dir, recursive) -> list[Path]`
+
+Sorted `*.md` discovery under `target_dir`; empty list for a missing
+directory. `merge_llm_hypotheses(llm, rules)` prefers LLM hypotheses and
+dedups rule hypotheses by `type`. `MODEL_FAMILIES` enumerates every value
+`detect_model_family` can return.
 
 ### `detect_model_family(content: str) -> str`
 
@@ -41,6 +68,12 @@ Structural feature extraction helpers.
 
 - `process_research`
 - `FEATURES`, `__version__`
+
+From `research.processor`: `analyze_gnn`, `ModelAnalysis`, `MODEL_FAMILIES`,
+`detect_model_family`, `extract_state_space_dims`, `count_connections`,
+`generate_rule_based_hypotheses`, `summarize_hypotheses`,
+`render_research_report`, `write_research_outputs`, `discover_gnn_files`,
+`merge_llm_hypotheses`
 
 ## Usage Examples
 
@@ -57,17 +90,23 @@ success = process_research(
 )
 ```
 
-### Direct hypothesis generation
+### Direct analysis and hypothesis generation
 
 ```python
-from research.processor import generate_rule_based_hypotheses
-
-hypotheses, report = generate_rule_based_hypotheses(
-    content=gnn_content,
-    model_name="my_model",
-    output_dir=Path("output/19_research_output"),
-    logger=logger,
+from research.processor import (
+    analyze_gnn,
+    generate_rule_based_hypotheses,
+    summarize_hypotheses,
 )
+
+analysis = analyze_gnn(gnn_content)
+hypotheses = generate_rule_based_hypotheses(
+    content=gnn_content,
+    model_family=analysis.model_family,
+    dims=analysis.dimensions,
+    connections=analysis.connections,
+)
+summary = summarize_hypotheses(hypotheses)  # {"total", "by_priority", "by_type"}
 ```
 
 ## Integration with Pipeline
@@ -93,7 +132,12 @@ output/19_research_output/
 
 ## Testing
 
-Tests live in `src/tests/research/`: `test_research_overall.py`, `test_research_functional.py`, `test_research_mcp_tools.py`.
+Tests live in `src/tests/research/`: `test_research_overall.py`, `test_research_functional.py`, `test_research_mcp_tools.py`, `test_research_analysis.py`.
+
+`test_research_analysis.py` pins the pure analysis API: `analyze_gnn` /
+`ModelAnalysis`, section-scanning boundaries, `summarize_hypotheses`,
+`merge_llm_hypotheses`, report-render purity and parity with the written
+report, and sorted `discover_gnn_files`.
 
 ```bash
 uv run --extra dev python -m pytest src/tests/research/ --cov=src/research

@@ -5,50 +5,20 @@ Audio generator module for GNN Processing Pipeline.
 This module provides audio generation functionality.
 """
 
-import math
+import logging
 from typing import Any, Dict, List, Optional, cast
 
-# Optional numpy import with recovery
-try:
-    import numpy as np
+import numpy as np
 
-    NUMPY_AVAILABLE = True
-except ImportError:
-    np = cast(Any, None)
-    NUMPY_AVAILABLE = False
+from .validation import coerce_audio_array, coerce_finite, coerce_sample_rate
 
+# Kept for backwards compatibility with any external callers that imported the
+# private names before the shared ``audio.validation`` module existed.
+_finite_number = coerce_finite
+_positive_sample_rate = coerce_sample_rate
+_audio_array = coerce_audio_array
 
-def _finite_number(value: Any, default: float) -> float:
-    try:
-        parsed = float(value)
-    except (TypeError, ValueError):
-        return default
-    return parsed if math.isfinite(parsed) else default
-
-
-def _positive_sample_rate(value: Any, default: int = 44100) -> int:
-    if isinstance(value, bool):
-        return default
-    try:
-        parsed = int(value)
-    except (OverflowError, TypeError, ValueError):
-        return default
-    return parsed if parsed > 0 and parsed == value else default
-
-
-def _audio_array(audio: Any) -> np.ndarray:
-    raw = np.asarray(audio)
-    if np.iscomplexobj(raw):
-        raise ValueError("audio samples must be real")
-    try:
-        samples = np.asarray(audio, dtype=np.float64)
-    except (TypeError, ValueError) as exc:
-        raise ValueError("audio samples must be numeric") from exc
-    if samples.ndim not in (1, 2):
-        raise ValueError("audio must be mono or frames-by-channels")
-    if samples.ndim == 2 and samples.shape[1] < 1:
-        raise ValueError("audio must contain at least one channel")
-    return np.asarray(np.nan_to_num(samples, nan=0.0, posinf=1.0, neginf=-1.0))
+logger = logging.getLogger(__name__)
 
 
 def generate_tonal_representation(
@@ -207,6 +177,9 @@ def generate_oscillator_audio(
         return generator.generate_synthetic_audio(config)
 
     except Exception:
+        logger.warning(
+            "synthetic audio generation failed; returning zeros", exc_info=True
+        )
         return np.zeros(int(sample_rate * duration))
 
 
@@ -229,6 +202,9 @@ def apply_envelope(audio: np.ndarray, envelope_type: str = "ADSR") -> np.ndarray
         return generator.apply_envelope(audio, envelope_type)
 
     except Exception:
+        logger.warning(
+            "envelope application failed; returning unmodified audio", exc_info=True
+        )
         return audio
 
 

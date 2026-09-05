@@ -7,7 +7,9 @@ resources, executes them with thread-safe caching and rate limiting, and
 exposes them to MCP-compatible clients via stdio or HTTP transport.
 """
 
+import hashlib
 import importlib
+import json
 import logging
 import sys
 import threading
@@ -24,6 +26,7 @@ logger = logging.getLogger("mcp")
 # --- Import MCP Exceptions from dedicated module ---
 from .exceptions import (
     MCPInvalidParamsError,
+    MCPRateLimitError,
     MCPResourceNotFoundError,
     MCPSDKNotFoundError,
     MCPToolExecutionError,
@@ -900,6 +903,39 @@ class MCP:
                     schema=tool.schema,
                 ) from exc
 
+        if self._enable_rate_limiting and tool.rate_limit is not None:
+            try:
+                self._check_rate_limit(tool_name, tool.rate_limit)
+            except MCPRateLimitError:
+                with self._lock:
+                    self._error_count += 1
+                    self._performance_metrics.failed_requests += 1
+                    self._performance_metrics.error_counts[tool_name] = (
+                        self._performance_metrics.error_counts.get(tool_name, 0) + 1
+                    )
+                raise
+
+        # Result cache: only for tools that opted in via cache_ttl, and only
+        # when caching is enabled for this server instance (performance_mode
+        # "low" disables it, so default pipeline runs never cache results).
+        cache_key = ""
+        if self._enable_caching and tool.cache_ttl is not None:
+            cache_key = self._result_cache_key(tool_name, params)
+            if cache_key:
+                cache_hit, cached_result = self._cache_get(cache_key)
+                if cache_hit:
+                    with self._lock:
+                        self._performance_metrics.successful_requests += 1
+                        self._performance_metrics.tool_usage_stats[tool_name] = (
+                            self._performance_metrics.tool_usage_stats.get(tool_name, 0)
+                            + 1
+                        )
+                        self._performance_metrics.update_cache_stats(True)
+                    logger.debug(f"Tool {tool_name} served from result cache")
+                    return cast("dict[str, Any]", cached_result)
+                with self._lock:
+                    self._performance_metrics.update_cache_stats(False)
+
         with self._execution_lock:
             self._active_executions[tool_name] += 1
             self._performance_metrics.concurrent_requests += 1
@@ -923,6 +959,13 @@ class MCP:
                 )
                 self._performance_metrics.update_execution_time(execution_time)
                 self._tool_execution_times[tool_name].append(execution_time)
+                tool.mark_used()
+                if cache_key and tool.cache_ttl is not None:
+                    with self._result_cache_lock:
+                        self._result_cache[cache_key] = (
+                            result,
+                            time.time() + tool.cache_ttl,
+                        )
             logger.debug(f"Tool {tool_name} executed successfully")
             return cast("dict[str, Any]", result)
         except Exception as e:
@@ -953,6 +996,57 @@ class MCP:
                 self._performance_metrics.concurrent_requests = max(
                     0, self._performance_metrics.concurrent_requests - 1
                 )
+
+    # --- Result-cache and rate-limit helpers (used by execute_tool) ---------
+
+    @staticmethod
+    def _result_cache_key(tool_name: str, params: Dict[str, Any]) -> str:
+        """Build a deterministic cache key for a tool invocation.
+
+        Returns "" when params are not JSON-serialisable (uncacheable call).
+        """
+        try:
+            encoded = json.dumps(
+                {"tool": tool_name, "params": params},
+                sort_keys=True,
+                separators=(",", ":"),
+                default=str,
+            )
+        except (TypeError, ValueError):
+            return ""
+        return hashlib.sha256(encoded.encode("utf-8")).hexdigest()
+
+    def _cache_get(self, cache_key: str) -> Tuple[bool, Any]:
+        """Read a result-cache entry, returning (is_hit, value)."""
+        with self._result_cache_lock:
+            entry = self._result_cache.get(cache_key)
+            if entry is None:
+                return False, None
+            result, expires_at = entry
+            if expires_at < time.time():
+                self._result_cache.pop(cache_key, None)
+                return False, None
+            return True, result
+
+    def _check_rate_limit(self, tool_name: str, rate_limit: float) -> None:
+        """Enforce a per-tool sliding-window rate limit.
+
+        Raises:
+            MCPRateLimitError: When the tool exceeds ``rate_limit`` requests
+                per second over the trailing window.
+        """
+        now = time.time()
+        with self._rate_limit_lock:
+            timestamps = self._rate_limit_timestamps[tool_name]
+            cutoff = now - 1.0
+            recent = [ts for ts in timestamps if ts >= cutoff]
+            if len(recent) >= int(rate_limit):
+                self._rate_limit_timestamps[tool_name] = recent
+                raise MCPRateLimitError(
+                    tool_name, rate_limit, current_rate=float(len(recent))
+                )
+            recent.append(now)
+            self._rate_limit_timestamps[tool_name] = recent
 
     def get_resource(self, uri: str) -> Dict[str, Any]:
         """

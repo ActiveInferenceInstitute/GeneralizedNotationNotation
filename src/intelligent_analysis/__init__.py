@@ -41,12 +41,22 @@ from .analyzer import (
     detect_performance_patterns,
     generate_optimization_suggestions,
 )
+from .history import (
+    RunSnapshot,
+    StepDelta,
+    analyze_run_history,
+    build_run_snapshot,
+    classify_trend,
+    compute_step_deltas,
+)
 
 # Import processor functions and classes
 from .processor import (
+    FullAnalysisResult,
     StepAnalysis,
     analyze_individual_steps,
     analyze_pipeline_summary,
+    compute_full_analysis,
     extract_failure_context,
     generate_executive_report,
     generate_recommendations,
@@ -143,6 +153,16 @@ __all__: list[Any] = [
     "identify_bottlenecks",
     "extract_failure_context",
     "generate_recommendations",
+    # Full-analysis core
+    "FullAnalysisResult",
+    "compute_full_analysis",
+    # Run-history analysis
+    "RunSnapshot",
+    "StepDelta",
+    "build_run_snapshot",
+    "compute_step_deltas",
+    "classify_trend",
+    "analyze_run_history",
     "StepAnalysis",
     # Analyzer classes and functions
     "IntelligentAnalyzer",

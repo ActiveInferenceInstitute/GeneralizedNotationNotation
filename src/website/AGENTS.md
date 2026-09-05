@@ -12,7 +12,7 @@
 
 **Version**: 3.2.0
 
-**Last Updated**: 2026-04-16
+**Last Updated**: 2026-09-04
 
 ---
 
@@ -77,7 +77,16 @@ success = process_website(
 
 **Returns**: `bool` - True if embedding succeeded, False otherwise
 
-Additional exports (see `__init__.py`): `WebsiteGenerator`, `WebsiteRenderer`, `generate_website`, `embed_text_file`, `embed_json_file`, `embed_html_file`, `get_module_info`, `get_supported_file_types`, `validate_website_config`.
+Additional exports (see `__init__.py`): `WebsiteGenerator`, `WebsiteRenderer`, `generate_website`, `embed_text_file`, `embed_json_file`, `embed_html_file`, `get_module_info`, `get_supported_file_types`, `validate_website_config`, `render_dashboard` (re-exported from `dashboard.py`), `collect_website_data`, `get_pipeline_steps`, `PIPELINE_STEPS`, `StepInfo`, `inspect_website`, `list_website_pages`.
+
+#### `collect_website_data(pipeline_output_root, input_dir, assets_dir, *, output_dir=None, user_data=None, mcp_tools_provider=None) -> dict`
+**Description**: Pure aggregation of every artifact the pages render (GNN files, step statuses, analysis JSON, execution summary, visualization assets, reports, MCP inventory). `mcp_tools_provider` injects the MCP tool list; the default performs a best-effort live registry read. Callers can build the data once and render pages from it.
+
+#### `get_pipeline_steps() -> tuple[StepInfo, ...]`
+**Description**: Returns the immutable 25-step catalogue (`StepInfo(number, name, description)` with a `script_name` display property) used to render the dashboard and pipeline pages.
+
+#### `inspect_website(directory) -> dict` / `list_website_pages(directory) -> dict`
+**Description**: Pure filesystem queries over a generated site (page inventory, sizes, key-page completeness; per-page size/mtime listing). `website.inspection.KEY_PAGES` lists the seven canonical pages. These are the shared implementation behind the `get_website_status` and `list_generated_website_pages` MCP tools.
 
 ---
 
@@ -110,7 +119,7 @@ success = embed_image(
 - `visualization.html` - Gallery of generated visualizations
 - `reports.html` - JSON/text report viewer
 - `mcp.html` - MCP tools registry across all modules
-- `website_results.json` - minimal success/pages-created manifest (written by `process_website`)
+- `website_results.json` - generation manifest with `success`, `pages_created`, `pages` (written filenames), `errors`, `warnings`, `generated_at` (written by `process_website`)
 
 `assets/` is created under the output dir; `static/` is copied only if a `static/` directory ships beside the module.
 
@@ -137,11 +146,8 @@ Generation is fast (seconds) for typical pipeline output; no published benchmark
 ---
 ## Error Handling
 
-### Website Errors
-1. **Template Errors**: Template rendering failures
-2. **Content Errors**: Content processing failures
-3. **Asset Errors**: Asset embedding failures
-4. **File I/O**: File system operation failures
+### Page Resilience
+Each of the seven pages is rendered and written independently (atomic temp-file + rename per page). A failure on one page records `Failed to render/write <page>` in `errors` and leaves the remaining pages intact; `success` in the result dict (and the `process_website` bool) is `True` only when no errors occurred. Values coming from pipeline data (GNN sources, analysis JSON, report content, MCP tool fields) are HTML-escaped on every page.
 
 ### Recovery Strategies
 - **Template Recovery**: Use default templates
@@ -175,7 +181,10 @@ Pipeline Artifacts → Content Extraction → Template Processing → Asset Embe
 
 ### Test Files
 - `src/tests/website/test_website_overall.py` - Module-level tests
-
+- `src/tests/website/test_website_public_api.py` - Public API surface tests
+- `src/tests/website/test_website_dashboard.py` - Dashboard tests
+- `src/tests/website/test_website_generator_units.py` - Catalogue, data collection, escaping, page-resilience, manifest tests
+- `src/tests/website/test_website_inspection.py` - `inspect_website` / `list_website_pages` tests
 ### Test Coverage
 Measure on demand:
 
@@ -233,7 +242,7 @@ The module-info inventory and `register_tools()` use these same five names.
 
 ## Version History
 
-Module `__version__` is `1.6.0` (`__init__.py`); the pipeline/repo release is `3.2.0`. No formal changelog is maintained in this file.
+Module `__version__` is `1.7.0` (`__init__.py`); the pipeline/repo release is `3.2.0`. No formal changelog is maintained in this file.
 
 ---
 ## References
@@ -248,7 +257,7 @@ Module `__version__` is `1.6.0` (`__init__.py`); the pipeline/repo release is `3
 
 ---
 
-**Last Updated**: 2026-04-16
+**Last Updated**: 2026-09-04
 **Maintainer**: GNN Pipeline Team
 **Status**: Production Ready
 **Version**: 3.2.0

@@ -136,7 +136,7 @@ class LLMCache:
         except OSError as exc:
             logger.warning(f"Failed to write cache entry {key[:12]}…: {exc}")
 
-    def summary(self) -> dict:
+    def summary(self) -> dict[str, Any]:
         """Return cache statistics for logging."""
         total = self.hits + self.misses
         ratio = (self.hits / total * 100) if total > 0 else 0.0

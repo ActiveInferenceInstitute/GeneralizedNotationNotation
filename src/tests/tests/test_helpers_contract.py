@@ -1,4 +1,4 @@
-"""Contracts for ``tests.helpers``: script loader, GNN samples, MCP stubs."""
+"""Contracts for ``tests.helpers``: script loader, GNN samples, MCP test adapters."""
 
 from __future__ import annotations
 

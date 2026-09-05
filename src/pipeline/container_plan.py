@@ -19,6 +19,7 @@ Public API:
 
 import hashlib
 import json
+import posixpath
 import re
 from datetime import datetime
 from typing import Any, Dict, List, Optional
@@ -67,7 +68,10 @@ _DANGEROUS_CAPS = frozenset(
 
 def _mount_host_path(mount: str) -> str:
     """Return the host-side path of a ``host:container[:mode]`` mount string."""
-    return mount.split(":", 1)[0].strip()
+    source = mount.split(":", 1)[0].strip()
+    if source.startswith("/"):
+        return posixpath.normpath("/" + source.lstrip("/"))
+    return source
 
 
 class ResourceLimits(BaseModel):
@@ -264,7 +268,8 @@ def security_review(plan: ContainerPlan) -> List[Finding]:
                     spec_name=spec.name,
                 )
             )
-        if spec.user in ("", "root"):
+        user = spec.user.strip().split(":", 1)[0]
+        if user in ("", "root") or (user.isdecimal() and int(user) == 0):
             findings.append(
                 Finding(
                     severity="HIGH",
@@ -323,7 +328,11 @@ def security_review(plan: ContainerPlan) -> List[Finding]:
         # Host-path mounts that enable trivial container escape.
         for mount in spec.mounts:
             host_path = _mount_host_path(mount)
-            if host_path in _SENSITIVE_HOST_MOUNTS:
+            if any(
+                host_path == sensitive
+                or (sensitive != "/" and host_path.startswith(sensitive + "/"))
+                for sensitive in _SENSITIVE_HOST_MOUNTS
+            ):
                 findings.append(
                     Finding(
                         severity="CRITICAL",
@@ -388,7 +397,12 @@ def plan_to_compose(plan: ContainerPlan) -> Dict[str, Any]:
         A dict with a "services" mapping keyed by spec name.
     """
     services: Dict[str, Any] = {}
+    volumes: Dict[str, Any] = {}
     for spec in plan.specs:
+        if spec.name in services:
+            raise ValueError(
+                f"Duplicate container name cannot be exported: {spec.name}"
+            )
         service: Dict[str, Any] = {
             "image": spec.image,
             "read_only": spec.read_only_rootfs,
@@ -402,8 +416,22 @@ def plan_to_compose(plan: ContainerPlan) -> Dict[str, Any]:
             service["environment"] = dict(spec.env)
         if spec.mounts:
             service["volumes"] = list(spec.mounts)
+            for mount in spec.mounts:
+                source = _mount_host_path(mount)
+                if ":" in mount and re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_.-]*", source):
+                    volumes[source] = {}
         if spec.cap_drop:
             service["cap_drop"] = list(spec.cap_drop)
+        if spec.cap_add:
+            service["cap_add"] = list(spec.cap_add)
+        for source_field, compose_field in (
+            ("network", "network_mode"),
+            ("pid", "pid"),
+            ("ipc", "ipc"),
+        ):
+            value = getattr(spec, source_field)
+            if value:
+                service[compose_field] = value
         limits: Dict[str, str] = {}
         if spec.resources.cpu:
             limits["cpus"] = spec.resources.cpu
@@ -418,6 +446,7 @@ def plan_to_compose(plan: ContainerPlan) -> Dict[str, Any]:
         "x-plan-version": plan.version,
         "x-plan-hash": plan.plan_hash,
         "services": services,
+        "volumes": volumes,
     }
 
 

@@ -302,6 +302,7 @@ class TestMCPServerLifecycle:
                 "id": 1,
             }
         )
+        assert response is not None
         assert response["jsonrpc"] == "2.0"
         assert "result" in response
         assert "protocolVersion" in response["result"]
@@ -325,6 +326,7 @@ class TestMCPServerLifecycle:
                 "id": 2,
             }
         )
+        assert response is not None
         assert "result" in response
         tools = response["result"]["tools"]
         tool_names = [t["name"] for t in tools]
@@ -341,6 +343,7 @@ class TestMCPServerLifecycle:
                 "id": 3,
             }
         )
+        assert response is not None
         assert "error" in response
         assert response["error"]["code"] == -32601
 
@@ -355,6 +358,7 @@ class TestMCPServerLifecycle:
                 "id": 4,
             }
         )
+        assert response is not None
         assert "error" in response
 
     @pytest.mark.unit
@@ -370,6 +374,7 @@ class TestMCPServerLifecycle:
                 "id": 5,
             }
         )
+        assert response is not None
         assert response["error"]["code"] == -32602
         assert response["error"]["message"] == "JSON-RPC params must be an object"
         assert "details" in response["error"]["data"]

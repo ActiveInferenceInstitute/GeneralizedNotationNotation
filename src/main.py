@@ -62,9 +62,12 @@ import time
 import uuid
 from datetime import datetime
 from pathlib import Path
+from threading import RLock
 from typing import Any, Dict, List, Optional, Sequence
 
 _module_logger = logging.getLogger(__name__)
+# Environment scope is process-global; serialize programmatic top-level runs.
+_run_environment_lock = RLock()
 
 # Detect project root and ensure we're working from there
 SCRIPT_DIR = Path(__file__).parent  # src/
@@ -494,17 +497,32 @@ def _initialize_pipeline_summary(
     args: PipelineArguments,
     steps_to_execute: list[PipelineStep],
     config_pipeline_settings: dict[Any, Any],
+    *,
+    input_config: Optional[Dict[str, Any]] = None,
 ) -> dict[str, Any]:
     """Create the initial summary payload before step execution starts."""
-    from pipeline.hasher import compute_run_hash_with_files
+    from pipeline.hasher import (
+        RUN_HASH_SCHEMA,
+        compute_run_hash_with_files,
+        effective_run_config,
+    )
 
+    identity_config = effective_run_config(
+        args.to_dict(),
+        config_pipeline_settings,
+        [step[0] for step in steps_to_execute],
+        input_config,
+    )
     run_hash, file_hashes = compute_run_hash_with_files(
         args.target_dir,
-        config=config_pipeline_settings,
+        config=identity_config,
     )
 
     return {
+        "run_id": os.environ.get("GNN_RUN_ID"),
         "run_hash": run_hash,
+        "run_hash_schema": RUN_HASH_SCHEMA,
+        "identity_config": identity_config,
         "file_hashes": file_hashes,
         "start_time": datetime.now().isoformat(),
         "arguments": args.to_dict(),
@@ -538,31 +556,48 @@ def _prepare_pipeline_context(
 ]:
     """Prepare args, config, logging, step list, and initial summary."""
     args, parsed = _build_main_args(override_args)
-    visual_logger, correlation_id = _create_pipeline_visual_logger(args)
-    logger = _setup_pipeline_logger(args)
+    try:
+        visual_logger, correlation_id = _create_pipeline_visual_logger(args)
+        logger = _setup_pipeline_logger(args)
 
-    if args.verbose:
-        _log_backend_versions(logger)
+        if args.verbose:
+            _log_backend_versions(logger)
 
-    full_config, config_pipeline_settings = _load_pipeline_config(
-        override_config, logger
-    )
-    apply_input_config_defaults(args, full_config, parsed)
+        full_config, config_pipeline_settings = _load_pipeline_config(
+            override_config, logger
+        )
+        apply_input_config_defaults(args, full_config, parsed)
 
-    steps_to_execute = _resolve_steps_to_execute(args, config_pipeline_settings, logger)
-    pipeline_summary = _initialize_pipeline_summary(
-        args, steps_to_execute, config_pipeline_settings
-    )
+        steps_to_execute = _resolve_steps_to_execute(
+            args, config_pipeline_settings, logger
+        )
+        pipeline_summary = _initialize_pipeline_summary(
+            args, steps_to_execute, config_pipeline_settings, input_config=full_config
+        )
 
-    return (
-        args,
-        config_pipeline_settings,
-        steps_to_execute,
-        pipeline_summary,
-        visual_logger,
-        correlation_id,
-        logger,
-    )
+        return (
+            args,
+            config_pipeline_settings,
+            steps_to_execute,
+            pipeline_summary,
+            visual_logger,
+            correlation_id,
+            logger,
+        )
+    except Exception as error:
+        # Args are resolved, so even a config/logging/selection failure has a receipt.
+        _save_minimal_pipeline_summary(
+            _pipeline_summary_path(args.output_dir),
+            {
+                "run_id": os.environ.get("GNN_RUN_ID"),
+                "start_time": datetime.now().isoformat(),
+                "arguments": args.to_dict(),
+                "steps": [],
+            },
+            error,
+            _module_logger,
+        )
+        raise
 
 
 def _start_pipeline_run(
@@ -903,7 +938,13 @@ def _execute_pipeline_iteration(
     if script_name in ("23_report.py", "24_intelligent_analysis.py"):
         _write_preliminary_pipeline_summary(pipeline_summary, args.output_dir, logger)
 
-    step_result = execute_pipeline_step(script_name, args, logger)
+    step_result = execute_pipeline_step(
+        script_name,
+        args,
+        logger,
+        run_id=pipeline_summary.get("run_id"),
+        pipeline_config=pipeline_summary.get("identity_config", {}).get("input_config"),
+    )
     step_duration = time.time() - step_start_time
     step_end_datetime = datetime.now()
 
@@ -1036,6 +1077,10 @@ def _save_minimal_pipeline_summary(
     """Persist a reduced summary when full summary rendering fails."""
     try:
         minimal_summary: dict[str, Any] = {
+            "run_id": pipeline_summary.get("run_id", os.environ.get("GNN_RUN_ID")),
+            "run_hash": pipeline_summary.get("run_hash"),
+            "run_hash_schema": pipeline_summary.get("run_hash_schema"),
+            "identity_config": pipeline_summary.get("identity_config"),
             "start_time": pipeline_summary.get("start_time"),
             "end_time": datetime.now().isoformat(),
             "overall_status": "FAILED",
@@ -1045,8 +1090,11 @@ def _save_minimal_pipeline_summary(
             "performance_summary": pipeline_summary.get("performance_summary", {}),
             "steps": pipeline_summary.get("steps", []),
         }
-        with open(summary_path, "w") as f:
-            json.dump(minimal_summary, f, indent=4, default=str)
+        from pipeline._io import atomic_write_text
+
+        atomic_write_text(
+            summary_path, json.dumps(minimal_summary, indent=4, default=str)
+        )
         logger.info("Minimal summary saved as recovery")
     except Exception as fallback_error:
         logger.error(f"Failed to save even minimal summary: {fallback_error}")
@@ -1059,16 +1107,37 @@ def _write_pipeline_summary_outputs(
     logger: logging.Logger,
 ) -> None:
     """Validate, save, index, and render all final pipeline summary artifacts."""
-    from pipeline.hasher import index_run
+    from pipeline.hasher import RUN_HASH_SCHEMA, index_run, verify_indexed_run
 
+    run_config = {
+        "args": args.to_dict(),
+        "pipeline": config_pipeline_settings,
+        "identity_config": pipeline_summary.get("identity_config"),
+        "run_hash_schema": pipeline_summary.get("run_hash_schema"),
+    }
     summary_path = _pipeline_summary_path(args.output_dir)
     summary_path.parent.mkdir(parents=True, exist_ok=True)
     logger.info(f"Saving pipeline summary to: {summary_path}")
 
     try:
+        if pipeline_summary.get("run_hash_schema") == RUN_HASH_SCHEMA:
+            problems = verify_indexed_run(
+                {
+                    "run_hash": pipeline_summary.get("run_hash"),
+                    "file_hashes": pipeline_summary.get("file_hashes"),
+                    "config": run_config,
+                }
+            )
+            if problems:
+                raise ValueError(
+                    "Run identity changed before publication: " + "; ".join(problems)
+                )
         validate_pipeline_summary(pipeline_summary, logger)
-        with open(summary_path, "w") as f:
-            json.dump(pipeline_summary, f, indent=4, default=str)
+        from pipeline._io import atomic_write_text
+
+        atomic_write_text(
+            summary_path, json.dumps(pipeline_summary, indent=4, default=str)
+        )
         logger.info("Pipeline summary saved successfully")
 
         run_hash_value = pipeline_summary.get("run_hash")
@@ -1076,10 +1145,7 @@ def _write_pipeline_summary_outputs(
             index_run(
                 run_hash=run_hash_value,
                 summary_path=summary_path,
-                config={
-                    "args": args.to_dict(),
-                    "pipeline": config_pipeline_settings,
-                },
+                config=run_config,
                 file_hashes=pipeline_summary.get("file_hashes"),
             )
 
@@ -1088,6 +1154,7 @@ def _write_pipeline_summary_outputs(
         _log_pipeline_summary_counts(pipeline_summary, logger)
     except Exception as e:
         logger.error(f"Failed to save pipeline summary: {e}")
+        pipeline_summary["overall_status"] = "FAILED"
         _save_minimal_pipeline_summary(summary_path, pipeline_summary, e, logger)
 
 
@@ -1138,8 +1205,9 @@ def _handle_pipeline_failure(
 
     summary_path = _pipeline_summary_path(args.output_dir)
     summary_path.parent.mkdir(parents=True, exist_ok=True)
-    with open(summary_path, "w") as f:
-        json.dump(pipeline_summary, f, indent=4, default=str)
+    from pipeline._io import atomic_write_text
+
+    atomic_write_text(summary_path, json.dumps(pipeline_summary, indent=4, default=str))
 
     log_step_error(logger, f"Pipeline failed: {str(error)}")
     return 1
@@ -1162,7 +1230,28 @@ def main(
     override_args: Optional[PipelineArguments] = None,
     override_config: Optional[Dict[str, Any]] = None,
 ) -> int:
-    """Main pipeline orchestration function."""
+    """Run once with an invocation ID, restoring the caller's environment on exit.
+
+    An incoming API ID is authoritative. Fresh calls receive distinct UUIDs;
+    the separately computed run_hash continues to identify stable input/config.
+    """
+    with _run_environment_lock:
+        incoming_run_id = os.environ.get("GNN_RUN_ID")
+        os.environ["GNN_RUN_ID"] = incoming_run_id or uuid.uuid4().hex
+        try:
+            return _run_pipeline(override_args, override_config)
+        finally:
+            if incoming_run_id is None:
+                os.environ.pop("GNN_RUN_ID", None)
+            else:
+                os.environ["GNN_RUN_ID"] = incoming_run_id
+
+
+def _run_pipeline(
+    override_args: Optional[PipelineArguments],
+    override_config: Optional[Dict[str, Any]],
+) -> int:
+    """Execute one invocation inside main's environment scope."""
     try:
         (
             args,
@@ -1278,6 +1367,10 @@ def main(
                                 script_name,
                                 args,
                                 logger,
+                                run_id=pipeline_summary.get("run_id"),
+                                pipeline_config=pipeline_summary.get(
+                                    "identity_config", {}
+                                ).get("input_config"),
                             )
                             futures.append(
                                 (
@@ -1333,7 +1426,12 @@ def main(
 
 
 def execute_pipeline_step(
-    script_name: str, args: PipelineArguments, logger: Any
+    script_name: str,
+    args: PipelineArguments,
+    logger: Any,
+    *,
+    run_id: Optional[str] = None,
+    pipeline_config: Optional[Dict[str, Any]] = None,
 ) -> Dict[str, Any]:
     """Execute a single pipeline step with comprehensive monitoring."""
     # Initialize performance tracking
@@ -1358,7 +1456,11 @@ def execute_pipeline_step(
         config_skip_steps: list[Any] = []
         testing_matrix: dict[Any, Any] = {}
         try:
-            _full_cfg = _read_input_config(Path("input/config.yaml"))
+            _full_cfg = (
+                pipeline_config
+                if pipeline_config is not None
+                else _read_input_config(Path("input/config.yaml"))
+            )
             config_skip_steps = _full_cfg.get("pipeline", {}).get("skip_steps", [])
             testing_matrix = _full_cfg.get("testing_matrix", {})
         except Exception as e:
@@ -1428,6 +1530,8 @@ def execute_pipeline_step(
 
         # Prepare environment
         _env = os.environ.copy()
+        if run_id is not None:
+            _env["GNN_RUN_ID"] = run_id
         _env.setdefault("PYTHONUNBUFFERED", "1")
         comprehensive_requested = any("--comprehensive" in str(arg) for arg in sys.argv)
         step_timeout_seconds = get_step_timeout(

@@ -18,6 +18,7 @@ Public API:
   - review_pipeline_plan(plan): list[Finding] (thin wrapper over security_review)
 """
 
+import posixpath
 from pathlib import Path
 from typing import List, Optional, Union
 
@@ -133,6 +134,15 @@ def plan_for_pipeline(
     Returns:
         A fully populated, hardened ContainerPlan.
     """
+    if not output_dir or ":" in output_dir:
+        raise ValueError(
+            "output_dir must be a nonempty POSIX path without mount separators"
+        )
+    output_mount = posixpath.normpath(posixpath.join("/app", output_dir))
+    if output_mount in ("/", "/app"):
+        raise ValueError(
+            "output_dir must not replace the container root or application directory"
+        )
     skip_steps = read_skip_steps(config_path)
     command = build_pipeline_command(target_dir, output_dir, skip_steps)
 
@@ -144,7 +154,7 @@ def plan_for_pipeline(
         # provided by a named volume, NOT a host-path bind mount, so the mount
         # never matches a sensitive host path.
         "read_only_rootfs": True,
-        "mounts": [f"gnn-output:/app/{output_dir}"],
+        "mounts": [f"gnn-output:{output_mount}"],
         "resources": ResourceLimits(cpu="2.0", memory="2Gi"),
         # No host namespaces, no added caps: leave network/pid/ipc isolated and
         # cap_add empty (cap_drop=["ALL"] comes from the hardened default).

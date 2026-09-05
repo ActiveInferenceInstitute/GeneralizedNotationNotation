@@ -78,3 +78,19 @@ api/
 
 - [AGENTS.md](AGENTS.md) — Agent documentation
 - [SPEC.md](SPEC.md) — Module specification
+
+
+### Reliability contract
+
+Both API surfaces use the same subprocess exit policy: rc0 completes, rc1 fails,
+and rc2 completes with warnings unless `strict=true`, which makes it fail.
+`RunRequest` and `ProcessRequest` both accept `strict`. Step selections must be
+actual integers; booleans, numeric strings, floats, duplicates, and out-of-range
+values are rejected. Summary ingestion tolerates malformed roots and ignores
+summaries older than the current subprocess invocation or carrying another
+`run_id`. Each API subprocess receives its unique `GNN_RUN_ID`; the orchestrator
+must preserve that ID in its canonical summary.
+
+Deleting a queued or running run record returns HTTP 409 in the canonical API
+envelope. Completed/failed records remain removable. Run deduplication uses
+normalized input/output paths, sorted effective step selections, and strict policy.

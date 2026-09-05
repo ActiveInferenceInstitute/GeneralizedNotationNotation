@@ -12,7 +12,7 @@
 
 **Version**: 3.2.0
 
-**Last Updated**: 2026-09-02
+**Last Updated**: 2026-09-04
 
 ---
 
@@ -54,16 +54,16 @@ success = process_research(
 ```
 
 
-#### `generate_rule_based_hypotheses(content: str, model_name: str, output_dir: Path, logger: logging.Logger) -> Tuple[List[Dict], str]`
-**Description**: Core rule-based hypothesis generation engine. Analyzes GNN model content, detects complexity patterns, structural diagnostics, and generates evidence-backed hypotheses.
+#### `generate_rule_based_hypotheses(content: str, model_family: str, dims: Mapping[str, list[int]], connections: Mapping[str, int]) -> list[dict[str, Any]]`
+**Description**: Core rule-based hypothesis generation engine. Pure function from GNN content plus precomputed structural evidence to a list of evidence-backed hypothesis dicts (`type`, `description`, `rationale`, `priority`).
 
 **Parameters**:
 - `content` (str): Raw GNN file content
-- `model_name` (str): Name of the model being analyzed
-- `output_dir` (Path): Output directory for reports
-- `logger` (logging.Logger): Logger instance
+- `model_family` (str): Model family from `detect_model_family()`
+- `dims` (Mapping[str, list[int]]): State-space dimensions from `extract_state_space_dims()`
+- `connections` (Mapping[str, int]): Connection counts from `count_connections()`
 
-**Returns**: `Tuple[List[Dict], str]` - (hypotheses list, markdown report)
+**Returns**: `list[dict[str, Any]]` - hypothesis dicts
 
 #### `detect_model_family(content: str) -> str`
 **Description**: Detect the model family (e.g., POMDP, MDP, continuous, mixed) from GNN content.
@@ -73,6 +73,18 @@ success = process_research(
 
 #### `count_connections(content: str) -> Dict[str, int]`
 **Description**: Count connections by type (directed, undirected) in GNN content.
+
+#### `analyze_gnn(content: str) -> ModelAnalysis`
+**Description**: One-call pure static analysis; returns a frozen `ModelAnalysis` dataclass bundling `model_family`, `dimensions`, and `connections`.
+
+#### `summarize_hypotheses(hypotheses: Iterable[Mapping[str, Any]]) -> dict[str, Any]`
+**Description**: Pure triage helper counting hypotheses by `priority` and `type`, plus `total`. Deterministic output.
+
+#### `render_research_report(results: Mapping[str, Any]) -> str` / `write_research_outputs(results_dir: Path, results: dict[str, Any]) -> None`
+**Description**: `render_research_report` is the pure markdown renderer; `write_research_outputs` writes the three JSON summaries plus exactly that rendering to `research_report.md` (atomic via temp file + `os.replace`).
+
+#### `discover_gnn_files(target_dir: Path, recursive: bool) -> list[Path]` / `merge_llm_hypotheses(llm, rules) -> list[dict]`
+**Description**: Sorted `*.md` discovery (empty list for missing dirs); LLM-first hypothesis merge deduped by `type`. `MODEL_FAMILIES` enumerates every `detect_model_family` return value.
 
 ---
 
@@ -181,6 +193,7 @@ GNN Files → Static Analysis (family, dims, connections) → Rule-Based Hypothe
 - `src/tests/research/test_research_overall.py` - Module-level tests
 - `src/tests/research/test_research_functional.py` - Functional tests
 - `src/tests/research/test_research_mcp_tools.py` - MCP tool tests
+- `src/tests/research/test_research_analysis.py` - Pure analysis API tests (`analyze_gnn`, `summarize_hypotheses`, report-render purity/parity, discovery)
 
 ### Test Coverage
 Measure on demand:
@@ -233,12 +246,13 @@ uv run --extra dev python -m pytest src/tests/research/ \
 
 ## Version History
 
-### Current Version: 1.6.0 (module `__init__.py`), pipeline release 3.2.0
+### Current Version: 1.7.0 (module `__init__.py`), pipeline release 3.2.0
 
 **Features**:
 - Rule-based hypothesis generation
 - Model-family detection and structural diagnostics
 - Automated evidence-backed reporting
+- Pure composable analysis API (`analyze_gnn`, `summarize_hypotheses`, `render_research_report`)
 
 **Known Issues**:
 - None currently
@@ -261,7 +275,7 @@ uv run --extra dev python -m pytest src/tests/research/ \
 
 ---
 
-**Last Updated**: 2026-09-02
+**Last Updated**: 2026-09-04
 **Maintainer**: GNN Pipeline Team
 **Status**: Production Ready
 **Version**: 3.2.0

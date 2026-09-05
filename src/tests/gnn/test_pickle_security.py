@@ -82,3 +82,37 @@ class TestRestrictedUnpickle:
         """Reconstructing a non-allowlisted class raises UnpicklingError."""
         with pytest.raises(pickle.UnpicklingError):
             safe_pickle_loads(pickle.dumps(_NotAllowedOnAllowlist()))
+
+
+@pytest.mark.parametrize(
+    "code,opcode,width", [(233, b"\x82", 1), (60003, b"\x83", 2), (1000003, b"\x84", 4)]
+)
+@pytest.mark.parametrize("stream", [False, True])
+def test_cached_extension_cannot_bypass_restricted_loader(
+    monkeypatch: pytest.MonkeyPatch, code: int, opcode: bytes, width: int, stream: bool
+) -> None:
+    import copyreg
+    import io
+
+    from gnn.parsers.binary_parser import safe_pickle_load
+
+    calls: list[str] = []
+
+    def reconstruct() -> dict[str, str]:
+        calls.append("executed")
+        return {"model_name": "unapproved"}
+
+    monkeypatch.setitem(vars(copyreg)["_extension_cache"], code, reconstruct)
+    payload = b"\x80\x04" + opcode + code.to_bytes(width, "little") + b")R."
+    with pytest.raises(pickle.UnpicklingError, match="extension"):
+        if stream:
+            safe_pickle_load(io.BytesIO(payload))
+        else:
+            safe_pickle_loads(payload)
+    assert not calls
+
+
+@pytest.mark.parametrize("suffix", [b"trailing", pickle.dumps({"second": "record"})])
+def test_restricted_loader_rejects_bytes_after_first_record(suffix: bytes) -> None:
+    with pytest.raises(pickle.UnpicklingError, match="Trailing"):
+        safe_pickle_loads(pickle.dumps(_enhanced_dict()) + suffix)

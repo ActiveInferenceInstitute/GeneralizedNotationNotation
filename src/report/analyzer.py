@@ -12,6 +12,123 @@ import logging
 from pathlib import Path
 from typing import Any, Dict, List
 
+logger = logging.getLogger(__name__)
+
+
+STEP_OUTPUT_DIRS: tuple[str, ...] = (
+    "0_template_output",
+    "1_setup_output",
+    "2_tests_output",
+    "3_gnn_output",
+    "4_model_registry_output",
+    "5_type_checker_output",
+    "6_validation_output",
+    "7_export_output",
+    "8_visualization_output",
+    "9_advanced_viz_output",
+    "10_ontology_output",
+    "11_render_output",
+    "12_execute_output",
+    "13_llm_output",
+    "14_ml_integration_output",
+    "15_audio_output",
+    "16_analysis_output",
+    "17_integration_output",
+    "18_security_output",
+    "19_research_output",
+    "20_website_output",
+    "21_mcp_output",
+    "22_gui_output",
+    "23_report_output",
+    "24_intelligent_analysis_output",
+)
+"""Canonical per-step output directories, in pipeline order.
+
+Single source of truth for the step catalog; consumers should import this
+tuple instead of redefining their own step lists.
+"""
+
+STEP_DEPENDENCIES: dict[str, tuple[str, ...]] = {
+    "1_setup_output": ("0_template_output",),
+    "2_tests_output": ("1_setup_output",),
+    "3_gnn_output": ("1_setup_output",),
+    "4_model_registry_output": ("3_gnn_output",),
+    "5_type_checker_output": ("3_gnn_output",),
+    "6_validation_output": ("3_gnn_output",),
+    "7_export_output": ("5_type_checker_output",),
+    "8_visualization_output": ("7_export_output",),
+    "9_advanced_viz_output": ("8_visualization_output",),
+    "10_ontology_output": ("7_export_output",),
+    "11_render_output": ("7_export_output",),
+    "12_execute_output": ("11_render_output",),
+    "13_llm_output": ("3_gnn_output",),
+    "14_ml_integration_output": ("3_gnn_output",),
+    "15_audio_output": ("3_gnn_output",),
+    "16_analysis_output": ("12_execute_output",),
+    "17_integration_output": ("3_gnn_output",),
+    "18_security_output": ("3_gnn_output",),
+    "19_research_output": ("3_gnn_output",),
+    "20_website_output": ("8_visualization_output", "10_ontology_output"),
+    "21_mcp_output": ("3_gnn_output",),
+    "22_gui_output": ("3_gnn_output",),
+    "23_report_output": (
+        "8_visualization_output",
+        "10_ontology_output",
+        "15_audio_output",
+    ),
+    "24_intelligent_analysis_output": ("23_report_output",),
+}
+"""Prerequisite step output directories per step (see analyze_step_dependencies)."""
+
+KEY_FILE_PATTERNS: dict[str, tuple[str, ...]] = {
+    "0_template_output": ("template_processing_summary.json",),
+    "1_setup_output": ("setup_success.json", "directory_structure.json"),
+    "2_tests_output": ("pytest_report.xml", "test_summary.json", "*.txt"),
+    "3_gnn_output": ("gnn_processing_results.json", "*_parsed.json"),
+    "4_model_registry_output": ("model_registry.json",),
+    "5_type_checker_output": ("type_check_report.md", "type_check_summary.json"),
+    "6_validation_output": ("validation_results.json",),
+    "7_export_output": ("*.json", "*.xml", "*.graphml", "*.gexf"),
+    "8_visualization_output": ("*.png", "*.svg", "*.html"),
+    "9_advanced_viz_output": (
+        "*.png",
+        "*.svg",
+        "*.html",
+        "advanced_viz_summary.json",
+    ),
+    "10_ontology_output": ("ontology_results.json",),
+    "11_render_output": ("*.py", "*.jl", "render_processing_summary.json"),
+    "12_execute_output": (
+        "summaries/execution_summary.json",
+        "summaries/execution_report.md",
+        "*.png",
+    ),
+    "13_llm_output": ("llm_results.json", "llm_summary.md"),
+    "14_ml_integration_output": ("ml_integration_results.json",),
+    "15_audio_output": ("*.wav", "*.mp3", "audio_processing_summary.json"),
+    "16_analysis_output": ("analysis_results.json", "analysis_summary.md"),
+    "17_integration_output": ("integration_processing_summary.json",),
+    "18_security_output": ("security_results.json", "security_summary.md"),
+    "19_research_output": (
+        "research_results.json",
+        "research_processing_summary.json",
+        "research_report.md",
+    ),
+    "20_website_output": ("*.html", "*.css", "*.js"),
+    "21_mcp_output": ("mcp_processing_summary.json", "registered_tools.json"),
+    "22_gui_output": ("gui_processing_summary.json", "navigation.html"),
+    "23_report_output": (
+        "comprehensive_analysis_report.html",
+        "report_summary.json",
+    ),
+    "24_intelligent_analysis_output": (
+        "intelligent_analysis_report.md",
+        "analysis_data.json",
+        "intelligent_analysis_summary.json",
+    ),
+}
+"""Key artifact name/glob patterns per step output directory (see is_key_file)."""
+
 
 def _summary_timestamp(summary: Dict[str, Any]) -> str:
     """Use a timestamp from the evidence bundle, never the wall clock."""
@@ -101,33 +218,7 @@ def collect_pipeline_data(
             logger.warning(f"Failed to read pipeline summary: {e}")
 
     # Collect data from each step directory
-    step_directories: list[Any] = [
-        "0_template_output",
-        "1_setup_output",
-        "2_tests_output",
-        "3_gnn_output",
-        "4_model_registry_output",
-        "5_type_checker_output",
-        "6_validation_output",
-        "7_export_output",
-        "8_visualization_output",
-        "9_advanced_viz_output",
-        "10_ontology_output",
-        "11_render_output",
-        "12_execute_output",
-        "13_llm_output",
-        "14_ml_integration_output",
-        "15_audio_output",
-        "16_analysis_output",
-        "17_integration_output",
-        "18_security_output",
-        "19_research_output",
-        "20_website_output",
-        "21_mcp_output",
-        "22_gui_output",
-        "23_report_output",
-        "24_intelligent_analysis_output",
-    ]
+    step_directories = list(STEP_OUTPUT_DIRS)
 
     for step_dir in step_directories:
         step_path = pipeline_output_dir / step_dir
@@ -471,72 +562,14 @@ def analyze_step_dependencies(
         Dictionary with dependency analysis
     """
     dependencies: dict[str, Any] = {
-        "step_order": [
-            "0_template_output",
-            "1_setup_output",
-            "2_tests_output",
-            "3_gnn_output",
-            "4_model_registry_output",
-            "5_type_checker_output",
-            "6_validation_output",
-            "7_export_output",
-            "8_visualization_output",
-            "9_advanced_viz_output",
-            "10_ontology_output",
-            "11_render_output",
-            "12_execute_output",
-            "13_llm_output",
-            "14_ml_integration_output",
-            "15_audio_output",
-            "16_analysis_output",
-            "17_integration_output",
-            "18_security_output",
-            "19_research_output",
-            "20_website_output",
-            "21_mcp_output",
-            "22_gui_output",
-            "23_report_output",
-            "24_intelligent_analysis_output",
-        ],
+        "step_order": list(STEP_OUTPUT_DIRS),
         "dependency_chain": {},
         "missing_prerequisites": [],
     }
 
     try:
-        # Define step dependencies
-        step_deps: dict[str, Any] = {
-            "1_setup_output": ["0_template_output"],
-            "2_tests_output": ["1_setup_output"],
-            "3_gnn_output": ["1_setup_output"],
-            "4_model_registry_output": ["3_gnn_output"],
-            "5_type_checker_output": ["3_gnn_output"],
-            "6_validation_output": ["3_gnn_output"],
-            "7_export_output": ["5_type_checker_output"],
-            "8_visualization_output": ["7_export_output"],
-            "9_advanced_viz_output": ["8_visualization_output"],
-            "10_ontology_output": ["7_export_output"],
-            "11_render_output": ["7_export_output"],
-            "12_execute_output": ["11_render_output"],
-            "13_llm_output": ["3_gnn_output"],
-            "14_ml_integration_output": ["3_gnn_output"],
-            "15_audio_output": ["3_gnn_output"],
-            "16_analysis_output": ["12_execute_output"],
-            "17_integration_output": ["3_gnn_output"],
-            "18_security_output": ["3_gnn_output"],
-            "19_research_output": ["3_gnn_output"],
-            "20_website_output": ["8_visualization_output", "10_ontology_output"],
-            "21_mcp_output": ["3_gnn_output"],
-            "22_gui_output": ["3_gnn_output"],
-            "23_report_output": [
-                "8_visualization_output",
-                "10_ontology_output",
-                "15_audio_output",
-            ],
-            "24_intelligent_analysis_output": ["23_report_output"],
-        }
-
         # Check for missing prerequisites
-        for step_name, prereqs in step_deps.items():
+        for step_name, prereqs in STEP_DEPENDENCIES.items():
             if step_name in steps and steps[step_name].get("exists", False):
                 missing: list[Any] = []
                 for prereq in prereqs:
@@ -549,7 +582,7 @@ def analyze_step_dependencies(
                     )
 
                 dependencies["dependency_chain"][step_name] = {
-                    "prerequisites": prereqs,
+                    "prerequisites": list(prereqs),
                     "missing_prerequisites": missing,
                     "status": "complete" if not missing else "incomplete",
                 }
@@ -619,59 +652,11 @@ def is_key_file(file_path: Path, step_name: str) -> bool:
     Returns:
         True if the file is a key file for the step
     """
-    key_patterns: dict[str, Any] = {
-        "0_template_output": ["template_processing_summary.json"],
-        "1_setup_output": ["setup_success.json", "directory_structure.json"],
-        "2_tests_output": ["pytest_report.xml", "test_summary.json", "*.txt"],
-        "3_gnn_output": ["gnn_processing_results.json", "*_parsed.json"],
-        "4_model_registry_output": ["model_registry.json"],
-        "5_type_checker_output": ["type_check_report.md", "type_check_summary.json"],
-        "6_validation_output": ["validation_results.json"],
-        "7_export_output": ["*.json", "*.xml", "*.graphml", "*.gexf"],
-        "8_visualization_output": ["*.png", "*.svg", "*.html"],
-        "9_advanced_viz_output": [
-            "*.png",
-            "*.svg",
-            "*.html",
-            "advanced_viz_summary.json",
-        ],
-        "10_ontology_output": ["ontology_results.json"],
-        "11_render_output": ["*.py", "*.jl", "render_processing_summary.json"],
-        "12_execute_output": [
-            "summaries/execution_summary.json",
-            "summaries/execution_report.md",
-            "*.png",
-        ],
-        "13_llm_output": ["llm_results.json", "llm_summary.md"],
-        "14_ml_integration_output": ["ml_integration_results.json"],
-        "15_audio_output": ["*.wav", "*.mp3", "audio_processing_summary.json"],
-        "16_analysis_output": ["analysis_results.json", "analysis_summary.md"],
-        "17_integration_output": ["integration_processing_summary.json"],
-        "18_security_output": ["security_results.json", "security_summary.md"],
-        "19_research_output": [
-            "research_results.json",
-            "research_processing_summary.json",
-            "research_report.md",
-        ],
-        "20_website_output": ["*.html", "*.css", "*.js"],
-        "21_mcp_output": ["mcp_processing_summary.json", "registered_tools.json"],
-        "22_gui_output": ["gui_processing_summary.json", "navigation.html"],
-        "23_report_output": [
-            "comprehensive_analysis_report.html",
-            "report_summary.json",
-        ],
-        "24_intelligent_analysis_output": [
-            "intelligent_analysis_report.md",
-            "analysis_data.json",
-            "intelligent_analysis_summary.json",
-        ],
-    }
-
-    if step_name not in key_patterns:
+    if step_name not in KEY_FILE_PATTERNS:
         return False
 
     file_name = file_path.name
-    for pattern in key_patterns[step_name]:
+    for pattern in KEY_FILE_PATTERNS[step_name]:
         if pattern.startswith("*."):
             if file_name.endswith(pattern[1:]):
                 return True
@@ -777,6 +762,70 @@ def collect_visualizations(
     return visualizations
 
 
+def health_score_components(pipeline_data: Dict[str, Any]) -> Dict[str, float]:
+    """Decompose the pipeline health score into its weighted components.
+
+    The receipt-backed basis (``summary.status_source ==
+    "pipeline_execution_summary"``) weighs four 0-100 subscores:
+    ``step_completion`` (0.4), ``file_processing`` (0.3), ``error_margin``
+    (0.2), and ``performance`` (0.1). The artifact-coverage basis degrades to
+    the raw success rate and reports the neutral subscores.
+
+    Args:
+        pipeline_data: Pipeline analysis data
+
+    Returns:
+        Mapping of component name to 0-100 subscore, plus the resulting
+        ``weighted_score``. See :func:`get_pipeline_health_score` for the
+        scalar form.
+    """
+    summary = pipeline_data.get("summary", {})
+    success_rate = float(summary.get("success_rate", 0))
+    if summary.get("status_source") != "pipeline_execution_summary":
+        return {
+            "step_completion": success_rate,
+            "file_processing": success_rate,
+            "error_margin": 100.0,
+            "performance": 50.0,
+            "weighted_score": round(success_rate, 1),
+        }
+
+    # Error margin (20% weight): penalize 5 points per error, 10 per critical.
+    error_analysis = pipeline_data.get("error_analysis", {})
+    total_errors = error_analysis.get("total_errors", 0)
+    critical_errors = len(error_analysis.get("critical_errors", []))
+    error_penalty = min(total_errors * 5 + critical_errors * 10, 100)
+    error_margin = 100.0 - error_penalty
+
+    # Performance (10% weight): full credit under 10 minutes, decaying after.
+    performance_metrics = pipeline_data.get("performance_metrics", {})
+    if "execution_time" in performance_metrics:
+        exec_time = performance_metrics["execution_time"]
+        if exec_time < 600:
+            performance = 100.0
+        else:
+            performance = max(0.0, 100.0 - (exec_time - 600) / 60)
+    else:
+        performance = 50.0  # Default subscore when no performance data exists
+
+    subscores = {
+        "step_completion": success_rate,
+        "file_processing": success_rate,
+        "error_margin": error_margin,
+        "performance": performance,
+    }
+    weights = {
+        "step_completion": 0.4,
+        "file_processing": 0.3,
+        "error_margin": 0.2,
+        "performance": 0.1,
+    }
+    subscores["weighted_score"] = round(
+        sum(subscores[name] * weight for name, weight in weights.items()), 1
+    )
+    return subscores
+
+
 def get_pipeline_health_score(pipeline_data: Dict[str, Any]) -> float:
     """
     Calculate a health score for the pipeline based on various metrics.
@@ -786,59 +835,12 @@ def get_pipeline_health_score(pipeline_data: Dict[str, Any]) -> float:
 
     Returns:
         Health score between 0 and 100
+
+    See Also:
+        :func:`health_score_components` for the per-component breakdown.
     """
     try:
-        summary = pipeline_data.get("summary", {})
-        if summary.get("status_source") != "pipeline_execution_summary":
-            return round(float(summary.get("success_rate", 0)), 1)
-
-        score = 0.0
-        total_weight = 0.0
-
-        # Step completion rate (40% weight)
-        steps = pipeline_data.get("steps", {})
-        if summary.get("status_source") == "pipeline_execution_summary":
-            step_completion_rate = float(summary.get("success_rate", 0))
-        else:
-            successful_steps = len(
-                [step for step in steps.values() if step.get("exists", False)]
-            )
-            total_steps = len(steps)
-            step_completion_rate = (
-                (successful_steps / total_steps) * 100 if total_steps > 0 else 0
-            )
-        score += step_completion_rate * 0.4
-        total_weight += 0.4
-
-        # File processing success (30% weight)
-        success_rate = summary.get("success_rate", 0)
-        score += success_rate * 0.3
-        total_weight += 0.3
-
-        # Error rate (20% weight)
-        error_analysis = pipeline_data.get("error_analysis", {})
-        total_errors = error_analysis.get("total_errors", 0)
-        critical_errors = len(error_analysis.get("critical_errors", []))
-
-        # Penalize for errors
-        error_penalty = min(total_errors * 5 + critical_errors * 10, 100)
-        score += (100 - error_penalty) * 0.2
-        total_weight += 0.2
-
-        # Performance (10% weight)
-        performance_metrics = pipeline_data.get("performance_metrics", {})
-        if "execution_time" in performance_metrics:
-            # Assume good performance if under 10 minutes
-            exec_time = performance_metrics["execution_time"]
-            if exec_time < 600:  # 10 minutes
-                score += 100 * 0.1
-            else:
-                score += max(0, 100 - (exec_time - 600) / 60) * 0.1
-        else:
-            score += 50 * 0.1  # Default score if no performance data
-        total_weight += 0.1
-
-        return round(score / total_weight, 1) if total_weight > 0 else 0.0
-
+        return float(health_score_components(pipeline_data)["weighted_score"])
     except Exception:
+        logger.warning("health score computation failed", exc_info=True)
         return 0.0

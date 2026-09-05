@@ -68,7 +68,8 @@ def resolve_step_numbers(
 
 
 def _coerce_steps(steps: Any, pipeline_data: dict | None = None) -> list[int]:
-    """Backward-compatible alias for :func:`resolve_step_numbers`."""
+    """Step-input coercion retained for existing callers; canonical
+    resolution lives in :func:`resolve_step_numbers`."""
     if steps is None and pipeline_data:
         steps = pipeline_data.get("steps") or pipeline_data.get("only_steps")
 

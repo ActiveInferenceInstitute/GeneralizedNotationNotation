@@ -528,13 +528,14 @@ class TestUVCacheAndPerformance:
         # Just verify the command works
 
     def test_uv_sync_fast(self) -> Any:
-        """Test that ``uv sync --frozen --extra dev`` is fast and non-pruning.
+        """Check required dev dependencies without pruning optional packages.
 
         Uses ``--check`` (non-mutating) so this default-suite test never
         rewrites the shared ``.venv`` while other tests read it. A pruning
         regression (e.g. dropping pytest/LSP/API/websocket deps) still fails
-        the gate: ``--check`` exits non-zero whenever the environment is out
-        of sync with the requested extras.
+        the gate. ``--inexact`` permits additional packages installed for
+        optional workflows; missing or incompatible required packages still
+        make ``--check`` exit non-zero.
 
         A concurrent mutating ``uv sync`` (the pipeline setup step or another
         xdist worker) can transiently report the environment as "outdated".
@@ -551,7 +552,7 @@ class TestUVCacheAndPerformance:
         err = ""
         for attempt in range(3):
             result = subprocess.run(  # nosec B607 B603
-                [UV_BIN, "sync", "--frozen", "--check", "--extra", "dev"],
+                [UV_BIN, "sync", "--frozen", "--check", "--inexact", "--extra", "dev"],
                 capture_output=True,
                 text=True,
                 cwd=str(PROJECT_ROOT),

@@ -52,7 +52,8 @@ from .visualizer import (
     generate_visualizations,
 )
 
-# Backwards-compatible alias for the pinned package-root statistics helper.
+# Alias retained for existing import sites; forwards to the pinned
+# package-root statistics helper.
 _generate_network_statistics = compute_connection_statistics
 
 __version__ = "1.6.0"

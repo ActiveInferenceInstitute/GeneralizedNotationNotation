@@ -41,7 +41,8 @@ def register_module_tools(module_name: (str) | None = None) -> Any:
         # Return the current tool list so callers can inspect what was registered
         try:
             registered = cast(list[Any], mcp_instance.list_available_tools())
-        except Exception:
+        except Exception as exc:
+            logger.warning("Tool listing failed during auto-discovery: %s", exc)
             registered = []
         logger.info(
             f"Auto-discovered registration complete: {len(registered)} tool(s) available"

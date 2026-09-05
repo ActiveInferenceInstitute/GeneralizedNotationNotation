@@ -221,7 +221,12 @@ progress is reported by the per-run `pipeline_execution_summary.json` instead.
 
 ### Environment Variables
 
-None dedicated to this module. Pipeline-level behavior is configured through
+`GNN_RUN_ID` identifies one top-level invocation. `src/main.py` preserves an
+incoming API value or creates a UUID, passes it explicitly to step subprocesses,
+and restores the caller environment in `finally`. Canonical summaries retain
+`run_id` on success and failure; `run_hash` remains the stable input/config hash.
+Programmatic top-level calls serialize their environment scopes; parallel step
+execution uses explicit child environments. Other pipeline behavior is configured through
 `input/config.yaml` (loaded by `src/main.py` via `utils/arg_parsing.py`) and
 CLI flags.
 

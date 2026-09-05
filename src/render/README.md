@@ -153,7 +153,7 @@ src/render/
 ├── continuous_script.py           # Continuous (LGSSM) script generation
 ├── naming.py                      # Shared output naming + atomic writes
 ├── spec_matrices.py               # Shared discrete matrix extraction/literals
-├── generators.py                  # Standalone generators (bnlearn, discopy, legacy pymdp)
+├── generators.py                  # Standalone generators (bnlearn, discopy, pre-package pymdp)
 ├── pymdp_template.py              # PyMDP template definitions
 ├── visualization_suite.py         # Data export + visualization suite
 ├── pymdp/                         # PyMDP code generation
@@ -211,7 +211,7 @@ Backend-specific renderers live under:
 - `src/render/activeinference_jl/`
 - `src/render/jax/`
 - `src/render/discopy/`
-- additional maintained backends: `src/render/pytorch/`, `src/render/numpyro/`, `src/render/stan/` (runnable HMM / LGSSM programs plus cmdstanpy drivers), and generator-backed `bnlearn`
+- additional maintained backends: `src/render/pytorch/`, `src/render/numpyro/`, `src/render/stan/` (runnable HMM / LGSSM programs plus cmdstanpy drivers), and generator-backed `bnlearn` (render-only; no Step 12 executor)
 
 ### Model kinds
 
@@ -667,3 +667,38 @@ This module is part of the GeneralizedNotationNotation project. See the main rep
 - **[AGENTS](AGENTS.md)**: Agentic Workflows
 - **[SPEC](SPEC.md)**: Architectural Specification
 - **[SKILL](SKILL.md)**: Capability API
+
+
+### Current render receipts
+
+`render_processing_summary.json` replaces the current input scope on each
+invocation and recomputes counts from its file records. Source and generated
+artifact identities contain resolved paths and SHA-256 content digests.
+`receipt_identity` records the run ID and configuration digest. Prior JSON
+receipts are archived under `history/render-<digest>.json` before atomic
+publication of the replacement.
+
+Pass the same `run_id` keyword or `GNN_RUN_ID` environment value to all folder
+invocations belonging to one run. Only same-run, same-configuration records
+whose source and artifact bytes still match can be carried forward. Standalone
+calls without an explicit run ID get a fresh ID. Retrying a scope replaces its
+records, including removed inputs; history never contributes to current counts.
+The framework registry exposes `supports_execution`; this is false for bnlearn,
+which remains a render-only optional backend even if its package is installed.
+
+
+`render_gnn_spec` accepts structured parser mappings and
+`GNNInternalRepresentation` objects as well as canonical POMDP mappings.
+Singleton-row or singleton-column `C`, `D`, and `E` vectors are flattened before
+canonical dimension inference; this preserves the two-state/two-policy shape
+of the accepted FepLean symmetric Boolean bridge fixture.
+
+### Public continuous-model dispatch
+
+`render_gnn_spec` routes continuous linear-Gaussian models to the JAX,
+NumPyro, PyTorch, RxInfer, and Stan continuous renderers before categorical
+A/B/C/D validation. Unsupported continuous targets return a failed result.
+Stan returns both the program and Python driver; RxInfer returns the script
+and any execution metadata. The public regression suite exercises all five
+routes and a three-step JAX prediction/update with an independent scalar
+posterior recurrence. This numerical test is separate from formal evidence.

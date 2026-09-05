@@ -289,6 +289,16 @@ def run_simulation():
         "actions": actions_history,
         "observations": observations_history,
         "efe_history": efe_history,
+        "expected_free_energy_convention": "pytorch renderer efe_history:"
+            " EFE = ambiguity + risk where ambiguity = -(sum_s' q(s') *"
+            " sum_o A[o,s'] log A[o,s']) (expected entropy of"
+            " observations) and risk = sum_o q(o) (log q(o) - log"
+            " softmax(C)[o]) (KL of predicted observations against"
+            " softmax-normalised preferences). Closest to the Lean"
+            " expectedFreeEnergy_eq_risk_add_ambiguity shape, but the"
+            " preference reference is softmax(C), not the raw C vector,"
+            " so values are not directly comparable without convention"
+            " mapping (bridge finding O1).",
         "validation": validation,
         "execution_time_seconds": round(elapsed, 4),
         "torch_version": torch.__version__

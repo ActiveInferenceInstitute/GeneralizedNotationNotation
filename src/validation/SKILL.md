@@ -25,11 +25,14 @@ python src/main.py --only-steps 6 --verbose
 from validation import (
     SemanticValidator,
     process_semantic_validation,
+    validate_content,
     PerformanceProfiler,
     profile_performance,
     ConsistencyChecker,
     check_consistency,
     process_validation,
+    validate_directory,
+    StageServices,
 )
 
 # Run full validation (used by pipeline)
@@ -50,10 +53,11 @@ result = profile_performance(parsed_model)
 
 ## Key Exports
 
-- `SemanticValidator` / `process_semantic_validation` — Active Inference constraint validation
+- `SemanticValidator` / `process_semantic_validation` / `validate_content` — Active Inference constraint validation
 - `PerformanceProfiler` / `profile_performance` — model performance analysis
 - `ConsistencyChecker` / `check_consistency` — cross-model coherence checks
 - `process_validation` — main pipeline processing function
+- `validate_directory` / `StageServices` — composable directory workflow with injectable stage callables
 
 ## Output
 

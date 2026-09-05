@@ -18,6 +18,7 @@ from typing import Any, Dict, Optional
 from gnn.processor import discover_gnn_files
 from gui.websocket_bridge import build_initial_messages
 
+from ..backend import write_json_atomically
 from .mermaid_converter import convert_gnn_file_to_mermaid
 from .mermaid_parser import convert_mermaid_file_to_gnn
 
@@ -230,10 +231,9 @@ def process_oxdraw(
         for message in build_initial_messages(successful_payloads)
     ]
 
-    # Save processing results
+    # Save processing results (atomic to avoid torn artifacts on crash)
     results_file = output_dir / "oxdraw_processing_results.json"
-    with open(results_file, "w") as f:
-        json.dump(results, f, indent=2)
+    write_json_atomically(results_file, results)
 
     logger.info(f"📊 Processing results saved to: {results_file}")
 

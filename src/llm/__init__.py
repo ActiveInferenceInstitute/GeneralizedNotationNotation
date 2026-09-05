@@ -23,8 +23,7 @@ FEATURES: dict[str, Any] = {
 }
 
 import logging
-import os
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Dict, Union
 
 logger = logging.getLogger(__name__)
 
@@ -137,24 +136,12 @@ def get_module_info() -> Dict[str, Any]:
 
 def analyze_gnn_model(model_content: Union[str, Dict[str, Any]]) -> Dict[str, Any]:
     """Compatibility helper exposing synchronous analysis expected by tests."""
-    # Prefer analyzer class if available
-    try:
-        analyzer = LLMAnalyzer()
-        return analyzer.analyze_content(
-            model_content
-            if isinstance(model_content, str)
-            else model_content.get("content", "")
-        )
-    except Exception:
-        content = (
-            model_content
-            if isinstance(model_content, str)
-            else model_content.get("content", "")
-        )
-        return {
-            "variables": extract_variables(content),
-            "connections": extract_connections(content),
-        }
+    content = (
+        model_content
+        if isinstance(model_content, str)
+        else model_content.get("content", "")
+    )
+    return LLMAnalyzer().analyze_content(content)
 
 
 def generate_model_description(content: str) -> str:
@@ -163,23 +150,20 @@ def generate_model_description(content: str) -> str:
     return proc.generate_description(content)
 
 
-def get_available_providers() -> list:
-    """Return a list of available provider identifiers (best-effort)."""
-    providers: list[Any] = ["ollama"]
-    try:
-        # Importing lazily to avoid heavy deps
-        from .providers import openai_provider as _openai  # noqa: F401
+def get_available_providers() -> list[str]:
+    """Return provider identifiers usable in this environment.
 
-        providers.append("openai")
-    except ImportError:
-        logger.debug("openai provider not installed, skipping")
-    try:
-        from .providers import openrouter_provider as _openrouter  # noqa: F401
-
-        providers.append("openrouter")
-    except ImportError:
-        logger.debug("openrouter provider not installed, skipping")
-    return providers
+    Ollama counts as available unless ``OLLAMA_DISABLED`` is truthy; each
+    cloud provider requires its API key in the environment. Delegates to
+    :func:`llm_processor.load_api_keys_from_env` as the single source of
+    truth for provider configuration.
+    """
+    api_keys = load_api_keys_from_env()
+    return [
+        name
+        for name in ("ollama", "openai", "openrouter", "perplexity")
+        if name in api_keys
+    ]
 
 
 __all__: list[Any] = [

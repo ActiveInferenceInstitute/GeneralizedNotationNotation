@@ -2,8 +2,8 @@
 
 | Field | Value |
 | --- | --- |
-| Version | 0.1 (draft) |
-| Date | 2026-09-03 |
+| Version | 0.4 |
+| Date | 2026-09-04 |
 | Canonical copy | `../fep_lean/docs/design/gnn-bridge/bridge-contract.md` — edit there first |
 | Mirror copy | this file, `doc/other/fep_lean/bridge-contract.md` |
 | Change rule | substance changes bump the version and land in both checkouts in the same working session |
@@ -104,8 +104,7 @@ targeted. A document without provenance is not a bridge artifact.
 | S6 Renderer statements | fep_lean | semantics-preservation statements for render targets | statements first; proofs are later slices |
 
 Direction 2 detail lives in
-`fep_lean/docs/design/gnn-bridge/direction-2-gnn-to-lean.md` (cross-repo
-references are inline code paths, never markdown links).
+`fep_lean/docs/design/gnn-bridge/direction-2-gnn-to-lean.md` (cross-repository reference).
 
 ## 7. Evidence firewall
 
@@ -141,8 +140,86 @@ proved property.
 | --- | --- |
 | A field of the GNN document cannot be derived deterministically from the named Lean definition | stop; narrow the extraction contract; never hand-fit the document |
 | Syntax surface drift in `doc/gnn/gnn_syntax.md` | freeze the pinned version per slice; re-freeze explicitly before extending |
-| Numeric rounding of exact Lean values | rounding policy fixed once in this contract's first slice; the digest of the exact source is recorded in provenance |
+| Numeric rounding of exact Lean values — terminating decimals emit exactly; non-terminating exact Lean reals emit as float64 (shortest round-trip repr), with the exact formula recorded verbatim in provenance, and consumers treat the float as an approximation, never as the Lean value | rounding policy fixed once in this contract's first slice and extended by v0.2; the digest of the exact source is recorded in provenance |
 | A projected model exceeds a backend (e.g. continuous model on a categorical-only renderer) | report `unsupported`; never distort the model |
 | A desired ontology binding is absent from the GNN canonical vocabulary | either use existing terms or open an explicit vocabulary-extension request on the GNN side; never emit bindings that fail step 10 |
 | Contract edit without the mirror edit | revert until both land |
 | Pressure to claim execution "verifies" a theorem or a theorem "validates" execution | refuse; section 7 is non-negotiable |
+
+## 10. Source custody and evidence operations (v0.3)
+
+The W2 source pin records explicit commit references and relevant owner-content
+hashes for both repositories. Hashes describe the actual working tree; a commit
+reference does not claim that dirty owner bytes are committed. Owner additions,
+deletions, or changes invalidate the pin. Unrelated HEAD movement does not.
+The pin and emitted artifacts are excluded from their own owner digests.
+
+Pinning and emission are explicit operations. Default status, freshness checks,
+and numerical comparison do not write reports or documents. A digest refresh
+may change only designated fields in the unique Signature section; reordered,
+deleted, duplicated, or otherwise changed model content requires deliberate
+re-emission. Finite and continuous emission follow the same custody rules.
+
+Numerical receipts bind the comparison policy, actual result artifact, document,
+and owner snapshot. A result from an older run may be compared, but is not thereby
+execution evidence for the new sources. Such receipts explicitly keep
+`execution_source_verified: false` and `native_claim_ready: false`. A concrete
+renderer-payload proof has a separate artifact/native verification receipt and
+does not establish runtime behavior or general renderer correctness.
+
+The historical P3 comparison default is read-only; report writing requires
+`--output`. Supported source-bound operations use `fep-lean bridge` with an
+explicit `--gnn-root`. Legacy script locations remain compatibility entry points.
+
+## 11. Concrete artifact proofs and shared receipts (v0.4)
+
+The artifact slices have separate mathematical contracts. Acceptance requires a
+current native receipt for the exact slice; a generated probe or passing Python
+test alone does not establish native acceptance.
+
+| Slice | Checked artifact and mathematical scope | Excluded claims |
+| --- | --- | --- |
+| Q5 | A canonical PyMDP render and a separately authored asymmetric control; restricted literal tables instantiate fixed finite payload statements. | Python execution, general renderer correctness, or arbitrary model equivalence. |
+| Q6 | Two canonical Boolean Julia runners; their embedded JSON tables agree with independent symmetric and asymmetric Lean payloads. | Consumed runtime preferences, EFE equivalence, or ActiveInference.jl behavior: the runner transforms C and does not consume E in its action selector. |
+| Q7 | A canonical scalar-OU JAX render; decoded binary64 coefficients have bounded error against the selected exact-real OU formulas and one-step prediction. | Floating-point execution, accumulated trajectory error, a general SDE solution, or physical applicability. |
+
+The source locations are `fep_lean/specs/gnn-bridge-q5-artifact-proof/`,
+`fep_lean/specs/gnn-bridge-q6-activeinference-artifact/`, and
+`fep_lean/specs/gnn-bridge-q7-continuous-ou-proof/`. Each slice declares an
+immutable contract consumed by the shared
+`fep_lean/src/fep_lean/verification/gnn_artifact_receipt.py` engine.
+
+Schema-2 native receipts bind source snapshots before and after compilation,
+the full slice contract, exact generator/extractor/probe bytes, canonical
+render provenance, resolved toolchain binaries, recursive formal dependencies,
+compiled imports, native commands, and complete theorem axiom reports. Checks
+reject stale bytes, changed commands, warning diagnostics, and unapproved
+axioms. Default and `--check` operation are read-only; `--compile` explicitly
+creates fresh evidence. Schema-1 historical receipts require regeneration.
+
+The sealing order is final source pin, explicit finite/continuous emission,
+canonical render refresh, deterministic probe regeneration, native compilation,
+and read-only receipt validation. Renderer-input custody and generated-proof
+custody remain distinct. Checked local Python and toolchain binaries are
+trusted inputs; these checks provide content custody, not a Python sandbox or
+independent authentication of the host compiler.
+
+Runtime evidence remains separate. In particular, the retained one-timestep
+Q7 fixture observes its prior without applying a transition. A nonstationary
+multi-step JAX regression exercises transition behavior but does not become a
+native proof or establish a whole-trajectory error bound.
+
+## 12. Horizon acceptance boundary (v0.4)
+
+Horizon 2 terminal acceptance combines the exact mandatory native-test roster,
+unchanged native-source snapshots, the explicitly enabled Fin4 supplement,
+independent typed scalar/Fin4 numerical witnesses, retained predecessor
+contracts, and three distinct source-bound Lean, domain, and skeptical reviews.
+The validator under `fep_lean/specs/horizon-2-smooth-stochastic/readiness/`
+rejects absent, stale, malformed, or incomplete evidence.
+
+An accepted terminal record opens only read-only H3.G0 eligibility review.
+`fep_lean/specs/h3-reference-study/` validates the accepted carrier and required
+prospective study declarations. It does not select a dataset, invent license
+or sampling metadata, or authorize H3.0--H3.7 empirical execution. Numerical
+witnesses and bridge proofs do not replace these study requirements.

@@ -144,3 +144,9 @@ When extending the JAX executor:
 1. Change generated code in `src/render/jax/`; this module only runs what the renderer emits
 2. Keep `jax_runner.py` signatures in sync with this README and `AGENTS.md`
 3. Add tests under `src/tests/execute/` (see `test_kronecker_factorized.py`)
+
+`execute_jax_script(..., output_dir=path)` resolves the requested directory
+and supplies that same absolute path in both `JAX_OUTPUT_DIR` and
+`GNN_OUTPUT_DIR`. Current continuous and factorized scripts therefore place
+results beside their execution logs even when the script runs from a
+different working directory.

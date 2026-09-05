@@ -25,6 +25,9 @@ DEFAULT_SKIP_ALLOWLIST = {
     # only the execution half skips when the toolchain is absent.
     "src/tests/render/test_continuous_renderers.py",
     "src/tests/execute/test_execute_stan.py",
+    # sklearn is an optional ``ml-ai`` extra; the inference round-trip tests
+    # skip when scikit-learn is not installed (all uses are deferred imports).
+    "src/tests/ml_integration/test_ml_integration_inference.py",
 }
 
 

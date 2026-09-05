@@ -104,19 +104,23 @@ logger = setup_step_logging("3_gnn", verbose=True)
 - `--verbose`: Enable verbose logging
 - `--recursive`: Recursively process directories
 
-#### `build_step_command_args(step_name: str, args: argparse.Namespace) -> List[str]`
-**Description**: Build command-line arguments for a pipeline step
+#### `build_step_command_args(step_name: str, pipeline_args: PipelineArguments, python_executable: str, script_path: Path) -> List[str]`
+**Description**: Build validated command-line arguments for a pipeline step
 
 **Parameters**:
-- `step_name` (str): Name of the pipeline step
-- `args` (argparse.Namespace): Parsed arguments
+- `step_name` (str): Name of the pipeline step (e.g., "1_gnn")
+- `pipeline_args` (PipelineArguments): Main pipeline arguments
+- `python_executable` (str): Path to the Python executable
+- `script_path` (Path): Path to the step script
+
+**Raises**: `ValueError` if the step configuration is invalid
 
 **Returns**: `List[str]` - Command-line argument list
 
-#### `audit_step_contracts() -> Dict[str, Any]`
+#### `audit_step_contracts(python_executable: Optional[str] = None, script_dir: Optional[Path] = None) -> List[Dict[str, Any]]`
 **Description**: Audit registered step contracts for drift between `STEP_ARGUMENTS`, `StepConfiguration`, parser defaults, and command-builder propagation.
 
-**Returns**: `Dict[str, Any]` - Contract audit summary with per-step mismatches and aggregate status
+**Returns**: `List[Dict[str, Any]]` - Contract audit issues; each entry describes a per-step mismatch (empty list means no drift)
 
 **Contract**: `StepConfiguration` is the shared source for step defaults and critical-step metadata. Exit codes are canonical across numbered scripts and the main orchestrator: `0=success`, `1=error`, `2=success with warnings/skipped`.
 
@@ -204,7 +208,7 @@ historical entry point remains valid:
 - **Writable-directory probe**: `utils.io_utils.verify_directory_writable(directory, probe_name=".write_probe") -> None` is the single create-rename-cleanup probe. `utils.pipeline.validate_output_directory` and `utils.pipeline_validator.check_pipeline_readiness` call it; both keep their own error messaging.
 - **Canonical memory probe**: `utils.resource_manager.get_memory_usage` (alias of `get_current_memory_usage`); `utils.test_utils.get_memory_usage` and `utils.visualization_optimizer.get_memory_usage` delegate to it instead of carrying their own psutil copies.
 - **Step-argument fallback defaults**: `utils.arg_parsing.fallback_default_for(arg_name)` backed by the `_FALLBACK_DEFAULTS` mapping replaced two ~70-line if/elif ladders in `ArgumentParser.parse_step_arguments` and `ArgumentParser.create_default_namespace`. `create_default_namespace` now matches the registered contract for `advanced_stats` (`False`) and `simulation_params` (`"{}"`) where it previously fell through to `None`.
-- **Injectable project root**: `StepConfiguration.validate_step_args(step_name, args, project_root=None)` accepts an explicit project root for missing-input-path repair; when omitted, the legacy caller-frame heuristic applies (unchanged behavior for existing callers).
+- **Injectable project root**: `StepConfiguration.validate_step_args(step_name, args, project_root=None)` accepts an explicit project root for missing-input-path repair; when omitted, the caller-frame heuristic (long-standing default) applies (unchanged behavior for existing callers).
 - **`with_resource_limits`**: exceptions raised by the wrapped body always propagate; limit violations are only raised when the body completed normally (previously a `RuntimeError` raised from `finally` could mask a body failure).
 - **Environment redaction**: `utils.mcp.SENSITIVE_ENV_KEY_MARKERS`, `is_sensitive_env_key(key) -> bool`, and `redact_environment() -> dict[str, str]` centralize secret filtering used by `get_environment_info` (markers widened with `credential`, `passwd`, `auth`).
 - **Monitor alert bands**: `PipelineMonitor.health_thresholds["duration_variance"]` now defines `"critical": 3.0` (previously a `KeyError` on the >3x-baseline alert path); the degraded-band warning fires between 2x and 3x baseline.

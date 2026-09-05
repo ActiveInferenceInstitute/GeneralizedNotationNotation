@@ -1294,6 +1294,29 @@ def _parse_vector_string(vector_str: str) -> np.ndarray:
     return np.array(values)
 
 
+def _json_dumps(value: str) -> str:
+    """Return *value* as a JSON string literal (module-level import site)."""
+    import json
+
+    return json.dumps(value)
+
+
+EFE_CONVENTION_JAX = (
+    "jax renderer compute_expected_free_energy heuristic:"
+    " EFE = obs_entropy - pragmatic_value + 0.1 * kl_divergence, where"
+    " obs_entropy is the entropy of predicted observations,"
+    " pragmatic_value = sum_o q(o) C[o] (a LINEAR payoff sum, not a KL"
+    " against C), and kl_divergence = KL(next_belief || D) weighted by a"
+    " fixed 0.1 coefficient. This is NOT the risk+ambiguity EFE"
+    " decomposition (risk is the KL against C) and is not comparable to"
+    " the pymdp neg_efe or the Lean"
+    " expectedFreeEnergy_eq_risk_add_ambiguity without convention"
+    " mapping (bridge finding O1)."
+)
+EFE_CONVENTION_JAX_JSON = EFE_CONVENTION_JAX.replace("\n", " ")
+EFE_CONVENTION_JAX_JSON_LITERAL = _json_dumps(EFE_CONVENTION_JAX_JSON)
+
+
 def _generate_jax_model_code(
     gnn_spec: Dict[str, Any], options: Optional[Dict[str, Any]]
 ) -> str:
@@ -1692,6 +1715,7 @@ def save_simulation_results(trajectory: Dict[str, Any], params: Dict[str, jnp.nd
         }},
         "metrics": {{
             "expected_free_energy": trajectory['expected_free_energies'].tolist(),
+            "expected_free_energy_convention": {EFE_CONVENTION_JAX_JSON_LITERAL},
             "average_efe": float(jnp.mean(trajectory['expected_free_energies'])),
             "belief_confidence": [float(max(b)) for b in trajectory['beliefs']],
         }},

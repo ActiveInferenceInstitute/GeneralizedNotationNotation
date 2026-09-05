@@ -8,6 +8,14 @@ This module provides integration capabilities including:
 
 from typing import Any
 
+from .graph import (
+    SystemAnalysis,
+    SystemGraphStats,
+    analyze_system,
+    build_system_graph,
+    export_dependency_graph,
+    verify_references,
+)
 from .meta_analysis import SweepDataCollector, SweepRecord, run_meta_analysis
 from .processor import process_integration
 
@@ -15,7 +23,7 @@ _META_ANALYSIS_AVAILABLE = True
 
 
 # Module metadata
-__version__ = "1.6.0"
+__version__ = "1.7.0"
 __author__ = "Active Inference Institute"
 __description__ = "integration processing for GNN Processing Pipeline"
 
@@ -23,11 +31,18 @@ __description__ = "integration processing for GNN Processing Pipeline"
 FEATURES: dict[str, Any] = {
     "basic_processing": True,
     "meta_analysis": _META_ANALYSIS_AVAILABLE,
+    "system_graph_export": True,
 }
 
 
 __all__: list[Any] = [
     "process_integration",
+    "analyze_system",
+    "build_system_graph",
+    "verify_references",
+    "export_dependency_graph",
+    "SystemAnalysis",
+    "SystemGraphStats",
     "run_meta_analysis",
     "SweepDataCollector",
     "SweepRecord",

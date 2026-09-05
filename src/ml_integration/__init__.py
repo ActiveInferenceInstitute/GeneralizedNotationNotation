@@ -1,12 +1,35 @@
 """
 ML Integration module for GNN Processing Pipeline.
 
-This module provides machine learning model integration capabilities.
+This module provides machine learning model integration capabilities:
+structural feature extraction from GNN files, scikit-learn classifier
+training (Step 14), framework availability detection, and inference with
+the trained classifier artifacts.
 """
 
-from typing import Any, Dict
+from typing import Any
 
-__version__ = "1.6.0"
+from .frameworks import check_ml_frameworks
+from .inference import (
+    InferenceError,
+    load_classifier,
+    predict_batch,
+    predict_with_model,
+)
+from .processor import (
+    COMPLEXITY_LABELS,
+    COMPLEXITY_THRESHOLDS,
+    NUMERIC_FEATURE_NAMES,
+    SUMMARY_STATISTIC_KEYS,
+    complexity_label,
+    extract_gnn_features,
+    feature_vector,
+    process_ml_integration,
+    summarize_features,
+)
+
+__version__ = "1.7.0"
+
 FEATURES: dict[str, Any] = {
     "model_training": True,
     "model_inference": True,
@@ -14,75 +37,8 @@ FEATURES: dict[str, Any] = {
     "mcp_integration": True,
 }
 
-# Import processor functions - single source of truth
-from .processor import process_ml_integration
 
-
-def check_ml_frameworks() -> Dict[str, Any]:
-    """Check availability of ML frameworks."""
-    import logging
-
-    frameworks: dict[Any, Any] = {}
-
-    # Check PyTorch
-    try:
-        import torch
-
-        if not hasattr(torch, "__version__"):
-            logging.getLogger(__name__).warning(
-                f"Imported 'torch' module has no '__version__'. Path: {getattr(torch, '__file__', 'unknown')}"
-            )
-            frameworks["pytorch"] = {"available": False, "version": None}
-        else:
-            frameworks["pytorch"] = {
-                "available": True,
-                "version": torch.__version__,
-                "cuda_available": torch.cuda.is_available()
-                if hasattr(torch, "cuda")
-                else False,
-            }
-    except ImportError:
-        frameworks["pytorch"] = {"available": False, "version": None}
-    except Exception as e:
-        logging.getLogger(__name__).warning(f"Error checking PyTorch: {e}")
-        frameworks["pytorch"] = {"available": False, "version": None}
-
-    # Check TensorFlow
-    try:
-        import tensorflow as tf
-
-        frameworks["tensorflow"] = {"available": True, "version": tf.__version__}
-    except ImportError:
-        frameworks["tensorflow"] = {"available": False, "version": None}
-
-    # Check JAX
-    try:
-        import jax
-
-        frameworks["jax"] = {"available": True, "version": jax.__version__}
-    except ImportError:
-        frameworks["jax"] = {"available": False, "version": None}
-
-    # Check scikit-learn
-    try:
-        import sklearn
-
-        frameworks["sklearn"] = {"available": True, "version": sklearn.__version__}
-    except ImportError:
-        frameworks["sklearn"] = {"available": False, "version": None}
-
-    return frameworks
-
-
-__all__: list[Any] = [
-    "process_ml_integration",
-    "check_ml_frameworks",
-    "FEATURES",
-    "__version__",
-]
-
-
-def get_module_info() -> dict:
+def get_module_info() -> dict[str, Any]:
     """Return module metadata for composability and MCP discovery."""
     return {
         "name": "ml_integration",
@@ -90,3 +46,24 @@ def get_module_info() -> dict:
         "description": "Machine learning model training and evaluation",
         "features": FEATURES,
     }
+
+
+__all__: list[str] = [
+    "COMPLEXITY_LABELS",
+    "COMPLEXITY_THRESHOLDS",
+    "FEATURES",
+    "InferenceError",
+    "NUMERIC_FEATURE_NAMES",
+    "SUMMARY_STATISTIC_KEYS",
+    "__version__",
+    "check_ml_frameworks",
+    "complexity_label",
+    "extract_gnn_features",
+    "feature_vector",
+    "get_module_info",
+    "load_classifier",
+    "predict_batch",
+    "predict_with_model",
+    "process_ml_integration",
+    "summarize_features",
+]

@@ -10,10 +10,11 @@ from __future__ import annotations
 
 import json
 import logging
+import math
 import re
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 
 @dataclass
@@ -32,7 +33,7 @@ class SweepRecord:
     execution_time_std: Any = None
     execution_time_mean: Any = None
     execution_benchmark_repeats: int = 1
-    execution_time_samples: Optional[List[float]] = None
+    execution_time_samples: list[float] | None = None
     success: bool = False
     timed_out: bool = False
 
@@ -43,14 +44,14 @@ class SweepRecord:
     # Simulation metrics (from simulation_results.json)
     final_accuracy: Any = None
     mean_belief_entropy: Any = None
-    efe_trace: List[float] = field(default_factory=list)
-    vfe_trace: List[float] = field(default_factory=list)
+    efe_trace: list[float] = field(default_factory=list)
+    vfe_trace: list[float] = field(default_factory=list)
 
     # Raw model parameters
-    model_params: Dict[str, Any] = field(default_factory=dict)
+    model_params: dict[str, Any] = field(default_factory=dict)
 
     # Source paths
-    simulation_results_path: Optional[str] = None
+    simulation_results_path: str | None = None
 
     @property
     def sweep_label(self) -> str:
@@ -63,7 +64,7 @@ class SweepRecord:
         return ", ".join(parts) if parts else self.model_name
 
     @property
-    def time_per_step(self) -> Optional[float]:
+    def time_per_step(self) -> float | None:
         """Execution time per simulation timestep (ms)."""
         if self.execution_time > 0 and self.num_timesteps and self.num_timesteps > 0:
             return float((self.execution_time / self.num_timesteps) * 1000.0)
@@ -74,7 +75,7 @@ class SweepRecord:
 _SWEEP_PARAM_RE = re.compile(r"N(\d+).*?T(\d+)", re.IGNORECASE)
 
 
-def _parse_sweep_params(model_name: str) -> tuple[Optional[int], Optional[int]]:
+def _parse_sweep_params(model_name: str) -> tuple[int | None, int | None]:
     """Extract (num_states, num_timesteps) from a model name."""
     m = _SWEEP_PARAM_RE.search(model_name)
     if m:
@@ -88,15 +89,15 @@ class SweepDataCollector:
     def __init__(
         self,
         execute_output_dir: Path,
-        render_output_dir: Optional[Path] = None,
-        logger: Optional[logging.Logger] = None,
+        render_output_dir: Path | None = None,
+        logger: logging.Logger | None = None,
     ) -> None:
         """Initialize the instance."""
         self.execute_output_dir = Path(execute_output_dir)
         self.render_output_dir = Path(render_output_dir) if render_output_dir else None
         self.logger = logger or logging.getLogger(__name__)
 
-    def collect(self) -> List[SweepRecord]:
+    def collect(self) -> list[SweepRecord]:
         """Scan execution outputs and return sweep records.
 
         Strategy:
@@ -104,7 +105,7 @@ class SweepDataCollector:
         2. Walk model directories for simulation_results.json for metric data.
         3. Merge by (model_name, framework).
         """
-        records: Dict[tuple[str, str], SweepRecord] = {}
+        records: dict[tuple[str, str], SweepRecord] = {}
 
         # Phase 1: execution summary (aggregate timing data)
         summary_path = self.execute_output_dir / "summaries" / "execution_summary.json"
@@ -130,7 +131,7 @@ class SweepDataCollector:
         return result
 
     def _collect_from_summary(
-        self, summary_path: Path, records: Dict[tuple[str, str], SweepRecord]
+        self, summary_path: Path, records: dict[tuple[str, str], SweepRecord]
     ) -> None:
         """Extract runtime data from the execution summary."""
         try:
@@ -174,7 +175,7 @@ class SweepDataCollector:
             record.timed_out = "timed out" in detail.get("error", "").lower()
 
     def _collect_from_execution_logs(
-        self, records: Dict[tuple[str, str], SweepRecord]
+        self, records: dict[tuple[str, str], SweepRecord]
     ) -> None:
         """Mine per-script execution_logs/*_results.json for runtime data.
 
@@ -227,7 +228,7 @@ class SweepDataCollector:
                     record.execution_time_samples = [float(x) for x in samples]
 
     def _collect_render_metrics(
-        self, records: Dict[tuple[str, str], SweepRecord]
+        self, records: dict[tuple[str, str], SweepRecord]
     ) -> None:
         """Harvest lines of code and other render-time metrics."""
         if self.render_output_dir is None:
@@ -270,7 +271,7 @@ class SweepDataCollector:
                             break
 
     def _collect_simulation_results(
-        self, records: Dict[tuple[str, str], SweepRecord]
+        self, records: dict[tuple[str, str], SweepRecord]
     ) -> None:
         """Walk the output tree for *simulation_results.json files.
 
@@ -345,8 +346,6 @@ class SweepDataCollector:
             # Belief entropy (mean of last 10% of steps)
             beliefs = data.get("beliefs", [])
             if beliefs:
-                import math
-
                 window = max(1, len(beliefs) // 10)
                 entropies: list[Any] = []
                 for belief in beliefs[-window:]:

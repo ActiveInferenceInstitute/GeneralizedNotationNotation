@@ -230,14 +230,11 @@ def _render_step_details(steps: List[dict], step_dirs: List[Path]) -> str:
         artifacts_html = ""
         d = dir_map.get(out_dir)
         if d and d.exists():
-            files = sorted(f.name for f in d.rglob("*") if f.is_file())[:15]
+            all_files = sorted(f.name for f in d.rglob("*") if f.is_file())
+            files = all_files[:15]
             if files:
                 file_list = "".join(f"<li>{escape(f)}</li>" for f in files)
-                more = (
-                    "<li><em>…and more</em></li>"
-                    if len(list(d.rglob("*"))) > 15
-                    else ""
-                )
+                more = "<li><em>…and more</em></li>" if len(all_files) > 15 else ""
                 artifacts_html = f"<ul class='artifact-list'>{file_list}{more}</ul>"
 
         sections.append(

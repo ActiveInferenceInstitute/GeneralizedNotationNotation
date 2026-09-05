@@ -14,11 +14,14 @@ Public API:
 - gui_3: state space design studio
 - oxdraw: visual diagram-as-code with Mermaid
 - get_available_guis: list all available GUI implementations
+- normalize_gui_types: parse/validate the gui_types option
+- summarize_gui_results: aggregate per-GUI results into a typed summary
+- collect_pipeline_outputs: discover pipeline artifacts for navigation
 """
 
 from typing import Any
 
-__version__ = "1.6.0"
+__version__ = "1.7.0"
 FEATURES: dict[str, Any] = {
     "form_based_constructor": True,
     "visual_matrix_editor": True,
@@ -47,8 +50,14 @@ from .oxdraw import get_oxdraw_info, oxdraw_gui
 
 # Import main processing functions from processor
 from .processor import (
+    DEFAULT_GUI_TYPES,
+    MAX_FILES_PER_SECTION,
+    PIPELINE_OUTPUT_SECTIONS,
+    collect_pipeline_outputs,
     generate_html_navigation,
+    normalize_gui_types,
     process_gui,
+    summarize_gui_results,
 )
 
 
@@ -74,6 +83,12 @@ __all__: list[Any] = [
     "get_gui_3_info",
     "get_oxdraw_info",
     "generate_html_navigation",
+    "normalize_gui_types",
+    "summarize_gui_results",
+    "collect_pipeline_outputs",
+    "DEFAULT_GUI_TYPES",
+    "MAX_FILES_PER_SECTION",
+    "PIPELINE_OUTPUT_SECTIONS",
     # GUI 1 utilities
     "add_component_to_markdown",
     "update_component_states",

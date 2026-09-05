@@ -5,10 +5,10 @@ _cmd_render (with missing file), _cmd_report, _cmd_preflight, _cmd_serve,
 _cmd_lsp, _cmd_watch, _cmd_graph, _cmd_templates, _cmd_pull, _find_render_artifact.
 """
 
+import argparse
 import json
 import sys
 from pathlib import Path
-from types import SimpleNamespace
 from typing import Any
 
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
@@ -53,7 +53,7 @@ class TestCmdHandlers:
     def test_cmd_parse_missing_file(self) -> None:
         from cli import _cmd_parse
 
-        args = SimpleNamespace(file=Path("/nonexistent.md"), format="json")
+        args = argparse.Namespace(file=Path("/nonexistent.md"), format="json")
         result = _cmd_parse(args)
         assert result == 1  # Error exit code
 
@@ -65,7 +65,9 @@ class TestCmdHandlers:
 
         malformed = tmp_path / "malformed.md"
         malformed.write_text("# incomplete GNN\n", encoding="utf-8")
-        result = _cmd_validate(SimpleNamespace(file=malformed, strict=False, json=True))
+        result = _cmd_validate(
+            argparse.Namespace(file=malformed, strict=False, json=True)
+        )
         assert result == 2
         envelope = json.loads(capsys.readouterr().out)
         assert envelope["status"] == "warning"
@@ -82,7 +84,9 @@ class TestCmdHandlers:
             "## Connections\nA>missing\n",
             encoding="utf-8",
         )
-        result = _cmd_parse(SimpleNamespace(file=malformed, format="json", json=True))
+        result = _cmd_parse(
+            argparse.Namespace(file=malformed, format="json", json=True)
+        )
         assert result == 2
         envelope = json.loads(capsys.readouterr().out)
         assert envelope["status"] == "warning"
@@ -91,7 +95,7 @@ class TestCmdHandlers:
     def test_cmd_render_missing_file(self) -> None:
         from cli import _cmd_render
 
-        args = SimpleNamespace(
+        args = argparse.Namespace(
             file=Path("/nonexistent.md"),
             framework="pymdp",
             output=None,
@@ -103,14 +107,14 @@ class TestCmdHandlers:
     def test_cmd_report_missing_dir(self) -> None:
         from cli import _cmd_report
 
-        args = SimpleNamespace(output_dir=Path("/nonexistent_output"))
+        args = argparse.Namespace(output_dir=Path("/nonexistent_output"))
         result = _cmd_report(args)
         assert result == 1
 
     def test_cmd_report_json_missing_dir(self, capsys: Any) -> None:
         from cli import _cmd_report
 
-        args = SimpleNamespace(output_dir=Path("/nonexistent_output"), json=True)
+        args = argparse.Namespace(output_dir=Path("/nonexistent_output"), json=True)
         result = _cmd_report(args)
         assert result == 1
         captured = capsys.readouterr()
@@ -121,7 +125,7 @@ class TestCmdHandlers:
     def test_cmd_graph_json_missing_file(self, capsys: Any) -> None:
         from cli import _cmd_graph
 
-        args = SimpleNamespace(
+        args = argparse.Namespace(
             file=Path("/nonexistent.md"), format="mermaid", json=True
         )
         result = _cmd_graph(args)
@@ -134,7 +138,7 @@ class TestCmdHandlers:
     def test_cmd_health_json(self, capsys: Any) -> None:
         from cli import _cmd_health
 
-        args = SimpleNamespace(strict=False, json=True)
+        args = argparse.Namespace(strict=False, json=True)
         result = _cmd_health(args)
         assert isinstance(result, int)
         captured = capsys.readouterr()
@@ -146,14 +150,14 @@ class TestCmdHandlers:
     def test_cmd_preflight_default(self) -> None:
         from cli import _cmd_preflight
 
-        args = SimpleNamespace(config=None, verbose=False, json=False)
+        args = argparse.Namespace(config=None, verbose=False, json=False)
         result = _cmd_preflight(args)
         assert isinstance(result, int)
 
     def test_cmd_preflight_json(self, capsys: Any) -> None:
         from cli import _cmd_preflight
 
-        args = SimpleNamespace(config=None, verbose=False, json=True)
+        args = argparse.Namespace(config=None, verbose=False, json=True)
         result = _cmd_preflight(args)
         assert isinstance(result, int)
         captured = capsys.readouterr()
@@ -180,7 +184,7 @@ class TestCmdHandlers:
     def test_cmd_graph_missing_file(self) -> None:
         from cli import _cmd_graph
 
-        args = SimpleNamespace(
+        args = argparse.Namespace(
             file=Path("/nonexistent.md"), format="mermaid", verbose=False
         )
         result = _cmd_graph(args)
@@ -189,7 +193,7 @@ class TestCmdHandlers:
     def test_cmd_models_json(self, capsys: Any) -> None:
         from cli import _cmd_models
 
-        args = SimpleNamespace(
+        args = argparse.Namespace(
             target_dir=Path("input/gnn_files/basics"),
             query_ontology=None,
             json=True,
@@ -205,7 +209,7 @@ class TestCmdHandlers:
     def test_cmd_pull_missing_template(self, tmp_path: Path) -> None:
         from cli import _cmd_pull
 
-        args = SimpleNamespace(
+        args = argparse.Namespace(
             name="nonexistent-template",
             output_dir=tmp_path,
             dry_run=True,
@@ -218,7 +222,7 @@ class TestCmdHandlers:
     def test_cmd_templates_unknown_subcommand(self, capsys: Any) -> None:
         from cli import _cmd_templates
 
-        args = SimpleNamespace(
+        args = argparse.Namespace(
             templates_command="nonexistent",
             verbose=False,
         )

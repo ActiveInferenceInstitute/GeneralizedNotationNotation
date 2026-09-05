@@ -10,7 +10,10 @@ markdown execution report. Extracted from ``execute.processor``.
 import hashlib
 import json
 import logging
+import os
+import tempfile
 import tomllib
+import uuid
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
@@ -121,6 +124,7 @@ def _load_render_summary_contract(
     requested_frameworks: List[str],
     logger: logging.Logger,
     target_dir: Optional[Path] = None,
+    run_id: Optional[str] = None,
 ) -> Tuple[Optional[set[Path]], List[Dict[str, str]]]:
     """Load the latest Step 11 render contract for script filtering and failures.
 
@@ -139,6 +143,23 @@ def _load_render_summary_contract(
     except (OSError, json.JSONDecodeError) as exc:
         logger.warning("Could not read render summary %s: %s", summary_file, exc)
         return None, []
+
+    if not isinstance(summary, dict):
+        return None, []
+
+    expected_run = run_id or os.environ.get("GNN_RUN_ID")
+    receipt_identity = summary.get("receipt_identity")
+    if expected_run and (
+        not isinstance(receipt_identity, dict)
+        or receipt_identity.get("run_id") != expected_run
+    ):
+        return set(), [
+            {
+                "file": str(summary_file),
+                "framework": "all",
+                "message": "Render receipt belongs to a different run",
+            }
+        ]
 
     def _in_scope(source_file: str) -> bool:
         if target_dir is None:
@@ -168,6 +189,47 @@ def _load_render_summary_contract(
         for framework, framework_result in framework_results.items():
             if framework not in requested or not isinstance(framework_result, dict):
                 continue
+            if isinstance(receipt_identity, dict):
+                try:
+                    source = Path(source_file)
+                    source_identity = {
+                        "path": str(source.resolve()),
+                        "sha256": _sha256_file(source),
+                    }
+                    artifacts = framework_result.get("artifact_identities")
+                    output_files = framework_result.get("output_files", [])
+                    if file_result.get("source_identity") != source_identity:
+                        raise ValueError(
+                            "Source content no longer matches render receipt"
+                        )
+                    if framework_result.get("success"):
+                        if not isinstance(artifacts, list) or not isinstance(
+                            output_files, list
+                        ):
+                            raise ValueError("Missing artifact identities")
+                        expected = {str(Path(item).resolve()) for item in output_files}
+                        actual = {item["path"] for item in artifacts}
+                        if expected != actual:
+                            raise ValueError(
+                                "Artifact inventory no longer matches render receipt"
+                            )
+                        for artifact in artifacts:
+                            if (
+                                _sha256_file(Path(artifact["path"]))
+                                != artifact["sha256"]
+                            ):
+                                raise ValueError(
+                                    "Artifact content no longer matches render receipt"
+                                )
+                except (OSError, ValueError, TypeError, KeyError) as exc:
+                    render_failures.append(
+                        {
+                            "file": str(source_file),
+                            "framework": str(framework),
+                            "message": str(exc),
+                        }
+                    )
+                    continue
             if framework_result.get("unsupported"):
                 # The renderer declared this framework cannot represent the
                 # model (categorical backend, continuous model): nothing to
@@ -237,6 +299,8 @@ def _slim_execution_detail(detail: Dict[str, Any]) -> Dict[str, Any]:
         "output_file",
         "implementation_directory",
         "execution_metadata",
+        "script_identity",
+        "source_scope",
     )
     slim: Dict[str, Any] = {}
     for k in keys_keep:
@@ -255,13 +319,10 @@ def _slim_execution_detail(detail: Dict[str, Any]) -> Dict[str, Any]:
 
 def _execution_detail_key(detail: Dict[str, Any]) -> str:
     """Stable identity for one executed script across folder invocations."""
-    return str(
-        detail.get("script_path")
-        or detail.get("path")
-        or detail.get("script_name")
-        or detail.get("name")
-        or ""
-    )
+    path = detail.get("script_path") or detail.get("path")
+    if path:
+        return str(Path(path).resolve())
+    return str(detail.get("script_name") or detail.get("name") or "")
 
 
 _STATUS_SEVERITY = {
@@ -273,137 +334,255 @@ _STATUS_SEVERITY = {
 }
 
 
+def _atomic_execution_json(path: Path, payload: Dict[str, Any]) -> None:
+    """Publish a complete receipt using an atomic same-filesystem replace."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temporary: Optional[str] = None
+    try:
+        with tempfile.NamedTemporaryFile(
+            mode="w", encoding="utf-8", dir=path.parent, delete=False
+        ) as handle:
+            temporary = handle.name
+            json.dump(payload, handle, indent=2, default=str)
+            handle.flush()
+            os.fsync(handle.fileno())
+        os.replace(temporary, path)
+    finally:
+        if temporary and os.path.exists(temporary):
+            os.unlink(temporary)
+
+
+def _execution_input_identity(target: Path) -> Dict[str, Any]:
+    """Fingerprint the current input scope without relying on file names alone."""
+    files = {}
+    if target.is_dir():
+        for path in sorted(target.rglob("*")):
+            if path.is_file() and path.suffix.lower() in {
+                ".md",
+                ".json",
+                ".yaml",
+                ".yml",
+                ".py",
+                ".jl",
+            }:
+                files[str(path.resolve())] = _sha256_file(path)
+    return {"path": str(target.resolve()), "files": files}
+
+
+def _execution_script_identity(detail: Dict[str, Any]) -> Dict[str, Any]:
+    path = Path(_execution_detail_key(detail)).resolve()
+    return {"path": str(path), "sha256": _sha256_file(path) if path.is_file() else None}
+
+
 def _merge_prior_execution_summary(
     execution_results: Dict[str, Any], results_file: Path, logger: Any
 ) -> None:
-    """Fold a previously written ``execution_summary.json`` into the current results.
+    """Replace this scope and recount verified records from the same run/config.
 
-    Details are keyed by script path; a script re-executed in this invocation
-    replaces its earlier record. Aggregate counts, per-framework status and the
-    overall status are recomputed over the merged detail set so downstream
-    consumers (Step 16/23) never see only the last folder's slice.
+    Receipts from earlier runs and unbound receipts are archived but cannot
+    authorize current
+    execution claims. A fresh standalone invocation receives a fresh run ID.
     """
-    if not results_file.exists():
-        return
-    try:
-        prior = json.loads(results_file.read_text(encoding="utf-8"))
-    except (OSError, json.JSONDecodeError) as exc:
-        logger.warning(
-            "Could not read prior execution summary %s: %s", results_file, exc
-        )
-        return
-    if not isinstance(prior, dict):
-        return
-    prior_details = prior.get("execution_details") or []
-    if not isinstance(prior_details, list) or not prior_details:
-        return
-
-    current_details = list(execution_results.get("execution_details") or [])
-    current_keys = {
-        _execution_detail_key(d) for d in current_details if isinstance(d, dict)
+    prior: Dict[str, Any] = {}
+    if results_file.is_file():
+        try:
+            data = json.loads(results_file.read_text(encoding="utf-8"))
+            if isinstance(data, dict):
+                prior = data
+        except (OSError, json.JSONDecodeError) as exc:
+            logger.warning(
+                "Could not read prior execution summary %s: %s", results_file, exc
+            )
+    if prior:
+        digest = hashlib.sha256(
+            json.dumps(prior, sort_keys=True, default=str).encode()
+        ).hexdigest()
+        archive = results_file.parent / "history" / f"execution-{digest}.json"
+        if not archive.exists():
+            _atomic_execution_json(archive, prior)
+    config = execution_results.get("configuration", {})
+    identity = {
+        "run_id": str(
+            execution_results.get("run_id")
+            or os.environ.get("GNN_RUN_ID")
+            or uuid.uuid4().hex
+        ),
+        "config_sha256": hashlib.sha256(
+            json.dumps(config, sort_keys=True, default=str).encode()
+        ).hexdigest(),
     }
-    carried = [
-        d
-        for d in prior_details
-        if isinstance(d, dict) and _execution_detail_key(d) not in current_keys
+    scope = str(Path(execution_results.get("target_directory") or ".").resolve())
+    current_details = [
+        dict(d)
+        for d in execution_results.get("execution_details", [])
+        if isinstance(d, dict)
     ]
-    if not carried:
-        return
-
-    # Preserve this invocation's own verdict before the aggregate overwrites
-    # ``status``/``success``: the function's return value describes the
-    # current folder, the durable summary describes every folder so far.
-    execution_results["current_invocation"] = {
-        "target_directory": execution_results.get("target_directory"),
-        "status": execution_results.get("status"),
-        "success": execution_results.get("success"),
-        "outcome_reason": execution_results.get("outcome_reason"),
-        "total_scripts_found": execution_results.get("total_scripts_found"),
-        "successful_executions": execution_results.get("successful_executions"),
-        "failed_executions": execution_results.get("failed_executions"),
-        "skipped_executions": execution_results.get("skipped_executions", 0),
+    for detail in current_details:
+        detail["script_identity"] = detail.get(
+            "script_identity"
+        ) or _execution_script_identity(detail)
+        detail["source_scope"] = scope
+    current = {
+        key: execution_results.get(key)
+        for key in (
+            "status",
+            "success",
+            "exit_code",
+            "outcome_reason",
+            "render_failures",
+            "missing_render_scripts",
+            "missing_render_summary",
+        )
     }
-
-    merged = carried + current_details
+    current["input_identity"] = execution_results.get(
+        "input_identity"
+    ) or _execution_input_identity(Path(scope))
+    current["execution_details"] = [_slim_execution_detail(d) for d in current_details]
+    invocations: Dict[str, Any] = {}
+    prior_invocations = prior.get("invocation_receipts", {})
+    if prior.get("receipt_identity") == identity and isinstance(
+        prior_invocations, dict
+    ):
+        for old_scope, record in prior_invocations.items():
+            if (
+                old_scope == scope
+                or Path(old_scope).is_relative_to(Path(scope))
+                or Path(scope).is_relative_to(Path(old_scope))
+                or not isinstance(record, dict)
+            ):
+                continue
+            try:
+                if record.get("input_identity") != _execution_input_identity(
+                    Path(old_scope)
+                ):
+                    continue
+                if not all(
+                    d.get("script_identity", {}).get("sha256")
+                    and d.get("script_identity") == _execution_script_identity(d)
+                    for d in record.get("execution_details", [])
+                ):
+                    continue
+            except OSError:
+                continue
+            invocations[old_scope] = record
+    invocations[scope] = current
+    execution_results["receipt_identity"] = identity
+    execution_results["run_id"] = identity["run_id"]
+    execution_results["input_identity"] = current["input_identity"]
+    execution_results["invocation_receipts"] = invocations
+    execution_results["current_invocation"] = {**current, "target_directory": scope}
+    execution_results["merged_prior_folder_runs"] = len(invocations) - 1
+    merged_by_key = {}
+    for old_scope, record in invocations.items():
+        for detail in (
+            current_details if old_scope == scope else record["execution_details"]
+        ):
+            merged_by_key[(_execution_detail_key(detail), detail.get("framework"))] = (
+                detail
+            )
+    merged = list(merged_by_key.values())
     execution_results["execution_details"] = merged
-    execution_results["merged_prior_folder_runs"] = (
-        int(prior.get("merged_prior_folder_runs", 0)) + 1
-    )
-
     successful = failed = skipped = 0
     framework_status: Dict[str, Dict[str, Any]] = {}
-    for d in merged:
-        fw = str(d.get("framework", "unknown"))
-        fs = framework_status.setdefault(
-            fw,
-            {
-                "status": "unknown",
-                "executions": 0,
-                "successful": 0,
-                "failed": 0,
-                "skipped": 0,
-            },
+    for detail in merged:
+        fw = str(detail.get("framework", "unknown"))
+        counts = framework_status.setdefault(
+            fw, {"executions": 0, "successful": 0, "failed": 0, "skipped": 0}
         )
-        fs["executions"] += 1
-        if d.get("skipped"):
+        counts["executions"] += 1
+        if detail.get("skipped"):
             skipped += 1
-            fs["skipped"] += 1
-        elif d.get("success"):
+            counts["skipped"] += 1
+        elif detail.get("success"):
             successful += 1
-            fs["successful"] += 1
+            counts["successful"] += 1
         else:
             failed += 1
-            fs["failed"] += 1
-        if d.get("error") and not d.get("success"):
-            fs["error"] = d["error"]
-    for fs in framework_status.values():
-        if fs["failed"]:
-            fs["status"] = "failed"
-        elif fs["successful"] and fs["skipped"]:
-            fs["status"] = "success_with_skips"
-        elif fs["successful"]:
-            fs["status"] = "success"
-        else:
-            fs["status"] = "skipped"
-
-    execution_results["framework_status"] = framework_status
-    execution_results["total_scripts_found"] = len(merged)
-    execution_results["total_scripts"] = len(merged)
-    execution_results["successful_executions"] = successful
-    execution_results["failed_executions"] = failed
-    execution_results["skipped_executions"] = skipped
+            counts["failed"] += 1
+        if detail.get("error") and not detail.get("success"):
+            counts["error"] = detail["error"]
+    for counts in framework_status.values():
+        counts["status"] = (
+            "failed"
+            if counts["failed"]
+            else "success_with_skips"
+            if counts["successful"] and counts["skipped"]
+            else "success"
+            if counts["successful"]
+            else "skipped"
+        )
     attempted = len(merged) - skipped
-    execution_results["attempted_scripts"] = attempted
-    execution_results["success_rate"] = (
-        round(successful / attempted * 100, 2) if attempted > 0 else 0.0
+    execution_results.update(
+        {
+            "framework_status": framework_status,
+            "total_scripts_found": len(merged),
+            "total_scripts": len(merged),
+            "successful_executions": successful,
+            "failed_executions": failed,
+            "skipped_executions": skipped,
+            "attempted_scripts": attempted,
+            "success_rate": round(successful / attempted * 100, 2)
+            if attempted
+            else 0.0,
+        }
     )
     for key in ("render_failures", "missing_render_scripts"):
-        prior_items = prior.get(key) or []
-        if isinstance(prior_items, list) and prior_items:
-            seen = {
-                json.dumps(i, sort_keys=True, default=str)
-                for i in execution_results.get(key, [])
-            }
-            for item in prior_items:
-                if json.dumps(item, sort_keys=True, default=str) not in seen:
-                    execution_results.setdefault(key, []).append(item)
-
-    prior_status = str(prior.get("status", "success"))
-    current_status = str(execution_results.get("status", "success"))
-    if _STATUS_SEVERITY.get(prior_status, 0) > _STATUS_SEVERITY.get(current_status, 0):
-        execution_results["status"] = prior_status
-        execution_results["outcome_reason"] = prior.get(
-            "outcome_reason", execution_results.get("outcome_reason")
+        items = {}
+        for record in invocations.values():
+            for item in record.get(key) or []:
+                items[json.dumps(item, sort_keys=True, default=str)] = item
+        execution_results[key] = list(items.values())
+    failed_scopes = [
+        record for record in invocations.values() if record.get("status") == "failed"
+    ]
+    skipped_scopes = any(
+        record.get("status") == "skipped" for record in invocations.values()
+    )
+    if failed or failed_scopes:
+        # Preserve the classifier's specific failure (for example a strict
+        # requested-framework failure) when recomputing aggregate counters.
+        reason = next(
+            (
+                record["outcome_reason"]
+                for record in failed_scopes
+                if record.get("outcome_reason")
+            ),
+            "script_execution_failure",
         )
-        execution_results["success"] = bool(prior.get("success", False))
-        execution_results["exit_code"] = prior.get(
-            "exit_code", execution_results.get("exit_code")
+        execution_results.update(
+            status="failed", success=False, exit_code=1, outcome_reason=reason
         )
-    elif failed > 0 and execution_results.get("status") != "failed":
-        execution_results["status"] = "failed"
-        execution_results["success"] = False
-        execution_results["exit_code"] = 1
-        execution_results["outcome_reason"] = "script_execution_failure"
+    elif (
+        successful
+        or any(record.get("success") is True for record in invocations.values())
+    ) and (skipped or skipped_scopes):
+        execution_results.update(
+            status="success_with_skips",
+            success=True,
+            exit_code=0,
+            outcome_reason="optional_dependencies_unavailable",
+        )
+    elif successful and execution_results["render_failures"]:
+        execution_results.update(
+            status="success_with_render_failures",
+            success=True,
+            exit_code=0,
+            outcome_reason="best_effort_render_subset_executed",
+        )
+    elif successful:
+        execution_results.update(
+            status="success",
+            success=True,
+            exit_code=0,
+            outcome_reason="all_scripts_succeeded",
+        )
+    else:
+        execution_results.update(
+            status="skipped",
+            success=False,
+            exit_code=2,
+            outcome_reason="no_executable_scripts",
+        )
 
 
 def generate_execution_report(

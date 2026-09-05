@@ -10,9 +10,9 @@
 
 **Status**: Production Ready
 
-**Version**: 3.2.0
+**Version**: 3.2.0 (pipeline) / package `__version__` 1.7.0
 
-**Last Updated**: 2026-09-02
+**Last Updated**: 2026-09-04
 
 ---
 
@@ -27,9 +27,16 @@
 
 ### Key Capabilities
 - **Real Model Training**: `DecisionTreeClassifier(max_depth=4)` and `RandomForestClassifier(n_estimators=10, max_depth=4)`, both `random_state=42`.
-- **Automatic Task Selection**: model-family classification when labels vary; `small`/`medium`/`large` complexity classification otherwise.
+- **Automatic Task Selection**: model-family classification when labels vary; `small`/`medium`/`large` complexity classification otherwise (see `complexity_label` and `COMPLEXITY_THRESHOLDS`).
 - **Feature Extraction**: Parses `## StateSpaceBlock` dimensions and `## Connections` counts from GNN markdown.
 - **Graceful Fallback**: When every sample has the same label, no classifier is trained; a per-feature summary-statistics analysis is saved instead.
+
+### Public Constants
+
+- `NUMERIC_FEATURE_NAMES` — canonical 14-entry tuple giving the order of `feature_vector()` output (`num_states`, `num_observations`, `num_actions`, `num_variables`, `connectivity_ratio`, `max_dimension`, `total_parameters`, `planning_horizon`, `directed_connections`, `undirected_connections`, `has_precision`, `has_learning`, `has_ontology`, `has_parameterization`).
+- `COMPLEXITY_THRESHOLDS` — `(100, 1000)`, the boundaries used by `complexity_label()`.
+- `COMPLEXITY_LABELS` — `("small", "medium", "large")`.
+- `SUMMARY_STATISTIC_KEYS` — keys summarized by `summarize_features()` (`num_states`, `num_observations`, `num_actions`, `total_parameters`, `connectivity_ratio`).
 
 ---
 
@@ -67,6 +74,26 @@ Availability check returning a dict keyed by `pytorch`, `tensorflow`, `jax`, `sk
 #### `extract_gnn_features(file_path: Path) -> Dict[str, Any]`
 Extracts the structural feature dict for a single GNN file.
 
+#### `feature_vector(features: Mapping[str, Any]) -> list[float]`
+Canonical numeric vector for a feature dict, in `NUMERIC_FEATURE_NAMES` order — the representation used to build training matrices and consumed by saved `.pkl` artifacts at inference time. Missing keys default to `0.0`, except `planning_horizon`, which defaults to `1.0`; boolean features map to `0.0`/`1.0`.
+
+#### `complexity_label(total_parameters: float) -> str`
+Maps a parameter count to `"small"`, `"medium"`, or `"large"` via `COMPLEXITY_THRESHOLDS = (100, 1000)`: `small` below 100, `medium` below 1000, `large` at or above.
+
+#### `summarize_features(features: Sequence[Mapping[str, Any]]) -> dict`
+Pure summary over `SUMMARY_STATISTIC_KEYS`; returns `{key: {"min": ..., "max": ..., "mean": ...}}`. No I/O; deterministic.
+
+### Inference
+
+Trained artifacts can be reused without retraining:
+
+- `load_classifier(model_path: Path) -> Any` — loads a pickled classifier from a `.pkl` artifact via the restricted global-allowlist unpickler (extension opcodes and trailing data rejected by default; see README §Loading).
+- `predict_with_model(model_path: Path, features: Mapping[str, Any], label_names: Sequence[str] | None = None) -> str | int | float` — builds the canonical feature vector for one sample and returns the predicted label; `label_names` decodes integer predictions into names and comes from `ml_integration_results.json` when the model was trained with label encoding.
+- `predict_batch(model_path: Path, feature_mappings: Sequence[Mapping[str, Any]], label_names: Sequence[str] | None = None) -> list[str | int | float]` — batch form of `predict_with_model`.
+- `InferenceError(RuntimeError)` — raised for missing/invalid artifacts or prediction failures.
+
+scikit-learn is required only at inference call time (deferred import); importing the package without it works fine. The same `feature_vector()` ordering used for training is reused here, so feature dicts and `.pkl` artifacts stay consistent.
+
 ---
 
 ## ML Framework Support
@@ -96,6 +123,11 @@ Install with `uv sync --extra ml-ai`. Without it, the step degrades to feature-e
 
 ### Detection-Only (never imported for training)
 - `torch`, `tensorflow`, `jax`
+
+### Internal Modules
+
+- `frameworks.py` — detection-only framework availability probes (moved out of `__init__.py`; `check_ml_frameworks()` delegates here)
+- `inference.py` — artifact loading and prediction (`load_classifier`, `predict_with_model`, `predict_batch`, `InferenceError`)
 
 ### Internal Dependencies
 - `utils.pipeline_template` - Standardized pipeline processing
@@ -164,11 +196,13 @@ summary-statistics analysis.
 ---
 
 ## Error Handling
-
 ### Graceful Degradation
-- **scikit-learn/numpy missing**: Feature extraction only; per-feature summary analysis saved
+- **scikit-learn missing**: Feature extraction only; per-feature summary analysis (feature_statistics, model_families) is saved via structural_analysis entries — this happens in BOTH degradation cases
+- **Fewer than 2 usable samples**: Also degrades to summary analysis (note: `Need >=2 GNN files for ML classification (have {n})`); the same feature_statistics/model_families data is saved in this case as in the sklearn-missing case
 - **Single-label dataset**: No classifier trained; `classification_status: insufficient_label_variation` recorded
 - **Per-model training failure**: Logged, remaining models still attempted
+
+In both degradation cases (sklearn missing AND fewer than 2 files), a `structural_analysis` entry is written and the results JSON still contains feature_statistics and model_families — the degradation path is symmetric, not a reduced subset.
 
 ### Error Categories
 1. **Dependency Errors**: Missing numpy/scikit-learn (deferred import)
@@ -202,9 +236,10 @@ GNN Files → Feature Extraction → Task Selection → Model Training → CV Ev
 
 ### Test Files
 - `src/tests/ml_integration/test_ml_integration_overall.py` - Module-level tests
-- `src/tests/ml_integration/test_ml_integration_public_api.py` - Public API contract tests
-- `src/tests/ml_integration/test_ml_integration_coverage.py` - Coverage tests
 - `src/tests/ml_integration/test_ml_integration_mcp_tools.py` - MCP tool tests
+- `src/tests/ml_integration/test_ml_integration_features.py` - Feature vector / complexity / summary tests
+- `src/tests/ml_integration/test_ml_integration_degradation.py` - Degradation-path tests
+- `src/tests/ml_integration/test_ml_integration_inference.py` - Inference tests (sklearn required; skips cleanly without it)
 
 ### Test Coverage
 Measure on demand:
@@ -238,10 +273,10 @@ JSON input schema, module/category metadata, and explicit success/error results.
 
 ---
 
-**Last Updated**: 2026-09-02
+**Last Updated**: 2026-09-04
 **Maintainer**: GNN Pipeline Team
 **Status**: Production Ready
-**Version**: 3.2.0
+**Version**: 3.2.0 (pipeline) / package `__version__` 1.7.0
 **Architecture Compliance**: Thin Orchestrator Pattern
 
 
