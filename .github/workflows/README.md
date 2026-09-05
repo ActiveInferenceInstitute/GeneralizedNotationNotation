@@ -22,3 +22,7 @@ actionlint .github/workflows/*.yml
 ```
 
 Run from repo root (paths relative to root).
+
+CI sets `UV_PYTHON` to the test matrix version (and 3.12 for security and
+documentation jobs), overriding the local `.python-version` pin. XML export
+validation uses `defusedxml` and rejects entity declarations.

@@ -100,6 +100,18 @@ class ArgumentParser:
     # Define all available arguments
     ARGUMENT_DEFINITIONS = MappingProxyType(
         {
+            "formats": ArgumentDefinition(
+                flag="--formats",
+                nargs="+",
+                default=None,
+                help_text="Step 7 export formats (default: five pipeline formats)",
+            ),
+            "geo_infer_options_file": ArgumentDefinition(
+                flag="--geo-infer-options-file",
+                arg_type=Path,
+                default=None,
+                help_text="Step 7 JSON mapping source filenames to GEO metadata",
+            ),
             "target_dir": ArgumentDefinition(
                 flag="--target-dir",
                 arg_type=Path,
@@ -574,6 +586,8 @@ class ArgumentParser:
                 "geo_step_seconds",
                 "geo_state_ids",
                 "geo_space_kind",
+                "formats",
+                "geo_infer_options_file",
             ],
             "8_visualization.py": ["target_dir", "output_dir", "recursive", "verbose"],
             "9_advanced_viz.py": [

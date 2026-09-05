@@ -234,7 +234,7 @@ class TestFallbackDefaults:
 
 
 class TestValidateStepArgsProjectRoot:
-    """Injectable project root (the caller-frame heuristic remains the default)."""
+    """Injectable project root (existing frame heuristic still the default)."""
 
     def test_unknown_step(self) -> None:
         errors = StepConfiguration.validate_step_args(

@@ -39,8 +39,7 @@ from .framework_common import (
 
 _FRAMEWORK_DIR_NAMES: frozenset[str] = FRAMEWORK_DIR_NAMES
 
-# Alias retained for existing import sites; the shared implementation
-# lives in framework_common.
+# Internal alias — shared implementation lives in framework_common.
 _normalize_framework_name = normalize_framework_name
 
 

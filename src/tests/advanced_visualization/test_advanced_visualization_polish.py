@@ -60,17 +60,17 @@ class TestNetworkGraphIndices:
             "parameters": [],
         }
 
-        class ScriptedExtractor:
+        class TestExtractor:
             def extract_from_content(self, content: str) -> dict[str, Any]:
                 return payload
 
-        AdvancedVisualizer(extractor=ScriptedExtractor()).generate_visualizations(
+        AdvancedVisualizer(extractor=TestExtractor()).generate_visualizations(
             content="x", model_name="idx", output_dir=tmp_path
         )
         assert (tmp_path / "idx" / "idx_network.png").exists()
 
     def test_legacy_scalar_connections_resolve(self, tmp_path: Any) -> None:
-        """Scalar ``source``/``target`` connection dicts are accepted as
+        """``source``/``target`` scalar dicts are accepted as
         singletons (same contract as _shared.normalize_connection_format)."""
         from advanced_visualization.visualizer import AdvancedVisualizer
 
@@ -81,11 +81,11 @@ class TestNetworkGraphIndices:
             "parameters": [],
         }
 
-        class ScriptedExtractor:
+        class TestExtractor:
             def extract_from_content(self, content: str) -> dict[str, Any]:
                 return payload
 
-        AdvancedVisualizer(extractor=ScriptedExtractor()).generate_visualizations(
+        AdvancedVisualizer(extractor=TestExtractor()).generate_visualizations(
             content="x", model_name="leg", output_dir=tmp_path
         )
         assert (tmp_path / "leg" / "leg_network.png").exists()
@@ -100,18 +100,17 @@ class TestExtractorInjection:
 
         calls: list[str] = []
 
-        class ScriptedExtractor:
+        class TestExtractor:
             def extract_from_content(self, content: str) -> dict[str, Any]:
                 calls.append(content)
-                return {"success": False, "errors": ["scripted-extractor-error"]}
+                return {"success": False, "errors": ["TestExtractor"]}
 
-        viz = AdvancedVisualizer(extractor=ScriptedExtractor())
+        viz = AdvancedVisualizer(extractor=TestExtractor())
         viz.generate_visualizations(
             content="probe-content", model_name="di", output_dir=tmp_path
         )
-        assert (
-            calls == ["probe-content"]
-        )  # injected in-memory extractor consumed the content; the real extractor was never built
+        # The injected extractor handled the request.
+        assert calls == ["probe-content"]
         assert (tmp_path / "di" / "di_fallback_summary.html").exists()
 
     def test_default_construction_still_builds_extractor(self) -> None:

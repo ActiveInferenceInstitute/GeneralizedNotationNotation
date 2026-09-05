@@ -280,3 +280,6 @@ This module is part of the GeneralizedNotationNotation project. See the main rep
 - **[AGENTS](AGENTS.md)**: Agentic Workflows
 - **[SPEC](SPEC.md)**: Architectural Specification
 - **[SKILL](SKILL.md)**: Capability API
+
+Step 7 accepts `--formats` and `--geo-infer-options-file`; argument definitions,
+step configuration and `PipelineArguments` preserve these through orchestration.

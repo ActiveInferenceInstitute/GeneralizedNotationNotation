@@ -530,12 +530,11 @@ class TestUVCacheAndPerformance:
     def test_uv_sync_fast(self) -> Any:
         """Check required dev dependencies without pruning optional packages.
 
-        Uses ``--check`` (non-mutating) so this default-suite test never
+        Uses ``--check --inexact`` (non-mutating) so this default-suite test never
         rewrites the shared ``.venv`` while other tests read it. A pruning
         regression (e.g. dropping pytest/LSP/API/websocket deps) still fails
-        the gate. ``--inexact`` permits additional packages installed for
-        optional workflows; missing or incompatible required packages still
-        make ``--check`` exit non-zero.
+        the gate: missing or stale required packages still fail. Additional
+        optional extras (such as GEO H3 support) are allowed to coexist.
 
         A concurrent mutating ``uv sync`` (the pipeline setup step or another
         xdist worker) can transiently report the environment as "outdated".

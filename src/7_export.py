@@ -38,6 +38,7 @@ from typing import Any, cast
 sys.path.insert(0, str(Path(__file__).parent))
 
 from export import process_export
+from export.options import process_export_cli
 from export.registry import DEFAULT_PIPELINE_FORMATS
 from utils.pipeline_template import create_standardized_pipeline_script
 
@@ -62,16 +63,24 @@ geo_arguments = {
 
 
 def _export_with_geo(**kwargs: Any) -> bool:
-    """Opt-in GEO-INFER export via the registered --geo-* CLI flags."""
+    """Opt-in GEO-INFER export via the registered --geo-* CLI flags.
+
+    Also routes the explicit per-model ``--geo-infer-options-file``
+    metadata flow to the export CLI adapter.
+    """
     step_seconds = kwargs.pop("geo_step_seconds", None)
     state_ids_path = kwargs.pop("geo_state_ids", None)
     space_kind = kwargs.pop("geo_space_kind", None)
+    options_file = kwargs.pop("geo_infer_options_file", None)
     if step_seconds is None:
         if state_ids_path or space_kind:
             raise ValueError(
                 "geo_infer export requires explicit geo_infer options with a "
                 "mandatory, positive 'step_seconds' key"
             )
+        if options_file is not None:
+            kwargs["geo_infer_options_file"] = options_file
+            return process_export_cli(**kwargs)
         return process_export(**kwargs)
     kwargs["geo_infer"] = {
         "step_seconds": float(step_seconds),

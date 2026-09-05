@@ -342,19 +342,17 @@ class OpenAIProvider(BaseLLMProvider):
         try:
             asyncio.get_running_loop()
         except RuntimeError:
-            active_loop = False
+            running_loop = False
         else:
-            active_loop = True
-
+            running_loop = True
         try:
-            if not active_loop:
+            if not running_loop:
                 return _extract(asyncio.run(_run()))
-
-            def _thread_run() -> LLMResponse:
-                return asyncio.run(_run())
-
+            # Detect the loop before constructing a coroutine. A rejected
+            # asyncio.run call would leak it, and a provider RuntimeError must
+            # never trigger an unintended second request.
             with concurrent.futures.ThreadPoolExecutor(max_workers=1) as pool:
-                future = pool.submit(_thread_run)
+                future = pool.submit(lambda: asyncio.run(_run()))
                 return _extract(future.result(timeout=30))
         except Exception as e:
             logger.error(f"OpenAI analysis failed: {e}")

@@ -1,7 +1,7 @@
 # ontology-worker REPORT — GNN module fleet 3 (2026-09-04)
 
 **Scope owned:** `src/ontology/` entirely (incl. `AGENTS.md`, `README.md`, `SKILL.md`, `SPEC.md`) + numbered orchestrator `src/10_ontology.py`.
-**Repo:** `/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation` (branch `main`, HEAD `f64ac9085`).
+**Repo:** `GeneralizedNotationNotation` (branch `main`, HEAD `f64ac9085`).
 **Worker:** ontology-worker (one of 35 herdr tabs, wave dispatch in 7s).
 
 ## Deepening pass (post-report extension, same turn)

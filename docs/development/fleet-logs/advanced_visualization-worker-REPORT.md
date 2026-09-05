@@ -1,7 +1,7 @@
 # advanced_visualization worker — fleet report
 
 **Scope:** `src/advanced_visualization/` (entire module incl. AGENTS.md/README) + numbered orchestrator `src/9_advanced_viz.py`
-**Repo:** `/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation` (branch main, HEAD `f64ac9085`)
+**Repo:** `GeneralizedNotationNotation` (branch main, HEAD `f64ac9085`)
 **Worker:** advanced_visualization-worker
 **Date:** 2026-09-04
 

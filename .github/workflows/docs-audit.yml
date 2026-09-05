@@ -36,6 +36,8 @@ jobs:
   markdown-audit:
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    env:
+      UV_PYTHON: "3.12"
     steps:
       - uses: actions/checkout@v7
 

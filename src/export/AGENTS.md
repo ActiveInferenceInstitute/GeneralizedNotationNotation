@@ -107,8 +107,10 @@ success = generate_exports(
   `state_ids_path` (path to a JSON array labeling states in matrix order,
   optional; required for `space_kind="h3"`), and `space_kind`
   (`"categorical"` (default) or `"h3"`). If `geo_infer` is requested without
-  a `step_seconds` key, `process_export` raises a distinct `ValueError`
-  naming `geo_infer` and the missing key before any output is written.
+  a `step_seconds` key, `process_export` fails visibly before any output is
+  written (returns `False` and reports the missing key); the Step 7 CLI
+  additionally raises a distinct `ValueError` naming the flags when
+  `--geo-*` options are given without `--geo-step-seconds`.
   When `geo_infer` is not requested, the five default formats are produced
   exactly as before.
 
@@ -373,6 +375,7 @@ python src/7_export.py --target-dir input/ --verbose
 - **[SPEC](SPEC.md)**: Architectural Specification
 - **[SKILL](SKILL.md)**: Capability API
 
+
 ## GNN / GEO-INFER boundary
 
 `geo_infer.py` owns the opt-in `geo_infer` registry writer. Its normative
@@ -383,3 +386,23 @@ matrix probabilities, or silently coerce a continuous model into categorical for
 Run export tests and the POMDP extractor orientation tests when changing this
 boundary; run GEO's separate-environment conformance command when both repos are
 available. General canonicalization must preserve non-square axes and be idempotent.
+
+`geo_infer_gaussian.py` adds the explicit discrete-time linear Gaussian v2
+producer. It requires source F/G/H/Q/R and initial belief plus caller units;
+never add default control maps or interpret F as a generator. `process_export`
+accepts `geo_infer_options` keyed by source filename and reads contained original
+source for provenance. Missing metadata fails the requested format and run.
+`test_geo_infer_gaussian.py` covers unequal axes, covariance rejection, CLI,
+source containment, partial failure and unchanged default formats.
+
+Step 7 additionally exposes `--geo-step-seconds`, `--geo-state-ids` and
+`--geo-space-kind` CLI flags; when `--geo-step-seconds` is passed, the adapter
+supplies a single global `geo_infer` mapping to `process_export` instead of
+per-file metadata. Requesting `geo_infer` through Step 7 with neither mechanism
+fails without writing output.
+
+`options.py` loads bounded, duplicate-free physical metadata for the numbered
+Step 7 CLI; `geo_infer_factored.py` exports explicitly structured factored JSON.
+
+Export validation parses XML, GraphML and GEXF with `defusedxml` and rejects
+entity declarations; the manifest records these files as invalid.

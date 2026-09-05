@@ -72,7 +72,7 @@ class GNNExtractionError(Exception):
 def _gnn_distribution_version() -> str:
     """Best-effort installed version of the generalized-notation-notation package."""
     try:
-        from importlib.metadata import PackageNotFoundError, version
+        from importlib.metadata import version
 
         return version("generalized-notation-notation")
     except Exception:  # noqa: BLE001 - any metadata failure degrades to "unknown"
@@ -1354,7 +1354,6 @@ class POMDPExtractor:
 
     def _parse_parameter_value(self, value_str: str) -> Any:
         """Parse parameter value string into appropriate data structure."""
-        import ast
 
         value_str = value_str.strip()
 

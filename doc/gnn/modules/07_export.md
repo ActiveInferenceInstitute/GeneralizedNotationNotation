@@ -2,7 +2,7 @@
 
 ## Architectural Mapping
 
-**Orchestrator**: `src/7_export.py` (102 lines)
+**Orchestrator**: `src/7_export.py` (111 lines)
 **Implementation Layer**: `src/export/`
 
 ## Module Description

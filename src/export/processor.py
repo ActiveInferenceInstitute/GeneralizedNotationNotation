@@ -12,6 +12,8 @@ import sys
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple, cast
 
+from defusedxml import ElementTree as ET
+
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
@@ -24,15 +26,10 @@ from utils.pipeline_template import (
 
 # Import actual formatter implementations
 from .formatters import (
-    export_to_gexf,
-    export_to_graphml,
-    export_to_json,
     export_to_json_gnn,
-    export_to_pickle,
     export_to_plaintext_dsl,
     export_to_plaintext_summary,
     export_to_python_pickle,
-    export_to_xml,
     export_to_xml_gnn,
 )
 from .registry import DEFAULT_PIPELINE_FORMATS, get_format_spec, resolve_format_writer
@@ -62,36 +59,32 @@ _GNN_MODEL_WRITERS: Dict[str, Tuple[Any, str]] = {
     "dsl": (export_to_plaintext_dsl, "gnn_model.dsl"),
 }
 
-# ``process_export`` only wires the five pipeline formats; requesting ``txt``
-# or ``dsl`` here logs an "Unsupported format" warning (matching the prior
-# behaviour) even though the registry knows those writers.
+# Keep the five defaults stable; the strict interchange writer is an
+# explicit opt-in resolved on demand in the pipeline loop.
 _PIPELINE_WRITERS: Dict[str, Any] = {
     name: resolve_format_writer(name) for name in DEFAULT_PIPELINE_FORMATS
 }
 
 
-def _pipeline_formats_generated(geo_options: Any) -> Dict[str, int]:
+def _pipeline_formats_generated(
+    geo_options: Any, requested_formats: Any = None
+) -> Dict[str, int]:
     """Return the per-format counters, including ``geo_infer`` when opted in."""
-    counters = dict.fromkeys(_PIPELINE_WRITERS, 0)
-    if isinstance(geo_options, dict):
+    counters: Dict[str, int] = dict.fromkeys(DEFAULT_PIPELINE_FORMATS, 0)
+    if isinstance(geo_options, dict) or (
+        isinstance(requested_formats, (list, tuple, set))
+        and "geo_infer" in requested_formats
+    ):
         counters["geo_infer"] = 0
     return counters
 
 
-def _geo_writer_input(
-    model_data: Dict[str, Any], file_result: Dict[str, Any], geo_options: Any
-) -> Dict[str, Any]:
-    """Build the writer input for the opt-in geo_infer format.
+def _pipeline_geo_options(geo_options: Dict[str, Any]) -> Dict[str, Any]:
+    """Resolve the global ``geo_infer`` mapping for the strict writer.
 
     Resolves ``state_ids_path`` into the ``state_ids`` list the strict
-    writer expects and attaches ``raw_content`` (read from the source file
-    when the parsed spec does not carry it).
+    writer expects; ``raw_content`` is attached by the caller.
     """
-    if not isinstance(geo_options, dict):
-        raise ValueError(
-            "geo_infer export requires explicit geo_infer options with a "
-            "mandatory, positive 'step_seconds' key"
-        )
     options: Dict[str, Any] = dict(geo_options)
     state_ids_path = options.pop("state_ids_path", None)
     if state_ids_path is not None:
@@ -100,16 +93,7 @@ def _geo_writer_input(
         if not isinstance(state_ids, list):
             raise ValueError("geo_infer state_ids_path must point to a JSON array")
         options["state_ids"] = state_ids
-    raw_content = model_data.get("raw_content")
-    if raw_content is None:
-        source = file_result.get("file_path")
-        if not source:
-            raise ValueError(
-                "geo_infer export requires raw_content but no source file_path "
-                "is available for this model"
-            )
-        raw_content = Path(source).read_text(encoding="utf-8")
-    return {**model_data, "raw_content": raw_content, "geo_infer": options}
+    return options
 
 
 def generate_exports(target_dir: Path, output_dir: Path, verbose: bool = False) -> bool:
@@ -523,6 +507,8 @@ def process_export(
             ``geo_infer`` mapping (``step_seconds`` required; optional
             ``state_ids_path`` and ``space_kind``) opts the request into the
             strict GEO-INFER export when ``"geo_infer"`` is in ``formats``.
+        geo_infer_options: Optional explicit per-model GEO metadata mapping
+            (source filenames to options), set by ``process_export_cli``.
 
     Returns:
         True if export succeeded, False otherwise
@@ -540,17 +526,11 @@ def process_export(
 
     # Ensure output directory exists
     output_dir.mkdir(parents=True, exist_ok=True)
-    # Opt-in GEO-INFER export: validate options up front so a missing
-    # ``step_seconds`` fails visibly, before any output is written.
-    requested_formats = kwargs.get("formats", list(_DEFAULT_FORMATS))
+    # GEO-INFER opt-in: the strict writer's requirements (explicit options
+    # per file, or a global ``geo_infer`` mapping) are enforced inside the
+    # export loop so failures are recorded per format.
+    requested_formats = kwargs.get("formats") or list(_DEFAULT_FORMATS)
     geo_options = kwargs.get("geo_infer")
-    if "geo_infer" in requested_formats and (
-        not isinstance(geo_options, dict) or "step_seconds" not in geo_options
-    ):
-        raise ValueError(
-            "geo_infer export requires explicit geo_infer options with a "
-            "mandatory, positive 'step_seconds' key; no output was written"
-        )
 
     try:
         # Load parsed GNN data from previous step (step 3)
@@ -594,10 +574,18 @@ def process_export(
                 "successful_exports": 0,
                 "failed_exports": 0,
                 "formats_generated": _pipeline_formats_generated(
-                    kwargs.get("geo_infer")
+                    kwargs.get("geo_infer"), requested_formats
                 ),
             },
         }
+
+        # Get requested formats
+        requested_formats = kwargs.get("formats") or list(_DEFAULT_FORMATS)
+
+        filename_counts: dict[str, int] = {}
+        for entry in gnn_results["processed_files"]:
+            name = entry.get("file_name", "")
+            filename_counts[name] = filename_counts.get(name, 0) + 1
 
         # Process each file
         for file_result in gnn_results["processed_files"]:
@@ -605,6 +593,15 @@ def process_export(
                 continue
 
             file_name = file_result["file_name"]
+            if (
+                not isinstance(file_name, str)
+                or not file_name.endswith(".md")
+                or file_name in {".md", "..md"}
+                or "/" in file_name
+                or "\\" in file_name
+                or "\x00" in file_name
+            ):
+                raise ValueError("Step 3 file_name must be a simple Markdown filename")
             logger.info(f"Exporting: {file_name}")
 
             # Load the actual parsed GNN specification
@@ -628,9 +625,47 @@ def process_export(
                 )
                 model_data = file_result
 
-            # Create file-specific output directory
-            file_output_dir = output_dir / file_name.replace(".md", "")
-            file_output_dir.mkdir(exist_ok=True)
+            source = None
+            source_error = None
+            relative_source = Path(file_name)
+            if "geo_infer" in requested_formats:
+                try:
+                    source_root = Path(target_dir).resolve()
+                    supplied_source = Path(file_result["file_path"])
+                    candidates = (
+                        [supplied_source.resolve()]
+                        if supplied_source.is_absolute()
+                        else [
+                            supplied_source.resolve(),
+                            (source_root / supplied_source).resolve(),
+                        ]
+                    )
+                    source = next(
+                        (
+                            candidate
+                            for candidate in candidates
+                            if candidate.is_relative_to(source_root)
+                            and candidate.is_file()
+                        ),
+                        None,
+                    )
+                    if source is None:
+                        raise ValueError("GNN source must be a file inside target_dir")
+                    if source.name != file_name:
+                        raise ValueError(
+                            "GNN source filename disagrees with Step 3 file_name"
+                        )
+                    relative_source = source.relative_to(source_root)
+                except (TypeError, ValueError, OSError) as exc:
+                    source_error = exc
+
+            # Preserve nested source identities instead of overwriting equal basenames.
+            file_output_dir = (
+                output_dir / relative_source.parent / relative_source.stem
+            ).resolve()
+            if not file_output_dir.is_relative_to(Path(output_dir).resolve()):
+                raise ValueError("Model output directory must remain inside output_dir")
+            file_output_dir.mkdir(parents=True, exist_ok=True)
 
             file_export_result: dict[str, Any] = {
                 "file_name": file_name,
@@ -648,22 +683,50 @@ def process_export(
                     logger.warning(f"Unsupported format: {format_name}")
                     continue
                 try:
-                    extension = "pkl" if format_name == "pickle" else format_name
-                    if format_name == "geo_infer":
-                        geo_spec = get_format_spec("geo_infer")
-                        extension = (
-                            geo_spec["extension"] if geo_spec else ".json"
-                        ).lstrip(".")
+                    spec = get_format_spec(format_name)
+                    extension = spec["extension"].lstrip(".") if spec else format_name
                     export_file = (
                         file_output_dir
-                        / f"{file_name.replace('.md', '')}_{format_name}.{extension}"
+                        / f"{Path(file_name).stem}_{format_name}.{extension}"
                     )
-                    writer_data = (
-                        _geo_writer_input(model_data, file_result, geo_options)
-                        if format_name == "geo_infer"
-                        else model_data
-                    )
-                    success = writer(writer_data, export_file)
+                    if not export_file.resolve().is_relative_to(
+                        Path(output_dir).resolve()
+                    ):
+                        raise ValueError("Export file must remain inside output_dir")
+                    export_data = model_data
+                    if format_name == "geo_infer":
+                        from .geo_infer import MAX_SOURCE_BYTES
+
+                        if source_error is not None:
+                            raise ValueError(str(source_error)) from source_error
+                        per_model = kwargs.get("geo_infer_options", {})
+                        options = None
+                        if isinstance(per_model, dict):
+                            options = per_model.get(relative_source.as_posix())
+                            if options is None and filename_counts[file_name] == 1:
+                                options = per_model.get(file_name)
+                        if options is None and isinstance(geo_options, dict):
+                            # Global CLI opt-in (--geo-* flags): a single
+                            # ``geo_infer`` mapping applies to every model.
+                            options = _pipeline_geo_options(geo_options)
+                        if not isinstance(options, dict):
+                            raise ValueError(
+                                f"Explicit geo_infer_options required for {file_name}"
+                            )
+                        if source is None:
+                            raise ValueError(
+                                "GNN source must be a file inside target_dir"
+                            )
+                        with source.open("rb") as stream:
+                            raw = stream.read(MAX_SOURCE_BYTES + 1)
+                        if len(raw) > MAX_SOURCE_BYTES:
+                            raise ValueError("GNN source exceeds four MiB")
+                        export_data = dict(
+                            model_data,
+                            raw_content=raw.decode("utf-8"),
+                            geo_infer=dict(options),
+                        )
+                    success = writer(export_data, export_file)
 
                     if success:
                         file_export_result["exports"][format_name] = {
@@ -702,11 +765,15 @@ def process_export(
 
         # Save export results
         export_results_file = output_dir / "export_results.json"
+        if not export_results_file.resolve().is_relative_to(Path(output_dir).resolve()):
+            raise ValueError("Export results manifest must remain inside output_dir")
         with open(export_results_file, "w") as f:
             json.dump(export_results, f, indent=2)
 
         # Save export summary
         export_summary_file = output_dir / "export_summary.json"
+        if not export_summary_file.resolve().is_relative_to(Path(output_dir).resolve()):
+            raise ValueError("Export summary manifest must remain inside output_dir")
         with open(export_summary_file, "w") as f:
             json.dump(export_results["summary"], f, indent=2)
 
@@ -720,7 +787,10 @@ def process_export(
             f"  Formats generated: {export_results['summary']['formats_generated']}"
         )
 
-        success = export_results["summary"]["successful_exports"] > 0
+        success = (
+            export_results["summary"]["successful_exports"] > 0
+            and export_results["summary"]["failed_exports"] == 0
+        )
         return cast("bool", success)
 
     except Exception as e:

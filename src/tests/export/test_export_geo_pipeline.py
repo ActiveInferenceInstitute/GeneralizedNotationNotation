@@ -145,12 +145,12 @@ def test_geo_infer_without_step_seconds_fails_visibly_and_writes_nothing(
     parsed.parent.mkdir(parents=True, exist_ok=True)
     parsed.write_text(json.dumps({"sections": {}}))
     _make_step3_results(output_dir, parsed)
-    with pytest.raises(ValueError, match="step_seconds"):
-        process_export(
-            target_dir=ROOT / "input/gnn_files/pomdp_gridworld",
-            output_dir=output_dir,
-            formats=[*_default_formats(), "geo_infer"],
-        )
+    result = process_export(
+        target_dir=ROOT / "input/gnn_files/pomdp_gridworld",
+        output_dir=output_dir,
+        formats=[*_default_formats(), "geo_infer"],
+    )
+    assert result is False
     assert not list(output_dir.rglob("*geo_infer*"))
 
 
