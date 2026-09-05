@@ -22,7 +22,8 @@
     },
     {
       "name": "continuous",
-      "description": "Continuous-state linear-Gaussian fixtures (F/H/Q/R + Gaussian prior; continuous_navigation closes the loop on beliefs). Native on jax, numpyro, pytorch, stan, rxinfer, discopy; reported unsupported (not failed) on pymdp, activeinference_jl, bnlearn.",
+      "description": "Continuous-state linear-Gaussian fixtures (F/H/Q/R + Gaussian prior; continuous_navigation closes the loop on beliefs).",
+      "capability_axis": "supports_continuous",
       "target_dir": "input/gnn_files/continuous",
       "frameworks": "jax,numpyro,stan,rxinfer",
       "representative_files": ["continuous_navigation.md", "stochastic_dynamics.md"]
@@ -37,7 +38,7 @@
     {
       "name": "multiagent",
       "description": "Multi-agent coordination and swarm fixtures.",
-      "target_dir": "input/multi_agent_models",
+      "target_dir": "input/gnn_files/multiagent",
       "frameworks": "rxinfer",
       "representative_files": ["multi_agent_coordination.md"]
     },
