@@ -10,9 +10,19 @@ Deterministic checks run before/after rendering the token-injected manuscript:
    ``manuscript/references.bib``.
 3. **Hard-coded counts** — bare literals equal to a high-value producer count (e.g. the
    test-file count, MCP-tool count) are flagged: they should be ``{{TOKEN}}`` instead.
+4. **Hard-coded step numbers** — a bare integer after "step"/"steps" that equals a
+   ``GNN_STEP_*`` token value is flagged regardless of size. Step numbers are below the
+   ``_HARDCODE_MIN`` floor the count scan uses, so they were invisible to check 3 while
+   the producer emitted a token for every one of them.
+5. **Malformed cross-references** — a pandoc-crossref marker glued to a stray prefix
+   character (``+@fig:x``) still resolves, so no reference gate catches it, but the
+   prefix renders literally into the PDF ("+fig. 2 depicts...").
+6. **config.yaml drift** — ``manuscript/config.yaml`` is never token-substituted, so its
+   ``version:`` / ``date:`` literals are compared against the producer's values.
 
-Exit code is non-zero when an unknown token or dangling citation is found (hard gate).
-Hard-coded-count findings are reported as warnings unless ``--strict`` is passed.
+Exit code is non-zero when an unknown token, dangling citation, malformed cross-reference
+or config.yaml drift is found (hard gate). Hard-coded count and step-number findings are
+reported as warnings unless ``--strict`` is passed.
 
 Usage:
     python scripts/check_manuscript_tokens.py [--strict]
@@ -29,16 +39,41 @@ _PROJECT_ROOT = Path(__file__).resolve().parents[1]
 if str(_PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(_PROJECT_ROOT))
 
-from src.manuscript_variables import generate_variables  # noqa: E402
+from src.manuscript_variables import (  # noqa: E402
+    config_metadata_drift,
+    generate_variables,
+)
 
-# Files in manuscript/ that are documentation, not rendered sections.
-_EXCLUDED = {"README.md", "AGENTS.md", "SYNTAX.md", "99_references.md"}
+# The set of manuscript/*.md files the renderer does NOT substitute, taken from
+# the renderer itself so this gate cannot drift from what actually ships. The
+# literal fallback mirrors infrastructure.rendering.manuscript_injection's
+# EXCLUDED_DOC_FILENAMES for standalone runs (no template checkout on sys.path).
+#
+# Deriving it replaced a hand-maintained list that exempted 99_references.md —
+# a file that IS rendered, as "10 References" in the PDF — while checking
+# preamble.md, whose tokens land in the LaTeX header rather than a section.
+# Both are substituted, so both are checked.
+try:  # pragma: no cover - exercised only with a template checkout present
+    from infrastructure.rendering.manuscript_injection import (  # type: ignore
+        EXCLUDED_DOC_FILENAMES as _EXCLUDED_FROZEN,
+    )
+
+    _EXCLUDED = set(_EXCLUDED_FROZEN)
+except ModuleNotFoundError:
+    _EXCLUDED = {"AGENTS.md", "MANUSCRIPT_STATUS.md", "README.md", "SYNTAX.md"}
 
 _TOKEN_RE = re.compile(r"\{\{([A-Z][A-Z0-9_]*)\}\}")
 _CITE_RE = re.compile(r"@([A-Za-z][\w:-]+)")
 _BIB_KEY_RE = re.compile(r"^@\w+\{([^,]+),", re.MULTILINE)
 # Counts small enough to appear coincidentally (step numbers, dims) are not flagged.
 _HARDCODE_MIN = 10
+# "step 3", "Steps 5 and 6", "steps 11 and 12" — the integers a GNN_STEP_* token owns.
+_STEP_PHRASE_RE = re.compile(r"[Ss]teps?\s+(\d+(?:\s*(?:,|and|to|through|–|-)\s*\d+)*)")
+_INT_RE = re.compile(r"\d+")
+# A crossref marker preceded by a character that is neither "[" nor "!" nor
+# whitespace: the marker resolves, so the reference gate stays green, and the
+# stray prefix renders literally.
+_MALFORMED_XREF_RE = re.compile(r"(?<=[^\[!\s])@(?:fig|tbl|eq|sec):[\w:-]+")
 
 
 def _section_files(manuscript_dir: Path) -> list[Path]:
@@ -101,6 +136,10 @@ def main() -> int:
         )
         if variables.get(k, "").isdigit()
     }
+    # version:/date: are producer-owned. scripts/z_generate_manuscript_variables.py
+    # writes them; this catches a hand-edit that put them back out of step.
+    config_drift = config_metadata_drift(_PROJECT_ROOT, variables)
+
     config_hardcoded: list[str] = []
     for line in config_text.splitlines():
         stripped = line.strip()
@@ -112,8 +151,17 @@ def main() -> int:
                     f"config.yaml: {stripped.split(':')[0]} hard-codes {value} (use a description without the number; {{{{{key}}}}} does not resolve in config.yaml)"
                 )
 
+    # Every pipeline step number the producer owns, keyed by its literal value.
+    # These sit below _HARDCODE_MIN, so the count scan above cannot see them.
+    step_literals = {
+        value: key
+        for key, value in variables.items()
+        if key.startswith("GNN_STEP_") and value.isdigit()
+    }
+
     unknown_tokens: list[str] = []
     dangling_cites: list[str] = []
+    malformed_xrefs: list[str] = []
     hardcoded: list[str] = list(config_hardcoded)
 
     for path in _section_files(manuscript_dir):
@@ -128,6 +176,10 @@ def main() -> int:
                 continue
             if key not in bib_keys:
                 dangling_cites.append(f"{path.name}: [@{key}]")
+        for match in _MALFORMED_XREF_RE.finditer(body):
+            malformed_xrefs.append(
+                f"{path.name}: {match.group(0)!r} has a stray prefix"
+            )
         # token-stripped body so {{COUNT}} does not count as a literal
         no_tokens = _TOKEN_RE.sub("", body)
         for value, key in hardcode_targets.items():
@@ -135,6 +187,14 @@ def main() -> int:
                 hardcoded.append(
                     f"{path.name}: literal {value} should be {{{{{key}}}}}"
                 )
+        for phrase in _STEP_PHRASE_RE.finditer(no_tokens):
+            for number in _INT_RE.findall(phrase.group(1)):
+                step_key = step_literals.get(number)
+                if step_key:
+                    hardcoded.append(
+                        f"{path.name}: step literal {number} in {phrase.group(0)!r} "
+                        f"should be {{{{{step_key}}}}}"
+                    )
 
     print(f"Sections checked: {len(_section_files(manuscript_dir))}")
     print(f"Known tokens: {len(known_tokens)} | Bib keys: {len(bib_keys)}")
@@ -150,6 +210,16 @@ def main() -> int:
         print(f"\nDANGLING CITATIONS ({len(dangling_cites)}):")
         for d in sorted(set(dangling_cites)):
             print(f"  ✗ {d}")
+    if malformed_xrefs:
+        ok = False
+        print(f"\nMALFORMED CROSS-REFERENCES ({len(malformed_xrefs)}):")
+        for m in sorted(set(malformed_xrefs)):
+            print(f"  ✗ {m}")
+    if config_drift:
+        ok = False
+        print(f"\nCONFIG.YAML DRIFT ({len(config_drift)}):")
+        for d in config_drift:
+            print(f"  ✗ {d} — run scripts/z_generate_manuscript_variables.py")
     if config_hardcoded:
         # config.yaml counts cannot be tokenized away — always a hard failure.
         ok = False
