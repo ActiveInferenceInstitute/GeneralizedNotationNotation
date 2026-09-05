@@ -19,6 +19,11 @@ Deterministic checks run before/after rendering the token-injected manuscript:
    prefix renders literally into the PDF ("+fig. 2 depicts...").
 6. **config.yaml drift** — ``manuscript/config.yaml`` is never token-substituted, so its
    ``version:`` / ``date:`` literals are compared against the producer's values.
+7. **Figure accessibility registry** — every ``{#fig:...}`` label a section declares must
+   have an ``output/figures/figure_registry.json`` entry with alt text and an existing
+   image file. The template's own ``validate_figure_registry`` runs at the *validation*
+   stage, not the render stage, so a render could (and did) ship a PDF with the registry
+   absent entirely. This is the in-repo gate that does not depend on the template.
 
 Exit code is non-zero when an unknown token, dangling citation, malformed cross-reference
 or config.yaml drift is found (hard gate). Hard-coded count and step-number findings are
@@ -31,6 +36,7 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import json
 import re
 import sys
 from pathlib import Path
@@ -78,6 +84,43 @@ _MALFORMED_XREF_RE = re.compile(r"(?<=[^\[!\s])@(?:fig|tbl|eq|sec):[\w:-]+")
 
 def _section_files(manuscript_dir: Path) -> list[Path]:
     return [p for p in sorted(manuscript_dir.glob("*.md")) if p.name not in _EXCLUDED]
+
+
+_FIG_LABEL_RE = re.compile(r"\{#(fig:[\w:-]+)")
+
+
+def _figure_registry_issues(manuscript_dir: Path, sections: list[Path]) -> list[str]:
+    """Check every declared figure label against the accessibility registry."""
+    declared: dict[str, str] = {}
+    for path in sections:
+        for label in _FIG_LABEL_RE.findall(path.read_text(encoding="utf-8")):
+            declared.setdefault(label, path.name)
+    if not declared:
+        return []
+    registry_path = _PROJECT_ROOT / "output" / "figures" / "figure_registry.json"
+    if not registry_path.is_file():
+        return [
+            f"{registry_path.relative_to(_PROJECT_ROOT)} is missing while "
+            f"{len(declared)} figure(s) are referenced — run "
+            "python -m scripts.manuscript_build_figures"
+        ]
+    payload = json.loads(registry_path.read_text(encoding="utf-8"))
+    records = payload.get("figures", payload) if isinstance(payload, dict) else payload
+    by_label = {str(rec.get("label")): rec for rec in records if isinstance(rec, dict)}
+    issues: list[str] = []
+    for label, section in sorted(declared.items()):
+        record = by_label.get(label)
+        if record is None:
+            issues.append(f"{section}: {label} has no figure_registry.json entry")
+            continue
+        if not str(record.get("alt_text", "")).strip():
+            issues.append(f"figure_registry.json: {label} has no alt_text")
+        filename = str(record.get("filename", ""))
+        if not filename or not (registry_path.parent / filename).is_file():
+            issues.append(
+                f"figure_registry.json: {label} image {filename!r} is missing"
+            )
+    return issues
 
 
 def _strip_code(text: str) -> str:
@@ -215,6 +258,14 @@ def main() -> int:
         print(f"\nMALFORMED CROSS-REFERENCES ({len(malformed_xrefs)}):")
         for m in sorted(set(malformed_xrefs)):
             print(f"  ✗ {m}")
+    figure_issues = _figure_registry_issues(
+        manuscript_dir, _section_files(manuscript_dir)
+    )
+    if figure_issues:
+        ok = False
+        print(f"\nFIGURE REGISTRY ({len(figure_issues)}):")
+        for f in figure_issues:
+            print(f"  ✗ {f}")
     if config_drift:
         ok = False
         print(f"\nCONFIG.YAML DRIFT ({len(config_drift)}):")
