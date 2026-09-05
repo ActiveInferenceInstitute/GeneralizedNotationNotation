@@ -58,6 +58,7 @@ def _registry_flags(snapshot: RepositorySnapshot, flag: str) -> list[str]:
         ):
             continue
         value = node.value
+        assert value is not None, "FRAMEWORK_REGISTRY has no assigned value"
         if isinstance(value, ast.Call) and value.args:
             value = value.args[0]
         registry = ast.literal_eval(value)
