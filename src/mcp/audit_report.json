@@ -2,7 +2,7 @@
   "modules_total": 32,
   "modules_loaded": 32,
   "modules_errored": 0,
-  "tools_total": 140,
+  "tools_total": 141,
   "tools_list": [
     {
       "name": "analyze_audio_characteristics",
@@ -98,7 +98,7 @@
       "category": "cli",
       "fn": "cli_preflight",
       "documented": true,
-      "description": "Check pipeline environment readiness"
+      "description": "Run pipeline preflight checks and return explicit readiness diagnostics"
     },
     {
       "name": "compute_complexity_metrics",
@@ -891,6 +891,14 @@
       "fn": "render_gnn_to_format_mcp",
       "documented": true,
       "description": "Render a single GNN file (runs Step 11 render; does not currently filter to one framework)."
+    },
+    {
+      "name": "render_spec_to_format",
+      "module": "src.render",
+      "category": "render",
+      "fn": "render_spec_to_format_mcp",
+      "documented": true,
+      "description": "Render a single GNN file to exactly one framework via render_gnn_spec."
     },
     {
       "name": "run_round_trip_tests",

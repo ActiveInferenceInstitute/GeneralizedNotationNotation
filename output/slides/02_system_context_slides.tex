@@ -1,0 +1,478 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\documentclass[
+  ignorenonframetext,
+]{beamer}
+\newif\ifbibliography
+\usepackage{pgfpages}
+\setbeamertemplate{caption}[numbered]
+\setbeamertemplate{caption label separator}{: }
+\setbeamercolor{caption name}{fg=normal text.fg}
+\beamertemplatenavigationsymbolsempty
+% remove section numbering
+\setbeamertemplate{part page}{
+  \centering
+  \begin{beamercolorbox}[sep=16pt,center]{part title}
+    \usebeamerfont{part title}\insertpart\par
+  \end{beamercolorbox}
+}
+\setbeamertemplate{section page}{
+  \centering
+  \begin{beamercolorbox}[sep=12pt,center]{section title}
+    \usebeamerfont{section title}\insertsection\par
+  \end{beamercolorbox}
+}
+\setbeamertemplate{subsection page}{
+  \centering
+  \begin{beamercolorbox}[sep=8pt,center]{subsection title}
+    \usebeamerfont{subsection title}\insertsubsection\par
+  \end{beamercolorbox}
+}
+% Prevent slide breaks in the middle of a paragraph
+\widowpenalties 1 10000
+\raggedbottom
+\AtBeginPart{
+  \frame{\partpage}
+}
+\AtBeginSection{
+  \ifbibliography
+  \else
+    \frame{\sectionpage}
+  \fi
+}
+\AtBeginSubsection{
+  \frame{\subsectionpage}
+}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{longtable,booktabs,array}
+\usepackage{caption}
+\captionsetup[table]{skip=6pt}
+\newcounter{none} % for unnumbered tables
+\usepackage{calc} % for calculating minipage widths
+\usepackage{caption}
+% Make caption package work with longtable
+\makeatletter
+\def\fnum@table{\tablename~\thetable}
+\makeatother
+\usepackage{graphicx}
+\makeatletter
+\newsavebox\pandoc@box
+\newcommand*\pandocbounded[1]{% scales image to fit in text height/width
+  \sbox\pandoc@box{#1}%
+  \Gscale@div\@tempa{\textheight}{\dimexpr\ht\pandoc@box+\dp\pandoc@box\relax}%
+  \Gscale@div\@tempb{\linewidth}{\wd\pandoc@box}%
+  \ifdim\@tempb\p@<\@tempa\p@\let\@tempa\@tempb\fi% select the smaller of both
+  \ifdim\@tempa\p@<\p@\scalebox{\@tempa}{\usebox\pandoc@box}%
+  \else\usebox{\pandoc@box}%
+  \fi%
+}
+% Set default figure placement to htbp
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+% Manuscript macro/package fallbacks (newcommand -> providecommand).
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{booktabs}
+
+% Slide layout defaults for warning-clean scientific decks.
+\usepackage{etoolbox}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{}
+\IfFileExists{seqsplit.sty}{\usepackage{seqsplit}}{\newcommand{\seqsplit}[1]{#1}}
+\protected\def\breakseq#1{\seqsplit{#1}}
+\protected\def\breaktt#1{\begingroup\ttfamily\seqsplit{#1}\endgroup}
+\setlength{\emergencystretch}{6em}
+\tolerance=5000
+\hbadness=10000
+\hfuzz=1pt
+\setlength{\tabcolsep}{2pt}
+\AtBeginEnvironment{longtable}{\tiny\renewcommand{\arraystretch}{0.86}\setlength{\tabcolsep}{1pt}}
+\AtBeginEnvironment{tabular}{\tiny\renewcommand{\arraystretch}{0.86}\setlength{\tabcolsep}{1pt}}
+\AtBeginEnvironment{equation}{\tiny}
+\AtBeginEnvironment{equation*}{\tiny}
+\AtBeginEnvironment{align}{\tiny}
+\AtBeginEnvironment{align*}{\tiny}
+\AtBeginEnvironment{itemize}{\footnotesize}
+\AtBeginEnvironment{enumerate}{\footnotesize}
+\AtBeginEnvironment{description}{\footnotesize}
+\setbeamerfont{caption}{size=\tiny}
+\setbeamerfont{caption name}{size=\tiny}
+\setbeamerfont{normal text}{size=\small}
+\setbeamerfont{frametitle}{size=\small}
+\setbeamerfont{section title}{size=\footnotesize}
+\setbeamerfont{subsection title}{size=\footnotesize}
+\setbeamertemplate{section page}{%
+  \centering
+  \begin{beamercolorbox}[sep=12pt,center,wd=\paperwidth]{section title}
+    \parbox{0.86\paperwidth}{\centering\usebeamerfont{section title}\insertsection\par}
+  \end{beamercolorbox}
+}
+\setbeamertemplate{subsection page}{%
+  \centering
+  \begin{beamercolorbox}[sep=8pt,center,wd=\paperwidth]{subsection title}
+    \parbox{0.86\paperwidth}{\centering\usebeamerfont{subsection title}\insertsubsection\par}
+  \end{beamercolorbox}
+}
+\setlength{\abovecaptionskip}{2pt}
+\setlength{\belowcaptionskip}{0pt}
+
+% Natbib and cross-reference fallbacks — slides don't load natbib
+% or cleveref, but combined-PDF manuscript prose may emit these
+% commands. The fallback renders citations as a bracketed key list
+% and cross-references as detokenized labels so slides don't fail on
+% undefined control sequences or raw underscores. \providecommand is
+% a no-op if packages load later.
+\providecommand{\citep}[1]{[#1]}
+\providecommand{\citet}[1]{#1}
+\providecommand{\citealp}[1]{#1}
+\providecommand{\citeauthor}[1]{#1}
+\providecommand{\citeyear}[1]{#1}
+\providecommand{\cref}[1]{\texttt{\detokenize{#1}}}
+\providecommand{\Cref}[1]{\texttt{\detokenize{#1}}}
+\providecommand{\crefrange}[2]{\texttt{\detokenize{#1}}--\texttt{\detokenize{#2}}}
+\providecommand{\Crefrange}[2]{\texttt{\detokenize{#1}}--\texttt{\detokenize{#2}}}
+\providecommand{\paragraph}[1]{\textbf{#1}\ }
+
+\newtheorem{proposition}{Proposition}
+\newtheorem{hypothesis}{Hypothesis}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{axiom}{Axiom}
+\newtheorem{property}{Property}
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+% fallback for those not using the hyperref driver hyperxmp:
+\makeatletter
+\@ifundefined{xmpquote}{\newcommand{\xmpquote}[1]{#1}}{}
+\makeatother
+\hypersetup{
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+\author{\texorpdfstring{}{}}
+\date{}
+
+\begin{document}
+
+\section{System Context}\label{sec:system_context}
+
+\begin{frame}[allowframebreaks]{System Context}
+Generalized Notation Notation (GNN) couples a small, declarative text
+language for Active Inference generative models to a deterministic
+processing pipeline that turns each specification into validation,
+visualization, simulation, and analysis artifacts (Smékal and Friedman
+2023). The language gives a model one canonical written form; the
+pipeline gives that form many executable and graphical realizations.
+This section describes both halves of the architecture and the way they
+meet, and it states the mathematical objects the language is obliged to
+carry.
+\end{frame}
+
+\begin{frame}[fragile,allowframebreaks]{The GNN Language}
+\protect\phantomsection\label{the-gnn-language}
+A GNN model is a plain-text document organized into named sections that
+together pin down a complete partially observable Markov decision
+process. The \texttt{StateSpaceBlock} declares the variables of the
+model and their dimensions --- hidden states, observations, control
+factors, and policies --- establishing the shape of every tensor that
+follows. The \texttt{Connections} section records the directed and
+undirected dependencies among those variables, the edges of the
+underlying factor graph that downstream tools read to lay out diagrams
+and wire up inference. The full construct vocabulary is catalogued in
+tbl.~4.
+\end{frame}
+
+\begin{frame}[fragile,allowframebreaks]{The Generative Model a
+Specification Denotes}
+\protect\phantomsection\label{the-generative-model-a-specification-denotes}
+Every GNN file denotes one object: a discrete state-space generative
+model over a horizon \(T\), factorized as in
+eq.~\ref{eq:generative_model} following the standard formulation (Da
+Costa et al. 2020; Smith et al. 2022).
+
+\begin{equation}\protect\phantomsection\label{eq:generative_model}{
+P(o_{1:T},\, s_{1:T},\, \pi) \;=\; P(\pi)\; P(s_1) \prod_{t=1}^{T} P(o_t \mid s_t) \prod_{t=2}^{T} P(s_t \mid s_{t-1},\, \pi)
+}\end{equation}
+
+The four matrices named in the \texttt{StateSpaceBlock} are exactly the
+factors of eq.~\ref{eq:generative_model}, and this correspondence is
+what makes the notation translatable rather than merely descriptive. The
+\texttt{A} matrix is the likelihood, a column-stochastic map from hidden
+states to observation outcomes, given in eq.~\ref{eq:likelihood}.
+
+\end{frame}
+
+\begin{frame}[fragile,allowframebreaks]{The Generative Model a
+Specification Denotes}
+\begin{equation}\protect\phantomsection\label{eq:likelihood}{
+P(o_t = i \mid s_t = j) \;=\; A_{ij}, \qquad \sum_i A_{ij} = 1
+}\end{equation}
+
+The \texttt{B} matrix is the controlled transition dynamics: one
+column-stochastic slice per action, as in eq.~\ref{eq:transition}.
+
+\begin{equation}\protect\phantomsection\label{eq:transition}{
+P(s_{t+1} = i \mid s_t = j,\, u_t = k) \;=\; B^{(k)}_{ij}, \qquad \sum_i B^{(k)}_{ij} = 1
+}\end{equation}
+
+The \texttt{C} vector holds log-preferences over observations, which
+enter inference as the biased outcome distribution of
+eq.~\ref{eq:preference}; the \texttt{D} vector is the prior over initial
+hidden states, eq.~\ref{eq:prior}.
+
+\end{frame}
+
+\begin{frame}[fragile,allowframebreaks]{The Generative Model a
+Specification Denotes}
+\begin{equation}\protect\phantomsection\label{eq:preference}{
+\tilde{P}(o_t = i) \;=\; \sigma(C)_i \;=\; \frac{\exp C_i}{\sum_j \exp C_j}
+}\end{equation}
+
+\begin{equation}\protect\phantomsection\label{eq:prior}{
+P(s_1 = i) \;=\; D_i, \qquad \sum_i D_i = 1
+}\end{equation}
+
+Given those factors, perception is approximate Bayesian inference: a
+variational posterior \(Q(s)\) is fitted by minimizing the variational
+free energy of eq.~\ref{eq:vfe}, which decomposes into a complexity term
+and an accuracy term (Friston 2010).
+
+\begin{equation}\protect\phantomsection\label{eq:vfe}{
+F[Q] \;=\; \underbrace{D_{\mathrm{KL}}\!\left[\,Q(s) \,\|\, P(s)\,\right]}_{\text{complexity}} \;-\; \underbrace{\mathbb{E}_{Q(s)}\!\left[\ln P(o \mid s)\right]}_{\text{accuracy}}
+}\end{equation}
+
+\end{frame}
+
+\begin{frame}[fragile,allowframebreaks]{The Generative Model a
+Specification Denotes}
+Action is expected-free-energy minimization: each policy \(\pi\) is
+scored over future steps \(\tau\) by eq.~\ref{eq:efe}, whose two terms
+are the information gain a policy is expected to yield and the extent to
+which its predicted outcomes match \texttt{C} (Da Costa et al. 2020).
+
+\begin{equation}\protect\phantomsection\label{eq:efe}{
+G(\pi) \;=\; -\underbrace{\mathbb{E}_{Q(o_\tau,\, s_\tau \mid \pi)}\!\left[\ln Q(s_\tau \mid o_\tau, \pi) - \ln Q(s_\tau \mid \pi)\right]}_{\text{epistemic value}} \;-\; \underbrace{\mathbb{E}_{Q(o_\tau \mid \pi)}\!\left[\ln \tilde{P}(o_\tau)\right]}_{\text{pragmatic value}}
+}\end{equation}
+
+\end{frame}
+
+\begin{frame}[fragile,allowframebreaks]{The Generative Model a
+Specification Denotes}
+The policy posterior then combines those scores with the habit prior
+\texttt{E} declared in the specification, as in eq.~\ref{eq:policy}, and
+the selected action \(u\) is sampled from it.
+
+\begin{equation}\protect\phantomsection\label{eq:policy}{
+Q(\pi) \;=\; \sigma\!\left(\ln E - G\right)
+}\end{equation}
+
+Recent work continues to refine how expected-free-energy objectives
+relate to variational inference and to alternative but equivalent
+formulations, which is why GNN keeps the objects of
+eq.~\ref{eq:generative_model} through eq.~\ref{eq:policy} explicit in
+the notation rather than burying them in backend-specific code (Champion
+et al. 2024; Nuijten, Lukashchuk, et al. 2026; Nuijten, Laar, et al.
+2026). A \texttt{ModelParameters} section fixes the scalars those
+objects depend on --- factor cardinalities and precision terms --- while
+a \texttt{Time} section declares whether the model is static or dynamic
+and, if dynamic, how the horizon \(T\) and its discretization are
+\end{frame}
+
+\begin{frame}[fragile,allowframebreaks]{The Generative Model a
+Specification Denotes}
+organized. Because every one of these sections is explicit text, a GNN
+file is at once human-readable, diffable under version control, and
+unambiguous to a parser --- the property that lets the rest of the
+pipeline operate deterministically.
+\end{frame}
+
+\begin{frame}[fragile,allowframebreaks]{The Processing Pipeline}
+\protect\phantomsection\label{the-processing-pipeline}
+The pipeline is a fixed sequence of 25 numbered steps, 0--24, each a
+self-contained stage that consumes the artifacts of its predecessors and
+writes typed outputs for those that follow. Early steps parse and
+type-check the GNN text and validate it against the language schema;
+middle steps render visualizations, export the model to executable
+backends, and run simulations; later steps perform analysis, reporting,
+and downstream integration. The data dependencies among the steps form
+the directed acyclic graph shown in fig.~\ref{fig:pipeline}, which makes
+the whole flow inspectable: any artifact can be traced back to the step
+that produced it and forward to every step that depends on it.
+
+\end{frame}
+
+\begin{frame}[fragile,allowframebreaks]{The Processing Pipeline}
+\begin{figure}
+\centering
+\includegraphics[width=0.9\linewidth,height=0.40\textheight,keepaspectratio,alt={The GNN processing pipeline as a directed acyclic graph of numbered steps, from parsing and validation through visualization, execution, and analysis.}]{../figures/gnn_pipeline_dag.png}
+\caption{The GNN processing pipeline as a directed acyclic graph of
+numbered steps, from parsing and validation through visualization,
+execution, and analysis.}\label{fig:pipeline}
+\end{figure}
+
+\end{frame}
+
+\begin{frame}[fragile,allowframebreaks]{The Processing Pipeline}
+The per-step responsibilities are enumerated in
+tbl.~\ref{tbl:pipeline_steps}; each row names a step and the
+transformation it owns within the 0--24 range.
+
+\end{frame}
+
+\begin{frame}[fragile,allowframebreaks]{The Processing Pipeline}
+\begin{longtable}[]{@{}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.4000}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3000}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3000}}@{}}
+\caption{The pipeline steps, their thin orchestrator modules, and their
+purposes, read from
+\protect\breaktt{src/STEP\_INDEX.md}.}\label{tbl:pipeline_steps}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedleft
+Step
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Module
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Purpose
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedleft
+Step
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Module
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Purpose
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+0 & \texttt{0\_template.py} & Pipeline template \& initialization \\
+1 & \texttt{1\_setup.py} & Environment setup \& UV dependency install \\
+2 & \texttt{2\_tests.py} & Test suite execution (pytest) \\
+3 & \texttt{3\_gnn.py} & GNN file discovery \& multi-format parsing \\
+4 & \breaktt{4\_model\_registry.py} & Model versioning \& registry
+management \\
+5 & \breaktt{5\_type\_checker.py} & GNN type validation \& resource
+estimation \\
+6 & \texttt{6\_validation.py} & Consistency \& semantic quality
+checking \\
+7 & \texttt{7\_export.py} & Multi-format export (JSON, XML, GraphML,
+GEXF, Pickle) \\
+8 & \breaktt{8\_visualization.py} & Graph \& matrix visualization
+generation \\
+9 & \breaktt{9\_advanced\_viz.py} & Interactive / advanced visualization
+(Plotly, D3) \\
+10 & \texttt{10\_ontology.py} & Active Inference ontology processing \&
+validation \\
+11 & \texttt{11\_render.py} & Code generation for simulation
+frameworks \\
+12 & \texttt{12\_execute.py} & Execute rendered simulation scripts \\
+13 & \texttt{13\_llm.py} & LLM-enhanced analysis \& model
+interpretation \\
+14 & \breaktt{14\_ml\_integration.py} & Machine learning integration \&
+model training \\
+15 & \texttt{15\_audio.py} & Audio sonification generation (SAPF) \\
+16 & \texttt{16\_analysis.py} & Statistical analysis \& cross-simulation
+aggregation \\
+17 & \breaktt{17\_integration.py} & System integration \& cross-module
+coordination \\
+18 & \texttt{18\_security.py} & Security validation \& generated code
+scanning \\
+19 & \texttt{19\_research.py} & Research tools \& literature
+references \\
+20 & \texttt{20\_website.py} & Static HTML website generation \\
+21 & \texttt{21\_mcp.py} & Model Context Protocol processing \& tool
+registration \\
+22 & \texttt{22\_gui.py} & Interactive GNN constructor GUI \\
+23 & \texttt{23\_report.py} & Comprehensive analysis report
+generation \\
+24 & \breaktt{24\_intelligent\_analysis.py} & AI-powered pipeline
+analysis \& executive reports \\
+\bottomrule\noalign{}
+\end{longtable}
+
+\end{frame}
+
+\begin{frame}[fragile,allowframebreaks]{The Processing Pipeline}
+This staged design keeps the architecture modular. The implementation is
+organized into 31 source packages, one cluster of responsibilities per
+concern, and is documented across 614 documentation files so that each
+step's contract, inputs, and outputs are specified independently of the
+others. New backends or analyses attach to the graph by declaring their
+dependencies rather than by editing a monolith, and the deterministic
+step ordering means a model processed today yields the same artifacts
+when reprocessed tomorrow.
+\end{frame}
+
+\begin{frame}[allowframebreaks]{The Triple Play}
+\protect\phantomsection\label{the-triple-play}
+The reason for separating a single written language from a multi-stage
+pipeline is the design goal GNN calls the Triple Play: one model
+specification, three coordinated modes of existence. The same GNN text
+is simultaneously a human-readable model description, a set of graphical
+visualizations of its state space and factor structure, and an
+executable cognitive model that can be run as a simulation.
++fig.~\ref{fig:triple_play} depicts these three faces and the shared
+specification at their center.
+
+\end{frame}
+
+\begin{frame}[allowframebreaks]{The Triple Play}
+\begin{figure}
+\centering
+\includegraphics[width=0.7\linewidth,height=0.40\textheight,keepaspectratio,alt={The Triple Play: a single GNN specification rendered as readable text, as graphical visualizations, and as an executable model.}]{../figures/gnn_triple_play.png}
+\caption{The Triple Play: a single GNN specification rendered as
+readable text, as graphical visualizations, and as an executable
+model.}\label{fig:triple_play}
+\end{figure}
+
+\end{frame}
+
+\begin{frame}[allowframebreaks]{The Triple Play}
+Each face is generated from the same source, so they cannot drift apart.
+The text is the contract a researcher reads and reviews; the
+visualizations expose the factor-graph structure for inspection and
+communication; and the executable rendering lets the identical model be
+simulated across inference frameworks, connecting the written
+specification to libraries such as pymdp for discrete Active Inference
+(Heins et al. 2022) and to the broader tooling ecosystem for
+compositional model representation (Felice et al. 2021). Because all
+three derive from one parsed document, GNN turns a model from a static
+artifact into a live object that can be read, seen, and run without
+re-encoding it for each purpose (Smith et al. 2022).
+\end{frame}
+
+\end{document}

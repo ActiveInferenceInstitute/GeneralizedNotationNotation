@@ -12,7 +12,7 @@ Active Inference [@gnn2023; @dacosta2020; @parr2022].
 A GNN file is an ordered, UTF-8 Markdown document whose level-2 headers name
 required and optional sections. The strict schema validator enforces section
 order, declaration grammar, and connection syntax; the constructs below are the
-load-bearing sections a parser must recognize.
+load-bearing sections a parser must recognize; they are catalogued in [@tbl:gnn_constructs].
 
 | Construct | Meaning |
 | --- | --- |
@@ -31,27 +31,31 @@ load-bearing sections a parser must recognize.
 | `A-B` | Undirected (bidirectional) connection operator, e.g. `s-A` (a hidden state participates in the likelihood mapping). |
 | `A>B:label` / `A-B:label` | A v1.1 annotated edge; the trailing label documents the relation and is preserved but may be ignored for structural validation. |
 | `default=…` | A v1.1 declaration hint (`uniform`, `zeros`, `ones`, `eye`, `random`) supplying an initialization for a matrix or vector. |
+: GNN language constructs a conforming parser must recognize, with the meaning each carries. {#tbl:gnn_constructs}
 
 ## Active Inference Symbols
 
 The exemplar discrete POMDP agent declares the standard generative-model
 components of Active Inference over a discrete state space, mapping each GNN
-variable to its probabilistic meaning [@dacosta2020; @smith2022; @parr2022].
+variable to its probabilistic meaning [@dacosta2020; @smith2022; @parr2022]. Each row
+of [@tbl:actinf_symbols] names the equation in [@sec:system_context] that fixes the
+symbol's role, so the glossary and the formal statement cannot drift apart.
 
 | Symbol | Meaning |
 | --- | --- |
-| `A` | Likelihood (observation) matrix encoding $P(o \mid s)$, mapping hidden states to observation outcomes. |
-| `B` | Transition matrix encoding $P(s' \mid s, u)$, mapping a previous state and action to the next state. |
-| `C` | Preference vector: log-preferences over observation outcomes that bias the agent toward preferred outcomes. |
-| `D` | Prior vector over initial hidden states, $P(s_0)$. |
-| `E` | Habit vector: an initial policy prior (baseline preference) over actions. |
+| `A` | Likelihood (observation) matrix encoding $P(o \mid s)$, mapping hidden states to observation outcomes ([@eq:likelihood]). |
+| `B` | Transition matrix encoding $P(s' \mid s, u)$, mapping a previous state and action to the next state ([@eq:transition]). |
+| `C` | Preference vector: log-preferences over observation outcomes that bias the agent toward preferred outcomes ([@eq:preference]). |
+| `D` | Prior vector over initial hidden states ([@eq:prior]). |
+| `E` | Habit vector: an initial policy prior (baseline preference) over actions, entering the policy posterior ([@eq:policy]). |
 | `s` | Current hidden-state distribution; `s_prime` (`s'`) is the next hidden-state distribution. |
 | `o` | Current observation, an integer index over outcome modalities. |
-| `π` | Policy: a distribution over actions inferred from expected free energy. |
-| `u` | The selected (sampled) action. |
-| `F` | Variational free energy, minimized during state inference to update beliefs from observations [@friston2010]. |
-| `G` | Expected free energy per policy, minimized during policy inference to score candidate actions [@dacosta2020]. |
-| `t` | Discrete time step. |
+| `π` | Policy: a distribution over actions inferred from expected free energy ([@eq:policy]). |
+| `u` | The selected (sampled) action, sampled from the policy posterior. |
+| `F` | Variational free energy, minimized during state inference to update beliefs from observations ([@eq:vfe]) [@friston2010]. |
+| `G` | Expected free energy per policy, minimized during policy inference to score candidate actions ([@eq:efe]) [@dacosta2020]. |
+| `t` | Discrete time step; the horizon $T$ bounds the product in [@eq:generative_model]. |
+: Active Inference symbols carried by a GNN specification, each bound to the equation in [@sec:system_context] that defines it. {#tbl:actinf_symbols}
 
 ## Ontology Bindings and Implementations
 

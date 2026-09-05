@@ -1,0 +1,2329 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.11" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="Daniel Ari Friedman" />
+  <meta name="description" content="A text language and modular processing pipeline for Active Inference generative models" />
+  <title>GeneralizedNotationNotation: A Text Language for Active
+Inference Models</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      white-space: pre-wrap;
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #1a1a1a;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+    /* CSS for citations */
+    div.csl-bib-body { }
+    div.csl-entry {
+      clear: both;
+    }
+    .hanging-indent div.csl-entry {
+      margin-left:2em;
+      text-indent:-2em;
+    }
+    div.csl-left-margin {
+      min-width:2em;
+      float:left;
+    }
+    div.csl-right-inline {
+      margin-left:2em;
+      padding-left:1em;
+    }
+    div.csl-indent {
+      margin-left: 2em;
+    }  </style>
+  <script data-template-mathjax-config>
+window.MathJax = window.MathJax || {};
+window.MathJax.chtml = Object.assign({}, window.MathJax.chtml, {
+  fontURL: "https://cdn.jsdelivr.net/npm/@mathjax/mathjax-newcm-font@4.0.0/chtml/woff2",
+  dynamicPrefix: "https://cdn.jsdelivr.net/npm/@mathjax/mathjax-newcm-font@4.0.0/chtml/dynamic"
+});
+var templateMathOutput = window.MathJax.output || {};
+window.MathJax.output = Object.assign({}, templateMathOutput, {
+  displayOverflow: "linebreak",
+  linebreaks: Object.assign({}, templateMathOutput.linebreaks, {
+    inline: true,
+    width: "100%",
+    lineleading: 0.5
+  })
+});
+window.normalizeTemplateMathJaxAria = function () {
+  document.querySelectorAll("mjx-speech[aria-roledescription]").forEach(function (node) {
+    var roleDescription = node.getAttribute("aria-roledescription") || "";
+    if (/[-]/.test(roleDescription)) {
+      node.setAttribute("aria-roledescription", "mathematical expression");
+    }
+  });
+};
+window.MathJax.startup = Object.assign({}, window.MathJax.startup, {
+  ready: function () {
+    window.MathJax.startup.defaultReady();
+    window.MathJax.startup.promise.then(window.normalizeTemplateMathJaxAria);
+  }
+});
+</script>
+<script defer=""
+  type="text/javascript" src="https://cdn.jsdelivr.net/npm/mathjax@4.0.0/tex-chtml.js" integrity="sha384-2BWc4dVaHADUocwKrUrK9u3iDwHxVMKXWEcoRmUkXYSFKhAsgVAYClu9ydNuo5Oz" crossorigin="anonymous"></script>
+
+<link data-template-favicon rel="icon" href="favicon.ico">
+
+<style>
+:root {
+  --brand-1: #5b6ee0;
+  --web-bg: #f8f8f8;
+  --web-surface: #ffffff;
+  --web-text: #2c3e50;
+  --web-border: #bdc3c7;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --brand-1: #7e8ce8;
+    --web-bg: #0f1420;
+    --web-surface: #161c2b;
+    --web-text: #e6eaf2;
+    --web-border: #2a3447;
+  }
+}
+.theorem-box {
+  border-left: 4px solid var(--brand-1);
+  background: var(--web-surface);
+  padding: 0.6em 1em;
+  margin: 1.1em 0;
+  border-radius: 0 4px 4px 0;
+}
+.theorem-box.definition { border-left-style: dashed; }
+.theorem-box > p:first-child { margin-top: 0; }
+.theorem-box > p:last-child { margin-bottom: 0; }
+.figure-long-description {
+  border: 1px solid var(--web-border);
+  border-radius: 4px;
+  margin-block: 0.75rem;
+  padding: 0.5rem 0.75rem;
+}
+.figure-long-description > summary { cursor: pointer; font-weight: 700; }
+.figure-long-description > p { max-width: 80ch; overflow-wrap: anywhere; }
+.figure-exact-values { max-width: 80ch; overflow-wrap: anywhere; }
+code { overflow-wrap: anywhere; word-break: break-word; }
+pre {
+  max-width: 100%;
+  overflow: visible;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+pre code { overflow-wrap: inherit; white-space: inherit; word-break: inherit; }
+div.sourceCode { max-width: 100%; overflow: visible; }
+pre.sourceCode { background: #2c3e50; color: #ecf0f1; }
+pre.sourceCode code,
+pre.sourceCode code span { color: inherit; }
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span {
+  display: block;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+mjx-container[display="true"] { max-width: 100%; overflow: visible; }
+.table-scroll {
+  max-width: 100%;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  scrollbar-gutter: stable;
+}
+.table-scroll:focus-visible {
+  outline: 3px solid var(--brand-1);
+  outline-offset: 3px;
+}
+.table-scroll > table { margin-block: 0; min-width: 100%; width: max-content; }
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  max-width: 100%;
+  overflow-x: hidden;
+  overflow-x: clip;
+}
+
+body {
+  font-family: 'Liberation Serif', 'Times New Roman', serif;
+  line-height: 1.6;
+  width: min(100%, 800px);
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f8f8f8;
+  color: #1a1a1a;
+  overflow-wrap: break-word;
+  overflow-x: hidden;
+  overflow-x: clip;
+}
+
+main,
+nav,
+section,
+article,
+figure,
+figcaption {
+  min-width: 0;
+}
+
+.skip-link {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  padding: 0.65rem 0.9rem;
+  transform: translateY(-120%);
+  background-color: #1a1a1a;
+  color: #ffffff;
+  font-family: sans-serif;
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+.skip-link:visited {
+  color: #ffffff;
+}
+
+.skip-link:focus,
+.skip-link:focus-visible {
+  transform: translateY(0);
+}
+
+@media (max-width: 600px) {
+  body {
+    width: 100%;
+    max-width: 100%;
+    padding: 16px;
+  }
+
+  figure img {
+    width: 100% !important;
+  }
+}
+
+@media (max-width: 800px) {
+  body {
+    width: 100%;
+    max-width: 100vw;
+    margin: 0 auto;
+  }
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #2c3e50;
+  border-bottom: 2px solid #3498db;
+  padding-bottom: 5px;
+  overflow-wrap: anywhere;
+}
+
+code {
+  background-color: #ecf0f1;
+  padding: 2px 4px;
+  border-radius: 3px;
+  font-family: 'Liberation Mono', 'Courier New', monospace;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+pre {
+  background-color: #2c3e50;
+  color: #ecf0f1;
+  padding: 15px;
+  border-radius: 5px;
+  max-width: 100%;
+  overflow: visible;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+pre code {
+  overflow-wrap: inherit;
+  white-space: inherit;
+  word-break: inherit;
+}
+
+div.sourceCode {
+  max-width: 100%;
+  overflow: visible;
+}
+
+pre.sourceCode {
+  background: #2c3e50;
+  color: #ecf0f1;
+}
+
+pre.sourceCode code,
+pre.sourceCode code span {
+  color: inherit;
+}
+
+pre > code.sourceCode {
+  white-space: pre-wrap;
+}
+
+pre > code.sourceCode > span {
+  display: block;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 20px 0;
+}
+
+.table-scroll {
+  max-width: 100%;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  scrollbar-gutter: stable;
+}
+
+.table-scroll:focus-visible {
+  outline: 3px solid #1f6f8b;
+  outline-offset: 3px;
+}
+
+.table-scroll > table {
+  margin-block: 0;
+  min-width: 100%;
+  width: max-content;
+}
+
+figure {
+  max-width: 100%;
+  margin: 1.5rem 0;
+}
+
+th, td {
+  border: 1px solid #bdc3c7;
+  padding: 8px;
+  text-align: left;
+}
+
+th {
+  background-color: #1f6f8b;
+  color: white;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  border: 1px solid #bdc3c7;
+  border-radius: 5px;
+  margin: 20px 0;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+a {
+  color: #b91c1c;
+  text-decoration: underline;
+  text-decoration-thickness: 0.08em;
+  text-underline-offset: 0.14em;
+  overflow-wrap: anywhere;
+}
+
+a:visited {
+  color: #8f1d1d;
+}
+
+a:hover {
+  text-decoration-thickness: 0.14em;
+}
+
+a:focus-visible {
+  outline: 3px solid #1f6f8b;
+  outline-offset: 3px;
+}
+
+.toc {
+  background-color: #ecf0f1;
+  padding: 20px;
+  border-radius: 5px;
+  margin-bottom: 30px;
+}
+
+.toc a,
+#TOC a {
+  color: #b91c1c;
+  display: inline-block;
+  min-height: 28px;
+  line-height: 1.5;
+  padding-block: 2px;
+}
+
+.toc li,
+#TOC li {
+  margin-block: 1px;
+}
+
+.math {
+  text-align: center;
+  margin: 20px 0;
+  font-size: 1.1em;
+}
+
+mjx-container[display="true"] {
+  display: block;
+  max-width: 100%;
+  overflow: visible;
+  padding-bottom: 0.25rem;
+}
+
+.figure {
+  text-align: center;
+  margin: 30px 0;
+}
+
+.figure img {
+  max-width: 100%;
+  height: auto;
+  border: 2px solid #3498db;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+/* A reading column keeps prose comfortable, but dense scientific figures need
+   a larger inspection surface.  The rendered image remains responsive and the
+   explicit link opens its source-resolution asset without changing the PDF. */
+.figure-full-size-link {
+  color: inherit;
+  display: block;
+  max-width: 100%;
+  text-align: center;
+}
+
+.figure-full-size-link img {
+  cursor: zoom-in;
+  margin-bottom: 0.45rem;
+}
+
+.figure-full-size-label {
+  color: #1f6f8b;
+  display: inline-block;
+  font-family: sans-serif;
+  font-size: 0.875rem;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+  text-decoration: underline;
+  text-underline-offset: 0.14em;
+}
+
+.figure-full-size-link:focus-visible {
+  outline: 3px solid #1f6f8b;
+  outline-offset: 4px;
+}
+
+@media (min-width: 1000px) {
+  .figure-full-size-link {
+    left: 50%;
+    max-width: none;
+    position: relative;
+    transform: translateX(-50%);
+    width: min(1080px, calc(100vw - 3rem));
+  }
+}
+
+.figure-caption {
+  font-style: italic;
+  color: #4b5563;
+  margin-top: 10px;
+  text-align: center;
+}
+
+.figure-long-description,
+.figure-exact-values {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main-content">Skip to main content</a>
+<header id="title-block-header">
+<h1 class="title">GeneralizedNotationNotation: A Text Language for
+Active Inference Models</h1>
+<p class="subtitle">A text language and modular processing pipeline for
+Active Inference generative models</p>
+<p class="author">Daniel Ari Friedman</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#sec:abstract" id="toc-sec:abstract"><span
+class="toc-section-number">1</span> Abstract</a></li>
+<li><a href="#sec:introduction" id="toc-sec:introduction"><span
+class="toc-section-number">2</span> Introduction</a>
+<ul>
+<li><a href="#motivation" id="toc-motivation"><span
+class="toc-section-number">2.1</span> Motivation</a></li>
+<li><a href="#the-gnn-approach" id="toc-the-gnn-approach"><span
+class="toc-section-number">2.2</span> The GNN Approach</a></li>
+<li><a href="#contributions" id="toc-contributions"><span
+class="toc-section-number">2.3</span> Contributions</a></li>
+<li><a href="#reader-orientation" id="toc-reader-orientation"><span
+class="toc-section-number">2.4</span> Reader Orientation</a></li>
+</ul></li>
+<li><a href="#sec:system_context" id="toc-sec:system_context"><span
+class="toc-section-number">3</span> System Context</a>
+<ul>
+<li><a href="#the-gnn-language" id="toc-the-gnn-language"><span
+class="toc-section-number">3.1</span> The GNN Language</a></li>
+<li><a href="#the-generative-model-a-specification-denotes"
+id="toc-the-generative-model-a-specification-denotes"><span
+class="toc-section-number">3.2</span> The Generative Model a
+Specification Denotes</a></li>
+<li><a href="#the-processing-pipeline"
+id="toc-the-processing-pipeline"><span
+class="toc-section-number">3.3</span> The Processing Pipeline</a></li>
+<li><a href="#the-triple-play" id="toc-the-triple-play"><span
+class="toc-section-number">3.4</span> The Triple Play</a></li>
+</ul></li>
+<li><a href="#sec:methods" id="toc-sec:methods"><span
+class="toc-section-number">4</span> Methods</a>
+<ul>
+<li><a href="#parsing-and-multi-format-export"
+id="toc-parsing-and-multi-format-export"><span
+class="toc-section-number">4.1</span> Parsing and Multi-Format
+Export</a></li>
+<li><a href="#type-checking-and-validation"
+id="toc-type-checking-and-validation"><span
+class="toc-section-number">4.2</span> Type Checking and
+Validation</a></li>
+<li><a href="#rendering-to-multiple-backends"
+id="toc-rendering-to-multiple-backends"><span
+class="toc-section-number">4.3</span> Rendering to Multiple
+Backends</a></li>
+<li><a href="#execution" id="toc-execution"><span
+class="toc-section-number">4.4</span> Execution</a></li>
+<li><a href="#long-running-orchestration-contracts"
+id="toc-long-running-orchestration-contracts"><span
+class="toc-section-number">4.5</span> Long-Running Orchestration
+Contracts</a></li>
+<li><a href="#analysis-visualization-and-reporting"
+id="toc-analysis-visualization-and-reporting"><span
+class="toc-section-number">4.6</span> Analysis, Visualization, and
+Reporting</a></li>
+<li><a href="#reproducibility-and-auto-injection"
+id="toc-reproducibility-and-auto-injection"><span
+class="toc-section-number">4.7</span> Reproducibility and
+Auto-Injection</a></li>
+</ul></li>
+<li><a href="#sec:artifacts_evidence"
+id="toc-sec:artifacts_evidence"><span
+class="toc-section-number">5</span> Artifacts and Evidence</a>
+<ul>
+<li><a href="#model-family-coverage"
+id="toc-model-family-coverage"><span
+class="toc-section-number">5.1</span> Model-Family Coverage</a></li>
+<li><a href="#semantic-fidelity-and-cross-framework-reliability-gates"
+id="toc-semantic-fidelity-and-cross-framework-reliability-gates"><span
+class="toc-section-number">5.2</span> Semantic-Fidelity and
+Cross-Framework Reliability Gates</a></li>
+<li><a href="#repository-scale" id="toc-repository-scale"><span
+class="toc-section-number">5.3</span> Repository Scale</a></li>
+<li><a href="#claim-discipline" id="toc-claim-discipline"><span
+class="toc-section-number">5.4</span> Claim Discipline</a></li>
+</ul></li>
+<li><a href="#sec:reproducibility" id="toc-sec:reproducibility"><span
+class="toc-section-number">6</span> Reproducibility</a>
+<ul>
+<li><a href="#pipeline-smoke-run" id="toc-pipeline-smoke-run"><span
+class="toc-section-number">6.1</span> Pipeline Smoke Run</a></li>
+<li><a href="#validation-gates" id="toc-validation-gates"><span
+class="toc-section-number">6.2</span> Validation Gates</a></li>
+<li><a href="#manuscript-reproducibility"
+id="toc-manuscript-reproducibility"><span
+class="toc-section-number">6.3</span> Manuscript
+Reproducibility</a></li>
+<li><a href="#reproducibility-contract"
+id="toc-reproducibility-contract"><span
+class="toc-section-number">6.4</span> Reproducibility Contract</a></li>
+</ul></li>
+<li><a href="#sec:limitations_next_steps"
+id="toc-sec:limitations_next_steps"><span
+class="toc-section-number">7</span> Limitations and Next Steps</a>
+<ul>
+<li><a href="#current-limitations" id="toc-current-limitations"><span
+class="toc-section-number">7.1</span> Current Limitations</a></li>
+<li><a href="#next-steps" id="toc-next-steps"><span
+class="toc-section-number">7.2</span> Next Steps</a></li>
+</ul></li>
+<li><a href="#sec:source_surface" id="toc-sec:source_surface"><span
+class="toc-section-number">8</span> Supplemental Source Surface</a>
+<ul>
+<li><a href="#expansion-checklist" id="toc-expansion-checklist"><span
+class="toc-section-number">8.1</span> Expansion Checklist</a></li>
+</ul></li>
+<li><a href="#sec:symbols_glossary" id="toc-sec:symbols_glossary"><span
+class="toc-section-number">9</span> Symbols and Glossary</a>
+<ul>
+<li><a href="#language-constructs" id="toc-language-constructs"><span
+class="toc-section-number">9.1</span> Language Constructs</a></li>
+<li><a href="#active-inference-symbols"
+id="toc-active-inference-symbols"><span
+class="toc-section-number">9.2</span> Active Inference Symbols</a></li>
+<li><a href="#ontology-bindings-and-implementations"
+id="toc-ontology-bindings-and-implementations"><span
+class="toc-section-number">9.3</span> Ontology Bindings and
+Implementations</a></li>
+</ul></li>
+<li><a href="#sec:references" id="toc-sec:references"><span
+class="toc-section-number">10</span> References</a></li>
+</ul>
+</nav>
+<main id="main-content" tabindex="-1">
+<h1 data-number="1" id="sec:abstract"><span
+class="header-section-number">1</span> Abstract</h1>
+<p>Active Inference offers a unifying account of perception, learning,
+and action under the free energy principle <span class="citation"
+data-cites="friston2010">(<a href="#ref-friston2010"
+role="doc-biblioref">Friston 2010</a>)</span>, yet the generative models
+at its core are still communicated ad hoc: scattered across prose
+descriptions, bespoke notebooks, and framework-specific code that rarely
+agree. This fragmentation makes published models hard to reproduce,
+compare, or port between tools, and it raises the barrier for newcomers
+learning the formalism <span class="citation" data-cites="parr2022">(<a
+href="#ref-parr2022" role="doc-biblioref">Parr et al. 2022</a>)</span>.
+GeneralizedNotationNotation (GNN) addresses this gap with a
+standardized, human- and machine-readable text language for specifying
+Active Inference generative models, paired with a 25-step processing
+pipeline that transforms a single specification into validation,
+visualization, simulation, and analysis artifacts <span class="citation"
+data-cites="gnn2023">(<a href="#ref-gnn2023" role="doc-biblioref">Smékal
+and Friedman 2023</a>)</span>. GNN’s “Triple Play” treats each model as
+three coordinated views — a textual specification, graphical
+visualizations, and executable cognitive models — so that one source
+yields consistent outputs across modalities. The framework spans 9 model
+families and 9 registered rendering backends, with explicit gates for
+cross-format semantic fidelity and cross-framework reliability. GNN
+3.2.0 layers safe-by-design long-running orchestration on top of this
+language and pipeline — durable observation streams, resumable run
+sessions, and auditable container plans that generate, validate, and
+replay data only, with no live infrastructure mutation. We describe the
+language, the pipeline architecture, and the validation that confirms
+specifications round-trip faithfully across formats and render across
+multiple simulation backends — with coverage gaps recorded as explicit
+profiled-unsupported statuses rather than silently omitted —
+establishing GNN as reproducible, interoperable infrastructure for
+communicating Active Inference models.</p>
+<hr />
+<h1 data-number="2" id="sec:introduction"><span
+class="header-section-number">2</span> Introduction</h1>
+<h2 data-number="2.1" id="motivation"><span
+class="header-section-number">2.1</span> Motivation</h2>
+<p>Active Inference has matured into a broad research program spanning
+the free energy principle <span class="citation"
+data-cites="friston2010">(<a href="#ref-friston2010"
+role="doc-biblioref">Friston 2010</a>)</span>, discrete state-space
+formulations of perception and action <span class="citation"
+data-cites="dacosta2020">(<a href="#ref-dacosta2020"
+role="doc-biblioref">Da Costa et al. 2020</a>)</span>, and a growing
+body of pedagogy and reference implementations <span class="citation"
+data-cites="parr2022 smith2022">(<a href="#ref-parr2022"
+role="doc-biblioref">Parr et al. 2022</a>; <a href="#ref-smith2022"
+role="doc-biblioref">Smith et al. 2022</a>)</span>. Recent
+graphical-specification and message-passing work makes the same
+practical pressure visible: active-inference agents need representations
+that can be inspected as model structure and then carried into
+executable inference updates without being reauthored by hand <span
+class="citation"
+data-cites="koudahl2023syntheticAgents1 vandelaaar2023syntheticAgents2 bagaev2021reactiveMessagePassing">(<a
+href="#ref-koudahl2023syntheticAgents1" role="doc-biblioref">Koudahl et
+al. 2023</a>; <a href="#ref-vandelaaar2023syntheticAgents2"
+role="doc-biblioref">Laar et al. 2023</a>; <a
+href="#ref-bagaev2021reactiveMessagePassing" role="doc-biblioref">Bagaev
+and Vries 2021</a>)</span>. As the field has grown, so has a quieter
+problem: the models themselves are difficult to share, reproduce, and
+compare. A generative model that lives only as a tangle of matrix
+definitions inside one author’s script, a diagram in a slide deck, and a
+paragraph of prose in a paper has no single authoritative form. The same
+model is described three times, in three incompatible media, with no
+guarantee that they agree. When a reader wants to re-run that model in a
+different toolkit, they must reverse-engineer it from whichever fragment
+they happen to have.</p>
+<p>This is a reproducibility and interoperability crisis specific to the
+structure of Active Inference work. The discipline depends on precisely
+specified state spaces, observation and transition tensors, prior
+preferences, and policy structures; small notational ambiguities
+propagate into materially different behaviour. Yet the community has
+lacked a notation that is simultaneously human-readable,
+machine-parseable, and faithful to the underlying mathematics.
+Generalized Notation Notation (GNN) was introduced to fill exactly that
+gap <span class="citation" data-cites="gnn2023">(<a href="#ref-gnn2023"
+role="doc-biblioref">Smékal and Friedman 2023</a>)</span>: a standard,
+text-based way to write down an Active Inference generative model once,
+such that every downstream use derives from the same source of
+truth.</p>
+<h2 data-number="2.2" id="the-gnn-approach"><span
+class="header-section-number">2.2</span> The GNN Approach</h2>
+<p>GNN treats the model specification as a first-class artifact. A model
+is written in a plain-text language whose syntax captures the components
+an Active Inference modeller actually reasons about — state factors,
+observation modalities, the matrices that link them, control structure,
+and the temporal organization of the model. Because the specification is
+text, it lives comfortably in version control, diffs cleanly across
+revisions, and can be authored and reviewed by humans without
+specialized tooling.</p>
+<p>The defining commitment of GNN is what the project calls the Triple
+Play: a single text specification is the common origin for three
+coordinated renderings of the same model. The text form is the
+authoritative, editable description. From it, GNN produces graphical
+visualizations that expose the model’s factor and dependency structure
+for inspection and communication. And from the same source it produces
+executable cognitive models that can actually be run, so that the
+diagram, the equations, and the running code are provably the same model
+rather than three artifacts that merely claim to be. The Triple Play
+turns a model from a description scattered across media into one
+specification with multiple faithful projections (see fig. <a
+href="#fig:triple_play">2</a>).</p>
+<h2 data-number="2.3" id="contributions"><span
+class="header-section-number">2.3</span> Contributions</h2>
+<p>This work contributes a standard notation together with the
+infrastructure that makes it usable in practice:</p>
+<ul>
+<li><strong>A parseable, human-readable notation</strong> for Active
+Inference generative models, whose text form is authoritative and from
+which every other representation is derived.</li>
+<li><strong>A 25-step processing pipeline</strong>, implemented across
+31 source packages (0–24), that carries a specification from parsing and
+validation through visualization, rendering, and execution.</li>
+<li><strong>9 rendering backends</strong> (PyMDP, RxInfer.jl,
+ActiveInference.jl, JAX, DisCoPy, PyTorch, NumPyro, Stan, bnlearn) that
+materialize a single GNN specification as executable cognitive models
+across multiple simulation frameworks, realizing the executable arm of
+the Triple Play.</li>
+<li><strong>141 Model Context Protocol tools</strong> that expose the
+pipeline’s capabilities to agentic and programmatic clients, so the
+notation and its tooling are directly accessible to automated
+workflows.</li>
+<li><strong>9-family reliability gates</strong> that exercise the
+pipeline against a curated set of model families (basics, discrete,
+continuous, hierarchical, multiagent, precision, structured, gridworld,
+scaling-study), turning interoperability claims into checks that must
+pass rather than assertions that are merely made.</li>
+</ul>
+<h2 data-number="2.4" id="reader-orientation"><span
+class="header-section-number">2.4</span> Reader Orientation</h2>
+<p>The remainder of this manuscript is organized to move from language
+to mechanism to evidence. sec. <a href="#sec:system_context">3</a>
+states the notation and the generative model it denotes, writing the
+factorization, the four matrices, and the two free-energy objectives as
+explicit equations (eq. <a href="#eq:generative_model">1</a> through
+eq. <a href="#eq:policy">8</a>); it presents the pipeline structure
+(fig. <a href="#fig:pipeline">1</a>), the Triple Play (fig. <a
+href="#fig:triple_play">2</a>), and the per-step responsibility table
+(tbl. <a href="#tbl:pipeline_steps">1</a>). sec. <a
+href="#sec:methods">4</a> follows a specification through the pipeline —
+parsing, type checking, rendering, execution, and reporting — and
+presents the backend registry (tbl. <a
+href="#tbl:backend_registry">2</a>), the backend capability surface
+(fig. <a href="#fig:backend_matrix">3</a>), and the long-running
+orchestration contracts (fig. <a href="#fig:orchestration">4</a>).
+sec. <a href="#sec:artifacts_evidence">5</a> reports what the project
+has produced and how each number is grounded, with the model-family
+registry (tbl. <a href="#tbl:model_families">3</a>), the
+family-by-framework coverage (fig. <a href="#fig:family_matrix">5</a>),
+and repository-scale metrics (fig. <a href="#fig:repo_metrics">6</a>).
+Claims of independent re-execution are addressed in sec. <a
+href="#sec:reproducibility">6</a>, the boundaries of the current system
+in sec. <a href="#sec:limitations_next_steps">7</a>, the symbol and
+construct tables in sec. <a href="#sec:symbols_glossary">9</a>, and full
+source details in sec. <a href="#sec:references">10</a>. Read in this
+order, the manuscript moves from why a standard notation is needed,
+through how GNN realizes it, to the evidence that the standard
+holds.</p>
+<hr />
+<h1 data-number="3" id="sec:system_context"><span
+class="header-section-number">3</span> System Context</h1>
+<p>Generalized Notation Notation (GNN) couples a small, declarative text
+language for Active Inference generative models to a deterministic
+processing pipeline that turns each specification into validation,
+visualization, simulation, and analysis artifacts <span class="citation"
+data-cites="gnn2023">(<a href="#ref-gnn2023" role="doc-biblioref">Smékal
+and Friedman 2023</a>)</span>. The language gives a model one canonical
+written form; the pipeline gives that form many executable and graphical
+realizations. This section describes both halves of the architecture and
+the way they meet, and it states the mathematical objects the language
+is obliged to carry.</p>
+<h2 data-number="3.1" id="the-gnn-language"><span
+class="header-section-number">3.1</span> The GNN Language</h2>
+<p>A GNN model is a plain-text document organized into named sections
+that together pin down a complete partially observable Markov decision
+process. The <code>StateSpaceBlock</code> declares the variables of the
+model and their dimensions — hidden states, observations, control
+factors, and policies — establishing the shape of every tensor that
+follows. The <code>Connections</code> section records the directed and
+undirected dependencies among those variables, the edges of the
+underlying factor graph that downstream tools read to lay out diagrams
+and wire up inference. The full construct vocabulary is catalogued in
+tbl. <a href="#tbl:gnn_constructs">4</a>.</p>
+<h2 data-number="3.2"
+id="the-generative-model-a-specification-denotes"><span
+class="header-section-number">3.2</span> The Generative Model a
+Specification Denotes</h2>
+<p>Every GNN file denotes one object: a discrete state-space generative
+model over a horizon <span class="math inline">\(T\)</span>, factorized
+as in eq. <a href="#eq:generative_model">1</a> following the standard
+formulation <span class="citation"
+data-cites="dacosta2020 smith2022">(<a href="#ref-dacosta2020"
+role="doc-biblioref">Da Costa et al. 2020</a>; <a href="#ref-smith2022"
+role="doc-biblioref">Smith et al. 2022</a>)</span>.</p>
+<p><span id="eq:generative_model"><span class="math display">\[
+P(o_{1:T},\, s_{1:T},\, \pi) \;=\; P(\pi)\; P(s_1) \prod_{t=1}^{T} P(o_t
+\mid s_t) \prod_{t=2}^{T} P(s_t \mid s_{t-1},\, \pi)
+\qquad{(1)}\]</span></span></p>
+<p>The four matrices named in the <code>StateSpaceBlock</code> are
+exactly the factors of eq. <a href="#eq:generative_model">1</a>, and
+this correspondence is what makes the notation translatable rather than
+merely descriptive. The <code>A</code> matrix is the likelihood, a
+column-stochastic map from hidden states to observation outcomes, given
+in eq. <a href="#eq:likelihood">2</a>.</p>
+<p><span id="eq:likelihood"><span class="math display">\[
+P(o_t = i \mid s_t = j) \;=\; A_{ij}, \qquad \sum_i A_{ij} = 1
+\qquad{(2)}\]</span></span></p>
+<p>The <code>B</code> matrix is the controlled transition dynamics: one
+column-stochastic slice per action, as in eq. <a
+href="#eq:transition">3</a>.</p>
+<p><span id="eq:transition"><span class="math display">\[
+P(s_{t+1} = i \mid s_t = j,\, u_t = k) \;=\; B^{(k)}_{ij}, \qquad \sum_i
+B^{(k)}_{ij} = 1
+\qquad{(3)}\]</span></span></p>
+<p>The <code>C</code> vector holds log-preferences over observations,
+which enter inference as the biased outcome distribution of eq. <a
+href="#eq:preference">4</a>; the <code>D</code> vector is the prior over
+initial hidden states, eq. <a href="#eq:prior">5</a>.</p>
+<p><span id="eq:preference"><span class="math display">\[
+\tilde{P}(o_t = i) \;=\; \sigma(C)_i \;=\; \frac{\exp C_i}{\sum_j \exp
+C_j}
+\qquad{(4)}\]</span></span></p>
+<p><span id="eq:prior"><span class="math display">\[
+P(s_1 = i) \;=\; D_i, \qquad \sum_i D_i = 1
+\qquad{(5)}\]</span></span></p>
+<p>Given those factors, perception is approximate Bayesian inference: a
+variational posterior <span class="math inline">\(Q(s)\)</span> is
+fitted by minimizing the variational free energy of eq. <a
+href="#eq:vfe">6</a>, which decomposes into a complexity term and an
+accuracy term <span class="citation" data-cites="friston2010">(<a
+href="#ref-friston2010" role="doc-biblioref">Friston
+2010</a>)</span>.</p>
+<p><span id="eq:vfe"><span class="math display">\[
+F[Q] \;=\; \underbrace{D_{\mathrm{KL}}\!\left[\,Q(s) \,\|\,
+P(s)\,\right]}_{\text{complexity}} \;-\;
+\underbrace{\mathbb{E}_{Q(s)}\!\left[\ln P(o \mid
+s)\right]}_{\text{accuracy}}
+\qquad{(6)}\]</span></span></p>
+<p>Action is expected-free-energy minimization: each policy <span
+class="math inline">\(\pi\)</span> is scored over future steps <span
+class="math inline">\(\tau\)</span> by eq. <a href="#eq:efe">7</a>,
+whose two terms are the information gain a policy is expected to yield
+and the extent to which its predicted outcomes match <code>C</code>
+<span class="citation" data-cites="dacosta2020">(<a
+href="#ref-dacosta2020" role="doc-biblioref">Da Costa et al.
+2020</a>)</span>.</p>
+<p><span id="eq:efe"><span class="math display">\[
+G(\pi) \;=\; -\underbrace{\mathbb{E}_{Q(o_\tau,\, s_\tau \mid
+\pi)}\!\left[\ln Q(s_\tau \mid o_\tau, \pi) - \ln Q(s_\tau \mid
+\pi)\right]}_{\text{epistemic value}} \;-\;
+\underbrace{\mathbb{E}_{Q(o_\tau \mid \pi)}\!\left[\ln
+\tilde{P}(o_\tau)\right]}_{\text{pragmatic value}}
+\qquad{(7)}\]</span></span></p>
+<p>The policy posterior then combines those scores with the habit prior
+<code>E</code> declared in the specification, as in eq. <a
+href="#eq:policy">8</a>, and the selected action <span
+class="math inline">\(u\)</span> is sampled from it.</p>
+<p><span id="eq:policy"><span class="math display">\[
+Q(\pi) \;=\; \sigma\!\left(\ln E - G\right)
+\qquad{(8)}\]</span></span></p>
+<p>Recent work continues to refine how expected-free-energy objectives
+relate to variational inference and to alternative but equivalent
+formulations, which is why GNN keeps the objects of eq. <a
+href="#eq:generative_model">1</a> through eq. <a href="#eq:policy">8</a>
+explicit in the notation rather than burying them in backend-specific
+code <span class="citation"
+data-cites="champion2024reframingEfe nuijten2026typeInference nuijten2026efePlanningVariational">(<a
+href="#ref-champion2024reframingEfe" role="doc-biblioref">Champion et
+al. 2024</a>; <a href="#ref-nuijten2026typeInference"
+role="doc-biblioref">Nuijten, Lukashchuk, et al. 2026</a>; <a
+href="#ref-nuijten2026efePlanningVariational"
+role="doc-biblioref">Nuijten, Laar, et al. 2026</a>)</span>. A
+<code>ModelParameters</code> section fixes the scalars those objects
+depend on — factor cardinalities and precision terms — while a
+<code>Time</code> section declares whether the model is static or
+dynamic and, if dynamic, how the horizon <span
+class="math inline">\(T\)</span> and its discretization are organized.
+Because every one of these sections is explicit text, a GNN file is at
+once human-readable, diffable under version control, and unambiguous to
+a parser — the property that lets the rest of the pipeline operate
+deterministically.</p>
+<h2 data-number="3.3" id="the-processing-pipeline"><span
+class="header-section-number">3.3</span> The Processing Pipeline</h2>
+<p>The pipeline is a fixed sequence of 25 numbered steps, 0–24, each a
+self-contained stage that consumes the artifacts of its predecessors and
+writes typed outputs for those that follow. Early steps parse and
+type-check the GNN text and validate it against the language schema;
+middle steps render visualizations, export the model to executable
+backends, and run simulations; later steps perform analysis, reporting,
+and downstream integration. The data dependencies among the steps form
+the directed acyclic graph shown in fig. <a href="#fig:pipeline">1</a>,
+which makes the whole flow inspectable: any artifact can be traced back
+to the step that produced it and forward to every step that depends on
+it.</p>
+<figure id="fig:pipeline">
+<a class="figure-full-size-link" href="../figures/gnn_pipeline_dag.png" target="_blank" rel="noopener" aria-label="Open full-size Figure 1, The GNN processing pipeline as a directed acyclic graph of numbered steps, from parsing"><img src="../figures/gnn_pipeline_dag.png" style="width:90.0%"
+alt="Figure 1: The GNN processing pipeline as a directed acyclic graph of numbered steps, from parsing and validation through visualization, execution, and analysis." /><span class="figure-full-size-label" aria-hidden="true">Open full-size figure</span></a>
+<figcaption>Figure 1: The GNN processing pipeline as
+a directed acyclic graph of numbered steps, from parsing and validation
+through visualization, execution, and analysis.</figcaption>
+</figure>
+<p>The per-step responsibilities are enumerated in tbl. <a
+href="#tbl:pipeline_steps">1</a>; each row names a step and the
+transformation it owns within the 0–24 range.</p>
+<div class="table-scroll" role="region" tabindex="0" aria-label="Scrollable table: Table 1: The pipeline steps, their thin orchestrator modules, and their purposes, read from src/STEP_INDEX.md ."><table id="tbl:pipeline_steps" data-responsive-table="true">
+<caption>Table 1: The pipeline steps, their thin orchestrator modules,
+and their purposes, read from <code>src/STEP_INDEX.md</code>.</caption>
+<colgroup>
+<col style="width: 40%" />
+<col style="width: 30%" />
+<col style="width: 30%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: right;">Step</th>
+<th>Module</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right;">0</td>
+<td><code>0_template.py</code></td>
+<td>Pipeline template &amp; initialization</td>
+</tr>
+<tr>
+<td style="text-align: right;">1</td>
+<td><code>1_setup.py</code></td>
+<td>Environment setup &amp; UV dependency install</td>
+</tr>
+<tr>
+<td style="text-align: right;">2</td>
+<td><code>2_tests.py</code></td>
+<td>Test suite execution (pytest)</td>
+</tr>
+<tr>
+<td style="text-align: right;">3</td>
+<td><code>3_gnn.py</code></td>
+<td>GNN file discovery &amp; multi-format parsing</td>
+</tr>
+<tr>
+<td style="text-align: right;">4</td>
+<td><code>4_model_registry.py</code></td>
+<td>Model versioning &amp; registry management</td>
+</tr>
+<tr>
+<td style="text-align: right;">5</td>
+<td><code>5_type_checker.py</code></td>
+<td>GNN type validation &amp; resource estimation</td>
+</tr>
+<tr>
+<td style="text-align: right;">6</td>
+<td><code>6_validation.py</code></td>
+<td>Consistency &amp; semantic quality checking</td>
+</tr>
+<tr>
+<td style="text-align: right;">7</td>
+<td><code>7_export.py</code></td>
+<td>Multi-format export (JSON, XML, GraphML, GEXF, Pickle)</td>
+</tr>
+<tr>
+<td style="text-align: right;">8</td>
+<td><code>8_visualization.py</code></td>
+<td>Graph &amp; matrix visualization generation</td>
+</tr>
+<tr>
+<td style="text-align: right;">9</td>
+<td><code>9_advanced_viz.py</code></td>
+<td>Interactive / advanced visualization (Plotly, D3)</td>
+</tr>
+<tr>
+<td style="text-align: right;">10</td>
+<td><code>10_ontology.py</code></td>
+<td>Active Inference ontology processing &amp; validation</td>
+</tr>
+<tr>
+<td style="text-align: right;">11</td>
+<td><code>11_render.py</code></td>
+<td>Code generation for simulation frameworks</td>
+</tr>
+<tr>
+<td style="text-align: right;">12</td>
+<td><code>12_execute.py</code></td>
+<td>Execute rendered simulation scripts</td>
+</tr>
+<tr>
+<td style="text-align: right;">13</td>
+<td><code>13_llm.py</code></td>
+<td>LLM-enhanced analysis &amp; model interpretation</td>
+</tr>
+<tr>
+<td style="text-align: right;">14</td>
+<td><code>14_ml_integration.py</code></td>
+<td>Machine learning integration &amp; model training</td>
+</tr>
+<tr>
+<td style="text-align: right;">15</td>
+<td><code>15_audio.py</code></td>
+<td>Audio sonification generation (SAPF)</td>
+</tr>
+<tr>
+<td style="text-align: right;">16</td>
+<td><code>16_analysis.py</code></td>
+<td>Statistical analysis &amp; cross-simulation aggregation</td>
+</tr>
+<tr>
+<td style="text-align: right;">17</td>
+<td><code>17_integration.py</code></td>
+<td>System integration &amp; cross-module coordination</td>
+</tr>
+<tr>
+<td style="text-align: right;">18</td>
+<td><code>18_security.py</code></td>
+<td>Security validation &amp; generated code scanning</td>
+</tr>
+<tr>
+<td style="text-align: right;">19</td>
+<td><code>19_research.py</code></td>
+<td>Research tools &amp; literature references</td>
+</tr>
+<tr>
+<td style="text-align: right;">20</td>
+<td><code>20_website.py</code></td>
+<td>Static HTML website generation</td>
+</tr>
+<tr>
+<td style="text-align: right;">21</td>
+<td><code>21_mcp.py</code></td>
+<td>Model Context Protocol processing &amp; tool registration</td>
+</tr>
+<tr>
+<td style="text-align: right;">22</td>
+<td><code>22_gui.py</code></td>
+<td>Interactive GNN constructor GUI</td>
+</tr>
+<tr>
+<td style="text-align: right;">23</td>
+<td><code>23_report.py</code></td>
+<td>Comprehensive analysis report generation</td>
+</tr>
+<tr>
+<td style="text-align: right;">24</td>
+<td><code>24_intelligent_analysis.py</code></td>
+<td>AI-powered pipeline analysis &amp; executive reports</td>
+</tr>
+</tbody>
+</table></div>
+<p>This staged design keeps the architecture modular. The implementation
+is organized into 31 source packages, one cluster of responsibilities
+per concern, and is documented across 614 documentation files so that
+each step’s contract, inputs, and outputs are specified independently of
+the others. New backends or analyses attach to the graph by declaring
+their dependencies rather than by editing a monolith, and the
+deterministic step ordering means a model processed today yields the
+same artifacts when reprocessed tomorrow.</p>
+<h2 data-number="3.4" id="the-triple-play"><span
+class="header-section-number">3.4</span> The Triple Play</h2>
+<p>The reason for separating a single written language from a
+multi-stage pipeline is the design goal GNN calls the Triple Play: one
+model specification, three coordinated modes of existence. The same GNN
+text is simultaneously a human-readable model description, a set of
+graphical visualizations of its state space and factor structure, and an
+executable cognitive model that can be run as a simulation. +fig. <a
+href="#fig:triple_play">2</a> depicts these three faces and the shared
+specification at their center.</p>
+<figure id="fig:triple_play">
+<a class="figure-full-size-link" href="../figures/gnn_triple_play.png" target="_blank" rel="noopener" aria-label="Open full-size Figure 2, The Triple Play: a single GNN specification rendered as readable text, as graphical…"><img src="../figures/gnn_triple_play.png" style="width:70.0%"
+alt="Figure 2: The Triple Play: a single GNN specification rendered as readable text, as graphical visualizations, and as an executable model." /><span class="figure-full-size-label" aria-hidden="true">Open full-size figure</span></a>
+<figcaption>Figure 2: The Triple Play: a single GNN
+specification rendered as readable text, as graphical visualizations,
+and as an executable model.</figcaption>
+</figure>
+<p>Each face is generated from the same source, so they cannot drift
+apart. The text is the contract a researcher reads and reviews; the
+visualizations expose the factor-graph structure for inspection and
+communication; and the executable rendering lets the identical model be
+simulated across inference frameworks, connecting the written
+specification to libraries such as pymdp for discrete Active Inference
+<span class="citation" data-cites="heins2022">(<a href="#ref-heins2022"
+role="doc-biblioref">Heins et al. 2022</a>)</span> and to the broader
+tooling ecosystem for compositional model representation <span
+class="citation" data-cites="defelice2021">(<a href="#ref-defelice2021"
+role="doc-biblioref">Felice et al. 2021</a>)</span>. Because all three
+derive from one parsed document, GNN turns a model from a static
+artifact into a live object that can be read, seen, and run without
+re-encoding it for each purpose <span class="citation"
+data-cites="smith2022">(<a href="#ref-smith2022"
+role="doc-biblioref">Smith et al. 2022</a>)</span>.</p>
+<hr />
+<h1 data-number="4" id="sec:methods"><span
+class="header-section-number">4</span> Methods</h1>
+<p>The GeneralizedNotationNotation (GNN) method is realized as a
+sequence of deterministic transformations that take a plain-text model
+specification and carry it through parsing, validation, code generation,
+execution, and reporting. The processing pipeline is organized into 25
+numbered steps (steps 0–24), each implemented as a standalone module
+with a single responsibility. The methods below describe the path that a
+model travels from notation to executable cognitive model and back to
+analyzed results. Every quantity reported in this section is produced
+from the live repository rather than asserted by hand; the closing
+subsection makes that contract explicit.</p>
+<h2 data-number="4.1" id="parsing-and-multi-format-export"><span
+class="header-section-number">4.1</span> Parsing and Multi-Format
+Export</h2>
+<p>The pipeline begins by ingesting GNN model files written in the
+plain-text notation. Parsing (step 3) reads each specification, builds
+an internal model representation, and re-emits it across a family of
+structured export formats so that downstream tools, and human readers,
+can consume the same model through whichever serialization they prefer.
+The corpus that exercises this stage spans 29 example model files
+organized into 10 curated corpora, ranging from minimal perception
+fixtures used to test the parser to larger hierarchical and multi-agent
+models. The presence of hierarchical fixtures should be read as a
+coverage target, not as a claim that every current backend fully
+executes every hierarchical formulation; scaling hierarchical active
+inference remains an active research problem in its own right <span
+class="citation" data-cites="rangarajan2026hierarchicalSuccessor">(<a
+href="#ref-rangarajan2026hierarchicalSuccessor"
+role="doc-biblioref">Rangarajan and Rao 2026</a>)</span>. Treating
+parsing and export as a single round-trippable stage means a model
+authored once becomes immediately available as a typed object, a
+normalized text form, and machine-readable serializations without any
+manual re-encoding.</p>
+<h2 data-number="4.2" id="type-checking-and-validation"><span
+class="header-section-number">4.2</span> Type Checking and
+Validation</h2>
+<p>A model that parses is not yet a model that is well-formed. Steps 5
+and 6 apply type checking and validation to confirm that the state
+spaces, observation modalities, control factors, and the matrices
+relating them are mutually consistent before any code is generated. This
+catches dimensional mismatches and malformed factor structures at the
+notation level, where the diagnostic is cheap and legible, rather than
+allowing them to surface as opaque runtime errors deep inside a
+numerical backend. Validation here is the gate that protects every later
+stage: rendering, execution, and analysis all assume a model that has
+already been certified consistent.</p>
+<h2 data-number="4.3" id="rendering-to-multiple-backends"><span
+class="header-section-number">4.3</span> Rendering to Multiple
+Backends</h2>
+<p>The central act of the “Triple Play” is turning a validated
+specification into executable cognitive models. The rendering stage
+emits backend-specific code for 9 registered target frameworks — PyMDP,
+RxInfer.jl, ActiveInference.jl, JAX, DisCoPy, PyTorch, NumPyro, Stan,
+bnlearn — so that a single GNN model can be instantiated as a simulation
+in whichever computational ecosystem a researcher already works in;
+coverage across the family-by-backend matrix is uneven and is recorded
+explicitly (see sec. <a href="#sec:limitations_next_steps">7</a>). Each
+backend is addressed through a registry key that maps the abstract model
+onto that framework’s idioms for representing generative models and
+performing inference. The full mapping from registry key to backend is
+given below.</p>
+<div class="table-scroll" role="region" tabindex="0" aria-label="Scrollable table: Table 2: Render targets in src/render/framework_registry.py . The Executes column is the registry’s own supports_exec…"><table id="tbl:backend_registry" data-responsive-table="true">
+<caption>Table 2: Render targets in
+<code>src/render/framework_registry.py</code>. The <em>Executes</em>
+column is the registry’s own <code>supports_execution</code> flag: a
+render-only backend has no Step-12 executor.</caption>
+<thead>
+<tr>
+<th>Registry key</th>
+<th>Backend</th>
+<th>Executes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>pymdp</code></td>
+<td>PyMDP</td>
+<td>yes</td>
+</tr>
+<tr>
+<td><code>rxinfer</code></td>
+<td>RxInfer.jl</td>
+<td>yes</td>
+</tr>
+<tr>
+<td><code>activeinference_jl</code></td>
+<td>ActiveInference.jl</td>
+<td>yes</td>
+</tr>
+<tr>
+<td><code>jax</code></td>
+<td>JAX</td>
+<td>yes</td>
+</tr>
+<tr>
+<td><code>discopy</code></td>
+<td>DisCoPy</td>
+<td>yes</td>
+</tr>
+<tr>
+<td><code>pytorch</code></td>
+<td>PyTorch</td>
+<td>yes</td>
+</tr>
+<tr>
+<td><code>numpyro</code></td>
+<td>NumPyro</td>
+<td>yes</td>
+</tr>
+<tr>
+<td><code>stan</code></td>
+<td>Stan</td>
+<td>yes</td>
+</tr>
+<tr>
+<td><code>bnlearn</code></td>
+<td>bnlearn</td>
+<td>render-only</td>
+</tr>
+</tbody>
+</table></div>
+<p>The capability surface of these backends — which model families each
+one can express and execute — is summarized in fig. <a
+href="#fig:backend_matrix">3</a>.</p>
+<figure id="fig:backend_matrix">
+<a class="figure-full-size-link" href="../figures/gnn_backend_capability_matrix.png" target="_blank" rel="noopener" aria-label="Open full-size Figure 3, The GNN rendering backend registry: each registry key, its display name"><img src="../figures/gnn_backend_capability_matrix.png"
+style="width:85.0%"
+alt="Figure 3: The GNN rendering backend registry: each registry key, its display name, and the cross-framework comparison targets, read directly from the framework registry." /><span class="figure-full-size-label" aria-hidden="true">Open full-size figure</span></a>
+<figcaption>Figure 3: The GNN rendering backend
+registry: each registry key, its display name, and the cross-framework
+comparison targets, read directly from the framework
+registry.</figcaption>
+</figure>
+<p>By generating code rather than asking authors to port models by hand,
+the method keeps a single source of truth in the notation while still
+reaching the discrete message-passing libraries <span class="citation"
+data-cites="heins2022">(<a href="#ref-heins2022"
+role="doc-biblioref">Heins et al. 2022</a>)</span>, reactive
+message-passing lineage <span class="citation"
+data-cites="bagaev2021reactiveMessagePassing">(<a
+href="#ref-bagaev2021reactiveMessagePassing" role="doc-biblioref">Bagaev
+and Vries 2021</a>)</span>, and categorical, diagrammatic frameworks
+<span class="citation" data-cites="defelice2021">(<a
+href="#ref-defelice2021" role="doc-biblioref">Felice et al.
+2021</a>)</span> that different research communities have built. The
+underlying mathematics that compatible backends share — inference and
+policy selection over discrete state spaces under the free-energy
+objective <span class="citation" data-cites="dacosta2020 smith2022">(<a
+href="#ref-dacosta2020" role="doc-biblioref">Da Costa et al. 2020</a>;
+<a href="#ref-smith2022" role="doc-biblioref">Smith et al.
+2022</a>)</span> — is the common substrate the renderer attempts to
+preserve; where a backend cannot express a family faithfully, GNN
+records that boundary as an explicit unsupported status rather than
+treating all registered backends as equivalent.</p>
+<h2 data-number="4.4" id="execution"><span
+class="header-section-number">4.4</span> Execution</h2>
+<p>Generated backend code is not left as a static artifact. The
+execution stage (step 12) runs the rendered models, driving the
+inference and behavior that the notation describes and producing
+concrete traces, beliefs, and outputs. This closes the loop from text to
+running cognitive model: the same specification that was type-checked
+and exported is now exercised numerically, so that claims about a
+model’s behavior rest on having actually run it rather than on
+inspection of the source alone.</p>
+<h2 data-number="4.5" id="long-running-orchestration-contracts"><span
+class="header-section-number">4.5</span> Long-Running Orchestration
+Contracts</h2>
+<p>GNN 3.2.0 extends the pipeline with three safe-by-design
+orchestration contracts that let an extended run be observed, paused,
+resumed, and audited without ever mutating live infrastructure.
+<em>Durable observation streams</em> record file- and array-backed
+stream manifests with content checksums and replayable execution traces,
+so that a long run can be re-derived deterministically before any live
+sensor or device-backed stream is introduced. <em>Resumable run
+sessions</em> carry run-session manifests with atomic checkpoint and
+resume, status inspection, and cancellation-safe cleanup, so that an
+extended model-family acceptance run can be interrupted and resumed
+without corrupting partial state. <em>Auditable container plans</em>
+generate hardened container plans together with an explicit static
+security review and a rollback descriptor, deliberately stopping short
+of touching any real cluster. Each contract only generates and validates
+data; none performs live mutation, and each is governed by a strict
+acceptance gate and exercised through dedicated Model Context Protocol
+tools. fig. <a href="#fig:orchestration">4</a> shows how the three
+contracts compose into one inspectable orchestration surface.</p>
+<figure id="fig:orchestration">
+<a class="figure-full-size-link" href="../figures/gnn_orchestration.png" target="_blank" rel="noopener" aria-label="Open full-size Figure 4, The v3.0.0 long-running orchestration contracts: durable observation streams, resumable run…"><img src="../figures/gnn_orchestration.png" style="width:85.0%"
+alt="Figure 4: The v3.0.0 long-running orchestration contracts: durable observation streams, resumable run sessions, and auditable container plans." /><span class="figure-full-size-label" aria-hidden="true">Open full-size figure</span></a>
+<figcaption>Figure 4: The v3.0.0 long-running
+orchestration contracts: durable observation streams, resumable run
+sessions, and auditable container plans.</figcaption>
+</figure>
+<h2 data-number="4.6" id="analysis-visualization-and-reporting"><span
+class="header-section-number">4.6</span> Analysis, Visualization, and
+Reporting</h2>
+<p>The final group of stages turns execution results into interpretable
+evidence. Analysis (step 16) processes the outputs of execution into
+structured findings; visualization (step 8) and the rendering of figures
+(step 9) translate model structure and results into graphical form,
+supporting the graphical leg of the Triple Play; and the reporting stage
+(step 23) assembles these artifacts into a coherent summary of what the
+model is and how it behaved. Because each stage writes its outputs to a
+known location, the chain from a notation file to a finished report is
+fully traceable, and any figure or number in a report can be followed
+back to the step and model that produced it.</p>
+<h2 data-number="4.7" id="reproducibility-and-auto-injection"><span
+class="header-section-number">4.7</span> Reproducibility and
+Auto-Injection</h2>
+<p>Every quantitative value that appears in this manuscript is
+generated, not typed. The producer
+<code>scripts/z_generate_manuscript_variables.py</code> reads the
+repository’s source surfaces directly — the step modules, the source
+tree, the model-family manifest, and the framework registry — together
+with the project’s maintained ledgers, notably the Model Context
+Protocol tool audit (<code>src/mcp/audit_report.json</code>, itself
+regenerated by the test suite). From these it emits a manifest of named
+tokens — counts of pipeline steps, source packages and files, model
+families, backends, example files, tests, and tools — which the renderer
+substitutes into the prose at build time. Filesystem-derived counts are
+recomputed on every run; ledger-derived counts (such as the MCP tool
+total) are as current as the ledger they read, which the maintained test
+suite keeps in sync. The manuscript therefore inherits a determinism
+property: running the producer against a fixed repository state yields
+the same values, and authors are prohibited from hard-coding any number
+that has a corresponding token. This makes the manuscript a faithful,
+regenerable description of the system it documents: when the 25-step
+pipeline, the 9 rendering backends, or the 29-file example corpus
+change, the reported numbers change with them on the next build, with no
+opportunity for prose and repository to silently drift apart.</p>
+<hr />
+<h1 data-number="5" id="sec:artifacts_evidence"><span
+class="header-section-number">5</span> Artifacts and Evidence</h1>
+<p>This section reports what the project has actually produced and how
+each quantitative claim is grounded. Every number below is substituted
+at render time from the deterministic producer that reads the repository
+state, so the manuscript can never drift from the artifacts it
+describes.</p>
+<h2 data-number="5.1" id="model-family-coverage"><span
+class="header-section-number">5.1</span> Model-Family Coverage</h2>
+<p>GNN ships a curated corpus of model families that exercise the
+language across the difficulty gradient from minimal parser fixtures to
+full multi-agent and scaling studies. The current corpus spans 9
+families (basics, discrete, continuous, hierarchical, multiagent,
+precision, structured, gridworld, scaling-study), drawn from 10 family
+directories under <code>input/</code> and comprising 29 concrete example
+models. Each family declares the simulation frameworks it is meant to
+drive, which is what lets the same text model fan out across the
+executable-model leg of the Triple Play <span class="citation"
+data-cites="gnn2023">(<a href="#ref-gnn2023" role="doc-biblioref">Smékal
+and Friedman 2023</a>)</span>. The families and their declared
+frameworks are enumerated below.</p>
+<div class="table-scroll" role="region" tabindex="0" aria-label="Scrollable table: Table 3: Model families declared in input/model_family_manifest.json and the frameworks each family targets."><table id="tbl:model_families" data-responsive-table="true">
+<caption>Table 3: Model families declared in
+<code>input/model_family_manifest.json</code> and the frameworks each
+family targets.</caption>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th>Family</th>
+<th>Frameworks</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>basics</code></td>
+<td>pymdp</td>
+<td>Minimal perception fixtures used for parser and validator smoke
+coverage.</td>
+</tr>
+<tr>
+<td><code>discrete</code></td>
+<td>pymdp</td>
+<td>Discrete POMDP and HMM-style active inference fixtures.</td>
+</tr>
+<tr>
+<td><code>continuous</code></td>
+<td>jax, numpyro, stan, rxinfer</td>
+<td>Continuous-state linear-Gaussian fixtures (F/H/Q/R + Gaussian prior;
+continuous_navigation closes the loop on beliefs). Native on jax,
+numpyro, pytorch, stan, rxinfer, discopy; reported unsupported (not
+failed) on pymdp, activeinference_jl, bnlearn.</td>
+</tr>
+<tr>
+<td><code>hierarchical</code></td>
+<td>pymdp, rxinfer, jax</td>
+<td>Hierarchical and temporal model fixtures (per-level matrices
+composed into a joint POMDP for categorical backends; RxInfer.jl renders
+two-level models natively).</td>
+</tr>
+<tr>
+<td><code>multiagent</code></td>
+<td>rxinfer</td>
+<td>Multi-agent coordination and swarm fixtures.</td>
+</tr>
+<tr>
+<td><code>precision</code></td>
+<td>pymdp</td>
+<td>Precision weighting and curiosity-driven fixtures.</td>
+</tr>
+<tr>
+<td><code>structured</code></td>
+<td>pymdp</td>
+<td>Structured factor graph and posterior fixtures.</td>
+</tr>
+<tr>
+<td><code>gridworld</code></td>
+<td>pymdp, rxinfer, activeinference_jl</td>
+<td>Gridworld POMDP fixture used for cross-framework acceptance
+checks.</td>
+</tr>
+<tr>
+<td><code>scaling-study</code></td>
+<td>pymdp</td>
+<td>PyMDP scaling-study fixtures, sampled conservatively for
+acceptance.</td>
+</tr>
+</tbody>
+</table></div>
+<p>The family-by-framework structure is shown in fig. <a
+href="#fig:family_matrix">5</a>, which renders the coverage matrix
+directly from the family registry rather than from a hand-maintained
+table.</p>
+<figure id="fig:family_matrix">
+<a class="figure-full-size-link" href="../figures/gnn_family_framework_matrix.png" target="_blank" rel="noopener" aria-label="Open full-size Figure 5, Model-family coverage across simulation frameworks, generated from the GNN family registry."><img src="../figures/gnn_family_framework_matrix.png"
+style="width:85.0%"
+alt="Figure 5: Model-family coverage across simulation frameworks, generated from the GNN family registry." /><span class="figure-full-size-label" aria-hidden="true">Open full-size figure</span></a>
+<figcaption>Figure 5: Model-family coverage across
+simulation frameworks, generated from the GNN family
+registry.</figcaption>
+</figure>
+<p>These families are not illustrative prose: they are the inputs over
+which the parser, the type checker, and the cross-framework code
+generators are exercised, and they are the substrate for the reliability
+gates described next.</p>
+<h2 data-number="5.2"
+id="semantic-fidelity-and-cross-framework-reliability-gates"><span
+class="header-section-number">5.2</span> Semantic-Fidelity and
+Cross-Framework Reliability Gates</h2>
+<p>Two reproducible-by-command gates check that GNN’s promise — one text
+model, many faithful executable renderings — survives contact with real
+backends. Both live under <code>scripts/</code> and read the same family
+corpus described above, so they verify the artifacts the manuscript
+actually references.</p>
+<p>The semantic-fidelity gate,
+<code>scripts/run_semantic_fidelity_gate.py</code>, checks that a model
+parsed from GNN text and then re-emitted preserves its semantic content:
+the state-space structure, the factor and modality declarations, and the
+matrix shapes implied by a discrete Active Inference generative model
+survive the round trip <span class="citation"
+data-cites="dacosta2020">(<a href="#ref-dacosta2020"
+role="doc-biblioref">Da Costa et al. 2020</a>)</span>. It is meant to be
+run as a command and to report fidelity per model, not as a static claim
+baked into prose.</p>
+<p>The cross-framework reliability gate,
+<code>scripts/run_cross_framework_reliability.py</code>, takes a single
+GNN model and renders it across multiple simulation backends, then
+checks that the resulting executable models agree on the structure they
+were generated from. The reference comparison runs on the continuous
+family across JAX, NumPyro, Stan, RxInfer.jl — three independent Active
+Inference engines spanning the Python and Julia ecosystems <span
+class="citation" data-cites="heins2022">(<a href="#ref-heins2022"
+role="doc-biblioref">Heins et al. 2022</a>)</span>. Because the same
+source model drives all three renderings, disagreement between backends
+localizes a generator defect rather than a modeling choice.</p>
+<p>Both gates are stated here as commands you can run, not as asserted
+pass counts. The manuscript deliberately does not quote a fixed number
+of passing checks: the authoritative, current result is whatever those
+scripts report when executed against the corpus, and binding a frozen
+count into prose would invite exactly the drift the auto-injection
+contract exists to prevent.</p>
+<h2 data-number="5.3" id="repository-scale"><span
+class="header-section-number">5.3</span> Repository Scale</h2>
+<p>The repository’s scale is itself evidence of the surface that the
+gates and pipeline cover, and it is reported in fig. <a
+href="#fig:repo_metrics">6</a> directly from a scan of the working
+tree.</p>
+<figure id="fig:repo_metrics">
+<a class="figure-full-size-link" href="../figures/gnn_repo_metrics.png" target="_blank" rel="noopener" aria-label="Open full-size Figure 6, Repository-scale metrics — source packages, test files"><img src="../figures/gnn_repo_metrics.png" style="width:80.0%"
+alt="Figure 6: Repository-scale metrics — source packages, test files, and tool surface — measured from the live repository." /><span class="figure-full-size-label" aria-hidden="true">Open full-size figure</span></a>
+<figcaption>Figure 6: Repository-scale metrics —
+source packages, test files, and tool surface — measured from the live
+repository.</figcaption>
+</figure>
+<p>The test suite comprises 322 test files containing 3651 test
+functions, exercising a source base of 565 Python files across 31
+packages (190691 lines of source). The Model Context Protocol surface —
+which exposes GNN’s capabilities to external agents and tools — provides
+141 tools across 32 modules. The pipeline itself runs as 25 steps
+(0–24), and the rendering of figures, models, and reports produced 105
+figures in the current run.</p>
+<h2 data-number="5.4" id="claim-discipline"><span
+class="header-section-number">5.4</span> Claim Discipline</h2>
+<p>A claim is manuscript-ready only when it is bound to a verifiable
+artifact. Concretely, every claim in this manuscript must rest on one of
+four support types:</p>
+<ul>
+<li>A passing test or validator command — for example the
+semantic-fidelity and cross-framework gates above, which can be re-run
+on demand.</li>
+<li>A generated output produced by a deterministic producer, such as the
+figures rendered from the family and repository scans, or the token
+values emitted by the manuscript-variable producer that backs every
+number on this page.</li>
+<li>A source ledger, manifest, or configuration file that fixes the
+value being claimed.</li>
+<li>A resolved entry in <code>references.bib</code> for any
+external-literature claim <span class="citation"
+data-cites="friston2010 parr2022">(<a href="#ref-friston2010"
+role="doc-biblioref">Friston 2010</a>; <a href="#ref-parr2022"
+role="doc-biblioref">Parr et al. 2022</a>)</span>.</li>
+</ul>
+<p>The pipeline records its own evidence trail under
+<code>output/</code>. The run-level summary is written to
+<code>output/PIPELINE_REPORT.md</code>, and the per-step execution
+record — including which steps ran, their status, and their artifacts —
+is captured in <code>output/00_pipeline_summary</code>. These are the
+artifacts a reader should consult to confirm that the numbers
+substituted into this section correspond to a real, reproducible
+pipeline run rather than to asserted prose. When a value would otherwise
+need a literal number with no producer behind it, the discipline is to
+omit the number rather than to hard-code it.</p>
+<hr />
+<h1 data-number="6" id="sec:reproducibility"><span
+class="header-section-number">6</span> Reproducibility</h1>
+<p>Reproducibility in GNN is not an aspiration layered on top of the
+system; it is the operating contract that the pipeline enforces. The
+0–24 processing steps are deterministic given a model specification and
+a target directory, and every published claim in this manuscript is
+traceable to a command that regenerates the underlying artifact. This
+section lists only commands that exist in the repository, so that a
+reader with a clean checkout can reproduce the pipeline, the validation
+gates, and this manuscript itself.</p>
+<h2 data-number="6.1" id="pipeline-smoke-run"><span
+class="header-section-number">6.1</span> Pipeline Smoke Run</h2>
+<p>The fastest way to confirm a working installation is to drive the
+full pipeline over the discrete model family without invoking the
+optional LLM steps:</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run python src/main.py <span class="at">--target-dir</span> input/gnn_files/discrete <span class="at">--output-dir</span> /tmp/gnn-smoke <span class="at">--skip-llm</span></span></code></pre></div>
+<p>This parses the discrete GNN files, runs visualization and rendering
+across the maintained backends, and writes all artifacts under the
+chosen output directory. The <code>--skip-llm</code> flag keeps the run
+hermetic and free of external API calls, which makes it suitable for
+continuous integration and for offline reproduction. To exercise the
+complete model corpus rather than a single family, point
+<code>--target-dir</code> at <code>input/gnn_files</code>, which
+contains 10 family directories.</p>
+<h2 data-number="6.2" id="validation-gates"><span
+class="header-section-number">6.2</span> Validation Gates</h2>
+<p>GNN’s reproducibility guarantees rest on a small set of strict,
+deterministic gates that bind the manuscript’s quantitative claims to
+recomputable ledgers. The model-family acceptance gate runs the
+maintained families declared in the manifest and fails on any
+regression:</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run python scripts/run_model_family_acceptance.py <span class="dt">\</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">--manifest</span> input/model_family_manifest.json <span class="at">--strict</span></span></code></pre></div>
+<p>The semantic-fidelity gate verifies that a parse → serialize → parse
+round trip preserves variables, edges, dimensions, parameter shapes,
+equations, time semantics, and ontology mappings across the 9 model
+families; the cross-framework gate profiles the 9 maintained backends
+and records explicit compatible and unsupported statuses rather than
+silently degrading. Both write their ledgers to an output directory of
+your choosing:</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run python scripts/run_semantic_fidelity_gate.py <span class="dt">\</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">--manifest</span> input/model_family_manifest.json <span class="dt">\</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--output-dir</span> output/semantic_fidelity <span class="at">--strict</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run python scripts/run_cross_framework_reliability.py <span class="dt">\</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">--manifest</span> input/model_family_manifest.json <span class="dt">\</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">--output-dir</span> output/cross_framework <span class="at">--strict</span></span></code></pre></div>
+<p>Under <code>--strict</code>, each gate exits non-zero on the first
+mismatch, so these commands double as assertions in an automated
+reproduction run. Code-quality reproducibility is enforced separately
+through the developer command reference: <code>just lint</code> runs the
+Ruff linter over <code>src</code> and <code>scripts</code>, and the
+broader <code>just quality</code> recipe chains formatting, terminology,
+documentation, type, and security checks for a full pre-commit gate.</p>
+<h2 data-number="6.3" id="manuscript-reproducibility"><span
+class="header-section-number">6.3</span> Manuscript Reproducibility</h2>
+<p>This manuscript is itself a reproducible artifact. Every quantitative
+value in the prose — the pipeline step count, the family and backend
+counts, the source and test inventories — is a token rather than a
+hard-coded literal, and the deterministic producer regenerates all of
+them from the live repository state:</p>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> scripts/z_generate_manuscript_variables.py</span></code></pre></div>
+<p>That command recomputes the {{…}} tokens, persists them to
+<code>output/data/manuscript_variables.json</code> for audit, and
+hydrates the manuscript sources into <code>output/manuscript/</code>.
+The hydrated sources are then rendered to PDF through the template
+research pipeline (invoked from the parent monorepo / template
+framework), whose rendering stage converts the markdown sections,
+figures, and references into the final document:</p>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> <span class="at">-m</span> scripts.manuscript_build_figures</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> <span class="at">-m</span> scripts.z_generate_manuscript_variables</span></code></pre></div>
+<p>Because the variables file is regenerated immediately before
+rendering, the numbers in the rendered PDF cannot drift from the
+repository: a code change that alters, for example, the test inventory
+(322 test files, 3651 test functions) propagates into the prose on the
+next regeneration without any manual editing.</p>
+<h2 data-number="6.4" id="reproducibility-contract"><span
+class="header-section-number">6.4</span> Reproducibility Contract</h2>
+<ul>
+<li>Do not cite results that cannot be regenerated or directly traced to
+a command in this repository.</li>
+<li>Keep generated outputs under <code>output/</code> and maintained
+manuscript source under <code>manuscript/</code>; treat everything in
+<code>output/</code> as disposable and regeneratable.</li>
+<li>Express every quantitative claim in the prose as a double-brace
+<code>{{...}}</code> token substituted by
+<code>scripts/z_generate_manuscript_variables.py</code>, never as a
+hard-coded number.</li>
+<li>Keep private data, credentials, and unpublished sensitive details
+out of the manuscript and out of version control.</li>
+<li>Record the exact verification commands — the smoke run, the
+acceptance and fidelity gates, and <code>just lint</code> — before
+marking this manuscript publication-ready.</li>
+</ul>
+<hr />
+<h1 data-number="7" id="sec:limitations_next_steps"><span
+class="header-section-number">7</span> Limitations and Next Steps</h1>
+<h2 data-number="7.1" id="current-limitations"><span
+class="header-section-number">7.1</span> Current Limitations</h2>
+<p>GNN 3.2.0 is a working system with deliberately scoped boundaries,
+and it is worth stating those boundaries plainly rather than implying
+broader completeness than the artifacts support. The reliability gates
+that underpin our confidence in the system — the semantic-fidelity
+ledger and the cross-framework reliability ledger — are reproducible by
+command and recorded against the 9 model families, but this manuscript
+does not assert a particular full-suite pass rate as a headline number.
+Pass and skip counts shift with the local toolchain, the presence or
+absence of optional simulation dependencies, and whether the optional
+Ollama integration paths are exercised, so we treat the reproducing
+command as the durable claim and leave the run-specific tallies to the
+ledgers and execution traces that the pipeline writes alongside each
+run. A reader who wants a number should regenerate it in their own
+environment rather than trust a transcribed digit here.</p>
+<p>A second limitation lives at the boundary between the model families
+and the rendering backends. GNN registers 9 simulation backends, but
+coverage across the family-by-backend matrix is intentionally uneven,
+and the gaps are recorded as explicit <em>profiled-unsupported</em>
+statuses rather than silently omitted. The cross-framework acceptance
+check is anchored on the continuous family, where JAX, NumPyro, Stan,
+RxInfer.jl are compared directly; the continuous and hierarchical
+families, by contrast, carry profiled-unsupported markers at the render
+and execute steps (Steps 11 and 12) for backends that cannot yet
+faithfully realize their continuous-state or temporal-depth structure.
+This is honest bookkeeping, not a defect to be hidden: an unsupported
+status with a recorded reason is more trustworthy than a forced
+translation that quietly misrepresents the model. It also reflects the
+state of the surrounding literature, where expected-free-energy
+formulations, variational-inference reductions, and hierarchical
+active-inference methods are still being actively refined rather than
+collapsed into one settled executable recipe <span class="citation"
+data-cites="champion2024reframingEfe nuijten2026typeInference rangarajan2026hierarchicalSuccessor">(<a
+href="#ref-champion2024reframingEfe" role="doc-biblioref">Champion et
+al. 2024</a>; <a href="#ref-nuijten2026typeInference"
+role="doc-biblioref">Nuijten, Lukashchuk, et al. 2026</a>; <a
+href="#ref-rangarajan2026hierarchicalSuccessor"
+role="doc-biblioref">Rangarajan and Rao 2026</a>)</span>. The practical
+consequence is that not every model expressible in the GNN syntax can be
+executed on every registered backend today, and authors should consult
+the recorded backend matrix before assuming a given family will
+round-trip through a given framework.</p>
+<p>Finally, several capabilities depend on optional dependencies that
+are not part of the minimal install. The simulation frameworks
+themselves, the audio sonification path, the LLM-enhanced analysis step,
+and the interactive visualization step all require extra packages that a
+lean checkout will not have, and the corresponding pipeline steps
+degrade to recorded skips rather than failures when those dependencies
+are absent. This keeps the core parse-validate-export-visualize spine
+runnable in constrained environments, but it means a full 0–24 traversal
+of all 25 steps reflects the optional surface that a particular machine
+has installed. We consider this an acceptable engineering trade for
+portability, but it is a limitation a reader should hold in mind when
+interpreting any single end-to-end run.</p>
+<h2 data-number="7.2" id="next-steps"><span
+class="header-section-number">7.2</span> Next Steps</h2>
+<p>The roadmap is concrete and staged. The current release, GNN 3.2.0
+(“Long-Running Orchestration”), delivers three safe-by-design
+orchestration contracts that generate and validate data only, with no
+live infrastructure mutation. The first is <em>durable observation
+streams</em>: file- and array-backed stream manifests
+(content-checksummed) with replayable execution traces, so that an
+extended run can be observed, paused, and re-derived deterministically
+before any live sensor or device-backed stream is ever introduced. The
+second is <em>resumable run sessions</em>: run-session manifests with
+atomic checkpoint/resume, status inspection, and cancellation-safe
+cleanup so that extended model-family acceptance runs can be interrupted
+and resumed without corrupting partial state. The third is <em>auditable
+container plans</em>: generating hardened container plans with an
+explicit static security-review and rollback descriptor, deliberately
+stopping short of mutating any real cluster. Each contract is covered by
+tests over real objects with negative controls and a strict acceptance
+gate, additive live wiring connects them to the session-acceptance and
+run-manifest paths, and three new Model Context Protocol tools expose
+them. The unifying discipline across all three is that orchestration
+becomes more capable only as fast as it becomes more inspectable.</p>
+<p>The next major target, v4.0.0, pushes toward bounded autonomy, and it
+is gated behind the 3.2.0 orchestration work for good reason. The intent
+is to promote today’s proposal-only candidate-scoring machinery — which
+already ranks candidate patches using the existing validators,
+model-family ledgers, and interpretability reports — toward <em>reviewed
+self-editing of GNN files</em>. Crucially, the design keeps a human in
+the loop: edits are proposed and applied only after explicit user
+approval, with no automatic source mutation, and the autonomy is wrapped
+in policy, rollback, and audit controls before any self-modifying or
+distributed action is permitted. This continues the same principle that
+governs the rest of the system, in the lineage of active-inference
+accounts of self-organizing systems that act to minimize free energy
+under explicit generative models <span class="citation"
+data-cites="friston2010 parr2022">(<a href="#ref-friston2010"
+role="doc-biblioref">Friston 2010</a>; <a href="#ref-parr2022"
+role="doc-biblioref">Parr et al. 2022</a>)</span>: an agent should
+expand its license to act only in proportion to the reviewability of
+what it does. The v4.0.0 items are not claimed as complete here; they
+are the recorded direction of travel, and each will be evidenced by its
+own gates when it lands, just as the 3.2.0 contracts are evidenced by
+theirs today.</p>
+<hr />
+<h1 data-number="8" id="sec:source_surface"><span
+class="header-section-number">8</span> Supplemental Source Surface</h1>
+<p>This supplement records the top-level source surfaces a reader or
+reviewer should inspect before turning any prose in the main manuscript
+into a verifiable claim. Each surface below is authored material under
+version control; the generated artifacts it produces are described
+separately so that the boundary between hand-written source and
+reproducible output stays explicit.</p>
+<p>The <code>src/</code> tree is the executable core of
+GeneralizedNotationNotation: A Text Language for Active Inference
+Models. It is organized into 31 Python packages spanning 565 source
+files and roughly 190691 lines of code. Among these packages sit the 25
+step modules that implement the numbered pipeline (0–24), each module
+owning one stage of the progression from a parsed GNN text model through
+visualization, type checking, code export, and executable cognitive
+simulation. Every claim the manuscript makes about pipeline behavior
+should be traceable to one of these step modules rather than to
+descriptive prose alone.</p>
+<p>The <code>input/</code> tree holds the model corpora that exercise
+the pipeline. It contains 10 GNN corpora organized by model family,
+together totaling 29 example files, plus a
+<code>model_family_manifest.json</code> that enumerates the families and
+their representative models. This manifest is the authoritative registry
+that downstream steps and the manuscript variable producer read when
+they report family counts and cross-framework coverage; it should be
+consulted directly rather than inferred from directory listings.</p>
+<p>The <code>scripts/</code> tree contains the thin orchestrators that
+gate and reproduce the project. These include the acceptance scripts
+that confirm the pipeline runs end to end, the reliability gates that
+enforce determinism and coverage expectations, and the manuscript
+variable producer (<code>src/manuscript_variables.py</code> driven from
+this layer) that emits the double-brace <code>{{...}}</code> token
+values consumed throughout the manuscript. Treating these scripts as the
+source of reproduction commands keeps reported numbers bound to what the
+code actually computes.</p>
+<p>The <code>doc/</code> tree is the prose and reference surface,
+comprising 614 files of specification, tutorial, and design
+documentation for the GNN language and its Active Inference grounding
+<span class="citation" data-cites="gnn2023">(<a href="#ref-gnn2023"
+role="doc-biblioref">Smékal and Friedman 2023</a>)</span>. It is the
+place to verify that a manuscript statement about GNN syntax or
+semantics matches the documented language rather than a convenient
+paraphrase.</p>
+<p>The <code>output/</code> tree collects per-step pipeline artifacts:
+the data dumps, intermediate representations, validation reports, and
+the 105 figures regenerated on each run. Everything here is disposable
+and reproducible from the surfaces above, so it should be read as
+evidence of a run rather than as authored source. Notably,
+<code>output/data/manuscript_variables.json</code> is where the
+manuscript’s substituted token values are materialized.</p>
+<h2 data-number="8.1" id="expansion-checklist"><span
+class="header-section-number">8.1</span> Expansion Checklist</h2>
+<ul>
+<li>Confirm which files are authored source and which are
+generated.</li>
+<li>Confirm which commands reproduce the current outputs.</li>
+<li>Confirm which values should become manuscript variables.</li>
+<li>Confirm which external references need verified BibTeX entries.</li>
+<li>Confirm whether any private material must be summarized rather than
+quoted or copied.</li>
+</ul>
+<hr />
+<h1 data-number="9" id="sec:symbols_glossary"><span
+class="header-section-number">9</span> Symbols and Glossary</h1>
+<p>This glossary defines the Generalized Notation Notation (GNN)
+language constructs used to specify Active Inference generative models,
+together with the canonical Active Inference symbols those constructs
+carry. Definitions follow the GNN syntax specification and the discrete
+POMDP exemplars distributed with the repository, and they align with the
+standard discrete-state-space formulation of Active Inference <span
+class="citation" data-cites="gnn2023 dacosta2020 parr2022">(<a
+href="#ref-gnn2023" role="doc-biblioref">Smékal and Friedman 2023</a>;
+<a href="#ref-dacosta2020" role="doc-biblioref">Da Costa et al.
+2020</a>; <a href="#ref-parr2022" role="doc-biblioref">Parr et al.
+2022</a>)</span>.</p>
+<h2 data-number="9.1" id="language-constructs"><span
+class="header-section-number">9.1</span> Language Constructs</h2>
+<p>A GNN file is an ordered, UTF-8 Markdown document whose level-2
+headers name required and optional sections. The strict schema validator
+enforces section order, declaration grammar, and connection syntax; the
+constructs below are the load-bearing sections a parser must recognize;
+they are catalogued in tbl. <a href="#tbl:gnn_constructs">4</a>.</p>
+<div class="table-scroll" role="region" tabindex="0" aria-label="Scrollable table: Table 4: GNN language constructs a conforming parser must recognize, with the meaning each carries."><table id="tbl:gnn_constructs" data-responsive-table="true">
+<caption>Table 4: GNN language constructs a conforming parser must
+recognize, with the meaning each carries.</caption>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>Construct</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>## GNNSection</code></td>
+<td>Required short identifier for the model block (no spaces,
+e.g. <code>ActInfPOMDP</code>).</td>
+</tr>
+<tr>
+<td><code>## GNNVersionAndFlags</code></td>
+<td>Required version declaration (<code>GNN v1</code> or
+<code>GNN v1.1</code>) with optional flags.</td>
+</tr>
+<tr>
+<td><code>## ModelName</code></td>
+<td>Required human-readable title of the generative model.</td>
+</tr>
+<tr>
+<td><code>## StateSpaceBlock</code></td>
+<td>Required block declaring every variable and matrix as
+<code>NAME[dim, …, type=…]</code>, one per line.</td>
+</tr>
+<tr>
+<td><code>## Connections</code></td>
+<td>Required edge list relating state-space variables, expressing the
+model’s factor graph.</td>
+</tr>
+<tr>
+<td><code>## ModelAnnotation</code></td>
+<td>Optional free-text description of the model’s modalities, factors,
+and assumptions.</td>
+</tr>
+<tr>
+<td><code>## InitialParameterization</code></td>
+<td>Optional concrete numeric values for declared matrices and
+vectors.</td>
+</tr>
+<tr>
+<td><code>## ActInfOntologyAnnotation</code></td>
+<td>Optional bindings from each variable to a CamelCase Active Inference
+ontology term.</td>
+</tr>
+<tr>
+<td><code>## ModelParameters</code></td>
+<td>Optional key-value dimensions (e.g. <code>num_hidden_states</code>,
+<code>num_obs</code>, <code>num_actions</code>) consumed by code
+generators.</td>
+</tr>
+<tr>
+<td><code>## Time</code></td>
+<td>Optional dynamics declaration: a time variable plus
+<code>Dynamic</code>/<code>Static</code>,
+<code>Discrete</code>/<code>Continuous</code>, and
+<code>ModelTimeHorizon</code>.</td>
+</tr>
+<tr>
+<td><code>NAME[d₁,d₂,…,type=…]</code></td>
+<td>A variable or tensor declaration; dimensions are positive integers
+or named references, and a <code>type</code> (<code>float</code>,
+<code>int</code>, <code>bool</code>) is required.</td>
+</tr>
+<tr>
+<td><code>A&gt;B</code></td>
+<td>Directed (causal) connection operator: edge from <code>A</code> to
+<code>B</code>, e.g. <code>D&gt;s</code> (a prior conditions a hidden
+state).</td>
+</tr>
+<tr>
+<td><code>A-B</code></td>
+<td>Undirected (bidirectional) connection operator,
+e.g. <code>s-A</code> (a hidden state participates in the likelihood
+mapping).</td>
+</tr>
+<tr>
+<td><code>A&gt;B:label</code> / <code>A-B:label</code></td>
+<td>A v1.1 annotated edge; the trailing label documents the relation and
+is preserved but may be ignored for structural validation.</td>
+</tr>
+<tr>
+<td><code>default=…</code></td>
+<td>A v1.1 declaration hint (<code>uniform</code>, <code>zeros</code>,
+<code>ones</code>, <code>eye</code>, <code>random</code>) supplying an
+initialization for a matrix or vector.</td>
+</tr>
+</tbody>
+</table></div>
+<h2 data-number="9.2" id="active-inference-symbols"><span
+class="header-section-number">9.2</span> Active Inference Symbols</h2>
+<p>The exemplar discrete POMDP agent declares the standard
+generative-model components of Active Inference over a discrete state
+space, mapping each GNN variable to its probabilistic meaning <span
+class="citation" data-cites="dacosta2020 smith2022 parr2022">(<a
+href="#ref-dacosta2020" role="doc-biblioref">Da Costa et al. 2020</a>;
+<a href="#ref-smith2022" role="doc-biblioref">Smith et al. 2022</a>; <a
+href="#ref-parr2022" role="doc-biblioref">Parr et al. 2022</a>)</span>.
+Each row of tbl. <a href="#tbl:actinf_symbols">5</a> names the equation
+in sec. <a href="#sec:system_context">3</a> that fixes the symbol’s
+role, so the glossary and the formal statement cannot drift apart.</p>
+<div class="table-scroll" role="region" tabindex="0" aria-label="Scrollable table: Table 5: Active Inference symbols carried by a GNN specification, each bound to the equation in sec. 3 that defines it."><table id="tbl:actinf_symbols" data-responsive-table="true">
+<caption>Table 5: Active Inference symbols carried by a GNN
+specification, each bound to the equation in sec. <a
+href="#sec:system_context">3</a> that defines it.</caption>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>Symbol</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>A</code></td>
+<td>Likelihood (observation) matrix encoding <span
+class="math inline">\(P(o \mid s)\)</span>, mapping hidden states to
+observation outcomes (eq. <a href="#eq:likelihood">2</a>).</td>
+</tr>
+<tr>
+<td><code>B</code></td>
+<td>Transition matrix encoding <span class="math inline">\(P(s&#39; \mid
+s, u)\)</span>, mapping a previous state and action to the next state
+(eq. <a href="#eq:transition">3</a>).</td>
+</tr>
+<tr>
+<td><code>C</code></td>
+<td>Preference vector: log-preferences over observation outcomes that
+bias the agent toward preferred outcomes (eq. <a
+href="#eq:preference">4</a>).</td>
+</tr>
+<tr>
+<td><code>D</code></td>
+<td>Prior vector over initial hidden states (eq. <a
+href="#eq:prior">5</a>).</td>
+</tr>
+<tr>
+<td><code>E</code></td>
+<td>Habit vector: an initial policy prior (baseline preference) over
+actions, entering the policy posterior (eq. <a
+href="#eq:policy">8</a>).</td>
+</tr>
+<tr>
+<td><code>s</code></td>
+<td>Current hidden-state distribution; <code>s_prime</code>
+(<code>s'</code>) is the next hidden-state distribution.</td>
+</tr>
+<tr>
+<td><code>o</code></td>
+<td>Current observation, an integer index over outcome modalities.</td>
+</tr>
+<tr>
+<td><code>π</code></td>
+<td>Policy: a distribution over actions inferred from expected free
+energy (eq. <a href="#eq:policy">8</a>).</td>
+</tr>
+<tr>
+<td><code>u</code></td>
+<td>The selected (sampled) action, sampled from the policy
+posterior.</td>
+</tr>
+<tr>
+<td><code>F</code></td>
+<td>Variational free energy, minimized during state inference to update
+beliefs from observations (eq. <a href="#eq:vfe">6</a>) <span
+class="citation" data-cites="friston2010">(<a href="#ref-friston2010"
+role="doc-biblioref">Friston 2010</a>)</span>.</td>
+</tr>
+<tr>
+<td><code>G</code></td>
+<td>Expected free energy per policy, minimized during policy inference
+to score candidate actions (eq. <a href="#eq:efe">7</a>) <span
+class="citation" data-cites="dacosta2020">(<a href="#ref-dacosta2020"
+role="doc-biblioref">Da Costa et al. 2020</a>)</span>.</td>
+</tr>
+<tr>
+<td><code>t</code></td>
+<td>Discrete time step; the horizon <span
+class="math inline">\(T\)</span> bounds the product in eq. <a
+href="#eq:generative_model">1</a>.</td>
+</tr>
+</tbody>
+</table></div>
+<h2 data-number="9.3" id="ontology-bindings-and-implementations"><span
+class="header-section-number">9.3</span> Ontology Bindings and
+Implementations</h2>
+<p>The <code>## ActInfOntologyAnnotation</code> section binds each
+variable to a canonical term (<code>A=LikelihoodMatrix</code>,
+<code>B=TransitionMatrix</code>, <code>C=LogPreferenceVector</code>,
+<code>D=PriorOverHiddenStates</code>, <code>s=HiddenState</code>,
+<code>o=Observation</code>, <code>π=PolicyVector</code>), which
+downstream pipeline steps use for semantic analysis and validation. The
+same GNN specification feeds the project’s rendering backends —
+including the 9 executable targets (PyMDP, RxInfer.jl,
+ActiveInference.jl, JAX, DisCoPy, PyTorch, NumPyro, Stan, bnlearn) — so
+that a model written once in this notation can be parsed, visualized,
+and executed across the 25-step pipeline (0–24) without restating its
+mathematics <span class="citation"
+data-cites="gnn2023 heins2022 defelice2021">(<a href="#ref-gnn2023"
+role="doc-biblioref">Smékal and Friedman 2023</a>; <a
+href="#ref-heins2022" role="doc-biblioref">Heins et al. 2022</a>; <a
+href="#ref-defelice2021" role="doc-biblioref">Felice et al.
+2021</a>)</span>.</p>
+<hr />
+<h1 data-number="10" id="sec:references"><span
+class="header-section-number">10</span> References</h1>
+<p>Bibliography lives in <a
+href="references.bib"><code>manuscript/references.bib</code></a> and is
+read by Pandoc during PDF render. Add real BibTeX entries before adding
+citation markers to the manuscript.</p>
+<div id="refs" class="references csl-bib-body hanging-indent"
+role="list">
+<div id="ref-bagaev2021reactiveMessagePassing" class="csl-entry"
+role="listitem">
+Bagaev, Dmitry, and Bert de Vries. 2021. <em>Reactive Message Passing
+for Scalable Bayesian Inference</em>. <a
+href="https://arxiv.org/abs/2112.13251">https://arxiv.org/abs/2112.13251</a>.
+</div>
+<div id="ref-champion2024reframingEfe" class="csl-entry"
+role="listitem">
+Champion, Théophile, Howard Bowman, Dimitrije Marković, and Marek Grześ.
+2024. <em>Reframing the Expected Free Energy: Four Formulations and a
+Unification</em>. <a
+href="https://arxiv.org/abs/2402.14460">https://arxiv.org/abs/2402.14460</a>.
+</div>
+<div id="ref-dacosta2020" class="csl-entry" role="listitem">
+Da Costa, Lancelot, Thomas Parr, Noor Sajid, Sebastijan Veselic,
+Victorita Neacsu, and Karl Friston. 2020. <span>“Active Inference on
+Discrete State-Spaces: A Synthesis.”</span> <em>Journal of Mathematical
+Psychology</em> 99: 102447. <a
+href="https://doi.org/10.1016/j.jmp.2020.102447">https://doi.org/10.1016/j.jmp.2020.102447</a>.
+</div>
+<div id="ref-defelice2021" class="csl-entry" role="listitem">
+Felice, Giovanni de, Alexis Toumi, and Bob Coecke. 2021. <span>“DisCoPy:
+Monoidal Categories in Python.”</span> <em>Electronic Proceedings in
+Theoretical Computer Science</em> 333: 183–97. <a
+href="https://doi.org/10.4204/EPTCS.333.13">https://doi.org/10.4204/EPTCS.333.13</a>.
+</div>
+<div id="ref-friston2010" class="csl-entry" role="listitem">
+Friston, Karl. 2010. <span>“The Free-Energy Principle: A Unified Brain
+Theory?”</span> <em>Nature Reviews Neuroscience</em> 11 (2): 127–38. <a
+href="https://doi.org/10.1038/nrn2787">https://doi.org/10.1038/nrn2787</a>.
+</div>
+<div id="ref-heins2022" class="csl-entry" role="listitem">
+Heins, Conor, Beren Millidge, Daphne Demekas, et al. 2022. <span>“Pymdp:
+A Python Library for Active Inference in Discrete State Spaces.”</span>
+<em>Journal of Open Source Software</em> 7 (73): 4098. <a
+href="https://doi.org/10.21105/joss.04098">https://doi.org/10.21105/joss.04098</a>.
+</div>
+<div id="ref-koudahl2023syntheticAgents1" class="csl-entry"
+role="listitem">
+Koudahl, Magnus, Thijs van de Laar, and Bert de Vries. 2023.
+<em>Realising Synthetic Active Inference Agents, Part i: Epistemic
+Objectives and Graphical Specification Language</em>. <a
+href="https://arxiv.org/abs/2306.08014">https://arxiv.org/abs/2306.08014</a>.
+</div>
+<div id="ref-vandelaaar2023syntheticAgents2" class="csl-entry"
+role="listitem">
+Laar, Thijs van de, Magnus Koudahl, and Bert de Vries. 2023.
+<em>Realising Synthetic Active Inference Agents, Part II: Variational
+Message Updates</em>. <a
+href="https://doi.org/10.1162/neco_a_01713">https://doi.org/10.1162/neco_a_01713</a>.
+</div>
+<div id="ref-nuijten2026efePlanningVariational" class="csl-entry"
+role="listitem">
+Nuijten, Wouter W. L., Thijs van de Laar, and Bert de Vries. 2026.
+<span>“Expected Free Energy-Based Planning as Variational
+Inference.”</span> <em>Transactions on Machine Learning Research</em>.
+<a
+href="https://arxiv.org/abs/2606.20658">https://arxiv.org/abs/2606.20658</a>.
+</div>
+<div id="ref-nuijten2026typeInference" class="csl-entry"
+role="listitem">
+Nuijten, Wouter W. L., Mykola Lukashchuk, Thijs van de Laar, and Bert de
+Vries. 2026. <em>What Type of Inference Is Active Inference?</em> <a
+href="https://arxiv.org/abs/2606.04935">https://arxiv.org/abs/2606.04935</a>.
+</div>
+<div id="ref-parr2022" class="csl-entry" role="listitem">
+Parr, Thomas, Giovanni Pezzulo, and Karl J. Friston. 2022. <em>Active
+Inference: The Free Energy Principle in Mind, Brain, and Behavior</em>.
+MIT Press. <a
+href="https://doi.org/10.7551/mitpress/12441.001.0001">https://doi.org/10.7551/mitpress/12441.001.0001</a>.
+</div>
+<div id="ref-rangarajan2026hierarchicalSuccessor" class="csl-entry"
+role="listitem">
+Rangarajan, Prashant, and Rajesh P. N. Rao. 2026. <em>Hierarchical
+Active Inference Using Successor Representations</em>. <a
+href="https://arxiv.org/abs/2604.15679">https://arxiv.org/abs/2604.15679</a>.
+</div>
+<div id="ref-gnn2023" class="csl-entry" role="listitem">
+Smékal, Jakub, and Daniel Ari Friedman. 2023. <span>“Generalized
+Notation Notation for Active Inference Models.”</span> <em>Active
+Inference Journal</em>, ahead of print. <a
+href="https://doi.org/10.5281/zenodo.7803328">https://doi.org/10.5281/zenodo.7803328</a>.
+</div>
+<div id="ref-smith2022" class="csl-entry" role="listitem">
+Smith, Ryan, Karl J. Friston, and Christopher J. Whyte. 2022. <span>“A
+Step-by-Step Tutorial on Active Inference and Its Application to
+Empirical Data.”</span> <em>Journal of Mathematical Psychology</em> 107:
+102632. <a
+href="https://doi.org/10.1016/j.jmp.2021.102632">https://doi.org/10.1016/j.jmp.2021.102632</a>.
+</div>
+</div>
+</main>
+</body>
+</html>

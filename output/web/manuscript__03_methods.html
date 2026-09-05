@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.11" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>03_methods.md.web</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      white-space: pre-wrap;
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #1a1a1a;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+
+<link data-template-favicon rel="icon" href="favicon.ico">
+
+<style>
+:root {
+  --brand-1: #5b6ee0;
+  --web-bg: #f8f8f8;
+  --web-surface: #ffffff;
+  --web-text: #2c3e50;
+  --web-border: #bdc3c7;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --brand-1: #7e8ce8;
+    --web-bg: #0f1420;
+    --web-surface: #161c2b;
+    --web-text: #e6eaf2;
+    --web-border: #2a3447;
+  }
+}
+.theorem-box {
+  border-left: 4px solid var(--brand-1);
+  background: var(--web-surface);
+  padding: 0.6em 1em;
+  margin: 1.1em 0;
+  border-radius: 0 4px 4px 0;
+}
+.theorem-box.definition { border-left-style: dashed; }
+.theorem-box > p:first-child { margin-top: 0; }
+.theorem-box > p:last-child { margin-bottom: 0; }
+.figure-long-description {
+  border: 1px solid var(--web-border);
+  border-radius: 4px;
+  margin-block: 0.75rem;
+  padding: 0.5rem 0.75rem;
+}
+.figure-long-description > summary { cursor: pointer; font-weight: 700; }
+.figure-long-description > p { max-width: 80ch; overflow-wrap: anywhere; }
+.figure-exact-values { max-width: 80ch; overflow-wrap: anywhere; }
+code { overflow-wrap: anywhere; word-break: break-word; }
+pre {
+  max-width: 100%;
+  overflow: visible;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+pre code { overflow-wrap: inherit; white-space: inherit; word-break: inherit; }
+div.sourceCode { max-width: 100%; overflow: visible; }
+pre.sourceCode { background: #2c3e50; color: #ecf0f1; }
+pre.sourceCode code,
+pre.sourceCode code span { color: inherit; }
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span {
+  display: block;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+mjx-container[display="true"] { max-width: 100%; overflow: visible; }
+.table-scroll {
+  max-width: 100%;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  scrollbar-gutter: stable;
+}
+.table-scroll:focus-visible {
+  outline: 3px solid var(--brand-1);
+  outline-offset: 3px;
+}
+.table-scroll > table { margin-block: 0; min-width: 100%; width: max-content; }
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  max-width: 100%;
+  overflow-x: hidden;
+  overflow-x: clip;
+}
+
+body {
+  font-family: 'Liberation Serif', 'Times New Roman', serif;
+  line-height: 1.6;
+  width: min(100%, 800px);
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f8f8f8;
+  color: #1a1a1a;
+  overflow-wrap: break-word;
+  overflow-x: hidden;
+  overflow-x: clip;
+}
+
+main,
+nav,
+section,
+article,
+figure,
+figcaption {
+  min-width: 0;
+}
+
+.skip-link {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  padding: 0.65rem 0.9rem;
+  transform: translateY(-120%);
+  background-color: #1a1a1a;
+  color: #ffffff;
+  font-family: sans-serif;
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+.skip-link:visited {
+  color: #ffffff;
+}
+
+.skip-link:focus,
+.skip-link:focus-visible {
+  transform: translateY(0);
+}
+
+@media (max-width: 600px) {
+  body {
+    width: 100%;
+    max-width: 100%;
+    padding: 16px;
+  }
+
+  figure img {
+    width: 100% !important;
+  }
+}
+
+@media (max-width: 800px) {
+  body {
+    width: 100%;
+    max-width: 100vw;
+    margin: 0 auto;
+  }
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #2c3e50;
+  border-bottom: 2px solid #3498db;
+  padding-bottom: 5px;
+  overflow-wrap: anywhere;
+}
+
+code {
+  background-color: #ecf0f1;
+  padding: 2px 4px;
+  border-radius: 3px;
+  font-family: 'Liberation Mono', 'Courier New', monospace;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+pre {
+  background-color: #2c3e50;
+  color: #ecf0f1;
+  padding: 15px;
+  border-radius: 5px;
+  max-width: 100%;
+  overflow: visible;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+pre code {
+  overflow-wrap: inherit;
+  white-space: inherit;
+  word-break: inherit;
+}
+
+div.sourceCode {
+  max-width: 100%;
+  overflow: visible;
+}
+
+pre.sourceCode {
+  background: #2c3e50;
+  color: #ecf0f1;
+}
+
+pre.sourceCode code,
+pre.sourceCode code span {
+  color: inherit;
+}
+
+pre > code.sourceCode {
+  white-space: pre-wrap;
+}
+
+pre > code.sourceCode > span {
+  display: block;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 20px 0;
+}
+
+.table-scroll {
+  max-width: 100%;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  scrollbar-gutter: stable;
+}
+
+.table-scroll:focus-visible {
+  outline: 3px solid #1f6f8b;
+  outline-offset: 3px;
+}
+
+.table-scroll > table {
+  margin-block: 0;
+  min-width: 100%;
+  width: max-content;
+}
+
+figure {
+  max-width: 100%;
+  margin: 1.5rem 0;
+}
+
+th, td {
+  border: 1px solid #bdc3c7;
+  padding: 8px;
+  text-align: left;
+}
+
+th {
+  background-color: #1f6f8b;
+  color: white;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  border: 1px solid #bdc3c7;
+  border-radius: 5px;
+  margin: 20px 0;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+a {
+  color: #b91c1c;
+  text-decoration: underline;
+  text-decoration-thickness: 0.08em;
+  text-underline-offset: 0.14em;
+  overflow-wrap: anywhere;
+}
+
+a:visited {
+  color: #8f1d1d;
+}
+
+a:hover {
+  text-decoration-thickness: 0.14em;
+}
+
+a:focus-visible {
+  outline: 3px solid #1f6f8b;
+  outline-offset: 3px;
+}
+
+.toc {
+  background-color: #ecf0f1;
+  padding: 20px;
+  border-radius: 5px;
+  margin-bottom: 30px;
+}
+
+.toc a,
+#TOC a {
+  color: #b91c1c;
+  display: inline-block;
+  min-height: 28px;
+  line-height: 1.5;
+  padding-block: 2px;
+}
+
+.toc li,
+#TOC li {
+  margin-block: 1px;
+}
+
+.math {
+  text-align: center;
+  margin: 20px 0;
+  font-size: 1.1em;
+}
+
+mjx-container[display="true"] {
+  display: block;
+  max-width: 100%;
+  overflow: visible;
+  padding-bottom: 0.25rem;
+}
+
+.figure {
+  text-align: center;
+  margin: 30px 0;
+}
+
+.figure img {
+  max-width: 100%;
+  height: auto;
+  border: 2px solid #3498db;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+/* A reading column keeps prose comfortable, but dense scientific figures need
+   a larger inspection surface.  The rendered image remains responsive and the
+   explicit link opens its source-resolution asset without changing the PDF. */
+.figure-full-size-link {
+  color: inherit;
+  display: block;
+  max-width: 100%;
+  text-align: center;
+}
+
+.figure-full-size-link img {
+  cursor: zoom-in;
+  margin-bottom: 0.45rem;
+}
+
+.figure-full-size-label {
+  color: #1f6f8b;
+  display: inline-block;
+  font-family: sans-serif;
+  font-size: 0.875rem;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+  text-decoration: underline;
+  text-underline-offset: 0.14em;
+}
+
+.figure-full-size-link:focus-visible {
+  outline: 3px solid #1f6f8b;
+  outline-offset: 4px;
+}
+
+@media (min-width: 1000px) {
+  .figure-full-size-link {
+    left: 50%;
+    max-width: none;
+    position: relative;
+    transform: translateX(-50%);
+    width: min(1080px, calc(100vw - 3rem));
+  }
+}
+
+.figure-caption {
+  font-style: italic;
+  color: #4b5563;
+  margin-top: 10px;
+  text-align: center;
+}
+
+.figure-long-description,
+.figure-exact-values {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main-content">Skip to main content</a>
+<main id="main-content" tabindex="-1">
+<h1 id="sec:methods">Methods</h1>
+<p>The GeneralizedNotationNotation (GNN) method is realized as a
+sequence of deterministic transformations that take a plain-text model
+specification and carry it through parsing, validation, code generation,
+execution, and reporting. The processing pipeline is organized into 25
+numbered steps (steps 0–24), each implemented as a standalone module
+with a single responsibility. The methods below describe the path that a
+model travels from notation to executable cognitive model and back to
+analyzed results. Every quantity reported in this section is produced
+from the live repository rather than asserted by hand; the closing
+subsection makes that contract explicit.</p>
+<h2 id="parsing-and-multi-format-export">Parsing and Multi-Format
+Export</h2>
+<p>The pipeline begins by ingesting GNN model files written in the
+plain-text notation. Parsing (step 3) reads each specification, builds
+an internal model representation, and re-emits it across a family of
+structured export formats so that downstream tools, and human readers,
+can consume the same model through whichever serialization they prefer.
+The corpus that exercises this stage spans 29 example model files
+organized into 10 curated corpora, ranging from minimal perception
+fixtures used to test the parser to larger hierarchical and multi-agent
+models. The presence of hierarchical fixtures should be read as a
+coverage target, not as a claim that every current backend fully
+executes every hierarchical formulation; scaling hierarchical active
+inference remains an active research problem in its own right
+[rangarajan2026hierarchicalSuccessor]. Treating parsing and export as a
+single round-trippable stage means a model authored once becomes
+immediately available as a typed object, a normalized text form, and
+machine-readable serializations without any manual re-encoding.</p>
+<h2 id="type-checking-and-validation">Type Checking and Validation</h2>
+<p>A model that parses is not yet a model that is well-formed. Steps 5
+and 6 apply type checking and validation to confirm that the state
+spaces, observation modalities, control factors, and the matrices
+relating them are mutually consistent before any code is generated. This
+catches dimensional mismatches and malformed factor structures at the
+notation level, where the diagnostic is cheap and legible, rather than
+allowing them to surface as opaque runtime errors deep inside a
+numerical backend. Validation here is the gate that protects every later
+stage: rendering, execution, and analysis all assume a model that has
+already been certified consistent.</p>
+<h2 id="rendering-to-multiple-backends">Rendering to Multiple
+Backends</h2>
+<p>The central act of the “Triple Play” is turning a validated
+specification into executable cognitive models. The rendering stage
+emits backend-specific code for 9 registered target frameworks — PyMDP,
+RxInfer.jl, ActiveInference.jl, JAX, DisCoPy, PyTorch, NumPyro, Stan,
+bnlearn — so that a single GNN model can be instantiated as a simulation
+in whichever computational ecosystem a researcher already works in;
+coverage across the family-by-backend matrix is uneven and is recorded
+explicitly (see <span class="citation"
+data-cites="sec:limitations_next_steps">@sec:limitations_next_steps</span>).
+Each backend is addressed through a registry key that maps the abstract
+model onto that framework’s idioms for representing generative models
+and performing inference. The full mapping from registry key to backend
+is given below.</p>
+<div class="table-scroll" role="region" tabindex="0" aria-label="Scrollable table: Render targets in src/render/framework_registry.py . The Executes column is the registry’s own supports_execution fla…"><table id="tbl:backend_registry" data-responsive-table="true">
+<caption>Render targets in
+<code>src/render/framework_registry.py</code>. The <em>Executes</em>
+column is the registry’s own <code>supports_execution</code> flag: a
+render-only backend has no Step-12 executor.</caption>
+<thead>
+<tr>
+<th>Registry key</th>
+<th>Backend</th>
+<th>Executes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>pymdp</code></td>
+<td>PyMDP</td>
+<td>yes</td>
+</tr>
+<tr>
+<td><code>rxinfer</code></td>
+<td>RxInfer.jl</td>
+<td>yes</td>
+</tr>
+<tr>
+<td><code>activeinference_jl</code></td>
+<td>ActiveInference.jl</td>
+<td>yes</td>
+</tr>
+<tr>
+<td><code>jax</code></td>
+<td>JAX</td>
+<td>yes</td>
+</tr>
+<tr>
+<td><code>discopy</code></td>
+<td>DisCoPy</td>
+<td>yes</td>
+</tr>
+<tr>
+<td><code>pytorch</code></td>
+<td>PyTorch</td>
+<td>yes</td>
+</tr>
+<tr>
+<td><code>numpyro</code></td>
+<td>NumPyro</td>
+<td>yes</td>
+</tr>
+<tr>
+<td><code>stan</code></td>
+<td>Stan</td>
+<td>yes</td>
+</tr>
+<tr>
+<td><code>bnlearn</code></td>
+<td>bnlearn</td>
+<td>render-only</td>
+</tr>
+</tbody>
+</table></div>
+<p>The capability surface of these backends — which model families each
+one can express and execute — is summarized in <span class="citation"
+data-cites="fig:backend_matrix">@fig:backend_matrix</span>.</p>
+<figure id="fig:backend_matrix">
+<a class="figure-full-size-link" href="../figures/gnn_backend_capability_matrix.png" target="_blank" rel="noopener" aria-label="Open full-size figure, The GNN rendering backend registry: each registry key, its display name"><img src="../figures/gnn_backend_capability_matrix.png"
+style="width:85.0%"
+alt="The GNN rendering backend registry: each registry key, its display name, and the cross-framework comparison targets, read directly from the framework registry." /><span class="figure-full-size-label" aria-hidden="true">Open full-size figure</span></a>
+<figcaption>The GNN rendering backend registry: each
+registry key, its display name, and the cross-framework comparison
+targets, read directly from the framework registry.</figcaption>
+</figure>
+<p>By generating code rather than asking authors to port models by hand,
+the method keeps a single source of truth in the notation while still
+reaching the discrete message-passing libraries [heins2022], reactive
+message-passing lineage [bagaev2021reactiveMessagePassing], and
+categorical, diagrammatic frameworks [defelice2021] that different
+research communities have built. The underlying mathematics that
+compatible backends share — inference and policy selection over discrete
+state spaces under the free-energy objective [dacosta2020; smith2022] —
+is the common substrate the renderer attempts to preserve; where a
+backend cannot express a family faithfully, GNN records that boundary as
+an explicit unsupported status rather than treating all registered
+backends as equivalent.</p>
+<h2 id="execution">Execution</h2>
+<p>Generated backend code is not left as a static artifact. The
+execution stage (step 12) runs the rendered models, driving the
+inference and behavior that the notation describes and producing
+concrete traces, beliefs, and outputs. This closes the loop from text to
+running cognitive model: the same specification that was type-checked
+and exported is now exercised numerically, so that claims about a
+model’s behavior rest on having actually run it rather than on
+inspection of the source alone.</p>
+<h2 id="long-running-orchestration-contracts">Long-Running Orchestration
+Contracts</h2>
+<p>GNN 3.2.0 extends the pipeline with three safe-by-design
+orchestration contracts that let an extended run be observed, paused,
+resumed, and audited without ever mutating live infrastructure.
+<em>Durable observation streams</em> record file- and array-backed
+stream manifests with content checksums and replayable execution traces,
+so that a long run can be re-derived deterministically before any live
+sensor or device-backed stream is introduced. <em>Resumable run
+sessions</em> carry run-session manifests with atomic checkpoint and
+resume, status inspection, and cancellation-safe cleanup, so that an
+extended model-family acceptance run can be interrupted and resumed
+without corrupting partial state. <em>Auditable container plans</em>
+generate hardened container plans together with an explicit static
+security review and a rollback descriptor, deliberately stopping short
+of touching any real cluster. Each contract only generates and validates
+data; none performs live mutation, and each is governed by a strict
+acceptance gate and exercised through dedicated Model Context Protocol
+tools. <span class="citation"
+data-cites="fig:orchestration">@fig:orchestration</span> shows how the
+three contracts compose into one inspectable orchestration surface.</p>
+<figure id="fig:orchestration">
+<a class="figure-full-size-link" href="../figures/gnn_orchestration.png" target="_blank" rel="noopener" aria-label="Open full-size figure, The v3.0.0 long-running orchestration contracts: durable observation streams, resumable run…"><img src="../figures/gnn_orchestration.png" style="width:85.0%"
+alt="The v3.0.0 long-running orchestration contracts: durable observation streams, resumable run sessions, and auditable container plans." /><span class="figure-full-size-label" aria-hidden="true">Open full-size figure</span></a>
+<figcaption>The v3.0.0 long-running orchestration
+contracts: durable observation streams, resumable run sessions, and
+auditable container plans.</figcaption>
+</figure>
+<h2 id="analysis-visualization-and-reporting">Analysis, Visualization,
+and Reporting</h2>
+<p>The final group of stages turns execution results into interpretable
+evidence. Analysis (step 16) processes the outputs of execution into
+structured findings; visualization (step 8) and the rendering of figures
+(step 9) translate model structure and results into graphical form,
+supporting the graphical leg of the Triple Play; and the reporting stage
+(step 23) assembles these artifacts into a coherent summary of what the
+model is and how it behaved. Because each stage writes its outputs to a
+known location, the chain from a notation file to a finished report is
+fully traceable, and any figure or number in a report can be followed
+back to the step and model that produced it.</p>
+<h2 id="reproducibility-and-auto-injection">Reproducibility and
+Auto-Injection</h2>
+<p>Every quantitative value that appears in this manuscript is
+generated, not typed. The producer
+<code>scripts/z_generate_manuscript_variables.py</code> reads the
+repository’s source surfaces directly — the step modules, the source
+tree, the model-family manifest, and the framework registry — together
+with the project’s maintained ledgers, notably the Model Context
+Protocol tool audit (<code>src/mcp/audit_report.json</code>, itself
+regenerated by the test suite). From these it emits a manifest of named
+tokens — counts of pipeline steps, source packages and files, model
+families, backends, example files, tests, and tools — which the renderer
+substitutes into the prose at build time. Filesystem-derived counts are
+recomputed on every run; ledger-derived counts (such as the MCP tool
+total) are as current as the ledger they read, which the maintained test
+suite keeps in sync. The manuscript therefore inherits a determinism
+property: running the producer against a fixed repository state yields
+the same values, and authors are prohibited from hard-coding any number
+that has a corresponding token. This makes the manuscript a faithful,
+regenerable description of the system it documents: when the 25-step
+pipeline, the 9 rendering backends, or the 29-file example corpus
+change, the reported numbers change with them on the next build, with no
+opportunity for prose and repository to silently drift apart.</p>
+</main>
+</body>
+</html>

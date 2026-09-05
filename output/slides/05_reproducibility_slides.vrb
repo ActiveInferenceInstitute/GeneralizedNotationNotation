@@ -1,0 +1,23 @@
+\frametitle{Reproducibility Contract}
+\begin{itemize}
+\tightlist
+\item
+  Do not cite results that cannot be regenerated or directly traced to a
+  command in this repository.
+\item
+  Keep generated outputs under \texttt{output/} and maintained
+  manuscript source under \texttt{manuscript/}; treat everything in
+  \texttt{output/} as disposable and regeneratable.
+\item
+  Express every quantitative claim in the prose as a double-brace
+  \texttt{\{\{...\}\}} token substituted by
+  \breaktt{scripts/z\_generate\_manuscript\_variables.py}, never as a
+  hard-coded number.
+\item
+  Keep private data, credentials, and unpublished sensitive details out
+  of the manuscript and out of version control.
+\item
+  Record the exact verification commands --- the smoke run, the
+  acceptance and fidelity gates, and \texttt{just\ lint} --- before
+  marking this manuscript publication-ready.
+\end{itemize}

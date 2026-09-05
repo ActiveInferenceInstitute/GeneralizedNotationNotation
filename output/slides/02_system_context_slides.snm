@@ -1,0 +1,15 @@
+\beamer@slide {the-gnn-language}{3}
+\beamer@slide {the-generative-model-a-specification-denotes}{4}
+\beamer@slide {eq:generative_model}{4}
+\beamer@slide {eq:likelihood}{5}
+\beamer@slide {eq:transition}{5}
+\beamer@slide {eq:preference}{6}
+\beamer@slide {eq:prior}{6}
+\beamer@slide {eq:vfe}{6}
+\beamer@slide {eq:efe}{7}
+\beamer@slide {eq:policy}{8}
+\beamer@slide {the-processing-pipeline}{10}
+\beamer@slide {fig:pipeline}{11}
+\beamer@slide {tbl:pipeline_steps}{13}
+\beamer@slide {the-triple-play}{16}
+\beamer@slide {fig:triple_play}{17}

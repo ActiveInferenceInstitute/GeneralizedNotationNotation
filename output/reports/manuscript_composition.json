@@ -1,0 +1,73 @@
+{
+  "algorithm": "web-renderer-combine-v1",
+  "binding_sha256": "51f267c9c68bc6c928012ab1e2c0323498854bca9920d5b5193b6652f613dea4",
+  "combined_path": "output/web/_combined_manuscript.md",
+  "combined_sha256": "5146cf7d2b098dd4ca7fc665e9de5d81a3885b5e5887bf37e48e2bf366c09728",
+  "combined_size_bytes": 53440,
+  "input_root_kind": "hydrated",
+  "ordered_inputs": [
+    {
+      "ordinal": 1,
+      "path": "output/manuscript/00_abstract.md",
+      "sha256": "b3e8f24452cbacb8cf9afe203b4f34e77900e1c863a815fb0d8d623228d48000",
+      "size_bytes": 1871
+    },
+    {
+      "ordinal": 2,
+      "path": "output/manuscript/01_introduction.md",
+      "sha256": "310b11cffe1fd8783b63e4f36fd8b303baec7ca15cceea4d30ffc1bda846e7c4",
+      "size_bytes": 5996
+    },
+    {
+      "ordinal": 3,
+      "path": "output/manuscript/02_system_context.md",
+      "sha256": "a018ea6d7e6c175721f340c2d0557cbbb40b26da04db7b725e40c07934d5d947",
+      "size_bytes": 9724
+    },
+    {
+      "ordinal": 4,
+      "path": "output/manuscript/03_methods.md",
+      "sha256": "e7432400fb5bb4a8d66bedd96929b084492359cd1a3788a4a8450861dad33817",
+      "size_bytes": 9126
+    },
+    {
+      "ordinal": 5,
+      "path": "output/manuscript/04_artifacts_and_evidence.md",
+      "sha256": "01cb588cf46ee25df50eb47501f09f4b608ee074602ffb63b02304b7e5a9cdee",
+      "size_bytes": 6869
+    },
+    {
+      "ordinal": 6,
+      "path": "output/manuscript/05_reproducibility.md",
+      "sha256": "3c3c30ca83a086c4ada6dc25f6ef85fdbee1abd5eb9298bb704529b3ad008009",
+      "size_bytes": 4925
+    },
+    {
+      "ordinal": 7,
+      "path": "output/manuscript/06_limitations_and_next_steps.md",
+      "sha256": "1d52094f48be8bde155df47e6e3548c5feeeb4fc60f207f5b8ece1101b4c4036",
+      "size_bytes": 5912
+    },
+    {
+      "ordinal": 8,
+      "path": "output/manuscript/S01_source_surface.md",
+      "sha256": "ec5c8f338bb0a617d33c96d8ddf5c7b92b7ce2f4c85fb2f297f12e9e3e5d6ed6",
+      "size_bytes": 3247
+    },
+    {
+      "ordinal": 9,
+      "path": "output/manuscript/98_symbols_glossary.md",
+      "sha256": "1ce4cb0e25865814406d794fe0d2f035647f8ad2862d76e87682579b3ec494d8",
+      "size_bytes": 5507
+    },
+    {
+      "ordinal": 10,
+      "path": "output/manuscript/99_references.md",
+      "sha256": "6a80818379d59ddbbd2bf765712699708e6ecc8d89bc3423e6774d32169b08ee",
+      "size_bytes": 215
+    }
+  ],
+  "ordered_inputs_sha256": "1db64f90217d0e484b49d63ce3a3cda58c9d06aa58243be74a2469b35ef553e8",
+  "project": "GeneralizedNotationNotation",
+  "schema_version": "template-manuscript-composition-v1"
+}

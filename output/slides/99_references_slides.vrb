@@ -1,0 +1,5 @@
+\frametitle{References}
+Bibliography lives in
+\href{references.bib}{\breaktt{manuscript/references.bib}} and is read by
+Pandoc during PDF render. Add real BibTeX entries before adding citation
+markers to the manuscript.

@@ -1,0 +1,10 @@
+\beamer@slide {parsing-and-multi-format-export}{3}
+\beamer@slide {type-checking-and-validation}{5}
+\beamer@slide {rendering-to-multiple-backends}{6}
+\beamer@slide {tbl:backend_registry}{7}
+\beamer@slide {fig:backend_matrix}{9}
+\beamer@slide {execution}{11}
+\beamer@slide {long-running-orchestration-contracts}{12}
+\beamer@slide {fig:orchestration}{14}
+\beamer@slide {analysis-visualization-and-reporting}{15}
+\beamer@slide {reproducibility-and-auto-injection}{16}

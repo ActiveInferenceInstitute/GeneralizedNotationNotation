@@ -1,0 +1,311 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\documentclass[
+  ignorenonframetext,
+]{beamer}
+\newif\ifbibliography
+\usepackage{pgfpages}
+\setbeamertemplate{caption}[numbered]
+\setbeamertemplate{caption label separator}{: }
+\setbeamercolor{caption name}{fg=normal text.fg}
+\beamertemplatenavigationsymbolsempty
+% remove section numbering
+\setbeamertemplate{part page}{
+  \centering
+  \begin{beamercolorbox}[sep=16pt,center]{part title}
+    \usebeamerfont{part title}\insertpart\par
+  \end{beamercolorbox}
+}
+\setbeamertemplate{section page}{
+  \centering
+  \begin{beamercolorbox}[sep=12pt,center]{section title}
+    \usebeamerfont{section title}\insertsection\par
+  \end{beamercolorbox}
+}
+\setbeamertemplate{subsection page}{
+  \centering
+  \begin{beamercolorbox}[sep=8pt,center]{subsection title}
+    \usebeamerfont{subsection title}\insertsubsection\par
+  \end{beamercolorbox}
+}
+% Prevent slide breaks in the middle of a paragraph
+\widowpenalties 1 10000
+\raggedbottom
+\AtBeginPart{
+  \frame{\partpage}
+}
+\AtBeginSection{
+  \ifbibliography
+  \else
+    \frame{\sectionpage}
+  \fi
+}
+\AtBeginSubsection{
+  \frame{\subsectionpage}
+}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{longtable,booktabs,array}
+\usepackage{caption}
+\captionsetup[table]{skip=6pt}
+\newcounter{none} % for unnumbered tables
+\usepackage{calc} % for calculating minipage widths
+\usepackage{caption}
+% Make caption package work with longtable
+\makeatletter
+\def\fnum@table{\tablename~\thetable}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+% Manuscript macro/package fallbacks (newcommand -> providecommand).
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{booktabs}
+
+% Slide layout defaults for warning-clean scientific decks.
+\usepackage{etoolbox}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{}
+\IfFileExists{seqsplit.sty}{\usepackage{seqsplit}}{\newcommand{\seqsplit}[1]{#1}}
+\protected\def\breakseq#1{\seqsplit{#1}}
+\protected\def\breaktt#1{\begingroup\ttfamily\seqsplit{#1}\endgroup}
+\setlength{\emergencystretch}{6em}
+\tolerance=5000
+\hbadness=10000
+\hfuzz=1pt
+\setlength{\tabcolsep}{2pt}
+\AtBeginEnvironment{longtable}{\tiny\renewcommand{\arraystretch}{0.86}\setlength{\tabcolsep}{1pt}}
+\AtBeginEnvironment{tabular}{\tiny\renewcommand{\arraystretch}{0.86}\setlength{\tabcolsep}{1pt}}
+\AtBeginEnvironment{equation}{\tiny}
+\AtBeginEnvironment{equation*}{\tiny}
+\AtBeginEnvironment{align}{\tiny}
+\AtBeginEnvironment{align*}{\tiny}
+\AtBeginEnvironment{itemize}{\footnotesize}
+\AtBeginEnvironment{enumerate}{\footnotesize}
+\AtBeginEnvironment{description}{\footnotesize}
+\setbeamerfont{caption}{size=\tiny}
+\setbeamerfont{caption name}{size=\tiny}
+\setbeamerfont{normal text}{size=\small}
+\setbeamerfont{frametitle}{size=\small}
+\setbeamerfont{section title}{size=\footnotesize}
+\setbeamerfont{subsection title}{size=\footnotesize}
+\setbeamertemplate{section page}{%
+  \centering
+  \begin{beamercolorbox}[sep=12pt,center,wd=\paperwidth]{section title}
+    \parbox{0.86\paperwidth}{\centering\usebeamerfont{section title}\insertsection\par}
+  \end{beamercolorbox}
+}
+\setbeamertemplate{subsection page}{%
+  \centering
+  \begin{beamercolorbox}[sep=8pt,center,wd=\paperwidth]{subsection title}
+    \parbox{0.86\paperwidth}{\centering\usebeamerfont{subsection title}\insertsubsection\par}
+  \end{beamercolorbox}
+}
+\setlength{\abovecaptionskip}{2pt}
+\setlength{\belowcaptionskip}{0pt}
+
+% Natbib and cross-reference fallbacks — slides don't load natbib
+% or cleveref, but combined-PDF manuscript prose may emit these
+% commands. The fallback renders citations as a bracketed key list
+% and cross-references as detokenized labels so slides don't fail on
+% undefined control sequences or raw underscores. \providecommand is
+% a no-op if packages load later.
+\providecommand{\citep}[1]{[#1]}
+\providecommand{\citet}[1]{#1}
+\providecommand{\citealp}[1]{#1}
+\providecommand{\citeauthor}[1]{#1}
+\providecommand{\citeyear}[1]{#1}
+\providecommand{\cref}[1]{\texttt{\detokenize{#1}}}
+\providecommand{\Cref}[1]{\texttt{\detokenize{#1}}}
+\providecommand{\crefrange}[2]{\texttt{\detokenize{#1}}--\texttt{\detokenize{#2}}}
+\providecommand{\Crefrange}[2]{\texttt{\detokenize{#1}}--\texttt{\detokenize{#2}}}
+\providecommand{\paragraph}[1]{\textbf{#1}\ }
+
+\newtheorem{proposition}{Proposition}
+\newtheorem{hypothesis}{Hypothesis}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{axiom}{Axiom}
+\newtheorem{property}{Property}
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+% fallback for those not using the hyperref driver hyperxmp:
+\makeatletter
+\@ifundefined{xmpquote}{\newcommand{\xmpquote}[1]{#1}}{}
+\makeatother
+\hypersetup{
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+\author{\texorpdfstring{}{}}
+\date{}
+
+\begin{document}
+
+\section{Introduction}\label{sec:introduction}
+
+\begin{frame}[allowframebreaks]{Motivation}
+\protect\phantomsection\label{motivation}
+Active Inference has matured into a broad research program spanning the
+free energy principle (Friston 2010), discrete state-space formulations
+of perception and action (Da Costa et al. 2020), and a growing body of
+pedagogy and reference implementations (Parr et al. 2022; Smith et al.
+2022). Recent graphical-specification and message-passing work makes the
+same practical pressure visible: active-inference agents need
+representations that can be inspected as model structure and then
+carried into executable inference updates without being reauthored by
+hand (Koudahl et al. 2023; Laar et al. 2023; Bagaev and Vries 2021). As
+the field has grown, so has a quieter problem: the models themselves are
+difficult to share, reproduce, and compare. A generative model that
+lives only as a tangle of matrix definitions inside one author's script,
+a diagram in a slide deck, and a paragraph of prose in a paper has no
+\end{frame}
+
+\begin{frame}[allowframebreaks]{Motivation}
+single authoritative form. The same model is described three times, in
+three incompatible media, with no guarantee that they agree. When a
+reader wants to re-run that model in a different toolkit, they must
+reverse-engineer it from whichever fragment they happen to have.
+
+This is a reproducibility and interoperability crisis specific to the
+structure of Active Inference work. The discipline depends on precisely
+specified state spaces, observation and transition tensors, prior
+preferences, and policy structures; small notational ambiguities
+propagate into materially different behaviour. Yet the community has
+lacked a notation that is simultaneously human-readable,
+machine-parseable, and faithful to the underlying mathematics.
+Generalized Notation Notation (GNN) was introduced to fill exactly that
+gap (Smékal and Friedman 2023): a standard, text-based way to write down
+an Active Inference generative model once, such that every downstream
+\end{frame}
+
+\begin{frame}[allowframebreaks]{Motivation}
+use derives from the same source of truth.
+\end{frame}
+
+\begin{frame}[allowframebreaks]{The GNN Approach}
+\protect\phantomsection\label{the-gnn-approach}
+GNN treats the model specification as a first-class artifact. A model is
+written in a plain-text language whose syntax captures the components an
+Active Inference modeller actually reasons about --- state factors,
+observation modalities, the matrices that link them, control structure,
+and the temporal organization of the model. Because the specification is
+text, it lives comfortably in version control, diffs cleanly across
+revisions, and can be authored and reviewed by humans without
+specialized tooling.
+
+\end{frame}
+
+\begin{frame}[allowframebreaks]{The GNN Approach}
+The defining commitment of GNN is what the project calls the Triple
+Play: a single text specification is the common origin for three
+coordinated renderings of the same model. The text form is the
+authoritative, editable description. From it, GNN produces graphical
+visualizations that expose the model's factor and dependency structure
+for inspection and communication. And from the same source it produces
+executable cognitive models that can actually be run, so that the
+diagram, the equations, and the running code are provably the same model
+rather than three artifacts that merely claim to be. The Triple Play
+turns a model from a description scattered across media into one
+specification with multiple faithful projections (see
+fig.~2).
+\end{frame}
+
+\begin{frame}[allowframebreaks]{Contributions}
+\protect\phantomsection\label{contributions}
+This work contributes a standard notation together with the
+infrastructure that makes it usable in practice:
+
+\end{frame}
+
+\begin{frame}[allowframebreaks]{Contributions}
+\begin{itemize}
+\tightlist
+\item
+  \textbf{A parseable, human-readable notation} for Active Inference
+  generative models, whose text form is authoritative and from which
+  every other representation is derived.
+\item
+  \textbf{A 25-step processing pipeline}, implemented across 31 source
+  packages (0--24), that carries a specification from parsing and
+  validation through visualization, rendering, and execution.
+\item
+  \textbf{9 rendering backends} (PyMDP, RxInfer.jl, ActiveInference.jl,
+  JAX, DisCoPy, PyTorch, NumPyro, Stan, bnlearn) that materialize a
+  single GNN specification as executable cognitive models across
+  multiple simulation frameworks, realizing the executable arm of the
+  Triple Play.
+\item
+  \textbf{141 Model Context Protocol tools} that expose the pipeline's
+  capabilities to agentic and programmatic clients, so the notation and
+  its tooling are directly accessible to automated workflows.
+\item
+  \textbf{9-family reliability gates} that exercise the pipeline against
+  a curated set of model families (basics, discrete, continuous,
+  hierarchical, multiagent, precision, structured, gridworld,
+  scaling-study), turning interoperability claims into checks that must
+  pass rather than assertions that are merely made.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[allowframebreaks]{Reader Orientation}
+\protect\phantomsection\label{reader-orientation}
+The remainder of this manuscript is organized to move from language to
+mechanism to evidence. sec.~3 states the notation
+and the generative model it denotes, writing the factorization, the four
+matrices, and the two free-energy objectives as explicit equations
+(eq.~1 through eq.~8); it presents
+the pipeline structure (fig.~1), the Triple Play
+(fig.~2), and the per-step responsibility table
+(tbl.~1). sec.~4 follows a
+specification through the pipeline --- parsing, type checking,
+rendering, execution, and reporting --- and presents the backend
+registry (tbl.~2), the backend capability
+surface (fig.~3), and the long-running
+orchestration contracts (fig.~4).
+sec.~5 reports what the project has produced
+and how each number is grounded, with the model-family registry
+(tbl.~3), the family-by-framework coverage
+(fig.~5), and repository-scale metrics
+\end{frame}
+
+\begin{frame}[allowframebreaks]{Reader Orientation}
+(fig.~6). Claims of independent re-execution are
+addressed in sec.~6, the boundaries of the
+current system in sec.~7, the symbol and
+construct tables in sec.~9, and full source
+details in sec.~10. Read in this order, the manuscript
+moves from why a standard notation is needed, through how GNN realizes
+it, to the evidence that the standard holds.
+\end{frame}
+
+\end{document}

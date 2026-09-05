@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.11" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>02_system_context.md.web</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      white-space: pre-wrap;
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #1a1a1a;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+  <script data-template-mathjax-config>
+window.MathJax = window.MathJax || {};
+window.MathJax.chtml = Object.assign({}, window.MathJax.chtml, {
+  fontURL: "https://cdn.jsdelivr.net/npm/@mathjax/mathjax-newcm-font@4.0.0/chtml/woff2",
+  dynamicPrefix: "https://cdn.jsdelivr.net/npm/@mathjax/mathjax-newcm-font@4.0.0/chtml/dynamic"
+});
+var templateMathOutput = window.MathJax.output || {};
+window.MathJax.output = Object.assign({}, templateMathOutput, {
+  displayOverflow: "linebreak",
+  linebreaks: Object.assign({}, templateMathOutput.linebreaks, {
+    inline: true,
+    width: "100%",
+    lineleading: 0.5
+  })
+});
+window.normalizeTemplateMathJaxAria = function () {
+  document.querySelectorAll("mjx-speech[aria-roledescription]").forEach(function (node) {
+    var roleDescription = node.getAttribute("aria-roledescription") || "";
+    if (/[-]/.test(roleDescription)) {
+      node.setAttribute("aria-roledescription", "mathematical expression");
+    }
+  });
+};
+window.MathJax.startup = Object.assign({}, window.MathJax.startup, {
+  ready: function () {
+    window.MathJax.startup.defaultReady();
+    window.MathJax.startup.promise.then(window.normalizeTemplateMathJaxAria);
+  }
+});
+</script>
+<script defer=""
+  type="text/javascript" src="https://cdn.jsdelivr.net/npm/mathjax@4.0.0/tex-chtml.js" integrity="sha384-2BWc4dVaHADUocwKrUrK9u3iDwHxVMKXWEcoRmUkXYSFKhAsgVAYClu9ydNuo5Oz" crossorigin="anonymous"></script>
+
+<link data-template-favicon rel="icon" href="favicon.ico">
+
+<style>
+:root {
+  --brand-1: #5b6ee0;
+  --web-bg: #f8f8f8;
+  --web-surface: #ffffff;
+  --web-text: #2c3e50;
+  --web-border: #bdc3c7;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --brand-1: #7e8ce8;
+    --web-bg: #0f1420;
+    --web-surface: #161c2b;
+    --web-text: #e6eaf2;
+    --web-border: #2a3447;
+  }
+}
+.theorem-box {
+  border-left: 4px solid var(--brand-1);
+  background: var(--web-surface);
+  padding: 0.6em 1em;
+  margin: 1.1em 0;
+  border-radius: 0 4px 4px 0;
+}
+.theorem-box.definition { border-left-style: dashed; }
+.theorem-box > p:first-child { margin-top: 0; }
+.theorem-box > p:last-child { margin-bottom: 0; }
+.figure-long-description {
+  border: 1px solid var(--web-border);
+  border-radius: 4px;
+  margin-block: 0.75rem;
+  padding: 0.5rem 0.75rem;
+}
+.figure-long-description > summary { cursor: pointer; font-weight: 700; }
+.figure-long-description > p { max-width: 80ch; overflow-wrap: anywhere; }
+.figure-exact-values { max-width: 80ch; overflow-wrap: anywhere; }
+code { overflow-wrap: anywhere; word-break: break-word; }
+pre {
+  max-width: 100%;
+  overflow: visible;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+pre code { overflow-wrap: inherit; white-space: inherit; word-break: inherit; }
+div.sourceCode { max-width: 100%; overflow: visible; }
+pre.sourceCode { background: #2c3e50; color: #ecf0f1; }
+pre.sourceCode code,
+pre.sourceCode code span { color: inherit; }
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span {
+  display: block;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+mjx-container[display="true"] { max-width: 100%; overflow: visible; }
+.table-scroll {
+  max-width: 100%;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  scrollbar-gutter: stable;
+}
+.table-scroll:focus-visible {
+  outline: 3px solid var(--brand-1);
+  outline-offset: 3px;
+}
+.table-scroll > table { margin-block: 0; min-width: 100%; width: max-content; }
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  max-width: 100%;
+  overflow-x: hidden;
+  overflow-x: clip;
+}
+
+body {
+  font-family: 'Liberation Serif', 'Times New Roman', serif;
+  line-height: 1.6;
+  width: min(100%, 800px);
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f8f8f8;
+  color: #1a1a1a;
+  overflow-wrap: break-word;
+  overflow-x: hidden;
+  overflow-x: clip;
+}
+
+main,
+nav,
+section,
+article,
+figure,
+figcaption {
+  min-width: 0;
+}
+
+.skip-link {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  padding: 0.65rem 0.9rem;
+  transform: translateY(-120%);
+  background-color: #1a1a1a;
+  color: #ffffff;
+  font-family: sans-serif;
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+.skip-link:visited {
+  color: #ffffff;
+}
+
+.skip-link:focus,
+.skip-link:focus-visible {
+  transform: translateY(0);
+}
+
+@media (max-width: 600px) {
+  body {
+    width: 100%;
+    max-width: 100%;
+    padding: 16px;
+  }
+
+  figure img {
+    width: 100% !important;
+  }
+}
+
+@media (max-width: 800px) {
+  body {
+    width: 100%;
+    max-width: 100vw;
+    margin: 0 auto;
+  }
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #2c3e50;
+  border-bottom: 2px solid #3498db;
+  padding-bottom: 5px;
+  overflow-wrap: anywhere;
+}
+
+code {
+  background-color: #ecf0f1;
+  padding: 2px 4px;
+  border-radius: 3px;
+  font-family: 'Liberation Mono', 'Courier New', monospace;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+pre {
+  background-color: #2c3e50;
+  color: #ecf0f1;
+  padding: 15px;
+  border-radius: 5px;
+  max-width: 100%;
+  overflow: visible;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+pre code {
+  overflow-wrap: inherit;
+  white-space: inherit;
+  word-break: inherit;
+}
+
+div.sourceCode {
+  max-width: 100%;
+  overflow: visible;
+}
+
+pre.sourceCode {
+  background: #2c3e50;
+  color: #ecf0f1;
+}
+
+pre.sourceCode code,
+pre.sourceCode code span {
+  color: inherit;
+}
+
+pre > code.sourceCode {
+  white-space: pre-wrap;
+}
+
+pre > code.sourceCode > span {
+  display: block;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 20px 0;
+}
+
+.table-scroll {
+  max-width: 100%;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  scrollbar-gutter: stable;
+}
+
+.table-scroll:focus-visible {
+  outline: 3px solid #1f6f8b;
+  outline-offset: 3px;
+}
+
+.table-scroll > table {
+  margin-block: 0;
+  min-width: 100%;
+  width: max-content;
+}
+
+figure {
+  max-width: 100%;
+  margin: 1.5rem 0;
+}
+
+th, td {
+  border: 1px solid #bdc3c7;
+  padding: 8px;
+  text-align: left;
+}
+
+th {
+  background-color: #1f6f8b;
+  color: white;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  border: 1px solid #bdc3c7;
+  border-radius: 5px;
+  margin: 20px 0;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+a {
+  color: #b91c1c;
+  text-decoration: underline;
+  text-decoration-thickness: 0.08em;
+  text-underline-offset: 0.14em;
+  overflow-wrap: anywhere;
+}
+
+a:visited {
+  color: #8f1d1d;
+}
+
+a:hover {
+  text-decoration-thickness: 0.14em;
+}
+
+a:focus-visible {
+  outline: 3px solid #1f6f8b;
+  outline-offset: 3px;
+}
+
+.toc {
+  background-color: #ecf0f1;
+  padding: 20px;
+  border-radius: 5px;
+  margin-bottom: 30px;
+}
+
+.toc a,
+#TOC a {
+  color: #b91c1c;
+  display: inline-block;
+  min-height: 28px;
+  line-height: 1.5;
+  padding-block: 2px;
+}
+
+.toc li,
+#TOC li {
+  margin-block: 1px;
+}
+
+.math {
+  text-align: center;
+  margin: 20px 0;
+  font-size: 1.1em;
+}
+
+mjx-container[display="true"] {
+  display: block;
+  max-width: 100%;
+  overflow: visible;
+  padding-bottom: 0.25rem;
+}
+
+.figure {
+  text-align: center;
+  margin: 30px 0;
+}
+
+.figure img {
+  max-width: 100%;
+  height: auto;
+  border: 2px solid #3498db;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+/* A reading column keeps prose comfortable, but dense scientific figures need
+   a larger inspection surface.  The rendered image remains responsive and the
+   explicit link opens its source-resolution asset without changing the PDF. */
+.figure-full-size-link {
+  color: inherit;
+  display: block;
+  max-width: 100%;
+  text-align: center;
+}
+
+.figure-full-size-link img {
+  cursor: zoom-in;
+  margin-bottom: 0.45rem;
+}
+
+.figure-full-size-label {
+  color: #1f6f8b;
+  display: inline-block;
+  font-family: sans-serif;
+  font-size: 0.875rem;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+  text-decoration: underline;
+  text-underline-offset: 0.14em;
+}
+
+.figure-full-size-link:focus-visible {
+  outline: 3px solid #1f6f8b;
+  outline-offset: 4px;
+}
+
+@media (min-width: 1000px) {
+  .figure-full-size-link {
+    left: 50%;
+    max-width: none;
+    position: relative;
+    transform: translateX(-50%);
+    width: min(1080px, calc(100vw - 3rem));
+  }
+}
+
+.figure-caption {
+  font-style: italic;
+  color: #4b5563;
+  margin-top: 10px;
+  text-align: center;
+}
+
+.figure-long-description,
+.figure-exact-values {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main-content">Skip to main content</a>
+<main id="main-content" tabindex="-1">
+<h1 id="sec:system_context">System Context</h1>
+<p>Generalized Notation Notation (GNN) couples a small, declarative text
+language for Active Inference generative models to a deterministic
+processing pipeline that turns each specification into validation,
+visualization, simulation, and analysis artifacts [gnn2023]. The
+language gives a model one canonical written form; the pipeline gives
+that form many executable and graphical realizations. This section
+describes both halves of the architecture and the way they meet, and it
+states the mathematical objects the language is obliged to carry.</p>
+<h2 id="the-gnn-language">The GNN Language</h2>
+<p>A GNN model is a plain-text document organized into named sections
+that together pin down a complete partially observable Markov decision
+process. The <code>StateSpaceBlock</code> declares the variables of the
+model and their dimensions — hidden states, observations, control
+factors, and policies — establishing the shape of every tensor that
+follows. The <code>Connections</code> section records the directed and
+undirected dependencies among those variables, the edges of the
+underlying factor graph that downstream tools read to lay out diagrams
+and wire up inference. The full construct vocabulary is catalogued in
+<span class="citation"
+data-cites="tbl:gnn_constructs">[@tbl:gnn_constructs]</span>.</p>
+<h2 id="the-generative-model-a-specification-denotes">The Generative
+Model a Specification Denotes</h2>
+<p>Every GNN file denotes one object: a discrete state-space generative
+model over a horizon <span class="math inline">\(T\)</span>, factorized
+as in <span class="citation"
+data-cites="eq:generative_model">[@eq:generative_model]</span> following
+the standard formulation [dacosta2020; smith2022].</p>
+<p><span class="math display">\[
+P(o_{1:T},\, s_{1:T},\, \pi) \;=\; P(\pi)\; P(s_1) \prod_{t=1}^{T} P(o_t
+\mid s_t) \prod_{t=2}^{T} P(s_t \mid s_{t-1},\, \pi)
+\]</span> {#eq:generative_model}</p>
+<p>The four matrices named in the <code>StateSpaceBlock</code> are
+exactly the factors of <span class="citation"
+data-cites="eq:generative_model">[@eq:generative_model]</span>, and this
+correspondence is what makes the notation translatable rather than
+merely descriptive. The <code>A</code> matrix is the likelihood, a
+column-stochastic map from hidden states to observation outcomes, given
+in <span class="citation"
+data-cites="eq:likelihood">[@eq:likelihood]</span>.</p>
+<p><span class="math display">\[
+P(o_t = i \mid s_t = j) \;=\; A_{ij}, \qquad \sum_i A_{ij} = 1
+\]</span> {#eq:likelihood}</p>
+<p>The <code>B</code> matrix is the controlled transition dynamics: one
+column-stochastic slice per action, as in <span class="citation"
+data-cites="eq:transition">[@eq:transition]</span>.</p>
+<p><span class="math display">\[
+P(s_{t+1} = i \mid s_t = j,\, u_t = k) \;=\; B^{(k)}_{ij}, \qquad \sum_i
+B^{(k)}_{ij} = 1
+\]</span> {#eq:transition}</p>
+<p>The <code>C</code> vector holds log-preferences over observations,
+which enter inference as the biased outcome distribution of <span
+class="citation" data-cites="eq:preference">[@eq:preference]</span>; the
+<code>D</code> vector is the prior over initial hidden states, <span
+class="citation" data-cites="eq:prior">[@eq:prior]</span>.</p>
+<p><span class="math display">\[
+\tilde{P}(o_t = i) \;=\; \sigma(C)_i \;=\; \frac{\exp C_i}{\sum_j \exp
+C_j}
+\]</span> {#eq:preference}</p>
+<p><span class="math display">\[
+P(s_1 = i) \;=\; D_i, \qquad \sum_i D_i = 1
+\]</span> {#eq:prior}</p>
+<p>Given those factors, perception is approximate Bayesian inference: a
+variational posterior <span class="math inline">\(Q(s)\)</span> is
+fitted by minimizing the variational free energy of <span
+class="citation" data-cites="eq:vfe">[@eq:vfe]</span>, which decomposes
+into a complexity term and an accuracy term [friston2010].</p>
+<p><span class="math display">\[
+F[Q] \;=\; \underbrace{D_{\mathrm{KL}}\!\left[\,Q(s) \,\|\,
+P(s)\,\right]}_{\text{complexity}} \;-\;
+\underbrace{\mathbb{E}_{Q(s)}\!\left[\ln P(o \mid
+s)\right]}_{\text{accuracy}}
+\]</span> {#eq:vfe}</p>
+<p>Action is expected-free-energy minimization: each policy <span
+class="math inline">\(\pi\)</span> is scored over future steps <span
+class="math inline">\(\tau\)</span> by <span class="citation"
+data-cites="eq:efe">[@eq:efe]</span>, whose two terms are the
+information gain a policy is expected to yield and the extent to which
+its predicted outcomes match <code>C</code> [dacosta2020].</p>
+<p><span class="math display">\[
+G(\pi) \;=\; -\underbrace{\mathbb{E}_{Q(o_\tau,\, s_\tau \mid
+\pi)}\!\left[\ln Q(s_\tau \mid o_\tau, \pi) - \ln Q(s_\tau \mid
+\pi)\right]}_{\text{epistemic value}} \;-\;
+\underbrace{\mathbb{E}_{Q(o_\tau \mid \pi)}\!\left[\ln
+\tilde{P}(o_\tau)\right]}_{\text{pragmatic value}}
+\]</span> {#eq:efe}</p>
+<p>The policy posterior then combines those scores with the habit prior
+<code>E</code> declared in the specification, as in <span
+class="citation" data-cites="eq:policy">[@eq:policy]</span>, and the
+selected action <span class="math inline">\(u\)</span> is sampled from
+it.</p>
+<p><span class="math display">\[
+Q(\pi) \;=\; \sigma\!\left(\ln E - G\right)
+\]</span> {#eq:policy}</p>
+<p>Recent work continues to refine how expected-free-energy objectives
+relate to variational inference and to alternative but equivalent
+formulations, which is why GNN keeps the objects of <span
+class="citation"
+data-cites="eq:generative_model">[@eq:generative_model]</span> through
+<span class="citation" data-cites="eq:policy">[@eq:policy]</span>
+explicit in the notation rather than burying them in backend-specific
+code [champion2024reframingEfe; nuijten2026typeInference;
+nuijten2026efePlanningVariational]. A <code>ModelParameters</code>
+section fixes the scalars those objects depend on — factor cardinalities
+and precision terms — while a <code>Time</code> section declares whether
+the model is static or dynamic and, if dynamic, how the horizon <span
+class="math inline">\(T\)</span> and its discretization are organized.
+Because every one of these sections is explicit text, a GNN file is at
+once human-readable, diffable under version control, and unambiguous to
+a parser — the property that lets the rest of the pipeline operate
+deterministically.</p>
+<h2 id="the-processing-pipeline">The Processing Pipeline</h2>
+<p>The pipeline is a fixed sequence of 25 numbered steps, 0–24, each a
+self-contained stage that consumes the artifacts of its predecessors and
+writes typed outputs for those that follow. Early steps parse and
+type-check the GNN text and validate it against the language schema;
+middle steps render visualizations, export the model to executable
+backends, and run simulations; later steps perform analysis, reporting,
+and downstream integration. The data dependencies among the steps form
+the directed acyclic graph shown in <span class="citation"
+data-cites="fig:pipeline">[@fig:pipeline]</span>, which makes the whole
+flow inspectable: any artifact can be traced back to the step that
+produced it and forward to every step that depends on it.</p>
+<figure id="fig:pipeline">
+<a class="figure-full-size-link" href="../figures/gnn_pipeline_dag.png" target="_blank" rel="noopener" aria-label="Open full-size figure, The GNN processing pipeline as a directed acyclic graph of numbered steps, from parsing"><img src="../figures/gnn_pipeline_dag.png" style="width:90.0%"
+alt="The GNN processing pipeline as a directed acyclic graph of numbered steps, from parsing and validation through visualization, execution, and analysis." /><span class="figure-full-size-label" aria-hidden="true">Open full-size figure</span></a>
+<figcaption>The GNN processing pipeline as a directed
+acyclic graph of numbered steps, from parsing and validation through
+visualization, execution, and analysis.</figcaption>
+</figure>
+<p>The per-step responsibilities are enumerated in <span
+class="citation"
+data-cites="tbl:pipeline_steps">[@tbl:pipeline_steps]</span>; each row
+names a step and the transformation it owns within the 0–24 range.</p>
+<div class="table-scroll" role="region" tabindex="0" aria-label="Scrollable table: The pipeline steps, their thin orchestrator modules, and their purposes, read from src/STEP_INDEX.md ."><table id="tbl:pipeline_steps" data-responsive-table="true">
+<caption>The pipeline steps, their thin orchestrator modules, and their
+purposes, read from <code>src/STEP_INDEX.md</code>.</caption>
+<colgroup>
+<col style="width: 40%" />
+<col style="width: 30%" />
+<col style="width: 30%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: right;">Step</th>
+<th>Module</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right;">0</td>
+<td><code>0_template.py</code></td>
+<td>Pipeline template &amp; initialization</td>
+</tr>
+<tr>
+<td style="text-align: right;">1</td>
+<td><code>1_setup.py</code></td>
+<td>Environment setup &amp; UV dependency install</td>
+</tr>
+<tr>
+<td style="text-align: right;">2</td>
+<td><code>2_tests.py</code></td>
+<td>Test suite execution (pytest)</td>
+</tr>
+<tr>
+<td style="text-align: right;">3</td>
+<td><code>3_gnn.py</code></td>
+<td>GNN file discovery &amp; multi-format parsing</td>
+</tr>
+<tr>
+<td style="text-align: right;">4</td>
+<td><code>4_model_registry.py</code></td>
+<td>Model versioning &amp; registry management</td>
+</tr>
+<tr>
+<td style="text-align: right;">5</td>
+<td><code>5_type_checker.py</code></td>
+<td>GNN type validation &amp; resource estimation</td>
+</tr>
+<tr>
+<td style="text-align: right;">6</td>
+<td><code>6_validation.py</code></td>
+<td>Consistency &amp; semantic quality checking</td>
+</tr>
+<tr>
+<td style="text-align: right;">7</td>
+<td><code>7_export.py</code></td>
+<td>Multi-format export (JSON, XML, GraphML, GEXF, Pickle)</td>
+</tr>
+<tr>
+<td style="text-align: right;">8</td>
+<td><code>8_visualization.py</code></td>
+<td>Graph &amp; matrix visualization generation</td>
+</tr>
+<tr>
+<td style="text-align: right;">9</td>
+<td><code>9_advanced_viz.py</code></td>
+<td>Interactive / advanced visualization (Plotly, D3)</td>
+</tr>
+<tr>
+<td style="text-align: right;">10</td>
+<td><code>10_ontology.py</code></td>
+<td>Active Inference ontology processing &amp; validation</td>
+</tr>
+<tr>
+<td style="text-align: right;">11</td>
+<td><code>11_render.py</code></td>
+<td>Code generation for simulation frameworks</td>
+</tr>
+<tr>
+<td style="text-align: right;">12</td>
+<td><code>12_execute.py</code></td>
+<td>Execute rendered simulation scripts</td>
+</tr>
+<tr>
+<td style="text-align: right;">13</td>
+<td><code>13_llm.py</code></td>
+<td>LLM-enhanced analysis &amp; model interpretation</td>
+</tr>
+<tr>
+<td style="text-align: right;">14</td>
+<td><code>14_ml_integration.py</code></td>
+<td>Machine learning integration &amp; model training</td>
+</tr>
+<tr>
+<td style="text-align: right;">15</td>
+<td><code>15_audio.py</code></td>
+<td>Audio sonification generation (SAPF)</td>
+</tr>
+<tr>
+<td style="text-align: right;">16</td>
+<td><code>16_analysis.py</code></td>
+<td>Statistical analysis &amp; cross-simulation aggregation</td>
+</tr>
+<tr>
+<td style="text-align: right;">17</td>
+<td><code>17_integration.py</code></td>
+<td>System integration &amp; cross-module coordination</td>
+</tr>
+<tr>
+<td style="text-align: right;">18</td>
+<td><code>18_security.py</code></td>
+<td>Security validation &amp; generated code scanning</td>
+</tr>
+<tr>
+<td style="text-align: right;">19</td>
+<td><code>19_research.py</code></td>
+<td>Research tools &amp; literature references</td>
+</tr>
+<tr>
+<td style="text-align: right;">20</td>
+<td><code>20_website.py</code></td>
+<td>Static HTML website generation</td>
+</tr>
+<tr>
+<td style="text-align: right;">21</td>
+<td><code>21_mcp.py</code></td>
+<td>Model Context Protocol processing &amp; tool registration</td>
+</tr>
+<tr>
+<td style="text-align: right;">22</td>
+<td><code>22_gui.py</code></td>
+<td>Interactive GNN constructor GUI</td>
+</tr>
+<tr>
+<td style="text-align: right;">23</td>
+<td><code>23_report.py</code></td>
+<td>Comprehensive analysis report generation</td>
+</tr>
+<tr>
+<td style="text-align: right;">24</td>
+<td><code>24_intelligent_analysis.py</code></td>
+<td>AI-powered pipeline analysis &amp; executive reports</td>
+</tr>
+</tbody>
+</table></div>
+<p>This staged design keeps the architecture modular. The implementation
+is organized into 31 source packages, one cluster of responsibilities
+per concern, and is documented across 614 documentation files so that
+each step’s contract, inputs, and outputs are specified independently of
+the others. New backends or analyses attach to the graph by declaring
+their dependencies rather than by editing a monolith, and the
+deterministic step ordering means a model processed today yields the
+same artifacts when reprocessed tomorrow.</p>
+<h2 id="the-triple-play">The Triple Play</h2>
+<p>The reason for separating a single written language from a
+multi-stage pipeline is the design goal GNN calls the Triple Play: one
+model specification, three coordinated modes of existence. The same GNN
+text is simultaneously a human-readable model description, a set of
+graphical visualizations of its state space and factor structure, and an
+executable cognitive model that can be run as a simulation. +<span
+class="citation" data-cites="fig:triple_play">@fig:triple_play</span>
+depicts these three faces and the shared specification at their
+center.</p>
+<figure id="fig:triple_play">
+<a class="figure-full-size-link" href="../figures/gnn_triple_play.png" target="_blank" rel="noopener" aria-label="Open full-size figure, The Triple Play: a single GNN specification rendered as readable text, as graphical…"><img src="../figures/gnn_triple_play.png" style="width:70.0%"
+alt="The Triple Play: a single GNN specification rendered as readable text, as graphical visualizations, and as an executable model." /><span class="figure-full-size-label" aria-hidden="true">Open full-size figure</span></a>
+<figcaption>The Triple Play: a single GNN
+specification rendered as readable text, as graphical visualizations,
+and as an executable model.</figcaption>
+</figure>
+<p>Each face is generated from the same source, so they cannot drift
+apart. The text is the contract a researcher reads and reviews; the
+visualizations expose the factor-graph structure for inspection and
+communication; and the executable rendering lets the identical model be
+simulated across inference frameworks, connecting the written
+specification to libraries such as pymdp for discrete Active Inference
+[heins2022] and to the broader tooling ecosystem for compositional model
+representation [defelice2021]. Because all three derive from one parsed
+document, GNN turns a model from a static artifact into a live object
+that can be read, seen, and run without re-encoding it for each purpose
+[smith2022].</p>
+</main>
+</body>
+</html>
