@@ -23,10 +23,18 @@ DATA_PATH = REPO_ROOT / "output" / "data" / "manuscript_variables.json"
 OUTPUT_PATH = REPO_ROOT / "output" / "figures" / "gnn_repo_metrics.png"
 
 # (json_key, human-readable label) — order is rendering order (top to bottom).
+#
+# The label must name the set the token counts. GNN_BACKEND_COUNT is
+# len(FRAMEWORK_REGISTRY) — the *registered* backends, one of which (bnlearn)
+# is render-only with no Step-12 executor, exactly as the same document's
+# tbl:backend_registry reports. Labelling it "Execution backends" put a figure
+# in section 4 that contradicted a table in section 3. Both sets are shown, so
+# the distinction is visible rather than resolved by picking one.
 METRICS: list[tuple[str, str]] = [
     ("GNN_STEP_COUNT", "Pipeline steps"),
     ("GNN_FAMILY_COUNT", "Model families"),
-    ("GNN_BACKEND_COUNT", "Execution backends"),
+    ("GNN_BACKEND_COUNT", "Registered backends"),
+    ("GNN_EXECUTABLE_BACKEND_COUNT", "Execution backends"),
     ("GNN_MCP_TOOL_COUNT", "MCP tools"),
     ("GNN_SRC_PACKAGE_COUNT", "Source packages"),
     ("GNN_TEST_FILE_COUNT", "Test files"),
@@ -60,7 +68,8 @@ def main() -> None:
         fontweight="bold",
     )
 
-    # Log scale keeps small (steps=25) and large (docs=606) bars all legible.
+    # Log scale keeps the small bars (pipeline steps) and the large ones
+    # (documentation files) legible in one frame.
     ax.set_xscale("log")
     ax.set_xlim(1, max(values) * 1.6)
 
