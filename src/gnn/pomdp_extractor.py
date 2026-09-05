@@ -72,7 +72,7 @@ class GNNExtractionError(Exception):
 def _gnn_distribution_version() -> str:
     """Best-effort installed version of the generalized-notation-notation package."""
     try:
-        from importlib.metadata import PackageNotFoundError, version
+        from importlib.metadata import version
 
         return version("generalized-notation-notation")
     except Exception:  # noqa: BLE001 - any metadata failure degrades to "unknown"
@@ -1354,7 +1354,6 @@ class POMDPExtractor:
 
     def _parse_parameter_value(self, value_str: str) -> Any:
         """Parse parameter value string into appropriate data structure."""
-        import ast
 
         value_str = value_str.strip()
 
@@ -1560,10 +1559,19 @@ class POMDPExtractor:
                         pomdp_space.num_states,
                         pomdp_space.num_actions,
                     )
+                    stored_order = (
+                        (pomdp_space.matrix_provenance or {}).get("B") or {}
+                    ).get("detected_order")
+                    if stored_order == ["action", "previous_state", "next_state"]:
+                        expected_b_dims = (
+                            pomdp_space.num_actions,
+                            pomdp_space.num_states,
+                            pomdp_space.num_states,
+                        )
                     actual_b_dims = (
+                        len(pomdp_space.B_matrix),
                         len(pomdp_space.B_matrix[0]),
                         len(pomdp_space.B_matrix[0][0]),
-                        len(pomdp_space.B_matrix),
                     )
                     if expected_b_dims != actual_b_dims:
                         warnings.append(
@@ -1709,11 +1717,13 @@ def canonicalize_pomdp(spec: POMDPStateSpace) -> POMDPStateSpace:
     (detected_order/claimed_slice_convention) when decisive; a 3-D B stored
     as (action, previous_state, next_state) is transposed to
     (next_state, previous_state, action); canonical or ambiguous storage is
-    copied unchanged. All other fields are copied as-is.
+    copied unchanged. B shape/orientation provenance and matrices["B"] follow
+    the transformed tensor, making repeated canonicalization idempotent.
+    All unrelated fields are deep-copied as-is.
     """
-    canonical = POMDPStateSpace(
-        **{field: getattr(spec, field) for field in spec.__dataclass_fields__}
-    )
+    from copy import deepcopy
+
+    canonical = deepcopy(spec)
     b_matrix = spec.B_matrix
     provenance = spec.matrix_provenance or {}
     b_meta = provenance.get("B") or {}
@@ -1733,11 +1743,20 @@ def canonicalize_pomdp(spec: POMDPStateSpace) -> POMDPStateSpace:
         # canonical[n][p][a] = stored[a][p][n]
         canonical.B_matrix = [
             [
-                [b_matrix[a][p][n] for a in range(self_shape[2])]
+                [b_matrix[a][p][n] for a in range(self_shape[0])]
                 for p in range(self_shape[1])
             ]
-            for n in range(self_shape[0])
+            for n in range(self_shape[2])
         ]
+        canonical.matrix_provenance = deepcopy(provenance)
+        canonical.matrix_provenance["B"] = {
+            **b_meta,
+            "original_detected_order": stored_order,
+            "detected_order": list(CANONICAL_B_ORDER),
+            "shape": _shape_of(canonical.B_matrix),
+        }
+        if canonical.matrices is not None and "B" in canonical.matrices:
+            canonical.matrices["B"] = deepcopy(canonical.B_matrix)
     return canonical
 
 

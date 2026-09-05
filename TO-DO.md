@@ -58,3 +58,19 @@ git diff --check
   land; the audit trail lives in `CHANGELOG.md` and git history.
 - Scope open items with concrete tasks, file paths, verification commands, and
   acceptance criteria so the next session can execute without re-deriving them.
+
+
+## GEO-INFER contract expansion
+
+The delivered opt-in v1 format is specified in `src/export/geo_infer_contract.md`.
+Further work must preserve independently installable runtimes and explicit matrix,
+space and time semantics.
+
+| ID | Scope | Acceptance evidence |
+| --- | --- | --- |
+| GNN-02 | Specify linear Gaussian F/control/H/Q/R, units and initial beliefs jointly with GEO-INFER-ACT. | Unequal dimensions reproduce analytic filter results; continuous generators cannot be misread as per-step transitions. |
+| GNN-03 | Specify factor/modal dependency axes and multi-step policy enumeration. | Asymmetric, non-square fixtures preserve all axes and E cardinality; unsupported structures remain rejected until covered. |
+| GNN-04 | Pin paired repository revisions in cross-repository CI. | Independent locked environments complete both categorical and H3 round trips; receipts include source/artifact digests and both revisions. |
+| GNN-05 | Wire Step 7 to per-model explicit time/space options and original source provenance. | Requested GEO export fails visibly when metadata is absent; existing five-format defaults remain unchanged. |
+
+| GNN-06 | Integrate the `codex/geo-infer-interchange` topic branch with the concurrently advancing main branch. Its starting checkout includes the existing fleet baseline commits `3f2694d3a` and `64d49355a`. | Review that ancestry explicitly, retain concurrent security/parser work, and rerun export/extractor tests, strict docs and the paired GEO conformance check on the merged revision. |

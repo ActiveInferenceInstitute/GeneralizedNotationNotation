@@ -26,18 +26,13 @@ from utils.pipeline_template import (
 
 # Import actual formatter implementations
 from .formatters import (
-    export_to_gexf,
-    export_to_graphml,
-    export_to_json,
     export_to_json_gnn,
-    export_to_pickle,
     export_to_plaintext_dsl,
     export_to_plaintext_summary,
     export_to_python_pickle,
-    export_to_xml,
     export_to_xml_gnn,
 )
-from .registry import DEFAULT_PIPELINE_FORMATS, resolve_format_writer
+from .registry import DEFAULT_PIPELINE_FORMATS, get_format_spec, resolve_format_writer
 
 # Canonical default format set for the pipeline path (``process_export``) and
 # ``export_model``. ``export_gnn_model`` supports a different (text-leaning)
@@ -326,7 +321,10 @@ def export_model(
         output_dir.mkdir(parents=True, exist_ok=True)
         for format_type in formats:
             try:
-                filename = _MODEL_FORMAT_FILES.get(format_type)
+                spec = get_format_spec(format_type)
+                filename = _MODEL_FORMAT_FILES.get(format_type) or (
+                    "model" + spec["extension"] if spec else None
+                )
                 writer = resolve_format_writer(format_type)
                 if filename is None or writer is None:
                     results["errors"].append(f"Unsupported format: {format_type}")

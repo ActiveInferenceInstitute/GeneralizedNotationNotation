@@ -75,6 +75,7 @@ dependencies = [
 
 # Development dependencies (enhanced for comprehensive development workflow)
 [project.optional-dependencies]
+geo-infer = ["h3>=4.5.0,<5"]
 dev = [
     # aiohttp is a core dependency; listed here only so ``uv sync --extra dev`` stays explicit in lockfiles
     "aiohttp>=3.14.3",

@@ -27,6 +27,14 @@ from .formatters import (
     export_to_xml,
 )
 
+
+def _write_geo_infer(model_data: Dict[str, Any], output_file: Path) -> bool:
+    """Load the optional strict GNN interchange writer only on request."""
+    from .geo_infer import export_to_geo_infer
+
+    return export_to_geo_infer(model_data, output_file)
+
+
 #: A format writer takes the model/parse dict and the output path and
 #: returns ``True`` on success. This is the ``formatters``-family contract
 #: (the ``format_exporters``-family returns ``tuple[bool, str]`` instead).
@@ -51,6 +59,13 @@ class ExportFormatSpec(TypedDict):
 DEFAULT_PIPELINE_FORMATS: Tuple[str, ...] = ("json", "xml", "graphml", "gexf", "pickle")
 
 _FORMAT_SPECS: Tuple[ExportFormatSpec, ...] = (
+    ExportFormatSpec(
+        name="geo_infer",
+        category="data",
+        extension=".geo-infer.json",
+        writer=_write_geo_infer,
+        description="Strict single-factor GNN/GEO-INFER v1 artifact; requires explicit timestep",
+    ),
     ExportFormatSpec(
         name="json",
         category="data",

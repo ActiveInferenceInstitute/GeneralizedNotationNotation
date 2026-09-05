@@ -542,3 +542,13 @@ This module is part of the GeneralizedNotationNotation project. See the main rep
 - **[AGENTS](AGENTS.md)**: Agentic Workflows
 - **[SPEC](SPEC.md)**: Architectural Specification
 - **[SKILL](SKILL.md)**: Capability API
+
+
+## GEO-INFER interchange
+
+The opt-in `geo_infer` format exports explicit single-factor categorical A–E
+models with state ordering, a caller-declared timestep and source SHA-256.
+Use `export_model(..., formats=['geo_infer'])` with `raw_content` and
+`geo_infer.step_seconds`, or `python -m export.geo_infer --help`.
+[The versioned contract](geo_infer_contract.md) defines supported semantics,
+separate environment setup and cross-repository conformance checks.

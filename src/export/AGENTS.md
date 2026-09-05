@@ -360,3 +360,15 @@ python src/7_export.py --target-dir input/ --verbose
 - **[AGENTS](AGENTS.md)**: Agentic Workflows
 - **[SPEC](SPEC.md)**: Architectural Specification
 - **[SKILL](SKILL.md)**: Capability API
+
+
+## GNN / GEO-INFER boundary
+
+`geo_infer.py` owns the opt-in `geo_infer` registry writer. Its normative
+[contract](geo_infer_contract.md) accepts only explicit single-factor A–E models
+and requires physical step seconds. Keep the default five Step 7 formats stable.
+Do not import GEO-INFER into this package, infer geographic state meaning, repair
+matrix probabilities, or silently coerce a continuous model into categorical form.
+Run export tests and the POMDP extractor orientation tests when changing this
+boundary; run GEO's separate-environment conformance command when both repos are
+available. General canonicalization must preserve non-square axes and be idempotent.

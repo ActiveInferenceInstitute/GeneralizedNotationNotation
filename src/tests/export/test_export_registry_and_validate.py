@@ -2,7 +2,7 @@
 """Tests for the export format registry and validate_export_outputs.
 
 Covers:
-  - Registry completeness (7 canonical formats)
+  - Registry completeness (8 canonical formats)
   - resolve_format_writer returns correct callables
   - get_format_categories grouping
   - is_supported_format
@@ -34,12 +34,21 @@ if str(SRC) not in sys.path:
 class TestRegistry:
     """Canonical format registry invariants."""
 
-    def test_registry_has_seven_formats(self) -> None:
+    def test_registry_has_eight_formats(self) -> None:
         from export.registry import get_export_registry
 
         reg = get_export_registry()
-        assert len(reg) == 7
-        assert set(reg) == {"json", "xml", "graphml", "gexf", "pickle", "txt", "dsl"}
+        assert len(reg) == 8
+        assert set(reg) == {
+            "json",
+            "xml",
+            "graphml",
+            "gexf",
+            "pickle",
+            "txt",
+            "dsl",
+            "geo_infer",
+        }
 
     def test_pipeline_defaults_are_five(self) -> None:
         from export.registry import DEFAULT_PIPELINE_FORMATS
@@ -62,7 +71,7 @@ class TestRegistry:
 
         cats = get_format_categories()
         assert isinstance(cats, dict)
-        assert cats["data"] == ["json", "xml", "pickle"]
+        assert cats["data"] == ["geo_infer", "json", "xml", "pickle"]
         assert cats["graph"] == ["graphml", "gexf"]
         assert cats["text"] == ["txt", "dsl"]
 
