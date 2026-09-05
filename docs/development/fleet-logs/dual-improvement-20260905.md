@@ -134,3 +134,54 @@ surfaces (manuscript/, output/{manuscript,pdf,slides,web,reports,data,
 figures}, src/manuscript_variables.py, src/mcp/audit_report.json — avoided
 entirely by this cycle). The 2 deletions (src/llm demo removals) and the
 `out/` artifacts predate today. This report adds one untracked file.
+
+## Cycle 2 — "push all" custody cycle and three-repo integration (same day)
+
+The user ordered all remaining improvements landed and all three sibling
+repos (GNN, fep_lean, GEO-INFER) pushed informatively to main.
+
+**Custody-free + rostered landing.** Re-applied `uv_management.py:785`
+accelerator-fallback logging (unnecessarily reverted in cycle 1 — unrostered);
+rewrote 21 weak test sites (gnn parsing, advanced visualization) to assert
+probed real behavior, zero deletions; landed the full rostered set with
+gate-verified designs: comparator fix (strict gate 9/9, exit 0, 320s), gnn ×4,
+execute ×4, visualization_suite logging, and Step 7 GEO opt-in restored to
+CLI flags registered in the step-argument registry (`arg_parsing.py`
+ARGUMENT_DEFINITIONS/STEP_ARGUMENTS + `step_config.py` optional_args; env-var
+shim removed, clean cutover). Full suite on the landed tree: **4701 passed,
+14 skipped, 0 failed**.
+
+**Coordinated custody cycle.** Pre-pin drift union reconciled exactly
+(2 pre-existing fep-lane files + precisely the 12 edited rostered files,
+nothing unlisted); `bridge pin` → `emit --refresh-digests` (finite +
+continuous) → `emit --check` → status ok. P3 certificates correctly remain
+bound to their original pin ("existing receipts are not promoted");
+re-issuing C1/C2 requires native Lean witnesses (program's own loop).
+
+**Three-repo integration and push.** Upstream had moved under both repos
+(GNN +7: geo-infer-interchange PR #25, CI enforcement; GEO +12: GNN
+space-time interchange). Local states were committed informatively (GNN:
+manuscript lane / quality wave / custody cycle; fep_lean: manuscript lane /
+custody re-pin; GEO: staged RISK→INSURANCE rename / module pass / lock+CI),
+then merged with origin: GNN 34 conflicts resolved by a 3-worker pool
+(upstream canonical for reviewed interchange internals incl. its improved
+OpenAIProvider running-loop fix; local canonical for Step 7 CLI flags,
+hygiene, strengthened tests; one W3 resolution bug — TO-DO.md gutted to
+4 lines — caught by the capability-contracts gate and restored to the true
+union; process_export visible-failure contract adopts upstream's
+return-False, CLI-level ValueError kept, test + docs adapted). GEO-INFER:
+14 conflicts resolved inline (upstream policy-only inference params, verified
+ISA checklist + local receipt, README/TODO counts recounted from the merged
+tree: 45 modules, 917 src / 685 test files). Post-merge gates: mypy 0/994,
+ruff clean, doc audits clean, **full suite 4755 passed / 14 skipped /
+0 failed**. Custody re-pinned at each pushed state; final bridge status ok
+(binding clean, finite + continuous FRESH).
+
+**Pushed to main**: fep_lean `d16f252` + `bad6833`; GNN `f3b208a0`,
+`0da46dcd4`, `dfab53b89`, merge `143af3762`; GEO-INFER `2855d786`,
+`d66b9ae7`, `c39a3c59`, merge `2935d016`. All three working trees clean.
+
+**Remaining open (unchanged)**: GNN-02/03 contract co-design, GNN-04
+CI pairing (needs GEO runner access), bridge emitter promotion (v0.5),
+P3 certificate re-issuance (native Lean), fep_lean receipt-promised rows,
+H2.7 TODO arbitration, GPU/browser deferred-verification rows in GEO TODO.
