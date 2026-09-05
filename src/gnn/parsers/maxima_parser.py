@@ -194,7 +194,7 @@ class MaximaParser(BaseGNNParser):
                 return f"e-expression: {value_clean}"
             else:
                 return value_clean
-        except Exception:
+        except (ValueError, TypeError):
             return value_clean
 
     def _infer_variable_type(self, name: str) -> VariableType:

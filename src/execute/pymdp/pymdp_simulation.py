@@ -59,6 +59,10 @@ with warnings.catch_warnings():
         _require_pymdp_1,
     )
 
+# The convention constant lives in .simulation (single source; this module
+# imports from .simulation below, so the dependency direction is acyclic).
+from .simulation import EFE_CONVENTION_PYMDP  # noqa: E402
+
 
 class PyMDPSimulation:
     """
@@ -574,7 +578,10 @@ class PyMDPSimulation:
                 accelerator_type = "cuda"
             elif sys.platform == "darwin":
                 accelerator_type = "mps"
-        except Exception:
+        except Exception as e:
+            self.logger.debug(
+                "Accelerator detection failed; falling back to cpu: %s", e
+            )
             accelerator_type = "cpu"
 
         results_out: Dict[str, Any] = {
@@ -595,6 +602,7 @@ class PyMDPSimulation:
             "beliefs_by_factor": {"joint_state": beliefs},
             "hidden_states_by_factor": {"joint_state": true_states},
             "expected_free_energy": efe_history,
+            "expected_free_energy_convention": EFE_CONVENTION_PYMDP,
             "variational_free_energy": vfe_history,
             "policy_posterior": policy_posterior,
             "simulation_trace": {

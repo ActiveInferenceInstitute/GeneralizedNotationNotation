@@ -4,6 +4,8 @@ Test suite for Advanced Visualization module.
 Tests D2 diagram generation, dashboards, and interactive visualizations.
 """
 
+import json
+from pathlib import Path
 from typing import Any
 
 import pytest
@@ -63,8 +65,7 @@ class TestAdvancedVisualizer:
 
         visualizer = AdvancedVisualizer()
 
-        # Check for common visualization methods
-        assert hasattr(visualizer, "__class__")
+        assert callable(visualizer.generate_visualizations)
 
 
 class TestDashboardGenerator:
@@ -98,15 +99,13 @@ learning_rate = 0.01
         model_name = "test_model"
         output_dir = safe_filesystem.create_dir("dashboard_output")
 
-        try:
-            result = generate_dashboard(gnn_content, model_name, output_dir)
-            # Result could be None if generation failed gracefully, or Path if successful
-            assert result is None or hasattr(result, "exists")
-        except Exception as e:
-            # May require additional dependencies
-            raise AssertionError(
-                f"Dashboard generation requires additional dependencies: {e}"
-            )
+        result = generate_dashboard(gnn_content, model_name, output_dir)
+        assert isinstance(result, Path), (
+            "generate_dashboard must return the output path"
+        )
+        assert result.exists(), f"dashboard artifact missing: {result}"
+        assert result.suffix == ".html"
+        assert result.read_text(encoding="utf-8").strip() != ""
 
 
 class TestVisualizationDataExtractor:
@@ -140,13 +139,16 @@ learning_rate = 0.01
         safe_filesystem.create_file("viz_model.md", gnn_content)
         output_dir = safe_filesystem.create_dir("viz_data_output")
 
-        try:
-            # extract_visualization_data expects (target_dir, output_dir, **kwargs)
-            result = extract_visualization_data(safe_filesystem.temp_dir, output_dir)
-            assert result is not None
-            assert isinstance(result, dict)
-        except Exception as e:
-            raise AssertionError(f"Data extraction failed: {e}")
+        result = extract_visualization_data(safe_filesystem.temp_dir, output_dir)
+        assert isinstance(result, dict)
+        assert {
+            "processed_files",
+            "successful_extractions",
+            "failed_extractions",
+            "extracted_data",
+            "statistics",
+            "errors",
+        }.issubset(result.keys())
 
     def test_extract_from_file_failure_returns_full_shape(self, tmp_path: Any) -> Any:
         """Failure path returns all 13 keys matching the success shape."""
@@ -233,8 +235,8 @@ class TestD2Visualization:
         """Test D2Visualizer can be imported when available."""
         from advanced_visualization import D2Visualizer
 
-        if D2Visualizer is not None:
-            assert callable(D2Visualizer)
+        assert D2Visualizer is not None, "D2Visualizer must be importable"
+        assert callable(D2Visualizer)
 
     def test_process_gnn_file_with_d2(
         self, safe_filesystem: Any, caplog: pytest.LogCaptureFixture
@@ -294,23 +296,33 @@ Dynamic
 
         logger = logging.getLogger("test_adv_viz")
 
-        try:
-            result = process_advanced_viz(
-                target_dir=safe_filesystem.temp_dir,
-                output_dir=output_dir,
-                logger=logger,
-                verbose=True,
-            )
-            # Should return True or dict with success status
-            assert (
-                result is True
-                or (isinstance(result, dict) and result.get("success", False))
-                or result is not None
-            )
-        except ImportError as e:
-            raise AssertionError(
-                f"Advanced visualization requires additional dependencies: {e}"
-            )
+        # Real success path: seed a parsed Step-3 model where
+        # process_advanced_viz looks for one. It resolves the GNN output
+        # directory as output_dir.parent / "3_gnn_output" when output_dir
+        # ends with "_output".
+        gnn_output_dir = output_dir.parent / "3_gnn_output"
+        gnn_output_dir.mkdir(parents=True, exist_ok=True)
+        (gnn_output_dir / "adv_viz_parsed.json").write_text(
+            json.dumps({"model_name": "adv_viz", "variables": [], "connections": []}),
+            encoding="utf-8",
+        )
+
+        result = process_advanced_viz(
+            target_dir=safe_filesystem.temp_dir,
+            output_dir=output_dir,
+            logger=logger,
+            verbose=True,
+        )
+        assert result is True, f"expected success (True), got {result!r}"
+        summary = json.loads(
+            (output_dir / "advanced_viz_summary.json").read_text(encoding="utf-8")
+        )
+        assert summary["successful"] >= 1, (
+            f"no successful attempts: {summary['attempts']}"
+        )
+        output_files = [Path(p) for p in summary["output_files"]]
+        assert output_files, "successful run must record output files"
+        assert all(p.exists() for p in output_files)
 
     def test_process_with_viz_types(self, safe_filesystem: Any) -> None:
         """Test processing with different visualization types."""
@@ -322,7 +334,7 @@ Dynamic
 s[3]
 """
         safe_filesystem.create_file("types_test.md", gnn_content)
-        output_dir = safe_filesystem.create_dir("types_output")
+        safe_filesystem.create_dir("types_output")
 
         import logging
 
@@ -330,23 +342,41 @@ s[3]
 
         viz_types: list[Any] = ["all", "dashboard", "d2", "network"]
 
+        # Each viz type must run to completion with a seeded Step-3 model and
+        # report a consistent outcome: True (attempts succeeded) or 2 (all
+        # attempts skipped, e.g. the D2 CLI is not installed).
+        # Seed the parsed Step-3 model once. Per-type output dirs end with
+        # "_output", so process_advanced_viz resolves the GNN output
+        # directory as their parent / "3_gnn_output".
+        gnn_output_dir = safe_filesystem.temp_dir / "3_gnn_output"
+        gnn_output_dir.mkdir(parents=True, exist_ok=True)
+        (gnn_output_dir / "types_test_parsed.json").write_text(
+            json.dumps(
+                {"model_name": "types_test", "variables": [], "connections": []}
+            ),
+            encoding="utf-8",
+        )
+
         for viz_type in viz_types:
-            try:
-                result = process_advanced_viz(
-                    target_dir=safe_filesystem.temp_dir,
-                    output_dir=output_dir,
-                    logger=logger,
-                    viz_type=viz_type,
+            type_output_dir = safe_filesystem.create_dir(f"viz_types_{viz_type}_output")
+
+            result = process_advanced_viz(
+                target_dir=safe_filesystem.temp_dir,
+                output_dir=type_output_dir,
+                logger=logger,
+                viz_type=viz_type,
+            )
+            assert result in (True, 2), f"viz_type={viz_type} returned {result!r}"
+            summary = json.loads(
+                (type_output_dir / "advanced_viz_summary.json").read_text(
+                    encoding="utf-8"
                 )
-                # Should not crash
-                assert result is not None or result is True or result is False
-            except ImportError:
-                raise AssertionError(
-                    f"Visualization type {viz_type} requires additional dependencies"
-                )
-            except Exception:
-                # Some viz types may fail without proper data, that's OK
-                pass
+            )
+            if result is True:
+                assert summary["successful"] >= 1
+            else:
+                assert summary["successful"] == 0
+                assert summary["attempts"], "skip exit must record skipped attempts"
 
     def test_process_advanced_viz_empty_input_returns_warning_code(
         self, tmp_path: Any
@@ -380,12 +410,11 @@ class TestVisualizationCreation:
 
         data: dict[str, Any] = {"name": "test", "values": [1, 2, 3]}
 
-        try:
-            result = create_default_visualization(data)
-            assert result is not None
-        except Exception:
-            # May require specific data format
-            pass
+        result = create_default_visualization(data)
+        assert isinstance(result, dict)
+        assert result["type"] == "chart"
+        assert result["data"] == data
+        assert result["options"]["chart_type"] == "line"
 
     def test_create_network_visualization(self) -> None:
         """Test network visualization creation."""
@@ -396,9 +425,10 @@ class TestVisualizationCreation:
             "edges": [("A", "B"), ("B", "C")],
         }
 
-        try:
-            result = create_network_visualization(data)
-            assert result is not None
-        except Exception:
-            # May require specific data format or dependencies
-            pass
+        result = create_network_visualization(data)
+        assert isinstance(result, dict)
+        assert result["type"] == "network"
+        assert result["nodes"] == ["A", "B", "C"]
+        assert result["edges"] == [("A", "B"), ("B", "C")]
+        assert "layout" in result
+        assert "options" in result

@@ -118,7 +118,8 @@ def get_available_hardware() -> list[str]:
         import jax  # noqa: F401
 
         return ["cpu", "gpu"]
-    except Exception:
+    except Exception as e:
+        logger.debug("jax import failed; falling back to cpu: %s", e)
         return ["cpu"]
 
 
@@ -193,7 +194,8 @@ class GNNExecutor:
             try:
                 devices = get_available_hardware()
                 result.setdefault("execution_device", devices[0] if devices else "cpu")
-            except Exception:
+            except Exception as e:
+                logger.debug("Device discovery failed; falling back to cpu: %s", e)
                 result.setdefault("execution_device", "cpu")
 
             # Log execution

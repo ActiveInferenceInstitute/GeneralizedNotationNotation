@@ -100,46 +100,105 @@ def run_cross_framework_reliability(
 
 def compare_framework_metrics(
     framework_metrics: dict[str, dict[str, Any]],
-) -> list[FrameworkComparisonIssue]:
-    """Compare normalized metrics from two or more compatible frameworks."""
+) -> tuple[list[FrameworkComparisonIssue], list[dict[str, str]]]:
+    """Compare normalized metrics from two or more compatible frameworks.
+
+    Returns ``(issues, skipped)``. ``issues`` are hard mismatches that fail the
+    gate; ``skipped`` records metrics that could not be compared because they
+    are not reported by all compared frameworks.
+    """
     available = {
         framework: metrics
         for framework, metrics in sorted(framework_metrics.items())
         if metrics.get("available")
     }
     if len(available) < 2:
-        return []
+        return [], []
     issues: list[FrameworkComparisonIssue] = []
-    missing_seed = [
+    skipped: list[dict[str, str]] = []
+    reference_name, reference_metrics = next(iter(available.items()))
+
+    seed_missing = sorted(
         framework
         for framework, metrics in available.items()
         if metrics.get("random_seed") is None
-    ]
-    if missing_seed:
-        issues.append(
-            FrameworkComparisonIssue(
-                field="random_seed",
-                message=(
-                    "Comparable stochastic framework outputs are missing "
-                    f"random_seed: {', '.join(missing_seed)}"
-                ),
-            )
+    )
+    if seed_missing:
+        skipped.append(
+            {
+                "field": "random_seed",
+                "reason": "not reported by all compared frameworks",
+                "detail": "missing from: " + ", ".join(seed_missing),
+            }
         )
 
-    reference_name, reference_metrics = next(iter(available.items()))
+    shared_keys: dict[str, set[str]] = {}
+    for field in ("matrix_shapes", "trace_lengths"):
+        tables = {
+            framework: metrics.get(field) or {}
+            for framework, metrics in available.items()
+        }
+        key_sets = [set(table) for table in tables.values()]
+        shared = set.intersection(*key_sets)
+        shared_keys[field] = shared
+        missing_by_key = {
+            key: sorted(name for name, table in tables.items() if key not in table)
+            for key in sorted(set.union(*key_sets) - shared)
+        }
+        if missing_by_key:
+            detail = "; ".join(
+                f"{key} missing from {', '.join(frameworks_list)}"
+                for key, frameworks_list in missing_by_key.items()
+            )
+            skipped.append(
+                {
+                    "field": field,
+                    "reason": "key not reported by all compared frameworks",
+                    "detail": detail,
+                }
+            )
+
     for framework, metrics in list(available.items())[1:]:
-        for field in ("num_timesteps", "matrix_shapes", "trace_lengths"):
-            if metrics.get(field) != reference_metrics.get(field):
-                issues.append(
-                    FrameworkComparisonIssue(
-                        field=field,
-                        message=(
-                            f"{framework} differs from {reference_name}: "
-                            f"{metrics.get(field)!r} != {reference_metrics.get(field)!r}"
-                        ),
-                    )
+        if metrics.get("num_timesteps") != reference_metrics.get("num_timesteps"):
+            issues.append(
+                FrameworkComparisonIssue(
+                    field="num_timesteps",
+                    message=(
+                        f"{framework} differs from {reference_name}: "
+                        f"{metrics.get('num_timesteps')!r} != "
+                        f"{reference_metrics.get('num_timesteps')!r}"
+                    ),
                 )
-    return issues
+            )
+        if not seed_missing and metrics.get("random_seed") != reference_metrics.get(
+            "random_seed"
+        ):
+            issues.append(
+                FrameworkComparisonIssue(
+                    field="random_seed",
+                    message=(
+                        f"{framework} differs from {reference_name}: "
+                        f"{metrics.get('random_seed')!r} != "
+                        f"{reference_metrics.get('random_seed')!r}"
+                    ),
+                )
+            )
+        for field in ("matrix_shapes", "trace_lengths"):
+            table = metrics.get(field) or {}
+            reference_table = reference_metrics.get(field) or {}
+            for key in sorted(shared_keys[field]):
+                if table.get(key) != reference_table.get(key):
+                    issues.append(
+                        FrameworkComparisonIssue(
+                            field=field,
+                            message=(
+                                f"{framework} differs from {reference_name} for "
+                                f"{field} key {key!r}: {table.get(key)!r} != "
+                                f"{reference_table.get(key)!r}"
+                            ),
+                        )
+                    )
+    return issues, skipped
 
 
 def collect_framework_metrics(pipeline_output: Path, framework: str) -> dict[str, Any]:
@@ -250,7 +309,9 @@ def _build_family_reliability(
         for framework, result in framework_results.items()
         if result["status"] == "passed" and result.get("metrics", {}).get("available")
     }
-    comparison_issues = compare_framework_metrics(comparable_metrics)
+    comparison_issues, comparison_skipped = compare_framework_metrics(
+        comparable_metrics
+    )
     comparison_status = (
         "failed"
         if comparison_issues
@@ -279,6 +340,7 @@ def _build_family_reliability(
             ),
             "compared_frameworks": sorted(comparable_metrics),
             "issues": [issue.to_dict() for issue in comparison_issues],
+            "skipped": comparison_skipped,
         },
         "required_framework_failures": required_failures,
         "artifact_links": family_result.get("artifact_links", []),

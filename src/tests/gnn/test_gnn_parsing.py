@@ -102,12 +102,9 @@ class TestGNNDiscovery:
 
         nonexistent = isolated_temp_dir / "does_not_exist"
 
-        # Should handle gracefully
-        try:
-            result = discover_gnn_files(nonexistent)
-            assert isinstance(result, list)
-        except (FileNotFoundError, ValueError):
-            pass  # Expected behavior
+        # A nonexistent directory yields no models rather than raising.
+        result = discover_gnn_files(nonexistent)
+        assert result == []
 
     @pytest.mark.unit
     @pytest.mark.fast
@@ -178,7 +175,8 @@ B[3,3,3,type=float]
 """
         parser = MarkdownGNNParser()
         result = parser.parse_string(content)
-        assert result.success or "StateSpace" in str(result)
+        assert result.success, "StateSpaceBlock-only document must parse"
+        assert [v.name for v in result.model.variables] == ["A", "B"]
 
     @pytest.mark.unit
     @pytest.mark.fast
@@ -200,8 +198,110 @@ B-A
 """
         parser = MarkdownGNNParser()
         result = parser.parse_string(content)
-        # Should not crash, may succeed or fail based on content
-        assert result is not None
+        assert result.success, "Connections document must parse"
+        assert [
+            (c.source_variables, c.target_variables) for c in result.model.connections
+        ] == [
+            (["A"], ["B"]),
+            (["B"], ["A"]),
+        ]
+
+    @pytest.mark.unit
+    @pytest.mark.fast
+    def test_parse_annotated_edges_v11(self) -> None:
+        """Test v1.1 ':annotation' suffix on edges (gnn_syntax.md section 3).
+
+        An annotated directed edge ``A>B:label`` must resolve target ``A``
+        and target ``B`` as variables, carry the annotation as a label,
+        and NOT warn about an unknown target variable ``B:label``.
+        """
+        content = """## GNNSection
+TestAnnotated
+
+## GNNVersionAndFlags
+GNN v1.1
+
+## ModelName
+Annotated Edge Test
+
+## StateSpaceBlock
+A[2,2,type=float]
+B[2,2,2,type=float]
+C[2,type=float]
+D[2,type=float]
+E[2,type=float]
+pi[2,type=float]
+u[2,type=float]
+s[2,1,type=float]
+o[2,1,type=float]
+
+## Connections
+D>s:prior_initialization
+s-B
+B>s
+A-o:observation_mapping
+E>u:select_action
+"""
+        parser = MarkdownGNNParser()
+        result = parser.parse_string(content)
+        assert result.success, "Annotated-edge document must parse"
+        model = result.model
+
+        by_pair = {
+            (tuple(c.source_variables), tuple(c.target_variables)): c
+            for c in model.connections
+        }
+        annotated = by_pair[("D",), ("s",)]
+        assert annotated.annotation == "prior_initialization"
+        assert annotated.target_variables == ["s"]
+        assert by_pair[("A",), ("o",)].annotation == "observation_mapping"
+        assert by_pair[("E",), ("u",)].annotation == "select_action"
+        # Unannotated edges stay None.
+        assert by_pair[("s",), ("B",)].annotation is None
+
+        # The structural consequence of the fix: no unknown-target
+        # warnings for annotated edges.
+        declared = {v.name for v in model.variables}
+        unknown = [
+            t
+            for c in model.connections
+            for t in c.target_variables
+            if t not in declared
+        ]
+        assert unknown == [], f"unknown targets after annotation strip: {unknown}"
+
+    @pytest.mark.unit
+    @pytest.mark.fast
+    def test_annotated_edge_serialization_round_trip(self) -> None:
+        """An annotation survives a parse -> serialize -> parse round trip."""
+        from gnn.parsers.markdown_serializer import MarkdownSerializer
+
+        content = """## GNNSection
+TestAnnRoundTrip
+
+## GNNVersionAndFlags
+GNN v1.1
+
+## ModelName
+Annotation Round Trip
+
+## StateSpaceBlock
+D[2,type=float]
+s[2,type=float]
+
+## Connections
+D>s:prior_initialization
+"""
+        parser = MarkdownGNNParser()
+        result = parser.parse_string(content)
+        assert result.success
+        serialized = MarkdownSerializer().serialize(result.model)
+        assert "D>s:prior_initialization" in serialized
+        reparsed = parser.parse_string(serialized)
+        assert reparsed.success
+        conn = reparsed.model.connections[0]
+        assert conn.annotation == "prior_initialization"
+        assert conn.target_variables == ["s"]
 
     @pytest.mark.unit
     @pytest.mark.fast
@@ -218,8 +318,8 @@ Model with unicode: αβγδ ∑∏∫
 """
         parser = MarkdownGNNParser()
         result = parser.parse_string(content)
-        # Should handle unicode gracefully
-        assert result is not None
+        assert result.success, "Unicode content must parse"
+        assert result.model.model_name == "UnicodeTest_αβγ"
 
     @pytest.mark.unit
     @pytest.mark.fast
@@ -236,7 +336,8 @@ Model with special chars: !@#$%^&*()
 """
         parser = MarkdownGNNParser()
         result = parser.parse_string(content)
-        assert result is not None
+        assert result.success, "Special-character content must parse"
+        assert result.model.model_name == "SpecialChars_Test-1.0"
 
     @pytest.mark.unit
     @pytest.mark.fast
@@ -259,11 +360,8 @@ Model with special chars: !@#$%^&*()
 
         nonexistent = isolated_temp_dir / "does_not_exist.md"
 
-        try:
-            result = parser.parse_file(nonexistent)
-            assert not result.success
-        except (FileNotFoundError, ParseError):
-            pass  # Expected behavior - parser wraps FileNotFoundError in ParseError
+        with pytest.raises(ParseError, match="Failed to read file"):
+            parser.parse_file(nonexistent)
 
 
 class TestScalaParser:
@@ -284,7 +382,8 @@ class TestScalaParser:
         parser = ScalaGNNParser()
         result = parser.parse_string("")
         # Should handle gracefully
-        assert result is not None
+        assert result.success, "Empty content must yield a successful empty parse"
+        assert result.model.variables == []
 
     @pytest.mark.unit
     @pytest.mark.fast
@@ -298,7 +397,8 @@ object TestModel {
 """
         parser = ScalaGNNParser()
         result = parser.parse_string(content)
-        assert result is not None
+        assert result.success, "Simple Scala content must parse"
+        assert result.model.model_name == "TestModel"
 
     @pytest.mark.unit
     @pytest.mark.fast
@@ -314,7 +414,8 @@ object TestModel extends GNNModel {
 """
         parser = ScalaGNNParser()
         result = parser.parse_string(content)
-        assert result is not None
+        assert result.success, "Scala content with imports must parse"
+        assert result.model.model_name == "TestModel"
 
 
 class TestLeanParser:
@@ -338,7 +439,8 @@ class TestLeanParser:
         """Test parsing empty string."""
         parser = LeanGNNParser()
         result = parser.parse_string("")
-        assert result is not None
+        assert result.success, "Empty content must yield a successful empty parse"
+        assert result.model.variables == []
 
     @pytest.mark.unit
     @pytest.mark.fast
@@ -352,7 +454,8 @@ def GNNModel : Type :=
 """
         parser = LeanGNNParser()
         result = parser.parse_string(content)
-        assert result is not None
+        assert result.success, "Lean definition must parse"
+        assert result.model.model_name == "LeanGNNModel"
 
     @pytest.mark.unit
     @pytest.mark.fast
@@ -366,7 +469,8 @@ theorem model_valid : stateSpace → obsSpace → Prop := fun _ _ => True
 """
         parser = LeanGNNParser()
         result = parser.parse_string(content)
-        assert result is not None
+        assert result.success, "Lean type annotations must parse"
+        assert [v.name for v in result.model.variables] == ["stateSpace", "obsSpace"]
 
 
 class TestCoqParser:
@@ -394,7 +498,8 @@ class TestCoqParser:
 
         parser = CoqGNNParser()
         result = parser.parse_string("")
-        assert result is not None
+        assert result.success, "Empty content must yield a successful empty parse"
+        assert result.model.variables == []
 
     @pytest.mark.unit
     @pytest.mark.fast
@@ -410,7 +515,8 @@ Inductive State : Type :=
 
         parser = CoqGNNParser()
         result = parser.parse_string(content)
-        assert result is not None
+        assert result.success, "Coq inductive definition must parse"
+        assert result.model.model_name == "CoqGNNModel"
 
 
 class TestParserEdgeCases:
@@ -424,13 +530,10 @@ class TestParserEdgeCases:
             "## StateSpaceBlock\nA[3,3,type=float\nB[2,2"  # Missing closing brackets
         )
         parser = MarkdownGNNParser()
-        # Should not crash
-        try:
-            result = parser.parse_string(content)
-            assert result is not None
-        except Exception as e:
-            # Acceptable to raise for malformed input
-            assert isinstance(e, (ValueError, SyntaxError, Exception))
+        # The parser recovers from unclosed brackets instead of raising.
+        result = parser.parse_string(content)
+        assert result.success, "Unclosed brackets must not crash the parser"
+        assert result.errors == [], "Recovery must not report errors"
 
     @pytest.mark.unit
     @pytest.mark.fast
@@ -440,12 +543,9 @@ class TestParserEdgeCases:
         content += "A" * 10000  # Very long variable name
 
         parser = MarkdownGNNParser()
-        # Should handle without hanging
-        try:
-            result = parser.parse_string(content)
-            assert result is not None
-        except Exception:
-            pass  # Memory or length limits acceptable
+        # Must complete without hanging or raising.
+        result = parser.parse_string(content)
+        assert result.success, "Very long content must parse"
 
     @pytest.mark.unit
     @pytest.mark.fast
@@ -454,13 +554,9 @@ class TestParserEdgeCases:
         binary_content = b"\x00\x01\x02\x03\xff\xfe"
 
         parser = MarkdownGNNParser()
-        try:
-            result = parser.parse_string(
-                binary_content.decode("utf-8", errors="replace")
-            )
-            assert result is not None
-        except Exception:
-            pass  # Expected for binary input
+        result = parser.parse_string(binary_content.decode("utf-8", errors="replace"))
+        assert not result.success, "Binary soup must be rejected, not accepted"
+        assert result.errors, "Failure must report errors"
 
     @pytest.mark.unit
     @pytest.mark.fast
@@ -469,11 +565,9 @@ class TestParserEdgeCases:
         content = "## ModelName\nTest\x00Model\n"
 
         parser = MarkdownGNNParser()
-        try:
-            result = parser.parse_string(content)
-            assert result is not None
-        except Exception:
-            pass  # Null bytes may cause issues
+        result = parser.parse_string(content)
+        assert result.success, "Null bytes must not crash the parser"
+        assert result.model.model_name == "Test\x00Model"
 
     @pytest.mark.unit
     @pytest.mark.fast
@@ -484,7 +578,8 @@ class TestParserEdgeCases:
 
         parser = MarkdownGNNParser()
         result = parser.parse_string(content)
-        assert result is not None
+        assert result.success, "Nested markdown sections must parse"
+        assert result.model.model_name == "DeepModel"
 
 
 class TestParserInstantiation:

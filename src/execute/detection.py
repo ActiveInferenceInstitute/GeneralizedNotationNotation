@@ -372,6 +372,7 @@ def _detect_accelerator_type() -> str:
             accelerator_type = "cuda"
         elif sys.platform == "darwin":
             accelerator_type = "mps"
-    except Exception:
+    except Exception as e:
+        logger.debug("Accelerator detection failed; falling back to cpu: %s", e)
         accelerator_type = "cpu"
     return accelerator_type

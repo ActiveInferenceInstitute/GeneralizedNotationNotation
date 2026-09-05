@@ -58,3 +58,16 @@ git diff --check
   land; the audit trail lives in `CHANGELOG.md` and git history.
 - Scope open items with concrete tasks, file paths, verification commands, and
   acceptance criteria so the next session can execute without re-deriving them.
+
+## GEO-INFER contract expansion
+
+The delivered opt-in v1 format is specified in `src/export/geo_infer_contract.md`.
+Further work must preserve independently installable runtimes and explicit matrix,
+space and time semantics.
+
+| ID | Scope | Acceptance evidence |
+| --- | --- | --- |
+| GNN-02 | Specify linear Gaussian F/control/H/Q/R, units and initial beliefs jointly with GEO-INFER-ACT. | Unequal dimensions reproduce analytic filter results; continuous generators cannot be misread as per-step transitions. |
+| GNN-03 | Specify factor/modal dependency axes and multi-step policy enumeration. | Asymmetric, non-square fixtures preserve all axes and E cardinality; unsupported structures remain rejected until covered. |
+| GNN-04 | Pin paired repository revisions in cross-repository CI. | Independent locked environments complete both categorical and H3 round trips; receipts include source/artifact digests and both revisions. |
+| GNN-05 | Wire Step 7 to per-model explicit time/space options and original source provenance. | Step 7 CLI wiring (`--geo-step-seconds`/`--geo-state-ids`/`--geo-space-kind` registered in the shared step-argument registry, mapping via `process_export`'s `geo_infer`), visible failure on missing metadata, and unchanged five-format defaults have landed (`src/tests/export/test_export_geo_pipeline.py`). Row stays open for per-model notation-driven metadata discovery and original-source provenance plumbing. |

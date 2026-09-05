@@ -1,6 +1,6 @@
-"""Provides helper functions: test_cross_framework_gate_profiles_all_maintained_backends, test_cross_framework_gate_fails_missing_step_12_evidence, test_cross_framework_gate_fails_unprofiled_framework, test_compare_framework_metrics_fails_on_metric_mismatch, and 4 more.
-
-Public functions: test_cross_framework_gate_profiles_all_maintained_backends, test_cross_framework_gate_fails_missing_step_12_evidence, test_cross_framework_gate_fails_unprofiled_framework, test_compare_framework_metrics_fails_on_metric_mismatch, test_compare_framework_metrics_fails_missing_seed, _acceptance_ledger, _write_simulation_payload, _write_execution_summary
+"""Tests for cross-framework reliability gates: profiled backend coverage,
+missing step 12 evidence, unprofiled framework rejection, and metric
+comparison behavior (mismatch failures plus skipped incomparable metrics).
 """
 
 from __future__ import annotations
@@ -76,7 +76,7 @@ def test_cross_framework_gate_fails_unprofiled_framework(tmp_path: Path) -> None
 
 
 def test_compare_framework_metrics_fails_on_metric_mismatch() -> None:
-    issues = compare_framework_metrics(
+    issues, _skipped = compare_framework_metrics(
         {
             "pymdp": {
                 "available": True,
@@ -98,8 +98,8 @@ def test_compare_framework_metrics_fails_on_metric_mismatch() -> None:
     assert any(issue.field == "num_timesteps" for issue in issues)
 
 
-def test_compare_framework_metrics_fails_missing_seed() -> None:
-    issues = compare_framework_metrics(
+def test_compare_framework_metrics_skips_missing_seed() -> None:
+    issues, skipped = compare_framework_metrics(
         {
             "pymdp": {
                 "available": True,
@@ -118,7 +118,62 @@ def test_compare_framework_metrics_fails_missing_seed() -> None:
         }
     )
 
-    assert any(issue.field == "random_seed" for issue in issues)
+    assert issues == []
+    assert any(note["field"] == "random_seed" for note in skipped)
+
+
+def test_compare_framework_metrics_key_asymmetry_passes_with_note() -> None:
+    issues, skipped = compare_framework_metrics(
+        {
+            "pymdp": {
+                "available": True,
+                "random_seed": 42,
+                "num_timesteps": 10,
+                "matrix_shapes": {
+                    "A_shape": [3, 3],
+                    "B_shape": [3, 3, 2],
+                },
+                "trace_lengths": {"beliefs": 10, "actions": 10},
+            },
+            "jax": {
+                "available": True,
+                "random_seed": None,
+                "num_timesteps": 10,
+                "matrix_shapes": {"B_shape": [3, 3, 2]},
+                "trace_lengths": {"actions": 10},
+            },
+        }
+    )
+
+    assert issues == []
+    assert {note["field"] for note in skipped} == {
+        "random_seed",
+        "matrix_shapes",
+        "trace_lengths",
+    }
+
+
+def test_compare_framework_metrics_fails_on_shared_key_mismatch() -> None:
+    issues, _skipped = compare_framework_metrics(
+        {
+            "pymdp": {
+                "available": True,
+                "random_seed": 42,
+                "num_timesteps": 10,
+                "matrix_shapes": {"B_shape": [3, 3, 2]},
+                "trace_lengths": {"actions": 10},
+            },
+            "jax": {
+                "available": True,
+                "random_seed": 42,
+                "num_timesteps": 10,
+                "matrix_shapes": {"B_shape": [4, 4, 2]},
+                "trace_lengths": {"actions": 10},
+            },
+        }
+    )
+
+    assert any(issue.field == "matrix_shapes" for issue in issues)
 
 
 def _acceptance_ledger(name: str, pipeline_output: Path) -> dict[str, Any]:

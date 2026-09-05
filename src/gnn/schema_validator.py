@@ -901,7 +901,8 @@ class GNNValidator:
         try:
             # allow passing a string
             return cast("int", mapping.get(ValidationLevel(level), 0))
-        except Exception:
+        except (ValueError, TypeError):
+            logger.warning("Unknown validation level %r; defaulting rank to 0", level)
             return 0
 
     def validate_file(
@@ -1164,6 +1165,30 @@ class GNNValidator:
         # Validate parameter completeness
         if len(parsed_gnn.parameters) < len(parsed_gnn.variables) * 0.5:
             result.warnings.append("Many variables lack parameter specifications")
+
+        # Bridge provenance strictness: a document whose GNNSection
+        # identifier carries the `FepLean` prefix (the fep_lean<->GNN
+        # bridge convention, bridge contract section 4) MUST carry the
+        # bridge provenance keys in its Signature under strict
+        # validation. Non-bridge documents are unchanged.
+        if str(parsed_gnn.gnn_section or "").startswith("FepLean"):
+            missing = [
+                key
+                for key in (
+                    "source_repository",
+                    "source_commit",
+                    "lean_module",
+                    "projection_tool",
+                    "target_syntax",
+                )
+                if not (parsed_gnn.signature or {}).get(key)
+            ]
+            for key in missing:
+                result.errors.append(
+                    f"Bridge document (GNNSection {parsed_gnn.gnn_section!r})"
+                    f" is missing required provenance key '{key}' in its"
+                    " Signature section (bridge contract section 4)"
+                )
 
     def _validate_research_standards(
         self, parsed_gnn: Optional[ParsedGNN], content: str, result: ValidationResult

@@ -503,16 +503,19 @@ output/7_export_output/
 
 There are no `ExportError`/`FormatExportError` exception types.
 
+`validate_export_outputs` reads XML, GraphML, and GEXF with `defusedxml`; DTDs, entities, and external references are forbidden. Both `.pkl` and `.pickle` records use the GNN restricted `safe_pickle_load` loader. Extension opcodes and trailing bytes are rejected before reconstruction. Malformed content and missing reader dependencies are reported as invalid artifacts. These are content checks, not artifact authentication or memory/CPU limits.
+
 ## Testing
 
-Tests live in `src/tests/export/` (`test_export_overall.py`, `test_export_format_writers.py`, `test_export_public_api.py`, `test_export_roundtrip.py`, `test_export_registry_and_validate.py`).
+Tests live in `src/tests/export/` (`test_export_overall.py`, `test_export_format_writers.py`, `test_export_public_api.py`, `test_export_roundtrip.py`, `test_export_registry_and_validate.py`, `test_export_deserialization_security.py`).
 
 ## Dependencies
 
 ### Required Dependencies
 
 - **json**: JSON format support
-- **xml.etree.ElementTree**: XML format support
+- **xml.etree.ElementTree**: XML serialization
+- **defusedxml**: XML, GraphML, and GEXF validation without DTD/entity expansion
 - **pickle**: Python serialization
 - **pathlib**: Path handling
 
@@ -542,3 +545,27 @@ This module is part of the GeneralizedNotationNotation project. See the main rep
 - **[AGENTS](AGENTS.md)**: Agentic Workflows
 - **[SPEC](SPEC.md)**: Architectural Specification
 - **[SKILL](SKILL.md)**: Capability API
+
+## GEO-INFER interchange
+
+The opt-in `geo_infer` format exports explicit single-factor categorical A–E
+models with state ordering, a caller-declared timestep and source SHA-256.
+Use `export_model(..., formats=['geo_infer'])` with `raw_content` and
+`geo_infer.step_seconds`, or `python -m export.geo_infer --help`.
+
+### Opt-in via Step 7 / `process_export`
+
+`process_export` accepts a `geo_infer` options mapping. When `"geo_infer"` is
+requested in `formats` (Step 7 does this when the `--geo-step-seconds` CLI
+flag is passed, alongside `--geo-state-ids` and `--geo-space-kind`), the
+strict artifact is written next to the other per-format exports as
+`{model}_geo_infer.geo-infer.json`. Options: `step_seconds` (mandatory,
+finite, positive), `state_ids_path` (JSON array in matrix state order;
+required for `space_kind="h3"`), and `space_kind` (`"categorical"` default or
+`"h3"`). Requesting `geo_infer` without `step_seconds` fails visibly with a
+distinct error naming the missing key, before any output is written. Without
+the `geo_infer` options, the five default pipeline formats are produced
+unchanged. See `src/tests/export/test_export_geo_pipeline.py`.
+
+[The versioned contract](geo_infer_contract.md) defines supported semantics,
+separate environment setup and cross-repository conformance checks.

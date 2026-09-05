@@ -782,7 +782,8 @@ def check_environment_health(verbose: bool = False) -> Dict[str, Any]:
             accelerator_type = "cuda"
         elif sys.platform == "darwin":
             accelerator_type = "mps"
-    except Exception:
+    except Exception as e:
+        logger.debug("Accelerator detection failed; falling back to cpu: %s", e)
         accelerator_type = "cpu"
     health["accelerator_type"] = accelerator_type
 

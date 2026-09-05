@@ -84,8 +84,8 @@ class ComprehensiveDataExporter:
                 with h5py.File(hdf5_file, "w") as f:
                     self._write_dict_to_hdf5(data_dict, f)
                 exported_files.append(hdf5_file)
-            except Exception:
-                logger.debug("HDF5 export failed, skipping")
+            except Exception as exc:
+                logger.warning("HDF5 export failed, skipping: %s", exc)
         else:
             logger.debug("h5py not available, skipping HDF5 export")
 

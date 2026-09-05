@@ -484,6 +484,22 @@ class ArgumentParser:
                     "(enabled by default)"
                 ),
             ),
+            "geo_step_seconds": ArgumentDefinition(
+                flag="--geo-step-seconds",
+                arg_type=float,
+                help_text="GEO-INFER export (step 7): explicit step seconds",
+            ),
+            "geo_state_ids": ArgumentDefinition(
+                flag="--geo-state-ids",
+                arg_type=str,
+                help_text="GEO-INFER export (step 7): path to state IDs file",
+            ),
+            "geo_space_kind": ArgumentDefinition(
+                flag="--geo-space-kind",
+                arg_type=str,
+                choices=["categorical", "h3"],
+                help_text="GEO-INFER export (step 7): space kind",
+            ),
         }
     )
 
@@ -550,7 +566,15 @@ class ArgumentParser:
                 "strict",
                 "profile",
             ],
-            "7_export.py": ["target_dir", "output_dir", "recursive", "verbose"],
+            "7_export.py": [
+                "target_dir",
+                "output_dir",
+                "recursive",
+                "verbose",
+                "geo_step_seconds",
+                "geo_state_ids",
+                "geo_space_kind",
+            ],
             "8_visualization.py": ["target_dir", "output_dir", "recursive", "verbose"],
             "9_advanced_viz.py": [
                 "target_dir",

@@ -114,6 +114,7 @@ class XSDParser(BaseGNNParser):
             # Restore connections
             for conn_data in data.get("connections", []):
                 connection = Connection(
+                    annotation=conn_data.get("annotation"),
                     source_variables=conn_data.get("source_variables", []),
                     target_variables=conn_data.get("target_variables", []),
                     connection_type=self._parse_enum_value(
@@ -170,7 +171,7 @@ class XSDParser(BaseGNNParser):
                     return enum_val
             # Recovery to first enum value
             return list(enum_class)[0]
-        except Exception:
+        except (TypeError, AttributeError, ValueError, IndexError):
             return list(enum_class)[0]
 
     def get_supported_extensions(self) -> List[str]:
@@ -332,6 +333,7 @@ class ASN1Parser(BaseGNNParser):
             # Restore connections
             for conn_data in data.get("connections", []):
                 connection = Connection(
+                    annotation=conn_data.get("annotation"),
                     source_variables=conn_data.get("source_variables", []),
                     target_variables=conn_data.get("target_variables", []),
                     connection_type=self._parse_enum_value(
@@ -388,7 +390,7 @@ class ASN1Parser(BaseGNNParser):
                     return enum_val
             # Recovery to first enum value
             return list(enum_class)[0]
-        except Exception:
+        except (TypeError, AttributeError, ValueError, IndexError):
             return list(enum_class)[0]
 
     def get_supported_extensions(self) -> List[str]:
@@ -554,6 +556,7 @@ class PKLParser(BaseGNNParser):
             # Restore connections
             for conn_data in data.get("connections", []):
                 connection = Connection(
+                    annotation=conn_data.get("annotation"),
                     source_variables=conn_data.get("source_variables", []),
                     target_variables=conn_data.get("target_variables", []),
                     connection_type=self._parse_enum_value(
@@ -611,7 +614,7 @@ class PKLParser(BaseGNNParser):
                     return enum_val
             # Recovery to first enum value
             return list(enum_class)[0]
-        except Exception:
+        except (TypeError, AttributeError, ValueError, IndexError):
             return list(enum_class)[0]
 
     def get_supported_extensions(self) -> List[str]:
@@ -996,6 +999,7 @@ class PKLParser(BaseGNNParser):
             for conn_data in embedded_data["connections"]:
                 if isinstance(conn_data, dict):
                     connection = Connection(
+                        annotation=conn_data.get("annotation"),
                         source_variables=conn_data.get("source_variables", []),
                         target_variables=conn_data.get("target_variables", []),
                         connection_type=ConnectionType(
@@ -1263,6 +1267,7 @@ class AlloyParser(BaseGNNParser):
             # Restore connections
             for conn_data in embedded_data.get("connections", []):
                 conn = Connection(
+                    annotation=conn_data.get("annotation"),
                     source_variables=conn_data.get("source_variables", []),
                     target_variables=conn_data.get("target_variables", []),
                     connection_type=ConnectionType(
@@ -1425,6 +1430,7 @@ class ZNotationParser(BaseGNNParser):
             # Restore connections
             for conn_data in embedded_data.get("connections", []):
                 conn = Connection(
+                    annotation=conn_data.get("annotation"),
                     source_variables=conn_data.get("source_variables", []),
                     target_variables=conn_data.get("target_variables", []),
                     connection_type=ConnectionType(

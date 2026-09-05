@@ -512,7 +512,11 @@ class CrossFormatValidator:
         try:
             with open(temp_fd, "w", encoding="utf-8") as f:
                 f.write(content)
-        except Exception:
+        except (OSError, UnicodeError, TypeError):
+            logger.warning(
+                "Text write failed for temp file %s; falling back to binary write",
+                temp_path,
+            )
             # Handle binary formats
             with open(temp_path, "wb") as f:
                 f.write(content.encode("utf-8"))

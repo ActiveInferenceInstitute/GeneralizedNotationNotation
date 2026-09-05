@@ -2,7 +2,7 @@
 
 ## Architectural Mapping
 
-**Orchestrator**: `src/7_export.py` (55 lines)
+**Orchestrator**: `src/7_export.py` (102 lines)
 **Implementation Layer**: `src/export/`
 
 ## Module Description
@@ -74,7 +74,9 @@ src/export/
 - `target_dir` (Path): Directory containing GNN files
 - `output_dir` (Path): Output directory for exports
 - `verbose` (bool): Enable verbose logging (default: False)
-- `**kwargs`: Additional processing options, including `formats`
+- `**kwargs`: Additional processing options, including `formats` and an
+  optional opt-in `geo_infer` mapping that enables the strict GEO-INFER
+  export (see Configuration).
 
 **Returns**: `True` if all exports succeeded
 
@@ -130,6 +132,23 @@ success = process_export(
   - `"txt"`: Plaintext summary
   - `"dsl"`: Plaintext DSL
 
+Passing `geo_infer={"step_seconds": ..., "state_ids_path": ..., "space_kind": ...}`
+to `process_export` (or passing the Step 7 CLI flags `--geo-step-seconds`,
+`--geo-state-ids`, `--geo-space-kind`, registered in the shared step-argument
+registry) requests the strict GEO-INFER artifact
+(`{model}_geo_infer.geo-infer.json`) in addition to the requested formats.
+Rules:
+
+- `step_seconds` (float): mandatory, finite, and positive.
+- `state_ids_path` (str): optional path to a JSON array labeling states in
+  matrix order; required when `space_kind` is `"h3"`.
+- `space_kind` (str): `"categorical"` (default) or `"h3"`.
+- **Visible failure**: requesting `geo_infer` without `step_seconds` raises
+  a distinct error naming `geo_infer` and the missing key before any output
+  is written.
+- Without the `geo_infer` mapping, the five default formats are produced
+  exactly as before.
+
 #### Export Options
 
 - `include_metadata` (bool): Include metadata in exports (default: `True`)
@@ -151,7 +170,8 @@ success = process_export(
 ### Required Dependencies
 
 - `json` - JSON export
-- `xml.etree.ElementTree` - XML export
+- `xml.etree.ElementTree` - XML serialization (writers)
+- `defusedxml` - XML, GraphML, and GEXF validation reads without DTD/entity expansion
 - `pickle` - Pickle serialization
 
 ### Optional Dependencies

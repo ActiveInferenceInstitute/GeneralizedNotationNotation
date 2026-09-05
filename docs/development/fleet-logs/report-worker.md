@@ -1,0 +1,2 @@
+# fleet-logs/report-worker.md
+- 2026-09-04T20:00Z report-worker AUDIT: scope read (src/report/* + 23_report.py), public API mapped, consumers proven (23_report.py, main.py, cli/__init__.py, pipeline/* ledgers, 112 existing tests). Baseline: pytest 112 passed, ruff clean, mypy clean. Found: step-catalog triplication in analyzer.py, 210-line __init__.process_report monolith, duplicated label math in formatters.py, dead imports in __init__. Next: refactor pass.

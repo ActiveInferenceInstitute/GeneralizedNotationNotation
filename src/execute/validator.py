@@ -15,6 +15,8 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional, cast
 
+logger = logging.getLogger(__name__)
+
 # psutil is optional; fall back gracefully if unavailable
 try:
     import psutil
@@ -311,13 +313,18 @@ def check_dependencies() -> List[ValidationResult]:
                     )
                 )
 
-            except Exception:
+            except Exception as e:
+                logger.warning("Version check for %s failed: %s", package, e)
                 results.append(
                     ValidationResult(
                         component=f"dependency_{package}",
                         status="warn",
                         message=f"{package} is available but version unknown",
-                        details={"package": package, "min_version": min_version},
+                        details={
+                            "package": package,
+                            "min_version": min_version,
+                            "error": str(e),
+                        },
                         suggestion=f"Verify {package} version meets minimum requirement",
                     )
                 )
