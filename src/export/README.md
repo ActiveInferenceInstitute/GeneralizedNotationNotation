@@ -552,3 +552,14 @@ Use `export_model(..., formats=['geo_infer'])` with `raw_content` and
 `geo_infer.step_seconds`, or `python -m export.geo_infer --help`.
 [The versioned contract](geo_infer_contract.md) defines supported semantics,
 separate environment setup and cross-repository conformance checks.
+
+### GEO-INFER interchange
+
+The opt-in `geo_infer` writer supports strict categorical v1 and discrete-time
+linear Gaussian v2 artifacts. Step 7 requires explicit per-file
+`geo_infer_options`; original source bytes establish provenance. See the
+[interchange contract](geo_infer_contract.md) for axes, units, examples, and
+failure behavior. Default pipeline formats remain unchanged.
+
+`options.py` loads bounded, duplicate-free physical metadata for the numbered
+Step 7 CLI; `geo_infer_factored.py` exports explicitly structured factored JSON.

@@ -23,6 +23,10 @@ class PipelineArguments:
     recursive: bool = True
     verbose: bool = False
 
+    # Opt-in Step 7 interchange metadata and format selection.
+    formats: Optional[List[str]] = None
+    geo_infer_options_file: Any = None
+
     # Logging options
     log_format: str = "human"
 

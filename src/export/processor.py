@@ -59,11 +59,11 @@ _GNN_MODEL_WRITERS: Dict[str, Tuple[Any, str]] = {
     "dsl": (export_to_plaintext_dsl, "gnn_model.dsl"),
 }
 
-# ``process_export`` only wires the five pipeline formats; requesting ``txt``
-# or ``dsl`` here logs an "Unsupported format" warning (matching the prior
-# behaviour) even though the registry knows those writers.
+# Keep the five defaults stable. The strict interchange writer is an explicit
+# opt-in; per-model metadata is attached only in its pipeline invocation.
 _PIPELINE_WRITERS: Dict[str, Any] = {
-    name: resolve_format_writer(name) for name in DEFAULT_PIPELINE_FORMATS
+    name: resolve_format_writer(name)
+    for name in (*DEFAULT_PIPELINE_FORMATS, "geo_infer")
 }
 
 
@@ -535,12 +535,26 @@ def process_export(
         # Get requested formats
         requested_formats = kwargs.get("formats", list(_DEFAULT_FORMATS))
 
+        filename_counts: dict[str, int] = {}
+        for entry in gnn_results["processed_files"]:
+            name = entry.get("file_name", "")
+            filename_counts[name] = filename_counts.get(name, 0) + 1
+
         # Process each file
         for file_result in gnn_results["processed_files"]:
             if not file_result["parse_success"]:
                 continue
 
             file_name = file_result["file_name"]
+            if (
+                not isinstance(file_name, str)
+                or not file_name.endswith(".md")
+                or file_name in {".md", "..md"}
+                or "/" in file_name
+                or "\\" in file_name
+                or "\x00" in file_name
+            ):
+                raise ValueError("Step 3 file_name must be a simple Markdown filename")
             logger.info(f"Exporting: {file_name}")
 
             # Load the actual parsed GNN specification
@@ -564,9 +578,47 @@ def process_export(
                 )
                 model_data = file_result
 
-            # Create file-specific output directory
-            file_output_dir = output_dir / file_name.replace(".md", "")
-            file_output_dir.mkdir(exist_ok=True)
+            source = None
+            source_error = None
+            relative_source = Path(file_name)
+            if "geo_infer" in requested_formats:
+                try:
+                    source_root = Path(target_dir).resolve()
+                    supplied_source = Path(file_result["file_path"])
+                    candidates = (
+                        [supplied_source.resolve()]
+                        if supplied_source.is_absolute()
+                        else [
+                            supplied_source.resolve(),
+                            (source_root / supplied_source).resolve(),
+                        ]
+                    )
+                    source = next(
+                        (
+                            candidate
+                            for candidate in candidates
+                            if candidate.is_relative_to(source_root)
+                            and candidate.is_file()
+                        ),
+                        None,
+                    )
+                    if source is None:
+                        raise ValueError("GNN source must be a file inside target_dir")
+                    if source.name != file_name:
+                        raise ValueError(
+                            "GNN source filename disagrees with Step 3 file_name"
+                        )
+                    relative_source = source.relative_to(source_root)
+                except (TypeError, ValueError, OSError) as exc:
+                    source_error = exc
+
+            # Preserve nested source identities instead of overwriting equal basenames.
+            file_output_dir = (
+                output_dir / relative_source.parent / relative_source.stem
+            ).resolve()
+            if not file_output_dir.is_relative_to(Path(output_dir).resolve()):
+                raise ValueError("Model output directory must remain inside output_dir")
+            file_output_dir.mkdir(parents=True, exist_ok=True)
 
             file_export_result: dict[str, Any] = {
                 "file_name": file_name,
@@ -582,12 +634,46 @@ def process_export(
                     logger.warning(f"Unsupported format: {format_name}")
                     continue
                 try:
-                    extension = "pkl" if format_name == "pickle" else format_name
+                    spec = get_format_spec(format_name)
+                    extension = spec["extension"].lstrip(".") if spec else format_name
                     export_file = (
                         file_output_dir
-                        / f"{file_name.replace('.md', '')}_{format_name}.{extension}"
+                        / f"{Path(file_name).stem}_{format_name}.{extension}"
                     )
-                    success = writer(model_data, export_file)
+                    if not export_file.resolve().is_relative_to(
+                        Path(output_dir).resolve()
+                    ):
+                        raise ValueError("Export file must remain inside output_dir")
+                    export_data = model_data
+                    if format_name == "geo_infer":
+                        from .geo_infer import MAX_SOURCE_BYTES
+
+                        if source_error is not None:
+                            raise ValueError(str(source_error)) from source_error
+                        per_model = kwargs.get("geo_infer_options", {})
+                        options = None
+                        if isinstance(per_model, dict):
+                            options = per_model.get(relative_source.as_posix())
+                            if options is None and filename_counts[file_name] == 1:
+                                options = per_model.get(file_name)
+                        if not isinstance(options, dict):
+                            raise ValueError(
+                                f"Explicit geo_infer_options required for {file_name}"
+                            )
+                        if source is None:
+                            raise ValueError(
+                                "GNN source must be a file inside target_dir"
+                            )
+                        with source.open("rb") as stream:
+                            raw = stream.read(MAX_SOURCE_BYTES + 1)
+                        if len(raw) > MAX_SOURCE_BYTES:
+                            raise ValueError("GNN source exceeds four MiB")
+                        export_data = dict(
+                            model_data,
+                            raw_content=raw.decode("utf-8"),
+                            geo_infer=dict(options),
+                        )
+                    success = writer(export_data, export_file)
 
                     if success:
                         file_export_result["exports"][format_name] = {
@@ -626,11 +712,15 @@ def process_export(
 
         # Save export results
         export_results_file = output_dir / "export_results.json"
+        if not export_results_file.resolve().is_relative_to(Path(output_dir).resolve()):
+            raise ValueError("Export results manifest must remain inside output_dir")
         with open(export_results_file, "w") as f:
             json.dump(export_results, f, indent=2)
 
         # Save export summary
         export_summary_file = output_dir / "export_summary.json"
+        if not export_summary_file.resolve().is_relative_to(Path(output_dir).resolve()):
+            raise ValueError("Export summary manifest must remain inside output_dir")
         with open(export_summary_file, "w") as f:
             json.dump(export_results["summary"], f, indent=2)
 
@@ -644,7 +734,10 @@ def process_export(
             f"  Formats generated: {export_results['summary']['formats_generated']}"
         )
 
-        success = export_results["summary"]["successful_exports"] > 0
+        success = (
+            export_results["summary"]["successful_exports"] > 0
+            and export_results["summary"]["failed_exports"] == 0
+        )
         return cast("bool", success)
 
     except Exception as e:

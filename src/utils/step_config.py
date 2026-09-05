@@ -142,7 +142,12 @@ class StepConfiguration:
             "7_export": {
                 "critical": True,
                 "required_args": ["target_dir", "output_dir"],
-                "optional_args": ["recursive", "verbose"],
+                "optional_args": [
+                    "recursive",
+                    "verbose",
+                    "formats",
+                    "geo_infer_options_file",
+                ],
                 "defaults": {"recursive": True, "verbose": False},
                 "description": "GNN Export & Format Conversion",
             },

@@ -947,3 +947,10 @@ Completes the remaining RED_TEAM_REVIEW.md items from the 2026-08-14 wave.
 [1.2.0]: https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/releases
 [1.1.0]: https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/releases
 [1.0.0]: https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/releases
+
+## GEO-INFER interchange expansion (2026-09-05)
+
+Added strict Gaussian and factored data contracts, explicit Step 7 metadata and
+source provenance, independent conformance fixtures and numerical/path checks.
+[Verification and ancestry](doc/development/geo_infer_2026_09.md) record the
+validation scope and inherited fleet changes. No version or package release.

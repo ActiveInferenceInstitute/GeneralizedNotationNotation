@@ -171,7 +171,18 @@ def export_to_geo_infer(model_data: dict[str, Any], output_file: Path) -> bool:
         raise ValueError(
             "geo_infer export requires raw_content and explicit geo_infer.step_seconds"
         )
-    artifact = build_geo_infer_artifact(model_data["raw_content"], **options)
+    options = dict(options)
+    model_type = options.pop("model_type", "categorical")
+    if model_type == "linear_gaussian":
+        from .geo_infer_gaussian import build_geo_infer_gaussian_artifact
+
+        artifact = build_geo_infer_gaussian_artifact(
+            model_data["raw_content"], **options
+        )
+    elif model_type == "categorical":
+        artifact = build_geo_infer_artifact(model_data["raw_content"], **options)
+    else:
+        raise ValueError(f"Unsupported geo_infer model_type: {model_type}")
     output_file.write_text(
         json.dumps(artifact, sort_keys=True, separators=(",", ":"), allow_nan=False)
         + "\n",
@@ -196,6 +207,16 @@ def main() -> int:
     parser.add_argument(
         "--space-kind", choices=["categorical", "h3"], default="categorical"
     )
+    parser.add_argument(
+        "--model-type",
+        choices=["categorical", "linear_gaussian"],
+        default="categorical",
+    )
+    parser.add_argument(
+        "--units",
+        type=Path,
+        help="Gaussian JSON object with states, observations and controls unit arrays",
+    )
     args = parser.parse_args()
     with args.source.open("rb") as stream:
         raw = stream.read(MAX_SOURCE_BYTES + 1)
@@ -204,6 +225,22 @@ def main() -> int:
     options: dict[str, Any] = dict(
         step_seconds=args.step_seconds, space_kind=args.space_kind
     )
+    if args.model_type == "linear_gaussian":
+        if args.units is None or args.state_ids or args.space_kind != "categorical":
+            raise ValueError(
+                "Gaussian export requires --units and does not accept categorical space options"
+            )
+        with args.units.open("rb") as stream:
+            raw_units = stream.read(MAX_SOURCE_BYTES + 1)
+        if len(raw_units) > MAX_SOURCE_BYTES:
+            raise ValueError("Units exceed four MiB")
+        options = dict(
+            model_type="linear_gaussian",
+            step_seconds=args.step_seconds,
+            units=json.loads(raw_units),
+        )
+    elif args.units is not None:
+        raise ValueError("--units requires --model-type linear_gaussian")
     if args.state_ids:
         with args.state_ids.open("rb") as stream:
             labels = stream.read(MAX_SOURCE_BYTES + 1)

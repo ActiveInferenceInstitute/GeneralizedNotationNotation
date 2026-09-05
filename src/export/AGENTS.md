@@ -372,3 +372,14 @@ matrix probabilities, or silently coerce a continuous model into categorical for
 Run export tests and the POMDP extractor orientation tests when changing this
 boundary; run GEO's separate-environment conformance command when both repos are
 available. General canonicalization must preserve non-square axes and be idempotent.
+
+`geo_infer_gaussian.py` adds the explicit discrete-time linear Gaussian v2
+producer. It requires source F/G/H/Q/R and initial belief plus caller units;
+never add default control maps or interpret F as a generator. `process_export`
+accepts `geo_infer_options` keyed by source filename and reads contained original
+source for provenance. Missing metadata fails the requested format and run.
+`test_geo_infer_gaussian.py` covers unequal axes, covariance rejection, CLI,
+source containment, partial failure and unchanged default formats.
+
+`options.py` loads bounded, duplicate-free physical metadata for the numbered
+Step 7 CLI; `geo_infer_factored.py` exports explicitly structured factored JSON.
